@@ -103,15 +103,15 @@ namespace libsemigroups {
       _elements.push_back(y);
       _map.emplace(y, i++);
     }
-    if (S.nr_generators() != 0) {
-      copy_generators_from_elements(S.nr_generators());
+    if (S.number_of_generators() != 0) {
+      copy_generators_from_elements(S.number_of_generators());
       init_degree(this->to_external_const(_gens[0]));
     }
   }
 
   TEMPLATE
   FROIDURE_PIN::~FroidurePin() {
-    if (nr_generators() > 0) {
+    if (number_of_generators() > 0) {
       this->internal_free(_tmp_product);
       this->internal_free(_id);
     }
@@ -187,7 +187,7 @@ namespace libsemigroups {
       is_one(y, i++);
     }
     // copy the old generators
-    copy_generators_from_elements(S.nr_generators());
+    copy_generators_from_elements(S.number_of_generators());
     // Now this is ready to have add_generators or closure called on it
   }
 
@@ -204,7 +204,8 @@ namespace libsemigroups {
     // word_to_pos is always known for generators (i.e. when w.size() == 1),
     // and word_to_pos verifies that w is valid.
     LIBSEMIGROUPS_ASSERT(w.size() > 1);
-    LIBSEMIGROUPS_ASSERT(w[0] < nr_generators() && w[1] < nr_generators());
+    LIBSEMIGROUPS_ASSERT(w[0] < number_of_generators()
+                         && w[1] < number_of_generators());
     element_type prod
         = this->external_copy(this->to_external_const(_tmp_product));
 
@@ -214,7 +215,7 @@ namespace libsemigroups {
                       this->to_external_const(_gens[w[1]]),
                       state_ptr);
     for (auto it = w.begin() + 2; it < w.end(); ++it) {
-      LIBSEMIGROUPS_ASSERT(*it < nr_generators());
+      LIBSEMIGROUPS_ASSERT(*it < number_of_generators());
       Swap()(this->to_external(_tmp_product), prod);
       InternalProduct()(prod,
                         this->to_external_const(_tmp_product),
@@ -241,7 +242,7 @@ namespace libsemigroups {
     }
   }
 
-  SIZE_T FROIDURE_PIN::nr_generators() const noexcept {
+  SIZE_T FROIDURE_PIN::number_of_generators() const noexcept {
     return _gens.size();
   }
 
@@ -276,7 +277,7 @@ namespace libsemigroups {
   }
 
   // TODO(later) put this in FroidurePinBase??
-  SIZE_T FROIDURE_PIN::nr_idempotents() {
+  SIZE_T FROIDURE_PIN::number_of_idempotents() {
     init_idempotents();
     return _idempotents.size();
   }
@@ -397,10 +398,10 @@ namespace libsemigroups {
 
     // product the generators by every generator
     if (_pos < _lenindex[1]) {
-      size_type nr_shorter_elements = _nr;
+      size_type number_of_shorter_elements = _nr;
       while (_pos < _lenindex[1]) {
         element_index_type i = _enumerate_order[_pos];
-        for (letter_type j = 0; j != nr_generators(); ++j) {
+        for (letter_type j = 0; j != number_of_generators(); ++j) {
           InternalProduct()(this->to_external(_tmp_product),
                             this->to_external_const(_elements[i]),
                             this->to_external_const(_gens[j]),
@@ -434,23 +435,23 @@ namespace libsemigroups {
       }
       for (enumerate_index_type i = 0; i != _pos; ++i) {
         letter_type b = _final[_enumerate_order[i]];
-        for (letter_type j = 0; j != nr_generators(); ++j) {
+        for (letter_type j = 0; j != number_of_generators(); ++j) {
           _left.set(_enumerate_order[i], j, _right.get(_letter_to_pos[j], b));
         }
       }
       _wordlen++;
-      expand(_nr - nr_shorter_elements);
+      expand(_nr - number_of_shorter_elements);
       _lenindex.push_back(_enumerate_order.size());
     }
 
     // Multiply the words of length > 1 by every generator
     while (_pos != _nr && !stopped()) {
-      size_type nr_shorter_elements = _nr;
+      size_type number_of_shorter_elements = _nr;
       while (_pos != _lenindex[_wordlen + 1] && !stopped()) {
         element_index_type i = _enumerate_order[_pos];
         letter_type        b = _first[i];
         element_index_type s = _suffix[i];
-        for (letter_type j = 0; j != nr_generators(); ++j) {
+        for (letter_type j = 0; j != number_of_generators(); ++j) {
           if (!_reduced.get(s, j)) {
             element_index_type r = _right.get(s, j);
             if (_found_one && r == _pos_one) {
@@ -492,13 +493,13 @@ namespace libsemigroups {
         }  // finished applying gens to <_elements.at(_pos)>
         _pos++;
       }  // finished words of length <wordlen> + 1
-      expand(_nr - nr_shorter_elements);
+      expand(_nr - number_of_shorter_elements);
 
       if (_pos > _nr || _pos == _lenindex[_wordlen + 1]) {
         for (enumerate_index_type i = _lenindex[_wordlen]; i != _pos; ++i) {
           element_index_type p = _prefix[_enumerate_order[i]];
           letter_type        b = _final[_enumerate_order[i]];
-          for (letter_type j = 0; j != nr_generators(); ++j) {
+          for (letter_type j = 0; j != number_of_generators(); ++j) {
             _left.set(_enumerate_order[i], j, _right.get(_left.get(p, j), b));
           }
         }
@@ -567,13 +568,13 @@ namespace libsemigroups {
       init_degree(*first);
     }
 
-    size_t nr_new_elements = 0;
+    size_t number_of_new_elements = 0;
 
     for (auto it_coll = first; it_coll < last; ++it_coll) {
       auto it = _map.find(this->to_internal_const(*it_coll));
       if (it == _map.end()) {
         // new generator
-        nr_new_elements++;
+        number_of_new_elements++;
         _gens.push_back(this->internal_copy(this->to_internal_const(*it_coll)));
         letter_type const n = _gens.size() - 1;
 
@@ -614,9 +615,9 @@ namespace libsemigroups {
         _length[it->second] = UNDEFINED;
       }
     }
-    expand(nr_new_elements);
+    expand(number_of_new_elements);
     LIBSEMIGROUPS_ASSERT(_lenindex.size() > 1);
-    _lenindex[1] += nr_new_elements;
+    _lenindex[1] += number_of_new_elements;
     _left.add_cols(m);
     _reduced.add_cols(m);
     _right.add_cols(m);
@@ -629,9 +630,9 @@ namespace libsemigroups {
     size_t const  tid = THREAD_ID_MANAGER.tid(std::this_thread::get_id());
 
     // get some parameters from the old semigroup
-    letter_type const old_nrgens  = nr_generators();
-    size_type const   old_nr      = _nr;
-    size_type         nr_old_left = _pos;
+    letter_type const old_nrgens         = number_of_generators();
+    size_type const   old_nr             = _nr;
+    size_type         number_of_old_left = _pos;
 
     // erase the old index
     _enumerate_order.erase(_enumerate_order.begin() + _lenindex[1],
@@ -656,22 +657,22 @@ namespace libsemigroups {
     _wordlen           = 0;
     _lenindex.clear();
     _lenindex.push_back(0);
-    _lenindex.push_back(nr_generators() - _duplicate_gens.size());
+    _lenindex.push_back(number_of_generators() - _duplicate_gens.size());
     std::fill(_reduced.begin(), _reduced.end(), false);
 
-    size_type nr_shorter_elements;
+    size_type number_of_shorter_elements;
     auto      ptr = _state.get();
     // Repeat until we have multiplied all of the elements of <old> up to the
     // old value of _pos by all of the (new and old) generators
 
-    while (nr_old_left > 0) {
-      nr_shorter_elements = _nr;
-      while (_pos < _lenindex[_wordlen + 1] && nr_old_left > 0) {
+    while (number_of_old_left > 0) {
+      number_of_shorter_elements = _nr;
+      while (_pos < _lenindex[_wordlen + 1] && number_of_old_left > 0) {
         element_index_type i = _enumerate_order[_pos];  // position in _elements
         letter_type        b = _first[i];
         element_index_type s = _suffix[i];
         if (_right.get(i, 0) != UNDEFINED) {
-          nr_old_left--;
+          number_of_old_left--;
           // _elements[i] is in old semigroup, and its descendants are
           // known
           for (letter_type j = 0; j < old_nrgens; j++) {
@@ -695,25 +696,25 @@ namespace libsemigroups {
               _nr_rules++;
             }
           }
-          for (letter_type j = old_nrgens; j < nr_generators(); j++) {
+          for (letter_type j = old_nrgens; j < number_of_generators(); j++) {
             closure_update(i, j, b, s, old_nr, tid, old_new, ptr);
           }
         } else {
           // _elements[i] is either not in old, or it is in old but its
           // descendants are not known
-          for (letter_type j = 0; j < nr_generators(); j++) {
+          for (letter_type j = 0; j < number_of_generators(); j++) {
             closure_update(i, j, b, s, old_nr, tid, old_new, ptr);
           }
         }
         _pos++;
       }  // finished words of length <wordlen> + 1
 
-      expand(_nr - nr_shorter_elements);
+      expand(_nr - number_of_shorter_elements);
       if (_pos > _nr || _pos == _lenindex[_wordlen + 1]) {
         if (_wordlen == 0) {
           for (enumerate_index_type i = 0; i < _pos; i++) {
             size_t b = _final[_enumerate_order[i]];
-            for (letter_type j = 0; j < nr_generators(); j++) {
+            for (letter_type j = 0; j < number_of_generators(); j++) {
               // TODO(JDM) reuse old info here!
               _left.set(
                   _enumerate_order[i], j, _right.get(_letter_to_pos[j], b));
@@ -723,7 +724,7 @@ namespace libsemigroups {
           for (enumerate_index_type i = _lenindex[_wordlen]; i < _pos; i++) {
             element_index_type p = _prefix[_enumerate_order[i]];
             letter_type        b = _final[_enumerate_order[i]];
-            for (letter_type j = 0; j < nr_generators(); j++) {
+            for (letter_type j = 0; j < number_of_generators(); j++) {
               // TODO(JDM) reuse old info here!
               _left.set(_enumerate_order[i], j, _right.get(_left.get(p, j), b));
             }
@@ -1121,12 +1122,12 @@ namespace libsemigroups {
                            threshold_index,
                            std::ref(tmp[N - 1]));
 
-      size_t nr_idempotents = 0;
+      size_t number_of_idempotents = 0;
       for (size_t i = 0; i < N; i++) {
         threads[i].join();
-        nr_idempotents += tmp[i].size();
+        number_of_idempotents += tmp[i].size();
       }
-      _idempotents.reserve(nr_idempotents);
+      _idempotents.reserve(number_of_idempotents);
       for (size_t i = 0; i < N; i++) {
         std::copy(
             tmp[i].begin(), tmp[i].end(), std::back_inserter(_idempotents));

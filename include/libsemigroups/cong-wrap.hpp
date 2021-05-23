@@ -77,7 +77,7 @@ namespace libsemigroups {
     explicit CongruenceWrapper(std::shared_ptr<FroidurePinBase> fp)
         : _wrapped_cong(
             std::make_unique<wrapped_type>(congruence_type::twosided, fp)) {
-      set_alphabet(fp->nr_generators());
+      set_alphabet(fp->number_of_generators());
       // TODO(later): Adding the rules from fp in the constructor is not
       // always desirable, since it might trigger an infinite computation in
       // fp.  This seems to work right in all current tests though, and since
@@ -137,7 +137,7 @@ namespace libsemigroups {
 
     uint64_t size() override {
       run();  // to ensure the state is correct
-      return _wrapped_cong->nr_classes();
+      return _wrapped_cong->number_of_classes();
     }
 
     bool equal_to(std::string const& lhs, std::string const& rhs) override {
@@ -224,11 +224,11 @@ namespace libsemigroups {
     //////////////////////////////////////////////////////////////////////////
 
     void set_alphabet_impl(std::string const& lphbt) override {
-      _wrapped_cong->set_nr_generators(lphbt.size());
+      _wrapped_cong->set_number_of_generators(lphbt.size());
     }
 
-    void set_alphabet_impl(size_t nr_letters) override {
-      _wrapped_cong->set_nr_generators(nr_letters);
+    void set_alphabet_impl(size_t number_of_letters) override {
+      _wrapped_cong->set_number_of_generators(number_of_letters);
     }
 
     // TODO(later) We override FpSemigroupInterface::add_rule_impl to avoid

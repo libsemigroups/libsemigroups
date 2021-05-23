@@ -76,7 +76,7 @@ namespace libsemigroups {
 
       kb.run();
       REQUIRE(kb.confluent());
-      REQUIRE(kb.nr_active_rules() == 24);
+      REQUIRE(kb.number_of_active_rules() == 24);
 
       REQUIRE(kb.equal_to("ab", "c"));
       REQUIRE(kb.equal_to("bc", "d"));
@@ -142,7 +142,7 @@ namespace libsemigroups {
 
       kb.run();
       REQUIRE(kb.confluent());
-      REQUIRE(kb.nr_active_rules() == 6);
+      REQUIRE(kb.number_of_active_rules() == 6);
 
       REQUIRE(kb.equal_to("Aba", "bb"));
       REQUIRE(kb.equal_to("Bcb", "cc"));
@@ -178,7 +178,7 @@ namespace libsemigroups {
       REQUIRE(!kb.confluent());
       kb.run();
       REQUIRE(kb.confluent());
-      REQUIRE(kb.nr_active_rules() == 16);
+      REQUIRE(kb.number_of_active_rules() == 16);
 
       REQUIRE(kb.equal_to("DCdc", "ABab"));
       REQUIRE(kb.active_rules()
@@ -235,7 +235,7 @@ namespace libsemigroups {
 
       kb.run();
       REQUIRE(kb.confluent());
-      REQUIRE(kb.nr_active_rules() == 183);
+      REQUIRE(kb.number_of_active_rules() == 183);
 
       REQUIRE(kb.equal_to("aaa", ""));
       REQUIRE(kb.equal_to("bbb", ""));
@@ -285,7 +285,7 @@ namespace libsemigroups {
       REQUIRE(kb.confluent());
       kb.run();
       REQUIRE(kb.confluent());
-      REQUIRE(kb.nr_active_rules() == 4);
+      REQUIRE(kb.number_of_active_rules() == 4);
       REQUIRE(kb.size() == POSITIVE_INFINITY);
       REQUIRE(std::vector<std::string>({"",
                                         "a",
@@ -434,9 +434,9 @@ namespace libsemigroups {
       // kb.knuth_bendix_by_overlap_length();
       kb.run();  // faster
       REQUIRE(kb.confluent());
-      REQUIRE(kb.nr_active_rules() == 211);  // verified with KBMAG
-      REQUIRE(kb.gilman_digraph().nr_nodes() == 121);
-      REQUIRE(kb.gilman_digraph().nr_edges() == 680);
+      REQUIRE(kb.number_of_active_rules() == 211);  // verified with KBMAG
+      REQUIRE(kb.gilman_digraph().number_of_nodes() == 121);
+      REQUIRE(kb.gilman_digraph().number_of_edges() == 680);
       // verified with KBMAG
       REQUIRE(
           std::distance(kb.cbegin_normal_forms(0, 7), kb.cend_normal_forms())
@@ -466,7 +466,7 @@ namespace libsemigroups {
 
       kb.run();
       REQUIRE(kb.confluent());
-      REQUIRE(kb.nr_active_rules() == 6);
+      REQUIRE(kb.number_of_active_rules() == 6);
 
       REQUIRE(kb.equal_to("bb", "B"));
       REQUIRE(kb.equal_to("BaB", "aba"));
@@ -497,12 +497,12 @@ namespace libsemigroups {
 
       REQUIRE(kb.active_rules()
               == std::vector<rule_type>({{"a", ""}, {"b", ""}}));
-      REQUIRE(kb.nr_active_rules() == 2);
+      REQUIRE(kb.number_of_active_rules() == 2);
       REQUIRE(kb.confluent());
 
       kb.run();
       REQUIRE(kb.confluent());
-      REQUIRE(kb.nr_active_rules() == 2);
+      REQUIRE(kb.number_of_active_rules() == 2);
 
       REQUIRE(kb.equal_to("b", ""));
       REQUIRE(kb.equal_to("a", ""));
@@ -525,7 +525,7 @@ namespace libsemigroups {
 
       kb.run();
       REQUIRE(kb.confluent());
-      REQUIRE(kb.nr_active_rules() == 2);
+      REQUIRE(kb.number_of_active_rules() == 2);
       REQUIRE(kb.size() == POSITIVE_INFINITY);
     }
 
@@ -544,7 +544,7 @@ namespace libsemigroups {
 
       kb.run();
       REQUIRE(kb.confluent());
-      REQUIRE(kb.nr_active_rules() == 1);
+      REQUIRE(kb.number_of_active_rules() == 1);
 
       REQUIRE(kb.equal_to("a", ""));
       REQUIRE(kb.active_rules() == std::vector<rule_type>({{"a", ""}}));
@@ -570,7 +570,7 @@ namespace libsemigroups {
 
       kb.run();
       REQUIRE(kb.confluent());
-      REQUIRE(kb.nr_active_rules() == 24);
+      REQUIRE(kb.number_of_active_rules() == 24);
 
       REQUIRE(kb.equal_to("ab", "c"));
       REQUIRE(kb.equal_to("bc", "d"));
@@ -626,7 +626,7 @@ namespace libsemigroups {
 
       kb.run();
       REQUIRE(kb.confluent());
-      REQUIRE(kb.nr_active_rules() == 32);
+      REQUIRE(kb.number_of_active_rules() == 32);
       REQUIRE(kb.active_rules()
               == std::vector<rule_type>({{"Aa", ""},
                                          {"Ac", "b"},
@@ -678,7 +678,7 @@ namespace libsemigroups {
 
       kb.run();
       REQUIRE(kb.confluent());
-      REQUIRE(kb.nr_active_rules() == 1);
+      REQUIRE(kb.number_of_active_rules() == 1);
 
       REQUIRE(kb.active_rules() == std::vector<rule_type>({{"aa", ""}}));
     }
@@ -705,7 +705,7 @@ namespace libsemigroups {
 
       kb.run();
       REQUIRE(kb.confluent());
-      REQUIRE(kb.nr_active_rules() == 14);
+      REQUIRE(kb.number_of_active_rules() == 14);
 
       REQUIRE(kb.equal_to("aaa", ""));
       REQUIRE(kb.equal_to("Hb", "H"));
@@ -756,7 +756,7 @@ namespace libsemigroups {
       REQUIRE(!kb.confluent());
 
       kb.run();
-      REQUIRE(kb.nr_active_rules() == 8);
+      REQUIRE(kb.number_of_active_rules() == 8);
       REQUIRE(kb.confluent());
     }
 
@@ -779,7 +779,7 @@ namespace libsemigroups {
       // The following never terminates (requires recursive order?)
       // kb.knuth_bendix_by_overlap_length();
       // REQUIRE(kb.confluent());
-      // REQUIRE(kb.nr_active_rules() == 32758);
+      // REQUIRE(kb.number_of_active_rules() == 32758);
     }
 
     LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
@@ -795,27 +795,27 @@ namespace libsemigroups {
       kb.add_rule("ababababababab", "");
       kb.add_rule("abacabacabacabac", "");
 
-      REQUIRE(kb.nr_active_rules() == 5);
+      REQUIRE(kb.number_of_active_rules() == 5);
       REQUIRE(!kb.confluent());
 
       kb.max_rules(10);
       kb.run();
-      REQUIRE(kb.nr_active_rules() == 10);
+      REQUIRE(kb.number_of_active_rules() == 10);
       REQUIRE(!kb.confluent());
 
       kb.run();
-      REQUIRE(kb.nr_active_rules() == 10);
+      REQUIRE(kb.number_of_active_rules() == 10);
       REQUIRE(!kb.confluent());
 
       kb.max_rules(20);
       kb.run();
-      REQUIRE(kb.nr_active_rules() == 21);
+      REQUIRE(kb.number_of_active_rules() == 21);
       REQUIRE(!kb.confluent());
 
       kb.max_rules(LIMIT_MAX);
       kb.run();
       REQUIRE(kb.confluent());
-      REQUIRE(kb.nr_active_rules() == 40);
+      REQUIRE(kb.number_of_active_rules() == 40);
     }
 
     // Von Dyck (2,3,7) group - infinite hyperbolic
@@ -872,11 +872,11 @@ namespace libsemigroups {
       kb.add_rule("BaAaAAaAAaAAA", "cAAaAaAAaAAa");
       kb.add_rule("BaAAaAAaAAaAAA", "cAAaAAaAAaAAa");
 
-      REQUIRE(kb.nr_active_rules() == 9);
+      REQUIRE(kb.number_of_active_rules() == 9);
       REQUIRE(!kb.confluent());
       kb.run();
       REQUIRE(kb.confluent());
-      REQUIRE(kb.nr_active_rules() == 32);
+      REQUIRE(kb.number_of_active_rules() == 32);
       REQUIRE(kb.size() == POSITIVE_INFINITY);
       REQUIRE(kb.number_of_normal_forms(4, 5) == 24);
       REQUIRE(std::vector<std::string>(kb.cbegin_normal_forms(4, 5),
@@ -905,7 +905,7 @@ namespace libsemigroups {
       REQUIRE(!kb.confluent());
 
       kb.knuth_bendix_by_overlap_length();
-      REQUIRE(kb.nr_active_rules() == 11);
+      REQUIRE(kb.number_of_active_rules() == 11);
       REQUIRE(kb.confluent());
       REQUIRE(kb.size() == 12);
       REQUIRE(kb.number_of_normal_forms(4, 5) == 0);
@@ -945,7 +945,7 @@ namespace libsemigroups {
       REQUIRE(!kb.confluent());
 
       kb.knuth_bendix_by_overlap_length();
-      REQUIRE(kb.nr_active_rules() == 11);
+      REQUIRE(kb.number_of_active_rules() == 11);
       REQUIRE(kb.confluent());
     }
 
@@ -1021,7 +1021,7 @@ namespace libsemigroups {
 
       kb.knuth_bendix_by_overlap_length();
       REQUIRE(kb.confluent());
-      REQUIRE(kb.nr_rules() == 18);
+      REQUIRE(kb.number_of_rules() == 18);
       REQUIRE(kb.size() == 22);
       REQUIRE(
           std::vector<std::string>(kb.cbegin_normal_forms(0, POSITIVE_INFINITY),
@@ -1053,7 +1053,7 @@ namespace libsemigroups {
 
       kb.knuth_bendix_by_overlap_length();
       REQUIRE(kb.confluent());
-      REQUIRE(kb.nr_rules() == 18);
+      REQUIRE(kb.number_of_rules() == 18);
       REQUIRE(kb.size() == 22);
     }
 
@@ -1084,7 +1084,7 @@ namespace libsemigroups {
       kb1.set_alphabet("ab");
       kb1.add_rule("aaa", "a");
       KnuthBendix kb3(kb1);
-      REQUIRE(kb3.nr_rules() == 1);
+      REQUIRE(kb3.number_of_rules() == 1);
       REQUIRE_THROWS_AS(kb3.set_identity("ab"), LibsemigroupsException);
       REQUIRE_NOTHROW(kb3.set_identity("a"));
     }
@@ -1183,7 +1183,7 @@ namespace libsemigroups {
       REQUIRE(!kb.confluent());
       kb.run();
       REQUIRE(kb.confluent());
-      REQUIRE(kb.nr_active_rules() == 57);
+      REQUIRE(kb.number_of_active_rules() == 57);
       REQUIRE(kb.size() == 362880);
     }
   }  // namespace fpsemigroup

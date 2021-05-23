@@ -57,15 +57,15 @@ namespace libsemigroups {
       ~DynamicArray2() = default;
 
       // Not noexcept because DynamicArray2::add_rows can throw.
-      explicit DynamicArray2(size_t nr_cols     = 0,
-                             size_t nr_rows     = 0,
-                             T      default_val = 0)
+      explicit DynamicArray2(size_t number_of_cols = 0,
+                             size_t number_of_rows = 0,
+                             T      default_val    = 0)
           : _vec(),
-            _nr_used_cols(nr_cols),
+            _nr_used_cols(number_of_cols),
             _nr_unused_cols(0),
             _nr_rows(0),
             _default_val(default_val) {
-        this->add_rows(nr_rows);
+        this->add_rows(number_of_rows);
       }
 
       // Not noexcept because DynamicArray2::DynamicArray2(size_t, size_t) can
@@ -82,22 +82,23 @@ namespace libsemigroups {
 
       // Not noexcept
       template <typename S, typename B>
-      DynamicArray2(DynamicArray2<S, B> const& copy, size_t nr_cols_to_add = 0)
+      DynamicArray2(DynamicArray2<S, B> const& copy,
+                    size_t                     number_of_cols_to_add = 0)
           : _vec(),
             _nr_used_cols(copy._nr_used_cols),
             _nr_unused_cols(copy._nr_unused_cols),
-            _nr_rows(copy.nr_rows()),
+            _nr_rows(copy.number_of_rows()),
             _default_val(copy._default_val) {
-        if (nr_cols_to_add <= _nr_unused_cols) {
+        if (number_of_cols_to_add <= _nr_unused_cols) {
           _vec.assign(copy._vec.cbegin(), copy._vec.cend());
-          _nr_used_cols += nr_cols_to_add;
-          _nr_unused_cols -= nr_cols_to_add;
+          _nr_used_cols += number_of_cols_to_add;
+          _nr_unused_cols -= number_of_cols_to_add;
           return;
         }
 
-        size_t new_nr_cols
-            = std::max(2 * nr_cols(), nr_cols_to_add + nr_cols());
-        _nr_used_cols += nr_cols_to_add;
+        size_t new_nr_cols = std::max(2 * number_of_cols(),
+                                      number_of_cols_to_add + number_of_cols());
+        _nr_used_cols += number_of_cols_to_add;
         _nr_unused_cols = new_nr_cols - _nr_used_cols;
 
         _vec.reserve(new_nr_cols * _nr_rows);
@@ -162,10 +163,10 @@ namespace libsemigroups {
 
       // Not noexcept since std::swap_ranges can throw.
       void swap_rows(size_t i, size_t j) {
-        size_t const nr_cols = _nr_used_cols + _nr_unused_cols;
-        std::swap_ranges(_vec.begin() + (i * nr_cols),
-                         _vec.begin() + ((i + 1) * nr_cols),
-                         _vec.begin() + (j * nr_cols));
+        size_t const number_of_cols = _nr_used_cols + _nr_unused_cols;
+        std::swap_ranges(_vec.begin() + (i * number_of_cols),
+                         _vec.begin() + ((i + 1) * number_of_cols),
+                         _vec.begin() + (j * number_of_cols));
       }
 
       // The following is adapted from http://bit.ly/2X4xPlK
@@ -266,11 +267,11 @@ namespace libsemigroups {
         return _vec[i * (_nr_used_cols + _nr_unused_cols) + j];
       }
 
-      size_t nr_rows() const noexcept {
+      size_t number_of_rows() const noexcept {
         return _nr_rows;
       }
 
-      size_t nr_cols() const noexcept {
+      size_t number_of_cols() const noexcept {
         return _nr_used_cols;
       }
 
@@ -297,8 +298,8 @@ namespace libsemigroups {
       }
 
       // Not noexcept
-      void reserve(size_t nr_rows) {
-        _vec.reserve(nr_rows * (_nr_unused_cols + _nr_used_cols));
+      void reserve(size_t number_of_rows) {
+        _vec.reserve(number_of_rows * (_nr_unused_cols + _nr_used_cols));
       }
 
      private:
@@ -339,7 +340,7 @@ namespace libsemigroups {
           if (da->_nr_unused_cols == 0 || val == 0) {
             return it += val;
           }
-          size_type s = da->nr_cols();
+          size_type s = da->number_of_cols();
           size_type n = da->_nr_unused_cols;
 
           size_type q = val / s;
@@ -366,7 +367,7 @@ namespace libsemigroups {
           if (da->_nr_unused_cols == 0 || val == 0) {
             return it -= val;
           }
-          size_type s = da->nr_cols();
+          size_type s = da->number_of_cols();
           size_type n = da->_nr_unused_cols;
 
           size_type q = val / s;

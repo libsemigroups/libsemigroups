@@ -70,7 +70,7 @@ namespace libsemigroups {
   P_CLASS::CongruenceByPairsHelper(congruence_type                  type,
                                    std::shared_ptr<FroidurePinBase> S) noexcept
       : CongruenceByPairsHelper(type) {
-    set_nr_generators(S->nr_generators());
+    set_number_of_generators(S->number_of_generators());
     set_parent_froidure_pin(S);
     _state = static_cast<froidure_pin_type*>(S.get())->state();
   }
@@ -117,7 +117,7 @@ namespace libsemigroups {
   }
 #pragma GCC diagnostic pop
 
-  SIZE_T P_CLASS::nr_classes_impl() {
+  SIZE_T P_CLASS::number_of_classes_impl() {
     run();
     return parent_froidure_pin()->size() - _class_lookup.size() + _next_class;
   }
@@ -145,7 +145,7 @@ namespace libsemigroups {
       auto prnt = static_cast<froidure_pin_type*>(parent_froidure_pin().get());
       auto ptr  = _state.get();
       // Add its left and/or right multiples
-      for (size_t i = 0; i < prnt->nr_generators(); i++) {
+      for (size_t i = 0; i < prnt->number_of_generators(); i++) {
         const_reference gen = prnt->generator(i);
         if (kind() == congruence_type::left
             || kind() == congruence_type::twosided) {
@@ -183,7 +183,7 @@ namespace libsemigroups {
             "stack\n",
             _found_pairs.size(),
             _map_next,
-            _lookup.nr_blocks(),
+            _lookup.number_of_blocks(),
             _pairs_to_mult.size());
         // If the congruence is only using 1 thread, then this will never
         // happen, if the congruence uses > 1 threads, then it is ok for this to
@@ -228,7 +228,7 @@ namespace libsemigroups {
     REPORT_DEFAULT("stopping with %d pairs: %d elements in %d classes\n",
                    _found_pairs.size(),
                    _map_next,
-                   _lookup.nr_blocks());
+                   _lookup.number_of_blocks());
     REPORT_TIME(t);
     report_why_we_stopped();
   }
@@ -361,7 +361,7 @@ namespace libsemigroups {
   VOID P_CLASS::init() {
     if (!_init_done) {
       LIBSEMIGROUPS_ASSERT(has_parent_froidure_pin());
-      LIBSEMIGROUPS_ASSERT(parent_froidure_pin()->nr_generators() > 0);
+      LIBSEMIGROUPS_ASSERT(parent_froidure_pin()->number_of_generators() > 0);
       auto fp = static_cast<froidure_pin_type*>(parent_froidure_pin().get());
       _tmp1   = this->internal_copy(this->to_internal_const(fp->generator(0)));
       _tmp2   = this->internal_copy(_tmp1);

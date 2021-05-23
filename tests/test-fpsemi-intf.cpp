@@ -67,7 +67,7 @@ namespace libsemigroups {
       auto rg = ReportGuard(REPORT);
 
       std::unique_ptr<FpSemigroupInterface> fp;
-      size_t                                nr_words = 0;
+      size_t                                N = 0;
       SECTION("human readable alphabet") {
         SECTION("ToddCoxeter") {
           fp = std::make_unique<ToddCoxeter>();
@@ -84,7 +84,7 @@ namespace libsemigroups {
         fp->add_rule("abab", "aa");
         REQUIRE(!fp->finished());
         REQUIRE(fp->size() == 27);
-        nr_words = 171;
+        N = 171;
       }
       SECTION("FpSemigroupByPairs") {
         using Transf = LeastTransf<5>;
@@ -96,7 +96,7 @@ namespace libsemigroups {
         fp->add_rule({0, 1, 0, 1}, {1, 1});
         REQUIRE(!fp->finished());
         REQUIRE(fp->size() == 2);
-        nr_words = 10;
+        N = 10;
       }
       REQUIRE(fp->equal_to({0, 0, 0}, {0}));
       REQUIRE(!fp->equal_to({1, 1, 1, 1, 1, 1}, {0}));
@@ -106,7 +106,7 @@ namespace libsemigroups {
                                    [&fp](word_type const& w) -> bool {
                                      return fp->equal_to(w, {0});
                                    }))
-              == nr_words);
+              == N);
     }
 
     LIBSEMIGROUPS_TEST_CASE("FpSemigroupInterface",
@@ -334,13 +334,13 @@ namespace libsemigroups {
       SECTION("FpSemigroupByPairs") {
         fp = std::make_unique<FpSemigroupByPairs<Transf>>(S);
       }
-      size_t expected = fp->nr_rules();
+      size_t expected = fp->number_of_rules();
       REQUIRE_NOTHROW(fp->add_rule({0}, {0}));
-      REQUIRE(fp->nr_rules() == expected);
+      REQUIRE(fp->number_of_rules() == expected);
       REQUIRE_NOTHROW(fp->add_rule(std::pair<word_type, word_type>({0}, {0})));
       REQUIRE_NOTHROW(
           fp->add_rule(std::pair<word_type, word_type>({{1, 1}, {0, 1}})));
-      REQUIRE(fp->nr_rules() == expected + 1);
+      REQUIRE(fp->number_of_rules() == expected + 1);
     }
 
     LIBSEMIGROUPS_TEST_CASE("FpSemigroupInterface",
@@ -360,14 +360,14 @@ namespace libsemigroups {
         fp = std::make_unique<FpSemigroup>();
       }
       fp->set_alphabet("ab");
-      size_t expected = fp->nr_rules();
+      size_t expected = fp->number_of_rules();
       REQUIRE_NOTHROW(fp->add_rule("a", "a"));
       REQUIRE_NOTHROW(fp->add_rule("ab", "ab"));
       REQUIRE_NOTHROW(fp->add_rule("abaaaaaaaa", "abaaaaaaaa"));
-      REQUIRE(fp->nr_rules() == expected);
+      REQUIRE(fp->number_of_rules() == expected);
       REQUIRE_NOTHROW(fp->add_rule(std::make_pair("a", "a")));
       REQUIRE_NOTHROW(fp->add_rule(std::make_pair("ab", "ab")));
-      REQUIRE(fp->nr_rules() == expected);
+      REQUIRE(fp->number_of_rules() == expected);
     }
 
     LIBSEMIGROUPS_TEST_CASE("FpSemigroupInterface",
@@ -387,13 +387,13 @@ namespace libsemigroups {
         fp = std::make_unique<FpSemigroup>();
       }
       fp->set_alphabet(2);
-      size_t expected = fp->nr_rules();
+      size_t expected = fp->number_of_rules();
       REQUIRE_NOTHROW(fp->add_rule({0}, {0}));
       REQUIRE_NOTHROW(fp->add_rule({0, 1}, {0, 1}));
-      REQUIRE(fp->nr_rules() == expected);
+      REQUIRE(fp->number_of_rules() == expected);
       REQUIRE_NOTHROW(fp->add_rule({0, 0, 0}, {0}));
       REQUIRE_NOTHROW(fp->add_rule({0, 1, 0}, {0, 1}));
-      REQUIRE(fp->nr_rules() == expected + 2);
+      REQUIRE(fp->number_of_rules() == expected + 2);
       REQUIRE_THROWS_AS(fp->add_rule({0, 1, 0}, {}), LibsemigroupsException);
     }
 
@@ -458,19 +458,19 @@ namespace libsemigroups {
       using Transf = LeastTransf<5>;
       FroidurePin<Transf> S({Transf({1, 3, 4, 2, 3}), Transf({3, 2, 1, 3, 3})});
       FpSemigroupByPairs<Transf> fp(S);
-      REQUIRE(fp.nr_rules() == 18);
-      REQUIRE(fp.congruence().nr_generating_pairs() == 0);
+      REQUIRE(fp.number_of_rules() == 18);
+      REQUIRE(fp.congruence().number_of_generating_pairs() == 0);
       // Generating pairs are the extra generating pairs added, whereas
-      // the nr_rules is the number of rules of defining the semigroup over
-      // which the congruence is defined.
-      REQUIRE(fp.congruence().nr_generating_pairs() == 0);
+      // the number_of_rules is the number of rules of defining the semigroup
+      // over which the congruence is defined.
+      REQUIRE(fp.congruence().number_of_generating_pairs() == 0);
 
       using Transf = LeastTransf<5>;
       FroidurePin<Transf> T({Transf({1, 3, 4, 2, 3}), Transf({3, 2, 1, 3, 3})});
       REQUIRE_NOTHROW(fp.add_rules(T));
-      REQUIRE(fp.nr_rules() == 36);
+      REQUIRE(fp.number_of_rules() == 36);
       REQUIRE(fp.size() == S.size());
-      REQUIRE(fp.congruence().nr_generating_pairs() == 0);
+      REQUIRE(fp.congruence().number_of_generating_pairs() == 0);
     }
 
     LIBSEMIGROUPS_TEST_CASE("FpSemigroupInterface",
@@ -489,11 +489,11 @@ namespace libsemigroups {
         fp = std::make_unique<FpSemigroup>();
       }
       REQUIRE_NOTHROW(fp->set_alphabet("ab"));
-      size_t const expected = fp->nr_rules() + 3;
+      size_t const expected = fp->number_of_rules() + 3;
       std::vector<std::pair<std::string, std::string>> v
           = {{"aaa", "a"}, {"ab", "ba"}, {"bbbb", "b"}};
       REQUIRE_NOTHROW(fp->add_rules(v));
-      REQUIRE(fp->nr_rules() == expected);
+      REQUIRE(fp->number_of_rules() == expected);
     }
 
     LIBSEMIGROUPS_TEST_CASE("FpSemigroupInterface",

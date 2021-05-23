@@ -99,21 +99,21 @@
 
 #define TODD_COXETER_REPORT_COSETS()                                \
   REPORT_DEFAULT("%d defined, %d max, %d active, %d killed (%s)\n", \
-                 nr_cosets_defined(),                               \
+                 number_of_cosets_defined(),                        \
                  coset_capacity(),                                  \
-                 nr_cosets_active(),                                \
-                 nr_cosets_killed(),                                \
+                 number_of_cosets_active(),                         \
+                 number_of_cosets_killed(),                         \
                  __func__);
 
-#define TODD_COXETER_REPORT_SWITCH(t, r)                                 \
-  REPORT_VERBOSE_DEFAULT("switching %*d %s and %*d %s\n",                \
-                         detail::to_string(nr_cosets_active()).length()  \
-                             - detail::to_string(t).length() + 1,        \
-                         t,                                              \
-                         (is_active_coset(t) ? "(active)" : "(free)  "), \
-                         detail::to_string(nr_cosets_active()).length()  \
-                             - detail::to_string(r).length() + 1,        \
-                         r,                                              \
+#define TODD_COXETER_REPORT_SWITCH(t, r)                                       \
+  REPORT_VERBOSE_DEFAULT("switching %*d %s and %*d %s\n",                      \
+                         detail::to_string(number_of_cosets_active()).length() \
+                             - detail::to_string(t).length() + 1,              \
+                         t,                                                    \
+                         (is_active_coset(t) ? "(active)" : "(free)  "),       \
+                         detail::to_string(number_of_cosets_active()).length() \
+                             - detail::to_string(r).length() + 1,              \
+                         r,                                                    \
                          (is_active_coset(r) ? "(active)" : "(free)  "));
 
 #ifdef LIBSEMIGROUPS_DEBUG
@@ -261,14 +261,14 @@ namespace libsemigroups {
       static constexpr state_type final_state   = UNDEFINED;
 
       explicit FelschTree(ToddCoxeter const* tc)
-          : _automata(tc->nr_generators(), 1, final_state),
+          : _automata(tc->number_of_generators(), 1, final_state),
             _index(1, std::vector<index_type>({})),
             _parent(1, state_type(UNDEFINED)) {}
 
       FelschTree(FelschTree const&) = default;
 
       void add_relations(std::vector<word_type> const& rels) {
-        size_t nr_words = 0;
+        size_t number_of_words = 0;
         LIBSEMIGROUPS_ASSERT(rels.size() % 2 == 0);
         for (auto const& w : rels) {
           // For every prefix [w.cbegin(), last)
@@ -286,16 +286,16 @@ namespace libsemigroups {
               if (_automata.get(s, *it) == final_state) {
                 // [it + 1, last) is the maximal suffix of [first, last) that
                 // corresponds to the existing state s
-                size_t nr_states = _automata.nr_rows();
+                size_t number_of_states = _automata.number_of_rows();
                 _automata.add_rows((it + 1) - first);
                 _index.resize(_index.size() + ((it + 1) - first), {});
                 _parent.resize(_parent.size() + ((it + 1) - first), UNDEFINED);
                 while (it >= first) {
                   // Add [it, last) as a new state
-                  _automata.set(s, *it, nr_states);
-                  _parent[nr_states] = s;
-                  s                  = nr_states;
-                  nr_states++;
+                  _automata.set(s, *it, number_of_states);
+                  _parent[number_of_states] = s;
+                  s                         = number_of_states;
+                  number_of_states++;
                   it--;
                 }
               }
@@ -308,12 +308,13 @@ namespace libsemigroups {
               LIBSEMIGROUPS_ASSERT(s != final_state);
               --it;
             }
-            index_type m = ((nr_words % 2) == 0 ? nr_words : nr_words - 1);
+            index_type m = ((number_of_words % 2) == 0 ? number_of_words
+                                                       : number_of_words - 1);
             if (!std::binary_search(_index[s].cbegin(), _index[s].cend(), m)) {
               _index[s].push_back(m);
             }
           }
-          nr_words++;
+          number_of_words++;
         }
       }
 
@@ -322,7 +323,7 @@ namespace libsemigroups {
       }
 
       bool push_front(letter_type x) {
-        LIBSEMIGROUPS_ASSERT(x < _automata.nr_cols());
+        LIBSEMIGROUPS_ASSERT(x < _automata.number_of_cols());
         if (_automata.get(_current_state, x) != final_state) {
           _current_state = _automata.get(_current_state, x);
           return true;
@@ -413,7 +414,7 @@ namespace libsemigroups {
         : ToddCoxeter(type) {
       _settings->froidure_pin = p;
       set_parent_froidure_pin(S);
-      set_nr_generators(S->nr_generators());
+      set_number_of_generators(S->number_of_generators());
     }
 
     // Construct a ToddCoxeter object representing a congruence over the
@@ -435,7 +436,7 @@ namespace libsemigroups {
         : ToddCoxeter(typ) {
       set_parent_froidure_pin(copy);
       if (copy.finished()) {
-        set_nr_generators(copy.froidure_pin()->nr_generators());
+        set_number_of_generators(copy.froidure_pin()->number_of_generators());
         _settings->froidure_pin = options::froidure_pin::use_cayley_graph;
       } else {
         copy_relations_for_quotient(copy.congruence());
@@ -445,7 +446,7 @@ namespace libsemigroups {
 
     ToddCoxeter::ToddCoxeter(congruence_type typ, fpsemigroup::KnuthBendix& kb)
         : ToddCoxeter(typ) {
-      set_nr_generators(kb.alphabet().size());
+      set_number_of_generators(kb.alphabet().size());
       // TODO(later) use active rules when available
       for (auto it = kb.cbegin_rules(); it < kb.cend_rules(); ++it) {
         add_pair(kb.string_to_word(it->first), kb.string_to_word(it->second));
@@ -598,7 +599,8 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////
 
     bool ToddCoxeter::empty() const {
-      return _relations.empty() && _extra.empty() && nr_cosets_active() == 1;
+      return _relations.empty() && _extra.empty()
+             && number_of_cosets_active() == 1;
     }
 
     void ToddCoxeter::reserve(size_t n) {
@@ -620,11 +622,11 @@ namespace libsemigroups {
         standardize(order::shortlex);
       }
 
-      _table.shrink_rows_to(nr_cosets_active());
+      _table.shrink_rows_to(number_of_cosets_active());
       // Cannot delete _preim_init or _preim_next because they are required by
       // standardize
-      _preim_init.shrink_rows_to(nr_cosets_active());
-      _preim_next.shrink_rows_to(nr_cosets_active());
+      _preim_init.shrink_rows_to(number_of_cosets_active());
+      _preim_next.shrink_rows_to(number_of_cosets_active());
       _relations.clear();
       _relations.shrink_to_fit();
       _extra.clear();
@@ -637,7 +639,7 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////
 
     bool ToddCoxeter::complete() const noexcept {
-      size_t const n = nr_generators();
+      size_t const n = number_of_generators();
       coset_type   c = _id_coset;
       while (c != first_free_coset()) {
         for (size_t a = 0; a < n; ++a) {
@@ -724,10 +726,10 @@ namespace libsemigroups {
       return w;
     }
 
-    size_t ToddCoxeter::nr_classes_impl() {
+    size_t ToddCoxeter::number_of_classes_impl() {
       run();
       LIBSEMIGROUPS_ASSERT(finished());
-      return nr_cosets_active() - 1;
+      return number_of_cosets_active() - 1;
     }
 
     std::shared_ptr<FroidurePinBase> ToddCoxeter::quotient_impl() {
@@ -737,7 +739,7 @@ namespace libsemigroups {
       shrink_to_fit();
       // Ensure class indices and letters are equal!
       auto   table = std::make_shared<table_type>(_table);
-      size_t n     = nr_generators();
+      size_t n     = number_of_generators();
       for (letter_type a = 0; a < n;) {
         if (table->get(0, a) != a + 1) {
           table->erase_column(a);
@@ -748,7 +750,7 @@ namespace libsemigroups {
       }
       auto ptr = std::make_shared<
           FroidurePin<TCE, FroidurePinTraits<TCE, table_type>>>(table);
-      for (size_t i = 0; i < nr_generators(); ++i) {
+      for (size_t i = 0; i < number_of_generators(); ++i) {
         // We use table.get(0, i) instead of just i, because there might be
         // more generators than cosets.
         ptr->add_generator(TCE(_table.get(0, i)));
@@ -766,7 +768,7 @@ namespace libsemigroups {
         size_t const bound     = _settings->lower_bound;
         _settings->lower_bound = UNDEFINED;
         run_until([this, &bound]() -> bool {
-          return (nr_cosets_active() == bound) && complete();
+          return (number_of_cosets_active() == bound) && complete();
         });
       } else if (_settings->strategy == options::strategy::felsch) {
         felsch();
@@ -788,8 +790,8 @@ namespace libsemigroups {
         standardize(order::shortlex);
       }
       coset_type c = const_word_to_class_index(w);
-      // c is in the range 1, ..., nr_cosets_active() because 0 represents the
-      // identity coset, and does not correspond to an element.
+      // c is in the range 1, ..., number_of_cosets_active() because 0
+      // represents the identity coset, and does not correspond to an element.
       return c;
     }
 
@@ -829,16 +831,16 @@ namespace libsemigroups {
       init();
       if (_prefilled) {
         return false;
-      } else if (nr_generators() > _relations.size() + _extra.size()) {
+      } else if (number_of_generators() > _relations.size() + _extra.size()) {
         return true;
       }
-      detail::IsObviouslyInfinite ioi(nr_generators());
+      detail::IsObviouslyInfinite ioi(number_of_generators());
       ioi.add_rules(_relations.cbegin(), _relations.cend());
       ioi.add_rules(_extra.cbegin(), _extra.cend());
       return ioi.result();
     }
 
-    void ToddCoxeter::set_nr_generators_impl(size_t n) {
+    void ToddCoxeter::set_number_of_generators_impl(size_t n) {
       // TODO(later) add columns to make it up to n?
       _preim_init = table_type(n, 1, UNDEFINED);
       _preim_next = table_type(n, 1, UNDEFINED);
@@ -853,20 +855,20 @@ namespace libsemigroups {
                                      size_t const      first,
                                      size_t const      last) const {
       REPORT_DEBUG_DEFAULT("validating coset table...\n");
-      if (nr_generators() == UNDEFINED) {
+      if (number_of_generators() == UNDEFINED) {
         LIBSEMIGROUPS_EXCEPTION("no generators have been defined");
-      } else if (table.nr_cols() != nr_generators()) {
+      } else if (table.number_of_cols() != number_of_generators()) {
         LIBSEMIGROUPS_EXCEPTION("invalid table, expected %d columns, found %d",
-                                nr_generators(),
-                                table.nr_cols());
+                                number_of_generators(),
+                                table.number_of_cols());
       }
       if (last - first <= 0) {
         LIBSEMIGROUPS_EXCEPTION(
             "invalid table, expected at least 1 rows, found %d",
-            table.nr_rows());
+            table.number_of_rows());
       }
       for (size_t i = first; i < last; ++i) {
-        for (size_t j = 0; j < table.nr_cols(); ++j) {
+        for (size_t j = 0; j < table.number_of_cols(); ++j) {
           coset_type c = table.get(i, j);
           if (c < first || c >= last) {
             LIBSEMIGROUPS_EXCEPTION(
@@ -892,7 +894,7 @@ namespace libsemigroups {
       REPORT_DEBUG_DEFAULT("copying relations for quotient...\n");
       LIBSEMIGROUPS_ASSERT(empty());
       copy.init();
-      set_nr_generators(copy.nr_generators());
+      set_number_of_generators(copy.number_of_generators());
       _state     = state::initialized;
       _relations = copy._relations;
       _relations.insert(
@@ -975,14 +977,15 @@ namespace libsemigroups {
 
     void ToddCoxeter::init_preimages_from_table() {
       REPORT_DEBUG("initializing preimages...\n");
-      LIBSEMIGROUPS_ASSERT(_table.nr_cols() == nr_generators());
-      LIBSEMIGROUPS_ASSERT(_table.nr_rows() >= nr_cosets_active());
+      LIBSEMIGROUPS_ASSERT(_table.number_of_cols() == number_of_generators());
+      LIBSEMIGROUPS_ASSERT(_table.number_of_rows()
+                           >= number_of_cosets_active());
       LIBSEMIGROUPS_ASSERT(_prefilled);
       LIBSEMIGROUPS_ASSERT(_state == state::constructed);
       LIBSEMIGROUPS_ASSERT(_relations.empty());
 
-      for (coset_type c = 0; c < nr_cosets_active(); c++) {
-        for (size_t i = 0; i < nr_generators(); i++) {
+      for (coset_type c = 0; c < number_of_cosets_active(); c++) {
+        for (size_t i = 0; i < number_of_generators(); i++) {
           coset_type b = _table.get(c, i);
           _preim_next.set(c, i, _preim_init.get(b, i));
           _preim_init.set(b, i, c);
@@ -996,13 +999,13 @@ namespace libsemigroups {
       LIBSEMIGROUPS_ASSERT(
           _settings->froidure_pin == options::froidure_pin::use_cayley_graph
           || _settings->froidure_pin == options::froidure_pin::none);
-      LIBSEMIGROUPS_ASSERT(S.nr_generators() == nr_generators());
+      LIBSEMIGROUPS_ASSERT(S.number_of_generators() == number_of_generators());
       if (kind() == congruence_type::left) {
         prefill_and_validate(S.left_cayley_graph(), false);
       } else {
         prefill_and_validate(S.right_cayley_graph(), false);
       }
-      for (size_t i = 0; i < nr_generators(); i++) {
+      for (size_t i = 0; i < number_of_generators(); i++) {
         _table.set(0, i, S.letter_to_pos(i) + 1);
       }
       init_preimages_from_table();
@@ -1018,24 +1021,24 @@ namespace libsemigroups {
         LIBSEMIGROUPS_EXCEPTION("cannot prefill a non-empty instance")
       }
       if (validate) {
-        validate_table(table, 0, table.nr_rows());
+        validate_table(table, 0, table.number_of_rows());
       }
 
       REPORT_DEBUG("prefilling the coset table...\n");
       _prefilled = true;
-      size_t m   = table.nr_rows() + 1;
-      _table.add_rows(m - _table.nr_rows());
-      for (size_t i = 0; i < _table.nr_cols(); i++) {
+      size_t m   = table.number_of_rows() + 1;
+      _table.add_rows(m - _table.number_of_rows());
+      for (size_t i = 0; i < _table.number_of_cols(); i++) {
         _table.set(0, i, i + 1);
       }
-      for (size_t row = 0; row < _table.nr_rows() - 1; ++row) {
-        for (size_t col = 0; col < _table.nr_cols(); ++col) {
+      for (size_t row = 0; row < _table.number_of_rows() - 1; ++row) {
+        for (size_t col = 0; col < _table.number_of_cols(); ++col) {
           _table.set(row + 1, col, table.get(row, col) + 1);
         }
       }
-      add_active_cosets(m - nr_cosets_active());
-      _preim_init.add_rows(m - _preim_init.nr_rows());
-      _preim_next.add_rows(m - _preim_next.nr_rows());
+      add_active_cosets(m - number_of_cosets_active());
+      _preim_init.add_rows(m - _preim_init.number_of_rows());
+      _preim_next.add_rows(m - _preim_next.number_of_rows());
     }
 
     void
@@ -1058,7 +1061,7 @@ namespace libsemigroups {
       } else {
         coset_type const c = new_active_coset();
         // Clear the new coset's row in each table
-        for (letter_type i = 0; i < nr_generators(); i++) {
+        for (letter_type i = 0; i < number_of_generators(); i++) {
           _table.set(c, i, UNDEFINED);
           _preim_init.set(c, i, UNDEFINED);
         }
@@ -1090,7 +1093,7 @@ namespace libsemigroups {
             c, _relations[*it], _relations[*it + 1]);
       }
 
-      size_t const n = nr_generators();
+      size_t const n = number_of_generators();
       for (size_t x = 0; x < n; ++x) {
         if (_felsch_tree->push_front(x)) {
           coset_type e = _preim_init.get(c, x);
@@ -1136,7 +1139,7 @@ namespace libsemigroups {
       detail::Timer tmr;
       init();
       coset_type   t = 0;
-      size_t const n = nr_generators();
+      size_t const n = number_of_generators();
       // Can only initialise _felsch_tree here because we require _relations
       // to be complete.
       init_felsch_tree();
@@ -1213,7 +1216,7 @@ namespace libsemigroups {
               _id_coset, *it, *(it + 1));
         }
         if (_settings->standardize) {
-          size_t const n = nr_generators();
+          size_t const n = number_of_generators();
           for (letter_type x = 0; x < n; ++x) {
             standardize_immediate(_id_coset, t, x);
           }
@@ -1231,7 +1234,7 @@ namespace libsemigroups {
       if (_settings->save) {
         init_felsch_tree();
       }
-      // size_t const n = nr_generators();
+      // size_t const n = number_of_generators();
       while (_current != first_free_coset() && !stopped()) {
         if (!_settings->save) {
           for (auto it = _relations.cbegin(); it < _relations.cend(); it += 2) {
@@ -1257,11 +1260,11 @@ namespace libsemigroups {
           //   }
           // }
         }
-        if (nr_cosets_active() > _settings->next_lookahead) {
+        if (number_of_cosets_active() > _settings->next_lookahead) {
           perform_lookahead();
         }
         if (_settings->standardize) {
-          size_t const n = nr_generators();
+          size_t const n = number_of_generators();
           for (letter_type x = 0; x < n; ++x) {
             standardize_immediate(_current, t, x);
           }
@@ -1361,7 +1364,7 @@ namespace libsemigroups {
       }
       TODD_COXETER_REPORT_COSETS()
 
-      size_t nr_killed = nr_cosets_killed();
+      size_t number_of_killed = number_of_cosets_killed();
       while (_current_la != first_free_coset()
              // when running the random sims method the state is finished at
              // this point, and so stopped() == true, but we anyway want to
@@ -1377,12 +1380,12 @@ namespace libsemigroups {
           TODD_COXETER_REPORT_COSETS()
         }
       }
-      nr_killed = nr_cosets_killed() - nr_killed;
-      if (nr_cosets_active() > _settings->next_lookahead
-          || nr_killed < (nr_cosets_active() / 4)) {
+      number_of_killed = number_of_cosets_killed() - number_of_killed;
+      if (number_of_cosets_active() > _settings->next_lookahead
+          || number_of_killed < (number_of_cosets_active() / 4)) {
         _settings->next_lookahead *= 2;
       }
-      REPORT_DEFAULT("%2d cosets killed\n", nr_killed);
+      REPORT_DEFAULT("%2d cosets killed\n", number_of_killed);
       _state = old_state;
     }
 
@@ -1392,10 +1395,10 @@ namespace libsemigroups {
 
     void ToddCoxeter::init_standardize() {
       if (_tree == nullptr) {
-        _tree = std::make_unique<std::vector<TreeNode>>(nr_cosets_active(),
-                                                        TreeNode());
+        _tree = std::make_unique<std::vector<TreeNode>>(
+            number_of_cosets_active(), TreeNode());
       } else {
-        _tree->resize(nr_cosets_active());
+        _tree->resize(number_of_cosets_active());
       }
       LIBSEMIGROUPS_ASSERT(_coinc.empty());
     }
@@ -1450,7 +1453,7 @@ namespace libsemigroups {
       coset_type              s = 0;
       coset_type              t = 0;
       letter_type             x = 0;
-      size_t const            n = nr_generators();
+      size_t const            n = number_of_generators();
       std::vector<coset_type> p(coset_capacity(), 0);
       std::iota(p.begin(), p.end(), 0);
       std::vector<coset_type> q(coset_capacity(), 0);
@@ -1483,7 +1486,7 @@ namespace libsemigroups {
       REPORT_DEFAULT("standardizing (shortlex)... ");
       detail::Timer           tmr;
       coset_type              t = 0;
-      size_t const            n = nr_generators();
+      size_t const            n = number_of_generators();
       std::vector<coset_type> p(coset_capacity(), 0);
       std::iota(p.begin(), p.end(), 0);
       std::vector<coset_type> q(coset_capacity(), 0);
@@ -1561,7 +1564,7 @@ namespace libsemigroups {
       REPORT_DEFAULT("standardizing (recursive)... ");
       detail::Timer          tmr;
       std::vector<word_type> out;
-      size_t const           n = nr_generators();
+      size_t const           n = number_of_generators();
       letter_type            a = 0;
       coset_type             s = 0;
       coset_type             t = 0;
@@ -1580,7 +1583,7 @@ namespace libsemigroups {
       a++;
       bool new_generator = true;
       int  x, u, w;
-      while (a < n && t < nr_cosets_active() - 1) {
+      while (a < n && t < number_of_cosets_active() - 1) {
         if (new_generator) {
           w = -1;  // -1 is the empty word
           if (standardize_deferred(p, q, 0, t, a)) {
@@ -1632,25 +1635,25 @@ namespace libsemigroups {
     }
 
     // The permutation q must map the active cosets to the [0, ..
-    // , nr_cosets_active())
+    // , number_of_cosets_active())
     void ToddCoxeter::apply_permutation(std::vector<coset_type>& p,
                                         std::vector<coset_type>& q) {
       // p : new -> old, q = p ^ -1
 #ifdef LIBSEMIGROUPS_DEBUG
       for (size_t c = 0; c < q.size(); ++c) {
         LIBSEMIGROUPS_ASSERT(
-            (is_active_coset(c) && q[c] < nr_cosets_active())
-            || (!is_active_coset(c) && q[c] >= nr_cosets_active()));
+            (is_active_coset(c) && q[c] < number_of_cosets_active())
+            || (!is_active_coset(c) && q[c] >= number_of_cosets_active()));
         LIBSEMIGROUPS_ASSERT(p[q[c]] == c);
         LIBSEMIGROUPS_ASSERT(q[p[c]] == c);
       }
 #endif
       {
         coset_type   c = _id_coset;
-        size_t const n = nr_generators();
+        size_t const n = number_of_generators();
         // Permute all the values in the _table, and pre-images, that relate
         // to active cosets
-        while (c < nr_cosets_active()) {
+        while (c < number_of_cosets_active()) {
           for (letter_type x = 0; x < n; ++x) {
             coset_type i = _table.get(p[c], x);
             _table.set(p[c], x, (i == UNDEFINED ? i : q[i]));
@@ -1695,7 +1698,7 @@ namespace libsemigroups {
       LIBSEMIGROUPS_ASSERT(is_valid_coset(d));
       LIBSEMIGROUPS_ASSERT(is_active_coset(c) || is_active_coset(d));
 
-      size_t const n = nr_generators();
+      size_t const n = number_of_generators();
       for (letter_type x = 0; x < n; ++x) {
         coset_type cx = _table.get(c, x);
         coset_type dx = _table.get(d, x);
@@ -1796,7 +1799,7 @@ namespace libsemigroups {
     // Validates the coset table.
     void ToddCoxeter::debug_validate_table() const {
       REPORT_DEBUG_DEFAULT("validating the coset table... ");
-      size_t const n = nr_generators();
+      size_t const n = number_of_generators();
       coset_type   c = _id_coset;
       while (c != first_free_coset()) {
         if (!is_active_coset(c)) {
@@ -1821,7 +1824,7 @@ namespace libsemigroups {
     // Validates the preimages, this is very expensive.
     void ToddCoxeter::debug_validate_preimages() const {
       REPORT_DEBUG_DEFAULT("validating preimages... ");
-      size_t const n = nr_generators();
+      size_t const n = number_of_generators();
       coset_type   c = _id_coset;
       while (c != first_free_coset()) {
         for (letter_type x = 0; x < n; ++x) {

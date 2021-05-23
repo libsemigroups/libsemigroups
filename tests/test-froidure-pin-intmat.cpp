@@ -83,9 +83,9 @@ namespace libsemigroups {
 
       REQUIRE(S.size() == 13);
       REQUIRE(S.degree() == 2);
-      REQUIRE(S.nr_idempotents() == 4);
-      REQUIRE(S.nr_generators() == 2);
-      REQUIRE(S.nr_rules() == 6);
+      REQUIRE(S.number_of_idempotents() == 4);
+      REQUIRE(S.number_of_generators() == 2);
+      REQUIRE(S.number_of_rules() == 6);
       REQUIRE(S[0] == S.generator(0));
       REQUIRE(S[1] == S.generator(1));
 

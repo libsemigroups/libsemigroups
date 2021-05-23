@@ -226,9 +226,10 @@ namespace libsemigroups {
     return _settings._batch_size;
   }
 
-  FroidurePinBase& FroidurePinBase::max_threads(size_t nr_threads) noexcept {
-    unsigned int n
-        = static_cast<unsigned int>(nr_threads == 0 ? 1 : nr_threads);
+  FroidurePinBase&
+  FroidurePinBase::max_threads(size_t number_of_threads) noexcept {
+    unsigned int n = static_cast<unsigned int>(
+        number_of_threads == 0 ? 1 : number_of_threads);
     _settings._max_threads = std::min(n, std::thread::hardware_concurrency());
     return *this;
   }

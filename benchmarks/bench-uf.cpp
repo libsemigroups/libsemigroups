@@ -38,7 +38,7 @@ namespace libsemigroups {
           for (size_t i = 0; i < N / 5; ++i) {
             uf.unite(dist(gen), dist(gen));
           }
-          REQUIRE(uf.nr_blocks() > 1);
+          REQUIRE(uf.number_of_blocks() > 1);
         }
       };
 
@@ -48,7 +48,7 @@ namespace libsemigroups {
           for (size_t i = 0; i < N / 5; ++i) {
             uf.unite(dist(gen), dist(gen));
           }
-          REQUIRE(uf.nr_blocks() > 1);
+          REQUIRE(uf.number_of_blocks() > 1);
         }
       };
 

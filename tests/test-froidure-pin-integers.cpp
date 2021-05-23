@@ -86,13 +86,13 @@ namespace libsemigroups {
     auto             rg = ReportGuard(REPORT);
     FroidurePin<int> S({2});
     REQUIRE(S.size() == 32);
-    REQUIRE(S.nr_idempotents() == 1);
+    REQUIRE(S.number_of_idempotents() == 1);
     FroidurePin<int>::const_iterator it = S.cbegin();
     REQUIRE(*it == 2);
 
     FroidurePin<uint8_t> T({2, 3});
     REQUIRE(T.size() == 130);
-    REQUIRE(T.nr_idempotents() == 2);
+    REQUIRE(T.number_of_idempotents() == 2);
     REQUIRE(*T.cbegin_idempotents() == 0);
     REQUIRE(*T.cbegin_idempotents() + 1 == 1);
   }

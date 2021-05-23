@@ -102,7 +102,7 @@ namespace libsemigroups {
                     detail::DynamicArray2<bool>& tmp,
                     size_t const&                i,
                     size_t const&                j) {
-      for (size_t k = 0; k < out.nr_cols(); k++) {
+      for (size_t k = 0; k < out.number_of_cols(); k++) {
         out.set(i, k, (out.get(i, k) || tmp.get(j, k + 1)));
       }
     }
@@ -320,11 +320,11 @@ namespace libsemigroups {
       for (auto const& j : x[i]) {
         if (j < n) {
           out.set(i, j, true);
-        } else if (j < tmp.nr_rows() && tmp.get(j, 0)) {
+        } else if (j < tmp.number_of_rows() && tmp.get(j, 0)) {
           unite_rows(out, tmp, i, j);
         } else {
-          if (j >= tmp.nr_rows()) {
-            tmp.add_rows(j - tmp.nr_rows() + 1);
+          if (j >= tmp.number_of_rows()) {
+            tmp.add_rows(j - tmp.number_of_rows() + 1);
           }
           tmp.set(j, 0, true);
           x_seen[i] = true;
@@ -345,11 +345,11 @@ namespace libsemigroups {
       for (auto const& j : y[i]) {
         if (j >= n) {
           out.set(i, j, true);
-        } else if (j < tmp.nr_rows() && tmp.get(j, 0)) {
+        } else if (j < tmp.number_of_rows() && tmp.get(j, 0)) {
           unite_rows(out, tmp, i, j);
         } else {
-          if (j >= tmp.nr_rows()) {
-            tmp.add_rows(j - tmp.nr_rows() + 1);
+          if (j >= tmp.number_of_rows()) {
+            tmp.add_rows(j - tmp.number_of_rows() + 1);
           }
           tmp.set(j, 0, true);
           y_seen[i] = true;

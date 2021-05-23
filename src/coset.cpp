@@ -107,8 +107,8 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////
 
     void CosetManager::add_active_cosets(size_t n) {
-      if (n > (coset_capacity() - nr_cosets_active())) {
-        size_t const m = n - (coset_capacity() - nr_cosets_active());
+      if (n > (coset_capacity() - number_of_cosets_active())) {
+        size_t const m = n - (coset_capacity() - number_of_cosets_active());
         add_free_cosets(m);
         // add_free_cosets adds new free cosets to the start of the free list
         _last_active_coset = _forwd.size() - 1;
@@ -166,24 +166,25 @@ namespace libsemigroups {
 #ifdef LIBSEMIGROUPS_DEBUG
       size_t sum = 0;
       for (coset_type c = _id_coset; c != _first_free_coset; c = _forwd[c]) {
-        LIBSEMIGROUPS_ASSERT(c < nr_cosets_active());
+        LIBSEMIGROUPS_ASSERT(c < number_of_cosets_active());
         sum += c;
       }
-      LIBSEMIGROUPS_ASSERT(
-          sum == nr_cosets_active() * (nr_cosets_active() - 1) / 2);
+      LIBSEMIGROUPS_ASSERT(sum
+                           == number_of_cosets_active()
+                                  * (number_of_cosets_active() - 1) / 2);
       std::vector<coset_type> copy(_forwd.cbegin(),
-                                   _forwd.cbegin() + nr_cosets_active());
+                                   _forwd.cbegin() + number_of_cosets_active());
       std::sort(copy.begin(), copy.end());
       auto it = std::unique(copy.begin(), copy.end());
       LIBSEMIGROUPS_ASSERT(it == copy.end());
 #endif
       _first_free_coset = UNDEFINED;
-      _forwd.erase(_forwd.begin() + nr_cosets_active(), _forwd.end());
+      _forwd.erase(_forwd.begin() + number_of_cosets_active(), _forwd.end());
       _forwd[_last_active_coset] = UNDEFINED;
       _forwd.shrink_to_fit();
-      _bckwd.erase(_bckwd.begin() + nr_cosets_active(), _bckwd.end());
+      _bckwd.erase(_bckwd.begin() + number_of_cosets_active(), _bckwd.end());
       _bckwd.shrink_to_fit();
-      _ident.erase(_ident.begin() + nr_cosets_active(), _ident.end());
+      _ident.erase(_ident.begin() + number_of_cosets_active(), _ident.end());
       _ident.shrink_to_fit();
 #ifdef LIBSEMIGROUPS_DEBUG
       debug_validate_forwd_bckwd();
@@ -293,13 +294,13 @@ namespace libsemigroups {
       REPORT_DEBUG_DEFAULT("validating the doubly linked list of cosets...\n");
       LIBSEMIGROUPS_ASSERT(_forwd.size() == _bckwd.size());
       LIBSEMIGROUPS_ASSERT(_bckwd.size() == _ident.size());
-      coset_type nr_cosets = 0;
-      coset_type e         = _id_coset;
+      coset_type number_of_cosets = 0;
+      coset_type e                = _id_coset;
       while (e != _first_free_coset) {
         LIBSEMIGROUPS_ASSERT(e == _id_coset || _forwd[_bckwd[e]] == e);
         LIBSEMIGROUPS_ASSERT(_forwd[e] == _first_free_coset
                              || _bckwd[_forwd[e]] == e);
-        nr_cosets++;
+        number_of_cosets++;
         LIBSEMIGROUPS_ASSERT(is_active_coset(_forwd[e])
                              || _forwd[e] == _first_free_coset);
         e = _forwd[e];
@@ -308,12 +309,12 @@ namespace libsemigroups {
         LIBSEMIGROUPS_ASSERT(!is_active_coset(e));
         LIBSEMIGROUPS_ASSERT(_forwd[_bckwd[e]] == e);
         LIBSEMIGROUPS_ASSERT(_forwd[e] == UNDEFINED || _bckwd[_forwd[e]] == e);
-        nr_cosets++;
+        number_of_cosets++;
         e = _forwd[e];
       }
-      LIBSEMIGROUPS_ASSERT(nr_cosets == _forwd.size());
-      LIBSEMIGROUPS_ASSERT(nr_cosets == _bckwd.size());
-      LIBSEMIGROUPS_ASSERT(nr_cosets == _ident.size());
+      LIBSEMIGROUPS_ASSERT(number_of_cosets == _forwd.size());
+      LIBSEMIGROUPS_ASSERT(number_of_cosets == _bckwd.size());
+      LIBSEMIGROUPS_ASSERT(number_of_cosets == _ident.size());
       REPORT_DEBUG_DEFAULT("...doubly linked list of cosets ok\n");
     }
 #endif

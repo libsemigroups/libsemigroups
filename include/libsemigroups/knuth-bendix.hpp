@@ -73,7 +73,7 @@ namespace libsemigroups {
     //!
     //! !kb.confluent();       // true
     //! kb.run();
-    //! kb.nr_active_rules();  // 31
+    //! kb.number_of_active_rules();  // 31
     //! kb.confluent();        // true
     //! \endcode
     class KnuthBendix final : public FpSemigroupInterface {
@@ -283,7 +283,7 @@ namespace libsemigroups {
       //!
       //! \parameters
       //! (None)
-      size_t nr_active_rules() const noexcept;
+      size_t number_of_active_rules() const noexcept;
 
       //! Returns a copy of the active rules.
       //!
@@ -692,11 +692,11 @@ namespace libsemigroups {
     //! \par Example
     //! \code
     //! KnuthBendix kb;
-    //! kb.set_nr_generators(2);
+    //! kb.set_number_of_generators(2);
     //! kb.add_pair({0, 0, 0}, {0});
     //! kb.add_pair({0}, {1, 1});
     //!
-    //! kb.nr_classes();                            // 5
+    //! kb.number_of_classes();                            // 5
     //! kb.word_to_class_index({0, 0, 1});          // 4
     //! kb.word_to_class_index({0, 0, 0, 0, 1});    // 4
     //! kb.word_to_class_index({0, 1, 1, 0, 0, 1}); // 4
@@ -815,7 +815,7 @@ namespace libsemigroups {
       ////////////////////////////////////////////////////////////////////////////
 
       word_type class_index_to_word_impl(class_index_type) override;
-      size_t    nr_classes_impl() override;
+      size_t    number_of_classes_impl() override;
       std::shared_ptr<FroidurePinBase> quotient_impl() override;
       class_index_type word_to_class_index_impl(word_type const&) override;
       void             run_impl() override;
@@ -825,7 +825,7 @@ namespace libsemigroups {
       ////////////////////////////////////////////////////////////////////////////
 
       void add_pair_impl(word_type const&, word_type const&) override;
-      void set_nr_generators_impl(size_t) override;
+      void set_number_of_generators_impl(size_t) override;
       bool is_quotient_obviously_finite_impl() override;
       bool is_quotient_obviously_infinite_impl() override;
 

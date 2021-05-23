@@ -78,7 +78,7 @@ namespace libsemigroups {
       for (auto it = first; it < last; it += 2) {
         private_add_rule(matrix_start + (it - first) / 2, *it, *(it + 1));
       }
-      _nr_letter_components = _letter_components.nr_blocks();
+      _nr_letter_components = _letter_components.number_of_blocks();
     }
 
     void IsObviouslyInfinite::add_rules(std::string const&         lphbt,
@@ -102,7 +102,7 @@ namespace libsemigroups {
         stw(it->second, rhs);  // rhs changed in-place
         private_add_rule(matrix_start + (it - first), lhs, rhs);
       }
-      _nr_letter_components = _letter_components.nr_blocks();
+      _nr_letter_components = _letter_components.number_of_blocks();
     }
 
     bool IsObviouslyInfinite::result() const {

@@ -30,8 +30,8 @@ namespace libsemigroups {
                             "[containers][quick]") {
       DynamicArray2<bool> rv = DynamicArray2<bool>();
       REQUIRE(rv.size() == 0);
-      REQUIRE(rv.nr_rows() == 0);
-      REQUIRE(rv.nr_cols() == 0);
+      REQUIRE(rv.number_of_rows() == 0);
+      REQUIRE(rv.number_of_cols() == 0);
     }
 
     LIBSEMIGROUPS_TEST_CASE("DynamicArray2",
@@ -40,8 +40,8 @@ namespace libsemigroups {
                             "[containers][quick]") {
       DynamicArray2<size_t> rv = DynamicArray2<size_t>(5);
       REQUIRE(rv.size() == 0);
-      REQUIRE(rv.nr_cols() == 5);
-      REQUIRE(rv.nr_rows() == 0);
+      REQUIRE(rv.number_of_cols() == 5);
+      REQUIRE(rv.number_of_rows() == 0);
     }
 
     LIBSEMIGROUPS_TEST_CASE("DynamicArray2",
@@ -50,8 +50,8 @@ namespace libsemigroups {
                             "[containers][quick]") {
       DynamicArray2<bool> rv = DynamicArray2<bool>(5, 5);
       REQUIRE(rv.size() == 25);
-      REQUIRE(rv.nr_cols() == 5);
-      REQUIRE(rv.nr_rows() == 5);
+      REQUIRE(rv.number_of_cols() == 5);
+      REQUIRE(rv.number_of_rows() == 5);
       REQUIRE(std::all_of(
           rv.begin(), rv.end(), [](bool val) { return val == false; }));
     }
@@ -62,8 +62,8 @@ namespace libsemigroups {
                             "[containers][quick]") {
       DynamicArray2<bool> rv = DynamicArray2<bool>(2, 7, true);
       REQUIRE(rv.size() == 14);
-      REQUIRE(rv.nr_cols() == 2);
-      REQUIRE(rv.nr_rows() == 7);
+      REQUIRE(rv.number_of_cols() == 2);
+      REQUIRE(rv.number_of_rows() == 7);
       REQUIRE(std::all_of(
           rv.begin(), rv.end(), [](bool val) { return val == true; }));
     }
@@ -75,8 +75,8 @@ namespace libsemigroups {
       DynamicArray2<size_t> rv   = DynamicArray2<size_t>(3, 7, 666);
       DynamicArray2<size_t> copy = DynamicArray2<size_t>(rv);
       REQUIRE(copy.size() == 21);
-      REQUIRE(copy.nr_cols() == 3);
-      REQUIRE(copy.nr_rows() == 7);
+      REQUIRE(copy.number_of_cols() == 3);
+      REQUIRE(copy.number_of_rows() == 7);
       REQUIRE(std::all_of(
           copy.begin(), copy.end(), [](size_t val) { return val == 666; }));
     }
@@ -88,8 +88,8 @@ namespace libsemigroups {
       DynamicArray2<size_t> rv   = DynamicArray2<size_t>(3, 7, 666);
       DynamicArray2<size_t> copy = DynamicArray2<size_t>(rv, 2);
       REQUIRE(copy.size() == 35);
-      REQUIRE(copy.nr_cols() == 5);
-      REQUIRE(copy.nr_rows() == 7);
+      REQUIRE(copy.number_of_cols() == 5);
+      REQUIRE(copy.number_of_rows() == 7);
       REQUIRE(std::all_of(
           copy.begin(), copy.end(), [](size_t val) { return val == 666; }));
 
@@ -97,8 +97,8 @@ namespace libsemigroups {
       rv.add_cols(10);
       DynamicArray2<size_t> copy2(rv, 0);
       REQUIRE(copy2.size() == 91);
-      REQUIRE(copy2.nr_cols() == 13);
-      REQUIRE(copy2.nr_rows() == 7);
+      REQUIRE(copy2.number_of_cols() == 13);
+      REQUIRE(copy2.number_of_rows() == 7);
       REQUIRE(std::all_of(
           copy2.begin(), copy2.end(), [](size_t val) { return val == 666; }));
     }
@@ -110,20 +110,20 @@ namespace libsemigroups {
       DynamicArray2<size_t> rv = DynamicArray2<size_t>(3, 7, 666);
       rv.add_rows(1);
       REQUIRE(rv.size() == 24);
-      REQUIRE(rv.nr_cols() == 3);
-      REQUIRE(rv.nr_rows() == 8);
+      REQUIRE(rv.number_of_cols() == 3);
+      REQUIRE(rv.number_of_rows() == 8);
       REQUIRE(std::all_of(
           rv.begin(), rv.end(), [](size_t val) { return val == 666; }));
       rv.add_rows(2);
       REQUIRE(rv.size() == 30);
-      REQUIRE(rv.nr_cols() == 3);
-      REQUIRE(rv.nr_rows() == 10);
+      REQUIRE(rv.number_of_cols() == 3);
+      REQUIRE(rv.number_of_rows() == 10);
       REQUIRE(std::all_of(
           rv.begin(), rv.end(), [](size_t val) { return val == 666; }));
       rv.add_rows(1);
       REQUIRE(rv.size() == 33);
-      REQUIRE(rv.nr_cols() == 3);
-      REQUIRE(rv.nr_rows() == 11);
+      REQUIRE(rv.number_of_cols() == 3);
+      REQUIRE(rv.number_of_rows() == 11);
       REQUIRE(std::all_of(
           rv.begin(), rv.end(), [](size_t val) { return val == 666; }));
     }
@@ -135,14 +135,14 @@ namespace libsemigroups {
       DynamicArray2<size_t> rv = DynamicArray2<size_t>(3, 7, 666);
       rv.add_rows(10);
       REQUIRE(rv.size() == 51);
-      REQUIRE(rv.nr_cols() == 3);
-      REQUIRE(rv.nr_rows() == 17);
+      REQUIRE(rv.number_of_cols() == 3);
+      REQUIRE(rv.number_of_rows() == 17);
       REQUIRE(std::all_of(
           rv.begin(), rv.end(), [](size_t val) { return val == 666; }));
       rv.add_rows(7);
       REQUIRE(rv.size() == 72);
-      REQUIRE(rv.nr_cols() == 3);
-      REQUIRE(rv.nr_rows() == 24);
+      REQUIRE(rv.number_of_cols() == 3);
+      REQUIRE(rv.number_of_rows() == 24);
       REQUIRE(std::all_of(
           rv.begin(), rv.end(), [](size_t val) { return val == 666; }));
     }
@@ -154,14 +154,14 @@ namespace libsemigroups {
       DynamicArray2<size_t> rv = DynamicArray2<size_t>(100, 2, 666);
       rv.add_cols(10);
       REQUIRE(rv.size() == 220);
-      REQUIRE(rv.nr_cols() == 110);
-      REQUIRE(rv.nr_rows() == 2);
+      REQUIRE(rv.number_of_cols() == 110);
+      REQUIRE(rv.number_of_rows() == 2);
       REQUIRE(std::all_of(
           rv.begin(), rv.end(), [](size_t val) { return val == 666; }));
       rv.add_cols(5);
       REQUIRE(rv.size() == 230);
-      REQUIRE(rv.nr_cols() == 115);
-      REQUIRE(rv.nr_rows() == 2);
+      REQUIRE(rv.number_of_cols() == 115);
+      REQUIRE(rv.number_of_rows() == 2);
       REQUIRE(std::all_of(
           rv.begin(), rv.end(), [](size_t val) { return val == 666; }));
     }
@@ -204,18 +204,18 @@ namespace libsemigroups {
       DynamicArray2<size_t> rv1 = DynamicArray2<size_t>(100, 50, 555);
       DynamicArray2<size_t> rv2 = DynamicArray2<size_t>(100, 50, 666);
       REQUIRE(rv1.size() == 5000);
-      REQUIRE(rv1.nr_cols() == 100);
-      REQUIRE(rv1.nr_rows() == 50);
+      REQUIRE(rv1.number_of_cols() == 100);
+      REQUIRE(rv1.number_of_rows() == 50);
       REQUIRE(rv2.size() == 5000);
-      REQUIRE(rv2.nr_cols() == 100);
-      REQUIRE(rv2.nr_rows() == 50);
+      REQUIRE(rv2.number_of_cols() == 100);
+      REQUIRE(rv2.number_of_rows() == 50);
       rv1.append(rv2);
       REQUIRE(rv1.size() == 10000);
-      REQUIRE(rv1.nr_cols() == 100);
-      REQUIRE(rv1.nr_rows() == 100);
+      REQUIRE(rv1.number_of_cols() == 100);
+      REQUIRE(rv1.number_of_rows() == 100);
       REQUIRE(rv2.size() == 5000);
-      REQUIRE(rv2.nr_cols() == 100);
-      REQUIRE(rv2.nr_rows() == 50);
+      REQUIRE(rv2.number_of_cols() == 100);
+      REQUIRE(rv2.number_of_rows() == 50);
       REQUIRE(std::all_of(
           rv2.begin(), rv2.end(), [](size_t val) { return val == 666; }));
       auto check_it = [&rv1](size_t begin, size_t end, size_t val) {
@@ -238,30 +238,30 @@ namespace libsemigroups {
                             "[containers][quick]") {
       DynamicArray2<size_t> rv1 = DynamicArray2<size_t>(10, 10, 555);
       REQUIRE(rv1.size() == 100);
-      REQUIRE(rv1.nr_cols() == 10);
-      REQUIRE(rv1.nr_rows() == 10);
+      REQUIRE(rv1.number_of_cols() == 10);
+      REQUIRE(rv1.number_of_rows() == 10);
       rv1.add_rows(40);
       for (size_t i = 0; i < 9; i++) {
         rv1.add_cols(10);
       }
       REQUIRE(rv1.size() == 5000);
-      REQUIRE(rv1.nr_cols() == 100);
-      REQUIRE(rv1.nr_rows() == 50);
+      REQUIRE(rv1.number_of_cols() == 100);
+      REQUIRE(rv1.number_of_rows() == 50);
 
       DynamicArray2<size_t> rv2 = DynamicArray2<size_t>(3, 4, 666);
       rv2.add_rows(46);
       rv2.add_cols(97);
       REQUIRE(rv1.size() == 5000);
-      REQUIRE(rv1.nr_cols() == 100);
-      REQUIRE(rv1.nr_rows() == 50);
+      REQUIRE(rv1.number_of_cols() == 100);
+      REQUIRE(rv1.number_of_rows() == 50);
 
       rv1.append(rv2);
       REQUIRE(rv1.size() == 10000);
-      REQUIRE(rv1.nr_cols() == 100);
-      REQUIRE(rv1.nr_rows() == 100);
+      REQUIRE(rv1.number_of_cols() == 100);
+      REQUIRE(rv1.number_of_rows() == 100);
       REQUIRE(rv2.size() == 5000);
-      REQUIRE(rv2.nr_cols() == 100);
-      REQUIRE(rv2.nr_rows() == 50);
+      REQUIRE(rv2.number_of_cols() == 100);
+      REQUIRE(rv2.number_of_rows() == 50);
       REQUIRE(std::all_of(
           rv2.begin(), rv2.end(), [](size_t val) { return val == 666; }));
       auto check_it = [&rv1](size_t begin, size_t end, size_t val) {
@@ -310,12 +310,12 @@ namespace libsemigroups {
                             "[containers][quick]") {
       DynamicArray2<size_t> rv = DynamicArray2<size_t>(10, 10);
       REQUIRE(rv.size() == 100);
-      REQUIRE(rv.nr_cols() == 10);
-      REQUIRE(rv.nr_rows() == 10);
+      REQUIRE(rv.number_of_cols() == 10);
+      REQUIRE(rv.number_of_rows() == 10);
       rv.clear();
       REQUIRE(rv.size() == 0);
-      REQUIRE(rv.nr_cols() == 0);
-      REQUIRE(rv.nr_rows() == 0);
+      REQUIRE(rv.number_of_cols() == 0);
+      REQUIRE(rv.number_of_rows() == 0);
     }
 
     LIBSEMIGROUPS_TEST_CASE("DynamicArray2",
@@ -323,7 +323,7 @@ namespace libsemigroups {
                             "begin_row and end_row",
                             "[containers][quick]") {
       DynamicArray2<size_t> rv = DynamicArray2<size_t>(100, 2);
-      for (size_t i = 0; i < rv.nr_rows(); i++) {
+      for (size_t i = 0; i < rv.number_of_rows(); i++) {
         for (auto it = rv.begin_row(i); it < rv.end_row(i); it++) {
           REQUIRE(*it == 0);
           if (i == 0) {
@@ -341,7 +341,7 @@ namespace libsemigroups {
                             "cbegin_row and cend_row",
                             "[containers][quick]") {
       DynamicArray2<size_t> rv = DynamicArray2<size_t>(10, 10, 66);
-      for (size_t i = 0; i < rv.nr_rows(); i++) {
+      for (size_t i = 0; i < rv.number_of_rows(); i++) {
         for (auto it = rv.cbegin_row(i); it < rv.cend_row(i); it++) {
           REQUIRE(*it == 66);
         }
@@ -360,14 +360,14 @@ namespace libsemigroups {
         REQUIRE(*it == 0);
         *it = val++;
       }
-      REQUIRE(val == rv1.nr_cols() * rv1.nr_rows());
+      REQUIRE(val == rv1.number_of_cols() * rv1.number_of_rows());
       REQUIRE(val == (100 + 10) * 2);
 
       val = 0;
       for (auto it = rv1.begin(); it < rv1.end(); it++) {
         REQUIRE(*it == val++);
       }
-      REQUIRE(val == rv1.nr_cols() * rv1.nr_rows());
+      REQUIRE(val == rv1.number_of_cols() * rv1.number_of_rows());
       REQUIRE(val == (100 + 10) * 2);
 
       for (auto it = rv1.rbegin(); it < rv1.rend(); it++) {
@@ -386,7 +386,7 @@ namespace libsemigroups {
         }
         val++;
       }
-      REQUIRE(val == rv2.nr_cols() * rv2.nr_rows());
+      REQUIRE(val == rv2.number_of_cols() * rv2.number_of_rows());
       REQUIRE(val == (100 + 10) * 2);
 
       for (auto it = rv2.rbegin(); it < rv2.rend(); it++) {
@@ -405,7 +405,7 @@ namespace libsemigroups {
         REQUIRE(*it == true);
         val++;
       }
-      REQUIRE(val == rv2.nr_cols() * rv2.nr_rows());
+      REQUIRE(val == rv2.number_of_cols() * rv2.number_of_rows());
       REQUIRE(val == (100 + 10) * 2);
     }
 
@@ -445,14 +445,14 @@ namespace libsemigroups {
       for (auto it = rv1.begin(); it < rv1.end(); it++) {
         REQUIRE(*it == val++);
       }
-      REQUIRE(val == rv1.nr_cols() * rv1.nr_rows());
+      REQUIRE(val == rv1.number_of_cols() * rv1.number_of_rows());
       REQUIRE(val == (100 + 10) * 2);
 
       val = 0;
       for (auto it = rv1.begin(); it < rv1.end(); ++it) {
         REQUIRE(*it == val++);
       }
-      REQUIRE(val == rv1.nr_cols() * rv1.nr_rows());
+      REQUIRE(val == rv1.number_of_cols() * rv1.number_of_rows());
       REQUIRE(val == (100 + 10) * 2);
 
       for (auto it = rv1.begin(); it < rv1.end(); ++it) {
@@ -486,7 +486,7 @@ namespace libsemigroups {
         }
         val++;
       }
-      REQUIRE(val == rv2.nr_cols() * rv2.nr_rows());
+      REQUIRE(val == rv2.number_of_cols() * rv2.number_of_rows());
       REQUIRE(val == (100 + 10) * 2);
 
       for (auto it = rv2.begin(); it < rv2.end(); ++it) {
@@ -537,7 +537,7 @@ namespace libsemigroups {
       for (auto it = rv.end() - 1; it >= rv.begin(); it--) {
         REQUIRE(*it == val++);
       }
-      REQUIRE(val == rv.nr_cols() * rv.nr_rows());
+      REQUIRE(val == rv.number_of_cols() * rv.number_of_rows());
       REQUIRE(val == (100 + 10) * 2);
 
       for (auto it = rv.end() - 1; it >= rv.begin(); --it) {
@@ -576,7 +576,7 @@ namespace libsemigroups {
       for (auto it = rv.end() - 1; it >= rv.begin(); --it) {
         REQUIRE(*it == val++);
       }
-      REQUIRE(val == rv.nr_cols() * rv.nr_rows());
+      REQUIRE(val == rv.number_of_cols() * rv.number_of_rows());
       REQUIRE(val == (100 + 10) * 2);
 
       for (auto it = rv.end() - 1; it >= rv.begin(); --it) {
@@ -605,24 +605,24 @@ namespace libsemigroups {
       DynamicArray2<size_t> rv1     = DynamicArray2<size_t>(10, 10, 3);
       DynamicArray2<size_t> rv2     = DynamicArray2<size_t>(9, 9, 2);
       rv1.                  operator=(rv2);
-      REQUIRE(rv1.nr_cols() == 9);
-      REQUIRE(rv1.nr_rows() == 9);
+      REQUIRE(rv1.number_of_cols() == 9);
+      REQUIRE(rv1.number_of_rows() == 9);
       REQUIRE(std::all_of(
           rv1.begin(), rv1.end(), [](size_t val) { return val == 2; }));
-      REQUIRE(rv2.nr_cols() == 9);
-      REQUIRE(rv2.nr_rows() == 9);
+      REQUIRE(rv2.number_of_cols() == 9);
+      REQUIRE(rv2.number_of_rows() == 9);
       REQUIRE(std::all_of(
           rv2.begin(), rv2.end(), [](size_t val) { return val == 2; }));
 
       DynamicArray2<bool> rv3     = DynamicArray2<bool>(10, 10, false);
       DynamicArray2<bool> rv4     = DynamicArray2<bool>(9, 9, true);
       rv3.                operator=(rv4);
-      REQUIRE(rv3.nr_cols() == 9);
-      REQUIRE(rv3.nr_rows() == 9);
+      REQUIRE(rv3.number_of_cols() == 9);
+      REQUIRE(rv3.number_of_rows() == 9);
       REQUIRE(std::all_of(
           rv3.begin(), rv3.end(), [](bool val) { return val == true; }));
-      REQUIRE(rv4.nr_cols() == 9);
-      REQUIRE(rv4.nr_rows() == 9);
+      REQUIRE(rv4.number_of_cols() == 9);
+      REQUIRE(rv4.number_of_rows() == 9);
       REQUIRE(std::all_of(
           rv4.begin(), rv4.end(), [](bool val) { return val == true; }));
     }
@@ -721,28 +721,28 @@ namespace libsemigroups {
       rv1.clear();
       REQUIRE(rv1.empty());
       REQUIRE(rv1.size() == 0);
-      REQUIRE(rv1.nr_rows() == 0);
-      REQUIRE(rv1.nr_cols() == 0);
+      REQUIRE(rv1.number_of_rows() == 0);
+      REQUIRE(rv1.number_of_cols() == 0);
 
       DynamicArray2<size_t> rv2 = DynamicArray2<size_t>(10);
       REQUIRE(rv2.empty());
       REQUIRE(rv2.size() == 0);
-      REQUIRE(rv2.nr_rows() == 0);
-      REQUIRE(rv2.nr_cols() != 0);
+      REQUIRE(rv2.number_of_rows() == 0);
+      REQUIRE(rv2.number_of_cols() != 0);
 
       DynamicArray2<bool> rv3 = DynamicArray2<bool>(10, 10);
       REQUIRE(!rv3.empty());
       rv3.clear();
       REQUIRE(rv3.empty());
       REQUIRE(rv3.size() == 0);
-      REQUIRE(rv3.nr_rows() == 0);
-      REQUIRE(rv3.nr_cols() == 0);
+      REQUIRE(rv3.number_of_rows() == 0);
+      REQUIRE(rv3.number_of_cols() == 0);
 
       DynamicArray2<bool> rv4 = DynamicArray2<bool>(10);
       REQUIRE(rv4.empty());
       REQUIRE(rv4.size() == 0);
-      REQUIRE(rv4.nr_rows() == 0);
-      REQUIRE(rv4.nr_cols() != 0);
+      REQUIRE(rv4.number_of_rows() == 0);
+      REQUIRE(rv4.number_of_cols() != 0);
     }
 
     LIBSEMIGROUPS_TEST_CASE("DynamicArray2",
@@ -766,32 +766,32 @@ namespace libsemigroups {
       rv1.add_cols(2);  // rv1 has 16 = 5 * 10 / 4 + 4 cols in total
       rv2.add_cols(1);  // rv2 has 15 = 5 * 9 / 4 + 4 cols in total
 
-      REQUIRE(rv1.nr_cols() == 12);
-      REQUIRE(rv1.nr_rows() == 10);
+      REQUIRE(rv1.number_of_cols() == 12);
+      REQUIRE(rv1.number_of_rows() == 10);
       REQUIRE(std::all_of(
           rv1.begin(), rv1.end(), [](size_t val) { return val == 3; }));
-      REQUIRE(rv2.nr_cols() == 10);
-      REQUIRE(rv2.nr_rows() == 9);
+      REQUIRE(rv2.number_of_cols() == 10);
+      REQUIRE(rv2.number_of_rows() == 9);
       REQUIRE(std::all_of(
           rv2.begin(), rv2.end(), [](size_t val) { return val == 2; }));
 
       rv1.swap(rv2);
-      REQUIRE(rv1.nr_cols() == 10);
-      REQUIRE(rv1.nr_rows() == 9);
+      REQUIRE(rv1.number_of_cols() == 10);
+      REQUIRE(rv1.number_of_rows() == 9);
       REQUIRE(std::all_of(
           rv1.begin(), rv1.end(), [](size_t val) { return val == 2; }));
-      REQUIRE(rv2.nr_cols() == 12);
-      REQUIRE(rv2.nr_rows() == 10);
+      REQUIRE(rv2.number_of_cols() == 12);
+      REQUIRE(rv2.number_of_rows() == 10);
       REQUIRE(std::all_of(
           rv2.begin(), rv2.end(), [](size_t val) { return val == 3; }));
 
       std::swap(rv1, rv2);
-      REQUIRE(rv1.nr_cols() == 12);
-      REQUIRE(rv1.nr_rows() == 10);
+      REQUIRE(rv1.number_of_cols() == 12);
+      REQUIRE(rv1.number_of_rows() == 10);
       REQUIRE(std::all_of(
           rv1.begin(), rv1.end(), [](size_t val) { return val == 3; }));
-      REQUIRE(rv2.nr_cols() == 10);
-      REQUIRE(rv2.nr_rows() == 9);
+      REQUIRE(rv2.number_of_cols() == 10);
+      REQUIRE(rv2.number_of_rows() == 9);
       REQUIRE(std::all_of(
           rv2.begin(), rv2.end(), [](size_t val) { return val == 2; }));
 
@@ -800,32 +800,32 @@ namespace libsemigroups {
 
       rv3.add_cols(2);  // rv3 has 16 = 5 * 10 / 4 + 4 cols in total
 
-      REQUIRE(rv3.nr_cols() == 12);
-      REQUIRE(rv3.nr_rows() == 10);
+      REQUIRE(rv3.number_of_cols() == 12);
+      REQUIRE(rv3.number_of_rows() == 10);
       REQUIRE(std::all_of(
           rv3.begin(), rv3.end(), [](bool val) { return val == false; }));
-      REQUIRE(rv4.nr_cols() == 9);
-      REQUIRE(rv4.nr_rows() == 9);
+      REQUIRE(rv4.number_of_cols() == 9);
+      REQUIRE(rv4.number_of_rows() == 9);
       REQUIRE(std::all_of(
           rv4.begin(), rv4.end(), [](bool val) { return val == true; }));
 
       rv3.swap(rv4);
-      REQUIRE(rv3.nr_cols() == 9);
-      REQUIRE(rv3.nr_rows() == 9);
+      REQUIRE(rv3.number_of_cols() == 9);
+      REQUIRE(rv3.number_of_rows() == 9);
       REQUIRE(std::all_of(
           rv3.begin(), rv3.end(), [](bool val) { return val == true; }));
-      REQUIRE(rv4.nr_cols() == 12);
-      REQUIRE(rv4.nr_rows() == 10);
+      REQUIRE(rv4.number_of_cols() == 12);
+      REQUIRE(rv4.number_of_rows() == 10);
       REQUIRE(std::all_of(
           rv4.begin(), rv4.end(), [](bool val) { return val == false; }));
 
       std::swap(rv3, rv4);
-      REQUIRE(rv3.nr_cols() == 12);
-      REQUIRE(rv3.nr_rows() == 10);
+      REQUIRE(rv3.number_of_cols() == 12);
+      REQUIRE(rv3.number_of_rows() == 10);
       REQUIRE(std::all_of(
           rv3.begin(), rv3.end(), [](bool val) { return val == false; }));
-      REQUIRE(rv4.nr_cols() == 9);
-      REQUIRE(rv4.nr_rows() == 9);
+      REQUIRE(rv4.number_of_cols() == 9);
+      REQUIRE(rv4.number_of_rows() == 9);
       REQUIRE(std::all_of(
           rv4.begin(), rv4.end(), [](bool val) { return val == true; }));
     }
@@ -1150,14 +1150,14 @@ namespace libsemigroups {
         REQUIRE(*it == 0);
         *it = val++;
       }
-      REQUIRE(val == rv1.nr_cols() * rv1.nr_rows());
+      REQUIRE(val == rv1.number_of_cols() * rv1.number_of_rows());
       REQUIRE(val == (100 + 10) * 2);
 
       val = 0;
       for (auto it = rv1.cbegin(); it < rv1.cend(); it++) {
         REQUIRE(*it == val++);
       }
-      REQUIRE(val == rv1.nr_cols() * rv1.nr_rows());
+      REQUIRE(val == rv1.number_of_cols() * rv1.number_of_rows());
       REQUIRE(val == (100 + 10) * 2);
 
       for (auto it = rv1.crbegin(); it < rv1.crend(); it++) {
@@ -1175,7 +1175,7 @@ namespace libsemigroups {
         }
         val++;
       }
-      REQUIRE(val == rv2.nr_cols() * rv2.nr_rows());
+      REQUIRE(val == rv2.number_of_cols() * rv2.number_of_rows());
       REQUIRE(val == (100 + 10) * 2);
 
       for (auto it = rv2.crbegin(); it < rv2.crend(); it++) {
@@ -1197,7 +1197,7 @@ namespace libsemigroups {
         }
         val++;
       }
-      REQUIRE(val == rv2.nr_cols() * rv2.nr_rows());
+      REQUIRE(val == rv2.number_of_cols() * rv2.number_of_rows());
       REQUIRE(val == (100 + 10) * 2);
     }
 
@@ -1219,60 +1219,60 @@ namespace libsemigroups {
                             "column iterators",
                             "[containers][quick]") {
       DynamicArray2<size_t> rv = DynamicArray2<size_t>(3, 3);
-      for (size_t i = 0; i < rv.nr_cols(); i++) {
+      for (size_t i = 0; i < rv.number_of_cols(); i++) {
         std::fill(rv.begin_column(i), rv.end_column(i), i);
       }
 
-      for (size_t i = 0; i < rv.nr_rows(); i++) {
+      for (size_t i = 0; i < rv.number_of_rows(); i++) {
         size_t j = 0;
         for (auto it = rv.begin_row(i); it < rv.end_row(i); it++, j++) {
           REQUIRE(*it == j);
         }
       }
 
-      for (size_t i = 0; i < rv.nr_cols(); i++) {
+      for (size_t i = 0; i < rv.number_of_cols(); i++) {
         for (auto it = rv.cbegin_column(i); it < rv.cend_column(i); it++) {
           REQUIRE(*it == i);
         }
       }
 
-      for (size_t i = 0; i < rv.nr_cols(); i++) {
+      for (size_t i = 0; i < rv.number_of_cols(); i++) {
         for (auto it = rv.cend_column(i) - 1; it >= rv.cbegin_column(i); it--) {
           REQUIRE(*it == i);
         }
       }
 
-      for (size_t i = 0; i < rv.nr_cols(); i++) {
+      for (size_t i = 0; i < rv.number_of_cols(); i++) {
         for (auto it = rv.cbegin_column(i); it < rv.cend_column(i); ++it) {
           REQUIRE(*it == i);
         }
       }
 
-      for (size_t i = 0; i < rv.nr_cols(); i++) {
+      for (size_t i = 0; i < rv.number_of_cols(); i++) {
         for (auto it = rv.cend_column(i) - 1; it >= rv.cbegin_column(i); --it) {
           REQUIRE(*it == i);
         }
       }
 
-      for (size_t i = 0; i < rv.nr_cols(); i++) {
+      for (size_t i = 0; i < rv.number_of_cols(); i++) {
         for (auto it = rv.begin_column(i); it < rv.end_column(i); it++) {
           REQUIRE(*it == i);
         }
       }
 
-      for (size_t i = 0; i < rv.nr_cols(); i++) {
+      for (size_t i = 0; i < rv.number_of_cols(); i++) {
         for (auto it = rv.end_column(i) - 1; it >= rv.begin_column(i); it--) {
           REQUIRE(*it == i);
         }
       }
 
-      for (size_t i = 0; i < rv.nr_cols(); i++) {
+      for (size_t i = 0; i < rv.number_of_cols(); i++) {
         for (auto it = rv.begin_column(i); it < rv.end_column(i); ++it) {
           REQUIRE(*it == i);
         }
       }
 
-      for (size_t i = 0; i < rv.nr_cols(); i++) {
+      for (size_t i = 0; i < rv.number_of_cols(); i++) {
         for (auto it = rv.end_column(i) - 1; it >= rv.begin_column(i); --it) {
           REQUIRE(*it == i);
         }
@@ -1285,7 +1285,7 @@ namespace libsemigroups {
                             "[containers][quick][no-valgrind]") {
       {
         DynamicArray2<size_t> rv = DynamicArray2<size_t>(10, 10, 1000);
-        for (size_t i = 0; i < rv.nr_cols(); i++) {
+        for (size_t i = 0; i < rv.number_of_cols(); i++) {
           std::fill(rv.begin_column(i), rv.end_column(i), i);
         }
         for (size_t j = 0; j < 10; j++) {
@@ -1331,7 +1331,7 @@ namespace libsemigroups {
       }
       {
         DynamicArray2<bool> rv = DynamicArray2<bool>(10, 10, false);
-        for (size_t i = 0; i < rv.nr_cols(); i++) {
+        for (size_t i = 0; i < rv.number_of_cols(); i++) {
           std::fill(rv.begin_column(i), rv.end_column(i), i % 2);
         }
         for (size_t j = 0; j < 10; j++) {
@@ -1408,8 +1408,8 @@ namespace libsemigroups {
                             "[containers][quick]") {
       DynamicArray2<size_t> rv = DynamicArray2<size_t>(100, 100);
       rv.reserve(1000);
-      REQUIRE(rv.nr_cols() == 100);
-      REQUIRE(rv.nr_rows() == 100);
+      REQUIRE(rv.number_of_cols() == 100);
+      REQUIRE(rv.number_of_rows() == 100);
     }
 
     LIBSEMIGROUPS_TEST_CASE("DynamicArray2",
@@ -1422,8 +1422,8 @@ namespace libsemigroups {
       }
 
       rv.erase_column(2);
-      REQUIRE(rv.nr_cols() == 9);
-      REQUIRE(rv.nr_rows() == 10);
+      REQUIRE(rv.number_of_cols() == 9);
+      REQUIRE(rv.number_of_rows() == 10);
       for (size_t i = 0; i < 10; ++i) {
         REQUIRE(rv.get(i, 1) == 1);
         REQUIRE(rv.get(i, 2) == 3);
@@ -1494,22 +1494,22 @@ namespace libsemigroups {
                             "shrink_rows_to",
                             "[containers][quick]") {
       DynamicArray2<size_t> da = DynamicArray2<size_t>({{0, 1}, {2, 3}});
-      REQUIRE(da.nr_rows() == 2);
-      REQUIRE(da.nr_cols() == 2);
+      REQUIRE(da.number_of_rows() == 2);
+      REQUIRE(da.number_of_cols() == 2);
       da.shrink_rows_to(3);
-      REQUIRE(da.nr_rows() == 2);
-      REQUIRE(da.nr_cols() == 2);
+      REQUIRE(da.number_of_rows() == 2);
+      REQUIRE(da.number_of_cols() == 2);
       REQUIRE(da == DynamicArray2<size_t>({{0, 1}, {2, 3}}));
       da.shrink_rows_to(1);
-      REQUIRE(da.nr_rows() == 1);
-      REQUIRE(da.nr_cols() == 2);
+      REQUIRE(da.number_of_rows() == 1);
+      REQUIRE(da.number_of_cols() == 2);
       REQUIRE(da == DynamicArray2<size_t>({{0, 1}}));
 
       da.add_rows(3);
       da.add_cols(2);
       da.set_default_value(0);
-      REQUIRE(da.nr_rows() == 4);
-      REQUIRE(da.nr_cols() == 4);
+      REQUIRE(da.number_of_rows() == 4);
+      REQUIRE(da.number_of_cols() == 4);
       REQUIRE(da
               == DynamicArray2<size_t>(
                   {{0, 1, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}}));

@@ -30,6 +30,6 @@ libsemigroups::BMat8:
   - row_space_basis() const noexcept
   - row_space_size() const
   - rows() const
-  - nr_rows() const noexcept
+  - number_of_rows() const noexcept
 - Miscellanea:
   - is_regular_element() const noexcept

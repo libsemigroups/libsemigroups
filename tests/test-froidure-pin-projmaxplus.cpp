@@ -42,7 +42,7 @@ namespace libsemigroups {
       S.reserve(142);
 
       REQUIRE(S.size() == 142);
-      REQUIRE(S.nr_idempotents() == 90);
+      REQUIRE(S.number_of_idempotents() == 90);
       size_t pos = 0;
 
       for (auto it = S.cbegin(); it < S.cend(); ++it) {
@@ -64,7 +64,7 @@ namespace libsemigroups {
         REQUIRE(*it * *it == *it);
         pos++;
       }
-      REQUIRE(pos == S.nr_idempotents());
+      REQUIRE(pos == S.number_of_idempotents());
       for (auto it = S.cbegin_sorted() + 1; it < S.cend_sorted(); ++it) {
         REQUIRE(*(it - 1) < *it);
       }
@@ -79,9 +79,9 @@ namespace libsemigroups {
 
       REQUIRE(S.size() == 1);
       REQUIRE(S.degree() == 3);
-      REQUIRE(S.nr_idempotents() == 1);
-      REQUIRE(S.nr_generators() == 1);
-      REQUIRE(S.nr_rules() == 1);
+      REQUIRE(S.number_of_idempotents() == 1);
+      REQUIRE(S.number_of_generators() == 1);
+      REQUIRE(S.number_of_rules() == 1);
       REQUIRE(S[0] == id);
 
       REQUIRE(S.position(id) == 0);

@@ -75,12 +75,12 @@ namespace libsemigroups {
     //! \strong_guarantee
     //!
     //! \complexity
-    //! At most linear in `nr_nodes() + n`.
+    //! At most linear in `number_of_nodes() + n`.
     //!
     //! \iterator_validity
     //! \iterator_invalid
     void add_nodes(size_t n) {
-      size_t const old_nr_nodes = nr_nodes();
+      size_t const old_nr_nodes = number_of_nodes();
       try {
         _edge_label.insert(
             _edge_label.cend(), n, static_cast<size_t>(UNDEFINED));
@@ -101,7 +101,7 @@ namespace libsemigroups {
     //! \noexcept
     //!
     //! \complexity
-    //! Linear in nr_nodes().
+    //! Linear in number_of_nodes().
     //!
     //! \iterator_validity
     //! \iterator_invalid
@@ -124,7 +124,7 @@ namespace libsemigroups {
     //! (None)
     //!
     //! \throws LibsemigroupsException if \p node or \p parent exceeds
-    //! nr_nodes().
+    //! number_of_nodes().
     //!
     //! \complexity
     //! Constant
@@ -149,7 +149,7 @@ namespace libsemigroups {
     //!
     //! \par Parameters
     //! (None)
-    size_t nr_nodes() const noexcept {
+    size_t number_of_nodes() const noexcept {
       return _parent.size();
     }
 
@@ -160,7 +160,7 @@ namespace libsemigroups {
     //! \returns
     //! A \ref node_type.
     //!
-    //! \throws LibsemigroupsException if \p i exceeds \p nr_nodes().
+    //! \throws LibsemigroupsException if \p i exceeds \p number_of_nodes().
     //!
     //! \complexity
     //! Constant
@@ -177,7 +177,7 @@ namespace libsemigroups {
     //! \returns
     //! A \ref label_type.
     //!
-    //! \throws LibsemigroupsException if \p i exceeds \p nr_nodes().
+    //! \throws LibsemigroupsException if \p i exceeds \p number_of_nodes().
     //!
     //! \complexity
     //! Constant
@@ -223,10 +223,10 @@ namespace libsemigroups {
 
    private:
     void validate_node(node_type v) const {
-      if (v >= nr_nodes()) {
+      if (v >= number_of_nodes()) {
         LIBSEMIGROUPS_EXCEPTION("node value out of bounds, expected value in "
                                 "the range [0, %d), got %d",
-                                nr_nodes(),
+                                number_of_nodes(),
                                 v);
       }
     }

@@ -34,7 +34,7 @@ libsemigroups::FroidurePinBase:
   - degree() const noexcept
   - is_monoid()
   - current_size() const noexcept
-  - current_nr_rules() const noexcept
+  - current_number_of_rules() const noexcept
   - size()
   - enumerate(size_t)
 - Cayley graphs:
@@ -56,7 +56,7 @@ libsemigroups::FroidurePinBase:
   - minimal_factorisation(element_index_type)
   - factorisation(word_type&, element_index_type)
   - factorisation(element_index_type)
-  - nr_rules()
+  - number_of_rules()
   - length_const(element_index_type) const
   - length_non_const(element_index_type)
   - cbegin_rules() const

@@ -62,7 +62,7 @@ namespace libsemigroups {
     // check that CongruenceByPairs does not enumerate the semigroup, they
     // remain to remind us of the size and number of rules of the semigroups.
     // REQUIRE(S.size() == 88);
-    // REQUIRE(S.nr_rules() == 18);
+    // REQUIRE(S.number_of_rules() == 18);
 
     CongruenceByPairs<decltype(S)> p(twosided, S);  // p copies S!
     REQUIRE(p.has_parent_froidure_pin());
@@ -75,9 +75,9 @@ namespace libsemigroups {
     REQUIRE(!p.parent_froidure_pin()->started());
     REQUIRE(!p.parent_froidure_pin()->finished());
 
-    REQUIRE(p.nr_classes() == 21);
-    REQUIRE(p.nr_classes() == 21);
-    // nr_classes requires p.parent_froidure_pin().size();
+    REQUIRE(p.number_of_classes() == 21);
+    REQUIRE(p.number_of_classes() == 21);
+    // number_of_classes requires p.parent_froidure_pin().size();
     REQUIRE(p.parent_froidure_pin()->finished());
     REQUIRE(!S.started());  // p copies S
     REQUIRE(!S.finished());
@@ -96,7 +96,7 @@ namespace libsemigroups {
     // check that CongruenceByPairs does not enumerate the semigroup, they
     // remain to remind us of the size and number of rules of the semigroups.
     // REQUIRE(S.size(false) == 88);
-    // REQUIRE(S.nr_rules(false) == 18);
+    // REQUIRE(S.number_of_rules(false) == 18);
 
     CongruenceByPairs<decltype(S)> p(left, S);
     p.add_pair({0, 1, 0, 0, 0, 1, 1, 0, 0}, {1, 0, 0, 0, 1});
@@ -106,9 +106,9 @@ namespace libsemigroups {
     REQUIRE(!S.started());
     REQUIRE(!S.finished());
 
-    REQUIRE(p.nr_classes() == 69);
-    REQUIRE(p.nr_classes() == 69);
-    // nr_classes requires p.parent_froidure_pin().size();
+    REQUIRE(p.number_of_classes() == 69);
+    REQUIRE(p.number_of_classes() == 69);
+    // number_of_classes requires p.parent_froidure_pin().size();
     REQUIRE(p.parent_froidure_pin()->finished());
     REQUIRE(!S.started());  // p copies S
     REQUIRE(!S.finished());
@@ -127,7 +127,7 @@ namespace libsemigroups {
     // check that CongruenceByPairs does not enumerate the semigroup, they
     // remain to remind us of the size and number of rules of the semigroups.
     // REQUIRE(S.size(false) == 88);
-    // REQUIRE(S.nr_rules(false) == 18);
+    // REQUIRE(S.number_of_rules(false) == 18);
 
     CongruenceByPairs<decltype(S)> p(right, S);
     p.add_pair({0, 1, 0, 0, 0, 1, 1, 0, 0}, {1, 0, 0, 0, 1});
@@ -137,9 +137,9 @@ namespace libsemigroups {
     REQUIRE(!S.started());
     REQUIRE(!S.finished());
 
-    REQUIRE(p.nr_classes() == 72);
-    REQUIRE(p.nr_classes() == 72);
-    // nr_classes requires p.parent_froidure_pin().size();
+    REQUIRE(p.number_of_classes() == 72);
+    REQUIRE(p.number_of_classes() == 72);
+    // number_of_classes requires p.parent_froidure_pin().size();
     REQUIRE(p.parent_froidure_pin()->finished());
     REQUIRE(!S.started());  // p copies S
     REQUIRE(!S.finished());
@@ -158,7 +158,7 @@ namespace libsemigroups {
     // check that CongruenceByPairs does not enumerate the semigroup, they
     // remain to remind us of the size and number of rules of the semigroups.
     // REQUIRE(S.size(false) == 53);
-    // REQUIRE(S.nr_rules(false) == 20);
+    // REQUIRE(S.number_of_rules(false) == 20);
 
     CongruenceByPairs<decltype(S)> p(twosided, S);
 
@@ -175,9 +175,9 @@ namespace libsemigroups {
     REQUIRE(!S.started());
     REQUIRE(!S.finished());
 
-    REQUIRE(p.nr_classes() == 53);
-    REQUIRE(p.nr_classes() == 53);
-    // nr_classes requires p.parent_froidure_pin().size();
+    REQUIRE(p.number_of_classes() == 53);
+    REQUIRE(p.number_of_classes() == 53);
+    // number_of_classes requires p.parent_froidure_pin().size();
     REQUIRE(p.parent_froidure_pin()->finished());
     REQUIRE(!S.started());  // p copies S
     REQUIRE(!S.finished());
@@ -196,7 +196,7 @@ namespace libsemigroups {
     // check that CongruenceByPairs does not enumerate the semigroup, they
     // remain to remind us of the size and number of rules of the semigroups.
     // REQUIRE(S.size(false) == 53);
-    // REQUIRE(S.nr_rules(false) == 20);
+    // REQUIRE(S.number_of_rules(false) == 20);
 
     CongruenceByPairs<decltype(S)> p(left, S);
 
@@ -213,10 +213,10 @@ namespace libsemigroups {
     REQUIRE(!S.started());
     REQUIRE(!S.finished());
 
-    REQUIRE(p.nr_classes() == 53);
-    REQUIRE(p.nr_classes() == 53);
+    REQUIRE(p.number_of_classes() == 53);
+    REQUIRE(p.number_of_classes() == 53);
 
-    // nr_classes requires p.parent_froidure_pin().size();
+    // number_of_classes requires p.parent_froidure_pin().size();
     REQUIRE(p.parent_froidure_pin()->finished());
     REQUIRE(!S.started());  // p copies S
     REQUIRE(!S.finished());
@@ -235,7 +235,7 @@ namespace libsemigroups {
     // check that CongruenceByPairs does not enumerate the semigroup, they
     // remain to remind us of the size and number of rules of the semigroups.
     // REQUIRE(S.size(false) == 53);
-    // REQUIRE(S.nr_rules(false) == 20);
+    // REQUIRE(S.number_of_rules(false) == 20);
 
     CongruenceByPairs<decltype(S)> p(right, S);
 
@@ -252,10 +252,10 @@ namespace libsemigroups {
     REQUIRE(!S.started());
     REQUIRE(!S.finished());
 
-    REQUIRE(p.nr_classes() == 53);
-    REQUIRE(p.nr_classes() == 53);
+    REQUIRE(p.number_of_classes() == 53);
+    REQUIRE(p.number_of_classes() == 53);
 
-    // nr_classes requires p.parent_froidure_pin().size();
+    // number_of_classes requires p.parent_froidure_pin().size();
     REQUIRE(p.parent_froidure_pin()->finished());
     REQUIRE(!S.started());  // p copies S
     REQUIRE(!S.finished());
@@ -274,7 +274,7 @@ namespace libsemigroups {
     // check that CongruenceByPairs does not enumerate the semigroup, they
     // remain to remind us of the size and number of rules of the semigroups.
     // REQUIRE(S.size(false) == 142);
-    // REQUIRE(S.nr_rules(false) == 32);
+    // REQUIRE(S.number_of_rules(false) == 32);
 
     CongruenceByPairs<decltype(S)> p(twosided, S);
     p.add_pair({1}, {0, 0, 0, 1, 0});
@@ -292,10 +292,10 @@ namespace libsemigroups {
     REQUIRE(!S.started());
     REQUIRE(!S.finished());
 
-    REQUIRE(p.nr_classes() == 1);
-    REQUIRE(p.nr_classes() == 1);
+    REQUIRE(p.number_of_classes() == 1);
+    REQUIRE(p.number_of_classes() == 1);
 
-    // nr_classes requires p.parent_froidure_pin().size();
+    // number_of_classes requires p.parent_froidure_pin().size();
     REQUIRE(p.parent_froidure_pin()->finished());
     REQUIRE(!S.started());  // p copies S
     REQUIRE(!S.finished());
@@ -316,7 +316,7 @@ namespace libsemigroups {
     // check that CongruenceByPairs does not enumerate the semigroup, they
     // remain to remind us of the size and number of rules of the semigroups.
     // REQUIRE(S.size(false) == 11804);
-    // REQUIRE(S.nr_rules(false) == 2460);
+    // REQUIRE(S.number_of_rules(false) == 2460);
 
     CongruenceByPairs<decltype(S)> p(twosided, S);
     p.add_pair({0, 3, 2, 1, 3, 2, 2}, {3, 2, 2, 1, 3, 3});
@@ -340,10 +340,10 @@ namespace libsemigroups {
     REQUIRE(!S.started());
     REQUIRE(!S.finished());
 
-    REQUIRE(p.nr_classes() == 525);
-    REQUIRE(p.nr_classes() == 525);
+    REQUIRE(p.number_of_classes() == 525);
+    REQUIRE(p.number_of_classes() == 525);
 
-    // nr_classes requires p.parent_froidure_pin().size();
+    // number_of_classes requires p.parent_froidure_pin().size();
     REQUIRE(p.parent_froidure_pin()->finished());
     REQUIRE(!S.started());  // p copies S
     REQUIRE(!S.finished());
@@ -364,7 +364,7 @@ namespace libsemigroups {
     // check that CongruenceByPairs does not enumerate the semigroup, they
     // remain to remind us of the size and number of rules of the semigroups.
     // REQUIRE(S.size(false) == 11804);
-    // REQUIRE(S.nr_rules(false) == 2460);
+    // REQUIRE(S.number_of_rules(false) == 2460);
 
     std::vector<relation_type> extra(
         {relation_type({1, 3, 0, 1, 2, 2, 0, 2}, {1, 0, 0, 1, 3, 1})});
@@ -387,10 +387,10 @@ namespace libsemigroups {
     REQUIRE(!S.started());
     REQUIRE(!S.finished());
 
-    REQUIRE(p.nr_classes() == 9597);
-    REQUIRE(p.nr_classes() == 9597);
+    REQUIRE(p.number_of_classes() == 9597);
+    REQUIRE(p.number_of_classes() == 9597);
 
-    // nr_classes requires p.parent_froidure_pin().size();
+    // number_of_classes requires p.parent_froidure_pin().size();
     REQUIRE(p.parent_froidure_pin()->finished());
     REQUIRE(!S.started());  // p copies S
     REQUIRE(!S.finished());
@@ -411,7 +411,7 @@ namespace libsemigroups {
     // check that CongruenceByPairs does not enumerate the semigroup, they
     // remain to remind us of the size and number of rules of the semigroups.
     // REQUIRE(S.size(false) == 11804);
-    // REQUIRE(S.nr_rules(false) == 2460);
+    // REQUIRE(S.number_of_rules(false) == 2460);
     std::vector<relation_type>     extra({relation_type()});
     CongruenceByPairs<decltype(S)> p(left, S);
     p.add_pair({0, 3, 2, 1, 3, 2, 2}, {3, 2, 2, 1, 3, 3});
@@ -432,10 +432,10 @@ namespace libsemigroups {
     REQUIRE(!S.started());
     REQUIRE(!S.finished());
 
-    REQUIRE(p.nr_classes() == 7449);
-    REQUIRE(p.nr_classes() == 7449);
+    REQUIRE(p.number_of_classes() == 7449);
+    REQUIRE(p.number_of_classes() == 7449);
 
-    // nr_classes requires p.parent_froidure_pin().size();
+    // number_of_classes requires p.parent_froidure_pin().size();
     REQUIRE(p.parent_froidure_pin()->finished());
     REQUIRE(!S.started());  // p copies S
     REQUIRE(!S.finished());
@@ -449,7 +449,7 @@ namespace libsemigroups {
     auto rg = ReportGuard(REPORT);
 
     ToddCoxeter tc(twosided);
-    tc.set_nr_generators(2);
+    tc.set_number_of_generators(2);
     tc.add_pair({0, 0, 0}, {0});
     tc.add_pair({1, 1, 1, 1}, {1});
     tc.add_pair({0, 1, 0, 1}, {0, 0});
@@ -480,7 +480,7 @@ namespace libsemigroups {
         right, static_cast<FroidurePinTCE&>(*tc.quotient_froidure_pin()));
 
     REQUIRE_THROWS_AS(cong.quotient_froidure_pin(), LibsemigroupsException);
-    REQUIRE(cong.nr_classes() == 27);
+    REQUIRE(cong.number_of_classes() == 27);
   }
 
   LIBSEMIGROUPS_TEST_CASE("CongruenceByPairs",
@@ -490,7 +490,7 @@ namespace libsemigroups {
     auto rg = ReportGuard(REPORT);
 
     ToddCoxeter tc(twosided);
-    tc.set_nr_generators(2);
+    tc.set_number_of_generators(2);
     tc.add_pair({0, 0, 0}, {0});
     tc.add_pair({1, 1, 1, 1}, {1});
     tc.add_pair({0, 1, 0, 1}, {0, 0});
@@ -574,11 +574,11 @@ namespace libsemigroups {
     using P = CongruenceByPairs<decltype(S)>;
 
     P cong1(right, S);
-    REQUIRE(cong1.nr_classes() == 11804);
+    REQUIRE(cong1.number_of_classes() == 11804);
     P cong2(left, S);
-    REQUIRE(cong2.nr_classes() == 11804);
+    REQUIRE(cong2.number_of_classes() == 11804);
     P cong3(twosided, S);
-    REQUIRE(cong3.nr_classes() == 11804);
+    REQUIRE(cong3.number_of_classes() == 11804);
   }
 
   LIBSEMIGROUPS_TEST_CASE("KnuthBendixCongruenceByPairs",
@@ -606,7 +606,7 @@ namespace libsemigroups {
     REQUIRE(kbp.word_to_class_index({0}) == kbp.word_to_class_index({1, 1}));
     REQUIRE(kbp.word_to_class_index({0}) == kbp.word_to_class_index({1, 0, 1}));
 
-    REQUIRE(kbp.nr_non_trivial_classes() == 1);
+    REQUIRE(kbp.number_of_non_trivial_classes() == 1);
     REQUIRE(kbp.cbegin_ntc()->size() == 5);
     REQUIRE(std::vector<word_type>(kbp.cbegin_ntc()->cbegin(),
                                    kbp.cbegin_ntc()->cend())
@@ -644,7 +644,7 @@ namespace libsemigroups {
     REQUIRE(kbp.word_to_class_index({0}) == kbp.word_to_class_index({1, 1}));
     REQUIRE(kbp.word_to_class_index({0}) == kbp.word_to_class_index({1, 0, 1}));
 
-    REQUIRE(kbp.nr_non_trivial_classes() == 1);
+    REQUIRE(kbp.number_of_non_trivial_classes() == 1);
     REQUIRE(kbp.cbegin_ntc()->size() == 5);
     REQUIRE(std::vector<word_type>(kbp.cbegin_ntc()->cbegin(),
                                    kbp.cbegin_ntc()->cend())
@@ -688,7 +688,7 @@ namespace libsemigroups {
 
     REQUIRE(kbp.word_to_class_index({1}) == kbp.word_to_class_index({2}));
 
-    REQUIRE(kbp.nr_non_trivial_classes() == 1);
+    REQUIRE(kbp.number_of_non_trivial_classes() == 1);
     REQUIRE(kbp.cbegin_ntc()->size() == 2);
     REQUIRE(std::vector<word_type>(kbp.cbegin_ntc()->cbegin(),
                                    kbp.cbegin_ntc()->cend())
@@ -735,7 +735,7 @@ namespace libsemigroups {
 
     REQUIRE(kbp.word_to_class_index({3}) == kbp.word_to_class_index({2}));
 
-    REQUIRE(kbp.nr_non_trivial_classes() == 1);
+    REQUIRE(kbp.number_of_non_trivial_classes() == 1);
     REQUIRE(kbp.cbegin_ntc()->size() == 3);
     REQUIRE(std::vector<word_type>(kbp.cbegin_ntc()->cbegin(),
                                    kbp.cbegin_ntc()->cend())
@@ -761,7 +761,7 @@ namespace libsemigroups {
 
     KnuthBendixCongruenceByPairs kbp(twosided, kb);
 
-    REQUIRE(kbp.nr_classes() == 27);
+    REQUIRE(kbp.number_of_classes() == 27);
     REQUIRE(kbp.word_to_class_index({0}) == 0);
 
     REQUIRE(kbp.word_to_class_index({0, 0, 0, 0}) == 1);
@@ -769,7 +769,7 @@ namespace libsemigroups {
     REQUIRE(kbp.word_to_class_index({1, 0, 1}) == 2);
     REQUIRE(kbp.word_to_class_index({0, 1, 1, 0}) == 1);
 
-    REQUIRE(kbp.nr_non_trivial_classes() == 0);
+    REQUIRE(kbp.number_of_non_trivial_classes() == 0);
     REQUIRE(kbp.cbegin_ntc() == kbp.cend_ntc());
   }
 
@@ -795,7 +795,7 @@ namespace libsemigroups {
     kbp.add_pair({0}, {1});
     kbp.add_pair({0, 0}, {0});
 
-    REQUIRE(kbp.nr_classes() == 1);
+    REQUIRE(kbp.number_of_classes() == 1);
 
     REQUIRE(kbp.cbegin_ntc()->size() == 27);
     REQUIRE(kb.size() == 27);
@@ -829,7 +829,7 @@ namespace libsemigroups {
                                        {1, 1, 0, 1, 0, 0},
                                        {1, 1, 0, 1, 0, 1}}));
 
-    REQUIRE(kbp.nr_non_trivial_classes() == 1);
+    REQUIRE(kbp.number_of_non_trivial_classes() == 1);
 
     REQUIRE(kbp.word_to_class_index({0, 0, 0, 0}) == 0);
     REQUIRE(kbp.word_to_class_index({0}) == 0);
@@ -858,9 +858,9 @@ namespace libsemigroups {
     kbp.add_pair({0}, {1});
     kbp.add_pair({0, 0}, {0});
 
-    REQUIRE(kbp.nr_non_trivial_classes() == 6);
+    REQUIRE(kbp.number_of_non_trivial_classes() == 6);
 
-    std::vector<size_t> v(kbp.nr_non_trivial_classes(), 0);
+    std::vector<size_t> v(kbp.number_of_non_trivial_classes(), 0);
     std::transform(kbp.cbegin_ntc(),
                    kbp.cend_ntc(),
                    v.begin(),
@@ -897,7 +897,7 @@ namespace libsemigroups {
     REQUIRE(kbp.word_to_class_index({0}) == 0);
     REQUIRE(kbp.word_to_class_index({0, 1, 1, 0}) == 0);
 
-    REQUIRE(kbp.nr_classes() == 6);
+    REQUIRE(kbp.number_of_classes() == 6);
   }
 
   // KnuthBendixCongruenceByPairs 07 only really tests
@@ -924,8 +924,8 @@ namespace libsemigroups {
     kb.add_rule({1, 2, 1, 3, 1, 3, 1, 2, 1, 3, 1, 2}, {0});
 
     KnuthBendixCongruenceByPairs kbp(twosided, kb);
-    REQUIRE(kbp.nr_classes() == 120);
-    REQUIRE(kbp.nr_non_trivial_classes() == 0);
+    REQUIRE(kbp.number_of_classes() == 120);
+    REQUIRE(kbp.number_of_non_trivial_classes() == 0);
   }
 
   LIBSEMIGROUPS_TEST_CASE("KnuthBendixCongruenceByPairs",
@@ -949,7 +949,7 @@ namespace libsemigroups {
     REQUIRE(kbp.word_to_class_index({1, 2, 2, 1})
             == kbp.word_to_class_index({1, 1, 2, 1, 2}));
 
-    REQUIRE(kbp.nr_non_trivial_classes() == 1);
+    REQUIRE(kbp.number_of_non_trivial_classes() == 1);
     REQUIRE(std::vector<word_type>(kbp.cbegin_ntc()->begin(),
                                    kbp.cbegin_ntc()->end())
             == std::vector<word_type>({{1, 2, 2, 1}, {1, 1, 2, 1, 2}}));
@@ -998,8 +998,8 @@ namespace libsemigroups {
 
     KnuthBendixCongruenceByPairs kbp(twosided, kb);
 
-    REQUIRE(kbp.nr_classes() == 6);
-    REQUIRE(kbp.nr_non_trivial_classes() == 0);
+    REQUIRE(kbp.number_of_classes() == 6);
+    REQUIRE(kbp.number_of_non_trivial_classes() == 0);
     REQUIRE(kbp.word_to_class_index({1}) == kbp.word_to_class_index({2}));
   }
 
@@ -1036,8 +1036,8 @@ namespace libsemigroups {
     KnuthBendixCongruenceByPairs kbp(twosided, kb);
     kbp.add_pair({2}, {3});
 
-    REQUIRE(kbp.nr_classes() == 16);
-    REQUIRE(kbp.nr_non_trivial_classes() == 0);
+    REQUIRE(kbp.number_of_classes() == 16);
+    REQUIRE(kbp.number_of_non_trivial_classes() == 0);
     REQUIRE(kbp.word_to_class_index({2}) == kbp.word_to_class_index({3}));
   }
 
@@ -1102,8 +1102,8 @@ namespace libsemigroups {
     KnuthBendixCongruenceByPairs kbp(twosided, kb);
     kbp.add_pair({1}, {3});
 
-    REQUIRE(kbp.nr_classes() == 3);
-    REQUIRE(kbp.nr_non_trivial_classes() == 1);
+    REQUIRE(kbp.number_of_classes() == 3);
+    REQUIRE(kbp.number_of_non_trivial_classes() == 1);
     REQUIRE(std::vector<word_type>(kbp.cbegin_ntc()->begin(),
                                    kbp.cbegin_ntc()->end())
             == std::vector<word_type>({{1},
@@ -1167,7 +1167,7 @@ namespace libsemigroups {
     // check that FpSemigroupByPairs does not enumerate the semigroup, they
     // remain to remind us of the size and number of rules of the semigroups.
     // REQUIRE(S.size() == 88);
-    // REQUIRE(S.nr_rules() == 18);
+    // REQUIRE(S.number_of_rules() == 18);
 
     FpSemigroupByPairs<decltype(S)> p(S);
     p.add_rule(word_type({0, 1, 0, 0, 0, 1, 1, 0, 0}),
@@ -1181,7 +1181,7 @@ namespace libsemigroups {
     REQUIRE(p.size() == 21);
     REQUIRE(p.size() == 21);
 
-    // nr_classes requires p.parent_froidure_pin().size();
+    // number_of_classes requires p.parent_froidure_pin().size();
     REQUIRE(!S.started());  // p copies S
     REQUIRE(!S.finished());
   }
@@ -1199,7 +1199,7 @@ namespace libsemigroups {
     // check that FpSemigroupByPairs does not enumerate the semigroup, they
     // remain to remind us of the size and number of rules of the semigroups.
     // REQUIRE(S.size() == 88);
-    // REQUIRE(S.nr_rules() == 18);
+    // REQUIRE(S.number_of_rules() == 18);
 
     FpSemigroupByPairs<decltype(S)> p(S);
     p.add_rule(word_type({0, 1, 0, 0, 0, 1, 1, 0, 0}),

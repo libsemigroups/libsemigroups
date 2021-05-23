@@ -21,11 +21,11 @@ libsemigroups::CongruenceInterface:
 - Initialization:
   - ["This page contains information about initialising the
      :cpp:any:`CongruenceInterface` class."]
-  - set_nr_generators(size_t)
-  - nr_generators() const noexcept
+  - set_number_of_generators(size_t)
+  - number_of_generators() const noexcept
   - add_pair(std::initializer_list<size_t>, std::initializer_list<size_t>)
   - add_pair(word_type const&, word_type const&)
-  - nr_generating_pairs() const noexcept
+  - number_of_generating_pairs() const noexcept
 - Handedness:
   - kind() const noexcept
 - Iterators:
@@ -48,8 +48,8 @@ libsemigroups::CongruenceInterface:
   - less(word_type const&, word_type const&)
   - const_contains(word_type const&, word_type const&) const
   - contains(word_type const&, word_type const&)
-  - nr_classes()
-  - nr_non_trivial_classes()
+  - number_of_classes()
+  - number_of_non_trivial_classes()
   - non_trivial_classes()
 - Related semigroups:
   - ["This page contains information about the member functions of the

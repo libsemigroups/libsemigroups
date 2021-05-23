@@ -57,12 +57,12 @@ namespace libsemigroups {
       auto rg = ReportGuard(REPORT);
 
       KnuthBendix kb;
-      kb.set_nr_generators(2);
+      kb.set_number_of_generators(2);
       kb.add_pair({0, 0, 0}, {0});
       kb.add_pair({0}, {1, 1});
 
       REQUIRE(!kb.finished());
-      REQUIRE(kb.nr_classes() == 5);
+      REQUIRE(kb.number_of_classes() == 5);
       REQUIRE(kb.finished());
 
       REQUIRE(kb.word_to_class_index({0, 0, 1}) == 4);
@@ -79,7 +79,7 @@ namespace libsemigroups {
                             "[quick][cong][congruence][knuth-bendix][cong]") {
       auto        rg = ReportGuard(REPORT);
       KnuthBendix kb;
-      kb.set_nr_generators(5);
+      kb.set_number_of_generators(5);
       kb.add_pair({0, 0}, {0});
       kb.add_pair({0, 1}, {1});
       kb.add_pair({1, 0}, {1});
@@ -97,9 +97,10 @@ namespace libsemigroups {
       kb.add_pair({1, 4, 2, 3, 3}, {0});
       kb.add_pair({4, 4, 4}, {0});
 
-      REQUIRE(kb.nr_classes() == 6);
+      REQUIRE(kb.number_of_classes() == 6);
       // Throws because there's no parent semigroup
-      REQUIRE_THROWS_AS(kb.nr_non_trivial_classes(), LibsemigroupsException);
+      REQUIRE_THROWS_AS(kb.number_of_non_trivial_classes(),
+                        LibsemigroupsException);
       REQUIRE(kb.word_to_class_index({1}) == kb.word_to_class_index({2}));
     }
 
@@ -109,7 +110,7 @@ namespace libsemigroups {
                             "[quick][congruence][knuth-bendix][cong]") {
       auto        rg = ReportGuard(REPORT);
       KnuthBendix kb;
-      kb.set_nr_generators(4);
+      kb.set_number_of_generators(4);
       kb.add_pair({3}, {2});
       kb.add_pair({0, 3}, {0, 2});
       kb.add_pair({1, 1}, {1});
@@ -132,8 +133,8 @@ namespace libsemigroups {
       kb.add_pair({2, 0, 1, 0}, {2, 0, 1});
       kb.add_pair({2, 0, 2, 0}, {2, 0, 2});
 
-      REQUIRE(kb.nr_classes() == 16);
-      // REQUIRE(kb.knuth_bendix().nr_active_rules() == 16);
+      REQUIRE(kb.number_of_classes() == 16);
+      // REQUIRE(kb.knuth_bendix().number_of_active_rules() == 16);
       REQUIRE(kb.word_to_class_index({2}) == kb.word_to_class_index({3}));
     }
 
@@ -143,7 +144,7 @@ namespace libsemigroups {
                             "[quick][congruence][knuth-bendix][cong]") {
       auto        rg = ReportGuard(REPORT);
       KnuthBendix kb;
-      kb.set_nr_generators(11);
+      kb.set_number_of_generators(11);
       kb.add_pair({2}, {1});
       kb.add_pair({4}, {3});
       kb.add_pair({5}, {0});
@@ -194,7 +195,7 @@ namespace libsemigroups {
       kb.add_pair({3, 0, 1, 0}, {3, 0, 1});
       kb.add_pair({3, 0, 3, 0}, {3, 0, 3});
 
-      REQUIRE(kb.nr_classes() == 16);
+      REQUIRE(kb.number_of_classes() == 16);
       REQUIRE(kb.word_to_class_index({0}) == kb.word_to_class_index({5}));
       REQUIRE(kb.word_to_class_index({0}) == kb.word_to_class_index({10}));
       REQUIRE(kb.word_to_class_index({1}) == kb.word_to_class_index({2}));
@@ -212,14 +213,14 @@ namespace libsemigroups {
         "[no-valgrind][quick][congruence][knuth-bendix][cong]") {
       auto        rg = ReportGuard(REPORT);
       KnuthBendix kb;
-      kb.set_nr_generators(2);
+      kb.set_number_of_generators(2);
       kb.add_pair({0, 0, 0}, {0});
       kb.add_pair({1, 1, 1, 1}, {1});
       kb.add_pair({0, 1, 1, 1, 0}, {0, 0});
       kb.add_pair({1, 0, 0, 1}, {1, 1});
       kb.add_pair({0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0}, {0, 0});
 
-      REQUIRE(kb.nr_classes() == 240);
+      REQUIRE(kb.number_of_classes() == 240);
     }
 
     LIBSEMIGROUPS_TEST_CASE(
@@ -229,7 +230,7 @@ namespace libsemigroups {
         "[no-valgrind][quick][congruence][knuth-bendix][cong]") {
       auto        rg = ReportGuard(REPORT);
       KnuthBendix kb;
-      kb.set_nr_generators(2);
+      kb.set_number_of_generators(2);
       kb.add_pair({0, 0, 0}, {0});
       kb.add_pair({1, 1, 1, 1}, {1});
       kb.add_pair({0, 1, 1, 1, 0}, {0, 0});
@@ -248,7 +249,7 @@ namespace libsemigroups {
       auto rg = ReportGuard(REPORT);
       {
         KnuthBendix kb;
-        kb.set_nr_generators(2);
+        kb.set_number_of_generators(2);
         kb.add_pair({0, 0, 0}, {0});
         kb.add_pair({1, 1, 1, 1, 1}, {1});
         kb.add_pair({0, 1, 1, 1, 0, 1, 1}, {1, 1, 0});
@@ -259,7 +260,7 @@ namespace libsemigroups {
       }
       {
         KnuthBendix kb;
-        kb.set_nr_generators(2);
+        kb.set_number_of_generators(2);
         kb.add_pair({0, 0, 0}, {0});
         kb.add_pair({1, 1, 1, 1, 1}, {1});
         kb.add_pair({0, 1, 1, 1, 0, 1, 1}, {1, 1, 0});
@@ -276,7 +277,7 @@ namespace libsemigroups {
         "[quick][congruence][knuth-bendix][cong][no-valgrind]") {
       auto        rg = ReportGuard(REPORT);
       KnuthBendix kb;
-      kb.set_nr_generators(2);
+      kb.set_number_of_generators(2);
       kb.add_pair({0, 0, 0}, {0});
       kb.add_pair({1, 1, 1, 1, 1, 1, 1, 1, 1}, {1});
       kb.add_pair({0, 1, 1, 1, 1, 1, 0, 1, 1}, {1, 1, 0});
@@ -291,17 +292,17 @@ namespace libsemigroups {
         "[quick][congruence][knuth-bendix][cong][no-valgrind]") {
       auto        rg = ReportGuard(REPORT);
       KnuthBendix kb;
-      kb.set_nr_generators(2);
+      kb.set_number_of_generators(2);
       kb.add_pair({0, 0, 0}, {0});
       kb.add_pair({1, 1, 1, 1, 1, 1, 1, 1, 1}, {1});
       kb.add_pair({0, 1, 1, 1, 1, 1, 0, 1, 1}, {1, 1, 0});
-      REQUIRE(kb.nr_classes() == 746);
+      REQUIRE(kb.number_of_classes() == 746);
       auto copy(kb);
-      REQUIRE(copy.nr_classes() == 746);
-      REQUIRE(copy.nr_generators() == 2);
+      REQUIRE(copy.number_of_classes() == 746);
+      REQUIRE(copy.number_of_generators() == 2);
       // the copy uses the "active rules" of kb, of which there are 105 since
       // knuth-bendix has already been run.
-      REQUIRE(copy.nr_generating_pairs() == 105);
+      REQUIRE(copy.number_of_generating_pairs() == 105);
     }
 
     LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
@@ -310,7 +311,7 @@ namespace libsemigroups {
                             "[quick][congruence][knuth-bendix][cong]") {
       auto        rg = ReportGuard(REPORT);
       KnuthBendix kb;
-      kb.set_nr_generators(2);
+      kb.set_number_of_generators(2);
       kb.add_pair({0, 0, 0}, {0});
       kb.add_pair({1, 1, 1, 1}, {1});
       kb.add_pair({0, 1, 1, 1, 1, 1, 0, 1, 1}, {1, 1, 0});
@@ -321,7 +322,7 @@ namespace libsemigroups {
       REQUIRE_THROWS_AS(kb.const_contains({0, 0, 2}, {0, 0, 0}),
                         LibsemigroupsException);
       REQUIRE(kb.const_contains({0, 0, 0}, {0}) == tril::TRUE);
-      REQUIRE(kb.nr_classes() == 12);
+      REQUIRE(kb.number_of_classes() == 12);
       REQUIRE(kb.const_contains({0, 0, 0}, {1, 1}) == tril::FALSE);
       REQUIRE(!kb.contains({0, 0, 0}, {1, 1}));
       REQUIRE(kb.contains({0, 0, 0}, {0, 0, 0}));
@@ -333,7 +334,7 @@ namespace libsemigroups {
                             "[quick][congruence][knuth-bendix][cong]") {
       auto        rg = ReportGuard(REPORT);
       KnuthBendix kb;
-      kb.set_nr_generators(2);
+      kb.set_number_of_generators(2);
       kb.add_pair({0, 0, 0}, {0});
       kb.add_pair({1, 1, 1, 1}, {1});
       kb.add_pair({0, 1, 1, 1, 1, 1, 0, 1, 1}, {1, 1, 0});
@@ -346,7 +347,7 @@ namespace libsemigroups {
                             "[quick][congruence][knuth-bendix][cong]") {
       auto        rg = ReportGuard(REPORT);
       KnuthBendix kb;
-      kb.set_nr_generators(2);
+      kb.set_number_of_generators(2);
       kb.add_pair({0, 0, 0}, {0});
       kb.add_pair({1, 1, 1, 1}, {1});
       kb.add_pair({0, 1, 1, 1, 1, 1, 0, 1, 1}, {1, 1, 0});
@@ -370,7 +371,7 @@ namespace libsemigroups {
                             "[quick][congruence][knuth-bendix][cong]") {
       auto        rg = ReportGuard(REPORT);
       KnuthBendix kb;
-      kb.set_nr_generators(2);
+      kb.set_number_of_generators(2);
       kb.add_pair({0, 0, 0}, {0});
       kb.add_pair({1, 1, 1, 1}, {1});
       kb.add_pair({0, 1, 1, 1, 1, 1, 0, 1, 1}, {1, 1, 0});
@@ -379,13 +380,13 @@ namespace libsemigroups {
 
     LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
                             "114",
-                            "(cong) set_nr_generators",
+                            "(cong) set_number_of_generators",
                             "[quick][congruence][knuth-bendix][cong]") {
       auto        rg = ReportGuard(REPORT);
       KnuthBendix kb;
-      REQUIRE_NOTHROW(kb.set_nr_generators(2));
-      REQUIRE_THROWS_AS(kb.set_nr_generators(3), LibsemigroupsException);
-      REQUIRE_NOTHROW(kb.set_nr_generators(2));
+      REQUIRE_NOTHROW(kb.set_number_of_generators(2));
+      REQUIRE_THROWS_AS(kb.set_number_of_generators(3), LibsemigroupsException);
+      REQUIRE_NOTHROW(kb.set_number_of_generators(2));
     }
   }  // namespace congruence
 }  // namespace libsemigroups

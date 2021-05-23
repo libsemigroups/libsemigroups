@@ -407,22 +407,25 @@ namespace libsemigroups {
     // std::cout << t;
   }
 
-  LIBSEMIGROUPS_TEST_CASE("BMat8", "011", "nr_rows, nr_cols", "[quick]") {
+  LIBSEMIGROUPS_TEST_CASE("BMat8",
+                          "011",
+                          "number_of_rows, number_of_cols",
+                          "[quick]") {
     auto  rg    = ReportGuard(REPORT);
     BMat8 idem1 = BMat8::one();
     BMat8 idem2 = BMat8::one();
     BMat8 one   = BMat8::one();
 
-    REQUIRE(one.nr_rows() == 8);
-    REQUIRE(bmat8_helpers::nr_cols(one) == 8);
+    REQUIRE(one.number_of_rows() == 8);
+    REQUIRE(bmat8_helpers::number_of_cols(one) == 8);
     for (size_t i = 0; i < 7; ++i) {
       idem1.set(i, i, false);
       idem2.set(7 - i, 7 - i, false);
 
-      REQUIRE(idem1.nr_rows() == 7 - i);
-      REQUIRE(bmat8_helpers::nr_cols(idem1) == 7 - i);
-      REQUIRE(idem2.nr_rows() == 7 - i);
-      REQUIRE(bmat8_helpers::nr_cols(idem2) == 7 - i);
+      REQUIRE(idem1.number_of_rows() == 7 - i);
+      REQUIRE(bmat8_helpers::number_of_cols(idem1) == 7 - i);
+      REQUIRE(idem2.number_of_rows() == 7 - i);
+      REQUIRE(bmat8_helpers::number_of_cols(idem2) == 7 - i);
     }
 
     const std::vector<BMat8> gens
@@ -435,12 +438,13 @@ namespace libsemigroups {
     FroidurePin<BMat8> S(gens);
 
     for (auto it = S.begin(); it < S.end(); it++) {
-      REQUIRE((*it).nr_rows() <= 8);
-      REQUIRE((*it).nr_rows() <= 8);
+      REQUIRE((*it).number_of_rows() <= 8);
+      REQUIRE((*it).number_of_rows() <= 8);
 
-      REQUIRE((*it).row_space_basis().nr_rows() <= (*it).nr_rows());
-      REQUIRE(bmat8_helpers::nr_cols((*it).col_space_basis())
-              <= bmat8_helpers::nr_cols(*it));
+      REQUIRE((*it).row_space_basis().number_of_rows()
+              <= (*it).number_of_rows());
+      REQUIRE(bmat8_helpers::number_of_cols((*it).col_space_basis())
+              <= bmat8_helpers::number_of_cols(*it));
     }
   }
 
@@ -478,9 +482,9 @@ namespace libsemigroups {
       REQUIRE(x.row_space_size() <= 16);
       REQUIRE(bmat8_helpers::col_space_size(x) <= 16);
 
-      REQUIRE(rows.row_space_size() <= pow(2, rows.nr_rows()));
+      REQUIRE(rows.row_space_size() <= pow(2, rows.number_of_rows()));
       REQUIRE(bmat8_helpers::col_space_size(cols)
-              <= pow(2, bmat8_helpers::nr_cols(cols)));
+              <= pow(2, bmat8_helpers::number_of_cols(cols)));
 
       for (auto it2 = S.begin(); it2 < S.end(); it2++) {
         BMat8 y = *it2;

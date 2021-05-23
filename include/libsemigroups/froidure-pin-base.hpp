@@ -138,12 +138,12 @@ namespace libsemigroups {
     //!
     //! This member function sets the maximum number of threads to be used by
     //! any member function of a FroidurePin object. The number of threads is
-    //! limited to the maximum of 1 and the minimum of \p nr_threads and the
-    //! number of threads supported by the hardware.
+    //! limited to the maximum of 1 and the minimum of \p number_of_threads and
+    //! the number of threads supported by the hardware.
     //!
     //! The default value is `std::thread::hardware_concurrency()`.
     //!
-    //! \param nr_threads the maximum number of threads to use.
+    //! \param number_of_threads the maximum number of threads to use.
     //!
     //! \returns A reference to \c this.
     //!
@@ -155,7 +155,7 @@ namespace libsemigroups {
     //!
     //! \sa
     //! max_threads().
-    FroidurePinBase& max_threads(size_t nr_threads) noexcept;
+    FroidurePinBase& max_threads(size_t number_of_threads) noexcept;
 
     //! Returns the current value of the maximum number of threads.
     //!
@@ -181,7 +181,7 @@ namespace libsemigroups {
     //! exceeds this value, then the following functions may use a concurrent
     //! implementation:
     //!
-    //! * \ref FroidurePin::nr_idempotents
+    //! * \ref FroidurePin::number_of_idempotents
     //!
     //! The default value is `823543`.
     //!
@@ -267,12 +267,12 @@ namespace libsemigroups {
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
     virtual bool equal_to(word_type const&, word_type const&) const = 0;
 
-    virtual size_t nr_generators() const = 0;
+    virtual size_t number_of_generators() const = 0;
 
     virtual element_index_type fast_product(element_index_type,
                                             element_index_type) const = 0;
 
-    virtual size_t nr_idempotents() = 0;
+    virtual size_t number_of_idempotents() = 0;
 
     virtual bool is_idempotent(element_index_type) = 0;
 
@@ -309,7 +309,7 @@ namespace libsemigroups {
     //! A value of type `element_index_type` or \ref UNDEFINED.
     //!
     //! \throws LibsemigroupsException if \p w contains an value exceeding
-    //! FroidurePin::nr_generators.
+    //! FroidurePin::number_of_generators.
     //!
     //! \complexity
     //! \f$O(n)\f$ where \f$n\f$ is the length of the word \p w.
@@ -394,7 +394,7 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Constant.
-    size_t current_nr_rules() const noexcept {
+    size_t current_number_of_rules() const noexcept {
       return _nr_rules;
     }
 
@@ -566,7 +566,7 @@ namespace libsemigroups {
     //! \returns A value of type \ref element_index_type.
     //!
     //! \throws LibsemigroupsException if \p i is greater than or equal to
-    //! FroidurePin::nr_generators.
+    //! FroidurePin::number_of_generators.
     //!
     //! \complexity
     //! Constant.
@@ -589,7 +589,8 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! At worst \f$O(|S|n)\f$ where \f$S\f$ is the semigroup represented by \c
-    //! this, and \f$n\f$ is the return value of FroidurePin::nr_generators.
+    //! this, and \f$n\f$ is the return value of
+    //! FroidurePin::number_of_generators.
     size_t size() {
       run();
       return _nr;
@@ -606,7 +607,8 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! At worst \f$O(|S|n)\f$ where \f$S\f$ is the semigroup represented by \c
-    //! this, and \f$n\f$ is the return value of FroidurePin::nr_generators.
+    //! this, and \f$n\f$ is the return value of
+    //! FroidurePin::number_of_generators.
     //!
     //! \parameters
     //! (None).
@@ -625,13 +627,14 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! At worst \f$O(|S|n)\f$ where \f$S\f$ is the semigroup represented by \c
-    //! this, and \f$n\f$ is the return value of FroidurePin::nr_generators.
+    //! this, and \f$n\f$ is the return value of
+    //! FroidurePin::number_of_generators.
     //!
     //! \sa \ref cbegin_rules and \ref cend_rules.
     //!
     //! \parameters
     //! (None)
-    size_t nr_rules() {
+    size_t number_of_rules() {
       run();
       return _nr_rules;
     }
@@ -649,11 +652,12 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if \p i is greater than or equal to
     //! size().
     //! \throws LibsemigroupsException if \p j is greater than or equal to
-    //! FroidurePin::nr_generators().
+    //! FroidurePin::number_of_generators().
     //!
     //! \complexity
     //! At worst \f$O(|S|n)\f$ where \f$S\f$ is the semigroup represented by \c
-    //! this, and \f$n\f$ is the return value of FroidurePin::nr_generators.
+    //! this, and \f$n\f$ is the return value of
+    //! FroidurePin::number_of_generators.
     //!
     //! \sa
     //! \ref left.
@@ -673,7 +677,8 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! At worst \f$O(|S|n)\f$ where \f$S\f$ is the semigroup represented by \c
-    //! this, and \f$n\f$ is the return value of FroidurePin::nr_generators.
+    //! this, and \f$n\f$ is the return value of
+    //! FroidurePin::number_of_generators.
     //!
     //! \parameters
     //! None.
@@ -696,11 +701,12 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if \p i is greater than or equal to
     //! size().
     //! \throws LibsemigroupsException if \p j is greater than or equal to
-    //! FroidurePin::nr_generators().
+    //! FroidurePin::number_of_generators().
     //!
     //! \complexity
     //! At worst \f$O(|S|n)\f$ where \f$S\f$ is the semigroup represented by \c
-    //! this, and \f$n\f$ is the return value of FroidurePin::nr_generators.
+    //! this, and \f$n\f$ is the return value of
+    //! FroidurePin::number_of_generators.
     //!
     //! \sa
     //! \ref right.
@@ -720,7 +726,8 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! At worst \f$O(|S|n)\f$ where \f$S\f$ is the semigroup represented by \c
-    //! this, and \f$n\f$ is the return value of FroidurePin::nr_generators.
+    //! this, and \f$n\f$ is the return value of
+    //! FroidurePin::number_of_generators.
     //!
     //! \parameters
     //! None.
@@ -754,7 +761,7 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! At worst \f$O(mn)\f$ where \f$m\f$ equals \p pos and \f$n\f$ is the
-    //! return value of FroidurePin::nr_generators.
+    //! return value of FroidurePin::number_of_generators.
     void minimal_factorisation(word_type& word, element_index_type pos) {
       if (pos >= _nr && !finished()) {
         enumerate(pos + 1);
@@ -780,7 +787,7 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! At worst \f$O(mn)\f$ where \f$m\f$ equals \p pos and \f$n\f$ is the
-    //! return value of FroidurePin::nr_generators.
+    //! return value of FroidurePin::number_of_generators.
     word_type minimal_factorisation(element_index_type pos) {
       word_type word;
       minimal_factorisation(word, pos);
@@ -836,7 +843,7 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! At worst \f$O(mn)\f$ where \f$m\f$ equals \p pos and \f$n\f$ is the
-    //! return value of FroidurePin::nr_generators.
+    //! return value of FroidurePin::number_of_generators.
     void factorisation(word_type& word, element_index_type pos) {
       minimal_factorisation(word, pos);
     }
@@ -861,7 +868,7 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! At worst \f$O(mn)\f$ where \f$m\f$ equals \p pos and \f$n\f$ is the
-    //! return value of FroidurePin::nr_generators.
+    //! return value of FroidurePin::number_of_generators.
     word_type factorisation(element_index_type pos) {
       return minimal_factorisation(pos);
     }
@@ -884,7 +891,7 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! At worst \f$O(mn)\f$ where \f$m\f$ equals \p limit and \f$n\f$ is the
-    //! return value of FroidurePin::nr_generators.
+    //! return value of FroidurePin::number_of_generators.
     void enumerate(size_t limit);
 
     //! Return type of \ref cbegin_rules and \ref cend_rules.
@@ -955,7 +962,7 @@ namespace libsemigroups {
 
         if (_pos != UNDEFINED) {
           while (_pos < ptr->current_size()) {
-            while (_gen < ptr->nr_generators()) {
+            while (_gen < ptr->number_of_generators()) {
               if (!ptr->_reduced.get(ptr->_enumerate_order[_pos], _gen)
                   && (_pos < ptr->_lenindex[1]
                       || ptr->_reduced.get(
@@ -1213,10 +1220,10 @@ namespace libsemigroups {
     }
 
     void validate_letter_index(letter_type i) const {
-      if (i >= nr_generators()) {
+      if (i >= number_of_generators()) {
         LIBSEMIGROUPS_EXCEPTION(
             "generator index out of bounds, expected value in [0, %d), got %d",
-            nr_generators(),
+            number_of_generators(),
             i);
       }
     }

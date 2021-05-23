@@ -26,7 +26,7 @@ libsemigroups::congruence::KnuthBendix:
   - class_index_type
   - non_trivial_class_iterator
   - non_trivial_classes_type
-  - set_nr_generators(size_t)
+  - set_number_of_generators(size_t)
   - kind() const noexcept
   - quotient_froidure_pin()
   - has_quotient_froidure_pin() const noexcept
@@ -34,8 +34,8 @@ libsemigroups::congruence::KnuthBendix:
   - has_parent_froidure_pin() const noexcept
   - is_quotient_obviously_finite()
   - is_quotient_obviously_infinite()
-  - nr_generators() const noexcept
-  - nr_generating_pairs() const noexcept
+  - number_of_generators() const noexcept
+  - number_of_generating_pairs() const noexcept
   - cbegin_generating_pairs() const noexcept
   - cend_generating_pairs() const noexcept
   - cbegin_ntc()
@@ -45,8 +45,8 @@ libsemigroups::congruence::KnuthBendix:
   - less(word_type const&, word_type const&)
   - const_contains(word_type const&, word_type const&) const override
   - contains(word_type const&, word_type const&) override
-  - nr_classes()
-  - nr_non_trivial_classes()
+  - number_of_classes()
+  - number_of_non_trivial_classes()
   - non_trivial_classes()
   - word_to_class_index(word_type const&)
   - class_index_to_word(class_index_type)

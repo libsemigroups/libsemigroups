@@ -27,9 +27,9 @@
 namespace libsemigroups {
   namespace {
     void add_path(ActionDigraph<size_t>& digraph, size_t n) {
-      size_t old_nodes = digraph.nr_nodes();
+      size_t old_nodes = digraph.number_of_nodes();
       digraph.add_nodes(n);
-      for (size_t i = old_nodes; i < digraph.nr_nodes() - 1; ++i) {
+      for (size_t i = old_nodes; i < digraph.number_of_nodes() - 1; ++i) {
         digraph.add_edge(i, i + 1, 0);
       }
     }
@@ -44,11 +44,11 @@ namespace libsemigroups {
       if (n != digraph.out_degree()) {
         throw std::runtime_error("can't do it!");
       }
-      size_t old_nodes = digraph.nr_nodes();
+      size_t old_nodes = digraph.number_of_nodes();
       digraph.add_nodes(n);
 
-      for (size_t i = old_nodes; i < digraph.nr_nodes(); ++i) {
-        for (size_t j = old_nodes; j < digraph.nr_nodes(); ++j) {
+      for (size_t i = old_nodes; i < digraph.number_of_nodes(); ++i) {
+        for (size_t j = old_nodes; j < digraph.number_of_nodes(); ++j) {
           digraph.add_edge(i, j, j - old_nodes);
         }
       }
@@ -130,7 +130,7 @@ namespace libsemigroups {
     }
     REQUIRE(action_digraph_helper::is_acyclic(ad));
     REQUIRE(action_digraph_helper::topological_sort(ad).size()
-            == ad.nr_nodes());
+            == ad.number_of_nodes());
   }
 
   LIBSEMIGROUPS_TEST_CASE("is_acyclic",

@@ -58,7 +58,7 @@ namespace libsemigroups {
 
       REQUIRE(S.size() == 4);
       REQUIRE(S.degree() == 2);
-      REQUIRE(S.nr_rules() == 4);
+      REQUIRE(S.number_of_rules() == 4);
 
       KnuthBendix kb(S);
       REQUIRE(kb.confluent());

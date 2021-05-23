@@ -105,9 +105,9 @@ namespace libsemigroups {
     //////////////////////////////////////////////////////////////////////////
 
     void KnuthBendix::init_from(FroidurePinBase& S) {
-      if (S.nr_generators() != 0) {
+      if (S.number_of_generators() != 0) {
         if (alphabet().empty()) {
-          set_alphabet(S.nr_generators());
+          set_alphabet(S.number_of_generators());
         }
         // throws if rules contain letters that are not in the alphabet.
         add_rules(S);
@@ -237,12 +237,12 @@ namespace libsemigroups {
       }
     }
 
-    size_t KnuthBendix::nr_active_rules() const noexcept {
-      return _impl->nr_rules();
+    size_t KnuthBendix::number_of_active_rules() const noexcept {
+      return _impl->number_of_rules();
     }
 
     ActionDigraph<size_t> const& KnuthBendix::gilman_digraph() {
-      if (_gilman_digraph.nr_nodes() == 0) {
+      if (_gilman_digraph.number_of_nodes() == 0) {
         // reset the settings so that we really run!
         max_rules(POSITIVE_INFINITY);
         run();
@@ -312,7 +312,7 @@ namespace libsemigroups {
     bool KnuthBendix::is_obviously_infinite_impl() {
       if (finished()) {
         return !action_digraph_helper::is_acyclic(gilman_digraph());
-      } else if (alphabet().size() > nr_rules()) {
+      } else if (alphabet().size() > number_of_rules()) {
         return true;
       }
       detail::IsObviouslyInfinite ioi(alphabet().size());
@@ -374,7 +374,7 @@ namespace libsemigroups {
         : KnuthBendix() {
       _kb->init_from(kb, false);  // false = don't add rules
       if (!_kb->alphabet().empty()) {
-        set_nr_generators(_kb->alphabet().size());
+        set_number_of_generators(_kb->alphabet().size());
       }
       // TODO(later):
       // The following lines don't do anything because _kb does not get the
@@ -390,7 +390,7 @@ namespace libsemigroups {
     KnuthBendix::KnuthBendix(std::shared_ptr<FroidurePinBase> S)
         : KnuthBendix() {
       _kb->init_from(*S);
-      set_nr_generators(S->nr_generators());
+      set_number_of_generators(S->number_of_generators());
       set_parent_froidure_pin(S);
     }
 
@@ -422,7 +422,8 @@ namespace libsemigroups {
     bool KnuthBendix::is_quotient_obviously_finite_impl() {
       return finished()
              || (has_parent_froidure_pin() && parent_froidure_pin()->finished())
-             || (_kb->is_obviously_finite() && nr_generators() != UNDEFINED);
+             || (_kb->is_obviously_finite()
+                 && number_of_generators() != UNDEFINED);
     }
 
     bool KnuthBendix::contains(word_type const& lhs, word_type const& rhs) {
@@ -445,7 +446,7 @@ namespace libsemigroups {
       return _kb->froidure_pin()->minimal_factorisation(i);
     }
 
-    size_t KnuthBendix::nr_classes_impl() {
+    size_t KnuthBendix::number_of_classes_impl() {
       run();  // required so that the state of this is correctly set.
       return _kb->size();
     }
@@ -480,7 +481,7 @@ namespace libsemigroups {
       _kb->add_rule(u, v);
     }
 
-    void KnuthBendix::set_nr_generators_impl(size_t n) {
+    void KnuthBendix::set_number_of_generators_impl(size_t n) {
       if (_kb->alphabet().empty()) {
         _kb->set_alphabet(n);
       }

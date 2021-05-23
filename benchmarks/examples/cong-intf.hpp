@@ -44,7 +44,7 @@ namespace libsemigroups {
       typename std::enable_if<std::is_base_of<CongruenceInterface, S>::value,
                               SFINAE*>::type {
     auto thing = new S(congruence_type::twosided);
-    thing->set_nr_generators(p.A);
+    thing->set_number_of_generators(p.A);
     for (auto const& x : p.R) {
       thing->add_pair(x.first, x.second);
     }

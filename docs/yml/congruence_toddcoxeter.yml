@@ -7,10 +7,10 @@ libsemigroups::congruence::ToddCoxeter:
   - sort_free_function_type
   - sort_function_type
   - table_type
-  - policy
-  - policy::strategy
-  - policy::lookahead
-  - policy::froidure_pin
+  - options
+  - options::strategy
+  - options::lookahead
+  - options::froidure_pin
   - order
 - Constructors:
   - ["This page contains information about the constructors for the
@@ -19,7 +19,7 @@ libsemigroups::congruence::ToddCoxeter:
   - ToddCoxeter(congruence_type, T const&)
   - ToddCoxeter(congruence_type,
                 std::shared_ptr<FroidurePinBase>,
-                policy::froidure_pin)
+                options::froidure_pin)
   - ToddCoxeter(congruence_type, ToddCoxeter&)
   - ToddCoxeter(congruence_type, fpsemigroup::ToddCoxeter&)
   - ToddCoxeter(congruence_type, fpsemigroup::KnuthBendix&)
@@ -39,15 +39,15 @@ libsemigroups::congruence::ToddCoxeter:
   - ["This page contains information about the member functions of the
      :cpp:any:`ToddCoxeter` that control various settings that influence the
      coset enumeration process."]
-  - froidure_pin_policy(policy::froidure_pin) noexcept
+  - froidure_pin_policy(options::froidure_pin) noexcept
   - froidure_pin_policy() const noexcept
-  - lookahead(policy::lookahead) noexcept
+  - lookahead(options::lookahead) noexcept
   - lower_bound(size_t) noexcept
   - next_lookahead(size_t) noexcept
   - save(bool)
   - standardize(bool) noexcept
   - strategy() const noexcept
-  - strategy(policy::strategy)
+  - strategy(options::strategy)
   - random_interval(std::chrono::nanoseconds) noexcept
   - random_interval(T) noexcept
   - sort_generating_pairs(sort_function_type)
@@ -85,9 +85,9 @@ libsemigroups::congruence::ToddCoxeter:
   - is_active_coset(coset_type const) const
   - is_valid_coset(coset_type const) const noexcept
   - next_active_coset(coset_type const) const
-  - nr_cosets_active() const noexcept
-  - nr_cosets_defined() const noexcept
-  - nr_cosets_killed() const noexcept
+  - number_of_cosets_active() const noexcept
+  - number_of_cosets_defined() const noexcept
+  - number_of_cosets_killed() const noexcept
 - Member functions inherited from CongruenceInterface:
   - ["This page contains a description of the member functions of the
      :cpp:any:`ToddCoxeter` class inherited from
@@ -96,7 +96,7 @@ libsemigroups::congruence::ToddCoxeter:
   - non_trivial_classes_type
   - non_trivial_class_iterator
   - const_iterator
-  - set_nr_generators(size_t)
+  - set_number_of_generators(size_t)
   - kind() const noexcept
   - quotient_froidure_pin()
   - has_quotient_froidure_pin() const noexcept
@@ -104,8 +104,8 @@ libsemigroups::congruence::ToddCoxeter:
   - has_parent_froidure_pin() const noexcept
   - is_quotient_obviously_finite()
   - is_quotient_obviously_infinite()
-  - nr_generators() const noexcept
-  - nr_generating_pairs() const noexcept
+  - number_of_generators() const noexcept
+  - number_of_generating_pairs() const noexcept
   - cbegin_generating_pairs() const noexcept
   - cend_generating_pairs() const noexcept
   - cbegin_ntc()
@@ -115,8 +115,8 @@ libsemigroups::congruence::ToddCoxeter:
   - less(word_type const&, word_type const&)
   - const_contains(word_type const&, word_type const&) const
   - contains(word_type const&, word_type const&) override
-  - nr_classes()
-  - nr_non_trivial_classes()
+  - number_of_classes()
+  - number_of_non_trivial_classes()
   - non_trivial_classes()
   - word_to_class_index(word_type const&)
   - class_index_to_word(class_index_type)

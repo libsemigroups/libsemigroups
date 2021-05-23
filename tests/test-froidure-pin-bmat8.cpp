@@ -60,18 +60,18 @@ namespace libsemigroups {
                                       {0, 0, 0, 0, 0}}))
             == UNDEFINED);
     REQUIRE(S.current_size() == 4);
-    REQUIRE(S.current_nr_rules() == 0);
+    REQUIRE(S.current_number_of_rules() == 0);
     REQUIRE(S.length_const(0) == 1);
     REQUIRE(S.length_non_const(5) == 2);
 
     REQUIRE(S.size() == 63904);
-    REQUIRE(S.nr_idempotents() == 2360);
+    REQUIRE(S.number_of_idempotents() == 2360);
     REQUIRE(S.word_to_pos({0, 1, 2, 0, 1, 2}) == 378);
     REQUIRE(S.word_to_element({0, 1, 2, 0, 1, 2})
             == BMat8({{1, 0, 0, 1}, {0, 1, 0, 0}, {1, 0, 1, 0}, {0, 0, 1, 0}}));
     REQUIRE(S.current_max_word_length() == 21);
     REQUIRE(S.degree() == 8);
-    REQUIRE(S.nr_generators() == 4);
+    REQUIRE(S.number_of_generators() == 4);
     REQUIRE(S.generator(0)
             == BMat8({{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}));
     REQUIRE(S.generator(1)
@@ -89,7 +89,7 @@ namespace libsemigroups {
                                       {0, 0, 1, 0, 1},
                                       {0, 0, 0, 0, 0}}))
             == UNDEFINED);
-    REQUIRE(S.current_nr_rules() == 13716);
+    REQUIRE(S.current_number_of_rules() == 13716);
     REQUIRE(S.prefix(0) == UNDEFINED);
     REQUIRE(S.suffix(0) == UNDEFINED);
     REQUIRE(S.first_letter(0) == 0);
@@ -109,7 +109,7 @@ namespace libsemigroups {
     REQUIRE(!S.is_idempotent(0));
     REQUIRE(S.is_idempotent(3));
     REQUIRE(!S.is_idempotent(7));
-    REQUIRE(S.nr_rules() == 13716);
+    REQUIRE(S.number_of_rules() == 13716);
     REQUIRE(S.contains(S.generator(1)));
     REQUIRE(!S.contains(BMat8({{1, 0, 0, 1, 1},
                                {0, 1, 0, 0, 1},
@@ -198,29 +198,29 @@ namespace libsemigroups {
     }
     REQUIRE(pos == S.size());
     std::vector<relation_type> v(S.cbegin_rules(), S.cend_rules());
-    REQUIRE(v.size() == S.nr_rules());
+    REQUIRE(v.size() == S.number_of_rules());
     REQUIRE(v.size() == 13716);
 
     // The next works but is a bit slow
     // congruence::ToddCoxeter tc(congruence_type::twosided);
-    // tc.set_nr_generators(S.nr_generators());
+    // tc.set_number_of_generators(S.number_of_generators());
     // for (auto const& rel : v) {
     //   tc.add_pair(rel.first, rel.second);
     // }
 
-    // REQUIRE(tc.nr_classes() == 63904);
-    // REQUIRE(tc.nr_classes() == S.size());
+    // REQUIRE(tc.number_of_classes() == 63904);
+    // REQUIRE(tc.number_of_classes() == S.size());
 
     // Copy - after run
     FroidurePin<BMat8> T(S);
     REQUIRE(T.size() == 63904);
-    REQUIRE(T.nr_idempotents() == 2360);
+    REQUIRE(T.number_of_idempotents() == 2360);
     REQUIRE(T.word_to_pos({0, 1, 2, 0, 1, 2}) == 378);
     REQUIRE(T.word_to_element({0, 1, 2, 0, 1, 2})
             == BMat8({{1, 0, 0, 1}, {0, 1, 0, 0}, {1, 0, 1, 0}, {0, 0, 1, 0}}));
     REQUIRE(T.current_max_word_length() == 21);
     REQUIRE(T.degree() == 8);
-    REQUIRE(T.nr_generators() == 4);
+    REQUIRE(T.number_of_generators() == 4);
     REQUIRE(T.generator(0)
             == BMat8({{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}));
     REQUIRE(T.generator(1)

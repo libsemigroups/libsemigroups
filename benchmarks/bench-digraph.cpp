@@ -321,7 +321,7 @@ namespace libsemigroups {
           ad = ActionDigraph<size_t>::random(M, N, nr_edges);
           action_digraph_helper::add_cycle(
               ad, ad.cbegin_nodes(), ad.cend_nodes());
-          std::string m = std::to_string(ad.nr_edges());
+          std::string m = std::to_string(ad.number_of_edges());
           size_t      w = source(mt);
           BENCHMARK("algorithm::dfs: " + std::to_string(M) + " nodes, "
                     + std::to_string(N) + " out-degree, " + m + " edges") {

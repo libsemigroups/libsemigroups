@@ -509,8 +509,8 @@ namespace libsemigroups {
     //! \par Parameters
     //! (None)
     //!
-    //! \sa bmat8_helpers::nr_cols and bmat8_helpers::minimum_dim.
-    size_t nr_rows() const noexcept {
+    //! \sa bmat8_helpers::number_of_cols and bmat8_helpers::minimum_dim.
+    size_t number_of_rows() const noexcept {
       size_t count = 0;
       for (size_t i = 0; i < 8; ++i) {
         if (_data << (8 * i) >> 56 > 0) {
@@ -600,10 +600,10 @@ namespace libsemigroups {
     //! \complexity
     //! Constant.
     //!
-    //! \sa BMat8::nr_rows and bmat8_helpers::minimum_dim.
-    // noexcept because transpose and nr_rows are.
-    static inline size_t nr_cols(BMat8 const& x) noexcept {
-      return x.transpose().nr_rows();
+    //! \sa BMat8::number_of_rows and bmat8_helpers::minimum_dim.
+    // noexcept because transpose and number_of_rows are.
+    static inline size_t number_of_cols(BMat8 const& x) noexcept {
+      return x.transpose().number_of_rows();
     }
 
     //! Find the size of the column space of \c x.

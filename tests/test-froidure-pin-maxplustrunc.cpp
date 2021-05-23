@@ -121,7 +121,7 @@ namespace libsemigroups {
     S.add_generator(Mat({{2, 1}, {4, 0}}));
 
     REQUIRE(S.size() == 20);
-    REQUIRE(S.nr_idempotents() == 1);
+    REQUIRE(S.number_of_idempotents() == 1);
     size_t pos = 0;
 
     for (auto it = S.cbegin(); it < S.cend(); ++it) {
@@ -144,7 +144,7 @@ namespace libsemigroups {
       REQUIRE(*it * *it == *it);
       pos++;
     }
-    REQUIRE(pos == S.nr_idempotents());
+    REQUIRE(pos == S.number_of_idempotents());
     for (auto it = S.cbegin_sorted() + 1; it < S.cend_sorted(); ++it) {
       REQUIRE(*(it - 1) < *it);
     }

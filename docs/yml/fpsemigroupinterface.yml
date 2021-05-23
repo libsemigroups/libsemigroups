@@ -49,7 +49,7 @@ libsemigroups::FpSemigroupInterface:
   - add_rule(word_type const&, word_type const&)
   - add_rules(FroidurePinBase&)
   - add_rules(std::vector<rule_type> const&)
-  - nr_rules() const noexcept
+  - number_of_rules() const noexcept
   - has_identity() const noexcept
 - Normal forms and equality testing:
   - ["This page contains information about the member functions of 

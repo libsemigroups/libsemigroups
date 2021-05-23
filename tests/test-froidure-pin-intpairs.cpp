@@ -115,6 +115,6 @@ namespace libsemigroups {
     auto                 rg = ReportGuard(REPORT);
     FroidurePin<IntPair> S({IntPair(1, 1)});
     REQUIRE(S.size() == 1);
-    REQUIRE(S.nr_idempotents() == 1);
+    REQUIRE(S.number_of_idempotents() == 1);
   }
 }  // namespace libsemigroups

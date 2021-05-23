@@ -200,26 +200,27 @@ namespace libsemigroups {
 
     //! Construct a random digraph from number of nodes and out-degree.
     //!
-    //! \param nr_nodes the number of nodes
+    //! \param number_of_nodes the number of nodes
     //! \param out_degree the out-degree of every node
     //! \param mt a std::mt19937 used as a random source (defaults to:
     //! std::mt19937(std::random_device()()))
     //!
     //! \throws LibsemigroupsException if any of the following hold:
-    //! * \p nr_nodes is less than \c 2
+    //! * \p number_of_nodes is less than \c 2
     //! * \p out_degree is less than \c 2
     //!
     //! \par Complexity
     //! \f$O(mn)\f$ where \p m is the number of nodes, and \p n is
     //! the out-degree of the digraph.
-    static ActionDigraph random(T const      nr_nodes,
+    static ActionDigraph random(T const      number_of_nodes,
                                 T const      out_degree,
                                 std::mt19937 mt
                                 = std::mt19937(std::random_device()())) {
-      std::uniform_int_distribution<T> dist(0, nr_nodes - 1);
-      ActionDigraph<T>                 g(nr_nodes, out_degree);
-      LIBSEMIGROUPS_ASSERT(g._dynamic_array_2.nr_rows() == nr_nodes);
-      LIBSEMIGROUPS_ASSERT(g._dynamic_array_2.nr_cols() == out_degree);
+      std::uniform_int_distribution<T> dist(0, number_of_nodes - 1);
+      ActionDigraph<T>                 g(number_of_nodes, out_degree);
+      LIBSEMIGROUPS_ASSERT(g._dynamic_array_2.number_of_rows()
+                           == number_of_nodes);
+      LIBSEMIGROUPS_ASSERT(g._dynamic_array_2.number_of_cols() == out_degree);
       std::generate(g._dynamic_array_2.begin(),
                     g._dynamic_array_2.end(),
                     [&dist, &mt]() { return dist(mt); });
@@ -228,51 +229,53 @@ namespace libsemigroups {
 
     //! Construct a random digraph from number of nodes, edges, and out-degree.
     //!
-    //! \param nr_nodes the number of nodes
+    //! \param number_of_nodes the number of nodes
     //! \param out_degree the out-degree of every node
-    //! \param nr_edges the out-degree of every node
+    //! \param number_of_edges the out-degree of every node
     //! \param mt a std::mt19937 used as a random source (defaults to:
     //! std::mt19937(std::random_device()()))
     //!
     //! \throws LibsemigroupsException if any of the following hold:
-    //! * \p nr_nodes is less than \c 2
+    //! * \p number_of_nodes is less than \c 2
     //! * \p out_degree is less than \c 2
-    //! * \p nr_edges exceeds the product of \p nr_nodes and \p out_degree
+    //! * \p number_of_edges exceeds the product of \p number_of_nodes and \p
+    //! out_degree
     //!
     //! \par Complexity
     //! At least \f$O(mn)\f$ where \p m is the number of nodes, and \p n is the
     //! out-degree of the digraph.
-    static ActionDigraph random(T const      nr_nodes,
+    static ActionDigraph random(T const      number_of_nodes,
                                 T const      out_degree,
-                                T const      nr_edges,
+                                T const      number_of_edges,
                                 std::mt19937 mt
                                 = std::mt19937(std::random_device()())) {
-      if (nr_nodes < 2) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "the 1st parameter `nr_nodes` must be at least 2, found %llu",
-            static_cast<uint64_t>(nr_nodes));
+      if (number_of_nodes < 2) {
+        LIBSEMIGROUPS_EXCEPTION("the 1st parameter `number_of_nodes` must be "
+                                "at least 2, found %llu",
+                                static_cast<uint64_t>(number_of_nodes));
       } else if (out_degree < 2) {
+        LIBSEMIGROUPS_EXCEPTION("the 2nd parameter `number_of_edges` must be "
+                                "at least 2, found %llu",
+                                static_cast<uint64_t>(out_degree));
+      } else if (number_of_edges > number_of_nodes * out_degree) {
         LIBSEMIGROUPS_EXCEPTION(
-            "the 2nd parameter `nr_edges` must be at least 2, found %llu",
-            static_cast<uint64_t>(out_degree));
-      } else if (nr_edges > nr_nodes * out_degree) {
-        LIBSEMIGROUPS_EXCEPTION("the 3rd parameter `nr_edges` must be at "
-                                "most %llu, but found %llu",
-                                static_cast<uint64_t>(nr_nodes * out_degree),
-                                static_cast<uint64_t>(nr_edges));
+            "the 3rd parameter `number_of_edges` must be at "
+            "most %llu, but found %llu",
+            static_cast<uint64_t>(number_of_nodes * out_degree),
+            static_cast<uint64_t>(number_of_edges));
       }
-      std::uniform_int_distribution<T> source(0, nr_nodes - 1);
-      std::uniform_int_distribution<T> target(0, nr_nodes - 1);
+      std::uniform_int_distribution<T> source(0, number_of_nodes - 1);
+      std::uniform_int_distribution<T> target(0, number_of_nodes - 1);
       std::uniform_int_distribution<T> label(0, out_degree - 1);
 
-      ActionDigraph<T> g(nr_nodes, out_degree);
-      size_t           edges_to_add = nr_edges;
+      ActionDigraph<T> g(number_of_nodes, out_degree);
+      size_t           edges_to_add = number_of_edges;
       size_t           old_nr_edges = 0;
       do {
         for (size_t i = 0; i < edges_to_add; ++i) {
           g._dynamic_array_2.set(source(mt), label(mt), target(mt));
         }
-        size_t new_nr_edges = g.nr_edges();
+        size_t new_nr_edges = g.number_of_edges();
         edges_to_add -= (new_nr_edges - old_nr_edges);
         old_nr_edges = new_nr_edges;
       } while (edges_to_add != 0);
@@ -282,59 +285,62 @@ namespace libsemigroups {
     //! Construct a random acyclic digraph from number of nodes, edges, and
     //! out-degree.
     //!
-    //! \param nr_nodes the number of nodes
+    //! \param number_of_nodes the number of nodes
     //! \param out_degree the out-degree of every node
-    //! \param nr_edges the out-degree of every node
+    //! \param number_of_edges the out-degree of every node
     //! \param mt a std::mt19937 used as a random source (defaults to:
     //! std::mt19937(std::random_device()()))
     //!
     //! \throws LibsemigroupsException if any of the following hold:
-    //! * \p nr_nodes is less than \c 2
+    //! * \p number_of_nodes is less than \c 2
     //! * \p out_degree is less than \c 2
-    //! * \p nr_edges exceeds the product of \p nr_nodes and \p out_degree
-    //! * \p nr_edges exceeds the product of \p nr_nodes and \p nr_nodes - 1
-    //! divided by 2.
+    //! * \p number_of_edges exceeds the product of \p number_of_nodes and \p
+    //! out_degree
+    //! * \p number_of_edges exceeds the product of \p number_of_nodes and \p
+    //! number_of_nodes - 1 divided by 2.
     //!
     //! \par Complexity
     //! At least \f$O(mn)\f$ where \p m is the number of nodes, and \p n is the
     //! out-degree of the digraph.
     static ActionDigraph
-    random_acyclic(T const      nr_nodes,
+    random_acyclic(T const      number_of_nodes,
                    T const      out_degree,
-                   T const      nr_edges,
+                   T const      number_of_edges,
                    std::mt19937 mt = std::mt19937(std::random_device()())) {
-      if (nr_nodes < 2) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "the 1st parameter `nr_nodes` must be at least 2, found %llu",
-            static_cast<uint64_t>(nr_nodes));
+      if (number_of_nodes < 2) {
+        LIBSEMIGROUPS_EXCEPTION("the 1st parameter `number_of_nodes` must be "
+                                "at least 2, found %llu",
+                                static_cast<uint64_t>(number_of_nodes));
       } else if (out_degree < 2) {
+        LIBSEMIGROUPS_EXCEPTION("the 2nd parameter `number_of_edges` must be "
+                                "at least 2, found %llu",
+                                static_cast<uint64_t>(out_degree));
+      } else if (number_of_edges
+                 > std::min(number_of_nodes * out_degree,
+                            number_of_nodes * (number_of_nodes - 1) / 2)) {
         LIBSEMIGROUPS_EXCEPTION(
-            "the 2nd parameter `nr_edges` must be at least 2, found %llu",
-            static_cast<uint64_t>(out_degree));
-      } else if (nr_edges > std::min(nr_nodes * out_degree,
-                                     nr_nodes * (nr_nodes - 1) / 2)) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "the 3rd parameter `nr_edges` must be at most %llu, but found %llu",
-            static_cast<uint64_t>(nr_nodes * out_degree),
-            static_cast<uint64_t>(nr_edges));
+            "the 3rd parameter `number_of_edges` must be at most %llu, but "
+            "found %llu",
+            static_cast<uint64_t>(number_of_nodes * out_degree),
+            static_cast<uint64_t>(number_of_edges));
       }
-      std::uniform_int_distribution<T> source(0, nr_nodes - 1);
+      std::uniform_int_distribution<T> source(0, number_of_nodes - 1);
       std::uniform_int_distribution<T> label(0, out_degree - 1);
 
-      ActionDigraph<T> g(nr_nodes, out_degree);
-      size_t           edges_to_add = nr_edges;
+      ActionDigraph<T> g(number_of_nodes, out_degree);
+      size_t           edges_to_add = number_of_edges;
       size_t           old_nr_edges = 0;
       do {
         for (size_t i = 0; i < edges_to_add; ++i) {
           auto v = source(mt);
-          if (v != nr_nodes - 1) {
-            g._dynamic_array_2.set(
-                v,
-                label(mt),
-                std::uniform_int_distribution<T>(v + 1, nr_nodes - 1)(mt));
+          if (v != number_of_nodes - 1) {
+            g._dynamic_array_2.set(v,
+                                   label(mt),
+                                   std::uniform_int_distribution<T>(
+                                       v + 1, number_of_nodes - 1)(mt));
           }
         }
-        size_t new_nr_edges = g.nr_edges();
+        size_t new_nr_edges = g.number_of_edges();
         edges_to_add -= (new_nr_edges - old_nr_edges);
         old_nr_edges = new_nr_edges;
       } while (edges_to_add != 0);
@@ -357,15 +363,15 @@ namespace libsemigroups {
     //! \strong_guarantee
     //!
     //! \complexity
-    //! Linear in `nr_nodes() + nr`.
+    //! Linear in `number_of_nodes() + nr`.
     //!
     //! \iterator_validity
     //! \iterator_invalid
     // Not noexcept because DynamicArray2::add_rows isn't.
     void inline add_nodes(size_t nr) {
-      if (nr > _dynamic_array_2.nr_rows() - _nr_nodes) {
-        _dynamic_array_2.add_rows(nr
-                                  - (_dynamic_array_2.nr_rows() - _nr_nodes));
+      if (nr > _dynamic_array_2.number_of_rows() - _nr_nodes) {
+        _dynamic_array_2.add_rows(
+            nr - (_dynamic_array_2.number_of_rows() - _nr_nodes));
       }
       _nr_nodes += nr;
       reset();
@@ -390,8 +396,9 @@ namespace libsemigroups {
     //! \iterator_invalid
     // Not noexcept because DynamicArray2::add_cols isn't.
     void inline add_to_out_degree(size_t nr) {
-      if (nr > _dynamic_array_2.nr_cols() - _degree) {
-        _dynamic_array_2.add_cols(nr - (_dynamic_array_2.nr_cols() - _degree));
+      if (nr > _dynamic_array_2.number_of_cols() - _degree) {
+        _dynamic_array_2.add_cols(
+            nr - (_dynamic_array_2.number_of_cols() - _degree));
       }
       _degree += nr;
       reset();
@@ -429,7 +436,7 @@ namespace libsemigroups {
     //! out-degree.
     //!
     //! \note
-    //! Does not modify nr_nodes() or out_degree().
+    //! Does not modify number_of_nodes() or out_degree().
     //!
     //! \param m the number of nodes
     //! \param n the out-degree
@@ -448,9 +455,9 @@ namespace libsemigroups {
     //! \iterator_invalid
     // Not noexcept because DynamicArray2::add_cols isn't.
     void reserve(T m, T n) const {
-      _dynamic_array_2.add_cols(n - _dynamic_array_2.nr_cols());
+      _dynamic_array_2.add_cols(n - _dynamic_array_2.number_of_cols());
       // What if add_cols throws, what guarantee can we offer then?
-      _dynamic_array_2.add_rows(m - _dynamic_array_2.nr_rows());
+      _dynamic_array_2.add_rows(m - _dynamic_array_2.number_of_rows());
     }
 
     ////////////////////////////////////////////////////////////////////////
@@ -589,7 +596,7 @@ namespace libsemigroups {
     //!
     //! \par Parameters
     //! (None)
-    T inline nr_nodes() const noexcept {
+    T inline number_of_nodes() const noexcept {
       return _nr_nodes;
     }
 
@@ -602,13 +609,14 @@ namespace libsemigroups {
     //! \no_libsemigroups_except
     //!
     //! \complexity
-    //! \f$O(mn)\f$ where \c m is nr_nodes() and \c n is out_degree().
+    //! \f$O(mn)\f$ where \c m is number_of_nodes() and \c n is out_degree().
     //!
     //! \par Parameters
     //! (None)
     // Not noexcept because std::count isn't
-    size_t nr_edges() const {
-      return _dynamic_array_2.nr_rows() * _dynamic_array_2.nr_cols()
+    size_t number_of_edges() const {
+      return _dynamic_array_2.number_of_rows()
+                 * _dynamic_array_2.number_of_cols()
              - std::count(
                  _dynamic_array_2.cbegin(), _dynamic_array_2.cend(), UNDEFINED);
     }
@@ -624,7 +632,7 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! \f$O(n)\f$ where \c n is out_degree().
-    size_t nr_edges(node_type const n) const {
+    size_t number_of_edges(node_type const n) const {
       action_digraph_helper::validate_node(*this, n);
       return out_degree()
              - std::count(_dynamic_array_2.cbegin_row(n),
@@ -658,12 +666,12 @@ namespace libsemigroups {
     //! \noexcept
     //!
     //! \complexity
-    //! \f$O(mn)\f$ where \c m is nr_nodes() and \c n is out_degree().
+    //! \f$O(mn)\f$ where \c m is number_of_nodes() and \c n is out_degree().
     //!
     //! \par Parameters
     //! (None)
     bool validate() const noexcept {
-      return nr_edges() == nr_nodes() * out_degree();
+      return number_of_edges() == number_of_nodes() * out_degree();
     }
 
     //! Returns a random access iterator pointing at the first node of the
@@ -681,7 +689,7 @@ namespace libsemigroups {
     //! \par Parameters
     //! (None)
     const_iterator_nodes cbegin_nodes() const noexcept {
-      return IntegralRange<T>(0, nr_nodes()).cbegin();
+      return IntegralRange<T>(0, number_of_nodes()).cbegin();
     }
 
     //! Returns a random access iterator pointing at the last node of the
@@ -699,7 +707,7 @@ namespace libsemigroups {
     //! \par Parameters
     //! (None)
     const_reverse_iterator_nodes crbegin_nodes() const noexcept {
-      return IntegralRange<T>(0, nr_nodes()).crbegin();
+      return IntegralRange<T>(0, number_of_nodes()).crbegin();
     }
 
     //! Returns a random access iterator pointing one-past-the-first node of
@@ -717,7 +725,7 @@ namespace libsemigroups {
     //! \par Parameters
     //! (None)
     const_reverse_iterator_nodes crend_nodes() const noexcept {
-      return IntegralRange<T>(0, nr_nodes()).crend();
+      return IntegralRange<T>(0, number_of_nodes()).crend();
     }
 
     //! Returns a random access iterator pointing one-past-the-last node of the
@@ -735,7 +743,7 @@ namespace libsemigroups {
     //! \par Parameters
     //! (None)
     const_iterator_nodes cend_nodes() const noexcept {
-      return IntegralRange<T>(0, nr_nodes()).cend();
+      return IntegralRange<T>(0, number_of_nodes()).cend();
     }
 
     //! Returns a random access iterator pointing at the first neighbor of a
@@ -788,7 +796,8 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if \p nd is not valid.
     //!
     //! \complexity
-    //! At most \f$O(mn)\f$ where \c m is nr_nodes() and \c n is out_degree().
+    //! At most \f$O(mn)\f$ where \c m is number_of_nodes() and \c n is
+    //! out_degree().
     // Not noexcept because validate_node isn't
     scc_index_type scc_id(node_type nd) const {
       action_digraph_helper::validate_node(*this, nd);
@@ -809,12 +818,13 @@ namespace libsemigroups {
     //! \basic_guarantee
     //!
     //! \complexity
-    //! At most \f$O(mn)\f$ where \c m is nr_nodes() and \c n is out_degree().
+    //! At most \f$O(mn)\f$ where \c m is number_of_nodes() and \c n is
+    //! out_degree().
     //!
     //! \par Parameters
     //! (None)
     // Not noexcept because gabow_scc isn't
-    size_t nr_scc() const {
+    size_t number_of_scc() const {
       gabow_scc();
       return _scc._comps.size();
     }
@@ -835,7 +845,8 @@ namespace libsemigroups {
     //! \basic_guarantee
     //!
     //! \complexity
-    //! At most \f$O(mn)\f$ where \c m is nr_nodes() and \c n is out_degree().
+    //! At most \f$O(mn)\f$ where \c m is number_of_nodes() and \c n is
+    //! out_degree().
     // Not noexcept because scc_id isn't
     node_type root_of_scc(node_type nd) const {
       // nd is validated in scc_id
@@ -854,7 +865,8 @@ namespace libsemigroups {
     //! \basic_guarantee
     //!
     //! \complexity
-    //! At most \f$O(mn)\f$ where \c m is nr_nodes() and \c n is out_degree().
+    //! At most \f$O(mn)\f$ where \c m is number_of_nodes() and \c n is
+    //! out_degree().
     //!
     //! \par Parameters
     //! (None)
@@ -877,7 +889,8 @@ namespace libsemigroups {
     //! \basic_guarantee
     //!
     //! \complexity
-    //! At most \f$O(mn)\f$ where \c m is nr_nodes() and \c n is out_degree().
+    //! At most \f$O(mn)\f$ where \c m is number_of_nodes() and \c n is
+    //! out_degree().
     //!
     //! \par Parameters
     //! (None)
@@ -901,10 +914,11 @@ namespace libsemigroups {
     //! any label \c lbl.
     //!
     //! \throws LibsemigroupsException if \p i is not in the range \c 0 to \c
-    //! nr_scc() - 1.
+    //! number_of_scc() - 1.
     //!
     //! \complexity
-    //! At most \f$O(mn)\f$ where \c m is nr_nodes() and \c n is out_degree().
+    //! At most \f$O(mn)\f$ where \c m is number_of_nodes() and \c n is
+    //! out_degree().
     //!
     //! \note
     //! \basic_guarantee
@@ -930,10 +944,11 @@ namespace libsemigroups {
     //! any label \c lbl.
     //!
     //! \throws LibsemigroupsException if \p i is not in the range \c 0 to \c
-    //! nr_scc() - 1.
+    //! number_of_scc() - 1.
     //!
     //! \complexity
-    //! At most \f$O(mn)\f$ where \c m is nr_nodes() and \c n is out_degree().
+    //! At most \f$O(mn)\f$ where \c m is number_of_nodes() and \c n is
+    //! out_degree().
     //!
     //! \note
     //! \basic_guarantee
@@ -955,7 +970,8 @@ namespace libsemigroups {
     //! any label \c lbl. \basic_guarantee
     //!
     //! \complexity
-    //! At most \f$O(mn)\f$ where \c m is nr_nodes() and \c n is out_degree().
+    //! At most \f$O(mn)\f$ where \c m is number_of_nodes() and \c n is
+    //! out_degree().
     //!
     //! \par Parameters
     //! (None)
@@ -975,7 +991,8 @@ namespace libsemigroups {
     //! any label \c lbl. \basic_guarantee
     //!
     //! \complexity
-    //! At most \f$O(mn)\f$ where \c m is nr_nodes() and \c n is out_degree().
+    //! At most \f$O(mn)\f$ where \c m is number_of_nodes() and \c n is
+    //! out_degree().
     //!
     //! \par Parameters
     //! (None)
@@ -1003,7 +1020,8 @@ namespace libsemigroups {
     //! any label \c lbl. \basic_guarantee
     //!
     //! \complexity
-    //! At most \f$O(mn)\f$ where \c m is nr_nodes() and \c n is out_degree().
+    //! At most \f$O(mn)\f$ where \c m is number_of_nodes() and \c n is
+    //! out_degree().
     //!
     //! \par Parameters
     //! (None)
@@ -1012,13 +1030,13 @@ namespace libsemigroups {
         // Validity checked in gabow_scc
         gabow_scc();
 
-        std::vector<bool> seen(nr_nodes(), false);
+        std::vector<bool> seen(number_of_nodes(), false);
         std::queue<T>     queue;
 
         _scc_forest._forest.clear();
-        _scc_forest._forest.add_nodes(nr_nodes());
+        _scc_forest._forest.add_nodes(number_of_nodes());
 
-        for (size_t i = 0; i < nr_scc(); ++i) {
+        for (size_t i = 0; i < number_of_scc(); ++i) {
           queue.push(_scc._comps[i][0]);
           seen[_scc._comps[i][0]] = true;
           do {
@@ -1054,7 +1072,8 @@ namespace libsemigroups {
     //! any label \c lbl. \basic_guarantee
     //!
     //! \complexity
-    //! At most \f$O(mn)\f$ where \c m is nr_nodes() and \c n is out_degree().
+    //! At most \f$O(mn)\f$ where \c m is number_of_nodes() and \c n is
+    //! out_degree().
     //!
     //! \par Parameters
     //! (None)
@@ -1064,13 +1083,14 @@ namespace libsemigroups {
         gabow_scc();
 
         _scc_back_forest._forest.clear();
-        _scc_back_forest._forest.add_nodes(nr_nodes());
+        _scc_back_forest._forest.add_nodes(number_of_nodes());
 
-        std::vector<std::vector<T>> reverse_edges(nr_nodes(), std::vector<T>());
-        std::vector<std::vector<T>> reverse_labels(nr_nodes(),
+        std::vector<std::vector<T>> reverse_edges(number_of_nodes(),
+                                                  std::vector<T>());
+        std::vector<std::vector<T>> reverse_labels(number_of_nodes(),
                                                    std::vector<T>());
 
-        for (size_t i = 0; i < nr_nodes(); ++i) {
+        for (size_t i = 0; i < number_of_nodes(); ++i) {
           size_t const scc_id_i = scc_id(i);
           for (size_t j = 0; j < out_degree(); ++j) {
             size_t const k = _dynamic_array_2.get(i, j);
@@ -1081,9 +1101,9 @@ namespace libsemigroups {
           }
         }
         std::queue<size_t> queue;
-        std::vector<bool>  seen(nr_nodes(), false);
+        std::vector<bool>  seen(number_of_nodes(), false);
 
-        for (size_t i = 0; i < nr_scc(); ++i) {
+        for (size_t i = 0; i < number_of_scc(); ++i) {
           LIBSEMIGROUPS_ASSERT(queue.empty());
           queue.push(_scc._comps[i][0]);
           seen[_scc._comps[i][0]] = true;
@@ -1868,7 +1888,7 @@ namespace libsemigroups {
       void init_can_reach_target() {
         if (_can_reach_target.empty()) {
           std::vector<std::vector<node_type>> in_neighbours(
-              _digraph->nr_nodes(), std::vector<node_type>({}));
+              _digraph->number_of_nodes(), std::vector<node_type>({}));
           for (auto n = _digraph->cbegin_nodes(); n != _digraph->cend_nodes();
                ++n) {
             for (auto e = _digraph->cbegin_edges(*n);
@@ -1880,7 +1900,7 @@ namespace libsemigroups {
             }
           }
 
-          _can_reach_target.resize(_digraph->nr_nodes(), false);
+          _can_reach_target.resize(_digraph->number_of_nodes(), false);
           _can_reach_target[_target]   = true;
           std::vector<node_type>& todo = in_neighbours[_target];
           std::vector<node_type>  next;
@@ -2182,7 +2202,7 @@ namespace libsemigroups {
           // (the empty one).
           return 1;
         } else {
-          std::vector<uint64_t> number_paths(nr_nodes(), 0);
+          std::vector<uint64_t> number_paths(number_of_nodes(), 0);
           for (auto m = topo.cbegin() + 1; m < topo.cend(); ++m) {
             for (auto n = cbegin_edges(*m); n != cend_edges(*m); ++n) {
               if (*n != UNDEFINED) {
@@ -2227,7 +2247,8 @@ namespace libsemigroups {
         // there are infinitely many words labelling paths.
         if (max == POSITIVE_INFINITY) {
           return algorithm::trivial;
-        } else if (nr_edges() < detail::magic_number(nr_nodes()) * nr_nodes()) {
+        } else if (number_of_edges() < detail::magic_number(number_of_nodes())
+                                           * number_of_nodes()) {
           return algorithm::dfs;
         } else {
           return algorithm::matrix;
@@ -2332,7 +2353,8 @@ namespace libsemigroups {
         // max == POSITIVE_INFINITY, we can't conclude anything, because it
         // might be `target` isn't reachable from `source`, for example, or
         // there are no cycles in the graph between `source` and `target`.
-        if (nr_edges() < detail::magic_number(nr_nodes()) * nr_nodes()) {
+        if (number_of_edges()
+            < detail::magic_number(number_of_nodes()) * number_of_nodes()) {
           return algorithm::dfs;
         } else {
           return algorithm::matrix;
@@ -2470,7 +2492,7 @@ namespace libsemigroups {
       // #else
       auto           am    = detail::adjacency_matrix(*this);
       auto           tmp   = am;
-      uint64_t const N     = nr_nodes();
+      uint64_t const N     = number_of_nodes();
       auto           acc   = matrix_helpers::pow(am, min);
       size_t         total = 0;
       for (size_t i = min; i < max; ++i) {
@@ -2504,7 +2526,7 @@ namespace libsemigroups {
 
       auto           am    = detail::adjacency_matrix(*this);
       auto           tmp   = am;
-      uint64_t const N     = nr_nodes();
+      uint64_t const N     = number_of_nodes();
       auto           acc   = matrix_helpers::pow(am, min);
       size_t         total = 0;
       for (size_t i = min; i < max; ++i) {
@@ -2600,7 +2622,7 @@ namespace libsemigroups {
         return 0;
       }
       // Don't visit nodes that occur after target in "topo".
-      std::vector<bool> lookup(nr_nodes(), true);
+      std::vector<bool> lookup(number_of_nodes(), true);
       std::for_each(topo.cbegin(), it, [&lookup](node_type const& n) {
         lookup[n] = false;
       });
@@ -2643,10 +2665,10 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////
 
     void validate_scc_index(scc_index_type i) const {
-      if (i >= nr_scc()) {
+      if (i >= number_of_scc()) {
         LIBSEMIGROUPS_EXCEPTION("strong component index out of bounds, "
                                 "expected value in the range [0, %d), got %d",
-                                nr_scc(),
+                                number_of_scc(),
                                 i);
       }
     }
@@ -2677,18 +2699,18 @@ namespace libsemigroups {
       static std::stack<T>               stack2;
       static std::stack<std::pair<T, T>> frame;
       static std::vector<T>              preorder;
-      preorder.assign(nr_nodes(), UNDEFINED);
+      preorder.assign(number_of_nodes(), UNDEFINED);
       LIBSEMIGROUPS_ASSERT(stack1.empty());
       LIBSEMIGROUPS_ASSERT(stack2.empty());
       LIBSEMIGROUPS_ASSERT(frame.empty());
 
       _scc._comps.clear();
-      _scc._id.assign(nr_nodes(), UNDEFINED);
+      _scc._id.assign(number_of_nodes(), UNDEFINED);
 
       T C     = 0;
       T index = 0;
 
-      for (T w = 0; w < nr_nodes(); ++w) {
+      for (T w = 0; w < number_of_nodes(); ++w) {
         if (_scc._id[w] == UNDEFINED) {
           frame.emplace(w, 0);
         dfs_start:
@@ -2701,7 +2723,7 @@ namespace libsemigroups {
           stack2.push(v);
           for (; i < _degree; ++i) {
           dfs_end:
-            LIBSEMIGROUPS_ASSERT(v < nr_nodes() && i < _degree);
+            LIBSEMIGROUPS_ASSERT(v < number_of_nodes() && i < _degree);
             T u = _dynamic_array_2.get(v, i);
             if (preorder[u] == UNDEFINED) {
               frame.top().second = i;
@@ -2892,7 +2914,7 @@ namespace libsemigroups {
   namespace detail {
     template <typename T>
     IntMat<0, 0, int64_t> adjacency_matrix(ActionDigraph<T> const& ad) {
-      size_t const          N = ad.nr_nodes();
+      size_t const          N = ad.number_of_nodes();
       IntMat<0, 0, int64_t> mat(N, N);
       std::fill(mat.begin(), mat.end(), 0);
 

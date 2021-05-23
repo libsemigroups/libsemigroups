@@ -74,7 +74,7 @@ namespace libsemigroups {
     auto                  rg = ReportGuard(REPORT);
     FroidurePin<Transf16> S({Transf16({1, 2, 0})});
     REQUIRE(S.size() == 3);
-    REQUIRE(S.nr_idempotents() == 1);
+    REQUIRE(S.number_of_idempotents() == 1);
     REQUIRE(std::vector<Transf16>(S.cbegin_sorted(), S.cend_sorted())
             == std::vector<Transf16>(
                 {Transf16({}), Transf16({1, 2, 0}), Transf16({2, 0, 1})}));
@@ -306,7 +306,7 @@ namespace libsemigroups {
     // the file was renamed where the tests worked).
     REQUIRE(S.size() == 1793622);
     // Same problem as above, the value below was 128.
-    REQUIRE(S.nr_idempotents() == 158716);
+    REQUIRE(S.number_of_idempotents() == 158716);
   }
 
   LIBSEMIGROUPS_TEST_CASE("HPCombi",

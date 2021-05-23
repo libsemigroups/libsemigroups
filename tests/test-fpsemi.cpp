@@ -191,12 +191,12 @@ namespace libsemigroups {
     for (relation_type const& rl : RennerTypeBMonoid(4, 1)) {
       S.add_rule(rl);
     }
-    REQUIRE(S.nr_rules() == 110);
+    REQUIRE(S.number_of_rules() == 110);
     REQUIRE(!S.is_obviously_infinite());
     REQUIRE(!S.knuth_bendix()->confluent());
     // S.knuth_bendix()->run(); // Works too but is slower :)
     REQUIRE(S.size() == 13889);
-    REQUIRE(S.froidure_pin()->nr_rules() == 356);
+    REQUIRE(S.froidure_pin()->number_of_rules() == 356);
   }
 
   LIBSEMIGROUPS_TEST_CASE(
@@ -210,12 +210,12 @@ namespace libsemigroups {
     for (relation_type const& rl : RennerTypeBMonoid(4, 0)) {
       S.add_rule(rl);
     }
-    REQUIRE(S.nr_rules() == 110);
+    REQUIRE(S.number_of_rules() == 110);
     REQUIRE(!S.is_obviously_infinite());
     REQUIRE(!S.knuth_bendix()->confluent());
     // S.knuth_bendix()->run(); // Works too :)
     REQUIRE(S.size() == 13889);
-    REQUIRE(S.froidure_pin()->nr_rules() == 356);
+    REQUIRE(S.froidure_pin()->number_of_rules() == 356);
   }
 
   // This appears to be an example where KB + FP is faster than TC
@@ -230,22 +230,22 @@ namespace libsemigroups {
     for (relation_type const& rl : RennerTypeBMonoid(5, 1)) {
       S.add_rule(rl);
     }
-    REQUIRE(S.nr_rules() == 159);
+    REQUIRE(S.number_of_rules() == 159);
     REQUIRE(!S.is_obviously_infinite());
     REQUIRE(!S.knuth_bendix()->confluent());
     // S.todd_coxeter()->run(); // Takes 2m30s or so to run
     REQUIRE(S.size() == 322021);
-    REQUIRE(S.froidure_pin()->nr_rules() == 1453);
+    REQUIRE(S.froidure_pin()->number_of_rules() == 1453);
     {
       congruence::ToddCoxeter tc(
           twosided,
           S.froidure_pin(),
           congruence::ToddCoxeter::options::froidure_pin::use_cayley_graph);
-      REQUIRE(tc.nr_classes() == 322021);  // Works!
+      REQUIRE(tc.number_of_classes() == 322021);  // Works!
     }
     {
       fpsemigroup::ToddCoxeter tc(S.froidure_pin());
-      REQUIRE(tc.nr_rules() == 1453);
+      REQUIRE(tc.number_of_rules() == 1453);
       REQUIRE(tc.size() == 322021);
     }
   }
@@ -261,19 +261,19 @@ namespace libsemigroups {
     for (relation_type const& rl : RennerTypeBMonoid(5, 0)) {
       S.add_rule(rl);
     }
-    REQUIRE(S.nr_rules() == 159);
+    REQUIRE(S.number_of_rules() == 159);
     REQUIRE(!S.is_obviously_infinite());
     REQUIRE(!S.knuth_bendix()->confluent());
     // Doesn't terminate, or show signs that it will, in 5 minutes or so
     // S.todd_coxeter()->run();
     REQUIRE(S.size() == 322021);
-    REQUIRE(S.froidure_pin()->nr_rules() == 1453);
+    REQUIRE(S.froidure_pin()->number_of_rules() == 1453);
 
     congruence::ToddCoxeter tc(
         twosided,
         S.froidure_pin(),
         congruence::ToddCoxeter::options::froidure_pin::use_cayley_graph);
-    REQUIRE(tc.nr_classes() == 322021);  // Works!
+    REQUIRE(tc.number_of_classes() == 322021);  // Works!
   }
 
   LIBSEMIGROUPS_TEST_CASE("FpSemigroup",
@@ -286,12 +286,12 @@ namespace libsemigroups {
     for (relation_type const& rl : EGTypeDMonoid(2, 1)) {
       S.add_rule(rl);
     }
-    REQUIRE(S.nr_rules() == 44);
+    REQUIRE(S.number_of_rules() == 44);
     REQUIRE(!S.is_obviously_infinite());
     REQUIRE(!S.knuth_bendix()->confluent());
     // S.knuth_bendix()->run(); // Works too :)
     REQUIRE(S.size() == 37);
-    REQUIRE(S.froidure_pin()->nr_rules() == 54);
+    REQUIRE(S.froidure_pin()->number_of_rules() == 54);
   }
 
   LIBSEMIGROUPS_TEST_CASE("FpSemigroup",
@@ -304,12 +304,12 @@ namespace libsemigroups {
     for (relation_type const& rl : EGTypeDMonoid(2, 0)) {
       S.add_rule(rl);
     }
-    REQUIRE(S.nr_rules() == 44);
+    REQUIRE(S.number_of_rules() == 44);
     REQUIRE(!S.is_obviously_infinite());
     REQUIRE(!S.knuth_bendix()->confluent());
     // S.knuth_bendix()->run(); // Works too :)
     REQUIRE(S.size() == 37);
-    REQUIRE(S.froidure_pin()->nr_rules() == 54);
+    REQUIRE(S.froidure_pin()->number_of_rules() == 54);
   }
 
   LIBSEMIGROUPS_TEST_CASE("FpSemigroup",
@@ -322,12 +322,12 @@ namespace libsemigroups {
     for (relation_type const& rl : EGTypeDMonoid(3, 1)) {
       S.add_rule(rl);
     }
-    REQUIRE(S.nr_rules() == 78);
+    REQUIRE(S.number_of_rules() == 78);
     REQUIRE(!S.is_obviously_infinite());
     REQUIRE(!S.knuth_bendix()->confluent());
     // S.knuth_bendix()->run(); // Works too but is a bit slower :)
     REQUIRE(S.size() == 541);
-    REQUIRE(S.froidure_pin()->nr_rules() == 148);
+    REQUIRE(S.froidure_pin()->number_of_rules() == 148);
   }
 
   LIBSEMIGROUPS_TEST_CASE("FpSemigroup",
@@ -340,12 +340,12 @@ namespace libsemigroups {
     for (relation_type const& rl : EGTypeDMonoid(3, 0)) {
       S.add_rule(rl);
     }
-    REQUIRE(S.nr_rules() == 78);
+    REQUIRE(S.number_of_rules() == 78);
     REQUIRE(!S.is_obviously_infinite());
     REQUIRE(!S.knuth_bendix()->confluent());
     // S.knuth_bendix()->run(); // Works too but is a bit slower :)
     REQUIRE(S.size() == 541);
-    REQUIRE(S.froidure_pin()->nr_rules() == 148);
+    REQUIRE(S.froidure_pin()->number_of_rules() == 148);
   }
 
   LIBSEMIGROUPS_TEST_CASE("FpSemigroup",
@@ -359,14 +359,14 @@ namespace libsemigroups {
     for (relation_type const& rl : EGTypeDMonoid(4, 1)) {
       S.add_rule(rl);
     }
-    REQUIRE(S.nr_rules() == 119);
+    REQUIRE(S.number_of_rules() == 119);
     REQUIRE(!S.is_obviously_infinite());
     REQUIRE(!S.knuth_bendix()->confluent());
 
     REQUIRE(S.size() == POSITIVE_INFINITY);
 
     S.froidure_pin()->enumerate(10626);
-    REQUIRE(S.froidure_pin()->current_nr_rules() == 417);
+    REQUIRE(S.froidure_pin()->current_number_of_rules() == 417);
     REQUIRE(S.froidure_pin()->current_size() == 10626);
     // REQUIRE(S.size() == 10625); // Runs forever
   }
@@ -382,12 +382,12 @@ namespace libsemigroups {
     for (relation_type const& rl : EGTypeDMonoid(4, 0)) {
       S.add_rule(rl);
     }
-    REQUIRE(S.nr_rules() == 119);
+    REQUIRE(S.number_of_rules() == 119);
     REQUIRE(!S.is_obviously_infinite());
     REQUIRE(!S.knuth_bendix()->confluent());
 
     S.froidure_pin()->enumerate(10626);
-    REQUIRE(S.froidure_pin()->current_nr_rules() == 417);
+    REQUIRE(S.froidure_pin()->current_number_of_rules() == 417);
     REQUIRE(S.froidure_pin()->current_size() == 10626);
     // REQUIRE(S.size() == 10625); // Runs forever
   }
@@ -403,12 +403,12 @@ namespace libsemigroups {
     for (relation_type const& rl : RennerTypeDMonoid(2, 1)) {
       S.add_rule(rl);
     }
-    REQUIRE(S.nr_rules() == 44);
+    REQUIRE(S.number_of_rules() == 44);
     REQUIRE(!S.is_obviously_infinite());
     REQUIRE(!S.knuth_bendix()->confluent());
     // S.knuth_bendix()->run(); // Works too :)
     REQUIRE(S.size() == 37);
-    REQUIRE(S.froidure_pin()->nr_rules() == 54);
+    REQUIRE(S.froidure_pin()->number_of_rules() == 54);
   }
 
   LIBSEMIGROUPS_TEST_CASE(
@@ -422,12 +422,12 @@ namespace libsemigroups {
     for (relation_type const& rl : RennerTypeDMonoid(2, 0)) {
       S.add_rule(rl);
     }
-    REQUIRE(S.nr_rules() == 44);
+    REQUIRE(S.number_of_rules() == 44);
     REQUIRE(!S.is_obviously_infinite());
     REQUIRE(!S.knuth_bendix()->confluent());
     // S.knuth_bendix()->run(); // Works too :)
     REQUIRE(S.size() == 37);
-    REQUIRE(S.froidure_pin()->nr_rules() == 54);
+    REQUIRE(S.froidure_pin()->number_of_rules() == 54);
   }
 
   LIBSEMIGROUPS_TEST_CASE(
@@ -441,12 +441,12 @@ namespace libsemigroups {
     for (relation_type const& rl : RennerTypeDMonoid(3, 1)) {
       S.add_rule(rl);
     }
-    REQUIRE(S.nr_rules() == 78);
+    REQUIRE(S.number_of_rules() == 78);
     REQUIRE(!S.is_obviously_infinite());
     REQUIRE(!S.knuth_bendix()->confluent());
     // S.knuth_bendix()->run(); // Works too but is a bit slower :)
     REQUIRE(S.size() == 541);
-    REQUIRE(S.froidure_pin()->nr_rules() == 148);
+    REQUIRE(S.froidure_pin()->number_of_rules() == 148);
   }
 
   LIBSEMIGROUPS_TEST_CASE(
@@ -460,12 +460,12 @@ namespace libsemigroups {
     for (relation_type const& rl : RennerTypeDMonoid(3, 0)) {
       S.add_rule(rl);
     }
-    REQUIRE(S.nr_rules() == 78);
+    REQUIRE(S.number_of_rules() == 78);
     REQUIRE(!S.is_obviously_infinite());
     REQUIRE(!S.knuth_bendix()->confluent());
     // S.knuth_bendix()->run(); // Works too but is a bit slower :)
     REQUIRE(S.size() == 541);
-    REQUIRE(S.froidure_pin()->nr_rules() == 148);
+    REQUIRE(S.froidure_pin()->number_of_rules() == 148);
   }
 
   LIBSEMIGROUPS_TEST_CASE(
@@ -479,12 +479,12 @@ namespace libsemigroups {
     for (relation_type const& rl : RennerTypeDMonoid(4, 1)) {
       S.add_rule(rl);
     }
-    REQUIRE(S.nr_rules() == 121);
+    REQUIRE(S.number_of_rules() == 121);
     REQUIRE(!S.is_obviously_infinite());
     REQUIRE(!S.knuth_bendix()->confluent());
 
     REQUIRE(S.size() == 10625);
-    REQUIRE(S.froidure_pin()->nr_rules() == 419);
+    REQUIRE(S.froidure_pin()->number_of_rules() == 419);
   }
 
   LIBSEMIGROUPS_TEST_CASE(
@@ -498,11 +498,11 @@ namespace libsemigroups {
     for (relation_type const& rl : RennerTypeDMonoid(4, 0)) {
       S.add_rule(rl);
     }
-    REQUIRE(S.nr_rules() == 121);
+    REQUIRE(S.number_of_rules() == 121);
     REQUIRE(!S.is_obviously_infinite());
     REQUIRE(!S.knuth_bendix()->confluent());
     REQUIRE(S.size() == 10625);
-    REQUIRE(S.froidure_pin()->nr_rules() == 419);
+    REQUIRE(S.froidure_pin()->number_of_rules() == 419);
   }
 
   LIBSEMIGROUPS_TEST_CASE(
@@ -516,12 +516,12 @@ namespace libsemigroups {
     for (relation_type const& rl : RennerTypeDMonoid(5, 1)) {
       S.add_rule(rl);
     }
-    REQUIRE(S.nr_rules() == 173);
+    REQUIRE(S.number_of_rules() == 173);
     REQUIRE(!S.is_obviously_infinite());
     REQUIRE(!S.knuth_bendix()->confluent());
 
     REQUIRE(S.size() == 258661);
-    REQUIRE(S.froidure_pin()->nr_rules() == 1279);
+    REQUIRE(S.froidure_pin()->number_of_rules() == 1279);
   }
 
   LIBSEMIGROUPS_TEST_CASE(
@@ -535,11 +535,11 @@ namespace libsemigroups {
     for (relation_type const& rl : RennerTypeDMonoid(5, 0)) {
       S.add_rule(rl);
     }
-    REQUIRE(S.nr_rules() == 173);
+    REQUIRE(S.number_of_rules() == 173);
     REQUIRE(!S.is_obviously_infinite());
     REQUIRE(!S.knuth_bendix()->confluent());
     REQUIRE(S.size() == 258661);
-    REQUIRE(S.froidure_pin()->nr_rules() == 1279);
+    REQUIRE(S.froidure_pin()->number_of_rules() == 1279);
   }
 
   // Takes about 4 minutes
@@ -554,12 +554,12 @@ namespace libsemigroups {
     for (relation_type const& rl : RennerTypeDMonoid(6, 1)) {
       S.add_rule(rl);
     }
-    REQUIRE(S.nr_rules() == 234);
+    REQUIRE(S.number_of_rules() == 234);
     REQUIRE(!S.is_obviously_infinite());
     REQUIRE(!S.knuth_bendix()->confluent());
 
     REQUIRE(S.size() == 7464625);
-    REQUIRE(S.froidure_pin()->nr_rules() == 4570);
+    REQUIRE(S.froidure_pin()->number_of_rules() == 4570);
   }
 
   // Takes about 4 minutes
@@ -574,12 +574,12 @@ namespace libsemigroups {
     for (relation_type const& rl : RennerTypeDMonoid(6, 0)) {
       S.add_rule(rl);
     }
-    REQUIRE(S.nr_rules() == 234);
+    REQUIRE(S.number_of_rules() == 234);
     REQUIRE(!S.is_obviously_infinite());
     REQUIRE(!S.knuth_bendix()->confluent());
     S.knuth_bendix()->knuth_bendix_by_overlap_length();
     REQUIRE(S.size() == 7464625);
-    REQUIRE(S.froidure_pin()->nr_rules() == 4570);
+    REQUIRE(S.froidure_pin()->number_of_rules() == 4570);
   }
 
   LIBSEMIGROUPS_TEST_CASE("FpSemigroup",
@@ -592,11 +592,11 @@ namespace libsemigroups {
     for (relation_type const& rl : RookMonoid(5, 0)) {
       S.add_rule(rl);
     }
-    REQUIRE(S.nr_rules() == 33);
+    REQUIRE(S.number_of_rules() == 33);
     REQUIRE(!S.is_obviously_infinite());
     REQUIRE(!S.knuth_bendix()->confluent());
     REQUIRE(S.size() == 1546);
-    REQUIRE(S.froidure_pin()->nr_rules() == 71);
+    REQUIRE(S.froidure_pin()->number_of_rules() == 71);
   }
 
   LIBSEMIGROUPS_TEST_CASE("FpSemigroup",
@@ -609,11 +609,11 @@ namespace libsemigroups {
     for (relation_type const& rl : RookMonoid(5, 1)) {
       S.add_rule(rl);
     }
-    REQUIRE(S.nr_rules() == 33);
+    REQUIRE(S.number_of_rules() == 33);
     REQUIRE(!S.is_obviously_infinite());
     REQUIRE(!S.knuth_bendix()->confluent());
     REQUIRE(S.size() == 1546);
-    REQUIRE(S.froidure_pin()->nr_rules() == 71);
+    REQUIRE(S.froidure_pin()->number_of_rules() == 71);
   }
 
   LIBSEMIGROUPS_TEST_CASE("FpSemigroup",
@@ -626,11 +626,11 @@ namespace libsemigroups {
     for (relation_type const& rl : RookMonoid(6, 0)) {
       S.add_rule(rl);
     }
-    REQUIRE(S.nr_rules() == 45);
+    REQUIRE(S.number_of_rules() == 45);
     REQUIRE(!S.is_obviously_infinite());
     REQUIRE(!S.knuth_bendix()->confluent());
     REQUIRE(S.size() == 13327);
-    REQUIRE(S.froidure_pin()->nr_rules() == 207);
+    REQUIRE(S.froidure_pin()->number_of_rules() == 207);
   }
 
   LIBSEMIGROUPS_TEST_CASE("FpSemigroup",
@@ -643,11 +643,11 @@ namespace libsemigroups {
     for (relation_type const& rl : RookMonoid(6, 1)) {
       S.add_rule(rl);
     }
-    REQUIRE(S.nr_rules() == 45);
+    REQUIRE(S.number_of_rules() == 45);
     REQUIRE(!S.is_obviously_infinite());
     REQUIRE(!S.knuth_bendix()->confluent());
     REQUIRE(S.size() == 13327);
-    REQUIRE(S.froidure_pin()->nr_rules() == 207);
+    REQUIRE(S.froidure_pin()->number_of_rules() == 207);
   }
 
   LIBSEMIGROUPS_TEST_CASE("FpSemigroup",
@@ -680,13 +680,13 @@ namespace libsemigroups {
         {LeastTransf<5>({1, 3, 4, 2, 3}), LeastTransf<5>({3, 2, 1, 3, 3})});
 
     REQUIRE(S.size() == 88);
-    REQUIRE(S.nr_rules() == 18);
+    REQUIRE(S.number_of_rules() == 18);
 
     FpSemigroup T(S);
-    REQUIRE(T.nr_rules() == 18);
+    REQUIRE(T.number_of_rules() == 18);
     T.add_rule(S.factorisation(LeastTransf<5>({3, 4, 4, 4, 4})),
                S.factorisation(LeastTransf<5>({3, 1, 3, 3, 3})));
-    REQUIRE(T.nr_rules() == 19);
+    REQUIRE(T.number_of_rules() == 19);
 
     REQUIRE(T.size() == 21);
     REQUIRE(T.equal_to(S.factorisation(LeastTransf<5>({1, 3, 1, 3, 3})),
@@ -857,7 +857,7 @@ namespace libsemigroups {
 
     auto T = S.froidure_pin();
     REQUIRE(T->size() == 5);
-    REQUIRE(T->nr_idempotents() == 1);
+    REQUIRE(T->number_of_idempotents() == 1);
   }
 
   LIBSEMIGROUPS_TEST_CASE("FpSemigroup", "040", "add_rule", "[quick][fpsemi]") {
@@ -873,7 +873,7 @@ namespace libsemigroups {
 
     auto T = S.froidure_pin();
     REQUIRE(T->size() == 5);
-    REQUIRE(T->nr_idempotents() == 1);
+    REQUIRE(T->number_of_idempotents() == 1);
   }
 
   LIBSEMIGROUPS_TEST_CASE("FpSemigroup", "041", "equal_to", "[quick][fpsemi]") {
@@ -949,13 +949,13 @@ namespace libsemigroups {
     S.add_rule("abacabacabacabacabacabacabacabac", "e");
     S.run_for(std::chrono::nanoseconds(1));
     REQUIRE(!S.finished());
-    size_t nr_calls = 0;
-    S.run_until([&nr_calls]() {
-      ++nr_calls;
-      return nr_calls == 3;
+    size_t number_of_calls = 0;
+    S.run_until([&number_of_calls]() {
+      ++number_of_calls;
+      return number_of_calls == 3;
     });
     // REQUIRE(!S.finished());
-    REQUIRE(nr_calls == 3);
+    REQUIRE(number_of_calls == 3);
   }
 
   LIBSEMIGROUPS_TEST_CASE("FpSemigroup",
