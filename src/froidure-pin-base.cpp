@@ -164,7 +164,8 @@ namespace libsemigroups {
   // FroidurePinBase - member functions - public
   ////////////////////////////////////////////////////////////////////////
 
-  element_index_type FroidurePinBase::word_to_pos(word_type const& w) const {
+  element_index_type
+  FroidurePinBase::current_position(word_type const& w) const {
     // w is a word in the generators (i.e. a vector of letter_type's)
     if (w.size() == 0) {
       LIBSEMIGROUPS_EXCEPTION("the given word has length 0");
@@ -185,7 +186,7 @@ namespace libsemigroups {
     validate_element_index(i);
     validate_element_index(j);
 
-    if (length_const(i) <= length_const(j)) {
+    if (current_length(i) <= current_length(j)) {
       while (i != UNDEFINED) {
         j = _left.get(j, _final[i]);
         i = _prefix[i];

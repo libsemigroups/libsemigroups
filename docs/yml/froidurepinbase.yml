@@ -49,16 +49,17 @@ libsemigroups::FroidurePinBase:
      :cpp:any:`FroidurePinBase` class related to factorising elements, products, and
      defining relations."]
   - current_max_word_length() const noexcept
-  - word_to_pos(word_type const &) const
-  - letter_to_pos(letter_type) const
+  - current_position(word_type const &) const
+  - current_position(std::initializer_list< size_t > const &) const
+  - current_position(letter_type) const
   - minimal_factorisation(word_type &,element_index_type) const
   - minimal_factorisation(word_type &,element_index_type)
   - minimal_factorisation(element_index_type)
   - factorisation(word_type&, element_index_type)
   - factorisation(element_index_type)
   - number_of_rules()
-  - length_const(element_index_type) const
-  - length_non_const(element_index_type)
+  - current_length(element_index_type) const
+  - length(element_index_type)
   - cbegin_rules() const
   - cend_rules() const
   - product_by_reduction(element_index_type,element_index_type) const

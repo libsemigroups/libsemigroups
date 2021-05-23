@@ -61,12 +61,12 @@ namespace libsemigroups {
             == UNDEFINED);
     REQUIRE(S.current_size() == 4);
     REQUIRE(S.current_number_of_rules() == 0);
-    REQUIRE(S.length_const(0) == 1);
-    REQUIRE(S.length_non_const(5) == 2);
+    REQUIRE(S.current_length(0) == 1);
+    REQUIRE(S.length(5) == 2);
 
     REQUIRE(S.size() == 63904);
     REQUIRE(S.number_of_idempotents() == 2360);
-    REQUIRE(S.word_to_pos({0, 1, 2, 0, 1, 2}) == 378);
+    REQUIRE(S.current_position({0, 1, 2, 0, 1, 2}) == 378);
     REQUIRE(S.word_to_element({0, 1, 2, 0, 1, 2})
             == BMat8({{1, 0, 0, 1}, {0, 1, 0, 0}, {1, 0, 1, 0}, {0, 0, 1, 0}}));
     REQUIRE(S.current_max_word_length() == 21);
@@ -95,17 +95,17 @@ namespace libsemigroups {
     REQUIRE(S.first_letter(0) == 0);
     REQUIRE(S.final_letter(0) == 0);
     REQUIRE(S.batch_size() == 8192);
-    REQUIRE(S.length_const(0) == 1);
-    REQUIRE(S.length_const(7) == 2);
-    REQUIRE(S.length_const(63903) == 21);
-    REQUIRE(S.length_non_const(7) == 2);
-    REQUIRE(S.length_non_const(63903) == 21);
+    REQUIRE(S.current_length(0) == 1);
+    REQUIRE(S.current_length(7) == 2);
+    REQUIRE(S.current_length(63903) == 21);
+    REQUIRE(S.length(7) == 2);
+    REQUIRE(S.length(63903) == 21);
     REQUIRE(S.product_by_reduction(0, 3) == 7);
     REQUIRE(S.fast_product(0, 3) == 7);
-    REQUIRE(S.letter_to_pos(0) == 0);
-    REQUIRE(S.letter_to_pos(1) == 1);
-    REQUIRE(S.letter_to_pos(2) == 2);
-    REQUIRE(S.letter_to_pos(3) == 3);
+    REQUIRE(S.current_position(0) == 0);
+    REQUIRE(S.current_position(1) == 1);
+    REQUIRE(S.current_position(2) == 2);
+    REQUIRE(S.current_position(3) == 3);
     REQUIRE(!S.is_idempotent(0));
     REQUIRE(S.is_idempotent(3));
     REQUIRE(!S.is_idempotent(7));
@@ -154,7 +154,7 @@ namespace libsemigroups {
     word_type w;
     S.minimal_factorisation(w, 378);
     REQUIRE(w == word_type({0, 1, 2, 0, 1, 2}));
-    REQUIRE(S.length_const(378) == 6);
+    REQUIRE(S.current_length(378) == 6);
 
     REQUIRE(S.minimal_factorisation(S.at(378))
             == word_type({0, 1, 2, 0, 1, 2}));
@@ -171,7 +171,7 @@ namespace libsemigroups {
     w.clear();
     S.factorisation(w, 378);
     REQUIRE(w == word_type({0, 1, 2, 0, 1, 2}));
-    REQUIRE(S.length_const(378) == 6);
+    REQUIRE(S.current_length(378) == 6);
 
     REQUIRE(S.factorisation(S.at(378)) == word_type({0, 1, 2, 0, 1, 2}));
 
@@ -215,7 +215,7 @@ namespace libsemigroups {
     FroidurePin<BMat8> T(S);
     REQUIRE(T.size() == 63904);
     REQUIRE(T.number_of_idempotents() == 2360);
-    REQUIRE(T.word_to_pos({0, 1, 2, 0, 1, 2}) == 378);
+    REQUIRE(T.current_position({0, 1, 2, 0, 1, 2}) == 378);
     REQUIRE(T.word_to_element({0, 1, 2, 0, 1, 2})
             == BMat8({{1, 0, 0, 1}, {0, 1, 0, 0}, {1, 0, 1, 0}, {0, 0, 1, 0}}));
     REQUIRE(T.current_max_word_length() == 21);
@@ -316,7 +316,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
                           "008",
-                          "(BMat8) exception length_const",
+                          "(BMat8) exception current_length",
                           "[quick][froidure-pin][bmat8]") {
     std::vector<BMat8> gens
         = {BMat8({{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}),
@@ -325,8 +325,8 @@ namespace libsemigroups {
     FroidurePin<BMat8> S(gens);
 
     for (size_t i = 0; i < S.size(); ++i) {
-      REQUIRE_NOTHROW(S.length_const(i));
-      REQUIRE_THROWS_AS(S.length_const(i + S.size()), LibsemigroupsException);
+      REQUIRE_NOTHROW(S.current_length(i));
+      REQUIRE_THROWS_AS(S.current_length(i + S.size()), LibsemigroupsException);
     }
   }
 
