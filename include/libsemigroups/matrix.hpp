@@ -109,13 +109,11 @@ namespace libsemigroups {
       // MatrixCommon - Semiring arithmetic - private
       ////////////////////////////////////////////////////////////////////////
 
-      scalar_type plus(scalar_type const x,
-                       scalar_type const y) const noexcept {
+      scalar_type plus(scalar_type x, scalar_type y) const noexcept {
         return static_cast<Subclass const*>(this)->plus_impl(y, x);
       }
 
-      scalar_type prod(scalar_type const x,
-                       scalar_type const y) const noexcept {
+      scalar_type prod(scalar_type x, scalar_type y) const noexcept {
         return static_cast<Subclass const*>(this)->prod_impl(y, x);
       }
 
@@ -125,13 +123,13 @@ namespace libsemigroups {
       ////////////////////////////////////////////////////////////////////////
 
       template <typename SFINAE = container_type>
-      auto resize(size_t const r, size_t const c) -> std::enable_if_t<
+      auto resize(size_t r, size_t c) -> std::enable_if_t<
           std::is_same<SFINAE, std::vector<scalar_type>>::value> {
         _container.resize(r * c);
       }
 
       template <typename SFINAE = container_type>
-      auto resize(size_t const, size_t const) -> std::enable_if_t<
+      auto resize(size_t, size_t) -> std::enable_if_t<
           !std::is_same<SFINAE, std::vector<scalar_type>>::value> {}
 
      public:
@@ -146,7 +144,7 @@ namespace libsemigroups {
       MatrixCommon& operator=(MatrixCommon const&) = default;
       MatrixCommon& operator=(MatrixCommon&&) = default;
 
-      explicit MatrixCommon(std::initializer_list<scalar_type> const c)
+      explicit MatrixCommon(std::initializer_list<scalar_type> const& c)
           : MatrixCommon() {
         resize(1, c.size());
         std::copy(c.begin(), c.end(), _container.begin());
@@ -158,7 +156,7 @@ namespace libsemigroups {
       }
 
       MatrixCommon(
-          std::initializer_list<std::initializer_list<scalar_type>> const m)
+          std::initializer_list<std::initializer_list<scalar_type>> const& m)
           : MatrixCommon() {
         init(m);
       }
@@ -183,7 +181,7 @@ namespace libsemigroups {
 
       // not noexcept because init isn't
       void
-      init(std::initializer_list<std::initializer_list<scalar_type>> const m) {
+      init(std::initializer_list<std::initializer_list<scalar_type>> const& m) {
         init<std::initializer_list<std::initializer_list<scalar_type>>>(m);
       }
 
@@ -193,27 +191,28 @@ namespace libsemigroups {
         std::copy(rv.cbegin(), rv.cend(), _container.begin());
       }
 
-      static Subclass
-      make(std::initializer_list<std::initializer_list<scalar_type>> il) {
+      static Subclass make(
+          std::initializer_list<std::initializer_list<scalar_type>> const& il) {
         validate_args(il);
         Subclass m(il);
         matrix_validate(m);
         return m;
       }
 
-      static Subclass make(std::initializer_list<scalar_type> il) {
+      static Subclass make(std::initializer_list<scalar_type> const& il) {
         Subclass m(il);
         matrix_validate(m);
         return m;
       }
 
-      static Subclass
-      make(void const*,
-           std::initializer_list<std::initializer_list<scalar_type>> il) {
+      static Subclass make(
+          void const*,
+          std::initializer_list<std::initializer_list<scalar_type>> const& il) {
         return make(il);
       }
 
-      static Subclass make(void const*, std::initializer_list<scalar_type> il) {
+      static Subclass make(void const*,
+                           std::initializer_list<scalar_type> const& il) {
         return make(il);
       }
 
@@ -276,13 +275,13 @@ namespace libsemigroups {
 
       // not noexcept because vector::operator[] isn't, and neither is
       // array::operator[]
-      scalar_reference operator()(size_t const r, size_t const c) {
+      scalar_reference operator()(size_t r, size_t c) {
         return this->_container[r * number_of_cols() + c];
       }
 
       // not noexcept because vector::operator[] isn't, and neither is
       // array::operator[]
-      scalar_const_reference operator()(size_t const r, size_t const c) const {
+      scalar_const_reference operator()(size_t r, size_t c) const {
         return this->_container[r * number_of_cols() + c];
       }
       // noexcept because number_of_rows_impl is noexcept
@@ -344,7 +343,7 @@ namespace libsemigroups {
       }
 
       // not noexcept because iterator increment isn't
-      void operator*=(scalar_type const a) {
+      void operator*=(scalar_type a) {
         for (auto it = _container.begin(); it < _container.end(); ++it) {
           *it = prod(*it, a);
         }
@@ -366,7 +365,7 @@ namespace libsemigroups {
 
       // TODO(later) uncomment and test (this works, just not tested or used
       // for anything, so because time is short commenting out for now)
-      // void operator+=(scalar_type const a) {
+      // void operator+=(scalar_type a) {
       //   for (auto it = _container.begin(); it < _container.end(); ++it) {
       //     *it = plus(*it, a);
       //   }
@@ -392,8 +391,8 @@ namespace libsemigroups {
         return result;
       }
 
-      // TODO(later) implement operator*(scalar const)
-      // TODO(later) implement operator+(scalar const)
+      // TODO(later) implement operator*(Scalar)
+      // TODO(later) implement operator+(Scalar)
 
       ////////////////////////////////////////////////////////////////////////
       // Iterators
@@ -430,7 +429,7 @@ namespace libsemigroups {
       }
 
       template <typename U>
-      std::pair<scalar_type, scalar_type> coords(U const it) const {
+      std::pair<scalar_type, scalar_type> coords(U const& it) const {
         static_assert(
             std::is_same<U, iterator>::value
                 || std::is_same<U, const_iterator>::value,
@@ -546,7 +545,7 @@ namespace libsemigroups {
       MatrixDynamicDim& operator=(MatrixDynamicDim const&) = default;
       MatrixDynamicDim& operator=(MatrixDynamicDim&&) = default;
 
-      MatrixDynamicDim(size_t const r, size_t const c)
+      MatrixDynamicDim(size_t r, size_t c)
           : _number_of_cols(c), _number_of_rows(r) {}
 
       virtual ~MatrixDynamicDim() = default;
@@ -587,13 +586,13 @@ namespace libsemigroups {
       // private or protected
       using scalar_type = Scalar;
 
-      static constexpr scalar_type plus_impl(scalar_type const x,
-                                             scalar_type const y) noexcept {
+      static constexpr scalar_type plus_impl(scalar_type x,
+                                             scalar_type y) noexcept {
         return PlusOp()(x, y);
       }
 
-      static constexpr scalar_type prod_impl(scalar_type const x,
-                                             scalar_type const y) noexcept {
+      static constexpr scalar_type prod_impl(scalar_type x,
+                                             scalar_type y) noexcept {
         return ProdOp()(x, y);
       }
 
@@ -636,13 +635,11 @@ namespace libsemigroups {
       }
 
      private:
-      scalar_type plus(scalar_type const x,
-                       scalar_type const y) const noexcept {
+      scalar_type plus(scalar_type x, scalar_type y) const noexcept {
         return static_cast<Subclass const*>(this)->plus_impl(y, x);
       }
 
-      scalar_type prod(scalar_type const x,
-                       scalar_type const y) const noexcept {
+      scalar_type prod(scalar_type x, scalar_type y) const noexcept {
         return static_cast<Subclass const*>(this)->prod_impl(y, x);
       }
 
@@ -657,22 +654,22 @@ namespace libsemigroups {
           : RowViewCommon(const_cast<Row&>(r).begin()) {}
 
       // Not noexcept because iterator::operator[] isn't
-      scalar_const_reference operator[](size_t const i) const {
+      scalar_const_reference operator[](size_t i) const {
         return _begin[i];
       }
 
       // Not noexcept because iterator::operator[] isn't
-      scalar_reference operator[](size_t const i) {
+      scalar_reference operator[](size_t i) {
         return _begin[i];
       }
 
       // Not noexcept because iterator::operator[] isn't
-      scalar_const_reference operator()(size_t const i) const {
+      scalar_const_reference operator()(size_t i) const {
         return (*this)[i];
       }
 
       // Not noexcept because iterator::operator[] isn't
-      scalar_reference operator()(size_t const i) {
+      scalar_reference operator()(size_t i) {
         return (*this)[i];
       }
 
@@ -719,21 +716,21 @@ namespace libsemigroups {
       }
 
       // not noexcept because iterator arithmeic isn't
-      void operator+=(scalar_type const a) {
+      void operator+=(scalar_type a) {
         for (auto& x : *this) {
           x = plus(x, a);
         }
       }
 
       // not noexcept because iterator arithmeic isn't
-      void operator*=(scalar_type const a) {
+      void operator*=(scalar_type a) {
         for (auto& x : *this) {
           x = prod(x, a);
         }
       }
 
       // not noexcept because operator*= isn't
-      Row operator*(scalar_type const a) const {
+      Row operator*(scalar_type a) const {
         Row result(*static_cast<Subclass const*>(this));
         result *= a;
         return result;
@@ -900,7 +897,7 @@ namespace libsemigroups {
         DynamicRowView<PlusOp, ProdOp, ZeroOp, OneOp, Scalar>>::RowViewCommon;
 
     DynamicRowView() = default;
-    DynamicRowView(DynamicMatrix_ const*, iterator const it, size_t const N)
+    DynamicRowView(DynamicMatrix_ const*, iterator const& it, size_t N)
         : RowViewCommon(it), _length(N) {}
 
     explicit DynamicRowView(Row const& r)
@@ -940,7 +937,7 @@ namespace libsemigroups {
 
     DynamicRowView() = default;
 
-    DynamicRowView(DynamicMatrix_ const* mat, iterator const it, size_t const)
+    DynamicRowView(DynamicMatrix_ const* mat, iterator const& it, size_t)
         : RowViewCommon(it), _matrix(mat) {}
 
     explicit DynamicRowView(Row const& r) : RowViewCommon(r), _matrix(&r) {}
@@ -950,13 +947,11 @@ namespace libsemigroups {
       return _matrix->number_of_cols();
     }
 
-    scalar_type plus_impl(scalar_type const x,
-                          scalar_type const y) const noexcept {
+    scalar_type plus_impl(scalar_type x, scalar_type y) const noexcept {
       return _matrix->plus_impl(x, y);
     }
 
-    scalar_type prod_impl(scalar_type const x,
-                          scalar_type const y) const noexcept {
+    scalar_type prod_impl(scalar_type x, scalar_type y) const noexcept {
       return _matrix->prod_impl(x, y);
     }
 
@@ -1016,7 +1011,7 @@ namespace libsemigroups {
     // StaticMatrix - Constructors + destructor - public
     ////////////////////////////////////////////////////////////////////////
 
-    explicit StaticMatrix(std::initializer_list<scalar_type> const c)
+    explicit StaticMatrix(std::initializer_list<scalar_type> const& c)
         : MatrixCommon(c) {
       static_assert(R == 1,
                     "cannot construct Matrix from the given initializer list, "
@@ -1025,17 +1020,17 @@ namespace libsemigroups {
     }
 
     explicit StaticMatrix(
-        std::initializer_list<std::initializer_list<scalar_type>> const m)
+        std::initializer_list<std::initializer_list<scalar_type>> const& m)
         : MatrixCommon(m) {}
 
-    StaticMatrix(size_t const r, size_t const c) : StaticMatrix() {
+    StaticMatrix(size_t r, size_t c) : StaticMatrix() {
       (void) r;
       (void) c;
       LIBSEMIGROUPS_ASSERT(r == number_of_rows());
       LIBSEMIGROUPS_ASSERT(c == number_of_cols());
     }
 
-    explicit StaticMatrix(std::vector<std::vector<scalar_type>> const m)
+    explicit StaticMatrix(std::vector<std::vector<scalar_type>> const& m)
         : MatrixCommon(m) {}
 
     explicit StaticMatrix(RowView const& rv) : MatrixCommon(rv) {
@@ -1051,7 +1046,7 @@ namespace libsemigroups {
     StaticMatrix& operator=(StaticMatrix&&) = default;
 
     // For uniformity of interface, the first arg does nothing
-    StaticMatrix(void const* ptr, std::initializer_list<scalar_type> const c)
+    StaticMatrix(void const* ptr, std::initializer_list<scalar_type> const& c)
         : StaticMatrix(c) {
       (void) ptr;
       LIBSEMIGROUPS_ASSERT(ptr == nullptr);
@@ -1059,8 +1054,8 @@ namespace libsemigroups {
 
     // For uniformity of interface, the first arg does nothing
     StaticMatrix(
-        void const*                                                     ptr,
-        std::initializer_list<std::initializer_list<scalar_type>> const m)
+        void const*                                                      ptr,
+        std::initializer_list<std::initializer_list<scalar_type>> const& m)
         : StaticMatrix(m) {
       (void) ptr;
       LIBSEMIGROUPS_ASSERT(ptr == nullptr);
@@ -1074,15 +1069,14 @@ namespace libsemigroups {
     }
 
     // For uniformity of interface, no arg used for anything
-    StaticMatrix(void const* ptr, size_t const r, size_t const c)
-        : StaticMatrix(r, c) {
+    StaticMatrix(void const* ptr, size_t r, size_t c) : StaticMatrix(r, c) {
       (void) ptr;
       LIBSEMIGROUPS_ASSERT(ptr == nullptr);
     }
 
     ~StaticMatrix() = default;
 
-    static StaticMatrix identity(size_t const n = 0) {
+    static StaticMatrix identity(size_t n = 0) {
       (void) n;
       static_assert(C == R, "cannot create non-square identity matrix");
       // If specified the value of n must equal R or otherwise weirdness will
@@ -1160,33 +1154,31 @@ namespace libsemigroups {
     DynamicMatrix& operator=(DynamicMatrix const&) = default;
     DynamicMatrix& operator=(DynamicMatrix&&) = default;
 
-    DynamicMatrix(size_t const r, size_t const c)
-        : MatrixDynamicDim(r, c), MatrixCommon() {
+    DynamicMatrix(size_t r, size_t c) : MatrixDynamicDim(r, c), MatrixCommon() {
       resize(number_of_rows(), number_of_cols());
     }
 
-    explicit DynamicMatrix(std::initializer_list<scalar_type> const c)
+    explicit DynamicMatrix(std::initializer_list<scalar_type> const& c)
         : MatrixDynamicDim(1, c.size()), MatrixCommon(c) {}
 
     explicit DynamicMatrix(
-        std::initializer_list<std::initializer_list<scalar_type>> const m)
+        std::initializer_list<std::initializer_list<scalar_type>> const& m)
         : MatrixDynamicDim(m.size(), m.begin()->size()), MatrixCommon(m) {}
 
-    explicit DynamicMatrix(std::vector<std::vector<scalar_type>> const m)
+    explicit DynamicMatrix(std::vector<std::vector<scalar_type>> const& m)
         : MatrixDynamicDim(m.size(), m.begin()->size()), MatrixCommon(m) {}
 
     explicit DynamicMatrix(RowView const& rv)
         : MatrixDynamicDim(1, rv.size()), MatrixCommon(rv) {}
 
     // For uniformity of interface, the first arg does nothing
-    DynamicMatrix(void const* ptr, size_t const r, size_t const c)
-        : DynamicMatrix(r, c) {
+    DynamicMatrix(void const* ptr, size_t r, size_t c) : DynamicMatrix(r, c) {
       (void) ptr;
       LIBSEMIGROUPS_ASSERT(ptr == nullptr);
     }
 
     // For uniformity of interface, the first arg does nothing
-    DynamicMatrix(void const* ptr, std::initializer_list<scalar_type> const c)
+    DynamicMatrix(void const* ptr, std::initializer_list<scalar_type> const& c)
         : DynamicMatrix(c) {
       (void) ptr;
       LIBSEMIGROUPS_ASSERT(ptr == nullptr);
@@ -1194,8 +1186,8 @@ namespace libsemigroups {
 
     // For uniformity of interface, the first arg does nothing
     DynamicMatrix(
-        void const*                                                     ptr,
-        std::initializer_list<std::initializer_list<scalar_type>> const m)
+        void const*                                                      ptr,
+        std::initializer_list<std::initializer_list<scalar_type>> const& m)
         : DynamicMatrix(m) {
       (void) ptr;
       LIBSEMIGROUPS_ASSERT(ptr == nullptr);
@@ -1203,7 +1195,7 @@ namespace libsemigroups {
 
     ~DynamicMatrix();
 
-    static DynamicMatrix identity(size_t const n) {
+    static DynamicMatrix identity(size_t n) {
       DynamicMatrix x(n, n);
       std::fill(x.begin(), x.end(), ZeroOp()());
       for (size_t r = 0; r < n; ++r) {
@@ -1267,24 +1259,24 @@ namespace libsemigroups {
     DynamicMatrix& operator=(DynamicMatrix const&) = default;
     DynamicMatrix& operator=(DynamicMatrix&&) = default;
 
-    DynamicMatrix(Semiring const* semiring, size_t const r, size_t const c)
+    DynamicMatrix(Semiring const* semiring, size_t r, size_t c)
         : MatrixDynamicDim(r, c), MatrixCommon(), _semiring(semiring) {
       resize(number_of_rows(), number_of_cols());
     }
 
-    explicit DynamicMatrix(Semiring const*                          semiring,
-                           std::initializer_list<scalar_type> const c)
+    explicit DynamicMatrix(Semiring const*                           semiring,
+                           std::initializer_list<scalar_type> const& c)
         : MatrixDynamicDim(1, c.size()), MatrixCommon(c), _semiring(semiring) {}
 
     explicit DynamicMatrix(
         Semiring const* semiring,
-        std::initializer_list<std::initializer_list<scalar_type>> const m)
+        std::initializer_list<std::initializer_list<scalar_type>> const& m)
         : MatrixDynamicDim(m.size(), m.begin()->size()),
           MatrixCommon(m),
           _semiring(semiring) {}
 
-    explicit DynamicMatrix(Semiring const*                             semiring,
-                           std::vector<std::vector<scalar_type>> const m)
+    explicit DynamicMatrix(Semiring const* semiring,
+                           std::vector<std::vector<scalar_type>> const& m)
         : MatrixDynamicDim(m.size(), (m.empty() ? 0 : m.begin()->size())),
           MatrixCommon(m),
           _semiring(semiring) {}
@@ -1331,13 +1323,11 @@ namespace libsemigroups {
     }
 
    private:
-    scalar_type plus_impl(scalar_type const x,
-                          scalar_type const y) const noexcept {
+    scalar_type plus_impl(scalar_type x, scalar_type y) const noexcept {
       return _semiring->plus(x, y);
     }
 
-    scalar_type prod_impl(scalar_type const x,
-                          scalar_type const y) const noexcept {
+    scalar_type prod_impl(scalar_type x, scalar_type y) const noexcept {
       return _semiring->prod(x, y);
     }
 
@@ -1438,13 +1428,13 @@ namespace libsemigroups {
   ////////////////////////////////////////////////////////////////////////
 
   struct BooleanPlus {
-    bool operator()(bool const x, bool const y) const noexcept {
+    bool operator()(bool x, bool y) const noexcept {
       return x || y;
     }
   };
 
   struct BooleanProd {
-    bool operator()(bool const x, bool const y) const noexcept {
+    bool operator()(bool x, bool y) const noexcept {
       return x & y;
     }
   };
@@ -1528,14 +1518,14 @@ namespace libsemigroups {
 
   template <typename Scalar>
   struct IntegerPlus {
-    Scalar operator()(Scalar const x, Scalar const y) const noexcept {
+    Scalar operator()(Scalar x, Scalar y) const noexcept {
       return x + y;
     }
   };
 
   template <typename Scalar>
   struct IntegerProd {
-    Scalar operator()(Scalar const x, Scalar const y) const noexcept {
+    Scalar operator()(Scalar x, Scalar y) const noexcept {
       return x * y;
     }
   };
@@ -1601,7 +1591,7 @@ namespace libsemigroups {
   struct MaxPlusPlus {
     static_assert(std::is_signed<Scalar>::value,
                   "MaxPlus requires a signed integer type as parameter!");
-    Scalar operator()(Scalar const x, Scalar const y) const noexcept {
+    Scalar operator()(Scalar x, Scalar y) const noexcept {
       if (x == NEGATIVE_INFINITY) {
         return y;
       } else if (y == NEGATIVE_INFINITY) {
@@ -1615,7 +1605,7 @@ namespace libsemigroups {
   struct MaxPlusProd {
     static_assert(std::is_signed<Scalar>::value,
                   "MaxPlus requires a signed integer type as parameter!");
-    Scalar operator()(Scalar const x, Scalar const y) const noexcept {
+    Scalar operator()(Scalar x, Scalar y) const noexcept {
       if (x == NEGATIVE_INFINITY || y == NEGATIVE_INFINITY) {
         return NEGATIVE_INFINITY;
       }
@@ -1680,7 +1670,7 @@ namespace libsemigroups {
   struct MinPlusPlus {
     static_assert(std::is_signed<Scalar>::value,
                   "MinPlus requires a signed integer type as parameter!");
-    Scalar operator()(Scalar const x, Scalar const y) const noexcept {
+    Scalar operator()(Scalar x, Scalar y) const noexcept {
       if (x == POSITIVE_INFINITY) {
         return y;
       } else if (y == POSITIVE_INFINITY) {
@@ -1694,7 +1684,7 @@ namespace libsemigroups {
   struct MinPlusProd {
     static_assert(std::is_signed<Scalar>::value,
                   "MinPlus requires a signed integer type as parameter!");
-    Scalar operator()(Scalar const x, Scalar const y) const noexcept {
+    Scalar operator()(Scalar x, Scalar y) const noexcept {
       if (x == POSITIVE_INFINITY || y == POSITIVE_INFINITY) {
         return POSITIVE_INFINITY;
       }
@@ -1758,7 +1748,7 @@ namespace libsemigroups {
   struct MaxPlusTruncProd {
     static_assert(std::is_signed<Scalar>::value,
                   "MaxPlus requires a signed integer type as parameter!");
-    Scalar operator()(Scalar const x, Scalar const y) const noexcept {
+    Scalar operator()(Scalar x, Scalar y) const noexcept {
       LIBSEMIGROUPS_ASSERT((x >= 0 && x <= static_cast<Scalar>(T))
                            || x == NEGATIVE_INFINITY);
       LIBSEMIGROUPS_ASSERT((y >= 0 && y <= static_cast<Scalar>(T))
@@ -1784,8 +1774,7 @@ namespace libsemigroups {
     MaxPlusTruncSemiring& operator=(MaxPlusTruncSemiring&&) noexcept = default;
     ~MaxPlusTruncSemiring()                                          = default;
 
-    explicit MaxPlusTruncSemiring(Scalar const threshold)
-        : _threshold(threshold) {
+    explicit MaxPlusTruncSemiring(Scalar threshold) : _threshold(threshold) {
       if (threshold < 0) {
         LIBSEMIGROUPS_EXCEPTION("expected non-negative value, found %lld",
                                 static_cast<int64_t>(threshold));
@@ -1800,7 +1789,7 @@ namespace libsemigroups {
       return NEGATIVE_INFINITY;
     }
 
-    Scalar prod(Scalar const x, Scalar const y) const noexcept {
+    Scalar prod(Scalar x, Scalar y) const noexcept {
       LIBSEMIGROUPS_ASSERT((x >= 0 && x <= _threshold)
                            || x == NEGATIVE_INFINITY);
       LIBSEMIGROUPS_ASSERT((y >= 0 && y <= _threshold)
@@ -1811,7 +1800,7 @@ namespace libsemigroups {
       return std::min(x + y, _threshold);
     }
 
-    Scalar plus(Scalar const x, Scalar const y) const noexcept {
+    Scalar plus(Scalar x, Scalar y) const noexcept {
       LIBSEMIGROUPS_ASSERT((x >= 0 && x <= _threshold)
                            || x == NEGATIVE_INFINITY);
       LIBSEMIGROUPS_ASSERT((y >= 0 && y <= _threshold)
@@ -1927,7 +1916,7 @@ namespace libsemigroups {
 
   template <size_t T, typename Scalar>
   struct MinPlusTruncProd {
-    Scalar operator()(Scalar const x, Scalar const y) const noexcept {
+    Scalar operator()(Scalar x, Scalar y) const noexcept {
       LIBSEMIGROUPS_ASSERT((x >= 0 && x <= static_cast<Scalar>(T))
                            || x == POSITIVE_INFINITY);
       LIBSEMIGROUPS_ASSERT((y >= 0 && y <= static_cast<Scalar>(T))
@@ -1953,8 +1942,7 @@ namespace libsemigroups {
     MinPlusTruncSemiring& operator=(MinPlusTruncSemiring&&) noexcept = default;
     ~MinPlusTruncSemiring()                                          = default;
 
-    explicit MinPlusTruncSemiring(Scalar const threshold)
-        : _threshold(threshold) {
+    explicit MinPlusTruncSemiring(Scalar threshold) : _threshold(threshold) {
       if (std::is_signed<Scalar>::value && threshold < 0) {
         LIBSEMIGROUPS_EXCEPTION("expected non-negative value, found %lld",
                                 static_cast<int64_t>(threshold));
@@ -1970,7 +1958,7 @@ namespace libsemigroups {
       return POSITIVE_INFINITY;
     }
 
-    Scalar prod(Scalar const x, Scalar const y) const noexcept {
+    Scalar prod(Scalar x, Scalar y) const noexcept {
       LIBSEMIGROUPS_ASSERT((x >= 0 && x <= _threshold)
                            || x == POSITIVE_INFINITY);
       LIBSEMIGROUPS_ASSERT((y >= 0 && y <= _threshold)
@@ -1981,7 +1969,7 @@ namespace libsemigroups {
       return std::min(x + y, _threshold);
     }
 
-    Scalar plus(Scalar const x, Scalar const y) const noexcept {
+    Scalar plus(Scalar x, Scalar y) const noexcept {
       LIBSEMIGROUPS_ASSERT((x >= 0 && x <= _threshold)
                            || x == POSITIVE_INFINITY);
       LIBSEMIGROUPS_ASSERT((y >= 0 && y <= _threshold)
@@ -2097,7 +2085,7 @@ namespace libsemigroups {
 
   namespace detail {
     template <size_t T, size_t P, typename Scalar>
-    constexpr Scalar thresholdperiod(Scalar const x) noexcept {
+    constexpr Scalar thresholdperiod(Scalar x) noexcept {
       if (x > T) {
         return T + (x - T) % P;
       }
@@ -2105,9 +2093,9 @@ namespace libsemigroups {
     }
 
     template <typename Scalar>
-    inline Scalar thresholdperiod(Scalar const x,
-                                  Scalar const threshold,
-                                  Scalar const period) noexcept {
+    inline Scalar thresholdperiod(Scalar x,
+                                  Scalar threshold,
+                                  Scalar period) noexcept {
       if (x > threshold) {
         return threshold + (x - threshold) % period;
       }
@@ -2118,14 +2106,14 @@ namespace libsemigroups {
   // Static arithmetic
   template <size_t T, size_t P, typename Scalar>
   struct NTPPlus {
-    Scalar operator()(Scalar const x, Scalar const y) const noexcept {
+    Scalar operator()(Scalar x, Scalar y) const noexcept {
       return detail::thresholdperiod<T, P>(x + y);
     }
   };
 
   template <size_t T, size_t P, typename Scalar>
   struct NTPProd {
-    Scalar operator()(Scalar const x, Scalar const y) const noexcept {
+    Scalar operator()(Scalar x, Scalar y) const noexcept {
       return detail::thresholdperiod<T, P>(x * y);
     }
   };
@@ -2144,7 +2132,7 @@ namespace libsemigroups {
 
     ~NTPSemiring() = default;
 
-    NTPSemiring(Scalar const t, Scalar const p) : _period(p), _threshold(t) {
+    NTPSemiring(Scalar t, Scalar p) : _period(p), _threshold(t) {
       if (std::is_signed<Scalar>::value) {
         if (t < 0) {
           LIBSEMIGROUPS_EXCEPTION(
@@ -2166,13 +2154,13 @@ namespace libsemigroups {
       return 0;
     }
 
-    Scalar prod(Scalar const x, Scalar const y) const noexcept {
+    Scalar prod(Scalar x, Scalar y) const noexcept {
       LIBSEMIGROUPS_ASSERT(x >= 0 && x <= _period + _threshold - 1);
       LIBSEMIGROUPS_ASSERT(y >= 0 && y <= _period + _threshold - 1);
       return detail::thresholdperiod(x * y, _threshold, _period);
     }
 
-    Scalar plus(Scalar const x, Scalar const y) const noexcept {
+    Scalar plus(Scalar x, Scalar y) const noexcept {
       LIBSEMIGROUPS_ASSERT(x >= 0 && x <= _period + _threshold - 1);
       LIBSEMIGROUPS_ASSERT(y >= 0 && y <= _period + _threshold - 1);
       return detail::thresholdperiod(x + y, _threshold, _period);
@@ -2346,24 +2334,24 @@ namespace libsemigroups {
       ProjMaxPlusMat& operator=(ProjMaxPlusMat const&) = default;
       ProjMaxPlusMat& operator=(ProjMaxPlusMat&&) = default;
 
-      ProjMaxPlusMat(size_t const r, size_t const c)
+      ProjMaxPlusMat(size_t r, size_t c)
           : _is_normalized(false), _underlying_mat(r, c) {}
 
       ProjMaxPlusMat(
-          std::initializer_list<std::initializer_list<scalar_type>> const m)
+          std::initializer_list<std::initializer_list<scalar_type>> const& m)
           : _is_normalized(false), _underlying_mat(m) {
         normalize();
       }
 
-      static ProjMaxPlusMat
-      make(std::initializer_list<std::initializer_list<scalar_type>> const il) {
+      static ProjMaxPlusMat make(
+          std::initializer_list<std::initializer_list<scalar_type>> const& il) {
         auto result = ProjMaxPlusMat(T::make(il));
         return result;
       }
 
-      static ProjMaxPlusMat
-      make(void const*,
-           std::initializer_list<std::initializer_list<scalar_type>> const il) {
+      static ProjMaxPlusMat make(
+          void const*,
+          std::initializer_list<std::initializer_list<scalar_type>> const& il) {
         return make(il);
       }
 
@@ -2374,7 +2362,7 @@ namespace libsemigroups {
         return result;
       }
 
-      static ProjMaxPlusMat identity(size_t const n) {
+      static ProjMaxPlusMat identity(size_t n) {
         return ProjMaxPlusMat(T::identity(n));
       }
 
@@ -2415,7 +2403,7 @@ namespace libsemigroups {
         return _underlying_mat(r, c);
       }
 
-      scalar_const_reference operator()(size_t const r, size_t const c) const {
+      scalar_const_reference operator()(size_t r, size_t c) const {
         normalize();
         return _underlying_mat(r, c);
       }
@@ -2447,7 +2435,7 @@ namespace libsemigroups {
         normalize(true);  // force normalize
       }
 
-      void operator*=(scalar_type const a) {
+      void operator*=(scalar_type a) {
         _underlying_mat *= a;
         normalize(true);  // force normalize
       }
@@ -2526,7 +2514,7 @@ namespace libsemigroups {
       // Rows
       ////////////////////////////////////////////////////////////////////////
 
-      RowView row(size_t const i) const {
+      RowView row(size_t i) const {
         normalize();
         return _underlying_mat.row(i);
       }

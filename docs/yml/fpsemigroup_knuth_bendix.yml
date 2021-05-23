@@ -26,15 +26,15 @@ libsemigroups::fpsemigroup::KnuthBendix:
      classes."]
   - rewrite(std::string) const
   - rewrite(std::string *) const
-  - cbegin_normal_forms(std::string const&, size_t const, size_t const)
-  - cbegin_normal_forms(size_t const, size_t const)
+  - cbegin_normal_forms(std::string const&, size_t, size_t)
+  - cbegin_normal_forms(size_t, size_t)
   - cend_normal_forms()
   - number_of_active_rules() const noexcept
   - active_rules() const
   - confluent() const
   - gilman_digraph()
   - contains_empty_string() const
-  - number_of_normal_forms(size_t const, size_t const)
+  - number_of_normal_forms(size_t, size_t)
   - knuth_bendix_by_overlap_length()
   - operator<<(std::ostream &,KnuthBendix const &)
 - Settings:

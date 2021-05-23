@@ -161,10 +161,10 @@ namespace libsemigroups {
   //! \par Possible Implementation
   //! \code
   //! template <typename T, typename S>
-  //! bool shortlex_compare(T const first1,
-  //!                       T const last1,
-  //!                       S const first2,
-  //!                       S const last2) {
+  //! bool shortlex_compare(T const& first1,
+  //!                       T const& last1,
+  //!                       S const& first2,
+  //!                       S const& last2) {
   //!   return (last1 - first1) < (last2 - first2)
   //!          || ((last1 - first1) == (last2 - first2)
   //!              && std::lexicographical_compare
@@ -192,10 +192,10 @@ namespace libsemigroups {
   //! [std::lexicographical_compare]:
   //! https://en.cppreference.com/w/cpp/algorithm/lexicographical_compare
   template <typename T, typename S>
-  bool shortlex_compare(T const first1,
-                        T const last1,
-                        S const first2,
-                        S const last2) {
+  bool shortlex_compare(T const& first1,
+                        T const& last1,
+                        S const& first2,
+                        S const& last2) {
     return (last1 - first1) < (last2 - first2)
            || ((last1 - first1) == (last2 - first2)
                && std::lexicographical_compare(first1, last1, first2, last2));
@@ -316,10 +316,10 @@ namespace libsemigroups {
   //! [std::lexicographical_compare]:
   //! https://en.cppreference.com/w/cpp/algorithm/lexicographical_compare
   template <typename T, typename S>
-  bool recursive_path_compare(T const first1,
-                              T       last1,
-                              S const first2,
-                              S       last2) noexcept {
+  bool recursive_path_compare(T const& first1,
+                              T        last1,
+                              S const& first2,
+                              S        last2) noexcept {
     bool lastmoved = false;
     --last1;
     --last2;

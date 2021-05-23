@@ -685,22 +685,20 @@ namespace libsemigroups {
      protected:
       //! No doc
       template <typename SFINAE = void>
-      static auto resize(container_type&, size_t const, value_type const = 0)
+      static auto resize(container_type&, size_t, value_type = 0)
           -> std::enable_if_t<detail::IsStdArray<container_type>::value,
                               SFINAE> {}
 
       //! No doc
       template <typename SFINAE = void>
-      static auto resize(container_type&  c,
-                         size_t const     N,
-                         value_type const val = 0)
+      static auto resize(container_type& c, size_t N, value_type val = 0)
           -> std::enable_if_t<!detail::IsStdArray<container_type>::value,
                               SFINAE> {
         c.resize(N, val);
       }
 
       //! No doc
-      void resize(size_t const N, value_type const val = 0) {
+      void resize(size_t N, value_type val = 0) {
         resize(_container, N, val);
       }
 
@@ -1869,7 +1867,7 @@ namespace libsemigroups {
   struct ImageRightAction<Perm<N, Scalar>,
                           Scalar,
                           std::enable_if_t<std::is_integral<Scalar>::value>> {
-    Scalar operator()(Scalar const pt, Perm<N, Scalar> const& x) {
+    Scalar operator()(Scalar pt, Perm<N, Scalar> const& x) {
       return x[pt];
     }
   };
@@ -2328,7 +2326,7 @@ namespace libsemigroups {
     }
 
     //! Returns the image of \p pt under the action of \p p.
-    T operator()(T const pt, Perm<N, Scalar> const& x) {
+    T operator()(T pt, Perm<N, Scalar> const& x) {
       return x[pt];
     }
   };

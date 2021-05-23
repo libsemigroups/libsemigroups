@@ -814,20 +814,20 @@ namespace libsemigroups {
 
     class MultiplierCache {
      public:
-      element_type& operator[](index_type const i) {
+      element_type& operator[](index_type i) {
         return _multipliers[i].second;
       }
 
-      bool defined(index_type const i) const {
+      bool defined(index_type i) const {
         return (i < _multipliers.size() ? _multipliers[i].first : false);
       }
 
-      bool set_defined(index_type const i) {
+      bool set_defined(index_type i) {
         LIBSEMIGROUPS_ASSERT(i < _multipliers.size());
         return _multipliers[i].first = true;
       }
 
-      void init(index_type const N, element_type const& sample) {
+      void init(index_type N, element_type const& sample) {
         if (N > _multipliers.size()) {
           _multipliers.resize(N, {false, One()(sample)});
         }

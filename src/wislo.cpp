@@ -35,9 +35,9 @@ namespace libsemigroups {
   const_wislo_iterator::const_wislo_iterator(const_wislo_iterator const&)
       = default;
 
-  const_wislo_iterator cbegin_wislo(size_t const n,
-                                    word_type&&  first,
-                                    word_type&&  last) {
+  const_wislo_iterator cbegin_wislo(size_t      n,
+                                    word_type&& first,
+                                    word_type&& last) {
     if (!shortlex_compare(
             first.cbegin(), first.cend(), last.cbegin(), last.cend())) {
       return cend_wislo(n, std::move(first), std::move(last));
@@ -45,7 +45,7 @@ namespace libsemigroups {
     return const_wislo_iterator(n, std::move(first), std::move(last));
   }
 
-  const_wislo_iterator cbegin_wislo(size_t const     n,
+  const_wislo_iterator cbegin_wislo(size_t           n,
                                     word_type const& first,
                                     word_type const& last) {
     return cbegin_wislo(n, word_type(first), word_type(last));

@@ -942,15 +942,12 @@ namespace libsemigroups {
       ////////////////////////////////////////////////////////////////////////
 
       coset_type new_coset();
-      void       remove_preimage(coset_type const,
-                                 letter_type const,
-                                 coset_type const);
+      void       remove_preimage(coset_type, letter_type, coset_type);
 
-      void make_deductions_dfs(coset_type const);
+      void make_deductions_dfs(coset_type);
       void process_deductions();
 
-      inline coset_type tau(coset_type const  c,
-                            letter_type const a) const noexcept {
+      inline coset_type tau(coset_type c, letter_type a) const noexcept {
         LIBSEMIGROUPS_ASSERT(is_valid_coset(c));
         LIBSEMIGROUPS_ASSERT(a < _table.number_of_cols());
         return _table.get(c, a);
@@ -1117,9 +1114,9 @@ namespace libsemigroups {
       }
 
       // Add d to the list of preimages of c under x, i.e. _table[d][x] = c
-      inline void add_preimage(coset_type const  c,
-                               letter_type const x,
-                               coset_type const  d) noexcept {
+      inline void add_preimage(coset_type  c,
+                               letter_type x,
+                               coset_type  d) noexcept {
         LIBSEMIGROUPS_ASSERT(is_valid_coset(c));
         LIBSEMIGROUPS_ASSERT(x < number_of_generators());
         LIBSEMIGROUPS_ASSERT(is_valid_coset(d));
@@ -1129,9 +1126,9 @@ namespace libsemigroups {
       }
 
       template <typename TStackDeduct>
-      inline coset_type define(coset_type const  c,
-                               letter_type const x,
-                               coset_type const  d) noexcept {
+      inline coset_type define(coset_type  c,
+                               letter_type x,
+                               coset_type  d) noexcept {
         LIBSEMIGROUPS_ASSERT(is_valid_coset(c));
         LIBSEMIGROUPS_ASSERT(x < number_of_generators());
         LIBSEMIGROUPS_ASSERT(is_valid_coset(d));

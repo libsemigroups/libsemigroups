@@ -71,7 +71,7 @@ namespace libsemigroups {
     const_wislo_iterator& operator=(const_wislo_iterator&&) = default;
 
     //! No doc
-    const_wislo_iterator(size_type const n, word_type&& first, word_type&& last)
+    const_wislo_iterator(size_type n, word_type&& first, word_type&& last)
         : _current(std::move(first)),
           _index(),
           _last(std::move(last)),
@@ -187,12 +187,12 @@ namespace libsemigroups {
   //!                        cend_wislo(2,  {0}, {0, 0, 0}));
   //! // {{0}, {1}, {0, 0}, {0, 1}, {1, 0}, {1, 1}};
   //! \endcode
-  const_wislo_iterator cbegin_wislo(size_t const n,
-                                    word_type&&  first,
-                                    word_type&&  last);
+  const_wislo_iterator cbegin_wislo(size_t      n,
+                                    word_type&& first,
+                                    word_type&& last);
 
   //! \copydoc cbegin_wislo(size_t const, word_type&&, word_type&&)
-  const_wislo_iterator cbegin_wislo(size_t const     n,
+  const_wislo_iterator cbegin_wislo(size_t           n,
                                     word_type const& first,
                                     word_type const& last);
 
@@ -203,12 +203,12 @@ namespace libsemigroups {
   //! but does not point to a word in the correct range.
   //!
   //! \sa cbegin_wislo
-  const_wislo_iterator cend_wislo(size_t const n,
-                                  word_type&&  first,
-                                  word_type&&  last);
+  const_wislo_iterator cend_wislo(size_t      n,
+                                  word_type&& first,
+                                  word_type&& last);
 
   //! \copydoc cend_wislo(size_t const, word_type&&, word_type&&)
-  const_wislo_iterator cend_wislo(size_t const     n,
+  const_wislo_iterator cend_wislo(size_t           n,
                                   word_type const& first,
                                   word_type const& last);
   //! No doc

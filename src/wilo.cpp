@@ -35,10 +35,10 @@ namespace libsemigroups {
   const_wilo_iterator::const_wilo_iterator(const_wilo_iterator const&)
       = default;
 
-  const_wilo_iterator cbegin_wilo(size_t const n,
-                                  size_t const upper_bound,
-                                  word_type&&  first,
-                                  word_type&&  last) {
+  const_wilo_iterator cbegin_wilo(size_t      n,
+                                  size_t      upper_bound,
+                                  word_type&& first,
+                                  word_type&& last) {
     if (!lexicographical_compare(
             first.cbegin(), first.cend(), last.cbegin(), last.cend())) {
       return cend_wilo(n, upper_bound, std::move(first), std::move(last));
@@ -51,23 +51,21 @@ namespace libsemigroups {
         n, upper_bound, std::move(first), std::move(last));
   }
 
-  const_wilo_iterator cbegin_wilo(size_t const     n,
-                                  size_t const     upper_bound,
+  const_wilo_iterator cbegin_wilo(size_t           n,
+                                  size_t           upper_bound,
                                   word_type const& first,
                                   word_type const& last) {
     return cbegin_wilo(n, upper_bound, word_type(first), word_type(last));
   }
 
-  const_wilo_iterator cend_wilo(size_t const n,
-                                size_t const upper_bound,
-                                word_type&&,
-                                word_type&& last) {
+  const_wilo_iterator
+  cend_wilo(size_t n, size_t upper_bound, word_type&&, word_type&& last) {
     return const_wilo_iterator(
         n, upper_bound, word_type(last), std::move(last));
   }
 
-  const_wilo_iterator cend_wilo(size_t const n,
-                                size_t const upper_bound,
+  const_wilo_iterator cend_wilo(size_t n,
+                                size_t upper_bound,
                                 word_type const&,
                                 word_type const& last) {
     return cend_wilo(n, upper_bound, word_type(), word_type(last));

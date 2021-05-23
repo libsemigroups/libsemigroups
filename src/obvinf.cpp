@@ -129,7 +129,7 @@ namespace libsemigroups {
 #endif
     }
 
-    void IsObviouslyInfinite::private_add_rule(size_t const     row_index,
+    void IsObviouslyInfinite::private_add_rule(size_t           row_index,
                                                word_type const& u,
                                                word_type const& v) {
       _nr_relations++;

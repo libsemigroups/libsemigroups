@@ -11,14 +11,14 @@ The functions :cpp:any:`libsemigroups::cbegin_wilo` and
 :cpp:any:`libsemigroups::cend_wilo` can be used to iterate through words in
 lexicographic order in some range. 
 
-.. doxygenfunction:: libsemigroups::cbegin_wilo(size_t const, size_t const, word_type&&, word_type&&)
+.. doxygenfunction:: libsemigroups::cbegin_wilo(size_t, size_t, word_type&&, word_type&&)
    :project: libsemigroups
 
-.. doxygenfunction:: libsemigroups::cend_wilo(size_t const, size_t const, word_type&&, word_type&&)
+.. doxygenfunction:: libsemigroups::cend_wilo(size_t, size_t, word_type&&, word_type&&)
    :project: libsemigroups
 
-.. doxygenfunction:: libsemigroups::cbegin_wilo(size_t const, size_t const, word_type const&, word_type const&)
+.. doxygenfunction:: libsemigroups::cbegin_wilo(size_t, size_t, word_type const&, word_type const&)
    :project: libsemigroups
 
-.. doxygenfunction:: libsemigroups::cend_wilo(size_t const, size_t const, word_type const&, word_type const&)
+.. doxygenfunction:: libsemigroups::cend_wilo(size_t, size_t, word_type const&, word_type const&)
    :project: libsemigroups

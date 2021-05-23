@@ -50,7 +50,7 @@
 namespace libsemigroups {
 
   namespace detail {
-    static inline double magic_number(size_t const N) {
+    static inline double magic_number(size_t N) {
       return 0.0015 * N + 2.43;
     }
 
@@ -212,8 +212,8 @@ namespace libsemigroups {
     //! \par Complexity
     //! \f$O(mn)\f$ where \p m is the number of nodes, and \p n is
     //! the out-degree of the digraph.
-    static ActionDigraph random(T const      number_of_nodes,
-                                T const      out_degree,
+    static ActionDigraph random(T            number_of_nodes,
+                                T            out_degree,
                                 std::mt19937 mt
                                 = std::mt19937(std::random_device()())) {
       std::uniform_int_distribution<T> dist(0, number_of_nodes - 1);
@@ -244,9 +244,9 @@ namespace libsemigroups {
     //! \par Complexity
     //! At least \f$O(mn)\f$ where \p m is the number of nodes, and \p n is the
     //! out-degree of the digraph.
-    static ActionDigraph random(T const      number_of_nodes,
-                                T const      out_degree,
-                                T const      number_of_edges,
+    static ActionDigraph random(T            number_of_nodes,
+                                T            out_degree,
+                                T            number_of_edges,
                                 std::mt19937 mt
                                 = std::mt19937(std::random_device()())) {
       if (number_of_nodes < 2) {
@@ -303,9 +303,9 @@ namespace libsemigroups {
     //! At least \f$O(mn)\f$ where \p m is the number of nodes, and \p n is the
     //! out-degree of the digraph.
     static ActionDigraph
-    random_acyclic(T const      number_of_nodes,
-                   T const      out_degree,
-                   T const      number_of_edges,
+    random_acyclic(T            number_of_nodes,
+                   T            out_degree,
+                   T            number_of_edges,
                    std::mt19937 mt = std::mt19937(std::random_device()())) {
       if (number_of_nodes < 2) {
         LIBSEMIGROUPS_EXCEPTION("the 1st parameter `number_of_nodes` must be "
@@ -632,7 +632,7 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! \f$O(n)\f$ where \c n is out_degree().
-    size_t number_of_edges(node_type const n) const {
+    size_t number_of_edges(node_type n) const {
       action_digraph_helper::validate_node(*this, n);
       return out_degree()
              - std::count(_dynamic_array_2.cbegin_row(n),
@@ -2436,18 +2436,18 @@ namespace libsemigroups {
 
    private:
     // Implemented below
-    bool number_of_paths_special(node_type const source,
-                                 node_type const target,
-                                 size_t const    min,
-                                 size_t const    max) const;
+    bool number_of_paths_special(node_type source,
+                                 node_type target,
+                                 size_t    min,
+                                 size_t    max) const;
 
     ////////////////////////////////////////////////////////////////////////
     // ActionDigraph - number_of_paths_trivial - private
     ////////////////////////////////////////////////////////////////////////
 
-    uint64_t number_of_paths_trivial(node_type const source,
-                                     size_t const    min,
-                                     size_t const    max) const {
+    uint64_t number_of_paths_trivial(node_type source,
+                                     size_t    min,
+                                     size_t    max) const {
       if (min >= max) {
         return 0;
       } else if (validate()) {
@@ -2470,10 +2470,10 @@ namespace libsemigroups {
       LIBSEMIGROUPS_EXCEPTION("number of paths cannot be trivially determined");
     }
 
-    uint64_t number_of_paths_trivial(node_type const,
-                                     node_type const,
-                                     size_t const min,
-                                     size_t const max) const {
+    uint64_t number_of_paths_trivial(node_type,
+                                     node_type,
+                                     size_t min,
+                                     size_t max) const {
       if (min >= max) {
         return 0;
       }
@@ -2484,9 +2484,9 @@ namespace libsemigroups {
     // ActionDigraph - number_of_paths_matrix - private
     ////////////////////////////////////////////////////////////////////////
 
-    uint64_t number_of_paths_matrix(node_type const source,
-                                    size_t const    min,
-                                    size_t const    max) const {
+    uint64_t number_of_paths_matrix(node_type source,
+                                    size_t    min,
+                                    size_t    max) const {
       // #ifdef LIBSEMIGROUPS_EIGEN_ENABLED
       // TODO(later)
       // #else
@@ -2510,10 +2510,10 @@ namespace libsemigroups {
       // #endif
     }
 
-    uint64_t number_of_paths_matrix(node_type const source,
-                                    node_type const target,
-                                    size_t const    min,
-                                    size_t const    max) const {
+    uint64_t number_of_paths_matrix(node_type source,
+                                    node_type target,
+                                    size_t    min,
+                                    size_t    max) const {
       // #ifdef LIBSEMIGROUPS_EIGEN_ENABLED
       // TODO(later)
       // #else
@@ -2550,9 +2550,9 @@ namespace libsemigroups {
     // ActionDigraph - number_of_paths_acyclic - private
     ////////////////////////////////////////////////////////////////////////
 
-    uint64_t number_of_paths_acyclic(node_type const source,
-                                     size_t const    min,
-                                     size_t const    max) const {
+    uint64_t number_of_paths_acyclic(node_type source,
+                                     size_t    min,
+                                     size_t    max) const {
       auto topo = action_digraph_helper::topological_sort(*this, source);
       if (topo.empty()) {
         // Can't topologically sort, so the digraph contains cycles.
@@ -2595,10 +2595,10 @@ namespace libsemigroups {
                              0);
     }
 
-    uint64_t number_of_paths_acyclic(node_type const source,
-                                     node_type const target,
-                                     size_t const    min,
-                                     size_t const    max) const {
+    uint64_t number_of_paths_acyclic(node_type source,
+                                     node_type target,
+                                     size_t    min,
+                                     size_t    max) const {
       auto topo = action_digraph_helper::topological_sort(*this, source);
       if (topo.empty()) {
         // Can't topologically sort, so the digraph contains cycles.
@@ -2887,10 +2887,10 @@ namespace libsemigroups {
   // Used by the matrix(source, target) and the dfs(source, target)
   // algorithms
   template <typename T>
-  bool ActionDigraph<T>::number_of_paths_special(node_type const source,
-                                                 node_type const target,
-                                                 size_t const,
-                                                 size_t const max) const {
+  bool ActionDigraph<T>::number_of_paths_special(node_type source,
+                                                 node_type target,
+                                                 size_t,
+                                                 size_t max) const {
     if (max == POSITIVE_INFINITY) {
       if (source == target
           && std::any_of(cbegin_edges(source),

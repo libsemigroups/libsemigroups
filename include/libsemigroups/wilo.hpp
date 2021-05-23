@@ -72,10 +72,10 @@ namespace libsemigroups {
     const_wilo_iterator& operator=(const_wilo_iterator&&) = default;
 
     //! No doc
-    const_wilo_iterator(size_type const n,
-                        size_type const upper_bound,
-                        word_type&&     first,
-                        word_type&&     last)
+    const_wilo_iterator(size_type   n,
+                        size_type   upper_bound,
+                        word_type&& first,
+                        word_type&& last)
         : _current(std::move(first)),
           _index(),
           _letter(0),
@@ -215,14 +215,14 @@ namespace libsemigroups {
   //!                        cend_wilo(2, 3, {0}, {1, 1, 1}));
   //! // {{0}, {0, 0}, {0, 1}, {1}, {1, 0}, {1, 1}};
   //! \endcode
-  const_wilo_iterator cbegin_wilo(size_t const n,
-                                  size_t const upper_bound,
-                                  word_type&&  first,
-                                  word_type&&  last);
+  const_wilo_iterator cbegin_wilo(size_t      n,
+                                  size_t      upper_bound,
+                                  word_type&& first,
+                                  word_type&& last);
 
   //! \copydoc cbegin_wilo(size_t const, size_t const, word_type&&, word_type&&)
-  const_wilo_iterator cbegin_wilo(size_t const     n,
-                                  size_t const     upper_bound,
+  const_wilo_iterator cbegin_wilo(size_t           n,
+                                  size_t           upper_bound,
                                   word_type const& first,
                                   word_type const& last);
 
@@ -233,14 +233,12 @@ namespace libsemigroups {
   //! incrementable, but does not point to a word in the correct range.
   //!
   //! \sa cbegin_wilo
-  const_wilo_iterator cend_wilo(size_t const n,
-                                size_t const upper_bound,
-                                word_type&&  first,
-                                word_type&&  last);
+  const_wilo_iterator
+  cend_wilo(size_t n, size_t upper_bound, word_type&& first, word_type&& last);
 
   //! \copydoc cend_wilo(size_t const, size_t const, word_type&&, word_type&&)
-  const_wilo_iterator cend_wilo(size_t const     n,
-                                size_t const     upper_bound,
+  const_wilo_iterator cend_wilo(size_t           n,
+                                size_t           upper_bound,
                                 word_type const& first,
                                 word_type const& last);
 

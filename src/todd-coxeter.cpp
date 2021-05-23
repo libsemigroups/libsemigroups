@@ -1069,9 +1069,9 @@ namespace libsemigroups {
       }
     }
 
-    void ToddCoxeter::remove_preimage(coset_type const  cx,
-                                      letter_type const x,
-                                      coset_type const  d) {
+    void ToddCoxeter::remove_preimage(coset_type  cx,
+                                      letter_type x,
+                                      coset_type  d) {
       LIBSEMIGROUPS_ASSERT(is_active_coset(cx));
       LIBSEMIGROUPS_ASSERT(is_valid_coset(d));
       coset_type e = _preim_init.get(cx, x);
@@ -1087,7 +1087,7 @@ namespace libsemigroups {
     }
 
     // Perform a DFS in _felsch_tree
-    void ToddCoxeter::make_deductions_dfs(coset_type const c) {
+    void ToddCoxeter::make_deductions_dfs(coset_type c) {
       for (auto it = _felsch_tree->cbegin(); it < _felsch_tree->cend(); ++it) {
         push_definition_felsch<StackDeductions, DoNotProcessCoincidences>(
             c, _relations[*it], _relations[*it + 1]);
@@ -1405,9 +1405,9 @@ namespace libsemigroups {
 
     // Returns true if t is incremented (i.e. it's the first time we are
     // seeing and t as a coset in a standardization) and false otherwise.
-    bool ToddCoxeter::standardize_immediate(coset_type const  s,
-                                            coset_type&       t,
-                                            letter_type const x) {
+    bool ToddCoxeter::standardize_immediate(coset_type  s,
+                                            coset_type& t,
+                                            letter_type x) {
       LIBSEMIGROUPS_ASSERT(!finished());
       coset_type const r = _table.get(s, x);
       if (r != UNDEFINED) {
@@ -1687,7 +1687,7 @@ namespace libsemigroups {
 
     // Based on the procedure SWITCH in Sims' book, p193
     // Swaps an active coset and another coset in the table.
-    void ToddCoxeter::swap(coset_type const c, coset_type const d) {
+    void ToddCoxeter::swap(coset_type c, coset_type d) {
       TODD_COXETER_REPORT_SWITCH(c, d)
 
       LIBSEMIGROUPS_ASSERT(_coinc.empty());

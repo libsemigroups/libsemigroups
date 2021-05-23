@@ -26,9 +26,9 @@ libsemigroups::ActionDigraph:
 - Static member functions:
   - ["This page contains information about the static member functions for the
      :cpp:any:`ActionDigraph` class."]
-  - random(T const, T const, std::mt19937)
-  - random(T const, T const, T const, std::mt19937)
-  - random_acyclic(T const, T const, T const, std::mt19937)
+  - random(T, T, std::mt19937)
+  - random(T, T, T, std::mt19937)
+  - random_acyclic(T, T, T, std::mt19937)
 - Initialization:
   - ["This page contains information about initialising the
      :cpp:any:`ActionDigraph` class."]
@@ -45,7 +45,7 @@ libsemigroups::ActionDigraph:
   - unsafe_next_neighbor(node_type, label_type) const
   - number_of_nodes() const noexcept
   - number_of_edges() const
-  - number_of_edges(node_type const) const
+  - number_of_edges(node_type) const
   - out_degree() const noexcept
   - validate() const noexcept
   - cbegin_nodes() const noexcept

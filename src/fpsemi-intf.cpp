@@ -114,7 +114,7 @@ namespace libsemigroups {
     reset();
   }
 
-  void FpSemigroupInterface::set_alphabet(size_t const number_of_letters) {
+  void FpSemigroupInterface::set_alphabet(size_t number_of_letters) {
     if (!_alphabet.empty()) {
       LIBSEMIGROUPS_EXCEPTION("the alphabet cannot be set more than once");
     } else if (number_of_letters == 0) {

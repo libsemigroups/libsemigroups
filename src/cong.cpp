@@ -302,7 +302,7 @@ namespace libsemigroups {
     return false;  // Returns false if _race is empty
   }
 
-  void Congruence::set_number_of_generators_impl(size_t const n) {
+  void Congruence::set_number_of_generators_impl(size_t n) {
     for (auto runner : _race) {
       static_cast<CongruenceInterface*>(runner.get())
           ->set_number_of_generators(n);

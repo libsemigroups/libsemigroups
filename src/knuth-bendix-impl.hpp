@@ -336,7 +336,7 @@ namespace libsemigroups {
 #endif
       }
 
-      static internal_string_type uint_to_internal_string(size_t const i) {
+      static internal_string_type uint_to_internal_string(size_t i) {
         LIBSEMIGROUPS_ASSERT(i
                              <= std::numeric_limits<internal_char_type>::max());
         return internal_string_type({uint_to_internal_char(i)});

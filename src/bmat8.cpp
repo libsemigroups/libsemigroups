@@ -189,7 +189,7 @@ namespace libsemigroups {
   }
 
   // Not noexcept because it can throw.
-  BMat8 BMat8::random(size_t const dim) {
+  BMat8 BMat8::random(size_t dim) {
     if (0 == dim || dim > 8) {
       LIBSEMIGROUPS_EXCEPTION("the argument should be in [1, 8], got %d", dim);
     }

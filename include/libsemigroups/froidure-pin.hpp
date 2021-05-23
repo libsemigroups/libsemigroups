@@ -855,7 +855,7 @@ namespace libsemigroups {
     template <typename T>
     FroidurePin copy_add_generators(T const& coll) const;
 
-    //! \copydoc copy_add_generators(T const &) const
+    //! \copydoc copy_add_generators(T const&) const
     FroidurePin copy_add_generators(std::initializer_list<element_type> coll);
 
     //! Add non-redundant generators in collection.

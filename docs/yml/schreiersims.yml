@@ -30,22 +30,22 @@ libsemigroups::SchreierSims:
 - Initialisation:
   - ["This page contains information about the member functions of the 
      :cpp:any:`SchreierSims` class that can be used for initialisation."]
-  - add_base_point(point_type const)
+  - add_base_point(point_type)
   - add_generator(const_element_reference)
   - clear()
 - Attributes:
   - ["This page contains information about non-const attributes of the  
      :cpp:any:`SchreierSims` class."]
-  - base(index_type const) const
+  - base(index_type) const
   - base_size() const noexcept
   - empty()
   - finished() const
   - number_of_generators() const noexcept
-  - number_of_strong_generators(index_type const) const noexcept
-  - strong_generator(index_type const,index_type const) const
+  - number_of_strong_generators(index_type) const noexcept
+  - strong_generator(index_type,index_type) const
   - size()
   - identity() const
-  - generator(index_type const) const
+  - generator(index_type) const
 - Membership: 
   - ["This page contains information about the member functions of the  
      :cpp:any:`SchreierSims` class related to checking membership."]

@@ -125,7 +125,7 @@ namespace libsemigroups {
         _acquirable.push(ptr);
       }
 
-      void init(T const sample) {
+      void init(T sample) {
         push(sample);
       }
 
@@ -138,7 +138,7 @@ namespace libsemigroups {
 
      private:
       // Not noexcept
-      void push(T const x, size_t number = 1) {
+      void push(T x, size_t number = 1) {
         for (size_t i = 0; i < number; ++i) {
           _acquirable.push(new (typename std::remove_pointer<T>::type)(*x));
         }

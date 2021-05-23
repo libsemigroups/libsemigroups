@@ -7,5 +7,5 @@
 shortlex_compare (iterators)
 ============================
 
-.. doxygenfunction:: libsemigroups::shortlex_compare(T const, T const, S const, S const)
+.. doxygenfunction:: libsemigroups::shortlex_compare(T const&, T const&, S const&, S const&)
    :project: libsemigroups
