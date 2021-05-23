@@ -55,7 +55,7 @@ namespace libsemigroups {
 
     // Forward declaration
     template <typename T>
-    std::string to_string(const T& n);
+    std::string to_string(T const& n);
   }  // namespace detail
 
   // A << function for vectors
@@ -112,7 +112,7 @@ namespace libsemigroups {
       return ::libsemigroups::operator<<(os, p);
     }
 
-    static inline std::string wrap(size_t const indent, std::string& s) {
+    static inline std::string wrap(size_t indent, std::string& s) {
       size_t      pos = 100 - indent;
       std::string prefix(indent, ' ');
       while (pos < s.size()) {

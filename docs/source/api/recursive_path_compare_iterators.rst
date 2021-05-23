@@ -7,5 +7,5 @@
 recursive_path_compare (iterators)
 ==================================
 
-.. doxygenfunction:: libsemigroups::recursive_path_compare(T const, T, S const, S) noexcept
+.. doxygenfunction:: libsemigroups::recursive_path_compare(T const&, T, S const&, S) noexcept
    :project: libsemigroups

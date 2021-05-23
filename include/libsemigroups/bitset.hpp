@@ -186,12 +186,12 @@ namespace libsemigroups {
       _block |= that._block;
     }
 
-    bool test(size_t const pos) const noexcept {
+    bool test(size_t pos) const noexcept {
       LIBSEMIGROUPS_ASSERT(pos < N);
       return _block & mask(pos);
     }
 
-    bool operator[](size_t const pos) const noexcept {
+    bool operator[](size_t pos) const noexcept {
       return test(pos);
     }
 
@@ -200,7 +200,7 @@ namespace libsemigroups {
       return *this;
     }
 
-    BitSet& set(size_t const pos, bool const value = true) noexcept {
+    BitSet& set(size_t pos, bool value = true) noexcept {
       LIBSEMIGROUPS_ASSERT(pos < N);
       if (value) {
         _block |= mask(pos);
@@ -210,9 +210,7 @@ namespace libsemigroups {
       return *this;
     }
 
-    BitSet& set(size_t const first,
-                size_t const last,
-                bool const   value) noexcept {
+    BitSet& set(size_t first, size_t last, bool value) noexcept {
       LIBSEMIGROUPS_ASSERT(first < N);
       LIBSEMIGROUPS_ASSERT(last <= N);
       LIBSEMIGROUPS_ASSERT(first < last);
@@ -233,13 +231,13 @@ namespace libsemigroups {
       return *this;
     }
 
-    BitSet& reset(size_t const pos) noexcept {
+    BitSet& reset(size_t pos) noexcept {
       LIBSEMIGROUPS_ASSERT(pos < N);
       _block &= ~mask(pos);
       return *this;
     }
 
-    BitSet& reset(size_t const first, size_t const last) {
+    BitSet& reset(size_t first, size_t last) {
       LIBSEMIGROUPS_ASSERT(first < N);
       LIBSEMIGROUPS_ASSERT(last <= N);
       LIBSEMIGROUPS_ASSERT(first < last);
@@ -302,7 +300,7 @@ namespace libsemigroups {
       return sizeof(block_type) * CHAR_BIT;
     }
 
-    constexpr block_type mask(size_t const i) const noexcept {
+    constexpr block_type mask(size_t i) const noexcept {
       // LIBSEMIGROUPS_ASSERT(i < size());
       return static_cast<block_type>(MASK[i]);
     }

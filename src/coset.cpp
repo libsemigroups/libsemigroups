@@ -202,7 +202,7 @@ namespace libsemigroups {
       return _last_active_coset;
     }
 
-    void CosetManager::switch_cosets(coset_type const c, coset_type const d) {
+    void CosetManager::switch_cosets(coset_type c, coset_type d) {
       LIBSEMIGROUPS_ASSERT(is_active_coset(c) || is_active_coset(d));
       coset_type fc = _forwd[c], fd = _forwd[d], bc = _bckwd[c], bd = _bckwd[d];
 
@@ -253,7 +253,7 @@ namespace libsemigroups {
     // CosetManager - member functions - private
     ////////////////////////////////////////////////////////////////////////
 
-    void CosetManager::free_coset(coset_type const c) {
+    void CosetManager::free_coset(coset_type c) {
       LIBSEMIGROUPS_ASSERT(is_active_coset(c));
       // If any "controls" point to <c>, move them back one in the list
       LIBSEMIGROUPS_ASSERT(_current < _bckwd.size()

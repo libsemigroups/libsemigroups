@@ -82,9 +82,9 @@ libsemigroups::congruence::ToddCoxeter:
   - coset_capacity() const noexcept
   - first_free_coset() const noexcept
   - has_free_cosets() const noexcept
-  - is_active_coset(coset_type const) const
-  - is_valid_coset(coset_type const) const noexcept
-  - next_active_coset(coset_type const) const
+  - is_active_coset(coset_type) const
+  - is_valid_coset(coset_type) const noexcept
+  - next_active_coset(coset_type) const
   - number_of_cosets_active() const noexcept
   - number_of_cosets_defined() const noexcept
   - number_of_cosets_killed() const noexcept

@@ -24,7 +24,7 @@ Full API
 .. doxygenfunction:: libsemigroups::action_digraph_helper::is_acyclic(ActionDigraph<T> const&)
    :project: libsemigroups
 
-.. doxygenfunction:: libsemigroups::action_digraph_helper::is_acyclic(ActionDigraph<T> const&, node_type<T> const)
+.. doxygenfunction:: libsemigroups::action_digraph_helper::is_acyclic(ActionDigraph<T> const&, node_type<T>)
    :project: libsemigroups
 
 .. doxygenfunction:: libsemigroups::action_digraph_helper::is_reachable
@@ -33,11 +33,11 @@ Full API
 .. doxygenfunction:: libsemigroups::action_digraph_helper::topological_sort(ActionDigraph<T> const&)
    :project: libsemigroups
 
-.. doxygenfunction:: libsemigroups::action_digraph_helper::topological_sort(ActionDigraph<T> const&, node_type<T> const)
+.. doxygenfunction:: libsemigroups::action_digraph_helper::topological_sort(ActionDigraph<T> const&, node_type<T>)
    :project: libsemigroups
     
-.. doxygenfunction:: libsemigroups::action_digraph_helper::add_cycle(ActionDigraph<T>&, U const, U const)
+.. doxygenfunction:: libsemigroups::action_digraph_helper::add_cycle(ActionDigraph<T>&, U, U)
    :project: libsemigroups
     
-.. doxygenfunction:: libsemigroups::action_digraph_helper::add_cycle(ActionDigraph<T>&, size_t const)
+.. doxygenfunction:: libsemigroups::action_digraph_helper::add_cycle(ActionDigraph<T>&, size_t)
    :project: libsemigroups

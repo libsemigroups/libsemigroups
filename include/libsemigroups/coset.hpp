@@ -118,7 +118,7 @@ namespace libsemigroups {
       //! \complexity
       //! Constant
       // not noexcept since std::vector::operator[] isn't.
-      inline bool is_active_coset(coset_type const c) const {
+      inline bool is_active_coset(coset_type c) const {
         LIBSEMIGROUPS_ASSERT(c < _ident.size() || c == UNDEFINED);
         return c != UNDEFINED && _ident[c] == c;
       }
@@ -134,7 +134,7 @@ namespace libsemigroups {
       //!
       //! \complexity
       //! Constant
-      inline bool is_valid_coset(coset_type const c) const noexcept {
+      inline bool is_valid_coset(coset_type c) const noexcept {
         return c < _forwd.size();
       }
 
@@ -150,7 +150,7 @@ namespace libsemigroups {
       //! \complexity
       //! Constant
       // not noexcept since std::vector::operator[] isn't.
-      inline coset_type next_active_coset(coset_type const c) const {
+      inline coset_type next_active_coset(coset_type c) const {
         LIBSEMIGROUPS_ASSERT(is_active_coset(c));
         return _forwd[c];
       }
@@ -211,7 +211,7 @@ namespace libsemigroups {
       // not noexcept because free_coset isn't, and std::vector::operator[]
       // isn't.
       //! No doc
-      inline void union_cosets(coset_type const min, coset_type const max) {
+      inline void union_cosets(coset_type min, coset_type max) {
         LIBSEMIGROUPS_ASSERT(is_active_coset(min));
         LIBSEMIGROUPS_ASSERT(is_active_coset(max));
         LIBSEMIGROUPS_ASSERT(max > min);

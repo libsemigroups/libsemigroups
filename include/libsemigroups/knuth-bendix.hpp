@@ -415,8 +415,8 @@ namespace libsemigroups {
       //! \sa
       //! \ref cend_normal_forms.
       const_normal_form_iterator cbegin_normal_forms(std::string const& lphbt,
-                                                     size_t const       min,
-                                                     size_t const       max);
+                                                     size_t             min,
+                                                     size_t             max);
 
       //! Returns a forward iterator pointing at the first normal form with
       //! length in a given range.
@@ -447,8 +447,7 @@ namespace libsemigroups {
       //!
       //! \sa
       //! cend_normal_forms.
-      const_normal_form_iterator cbegin_normal_forms(size_t const min,
-                                                     size_t const max) {
+      const_normal_form_iterator cbegin_normal_forms(size_t min, size_t max) {
         return cbegin_normal_forms(alphabet(), min, max);
       }
 
@@ -584,7 +583,7 @@ namespace libsemigroups {
       //! this function is at worst \f$O(mn)\f$ where \f$m\f$ is the number of
       //! letters in the alphabet, and \f$n\f$ is the number of nodes in the
       //! \ref gilman_digraph.
-      uint64_t number_of_normal_forms(size_t const min, size_t const max);
+      uint64_t number_of_normal_forms(size_t min, size_t max);
 
       //////////////////////////////////////////////////////////////////////////
       // FpSemigroupInterface - pure virtual member functions - public

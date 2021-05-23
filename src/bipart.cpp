@@ -99,11 +99,11 @@ namespace libsemigroups {
     _lookup.resize(n, false);
   }
 
-  bool Blocks::operator==(const Blocks& that) const {
+  bool Blocks::operator==(Blocks const& that) const {
     return _blocks == that._blocks && _lookup == that._lookup;
   }
 
-  bool Blocks::operator<(const Blocks& that) const {
+  bool Blocks::operator<(Blocks const& that) const {
     if (_blocks != that._blocks) {
       return _blocks < that._blocks;
     }

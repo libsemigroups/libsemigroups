@@ -43,7 +43,7 @@ namespace libsemigroups {
     //! No doc
     // not noexcept because it throws an exception!
     template <typename T>
-    void validate_node(ActionDigraph<T> const& ad, node_type<T> const v) {
+    void validate_node(ActionDigraph<T> const& ad, node_type<T> v) {
       if (v >= ad.number_of_nodes()) {
         LIBSEMIGROUPS_EXCEPTION("node value out of bounds, expected value in "
                                 "the range [0, %d), got %d",
@@ -55,7 +55,7 @@ namespace libsemigroups {
     //! No doc
     // not noexcept because it throws an exception!
     template <typename T>
-    void validate_label(ActionDigraph<T> const& ad, label_type<T> const lbl) {
+    void validate_label(ActionDigraph<T> const& ad, label_type<T> lbl) {
       if (lbl >= ad.out_degree()) {
         LIBSEMIGROUPS_EXCEPTION("label value out of bounds, expected value in "
                                 "the range [0, %d), got %d",
@@ -328,7 +328,7 @@ namespace libsemigroups {
     //! and \f$n\f$ is the number of edges.
     template <typename T>
     detail::topological_sort_type<T>
-    topological_sort(ActionDigraph<T> const& ad, node_type<T> const source) {
+    topological_sort(ActionDigraph<T> const& ad, node_type<T> source) {
       detail::topological_sort_type<T> order;
       if (ad.validate()) {
         return order;
@@ -381,7 +381,7 @@ namespace libsemigroups {
     //! \endcode
     // Not noexcept because detail::is_acyclic isn't
     template <typename T>
-    bool is_acyclic(ActionDigraph<T> const& ad, node_type<T> const source) {
+    bool is_acyclic(ActionDigraph<T> const& ad, node_type<T> source) {
       validate_node(ad, source);
       std::stack<std::pair<node_type<T>, label_type<T>>> stck;
       stck.emplace(source, 0);
@@ -491,7 +491,7 @@ namespace libsemigroups {
     //! \note
     //! The edges added by this function are all labelled \c 0.
     template <typename T, typename U>
-    void add_cycle(ActionDigraph<T>& ad, U const first, U const last) {
+    void add_cycle(ActionDigraph<T>& ad, U first, U last) {
       for (auto it = first; it < last - 1; ++it) {
         ad.add_edge(*it, *(it + 1), 0);
       }
@@ -517,7 +517,7 @@ namespace libsemigroups {
     //! \note
     //! The edges added by this function are all labelled \c 0.
     template <typename T>
-    void add_cycle(ActionDigraph<T>& ad, size_t const N) {
+    void add_cycle(ActionDigraph<T>& ad, size_t N) {
       size_t M = ad.number_of_nodes();
       ad.add_nodes(N);
       add_cycle(ad, ad.cbegin_nodes() + M, ad.cend_nodes());

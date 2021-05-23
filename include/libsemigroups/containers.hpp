@@ -277,7 +277,7 @@ namespace libsemigroups {
 
       // Not noexcept
       template <typename S, typename B>
-      void append(const DynamicArray2<S, B>& copy) {
+      void append(DynamicArray2<S, B> const& copy) {
         LIBSEMIGROUPS_ASSERT(copy._nr_used_cols == _nr_used_cols);
 
         size_t old_nr_rows = _nr_rows;

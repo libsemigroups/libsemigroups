@@ -296,7 +296,7 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Constant.
-    const_element_reference generator(index_type const index) const {
+    const_element_reference generator(index_type index) const {
       return strong_generator(0, index);
     }
 
@@ -334,7 +334,7 @@ namespace libsemigroups {
     //! \parameters
     //! (None)
     // TODO(later) shouldn't this throw if depth is out of bounds??
-    size_t number_of_strong_generators(index_type const depth) const noexcept {
+    size_t number_of_strong_generators(index_type depth) const noexcept {
       return _strong_gens.size(depth);
     }
 
@@ -352,8 +352,8 @@ namespace libsemigroups {
     //! \complexity
     //! Constant.
     // TODO(later) shouldn't this throw if depth is out of bounds??
-    const_element_reference strong_generator(index_type const depth,
-                                             index_type const index) const {
+    const_element_reference strong_generator(index_type depth,
+                                             index_type index) const {
       if (index >= _strong_gens.size(depth)) {
         LIBSEMIGROUPS_EXCEPTION(
             "index out of bounds, expected value in range (0, %d], got %d",
@@ -529,7 +529,7 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Linear in the current number of base points.
-    void add_base_point(point_type const pt) {
+    void add_base_point(point_type pt) {
       if (pt >= N) {
         LIBSEMIGROUPS_EXCEPTION(
             "base point out of range, expected value in [0, %d), got %d",
@@ -558,7 +558,7 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Constant.
-    point_type base(index_type const index) const {
+    point_type base(index_type index) const {
       if (index >= _base_size) {
         LIBSEMIGROUPS_EXCEPTION(
             "index out of bounds, expected value in range (0, %d], got %d",
@@ -600,7 +600,7 @@ namespace libsemigroups {
           Degree()(x) == N;
     }
 
-    void internal_add_base_point(point_type const pt) {
+    void internal_add_base_point(point_type pt) {
       LIBSEMIGROUPS_ASSERT(_base_size < N);
       _base[_base_size] = pt;
       _orbits.push_back(_base_size, pt);
@@ -610,7 +610,7 @@ namespace libsemigroups {
       _base_size++;
     }
 
-    void orbit_enumerate(index_type const depth, index_type first = 0) {
+    void orbit_enumerate(index_type depth, index_type first = 0) {
       LIBSEMIGROUPS_ASSERT(depth < _base_size);
       for (index_type i = first; i < _orbits.size(depth); i++) {
         for (auto it = _strong_gens.cbegin(depth);
@@ -621,7 +621,7 @@ namespace libsemigroups {
       }
     }
 
-    void orbit_add_gen(index_type const depth, internal_element_type gen) {
+    void orbit_add_gen(index_type depth, internal_element_type gen) {
       LIBSEMIGROUPS_ASSERT(depth < _base_size);
       // Apply the new generator to existing points in orbits[depth].
       index_type old_size_orbit = _orbits.size(depth);
@@ -631,9 +631,9 @@ namespace libsemigroups {
       orbit_enumerate(depth, old_size_orbit);
     }
 
-    void orbit_add_point(index_type const      depth,
+    void orbit_add_point(index_type            depth,
                          internal_element_type x,
-                         point_type const      pt) {
+                         point_type            pt) {
       point_type img = Action()(pt, this->to_external_const(x));
       if (!_orbits_lookup[depth][img]) {
         _orbits.push_back(depth, img);

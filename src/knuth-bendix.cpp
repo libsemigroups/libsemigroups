@@ -225,8 +225,7 @@ namespace libsemigroups {
              || (has_identity() && identity().empty());
     }
 
-    uint64_t KnuthBendix::number_of_normal_forms(size_t const min,
-                                                 size_t const max) {
+    uint64_t KnuthBendix::number_of_normal_forms(size_t min, size_t max) {
       if (alphabet().empty()) {
         return 0;
       } else {
