@@ -21,8 +21,8 @@
 #include "catch.hpp"      // for TEST_CASE
 #include "test-main.hpp"  // LIBSEMIGROUPS_TEST_CASE
 
-#include "libsemigroups/libsemigroups-exception.hpp"  // for LibsemigroupsException
-#include "libsemigroups/pbr.hpp"                      // for PBR
+#include "libsemigroups/exception.hpp"  // for LibsemigroupsException
+#include "libsemigroups/pbr.hpp"        // for PBR
 
 namespace libsemigroups {
   // Forward decl

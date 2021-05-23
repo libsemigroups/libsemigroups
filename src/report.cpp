@@ -20,7 +20,7 @@
 
 #include <iostream>
 
-#include "libsemigroups/libsemigroups-config.hpp"
+#include "libsemigroups/config.hpp"
 
 namespace libsemigroups {
   detail::Reporter        REPORTER;

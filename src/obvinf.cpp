@@ -26,11 +26,11 @@
 #include <vector>     // for vector
 
 // for LIBSEMIGROUPS_EIGEN_ENABLED
-#include "libsemigroups/libsemigroups-config.hpp"
+#include "libsemigroups/config.hpp"
 
-#include "libsemigroups/constants.hpp"            // for UNDEFINED
-#include "libsemigroups/libsemigroups-debug.hpp"  // for LIBSEMIGROUPS_ASSERT
-#include "libsemigroups/word.hpp"                 // for StringToWord
+#include "libsemigroups/constants.hpp"  // for UNDEFINED
+#include "libsemigroups/debug.hpp"      // for LIBSEMIGROUPS_ASSERT
+#include "libsemigroups/word.hpp"       // for StringToWord
 
 #ifdef LIBSEMIGROUPS_EIGEN_ENABLED
 #include <Eigen/QR>  // for dimensionOfKernel

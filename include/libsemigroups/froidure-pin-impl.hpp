@@ -19,10 +19,10 @@
 // This file contains implementations of the member functions for the
 // FroidurePin class.
 
-#include "libsemigroups-debug.hpp"      // for LIBSEMIGROUPS_ASSERT
-#include "libsemigroups-exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
-#include "report.hpp"                   // for REPORT
-#include "timer.hpp"                    // for detail::Timer
+#include "debug.hpp"      // for LIBSEMIGROUPS_ASSERT
+#include "exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
+#include "report.hpp"     // for REPORT
+#include "timer.hpp"      // for detail::Timer
 
 #ifndef LIBSEMIGROUPS_FROIDURE_PIN_IMPL_HPP_
 #define LIBSEMIGROUPS_FROIDURE_PIN_IMPL_HPP_

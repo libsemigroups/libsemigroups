@@ -16,8 +16,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#ifndef LIBSEMIGROUPS_LIBSEMIGROUPS_EXCEPTION_HPP_
-#define LIBSEMIGROUPS_LIBSEMIGROUPS_EXCEPTION_HPP_
+#ifndef LIBSEMIGROUPS_EXCEPTION_HPP_
+#define LIBSEMIGROUPS_EXCEPTION_HPP_
 
 #include <exception>  // for std::runtime_error
 #include <string>     // for std::string
@@ -27,7 +27,7 @@
 namespace libsemigroups {
   //! Exception class deriving from std::runtime_error.
   //!
-  //! Defined in ``libsemigroups-exception.hpp``.
+  //! Defined in ``exception.hpp``.
   //!
   //! This page contains the documentation for the class
   //! LibsemigroupsException.  All exceptions thrown by
@@ -68,4 +68,4 @@ namespace libsemigroups {
         __FILE__, __LINE__, __func__, detail::string_format(__VA_ARGS__)); \
   }
 
-#endif  // LIBSEMIGROUPS_LIBSEMIGROUPS_EXCEPTION_HPP_
+#endif  // LIBSEMIGROUPS_EXCEPTION_HPP_

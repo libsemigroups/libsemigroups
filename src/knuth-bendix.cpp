@@ -20,16 +20,16 @@
 #include <string>   // for string
 
 #include "libsemigroups/cong-intf.hpp"  // for CongruenceInterface, CongruenceInterface::...
-#include "libsemigroups/digraph.hpp"              // for ActionDigraph
-#include "libsemigroups/fpsemi-intf.hpp"          // for FpSemigroupInterface
-#include "libsemigroups/froidure-pin-base.hpp"    // for FroidurePinBase
-#include "libsemigroups/froidure-pin.hpp"         // for FroidurePin
-#include "libsemigroups/kbe.hpp"                  // for detail::KBE
-#include "libsemigroups/knuth-bendix.hpp"         // for KnuthBendix, KnuthBe...
-#include "libsemigroups/libsemigroups-debug.hpp"  // for LIBSEMIGROUPS_ASSERT
-#include "libsemigroups/libsemigroups-exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
-#include "libsemigroups/obvinf.hpp"  // for IsObviouslyInfinitePairs
-#include "libsemigroups/types.hpp"   // for word_type
+#include "libsemigroups/debug.hpp"              // for LIBSEMIGROUPS_ASSERT
+#include "libsemigroups/digraph.hpp"            // for ActionDigraph
+#include "libsemigroups/exception.hpp"          // for LIBSEMIGROUPS_EXCEPTION
+#include "libsemigroups/fpsemi-intf.hpp"        // for FpSemigroupInterface
+#include "libsemigroups/froidure-pin-base.hpp"  // for FroidurePinBase
+#include "libsemigroups/froidure-pin.hpp"       // for FroidurePin
+#include "libsemigroups/kbe.hpp"                // for detail::KBE
+#include "libsemigroups/knuth-bendix.hpp"       // for KnuthBendix, KnuthBe...
+#include "libsemigroups/obvinf.hpp"             // for IsObviouslyInfinitePairs
+#include "libsemigroups/types.hpp"              // for word_type
 
 #include "knuth-bendix-impl.hpp"
 

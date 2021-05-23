@@ -18,7 +18,7 @@
 
 // Must include hpcombi.hpp so that LIBSEMIGROUPS_HPCOMBI_ENABLED is defined,
 // if so specified at during configure.
-#include "libsemigroups/libsemigroups-config.hpp"  // for LIBSEMIGROUPS_HPCOMBI_ENABLED
+#include "libsemigroups/config.hpp"  // for LIBSEMIGROUPS_HPCOMBI_ENABLED
 
 #ifdef LIBSEMIGROUPS_HPCOMBI_ENABLED
 

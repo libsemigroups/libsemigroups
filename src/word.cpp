@@ -23,9 +23,9 @@
 
 #include <cmath>  // for std::pow
 
-#include "libsemigroups/int-range.hpp"                // for IntegralRange
-#include "libsemigroups/libsemigroups-exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
-#include "libsemigroups/types.hpp"                    // for word_type
+#include "libsemigroups/exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
+#include "libsemigroups/int-range.hpp"  // for IntegralRange
+#include "libsemigroups/types.hpp"      // for word_type
 
 namespace libsemigroups {
   namespace {

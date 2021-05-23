@@ -70,12 +70,12 @@
 #include "bruidhinn-traits.hpp"  // for detail::BruidhinnTraits
 #include "cong-intf.hpp"         // for CongruenceInterface::class_index_type
 #include "cong-wrap.hpp"         // for CongruenceWrapper
+#include "exception.hpp"         // for LIBSEMIGROUPS_EXCEPTION
 #include "froidure-pin.hpp"      // for FroidurePin
 #include "kbe.hpp"               // for detail::KBE
 #include "knuth-bendix.hpp"      // for fpsemigroup::KnuthBendix
-#include "libsemigroups-exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
-#include "types.hpp"                    // for word_type
-#include "uf.hpp"                       // for Duf
+#include "types.hpp"             // for word_type
+#include "uf.hpp"                // for Duf
 
 namespace libsemigroups {
   class FroidurePinBase;  // Forward declaration, for constructor parameter

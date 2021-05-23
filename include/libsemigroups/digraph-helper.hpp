@@ -23,9 +23,9 @@
 #include <utility>  // for pair
 #include <vector>   // for vector
 
-#include "constants.hpp"                // for UNDEFINED
-#include "libsemigroups-exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
-#include "types.hpp"                    // for word_type
+#include "constants.hpp"  // for UNDEFINED
+#include "exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
+#include "types.hpp"      // for word_type
 
 namespace libsemigroups {
   template <typename T>

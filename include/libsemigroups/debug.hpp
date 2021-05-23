@@ -18,12 +18,12 @@
 
 // This file declares debugging functionality.
 
-#ifndef LIBSEMIGROUPS_LIBSEMIGROUPS_DEBUG_HPP_
-#define LIBSEMIGROUPS_LIBSEMIGROUPS_DEBUG_HPP_
+#ifndef LIBSEMIGROUPS_DEBUG_HPP_
+#define LIBSEMIGROUPS_DEBUG_HPP_
 
 #include <assert.h>
 
-#include "libsemigroups-config.hpp"
+#include "config.hpp"
 
 #ifdef LIBSEMIGROUPS_DEBUG
 #define LIBSEMIGROUPS_ASSERT(x) assert(x)
@@ -36,4 +36,4 @@
 #error "GCC version 5.0 or higher is required"
 #endif
 
-#endif  // LIBSEMIGROUPS_LIBSEMIGROUPS_DEBUG_HPP_
+#endif  // LIBSEMIGROUPS_DEBUG_HPP_

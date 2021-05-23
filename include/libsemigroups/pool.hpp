@@ -27,7 +27,7 @@
 #include <type_traits>    // for is_pointer
 #include <unordered_map>  // for unordered_map
 
-#include "libsemigroups/libsemigroups-exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
+#include "libsemigroups/exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
 
 namespace libsemigroups {
   namespace detail {

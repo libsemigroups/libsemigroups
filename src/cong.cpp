@@ -24,12 +24,12 @@
 #include <memory>  // for shared_ptr
 
 #include "libsemigroups/cong-pair.hpp"  // for KnuthBendixCongruenceByPairs
+#include "libsemigroups/debug.hpp"      // for LIBSEMIGROUPS_ASSERT
+#include "libsemigroups/exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
 #include "libsemigroups/fpsemi.hpp"     // for FpSemigroup
-#include "libsemigroups/froidure-pin-base.hpp"    // for FroidurePinBase
-#include "libsemigroups/knuth-bendix.hpp"         // for KnuthBendix
-#include "libsemigroups/libsemigroups-debug.hpp"  // for LIBSEMIGROUPS_ASSERT
-#include "libsemigroups/libsemigroups-exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
-#include "libsemigroups/todd-coxeter.hpp"             // for ToddCoxeter
+#include "libsemigroups/froidure-pin-base.hpp"  // for FroidurePinBase
+#include "libsemigroups/knuth-bendix.hpp"       // for KnuthBendix
+#include "libsemigroups/todd-coxeter.hpp"       // for ToddCoxeter
 
 namespace libsemigroups {
   using ToddCoxeter      = congruence::ToddCoxeter;

@@ -25,8 +25,8 @@
 #include <cstddef>  // for size_t
 #include <vector>   // for vector
 
-#include "constants.hpp"            // for UNDEFINED
-#include "libsemigroups-debug.hpp"  // for LIBSEMIGROUPS_ASSERT/DEBUG
+#include "constants.hpp"  // for UNDEFINED
+#include "debug.hpp"      // for LIBSEMIGROUPS_ASSERT/DEBUG
 
 namespace libsemigroups {
   namespace detail {

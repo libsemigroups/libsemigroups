@@ -22,9 +22,9 @@
 #ifndef LIBSEMIGROUPS_HPCOMBI_HPP_
 #define LIBSEMIGROUPS_HPCOMBI_HPP_
 
-// Must include libsemigroups-config.hpp so that LIBSEMIGROUPS_HPCOMBI_ENABLED
+// Must include config.hpp so that LIBSEMIGROUPS_HPCOMBI_ENABLED
 // is defined, if so specified at during configure.
-#include "libsemigroups-config.hpp"  // for LIBSEMIGROUPS_HPCOMBI_ENABLED
+#include "config.hpp"  // for LIBSEMIGROUPS_HPCOMBI_ENABLED
 
 #if defined(LIBSEMIGROUPS_HPCOMBI_ENABLED) \
     || defined(LIBSEMIGROUPS_PARSED_BY_DOXYGEN)
@@ -34,8 +34,8 @@
 #pragma GCC diagnostic ignored "-Winline"
 #include "HPCombi/include/hpcombi.hpp"  // for HPCombi::Perm16, ...
 
-#include "adapters.hpp"             // for Complexity, Degree, ...
-#include "libsemigroups-debug.hpp"  // for LIBSEMIGROUPS_ASSERT
+#include "adapters.hpp"  // for Complexity, Degree, ...
+#include "debug.hpp"     // for LIBSEMIGROUPS_ASSERT
 
 namespace libsemigroups {
 

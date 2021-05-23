@@ -34,20 +34,20 @@
 #include <set>  // for set
 #endif
 
+#include "libsemigroups/config.hpp"             // for LIBSEMIGROUPS_DEBUG
 #include "libsemigroups/cong-intf.hpp"          // for CongruenceInterface
 #include "libsemigroups/coset.hpp"              // for CosetManager
+#include "libsemigroups/debug.hpp"              // for LIBSEMIGROUPS_ASSERT
+#include "libsemigroups/exception.hpp"          // for LIBSEMIGROUPS_EXCEPTION
 #include "libsemigroups/froidure-pin-base.hpp"  // for FroidurePinBase
 #include "libsemigroups/froidure-pin.hpp"       // for FroidurePin
 #include "libsemigroups/knuth-bendix.hpp"       // for fpsemigroup::KnuthBendix
-#include "libsemigroups/libsemigroups-config.hpp"  // for LIBSEMIGROUPS_DEBUG
-#include "libsemigroups/libsemigroups-debug.hpp"   // for LIBSEMIGROUPS_ASSERT
-#include "libsemigroups/libsemigroups-exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
-#include "libsemigroups/obvinf.hpp"                   // for IsObviouslyInfinite
-#include "libsemigroups/report.hpp"                   // for REPORT
-#include "libsemigroups/stl.hpp"                      // for apply_permutation
-#include "libsemigroups/tce.hpp"                      // for TCE
-#include "libsemigroups/timer.hpp"                    // for detail::Timer
-#include "libsemigroups/types.hpp"                    // for letter_type
+#include "libsemigroups/obvinf.hpp"             // for IsObviouslyInfinite
+#include "libsemigroups/report.hpp"             // for REPORT
+#include "libsemigroups/stl.hpp"                // for apply_permutation
+#include "libsemigroups/tce.hpp"                // for TCE
+#include "libsemigroups/timer.hpp"              // for detail::Timer
+#include "libsemigroups/types.hpp"              // for letter_type
 
 // TODO(later)
 //
@@ -242,14 +242,14 @@ namespace libsemigroups {
 #ifdef LIBSEMIGROUPS_DEBUG
       bool enable_debug_verify_no_missing_deductions;
 #endif
-      options::lookahead        lookahead;
+      options::lookahead       lookahead;
       size_t                   lower_bound;
       size_t                   next_lookahead;
-      options::froidure_pin     froidure_pin;
+      options::froidure_pin    froidure_pin;
       std::chrono::nanoseconds random_interval;
       bool                     save;
       bool                     standardize;
-      options::strategy         strategy;
+      options::strategy        strategy;
     };
 
     class ToddCoxeter::FelschTree {
@@ -409,7 +409,7 @@ namespace libsemigroups {
 
     ToddCoxeter::ToddCoxeter(congruence_type                  type,
                              std::shared_ptr<FroidurePinBase> S,
-                             options::froidure_pin             p)
+                             options::froidure_pin            p)
         : ToddCoxeter(type) {
       _settings->froidure_pin = p;
       set_parent_froidure_pin(S);
@@ -1311,8 +1311,8 @@ namespace libsemigroups {
         size_t m = dist(mt);
         if (m < 8) {
           strategy(options::strategy::hlt);
-          lookahead(
-              (full[m] ? options::lookahead::full : options::lookahead::partial));
+          lookahead((full[m] ? options::lookahead::full
+                             : options::lookahead::partial));
           try {
             save(save_it[m]);
           } catch (...) {

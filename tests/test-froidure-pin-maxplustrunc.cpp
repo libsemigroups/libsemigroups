@@ -24,9 +24,9 @@
 #include "catch.hpp"      // for  REQUIRE
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
-#include "libsemigroups/froidure-pin.hpp"         // for FroidurePin
-#include "libsemigroups/libsemigroups-debug.hpp"  // for LIBSEMIGROUPS_ASSERT
-#include "libsemigroups/matrix.hpp"               // for Matrix
+#include "libsemigroups/debug.hpp"         // for LIBSEMIGROUPS_ASSERT
+#include "libsemigroups/froidure-pin.hpp"  // for FroidurePin
+#include "libsemigroups/matrix.hpp"        // for Matrix
 
 namespace libsemigroups {
   // Forward declaration

@@ -31,9 +31,9 @@
 #include <unordered_map>  // for unordered_map
 #include <vector>         // for vector
 
-#include "libsemigroups-config.hpp"  // for LIBSEMIGROUPS_FMT_ENABLED
-#include "libsemigroups-debug.hpp"   // for LIBSEMIGROUPS_ASSERT
-#include "string.hpp"                // for wrap
+#include "config.hpp"  // for LIBSEMIGROUPS_FMT_ENABLED
+#include "debug.hpp"   // for LIBSEMIGROUPS_ASSERT
+#include "string.hpp"  // for wrap
 
 #ifdef LIBSEMIGROUPS_FMT_ENABLED
 #include "fmt/color.h"

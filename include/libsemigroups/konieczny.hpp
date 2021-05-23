@@ -34,16 +34,16 @@
 #include <utility>        // for pair, make_pair
 #include <vector>         // for vector
 
-#include "action.hpp"                   // for LeftAction, RightAction
-#include "adapters.hpp"                 // for Lambda, etc
-#include "bruidhinn-traits.hpp"         // for BruidhinnTraits
-#include "constants.hpp"                // for UNDEFINED
-#include "libsemigroups-debug.hpp"      // for LIBSEMIGROUPS_ASSERT
-#include "libsemigroups-exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
-#include "pool.hpp"                     // for detail::Pool
-#include "report.hpp"                   // for REPORT_DEFAULT
-#include "runner.hpp"                   // for Runner
-#include "timer.hpp"                    // for Timer
+#include "action.hpp"            // for LeftAction, RightAction
+#include "adapters.hpp"          // for Lambda, etc
+#include "bruidhinn-traits.hpp"  // for BruidhinnTraits
+#include "constants.hpp"         // for UNDEFINED
+#include "debug.hpp"             // for LIBSEMIGROUPS_ASSERT
+#include "exception.hpp"         // for LIBSEMIGROUPS_EXCEPTION
+#include "pool.hpp"              // for detail::Pool
+#include "report.hpp"            // for REPORT_DEFAULT
+#include "runner.hpp"            // for Runner
+#include "timer.hpp"             // for Timer
 
 namespace libsemigroups {
   //! Defined in ``konieczny.hpp``.

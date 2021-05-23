@@ -36,16 +36,16 @@
 #include <utility>      // for pair
 #include <vector>       // for vector
 
-#include "containers.hpp"               // for DynamicArray2
-#include "digraph-helper.hpp"           // for is_reachable
-#include "forest.hpp"                   // for Forest
-#include "int-range.hpp"                // for IntegralRange
-#include "iterator.hpp"                 // for ConstIteratorStateless
-#include "libsemigroups-debug.hpp"      // for LIBSEMIGROUPS_ASSERT
-#include "libsemigroups-exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
-#include "matrix.hpp"                   // for IntMat
-#include "types.hpp"                    // for word_type
-#include "word.hpp"                     // for number_of_words
+#include "containers.hpp"      // for DynamicArray2
+#include "debug.hpp"           // for LIBSEMIGROUPS_ASSERT
+#include "digraph-helper.hpp"  // for is_reachable
+#include "exception.hpp"       // for LIBSEMIGROUPS_EXCEPTION
+#include "forest.hpp"          // for Forest
+#include "int-range.hpp"       // for IntegralRange
+#include "iterator.hpp"        // for ConstIteratorStateless
+#include "matrix.hpp"          // for IntMat
+#include "types.hpp"           // for word_type
+#include "word.hpp"            // for number_of_words
 
 namespace libsemigroups {
 
