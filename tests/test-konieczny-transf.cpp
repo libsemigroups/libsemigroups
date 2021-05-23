@@ -138,13 +138,13 @@ namespace libsemigroups {
       return S.cend_D_classes() - S.cbegin_D_classes() > 20;
     });
 
-    size_t nr_classes1 = S.cend_D_classes() - S.cbegin_D_classes();
-    REQUIRE(nr_classes1 >= 20);
+    size_t number_of_classes1 = S.cend_D_classes() - S.cbegin_D_classes();
+    REQUIRE(number_of_classes1 >= 20);
     S.run();
-    size_t nr_classes2 = S.cend_D_classes() - S.cbegin_D_classes();
+    size_t number_of_classes2 = S.cend_D_classes() - S.cbegin_D_classes();
     REQUIRE(S.size() == 232511);
-    REQUIRE(nr_classes1 < nr_classes2);
-    REQUIRE(nr_classes2 == 2122);
+    REQUIRE(number_of_classes1 < number_of_classes2);
+    REQUIRE(number_of_classes2 == 2122);
   }
 
   LIBSEMIGROUPS_TEST_CASE("Konieczny",

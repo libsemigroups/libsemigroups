@@ -107,7 +107,7 @@ namespace libsemigroups {
   //!               16));
   //! o.reserve(70000);
   //! o.size(); // 65536
-  //! o.digraph().nr_scc(); // 17
+  //! o.digraph().number_of_scc(); // 17
   //! \endcode
   //!
   //! \complexity
@@ -579,7 +579,7 @@ namespace libsemigroups {
         if (_multipliers_from_scc_root.defined(pos)) {
           return _multipliers_from_scc_root[pos];
         }
-        _multipliers_from_scc_root.init(_graph.nr_nodes(), _gens[0]);
+        _multipliers_from_scc_root.init(_graph.number_of_nodes(), _gens[0]);
         index_type             i = pos;
         std::stack<index_type> visited;
         while (!_multipliers_from_scc_root.defined(i)
@@ -644,7 +644,7 @@ namespace libsemigroups {
         if (_multipliers_to_scc_root.defined(pos)) {
           return _multipliers_to_scc_root[pos];
         }
-        _multipliers_to_scc_root.init(_graph.nr_nodes(), _gens[0]);
+        _multipliers_to_scc_root.init(_graph.number_of_nodes(), _gens[0]);
         index_type             i = pos;
         std::stack<index_type> visited;
         while (!_multipliers_to_scc_root.defined(i)

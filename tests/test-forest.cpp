@@ -26,7 +26,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("Forest", "001", "test forest", "[quick]") {
     Forest forest(100);
-    REQUIRE(forest.nr_nodes() == 100);
+    REQUIRE(forest.number_of_nodes() == 100);
     for (size_t i = 1; i < 100; ++i) {
       forest.set(i, i - 1, i * i % 7);
     }
@@ -47,8 +47,8 @@ namespace libsemigroups {
              74,        75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88,
              89,        90, 91, 92, 93, 94, 95, 96, 97, 98}));
     REQUIRE_NOTHROW(forest.clear());
-    REQUIRE(forest.nr_nodes() == 0);
+    REQUIRE(forest.number_of_nodes() == 0);
     REQUIRE_NOTHROW(forest.add_nodes(10));
-    REQUIRE(forest.nr_nodes() == 10);
+    REQUIRE(forest.number_of_nodes() == 10);
   }
 }  // namespace libsemigroups

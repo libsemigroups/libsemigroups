@@ -27,7 +27,7 @@ namespace libsemigroups {
       congruence_type              type,
       std::shared_ptr<KnuthBendix> kb) noexcept
       : CongruenceByPairsHelper_(type, kb, false) {  // final param is a dummy
-    set_nr_generators(kb->alphabet().size());
+    set_number_of_generators(kb->alphabet().size());
   }
 
   KnuthBendixCongruenceByPairs::KnuthBendixCongruenceByPairs(

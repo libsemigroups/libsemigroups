@@ -107,7 +107,7 @@ namespace libsemigroups {
   ////////////////////////////////////////////////////////////////////////////
 
   void CongruenceInterface::before_run() {
-    if (nr_generators() == UNDEFINED) {
+    if (number_of_generators() == UNDEFINED) {
       LIBSEMIGROUPS_EXCEPTION("no generators have been set!");
     }
   }
@@ -142,9 +142,9 @@ namespace libsemigroups {
     }
   }
 
-  void CongruenceInterface::set_nr_generators(size_t n) {
-    if (nr_generators() != UNDEFINED) {
-      if (nr_generators() != n) {
+  void CongruenceInterface::set_number_of_generators(size_t n) {
+    if (number_of_generators() != UNDEFINED) {
+      if (number_of_generators() != n) {
         LIBSEMIGROUPS_EXCEPTION("cannot change the number of generators");
       } else {
         return;  // do nothing
@@ -156,7 +156,7 @@ namespace libsemigroups {
           "cannot set the number of generator at this stage");
     }
     _nr_gens = n;
-    set_nr_generators_impl(n);
+    set_number_of_generators_impl(n);
     reset();
   }
 
@@ -185,12 +185,12 @@ namespace libsemigroups {
   }
 
   word_type CongruenceInterface::class_index_to_word(class_index_type i) {
-    if (nr_generators() == UNDEFINED) {
+    if (number_of_generators() == UNDEFINED) {
       LIBSEMIGROUPS_EXCEPTION("no generators have been defined");
-    } else if (i >= nr_classes()) {
+    } else if (i >= number_of_classes()) {
       LIBSEMIGROUPS_EXCEPTION("invalid class index, expected a value in the "
                               "range [0, %d), found %d",
-                              nr_classes(),
+                              number_of_classes(),
                               i);
     }
     return class_index_to_word_impl(i);
@@ -219,8 +219,8 @@ namespace libsemigroups {
     // is not obviously infinite), or infinite, which is undecidable in
     // general, so we leave the answer to this question to
     // is_quotient_obviously_infinite_impl in the derived class.
-    if (nr_generators() == UNDEFINED) {
-      // If nr_generators() is undefined, then there is no quotient yet,
+    if (number_of_generators() == UNDEFINED) {
+      // If number_of_generators() is undefined, then there is no quotient yet,
       // and so it is not obviously infinite, or anything!
       REPORT_VERBOSE("not obviously infinite (no generators yet defined)");
       return false;
@@ -251,18 +251,18 @@ namespace libsemigroups {
     return false;
   }
 
-  size_t CongruenceInterface::nr_classes() {
-    if (nr_generators() == UNDEFINED) {
+  size_t CongruenceInterface::number_of_classes() {
+    if (number_of_generators() == UNDEFINED) {
       return UNDEFINED;
     } else if (!finished() && is_quotient_obviously_infinite()) {
       return POSITIVE_INFINITY;
     }
-    return nr_classes_impl();
+    return number_of_classes_impl();
   }
 
   CongruenceInterface::class_index_type
   CongruenceInterface::word_to_class_index(word_type const& word) {
-    // validate_word throws if nr_generators is undefined.
+    // validate_word throws if number_of_generators is undefined.
     validate_word(word);
     return word_to_class_index_impl(word);
   }
@@ -274,11 +274,12 @@ namespace libsemigroups {
   void CongruenceInterface::set_parent_froidure_pin(
       std::shared_ptr<FroidurePinBase> prnt) {
     LIBSEMIGROUPS_ASSERT(!_parent->has_froidure_pin());
-    LIBSEMIGROUPS_ASSERT(nr_generators() == UNDEFINED
-                         || prnt->nr_generators() == nr_generators());
+    LIBSEMIGROUPS_ASSERT(number_of_generators() == UNDEFINED
+                         || prnt->number_of_generators()
+                                == number_of_generators());
     LIBSEMIGROUPS_ASSERT(!finished());
-    if (nr_generators() == UNDEFINED) {
-      set_nr_generators(prnt->nr_generators());
+    if (number_of_generators() == UNDEFINED) {
+      set_number_of_generators(prnt->number_of_generators());
     }
     _parent->set(prnt);
     reset();
@@ -287,11 +288,11 @@ namespace libsemigroups {
   void CongruenceInterface::set_parent_froidure_pin(
       std::shared_ptr<FpSemigroupInterface> prnt) {
     LIBSEMIGROUPS_ASSERT(!_parent->has_froidure_pin());
-    LIBSEMIGROUPS_ASSERT(nr_generators() == UNDEFINED
-                         || prnt->alphabet().size() == nr_generators());
+    LIBSEMIGROUPS_ASSERT(number_of_generators() == UNDEFINED
+                         || prnt->alphabet().size() == number_of_generators());
     LIBSEMIGROUPS_ASSERT(!finished());
-    if (nr_generators() == UNDEFINED && !prnt->alphabet().empty()) {
-      set_nr_generators(prnt->alphabet().size());
+    if (number_of_generators() == UNDEFINED && !prnt->alphabet().empty()) {
+      set_number_of_generators(prnt->alphabet().size());
     }
     _parent->set(prnt);
     reset();
@@ -308,7 +309,7 @@ namespace libsemigroups {
     return UNDEFINED;
   }
 
-  void CongruenceInterface::set_nr_generators_impl(size_t) {
+  void CongruenceInterface::set_number_of_generators_impl(size_t) {
     // do nothing
   }
 
@@ -320,7 +321,8 @@ namespace libsemigroups {
     }
     // The next line may trigger an infinite computation
     auto fp  = _parent->froidure_pin();
-    auto ntc = non_trivial_classes_type(nr_classes(), std::vector<word_type>());
+    auto ntc = non_trivial_classes_type(number_of_classes(),
+                                        std::vector<word_type>());
 
     word_type w;
     for (size_t pos = 0; pos < fp->size(); ++pos) {
@@ -380,7 +382,7 @@ namespace libsemigroups {
   /////////////////////////////////////////////////////////////////////////
 
   bool CongruenceInterface::validate_letter(letter_type c) const {
-    if (nr_generators() == UNDEFINED) {
+    if (number_of_generators() == UNDEFINED) {
       LIBSEMIGROUPS_EXCEPTION("no generators have been defined");
     }
     return c < _nr_gens;

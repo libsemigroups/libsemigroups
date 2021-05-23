@@ -67,12 +67,12 @@ namespace libsemigroups {
       auto                  rg = ReportGuard(REPORT);
       FroidurePin<Transf<>> S({Transf<>({1, 0}), Transf<>({0, 0})});
       REQUIRE(S.size() == 4);
-      REQUIRE(S.nr_rules() == 4);
+      REQUIRE(S.number_of_rules() == 4);
 
       KnuthBendix kb(S);
       REQUIRE(kb.confluent());
-      REQUIRE(kb.nr_rules() == 4);
-      REQUIRE(kb.nr_active_rules() == 4);
+      REQUIRE(kb.number_of_rules() == 4);
+      REQUIRE(kb.number_of_active_rules() == 4);
       REQUIRE(kb.size() == 4);
     }
 
@@ -87,11 +87,11 @@ namespace libsemigroups {
 
       REQUIRE(S.size() == 9);
       REQUIRE(S.degree() == 5);
-      REQUIRE(S.nr_rules() == 3);
+      REQUIRE(S.number_of_rules() == 3);
 
       KnuthBendix kb(S);
       REQUIRE(kb.confluent());
-      REQUIRE(kb.nr_active_rules() == 3);
+      REQUIRE(kb.number_of_active_rules() == 3);
       REQUIRE(kb.size() == 9);
     }
 
@@ -106,11 +106,11 @@ namespace libsemigroups {
 
       REQUIRE(S.size() == 88);
       REQUIRE(S.degree() == 5);
-      REQUIRE(S.nr_rules() == 18);
+      REQUIRE(S.number_of_rules() == 18);
 
       KnuthBendix kb(S);
       REQUIRE(kb.confluent());
-      REQUIRE(kb.nr_active_rules() == 18);
+      REQUIRE(kb.number_of_active_rules() == 18);
       REQUIRE(kb.size() == 88);
     }
 
@@ -156,7 +156,7 @@ namespace libsemigroups {
       congruence::KnuthBendix kb(S);
       kb.run();
       REQUIRE(kb.knuth_bendix().confluent());
-      REQUIRE(kb.nr_classes() == 88);
+      REQUIRE(kb.number_of_classes() == 88);
     }
   }  // namespace fpsemigroup
 }  // namespace libsemigroups

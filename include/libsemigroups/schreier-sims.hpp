@@ -313,8 +313,8 @@ namespace libsemigroups {
     //!
     //! \parameters
     //! (None)
-    size_t nr_generators() const noexcept {
-      return nr_strong_generators(0);
+    size_t number_of_generators() const noexcept {
+      return number_of_strong_generators(0);
     }
 
     //! The number of strong generators at a given depth.
@@ -334,7 +334,7 @@ namespace libsemigroups {
     //! \parameters
     //! (None)
     // TODO(later) shouldn't this throw if depth is out of bounds??
-    size_t nr_strong_generators(index_type const depth) const noexcept {
+    size_t number_of_strong_generators(index_type const depth) const noexcept {
       return _strong_gens.size(depth);
     }
 
@@ -365,7 +365,8 @@ namespace libsemigroups {
 
     //! Check if any generators have been added so far.
     //!
-    //! \returns \c true if `nr_generators() == 0` and \c false otherwise.
+    //! \returns \c true if `number_of_generators() == 0` and \c false
+    //! otherwise.
     //!
     //! \parameters
     //! (None)

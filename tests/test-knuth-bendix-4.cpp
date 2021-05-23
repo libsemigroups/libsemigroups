@@ -86,7 +86,7 @@ namespace libsemigroups {
       kb.check_confluence_interval(LIMIT_MAX);
 
       kb.run();
-      REQUIRE(kb.nr_active_rules() == 1026);
+      REQUIRE(kb.number_of_active_rules() == 1026);
       // REQUIRE(kb.confluent());
       // REQUIRE(kb.size() == 10752);
     }
@@ -117,7 +117,7 @@ namespace libsemigroups {
       kb.knuth_bendix_by_overlap_length();
       // kb.run() // also works, but is slower
       REQUIRE(kb.confluent());
-      REQUIRE(kb.nr_active_rules() == 8);
+      REQUIRE(kb.number_of_active_rules() == 8);
       REQUIRE(kb.size() == 3);
       REQUIRE(
           std::vector<std::string>(kb.cbegin_normal_forms(0, POSITIVE_INFINITY),
@@ -154,7 +154,7 @@ namespace libsemigroups {
 
       kb.knuth_bendix_by_overlap_length();
       REQUIRE(kb.confluent());
-      REQUIRE(kb.nr_active_rules() == 194);
+      REQUIRE(kb.number_of_active_rules() == 194);
       REQUIRE(kb.size() == 29);
     }
 
@@ -179,7 +179,7 @@ namespace libsemigroups {
 
       kb.knuth_bendix_by_overlap_length();
       REQUIRE(kb.confluent());
-      REQUIRE(kb.nr_active_rules() == 1731);
+      REQUIRE(kb.number_of_active_rules() == 1731);
       REQUIRE(kb.size() == 7920);
     }
 
@@ -226,9 +226,9 @@ namespace libsemigroups {
       REQUIRE(!kb.confluent());
       kb.knuth_bendix_by_overlap_length();
       REQUIRE(kb.confluent());
-      REQUIRE(kb.nr_active_rules() == 192);
-      REQUIRE(kb.gilman_digraph().nr_nodes() == 332);
-      REQUIRE(kb.gilman_digraph().nr_edges() == 533);
+      REQUIRE(kb.number_of_active_rules() == 192);
+      REQUIRE(kb.gilman_digraph().number_of_nodes() == 332);
+      REQUIRE(kb.gilman_digraph().number_of_edges() == 533);
       REQUIRE(kb.size() == 696729600);
     }
 
@@ -254,7 +254,7 @@ namespace libsemigroups {
       // kb.run();
       kb.knuth_bendix_by_overlap_length();
       REQUIRE(kb.confluent());
-      REQUIRE(kb.nr_active_rules() == 6);
+      REQUIRE(kb.number_of_active_rules() == 6);
       REQUIRE(kb.size() == 1);
     }
     // Two generator presentation of Fibonacci group F(2,7) - order 29. Large
@@ -278,7 +278,7 @@ namespace libsemigroups {
 
       kb.knuth_bendix_by_overlap_length();
       REQUIRE(kb.confluent());
-      REQUIRE(kb.nr_active_rules() == 19);
+      REQUIRE(kb.number_of_active_rules() == 19);
       REQUIRE(kb.size() == 29);
     }
 
@@ -299,7 +299,7 @@ namespace libsemigroups {
 
       REQUIRE(!kb.confluent());
       kb.knuth_bendix_by_overlap_length();
-      REQUIRE(kb.nr_active_rules() == 1026);
+      REQUIRE(kb.number_of_active_rules() == 1026);
       REQUIRE(kb.confluent());
       REQUIRE(kb.size() == 10752);
     }
@@ -328,7 +328,7 @@ namespace libsemigroups {
       kb.knuth_bendix_by_overlap_length();
       // Fails to terminate, or is very slow, with knuth_bendix
       REQUIRE(kb.confluent());
-      REQUIRE(kb.nr_active_rules() == 47);
+      REQUIRE(kb.number_of_active_rules() == 47);
       REQUIRE(kb.size() == POSITIVE_INFINITY);
     }
 
@@ -354,12 +354,12 @@ namespace libsemigroups {
 
       kb.knuth_bendix_by_overlap_length();
       REQUIRE(kb.confluent());
-      REQUIRE(kb.nr_active_rules() == 1026);
+      REQUIRE(kb.number_of_active_rules() == 1026);
       REQUIRE(kb.size() == 10752);
 
       auto& ad = kb.gilman_digraph();
-      REQUIRE(ad.nr_nodes() == 6021);
-      REQUIRE(ad.nr_edges() == 7435);
+      REQUIRE(ad.number_of_nodes() == 6021);
+      REQUIRE(ad.number_of_edges() == 7435);
       REQUIRE(action_digraph_helper::is_acyclic(ad));
       REQUIRE(ad.number_of_paths(0, 0, 100) == 10752);
     }
@@ -421,7 +421,7 @@ namespace libsemigroups {
 
         kb.knuth_bendix_by_overlap_length();
         if (kb.confluent()) {
-          REQUIRE(kb.nr_active_rules() == 0);
+          REQUIRE(kb.number_of_active_rules() == 0);
           REQUIRE(kb.size() == 0);
           break;
         }
@@ -445,7 +445,7 @@ namespace libsemigroups {
       REQUIRE(!kb.confluent());
 
       kb.run();
-      REQUIRE(kb.nr_active_rules() == 7);
+      REQUIRE(kb.number_of_active_rules() == 7);
       REQUIRE(kb.size() == size_t(std::pow(5, n)) + 4 * p - 5);
       REQUIRE(kb.normal_form("aabb") == "aabb");
       REQUIRE(kb.normal_form("aabbaabb") == "bbbb");

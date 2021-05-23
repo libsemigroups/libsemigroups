@@ -49,7 +49,7 @@ namespace libsemigroups {
     S.reserve(10);
 
     REQUIRE(S.size() == 10);
-    REQUIRE(S.nr_idempotents() == 6);
+    REQUIRE(S.number_of_idempotents() == 6);
 
     size_t pos = 0;
     for (auto it = S.cbegin(); it < S.cend(); ++it) {
@@ -85,7 +85,7 @@ namespace libsemigroups {
       REQUIRE(*it * *it == *it);
       pos++;
     }
-    REQUIRE(pos == S.nr_idempotents());
+    REQUIRE(pos == S.number_of_idempotents());
     for (auto it = S.cbegin_sorted() + 1; it < S.cend_sorted(); ++it) {
       REQUIRE(*(it - 1) < *it);
     }
@@ -108,7 +108,7 @@ namespace libsemigroups {
     S.reserve(10);
 
     REQUIRE(S.size() == 10);
-    REQUIRE(S.nr_idempotents() == 6);
+    REQUIRE(S.number_of_idempotents() == 6);
 
     size_t pos = 0;
     for (auto it = S.cbegin(); it < S.cend(); ++it) {
@@ -144,7 +144,7 @@ namespace libsemigroups {
       REQUIRE(*it * *it == *it);
       pos++;
     }
-    REQUIRE(pos == S.nr_idempotents());
+    REQUIRE(pos == S.number_of_idempotents());
     for (auto it = S.cbegin_sorted() + 1; it < S.cend_sorted(); ++it) {
       REQUIRE(*(it - 1) < *it);
     }
@@ -165,9 +165,9 @@ namespace libsemigroups {
 
     REQUIRE(S.size() == 10);
     REQUIRE(S.degree() == 10);
-    REQUIRE(S.nr_idempotents() == 6);
-    REQUIRE(S.nr_generators() == 3);
-    REQUIRE(S.nr_rules() == 14);
+    REQUIRE(S.number_of_idempotents() == 6);
+    REQUIRE(S.number_of_generators() == 3);
+    REQUIRE(S.number_of_rules() == 14);
 
     REQUIRE(S[0] == S.generator(0));
     REQUIRE(S[1] == S.generator(1));
@@ -205,7 +205,7 @@ namespace libsemigroups {
     S.add_generator(Bipartition({0, 0, 1, 2, 3, 4, 0, 0, 1, 2, 3, 4}));
     S.reserve(4213597);
     REQUIRE(S.size() == 4213597);
-    REQUIRE(S.nr_idempotents() == 541254);
+    REQUIRE(S.number_of_idempotents() == 541254);
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<Bipartition>",

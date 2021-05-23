@@ -57,7 +57,7 @@ namespace libsemigroups {
   template <typename T>
   void bench_const_rule_iterator(FroidurePin<T>* fp, size_t) {
     std::vector<relation_type> v(fp->cbegin_rules(), fp->cend_rules());
-    REQUIRE(v.size() == fp->nr_rules());
+    REQUIRE(v.size() == fp->number_of_rules());
   }
 
   LIBSEMIGROUPS_BENCHMARK("FroidurePin<LeastTransf<16>>",

@@ -67,8 +67,8 @@ namespace libsemigroups {
 
     Congruence cong(twosided, S);
 
-    REQUIRE(cong.nr_generating_pairs() == 0);
-    REQUIRE(cong.nr_classes() == 5);
+    REQUIRE(cong.number_of_generating_pairs() == 0);
+    REQUIRE(cong.number_of_classes() == 5);
 
     REQUIRE(cong.word_to_class_index({0, 0, 1})
             == cong.word_to_class_index({0, 0, 0, 0, 1}));
@@ -96,7 +96,7 @@ namespace libsemigroups {
     S.add_rule({0}, {1, 1});     // (a, b^2)
 
     Congruence cong(left, S);
-    REQUIRE(cong.nr_classes() == 5);
+    REQUIRE(cong.number_of_classes() == 5);
   }
 
   LIBSEMIGROUPS_TEST_CASE("Congruence",
@@ -111,7 +111,7 @@ namespace libsemigroups {
     S.add_rule({0}, {1, 1});     // (a, b^2)
 
     Congruence cong(left, S);
-    REQUIRE(cong.nr_classes() == 5);
+    REQUIRE(cong.number_of_classes() == 5);
     REQUIRE(cong.word_to_class_index({0, 1, 1, 0, 0, 1})
             == cong.word_to_class_index({0, 0, 1}));
     REQUIRE(cong.word_to_class_index({0, 0, 1})
@@ -163,7 +163,7 @@ namespace libsemigroups {
 
     Congruence cong(twosided, S);
     REQUIRE(cong.is_quotient_obviously_finite());
-    REQUIRE(cong.nr_classes() == 88);
+    REQUIRE(cong.number_of_classes() == 88);
   }
 
   LIBSEMIGROUPS_TEST_CASE("Congruence",
@@ -179,7 +179,7 @@ namespace libsemigroups {
     Congruence cong(twosided, S);
     cong.add_pair(S.factorisation(Transf({3, 4, 4, 4, 4})),
                   S.factorisation(Transf({3, 1, 3, 3, 3})));
-    REQUIRE(cong.nr_classes() == 21);
+    REQUIRE(cong.number_of_classes() == 21);
   }
 
   LIBSEMIGROUPS_TEST_CASE("Congruence",
@@ -206,11 +206,11 @@ namespace libsemigroups {
 
     Congruence cong1(twosided, S.froidure_pin());
     cong1.add_pair({0}, {1});
-    REQUIRE(cong1.nr_classes() == 2);
+    REQUIRE(cong1.number_of_classes() == 2);
 
     Congruence cong2(twosided, S);
     cong2.add_pair({0}, {1});
-    REQUIRE(cong2.nr_classes() == 2);
+    REQUIRE(cong2.number_of_classes() == 2);
   }
 
   LIBSEMIGROUPS_TEST_CASE("Congruence",
@@ -242,7 +242,7 @@ namespace libsemigroups {
 
     REQUIRE(cong.contains({1}, {1, 1}));
     REQUIRE(cong.contains({1, 0, 1}, {1, 0}));
-    REQUIRE(cong.nr_classes() == 2);
+    REQUIRE(cong.number_of_classes() == 2);
   }
 
   LIBSEMIGROUPS_TEST_CASE("Congruence",
@@ -291,7 +291,7 @@ namespace libsemigroups {
 
     // The following lines are intentionally commented out.
     // REQUIRE(S.size() == 11804);
-    // REQUIRE(S.nr_rules() == 2460);
+    // REQUIRE(S.number_of_rules() == 2460);
 
     Congruence cong(twosided, S);
     cong.add_pair({0, 3, 2, 1, 3, 2, 2}, {3, 2, 2, 1, 3, 3});
@@ -321,8 +321,8 @@ namespace libsemigroups {
     REQUIRE(cong.less({1, 3, 3, 2, 2, 1, 0}, {1, 1, 0}));
     REQUIRE(!cong.less({1, 1, 0, 0}, {0, 0, 3}));
 
-    REQUIRE(cong.nr_classes() == 525);
-    REQUIRE(cong.nr_classes() == 525);
+    REQUIRE(cong.number_of_classes() == 525);
+    REQUIRE(cong.number_of_classes() == 525);
   }
 
   LIBSEMIGROUPS_TEST_CASE("Congruence",
@@ -343,14 +343,14 @@ namespace libsemigroups {
                         PBR({{3}, {2, 3}, {0}, {1}})});
 
     // REQUIRE(S.size() == 65536);
-    // REQUIRE(S.nr_rules() == 45416);
+    // REQUIRE(S.number_of_rules() == 45416);
 
     Congruence cong(twosided, S);
     cong.add_pair({7, 10, 9, 3, 6, 9, 4, 7, 9, 10}, {9, 3, 6, 6, 10, 9, 4, 7});
     cong.add_pair({8, 7, 5, 8, 9, 8}, {6, 3, 8, 6, 1, 2, 4});
 
-    REQUIRE(cong.nr_classes() == 19009);
-    REQUIRE(cong.nr_non_trivial_classes() == 577);
+    REQUIRE(cong.number_of_classes() == 19009);
+    REQUIRE(cong.number_of_non_trivial_classes() == 577);
     REQUIRE(cong.cend_ntc() - cong.cbegin_ntc() == 577);
 
     std::vector<size_t> v(577, 0);
@@ -382,11 +382,11 @@ namespace libsemigroups {
          LeastPPerm<6>({1, 3, 4}, {5, 0, 2}, 6)});
 
     // REQUIRE(S.size() == 712);
-    // REQUIRE(S.nr_rules() == 1121);
+    // REQUIRE(S.number_of_rules() == 1121);
 
     Congruence cong(twosided, S);
     cong.add_pair({2, 7}, {1, 6, 6, 1});
-    REQUIRE(cong.nr_classes() == 32);
+    REQUIRE(cong.number_of_classes() == 32);
   }
 
   LIBSEMIGROUPS_TEST_CASE("Congruence",
@@ -426,11 +426,11 @@ namespace libsemigroups {
 
     Congruence cong(twosided, S);
     cong.add_pair({1, 1, 1}, {0});
-    REQUIRE(cong.nr_classes() == 3);
-    // The next test currently runs forever because nr_non_trivial_classes
-    // attempts to enumerate all elements in the non_trivial_classes (and there
-    // are infinitely many).
-    // REQUIRE_THROWS_AS(cong.nr_non_trivial_classes() == 3,
+    REQUIRE(cong.number_of_classes() == 3);
+    // The next test currently runs forever because
+    // number_of_non_trivial_classes attempts to enumerate all elements in the
+    // non_trivial_classes (and there are infinitely many).
+    // REQUIRE_THROWS_AS(cong.number_of_non_trivial_classes() == 3,
     //                  LibsemigroupsException);
   }
 
@@ -448,7 +448,7 @@ namespace libsemigroups {
     cong.add_pair({1, 1, 1, 1, 1}, {1});
     cong.add_pair({2, 2, 2}, {2});
 
-    REQUIRE(cong.nr_classes() == 15);
+    REQUIRE(cong.number_of_classes() == 15);
   }
 
   // The previous Congruence 17 test was identical to Congruence 12
@@ -470,7 +470,7 @@ namespace libsemigroups {
     Congruence cong(twosided, S);
     cong.add_pair({0}, {1});
 
-    REQUIRE(cong.nr_classes() == 4);
+    REQUIRE(cong.number_of_classes() == 4);
     REQUIRE(!cong.quotient_froidure_pin()->is_monoid());
   }
 
@@ -483,7 +483,7 @@ namespace libsemigroups {
     FroidurePin<Transf> S({Transf({1, 3, 4, 2, 3}), Transf({3, 2, 1, 3, 3})});
 
     REQUIRE(S.size() == 88);
-    REQUIRE(S.nr_rules() == 18);
+    REQUIRE(S.number_of_rules() == 18);
 
     word_type w1 = S.factorisation(Transf({3, 4, 4, 4, 4}));
     word_type w2 = S.factorisation(Transf({3, 4, 4, 4, 4}));
@@ -491,7 +491,7 @@ namespace libsemigroups {
     Congruence cong(twosided, S);
     cong.add_pair(S.factorisation(Transf({3, 4, 4, 4, 4})),
                   S.factorisation(Transf({3, 1, 3, 3, 3})));
-    REQUIRE(cong.nr_classes() == 21);
+    REQUIRE(cong.number_of_classes() == 21);
 
     word_type u = S.factorisation(Transf({1, 3, 1, 3, 3}));
     word_type v = S.factorisation(Transf({4, 2, 4, 4, 2}));
@@ -499,9 +499,9 @@ namespace libsemigroups {
     REQUIRE(cong.contains(u, v));
   }
 
-  // The next test behaves as expected but runs forever, since the nr_classes
-  // method requires to know the size of the semigroup S, and we cannot
-  // currently work that out.
+  // The next test behaves as expected but runs forever, since the
+  // number_of_classes method requires to know the size of the semigroup S, and
+  // we cannot currently work that out.
   LIBSEMIGROUPS_TEST_CASE("Congruence",
                           "018",
                           "infinite fp semigroup from GAP library ",
@@ -527,10 +527,11 @@ namespace libsemigroups {
     Congruence cong(twosided, S);
     cong.add_pair({0}, {1});
     REQUIRE(!cong.finished());
-    REQUIRE(cong.nr_non_trivial_classes() == 1);
+    REQUIRE(cong.number_of_non_trivial_classes() == 1);
     REQUIRE(cong.cbegin_ntc()->size() == 5);
     REQUIRE(cong.finished());
-    // REQUIRE(cong.nr_classes());  // Currently runs forever (and should)
+    // REQUIRE(cong.number_of_classes());  // Currently runs forever (and
+    // should)
   }
 
   LIBSEMIGROUPS_TEST_CASE("Congruence",
@@ -578,7 +579,7 @@ namespace libsemigroups {
 
     // No generating pairs for the congruence (not the fp semigroup) means no
     // non-trivial classes.
-    REQUIRE(cong.nr_non_trivial_classes() == 0);
+    REQUIRE(cong.number_of_non_trivial_classes() == 0);
     REQUIRE(cong.finished());
     REQUIRE(cong.started());
     REQUIRE_THROWS_AS(cong.add_pair({0, 0}, {0}), LibsemigroupsException);
@@ -595,7 +596,7 @@ namespace libsemigroups {
                            Transf({7, 3, 5, 3, 4, 2, 7, 7}),
                            Transf({3, 6, 3, 4, 0, 6, 0, 7})});
     Congruence          cong(twosided, S);
-    REQUIRE(cong.nr_classes() == S.size());
+    REQUIRE(cong.number_of_classes() == S.size());
   }
 
   LIBSEMIGROUPS_TEST_CASE("Congruence",
@@ -628,7 +629,7 @@ namespace libsemigroups {
     Congruence cong(twosided, S);
     cong.add_pair({0}, {1});
 
-    REQUIRE(cong.nr_non_trivial_classes() == 1);
+    REQUIRE(cong.number_of_non_trivial_classes() == 1);
     REQUIRE(cong.cbegin_ntc()->size() == 78);
   }
 
@@ -670,7 +671,7 @@ namespace libsemigroups {
       S.factorisation(w2, S.position(elms[i + 1]));
       cong.add_pair(w1, w2);
     }
-    REQUIRE(cong.nr_classes() == 1);
+    REQUIRE(cong.number_of_classes() == 1);
   }
 
   LIBSEMIGROUPS_TEST_CASE("Congruence",
@@ -710,7 +711,7 @@ namespace libsemigroups {
       Congruence cong(twosided, S);
       cong.add_pair({2, 2}, {2});
       REQUIRE(cong.is_quotient_obviously_infinite());
-      REQUIRE(cong.nr_classes() == POSITIVE_INFINITY);
+      REQUIRE(cong.number_of_classes() == POSITIVE_INFINITY);
       // REQUIRE(cong.class_index_to_word(0) == word_type({}));
       // TODO(later) the above doesn't currently work, but it should, and there
       // is no reason it can't
@@ -803,7 +804,7 @@ namespace libsemigroups {
       cong.add_pair({1}, {0});
       REQUIRE(!cong.is_quotient_obviously_infinite());
       REQUIRE(cong.is_quotient_obviously_finite());
-      REQUIRE(cong.nr_classes() == 1);
+      REQUIRE(cong.number_of_classes() == 1);
     }
   }
 
@@ -838,11 +839,11 @@ namespace libsemigroups {
       Congruence cong(twosided, S);
       cong.add_pair({1}, {0});
 
-      REQUIRE(cong.nr_classes() == 3);
+      REQUIRE(cong.number_of_classes() == 3);
       REQUIRE(cong.word_to_class_index({1}) == 0);
-      REQUIRE(cong.nr_non_trivial_classes() == 3);
+      REQUIRE(cong.number_of_non_trivial_classes() == 3);
 
-      std::vector<size_t> v(cong.nr_non_trivial_classes(), 0);
+      std::vector<size_t> v(cong.number_of_non_trivial_classes(), 0);
       std::transform(cong.cbegin_ntc(),
                      cong.cend_ntc(),
                      v.begin(),
@@ -870,11 +871,11 @@ namespace libsemigroups {
       Congruence        cong(twosided, S);
       cong.add_pair({1}, {0});
 
-      REQUIRE(cong.nr_classes() == 2);
+      REQUIRE(cong.number_of_classes() == 2);
       REQUIRE(cong.word_to_class_index({1}) == 0);
-      REQUIRE(cong.nr_non_trivial_classes() == 2);
+      REQUIRE(cong.number_of_non_trivial_classes() == 2);
 
-      std::vector<size_t> v(cong.nr_non_trivial_classes(), 0);
+      std::vector<size_t> v(cong.number_of_non_trivial_classes(), 0);
       std::transform(cong.cbegin_ntc(),
                      cong.cend_ntc(),
                      v.begin(),
@@ -912,8 +913,8 @@ namespace libsemigroups {
     Congruence cong(left, S);
     cong.add_pair({0, 1, 0, 0, 0, 1, 1, 0, 0}, {1, 0, 0, 0, 1});
 
-    REQUIRE(cong.nr_classes() == 69);
-    REQUIRE(cong.nr_classes() == 69);
+    REQUIRE(cong.number_of_classes() == 69);
+    REQUIRE(cong.number_of_classes() == 69);
 
     word_type w3 = S.factorisation(Transf<>({1, 3, 1, 3, 3}));
     word_type w4 = S.factorisation(Transf<>({4, 2, 4, 4, 2}));
@@ -948,8 +949,8 @@ namespace libsemigroups {
     Congruence cong(right, S);
     cong.add_pair({0, 1, 0, 0, 0, 1, 1, 0, 0}, {1, 0, 0, 0, 1});
 
-    REQUIRE(cong.nr_classes() == 72);
-    REQUIRE(cong.nr_classes() == 72);
+    REQUIRE(cong.number_of_classes() == 72);
+    REQUIRE(cong.number_of_classes() == 72);
 
     word_type w3 = S.factorisation(Transf<>({1, 3, 1, 3, 3}));
     word_type w4 = S.factorisation(Transf<>({4, 2, 4, 4, 2}));
@@ -986,7 +987,7 @@ namespace libsemigroups {
     S.add_generator(Transf<>({3, 2, 1, 3, 3}));
 
     REQUIRE(S.size() == 88);
-    REQUIRE(S.nr_rules() == 18);
+    REQUIRE(S.number_of_rules() == 18);
     REQUIRE(S.degree() == 5);
     word_type w1, w2;
     S.factorisation(w1, S.position(Transf<>({3, 4, 4, 4, 4})));
@@ -994,8 +995,8 @@ namespace libsemigroups {
     Congruence cong(right, S);
     cong.add_pair(w1, w2);
 
-    REQUIRE(cong.nr_classes() == 72);
-    REQUIRE(cong.nr_classes() == 72);
+    REQUIRE(cong.number_of_classes() == 72);
+    REQUIRE(cong.number_of_classes() == 72);
     word_type w3, w4, w5, w6;
     S.factorisation(w3, S.position(Transf<>({1, 3, 3, 3, 3})));
     S.factorisation(w4, S.position(Transf<>({4, 2, 4, 4, 2})));
@@ -1033,7 +1034,7 @@ namespace libsemigroups {
       S.add_rule(rl);
     }
 
-    REQUIRE(S.nr_rules() == 9);
+    REQUIRE(S.number_of_rules() == 9);
     REQUIRE(!S.is_obviously_infinite());
     REQUIRE(S.knuth_bendix()->confluent());
     REQUIRE(S.size() == 7);
@@ -1044,8 +1045,8 @@ namespace libsemigroups {
       cong.add_pair(rl.first, rl.second);
     }
     REQUIRE(!cong.is_quotient_obviously_infinite());
-    REQUIRE(cong.nr_classes() == 5);
-    REQUIRE(cong.nr_non_trivial_classes() == 1);
+    REQUIRE(cong.number_of_classes() == 5);
+    REQUIRE(cong.number_of_non_trivial_classes() == 1);
 
     std::vector<word_type> v(cong.cbegin_ntc()->cbegin(),
                              cong.cbegin_ntc()->cend());
@@ -1061,7 +1062,7 @@ namespace libsemigroups {
       S.add_rule(rl);
     }
 
-    REQUIRE(S.nr_rules() == 15);
+    REQUIRE(S.number_of_rules() == 15);
     REQUIRE(!S.is_obviously_infinite());
     REQUIRE(!S.knuth_bendix()->confluent());
     REQUIRE(S.size() == 34);
@@ -1072,13 +1073,13 @@ namespace libsemigroups {
       cong.add_pair(rl.first, rl.second);
     }
     REQUIRE(!cong.is_quotient_obviously_infinite());
-    REQUIRE(cong.nr_classes() == 16);
-    REQUIRE(cong.nr_non_trivial_classes() == 4);
+    REQUIRE(cong.number_of_classes() == 16);
+    REQUIRE(cong.number_of_non_trivial_classes() == 4);
 
     using non_trivial_classes_type = Congruence::non_trivial_classes_type;
 
     non_trivial_classes_type v;
-    v.reserve(cong.nr_non_trivial_classes());
+    v.reserve(cong.number_of_non_trivial_classes());
     for (auto it = cong.cbegin_ntc(); it < cong.cend_ntc(); ++it) {
       v.push_back(std::vector<word_type>(it->cbegin(), it->cend()));
       std::sort(v.back().begin(), v.back().end());
@@ -1113,7 +1114,7 @@ namespace libsemigroups {
       S.add_rule(rl);
     }
 
-    REQUIRE(S.nr_rules() == 23);
+    REQUIRE(S.number_of_rules() == 23);
     REQUIRE(!S.is_obviously_infinite());
     REQUIRE(!S.knuth_bendix()->confluent());
     REQUIRE(S.size() == 209);
@@ -1124,10 +1125,10 @@ namespace libsemigroups {
       cong.add_pair(rl.first, rl.second);
     }
     REQUIRE(!cong.is_quotient_obviously_infinite());
-    REQUIRE(cong.nr_classes() == 65);
-    REQUIRE(cong.nr_non_trivial_classes() == 17);
+    REQUIRE(cong.number_of_classes() == 65);
+    REQUIRE(cong.number_of_non_trivial_classes() == 17);
 
-    std::vector<size_t> v(cong.nr_non_trivial_classes(), 0);
+    std::vector<size_t> v(cong.number_of_non_trivial_classes(), 0);
     std::transform(cong.cbegin_ntc(),
                    cong.cend_ntc(),
                    v.begin(),
@@ -1136,9 +1137,10 @@ namespace libsemigroups {
     REQUIRE(v
             == std::vector<size_t>(
                 {3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 13, 13, 13, 13, 73}));
-    REQUIRE(std::accumulate(v.cbegin(), v.cend(), 0)
-                + (cong.nr_classes() - cong.nr_non_trivial_classes())
-            == 209);
+    REQUIRE(
+        std::accumulate(v.cbegin(), v.cend(), 0)
+            + (cong.number_of_classes() - cong.number_of_non_trivial_classes())
+        == 209);
   }
 
   LIBSEMIGROUPS_TEST_CASE("Congruence",
@@ -1152,7 +1154,7 @@ namespace libsemigroups {
       S.add_rule(rl);
     }
 
-    REQUIRE(S.nr_rules() == 33);
+    REQUIRE(S.number_of_rules() == 33);
     REQUIRE(!S.is_obviously_infinite());
     REQUIRE(!S.knuth_bendix()->confluent());
     REQUIRE(S.size() == 1546);
@@ -1163,10 +1165,10 @@ namespace libsemigroups {
       cong.add_pair(rl.first, rl.second);
     }
     REQUIRE(!cong.is_quotient_obviously_infinite());
-    REQUIRE(cong.nr_classes() == 326);
-    REQUIRE(cong.nr_non_trivial_classes() == 86);
+    REQUIRE(cong.number_of_classes() == 326);
+    REQUIRE(cong.number_of_non_trivial_classes() == 86);
 
-    std::vector<size_t> v(cong.nr_non_trivial_classes(), 0);
+    std::vector<size_t> v(cong.number_of_non_trivial_classes(), 0);
     std::transform(cong.cbegin_ntc(),
                    cong.cend_ntc(),
                    v.begin(),
@@ -1175,9 +1177,10 @@ namespace libsemigroups {
     REQUIRE(std::count(v.cbegin(), v.cend(), 13) == 20);
     REQUIRE(std::count(v.cbegin(), v.cend(), 73) == 5);
     REQUIRE(std::count(v.cbegin(), v.cend(), 501) == 1);
-    REQUIRE(std::accumulate(v.cbegin(), v.cend(), 0)
-                + (cong.nr_classes() - cong.nr_non_trivial_classes())
-            == S.size());
+    REQUIRE(
+        std::accumulate(v.cbegin(), v.cend(), 0)
+            + (cong.number_of_classes() - cong.number_of_non_trivial_classes())
+        == S.size());
   }
 
   LIBSEMIGROUPS_TEST_CASE("Congruence",
@@ -1191,7 +1194,7 @@ namespace libsemigroups {
       S.add_rule(rl);
     }
 
-    REQUIRE(S.nr_rules() == 45);
+    REQUIRE(S.number_of_rules() == 45);
     REQUIRE(!S.is_obviously_infinite());
     REQUIRE(!S.knuth_bendix()->confluent());
     REQUIRE(S.size() == 13327);
@@ -1201,17 +1204,18 @@ namespace libsemigroups {
       cong.add_pair(rl.first, rl.second);
     }
     REQUIRE(!cong.is_quotient_obviously_infinite());
-    REQUIRE(cong.nr_classes() == 1957);
-    REQUIRE(cong.nr_non_trivial_classes() == 517);
+    REQUIRE(cong.number_of_classes() == 1957);
+    REQUIRE(cong.number_of_non_trivial_classes() == 517);
 
-    std::vector<size_t> v(cong.nr_non_trivial_classes(), 0);
+    std::vector<size_t> v(cong.number_of_non_trivial_classes(), 0);
     std::transform(cong.cbegin_ntc(),
                    cong.cend_ntc(),
                    v.begin(),
                    std::mem_fn(&std::vector<word_type>::size));
-    REQUIRE(std::accumulate(v.cbegin(), v.cend(), 0)
-                + (cong.nr_classes() - cong.nr_non_trivial_classes())
-            == S.size());
+    REQUIRE(
+        std::accumulate(v.cbegin(), v.cend(), 0)
+            + (cong.number_of_classes() - cong.number_of_non_trivial_classes())
+        == S.size());
   }
 
   LIBSEMIGROUPS_TEST_CASE("Congruence",
@@ -1225,7 +1229,7 @@ namespace libsemigroups {
       S.add_rule(rl);
     }
 
-    REQUIRE(S.nr_rules() == 59);
+    REQUIRE(S.number_of_rules() == 59);
     REQUIRE(!S.is_obviously_infinite());
     REQUIRE(!S.knuth_bendix()->confluent());
     REQUIRE(S.size() == 130922);
@@ -1235,17 +1239,18 @@ namespace libsemigroups {
       cong.add_pair(rl.first, rl.second);
     }
     REQUIRE(!cong.is_quotient_obviously_infinite());
-    REQUIRE(cong.nr_classes() == 13700);
-    REQUIRE(cong.nr_non_trivial_classes() == 3620);
+    REQUIRE(cong.number_of_classes() == 13700);
+    REQUIRE(cong.number_of_non_trivial_classes() == 3620);
 
-    std::vector<size_t> v(cong.nr_non_trivial_classes(), 0);
+    std::vector<size_t> v(cong.number_of_non_trivial_classes(), 0);
     std::transform(cong.cbegin_ntc(),
                    cong.cend_ntc(),
                    v.begin(),
                    std::mem_fn(&std::vector<word_type>::size));
-    REQUIRE(std::accumulate(v.cbegin(), v.cend(), 0)
-                + (cong.nr_classes() - cong.nr_non_trivial_classes())
-            == S.size());
+    REQUIRE(
+        std::accumulate(v.cbegin(), v.cend(), 0)
+            + (cong.number_of_classes() - cong.number_of_non_trivial_classes())
+        == S.size());
   }
 
   LIBSEMIGROUPS_TEST_CASE("Congruence",
@@ -1267,21 +1272,21 @@ namespace libsemigroups {
     S.add_rule("bbaba", "bbaa");
 
     REQUIRE(S.knuth_bendix()->confluent());
-    REQUIRE(S.knuth_bendix()->nr_rules() == 13);
+    REQUIRE(S.knuth_bendix()->number_of_rules() == 13);
 
     KnuthBendixCongruenceByPairs kbp(left, S.knuth_bendix());
     // kbp.add_pair({0}, {1, 1, 1});
     kbp.add_pair({1, 1}, {0, 0, 0, 0, 0, 0, 0});
 
-    REQUIRE(kbp.nr_classes() == 11);
+    REQUIRE(kbp.number_of_classes() == 11);
 
     Congruence cong1(left, S);
     cong1.add_pair({0}, {1, 1, 1});
-    REQUIRE(cong1.nr_classes() == 11);
+    REQUIRE(cong1.number_of_classes() == 11);
 
     Congruence cong2(left, S);
     cong2.add_pair({1, 1}, {0, 0, 0, 0, 0, 0, 0});
-    REQUIRE(cong1.nr_classes() == cong2.nr_classes());
+    REQUIRE(cong1.number_of_classes() == cong2.number_of_classes());
   }
 
   LIBSEMIGROUPS_TEST_CASE("Congruence",
@@ -1308,13 +1313,13 @@ namespace libsemigroups {
                           "[quick][cong]") {
     auto       rg = ReportGuard(REPORT);
     Congruence cong(twosided);
-    REQUIRE(cong.nr_generators() == UNDEFINED);
-    REQUIRE_THROWS_AS(cong.set_nr_generators(0), LibsemigroupsException);
+    REQUIRE(cong.number_of_generators() == UNDEFINED);
+    REQUIRE_THROWS_AS(cong.set_number_of_generators(0), LibsemigroupsException);
     REQUIRE_THROWS_AS(cong.contains({1}, {2, 2, 2, 2, 2, 2, 2, 2, 2, 2}),
                       LibsemigroupsException);
     REQUIRE_THROWS_AS(cong.const_contains({1}, {2, 2, 2, 2, 2, 2, 2, 2, 2, 2}),
                       LibsemigroupsException);
-    REQUIRE(cong.nr_classes() == UNDEFINED);
+    REQUIRE(cong.number_of_classes() == UNDEFINED);
     REQUIRE_THROWS_AS(cong.word_to_class_index({2, 2, 2, 2}),
                       LibsemigroupsException);
     REQUIRE_THROWS_AS(cong.class_index_to_word(0), LibsemigroupsException);
@@ -1324,7 +1329,7 @@ namespace libsemigroups {
     REQUIRE(!cong.started());
     REQUIRE(!cong.finished());
 
-    REQUIRE_NOTHROW(cong.set_nr_generators(2));
+    REQUIRE_NOTHROW(cong.set_number_of_generators(2));
 
     REQUIRE_NOTHROW(cong.add_pair({0, 0, 0}, {0}));
     REQUIRE_NOTHROW(cong.add_pair({0}, {1, 1}));
@@ -1336,7 +1341,7 @@ namespace libsemigroups {
     REQUIRE_NOTHROW(cong.run());
     REQUIRE(!cong.contains({1}, {0}));
     REQUIRE(cong.contains({0}, {1, 1}));
-    REQUIRE(cong.nr_classes() == 5);
+    REQUIRE(cong.number_of_classes() == 5);
     REQUIRE_THROWS_AS(cong.word_to_class_index({2, 2, 2, 2}),
                       LibsemigroupsException);
     REQUIRE(cong.word_to_class_index({1, 1, 1, 1}) == 2);
@@ -1353,7 +1358,7 @@ namespace libsemigroups {
                           "[quick][cong]") {
     auto       rg = ReportGuard(REPORT);
     Congruence cong(twosided);
-    cong.set_nr_generators(2);
+    cong.set_number_of_generators(2);
     cong.add_pair({0, 0, 0}, {0});
     cong.add_pair({1, 1, 1, 1}, {1});
     cong.add_pair({0, 1, 1, 1, 0}, {0, 0});
@@ -1375,7 +1380,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("Congruence", "042", "no winner", "[quick][cong]") {
     auto       rg = ReportGuard(REPORT);
     Congruence cong(twosided);
-    cong.set_nr_generators(4);
+    cong.set_number_of_generators(4);
     cong.max_threads(2);
     // Required in case of using a 1 core computer, otherwise the tests below
     // fail.
@@ -1403,12 +1408,13 @@ namespace libsemigroups {
   //     cong = detail::make_unique<Congruence>(twosided, S);
   //   }
   //   REQUIRE(!cong->empty());
-  //   REQUIRE_THROWS_AS(cong->set_nr_generators(0), LibsemigroupsException);
-  //   REQUIRE_THROWS_AS(!cong->contains({1}, {2, 2, 2, 2, 2, 2, 2, 2, 2, 2}),
+  //   REQUIRE_THROWS_AS(cong->set_number_of_generators(0),
+  //   LibsemigroupsException); REQUIRE_THROWS_AS(!cong->contains({1}, {2, 2, 2,
+  //   2, 2, 2, 2, 2, 2, 2}),
   //                     LibsemigroupsException);
   //   REQUIRE(cong->const_contains({1}, {2, 2, 2, 2, 2, 2, 2, 2, 2, 2})
   //           == tril::unknown);
-  //   REQUIRE_THROWS_AS(cong->nr_classes(), LibsemigroupsException);
+  //   REQUIRE_THROWS_AS(cong->number_of_classes(), LibsemigroupsException);
   //   REQUIRE_THROWS_AS(cong->word_to_class_index({2, 2, 2, 2}),
   //                     LibsemigroupsException);
   //   REQUIRE_THROWS_AS(cong->class_index_to_word(0), LibsemigroupsException);
@@ -1438,20 +1444,20 @@ namespace libsemigroups {
   //     SECTION("add pair before copy") {
   //       tc.add_pair({0}, {0, 0});
   //       cong.add_runner(tc);
-  //       REQUIRE(cong.nr_classes() == 6);
+  //       REQUIRE(cong.number_of_classes() == 6);
   //     }
   //     SECTION("add pair after copy") {
   //       cong.add_runner(tc);
   //       tc.add_pair({0}, {0, 0});
   //       cong.add_pair({0}, {0, 0});
-  //       REQUIRE(cong.nr_classes() == 6);
+  //       REQUIRE(cong.number_of_classes() == 6);
   //     }
   //     SECTION("no added pairs") {
   //       cong.add_runner(tc);
   //       tc.add_pair({0}, {0, 0});
-  //       REQUIRE(cong.nr_classes() == 88);
+  //       REQUIRE(cong.number_of_classes() == 88);
   //     }
-  //     REQUIRE(tc.nr_classes() == 6);
+  //     REQUIRE(tc.number_of_classes() == 6);
   //   }
   //   SECTION("KnuthBendix") {
   //     congruence::KnuthBendix kb(S);
@@ -1461,20 +1467,20 @@ namespace libsemigroups {
   //     SECTION("add pair before copy") {
   //       kb.add_pair({0}, {0, 0});
   //       cong.add_runner(kb);
-  //       REQUIRE(cong.nr_classes() == 6);
+  //       REQUIRE(cong.number_of_classes() == 6);
   //     }
   //     SECTION("add pair after copy") {
   //       cong.add_runner(kb);
   //       kb.add_pair({0}, {0, 0});
   //       cong.add_pair({0}, {0, 0});
-  //       REQUIRE(cong.nr_classes() == 6);
+  //       REQUIRE(cong.number_of_classes() == 6);
   //     }
   //     SECTION("no added pairs") {
   //       cong.add_runner(kb);
   //       kb.add_pair({0}, {0, 0});
-  //       REQUIRE(cong.nr_classes() == 88);
+  //       REQUIRE(cong.number_of_classes() == 88);
   //     }
-  //     REQUIRE(kb.nr_classes() == 6);
+  //     REQUIRE(kb.number_of_classes() == 6);
   //   }
   //   SECTION("ToddCoxeter + KnuthBendix") {
   //     congruence::ToddCoxeter tc(twosided, S);
@@ -1486,7 +1492,7 @@ namespace libsemigroups {
   //       cong.add_runner(tc);
   //       cong.add_runner(kb);
   //       REQUIRE(cong.number_runners() == 2);
-  //       REQUIRE(cong.nr_classes() == 6);
+  //       REQUIRE(cong.number_of_classes() == 6);
   //     }
   //     SECTION("add pair after copy") {
   //       cong.add_runner(tc);
@@ -1495,7 +1501,7 @@ namespace libsemigroups {
   //       tc.add_pair({0}, {0, 0});
   //       kb.add_pair({0}, {0, 0});
   //       cong.add_pair({0}, {0, 0});
-  //       REQUIRE(cong.nr_classes() == 6);
+  //       REQUIRE(cong.number_of_classes() == 6);
   //     }
   //     SECTION("no added pairs") {
   //       cong.add_runner(tc);
@@ -1503,10 +1509,10 @@ namespace libsemigroups {
   //       REQUIRE(cong.number_runners() == 2);
   //       tc.add_pair({0}, {0, 0});
   //       kb.add_pair({0}, {0, 0});
-  //       REQUIRE(cong.nr_classes() == 88);
+  //       REQUIRE(cong.number_of_classes() == 88);
   //     }
-  //     REQUIRE(tc.nr_classes() == 6);
-  //     REQUIRE(kb.nr_classes() == 6);
+  //     REQUIRE(tc.number_of_classes() == 6);
+  //     REQUIRE(kb.number_of_classes() == 6);
   //   }
   //   REQUIRE(!cong.is_quotient_obviously_infinite());
   //   REQUIRE(cong.is_quotient_obviously_finite());
@@ -1523,37 +1529,37 @@ namespace libsemigroups {
 
   //   SECTION("add runner after finished") {
   //     Congruence cong(twosided, S);
-  //     REQUIRE(cong.nr_classes() == 88);
+  //     REQUIRE(cong.number_of_classes() == 88);
   //     congruence::ToddCoxeter tc(twosided, S);
   //     REQUIRE_THROWS_AS(cong.add_runner(tc), LibsemigroupsException);
   //   }
-  //   SECTION("add before nr_generators is set") {
+  //   SECTION("add before number_of_generators is set") {
   //     Congruence cong(twosided);
   //     congruence::ToddCoxeter tc(twosided, S);
   //     REQUIRE_THROWS_AS(cong.add_runner(tc), LibsemigroupsException);
   //   }
   //   SECTION("add_runner when initialized with generators") {
   //     Congruence cong(twosided);
-  //     cong.set_nr_generators(2);
+  //     cong.set_number_of_generators(2);
   //     REQUIRE(!cong.is_quotient_obviously_finite());
   //     REQUIRE(cong.is_quotient_obviously_infinite());
 
   //     congruence::ToddCoxeter tc(twosided, S);
   //     REQUIRE_THROWS_AS(cong.add_runner(tc), LibsemigroupsException);
-  //     REQUIRE(tc.nr_classes() == 88);
-  //     REQUIRE(cong.nr_classes() == POSITIVE_INFINITY);
+  //     REQUIRE(tc.number_of_classes() == 88);
+  //     REQUIRE(cong.number_of_classes() == POSITIVE_INFINITY);
   //   }
   //   SECTION("add_runner when initialized with generators + pairs") {
   //     Congruence cong(twosided);
-  //     cong.set_nr_generators(2);
+  //     cong.set_number_of_generators(2);
   //     cong.add_pair({0, 0}, {0});
   //     REQUIRE(!cong.is_quotient_obviously_finite());
   //     REQUIRE(cong.is_quotient_obviously_infinite());
 
   //     congruence::ToddCoxeter tc(twosided, S);
   //     REQUIRE_THROWS_AS(cong.add_runner(tc), LibsemigroupsException);
-  //     REQUIRE(tc.nr_classes() == 88);
-  //     REQUIRE(cong.nr_classes() == POSITIVE_INFINITY);
+  //     REQUIRE(tc.number_of_classes() == 88);
+  //     REQUIRE(cong.number_of_classes() == POSITIVE_INFINITY);
   //   }
   //   SECTION("add_runner when not initialized + Policy::none") {
   //     Congruence cong(twosided, Congruence::Policy::none);
@@ -1562,11 +1568,11 @@ namespace libsemigroups {
   //     REQUIRE(cong.number_runners() == 0);
   //     REQUIRE(!cong.is_quotient_obviously_finite());
   //     REQUIRE(!cong.is_quotient_obviously_infinite());
-  //     REQUIRE(cong.nr_generators() == UNDEFINED);
+  //     REQUIRE(cong.number_of_generators() == UNDEFINED);
   //     {
   //       congruence::ToddCoxeter tc(twosided, S);
   //       REQUIRE_THROWS_AS(cong.add_runner(tc), LibsemigroupsException);
-  //       REQUIRE(tc.nr_classes() == 88);
+  //       REQUIRE(tc.number_of_classes() == 88);
   //     }
   //     {
   //       congruence::ToddCoxeter tc(twosided);
@@ -1578,9 +1584,9 @@ namespace libsemigroups {
   //     }
   //     REQUIRE(!cong.is_quotient_obviously_finite());
   //     REQUIRE(!cong.is_quotient_obviously_infinite());
-  //     REQUIRE(cong.nr_generators() == S.nr_generators());
+  //     REQUIRE(cong.number_of_generators() == S.number_of_generators());
   //     cong.add_pair({0, 0}, {0});
-  //     REQUIRE(cong.nr_classes() == 6);
+  //     REQUIRE(cong.number_of_classes() == 6);
   //   }
   //   SECTION("add_runner when not initialized + Policy::standard") {
   //     Congruence cong(twosided, Congruence::Policy::standard);
@@ -1588,11 +1594,11 @@ namespace libsemigroups {
   //     REQUIRE(cong.number_runners() > 0);
   //     REQUIRE(!cong.is_quotient_obviously_finite());
   //     REQUIRE(!cong.is_quotient_obviously_infinite());
-  //     REQUIRE(cong.nr_generators() == UNDEFINED);
+  //     REQUIRE(cong.number_of_generators() == UNDEFINED);
   //     {
   //       congruence::ToddCoxeter tc(twosided, S);
   //       REQUIRE_THROWS_AS(cong.add_runner(tc), LibsemigroupsException);
-  //       REQUIRE(tc.nr_classes() == 88);
+  //       REQUIRE(tc.number_of_classes() == 88);
   //     }
   //     {
   //       congruence::ToddCoxeter tc(twosided);
@@ -1601,9 +1607,9 @@ namespace libsemigroups {
   //     }
   //     REQUIRE(!cong.is_quotient_obviously_finite());
   //     REQUIRE(!cong.is_quotient_obviously_infinite());
-  //     REQUIRE(cong.nr_generators() == S.nr_generators());
+  //     REQUIRE(cong.number_of_generators() == S.number_of_generators());
   //     cong.add_pair({0, 0}, {0});
-  //     REQUIRE(cong.nr_classes() == 6);
+  //     REQUIRE(cong.number_of_classes() == 6);
   //   }
   // }
 

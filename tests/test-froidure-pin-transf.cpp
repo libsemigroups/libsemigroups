@@ -49,7 +49,7 @@ namespace libsemigroups {
       S.reserve(597369);
 
       REQUIRE(S.size() == 597369);
-      REQUIRE(S.nr_idempotents() == 8194);
+      REQUIRE(S.number_of_idempotents() == 8194);
       size_t pos = 0;
       for (auto it = S.cbegin(); it < S.cend(); ++it) {
         REQUIRE(S.position(*it) == pos);
@@ -72,7 +72,7 @@ namespace libsemigroups {
         REQUIRE(*it * *it == *it);
         pos++;
       }
-      REQUIRE(pos == S.nr_idempotents());
+      REQUIRE(pos == S.number_of_idempotents());
       for (auto it = S.cbegin_sorted() + 1; it < S.cend_sorted(); ++it) {
         REQUIRE(*(it - 1) < *it);
       }
@@ -111,7 +111,7 @@ namespace libsemigroups {
         REQUIRE(S.word_to_pos(it->first) == S.word_to_pos(it->second));
         nr++;
       }
-      REQUIRE(nr == S.current_nr_rules());
+      REQUIRE(nr == S.current_number_of_rules());
     }
   }  // namespace
 
@@ -404,7 +404,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<Transf<>>",
                           "017",
-                          "multithread nr_idempotents",
+                          "multithread number_of_idempotents",
                           "[quick][froidure-pin][transformation][transf]") {
     auto                  rg = ReportGuard(REPORT);
     FroidurePin<Transf<>> S({Transf<>({1, 7, 2, 6, 0, 0, 1, 2}),
@@ -414,7 +414,7 @@ namespace libsemigroups {
             == std::min(static_cast<unsigned int>(2),
                         std::thread::hardware_concurrency()));
     REQUIRE(S.concurrency_threshold() == 0);
-    REQUIRE(S.nr_idempotents() == 72);
+    REQUIRE(S.number_of_idempotents() == 72);
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<Transf<>>",
@@ -428,9 +428,9 @@ namespace libsemigroups {
 
     REQUIRE(S.size() == 2);
     REQUIRE(S.degree() == 3);
-    REQUIRE(S.nr_idempotents() == 2);
-    REQUIRE(S.nr_generators() == 2);
-    REQUIRE(S.nr_rules() == 4);
+    REQUIRE(S.number_of_idempotents() == 2);
+    REQUIRE(S.number_of_generators() == 2);
+    REQUIRE(S.number_of_rules() == 4);
 
     REQUIRE(S[0] == Transf<>({0, 1, 0}));
     REQUIRE(S[1] == Transf<>({0, 1, 2}));
@@ -461,9 +461,9 @@ namespace libsemigroups {
 
     REQUIRE(S.size() == 7776);
     REQUIRE(S.degree() == 6);
-    REQUIRE(S.nr_idempotents() == 537);
-    REQUIRE(S.nr_generators() == 5);
-    REQUIRE(S.nr_rules() == 2459);
+    REQUIRE(S.number_of_idempotents() == 537);
+    REQUIRE(S.number_of_generators() == 5);
+    REQUIRE(S.number_of_rules() == 2459);
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<Transf<>>",
@@ -483,30 +483,30 @@ namespace libsemigroups {
 
     REQUIRE(S.at(100) == Transf<>({5, 3, 4, 1, 2, 5}));
     REQUIRE(S.current_size() == 1029);
-    REQUIRE(S.current_nr_rules() == 74);
+    REQUIRE(S.current_number_of_rules() == 74);
     REQUIRE(S.current_max_word_length() == 7);
 
     REQUIRE(S.position(Transf<>({5, 3, 4, 1, 2, 5})) == 100);
 
     REQUIRE(S.at(1023) == Transf<>({5, 4, 3, 4, 1, 5}));
     REQUIRE(S.current_size() == 1029);
-    REQUIRE(S.current_nr_rules() == 74);
+    REQUIRE(S.current_number_of_rules() == 74);
     REQUIRE(S.current_max_word_length() == 7);
 
     REQUIRE(S.position(Transf<>({5, 4, 3, 4, 1, 5})) == 1023);
 
     REQUIRE(S.at(3000) == Transf<>({5, 3, 5, 3, 4, 5}));
     REQUIRE(S.current_size() == 3001);
-    REQUIRE(S.current_nr_rules() == 526);
+    REQUIRE(S.current_number_of_rules() == 526);
     REQUIRE(S.current_max_word_length() == 9);
 
     REQUIRE(S.position(Transf<>({5, 3, 5, 3, 4, 5})) == 3000);
 
     REQUIRE(S.size() == 7776);
     REQUIRE(S.degree() == 6);
-    REQUIRE(S.nr_idempotents() == 537);
-    REQUIRE(S.nr_generators() == 5);
-    REQUIRE(S.nr_rules() == 2459);
+    REQUIRE(S.number_of_idempotents() == 537);
+    REQUIRE(S.number_of_generators() == 5);
+    REQUIRE(S.number_of_rules() == 2459);
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<Transf<>>",
@@ -525,24 +525,24 @@ namespace libsemigroups {
 
     S.enumerate(3000);
     REQUIRE(S.current_size() == 3000);
-    REQUIRE(S.current_nr_rules() == 526);
+    REQUIRE(S.current_number_of_rules() == 526);
     REQUIRE(S.current_max_word_length() == 9);
 
     S.enumerate(3001);
     REQUIRE(S.current_size() == 4024);
-    REQUIRE(S.current_nr_rules() == 999);
+    REQUIRE(S.current_number_of_rules() == 999);
     REQUIRE(S.current_max_word_length() == 10);
 
     S.enumerate(7000);
     REQUIRE(S.current_size() == 7000);
-    REQUIRE(S.current_nr_rules() == 2044);
+    REQUIRE(S.current_number_of_rules() == 2044);
     REQUIRE(S.current_max_word_length() == 12);
 
     REQUIRE(S.size() == 7776);
     REQUIRE(S.degree() == 6);
-    REQUIRE(S.nr_idempotents() == 537);
-    REQUIRE(S.nr_generators() == 5);
-    REQUIRE(S.nr_rules() == 2459);
+    REQUIRE(S.number_of_idempotents() == 537);
+    REQUIRE(S.number_of_generators() == 5);
+    REQUIRE(S.number_of_rules() == 2459);
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<Transf<>>",
@@ -566,9 +566,9 @@ namespace libsemigroups {
 
     REQUIRE(S.size() == 7776);
     REQUIRE(S.degree() == 6);
-    REQUIRE(S.nr_idempotents() == 537);
-    REQUIRE(S.nr_generators() == 5);
-    REQUIRE(S.nr_rules() == 2459);
+    REQUIRE(S.number_of_idempotents() == 537);
+    REQUIRE(S.number_of_generators() == 5);
+    REQUIRE(S.number_of_rules() == 2459);
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<Transf<>>",
@@ -594,7 +594,7 @@ namespace libsemigroups {
     REQUIRE(S.current_max_word_length() == 11);
 
     REQUIRE(S.current_size() == 5539);
-    REQUIRE(S.current_nr_rules() == 1484);
+    REQUIRE(S.current_number_of_rules() == 1484);
     REQUIRE(S.current_max_word_length() == 11);
 
     REQUIRE(S.length_non_const(7775) == 16);
@@ -776,9 +776,9 @@ namespace libsemigroups {
 
     REQUIRE(S.size() == 7776);
     REQUIRE(S.degree() == 6);
-    REQUIRE(S.nr_idempotents() == 537);
-    REQUIRE(S.nr_generators() == 32);
-    REQUIRE(S.nr_rules() == 2621);
+    REQUIRE(S.number_of_idempotents() == 537);
+    REQUIRE(S.number_of_generators() == 32);
+    REQUIRE(S.number_of_rules() == 2621);
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<Transf<>>",
@@ -791,37 +791,37 @@ namespace libsemigroups {
 
     REQUIRE(S.size() == 1);
     REQUIRE(S.degree() == 6);
-    REQUIRE(S.nr_idempotents() == 1);
-    REQUIRE(S.nr_generators() == 1);
-    REQUIRE(S.nr_rules() == 1);
+    REQUIRE(S.number_of_idempotents() == 1);
+    REQUIRE(S.number_of_generators() == 1);
+    REQUIRE(S.number_of_rules() == 1);
 
     S.add_generator(Transf<>({1, 0, 2, 3, 4, 5}));
     REQUIRE(S.size() == 2);
     REQUIRE(S.degree() == 6);
-    REQUIRE(S.nr_idempotents() == 1);
-    REQUIRE(S.nr_generators() == 2);
-    REQUIRE(S.nr_rules() == 4);
+    REQUIRE(S.number_of_idempotents() == 1);
+    REQUIRE(S.number_of_generators() == 2);
+    REQUIRE(S.number_of_rules() == 4);
 
     S.add_generator(Transf<>({4, 0, 1, 2, 3, 5}));
     REQUIRE(S.size() == 120);
     REQUIRE(S.degree() == 6);
-    REQUIRE(S.nr_idempotents() == 1);
-    REQUIRE(S.nr_generators() == 3);
-    REQUIRE(S.nr_rules() == 25);
+    REQUIRE(S.number_of_idempotents() == 1);
+    REQUIRE(S.number_of_generators() == 3);
+    REQUIRE(S.number_of_rules() == 25);
 
     S.add_generator(Transf<>({5, 1, 2, 3, 4, 5}));
     REQUIRE(S.size() == 1546);
     REQUIRE(S.degree() == 6);
-    REQUIRE(S.nr_idempotents() == 32);
-    REQUIRE(S.nr_generators() == 4);
-    REQUIRE(S.nr_rules() == 495);
+    REQUIRE(S.number_of_idempotents() == 32);
+    REQUIRE(S.number_of_generators() == 4);
+    REQUIRE(S.number_of_rules() == 495);
 
     S.add_generator(Transf<>({1, 1, 2, 3, 4, 5}));
     REQUIRE(S.size() == 7776);
     REQUIRE(S.degree() == 6);
-    REQUIRE(S.nr_idempotents() == 537);
-    REQUIRE(S.nr_generators() == 5);
-    REQUIRE(S.nr_rules() == 2459);
+    REQUIRE(S.number_of_idempotents() == 537);
+    REQUIRE(S.number_of_generators() == 5);
+    REQUIRE(S.number_of_rules() == 2459);
 
     REQUIRE(S.letter_to_pos(0) == 0);
     REQUIRE(S.letter_to_pos(1) == 1);
@@ -847,7 +847,7 @@ namespace libsemigroups {
       test_idempotent(S, *it);
       nr++;
     }
-    REQUIRE(nr == S.nr_idempotents());
+    REQUIRE(nr == S.number_of_idempotents());
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<Transf<>>",
@@ -868,7 +868,7 @@ namespace libsemigroups {
       test_idempotent(S, *it);
       nr++;
     }
-    REQUIRE(nr == S.nr_idempotents());
+    REQUIRE(nr == S.number_of_idempotents());
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<Transf<>>",
@@ -891,7 +891,7 @@ namespace libsemigroups {
         nr++;
       }
     }
-    REQUIRE(nr == S.nr_idempotents());
+    REQUIRE(nr == S.number_of_idempotents());
   }
 
   LIBSEMIGROUPS_TEST_CASE(
@@ -912,7 +912,7 @@ namespace libsemigroups {
       test_idempotent(S, *it);
       nr++;
     }
-    REQUIRE(nr == S.nr_idempotents());
+    REQUIRE(nr == S.number_of_idempotents());
     REQUIRE(nr == 6322);
 
     nr = 0;
@@ -920,7 +920,7 @@ namespace libsemigroups {
       test_idempotent(S, *it);
       nr++;
     }
-    REQUIRE(nr == S.nr_idempotents());
+    REQUIRE(nr == S.number_of_idempotents());
     REQUIRE(nr == 6322);
   }
 
@@ -971,23 +971,23 @@ namespace libsemigroups {
     S.enumerate(1024);
 
     REQUIRE(S.current_size() == 1029);
-    REQUIRE(S.current_nr_rules() == 74);
+    REQUIRE(S.current_number_of_rules() == 74);
     REQUIRE(S.current_max_word_length() == 7);
     REQUIRE(S.current_position(S.at(1024)) == 1024);
 
     REQUIRE(S.current_position(Transf<>({5, 1, 5, 5, 2, 5})) == 1028);
     REQUIRE(S.current_size() == 1029);
-    REQUIRE(S.current_nr_rules() == 74);
+    REQUIRE(S.current_number_of_rules() == 74);
     REQUIRE(S.current_max_word_length() == 7);
 
     REQUIRE(S.current_position(Transf<>({5, 1, 5, 5, 2, 5, 6})) == UNDEFINED);
     REQUIRE(S.current_size() == 1029);
-    REQUIRE(S.current_nr_rules() == 74);
+    REQUIRE(S.current_number_of_rules() == 74);
     REQUIRE(S.current_max_word_length() == 7);
 
     REQUIRE(S.current_position(Transf<>({5, 4, 5, 1, 0, 5})) == UNDEFINED);
     REQUIRE(S.current_size() == 1029);
-    REQUIRE(S.current_nr_rules() == 74);
+    REQUIRE(S.current_number_of_rules() == 74);
     REQUIRE(S.current_max_word_length() == 7);
     REQUIRE(S.position(Transf<>({5, 4, 5, 1, 0, 5})) == 1029);
   }
@@ -1363,7 +1363,7 @@ namespace libsemigroups {
     REQUIRE(!S.started());
     REQUIRE(!S.finished());
     REQUIRE(S.current_size() == 5);
-    REQUIRE(S.current_nr_rules() == 0);
+    REQUIRE(S.current_number_of_rules() == 0);
     REQUIRE(S.current_max_word_length() == 1);
     REQUIRE(S.current_position(S.generator(1)) == 1);
 
@@ -1371,16 +1371,16 @@ namespace libsemigroups {
 
     REQUIRE(!T.started());
     REQUIRE(!T.finished());
-    REQUIRE(T.nr_generators() == 5);
+    REQUIRE(T.number_of_generators() == 5);
     REQUIRE(T.degree() == 6);
     REQUIRE(T.current_size() == 5);
-    REQUIRE(T.current_nr_rules() == 0);
+    REQUIRE(T.current_number_of_rules() == 0);
     REQUIRE(T.current_max_word_length() == 1);
     REQUIRE(T.current_position(S.generator(1)) == 1);
 
     REQUIRE(T.size() == 7776);
-    REQUIRE(T.nr_idempotents() == 537);
-    REQUIRE(T.nr_rules() == 2459);
+    REQUIRE(T.number_of_idempotents() == 537);
+    REQUIRE(T.number_of_rules() == 2459);
     REQUIRE(T.started());
     REQUIRE(T.finished());
   }
@@ -1396,10 +1396,10 @@ namespace libsemigroups {
 
     REQUIRE(!S.started());
     REQUIRE(!S.finished());
-    REQUIRE(S.nr_generators() == 2);
+    REQUIRE(S.number_of_generators() == 2);
     REQUIRE(S.degree() == 6);
     REQUIRE(S.current_size() == 2);
-    REQUIRE(S.current_nr_rules() == 0);
+    REQUIRE(S.current_number_of_rules() == 0);
     REQUIRE(S.current_max_word_length() == 1);
 
     std::vector<Transf<>> coll = {Transf<>({4, 0, 1, 2, 3, 5}),
@@ -1410,40 +1410,40 @@ namespace libsemigroups {
 
     REQUIRE(T.started());
     REQUIRE(!T.finished());
-    REQUIRE(T.nr_generators() == 5);
+    REQUIRE(T.number_of_generators() == 5);
     REQUIRE(T.degree() == 6);
     REQUIRE(T.current_size() == 7719);
-    REQUIRE(T.current_nr_rules() == 2418);
+    REQUIRE(T.current_number_of_rules() == 2418);
     REQUIRE(T.current_max_word_length() == 14);
     REQUIRE(T.current_position(S.generator(1)) == 1);
 
     REQUIRE(T.size() == 7776);
     REQUIRE(T.finished());
-    REQUIRE(T.nr_idempotents() == 537);
-    REQUIRE(T.nr_rules() == 2459);
+    REQUIRE(T.number_of_idempotents() == 537);
+    REQUIRE(T.number_of_rules() == 2459);
 
     FroidurePin<Transf<>> U = T.copy_closure({Transf<>({6, 0, 1, 2, 3, 5, 6})});
 
     REQUIRE(U.started());
     REQUIRE(U.finished());
-    REQUIRE(U.nr_generators() == 6);
+    REQUIRE(U.number_of_generators() == 6);
     REQUIRE(U.degree() == 7);
     REQUIRE(U.current_size() == 16807);
     REQUIRE(U.current_max_word_length() == 16);
-    REQUIRE(U.nr_idempotents() == 1358);
-    REQUIRE(U.nr_rules() == 7901);
+    REQUIRE(U.number_of_idempotents() == 1358);
+    REQUIRE(U.number_of_rules() == 7901);
 
     FroidurePin<Transf<>> V = U.copy_closure({});
 
     REQUIRE(&V != &U);
     REQUIRE(V.started());
     REQUIRE(V.finished());
-    REQUIRE(V.nr_generators() == 6);
+    REQUIRE(V.number_of_generators() == 6);
     REQUIRE(V.degree() == 7);
     REQUIRE(V.current_size() == 16807);
     REQUIRE(V.current_max_word_length() == 16);
-    REQUIRE(V.nr_idempotents() == 1358);
-    REQUIRE(V.nr_rules() == 7901);
+    REQUIRE(V.number_of_idempotents() == 1358);
+    REQUIRE(V.number_of_rules() == 7901);
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<Transf<>>",
@@ -1457,10 +1457,10 @@ namespace libsemigroups {
 
     REQUIRE(!S.started());
     REQUIRE(!S.finished());
-    REQUIRE(S.nr_generators() == 2);
+    REQUIRE(S.number_of_generators() == 2);
     REQUIRE(S.degree() == 6);
     REQUIRE(S.current_size() == 2);
-    REQUIRE(S.current_nr_rules() == 0);
+    REQUIRE(S.current_number_of_rules() == 0);
     REQUIRE(S.current_max_word_length() == 1);
 
     std::vector<Transf<>> coll = {Transf<>({4, 0, 1, 2, 3, 5}),
@@ -1471,27 +1471,27 @@ namespace libsemigroups {
 
     REQUIRE(!T.started());
     REQUIRE(!T.finished());
-    REQUIRE(T.nr_generators() == 5);
+    REQUIRE(T.number_of_generators() == 5);
     REQUIRE(T.degree() == 6);
     REQUIRE(T.current_size() == 5);
-    REQUIRE(T.current_nr_rules() == 0);
+    REQUIRE(T.current_number_of_rules() == 0);
     REQUIRE(T.current_max_word_length() == 1);
     REQUIRE(T.current_position(S.generator(1)) == 1);
 
     REQUIRE(T.size() == 7776);
     REQUIRE(T.finished());
-    REQUIRE(T.nr_idempotents() == 537);
-    REQUIRE(T.nr_rules() == 2459);
+    REQUIRE(T.number_of_idempotents() == 537);
+    REQUIRE(T.number_of_rules() == 2459);
 
     FroidurePin<Transf<>> U
         = T.copy_add_generators({Transf<>({6, 0, 1, 2, 3, 5, 6})});
 
-    REQUIRE(U.nr_generators() == 6);
+    REQUIRE(U.number_of_generators() == 6);
     REQUIRE(U.degree() == 7);
     REQUIRE(U.current_size() == 16807);
     REQUIRE(U.current_max_word_length() == 16);
-    REQUIRE(U.nr_idempotents() == 1358);
-    REQUIRE(U.nr_rules() == 7901);
+    REQUIRE(U.number_of_idempotents() == 1358);
+    REQUIRE(U.number_of_rules() == 7901);
     REQUIRE(U.finished());
 
     FroidurePin<Transf<>> V = U.copy_add_generators({});
@@ -1499,12 +1499,12 @@ namespace libsemigroups {
     REQUIRE(&V != &U);
     REQUIRE(V.started());
     REQUIRE(V.finished());
-    REQUIRE(V.nr_generators() == 6);
+    REQUIRE(V.number_of_generators() == 6);
     REQUIRE(V.degree() == 7);
     REQUIRE(V.current_size() == 16807);
     REQUIRE(V.current_max_word_length() == 16);
-    REQUIRE(V.nr_idempotents() == 1358);
-    REQUIRE(V.nr_rules() == 7901);
+    REQUIRE(V.number_of_idempotents() == 1358);
+    REQUIRE(V.number_of_rules() == 7901);
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<Transf<>>",
@@ -1524,7 +1524,7 @@ namespace libsemigroups {
     REQUIRE(S.started());
     REQUIRE(!S.finished());
     REQUIRE(S.current_size() == 1006);
-    REQUIRE(S.current_nr_rules() == 70);
+    REQUIRE(S.current_number_of_rules() == 70);
     REQUIRE(S.current_max_word_length() == 7);
     REQUIRE(S.current_position(S.generator(1)) == 1);
 
@@ -1532,18 +1532,18 @@ namespace libsemigroups {
 
     REQUIRE(T.started());
     REQUIRE(!T.finished());
-    REQUIRE(T.nr_generators() == 5);
+    REQUIRE(T.number_of_generators() == 5);
     REQUIRE(T.degree() == 6);
     REQUIRE(T.current_size() == 1006);
-    REQUIRE(T.current_nr_rules() == 70);
+    REQUIRE(T.current_number_of_rules() == 70);
     REQUIRE(T.current_max_word_length() == 7);
 
     REQUIRE(T.current_position(Transf<>({0, 1, 2, 3, 4, 5})) == 0);
     REQUIRE(T.current_position(Transf<>({1, 0, 2, 3, 4, 5})) == 1);
 
     REQUIRE(T.size() == 7776);
-    REQUIRE(T.nr_idempotents() == 537);
-    REQUIRE(T.nr_rules() == 2459);
+    REQUIRE(T.number_of_idempotents() == 537);
+    REQUIRE(T.number_of_rules() == 2459);
     REQUIRE(T.started());
     REQUIRE(T.finished());
   }
@@ -1562,10 +1562,10 @@ namespace libsemigroups {
 
     REQUIRE(S.started());
     REQUIRE(!S.finished());
-    REQUIRE(S.nr_generators() == 3);
+    REQUIRE(S.number_of_generators() == 3);
     REQUIRE(S.degree() == 6);
     REQUIRE(S.current_size() == 63);
-    REQUIRE(S.current_nr_rules() == 11);
+    REQUIRE(S.current_number_of_rules() == 11);
     REQUIRE(S.current_max_word_length() == 7);
 
     auto coll = {Transf<>({5, 1, 2, 3, 4, 5}), Transf<>({1, 1, 2, 3, 4, 5})};
@@ -1576,16 +1576,16 @@ namespace libsemigroups {
 
     REQUIRE(T.started());
     REQUIRE(!T.finished());
-    REQUIRE(T.nr_generators() == 5);
+    REQUIRE(T.number_of_generators() == 5);
     REQUIRE(T.degree() == 6);
     REQUIRE(T.current_size() == 7719);
-    REQUIRE(T.current_nr_rules() == 2418);
+    REQUIRE(T.current_number_of_rules() == 2418);
     REQUIRE(T.current_max_word_length() == 14);
 
     REQUIRE(T.size() == 7776);
     REQUIRE(T.finished());
-    REQUIRE(T.nr_idempotents() == 537);
-    REQUIRE(T.nr_rules() == 2459);
+    REQUIRE(T.number_of_idempotents() == 537);
+    REQUIRE(T.number_of_rules() == 2459);
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<Transf<>>",
@@ -1602,10 +1602,10 @@ namespace libsemigroups {
 
     REQUIRE(S.started());
     REQUIRE(!S.finished());
-    REQUIRE(S.nr_generators() == 3);
+    REQUIRE(S.number_of_generators() == 3);
     REQUIRE(S.degree() == 6);
     REQUIRE(S.current_size() == 63);
-    REQUIRE(S.current_nr_rules() == 11);
+    REQUIRE(S.current_number_of_rules() == 11);
     REQUIRE(S.current_max_word_length() == 7);
 
     auto coll = {Transf<>({5, 1, 2, 3, 4, 5}), Transf<>({1, 1, 2, 3, 4, 5})};
@@ -1615,16 +1615,16 @@ namespace libsemigroups {
     REQUIRE(Transf<>({1, 1, 2, 3, 4, 5}) == T.generator(4));
 
     REQUIRE(!T.finished());
-    REQUIRE(T.nr_generators() == 5);
+    REQUIRE(T.number_of_generators() == 5);
     REQUIRE(T.degree() == 6);
     REQUIRE(T.current_size() == 818);
-    REQUIRE(T.current_nr_rules() == 55);
+    REQUIRE(T.current_number_of_rules() == 55);
     REQUIRE(T.current_max_word_length() == 7);
 
     REQUIRE(T.size() == 7776);
     REQUIRE(T.finished());
-    REQUIRE(T.nr_idempotents() == 537);
-    REQUIRE(T.nr_rules() == 2459);
+    REQUIRE(T.number_of_idempotents() == 537);
+    REQUIRE(T.number_of_rules() == 2459);
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<Transf<>>",
@@ -1644,17 +1644,17 @@ namespace libsemigroups {
     REQUIRE(S.started());
     REQUIRE(S.finished());
     REQUIRE(S.size() == 7776);
-    REQUIRE(S.nr_idempotents() == 537);
-    REQUIRE(S.nr_rules() == 2459);
+    REQUIRE(S.number_of_idempotents() == 537);
+    REQUIRE(S.number_of_rules() == 2459);
 
     auto T(S);
     REQUIRE(T.started());
     REQUIRE(T.finished());
-    REQUIRE(T.nr_generators() == 5);
+    REQUIRE(T.number_of_generators() == 5);
     REQUIRE(T.degree() == 6);
     REQUIRE(T.size() == 7776);
-    REQUIRE(T.nr_idempotents() == 537);
-    REQUIRE(T.nr_rules() == 2459);
+    REQUIRE(T.number_of_idempotents() == 537);
+    REQUIRE(T.number_of_rules() == 2459);
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<Transf<>>",
@@ -1670,10 +1670,10 @@ namespace libsemigroups {
 
     REQUIRE(S.started());
     REQUIRE(S.finished());
-    REQUIRE(S.nr_generators() == 3);
+    REQUIRE(S.number_of_generators() == 3);
     REQUIRE(S.degree() == 6);
     REQUIRE(S.current_size() == 120);
-    REQUIRE(S.current_nr_rules() == 25);
+    REQUIRE(S.current_number_of_rules() == 25);
     REQUIRE(S.current_max_word_length() == 11);
 
     FroidurePin<Transf<>> T = S.copy_closure(
@@ -1684,16 +1684,16 @@ namespace libsemigroups {
 
     REQUIRE(T.started());
     REQUIRE(!T.finished());
-    REQUIRE(T.nr_generators() == 5);
+    REQUIRE(T.number_of_generators() == 5);
     REQUIRE(T.degree() == 6);
     REQUIRE(T.current_size() == 7719);
-    REQUIRE(T.current_nr_rules() == 2418);
+    REQUIRE(T.current_number_of_rules() == 2418);
     REQUIRE(T.current_max_word_length() == 14);
 
     REQUIRE(T.size() == 7776);
     REQUIRE(T.finished());
-    REQUIRE(T.nr_idempotents() == 537);
-    REQUIRE(T.nr_rules() == 2459);
+    REQUIRE(T.number_of_idempotents() == 537);
+    REQUIRE(T.number_of_rules() == 2459);
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<Transf<>>",
@@ -1709,10 +1709,10 @@ namespace libsemigroups {
 
     REQUIRE(S.started());
     REQUIRE(S.finished());
-    REQUIRE(S.nr_generators() == 3);
+    REQUIRE(S.number_of_generators() == 3);
     REQUIRE(S.degree() == 6);
     REQUIRE(S.current_size() == 120);
-    REQUIRE(S.current_nr_rules() == 25);
+    REQUIRE(S.current_number_of_rules() == 25);
     REQUIRE(S.current_max_word_length() == 11);
 
     FroidurePin<Transf<>> T = S.copy_add_generators(
@@ -1722,16 +1722,16 @@ namespace libsemigroups {
     REQUIRE(Transf<>({1, 1, 2, 3, 4, 5}) == T.generator(4));
 
     REQUIRE(!T.finished());
-    REQUIRE(T.nr_generators() == 5);
+    REQUIRE(T.number_of_generators() == 5);
     REQUIRE(T.degree() == 6);
     REQUIRE(T.current_size() == 6842);
-    REQUIRE(T.current_nr_rules() == 1970);
+    REQUIRE(T.current_number_of_rules() == 1970);
     REQUIRE(T.current_max_word_length() == 12);
 
     REQUIRE(T.size() == 7776);
     REQUIRE(T.finished());
-    REQUIRE(T.nr_idempotents() == 537);
-    REQUIRE(T.nr_rules() == 2459);
+    REQUIRE(T.number_of_idempotents() == 537);
+    REQUIRE(T.number_of_rules() == 2459);
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<Transf<>>",
@@ -1759,9 +1759,9 @@ namespace libsemigroups {
       ++it;
       ++nr;
     }
-    REQUIRE(S.nr_rules() == nr - 1);
+    REQUIRE(S.number_of_rules() == nr - 1);
     std::vector<relation_type> rules(S.cbegin_rules(), S.cend_rules());
-    REQUIRE(S.nr_rules() == rules.size());
+    REQUIRE(S.number_of_rules() == rules.size());
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<Transf<>>",
@@ -1777,7 +1777,7 @@ namespace libsemigroups {
     S.add_generator(Transf<>({1, 1, 2, 3, 4, 5}));
     // No rules, because not enumerated
     REQUIRE(S.cbegin_rules() == S.cend_rules());
-    S.run_until([&S]() { return S.current_nr_rules() >= 2; });
+    S.run_until([&S]() { return S.current_number_of_rules() >= 2; });
     REQUIRE(!S.finished());
     {  // test cbegin_rules, cend_rules on partially enumerated S
       auto it = S.cbegin_rules();
@@ -1786,12 +1786,12 @@ namespace libsemigroups {
       REQUIRE(*it == relation_type({0, 1}, {1}));
       test_rules_iterator(S);
       REQUIRE(!S.finished());
-      REQUIRE(S.current_nr_rules() == 15);
+      REQUIRE(S.current_number_of_rules() == 15);
     }
 
     S.run();
     REQUIRE(S.finished());
-    REQUIRE(S.nr_rules() == 2459);
+    REQUIRE(S.number_of_rules() == 2459);
     {
       auto it = S.cbegin_rules();
       REQUIRE(*it == relation_type({0, 0}, {0}));
@@ -1818,12 +1818,12 @@ namespace libsemigroups {
     S.run();
     REQUIRE(S.started());
     REQUIRE(S.finished());
-    REQUIRE(S.nr_generators() == 5);
+    REQUIRE(S.number_of_generators() == 5);
     REQUIRE(S.degree() == 6);
     REQUIRE(S.current_size() == 120);
     REQUIRE(S.size() == 120);
-    REQUIRE(S.current_nr_rules() == 33);
-    REQUIRE(S.nr_rules() == 33);
+    REQUIRE(S.current_number_of_rules() == 33);
+    REQUIRE(S.number_of_rules() == 33);
     REQUIRE(S.current_max_word_length() == 11);
 
     std::vector<Transf<>> coll = {Transf<>({5, 1, 2, 3, 4, 5}),
@@ -1835,7 +1835,7 @@ namespace libsemigroups {
 
     REQUIRE(T.size() == 7776);
     REQUIRE(T.finished());
-    REQUIRE(T.nr_idempotents() == 537);
+    REQUIRE(T.number_of_idempotents() == 537);
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<Transf<>>",
@@ -1853,12 +1853,12 @@ namespace libsemigroups {
     S.run();
     REQUIRE(S.started());
     REQUIRE(S.finished());
-    REQUIRE(S.nr_generators() == 5);
+    REQUIRE(S.number_of_generators() == 5);
     REQUIRE(S.degree() == 6);
     REQUIRE(S.current_size() == 120);
     REQUIRE(S.size() == 120);
-    REQUIRE(S.current_nr_rules() == 33);
-    REQUIRE(S.nr_rules() == 33);
+    REQUIRE(S.current_number_of_rules() == 33);
+    REQUIRE(S.number_of_rules() == 33);
     REQUIRE(S.current_max_word_length() == 11);
 
     std::vector<Transf<>> coll = {Transf<>({5, 1, 2, 3, 4, 5}),
@@ -1870,7 +1870,7 @@ namespace libsemigroups {
 
     REQUIRE(T.size() == 7776);
     REQUIRE(T.finished());
-    REQUIRE(T.nr_idempotents() == 537);
+    REQUIRE(T.number_of_idempotents() == 537);
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<Transf<>>",
@@ -1886,7 +1886,7 @@ namespace libsemigroups {
     S.add_generator(Transf<>({1, 1, 2, 3, 4, 5}));
 
     auto T(S);
-    REQUIRE(T.current_nr_rules() == S.current_nr_rules());
+    REQUIRE(T.current_number_of_rules() == S.current_number_of_rules());
     REQUIRE(!T.finished());
 
     test_rules_iterator(T);
@@ -1912,14 +1912,14 @@ namespace libsemigroups {
     S.enumerate(1000);
 
     auto T(S);
-    REQUIRE(T.current_nr_rules() == S.current_nr_rules());
+    REQUIRE(T.current_number_of_rules() == S.current_number_of_rules());
 
     test_rules_iterator(T);
     test_rules_iterator(T);
 
     T.run();
     REQUIRE(T.finished());
-    REQUIRE(T.nr_rules() == S.nr_rules());
+    REQUIRE(T.number_of_rules() == S.number_of_rules());
     test_rules_iterator(T);
   }
 
@@ -1938,16 +1938,16 @@ namespace libsemigroups {
     S.enumerate(8000);
 
     auto T(S);
-    REQUIRE(T.nr_rules() == S.nr_rules());
+    REQUIRE(T.number_of_rules() == S.number_of_rules());
 
-    REQUIRE(T.current_nr_rules() == S.current_nr_rules());
+    REQUIRE(T.current_number_of_rules() == S.current_number_of_rules());
 
     test_rules_iterator(T);
     test_rules_iterator(T);
 
     T.run();
     REQUIRE(T.finished());
-    REQUIRE(T.nr_rules() == S.nr_rules());
+    REQUIRE(T.number_of_rules() == S.number_of_rules());
     test_rules_iterator(T);
   }
 
@@ -1971,12 +1971,12 @@ namespace libsemigroups {
     REQUIRE(Transf<>({1, 1, 2, 3, 4, 5}) == T.generator(4));
 
     REQUIRE(!T.finished());
-    REQUIRE(T.current_nr_rules() == 2418);
+    REQUIRE(T.current_number_of_rules() == 2418);
     test_rules_iterator(T);
     REQUIRE(!T.finished());
-    REQUIRE(T.current_nr_rules() == 2418);
+    REQUIRE(T.current_number_of_rules() == 2418);
     test_rules_iterator(T);
-    REQUIRE(T.current_nr_rules() == 2418);
+    REQUIRE(T.current_number_of_rules() == 2418);
   }
 
   LIBSEMIGROUPS_TEST_CASE(
@@ -2001,7 +2001,7 @@ namespace libsemigroups {
     REQUIRE(coll[1] == T.generator(4));
 
     test_rules_iterator(T);
-    REQUIRE(T.nr_rules() == 2459);
+    REQUIRE(T.number_of_rules() == 2459);
     test_rules_iterator(T);
   }
 
@@ -2052,7 +2052,7 @@ namespace libsemigroups {
     FroidurePin<Transf<>> T = S.copy_add_generators(coll);
 
     test_rules_iterator(T);
-    REQUIRE(T.nr_rules() == 2459);
+    REQUIRE(T.number_of_rules() == 2459);
     test_rules_iterator(T);
   }
 
@@ -2077,7 +2077,7 @@ namespace libsemigroups {
     FroidurePin<Transf<>> T = S.copy_closure(coll);
 
     test_rules_iterator(T);
-    REQUIRE(T.nr_rules() == 2459);
+    REQUIRE(T.number_of_rules() == 2459);
     test_rules_iterator(T);
   }
 
@@ -2103,7 +2103,7 @@ namespace libsemigroups {
     FroidurePin<Transf<>> T = S.copy_add_generators(coll);
 
     test_rules_iterator(T);
-    REQUIRE(T.nr_rules() == 2459);
+    REQUIRE(T.number_of_rules() == 2459);
     test_rules_iterator(T);
   }
 
@@ -2117,47 +2117,47 @@ namespace libsemigroups {
     S.add_generator(Transf<>({0, 1, 0, 3, 4, 5}));
 
     REQUIRE(S.size() == 1);
-    REQUIRE(S.nr_generators() == 2);
+    REQUIRE(S.number_of_generators() == 2);
 
     S.add_generators({});
     REQUIRE(S.size() == 1);
-    REQUIRE(S.nr_generators() == 2);
+    REQUIRE(S.number_of_generators() == 2);
 
     S.add_generator(S.generator(0));
     REQUIRE(S.size() == 1);
-    REQUIRE(S.nr_generators() == 3);
+    REQUIRE(S.number_of_generators() == 3);
 
     S.add_generator(Transf<>({0, 1, 2, 3, 4, 5}));
     REQUIRE(S.size() == 2);
-    REQUIRE(S.nr_generators() == 4);
+    REQUIRE(S.number_of_generators() == 4);
 
     S.add_generator(Transf<>({0, 1, 3, 5, 5, 4}));
     REQUIRE(S.size() == 7);
-    REQUIRE(S.nr_generators() == 5);
+    REQUIRE(S.number_of_generators() == 5);
 
     S.add_generator(Transf<>({1, 0, 2, 4, 4, 5}));
     REQUIRE(S.size() == 18);
-    REQUIRE(S.nr_generators() == 6);
+    REQUIRE(S.number_of_generators() == 6);
 
     S.add_generator(Transf<>({4, 3, 3, 1, 0, 5}));
     REQUIRE(S.size() == 87);
-    REQUIRE(S.nr_generators() == 7);
+    REQUIRE(S.number_of_generators() == 7);
 
     S.add_generator(Transf<>({4, 3, 5, 1, 0, 5}));
     REQUIRE(S.size() == 97);
-    REQUIRE(S.nr_generators() == 8);
+    REQUIRE(S.number_of_generators() == 8);
 
     S.add_generator(Transf<>({5, 5, 2, 3, 4, 0}));
     REQUIRE(S.size() == 119);
-    REQUIRE(S.nr_generators() == 9);
-    REQUIRE(S.nr_rules() == 213);
+    REQUIRE(S.number_of_generators() == 9);
+    REQUIRE(S.number_of_rules() == 213);
 
     S.add_generator(Transf<>({1, 0, 2, 4, 4, 5})
                     * Transf<>({4, 3, 3, 1, 0, 5}));
 
     REQUIRE(S.size() == 119);
-    REQUIRE(S.nr_generators() == 10);
-    REQUIRE(S.nr_rules() == 267);
+    REQUIRE(S.number_of_generators() == 10);
+    REQUIRE(S.number_of_rules() == 267);
 
     REQUIRE(S.letter_to_pos(0) == 0);
     REQUIRE(S.letter_to_pos(1) == 0);
@@ -2186,21 +2186,21 @@ namespace libsemigroups {
     S.add_generator(Transf<>({0, 1, 3, 5, 5, 4}));
     S.add_generator(Transf<>({1, 0, 2, 4, 4, 5}));
     REQUIRE(S.size() == 18);
-    REQUIRE(S.nr_generators() == 6);
+    REQUIRE(S.number_of_generators() == 6);
 
     S.add_generator(Transf<>({4, 3, 3, 1, 0, 5}));
     S.add_generator(Transf<>({4, 3, 5, 1, 0, 5}));
     REQUIRE(S.size() == 97);
-    REQUIRE(S.nr_generators() == 8);
-    REQUIRE(S.nr_rules() == 126);
+    REQUIRE(S.number_of_generators() == 8);
+    REQUIRE(S.number_of_rules() == 126);
 
     S.add_generators({S.generator(4), S.generator(5)});
     S.add_generator(S.generator(5));
     S.add_generator(Transf<>({5, 5, 2, 3, 4, 0}));
     S.add_generators({S.generator(0), S.generator(0)});
     REQUIRE(S.size() == 119);
-    REQUIRE(S.nr_generators() == 14);
-    REQUIRE(S.nr_rules() == 253);
+    REQUIRE(S.number_of_generators() == 14);
+    REQUIRE(S.number_of_rules() == 253);
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<Transf<>>",
@@ -2230,24 +2230,24 @@ namespace libsemigroups {
     S.run();
     REQUIRE(S.current_size() == 7);
     S.add_generators({T.generator(3), T.generator(4), T.generator(5)});
-    REQUIRE(S.nr_generators() == 8);
+    REQUIRE(S.number_of_generators() == 8);
     REQUIRE(S.letter_to_pos(5) == 7);
     REQUIRE(S.letter_to_pos(6) == 8);
     REQUIRE(S.letter_to_pos(7) == 9);
     REQUIRE(S.current_size() == 55);
 
     S.add_generator(S.at(44));
-    REQUIRE(S.nr_generators() == 9);
+    REQUIRE(S.number_of_generators() == 9);
     REQUIRE(S.current_size() == 73);
     REQUIRE(S.size() == 97);
 
     S.add_generator(S.at(75));
-    REQUIRE(S.nr_generators() == 10);
+    REQUIRE(S.number_of_generators() == 10);
     REQUIRE(S.current_size() == 97);
     REQUIRE(S.size() == 97);
 
     S.add_generators({T.generator(6)});
-    REQUIRE(S.nr_generators() == 11);
+    REQUIRE(S.number_of_generators() == 11);
     REQUIRE(S.size() == 119);
   }
 
@@ -2261,39 +2261,39 @@ namespace libsemigroups {
     S.add_generator(Transf<>({0, 1, 0, 3, 4, 5}));
 
     REQUIRE(S.size() == 1);
-    REQUIRE(S.nr_generators() == 2);
+    REQUIRE(S.number_of_generators() == 2);
 
     S.closure({});
     REQUIRE(S.size() == 1);
-    REQUIRE(S.nr_generators() == 2);
+    REQUIRE(S.number_of_generators() == 2);
 
     S.closure({S.generator(0)});
     REQUIRE(S.size() == 1);
-    REQUIRE(S.nr_generators() == 2);
+    REQUIRE(S.number_of_generators() == 2);
 
     S.closure({Transf<>({0, 1, 2, 3, 4, 5})});
     REQUIRE(S.size() == 2);
-    REQUIRE(S.nr_generators() == 3);
+    REQUIRE(S.number_of_generators() == 3);
 
     S.closure({Transf<>({0, 1, 3, 5, 5, 4})});
     REQUIRE(S.size() == 7);
-    REQUIRE(S.nr_generators() == 4);
+    REQUIRE(S.number_of_generators() == 4);
 
     S.closure({Transf<>({1, 0, 2, 4, 4, 5})});
     REQUIRE(S.size() == 18);
-    REQUIRE(S.nr_generators() == 5);
+    REQUIRE(S.number_of_generators() == 5);
 
     S.closure({Transf<>({4, 3, 3, 1, 0, 5})});
     REQUIRE(S.size() == 87);
-    REQUIRE(S.nr_generators() == 6);
+    REQUIRE(S.number_of_generators() == 6);
 
     S.closure({Transf<>({4, 3, 5, 1, 0, 5})});
     REQUIRE(S.size() == 97);
-    REQUIRE(S.nr_generators() == 7);
+    REQUIRE(S.number_of_generators() == 7);
 
     S.closure({Transf<>({5, 5, 2, 3, 4, 0})});
     REQUIRE(S.size() == 119);
-    REQUIRE(S.nr_generators() == 8);
+    REQUIRE(S.number_of_generators() == 8);
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<Transf<>>",
@@ -2317,7 +2317,7 @@ namespace libsemigroups {
 
     S.closure(gens);
     REQUIRE(S.size() == 27);
-    REQUIRE(S.nr_generators() == 10);
+    REQUIRE(S.number_of_generators() == 10);
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<Transf<>>",

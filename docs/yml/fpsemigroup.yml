@@ -40,7 +40,7 @@ libsemigroups::FpSemigroup:
   - set_identity(std::string const&)
   - set_identity(letter_type)
   - inverses() const
-  - nr_rules() const noexcept
+  - number_of_rules() const noexcept
   - add_rule(relation_type)
   - add_rule(rule_type)
   - add_rule(std::initializer_list<size_t>, std::initializer_list<size_t>)

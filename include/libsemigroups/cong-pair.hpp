@@ -111,11 +111,11 @@ namespace libsemigroups {
   //! using P = CongruenceByPairs<decltype(S)>;
   //!
   //! P cong1(right, S);
-  //! cong1.nr_classes();   // 11804
+  //! cong1.number_of_classes();   // 11804
   //! P cong2(left, S);
-  //! cong2.nr_classes();   // 11804
+  //! cong2.number_of_classes();   // 11804
   //! P cong3(twosided, S);
-  //! cong3.nr_classes();   // 11804
+  //! cong3.number_of_classes();   // 11804
   //! \endcode
 
   // Implemented in cong-pair-impl.hpp
@@ -323,7 +323,7 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////
 
     word_type class_index_to_word_impl(class_index_type) override;
-    size_t    nr_classes_impl() override;
+    size_t    number_of_classes_impl() override;
     std::shared_ptr<FroidurePinBase> quotient_impl() override;
     class_index_type word_to_class_index_impl(word_type const&) override;
 
@@ -492,7 +492,7 @@ namespace libsemigroups {
   //! KnuthBendixCongruenceByPairs kbp(twosided, kb);
   //! kbp.add_pair({0}, {1});
   //!
-  //! kbp.nr_non_trivial_classes();  // == 1
+  //! kbp.number_of_non_trivial_classes();  // == 1
   //! kbp.cbegin_ntc()->size();      // == 5
   //! \endcode
   // Implemented in cong-pair.cpp.

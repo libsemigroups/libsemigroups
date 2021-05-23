@@ -107,7 +107,7 @@ namespace libsemigroups {
     if (_blocks != that._blocks) {
       return _blocks < that._blocks;
     }
-    for (size_t i = 0; i < nr_blocks(); i++) {
+    for (size_t i = 0; i < number_of_blocks(); i++) {
       if (_lookup[i] != that._lookup[i]) {
         return _lookup[i] > that._lookup[i];
       }
@@ -120,7 +120,7 @@ namespace libsemigroups {
   }
 
   size_t Blocks::hash_value() const noexcept {
-    if (nr_blocks() == 0) {
+    if (number_of_blocks() == 0) {
       return 0;
     }
     size_t       seed = 0;
@@ -242,15 +242,17 @@ namespace libsemigroups {
 
   Bipartition::~Bipartition() = default;
 
-  void Bipartition::set_nr_blocks(size_t nr_blocks) noexcept {
-    LIBSEMIGROUPS_ASSERT(_nr_blocks == UNDEFINED || _nr_blocks == nr_blocks);
-    _nr_blocks = nr_blocks;
+  void Bipartition::set_number_of_blocks(size_t number_of_blocks) noexcept {
+    LIBSEMIGROUPS_ASSERT(_nr_blocks == UNDEFINED
+                         || _nr_blocks == number_of_blocks);
+    _nr_blocks = number_of_blocks;
   }
 
-  void Bipartition::set_nr_left_blocks(size_t nr_left_blocks) noexcept {
+  void Bipartition::set_number_of_left_blocks(
+      size_t number_of_left_blocks) noexcept {
     LIBSEMIGROUPS_ASSERT(_nr_left_blocks == UNDEFINED
-                         || _nr_left_blocks == nr_left_blocks);
-    _nr_left_blocks = nr_left_blocks;
+                         || _nr_left_blocks == number_of_left_blocks);
+    _nr_left_blocks = number_of_left_blocks;
   }
 
   void Bipartition::set_rank(size_t rank) noexcept {
@@ -291,8 +293,8 @@ namespace libsemigroups {
     std::vector<uint32_t> const& xblocks = xx._vector;
     std::vector<uint32_t> const& yblocks = yy._vector;
 
-    uint32_t const nrx(xx.nr_blocks());
-    uint32_t const nry(yy.nr_blocks());
+    uint32_t const nrx(xx.number_of_blocks());
+    uint32_t const nry(yy.number_of_blocks());
 
     static std::vector<std::vector<uint32_t>> fuses(
         std::thread::hardware_concurrency() + 1);
@@ -337,7 +339,7 @@ namespace libsemigroups {
     }
   }
 
-  uint32_t Bipartition::nr_blocks() const {
+  uint32_t Bipartition::number_of_blocks() const {
     if (_nr_blocks != UNDEFINED) {
       return _nr_blocks;
     } else if (degree() == 0) {
@@ -347,7 +349,7 @@ namespace libsemigroups {
     return *std::max_element(_vector.begin(), _vector.end()) + 1;
   }
 
-  uint32_t Bipartition::nr_left_blocks() {
+  uint32_t Bipartition::number_of_left_blocks() {
     if (_nr_left_blocks == UNDEFINED) {
       if (degree() == 0) {
         _nr_left_blocks = 0;
@@ -361,12 +363,12 @@ namespace libsemigroups {
     return _nr_left_blocks;
   }
 
-  uint32_t Bipartition::nr_right_blocks() {
-    return nr_blocks() - nr_left_blocks() + rank();
+  uint32_t Bipartition::number_of_right_blocks() {
+    return number_of_blocks() - number_of_left_blocks() + rank();
   }
 
   bool Bipartition::is_transverse_block(size_t index) {
-    if (index < nr_left_blocks()) {
+    if (index < number_of_left_blocks()) {
       init_trans_blocks_lookup();
       return _trans_blocks_lookup[index];
     }
@@ -375,9 +377,9 @@ namespace libsemigroups {
 
   void Bipartition::init_trans_blocks_lookup() {
     if (_trans_blocks_lookup.empty() && degree() > 0) {
-      _trans_blocks_lookup.resize(nr_left_blocks());
+      _trans_blocks_lookup.resize(number_of_left_blocks());
       for (auto it = _vector.begin() + degree(); it < _vector.end(); it++) {
-        if ((*it) < nr_left_blocks()) {
+        if ((*it) < number_of_left_blocks()) {
           _trans_blocks_lookup[(*it)] = true;
         }
       }

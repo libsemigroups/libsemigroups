@@ -163,12 +163,12 @@ namespace libsemigroups {
   //!
   //! FroidurePin<int> S({2});
   //! S.size();           // 32
-  //! S.nr_idempotents()  // 1
+  //! S.number_of_idempotents()  // 1
   //! *S.cbegin();        // 2
   //!
   //! FroidurePin<uint8_t> T({2, 3});
   //! T.size()                      // 130
-  //! T.nr_idempotents()            // 2
+  //! T.number_of_idempotents()            // 2
   //! *T.cbegin_idempotents();      // 0
   //! *T.cbegin_idempotents() + 1;  // 1
   //! \endcode
@@ -461,7 +461,7 @@ namespace libsemigroups {
     //! \returns A value of type \c bool.
     //!
     //! \throws LibsemigroupsException if \p w contains an value exceeding
-    //! \ref nr_generators.
+    //! \ref number_of_generators.
     bool equal_to(word_type const& x, word_type const& y) const override;
 
     //! Returns the number of generators.
@@ -473,7 +473,7 @@ namespace libsemigroups {
     //!
     //! \exceptions
     //! \noexcept
-    size_t nr_generators() const noexcept override;
+    size_t number_of_generators() const noexcept override;
 
     //! Returns the generator with specified index.
     //!
@@ -483,7 +483,7 @@ namespace libsemigroups {
     //! A value of type \ref const_reference.
     //!
     //! \throws LibsemigroupsException if \p i is greater than or equal to \ref
-    //! nr_generators().
+    //! number_of_generators().
     //!
     //! \note
     //! Note that `generator(i)` is in general not in position \p i.
@@ -554,7 +554,7 @@ namespace libsemigroups {
     //!
     //! \note
     //! This function triggers a full enumeration.
-    size_t nr_idempotents() override;
+    size_t number_of_idempotents() override;
 
     //! Check if an element is an idempotent via its index.
     //!

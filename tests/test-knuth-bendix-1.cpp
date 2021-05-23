@@ -85,7 +85,7 @@ namespace libsemigroups {
 #ifdef LIBSEMIGROUPS_DEBUG
       REQUIRE(kb.alphabet() == "abc");
 #endif
-      REQUIRE(kb.nr_active_rules() == 4);
+      REQUIRE(kb.number_of_active_rules() == 4);
       REQUIRE(kb.normal_form({2, 0}) == word_type({0}));
       REQUIRE(kb.normal_form({0, 2}) == word_type({0}));
       REQUIRE(kb.equal_to(word_type({2, 0}), word_type({0})));
@@ -123,7 +123,7 @@ namespace libsemigroups {
       kb.add_rule({0}, {1});
 
       REQUIRE(kb.confluent());
-      REQUIRE(kb.nr_active_rules() == 4);
+      REQUIRE(kb.number_of_active_rules() == 4);
       REQUIRE(kb.is_obviously_infinite());
       REQUIRE(std::vector<std::string>(kb.cbegin_normal_forms("abc", 0, 5),
                                        kb.cend_normal_forms())
@@ -141,7 +141,7 @@ namespace libsemigroups {
       kb.set_alphabet("012");
 
       REQUIRE(kb.alphabet() == "012");
-      REQUIRE(kb.nr_active_rules() == 0);
+      REQUIRE(kb.number_of_active_rules() == 0);
 
       kb.add_rule("01", "10");
       kb.add_rule("02", "20");
@@ -155,9 +155,9 @@ namespace libsemigroups {
       kb.add_rule("21", "1");
       kb.add_rule("0", "1");
 
-      REQUIRE(kb.nr_active_rules() == 4);
+      REQUIRE(kb.number_of_active_rules() == 4);
       REQUIRE(kb.confluent());
-      REQUIRE(kb.nr_active_rules() == 4);
+      REQUIRE(kb.number_of_active_rules() == 4);
       REQUIRE(kb.size() == POSITIVE_INFINITY);
 
       REQUIRE(std::vector<std::string>(kb.cbegin_normal_forms(1, 2),
@@ -197,7 +197,7 @@ namespace libsemigroups {
       REQUIRE(kb.alphabet() == "01");
       REQUIRE(!kb.confluent());
       kb.run();
-      REQUIRE(kb.nr_active_rules() == 4);
+      REQUIRE(kb.number_of_active_rules() == 4);
       REQUIRE(kb.confluent());
       REQUIRE(kb.size() == POSITIVE_INFINITY);
 
@@ -230,7 +230,7 @@ namespace libsemigroups {
 
       REQUIRE(!kb.confluent());
       kb.run();
-      REQUIRE(kb.nr_active_rules() == 8);
+      REQUIRE(kb.number_of_active_rules() == 8);
       REQUIRE(kb.confluent());
       REQUIRE(kb.size() == POSITIVE_INFINITY);
       REQUIRE(std::vector<std::string>(
@@ -265,7 +265,7 @@ namespace libsemigroups {
 
       REQUIRE(!kb.confluent());
       kb.run();
-      REQUIRE(kb.nr_active_rules() == 8);
+      REQUIRE(kb.number_of_active_rules() == 8);
       REQUIRE(kb.confluent());
       REQUIRE(kb.size() == POSITIVE_INFINITY);
       REQUIRE(std::vector<std::string>(
@@ -297,7 +297,7 @@ namespace libsemigroups {
 
       REQUIRE(!kb.confluent());
       kb.run();
-      REQUIRE(kb.nr_active_rules() == 6);
+      REQUIRE(kb.number_of_active_rules() == 6);
       REQUIRE(kb.confluent());
       REQUIRE(kb.size() == 12);
       REQUIRE(std::distance(kb.cbegin_normal_forms(0, POSITIVE_INFINITY),
@@ -339,7 +339,7 @@ namespace libsemigroups {
 
       REQUIRE(!kb.confluent());
       kb.run();
-      REQUIRE(kb.nr_active_rules() == 11);
+      REQUIRE(kb.number_of_active_rules() == 11);
       REQUIRE(kb.confluent());
       REQUIRE(kb.size() == 12);
       REQUIRE(std::vector<std::string>(kb.cbegin_normal_forms(1, 5),
@@ -378,7 +378,7 @@ namespace libsemigroups {
       REQUIRE(!kb.is_obviously_infinite());
       REQUIRE(!kb.is_obviously_finite());
       kb.run();
-      REQUIRE(kb.nr_active_rules() == 40);
+      REQUIRE(kb.number_of_active_rules() == 40);
       REQUIRE(kb.confluent());
       REQUIRE(kb.normal_form("cc") == "b");
       REQUIRE(kb.normal_form("ccc") == "");
@@ -423,12 +423,12 @@ namespace libsemigroups {
       REQUIRE(kb.alphabet() == "012");
       REQUIRE(!kb.confluent());
       kb.run();
-      REQUIRE(kb.nr_active_rules() == 9);
+      REQUIRE(kb.number_of_active_rules() == 9);
       REQUIRE(kb.confluent());
 
       auto& ad = kb.gilman_digraph();
-      REQUIRE(ad.nr_nodes() == 9);
-      REQUIRE(ad.nr_edges() == 13);
+      REQUIRE(ad.number_of_nodes() == 9);
+      REQUIRE(ad.number_of_edges() == 13);
       REQUIRE(!action_digraph_helper::is_acyclic(ad));
 
       auto&                  fp = *kb.froidure_pin();
@@ -474,13 +474,13 @@ namespace libsemigroups {
       REQUIRE(!kb.confluent());
 
       kb.run();
-      REQUIRE(kb.nr_active_rules() == 152);
+      REQUIRE(kb.number_of_active_rules() == 152);
       REQUIRE(kb.confluent());
       REQUIRE(kb.size() == 336);
 
       auto& ad = kb.gilman_digraph();
-      REQUIRE(ad.nr_nodes() == 232);
-      REQUIRE(ad.nr_edges() == 265);
+      REQUIRE(ad.number_of_nodes() == 232);
+      REQUIRE(ad.number_of_edges() == 265);
       REQUIRE(action_digraph_helper::is_acyclic(ad));
       REQUIRE(ad.number_of_paths(0, 0, 13) == 336);
     }
@@ -502,13 +502,13 @@ namespace libsemigroups {
 
       REQUIRE(!kb.confluent());
       kb.run();
-      REQUIRE(kb.nr_active_rules() == 24);
+      REQUIRE(kb.number_of_active_rules() == 24);
       REQUIRE(kb.confluent());
       REQUIRE(kb.size() == 11);
 
       auto& ad = kb.gilman_digraph();
-      REQUIRE(ad.nr_nodes() == 8);
-      REQUIRE(ad.nr_edges() == 11);
+      REQUIRE(ad.number_of_nodes() == 8);
+      REQUIRE(ad.number_of_edges() == 11);
       REQUIRE(action_digraph_helper::is_acyclic(ad));
       REQUIRE(ad.number_of_paths(0, 0, 5) == 12);
     }
@@ -526,11 +526,11 @@ namespace libsemigroups {
 
       REQUIRE(!kb.confluent());
       kb.run();
-      REQUIRE(kb.nr_active_rules() == 4);
+      REQUIRE(kb.number_of_active_rules() == 4);
 
       auto& ad = kb.gilman_digraph();
-      REQUIRE(ad.nr_nodes() == 7);
-      REQUIRE(ad.nr_edges() == 17);
+      REQUIRE(ad.number_of_nodes() == 7);
+      REQUIRE(ad.number_of_edges() == 17);
       REQUIRE(!action_digraph_helper::is_acyclic(ad));
       REQUIRE(ad.number_of_paths(0, 0, 10) == 13044);
     }
@@ -567,7 +567,7 @@ namespace libsemigroups {
     //
     //   kb.run();
     //   REQUIRE(kb.confluent());
-    //   REQUIRE(kb.nr_active_rules() == 9);
+    //   REQUIRE(kb.number_of_active_rules() == 9);
     //
     //   REQUIRE(kb.equal_to("BAba", "c"));
     //   REQUIRE(kb.equal_to("CAca", "d"));
@@ -596,7 +596,7 @@ namespace libsemigroups {
     //   3})});
 
     //   REQUIRE(S.size() == 88);
-    //   REQUIRE(S.nr_rules() == 18);
+    //   REQUIRE(S.number_of_rules() == 18);
 
     //   KnuthBendix kb(S);
     //   auto&       P = kb.quotient_froidure_pin();
@@ -606,12 +606,12 @@ namespace libsemigroups {
     //   // P is now invalid, it's a reference to something that was deleted in
     //   // kb.
 
-    //   REQUIRE(kb.nr_classes() == 21);
-    //   REQUIRE(kb.nr_classes() == 21);
+    //   REQUIRE(kb.number_of_classes() == 21);
+    //   REQUIRE(kb.number_of_classes() == 21);
     //   auto& Q = kb.quotient_froidure_pin();  // quotient
 
     //   REQUIRE(Q.size() == 21);
-    //   REQUIRE(Q.nr_idempotents() == 3);
+    //   REQUIRE(Q.number_of_idempotents() == 3);
 
     //   std::vector<word_type>
     //   v(static_cast<FroidurePin<detail::KBE>&>(Q).cbegin(),
@@ -644,8 +644,8 @@ namespace libsemigroups {
     //       == kb.word_to_class_index(S.factorisation(Transf({4, 2, 4, 4,
     //       2}))));
 
-    //   REQUIRE(kb.nr_non_trivial_classes() == 1);
-    //   REQUIRE(kb.nr_generators() == 2);
+    //   REQUIRE(kb.number_of_non_trivial_classes() == 1);
+    //   REQUIRE(kb.number_of_generators() == 2);
     //   REQUIRE(kb.cbegin_ntc()->size() == 68);
     // }
 
@@ -662,7 +662,7 @@ namespace libsemigroups {
 
     //   kb.run();
     //   REQUIRE(kb.confluent());
-    //   REQUIRE(kb.nr_active_rules() == 1);
+    //   REQUIRE(kb.number_of_active_rules() == 1);
 
     //   REQUIRE(kb.equal_to("Baab", "aaa"));
     //   REQUIRE(kb.active_rules()
@@ -687,7 +687,7 @@ namespace libsemigroups {
 
     //   kb.run();
     //   REQUIRE(kb.confluent());
-    //   REQUIRE(kb.nr_active_rules() == 7);
+    //   REQUIRE(kb.number_of_active_rules() == 7);
 
     //   REQUIRE(kb.equal_to("BAba", "c"));
     //   REQUIRE(kb.equal_to("CAca", "d"));
@@ -719,21 +719,20 @@ namespace libsemigroups {
     //   kb.run_for(FOREVER);
     //   REQUIRE(kb.finished());
     //   // The next line tests what happens when run_for is called when
-    //   finished. kb.run_for(FOREVER); REQUIRE(kb.nr_active_rules() == 11);
-    //   REQUIRE(kb.confluent());
-    //   REQUIRE(kb.size() == 12);
+    //   finished. kb.run_for(FOREVER); REQUIRE(kb.number_of_active_rules() ==
+    //   11); REQUIRE(kb.confluent()); REQUIRE(kb.size() == 12);
 
     //   REQUIRE(kb.equal_to("aa", ""));
     //   REQUIRE(!kb.equal_to("a", "b"));
 
     //   KnuthBendix kb2(&kb);
-    //   REQUIRE(kb2.nr_active_rules() == 11);
+    //   REQUIRE(kb2.number_of_active_rules() == 11);
     //   kb2.add_rule("a", "b");
-    //   REQUIRE(kb2.nr_rules() == 5);
+    //   REQUIRE(kb2.number_of_rules() == 5);
     //   // Adding a rule does not change the number of active rules until
     //   *after*
     //   // kb.run() is called again.
-    //   REQUIRE(kb2.nr_active_rules() == 11);
+    //   REQUIRE(kb2.number_of_active_rules() == 11);
 
     //   using rules_type = std::vector<rule_type>;
 
@@ -747,7 +746,7 @@ namespace libsemigroups {
     //   REQUIRE(!kb2.confluent());
     //   REQUIRE(kb2.size() == 1);
     //   REQUIRE(kb2.confluent());
-    //   REQUIRE(kb2.nr_active_rules() == 3);
+    //   REQUIRE(kb2.number_of_active_rules() == 3);
     //   REQUIRE(kb2.active_rules() == rules_type({{"B", ""}, {"a", ""}, {"b",
     //   "a"}}));
     // }
@@ -768,7 +767,7 @@ namespace libsemigroups {
     //   kb.run();
     //   REQUIRE(kb.confluent());
     //
-    //   REQUIRE(kb.nr_active_rules() == 3);
+    //   REQUIRE(kb.number_of_active_rules() == 3);
     // }
 
     // monoid presentation of F(2,7) - should produce a monoid of length 30
@@ -794,7 +793,7 @@ namespace libsemigroups {
 
     //   kb.run();
     //   REQUIRE(kb.confluent());
-    //   REQUIRE(kb.nr_active_rules() == 32767);
+    //   REQUIRE(kb.number_of_active_rules() == 32767);
     // }
 
     // This example verifies the nilpotence of the group using the Sims
@@ -824,7 +823,7 @@ namespace libsemigroups {
 
     //   kb.run();
     //   REQUIRE(kb.confluent());
-    //   REQUIRE(kb.nr_active_rules() == 32767);
+    //   REQUIRE(kb.number_of_active_rules() == 32767);
     //  }
 
   }  // namespace fpsemigroup

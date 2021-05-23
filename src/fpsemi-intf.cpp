@@ -114,15 +114,15 @@ namespace libsemigroups {
     reset();
   }
 
-  void FpSemigroupInterface::set_alphabet(size_t const nr_letters) {
+  void FpSemigroupInterface::set_alphabet(size_t const number_of_letters) {
     if (!_alphabet.empty()) {
       LIBSEMIGROUPS_EXCEPTION("the alphabet cannot be set more than once");
-    } else if (nr_letters == 0) {
+    } else if (number_of_letters == 0) {
       LIBSEMIGROUPS_EXCEPTION("the alphabet must be non-empty");
-    } else if (nr_letters > 256) {
+    } else if (number_of_letters > 256) {
       LIBSEMIGROUPS_EXCEPTION("the alphabet must contain at most 256 letters");
     }
-    for (size_t i = 0; i < nr_letters; ++i) {
+    for (size_t i = 0; i < number_of_letters; ++i) {
 #ifdef LIBSEMIGROUPS_DEBUG
       _alphabet += static_cast<char>(i + 97);
 #else
@@ -130,14 +130,14 @@ namespace libsemigroups {
 #endif
       _alphabet_map.emplace(_alphabet[i], i);
     }
-    set_alphabet_impl(nr_letters);
+    set_alphabet_impl(number_of_letters);
     reset();
   }
 
   void FpSemigroupInterface::add_rules(FroidurePinBase& S) {
-    if (!_alphabet.empty() && _alphabet.size() != S.nr_generators()) {
+    if (!_alphabet.empty() && _alphabet.size() != S.number_of_generators()) {
       LIBSEMIGROUPS_EXCEPTION("incompatible number of generators, found "
-                              + detail::to_string(S.nr_generators())
+                              + detail::to_string(S.number_of_generators())
                               + ", should be at most "
                               + detail::to_string(_alphabet.size()));
     }
@@ -265,7 +265,7 @@ namespace libsemigroups {
     // general, so we leave the answer to this question to
     // is_quotient_obviously_infinite_impl in the derived class.
     if (alphabet().empty()) {
-      // If nr_generators() is undefined, then there is no quotient yet,
+      // If number_of_generators() is undefined, then there is no quotient yet,
       // and so it is not obviously infinite, or anything!
       REPORT_VERBOSE_DEFAULT("not obviously infinite (no alphabet defined)\n");
       return false;

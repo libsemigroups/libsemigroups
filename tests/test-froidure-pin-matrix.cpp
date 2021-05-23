@@ -37,9 +37,9 @@ namespace libsemigroups {
 
       REQUIRE(S.size() == 26);
       REQUIRE(S.degree() == 2);
-      REQUIRE(S.nr_idempotents() == 4);
-      REQUIRE(S.nr_generators() == 2);
-      REQUIRE(S.nr_rules() == 9);
+      REQUIRE(S.number_of_idempotents() == 4);
+      REQUIRE(S.number_of_generators() == 2);
+      REQUIRE(S.number_of_rules() == 9);
       REQUIRE(S[0] == S.generator(0));
       REQUIRE(S[1] == S.generator(1));
 
@@ -72,7 +72,7 @@ namespace libsemigroups {
       S.add_generator(Mat(sr, {{0, 0, 1}, {0, 1, 0}, {3, 0, 0}}));
       S.reserve(10077696);
       REQUIRE(S.size() == 10077696);
-      REQUIRE(S.nr_idempotents() == 13688);
+      REQUIRE(S.number_of_idempotents() == 13688);
     }
 
     // Min-plus
@@ -84,9 +84,9 @@ namespace libsemigroups {
 
       REQUIRE(S.size() == 3);
       REQUIRE(S.degree() == 2);
-      REQUIRE(S.nr_idempotents() == 1);
-      REQUIRE(S.nr_generators() == 1);
-      REQUIRE(S.nr_rules() == 1);
+      REQUIRE(S.number_of_idempotents() == 1);
+      REQUIRE(S.number_of_generators() == 1);
+      REQUIRE(S.number_of_rules() == 1);
 
       REQUIRE(S[0] == S.generator(0));
       REQUIRE(S.position(S.generator(0)) == 0);
@@ -110,9 +110,9 @@ namespace libsemigroups {
 
       REQUIRE(S.size() == 119);
       REQUIRE(S.degree() == 3);
-      REQUIRE(S.nr_idempotents() == 1);
-      REQUIRE(S.nr_generators() == 2);
-      REQUIRE(S.nr_rules() == 18);
+      REQUIRE(S.number_of_idempotents() == 1);
+      REQUIRE(S.number_of_generators() == 2);
+      REQUIRE(S.number_of_rules() == 18);
 
       REQUIRE(S[0] == S.generator(0));
       REQUIRE(S.position(S.generator(0)) == 0);
@@ -133,9 +133,9 @@ namespace libsemigroups {
 
       REQUIRE(S.size() == 1039);
       REQUIRE(S.degree() == 3);
-      REQUIRE(S.nr_idempotents() == 5);
-      REQUIRE(S.nr_generators() == 2);
-      REQUIRE(S.nr_rules() == 38);
+      REQUIRE(S.number_of_idempotents() == 5);
+      REQUIRE(S.number_of_generators() == 2);
+      REQUIRE(S.number_of_rules() == 38);
 
       REQUIRE(S[0] == S.generator(0));
       REQUIRE(S.position(S.generator(0)) == 0);
@@ -159,9 +159,9 @@ namespace libsemigroups {
 
       REQUIRE(S.size() == 86);
       REQUIRE(S.degree() == 3);
-      REQUIRE(S.nr_idempotents() == 10);
-      REQUIRE(S.nr_generators() == 2);
-      REQUIRE(S.nr_rules() == 16);
+      REQUIRE(S.number_of_idempotents() == 10);
+      REQUIRE(S.number_of_generators() == 2);
+      REQUIRE(S.number_of_rules() == 16);
 
       REQUIRE(S[0] == S.generator(0));
       REQUIRE(S.position(S.generator(0)) == 0);

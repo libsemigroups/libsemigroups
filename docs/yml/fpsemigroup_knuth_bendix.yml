@@ -4,8 +4,8 @@ libsemigroups::fpsemigroup::KnuthBendix:
       :cpp:any:`fpsemigroup::KnuthBendix` class that are not present in any of
       its base classes."]
   - froidure_pin_type
-  - policy::overlap
-  - policy
+  - options::overlap
+  - options
   - const_normal_form_iterator
 - Constructors:
   - ["This page contains information about the constructors for the,\\
@@ -29,7 +29,7 @@ libsemigroups::fpsemigroup::KnuthBendix:
   - cbegin_normal_forms(std::string const&, size_t const, size_t const)
   - cbegin_normal_forms(size_t const, size_t const)
   - cend_normal_forms()
-  - nr_active_rules() const noexcept
+  - number_of_active_rules() const noexcept
   - active_rules() const
   - confluent() const
   - gilman_digraph()
@@ -41,7 +41,7 @@ libsemigroups::fpsemigroup::KnuthBendix:
   - ["This page contains information about the member functions of the
      :cpp:any:`fpsemigroup::KnuthBendix` that control various settings."]
   - check_confluence_interval(size_t)
-  - overlap_policy(policy::overlap)
+  - overlap_policy(options::overlap)
   - max_overlap(size_t)
   - max_rules(size_t)
 - Member functions and types inherited from FpSemigroupInterface:
@@ -67,7 +67,7 @@ libsemigroups::fpsemigroup::KnuthBendix:
   - set_identity(std::string const&)
   - set_identity(letter_type)
   - inverses() const
-  - nr_rules() const noexcept
+  - number_of_rules() const noexcept
   - add_rule(relation_type)
   - add_rule(rule_type)
   - add_rule(std::initializer_list<size_t>, std::initializer_list<size_t>)

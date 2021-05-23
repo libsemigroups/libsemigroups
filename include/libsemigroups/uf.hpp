@@ -188,7 +188,7 @@ namespace libsemigroups {
 
       // not noexcept because std::array::operator[] and
       // std::vector::operator[] aren't
-      size_type nr_blocks() const {
+      size_type number_of_blocks() const {
         size_type count = 0;
         for (index_type i = 0; i < _data.size(); ++i) {
           if (index(_data[i]) == i) {

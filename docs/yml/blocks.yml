@@ -32,7 +32,7 @@ libsemigroups::Blocks:
      :cpp:any:`Blocks` class."]
   - degree() const noexcept
   - is_transverse_block(size_t) const noexcept
-  - nr_blocks() const noexcept
+  - number_of_blocks() const noexcept
   - rank() const
   - hash_value() const noexcept
 - Iterators:

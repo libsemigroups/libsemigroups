@@ -69,11 +69,11 @@ namespace libsemigroups {
                 == std::vector<size_t>({10, 9, 8, 5, 4, 3, 1}));
 
         REQUIRE(uf.size() == 11);
-        REQUIRE(uf.nr_blocks() == 7);
+        REQUIRE(uf.number_of_blocks() == 7);
 
         Duf<> uf2(uf);
         REQUIRE(uf2.size() == 11);
-        REQUIRE(uf2.nr_blocks() == 7);
+        REQUIRE(uf2.number_of_blocks() == 7);
       }
       {
         Suf<11> uf;
@@ -83,7 +83,7 @@ namespace libsemigroups {
         uf.unite(6, 7);
 
         REQUIRE(uf.size() == 11);
-        REQUIRE(uf.nr_blocks() == 7);
+        REQUIRE(uf.number_of_blocks() == 7);
 
         std::vector<size_t> v(uf.size(), 0);
         std::iota(v.begin(), v.end(), 0);
@@ -96,11 +96,11 @@ namespace libsemigroups {
                 == std::vector<size_t>({10, 9, 8, 5, 4, 3, 1}));
 
         REQUIRE(uf.size() == 11);
-        REQUIRE(uf.nr_blocks() == 7);
+        REQUIRE(uf.number_of_blocks() == 7);
 
         auto uf2(uf);
         REQUIRE(uf2.size() == 11);
-        REQUIRE(uf2.nr_blocks() == 7);
+        REQUIRE(uf2.number_of_blocks() == 7);
       }
     }
 
@@ -113,7 +113,7 @@ namespace libsemigroups {
         uf.unite(4, 5);
         uf.unite(6, 2);
         uf.unite(6, 7);
-        REQUIRE(uf.nr_blocks() == 5);
+        REQUIRE(uf.number_of_blocks() == 5);
         REQUIRE(uf.find(0) == 10);
         REQUIRE(uf.find(1) == 1);
         REQUIRE(uf.find(2) == 3);
@@ -134,7 +134,7 @@ namespace libsemigroups {
         uf.unite(4, 5);
         uf.unite(6, 2);
         uf.unite(6, 7);
-        REQUIRE(uf.nr_blocks() == 5);
+        REQUIRE(uf.number_of_blocks() == 5);
         REQUIRE(uf.find(0) == 10);
         REQUIRE(uf.find(1) == 1);
         REQUIRE(uf.find(2) == 3);
@@ -159,7 +159,7 @@ namespace libsemigroups {
       uf.unite(11, 9);
       uf.unite(8, 9);
 
-      REQUIRE(uf.nr_blocks() == 6);
+      REQUIRE(uf.number_of_blocks() == 6);
       REQUIRE(std::vector<size_t>(uf.cbegin(), uf.cend())
               == std::vector<size_t>({1, 2, 5, 6, 7, 9}));
       REQUIRE(std::all_of(
@@ -169,7 +169,7 @@ namespace libsemigroups {
       REQUIRE(uf.find(8) == 9);
       REQUIRE(uf.find(11) == 9);
 
-      REQUIRE(uf.nr_blocks() == 6);
+      REQUIRE(uf.number_of_blocks() == 6);
       REQUIRE(std::vector<size_t>(uf.cbegin(), uf.cend())
               == std::vector<size_t>({1, 2, 5, 6, 7, 9}));
       REQUIRE(std::all_of(
@@ -179,7 +179,7 @@ namespace libsemigroups {
       REQUIRE(uf.find(0) == 1);
       REQUIRE(uf.find(8) == 9);
       REQUIRE(uf.find(11) == 9);
-      REQUIRE(uf.nr_blocks() == 6);
+      REQUIRE(uf.number_of_blocks() == 6);
       REQUIRE(std::vector<size_t>(uf.cbegin(), uf.cend())
               == std::vector<size_t>({1, 2, 5, 6, 7, 9}));
       REQUIRE(std::all_of(
@@ -189,7 +189,7 @@ namespace libsemigroups {
       REQUIRE(uf.find(0) == 1);
       REQUIRE(uf.find(8) == 9);
       REQUIRE(uf.find(11) == 9);
-      REQUIRE(uf.nr_blocks() == 6);
+      REQUIRE(uf.number_of_blocks() == 6);
       REQUIRE(std::vector<size_t>(uf.cbegin(), uf.cend())
               == std::vector<size_t>({1, 2, 5, 6, 7, 9}));
       REQUIRE(std::all_of(
@@ -199,7 +199,7 @@ namespace libsemigroups {
       REQUIRE(uf.find(0) == 1);
       REQUIRE(uf.find(8) == 1);
       REQUIRE(uf.find(11) == 1);
-      REQUIRE(uf.nr_blocks() == 5);
+      REQUIRE(uf.number_of_blocks() == 5);
       REQUIRE(std::vector<size_t>(uf.cbegin(), uf.cend())
               == std::vector<size_t>({1, 2, 5, 6, 7}));
       REQUIRE(std::all_of(
@@ -216,7 +216,7 @@ namespace libsemigroups {
       uf.unite(11, 9);
       uf.unite(8, 9);
 
-      REQUIRE(uf.nr_blocks() == 6);
+      REQUIRE(uf.number_of_blocks() == 6);
       REQUIRE(std::vector<size_t>(uf.cbegin(), uf.cend())
               == std::vector<size_t>({1, 2, 5, 6, 7, 9}));
       REQUIRE(std::all_of(
@@ -226,7 +226,7 @@ namespace libsemigroups {
       REQUIRE(uf.find(8) == 9);
       REQUIRE(uf.find(11) == 9);
 
-      REQUIRE(uf.nr_blocks() == 6);
+      REQUIRE(uf.number_of_blocks() == 6);
       REQUIRE(std::vector<size_t>(uf.cbegin(), uf.cend())
               == std::vector<size_t>({1, 2, 5, 6, 7, 9}));
       REQUIRE(std::all_of(
@@ -236,7 +236,7 @@ namespace libsemigroups {
       REQUIRE(uf.find(0) == 1);
       REQUIRE(uf.find(8) == 9);
       REQUIRE(uf.find(11) == 9);
-      REQUIRE(uf.nr_blocks() == 6);
+      REQUIRE(uf.number_of_blocks() == 6);
       REQUIRE(std::vector<size_t>(uf.cbegin(), uf.cend())
               == std::vector<size_t>({1, 2, 5, 6, 7, 9}));
       REQUIRE(std::all_of(
@@ -246,7 +246,7 @@ namespace libsemigroups {
       REQUIRE(uf.find(0) == 1);
       REQUIRE(uf.find(8) == 9);
       REQUIRE(uf.find(11) == 9);
-      REQUIRE(uf.nr_blocks() == 6);
+      REQUIRE(uf.number_of_blocks() == 6);
       REQUIRE(std::vector<size_t>(uf.cbegin(), uf.cend())
               == std::vector<size_t>({1, 2, 5, 6, 7, 9}));
       REQUIRE(std::all_of(
@@ -256,7 +256,7 @@ namespace libsemigroups {
       REQUIRE(uf.find(0) == 1);
       REQUIRE(uf.find(8) == 1);
       REQUIRE(uf.find(11) == 1);
-      REQUIRE(uf.nr_blocks() == 5);
+      REQUIRE(uf.number_of_blocks() == 5);
       REQUIRE(std::vector<size_t>(uf.cbegin(), uf.cend())
               == std::vector<size_t>({1, 2, 5, 6, 7}));
       REQUIRE(std::all_of(
@@ -354,7 +354,7 @@ namespace libsemigroups {
       REQUIRE(std::vector<size_t>(uf.cbegin_rank(), uf.cend_rank())
               == std::vector<size_t>({0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0,
                                       0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}));
-      REQUIRE(uf.nr_blocks() == 23);
+      REQUIRE(uf.number_of_blocks() == 23);
     }
 
     LIBSEMIGROUPS_TEST_CASE("Duf", "010", "resize", "[quick]") {
@@ -368,7 +368,7 @@ namespace libsemigroups {
       REQUIRE(uf.find(7) == 7);
       uf.unite(1, 7);
       REQUIRE(uf.find(7) == 7);
-      REQUIRE(uf.nr_blocks() == 5);
+      REQUIRE(uf.number_of_blocks() == 5);
       REQUIRE(std::vector<size_t>(uf.cbegin(), uf.cend())
               == std::vector<size_t>({2, 3, 5, 6, 7}));
     }
@@ -380,7 +380,7 @@ namespace libsemigroups {
         tab.push_back(i);
       }
       Duf<> uf(tab);
-      REQUIRE(uf.nr_blocks() == 1);
+      REQUIRE(uf.number_of_blocks() == 1);
       REQUIRE(uf.size() == 100001);
       REQUIRE(uf.find(12345) == 0);
       REQUIRE(uf.find(100000) == 0);
@@ -395,7 +395,7 @@ namespace libsemigroups {
       std::array<uint32_t, 100001> tab;
       std::iota(tab.begin() + 1, tab.end(), 0);
       Suf<100001> uf(std::move(tab));
-      REQUIRE(uf.nr_blocks() == 1);
+      REQUIRE(uf.number_of_blocks() == 1);
       REQUIRE(uf.size() == 100001);
       REQUIRE(uf.find(12345) == 0);
       REQUIRE(uf.find(100000) == 0);
@@ -408,15 +408,15 @@ namespace libsemigroups {
 
     LIBSEMIGROUPS_TEST_CASE("Duf", "013", "empty table", "[quick]") {
       Duf<> uf(0);
-      REQUIRE(uf.nr_blocks() == 0);
+      REQUIRE(uf.number_of_blocks() == 0);
       uf.resize(1);
       REQUIRE(uf.size() == 1);
-      REQUIRE(uf.nr_blocks() == 1);
+      REQUIRE(uf.number_of_blocks() == 1);
     }
 
     LIBSEMIGROUPS_TEST_CASE("Suf", "016", "empty table", "[quick]") {
       Suf<0> uf;
-      REQUIRE(uf.nr_blocks() == 0);
+      REQUIRE(uf.number_of_blocks() == 0);
     }
 
     LIBSEMIGROUPS_TEST_CASE("Duf", "015", "join", "[quick]") {
@@ -425,20 +425,20 @@ namespace libsemigroups {
       uf1.unite(4, 9);
       uf1.unite(1, 7);
 
-      REQUIRE(uf1.nr_blocks() == 7);
+      REQUIRE(uf1.number_of_blocks() == 7);
 
       uf1.join(uf1);
-      REQUIRE(uf1.nr_blocks() == 7);
+      REQUIRE(uf1.number_of_blocks() == 7);
 
       Duf<> uf2(10);
       uf2.unite(1, 4);
       uf2.unite(3, 9);
       uf2.unite(0, 7);
-      REQUIRE(uf2.nr_blocks() == 7);
+      REQUIRE(uf2.number_of_blocks() == 7);
 
       uf1.join(uf2);
-      REQUIRE(uf2.nr_blocks() == 7);
-      REQUIRE(uf1.nr_blocks() == 4);
+      REQUIRE(uf2.number_of_blocks() == 7);
+      REQUIRE(uf1.number_of_blocks() == 4);
 
       REQUIRE(std::vector<size_t>(uf1.cbegin(), uf1.cend())
               == std::vector<size_t>({4, 5, 6, 8}));
@@ -450,20 +450,20 @@ namespace libsemigroups {
       uf1.unite(4, 9);
       uf1.unite(1, 7);
 
-      REQUIRE(uf1.nr_blocks() == 7);
+      REQUIRE(uf1.number_of_blocks() == 7);
 
       uf1.join(uf1);
-      REQUIRE(uf1.nr_blocks() == 7);
+      REQUIRE(uf1.number_of_blocks() == 7);
 
       Suf<10> uf2;
       uf2.unite(1, 4);
       uf2.unite(3, 9);
       uf2.unite(0, 7);
-      REQUIRE(uf2.nr_blocks() == 7);
+      REQUIRE(uf2.number_of_blocks() == 7);
 
       uf1.join(uf2);
-      REQUIRE(uf2.nr_blocks() == 7);
-      REQUIRE(uf1.nr_blocks() == 4);
+      REQUIRE(uf2.number_of_blocks() == 7);
+      REQUIRE(uf1.number_of_blocks() == 4);
 
       REQUIRE(std::vector<size_t>(uf1.cbegin(), uf1.cend())
               == std::vector<size_t>({4, 5, 6, 8}));

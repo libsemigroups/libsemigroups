@@ -36,7 +36,7 @@ For static matrices
 -------------------
    
 .. cpp:function:: template <typename T, typename = std::enable_if_t<IsStaticMatrix<T>>> \
-                  detail::StaticVector1<typename T::RowView, T::nr_rows> rows(T const& x)
+                  detail::StaticVector1<typename T::RowView, T::number_of_rows> rows(T const& x)
    
    Returns a static vector of row views into all of the rows of the static matrix
    ``x``. Static vectors have the same interface as ``std::vector`` but their

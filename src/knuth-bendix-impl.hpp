@@ -440,7 +440,7 @@ namespace libsemigroups {
         return rules;
       }
 
-      size_t nr_rules() const {
+      size_t number_of_rules() const {
         return _active_rules.size();
       }
 

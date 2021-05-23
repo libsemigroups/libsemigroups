@@ -274,7 +274,7 @@ namespace libsemigroups {
     //!
     //! \parameters
     //! (None)
-    uint32_t nr_blocks() const noexcept {
+    uint32_t number_of_blocks() const noexcept {
       return _lookup.size();
     }
 
@@ -862,7 +862,7 @@ namespace libsemigroups {
     //!
     //! \parameters
     //! (None)
-    uint32_t nr_blocks() const;
+    uint32_t number_of_blocks() const;
 
     //! Returns the number of blocks containing a positive integer.
     //!
@@ -881,7 +881,7 @@ namespace libsemigroups {
     //!
     //! \parameters
     //! (None)
-    uint32_t nr_left_blocks();
+    uint32_t number_of_left_blocks();
 
     //! Returns the number of blocks containing a negative integer.
     //!
@@ -900,7 +900,7 @@ namespace libsemigroups {
     //!
     //! \parameters
     //! (None)
-    uint32_t nr_right_blocks();
+    uint32_t number_of_right_blocks();
 
     //! Check if a block is a transverse block.
     //!
@@ -975,7 +975,7 @@ namespace libsemigroups {
     //!
     //! \exceptions
     //! \noexcept
-    void set_nr_blocks(size_t n) noexcept;
+    void set_number_of_blocks(size_t n) noexcept;
 
     //! Set the number of left blocks.
     //!
@@ -992,7 +992,7 @@ namespace libsemigroups {
     //!
     //! \exceptions
     //! \noexcept
-    void set_nr_left_blocks(size_t n) noexcept;
+    void set_number_of_left_blocks(size_t n) noexcept;
 
     //! Set the rank.
     //!

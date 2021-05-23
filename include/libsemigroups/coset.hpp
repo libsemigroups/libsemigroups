@@ -167,7 +167,7 @@ namespace libsemigroups {
       //!
       //! \par Parameters
       //! (None)
-      inline size_t nr_cosets_active() const noexcept {
+      inline size_t number_of_cosets_active() const noexcept {
         return _active;
       }
 
@@ -183,7 +183,7 @@ namespace libsemigroups {
       //!
       //! \par Parameters
       //! (None)
-      inline size_t nr_cosets_defined() const noexcept {
+      inline size_t number_of_cosets_defined() const noexcept {
         return _defined;
       }
 
@@ -199,7 +199,7 @@ namespace libsemigroups {
       //!
       //! \par Parameters
       //! (None)
-      inline size_t nr_cosets_killed() const noexcept {
+      inline size_t number_of_cosets_killed() const noexcept {
         return _cosets_killed;
       }
 

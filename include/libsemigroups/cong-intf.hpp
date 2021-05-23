@@ -264,7 +264,7 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Constant.
-    void set_nr_generators(size_t n);
+    void set_number_of_generators(size_t n);
 
     //! Add a generating pair to the congruence.
     //!
@@ -276,7 +276,8 @@ namespace libsemigroups {
     //! \returns (None)
     //!
     //! \throws LibsemigroupsException if
-    //! the number of generators has not yet been set via set_nr_generators()
+    //! the number of generators has not yet been set via
+    //! set_number_of_generators()
     //!
     //! \throws LibsemigroupsException if \p u or \p v contains a letter that
     //! is out of bounds.
@@ -408,8 +409,8 @@ namespace libsemigroups {
     //! \par Parameters
     //! (None)
     //!
-    //! \sa set_nr_generators()
-    size_t nr_generators() const noexcept {
+    //! \sa set_number_of_generators()
+    size_t number_of_generators() const noexcept {
       return _nr_gens;
     }
 
@@ -430,7 +431,7 @@ namespace libsemigroups {
     //! (None)
     //!
     //! \sa add_pair()
-    size_t nr_generating_pairs() const noexcept {
+    size_t number_of_generating_pairs() const noexcept {
       return _gen_pairs.size();
     }
 
@@ -449,8 +450,8 @@ namespace libsemigroups {
     //!
     //! \par Parameters
     //! (None)
-    size_t nr_non_trivial_classes() {
-      // TODO(later) this could be better, for example, if nr_classes is
+    size_t number_of_non_trivial_classes() {
+      // TODO(later) this could be better, for example, if number_of_classes is
       // finite, then we can count the number of non-trivial classes, by
       // counting the number of paths in the right Cayley graph (right action
       // digraph if left or right) from the root to every vertex.
@@ -674,7 +675,7 @@ namespace libsemigroups {
     //!
     //! \par Parameters
     //! (None)
-    size_t nr_classes();
+    size_t number_of_classes();
 
    protected:
     /////////////////////////////////////////////////////////////////////////
@@ -751,7 +752,7 @@ namespace libsemigroups {
     /////////////////////////////////////////////////////////////////////////
 
     virtual word_type class_index_to_word_impl(class_index_type i)        = 0;
-    virtual size_t    nr_classes_impl()                                   = 0;
+    virtual size_t    number_of_classes_impl()                            = 0;
     virtual std::shared_ptr<FroidurePinBase> quotient_impl()              = 0;
     virtual class_index_type word_to_class_index_impl(word_type const& w) = 0;
 
@@ -764,7 +765,7 @@ namespace libsemigroups {
     // (i.e the return value should not change).
     virtual void             add_pair_impl(word_type const&, word_type const&);
     virtual class_index_type const_word_to_class_index(word_type const&) const;
-    virtual void             set_nr_generators_impl(size_t);
+    virtual void             set_number_of_generators_impl(size_t);
     virtual std::shared_ptr<non_trivial_classes_type const>
     non_trivial_classes_impl();
 

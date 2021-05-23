@@ -13,7 +13,7 @@ libsemigroups::Forest:
   - clear() noexcept
   - set(node_type, node_type, label_type)
 - Accessors:
-  - nr_nodes() const noexcept
+  - number_of_nodes() const noexcept
   - parent(node_type) const
   - label(node_type) const
 - Iterators:

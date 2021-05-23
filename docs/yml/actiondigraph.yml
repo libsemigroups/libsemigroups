@@ -43,9 +43,9 @@ libsemigroups::ActionDigraph:
   - unsafe_neighbor(node_type, label_type) const
   - next_neighbor(node_type, label_type) const
   - unsafe_next_neighbor(node_type, label_type) const
-  - nr_nodes() const noexcept
-  - nr_edges() const
-  - nr_edges(node_type const) const
+  - number_of_nodes() const noexcept
+  - number_of_edges() const
+  - number_of_edges(node_type const) const
   - out_degree() const noexcept
   - validate() const noexcept
   - cbegin_nodes() const noexcept
@@ -58,7 +58,7 @@ libsemigroups::ActionDigraph:
   - ["This page contains information about the strongly connected components 
       functionality of the :cpp:any:`ActionDigraph` class."]
   - scc_id(node_type) const
-  - nr_scc() const
+  - number_of_scc() const
   - root_of_scc(node_type) const
   - cbegin_sccs() const
   - cend_sccs() const

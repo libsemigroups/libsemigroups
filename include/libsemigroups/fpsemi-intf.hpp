@@ -597,7 +597,7 @@ namespace libsemigroups {
     //!
     //! \parameters
     //! (None)
-    size_t nr_rules() const noexcept {
+    size_t number_of_rules() const noexcept {
       return _rules.size();
     }
 
@@ -743,7 +743,7 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! \f$O(m + n)\f$ where \f$m\f$ is alphabet().size() and \f$n\f$ is
-    //! nr_rules().
+    //! number_of_rules().
     //!
     //! \parameters
     //! (None)

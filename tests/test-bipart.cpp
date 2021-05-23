@@ -50,7 +50,7 @@ namespace libsemigroups {
     REQUIRE(b1 < b2);
     REQUIRE(!(b2 < b1));
     REQUIRE(b1.degree() == 0);
-    REQUIRE(b1.nr_blocks() == 0);
+    REQUIRE(b1.number_of_blocks() == 0);
     REQUIRE(b1.rank() == 0);
   }
 
@@ -61,7 +61,7 @@ namespace libsemigroups {
     REQUIRE(b.degree() == 6);
     REQUIRE(std::vector<bool>(b.cbegin_lookup(), b.cend_lookup())
             == std::vector<bool>({true, false, true}));
-    REQUIRE(b.nr_blocks() == 3);
+    REQUIRE(b.number_of_blocks() == 3);
     REQUIRE(b.rank() == 2);
     REQUIRE(b.is_transverse_block(0));
     REQUIRE(!b.is_transverse_block(1));
@@ -83,7 +83,7 @@ namespace libsemigroups {
     REQUIRE(b->degree() == 10);
     REQUIRE(std::vector<bool>(b->cbegin_lookup(), b->cend_lookup())
             == std::vector<bool>({true, true, true}));
-    REQUIRE(b->nr_blocks() == 3);
+    REQUIRE(b->number_of_blocks() == 3);
     REQUIRE(b->rank() == 3);
     REQUIRE(b->is_transverse_block(0));
     REQUIRE(b->is_transverse_block(1));
@@ -105,7 +105,7 @@ namespace libsemigroups {
     REQUIRE(b->degree() == 10);
     REQUIRE(std::vector<bool>(b->cbegin_lookup(), b->cend_lookup())
             == std::vector<bool>({false, true, true, true, true}));
-    REQUIRE(b->nr_blocks() == 5);
+    REQUIRE(b->number_of_blocks() == 5);
     REQUIRE(b->rank() == 4);
     REQUIRE(!b->is_transverse_block(0));
     REQUIRE(b->is_transverse_block(1));
@@ -123,11 +123,11 @@ namespace libsemigroups {
     REQUIRE(!IsBipartition<Blocks>);
     REQUIRE(IsBipartition<Bipartition>);
     REQUIRE(b.degree() == 0);
-    REQUIRE(b.nr_blocks() == 0);
+    REQUIRE(b.number_of_blocks() == 0);
     REQUIRE(b.rank() == 0);
 
     REQUIRE(c.degree() == 0);
-    REQUIRE(c.nr_blocks() == 0);
+    REQUIRE(c.number_of_blocks() == 0);
     REQUIRE(c.rank() == 0);
   }
 
@@ -142,7 +142,7 @@ namespace libsemigroups {
     REQUIRE(b.degree() == 11);
     REQUIRE(std::vector<bool>(b.cbegin_lookup(), b.cend_lookup())
             == std::vector<bool>({false, true, false}));
-    REQUIRE(b.nr_blocks() == 3);
+    REQUIRE(b.number_of_blocks() == 3);
     REQUIRE(b.rank() == 1);
 
     REQUIRE(c.degree() == 11);
@@ -150,7 +150,7 @@ namespace libsemigroups {
                        b.cend_lookup(),
                        c.cbegin_lookup(),
                        c.cend_lookup()));
-    REQUIRE(c.nr_blocks() == 3);
+    REQUIRE(c.number_of_blocks() == 3);
     REQUIRE(c.rank() == 1);
   }
 
@@ -255,12 +255,12 @@ namespace libsemigroups {
     REQUIRE(x.at(0) == 0);
     REQUIRE(x.at(6) == 1);
     REQUIRE(x.at(10) == 0);
-    REQUIRE(x.nr_blocks() == 5);
-    REQUIRE(x.nr_blocks() == 5);
-    REQUIRE(x.nr_blocks() == 5);
-    REQUIRE(x.nr_blocks() == 5);
-    REQUIRE(x.nr_left_blocks() == 3);
-    REQUIRE(x.nr_right_blocks() == 5);
+    REQUIRE(x.number_of_blocks() == 5);
+    REQUIRE(x.number_of_blocks() == 5);
+    REQUIRE(x.number_of_blocks() == 5);
+    REQUIRE(x.number_of_blocks() == 5);
+    REQUIRE(x.number_of_left_blocks() == 3);
+    REQUIRE(x.number_of_right_blocks() == 5);
     REQUIRE(x.is_transverse_block(0));
     REQUIRE(x.is_transverse_block(1));
     REQUIRE(x.is_transverse_block(2));
@@ -282,15 +282,15 @@ namespace libsemigroups {
 
     x = Bipartition(
         {0, 0, 0, 0, 0, 0, 1, 2, 0, 1, 0, 0, 1, 2, 3, 3, 0, 4, 1, 1});
-    x.set_nr_blocks(5);
-    REQUIRE(x.nr_blocks() == 5);
+    x.set_number_of_blocks(5);
+    REQUIRE(x.number_of_blocks() == 5);
 
     x = Bipartition(
         {0, 0, 0, 0, 0, 0, 1, 2, 0, 1, 0, 0, 1, 2, 3, 3, 0, 4, 1, 1});
-    x.set_nr_left_blocks(3);
-    REQUIRE(x.nr_left_blocks() == 3);
-    REQUIRE(x.nr_right_blocks() == 5);
-    REQUIRE(x.nr_blocks() == 5);
+    x.set_number_of_left_blocks(3);
+    REQUIRE(x.number_of_left_blocks() == 3);
+    REQUIRE(x.number_of_right_blocks() == 5);
+    REQUIRE(x.number_of_blocks() == 5);
 
     x = Bipartition(
         {0, 0, 0, 0, 0, 0, 1, 2, 0, 1, 0, 0, 1, 2, 3, 3, 0, 4, 1, 1});
@@ -314,17 +314,17 @@ namespace libsemigroups {
                           "degree 0",
                           "[quick][bipartition]") {
     Bipartition x(std::vector<uint32_t>({}));
-    REQUIRE(x.nr_blocks() == 0);
-    REQUIRE(x.nr_left_blocks() == 0);
+    REQUIRE(x.number_of_blocks() == 0);
+    REQUIRE(x.number_of_left_blocks() == 0);
 
     Blocks* b = x.left_blocks();
     REQUIRE(b->degree() == 0);
-    REQUIRE(b->nr_blocks() == 0);
+    REQUIRE(b->number_of_blocks() == 0);
     delete b;
 
     b = x.right_blocks();
     REQUIRE(b->degree() == 0);
-    REQUIRE(b->nr_blocks() == 0);
+    REQUIRE(b->number_of_blocks() == 0);
     delete b;
   }
 
@@ -375,12 +375,12 @@ namespace libsemigroups {
     REQUIRE(x.at(0) == 0);
     REQUIRE(x.at(6) == 1);
     REQUIRE(x.at(10) == 0);
-    REQUIRE(x.nr_blocks() == 5);
-    REQUIRE(x.nr_blocks() == 5);
-    REQUIRE(x.nr_blocks() == 5);
-    REQUIRE(x.nr_blocks() == 5);
-    REQUIRE(x.nr_left_blocks() == 3);
-    REQUIRE(x.nr_right_blocks() == 5);
+    REQUIRE(x.number_of_blocks() == 5);
+    REQUIRE(x.number_of_blocks() == 5);
+    REQUIRE(x.number_of_blocks() == 5);
+    REQUIRE(x.number_of_blocks() == 5);
+    REQUIRE(x.number_of_left_blocks() == 3);
+    REQUIRE(x.number_of_right_blocks() == 5);
     REQUIRE(x.is_transverse_block(0));
     REQUIRE(x.is_transverse_block(1));
     REQUIRE(x.is_transverse_block(2));
@@ -417,8 +417,8 @@ namespace libsemigroups {
                      {-5, -6},
                      {-8}});
     REQUIRE(x == xx);
-    x.set_nr_blocks(5);
-    REQUIRE(x.nr_blocks() == 5);
+    x.set_number_of_blocks(5);
+    REQUIRE(x.number_of_blocks() == 5);
 
     xx = Bipartition(
         {0, 0, 0, 0, 0, 0, 1, 2, 0, 1, 0, 0, 1, 2, 3, 3, 0, 4, 1, 1});
@@ -428,10 +428,10 @@ namespace libsemigroups {
                      {-5, -6},
                      {-8}});
     REQUIRE(x == xx);
-    x.set_nr_left_blocks(3);
-    REQUIRE(x.nr_left_blocks() == 3);
-    REQUIRE(x.nr_right_blocks() == 5);
-    REQUIRE(x.nr_blocks() == 5);
+    x.set_number_of_left_blocks(3);
+    REQUIRE(x.number_of_left_blocks() == 3);
+    REQUIRE(x.number_of_right_blocks() == 5);
+    REQUIRE(x.number_of_blocks() == 5);
 
     x = Bipartition({{1, 2, 3, 4, 5, 6, 9, -1, -2, -7},
                      {7, 10, -3, -9, -10},

@@ -58,7 +58,7 @@ namespace libsemigroups {
   //!
   //! Congruence cong(twosided, S);
   //! cong.add_pair({1, 1, 1}, {0});
-  //! cong.nr_classes(); // 3
+  //! cong.number_of_classes(); // 3
   //! \endcode
   class Congruence final : public CongruenceInterface {
    public:
@@ -97,7 +97,7 @@ namespace libsemigroups {
     //! \complexity
     //! Constant.
     //!
-    //! \sa set_nr_generators and add_pair.
+    //! \sa set_number_of_generators and add_pair.
     explicit Congruence(congruence_type  type,
                         options::runners opt = options::runners::standard);
 
@@ -344,7 +344,7 @@ namespace libsemigroups {
     //////////////////////////////////////////////////////////////////////////
 
     word_type class_index_to_word_impl(class_index_type) override;
-    size_t    nr_classes_impl() override;
+    size_t    number_of_classes_impl() override;
     std::shared_ptr<FroidurePinBase> quotient_impl() override;
     class_index_type word_to_class_index_impl(word_type const&) override;
 
@@ -365,7 +365,7 @@ namespace libsemigroups {
          non_trivial_classes_impl() override;
     bool is_quotient_obviously_finite_impl() override;
     bool is_quotient_obviously_infinite_impl() override;
-    void set_nr_generators_impl(size_t) override;
+    void set_number_of_generators_impl(size_t) override;
 
     /////////////////////////////////////////////////////////////////////////
     // Congruence - data - private

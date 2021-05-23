@@ -63,13 +63,13 @@ namespace libsemigroups {
     tc->froidure_pin_policy(
         congruence::ToddCoxeter::options::froidure_pin::use_cayley_graph);
     _race.add_runner(tc);
-    set_nr_generators(S->nr_generators());
+    set_number_of_generators(S->number_of_generators());
     set_parent_froidure_pin(S);
   }
 
   Congruence::Congruence(congruence_type type, FpSemigroup& S)
       : Congruence(type, options::runners::none) {
-    set_nr_generators(S.alphabet().size());
+    set_number_of_generators(S.alphabet().size());
     LIBSEMIGROUPS_ASSERT(!has_parent_froidure_pin());
     set_parent_froidure_pin(S);
     _race.max_threads(POSITIVE_INFINITY);
@@ -201,7 +201,7 @@ namespace libsemigroups {
         ->class_index_to_word(i);
   }
 
-  size_t Congruence::nr_classes_impl() {
+  size_t Congruence::number_of_classes_impl() {
     run();  // to ensure the state is correctly set.
     if (_race.winner() == nullptr) {
       // The next line is not testable, this is just a sanity check in case
@@ -209,7 +209,7 @@ namespace libsemigroups {
       LIBSEMIGROUPS_EXCEPTION("cannot determine the number of classes");
     }
     return static_cast<CongruenceInterface*>(_race.winner().get())
-        ->nr_classes();
+        ->number_of_classes();
   }
 
   std::shared_ptr<FroidurePinBase> Congruence::quotient_impl() {
@@ -302,9 +302,10 @@ namespace libsemigroups {
     return false;  // Returns false if _race is empty
   }
 
-  void Congruence::set_nr_generators_impl(size_t const n) {
+  void Congruence::set_number_of_generators_impl(size_t const n) {
     for (auto runner : _race) {
-      static_cast<CongruenceInterface*>(runner.get())->set_nr_generators(n);
+      static_cast<CongruenceInterface*>(runner.get())
+          ->set_number_of_generators(n);
     }
   }
 }  // namespace libsemigroups

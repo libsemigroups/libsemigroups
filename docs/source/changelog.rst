@@ -125,7 +125,7 @@ The major new features in this release are:
   of the class template ``ActionDigraph``, and the ability to specify the
   algorithm to be used.
 
-* the class template ``ActionDigraph`` gets new member functions: ``nr_edges``
+* the class template ``ActionDigraph`` gets new member functions: ``number_of_edges``
   for a node; ``number_of_paths`` with a single node as argument; 
   ``number_of_paths_algorithm`` which returns a value in an enum describing the
   algorithm used by ``number_of_paths`` by default.
@@ -172,7 +172,7 @@ The more major new features in this release are:
 
 The more major bugs fixed are:
 
-* the class ``FpSemigroup`` member functions ``nr_rules``, ``run_until``, and
+* the class ``FpSemigroup`` member functions ``number_of_rules``, ``run_until``, and
   ``run_for`` now behave as expected
 * a fix so that ``libsemigroups`` can be used with ``fmt`` version 6.2.0 was
   made.

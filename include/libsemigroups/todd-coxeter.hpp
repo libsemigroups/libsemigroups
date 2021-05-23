@@ -81,20 +81,20 @@ namespace libsemigroups {
     //! \par Example 1
     //! \code
     //! ToddCoxeter tc(congruence_type::left);  // construct a left congruence
-    //! tc.set_nr_generators(2);                // 2 generators
+    //! tc.set_number_of_generators(2);                // 2 generators
     //! tc.add_pair({0, 0}, {0});               // generator 0 squared is itself
     //! tc.add_pair({0}, {1});                  // generator 0 equals 1
     //! tc.strategy(options::strategy::felsch);  // set the strategy
-    //! tc.nr_classes();                        // calculate number of classes
-    //! tc.contains({0, 0, 0, 0}, {0, 0});      // check if 2 words are equal
-    //! tc.word_to_class_index({0, 0, 0, 0});   // get the index of a class
-    //! tc.standardize(order::lex);             // standardize to lex order
-    //! \endcode
+    //! tc.number_of_classes();                        // calculate number of
+    //! classes tc.contains({0, 0, 0, 0}, {0, 0});      // check if 2 words are
+    //! equal tc.word_to_class_index({0, 0, 0, 0});   // get the index of a
+    //! class tc.standardize(order::lex);             // standardize to lex
+    //! order \endcode
     //!
     //! \par Example 2
     //! \code
     //! ToddCoxeter tc(congruence_type::twosided);
-    //! tc.set_nr_generators(4);
+    //! tc.set_number_of_generators(4);
     //! tc.add_pair({0, 0}, {0});
     //! tc.add_pair({1, 0}, {1});
     //! tc.add_pair({0, 1}, {1});
@@ -113,12 +113,12 @@ namespace libsemigroups {
     //!    .standardize(false)
     //!    .lookahead(options::lookahead::partial)
     //!    .save(false)
-    //! tc.nr_classes()  // 10752
+    //! tc.number_of_classes()  // 10752
     //! tc.complete();   // true
     //! tc.compatible(); // true
     //! auto& S = tc.quotient_semigroup();  // FroidurePin<TCE>
     //! S.size()                            // 10752
-    //! S.nr_idempotents()                  // 1
+    //! S.number_of_idempotents()                  // 1
     //! tc.standardize(order::recursive);
     //! std::vector<word_type>(tc.cbegin_normal_forms(),
     //!                        tc.cbegin_normal_forms() + 10);
@@ -313,7 +313,7 @@ namespace libsemigroups {
                       "the template parameter must be a derived class of "
                       "FroidurePinBase or FpSemigroupInterface");
         set_parent_froidure_pin(S);
-        set_nr_generators(S.nr_generators());
+        set_number_of_generators(S.number_of_generators());
       }
 
       //! Construct from kind (left/right/2-sided), shared pointer to
@@ -871,7 +871,7 @@ namespace libsemigroups {
       //! \exceptions
       //! \no_libsemigroups_except
       normal_form_iterator cbegin_normal_forms() {
-        auto range = IntegralRange<coset_type>(0, nr_classes());
+        auto range = IntegralRange<coset_type>(0, number_of_classes());
         return normal_form_iterator(this, range.cbegin());
       }
 
@@ -891,7 +891,7 @@ namespace libsemigroups {
       //! \exceptions
       //! \no_libsemigroups_except
       normal_form_iterator cend_normal_forms() {
-        auto range = IntegralRange<coset_type>(0, nr_classes());
+        auto range = IntegralRange<coset_type>(0, number_of_classes());
         return normal_form_iterator(this, range.cend());
       }
 
@@ -904,7 +904,7 @@ namespace libsemigroups {
       ////////////////////////////////////////////////////////////////////////
 
       word_type class_index_to_word_impl(coset_type) override;
-      size_t    nr_classes_impl() override;
+      size_t    number_of_classes_impl() override;
       // Guaranteed to return a FroidurePin<TCE>.
       std::shared_ptr<FroidurePinBase> quotient_impl() override;
       coset_type word_to_class_index_impl(word_type const&) override;
@@ -916,7 +916,7 @@ namespace libsemigroups {
       coset_type const_word_to_class_index(word_type const&) const override;
       bool       is_quotient_obviously_finite_impl() override;
       bool       is_quotient_obviously_infinite_impl() override;
-      void       set_nr_generators_impl(size_t) override;
+      void       set_number_of_generators_impl(size_t) override;
 
       ////////////////////////////////////////////////////////////////////////
       // ToddCoxeter - member functions (validation) - private
@@ -952,7 +952,7 @@ namespace libsemigroups {
       inline coset_type tau(coset_type const  c,
                             letter_type const a) const noexcept {
         LIBSEMIGROUPS_ASSERT(is_valid_coset(c));
-        LIBSEMIGROUPS_ASSERT(a < _table.nr_cols());
+        LIBSEMIGROUPS_ASSERT(a < _table.number_of_cols());
         return _table.get(c, a);
       }
 
@@ -1086,7 +1086,7 @@ namespace libsemigroups {
             }
             union_cosets(min, max);
 
-            size_t const n = _table.nr_cols();
+            size_t const n = _table.number_of_cols();
             for (letter_type i = 0; i < n; ++i) {
               // Let <v> be the first PREIMAGE of <max>
               coset_type v = _preim_init.get(max, i);
@@ -1121,7 +1121,7 @@ namespace libsemigroups {
                                letter_type const x,
                                coset_type const  d) noexcept {
         LIBSEMIGROUPS_ASSERT(is_valid_coset(c));
-        LIBSEMIGROUPS_ASSERT(x < nr_generators());
+        LIBSEMIGROUPS_ASSERT(x < number_of_generators());
         LIBSEMIGROUPS_ASSERT(is_valid_coset(d));
         // c -> e -> ... -->  c -> d -> e -> ..
         _preim_next.set(d, x, _preim_init.get(c, x));
@@ -1133,7 +1133,7 @@ namespace libsemigroups {
                                letter_type const x,
                                coset_type const  d) noexcept {
         LIBSEMIGROUPS_ASSERT(is_valid_coset(c));
-        LIBSEMIGROUPS_ASSERT(x < nr_generators());
+        LIBSEMIGROUPS_ASSERT(x < number_of_generators());
         LIBSEMIGROUPS_ASSERT(is_valid_coset(d));
         TStackDeduct()(_deduct, c, x);
         _table.set(c, x, d);

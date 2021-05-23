@@ -44,10 +44,10 @@ namespace libsemigroups {
     // not noexcept because it throws an exception!
     template <typename T>
     void validate_node(ActionDigraph<T> const& ad, node_type<T> const v) {
-      if (v >= ad.nr_nodes()) {
+      if (v >= ad.number_of_nodes()) {
         LIBSEMIGROUPS_EXCEPTION("node value out of bounds, expected value in "
                                 "the range [0, %d), got %d",
-                                ad.nr_nodes(),
+                                ad.number_of_nodes(),
                                 v);
       }
     }
@@ -233,7 +233,7 @@ namespace libsemigroups {
       if (ad.validate()) {
         return false;
       }
-      node_type<T> const                                 N = ad.nr_nodes();
+      node_type<T> const N = ad.number_of_nodes();
       std::stack<std::pair<node_type<T>, label_type<T>>> stck;
       std::vector<uint8_t>                               seen(N, 0);
 
@@ -283,7 +283,7 @@ namespace libsemigroups {
         return order;
       }
 
-      size_t const          N = ad.nr_nodes();
+      size_t const          N = ad.number_of_nodes();
       detail::stack_type<T> stck;
       std::vector<uint8_t>  seen(N, 0);
 
@@ -298,7 +298,7 @@ namespace libsemigroups {
           }
         }
       }
-      LIBSEMIGROUPS_ASSERT(order.size() == ad.nr_nodes());
+      LIBSEMIGROUPS_ASSERT(order.size() == ad.number_of_nodes());
       return order;
     }
 
@@ -333,7 +333,7 @@ namespace libsemigroups {
       if (ad.validate()) {
         return order;
       }
-      size_t const          N = ad.nr_nodes();
+      size_t const          N = ad.number_of_nodes();
       detail::stack_type<T> stck;
       std::vector<uint8_t>  seen(N, 0);
 
@@ -385,7 +385,7 @@ namespace libsemigroups {
       validate_node(ad, source);
       std::stack<std::pair<node_type<T>, label_type<T>>> stck;
       stck.emplace(source, 0);
-      std::vector<uint8_t> seen(ad.nr_nodes(), 0);
+      std::vector<uint8_t> seen(ad.number_of_nodes(), 0);
       return detail::is_acyclic(ad, stck, seen);
     }
 
@@ -439,7 +439,7 @@ namespace libsemigroups {
       label_type<T>             edge = 0;
       std::stack<node_type<T>>  nodes;
       std::stack<label_type<T>> edges;
-      std::vector<bool>         seen(ad.nr_nodes(), false);
+      std::vector<bool>         seen(ad.number_of_nodes(), false);
       nodes.push(source);
       seen[source] = true;
 
@@ -518,7 +518,7 @@ namespace libsemigroups {
     //! The edges added by this function are all labelled \c 0.
     template <typename T>
     void add_cycle(ActionDigraph<T>& ad, size_t const N) {
-      size_t M = ad.nr_nodes();
+      size_t M = ad.number_of_nodes();
       ad.add_nodes(N);
       add_cycle(ad, ad.cbegin_nodes() + M, ad.cend_nodes());
     }
@@ -527,7 +527,7 @@ namespace libsemigroups {
       template <typename T>
       std::string to_string(ActionDigraph<T>& ad) {
         std::string out = "ActionDigraph<size_t> ad;\n";
-        out += "ad.add_nodes(" + std::to_string(ad.nr_nodes()) + ");\n";
+        out += "ad.add_nodes(" + std::to_string(ad.number_of_nodes()) + ");\n";
         out += "ad.add_to_out_degree(" + std::to_string(ad.out_degree())
                + ");\n";
         for (auto n = ad.cbegin_nodes(); n < ad.cend_nodes(); ++n) {
