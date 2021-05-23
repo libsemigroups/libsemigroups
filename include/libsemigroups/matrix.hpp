@@ -195,13 +195,13 @@ namespace libsemigroups {
           std::initializer_list<std::initializer_list<scalar_type>> const& il) {
         validate_args(il);
         Subclass m(il);
-        matrix_validate(m);
+        validate(m);
         return m;
       }
 
       static Subclass make(std::initializer_list<scalar_type> const& il) {
         Subclass m(il);
-        matrix_validate(m);
+        validate(m);
         return m;
       }
 
@@ -1290,21 +1290,21 @@ namespace libsemigroups {
     make(Semiring const*                                                 sr,
          std::initializer_list<std::initializer_list<scalar_type>> const il) {
       DynamicMatrix m(sr, il);
-      matrix_validate(m);
+      validate(m);
       return m;
     }
 
     static DynamicMatrix make(Semiring const*                             sr,
                               std::vector<std::vector<scalar_type>> const v) {
       DynamicMatrix m(sr, v);
-      matrix_validate(m);
+      validate(m);
       return m;
     }
 
     static DynamicMatrix make(Semiring const*                          sr,
                               std::initializer_list<scalar_type> const il) {
       DynamicMatrix m(sr, il);
-      matrix_validate(m);
+      validate(m);
       return m;
     }
 
@@ -1497,7 +1497,7 @@ namespace libsemigroups {
   static constexpr bool IsBMat = detail::IsBMatHelper<T>::value;
 
   template <typename Mat>
-  auto matrix_validate(Mat const& m) -> std::enable_if_t<IsBMat<Mat>> {
+  auto validate(Mat const& m) -> std::enable_if_t<IsBMat<Mat>> {
     using scalar_type = typename Mat::scalar_type;
     auto it           = std::find_if_not(
         m.cbegin(), m.cend(), [](scalar_type x) { return x == 0 || x == 1; });
@@ -1580,7 +1580,7 @@ namespace libsemigroups {
   static constexpr bool IsIntMat = detail::IsIntMatHelper<T>::value;
 
   template <typename Mat>
-  auto matrix_validate(Mat const&) -> std::enable_if_t<IsIntMat<Mat>> {}
+  auto validate(Mat const&) -> std::enable_if_t<IsIntMat<Mat>> {}
 
   ////////////////////////////////////////////////////////////////////////
   // Max-plus matrices
@@ -1659,7 +1659,7 @@ namespace libsemigroups {
   static constexpr bool IsMaxPlusMat = detail::IsMaxPlusMatHelper<T>::value;
 
   template <typename Mat>
-  auto matrix_validate(Mat const&) -> std::enable_if_t<IsMaxPlusMat<Mat>> {}
+  auto validate(Mat const&) -> std::enable_if_t<IsMaxPlusMat<Mat>> {}
 
   ////////////////////////////////////////////////////////////////////////
   // Min-plus matrices
@@ -1738,7 +1738,7 @@ namespace libsemigroups {
   static constexpr bool IsMinPlusMat = detail::IsMinPlusMatHelper<T>::value;
 
   template <typename Mat>
-  auto matrix_validate(Mat const&) -> std::enable_if_t<IsMinPlusMat<Mat>> {}
+  auto validate(Mat const&) -> std::enable_if_t<IsMinPlusMat<Mat>> {}
 
   ////////////////////////////////////////////////////////////////////////
   // Max-plus matrices with threshold
@@ -1886,7 +1886,7 @@ namespace libsemigroups {
   }  // namespace detail
 
   template <typename Mat>
-  auto matrix_validate(Mat const& m)
+  auto validate(Mat const& m)
       -> std::enable_if_t<IsMaxPlusTruncMat<Mat>> {
     // Check that the semiring pointer isn't the nullptr if it shouldn't be
     detail::semiring_validate(m);
@@ -2055,7 +2055,7 @@ namespace libsemigroups {
   }  // namespace detail
 
   template <typename Mat>
-  auto matrix_validate(Mat const& m)
+  auto validate(Mat const& m)
       -> std::enable_if_t<IsMinPlusTruncMat<Mat>> {
     // Check that the semiring pointer isn't the nullptr if it shouldn't be
     detail::semiring_validate(m);
@@ -2269,7 +2269,7 @@ namespace libsemigroups {
   }
 
   template <typename Mat>
-  auto matrix_validate(Mat const& m) -> std::enable_if_t<IsNTPMat<Mat>> {
+  auto validate(Mat const& m) -> std::enable_if_t<IsNTPMat<Mat>> {
     // Check that the semiring pointer isn't the nullptr if it shouldn't be
     detail::semiring_validate(m);
 
@@ -2602,9 +2602,9 @@ namespace libsemigroups {
       = detail::IsProjMaxPlusMatHelper<T>::value;
 
   template <typename Mat>
-  auto matrix_validate(Mat const& m)
+  auto validate(Mat const& m)
       -> std::enable_if_t<IsProjMaxPlusMat<Mat>> {
-    matrix_validate(m.underlying_matrix());
+    validate(m.underlying_matrix());
   }
 
   namespace matrix_helpers {

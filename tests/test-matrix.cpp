@@ -130,7 +130,7 @@ namespace libsemigroups {
       auto rg = ReportGuard(REPORT);
       {
         Mat m = Mat::make({{0, 1}, {0, 1}});
-        REQUIRE_NOTHROW(matrix_validate(m));
+        REQUIRE_NOTHROW(validate(m));
         REQUIRE(m == Mat({{0, 1}, {0, 1}}));
         REQUIRE(!(m == Mat({{0, 0}, {0, 1}})));
         REQUIRE(m == Mat({{0, 1}, {0, 1}}));
@@ -308,7 +308,7 @@ namespace libsemigroups {
       using Row = typename Mat::Row;
       auto rg   = ReportGuard(REPORT);
       Mat  m(sr, 3, 3);
-      // REQUIRE(matrix_validate(m)); // m might not be valid!
+      // REQUIRE(validate(m)); // m might not be valid!
       m.product_inplace(Mat::make(sr, {{1, 1, 0}, {0, 0, 1}, {1, 0, 1}}),
                         Mat::make(sr, {{1, 0, 1}, {0, 0, 1}, {1, 1, 0}}));
       REQUIRE(m == Mat::make(sr, {{1, 0, 2}, {1, 1, 0}, {2, 1, 1}}));
