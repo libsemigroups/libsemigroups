@@ -33,9 +33,9 @@ namespace libsemigroups {
   struct LibsemigroupsException;  // Forward declaration
 
   constexpr bool REPORT              = false;
-  congruence_type constexpr twosided = congruence_type::twosided;
-  congruence_type constexpr left     = congruence_type::left;
-  congruence_type constexpr right    = congruence_type::right;
+  congruence_kind constexpr twosided = congruence_kind::twosided;
+  congruence_kind constexpr left     = congruence_kind::left;
+  congruence_kind constexpr right    = congruence_kind::right;
 
   using detail::TCE;
   using FroidurePinTCE = FroidurePin<TCE, FroidurePinTraits<TCE, TCE::Table>>;

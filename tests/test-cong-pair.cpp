@@ -24,7 +24,7 @@
 #include <vector>      // for vector
 
 #include "catch.hpp"  // for REQUIRE, SECTION, REQUIRE_THROWS_AS, REQ...
-#include "libsemigroups/cong-intf.hpp"  // for congruence_type, CongruenceInterface::non_tr...
+#include "libsemigroups/cong-intf.hpp"  // for congruence_kind, CongruenceInterface::non_tr...
 #include "libsemigroups/cong-pair.hpp"  // for KnuthBendixCongruenceByPairs, CongruenceByPairs
 #include "libsemigroups/knuth-bendix.hpp"  // for KnuthBendix
 #include "libsemigroups/report.hpp"        // for ReportGuard
@@ -41,9 +41,9 @@ namespace libsemigroups {
 namespace libsemigroups {
   constexpr bool REPORT = false;
 
-  congruence_type const twosided = congruence_type::twosided;
-  congruence_type const left     = congruence_type::left;
-  congruence_type const right    = congruence_type::right;
+  congruence_kind const twosided = congruence_kind::twosided;
+  congruence_kind const left     = congruence_kind::left;
+  congruence_kind const right    = congruence_kind::right;
   using congruence::ToddCoxeter;
 
   using detail::TCE;

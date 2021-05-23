@@ -96,7 +96,7 @@ namespace libsemigroups {
   //! CongruenceByPairsHelper since this will be deprecated in a later version
   //! of ``libsemigroups``.
   //!
-  //! \sa congruence_type and tril.
+  //! \sa congruence_kind and tril.
   //!
   //! \par Example
   //! \code
@@ -173,7 +173,7 @@ namespace libsemigroups {
     // semigroup.
 
     //! No doc
-    explicit CongruenceByPairsHelper(congruence_type);
+    explicit CongruenceByPairsHelper(congruence_kind);
 
    private:
     ////////////////////////////////////////////////////////////////////////
@@ -199,7 +199,7 @@ namespace libsemigroups {
     //! No doc
     template <typename T,
               typename SFINAE = std::enable_if_t<IsState<T>::value, T>>
-    CongruenceByPairsHelper(congruence_type type, std::shared_ptr<T> stt, bool)
+    CongruenceByPairsHelper(congruence_kind type, std::shared_ptr<T> stt, bool)
         : CongruenceByPairsHelper(type) {
       _state = stt;
     }
@@ -212,14 +212,14 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if \p type and the template parameter
     //! \p T are incompatible. Currently, this is when \p type is not
-    //! `congruence_type::right` and `T::element_type` is TCE.
+    //! `congruence_kind::right` and `T::element_type` is TCE.
     //!
     //! \par Complexity
     //! Constant.
     //!
     //! \note
     //! The FroidurePinBase pointed to by \p S is not copied
-    CongruenceByPairsHelper(congruence_type                  type,
+    CongruenceByPairsHelper(congruence_kind                  type,
                             std::shared_ptr<FroidurePinBase> S) noexcept;
 
     //! Construct a CongruenceByPairsHelper over the FroidurePin instance \p fp
@@ -235,7 +235,7 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if \p type and the template parameter
     //! \p T are incompatible. Currently, this is when \p type is not
-    //! `congruence_type::right` and `T::element_type` is TCE.
+    //! `congruence_kind::right` and `T::element_type` is TCE.
     //!
     //! \par Complexity
     //! Constant.
@@ -243,7 +243,7 @@ namespace libsemigroups {
     //! \warning The parameter `T& S` is copied, this might be expensive, use
     //! a std::shared_ptr to avoid the copy!
     template <typename T>
-    CongruenceByPairsHelper(congruence_type type, T const& S)
+    CongruenceByPairsHelper(congruence_kind type, T const& S)
         : CongruenceByPairsHelper(type,
                                   static_cast<std::shared_ptr<FroidurePinBase>>(
                                       std::make_shared<T>(S))) {
@@ -255,7 +255,7 @@ namespace libsemigroups {
           "incompatible element_type's, the element_type of the FroidurePin "
           "instance must be the same as the CongruenceByPairsHelper "
           "element_type");
-      if (type != congruence_type::right
+      if (type != congruence_kind::right
           && std::is_same<typename T::element_type, detail::TCE>::value) {
         LIBSEMIGROUPS_EXCEPTION("Cannot create a left or 2-sided congruence "
                                 "over a semigroup of TCE's");
@@ -473,7 +473,7 @@ namespace libsemigroups {
   //! to enumerate the infinite semigroup represented by the output of
   //! fpsemigroup::KnuthBendix first).
   //!
-  //! \sa congruence_type, tril, and CongruenceByPairs.
+  //! \sa congruence_kind, tril, and CongruenceByPairs.
   //!
   //! \par Example
   //! \code
@@ -529,7 +529,7 @@ namespace libsemigroups {
     //!
     //! \note
     //! The fpsemigroup::KnuthBendix referred to by \p kb is not copied.
-    KnuthBendixCongruenceByPairs(congruence_type              type,
+    KnuthBendixCongruenceByPairs(congruence_kind              type,
                                  std::shared_ptr<KnuthBendix> kb) noexcept;
 
     //! Construct a KnuthBendixCongruenceByPairs over the
@@ -546,7 +546,7 @@ namespace libsemigroups {
     //!
     //! \warning The parameter \p kb is copied, this might be expensive, use a
     //! std::shared_ptr to avoid the copy!
-    KnuthBendixCongruenceByPairs(congruence_type    type,
+    KnuthBendixCongruenceByPairs(congruence_kind    type,
                                  KnuthBendix const& kb) noexcept;
 
     //! Deleted.

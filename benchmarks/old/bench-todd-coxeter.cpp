@@ -25,12 +25,12 @@
 #include "bench-main.hpp"
 #include "todd-coxeter.hpp"
 
-using congruence_type              = libsemigroups::congruence_type;
-congruence_type constexpr TWOSIDED = congruence_type::twosided;
+using congruence_kind              = libsemigroups::congruence_kind;
+congruence_kind constexpr TWOSIDED = congruence_kind::twosided;
 
 void BM_todd_coxeter_002(benchmark::State& st) {
   using ToddCoxeter = libsemigroups::congruence::ToddCoxeter;
-  auto rg = libsemigroups::ReportGuard();
+  auto rg           = libsemigroups::ReportGuard();
 
   ToddCoxeter tc(twosided);
   tc.set_nr_generators(4);

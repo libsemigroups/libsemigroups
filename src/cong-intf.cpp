@@ -84,7 +84,7 @@ namespace libsemigroups {
   // CongruenceInterface - constructors + destructor - public
   ////////////////////////////////////////////////////////////////////////////
 
-  CongruenceInterface::CongruenceInterface(congruence_type type)
+  CongruenceInterface::CongruenceInterface(congruence_kind type)
       : Runner(),
         // Non-mutable
         _gen_pairs(),
@@ -201,9 +201,9 @@ namespace libsemigroups {
   std::shared_ptr<FroidurePinBase>
   CongruenceInterface::quotient_froidure_pin() {
     if (_quotient != nullptr) {
-      LIBSEMIGROUPS_ASSERT(kind() == congruence_type::twosided);
+      LIBSEMIGROUPS_ASSERT(kind() == congruence_kind::twosided);
       return _quotient;
-    } else if (kind() != congruence_type::twosided) {
+    } else if (kind() != congruence_kind::twosided) {
       LIBSEMIGROUPS_EXCEPTION("the congruence must be two-sided");
     } else if (is_quotient_obviously_infinite()) {
       LIBSEMIGROUPS_EXCEPTION(
@@ -407,13 +407,13 @@ namespace libsemigroups {
   /////////////////////////////////////////////////////////////////////////
 
   std::string const&
-  CongruenceInterface::congruence_type_to_string(congruence_type typ) {
+  CongruenceInterface::congruence_kind_to_string(congruence_kind typ) {
     switch (typ) {
-      case congruence_type::twosided:
+      case congruence_kind::twosided:
         return STRING_TWOSIDED;
-      case congruence_type::left:
+      case congruence_kind::left:
         return STRING_LEFT;
-      case congruence_type::right:
+      case congruence_kind::right:
         return STRING_RIGHT;
       default:
         LIBSEMIGROUPS_EXCEPTION("incorrect type");

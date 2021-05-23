@@ -366,7 +366,7 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////////
 
     KnuthBendix::KnuthBendix()
-        : CongruenceInterface(congruence_type::twosided),
+        : CongruenceInterface(congruence_kind::twosided),
           _kb(std::make_unique<fpsemigroup::KnuthBendix>()) {}
 
     KnuthBendix::KnuthBendix(fpsemigroup::KnuthBendix const& kb)

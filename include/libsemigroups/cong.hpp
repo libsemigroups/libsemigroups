@@ -47,7 +47,7 @@ namespace libsemigroups {
   //! classes implementing individual algorithms, such as
   //! congruence::ToddCoxeter and congruence::KnuthBendix.
   //!
-  //! \sa congruence_type and tril.
+  //! \sa congruence_kind and tril.
   //! \par Example
   //! \code
   //! FpSemigroup S;
@@ -98,7 +98,7 @@ namespace libsemigroups {
     //! Constant.
     //!
     //! \sa set_number_of_generators and add_pair.
-    explicit Congruence(congruence_type  type,
+    explicit Congruence(congruence_kind  type,
                         options::runners opt = options::runners::standard);
 
     //! Construct from kind (left/right/2-sided) and FroidurePin.
@@ -121,7 +121,7 @@ namespace libsemigroups {
     //! \warning the parameter `T const& S` is copied, this might be expensive,
     //! use a std::shared_ptr to avoid the copy!
     template <typename T>
-    Congruence(congruence_type type, T const& S)
+    Congruence(congruence_kind type, T const& S)
         : Congruence(type,
                      static_cast<std::shared_ptr<FroidurePinBase>>(
                          std::make_shared<T>(S))) {
@@ -147,7 +147,7 @@ namespace libsemigroups {
     //!
     //! \note
     //! The FroidurePinBase pointed to by \p S is not copied.
-    Congruence(congruence_type type, std::shared_ptr<FroidurePinBase> S);
+    Congruence(congruence_kind type, std::shared_ptr<FroidurePinBase> S);
 
     //! Construct from kind (left/right/2-sided) and FpSemigroup.
     //!
@@ -162,7 +162,7 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Constant.
-    Congruence(congruence_type type, FpSemigroup& S);
+    Congruence(congruence_kind type, FpSemigroup& S);
 
     ~Congruence() = default;
 

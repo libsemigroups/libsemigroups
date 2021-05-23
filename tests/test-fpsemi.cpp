@@ -34,7 +34,7 @@ namespace libsemigroups {
 
   constexpr bool REPORT = false;
 
-  constexpr congruence_type twosided = congruence_type::twosided;
+  constexpr congruence_kind twosided = congruence_kind::twosided;
 
   LIBSEMIGROUPS_TEST_CASE("FpSemigroup",
                           "001",

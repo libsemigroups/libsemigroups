@@ -9,7 +9,7 @@ libsemigroups::CongruenceInterface:
 - Constructors:
   - ["This page contains information about the constructors for the
      :cpp:any:`CongruenceInterface` class."]
-  - CongruenceInterface(congruence_type)
+  - CongruenceInterface(congruence_kind)
   - CongruenceInterface(CongruenceInterface const&) = default
 - Deleted constructors:
   - ["This page lists the deleted constructors of the

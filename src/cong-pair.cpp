@@ -24,14 +24,14 @@ namespace libsemigroups {
   ////////////////////////////////////////////////////////////////////////
 
   KnuthBendixCongruenceByPairs::KnuthBendixCongruenceByPairs(
-      congruence_type              type,
+      congruence_kind              type,
       std::shared_ptr<KnuthBendix> kb) noexcept
       : CongruenceByPairsHelper_(type, kb, false) {  // final param is a dummy
     set_number_of_generators(kb->alphabet().size());
   }
 
   KnuthBendixCongruenceByPairs::KnuthBendixCongruenceByPairs(
-      congruence_type    type,
+      congruence_kind    type,
       KnuthBendix const& kb) noexcept
       : KnuthBendixCongruenceByPairs(type, std::make_shared<KnuthBendix>(kb)) {}
 

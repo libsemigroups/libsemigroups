@@ -41,17 +41,17 @@ namespace libsemigroups {
   // Congruence - constructors - public
   //////////////////////////////////////////////////////////////////////////
 
-  Congruence::Congruence(congruence_type type, options::runners p)
+  Congruence::Congruence(congruence_kind type, options::runners p)
       : CongruenceInterface(type), _race() {
     if (p == options::runners::standard) {
       _race.add_runner(std::make_shared<ToddCoxeter>(type));
-      if (type == congruence_type::twosided) {
+      if (type == congruence_kind::twosided) {
         _race.add_runner(std::make_shared<KnuthBendix>());
       }
     }
   }
 
-  Congruence::Congruence(congruence_type                  type,
+  Congruence::Congruence(congruence_kind                  type,
                          std::shared_ptr<FroidurePinBase> S)
       : Congruence(type, options::runners::none) {
     auto tc = std::make_shared<ToddCoxeter>(type, S);
@@ -67,7 +67,7 @@ namespace libsemigroups {
     set_parent_froidure_pin(S);
   }
 
-  Congruence::Congruence(congruence_type type, FpSemigroup& S)
+  Congruence::Congruence(congruence_kind type, FpSemigroup& S)
       : Congruence(type, options::runners::none) {
     set_number_of_generators(S.alphabet().size());
     LIBSEMIGROUPS_ASSERT(!has_parent_froidure_pin());
@@ -132,7 +132,7 @@ namespace libsemigroups {
         }
       }
 
-      if (type == congruence_type::twosided) {
+      if (type == congruence_kind::twosided) {
         // Method 6 (KBFP)
         // S.knuth_bendix() must be copied because maybe we will add more
         // generating pairs.

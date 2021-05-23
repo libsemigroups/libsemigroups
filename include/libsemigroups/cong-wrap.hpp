@@ -27,7 +27,7 @@
 #include <memory>   // for unique_ptr, shared_ptr
 #include <string>   // for string
 
-#include "cong-intf.hpp"          // for congruence_type, con...
+#include "cong-intf.hpp"          // for congruence_kind, con...
 #include "fpsemi-intf.hpp"        // for FpSemigroupInterface
 #include "froidure-pin-base.hpp"  // for FroidurePinBase
 
@@ -60,7 +60,7 @@ namespace libsemigroups {
     //! (None)
     CongruenceWrapper()
         : _wrapped_cong(
-            std::make_unique<wrapped_type>(congruence_type::twosided)) {}
+            std::make_unique<wrapped_type>(congruence_kind::twosided)) {}
 
     //! Constructor from a \shared_ptr to a FroidurePinBase.
     //!
@@ -76,7 +76,7 @@ namespace libsemigroups {
     //! this constructor.
     explicit CongruenceWrapper(std::shared_ptr<FroidurePinBase> fp)
         : _wrapped_cong(
-            std::make_unique<wrapped_type>(congruence_type::twosided, fp)) {
+            std::make_unique<wrapped_type>(congruence_kind::twosided, fp)) {
       set_alphabet(fp->number_of_generators());
       // TODO(later): Adding the rules from fp in the constructor is not
       // always desirable, since it might trigger an infinite computation in

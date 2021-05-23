@@ -13,9 +13,9 @@ libsemigroups::CongruenceByPairsHelper:
   - EqualTo
   - Product
 - Constructors:
-  - CongruenceByPairsHelper(congruence_type, std::shared_ptr<FroidurePinBase>) noexcept
-  - CongruenceByPairsHelper(congruence_type, std::shared_ptr<T>, bool)
-  - CongruenceByPairsHelper(congruence_type, T const&)
+  - CongruenceByPairsHelper(congruence_kind, std::shared_ptr<FroidurePinBase>) noexcept
+  - CongruenceByPairsHelper(congruence_kind, std::shared_ptr<T>, bool)
+  - CongruenceByPairsHelper(congruence_kind, T const&)
   - CongruenceByPairsHelper(CongruenceByPairsHelper&&) = default
   - CongruenceByPairsHelper(CongruenceByPairsHelper const&) = default
 - Deleted constructors:
