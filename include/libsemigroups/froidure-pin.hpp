@@ -921,7 +921,7 @@ namespace libsemigroups {
     //!
     //! \exceptions
     //! \no_libsemigroups_except
-    std::shared_ptr<state_type> state() {
+    std::shared_ptr<state_type> state() const {
       return _state;
     }
 

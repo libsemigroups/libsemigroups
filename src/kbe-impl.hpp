@@ -84,9 +84,18 @@ namespace libsemigroups {
   tril FroidurePin<detail::KBE,
                    FroidurePinTraits<detail::KBE, fpsemigroup::KnuthBendix>>::
       is_finite() const {
-    // TODO(now) update this to check if the underlying KnuthBendix is
-    // infinite or not
-    return (finished() ? tril::TRUE : tril::unknown);
+    // Turns out that the FroidurePin can be finished without the state
+    // being finished, this sounds like a bug, I'm not 100% sure how that
+    // works. Probably the state of the FroidurePin and the underlying
+    // KnuthBendix are not the same object, and one is being used when the
+    // other one should be, or something.
+    if (finished() || state()->is_obviously_finite()) {
+      return tril::TRUE;
+    }
+    if (state()->is_obviously_infinite()) {
+      return tril::FALSE;
+    }
+    return tril::unknown;
   }
 }  // namespace libsemigroups
 #endif  // LIBSEMIGROUPS_SRC_KBE_IMPL_HPP_
