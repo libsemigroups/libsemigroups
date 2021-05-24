@@ -3,14 +3,21 @@ coverage:
   round: down
   range: "90...100"
 
-  status:
-    project: no
-    patch: no
-    changes: no
+  status: # GitHub status checks to add to a PR
+    project:
+      default:
+        informational: true # Don't fail the check if overall coverage decreases
+    patch: # Check only the PR's diff
+      default:
+        target: 100
+        threshold: 0
+        informational: false # Do fail the check if the diff is not 100% covered
+    changes: # Information about changes in coverage outside the diff
+      default:
+        informational: true # Don't fail the check
 
-comment:
-  layout: "header, diff, changes, tree"
-  behavior: default
+# Comment to post on PRs
+comment: false
 
 ignore:
  - "extern"
