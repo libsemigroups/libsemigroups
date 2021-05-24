@@ -30,6 +30,11 @@
 #include "libsemigroups/transf.hpp"        // for Transf<>
 #include "libsemigroups/types.hpp"         // for word_type
 
+CATCH_REGISTER_ENUM(libsemigroups::tril,
+                    libsemigroups::tril::TRUE,
+                    libsemigroups::tril::FALSE,
+                    libsemigroups::tril::unknown);
+
 namespace libsemigroups {
   // Forward declarations
   struct LibsemigroupsException;
@@ -202,7 +207,11 @@ namespace libsemigroups {
     S.add_rule({0}, {1});
 
     REQUIRE(S.size() == 2);
+    REQUIRE(!S.is_obviously_infinite());
+    REQUIRE(S.is_obviously_finite());
+
     REQUIRE(S.froidure_pin()->size() == 2);
+    REQUIRE(S.froidure_pin()->is_finite() == tril::TRUE);
 
     Congruence cong1(twosided, S.froidure_pin());
     cong1.add_pair({0}, {1});
