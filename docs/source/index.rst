@@ -65,7 +65,7 @@ See the installation instructions:
    changelog
 
 ``libsemigroups`` is used in the `Semigroups package for GAP`_, and the
-development version is available on `Github`. There were `python bindings`_
+development version is available on github_. There were `python bindings`_
 (for Python 2 and 3) for earlier versions of ``libsemigroups``, and there will
 be in the future too, but presently they don't work. 
 
