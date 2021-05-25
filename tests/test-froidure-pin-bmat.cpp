@@ -172,70 +172,70 @@ namespace libsemigroups {
   ////////////////////////////////////////////////////////////////////////
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<BMat<4>>",
-                          "000",
+                          "005",
                           "small example 1",
                           "[quick][froidure-pin][bmat]") {
     test000<BMat<4>>();
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<BMat<>>",
-                          "001",
+                          "006",
                           "small example 1",
                           "[quick][froidure-pin][bmat]") {
     test000<BMat<>>();
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<BMat<4>>",
-                          "002",
+                          "007",
                           "regular bmat monoid 4",
                           "[quick][froidure-pin][bmat][no-valgrind]") {
     test001<BMat<4>>();
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<BMat<>>",
-                          "003",
+                          "008",
                           "regular bmat monoid 4",
                           "[quick][froidure-pin][bmat][no-valgrind]") {
     test001<BMat<>>();
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<BMat<3>>",
-                          "004",
+                          "009",
                           "small example 2",
                           "[quick][froidure-pin][bmat]") {
     test002<BMat<3>>();
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<BMat<>>",
-                          "005",
+                          "010",
                           "small example 2",
                           "[quick][froidure-pin][bmat]") {
     test002<BMat<>>();
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<BMat<4>>",
-                          "006",
+                          "011",
                           "small example 3",
                           "[quick][froidure-pin][bmat]") {
     test003<BMat<4>>();
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<BMat<>>",
-                          "007",
+                          "012",
                           "small example 3",
                           "[quick][froidure-pin][bmat]") {
     test003<BMat<>>();
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<BMat<>>",
-                          "008",
+                          "013",
                           "Clark generators",
                           "[extreme][froidure-pin][bmat]") {
     test004<BMat<>>();
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<BMat<40>>",
-                          "009",
+                          "014",
                           "Clark generators",
                           "[extreme][froidure-pin][bmat]") {
     test004<BMat<40>>();

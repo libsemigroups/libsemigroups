@@ -61,7 +61,7 @@ namespace libsemigroups {
 
   namespace fpsemigroup {
     LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
-                            "095",
+                            "097",
                             "(fpsemi) transformation semigroup (size 4)",
                             "[quick][knuth-bendix][fpsemigroup][fpsemi]") {
       auto                  rg = ReportGuard(REPORT);
@@ -77,7 +77,7 @@ namespace libsemigroups {
     }
 
     LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
-                            "096",
+                            "098",
                             "(fpsemi) transformation semigroup (size 9)",
                             "[quick][knuth-bendix][fpsemigroup][fpsemi]") {
       auto                  rg = ReportGuard(REPORT);
@@ -96,7 +96,7 @@ namespace libsemigroups {
     }
 
     LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
-                            "097",
+                            "099",
                             "(fpsemi) transformation semigroup (size 88)",
                             "[quick][knuth-bendix][fpsemigroup][fpsemi]") {
       auto                  rg = ReportGuard(REPORT);
@@ -115,7 +115,7 @@ namespace libsemigroups {
     }
 
     LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
-                            "098",
+                            "100",
                             "internal_string_to_word",
                             "[quick]") {
       auto                  rg = ReportGuard(REPORT);
@@ -132,7 +132,7 @@ namespace libsemigroups {
 
     LIBSEMIGROUPS_TEST_CASE(
         "KnuthBendix",
-        "099",
+        "101",
         "(fpsemi) construct from shared_ptr<FroidurePin>",
         "[quick][knuth-bendix][fpsemigroup][fpsemi][shortlex]") {
       auto rg  = ReportGuard(REPORT);
@@ -147,7 +147,7 @@ namespace libsemigroups {
     }
 
     LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
-                            "100",
+                            "102",
                             "internal_string_to_word",
                             "[quick]") {
       FroidurePin<Transf<>> S(

@@ -29,7 +29,7 @@ namespace libsemigroups {
   constexpr bool REPORT = false;
 
   LIBSEMIGROUPS_TEST_CASE("Konieczny",
-                          "026",
+                          "031",
                           "transformations",
                           "[quick][transf]") {
     using Transf         = LeastTransf<5>;
@@ -56,7 +56,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Konieczny",
-                          "027",
+                          "032",
                           "transformations - JDM favourite example",
                           "[quick][no-valgrind][transf]") {
     using Transf         = LeastTransf<8>;
@@ -82,7 +82,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Konieczny",
-                          "028",
+                          "033",
                           "transformations - large example",
                           "[standard][no-valgrind][transf]") {
     auto                        rg   = ReportGuard(REPORT);
@@ -111,7 +111,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Konieczny",
-                          "029",
+                          "034",
                           "transformations - large example with stop",
                           "[standard][no-valgrind][transf]") {
     auto                rg = ReportGuard(REPORT);
@@ -125,7 +125,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Konieczny",
-                          "030",
+                          "035",
                           "transformations - large example with run_until",
                           "[standard][no-valgrind][transf]") {
     auto                rg = ReportGuard(REPORT);
@@ -148,7 +148,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Konieczny",
-                          "031",
+                          "036",
                           "transformations - large example with stop in Action",
                           "[standard][no-valgrind][transf]") {
     auto                rg = ReportGuard(REPORT);
@@ -168,7 +168,7 @@ namespace libsemigroups {
     REQUIRE(S.size() == 232511);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("Konieczny", "032", "exceptions", "[quick][transf]") {
+  LIBSEMIGROUPS_TEST_CASE("Konieczny", "037", "exceptions", "[quick][transf]") {
     auto rg          = ReportGuard(REPORT);
     using value_type = typename Transf<>::value_type;
     std::vector<value_type> v(65, 0);
@@ -178,7 +178,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Konieczny",
-                          "033",
+                          "038",
                           "transformations: contains",
                           "[quick][transf]") {
     auto                rg = ReportGuard(REPORT);
@@ -217,7 +217,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Konieczny",
-                          "035",
+                          "039",
                           "transformations Hall monoid 5",
                           "[extreme][transf]") {
     auto rg      = ReportGuard();

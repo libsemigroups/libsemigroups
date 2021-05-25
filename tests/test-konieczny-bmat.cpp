@@ -107,48 +107,48 @@ namespace libsemigroups {
   ////////////////////////////////////////////////////////////////////////
 
   LIBSEMIGROUPS_TEST_CASE("Konieczny",
-                          "018",
+                          "000",
                           "test000<BMat<>>",
                           "[quick][bmat]") {
     test000<BMat<>>();
   }
 
   LIBSEMIGROUPS_TEST_CASE("Konieczny",
-                          "036",
+                          "001",
                           "test000<BMat<4>>",
                           "[quick][bmat]") {
     test000<BMat<4>>();
   }
 
   LIBSEMIGROUPS_TEST_CASE("Konieczny",
-                          "019",
+                          "002",
                           "test001<BMat<>>",
                           "[quick][bmat][no-valgrind]") {
     test001<BMat<>>();
   }
 
   LIBSEMIGROUPS_TEST_CASE("Konieczny",
-                          "037",
+                          "003",
                           "test001<BMat<4>>",
                           "[quick][bmat][no-valgrind]") {
     test001<BMat<4>>();
   }
 
   LIBSEMIGROUPS_TEST_CASE("Konieczny",
-                          "020",
+                          "004",
                           "BMat<>: generators from Sean Clark",
                           "[extreme][bmat]") {
     test002<BMat<>>();
   }
 
   LIBSEMIGROUPS_TEST_CASE("Konieczny",
-                          "038",
+                          "005",
                           "BMat<40>: generators from Sean Clark",
                           "[extreme][bmat]") {
     test002<BMat<40>>();
   }
 
-  LIBSEMIGROUPS_TEST_CASE("Konieczny", "021", "exceptions", "[quick][bmat]") {
+  LIBSEMIGROUPS_TEST_CASE("Konieczny", "006", "exceptions", "[quick][bmat]") {
     auto rg = ReportGuard(REPORT);
     REQUIRE_THROWS_AS(
         Konieczny<BMat<>>(
@@ -159,14 +159,14 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Konieczny",
-                          "022",
+                          "007",
                           "code coverage",
                           "[quick][bmat][no-valgrind]") {
     test003<BMat<>>();
   }
 
   LIBSEMIGROUPS_TEST_CASE("Konieczny",
-                          "039",
+                          "008",
                           "code coverage",
                           "[quick][bmat][no-valgrind]") {
     test003<BMat<5>>();

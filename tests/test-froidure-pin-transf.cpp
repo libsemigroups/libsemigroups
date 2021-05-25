@@ -117,21 +117,21 @@ namespace libsemigroups {
   }  // namespace
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<Transf<>>",
-                          "000",
+                          "063",
                           "JDM favourite (dynamic)",
                           "[standard][froidure-pin][transformation][transf]") {
     test000<Transf<>>();
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<Transf<>>",
-                          "001",
+                          "064",
                           "JDM favourite (static)",
                           "[standard][froidure-pin][transformation][transf]") {
     test000<Transf<8>>();
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<Transf<>>",
-                          "002",
+                          "065",
                           "no exception zero generators given",
                           "[quick][froidure-pin][transformation][transf]") {
     test001<Transf<>>();
@@ -139,7 +139,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<Transf<>>",
-                          "003",
+                          "066",
                           "exception generators of "
                           "different degrees",
                           "[quick][froidure-pin][transformation][transf]") {
@@ -148,7 +148,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<Transf<>>",
-                          "004",
+                          "067",
                           "exception current_position",
                           "[quick][froidure-pin][transformation][transf]") {
     auto                  rg   = ReportGuard(REPORT);
@@ -165,7 +165,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<Transf<>>",
-                          "005",
+                          "068",
                           "exception word_to_element",
                           "[quick][froidure-pin][transformation][transf]") {
     auto                  rg   = ReportGuard(REPORT);
@@ -187,7 +187,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<Transf<>>",
-                          "006",
+                          "069",
                           "exception gens",
                           "[quick][froidure-pin][transformation][transf]") {
     auto rg = ReportGuard(REPORT);
@@ -212,7 +212,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<Transf<>>",
-                          "007",
+                          "070",
                           "exception prefix",
                           "[quick][froidure-pin][transformation][transf]") {
     auto                  rg   = ReportGuard(REPORT);
@@ -228,7 +228,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<Transf<>>",
-                          "008",
+                          "071",
                           "exception suffix",
                           "[quick][froidure-pin][transformation][transf]") {
     auto                  rg   = ReportGuard(REPORT);
@@ -247,7 +247,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<Transf<>>",
-                          "009",
+                          "072",
                           "exception first_letter",
                           "[quick][froidure-pin][transformation][transf]") {
     auto                  rg   = ReportGuard(REPORT);
@@ -263,7 +263,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<Transf<>>",
-                          "010",
+                          "073",
                           "exception final_letter",
                           "[quick][froidure-pin][transformation][transf]") {
     auto                  rg   = ReportGuard(REPORT);
@@ -279,7 +279,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<Transf<>>",
-                          "011",
+                          "074",
                           "exception current_length",
                           "[quick][froidure-pin][transformation][transf]") {
     auto                  rg   = ReportGuard(REPORT);
@@ -295,7 +295,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<Transf<>>",
-                          "012",
+                          "075",
                           "exception product_by_reduction",
                           "[quick][froidure-pin][transformation][transf]") {
     auto                  rg = ReportGuard(REPORT);
@@ -317,7 +317,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<Transf<>>",
-                          "013",
+                          "076",
                           "exception fast_product",
                           "[quick][froidure-pin][transformation][transf]") {
     auto                  rg = ReportGuard(REPORT);
@@ -339,7 +339,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<Transf<>>",
-                          "014",
+                          "077",
                           "exception current_position",
                           "[quick][froidure-pin][transformation][transf]") {
     auto rg = ReportGuard(REPORT);
@@ -364,7 +364,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<Transf<>>",
-                          "015",
+                          "078",
                           "exception is_idempotent",
                           "[quick][froidure-pin][transformation][transf]") {
     auto                  rg   = ReportGuard(REPORT);
@@ -384,7 +384,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<Transf<>>",
-                          "016",
+                          "079",
                           "exception add_generators",
                           "[quick][froidure-pin][transformation][transf]") {
     auto                  rg   = ReportGuard(REPORT);
@@ -404,7 +404,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<Transf<>>",
-                          "017",
+                          "080",
                           "multithread number_of_idempotents",
                           "[quick][froidure-pin][transformation][transf]") {
     auto                  rg = ReportGuard(REPORT);
@@ -419,7 +419,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<Transf<>>",
-                          "018",
+                          "081",
                           "small semigroup",
                           "[quick][froidure-pin][transf]") {
     auto                  rg = ReportGuard(REPORT);
@@ -447,7 +447,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<Transf<>>",
-                          "019",
+                          "082",
                           "large semigroup",
                           "[quick][froidure-pin][transf][no-valgrind]") {
     auto rg = ReportGuard(REPORT);
@@ -468,7 +468,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<Transf<>>",
-                          "020",
+                          "083",
                           "at, position, current_*",
                           "[quick][froidure-pin][transf][no-valgrind]") {
     auto rg = ReportGuard(REPORT);
@@ -511,7 +511,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<Transf<>>",
-                          "021",
+                          "084",
                           "run",
                           "[quick][froidure-pin][transf][no-valgrind]") {
     auto                  rg = ReportGuard(REPORT);
@@ -547,7 +547,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<Transf<>>",
-                          "022",
+                          "085",
                           "run [many stops and starts]",
                           "[quick][froidure-pin][transf][no-valgrind]") {
     auto rg = ReportGuard(REPORT);
@@ -573,7 +573,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<Transf<>>",
-                          "023",
+                          "086",
                           "factorisation, length [1 element]",
                           "[quick][froidure-pin][transf][no-valgrind]") {
     auto                  rg = ReportGuard(REPORT);
@@ -603,7 +603,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<Transf<>>",
-                          "024",
+                          "087",
                           "factorisation, products [all elements]",
                           "[quick][froidure-pin][transf][no-valgrind]") {
     auto                  rg = ReportGuard(REPORT);
@@ -624,7 +624,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<Transf<>>",
-                          "025",
+                          "088",
                           "first/final letter, prefix, suffix, products",
                           "[quick][froidure-pin][transf][no-valgrind]") {
     auto                  rg = ReportGuard(REPORT);
@@ -710,7 +710,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<Transf<>>",
-                          "026",
+                          "089",
                           "current_position [standard]",
                           "[quick][froidure-pin][transf]") {
     auto                  rg = ReportGuard(REPORT);
@@ -729,7 +729,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<Transf<>>",
-                          "027",
+                          "090",
                           "current_position [duplicate gens]",
                           "[quick][froidure-pin][transf][no-valgrind]") {
     auto                  rg = ReportGuard(REPORT);
@@ -783,7 +783,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<Transf<>>",
-                          "028",
+                          "091",
                           "current_position [after add_generators]",
                           "[quick][froidure-pin][transf][no-valgrind]") {
     auto                  rg = ReportGuard(REPORT);
@@ -832,7 +832,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<Transf<>>",
-                          "029",
+                          "092",
                           "cbegin_idempotents/cend [1 thread]",
                           "[quick][froidure-pin][transf][no-valgrind]") {
     auto                  rg = ReportGuard(REPORT);
@@ -852,7 +852,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<Transf<>>",
-                          "030",
+                          "093",
                           "idempotent_cend/cbegin [1 thread]",
                           "[quick][froidure-pin][transf][no-valgrind]") {
     auto                  rg = ReportGuard(REPORT);
@@ -873,7 +873,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<Transf<>>",
-                          "031",
+                          "094",
                           "is_idempotent [1 thread]",
                           "[quick][froidure-pin][transf][no-valgrind]") {
     auto                  rg = ReportGuard(REPORT);
@@ -897,7 +897,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE(
       "FroidurePin<Transf<>>",
-      "032",
+      "095",
       "cbegin_idempotents/cend, is_idempotent [2 threads]",
       "[standard][froidure-pin][transf][multithread][no-valgrind]") {
     auto                  rg = ReportGuard(REPORT);
@@ -926,7 +926,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<Transf<>>",
-                          "033",
+                          "096",
                           "finished, started",
                           "[quick][froidure-pin][transf]") {
     auto                  rg = ReportGuard(REPORT);
@@ -951,7 +951,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<Transf<>>",
-                          "034",
+                          "097",
                           "current_position",
                           "[quick][froidure-pin][transf]") {
     auto                  rg = ReportGuard(REPORT);
@@ -994,7 +994,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<Transf<>>",
-                          "035",
+                          "098",
                           "sorted_position, sorted_at",
                           "[quick][froidure-pin][transf]") {
     auto                  rg = ReportGuard(REPORT);
@@ -1049,7 +1049,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<Transf<>>",
-                          "036",
+                          "099",
                           "right/left Cayley graph",
                           "[quick][froidure-pin][transf][no-valgrind]") {
     auto                  rg = ReportGuard(REPORT);
@@ -1076,7 +1076,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<Transf<>>",
-                          "037",
+                          "100",
                           "iterator",
                           "[quick][froidure-pin][transf][no-valgrind]") {
     auto                  rg = ReportGuard(REPORT);
@@ -1136,7 +1136,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<Transf<>>",
-                          "038",
+                          "101",
                           "reverse iterator",
                           "[quick][froidure-pin][transf][no-valgrind]") {
     auto                  rg = ReportGuard(REPORT);
@@ -1196,7 +1196,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<Transf<>>",
-                          "039",
+                          "102",
                           "iterator arithmetic",
                           "[quick][froidure-pin][transf][no-valgrind]") {
     auto                  rg = ReportGuard(REPORT);
@@ -1249,7 +1249,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<Transf<>>",
-                          "040",
+                          "103",
                           "iterator sorted",
                           "[quick][froidure-pin][transf][no-valgrind]") {
     auto                  rg = ReportGuard(REPORT);
@@ -1297,7 +1297,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<Transf<>>",
-                          "041",
+                          "104",
                           "iterator sorted arithmetic",
                           "[quick][froidure-pin][transf][no-valgrind]") {
     auto                  rg = ReportGuard(REPORT);
@@ -1350,7 +1350,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<Transf<>>",
-                          "042",
+                          "105",
                           "copy [not enumerated]",
                           "[quick][froidure-pin][transf][no-valgrind]") {
     auto                  rg = ReportGuard(REPORT);
@@ -1387,7 +1387,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<Transf<>>",
-                          "043",
+                          "106",
                           "copy_closure [not enumerated]",
                           "[quick][froidure-pin][transf][no-valgrind]") {
     auto                  rg = ReportGuard(REPORT);
@@ -1448,7 +1448,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<Transf<>>",
-                          "044",
+                          "107",
                           "copy_add_generators [not enumerated]",
                           "[quick][froidure-pin][transf][no-valgrind]") {
     auto                  rg = ReportGuard(REPORT);
@@ -1509,7 +1509,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<Transf<>>",
-                          "045",
+                          "108",
                           "copy [partly enumerated]",
                           "[quick][froidure-pin][transf]") {
     auto                  rg = ReportGuard(REPORT);
@@ -1550,7 +1550,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<Transf<>>",
-                          "046",
+                          "109",
                           "copy_closure [partly enumerated]",
                           "[quick][froidure-pin][transf]") {
     auto                  rg = ReportGuard(REPORT);
@@ -1590,7 +1590,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<Transf<>>",
-                          "047",
+                          "110",
                           "copy_add_generators [partly enumerated]",
                           "[quick][froidure-pin][transf]") {
     auto                  rg = ReportGuard(REPORT);
@@ -1629,7 +1629,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<Transf<>>",
-                          "048",
+                          "111",
                           "copy [fully enumerated]",
                           "[quick][froidure-pin][transf]") {
     auto                  rg = ReportGuard(REPORT);
@@ -1659,7 +1659,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<Transf<>>",
-                          "049",
+                          "112",
                           "copy_closure [fully enumerated]",
                           "[quick][froidure-pin][transf]") {
     auto                  rg = ReportGuard(REPORT);
@@ -1698,7 +1698,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<Transf<>>",
-                          "050",
+                          "113",
                           "copy_add_generators [fully enumerated]",
                           "[quick][froidure-pin][transf]") {
     auto                  rg = ReportGuard(REPORT);
@@ -1736,7 +1736,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<Transf<>>",
-                          "051",
+                          "114",
                           "relations [duplicate gens]",
                           "[quick][froidure-pin][transf]") {
     auto                  rg = ReportGuard(REPORT);
@@ -1766,7 +1766,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<Transf<>>",
-                          "052",
+                          "115",
                           "relations",
                           "[quick][froidure-pin][transf]") {
     auto                  rg = ReportGuard(REPORT);
@@ -1805,7 +1805,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<Transf<>>",
-                          "053",
+                          "116",
                           "relations [copy_closure, duplicate gens]",
                           "[quick][froidure-pin][transf]") {
     auto                  rg = ReportGuard(REPORT);
@@ -1840,7 +1840,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<Transf<>>",
-                          "054",
+                          "117",
                           "relations [copy_add_generators, duplicate gens]",
                           "[quick][froidure-pin][transf]") {
     auto                  rg = ReportGuard(REPORT);
@@ -1875,7 +1875,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<Transf<>>",
-                          "055",
+                          "118",
                           "relations [from copy, not enumerated]",
                           "[quick][froidure-pin][transf]") {
     auto                  rg = ReportGuard(REPORT);
@@ -1898,7 +1898,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<Transf<>>",
-                          "056",
+                          "119",
                           "relations [from copy, partly enumerated]",
                           "[quick][froidure-pin][transf]") {
     auto                  rg = ReportGuard(REPORT);
@@ -1925,7 +1925,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<Transf<>>",
-                          "057",
+                          "120",
                           "relations [from copy, fully enumerated]",
                           "[quick][froidure-pin][transf]") {
     auto                  rg = ReportGuard(REPORT);
@@ -1953,7 +1953,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<Transf<>>",
-                          "058",
+                          "121",
                           "relations [from copy_closure, not enumerated]",
                           "[quick][froidure-pin][transf]") {
     auto                  rg = ReportGuard(REPORT);
@@ -1982,7 +1982,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE(
       "FroidurePin<Transf<>>",
-      "059",
+      "122",
       "relations [from copy_add_generators, not enumerated]",
       "[quick][froidure-pin][transf]") {
     auto                  rg = ReportGuard(REPORT);
@@ -2007,7 +2007,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<Transf<>>",
-                          "060",
+                          "123",
                           "relations [from copy_closure, partly enumerated]",
                           "[quick][froidure-pin][transf]") {
     auto                  rg = ReportGuard(REPORT);
@@ -2031,7 +2031,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE(
       "FroidurePin<Transf<>>",
-      "061",
+      "124",
       "relations [from copy_add_generators, partly enumerated]",
       "[quick][froidure-pin][transf]") {
     auto                  rg = ReportGuard(REPORT);
@@ -2058,7 +2058,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<Transf<>>",
-                          "062",
+                          "125",
                           "relations [from copy_closure, fully enumerated]",
                           "[quick][froidure-pin][transf]") {
     auto                  rg = ReportGuard(REPORT);
@@ -2084,7 +2084,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE(
       "FroidurePin<Transf<>>",
-      "063",
+      "126",
       "relations [from copy_add_generators, fully enumerated]",
       "[quick][froidure-pin][transf]") {
     auto                  rg = ReportGuard(REPORT);
@@ -2109,7 +2109,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<Transf<>>",
-                          "064",
+                          "127",
                           "add_generators [duplicate generators]",
                           "[quick][froidure-pin][transf]") {
     auto                  rg = ReportGuard(REPORT);
@@ -2173,7 +2173,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<Transf<>>",
-                          "065",
+                          "128",
                           "add_generators [incremental 1]",
                           "[quick][froidure-pin][transf]") {
     auto                  rg = ReportGuard(REPORT);
@@ -2205,7 +2205,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<Transf<>>",
-                          "066",
+                          "129",
                           "add_generators [incremental 2]",
                           "[quick][froidure-pin][transf]") {
     auto                  rg = ReportGuard(REPORT);
@@ -2253,7 +2253,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<Transf<>>",
-                          "067",
+                          "130",
                           "closure [duplicate generators]",
                           "[quick][froidure-pin][transf]") {
     auto                  rg = ReportGuard(REPORT);
@@ -2298,7 +2298,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<Transf<>>",
-                          "068",
+                          "131",
                           "closure ",
                           "[quick][froidure-pin][transf]") {
     auto                  rg = ReportGuard(REPORT);
@@ -2322,7 +2322,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<Transf<>>",
-                          "069",
+                          "132",
                           "factorisation ",
                           "[quick][froidure-pin][transf]") {
     auto                  rg = ReportGuard(REPORT);
@@ -2334,7 +2334,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<Transf<>>",
-                          "070",
+                          "133",
                           "my favourite example with reserve",
                           "[standard][froidure-pin][transf]") {
     auto                  rg = ReportGuard(REPORT);
@@ -2353,7 +2353,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<Transf<>>",
-                          "071",
+                          "134",
                           "minimal_factorisation ",
                           "[quick][froidure-pin][transf]") {
     auto                  rg = ReportGuard(REPORT);
@@ -2372,7 +2372,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<Transf<>>",
-                          "072",
+                          "135",
                           "batch_size (for an extremely large value)",
                           "[quick][froidure-pin][transf]") {
     auto                  rg = ReportGuard(REPORT);
@@ -2387,7 +2387,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<Transf<>>",
-                          "073",
+                          "136",
                           "my favourite example without reserve",
                           "[standard][froidure-pin][transf]") {
     auto                  rg = ReportGuard(REPORT);
@@ -2405,7 +2405,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<Transf<>>",
-                          "074",
+                          "137",
                           "exception: generators of different degrees",
                           "[quick][froidure-pin][transf]") {
     REQUIRE_THROWS_AS(FroidurePin<Transf<>>({Transf<>({0, 1, 2, 3, 4, 5}),
@@ -2414,7 +2414,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<Transf<>>",
-                          "075",
+                          "138",
                           "exception: current_position",
                           "[quick][froidure-pin][transf]") {
     FroidurePin<Transf<>> U;
@@ -2430,7 +2430,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<Transf<>>",
-                          "076",
+                          "139",
                           "exception: word_to_element",
                           "[quick][froidure-pin][transf]") {
     FroidurePin<Transf<>> U;
@@ -2449,7 +2449,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<Transf<>>",
-                          "077",
+                          "140",
                           "exception: gens, current_position",
                           "[quick][froidure-pin][transf]") {
     using value_type = typename Transf<>::value_type;
@@ -2474,7 +2474,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<Transf<>>",
-                          "078",
+                          "141",
                           "exception: add_generators",
                           "[quick][froidure-pin][transf]") {
     FroidurePin<Transf<>> S;

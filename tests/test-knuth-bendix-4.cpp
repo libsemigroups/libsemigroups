@@ -388,7 +388,7 @@ namespace libsemigroups {
     // kbmag/standalone/kb_data/verifynilp
     LIBSEMIGROUPS_TEST_CASE(
         "KnuthBendix",
-        "083",
+        "095",
         "(KnuthBendix 050 again) (from kbmag/standalone/kb_data/verifynilp)",
         "[fail][knuth-bendix][kbmag][shortlex]") {
       auto                rg    = ReportGuard();
@@ -429,7 +429,7 @@ namespace libsemigroups {
     }
 
     LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
-                            "013",
+                            "096",
                             "Sorouhesh",
                             "[quick][knuth-bendix][kbmag][shortlex]") {
       auto         rg = ReportGuard(REPORT);

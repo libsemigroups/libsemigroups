@@ -290,7 +290,7 @@ namespace libsemigroups {
     }
 
     LIBSEMIGROUPS_TEST_CASE("CongruenceInterface",
-                            "009",
+                            "006",
                             "parent_froidure_pin",
                             "[quick]") {
       auto rg = ReportGuard(REPORT);
@@ -326,7 +326,7 @@ namespace libsemigroups {
     }
 
     LIBSEMIGROUPS_TEST_CASE("CongruenceInterface",
-                            "006",
+                            "007",
                             "cbegin/cend_ntc",
                             "[quick]") {
       auto rg = ReportGuard(REPORT);
@@ -425,7 +425,7 @@ namespace libsemigroups {
     }
 
     LIBSEMIGROUPS_TEST_CASE("CongruenceInterface",
-                            "007",
+                            "008",
                             "cbegin/cend_ntc",
                             "[quick]") {
       auto rg = ReportGuard(REPORT);
@@ -459,7 +459,7 @@ namespace libsemigroups {
     }
 
     LIBSEMIGROUPS_TEST_CASE("CongruenceInterface",
-                            "008",
+                            "009",
                             "quotient is immutable",
                             "[quick]") {
       auto rg = ReportGuard(REPORT);

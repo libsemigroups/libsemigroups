@@ -94,7 +94,7 @@ namespace libsemigroups {
   }  // namespace
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
-                          "107",
+                          "061",
                           "projective max plus matrix",
                           "[quick][froidure-pin][projmaxplus]") {
     test000<ProjMaxPlusMat<3>>();
@@ -102,7 +102,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
-                          "021",
+                          "062",
                           "projective max plus matrix",
                           "[quick][froidure-pin][element]") {
     test001<ProjMaxPlusMat<3>>();

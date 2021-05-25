@@ -108,7 +108,7 @@ namespace libsemigroups {
   constexpr bool REPORT = false;
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
-                          "125",
+                          "055",
                           "(tropical max-plus semiring matrices)",
                           "[quick][froidure-pin][tropmaxplus]") {
     auto rg = ReportGuard(REPORT);
