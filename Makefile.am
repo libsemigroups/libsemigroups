@@ -589,6 +589,13 @@ EXTRA_DIST += tests/catch.hpp
 EXTRA_DIST += tests/fpsemi-examples.hpp
 EXTRA_DIST += tests/bmat-data.hpp
 EXTRA_DIST += tests/test-main.hpp
+EXTRA_DIST += benchmarks/bench-main.hpp
+EXTRA_DIST += benchmarks/catch.hpp
+EXTRA_DIST += benchmarks/uf-old.hpp
+EXTRA_DIST += benchmarks/examples/common.hpp
+EXTRA_DIST += benchmarks/examples/cong-intf.hpp
+EXTRA_DIST += benchmarks/examples/fpsemi-intf.hpp
+EXTRA_DIST += benchmarks/examples/generators.hpp
 
 ## For testing . . .
 

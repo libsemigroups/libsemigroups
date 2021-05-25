@@ -1,7 +1,7 @@
 Changelog - version 2
 =====================
 
-v2.0.0 (released 25/05/2021)
+v2.0.0 (released 26/05/2021)
 ----------------------------
 
 This release includes a major rewrite of the functionality in ``libsemigroups``
