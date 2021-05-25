@@ -26,7 +26,7 @@ namespace libsemigroups {
   KnuthBendixCongruenceByPairs::KnuthBendixCongruenceByPairs(
       congruence_kind              type,
       std::shared_ptr<KnuthBendix> kb) noexcept
-      : CongruenceByPairsHelper_(type, kb, false) {  // final param is a dummy
+      : CongruenceByPairs_(type, kb, false) {  // final param is a dummy
     set_number_of_generators(kb->alphabet().size());
   }
 
@@ -51,14 +51,13 @@ namespace libsemigroups {
       // causing an infinite loop. We really want to call run_until on the
       // p_type, using its run member function, but that's not currently
       // possible.
-      CongruenceByPairsHelper_::run_impl();
+      CongruenceByPairs_::run_impl();
     }
     report_why_we_stopped();
   }
 
   bool KnuthBendixCongruenceByPairs::finished_impl() const {
-    return has_parent_froidure_pin()
-           && CongruenceByPairsHelper_::finished_impl();
+    return has_parent_froidure_pin() && CongruenceByPairs_::finished_impl();
   }
 
   std::shared_ptr<FroidurePinBase>

@@ -90,7 +90,7 @@ namespace libsemigroups {
         using Transf = LeastTransf<5>;
         FroidurePin<Transf> S(
             {Transf({1, 3, 4, 2, 3}), Transf({3, 2, 1, 3, 3})});
-        fp = std::make_unique<FpSemigroupByPairs<Transf>>(S);
+        fp = std::make_unique<FpSemigroupByPairs<decltype(S)>>(S);
         fp->add_rule({0, 0, 0}, {0});
         fp->add_rule({1, 1, 1, 1}, {1});
         fp->add_rule({0, 1, 0, 1}, {1, 1});
@@ -246,7 +246,7 @@ namespace libsemigroups {
       std::unique_ptr<FpSemigroupInterface> fp;
       using Transf = LeastTransf<5>;
       FroidurePin<Transf> S({Transf({1, 3, 4, 2, 3}), Transf({3, 2, 1, 3, 3})});
-      fp = std::make_unique<FpSemigroupByPairs<Transf>>(S);
+      fp = std::make_unique<FpSemigroupByPairs<decltype(S)>>(S);
       fp->add_rule({0, 0, 0}, {0});
       fp->add_rule({1, 1, 1, 1}, {1});
       fp->add_rule({0, 1, 0, 1}, {1, 1});
@@ -296,7 +296,7 @@ namespace libsemigroups {
         using Transf = LeastTransf<5>;
         FroidurePin<Transf> S(
             {Transf({1, 3, 4, 2, 3}), Transf({3, 2, 1, 3, 3})});
-        fp = std::make_unique<FpSemigroupByPairs<Transf>>(S);
+        fp = std::make_unique<FpSemigroupByPairs<decltype(S)>>(S);
         fp->add_rule({0, 0, 0}, {0});
         fp->add_rule({1, 1, 1, 1}, {1});
         fp->add_rule({0, 1, 0, 1}, {1, 1});
@@ -332,7 +332,7 @@ namespace libsemigroups {
         }
       }
       SECTION("FpSemigroupByPairs") {
-        fp = std::make_unique<FpSemigroupByPairs<Transf>>(S);
+        fp = std::make_unique<FpSemigroupByPairs<decltype(S)>>(S);
       }
       size_t expected = fp->number_of_rules();
       REQUIRE_NOTHROW(fp->add_rule({0}, {0}));
@@ -457,7 +457,7 @@ namespace libsemigroups {
 
       using Transf = LeastTransf<5>;
       FroidurePin<Transf> S({Transf({1, 3, 4, 2, 3}), Transf({3, 2, 1, 3, 3})});
-      FpSemigroupByPairs<Transf> fp(S);
+      FpSemigroupByPairs<decltype(S)> fp(S);
       REQUIRE(fp.number_of_rules() == 18);
       REQUIRE(fp.congruence().number_of_generating_pairs() == 0);
       // Generating pairs are the extra generating pairs added, whereas
@@ -552,7 +552,7 @@ namespace libsemigroups {
       std::unique_ptr<FpSemigroupInterface> fp;
       using Transf = LeastTransf<5>;
       FroidurePin<Transf> S({Transf({1, 3, 4, 2, 3}), Transf({3, 2, 1, 3, 3})});
-      fp = std::make_unique<FpSemigroupByPairs<Transf>>(S);
+      fp = std::make_unique<FpSemigroupByPairs<decltype(S)>>(S);
 
       auto a = std::string(1, fp->alphabet()[0]);
       auto b = std::string(1, fp->alphabet()[1]);
@@ -714,7 +714,7 @@ namespace libsemigroups {
       std::unique_ptr<FpSemigroupInterface> fp;
       using Transf = LeastTransf<5>;
       FroidurePin<Transf> S({Transf({1, 3, 4, 2, 3}), Transf({3, 2, 1, 3, 3})});
-      fp = std::make_unique<FpSemigroupByPairs<Transf>>(S);
+      fp = std::make_unique<FpSemigroupByPairs<decltype(S)>>(S);
 
       auto a = std::string(1, fp->alphabet()[0]);
       auto b = std::string(1, fp->alphabet()[1]);
@@ -818,7 +818,7 @@ namespace libsemigroups {
       std::unique_ptr<FpSemigroupInterface> fp;
       using Transf = LeastTransf<1>;
       FroidurePin<Transf> S({Transf({0})});
-      fp = std::make_unique<FpSemigroupByPairs<Transf>>(S);
+      fp = std::make_unique<FpSemigroupByPairs<decltype(S)>>(S);
 
       REQUIRE(!fp->is_obviously_infinite());
       REQUIRE(!fp->is_obviously_infinite());
@@ -868,7 +868,7 @@ namespace libsemigroups {
       std::unique_ptr<FpSemigroupInterface> fp;
       using Transf = LeastTransf<1>;
       FroidurePin<Transf> S({Transf({0})});
-      fp = std::make_unique<FpSemigroupByPairs<Transf>>(S);
+      fp = std::make_unique<FpSemigroupByPairs<decltype(S)>>(S);
       REQUIRE(fp->is_obviously_finite());
       REQUIRE(fp->is_obviously_finite());
       fp->add_rule({0, 0, 0}, {0});
@@ -934,7 +934,7 @@ namespace libsemigroups {
       std::unique_ptr<FpSemigroupInterface> fp;
       using Transf = LeastTransf<1>;
       FroidurePin<Transf> S({Transf({0})});
-      fp = std::make_unique<FpSemigroupByPairs<Transf>>(S);
+      fp = std::make_unique<FpSemigroupByPairs<decltype(S)>>(S);
 
       REQUIRE(fp->to_gap_string()
               == "free := FreeMonoid(\"a\");\n"
