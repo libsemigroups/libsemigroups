@@ -23,6 +23,7 @@
 
 #include "action.hpp"
 #include "adapters.hpp"
+#include "bipart.hpp"
 #include "bitset.hpp"
 #include "bmat.hpp"
 #include "bmat8.hpp"
@@ -39,6 +40,7 @@
 #include "digraph-helper.hpp"
 #include "digraph.hpp"
 #include "exception.hpp"
+#include "fastest-bmat.hpp"
 #include "forest.hpp"
 #include "fpsemi-intf.hpp"
 #include "fpsemi.hpp"
@@ -54,6 +56,7 @@
 #include "matrix.hpp"
 #include "obvinf.hpp"
 #include "order.hpp"
+#include "pbr.hpp"
 #include "pool.hpp"
 #include "race.hpp"
 #include "report.hpp"
