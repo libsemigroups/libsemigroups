@@ -8,6 +8,7 @@ AC_CONFIG_SRCDIR(include/libsemigroups/libsemigroups.hpp)
 AC_CONFIG_HEADERS(config/config.h)
 AC_CONFIG_MACRO_DIR([m4])
 AC_CONFIG_AUX_DIR(config)
+AC_CANONICAL_TARGET
 
 dnl Set default CFLAGS/CXXFLAGS to nothing, to avoid passing -g -O2 as
 dnl the default C/CXXFLAGS when compiling in, e.g. debug mode
@@ -37,7 +38,7 @@ dnl Checks for programs.
 
 AC_PROG_INSTALL
 AC_PROG_LN_S
-AC_PROG_LIBTOOL
+LT_INIT
 
 # Checks for header files.
 AC_CHECK_HEADERS([limits.h stdint.h stdlib.h sys/time.h unistd.h pthread.h])

@@ -18,7 +18,7 @@ AC_DEFUN([AX_CHECK_EIGEN], [
   if test "x$enable_eigen" = xyes; then
     AC_ARG_WITH(
       [external-eigen],
-      [AC_HELP_STRING([--with-external-eigen], [use the external eigen])],
+      [AS_HELP_STRING([--with-external-eigen],[use the external eigen])],
       [], 
       [with_external_eigen=no]
     )
