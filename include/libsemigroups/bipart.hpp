@@ -121,7 +121,7 @@ namespace libsemigroups {
     //! Default move constructor.
     Blocks(Blocks&& copy) = default;
 
-    ~Blocks() = default;
+    ~Blocks();
 
     //! Set whether or not the block containing a point is transverse.
     //!

@@ -80,6 +80,8 @@ namespace libsemigroups {
   // Blocks
   ////////////////////////////////////////////////////////////////////////
 
+  Blocks::~Blocks() = default;
+
   Blocks::Blocks(const_iterator first, const_iterator last) {
     _blocks.assign(first, last);
     // must reindex the blocks
