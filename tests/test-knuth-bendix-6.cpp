@@ -51,7 +51,7 @@ namespace libsemigroups {
   namespace congruence {
 
     LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
-                            "101",
+                            "103",
                             "(cong) free semigroup congruence (5 classes)",
                             "[quick][congruence][knuth-bendix][cong]") {
       auto rg = ReportGuard(REPORT);
@@ -74,7 +74,7 @@ namespace libsemigroups {
     }
 
     LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
-                            "102",
+                            "104",
                             "free semigroup congruence (6 classes)",
                             "[quick][cong][congruence][knuth-bendix][cong]") {
       auto        rg = ReportGuard(REPORT);
@@ -105,7 +105,7 @@ namespace libsemigroups {
     }
 
     LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
-                            "103",
+                            "105",
                             "(cong) free semigroup congruence (16 classes)",
                             "[quick][congruence][knuth-bendix][cong]") {
       auto        rg = ReportGuard(REPORT);
@@ -139,7 +139,7 @@ namespace libsemigroups {
     }
 
     LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
-                            "104",
+                            "106",
                             "(cong) free semigroup congruence (6 classes)",
                             "[quick][congruence][knuth-bendix][cong]") {
       auto        rg = ReportGuard(REPORT);
@@ -208,7 +208,7 @@ namespace libsemigroups {
 
     LIBSEMIGROUPS_TEST_CASE(
         "KnuthBendix",
-        "105",
+        "107",
         "(cong) free semigroup congruence (240 classes)",
         "[no-valgrind][quick][congruence][knuth-bendix][cong]") {
       auto        rg = ReportGuard(REPORT);
@@ -225,7 +225,7 @@ namespace libsemigroups {
 
     LIBSEMIGROUPS_TEST_CASE(
         "KnuthBendix",
-        "106",
+        "108",
         "(cong) free semigroup congruence (240 classes)",
         "[no-valgrind][quick][congruence][knuth-bendix][cong]") {
       auto        rg = ReportGuard(REPORT);
@@ -243,7 +243,7 @@ namespace libsemigroups {
 
     LIBSEMIGROUPS_TEST_CASE(
         "KnuthBendix",
-        "107",
+        "109",
         "(cong) less",
         "[no-valgrind][quick][congruence][knuth-bendix][cong]") {
       auto rg = ReportGuard(REPORT);
@@ -272,7 +272,7 @@ namespace libsemigroups {
 
     LIBSEMIGROUPS_TEST_CASE(
         "KnuthBendix",
-        "108",
+        "110",
         "(cong) less",
         "[quick][congruence][knuth-bendix][cong][no-valgrind]") {
       auto        rg = ReportGuard(REPORT);
@@ -287,7 +287,7 @@ namespace libsemigroups {
 
     LIBSEMIGROUPS_TEST_CASE(
         "KnuthBendix",
-        "109",
+        "111",
         "(cong) constructors",
         "[quick][congruence][knuth-bendix][cong][no-valgrind]") {
       auto        rg = ReportGuard(REPORT);
@@ -306,7 +306,7 @@ namespace libsemigroups {
     }
 
     LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
-                            "110",
+                            "112",
                             "(cong) const_contains/contains",
                             "[quick][congruence][knuth-bendix][cong]") {
       auto        rg = ReportGuard(REPORT);
@@ -329,7 +329,7 @@ namespace libsemigroups {
     }
 
     LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
-                            "111",
+                            "113",
                             "(cong) is_quotient_obviously_finite",
                             "[quick][congruence][knuth-bendix][cong]") {
       auto        rg = ReportGuard(REPORT);
@@ -342,7 +342,7 @@ namespace libsemigroups {
     }
 
     LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
-                            "112",
+                            "114",
                             "(cong) class_index_to_word",
                             "[quick][congruence][knuth-bendix][cong]") {
       auto        rg = ReportGuard(REPORT);
@@ -366,7 +366,7 @@ namespace libsemigroups {
     }
 
     LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
-                            "113",
+                            "115",
                             "(cong) quotient_froidure_pin",
                             "[quick][congruence][knuth-bendix][cong]") {
       auto        rg = ReportGuard(REPORT);
@@ -379,7 +379,7 @@ namespace libsemigroups {
     }
 
     LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
-                            "114",
+                            "116",
                             "(cong) set_number_of_generators",
                             "[quick][congruence][knuth-bendix][cong]") {
       auto        rg = ReportGuard(REPORT);

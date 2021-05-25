@@ -442,7 +442,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("CongruenceByPairs",
-                          "014",
+                          "011",
                           "(cong) left congruence on TCE",
                           "[quick][cong][cong-pair]") {
     using detail::TCE;
@@ -484,7 +484,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("CongruenceByPairs",
-                          "015",
+                          "012",
                           "(cong) is_quotient_obviously_finite",
                           "[quick][cong][cong-pair]") {
     auto rg = ReportGuard(REPORT);
@@ -505,7 +505,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("CongruenceByPairs",
-                          "016",
+                          "013",
                           "(cong) class_index_to_word/quotient",
                           "[quick][cong][cong-pair][no-valgrind]") {
     auto                  rg   = ReportGuard(REPORT);
@@ -561,7 +561,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("CongruenceByPairs",
-                          "017",
+                          "014",
                           "(cong) const_word_to_class_index",
                           "[quick][cong][cong-pair]") {
     auto                  rg = ReportGuard(REPORT);
@@ -588,7 +588,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("CongruenceByPairs",
-                          "018",
+                          "015",
                           "(cong) size non-Element*",
                           "[quick][cong][cong-pair]") {
     auto                  rg = ReportGuard(REPORT);
@@ -608,7 +608,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("KnuthBendixCongruenceByPairs",
-                          "001",
+                          "016",
                           "non-trivial congruence on an infinite fp semigroup",
                           "[quick][kbp][cong-pair]") {
     auto                     rg = ReportGuard(REPORT);
@@ -641,7 +641,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("KnuthBendixCongruenceByPairs",
-                          "002",
+                          "017",
                           "non-trivial congruence on an infinite fp semigroup",
                           "[quick][kbp][cong-pair]") {
     auto                     rg = ReportGuard(REPORT);
@@ -679,7 +679,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("KnuthBendixCongruenceByPairs",
-                          "003",
+                          "018",
                           "non-trivial congruence on an infinite fp semigroup",
                           "[quick][kbp][cong-pair]") {
     auto                     rg = ReportGuard(REPORT);
@@ -726,7 +726,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("KnuthBendixCongruenceByPairs",
-                          "004",
+                          "019",
                           "non-trivial congruence on an infinite fp semigroup",
                           "[quick][kbp][cong-pair]") {
     auto                     rg = ReportGuard(REPORT);
@@ -770,7 +770,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("KnuthBendixCongruenceByPairs",
-                          "005",
+                          "020",
                           "trivial congruence on a finite fp semigroup",
                           "[quick][kbp][cong-pair]") {
     auto                     rg = ReportGuard(REPORT);
@@ -801,7 +801,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("KnuthBendixCongruenceByPairs",
-                          "006",
+                          "021",
                           "universal congruence on a finite fp semigroup",
                           "[quick][kbp][cong-pair]") {
     auto rg = ReportGuard(REPORT);
@@ -865,7 +865,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("KnuthBendixCongruenceByPairs",
-                          "013",
+                          "022",
                           "left congruence on a finite fp semigroup",
                           "[quick][kbp][cong-pair]") {
     auto                     rg = ReportGuard(REPORT);
@@ -931,7 +931,7 @@ namespace libsemigroups {
   // fpsemigroup::KnuthBendix
   LIBSEMIGROUPS_TEST_CASE(
       "KnuthBendixCongruenceByPairs",
-      "007",
+      "023",
       "finite group, Chapter 11, Theorem 1.9, H, q = 4 in NR ",
       "[quick][kbp][cong-pair][no-valgrind]") {
     auto                     rg = ReportGuard(REPORT);
@@ -956,7 +956,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("KnuthBendixCongruenceByPairs",
-                          "008",
+                          "024",
                           "right congruence on infinite fp semigroup",
                           "[quick][kbp][cong-pair]") {
     auto                     rg = ReportGuard(REPORT);
@@ -983,7 +983,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("KnuthBendixCongruenceByPairs",
-                          "009",
+                          "025",
                           "finite fp semigroup, dihedral group of order 6",
                           "[quick][kbp][cong-pair]") {
     using detail::KBE;
@@ -1031,7 +1031,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("KnuthBendixCongruenceByPairs",
-                          "010",
+                          "026",
                           "finite fp semigroup, size 16",
                           "[quick][kbp][cong-pair]") {
     auto rg = ReportGuard(REPORT);
@@ -1069,7 +1069,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("KnuthBendixCongruenceByPairs",
-                          "011",
+                          "027",
                           "finite fp semigroup, size 16",
                           "[quick][kbp][cong-pair]") {
     auto rg = ReportGuard(REPORT);
@@ -1158,7 +1158,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("KnuthBendixCongruenceByPairs",
-                          "012",
+                          "028",
                           "infinite fp semigroup with infinite classes",
                           "[quick][kbp][cong-pair]") {
     auto rg = ReportGuard(REPORT);
@@ -1182,7 +1182,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FpSemigroupByPairs",
-                          "011",
+                          "029",
                           "(fpsemi) 2-sided congruence on finite semigroup",
                           "[quick][fpsemi][cong-pair]") {
     auto                  rg = ReportGuard(REPORT);
@@ -1214,7 +1214,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FpSemigroupByPairs",
-                          "012",
+                          "030",
                           "(fpsemi) 2-sided congruence on finite semigroup",
                           "[quick][fpsemi][cong-pair]") {
     auto                  rg = ReportGuard(REPORT);
@@ -1246,7 +1246,7 @@ namespace libsemigroups {
   // the FpSemigroupByPairs class requires a base semigroup over which to
   // compute, in the example below there is no such base semigroup.
   //
-  // LIBSEMIGROUPS_TEST_CASE("FpSemigroupByPairs", "013",
+  // LIBSEMIGROUPS_TEST_CASE("FpSemigroupByPairs", "031",
   //                         "infinite fp semigroup from GAP library ",
   //                         "[quick][fpsemi][cong-pair]") {
   //   auto rg = ReportGuard(REPORT);

@@ -1362,7 +1362,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Congruence",
-                          "043",
+                          "042",
                           "const_contains",
                           "[quick][cong]") {
     auto       rg = ReportGuard(REPORT);
@@ -1386,7 +1386,7 @@ namespace libsemigroups {
     }
   }
 
-  LIBSEMIGROUPS_TEST_CASE("Congruence", "042", "no winner", "[quick][cong]") {
+  LIBSEMIGROUPS_TEST_CASE("Congruence", "043", "no winner", "[quick][cong]") {
     auto       rg = ReportGuard(REPORT);
     Congruence cong(twosided);
     cong.set_number_of_generators(4);
@@ -1403,7 +1403,7 @@ namespace libsemigroups {
   // decided not to include in v1.0.0.
 
   // LIBSEMIGROUPS_TEST_CASE("Congruence",
-  //                         "043",
+  //                         "044",
   //                         "Policy::none edge cases",
   //                         "[quick][cong]") {
   //   auto       rg = ReportGuard(REPORT);
@@ -1433,7 +1433,7 @@ namespace libsemigroups {
   // }
 
   // LIBSEMIGROUPS_TEST_CASE("Congruence",
-  //                         "044",
+  //                         "045",
   //                         "Policy::none",
   //                         "[quick][cong]") {
   //   auto rg      = ReportGuard(REPORT);
@@ -1528,7 +1528,7 @@ namespace libsemigroups {
   // }
 
   // LIBSEMIGROUPS_TEST_CASE("Congruence",
-  //                         "045",
+  //                         "046",
   //                         "add_runner exceptions",
   //                         "[quick][cong]") {
   //   auto rg      = ReportGuard(REPORT);

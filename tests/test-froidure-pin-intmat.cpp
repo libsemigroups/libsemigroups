@@ -198,35 +198,35 @@ namespace libsemigroups {
   }  // namespace
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<IntMat<2, int64_t>>",
-                          "000",
+                          "032",
                           "Example 000",
                           "[quick][froidure-pin][intmat]") {
     test_IntMat000<IntMat<2, 2, int64_t>>();  // Static
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<IntMat<0, int64_t>>",
-                          "001",
+                          "033",
                           "Example 000",
                           "[quick][froidure-pin][intmat]") {
     test_IntMat000<IntMat<0, 0, int64_t>>();
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<IntMat<2, int64_t>>",
-                          "002",
+                          "034",
                           "Example 001",
                           "[quick][froidure-pin][intmat]") {
     test_IntMat001<IntMat<2, 2, int64_t>>();  // Static
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<IntMat<0, int64_t>>",
-                          "003",
+                          "035",
                           "Example 001",
                           "[quick][froidure-pin][intmat]") {
     test_IntMat001<IntMat<0, 0, int64_t>>();  // Static
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<IntMat>",
-                          "019",
+                          "036",
                           "exception: current_position",
                           "[quick][froidure-pin][element]") {
     test008<IntMat<2>>();
@@ -234,7 +234,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<IntMat>",
-                          "021",
+                          "037",
                           "exception: word_to_element",
                           "[quick][froidure-pin][element]") {
     test009<IntMat<2>>();
@@ -242,7 +242,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<IntMat>",
-                          "023",
+                          "038",
                           "exception: prefix, suffix, first_letter",
                           "[quick][froidure-pin][element]") {
     test010<IntMat<2>>();

@@ -33,7 +33,7 @@ namespace libsemigroups {
   constexpr bool REPORT = false;
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<PBR>",
-                          "000",
+                          "056",
                           "example 1",
                           "[quick][froidure-pin][pbr]") {
     auto             rg   = ReportGuard(REPORT);
@@ -122,7 +122,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<PBR>",
-                          "001",
+                          "057",
                           "example 2",
                           "[quick][froidure-pin][pbr]") {
     auto rg = ReportGuard(REPORT);

@@ -41,7 +41,7 @@ namespace libsemigroups {
   }  // namespace
 
   LIBSEMIGROUPS_TEST_CASE("Konieczny",
-                          "017",
+                          "026",
                           "non-regular D-classes 02",
                           "[quick][bmat8]") {
     auto                     rg = ReportGuard(REPORT);
@@ -160,7 +160,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Konieczny",
-                          "034",
+                          "027",
                           "Hall monoid 5",
                           "[extreme][bmat8]") {
 #ifdef LIBSEMIGROUPS_HPCOMBI_ENABLED

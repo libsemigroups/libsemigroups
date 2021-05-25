@@ -187,7 +187,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Bipartition",
-                          "001",
+                          "009",
                           "mem fns 1",
                           "[quick][bipartition]") {
     auto x = Bipartition(
@@ -236,7 +236,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Bipartition",
-                          "002",
+                          "010",
                           "hash",
                           "[quick][bipartition]") {
     Bipartition x({0, 1, 2, 1, 0, 2, 1, 0, 2, 2, 0, 0, 2, 0, 3, 4, 4, 1, 3, 0});
@@ -246,7 +246,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Bipartition",
-                          "003",
+                          "011",
                           "mem fns 2",
                           "[quick][bipartition]") {
     Bipartition x({0, 0, 0, 0, 0, 0, 1, 2, 0, 1, 0, 0, 1, 2, 3, 3, 0, 4, 1, 1});
@@ -299,7 +299,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Bipartition",
-                          "004",
+                          "012",
                           "delete/copy",
                           "[quick][bipartition]") {
     Bipartition x({0, 0, 0, 0});
@@ -310,7 +310,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Bipartition",
-                          "005",
+                          "013",
                           "degree 0",
                           "[quick][bipartition]") {
     Bipartition x(std::vector<uint32_t>({}));
@@ -329,7 +329,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Bipartition",
-                          "006",
+                          "014",
                           "exceptions",
                           "[quick][bipartition]") {
     REQUIRE_NOTHROW(Bipartition(std::vector<uint32_t>()));
@@ -338,7 +338,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Bipartition",
-                          "007",
+                          "015",
                           "convenience constructor",
                           "[quick][bipartition]") {
     Bipartition xx(
@@ -490,7 +490,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Bipartition",
-                          "008",
+                          "016",
                           "force copy constructor over move constructor",
                           "[quick][bipartition]") {
     std::vector<uint32_t> xx(
