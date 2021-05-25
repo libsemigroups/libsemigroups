@@ -33,7 +33,7 @@
 CATCH_REGISTER_ENUM(libsemigroups::tril,
                     libsemigroups::tril::TRUE,
                     libsemigroups::tril::FALSE,
-                    libsemigroups::tril::unknown);
+                    libsemigroups::tril::unknown)
 
 namespace libsemigroups {
   // Forward declarations
