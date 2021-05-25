@@ -53,7 +53,7 @@ libsemigroups::FroidurePin:
   - copy_add_generators(std::initializer_list< element_type >)
   - copy_closure(T const &)
   - copy_closure(std::initializer_list< element_type >)
-  - state()
+  - state() const
 - Factorisation and relations:
   - ["This page contains information about the member functions of the  
      :cpp:any:`FroidurePin` class related to factorising elements, products, and
