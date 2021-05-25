@@ -23,17 +23,17 @@
 // one that works, such as, for example, the semigroup in the test
 // KnuthBendixCongruenceByPairs 001.
 
-// There is a fair amount of overlap between CongruenceByPairsHelper and
+// There is a fair amount of overlap between CongruenceByPairs and
 // FroidurePin. In particular, the need to wrangle all of the types, and the
 // InternalProduct, InternalEqualTo, and InternalHash. The main aim of this
 // class is to provide the derived class KnuthBendixByPairs, which is designed
 // to run without fully enumerating the underlying FroidurePin instance. In
 // particular, because this might be infinite. We therefore require all of the
-// machinery to implemented in CongruenceByPairsHelper for KnuthBendixByPairs
+// machinery to implemented in CongruenceByPairs for KnuthBendixByPairs
 // (specifically, we won't know element_index_type's for elements where the
 // underlying FroidurePin<KBE> is infinite) and so we must be able to work
 // directly with the KBE's themselves, rather than with their indices. It would
-// be possible to improve CongruenceByPairsHelper, using:
+// be possible to improve CongruenceByPairs, using:
 //
 // * use pairs of element_index_type and FroidurePin::fast_product
 //   instead of the current setup, i.e. in this case, this would be a
@@ -42,7 +42,7 @@
 //   be passed the FroidurePin as the "state" parameter, and use fast_product
 //   to compute the product.
 //
-// but given that CongruenceByPairsHelper is likely to be a terrible algorithm
+// but given that CongruenceByPairs is likely to be a terrible algorithm
 // even with this optimisation, it does not seem worthwhile implementing the
 // above change.
 //
@@ -90,11 +90,7 @@ namespace libsemigroups {
   //! semigroups and monoids.
   //!
   //! This page contains a summary of the member functions of the class
-  //! CongruenceByPairs, and related things in libsemigroups.
-  //! CongruenceByPairsHelper is a helper class, CongruenceByPairs has
-  //! identical functionality, please use CongruenceByPairs, but not
-  //! CongruenceByPairsHelper since this will be deprecated in a later version
-  //! of ``libsemigroups``.
+  //! CongruenceByPairs, and related things in ``libsemigroups``.
   //!
   //! \sa congruence_kind and tril.
   //!
@@ -120,22 +116,22 @@ namespace libsemigroups {
 
   // Implemented in cong-pair-impl.hpp
   template <typename TFroidurePinType>
-  class CongruenceByPairsHelper : public CongruenceInterface,
-                                  protected detail::BruidhinnTraits<
-                                      typename TFroidurePinType::element_type> {
+  class CongruenceByPairs : public CongruenceInterface,
+                            protected detail::BruidhinnTraits<
+                                typename TFroidurePinType::element_type> {
     static_assert(
         std::is_base_of<FroidurePinBase, TFroidurePinType>::value,
         "the template parameter must be derived from FroidurePinBase");
 
    public:
     ////////////////////////////////////////////////////////////////////////
-    // CongruenceByPairsHelper - typedefs - public
+    // CongruenceByPairs - typedefs - public
     ////////////////////////////////////////////////////////////////////////
 
     //! No doc
     using froidure_pin_type = TFroidurePinType;
 
-    //! The type of elements over which an instance of CongruenceByPairsHelper
+    //! The type of elements over which an instance of CongruenceByPairs
     //! is defined.
     using element_type = typename froidure_pin_type::element_type;
 
@@ -159,25 +155,25 @@ namespace libsemigroups {
 
    protected:
     ////////////////////////////////////////////////////////////////////////
-    // CongruenceByPairsHelper - typedefs - protected
+    // CongruenceByPairs - typedefs - protected
     ////////////////////////////////////////////////////////////////////////
     //! No doc
     using internal_element_type =
         typename detail::BruidhinnTraits<element_type>::internal_value_type;
 
     ////////////////////////////////////////////////////////////////////////
-    // CongruenceByPairsHelper - constructor - protected
+    // CongruenceByPairs - constructor - protected
     ////////////////////////////////////////////////////////////////////////
     // This is protected because it is not possible to create a
-    // CongruenceByPairsHelper object without it being defined over a parent
+    // CongruenceByPairs object without it being defined over a parent
     // semigroup.
 
     //! No doc
-    explicit CongruenceByPairsHelper(congruence_kind);
+    explicit CongruenceByPairs(congruence_kind);
 
    private:
     ////////////////////////////////////////////////////////////////////////
-    // CongruenceByPairsHelper - typedefs - private
+    // CongruenceByPairs - typedefs - private
     ////////////////////////////////////////////////////////////////////////
     using internal_const_element_type = typename detail::BruidhinnTraits<
         element_type>::internal_const_value_type;
@@ -193,18 +189,18 @@ namespace libsemigroups {
 
    public:
     ////////////////////////////////////////////////////////////////////////
-    // CongruenceByPairsHelper - constructor + destructor - public
+    // CongruenceByPairs - constructor + destructor - public
     ////////////////////////////////////////////////////////////////////////
 
     //! No doc
     template <typename T,
               typename SFINAE = std::enable_if_t<IsState<T>::value, T>>
-    CongruenceByPairsHelper(congruence_kind type, std::shared_ptr<T> stt, bool)
-        : CongruenceByPairsHelper(type) {
+    CongruenceByPairs(congruence_kind type, std::shared_ptr<T> stt, bool)
+        : CongruenceByPairs(type) {
       _state = stt;
     }
 
-    //! Construct a CongruenceByPairsHelper over the FroidurePin instance \p S
+    //! Construct a CongruenceByPairs over the FroidurePin instance \p S
     //! representing a left/right/2-sided congruence according to \p type.
     //! \param type whether the congruence is left, right, or 2-sided
     //! \param S  a shared_ptr to the semigroup over which the congruence is
@@ -219,14 +215,14 @@ namespace libsemigroups {
     //!
     //! \note
     //! The FroidurePinBase pointed to by \p S is not copied
-    CongruenceByPairsHelper(congruence_kind                  type,
-                            std::shared_ptr<FroidurePinBase> S) noexcept;
+    CongruenceByPairs(congruence_kind                  type,
+                      std::shared_ptr<FroidurePinBase> S) noexcept;
 
-    //! Construct a CongruenceByPairsHelper over the FroidurePin instance \p fp
+    //! Construct a CongruenceByPairs over the FroidurePin instance \p fp
     //! representing a left/right/2-sided congruence according to \p type.
     //!
     //! \tparam T a class derived from FroidurePinBase. It is required that
-    //! `T::element_type` is the same as CongruenceByPairsHelper::element_type
+    //! `T::element_type` is the same as CongruenceByPairs::element_type
     //! (which is the same as the template parameter \p element_type).
     //!
     //! \param type whether the congruence is left, right, or 2-sided
@@ -243,17 +239,17 @@ namespace libsemigroups {
     //! \warning The parameter `T& S` is copied, this might be expensive, use
     //! a std::shared_ptr to avoid the copy!
     template <typename T>
-    CongruenceByPairsHelper(congruence_kind type, T const& S)
-        : CongruenceByPairsHelper(type,
-                                  static_cast<std::shared_ptr<FroidurePinBase>>(
-                                      std::make_shared<T>(S))) {
+    CongruenceByPairs(congruence_kind type, T const& S)
+        : CongruenceByPairs(type,
+                            static_cast<std::shared_ptr<FroidurePinBase>>(
+                                std::make_shared<T>(S))) {
       static_assert(std::is_base_of<FroidurePinBase, T>::value,
                     "the template parameter must be a derived class of "
                     "FroidurePinBase");
       static_assert(
           std::is_same<typename T::element_type, element_type>::value,
           "incompatible element_type's, the element_type of the FroidurePin "
-          "instance must be the same as the CongruenceByPairsHelper "
+          "instance must be the same as the CongruenceByPairs "
           "element_type");
       if (type != congruence_kind::right
           && std::is_same<typename T::element_type, detail::TCE>::value) {
@@ -262,29 +258,29 @@ namespace libsemigroups {
       }
     }
 
-    ~CongruenceByPairsHelper();
+    ~CongruenceByPairs();
 
-    //! A CongruenceByPairsHelper instance is not default-constructible.
+    //! A CongruenceByPairs instance is not default-constructible.
     //! This constructor is deleted.
-    CongruenceByPairsHelper() = delete;
+    CongruenceByPairs() = delete;
 
     //! A default copy constructor.
-    CongruenceByPairsHelper(CongruenceByPairsHelper const&) = default;
+    CongruenceByPairs(CongruenceByPairs const&) = default;
 
-    //! A CongruenceByPairsHelper instance is not copy assignable.
+    //! A CongruenceByPairs instance is not copy assignable.
     //! This constructor is deleted.
-    CongruenceByPairsHelper& operator=(CongruenceByPairsHelper const&) = delete;
+    CongruenceByPairs& operator=(CongruenceByPairs const&) = delete;
 
     //! A default move constructor.
-    CongruenceByPairsHelper(CongruenceByPairsHelper&&) = default;
+    CongruenceByPairs(CongruenceByPairs&&) = default;
 
-    //! A CongruenceByPairsHelper instance is not move assignable.
+    //! A CongruenceByPairs instance is not move assignable.
     //! This constructor is deleted.
-    CongruenceByPairsHelper& operator=(CongruenceByPairsHelper&&) = delete;
+    CongruenceByPairs& operator=(CongruenceByPairs&&) = delete;
 
    protected:
     ////////////////////////////////////////////////////////////////////////
-    // CongruenceByPairsHelper - member functions - protected
+    // CongruenceByPairs - member functions - protected
     ////////////////////////////////////////////////////////////////////////
 
     //! No doc
@@ -302,7 +298,7 @@ namespace libsemigroups {
 
     // non_trivial_classes_impl is private in CongruenceInterface but
     // protected here since KnuthBendixCongruenceByPairs uses it and
-    // derives from class CongruenceByPairsHelper.
+    // derives from class CongruenceByPairs.
     //! No doc
     std::shared_ptr<non_trivial_classes_type const>
     non_trivial_classes_impl() override;
@@ -338,7 +334,7 @@ namespace libsemigroups {
     }
 
     ////////////////////////////////////////////////////////////////////////
-    // CongruenceByPairsHelper - member functions - private
+    // CongruenceByPairs - member functions - private
     ////////////////////////////////////////////////////////////////////////
 
     size_t add_index(internal_element_type) const;
@@ -347,7 +343,7 @@ namespace libsemigroups {
     void   init();
 
     ////////////////////////////////////////////////////////////////////////
-    // CongruenceByPairsHelper - inner structs - private
+    // CongruenceByPairs - inner structs - private
     ////////////////////////////////////////////////////////////////////////
 
     struct InternalEqualTo : private detail::BruidhinnTraits<element_type> {
@@ -406,7 +402,7 @@ namespace libsemigroups {
     };
 
     ////////////////////////////////////////////////////////////////////////
-    // CongruenceByPairsHelper - data - private
+    // CongruenceByPairs - data - private
     ////////////////////////////////////////////////////////////////////////
 
     mutable std::vector<class_index_type> _class_lookup;
@@ -431,29 +427,6 @@ namespace libsemigroups {
     std::shared_ptr<state_type>                _state;
     internal_element_type                      _tmp1;
     internal_element_type                      _tmp2;
-  };
-
-  // The following only exist for backwards compatibility, so that it is
-  // possible to create a CongruenceByPairs where the template parameter is the
-  // element type. TODO(2.0): remove these and rename CongruenceByPairsHelper
-  // -> CongruenceByPairs.
-  template <typename T, typename = void>
-  class CongruenceByPairs;
-
-  template <typename T>
-  class CongruenceByPairs<
-      T,
-      std::enable_if_t<std::is_base_of<FroidurePinBase, T>::value>>
-      : public CongruenceByPairsHelper<T> {
-    using CongruenceByPairsHelper<T>::CongruenceByPairsHelper;
-  };
-
-  template <typename T>
-  class CongruenceByPairs<
-      T,
-      std::enable_if_t<!std::is_base_of<FroidurePinBase, T>::value>>
-      : public CongruenceByPairsHelper<FroidurePin<T>> {
-    using CongruenceByPairsHelper<FroidurePin<T>>::CongruenceByPairsHelper;
   };
 
   //! Defined in ``cong-pair.hpp``.
@@ -497,15 +470,15 @@ namespace libsemigroups {
   //! \endcode
   // Implemented in cong-pair.cpp.
   class KnuthBendixCongruenceByPairs
-      : public CongruenceByPairsHelper<FroidurePin<
+      : public CongruenceByPairs<FroidurePin<
             detail::KBE,
             FroidurePinTraits<detail::KBE, fpsemigroup::KnuthBendix>>> {
     ////////////////////////////////////////////////////////////////////////
     // KnuthBendixCongruenceByPairs - typedefs - private
     ////////////////////////////////////////////////////////////////////////
 
-    using KnuthBendix              = fpsemigroup::KnuthBendix;
-    using CongruenceByPairsHelper_ = CongruenceByPairsHelper<
+    using KnuthBendix        = fpsemigroup::KnuthBendix;
+    using CongruenceByPairs_ = CongruenceByPairs<
         FroidurePin<detail::KBE,
                     FroidurePinTraits<detail::KBE, fpsemigroup::KnuthBendix>>>;
 
@@ -579,7 +552,7 @@ namespace libsemigroups {
     // CongruenceInterface - non-pure virtual member functions - private
     ////////////////////////////////////////////////////////////////////////
 
-    using CongruenceByPairsHelper_::non_trivial_classes_impl;
+    using CongruenceByPairs_::non_trivial_classes_impl;
     // Override the method for the class CongruenceByPairs to avoid having to
     // know the parent semigroup (found as part of
     // KnuthBendixCongruenceByPairs::run) to add a pair.

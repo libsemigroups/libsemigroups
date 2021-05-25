@@ -1,4 +1,4 @@
-libsemigroups::CongruenceByPairsHelper:
+libsemigroups::CongruenceByPairs:
 - Aliases:
   - element_type
   - const_reference
@@ -13,18 +13,18 @@ libsemigroups::CongruenceByPairsHelper:
   - EqualTo
   - Product
 - Constructors:
-  - CongruenceByPairsHelper(congruence_kind, std::shared_ptr<FroidurePinBase>) noexcept
-  - CongruenceByPairsHelper(congruence_kind, std::shared_ptr<T>, bool)
-  - CongruenceByPairsHelper(congruence_kind, T const&)
-  - CongruenceByPairsHelper(CongruenceByPairsHelper&&) = default
-  - CongruenceByPairsHelper(CongruenceByPairsHelper const&) = default
+  - CongruenceByPairs(congruence_kind, std::shared_ptr<FroidurePinBase>) noexcept
+  - CongruenceByPairs(congruence_kind, std::shared_ptr<T>, bool)
+  - CongruenceByPairs(congruence_kind, T const&)
+  - CongruenceByPairs(CongruenceByPairs&&) = default
+  - CongruenceByPairs(CongruenceByPairs const&) = default
 - Deleted constructors:
-  - CongruenceByPairsHelper() = delete
-  - operator=(CongruenceByPairsHelper&&) = delete
-  - operator=(CongruenceByPairsHelper const&) = delete
+  - CongruenceByPairs() = delete
+  - operator=(CongruenceByPairs&&) = delete
+  - operator=(CongruenceByPairs const&) = delete
 - Member functions inherited from CongruenceInterface:
   - ["This page contains a description of the member functions of the
-     :cpp:any:`CongruenceByPairsHelper` class inherited from
+     :cpp:any:`CongruenceByPairs` class inherited from
      :cpp:any:`CongruenceInterface`."]
   - set_number_of_generators(size_t)
   - kind() const noexcept
@@ -54,7 +54,7 @@ libsemigroups::CongruenceByPairsHelper:
   - has_parent_fpsemigroup() const noexcept
 - Member functions inherited from Runner:
   - ["This page contains a description of the member functions of the
-     :cpp:any:`CongruenceByPairsHelper` class inherited from :cpp:any:`Runner`."]
+     :cpp:any:`CongruenceByPairs` class inherited from :cpp:any:`Runner`."]
   - dead() const noexcept
   - finished() const
   - started() const

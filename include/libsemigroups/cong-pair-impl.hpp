@@ -17,10 +17,10 @@
 //
 
 // This file contains implementations of the member functions for
-// CongruenceByPairsHelper.
+// CongruenceByPairs.
 
 // TODO(later):
-//   1. the type of the congruence defined by class CongruenceByPairsHelper
+//   1. the type of the congruence defined by class CongruenceByPairs
 //   could be
 //      a template parameter
 
@@ -32,7 +32,7 @@
 #endif
 
 #define TEMPLATE template <typename TFroidurePinType>
-#define P_CLASS CongruenceByPairsHelper<TFroidurePinType>
+#define P_CLASS CongruenceByPairs<TFroidurePinType>
 #define VOID TEMPLATE void
 #define SIZE_T TEMPLATE size_t
 #define CLASS_INDEX_TYPE TEMPLATE CongruenceInterface::class_index_type
@@ -42,11 +42,11 @@
 
 namespace libsemigroups {
   ////////////////////////////////////////////////////////////////////////
-  // CongruenceByPairsHelper - constructor - protected
+  // CongruenceByPairs - constructor - protected
   ////////////////////////////////////////////////////////////////////////
 
   TEMPLATE
-  P_CLASS::CongruenceByPairsHelper(congruence_kind type)
+  P_CLASS::CongruenceByPairs(congruence_kind type)
       : CongruenceInterface(type),
         _class_lookup(),
         _found_pairs(),
@@ -63,20 +63,20 @@ namespace libsemigroups {
         _tmp2() {}
 
   ////////////////////////////////////////////////////////////////////////
-  // CongruenceByPairsHelper - constructor + destructor - public
+  // CongruenceByPairs - constructor + destructor - public
   ////////////////////////////////////////////////////////////////////////
 
   TEMPLATE
-  P_CLASS::CongruenceByPairsHelper(congruence_kind                  type,
-                                   std::shared_ptr<FroidurePinBase> S) noexcept
-      : CongruenceByPairsHelper(type) {
+  P_CLASS::CongruenceByPairs(congruence_kind                  type,
+                             std::shared_ptr<FroidurePinBase> S) noexcept
+      : CongruenceByPairs(type) {
     set_number_of_generators(S->number_of_generators());
     set_parent_froidure_pin(S);
     _state = static_cast<froidure_pin_type*>(S.get())->state();
   }
 
   TEMPLATE
-  P_CLASS::~CongruenceByPairsHelper() {
+  P_CLASS::~CongruenceByPairs() {
     delete_tmp_storage();
     this->internal_free(_tmp1);
     this->internal_free(_tmp2);
@@ -286,7 +286,7 @@ namespace libsemigroups {
   }
 
   ////////////////////////////////////////////////////////////////////////
-  // CongruenceByPairsHelper - member functions - protected
+  // CongruenceByPairs - member functions - protected
   ////////////////////////////////////////////////////////////////////////
 
   VOID P_CLASS::internal_add_pair(internal_element_type x,
@@ -336,7 +336,7 @@ namespace libsemigroups {
   }
 
   ////////////////////////////////////////////////////////////////////////
-  // CongruenceByPairsHelper - member functions - private
+  // CongruenceByPairs - member functions - private
   ////////////////////////////////////////////////////////////////////////
 
   SIZE_T P_CLASS::add_index(internal_element_type x) const {

@@ -37,7 +37,7 @@ The classes in ``libsemigroups`` for congruences are:
 
    _generated/libsemigroups__congruenceinterface
    _generated/libsemigroups__congruence
-   _generated/libsemigroups__congruencebypairshelper
+   _generated/libsemigroups__congruencebypairs
    _generated/libsemigroups__congruence__toddcoxeter 
    _generated/libsemigroups__congruence__knuthbendix
    _generated/libsemigroups__knuthbendixcongruencebypairs 

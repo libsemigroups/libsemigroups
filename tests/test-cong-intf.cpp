@@ -438,8 +438,7 @@ namespace libsemigroups {
       REQUIRE(S.number_of_rules() == 18);
 
       SECTION("CongruenceByPairs") {
-        cong = std::make_unique<CongruenceByPairs<decltype(S)::element_type>>(
-            right, S);
+        cong = std::make_unique<CongruenceByPairs<decltype(S)>>(right, S);
       }
       SECTION("Congruence") {
         cong = std::make_unique<Congruence>(right, S);
@@ -569,7 +568,7 @@ namespace libsemigroups {
       REQUIRE(S.size() == 88);
       REQUIRE(S.number_of_rules() == 21);
 
-      CongruenceByPairs<decltype(S)::element_type> cong(twosided, S);
+      CongruenceByPairs<decltype(S)> cong(twosided, S);
       REQUIRE_THROWS_AS(cong.set_number_of_generators(0),
                         LibsemigroupsException);
       REQUIRE(cong.word_to_class_index({2, 2, 2, 2}) == 0);
