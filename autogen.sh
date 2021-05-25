@@ -6,4 +6,4 @@
 # This file is part of the build system of libsemigroups.
 # Requires GNU autoconf, GNU automake and GNU libtool.
 #
-autoreconf -vif `dirname "$0"`
+autoreconf -if `dirname "$0"`

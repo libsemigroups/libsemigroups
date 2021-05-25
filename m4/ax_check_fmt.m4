@@ -18,7 +18,7 @@ AC_DEFUN([AX_CHECK_FMT], [
   if test "x$enable_fmt" = xyes;  then
     AC_ARG_WITH(
       [external-fmt],
-      [AC_HELP_STRING([--with-external-fmt], [use the external fmt])],
+      [AS_HELP_STRING([--with-external-fmt],[use the external fmt])],
       [],
       [with_external_fmt=no]
     )
