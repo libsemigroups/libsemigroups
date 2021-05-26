@@ -49,66 +49,132 @@ namespace libsemigroups {
 
   }  // namespace
 
-  void standardize(word_type& x) {
-    if (x.empty()) {
-      return;
-    }
-
-    size_t              distinct_chars = 0;
-    size_t const        N = *std::max_element(x.cbegin(), x.cend()) + 1;
-    std::vector<size_t> lookup(N, N);
-    lookup[x[0]] = 0;
-    x[0]         = 0;
-    for (size_t i = 1; i < x.size(); ++i) {
-      if (lookup[x[i]] == N) {
-        lookup[x[i]] = ++distinct_chars;
-      }
-      x[i] = lookup[x[i]];
-    }
-  }
-
   using level_edges_type = std::vector<std::vector<size_t>>;
   using left_type        = std::vector<size_t>;
   using right_type       = std::vector<size_t>;
 
-  void level_edges(word_type const&           w,
-                   size_t const               k,
-                   std::vector<size_t> const& rdx,
-                   right_type const&          rightk,
-                   left_type const&           leftk,
-                   right_type const&          rightm,
-                   left_type const&           leftm,
-                   level_edges_type&          out) {
-    size_t const n = w.size();
-    LIBSEMIGROUPS_ASSERT(out.size() == 2 * n);
-    std::fill(
-        out.begin(),
-        out.end(),
-        std::vector<size_t>({UNDEFINED, UNDEFINED, UNDEFINED, UNDEFINED}));
+  namespace detail {
+    void standardize(word_type& x) {
+      if (x.empty()) {
+        return;
+      }
 
-    if (k == 1) {
+      size_t              distinct_chars = 0;
+      size_t const        N = *std::max_element(x.cbegin(), x.cend()) + 1;
+      std::vector<size_t> lookup(N, N);
+      lookup[x[0]] = 0;
+      x[0]         = 0;
+      for (size_t i = 1; i < x.size(); ++i) {
+        if (lookup[x[i]] == N) {
+          lookup[x[i]] = ++distinct_chars;
+        }
+        x[i] = lookup[x[i]];
+      }
+    }
+
+
+    void level_edges(word_type const&           w,
+                     size_t const               k,
+                     std::vector<size_t> const& rdx,
+                     right_type const&          rightk,
+                     left_type const&           leftk,
+                     right_type const&          rightm,
+                     left_type const&           leftm,
+                     level_edges_type&          out) {
+      size_t const n = w.size();
+      LIBSEMIGROUPS_ASSERT(out.size() == 2 * n);
+      std::fill(
+          out.begin(),
+          out.end(),
+          std::vector<size_t>({UNDEFINED, UNDEFINED, UNDEFINED, UNDEFINED}));
+
+      if (k == 1) {
+        for (size_t i = 0; i < n; ++i) {
+          out[i]     = {0, w.at(i), w.at(i), 0};
+          out[i + n] = {0, w.at(i), w.at(i), 0};
+        }
+        return;
+      }
+
       for (size_t i = 0; i < n; ++i) {
-        out[i]     = {0, w.at(i), w.at(i), 0};
-        out[i + n] = {0, w.at(i), w.at(i), 0};
+        if (rightk.at(i) != UNDEFINED) {
+          out[i] = {rdx.at(i),
+                    w.at(rightm.at(i) + 1),
+                    w.at(leftm.at(rightk.at(i)) - 1),
+                    rdx.at(rightk.at(i) + n)};
+        }
+        if (leftk.at(i) != UNDEFINED) {
+          out[i + n] = {rdx.at(leftk.at(i)),
+                        w.at(rightm.at(leftk.at(i)) + 1),
+                        w.at(leftm.at(i) - 1),
+                        rdx.at(i + n)};
+        }
       }
-      return;
     }
 
-    for (size_t i = 0; i < n; ++i) {
-      if (rightk.at(i) != UNDEFINED) {
-        out[i] = {rdx.at(i),
-                  w.at(rightm.at(i) + 1),
-                  w.at(leftm.at(rightk.at(i)) - 1),
-                  rdx.at(rightk.at(i) + n)};
+    void radix_sort(std::vector<word_type> const& level_edges,
+                    size_t                        alphabet_size,
+                    std::vector<size_t>&          result_index_list,
+                    std::vector<size_t>&          index_list) {
+      LIBSEMIGROUPS_ASSERT(result_index_list.size() == level_edges.size());
+      LIBSEMIGROUPS_ASSERT(index_list.size() == level_edges.size());
+
+      std::fill(result_index_list.begin(), result_index_list.end(), 0);
+      std::fill(index_list.begin(), index_list.end(), 0);
+
+      for (size_t j = 0; j < index_list.size(); j++) {
+        index_list[j] = j;
       }
-      if (leftk.at(i) != UNDEFINED) {
-        out[i + n] = {rdx.at(leftk.at(i)),
-                      w.at(rightm.at(leftk.at(i)) + 1),
-                      w.at(leftm.at(i) - 1),
-                      rdx.at(i + n)};
+
+      detail::count_sort(level_edges, index_list, 0, index_list.size());
+      detail::count_sort(level_edges, index_list, 1, alphabet_size);
+      detail::count_sort(level_edges, index_list, 2, alphabet_size);
+      detail::count_sort(level_edges, index_list, 3, index_list.size());
+
+      size_t c = 0;
+      for (size_t j = 1; j < index_list.size(); j++) {
+        if (level_edges[index_list[j]] != level_edges[index_list[j - 1]])
+          c++;
+        result_index_list[index_list[j]] = c;
       }
+      result_index_list[index_list[0]] = 0;
     }
-  }
+
+    // What types should we be using? I get that word_type is an alias to
+    // std::vector<size_t>, but wouldn't using the vector be more useful,
+    // since the output/input is not really a representation of a word.
+    // Also the input i here will range from 0 to 3, so is it better
+    // to assign it to a unsigned short or something?
+    void count_sort(std::vector<word_type> const& level_edges,
+                    word_type&                    index_list,
+                    size_t                        i,
+                    size_t                        radix) {
+      // Could actually reuse an already existing count array
+      word_type counts(radix + 1, 0);
+      for (auto j : index_list) {
+        if (level_edges[j][i] != UNDEFINED)
+          counts[level_edges[j][i]]++;
+        else
+          counts[radix]++;
+      }
+      for (size_t j = 1; j < counts.size(); j++)
+        counts[j] += counts[j - 1];
+      // This can also be reused and doesnt even have to be initialized if we
+      // reuse it.
+      word_type result_index_list(index_list.size(), 0);
+      for (auto j = index_list.rbegin(); j != index_list.rend(); j++) {
+        if (level_edges[*j][i] != UNDEFINED) {
+          counts[level_edges[*j][i]]--;
+          result_index_list[counts[level_edges[*j][i]]] = *j;
+        } else {
+          counts[radix]--;
+          result_index_list[counts[radix]] = *j;
+        }
+      }
+      // Could also swap result_index_list with index_list!
+      std::swap(result_index_list, index_list);
+    }
+  }  // namespace detail
 
   bool freeband_equal_to(word_type& x, word_type& y) {
     if (x == y) {
@@ -121,7 +187,7 @@ namespace libsemigroups {
     word_type xy(x);
     xy.push_back(N);
     xy.insert(xy.end(), y.cbegin(), y.cend());
-    standardize(xy);
+    detail::standardize(xy);
     LIBSEMIGROUPS_ASSERT(xy.at(x.size())
                          == *std::max_element(xy.cbegin(), xy.cend()));
     N = content_size(xy);
@@ -139,76 +205,12 @@ namespace libsemigroups {
       std::swap(rightm, rightk);
       std::swap(leftm, leftk);
 
-      right(xy.begin(), xy.end(), k, rightk);
-      left(xy.begin(), xy.end(), k, leftk);
-      level_edges(xy, k, rdx, rightk, leftk, rightm, leftm, lvldgs);
-      radix_sort(lvldgs, N + 1, rdx, ndx);
+      detail::right(xy.begin(), xy.end(), k, rightk);
+      detail::left(xy.begin(), xy.end(), k, leftk);
+      detail::level_edges(xy, k, rdx, rightk, leftk, rightm, leftm, lvldgs);
+      detail::radix_sort(lvldgs, N + 1, rdx, ndx);
     }
 
     return rdx[0] == rdx[x.size() + 1];
   }
-
-  void radix_sort(std::vector<word_type> const& level_edges,
-                  size_t                        alphabet_size,
-                  std::vector<size_t>&          result_index_list,
-                  std::vector<size_t>&          index_list) {
-    LIBSEMIGROUPS_ASSERT(result_index_list.size() == level_edges.size());
-    LIBSEMIGROUPS_ASSERT(index_list.size() == level_edges.size());
-
-    std::fill(result_index_list.begin(), result_index_list.end(), 0);
-    std::fill(index_list.begin(), index_list.end(), 0);
-
-    for (size_t j = 0; j < index_list.size(); j++) {
-      index_list[j] = j;
-    }
-
-    count_sort(level_edges, index_list, 0, index_list.size());
-    count_sort(level_edges, index_list, 1, alphabet_size);
-    count_sort(level_edges, index_list, 2, alphabet_size);
-    count_sort(level_edges, index_list, 3, index_list.size());
-
-    size_t c = 0;
-    for (size_t j = 1; j < index_list.size(); j++) {
-      if (level_edges[index_list[j]] != level_edges[index_list[j - 1]])
-        c++;
-      result_index_list[index_list[j]] = c;
-    }
-    result_index_list[index_list[0]] = 0;
-  }
-
-  // What types should we be using? I get that word_type is an alias to
-  // std::vector<size_t>, but wouldn't using the vector be more useful,
-  // since the output/input is not really a representation of a word.
-  // Also the input i here will range from 0 to 3, so is it better
-  // to assign it to a unsigned short or something?
-  void count_sort(std::vector<word_type> const& level_edges,
-                  word_type&                    index_list,
-                  size_t                        i,
-                  size_t                        radix) {
-    // Could actually reuse an already existing count array
-    word_type counts(radix + 1, 0);
-    for (auto j : index_list) {
-      if (level_edges[j][i] != UNDEFINED)
-        counts[level_edges[j][i]]++;
-      else
-        counts[radix]++;
-    }
-    for (size_t j = 1; j < counts.size(); j++)
-      counts[j] += counts[j - 1];
-    // This can also be reused and doesnt even have to be initialized if we
-    // reuse it.
-    word_type result_index_list(index_list.size(), 0);
-    for (auto j = index_list.rbegin(); j != index_list.rend(); j++) {
-      if (level_edges[*j][i] != UNDEFINED) {
-        counts[level_edges[*j][i]]--;
-        result_index_list[counts[level_edges[*j][i]]] = *j;
-      } else {
-        counts[radix]--;
-        result_index_list[counts[radix]] = *j;
-      }
-    }
-    // Could also swap result_index_list with index_list!
-    std::swap(result_index_list, index_list);
-  }
-
 }  // namespace libsemigroups
