@@ -17,9 +17,9 @@ LINK="libsemigroups__action__member_functions_inherited_from_runner.html"
 
 for FILE in "${FILES[@]}"; do
   echo "* fixing Runner links in: $FILE"
-  sed -i '' -e "s:libsemigroups__runner__operators.html\#:$LINK\#:g" "$PREFIX/$FILE"
-  sed -i '' -e "s:libsemigroups__runner__state.html\#:$LINK\#:g" "$PREFIX/$FILE"
-  sed -i '' -e "s:libsemigroups__runner__reporting.html\#:$LINK\#:g" "$PREFIX/$FILE"
+  sed -i'' -e "s:libsemigroups__runner__operators.html\#:$LINK\#:g" "$PREFIX/$FILE"
+  sed -i'' -e "s:libsemigroups__runner__state.html\#:$LINK\#:g" "$PREFIX/$FILE"
+  sed -i'' -e "s:libsemigroups__runner__reporting.html\#:$LINK\#:g" "$PREFIX/$FILE"
 done
 
 # CongruenceInterface
@@ -41,16 +41,16 @@ LINK="libsemigroups__congruenceinterface__member_functions_inherited_from_runner
 
 for FILE in "${FILES[@]}"; do
   echo "* fixing Runner links in: $FILE"
-  sed -i '' -e "s:libsemigroups__runner__operators.html\#:$LINK\#:g" "$PREFIX/$FILE"
-  sed -i '' -e "s:libsemigroups__runner__state.html\#:$LINK\#:g" "$PREFIX/$FILE"
-  sed -i '' -e "s:libsemigroups__runner__reporting.html\#:$LINK\#:g" "$PREFIX/$FILE"
+  sed -i'' -e "s:libsemigroups__runner__operators.html\#:$LINK\#:g" "$PREFIX/$FILE"
+  sed -i'' -e "s:libsemigroups__runner__state.html\#:$LINK\#:g" "$PREFIX/$FILE"
+  sed -i'' -e "s:libsemigroups__runner__reporting.html\#:$LINK\#:g" "$PREFIX/$FILE"
 done
 
 # This only works because the structure of the doc for
 # KnuthBendixCongruenceByPairs and CongruenceInterface are the same.
 for FILE in "${FILES[@]}"; do
   echo "* fixing KnuthBendixCongruenceByPairs links in: $FILE"
-  sed -i '' -e 's:libsemigroups__knuthbendixcongruencebypairs:libsemigroups__congruenceinterface:g' "$PREFIX/$FILE"
+  sed -i'' -e 's:libsemigroups__knuthbendixcongruencebypairs:libsemigroups__congruenceinterface:g' "$PREFIX/$FILE"
 done
 
 # Congruence
@@ -64,16 +64,16 @@ FILES=( "libsemigroups__congruence__member_functions.html" \
 # KnuthBendixCongruenceByPairs and Congruence are the same.
 for FILE in "${FILES[@]}"; do
   echo "* fixing KnuthBendixCongruenceByPairs links in: $FILE"
-  sed -i '' -e 's:libsemigroups__knuthbendixcongruencebypairs:libsemigroups__congruence:g' "$PREFIX/$FILE"
+  sed -i'' -e 's:libsemigroups__knuthbendixcongruencebypairs:libsemigroups__congruence:g' "$PREFIX/$FILE"
 done
 
 LINK="libsemigroups__congruence__member_functions_inherited_from_runner.html"
 for FILE in "${FILES[@]}"; do
   echo "* fixing Runner links in: $FILE"
-  sed -i '' -e "s:libsemigroups__runner__operators.html\#:$LINK\#:g" "$PREFIX/$FILE"
-  sed -i '' -e "s:libsemigroups__runner__state.html\#:$LINK\#:g" "$PREFIX/$FILE"
-  sed -i '' -e "s:libsemigroups__runner__reporting.html\#:$LINK\#:g" "$PREFIX/$FILE"
+  sed -i'' -e "s:libsemigroups__runner__operators.html\#:$LINK\#:g" "$PREFIX/$FILE"
+  sed -i'' -e "s:libsemigroups__runner__state.html\#:$LINK\#:g" "$PREFIX/$FILE"
+  sed -i'' -e "s:libsemigroups__runner__reporting.html\#:$LINK\#:g" "$PREFIX/$FILE"
 done
 
-# 
+#
 
