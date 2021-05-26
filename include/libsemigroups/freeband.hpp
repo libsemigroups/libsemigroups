@@ -29,7 +29,7 @@
 #include <vector>     // for vector
 
 #include "libsemigroups/constants.hpp"
-#include "libsemigroups/libsemigroups-debug.hpp"
+#include "libsemigroups/debug.hpp"
 #include "types.hpp"  // word_type
 
 namespace libsemigroups {

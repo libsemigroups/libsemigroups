@@ -24,7 +24,7 @@
 #include <vector>     // for vector
 
 #include "libsemigroups/constants.hpp"
-#include "libsemigroups/libsemigroups-debug.hpp"
+#include "libsemigroups/debug.hpp"
 #include "libsemigroups/string.hpp"
 
 namespace libsemigroups {
