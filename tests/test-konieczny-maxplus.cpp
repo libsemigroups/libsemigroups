@@ -21,8 +21,8 @@
 #include <vector>   // for vector
 
 #include "catch.hpp"                           // for LIBSEMIGROUPS_TEST_CASE
+#include "libsemigroups/adapters.hpp"          // for detail::BruidhinnTraits
 #include "libsemigroups/bruidhinn-traits.hpp"  // for detail::BruidhinnTraits
-#include "libsemigroups/element-adapters.hpp"  // for Degree etc
 #include "libsemigroups/froidure-pin.hpp"  // for FroidurePin, FroidurePin<>::eleme...
 #include "libsemigroups/konieczny.hpp"           // for Konieczny
 #include "libsemigroups/matrix.hpp"              // for TropicalMaxPlusMat

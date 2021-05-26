@@ -21,11 +21,11 @@
 
 #include <cstddef>  // for size_t
 
-#include "action.hpp"                   // for RightAction
-#include "adapters.hpp"                 // for ImageRightAction
-#include "libsemigroups-debug.hpp"      // for LIBSEMIGROUPS_ASSERT
-#include "libsemigroups-exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
-#include "matrix.hpp"                   // for MaxPlusTruncMat
+#include "action.hpp"     // for RightAction
+#include "adapters.hpp"   // for ImageRightAction
+#include "debug.hpp"      // for LIBSEMIGROUPS_ASSERT
+#include "exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
+#include "matrix.hpp"     // for MaxPlusTruncMat
 
 namespace libsemigroups {
   // ////////////////////////////////////////////////////////////////////////
