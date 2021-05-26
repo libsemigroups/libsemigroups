@@ -31,9 +31,9 @@
 #define LIBSEMIGROUPS_ASSERT(x)
 #endif
 
-#if (defined(__GNUC__) && __GNUC__ < 5 \
+#if (defined(__GNUC__) && __GNUC__ < 6 \
      && !(defined(__clang__) || defined(__INTEL_COMPILER)))
-#error "GCC version 5.0 or higher is required"
+#error "GCC version 6.0 or higher is required"
 #endif
 
 #endif  // LIBSEMIGROUPS_DEBUG_HPP_
