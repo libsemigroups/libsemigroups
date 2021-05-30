@@ -1,6 +1,7 @@
 //
 // libsemigroups - C++ library for semigroups and monoids
 // Copyright (C) 2020 James D. Mitchell
+//                    Reinis Cirpons
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -17,6 +18,7 @@
 //
 
 #include <random>  // for mt19937, random_device
+#include <string>  // for tests with strings
 
 #include "catch.hpp"      // for REQUIRE etc
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
@@ -36,9 +38,9 @@ namespace libsemigroups {
     }
     return out;
   }
-  
+
   // The following contains useful test cases when checking the right, left,
-  // count_sort and radix_sort functions. 
+  // count_sort and radix_sort functions.
   /*
   LIBSEMIGROUPS_TEST_CASE("Test right and left",
                           "001",
@@ -159,6 +161,17 @@ namespace libsemigroups {
          1, 2, 2, 2, 1, 3, 1, 1, 0, 1, 0, 3, 0, 3, 0, 2, 2, 3, 2, 2,
          3, 1, 3, 3, 3, 2, 2, 2, 3, 3, 0, 2, 0, 1, 3, 1, 3, 1, 0, 2,
          3, 3, 3, 2, 1, 2, 2, 1, 1, 1, 0, 1, 1, 0, 3, 0, 1, 1, 2, 3}));
+
+    // Check the iterator version of the function works as intended
+    std::string a = "abcdba";
+    std::string b = "abcdcdba";
+    REQUIRE(freeband_equal_to(a.begin(), a.end(), b.begin(), b.end()));
+    a = "bcd";
+    b = "abc";
+    REQUIRE(!freeband_equal_to(a.begin(), a.end(), b.begin(), b.end()));
+    a = "adbcZ";
+    b = "adadbcZ";
+    REQUIRE(freeband_equal_to(a.begin(), a.end(), b.begin(), b.end()));
   }
 
 }  // namespace libsemigroups

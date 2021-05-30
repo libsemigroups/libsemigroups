@@ -1,7 +1,9 @@
 //
 // libsemigroups - C++ library for semigroups and monoids
 // Copyright (C) 2020 James D. Mitchell
-//                    + TODO the other guys
+//                    Tom D. Conti-Leslie
+//                    Murray T. Whyte
+//                    Reinis Cirpons
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -19,7 +21,11 @@
 
 // This file contains a declaration of the function freeband_equal_to which
 // implements the algorithm described in:
-// TODO
+// "Efficient Testing of Equivalence of Words in a Free Idempotent Semigroup"
+// by J. Radoszewski and W. Rytter
+// in SOFSEM 2010: Theory and Practice of Computer Science. Jan. 2010,
+// pp. 664-671
+// doi: 10.1007/978-3-642-11266-9_55
 
 #ifndef LIBSEMIGROUPS_FREEBAND_HPP_
 #define LIBSEMIGROUPS_FREEBAND_HPP_
@@ -34,13 +40,17 @@
 
 namespace libsemigroups {
 
-  bool freeband_equal_to(word_type& x, word_type& y);
+  bool freeband_equal_to(word_type&& x, word_type&& y);
 
-  bool freeband_equal_to(std::initializer_list<size_t> x,
-                         std::initializer_list<size_t> y) {
-    word_type xx(x);
-    word_type yy(y);
-    return freeband_equal_to(xx, yy);
+  template <typename T>
+  bool freeband_equal_to(T x, T y) {
+    return freeband_equal_to(word_type(x), word_type(y));
+  }
+
+  template <typename T>
+  bool freeband_equal_to(T first1, T last1, T first2, T last2) {
+    return freeband_equal_to(word_type(first1, last1),
+                             word_type(first2, last2));
   }
 
 }  // namespace libsemigroups
