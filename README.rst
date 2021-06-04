@@ -39,7 +39,7 @@ C++ library for semigroups and monoids
 What is ``libsemigroups``?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-``libsemigroups``  is a C++11 library containing implementations of several
+``libsemigroups``  is a C++14 library containing implementations of several
 algorithms for computing finite and finitely presented semigroups. Namely:
 
 - the `Froidure-Pin algorithm`_ for computing finite semigroups;
