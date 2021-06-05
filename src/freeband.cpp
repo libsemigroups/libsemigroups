@@ -22,12 +22,10 @@
 #include "libsemigroups/freeband.hpp"
 
 #include <algorithm>  // for max_element
-#include <iostream>   // for cout
 #include <vector>     // for vector
 
-#include "libsemigroups/constants.hpp"
-#include "libsemigroups/debug.hpp"
-#include "libsemigroups/string.hpp"
+#include "libsemigroups/constants.hpp"  // for UNDEFINED
+#include "libsemigroups/debug.hpp"      // for LIBSEMIGROUPS_ASSERT
 
 namespace libsemigroups {
 
@@ -80,12 +78,14 @@ namespace libsemigroups {
     template <typename T>
     void right(T first, T last, size_t const k, std::vector<size_t>& out) {
       // TODO assertions
-      static_assert(std::is_same<std::decay_t<T>,
-                                 typename word_type::const_iterator>::value
-                        || std::is_same<
-                            std::decay_t<T>,
-                            typename word_type::const_reverse_iterator>::value,
-                    "The template parameter must be");
+      static_assert(
+          std::is_same<std::decay_t<T>,
+                       typename word_type::const_iterator>::value
+              || std::is_same<
+                  std::decay_t<T>,
+                  typename word_type::const_reverse_iterator>::value,
+          "The template parameter must be a word_type::const_iterator or a "
+          "word_type::const_reverse_iterator");
 
       out.clear();
       if (std::distance(first, last) == 0) {
