@@ -18,7 +18,7 @@ Namely:
 - the `Schreier-Sims algorithm`_ for permutation groups;
 - a preliminary implementation of the `Konieczny`_ :cite:`Konieczny1994aa` and
   `Lallement-McFadden`_ :cite:`Lallement1990aa` algorithm for computing finite
-  semigroups which act on sets.
+  semigroups which act on sets;
 - an implementation of the `Radoszewski-Rytter`_ :cite:`Radoszewski2010aa`
   algorithm for testing equivalence of words in free bands.
 
