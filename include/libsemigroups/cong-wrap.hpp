@@ -136,6 +136,9 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////////
 
     uint64_t size() override {
+      if (is_obviously_infinite()) {
+        return POSITIVE_INFINITY;
+      }
       run();  // to ensure the state is correct
       return _wrapped_cong->number_of_classes();
     }
