@@ -2432,11 +2432,9 @@ namespace libsemigroups {
         // TEST_FELSCH(tc.congruence());
         // TODO(later) investigate: if the performance of creating the Felsch
         // tree can be improved, it's quite bad here if N is large enough.
-        // FIXME(later) the following doesn't seem to work, when congruence()
-        // is removed.
-        // tc.congruence().run_until([&tc]() -> bool {
-        //  return tc.congruence().number_of_cosets_active() >= 10000;
-        // });
+        tc.run_until([&tc]() -> bool {
+          return tc.congruence().number_of_cosets_active() >= 10000;
+        });
         tc.run();
         if (N % 3 == 1) {
           REQUIRE(tc.size() == 3);
