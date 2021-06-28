@@ -396,9 +396,7 @@ namespace libsemigroups {
           _race.erase_runners(_race.cbegin());
         }
       }
-      // TODO(now) why's this not _race.run_until(this->stopped()) as in
-      // FpSemigroup?
-      _race.run();
+      _race.run_until([this]() { return this->stopped(); });
     }
 
     bool finished_impl() const override {
