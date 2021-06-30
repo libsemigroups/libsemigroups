@@ -33,7 +33,7 @@
 #include "types.hpp"  // word_type
 
 namespace libsemigroups {
-  
+
   //! Check if two given words represent the same element in the free band.
   //!
   //! The free band is the free object in the variety of bands or idempotent
@@ -46,13 +46,13 @@ namespace libsemigroups {
   //! \param x the first word to compare in the free band.
   //! \param y the second word to compare in the free band.
   //!
-  //! \returns 
+  //! \returns
   //! Return `true` if both words are the same as elements of the free band and
   //! `false` otherwise.
   //!
   //! \exceptions
   //! \no_libsemigroups_except
-  //! 
+  //!
   //! \complexity
   //! The time complexity is \f$O(mn)\f$ and space complexity is \f$O(n)\f$
   //! where \f$n\f$ is the total length of \p x and \p y, and \f$m\f$ is the
@@ -82,13 +82,13 @@ namespace libsemigroups {
   //! \param x the first word to compare in the free band.
   //! \param y the second word to compare in the free band.
   //!
-  //! \returns 
+  //! \returns
   //! Return `true` if both words are the same as elements of the free band and
   //! `false` otherwise.
   //!
   //! \exceptions
   //! \no_libsemigroups_except
-  //! 
+  //!
   //! \complexity
   //! The time complexity is \f$O(mn)\f$ and space complexity is \f$O(n)\f$
   //! where \f$n\f$ is the total length of \p x and \p y, and \f$m\f$ is the
@@ -107,13 +107,13 @@ namespace libsemigroups {
   //! \param first2 iterator to start of the second word.
   //! \param last2 iterator to end of the second word.
   //!
-  //! \returns 
+  //! \returns
   //! Return `true` if both words are the same as elements of the free band and
   //! `false` otherwise.
   //!
   //! \exceptions
   //! \no_libsemigroups_except
-  //! 
+  //!
   //! \complexity
   //! The time complexity is \f$O(mn)\f$ and space complexity is \f$O(n)\f$
   //! where \f$n\f$ is the total length of \p x and \p y, and \f$m\f$ is the
