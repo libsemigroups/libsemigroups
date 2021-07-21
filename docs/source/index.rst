@@ -18,7 +18,9 @@ Namely:
 - the `Schreier-Sims algorithm`_ for permutation groups;
 - a preliminary implementation of the `Konieczny`_ :cite:`Konieczny1994aa` and
   `Lallement-McFadden`_ :cite:`Lallement1990aa` algorithm for computing finite
-  semigroups which act on sets.
+  semigroups which act on sets;
+- an implementation of the `Radoszewski-Rytter`_ :cite:`Radoszewski2010aa`
+  algorithm for testing equivalence of words in free bands.
 
 .. _Froidure-Pin algorithm: https://www.irif.fr/~jep/PDF/Rio.pdf
 .. _Todd-Coxeter algorithm: https://en.wikipedia.org/wiki/Todd%E2%80%93Coxeter_algorithm
@@ -26,6 +28,7 @@ Namely:
 .. _Schreier-Sims algorithm: https://en.wikipedia.org/wiki/Schreier%E2%80%93Sims_algorithm
 .. _Konieczny: https://link.springer.com/article/10.1007/BF02573672
 .. _Lallement-McFadden: https://www.sciencedirect.com/science/article/pii/S0747717108800570 
+.. _Radoszewski-Rytter: https://link.springer.com/chapter/10.1007/978-3-642-11266-9_55
 
 The development version of ``libsemigroups`` is available on github_, and some related projects are here_.
 
@@ -86,6 +89,7 @@ be in the future too, but presently they don't work.
    order
    semigroups
    words
+   freeband
    misc
 
 .. toctree::

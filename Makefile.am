@@ -67,6 +67,7 @@ pkginclude_HEADERS += include/libsemigroups/fastest-bmat.hpp
 pkginclude_HEADERS += include/libsemigroups/forest.hpp
 pkginclude_HEADERS += include/libsemigroups/fpsemi-intf.hpp
 pkginclude_HEADERS += include/libsemigroups/fpsemi.hpp
+pkginclude_HEADERS += include/libsemigroups/freeband.hpp
 pkginclude_HEADERS += include/libsemigroups/froidure-pin-base.hpp
 pkginclude_HEADERS += include/libsemigroups/froidure-pin-impl.hpp
 pkginclude_HEADERS += include/libsemigroups/froidure-pin.hpp
@@ -544,6 +545,7 @@ libsemigroups_la_SOURCES += src/coset.cpp
 libsemigroups_la_SOURCES += src/forest.cpp
 libsemigroups_la_SOURCES += src/fpsemi-intf.cpp
 libsemigroups_la_SOURCES += src/fpsemi.cpp
+libsemigroups_la_SOURCES += src/freeband.cpp
 libsemigroups_la_SOURCES += src/froidure-pin-base.cpp
 libsemigroups_la_SOURCES += src/knuth-bendix.cpp
 libsemigroups_la_SOURCES += src/obvinf.cpp
@@ -619,6 +621,7 @@ EXTRA_PROGRAMS += test_digraph
 EXTRA_PROGRAMS += test_forest
 EXTRA_PROGRAMS += test_fpsemi
 EXTRA_PROGRAMS += test_fpsemi_intf
+EXTRA_PROGRAMS += test_freeband
 EXTRA_PROGRAMS += test_froidure_pin_bipart
 EXTRA_PROGRAMS += test_froidure_pin_bmat8
 EXTRA_PROGRAMS += test_froidure_pin_bmat
@@ -658,6 +661,7 @@ EXTRA_PROGRAMS += bench_all
 EXTRA_PROGRAMS += bench_action
 EXTRA_PROGRAMS += bench_bmat
 EXTRA_PROGRAMS += bench_digraph
+EXTRA_PROGRAMS += bench_freeband
 EXTRA_PROGRAMS += bench_froidure_pin
 EXTRA_PROGRAMS += bench_knuth_bendix
 EXTRA_PROGRAMS += bench_konieczny
@@ -689,6 +693,7 @@ test_all_SOURCES += tests/test-digraph.cpp
 test_all_SOURCES += tests/test-forest.cpp
 test_all_SOURCES += tests/test-fpsemi.cpp
 test_all_SOURCES += tests/test-fpsemi-intf.cpp
+test_all_SOURCES += tests/test-freeband.cpp
 test_all_SOURCES += tests/test-froidure-pin-bipart.cpp
 test_all_SOURCES += tests/test-froidure-pin-bmat8.cpp
 test_all_SOURCES += tests/test-froidure-pin-bmat.cpp
@@ -778,6 +783,9 @@ test_fpsemi_SOURCES += tests/test-main.cpp
 
 test_fpsemi_intf_SOURCES =  tests/test-fpsemi-intf.cpp
 test_fpsemi_intf_SOURCES += tests/test-main.cpp
+
+test_freeband_SOURCES =  tests/test-freeband.cpp
+test_freeband_SOURCES += tests/test-main.cpp
 
 test_froidure_pin_bipart_SOURCES =  tests/test-froidure-pin-bipart.cpp
 test_froidure_pin_bipart_SOURCES += tests/test-main.cpp
@@ -920,6 +928,9 @@ bench_bmat_SOURCES += tests/bmat-data.cpp
 
 bench_digraph_SOURCES =  benchmarks/bench-digraph.cpp
 bench_digraph_SOURCES += benchmarks/bench-main.cpp
+
+bench_freeband_SOURCES =  benchmarks/bench-freeband.cpp
+bench_freeband_SOURCES += benchmarks/bench-main.cpp
 
 bench_froidure_pin_SOURCES =  benchmarks/examples/generators.cpp
 bench_froidure_pin_SOURCES += benchmarks/bench-froidure-pin.cpp
