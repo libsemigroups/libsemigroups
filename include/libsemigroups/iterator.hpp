@@ -328,7 +328,6 @@ namespace libsemigroups {
                            that.get_wrapped_iter());
       }
 
-      // TODO(now) all these operators should take 4 args, not 3
       template <typename TSfinae   = TIteratorTraits,
                 typename TOperator = typename TSfinae::More>
       auto constexpr operator>(IteratorStatefulBase const& that) const noexcept
@@ -353,15 +352,17 @@ namespace libsemigroups {
                 typename TOperator = typename TSfinae::MoreOrEqualTo>
       auto constexpr operator>=(IteratorStatefulBase const& that) const noexcept
           -> ReturnTypeIfExists<TOperator, bool> {
-        return TOperator()(
-            get_state(), this->get_wrapped_iter(), that.get_wrapped_iter());
+        return TOperator()(this->get_state(),
+                           this->get_wrapped_iter(),
+                           that.get_state(),
+                           that.get_wrapped_iter());
       }
 
       template <typename TSfinae   = TIteratorTraits,
                 typename TOperator = typename TSfinae::AddAssign>
       auto operator+=(size_type val) noexcept
           -> ReturnTypeIfExists<TOperator, TSubclass&> {
-        TOperator()(get_state(), this->get_wrapped_iter(), val);
+        TOperator()(this->get_state(), this->get_wrapped_iter(), val);
         return static_cast<TSubclass&>(*this);
       }
 
@@ -369,7 +370,7 @@ namespace libsemigroups {
                 typename TOperator = typename TSfinae::SubtractAssign>
       auto operator-=(size_type val) noexcept
           -> ReturnTypeIfExists<TOperator, TSubclass&> {
-        TOperator()(get_state(), this->get_wrapped_iter(), val);
+        TOperator()(this->get_state(), this->get_wrapped_iter(), val);
         return static_cast<TSubclass&>(*this);
       }
 
@@ -377,14 +378,14 @@ namespace libsemigroups {
       template <typename TSfinae   = TIteratorTraits,
                 typename TOperator = typename TSfinae::PrefixIncrement>
       auto operator++() noexcept -> ReturnTypeIfExists<TOperator, TSubclass&> {
-        TOperator()(get_state(), this->get_wrapped_iter());
+        TOperator()(this->get_state(), this->get_wrapped_iter());
         return static_cast<TSubclass&>(*this);
       }
 
       template <typename TSfinae   = TIteratorTraits,
                 typename TOperator = typename TSfinae::PrefixDecrement>
       auto operator--() noexcept -> ReturnTypeIfExists<TOperator, TSubclass&> {
-        TOperator()(get_state(), this->get_wrapped_iter());
+        TOperator()(this->get_state(), this->get_wrapped_iter());
         return static_cast<TSubclass&>(*this);
       }
 
@@ -392,7 +393,7 @@ namespace libsemigroups {
                 typename TOperator = typename TSfinae::Difference>
       auto constexpr operator-(IteratorStatefulBase const& that) const noexcept
           -> ReturnTypeIfExists<TOperator, difference_type> {
-        return TOperator()(get_state(),
+        return TOperator()(this->get_state(),
                            this->get_wrapped_iter(),
                            that.get_state(),
                            that.get_wrapped_iter());
