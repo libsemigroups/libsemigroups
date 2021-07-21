@@ -16,7 +16,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-// TODO(now)
+// TODO(later)
 // - more benchmarks
 // - make a cpp file
 

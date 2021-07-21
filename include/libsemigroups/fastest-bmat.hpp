@@ -50,7 +50,7 @@ namespace libsemigroups {
   //! ``libsemigroups`` or ``HPCombi`` (if enabled).
   //!
   //! \tparam N the dimension of the boolean matrices.
-  // TODO example
+  // TODO(later) example
   template <size_t N>
   using FastestBMat = typename detail::FastestBMatHelper<N>::type;
 

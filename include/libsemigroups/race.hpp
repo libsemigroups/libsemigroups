@@ -201,7 +201,7 @@ namespace libsemigroups {
               REPORT_DEFAULT("using 0 additional threads\n");
               _winner = _runners[i];
               REPORT_DEFAULT("#%d is already finished!\n", i);
-              // TODO delete the other runners?
+              // delete the other runners?
               return;
             }
           }

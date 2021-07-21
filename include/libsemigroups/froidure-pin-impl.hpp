@@ -797,7 +797,7 @@ namespace libsemigroups {
     }
   }
 
-  // TODO shouldn't element_type -> const_element_type??
+  // TODO(later) shouldn't element_type -> const_element_type??
   TEMPLATE
   FROIDURE_PIN
   FROIDURE_PIN::copy_add_generators(std::initializer_list<element_type> coll) {
@@ -844,7 +844,7 @@ namespace libsemigroups {
     }
   }
 
-  // TODO shouldn't element_type -> const_element_type??
+  // TODO(later) shouldn't element_type -> const_element_type??
   TEMPLATE
   FROIDURE_PIN
   FROIDURE_PIN::copy_closure(std::initializer_list<element_type> coll) {

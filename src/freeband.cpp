@@ -77,7 +77,7 @@ namespace libsemigroups {
 
     template <typename T>
     void right(T first, T last, size_t const k, std::vector<size_t>& out) {
-      // TODO assertions
+      // TODO(later) assertions
       static_assert(
           std::is_same<std::decay_t<T>,
                        typename word_type::const_iterator>::value
