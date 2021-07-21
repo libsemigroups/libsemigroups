@@ -65,11 +65,7 @@ namespace libsemigroups {
         };
       }
 
-      // On the linked page above, decltype(auto) is used and not TReturn, but
-      // since we are only using callables with return type bool, and
-      // decltype(auto) is C++14, we replace it with TReturn.
-      // TODO update for C++14
-      TReturn operator()(TArgs... xs) const
+      decltype(auto) operator()(TArgs... xs) const
           noexcept(noexcept(_erased_fn(_ptr, std::forward<TArgs>(xs)...))) {
         LIBSEMIGROUPS_ASSERT(valid());
         return _erased_fn(_ptr, std::forward<TArgs>(xs)...);
