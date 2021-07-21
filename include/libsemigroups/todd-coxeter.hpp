@@ -265,7 +265,7 @@ namespace libsemigroups {
         shortlex,
         //! Normal forms are the lexicographical least word belonging to a given
         //! congruence class.
-        lex,  // TODO(now) does this even make sense?
+        lex,  // TODO(later) does this even make sense?
         //! Normal forms are the recursive-path least word belonging to a given
         //! congruence class.
         recursive

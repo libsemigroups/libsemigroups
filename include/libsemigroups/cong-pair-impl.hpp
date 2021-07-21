@@ -123,7 +123,7 @@ namespace libsemigroups {
       start = S.current_size();
       S.enumerate(start + 1);
     } while (!S.finished());
-    // TODO improve
+    // TODO(later) improve
     LIBSEMIGROUPS_EXCEPTION("class index out of bounds!!!");
   }
 

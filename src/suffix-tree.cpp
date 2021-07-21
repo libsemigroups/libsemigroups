@@ -257,8 +257,8 @@ namespace libsemigroups {
     }
 
     size_t SuffixTree::maximal_piece_suffix(word_index_type j) const {
-      // TODO Currently we do this for each of the N relation words, so the
-      // cost is 2 N ^ 2, when instead we could do it once for all relation
+      // TODO(later) Currently we do this for each of the N relation words, so
+      // the cost is 2 N ^ 2, when instead we could do it once for all relation
       // words in O(N) time.
       //
       // The analysis of the previous paragraph also assumes that
@@ -295,8 +295,8 @@ namespace libsemigroups {
     }
 
     size_t SuffixTree::number_of_pieces(word_index_type i) const {
-      // TODO should really return once at least a proper prefix of Y is found
-      // to be a piece
+      // TODO(later) should really return once at least a proper prefix of Y is
+      // found to be a piece
       LIBSEMIGROUPS_ASSERT(i + 1 < _word_begin.size());
       size_t result = 0;
       auto   l = _word_begin[i], r = _word_begin[i + 1];

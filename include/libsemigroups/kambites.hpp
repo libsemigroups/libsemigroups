@@ -82,7 +82,7 @@ namespace libsemigroups {
     //! This page describes the implementation in the class
     //! fpsemigroup::Kambites which uses the FpSemigroupInterface, which is
     //! also documented on this page.
-    // TODO(now) example
+    // TODO(later) example
     template <typename T>
     class Kambites final : public FpSemigroupInterface {
      public:

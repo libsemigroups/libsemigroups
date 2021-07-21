@@ -169,7 +169,7 @@ namespace libsemigroups {
   // Bipartition friends
   ////////////////////////////////////////////////////////////////////////
 
-  // TODO(now) check other things like _nr_blocks is correct etc...
+  // TODO(later) check other things like _nr_blocks is correct etc...
   void validate(Bipartition const& x) {
     size_t const n = 2 * x.degree();
     if (n != static_cast<size_t>(std::distance(x.cbegin(), x.cend()))) {

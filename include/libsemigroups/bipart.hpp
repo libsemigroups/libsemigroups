@@ -938,7 +938,7 @@ namespace libsemigroups {
     //!
     //! \parameters
     //! (None)
-    // TODO remove this
+    // TODO(later) remove this
     Blocks* left_blocks();
 
     //! Return a pointer to the right blocks of a bipartition.
@@ -957,7 +957,7 @@ namespace libsemigroups {
     //!
     //! \parameters
     //! (None)
-    // TODO remove this
+    // TODO(later) remove this
     Blocks* right_blocks();
 
     //! Set the number of blocks.
