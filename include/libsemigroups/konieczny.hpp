@@ -316,6 +316,23 @@ namespace libsemigroups {
       }
     };
 
+    // RepInfo does not own its internal_element_type member
+    struct RepInfo {
+      RepInfo(D_class_index_type    D_idx,
+              internal_element_type elt,
+              lambda_orb_index_type lambda_idx,
+              rho_orb_index_type    rho_idx)
+          : _D_idx(D_idx),
+            _elt(elt),
+            _lambda_idx(lambda_idx),
+            _rho_idx(rho_idx) {}
+
+      D_class_index_type    _D_idx;
+      internal_element_type _elt;
+      lambda_orb_index_type _lambda_idx;
+      rho_orb_index_type    _rho_idx;
+    };
+
    public:
     ////////////////////////////////////////////////////////////////////////
     // Konieczny - constructor and destructor - public
@@ -1510,14 +1527,13 @@ namespace libsemigroups {
       _rank_state = new rank_state_type(cbegin_generators(), cend_generators());
       LIBSEMIGROUPS_ASSERT((_rank_state == nullptr)
                            == (std::is_same<void, rank_state_type>::value));
-      _nonregular_reps = std::vector<
-          std::vector<std::pair<internal_element_type, D_class_index_type>>>(
+      _nonregular_reps = std::vector<std::vector<RepInfo>>(
           InternalRank()(_rank_state, this->to_external_const(_one)) + 1,
-          std::vector<std::pair<internal_element_type, D_class_index_type>>());
-      _reg_reps = std::vector<
-          std::vector<std::pair<internal_element_type, D_class_index_type>>>(
+          std::vector<RepInfo>());
+
+      _reg_reps = std::vector<std::vector<RepInfo>>(
           InternalRank()(_rank_state, this->to_external_const(_one)) + 1,
-          std::vector<std::pair<internal_element_type, D_class_index_type>>());
+          std::vector<RepInfo>());
 
       _data_initialised = true;
     }
@@ -1605,19 +1621,15 @@ namespace libsemigroups {
                     _group_indices_rev;
     lambda_orb_type _lambda_orb;
     std::unordered_map<lambda_orb_index_type, std::vector<D_class_index_type>>
-        _lambda_to_D_map;
-    std::vector<
-        std::vector<std::pair<internal_element_type, D_class_index_type>>>
-                                _nonregular_reps;
-    internal_element_type       _one;
-    rank_state_type*            _rank_state;
-    std::set<rank_type>         _ranks;
-    std::vector<RegularDClass*> _regular_D_classes;
-    std::vector<
-        std::vector<std::pair<internal_element_type, D_class_index_type>>>
-                 _reg_reps;
-    size_t       _reps_processed;
-    rho_orb_type _rho_orb;
+                                      _lambda_to_D_map;
+    std::vector<std::vector<RepInfo>> _nonregular_reps;
+    internal_element_type             _one;
+    rank_state_type*                  _rank_state;
+    std::set<rank_type>               _ranks;
+    std::vector<RegularDClass*>       _regular_D_classes;
+    std::vector<std::vector<RepInfo>> _reg_reps;
+    size_t                            _reps_processed;
+    rho_orb_type                      _rho_orb;
     std::unordered_map<rho_orb_index_type, std::vector<D_class_index_type>>
                               _rho_to_D_map;
     bool                      _run_initialised;
@@ -1708,6 +1720,7 @@ namespace libsemigroups {
           _right_mults_inv(),
           _right_reps(),
           _tmp_internal_set(),
+          _tmp_rep_info_vec(),
           _tmp_internal_vec(),
           _tmp_lambda_value(OneParamLambda()(this->to_external_const(rep))),
           _tmp_rho_value(OneParamRho()(this->to_external_const(rep))) {
@@ -2334,10 +2347,12 @@ namespace libsemigroups {
     // either by finding representatives of all L-classes or all R-classes. This
     // member function returns the representatives obtainable by multipliying
     // the representatives  by generators on either the left or right.
-    std::vector<internal_element_type>& covering_reps() {
+    std::vector<RepInfo>& covering_reps() {
       init();
-      _tmp_internal_vec.clear();
+      _tmp_rep_info_vec.clear();
       _tmp_internal_set.clear();
+      // not thread safe (like everything else in here)
+      D_class_index_type class_nr = _parent->_D_classes.size();
       // TODO(later): how to best decide which side to calculate? One is often
       // faster
       if (_parent->_lambda_orb.size() < _parent->_rho_orb.size()) {
@@ -2362,7 +2377,7 @@ namespace libsemigroups {
               if (_tmp_internal_set.find(tmp) == _tmp_internal_set.end()) {
                 internal_element_type x = this->internal_copy(tmp);
                 _tmp_internal_set.insert(x);
-                _tmp_internal_vec.push_back(x);
+                _tmp_rep_info_vec.emplace_back(class_nr, x, lpos, rpos);
               }
             }
           }
@@ -2389,13 +2404,13 @@ namespace libsemigroups {
               if (_tmp_internal_set.find(tmp) == _tmp_internal_set.end()) {
                 internal_element_type x = this->internal_copy(tmp);
                 _tmp_internal_set.insert(x);
-                _tmp_internal_vec.push_back(x);
+                _tmp_rep_info_vec.emplace_back(class_nr, x, lpos, rpos);
               }
             }
           }
         }
       }
-      return _tmp_internal_vec;
+      return _tmp_rep_info_vec;
     }
 
     ////////////////////////////////////////////////////////////////////////
@@ -2419,6 +2434,7 @@ namespace libsemigroups {
     std::vector<internal_element_type>         _right_mults_inv;
     std::vector<internal_element_type>         _right_reps;
     mutable internal_set_type                  _tmp_internal_set;
+    mutable std::vector<RepInfo>               _tmp_rep_info_vec;
     mutable std::vector<internal_element_type> _tmp_internal_vec;
     mutable lambda_value_type                  _tmp_lambda_value;
     mutable rho_value_type                     _tmp_rho_value;
@@ -3726,11 +3742,11 @@ namespace libsemigroups {
     // _one is included in _gens
     InternalVecFree()(_gens);
     while (!_ranks.empty()) {
-      for (auto x : _reg_reps[max_rank()]) {
-        this->internal_free(x.first);
+      for (auto rep_info : _reg_reps[max_rank()]) {
+        this->internal_free(rep_info._elt);
       }
-      for (auto x : _nonregular_reps[max_rank()]) {
-        this->internal_free(x.first);
+      for (auto rep_info : _nonregular_reps[max_rank()]) {
+        this->internal_free(rep_info._elt);
       }
       _ranks.erase(max_rank());
     }
@@ -3780,13 +3796,14 @@ namespace libsemigroups {
     internal_element_type y   = this->internal_copy(_one);
     RegularDClass*        top = new RegularDClass(this, y);
     add_D_class(top);
-    for (internal_reference x : top->covering_reps()) {
+    for (auto& rep_info : top->covering_reps()) {
+      internal_reference x = rep_info._elt;
       size_t rnk = InternalRank()(_rank_state, this->to_external_const(x));
       _ranks.insert(rnk);
       if (is_regular_element_NC(x)) {
-        _reg_reps[rnk].emplace_back(x, 0);
+        _reg_reps[rnk].push_back(std::move(rep_info));
       } else {
-        _nonregular_reps[rnk].emplace_back(x, 0);
+        _nonregular_reps[rnk].push_back(std::move(rep_info));
       }
     }
     _reps_processed++;
@@ -3849,8 +3866,8 @@ namespace libsemigroups {
       return;
     }
 
-    std::vector<std::pair<internal_element_type, D_class_index_type>> next_reps;
-    std::vector<std::pair<internal_element_type, D_class_index_type>> tmp_next;
+    std::vector<RepInfo> next_reps;
+    std::vector<RepInfo> tmp_next;
 
     while (!stopped() && !_ranks.empty()) {
       LIBSEMIGROUPS_ASSERT(next_reps.empty());
@@ -3867,10 +3884,10 @@ namespace libsemigroups {
 
       tmp_next.clear();
       for (auto it = next_reps.begin(); it < next_reps.end(); it++) {
-        D_class_index_type i = get_containing_D_class(it->first);
+        D_class_index_type i = get_containing_D_class(it->_elt);
         if (i != UNDEFINED) {
-          _D_rels[i].push_back(it->second);
-          this->internal_free(it->first);
+          _D_rels[i].push_back(it->_D_idx);
+          this->internal_free(it->_elt);
           _reps_processed++;
         } else {
           tmp_next.push_back(*it);
@@ -3880,33 +3897,36 @@ namespace libsemigroups {
 
       while (!next_reps.empty()) {
         run_report();
-        auto& tup = next_reps.back();
+        auto& rep_info = next_reps.back();
         if (reps_are_reg) {
-          add_D_class(new RegularDClass(this, tup.first));
+          add_D_class(new RegularDClass(this, rep_info._elt));
         } else {
-          add_D_class(new NonRegularDClass(this, tup.first));
+          add_D_class(new NonRegularDClass(this, rep_info._elt));
         }
-        for (internal_reference x : _D_classes.back()->covering_reps()) {
-          size_t rnk = InternalRank()(_rank_state, this->to_external_const(x));
+        for (auto& rep_info : _D_classes.back()->covering_reps()) {
+          internal_reference x = rep_info._elt;
+          rank_type          rnk
+              = InternalRank()(_rank_state, this->to_external_const(x));
           _ranks.insert(rnk);
           if (is_regular_element_NC(x)) {
             LIBSEMIGROUPS_ASSERT(rnk < mx_rank);
-            _reg_reps[rnk].emplace_back(x, _D_classes.size() - 1);
+            _reg_reps[rnk].push_back(std::move(rep_info));
           } else {
-            _nonregular_reps[rnk].emplace_back(x, _D_classes.size() - 1);
+            _nonregular_reps[rnk].push_back(std::move(rep_info));
           }
         }
         next_reps.pop_back();
         _reps_processed++;
 
         tmp_next.clear();
-        for (auto& x : next_reps) {
-          if (_D_classes.back()->contains_NC(x.first)) {
-            _D_rels.back().push_back(x.second);
-            this->internal_free(x.first);
+        for (auto& rep_info : next_reps) {
+          if (_D_classes.back()->contains_NC(
+                  rep_info._elt, rep_info._lambda_idx, rep_info._rho_idx)) {
+            _D_rels.back().push_back(rep_info._D_idx);
+            this->internal_free(rep_info._elt);
             _reps_processed++;
           } else {
-            tmp_next.push_back(std::move(x));
+            tmp_next.push_back(std::move(rep_info));
           }
         }
         std::swap(next_reps, tmp_next);
