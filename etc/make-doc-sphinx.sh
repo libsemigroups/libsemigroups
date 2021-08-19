@@ -1,13 +1,13 @@
 #!/bin/bash
 set -e
 
-if [[ -x "$(command -v unbuffer)" ]]; then
-  UNBUF="unbuffer"
-  UNBUF_P="unbuffer -p"
-else 
-  UNBUF=
-  UNBUF_P=
-fi
+# if [[ -x "$(command -v unbuffer)" ]]; then
+#   UNBUF="unbuffer"
+#   UNBUF_P="unbuffer -p"
+# else 
+UNBUF=
+UNBUF_P=
+# fi
 
 cd docs/
 mkdir -p source/_static

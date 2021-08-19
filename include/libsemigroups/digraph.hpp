@@ -315,13 +315,15 @@ namespace libsemigroups {
         LIBSEMIGROUPS_EXCEPTION("the 2nd parameter `number_of_edges` must be "
                                 "at least 2, found %llu",
                                 static_cast<uint64_t>(out_degree));
-      } else if (number_of_edges
-                 > std::min(number_of_nodes * out_degree,
-                            number_of_nodes * (number_of_nodes - 1) / 2)) {
+      }
+      size_t max_edges = std::min(number_of_nodes * out_degree,
+                                  number_of_nodes * (number_of_nodes - 1) / 2);
+
+      if (number_of_edges > max_edges) {
         LIBSEMIGROUPS_EXCEPTION(
             "the 3rd parameter `number_of_edges` must be at most %llu, but "
             "found %llu",
-            static_cast<uint64_t>(number_of_nodes * out_degree),
+            static_cast<uint64_t>(max_edges),
             static_cast<uint64_t>(number_of_edges));
       }
       std::uniform_int_distribution<T> source(0, number_of_nodes - 1);
