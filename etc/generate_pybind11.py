@@ -150,6 +150,10 @@ def is_overloaded(class_n, mem_fn):
 def skip_mem_fn(class_n, mem_fn, params_t):
     if mem_fn.startswith("operator"):
         return True
+    try:
+        get_xml(class_n, mem_fn)
+    except KeyError:
+        return True
     return is_deleted_mem_fn(class_n, mem_fn, params_t) or is_mem_fn_template(
         class_n, mem_fn, params_t
     )
@@ -224,7 +228,9 @@ def pybind11_doc(class_n, mem_fn, params_t):
                 doc += "\n                            "
     # get return text
     return_ = [
-        x for x in detailed.find_all("simplesect") if x.attrs["kind"] == "return"
+        x
+        for x in detailed.find_all("simplesect")
+        if x.attrs["kind"] == "return"
     ]
     if len(return_) > 0:
         if not is_overloaded(class_n, mem_fn):
