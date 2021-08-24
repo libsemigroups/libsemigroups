@@ -459,8 +459,8 @@ def doxy_is_typedef(ymlfname, name, params=None):
     if isinstance(xml, bs4.element.Tag):
         return "kind" in xml.attrs and xml["kind"] == "typedef"
     else:
-        __warn(ymlfname, "could not determine if %s is inherited" % name)
-        raise Exception("could not determine if %s is inherited" % name)
+        __warn(ymlfname, "could not determine if %s is a typedef" % name)
+        raise Exception("could not determine if %s is a typedef" % name)
 
 
 @lru_cache(maxsize=None)
