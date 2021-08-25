@@ -228,7 +228,7 @@ namespace libsemigroups {
     //!
     //! The default value is **false**.
     //!
-    //! \param val the new threshold.
+    //! \param val the new value.
     //!
     //! \returns A reference to \c this.
     //!
@@ -323,6 +323,32 @@ namespace libsemigroups {
       word_type ww = w;
       return current_position(ww);
     }
+
+    //! Returns the position in of the generator with specified index.
+    //!
+    //! In many cases \p current_position(i) will equal \p i, examples
+    //! of when this will not be the case are:
+    //!
+    //! * there are duplicate generators;
+    //!
+    //! * FroidurePin::add_generators was called after the semigroup was already
+    //! partially enumerated.
+    //!
+    //! \param i the index of the generators
+    //!
+    //! \returns A value of type \ref element_index_type.
+    //!
+    //! \throws LibsemigroupsException if \p i is greater than or equal to
+    //! FroidurePin::number_of_generators.
+    //!
+    //! \complexity
+    //! Constant.
+    element_index_type current_position(letter_type i) const {
+      validate_letter_index(i);
+      return _letter_to_pos[i];
+    }
+
+    // TODO analogues of the current_position mem fns for position
 
     //! Returns the maximum length of a word in the generators so far computed.
     //!
@@ -554,30 +580,6 @@ namespace libsemigroups {
     //! `minimal_factorisation(i)` and `minimal_factorisation(j)`.
     element_index_type product_by_reduction(element_index_type i,
                                             element_index_type j) const;
-
-    //! Returns the position in of the generator with specified index.
-    //!
-    //! In many cases \p current_position(i) will equal \p i, examples
-    //! of when this will not be the case are:
-    //!
-    //! * there are duplicate generators;
-    //!
-    //! * FroidurePin::add_generators was called after the semigroup was already
-    //! partially enumerated.
-    //!
-    //! \param i the index of the generators
-    //!
-    //! \returns A value of type \ref element_index_type.
-    //!
-    //! \throws LibsemigroupsException if \p i is greater than or equal to
-    //! FroidurePin::number_of_generators.
-    //!
-    //! \complexity
-    //! Constant.
-    element_index_type current_position(letter_type i) const {
-      validate_letter_index(i);
-      return _letter_to_pos[i];
-    }
 
     //! Returns the size.
     //!
