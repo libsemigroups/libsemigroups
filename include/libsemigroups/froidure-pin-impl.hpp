@@ -177,7 +177,9 @@ namespace libsemigroups {
     element_index_type i = 0;
     for (internal_const_reference x : S._elements) {
       auto y = this->internal_copy(x);
-      IncreaseDegree()(this->to_external(y), deg_plus);
+      if (deg_plus != 0) {
+        IncreaseDegree()(this->to_external(y), deg_plus);
+      }
       _elements.push_back(y);
       _map.emplace(y, i);
       is_one(y, i++);
