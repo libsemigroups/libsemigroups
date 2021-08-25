@@ -648,6 +648,7 @@ namespace libsemigroups {
     //!
     //! \exceptions
     //! \no_libsemigroups_except
+    // TODO(3.0) rename to sorted_position
     element_index_type
     position_to_sorted_position(element_index_type i) override;
 
