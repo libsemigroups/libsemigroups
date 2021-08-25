@@ -348,6 +348,10 @@ namespace libsemigroups {
                             "002",
                             "Example 6.6 in Sims (see also KnuthBendix 013)",
                             "[todd-coxeter][standard]") {
+      using TCE = detail::TCE;
+      using FroidurePinTCE
+          = FroidurePin<TCE, FroidurePinTraits<TCE, TCE::Table>>;
+
       auto rg = ReportGuard(REPORT);
 
       ToddCoxeter tc(twosided);
@@ -374,7 +378,13 @@ namespace libsemigroups {
       REQUIRE(tc.complete());
       REQUIRE(tc.compatible());
 
-      auto& S = *tc.quotient_froidure_pin();
+      // Take a copy to test copy constructor
+      auto& S = static_cast<FroidurePinTCE&>(*tc.quotient_froidure_pin());
+      auto  T = S.copy_closure({S.generator(0)});
+
+      REQUIRE(T.size() == S.size());
+      REQUIRE(T.number_of_generators() == S.number_of_generators());
+
       REQUIRE(S.size() == 10752);
       REQUIRE(S.number_of_idempotents() == 1);
       for (size_t c = 0; c < tc.number_of_classes(); ++c) {

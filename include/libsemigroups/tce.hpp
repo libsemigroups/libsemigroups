@@ -125,6 +125,11 @@ namespace libsemigroups {
     }
   };
 
+  template <>
+  struct IncreaseDegree<detail::TCE> {
+    void operator()(detail::TCE const&, size_t) const noexcept {}
+  };
+
   //! Specialization of the adapter libsemigroups::One for TCE.
   template <>
   struct One<detail::TCE> {

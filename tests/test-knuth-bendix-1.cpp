@@ -458,7 +458,8 @@ namespace libsemigroups {
         "(fpsemi) SL(2, 7) from Chapter 3, Proposition 1.5 in NR "
         "(size 336)",
         "[no-valgrind][quick][knuth-bendix][fpsemigroup][fpsemi]") {
-      auto rg = ReportGuard(REPORT);
+      using FroidurePinKBE = KnuthBendix::froidure_pin_type;
+      auto rg              = ReportGuard(REPORT);
 
       KnuthBendix kb;
       kb.set_alphabet("abAB");
@@ -477,6 +478,13 @@ namespace libsemigroups {
       REQUIRE(kb.number_of_active_rules() == 152);
       REQUIRE(kb.confluent());
       REQUIRE(kb.size() == 336);
+
+      // Test copy constructor
+      auto           T = static_cast<FroidurePinKBE&>(*kb.froidure_pin());
+      FroidurePinKBE S = T.copy_closure({T.generator(0)});
+
+      REQUIRE(S.size() == 336);
+      REQUIRE(S.number_of_generators() == 4);
 
       auto& ad = kb.gilman_digraph();
       REQUIRE(ad.number_of_nodes() == 232);
