@@ -110,7 +110,7 @@ namespace libsemigroups {
 
   template <>
   struct IncreaseDegree<detail::KBE> {
-    void operator()(detail::KBE const&) const noexcept {}
+    void operator()(detail::KBE const&, size_t) const noexcept {}
   };
 
   template <>
