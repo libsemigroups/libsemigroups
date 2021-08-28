@@ -62,6 +62,7 @@ namespace libsemigroups {
       }
       auto t = Transf<>::make({9, 7, 3, 5, 3, 4, 2, 7, 7, 1});
       REQUIRE(t.hash_value() != 0);
+      REQUIRE_NOTHROW(t.undef());
     }
 
     template <typename T>
@@ -69,6 +70,7 @@ namespace libsemigroups {
       static_assert(IsPPerm<T>, "IsPPerm<T> must be true!");
       auto x = T({4, 5, 0}, {9, 0, 1}, 10);
       auto y = T({4, 5, 0}, {9, 0, 1}, 10);
+      REQUIRE(x.undef() == UNDEFINED);
       REQUIRE(x == y);
       auto yy = x * x;
       REQUIRE(yy[0] == UNDEFINED);

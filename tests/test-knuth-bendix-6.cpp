@@ -388,5 +388,27 @@ namespace libsemigroups {
       REQUIRE_THROWS_AS(kb.set_number_of_generators(3), LibsemigroupsException);
       REQUIRE_NOTHROW(kb.set_number_of_generators(2));
     }
+
+    LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
+                            "117",
+                            "(cong) number of classes when obv-inf",
+                            "[quick][congruence][knuth-bendix][cong]") {
+      auto        rg = ReportGuard(REPORT);
+      KnuthBendix kb;
+      kb.set_number_of_generators(3);
+      kb.add_pair({0, 1}, {1, 0});
+      kb.add_pair({0, 2}, {2, 0});
+      kb.add_pair({0, 0}, {0});
+      kb.add_pair({0, 2}, {0});
+      kb.add_pair({2, 0}, {0});
+      kb.add_pair({1, 1}, {1, 1});
+      kb.add_pair({1, 2}, {2, 1});
+      kb.add_pair({1, 1, 1}, {1});
+      kb.add_pair({1, 2}, {1});
+      kb.add_pair({2, 1}, {1});
+      kb.add_pair({0}, {1});
+      REQUIRE(kb.is_quotient_obviously_infinite());
+      REQUIRE(kb.number_of_classes() == POSITIVE_INFINITY);
+    }
   }  // namespace congruence
 }  // namespace libsemigroups

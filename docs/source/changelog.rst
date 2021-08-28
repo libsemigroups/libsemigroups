@@ -1,6 +1,17 @@
 Changelog - version 2
 =====================
 
+v2.0.1 (released 28/08/2021)
+----------------------------
+
+This release includes some improvements and minor fixes including:
+
+- some remnants of C++11 in the code and docs were removed
+- the class ``Runner`` was given proper copy and move constructors
+- some performance improvements were made to ``Konieczny`` by `Finn Smith`_
+- some minor updates were made to ``FroidurePin`` and its documentation
+- some missing adapters for ``KBE`` and ``TCE`` were implemented.
+
 v2.0.0 (released 26/05/2021)
 ----------------------------
 
@@ -55,11 +66,6 @@ The following files were renamed:
 - ``libsemigroups-debug.hpp`` was renamed ``debug.hpp``
 - ``libsemigroups-exception.hpp`` was renamed ``exception.hpp``
 
-.. the following is required for the release script to work, but can be removed
-   after 2.0.1 or higher.
-
-   v1.3.7 (released 28/02/2021)
-
 Changelog - version 1
 =====================
 
@@ -72,3 +78,4 @@ Changelog - version 1
 .. _libsemigroups_cppyy: https://github.com/libsemigroups/libsemigroups_cppyy
 .. _Bernhard M. Wiedemann: https://lizards.opensuse.org/author/bmwiedemann/
 .. _Semigroups: https://github.com/semigroups/Semigroups/
+.. _Finn Smith: https://flsmith.github.io
