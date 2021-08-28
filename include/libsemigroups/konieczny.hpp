@@ -3745,9 +3745,7 @@ namespace libsemigroups {
       for (auto rep_info : _reg_reps[max_rank()]) {
         this->internal_free(rep_info._elt);
       }
-      for (auto rep_info : _nonregular_reps[max_rank()]) {
-        this->internal_free(rep_info._elt);
-      }
+      LIBSEMIGROUPS_ASSERT(_nonregular_reps[max_rank()].empty());
       _ranks.erase(max_rank());
     }
     delete _rank_state;
