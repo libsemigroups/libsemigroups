@@ -358,7 +358,7 @@ namespace libsemigroups {
     //! Check if currently running.
     //!
     //! \returns
-    //! \c true if run() is in the process to run and \c false it is not.
+    //! \c true if run() is in the process of running and \c false it is not.
     //!
     //! \par Parameters
     //! (None)

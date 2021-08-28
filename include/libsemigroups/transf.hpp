@@ -144,8 +144,8 @@ namespace libsemigroups {
       //!
       //! Constructs an partial transformation initialized using the
       //! container \p cont as follows: the image of the point \c i under
-      //! the partial perm is the value in position \c i of the container \p
-      //! cont.
+      //! the partial transformation is the value in position \c i of the
+      //! container \p cont.
       //!
       //! \param cont the container.
       //!
@@ -163,8 +163,8 @@ namespace libsemigroups {
       //!
       //! Constructs an partial transformation initialized using the
       //! container \p cont as follows: the image of the point \c i under
-      //! the partial perm is the value in position \c i of the container \p
-      //! cont.
+      //! the partial transformation is the value in position \c i of the
+      //! container \p cont.
       //!
       //! \param cont the container.
       //!
@@ -182,9 +182,9 @@ namespace libsemigroups {
       //!
       //! Constructs an partial transformation initialized using the
       //! container \p cont as follows: the image of the point \c i under
-      //! the partial perm is the value in position \c i of the container \p
-      //! cont. The values in the initializer list must be convertible to
-      //! value_type or equal to \ref UNDEFINED.
+      //! the partial transformation is the value in position \c i of the
+      //! container \p cont. The values in the initializer list must be
+      //! convertible to value_type or equal to \ref UNDEFINED.
       //!
       //! \param cont the initializer list.
       //!
@@ -213,8 +213,8 @@ namespace libsemigroups {
       //!
       //! Constructs an partial transformation initialized using the
       //! container \p cont as follows: the image of the point \c i under
-      //! the partial perm is the value in position \c i of the container \p
-      //! cont.
+      //! the partial transformation is the value in position \c i of the
+      //! container \p cont.
       //!
       //! \param cont the container.
       //!
