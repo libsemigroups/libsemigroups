@@ -121,6 +121,11 @@ namespace libsemigroups {
       //! In this case, this is `std::vector<value_type>`.
       using container_type = TContainer;
 
+      // Required by python bindings
+      static value_type undef() noexcept {
+        return static_cast<value_type>(UNDEFINED);
+      }
+
       //! Default constructor.
       //!
       //! Constructs an uninitialized partial transformation of degree \c 0.
@@ -1243,6 +1248,7 @@ namespace libsemigroups {
 
     // Currently no way to document these
     using base_type::degree;
+    using base_type::undef;
 
     //! Construct from image list and validate
     //!
