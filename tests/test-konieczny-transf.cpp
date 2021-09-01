@@ -255,4 +255,49 @@ namespace libsemigroups {
                 0, 0, 0, 16, 2, 10, 2, 26, 1, 1, 5, 21, 3, 11, 7}));
     REQUIRE(K.size() == 23191071);
   }
+
+  LIBSEMIGROUPS_TEST_CASE("Konieczny",
+                          "040",
+                          "transformations - destructor coverage",
+                          "[standard][transf]") {
+    auto rg      = ReportGuard();
+    using Transf = LeastTransf<9>;
+    Konieczny<Transf> S({Transf({2, 1, 0, 4, 2, 1, 1, 8, 0}),
+                         Transf({1, 7, 6, 2, 5, 1, 1, 4, 3}),
+                         Transf({1, 0, 7, 2, 1, 3, 1, 3, 7}),
+                         Transf({0, 3, 8, 1, 2, 8, 1, 7, 0}),
+                         Transf({0, 0, 0, 2, 7, 7, 5, 5, 3})});
+    S.run_until([&S]() -> bool {
+      return S.current_number_of_regular_D_classes() > 2;
+    });
+
+    // if these fail, this test won't get the coverage hoped for
+    REQUIRE(S.current_number_of_regular_D_classes() < 5);
+    REQUIRE(S.current_number_of_D_classes()
+            - S.number_of_regular_D_classes() < 2117);
+    // now all of the destructor should run
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Konieczny",
+                          "041",
+                          "current_number_D_classes",
+                          "[standard][transf]") {
+    auto rg      = ReportGuard();
+    using Transf = LeastTransf<9>;
+    Konieczny<Transf> S({Transf({2, 1, 0, 4, 2, 1, 1, 8, 0}),
+                         Transf({1, 7, 6, 2, 5, 1, 1, 4, 3}),
+                         Transf({1, 0, 7, 2, 1, 3, 1, 3, 7}),
+                         Transf({0, 3, 8, 1, 2, 8, 1, 7, 0}),
+                         Transf({0, 0, 0, 2, 7, 7, 5, 5, 3})});
+    REQUIRE(S.current_number_of_regular_D_classes() == 0);
+    REQUIRE(S.current_number_of_D_classes() == 0);
+    S.run_until([&S]() -> bool {
+      return S.current_number_of_regular_D_classes() > 2;
+    });
+
+    S.run();
+    REQUIRE(S.current_number_of_regular_D_classes() == 5);
+    REQUIRE(S.current_number_of_D_classes()
+            - S.number_of_regular_D_classes() == 2117);
+  }
 }  // namespace libsemigroups

@@ -1124,9 +1124,12 @@ namespace libsemigroups {
     // not noexcept because operator++ isn't necessarily
     const_d_class_iterator cbegin_D_classes() const {
       auto it = _D_classes.cbegin();
-      return const_d_class_iterator(it)
-             + ((_D_classes.size() > 0 && _adjoined_identity_contained) ? 0
-                                                                        : 1);
+      if (_run_initialised) {
+        return const_d_class_iterator(it)
+               + (_adjoined_identity_contained ? 0 : 1);
+      } else {
+        return const_d_class_iterator(it);
+      }
     }
 
     //! Returns a const iterator referring to past the pointer to the last
@@ -1178,10 +1181,12 @@ namespace libsemigroups {
     // not noexcept because operator++ isn't necessarily
     const_regular_d_class_iterator cbegin_regular_D_classes() const {
       auto it = _regular_D_classes.cbegin();
-      return const_regular_d_class_iterator(it)
-             + ((_regular_D_classes.size() > 0 && _adjoined_identity_contained)
-                    ? 0
-                    : 1);
+      if (_run_initialised) {
+        return const_regular_d_class_iterator(it)
+               + (_adjoined_identity_contained ? 0 : 1);
+      } else {
+        return const_regular_d_class_iterator(it);
+      }
     }
 
     //! Shorter form of \ref cbegin_regular_D_classes.
@@ -3745,7 +3750,9 @@ namespace libsemigroups {
       for (auto rep_info : _reg_reps[max_rank()]) {
         this->internal_free(rep_info._elt);
       }
-      LIBSEMIGROUPS_ASSERT(_nonregular_reps[max_rank()].empty());
+      for (auto rep_info : _nonregular_reps[max_rank()]) {
+        this->internal_free(rep_info._elt);
+      }
       _ranks.erase(max_rank());
     }
     delete _rank_state;
