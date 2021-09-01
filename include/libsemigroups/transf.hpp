@@ -1683,7 +1683,10 @@ namespace libsemigroups {
   //! Perm has the same member functions as \ref StaticPTransf and \ref
   //! DynamicPTransf, this isn't current reflected by the contents of this
   //! page.
-  template <size_t N = 0, typename Scalar = uint32_t>
+  template <
+      size_t N = 0,
+      typename Scalar
+      = std::conditional_t<N == 0, uint32_t, typename SmallestInteger<N>::type>>
   class Perm final : public Transf<N, Scalar> {
     using base_type = PTransf<N, Scalar>;
 
