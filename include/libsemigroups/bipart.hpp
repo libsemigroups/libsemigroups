@@ -264,7 +264,7 @@ namespace libsemigroups {
     //! This function returns the number of parts in the partition that
     //! instances of this class represent.
     //!
-    //! \returns The number of blocks in a Blocks object.
+    //! \returns The number of blocks in a Bipartition object.
     //!
     //! \exceptions
     //! \noexcept
