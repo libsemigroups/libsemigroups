@@ -13,9 +13,9 @@ operator*=
 
 .. cpp:function:: void operator*=(scalar_type const a)
 
-   Adds a scalar to every entry of the matrix in-place.
+   Multiplies every entry of the matrix by a scalar in-place.
 
-   :param a: the scalar to add to every entry of ``this``.
+   :param a: the scalar to multiply every entry of ``this``.
     
    :returns: (None)
 

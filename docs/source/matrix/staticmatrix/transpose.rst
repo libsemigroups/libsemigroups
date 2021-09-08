@@ -13,7 +13,7 @@ transpose
 
 .. cpp:function::  void transpose() noexcept
 
-   Swaps the contents of ``this`` with the contents of ``that``. 
+   Transposes the matrix in-place. 
 
    :parameters: (None)
 
