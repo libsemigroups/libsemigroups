@@ -532,4 +532,9 @@ namespace libsemigroups {
     z.product_inplace(y, id, 0);
     REQUIRE(z == y);
   }
+
+  LIBSEMIGROUPS_TEST_CASE("Bipartition", "017", "adapters", "[quick][pbr]") {
+    Bipartition x({0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 3, 3, 1, 2, 1});
+    REQUIRE_NOTHROW(IncreaseDegree<Bipartition>()(x, 0));
+  }
 }  // namespace libsemigroups

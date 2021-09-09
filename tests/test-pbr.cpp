@@ -189,4 +189,9 @@ namespace libsemigroups {
     REQUIRE_THROWS_AS(PBR::make({{}, {2}, {1}, {3, 0}}),
                       LibsemigroupsException);
   }
+
+  LIBSEMIGROUPS_TEST_CASE("PBR", "010", "adapters", "[quick][pbr]") {
+    PBR x({});
+    REQUIRE_NOTHROW(IncreaseDegree<PBR>()(x, 0));
+  }
 }  // namespace libsemigroups

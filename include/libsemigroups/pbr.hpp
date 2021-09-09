@@ -445,5 +445,10 @@ namespace libsemigroups {
     }
   };
 
+  template <>
+  struct IncreaseDegree<PBR> {
+    void operator()(PBR&, size_t) {}
+  };
+
 }  // namespace libsemigroups
 #endif  // LIBSEMIGROUPS_PBR_HPP_

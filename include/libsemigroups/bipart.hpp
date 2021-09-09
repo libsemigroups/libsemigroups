@@ -1200,5 +1200,10 @@ namespace libsemigroups {
     }
   };
 
+  template <>
+  struct IncreaseDegree<Bipartition> {
+    void operator()(Bipartition&, size_t) {}
+  };
+
 }  // namespace libsemigroups
 #endif  // LIBSEMIGROUPS_BIPART_HPP_
