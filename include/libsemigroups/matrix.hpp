@@ -2337,11 +2337,15 @@ namespace libsemigroups {
       ProjMaxPlusMat(size_t r, size_t c)
           : _is_normalized(false), _underlying_mat(r, c) {}
 
-      ProjMaxPlusMat(
-          std::initializer_list<std::initializer_list<scalar_type>> const& m)
+      ProjMaxPlusMat(std::vector<std::vector<scalar_type>> const& m)
           : _is_normalized(false), _underlying_mat(m) {
         normalize();
       }
+
+      ProjMaxPlusMat(
+          std::initializer_list<std::initializer_list<scalar_type>> const& m)
+          : ProjMaxPlusMat(
+              std::vector<std::vector<scalar_type>>(m.begin(), m.end())) {}
 
       static ProjMaxPlusMat make(
           std::initializer_list<std::initializer_list<scalar_type>> const& il) {
@@ -2377,15 +2381,17 @@ namespace libsemigroups {
       }
 
       bool operator!=(ProjMaxPlusMat const& that) const {
-        normalize();
-        that.normalize();
-        return _underlying_mat != that._underlying_mat;
+        return !(_underlying_mat == that._underlying_mat);
       }
 
       bool operator<(ProjMaxPlusMat const& that) const {
         normalize();
         that.normalize();
         return _underlying_mat < that._underlying_mat;
+      }
+
+      bool operator>(ProjMaxPlusMat const& that) const {
+        return that < *this;
       }
 
       ////////////////////////////////////////////////////////////////////////

@@ -754,6 +754,7 @@ namespace libsemigroups {
       REQUIRE(y == expected);
 
       REQUIRE(x < y);
+      REQUIRE(y > x);
       REQUIRE(Degree<Mat>()(x) == 3);
       REQUIRE(Degree<Mat>()(y) == 3);
       REQUIRE(Complexity<Mat>()(x) == 27);
