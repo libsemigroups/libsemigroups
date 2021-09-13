@@ -3010,9 +3010,8 @@ namespace libsemigroups {
   }
 
   template <typename T>
-  auto operator<<(std::ostringstream& os, T const& x) -> std::enable_if_t<
-      std::is_base_of<detail::MatrixPolymorphicBase, T>::value,
-      std::ostringstream&> {
+  auto operator<<(std::ostringstream& os, T const& x)
+      -> std::enable_if_t<IsMatrix<T>, std::ostringstream&> {
     size_t n = 0;
     if (x.number_of_rows() != 1) {
       os << "{";
