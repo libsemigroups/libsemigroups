@@ -1872,15 +1872,6 @@ namespace libsemigroups {
     }
   };
 
-  template <size_t N, typename Scalar>
-  struct ImageRightAction<Perm<N, Scalar>,
-                          Scalar,
-                          std::enable_if_t<std::is_integral<Scalar>::value>> {
-    Scalar operator()(Scalar pt, Perm<N, Scalar> const& x) {
-      return x[pt];
-    }
-  };
-
   template <typename TSubclass>
   struct Product<TSubclass, std::enable_if_t<IsDerivedFromPTransf<TSubclass>>> {
     void operator()(TSubclass&       xy,
