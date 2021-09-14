@@ -1090,6 +1090,13 @@ namespace libsemigroups {
       return x;
     }
 
+    static StaticMatrix identity(void const* ptr, size_t n = 0) {
+      (void) ptr;
+      LIBSEMIGROUPS_ASSERT(ptr == nullptr);
+      LIBSEMIGROUPS_ASSERT(n == 0 || n == R);
+      return identity(n);
+    }
+
     ////////////////////////////////////////////////////////////////////////
     // StaticMatrix - member function aliases - public
     ////////////////////////////////////////////////////////////////////////
@@ -1194,6 +1201,12 @@ namespace libsemigroups {
     }
 
     ~DynamicMatrix();
+
+    static DynamicMatrix identity(void const* ptr, size_t n) {
+      (void) ptr;
+      LIBSEMIGROUPS_ASSERT(ptr == nullptr);
+      return identity(n);
+    }
 
     static DynamicMatrix identity(size_t n) {
       DynamicMatrix x(n, n);
@@ -1308,9 +1321,20 @@ namespace libsemigroups {
       return m;
     }
 
+    // No static DynamicMatrix::identity(size_t n) because we need a semiring!
+    static DynamicMatrix identity(Semiring const* sr, size_t n) {
+      DynamicMatrix x(sr, n, n);
+      std::fill(x.begin(), x.end(), x.zero());
+      for (size_t r = 0; r < n; ++r) {
+        x(r, r) = x.one();
+      }
+      return x;
+    }
+
     ~DynamicMatrix();
 
     using MatrixCommon::begin;
+    using MatrixCommon::identity;
     using MatrixCommon::number_of_cols;
     using MatrixCommon::number_of_rows;
     using MatrixCommon::resize;
