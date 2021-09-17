@@ -648,7 +648,7 @@ namespace libsemigroups {
     BMat8 bm1(0);
     REQUIRE(Complexity<BMat8>()(bm1) == 0);
     REQUIRE(Degree<BMat8>()(bm1) == 8);
-    REQUIRE_NOTHROW(IncreaseDegree<BMat8>()(bm1));
+    REQUIRE_NOTHROW(IncreaseDegree<BMat8>()(bm1, 0));
     REQUIRE(One<BMat8>()(bm1) == bm1.one());
     REQUIRE(One<BMat8>()(4) == bmat8_helpers::one<BMat8>(4));
 
