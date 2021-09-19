@@ -51,3 +51,4 @@ libsemigroups::DynamicPTransf:
   - rank() const
   - hash_value() const
   - degree() const noexcept
+  - undef() noexcept
