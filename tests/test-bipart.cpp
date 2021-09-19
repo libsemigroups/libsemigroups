@@ -445,6 +445,10 @@ namespace libsemigroups {
     REQUIRE_NOTHROW(validate(xxx));
     REQUIRE(x != xxx);
     REQUIRE(xx != xxx);
+    REQUIRE(xx > xxx);
+    REQUIRE(xxx < xx);
+    REQUIRE(xxx <= xx);
+    REQUIRE(xx >= xxx);
 
     REQUIRE_THROWS_AS(Bipartition::make({{0, 2, 3, 4, 5, 6, 9, -1, -2, -7},
                                          {7, 10, -3, -9, -10},

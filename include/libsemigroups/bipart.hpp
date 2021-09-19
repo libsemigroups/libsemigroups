@@ -1135,7 +1135,24 @@ namespace libsemigroups {
   //!
   //! \complexity
   //! At worst linear in the degree of \p x and \p y.
-  bool operator!=(Bipartition const& x, Bipartition const& y);
+  inline bool operator!=(Bipartition const& x, Bipartition const& y) {
+    return !(x == y);
+  }
+
+  //! Convenience function that just calls ``operator<`` and ``operator==``.
+  inline bool operator<=(Bipartition const& x, Bipartition const& y) {
+    return x < y || x == y;
+  }
+
+  //! Convenience function that just calls ``operator<``.
+  inline bool operator>(Bipartition const& x, Bipartition const& y) {
+    return y < x;
+  }
+
+  //! Convenience function that just calls ``operator<=``.
+  inline bool operator>=(Bipartition const& x, Bipartition const& y) {
+    return y <= x;
+  }
 
   ////////////////////////////////////////////////////////////////////////
   // Adapters
