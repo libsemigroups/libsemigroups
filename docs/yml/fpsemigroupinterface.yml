@@ -107,5 +107,6 @@ libsemigroups::FpSemigroupInterface:
   - run_until(bool(*)())
   - report_every(TIntType)
   - report_every(std::chrono::nanoseconds)
+  - report_every() const noexcept
   - report() const
   - report_why_we_stopped() const
