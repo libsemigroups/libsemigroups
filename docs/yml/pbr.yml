@@ -9,10 +9,16 @@ libsemigroups::PBR:
   - operator<<(std::ostream &,PBR const &)
 - Constructors:
   - ["This page lists the constructors of :cpp:any:`PBR`."]
-  - PBR(vector_type)
   - PBR(initializer_list_type<uint32_t>)
+  - PBR(vector_type<uint32_t>)
   - PBR(size_t)
   - PBR(initializer_list_type<int32_t>,initializer_list_type<int32_t>)
+  - PBR(vector_type<int32_t>,vector_type<int32_t>)
+  - PBR() = delete
+  - PBR(PBR const &) = default
+  - PBR(PBR &&) = default
+  - operator=(PBR const &) = default
+  - operator=(PBR &&) = default
 - Static member functions:
   - ["This page lists the static member functions of :cpp:any:`PBR`."]
   - identity() const

@@ -164,10 +164,6 @@ namespace libsemigroups {
     return xy;
   }
 
-  bool operator!=(PBR const& x, PBR const& y) {
-    return !(x == y);
-  }
-
   void validate(PBR const& x) {
     size_t n = x._vector.size();
     if (n % 2 == 1) {

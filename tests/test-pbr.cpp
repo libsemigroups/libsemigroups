@@ -225,6 +225,12 @@ namespace libsemigroups {
                   {0, 1, 2, 3, 4, 5}});
     REQUIRE(x * y == expected);
     REQUIRE(y * y != expected);
+    REQUIRE(y * y > expected);
+    REQUIRE(y * y >= expected);
+    REQUIRE(expected < y * y);
+    REQUIRE(expected <= y * y);
+    REQUIRE(x * x >= expected);
+    REQUIRE(expected <= x * x);
   }
 
   LIBSEMIGROUPS_TEST_CASE("PBR", "008", "to_string", "[quick][pbr]") {

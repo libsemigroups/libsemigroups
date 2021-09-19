@@ -82,7 +82,7 @@ namespace libsemigroups {
     //! \sa \ref libsemigroups::validate(PBR const&)
     explicit PBR(vector_type<uint32_t> x);
 
-    //! \copydoc PBR(vector_type)
+    //! \copydoc PBR(vector_type<uint32_t>)
     explicit PBR(initializer_list_type<uint32_t> x);
 
     //! Construct empty PBR of given \ref degree.
@@ -385,7 +385,24 @@ namespace libsemigroups {
   //!
   //! \complexity
   //! At worst quadratic in the degree of \p x and \p y.
-  bool operator!=(PBR const& x, PBR const& y);
+  inline bool operator!=(PBR const& x, PBR const& y) {
+    return !(x == y);
+  }
+
+  //! Convenience function that just calls ``operator<``.
+  inline bool operator>(PBR const& x, PBR const& y) {
+    return y < x;
+  }
+
+  //! Convenience function that just calls ``operator<`` and ``operator==``.
+  inline bool operator<=(PBR const& x, PBR const& y) {
+    return x < y || x == y;
+  }
+
+  //! Convenience function that just calls ``operator<=``.
+  inline bool operator>=(PBR const& x, PBR const& y) {
+    return y <= x;
+  }
 
   namespace detail {
 
