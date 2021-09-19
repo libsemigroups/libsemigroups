@@ -158,14 +158,12 @@ namespace libsemigroups {
 
   }  // namespace
 
-  // TODO(now) Should be defined for all of the new element types
   PBR operator*(PBR const& x, PBR const& y) {
     PBR xy(x.degree());
     xy.product_inplace(x, y);
     return xy;
   }
 
-  // TODO(now) Should be defined for all of the new element types
   bool operator!=(PBR const& x, PBR const& y) {
     return !(x == y);
   }
@@ -209,6 +207,10 @@ namespace libsemigroups {
 
   PBR::PBR(std::initializer_list<std::vector<int32_t>> const& left,
            std::initializer_list<std::vector<int32_t>> const& right)
+      : PBR(process_left_right(left, right)) {}
+
+  PBR::PBR(std::vector<std::vector<int32_t>> const& left,
+           std::vector<std::vector<int32_t>> const& right)
       : PBR(process_left_right(left, right)) {}
 
   std::ostringstream& operator<<(std::ostringstream& os, PBR const& pbr) {
