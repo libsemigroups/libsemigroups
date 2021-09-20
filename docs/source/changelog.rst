@@ -1,6 +1,11 @@
 Changelog - version 2
 =====================
 
+v2.0.2 (released 20/09/2021)
+----------------------------
+
+This release includes some missing operators, adapters, and doc were added.
+
 v2.0.1 (released 28/08/2021)
 ----------------------------
 
