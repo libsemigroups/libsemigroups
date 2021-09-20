@@ -1190,6 +1190,7 @@ namespace libsemigroups {
                                    TCE(26), TCE(27), TCE(28), TCE(29), TCE(30),
                                    TCE(31), TCE(32), TCE(33), TCE(34)}));
       REQUIRE(detail::to_string(TCE(1)) == "1");
+      REQUIRE_NOTHROW(IncreaseDegree<TCE>()(TCE(1), 10));
 
       std::ostringstream oss;
       oss << TCE(10);  // Does not do anything visible
@@ -3530,6 +3531,17 @@ namespace libsemigroups {
 
       REQUIRE_THROWS_AS(tc.congruence().sort_generating_pairs(shortlex_compare),
                         LibsemigroupsException);
+    }
+
+    LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
+                            "099",
+                            "short circuit size in obviously infinite",
+                            "[todd-coxeter][quick]") {
+      auto        rg = ReportGuard(REPORT);
+      ToddCoxeter tc;
+      tc.set_alphabet("abc");
+      tc.add_rule("aaaa", "a");
+      REQUIRE(tc.size() == POSITIVE_INFINITY);
     }
   }  // namespace fpsemigroup
 }  // namespace libsemigroups

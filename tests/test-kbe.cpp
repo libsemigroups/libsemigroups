@@ -124,6 +124,9 @@ namespace libsemigroups {
       REQUIRE(Complexity<KBE>()(x) == LIMIT_MAX);
       REQUIRE(EqualTo<KBE>()(x, x));
       REQUIRE(One<KBE>()(x) == KBE());
+      auto y(x);
+      IncreaseDegree<KBE>()(y, 10);
+      REQUIRE(x == y);
     }
 
     LIBSEMIGROUPS_TEST_CASE("KBE", "005", "conversions", "[quick]") {
