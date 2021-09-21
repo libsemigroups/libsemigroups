@@ -445,6 +445,10 @@ namespace libsemigroups {
     REQUIRE_NOTHROW(validate(xxx));
     REQUIRE(x != xxx);
     REQUIRE(xx != xxx);
+    REQUIRE(xx > xxx);
+    REQUIRE(xxx < xx);
+    REQUIRE(xxx <= xx);
+    REQUIRE(xx >= xxx);
 
     REQUIRE_THROWS_AS(Bipartition::make({{0, 2, 3, 4, 5, 6, 9, -1, -2, -7},
                                          {7, 10, -3, -9, -10},
@@ -531,5 +535,10 @@ namespace libsemigroups {
     REQUIRE(z == y);
     z.product_inplace(y, id, 0);
     REQUIRE(z == y);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Bipartition", "017", "adapters", "[quick][pbr]") {
+    Bipartition x({0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 3, 3, 1, 2, 1});
+    REQUIRE_NOTHROW(IncreaseDegree<Bipartition>()(x, 0));
   }
 }  // namespace libsemigroups

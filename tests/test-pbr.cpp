@@ -32,8 +32,12 @@ namespace libsemigroups {
                           "001",
                           "universal product with convenience constructor",
                           "[quick][pbr]") {
-    PBR x({{-3, -1}, {-3, -2, -1, 1, 2, 3}, {-3, -2, -1, 1, 3}},
-          {{-3, -1, 1, 2, 3}, {-3, 1, 3}, {-3, -2, -1, 2, 3}});
+    std::vector<std::vector<int32_t>> const left
+        = {{-3, -1}, {-3, -2, -1, 1, 2, 3}, {-3, -2, -1, 1, 3}};
+
+    std::vector<std::vector<int32_t>> const right
+        = {{-3, -1, 1, 2, 3}, {-3, 1, 3}, {-3, -2, -1, 2, 3}};
+    PBR x(left, right);
 
     PBR y({{-3, -2, -1, 1}, {-3, -2, 3}, {-3, 2, 3}},
           {{-3, -2, -1, 3}, {-3, -2, -1, 3}, {-2, 2, 3}});
@@ -56,6 +60,7 @@ namespace libsemigroups {
 
     REQUIRE(x == xx);
     REQUIRE(y == yy);
+    REQUIRE(x.degree() == 3);
 
     z.product_inplace(x, y);
 
@@ -148,7 +153,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("PBR", "005", "delete/copy", "[quick][pbr]") {
-    PBR x({{1}, {4}, {3}, {1}, {0, 2}, {0, 3, 4, 5}});
+    PBR x = PBR::make({{1}, {4}, {3}, {1}, {0, 2}, {0, 3, 4, 5}});
     PBR y(x);
     PBR z({{1}, {4}, {3}, {1}, {0, 2}, {0, 3, 4, 5}});
     REQUIRE(y == z);
@@ -157,6 +162,10 @@ namespace libsemigroups {
     PBR zz(yy);
     PBR a({{1}, {4}, {3}, {1}, {0, 2}, {0, 3, 4, 5}});
     REQUIRE(zz == a);
+    PBR tt(std::move(zz));
+    REQUIRE(tt == a);
+    tt = z;
+    REQUIRE(tt == z);
   }
 
   LIBSEMIGROUPS_TEST_CASE("PBR", "006", "exceptions", "[quick][pbr]") {
@@ -185,8 +194,75 @@ namespace libsemigroups {
             {{-4, -1}, {-3, -2, -1, 1, 2, 3}, {-3, -2, -1, 1, 3}},
             {{-3, -1, 1, 2, 3}, {-3, 1, 3}, {-3, -2, -1, 2, 3}, {-1, -2}}),
         LibsemigroupsException);
+    REQUIRE_THROWS_AS(
+        PBR::make({{-3, -1, 1, 2, 3}, {-3, 1, 3}, {-3, -2, -1, 2, 3}},
+                  {{-4, -1}, {-3, -2, -1, 1, 2, 3}, {-3, -2, -1, 1, 3}}),
+        LibsemigroupsException);
 
     REQUIRE_THROWS_AS(PBR::make({{}, {2}, {1}, {3, 0}}),
                       LibsemigroupsException);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("PBR", "007", "operators", "[quick][pbr]") {
+    PBR x({{3, 5},
+           {0, 1, 2, 3, 4, 5},
+           {0, 2, 3, 4, 5},
+           {0, 1, 2, 3, 5},
+           {0, 2, 5},
+           {1, 2, 3, 4, 5}});
+    PBR y({{0, 3, 4, 5},
+           {2, 4, 5},
+           {1, 2, 5},
+           {2, 3, 4, 5},
+           {2, 3, 4, 5},
+           {1, 2, 4}});
+
+    PBR expected({{0, 1, 2, 3, 4, 5},
+                  {0, 1, 2, 3, 4, 5},
+                  {0, 1, 2, 3, 4, 5},
+                  {0, 1, 2, 3, 4, 5},
+                  {0, 1, 2, 3, 4, 5},
+                  {0, 1, 2, 3, 4, 5}});
+    REQUIRE(x * y == expected);
+    REQUIRE(y * y != expected);
+    REQUIRE(y * y > expected);
+    REQUIRE(y * y >= expected);
+    REQUIRE(expected < y * y);
+    REQUIRE(expected <= y * y);
+    REQUIRE(x * x >= expected);
+    REQUIRE(expected <= x * x);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("PBR", "008", "to_string", "[quick][pbr]") {
+    PBR x({{3, 5},
+           {0, 1, 2, 3, 4, 5},
+           {0, 2, 3, 4, 5},
+           {0, 1, 2, 3, 5},
+           {0, 2, 5},
+           {1, 2, 3, 4, 5}});
+    REQUIRE_NOTHROW(detail::to_string(x));
+    x = PBR({});
+    REQUIRE_NOTHROW(detail::to_string(x));
+    std::stringbuf buf;
+    std::ostream   os(&buf);
+    os << x;  // doesn't do anything visible
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("PBR", "009", "identity", "[quick][pbr]") {
+    PBR x({{3, 5},
+           {0, 1, 2, 3, 4, 5},
+           {0, 2, 3, 4, 5},
+           {0, 1, 2, 3, 5},
+           {0, 2, 5},
+           {1, 2, 3, 4, 5}});
+    REQUIRE(x == x * x.identity());
+    REQUIRE(x == x.identity() * x);
+    REQUIRE(x == x * PBR::identity(3));
+    REQUIRE(x == PBR::identity(3) * x);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("PBR", "010", "adapters", "[quick][pbr]") {
+    PBR x({});
+    REQUIRE_NOTHROW(IncreaseDegree<PBR>()(x, 0));
   }
 }  // namespace libsemigroups

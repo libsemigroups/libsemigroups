@@ -201,11 +201,6 @@ namespace libsemigroups {
     return xy;
   }
 
-  // TODO(later) Should be defined for all of the new element types
-  bool operator!=(Bipartition const& x, Bipartition const& y) {
-    return !(x == y);
-  }
-
   ////////////////////////////////////////////////////////////////////////
   // Bipartitions
   ////////////////////////////////////////////////////////////////////////

@@ -318,6 +318,8 @@ namespace libsemigroups {
       REQUIRE(r[0] == Row(sr, {1, 0, 2}));
       REQUIRE(r[1] == Row(sr, {1, 1, 0}));
       REQUIRE(r[2] == Row(sr, {2, 1, 1}));
+      REQUIRE(m * Mat::identity(sr, 3) == m);
+      REQUIRE(Mat::identity(sr, 3) * m == m);
     }
 
     template <typename Mat>
@@ -532,6 +534,8 @@ namespace libsemigroups {
       expected.push_back({0, 1, 0, 1});
       tropical_max_plus_row_basis<4, 5>(expected);
       REQUIRE(expected.size() == 4);
+      REQUIRE(m * Mat::identity(sr, 4) == m);
+      REQUIRE(Mat::identity(sr, 4) * m == m);
     }
 
     template <typename Mat>
@@ -556,6 +560,8 @@ namespace libsemigroups {
       y.product_inplace(x, id);
       REQUIRE(y == x);
       REQUIRE(Hash<Mat>()(y) != 0);
+      REQUIRE(x * Mat::identity(sr, 3) == x);
+      REQUIRE(Mat::identity(sr, 3) * x == x);
     }
 
     ////////////////////////////////////////////////////////////////////////
@@ -728,6 +734,8 @@ namespace libsemigroups {
       REQUIRE(Hash<Mat>()(y) != 0);
       REQUIRE_THROWS_AS(Mat::make(sr, {{-22, 21, 0}, {10, 0, 0}, {1, 32, 1}}),
                         LibsemigroupsException);
+      REQUIRE(x * Mat::identity(sr, 3) == x);
+      REQUIRE(Mat::identity(sr, 3) * x == x);
     }
 
     ////////////////////////////////////////////////////////////////////////
@@ -754,6 +762,7 @@ namespace libsemigroups {
       REQUIRE(y == expected);
 
       REQUIRE(x < y);
+      REQUIRE(y > x);
       REQUIRE(Degree<Mat>()(x) == 3);
       REQUIRE(Degree<Mat>()(y) == 3);
       REQUIRE(Complexity<Mat>()(x) == 27);

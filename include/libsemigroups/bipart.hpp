@@ -264,7 +264,7 @@ namespace libsemigroups {
     //! This function returns the number of parts in the partition that
     //! instances of this class represent.
     //!
-    //! \returns The number of blocks in a Blocks object.
+    //! \returns The number of blocks in a Bipartition object.
     //!
     //! \exceptions
     //! \noexcept
@@ -1135,7 +1135,24 @@ namespace libsemigroups {
   //!
   //! \complexity
   //! At worst linear in the degree of \p x and \p y.
-  bool operator!=(Bipartition const& x, Bipartition const& y);
+  inline bool operator!=(Bipartition const& x, Bipartition const& y) {
+    return !(x == y);
+  }
+
+  //! Convenience function that just calls ``operator<`` and ``operator==``.
+  inline bool operator<=(Bipartition const& x, Bipartition const& y) {
+    return x < y || x == y;
+  }
+
+  //! Convenience function that just calls ``operator<``.
+  inline bool operator>(Bipartition const& x, Bipartition const& y) {
+    return y < x;
+  }
+
+  //! Convenience function that just calls ``operator<=``.
+  inline bool operator>=(Bipartition const& x, Bipartition const& y) {
+    return y <= x;
+  }
 
   ////////////////////////////////////////////////////////////////////////
   // Adapters
@@ -1198,6 +1215,11 @@ namespace libsemigroups {
                     size_t             thread_id = 0) {
       xy.product_inplace(x, y, thread_id);
     }
+  };
+
+  template <>
+  struct IncreaseDegree<Bipartition> {
+    void operator()(Bipartition&, size_t) {}
   };
 
 }  // namespace libsemigroups

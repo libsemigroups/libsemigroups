@@ -298,6 +298,13 @@ namespace libsemigroups {
       report_every(std::chrono::nanoseconds(t));
     }
 
+    //! Get the minimum elapsed time between reports.
+    //!
+    //! \par Parameters
+    //! (None)
+    //!
+    //! \returns
+    //! The number of nanoseconds between reports.
     std::chrono::nanoseconds report_every() const noexcept {
       return _report_time_interval;
     }

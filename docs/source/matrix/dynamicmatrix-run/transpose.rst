@@ -13,7 +13,7 @@ transpose
 
 .. cpp:function::  void transpose() noexcept
 
-   Swaps the contents of ``this`` with the contents of ``that``. 
+   Transposes the matrix in-place. 
 
    :parameters: (None)
 
@@ -23,9 +23,8 @@ transpose
      this function guarantees not to throw a :cpp:any:`LibsemigroupsException`. 
    
    :complexity: 
-     :math:`O(mn)` where :math:`m` is the template parameter :code:`R` and
-     :math:`n` is the template parameter :code:`C`. 
+     :math:`O(n ^ 2)` where :math:`n` is the number of rows and
+     the number of columns in the matrix. 
 
    .. warning:: 
-     This only works when the template parameters ``R`` and ``C`` are equal
-     (i.e. for square matrices).
+     This only works for square matrices. 

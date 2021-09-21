@@ -151,7 +151,7 @@ def skip_mem_fn(class_n, mem_fn, params_t):
     if mem_fn.startswith("operator"):
         return True
     try:
-        get_xml(class_n, mem_fn)
+        get_xml(class_n, mem_fn, params_t)
     except KeyError:
         return True
     return is_deleted_mem_fn(class_n, mem_fn, params_t) or is_mem_fn_template(

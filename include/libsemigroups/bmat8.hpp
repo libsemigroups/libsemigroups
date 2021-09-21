@@ -680,7 +680,7 @@ namespace libsemigroups {
   template <>
   struct IncreaseDegree<BMat8> {
     //! Does nothing.
-    inline void operator()(BMat8 const&) const noexcept {}
+    inline void operator()(BMat8 const&, size_t) const noexcept {}
   };
 
   //! Specialization of the adapter One for instances of BMat8.

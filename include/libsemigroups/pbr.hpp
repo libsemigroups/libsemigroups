@@ -42,11 +42,27 @@ namespace libsemigroups {
 
    public:
     //! Type of constructor argument.
-    using vector_type = std::vector<std::vector<uint32_t>> const&;
+    template <typename T>
+    using vector_type = std::vector<std::vector<T>> const&;
 
     //! Type of constructor argument.
     template <typename T>
     using initializer_list_type = std::initializer_list<std::vector<T>> const&;
+
+    //! Deleted.
+    PBR() = delete;
+
+    //! Default copy constructor.
+    PBR(PBR const&) = default;
+
+    //! Default move constructor.
+    PBR(PBR&&) = default;
+
+    //! Default copy assignment operator.
+    PBR& operator=(PBR const&) = default;
+
+    //! Default move assignment operator.
+    PBR& operator=(PBR&&) = default;
 
     //! Construct from adjacencies \c 0 to `2n - 1`.
     //!
@@ -64,9 +80,9 @@ namespace libsemigroups {
     //! No checks whatsoever on the validity of \p x are performed.
     //!
     //! \sa \ref libsemigroups::validate(PBR const&)
-    explicit PBR(vector_type x);
+    explicit PBR(vector_type<uint32_t> x);
 
-    //! \copydoc PBR(vector_type)
+    //! \copydoc PBR(vector_type<uint32_t>)
     explicit PBR(initializer_list_type<uint32_t> x);
 
     //! Construct empty PBR of given \ref degree.
@@ -101,6 +117,11 @@ namespace libsemigroups {
     //! make(initializer_list_type<int32_t>, initializer_list_type<int32_t>)
     PBR(initializer_list_type<int32_t> left,
         initializer_list_type<int32_t> right);
+
+    // clang-format off
+    //! \copydoc PBR(initializer_list_type<int32_t>, initializer_list_type<int32_t>) NOLINT(whitespace/line_length)
+    // clang-format on
+    PBR(vector_type<int32_t> left, vector_type<int32_t> right);
 
     //! Construct and validate.
     //!
@@ -364,7 +385,24 @@ namespace libsemigroups {
   //!
   //! \complexity
   //! At worst quadratic in the degree of \p x and \p y.
-  bool operator!=(PBR const& x, PBR const& y);
+  inline bool operator!=(PBR const& x, PBR const& y) {
+    return !(x == y);
+  }
+
+  //! Convenience function that just calls ``operator<``.
+  inline bool operator>(PBR const& x, PBR const& y) {
+    return y < x;
+  }
+
+  //! Convenience function that just calls ``operator<`` and ``operator==``.
+  inline bool operator<=(PBR const& x, PBR const& y) {
+    return x < y || x == y;
+  }
+
+  //! Convenience function that just calls ``operator<=``.
+  inline bool operator>=(PBR const& x, PBR const& y) {
+    return y <= x;
+  }
 
   namespace detail {
 
@@ -443,6 +481,11 @@ namespace libsemigroups {
     void operator()(PBR& xy, PBR const& x, PBR const& y, size_t thread_id = 0) {
       xy.product_inplace(x, y, thread_id);
     }
+  };
+
+  template <>
+  struct IncreaseDegree<PBR> {
+    void operator()(PBR&, size_t) {}
   };
 
 }  // namespace libsemigroups
