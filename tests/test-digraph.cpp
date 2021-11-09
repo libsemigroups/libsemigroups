@@ -1310,7 +1310,7 @@ namespace libsemigroups {
     action_digraph_helper::add_cycle(ad, n);
     REQUIRE(ad.number_of_paths(10) == POSITIVE_INFINITY);
     REQUIRE(ad.number_of_paths_algorithm(10, 10, 0, POSITIVE_INFINITY)
-            == algorithm::dfs);
+            == algorithm::trivial);
     REQUIRE(ad.number_of_paths(10, 10, 0, POSITIVE_INFINITY)
             == POSITIVE_INFINITY);
     ad = chain(n);
@@ -1881,7 +1881,7 @@ namespace libsemigroups {
 
     REQUIRE(std::distance(ad.cbegin_pilo(0, 10, 12), ad.cend_pilo()) == 35300);
 
-    REQUIRE(ad.number_of_paths_algorithm(1, 5, 0, 10) == algorithm::matrix);
+    REQUIRE(ad.number_of_paths_algorithm(1, 5, 0, 10) == algorithm::trivial);
     REQUIRE(ad.number_of_paths(1, 5, 0, 10) == 0);
     REQUIRE(0
             == std::distance(ad.cbegin_pstilo(1, 5, 0, 10), ad.cend_pstilo()));

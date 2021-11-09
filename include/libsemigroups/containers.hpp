@@ -57,9 +57,9 @@ namespace libsemigroups {
       ~DynamicArray2() = default;
 
       // Not noexcept because DynamicArray2::add_rows can throw.
-      explicit DynamicArray2(size_t number_of_cols = 0,
-                             size_t number_of_rows = 0,
-                             T      default_val    = 0)
+      explicit DynamicArray2(size_type number_of_cols = 0,
+                             size_type number_of_rows = 0,
+                             T         default_val    = 0)
           : _vec(),
             _nr_used_cols(number_of_cols),
             _nr_unused_cols(0),
@@ -68,8 +68,8 @@ namespace libsemigroups {
         this->add_rows(number_of_rows);
       }
 
-      // Not noexcept because DynamicArray2::DynamicArray2(size_t, size_t) can
-      // throw.
+      // Not noexcept because DynamicArray2::DynamicArray2(size_type, size_type)
+      // can throw.
       explicit DynamicArray2(std::initializer_list<std::initializer_list<T>> il)
           : DynamicArray2(il.begin()->size(), il.size()) {
         auto it = _vec.begin();
@@ -83,7 +83,7 @@ namespace libsemigroups {
       // Not noexcept
       template <typename S, typename B>
       DynamicArray2(DynamicArray2<S, B> const& copy,
-                    size_t                     number_of_cols_to_add = 0)
+                    size_type                  number_of_cols_to_add = 0)
           : _vec(),
             _nr_used_cols(copy._nr_used_cols),
             _nr_unused_cols(copy._nr_unused_cols),
@@ -96,15 +96,15 @@ namespace libsemigroups {
           return;
         }
 
-        size_t new_nr_cols = std::max(2 * number_of_cols(),
-                                      number_of_cols_to_add + number_of_cols());
+        size_type new_nr_cols = std::max(
+            2 * number_of_cols(), number_of_cols_to_add + number_of_cols());
         _nr_used_cols += number_of_cols_to_add;
         _nr_unused_cols = new_nr_cols - _nr_used_cols;
 
         _vec.reserve(new_nr_cols * _nr_rows);
         // TODO(later) improve
-        for (size_t i = 0; i < _nr_rows; i++) {
-          size_t j;
+        for (size_type i = 0; i < _nr_rows; i++) {
+          size_type j;
           for (j = 0; j < copy._nr_used_cols; j++) {
             _vec.push_back(copy.get(i, j));
           }
@@ -131,11 +131,11 @@ namespace libsemigroups {
         return _nr_rows == 0;
       }
 
-      size_t size() const noexcept {
+      size_type size() const noexcept {
         return _nr_rows * _nr_used_cols;
       }
 
-      size_t max_size() const noexcept {
+      size_type max_size() const noexcept {
         return _vec.max_size();
       }
 
@@ -152,7 +152,7 @@ namespace libsemigroups {
       }
 
       // Not noexcept because std::vector::operator[] isn't
-      void swap(size_t i, size_t j, size_t k, size_t l) {
+      void swap(size_type i, size_type j, size_type k, size_type l) {
         LIBSEMIGROUPS_ASSERT(i < _nr_rows);
         LIBSEMIGROUPS_ASSERT(j < _nr_used_cols);
         LIBSEMIGROUPS_ASSERT(k < _nr_rows);
@@ -162,8 +162,10 @@ namespace libsemigroups {
       }
 
       // Not noexcept since std::swap_ranges can throw.
-      void swap_rows(size_t i, size_t j) {
-        size_t const number_of_cols = _nr_used_cols + _nr_unused_cols;
+      void swap_rows(size_type i, size_type j) {
+        LIBSEMIGROUPS_ASSERT(i < _nr_rows);
+        LIBSEMIGROUPS_ASSERT(j < _nr_rows);
+        size_type const number_of_cols = _nr_used_cols + _nr_unused_cols;
         std::swap_ranges(_vec.begin() + (i * number_of_cols),
                          _vec.begin() + ((i + 1) * number_of_cols),
                          _vec.begin() + (j * number_of_cols));
@@ -174,11 +176,11 @@ namespace libsemigroups {
       //             2. should perform checks that p actually permutes the
       //                given row
       // Not noexcept because std::vector::operator[] isn't
-      void apply_row_permutation(std::vector<size_t> p) {
-        for (size_t i = 0; i < p.size(); i++) {
-          size_t current = i;
+      void apply_row_permutation(std::vector<T> p) {
+        for (size_type i = 0; i < p.size(); i++) {
+          size_type current = i;
           while (i != p[current]) {
-            size_t next = p[current];
+            size_type next = p[current];
             swap_rows(current, next);
             p[current] = current;
             current    = next;
@@ -195,7 +197,7 @@ namespace libsemigroups {
       }
 
       // Throws if the assignment operator of T throws
-      void shrink_rows_to(size_t n) {
+      void shrink_rows_to(size_type n) {
         if (n < _nr_rows) {
           _vec.erase(_vec.begin() + n * (_nr_used_cols + _nr_unused_cols),
                      _vec.end());
@@ -205,9 +207,9 @@ namespace libsemigroups {
       }
 
       // Throws if the assignment operator of T throws
-      void erase_column(size_t i) {
+      void erase_column(size_type i) {
         LIBSEMIGROUPS_ASSERT(i < _nr_used_cols);
-        size_t const n = _nr_used_cols + _nr_unused_cols;
+        size_type const n = _nr_used_cols + _nr_unused_cols;
         for (auto it = _vec.rbegin() + (n - i); it < _vec.rend(); it += n) {
           _vec.erase(it.base());
         }
@@ -215,7 +217,7 @@ namespace libsemigroups {
       }
 
       // Not noexcept since std::vector::resize can throw.
-      void inline add_rows(size_t nr) {
+      void inline add_rows(size_type nr) {
         _nr_rows += nr;
         if (nr != 0) {
           _vec.resize(_vec.size() + (_nr_used_cols + _nr_unused_cols) * nr,
@@ -228,15 +230,15 @@ namespace libsemigroups {
       }
 
       // Not noexcept
-      void add_cols(size_t nr) {
+      void add_cols(size_type nr) {
         if (nr <= _nr_unused_cols) {
           _nr_used_cols += nr;
           _nr_unused_cols -= nr;
           return;
         }
 
-        size_t old_nr_cols = _nr_used_cols + _nr_unused_cols;
-        size_t new_nr_cols = std::max(2 * old_nr_cols, nr + old_nr_cols);
+        size_type old_nr_cols = _nr_used_cols + _nr_unused_cols;
+        size_type new_nr_cols = std::max(2 * old_nr_cols, nr + old_nr_cols);
         if (_nr_rows != 0) {
           _vec.resize(new_nr_cols * _nr_rows, _default_val);
 
@@ -256,32 +258,22 @@ namespace libsemigroups {
       }
 
       // Not noexcept because std::vector::operator[] isn't
-      void inline set(size_t i, size_t j, T val) {
+      void inline set(size_type i, size_type j, T val) {
         LIBSEMIGROUPS_ASSERT(i < _nr_rows && j < _nr_used_cols);
         _vec[i * (_nr_used_cols + _nr_unused_cols) + j] = val;
       }
 
       // Not noexcept because std::vector::operator[] isn't
-      inline T get(size_t i, size_t j) const {
+      inline T get(size_type i, size_type j) const {
         LIBSEMIGROUPS_ASSERT(i < _nr_rows && j < _nr_used_cols);
         return _vec[i * (_nr_used_cols + _nr_unused_cols) + j];
       }
 
-      inline T& get_ref(size_t i, size_t j) {
-        LIBSEMIGROUPS_ASSERT(i < _nr_rows && j < _nr_used_cols);
-        return _vec[i * (_nr_used_cols + _nr_unused_cols) + j];
-      }
-
-      inline T const& get_ref(size_t i, size_t j) const {
-        LIBSEMIGROUPS_ASSERT(i < _nr_rows && j < _nr_used_cols);
-        return _vec[i * (_nr_used_cols + _nr_unused_cols) + j];
-      }
-
-      size_t number_of_rows() const noexcept {
+      size_type number_of_rows() const noexcept {
         return _nr_rows;
       }
 
-      size_t number_of_cols() const noexcept {
+      size_type number_of_cols() const noexcept {
         return _nr_used_cols;
       }
 
@@ -290,7 +282,7 @@ namespace libsemigroups {
       void append(DynamicArray2<S, B> const& copy) {
         LIBSEMIGROUPS_ASSERT(copy._nr_used_cols == _nr_used_cols);
 
-        size_t old_nr_rows = _nr_rows;
+        size_type old_nr_rows = _nr_rows;
         add_rows(copy._nr_rows);
 
         if (copy._nr_unused_cols == _nr_unused_cols) {
@@ -299,8 +291,8 @@ namespace libsemigroups {
                     _vec.begin()
                         + (_nr_used_cols + _nr_unused_cols) * old_nr_rows);
         } else {  // TODO(later) improve this
-          for (size_t i = old_nr_rows; i < _nr_rows; i++) {
-            for (size_t j = 0; j < _nr_used_cols; j++) {
+          for (size_type i = old_nr_rows; i < _nr_rows; i++) {
+            for (size_type j = 0; j < _nr_used_cols; j++) {
               set(i, j, copy.get(i - old_nr_rows, j));
             }
           }
@@ -308,15 +300,15 @@ namespace libsemigroups {
       }
 
       // Not noexcept
-      void reserve(size_t number_of_rows) {
+      void reserve(size_type number_of_rows) {
         _vec.reserve(number_of_rows * (_nr_unused_cols + _nr_used_cols));
       }
 
      private:
       std::vector<T, A> _vec;
-      size_t            _nr_used_cols;
-      size_t            _nr_unused_cols;
-      size_t            _nr_rows;
+      size_type         _nr_used_cols;
+      size_type         _nr_unused_cols;
+      size_type         _nr_rows;
       T                 _default_val;
 
       // Helper functions for iterators
@@ -346,7 +338,7 @@ namespace libsemigroups {
       struct AddAssign {
         TInternalIteratorType& operator()(DynamicArray2 const*   da,
                                           TInternalIteratorType& it,
-                                          size_t val) const noexcept {
+                                          size_type val) const noexcept {
           if (da->_nr_unused_cols == 0 || val == 0) {
             return it += val;
           }
@@ -373,7 +365,7 @@ namespace libsemigroups {
       struct SubtractAssign {
         TInternalIteratorType& operator()(DynamicArray2 const*   da,
                                           TInternalIteratorType& it,
-                                          size_t val) const noexcept {
+                                          size_type val) const noexcept {
           if (da->_nr_unused_cols == 0 || val == 0) {
             return it -= val;
           }
@@ -437,7 +429,7 @@ namespace libsemigroups {
       struct ColumnAddAssign {
         TInternalIteratorType& operator()(DynamicArray2 const*   da,
                                           TInternalIteratorType& it,
-                                          size_t val) const noexcept {
+                                          size_type val) const noexcept {
           return it += val * (da->_nr_used_cols + da->_nr_unused_cols);
         }
       };
@@ -449,7 +441,7 @@ namespace libsemigroups {
       struct ColumnSubtractAssign {
         TInternalIteratorType& operator()(DynamicArray2 const*   da,
                                           TInternalIteratorType& it,
-                                          size_t val) const noexcept {
+                                          size_type val) const noexcept {
           return it -= val * (da->_nr_used_cols + da->_nr_unused_cols);
         }
       };
@@ -595,45 +587,45 @@ namespace libsemigroups {
         return const_reverse_iterator(cbegin());
       }
 
-      iterator begin_row(size_t row_index) noexcept {
+      iterator begin_row(size_type row_index) noexcept {
         LIBSEMIGROUPS_ASSERT(row_index < _nr_rows);
         return iterator(
             this, _vec.begin() + (_nr_used_cols + _nr_unused_cols) * row_index);
       }
 
-      iterator end_row(size_t row_index) noexcept {
+      iterator end_row(size_type row_index) noexcept {
         LIBSEMIGROUPS_ASSERT(row_index < _nr_rows);
         return begin_row(row_index) + _nr_used_cols;
       }
 
-      column_iterator begin_column(size_t col_index) noexcept {
+      column_iterator begin_column(size_type col_index) noexcept {
         LIBSEMIGROUPS_ASSERT(col_index < _nr_used_cols);
         return column_iterator(this, _vec.begin() + col_index);
       }
 
-      column_iterator end_column(size_t col_index) noexcept {
+      column_iterator end_column(size_type col_index) noexcept {
         LIBSEMIGROUPS_ASSERT(col_index < _nr_used_cols);
         return column_iterator(this, _vec.end() + col_index);
       }
 
-      const_iterator cbegin_row(size_t row_index) const noexcept {
+      const_iterator cbegin_row(size_type row_index) const noexcept {
         LIBSEMIGROUPS_ASSERT(row_index < _nr_rows);
         return const_iterator(
             this,
             _vec.cbegin() + (_nr_used_cols + _nr_unused_cols) * row_index);
       }
 
-      const_iterator cend_row(size_t row_index) const noexcept {
+      const_iterator cend_row(size_type row_index) const noexcept {
         LIBSEMIGROUPS_ASSERT(row_index < _nr_rows);
         return cbegin_row(row_index) + _nr_used_cols;
       }
 
-      const_column_iterator cbegin_column(size_t col_index) const noexcept {
+      const_column_iterator cbegin_column(size_type col_index) const noexcept {
         LIBSEMIGROUPS_ASSERT(col_index < _nr_used_cols);
         return const_column_iterator(this, _vec.begin() + col_index);
       }
 
-      const_column_iterator cend_column(size_t col_index) const noexcept {
+      const_column_iterator cend_column(size_type col_index) const noexcept {
         LIBSEMIGROUPS_ASSERT(col_index < _nr_used_cols);
         return const_column_iterator(this, _vec.end() + col_index);
       }

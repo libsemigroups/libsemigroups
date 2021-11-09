@@ -59,7 +59,12 @@ namespace libsemigroups {
     }
 
     Reporter::Reporter(bool report)
-        : _last_msg(), _mtx(), _msg(), _options(), _report(report) {}
+        : _last_msg(), _mtx(), _msg(), _options(), _report(report) {
+      try {
+        std::locale::global(std::locale("en_US.UTF-8"));
+      } catch (std::runtime_error const& e) {
+      }
+    }
 
 #ifdef LIBSEMIGROUPS_FMT_ENABLED
     Reporter& Reporter::color(fmt::color c) {

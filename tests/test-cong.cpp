@@ -210,6 +210,7 @@ namespace libsemigroups {
     REQUIRE(!S.is_obviously_infinite());
     REQUIRE(S.is_obviously_finite());
 
+    REQUIRE(S.froidure_pin()->number_of_generators() == 3);
     REQUIRE(S.froidure_pin()->size() == 2);
     REQUIRE(S.froidure_pin()->is_finite() == tril::TRUE);
 
@@ -535,12 +536,15 @@ namespace libsemigroups {
 
     Congruence cong(twosided, S);
     cong.add_pair({0}, {1});
+    REQUIRE(cong.is_quotient_obviously_infinite());
+    REQUIRE(cong.number_of_classes() == POSITIVE_INFINITY);
     REQUIRE(!cong.finished());
     REQUIRE(cong.number_of_non_trivial_classes() == 1);
     REQUIRE(cong.cbegin_ntc()->size() == 5);
+    REQUIRE(std::vector<word_type>(cong.cbegin_ntc()->cbegin(),
+                                   cong.cbegin_ntc()->cend())
+            == std::vector<word_type>({{0}, {1}, {0, 1}, {1, 1}, {0, 1, 1}}));
     REQUIRE(cong.finished());
-    // REQUIRE(cong.number_of_classes());  // Currently runs forever (and
-    // should)
   }
 
   LIBSEMIGROUPS_TEST_CASE("Congruence",
@@ -1230,7 +1234,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("Congruence",
                           "038",
                           "Stellar S7",
-                          "[standard][cong]") {
+                          "[quick][cong][no-valgrind]") {
     auto        rg = ReportGuard(REPORT);
     FpSemigroup S;
     S.set_alphabet(8);

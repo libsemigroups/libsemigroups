@@ -47,7 +47,7 @@ namespace libsemigroups {
   using detail::random_string;
 
   namespace {
-    // TODO remove this, or put it in test-suffix-tree.cpp
+    // TODO(later) remove this, or put it in test-suffix-tree.cpp
     template <typename T>
     size_t number_of_subwords(T first, T last) {
       std::unordered_set<std::string> mp;
@@ -73,7 +73,7 @@ namespace libsemigroups {
       return mp.size();
     }
 
-    // TODO remove this
+    // TODO(later) remove this
     template <typename T>
     size_t sum_lengths(T first, T last) {
       size_t result = 0;
@@ -104,13 +104,101 @@ namespace libsemigroups {
           }
           case 2: {
             result += u;
-            break;
           }
+          default:
+            break;
         }
         exp--;
       }
       return result;
     }
+
+    // std::string swap_a_and_b(std::string const& w) {
+    //   std::string result;
+    //   for (auto l : w) {
+    //     if (l == 'a') {
+    //       result += "b";
+    //     } else if (l == '#') {
+    //       result += '#';
+    //     } else {
+    //       result += "a";
+    //     }
+    //   }
+    //   return result;
+    // }
+
+    auto sample(std::string A,
+                size_t      R,
+                size_t      min,
+                size_t      max,
+                size_t      sample_size) {
+      if (min < 7) {
+        LIBSEMIGROUPS_EXCEPTION("the minimum value of <min> is at least 7");
+        // Otherwise we get lhs = rhs in many of the things below and this
+        // skews the results.
+      } else if (min < max && max - min <= 1) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "the minimum and maximum values must be at least 2 apart");
+      }
+      auto     rg              = ReportGuard(false);
+      uint64_t total_c4        = 0;
+      uint64_t total_confluent = 0;
+      for (size_t j = 0; j < sample_size; ++j) {
+        fpsemigroup::Kambites<std::string> k;
+        k.set_alphabet(A);
+        fpsemigroup::KnuthBendix kb1;
+        kb1.set_alphabet(A);
+        fpsemigroup::KnuthBendix kb2;
+        std::reverse(A.begin(), A.end());
+        kb2.set_alphabet(A);
+        std::reverse(A.begin(), A.end());
+        for (size_t r = 0; r < R; ++r) {
+          auto        lhs = random_string(A, min, max);
+          std::string rhs;
+          if (lhs.size() == min) {
+            rhs = random_string(A, min + 1, max);
+          } else {
+            rhs = random_string(A, min, lhs.size());
+          }
+
+          k.add_rule(lhs, rhs);
+          kb1.add_rule(lhs, rhs);
+          kb2.add_rule(lhs, rhs);
+        }
+        kb1.run_for(std::chrono::milliseconds(1));
+        kb2.run_for(std::chrono::milliseconds(1));
+        if (k.small_overlap_class() >= 4) {
+          total_c4++;
+        }
+        if (kb1.confluent() || kb2.confluent()) {
+          total_confluent++;
+        }
+      }
+      return std::make_tuple(total_c4, total_confluent);
+    }
+
+    std::array<std::string, 5> swap_a_b_c(std::string const& w) {
+      static std::array<std::string, 5> perms
+          = {"bac", "acb", "cba", "bca", "cab"};
+      std::array<std::string, 5> result;
+      size_t                     count = 0;
+      for (auto const& p : perms) {
+        std::string ww;
+        for (auto l : w) {
+          if (l == 'a') {
+            ww += p[0];
+          } else if (l == 'b') {
+            ww += p[1];
+          } else {
+            ww += p[2];
+          }
+        }
+        result[count] = ww;
+        count++;
+      }
+      return result;
+    }
+
   }  // namespace
 
 #ifdef false
@@ -1524,20 +1612,6 @@ namespace libsemigroups {
     // semigroups
     ////////////////////////////////////////////////////////////////////////
 
-    std::string swap_a_and_b(std::string const& w) {
-      std::string result;
-      for (auto l : w) {
-        if (l == 'a') {
-          result += "b";
-        } else if (l == '#') {
-          result += '#';
-        } else {
-          result += "a";
-        }
-      }
-      return result;
-    }
-
     template <typename T>
     auto count_2_gen_1_rel(size_t min, size_t max) {
       Sislo x;
@@ -1563,56 +1637,6 @@ namespace libsemigroups {
         }
       }
       return std::make_pair(total_c4, total);
-    }
-
-    auto sample(std::string A,
-                size_t      R,
-                size_t      min,
-                size_t      max,
-                size_t      sample_size) {
-      if (min < 7) {
-        LIBSEMIGROUPS_EXCEPTION("the minimum value of <min> is at least 7");
-        // Otherwise we get lhs = rhs in many of the things below and this
-        // skews the results.
-      } else if (min < max && max - min <= 1) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "the minimum and maximum values must be at least 2 apart");
-      }
-      auto     rg              = ReportGuard(false);
-      uint64_t total_c4        = 0;
-      uint64_t total_confluent = 0;
-      for (size_t j = 0; j < sample_size; ++j) {
-        Kambites<std::string> k;
-        k.set_alphabet(A);
-        fpsemigroup::KnuthBendix kb1;
-        kb1.set_alphabet(A);
-        fpsemigroup::KnuthBendix kb2;
-        std::reverse(A.begin(), A.end());
-        kb2.set_alphabet(A);
-        std::reverse(A.begin(), A.end());
-        for (size_t r = 0; r < R; ++r) {
-          auto        lhs = random_string(A, min, max);
-          std::string rhs;
-          if (lhs.size() == min) {
-            rhs = random_string(A, min + 1, max);
-          } else {
-            rhs = random_string(A, min, lhs.size());
-          }
-
-          k.add_rule(lhs, rhs);
-          kb1.add_rule(lhs, rhs);
-          kb2.add_rule(lhs, rhs);
-        }
-        kb1.run_for(std::chrono::milliseconds(1));
-        kb2.run_for(std::chrono::milliseconds(1));
-        if (k.small_overlap_class() >= 4) {
-          total_c4++;
-        }
-        if (kb1.confluent() || kb2.confluent()) {
-          total_confluent++;
-        }
-      }
-      return std::make_tuple(total_c4, total_confluent);
     }
 
     LIBSEMIGROUPS_TEST_CASE(
@@ -1681,28 +1705,6 @@ namespace libsemigroups {
     // Some tests for exploration of the space of all 3-generator 1-relation
     // semigroups
     ////////////////////////////////////////////////////////////////////////
-
-    std::array<std::string, 5> swap_a_b_c(std::string const& w) {
-      static std::array<std::string, 5> perms
-          = {"bac", "acb", "cba", "bca", "cab"};
-      std::array<std::string, 5> result;
-      size_t                     count = 0;
-      for (auto const& p : perms) {
-        std::string ww;
-        for (auto l : w) {
-          if (l == 'a') {
-            ww += p[0];
-          } else if (l == 'b') {
-            ww += p[1];
-          } else {
-            ww += p[2];
-          }
-        }
-        result[count] = ww;
-        count++;
-      }
-      return result;
-    }
 
     LIBSEMIGROUPS_TEST_CASE("Kambites",
                             "074",
@@ -1786,8 +1788,8 @@ namespace libsemigroups {
       REQUIRE(k.contains({4, 5}, {3, 6}));
       REQUIRE(k.contains({0, 0, 0, 0, 0, 4, 5}, {0, 0, 0, 0, 0, 3, 6}));
       REQUIRE(k.contains({4, 5, 0, 1, 0, 1, 0}, {3, 6, 0, 1, 0, 1, 0}));
-      // TODO there's no reason that we can't find the quotient_froidure_pin
-      // here
+      // TODO(later) there's no reason that we can't find the
+      // quotient_froidure_pin here
       REQUIRE_THROWS_AS(k.quotient_froidure_pin(), LibsemigroupsException);
     }
 

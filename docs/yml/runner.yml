@@ -27,3 +27,5 @@ libsemigroups::Runner:
   - run_for(TIntType)
   - run_until(T&&)
   - run_until(bool(*)())
+  - running_for() const noexcept
+  - running_until() const noexcept

@@ -27,9 +27,9 @@
 #include <chrono>       // for nanoseconds, high_resolution_clock
 #include <type_traits>  // for forward
 
+#include "debug.hpp"         // for LIBSEMIGROUPS_ASSERT
 #include "exception.hpp"     // for LibsemigroupsException
 #include "function-ref.hpp"  // for FunctionRef
-#include "report.hpp"        // for REPORT_DEFAULT
 
 namespace libsemigroups {
   //! A pseudonym for std::chrono::nanoseconds::max().
@@ -220,7 +220,6 @@ namespace libsemigroups {
     // At the end of this either finished, dead, or stopped_by_predicate.
     template <typename T>
     void run_until(T&& func) {
-      REPORT_DEFAULT("running until predicate returns true or finished. . .\n");
       if (!finished() && !dead()) {
         before_run();
         _stopper = std::forward<T>(func);
@@ -262,7 +261,17 @@ namespace libsemigroups {
     //! (None)
     //!
     //! \sa report_every(std::chrono::nanoseconds) and report_every(TIntType).
-    bool report() const;
+    inline bool report() const {
+      auto t       = std::chrono::high_resolution_clock::now();
+      auto elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(
+          t - _last_report);
+      if (elapsed > _report_time_interval) {
+        _last_report = t;
+        return true;
+      } else {
+        return false;
+      }
+    }
 
     //! Set the minimum elapsed time between reports.
     //!
@@ -464,15 +473,51 @@ namespace libsemigroups {
       }
     }
 
-   private:
+    //! Check if the runner is currently running for a particular length of
+    //! time.
+    //!
+    //! If the Runner is currently running because its member function \ref
+    //! run_for has been invoked, then this function returns \c true.
+    //! Otherwise, \c false is returned.
+    //!
+    //! \returns
+    //! A \c bool.
+    //!
+    //! \exceptions
+    //! \noexcept
+    //!
+    //! \complexity
+    //! Constant.
+    //!
+    //! \par Parameters
+    //! (None)
     bool running_for() const noexcept {
       return _state == state::running_for;
     }
 
+    //! Check if the runner is currently running until a nullary predicate
+    //! returns \c true.
+    //!
+    //! If the Runner is currently running because its member function \ref
+    //! run_until has been invoked, then this function returns \c true.
+    //! Otherwise, \c false is returned.
+    //!
+    //! \returns
+    //! A \c bool.
+    //!
+    //! \exceptions
+    //! \noexcept
+    //!
+    //! \complexity
+    //! Constant.
+    //!
+    //! \par Parameters
+    //! (None)
     bool running_until() const noexcept {
       return _state == state::running_until;
     }
 
+   private:
     virtual void run_impl()            = 0;
     virtual bool finished_impl() const = 0;
     virtual void before_run() {}
@@ -482,7 +527,8 @@ namespace libsemigroups {
     }
 
     void set_state(state stt) const {
-      LIBSEMIGROUPS_ASSERT(stt != state::never_run);
+      // We can set the state back to never_run if run_impl throws, and we are
+      // restoring the old state.
       if (!dead()) {
         // It can be that *this* becomes dead after this function has been
         // called.

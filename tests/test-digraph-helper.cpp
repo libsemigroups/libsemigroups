@@ -176,6 +176,9 @@ namespace libsemigroups {
                            return action_digraph_helper::is_acyclic(ad, v);
                          }));
     REQUIRE(!action_digraph_helper::is_acyclic(ad));
+    REQUIRE(action_digraph_helper::is_acyclic(ad, 10, 20));
+    REQUIRE(!action_digraph_helper::is_acyclic(ad, 100, 120));
+    REQUIRE(action_digraph_helper::is_acyclic(ad, 10, 120));
   }
 
   LIBSEMIGROUPS_TEST_CASE("is_acyclic", "007", "for a node", "[quick]") {

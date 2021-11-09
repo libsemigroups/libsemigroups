@@ -19,11 +19,15 @@
 #define LIBSEMIGROUPS_DIGRAPH_HELPER_HPP_
 
 #include <cstddef>  // for size_t
+#include <cstdint>  // for uint8_t
 #include <stack>    // for stack
+#include <string>   // for string
+#include <tuple>    // for tie
 #include <utility>  // for pair
 #include <vector>   // for vector
 
 #include "constants.hpp"  // for UNDEFINED
+#include "debug.hpp"      // for LIBSEMIGROUPS_ASSERT
 #include "exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
 #include "types.hpp"      // for word_type
 
@@ -96,10 +100,116 @@ namespace libsemigroups {
       return last;
     }
 
+    // TODO(later) follow_path non-nc version for iterators
+
+    //! Follow the path from a specified node labelled by a word.
+    //!
+    //! This function returns the last node on the path in the action digraph
+    //! \p ad starting at the node \p from labelled by \f$[first, last)\f$ or
+    //! libsemigroups::UNDEFINED.
+    //!
+    //! \param ad an action digraph
+    //! \param from the source node
+    //! \param first iterator into a word
+    //! \param last iterator into a word.
+    //!
+    //! \exception
+    //! \noexcept
+    //!
+    //! \returns A value of tyep ActionDigraph::node_type.
+    //!
+    //! \complexity
+    //! At worst the distance from \p first to \p last.
+    //!
+    //! \warning
+    //! No checks on the arguments of this function are performed.
+    template <typename T, typename S>
+    node_type<T> follow_path_nc(ActionDigraph<T> const& ad,
+                                node_type<T> const      from,
+                                S                       first,
+                                S                       last) noexcept {
+      node_type<T> to = from;
+      for (auto it = first; it < last && to != UNDEFINED; ++it) {
+        to = ad.unsafe_neighbor(to, *it);
+      }
+      return to;
+    }
+
+    //! Follow the path from a specified node labelled by a word.
+    //!
+    //! This function returns the last node on the path in the action digraph
+    //! \p ad starting at the node \p from labelled by \p path or
+    //! libsemigroups::UNDEFINED.
+    //!
+    //! \tparam T the node type of the action digraph
+    //!
+    //! \param ad an action digraph
+    //! \param from the source node
+    //! \param path the word
+    //!
+    //! \exception
+    //! \noexcept
+    //!
+    //! \returns A value of tyep ActionDigraph::node_type.
+    //!
+    //! \complexity
+    //! At worst the length of \p path.
+    //!
+    //! \warning
+    //! No checks on the arguments of this function are performed.
+    template <typename T>
+    node_type<T> follow_path_nc(ActionDigraph<T> const& ad,
+                                node_type<T> const      from,
+                                word_type const&        path) noexcept {
+      return follow_path_nc(ad, from, path.cbegin(), path.cend());
+    }
+
+    //! Returns the last node on the path labelled by a word and an iterator to
+    //! the position in the word reached.
+    //!
+    //! \tparam T the node type of the action digraph
+    //! \tparam S the type of the iterators into a word
+    //!
+    //! \param ad an action digraph
+    //! \param from the source node
+    //! \param first iterator into a word
+    //! \param last iterator into a word.
+    //!
+    //! \exception
+    //! \noexcept
+    //!
+    //! \returns A pair consisting of ActionDigraph::node_type and \p S.
+    //!
+    //! \complexity
+    //! At worst the distance from \p first to \p last.
+    //!
+    //! \warning
+    //! No checks on the arguments of this function are performed.
+    template <typename T, typename S>
+    std::pair<node_type<T>, S> last_node_on_path_nc(ActionDigraph<T> const& ad,
+                                                    node_type<T> from,
+                                                    S const&     first,
+                                                    S const& last) noexcept {
+      auto         it   = first;
+      node_type<T> prev = from;
+      node_type<T> to   = from;
+      for (; it < last && to != UNDEFINED; ++it) {
+        prev = to;
+        to   = ad.unsafe_neighbor(to, *it);
+      }
+      if (it != last || to == UNDEFINED) {
+        LIBSEMIGROUPS_ASSERT(prev != UNDEFINED);
+        return {prev, it - 1};
+      } else {
+        return {to, it};
+      }
+    }
+
     namespace detail {
       template <typename T>
       using stack_type  = std::stack<std::pair<node_type<T>, label_type<T>>>;
       using lookup_type = std::vector<uint8_t>;
+
       template <typename T>
       using topological_sort_type = std::vector<node_type<T>>;
 
@@ -111,38 +221,38 @@ namespace libsemigroups {
       // topological_sort.
       template <typename T>
       bool is_acyclic(ActionDigraph<T> const& ad,
-                      stack_type<T>&          stck,
-                      lookup_type&            seen) {
+                      std::stack<T>&          stck,
+                      std::vector<T>&         preorder,
+                      T&                      next_preorder_num,
+                      std::vector<T>&         postorder,
+                      T&                      next_postorder_num) {
         size_t const M = ad.out_degree();
-        do {
-          auto& p = stck.top();
-          if (seen[p.first] == 2) {
-            return false;
-          } else if (seen[p.first] == 1 || p.second >= M) {
-            // backtrack
-            seen[p.first] = 1;
-            stck.pop();
-            seen[stck.top().first] = 3;
-            stck.top().second++;
+        size_t const N = ad.number_of_nodes();
+        node_type<T> v;
+        while (!stck.empty()) {
+          v = stck.top();
+          stck.pop();
+          if (v >= N) {
+            postorder[v - N] = next_postorder_num++;
           } else {
-            node_type<T> node;
-            std::tie(node, p.second)
-                = ad.unsafe_next_neighbor(p.first, p.second);
-#ifdef LIBSEMIGROUPS_DEBUG
-            if (node == UNDEFINED) {
-              LIBSEMIGROUPS_ASSERT(p.second == UNDEFINED);
-            } else {
-              validate_node(ad, node);
-              validate_label(ad, p.second);
-            }
-#endif
-            if (node != UNDEFINED) {
-              seen[p.first] = 2;
-              stck.emplace(node, 0);
+            if (preorder[v] < next_preorder_num && postorder[v] == N) {
+              // v is an ancestor of some vertex later in the search
+              return false;
+            } else if (preorder[v] == N) {
+              // not seen v before
+              preorder[v] = next_preorder_num++;
+              // acts as a divider, so that we know when we've stopped
+              // processing the out-neighbours of v
+              stck.push(N + v);
+              for (size_t label = 0; label < M; ++label) {
+                auto w = ad.unsafe_neighbor(v, label);
+                if (w != UNDEFINED) {
+                  stck.push(w);
+                }
+              }
             }
           }
-        } while (stck.size() > 1);
-        seen[stck.top().first] = 1;
+        }
         return true;
       }
 
@@ -199,7 +309,8 @@ namespace libsemigroups {
 
     //! Check if a digraph is acyclic.
     //!
-    //! \tparam T the type used as the template parameter for the ActionDigraph.
+    //! \tparam T the type used as the template parameter for the
+    //! ActionDigraph.
     //!
     //! \param ad the ActionDigraph object to check.
     //!
@@ -210,10 +321,10 @@ namespace libsemigroups {
     //! \no_libsemigroups_except
     //!
     //! \par Complexity
-    //! \f$O(m + n)\f$ where \f$m\f$ is the number of nodes in the ActionDigraph
-    //! \p ad and \f$n\f$ is the number of edges. Note that for ActionDigraph
-    //! objects the number of edges is always at most \f$mk\f$ where \f$k\f$ is
-    //! the ActionDigraph::out_degree.
+    //! \f$O(m + n)\f$ where \f$m\f$ is the number of nodes in the
+    //! ActionDigraph \p ad and \f$n\f$ is the number of edges. Note that for
+    //! ActionDigraph objects the number of edges is always at most \f$mk\f$
+    //! where \f$k\f$ is the ActionDigraph::out_degree.
     //!
     //! A digraph is acyclic if every directed cycle on the digraph is
     //! trivial.
@@ -233,18 +344,24 @@ namespace libsemigroups {
       if (ad.validate()) {
         return false;
       }
-      node_type<T> const N = ad.number_of_nodes();
-      std::stack<std::pair<node_type<T>, label_type<T>>> stck;
-      std::vector<uint8_t>                               seen(N, 0);
+      auto const     N = ad.number_of_nodes();
+      std::stack<T>  stck;
+      std::vector<T> preorder(N, N);
+      T              next_preorder_num = 0;
+      std::vector<T> postorder(N, N);
+      T              next_postorder_num = 0;
 
       for (node_type<T> m = 0; m < N; ++m) {
-        if (seen[m] == 0) {
-          stck.emplace(m, 0);
-          if (!detail::is_acyclic(ad, stck, seen)) {
-            LIBSEMIGROUPS_ASSERT(seen[m] != 0);
+        if (preorder[m] == N) {
+          stck.push(m);
+          if (!detail::is_acyclic(ad,
+                                  stck,
+                                  preorder,
+                                  next_preorder_num,
+                                  postorder,
+                                  next_postorder_num)) {
             return false;
           }
-          LIBSEMIGROUPS_ASSERT(seen[m] != 0);
         }
       }
       return true;
@@ -254,10 +371,11 @@ namespace libsemigroups {
     //! possible.
     //!
     //! If it is not empty, the returned vector has the property that if an
-    //! edge from a node \c n points to a node \c m, then \c m occurs before \c
-    //! n in the vector.
+    //! edge from a node \c n points to a node \c m, then \c m occurs before
+    //! \c n in the vector.
     //!
-    //! \tparam T the type used as the template parameter for the ActionDigraph.
+    //! \tparam T the type used as the template parameter for the
+    //! ActionDigraph.
     //!
     //! \param ad the ActionDigraph object to check.
     //!
@@ -269,10 +387,10 @@ namespace libsemigroups {
     //! \no_libsemigroups_except
     //!
     //! \par Complexity
-    //! \f$O(m + n)\f$ where \f$m\f$ is the number of nodes in the ActionDigraph
-    //! \p ad and \f$n\f$ is the number of edges. Note that for ActionDigraph
-    //! objects the number of edges is always at most \f$mk\f$ where \f$k\f$ is
-    //! the ActionDigraph::out_degree.
+    //! \f$O(m + n)\f$ where \f$m\f$ is the number of nodes in the
+    //! ActionDigraph \p ad and \f$n\f$ is the number of edges. Note that for
+    //! ActionDigraph objects the number of edges is always at most \f$mk\f$
+    //! where \f$k\f$ is the ActionDigraph::out_degree.
     template <typename T>
     detail::topological_sort_type<T>
     topological_sort(ActionDigraph<T> const& ad) {
@@ -310,7 +428,8 @@ namespace libsemigroups {
     //! before \c n in the vector, and the last item in the vector is \p
     //! source.
     //!
-    //! \tparam T the type used as the template parameter for the ActionDigraph.
+    //! \tparam T the type used as the template parameter for the
+    //! ActionDigraph.
     //!
     //! \param ad the ActionDigraph object to check.
     //! \param source the source node.
@@ -345,7 +464,8 @@ namespace libsemigroups {
     //! Check if the subdigraph induced by the nodes reachable from a source
     //! node is acyclic.
     //!
-    //! \tparam T the type used as the template parameter for the ActionDigraph.
+    //! \tparam T the type used as the template parameter for the
+    //! ActionDigraph.
     //!
     //! \param ad the ActionDigraph object to check.
     //! \param source the source node.
@@ -357,10 +477,10 @@ namespace libsemigroups {
     //! \no_libsemigroups_except
     //!
     //! \par Complexity
-    //! \f$O(m + n)\f$ where \f$m\f$ is the number of nodes in the ActionDigraph
-    //! \p ad and \f$n\f$ is the number of edges. Note that for ActionDigraph
-    //! objects the number of edges is always at most \f$mk\f$ where \f$k\f$ is
-    //! the ActionDigraph::out_degree.
+    //! \f$O(m + n)\f$ where \f$m\f$ is the number of nodes in the
+    //! ActionDigraph \p ad and \f$n\f$ is the number of edges. Note that for
+    //! ActionDigraph objects the number of edges is always at most \f$mk\f$
+    //! where \f$k\f$ is the ActionDigraph::out_degree.
     //!
     //! A digraph is acyclic if every directed cycle on the digraph is
     //! trivial.
@@ -383,15 +503,21 @@ namespace libsemigroups {
     template <typename T>
     bool is_acyclic(ActionDigraph<T> const& ad, node_type<T> source) {
       validate_node(ad, source);
-      std::stack<std::pair<node_type<T>, label_type<T>>> stck;
-      stck.emplace(source, 0);
-      std::vector<uint8_t> seen(ad.number_of_nodes(), 0);
-      return detail::is_acyclic(ad, stck, seen);
+      auto const    N = ad.number_of_nodes();
+      std::stack<T> stck;
+      stck.push(source);
+      std::vector<T> preorder(N, N);
+      T              next_preorder_num = 0;
+      std::vector<T> postorder(N, N);
+      T              next_postorder_num = 0;
+      return detail::is_acyclic(
+          ad, stck, preorder, next_preorder_num, postorder, next_postorder_num);
     }
 
     //! Check if there is a path from one node to another.
     //!
-    //! \tparam T the type used as the template parameter for the ActionDigraph.
+    //! \tparam T the type used as the template parameter for the
+    //! ActionDigraph.
     //!
     //! \param ad the ActionDigraph object to check.
     //! \param source the source node.
@@ -404,10 +530,10 @@ namespace libsemigroups {
     //! \no_libsemigroups_except
     //!
     //! \par Complexity
-    //! \f$O(m + n)\f$ where \f$m\f$ is the number of nodes in the ActionDigraph
-    //! \p ad and \f$n\f$ is the number of edges. Note that for ActionDigraph
-    //! objects the number of edges is always at most \f$mk\f$ where \f$k\f$ is
-    //! the ActionDigraph::out_degree.
+    //! \f$O(m + n)\f$ where \f$m\f$ is the number of nodes in the
+    //! ActionDigraph \p ad and \f$n\f$ is the number of edges. Note that for
+    //! ActionDigraph objects the number of edges is always at most \f$mk\f$
+    //! where \f$k\f$ is the ActionDigraph::out_degree.
     //!
     //! \note
     //! If \p source and \p target are equal, then, by convention, we consider
@@ -470,10 +596,37 @@ namespace libsemigroups {
       return false;
     }
 
+    template <typename T>
+    bool is_acyclic(ActionDigraph<T> const& ad,
+                    node_type<T>            source,
+                    node_type<T>            target) {
+      validate_node(ad, source);
+      validate_node(ad, target);
+      if (!is_reachable(ad, source, target)) {
+        return true;
+      }
+      auto const    N = ad.number_of_nodes();
+      std::stack<T> stck;
+      stck.push(source);
+      std::vector<T> preorder(N, N);
+      T              next_preorder_num = 0;
+      std::vector<T> postorder(N, N);
+      T              next_postorder_num = 0;
+      // TODO(later) there should be a better way of doing this
+      for (auto it = ad.cbegin_nodes(); it != ad.cend_nodes(); ++it) {
+        if (!is_reachable(ad, *it, target)) {
+          preorder[*it] = N + 1;
+        }
+      }
+      return detail::is_acyclic(
+          ad, stck, preorder, next_preorder_num, postorder, next_postorder_num);
+    }
+
     //! Adds a cycle involving the specified range of nodes.
     //!
-    //! \tparam T the type used as the template parameter for the ActionDigraph.
-    //! \tparam U the type of an iterator pointing to nodes of an ActionDigraph
+    //! \tparam T the type used as the template parameter for the
+    //! ActionDigraph. \tparam U the type of an iterator pointing to nodes of
+    //! an ActionDigraph
     //!
     //! \param ad the ActionDigraph object to add a cycle to.
     //! \param first a const iterator to nodes of \p ad
@@ -500,7 +653,8 @@ namespace libsemigroups {
 
     //! Adds a cycle consisting of \p N new nodes.
     //!
-    //! \tparam T the type used as the template parameter for the ActionDigraph.
+    //! \tparam T the type used as the template parameter for the
+    //! ActionDigraph.
     //!
     //! \param ad the ActionDigraph object to add a cycle to.
     //! \param N the length of the cycle and number of new nodes to add.

@@ -53,7 +53,7 @@ namespace libsemigroups {
 
   //! Empty base class for polymorphism.
   //!
-  //! \sa \ref IsDerivedFromPTransf
+  //! \sa IsDerivedFromPTransf
   struct PTransfPolymorphicBase {};
 
   namespace detail {
@@ -122,6 +122,19 @@ namespace libsemigroups {
       using container_type = TContainer;
 
       // Required by python bindings
+      //! Returns the value used to represent \"undefined\".
+      //!
+      //! This static function returns the value of type \ref value_type used to
+      //! represent an \"undefined\" value.
+      //!
+      //! \parameters
+      //! (None)
+      //!
+      //! \returns
+      //! A value of type \ref value_type.
+      //!
+      //! \exception
+      //! \noexcept
       static value_type undef() noexcept {
         return static_cast<value_type>(UNDEFINED);
       }

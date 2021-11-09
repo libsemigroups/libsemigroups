@@ -20,15 +20,22 @@
 #define CATCH_CONFIG_FAST_COMPILE
 #define CATCH_CONFIG_MAIN
 
+#include <algorithm>      // for transform, find_if
+#include <cctype>         // for tolower
+#include <chrono>         // for nanoseconds
+#include <cmath>          // for pow
 #include <cstdlib>        // for exit, size_t
-#include <string>         // for string
-#include <unordered_map>  // for unordered_map
+#include <iomanip>        // for operator<<, setw
+#include <iostream>       // for string, operator<<, basic_ostream
+#include <locale>         // for locale
+#include <string>         // for char_traits, allocator, hash
+#include <unordered_map>  // for unordered_map, __hash_map_iterator
+#include <vector>         // for vector
 
 #include "catch.hpp"  // for Colour, Colour::Code::BrightRed, CATCH_REGISTER...
 
-#include "libsemigroups/stl.hpp"     // for detail::to_string
-#include "libsemigroups/string.hpp"  // for detail::wrap
-#include "libsemigroups/timer.hpp"   // for detail::Timer
+#include "libsemigroups/string.hpp"  // for to_string, unicode_string_length
+#include "libsemigroups/timer.hpp"   // for Timer
 
 struct LibsemigroupsLineInfo {
   explicit LibsemigroupsLineInfo(Catch::TestCaseInfo const& testInfo)
@@ -42,6 +49,10 @@ struct LibsemigroupsListener : Catch::TestEventListenerBase {
   using TestEventListenerBase::TestEventListenerBase;  // inherit constructor
 
   void testCaseStarting(Catch::TestCaseInfo const& testInfo) override {
+    try {
+      std::locale::global(std::locale("en_US.UTF-8"));
+    } catch (std::runtime_error const& e) {
+    }
     _first_call = true;
     _one        = testInfo.name;
     _two        = " . . .";

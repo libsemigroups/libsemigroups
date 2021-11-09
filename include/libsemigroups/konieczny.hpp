@@ -3908,30 +3908,30 @@ namespace libsemigroups {
         } else {
           add_D_class(new NonRegularDClass(this, rep_info._elt));
         }
-        for (auto& rep_info : _D_classes.back()->covering_reps()) {
-          internal_reference x = rep_info._elt;
+        for (auto& rep_info2 : _D_classes.back()->covering_reps()) {
+          internal_reference x = rep_info2._elt;
           rank_type          rnk
               = InternalRank()(_rank_state, this->to_external_const(x));
           _ranks.insert(rnk);
           if (is_regular_element_NC(x)) {
             LIBSEMIGROUPS_ASSERT(rnk < mx_rank);
-            _reg_reps[rnk].push_back(std::move(rep_info));
+            _reg_reps[rnk].push_back(std::move(rep_info2));
           } else {
-            _nonregular_reps[rnk].push_back(std::move(rep_info));
+            _nonregular_reps[rnk].push_back(std::move(rep_info2));
           }
         }
         next_reps.pop_back();
         _reps_processed++;
 
         tmp_next.clear();
-        for (auto& rep_info : next_reps) {
+        for (auto& rep_info2 : next_reps) {
           if (_D_classes.back()->contains_NC(
-                  rep_info._elt, rep_info._lambda_idx, rep_info._rho_idx)) {
-            _D_rels.back().push_back(rep_info._D_idx);
-            this->internal_free(rep_info._elt);
+                  rep_info2._elt, rep_info2._lambda_idx, rep_info2._rho_idx)) {
+            _D_rels.back().push_back(rep_info2._D_idx);
+            this->internal_free(rep_info2._elt);
             _reps_processed++;
           } else {
-            tmp_next.push_back(std::move(rep_info));
+            tmp_next.push_back(std::move(rep_info2));
           }
         }
         std::swap(next_reps, tmp_next);

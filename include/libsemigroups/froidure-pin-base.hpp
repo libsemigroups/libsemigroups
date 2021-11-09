@@ -348,7 +348,7 @@ namespace libsemigroups {
       return _letter_to_pos[i];
     }
 
-    // TODO analogues of the current_position mem fns for position
+    // TODO(later) analogues of the current_position mem fns for position
 
     //! Returns the maximum length of a word in the generators so far computed.
     //!
@@ -1058,7 +1058,7 @@ namespace libsemigroups {
     //! you want to obtain the complete set of rules, then it is necessary to
     //! call run() first.
     //!
-    //! \returns An iterator of type \ref const_rule_iterator
+    //! \returns An iterator of type FroidurePinBase::const_rule_iterator
     //! pointing to a \ref relation_type.
     //!
     //! \parameters
@@ -1130,7 +1130,7 @@ namespace libsemigroups {
     //! you want to obtain the complete set of rules, then it is necessary to
     //! call run() first.
     //!
-    //! \returns An iterator of type \ref const_rule_iterator
+    //! \returns An iterator of type FroidurePinBase::const_rule_iterator
     //! pointing to a \ref relation_type.
     //!
     //! \parameters

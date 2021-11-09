@@ -25,15 +25,18 @@
 
 #include <atomic>         // for atomic
 #include <cstddef>        // for size_t
+#include <cstdint>        // for uint64_t
+#include <cstdlib>        // for free
 #include <iosfwd>         // for string, operator<<, cout, ost...
 #include <mutex>          // for mutex, lock_guard
+#include <string>         // for string
 #include <thread>         // for get_id, thread, thread::id
 #include <unordered_map>  // for unordered_map
+#include <utility>        // for pair
 #include <vector>         // for vector
 
 #include "config.hpp"  // for LIBSEMIGROUPS_FMT_ENABLED
-#include "debug.hpp"   // for LIBSEMIGROUPS_ASSERT
-#include "string.hpp"  // for wrap
+#include "string.hpp"  // for string_format, to_string
 
 #ifdef LIBSEMIGROUPS_FMT_ENABLED
 #include "fmt/color.h"
@@ -80,6 +83,11 @@
   REPORT_DEFAULT("elapsed time (%s): %s\n", __func__, var.string().c_str());
 
 namespace libsemigroups {
+#ifndef LIBSEMIGROUPS_FMT_ENABLED
+#define FORMAT(...) __VA_ARGS__
+#else
+#define FORMAT(...) fmt::format(__VA_ARGS__)
+#endif
 
   namespace detail {
 
@@ -294,8 +302,8 @@ namespace libsemigroups {
       Reporter& operator=(Reporter&&) = delete;
 
       template <typename TClass>
-      Reporter& prefix(TClass const* const ptr) {
-        if (_report) {
+      Reporter& prefix(TClass const* const ptr, bool overide = false) {
+        if (_report || overide) {
           std::lock_guard<std::mutex> lg(_mtx);
           uint64_t tid = THREAD_ID_MANAGER.tid(std::this_thread::get_id());
           resize(tid + 1);
@@ -316,6 +324,11 @@ namespace libsemigroups {
 #endif
 
       Reporter& prefix();
+
+      std::string get_prefix() const noexcept {
+        uint64_t tid = THREAD_ID_MANAGER.tid(std::this_thread::get_id());
+        return _options[tid].prefix;
+      }
 
       Reporter& flush_right();
 
@@ -377,6 +390,75 @@ namespace libsemigroups {
 
   extern detail::Reporter REPORTER;
 
+  namespace detail {
+    class PrintTable {
+     public:
+      template <typename S>
+      explicit PrintTable(S const* const class_, size_t width = 72)
+          : _rows(), _header(), _footer(), _width(width) {
+        REPORTER.prefix(class_, true);
+        try {
+          std::locale::global(std::locale("en_US.UTF-8"));
+        } catch (std::runtime_error const& e) {
+        }
+      }
+
+      std::string emit() {
+        std::string result = lineohash() + _header + lineohash();
+        for (auto const& row : _rows) {
+          size_t n = 0;
+          // Check if we contain a \infty
+          if (row.second.find("\u221E") == std::string::npos) {
+            n = _width - row.first.size() - row.second.size();
+          } else {
+            n = _width - row.first.size() - row.second.size() + 2;
+          }
+          result += row.first + std::string(n, ' ') + row.second + "\n";
+        }
+        result += lineohash() + _footer + lineohash();
+        return result;
+      }
+
+      void header(char const* text) {
+        _header = REPORTER.get_prefix() + text;
+        _header += "\n";
+      }
+
+      void footer(char const* text) {
+        _footer = REPORTER.get_prefix() + text;
+        _footer += "\n";
+      }
+
+      void divider() {
+        _rows.emplace_back(lineohash(false), "");
+      }
+
+      template <typename T>
+      void operator()(char const* col0, T const& col1) {
+        _rows.emplace_back(REPORTER.get_prefix() + col0,
+                           detail::to_string(col1));
+      }
+
+      template <typename T>
+      void operator()(char const* col0,
+                      char const* col1_format,
+                      T const&    col1) {
+        _rows.emplace_back(REPORTER.get_prefix() + col0,
+                           string_format(col1_format, col1));
+      }
+
+     private:
+      std::string lineohash(bool newline = true) {
+        return std::string(_width, '#') + (newline ? "\n" : "");
+      }
+
+      std::vector<std::pair<std::string, std::string>> _rows;
+      std::string                                      _header;
+      std::string                                      _footer;
+      size_t                                           _width;
+    };
+  }  // namespace detail
+
   //! This struct can be used to enable printing of some information during
   //! various of the computation in ``libsemigroups``. Reporting is enable (or
   //! not) at construction time, and disable when the ReportGuard goes out of
@@ -393,5 +475,6 @@ namespace libsemigroups {
       REPORTER.report(false);
     }
   };
+
 }  // namespace libsemigroups
 #endif  // LIBSEMIGROUPS_REPORT_HPP_

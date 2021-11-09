@@ -41,11 +41,6 @@ printf "\033[2m";
 lcov --version
 printf "\033[0m"
 
-bold "$MYCXX --version . . ." 
-printf "\033[2m";
-$MYCXX --version
-printf "\033[0m"
-
 if [[ $# -gt 2 || $# -le 0 ]]; then
   bold "error expected 1 or 2 arguments, got $#!"
   exit 1
@@ -87,14 +82,14 @@ printf "\033[0m";
 delete_gcda_files
 
 if [[ $# -eq 1 ]]; then
-  bold "Running ./$1 \"[quick]\" . . .";
-  if ! ./$1 "[quick]"; then
+  bold "Running ./$1 \"[quick][exclude:no-coverage]\" --abort . . .";
+  if ! ./$1 "[quick][exclude:no-coverage]" --abort; then
     delete_gcda_files
     exit 1
   fi
 else
-  bold "Running ./$1 $2 . . .";
-  if ! ./$1 "$2"; then
+  bold "Running \"./$1 $2 --abort\" . . .";
+  if ! ./$1 "$2" --abort; then
     delete_gcda_files
     exit 1
   fi

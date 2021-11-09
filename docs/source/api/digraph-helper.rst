@@ -21,6 +21,15 @@ Full API
 .. doxygenfunction:: libsemigroups::action_digraph_helper::follow_path
    :project: libsemigroups
 
+.. doxygenfunction:: libsemigroups::action_digraph_helper::follow_path_nc(ActionDigraph<T> const&, node_type<T> const, word_type const&) noexcept
+   :project: libsemigroups
+
+.. doxygenfunction:: libsemigroups::action_digraph_helper::follow_path_nc(ActionDigraph<T> const&, node_type<T> const, S, S) noexcept
+   :project: libsemigroups
+
+.. doxygenfunction:: libsemigroups::action_digraph_helper::last_node_on_path_nc
+   :project: libsemigroups
+
 .. doxygenfunction:: libsemigroups::action_digraph_helper::is_acyclic(ActionDigraph<T> const&)
    :project: libsemigroups
 

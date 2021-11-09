@@ -24,8 +24,12 @@
 #include <cstddef>  // for size_t
 #include <numeric>  // for iota
 
-#include "libsemigroups/debug.hpp"   // for LIBSEMIGROUPS_ASSERT
+#include "libsemigroups/debug.hpp"      // for LIBSEMIGROUPS_ASSERT
+#include "libsemigroups/exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
+
+#ifdef LIBSEMIGROUPS_DEBUG
 #include "libsemigroups/report.hpp"  // for REPORT_DEBUG
+#endif
 
 ////////////////////////////////////////////////////////////////////////////////
 //
@@ -96,11 +100,21 @@ namespace libsemigroups {
           _cosets_killed(0),
           _defined(1),
           _first_free_coset(UNDEFINED),
-          _forwd(1, static_cast<size_t>(UNDEFINED)),
+          _forwd(1, static_cast<coset_type>(UNDEFINED)),
+          _growth_factor(2.0),
           _ident(1, 0),
           _last_active_coset(0) {}
 
     CosetManager::~CosetManager() = default;
+
+    CosetManager& CosetManager::growth_factor(float val) {
+      if (val < 1.0) {
+        LIBSEMIGROUPS_EXCEPTION("expected a value of at least 1.0, found %f",
+                                val);
+      }
+      _growth_factor = val;
+      return *this;
+    }
 
     ////////////////////////////////////////////////////////////////////////
     // CosetManager - member functions - protected
@@ -196,7 +210,7 @@ namespace libsemigroups {
         // There are no free cosets to recycle: make new ones.
         // It seems to be marginally faster to make lots like this, than to
         // just make 1, in some examples, notably ToddCoxeter 040 (Walker 3).
-        add_free_cosets(2 * coset_capacity());
+        add_free_cosets(growth_factor() * coset_capacity());
       }
       add_active_cosets(1);
       return _last_active_coset;
@@ -247,6 +261,22 @@ namespace libsemigroups {
 
       LIBSEMIGROUPS_ASSERT(is_active_coset(_last_active_coset));
       LIBSEMIGROUPS_ASSERT(!is_active_coset(_first_free_coset));
+    }
+
+    // The permutation p ^ -1 must map the active cosets to the [0, ..
+    // , number_of_cosets_active())
+    void CosetManager::apply_permutation(CosetManager::Perm& p) {
+      size_t const n = p.size();
+      for (coset_type i = 0; i < n; ++i) {
+        coset_type current = i;
+        while (i != p[current]) {
+          size_t next = p[current];
+          switch_cosets(current, next);
+          p[current] = current;
+          current    = next;
+        }
+        p[current] = current;
+      }
     }
 
     ////////////////////////////////////////////////////////////////////////

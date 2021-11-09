@@ -6,6 +6,7 @@
 *.info
 *.la
 *.lo
+*.log
 *.o
 *.o.*
 *.pyc
@@ -15,6 +16,7 @@
 *.tmp
 *~
 .!*
+.DS_Store
 .VERSION
 .deps
 .dirstamp
@@ -63,6 +65,7 @@ html/
 libsemigroups-*-coverage*
 libsemigroups.pc
 libtool
+log/
 m4/libtool.m4
 m4/ltoptions.m4
 m4/ltsugar.m4
