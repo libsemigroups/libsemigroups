@@ -25,14 +25,15 @@
 #ifndef LIBSEMIGROUPS_TCE_HPP_
 #define LIBSEMIGROUPS_TCE_HPP_
 
-#include <cstddef>     // for size_t
-#include <functional>  // for hash
-#include <memory>      // for shared_ptr
-#include <sstream>     // for ostream, ostringstream
+#include <cstddef>      // for size_t
+#include <sstream>      // for ostream, ostringstream
+#include <type_traits>  // for integral_constant
+#include <utility>      // for hash
 
-#include "adapters.hpp"    // for Complexity, Degree, Less, One, Product, ...
-#include "constants.hpp"   // for LIMIT_MAX
-#include "containers.hpp"  // for DynamicArray2
+#include "adapters.hpp"      // for Complexity, Degree, Less, One, Product, ...
+#include "constants.hpp"     // for LIMIT_MAX
+#include "string.hpp"        // for to_string
+#include "todd-coxeter.hpp"  // for ToddCoxeter
 
 namespace libsemigroups {
   // Forward declarations
@@ -46,8 +47,8 @@ namespace libsemigroups {
       using ToddCoxeter = congruence::ToddCoxeter;
 
      public:
-      using class_index_type = size_t;
-      using Table            = detail::DynamicArray2<class_index_type>;
+      using coset_type = typename ToddCoxeter::coset_type;
+      using Table      = typename ToddCoxeter::table_type;
 
       TCE() noexcept           = default;
       TCE(TCE const&) noexcept = default;
@@ -56,7 +57,7 @@ namespace libsemigroups {
       TCE& operator=(TCE&&) noexcept = default;
       ~TCE()                         = default;
 
-      explicit TCE(class_index_type i) noexcept : _index(i) {}
+      explicit TCE(coset_type i) noexcept : _index(i) {}
 
       bool operator==(TCE const& that) const noexcept {
         return _index == that._index;
@@ -70,7 +71,7 @@ namespace libsemigroups {
         return TCE(0);
       }
 
-      operator class_index_type() const {
+      operator coset_type() const {
         return _index;
       }
 
@@ -79,7 +80,7 @@ namespace libsemigroups {
       // class_index_type  used in the ToddCoxeter class and not that number
       // minus 1, which is what "class_index" means in the context of
       // CongruenceInterface objects.
-      class_index_type _index;
+      coset_type _index;
     };
 
     // The following are not really required but are here as a reminder that
@@ -93,7 +94,7 @@ namespace libsemigroups {
   //! No doc
   inline std::ostringstream& operator<<(std::ostringstream& os,
                                         detail::TCE const&  x) {
-    os << "TCE(" << detail::TCE::class_index_type(x) << ")";
+    os << "TCE(" << detail::TCE::coset_type(x) << ")";
     return os;
   }
 
@@ -155,9 +156,9 @@ namespace libsemigroups {
 namespace std {
   template <>
   struct hash<libsemigroups::detail::TCE> {
-    using class_index_type = libsemigroups::detail::TCE::class_index_type;
+    using coset_type = libsemigroups::detail::TCE::coset_type;
     size_t operator()(libsemigroups::detail::TCE const& x) const noexcept {
-      return std::hash<class_index_type>()(x);
+      return std::hash<coset_type>()(x);
     }
   };
 }  // namespace std

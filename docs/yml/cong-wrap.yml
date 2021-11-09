@@ -11,10 +11,10 @@ libsemigroups::CongruenceWrapper:
   - CongruenceWrapper(std::shared_ptr<FroidurePinBase>)
   - CongruenceWrapper(S const&)
   - CongruenceWrapper(CongruenceWrapper const&) 
+  - CongruenceWrapper(CongruenceWrapper&&) = default
 - Deleted constructors:
   - ["This page lists the deleted constructors for the
      :cpp:any:`CongruenceWrapper` class."]
-  - CongruenceWrapper(CongruenceWrapper&&) = delete
   - operator=(CongruenceWrapper const&) = delete 
   - operator=(CongruenceWrapper&&) = delete
 - CongruenceWrapper member functions:
@@ -91,3 +91,5 @@ libsemigroups::CongruenceWrapper:
   - report_every() const noexcept
   - report() const
   - report_why_we_stopped() const
+  - running_for() const noexcept
+  - running_until() const noexcept

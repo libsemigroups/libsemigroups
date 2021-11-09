@@ -24,6 +24,7 @@
 #include <functional>   // for std::equal_to
 #include <memory>       // for shared_ptr
 #include <type_traits>  // for hash, is_same
+#include <utility>      // for pair, hash
 #include <vector>       // for std::vector
 
 #include "config.hpp"  // for LIBSEMIGROUPS_SIZEOF_VOID_P
@@ -460,6 +461,22 @@ namespace libsemigroups {
       for (T const& x : ar) {
         val ^= Hash<T>()(x) + 0x9e3779b97f4a7c16 + (val << 6) + (val >> 2);
       }
+      return val;
+    }
+  };
+
+  // TODO(later) doc
+  template <typename T>
+  struct Hash<std::pair<T, T>> {
+    //! This call operator hashes \p x.
+    //!
+    //! \param x the value to hash
+    //!
+    //! \returns A hash value for \p x, a value of type `size_t`.
+    size_t operator()(std::pair<T, T> const& x) const noexcept {
+      size_t val = 0;
+      val ^= Hash<T>()(x.first) + 0x9e3779b97f4a7c16 + (val << 6) + (val >> 2);
+      val ^= Hash<T>()(x.second) + 0x9e3779b97f4a7c16 + (val << 6) + (val >> 2);
       return val;
     }
   };

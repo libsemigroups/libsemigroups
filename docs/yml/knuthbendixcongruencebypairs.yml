@@ -65,3 +65,5 @@ libsemigroups::KnuthBendixCongruenceByPairs:
   - report_every() const noexcept
   - report() const
   - report_why_we_stopped() const
+  - running_for() const noexcept
+  - running_until() const noexcept

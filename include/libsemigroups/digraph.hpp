@@ -28,14 +28,18 @@
 
 #include <algorithm>    // for uniform_int_distribution
 #include <cstddef>      // for size_t
+#include <cstdint>      // for uint64_t, int64_t
 #include <iterator>     // for forward_iterator_tag, distance
+#include <numeric>      // for accumulate
 #include <queue>        // for queue
 #include <random>       // for mt19937
 #include <stack>        // for stack
+#include <tuple>        // for tie
 #include <type_traits>  // for is_integral, is_unsigned
 #include <utility>      // for pair
 #include <vector>       // for vector
 
+#include "constants.hpp"       // for UNDEFINED
 #include "containers.hpp"      // for DynamicArray2
 #include "debug.hpp"           // for LIBSEMIGROUPS_ASSERT
 #include "digraph-helper.hpp"  // for is_reachable
@@ -73,7 +77,7 @@ namespace libsemigroups {
   //!
   //! \sa Action.
   template <typename T>
-  class ActionDigraph final {
+  class ActionDigraph {
     static_assert(std::is_integral<T>(),
                   "the template parameter T must be an integral type!");
     static_assert(
@@ -379,6 +383,26 @@ namespace libsemigroups {
       reset();
     }
 
+    //! Restrict the digraph to its first \p n nodes.
+    //!
+    //! \param n the number of nodes
+    //!
+    //! \returns (None)
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \warning
+    //! This function performs no checks whatsoever and will result in a
+    //! corrupted digraph if there are any edges from the nodes \f$0, \ldots, n
+    //! - 1\f$ to nodes larger than \f$n - 1\f$.
+    // TODO(later) this is the nc version do a non-nc version also
+    // Means restrict the number of nodes to the first 0, ... ,n - 1.
+    void inline restrict(size_t n) {
+      _nr_nodes = n;
+      _dynamic_array_2.shrink_rows_to(n);
+    }
+
     //! Adds to the out-degree.
     //!
     //! \param nr the number of new out-edges for every node.
@@ -409,7 +433,7 @@ namespace libsemigroups {
     //! Add an edge from one node to another with a given label.
     //!
     //! If \p i and \p j are nodes in \c this, and \p lbl is in the range `[0,
-    //! out_degree())`, then this method adds an edge edge from \p i to \p j
+    //! out_degree())`, then this function adds an edge from \p i to \p j
     //! labelled \p lbl.
     //!
     //! \param i the source node
@@ -430,6 +454,27 @@ namespace libsemigroups {
       action_digraph_helper::validate_node(*this, i);
       action_digraph_helper::validate_node(*this, j);
       action_digraph_helper::validate_label(*this, lbl);
+      add_edge_nc(i, j, lbl);
+    }
+
+    //! Add an edge from one node to another with a given label.
+    //!
+    //! \param i the source node
+    //! \param j the range node
+    //! \param lbl the label of the edge from \p i to \p j
+    //!
+    //! \returns
+    //! (None)
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \complexity
+    //! Constant.
+    //!
+    //! \warning
+    //! No checks whatsoever on the validity of the arguments are peformed.
+    void inline add_edge_nc(node_type i, node_type j, label_type lbl) {
       _dynamic_array_2.set(i, lbl, j);
       reset();
     }
@@ -462,6 +507,32 @@ namespace libsemigroups {
       _dynamic_array_2.add_rows(m - _dynamic_array_2.number_of_rows());
     }
 
+    //! Swaps the edge with specified label from one node with another.
+    //!
+    //! This function swaps the target of the edge from the node \p u labelled
+    //! \p a with the target of the edge from the node \p v labelled \p a.
+    //!
+    //! \param u the first node
+    //! \param v the second node
+    //! \param a the label
+    //!
+    //! \returns
+    //! (None)
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \complexity
+    //! Constant
+    //!
+    //! \warning
+    //! No checks whatsoever on the validity of the arguments are peformed.
+    // swap u - a - > u' and v - a -> v'
+    void swap_edges_nc(node_type u, node_type v, label_type a) {
+      reset();
+      _dynamic_array_2.swap(u, a, v, a);
+    }
+
     ////////////////////////////////////////////////////////////////////////
     // ActionDigraph - nodes, neighbors, etc - public
     ////////////////////////////////////////////////////////////////////////
@@ -473,7 +544,7 @@ namespace libsemigroups {
     //!
     //! \returns
     //! Returns the node adjacent to \p v via the edge labelled \p lbl, or
-    //! \ref UNDEFINED; both are values of type \ref node_type.
+    //! libsemigroups::UNDEFINED; both are values of type \ref node_type.
     //!
     //! \complexity
     //! Constant.
@@ -494,7 +565,7 @@ namespace libsemigroups {
     //!
     //! \returns
     //! Returns the node adjacent to \p v via the edge labelled \p lbl, or
-    //! \ref UNDEFINED; both are values of type \ref node_type.
+    //! libsemigroups::UNDEFINED; both are values of type \ref node_type.
     //!
     //! \complexity
     //! Constant.
@@ -509,12 +580,13 @@ namespace libsemigroups {
       return _dynamic_array_2.get(v, lbl);
     }
 
-    //! Get the next neighbor of a node that doesn't equal \ref
-    //! UNDEFINED.
+    //! Get the next neighbor of a node that doesn't equal
+    //! libsemigroups::UNDEFINED.
     //!
-    //! If `neighbor(v, i)` equals \ref UNDEFINED for every value in the range
-    //! \f$[i, n)\f$, where \f$n\f$ is the return value of out_degree() then \c
-    //! x.first and \c x.second equal \ref UNDEFINED.
+    //! If `neighbor(v, i)` equals libsemigroups::UNDEFINED for every value in
+    //! the range \f$[i, n)\f$, where \f$n\f$ is the return value of
+    //! out_degree() then \c x.first and \c x.second equal
+    //! libsemigroups::UNDEFINED.
     //!
     //! \param v the node
     //! \param i the label
@@ -525,8 +597,8 @@ namespace libsemigroups {
     //! 1. \c x.first is adjacent to \p v via an edge labelled
     //!    \c x.second;
     //! 2. \c x.second is the minimum value in the range \f$[i, n)\f$ such that
-    //!    `neighbor(v, x.second)` is not equal to \ref UNDEFINED where \f$n\f$
-    //!    is the return value of out_degree(); and
+    //!    `neighbor(v, x.second)` is not equal to libsemigroups::UNDEFINED
+    //!    where \f$n\f$ is the return value of out_degree(); and
     //!
     //! \complexity
     //! At worst \f$O(n)\f$ where \f$n\f$ equals out_degree().
@@ -553,11 +625,12 @@ namespace libsemigroups {
     }
 
     //! Get the next neighbor of a node that doesn't equal
-    //! \ref UNDEFINED.
+    //! libsemigroups::UNDEFINED.
     //!
-    //! If `neighbor(v, i)` equals \ref UNDEFINED for every value in the range
-    //! \f$[i, n)\f$, where \f$n\f$ is the return value of out_degree() then \c
-    //! x.first and \c x.second equal \ref UNDEFINED.
+    //! If `neighbor(v, i)` equals libsemigroups::UNDEFINED for every value in
+    //! the range \f$[i, n)\f$, where \f$n\f$ is the return value of
+    //! out_degree() then \c x.first and \c x.second equal
+    //! libsemigroups::UNDEFINED.
     //!
     //! \param v the node
     //! \param i the label
@@ -568,8 +641,8 @@ namespace libsemigroups {
     //! 1. \c x.first is adjacent to \p v via an edge labelled
     //!    \c x.second;
     //! 2. \c x.second is the minimum value in the range \f$[i, n)\f$ such that
-    //!    `neighbor(v, x.second)` is not equal to \ref UNDEFINED where \f$n\f$
-    //!    is the return value of out_degree(); and
+    //!    `neighbor(v, x.second)` is not equal to libsemigroups::UNDEFINED
+    //!    where \f$n\f$ is the return value of out_degree(); and
     //!
     //! \complexity
     //! At worst \f$O(n)\f$ where \f$n\f$ equals out_degree().
@@ -815,7 +888,7 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if it is not the case that every node
     //! has exactly out_degree() out-neighbors. In other words, if
-    //! neighbor() is \ref UNDEFINED for any node \c nd and
+    //! neighbor() is libsemigroups::UNDEFINED for any node \c nd and
     //! any label \c lbl.
     //! \basic_guarantee
     //!
@@ -842,7 +915,7 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if it is not the case that every node
     //! has exactly out_degree() out-neighbors. In other words, if
-    //! neighbor() is \ref UNDEFINED for any node \c nd and
+    //! neighbor() is libsemigroups::UNDEFINED for any node \c nd and
     //! any label \c lbl.
     //! \basic_guarantee
     //!
@@ -862,7 +935,7 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if it is not the case that every node
     //! has exactly out_degree() out-neighbors. In other words, if
-    //! neighbor() is \ref UNDEFINED for any node \c nd and
+    //! neighbor() is libsemigroups::UNDEFINED for any node \c nd and
     //! any label \c lbl.
     //! \basic_guarantee
     //!
@@ -886,7 +959,7 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if it is not the case that every node
     //! has exactly out_degree() out-neighbors. In other words, if
-    //! neighbor() is \ref UNDEFINED for any node \c nd and
+    //! neighbor() is libsemigroups::UNDEFINED for any node \c nd and
     //! any label \c lbl.
     //! \basic_guarantee
     //!
@@ -912,7 +985,7 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if it is not the case that every node
     //! has exactly out_degree() out-neighbors. In other words, if
-    //! neighbor() is \ref UNDEFINED for any node \c nd and
+    //! neighbor() is libsemigroups::UNDEFINED for any node \c nd and
     //! any label \c lbl.
     //!
     //! \throws LibsemigroupsException if \p i is not in the range \c 0 to \c
@@ -942,7 +1015,7 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if it is not the case that every node
     //! has exactly out_degree() out-neighbors. In other words, if
-    //! neighbor() is \ref UNDEFINED for any node \c nd and
+    //! neighbor() is libsemigroups::UNDEFINED for any node \c nd and
     //! any label \c lbl.
     //!
     //! \throws LibsemigroupsException if \p i is not in the range \c 0 to \c
@@ -968,7 +1041,7 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if it is not the case that every node
     //! has exactly out_degree() out-neighbors. In other words, if
-    //! neighbor() is \ref UNDEFINED for any node \c nd and
+    //! neighbor() is libsemigroups::UNDEFINED for any node \c nd and
     //! any label \c lbl. \basic_guarantee
     //!
     //! \complexity
@@ -989,7 +1062,7 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if it is not the case that every node
     //! has exactly out_degree() out-neighbors. In other words, if
-    //! neighbor() is \ref UNDEFINED for any node \c nd and
+    //! neighbor() is libsemigroups::UNDEFINED for any node \c nd and
     //! any label \c lbl. \basic_guarantee
     //!
     //! \complexity
@@ -1018,7 +1091,7 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if it is not the case that every node
     //! has exactly out_degree() out-neighbors. In other words, if
-    //! neighbor() is \ref UNDEFINED for any node \c nd and
+    //! neighbor() is libsemigroups::UNDEFINED for any node \c nd and
     //! any label \c lbl. \basic_guarantee
     //!
     //! \complexity
@@ -1070,7 +1143,7 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if it is not the case that every node
     //! has exactly out_degree() out-neighbors. In other words, if
-    //! neighbor() is \ref UNDEFINED for any node \c nd and
+    //! neighbor() is libsemigroups::UNDEFINED for any node \c nd and
     //! any label \c lbl. \basic_guarantee
     //!
     //! \complexity
@@ -1303,13 +1376,13 @@ namespace libsemigroups {
     //! \param source the source node
     //! \param min the minimum length of a path to enumerate (defaults to \c 0)
     //! \param max the maximum length of a path to enumerate (defaults to
-    //!        \ref POSITIVE_INFINITY).
+    //!        libsemigroups::POSITIVE_INFINITY).
     //!
     //! \returns
     //! An iterator \c it of type \c const_panilo_iterator pointing to a
     //! [std::pair](https://en.cppreference.com/w/cpp/utility/pair)
     //! where:
-    //! * \c it->first is a \ref word_type consisting of the edge
+    //! * \c it->first is a libsemigroups::word_type consisting of the edge
     //! labels of the first path (in lexicographical order) from \p source of
     //! length in the range \f$[min, max)\f$; and
     //! * \c it->second is the last node on the path from \p source labelled by
@@ -1502,13 +1575,13 @@ namespace libsemigroups {
     //! \param source the source node
     //! \param min the minimum length of a path to enumerate (defaults to \c 0)
     //! \param max the maximum length of a path to enumerate (defaults to
-    //!        \ref POSITIVE_INFINITY).
+    //!        libsemigroups::POSITIVE_INFINITY).
     //!
     //! \returns
     //! An iterator \c it of type \c const_panislo_iterator pointing to a
     //! [std::pair](https://en.cppreference.com/w/cpp/utility/pair)
     //! where:
-    //! * \c it->first is a \ref word_type consisting of the edge
+    //! * \c it->first is a libsemigroups::word_type consisting of the edge
     //! labels of the first path (in short-lex order) from \p source of
     //! length in the range \f$[min, max)\f$; and
     //! * \c it->second is the last node on the path from \p source labelled by
@@ -1622,11 +1695,11 @@ namespace libsemigroups {
     //! \param source the source node
     //! \param min the minimum length of a path to enumerate (defaults to \c 0)
     //! \param max the maximum length of a path to enumerate (defaults to
-    //!        \ref POSITIVE_INFINITY).
+    //!        libsemigroups::POSITIVE_INFINITY).
     //!
     //! \returns
     //! An iterator \c it of type \c const_pilo_iterator pointing to a
-    //! \ref word_type consisting of the edge labels of the first
+    //! libsemigroups::word_type consisting of the edge labels of the first
     //! path (in lexicographical order) from \p source of length in the range
     //! \f$[min, max)\f$.
     //!
@@ -1695,11 +1768,11 @@ namespace libsemigroups {
     //! \param source the source node
     //! \param min the minimum length of a path to enumerate (defaults to \c 0)
     //! \param max the maximum length of a path to enumerate (defaults to
-    //!        \ref POSITIVE_INFINITY).
+    //!        libsemigroups::POSITIVE_INFINITY).
     //!
     //! \returns
     //! An iterator \c it of type \c const_pislo_iterator pointing to a
-    //! \ref word_type consisting of the edge labels of the first
+    //! libesemigroups::word_type consisting of the edge labels of the first
     //! path (in short-lex order) from \p source of length in the range
     //! \f$[min, max)\f$.
     //!
@@ -1957,11 +2030,11 @@ namespace libsemigroups {
     //! \param target the last node
     //! \param min the minimum length of a path to enumerate (defaults to \c 0)
     //! \param max the maximum length of a path to enumerate (defaults to
-    //!        \ref POSITIVE_INFINITY).
+    //!        libsemigroups::POSITIVE_INFINITY).
     //!
     //! \returns
     //! An iterator \c it of type \c const_pstilo_iterator pointing to a
-    //! \ref word_type consisting of the edge labels of the first
+    //! libsemigroups::word_type consisting of the edge labels of the first
     //! path (in lexicographical order) from the node \p source to the node \p
     //! target with length in the range \f$[min, max)\f$ (if any).
     //!
@@ -2091,11 +2164,11 @@ namespace libsemigroups {
     //! \param target the last node
     //! \param min the minimum length of a path to enumerate (defaults to \c 0)
     //! \param max the maximum length of a path to enumerate (defaults to
-    //!        \ref POSITIVE_INFINITY).
+    //!        libsemigroups::POSITIVE_INFINITY).
     //!
     //! \returns
     //! An iterator \c it of type \c const_pstislo_iterator pointing to a
-    //! \ref word_type consisting of the edge labels of the first
+    //! libsemigroups::word_type consisting of the edge labels of the first
     //! path (in short-lex order) from the node \p source to the node \p target
     //! with length in the range \f$[min, max)\f$ (if any).
     //!
@@ -2345,27 +2418,21 @@ namespace libsemigroups {
                                         node_type target,
                                         size_t    min,
                                         size_t    max) const {
-      (void) target;
-      if (min >= max) {
+      bool acyclic = action_digraph_helper::is_acyclic(*this, source, target);
+      if (min >= max
+          || !action_digraph_helper::is_reachable(*this, source, target)
+          || (!acyclic && max == POSITIVE_INFINITY)) {
         return algorithm::trivial;
-      }
-      auto topo = action_digraph_helper::topological_sort(*this, source);
-      if (topo.empty()) {
-        // Can't topologically sort, so the digraph contains cycles.  Even if
-        // max == POSITIVE_INFINITY, we can't conclude anything, because it
-        // might be `target` isn't reachable from `source`, for example, or
-        // there are no cycles in the graph between `source` and `target`.
-        if (number_of_edges()
-            < detail::magic_number(number_of_nodes()) * number_of_nodes()) {
-          return algorithm::dfs;
-        } else {
-          return algorithm::matrix;
-        }
-      } else {
-        // TODO(later) figure out threshold for using algorithm::dfs
+      } else if (acyclic && action_digraph_helper::is_acyclic(*this, source)) {
         return algorithm::acyclic;
+      } else if (number_of_edges() < detail::magic_number(number_of_nodes())
+                                         * number_of_nodes()) {
+        return algorithm::dfs;
+      } else {
+        return algorithm::matrix;
       }
     }
+
     //! Returns the number of paths between a pair of nodes with length in a
     //! given range.
     //!
@@ -2436,6 +2503,19 @@ namespace libsemigroups {
       }
     }
 
+   protected:
+    //! No doc
+    detail::DynamicArray2<T> const& table() const noexcept {
+      return _dynamic_array_2;
+    }
+
+    //! No doc
+    template <typename S>
+    void apply_row_permutation(S const& p) {
+      reset();
+      _dynamic_array_2.apply_row_permutation(p);
+    }
+
    private:
     // Implemented below
     bool number_of_paths_special(node_type source,
@@ -2464,6 +2544,7 @@ namespace libsemigroups {
         }
       }
       // Some edges are not defined ...
+      // TODO(later) why not use is_acyclic here?
       auto topo = action_digraph_helper::topological_sort(*this, source);
       if (topo.empty() && max == POSITIVE_INFINITY) {
         // Not acyclic
@@ -2472,12 +2553,16 @@ namespace libsemigroups {
       LIBSEMIGROUPS_EXCEPTION("number of paths cannot be trivially determined");
     }
 
-    uint64_t number_of_paths_trivial(node_type,
-                                     node_type,
-                                     size_t min,
-                                     size_t max) const {
-      if (min >= max) {
+    uint64_t number_of_paths_trivial(node_type source,
+                                     node_type target,
+                                     size_t    min,
+                                     size_t    max) const {
+      if (min >= max
+          || !action_digraph_helper::is_reachable(*this, source, target)) {
         return 0;
+      } else if (!action_digraph_helper::is_acyclic(*this, source, target)
+                 && max == POSITIVE_INFINITY) {
+        return POSITIVE_INFINITY;
       }
       LIBSEMIGROUPS_EXCEPTION("number of paths cannot be trivially determined");
     }

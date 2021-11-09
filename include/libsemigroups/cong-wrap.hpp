@@ -121,7 +121,7 @@ namespace libsemigroups {
           _wrapped_cong(std::make_unique<T>(*other._wrapped_cong)) {}
 
     //! Deleted
-    CongruenceWrapper(CongruenceWrapper&&) = delete;
+    CongruenceWrapper(CongruenceWrapper&&) = default;
 
     //! Deleted
     CongruenceWrapper& operator=(CongruenceWrapper const&) = delete;

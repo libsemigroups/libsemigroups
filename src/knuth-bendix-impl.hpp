@@ -325,11 +325,11 @@ namespace libsemigroups {
       }
 
       static internal_char_type uint_to_internal_char(size_t a) {
-        LIBSEMIGROUPS_ASSERT(a
-                             <= std::numeric_limits<internal_char_type>::max());
+        LIBSEMIGROUPS_ASSERT(
+            a <= size_t(std::numeric_limits<internal_char_type>::max()));
 #ifdef LIBSEMIGROUPS_DEBUG
-        LIBSEMIGROUPS_ASSERT(a <= std::numeric_limits<internal_char_type>::max()
-                                      - 97);
+        LIBSEMIGROUPS_ASSERT(
+            a <= size_t(std::numeric_limits<internal_char_type>::max() - 97));
         return static_cast<internal_char_type>(a + 97);
 #else
         return static_cast<internal_char_type>(a + 1);
@@ -337,8 +337,8 @@ namespace libsemigroups {
       }
 
       static internal_string_type uint_to_internal_string(size_t i) {
-        LIBSEMIGROUPS_ASSERT(i
-                             <= std::numeric_limits<internal_char_type>::max());
+        LIBSEMIGROUPS_ASSERT(
+            i <= size_t(std::numeric_limits<internal_char_type>::max()));
         return internal_string_type({uint_to_internal_char(i)});
       }
 

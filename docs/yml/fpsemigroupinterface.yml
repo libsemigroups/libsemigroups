@@ -11,10 +11,10 @@ libsemigroups::FpSemigroupInterface:
      :cpp:any:`FpSemigroupInterface` class."]
   - FpSemigroupInterface() 
   - FpSemigroupInterface(FpSemigroupInterface const&) = default
+  - FpSemigroupInterface(FpSemigroupInterface&&) = default
 - Deleted constructors:
   - ["This page lists the deleted constructors for the
      :cpp:any:`FpSemigroupInterface` class."]
-  - FpSemigroupInterface(FpSemigroupInterface&&) = delete
   - operator=(FpSemigroupInterface const&) = delete
   - operator=(FpSemigroupInterface&&) = delete
 - Pure virtual member functions:
@@ -110,3 +110,5 @@ libsemigroups::FpSemigroupInterface:
   - report_every() const noexcept
   - report() const
   - report_why_we_stopped() const
+  - running_for() const noexcept
+  - running_until() const noexcept

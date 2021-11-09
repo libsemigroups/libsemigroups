@@ -1,6 +1,6 @@
 //
 // libsemigroups - C++ library for semigroups and monoids
-// Copyright (C) 2019 James D. Mitchell
+// Copyright (C) 2019-2021 James D. Mitchell
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -17,111 +17,44 @@
 
 // The purpose of this file is to test the ToddCoxeter classes.
 
-// TODO(later) add tests that normal_form(c) = min. word w in the order such
-// that $\tau(0, w) = c!!
+#include <algorithm>      // for is_sorted, copy, all_of
+#include <array>          // for array
+#include <chrono>         // for duration, milliseconds
+#include <cstddef>        // for size_t
+#include <fstream>        // for ofstream
+#include <functional>     // for mem_fn
+#include <iostream>       // for string, operator<<, ostream
+#include <math.h>         // for pow
+#include <memory>         // for unique_ptr, shared_ptr
+#include <string>         // for basic_string, operator==
+#include <unordered_map>  // for operator!=, operator==
+#include <unordered_set>  // for unordered_set
+#include <utility>        // for pair
+#include <vector>         // for vector, operator==, swap
 
-#include <algorithm>   // for count, sort, transform
-#include <chrono>      // for duration, milliseconds
-#include <cstddef>     // for size_t
-#include <functional>  // for mem_fn
-#include <vector>      // for vector
-
-#include "catch.hpp"            // for SECTION, REQUIRE, REQUIRE_THROWS_AS
-#include "fpsemi-examples.hpp"  // for RennerTypeDMonoid, RennerTypeBMonoid
+#include "catch.hpp"            // for operator""_catch_sr, Asser...
+#include "fpsemi-examples.hpp"  // for setup, RennerTypeDMonoid
 #include "test-main.hpp"        // for LIBSEMIGROUPS_TEST_CASE
 
-#include "libsemigroups/bmat8.hpp"         // for BMat8
-#include "libsemigroups/cong-intf.hpp"     // for congruence::type
-#include "libsemigroups/fpsemi.hpp"        // for FpSemigroup
-#include "libsemigroups/froidure-pin.hpp"  // for FroidurePin
+#include "libsemigroups/bmat8.hpp"        // for BMat8
+#include "libsemigroups/cong-intf.hpp"    // for CongruenceInterface::class...
+#include "libsemigroups/cong-wrap.hpp"    // for CongruenceWrapper<>::wrapp...
+#include "libsemigroups/constants.hpp"    // for operator==, operator!=
+#include "libsemigroups/containers.hpp"   // for DynamicArray2, DynamicArra...
+#include "libsemigroups/fpsemi-intf.hpp"  // for FpSemigroupInterface::rule...
+#include "libsemigroups/fpsemi.hpp"       // for FpSemigroup
+#include "libsemigroups/froidure-pin-base.hpp"  // for FroidurePinBase
+#include "libsemigroups/froidure-pin.hpp"  // for FroidurePin, FroidurePin<>...
+#include "libsemigroups/iterator.hpp"      // for ConstIteratorStateful, ope...
 #include "libsemigroups/knuth-bendix.hpp"  // for KnuthBendix
-#include "libsemigroups/order.hpp"         // for shortlex_words
-#include "libsemigroups/tce.hpp"           // for TCE
-#include "libsemigroups/todd-coxeter.hpp"  // for ToddCoxeter
-#include "libsemigroups/transf.hpp"        // for Transf<>
-#include "libsemigroups/types.hpp"         // for relation_type, word_type
-#include "libsemigroups/wislo.hpp"         // for cbegin_wislo
-
-// Macros for testing different strategies on the same example.
-
-#define TEST_FELSCH_THROWS(var)                                \
-  SECTION("Felsch (throws)") {                                 \
-    REQUIRE_THROWS_AS(var.strategy(options::strategy::felsch), \
-                      LibsemigroupsException);                 \
-  }
-
-#define TEST_FELSCH(var)                                        \
-  SECTION("Felsch + no standardisation") {                      \
-    var.strategy(options::strategy::felsch).standardize(false); \
-  }                                                             \
-  SECTION("Felsch + standardisation") {                         \
-    var.strategy(options::strategy::felsch).standardize(true);  \
-  }
-
-#define TEST_HLT_NO_SAVE(var)                                     \
-  SECTION("HLT + no standardise + full lookahead + no save") {    \
-    var.strategy(options::strategy::hlt)                          \
-        .standardize(false)                                       \
-        .lookahead(options::lookahead::full)                      \
-        .save(false);                                             \
-  }                                                               \
-  SECTION("HLT + standardise + full lookahead + no save") {       \
-    var.strategy(options::strategy::hlt)                          \
-        .standardize(true)                                        \
-        .lookahead(options::lookahead::full)                      \
-        .save(false);                                             \
-  }                                                               \
-  SECTION("HLT + no standardise + partial lookahead + no save") { \
-    var.strategy(options::strategy::hlt)                          \
-        .standardize(false)                                       \
-        .lookahead(options::lookahead::partial)                   \
-        .save(false);                                             \
-  }                                                               \
-  SECTION("HLT + standardise + partial lookahead + no save") {    \
-    var.strategy(options::strategy::hlt)                          \
-        .standardize(true)                                        \
-        .lookahead(options::lookahead::partial)                   \
-        .save(false);                                             \
-  }
-
-#define TEST_HLT_SAVE(var)                                     \
-  SECTION("HLT + no standardise + full lookahead + save") {    \
-    var.strategy(options::strategy::hlt)                       \
-        .standardize(false)                                    \
-        .lookahead(options::lookahead::full)                   \
-        .save(true);                                           \
-  }                                                            \
-  SECTION("HLT + standardise + full lookahead + save") {       \
-    var.strategy(options::strategy::hlt)                       \
-        .standardize(true)                                     \
-        .lookahead(options::lookahead::full)                   \
-        .save(true);                                           \
-  }                                                            \
-  SECTION("HLT + no standardise + partial lookahead + save") { \
-    var.strategy(options::strategy::hlt)                       \
-        .standardize(false)                                    \
-        .lookahead(options::lookahead::partial)                \
-        .save(true);                                           \
-  }                                                            \
-  SECTION("HLT + standardise + partial lookahead + save") {    \
-    var.strategy(options::strategy::hlt)                       \
-        .standardize(true)                                     \
-        .lookahead(options::lookahead::partial)                \
-        .save(true);                                           \
-  }
-
-#define TEST_HLT_SAVE_THROWS(var)                                      \
-  SECTION("HLT + save (throws)") {                                     \
-    REQUIRE_THROWS_AS(var.strategy(options::strategy::hlt).save(true), \
-                      LibsemigroupsException);                         \
-  }
-
-#define TEST_HLT(var) TEST_HLT_NO_SAVE(var) TEST_HLT_SAVE(var)
-
-#define TEST_RANDOM_SIMS(var)                \
-  SECTION("random Sims strategy") {          \
-    var.strategy(options::strategy::random); \
-  }
+#include "libsemigroups/order.hpp"         // for RecursivePathCompare, Lexi...
+#include "libsemigroups/report.hpp"        // for ReportGuard
+#include "libsemigroups/string.hpp"        // for operator<<, to_string
+#include "libsemigroups/tce.hpp"           // for TCE, operator<<, IncreaseD...
+#include "libsemigroups/todd-coxeter.hpp"  // for ToddCoxeter, operator|
+#include "libsemigroups/transf.hpp"        // for Transf, LeastTransf
+#include "libsemigroups/types.hpp"         // for word_type, relation_type
+#include "libsemigroups/wislo.hpp"         // for const_wislo_iterator, cbeg...
 
 namespace libsemigroups {
   struct LibsemigroupsException;  // Forward declaration
@@ -134,68 +67,217 @@ namespace libsemigroups {
   using tc_order                     = congruence::ToddCoxeter::order;
   using options                      = congruence::ToddCoxeter::options;
 
-  template <typename TElementType>
-  void delete_gens(std::vector<TElementType>& gens) {
-    for (auto x : gens) {
-      delete x;
-    }
-  }
-
-  // This is how the recursive words up to a given length M, and on an
-  // arbitrary finite alphabet are generated.  On a single letter alphabet,
-  // this order is just increasing powers of the only generator:
-  //
-  //   a < aa < aaa < aaaa < ... < aa...a (M times)
-  //
-  // With an n-letter alphabet A = {a_1, a_2, ..., a_n}, suppose we have
-  // already obtained all of the words W_{n - 1} containing {a_1, ..., a_{n -
-  // 1}}.  Every word in W_{n - 1} is less than any word containing a_n, and
-  // the least word greater than every word in W_{n - 1} is a_n. Words greater
-  // than a_n are obtain in the follow way, where:
-  //
-  // x: is the maximum word in W_{n - 1}, this is constant, in the description
-  //    that follows.
-  // u: the first word obtained in point (1), the first time it is applied
-  //    after (2) has been applied, starting with u = a_{n - 1}.
-  // v: a word with one fewer letters than u, starting with the empty word.
-  // w: a word such that w < u, also starting with the empty word.
-  //
-  // 1. If v < x, then v is replaced by the next word in the order. If |uv| <=
-  //    M, then the next word is uv. Otherwise, goto 1.
-  //
-  // 2. If v = x, then and there exists a word w' in the set of words obtained
-  //    so far such that w' > w and |w'| <= M - 1, then replace w with w',
-  //    replace u by wa_n, replace v by the empty word, and the next word is
-  //    wa_n.
-  //
-  //    If no such word w' exists, then we have enumerated all the required
-  //    words, and we can stop.
-  //
-  // For example, if A = {a, b} and M = 4, then the initial elements in the
-  // order are:
-  //
-  //   e < a < aa < aaa < aaaa (e is the empty word)
-  //
-  // Set b > aaaa. At this point, x = aaaa, u = b, v = e, w = e, and so
-  // (1) applies, v <- a, and since |uv| = ba <= 4 = M, the next word is
-  // ba.  Repeatedly applying (1), until it fails to hold, we obtain the
-  // following:
-  //
-  //   aaaa < b < ba < baa < baaa
-  //
-  // After defining baa < baaa, x = aaaa, u = b, v = aaaa, and w = e. Hence v =
-  // x, and so (2) applies. The next w' in the set of words so far enumerated
-  // is a, and |a| = 1 <= 3 = M - 1, and so w <- a, u <- ab, v <- e, and the
-  // next word is ab. We repeatedly apply (1), until it fails, to obtain
-  //
-  //   baaa < ab < aba < abaa
-  //
-  // At which point u = b, v = aaaa = x, and w = a. Hence (2) applies, w <- aa,
-  // v <- e, u <- aab, and the next word is: aab. And so on ...
-  //
-  // The next function implements this order, returning the words on an
-  // n-letter alphabet of length up to M.
   namespace {
+    // Test functions
+    void check_felsch(congruence::ToddCoxeter& var) {
+      SECTION("Felsch + no standardisation") {
+        var.strategy(options::strategy::felsch).standardize(false);
+      }
+      SECTION("Felsch + standardisation") {
+        var.strategy(options::strategy::felsch).standardize(true);
+      }
+    }
+
+    void check_felsch(fpsemigroup::ToddCoxeter& var) {
+      check_felsch(var.congruence());
+    }
+
+    void check_felsch_throws(congruence::ToddCoxeter& var) {
+      SECTION("Felsch (throws)") {
+        REQUIRE_THROWS_AS(var.strategy(options::strategy::felsch),
+                          LibsemigroupsException);
+      }
+    }
+
+    void check_felsch_throws(fpsemigroup::ToddCoxeter& var) {
+      check_felsch_throws(var.congruence());
+    }
+
+    void check_hlt_no_save(congruence::ToddCoxeter& var) {
+      SECTION("HLT + no standardise + full lookahead + no save") {
+        var.strategy(options::strategy::hlt);
+        var.standardize(false).lookahead(options::lookahead::full).save(false);
+      }
+      SECTION("HLT + standardise + full lookahead + no save") {
+        var.strategy(options::strategy::hlt);
+        var.standardize(true).lookahead(options::lookahead::full).save(false);
+      }
+      SECTION("HLT + no standardise + partial lookahead + no save") {
+        var.strategy(options::strategy::hlt);
+        var.standardize(false)
+            .lookahead(options::lookahead::partial)
+            .save(false);
+      }
+      SECTION("HLT + standardise + partial lookahead + no save") {
+        var.strategy(options::strategy::hlt);
+        var.standardize(true)
+            .lookahead(options::lookahead::partial)
+            .save(false);
+      }
+    }
+
+    void check_hlt_no_save(fpsemigroup::ToddCoxeter& var) {
+      check_hlt_no_save(var.congruence());
+    }
+
+    void check_hlt_save(congruence::ToddCoxeter& var) {
+      SECTION("HLT + no standardise + full lookahead + save") {
+        var.strategy(options::strategy::hlt);
+        var.standardize(false).lookahead(options::lookahead::full).save(true);
+      }
+      SECTION("HLT + standardise + full lookahead + save") {
+        var.strategy(options::strategy::hlt);
+        var.standardize(true).lookahead(options::lookahead::full).save(true);
+      }
+      SECTION("HLT + no standardise + partial lookahead + save") {
+        var.strategy(options::strategy::hlt);
+        var.standardize(false)
+            .lookahead(options::lookahead::partial)
+            .save(true);
+      }
+      SECTION("HLT + standardise + partial lookahead + save") {
+        var.strategy(options::strategy::hlt);
+        var.standardize(true).lookahead(options::lookahead::partial).save(true);
+      }
+    }
+
+    void check_hlt_save_throws(congruence::ToddCoxeter& var) {
+      SECTION("HLT + save (throws)") {
+        REQUIRE_THROWS_AS(var.strategy(options::strategy::hlt).save(true),
+                          LibsemigroupsException);
+      }
+    }
+
+    void check_hlt_save_throws(fpsemigroup::ToddCoxeter& var) {
+      check_hlt_save_throws(var.congruence());
+    }
+
+    void check_hlt(congruence::ToddCoxeter& var) {
+      check_hlt_no_save(var);
+      check_hlt_save(var);
+    }
+
+    void check_hlt(fpsemigroup::ToddCoxeter& var) {
+      check_hlt(var.congruence());
+    }
+
+    void check_random(congruence::ToddCoxeter& var) {
+      SECTION("random strategy") {
+        var.strategy(options::strategy::random);
+      }
+    }
+
+    void check_random(fpsemigroup::ToddCoxeter& var) {
+      check_random(var.congruence());
+    }
+
+    void check_Rc_style(congruence::ToddCoxeter& tc) {
+      SECTION("Rc style + full lookahead") {
+        tc.strategy(options::strategy::Rc).lookahead(options::lookahead::full);
+        tc.run();
+      }
+      SECTION("Rc style + partial lookahead") {
+        tc.strategy(options::strategy::Rc)
+            .lookahead(options::lookahead::partial);
+        tc.run();
+      }
+    }
+
+    void check_Rc_style(fpsemigroup::ToddCoxeter& tc) {
+      check_Rc_style(tc.congruence());
+    }
+
+    void check_Cr_style(congruence::ToddCoxeter& tc) {
+      SECTION("Cr style") {
+        tc.strategy(options::strategy::Cr);
+        tc.run();
+      }
+    }
+
+    void check_Cr_style(fpsemigroup::ToddCoxeter& tc) {
+      check_Cr_style(tc.congruence());
+    }
+
+    void check_R_over_C_style(congruence::ToddCoxeter& tc) {
+      SECTION("R/C style") {
+        tc.strategy(options::strategy::R_over_C);
+        tc.run();
+      }
+    }
+
+    void check_R_over_C_style(fpsemigroup::ToddCoxeter& tc) {
+      check_R_over_C_style(tc.congruence());
+    }
+
+    void check_CR_style(congruence::ToddCoxeter& tc) {
+      SECTION("CR style") {
+        tc.strategy(options::strategy::CR);
+        tc.run();
+      }
+    }
+
+    void check_CR_style(fpsemigroup::ToddCoxeter& tc) {
+      check_CR_style(tc.congruence());
+    }
+
+    // This is how the recursive words up to a given length M, and on an
+    // arbitrary finite alphabet are generated.  On a single letter alphabet,
+    // this order is just increasing powers of the only generator:
+    //
+    //   a < aa < aaa < aaaa < ... < aa...a (M times)
+    //
+    // With an n-letter alphabet A = {a_1, a_2, ..., a_n}, suppose we have
+    // already obtained all of the words W_{n - 1} containing {a_1, ..., a_{n
+    // - 1}}.  Every word in W_{n - 1} is less than any word containing a_n,
+    // and the least word greater than every word in W_{n - 1} is a_n. Words
+    // greater than a_n are obtain in the follow way, where:
+    //
+    // x: is the maximum word in W_{n - 1}, this is constant, in the
+    // description
+    //    that follows.
+    // u: the first word obtained in point (1), the first time it is applied
+    //    after (2) has been applied, starting with u = a_{n - 1}.
+    // v: a word with one fewer letters than u, starting with the empty word.
+    // w: a word such that w < u, also starting with the empty word.
+    //
+    // 1. If v < x, then v is replaced by the next word in the order. If |uv|
+    // <=
+    //    M, then the next word is uv. Otherwise, goto 1.
+    //
+    // 2. If v = x, then and there exists a word w' in the set of words
+    // obtained
+    //    so far such that w' > w and |w'| <= M - 1, then replace w with w',
+    //    replace u by wa_n, replace v by the empty word, and the next word is
+    //    wa_n.
+    //
+    //    If no such word w' exists, then we have enumerated all the required
+    //    words, and we can stop.
+    //
+    // For example, if A = {a, b} and M = 4, then the initial elements in the
+    // order are:
+    //
+    //   e < a < aa < aaa < aaaa (e is the empty word)
+    //
+    // Set b > aaaa. At this point, x = aaaa, u = b, v = e, w = e, and so
+    // (1) applies, v <- a, and since |uv| = ba <= 4 = M, the next word is
+    // ba.  Repeatedly applying (1), until it fails to hold, we obtain the
+    // following:
+    //
+    //   aaaa < b < ba < baa < baaa
+    //
+    // After defining baa < baaa, x = aaaa, u = b, v = aaaa, and w = e. Hence
+    // v = x, and so (2) applies. The next w' in the set of words so far
+    // enumerated is a, and |a| = 1 <= 3 = M - 1, and so w <- a, u <- ab, v <-
+    // e, and the next word is ab. We repeatedly apply (1), until it fails, to
+    // obtain
+    //
+    //   baaa < ab < aba < abaa
+    //
+    // At which point u = b, v = aaaa = x, and w = a. Hence (2) applies, w <-
+    // aa, v <- e, u <- aab, and the next word is: aab. And so on ...
+    //
+    // The next function implements this order, returning the words on an
+    // n-letter alphabet of length up to M.
     std::vector<word_type> recursive_path_words(size_t n, size_t M) {
       std::vector<word_type> out;
       size_t                 a = 0;
@@ -243,9 +325,24 @@ namespace libsemigroups {
       }
       return out;
     }
+
+    void output_gap_benchmark_file(std::string const&       fname,
+                                   congruence::ToddCoxeter& tc) {
+      std::ofstream file;
+      file.open(fname);
+      file << "local free, rules, R, S, T;\n";
+      file << tc.to_gap_string();
+      file << "R := RightMagmaCongruenceByGeneratingPairs(S, []);\n";
+      file << "T := CosetTableOfFpSemigroup(R);;\n";
+      file << "Assert(0, Length(T) = Size(GeneratorsOfSemigroup(S)));\n";
+      file << "Assert(0, Length(T[1]) - 1 = "
+           << std::to_string(tc.number_of_classes()) << ");\n";
+      file.close();
+    }
   }  // namespace
 
   namespace congruence {
+
     LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                             "000",
                             "small 2-sided congruence",
@@ -257,13 +354,44 @@ namespace libsemigroups {
       tc.add_pair({0, 0, 0}, {0});
       tc.add_pair({1, 1, 1, 1}, {1});
       tc.add_pair({0, 1, 0, 1}, {0, 0});
-
-      TEST_HLT(tc);
-      TEST_FELSCH(tc);
-      TEST_RANDOM_SIMS(tc);
-
       REQUIRE(!tc.finished());
+
+      check_hlt(tc);
+      check_felsch(tc);
+      check_random(tc);
+      check_Rc_style(tc);
+      check_R_over_C_style(tc);
+      check_CR_style(tc);
+      check_Cr_style(tc);
+
       REQUIRE(tc.number_of_classes() == 27);
+      tc.shrink_to_fit();
+      auto words
+          = std::vector<word_type>(tc.cbegin_class(1, 0, 10), tc.cend_class());
+      REQUIRE(words
+              == std::vector<word_type>({word_type({1}),
+                                         word_type({1, 1, 1, 1}),
+                                         word_type({1, 1, 1, 1, 1, 1, 1})}));
+      words = std::vector<word_type>(
+          tc.cbegin_class(word_type({1, 1, 1, 1}), 0, 10), tc.cend_class());
+      REQUIRE(words
+              == std::vector<word_type>({word_type({1}),
+                                         word_type({1, 1, 1, 1}),
+                                         word_type({1, 1, 1, 1, 1, 1, 1})}));
+      REQUIRE(tc.number_of_words(1) == POSITIVE_INFINITY);
+      std::vector<size_t> class_sizes;
+      for (size_t i = 0; i < tc.number_of_classes(); ++i) {
+        class_sizes.push_back(tc.number_of_words(i));
+      }
+      REQUIRE(class_sizes
+              == std::vector<size_t>(tc.number_of_classes(),
+                                     size_t(POSITIVE_INFINITY)));
+      REQUIRE(tc.word_to_class_index(words[0]) == 1);
+      REQUIRE(
+          std::all_of(words.cbegin(), words.cend(), [&tc](word_type const& w) {
+            return tc.word_to_class_index(w) == 1;
+          }));
+
       // Too small for lookahead to kick in...
     }
 
@@ -277,14 +405,19 @@ namespace libsemigroups {
       tc.set_number_of_generators(2);
       tc.add_pair({0, 0, 0}, {0});  // (a^3, a)
       tc.add_pair({0}, {1, 1});     // (a, b^2)
-
-      TEST_HLT(tc);
-      TEST_FELSCH(tc);
-      TEST_RANDOM_SIMS(tc);
-
       REQUIRE(!tc.finished());
+
+      check_hlt(tc);
+      check_felsch(tc);
+      check_random(tc);
+      check_Rc_style(tc);
+      check_R_over_C_style(tc);
+      check_CR_style(tc);
+      check_Cr_style(tc);
+
       REQUIRE(tc.number_of_classes() == 5);
       REQUIRE(tc.finished());
+      REQUIRE(!tc.is_standardized());
 
       REQUIRE(tc.word_to_class_index({0, 0, 1})
               == tc.word_to_class_index({0, 0, 0, 0, 1}));
@@ -297,6 +430,7 @@ namespace libsemigroups {
       REQUIRE(tc.class_index_to_word(1) == word_type({0, 0}));
       REQUIRE(tc.class_index_to_word(2) == word_type({0, 0, 1}));
       REQUIRE(tc.class_index_to_word(3) == word_type({0, 0, 1, 0}));
+      REQUIRE(tc.word_to_class_index(word_type({0, 0, 0, 1})) == 3);
       REQUIRE(tc.class_index_to_word(4) == word_type({1}));
       REQUIRE(tc.word_to_class_index(tc.class_index_to_word(0)) == 0);
       REQUIRE(tc.word_to_class_index(tc.class_index_to_word(1)) == 1);
@@ -322,6 +456,14 @@ namespace libsemigroups {
       REQUIRE(std::is_sorted(tc.cbegin_normal_forms(),
                              tc.cend_normal_forms(),
                              ShortLexCompare<word_type>{}));
+
+      auto nf = std::vector<word_type>(tc.cbegin_normal_forms(),
+                                       tc.cend_normal_forms());
+      REQUIRE(nf
+              == std::vector<word_type>({{0}, {1}, {0, 0}, {0, 1}, {0, 0, 1}}));
+      REQUIRE(std::all_of(nf.begin(), nf.end(), [&tc](word_type& w) {
+        return w == *tc.cbegin_class(w, 0, w.size() + 1);
+      }));
 
       for (size_t i = 2; i < 6; ++i) {
         for (size_t j = 2; j < 10 - i; ++j) {
@@ -370,9 +512,14 @@ namespace libsemigroups {
       tc.add_pair({1, 2, 1, 3, 1, 2, 1, 3, 1, 2, 1, 3, 1, 2, 1, 3,
                    1, 2, 1, 3, 1, 2, 1, 3, 1, 2, 1, 3, 1, 2, 1, 3},
                   {0});
-      TEST_HLT(tc);
-      TEST_FELSCH(tc);
-      TEST_RANDOM_SIMS(tc);
+
+      check_hlt(tc);
+      check_felsch(tc);
+      check_random(tc);
+      check_Rc_style(tc);
+      check_R_over_C_style(tc);
+      check_CR_style(tc);
+      check_Cr_style(tc);
 
       REQUIRE(tc.number_of_classes() == 10752);
       REQUIRE(tc.complete());
@@ -453,7 +600,7 @@ namespace libsemigroups {
     LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                             "003",
                             "constructed from FroidurePin",
-                            "[no-valgrind][todd-coxeter][quick]") {
+                            "[no-valgrind][todd-coxeter][quick][no-coverage]") {
       auto rg = ReportGuard(REPORT);
 
       FroidurePin<BMat8> S(
@@ -466,15 +613,20 @@ namespace libsemigroups {
       tc.froidure_pin_policy(options::froidure_pin::use_relations);
       tc.add_pair({0}, {1});
 
-      TEST_FELSCH(tc);
-      TEST_HLT(tc);
-      TEST_RANDOM_SIMS(tc);
+      check_felsch(tc);
+      check_hlt(tc);
+      check_random(tc);
+      check_Rc_style(tc);
+      check_R_over_C_style(tc);
+      check_CR_style(tc);
+      check_Cr_style(tc);
 
       tc.random_interval(std::chrono::milliseconds(100));
       tc.lower_bound(3);
 
-      // Processing deductions in HLT in this example leads to very poor
-      // performance . . .
+      tc.run();
+      REQUIRE(tc.complete());
+      REQUIRE(tc.compatible());
       REQUIRE(tc.number_of_classes() == 3);
       REQUIRE(tc.number_of_generators() == 4);
       REQUIRE(tc.contains({0}, {1}));
@@ -531,10 +683,10 @@ namespace libsemigroups {
       tc.standardize(tc_order::none);  // does nothing
       REQUIRE(!tc.finished());
 
-      TEST_HLT_NO_SAVE(tc);
-      TEST_HLT_SAVE_THROWS(tc);
-      TEST_FELSCH_THROWS(tc);
-      TEST_RANDOM_SIMS(tc);
+      check_hlt_no_save(tc);
+      check_hlt_save_throws(tc);
+      check_felsch_throws(tc);
+      check_random(tc);
 
       REQUIRE(tc.number_of_classes() == 21);
       tc.shrink_to_fit();
@@ -595,9 +747,13 @@ namespace libsemigroups {
       tc.add_pair({2, 2}, {1});
       tc.add_pair({0}, {1});
 
-      TEST_HLT(tc);
-      TEST_FELSCH(tc);
-      TEST_RANDOM_SIMS(tc);
+      check_hlt(tc);
+      check_felsch(tc);
+      check_random(tc);
+      check_Rc_style(tc);
+      check_R_over_C_style(tc);
+      check_CR_style(tc);
+      check_Cr_style(tc);
 
       REQUIRE(tc.number_of_classes() == 2);
       tc.standardize(tc_order::shortlex);
@@ -614,9 +770,13 @@ namespace libsemigroups {
       tc.add_pair({0, 0, 0}, {0});
       tc.add_pair({0}, {1, 1});
 
-      TEST_HLT(tc);
-      TEST_FELSCH(tc);
-      TEST_RANDOM_SIMS(tc);
+      check_hlt(tc);
+      check_felsch(tc);
+      check_random(tc);
+      check_Rc_style(tc);
+      check_R_over_C_style(tc);
+      check_CR_style(tc);
+      check_Cr_style(tc);
 
       REQUIRE(tc.number_of_classes() == 5);
       REQUIRE(tc.finished());
@@ -628,25 +788,37 @@ namespace libsemigroups {
                             "left cong. on free semigroup",
                             "[todd-coxeter][quick]") {
       auto rg = ReportGuard(REPORT);
+      {
+        ToddCoxeter tc(left);
+        tc.set_number_of_generators(2);
+        tc.add_pair({0, 0, 0}, {0});
+        tc.add_pair({0}, {1, 1});
+        tc.growth_factor(1.5);
 
-      ToddCoxeter tc(left);
-      tc.set_number_of_generators(2);
-      tc.add_pair({0, 0, 0}, {0});
-      tc.add_pair({0}, {1, 1});
+        check_hlt(tc);
+        check_felsch(tc);
+        check_random(tc);
+        check_Rc_style(tc);
+        check_R_over_C_style(tc);
+        check_CR_style(tc);
+        check_Cr_style(tc);
 
-      TEST_HLT(tc);
-      TEST_FELSCH(tc);
-      TEST_RANDOM_SIMS(tc);
-
-      REQUIRE(tc.word_to_class_index({0, 0, 1})
-              == tc.word_to_class_index({0, 0, 0, 0, 1}));
-      REQUIRE(tc.word_to_class_index({0, 1, 1, 0, 0, 1})
-              == tc.word_to_class_index({0, 0, 0, 0, 1}));
-      REQUIRE(tc.word_to_class_index({1})
-              != tc.word_to_class_index({0, 0, 0, 0}));
-      REQUIRE(tc.word_to_class_index({0, 0, 0})
-              != tc.word_to_class_index({0, 0, 0, 0}));
-      tc.standardize(tc_order::shortlex);
+        REQUIRE(!tc.is_standardized());
+        REQUIRE(tc.word_to_class_index({0, 0, 1})
+                == tc.word_to_class_index({0, 0, 0, 0, 1}));
+        REQUIRE(tc.word_to_class_index({0, 1, 1, 0, 0, 1})
+                == tc.word_to_class_index({0, 0, 0, 0, 1}));
+        REQUIRE(tc.word_to_class_index({1})
+                != tc.word_to_class_index({0, 0, 0, 0}));
+        REQUIRE(tc.word_to_class_index({0, 0, 0})
+                != tc.word_to_class_index({0, 0, 0, 0}));
+        tc.standardize(tc_order::shortlex);
+        REQUIRE(tc.is_standardized());
+      }
+      {
+        ToddCoxeter tc(left);
+        REQUIRE_NOTHROW(ToddCoxeter(left, tc));
+      }
     }
 
     LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
@@ -659,9 +831,13 @@ namespace libsemigroups {
       tc.add_pair({0, 0, 0}, {0});  // (a^3, a)
       tc.add_pair({0}, {1, 1});     // (a, b^2)
 
-      TEST_HLT(tc);
-      TEST_FELSCH(tc);
-      TEST_RANDOM_SIMS(tc);
+      check_hlt(tc);
+      check_felsch(tc);
+      check_random(tc);
+      check_Rc_style(tc);
+      check_R_over_C_style(tc);
+      check_CR_style(tc);
+      check_Cr_style(tc);
 
       REQUIRE(tc.word_to_class_index({0, 0, 1})
               == tc.word_to_class_index({0, 0, 0, 0, 1}));
@@ -688,9 +864,13 @@ namespace libsemigroups {
       tc.add_pair(S.factorisation(Transf<>({3, 4, 4, 4, 4})),
                   S.factorisation(Transf<>({3, 1, 3, 3, 3})));
 
-      TEST_HLT(tc);
-      TEST_FELSCH(tc);
-      TEST_RANDOM_SIMS(tc);
+      check_hlt(tc);
+      check_felsch(tc);
+      check_random(tc);
+      check_Rc_style(tc);
+      check_R_over_C_style(tc);
+      check_CR_style(tc);
+      check_Cr_style(tc);
 
       REQUIRE(tc.number_of_classes() == 21);
       REQUIRE(tc.number_of_classes() == 21);
@@ -720,9 +900,13 @@ namespace libsemigroups {
       tc.add_pair(S.factorisation(Transf<>({3, 4, 4, 4, 4})),
                   S.factorisation(Transf<>({3, 1, 3, 3, 3})));
 
-      TEST_HLT(tc);
-      TEST_FELSCH(tc);
-      TEST_RANDOM_SIMS(tc);
+      check_hlt(tc);
+      check_felsch(tc);
+      check_random(tc);
+      check_Rc_style(tc);
+      check_R_over_C_style(tc);
+      check_CR_style(tc);
+      check_Cr_style(tc);
 
       REQUIRE(tc.number_of_classes() == 69);
       REQUIRE(tc.number_of_classes() == 69);
@@ -752,9 +936,13 @@ namespace libsemigroups {
       tc.add_pair(S.factorisation(Transf<>({3, 4, 4, 4, 4})),
                   S.factorisation(Transf<>({3, 1, 3, 3, 3})));
 
-      TEST_HLT(tc);
-      TEST_FELSCH(tc);
-      TEST_RANDOM_SIMS(tc);
+      check_hlt(tc);
+      check_felsch(tc);
+      check_random(tc);
+      check_Rc_style(tc);
+      check_R_over_C_style(tc);
+      check_CR_style(tc);
+      check_Cr_style(tc);
 
       REQUIRE(tc.number_of_classes() == 72);
       REQUIRE(tc.number_of_classes() == 72);
@@ -809,10 +997,10 @@ namespace libsemigroups {
 
       tc.add_pair(w1, w2);
 
-      TEST_HLT_NO_SAVE(tc);
-      TEST_HLT_SAVE_THROWS(tc);
-      TEST_FELSCH_THROWS(tc);
-      TEST_RANDOM_SIMS(tc);
+      check_hlt_no_save(tc);
+      check_hlt_save_throws(tc);
+      check_felsch_throws(tc);
+      check_random(tc);
 
       REQUIRE(tc.number_of_classes() == 21);
       REQUIRE(tc.number_of_classes() == 21);
@@ -841,9 +1029,13 @@ namespace libsemigroups {
       tc.froidure_pin_policy(options::froidure_pin::use_relations);
       tc.add_pair(w1, w2);
 
-      TEST_HLT(tc);
-      TEST_FELSCH(tc);
-      TEST_RANDOM_SIMS(tc);
+      check_hlt(tc);
+      check_felsch(tc);
+      check_random(tc);
+      check_Rc_style(tc);
+      check_R_over_C_style(tc);
+      check_CR_style(tc);
+      check_Cr_style(tc);
 
       REQUIRE(tc.number_of_classes() == 69);
       REQUIRE(tc.number_of_classes() == 69);
@@ -869,9 +1061,13 @@ namespace libsemigroups {
       tc.froidure_pin_policy(options::froidure_pin::use_relations);
       tc.add_pair(w1, w2);
 
-      TEST_HLT(tc);
-      TEST_FELSCH(tc);
-      TEST_RANDOM_SIMS(tc);
+      check_hlt(tc);
+      check_felsch(tc);
+      check_random(tc);
+      check_Rc_style(tc);
+      check_R_over_C_style(tc);
+      check_CR_style(tc);
+      check_Cr_style(tc);
 
       REQUIRE(tc.number_of_classes() == 72);
       REQUIRE(tc.number_of_classes() == 72);
@@ -909,9 +1105,14 @@ namespace libsemigroups {
       tc.add_pair({2, 2}, {0});
       tc.add_pair({1, 4, 2, 3, 3}, {0});
       tc.add_pair({4, 4, 4}, {0});
-      TEST_HLT(tc);
-      TEST_FELSCH(tc);
-      TEST_RANDOM_SIMS(tc);
+
+      check_hlt(tc);
+      check_felsch(tc);
+      check_random(tc);
+      check_Rc_style(tc);
+      check_R_over_C_style(tc);
+      check_CR_style(tc);
+      check_Cr_style(tc);
 
       REQUIRE(tc.number_of_classes() == 6);
       REQUIRE(tc.word_to_class_index({1}) == tc.word_to_class_index({2}));
@@ -947,9 +1148,13 @@ namespace libsemigroups {
       tc.add_pair({2, 0, 1, 0}, {2, 0, 1});
       tc.add_pair({2, 0, 2, 0}, {2, 0, 2});
 
-      TEST_HLT(tc);
-      TEST_FELSCH(tc);
-      TEST_RANDOM_SIMS(tc);
+      check_hlt(tc);
+      check_felsch(tc);
+      check_random(tc);
+      check_Rc_style(tc);
+      check_R_over_C_style(tc);
+      check_CR_style(tc);
+      check_Cr_style(tc);
 
       REQUIRE(tc.number_of_classes() == 16);
       REQUIRE(tc.word_to_class_index({2}) == tc.word_to_class_index({3}));
@@ -1012,9 +1217,14 @@ namespace libsemigroups {
       tc.add_pair({1, 3, 0, 3}, {3, 0, 3});
       tc.add_pair({3, 0, 1, 0}, {3, 0, 1});
       tc.add_pair({3, 0, 3, 0}, {3, 0, 3});
-      TEST_HLT(tc);
-      TEST_FELSCH(tc);
-      TEST_RANDOM_SIMS(tc);
+
+      check_hlt(tc);
+      check_felsch(tc);
+      check_random(tc);
+      check_Rc_style(tc);
+      check_R_over_C_style(tc);
+      check_CR_style(tc);
+      check_Cr_style(tc);
 
       REQUIRE(tc.number_of_classes() == 16);
       REQUIRE(tc.word_to_class_index({0}) == tc.word_to_class_index({5}));
@@ -1027,8 +1237,6 @@ namespace libsemigroups {
       REQUIRE(tc.word_to_class_index({3}) == tc.word_to_class_index({9}));
       tc.standardize(tc_order::shortlex);
     }
-
-    // ToddCoxeter 021 removed
 
     LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                             "018",
@@ -1054,7 +1262,7 @@ namespace libsemigroups {
         tc.add_pair({1, 1, 1, 1, 0, 1, 0}, {1, 0, 1, 0});
         tc.add_pair({0, 0, 1, 1, 1, 0, 1, 0}, {1, 1, 1, 0, 1, 0});
 
-        TEST_HLT(tc);
+        check_hlt(tc);
         REQUIRE(tc.number_of_classes() == 78);
         tc.standardize(tc_order::shortlex);
       }
@@ -1077,7 +1285,7 @@ namespace libsemigroups {
         tc.add_pair({1, 1, 1, 1, 0, 1, 0}, {1, 0, 1, 0});
         tc.add_pair({0, 0, 1, 1, 1, 0, 1, 0}, {1, 1, 1, 0, 1, 0});
 
-        TEST_HLT(tc);
+        check_hlt(tc);
         REQUIRE(tc.number_of_classes() == 78);
         tc.standardize(tc_order::shortlex);
       }
@@ -1103,10 +1311,10 @@ namespace libsemigroups {
       ToddCoxeter tc(left, S);
       tc.froidure_pin_policy(options::froidure_pin::use_cayley_graph);
       tc.add_pair(w1, w2);
-      TEST_HLT_NO_SAVE(tc);
-      TEST_HLT_SAVE_THROWS(tc);
-      TEST_FELSCH_THROWS(tc);
-      TEST_RANDOM_SIMS(tc);
+      check_hlt_no_save(tc);
+      check_hlt_save_throws(tc);
+      check_felsch_throws(tc);
+      check_random(tc);
       REQUIRE(tc.number_of_classes() == 69);
     }
 
@@ -1117,9 +1325,11 @@ namespace libsemigroups {
       auto        rg = ReportGuard(REPORT);
       ToddCoxeter tc(twosided);
       tc.set_number_of_generators(1);
-      TEST_HLT(tc);
-      TEST_FELSCH(tc);
-      TEST_RANDOM_SIMS(tc);
+
+      check_hlt(tc);
+      check_felsch(tc);
+      check_random(tc);
+
       REQUIRE(tc.contains({0, 0}, {0, 0}));
       REQUIRE(!tc.contains({0, 0}, {0}));
     }
@@ -1130,9 +1340,11 @@ namespace libsemigroups {
                             "[todd-coxeter][quick]") {
       ToddCoxeter tc(twosided);
       tc.set_number_of_generators(5);
-      TEST_HLT(tc);
-      TEST_FELSCH(tc);
-      TEST_RANDOM_SIMS(tc);
+
+      check_hlt(tc);
+      check_felsch(tc);
+      check_random(tc);
+
       REQUIRE_THROWS_AS(tc.run(), LibsemigroupsException);
     }
 
@@ -1142,7 +1354,7 @@ namespace libsemigroups {
                             "[todd-coxeter][quick][hivert]") {
       auto rg = ReportGuard(REPORT);
 
-      congruence::ToddCoxeter tc(twosided);
+      ToddCoxeter tc(twosided);
       tc.set_number_of_generators(4);
       tc.add_pair({3, 3}, {3});
       tc.add_pair({0, 3}, {0});
@@ -1160,16 +1372,20 @@ namespace libsemigroups {
       tc.add_pair({1, 0, 1, 0}, {0, 1, 0, 1});
       tc.add_pair({1, 0, 1, 0}, {0, 1, 0});
 
-      TEST_HLT(tc);
-      TEST_FELSCH(tc);
-      TEST_RANDOM_SIMS(tc);
+      check_hlt(tc);
+      check_felsch(tc);
+      check_random(tc);
+      check_Rc_style(tc);
+      check_R_over_C_style(tc);
+      check_CR_style(tc);
+      check_Cr_style(tc);
 
       REQUIRE(tc.number_of_classes() == 34);
       REQUIRE(tc.quotient_froidure_pin()->size() == 34);
+      using froidure_pin_type = typename ToddCoxeter::froidure_pin_type;
       using detail::TCE;
-      auto& S
-          = static_cast<FroidurePin<TCE, FroidurePinTraits<TCE, TCE::Table>>&>(
-              *tc.quotient_froidure_pin());
+
+      auto& S = static_cast<froidure_pin_type&>(*tc.quotient_froidure_pin());
       S.run();
       std::vector<TCE> v(S.cbegin(), S.cend());
       std::sort(v.begin(), v.end());
@@ -1209,9 +1425,15 @@ namespace libsemigroups {
       tc.set_number_of_generators(2);
       tc.add_pair({0, 0, 0}, {0});  // (a^3, a)
       tc.add_pair({0}, {1, 1});     // (a, b^2)
-      TEST_HLT(tc);
-      TEST_FELSCH(tc);
-      TEST_RANDOM_SIMS(tc);
+
+      check_hlt(tc);
+      check_felsch(tc);
+      check_random(tc);
+      check_Rc_style(tc);
+      check_R_over_C_style(tc);
+      check_CR_style(tc);
+      check_Cr_style(tc);
+
       REQUIRE(tc.number_of_classes() == 5);
     }
 
@@ -1234,9 +1456,13 @@ namespace libsemigroups {
         REQUIRE(!tc1.contains({0}, {1}));
         tc2.add_pair({0}, {1});
 
-        TEST_HLT(tc2);
-        TEST_FELSCH(tc2);
-        TEST_RANDOM_SIMS(tc2);
+        check_hlt(tc2);
+        check_felsch(tc2);
+        check_random(tc2);
+        check_Rc_style(tc2);
+        check_R_over_C_style(tc2);
+        check_CR_style(tc2);
+        check_Cr_style(tc2);
 
         REQUIRE(tc2.number_of_classes() == 1);
 
@@ -1261,9 +1487,13 @@ namespace libsemigroups {
         REQUIRE(!tc1.contains({0}, {1}));
         tc2.add_pair({0}, {1});
 
-        TEST_HLT(tc2);
-        TEST_FELSCH(tc2);
-        TEST_RANDOM_SIMS(tc2);
+        check_hlt(tc2);
+        check_felsch(tc2);
+        check_random(tc2);
+        check_Rc_style(tc2);
+        check_R_over_C_style(tc2);
+        check_CR_style(tc2);
+        check_Cr_style(tc2);
 
         REQUIRE(tc2.number_of_classes() == 1);
 
@@ -1285,9 +1515,10 @@ namespace libsemigroups {
         congruence::ToddCoxeter tc(left);
         tc.set_number_of_generators(3);
         tc.add_pair({0, 0, 0}, {0});
-        TEST_HLT(tc);
-        TEST_FELSCH(tc);
-        TEST_RANDOM_SIMS(tc);
+        check_hlt(tc);
+        check_felsch(tc);
+        check_random(tc);
+
         REQUIRE(tc.number_of_classes() == POSITIVE_INFINITY);
         REQUIRE(!tc.is_quotient_obviously_finite());
       }
@@ -1295,9 +1526,10 @@ namespace libsemigroups {
         congruence::ToddCoxeter tc(right);
         tc.set_number_of_generators(3);
         tc.add_pair({0, 0, 0}, {0});
-        TEST_HLT(tc);
-        TEST_FELSCH(tc);
-        TEST_RANDOM_SIMS(tc);
+        check_hlt(tc);
+        check_felsch(tc);
+        check_random(tc);
+
         REQUIRE(tc.number_of_classes() == POSITIVE_INFINITY);
         REQUIRE(!tc.is_quotient_obviously_finite());
       }
@@ -1305,9 +1537,10 @@ namespace libsemigroups {
         congruence::ToddCoxeter tc(twosided);
         tc.set_number_of_generators(3);
         tc.add_pair({0, 0, 0}, {0});
-        TEST_HLT(tc);
-        TEST_FELSCH(tc);
-        TEST_RANDOM_SIMS(tc);
+        check_hlt(tc);
+        check_felsch(tc);
+        check_random(tc);
+
         REQUIRE(tc.number_of_classes() == POSITIVE_INFINITY);
         REQUIRE(!tc.is_quotient_obviously_finite());
       }
@@ -1323,8 +1556,9 @@ namespace libsemigroups {
         tc.set_number_of_generators(2);
         tc.add_pair({0, 0, 0}, {0});
         tc.add_pair({0}, {1, 1});
-        TEST_HLT(tc);
-        TEST_FELSCH(tc);
+        check_hlt(tc);
+        check_felsch(tc);
+
         REQUIRE(tc.number_of_classes() == 5);
         REQUIRE(tc.class_index_to_word(0) == word_type({0}));
         // This next one should throw
@@ -1333,11 +1567,16 @@ namespace libsemigroups {
       {
         congruence::ToddCoxeter tc(twosided);
         tc.set_number_of_generators(2);
-        TEST_HLT(tc);
-        TEST_FELSCH(tc);
-        TEST_RANDOM_SIMS(tc);
         tc.add_pair({0, 0, 0}, {0});
         tc.add_pair({0}, {1, 1});
+        check_hlt(tc);
+        check_felsch(tc);
+        check_random(tc);
+        check_Rc_style(tc);
+        check_R_over_C_style(tc);
+        check_CR_style(tc);
+        check_Cr_style(tc);
+
         REQUIRE(tc.number_of_classes() == 5);
         REQUIRE(tc.class_index_to_word(0) == word_type({0}));
         REQUIRE(tc.class_index_to_word(1) == word_type({1}));
@@ -1389,12 +1628,12 @@ namespace libsemigroups {
         REQUIRE(tc1.size() == 5);
         congruence::ToddCoxeter tc2(left, tc1);
         REQUIRE(tc2.empty());
-        REQUIRE_THROWS_AS(tc2.add_pair({0}, {2}), LibsemigroupsException);
-        TEST_HLT_NO_SAVE(tc2);
-        TEST_HLT_SAVE_THROWS(tc2);
-        TEST_FELSCH_THROWS(tc2);
-        TEST_RANDOM_SIMS(tc2);
         tc2.add_pair({0}, {1});
+        REQUIRE_THROWS_AS(tc2.add_pair({0}, {2}), LibsemigroupsException);
+        check_hlt_no_save(tc2);
+        check_hlt_save_throws(tc2);
+        check_felsch_throws(tc2);
+        check_random(tc2);
         REQUIRE(tc2.number_of_classes() == 1);
       }
       {
@@ -1403,12 +1642,17 @@ namespace libsemigroups {
         tc1.add_rule("aaa", "a");
         tc1.add_rule("a", "bb");
         congruence::ToddCoxeter tc2(left, tc1);
-        TEST_HLT(tc2);
-        TEST_FELSCH(tc2);
-        TEST_RANDOM_SIMS(tc2);
+        tc2.add_pair({0}, {1});
+        check_hlt(tc2);
+        check_felsch(tc2);
+        check_random(tc2);
+        check_Rc_style(tc2);
+        check_R_over_C_style(tc2);
+        check_CR_style(tc2);
+        check_Cr_style(tc2);
+
         REQUIRE(!tc2.empty());
         REQUIRE_THROWS_AS(tc2.add_pair({0}, {2}), LibsemigroupsException);
-        tc2.add_pair({0}, {1});
         REQUIRE(tc2.number_of_classes() == 1);
       }
     }
@@ -1429,21 +1673,27 @@ namespace libsemigroups {
       std::unique_ptr<ToddCoxeter> tc = nullptr;
       SECTION("2-sided") {
         tc = std::make_unique<ToddCoxeter>(twosided, kb);
-        TEST_HLT((*tc));
-        TEST_FELSCH((*tc));
-        TEST_RANDOM_SIMS((*tc));
+        check_hlt(*tc);
+        check_felsch(*tc);
+        check_random(*tc);
+        // Don't use the other check_* functions because they run to avoid an
+        // issue with fpsemigroup::ToddCoxeter.
       }
       SECTION("left") {
         tc = std::make_unique<ToddCoxeter>(left, kb);
-        TEST_HLT((*tc));
-        TEST_FELSCH((*tc));
-        TEST_RANDOM_SIMS((*tc));
+        check_hlt(*tc);
+        check_felsch(*tc);
+        check_random(*tc);
+        // Don't use the other check_* functions because they run to avoid an
+        // issue with fpsemigroup::ToddCoxeter.
       }
       SECTION("right") {
         tc = std::make_unique<ToddCoxeter>(left, kb);
-        TEST_HLT((*tc));
-        TEST_FELSCH((*tc));
-        TEST_RANDOM_SIMS((*tc));
+        check_hlt(*tc);
+        check_felsch(*tc);
+        check_random(*tc);
+        // Don't use the other check_* functions because they run to avoid an
+        // issue with fpsemigroup::ToddCoxeter.
       }
       REQUIRE(!tc->has_parent_froidure_pin());
       tc->add_pair({1}, {2});
@@ -1479,21 +1729,27 @@ namespace libsemigroups {
       std::unique_ptr<ToddCoxeter> tc = nullptr;
       SECTION("2-sided") {
         tc = std::make_unique<ToddCoxeter>(twosided, kb);
-        TEST_HLT((*tc));
-        TEST_FELSCH((*tc));
-        TEST_RANDOM_SIMS((*tc));
+        check_hlt(*tc);
+        check_felsch(*tc);
+        check_random(*tc);
+        // Don't use the other check_* functions because they run to avoid an
+        // issue with fpsemigroup::ToddCoxeter.
       }
       SECTION("left") {
         tc = std::make_unique<ToddCoxeter>(left, kb);
-        TEST_HLT((*tc));
-        TEST_FELSCH((*tc));
-        TEST_RANDOM_SIMS((*tc));
+        check_hlt(*tc);
+        check_felsch(*tc);
+        check_random(*tc);
+        // Don't use the other check_* functions because they run to avoid an
+        // issue with fpsemigroup::ToddCoxeter.
       }
       SECTION("right") {
         tc = std::make_unique<ToddCoxeter>(right, kb);
-        TEST_HLT((*tc));
-        TEST_FELSCH((*tc));
-        TEST_RANDOM_SIMS((*tc));
+        check_hlt(*tc);
+        check_felsch(*tc);
+        check_random(*tc);
+        // Don't use the other check_* functions because they run to avoid an
+        // issue with fpsemigroup::ToddCoxeter.
       }
       REQUIRE(tc->has_parent_froidure_pin());
       tc->add_pair({1}, {2});
@@ -1537,24 +1793,38 @@ namespace libsemigroups {
       std::unique_ptr<ToddCoxeter> tc = nullptr;
       SECTION("2-sided") {
         tc = std::make_unique<ToddCoxeter>(twosided, kb);
-        TEST_HLT((*tc));
-        TEST_FELSCH((*tc));
-        TEST_RANDOM_SIMS((*tc));
+        tc->add_pair({1}, {2});
+        check_hlt(*tc);
+        check_felsch(*tc);
+        check_random(*tc);
+        check_Rc_style(*tc);
+        check_R_over_C_style(*tc);
+        check_CR_style(*tc);
+        check_Cr_style(*tc);
       }
       SECTION("left") {
         tc = std::make_unique<ToddCoxeter>(left, kb);
-        TEST_HLT((*tc));
-        TEST_FELSCH((*tc));
-        TEST_RANDOM_SIMS((*tc));
+        tc->add_pair({1}, {2});
+        check_hlt(*tc);
+        check_felsch(*tc);
+        check_random(*tc);
+        check_Rc_style(*tc);
+        check_R_over_C_style(*tc);
+        check_CR_style(*tc);
+        check_Cr_style(*tc);
       }
       SECTION("right") {
         tc = std::make_unique<ToddCoxeter>(left, kb);
-        TEST_HLT((*tc));
-        TEST_FELSCH((*tc));
-        TEST_RANDOM_SIMS((*tc));
+        tc->add_pair({1}, {2});
+        check_hlt(*tc);
+        check_felsch(*tc);
+        check_random(*tc);
+        check_Rc_style(*tc);
+        check_R_over_C_style(*tc);
+        check_CR_style(*tc);
+        check_Cr_style(*tc);
       }
       REQUIRE(tc->has_parent_froidure_pin());
-      tc->add_pair({1}, {2});
 
       REQUIRE(tc->number_of_classes() == 1);
       if (tc->kind() == twosided) {
@@ -1603,6 +1873,12 @@ namespace libsemigroups {
         rv.set(1, 1, 1);
         tc.prefill(rv);
       }
+      {
+        detail::DynamicArray2<ToddCoxeter::class_index_type> rv2(2, 0);
+        ToddCoxeter                                          tc(twosided);
+        tc.set_number_of_generators(2);
+        REQUIRE_THROWS_AS(tc.prefill(rv2), LibsemigroupsException);
+      }
     }
 
     LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
@@ -1619,8 +1895,8 @@ namespace libsemigroups {
       tc2.next_lookahead(1);
       tc2.report_every(1);
       REQUIRE(!tc2.empty());
-      TEST_HLT(tc2);
-      TEST_RANDOM_SIMS(tc2);
+      check_hlt(tc2);
+      check_random(tc2);
       tc2.add_pair({0}, {0, 0});
       REQUIRE(tc2.number_of_classes() == 3);
     }
@@ -1637,10 +1913,10 @@ namespace libsemigroups {
       ToddCoxeter tc(twosided, S);
       tc.froidure_pin_policy(options::froidure_pin::none);
       tc.set_number_of_generators(2);
-      TEST_HLT_NO_SAVE(tc);
-      TEST_HLT_SAVE_THROWS(tc);
-      TEST_FELSCH_THROWS(tc);
-      TEST_RANDOM_SIMS(tc);
+      check_hlt_no_save(tc);
+      check_hlt_save_throws(tc);
+      check_felsch_throws(tc);
+      check_random(tc);
       tc.add_pair({0}, {1, 1});
       REQUIRE(tc.number_of_classes() == 1);
     }
@@ -1667,9 +1943,14 @@ namespace libsemigroups {
 
       ToddCoxeter tc(left, *S.knuth_bendix());
       tc.add_pair({0}, {1, 1, 1});
-      TEST_HLT(tc);
-      TEST_FELSCH(tc);
-      TEST_RANDOM_SIMS(tc);
+      check_hlt(tc);
+      check_felsch(tc);
+      check_random(tc);
+      check_Rc_style(tc);
+      check_R_over_C_style(tc);
+      check_CR_style(tc);
+      check_Cr_style(tc);
+
       REQUIRE(tc.number_of_classes() == 2);
       REQUIRE(std::vector<word_type>(tc.cbegin_normal_forms(),
                                      tc.cend_normal_forms())
@@ -1722,13 +2003,504 @@ namespace libsemigroups {
       REQUIRE(copy.compatible());
     }
 
+    LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
+                            "038",
+                            "Stylic monoid",
+                            "[todd-coxeter][quick][no-coverage][no-valgrind]") {
+      auto        rg = ReportGuard(REPORT);
+      ToddCoxeter tc(twosided);
+      tc.set_number_of_generators(9);
+      for (auto const& w : Stylic(9)) {
+        tc.add_pair(w.first, w.second);
+      }
+      tc.strategy(options::strategy::random);
+      REQUIRE_THROWS_AS(tc.run_for(std::chrono::milliseconds(100)),
+                        LibsemigroupsException);
+      tc.remove_duplicate_generating_pairs()
+          .sort_generating_pairs()
+          .strategy(options::strategy::hlt)
+          .lookahead(options::lookahead::partial | options::lookahead::hlt);
+      REQUIRE(tc.number_of_classes() == 115'974);
+    }
+
+    LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
+                            "039",
+                            "Fibonacci(4, 6)",
+                            "[todd-coxeter][fail]") {
+      auto        rg = ReportGuard();
+      ToddCoxeter tc(twosided);
+      tc.set_number_of_generators(6);
+      for (auto const& w : Fibonacci(4, 6)) {
+        tc.add_pair(w.first, w.second);
+      }
+      tc.strategy(options::strategy::felsch);
+      REQUIRE(tc.number_of_classes() == 0);
+    }
+
+    LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
+                            "040",
+                            "some finite classes",
+                            "[todd-coxeter][quick]") {
+      auto        rg = ReportGuard(REPORT);
+      ToddCoxeter tc(twosided);
+      tc.set_number_of_generators(1);
+      REQUIRE(tc.number_of_classes() == POSITIVE_INFINITY);
+
+      tc.add_pair({0, 0, 0, 0, 0, 0}, {0, 0, 0, 0});
+      tc.add_pair({0, 0, 0, 0, 0, 0}, {0, 0, 0, 0});
+      tc.add_pair({0, 0, 0, 0, 0, 0}, {0, 0, 0, 0});
+      tc.strategy(options::strategy::random)
+          .remove_duplicate_generating_pairs()
+          .standardize(true);
+      REQUIRE(!tc.compatible());
+      REQUIRE_THROWS_AS(tc.run_for(std::chrono::microseconds(1)),
+                        LibsemigroupsException);
+      tc.strategy(options::strategy::CR);
+      size_t x = 0;
+      REQUIRE_THROWS_AS(tc.run_until([&x] { return x > 4; }),
+                        LibsemigroupsException);
+      tc.lower_bound(100)
+          .use_relations_in_extra(true)
+          .deduction_policy(options::deductions::v1
+                            | options::deductions::unlimited)
+          .restandardize(true)
+          .max_preferred_defs(0);
+      REQUIRE_THROWS_AS(tc.hlt_defs(0), LibsemigroupsException);
+      REQUIRE_THROWS_AS(tc.f_defs(0), LibsemigroupsException);
+      tc.hlt_defs(10)
+          .f_defs(10)
+          .lookahead_growth_factor(3.0)
+          .lookahead_growth_threshold(100'000)
+          .large_collapse(1);
+      REQUIRE_THROWS_AS(tc.lookahead_growth_factor(0.1),
+                        LibsemigroupsException);
+
+      REQUIRE(tc.random_interval() == std::chrono::milliseconds(200));
+      REQUIRE(tc.felsch_tree_height() == 7);
+      REQUIRE(tc.number_of_classes() == 5);
+      REQUIRE(tc.number_of_words(0) == 1);
+      REQUIRE(tc.number_of_words(1) == 1);
+      REQUIRE(tc.number_of_words(2) == 1);
+      REQUIRE(tc.number_of_words(3) == POSITIVE_INFINITY);
+      REQUIRE(tc.number_of_words(4) == POSITIVE_INFINITY);
+      REQUIRE(tc.standardization_order() == ToddCoxeter::order::none);
+      REQUIRE(tc.felsch_tree_number_of_nodes() == 7);
+      REQUIRE_THROWS_AS(tc.remove_duplicate_generating_pairs(),
+                        LibsemigroupsException);
+      ToddCoxeter tc2(left, tc);
+      tc2.add_pair({0, 0}, {0});
+      tc2.add_pair({0, 0}, {0});
+      tc2.remove_duplicate_generating_pairs();
+      // Uses CongruenceInterface's generating pairs
+      REQUIRE(tc2.number_of_generating_pairs() == 2);
+      ToddCoxeter tc3(twosided);
+      tc3.set_number_of_generators(1);
+      REQUIRE(tc3.is_non_trivial() == tril::TRUE);
+      tc3.add_pair({0, 0}, {0});
+      REQUIRE(tc3.is_non_trivial() == tril::unknown);
+      REQUIRE(tc3.number_of_classes() == 1);
+      REQUIRE(tc3.is_non_trivial() == tril::FALSE);
+      REQUIRE(!tc.settings_string().empty());
+      REQUIRE(!tc3.settings_string().empty());
+      REQUIRE(!tc.stats_string().empty());
+    }
+
+    // Takes about 1m7s
+    LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
+                            "041",
+                            "SymmetricGroup1",
+                            "[todd-coxeter][extreme]") {
+      auto        rg = ReportGuard(true);
+      ToddCoxeter tc(twosided);
+      tc.set_number_of_generators(4);
+      for (auto const& w : SymmetricGroup1(10)) {
+        tc.add_pair(w.first, w.second);
+      }
+      REQUIRE(tc.number_of_classes() == 3'628'800);
+      std::cout << tc.stats_string();
+    }
+
+    LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
+                            "042",
+                            "SymmetricGroup2",
+                            "[todd-coxeter][quick][no-valgrind]") {
+      auto        rg = ReportGuard(REPORT);
+      ToddCoxeter tc(twosided);
+      tc.set_number_of_generators(7);
+      for (auto const& w : SymmetricGroup2(7)) {
+        tc.add_pair(w.first, w.second);
+      }
+      tc.run_for(std::chrono::microseconds(1));
+      REQUIRE(tc.is_non_trivial() == tril::TRUE);
+      REQUIRE(!tc.finished());
+      tc.standardize(ToddCoxeter::order::shortlex);
+      tc.standardize(ToddCoxeter::order::none);
+      tc.strategy(options::strategy::CR).f_defs(100);
+      REQUIRE(tc.number_of_classes() == 5'040);
+    }
+
+    LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
+                            "043",
+                            "Option exceptions",
+                            "[todd-coxeter][quick]") {
+      auto rg = ReportGuard(REPORT);
+      REQUIRE_THROWS_AS(options::deductions::unlimited
+                            | options::deductions::unlimited,
+                        LibsemigroupsException);
+      REQUIRE_THROWS_AS(options::deductions::v1 | options::deductions::v2,
+                        LibsemigroupsException);
+      REQUIRE_THROWS_AS(options::lookahead::hlt | options::lookahead::hlt,
+                        LibsemigroupsException);
+      REQUIRE_THROWS_AS(options::lookahead::hlt | options::lookahead::felsch,
+                        LibsemigroupsException);
+      REQUIRE_THROWS_AS(options::lookahead::full | options::lookahead::partial,
+                        LibsemigroupsException);
+    }
+
+    LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
+                            "044",
+                            "Options operator<<",
+                            "[todd-coxeter][quick]") {
+      auto rg = ReportGuard(REPORT);
+      {
+        ToddCoxeter tc(twosided);
+        tc.strategy(options::strategy::hlt);
+        tc.settings_string();
+        tc.strategy(options::strategy::felsch);
+        tc.settings_string();
+        tc.strategy(options::strategy::random);
+        tc.settings_string();
+        tc.strategy(options::strategy::CR);
+        tc.settings_string();
+        tc.strategy(options::strategy::R_over_C);
+        tc.settings_string();
+        tc.strategy(options::strategy::Cr);
+        tc.settings_string();
+        tc.strategy(options::strategy::Rc);
+        tc.settings_string();
+      }
+      {
+        ToddCoxeter tc(twosided);
+        tc.lookahead(options::lookahead::full | options::lookahead::felsch);
+        tc.settings_string();
+        tc.lookahead(options::lookahead::full | options::lookahead::hlt);
+        tc.settings_string();
+        tc.lookahead(options::lookahead::partial | options::lookahead::felsch);
+        tc.settings_string();
+        tc.lookahead(options::lookahead::partial | options::lookahead::hlt);
+        tc.settings_string();
+      }
+      {
+        ToddCoxeter tc(twosided);
+        tc.deduction_policy(options::deductions::v1
+                            | options::deductions::no_stack_if_no_space);
+        tc.settings_string();
+        tc.deduction_policy(options::deductions::v1
+                            | options::deductions::purge_all);
+        tc.settings_string();
+        tc.deduction_policy(options::deductions::v1
+                            | options::deductions::purge_from_top);
+        tc.settings_string();
+        tc.deduction_policy(options::deductions::v1
+                            | options::deductions::discard_all_if_no_space);
+        tc.settings_string();
+        tc.deduction_policy(options::deductions::v1
+                            | options::deductions::unlimited);
+        tc.settings_string();
+        tc.deduction_policy(options::deductions::v2
+                            | options::deductions::no_stack_if_no_space);
+        tc.settings_string();
+        tc.deduction_policy(options::deductions::v2
+                            | options::deductions::purge_all);
+        tc.settings_string();
+        tc.deduction_policy(options::deductions::v2
+                            | options::deductions::purge_from_top);
+        tc.deduction_policy(options::deductions::v2
+                            | options::deductions::discard_all_if_no_space);
+        tc.settings_string();
+        tc.deduction_policy(options::deductions::v2
+                            | options::deductions::unlimited);
+        tc.settings_string();
+      }
+      {
+        ToddCoxeter tc(twosided);
+        tc.froidure_pin_policy(options::froidure_pin::none);
+        tc.settings_string();
+        tc.froidure_pin_policy(options::froidure_pin::use_cayley_graph);
+        tc.settings_string();
+        tc.froidure_pin_policy(options::froidure_pin::use_relations);
+        tc.settings_string();
+      }
+      {
+        ToddCoxeter tc(twosided);
+        tc.preferred_defs(options::preferred_defs::none);
+        tc.settings_string();
+        tc.preferred_defs(options::preferred_defs::immediate_no_stack);
+        tc.settings_string();
+        tc.preferred_defs(options::preferred_defs::immediate_yes_stack);
+        tc.settings_string();
+        tc.preferred_defs(options::preferred_defs::deferred);
+        tc.settings_string();
+      }
+    }
+
+    // Takes about 9m3s (2021 - MacBook Air M1 - 8GB RAM)
+    LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
+                            "045",
+                            "Easdown-East-FitzGerald DualSymInv(5)",
+                            "[todd-coxeter][quick][no-valgrind][no-coverage]") {
+      auto        rg = ReportGuard(REPORT);
+      auto const  n  = 5;
+      ToddCoxeter tc(twosided);
+      setup(tc, n + 1, DualSymmetricInverseMonoidEEF, n);
+      // tc.strategy(options::strategy::Rc)
+      //     .max_deductions(10'000)
+      //     .max_preferred_defs(512)
+      //     .random_interval(std::chrono::seconds(10));
+      check_hlt(tc);
+      check_hlt(tc);
+      check_felsch(tc);
+      check_random(tc);
+      check_R_over_C_style(tc);
+      check_Rc_style(tc);
+
+      REQUIRE(tc.number_of_classes() == 6'721);
+    }
+
+    LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
+                            "046",
+                            "FitzGerald UniformBlockBijection(3)",
+                            "[todd-coxeter][quick]") {
+      // 16, 131, 1496, 22482, 426833, 9934563, 9934563
+      auto        rg = ReportGuard(REPORT);
+      auto const  n  = 3;
+      ToddCoxeter tc(twosided);
+      setup(tc, n + 1, UniformBlockBijectionMonoidF, n);
+
+      check_hlt(tc);
+      check_felsch(tc);
+      check_random(tc);
+      check_R_over_C_style(tc);
+      check_Rc_style(tc);
+      REQUIRE(tc.number_of_classes() == 16);
+    }
+
+    LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
+                            "047",
+                            "Stellar(7) (Gay-Hivert)",
+                            "[todd-coxeter][quick][no-valgrind][no-coverage]") {
+      auto         rg = ReportGuard(false);
+      size_t const n  = 7;
+      ToddCoxeter  tc1(congruence_kind::twosided);
+      setup(tc1, n + 1, RookMonoid, n, 0);
+      ToddCoxeter tc2(congruence_kind::twosided, tc1);
+      setup(tc2, n + 1, Stell, n);
+      tc2.strategy(options::strategy::felsch);
+      REQUIRE(tc2.number_of_classes() == 13'700);
+    }
+
+    LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
+                            "048",
+                            "PartitionMonoid(4) (East)",
+                            "[todd-coxeter][quick][no-valgrind][no-coverage]") {
+      auto         rg = ReportGuard(REPORT);
+      size_t const n  = 4;
+      ToddCoxeter  tc(congruence_kind::twosided);
+      setup(tc, 5, PartitionMonoidEast41, n);
+      check_hlt(tc);
+      check_felsch(tc);
+      check_random(tc);
+      check_R_over_C_style(tc);
+      check_Rc_style(tc);
+      REQUIRE(tc.number_of_classes() == 4'140);
+    }
+
+    LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
+                            "049",
+                            "SingularBrauer(6) (Maltcev + Mazorchuk)",
+                            "[todd-coxeter][quick][no-valgrind][no-coverage]") {
+      auto         rg = ReportGuard(REPORT);
+      size_t const n  = 6;
+      ToddCoxeter  tc(congruence_kind::twosided);
+      setup(tc, n * n - n, SingularBrauer, n);
+      tc.sort_generating_pairs().remove_duplicate_generating_pairs();
+      REQUIRE(tc.number_of_classes() == 9'675);
+    }
+
+    LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
+                            "050",
+                            "OrientationPreserving(6) (Ruskuc + Arthur)",
+                            "[todd-coxeter][quick][no-valgrind][no-coverage]") {
+      auto         rg = ReportGuard(REPORT);
+      size_t const n  = 6;
+      ToddCoxeter  tc(congruence_kind::twosided);
+      setup(tc, 3, OrientationPreserving, n);
+      check_hlt(tc);
+      check_felsch(tc);
+      check_random(tc);
+      check_R_over_C_style(tc);
+      check_Rc_style(tc);
+
+      REQUIRE(tc.number_of_classes() == 2'742);
+    }
+
+    LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
+                            "051",
+                            "OrientationReversing(5) (Ruskuc + Arthur)",
+                            "[todd-coxeter][quick][no-valgrind][no-coverage]") {
+      auto         rg = ReportGuard(REPORT);
+      size_t const n  = 5;
+      ToddCoxeter  tc(congruence_kind::twosided);
+      setup(tc, 4, OrientationReversing, n);
+      check_hlt(tc);
+      check_felsch(tc);
+      check_random(tc);
+      check_Rc_style(tc);
+      check_R_over_C_style(tc);
+      check_CR_style(tc);
+      check_Cr_style(tc);
+
+      REQUIRE(tc.number_of_classes() == 1'015);
+    }
+
+    LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
+                            "052",
+                            "TemperleyLieb(10) (East)",
+                            "[todd-coxeter][quick][no-valgrind][no-coverage]") {
+      auto         rg = ReportGuard(REPORT);
+      size_t const n  = 10;
+      ToddCoxeter  tc(congruence_kind::twosided);
+      setup(tc, n - 1, TemperleyLieb, n);
+      REQUIRE(tc.number_of_classes() == 16'795);
+    }
+
+    LIBSEMIGROUPS_TEST_CASE(
+        "ToddCoxeter",
+        "053",
+        "Generate GAP benchmarks for Stellar(n) (Gay-Hivert)",
+        "[todd-coxeter][fail]") {
+      auto rg = ReportGuard(false);
+      for (size_t n = 3; n <= 9; ++n) {
+        ToddCoxeter tc1(congruence_kind::twosided);
+        setup(tc1, n + 1, RookMonoid, n, 0);
+        ToddCoxeter tc2(congruence_kind::twosided, tc1);
+        setup(tc2, n + 1, Stell, n);
+        output_gap_benchmark_file("stellar-" + std::to_string(n) + ".g", tc2);
+      }
+    }
+
+    LIBSEMIGROUPS_TEST_CASE(
+        "ToddCoxeter",
+        "054",
+        "Generate GAP benchmarks for PartitionMonoid(n) (East)",
+        "[todd-coxeter][fail]") {
+      auto rg = ReportGuard(false);
+      for (size_t n = 4; n <= 6; ++n) {
+        ToddCoxeter tc(congruence_kind::twosided);
+        setup(tc, 5, PartitionMonoidEast41, n);
+        tc.save(true);
+        output_gap_benchmark_file("partition-" + std::to_string(n) + ".g", tc);
+      }
+    }
+
+    LIBSEMIGROUPS_TEST_CASE(
+        "ToddCoxeter",
+        "055",
+        "Generate GAP benchmarks for dual symmetric inverse monoid (East)",
+        "[todd-coxeter][fail]") {
+      auto rg = ReportGuard(false);
+      for (size_t n = 3; n <= 6; ++n) {
+        ToddCoxeter tc(congruence_kind::twosided);
+        setup(tc, n + 1, DualSymmetricInverseMonoidEEF, n);
+        output_gap_benchmark_file("dual-sym-inv-" + std::to_string(n) + ".g",
+                                  tc);
+      }
+    }
+
+    LIBSEMIGROUPS_TEST_CASE(
+        "ToddCoxeter",
+        "056",
+        "Generate GAP benchmarks for UniformBlockBijectionMonoidF",
+        "[todd-coxeter][fail]") {
+      auto rg = ReportGuard(false);
+      for (size_t n = 3; n <= 7; ++n) {
+        ToddCoxeter tc(congruence_kind::twosided);
+        setup(tc, n + 1, UniformBlockBijectionMonoidF, n);
+        output_gap_benchmark_file(
+            "uniform-block-bijection-" + std::to_string(n) + ".g", tc);
+      }
+    }
+
+    LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
+                            "057",
+                            "Generate GAP benchmarks for stylic monoids",
+                            "[todd-coxeter][fail]") {
+      auto rg = ReportGuard(false);
+      for (size_t n = 3; n <= 9; ++n) {
+        ToddCoxeter tc(congruence_kind::twosided);
+        setup(tc, n, Stylic, n);
+        output_gap_benchmark_file("stylic-" + std::to_string(n) + ".g", tc);
+      }
+    }
+
+    LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
+                            "058",
+                            "Generate GAP benchmarks for OP_n",
+                            "[todd-coxeter][fail]") {
+      auto rg = ReportGuard(false);
+      for (size_t n = 3; n <= 9; ++n) {
+        ToddCoxeter tc(congruence_kind::twosided);
+        setup(tc, 3, OrientationPreserving, n);
+        output_gap_benchmark_file("orient-" + std::to_string(n) + ".g", tc);
+      }
+    }
+
+    LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
+                            "059",
+                            "Generate GAP benchmarks for OR_n",
+                            "[todd-coxeter][fail]") {
+      auto rg = ReportGuard(false);
+      for (size_t n = 3; n <= 8; ++n) {
+        ToddCoxeter tc(congruence_kind::twosided);
+        setup(tc, 4, OrientationReversing, n);
+        output_gap_benchmark_file("orient-reverse-" + std::to_string(n) + ".g",
+                                  tc);
+      }
+    }
+
+    LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
+                            "060",
+                            "Generate GAP benchmarks for TemperleyLieb(n)",
+                            "[todd-coxeter][fail]") {
+      auto rg = ReportGuard(false);
+      for (size_t n = 3; n <= 13; ++n) {
+        ToddCoxeter tc(congruence_kind::twosided);
+        setup(tc, n - 1, TemperleyLieb, n);
+        output_gap_benchmark_file("temperley-lieb-" + std::to_string(n) + ".g",
+                                  tc);
+      }
+    }
+
+    LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
+                            "061",
+                            "Generate GAP benchmarks for SingularBrauer(n)",
+                            "[todd-coxeter][fail]") {
+      auto rg = ReportGuard(false);
+      for (size_t n = 3; n <= 7; ++n) {
+        ToddCoxeter tc(congruence_kind::twosided);
+        setup(tc, n * n - n, SingularBrauer, n);
+        output_gap_benchmark_file("singular-brauer-" + std::to_string(n) + ".g",
+                                  tc);
+      }
+    }
   }  // namespace congruence
 
   namespace fpsemigroup {
+
     constexpr bool REPORT = false;
 
     LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
-                            "038",
+                            "062",
                             "add_rule",
                             "[todd-coxeter][quick]") {
       auto rg = ReportGuard(REPORT);
@@ -1737,9 +2509,67 @@ namespace libsemigroups {
         tc.set_alphabet("ab");
         tc.add_rule("aaa", "a");
         tc.add_rule("a", "bb");
-        TEST_HLT(tc.congruence());
-        TEST_FELSCH(tc.congruence());
-        TEST_RANDOM_SIMS(tc.congruence());
+        check_hlt(tc);
+        check_felsch(tc);
+        check_random(tc);
+        check_Rc_style(tc);
+        check_R_over_C_style(tc);
+        check_CR_style(tc);
+        check_Cr_style(tc);
+        SECTION("R/C + Felsch lookahead") {
+          tc.congruence()
+              .strategy(options::strategy::R_over_C)
+              .lookahead(options::lookahead::felsch | options::lookahead::full);
+          tc.congruence().run();
+        }
+        SECTION("HLT + Felsch lookahead + save") {
+          tc.congruence()
+              .strategy(options::strategy::hlt)
+              .save(true)
+              .lookahead(options::lookahead::felsch | options::lookahead::full)
+              .next_lookahead(2);
+          tc.congruence().run();
+        }
+        SECTION("Cr + small number of f_defs") {
+          tc.congruence().strategy(options::strategy::Cr).f_defs(3);
+          tc.congruence().run();
+        }
+        SECTION("Rc + small number of deductions") {
+          tc.congruence().strategy(options::strategy::Rc).max_deductions(0);
+          tc.congruence().run();
+        }
+        SECTION("Felsch + v2 + no preferred defs") {
+          tc.congruence()
+              .strategy(options::strategy::felsch)
+              .deduction_policy(options::deductions::v2
+                                | options::deductions::purge_all)
+              .preferred_defs(options::preferred_defs::none);
+        }
+        SECTION("Felsch + v2 + immediate no stack") {
+          tc.congruence()
+              .strategy(options::strategy::felsch)
+              .deduction_policy(options::deductions::v2
+                                | options::deductions::purge_from_top)
+              .preferred_defs(options::preferred_defs::immediate_no_stack);
+        }
+        SECTION("Felsch + v1 + immediate no stack") {
+          tc.congruence()
+              .strategy(options::strategy::felsch)
+              .deduction_policy(options::deductions::v1
+                                | options::deductions::discard_all_if_no_space)
+              .preferred_defs(options::preferred_defs::immediate_no_stack);
+        }
+        SECTION("Felsch + v1 + immediate yes stack") {
+          tc.congruence()
+              .strategy(options::strategy::felsch)
+              .deduction_policy(options::deductions::v1
+                                | options::deductions::no_stack_if_no_space)
+              .preferred_defs(options::preferred_defs::immediate_yes_stack);
+        }
+        SECTION("large collapse") {
+          tc.congruence().large_collapse(0);
+        }
+
         REQUIRE(tc.size() == 5);
       }
       {
@@ -1748,9 +2578,14 @@ namespace libsemigroups {
         tc.add_rule("aaa", "a");
         tc.add_rule("a", "bb");
         tc.congruence().next_lookahead(1);
-        TEST_HLT(tc.congruence());
-        TEST_FELSCH(tc.congruence());
-        TEST_RANDOM_SIMS(tc.congruence());
+        check_hlt(tc);
+        check_felsch(tc);
+        check_random(tc);
+        check_Rc_style(tc);
+        check_R_over_C_style(tc);
+        check_CR_style(tc);
+        check_Cr_style(tc);
+
         REQUIRE(tc.size() == 5);
       }
     }
@@ -1758,7 +2593,7 @@ namespace libsemigroups {
     // KnuthBendix methods fail for this one
     LIBSEMIGROUPS_TEST_CASE(
         "ToddCoxeter",
-        "039",
+        "063",
         "(from kbmag/standalone/kb_data/s4) (KnuthBendix 49)",
         "[todd-coxeter][quick][kbmag]") {
       auto rg = ReportGuard(REPORT);
@@ -1776,9 +2611,14 @@ namespace libsemigroups {
       tc.add_rule("db", "b");
       tc.add_rule("cd", "c");
       tc.add_rule("dc", "c");
-      TEST_HLT(tc.congruence());
-      TEST_FELSCH(tc.congruence());
-      TEST_RANDOM_SIMS(tc.congruence());
+      check_hlt(tc);
+      check_felsch(tc);
+      check_random(tc);
+      check_Rc_style(tc);
+      check_R_over_C_style(tc);
+      check_CR_style(tc);
+      check_Cr_style(tc);
+
       REQUIRE(tc.size() == 24);
       REQUIRE(tc.froidure_pin()->size() == 24);
       REQUIRE(tc.normal_form("aaaaaaaaaaaaaaaaaaa") == "a");
@@ -1788,7 +2628,7 @@ namespace libsemigroups {
     // Second of BHN's series of increasingly complicated presentations
     // of 1. Doesn't terminate
     LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
-                            "040",
+                            "064",
                             "(from kbmag/standalone/kb_data/degen4b) "
                             "(KnuthBendix 065)",
                             "[fail][todd-coxeter][kbmag][shortlex]") {
@@ -1803,12 +2643,15 @@ namespace libsemigroups {
       tc.add_rule("bbdeaecbffdbaeeccefbccefb", "g");
       tc.add_rule("ccefbfacddecbffaafdcaafdc", "g");
       tc.add_rule("aafdcdbaeefacddbbdeabbdea", "g");
+      tc.congruence().lookahead(options::lookahead::full
+                                | options::lookahead::felsch);
+      REQUIRE(!tc.is_obviously_infinite());
 
       REQUIRE(tc.size() == 1);
     }
 
     LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
-                            "041",
+                            "065",
                             "test validate",
                             "[todd-coxeter][quick]") {
       auto rg = ReportGuard(REPORT);
@@ -1822,7 +2665,7 @@ namespace libsemigroups {
     }
 
     LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
-                            "042",
+                            "066",
                             "add_rules after construct. from semigroup",
                             "[todd-coxeter][quick]") {
       auto rg = ReportGuard(REPORT);
@@ -1842,10 +2685,10 @@ namespace libsemigroups {
       ToddCoxeter tc1(S);
       tc1.add_rule(w1, w2);
 
-      TEST_HLT_NO_SAVE(tc1.congruence());
-      TEST_HLT_SAVE_THROWS(tc1.congruence());
-      TEST_FELSCH_THROWS(tc1.congruence());
-      TEST_RANDOM_SIMS(tc1.congruence());
+      check_hlt_no_save(tc1);
+      check_hlt_save_throws(tc1);
+      check_felsch_throws(tc1);
+      check_random(tc1);
 
       REQUIRE(tc1.size() == 21);
       REQUIRE(tc1.size() == tc1.froidure_pin()->size());
@@ -1854,9 +2697,10 @@ namespace libsemigroups {
 
       ToddCoxeter tc2(S);
       tc2.add_rule(w1, w2);
-      TEST_HLT_NO_SAVE(tc2.congruence());
-      TEST_HLT_SAVE_THROWS(tc2.congruence());
-      TEST_FELSCH_THROWS(tc2.congruence());
+
+      check_hlt_no_save(tc2);
+      check_hlt_save_throws(tc2);
+      check_felsch_throws(tc2);
 
       REQUIRE(tc2.size() == 21);
       REQUIRE(tc2.size() == tc2.froidure_pin()->size());
@@ -1865,7 +2709,7 @@ namespace libsemigroups {
     }
 
     LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
-                            "043",
+                            "067",
                             "Sym(5) from Chapter 3, Proposition 1.1 in NR",
                             "[todd-coxeter][quick]") {
       auto rg = ReportGuard(REPORT);
@@ -1883,14 +2727,42 @@ namespace libsemigroups {
       tc.add_rule("aBBBabbbaBBBabbb", "e");
       tc.add_rule("aA", "e");
       tc.add_rule("Aa", "e");
-      TEST_HLT(tc.congruence());
-      TEST_FELSCH(tc.congruence());
-      TEST_RANDOM_SIMS(tc.congruence());
+
+      SECTION("Deduction policy == purge_from_top") {
+        tc.congruence()
+            .max_deductions(2)
+            .strategy(options::strategy::felsch)
+            .max_preferred_defs(3);
+        REQUIRE_THROWS_AS(tc.congruence().deduction_policy(
+                              options::deductions::purge_from_top),
+                          LibsemigroupsException);
+        tc.congruence().deduction_policy(options::deductions::v1
+                                         | options::deductions::purge_from_top);
+      }
+      SECTION("Deduction policy == purge_all") {
+        tc.congruence().max_deductions(2).strategy(options::strategy::felsch);
+        tc.congruence().deduction_policy(options::deductions::v1
+                                         | options::deductions::purge_all);
+      }
+      SECTION("Deduction policy == discard_all_if_no_space") {
+        tc.congruence().max_deductions(2).strategy(options::strategy::felsch);
+        tc.congruence().deduction_policy(
+            options::deductions::v2
+            | options::deductions::discard_all_if_no_space);
+      }
+      check_hlt(tc);
+      check_felsch(tc);
+      check_random(tc);
+      check_Rc_style(tc);
+      check_R_over_C_style(tc);
+      check_CR_style(tc);
+      check_Cr_style(tc);
+
       REQUIRE(tc.size() == 120);
     }
 
     LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
-                            "044",
+                            "068",
                             "Chapter 7, Theorem 3.6 in NR (size 243)",
                             "[no-valgrind][todd-coxeter][quick]") {
       auto        rg = ReportGuard(REPORT);
@@ -1899,14 +2771,20 @@ namespace libsemigroups {
       tc.add_rule("aaa", "a");
       tc.add_rule("bbbb", "b");
       tc.add_rule("ababababab", "aa");
-      TEST_HLT(tc.congruence());
-      TEST_FELSCH(tc.congruence());
-      TEST_RANDOM_SIMS(tc.congruence());
+
+      check_hlt(tc);
+      check_felsch(tc);
+      check_random(tc);
+      check_Rc_style(tc);
+      check_R_over_C_style(tc);
+      check_CR_style(tc);
+      check_Cr_style(tc);
+
       REQUIRE(tc.size() == 243);
     }
 
     LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
-                            "045",
+                            "069",
                             "finite semigroup (size 99)",
                             "[todd-coxeter][quick]") {
       auto        rg = ReportGuard(REPORT);
@@ -1915,11 +2793,17 @@ namespace libsemigroups {
       tc.add_rule("aaa", "a");
       tc.add_rule("bbbb", "b");
       tc.add_rule("abababab", "aa");
-      TEST_HLT(tc.congruence());
-      TEST_FELSCH(tc.congruence());
-      TEST_RANDOM_SIMS(tc.congruence());
 
       REQUIRE(!tc.is_obviously_finite());
+
+      check_hlt(tc);
+      check_felsch(tc);
+      check_random(tc);
+      check_Rc_style(tc);
+      check_R_over_C_style(tc);
+      check_CR_style(tc);
+      check_Cr_style(tc);
+
       REQUIRE(tc.size() == 99);
       REQUIRE(tc.finished());
       REQUIRE(tc.is_obviously_finite());
@@ -1928,7 +2812,7 @@ namespace libsemigroups {
     // The following 8 examples are from Trevor Walker's Thesis: Semigroup
     // enumeration - computer implementation and applications, p41.
     LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
-                            "046",
+                            "070",
                             "Walker 1",
                             "[todd-coxeter][standard]") {
       auto        rg = ReportGuard(REPORT);
@@ -1957,11 +2841,12 @@ namespace libsemigroups {
       tc.add_rule("H", "Z");
       tc.add_rule("I", "Y");
 
-      tc.congruence().sort_generating_pairs(shortlex_compare);
-      tc.congruence().next_lookahead(500000);
-      tc.congruence().run_until([&tc]() -> bool {
-        return tc.congruence().coset_capacity() >= 10000;
-      });
+      tc.congruence()
+          .sort_generating_pairs(shortlex_compare)
+          .next_lookahead(500000)
+          .run_until([&tc]() -> bool {
+            return tc.congruence().coset_capacity() >= 10000;
+          });
       REQUIRE(!tc.finished());
       REQUIRE(!tc.is_obviously_finite());
       tc.congruence().standardize(tc_order::shortlex);
@@ -1971,9 +2856,13 @@ namespace libsemigroups {
       tc.congruence().standardize(tc_order::recursive);
       REQUIRE(!tc.finished());
 
-      TEST_HLT(tc.congruence());
-      TEST_FELSCH(tc.congruence());
-      TEST_RANDOM_SIMS(tc.congruence());
+      check_hlt(tc);
+      check_felsch(tc);
+      check_random(tc);
+      check_Rc_style(tc);
+      check_R_over_C_style(tc);
+      check_CR_style(tc);
+      check_Cr_style(tc);
 
       // This takes approx 1 seconds with Felsch . . .
       REQUIRE(tc.size() == 1);
@@ -1993,10 +2882,10 @@ namespace libsemigroups {
 
     // The following example is a good one for using the lookahead.
     LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
-                            "047",
+                            "071",
                             "Walker 2",
                             "[todd-coxeter][extreme]") {
-      auto        rg = ReportGuard();
+      auto        rg = ReportGuard(REPORT);
       ToddCoxeter tc;
       tc.set_alphabet("ab");
       tc.add_rule("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "a");
@@ -2004,21 +2893,33 @@ namespace libsemigroups {
       tc.add_rule("ababa", "b");
       tc.add_rule("aaaaaaaaaaaaaaaabaaaabaaaaaaaaaaaaaaaabaaaa", "b");
 
-      tc.congruence().next_lookahead(2000000);
-
       REQUIRE(!tc.is_obviously_finite());
 
-      TEST_HLT(tc.congruence());
-      TEST_FELSCH(tc.congruence());
-      TEST_RANDOM_SIMS(tc.congruence());
+      SECTION("custom HLT") {
+        tc.congruence()
+            .sort_generating_pairs()
+            .next_lookahead(1'000'000)
+            .max_deductions(2'000)
+            .use_relations_in_extra(true)
+            .strategy(options::strategy::hlt)
+            .lookahead(options::lookahead::partial | options::lookahead::felsch)
+            .deduction_policy(options::deductions::v2
+                              | options::deductions::no_stack_if_no_space);
+      }
 
-      // This takes approx 6 seconds with Felsch . . .
-      REQUIRE(tc.size() == 14911);
+      check_hlt(tc);
+      check_felsch(tc);
+      check_random(tc);
+      check_Rc_style(tc);
+      check_R_over_C_style(tc);
+      check_CR_style(tc);
+      check_Cr_style(tc);
+      REQUIRE(tc.size() == 14'911);
       tc.congruence().standardize(tc_order::shortlex);
     }
 
     LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
-                            "048",
+                            "072",
                             "Walker 3",
                             "[todd-coxeter][standard]") {
       auto        rg = ReportGuard(REPORT);
@@ -2027,18 +2928,22 @@ namespace libsemigroups {
       tc.add_rule("aaaaaaaaaaaaaaaa", "a");
       tc.add_rule("bbbbbbbbbbbbbbbb", "b");
       tc.add_rule("abb", "baa");
-      tc.congruence().next_lookahead(2000000);
+      tc.congruence().next_lookahead(2'000'000);
       REQUIRE(!tc.is_obviously_finite());
 
-      TEST_HLT(tc.congruence());
-      TEST_FELSCH(tc.congruence());
-      TEST_RANDOM_SIMS(tc.congruence());
+      check_hlt(tc);
+      check_felsch(tc);
+      check_random(tc);
+      // check_Rc_style(tc); // Rc_style + partial lookahead works very badly
+      // 2m30s
+      check_R_over_C_style(tc);
+      check_Cr_style(tc);
 
-      REQUIRE(tc.size() == 20490);
+      REQUIRE(tc.size() == 20'490);
     }
 
     LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
-                            "049",
+                            "073",
                             "Walker 4",
                             "[todd-coxeter][extreme]") {
       auto        rg = ReportGuard();
@@ -2053,23 +2958,21 @@ namespace libsemigroups {
 
       REQUIRE(!tc.is_obviously_finite());
 
-      TEST_HLT(tc.congruence());
-      SECTION("Felsch strategy + standardization") {
-        tc.congruence().strategy(options::strategy::felsch).standardize(true);
-        tc.congruence().run_until([&tc]() -> bool {
-          return tc.congruence().number_of_cosets_active() > 100000;
-        });
-        REQUIRE(!tc.congruence().finished());
-        REQUIRE(!tc.congruence().complete());
-        REQUIRE(!tc.congruence().compatible());
-        tc.congruence().strategy(options::strategy::hlt).standardize(true);
+      check_hlt(tc);
+      // Felsch very slow
+      check_random(tc);
+      SECTION("custom R/C") {
+        tc.congruence()
+            .next_lookahead(3'000'000)
+            .strategy(options::strategy::R_over_C)
+            .max_deductions(100'000);
       }
-      TEST_RANDOM_SIMS(tc.congruence());
-      REQUIRE(tc.size() == 36412);
+      tc.congruence().run();
+      REQUIRE(tc.size() == 36'412);
     }
 
     LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
-                            "050",
+                            "074",
                             "Walker 5",
                             "[todd-coxeter][extreme]") {
       auto        rg = ReportGuard(REPORT);
@@ -2083,16 +2986,23 @@ namespace libsemigroups {
       REQUIRE(!tc.is_obviously_finite());
 
       // This example is extremely slow with Felsch
-      TEST_HLT(tc.congruence());
-      TEST_RANDOM_SIMS(tc.congruence());
-      tc.run();
+      check_hlt(tc);
+      check_random(tc);
+      check_Rc_style(tc);
+      check_R_over_C_style(tc);
+      check_CR_style(tc);
+      check_Cr_style(tc);
+
+      tc.congruence().run();
       REQUIRE(tc.congruence().complete());
       REQUIRE(tc.congruence().compatible());
-      REQUIRE(tc.size() == 72822);
+
+      REQUIRE(tc.size() == 72'822);
+      std::cout << tc.congruence().stats_string();
     }
 
     LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
-                            "051",
+                            "075",
                             "not Walker 6",
                             "[todd-coxeter][extreme]") {
       auto        rg = ReportGuard();
@@ -2106,16 +3016,20 @@ namespace libsemigroups {
       tc.congruence().next_lookahead(5000000);
       REQUIRE(!tc.is_obviously_finite());
 
-      // This example is extremely slow with Felsch, the random Sims strategy
-      // is typically fastest
-      TEST_HLT(tc.congruence());
-      TEST_RANDOM_SIMS(tc.congruence());
+      // This example is extremely slow with Felsch, the random strategy
+      // strategy is typically fastest
+      check_hlt(tc);
+      check_random(tc);
+      check_Rc_style(tc);
+      check_R_over_C_style(tc);
+      check_CR_style(tc);
+      check_Cr_style(tc);
 
       REQUIRE(tc.size() == 8);
     }
 
     LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
-                            "052",
+                            "076",
                             "Walker 6",
                             "[todd-coxeter][standard]") {
       auto        rg = ReportGuard(REPORT);
@@ -2127,18 +3041,21 @@ namespace libsemigroups {
       lng += lng;
       lng += "abbabbbbbbbb";
       tc.add_rule(lng, "bb");
+      REQUIRE(!tc.is_obviously_finite());
 
       // This example is extremely slow with Felsch
-      TEST_HLT(tc.congruence());
-      TEST_RANDOM_SIMS(tc.congruence());
+      check_hlt(tc);
+      check_random(tc);
+      // check_Rc_style(tc); // partial lookahead is too slow
+      // check_Cr_style(tc); // very slow
+      check_R_over_C_style(tc);
 
-      REQUIRE(!tc.is_obviously_finite());
-      REQUIRE(tc.size() == 78722);
+      REQUIRE(tc.size() == 78'722);
     }
 
-    // Felsch is faster here too
+    // Felsch is faster here too!
     LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
-                            "053",
+                            "077",
                             "Walker 7",
                             "[todd-coxeter][standard]") {
       auto        rg = ReportGuard(REPORT);
@@ -2159,17 +3076,25 @@ namespace libsemigroups {
       tc.add_rule("bd", "db");
       tc.add_rule("be", "eb");
       tc.add_rule("ce", "ec");
-
-      TEST_HLT(tc.congruence());
-      TEST_FELSCH(tc.congruence());
-      TEST_RANDOM_SIMS(tc.congruence());
-
       REQUIRE(!tc.is_obviously_finite());
-      REQUIRE(tc.size() == 153500);
+
+      check_hlt(tc);
+      check_felsch(tc);
+      check_random(tc);
+      // check_Rc_style(tc); // partial lookahead very slow ~8s
+      check_R_over_C_style(tc);
+      check_Cr_style(tc);
+
+      tc.congruence()
+          .deduction_policy(options::deductions::v1
+                            | options::deductions::no_stack_if_no_space)
+          .preferred_defs(options::preferred_defs::none);
+
+      REQUIRE(tc.size() == 153'500);
     }
 
     LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
-                            "054",
+                            "078",
                             "Walker 8",
                             "[todd-coxeter][standard]") {
       auto        rg = ReportGuard(REPORT);
@@ -2179,19 +3104,23 @@ namespace libsemigroups {
       tc.add_rule("bbbbbbbbbbbbbbbbbbbbbbb", "b");
       tc.add_rule("abbbbbbbbbbbabb", "bba");
 
-      // This example is extremely slow with Felsch
-      TEST_HLT(tc.congruence());
-      TEST_RANDOM_SIMS(tc.congruence());
-
+      REQUIRE(tc.congruence().length_of_generating_pairs() == 46);
       REQUIRE(!tc.is_obviously_finite());
-      REQUIRE(tc.size() == 270272);
+
+      // This example is extremely slow with Felsch
+      check_hlt(tc);
+      check_random(tc);
+      // check_Rc_style(tc); + partial lookahead too slow
+      // check_Cr_style(tc); // too slow
+      check_R_over_C_style(tc);
+
+      REQUIRE(tc.congruence().number_of_classes() == 270'272);
     }
 
-    // Felsch is also much much faster here!
     LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
-                            "055",
+                            "079",
                             "KnuthBendix 098",
-                            "[todd-coxeter][standard]") {
+                            "[todd-coxeter][quick][no-valgrind]") {
       auto        rg = ReportGuard(REPORT);
       ToddCoxeter tc;
       tc.set_alphabet("aAbBcCdDyYfFgGe");
@@ -2206,43 +3135,19 @@ namespace libsemigroups {
       tc.add_rule("fg", "a");
       tc.add_rule("ga", "b");
 
-      TEST_HLT(tc.congruence());
-      TEST_FELSCH(tc.congruence());
-      TEST_RANDOM_SIMS(tc.congruence());
+      check_hlt(tc);
+      check_felsch(tc);
+      check_random(tc);
+      check_Rc_style(tc);
+      check_R_over_C_style(tc);
+      check_CR_style(tc);
+      check_Cr_style(tc);
 
       REQUIRE(tc.size() == 29);
     }
 
-    // This example currently fails with every approach
     LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
-                            "056",
-                            "Holt 1 - M_12",
-                            "[todd-coxeter][fail]") {
-      auto        rg = ReportGuard();
-      ToddCoxeter tc;
-
-      tc.set_alphabet("eaAbBcCdDxy");
-      tc.set_identity("e");
-      tc.set_inverses("eAaBbCcDdxy");
-
-      tc.add_rule("aaaaaaaaaaa", "x");
-      tc.add_rule("x", "e");
-      tc.add_rule("cc", "e");
-      tc.add_rule("dd", "e");
-      tc.add_rule("acacac", "e");
-      tc.add_rule("adadad", "e");
-      tc.add_rule("y", "cdcdcdcdcdcdcdcdcdcd");
-      tc.add_rule("y", "e");
-      tc.add_rule("aacdcdaDCDC", "e");
-
-      tc.congruence().sort_generating_pairs().strategy(
-          options::strategy::felsch);
-
-      REQUIRE(tc.size() == 95040);
-    }
-
-    LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
-                            "057",
+                            "080",
                             "Holt 2 - SL(2, p)",
                             "[todd-coxeter][extreme]") {
       auto        rg = ReportGuard();
@@ -2267,39 +3172,39 @@ namespace libsemigroups {
       SECTION("p = 3") {
         tc.add_rule(second(3), "e");
 
-        TEST_HLT(tc.congruence());
-        TEST_FELSCH(tc.congruence());
+        check_hlt(tc);
+        check_felsch(tc);
 
         REQUIRE(tc.size() == 24);
       }
       SECTION("p = 5") {
         tc.add_rule(second(5), "e");
 
-        TEST_HLT(tc.congruence());
-        TEST_FELSCH(tc.congruence());
+        check_hlt(tc);
+        check_felsch(tc);
 
         REQUIRE(tc.size() == 120);
       }
       SECTION("p = 7") {
         tc.add_rule(second(7), "e");
 
-        TEST_HLT(tc.congruence());
-        TEST_FELSCH(tc.congruence());
+        check_hlt(tc);
+        check_felsch(tc);
 
         REQUIRE(tc.size() == 336);
       }
       SECTION("p = 11") {
         tc.add_rule(second(11), "e");
 
-        TEST_HLT(tc.congruence());
-        TEST_RANDOM_SIMS(tc.congruence());
+        check_hlt(tc);
+        check_random(tc);
 
         REQUIRE(tc.size() == 1320);
       }
     }
 
     LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
-                            "058",
+                            "081",
                             "Holt 3",
                             "[todd-coxeter][standard]") {
       auto        rg = ReportGuard(REPORT);
@@ -2311,16 +3216,21 @@ namespace libsemigroups {
       tc.add_rule("bbCbc", "e");
       tc.add_rule("aaBab", "e");
       tc.add_rule("cABcabc", "e");
+      REQUIRE(tc.congruence().is_non_trivial() == tril::TRUE);
 
-      TEST_HLT(tc.congruence());
-      TEST_FELSCH(tc.congruence());
-      TEST_RANDOM_SIMS(tc.congruence());
+      check_hlt(tc);
+      check_felsch(tc);
+      check_random(tc);
+      check_Rc_style(tc);
+      check_R_over_C_style(tc);
+      check_CR_style(tc);
+      check_Cr_style(tc);
 
       REQUIRE(tc.size() == 6561);
     }
 
     LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
-                            "059",
+                            "082",
                             "Holt 3",
                             "[todd-coxeter][fail]") {
       auto        rg = ReportGuard();
@@ -2332,20 +3242,26 @@ namespace libsemigroups {
       tc.add_rule("aaCac", "e");
       tc.add_rule("acbbACb", "e");
       tc.add_rule("ABabccc", "e");
-      std::chrono::seconds t(1);
-      tc.congruence().random_interval(100000);
-      while (!tc.finished()) {
-        tc.congruence().strategy(options::strategy::felsch).standardize(true);
-        tc.congruence().run_for(t);
-        tc.congruence().strategy(options::strategy::hlt).standardize(true);
-        tc.congruence().run_for(2 * t);
-        t *= 2;
-      }
+      REQUIRE(!tc.is_obviously_infinite());
+      REQUIRE(tc.congruence().number_of_generating_pairs() == 22);
+      tc.congruence().strategy(options::strategy::R_over_C);
+      tc.congruence()
+          .sort_generating_pairs()
+          .remove_duplicate_generating_pairs();
+      REQUIRE(tc.congruence().number_of_generating_pairs() == 22);
+      tc.congruence()
+          .lookahead(options::lookahead::partial | options::lookahead::hlt)
+          .lookahead_growth_factor(1.01)
+          .lookahead_growth_threshold(10)
+          .f_defs(250'000)
+          .hlt_defs(20'000'000);
+      // REQUIRE(tc.congruence().is_non_trivial() == tril::TRUE);
+      tc.congruence().run();
       REQUIRE(tc.size() == 6561);
     }
 
     LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
-                            "060",
+                            "083",
                             "Campbell-Reza 1",
                             "[todd-coxeter][quick]") {
       auto        rg = ReportGuard(REPORT);
@@ -2354,9 +3270,13 @@ namespace libsemigroups {
       tc.add_rule("aa", "bb");
       tc.add_rule("ba", "aaaaaab");
 
-      TEST_HLT(tc.congruence());
-      TEST_FELSCH(tc.congruence());
-      TEST_RANDOM_SIMS(tc.congruence());
+      check_hlt(tc);
+      check_felsch(tc);
+      check_random(tc);
+      check_Rc_style(tc);
+      check_R_over_C_style(tc);
+      check_CR_style(tc);
+      check_Cr_style(tc);
 
       REQUIRE(tc.size() == 14);
       tc.congruence().standardize(tc_order::shortlex);
@@ -2383,9 +3303,9 @@ namespace libsemigroups {
 
     // The next example demonstrates why we require deferred standardization
     LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
-                            "061",
+                            "084",
                             "Renner monoid type D4 (Gay-Hivert), q = 1",
-                            "[no-valgrind][quick][todd-coxeter]") {
+                            "[no-valgrind][quick][todd-coxeter][no-coverage]") {
       auto        rg = ReportGuard(REPORT);
       ToddCoxeter tc;
       tc.set_alphabet(11);
@@ -2397,9 +3317,13 @@ namespace libsemigroups {
 
       REQUIRE(tc.size() == 10625);
 
-      TEST_HLT(tc.congruence());
-      TEST_FELSCH(tc.congruence());
-      TEST_RANDOM_SIMS(tc.congruence());
+      check_hlt(tc);
+      check_felsch(tc);
+      check_random(tc);
+      check_Rc_style(tc);
+      check_R_over_C_style(tc);
+      check_CR_style(tc);
+      check_Cr_style(tc);
 
       tc.congruence().standardize(tc_order::shortlex);
       REQUIRE(std::is_sorted(tc.congruence().cbegin_normal_forms(),
@@ -2418,10 +3342,11 @@ namespace libsemigroups {
       // }
     }
 
+    // Felsch very slow here
     LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
-                            "062",
+                            "085",
                             "trivial semigroup",
-                            "[no-valgrind][todd-coxeter][quick]") {
+                            "[no-valgrind][todd-coxeter][quick][no-coverage]") {
       auto rg = ReportGuard(REPORT);
 
       for (size_t N = 2; N < 1000; N += 199) {
@@ -2439,14 +3364,6 @@ namespace libsemigroups {
         lhs = "ba";
         rhs = std::string(N, 'b') + "a";
         tc.add_rule(lhs, rhs);
-        // TODO(later) investigate: Badly doesn't work in this example, defines
-        // 100million cosets and none are killed.
-        // TEST_FELSCH(tc.congruence());
-        // TODO(later) investigate: if the performance of creating the Felsch
-        // tree can be improved, it's quite bad here if N is large enough.
-        tc.run_until([&tc]() -> bool {
-          return tc.congruence().number_of_cosets_active() >= 10000;
-        });
         tc.run();
         if (N % 3 == 1) {
           REQUIRE(tc.size() == 3);
@@ -2457,10 +3374,10 @@ namespace libsemigroups {
     }
 
     LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
-                            "063",
-                            "ACE --- 2p17-2p14-fel1 - HLT",
+                            "086",
+                            "ACE --- 2p17-2p14 - HLT",
                             "[todd-coxeter][standard][ace]") {
-      auto        rg = ReportGuard(REPORT);
+      auto        rg = ReportGuard(false);
       ToddCoxeter G;
       G.set_alphabet("abcABCe");
       G.set_identity("e");
@@ -2471,37 +3388,14 @@ namespace libsemigroups {
 
       congruence::ToddCoxeter H(right, G.congruence());
       H.add_pair({1, 2}, {6});
+      H.next_lookahead(1'000'000);
 
-      H.strategy(options::strategy::hlt)
-          .save(true)
-          .lookahead(options::lookahead::partial);
-
-      REQUIRE(H.number_of_classes() == 16384);
+      REQUIRE(H.number_of_classes() == 16'384);
     }
 
     LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
-                            "064",
-                            "ACE --- 2p17-2p14-fel1 - Felsch",
-                            "[todd-coxeter][extreme][ace]") {
-      auto        rg = ReportGuard();
-      ToddCoxeter G;
-      G.set_alphabet("abcABCe");
-      G.set_identity("e");
-      G.set_inverses("ABCabce");
-      G.add_rule("aBCbac", "e");
-      G.add_rule("bACbaacA", "e");
-      G.add_rule("accAABab", "e");
-
-      congruence::ToddCoxeter H(right, G.congruence());
-      H.add_pair({1, 2}, {6});
-
-      H.strategy(options::strategy::felsch);
-      REQUIRE(H.number_of_classes() == 16384);
-    }
-
-    LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
-                            "065",
-                            "ACE --- 2p17-2p3-fel1 - HLT",
+                            "087",
+                            "ACE --- 2p17-2p3 - HLT",
                             "[todd-coxeter][standard][ace]") {
       auto        rg = ReportGuard(REPORT);
       ToddCoxeter G;
@@ -2531,95 +3425,8 @@ namespace libsemigroups {
     }
 
     LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
-                            "066",
-                            "ACE --- 2p17-2p3-fel1 - Random Sims",
-                            "[todd-coxeter][extreme][ace]") {
-      auto        rg = ReportGuard();
-      ToddCoxeter G;
-      G.set_alphabet("abcABCe");
-      G.set_identity("e");
-      G.set_inverses("ABCabce");
-      G.add_rule("aBCbac", "e");
-      G.add_rule("bACbaacA", "e");
-      G.add_rule("accAABab", "e");
-
-      letter_type             a = 0;
-      letter_type             b = 1;
-      letter_type             c = 2;
-      letter_type             A = 3;
-      letter_type             B = 4;
-      letter_type             C = 5;
-      letter_type             e = 6;
-      congruence::ToddCoxeter H(right, G.congruence());
-      H.add_pair({b, c}, {e});
-      H.add_pair({b, c}, {A, B, A, A, b, c, a, b, C});
-
-      H.strategy(options::strategy::random)
-          .random_interval(std::chrono::milliseconds(100));
-      REQUIRE(H.number_of_classes() == 8);
-    }
-
-    LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
-                            "067",
-                            "ACE --- 2p17-2p3-fel1 - Felsch",
-                            "[todd-coxeter][extreme][ace]") {
-      auto        rg = ReportGuard();
-      ToddCoxeter G;
-      G.set_alphabet("abcABCe");
-      G.set_identity("e");
-      G.set_inverses("ABCabce");
-      G.add_rule("aBCbac", "e");
-      G.add_rule("bACbaacA", "e");
-      G.add_rule("accAABab", "e");
-
-      letter_type             a = 0;
-      letter_type             b = 1;
-      letter_type             c = 2;
-      letter_type             A = 3;
-      letter_type             B = 4;
-      letter_type             C = 5;
-      letter_type             e = 6;
-      congruence::ToddCoxeter H(right, G.congruence());
-      H.add_pair({b, c}, {e});
-      H.add_pair({b, c}, {A, B, A, A, b, c, a, b, C});
-
-      H.strategy(options::strategy::felsch);
-      REQUIRE(H.number_of_classes() == 8);
-    }
-
-    LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
-                            "068",
-                            "ACE --- 2p17-fel1 - HLT",
-                            "[todd-coxeter][extreme][ace]") {
-      auto        rg = ReportGuard();
-      ToddCoxeter G;
-      G.set_alphabet("abcABCe");
-      G.set_identity("e");
-      G.set_inverses("ABCabce");
-      G.add_rule("aBCbac", "e");
-      G.add_rule("bACbaacA", "e");
-      G.add_rule("accAABab", "e");
-
-      letter_type a = 0;
-      letter_type b = 1;
-      letter_type c = 2;
-      letter_type A = 3;
-      letter_type B = 4;
-      letter_type C = 5;
-      letter_type e = 6;
-
-      congruence::ToddCoxeter H(right, G.congruence());
-      H.add_pair({a, B, C, b, a, c}, {e});
-      H.add_pair({b, A, C, b, a, a, c, A}, {e});
-      H.add_pair({a, c, c, A, A, B, a, b}, {e});
-
-      H.save(true).lookahead(options::lookahead::partial);
-      REQUIRE(H.number_of_classes() == 131072);
-    }
-
-    LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
-                            "069",
-                            "ACE --- 2p17-fel1a - HLT",
+                            "088",
+                            "ACE --- 2p17-1a - HLT",
                             "[todd-coxeter][standard][ace]") {
       auto        rg = ReportGuard(REPORT);
       ToddCoxeter G;
@@ -2642,6 +3449,7 @@ namespace libsemigroups {
       H.add_pair({b, c}, {e});
       H.add_pair({A, B, A, A, b, c, a, b, C}, {e});
       H.add_pair({A, c, c, c, a, c, B, c, A}, {e});
+      H.large_collapse(10'000);
 
       H.strategy(options::strategy::hlt)
           .save(true)
@@ -2650,193 +3458,33 @@ namespace libsemigroups {
     }
 
     LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
-                            "070",
-                            "ACE --- 2p17-fel1a - Random Sims",
-                            "[todd-coxeter][extreme][ace]") {
-      auto        rg = ReportGuard();
+                            "089",
+                            "ACE --- F27",
+                            "[todd-coxeter][standard][ace]") {
+      auto        rg = ReportGuard(REPORT);
       ToddCoxeter G;
-      G.set_alphabet("abcABCe");
+      G.set_alphabet("abcdxyzABCDXYZe");
       G.set_identity("e");
-      G.set_inverses("ABCabce");
-      G.add_rule("aBCbac", "e");
-      G.add_rule("bACbaacA", "e");
-      G.add_rule("accAABab", "e");
+      G.set_inverses("ABCDXYZabcdxyze");
+      G.add_rule("abC", "e");
+      G.add_rule("bcD", "e");
+      G.add_rule("cdX", "e");
+      G.add_rule("dxY", "e");
+      G.add_rule("xyZ", "e");
+      G.add_rule("yzA", "e");
+      G.add_rule("zaB", "e");
 
-      letter_type a = 0;
-      letter_type b = 1;
-      letter_type c = 2;
-      letter_type A = 3;
-      letter_type B = 4;
-      letter_type C = 5;
-      letter_type e = 6;
+      congruence::ToddCoxeter H(twosided, G);
+      check_felsch(H);
+      check_hlt(H);
+      check_random(H);
 
-      congruence::ToddCoxeter H(right, G.congruence());
-      H.add_pair({b, c}, {e});
-      H.add_pair({A, B, A, A, b, c, a, b, C}, {e});
-      H.add_pair({A, c, c, c, a, c, B, c, A}, {e});
-
-      H.strategy(options::strategy::random)
-          .random_interval(std::chrono::milliseconds(100));
-      REQUIRE(H.number_of_classes() == 1);
+      REQUIRE(H.number_of_classes() == 29);
     }
 
     LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
-                            "071",
-                            "ACE --- 2p17-fel1a - Felsch",
-                            "[todd-coxeter][extreme][ace]") {
-      auto        rg = ReportGuard();
-      ToddCoxeter G;
-      G.set_alphabet("abcABCe");
-      G.set_identity("e");
-      G.set_inverses("ABCabce");
-      G.add_rule("aBCbac", "e");
-      G.add_rule("bACbaacA", "e");
-      G.add_rule("accAABab", "e");
-
-      letter_type a = 0;
-      letter_type b = 1;
-      letter_type c = 2;
-      letter_type A = 3;
-      letter_type B = 4;
-      letter_type C = 5;
-      letter_type e = 6;
-
-      congruence::ToddCoxeter H(right, G.congruence());
-      H.add_pair({b, c}, {e});
-      H.add_pair({A, B, A, A, b, c, a, b, C}, {e});
-      H.add_pair({A, c, c, c, a, c, B, c, A}, {e});
-
-      H.strategy(options::strategy::felsch);
-      REQUIRE(H.number_of_classes() == 1);
-    }
-
-    LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
-                            "072",
-                            "ACE --- 2p17-id-fel1 - HLT",
-                            "[todd-coxeter][extreme][ace]") {
-      auto        rg = ReportGuard();
-      ToddCoxeter G;
-      G.set_alphabet("abcABCe");
-      G.set_identity("e");
-      G.set_inverses("ABCabce");
-      G.add_rule("aBCbac", "e");
-      G.add_rule("bACbaacA", "e");
-      G.add_rule("accAABab", "e");
-
-      congruence::ToddCoxeter H(twosided, G.congruence());
-
-      H.strategy(options::strategy::hlt)
-          .save(true)
-          .lookahead(options::lookahead::partial);
-
-      REQUIRE(H.number_of_classes() == std::pow(2, 17));
-    }
-
-    LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
-                            "073",
-                            "ACE --- 2p17-id-fel1 - Random Sims",
-                            "[todd-coxeter][extreme][ace]") {
-      auto        rg = ReportGuard();
-      ToddCoxeter G;
-      G.set_alphabet("abcABCe");
-      G.set_identity("e");
-      G.set_inverses("ABCabce");
-      G.add_rule("aBCbac", "e");
-      G.add_rule("bACbaacA", "e");
-      G.add_rule("accAABab", "e");
-
-      congruence::ToddCoxeter H(twosided, G.congruence());
-
-      H.strategy(options::strategy::random)
-          .random_interval(std::chrono::milliseconds(100));
-
-      REQUIRE(H.number_of_classes() == std::pow(2, 17));
-    }
-
-    LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
-                            "074",
-                            "ACE --- 2p17-id-fel1 - Felsch",
-                            "[todd-coxeter][extreme][ace]") {
-      auto        rg = ReportGuard();
-      ToddCoxeter G;
-      G.set_alphabet("abcABCe");
-      G.set_identity("e");
-      G.set_inverses("ABCabce");
-      G.add_rule("aBCbac", "e");
-      G.add_rule("bACbaacA", "e");
-      G.add_rule("accAABab", "e");
-
-      congruence::ToddCoxeter H(twosided, G.congruence());
-
-      H.strategy(options::strategy::felsch);
-
-      REQUIRE(H.number_of_classes() == std::pow(2, 17));
-    }
-
-    LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
-                            "075",
-                            "ACE --- 2p18-fel1 - HLT",
-                            "[todd-coxeter][extreme][ace]") {
-      auto        rg = ReportGuard();
-      ToddCoxeter G;
-      G.set_alphabet("abcABCex");
-      G.set_identity("e");
-      G.set_inverses("ABCabcex");
-      G.add_rule("aBCbac", "e");
-      G.add_rule("bACbaacA", "e");
-      G.add_rule("accAABab", "e");
-      G.add_rule("xx", "e");
-      G.add_rule("Axax", "e");
-      G.add_rule("Bxbx", "e");
-      G.add_rule("Cxcx", "e");
-
-      REQUIRE(G.equal_to("aBCbac", "e"));
-      REQUIRE(G.equal_to("bACbaacA", "e"));
-      REQUIRE(G.equal_to("accAABab", "e"));
-
-      congruence::ToddCoxeter H(twosided, G.congruence());
-
-      H.strategy(options::strategy::hlt)
-          .save(true)
-          .lookahead(options::lookahead::partial);
-
-      REQUIRE(H.number_of_classes() == std::pow(2, 18));
-    }
-
-    LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
-                            "076",
-                            "ACE --- big-hard, big-fel1 - HLT",
-                            "[todd-coxeter][extreme][ace]") {
-      auto        rg = ReportGuard();
-      ToddCoxeter G;
-      G.set_alphabet("abcyABCYex");
-      G.set_identity("e");
-      G.set_inverses("ABCYabcyex");
-      G.add_rule("aBCbac", "e");
-      G.add_rule("bACbaacA", "e");
-      G.add_rule("accAABab", "e");
-      G.add_rule("xx", "e");
-      G.add_rule("yyy", "e");
-      G.add_rule("Axax", "e");
-      G.add_rule("Bxbx", "e");
-      G.add_rule("Cxcx", "e");
-      G.add_rule("AYay", "e");
-      G.add_rule("BYby", "e");
-      G.add_rule("CYcy", "e");
-      G.add_rule("xYxy", "e");
-
-      congruence::ToddCoxeter H(twosided, G.congruence());
-
-      H.strategy(options::strategy::hlt)
-          .save(true)
-          .lookahead(options::lookahead::partial);
-
-      REQUIRE(H.number_of_classes() == 786432);
-    }
-
-    LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
-                            "077",
-                            "ACE --- SL219-hard - HLT",
+                            "090",
+                            "ACE --- SL219 - HLT",
                             "[todd-coxeter][standard][ace]") {
       auto        rg = ReportGuard(REPORT);
       ToddCoxeter G;
@@ -2862,34 +3510,7 @@ namespace libsemigroups {
     }
 
     LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
-                            "078",
-                            "ACE --- SL219-hard - Random Sims",
-                            "[todd-coxeter][extreme][ace]") {
-      auto        rg = ReportGuard();
-      ToddCoxeter G;
-      G.set_alphabet("abABe");
-      G.set_identity("e");
-      G.set_inverses("ABabe");
-      G.add_rule("aBABAB", "e");
-      G.add_rule("BAAbaa", "e");
-      G.add_rule(
-          "abbbbabbbbbbbbbbabbbbabbbbbbbbbbbbbbbbbbbbbbbbbbbbbaaaaaaaaaaaa",
-          "e");
-
-      letter_type b = 1;
-      letter_type e = 4;
-
-      congruence::ToddCoxeter H(right, G);
-      H.add_pair({b}, {e});
-
-      H.strategy(options::strategy::random)
-          .random_interval(std::chrono::milliseconds(100));
-
-      REQUIRE(H.number_of_classes() == 180);
-    }
-
-    LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
-                            "079",
+                            "091",
                             "ACE --- perf602p5 - HLT",
                             "[no-valgrind][todd-coxeter][quick][ace]") {
       auto        rg = ReportGuard(REPORT);
@@ -2934,387 +3555,70 @@ namespace libsemigroups {
 
       H.add_pair({a}, {e});
 
-      H.strategy(options::strategy::hlt)
-          .save(true)
-          .lookahead(options::lookahead::partial);
+      check_hlt(H);
+      check_random(H);
+      check_felsch(H);
 
       REQUIRE(H.number_of_classes() == 480);
-    }
-
-    LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
-                            "080",
-                            "ACE --- perf602p5 - Random Sims",
-                            "[no-valgrind][todd-coxeter][quick][ace]") {
-      auto        rg = ReportGuard(REPORT);
-      ToddCoxeter G;
-      G.set_alphabet("abstuvdABSTUVDe");
-      G.set_identity("e");
-      G.set_inverses("ABSTUVDabstuvde");
-
-      G.add_rule("aaD", "e");
-      G.add_rule("bbb", "e");
-      G.add_rule("ababababab", "e");
-      G.add_rule("ss", "e");
-      G.add_rule("tt", "e");
-      G.add_rule("uu", "e");
-      G.add_rule("vv", "e");
-      G.add_rule("dd", "e");
-      G.add_rule("STst", "e");
-      G.add_rule("UVuv", "e");
-      G.add_rule("SUsu", "e");
-      G.add_rule("SVsv", "e");
-      G.add_rule("TUtu", "e");
-      G.add_rule("TVtv", "e");
-      G.add_rule("AsaU", "e");
-      G.add_rule("AtaV", "e");
-      G.add_rule("AuaS", "e");
-      G.add_rule("AvaT", "e");
-      G.add_rule("BsbDVT", "e");
-      G.add_rule("BtbVUTS", "e");
-      G.add_rule("BubVU", "e");
-      G.add_rule("BvbU", "e");
-      G.add_rule("DAda", "e");
-      G.add_rule("DBdb", "e");
-      G.add_rule("DSds", "e");
-      G.add_rule("DTdt", "e");
-      G.add_rule("DUdu", "e");
-      G.add_rule("DVdv", "e");
-
-      congruence::ToddCoxeter H(right, G);
-
-      letter_type a = 0;
-      letter_type e = 14;
-
-      H.add_pair({a}, {e});
-
-      H.strategy(options::strategy::random)
-          .random_interval(std::chrono::milliseconds(100));
-
-      REQUIRE(H.number_of_classes() == 480);
-    }
-
-    LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
-                            "081",
-                            "ACE --- perf602p5 - Felsch",
-                            "[no-valgrind][todd-coxeter][quick][ace]") {
-      auto        rg = ReportGuard(REPORT);
-      ToddCoxeter G;
-      G.set_alphabet("abstuvdABSTUVDe");
-      G.set_identity("e");
-      G.set_inverses("ABSTUVDabstuvde");
-
-      G.add_rule("aaD", "e");
-      G.add_rule("bbb", "e");
-      G.add_rule("ababababab", "e");
-      G.add_rule("ss", "e");
-      G.add_rule("tt", "e");
-      G.add_rule("uu", "e");
-      G.add_rule("vv", "e");
-      G.add_rule("dd", "e");
-      G.add_rule("STst", "e");
-      G.add_rule("UVuv", "e");
-      G.add_rule("SUsu", "e");
-      G.add_rule("SVsv", "e");
-      G.add_rule("TUtu", "e");
-      G.add_rule("TVtv", "e");
-      G.add_rule("AsaU", "e");
-      G.add_rule("AtaV", "e");
-      G.add_rule("AuaS", "e");
-      G.add_rule("AvaT", "e");
-      G.add_rule("BsbDVT", "e");
-      G.add_rule("BtbVUTS", "e");
-      G.add_rule("BubVU", "e");
-      G.add_rule("BvbU", "e");
-      G.add_rule("DAda", "e");
-      G.add_rule("DBdb", "e");
-      G.add_rule("DSds", "e");
-      G.add_rule("DTdt", "e");
-      G.add_rule("DUdu", "e");
-      G.add_rule("DVdv", "e");
-
-      congruence::ToddCoxeter H(right, G);
-
-      letter_type a = 0;
-      letter_type e = 14;
-
-      H.add_pair({a}, {e});
-
-      H.strategy(options::strategy::felsch);
-
-      REQUIRE(H.number_of_classes() == 480);
-    }
-
-    LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
-                            "082",
-                            "ACE --- M12-fel1, M12-hlt - HLT",
-                            "[todd-coxeter][standard][ace]") {
-      auto        rg = ReportGuard(REPORT);
-      ToddCoxeter G;
-      G.set_alphabet("abcABCe");
-      G.set_identity("e");
-      G.set_inverses("ABCabce");
-      G.add_rule("aaaaaaaaaaa", "e");
-      G.add_rule("bb", "e");
-      G.add_rule("cc", "e");
-      G.add_rule("ababab", "e");
-      G.add_rule("acacac", "e");
-      G.add_rule("bcbcbcbcbcbcbcbcbcbc", "e");
-      G.add_rule("cbcbabcbcAAAAA", "e");
-
-      congruence::ToddCoxeter H(twosided, G);
-
-      H.strategy(options::strategy::hlt)
-          .save(true)
-          .lookahead(options::lookahead::partial);
-
-      REQUIRE(H.number_of_classes() == 95040);
-    }
-
-    LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
-                            "083",
-                            "ACE --- M12-fel1, M12-hlt - Random Sims",
-                            "[todd-coxeter][standard][ace]") {
-      auto        rg = ReportGuard(REPORT);
-      ToddCoxeter G;
-      G.set_alphabet("abcABCe");
-      G.set_identity("e");
-      G.set_inverses("ABCabce");
-      G.add_rule("aaaaaaaaaaa", "e");
-      G.add_rule("bb", "e");
-      G.add_rule("cc", "e");
-      G.add_rule("ababab", "e");
-      G.add_rule("acacac", "e");
-      G.add_rule("bcbcbcbcbcbcbcbcbcbc", "e");
-      G.add_rule("cbcbabcbcAAAAA", "e");
-
-      congruence::ToddCoxeter H(twosided, G);
-
-      H.strategy(options::strategy::random)
-          .random_interval(std::chrono::milliseconds(100));
-
-      REQUIRE(H.number_of_classes() == 95040);
-    }
-
-    LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
-                            "084",
-                            "ACE --- M12-fel1, M12-hlt - Felsch",
-                            "[todd-coxeter][standard][ace]") {
-      auto        rg = ReportGuard(REPORT);
-      ToddCoxeter G;
-      G.set_alphabet("abcABCe");
-      G.set_identity("e");
-      G.set_inverses("ABCabce");
-      G.add_rule("aaaaaaaaaaa", "e");
-      G.add_rule("bb", "e");
-      G.add_rule("cc", "e");
-      G.add_rule("ababab", "e");
-      G.add_rule("acacac", "e");
-      G.add_rule("bcbcbcbcbcbcbcbcbcbc", "e");
-      G.add_rule("cbcbabcbcAAAAA", "e");
-
-      congruence::ToddCoxeter H(twosided, G);
-
-      H.strategy(options::strategy::felsch);
-
-      REQUIRE(H.number_of_classes() == 95040);
-    }
-
-    LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
-                            "085",
-                            "ACE --- F27-fel0, F27-fel1, F27-purec - HLT",
-                            "[todd-coxeter][standard][ace]") {
-      auto        rg = ReportGuard(REPORT);
-      ToddCoxeter G;
-      G.set_alphabet("abcdxyzABCDXYZe");
-      G.set_identity("e");
-      G.set_inverses("ABCDXYZabcdxyze");
-      G.add_rule("abC", "e");
-      G.add_rule("bcD", "e");
-      G.add_rule("cdX", "e");
-      G.add_rule("dxY", "e");
-      G.add_rule("xyZ", "e");
-      G.add_rule("yzA", "e");
-      G.add_rule("zaB", "e");
-
-      congruence::ToddCoxeter H(twosided, G);
-
-      H.strategy(options::strategy::hlt)
-          .save(true)
-          .lookahead(options::lookahead::partial);
-
-      REQUIRE(H.number_of_classes() == 29);
-    }
-
-    LIBSEMIGROUPS_TEST_CASE(
-        "ToddCoxeter",
-        "086",
-        "ACE --- F27-fel0, F27-fel1, F27-purec - Random Sims",
-        "[todd-coxeter][standard][ace]") {
-      auto        rg = ReportGuard(REPORT);
-      ToddCoxeter G;
-      G.set_alphabet("abcdxyzABCDXYZe");
-      G.set_identity("e");
-      G.set_inverses("ABCDXYZabcdxyze");
-      G.add_rule("abC", "e");
-      G.add_rule("bcD", "e");
-      G.add_rule("cdX", "e");
-      G.add_rule("dxY", "e");
-      G.add_rule("xyZ", "e");
-      G.add_rule("yzA", "e");
-      G.add_rule("zaB", "e");
-
-      congruence::ToddCoxeter H(twosided, G);
-
-      H.strategy(options::strategy::random)
-          .random_interval(std::chrono::milliseconds(100));
-
-      REQUIRE(H.number_of_classes() == 29);
-    }
-
-    LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
-                            "087",
-                            "ACE --- F27-fel0, F27-fel1, F27-purec - Felsch",
-                            "[todd-coxeter][standard][ace]") {
-      auto        rg = ReportGuard(REPORT);
-      ToddCoxeter G;
-      G.set_alphabet("abcdxyzABCDXYZe");
-      G.set_identity("e");
-      G.set_inverses("ABCDXYZabcdxyze");
-      G.add_rule("abC", "e");
-      G.add_rule("bcD", "e");
-      G.add_rule("cdX", "e");
-      G.add_rule("dxY", "e");
-      G.add_rule("xyZ", "e");
-      G.add_rule("yzA", "e");
-      G.add_rule("zaB", "e");
-
-      congruence::ToddCoxeter H(twosided, G);
-
-      H.strategy(options::strategy::felsch);
-
-      REQUIRE(H.number_of_classes() == 29);
-    }
-
-    LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
-                            "088",
-                            "ACE --- C5-fel0 - HLT",
-                            "[todd-coxeter][quick][ace]") {
-      auto        rg = ReportGuard(REPORT);
-      ToddCoxeter G;
-      G.set_alphabet("abABe");
-      G.set_identity("e");
-      G.set_inverses("ABabe");
-      G.add_rule("aaaaa", "e");
-      G.add_rule("b", "e");
-
-      congruence::ToddCoxeter H(twosided, G);
-
-      H.strategy(options::strategy::hlt)
-          .standardize(true)
-          .save(true)
-          .lookahead(options::lookahead::partial);
-
-      REQUIRE(H.number_of_classes() == 5);
-    }
-
-    LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
-                            "089",
-                            "ACE --- C5-fel0 - Random Sims",
-                            "[todd-coxeter][quick][ace]") {
-      auto        rg = ReportGuard(REPORT);
-      ToddCoxeter G;
-      G.set_alphabet("abABe");
-      G.set_identity("e");
-      G.set_inverses("ABabe");
-      G.add_rule("aaaaa", "e");
-      G.add_rule("b", "e");
-
-      congruence::ToddCoxeter H(twosided, G);
-
-      H.strategy(options::strategy::random)
-          .random_interval(std::chrono::milliseconds(100));
-
-      REQUIRE(H.number_of_classes() == 5);
-    }
-
-    LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
-                            "090",
-                            "ACE --- C5-fel0 - Felsch",
-                            "[todd-coxeter][quick][ace]") {
-      auto        rg = ReportGuard(REPORT);
-      ToddCoxeter G;
-      G.set_alphabet("abABe");
-      G.set_identity("e");
-      G.set_inverses("ABabe");
-      G.add_rule("aaaaa", "e");
-      G.add_rule("b", "e");
-
-      congruence::ToddCoxeter H(twosided, G);
-
-      H.strategy(options::strategy::felsch).standardize(true);
-
-      REQUIRE(H.number_of_classes() == 5);
-    }
-
-    LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
-                            "091",
-                            "ACE --- A5-C5 - HLT",
-                            "[todd-coxeter][quick][ace]") {
-      auto        rg = ReportGuard(REPORT);
-      ToddCoxeter G;
-      G.set_alphabet("abABe");
-      G.set_identity("e");
-      G.set_inverses("ABabe");
-      G.add_rule("aa", "e");
-      G.add_rule("bbb", "e");
-      G.add_rule("ababababab", "e");
-
-      congruence::ToddCoxeter H(right, G);
-
-      letter_type a = 0;
-      letter_type b = 1;
-      letter_type e = 4;
-
-      H.add_pair({a, b}, {e});
-
-      H.strategy(options::strategy::hlt)
-          .standardize(true)
-          .save(true)
-          .lookahead(options::lookahead::partial);
-
-      REQUIRE(H.number_of_classes() == 12);
     }
 
     LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                             "092",
-                            "ACE --- A5-C5 - Random Sims",
-                            "[todd-coxeter][quick][ace]") {
+                            "ACE --- M12",
+                            "[todd-coxeter][standard][ace]") {
       auto        rg = ReportGuard(REPORT);
       ToddCoxeter G;
-      G.set_alphabet("abABe");
+      G.set_alphabet("abcABCe");
       G.set_identity("e");
-      G.set_inverses("ABabe");
-      G.add_rule("aa", "e");
-      G.add_rule("bbb", "e");
-      G.add_rule("ababababab", "e");
+      G.set_inverses("ABCabce");
+      G.add_rule("aaaaaaaaaaa", "e");
+      G.add_rule("bb", "e");
+      G.add_rule("cc", "e");
+      G.add_rule("ababab", "e");
+      G.add_rule("acacac", "e");
+      G.add_rule("bcbcbcbcbcbcbcbcbcbc", "e");
+      G.add_rule("cbcbabcbcAAAAA", "e");
 
-      congruence::ToddCoxeter H(right, G);
+      congruence::ToddCoxeter H(twosided, G);
 
-      letter_type a = 0;
-      letter_type b = 1;
-      letter_type e = 4;
+      SECTION("HLT + save + partial lookahead") {
+        H.strategy(options::strategy::hlt)
+            .save(true)
+            .lookahead(options::lookahead::partial);
+      }
+      SECTION("random") {
+        H.strategy(options::strategy::random)
+            .random_interval(std::chrono::milliseconds(100));
+      }
+      check_felsch(H);
 
-      H.add_pair({a, b}, {e});
-
-      H.strategy(options::strategy::random)
-          .random_interval(std::chrono::milliseconds(100));
-
-      REQUIRE(H.number_of_classes() == 12);
+      REQUIRE(H.number_of_classes() == 95'040);
     }
 
     LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                             "093",
-                            "ACE --- A5-C5 - Felsch",
+                            "ACE --- C5 - HLT",
+                            "[todd-coxeter][quick][ace]") {
+      auto        rg = ReportGuard(REPORT);
+      ToddCoxeter G;
+      G.set_alphabet("abABe");
+      G.set_identity("e");
+      G.set_inverses("ABabe");
+      G.add_rule("aaaaa", "e");
+      G.add_rule("b", "e");
+
+      congruence::ToddCoxeter H(twosided, G);
+
+      check_hlt(H);
+      check_random(H);
+      check_felsch(H);
+
+      REQUIRE(H.number_of_classes() == 5);
+    }
+
+    LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
+                            "094",
+                            "ACE --- A5-C5",
                             "[todd-coxeter][quick][ace]") {
       auto        rg = ReportGuard(REPORT);
       ToddCoxeter G;
@@ -3327,43 +3631,19 @@ namespace libsemigroups {
 
       congruence::ToddCoxeter H(right, G);
 
-      letter_type a = 0;
-      letter_type b = 1;
-      letter_type e = 4;
+      letter_type const a = 0, b = 1, e = 4;
 
       H.add_pair({a, b}, {e});
 
-      H.strategy(options::strategy::felsch).standardize(true);
-
+      check_hlt(H);
+      check_random(H);
+      check_felsch(H);
       REQUIRE(H.number_of_classes() == 12);
     }
 
     LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
-                            "094",
-                            "ACE --- A5 - HLT",
-                            "[todd-coxeter][quick][ace]") {
-      auto        rg = ReportGuard(REPORT);
-      ToddCoxeter G;
-      G.set_alphabet("abABe");
-      G.set_identity("e");
-      G.set_inverses("ABabe");
-      G.add_rule("aa", "e");
-      G.add_rule("bbb", "e");
-      G.add_rule("ababababab", "e");
-
-      congruence::ToddCoxeter H(twosided, G);
-
-      H.strategy(options::strategy::hlt)
-          .standardize(false)
-          .save(false)
-          .lookahead(options::lookahead::partial);
-
-      REQUIRE(H.number_of_classes() == 60);
-    }
-
-    LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                             "095",
-                            "ACE --- A5 - Random Sims",
+                            "ACE --- A5",
                             "[todd-coxeter][quick][ace]") {
       auto        rg = ReportGuard(REPORT);
       ToddCoxeter G;
@@ -3376,40 +3656,22 @@ namespace libsemigroups {
 
       congruence::ToddCoxeter H(twosided, G);
 
-      H.strategy(options::strategy::random)
-          .random_interval(std::chrono::milliseconds(100));
-
-      REQUIRE(H.number_of_classes() == 60);
-    }
-
-    LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
-                            "096",
-                            "ACE --- A5 - Felsch",
-                            "[todd-coxeter][quick][ace]") {
-      auto        rg = ReportGuard(REPORT);
-      ToddCoxeter G;
-      G.set_alphabet("abABe");
-      G.set_identity("e");
-      G.set_inverses("ABabe");
-      G.add_rule("aa", "e");
-      G.add_rule("bbb", "e");
-      G.add_rule("ababababab", "e");
-
-      congruence::ToddCoxeter H(twosided, G);
-
-      H.strategy(options::strategy::felsch)
-          .standardize(true)
-          .random_shuffle_generating_pairs();
+      check_hlt(H);
+      check_random(H);
+      check_felsch(H);
+      H.random_shuffle_generating_pairs();
 
       REQUIRE(H.number_of_classes() == 60);
       REQUIRE_THROWS_AS(H.random_shuffle_generating_pairs(),
                         LibsemigroupsException);
     }
 
+    // Felsch is much much better here
     LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
-                            "097",
+                            "096",
                             "relation ordering",
                             "[todd-coxeter][extreme]") {
+      auto        rg = ReportGuard();
       ToddCoxeter tc;
       tc.set_alphabet(13);
       for (relation_type const& rl : RennerTypeDMonoid(5, 1)) {
@@ -3417,16 +3679,18 @@ namespace libsemigroups {
       }
       REQUIRE(tc.number_of_rules() == 173);
       REQUIRE(!tc.is_obviously_infinite());
-      tc.congruence().sort_generating_pairs(&shortlex_compare);
-      tc.congruence().sort_generating_pairs(recursive_path_compare);
+      tc.congruence()
+          .sort_generating_pairs(&shortlex_compare)
+          .sort_generating_pairs(recursive_path_compare)
+          .remove_duplicate_generating_pairs();
+      REQUIRE(tc.number_of_rules() == 173);
 
-      tc.congruence().strategy(options::strategy::felsch);
-
-      REQUIRE(tc.size() == 258661);
+      tc.congruence().strategy(options::strategy::felsch).f_defs(100'000).run();
+      REQUIRE(tc.size() == 258'661);
     }
 
     LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
-                            "098",
+                            "097",
                             "relation ordering",
                             "[todd-coxeter][quick]") {
       ToddCoxeter tc;
@@ -3524,9 +3788,9 @@ namespace libsemigroups {
       tc.add_rule({9, 0, 1, 2, 3, 4, 5, 5, 1, 5, 6, 9, 8, 8, 8, 8, 8, 0}, {9});
       tc.congruence().sort_generating_pairs(recursive_path_compare);
 
-      TEST_FELSCH(tc.congruence());
-      TEST_HLT(tc.congruence());
-      TEST_RANDOM_SIMS(tc.congruence());
+      check_felsch(tc);
+      check_hlt(tc);
+      check_random(tc);
 
       REQUIRE(tc.size() == 10);
 
@@ -3535,7 +3799,7 @@ namespace libsemigroups {
     }
 
     LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
-                            "099",
+                            "098",
                             "short circuit size in obviously infinite",
                             "[todd-coxeter][quick]") {
       auto        rg = ReportGuard(REPORT);
@@ -3544,5 +3808,253 @@ namespace libsemigroups {
       tc.add_rule("aaaa", "a");
       REQUIRE(tc.size() == POSITIVE_INFINITY);
     }
+
+    LIBSEMIGROUPS_TEST_CASE(
+        "ToddCoxeter",
+        "099",
+        "http://brauer.maths.qmul.ac.uk/Atlas/misc/24A8/mag/24A8G1-P1.M",
+        "[todd-coxeter][standard]") {
+      ToddCoxeter tc;
+      tc.set_alphabet("xyXYe");
+      tc.set_identity("e");
+      tc.set_inverses("XYxye");
+      tc.add_rule("xx", "X");
+      tc.add_rule("yyyyyy", "Y");
+      tc.add_rule("YXyx", "XYxy");
+      tc.add_rule("xYYYxYYYxYY", "yyXyyyXyyyX");
+      tc.add_rule("xyxyyXyxYYxyyyx", "yyyXyyy");
+      tc.congruence()
+          .next_lookahead(2'000'000)
+          .strategy(options::strategy::hlt)
+          .sort_generating_pairs()
+          .lookahead(options::lookahead::partial)
+          .standardize(true);
+      tc.congruence().run();
+
+      REQUIRE(tc.size() == 322'560);
+    }
+
+    LIBSEMIGROUPS_TEST_CASE(
+        "ToddCoxeter",
+        "100",
+        "http://brauer.maths.qmul.ac.uk/Atlas/spor/M11/mag/M11G1-P1.M",
+        "[todd-coxeter][quick][no-coverage][no-valgrind]") {
+      ToddCoxeter tc;
+      tc.set_alphabet("xyXYe");
+      tc.set_identity("e");
+      tc.set_inverses("XYxye");
+      tc.add_rule("xx", "e");
+      tc.add_rule("yyyy", "e");
+      tc.add_rule("xyxyxyxyxyxyxyxyxyxyxy", "e");
+      tc.add_rule("xyyxyyxyyxyyxyyxyy", "e");
+      tc.add_rule("xyxyxYxyxyyxYxyxYxY", "e");
+      REQUIRE(tc.size() == 7'920);
+    }
+
+    LIBSEMIGROUPS_TEST_CASE(
+        "ToddCoxeter",
+        "101",
+        "http://brauer.maths.qmul.ac.uk/Atlas/spor/M12/mag/M12G1-P1.M",
+        "[todd-coxeter][standard]") {
+      ToddCoxeter tc;
+      tc.set_alphabet("xyXYe");
+      tc.set_identity("e");
+      tc.set_inverses("XYxye");
+      tc.add_rule("xx", "e");
+      tc.add_rule("yyy", "e");
+      tc.add_rule("xyxyxyxyxyxyxyxyxyxyxy", "e");
+      tc.add_rule("XYxyXYxyXYxyXYxyXYxyXYxy", "e");
+      tc.add_rule("xyxyxYxyxyxYxyxyxYxyxyxYxyxyxYxyxyxY", "e");
+      tc.add_rule("XYXYxyxyXYXYxyxyXYXYxyxyXYXYxyxyXYXYxyxy", "e");
+      REQUIRE(tc.size() == 95'040);
+    }
+
+    LIBSEMIGROUPS_TEST_CASE(
+        "ToddCoxeter",
+        "102",
+        "http://brauer.maths.qmul.ac.uk/Atlas/spor/M22/mag/M22G1-P1.M",
+        "[todd-coxeter][extreme]") {
+      ToddCoxeter tc;
+      tc.set_alphabet("xyXYe");
+      tc.set_identity("e");
+      tc.set_inverses("XYxye");
+      tc.add_rule("xx", "e");
+      tc.add_rule("yyyy", "e");
+      tc.add_rule("xyxyxyxyxyxyxyxyxyxyxy", "e");
+      tc.add_rule("xyyxyyxyyxyyxyy", "e");
+      tc.add_rule("XYxyXYxyXYxyXYxyXYxyXYxy", "e");
+      tc.add_rule("XYXYxyxyXYXYxyxyXYXYxyxy", "e");
+      tc.add_rule("xyxyxYxyxyxYxyxyxYxyxyxYxyxyxY", "e");
+      REQUIRE(tc.size() == 443'520);
+    }
+
+    // Takes about 4 minutes (2021 - MacBook Air M1 - 8GB RAM)
+    // with Felsch (3.5mins or 2.5mins with lowerbound) or HLT (4.5mins)
+    LIBSEMIGROUPS_TEST_CASE(
+        "ToddCoxeter",
+        "103",
+        "http://brauer.maths.qmul.ac.uk/Atlas/spor/M23/mag/M23G1-P1.M",
+        "[todd-coxeter][extreme]") {
+      ToddCoxeter tc;
+      tc.set_alphabet("xyXYe");
+      tc.set_identity("e");
+      tc.set_inverses("XYxye");
+      tc.add_rule("xx", "e");
+      tc.add_rule("yyyy", "e");
+      tc.add_rule("xyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxy", "e");
+      tc.add_rule("xyyxyyxyyxyyxyyxyy", "e");
+      tc.add_rule("XYxyXYxyXYxyXYxyXYxyXYxy", "e");
+      tc.add_rule("xyxYxyyxyxYxyyxyxYxyyxyxYxyy", "e");
+      tc.add_rule("xyxyxyxYxyyxyxYxyxYxyxyxyxYxYxY", "e");
+      tc.add_rule("xyxyyxyyxyxyyxyyxyxyyxyyxyxyyxyyxyxyyxyyxyxyyxyy", "e");
+      tc.add_rule("xyxyyxyxyyxyxyyxyyxYxyyxYxyxyyxyxYxyy", "e");
+      tc.congruence()
+          .sort_generating_pairs()
+          .strategy(options::strategy::felsch)
+          .use_relations_in_extra(true)
+          .lower_bound(10'200'960)
+          .deduction_policy(options::deductions::v2
+                            | options::deductions::no_stack_if_no_space)
+          .reserve(50'000'000);
+      std::cout << tc.congruence().settings_string();
+      tc.congruence().run();
+
+      REQUIRE(tc.size() == 10'200'960);
+    }
+
+    // Takes about 3 minutes
+    LIBSEMIGROUPS_TEST_CASE(
+        "ToddCoxeter",
+        "104",
+        "http://brauer.maths.qmul.ac.uk/Atlas/clas/S62/mag/S62G1-P1.M",
+        "[todd-coxeter][extreme]") {
+      ToddCoxeter tc;
+      tc.set_alphabet("xyXYe");
+      tc.set_identity("e");
+      tc.set_inverses("XYxye");
+      tc.add_rule("xx", "e");
+      tc.add_rule("yyy", "e");
+      tc.add_rule("xyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxy", "e");
+      tc.add_rule("XYxyXYxyXYxyXYxyXYxyXYxyXYxyXYxyXYxyXYxyXYxyXYxy", "e");
+      tc.add_rule("XYXYxyxyXYXYxyxyXYXYxyxyXYXYxyxyXYXYxyxy", "e");
+      tc.add_rule("xyxyxYxyxyxYxyxyxYxyxYxYxyxYxYxyxYxY", "e");
+      tc.add_rule("xyxyxYxyxYxyxYxyxyxYxyxYxyxYxyxyxYxyxYxyxYxyxyxYxyxYxyxY",
+                  "e");
+
+      congruence::ToddCoxeter tc2(congruence_kind::right, tc);
+      tc2.add_pair(tc.string_to_word("xy"), tc.string_to_word("e"));
+
+      REQUIRE(tc2.number_of_classes() == 10'644'480);
+    }
+
+    // Approx. 32 minutes (2021 - MacBook Air M1 - 8GB RAM)
+    LIBSEMIGROUPS_TEST_CASE(
+        "ToddCoxeter",
+        "105",
+        "http://brauer.maths.qmul.ac.uk/Atlas/spor/HS/mag/HSG1-P1.M",
+        "[todd-coxeter][extreme]") {
+      auto        rg = ReportGuard();
+      ToddCoxeter tc;
+      tc.set_alphabet("xyXYe");
+      tc.set_identity("e");
+      tc.set_inverses("XYxye");
+      tc.add_rule("xx", "e");
+      tc.add_rule("yyyyy", "e");
+      tc.add_rule("xyxyxyxyxyxyxyxyxyxyxy", "e");
+      tc.add_rule("xyyxyyxyyxyyxyyxyyxyyxyyxyyxyy", "e");
+      tc.add_rule("XYxyXYxyXYxyXYxyXYxy", "e");
+      tc.add_rule("XYXYxyxyXYXYxyxyXYXYxyxy", "e");
+      tc.add_rule("XYYxyyXYYxyyXYYxyyXYYxyyXYYxyyXYYxyy", "e");
+      tc.add_rule("xyxyxyyxYxYYxYxyyxyxyxYYxYYxYYxYY", "e");
+      tc.add_rule("xyxyyxYYxYYxyyxYYxYYxyyxyxyyxYxyyxYxyy", "e");
+      tc.add_rule("xyxyxyyxyyxyxYxYxyxyyxyyxyxyxYYxYxYY", "e");
+      tc.add_rule("xyxyxyyxYxYYxyxyxYxyxyxyyxYxYYxyxyxY", "e");
+      tc.add_rule("xyxyxyyxyxyxyyxyxyxYxyxyxyyxyyxyyxyxyxY", "e");
+      tc.add_rule("xyxyxyyxyxyyxyxyyxyxyxyyxYxyxYYxyxYxyy", "e");
+      congruence::ToddCoxeter tc2(congruence_kind::right, tc);
+      tc2.add_pair(tc.string_to_word("xy"), tc.string_to_word("e"));
+      tc2.sort_generating_pairs()
+          .use_relations_in_extra(true)
+          .strategy(options::strategy::hlt)
+          .lookahead(options::lookahead::felsch | options::lookahead::partial);
+      REQUIRE(tc2.number_of_classes() == 4'032'000);
+    }
+
+    LIBSEMIGROUPS_TEST_CASE(
+        "ToddCoxeter",
+        "106",
+        "http://brauer.maths.qmul.ac.uk/Atlas/spor/J1/mag/J1G1-P1.M",
+        "[todd-coxeter][standard]") {
+      ToddCoxeter tc;
+      tc.set_alphabet("xyXYe");
+      tc.set_identity("e");
+      tc.set_inverses("XYxye");
+      tc.add_rule("xx", "e");
+      tc.add_rule("yyy", "e");
+      tc.add_rule("xyxyxyxyxyxyxy", "e");
+      tc.add_rule("xyxyxYxyxYxyxYxyxyxYxyxYxyxYxyxyxYxyxYxyxYxyxyxYxyxYxyxYxyxy"
+                  "xYxyxYxyxY",
+                  "e");
+      tc.add_rule("xyxyxYxyxYxyxYxyxYxyxYxyxYxyxyxYxYxyxyxYxyxYxyxYxyxYxyxYxyxY"
+                  "xyxyxYxY",
+                  "e");
+      REQUIRE(tc.size() == 175'560);
+    }
+
+    LIBSEMIGROUPS_TEST_CASE(
+        "ToddCoxeter",
+        "107",
+        "http://brauer.maths.qmul.ac.uk/Atlas/lin/L34/mag/L34G1-P1.M",
+        "[todd-coxeter][quick][no-coverage][no-valgrind]") {
+      ToddCoxeter tc;
+      tc.set_alphabet("xyXYe");
+      tc.set_identity("e");
+      tc.set_inverses("XYxye");
+      tc.add_rule("xx", "e");
+      tc.add_rule("yyyy", "e");
+      tc.add_rule("xyxyxyxyxyxyxy", "e");
+      tc.add_rule("xyyxyyxyyxyyxyy", "e");
+      tc.add_rule("XYxyXYxyXYxyXYxyXYxy", "e");
+      tc.add_rule("xyxyxYxyxyxYxyxyxYxyxyxYxyxyxY", "e");
+      tc.add_rule("xyxyxyyxYxyxyxyyxYxyxyxyyxYxyxyxyyxYxyxyxyyxY", "e");
+      REQUIRE(tc.size() == 20'160);
+    }
+
+    // Takes about 10 seconds (2021 - MacBook Air M1 - 8GB RAM)
+    LIBSEMIGROUPS_TEST_CASE(
+        "ToddCoxeter",
+        "108",
+        "http://brauer.maths.qmul.ac.uk/Atlas/clas/S62/mag/S62G1-P1.M",
+        "[todd-coxeter][extreme]") {
+      ToddCoxeter tc;
+      tc.set_alphabet("xyXYe");
+      tc.set_identity("e");
+      tc.set_inverses("XYxye");
+      tc.add_rule("xx", "e");
+      tc.add_rule("yyyyyyy", "e");
+      tc.add_rule("xyxyxyxyxyxyxyxyxy", "e");
+      tc.add_rule("xyyxyyxyyxyyxyyxyyxyyxyyxyyxyyxyyxyy", "e");
+      tc.add_rule("XYXYXYxyxyxyXYXYXYxyxyxy", "e");
+      tc.add_rule("XYxyXYxyXYxy", "e");
+      tc.add_rule("XYYxyyXYYxyy", "e");
+      REQUIRE(tc.size() == 1'451'520);
+      std::cout << tc.congruence().stats_string();
+    }
+
+    LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
+                            "109",
+                            "Moore's Alt(7)",
+                            "[todd-coxeter][fail]") {
+      auto rg = ReportGuard(true);
+      // KnuthBendix kb = AlternatingGroupMoore<KnuthBendix>(5);
+      // kb.run();
+      // REQUIRE(kb.size() == POSITIVE_INFINITY);
+      ToddCoxeter tc = AlternatingGroupMoore<ToddCoxeter>(5);
+      std::cout << std::vector<FpSemigroup::rule_type>(tc.cbegin_rules(),
+                                                       tc.cend_rules())
+                << std::endl;
+      REQUIRE(tc.size() == 5040 / 2);
+    }
+
   }  // namespace fpsemigroup
 }  // namespace libsemigroups

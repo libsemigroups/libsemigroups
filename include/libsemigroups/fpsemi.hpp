@@ -214,10 +214,40 @@ namespace libsemigroups {
       return todd_coxeter() != nullptr;
     }
 
+    //! Returns the fpsemigroup::Kambites instance used to compute the
+    //! finitely presented semigroup (if any).
+    //!
+    //! \returns A shared_ptr to a congruence::Kambites or nullptr.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except.
+    //!
+    //! \par Complexity
+    //! Constant.
+    //!
+    //! \sa has_kambites().
+    //!
+    //! \par Parameters
+    //! (None)
     std::shared_ptr<Kambites> kambites() const {
       return _race.find_runner<Kambites>();
     }
 
+    //! Checks if a fpsemigroup::Kambites instance is being used to compute
+    //! the finitely presented semigroup represented by \c this.
+    //!
+    //! \parameters
+    //! (None)
+    //!
+    //! \returns A `bool`.
+    //!
+    //! \par Exceptions
+    //! \noexcept
+    //!
+    //! \complexity
+    //! Constant.
+    //!
+    //! \sa kambites().
     bool has_kambites() const noexcept {
       return kambites() != nullptr && kambites()->small_overlap_class() >= 4;
     }

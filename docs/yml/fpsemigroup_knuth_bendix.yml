@@ -14,10 +14,10 @@ libsemigroups::fpsemigroup::KnuthBendix:
   - KnuthBendix(FroidurePinBase&)
   - KnuthBendix(KnuthBendix const&)
   - KnuthBendix(std::shared_ptr<FroidurePinBase>)
+  - KnuthBendix(KnuthBendix&&)
 - Deleted constructors:
   - ["This page lists the deleted constructors for the
      :cpp:any:`fpsemigroup::KnuthBendix` class."]
-  - KnuthBendix(KnuthBendix&&) = delete
   - operator=(KnuthBendix const&) = delete
   - operator=(KnuthBendix &&) = delete
 - Member functions:
@@ -113,3 +113,5 @@ libsemigroups::fpsemigroup::KnuthBendix:
   - report_every() const noexcept
   - report() const
   - report_why_we_stopped() const
+  - running_for() const noexcept
+  - running_until() const noexcept

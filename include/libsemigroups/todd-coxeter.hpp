@@ -1,6 +1,6 @@
 //
 // libsemigroups - C++ library for semigroups and monoids
-// Copyright (C) 2019 James D. Mitchell
+// Copyright (C) 2019-21 James D. Mitchell
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -22,32 +22,36 @@
 #ifndef LIBSEMIGROUPS_TODD_COXETER_HPP_
 #define LIBSEMIGROUPS_TODD_COXETER_HPP_
 
-#include <chrono>      // for chrono::nanoseconds
-#include <cstddef>     // for size_t
-#include <functional>  // for function
-#include <memory>      // for shared_ptr
-#include <numeric>     // for std::iota
-#include <stack>       // for stack
-#include <utility>     // for pair
-#include <vector>      // for vector
+#include <chrono>       // for chrono::nanoseconds
+#include <cstddef>      // for size_t
+#include <cstdint>      // for uint64_t, int64_t
+#include <functional>   // for function
+#include <memory>       // for shared_ptr
+#include <stack>        // for stack
+#include <string>       // for string
+#include <type_traits>  // for is_base_of
+#include <utility>      // for pair
+#include <vector>       // for vector
 
-#include "cong-intf.hpp"   // for congruence_kind,...
-#include "cong-wrap.hpp"   // for CongruenceWrapper
-#include "containers.hpp"  // for DynamicArray2
-#include "coset.hpp"       // for CosetManager
-#include "debug.hpp"       // for LIBSEMIGROUPS_ASSERT
-#include "int-range.hpp"   // for IntegralRange
-#include "iterator.hpp"    // for ConstIteratorStateful
-#include "order.hpp"       // shortlex_compare
-#include "report.hpp"      // for REPORT
-#include "string.hpp"      // for to_string
-#include "types.hpp"       // for word_type, letter_type...
+#include "cong-intf.hpp"     // for congruence_kind,...
+#include "cong-wrap.hpp"     // for CongruenceWrapper
+#include "constants.hpp"     // for UNDEFINED
+#include "containers.hpp"    // for DynamicArray2
+#include "coset.hpp"         // for CosetManager
+#include "debug.hpp"         // for LIBSEMIGROUPS_ASSERT
+#include "digraph.hpp"       // for ActionDigraph
+#include "froidure-pin.hpp"  // for FroidurePin
+#include "int-range.hpp"     // for IntegralRange
+#include "iterator.hpp"      // for ConstIteratorStateful
+#include "order.hpp"         // shortlex_compare
+#include "types.hpp"         // for word_type, letter_type...
 
 namespace libsemigroups {
   // Forward declarations
   namespace detail {
     class TCE;
-  }
+    class Timer;
+  }  // namespace detail
   class FroidurePinBase;
 
   namespace congruence {
@@ -76,20 +80,24 @@ namespace libsemigroups {
     //! In this documentation we use the term "coset enumeration" to mean the
     //! execution of (any version of) the Todd-Coxeter algorithm.
     //!
+    //! Some of the features of this class were inspired by similar features in
+    //! [ACE](https://staff.itee.uq.edu.au/havas/) by George Havas and Colin
+    //! Ramsay.
+    //!
     //! \sa congruence_kind and tril.
     //!
     //! \par Example 1
     //! \code
     //! ToddCoxeter tc(congruence_kind::left);  // construct a left congruence
-    //! tc.set_number_of_generators(2);                // 2 generators
+    //! tc.set_number_of_generators(2);         // 2 generators
     //! tc.add_pair({0, 0}, {0});               // generator 0 squared is itself
     //! tc.add_pair({0}, {1});                  // generator 0 equals 1
-    //! tc.strategy(options::strategy::felsch);  // set the strategy
-    //! tc.number_of_classes();                        // calculate number of
-    //! classes tc.contains({0, 0, 0, 0}, {0, 0});      // check if 2 words are
-    //! equal tc.word_to_class_index({0, 0, 0, 0});   // get the index of a
-    //! class tc.standardize(order::lex);             // standardize to lex
-    //! order \endcode
+    //! tc.strategy(options::strategy::felsch); // set the strategy
+    //! tc.number_of_classes();
+    //! tc.contains({0, 0, 0, 0}, {0, 0});
+    //! equal tc.word_to_class_index({0, 0, 0, 0});
+    //! tc.standardize(order::lex);
+    //! \endcode
     //!
     //! \par Example 2
     //! \code
@@ -148,6 +156,9 @@ namespace libsemigroups {
     //! \endcode
     class ToddCoxeter final : public CongruenceInterface,
                               public detail::CosetManager {
+      struct Stats;  // forward decl
+      using Perm = typename CosetManager::Perm;
+
      public:
       ////////////////////////////////////////////////////////////////////////
       // ToddCoxeter - typedefs + enums - public
@@ -157,29 +168,42 @@ namespace libsemigroups {
       //!
       //! This is the type of the coset table stored inside a ToddCoxeter
       //! instance.
-      using table_type = detail::DynamicArray2<class_index_type>;
+      using table_type = detail::DynamicArray2<coset_type>;
 
-      //! Type of the indices of cosets.
-      using coset_type = CongruenceInterface::class_index_type;
+      //! The type of the return value of quotient_froidure_pin().
+      //!
+      //! quotient_froidure_pin() returns a \shared_ptr to a FroidurePinBase,
+      //! which is really of type \ref froidure_pin_type.
+      using froidure_pin_type
+          = FroidurePin<detail::TCE,
+                        FroidurePinTraits<detail::TCE, table_type>>;
 
       //! Holds values of various options.
       //!
       //! This struct holds various enums which effect the coset enumeration
       //! process used by \ref run.
       //!
-      //! \sa \ref strategy, \ref lookahead, and \ref froidure_pin.
+      //! \sa \ref strategy, \ref lookahead, \ref deductions, \ref
+      //! preferred_defs, and \ref froidure_pin.
       struct options {
         //! Values for defining the strategy.
         //!
         //! The values in this enum can be used as the argument for the member
         //! function strategy(options::strategy) to specify which strategy
         //! should be used when performing a coset enumeration.
+        //!
+        //! Several of the strategies mimic
+        //! [ACE](https://staff.itee.uq.edu.au/havas/) strategies of the same
+        //! name. The [ACE](https://staff.itee.uq.edu.au/havas/) strategy \"R*\"
+        //! is equivalent to \c strategy(options::strategy::hlt).save(true).
         enum class strategy {
           //! This value indicates that the HLT (Hazelgrove-Leech-Trotter)
-          //! strategy should be used. This is analogous to ACE's R-style.
+          //! strategy should be used. This is analogous to
+          //! [ACE](https://staff.itee.uq.edu.au/havas/)'s R-style.
           hlt,
           //! This value indicates that the Felsch strategy should be used.
-          //! This is analogous to ACE's C-style.
+          //! This is analogous to [ACE](https://staff.itee.uq.edu.au/havas/)'s
+          //! C-style.
           felsch,
           //! This value indicates that a random combination of the HLT and
           //! Felsch strategies should be used. A random strategy (and
@@ -204,7 +228,34 @@ namespace libsemigroups {
           //!
           //! and this strategy is then run for approximately the amount
           //! of time specified by the setting random_interval(T).
-          random
+          random,
+          //! This strategy is meant to mimic the
+          //! [ACE](https://staff.itee.uq.edu.au/havas/) strategy of the same
+          //! name. The Felsch is run until at least f_defs() nodes are
+          //! defined, then the HLT strategy is run until at least hlt_defs()
+          //! divided by length_of_generating_pairs() nodes have been defined.
+          //! These steps are repeated until the enumeration terminates.
+          CR,
+          //! This strategy is meant to mimic the
+          //! [ACE](https://staff.itee.uq.edu.au/havas/) strategy R/C. The HLT
+          //! strategy is run until the first lookahead is triggered (when
+          //! number_of_cosets_active() is at least next_lookhead()). A full
+          //! lookahead is then performed, and then the CR strategy is used.
+          R_over_C,
+          //! This strategy is meant to mimic the
+          //! [ACE](https://staff.itee.uq.edu.au/havas/) strategy Cr. The Felsch
+          //! strategy is run until at least f_defs() new nodes have been
+          //! defined, the HLT strategy is then run until at least hlt_defs()
+          //! divided by length_of_generating_pairs() new nodes are defined,
+          //! and then the Felsch strategy is run.
+          Cr,
+          //! This strategy is meant to mimic the
+          //! [ACE](https://staff.itee.uq.edu.au/havas/) strategy Rc. The HLT
+          //! strategy is run until at least hlt_defs() divided by
+          //! length_of_generating_pairs() new nodes have been
+          //! defined, the Felsch strategy is then run until at least f_defs()
+          //! new nodes are defined, and then the HLT strategy is run.
+          Rc
         };
 
         //! Values for specifying the type of lookahead to perform.
@@ -212,15 +263,31 @@ namespace libsemigroups {
         //! The values in this enum can be used as the argument for
         //! lookahead(options::lookahead) to specify the type of lookahead that
         //! should be performed when using the HLT strategy.
+        //!
+        //! It is possible to combine values of this type using operator|, for
+        //! example a full HLT style lookahead is specified by
+        //! ``options::lookahead::full | options::lookahead::hlt``.
+        //!
+        //! An exception will be thrown if incompatible values of
+        //! options::lookahead are combined in this way, such as, for example
+        //! ``options::lookahead::full | options::lookahead::partial``.
         enum class lookahead {
           //! A *full* lookahead is one starting from the initial coset.
           //! Full lookaheads are therefore sometimes slower but may
           //! detect more coincidences than a partial lookahead.
-          full,
+          full = 1,  // 00|01
           //! A *partial* lookahead is one starting from the current coset.
           //! Partial lookaheads are therefore sometimes faster but may not
           //! detect as many coincidences as a full lookahead.
-          partial
+          partial = 2,  // 00|10
+          //! The lookahead will be done in HLT style by following the paths
+          //! labelled by every relation from every coset in the range
+          //! specified by lookahead::full or lookahead::partial.
+          hlt = 4,  // 01|00
+          //! The lookahead will be done in Felsch style where every edge is
+          //! considered in every path labelled by a relation in which it
+          //! occurs.
+          felsch = 8  // 10|00
         };
 
         //! Values for specifying whether to use relations or Cayley graph.
@@ -244,10 +311,115 @@ namespace libsemigroups {
         enum class froidure_pin {
           //! No policy has been specified.
           none,
-          //! Use the relations of a FroidurePin instance
+          //! Use the relations of a FroidurePin instance.
           use_relations,
-          //! Use the left or right Cayley graph of a FroidurePin instance
+          //! Use the left or right Cayley graph of a FroidurePin instance.
           use_cayley_graph
+        };
+
+        //! Values for specifying how to handle deductions.
+        //!
+        //! The values in this enum can be used as the argument for
+        //! \ref deduction_policy(options::deductions).
+        //!
+        //! For our purposes, a *deduction* is a recently defined edge in the
+        //! word graph that we are attempting to construct in an instance of
+        //! ToddCoxeter. The values in this enum influence how these
+        //! deductions are stored and processed.
+        //!
+        //! For every deduction held in the deduction stack, a depth first
+        //! search through the Felsch tree of the generating pairs is
+        //! performed. The aim is to only follow paths from nodes in the word
+        //! graph labelled by generating pairs that actually pass through the
+        //! edge described by a deduction. There are two versions of this
+        //! represented by the values options::deductions::v1 and
+        //! options::deductions::v2. The first version is simpler, but may
+        //! involve following the same path that leads nowhere multiple times.
+        //! The second version is more complex, and attempts to avoid following
+        //! the same path multiple times if it is found to lead nowhere once.
+        //!
+        //! The other values in this enum represent what to do if the number of
+        //! deductions in the stack exceeds the value max_deductions().
+        //!
+        //! It is possible to combine values of this type using operator|, for
+        //! example options::deductions::v2 and options::deductions::unlimited
+        //! is specified by ``options::deductions::v2 |
+        //! options::deductions::unlimited``.
+        //!
+        //! An exception will be thrown if incompatible values of
+        //! options::deductions are combined in this way, such as, for example
+        //! ``options::deductions::v1 | options::deductions::v2``.
+        enum class deductions {
+          //! Version 1 deduction processing
+          v1 = 1,  // 000|01
+          //! Version 2 deduction processing
+          v2 = 3,  // 000|11
+          //! Do not put newly generated deductions in the stack if the stack
+          //! already has size max_deductions().
+          no_stack_if_no_space = 4,  // 001|00
+          //! If the deduction stack has size max_deductions() and a new
+          //! deduction is generated, then deductions with dead source node are
+          //! are popped from the top of the stack (if any).
+          purge_from_top = 8,  // 010|00
+          //! If the deduction stack has size max_deductions() and a new
+          //! deduction is generated, then deductions with dead source node are
+          //! are popped from the entire of the stack (if any).
+          purge_all = 12,  // 011|00
+          //! If the deduction stack has size max_deductions() and a new
+          //! deduction is generated, then all deductions in the stack are
+          //! discarded.
+          discard_all_if_no_space = 16,  // 100|00
+          //! There is no limit to the number of deductions that can be put in
+          //! the stack.
+          unlimited = 20,  // 101|00
+        };
+
+        //! Values for specifying how to handle preferred definitions.
+        //!
+        //! The values in this enum can be used as the argument for
+        //! \ref preferred_defs(options::preferred_defs).
+        //!
+        //! While in a Felsch phase of an enumeration, a definition of the next
+        //! new edge is usually made for the first node whose out-degree is not
+        //! equal to the number of generators. The exact order this happens is
+        //! depends on the implementation and is not specified. When following
+        //! the paths from a given node labelled by a relation it might be the
+        //! case that both paths end one letter before the end. It might be
+        //! beneficial for the next edges defined to be the missing edges from
+        //! these paths, these are what we refer to as *preferred definitions*.
+        //! The values in this enum influence how preferred definitions
+        //! are utilised.
+        //!
+        //! The maximum number of preferred definitions held at any time is
+        //! defined by the value of max_preferred_defs(). These definitions are
+        //! stored in a circular buffer, where newer preferred definitions
+        //! displace older ones once the number exceeds max_preferred_defs().
+        //!
+        //! \note The values in this enum roughly correspond to
+        //! [ACE](https://staff.itee.uq.edu.au/havas/)'s \"pmode\" options.
+        //!
+        //! \warning
+        //! If the option preferred_defs::deferred is used then the next edges
+        //! defined are always taken from the preferred definitions circular
+        //! buffer, regardless of the proportion of undefined edges in the word
+        //! graph. In [ACE](https://staff.itee.uq.edu.au/havas/), preferred
+        //! definitions are only made if the proportion of undefined edges is
+        //! sufficiently low (or the
+        //! \"fill factor\" is sufficiently high). This is not currently
+        //! implemented in ``libsemigroups`` and there are examples where using
+        //! preferred definitions causes an enumeration to run for longer than
+        //! if they are not used.
+        enum class preferred_defs {
+          //! Do not use preferred definitions at all.
+          none,
+          //! Immediately define the new edge and do not stack the
+          //! corresponding deductions.
+          immediate_no_stack,
+          //! Immediately define the new edge and do stack the
+          //! corresponding deductions.
+          immediate_yes_stack,
+          //! Add the preferred definition to the preferred definition buffer.
+          deferred
         };
       };
 
@@ -263,9 +435,11 @@ namespace libsemigroups {
         //! Normal forms are the short-lex least word belonging to a given
         //! congruence class.
         shortlex,
-        //! Normal forms are the lexicographical least word belonging to a given
-        //! congruence class.
-        lex,  // TODO(later) does this even make sense?
+        //! The congruence classes are ordered lexicographically by their
+        //! normal form. The normal forms themselves are essentially arbitrary
+        //! because there is not necessarily a lexicographically least word in
+        //! every class.
+        lex,
         //! Normal forms are the recursive-path least word belonging to a given
         //! congruence class.
         recursive
@@ -336,7 +510,6 @@ namespace libsemigroups {
                   std::shared_ptr<FroidurePinBase> fp,
                   options::froidure_pin            p
                   = options::froidure_pin::use_cayley_graph);
-      // TODO(later) remove the final argument here
       // This options::froidure_pin is guaranteed to terminate relatively
       // quickly
 
@@ -417,20 +590,22 @@ namespace libsemigroups {
 
       //! Prefill the coset table.
       //!
-      //! This member function allows a ToddCoxeter instance to be prefilled
+      //! This function can be used to prefill a ToddCoxeter instance to be
       //! with an existing coset table. The argument should represent the left
       //! or right Cayley graph of a finite semigroup.
       //!
-      //! \param t the table
+      //! \param table the table
       //!
       //! \returns
       //! (None)
       //!
-      //! \throws LibsemigroupsException if the table \p t is not valid.
+      //! \throws LibsemigroupsException if the table \p table is not valid.
       //!
       //! \complexity
-      //! Linear in the total number of entries in the table \p t.
-      void prefill(table_type const& t);
+      //! Linear in the total number of entries in the table \p table.
+      void prefill(table_type const& table) {
+        prefill(table, [](size_t i) { return i; });
+      }
 
       // Settings
 
@@ -441,6 +616,7 @@ namespace libsemigroups {
       //!
       //! If the ToddCoxeter instance is not created from a FroidurePin
       //! instance, then the value of this setting is ignored.
+      //!
       //! The default value is options::froidure_pin::use_cayley_graph.
       //!
       //! \param val value indicating whether to use relations or Cayley graph
@@ -453,7 +629,7 @@ namespace libsemigroups {
       //! \noexcept
       ToddCoxeter& froidure_pin_policy(options::froidure_pin val) noexcept;
 
-      //! Get the current value of the Froidure-Pin policy.
+      //! The current value of the Froidure-Pin policy setting.
       //!
       //! If the ToddCoxeter instance is not created from a FroidurePin
       //! instance, or from an object that has an already computed FroidurePin
@@ -471,34 +647,44 @@ namespace libsemigroups {
       //! \noexcept
       options::froidure_pin froidure_pin_policy() const noexcept;
 
-      //! Set the lookahead to use in HLT.
+      //! Set the style of lookahead to use in HLT.
       //!
       //! If the strategy is not HLT, then the value of this setting is
       //! ignored.
       //!
-      //! The default value is options::lookahead::partial, and the other
-      //! possible value is options::lookahead::full.
+      //! The default value is options::lookahead::partial |
+      //! options::lookahead::hlt. The other
+      //! possible value are documented in options::lookahead.
       //!
       //! \param val value indicating whether to perform a full or partial
-      //! lookahead.
+      //! lookahead in HLT or Felsch style.
       //!
       //! \returns A reference to `*this`.
       //!
       //! \exceptions
       //! \noexcept
-      //!
-      //! \sa ToddCoxeter::options::lookahead.
       ToddCoxeter& lookahead(options::lookahead val) noexcept;
+
+      //! The current value of the setting for lookaheads.
+      //!
+      //! \parameters
+      //! (None)
+      //!
+      //! \returns A value of type options::lookahead.
+      //!
+      //! \exceptions
+      //! \noexcept
+      options::lookahead lookahead() const noexcept;
 
       //! Specify minimum number of classes that may trigger early stop.
       //!
       //! Set a lower bound for the number of classes of the congruence
       //! represented by a ToddCoxeter instance. If the number of active cosets
       //! becomes at least the value of the argument, and the table is complete
-      //! (\ref complete returns \c true), then the coset enumeration is
-      //! terminated. When the given bound is equal to the number of classes,
-      //! this may save tracing relations at many cosets when there is no
-      //! possibility of finding coincidences.
+      //! (\ref complete returns \c true), then the enumeration is terminated.
+      //! When the given bound is equal to the number of classes, this may save
+      //! tracing relations at many cosets when there is no possibility of
+      //! finding coincidences.
       //!
       //! The default value is \ref UNDEFINED.
       //!
@@ -509,6 +695,19 @@ namespace libsemigroups {
       //! \exceptions
       //! \noexcept
       ToddCoxeter& lower_bound(size_t val) noexcept;
+
+      //! The current value of the lower bound setting.
+      //!
+      //! \parameters
+      //! None
+      //!
+      //! \returns A value of type `size_t`.
+      //!
+      //! \exceptions
+      //! \noexcept
+      //!
+      //! \sa lower_bound(size_t)
+      size_t lower_bound() const noexcept;
 
       //! Set the threshold that will trigger a lookahead in HLT.
       //!
@@ -527,6 +726,115 @@ namespace libsemigroups {
       //! \noexcept
       ToddCoxeter& next_lookahead(size_t val) noexcept;
 
+      //! The current value of the next lookahead setting.
+      //!
+      //! \parameters
+      //! None
+      //!
+      //! \returns A value of type `size_t`.
+      //!
+      //! \exceptions
+      //! \noexcept
+      //!
+      //! \sa next_lookahead(size_t)
+      size_t next_lookahead() const noexcept;
+
+      //! Set the minimum value of next_lookahead().
+      //!
+      //! After a lookahead is performed the value of next_lookahead() is
+      //! modified depending on the outcome of the current lookahead. If the
+      //! return value next_lookahead() of is too small or too large, then the
+      //! value is adjusted according to lookahead_growth_factor() and
+      //! lookahead_growth_threshold(). This setting specified the minimum
+      //! possible value for next_lookahead().
+      //!
+      //! The default value is \c 10'000.
+      //!
+      //! \param val value indicating the minimum value of next_lookahead().
+      //!
+      //! \returns A reference to `*this`.
+      //!
+      //! \exceptions
+      //! \noexcept
+      ToddCoxeter& min_lookahead(size_t val) noexcept;
+
+      //! The current value of the minimum lookahead setting.
+      //!
+      //! \parameters
+      //! None
+      //!
+      //! \returns A value of type `size_t`.
+      //!
+      //! \exceptions
+      //! \noexcept
+      //!
+      //! \sa min_lookahead(size_t)
+      size_t min_lookahead() const noexcept;
+
+      //! Set the lookahead growth factor.
+      //!
+      //! This setting determines by what factor the number of nodes required
+      //! to trigger a lookahead grows. More specifically, at the end of any
+      //! lookahead if the number of active nodes already exceeds the value of
+      //! next_lookahead() or the number of nodes killed during the lookahead
+      //! is less than the number of active nodes divided by
+      //! lookahead_growth_threshold(), then the value of
+      //! ToddCoxeter::next_lookhead is increased by a multiple of the \p value.
+      //!
+      //! \param val the value indicating the lookahead growth factor.
+      //! The default value is ``2.0``.
+      //!
+      //! \returns A reference to `*this`.
+      //!
+      //! \throws LibsemigroupsException if \p val is less than ``1.0``.
+      ToddCoxeter& lookahead_growth_factor(float val);
+
+      //! The current value of the lookahead growth factor.
+      //!
+      //! \parameters
+      //! None
+      //!
+      //! \returns A value of type `float`.
+      //!
+      //! \exceptions
+      //! \noexcept
+      //!
+      //! \sa lookahead_growth_factor(float)
+      float lookahead_growth_factor() const noexcept;
+
+      //! Set the lookahead growth threshold.
+      //!
+      //! This setting determines by what threshold for changing the number of
+      //! nodes required to trigger a lookahead grows. More specifically, at
+      //! the end of any lookahead if the number of active nodes already
+      //! exceeds the value of next_lookahead() or the number of nodes killed
+      //! during the lookahead is less than the number of active nodes divided
+      //! by \ref lookahead_growth_threshold, then the value of
+      //! ToddCoxeter::next_lookhead() is increased.
+      //!
+      //! The default value is ``4``.
+      //!
+      //! \param val the value indicating the lookahead growth threshold.
+      //!
+      //! \returns A reference to `*this`.
+      //!
+      //! \exceptions
+      //! \noexcept
+      ToddCoxeter& lookahead_growth_threshold(size_t val) noexcept;
+
+      //! The current value of the lookahead growth threshold.
+      //!
+      //! \parameters
+      //! None
+      //!
+      //! \returns A value of type `size_t`.
+      //!
+      //! \exceptions
+      //! \noexcept
+      //!
+      //! \sa lookahead_growth_threshold()
+      size_t lookahead_growth_threshold() const noexcept;
+
       //! Process deductions during HLT.
       //!
       //! If the argument of this function is \c true and the HLT strategy is
@@ -534,7 +842,7 @@ namespace libsemigroups {
       //!
       //! The default value is \c false.
       //!
-      //! \param val value indicating the initial threshold.
+      //! \param val value indicating whether or not to process deductions.
       //!
       //! \returns A reference to `*this`.
       //!
@@ -544,13 +852,26 @@ namespace libsemigroups {
       //! \throws LibsemigroupsException if the parent FroidurePin (if any) is
       //! finite, and the value of froidure_pin_policy() is not
       //! options::froidure_pin::use_relations.
-      ToddCoxeter& save(bool val);  // NOLINT()
+      ToddCoxeter& save(bool val);
 
-      //! Short-lex standardize the table during enumeration.
+      //! The current value of save setting.
+      //!
+      //! \parameters
+      //! None
+      //!
+      //! \returns A value of type `bool`.
+      //!
+      //! \exceptions
+      //! \noexcept
+      //!
+      //! \sa save(bool)
+      bool save() const noexcept;
+
+      //! Partially short-lex standardize the table during enumeration.
       //!
       //! If the argument of this function is \c true, then the coset table is
-      //! standardized (according to the short-lex order) during the coset
-      //! enumeration.
+      //! partially standardized (according to the short-lex order) during the
+      //! coset enumeration.
       //!
       //! The default value is \c false.
       //!
@@ -560,26 +881,39 @@ namespace libsemigroups {
       //!
       //! \exceptions
       //! \noexcept
-      ToddCoxeter& standardize(bool val) noexcept;  // NOLINT()
+      // Note to self: the word "partially" is added above because the table
+      // might actually not be standardized after deduction or coincidence
+      // processing because it's too difficult to keep track of standardization
+      // during these processes.
+      ToddCoxeter& standardize(bool val) noexcept;
+
+      //! The current value of the standardize setting.
+      //!
+      //! \parameters
+      //! None
+      //!
+      //! \returns A value of type `bool`.
+      //!
+      //! \exceptions
+      //! \noexcept
+      //!
+      //! \sa standardize(bool)
+      bool standardize() const noexcept;
 
       //! Specify the strategy.
       //!
-      //! The strategy used during the coset enumeration can be specified using
-      //! this function. It can be set to HLT, Felsch, or random.
+      //! The strategy used during the enumeration can be specified using
+      //! this function.
       //!
       //! The default value is options::strategy::hlt.
       //!
-      //! \param val value indicating which strategy to use, the possible
-      //! values are:
-      //! * options::strategy::hlt
-      //! * options::strategy::felsch
-      //! * options::strategy::random
+      //! \param val value indicating which strategy to use
       //!
       //! \returns A reference to `*this`.
       //!
       //! \throws LibsemigroupsException if \p val is options::strategy::felsch
       //! and any of the following conditions apply:
-      //! * \ref prefill as used to initialise \c this
+      //! * \ref prefill was used to initialise \c this
       //! * if the parent FroidurePin (if any) is
       //! finite, and the value of froidure_pin_policy() is not
       //! options::froidure_pin::use_relations.
@@ -596,7 +930,7 @@ namespace libsemigroups {
       //! \noexcept
       options::strategy strategy() const noexcept;
 
-      //! Set the amount of time per strategy for options::strategy::random.
+      //! Set the amount of time per strategy for options::strategy::random
       //!
       //! Sets the duration in nanoseconds that a given randomly selected
       //! strategy will run for, when using the random strategy
@@ -613,7 +947,7 @@ namespace libsemigroups {
       //! \noexcept
       ToddCoxeter& random_interval(std::chrono::nanoseconds val) noexcept;
 
-      //! Set the amount of time per strategy for options::strategy::random.
+      //! Set the amount of time per strategy for options::strategy::random
       //!
       //! Sets the duration (by converting to nanoseconds) that a given
       //! randomly selected strategy will run for, when using the random
@@ -633,6 +967,17 @@ namespace libsemigroups {
       ToddCoxeter& random_interval(T val) noexcept {
         return random_interval(std::chrono::nanoseconds(val));
       }
+
+      //! The current value of the random interval setting.
+      //!
+      //! \parameters
+      //! (None)
+      //!
+      //! \returns A value of type ``std::chrono::nanoseconds``.
+      //!
+      //! \exceptions
+      //! \noexcept
+      std::chrono::nanoseconds random_interval() const noexcept;
 
       //! Type of the argument to \ref sort_generating_pairs.
       //!
@@ -693,6 +1038,338 @@ namespace libsemigroups {
       //! \parameters
       //! (None)
       ToddCoxeter& random_shuffle_generating_pairs();
+
+      //! Remove duplicate generating pairs.
+      //!
+      //! Additionally, if \c this was defined over a finitely presented
+      //! semigroup, then the copy of the defining relations of that semigroup
+      //! contained in \c this (if any) also have duplicates removed.
+      //!
+      //! \returns A reference to `*this`.
+      //!
+      //! \throws LibsemigroupsException if started() returns \c true.
+      //!
+      //! \parameters
+      //! (None)
+      ToddCoxeter& remove_duplicate_generating_pairs();
+
+      //! Perform an HLT-style push of the defining relations at the identity.
+      //!
+      //! If a ToddCoxeter instance is defined over a finitely presented
+      //! semigroup and the Felsch strategy is being used, it can be useful
+      //! to follow all the paths from the identity labelled by the underlying
+      //! relations of the semigroup (if any). The setting specifies whether or
+      //! not to do this.
+      //!
+      //! The default value of this setting is \c false.
+      //!
+      //! \param val the boolean value.
+      //!
+      //! \returns A reference to `*this`.
+      //!
+      //! \exceptions
+      //! \noexcept
+      ToddCoxeter& use_relations_in_extra(bool val) noexcept;
+
+      //! The current value of the setting for using relations.
+      //!
+      //! \parameters
+      //! (None)
+      //!
+      //! \returns The current value of the setting, a value of type ``bool``.
+      //!
+      //! \exceptions
+      //! \noexcept
+      bool use_relations_in_extra() const noexcept;
+
+      //! The maximum number of deductions in the stack.
+      //!
+      //! This setting specifies the maximum number of deductions that can be
+      //! in the stack at any given time. What happens if there are the maximum
+      //! number of deductions in the stack and a new deduction is generated is
+      //! governed by deduction_policy().
+      //!
+      //! The default value of this setting is \c 2'000.
+      //!
+      //! \param val the maximum size of the deduction stack.
+      //!
+      //! \returns A reference to `*this`.
+      //!
+      //! \exceptions
+      //! \noexcept
+      ToddCoxeter& max_deductions(size_t val) noexcept;
+
+      //! The current value of the setting for the maximum number of
+      //! deductions.
+      //!
+      //! \parameters
+      //! (None)
+      //!
+      //! \returns The current value of the setting, a value of type
+      //! ``size_t``.
+      //!
+      //! \exceptions
+      //! \noexcept
+      size_t max_deductions() const noexcept;
+
+      //! Specify how to handle deductions.
+      //!
+      //! This function can be used to specify how to handle deductions. For
+      //! details see options::deductions.
+      //!
+      //! The default value of this setting is
+      //! ``options::deductions::no_stack_if_no_space |
+      //! options::deductions::v2``.
+      //!
+      //! \param val the policy to use.
+      //!
+      //! \returns A reference to `*this`.
+      //!
+      //! \throws LibsemigroupsException if \p val is not valid (i.e. if for
+      //! example ``options::deductions::v1 & options::deductions::v2`` returns
+      //! ``true``).
+      ToddCoxeter& deduction_policy(options::deductions val);
+
+      //! The current value of the deduction policy setting.
+      //!
+      //! \parameters
+      //! (None)
+      //!
+      //! \returns The current value of the setting, a value of type
+      //! ``options::deductions``.
+      //!
+      //! \exceptions
+      //! \noexcept
+      options::deductions deduction_policy() const noexcept;
+
+      //! Specify how to handle preferred definitions.
+      //!
+      //! This function can be used to specify how to handle preferred
+      //! definitions. For details see options::preferred_defs.
+      //!
+      //! The default value of this setting is
+      //! ``options::preferred_defs::deferred``.
+      //!
+      //! \note
+      //! If \p val is options::preferred_defs::none, then max_preferred_defs()
+      //! is set to \c 0.
+      //!
+      //! \param val the value to use.
+      //!
+      //! \returns A reference to `*this`.
+      //!
+      //! \exceptions
+      //! \noexcept
+      ToddCoxeter& preferred_defs(options::preferred_defs val) noexcept;
+
+      //! The current value of the preferred definitions setting.
+      //!
+      //! \parameters
+      //! (None)
+      //!
+      //! \returns The current value of the setting, a value of type
+      //! ``options::preferred_defs``.
+      //!
+      //! \exceptions
+      //! \noexcept
+      options::preferred_defs preferred_defs() const noexcept;
+
+      //! Specify the maximum number of preferred definitions.
+      //!
+      //! This function can be used to specify the maximum number of preferred
+      //! definitions that are held in the circular buffer at any time. For
+      //! details see options::preferred_defs.
+      //!
+      //! The default value of this setting is \c 256.
+      //!
+      //! \note
+      //! If \p val is \c 0, then preferred_defs() is set to
+      //! options::preferred_defs::none.
+      //!
+      //! \param val the value to use.
+      //!
+      //! \returns A reference to `*this`.
+      //!
+      //! \exceptions
+      //! \noexcept
+      ToddCoxeter& max_preferred_defs(size_t val) noexcept;
+
+      //! The current value of the maximum preferred definitions setting.
+      //!
+      //! \parameters
+      //! (None)
+      //!
+      //! \returns The current value of the setting, a value of type
+      //! ``size_t``.
+      //!
+      //! \exceptions
+      //! \noexcept
+      size_t max_preferred_defs() const noexcept;
+
+      //! The approx number of Felsch style definitions in
+      //! [ACE](https://staff.itee.uq.edu.au/havas/) strategies.
+      //!
+      //! If the strategy being used is any of those mimicking
+      //! [ACE](https://staff.itee.uq.edu.au/havas/), then the value of this
+      //! setting is used to determine the number of nodes defined in any Felsch
+      //! phase of the strategy.
+      //!
+      //! The default value of this setting is \c 100'000.
+      //!
+      //! \param val the value to use.
+      //!
+      //! \returns A reference to `*this`.
+      //!
+      //! \throws LibsemigroupsException if \p val is \c 0.
+      ToddCoxeter& f_defs(size_t val);
+
+      //! The current value of the f_defs setting.
+      //!
+      //! \parameters
+      //! (None)
+      //!
+      //! \returns The current value of the setting, a value of type
+      //! ``size_t``.
+      //!
+      //! \exceptions
+      //! \noexcept
+      size_t f_defs() const noexcept;
+
+      //! The approx number of HLT style definitions in
+      //! [ACE](https://staff.itee.uq.edu.au/havas/) strategies.
+      //!
+      //! If the strategy being used is any of those mimicking
+      //! [ACE](https://staff.itee.uq.edu.au/havas/), then the value of this
+      //! setting is used to determine the number of nodes defined in any HLT
+      //! phase of the strategy.
+      //!
+      //! The default value of this setting is \c 200'000.
+      //!
+      //! \param val the value to use.
+      //!
+      //! \returns A reference to `*this`.
+      //!
+      //! \throws LibsemigroupsException if \p val is less than
+      //! length_of_generating_pairs().
+      ToddCoxeter& hlt_defs(size_t val);
+
+      //! The current value of the hlt_defs setting.
+      //!
+      //! \parameters
+      //! (None)
+      //!
+      //! \returns The current value of the setting, a value of type
+      //! ``size_t``.
+      //!
+      //! \exceptions
+      //! \noexcept
+      size_t hlt_defs() const noexcept;
+
+      //! Specify whether to standardize between HLT and Felsch.
+      //!
+      //! This setting allows the word graph to be standardized when switching
+      //! between an HLT and Felsch phase (or vice versa) in an enumeration.
+      //!
+      //! The default value of this setting is \c false.
+      //!
+      //! \param val the value to use.
+      //!
+      //! \returns A reference to `*this`.
+      //!
+      //! \exceptions
+      //! \noexcept
+      ToddCoxeter& restandardize(bool val) noexcept;
+
+      //! The current value of the restandardize setting.
+      //!
+      //! \parameters
+      //! (None)
+      //!
+      //! \returns The current value of the setting, a value of type
+      //! ``bool``.
+      //!
+      //! \exceptions
+      //! \noexcept
+      bool restandardize() const noexcept;
+
+      //! Specify what should be considered a large collapse.
+      //!
+      //! By default when processing coincidences nodes are merged in the word
+      //! graph one pair at a time, and the in-neighbours of the surviving node
+      //! are updated at the same time. If the number of coincidences is
+      //! large, then it might be that a pair of nodes are merged at one step,
+      //! then the surviving node is merged with another node at a future step,
+      //! and this may happen many many times. This results in the
+      //! in-neighbours of the surviving nodes being repeatedly traversed,
+      //! which can result in a significant performance penalty.
+      //! It can be beneficial to stop updating the in-neighbours as nodes are
+      //! merged, and to just rebuild the entire in-neighbours data structure
+      //! by traversing the entire word graph after all coincidences have been
+      //! processed. This is beneficial if the number of surviving nodes is
+      //! relatively small in comparison to the number of nodes merged.
+      //! The purpose of this setting is to specify what should be
+      //! considered a \"large\" collapse, or more precisely, what number of
+      //! coincidences in the stack will trigger a change from updating the
+      //! in-neighbours one-by-one to traversing the entire graph once after
+      //! all coincidences have been processed.
+      //!
+      //! The default value of this setting is \c 100'000.
+      //!
+      //! \param val the value to use.
+      //!
+      //! \returns A reference to `*this`.
+      //!
+      //! \exceptions
+      //! \noexcept
+      ToddCoxeter& large_collapse(size_t val) noexcept;
+
+      //! The current value of the large collapse setting.
+      //!
+      //! \parameters
+      //! (None)
+      //!
+      //! \returns The current value of the setting, a value of type
+      //! ``size_t``.
+      //!
+      //! \exceptions
+      //! \noexcept
+      size_t large_collapse() const noexcept;
+
+      ////////////////////////////////////////////////////////////////////////
+      // ToddCoxeter - member functions (attributes) - public
+      ////////////////////////////////////////////////////////////////////////
+
+      //! Check if the congruence has more than one class.
+      //!
+      //! Returns tril::TRUE if it is possible to show that the congruence is
+      //! non-trivial; tril::FALSE if the congruence is already known to be
+      //! trivial; and tril::unknown if it is not possible to show that the
+      //! congruence is non-trivial.
+      //!
+      //! This function attempts to find a non-trivial congruence containing
+      //! the congruence represented by a ToddCoxeter instance by repeating the
+      //! following steps on a copy until the enumeration concludes:
+      //! 1. running the enumeration for the specified amount of time
+      //! 2. repeatedly choosing a random pair of cosets and identifying them,
+      //!    until the number of cosets left in the quotient is smaller than
+      //!    \p threshold times the initial number of cosets for this step.
+      //! If at the end of this process, the ToddCoxeter instance is
+      //! non-trivial, then the original ToddCoxeter is also non-trivial.
+      //! Otherwise, the entire process is repeated again up to a total of \p
+      //! tries times.
+      //!
+      //! \param tries the number of attempts to find non-trivial
+      //! super-congruence.
+      //! \param try_for the amount of time in millisecond to enumerate the
+      //! congruence after choosing a random pair of representatives and
+      //! identifying them.
+      //! \param threshold the threshold (see description).
+      //!
+      //! \returns A value of type \ref tril
+      tril is_non_trivial(size_t                    tries = 10,
+                          std::chrono::milliseconds try_for
+                          = std::chrono::milliseconds(100),
+                          float threshold = 0.99);
 
       ////////////////////////////////////////////////////////////////////////
       // ToddCoxeter - member functions (container-like) - public
@@ -779,6 +1456,51 @@ namespace libsemigroups {
       //! \noexcept
       bool compatible() const noexcept;
 
+      //! Returns the total length of the generating pairs.
+      //!
+      //! This function returns the total length of the words that make up the
+      //! generating pairs and any underlying relations.
+      //!
+      //! \returns A value of type \c size_t.
+      //!
+      //! \parameters
+      //! (None)
+      //!
+      //! \exceptions
+      //! \no_libsemigroups_except
+      size_t length_of_generating_pairs();
+
+      //! Returns the height of the Felsch tree.
+      //!
+      //! This function returns the height of the Felsch tree of a ToddCoxeter
+      //! instance. Processing deductions involves performing a depth first
+      //! search in this tree.
+      //!
+      //! \returns A value of type \c size_t.
+      //!
+      //! \parameters
+      //! (None)
+      //!
+      //! \exceptions
+      //! \no_libsemigroups_except
+      size_t felsch_tree_height();
+
+      //! Returns the number of nodes of the Felsch tree.
+      //!
+      //! This function returns the number of nodes in the Felsch tree of a
+      //! ToddCoxeter instance. Processing deductions involves performing a
+      //! depth first search in this tree.
+      //!
+      //! \returns A value of type \c size_t.
+      //!
+      //! \parameters
+      //! (None)
+      //!
+      //! \exceptions
+      //! \no_libsemigroups_except
+      size_t felsch_tree_number_of_nodes();
+
+     public:
       ////////////////////////////////////////////////////////////////////////
       // ToddCoxeter - member functions (standardization) - public
       ////////////////////////////////////////////////////////////////////////
@@ -810,12 +1532,97 @@ namespace libsemigroups {
       //! * order::recursive
       //!
       //! \returns
-      //! (None)
+      //! A value of type \c bool indicating whether or not any changes were
+      //! made.
       //!
       //! \exceptions
       //! \no_libsemigroups_except
-      void standardize(order val);
+      bool standardize(order val);
 
+      //! Returns the current order in which the table is standardized.
+      //!
+      //! \returns A value of type \ref order.
+      //!
+      //! \parameters
+      //! (None)
+      //!
+      //! \exceptions
+      //! \noexcept
+      order standardization_order() const noexcept;
+
+      ////////////////////////////////////////////////////////////////////////
+      // ToddCoxeter - member functions (reporting + stats) - public
+      ////////////////////////////////////////////////////////////////////////
+
+      //! Returns a const reference to a statistics object.
+      //!
+      //! This object contains a number of statistics related to the
+      //! enumeration.
+      //!
+      //! \parameters
+      //! (None)
+      //!
+      //! \returns
+      //! A const reference to \c Stats.
+      Stats const& stats() const noexcept {
+        return _stats;
+      }
+
+      //! Returns a string containing a tabularized summary of the statistics.
+      //!
+      //! This function returns a string containing a tabularized summary of
+      //! the enumeration statistics.
+      //!
+      //! \parameters
+      //! (None)
+      //!
+      //! \returns
+      //! A \c std::string.
+      std::string stats_string() const;
+
+      //! Returns a string containing a tabularized summary of all the
+      //! settings.
+      //!
+      //! This function returns a string containing a tabularized summary of
+      //! the settings of a ToddCoxeter instance.
+      //!
+      //! \parameters
+      //! (None)
+      //!
+      //! \returns
+      //! A \c std::string.
+      std::string settings_string() const;
+
+      //! Returns a string containing a GAP definition of the finitely
+      //! presented semigroup represented by a ToddCoxeter instance.
+      //!
+      //! \parameters
+      //! (None)
+      //!
+      //! \returns
+      //! A \c std::string.
+      //!
+      //! \throws LibsemigroupsException if the number of generators exceeds
+      //! 49.
+      std::string to_gap_string();
+
+     private:
+      ////////////////////////////////////////////////////////////////////////
+      // ToddCoxeter - member functions (reporting + stats) - private
+      ////////////////////////////////////////////////////////////////////////
+
+      // The argument is the calling function's name
+      void report_coincidences(char const*);
+      void report_active_cosets(char const*);
+
+      // The 1st argument is the calling function's name, and the second is the
+      // number of cosets killed.
+      void report_cosets_killed(char const*, int64_t) const;
+      void report_inc_lookahead(char const*, size_t) const;
+      void report_time(char const*, detail::Timer&) const;
+      void report_at_coset(char const*, size_t) const;
+
+     public:
       ////////////////////////////////////////////////////////////////////////
       // ToddCoxeter - iterators - public
       ////////////////////////////////////////////////////////////////////////
@@ -895,7 +1702,126 @@ namespace libsemigroups {
         return normal_form_iterator(this, range.cend());
       }
 
+      //! The type of a const iterator pointing to a word belonging to a
+      //! particular class.
+      //!
+      //! Iterators of this type point to a \ref word_type.
+      //!
+      //! \sa cbegin_class, cend_class.
+      using class_iterator =
+          typename ActionDigraph<coset_type>::const_pstislo_iterator;
+
+      //! Returns a \ref class_iterator pointing at the shortlex least word in
+      //! an class.
+      //!
+      //! Returns a const iterator pointing to the shortlex least word in the
+      //! class with index \p i. When incremented this iterator will point at
+      //! the shortlex next least word in the class with index \p i.  In this
+      //! way, all words belonging to the class with index \p i can be
+      //! obtained.
+      //!
+      //! \param i the index of the class
+      //! \param min the minimum length of a word (defaults to \c 0)
+      //! \param max the maximum length of a word (defaults to \c
+      //! POSITIVE_INFINITY).
+      //!
+      //! \returns A value of type \ref class_iterator.
+      //!
+      //! \exceptions
+      //! \no_libsemigroups_except
+      //!
+      //! \warning
+      //! This function does not trigger any enumeration!
+      class_iterator cbegin_class(class_index_type i,
+                                  size_t           min = 0,
+                                  size_t max = POSITIVE_INFINITY) const {
+        return _word_graph.cbegin_pstislo(_id_coset, i + 1, min, max);
+      }
+
+      //! Returns a \ref class_iterator pointing at the shortlex least word in
+      //! a class.
+      //!
+      //! Returns a const iterator pointing to the shortlex least word in the
+      //! class of the word \p w. When incremented this iterator will point at
+      //! the shortlex next least word in the class of \p w.  In this
+      //! way, all words belonging to the class of \p w can be
+      //! obtained.
+      //!
+      //! \param w the word of the class
+      //! \param min the minimum length of a word (defaults to \c 0)
+      //! \param max the maximum length of a word (defaults to \c
+      //! POSITIVE_INFINITY).
+      //!
+      //! \returns A value of type \ref class_iterator.
+      //!
+      //! \exceptions
+      //! \no_libsemigroups_except
+      // Might trigger an enumeration if word_to_class_index does.
+      class_iterator cbegin_class(word_type const& w,
+                                  size_t           min = 0,
+                                  size_t           max = POSITIVE_INFINITY) {
+        return cbegin_class(word_to_class_index(w), min, max);
+      }
+
+      //! Returns a \ref class_iterator pointing one past the last word in
+      //! a class.
+      //!
+      //! Returns a const iterator pointing one past the last word in any
+      //! class.
+      //!
+      //! \parameters
+      //! (None)
+      //!
+      //! \returns A value of type \ref class_iterator.
+      //!
+      //! \exceptions
+      //! \no_libsemigroups_except
+      //!
+      //! \warning
+      //! This function does not trigger any enumeration!
+      class_iterator cend_class() const {
+        return _word_graph.cend_pstislo();
+      }
+
+      //! Returns the size of the specified class.
+      //!
+      //! This function returns the number of words in the free semigroup that
+      //! belong to the class with index \p i.
+      //!
+      //! \param i the index of the class
+      //!
+      //! \returns A value of type \c size_t.
+      //!
+      //! \warning
+      //! This function does not trigger any enumeration!
+      size_t number_of_words(class_index_type i) const {
+        return _word_graph.number_of_paths(0, i + 1, 0, POSITIVE_INFINITY);
+      }
+
+      //! Returns the size of the specified class.
+      //!
+      //! This function returns the number of words in the free semigroup that
+      //! belong to the class of the word \p w.
+      //!
+      //! \param w a word in the class.
+      //!
+      //! \returns A value of type \c size_t.
+      // Might trigger an enumeration if word_to_class_index does.
+      size_t number_of_words(word_type const& w) {
+        return number_of_words(word_to_class_index(w) + 1);
+      }
+
      private:
+      void prefill(table_type const& table, std::function<size_t(size_t)> func);
+
+      template <typename T>
+      bool compatible(coset_type, T first, T last) const;
+      void push_settings();
+      void pop_settings();
+
+      ////////////////////////////////////////////////////////////////////////
+      // Runner - pure virtual member functions - private
+      ////////////////////////////////////////////////////////////////////////
       void run_impl() override;
       bool finished_impl() const override;
 
@@ -903,20 +1829,34 @@ namespace libsemigroups {
       // CongruenceInterface - pure virtual member functions - private
       ////////////////////////////////////////////////////////////////////////
 
-      word_type class_index_to_word_impl(coset_type) override;
+      word_type class_index_to_word_impl(class_index_type) override;
       size_t    number_of_classes_impl() override;
       // Guaranteed to return a FroidurePin<TCE>.
       std::shared_ptr<FroidurePinBase> quotient_impl() override;
-      coset_type word_to_class_index_impl(word_type const&) override;
+      class_index_type word_to_class_index_impl(word_type const&) override;
 
       ////////////////////////////////////////////////////////////////////////
       // CongruenceInterface - non-pure virtual member functions - private
       ////////////////////////////////////////////////////////////////////////
 
-      coset_type const_word_to_class_index(word_type const&) const override;
-      bool       is_quotient_obviously_finite_impl() override;
-      bool       is_quotient_obviously_infinite_impl() override;
-      void       set_number_of_generators_impl(size_t) override;
+      class_index_type
+           const_word_to_class_index(word_type const&) const override;
+      bool is_quotient_obviously_finite_impl() override;
+      bool is_quotient_obviously_infinite_impl() override;
+      void set_number_of_generators_impl(size_t) override;
+
+      ////////////////////////////////////////////////////////////////////////
+      // ToddCoxeter - enums - private
+      ////////////////////////////////////////////////////////////////////////
+
+      enum class state {
+        constructed = 0,
+        relation_extra_initialized,
+        hlt,
+        felsch,
+        lookahead,
+        finished
+      };
 
       ////////////////////////////////////////////////////////////////////////
       // ToddCoxeter - member functions (validation) - private
@@ -929,215 +1869,64 @@ namespace libsemigroups {
       ////////////////////////////////////////////////////////////////////////
 
       void copy_relations_for_quotient(ToddCoxeter&);
-      void init();
+      void init_generating_pairs();
       void init_felsch_tree();
-      void init_preimages_from_table();
       void prefill(FroidurePinBase&);
-      void prefill_and_validate(table_type const&, bool);
-      void reverse_if_necessary_and_push_back(word_type,
-                                              std::vector<word_type>&);
+      void prefill_and_validate(table_type const&,
+                                bool,
+                                std::function<size_t(size_t)>);
 
       ////////////////////////////////////////////////////////////////////////
       // ToddCoxeter - member functions (cosets) - private
       ////////////////////////////////////////////////////////////////////////
 
       coset_type new_coset();
-      void       remove_preimage(coset_type, letter_type, coset_type);
 
-      void make_deductions_dfs(coset_type);
-      void process_deductions();
-
-      inline coset_type tau(coset_type c, letter_type a) const noexcept {
-        LIBSEMIGROUPS_ASSERT(is_valid_coset(c));
-        LIBSEMIGROUPS_ASSERT(a < _table.number_of_cols());
-        return _table.get(c, a);
-      }
-
-      template <typename TIteratorType>
-      coset_type tau(coset_type    c,
-                     TIteratorType first,
-                     TIteratorType last) const noexcept {
-        LIBSEMIGROUPS_ASSERT(is_valid_coset(c) || c == UNDEFINED);
-        for (auto it = first; it < last && c != UNDEFINED; ++it) {
-          c = _table.get(c, *it);
-          LIBSEMIGROUPS_ASSERT(is_valid_coset(c) || c == UNDEFINED);
-        }
-        return c;
+      // Helper
+      template <typename TStackDeduct,
+                typename TProcessCoincide,
+                typename TPreferredDef>
+      inline void push_definition_felsch(coset_type const& c,
+                                         size_t            i) noexcept {
+        auto j = (i % 2 == 0 ? i + 1 : i - 1);
+        push_definition_felsch<TStackDeduct, TProcessCoincide, TPreferredDef>(
+            c, _relations[i], _relations[j]);
       }
 
       template <typename TStackDeduct>
-      coset_type
-      tau_and_define_if_necessary(coset_type                c,
-                                  word_type::const_iterator first,
-                                  word_type::const_iterator last) noexcept {
-        for (auto it = first; it < last; ++it) {
-          coset_type d = tau(c, *it);
-          if (d == UNDEFINED) {
-            d = new_coset();
-            define<TStackDeduct>(c, *it, d);
-          }
-          c = d;
-        }
-        return c;
+      inline void def_edge(coset_type c, letter_type x, coset_type d) noexcept {
+        LIBSEMIGROUPS_ASSERT(is_valid_coset(c));
+        LIBSEMIGROUPS_ASSERT(x < number_of_generators());
+        LIBSEMIGROUPS_ASSERT(is_valid_coset(d));
+        TStackDeduct()(_deduct.get(), c, x);
+        _word_graph.add_edge_nc(c, d, x);
       }
+
+      template <typename TStackDeduct>
+      coset_type def_edges(coset_type                c,
+                           word_type::const_iterator first,
+                           word_type::const_iterator last) noexcept;
 
       template <typename TStackDeduct, typename TProcessCoincide>
       void push_definition_hlt(coset_type const& c,
                                word_type const&  u,
-                               word_type const&  v) noexcept {
-        REPORT_VERBOSE_DEFAULT("pushing coset %d through %s = %s\n",
-                               c,
-                               detail::to_string(u).c_str(),
-                               detail::to_string(v).c_str());
+                               word_type const&  v) noexcept;
 
-        LIBSEMIGROUPS_ASSERT(is_active_coset(c));
-        LIBSEMIGROUPS_ASSERT(!u.empty());
-        LIBSEMIGROUPS_ASSERT(!v.empty());
-        coset_type const x = tau_and_define_if_necessary<TStackDeduct>(
-            c, u.cbegin(), u.cend() - 1);
-        coset_type const y = tau_and_define_if_necessary<TStackDeduct>(
-            c, v.cbegin(), v.cend() - 1);
-        letter_type const a  = u.back();
-        letter_type const b  = v.back();
-        coset_type const  xa = tau(x, a);
-        coset_type const  yb = tau(y, b);
-
-        if (xa == UNDEFINED && yb == UNDEFINED) {
-          coset_type d = new_coset();
-          define<TStackDeduct>(x, a, d);
-          if (a != b || x != y) {
-            define<TStackDeduct>(y, b, d);
-          }
-        } else if (xa == UNDEFINED && yb != UNDEFINED) {
-          // tau(x, a) <- yb
-          REPORT_VERBOSE_DEFAULT("deducing tau(%d, %d) = %d ...\n", x, a, yb);
-          define<TStackDeduct>(x, a, yb);
-        } else if (xa != UNDEFINED && yb == UNDEFINED) {
-          // tau(y, b) <- xa
-          REPORT_VERBOSE_DEFAULT("deducing tau(%d, %d) = %d ...\n", y, b, xa);
-          define<TStackDeduct>(y, b, xa);
-        } else if (xa != UNDEFINED && yb != UNDEFINED && xa != yb) {
-          // tau(x, a) and tau(y, b) are defined and not equal
-          _coinc.emplace(xa, yb);
-          TProcessCoincide().template operator()<TStackDeduct>(this);
-        }
-      }
-
-      template <typename TStackDeduct, typename TProcessCoincide>
+      template <typename TStackDeduct,
+                typename TProcessCoincide,
+                typename TPreferredDef>
       void push_definition_felsch(coset_type const& c,
                                   word_type const&  u,
-                                  word_type const&  v) noexcept {
-        REPORT_VERBOSE_DEFAULT("pushing coset %d through %s = %s\n",
-                               c,
-                               detail::to_string(u).c_str(),
-                               detail::to_string(v).c_str());
-        LIBSEMIGROUPS_ASSERT(is_active_coset(c));
-        LIBSEMIGROUPS_ASSERT(!u.empty());
-        LIBSEMIGROUPS_ASSERT(!v.empty());
-        class_index_type x = tau(c, u.cbegin(), u.cend() - 1);
-        if (x == UNDEFINED) {
-          return;
-        }
-        LIBSEMIGROUPS_ASSERT(is_valid_coset(x));
-        class_index_type y = tau(c, v.cbegin(), v.cend() - 1);
-        if (y == UNDEFINED) {
-          return;
-        }
-        LIBSEMIGROUPS_ASSERT(is_valid_coset(y));
-        letter_type const      a  = u.back();
-        letter_type const      b  = v.back();
-        class_index_type const xa = tau(x, a);
-        class_index_type const yb = tau(y, b);
-
-        if (xa == UNDEFINED && yb != UNDEFINED) {
-          // tau(x, a) <- yb
-          REPORT_VERBOSE_DEFAULT("deducing tau(%d, %d) = %d ...\n", x, a, yb);
-          define<TStackDeduct>(x, a, yb);
-        } else if (xa != UNDEFINED && yb == UNDEFINED) {
-          // tau(y, b) <- xa
-          REPORT_VERBOSE_DEFAULT("deducing tau(%d, %d) = %d ...\n", y, b, xa);
-          define<TStackDeduct>(y, b, xa);
-        } else if (xa != UNDEFINED && yb != UNDEFINED && xa != yb) {
-          // tau(x, a) and tau(y, b) are defined and not equal
-          _coinc.emplace(xa, yb);
-          TProcessCoincide().template operator()<TStackDeduct>(this);
-        }
-      }
+                                  word_type const&  v) noexcept;
 
       template <typename TStackDeduct>
-      void process_coincidences() {
-#ifdef LIBSEMIGROUPS_VERBOSE
-        if (!_coinc.empty()) {
-          REPORT_VERBOSE_DEFAULT("processing %llu coincidences...\n",
-                                 static_cast<uint64_t>(_coinc.size()));
-        }
-#endif
-        while (!_coinc.empty()) {
-          Coincidence c = _coinc.top();
-          _coinc.pop();
-          coset_type min = find_coset(c.first);
-          coset_type max = find_coset(c.second);
-          if (min != max) {
-            if (min > max) {
-              std::swap(min, max);
-            }
-            union_cosets(min, max);
+      void process_coincidences();
 
-            size_t const n = _table.number_of_cols();
-            for (letter_type i = 0; i < n; ++i) {
-              // Let <v> be the first PREIMAGE of <max>
-              coset_type v = _preim_init.get(max, i);
-              while (v != UNDEFINED) {
-                v = define<TStackDeduct>(v, i, min);
-                // TODO(later) are there possibly duplicates in the preimages,
-                // if so, then we should not add further duplicates to the
-                // preimages of min, we can check this by checking if tau(v, i)
-                // == min already.
-              }
-
-              // Now let <v> be the IMAGE of <max>
-              v = _table.get(max, i);
-              if (v != UNDEFINED) {
-                remove_preimage(v, i, max);
-                // Let <u> be the image of <min>, and ensure <u> = <v>
-                coset_type u = _table.get(min, i);
-                if (u == UNDEFINED) {
-                  define<TStackDeduct>(min, i, v);
-                } else if (u != v) {
-                  // Add (u,v) to the stack of pairs to be identified
-                  _coinc.emplace(u, v);
-                }
-              }
-            }
-          }
-        }
-      }
-
-      // Add d to the list of preimages of c under x, i.e. _table[d][x] = c
-      inline void add_preimage(coset_type  c,
-                               letter_type x,
-                               coset_type  d) noexcept {
-        LIBSEMIGROUPS_ASSERT(is_valid_coset(c));
-        LIBSEMIGROUPS_ASSERT(x < number_of_generators());
-        LIBSEMIGROUPS_ASSERT(is_valid_coset(d));
-        // c -> e -> ... -->  c -> d -> e -> ..
-        _preim_next.set(d, x, _preim_init.get(c, x));
-        _preim_init.set(c, x, d);
-      }
-
-      template <typename TStackDeduct>
-      inline coset_type define(coset_type  c,
-                               letter_type x,
-                               coset_type  d) noexcept {
-        LIBSEMIGROUPS_ASSERT(is_valid_coset(c));
-        LIBSEMIGROUPS_ASSERT(x < number_of_generators());
-        LIBSEMIGROUPS_ASSERT(is_valid_coset(d));
-        TStackDeduct()(_deduct, c, x);
-        _table.set(c, x, d);
-        coset_type e = _preim_next.get(c, x);
-        add_preimage(d, x, c);
-        return e;
-      }
+      template <typename TStackDeduct,
+                typename TProcessCoincide,
+                typename TPreferredDef>
+      void
+      push_definition(coset_type x, letter_type a, coset_type y, letter_type b);
 
       ////////////////////////////////////////////////////////////////////////
       // ToddCoxeter - member functions (main strategies) - private
@@ -1145,18 +1934,40 @@ namespace libsemigroups {
 
       void felsch();
       void hlt();
-      void sims();
+      void random();
+      void CR_style();
+      void R_over_C_style();
+      void Cr_style();
+      void Rc_style();
 
-      void perform_lookahead();
+      void process_deductions();
+
+      template <typename TPreferredDefs>
+      void process_deductions_v2();
+      template <typename TPreferredDefs>
+      void process_deductions_dfs_v2(coset_type, coset_type);
+      template <typename TPreferredDefs>
+      void process_deductions_v1();
+      template <typename TPreferredDefs>
+      void process_deductions_dfs_v1(coset_type);
+
+      void init_run();
+      void finalise_run(detail::Timer&);
+
+      ////////////////////////////////////////////////////////////////////////
+      // ToddCoxeter - member functions (lookahead) - private
+      ////////////////////////////////////////////////////////////////////////
+
+      void   perform_lookahead();
+      size_t hlt_lookahead(state const&);
+      size_t felsch_lookahead(state const&);
 
       ////////////////////////////////////////////////////////////////////////
       // ToddCoxeter - member functions (standardize) - private
       ////////////////////////////////////////////////////////////////////////
 
       void init_standardize();
-      bool standardize_immediate(coset_type const,
-                                 coset_type&,
-                                 letter_type const);
+      bool standardize_immediate(coset_type const, letter_type const);
 
       bool standardize_deferred(std::vector<coset_type>&,
                                 std::vector<coset_type>&,
@@ -1164,13 +1975,12 @@ namespace libsemigroups {
                                 coset_type&,
                                 letter_type const);
 
-      void lex_standardize();
-      void recursive_standardize();
-      void shortlex_standardize();
+      bool lex_standardize();
+      bool recursive_standardize();
+      bool shortlex_standardize();
 
-      void apply_permutation(std::vector<coset_type>&,
-                             std::vector<coset_type>&);
-      void swap(coset_type const, coset_type const);
+      void apply_permutation(Perm&, Perm&);
+      void swap_cosets(coset_type const, coset_type const);
 
       ////////////////////////////////////////////////////////////////////////
       // ToddCoxeter - member functions (debug) - private
@@ -1178,7 +1988,7 @@ namespace libsemigroups {
 
 #ifdef LIBSEMIGROUPS_DEBUG
       void debug_validate_table() const;
-      void debug_validate_preimages() const;
+      void debug_validate_word_graph() const;
       void debug_verify_no_missing_deductions() const;
 #endif
 
@@ -1186,51 +1996,219 @@ namespace libsemigroups {
       // ToddCoxeter - inner classes - private
       ////////////////////////////////////////////////////////////////////////
 
-      class FelschTree;                   // Forward declaration
-      struct Settings;                    // Forward declaration
-      friend struct ProcessCoincidences;  // Forward declaration
-      struct TreeNode;                    // Forward declaration
+      struct Settings;            // Forward declaration
+      class FelschTree;           // Forward declaration
+      struct TreeNode;            // Forward declaration
+      struct QueuePreferredDefs;  // Forward declaration
+      struct StackDeductions;     // Forward declaration
+
+      template <typename TStackDeduct>
+      struct ProcessCoincidences;  // Forward declaration
+      template <typename TStackDeduct>
+      struct ImmediateDef;  // Forward declaration
+
+      using Coincidence  = std::pair<coset_type, coset_type>;
+      using Coincidences = std::stack<Coincidence>;
+
+      class Deductions;     // Forward declaration
+      class PreferredDefs;  // Forward declaration
+
+      struct Stats {
+        uint64_t tc1_hlt_appl = 0;
+        uint64_t tc1_f_appl   = 0;
+
+#ifdef LIBSEMIGROUPS_ENABLE_STATS
+        uint64_t prev_active_cosets       = 0;
+        uint64_t prev_coincidences        = 0;
+        uint64_t f_lookahead_calls        = 0;
+        uint64_t hlt_lookahead_calls      = 0;
+        uint64_t tc2_appl                 = 0;
+        uint64_t tc2_good_appl            = 0;
+        uint64_t tc3_appl                 = 0;
+        uint64_t max_coinc                = 0;
+        uint64_t nr_active_coinc          = 0;
+        uint64_t total_coinc              = 0;
+        uint64_t max_deduct               = 0;
+        uint64_t nr_active_deduct         = 0;
+        uint64_t total_deduct             = 0;
+        uint64_t max_preferred_defs       = 0;
+        uint64_t nr_active_preferred_defs = 0;
+        uint64_t total_preferred_defs     = 0;
+#endif
+      };
+
+      class WordGraph : public ActionDigraph<coset_type> {
+        friend ToddCoxeter;
+        explicit WordGraph(ToddCoxeter* tc)
+            : ActionDigraph(0, 0),
+              _preim_init(0, 0, UNDEFINED),
+              _preim_next(0, 0, UNDEFINED),
+              _tc(tc) {}
+
+        WordGraph(ToddCoxeter* tc, WordGraph const& that)
+            : ActionDigraph(that),
+              _preim_init(that._preim_init),
+              _preim_next(that._preim_next),
+              _tc(tc) {}
+
+       public:
+        using size_type = coset_type;
+
+        WordGraph(WordGraph&&)      = default;
+        WordGraph(WordGraph const&) = default;
+        WordGraph& operator=(WordGraph const&) = default;
+        WordGraph& operator=(WordGraph&&) = default;
+
+        void add_edge_nc(coset_type c, coset_type d, letter_type x) noexcept {
+          ActionDigraph::add_edge_nc(c, d, x);
+          add_source(d, x, c);
+        }
+
+        void add_nodes(size_type m) {
+          ActionDigraph::add_nodes(m);
+          _preim_init.add_rows(m);
+          _preim_next.add_rows(m);
+        }
+
+        void add_to_out_degree(size_type m) {
+          _preim_init.add_cols(m);
+          _preim_next.add_cols(m);
+          ActionDigraph::add_to_out_degree(m);
+        }
+
+        void shrink_to_fit(size_type m) {
+          restrict(m);
+          _preim_init.shrink_rows_to(m);
+          _preim_next.shrink_rows_to(m);
+        }
+
+        coset_type first_source(coset_type c, letter_type x) const noexcept {
+          return _preim_init.get(c, x);
+        }
+
+        coset_type next_source(coset_type c, letter_type x) const noexcept {
+          return _preim_next.get(c, x);
+        }
+
+        // The permutation q must map the active cosets to the [0, ..
+        // , number_of_cosets_active()), and p = q ^ -1.
+        void permute_nodes_nc(Perm& p, Perm& q);
+
+        void swap_nodes(coset_type c, coset_type d);
+
+        template <typename TStackDeduct>
+        void merge_nodes(Coincidences& coinc,
+                         Deductions&   deduct,
+                         coset_type    min,
+                         coset_type    max) {
+          LIBSEMIGROUPS_ASSERT(min < max);
+          for (letter_type i = 0; i < out_degree(); ++i) {
+            // v -> max is an edge
+            coset_type v = first_source(max, i);
+            while (v != UNDEFINED) {
+              auto w = next_source(v, i);
+              add_edge_nc(v, min, i);
+              TStackDeduct()(&deduct, v, i);
+              v = w;
+            }
+
+            // Now let <v> be the IMAGE of <max>
+            v = unsafe_neighbor(max, i);
+            if (v != UNDEFINED) {
+              remove_source(v, i, max);
+              // Let <u> be the image of <min>, and ensure <u> = <v>
+              coset_type u = unsafe_neighbor(min, i);
+              if (u == UNDEFINED) {
+                add_edge_nc(min, v, i);
+                TStackDeduct()(&deduct, min, i);
+              } else if (u != v) {
+                // Add (u,v) to the stack of pairs to be identified
+                coinc.emplace(u, v);
+              }
+            }
+          }
+        }
+
+#ifdef LIBSEMIGROUPS_DEBUG
+        // Is d a source of c under x?
+        bool is_source(coset_type c, coset_type d, letter_type x) const {
+          c = first_source(c, x);
+          while (c != d && c != UNDEFINED) {
+            c = next_source(c, x);
+          }
+          return c == d;
+        }
+#endif
+
+       private:
+        // Add d to the list of preimages of c under x, i.e.
+        // _word_graph.target(d, x) = c
+        void add_source(coset_type c, letter_type x, coset_type d) noexcept {
+          LIBSEMIGROUPS_ASSERT(x < out_degree());
+          // c -> e -> ... -->  c -> d -> e -> ..
+          _preim_next.set(d, x, _preim_init.get(c, x));
+          _preim_init.set(c, x, d);
+        }
+
+        void remove_source(coset_type cx, letter_type x, coset_type d);
+
+        void clear_sources_and_targets(coset_type c);
+        void clear_sources(coset_type c);
+        bool is_active_coset(coset_type c) {
+          return _tc->is_active_coset(c);
+        }
+
+        void replace_target(coset_type c, coset_type d, size_t x);
+        void
+        replace_source(coset_type c, coset_type d, size_t x, coset_type cx);
+
+        table_type   _preim_init;
+        table_type   _preim_next;
+        ToddCoxeter* _tc;
+      };
 
       ////////////////////////////////////////////////////////////////////////
       // ToddCoxeter - aliases - private
       ////////////////////////////////////////////////////////////////////////
 
-      using Coincidence = std::pair<coset_type, coset_type>;
-      using Deduction   = std::pair<coset_type, letter_type>;
-      using Tree        = std::vector<TreeNode>;
-
-      ////////////////////////////////////////////////////////////////////////
-      // ToddCoxeter - enums - private
-      ////////////////////////////////////////////////////////////////////////
-
-      enum class state {
-        constructed = 0,
-        initialized,
-        hlt,
-        felsch,
-        lookahead,
-        finished
-      };
+      using Deduction = std::pair<coset_type, letter_type>;
+      using Tree      = std::vector<TreeNode>;
 
       ////////////////////////////////////////////////////////////////////////
       // ToddCoxeter - data - private
       ////////////////////////////////////////////////////////////////////////
 
-      std::stack<Coincidence>     _coinc;
-      std::stack<Deduction>       _deduct;
-      std::vector<word_type>      _extra;
-      std::unique_ptr<FelschTree> _felsch_tree;
-      size_t                      _nr_pairs_added_earlier;
-      bool                        _prefilled;
-      table_type                  _preim_init;
-      table_type                  _preim_next;
-      std::vector<word_type>      _relations;
-      std::unique_ptr<Settings>   _settings;
-      order                       _standardized;
-      state                       _state;
-      table_type                  _table;
-      std::unique_ptr<Tree>       _tree;
+      Coincidences                   _coinc;
+      std::unique_ptr<Deductions>    _deduct;
+      std::vector<word_type>         _extra;
+      std::unique_ptr<FelschTree>    _felsch_tree;
+      size_t                         _nr_pairs_added_earlier;
+      bool                           _prefilled;
+      std::unique_ptr<PreferredDefs> _preferred_defs;
+      std::vector<word_type>         _relations;
+      std::unique_ptr<Settings>      _settings;
+      std::stack<Settings*>          _setting_stack;
+      coset_type                     _standard_max;
+      order                          _standardized;
+      state                          _state;
+      Stats                          _stats;
+      std::unique_ptr<Tree>          _tree;
+      WordGraph                      _word_graph;
     };
+
+    ToddCoxeter::options::lookahead
+    operator|(ToddCoxeter::options::lookahead const& opt1,
+              ToddCoxeter::options::lookahead const& opt2);
+
+    bool operator&(ToddCoxeter::options::lookahead const& opt1,
+                   ToddCoxeter::options::lookahead const& opt2);
+
+    ToddCoxeter::options::deductions
+    operator|(ToddCoxeter::options::deductions const& opt1,
+              ToddCoxeter::options::deductions const& opt2);
+
+    bool operator&(ToddCoxeter::options::deductions const& opt1,
+                   ToddCoxeter::options::deductions const& opt2);
 
   }  // namespace congruence
 }  // namespace libsemigroups

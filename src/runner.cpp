@@ -46,11 +46,18 @@ namespace libsemigroups {
         return;
       }
       before_run();
+      auto previous_state = get_state();
       set_state(state::running_for);
       _start_time = std::chrono::high_resolution_clock::now();
       _run_for    = val;
       // run_impl should depend on the method timed_out!
-      run_impl();
+
+      try {
+        run_impl();
+      } catch (LibsemigroupsException const& e) {
+        set_state(previous_state);
+        throw e;
+      }
       if (!finished()) {
         if (!dead()) {
           set_state(state::timed_out);
@@ -60,18 +67,6 @@ namespace libsemigroups {
       }
     } else {
       REPORT_DEFAULT("already finished, not running\n");
-    }
-  }
-
-  bool Runner::report() const {
-    auto t       = std::chrono::high_resolution_clock::now();
-    auto elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(
-        t - _last_report);
-    if (elapsed > _report_time_interval) {
-      _last_report = t;
-      return true;
-    } else {
-      return false;
     }
   }
 

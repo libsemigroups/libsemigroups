@@ -160,7 +160,7 @@ namespace libsemigroups {
       KnuthBendix(KnuthBendix const& copy);
 
       //! Deleted.
-      KnuthBendix(KnuthBendix&&) = delete;
+      KnuthBendix(KnuthBendix&&);
 
       //! Deleted.
       KnuthBendix& operator=(KnuthBendix const&) = delete;

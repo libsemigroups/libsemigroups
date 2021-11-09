@@ -84,7 +84,7 @@ namespace libsemigroups {
     FpSemigroupInterface& operator=(FpSemigroupInterface const&) = delete;
 
     //! Deleted
-    FpSemigroupInterface(FpSemigroupInterface&&) = delete;
+    FpSemigroupInterface(FpSemigroupInterface&&) = default;
 
     //! Deleted
     FpSemigroupInterface& operator=(FpSemigroupInterface&&) = delete;

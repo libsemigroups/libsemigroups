@@ -2,6 +2,7 @@ libsemigroups::FroidurePin:
 - Member types:
   - ["This page contains information about the member types of the
      :cpp:any:`FroidurePin` class."]
+  - value_type
   - element_type
   - const_element_type
   - const_iterator
@@ -160,3 +161,5 @@ libsemigroups::FroidurePin:
   - report_every() const noexcept
   - report() const
   - report_why_we_stopped() const
+  - running_for() const noexcept
+  - running_until() const noexcept

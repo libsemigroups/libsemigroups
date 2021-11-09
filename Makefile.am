@@ -949,6 +949,7 @@ bench_all_SOURCES += benchmarks/bench-wilo.cpp
 bench_all_SOURCES += benchmarks/bench-wislo.cpp
 bench_all_SOURCES += benchmarks/uf-old.cpp
 bench_all_SOURCES += tests/bmat-data.cpp
+bench_all_SOURCES += tests/fpsemi-examples.cpp
 
 bench_action_SOURCES =  benchmarks/bench-action.cpp
 bench_action_SOURCES += benchmarks/bench-main.cpp
@@ -987,6 +988,7 @@ bench_todd_coxeter_SOURCES =  benchmarks/bench-todd-coxeter.cpp
 bench_todd_coxeter_SOURCES += benchmarks/examples/fpsemi-intf.cpp
 bench_todd_coxeter_SOURCES += benchmarks/examples/cong-intf.cpp
 bench_todd_coxeter_SOURCES += benchmarks/bench-main.cpp
+bench_todd_coxeter_SOURCES += tests/fpsemi-examples.cpp
 
 bench_uf_SOURCES =  benchmarks/bench-uf.cpp
 bench_uf_SOURCES += benchmarks/bench-main.cpp

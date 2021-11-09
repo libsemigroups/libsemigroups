@@ -61,8 +61,8 @@ namespace libsemigroups {
 
       using internal_value_type       = pointer;
       using internal_const_value_type = const_pointer;
-      using internal_reference        = internal_value_type&;
-      using internal_const_reference  = internal_const_value_type const&;
+      using internal_reference        = pointer;
+      using internal_const_reference  = const_pointer;
 
       BruidhinnTraits() noexcept                       = default;
       BruidhinnTraits(BruidhinnTraits const&) noexcept = default;

@@ -1187,5 +1187,17 @@ namespace libsemigroups {
       REQUIRE(kb.number_of_active_rules() == 57);
       REQUIRE(kb.size() == 362880);
     }
+
+    LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
+                            "019",
+                            "(fpsemi) C(4) monoid",
+                            "[quick][knuthbendix][fpsemigroup][fpsemi]") {
+      KnuthBendix k;
+      k.set_alphabet("abcde");
+      k.add_rule("bceac", "aeebbc");
+      k.add_rule("aeebbc", "dabcd");
+      k.run();
+      REQUIRE(k.confluent());
+    }
   }  // namespace fpsemigroup
 }  // namespace libsemigroups

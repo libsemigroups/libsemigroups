@@ -23,6 +23,7 @@
 #define LIBSEMIGROUPS_COSET_HPP_
 
 #include <cstddef>  // for size_t
+#include <cstdint>  // for uint32_t
 #include <vector>   // for vector
 
 #include "constants.hpp"  // for UNDEFINED
@@ -37,7 +38,8 @@ namespace libsemigroups {
       ////////////////////////////////////////////////////////////////////////
 
       //! Type of cosets stored in the table.
-      using coset_type = size_t;
+      using coset_type = uint32_t;
+      using Perm       = std::vector<coset_type>;
 
       ////////////////////////////////////////////////////////////////////////
       // CosetManager - constructors + destructor - public
@@ -203,6 +205,39 @@ namespace libsemigroups {
         return _cosets_killed;
       }
 
+      //! Set the value of the growth factor setting.
+      //!
+      //! This setting is used to determine the factor by which the number of
+      //! cosets in the table is increased, when more cosets are required.
+      //!
+      //! The default value of this setting is \c 2.0.
+      //!
+      //! \param val the new value of the setting.
+      //!
+      //! \returns A reference to \c *this.
+      //!
+      //! \throws LibsemigroupsException if \p val is less than \c 1.0.
+      //!
+      //! \complexity
+      //! Constant
+      CosetManager& growth_factor(float val);
+
+      //! The current value of the growth factor setting.
+      //!
+      //! \parameters
+      //! (None)
+      //!
+      //! \returns A value of type \c float.
+      //!
+      //! \exceptions
+      //! \noexcept
+      //!
+      //! \complexity
+      //! Constant
+      float growth_factor() const noexcept {
+        return _growth_factor;
+      }
+
      protected:
       ////////////////////////////////////////////////////////////////////////
       // CosetManager - member functions - protected
@@ -227,8 +262,17 @@ namespace libsemigroups {
       //! No doc
       inline coset_type find_coset(coset_type c) const {
         LIBSEMIGROUPS_ASSERT(is_valid_coset(c));
-        while (_ident[c] != c) {
-          c = _ident[c];
+        while (true) {
+          coset_type d = _ident[c];
+          if (d == c) {
+            return d;
+          }
+          coset_type e = _ident[d];
+          if (d == e) {
+            return d;
+          }
+          _ident[c] = e;
+          c         = e;
         }
         LIBSEMIGROUPS_ASSERT(is_active_coset(c));
         return c;
@@ -244,6 +288,8 @@ namespace libsemigroups {
       coset_type new_active_coset();
       //! No doc
       void switch_cosets(coset_type const, coset_type const);
+      //! No doc
+      void apply_permutation(Perm& p);
 
       ////////////////////////////////////////////////////////////////////////
       // CosetManager - data - protected
@@ -265,14 +311,15 @@ namespace libsemigroups {
       // CosetManager - data - private
       ////////////////////////////////////////////////////////////////////////
 
-      size_t                  _active;
-      std::vector<coset_type> _bckwd;
-      size_t                  _cosets_killed;
-      size_t                  _defined;
-      coset_type              _first_free_coset;
-      std::vector<coset_type> _forwd;
-      std::vector<coset_type> _ident;
-      coset_type              _last_active_coset;
+      size_t                          _active;
+      std::vector<coset_type>         _bckwd;
+      size_t                          _cosets_killed;
+      size_t                          _defined;
+      coset_type                      _first_free_coset;
+      std::vector<coset_type>         _forwd;
+      float                           _growth_factor;
+      mutable std::vector<coset_type> _ident;
+      coset_type                      _last_active_coset;
 
 #ifdef LIBSEMIGROUPS_DEBUG
 

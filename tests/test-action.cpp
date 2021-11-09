@@ -693,7 +693,7 @@ namespace libsemigroups {
       "Action",
       "021",
       "orbits for regular boolean mat monoid 5 (BMat<5>) with stop/start",
-      "[standard][no-valgrind]") {
+      "[quick][no-valgrind]") {
     test000<BMat<5>>();
   }
 }  // namespace libsemigroups

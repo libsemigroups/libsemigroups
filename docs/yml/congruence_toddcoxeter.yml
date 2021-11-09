@@ -11,7 +11,11 @@ libsemigroups::congruence::ToddCoxeter:
   - options::strategy
   - options::lookahead
   - options::froidure_pin
+  - options::deductions
+  - options::preferred_defs
   - order
+  - class_iterator
+  - froidure_pin_type
 - Constructors:
   - ["This page contains information about the constructors for the
      :cpp:any:`ToddCoxeter` class."]
@@ -42,17 +46,54 @@ libsemigroups::congruence::ToddCoxeter:
   - froidure_pin_policy(options::froidure_pin) noexcept
   - froidure_pin_policy() const noexcept
   - lookahead(options::lookahead) noexcept
+  - lookahead() const noexcept
+  - lookahead_growth_factor(float)
+  - lookahead_growth_factor() const noexcept
   - lower_bound(size_t) noexcept
+  - lower_bound() const noexcept
   - next_lookahead(size_t) noexcept
+  - next_lookahead() const noexcept
   - save(bool)
+  - save() const noexcept
   - standardize(bool) noexcept
+  - standardize() const noexcept
   - strategy() const noexcept
   - strategy(options::strategy)
   - random_interval(std::chrono::nanoseconds) noexcept
   - random_interval(T) noexcept
+  - random_interval() const noexcept
   - sort_generating_pairs(sort_function_type)
   - sort_generating_pairs(sort_free_function_type)
   - random_shuffle_generating_pairs()
+  - lookahead_growth_threshold(size_t) noexcept
+  - lookahead_growth_threshold() const noexcept
+  - use_relations_in_extra(bool) noexcept
+  - use_relations_in_extra() const noexcept
+  - max_deductions(size_t) noexcept
+  - max_deductions() const noexcept
+  - deduction_policy(options::deductions)
+  - deduction_policy() const noexcept
+  - preferred_defs(options::preferred_defs) noexcept
+  - preferred_defs() const noexcept
+  - max_preferred_defs(size_t) noexcept
+  - max_preferred_defs() const noexcept
+  - f_defs(size_t)
+  - f_defs() const noexcept
+  - hlt_defs(size_t)
+  - hlt_defs() const noexcept
+  - restandardize(bool) noexcept
+  - restandardize() const noexcept
+  - large_collapse(size_t) noexcept
+  - large_collapse() const noexcept
+  - remove_duplicate_generating_pairs()
+  - settings_string() const
+  - min_lookahead(size_t) noexcept
+  - min_lookahead() const noexcept
+- Statistics:
+  - ["This page contains information about the member functions of the 
+     :cpp:any:`ToddCoxeter` class for enumeration statistics."]
+  - stats() const noexcept
+  - stats_string() const
 - Container-like:
   - ["This page contains information about the member functions of the 
      :cpp:any:`ToddCoxeter` class that are similar to stl containers."]
@@ -64,17 +105,28 @@ libsemigroups::congruence::ToddCoxeter:
      :cpp:any:`ToddCoxeter` class related to standardization."]
   - is_standardized() const noexcept
   - standardize(order)
+  - standardization_order() const noexcept
 - Iterators:
   - ["This page contains information about the member functions of the 
      :cpp:any:`ToddCoxeter` class providing iterators to normal forms."]
   - cbegin_normal_forms()
   - cend_normal_forms()
+  - cbegin_class(class_index_type,size_t,size_t) const
+  - cbegin_class(word_type const &,size_t,size_t)
+  - cend_class() const
 - Properties:
   - ["This page contains information about the member functions of the 
      :cpp:any:`ToddCoxeter` class that can be used to check if the table is
      compelte and compatible with the defining relations."]
   - complete() const noexcept
   - compatible() const noexcept
+  - is_non_trivial(size_t, std::chrono::milliseconds, float)
+  - length_of_generating_pairs()
+  - felsch_tree_height()
+  - felsch_tree_number_of_nodes()
+  - number_of_words(class_index_type) const 
+  - number_of_words(word_type const&)
+  - to_gap_string()
 - Member functions inherited from CosetManager:
   - ["This page contains a description of the member functions of the
      :cpp:any:`ToddCoxeter` class inherited from
@@ -88,6 +140,8 @@ libsemigroups::congruence::ToddCoxeter:
   - number_of_cosets_active() const noexcept
   - number_of_cosets_defined() const noexcept
   - number_of_cosets_killed() const noexcept
+  - growth_factor(float)
+  - growth_factor() const noexcept
 - Member functions inherited from CongruenceInterface:
   - ["This page contains a description of the member functions of the
      :cpp:any:`ToddCoxeter` class inherited from
@@ -143,3 +197,5 @@ libsemigroups::congruence::ToddCoxeter:
   - report_every() const noexcept
   - report() const
   - report_why_we_stopped() const
+  - running_for() const noexcept
+  - running_until() const noexcept

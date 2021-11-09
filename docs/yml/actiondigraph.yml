@@ -35,7 +35,10 @@ libsemigroups::ActionDigraph:
   - add_nodes(size_t)
   - add_to_out_degree(size_t)
   - add_edge(node_type, node_type, label_type) 
+  - add_edge_nc(node_type, node_type, label_type) 
+  - swap_edges_nc(node_type, node_type, label_type) 
   - reserve(T, T) const
+  - restrict(size_t)
 - Nodes, edges, neighbors:
   - ["This page contains information about accessing the nodes, edges, and
       neighbours of the :cpp:any:`ActionDigraph` class."]
