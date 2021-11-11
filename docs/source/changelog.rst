@@ -1,6 +1,12 @@
 Changelog - version 2
 =====================
 
+v2.0.3 (released 11/11/2021)
+----------------------------
+
+This release contains a minor change to the ``FroidurePin`` class template that
+resolves an issue with the `python binding <https://github.com/libsemigroups/libsemigroups_pybind11>`_ highlighted by `Maria Tsalakou`_ and Chinmaya Nagpal.
+
 v2.0.2 (released 20/09/2021)
 ----------------------------
 
@@ -83,4 +89,7 @@ Changelog - version 1
 .. _libsemigroups_cppyy: https://github.com/libsemigroups/libsemigroups_cppyy
 .. _Bernhard M. Wiedemann: https://lizards.opensuse.org/author/bmwiedemann/
 .. _Semigroups: https://github.com/semigroups/Semigroups/
+.. _Finn Smith: https://flsmith.github.io
+.. _Maria Tsalakou: https://mariatsalakou.github.io/
+.. _Reinis Cirpons:
 .. _Finn Smith: https://flsmith.github.io

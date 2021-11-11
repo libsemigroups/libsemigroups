@@ -1,4 +1,4 @@
-libsemigroups - Version 2.0.2
+libsemigroups - Version 2.0.3
 =============================
 
 C++ library for semigroups and monoids
