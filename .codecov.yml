@@ -11,7 +11,7 @@ coverage:
       default:
         target: 100
         threshold: 0
-        informational: false # Do fail the check if the diff is not 100% covered
+        informational: true # Do fail the check if the diff is not 100% covered
     changes: # Information about changes in coverage outside the diff
       default:
         informational: true # Don't fail the check
