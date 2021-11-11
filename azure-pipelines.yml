@@ -144,3 +144,45 @@ jobs:
       ccache -s
       ./test_todd_coxeter "[123]"
     displayName: "Test flags: --disable-fmt --disable-stats"
+
+- job: libsemigroups_pybind11
+  variables:
+    URL: "https://github.com/libsemigroups/libsemigroups_pybind11.git"
+    LD_LIBRARY_PATH: "/usr/local/lib/"
+  steps:
+  - bash: |
+      sudo apt-get install -y ccache
+      echo "##vso[task.prependpath]/usr/lib/ccache"
+    displayName: "Install dependencies . . ."
+  - task: Cache@2
+    inputs:
+      key: 'ccache | "$(Agent.OS)"'
+      path: $(CCACHE_DIR)
+    displayName: "Restore cache . . ."
+  - bash: |
+      mkdir -p m4 && ./autogen.sh && ./configure --disable-hpcombi --disable-popcnt --disable-clzll
+    displayName: "Configure . . ."
+  - bash: |
+      ccache -z && sudo make install -j4 && ccache -s
+    displayName: "Build libsemigroups . . ."
+  - bash: |
+      VERSION=$(git ls-remote --tags "$URL" | grep -o 'refs/tags/v[0-9]*\.[0-9]*\.[0-9]*' | sort -r | head -n 1 | grep -o '[^\/]*$')
+      git clone --depth 1 --branch "$VERSION" "$URL"
+    displayName: "Clone libsemigroups_pybind11 . . ."
+  - bash: |
+      cd libsemigroups_pybind11
+      sudo apt-get --yes update
+      sudo apt-get install python3 --yes 
+      sudo apt-get install python3-pip --yes 
+      sudo -H pip3 install -r requirements.txt
+    displayName: "Installing prerequisites for libsemigroups_pybind11 . . ."
+  - bash: |
+      cd libsemigroups_pybind11
+      sudo -H pip3 install .
+    displayName: "Building libsemigroups_pybind11 . . ."
+  - bash: |
+      cd libsemigroups_pybind11
+      make check
+    displayName: "Running libsemigroups_pybind11 tests . . ."
+
+
