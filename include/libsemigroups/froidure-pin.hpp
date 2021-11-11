@@ -168,7 +168,7 @@ namespace libsemigroups {
   //!
   //! FroidurePin<uint8_t> T({2, 3});
   //! T.size()                      // 130
-  //! T.number_of_idempotents()            // 2
+  //! T.number_of_idempotents()     // 2
   //! *T.cbegin_idempotents();      // 0
   //! *T.cbegin_idempotents() + 1;  // 1
   //! \endcode
@@ -216,6 +216,11 @@ namespace libsemigroups {
     //! Type of the elements.
     using element_type =
         typename detail::BruidhinnTraits<TElementType>::value_type;
+
+    //! Alias for element_type.
+    // This only really exists to allow the python bindings to compile with
+    // gcc-6 + 7 (at least).
+    using value_type = element_type;
 
     //! Type of const elements.
     using const_element_type =
