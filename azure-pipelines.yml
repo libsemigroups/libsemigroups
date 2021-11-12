@@ -98,3 +98,49 @@ jobs:
       ccache -s
       ./test_obvinf "[quick]"
     displayName: "Test flag: --disable-eigen"
+
+- job: more_config_options
+  steps:
+  - bash: |
+      sudo apt-get install -y ccache
+      echo "##vso[task.prependpath]/usr/lib/ccache"
+    displayName: "Install dependencies . . ."
+  - task: Cache@2
+    inputs:
+      key: 'ccache | "$(Agent.OS)"'
+      path: $(CCACHE_DIR)
+    displayName: "Restore cache . . ."
+  - bash: |
+      ./autogen.sh 
+    displayName: "Run ./autogen.sh . . ."
+  - bash: |
+      ./configure --enable-fmt --enable-stats
+      ccache -z
+      make test_todd_coxeter -j4 || exit 1
+      ccache -s
+      ./test_todd_coxeter "[123]"
+    displayName: "Test flags: --enable-fmt --enable-stats"
+  - bash: |
+      make clean
+      ./configure --enable-fmt --disable-stats
+      ccache -z
+      make test_todd_coxeter -j4 || exit 1
+      ccache -s
+      ./test_todd_coxeter "[123]"
+    displayName: "Test flags: --enable-fmt --disable-stats"
+  - bash: |
+      make clean
+      ./configure --disable-fmt --enable-stats
+      ccache -z
+      make test_todd_coxeter -j4 || exit 1
+      ccache -s
+      ./test_todd_coxeter "[123]"
+    displayName: "Test flags: --disable-fmt --enable-stats"
+  - bash: |
+      make clean
+      ./configure --disable-fmt --disable-stats
+      ccache -z
+      make test_todd_coxeter -j4 || exit 1
+      ccache -s
+      ./test_todd_coxeter "[123]"
+    displayName: "Test flags: --disable-fmt --disable-stats"
