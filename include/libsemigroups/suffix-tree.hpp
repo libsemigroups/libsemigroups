@@ -30,6 +30,7 @@
 #include <iosfwd>         // for string
 #include <iterator>       // for operator+
 #include <map>            // for map
+#include <stack>          // for stack
 #include <unordered_map>  // for unordered_map
 #include <utility>        // for hash
 #include <vector>         // for vector
@@ -167,9 +168,74 @@ namespace libsemigroups {
 
       size_t number_of_subwords() const;
 
+      Node const& node(node_index_type v) const {
+        return _nodes[v];
+      }
+
+      size_t multiplicity(node_index_type v) const {
+        return _multiplicity[_word_index_lookup[v]];
+      }
+
+      bool is_leaf(node_index_type v) const {
+        return _nodes[v].is_leaf();
+      }
+
+      bool is_root(node_index_type v) const {
+        return _nodes[v].parent == UNDEFINED;
+      }
+
+      node_index_type parent(node_index_type v) const {
+        return _nodes[v].parent;
+      }
+
+      index_type right(node_index_type v) const {
+        return _nodes[v].r;
+      }
+
+      index_type left(node_index_type v) const {
+        return _nodes[v].l;
+      }
+
+      size_t length(node_index_type v) const {
+        return _nodes[v].length();
+      }
+
       ////////////////////////////////////////////////////////////////////////
       // SuffixTree - member functions for queries - public
       ////////////////////////////////////////////////////////////////////////
+
+      using const_iterator = typename word_type::const_iterator;
+
+      std::pair<const_iterator, const_iterator> word(index_type l,
+                                                     index_type r) const {
+        return std::make_pair(_word.cbegin() + l, _word.cbegin() + r);
+      }
+
+      template <typename T>
+      auto dfs(T& helper) const {
+        std::stack<node_index_type> S;
+        size_t const                N = _nodes.size();
+        S.push(0);
+        while (!S.empty()) {
+          node_index_type v = S.top();
+          S.pop();
+          if (v >= N) {
+            // post-order, everything in subtree starting at v has been
+            // processed.
+            v -= N;
+            helper.post_order(*this, v);
+          } else {
+            // This is a tree so we've never seen v before!
+            helper.pre_order(*this, v);
+            S.push(N + v);  // so that we can tell when we've finished
+            // processing the subtree starting at v
+            for (auto const& child : _nodes[v].children) {
+              S.push(child.second);
+            }
+          }
+        }
+        return helper.yield(*this);
+      }
 
       template <typename T>
       bool is_subword(T const& w) const {
@@ -294,6 +360,7 @@ namespace libsemigroups {
       }
 
       std::string tikz() const;
+      std::string dot() const;
 
      private:
       ////////////////////////////////////////////////////////////////////////
@@ -302,6 +369,7 @@ namespace libsemigroups {
 
       std::string tikz_traverse(size_t i, bool rotate = false) const;
       std::string tikz_word(size_t l, size_t r) const;
+      std::string dot_word(size_t l, size_t r) const;
 
       bool is_real_letter(letter_type l) const noexcept {
         return l < _next_unique_letter;
@@ -401,6 +469,7 @@ namespace libsemigroups {
                          EqualTo<word_type>>
                               _map;
       size_t                  _max_word_length;
+      std::vector<size_t>     _multiplicity;
       unique_letter_type      _next_unique_letter;
       std::vector<Node>       _nodes;
       State                   _ptr;
@@ -408,6 +477,78 @@ namespace libsemigroups {
       std::vector<index_type> _word_index_lookup;
       word_type               _word;
     };
+
+    class DFSHelper {
+     public:
+      using const_iterator = typename detail::SuffixTree::const_iterator;
+      explicit DFSHelper(detail::SuffixTree& st)
+          : _best(),
+            _best_goodness(),
+            _distance_from_root(st.number_of_nodes(), 0),
+            _num_leafs(st.number_of_nodes(), 0),
+            _suffix_index() {}
+
+      void pre_order(detail::SuffixTree const& st, size_t v) {
+        // This is a tree so we've never seen v before!
+        if (!st.is_root(v)) {
+          _distance_from_root[v]
+              = _distance_from_root[st.parent(v)] + st.length(v);
+        }
+        if (st.is_leaf(v)) {
+          _num_leafs[v]++;
+          // Starting index of the suffix that the leaf corresponds to
+          _suffix_index.push_back(st.right(v) - _distance_from_root[v]);
+        }
+      }
+
+      void post_order(detail::SuffixTree const& st, size_t v) {
+        if (st.is_leaf(v)) {
+          return;
+        }
+
+        for (auto const& child : st.node(v).children) {
+          _num_leafs[v] += _num_leafs[child.second];
+        }
+        _scratch.assign(_suffix_index.cend() - _num_leafs[v],
+                        _suffix_index.cend());
+        std::sort(_scratch.begin(), _scratch.end());
+        // number of non-overlapping subwords corresponding to the node v
+        size_t num_non_overlap = st.multiplicity(_scratch[0]);
+        for (size_t i = 0; i < _scratch.size() - 1; ++i) {
+          if (_scratch[i] + _distance_from_root[v] <= _scratch[i + 1]) {
+            num_non_overlap += st.multiplicity(_scratch[i]);
+          }
+        }
+        int goodness = (_distance_from_root[v] * num_non_overlap)
+                       - num_non_overlap - (_distance_from_root[v] + 1);
+        if (goodness > _best_goodness) {
+          _best          = v;
+          _best_goodness = goodness;
+        }
+      }
+
+      std::pair<const_iterator, const_iterator>
+      yield(detail::SuffixTree const& st) {
+        if (st.is_root(_best)) {
+          return st.word(0, 0);
+        }
+        return st.word(st.left(_best) - _distance_from_root[st.parent(_best)],
+                       st.right(_best));
+      }
+
+     private:
+      size_t              _best;
+      int                 _best_goodness;
+      std::vector<size_t> _distance_from_root;
+      std::vector<size_t> _num_leafs;
+      std::vector<size_t> _scratch;
+      std::vector<size_t> _suffix_index;
+    };
+    namespace suffix_tree_helper {
+
+      void add_words(SuffixTree& st, std::vector<word_type> const& words);
+
+    };  // namespace suffix_tree_helper
 
   }  // namespace detail
 
