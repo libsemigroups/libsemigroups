@@ -18,12 +18,15 @@
 
 #include "libsemigroups/cong-intf.hpp"
 
+#include <algorithm>  // for remove_if
+
 #include "libsemigroups/constants.hpp"          // for UNDEFINED
 #include "libsemigroups/debug.hpp"              // for LIBSEMIGROUPS_ASSERT
 #include "libsemigroups/exception.hpp"          // for LIBSEMIGROUPS_EXCEPTION
+#include "libsemigroups/fpsemi-intf.hpp"        // for FpSemigroupInterface
 #include "libsemigroups/froidure-pin-base.hpp"  // for FroidurePinBase
 #include "libsemigroups/report.hpp"             // for REPORT_VERBOSE_DEFAULT
-#include "libsemigroups/stl.hpp"                // for detail::to_string
+#include "libsemigroups/string.hpp"             // for detail::to_string
 
 namespace libsemigroups {
 
@@ -298,6 +301,17 @@ namespace libsemigroups {
     reset();
   }
 
+  void CongruenceInterface::add_generators(size_t n) {
+    if (n == 0) {
+      return;
+    } else if (started()) {
+      LIBSEMIGROUPS_EXCEPTION("cannot set add generators at this stage");
+    }
+    _nr_gens += n;
+    add_generators_impl(_nr_gens);
+    reset();
+  }
+
   /////////////////////////////////////////////////////////////////////////
   // CongruenceInterface - non-pure virtual methods - private
   /////////////////////////////////////////////////////////////////////////
@@ -310,6 +324,10 @@ namespace libsemigroups {
   }
 
   void CongruenceInterface::set_number_of_generators_impl(size_t) {
+    // do nothing
+  }
+
+  void CongruenceInterface::add_generators_impl(size_t) {
     // do nothing
   }
 

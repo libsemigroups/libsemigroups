@@ -15,30 +15,29 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include <stddef.h>  // for size_t
-
-#include <algorithm>      // for count_if, all_of
-#include <iostream>       // for string, char_traits
-#include <iterator>       // for distance
-#include <memory>         // for allocator, shared_ptr
-#include <string>         // for basic_string, operator==, operator!=, operator+
-#include <unordered_set>  // for unordered_set
-#include <vector>         // for vector
+#include <algorithm>  // for count_if, all_of
+#include <cstddef>    // for size_t
+#include <fstream>    // for ofstream
+#include <string>     // for basic_string, operator==, operator!=, operator+
+#include <vector>     // for vector
 
 #include "catch.hpp"      // for REQUIRE, REQUIRE_THROWS_AS
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
-#include "libsemigroups/suffix-tree.hpp"
-#include "libsemigroups/wislo.hpp"
+#include "libsemigroups/constants.hpp"    // for operator==, POSITIVE_INFINITY
+#include "libsemigroups/suffix-tree.hpp"  // for SuffixTree, SuffixTree::State
+#include "libsemigroups/types.hpp"        // for word_type
+#include "libsemigroups/wislo.hpp"        // for const_wislo_iterator, cbegi...
 
 namespace libsemigroups {
+  struct LibsemigroupsException;  // forward decl
 
   using detail::SuffixTree;
 
   LIBSEMIGROUPS_TEST_CASE("SuffixTree",
                           "000",
                           "basic tests",
-                          "[quick][suffixtree]") {
+                          "[quick][suffix-tree]") {
     SuffixTree t;
     // aaeaaa$
     // abcd$'
@@ -358,6 +357,23 @@ namespace libsemigroups {
     }
   }
 
+  LIBSEMIGROUPS_TEST_CASE("SuffixTree", "008", "dot", "[quick][suffix-tree]") {
+    {
+      SuffixTree t;
+      t.add_word({0, 0});
+      t.add_word({0, 0});
+      t.add_word({0, 1, 0});
+      t.add_word({0, 0});
+      t.add_word({0, 1, 0, 1});
+      t.add_word({0, 1, 0});
+      REQUIRE_NOTHROW(t.dot());
+      // std::ofstream file;
+      // file.open("tmp.dot");
+      // file << t.dot();
+      // file.close();
+    }
+  }
+
   LIBSEMIGROUPS_TEST_CASE("SuffixTree",
                           "007",
                           "strings",
@@ -388,5 +404,215 @@ namespace libsemigroups {
                       LibsemigroupsException);
     REQUIRE_THROWS_AS(t.number_of_pieces(std::string("xxx")),
                       LibsemigroupsException);
+  }
+
+  namespace {
+    auto best_subword(SuffixTree& t) {
+      detail::DFSHelper helper(t);
+      return t.dfs(helper);
+    }
+  }  // namespace
+
+  LIBSEMIGROUPS_TEST_CASE("SuffixTree",
+                          "009",
+                          "dfs #01",
+                          "[quick][suffix-tree]") {
+    using const_iterator = typename SuffixTree::const_iterator;
+    SuffixTree t;
+    t.add_word({1, 2, 1, 2});
+    t.add_word({0});
+    t.add_word({1, 2, 1, 3, 1, 2, 1, 3, 1, 2, 1, 3, 1, 2, 1, 3});
+    t.add_word({0});
+    const_iterator first, last;
+    std::tie(first, last) = best_subword(t);
+    REQUIRE(word_type(first, last) == word_type({1, 2, 1, 3}));
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("SuffixTree",
+                          "010",
+                          "dfs #02",
+                          "[quick][suffix-tree]") {
+    using const_iterator = typename SuffixTree::const_iterator;
+
+    SuffixTree t;
+    t.add_word(std::string("aaaaa"));
+    t.add_word(std::string("bbb"));
+    t.add_word(std::string("ababa"));
+    t.add_word(std::string("aaabaabaaabaa"));
+    const_iterator first, last;
+    std::tie(first, last) = best_subword(t);
+    REQUIRE(word_type(first, last) == word_type({97, 98, 97}));
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("SuffixTree",
+                          "011",
+                          "dfs #03",
+                          "[quick][suffix-tree]") {
+    using const_iterator = typename SuffixTree::const_iterator;
+    SuffixTree t;
+    t.add_word(std::string("aaaaa"));
+    t.add_word(std::string("bbb"));
+    t.add_word(std::string("cba"));
+    t.add_word(std::string("aaccaca"));
+    t.add_word(std::string("aba"));
+    const_iterator first, last;
+    std::tie(first, last) = best_subword(t);
+    REQUIRE(word_type(first, last) == word_type());
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("SuffixTree",
+                          "012",
+                          "dfs #04",
+                          "[quick][suffix-tree]") {
+    using const_iterator = typename SuffixTree::const_iterator;
+    SuffixTree t;
+    t.add_word({0, 0});
+    t.add_word({1, 0});
+    t.add_word({0, 1});
+    t.add_word({2, 0});
+    t.add_word({0, 2});
+    t.add_word({3, 0});
+    t.add_word({0, 3});
+    t.add_word({1, 1});
+    t.add_word({2, 3});
+    t.add_word({2, 2, 2});
+    t.add_word({1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2});
+    t.add_word({1, 2, 1, 3, 1, 2, 1, 3, 1, 2, 1, 3, 1, 2, 1, 3,
+                1, 2, 1, 3, 1, 2, 1, 3, 1, 2, 1, 3, 1, 2, 1, 3});
+    const_iterator first, last;
+    std::tie(first, last) = best_subword(t);
+    REQUIRE(word_type(first, last) == word_type({1, 2, 1, 3}));
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("SuffixTree",
+                          "013",
+                          "dfs #05",
+                          "[quick][suffix-tree]") {
+    using const_iterator = typename SuffixTree::const_iterator;
+    SuffixTree t;
+    t.add_word({0, 0});
+    t.add_word({1, 0});
+    t.add_word({0, 1});
+    t.add_word({2, 0});
+    t.add_word({0, 2});
+    t.add_word({3, 0});
+    t.add_word({0, 3});
+    t.add_word({1, 1});
+    t.add_word({2, 3});
+    t.add_word({2, 2, 2});
+    t.add_word({1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2});
+    t.add_word({4, 4, 4, 4, 4, 4, 4, 4});
+    t.add_word({1, 2, 1, 3});
+    const_iterator first, last;
+    std::tie(first, last) = best_subword(t);
+    REQUIRE(word_type(first, last) == word_type({1, 2}));
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("SuffixTree",
+                          "014",
+                          "dfs #06",
+                          "[quick][suffix-tree]") {
+    using const_iterator = typename SuffixTree::const_iterator;
+    SuffixTree t;
+    t.add_word({0, 0});
+    t.add_word({1, 0});
+    t.add_word({0, 1});
+    t.add_word({2, 0});
+    t.add_word({0, 2});
+    t.add_word({3, 0});
+    t.add_word({0, 3});
+    t.add_word({1, 1});
+    t.add_word({2, 3});
+    t.add_word({2, 2, 2});
+    t.add_word({5, 5, 5, 5, 5, 5, 5});
+    t.add_word({4, 4, 4, 4, 4, 4, 4, 4});
+    t.add_word({5, 1, 3});
+    t.add_word({1, 2});
+    const_iterator first, last;
+    std::tie(first, last) = best_subword(t);
+    REQUIRE(word_type(first, last) == word_type());
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("SuffixTree",
+                          "015",
+                          "dfs #07",
+                          "[quick][suffix-tree]") {
+    using const_iterator = typename SuffixTree::const_iterator;
+    SuffixTree t;
+    t.add_word(std::string("aaaaaaaaaaaaaa"));
+    t.add_word(std::string("bbbbbbbbbbbbbb"));
+    t.add_word(std::string("cccccccccccccc"));
+    t.add_word(std::string("aaaaba"));
+    t.add_word(std::string("bbb"));
+    t.add_word(std::string("bbbbab"));
+    t.add_word(std::string("aaa"));
+    t.add_word(std::string("aaaaca"));
+    t.add_word(std::string("ccc"));
+    t.add_word(std::string("ccccac"));
+    t.add_word(std::string("aaa"));
+    t.add_word(std::string("bbbbcb"));
+    t.add_word(std::string("ccc"));
+    t.add_word(std::string("ccccbc"));
+    t.add_word(std::string("bbb"));
+    const_iterator first, last;
+    std::tie(first, last) = best_subword(t);
+    REQUIRE(word_type(first, last) == word_type({99, 99, 99}));
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("SuffixTree",
+                          "016",
+                          "dfs #08",
+                          "[quick][suffix-tree]") {
+    using const_iterator = typename SuffixTree::const_iterator;
+    SuffixTree t;
+    t.add_word(std::string("aaaaaaaaaaaaaa"));
+    t.add_word(std::string("bbbbbbbbbbbbbb"));
+    t.add_word(std::string("ddddcc"));
+    t.add_word(std::string("aaaaba"));
+    t.add_word(std::string("bbb"));
+    t.add_word(std::string("bbbbab"));
+    t.add_word(std::string("aaa"));
+    t.add_word(std::string("aaaaca"));
+    t.add_word(std::string("dcac"));
+    t.add_word(std::string("aaa"));
+    t.add_word(std::string("bbbbcb"));
+    t.add_word(std::string("dcbc"));
+    t.add_word(std::string("bbb"));
+    t.add_word(std::string("ccc"));
+    const_iterator first, last;
+    std::tie(first, last) = best_subword(t);
+    REQUIRE(word_type(first, last) == word_type({98, 98, 98}));
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("SuffixTree",
+                          "017",
+                          "dfs #09",
+                          "[quick][suffix-tree]") {
+    using const_iterator = typename SuffixTree::const_iterator;
+    SuffixTree t;
+    t.add_word(std::string("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"));
+    t.add_word(std::string("bbb"));
+    t.add_word(std::string("ababa"));
+    t.add_word(std::string("aaaaaaaaaaaaaaaabaaaabaaaaaaaaaaaaaaaabaaaa"));
+    const_iterator first, last;
+    std::tie(first, last) = best_subword(t);
+    REQUIRE(
+        word_type(first, last)
+        == word_type(
+            {97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97}));
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("SuffixTree",
+                          "018",
+                          "dfs #10",
+                          "[quick][suffix-tree]") {
+    using const_iterator = typename SuffixTree::const_iterator;
+    SuffixTree t;
+    t.add_word(std::string("aBCbac"));
+    t.add_word(std::string("bACbaacA"));
+    t.add_word(std::string("accAABab"));
+    const_iterator first, last;
+    std::tie(first, last) = best_subword(t);
+    REQUIRE(word_type(first, last) == word_type());
   }
 }  // namespace libsemigroups

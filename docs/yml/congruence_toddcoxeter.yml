@@ -89,6 +89,7 @@ libsemigroups::congruence::ToddCoxeter:
   - settings_string() const
   - min_lookahead(size_t) noexcept
   - min_lookahead() const noexcept
+  - simplify(size_t)
 - Statistics:
   - ["This page contains information about the member functions of the 
      :cpp:any:`ToddCoxeter` class for enumeration statistics."]
@@ -114,6 +115,10 @@ libsemigroups::congruence::ToddCoxeter:
   - cbegin_class(class_index_type,size_t,size_t) const
   - cbegin_class(word_type const &,size_t,size_t)
   - cend_class() const
+  - cbegin_relations() const noexcept
+  - cend_relations() const noexcept
+  - cbegin_extra() const noexcept
+  - cend_extra() const noexcept
 - Properties:
   - ["This page contains information about the member functions of the 
      :cpp:any:`ToddCoxeter` class that can be used to check if the table is

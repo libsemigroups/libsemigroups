@@ -20,9 +20,11 @@
 
 #include "libsemigroups/suffix-tree.hpp"
 
+#include <array>    // for array
 #include <cstddef>  // for size_t
 #include <numeric>  // for accumulate
-#include <string>   // for string
+#include <string>   // for operator+, char_traits, to_st...
+#include <tuple>    // for tie, tuple
 
 #include "libsemigroups/adapters.hpp"   // for EqualTo, Hash
 #include "libsemigroups/constants.hpp"  // for UNDEFINED
@@ -55,10 +57,16 @@ namespace libsemigroups {
     void SuffixTree::add_word(word_type const& w) {
       if (w.empty()) {
         return;
-      } else if (!_map.emplace(w, number_of_words()).second) {
+      }
+      bool                     inserted;
+      decltype(_map)::iterator it;
+      std::tie(it, inserted) = _map.emplace(w, number_of_words());
+      if (!inserted) {
+        _multiplicity[it->second]++;
         // Duplicate word, do nothing
         return;
       }
+      _multiplicity.push_back(1);
 
       // Check that w doesn't contain illegal letters
       validate_word(w);
@@ -149,9 +157,57 @@ namespace libsemigroups {
       return s;
     }
 
+    std::string SuffixTree::dot() const {
+      if (number_of_words() == 0) {
+        LIBSEMIGROUPS_EXCEPTION("expected at least 1 word, found 0");
+      } else if (number_of_words() > 10) {
+        LIBSEMIGROUPS_EXCEPTION("expected at most 10 words, found %llu",
+                                uint64_t(number_of_words()));
+      }
+
+      static constexpr std::array<char const*, 7> colors = {
+          "red", "blue", "green", "orange", "cyan", "darkorchid1", "deeppink"};
+
+      std::string result = "digraph {\nordering=\"out\"\n";
+      for (size_t i = 0; i < _nodes.size(); ++i) {
+        auto color_index = _word_index_lookup[_nodes[i].l];
+        result += std::to_string(i) + "[shape=box, width=.5, color="
+                  + colors[color_index] + "]\n";
+        for (auto const& child : _nodes[i].children) {
+          auto const& l = _nodes[child.second].l;
+          auto const& r = _nodes[child.second].r;
+          color_index   = _word_index_lookup[l];
+          result += std::to_string(i) + "->" + std::to_string(child.second)
+                    + "[color=\"" + colors[color_index] + "\" label=\"["
+                    + std::to_string(l) + "," + std::to_string(r)
+                    + ")=" + dot_word(l, r) + "\"]\n";
+        }
+      }
+      result += "}\n";
+      return result;
+    }
+
     ////////////////////////////////////////////////////////////////////////
     // SuffixTree - helpers - private
     ////////////////////////////////////////////////////////////////////////
+
+    std::string SuffixTree::dot_word(size_t l, size_t r) const {
+      auto        first = _word.cbegin() + l;
+      auto        last  = _word.cbegin() + r;
+      std::string w;
+      for (auto it = first; it != last; ++it) {
+        if (*it < _next_unique_letter) {
+          if (*it < 96) {
+            w += to_string(*it);
+          } else {
+            w += std::string(1, *it);
+          }
+        } else {
+          w += "\\$_" + to_string(_word_index_lookup[l]);
+        }
+      }
+      return w;
+    }
 
     std::string SuffixTree::tikz_word(size_t l, size_t r) const {
       auto        first = _word.cbegin() + l;
@@ -257,15 +313,15 @@ namespace libsemigroups {
     }
 
     size_t SuffixTree::maximal_piece_suffix(word_index_type j) const {
-      // TODO(later) Currently we do this for each of the N relation words, so
-      // the cost is 2 N ^ 2, when instead we could do it once for all relation
-      // words in O(N) time.
+      // TODO(later) Currently we do this for each of the N relation words,
+      // so the cost is 2 N ^ 2, when instead we could do it once for all
+      // relation words in O(N) time.
       //
       // The analysis of the previous paragraph also assumes that
       // distance_from_root is constant time, which with the current
-      // implementation it isn't. It's O(M) where M is the number of (actual)
-      // nodes on the path from a given node to the root. This could also be
-      // preprocessed in O(N) time, for O(1) retrieval later.
+      // implementation it isn't. It's O(M) where M is the number of
+      // (actual) nodes on the path from a given node to the root. This
+      // could also be preprocessed in O(N) time, for O(1) retrieval later.
       LIBSEMIGROUPS_ASSERT(j + 1 < _word_begin.size());
       size_t result = 0;
 
@@ -295,8 +351,8 @@ namespace libsemigroups {
     }
 
     size_t SuffixTree::number_of_pieces(word_index_type i) const {
-      // TODO(later) should really return once at least a proper prefix of Y is
-      // found to be a piece
+      // TODO(later) should really return once at least a proper prefix of Y
+      // is found to be a piece
       LIBSEMIGROUPS_ASSERT(i + 1 < _word_begin.size());
       size_t result = 0;
       auto   l = _word_begin[i], r = _word_begin[i + 1];
@@ -406,8 +462,8 @@ namespace libsemigroups {
       LIBSEMIGROUPS_ASSERT(st.v != UNDEFINED);
       LIBSEMIGROUPS_ASSERT(st.pos <= _nodes[st.v].length());
       // WARNING: the assignment of xxx to split(st) in the next line looks
-      // redundant, but isn't! Without this the test fail when compiling with
-      // gcc (9, 10, 11, at least)!
+      // redundant, but isn't! Without this the test fail when compiling
+      // with gcc (9, 10, 11, at least)!
       auto xxx       = split(st);
       _nodes[v].link = xxx;
       LIBSEMIGROUPS_ASSERT(_nodes[v].link < _nodes.size());
@@ -437,6 +493,12 @@ namespace libsemigroups {
         }
       }
     }
-
-  }  // namespace detail
+    namespace suffix_tree_helper {
+      void add_words(SuffixTree& st, std::vector<word_type> const& words) {
+        for (auto const& word : words) {
+          st.add_word(word);
+        }
+      }
+    }  // namespace suffix_tree_helper
+  }    // namespace detail
 }  // namespace libsemigroups

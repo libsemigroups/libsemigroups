@@ -21,19 +21,19 @@
 #ifndef LIBSEMIGROUPS_CONG_INTF_HPP_
 #define LIBSEMIGROUPS_CONG_INTF_HPP_
 
-#include <cstddef>  // for size_t
-#include <memory>   // for shared_ptr
-#include <string>   // for string
-#include <vector>   // for vector
+#include <cstddef>           // for size_t
+#include <initializer_list>  // for initializer_list
+#include <memory>            // for shared_ptr, operator!=, make_shared
+#include <string>            // for string
+#include <type_traits>       // for enable_if_t, is_base_of
+#include <vector>            // for vector, operator==, vector<>::const_iter...
 
-#include "exception.hpp"    // for LIBSEMIGROUPS_EXCEPTION
-#include "fpsemi-intf.hpp"  // for FpSemigroupInterface
-#include "runner.hpp"       // for Runner
-#include "types.hpp"        // for word_type, letter_type, relation_type
+#include "runner.hpp"  // for Runner
+#include "types.hpp"   // for word_type, relation_type, letter_type, tril
 
 namespace libsemigroups {
-  class Congruence;       // Forward declaration, for friendship
-  class FroidurePinBase;  // Forward declaration, for member functions
+  class FroidurePinBase;       // Forward declaration, for member functions
+  class FpSemigroupInterface;  // Forward decl
 
   //! The values in this enum can be used to indicate that a congruence should
   //! be 2-sided, left, or right.
@@ -733,6 +733,9 @@ namespace libsemigroups {
       validate_relation(rel.first, rel.second);
     }
 
+    //! No doc
+    void add_generators(size_t);
+
     /////////////////////////////////////////////////////////////////////////
     // CongruenceInterface - non-virtual static functions - protected
     /////////////////////////////////////////////////////////////////////////
@@ -766,6 +769,7 @@ namespace libsemigroups {
     virtual void             add_pair_impl(word_type const&, word_type const&);
     virtual class_index_type const_word_to_class_index(word_type const&) const;
     virtual void             set_number_of_generators_impl(size_t);
+    virtual void             add_generators_impl(size_t);
     virtual std::shared_ptr<non_trivial_classes_type const>
     non_trivial_classes_impl();
 
