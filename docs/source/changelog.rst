@@ -1,6 +1,12 @@
 Changelog - version 2
 =====================
 
+v2.1.1 (released 28/11/2021)
+----------------------------
+
+This is a very minor release resolving an issue in the last release pointed out
+by Jan Engelhardt.
+
 v2.1.0 (released 28/11/2021)
 ----------------------------
 

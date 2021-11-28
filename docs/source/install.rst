@@ -1,4 +1,4 @@
-.. |libsemigroups-version| replace:: 2.1.0
+.. |libsemigroups-version| replace:: 2.1.1
 
 .. _Installation:
 
