@@ -1,6 +1,37 @@
 Changelog - version 2
 =====================
 
+v2.1.0 (released 28/11/2021)
+----------------------------
+
+The following new features, improvements, and fixes are included in this
+release:
+
+* new implementations of the linear time algorithm by Kambites for equality
+  checking and the algorithm by Mitchell and Tsalakou
+  for finding normal forms in small overlap monoids in the class ``Kambites``
+  (@james-d-mitchell and @mariatsalakou 
+  https://github.com/libsemigroups/libsemigroups/pull/278)
+* a performance improvement in the implementation of Konieczny algorithm, for
+  determining the structure of a finite semigroup or monoid (@flsmith
+  https://github.com/libsemigroups/libsemigroups/pull/297
+  https://github.com/libsemigroups/libsemigroups/pull/304)
+* an implement of the linear time algorithm by Radoszewski and Rytter for
+  checking equality of words in free bands in the function
+  ``freeband_equal_to`` (@reiniscirpons 
+  https://github.com/libsemigroups/libsemigroups/pull/298)
+* a major revision, expansion of the settings, and improvement in the
+  performance of the implementation of the Todd-Coxeter algorithm in the
+  class ``ToddCoxeter`` (@james-d-mitchell 
+  https://github.com/libsemigroups/libsemigroups/pull/313 
+  https://github.com/libsemigroups/libsemigroups/pull/318)
+* some other minor issues in the class templates
+  ``FroidurePin`` and ``ActionDigraph`` were resolved 
+  (@james-d-mitchell https://github.com/libsemigroups/libsemigroups/pull/299
+  https://github.com/libsemigroups/libsemigroups/pull/300)
+
+**Full Changelog**: https://github.com/libsemigroups/libsemigroups/compare/v2.0.3...v2.1.0
+
 v2.0.3 (released 11/11/2021)
 ----------------------------
 

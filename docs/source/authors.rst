@@ -16,8 +16,9 @@ Authors
 Contributors
 ------------
 
-- `R. Cirpons`_ contributed to ``IsObviouslyInfinite`` and to integrating
-  ``eigen``.
+- `R. Cirpons`_ contributed to ``IsObviouslyInfinite``, to integrating
+  ``eigen``, and contributed an implementation of the Radoszewski-Rytter
+  algorithm for testing equivalence of words in free bands.
 - `F. Hivert`_ contributed many helpful ideas to ``libsemigroups``, an
   allocator implementation (to be included in a future version), and
   ``HPCombi``.
@@ -30,8 +31,9 @@ Contributors
 - `N. Thiery`_ contributed to the build system, packaging ``libsemigroups`` via
   conda, the python bindings and many helpful conversations and suggestions. 
 - `M. Torpey`_ contributed to the congruences code in the v0.0.1 to v0.6.7.
-- `M. Tsalakou`_ contributed to the Knuth-Bendix implementation, and related
-  algorithms for the class `ActionDigraph`.
+- `M. Tsalakou`_ contributed to the Knuth-Bendix implementation, related
+  algorithms for the class :cpp:any:`ActionDigraph`, and to the implementation
+  of the :cpp:any:`Kambites` class.
 
 .. _R. Cirpons: 
 .. _F. Hivert: https://www.lri.fr/~hivert/

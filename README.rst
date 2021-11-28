@@ -4,7 +4,7 @@
 
    The full license is in the file LICENSE, distributed with this software.
 
-libsemigroups - Version 2.0.3
+libsemigroups - Version 2.1.0
 =============================
 
 .. image:: https://readthedocs.org/projects/libsemigroups/badge/?version=master
@@ -40,14 +40,26 @@ What is ``libsemigroups``?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ``libsemigroups``  is a C++14 library containing implementations of several
-algorithms for computing finite and finitely presented semigroups. Namely:
+algorithms for computing finite, and finitely presented, semigroups and
+monoids. Namely:
 
-- the `Froidure-Pin algorithm`_ for computing finite semigroups;
+- the `Froidure-Pin algorithm`_ for computing finite semigroups
+  :cite:`Froidure1997aa`;
 - the `Todd-Coxeter algorithm`_ for finitely presented semigroups and monoids;
 - the `Knuth-Bendix algorithm`_ for finitely presented semigroups and monoids;
 - the `Schreier-Sims algorithm`_ for permutation groups;
-- the `Konieczny`_  and `Lallement-McFadden`_ algorithm for computing finite
-  semigroups which act on sets.
+- a preliminary implementation of the `Konieczny`_ :cite:`Konieczny1994aa` and
+  `Lallement-McFadden`_ :cite:`Lallement1990aa` algorithm for computing finite
+  semigroups which act on sets;
+- an implementation of the `Radoszewski-Rytter`_ :cite:`Radoszewski2010aa`
+  algorithm for testing equivalence of words in free bands.
+- an implementation of the algorithm for solving the word problem
+  for small overlap monoids, and for computing normal forms in such monoids;
+  see `Kambites <https://doi.org/10.1016/j.jalgebra.2008.09.038>`__
+  :cite:`Kambites2009aa`, 
+  `Kambites <https://doi.org/10.1016/j.jalgebra.2008.12.028>`__
+  :cite:`Kambites2009ab`, and `Mitchell-Tsalakou
+  <http://arxiv.org/abs/2105.12125>`__ :cite:`Mitchell2021aa`. 
 
 .. _Froidure-Pin algorithm: https://www.irif.fr/~jep/PDF/Rio.pdf
 .. _Todd-Coxeter algorithm: https://en.wikipedia.org/wiki/Todd%E2%80%93Coxeter_algorithm
@@ -55,6 +67,7 @@ algorithms for computing finite and finitely presented semigroups. Namely:
 .. _Schreier-Sims algorithm: https://en.wikipedia.org/wiki/Schreier%E2%80%93Sims_algorithm
 .. _Konieczny: https://link.springer.com/article/10.1007/BF02573672
 .. _Lallement-McFadden: https://www.sciencedirect.com/science/article/pii/S0747717108800570 
+.. _Radoszewski-Rytter: https://link.springer.com/chapter/10.1007/978-3-642-11266-9_55
 
 ``libsemigroups`` is partly based on `Algorithms for computing finite
 semigroups`_, `Expository Slides`_, and `Semigroupe 2.01`_ by `Jean-Eric Pin`_.  
@@ -64,15 +77,22 @@ semigroups`_, `Expository Slides`_, and `Semigroupe 2.01`_ by `Jean-Eric Pin`_.
 .. _Semigroupe 2.01: https://www.irif.fr/~jep/Logiciels/Semigroupe2.0/semigroupe2.html
 .. _Jean-Eric Pin: https://www.irif.fr/~jep/
 
-The main classes in ``libsemigroups`` are named after the algorithms they
-implement; for example,  ``libsemigroups::FroidurePin``,
-``libsemigroups::congruence::ToddCoxeter``, 
-``libsemigroups::fpsemigroup::KnuthBendix``, and
-``libsemigroups::SchreierSims``.
+``libsemigroups`` is used in the `Semigroups package for GAP`_,  and it is
+possible to use ``libsemigroups`` directly in Python 3 via the package
+`libsemigroups_pybind11`_ The development version of ``libsemigroups`` is
+available on github_, and some related projects are here_.
 
-The implementations in ``libsemigroups::FroidurePin`` and
-``libsemigroups::SchreierSims`` are generic and easily adapted to
-user-defined types.
+The main classes in ``libsemigroups`` are named after the algorithms they
+implement; see, for example,  :cpp:any:`libsemigroups::FroidurePin`,
+:cpp:any:`libsemigroups::Konieczny`,
+:cpp:any:`libsemigroups::congruence::ToddCoxeter`,
+:cpp:any:`libsemigroups::fpsemigroup::Kambites`, 
+:cpp:any:`libsemigroups::fpsemigroup::KnuthBendix`, and
+:cpp:any:`libsemigroups::SchreierSims`.
+
+The implementations in :cpp:any:`libsemigroups::FroidurePin`,
+:cpp:any:`libsemigroups::Konieczny`, and :cpp:any:`libsemigroups::SchreierSims`
+are generic and easily adapted to user-defined types.
 
 ``libsemigroups`` uses: `HPCombi`_ which uses the SSE and AVX instruction sets
 for very fast manipulation of transformations, partial permutations,
@@ -109,8 +129,10 @@ Author
 Contributors
 ~~~~~~~~~~~~
 
-- `R. Cirpons`_ contributed to ``IsObviouslyInfinite`` and to integrating
-  ``eigen``.
+- `R. Cirpons`_ contributed to ``IsObviouslyInfinite``, to integrating
+  ``eigen``, and contributed an implementation of the `Radoszewski-Rytter`_
+  :cite:`Radoszewski2010aa` algorithm for testing equivalence of words in free
+  bands.
 - `F. Hivert`_ contributed many helpful ideas to ``libsemigroups``, an
   allocator implementation (to be included in a future version), and
   ``HPCombi``.
@@ -123,8 +145,9 @@ Contributors
 - `N. Thiery`_ contributed to the build system, packaging ``libsemigroups`` via
   conda, the python bindings and many helpful conversations and suggestions. 
 - `M. Torpey`_ contributed to the congruences code in the v0.0.1 to v0.6.7.
-- `M. Tsalakou`_ contributed to the Knuth-Bendix implementation, and related
-  algorithms for the class `ActionDigraph`.
+- `M. Tsalakou`_ contributed to the Knuth-Bendix implementation, related
+  algorithms for the class :cpp:any:`ActionDigraph`, and to the implementation
+  of the :cpp:any:`Kambites` class.
 
 .. _R. Cirpons: 
 .. _F. Hivert: https://www.lri.fr/~hivert/

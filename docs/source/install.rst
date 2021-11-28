@@ -1,4 +1,4 @@
-.. |libsemigroups-version| replace:: 2.0.3
+.. |libsemigroups-version| replace:: 2.1.0
 
 .. _Installation:
 
@@ -64,16 +64,22 @@ To build ``libsemigroups`` from a release archive:
 Docker
 ~~~~~~
 
-If you have Docker_ installed, you can download a `docker container`_ for
+If you have Docker_ installed, you can download an `x86 docker image`_ for
 ``libsemigroups`` as follows:
 
 .. parsed-literal::
    docker pull libsemigroups/libsemigroups-docker
 
+or an `arm docker image`_ as follows
+
+.. parsed-literal::
+   docker pull libsemigroups/libsemigroups-docker-arm
+
 and run it by doing
 
 .. parsed-literal::
    docker run --rm -it libsemigroups/libsemigroups-docker
+   docker run --rm -it libsemigroups/libsemigroups-docker-arm
 
 If you want to use a specific version of ``libsemigroups``, then use:
 
@@ -88,7 +94,8 @@ or, for the latest version, use:
   docker run --rm -it libsemigroups/libsemigroups-docker:latest
 
 .. _Docker: https://www.docker.com
-.. _docker container: https://hub.docker.com/repository/docker/libsemigroups/libsemigroups-docker
+.. _x86 docker image: https://hub.docker.com/repository/docker/libsemigroups/libsemigroups-docker
+.. _arm docker image: https://hub.docker.com/repository/docker/libsemigroups/libsemigroups-docker-arm
 
 Configuration options
 ---------------------
@@ -105,6 +112,7 @@ Option
 --enable-eigen              enable ``eigen`` (default=yes)
 --enable-fmt                enable fmt (default=no)
 --enable-hpcombi            enable ``HPCombi`` (default=yes)
+--enable-stats              enable statistics mode in :cpp:any:`ToddCoxeter` (default=yes)
 --enable-verbose            enable verbose mode (default=no)
 --with-external-fmt         do not use the included copy of fmt (default=no)
 --with-external-eigen       do not use the included copy of eigen (default=no)

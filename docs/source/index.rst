@@ -1,4 +1,4 @@
-libsemigroups - Version 2.0.3
+libsemigroups - Version 2.1.0
 =============================
 
 C++ library for semigroups and monoids
@@ -8,8 +8,8 @@ What is ``libsemigroups``?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ``libsemigroups``  is a C++14 library containing implementations of several
-algorithms for computing finite and finitely presented semigroups. 
-Namely:
+algorithms for computing finite, and finitely presented, semigroups and
+monoids. Namely:
 
 - the `Froidure-Pin algorithm`_ for computing finite semigroups
   :cite:`Froidure1997aa`;
@@ -26,7 +26,8 @@ Namely:
   see `Kambites <https://doi.org/10.1016/j.jalgebra.2008.09.038>`__
   :cite:`Kambites2009aa`, 
   `Kambites <https://doi.org/10.1016/j.jalgebra.2008.12.028>`__
-  :cite:`Kambites2009ab`, and Mitchell-Tsalakou :cite:`Mitchell2021aa`. 
+  :cite:`Kambites2009ab`, and `Mitchell-Tsalakou
+  <http://arxiv.org/abs/2105.12125>`__ :cite:`Mitchell2021aa`. 
 
 .. _Froidure-Pin algorithm: https://www.irif.fr/~jep/PDF/Rio.pdf
 .. _Todd-Coxeter algorithm: https://en.wikipedia.org/wiki/Todd%E2%80%93Coxeter_algorithm
@@ -36,15 +37,29 @@ Namely:
 .. _Lallement-McFadden: https://www.sciencedirect.com/science/article/pii/S0747717108800570 
 .. _Radoszewski-Rytter: https://link.springer.com/chapter/10.1007/978-3-642-11266-9_55
 
-The development version of ``libsemigroups`` is available on github_, and some related projects are here_.
+``libsemigroups`` is partly based on `Algorithms for computing finite
+semigroups`_, `Expository Slides`_, and `Semigroupe 2.01`_ by `Jean-Eric Pin`_.  
+
+.. _Algorithms for computing finite semigroups: https://www.irif.fr/~jep/PDF/Rio.pdf 
+.. _Expository slides: https://www.irif.fr/~jep/PDF/Exposes/StAndrews.pdf
+.. _Semigroupe 2.01: https://www.irif.fr/~jep/Logiciels/Semigroupe2.0/semigroupe2.html
+.. _Jean-Eric Pin: https://www.irif.fr/~jep/
+
+``libsemigroups`` is used in the `Semigroups package for GAP`_,  and it is
+possible to use ``libsemigroups`` directly in Python 3 via the package
+`libsemigroups_pybind11`_ The development version of ``libsemigroups`` is
+available on github_, and some related projects are here_.
 
 .. _github: https://github.com/libsemigroups/libsemigroups
 .. _here: https://github.com/libsemigroups 
+.. _libsemigroups_pybind11: https://libsemigroups.github.io/libsemigroups_pybind11/
+.. _Semigroups package for GAP: https://semigroups.github.io/Semigroups 
 
 The main classes in ``libsemigroups`` are named after the algorithms they
 implement; see, for example,  :cpp:any:`libsemigroups::FroidurePin`,
 :cpp:any:`libsemigroups::Konieczny`,
 :cpp:any:`libsemigroups::congruence::ToddCoxeter`,
+:cpp:any:`libsemigroups::fpsemigroup::Kambites`, 
 :cpp:any:`libsemigroups::fpsemigroup::KnuthBendix`, and
 :cpp:any:`libsemigroups::SchreierSims`.
 
@@ -62,25 +77,12 @@ permutations, and boolean matrices of small size;  `catch`_ for tests;
 .. _fmt: https://github.com/fmtlib/fmt
 .. _eigen: http://eigen.tuxfamily.org/
 
-How to use it
-~~~~~~~~~~~~~
-
-See the installation instructions:
-
 .. toctree::
    :maxdepth: 1
+   :caption: Installation and changelog
   
    install
    changelog
-
-``libsemigroups`` is used in the `Semigroups package for GAP`_, and the
-development version is available on github_. There were `python bindings`_
-(for Python 2 and 3) for earlier versions of ``libsemigroups``, and there will
-be in the future too, but presently they don't work. 
-
-.. _Github: https://github.com/libsemigroups/libsemigroups 
-.. _python bindings: https://github.com/libsemigroups/libsemigroups-python-bindings/
-.. _Semigroups package for GAP: https://semigroups.github.io/Semigroups 
 
 .. toctree::
    :caption: API REFERENCE
@@ -90,21 +92,18 @@ be in the future too, but presently they don't work.
    congruences
    digraphs
    elements
-   matrix/index
    fpsemigroups
+   freeband
+   matrix/index
+   misc
    order
    semigroups
    words
-   freeband
-   misc
 
 .. toctree::
    :caption: Bibliography
 
    biblio
-
-For the authors, contributors, and acknowledgements and a
-comparison with Semigroupe_ by Jean-Eric Pin see below.
 
 .. toctree::
    :caption: Further info

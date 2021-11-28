@@ -1278,7 +1278,7 @@ namespace libsemigroups {
     bool ToddCoxeter::reduce_length_once() {
       LIBSEMIGROUPS_ASSERT(_felsch_tree == nullptr);
       using detail::SuffixTree;
-      using const_iterator = typename detail::DFSHelper::const_iterator;
+      using const_iterator_word = typename detail::DFSHelper::const_iterator;
 
       if (_relations.empty() && _extra.empty()) {
         return false;
@@ -1287,8 +1287,8 @@ namespace libsemigroups {
       detail::suffix_tree_helper::add_words(st, _relations);
       detail::suffix_tree_helper::add_words(st, _extra);
 
-      detail::DFSHelper helper(st);
-      const_iterator    first, last;
+      detail::DFSHelper   helper(st);
+      const_iterator_word first, last;
       // Get the best word [first, last) so that replacing every
       // non-overlapping occurrence of [first, last) in _relations and
       // _extra with a new generator "x", and adding "x = [first, last)" as

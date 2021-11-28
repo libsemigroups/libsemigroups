@@ -12,10 +12,11 @@ Free Bands
 
 .. cpp:namespace:: libsemigroups
 
-``libsemigroups`` implements algorithms for computing in free bands.
-See :cite:`Radoszewski2010aa` for more details.
+``libsemigroups`` contains an implementation of the Radoszewski-Rytter
+algorithm :cite:`Radoszewski2010aa` for testing equivalence of words in free
+bands.
 
-The functions in ``libsemigroups`` for free bands are:
+The functions in ``libsemigroups`` for free bands are described on this page.
 
 .. cpp:namespace-pop::
 

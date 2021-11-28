@@ -21,8 +21,11 @@
 
 #include "libsemigroups/freeband.hpp"
 
-#include <algorithm>  // for max_element
-#include <vector>     // for vector
+#include <algorithm>    // for max_element
+#include <cstddef>      // for size_t
+#include <iterator>     // for distance, reverse_iterator
+#include <type_traits>  // for decay_t, is_same
+#include <vector>       // for vector
 
 #include "libsemigroups/constants.hpp"  // for UNDEFINED
 #include "libsemigroups/debug.hpp"      // for LIBSEMIGROUPS_ASSERT
