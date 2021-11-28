@@ -403,9 +403,6 @@ namespace libsemigroups {
         std::vector<StringView> _views;
       };
 
-      static_assert(sizeof(Short) == sizeof(Long),
-                    "sizeof(Short) must equal sizeof(Long)");
-
       ////////////////////////////////////////////////////////////////////////
       // StringViewContainer - public
       ////////////////////////////////////////////////////////////////////////
