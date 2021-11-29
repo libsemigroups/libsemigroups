@@ -251,3 +251,16 @@ jobs:
                 echo
                 ( ! grep -i "Invalid" valgrind.log )
                 ( ! grep -E "lost: [^0]" valgrind.log )
+   test-x86-32:
+      timeout-minutes: 30
+      runs-on: ubuntu-latest
+      env: 
+        GH_ACTIONS_ABI: "32"
+        GH_ACTIONS_ARCH: "x86"
+        GH_ACTIONS_TEST_PROG: "test_all"
+        GH_ACTIONS_TEST_TAGS: "[quick]"
+      steps:
+         - uses: actions/checkout@v2
+         - name: "Running the quick tests in libsemigroups-docker-x86-32-base docker container . . ."
+           run: |
+                ci/launch-docker-container.sh 
