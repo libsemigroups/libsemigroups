@@ -123,7 +123,6 @@ Changelog - version 1
 
 .. _J. James: http://www.jamezone.org/
 .. _Isuru Fernando: https://github.com/isuruf
-.. _libsemigroups_cppyy: https://github.com/libsemigroups/libsemigroups_cppyy
 .. _Bernhard M. Wiedemann: https://lizards.opensuse.org/author/bmwiedemann/
 .. _Semigroups: https://github.com/semigroups/Semigroups/
 .. _Finn Smith: https://flsmith.github.io
