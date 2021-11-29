@@ -38,8 +38,8 @@ namespace libsemigroups {
                           "000",
                           "catch all",
                           "[quick][multistringview]") {
-    REQUIRE(sizeof(detail::MultiStringView) == 32);
-    REQUIRE(sizeof(uint64_t) == 8);
+    // REQUIRE(sizeof(detail::MultiStringView) == 32);
+    // REQUIRE(sizeof(uint64_t) == 8);
     std::string             s = "abcdefghijkl";
     detail::MultiStringView msv(s.cbegin(), s.cbegin() + 3);
     REQUIRE(msv.size() == 3);
