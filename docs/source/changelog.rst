@@ -1,6 +1,12 @@
 Changelog - version 2
 =====================
 
+v2.1.2 (released 30/11/2021)
+----------------------------
+
+This is another very minor release resolving an issue in the last release
+on 32-bit systems raised by Jan Engelhardt.
+
 v2.1.1 (released 28/11/2021)
 ----------------------------
 

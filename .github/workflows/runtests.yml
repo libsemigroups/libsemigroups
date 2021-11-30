@@ -99,7 +99,7 @@ jobs:
                 make test_all -j4 || exit 1
                 ./test_all "[quick]"
    coverage:
-      timeout-minutes: 15
+      timeout-minutes: 20
       runs-on: ubuntu-latest
       steps:
          - name: "Restore cache . . ."
