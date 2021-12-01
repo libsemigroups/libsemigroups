@@ -2562,9 +2562,8 @@ namespace libsemigroups {
         }
       }
       // Some edges are not defined ...
-      // TODO(later) why not use is_acyclic here?
-      auto topo = action_digraph_helper::topological_sort(*this, source);
-      if (topo.empty() && max == POSITIVE_INFINITY) {
+      if (!action_digraph_helper::is_acyclic(*this, source)
+          && max == POSITIVE_INFINITY) {
         // Not acyclic
         return POSITIVE_INFINITY;
       }
