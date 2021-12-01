@@ -131,7 +131,6 @@ namespace libsemigroups {
 
       inline bool matrix_row_sums_to_0(size_t row) {
 #ifdef LIBSEMIGROUPS_EIGEN_ENABLED
-        // static_assert(false, "");
         return _matrix.row(row).sum() == 0;
 #else
         (void) row;
