@@ -1539,6 +1539,7 @@ namespace libsemigroups {
 
     REQUIRE(ad.number_of_paths_algorithm(0, 0, 16) == algorithm::acyclic);
     REQUIRE(ad.number_of_paths(0, 0, 30) == 9);
+    REQUIRE(ad.number_of_paths(1, 0, 10, algorithm::acyclic) == 6);
     REQUIRE(ad.number_of_paths(1, 0, 10, algorithm::matrix) == 6);
     REQUIRE(ad.number_of_paths(1, 9, 0, 10, algorithm::matrix) == 3);
   }
