@@ -87,16 +87,20 @@ jobs:
       ./configure --with-external-eigen
       ccache -z
       make test_obvinf -j4 || exit 1
+      make test_digraph -j4 || exit 1
       ccache -s
       ./test_obvinf "[quick]"
+      ./test_digraph "[quick]"
     displayName: "Test flag: --with-external-eigen"
   - bash: |
       make clean
       ./configure --disable-eigen
       ccache -z
       make test_obvinf -j4 || exit 1
+      make test_digraph -j4 || exit 1
       ccache -s
       ./test_obvinf "[quick]"
+      ./test_digraph "[quick]"
     displayName: "Test flag: --disable-eigen"
 
 - job: more_config_options
