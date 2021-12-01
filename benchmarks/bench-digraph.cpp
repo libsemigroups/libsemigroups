@@ -307,30 +307,29 @@ namespace libsemigroups {
     std::mt19937 mt;
     for (size_t M = 100; M < 1000; M += 100) {
       std::uniform_int_distribution<size_t> source(0, M - 1);
-      size_t                                v = source(mt);
-      uint64_t                              result;
-      auto                                  ad
-          = ActionDigraph<size_t>::random(M, 15, detail::magic_number(M) * M);
-      BENCHMARK("algorithm::matrix: " + std::to_string(M) + " nodes, "
-                + std::to_string(15) + " out-degree!") {
-        result = ad.number_of_paths(v, 0, 16, algorithm::matrix);
-      };
       for (size_t N = 10; N < 20; N += 5) {
         for (size_t nr_edges = 0; nr_edges <= detail::magic_number(M) * M;
              nr_edges += 500) {
-          ad = ActionDigraph<size_t>::random(M, N, nr_edges);
+          auto ad = ActionDigraph<size_t>::random(M, N, nr_edges);
           action_digraph_helper::add_cycle(
               ad, ad.cbegin_nodes(), ad.cend_nodes());
           std::string m = std::to_string(ad.number_of_edges());
           size_t      w = source(mt);
+          uint64_t    expected
+              = ad.number_of_paths(w, 0, 16, algorithm::automatic);
+          BENCHMARK("algorithm::matrix: " + std::to_string(M) + " nodes, "
+                    + std::to_string(N) + " out-degree, " + m + " edges") {
+            REQUIRE(ad.number_of_paths(w, 0, 16, algorithm::matrix)
+                    == expected);
+          };
           BENCHMARK("algorithm::dfs: " + std::to_string(M) + " nodes, "
                     + std::to_string(N) + " out-degree, " + m + " edges") {
-            result = ad.number_of_paths(w, 0, 16, algorithm::dfs);
+            REQUIRE(ad.number_of_paths(w, 0, 16, algorithm::dfs) == expected);
           };
           BENCHMARK("algorithm::automatic: " + std::to_string(M) + " nodes, "
                     + std::to_string(N) + " out-degree, " + m + " edges") {
-            REQUIRE(result
-                    == ad.number_of_paths(w, 0, 16, algorithm::automatic));
+            REQUIRE(ad.number_of_paths(w, 0, 16, algorithm::automatic)
+                    == expected);
           };
           std::cout << std::endl << std::string(72, '#') << std::endl;
         }

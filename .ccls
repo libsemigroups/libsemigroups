@@ -4,6 +4,14 @@ clang
 /Users/jdm/libsemigroups/include/
 -I
 /Users/jdm/libsemigroups/
+-I
+/Users/jdm/libsemigroups/extern/
+-I
+/Users/jdm/libsemigroups/extern/eigen-3.3.9/
+-isystem
+/Users/jdm/libsemigroups/extern/
+-isystem
+/Users/jdm/libsemigroups/extern/eigen-3.3.9/
 -isystem
 /usr/local/include
 -isystem
