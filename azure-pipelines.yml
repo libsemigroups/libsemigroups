@@ -16,7 +16,7 @@ pool:
 jobs:
 - job: GAP
   steps:
-  - script: ci/azure-gap.sh
+  - script: ci/launch-gap-docker-container.sh
     displayName: 'Running the Semigroups package for GAP tests in docker container. . .'
 
 - job: quick
