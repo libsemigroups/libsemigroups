@@ -36,6 +36,7 @@
 #include "libsemigroups/report.hpp"             // for ReportGuard
 #include "libsemigroups/siso.hpp"               // for const_sislo_iterator
 #include "libsemigroups/string.hpp"             // for random_string etc
+#include "libsemigroups/transf.hpp"             // for LeastTransf
 #include "libsemigroups/types.hpp"              // for tril etc
 #include "libsemigroups/word.hpp"               // for number_of_words
 
@@ -1817,5 +1818,22 @@ namespace libsemigroups {
       REQUIRE(l.word_to_class_index({0, 1, 0, 0}) == 100);
     }
 
+    LIBSEMIGROUPS_TEST_CASE("Kambites",
+                            "078",
+                            "(cong) large number of rules",
+                            "[quick][kambites][cong][congruence]") {
+      FroidurePin<LeastTransf<6>> S({LeastTransf<6>({1, 2, 3, 4, 5, 0}),
+                                     LeastTransf<6>({1, 0, 2, 3, 4, 5}),
+                                     LeastTransf<6>({0, 1, 2, 3, 4, 0})});
+      REQUIRE(S.size() == 46'656);
+      Kambites k;
+      k.set_number_of_generators(3);
+      for (auto it = S.cbegin_rules(); it != S.cend_rules(); ++it) {
+        k.add_pair(it->first, it->second);
+      }
+      REQUIRE(k.kambites().small_overlap_class() == 1);
+    }
+
   }  // namespace congruence
+
 }  // namespace libsemigroups
