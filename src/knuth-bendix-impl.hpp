@@ -779,6 +779,10 @@ namespace libsemigroups {
       // KnuthBendixImpl - main methods - public
       //////////////////////////////////////////////////////////////////////////
 
+      bool confluent_known() const noexcept {
+        return _confluence_known;
+      }
+
       bool confluent() const {
         if (!_stack.empty()) {
           return false;
