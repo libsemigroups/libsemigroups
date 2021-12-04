@@ -633,9 +633,7 @@ namespace libsemigroups {
 
       void run_impl() override;
 
-      bool finished_impl() const override {
-        return confluent();
-      }
+      bool finished_impl() const override;
 
       bool is_obviously_infinite_impl() override;
       bool is_obviously_finite_impl() override;
