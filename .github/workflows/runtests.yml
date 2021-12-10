@@ -32,7 +32,7 @@ jobs:
            run: |
                 make bench_all -j4
    clang:
-      timeout-minutes: 15
+      timeout-minutes: 20
       runs-on: ubuntu-latest
       env: 
         CXX: "ccache clang++"
