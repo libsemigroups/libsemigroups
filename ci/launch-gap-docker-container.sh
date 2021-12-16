@@ -13,7 +13,7 @@ ID=$(docker run --rm -i -d "$CONTAINER_NAME")
 docker cp . "$ID:/home/gap/libsemigroups"
 
 # Run the ci/docker-gap.sh script in the running container
-docker exec -i "$ID" libsemigroups/ci/docker-gap.sh ; exit
+docker exec -i "$ID" libsemigroups/ci/run-gap-tests-in-docker-container.sh ; exit
 
 # Attach to the container
 docker attach "$ID"

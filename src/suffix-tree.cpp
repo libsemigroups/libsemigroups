@@ -283,12 +283,10 @@ namespace libsemigroups {
 
     size_t SuffixTree::distance_from_root(node_index_type i) const {
       LIBSEMIGROUPS_ASSERT(i < _nodes.size());
-      Node   n      = _nodes[i];
       size_t result = 0;
-      while (n.parent != UNDEFINED) {
-        result += n.length();
-        i = n.parent;
-        n = _nodes[i];
+      while (_nodes[i].parent != UNDEFINED) {
+        result += _nodes[i].length();
+        i = _nodes[i].parent;
       }
       return result;
     }
@@ -302,14 +300,14 @@ namespace libsemigroups {
       // Follow the path from the root labelled by _words[i], then go back
       // from the leaf to its parent (which is an internal node),
       // corresponding to the maximal_piece_prefix.
-      index_type l = _word_begin[j];
-      index_type r = _word_begin[j + 1];
-      Node       m = _nodes.front();
+      index_type      l = _word_begin[j];
+      index_type      r = _word_begin[j + 1];
+      node_index_type m = 0;
       while (l < r) {
-        m = _nodes[m.child(_word[l])];
-        l += m.length();
+        m = _nodes[m].child(_word[l]);
+        l += _nodes[m].length();
       }
-      return distance_from_root(m.parent);
+      return distance_from_root(_nodes[m].parent);
     }
 
     size_t SuffixTree::maximal_piece_suffix(word_index_type j) const {
@@ -340,14 +338,13 @@ namespace libsemigroups {
       // Follow the path from the root labelled by _words[i], then go back
       // from the leaf to its parent (which is an internal node),
       // corresponding to the maximal_piece_prefix.
-      Node m = _nodes.front();
+      node_index_type m = 0;
       while (l < r) {
-        auto n = m.child(_word[l]);
-        LIBSEMIGROUPS_ASSERT(n != UNDEFINED);
-        m = _nodes[n];
-        l += m.length();
+        m = _nodes[m].child(_word[l]);
+        LIBSEMIGROUPS_ASSERT(m != UNDEFINED);
+        l += _nodes[m].length();
       }
-      return distance_from_root(m.parent);
+      return distance_from_root(_nodes[m].parent);
     }
 
     size_t SuffixTree::number_of_pieces(word_index_type i) const {

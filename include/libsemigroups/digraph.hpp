@@ -39,6 +39,7 @@
 #include <utility>      // for pair
 #include <vector>       // for vector
 
+#include "config.hpp"          // for LIBSEMIGROUPS_EIGEN_ENABLED
 #include "constants.hpp"       // for UNDEFINED
 #include "containers.hpp"      // for DynamicArray2
 #include "debug.hpp"           // for LIBSEMIGROUPS_ASSERT
@@ -51,6 +52,10 @@
 #include "types.hpp"           // for word_type
 #include "word.hpp"            // for number_of_words
 
+#ifdef LIBSEMIGROUPS_EIGEN_ENABLED
+#include <Eigen/Core>
+#endif
+
 namespace libsemigroups {
 
   namespace detail {
@@ -59,8 +64,14 @@ namespace libsemigroups {
     }
 
     // Implemented at end of this file.
-    template <typename T>
-    IntMat<0, 0, int64_t> adjacency_matrix(ActionDigraph<T> const& ad);
+    template <typename Mat, typename T>
+    Mat adjacency_matrix(ActionDigraph<T> const& ad);
+
+#ifdef LIBSEMIGROUPS_EIGEN_ENABLED
+    static inline Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>
+    pow(Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> const& x,
+        size_t                                                       e);
+#endif
   }  // namespace detail
 
   //! Defined in ``digraph.hpp``.
@@ -125,6 +136,13 @@ namespace libsemigroups {
 
     //! The type of edge labels in a digraph.
     using label_type = T;
+
+#ifdef LIBSEMIGROUPS_EIGEN_ENABLED
+    using adjacency_matrix_type
+        = Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>;
+#else
+    using adjacency_matrix_type = IntMat<0, 0, int64_t>;
+#endif
 
     //! The type of an index in a strongly connected component of a digraph.
     using scc_index_type = T;
@@ -2544,9 +2562,8 @@ namespace libsemigroups {
         }
       }
       // Some edges are not defined ...
-      // TODO(later) why not use is_acyclic here?
-      auto topo = action_digraph_helper::topological_sort(*this, source);
-      if (topo.empty() && max == POSITIVE_INFINITY) {
+      if (!action_digraph_helper::is_acyclic(*this, source)
+          && max == POSITIVE_INFINITY) {
         // Not acyclic
         return POSITIVE_INFINITY;
       }
@@ -2574,14 +2591,23 @@ namespace libsemigroups {
     uint64_t number_of_paths_matrix(node_type source,
                                     size_t    min,
                                     size_t    max) const {
-      // #ifdef LIBSEMIGROUPS_EIGEN_ENABLED
-      // TODO(later)
-      // #else
-      auto           am    = detail::adjacency_matrix(*this);
+      auto am = detail::adjacency_matrix<adjacency_matrix_type>(*this);
+#ifdef LIBSEMIGROUPS_EIGEN_ENABLED
+      auto     acc   = detail::pow(am, min);
+      uint64_t total = 0;
+      for (size_t i = min; i < max; ++i) {
+        uint64_t add = acc.row(source).sum();
+        if (add == 0) {
+          break;
+        }
+        total += add;
+        acc *= am;
+      }
+#else
       auto           tmp   = am;
       uint64_t const N     = number_of_nodes();
       auto           acc   = matrix_helpers::pow(am, min);
-      size_t         total = 0;
+      uint64_t       total = 0;
       for (size_t i = min; i < max; ++i) {
         uint64_t add = std::accumulate(acc.cbegin() + source * N,
                                        acc.cbegin() + source * N + N,
@@ -2593,17 +2619,14 @@ namespace libsemigroups {
         tmp.product_inplace(acc, am);
         tmp.swap(acc);
       }
+#endif
       return total;
-      // #endif
     }
 
     uint64_t number_of_paths_matrix(node_type source,
                                     node_type target,
                                     size_t    min,
                                     size_t    max) const {
-      // #ifdef LIBSEMIGROUPS_EIGEN_ENABLED
-      // TODO(later)
-      // #else
       if (!action_digraph_helper::is_reachable(*this, source, target)) {
         // Complexity is O(number of nodes + number of edges).
         return 0;
@@ -2611,11 +2634,23 @@ namespace libsemigroups {
         return POSITIVE_INFINITY;
       }
 
-      auto           am    = detail::adjacency_matrix(*this);
-      auto           tmp   = am;
-      uint64_t const N     = number_of_nodes();
-      auto           acc   = matrix_helpers::pow(am, min);
-      size_t         total = 0;
+      auto am = detail::adjacency_matrix<adjacency_matrix_type>(*this);
+#ifdef LIBSEMIGROUPS_EIGEN_ENABLED
+      auto     acc   = detail::pow(am, min);
+      uint64_t total = 0;
+      for (size_t i = min; i < max; ++i) {
+        uint64_t add = acc(source, target);
+        if (add == 0 && acc.row(source).isZero()) {
+          break;
+        }
+        total += add;
+        acc *= am;
+      }
+#else
+      size_t const N     = number_of_nodes();
+      auto         tmp   = am;
+      auto         acc   = matrix_helpers::pow(am, min);
+      size_t       total = 0;
       for (size_t i = min; i < max; ++i) {
         uint64_t add = acc(source, target);
 
@@ -2629,8 +2664,8 @@ namespace libsemigroups {
         tmp.product_inplace(acc, am);
         tmp.swap(acc);
       }
+#endif
       return total;
-      // #endif
     }
 
     ////////////////////////////////////////////////////////////////////////
@@ -2999,11 +3034,64 @@ namespace libsemigroups {
   }
 
   namespace detail {
+
+#ifdef LIBSEMIGROUPS_EIGEN_ENABLED
     template <typename T>
-    IntMat<0, 0, int64_t> adjacency_matrix(ActionDigraph<T> const& ad) {
-      size_t const          N = ad.number_of_nodes();
-      IntMat<0, 0, int64_t> mat(N, N);
+    void init_adjacency_matrix(
+        ActionDigraph<T> const&                                ad,
+        Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>& mat) {
+      size_t const N = ad.number_of_nodes();
+      mat.resize(N, N);
+      mat.fill(0);
+    }
+
+    static inline void
+    identity(Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>& x) {
+      x.fill(0);
+      for (size_t i = 0; i < static_cast<size_t>(x.rows()); ++i) {
+        x(i, i) = 1;
+      }
+    }
+
+    static inline Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>
+    pow(Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> const& x,
+        size_t                                                       e) {
+      if (x.cols() != x.rows()) {
+        LIBSEMIGROUPS_EXCEPTION("expected a square matrix, found %llux%llu",
+                                static_cast<uint64_t>(x.rows()),
+                                static_cast<uint64_t>(x.cols()));
+      }
+      auto y = x;
+      if (e % 2 == 0) {
+        identity(y);
+        if (e == 0) {
+          return y;
+        }
+      }
+      auto z = x;
+      while (e > 1) {
+        z *= z;
+        e /= 2;
+        if (e % 2 == 1) {
+          y *= z;
+        }
+      }
+      return y;
+    }
+#else
+    template <typename T>
+    void init_adjacency_matrix(ActionDigraph<T> const& ad,
+                               IntMat<0, 0, int64_t>&  mat) {
+      size_t const N = ad.number_of_nodes();
+      mat            = IntMat<0, 0, int64_t>(N, N);
       std::fill(mat.begin(), mat.end(), 0);
+    }
+#endif
+
+    template <typename Mat, typename T>
+    Mat adjacency_matrix(ActionDigraph<T> const& ad) {
+      Mat mat;
+      init_adjacency_matrix(ad, mat);
 
       for (auto n = ad.cbegin_nodes(); n != ad.cend_nodes(); ++n) {
         for (auto e = ad.cbegin_edges(*n); e != ad.cend_edges(*n); ++e) {

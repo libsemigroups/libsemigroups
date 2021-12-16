@@ -10,8 +10,7 @@ sudo apt-get install libtool-bin --yes
 GAP_SEMIGROUPS_BRANCH=libsemigroups-v2
 GAP_SEMIGROUPS_REPO=james-d-mitchell
 GAP_VERSION=$(ls inst)
-export GAPROOT=$HOME/inst/$GAP_VERSION
-GAP_SH="$GAPROOT/bin/gap.sh"
+GAP_SH="$HOME/inst/$GAP_VERSION/bin/gap.sh"
 
 sudo chown 1000:1000 -R libsemigroups/
 if [ -x libsemigroups/etc/version-number.sh ] && [ ! -f libsemigroups/.VERSION ]; then
@@ -41,17 +40,13 @@ git clone -b master --depth=1 https://github.com/gap-packages/PackageManager.git
 
 INSTALL_PKGS="if not InstallPackage(\"https://digraphs.github.io/Digraphs/PackageInfo.g\", false) then QuitGap(1); fi;"
 INSTALL_PKGS+="if not InstallPackage(\"io\", false) then QuitGap(1); fi;"
-INSTALL_PKGS+="if not InstallPackage(\"orb\", false) then QuitGap(1); fi;"
+INSTALL_PKGS+="if not (InstallPackage(\"orb\", false) and CompilePackage(\"orb\")) then QuitGap(1); fi;"
 INSTALL_PKGS+="if not InstallPackage(\"genss\", false) then QuitGap(1); fi;"
 INSTALL_PKGS+="if not InstallPackage(\"images\", false) then QuitGap(1); fi;"
 
 echo "LoadPackage(\"PackageManager\"); InstallPackage(\"PackageManager\", false); $INSTALL_PKGS QUIT;" | $GAP_SH -A -T || exit 1
-# The next line is a hack until the package manager compiles Orb
-cd $HOME/.gap/pkg/orb-* && ./configure $GAPROOT && make
 cd $HOME/inst/$GAP_VERSION/pkg/semigroups
 
-# The next line is required by semigroups/ci/docker-test.sh
-export SUITE="test"
-
+export ABI="64"
 # Run the tests defined in Semigroups
-ci/docker-test.sh
+ci/run-tests.sh

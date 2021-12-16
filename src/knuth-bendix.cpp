@@ -212,6 +212,10 @@ namespace libsemigroups {
       return _impl->confluent();
     }
 
+    bool KnuthBendix::finished_impl() const {
+      return _impl->confluent_known() && _impl->confluent();
+    }
+
     void KnuthBendix::run_impl() {
       _impl->knuth_bendix();
       report_why_we_stopped();
