@@ -1,6 +1,14 @@
 Changelog - version 2
 =====================
 
+v2.1.3 (released 16/12/2021)
+----------------------------
+
+This is a minor release with some performance improvements in:
+``ActionDigraph::number_of_paths`` (`eigen`_ is used in some circumstances when
+available); the suffix tree implementation (used by ``Kambites``); and in
+``KnuthBendix``.
+
 v2.1.2 (released 30/11/2021)
 ----------------------------
 
