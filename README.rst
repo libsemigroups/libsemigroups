@@ -4,7 +4,7 @@
 
    The full license is in the file LICENSE, distributed with this software.
 
-libsemigroups - Version 2.1.2
+libsemigroups - Version 2.1.3
 =============================
 
 .. image:: https://readthedocs.org/projects/libsemigroups/badge/?version=master
@@ -43,23 +43,21 @@ What is ``libsemigroups``?
 algorithms for computing finite, and finitely presented, semigroups and
 monoids. Namely:
 
-- the `Froidure-Pin algorithm`_ for computing finite semigroups
-  :cite:`Froidure1997aa`;
+- the `Froidure-Pin algorithm`_ for computing finite semigroups;
 - the `Todd-Coxeter algorithm`_ for finitely presented semigroups and monoids;
 - the `Knuth-Bendix algorithm`_ for finitely presented semigroups and monoids;
 - the `Schreier-Sims algorithm`_ for permutation groups;
-- a preliminary implementation of the `Konieczny`_ :cite:`Konieczny1994aa` and
-  `Lallement-McFadden`_ :cite:`Lallement1990aa` algorithm for computing finite
+- a preliminary implementation of the `Konieczny`_ and
+  `Lallement-McFadden`_ algorithm for computing finite
   semigroups which act on sets;
-- an implementation of the `Radoszewski-Rytter`_ :cite:`Radoszewski2010aa`
+- an implementation of the `Radoszewski-Rytter`_
   algorithm for testing equivalence of words in free bands.
 - an implementation of the algorithm for solving the word problem
   for small overlap monoids, and for computing normal forms in such monoids;
-  see `Kambites <https://doi.org/10.1016/j.jalgebra.2008.09.038>`__
-  :cite:`Kambites2009aa`, 
-  `Kambites <https://doi.org/10.1016/j.jalgebra.2008.12.028>`__
-  :cite:`Kambites2009ab`, and `Mitchell-Tsalakou
-  <http://arxiv.org/abs/2105.12125>`__ :cite:`Mitchell2021aa`. 
+  see `Kambites <https://doi.org/10.1016/j.jalgebra.2008.09.038>`__, 
+  `Kambites <https://doi.org/10.1016/j.jalgebra.2008.12.028>`__, and 
+  `Mitchell-Tsalakou
+  <http://arxiv.org/abs/2105.12125>`__. 
 
 .. _Froidure-Pin algorithm: https://www.irif.fr/~jep/PDF/Rio.pdf
 .. _Todd-Coxeter algorithm: https://en.wikipedia.org/wiki/Todd%E2%80%93Coxeter_algorithm
@@ -131,8 +129,7 @@ Contributors
 
 - `R. Cirpons`_ contributed to ``IsObviouslyInfinite``, to integrating
   ``eigen``, and contributed an implementation of the `Radoszewski-Rytter`_
-  :cite:`Radoszewski2010aa` algorithm for testing equivalence of words in free
-  bands.
+  algorithm for testing equivalence of words in free bands.
 - `F. Hivert`_ contributed many helpful ideas to ``libsemigroups``, an
   allocator implementation (to be included in a future version), and
   ``HPCombi``.
