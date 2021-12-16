@@ -77,7 +77,7 @@ semigroups`_, `Expository Slides`_, and `Semigroupe 2.01`_ by `Jean-Eric Pin`_.
 
 ``libsemigroups`` is used in the `Semigroups package for GAP`_,  and it is
 possible to use ``libsemigroups`` directly in Python 3 via the package
-`libsemigroups_pybind11`_ The development version of ``libsemigroups`` is
+`libsemigroups_pybind11`_. The development version of ``libsemigroups`` is
 available on github_, and some related projects are here_.
 
 .. _github: https://github.com/libsemigroups/libsemigroups
@@ -86,15 +86,15 @@ available on github_, and some related projects are here_.
 .. _Semigroups package for GAP: https://semigroups.github.io/Semigroups 
 
 The main classes in ``libsemigroups`` are named after the algorithms they
-implement; see, for example,  `libsemigroups::FroidurePin`,
-`libsemigroups::Konieczny`,
-`libsemigroups::congruence::ToddCoxeter`,
-`libsemigroups::fpsemigroup::Kambites`, 
-`libsemigroups::fpsemigroup::KnuthBendix`, and
-`libsemigroups::SchreierSims`.
+implement; see, for example,  ``libsemigroups::FroidurePin``,
+``libsemigroups::Konieczny``,
+``libsemigroups::congruence::ToddCoxeter``,
+``libsemigroups::fpsemigroup::Kambites``, 
+``libsemigroups::fpsemigroup::KnuthBendix``, and
+``libsemigroups::SchreierSims``.
 
-The implementations in `libsemigroups::FroidurePin`,
-`libsemigroups::Konieczny`, and `libsemigroups::SchreierSims`
+The implementations in ``libsemigroups::FroidurePin``,
+``libsemigroups::Konieczny``, and ``libsemigroups::SchreierSims``
 are generic and easily adapted to user-defined types.
 
 ``libsemigroups`` uses: `HPCombi`_ which uses the SSE and AVX instruction sets
