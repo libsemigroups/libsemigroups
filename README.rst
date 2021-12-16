@@ -80,16 +80,21 @@ possible to use ``libsemigroups`` directly in Python 3 via the package
 `libsemigroups_pybind11`_ The development version of ``libsemigroups`` is
 available on github_, and some related projects are here_.
 
-The main classes in ``libsemigroups`` are named after the algorithms they
-implement; see, for example,  :cpp:any:`libsemigroups::FroidurePin`,
-:cpp:any:`libsemigroups::Konieczny`,
-:cpp:any:`libsemigroups::congruence::ToddCoxeter`,
-:cpp:any:`libsemigroups::fpsemigroup::Kambites`, 
-:cpp:any:`libsemigroups::fpsemigroup::KnuthBendix`, and
-:cpp:any:`libsemigroups::SchreierSims`.
+.. _github: https://github.com/libsemigroups/libsemigroups
+.. _here: https://github.com/libsemigroups 
+.. _libsemigroups_pybind11: https://libsemigroups.github.io/libsemigroups_pybind11/
+.. _Semigroups package for GAP: https://semigroups.github.io/Semigroups 
 
-The implementations in :cpp:any:`libsemigroups::FroidurePin`,
-:cpp:any:`libsemigroups::Konieczny`, and :cpp:any:`libsemigroups::SchreierSims`
+The main classes in ``libsemigroups`` are named after the algorithms they
+implement; see, for example,  `libsemigroups::FroidurePin`,
+`libsemigroups::Konieczny`,
+`libsemigroups::congruence::ToddCoxeter`,
+`libsemigroups::fpsemigroup::Kambites`, 
+`libsemigroups::fpsemigroup::KnuthBendix`, and
+`libsemigroups::SchreierSims`.
+
+The implementations in `libsemigroups::FroidurePin`,
+`libsemigroups::Konieczny`, and `libsemigroups::SchreierSims`
 are generic and easily adapted to user-defined types.
 
 ``libsemigroups`` uses: `HPCombi`_ which uses the SSE and AVX instruction sets
@@ -143,8 +148,8 @@ Contributors
   conda, the python bindings and many helpful conversations and suggestions. 
 - `M. Torpey`_ contributed to the congruences code in the v0.0.1 to v0.6.7.
 - `M. Tsalakou`_ contributed to the Knuth-Bendix implementation, related
-  algorithms for the class :cpp:any:`ActionDigraph`, and to the implementation
-  of the :cpp:any:`Kambites` class.
+  algorithms for the class `ActionDigraph`, and to the implementation
+  of the `Kambites` class.
 
 .. _R. Cirpons: 
 .. _F. Hivert: https://www.lri.fr/~hivert/
