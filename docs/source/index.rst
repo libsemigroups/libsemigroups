@@ -47,7 +47,7 @@ semigroups`_, `Expository Slides`_, and `Semigroupe 2.01`_ by `Jean-Eric Pin`_.
 
 ``libsemigroups`` is used in the `Semigroups package for GAP`_,  and it is
 possible to use ``libsemigroups`` directly in Python 3 via the package
-`libsemigroups_pybind11`_ The development version of ``libsemigroups`` is
+`libsemigroups_pybind11`_. The development version of ``libsemigroups`` is
 available on github_, and some related projects are here_.
 
 .. _github: https://github.com/libsemigroups/libsemigroups
