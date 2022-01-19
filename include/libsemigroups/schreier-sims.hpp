@@ -325,16 +325,20 @@ namespace libsemigroups {
     //! The number of strong generators, a value of \c size_t, at depth \p
     //! depth of the stabiliser chain.
     //!
-    //! \exceptions
-    //! \noexcept
+    //! \throws LibsemigroupsException if the \p depth is out of bounds.
     //!
     //! \complexity
     //! Constant.
     //!
     //! \parameters
     //! (None)
-    // TODO(later) shouldn't this throw if depth is out of bounds??
     size_t number_of_strong_generators(index_type depth) const noexcept {
+      if (depth >= _base_size) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "depth out of bounds, expected value in range [0, %d), got %d",
+            _base_size,
+            depth);
+      }
       return _strong_gens.size(depth);
     }
 
@@ -347,13 +351,19 @@ namespace libsemigroups {
     //! A const reference to the strong generator of \c this at depth \p depth
     //! and with index \p index.
     //!
+    //! \throws LibsemigroupsException if the \p depth is out of bounds.
     //! \throws LibsemigroupsException if the \p index is out of bounds.
     //!
     //! \complexity
     //! Constant.
-    // TODO(later) shouldn't this throw if depth is out of bounds??
     const_element_reference strong_generator(index_type depth,
                                              index_type index) const {
+      if (depth >= _base_size) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "depth out of bounds, expected value in range [0, %d), got %d",
+            _base_size,
+            depth);
+      }
       if (index >= _strong_gens.size(depth)) {
         LIBSEMIGROUPS_EXCEPTION(
             "index out of bounds, expected value in range (0, %d], got %d",
