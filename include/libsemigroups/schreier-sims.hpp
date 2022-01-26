@@ -696,7 +696,7 @@ namespace libsemigroups {
     //! \returns
     //! (None)
     void run() {
-      if (_finished) {
+      if (_finished || _strong_gens.size(0) == 0) {
         return;
       }
 
