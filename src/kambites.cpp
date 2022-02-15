@@ -138,8 +138,8 @@ namespace libsemigroups {
       return _k->size();
     }
 
-    [[noreturn]] std::shared_ptr<FroidurePinBase> Kambites::quotient_impl() {
-      LIBSEMIGROUPS_EXCEPTION("Cannot reach here!");
+    std::shared_ptr<FroidurePinBase> Kambites::quotient_impl() {
+      return _k->froidure_pin();
     }
 
     class_index_type Kambites::word_to_class_index_impl(word_type const& word) {

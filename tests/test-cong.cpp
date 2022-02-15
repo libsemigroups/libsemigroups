@@ -1399,7 +1399,7 @@ namespace libsemigroups {
     // fail.
     REQUIRE(cong.word_to_class_index({2, 2, 2, 2}) == 254);
     REQUIRE(cong.class_index_to_word(2) == word_type({2}));
-    REQUIRE_THROWS_AS(cong.quotient_froidure_pin(), LibsemigroupsException);
+    REQUIRE_NOTHROW(cong.quotient_froidure_pin());
     REQUIRE_THROWS_AS(cong.cbegin_ntc(), LibsemigroupsException);
   }
 
