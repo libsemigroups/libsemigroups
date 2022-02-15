@@ -1195,7 +1195,7 @@ namespace libsemigroups {
 
       word_type class_index_to_word_impl(class_index_type) override;
       size_t    number_of_classes_impl() override;
-      [[noreturn]] std::shared_ptr<FroidurePinBase> quotient_impl() override;
+      std::shared_ptr<FroidurePinBase> quotient_impl() override;
       class_index_type word_to_class_index_impl(word_type const&) override;
       void             run_impl() override;
 

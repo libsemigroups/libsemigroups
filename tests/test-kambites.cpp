@@ -1789,9 +1789,7 @@ namespace libsemigroups {
       REQUIRE(k.contains({4, 5}, {3, 6}));
       REQUIRE(k.contains({0, 0, 0, 0, 0, 4, 5}, {0, 0, 0, 0, 0, 3, 6}));
       REQUIRE(k.contains({4, 5, 0, 1, 0, 1, 0}, {3, 6, 0, 1, 0, 1, 0}));
-      // TODO(later) there's no reason that we can't find the
-      // quotient_froidure_pin here
-      REQUIRE_THROWS_AS(k.quotient_froidure_pin(), LibsemigroupsException);
+      REQUIRE_NOTHROW(k.quotient_froidure_pin());
     }
 
     LIBSEMIGROUPS_TEST_CASE("Kambites",
@@ -1814,7 +1812,7 @@ namespace libsemigroups {
       REQUIRE(!l.is_quotient_obviously_finite());
       REQUIRE(l.number_of_classes() == POSITIVE_INFINITY);
       REQUIRE(l.class_index_to_word(100) == word_type({0, 1, 0, 0}));
-      REQUIRE_THROWS_AS(l.quotient_froidure_pin(), LibsemigroupsException);
+      REQUIRE_NOTHROW(l.quotient_froidure_pin());
       REQUIRE(l.word_to_class_index({0, 1, 0, 0}) == 100);
     }
 

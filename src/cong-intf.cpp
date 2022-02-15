@@ -208,9 +208,6 @@ namespace libsemigroups {
       return _quotient;
     } else if (kind() != congruence_kind::twosided) {
       LIBSEMIGROUPS_EXCEPTION("the congruence must be two-sided");
-    } else if (is_quotient_obviously_infinite()) {
-      LIBSEMIGROUPS_EXCEPTION(
-          "cannot find the quotient semigroup, it is infinite");
     }
     _quotient = quotient_impl();
     _quotient->immutable(true);
