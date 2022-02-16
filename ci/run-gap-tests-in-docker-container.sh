@@ -43,6 +43,7 @@ INSTALL_PKGS+="if not InstallPackage(\"io\", false) then QuitGap(1); fi;"
 INSTALL_PKGS+="if not (InstallPackage(\"orb\", false) and CompilePackage(\"orb\")) then QuitGap(1); fi;"
 INSTALL_PKGS+="if not InstallPackage(\"genss\", false) then QuitGap(1); fi;"
 INSTALL_PKGS+="if not InstallPackage(\"images\", false) then QuitGap(1); fi;"
+INSTALL_PKGS+="if not InstallPackage(\"autodoc\", false) then QuitGap(1); fi;"
 
 echo "LoadPackage(\"PackageManager\"); InstallPackage(\"PackageManager\", false); $INSTALL_PKGS QUIT;" | $GAP_SH -A -T || exit 1
 cd $HOME/inst/$GAP_VERSION/pkg/semigroups
