@@ -171,8 +171,8 @@ namespace libsemigroups {
 
   // TODO(later) check other things like _nr_blocks is correct etc...
   void validate(Bipartition const& x) {
-    size_t const n = 2 * x.degree();
-    if (n != static_cast<size_t>(std::distance(x.cbegin(), x.cend()))) {
+    size_t const n = static_cast<size_t>(std::distance(x.cbegin(), x.cend()));
+    if (2 * x.degree() != n) {
       LIBSEMIGROUPS_EXCEPTION(
           "the degree of a bipartition must be even, found %llu", uint64_t(n));
     }
