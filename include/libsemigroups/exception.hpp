@@ -46,6 +46,12 @@ namespace libsemigroups {
                            std::string const& msg)
         : std::runtime_error(fname + ":" + detail::to_string(linenum) + ":"
                              + funcname + ": " + msg) {}
+
+    //! Create an exception with message.
+    //!
+    //! \param msg the message of the exception being thrown.
+    LibsemigroupsException(std::string const& msg) : std::runtime_error(msg) {}
+
     //! Default copy constructor.
     LibsemigroupsException(LibsemigroupsException const&) = default;
 
@@ -62,10 +68,15 @@ namespace libsemigroups {
   };
 }  // namespace libsemigroups
 
+#ifdef LIBSEMIGROUPS_DEBUG
 #define LIBSEMIGROUPS_EXCEPTION(...)                                       \
   {                                                                        \
     throw LibsemigroupsException(                                          \
         __FILE__, __LINE__, __func__, detail::string_format(__VA_ARGS__)); \
   }
+#else
+#define LIBSEMIGROUPS_EXCEPTION(...) \
+  { throw LibsemigroupsException(detail::string_format(__VA_ARGS__)); }
+#endif
 
 #endif  // LIBSEMIGROUPS_EXCEPTION_HPP_
