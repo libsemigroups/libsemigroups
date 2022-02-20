@@ -388,7 +388,8 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Constant.
-    const_element_reference transversal(index_type depth, point_type pt) const {
+    const_element_reference transversal_element(index_type depth,
+                                                point_type pt) const {
       if (depth >= _base_size) {
         LIBSEMIGROUPS_EXCEPTION(
             "depth out of bounds, expected value in range [0, %d), got %d",
@@ -417,7 +418,8 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Constant.
-    const_element_reference inversal(index_type depth, point_type pt) const {
+    const_element_reference inversal_element(index_type depth,
+                                             point_type pt) const {
       if (depth >= _base_size) {
         LIBSEMIGROUPS_EXCEPTION(
             "depth out of bounds, expected value in range [0, %d), got %d",
