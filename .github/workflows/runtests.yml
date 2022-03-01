@@ -2,10 +2,30 @@ name: CI
 on: [pull_request]
 
 jobs:
+   cygwin:
+      defaults:
+        run:
+          shell: C:\cygwin64\bin\bash.exe --login -o igncr '{0}'
+      timeout-minutes: 40
+      runs-on: windows-latest
+      if: ${{ !(github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository) }}
+      env:
+        CHERE_INVOKING: 1
+      steps:
+         - uses: gap-actions/setup-cygwin@v1
+         - uses: actions/checkout@v2
+         - name: "Configure . . ."
+           run: ./autogen.sh && ./configure
+         - name: "Build libsemigroups . . ."
+           run: make -j4
+         - name: "Build test_all . . ."
+           run: make check -j4
+         - name: "Run the quick tests . . ."
+           run: ./test_all "[quick]"
    benchmark:
       timeout-minutes: 10
       runs-on: ubuntu-latest
-      env: 
+      env:
         CXX: "ccache g++"
         CXXFLAGS: "-fdiagnostics-color"
       steps:
@@ -20,11 +40,11 @@ jobs:
                 ccache:${{ matrix.os }}:${{ matrix.compiler }}:${{ matrix.modules }}-modules
          - name: "Install dependencies . . ."
            run: |
-                sudo apt-get --yes update 
+                sudo apt-get --yes update
                 sudo apt-get install -y ccache
          - name: "Configure . . ."
            run: |
-                mkdir -p m4 && ./autogen.sh && ./configure 
+                mkdir -p m4 && ./autogen.sh && ./configure
          - name: "Build libsemigroups . . ."
            run: |
                 ccache -z && make -j4 && ccache -s
@@ -34,7 +54,7 @@ jobs:
    clang:
       timeout-minutes: 20
       runs-on: ubuntu-latest
-      env: 
+      env:
         CXX: "ccache clang++"
         CXXFLAGS: "-fdiagnostics-color"
       steps:
@@ -49,7 +69,7 @@ jobs:
                 ccache:${{ matrix.os }}:${{ matrix.compiler }}:${{ matrix.modules }}-modules
          - name: "Install dependencies . . ."
            run: |
-                sudo apt-get --yes update 
+                sudo apt-get --yes update
                 sudo apt-get install -y ccache
          - name: "Configure . . ."
            run: |
@@ -66,18 +86,18 @@ jobs:
    config-options:
       timeout-minutes: 30
       runs-on: ubuntu-latest
-      env: 
+      env:
         PKG_CONFIG_PATH: "/usr/share/miniconda/lib/pkgconfig:/usr/share/miniconda/share/pkgconfig"
         LD_LIBRARY_PATH: "/usr/share/miniconda/lib"
       steps:
          - uses: actions/checkout@v2
          - name: "Install other dependencies . . ."
            run: |
-                sudo apt-get --yes update 
+                sudo apt-get --yes update
                 sudo apt-get install -y ccache
          - name: "Run ./autogen.sh . . ."
            run: |
-                ./autogen.sh 
+                ./autogen.sh
          - name: "Test flag: --enable-debug"
            run: |
                 ./configure --enable-debug
@@ -113,7 +133,7 @@ jobs:
          - uses: actions/checkout@v2
          - name: "Install dependencies . . ."
            run: |
-                sudo apt-get --yes update 
+                sudo apt-get --yes update
                 sudo apt-get install -y lcov ccache
          - name: "Run quick tests . . ."
            run: |
@@ -125,7 +145,7 @@ jobs:
    distcheck:
       timeout-minutes: 10
       runs-on: ubuntu-latest
-      env: 
+      env:
          CXX: "ccache g++"
          CXXFLAGS: "-fdiagnostics-color"
       steps:
@@ -140,7 +160,7 @@ jobs:
                 ccache:${{ matrix.os }}:${{ matrix.compiler }}:${{ matrix.modules }}-modules
          - name: "Install dependencies . . ."
            run: |
-                sudo apt-get --yes update 
+                sudo apt-get --yes update
                 sudo apt-get install -y ccache
          - name: "Configure . . ."
            run: |
@@ -155,7 +175,7 @@ jobs:
          - uses: actions/checkout@v2
          - name: "Install dependencies . . ."
            run: |
-                sudo apt-get --yes update 
+                sudo apt-get --yes update
                 sudo apt-get install expect
                 sudo apt-get install graphviz
                 sudo apt-get install python3-pip
@@ -164,12 +184,12 @@ jobs:
                 sudo -H pip3 install -r docs/requirements.txt
                 sudo -H pip3 install --upgrade --ignore-installed pyyaml
          - name: "Install latest doxygen . . ."
-           run: | 
+           run: |
                 bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
                 brew install doxygen
          - name: "Configure . . ."
            run: |
-                mkdir -p m4 && ./autogen.sh && ./configure 
+                mkdir -p m4 && ./autogen.sh && ./configure
          - name: "Build documentation . . ."
            run: |
                 echo "Doxygen version: "
@@ -181,12 +201,12 @@ jobs:
                 etc/make-doc-yml.sh | tee make-doc-yml.log
                 etc/make-doc-sphinx.sh | tee make-doc-sphinx.log
 
-                echo 
+                echo
                 ( ! (grep "WARNING:" make-doc-sphinx.log | grep -v "WARNING: bibtex citations changed, rerun sphinx" | grep -v "WARNING: Could not lex literal_block") )
    macosx:
       timeout-minutes: 15
       runs-on: macOS-latest
-      env: 
+      env:
          CXX: "ccache clang++"
          CXXFLAGS: "-fdiagnostics-color"
       steps:
@@ -204,7 +224,7 @@ jobs:
                 brew install ccache autoconf automake
          - name: "Configure . . ."
            run: |
-                mkdir -p m4 && ./autogen.sh && ./configure --disable-hpcombi 
+                mkdir -p m4 && ./autogen.sh && ./configure --disable-hpcombi
          - name: "Build libsemigroups . . ."
            run: |
                 ccache -z && make -j4 && ccache -s
@@ -217,7 +237,7 @@ jobs:
    valgrind:
       timeout-minutes: 20
       runs-on: ubuntu-latest
-      env: 
+      env:
         CXX: "ccache g++"
         CXXFLAGS: "-fdiagnostics-color"
       steps:
@@ -232,7 +252,7 @@ jobs:
                 ccache:${{ matrix.os }}:${{ matrix.compiler }}:${{ matrix.modules }}-modules
          - name: "Install dependencies . . ."
            run: |
-                sudo apt-get --yes update 
+                sudo apt-get --yes update
                 sudo apt-get install -y ccache expect libc6-dbg libtool-bin valgrind
          - name: "Configure . . ."
            run: |
@@ -254,7 +274,7 @@ jobs:
    test-x86-32:
       timeout-minutes: 30
       runs-on: ubuntu-latest
-      env: 
+      env:
         GH_ACTIONS_ABI: "32"
         GH_ACTIONS_ARCH: "x86"
         GH_ACTIONS_TEST_PROG: "test_all"
@@ -263,4 +283,4 @@ jobs:
          - uses: actions/checkout@v2
          - name: "Running the quick tests in libsemigroups-docker-x86-32-base docker container . . ."
            run: |
-                ci/launch-docker-container.sh 
+                ci/launch-docker-container.sh
