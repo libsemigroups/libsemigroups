@@ -49,7 +49,7 @@ jobs:
     LD_LIBRARY_PATH: "/usr/share/miniconda/lib"
   steps:
   - bash: echo "##vso[task.prependpath]$CONDA/bin"
-    displayName: Add conda to PATH 
+    displayName: Add conda to PATH
   - bash: |
          conda install -c conda-forge --yes mamba;
          mamba install -c conda-forge --yes fmt;
@@ -65,7 +65,7 @@ jobs:
       path: $(CCACHE_DIR)
     displayName: Restore cache . . .
   - bash: |
-      ./autogen.sh 
+      ./autogen.sh
     displayName: "Run ./autogen.sh . . ."
   - bash: |
       ./configure --with-external-fmt --enable-fmt
@@ -115,7 +115,7 @@ jobs:
       path: $(CCACHE_DIR)
     displayName: "Restore cache . . ."
   - bash: |
-      ./autogen.sh 
+      ./autogen.sh
     displayName: "Run ./autogen.sh . . ."
   - bash: |
       ./configure --enable-fmt --enable-stats
@@ -176,8 +176,8 @@ jobs:
   - bash: |
       cd libsemigroups_pybind11
       sudo apt-get --yes update
-      sudo apt-get install python3 --yes 
-      sudo apt-get install python3-pip --yes 
+      sudo apt-get install python3 --yes
+      sudo apt-get install python3-pip --yes
       sudo -H pip3 install -r requirements.txt
     displayName: "Installing prerequisites for libsemigroups_pybind11 . . ."
   - bash: |
