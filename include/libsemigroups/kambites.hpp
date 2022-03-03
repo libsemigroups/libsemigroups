@@ -410,7 +410,7 @@ namespace libsemigroups {
           size_t i = relation_prefix(it, y.cend());
           if (i != UNDEFINED) {
             size_t n = it - y.cbegin();
-            y.erase(y.cbegin() + x.size(), y.cend());
+            y.erase(y.begin() + x.size(), y.end());
             return std::make_tuple(
                 i, x.cbegin() + n, first + (XY(i).size() - (x.size() - n)));
           }
@@ -628,7 +628,7 @@ namespace libsemigroups {
         std::tie(s, it_zrb, it_wp)
             = p_active(Z(rb), w.cbegin() + Z(r).size(), w.cend());
         LIBSEMIGROUPS_ASSERT(s < _relation_words.size());
-        // we could just use w.erase(w.cbegin(), it_wp); if not for the
+        // we could just use w.erase(w.begin(), it_wp); if not for the
         // if-statement in the next line requiring the old w.
         internal_type wp(it_wp, w.cend());
         if (!wp_prefix(wp, wp, Z(s))) {
@@ -639,7 +639,7 @@ namespace libsemigroups {
         if (sb != UNDEFINED) {
           // line 10
           replace_prefix(wp, Z(s));
-          wp.erase(wp.cbegin(), wp.cbegin() + Z(s).size());
+          wp.erase(wp.begin(), wp.begin() + Z(s).size());
           internal_type b(X(sb).cbegin() + (Z(rb).cend() - it_zrb),
                           X(sb).cend());  // b
           if (wp_prefix(internal_type(w0),
@@ -837,12 +837,12 @@ namespace libsemigroups {
       internal_type u(w.cbegin() + i + XY(j).size(), w.cend());
       replace_prefix(u, Z(j));
       LIBSEMIGROUPS_ASSERT(detail::is_prefix(u, Z(j)));
-      u.erase(u.cbegin(), u.cbegin() + Z(j).size());
+      u.erase(u.begin(), u.begin() + Z(j).size());
 
       size_t k = prefix_of_complement(j, p.cbegin() + i, p.cend());
       LIBSEMIGROUPS_ASSERT(k != UNDEFINED);
 
-      w.erase(w.cbegin() + i, w.cend());
+      w.erase(w.begin() + i, w.end());
       w += XYZ(k);
       w += u;
       LIBSEMIGROUPS_ASSERT(detail::is_prefix(w, p));
@@ -943,11 +943,11 @@ namespace libsemigroups {
               v.cbegin() + XY(j).size(), v.cend(), Z(j).cbegin(), Z(j).cend());
 
           if (up_start_Z && vp_start_Z) {  // line 22
-            u.erase(u.cbegin(), u.cbegin() + XYZ(i).size());
+            u.erase(u.begin(), u.begin() + XYZ(i).size());
             auto k = Z_active_complement(i, u);
             k      = (k == UNDEFINED ? i : k);
             u      = Z(k) + u;
-            v.erase(v.cbegin(), v.cbegin() + XYZ(j).size());
+            v.erase(v.begin(), v.begin() + XYZ(j).size());
             v = Z(k) + v;
             p.clear();
             // line 23
@@ -957,17 +957,17 @@ namespace libsemigroups {
             } else {
               p = Z(i);
             }
-            u.erase(u.cbegin(), u.cbegin() + XY(i).size());
-            v.erase(v.cbegin(), v.cbegin() + XY(i).size());
+            u.erase(u.begin(), u.begin() + XY(i).size());
+            v.erase(v.begin(), v.begin() + XY(i).size());
           } else if (vp_start_Z) {  // line 30
-            u.erase(u.cbegin(), u.cbegin() + XY(i).size());
-            v.erase(v.cbegin(), v.cbegin() + XYZ(j).size());
+            u.erase(u.begin(), u.begin() + XY(i).size());
+            v.erase(v.begin(), v.begin() + XYZ(j).size());
             v = Z(i) + v;
             p.clear();
           } else if (up_start_Z) {  // line 32
-            u.erase(u.cbegin(), u.cbegin() + XYZ(i).size());
+            u.erase(u.begin(), u.begin() + XYZ(i).size());
             u = Z(j) + u;
-            v.erase(v.cbegin(), v.cbegin() + XY(j).size());
+            v.erase(v.begin(), v.begin() + XY(j).size());
             p.clear();
           } else {  // line 34
             p = detail::maximum_common_suffix(Z(i), Z(j));
@@ -981,8 +981,8 @@ namespace libsemigroups {
                               Z(j).cend() - p.size())) {
               return false;
             } else {
-              u.erase(u.cbegin(), u.cbegin() + XYZ(i).size() - p.size());
-              v.erase(v.cbegin(), v.cbegin() + XYZ(j).size() - p.size());
+              u.erase(u.begin(), u.begin() + XYZ(i).size() - p.size());
+              v.erase(v.begin(), v.begin() + XYZ(j).size() - p.size());
             }
           }
         }
