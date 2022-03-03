@@ -945,6 +945,14 @@ namespace libsemigroups {
         return const_reverse_iterator(cbegin());
       }
 
+      const_iterator begin() const {
+        return cbegin();
+      }
+
+      const_iterator end() const {
+        return cend();
+      }
+
       ////////////////////////////////////////////////////////////////////////
       // MultiStringView - operators - public
       ////////////////////////////////////////////////////////////////////////
