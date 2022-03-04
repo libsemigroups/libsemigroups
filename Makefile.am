@@ -591,6 +591,7 @@ EXTRA_DIST += etc/make-doc-sphinx.sh
 EXTRA_DIST += etc/make-doc-yml.sh
 EXTRA_DIST += etc/make-format.sh
 EXTRA_DIST += etc/make-lint.sh
+EXTRA_DIST += etc/post-proc-doc.sh
 EXTRA_DIST += etc/version-number.sh
 EXTRA_DIST += extern/HPCombi/VERSION
 EXTRA_DIST += src/kbe-impl.hpp 
