@@ -1,4 +1,4 @@
-.. |libsemigroups-version| replace:: 2.1.3
+.. |libsemigroups-version| replace:: 2.1.4
 
 .. _Installation:
 
@@ -9,7 +9,7 @@ Installing with conda
 ---------------------
 
 This installation method assumes that you have anaconda or miniconda installed.
-See the `getting started`_ and `miniconda download page`_ on the conda_ 
+See the `getting started`_ and `miniconda download page`_ on the conda_
 website.
 
 .. _getting started: http://bit.ly/33B0Vfs
@@ -56,7 +56,7 @@ To build ``libsemigroups`` from a release archive:
 .. parsed-literal::
 
    curl -L -O https://github.com/libsemigroups/libsemigroups/releases/latest/download/libsemigroups-|libsemigroups-version|.tar.gz
-   tar -xf libsemigroups-|libsemigroups-version|.tar.gz 
+   tar -xf libsemigroups-|libsemigroups-version|.tar.gz
    rm -f libsemigroups-|libsemigroups-version|.tar.gz
    cd libsemigroups-|libsemigroups-version|
    ./configure && make -j8 && sudo make install
@@ -104,7 +104,7 @@ In addition to the usual ``autoconf`` configuration options, the following
 configuration options are available for ``libsemigroups``:
 
 ==========================  ==================================================
-Option 
+Option
 --------------------------  --------------------------------------------------
 --enable-code-coverage      enable code coverage support (default=no)
 --enable-compile-warnings   enable compiler warnings (default=no)
@@ -157,7 +157,7 @@ location unknown to ``pkg-config``, one needs to add it to
 will print the version of the installed ``libsemigroups``. (As usual,
 ``PKG_CONFIG_PATH`` may be exported, added to shell configuration, etc.)
 
-Building the documentation 
+Building the documentation
 --------------------------
 
 The following are required to be able to build the documentation:
@@ -171,13 +171,13 @@ the above by doing:
 
 ::
 
-    brew install doxygen sphinx 
-    pip3 install -r docs/requirements 
+    brew install doxygen sphinx
+    pip3 install -r docs/requirements
 
 .. TODO add ubuntu instructions
 
 Then it ought to be possible to just run ``make doc`` in the ``libsemigroups``
-directory. 
+directory.
 
 Issues
 ------

@@ -1,6 +1,18 @@
 Changelog - version 2
 =====================
 
+v2.1.4 (released 04/03/2022)
+----------------------------
+
+This is a minor release with with a few minor changes:
+
+* it is now possible to create the `quotient_froidure_pin` of a congruence with
+  infinitely many classes;
+* some exception messages were corrected for `Bipartition` objects;
+* compilation of v2.1.0 to v2.1.3 did not work in cygwin for Windows;
+* there was a file missing in the archive, which meant that it wasn't possible
+  to build the documentation.
+
 v2.1.3 (released 16/12/2021)
 ----------------------------
 
@@ -30,7 +42,7 @@ release:
 * new implementations of the linear time algorithm by Kambites for equality
   checking and the algorithm by Mitchell and Tsalakou
   for finding normal forms in small overlap monoids in the class ``Kambites``
-  (@james-d-mitchell and @mariatsalakou 
+  (@james-d-mitchell and @mariatsalakou
   https://github.com/libsemigroups/libsemigroups/pull/278)
 * a performance improvement in the implementation of Konieczny algorithm, for
   determining the structure of a finite semigroup or monoid (@flsmith
@@ -38,15 +50,15 @@ release:
   https://github.com/libsemigroups/libsemigroups/pull/304)
 * an implement of the linear time algorithm by Radoszewski and Rytter for
   checking equality of words in free bands in the function
-  ``freeband_equal_to`` (@reiniscirpons 
+  ``freeband_equal_to`` (@reiniscirpons
   https://github.com/libsemigroups/libsemigroups/pull/298)
 * a major revision, expansion of the settings, and improvement in the
   performance of the implementation of the Todd-Coxeter algorithm in the
-  class ``ToddCoxeter`` (@james-d-mitchell 
-  https://github.com/libsemigroups/libsemigroups/pull/313 
+  class ``ToddCoxeter`` (@james-d-mitchell
+  https://github.com/libsemigroups/libsemigroups/pull/313
   https://github.com/libsemigroups/libsemigroups/pull/318)
 * some other minor issues in the class templates
-  ``FroidurePin`` and ``ActionDigraph`` were resolved 
+  ``FroidurePin`` and ``ActionDigraph`` were resolved
   (@james-d-mitchell https://github.com/libsemigroups/libsemigroups/pull/299
   https://github.com/libsemigroups/libsemigroups/pull/300)
 
@@ -83,7 +95,7 @@ for matrices, transformations, and other elements of semigroups.
 simplifications were made as a consequence.  The documentation has been
 improved, some deprecated functionality was remove, and other minor
 improvements, and simplifications were made. The included version of `eigen`_
-was updated from version 3.3.7 to 3.3.9. 
+was updated from version 3.3.7 to 3.3.9.
 
 .. _eigen: http://eigen.tuxfamily.org/
 
@@ -108,12 +120,12 @@ The following backwards incompatible changes have been made:
 - every function including ``_nr_`` has been renamed using ``_number_of_`` for
   consistency
 - ``const`` has been removed from all function parameters passed by value
-- ``congruence_type`` was renamed ``congruence_kind`` for consistency 
+- ``congruence_type`` was renamed ``congruence_kind`` for consistency
 - ``CongruenceByPairsHelper`` was renamed ``CongruenceByPairs``
 - ``Congruence::policy`` was renamed ``Congruence::options``
 - ``FroidurePin::copy_closure`` returns by value instead of returning a pointer
 - ``FroidurePin::copy_add_generators`` returns by value instead of returning a
-  pointer 
+  pointer
 - ``FroidurePin::letter_to_pos`` was renamed ``FroidurePin::current_position``
 - ``FroidurePin::length_const`` was renamed ``FroidurePin::length``
 - ``FroidurePin::length_non_const`` was renamed ``FroidurePin::current_length``
@@ -132,7 +144,7 @@ Changelog - version 1
 =====================
 
 .. toctree::
-  
+
    changelog-v1
 
 .. _J. James: http://www.jamezone.org/
