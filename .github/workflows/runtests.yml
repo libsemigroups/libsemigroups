@@ -64,7 +64,7 @@ jobs:
            run: |
                 ./test_all "[quick],[standard]"
    config-options:
-      timeout-minutes: 30
+      timeout-minutes: 35
       runs-on: ubuntu-latest
       env: 
         PKG_CONFIG_PATH: "/usr/share/miniconda/lib/pkgconfig:/usr/share/miniconda/share/pkgconfig"
