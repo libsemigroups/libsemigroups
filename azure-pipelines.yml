@@ -122,7 +122,7 @@ jobs:
       ccache -z
       make test_todd_coxeter -j4 || exit 1
       ccache -s
-      ./test_todd_coxeter "[123]"
+      ./test_todd_coxeter "[041],[045]"
     displayName: "Test flags: --enable-fmt --enable-stats"
   - bash: |
       make clean
@@ -130,7 +130,7 @@ jobs:
       ccache -z
       make test_todd_coxeter -j4 || exit 1
       ccache -s
-      ./test_todd_coxeter "[123]"
+      ./test_todd_coxeter "[041],[045]"
     displayName: "Test flags: --enable-fmt --disable-stats"
   - bash: |
       make clean
@@ -138,7 +138,7 @@ jobs:
       ccache -z
       make test_todd_coxeter -j4 || exit 1
       ccache -s
-      ./test_todd_coxeter "[123]"
+      ./test_todd_coxeter "[041],[045]"
     displayName: "Test flags: --disable-fmt --enable-stats"
   - bash: |
       make clean
@@ -146,7 +146,7 @@ jobs:
       ccache -z
       make test_todd_coxeter -j4 || exit 1
       ccache -s
-      ./test_todd_coxeter "[123]"
+      ./test_todd_coxeter "[041],[045]"
     displayName: "Test flags: --disable-fmt --disable-stats"
 
 - job: libsemigroups_pybind11
