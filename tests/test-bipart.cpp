@@ -450,6 +450,9 @@ namespace libsemigroups {
     REQUIRE(xxx <= xx);
     REQUIRE(xx >= xxx);
 
+    // Check for odd degree
+    REQUIRE_THROWS_AS(Bipartition::make({0, 1, 2}), LibsemigroupsException);
+
     REQUIRE_THROWS_AS(Bipartition::make({{0, 2, 3, 4, 5, 6, 9, -1, -2, -7},
                                          {7, 10, -3, -9, -10},
                                          {8, -4},
