@@ -8,7 +8,6 @@ jobs:
           shell: C:\cygwin64\bin\bash.exe --login -o igncr '{0}'
       timeout-minutes: 40
       runs-on: windows-latest
-      if: ${{ !(github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository) }}
       env:
         CHERE_INVOKING: 1
       steps:
