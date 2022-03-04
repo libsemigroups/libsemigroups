@@ -184,7 +184,7 @@ jobs:
                 echo 
                 ( ! (grep "WARNING:" make-doc-sphinx.log | grep -v "WARNING: bibtex citations changed, rerun sphinx" | grep -v "WARNING: Could not lex literal_block") )
    macosx:
-      timeout-minutes: 15
+      timeout-minutes: 30
       runs-on: macOS-latest
       env: 
          CXX: "ccache clang++"
