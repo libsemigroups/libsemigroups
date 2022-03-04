@@ -84,7 +84,7 @@ jobs:
            run: |
                 ./test_all "[quick],[standard]"
    config-options:
-      timeout-minutes: 30
+      timeout-minutes: 35
       runs-on: ubuntu-latest
       env:
         PKG_CONFIG_PATH: "/usr/share/miniconda/lib/pkgconfig:/usr/share/miniconda/share/pkgconfig"
@@ -204,7 +204,7 @@ jobs:
                 echo
                 ( ! (grep "WARNING:" make-doc-sphinx.log | grep -v "WARNING: bibtex citations changed, rerun sphinx" | grep -v "WARNING: Could not lex literal_block") )
    macosx:
-      timeout-minutes: 15
+      timeout-minutes: 30
       runs-on: macOS-latest
       env:
          CXX: "ccache clang++"
