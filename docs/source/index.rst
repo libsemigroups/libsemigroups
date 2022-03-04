@@ -1,4 +1,4 @@
-libsemigroups - Version 2.1.3
+libsemigroups - Version 2.1.4
 =============================
 
 C++ library for semigroups and monoids
@@ -24,23 +24,23 @@ monoids. Namely:
 - an implementation of the algorithm for solving the word problem
   for small overlap monoids, and for computing normal forms in such monoids;
   see `Kambites <https://doi.org/10.1016/j.jalgebra.2008.09.038>`__
-  :cite:`Kambites2009aa`, 
+  :cite:`Kambites2009aa`,
   `Kambites <https://doi.org/10.1016/j.jalgebra.2008.12.028>`__
   :cite:`Kambites2009ab`, and `Mitchell-Tsalakou
-  <http://arxiv.org/abs/2105.12125>`__ :cite:`Mitchell2021aa`. 
+  <http://arxiv.org/abs/2105.12125>`__ :cite:`Mitchell2021aa`.
 
 .. _Froidure-Pin algorithm: https://www.irif.fr/~jep/PDF/Rio.pdf
 .. _Todd-Coxeter algorithm: https://en.wikipedia.org/wiki/Todd%E2%80%93Coxeter_algorithm
 .. _Knuth-Bendix algorithm: https://en.wikipedia.org/wiki/Knuth%E2%80%93Bendix_completion_algorithm
 .. _Schreier-Sims algorithm: https://en.wikipedia.org/wiki/Schreier%E2%80%93Sims_algorithm
 .. _Konieczny: https://link.springer.com/article/10.1007/BF02573672
-.. _Lallement-McFadden: https://www.sciencedirect.com/science/article/pii/S0747717108800570 
+.. _Lallement-McFadden: https://www.sciencedirect.com/science/article/pii/S0747717108800570
 .. _Radoszewski-Rytter: https://link.springer.com/chapter/10.1007/978-3-642-11266-9_55
 
 ``libsemigroups`` is partly based on `Algorithms for computing finite
-semigroups`_, `Expository Slides`_, and `Semigroupe 2.01`_ by `Jean-Eric Pin`_.  
+semigroups`_, `Expository Slides`_, and `Semigroupe 2.01`_ by `Jean-Eric Pin`_.
 
-.. _Algorithms for computing finite semigroups: https://www.irif.fr/~jep/PDF/Rio.pdf 
+.. _Algorithms for computing finite semigroups: https://www.irif.fr/~jep/PDF/Rio.pdf
 .. _Expository slides: https://www.irif.fr/~jep/PDF/Exposes/StAndrews.pdf
 .. _Semigroupe 2.01: https://www.irif.fr/~jep/Logiciels/Semigroupe2.0/semigroupe2.html
 .. _Jean-Eric Pin: https://www.irif.fr/~jep/
@@ -51,15 +51,15 @@ possible to use ``libsemigroups`` directly in Python 3 via the package
 available on github_, and some related projects are here_.
 
 .. _github: https://github.com/libsemigroups/libsemigroups
-.. _here: https://github.com/libsemigroups 
+.. _here: https://github.com/libsemigroups
 .. _libsemigroups_pybind11: https://libsemigroups.github.io/libsemigroups_pybind11/
-.. _Semigroups package for GAP: https://semigroups.github.io/Semigroups 
+.. _Semigroups package for GAP: https://semigroups.github.io/Semigroups
 
 The main classes in ``libsemigroups`` are named after the algorithms they
 implement; see, for example,  :cpp:any:`libsemigroups::FroidurePin`,
 :cpp:any:`libsemigroups::Konieczny`,
 :cpp:any:`libsemigroups::congruence::ToddCoxeter`,
-:cpp:any:`libsemigroups::fpsemigroup::Kambites`, 
+:cpp:any:`libsemigroups::fpsemigroup::Kambites`,
 :cpp:any:`libsemigroups::fpsemigroup::KnuthBendix`, and
 :cpp:any:`libsemigroups::SchreierSims`.
 
@@ -69,7 +69,7 @@ are generic and easily adapted to user-defined types.
 
 ``libsemigroups`` uses: `HPCombi`_ which uses the SSE and AVX instruction sets
 for very fast manipulation of transformations, partial permutations,
-permutations, and boolean matrices of small size;  `catch`_ for tests; 
+permutations, and boolean matrices of small size;  `catch`_ for tests;
 `fmt`_ for reporting; and `eigen`_ for some linear algebra computations.
 
 .. _HPCombi: https://github.com/hivert/HPCombi
@@ -80,7 +80,7 @@ permutations, and boolean matrices of small size;  `catch`_ for tests;
 .. toctree::
    :maxdepth: 1
    :caption: Installation and changelog
-  
+
    install
    changelog
 
@@ -108,8 +108,8 @@ permutations, and boolean matrices of small size;  `catch`_ for tests;
 .. toctree::
    :caption: Further info
    :maxdepth: 1
-  
+
    semigroupe
    authors
 
-.. _Semigroupe: https://www.irif.fr/~jep/Logiciels/Semigroupe2.0/semigroupe2.html 
+.. _Semigroupe: https://www.irif.fr/~jep/Logiciels/Semigroupe2.0/semigroupe2.html
