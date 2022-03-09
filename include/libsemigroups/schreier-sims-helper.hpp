@@ -18,10 +18,8 @@
 // This file contains an implementation of a backtrack search for computing
 // the intersection of two permutations given by Schreier-Sims algorithm.
 
-// TODO
-// 1. Implement base change
-// 2. Keep track of representatives of phi
-// 3. Calculate Omega
+// TODO:
+// 1. Test that it works
 
 #ifndef LIBSEMIGROUPS_SCHREIER_SIMS_HELPER_HPP_
 #define LIBSEMIGROUPS_SCHREIER_SIMS_HELPER_HPP_
@@ -114,7 +112,7 @@ namespace libsemigroups {
         if (S2B.contains(state_elem[depth])) {
           T.add_generator(state_elem[depth]);
           // As soon as we find one, the rest are in a coset of stabiliser, so
-// dont need to look at any more nodes.
+          // dont need to look at any more nodes.
           depth = stab_depth;
         }
         // If previous if statement passes then depth = stab_depth > 0 by the
