@@ -31,13 +31,9 @@
 #include "transf.hpp"         // for LeastPerm
 #include "types.hpp"          // for SmallestInteger
 
-namespace libsemigroups {
+#include <iostream>
 
-  // template <size_t N,
-  //           typename TPointType,
-  //           typename TElementType,
-  //           typename TTraits>
-  // class SchreierSims;  // forward decl
+namespace libsemigroups {
 
   namespace schreier_sims_helper {
 
@@ -47,10 +43,20 @@ namespace libsemigroups {
     template <size_t N>
     using element_type = typename SchreierSims<N>::element_type;
 
+    // This might not be correct for general traits
+    template <size_t N>
+    using One = typename SchreierSims<N>::One;
+
+    // This might not be correct for general traits
+    template <size_t N>
+    using Product = typename SchreierSims<N>::Product;
+
     template <size_t N>
     void intersection(SchreierSims<N>& T,
                       SchreierSims<N>& S1,
                       SchreierSims<N>& S2) {
+      S1.run();
+      S2.run();
       if (S2.number_of_generators() < S1.number_of_generators()) {
         intersection(T, S2, S1);
         return;
@@ -70,7 +76,6 @@ namespace libsemigroups {
         base_size = N - 1;
 
       SchreierSims<N> S2B;
-      S1.run();
       for (size_t depth = 0; depth < base_size; ++depth) {
         S2B.add_base_point(S1.base(depth));
       }
@@ -98,17 +103,17 @@ namespace libsemigroups {
       std::array<size_t, N>          state_index;
       std::array<element_type<N>, N> state_elem;
       state_index.fill(0);
-      state_elem.fill(S1.One(N));
+      state_elem.fill(One<N>()(N));
 
       while (stab_depth > 0) {
         for (; depth < base_size; ++depth) {
           // This is a safe memory access as base_size <= N-1, so depth < N-1
           // during the loop and so depth + 1 <= N-1
           LIBSEMIGROUPS_ASSERT(depth + 1 < N);
-          S1.Product(state_elem[depth + 1],
-                     state_elem[depth],
-                     S1.transversal_element(
-                         depth, refined_orbit.at(depth, state_index[depth])));
+          Product<N>()(state_elem[depth + 1],
+                       state_elem[depth],
+                       S1.transversal_element(
+                           depth, refined_orbit.at(depth, state_index[depth])));
         }
         if (S2B.contains(state_elem[depth])) {
           T.add_generator(state_elem[depth]);
@@ -126,7 +131,7 @@ namespace libsemigroups {
         // index. Adjust stabilizer depth as depths are exhausted.
         for (;; --depth) {
           state_index[depth]++;
-          if (state_index[depth] < refined_orbit[depth].size())
+          if (state_index[depth] < refined_orbit.size(depth))
             break;
           if (depth < stab_depth)
             stab_depth = depth;
