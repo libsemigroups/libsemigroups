@@ -41,7 +41,7 @@ namespace libsemigroups {
     using Perm = decltype(S)::element_type;
     S.add_generator(Perm({0}));
     T.add_generator(Perm({0}));
-    U = schreier_sims_helper::intersection(S, T);
+    schreier_sims_helper::intersection(U, S, T);
     REQUIRE(U.size() == 1);
     REQUIRE(U.contains(Perm({0})));
   }
@@ -55,7 +55,7 @@ namespace libsemigroups {
     using Perm = SchreierSims<2>::element_type;
     S.add_generator(Perm({0, 1}));
     T.add_generator(Perm({1, 0}));
-    U = schreier_sims_helper::intersection(S, T);
+    schreier_sims_helper::intersection(U, S, T);
     REQUIRE(U.size() == 1);
     REQUIRE(U.sift(Perm({1, 0})) == Perm({1, 0}));
     REQUIRE(!U.contains(Perm({1, 0})));

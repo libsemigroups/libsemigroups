@@ -33,11 +33,11 @@
 
 namespace libsemigroups {
 
-  template <size_t N,
-            typename TPointType   = typename SmallestInteger<N>::type,
-            typename TElementType = LeastPerm<N>,
-            typename TTraits = SchreierSimsTraits<N, TPointType, TElementType>>
-  class SchreierSims;  // forward decl
+  // template <size_t N,
+  //           typename TPointType,
+  //           typename TElementType,
+  //           typename TTraits>
+  // class SchreierSims;  // forward decl
 
   namespace schreier_sims_helper {
 
@@ -48,17 +48,18 @@ namespace libsemigroups {
     using element_type = typename SchreierSims<N>::element_type;
 
     template <size_t N>
-    SchreierSims<N> intersection(SchreierSims<N> const& S1,
-                                 SchreierSims<N> const& S2) {
-      if (S2.number_of_generators() < S1.number_of_generators())
-        return intersection(S2, S1);
-
-      SchreierSims<N> T;
+    void intersection(SchreierSims<N>& T,
+                      SchreierSims<N>& S1,
+                      SchreierSims<N>& S2) {
+      if (S2.number_of_generators() < S1.number_of_generators()) {
+        intersection(T, S2, S1);
+        return;
+      }
 
       // If N <= 1 then both S1, S2 are trivial.
       if (N <= 1) {
         T.run();
-        return T;
+        return;
       }
 
       // Note that if N-1 points are fixed then the N-th point is also fixed.
@@ -82,11 +83,11 @@ namespace libsemigroups {
       detail::StaticVector2<point_type<N>, N> refined_orbit;
       for (size_t depth = 0; depth < base_size; ++depth) {
         // First point is always base point to make algorithm simpler
-        refined_orbit[depth].push_back(S1.base(depth));
+        refined_orbit.push_back(depth, S1.base(depth));
         for (point_type<N> pt = 0; pt < N; ++pt)
-          if ((pt != S1.base(depth)) && S1.orbit_lookup(depth, pt)
-              && S2B.orbit_lookup(depth, pt))
-            refined_orbit[depth].push_back(pt);
+          if ((pt != S1.base(depth)) && S1.orbits_lookup(depth, pt)
+              && S2B.orbits_lookup(depth, pt))
+            refined_orbit.push_back(depth, pt);
       }
 
       // Initially assume that we have traversed the tree to the leaf
@@ -97,7 +98,7 @@ namespace libsemigroups {
       std::array<size_t, N>          state_index;
       std::array<element_type<N>, N> state_elem;
       state_index.fill(0);
-      state_elem.fill(S1.One());
+      state_elem.fill(S1.One(N));
 
       while (stab_depth > 0) {
         for (; depth < base_size; ++depth) {
@@ -107,7 +108,7 @@ namespace libsemigroups {
           S1.Product(state_elem[depth + 1],
                      state_elem[depth],
                      S1.transversal_element(
-                         depth, refined_orbit[depth][state_index[depth]]));
+                         depth, refined_orbit.at(depth, state_index[depth])));
         }
         if (S2B.contains(state_elem[depth])) {
           T.add_generator(state_elem[depth]);
@@ -123,18 +124,19 @@ namespace libsemigroups {
 
         // Find largest depth that has an unvisited node and increment its
         // index. Adjust stabilizer depth as depths are exhausted.
-        for (; depth >= 0; --depth) {
+        for (;; --depth) {
           state_index[depth]++;
           if (state_index[depth] < refined_orbit[depth].size())
             break;
           if (depth < stab_depth)
             stab_depth = depth;
           state_index[depth] = 0;
+          if (depth == 0)
+            break;
         }
       }
 
       T.run();
-      return T;
     }
   }  // namespace schreier_sims_helper
 }  // namespace libsemigroups
