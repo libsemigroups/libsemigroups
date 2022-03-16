@@ -333,6 +333,8 @@ namespace libsemigroups {
     //! \parameters
     //! (None)
     size_t number_of_strong_generators(index_type depth) const noexcept {
+      if (_base_size == 0)
+        return 0;
       if (depth >= _base_size) {
         LIBSEMIGROUPS_EXCEPTION(
             "depth out of bounds, expected value in range [0, %d), got %d",
@@ -389,7 +391,7 @@ namespace libsemigroups {
     //! \complexity
     //! Constant.
     const_element_reference transversal_element(index_type depth,
-                                                point_type pt) const {
+                                                point_type pt) {
       if (depth >= _base_size) {
         LIBSEMIGROUPS_EXCEPTION(
             "depth out of bounds, expected value in range [0, %d), got %d",
@@ -418,8 +420,7 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Constant.
-    const_element_reference inversal_element(index_type depth,
-                                             point_type pt) const {
+    const_element_reference inversal_element(index_type depth, point_type pt) {
       if (depth >= _base_size) {
         LIBSEMIGROUPS_EXCEPTION(
             "depth out of bounds, expected value in range [0, %d), got %d",
@@ -446,7 +447,7 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Constant.
-    bool orbits_lookup(index_type depth, point_type pt) const noexcept {
+    bool orbits_lookup(index_type depth, point_type pt) {
       if (depth >= _base_size) {
         LIBSEMIGROUPS_EXCEPTION(
             "depth out of bounds, expected value in range [0, %d), got %d",
