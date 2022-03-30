@@ -57,7 +57,7 @@ namespace libsemigroups {
                       SchreierSims<N>& S2) {
       S1.run();
       S2.run();
-      if (S2.number_of_generators() < S1.number_of_generators()) {
+      if (S2.base_size() < S1.base_size()) {
         intersection(T, S2, S1);
         return;
       }

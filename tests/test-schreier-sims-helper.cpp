@@ -19,6 +19,7 @@
 
 #include <cstddef>  // for size_t
 #include <cstdint>  // for uint64_t
+#include <iostream>
 
 #include "catch.hpp"                 // for LIBSEMIGROUPS_TEST_CASE
 #include "libsemigroups/report.hpp"  // for ReportGuard
@@ -61,4 +62,133 @@ namespace libsemigroups {
     REQUIRE(!U.contains(Perm({1, 0})));
     REQUIRE(U.contains(Perm({0, 1})));
   }
+
+  LIBSEMIGROUPS_TEST_CASE("SchreierSimsHelper",
+                          "003",
+                          "cyclic group intersection (degree 13)",
+                          "[quick][schreier-sims]") {
+    auto             rg = ReportGuard(REPORT);
+    SchreierSims<13> S, T, U;
+    using Perm = SchreierSims<13>::element_type;
+    // Adapted from:
+    // https://math.stackexchange.com/q/4093199/152276
+    // (0, 1, 2, 3, 4)(5, 9)(6, 10)(7, 11)(8, 12)
+    S.add_generator(Perm({1, 2, 3, 4, 0, 9, 10, 11, 12, 5, 6, 7, 8}));
+    // (1, 4)(2, 3)(5, 6, 7, 8, 9, 10, 11, 12)
+    T.add_generator(Perm({0, 4, 3, 2, 1, 6, 7, 8, 9, 10, 11, 12, 5}));
+    schreier_sims_helper::intersection(U, S, T);
+    REQUIRE(U.size() == 2);
+    REQUIRE(!U.contains(Perm({1, 0, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12})));
+    REQUIRE(U.contains(Perm({0, 1, 2, 3, 4, 9, 10, 11, 12, 5, 6, 7, 8})));
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("SchreierSimsHelper",
+                          "004",
+                          "D10 and Z5 intersection",
+                          "[quick][schreier-sims]") {
+    auto             rg = ReportGuard(REPORT);
+    SchreierSims<12> S, T, U;
+    using Perm = SchreierSims<12>::element_type;
+    // (0, 2, 4, 6, 8)(1, 3, 5, 7, 9)(10, 11)
+    S.add_generator(Perm({2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 11, 10}));
+    // (0, 2, 4, 6, 8)(1, 3, 5, 7, 9)
+    // (0, 1)(2, 9)(3, 8)(4, 7)(5, 6)
+    T.add_generator(Perm({2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 10, 11}));
+    T.add_generator(Perm({1, 0, 9, 8, 7, 6, 5, 4, 3, 2, 10, 11}));
+    schreier_sims_helper::intersection(U, S, T);
+    REQUIRE(U.size() == 5);
+    // (0, 6, 2, 8, 4)(1, 7, 3, 9, 5)
+    REQUIRE(U.contains(Perm({6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 10, 11})));
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("SchreierSimsHelper",
+                          "005",
+                          "D8 and Q8 intersection",
+                          "[quick][schreier-sims]") {
+    auto            rg = ReportGuard(REPORT);
+    SchreierSims<8> S, T, U;
+    using Perm = SchreierSims<8>::element_type;
+    S.add_generator(Perm({1, 3, 7, 5, 2, 0, 4, 6}));
+    S.add_generator(Perm({2, 4, 3, 6, 5, 7, 0, 1}));
+    S.add_generator(Perm({3, 5, 6, 0, 7, 1, 2, 4}));
+    T.add_generator(Perm({1, 0, 7, 5, 6, 3, 4, 2}));
+    T.add_generator(Perm({2, 4, 3, 6, 5, 7, 0, 1}));
+    T.add_generator(Perm({3, 5, 6, 0, 7, 1, 2, 4}));
+    schreier_sims_helper::intersection(U, S, T);
+    REQUIRE(U.size() == 4);
+    REQUIRE(U.contains(Perm({2, 4, 3, 6, 5, 7, 0, 1})));
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("SchreierSimsHelper",
+                          "006",
+                          "primitive on 8 points intersection",
+                          "[quick][schreier-sims]") {
+    auto            rg = ReportGuard(REPORT);
+    SchreierSims<8> S, T, U;
+    using Perm = SchreierSims<8>::element_type;
+    S.add_generator(Perm({0, 2, 3, 4, 1, 5, 6, 7}));
+    S.add_generator(Perm({1, 2, 4, 0, 3, 5, 6, 7}));
+    T.add_generator(Perm({1, 2, 3, 4, 5, 6, 0, 7}));
+    T.add_generator(Perm({0, 1, 2, 3, 4, 6, 7, 5}));
+    schreier_sims_helper::intersection(U, S, T);
+    REQUIRE(U.size() == 10);
+    REQUIRE(U.contains(Perm({0, 3, 4, 1, 2, 5, 6, 7})));
+    REQUIRE(U.contains(Perm({1, 2, 4, 0, 3, 5, 6, 7})));
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("SchreierSimsHelper",
+                          "007",
+                          "primitive on 8 points intersection (swap order)",
+                          "[quick][schreier-sims]") {
+    auto            rg = ReportGuard(REPORT);
+    SchreierSims<8> S, T, U;
+    using Perm = SchreierSims<8>::element_type;
+    S.add_generator(Perm({0, 2, 3, 4, 1, 5, 6, 7}));
+    S.add_generator(Perm({1, 2, 4, 0, 3, 5, 6, 7}));
+    T.add_generator(Perm({1, 2, 3, 4, 5, 6, 0, 7}));
+    T.add_generator(Perm({0, 1, 2, 3, 4, 6, 7, 5}));
+    schreier_sims_helper::intersection(U, T, S);
+    REQUIRE(U.size() == 10);
+    REQUIRE(U.contains(Perm({0, 3, 4, 1, 2, 5, 6, 7})));
+    REQUIRE(U.contains(Perm({1, 2, 4, 0, 3, 5, 6, 7})));
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("SchreierSimsHelper",
+                          "008",
+                          "A13 and PGL(2, 11) intersection",
+                          "[quick][schreier-sims]") {
+    auto             rg = ReportGuard(REPORT);
+    SchreierSims<13> S, T, U;
+    using Perm = SchreierSims<13>::element_type;
+    S.add_generator(Perm({1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 0}));
+    S.add_generator(Perm({0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 11, 12, 10}));
+    T.add_generator(Perm({1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 0, 11, 12}));
+    T.add_generator(Perm({0, 2, 4, 6, 8, 10, 1, 3, 5, 7, 9, 11, 12}));
+    T.add_generator(Perm({11, 10, 5, 7, 8, 2, 9, 3, 4, 6, 1, 0, 12}));
+    schreier_sims_helper::intersection(U, S, T);
+    REQUIRE(U.size() == 660);
+    REQUIRE(U.contains(Perm({1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 0, 11, 12})));
+    REQUIRE(U.contains(Perm({0, 4, 8, 1, 5, 9, 2, 6, 10, 3, 7, 11, 12})));
+    REQUIRE(U.contains(Perm({11, 10, 5, 7, 8, 2, 9, 3, 4, 6, 1, 0, 12})));
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("SchreierSimsHelper",
+                          "009",
+                          "A13 and PGL(2, 11) intersection (swap order)",
+                          "[quick][schreier-sims]") {
+    auto             rg = ReportGuard(REPORT);
+    SchreierSims<13> S, T, U;
+    using Perm = SchreierSims<13>::element_type;
+    S.add_generator(Perm({1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 0}));
+    S.add_generator(Perm({0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 11, 12, 10}));
+    T.add_generator(Perm({1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 0, 11, 12}));
+    T.add_generator(Perm({0, 2, 4, 6, 8, 10, 1, 3, 5, 7, 9, 11, 12}));
+    T.add_generator(Perm({11, 10, 5, 7, 8, 2, 9, 3, 4, 6, 1, 0, 12}));
+    schreier_sims_helper::intersection(U, T, S);
+    REQUIRE(U.size() == 660);
+    REQUIRE(U.contains(Perm({1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 0, 11, 12})));
+    REQUIRE(U.contains(Perm({0, 4, 8, 1, 5, 9, 2, 6, 10, 3, 7, 11, 12})));
+    REQUIRE(U.contains(Perm({11, 10, 5, 7, 8, 2, 9, 3, 4, 6, 1, 0, 12})));
+  }
+
 }  // namespace libsemigroups
