@@ -666,7 +666,7 @@ namespace libsemigroups {
     }
 
     void schreier_sims() {
-      if (_finished) {
+      if (_finished || _strong_gens.size(0) == 0) {
         return;
       }
 
@@ -683,7 +683,8 @@ namespace libsemigroups {
         }
       }
 
-      index_type first = 0;
+      index_type first = _strong_gens.size(0) - 1;
+      LIBSEMIGROUPS_ASSERT(first < N);
       for (index_type i = 1; i < _base_size + 1; i++) {
         point_type beta      = _base[i - 1];
         index_type old_first = _strong_gens.size(i);
