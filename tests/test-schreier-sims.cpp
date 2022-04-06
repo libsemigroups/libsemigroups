@@ -3074,4 +3074,59 @@ namespace libsemigroups {
     }
     REQUIRE_THROWS_AS(S.add_base_point(6), LibsemigroupsException);
   }
+
+  LIBSEMIGROUPS_TEST_CASE("SchreierSims",
+                          "042",
+                          "A17 bug",
+                          "[quick][schreier-sims]") {
+    auto             rg = ReportGuard(REPORT);
+    SchreierSims<17> S, T;
+    using Perm = SchreierSims<17>::element_type;
+    S.add_generator(
+        Perm({0, 1, 2, 4, 16, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 3}));
+    S.add_generator(
+        Perm({0, 1, 2, 3, 5, 16, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 4}));
+    S.add_generator(
+        Perm({0, 1, 2, 3, 4, 6, 16, 7, 8, 9, 10, 11, 12, 13, 14, 15, 5}));
+    S.add_generator(
+        Perm({0, 1, 2, 3, 4, 5, 7, 16, 8, 9, 10, 11, 12, 13, 14, 15, 6}));
+    S.add_generator(
+        Perm({0, 1, 2, 3, 4, 5, 6, 8, 16, 9, 10, 11, 12, 13, 14, 15, 7}));
+    S.add_generator(
+        Perm({0, 1, 2, 3, 4, 5, 6, 7, 9, 16, 10, 11, 12, 13, 14, 15, 8}));
+    S.add_generator(
+        Perm({0, 1, 2, 3, 4, 5, 6, 7, 8, 10, 16, 11, 12, 13, 14, 15, 9}));
+    S.add_generator(
+        Perm({0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 11, 16, 12, 13, 14, 15, 10}));
+    S.add_generator(
+        Perm({0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 16, 13, 14, 15, 11}));
+    S.add_generator(
+        Perm({0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 16, 14, 15, 12}));
+    S.add_generator(
+        Perm({0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 14, 16, 15, 13}));
+    S.add_generator(
+        Perm({0, 1, 14, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 16, 15, 2}));
+    S.add_generator(
+        Perm({0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 16, 14, 15}));
+    S.add_generator(
+        Perm({0, 15, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 16, 1}));
+    S.add_generator(
+        Perm({15, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 16, 0}));
+
+    T.add_generator(
+        Perm({1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 0}));
+    T.add_generator(
+        Perm({0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 15, 16, 14}));
+
+    for (size_t i = 0; i < S.number_of_generators(); ++i) {
+      REQUIRE(T.contains(S.generator(i)));
+    }
+    for (size_t i = 0; i < T.number_of_generators(); ++i) {
+      REQUIRE(S.contains(T.generator(i)));
+    }
+
+    REQUIRE(T.size() == 177843714048000);
+    REQUIRE(S.size() == 177843714048000);
+  }
+
 }  // namespace libsemigroups
