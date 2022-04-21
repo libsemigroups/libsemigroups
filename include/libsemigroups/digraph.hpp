@@ -138,9 +138,11 @@ namespace libsemigroups {
     using label_type = T;
 
 #ifdef LIBSEMIGROUPS_EIGEN_ENABLED
+    //! The type of the adjacency matrix.
     using adjacency_matrix_type
         = Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>;
 #else
+    //! The type of the adjacency matrix.
     using adjacency_matrix_type = IntMat<0, 0, int64_t>;
 #endif
 

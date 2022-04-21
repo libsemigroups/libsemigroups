@@ -1,4 +1,4 @@
-libsemigroups - Version 2.1.4
+libsemigroups - Version 2.1.5
 =============================
 
 C++ library for semigroups and monoids
@@ -14,6 +14,7 @@ monoids. Namely:
 - the `Froidure-Pin algorithm`_ for computing finite semigroups
   :cite:`Froidure1997aa`;
 - the `Todd-Coxeter algorithm`_ for finitely presented semigroups and monoids;
+  see also `this paper <https://arxiv.org/abs/2203.11148>`_ :cite:`Coleman2022aa`;
 - the `Knuth-Bendix algorithm`_ for finitely presented semigroups and monoids;
 - the `Schreier-Sims algorithm`_ for permutation groups;
 - a preliminary implementation of the `Konieczny`_ :cite:`Konieczny1994aa` and

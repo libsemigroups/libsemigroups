@@ -1,10 +1,20 @@
 Changelog - version 2
 =====================
 
+v2.1.5 (released 21/04/2022)
+----------------------------
+
+This is a minor release with a few minor changes:
+
+* schreier-sims: fix issue #343 by @james-d-mitchell in https://github.com/libsemigroups/libsemigroups/pull/344
+* Replace -march=native by -march=avx by @fingolfin in https://github.com/libsemigroups/libsemigroups/pull/345
+
+@fingolfin made their first contribution in https://github.com/libsemigroups/libsemigroups/pull/345 welcome @fingolfin!
+
 v2.1.4 (released 04/03/2022)
 ----------------------------
 
-This is a minor release with with a few minor changes:
+This is a minor release with a few minor changes:
 
 * it is now possible to create the `quotient_froidure_pin` of a congruence with
   infinitely many classes;

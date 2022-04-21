@@ -2,6 +2,7 @@ libsemigroups::ActionDigraph:
 - Member types:
   - ["This page contains information about the member types of the
      :cpp:any:`ActionDigraph` class."]
+  - adjacency_matrix_type
   - node_type
   - label_type
   - scc_index_type
