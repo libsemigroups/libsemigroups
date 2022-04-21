@@ -1381,7 +1381,6 @@ namespace libsemigroups {
     REQUIRE(cong.const_contains({1, 1, 1, 1}, {1}) == tril::TRUE);
     REQUIRE(cong.const_contains({1, 1, 1, 1}, {1, 1}) == tril::unknown);
     REQUIRE(!cong.contains({1, 1, 1, 1}, {1, 1}));
-    REQUIRE(cong.finished());
     if (cong.has_todd_coxeter()) {
       REQUIRE_NOTHROW(cong.todd_coxeter());
     }
