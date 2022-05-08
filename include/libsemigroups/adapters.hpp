@@ -466,16 +466,16 @@ namespace libsemigroups {
   };
 
   // TODO(later) doc
-  template <typename T>
-  struct Hash<std::pair<T, T>> {
+  template <typename S, typename T>
+  struct Hash<std::pair<S, T>> {
     //! This call operator hashes \p x.
     //!
     //! \param x the value to hash
     //!
     //! \returns A hash value for \p x, a value of type `size_t`.
-    size_t operator()(std::pair<T, T> const& x) const noexcept {
+    size_t operator()(std::pair<S, T> const& x) const noexcept {
       size_t val = 0;
-      val ^= Hash<T>()(x.first) + 0x9e3779b97f4a7c16 + (val << 6) + (val >> 2);
+      val ^= Hash<S>()(x.first) + 0x9e3779b97f4a7c16 + (val << 6) + (val >> 2);
       val ^= Hash<T>()(x.second) + 0x9e3779b97f4a7c16 + (val << 6) + (val >> 2);
       return val;
     }
