@@ -156,9 +156,11 @@ namespace libsemigroups {
     partial_copy(S);
 
 #ifdef LIBSEMIGROUPS_DEBUG
-    for (const_reference x : *coll) {
-      LIBSEMIGROUPS_ASSERT(Degree()(x) == Degree()((*coll)[0]));
-    }
+    size_t N = Degree()(coll->at(0));
+    LIBSEMIGROUPS_ASSERT(
+        std::all_of(coll->cbegin(), coll->cend(), [&N](auto const& val) {
+          return Degree()(val) == N;
+        }));
 #endif
     _elements.reserve(S._nr);
 

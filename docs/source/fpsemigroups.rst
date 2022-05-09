@@ -4,7 +4,7 @@
 
    The full license is in the file LICENSE, distributed with this software.
 
-Finitely presented semigroups 
+Finitely presented semigroups
 =============================
 
 ``libsemigroups`` implements several algorithms for computing finitely
@@ -17,7 +17,7 @@ Todd-Coxeter, Knuth-Bendix, and the brute-force enumeration in parallel.  This
 class is, at present, not very customisable, and lacks some of the fine grained
 control offered by the classes implementing individual algorithms, such as
 :cpp:type:`libsemigroups::fpsemigroup::ToddCoxeter` and
-:cpp:type:`libsemigroups::fpsemigroup::KnuthBendix`.  
+:cpp:type:`libsemigroups::fpsemigroup::KnuthBendix`.
 
 All of the classes for finitely presented semigroups and monoids in
 ``libsemigroups`` can be used "interactively", in the sense that they can be
@@ -31,7 +31,7 @@ and monoids are:
 
 .. toctree::
    :maxdepth: 1
-  
+
    _generated/libsemigroups__fpsemigroupinterface
    _generated/libsemigroups__congruencewrapper
    _generated/libsemigroups__fpsemigroup
@@ -39,3 +39,4 @@ and monoids are:
    _generated/libsemigroups__fpsemigroup__kambites
    _generated/libsemigroups__fpsemigroup__knuthbendix
    _generated/libsemigroups__fpsemigroup__toddcoxeter
+   present

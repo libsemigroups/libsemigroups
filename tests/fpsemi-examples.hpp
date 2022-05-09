@@ -25,7 +25,8 @@
 #include <unordered_set>  // for unordered_set
 #include <vector>         // for vector
 
-#include "libsemigroups/types.hpp"  // for relation_type
+#include "libsemigroups/present.hpp"  // for Presentation
+#include "libsemigroups/types.hpp"    // for relation_type
 
 namespace libsemigroups {
   std::vector<relation_type> RookMonoid(size_t l, int q);
@@ -135,6 +136,22 @@ namespace libsemigroups {
       }
     }
     return make_group(x);
+  }
+
+  template <typename T,
+            typename
+            = std::enable_if_t<std::is_base_of<PresentationBase, T>::value>>
+  T make(std::vector<relation_type> const& rels) {
+    Presentation<word_type> p;
+    for (auto const& rel : rels) {
+      p.add_rule(rel.first.cbegin(),
+                 rel.first.cend(),
+                 rel.second.cbegin(),
+                 rel.second.cend());
+    }
+    p.alphabet_from_rules();
+    p.validate();
+    return p;
   }
 
 }  // namespace libsemigroups

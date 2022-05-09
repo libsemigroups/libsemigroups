@@ -1,0 +1,43 @@
+libsemigroups::Presentation:
+- Member types:
+  - ["This page contains information about the member types of the
+    :cpp:any:`Presentation` class template."]
+  - word_type
+  - letter_type
+  - const_iterator
+  - iterator
+  - size_type
+- Constructors:
+  - ["This page contains information about the constructors of the
+    :cpp:any:`Presentation` class template."]
+  - Presentation()
+  - Presentation(Presentation const &) = default
+  - Presentation(Presentation &&) = default
+  - operator=(Presentation const &) = default
+  - operator=(Presentation &&) = default
+- Alphabet + letters:
+  - ["This page contains information about the functionality for manipulating
+    the alphabet of a :cpp:any:`Presentation` object."]
+  - alphabet() const noexcept
+  - alphabet(size_type)
+  - alphabet(word_type const&)
+  - alphabet(word_type&&)
+  - alphabet_from_rules()
+  - letter(size_type) const
+  - index(letter_type) const
+  - contains_empty_word() const noexcept
+  - contains_empty_word(bool) noexcept
+- Rules:
+  - ["This page contains information about the functionality for manipulating
+    the rules of a :cpp:any:`Presentation` object."]
+  - rules
+  - add_rule(T,T,T,T)
+  - add_rule_and_check(T,T,T,T)
+- Validation:
+  - ["This page contains information about the functionality for checking if a
+      :cpp:any:`Presentation` object is consistent."]
+  - validate_alphabet() const
+  - validate_letter(letter_type) const
+  - validate_word(T, T) const
+  - validate_rules() const
+  - validate() const
