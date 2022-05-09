@@ -38,6 +38,10 @@ namespace libsemigroups {
     unknown = 2
   };
 
+  //! The values in this enum can be used to indicate that a congruence should
+  //! be 2-sided, left, or right.
+  enum class congruence_kind { left = 0, right = 1, twosided = 2 };
+
   //! Provides a type giving the smallest unsigned integer type capable of
   //! representing the template \c N.
   //!
