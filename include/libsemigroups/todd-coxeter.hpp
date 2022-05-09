@@ -51,6 +51,7 @@ namespace libsemigroups {
   namespace detail {
     class TCE;
     class Timer;
+    class FelschTree;
   }  // namespace detail
   class FroidurePinBase;
 
@@ -2103,7 +2104,6 @@ namespace libsemigroups {
       ////////////////////////////////////////////////////////////////////////
 
       struct Settings;            // Forward declaration
-      class FelschTree;           // Forward declaration
       struct TreeNode;            // Forward declaration
       struct QueuePreferredDefs;  // Forward declaration
       struct StackDeductions;     // Forward declaration
@@ -2284,22 +2284,22 @@ namespace libsemigroups {
       // ToddCoxeter - data - private
       ////////////////////////////////////////////////////////////////////////
 
-      Coincidences                   _coinc;
-      std::unique_ptr<Deductions>    _deduct;
-      std::vector<word_type>         _extra;
-      std::unique_ptr<FelschTree>    _felsch_tree;
-      size_t                         _nr_pairs_added_earlier;
-      bool                           _prefilled;
-      std::unique_ptr<PreferredDefs> _preferred_defs;
-      std::vector<word_type>         _relations;
-      std::unique_ptr<Settings>      _settings;
-      std::stack<Settings*>          _setting_stack;
-      coset_type                     _standard_max;
-      order                          _standardized;
-      state                          _state;
-      Stats                          _stats;
-      std::unique_ptr<Tree>          _tree;
-      WordGraph                      _word_graph;
+      Coincidences                        _coinc;
+      std::unique_ptr<Deductions>         _deduct;
+      std::vector<word_type>              _extra;
+      std::unique_ptr<detail::FelschTree> _felsch_tree;
+      size_t                              _nr_pairs_added_earlier;
+      bool                                _prefilled;
+      std::unique_ptr<PreferredDefs>      _preferred_defs;
+      std::vector<word_type>              _relations;
+      std::unique_ptr<Settings>           _settings;
+      std::stack<Settings*>               _setting_stack;
+      coset_type                          _standard_max;
+      order                               _standardized;
+      state                               _state;
+      Stats                               _stats;
+      std::unique_ptr<Tree>               _tree;
+      WordGraph                           _word_graph;
     };
 
     ToddCoxeter::options::lookahead
