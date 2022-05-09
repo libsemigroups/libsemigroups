@@ -898,6 +898,29 @@ namespace libsemigroups {
     // Not noexcept because validate_node isn't
     const_iterator_edges cbegin_edges(node_type i) const {
       action_digraph_helper::validate_node(*this, i);
+      return cbegin_edges_nc(i);
+    }
+
+    //! Returns a random access iterator pointing at the first neighbor of a
+    //! node.
+    //!
+    //! \param i a node in the digraph.
+    //!
+    //! \returns
+    //! A \ref const_iterator_edges.
+    //!
+    //! \exceptions
+    //! \noexcept
+    //!
+    //! \complexity
+    //! Constant.
+    //!
+    //! \warning
+    //! No checks whatsoever on the validity of the arguments are peformed.
+    //!
+    //! \sa
+    //! \ref cbegin_edges.
+    const_iterator_edges cbegin_edges_nc(node_type i) const noexcept {
       return _dynamic_array_2.cbegin_row(i);
     }
 
@@ -916,6 +939,29 @@ namespace libsemigroups {
     // Not noexcept because validate_node isn't
     const_iterator_edges cend_edges(node_type i) const {
       action_digraph_helper::validate_node(*this, i);
+      return cend_edges_nc(i);
+    }
+
+    //! Returns a random access iterator pointing one-past-the-last neighbor of
+    //! a node.
+    //!
+    //! \param i a node in the digraph.
+    //!
+    //! \returns
+    //! A \ref const_iterator_edges.
+    //!
+    //! \exceptions
+    //! \noexcept
+    //!
+    //! \complexity
+    //! Constant.
+    //!
+    //! \warning
+    //! No checks whatsoever on the validity of the arguments are peformed.
+    //!
+    //! \sa
+    //! \ref cend_edges.
+    const_iterator_edges cend_edges_nc(node_type i) const noexcept {
       return _dynamic_array_2.cend_row(i);
     }
 
