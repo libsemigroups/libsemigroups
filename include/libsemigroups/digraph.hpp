@@ -577,6 +577,24 @@ namespace libsemigroups {
       _dynamic_array_2.swap(u, a, v, a);
     }
 
+    //! Check if two action digraphs are equal.
+    //!
+    //! \param that the action digraph for comparisonb
+    //!
+    //! \returns
+    //! A `bool`.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \complexity
+    //! At worst \f$O(nm)\f$ where \f$n\f$ is the number of nodes and \f$m\f$
+    //! is the out-degree of the digraph.
+    // swap u - a - > u' and v - a -> v'
+    bool operator==(ActionDigraph const& that) const {
+      return _dynamic_array_2 == that._dynamic_array_2;
+    }
+
     ////////////////////////////////////////////////////////////////////////
     // ActionDigraph - nodes, neighbors, etc - public
     ////////////////////////////////////////////////////////////////////////
