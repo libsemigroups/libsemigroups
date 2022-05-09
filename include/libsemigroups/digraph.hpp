@@ -2611,12 +2611,28 @@ namespace libsemigroups {
       }
     }
 
-   protected:
-    //! No doc
+    //! Returns a const reference to the underlying array.
+    //!
+    //! This function returns a const reference to the underlying container for
+    //! the edges of a digraph.
+    //!
+    //! \parameters (None)
+    //!
+    //! \returns
+    //! A const reference to a detail::DynamicArray2<node_type>.
+    //!
+    //! \exceptions
+    //! \noexcept
+    //!
+    //! \complexity
+    //! Constant.
+    // TODO(later) this either shouldn't exist or DynamicArray2 should be
+    // public.
     detail::DynamicArray2<T> const& table() const noexcept {
       return _dynamic_array_2;
     }
 
+   protected:
     //! No doc
     template <typename S>
     void apply_row_permutation(S const& p) {
