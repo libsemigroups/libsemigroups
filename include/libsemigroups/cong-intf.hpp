@@ -35,10 +35,6 @@ namespace libsemigroups {
   class FroidurePinBase;       // Forward declaration, for member functions
   class FpSemigroupInterface;  // Forward decl
 
-  //! The values in this enum can be used to indicate that a congruence should
-  //! be 2-sided, left, or right.
-  enum class congruence_kind { left = 0, right = 1, twosided = 2 };
-
   //! Defined in ``cong-intf.hpp``.
   //!
   //! Every class for representing congruences in ``libsemigroups`` is derived
