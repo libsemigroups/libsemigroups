@@ -250,8 +250,6 @@ namespace libsemigroups {
         LIBSEMIGROUPS_ASSERT(is_active_coset(min));
         LIBSEMIGROUPS_ASSERT(is_active_coset(max));
         LIBSEMIGROUPS_ASSERT(max > min);
-        _active--;
-        _cosets_killed++;
         free_coset(max);
         // Leave a "forwarding address" so we know what <max> was identified
         // with
@@ -291,6 +289,9 @@ namespace libsemigroups {
       //! No doc
       void apply_permutation(Perm& p);
 
+      // not noexcept since std::vector::operator[] isn't.
+      void free_coset(coset_type const);
+
       ////////////////////////////////////////////////////////////////////////
       // CosetManager - data - protected
       ////////////////////////////////////////////////////////////////////////
@@ -303,9 +304,6 @@ namespace libsemigroups {
       ////////////////////////////////////////////////////////////////////////
       // CosetManager - member functions - private
       ////////////////////////////////////////////////////////////////////////
-
-      // not noexcept since std::vector::operator[] isn't.
-      void free_coset(coset_type const);
 
       ////////////////////////////////////////////////////////////////////////
       // CosetManager - data - private
