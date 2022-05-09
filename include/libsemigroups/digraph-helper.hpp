@@ -696,6 +696,26 @@ namespace libsemigroups {
         return out;
       }
     }  // namespace detail
-  }    // namespace action_digraph_helper
+
+    template <typename T>
+    ActionDigraph<T> make(size_t num_nodes,
+                          std::initializer_list<std::initializer_list<T>> il) {
+      ActionDigraph<T> result(num_nodes, il.begin()->size());
+      for (size_t i = 0; i < il.size(); ++i) {
+        for (size_t j = 0; j < (il.begin() + i)->size(); ++j) {
+          auto val = *((il.begin() + i)->begin() + j);
+          if (val != UNDEFINED) {
+            result.add_edge(i, *((il.begin() + i)->begin() + j), j);
+          }
+        }
+      }
+      return result;
+    }
+
+    template <typename T>
+    ActionDigraph<T> make(size_t num_nodes, size_t out_degree) {
+      return ActionDigraph<T>(num_nodes, out_degree);
+    }
+  }  // namespace action_digraph_helper
 }  // namespace libsemigroups
 #endif  // LIBSEMIGROUPS_DIGRAPH_HELPER_HPP_

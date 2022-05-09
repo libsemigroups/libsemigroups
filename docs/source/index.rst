@@ -21,14 +21,16 @@ monoids. Namely:
   `Lallement-McFadden`_ :cite:`Lallement1990aa` algorithm for computing finite
   semigroups which act on sets;
 - an implementation of the `Radoszewski-Rytter`_ :cite:`Radoszewski2010aa`
-  algorithm for testing equivalence of words in free bands.
+  algorithm for testing equivalence of words in free bands;
 - an implementation of the algorithm for solving the word problem
   for small overlap monoids, and for computing normal forms in such monoids;
   see `Kambites <https://doi.org/10.1016/j.jalgebra.2008.09.038>`__
   :cite:`Kambites2009aa`,
   `Kambites <https://doi.org/10.1016/j.jalgebra.2008.12.028>`__
   :cite:`Kambites2009ab`, and `Mitchell-Tsalakou
-  <http://arxiv.org/abs/2105.12125>`__ :cite:`Mitchell2021aa`.
+  <http://arxiv.org/abs/2105.12125>`__ :cite:`Mitchell2021aa`;
+- a version of Sims low index subgroup algorithm for computing one-sided
+  congruences of a semigroup or monoid.
 
 .. _Froidure-Pin algorithm: https://www.irif.fr/~jep/PDF/Rio.pdf
 .. _Todd-Coxeter algorithm: https://en.wikipedia.org/wiki/Todd%E2%80%93Coxeter_algorithm
@@ -61,8 +63,9 @@ implement; see, for example,  :cpp:any:`libsemigroups::FroidurePin`,
 :cpp:any:`libsemigroups::Konieczny`,
 :cpp:any:`libsemigroups::congruence::ToddCoxeter`,
 :cpp:any:`libsemigroups::fpsemigroup::Kambites`,
-:cpp:any:`libsemigroups::fpsemigroup::KnuthBendix`, and
-:cpp:any:`libsemigroups::SchreierSims`.
+:cpp:any:`libsemigroups::fpsemigroup::KnuthBendix`,
+:cpp:any:`libsemigroups::SchreierSims`, or
+:cpp:any:`libsemigroups::Sims1`.
 
 The implementations in :cpp:any:`libsemigroups::FroidurePin`,
 :cpp:any:`libsemigroups::Konieczny`, and :cpp:any:`libsemigroups::SchreierSims`
