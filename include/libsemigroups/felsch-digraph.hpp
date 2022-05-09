@@ -71,8 +71,7 @@ namespace libsemigroups {
 
     inline bool compatible(node_type const& c, size_t i) noexcept {
       auto j = (i % 2 == 0 ? i + 1 : i - 1);
-      return compatible(
-          c, *(_presentation.cbegin() + i), *(_presentation.cbegin() + j));
+      return compatible(c, _presentation.rules[i], _presentation.rules[j]);
     }
   };
 }  // namespace libsemigroups

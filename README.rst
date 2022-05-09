@@ -52,13 +52,15 @@ monoids. Namely:
   `Lallement-McFadden`_ algorithm for computing finite
   semigroups which act on sets;
 - an implementation of the `Radoszewski-Rytter`_
-  algorithm for testing equivalence of words in free bands.
+  algorithm for testing equivalence of words in free bands;
 - an implementation of the algorithm for solving the word problem
   for small overlap monoids, and for computing normal forms in such monoids;
   see `Kambites <https://doi.org/10.1016/j.jalgebra.2008.09.038>`__,
   `Kambites <https://doi.org/10.1016/j.jalgebra.2008.12.028>`__, and
   `Mitchell-Tsalakou
-  <http://arxiv.org/abs/2105.12125>`__.
+  <http://arxiv.org/abs/2105.12125>`__
+- a version of Sims low index subgroup algorithm for computing one-sided
+  congruences of a semigroup or monoid.
 
 .. _Froidure-Pin algorithm: https://www.irif.fr/~jep/PDF/Rio.pdf
 .. _Todd-Coxeter algorithm: https://en.wikipedia.org/wiki/Todd%E2%80%93Coxeter_algorithm
@@ -149,8 +151,8 @@ Contributors
   conda, the python bindings and many helpful conversations and suggestions.
 - `M. Torpey`_ contributed to the congruences code in the v0.0.1 to v0.6.7.
 - `M. Tsalakou`_ contributed to the Knuth-Bendix implementation, related
-  algorithms for the class `ActionDigraph`, and to the implementation
-  of the `Kambites` class.
+  algorithms for the class `ActionDigraph`, to the implementation
+  of the `Kambites` class, and to the `Sims1` class.
 
 .. _R. Cirpons:
 .. _F. Hivert: https://www.lri.fr/~hivert/

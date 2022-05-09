@@ -27,4 +27,34 @@
             "[" classname " " nr "][" classname "][" nr "][" __FILE__ \
             "][" STR(__LINE__) "]" tags)
 
+namespace libsemigroups {
+
+  template <typename T>
+  void verify_forward_iterator_requirements(T it) {
+    using deref_type = decltype(*it);
+    REQUIRE_NOTHROW(*it);
+    REQUIRE(std::is_reference<deref_type>::value);
+    REQUIRE(
+        std::is_const<typename std::remove_reference<deref_type>::type>::value);
+    T copy(it);
+    REQUIRE(&copy != &it);
+    it++;
+    auto it_val   = *it;
+    auto copy_val = *copy;
+    std::swap(it, copy);
+    REQUIRE(copy_val == *it);
+    REQUIRE(it_val == *copy);
+
+    it.swap(copy);
+    REQUIRE(it_val == *it);
+    REQUIRE(copy_val == *copy);
+
+    ++copy;
+    REQUIRE(*it == *copy);
+
+    ++it;
+    copy++;
+    REQUIRE(*it == *copy);
+  }
+}  // namespace libsemigroups
 #endif  // LIBSEMIGROUPS_TESTS_TEST_MAIN_HPP_
