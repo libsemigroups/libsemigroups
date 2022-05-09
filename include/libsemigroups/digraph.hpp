@@ -502,6 +502,27 @@ namespace libsemigroups {
       reset();
     }
 
+    //! Remove an edge from a node with a given label.
+    //!
+    //! \param i the source node
+    //! \param lbl the label of the edge from \p i
+    //!
+    //! \returns
+    //! (None)
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \complexity
+    //! Constant.
+    //!
+    //! \warning
+    //! No checks whatsoever on the validity of the arguments are peformed.
+    void inline remove_edge_nc(node_type i, label_type lbl) {
+      _dynamic_array_2.set(i, lbl, UNDEFINED);
+      reset();
+    }
+
     //! Ensures that the digraph has capacity for a given number of nodes, and
     //! out-degree.
     //!
