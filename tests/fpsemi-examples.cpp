@@ -86,6 +86,7 @@ namespace libsemigroups {
         }
       }
     }
+
     void add_monoid_relations(std::vector<word_type> const& alphabet,
                               word_type                     id,
                               std::vector<relation_type>&   relations) {
@@ -101,7 +102,13 @@ namespace libsemigroups {
   }  // namespace
 
   std::vector<relation_type> RookMonoid(size_t l, int q) {
-    // q is supposed to be 0 or 1
+    if (l < 2) {
+      LIBSEMIGROUPS_EXCEPTION(
+          "the 1st argument (size_t) must at least 2, found %llu", uint64_t(l));
+    } else if (q != 0 && q != 1) {
+      LIBSEMIGROUPS_EXCEPTION(
+          "the 2nd argument (int) must be 0 or 1, found %llu", uint64_t(q));
+    }
 
     std::vector<size_t> s;
     for (size_t i = 0; i < l; ++i) {
@@ -643,6 +650,11 @@ namespace libsemigroups {
 
   // From Theorem 41 in doi:10.1016/j.jalgebra.2011.04.008
   std::vector<relation_type> PartitionMonoidEast41(size_t n) {
+    if (n < 4) {
+      LIBSEMIGROUPS_EXCEPTION(
+          "the 1st argument (size_t) must be at least 4, found %llu",
+          uint64_t(n));
+    }
     word_type s  = {0};
     word_type c  = {1};
     word_type e  = {2};
