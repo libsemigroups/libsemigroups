@@ -1528,7 +1528,7 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////
 
     std::string ToddCoxeter::stats_string() const {
-      detail::PrintTable pt(this);
+      detail::PrintTable pt;
       pt.header("Summary of statistics");
       pt("Number of generators:", "%'14llu", uint64_t(number_of_generators()));
       pt("Number of relations:", "%'14llu", uint64_t(_relations.size() / 2));
@@ -1605,8 +1605,8 @@ namespace libsemigroups {
     }
 
     std::string ToddCoxeter::settings_string() const {
-      detail::PrintTable pt(this);
-      pt.header("Summary of settings");
+      detail::PrintTable pt;
+      pt.header("Summary of settings (Todd-Coxeter algorithm)");
       pt("deduction_policy:", deduction_policy());
       pt("f_defs:", "%'14llu", uint64_t(f_defs()));
       pt("froidure_pin_policy:", froidure_pin_policy());
@@ -2098,6 +2098,7 @@ namespace libsemigroups {
         TPreferredDef()(this, x, a, y, b);
       }
     }
+
     template <typename TStackDeduct>
     void ToddCoxeter::process_coincidences() {
       if (_coinc.empty()) {

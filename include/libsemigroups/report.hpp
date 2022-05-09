@@ -38,6 +38,8 @@
 #include "config.hpp"  // for LIBSEMIGROUPS_FMT_ENABLED
 #include "string.hpp"  // for string_format, to_string
 
+#include "textflowcpp/TextFlow.hpp"
+
 #ifdef LIBSEMIGROUPS_FMT_ENABLED
 #include "fmt/color.h"
 #include "fmt/printf.h"
@@ -393,10 +395,8 @@ namespace libsemigroups {
   namespace detail {
     class PrintTable {
      public:
-      template <typename S>
-      explicit PrintTable(S const* const class_, size_t width = 72)
+      explicit PrintTable(size_t width = 72)
           : _rows(), _header(), _footer(), _width(width) {
-        REPORTER.prefix(class_, true);
         try {
           std::locale::global(std::locale("en_US.UTF-8"));
         } catch (std::runtime_error const& e) {
@@ -408,10 +408,12 @@ namespace libsemigroups {
         for (auto const& row : _rows) {
           size_t n = 0;
           // Check if we contain a \infty
-          if (row.second.find("\u221E") == std::string::npos) {
-            n = _width - row.first.size() - row.second.size();
-          } else {
-            n = _width - row.first.size() - row.second.size() + 2;
+          if (!row.second.empty()) {
+            if (row.second.find("\u221E") == std::string::npos) {
+              n = _width - row.first.size() - row.second.size();
+            } else {
+              n = _width - row.first.size() - row.second.size() + 2;
+            }
           }
           result += row.first + std::string(n, ' ') + row.second + "\n";
         }
@@ -420,12 +422,12 @@ namespace libsemigroups {
       }
 
       void header(char const* text) {
-        _header = REPORTER.get_prefix() + text;
+        _header = wrap(text);
         _header += "\n";
       }
 
       void footer(char const* text) {
-        _footer = REPORTER.get_prefix() + text;
+        _footer = wrap(text);
         _footer += "\n";
       }
 
@@ -433,21 +435,27 @@ namespace libsemigroups {
         _rows.emplace_back(lineohash(false), "");
       }
 
+      void operator()(char const* col0) {
+        _rows.emplace_back(wrap(col0), std::string());
+      }
+
       template <typename T>
       void operator()(char const* col0, T const& col1) {
-        _rows.emplace_back(REPORTER.get_prefix() + col0,
-                           detail::to_string(col1));
+        _rows.emplace_back(col0, detail::to_string(col1));
       }
 
       template <typename T>
       void operator()(char const* col0,
                       char const* col1_format,
                       T const&    col1) {
-        _rows.emplace_back(REPORTER.get_prefix() + col0,
-                           string_format(col1_format, col1));
+        _rows.emplace_back(col0, string_format(col1_format, col1));
       }
 
      private:
+      std::string wrap(char const* text) {
+        return TextFlow::Column(text).width(_width).toString();
+      }
+
       std::string lineohash(bool newline = true) {
         return std::string(_width, '#') + (newline ? "\n" : "");
       }

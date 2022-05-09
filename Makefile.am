@@ -104,6 +104,9 @@ pkginclude_HEADERS += include/libsemigroups/wilo.hpp
 pkginclude_HEADERS += include/libsemigroups/wislo.hpp
 pkginclude_HEADERS += include/libsemigroups/word.hpp
 
+textflowcppincludedir = $(includedir)/libsemigroups/textflowcpp
+textflowcppinclude_HEADERS=extern/textflowcpp/TextFlow.hpp
+
 ## Define hpcombiincludedir outside the conditional
 ## LIBSEMIGROUPS_HPCOMBI_ENABLED because it is used by
 ## uninstall-hook
@@ -594,6 +597,8 @@ EXTRA_DIST += etc/make-lint.sh
 EXTRA_DIST += etc/post-proc-doc.sh
 EXTRA_DIST += etc/version-number.sh
 EXTRA_DIST += extern/HPCombi/VERSION
+EXTRA_DIST += extern/textflowcpp/LICENSE.txt
+EXTRA_DIST += extern/textflowcpp/README.md
 EXTRA_DIST += src/kbe-impl.hpp
 EXTRA_DIST += src/knuth-bendix-impl.hpp
 EXTRA_DIST += tests/catch.hpp
@@ -1036,8 +1041,9 @@ distclean-local:
 
 uninstall-hook:
 	if test -d ${eigenincludedir}; then rm -rf ${eigenincludedir}; fi
-	if test -d ${hpcombiincludedir}; then rm -rf ${hpcombiincludedir} && rmdir ${includedir}/libsemigroups/HPCombi; fi
+	if test -d ${hpcombiincludedir}; then rm -rf ${hpcombiincludedir}; fi
 	if test -d ${fmtincludedir}; then rm -rf ${fmtincludedir}; fi
+	if test -d ${textflowcppincludedir}; then rm -rf ${textflowcppincludedir}; fi
 	if test -d ${includedir}/libsemigroups; then rmdir ${includedir}/libsemigroups; fi
 .PHONY: uninstall-hook
 
