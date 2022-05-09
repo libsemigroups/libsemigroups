@@ -2541,6 +2541,32 @@ namespace libsemigroups {
                                   tc);
       }
     }
+
+    LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
+                            "111",
+                            "PartitionMonoid(2)",
+                            "[todd-coxeter][quick]") {
+      ToddCoxeter p(congruence_kind::twosided);
+      p.set_number_of_generators(4);
+      p.add_pair({0, 1}, {1});
+      p.add_pair({1, 0}, {1});
+      p.add_pair({0, 2}, {2});
+      p.add_pair({2, 0}, {2});
+      p.add_pair({0, 3}, {3});
+      p.add_pair({3, 0}, {3});
+      p.add_pair({1, 1}, {0});
+      p.add_pair({1, 3}, {3});
+      p.add_pair({2, 2}, {2});
+      p.add_pair({3, 1}, {3});
+      p.add_pair({3, 3}, {3});
+      p.add_pair({2, 3, 2}, {2});
+      p.add_pair({3, 2, 3}, {3});
+      p.add_pair({1, 2, 1, 2}, {2, 1, 2});
+      p.add_pair({2, 1, 2, 1}, {2, 1, 2});
+      auto rg = ReportGuard(false);
+      REQUIRE(p.number_of_classes() == 15);
+    }
+
   }  // namespace congruence
 
   namespace fpsemigroup {
