@@ -18,6 +18,9 @@ This page contains the documentation for helper function for the class
 Full API
 --------
 
+.. doxygenfunction:: libsemigroups::operator<<(std::ostream&, ActionDigraph<T> const&)
+   :project: libsemigroups
+
 .. doxygenfunction:: libsemigroups::action_digraph_helper::follow_path
    :project: libsemigroups
 

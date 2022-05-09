@@ -3105,5 +3105,39 @@ namespace libsemigroups {
       return mat;
     }
   }  // namespace detail
+
+  //! Output the edges of an ActionDigraph to a stream.
+  //!
+  //! This function outputs the action digraph \p ad to the stream \p os. The
+  //! digraph is represented by the out-neighbours of each node ordered
+  //! according to their labels. The symbol `-` is used to denote that an edge
+  //! is not defined. For example, the digraph with 1 nodes, out-degree 2, and
+  //! a single loop labelled 1 from node 0 to 0 is represented as `{{-, 0}}`.
+  //!
+  //! \param os the ostream
+  //! \param ad the action digraph
+  //!
+  //! \returns
+  //! The first parameter \p os.
+  //!
+  //! \exceptions
+  //! \no_libsemigroups_except
+  template <typename T>
+  std::ostream& operator<<(std::ostream& os, ActionDigraph<T> const& ad) {
+    os << "{";
+    std::string sep_n;
+    for (auto n = ad.cbegin_nodes(); n != ad.cend_nodes(); ++n) {
+      std::string sep_e;
+      os << sep_n << "{";
+      for (auto e = ad.cbegin_edges(*n); e != ad.cend_edges(*n); ++e) {
+        os << sep_e << (*e == UNDEFINED ? "-" : std::to_string(*e));
+        sep_e = ", ";
+      }
+      os << "}";
+      sep_n = ", ";
+    }
+    os << "}";
+    return os;
+  }
 }  // namespace libsemigroups
 #endif  // LIBSEMIGROUPS_DIGRAPH_HPP_
