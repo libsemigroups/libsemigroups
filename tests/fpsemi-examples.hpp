@@ -56,6 +56,7 @@ namespace libsemigroups {
       tc.add_pair(w.first, w.second);
     }
   }
+
   template <typename T>
   T make_group(T& M) {
     std::string              id = "e";
