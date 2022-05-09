@@ -284,6 +284,8 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////
 
     void CosetManager::free_coset(coset_type c) {
+      _active--;
+      _cosets_killed++;
       LIBSEMIGROUPS_ASSERT(is_active_coset(c));
       // If any "controls" point to <c>, move them back one in the list
       LIBSEMIGROUPS_ASSERT(_current < _bckwd.size()
