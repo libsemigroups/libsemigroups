@@ -66,8 +66,9 @@ libsemigroups::ActionDigraph:
   - cend_edges(node_type) const
   - cbegin_edges_nc(node_type) const noexcept
   - cend_edges_nc(node_type) const noexcept
+  - table() const noexcept
 - Strongly connected components:
-  - ["This page contains information about the strongly connected components 
+  - ["This page contains information about the strongly connected components
       functionality of the :cpp:any:`ActionDigraph` class."]
   - scc_id(node_type) const
   - number_of_scc() const
