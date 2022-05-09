@@ -27,23 +27,22 @@ EXCLUDE_SYMBOLS       = std::hash \
                         REPORTER \
                         libsemigroups::congruence::ToddCoxeter::NormalFormIteratorTraits \
                         libsemigroups::detail::IteratorTraitsBase \
-                        _* 
+                        _*
 EXCLUDE               = iterator.hpp \
                         string.hpp
 EXCLUDE_PATTERNS      = *-impl.hpp *KBE* string.hpp
 HIDE_UNDOC_CLASSES    = YES
 EXTRACT_LOCAL_CLASSES = NO
 EXTRACT_PRIVATE       = NO
-ALIASES               =  exceptions="\par Exceptions"
+ALIASES               =  exceptions="\throws (None)"
 ALIASES               += noexcept="This function is `noexcept` and is guaranteed never to throw."
 ALIASES               += no_libsemigroups_except="This function guarantees not to throw a LibsemigroupsException."
 ALIASES               += no_libsemigroups_except_detail="This function guarantees not to throw a \ref libsemigroups::LibsemigroupsException."
 ALIASES               += strong_guarantee="If an exception is thrown, \c this is guaranteed not to be modified (strong exception guarantee)."
 ALIASES               += basic_guarantee="If an exception is thrown, \c this might be modified but is guaranteed to be in a valid state (basic exception guarantee)."
 ALIASES               += iterator_validity="\par Iterator validity"
-ALIASES               += iterator_invalid="This function modifies the object defined by \p this, any iterators, pointers or references pointing into \c this may be invalidated by a call to this function." 
+ALIASES               += iterator_invalid="This function modifies the object defined by \p this, any iterators, pointers or references pointing into \c this may be invalidated by a call to this function."
 ALIASES               += complexity="\par Complexity"
-ALIASES               += deprecated="\warning This function is deprecated and will be removed in libsemigroups v2"
 ALIASES               += parameters="\par Parameters"
 ALIASES               += shared_ptr="<a href=\"https://en.cppreference.com/w/cpp/memory/shared_ptr\">std::shared_ptr</a>"
 ALIASES  += chrono_duration="<a href=\"https://en.cppreference.com/w/cpp/chrono/duration\">std::chrono::duration</a>"

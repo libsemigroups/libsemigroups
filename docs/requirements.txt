@@ -1,6 +1,6 @@
 beautifulsoup4==4.9.3
 lxml==4.6.5
-breathe==4.31.0
+breathe==4.33.1
 pyyaml>=5.3.1
 sphinx_rtd_theme
 sphinx==4.3.0

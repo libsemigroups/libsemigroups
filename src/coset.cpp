@@ -189,8 +189,7 @@ namespace libsemigroups {
       std::vector<coset_type> copy(_forwd.cbegin(),
                                    _forwd.cbegin() + number_of_cosets_active());
       std::sort(copy.begin(), copy.end());
-      auto it = std::unique(copy.begin(), copy.end());
-      LIBSEMIGROUPS_ASSERT(it == copy.end());
+      LIBSEMIGROUPS_ASSERT(std::unique(copy.begin(), copy.end()) == copy.end());
 #endif
       _first_free_coset = UNDEFINED;
       _forwd.erase(_forwd.begin() + number_of_cosets_active(), _forwd.end());

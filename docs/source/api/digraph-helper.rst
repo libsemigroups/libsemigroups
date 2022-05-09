@@ -13,7 +13,7 @@ Overview
 Defined in ``action-digraph-helper.hpp``.
 
 This page contains the documentation for helper function for the class
-:cpp:type:`libsemigroups::ActionDigraph`. 
+:cpp:type:`libsemigroups::ActionDigraph`.
 
 Full API
 --------
@@ -47,9 +47,9 @@ Full API
 
 .. doxygenfunction:: libsemigroups::action_digraph_helper::topological_sort(ActionDigraph<T> const&, node_type<T>)
    :project: libsemigroups
-    
+
 .. doxygenfunction:: libsemigroups::action_digraph_helper::add_cycle(ActionDigraph<T>&, U, U)
    :project: libsemigroups
-    
+
 .. doxygenfunction:: libsemigroups::action_digraph_helper::add_cycle(ActionDigraph<T>&, size_t)
    :project: libsemigroups
