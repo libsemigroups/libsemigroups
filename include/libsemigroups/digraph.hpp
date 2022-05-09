@@ -137,6 +137,9 @@ namespace libsemigroups {
     //! The type of edge labels in a digraph.
     using label_type = T;
 
+    //! Unsigned integer type.
+    using size_type = std::size_t;
+
 #ifdef LIBSEMIGROUPS_EIGEN_ENABLED
     //! The type of the adjacency matrix.
     using adjacency_matrix_type

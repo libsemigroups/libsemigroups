@@ -4,6 +4,7 @@ libsemigroups::ActionDigraph:
      :cpp:any:`ActionDigraph` class."]
   - adjacency_matrix_type
   - node_type
+  - size_type
   - label_type
   - scc_index_type
   - const_iterator_nodes
