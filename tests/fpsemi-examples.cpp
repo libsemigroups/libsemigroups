@@ -707,6 +707,7 @@ namespace libsemigroups {
   }
 
   // From Theorem 5 in 10.21136/MB.2007.134125
+  // https://dml.cz/bitstream/handle/10338.dmlcz/134125/MathBohem_132-2007-3_6.pdf
 
   std::vector<relation_type> SingularBrauer(size_t n) {
     std::vector<std::vector<word_type>> t;
@@ -834,6 +835,58 @@ namespace libsemigroups {
           result.emplace_back(e[i] * e[j], e[j] * e[i]);
         } else if (d == 1) {
           result.emplace_back(e[i] * e[j] * e[i], e[i]);
+        }
+      }
+    }
+
+    return result;
+  }
+
+  // From Theorem 3.1 in
+  // https://link.springer.com/content/pdf/10.2478/s11533-006-0017-6.pdf
+  std::vector<relation_type> Brauer(size_t n) {
+    word_type const e = {0};
+
+    std::vector<word_type> sigma(n);
+    std::vector<word_type> theta(n);
+
+    std::vector<word_type> alphabet = {e};
+    for (size_t i = 1; i <= n - 1; ++i) {
+      sigma[i] = {i};
+      alphabet.push_back(sigma[i]);
+    }
+    for (size_t i = 1; i <= n - 1; ++i) {
+      theta[i] = {i + n - 1};
+      alphabet.push_back(theta[i]);
+    }
+    std::vector<relation_type> result;
+
+    add_monoid_relations(alphabet, e, result);
+
+    // E1
+    for (size_t i = 1; i <= n - 1; ++i) {
+      result.emplace_back(sigma[i] ^ 2, e);
+      result.emplace_back(theta[i] ^ 2, theta[i]);
+      result.emplace_back(theta[i] * sigma[i], sigma[i] * theta[i]);
+      result.emplace_back(sigma[i] * theta[i], theta[i]);
+    }
+
+    // E2 + E3
+    for (size_t i = 1; i <= n - 1; ++i) {
+      for (size_t j = 1; j <= n - 1; ++j) {
+        auto d = std::abs(static_cast<int64_t>(i) - static_cast<int64_t>(j));
+        if (d > 1) {
+          result.emplace_back(sigma[i] * sigma[j], sigma[j] * sigma[i]);
+          result.emplace_back(theta[i] * theta[j], theta[j] * theta[i]);
+          result.emplace_back(theta[i] * sigma[j], sigma[j] * theta[i]);
+        } else if (d == 1) {
+          result.emplace_back(sigma[i] * sigma[j] * sigma[i],
+                              sigma[j] * sigma[i] * sigma[j]);
+          result.emplace_back(theta[i] * theta[j] * theta[i], theta[i]);
+          result.emplace_back(sigma[i] * theta[j] * theta[i],
+                              sigma[j] * theta[i]);
+          result.emplace_back(theta[i] * theta[j] * sigma[i],
+                              theta[i] * sigma[j]);
         }
       }
     }
