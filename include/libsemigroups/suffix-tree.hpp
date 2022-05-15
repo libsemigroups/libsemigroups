@@ -544,10 +544,17 @@ namespace libsemigroups {
       std::vector<size_t> _scratch;
       std::vector<size_t> _suffix_index;
     };
+
     namespace suffix_tree_helper {
 
       void add_words(SuffixTree& st, std::vector<word_type> const& words);
 
+      template <typename T>
+      void add_words(SuffixTree& st, T first, T last) {
+        for (auto it = first; it != last; ++it) {
+          st.add_word(*it);
+        }
+      }
     };  // namespace suffix_tree_helper
 
   }  // namespace detail
