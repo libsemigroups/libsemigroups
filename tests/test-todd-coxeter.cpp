@@ -2567,6 +2567,18 @@ namespace libsemigroups {
       REQUIRE(p.number_of_classes() == 15);
     }
 
+    LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
+                            "112",
+                            "Brauer(4) (Kudryavtseva + Mazorchuk)",
+                            "[todd-coxeter][quick][no-valgrind][no-coverage]") {
+      auto         rg = ReportGuard(REPORT);
+      size_t const n  = 4;
+      ToddCoxeter  tc(congruence_kind::twosided);
+      setup(tc, 2 * n - 1, Brauer, n);
+      tc.sort_generating_pairs().remove_duplicate_generating_pairs();
+      REQUIRE(tc.number_of_classes() == 105);
+    }
+
   }  // namespace congruence
 
   namespace fpsemigroup {
@@ -4133,4 +4145,5 @@ namespace libsemigroups {
     }
 
   }  // namespace fpsemigroup
+
 }  // namespace libsemigroups

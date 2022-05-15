@@ -48,6 +48,7 @@ namespace libsemigroups {
   std::vector<relation_type> OrientationPreserving(size_t n);
   std::vector<relation_type> OrientationReversing(size_t n);
   std::vector<relation_type> TemperleyLieb(size_t n);
+  std::vector<relation_type> Brauer(size_t n);
 
   template <typename T, typename F, typename... Args>
   void setup(T& tc, size_t num_gens, F func, Args... args) {
