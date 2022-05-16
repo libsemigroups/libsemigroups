@@ -100,7 +100,7 @@ namespace libsemigroups {
 
   //! Check if two given words represent the same element in the free band.
   //!
-  //! \tparam T an any type that can be converted to `word_type`
+  //! \tparam T any type that can be converted to `word_type`
   //!
   //! \param first1 iterator to start of the first word.
   //! \param last1 iterator to end of the first word.
