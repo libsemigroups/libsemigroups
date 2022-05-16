@@ -52,6 +52,16 @@ namespace libsemigroups {
                         word_type const&   input,
                         std::string&       output);
 
+    template <typename T>
+    std::string word_to_string(std::string const& alphabet, T first, T last) {
+      std::string output;
+      output.reserve(std::distance(first, last));
+      for (auto it = first; it != last; ++it) {
+        output.push_back(alphabet[*it]);
+      }
+      return output;
+    }
+
     // TODO(later) doc, lots
     class StringToWord {
      public:
