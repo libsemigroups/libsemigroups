@@ -33,18 +33,18 @@
 #include <utility>      // for pair
 #include <vector>       // for vector
 
-#include "cong-intf.hpp"     // for congruence_kind,...
-#include "cong-wrap.hpp"     // for CongruenceWrapper
-#include "constants.hpp"     // for UNDEFINED
-#include "containers.hpp"    // for DynamicArray2
-#include "coset.hpp"         // for CosetManager
-#include "debug.hpp"         // for LIBSEMIGROUPS_ASSERT
-#include "digraph.hpp"       // for ActionDigraph
-#include "froidure-pin.hpp"  // for FroidurePin
-#include "int-range.hpp"     // for IntegralRange
-#include "iterator.hpp"      // for ConstIteratorStateful
-#include "order.hpp"         // shortlex_compare
-#include "types.hpp"         // for word_type, letter_type...
+#include "cong-intf.hpp"             // for congruence_kind,...
+#include "cong-wrap.hpp"             // for CongruenceWrapper
+#include "constants.hpp"             // for UNDEFINED
+#include "containers.hpp"            // for DynamicArray2
+#include "coset.hpp"                 // for CosetManager
+#include "debug.hpp"                 // for LIBSEMIGROUPS_ASSERT
+#include "digraph-with-sources.hpp"  // for DigraphWithSources
+#include "froidure-pin.hpp"          // for FroidurePin
+#include "int-range.hpp"             // for IntegralRange
+#include "iterator.hpp"              // for ConstIteratorStateful
+#include "order.hpp"                 // shortlex_compare
+#include "types.hpp"                 // for word_type, letter_type...
 
 namespace libsemigroups {
   // Forward declarations
@@ -1813,7 +1813,7 @@ namespace libsemigroups {
       //!
       //! \sa cbegin_class, cend_class.
       using class_iterator =
-          typename ActionDigraph<coset_type>::const_pstislo_iterator;
+          typename DigraphWithSources<coset_type>::const_pstislo_iterator;
 
       //! Returns a \ref class_iterator pointing at the shortlex least word in
       //! an class.
@@ -2026,8 +2026,10 @@ namespace libsemigroups {
                                   word_type const&  u,
                                   word_type const&  v) noexcept;
 
-      template <typename TStackDeduct>
-      void process_coincidences();
+      // The argument means: stack deductions or do not stack deductions
+      enum class stack_deductions { yes, no };
+
+      void process_coincidences(stack_deductions);
 
       template <typename TStackDeduct,
                 typename TProcessCoincide,
@@ -2109,8 +2111,6 @@ namespace libsemigroups {
       struct StackDeductions;     // Forward declaration
 
       template <typename TStackDeduct>
-      struct ProcessCoincidences;  // Forward declaration
-      template <typename TStackDeduct>
       struct ImmediateDef;  // Forward declaration
 
       using Coincidence  = std::pair<coset_type, coset_type>;
@@ -2118,6 +2118,13 @@ namespace libsemigroups {
 
       class Deductions;     // Forward declaration
       class PreferredDefs;  // Forward declaration
+
+      template <stack_deductions val>
+      struct ProcessCoincidences {
+        void operator()(ToddCoxeter* tc) const noexcept {
+          tc->process_coincidences(val);
+        }
+      };
 
       struct Stats {
         uint64_t tc1_hlt_appl = 0;
@@ -2141,136 +2148,6 @@ namespace libsemigroups {
         uint64_t nr_active_preferred_defs = 0;
         uint64_t total_preferred_defs     = 0;
 #endif
-      };
-
-      class WordGraph : public ActionDigraph<coset_type> {
-        friend ToddCoxeter;
-        explicit WordGraph(ToddCoxeter* tc)
-            : ActionDigraph(0, 0),
-              _preim_init(0, 0, UNDEFINED),
-              _preim_next(0, 0, UNDEFINED),
-              _tc(tc) {}
-
-        WordGraph(ToddCoxeter* tc, WordGraph const& that)
-            : ActionDigraph(that),
-              _preim_init(that._preim_init),
-              _preim_next(that._preim_next),
-              _tc(tc) {}
-
-       public:
-        using size_type = coset_type;
-
-        WordGraph(WordGraph&&)      = default;
-        WordGraph(WordGraph const&) = default;
-        WordGraph& operator=(WordGraph const&) = default;
-        WordGraph& operator=(WordGraph&&) = default;
-
-        void add_edge_nc(coset_type c, coset_type d, letter_type x) noexcept {
-          ActionDigraph::add_edge_nc(c, d, x);
-          add_source(d, x, c);
-        }
-
-        void add_nodes(size_type m) {
-          ActionDigraph::add_nodes(m);
-          _preim_init.add_rows(m);
-          _preim_next.add_rows(m);
-        }
-
-        void add_to_out_degree(size_type m) {
-          _preim_init.add_cols(m);
-          _preim_next.add_cols(m);
-          ActionDigraph::add_to_out_degree(m);
-        }
-
-        void shrink_to_fit(size_type m) {
-          restrict(m);
-          _preim_init.shrink_rows_to(m);
-          _preim_next.shrink_rows_to(m);
-        }
-
-        coset_type first_source(coset_type c, letter_type x) const noexcept {
-          return _preim_init.get(c, x);
-        }
-
-        coset_type next_source(coset_type c, letter_type x) const noexcept {
-          return _preim_next.get(c, x);
-        }
-
-        // The permutation q must map the active cosets to the [0, ..
-        // , number_of_cosets_active()), and p = q ^ -1.
-        void permute_nodes_nc(Perm& p, Perm& q);
-
-        void swap_nodes(coset_type c, coset_type d);
-
-        template <typename TStackDeduct>
-        void merge_nodes(Coincidences& coinc,
-                         Deductions&   deduct,
-                         coset_type    min,
-                         coset_type    max) {
-          LIBSEMIGROUPS_ASSERT(min < max);
-          for (letter_type i = 0; i < out_degree(); ++i) {
-            // v -> max is an edge
-            coset_type v = first_source(max, i);
-            while (v != UNDEFINED) {
-              auto w = next_source(v, i);
-              add_edge_nc(v, min, i);
-              TStackDeduct()(&deduct, v, i);
-              v = w;
-            }
-
-            // Now let <v> be the IMAGE of <max>
-            v = unsafe_neighbor(max, i);
-            if (v != UNDEFINED) {
-              remove_source(v, i, max);
-              // Let <u> be the image of <min>, and ensure <u> = <v>
-              coset_type u = unsafe_neighbor(min, i);
-              if (u == UNDEFINED) {
-                add_edge_nc(min, v, i);
-                TStackDeduct()(&deduct, min, i);
-              } else if (u != v) {
-                // Add (u,v) to the stack of pairs to be identified
-                coinc.emplace(u, v);
-              }
-            }
-          }
-        }
-
-#ifdef LIBSEMIGROUPS_DEBUG
-        // Is d a source of c under x?
-        bool is_source(coset_type c, coset_type d, letter_type x) const {
-          c = first_source(c, x);
-          while (c != d && c != UNDEFINED) {
-            c = next_source(c, x);
-          }
-          return c == d;
-        }
-#endif
-
-       private:
-        // Add d to the list of preimages of c under x, i.e.
-        // _word_graph.target(d, x) = c
-        void add_source(coset_type c, letter_type x, coset_type d) noexcept {
-          LIBSEMIGROUPS_ASSERT(x < out_degree());
-          // c -> e -> ... -->  c -> d -> e -> ..
-          _preim_next.set(d, x, _preim_init.get(c, x));
-          _preim_init.set(c, x, d);
-        }
-
-        void remove_source(coset_type cx, letter_type x, coset_type d);
-
-        void clear_sources_and_targets(coset_type c);
-        void clear_sources(coset_type c);
-        bool is_active_coset(coset_type c) {
-          return _tc->is_active_coset(c);
-        }
-
-        void replace_target(coset_type c, coset_type d, size_t x);
-        void
-        replace_source(coset_type c, coset_type d, size_t x, coset_type cx);
-
-        table_type   _preim_init;
-        table_type   _preim_next;
-        ToddCoxeter* _tc;
       };
 
       ////////////////////////////////////////////////////////////////////////
@@ -2299,7 +2176,7 @@ namespace libsemigroups {
       state                               _state;
       Stats                               _stats;
       std::unique_ptr<Tree>               _tree;
-      WordGraph                           _word_graph;
+      DigraphWithSources<coset_type>      _word_graph;
     };
 
     ToddCoxeter::options::lookahead

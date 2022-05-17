@@ -125,7 +125,6 @@
 // 20. ToddCoxeter - member functions (lookahead) - private
 // 21. ToddCoxeter - member functions (standardize) - private
 // 22. ToddCoxeter - member functions (debug) - private
-// 23. ToddCoxeter::WordGraph - member functions
 
 ////////////////////////////////////////////////////////////////////////
 // 1. Helper functions, types etc in anonymous namespace
@@ -455,13 +454,6 @@ namespace libsemigroups {
       }
     };
 
-    template <typename TStackDeductions>
-    struct ToddCoxeter::ProcessCoincidences {
-      void operator()(ToddCoxeter* tc) const noexcept {
-        tc->process_coincidences<TStackDeductions>();
-      }
-    };
-
     template <typename TStackDeduct>
     struct ToddCoxeter::ImmediateDef {
       void operator()(ToddCoxeter* tc,
@@ -509,7 +501,7 @@ namespace libsemigroups {
           _standardized(order::none),
           _state(state::constructed),
           _tree(nullptr),
-          _word_graph(this) {}
+          _word_graph() {}
 
     ToddCoxeter::ToddCoxeter(ToddCoxeter const& copy)
         : CongruenceInterface(copy),
@@ -528,7 +520,7 @@ namespace libsemigroups {
           _standardized(copy._standardized),
           _state(copy._state),
           _tree(nullptr),
-          _word_graph(this, copy._word_graph) {
+          _word_graph(copy._word_graph) {
       if (copy._felsch_tree != nullptr) {
         _felsch_tree = std::make_unique<FelschTree>(*copy._felsch_tree);
       }
@@ -1378,7 +1370,7 @@ namespace libsemigroups {
               c2 = tc.next_active_coset(c2);
             }
             tc._coinc.emplace(c1, c2);
-            tc.process_coincidences<StackDeductions>();
+            tc.process_coincidences(stack_deductions::yes);
             tc.process_deductions();
             tc.run_for(try_for);
           }
@@ -1970,14 +1962,23 @@ namespace libsemigroups {
       }
     }
 
-    template <typename TStackDeduct>
-    void ToddCoxeter::process_coincidences() {
+    void ToddCoxeter::process_coincidences(stack_deductions val) {
       if (_coinc.empty()) {
         return;
       }
 #ifdef LIBSEMIGROUPS_ENABLE_STATS
       _stats.tc3_appl++;
 #endif
+      std::function<void(coset_type, letter_type)> new_edge_func;
+      if (val == stack_deductions::no) {
+        new_edge_func = [](coset_type, letter_type) {};
+      } else {
+        new_edge_func = [this](coset_type c, letter_type x) {
+          this->_deduct->emplace(c, x);
+        };
+      }
+      auto incompat_func
+          = [this](coset_type c, coset_type d) { this->_coinc.emplace(c, d); };
       while (!_coinc.empty() && _coinc.size() < large_collapse()) {
         Coincidence c = _coinc.top();
         _coinc.pop();
@@ -1994,7 +1995,7 @@ namespace libsemigroups {
             std::swap(min, max);
           }
           union_cosets(min, max);
-          _word_graph.merge_nodes<TStackDeduct>(_coinc, *_deduct, min, max);
+          _word_graph.merge_nodes(min, max, new_edge_func, incompat_func);
 #ifdef LIBSEMIGROUPS_ENABLE_STATS
           _stats.max_coinc = std::max(_stats.max_coinc,
                                       static_cast<uint64_t>(_coinc.size()));
@@ -2071,7 +2072,7 @@ namespace libsemigroups {
               if (cx != UNDEFINED) {
                 auto d = find_coset(cx);
                 if (cx != d) {
-                  TStackDeduct()(_deduct.get(), c, x);
+                  new_edge_func(c, x);
                   _word_graph.ActionDigraph<coset_type>::add_edge_nc(c, d, x);
                 }
                 // Must readd the source, even if we don't need to reset
@@ -2102,13 +2103,13 @@ namespace libsemigroups {
         if (save() || strategy() == options::strategy::felsch) {
           for (auto it = _extra.cbegin(); it < _extra.cend(); it += 2) {
             push_definition_hlt<StackDeductions,
-                                ProcessCoincidences<StackDeductions>>(
+                                ProcessCoincidences<stack_deductions::yes>>(
                 _id_coset, *it, *(it + 1));
           }
         } else {
           for (auto it = _extra.cbegin(); it < _extra.cend(); it += 2) {
             push_definition_hlt<DoNotStackDeductions,
-                                ProcessCoincidences<DoNotStackDeductions>>(
+                                ProcessCoincidences<stack_deductions::no>>(
                 _id_coset, *it, *(it + 1));
           }
         }
@@ -2116,7 +2117,7 @@ namespace libsemigroups {
             && use_relations_in_extra()) {
           for (auto it = _relations.cbegin(); it < _relations.cend(); it += 2) {
             push_definition_hlt<StackDeductions,
-                                ProcessCoincidences<StackDeductions>>(
+                                ProcessCoincidences<stack_deductions::yes>>(
                 _id_coset, *it, *(it + 1));
           }
         }
@@ -2261,7 +2262,7 @@ namespace libsemigroups {
         if (!save()) {
           for (auto it = _relations.cbegin(); it < _relations.cend(); it += 2) {
             push_definition_hlt<DoNotStackDeductions,
-                                ProcessCoincidences<DoNotStackDeductions>>(
+                                ProcessCoincidences<stack_deductions::no>>(
                 _current, *it, *(it + 1));
           }
         } else {
@@ -2500,7 +2501,7 @@ namespace libsemigroups {
           report_check--;
           _felsch_tree->push_back(d.second);
           process_deductions_dfs_v1<TPreferredDefs>(d.first);
-          process_coincidences<StackDeductions>();
+          process_coincidences(stack_deductions::yes);
           // The report_check bit in the next line stops us from calling
           // report() too often, which can bring a time penalty.
           if (report_check == 0 && report()) {
@@ -2509,10 +2510,10 @@ namespace libsemigroups {
           }
         }
         if (_deduct->empty()) {
-          process_coincidences<StackDeductions>();
+          process_coincidences(stack_deductions::yes);
         }
       }
-      process_coincidences<StackDeductions>();
+      process_coincidences(stack_deductions::yes);
     }
 
     template <typename TPreferredDefs>
@@ -2564,7 +2565,7 @@ namespace libsemigroups {
                                    NoPreferredDefs>(d.first, *it);
           }
           process_deductions_dfs_v2<TPreferredDefs>(d.first, d.first);
-          process_coincidences<StackDeductions>();
+          process_coincidences(stack_deductions::yes);
           // The report_check bit in the next line stops us from calling
           // report() too often, which can bring a time penalty.
           if (report_check == 0 && report()) {
@@ -2573,10 +2574,10 @@ namespace libsemigroups {
           }
         }
         if (_deduct->empty()) {
-          process_coincidences<StackDeductions>();
+          process_coincidences(stack_deductions::yes);
         }
       }
-      process_coincidences<StackDeductions>();
+      process_coincidences(stack_deductions::yes);
     }
 
     template <typename TPreferredDefs>
@@ -2710,7 +2711,7 @@ namespace libsemigroups {
              && (old_state == state::finished || !stopped())) {
         for (auto it = _relations.cbegin(); it < _relations.cend(); it += 2) {
           push_definition_felsch<DoNotStackDeductions,
-                                 ProcessCoincidences<DoNotStackDeductions>,
+                                 ProcessCoincidences<stack_deductions::no>,
                                  NoPreferredDefs>(
               // Using NoPreferredDefs is just a (more or less) arbitrary
               // choice, could allow the other choices here too (which works,
@@ -3027,7 +3028,7 @@ namespace libsemigroups {
         LIBSEMIGROUPS_ASSERT(q[p[c]] == c);
       }
 #endif
-      _word_graph.permute_nodes_nc(p, q);
+      _word_graph.permute_nodes_nc(p, q, number_of_cosets_active());
       CosetManager::apply_permutation(p);
     }
 
@@ -3040,8 +3041,14 @@ namespace libsemigroups {
       LIBSEMIGROUPS_ASSERT(c != d);
       LIBSEMIGROUPS_ASSERT(is_valid_coset(c));
       LIBSEMIGROUPS_ASSERT(is_valid_coset(d));
-      LIBSEMIGROUPS_ASSERT(is_active_coset(c) || is_active_coset(d));
-      _word_graph.swap_nodes(c, d);
+      if (is_active_coset(c) && is_active_coset(d)) {
+        _word_graph.swap_nodes(c, d);
+      } else if (is_active_coset(c)) {
+        _word_graph.rename_node(c, d);
+      } else {
+        LIBSEMIGROUPS_ASSERT(is_active_coset(d));
+        _word_graph.rename_node(d, c);
+      }
       switch_cosets(c, d);
     }
 
@@ -3075,7 +3082,7 @@ namespace libsemigroups {
       }
     }
 
-    // Validates the WordGraph, this is very expensive.
+    // Validates _word_graph, this is very expensive.
     void ToddCoxeter::debug_validate_word_graph() const {
       size_t const n = number_of_generators();
       coset_type   c = _id_coset;
@@ -3218,142 +3225,8 @@ namespace libsemigroups {
 #endif
 
     ////////////////////////////////////////////////////////////////////////
-    // 23. ToddCoxeter::WordGraph - member functions
+    // Combining options
     ////////////////////////////////////////////////////////////////////////
-
-    void ToddCoxeter::WordGraph::remove_source(coset_type  cx,
-                                               letter_type x,
-                                               coset_type  d) {
-      coset_type e = _preim_init.get(cx, x);
-      if (e == d) {
-        _preim_init.set(cx, x, _preim_next.get(d, x));
-      } else {
-        while (_preim_next.get(e, x) != d) {
-          e = _preim_next.get(e, x);
-        }
-        LIBSEMIGROUPS_ASSERT(_preim_next.get(e, x) == d);
-        _preim_next.set(e, x, _preim_next.get(d, x));
-      }
-    }
-
-    void ToddCoxeter::WordGraph::clear_sources_and_targets(coset_type c) {
-      for (letter_type i = 0; i < out_degree(); i++) {
-        ActionDigraph::add_edge_nc(c, UNDEFINED, i);
-        _preim_init.set(c, i, UNDEFINED);
-      }
-    }
-
-    void ToddCoxeter::WordGraph::clear_sources(coset_type c) {
-      for (letter_type i = 0; i < out_degree(); i++) {
-        _preim_init.set(c, i, UNDEFINED);
-      }
-    }
-
-    // The permutation q must map the active cosets to the [0, ..
-    // , number_of_cosets_active())
-    void ToddCoxeter::WordGraph::permute_nodes_nc(Perm& p, Perm& q) {
-      // p : new -> old, q = p ^ -1
-      coset_type   c = 0;
-      size_t const n = out_degree();
-      // Permute all the values in the _table, and pre-images, that relate
-      // to active cosets
-      while (c < _tc->number_of_cosets_active()) {
-        for (letter_type x = 0; x < n; ++x) {
-          coset_type i = unsafe_neighbor(p[c], x);
-          ActionDigraph::add_edge_nc(p[c], (i == UNDEFINED ? i : q[i]), x);
-          i = _preim_init.get(p[c], x);
-          _preim_init.set(p[c], x, (i == UNDEFINED ? i : q[i]));
-          i = _preim_next.get(p[c], x);
-          _preim_next.set(p[c], x, (i == UNDEFINED ? i : q[i]));
-        }
-        c++;
-      }
-      // Permute the rows themselves
-      ActionDigraph::apply_row_permutation(p);
-      _preim_init.apply_row_permutation(p);
-      _preim_next.apply_row_permutation(p);
-    }
-
-    // All edges of the form e - x -> c are replaced with e - x -> d,
-    void ToddCoxeter::WordGraph::replace_target(coset_type c,
-                                                coset_type d,
-                                                size_t     x) {
-      if (is_active_coset(c)) {
-        coset_type e = _preim_init.get(c, x);
-        while (e != UNDEFINED) {
-          LIBSEMIGROUPS_ASSERT(unsafe_neighbor(e, x) == c);
-          ActionDigraph::add_edge_nc(e, d, x);
-          e = _preim_next.get(e, x);
-        }
-      }
-    }
-
-    void ToddCoxeter::WordGraph::replace_source(coset_type c,
-                                                coset_type d,
-                                                size_t     x,
-                                                coset_type cx) {
-      if (is_active_coset(c) && cx != UNDEFINED) {
-        // Replace c <-- d in preimages of cx, and d is not a preimage of cx
-        // under x
-        coset_type e = _preim_init.get(cx, x);
-        if (e == c) {
-          _preim_init.set(cx, x, d);
-          return;
-        }
-        while (e != UNDEFINED) {
-          coset_type f = _preim_next.get(e, x);
-          if (f == c) {
-            _preim_next.set(e, x, d);
-            return;
-          }
-          e = f;
-        }
-      }
-    }
-
-    void ToddCoxeter::WordGraph::swap_nodes(coset_type c, coset_type d) {
-      LIBSEMIGROUPS_ASSERT(is_active_coset(c) || is_active_coset(d));
-
-      size_t const n = out_degree();
-      for (letter_type x = 0; x < n; ++x) {
-        coset_type cx = unsafe_neighbor(c, x);
-        coset_type dx = unsafe_neighbor(d, x);
-
-        replace_target(c, d, x);
-        replace_target(d, c, x);
-
-        if (is_active_coset(c) && is_active_coset(d) && cx == dx
-            && cx != UNDEFINED) {
-          // Swap c <--> d in preimages of cx = dx
-          size_t     found = 0;
-          coset_type e     = _preim_init.get(cx, x);
-          if (e == c) {
-            ++found;
-            _preim_init.set(cx, x, d);
-          } else if (e == d) {
-            ++found;
-            _preim_init.set(cx, x, c);
-          }
-          while (e != UNDEFINED && found < 2) {
-            coset_type f = _preim_next.get(e, x);
-            if (f == c) {
-              ++found;
-              _preim_next.set(e, x, d);
-            } else if (f == d) {
-              ++found;
-              _preim_next.set(e, x, c);
-            }
-            e = f;
-          }
-        } else {
-          replace_source(c, d, x, cx);
-          replace_source(d, c, x, dx);
-        }
-        swap_edges_nc(c, d, x);
-        _preim_init.swap(c, x, d, x);
-        _preim_next.swap(c, x, d, x);
-      }
-    }
 
     ToddCoxeter::options::deductions
     operator|(ToddCoxeter::options::deductions const& opt1,
