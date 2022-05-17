@@ -783,7 +783,7 @@ namespace libsemigroups {
 
       // not noexcept because iterator operations may throw
       inline void resize(size_t count) {
-        LIBSEMIGROUPS_ASSERT(count < N);
+        LIBSEMIGROUPS_ASSERT(count <= N);
         if (count >= _size) {
           for (auto it = begin() + _size; it < begin() + (count - _size);
                ++it) {
