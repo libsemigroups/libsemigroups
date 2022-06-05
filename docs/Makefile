@@ -54,6 +54,11 @@ html-no-doxy:
 	@echo
 	@echo "Build finished. The HTML pages are in $(BUILDDIR)/html."
 
+rst:
+	$(SPHINXBUILD) -b rst $(ALLSPHINXOPTS) $(BUILDDIR)/html
+	@echo
+	@echo "Build finished. The RST files are in ??."
+
 html:
 	doxygen
 	$(SPHINXBUILD) -b html $(ALLSPHINXOPTS) $(BUILDDIR)/html
