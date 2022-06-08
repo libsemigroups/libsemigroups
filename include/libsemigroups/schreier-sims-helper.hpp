@@ -54,6 +54,19 @@ namespace libsemigroups {
     template <size_t N>
     using Product = typename SchreierSims<N>::Product;
 
+    //! Find the intersection of two permutation groups.
+    //!
+    //! Modifies the first parameter \p T to be the Schreier-Sims object
+    //! corresponding to the intersection of \p S1 and \p S2.
+    //!
+    //! \tparam N the largest point not fixed by the permutations in the
+    //! permutation groups.
+    //!
+    //! \param T the Screier-Sims object holding the result.
+    //! \param S1 the first semigroup of the intersection.
+    //! \param S2 the second group of the intersection.
+    //!
+    // TODO(later) example
     template <size_t N>
     void intersection(SchreierSims<N>& T,
                       SchreierSims<N>& S1,
