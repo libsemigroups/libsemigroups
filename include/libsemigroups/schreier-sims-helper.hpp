@@ -179,4 +179,4 @@ namespace libsemigroups {
   }  // namespace schreier_sims_helper
 }  // namespace libsemigroups
 
-#endif  // LIBSEMIGROUPS_SCHREIER_SIMS__HELPER_HPP_
+#endif  // LIBSEMIGROUPS_SCHREIER_SIMS_HELPER_HPP_
