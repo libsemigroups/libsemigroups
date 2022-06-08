@@ -19,7 +19,10 @@
 // the intersection of two permutations given by Schreier-Sims algorithm.
 
 // TODO:
-// 1. Test that it works
+// 1. Implement orbit refinement heuristic for intersection.
+// 2. Make the Screier-Sims object during runtime, since we compute the
+//    stabilizers of the intersection already.
+// 3. Refactor for more generality.
 
 #ifndef LIBSEMIGROUPS_SCHREIER_SIMS_HELPER_HPP_
 #define LIBSEMIGROUPS_SCHREIER_SIMS_HELPER_HPP_
@@ -93,15 +96,15 @@ namespace libsemigroups {
       // In general, if we are at a node corresponding to elements g and h
       // in the tree and orbits O and P respectively, then the only points we
       // need to consider are O^g intersect P^h.
+      // This is not currently implemented! We just use all of the points
+      // in the orbits of S1. Implementing it probably requires refactoring the
+      // code.
       detail::StaticVector2<point_type<N>, N> refined_orbit;
       for (size_t depth = 0; depth < base_size; ++depth) {
         // First point is always base point to make algorithm simpler
         LIBSEMIGROUPS_ASSERT(S1.base(depth) == S2B.base(depth));
         refined_orbit.push_back(depth, S1.base(depth));
         for (point_type<N> pt = 0; pt < N; ++pt) {
-          // TODO: Refined orbits are wrong, reimplement
-          // if ((pt != S1.base(depth)) && (S1.orbits_lookup(depth, pt))
-          //     && (S2B.orbits_lookup(depth, pt)))
           if ((pt != S1.base(depth)) && S1.orbits_lookup(depth, pt))
             refined_orbit.push_back(depth, pt);
         }
@@ -133,17 +136,12 @@ namespace libsemigroups {
           T.add_generator(state_elem[depth]);
           // As soon as we find one, the rest are in a coset of stabiliser, so
           // dont need to look at any more nodes.
-          for (; depth > stab_depth; --depth) {
-            state_index[depth] = 0;
-            state_elem[depth]  = One<N>()(N);
-          }
+          depth = stab_depth;
         }
         // If previous if statement passes then depth = stab_depth > 0 by the
         // while loop invariant. If not, then depth = base_size > 0 due to the
         // for loop before the if statement.
         LIBSEMIGROUPS_ASSERT(depth != 0);
-        state_index[depth] = 0;
-        state_elem[depth]  = One<N>()(N);
         depth--;
 
         // Find largest depth that has an unvisited node and increment its
