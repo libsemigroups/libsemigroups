@@ -84,15 +84,27 @@ namespace libsemigroups {
       }
       S2B.run();
 
-      // Only need to consider points reachable by both groups
+      for (size_t depth = 0; depth < base_size; ++depth) {
+        LIBSEMIGROUPS_ASSERT(S1.base(depth) == S2B.base(depth));
+      }
+
+      // Only need to consider points reachable by both groups.
+      // Note that as we traverse the tree these points change!
+      // In general, if we are at a node corresponding to elements g and h
+      // in the tree and orbits O and P respectively, then the only points we
+      // need to consider are O^g intersect P^h.
       detail::StaticVector2<point_type<N>, N> refined_orbit;
       for (size_t depth = 0; depth < base_size; ++depth) {
         // First point is always base point to make algorithm simpler
+        LIBSEMIGROUPS_ASSERT(S1.base(depth) == S2B.base(depth));
         refined_orbit.push_back(depth, S1.base(depth));
-        for (point_type<N> pt = 0; pt < N; ++pt)
-          if ((pt != S1.base(depth)) && S1.orbits_lookup(depth, pt)
-              && S2B.orbits_lookup(depth, pt))
+        for (point_type<N> pt = 0; pt < N; ++pt) {
+          // TODO: Refined orbits are wrong, reimplement
+          // if ((pt != S1.base(depth)) && (S1.orbits_lookup(depth, pt))
+          //     && (S2B.orbits_lookup(depth, pt)))
+          if ((pt != S1.base(depth)) && S1.orbits_lookup(depth, pt))
             refined_orbit.push_back(depth, pt);
+        }
       }
 
       // Initially assume that we have traversed the tree to the leaf
@@ -111,31 +123,41 @@ namespace libsemigroups {
           // during the loop and so depth + 1 <= N-1
           LIBSEMIGROUPS_ASSERT(depth + 1 < N);
           Product<N>()(state_elem[depth + 1],
-                       state_elem[depth],
                        S1.transversal_element(
-                           depth, refined_orbit.at(depth, state_index[depth])));
+                           depth, refined_orbit.at(depth, state_index[depth])),
+                       state_elem[depth]);
         }
         if (S2B.contains(state_elem[depth])) {
+          LIBSEMIGROUPS_ASSERT(S1.contains(state_elem[depth]));
+          LIBSEMIGROUPS_ASSERT(S2.contains(state_elem[depth]));
           T.add_generator(state_elem[depth]);
           // As soon as we find one, the rest are in a coset of stabiliser, so
           // dont need to look at any more nodes.
-          depth = stab_depth;
+          for (; depth > stab_depth; --depth) {
+            state_index[depth] = 0;
+            state_elem[depth]  = One<N>()(N);
+          }
         }
         // If previous if statement passes then depth = stab_depth > 0 by the
         // while loop invariant. If not, then depth = base_size > 0 due to the
         // for loop before the if statement.
         LIBSEMIGROUPS_ASSERT(depth != 0);
+        state_index[depth] = 0;
+        state_elem[depth]  = One<N>()(N);
         depth--;
 
         // Find largest depth that has an unvisited node and increment its
         // index. Adjust stabilizer depth as depths are exhausted.
         for (;; --depth) {
+          LIBSEMIGROUPS_ASSERT((depth >= 0) && (depth < base_size));
           state_index[depth]++;
-          if (state_index[depth] < refined_orbit.size(depth))
+          if (state_index[depth] < refined_orbit.size(depth)) {
             break;
+          }
           if (depth < stab_depth)
             stab_depth = depth;
           state_index[depth] = 0;
+          state_elem[depth]  = One<N>()(N);
           if (depth == 0)
             break;
         }
