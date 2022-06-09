@@ -36,10 +36,4 @@ The classes for semigroups and monoids in ``libsemigroups`` are:
    konieczny
    _generated/libsemigroups__schreiersims
    _generated/libsemigroups__schreiersimstraits
-
-There are also some helper functions available for Schreier-Sims:
-
-.. toctree::
-   :maxdepth: 1
-
    api/schreiersims-helper
