@@ -333,8 +333,9 @@ namespace libsemigroups {
     //! \parameters
     //! (None)
     size_t number_of_strong_generators(index_type depth) const {
-      if (_base_size == 0)
+      if (_base_size == 0) {
         return 0;
+      }
       if (depth >= _base_size) {
         LIBSEMIGROUPS_EXCEPTION(
             "depth out of bounds, expected value in range [0, %d), got %d",
