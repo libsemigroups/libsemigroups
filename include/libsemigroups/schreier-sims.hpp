@@ -325,16 +325,22 @@ namespace libsemigroups {
     //! The number of strong generators, a value of \c size_t, at depth \p
     //! depth of the stabiliser chain.
     //!
-    //! \exceptions
-    //! \noexcept
+    //! \throws LibsemigroupsException if the \p depth is out of bounds.
     //!
     //! \complexity
     //! Constant.
     //!
     //! \parameters
     //! (None)
-    // TODO(later) shouldn't this throw if depth is out of bounds??
     size_t number_of_strong_generators(index_type depth) const noexcept {
+      if (_base_size == 0)
+        return 0;
+      if (depth >= _base_size) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "depth out of bounds, expected value in range [0, %d), got %d",
+            _base_size,
+            depth);
+      }
       return _strong_gens.size(depth);
     }
 
@@ -347,13 +353,19 @@ namespace libsemigroups {
     //! A const reference to the strong generator of \c this at depth \p depth
     //! and with index \p index.
     //!
+    //! \throws LibsemigroupsException if the \p depth is out of bounds.
     //! \throws LibsemigroupsException if the \p index is out of bounds.
     //!
     //! \complexity
     //! Constant.
-    // TODO(later) shouldn't this throw if depth is out of bounds??
     const_element_reference strong_generator(index_type depth,
                                              index_type index) const {
+      if (depth >= _base_size) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "depth out of bounds, expected value in range [0, %d), got %d",
+            _base_size,
+            depth);
+      }
       if (index >= _strong_gens.size(depth)) {
         LIBSEMIGROUPS_EXCEPTION(
             "index out of bounds, expected value in range (0, %d], got %d",
@@ -361,6 +373,88 @@ namespace libsemigroups {
             index);
       }
       return this->to_external_const(_strong_gens.at(depth, index));
+    }
+
+    //! Get a transversal element.
+    //!
+    //! \param depth the depth.
+    //! \param pt the image of the base point under the traversal.
+    //!
+    //! \returns
+    //! A const reference to the transversal element of \c this at depth
+    //! \p depth moving the corresponding basepoint to the point \p pt.
+    //!
+    //! \throws LibsemigroupsException if the \p depth is out of bounds.
+    //! \throws LibsemigroupsException if \p pt is not in the orbit of the
+    //! basepoint.
+    //!
+    //! \complexity
+    //! Constant.
+    const_element_reference transversal_element(index_type depth,
+                                                point_type pt) {
+      if (depth >= _base_size) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "depth out of bounds, expected value in range [0, %d), got %d",
+            _base_size,
+            depth);
+      }
+      if (!_orbits_lookup[depth][pt]) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "no element maps %d to %d at depth %d", _base[depth], pt, depth);
+      }
+      return this->to_external_const(_transversal[depth][pt]);
+    }
+
+    //! Get an inversal element.
+    //!
+    //! \param depth the depth.
+    //! \param pt the point to map to the base point under the inversal.
+    //!
+    //! \returns
+    //! A const reference to the insversal element of \c this at depth
+    //! \p depth moving the corresponding point \p pt to the basepoint.
+    //!
+    //! \throws LibsemigroupsException if the \p depth is out of bounds.
+    //! \throws LibsemigroupsException if \p pt is not in the orbit of the
+    //! basepoint.
+    //!
+    //! \complexity
+    //! Constant.
+    const_element_reference inversal_element(index_type depth, point_type pt) {
+      if (depth >= _base_size) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "depth out of bounds, expected value in range [0, %d), got %d",
+            _base_size,
+            depth);
+      }
+      if (!_orbits_lookup[depth][pt]) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "no element maps %d to %d at depth %d", _base[depth], pt, depth);
+      }
+      return this->to_external_const(_inversal[depth][pt]);
+    }
+
+    //! Check if a point is in the orbit of a basepoint.
+    //!
+    //! \param depth the depth.
+    //! \param pt the point.
+    //!
+    //! \returns
+    //! A boolean indicating if the point \p pt is in the orbit of the
+    //! basepoint of \c this at depth \p depth.
+    //!
+    //! \throws LibsemigroupsException if the \p depth is out of bounds.
+    //!
+    //! \complexity
+    //! Constant.
+    bool orbits_lookup(index_type depth, point_type pt) {
+      if (depth >= _base_size) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "depth out of bounds, expected value in range [0, %d), got %d",
+            _base_size,
+            depth);
+      }
+      return _orbits_lookup[depth][pt];
     }
 
     //! Check if any generators have been added so far.
@@ -394,7 +488,7 @@ namespace libsemigroups {
       if (empty()) {
         return 1;
       }
-      schreier_sims();
+      run();
       uint64_t out = 1;
       for (index_type i = 0; i < _base_size; i++) {
         out *= _orbits.size(i);
@@ -438,7 +532,7 @@ namespace libsemigroups {
       if (!has_valid_degree(x)) {
         return false;
       }
-      schreier_sims();
+      run();
       element_type cpy = this->external_copy(x);
       Swap()(cpy, this->to_external(_tmp_element2));
       this->external_free(cpy);
@@ -585,87 +679,23 @@ namespace libsemigroups {
       return _base_size;
     }
 
-   private:
-    void init() {
-      _base_size = 0;
-      _finished  = false;
-      _orbits_lookup.fill(false);
-    }
-
-    bool has_valid_degree(const_element_reference x) const {
-      return
-#ifdef LIBSEMIGROUPS_HPCOMBI_ENABLED
-          std::is_same<HPCombi::Perm16, element_type>::value ||
-#endif
-          Degree()(x) == N;
-    }
-
-    void internal_add_base_point(point_type pt) {
-      LIBSEMIGROUPS_ASSERT(_base_size < N);
-      _base[_base_size] = pt;
-      _orbits.push_back(_base_size, pt);
-      _orbits_lookup[_base_size][pt] = true;
-      _transversal[_base_size][pt]   = this->internal_copy(_one);
-      _inversal[_base_size][pt]      = this->internal_copy(_one);
-      _base_size++;
-    }
-
-    void orbit_enumerate(index_type depth, index_type first = 0) {
-      LIBSEMIGROUPS_ASSERT(depth < _base_size);
-      for (index_type i = first; i < _orbits.size(depth); i++) {
-        for (auto it = _strong_gens.cbegin(depth);
-             it < _strong_gens.cend(depth);
-             ++it) {
-          orbit_add_point(depth, *it, _orbits.at(depth, i));
-        }
-      }
-    }
-
-    void orbit_add_gen(index_type depth, internal_element_type gen) {
-      LIBSEMIGROUPS_ASSERT(depth < _base_size);
-      // Apply the new generator to existing points in orbits[depth].
-      index_type old_size_orbit = _orbits.size(depth);
-      for (index_type i = 0; i < old_size_orbit; i++) {
-        orbit_add_point(depth, gen, _orbits.at(depth, i));
-      }
-      orbit_enumerate(depth, old_size_orbit);
-    }
-
-    void orbit_add_point(index_type            depth,
-                         internal_element_type x,
-                         point_type            pt) {
-      point_type img = Action()(pt, this->to_external_const(x));
-      if (!_orbits_lookup[depth][img]) {
-        _orbits.push_back(depth, img);
-        _orbits_lookup[depth][img] = true;
-        _transversal[depth][img]   = this->internal_copy(_one);
-        Product()(this->to_external(_transversal[depth][img]),
-                  this->to_external_const(_transversal[depth][pt]),
-                  this->to_external_const(x));
-        _inversal[depth][img] = this->to_internal(
-            Inverse()(this->to_external_const(_transversal[depth][img])));
-      }
-    }
-
-    // Changes _tmp_element2 in-place, and returns the depth reached in the
-    // sifting.
-    index_type internal_sift() {
-      for (index_type depth = 0; depth < _base_size; ++depth) {
-        point_type beta
-            = Action()(_base[depth], this->to_external_const(_tmp_element2));
-        if (!_orbits_lookup[depth][beta]) {
-          return depth;
-        }
-        Product()(this->to_external(_tmp_element1),
-                  this->to_external_const(_tmp_element2),
-                  this->to_external_const(_inversal[depth][beta]));
-        Swap()(this->to_external(_tmp_element2),
-               this->to_external(_tmp_element1));
-      }
-      return _base_size;
-    }
-
-    void schreier_sims() {
+    //! Run the Schreier-Sims algorithm.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \complexity
+    //! \f$O(N^2\log^3|G|+|T|N^2\log|G|)\f$ time and
+    //! \f$O(N^2\log|G|+|T|N)\f$ space,
+    //! where \p N is the first template parameter, \f$|G|\f$ is the size of
+    //! the group and \f$|T|\f$ is the number of generators of the group.
+    //!
+    //! \parameters
+    //! (None)
+    //!
+    //! \returns
+    //! (None)
+    void run() {
       if (_finished || _strong_gens.size(0) == 0) {
         return;
       }
@@ -747,6 +777,86 @@ namespace libsemigroups {
         }
       }
       _finished = true;
+    }
+
+   private:
+    void init() {
+      _base_size = 0;
+      _finished  = false;
+      _orbits_lookup.fill(false);
+    }
+
+    bool has_valid_degree(const_element_reference x) const {
+      return
+#ifdef LIBSEMIGROUPS_HPCOMBI_ENABLED
+          std::is_same<HPCombi::Perm16, element_type>::value ||
+#endif
+          Degree()(x) == N;
+    }
+
+    void internal_add_base_point(point_type pt) {
+      LIBSEMIGROUPS_ASSERT(_base_size < N);
+      _base[_base_size] = pt;
+      _orbits.push_back(_base_size, pt);
+      _orbits_lookup[_base_size][pt] = true;
+      _transversal[_base_size][pt]   = this->internal_copy(_one);
+      _inversal[_base_size][pt]      = this->internal_copy(_one);
+      _base_size++;
+    }
+
+    void orbit_enumerate(index_type depth, index_type first = 0) {
+      LIBSEMIGROUPS_ASSERT(depth < _base_size);
+      for (index_type i = first; i < _orbits.size(depth); i++) {
+        for (auto it = _strong_gens.cbegin(depth);
+             it < _strong_gens.cend(depth);
+             ++it) {
+          orbit_add_point(depth, *it, _orbits.at(depth, i));
+        }
+      }
+    }
+
+    void orbit_add_gen(index_type depth, internal_element_type gen) {
+      LIBSEMIGROUPS_ASSERT(depth < _base_size);
+      // Apply the new generator to existing points in orbits[depth].
+      index_type old_size_orbit = _orbits.size(depth);
+      for (index_type i = 0; i < old_size_orbit; i++) {
+        orbit_add_point(depth, gen, _orbits.at(depth, i));
+      }
+      orbit_enumerate(depth, old_size_orbit);
+    }
+
+    void orbit_add_point(index_type            depth,
+                         internal_element_type x,
+                         point_type            pt) {
+      point_type img = Action()(pt, this->to_external_const(x));
+      if (!_orbits_lookup[depth][img]) {
+        _orbits.push_back(depth, img);
+        _orbits_lookup[depth][img] = true;
+        _transversal[depth][img]   = this->internal_copy(_one);
+        Product()(this->to_external(_transversal[depth][img]),
+                  this->to_external_const(_transversal[depth][pt]),
+                  this->to_external_const(x));
+        _inversal[depth][img] = this->to_internal(
+            Inverse()(this->to_external_const(_transversal[depth][img])));
+      }
+    }
+
+    // Changes _tmp_element2 in-place, and returns the depth reached in the
+    // sifting.
+    index_type internal_sift() {
+      for (index_type depth = 0; depth < _base_size; ++depth) {
+        point_type beta
+            = Action()(_base[depth], this->to_external_const(_tmp_element2));
+        if (!_orbits_lookup[depth][beta]) {
+          return depth;
+        }
+        Product()(this->to_external(_tmp_element1),
+                  this->to_external_const(_tmp_element2),
+                  this->to_external_const(_inversal[depth][beta]));
+        Swap()(this->to_external(_tmp_element2),
+               this->to_external(_tmp_element1));
+      }
+      return _base_size;
     }
 
     typename domain_type::const_iterator
