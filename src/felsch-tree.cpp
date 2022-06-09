@@ -44,11 +44,11 @@ namespace libsemigroups {
             // an existing state . . .
             auto       it = suffix - 1;
             state_type s  = initial_state;
-            while (_automata.get(s, *it) != final_state && it > prefix) {
+            while (_automata.get(s, *it) != initial_state && it > prefix) {
               s = _automata.get(s, *it);
               --it;
             }
-            if (_automata.get(s, *it) == final_state) {
+            if (_automata.get(s, *it) == initial_state) {
               // [it + 1, suffix) is the maximal suffix of [prefix, suffix)
               // that corresponds to the existing state s
               size_t number_of_states = _automata.number_of_rows();
@@ -71,7 +71,7 @@ namespace libsemigroups {
           state_type s  = initial_state;
           while (it >= wit->cbegin()) {
             s = _automata.get(s, *it);
-            LIBSEMIGROUPS_ASSERT(s != final_state);
+            LIBSEMIGROUPS_ASSERT(s != initial_state);
             --it;
           }
           index_type m = ((number_of_words % 2) == 0 ? number_of_words
@@ -85,12 +85,13 @@ namespace libsemigroups {
         }
         number_of_words++;
       }
+      LIBSEMIGROUPS_ASSERT(_index[0].empty());
     }
 
     bool FelschTree::push_front(letter_type x) {
       LIBSEMIGROUPS_ASSERT(x < _automata.number_of_cols());
       auto y = _automata.get(_current_state, x);
-      if (y != final_state) {
+      if (y != initial_state) {
         _length++;
         _current_state = y;
         return true;
@@ -104,7 +105,7 @@ namespace libsemigroups {
       for (state_type s = 1; s < _parent.size(); ++s) {
         size_t     h = 0;
         state_type t = s;
-        while (t != final_state) {
+        while (t != initial_state) {
           h++;
           t = _parent[t];
         }
