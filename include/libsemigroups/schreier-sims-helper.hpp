@@ -99,7 +99,7 @@ namespace libsemigroups {
         S2B.add_generator(S2.generator(i));
       }
       S2B.run();
-
+#ifdef LIBSEMIGROUPS_DEBUG
       for (size_t depth = 0; depth < base_size; ++depth) {
         LIBSEMIGROUPS_ASSERT(S1.base(depth) == S2B.base(depth));
       }
