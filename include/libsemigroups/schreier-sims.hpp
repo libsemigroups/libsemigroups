@@ -336,7 +336,7 @@ namespace libsemigroups {
       if (_base_size == 0) {
         return 0;
       }
-      if (depth >= _base_size) {
+      else if (depth >= _base_size) {
         LIBSEMIGROUPS_EXCEPTION(
             "depth out of bounds, expected value in range [0, %d), got %d",
             _base_size,
