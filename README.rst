@@ -154,7 +154,7 @@ Contributors
   algorithms for the class `ActionDigraph`, to the implementation
   of the `Kambites` class, and to the `Sims1` class.
 
-.. _R. Cirpons:
+.. _R. Cirpons: https://reinisc.id.lv
 .. _F. Hivert: https://www.lri.fr/~hivert/
 .. _J. James: http://www.jamezone.org/
 .. _J. Jonušas: http://julius.jonusas.work/
