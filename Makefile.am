@@ -97,6 +97,7 @@ pkginclude_HEADERS += include/libsemigroups/race.hpp
 pkginclude_HEADERS += include/libsemigroups/report.hpp
 pkginclude_HEADERS += include/libsemigroups/runner.hpp
 pkginclude_HEADERS += include/libsemigroups/schreier-sims.hpp
+pkginclude_HEADERS += include/libsemigroups/schreier-sims-helper.hpp
 pkginclude_HEADERS += include/libsemigroups/sims1.hpp
 pkginclude_HEADERS += include/libsemigroups/sims1.tpp
 pkginclude_HEADERS += include/libsemigroups/siso.hpp
