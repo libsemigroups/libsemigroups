@@ -1,4 +1,4 @@
-.. Copyright (c) 2020, J. D. Mitchell
+.. Copyright (c) 2022, Reinis Cirpons
 
    Distributed under the terms of the GPL license version 3.
 
