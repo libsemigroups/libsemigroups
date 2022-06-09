@@ -103,7 +103,7 @@ namespace libsemigroups {
       for (size_t depth = 0; depth < base_size; ++depth) {
         LIBSEMIGROUPS_ASSERT(S1.base(depth) == S2B.base(depth));
       }
-
+#endif
       // Only need to consider points reachable by both groups.
       // Note that as we traverse the tree these points change!
       // In general, if we are at a node corresponding to elements g and h
