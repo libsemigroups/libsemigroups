@@ -87,7 +87,7 @@ namespace libsemigroups {
       // Note that if N-1 points are fixed then the N-th point is also fixed.
       // So if base contains all N points, then we lose nothing by discarding
       // the last point in the base.
-      size_t base_size = S1.base_size();
+      size_t const base_size = S1.base_size();
       if (base_size == N)
         base_size = N - 1;
 
