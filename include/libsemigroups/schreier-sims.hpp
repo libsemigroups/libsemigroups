@@ -332,7 +332,7 @@ namespace libsemigroups {
     //!
     //! \parameters
     //! (None)
-    size_t number_of_strong_generators(index_type depth) const noexcept {
+    size_t number_of_strong_generators(index_type depth) const {
       if (_base_size == 0)
         return 0;
       if (depth >= _base_size) {
