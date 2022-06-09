@@ -16,9 +16,9 @@ v2.1.4 (released 04/03/2022)
 
 This is a minor release with a few minor changes:
 
-* it is now possible to create the `quotient_froidure_pin` of a congruence with
-  infinitely many classes;
-* some exception messages were corrected for `Bipartition` objects;
+* it is now possible to create the ``quotient_froidure_pin`` of a congruence
+  with infinitely many classes;
+* some exception messages were corrected for ``Bipartition`` objects;
 * compilation of v2.1.0 to v2.1.3 did not work in cygwin for Windows;
 * there was a file missing in the archive, which meant that it wasn't possible
   to build the documentation.
