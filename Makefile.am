@@ -636,6 +636,7 @@ EXTRA_PROGRAMS += test_constants
 EXTRA_PROGRAMS += test_containers
 EXTRA_PROGRAMS += test_digraph_helper
 EXTRA_PROGRAMS += test_digraph
+EXTRA_PROGRAMS += test_felsch_tree
 EXTRA_PROGRAMS += test_forest
 EXTRA_PROGRAMS += test_fpsemi
 EXTRA_PROGRAMS += test_fpsemi_intf
@@ -714,6 +715,7 @@ test_all_SOURCES += tests/test-constants.cpp
 test_all_SOURCES += tests/test-containers.cpp
 test_all_SOURCES += tests/test-digraph-helper.cpp
 test_all_SOURCES += tests/test-digraph.cpp
+test_all_SOURCES += tests/test-felsch-tree.cpp
 test_all_SOURCES += tests/test-forest.cpp
 test_all_SOURCES += tests/test-fpsemi.cpp
 test_all_SOURCES += tests/test-fpsemi-intf.cpp
@@ -801,9 +803,11 @@ test_digraph_helper_SOURCES += tests/test-main.cpp
 test_digraph_SOURCES =  tests/test-digraph.cpp
 test_digraph_SOURCES += tests/test-main.cpp
 
-
 test_forest_SOURCES =  tests/test-forest.cpp
 test_forest_SOURCES += tests/test-main.cpp
+
+test_felsch_tree_SOURCES =  tests/test-felsch-tree.cpp
+test_felsch_tree_SOURCES += tests/test-main.cpp
 
 test_fpsemi_SOURCES =  tests/test-fpsemi.cpp
 test_fpsemi_SOURCES += tests/fpsemi-examples.cpp

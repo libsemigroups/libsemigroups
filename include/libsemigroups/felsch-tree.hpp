@@ -36,10 +36,9 @@ namespace libsemigroups {
       using state_type     = size_t;
       using const_iterator = std::vector<index_type>::const_iterator;
       static constexpr state_type initial_state = 0;
-      static constexpr state_type final_state   = UNDEFINED;
 
       explicit FelschTree(size_t n)
-          : _automata(n, 1, final_state),
+          : _automata(n, 1, initial_state),
             _index(1, std::vector<index_type>({})),
             _parent(1, state_type(UNDEFINED)),
             _length(0) {}
@@ -58,17 +57,18 @@ namespace libsemigroups {
       bool push_front(letter_type x);
 
       void pop_front() {
+        LIBSEMIGROUPS_ASSERT(_length > 0);
         _length--;
         _current_state = _parent[_current_state];
       }
 
       const_iterator cbegin() const {
-        LIBSEMIGROUPS_ASSERT(_current_state != final_state);
+        LIBSEMIGROUPS_ASSERT(_current_state < _index.size());
         return _index[_current_state].cbegin();
       }
 
       const_iterator cend() const {
-        LIBSEMIGROUPS_ASSERT(_current_state != final_state);
+        LIBSEMIGROUPS_ASSERT(_current_state < _index.size());
         return _index[_current_state].cend();
       }
 

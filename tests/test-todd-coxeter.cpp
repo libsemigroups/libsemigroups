@@ -2029,7 +2029,7 @@ namespace libsemigroups {
       tc2.add_pair({0, 0}, {0});
       tc2.add_pair({0, 1, 0}, {0, 0});
       tc2.add_pair({0, 1, 0, 1}, {0, 1, 0});
-      REQUIRE(tc2.felsch_tree_height() == 5);
+      REQUIRE(tc2.felsch_tree_height() == 4);
 
       REQUIRE(std::equal(tc.cbegin_relations(),
                          tc.cend_relations(),
@@ -2047,7 +2047,7 @@ namespace libsemigroups {
       tc2.simplify();
       REQUIRE(
           std::vector<word_type>(tc2.cbegin_extra(), tc2.cend_extra()).empty());
-      REQUIRE(tc2.felsch_tree_height() == 5);
+      REQUIRE(tc2.felsch_tree_height() == 4);
       REQUIRE(tc2.number_of_classes() == 1);
     }
 
@@ -2124,7 +2124,7 @@ namespace libsemigroups {
                         LibsemigroupsException);
 
       REQUIRE(tc.random_interval() == std::chrono::milliseconds(200));
-      REQUIRE(tc.felsch_tree_height() == 7);
+      REQUIRE(tc.felsch_tree_height() == 6);
       REQUIRE(tc.number_of_classes() == 5);
       REQUIRE(tc.number_of_words(0) == 1);
       REQUIRE(tc.number_of_words(1) == 1);
