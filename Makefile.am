@@ -773,11 +773,8 @@ test_all_SOURCES += tests/test-present.cpp
 test_all_SOURCES += tests/test-race.cpp
 test_all_SOURCES += tests/test-runner.cpp
 test_all_SOURCES += tests/test-schreier-sims.cpp
-<<<<<<< HEAD
-test_all_SOURCES += tests/test-sims1.cpp
-=======
 test_all_SOURCES += tests/test-schreier-sims-helper.cpp
->>>>>>> d7468f6e (Add test file to the makefile and fix naming error)
+test_all_SOURCES += tests/test-sims1.cpp
 test_all_SOURCES += tests/test-siso.cpp
 test_all_SOURCES += tests/test-string.cpp
 test_all_SOURCES += tests/test-string-view.cpp
@@ -936,14 +933,12 @@ test_runner_SOURCES += tests/test-main.cpp
 test_schreier_sims_SOURCES =  tests/test-schreier-sims.cpp
 test_schreier_sims_SOURCES += tests/test-main.cpp
 
-<<<<<<< HEAD
+test_schreier_sims_helper_SOURCES =  tests/test-schreier-sims-helper.cpp
+test_schreier_sims_helper_SOURCES += tests/test-main.cpp
+
 test_sims1_SOURCES =  tests/test-sims1.cpp
 test_sims1_SOURCES += tests/test-main.cpp
 test_sims1_SOURCES += tests/fpsemi-examples.cpp
-=======
-test_schreier_sims_helper_SOURCES =  tests/test-schreier-sims-helper.cpp
-test_schreier_sims_helper_SOURCES += tests/test-main.cpp
->>>>>>> d7468f6e (Add test file to the makefile and fix naming error)
 
 test_siso_SOURCES =  tests/test-siso.cpp
 test_siso_SOURCES += tests/test-main.cpp
