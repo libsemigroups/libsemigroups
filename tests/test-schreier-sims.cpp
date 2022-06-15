@@ -3129,4 +3129,154 @@ namespace libsemigroups {
     REQUIRE(S.size() == 177843714048000);
   }
 
+  LIBSEMIGROUPS_TEST_CASE("SchreierSims",
+                          "043",
+                          "orbits_lookup test",
+                          "[quick][schreier-sims]") {
+    auto             rg = ReportGuard(REPORT);
+    SchreierSims<64> S, T;
+    using Perm = typename decltype(S)::element_type;
+    S.add_base_point(0);
+    S.add_base_point(1);
+    S.add_base_point(2);
+    S.add_generator(
+        Perm({0,  2,  59, 57, 16, 18, 43, 41, 36, 38, 31, 29, 52, 54, 15, 13,
+              8,  10, 51, 49, 24, 26, 35, 33, 44, 46, 23, 21, 60, 62, 7,  5,
+              32, 34, 27, 25, 48, 50, 11, 9,  4,  6,  63, 61, 20, 22, 47, 45,
+              40, 42, 19, 17, 56, 58, 3,  1,  12, 14, 55, 53, 28, 30, 39, 37}));
+    S.add_generator(
+        Perm({0,  40, 51, 27, 1,  41, 50, 26, 2,  42, 49, 25, 3,  43, 48, 24,
+              4,  44, 55, 31, 5,  45, 54, 30, 6,  46, 53, 29, 7,  47, 52, 28,
+              16, 56, 35, 11, 17, 57, 34, 10, 18, 58, 33, 9,  19, 59, 32, 8,
+              20, 60, 39, 15, 21, 61, 38, 14, 22, 62, 37, 13, 23, 63, 36, 12}));
+    S.add_generator(
+        Perm({1,  0,  3,  2,  5,  4,  7,  6,  9,  8,  11, 10, 13, 12, 15, 14,
+              17, 16, 19, 18, 21, 20, 23, 22, 25, 24, 27, 26, 29, 28, 31, 30,
+              33, 32, 35, 34, 37, 36, 39, 38, 41, 40, 43, 42, 45, 44, 47, 46,
+              49, 48, 51, 50, 53, 52, 55, 54, 57, 56, 59, 58, 61, 60, 63, 62}));
+    S.run();
+
+    detail::Array2<bool, 64> orbits_lookup_test;
+    orbits_lookup_test[0]
+        = {true, true, true, true, true, true, true, true, true, true, true,
+           true, true, true, true, true, true, true, true, true, true, true,
+           true, true, true, true, true, true, true, true, true, true, true,
+           true, true, true, true, true, true, true, true, true, true, true,
+           true, true, true, true, true, true, true, true, true, true, true,
+           true, true, true, true, true, true, true, true, true};
+    orbits_lookup_test[1]
+        = {false, true, true, true, true, true, true, true, true, true, true,
+           true,  true, true, true, true, true, true, true, true, true, true,
+           true,  true, true, true, true, true, true, true, true, true, true,
+           true,  true, true, true, true, true, true, true, true, true, true,
+           true,  true, true, true, true, true, true, true, true, true, true,
+           true,  true, true, true, true, true, true, true, true};
+    orbits_lookup_test[2]
+        = {false, false, true,  false, false, false, false, false, false, false,
+           false, true,  false, false, false, false, false, false, false, false,
+           false, false, false, false, false, false, false, false, false, false,
+           false, false, true,  false, false, false, false, false, false, false,
+           false, false, false, false, true,  false, false, false, false, false,
+           false, false, false, false, false, false, true,  false, false, false,
+           true,  false, false, false};
+    REQUIRE_THROWS_AS(S.orbits_lookup(3, 0), LibsemigroupsException);
+    REQUIRE_THROWS_AS(S.orbits_lookup(4, 0), LibsemigroupsException);
+    REQUIRE_THROWS_AS(S.orbits_lookup(0, 64), LibsemigroupsException);
+    REQUIRE_THROWS_AS(S.orbits_lookup(0, 65), LibsemigroupsException);
+    for (size_t i = 0; i < 3; ++i) {
+      for (size_t j = 0; j < 64; ++j) {
+        REQUIRE(S.orbits_lookup(i, j) == orbits_lookup_test[i][j]);
+      }
+    }
+
+    T.add_base_point(0);
+    T.add_base_point(1);
+    T.add_base_point(4);
+    T.add_generator(
+        Perm({0,  30, 5,  27, 41, 55, 44, 50, 2,  28, 7,  25, 43, 53, 46, 48,
+              4,  26, 1,  31, 45, 51, 40, 54, 6,  24, 3,  29, 47, 49, 42, 52,
+              16, 14, 21, 11, 57, 39, 60, 34, 18, 12, 23, 9,  59, 37, 62, 32,
+              20, 10, 17, 15, 61, 35, 56, 38, 22, 8,  19, 13, 63, 33, 58, 36}));
+    T.add_generator(
+        Perm({0,  10, 47, 37, 55, 61, 24, 18, 1,  11, 46, 36, 54, 60, 25, 19,
+              32, 42, 15, 5,  23, 29, 56, 50, 33, 43, 14, 4,  22, 28, 57, 51,
+              8,  2,  39, 45, 63, 53, 16, 26, 9,  3,  38, 44, 62, 52, 17, 27,
+              40, 34, 7,  13, 31, 21, 48, 58, 41, 35, 6,  12, 30, 20, 49, 59}));
+    T.add_generator(
+        Perm({1,  0,  3,  2,  5,  4,  7,  6,  9,  8,  11, 10, 13, 12, 15, 14,
+              17, 16, 19, 18, 21, 20, 23, 22, 25, 24, 27, 26, 29, 28, 31, 30,
+              33, 32, 35, 34, 37, 36, 39, 38, 41, 40, 43, 42, 45, 44, 47, 46,
+              49, 48, 51, 50, 53, 52, 55, 54, 57, 56, 59, 58, 61, 60, 63, 62}));
+    T.run();
+
+    orbits_lookup_test[2]
+        = {false, false, false, false, true,  true,  true,  true,  true,  true,
+           true,  true,  false, false, false, false, false, false, false, false,
+           false, false, false, false, false, false, false, false, false, false,
+           false, false, false, false, false, false, false, false, false, false,
+           false, false, false, false, false, false, false, false, false, false,
+           false, false, false, false, false, false, false, false, false, false,
+           false, false, false, false};
+    REQUIRE_THROWS_AS(T.orbits_lookup(3, 0), LibsemigroupsException);
+    REQUIRE_THROWS_AS(T.orbits_lookup(4, 0), LibsemigroupsException);
+    REQUIRE_THROWS_AS(T.orbits_lookup(0, 64), LibsemigroupsException);
+    REQUIRE_THROWS_AS(T.orbits_lookup(0, 65), LibsemigroupsException);
+    for (size_t i = 0; i < 3; ++i) {
+      for (size_t j = 0; j < 64; ++j) {
+        REQUIRE(T.orbits_lookup(i, j) == orbits_lookup_test[i][j]);
+      }
+    }
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("SchreierSims",
+                          "044",
+                          "transversal_element and inversal_element test",
+                          "[quick][schreier-sims]") {
+    auto             rg = ReportGuard(REPORT);
+    SchreierSims<64> S;
+    using Perm   = typename decltype(S)::element_type;
+    using Action = typename decltype(S)::Action;
+
+    S.add_base_point(0);
+    S.add_base_point(1);
+    S.add_base_point(2);
+    S.add_generator(
+        Perm({0,  2,  59, 57, 16, 18, 43, 41, 36, 38, 31, 29, 52, 54, 15, 13,
+              8,  10, 51, 49, 24, 26, 35, 33, 44, 46, 23, 21, 60, 62, 7,  5,
+              32, 34, 27, 25, 48, 50, 11, 9,  4,  6,  63, 61, 20, 22, 47, 45,
+              40, 42, 19, 17, 56, 58, 3,  1,  12, 14, 55, 53, 28, 30, 39, 37}));
+    S.add_generator(
+        Perm({0,  40, 51, 27, 1,  41, 50, 26, 2,  42, 49, 25, 3,  43, 48, 24,
+              4,  44, 55, 31, 5,  45, 54, 30, 6,  46, 53, 29, 7,  47, 52, 28,
+              16, 56, 35, 11, 17, 57, 34, 10, 18, 58, 33, 9,  19, 59, 32, 8,
+              20, 60, 39, 15, 21, 61, 38, 14, 22, 62, 37, 13, 23, 63, 36, 12}));
+    S.add_generator(
+        Perm({1,  0,  3,  2,  5,  4,  7,  6,  9,  8,  11, 10, 13, 12, 15, 14,
+              17, 16, 19, 18, 21, 20, 23, 22, 25, 24, 27, 26, 29, 28, 31, 30,
+              33, 32, 35, 34, 37, 36, 39, 38, 41, 40, 43, 42, 45, 44, 47, 46,
+              49, 48, 51, 50, 53, 52, 55, 54, 57, 56, 59, 58, 61, 60, 63, 62}));
+    S.run();
+
+    REQUIRE_THROWS_AS(S.transversal_element(3, 0), LibsemigroupsException);
+    REQUIRE_THROWS_AS(S.transversal_element(4, 0), LibsemigroupsException);
+    REQUIRE_THROWS_AS(S.transversal_element(0, 64), LibsemigroupsException);
+    REQUIRE_THROWS_AS(S.transversal_element(0, 65), LibsemigroupsException);
+    REQUIRE_THROWS_AS(S.inversal_element(3, 0), LibsemigroupsException);
+    REQUIRE_THROWS_AS(S.inversal_element(4, 0), LibsemigroupsException);
+    REQUIRE_THROWS_AS(S.inversal_element(0, 64), LibsemigroupsException);
+    REQUIRE_THROWS_AS(S.inversal_element(0, 65), LibsemigroupsException);
+    for (size_t i = 0; i < 3; ++i) {
+      for (size_t j = 0; j < 64; ++j) {
+        if (S.orbits_lookup(i, j)) {
+          REQUIRE(Action()(S.base(i), S.transversal_element(i, j)) == j);
+          REQUIRE(Action()(j, S.inversal_element(i, j)) == S.base(i));
+        } else {
+          REQUIRE_THROWS_AS(S.transversal_element(i, j),
+                            LibsemigroupsException);
+          REQUIRE_THROWS_AS(S.inversal_element(i, j), LibsemigroupsException);
+        }
+      }
+    }
+  }
+
 }  // namespace libsemigroups

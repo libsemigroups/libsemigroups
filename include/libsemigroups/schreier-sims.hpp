@@ -400,6 +400,12 @@ namespace libsemigroups {
             uint64_t(_base_size),
             uint64_t(depth));
       }
+      if (pt >= N) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "pt out of bounds, expected value in range [0, %llu), got %llu",
+            uint64_t(N),
+            uint64_t(pt));
+      }
       if (!_orbits_lookup[depth][pt]) {
         LIBSEMIGROUPS_EXCEPTION("no element maps %llu to %llu at depth %llu",
                                 uint64_t(_base[depth]),
@@ -431,6 +437,12 @@ namespace libsemigroups {
             uint64_t(_base_size),
             uint64_t(depth));
       }
+      if (pt >= N) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "pt out of bounds, expected value in range [0, %llu), got %llu",
+            uint64_t(N),
+            uint64_t(pt));
+      }
       if (!_orbits_lookup[depth][pt]) {
         LIBSEMIGROUPS_EXCEPTION("no element maps %llu to %llu at depth %llu",
                                 uint64_t(_base[depth]),
@@ -449,7 +461,8 @@ namespace libsemigroups {
     //! A boolean indicating if the point \p pt is in the orbit of the
     //! basepoint of \c this at depth \p depth.
     //!
-    //! \throws LibsemigroupsException if the \p depth is out of bounds.
+    //! \throws LibsemigroupsException if the \p depth is out of bounds or if
+    //! \p pt is out of bounds.
     //!
     //! \complexity
     //! Constant.
@@ -459,6 +472,12 @@ namespace libsemigroups {
             "depth out of bounds, expected value in range [0, %llu), got %llu",
             uint64_t(_base_size),
             uint64_t(depth));
+      }
+      if (pt >= N) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "pt out of bounds, expected value in range [0, %llu), got %llu",
+            uint64_t(N),
+            uint64_t(pt));
       }
       return _orbits_lookup[depth][pt];
     }

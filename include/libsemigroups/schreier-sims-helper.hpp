@@ -51,7 +51,7 @@ namespace libsemigroups {
     //! \param S1 the first semigroup of the intersection.
     //! \param S2 the second group of the intersection.
     //!
-    //! \throws LibsemigroupsException if \T is not empty.
+    //! \throws LibsemigroupsException if \p T is not empty.
     //!
     // TODO(later) example
     template <size_t N>
