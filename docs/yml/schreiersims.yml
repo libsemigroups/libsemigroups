@@ -33,6 +33,11 @@ libsemigroups::SchreierSims:
   - add_base_point(point_type)
   - add_generator(const_element_reference)
   - clear()
+- Running:
+  - ["This page contains information about the member functions of the
+     :cpp:any:`SchreierSims` class that can be used to run the Schreier-Sims
+     algorithm on an initialized :cpp:any:`SchreierSims` object."]
+  - run()
 - Attributes:
   - ["This page contains information about non-const attributes of the  
      :cpp:any:`SchreierSims` class."]
@@ -46,6 +51,9 @@ libsemigroups::SchreierSims:
   - size()
   - identity() const
   - generator(index_type) const
+  - transversal_element(index_type, point_type)
+  - inversal_element(index_type, point_type)
+  - orbits_lookup(index_type, point_type)
 - Membership: 
   - ["This page contains information about the member functions of the  
      :cpp:any:`SchreierSims` class related to checking membership."]

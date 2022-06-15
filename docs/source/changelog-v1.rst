@@ -72,10 +72,10 @@ v1.3.0 (released 28/08/2020)
 
 In this release some new features have been added and some issues have been
 resolved. The new features in this version of ``libsemigroups`` were implemented
-by `J. D. Mitchell`_, `Reinis Cirpons`, and `Finn Smith`_.
+by `J. D. Mitchell`_, `Reinis Cirpons`_, and `Finn Smith`_.
 
 .. _J. D. Mitchell: https://jdbm.me
-.. _Reinis Cirpons:
+.. _Reinis Cirpons: https://reinisc.id.lv
 .. _Finn Smith: https://flsmith.github.io
 
 The major new feature in this release is:

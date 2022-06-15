@@ -163,5 +163,5 @@ Changelog - version 1
 .. _Semigroups: https://github.com/semigroups/Semigroups/
 .. _Finn Smith: https://flsmith.github.io
 .. _Maria Tsalakou: https://mariatsalakou.github.io/
-.. _Reinis Cirpons:
+.. _Reinis Cirpons: https://reinisc.id.lv
 .. _Finn Smith: https://flsmith.github.io

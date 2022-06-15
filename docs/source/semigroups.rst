@@ -36,3 +36,4 @@ The classes for semigroups and monoids in ``libsemigroups`` are:
    konieczny
    _generated/libsemigroups__schreiersims
    _generated/libsemigroups__schreiersimstraits
+   api/schreiersims-helper

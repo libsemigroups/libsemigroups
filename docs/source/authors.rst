@@ -35,7 +35,7 @@ Contributors
   algorithms for the class :cpp:any:`ActionDigraph`, and to the implementation
   of the :cpp:any:`Kambites` class.
 
-.. _R. Cirpons: 
+.. _R. Cirpons: https://reinisc.id.lv
 .. _F. Hivert: https://www.lri.fr/~hivert/
 .. _J. James: http://www.jamezone.org/
 .. _J. Jonušas: http://julius.jonusas.work/
