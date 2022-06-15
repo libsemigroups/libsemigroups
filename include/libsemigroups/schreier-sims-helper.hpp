@@ -34,25 +34,9 @@
 #include "transf.hpp"         // for LeastPerm
 #include "types.hpp"          // for SmallestInteger
 
-#include <iostream>
-
 namespace libsemigroups {
 
   namespace schreier_sims_helper {
-
-    template <size_t N>
-    using point_type = typename SchreierSims<N>::point_type;
-
-    template <size_t N>
-    using element_type = typename SchreierSims<N>::element_type;
-
-    // This might not be correct for general traits
-    template <size_t N>
-    using One = typename SchreierSims<N>::One;
-
-    // This might not be correct for general traits
-    template <size_t N>
-    using Product = typename SchreierSims<N>::Product;
 
     //! Find the intersection of two permutation groups.
     //!
@@ -71,6 +55,13 @@ namespace libsemigroups {
     void intersection(SchreierSims<N>& T,
                       SchreierSims<N>& S1,
                       SchreierSims<N>& S2) {
+      // This might not be correct for general traits, i.e. only works for
+      // permutations for now.
+      using point_type   = typename SchreierSims<N>::point_type;
+      using element_type = typename SchreierSims<N>::element_type;
+      using One          = typename SchreierSims<N>::One;
+      using Product      = typename SchreierSims<N>::Product;
+
       S1.run();
       S2.run();
       if (S2.base_size() < S1.base_size()) {
