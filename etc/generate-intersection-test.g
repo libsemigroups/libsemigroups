@@ -21,7 +21,7 @@ PermutationToListOfImages := function(n, perm)
 end;;
 
 GeneratePermIntersectionTestCase := function(n, seed)
-  local S, T, U, rs1, gensS, gensT, gensU, i;
+  local S, T, U, rs1, gen, gensS, gensT, gensU, i;
   S := CyclicGroup(2);
   T := CyclicGroup(2);
   U := TrivialGroup();
@@ -70,4 +70,6 @@ GeneratePermIntersectionTestCase := function(n, seed)
     od;
     Print("})));\n");
   od;
+
+  return [S, T, U];
 end;
