@@ -278,7 +278,9 @@ namespace libsemigroups {
     void add_generator(const_element_reference x) {
       if (!has_valid_degree(x)) {
         LIBSEMIGROUPS_EXCEPTION(
-            "generator degree incorrect, expected %d, got %d", N, Degree()(x));
+            "generator degree incorrect, expected %llu, got %llu",
+            uint64_t(N),
+            uint64_t(Degree()(x)));
       } else if (!contains(x)) {
         _finished = false;
         _strong_gens.push_back(0, this->internal_copy(_tmp_element2));
@@ -335,12 +337,11 @@ namespace libsemigroups {
     size_t number_of_strong_generators(index_type depth) const {
       if (_base_size == 0) {
         return 0;
-      }
-      else if (depth >= _base_size) {
+      } else if (depth >= _base_size) {
         LIBSEMIGROUPS_EXCEPTION(
-            "depth out of bounds, expected value in range [0, %d), got %d",
-            _base_size,
-            depth);
+            "depth out of bounds, expected value in range [0, %llu), got %llu",
+            uint64_t(_base_size),
+            uint64_t(depth));
       }
       return _strong_gens.size(depth);
     }
@@ -363,15 +364,15 @@ namespace libsemigroups {
                                              index_type index) const {
       if (depth >= _base_size) {
         LIBSEMIGROUPS_EXCEPTION(
-            "depth out of bounds, expected value in range [0, %d), got %d",
-            _base_size,
-            depth);
+            "depth out of bounds, expected value in range [0, %llu), got %llu",
+            uint64_t(_base_size),
+            uint64_t(depth));
       }
       if (index >= _strong_gens.size(depth)) {
         LIBSEMIGROUPS_EXCEPTION(
-            "index out of bounds, expected value in range (0, %d], got %d",
-            _strong_gens.size(depth),
-            index);
+            "index out of bounds, expected value in range (0, %llu], got %llu",
+            uint64_t(_strong_gens.size(depth)),
+            uint64_t(index));
       }
       return this->to_external_const(_strong_gens.at(depth, index));
     }
@@ -395,13 +396,15 @@ namespace libsemigroups {
                                                 point_type pt) {
       if (depth >= _base_size) {
         LIBSEMIGROUPS_EXCEPTION(
-            "depth out of bounds, expected value in range [0, %d), got %d",
-            _base_size,
-            depth);
+            "depth out of bounds, expected value in range [0, %llu), got %llu",
+            uint64_t(_base_size),
+            uint64_t(depth));
       }
       if (!_orbits_lookup[depth][pt]) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "no element maps %d to %d at depth %d", _base[depth], pt, depth);
+        LIBSEMIGROUPS_EXCEPTION("no element maps %llu to %llu at depth %llu",
+                                uint64_t(_base[depth]),
+                                uint64_t(pt),
+                                uint64_t(depth));
       }
       return this->to_external_const(_transversal[depth][pt]);
     }
@@ -424,13 +427,15 @@ namespace libsemigroups {
     const_element_reference inversal_element(index_type depth, point_type pt) {
       if (depth >= _base_size) {
         LIBSEMIGROUPS_EXCEPTION(
-            "depth out of bounds, expected value in range [0, %d), got %d",
-            _base_size,
-            depth);
+            "depth out of bounds, expected value in range [0, %llu), got %llu",
+            uint64_t(_base_size),
+            uint64_t(depth));
       }
       if (!_orbits_lookup[depth][pt]) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "no element maps %d to %d at depth %d", _base[depth], pt, depth);
+        LIBSEMIGROUPS_EXCEPTION("no element maps %llu to %llu at depth %llu",
+                                uint64_t(_base[depth]),
+                                uint64_t(pt),
+                                uint64_t(depth));
       }
       return this->to_external_const(_inversal[depth][pt]);
     }
@@ -451,9 +456,9 @@ namespace libsemigroups {
     bool orbits_lookup(index_type depth, point_type pt) {
       if (depth >= _base_size) {
         LIBSEMIGROUPS_EXCEPTION(
-            "depth out of bounds, expected value in range [0, %d), got %d",
-            _base_size,
-            depth);
+            "depth out of bounds, expected value in range [0, %llu), got %llu",
+            uint64_t(_base_size),
+            uint64_t(depth));
       }
       return _orbits_lookup[depth][pt];
     }
@@ -508,7 +513,9 @@ namespace libsemigroups {
     element_type sift(const_element_reference x) {
       if (!has_valid_degree(x)) {
         LIBSEMIGROUPS_EXCEPTION(
-            "element degree incorrect, expected %d, got %d", N, Degree()(x));
+            "element degree incorrect, expected %llu, got %llu",
+            uint64_t(N),
+            uint64_t(Degree()(x)));
       }
       element_type cpy = this->external_copy(x);
       Swap()(cpy, this->to_external(_tmp_element2));
@@ -627,16 +634,17 @@ namespace libsemigroups {
     void add_base_point(point_type pt) {
       if (pt >= N) {
         LIBSEMIGROUPS_EXCEPTION(
-            "base point out of range, expected value in [0, %d), got %d",
-            N,
-            size_t(pt));
+            "base point out of range, expected value in [0, %llu), got %llu",
+            uint64_t(N),
+            uint64_t(pt));
       } else if (finished()) {
         LIBSEMIGROUPS_EXCEPTION("cannot add further base points");
       } else {
         for (size_t i = 0; i < _base_size; ++i) {
           if (_base[i] == pt) {
             LIBSEMIGROUPS_EXCEPTION(
-                "duplicate base point, %d is already a base point", size_t(pt));
+                "duplicate base point, %llu is already a base point",
+                uint64_t(pt));
           }
         }
       }
@@ -656,9 +664,9 @@ namespace libsemigroups {
     point_type base(index_type index) const {
       if (index >= _base_size) {
         LIBSEMIGROUPS_EXCEPTION(
-            "index out of bounds, expected value in range (0, %d], got %d",
-            _base_size,
-            index);
+            "index out of bounds, expected value in range (0, %llu], got %llu",
+            uint64_t(_base_size),
+            uint64_t(index));
       }
       return _base[index];
     }

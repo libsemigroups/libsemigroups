@@ -28,6 +28,7 @@
 #define LIBSEMIGROUPS_SCHREIER_SIMS_HELPER_HPP_
 
 #include <cstddef>  // for size_t
+#include <memory>   // for make_unique
 
 #include "containers.hpp"     // for Array2
 #include "schreier-sims.hpp"  // for SchreierSims, SchreierSims<>::ele...
@@ -46,9 +47,11 @@ namespace libsemigroups {
     //! \tparam N the largest point not fixed by the permutations in the
     //! permutation groups.
     //!
-    //! \param T the Screier-Sims object holding the result.
+    //! \param T an empty Schreier-Sims object that will hold the result.
     //! \param S1 the first semigroup of the intersection.
     //! \param S2 the second group of the intersection.
+    //!
+    //! \throws LibsemigroupsException if \T is not empty.
     //!
     // TODO(later) example
     template <size_t N>
@@ -61,6 +64,10 @@ namespace libsemigroups {
       using element_type = typename SchreierSims<N>::element_type;
       using One          = typename SchreierSims<N>::One;
       using Product      = typename SchreierSims<N>::Product;
+
+      if (!T.empty()) {
+        LIBSEMIGROUPS_EXCEPTION("the parameter T must be empty");
+      }
 
       S1.run();
       S2.run();
@@ -78,21 +85,22 @@ namespace libsemigroups {
       // Note that if N-1 points are fixed then the N-th point is also fixed.
       // So if base contains all N points, then we lose nothing by discarding
       // the last point in the base.
-      size_t const base_size = S1.base_size();
-      if (base_size == N)
+      size_t base_size = S1.base_size();
+      if (base_size == N) {
         base_size = N - 1;
+      }
 
-      SchreierSims<N> S2B;
+      auto S2B = std::make_unique<SchreierSims<N>>();
       for (size_t depth = 0; depth < base_size; ++depth) {
-        S2B.add_base_point(S1.base(depth));
+        S2B->add_base_point(S1.base(depth));
       }
       for (size_t i = 0; i < S2.number_of_generators(); ++i) {
-        S2B.add_generator(S2.generator(i));
+        S2B->add_generator(S2.generator(i));
       }
-      S2B.run();
+      S2B->run();
 #ifdef LIBSEMIGROUPS_DEBUG
       for (size_t depth = 0; depth < base_size; ++depth) {
-        LIBSEMIGROUPS_ASSERT(S1.base(depth) == S2B.base(depth));
+        LIBSEMIGROUPS_ASSERT(S1.base(depth) == S2B->base(depth));
       }
 #endif
       // Only need to consider points reachable by both groups.
@@ -103,38 +111,39 @@ namespace libsemigroups {
       // This is not currently implemented! We just use all of the points
       // in the orbits of S1. Implementing it probably requires refactoring the
       // code.
-      detail::StaticVector2<point_type<N>, N> refined_orbit;
+      detail::StaticVector2<point_type, N> refined_orbit;
       for (size_t depth = 0; depth < base_size; ++depth) {
         // First point is always base point to make algorithm simpler
-        LIBSEMIGROUPS_ASSERT(S1.base(depth) == S2B.base(depth));
+        LIBSEMIGROUPS_ASSERT(S1.base(depth) == S2B->base(depth));
         refined_orbit.push_back(depth, S1.base(depth));
-        for (point_type<N> pt = 0; pt < N; ++pt) {
-          if ((pt != S1.base(depth)) && S1.orbits_lookup(depth, pt))
+        for (point_type pt = 0; pt < N; ++pt) {
+          if ((pt != S1.base(depth)) && S1.orbits_lookup(depth, pt)) {
             refined_orbit.push_back(depth, pt);
+          }
         }
       }
 
       // Initially assume that we have traversed the tree to the leaf
       // corresponding to the base and identity element.
       // stab_depth tracks the largest stabiliser we have found thus far.
-      size_t                         stab_depth = base_size;
-      size_t                         depth      = 0;
-      std::array<size_t, N>          state_index;
-      std::array<element_type<N>, N> state_elem;
+      size_t                      stab_depth = base_size;
+      size_t                      depth      = 0;
+      std::array<size_t, N>       state_index;
+      std::array<element_type, N> state_elem;
       state_index.fill(0);
-      state_elem.fill(One<N>()(N));
+      state_elem.fill(One()(N));
 
       while (stab_depth > 0) {
         for (; depth < base_size; ++depth) {
           // This is a safe memory access as base_size <= N-1, so depth < N-1
           // during the loop and so depth + 1 <= N-1
           LIBSEMIGROUPS_ASSERT(depth + 1 < N);
-          Product<N>()(state_elem[depth + 1],
-                       S1.transversal_element(
-                           depth, refined_orbit.at(depth, state_index[depth])),
-                       state_elem[depth]);
+          Product()(state_elem[depth + 1],
+                    S1.transversal_element(
+                        depth, refined_orbit.at(depth, state_index[depth])),
+                    state_elem[depth]);
         }
-        if (S2B.contains(state_elem[depth])) {
+        if (S2B->contains(state_elem[depth])) {
           LIBSEMIGROUPS_ASSERT(S1.contains(state_elem[depth]));
           LIBSEMIGROUPS_ASSERT(S2.contains(state_elem[depth]));
           T.add_generator(state_elem[depth]);
@@ -156,12 +165,14 @@ namespace libsemigroups {
           if (state_index[depth] < refined_orbit.size(depth)) {
             break;
           }
-          if (depth < stab_depth)
+          if (depth < stab_depth) {
             stab_depth = depth;
+          }
           state_index[depth] = 0;
-          state_elem[depth]  = One<N>()(N);
-          if (depth == 0)
+          state_elem[depth]  = One()(N);
+          if (depth == 0) {
             break;
+          }
         }
       }
 
