@@ -1,6 +1,16 @@
 Changelog - version 2
 =====================
 
+v2.2.0 (released 01/07/2022)
+----------------------------
+
+This release adds two new features to libsemigroups:
+
+* Sims Low-Index Congruence Algorithm by @james-d-mitchell in
+  https://github.com/libsemigroups/libsemigroups/pull/349
+* Add permutation group intersections for SchreierSims by @reiniscirpons in
+  https://github.com/libsemigroups/libsemigroups/pull/351
+
 v2.1.5 (released 21/04/2022)
 ----------------------------
 

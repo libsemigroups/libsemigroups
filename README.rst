@@ -4,7 +4,7 @@
 
    The full license is in the file LICENSE, distributed with this software.
 
-libsemigroups - Version 2.1.5
+libsemigroups - Version 2.2.0
 =============================
 
 .. image:: https://readthedocs.org/projects/libsemigroups/badge/?version=master
@@ -136,13 +136,15 @@ Contributors
 ~~~~~~~~~~~~
 
 - `R. Cirpons`_ contributed to ``IsObviouslyInfinite``, to integrating
-  ``eigen``, and contributed an implementation of the `Radoszewski-Rytter`_
-  algorithm for testing equivalence of words in free bands.
+  ``eigen``, contributed an implementation of the `Radoszewski-Rytter`_
+  algorithm for testing equivalence of words in free bands; and 
+  the intersection of permutation groups in ``SchreierSims``. 
 - `F. Hivert`_ contributed many helpful ideas to ``libsemigroups``, an
   allocator implementation (to be included in a future version), and
   ``HPCombi``.
 - `J. James`_ contributed some bugfixes.
-- `J. Jonušas`_ contributed to the implementation of the Froidure-Pin algorithm.
+- `J. Jonušas`_ contributed to the implementation of the Froidure-Pin
+  algorithm.
 - `D. V. Pasechnik`_ contributed to the build system.
 - `F. Smith`_ contributed the implementation of the Konieczny and
   Lallement-McFadden algorithm, to the Todd-Coxeter implementation, and to
