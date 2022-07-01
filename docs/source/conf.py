@@ -31,7 +31,6 @@ extensions = [
     "sphinx.ext.mathjax",
     "sphinx_copybutton",
     "sphinxcontrib.bibtex",
-    "sphinxcontrib.restbuilder",
 ]
 
 bibtex_bibfiles = ["libsemigroups.bib"]
