@@ -136,4 +136,11 @@ namespace libsemigroups {
       }
     }
   }  // namespace detail
+
+  namespace report {
+    bool should_report() noexcept {
+      return REPORTER.report();
+    }
+
+  }  // namespace report
 }  // namespace libsemigroups

@@ -462,6 +462,10 @@ namespace libsemigroups {
     };
   }  // namespace detail
 
+  namespace report {
+    bool should_report() noexcept;
+  }
+
   //! This struct can be used to enable printing of some information during
   //! various of the computation in ``libsemigroups``. Reporting is enable (or
   //! not) at construction time, and disable when the ReportGuard goes out of

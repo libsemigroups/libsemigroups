@@ -1576,11 +1576,13 @@ namespace libsemigroups {
 
 #ifdef LIBSEMIGROUPS_ENABLE_STATS
     void ToddCoxeter::report_coincidences(char const* fnam) {
-      REPORT_DEFAULT(FORMAT("coincidences:" + fmt_line(),
-                            _coinc.size(),
-                            int64_t(_coinc.size() - _stats.prev_coincidences),
-                            fnam));
-      _stats.prev_coincidences = _coinc.size();
+      if (report::should_report()) {
+        REPORT_DEFAULT(FORMAT("coincidences:" + fmt_line(),
+                              _coinc.size(),
+                              int64_t(_coinc.size() - _stats.prev_coincidences),
+                              fnam));
+        _stats.prev_coincidences = _coinc.size();
+      }
     }
 #else
     void ToddCoxeter::report_coincidences(char const* fnam) {
@@ -1591,12 +1593,14 @@ namespace libsemigroups {
 
 #ifdef LIBSEMIGROUPS_ENABLE_STATS
     void ToddCoxeter::report_active_cosets(char const* fnam) {
-      REPORT_DEFAULT(
-          FORMAT("active cosets:" + fmt_line(),
-                 number_of_cosets_active(),
-                 int64_t(number_of_cosets_active() - _stats.prev_active_cosets),
-                 fnam));
-      _stats.prev_active_cosets = number_of_cosets_active();
+      if (report::should_report()) {
+        REPORT_DEFAULT(FORMAT(
+            "active cosets:" + fmt_line(),
+            number_of_cosets_active(),
+            int64_t(number_of_cosets_active() - _stats.prev_active_cosets),
+            fnam));
+        _stats.prev_active_cosets = number_of_cosets_active();
+      }
     }
 #else
     void ToddCoxeter::report_active_cosets(char const* fnam) {
@@ -1606,52 +1610,60 @@ namespace libsemigroups {
 #endif
 
     void ToddCoxeter::report_cosets_killed(char const* fnam, int64_t N) const {
+      if (report::should_report()) {
 #ifdef LIBSEMIGROUPS_FMT_ENABLED
-      std::string fmt = "\t{:>12} {:+12L} ({})\n";
+        std::string fmt = "\t{:>12} {:+12L} ({})\n";
 #else
-      std::string fmt = "\t%12s %+'12lld (%s)\n";
+        std::string fmt = "\t%12s %+'12lld (%s)\n";
 #endif
-      REPORT_DEFAULT(FORMAT("cosets killed:" + fmt, "", -1 * N, fnam));
+        REPORT_DEFAULT(FORMAT("cosets killed:" + fmt, "", -1 * N, fnam));
+      }
     }
 
     void ToddCoxeter::report_inc_lookahead(char const* fnam,
                                            size_t      new_value) const {
+      if (report::should_report()) {
 #if defined(LIBSEMIGROUPS_FMT_ENABLED)
-      std::string fmt = "\t{:12L} {:+12L} ({})\n";
+        std::string fmt = "\t{:12L} {:+12L} ({})\n";
 #else
-      std::string fmt = "\t%'12llu %+'12lld (%s)\n";
+        std::string fmt = "\t%'12llu %+'12lld (%s)\n";
 #endif
-      REPORT_DEFAULT(FORMAT("lookahead at:" + fmt,
-                            new_value,
-                            int64_t(new_value - next_lookahead()),
-                            fnam));
+        REPORT_DEFAULT(FORMAT("lookahead at:" + fmt,
+                              new_value,
+                              int64_t(new_value - next_lookahead()),
+                              fnam));
+      }
     }
 
     void ToddCoxeter::report_time(char const* fnam, detail::Timer& t) const {
-      auto   tt    = t.string();
-      size_t width = 12;
-      // Check if we contain a \mu
-      if (tt.find("\u03BC") != std::string::npos) {
-        width = 13;
-      }
+      if (report::should_report()) {
+        auto   tt    = t.string();
+        size_t width = 12;
+        // Check if we contain a \mu
+        if (tt.find("\u03BC") != std::string::npos) {
+          width = 13;
+        }
 #ifdef LIBSEMIGROUPS_FMT_ENABLED
-      std::string fmt = "\t{:>" + std::to_string(width) + "} {:>{}} ({})\n";
-      REPORT_DEFAULT(FORMAT("elapsed time:" + fmt, tt.c_str(), "", 12, fnam));
+        std::string fmt = "\t{:>" + std::to_string(width) + "} {:>{}} ({})\n";
+        REPORT_DEFAULT(FORMAT("elapsed time:" + fmt, tt.c_str(), "", 12, fnam));
 #else
-      std::string fmt = "\t%" + std::to_string(width) + "s %*s (%s)\n";
-      REPORT_DEFAULT(FORMAT("elapsed time:" + fmt, tt.c_str(), 12, "", fnam));
+        std::string fmt = "\t%" + std::to_string(width) + "s %*s (%s)\n";
+        REPORT_DEFAULT(FORMAT("elapsed time:" + fmt, tt.c_str(), 12, "", fnam));
 #endif
+      }
     }
 
     // Cannot test this
     void ToddCoxeter::report_at_coset(char const* fnam, size_t N) const {
+      if (report::should_report()) {
 #ifdef LIBSEMIGROUPS_FMT_ENABLED
-      std::string fmt = "\t{:12L} {:12L} ({})\n";
+        std::string fmt = "\t{:12L} {:12L} ({})\n";
 #else
-      std::string fmt = "\t%'12llu %'12lld (%s)\n";
+        std::string fmt = "\t%'12llu %'12lld (%s)\n";
 #endif
-      REPORT_DEFAULT(
-          FORMAT("at coset:" + fmt, N, number_of_cosets_active(), fnam));
+        REPORT_DEFAULT(
+            FORMAT("at coset:" + fmt, N, number_of_cosets_active(), fnam));
+      }
     }
 
     ////////////////////////////////////////////////////////////////////////
