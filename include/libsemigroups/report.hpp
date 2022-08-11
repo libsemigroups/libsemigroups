@@ -396,12 +396,7 @@ namespace libsemigroups {
     class PrintTable {
      public:
       explicit PrintTable(size_t width = 72)
-          : _rows(), _header(), _footer(), _width(width) {
-        try {
-          std::locale::global(std::locale("en_US.UTF-8"));
-        } catch (std::runtime_error const& e) {
-        }
-      }
+          : _rows(), _header(), _footer(), _width(width) {}
 
       std::string emit() {
         std::string result = lineohash() + _header + lineohash();

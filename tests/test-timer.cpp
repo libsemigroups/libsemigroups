@@ -31,7 +31,6 @@ namespace libsemigroups {
                           "001",
                           "string method (1 argument)",
                           "[quick]") {
-    std::locale::global(std::locale("C"));
     detail::Timer            t;
     std::chrono::nanoseconds ns(1);
     REQUIRE(t.string(ns) == "1ns");
