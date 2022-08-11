@@ -49,10 +49,6 @@ struct LibsemigroupsListener : Catch::TestEventListenerBase {
   using TestEventListenerBase::TestEventListenerBase;  // inherit constructor
 
   void testCaseStarting(Catch::TestCaseInfo const& testInfo) override {
-    try {
-      std::locale::global(std::locale("en_US.UTF-8"));
-    } catch (std::runtime_error const& e) {
-    }
     _first_call = true;
     _one        = testInfo.name;
     _two        = " . . .";
