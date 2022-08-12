@@ -1,6 +1,12 @@
 Changelog - version 2
 =====================
 
+v2.2.1 (released 12/08/2022)
+----------------------------
+
+This is a minor release fixing a data race (probably) caused by setting the
+global locale, that sometimes caused a crash.
+
 v2.2.0 (released 01/07/2022)
 ----------------------------
 
