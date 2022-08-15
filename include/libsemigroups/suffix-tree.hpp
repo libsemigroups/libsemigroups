@@ -121,6 +121,10 @@ namespace libsemigroups {
         edge_index_type pos;
         State()             = default;
         State(State const&) = default;
+        State(State&&)      = default;
+        State& operator=(State const&) = default;
+        State& operator=(State&&) = default;
+
         State(node_index_type vv, edge_index_type ppos) : v(vv), pos(ppos) {}
 
         bool valid() const noexcept {
