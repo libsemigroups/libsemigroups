@@ -773,12 +773,6 @@ namespace libsemigroups {
     //! action_digraph_helper::is_connected(ad);  // returns false
     //! \endcode
     template <typename T>
-    ActionDigraph<T> make(size_t num_nodes, size_t out_degree) {
-      return ActionDigraph<T>(num_nodes, out_degree);
-    }
-
-    // TODO(Sims1) doc
-    template <typename T>
     bool is_connected(ActionDigraph<T> const& ad) {
       using node_type = typename ActionDigraph<T>::node_type;
 
