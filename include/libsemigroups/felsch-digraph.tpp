@@ -138,4 +138,36 @@ namespace libsemigroups {
     return true;
   }
 
+  namespace felsch_digraph {
+    template <typename W, typename N>
+    bool
+    compatible(FelschDigraph<W, N> &                   fd,
+               typename FelschDigraph<W, N>::node_type first_node,
+               typename FelschDigraph<W, N>::node_type last_node,
+               typename std::vector<W>::const_iterator first_rule,
+               typename std::vector<W>::const_iterator last_rule) noexcept {
+      LIBSEMIGROUPS_ASSERT(first_node < fd.number_of_nodes());
+      LIBSEMIGROUPS_ASSERT(last_node < fd.number_of_nodes());
+      LIBSEMIGROUPS_ASSERT(std::distance(first_rule, last_rule) % 2 == 0);
+
+      using node_type = typename FelschDigraph<W, N>::node_type;
+      for (node_type n = first_node; n < last_node; ++n) {
+        for (auto it = first_rule; it != last_rule; it += 2) {
+          if (!fd.compatible(n, *it, *(it + 1))) {
+            return false;
+          }
+        }
+      }
+      return true;
+    }
+
+    template <typename W, typename N>
+    bool
+    compatible(FelschDigraph<W, N> &                   fd,
+               typename FelschDigraph<W, N>::node_type node,
+               typename std::vector<W>::const_iterator first_rule,
+               typename std::vector<W>::const_iterator last_rule) noexcept {
+      return compatible(fd, node, node + 1, first_rule, last_rule);
+    }
+  }  // namespace felsch_digraph
 }  // namespace libsemigroups

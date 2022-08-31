@@ -80,6 +80,22 @@ namespace libsemigroups {
       return compatible(c, _presentation.rules[i], _presentation.rules[j]);
     }
   };
+
+  namespace felsch_digraph {
+    template <typename W, typename N>
+    bool compatible(FelschDigraph<W, N>&                    fd,
+                    typename FelschDigraph<W, N>::node_type first_node,
+                    typename FelschDigraph<W, N>::node_type last_node,
+                    typename std::vector<W>::const_iterator first_rule,
+                    typename std::vector<W>::const_iterator last_rule) noexcept;
+
+    template <typename W, typename N>
+    bool compatible(FelschDigraph<W, N>&                    fd,
+                    typename FelschDigraph<W, N>::node_type node,
+                    typename std::vector<W>::const_iterator first_rule,
+                    typename std::vector<W>::const_iterator last_rule) noexcept;
+
+  }  // namespace felsch_digraph
 }  // namespace libsemigroups
 
 #include "felsch-digraph.tpp"
