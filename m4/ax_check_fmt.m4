@@ -25,7 +25,7 @@ AC_DEFUN([AX_CHECK_FMT], [
     AC_MSG_CHECKING([whether to use external fmt])
     AC_MSG_RESULT([$with_external_fmt])
 
-    MIN_FMT_VERSION="5.3.0"
+    MIN_FMT_VERSION="8.1.1"
 
     if test "x$with_external_fmt" = xyes;  then
           m4_ifdef([PKG_CHECK_MODULES], [
@@ -33,7 +33,7 @@ AC_DEFUN([AX_CHECK_FMT], [
                             [fmt >= $MIN_FMT_VERSION])],
           [AC_MSG_ERROR([cannot use flag --with-external-fmt, the libsemigroups configure file was created on a system without m4 macros for pkg-config available...])])
     else
-          AC_SUBST(FMT_CFLAGS, ['-I$(srcdir)/extern/fmt-8.0.1/include'])
+          AC_SUBST(FMT_CFLAGS, ['-I$(srcdir)/extern/fmt-8.1.1/include'])
     fi
   fi
 
