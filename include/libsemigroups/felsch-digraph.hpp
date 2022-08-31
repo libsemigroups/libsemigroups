@@ -51,6 +51,12 @@ namespace libsemigroups {
 
     FelschDigraph(Presentation<word_type> const& p, size_type n);
 
+    FelschDigraph()                     = default;
+    FelschDigraph(FelschDigraph const&) = default;
+    FelschDigraph(FelschDigraph&&)      = default;
+    FelschDigraph& operator=(FelschDigraph const&) = default;
+    FelschDigraph& operator=(FelschDigraph&&) = default;
+
     bool def_edge(node_type c, letter_type x, node_type d) noexcept;
 
     // Returns true if no contradictions are found.
