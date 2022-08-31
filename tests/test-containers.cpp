@@ -16,11 +16,19 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include <numeric>  // for iota
+#include <algorithm>         // for all_of, count, fill
+#include <cstddef>           // for size_t
+#include <cstdint>           // for int64_t
+#include <initializer_list>  // for initializer_list
+#include <numeric>           // for iota
+#include <stdexcept>         // for out_of_range
+#include <utility>           // for swap
+#include <vector>            // for vector
 
-#include "catch.hpp"
-#include "libsemigroups/containers.hpp"
-#include "test-main.hpp"
+#include "catch.hpp"      // for REQUIRE
+#include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
+
+#include "libsemigroups/containers.hpp"  // for DynamicArray2, DynamicArray...
 
 namespace libsemigroups {
   namespace detail {
@@ -1521,8 +1529,44 @@ namespace libsemigroups {
       REQUIRE(da == DynamicArray2<size_t>({{0, 1, 0, 0}, {0, 0, 0, 0}}));
     }
 
-    LIBSEMIGROUPS_TEST_CASE("StaticVector2",
+    LIBSEMIGROUPS_TEST_CASE("DynamicArray2",
                             "042",
+                            "shrink_rows_to - for range",
+                            "[containers][quick]") {
+      DynamicArray2<size_t> da = DynamicArray2<size_t>({{0, 1}, {2, 3}});
+      REQUIRE(da.number_of_rows() == 2);
+      REQUIRE(da.number_of_cols() == 2);
+      da.shrink_rows_to(3);
+      REQUIRE(da.number_of_rows() == 2);
+      REQUIRE(da.number_of_cols() == 2);
+      REQUIRE(da == DynamicArray2<size_t>({{0, 1}, {2, 3}}));
+      da.shrink_rows_to(1, 2);
+      REQUIRE(da.number_of_rows() == 1);
+      REQUIRE(da.number_of_cols() == 2);
+      REQUIRE(da == DynamicArray2<size_t>({{2, 3}}));
+
+      da.add_rows(3);
+      da.add_cols(2);
+      da.set_default_value(0);
+      REQUIRE(da.number_of_rows() == 4);
+      REQUIRE(da.number_of_cols() == 4);
+      REQUIRE(da
+              == DynamicArray2<size_t>(
+                  {{2, 3, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}}));
+      da.shrink_rows_to(1, 4);
+      REQUIRE(
+          da
+          == DynamicArray2<size_t>({{0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}}));
+      da.set(2, 1, 3);
+      REQUIRE(
+          da
+          == DynamicArray2<size_t>({{0, 0, 0, 0}, {0, 0, 0, 0}, {0, 3, 0, 0}}));
+      da.shrink_rows_to(1, 3);
+      REQUIRE(da == DynamicArray2<size_t>({{0, 0, 0, 0}, {0, 3, 0, 0}}));
+    }
+
+    LIBSEMIGROUPS_TEST_CASE("StaticVector2",
+                            "043",
                             "all",
                             "[containers][quick]") {
       StaticVector2<size_t, 3> sv;
@@ -1568,7 +1612,7 @@ namespace libsemigroups {
               == std::vector<size_t>({5}));
     }
 
-    LIBSEMIGROUPS_TEST_CASE("Array2", "043", "all", "[containers][quick]") {
+    LIBSEMIGROUPS_TEST_CASE("Array2", "044", "all", "[containers][quick]") {
       Array2<size_t, 3> rry;
       rry.fill(10);
       REQUIRE(std::vector<size_t>(rry.cbegin(0), rry.cend(0))
