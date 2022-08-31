@@ -36,6 +36,7 @@
 #include <unordered_map>  // for unordered_map
 #include <vector>         // for vector
 
+#include "adapters.hpp"  // for Hash
 #include "config.hpp"    // for LIBSEMIGROUPS_SIZEOF_VOID_P
 #include "debug.hpp"     // for LIBSEMIGROUPS_ASSERT
 #include "iterator.hpp"  // for ConstIteratorStateless
@@ -383,6 +384,10 @@ namespace libsemigroups {
         return const_rank_iterator(_data.cend());
       }
 
+      size_t hash() const {
+        return Hash<container_type>()(_data);
+      }
+
      private:
       ////////////////////////////////////////////////////////////////////////
       // Private
@@ -460,5 +465,12 @@ namespace libsemigroups {
                   typename SmallestInteger<N*(RANK_BITS == 5 ? 32 : 64)>::type>
     using Suf = UF<std::array<T, N>>;
   }  // namespace detail
+
+  template <typename T>
+  struct Hash<detail::Duf<T>> {
+    size_t operator()(detail::Duf<T> const& x) const {
+      return x.hash();
+    }
+  };
 }  // namespace libsemigroups
 #endif  // LIBSEMIGROUPS_UF_HPP_

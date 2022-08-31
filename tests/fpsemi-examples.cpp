@@ -688,60 +688,181 @@ namespace libsemigroups {
   }
 
   // From Theorem 41 in doi:10.1016/j.jalgebra.2011.04.008
-  std::vector<relation_type> PartitionMonoidEast41(size_t n) {
-    if (n < 4) {
-      LIBSEMIGROUPS_EXCEPTION(
-          "the 1st argument (size_t) must be at least 4, found %llu",
-          uint64_t(n));
-    }
-    word_type s  = {0};
-    word_type c  = {1};
-    word_type e  = {2};
-    word_type t  = {3};
-    word_type id = {4};
-
-    std::vector<word_type>     alphabet = {s, c, e, t, id};
+  std::vector<relation_type> PartitionMonoid(size_t n, author val) {
     std::vector<relation_type> result;
-    add_monoid_relations(alphabet, id, result);
+    if (val == author::Machine) {
+      if (n != 3) {
+        LIBSEMIGROUPS_EXCEPTION("the 1st argument (size_t) must be 3 when the "
+                                "2nd argument is Machine, found %llu",
+                                uint64_t(n));
+      }
+      result.emplace_back<word_type, word_type>({0, 0}, {0});
+      result.emplace_back<word_type, word_type>({0, 1}, {1});
+      result.emplace_back<word_type, word_type>({0, 2}, {2});
+      result.emplace_back<word_type, word_type>({0, 3}, {3});
+      result.emplace_back<word_type, word_type>({0, 4}, {4});
+      result.emplace_back<word_type, word_type>({1, 0}, {1});
+      result.emplace_back<word_type, word_type>({2, 0}, {2});
+      result.emplace_back<word_type, word_type>({2, 2}, {0});
+      result.emplace_back<word_type, word_type>({2, 4}, {4});
+      result.emplace_back<word_type, word_type>({3, 0}, {3});
+      result.emplace_back<word_type, word_type>({3, 3}, {3});
+      result.emplace_back<word_type, word_type>({4, 0}, {4});
+      result.emplace_back<word_type, word_type>({4, 2}, {4});
+      result.emplace_back<word_type, word_type>({4, 4}, {4});
+      result.emplace_back<word_type, word_type>({1, 1, 1}, {0});
+      result.emplace_back<word_type, word_type>({1, 1, 2}, {2, 1});
+      result.emplace_back<word_type, word_type>({1, 2, 1}, {2});
+      result.emplace_back<word_type, word_type>({2, 1, 1}, {1, 2});
+      result.emplace_back<word_type, word_type>({2, 1, 2}, {1, 1});
+      result.emplace_back<word_type, word_type>({2, 1, 4}, {1, 1, 4});
+      result.emplace_back<word_type, word_type>({3, 1, 2}, {1, 2, 3});
+      result.emplace_back<word_type, word_type>({3, 4, 3}, {3});
+      result.emplace_back<word_type, word_type>({4, 1, 2}, {4, 1, 1});
+      result.emplace_back<word_type, word_type>({4, 3, 4}, {4});
+      result.emplace_back<word_type, word_type>({1, 1, 3, 1}, {2, 3, 2});
+      result.emplace_back<word_type, word_type>({1, 1, 3, 2}, {2, 3, 1});
+      result.emplace_back<word_type, word_type>({1, 2, 3, 1}, {3, 2});
+      result.emplace_back<word_type, word_type>({1, 2, 3, 2}, {3, 1});
+      result.emplace_back<word_type, word_type>({1, 2, 3, 4}, {3, 1, 4});
+      result.emplace_back<word_type, word_type>({1, 3, 2, 3}, {3, 1, 3});
+      result.emplace_back<word_type, word_type>({1, 4, 1, 4}, {4, 1, 4});
+      result.emplace_back<word_type, word_type>({2, 1, 3, 1}, {1, 3, 2});
+      result.emplace_back<word_type, word_type>({2, 1, 3, 2}, {1, 3, 1});
+      result.emplace_back<word_type, word_type>({2, 1, 3, 4}, {1, 3, 1, 4});
+      result.emplace_back<word_type, word_type>({2, 3, 1, 3}, {1, 3, 1, 3});
+      result.emplace_back<word_type, word_type>({2, 3, 1, 4}, {1, 1, 3, 4});
+      result.emplace_back<word_type, word_type>({2, 3, 2, 3}, {3, 2, 3});
+      result.emplace_back<word_type, word_type>({3, 1, 3, 2}, {3, 1, 3});
+      result.emplace_back<word_type, word_type>({3, 1, 4, 3}, {1, 2, 3});
+      result.emplace_back<word_type, word_type>({3, 2, 3, 2}, {3, 2, 3});
+      result.emplace_back<word_type, word_type>({4, 1, 1, 4}, {4, 1, 4});
+      result.emplace_back<word_type, word_type>({4, 1, 3, 2}, {4, 1, 3, 1});
+      result.emplace_back<word_type, word_type>({4, 1, 4, 1}, {4, 1, 4});
+      result.emplace_back<word_type, word_type>({1, 3, 1, 1, 3}, {3, 2, 1, 3});
+      result.emplace_back<word_type, word_type>({1, 3, 4, 1, 4}, {4, 1, 3, 4});
+      result.emplace_back<word_type, word_type>({2, 3, 1, 1, 3}, {3, 1, 1, 3});
+      result.emplace_back<word_type, word_type>({2, 3, 2, 1, 3},
+                                                {1, 3, 2, 1, 3});
+      result.emplace_back<word_type, word_type>({2, 3, 4, 1, 3},
+                                                {1, 3, 4, 1, 3});
+      result.emplace_back<word_type, word_type>({2, 3, 4, 1, 4},
+                                                {1, 4, 1, 3, 4});
+      result.emplace_back<word_type, word_type>({3, 1, 1, 4, 1},
+                                                {1, 1, 4, 1, 3});
+      result.emplace_back<word_type, word_type>({3, 1, 3, 1, 1}, {3, 2, 1, 3});
+      result.emplace_back<word_type, word_type>({3, 2, 3, 1, 1}, {3, 1, 1, 3});
+      result.emplace_back<word_type, word_type>({3, 4, 1, 1, 3}, {1, 2, 3});
+      result.emplace_back<word_type, word_type>({3, 4, 1, 4, 3},
+                                                {1, 1, 4, 1, 3});
+      result.emplace_back<word_type, word_type>({4, 1, 1, 3, 4}, {4, 3, 1, 4});
+      result.emplace_back<word_type, word_type>({4, 1, 3, 1, 1},
+                                                {1, 3, 1, 1, 4});
+      result.emplace_back<word_type, word_type>({4, 1, 3, 1, 3}, {4, 3, 1, 3});
+      result.emplace_back<word_type, word_type>({4, 1, 3, 1, 4}, {4, 1, 3, 4});
+      result.emplace_back<word_type, word_type>({4, 1, 3, 4, 1}, {4, 1, 3, 4});
+      result.emplace_back<word_type, word_type>({4, 1, 4, 3, 2},
+                                                {4, 1, 4, 3, 1});
+      result.emplace_back<word_type, word_type>({1, 1, 3, 4, 1, 3},
+                                                {3, 1, 4, 1, 3});
+      result.emplace_back<word_type, word_type>({1, 1, 4, 1, 3, 4},
+                                                {3, 4, 1, 4});
+      result.emplace_back<word_type, word_type>({1, 3, 1, 1, 4, 3},
+                                                {4, 3, 2, 1, 3});
+      result.emplace_back<word_type, word_type>({1, 3, 1, 3, 1, 3},
+                                                {3, 1, 3, 1, 3});
+      result.emplace_back<word_type, word_type>({1, 3, 1, 4, 1, 3},
+                                                {3, 4, 1, 3});
+      result.emplace_back<word_type, word_type>({1, 4, 3, 1, 1, 4},
+                                                {4, 3, 1, 1, 4});
+      result.emplace_back<word_type, word_type>({2, 3, 1, 1, 4, 3},
+                                                {1, 4, 3, 2, 1, 3});
+      result.emplace_back<word_type, word_type>({3, 1, 1, 3, 4, 1},
+                                                {3, 1, 4, 1, 3});
+      result.emplace_back<word_type, word_type>({3, 1, 1, 4, 3, 1},
+                                                {1, 1, 4, 3, 1, 3});
+      result.emplace_back<word_type, word_type>({3, 1, 3, 1, 3, 1},
+                                                {3, 1, 3, 1, 3});
+      result.emplace_back<word_type, word_type>({3, 1, 3, 1, 4, 1},
+                                                {3, 4, 1, 3});
+      result.emplace_back<word_type, word_type>({3, 1, 4, 1, 1, 3}, {3});
+      result.emplace_back<word_type, word_type>({4, 1, 4, 3, 1, 1},
+                                                {4, 3, 1, 1, 4});
+      result.emplace_back<word_type, word_type>({4, 1, 4, 3, 1, 4}, {4, 1, 4});
+      result.emplace_back<word_type, word_type>({4, 3, 1, 3, 1, 4},
+                                                {1, 3, 1, 1, 4});
+      result.emplace_back<word_type, word_type>({1, 1, 4, 3, 1, 3, 1},
+                                                {3, 1, 1, 4, 3, 2});
+      result.emplace_back<word_type, word_type>({1, 1, 4, 3, 2, 1, 3},
+                                                {3, 1, 1, 4, 3});
+      result.emplace_back<word_type, word_type>({1, 3, 1, 3, 4, 1, 3},
+                                                {3, 1, 3, 4, 1, 3});
+      result.emplace_back<word_type, word_type>({3, 1, 1, 4, 3, 2, 1},
+                                                {3, 1, 1, 4, 3});
+      result.emplace_back<word_type, word_type>({3, 1, 3, 1, 3, 4, 1},
+                                                {3, 1, 3, 4, 1, 3});
+      result.emplace_back<word_type, word_type>({4, 3, 1, 1, 4, 3, 2},
+                                                {4, 1, 4, 3, 1, 3, 1});
+      result.emplace_back<word_type, word_type>({3, 1, 1, 4, 3, 2, 3, 1},
+                                                {3, 1, 1, 4, 3, 2, 3});
+      result.emplace_back<word_type, word_type>({3, 1, 1, 4, 3, 2, 3, 4, 1},
+                                                {1, 1, 4, 3, 1, 3, 4, 1, 3});
 
-    // V1
-    result.emplace_back(c ^ n, id);
-    result.emplace_back((s * c) ^ (n - 1), id);
-    result.emplace_back(s * s, id);
-    for (size_t i = 2; i <= n / 2; ++i) {
-      result.emplace_back(((c ^ i) * s * (c ^ (n - i)) * s) ^ 2, id);
+      return result;
+    } else if (val == author::East) {
+      if (n < 4) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "the 1st argument (size_t) must be at least 4, found %llu",
+            uint64_t(n));
+      }
+      word_type s  = {0};
+      word_type c  = {1};
+      word_type e  = {2};
+      word_type t  = {3};
+      word_type id = {4};
+
+      std::vector<word_type> alphabet = {s, c, e, t, id};
+      add_monoid_relations(alphabet, id, result);
+
+      // V1
+      result.emplace_back(c ^ n, id);
+      result.emplace_back((s * c) ^ (n - 1), id);
+      result.emplace_back(s * s, id);
+      for (size_t i = 2; i <= n / 2; ++i) {
+        result.emplace_back(((c ^ i) * s * (c ^ (n - i)) * s) ^ 2, id);
+      }
+
+      // V2
+      result.emplace_back(e * e, e);
+      result.emplace_back(e * t * e, e);
+      result.emplace_back(s * c * e * (c ^ (n - 1)) * s, e);
+      result.emplace_back(c * s * (c ^ (n - 1)) * e * c * s * (c ^ (n - 1)), e);
+
+      // V3
+      result.emplace_back(t * t, t);
+      result.emplace_back(t * e * t, t);
+      result.emplace_back(t * s, t);
+      result.emplace_back(s * t, t);
+      result.emplace_back(
+          (c ^ 2) * s * (c ^ (n - 2)) * t * (c ^ 2) * s * (c ^ (n - 2)), t);
+      result.emplace_back((c ^ (n - 1)) * s * c * s * (c ^ (n - 1)) * t * c * s
+                              * (c ^ (n - 1)) * s * c,
+                          t);
+
+      // V4
+      result.emplace_back(s * e * s * e, e * s * e);
+      result.emplace_back(e * s * e * s, e * s * e);
+
+      // V5
+      result.emplace_back(t * c * t * (c ^ (n - 1)), c * t * (c ^ (n - 1)) * t);
+
+      // V6
+      result.emplace_back(t * (c ^ 2) * t * (c ^ (n - 2)),
+                          (c ^ 2) * t * (c ^ (n - 2)) * t);
+      // V7
+      result.emplace_back(t * (c ^ 2) * e * (c ^ (n - 2)),
+                          (c ^ 2) * e * (c ^ (n - 2)) * t);
     }
-
-    // V2
-    result.emplace_back(e * e, e);
-    result.emplace_back(e * t * e, e);
-    result.emplace_back(s * c * e * (c ^ (n - 1)) * s, e);
-    result.emplace_back(c * s * (c ^ (n - 1)) * e * c * s * (c ^ (n - 1)), e);
-
-    // V3
-    result.emplace_back(t * t, t);
-    result.emplace_back(t * e * t, t);
-    result.emplace_back(t * s, t);
-    result.emplace_back(s * t, t);
-    result.emplace_back(
-        (c ^ 2) * s * (c ^ (n - 2)) * t * (c ^ 2) * s * (c ^ (n - 2)), t);
-    result.emplace_back((c ^ (n - 1)) * s * c * s * (c ^ (n - 1)) * t * c * s
-                            * (c ^ (n - 1)) * s * c,
-                        t);
-
-    // V4
-    result.emplace_back(s * e * s * e, e * s * e);
-    result.emplace_back(e * s * e * s, e * s * e);
-
-    // V5
-    result.emplace_back(t * c * t * (c ^ (n - 1)), c * t * (c ^ (n - 1)) * t);
-
-    // V6
-    result.emplace_back(t * (c ^ 2) * t * (c ^ (n - 2)),
-                        (c ^ 2) * t * (c ^ (n - 2)) * t);
-    // V7
-    result.emplace_back(t * (c ^ 2) * e * (c ^ (n - 2)),
-                        (c ^ 2) * e * (c ^ (n - 2)) * t);
     return result;
   }
 
@@ -1106,7 +1227,8 @@ namespace libsemigroups {
   }
 
   // Chinese monoid
-  // See: The Chinese Monoid - Cassaigne, Espie, Krob, Novelli and Hivert, 2001
+  // See: The Chinese Monoid - Cassaigne, Espie, Krob, Novelli and Hivert,
+  // 2001
   std::vector<relation_type> ChineseMonoid(size_t n) {
     std::vector<relation_type> result;
 

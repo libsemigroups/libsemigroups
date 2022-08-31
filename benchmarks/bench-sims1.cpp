@@ -150,7 +150,7 @@ namespace libsemigroups {
 
     BENCHMARK("Right congruences") {
       Sims1_ C(congruence_kind::right, p);
-      C.split_at(64);
+      C.split_at((252 - 64) / 2);
       REQUIRE(C.number_of_congruences(81) == 601'265);
     };
   }
@@ -185,7 +185,7 @@ namespace libsemigroups {
 
   TEST_CASE("SymmetricInverseMonoid(4) (Hivert)",
             "[talk][SymmetricInverseMonoid4]") {
-    auto rg = ReportGuard(true);
+    auto rg = ReportGuard(false);
     auto p  = make<Presentation<word_type>>(RookMonoid(4, 1));
     presentation::remove_duplicate_rules(p);
     presentation::sort_each_rule(p);
@@ -193,7 +193,9 @@ namespace libsemigroups {
 
     BENCHMARK("Right congruences") {
       Sims1_ C(congruence_kind::right, p);
-      REQUIRE(C.number_of_congruences(209) == 195'709);
+      REQUIRE(C.number_of_threads(std::thread::hardware_concurrency())
+                  .number_of_congruences(209)
+              == 195'709);
     };
   }
 

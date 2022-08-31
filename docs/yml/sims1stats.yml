@@ -1,0 +1,8 @@
+libsemigroups::Sims1Stats:
+- Member types:
+  - ["This page contains information about the data members of the
+     :cpp:any:`Sims1Stats` class."]
+  - total_pending
+  - max_pending
+- Member functions:
+  - operator+=(Sims1Stats const &)

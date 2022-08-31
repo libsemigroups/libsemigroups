@@ -107,8 +107,7 @@ namespace libsemigroups {
         std::lock_guard<std::mutex> lg(_mtx);
         size_t      tid  = THREAD_ID_MANAGER.tid(std::this_thread::get_id());
         auto const& prfx = _options[tid].prefix;
-        // TODO(Sims1) handle case when ":" is -1
-        auto pos = prfx.find(":");
+        auto        pos  = prfx.find(":");
         if (pos != std::string::npos && pos + 2 <= prfx.size() - 1) {
           std::string class_name(prfx.cbegin() + prfx.find(":") + 2,
                                  prfx.cend() - 2);

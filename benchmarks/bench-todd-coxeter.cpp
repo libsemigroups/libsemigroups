@@ -423,13 +423,13 @@ namespace libsemigroups {
             = std::string("PartitionMonoid(") + std::to_string(n) + ") ";
         BENCHMARK((title + "+ HLT (default) + save").c_str()) {
           ToddCoxeter tc(congruence_kind::twosided);
-          setup(tc, 5, PartitionMonoidEast41, n);
+          setup(tc, 5, PartitionMonoid, n, author::East);
           tc.strategy(ToddCoxeter::options::strategy::hlt).save(true);
           REQUIRE(tc.number_of_classes() == sizes[n]);
         };
         BENCHMARK((title + "+ Felsch (default)").c_str()) {
           ToddCoxeter tc(congruence_kind::twosided);
-          setup(tc, 5, PartitionMonoidEast41, n);
+          setup(tc, 5, PartitionMonoid, n, author::East);
           tc.strategy(ToddCoxeter::options::strategy::felsch);
           REQUIRE(tc.number_of_classes() == sizes[n]);
         };
@@ -442,7 +442,7 @@ namespace libsemigroups {
       void bench_partition(size_t n, size_t size) {
         auto        rg = ReportGuard(true);
         ToddCoxeter tc(congruence_kind::twosided);
-        setup(tc, 5, PartitionMonoidEast41, n);
+        setup(tc, 5, PartitionMonoid, n, author::East);
         tc.lookahead(options::lookahead::hlt | options::lookahead::partial)
             .use_relations_in_extra(true)
             .sort_generating_pairs()
