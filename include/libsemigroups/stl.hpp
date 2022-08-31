@@ -24,6 +24,7 @@
 
 #include <cstddef>      // for size_t
 #include <memory>       // for unique_ptr
+#include <thread>       // for std::thread
 #include <type_traits>  // for enable_if, forward, hash, is_function, is_same
 #include <vector>       // for vector
 
@@ -75,6 +76,24 @@ namespace libsemigroups {
         std::enable_if_t<
             std::is_same<decltype(void(&T::operator())), void>::value>>
         : std::true_type {};
+
+    // From p, 275, Section 8 of C++ concurrency in action, 2nd edition, by
+    // Anthony Williams.
+    class JoinThreads {
+      std::vector<std::thread>& _threads;
+
+     public:
+      explicit JoinThreads(std::vector<std::thread>& threads)
+          : _threads(threads) {}
+
+      ~JoinThreads() {
+        for (size_t i = 0; i < _threads.size(); ++i) {
+          if (_threads[i].joinable()) {
+            _threads[i].join();
+          }
+        }
+      }
+    };
 
   }  // namespace detail
 }  // namespace libsemigroups
