@@ -31,10 +31,13 @@
 #include <iterator>          // for distance
 #include <numeric>           // for accumulate
 #include <string>            // for string
+#include <type_traits>       // for enable_if_t, is_same
 #include <unordered_map>     // for unordered_map
 #include <unordered_set>     // for unordered_set
 #include <vector>            // for vector
 
+#include "constants.hpp"    // for UNDEFINED
+#include "debug.hpp"        // for LIBSEMIGROUPS_ASSERT
 #include "order.hpp"        // for shortlex_compare
 #include "suffix-tree.hpp"  // for SuffixTree
 #include "uf.hpp"           // for Duf
@@ -217,6 +220,18 @@ namespace libsemigroups {
     //! alphabet.
     size_type index(letter_type val) const {
       return _alphabet_map.find(val)->second;
+    }
+
+    //! Check if a letter belongs to the alphabet or not.
+    //!
+    //! \no_libsemigroups_except
+    //!
+    //! \param val the letter to check
+    //!
+    //! \returns
+    //! A value of type `bool`.
+    bool in_alphabet(letter_type val) const {
+      return _alphabet_map.find(val) != _alphabet_map.cend();
     }
 
     //! Add a rule to the presentation
@@ -627,12 +642,25 @@ namespace libsemigroups {
     //!
     //! \returns (None)
     //!
-    //! \exceptions
-    //! \no_libsemigroups_except
+    //! \throws LibsemigroupsException if `p.rules.size()` is odd.
     template <typename W>
     void remove_duplicate_rules(Presentation<W>& p);
 
-    //! If there are rule \f$u = v\f$ and \f$v = w\f$ where \f$|w| < |v|\f$,
+    //! Remove rules consisting of identical words.
+    //!
+    //! Removes all instance of rules (if any) where the left hand side and the
+    //! right hand side are identical.
+    //!
+    //! \tparam W the type of the words in the presentation
+    //! \param p the presentation
+    //!
+    //! \returns (None)
+    //!
+    //! \throws LibsemigroupsException if `p.rules.size()` is odd.
+    template <typename W>
+    void remove_trivial_rules(Presentation<W>& p);
+
+    //! If there are rules \f$u = v\f$ and \f$v = w\f$ where \f$|w| < |v|\f$,
     //! then replace \f$u = v\f$ by \f$u = w\f$.
     //!
     //! Attempts to reduce the length of the words by finding the equivalence
@@ -650,8 +678,7 @@ namespace libsemigroups {
     //!
     //! \returns (None)
     //!
-    //! \exceptions
-    //! \no_libsemigroups_except
+    //! \throws LibsemigroupsException if `p.rules.size()` is odd.
     template <typename W>
     void reduce_complements(Presentation<W>& p);
 
@@ -663,21 +690,19 @@ namespace libsemigroups {
     //!
     //! \returns (None)
     //!
-    //! \exceptions
-    //! \no_libsemigroups_except
+    //! \throws LibsemigroupsException if `p.rules.size()` is odd.
     template <typename W>
     void sort_each_rule(Presentation<W>& p);
 
     //! Sort the rules \f$u_1 = v_1, \ldots, u_n = v_n\f$ so that
-    //! \f$u_1 < \cdots < u_n\f$ where \f$<\f$ is the shortlex order.
+    //! \f$u_1v_1 < \cdots < u_nv_n\f$ where \f$<\f$ is the shortlex order.
     //!
     //! \tparam W the type of the words in the presentation
     //! \param p the presentation to sort
     //!
     //! \returns (None)
     //!
-    //! \exceptions
-    //! \no_libsemigroups_except
+    //! \throws LibsemigroupsException if `p.rules.size()` is odd.
     template <typename W>
     void sort_rules(Presentation<W>& p);
 
@@ -702,10 +727,10 @@ namespace libsemigroups {
 
     //! Replace non-overlapping instances of a subword via iterators.
     //!
-    //! If \f$w=\f$`[first, last)` is a word, then replaces every
-    //! non-overlapping instance of \f$w\f$ in every rule, adds a new
-    //! generator \f$z\f$, and the rule \f$w = z\f$. The new generator and rule
-    //! are added even if \f$w\f$ is not a subword of any rule.
+    //! If \f$w=\f$`[first, last)` is a word, then this function replaces every
+    //! non-overlapping instance of \f$w\f$ in every rule, adds a new generator
+    //! \f$z\f$, and the rule \f$w = z\f$. The new generator and rule are added
+    //! even if \f$w\f$ is not a subword of any rule.
     //!
     //! \tparam W the type of the words in the presentation
     //! \tparam T the type of the 2nd and 3rd parameters (iterators)
@@ -718,15 +743,39 @@ namespace libsemigroups {
     //! \exceptions
     //! \no_libsemigroups_except
     // TODO(later) complexity
-    template <typename W, typename T>
+    template <typename W,
+              typename T,
+              typename = std::enable_if_t<!std::is_same<T, W>::value>>
     void replace_subword(Presentation<W>& p, T first, T last);
+
+    //! Replace non-overlapping instances of a subword by another word.
+    //!
+    //! If \p existing and \p replacement are words, then this function
+    //! replaces every non-overlapping instance of \p existing in every rule by
+    //! \p replacement. The presentation \p p is changed in-place.
+    //!
+    //! \tparam W the type of the words in the presentation
+    //! \param p the presentation
+    //! \param existing the word to be replaced
+    //! \param replacement the replacement word.
+    //!
+    //! \returns (None)
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    // TODO(later) complexity
+    template <typename W>
+    void replace_subword(Presentation<W>& p,
+                         W const&         existing,
+                         W const&         replacement);
 
     //! Replace non-overlapping instances of a subword via const reference.
     //!
     //! If \f$w=\f$`[first, last)` is a word, then replaces every
-    //! non-overlapping instance of \f$w\f$ in every rule, adds a new
-    //! generator \f$z\f$, and the rule \f$w = z\f$. The new generator and rule
-    //! are added even if \f$w\f$ is not a subword of any rule.
+    //! non-overlapping instance (from left to right) of \f$w\f$ in every rule,
+    //! adds a new generator \f$z\f$, and the rule \f$w = z\f$. The new
+    //! generator and rule are added even if \f$w\f$ is not a subword of any
+    //! rule.
     //!
     //! \tparam W the type of the words in the presentation
     //! \tparam T the type of the 2nd and 3rd parameters (iterators)
@@ -753,7 +802,7 @@ namespace libsemigroups {
     //! \exceptions
     //! \no_libsemigroups_except
     template <typename W>
-    size_t length(Presentation<W>& p) {
+    size_t length(Presentation<W> const& p) {
       auto op = [](size_t val, W const& x) { return val + x.size(); };
       return std::accumulate(p.rules.cbegin(), p.rules.cend(), size_t(0), op);
     }
@@ -790,6 +839,153 @@ namespace libsemigroups {
     template <typename W>
     void normalize_alphabet(Presentation<W>& p);
 
+    //! Returns an iterator pointing at the left hand side of the first
+    //! rule of maximal length in the given range.
+    //!
+    //! The *length* of a rule is defined to be the sum of the lengths of its
+    //! left and right hand sides.
+    //!
+    //! \tparam T the type of the parameters
+    //! \param first left hand side of the first rule
+    //! \param last one past the right hand side of the last rule
+    //!
+    //! \returns A value of type `T`.
+    //!
+    //! \throws LibsemigroupsException if the distance between \p first and \p
+    //! last is odd.
+    template <typename T>
+    T longest_rule(T first, T last);
+
+    //! Returns an iterator pointing at the left hand side of the first
+    //! rule in the presentation with maximal length.
+    //!
+    //! The *length* of a rule is defined to be the sum of the lengths of its
+    //! left and right hand sides.
+    //!
+    //! \tparam W the type of the words in the presentation
+    //! \param p the presentation
+    //!
+    //! \returns A value of type `std::vector<W>::const_iterator`.
+    //!
+    //! \throws LibsemigroupsException if the length of \p p.rules is odd.
+    template <typename W>
+    auto longest_rule(Presentation<W> const& p) {
+      return longest_rule(p.rules.cbegin(), p.rules.cend());
+    }
+
+    //! Returns an iterator pointing at the left hand side of the first
+    //! rule of minimal length in the given range.
+    //!
+    //! The *length* of a rule is defined to be the sum of the lengths of its
+    //! left and right hand sides.
+    //!
+    //! \tparam T the type of the parameters
+    //! \param first left hand side of the first rule
+    //! \param last one past the right hand side of the last rule
+    //!
+    //! \returns A value of type `T`.
+    //!
+    //! \throws LibsemigroupsException if the distance between \p first and \p
+    //! last is odd.
+    template <typename T>
+    T shortest_rule(T first, T last);
+
+    //! Returns an iterator pointing at the left hand side of the first
+    //! rule in the presentation with minimal length.
+    //!
+    //! The *length* of a rule is defined to be the sum of the lengths of its
+    //! left and right hand sides.
+    //!
+    //! \tparam W the type of the words in the presentation
+    //! \param p the presentation
+    //!
+    //! \returns A value of type `std::vector<W>::const_iterator`.
+    //!
+    //! \throws LibsemigroupsException if the length of \p p.rules is odd.
+    template <typename W>
+    auto shortest_rule(Presentation<W> const& p) {
+      return shortest_rule(p.rules.cbegin(), p.rules.cend());
+    }
+
+    //! Returns the maximum length of a rule in the given range.
+    //!
+    //! The *length* of a rule is defined to be the sum of the lengths of its
+    //! left and right hand sides.
+    //!
+    //! \tparam T the type of the parameters
+    //! \param first left hand side of the first rule
+    //! \param last one past the right hand side of the last rule
+    //!
+    //! \returns A value of type `decltype(first)::value_type::size_type`.
+    //!
+    //! \throws LibsemigroupsException if the length of \p p.rules is odd.
+    template <typename T>
+    auto longest_rule_length(T first, T last);
+
+    //! Returns the maximum length of a rule in the presentation.
+    //!
+    //! The *length* of a rule is defined to be the sum of the lengths of its
+    //! left and right hand sides.
+    //!
+    //! \tparam W the type of the words in the presentation
+    //! \param p the presentation
+    //!
+    //! \returns A value of type `W::size_type`.
+    //!
+    //! \throws LibsemigroupsException if the length of \p p.rules is odd.
+    template <typename W>
+    auto longest_rule_length(Presentation<W> const& p) {
+      return longest_rule_length(p.rules.cbegin(), p.rules.cend());
+    }
+
+    //! Returns the minimum length of a rule in the given range.
+    //!
+    //! The *length* of a rule is defined to be the sum of the lengths of its
+    //! left and right hand sides.
+    //!
+    //! \tparam T the type of the parameters
+    //! \param first left hand side of the first rule
+    //! \param last one past the right hand side of the last rule
+    //!
+    //! \returns A value of type `decltype(first)::value_type::size_type`.
+    //!
+    //! \throws LibsemigroupsException if the length of \p p.rules is odd.
+    template <typename T>
+    auto shortest_rule_length(T first, T last);
+
+    //! Returns the minimum length of a rule in the presentation.
+    //!
+    //! The *length* of a rule is defined to be the sum of the lengths of its
+    //! left and right hand sides.
+    //!
+    //! \tparam W the type of the words in the presentation
+    //! \param p the presentation
+    //!
+    //! \returns A value of type `W::size_type`.
+    //!
+    //! \throws LibsemigroupsException if the length of \p p.rules is odd.
+    template <typename W>
+    auto shortest_rule_length(Presentation<W> const& p) {
+      return shortest_rule_length(p.rules.cbegin(), p.rules.cend());
+    }
+
+    //! Remove any trivially redundant generators.
+    //!
+    //! If one side of any of the rules in the presentation \p p is a letter \c
+    //! a and the other side of the rule does not contain \c a, then this
+    //! function replaces every occurrence of \c a in every rule by the other
+    //! side of the rule. This substitution is performed for every such
+    //! rule in the presentation; and the trivial rules (with both sides being
+    //! identical) are removed. If both sides of a rule are letters, then the
+    //! greater letter is replaced by the lesser one.
+    //!
+    //! \tparam W the type of the words in the presentation
+    //!
+    //! \returns (None)
+    //!
+    //! \throws LibsemigroupsException if `p.rules.size()` is odd.
+    template <typename W>
+    void remove_redundant_generators(Presentation<W>& p);
   }  // namespace presentation
 }  // namespace libsemigroups
 

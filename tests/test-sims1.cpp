@@ -729,7 +729,7 @@ namespace libsemigroups {
     REQUIRE(p.rules.size() == 86);
     do {
       auto it = presentation::redundant_rule(p, std::chrono::milliseconds(100));
-      p.rules.erase(it, it + 1);
+      p.rules.erase(it, it + 2);
     } while (presentation::length(p) > 300);
     // REQUIRE(word_type(fl.first, fl.second) == word_type({1, 1}));
     presentation::replace_subword(p, presentation::longest_common_subword(p));
