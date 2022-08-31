@@ -31,9 +31,11 @@
 #include <cstdint>      // for uint64_t, int64_t
 #include <iterator>     // for forward_iterator_tag, distance
 #include <numeric>      // for accumulate
+#include <ostream>      // for operator<<
 #include <queue>        // for queue
 #include <random>       // for mt19937
 #include <stack>        // for stack
+#include <string>       // for to_string
 #include <tuple>        // for tie
 #include <type_traits>  // for is_integral, is_unsigned
 #include <utility>      // for pair
@@ -2626,14 +2628,15 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Constant.
-    // TODO(later) this either shouldn't exist or DynamicArray2 should be
-    // public.
+    // TODO(v3) this either shouldn't exist it's used by ToddCoxeter when
+    // creating the quotient FroidurePin, but we could just use the
+    // ActionDigraph itself.
     detail::DynamicArray2<T> const& table() const noexcept {
       return _dynamic_array_2;
     }
 
    protected:
-    //! No doc
+    // TODO(v3) make this public, doc, and test it
     template <typename S>
     void apply_row_permutation(S const& p) {
       reset();
@@ -3159,6 +3162,8 @@ namespace libsemigroups {
       }
     }
 
+    // Why does this exist? TODO(v3) try replacing it with Eigen::MatrixPower or
+    // x.pow()
     static inline Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>
     pow(Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> const& x,
         size_t                                                       e) {
