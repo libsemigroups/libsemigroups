@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-CONTAINER_NAME="jamesdbmitchell/gap-docker-minimal:version-4.11.0"
+CONTAINER_NAME="jamesdbmitchell/gap-docker-minimal:version-4.12.1"
 
 # Pull the docker container
 docker pull "$CONTAINER_NAME" 
