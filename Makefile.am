@@ -147,19 +147,19 @@ endif ## LIBSEMIGROUPS_HPCOMBI_ENABLED
 ## uninstall-hook
 fmtincludedir = $(includedir)/libsemigroups/fmt
 if LIBSEMIGROUPS_WITH_INTERNAL_FMT
-fmtinclude_HEADERS =  extern/fmt-8.0.1/include/fmt/args.h
-fmtinclude_HEADERS += extern/fmt-8.0.1/include/fmt/chrono.h
-fmtinclude_HEADERS += extern/fmt-8.0.1/include/fmt/color.h
-fmtinclude_HEADERS += extern/fmt-8.0.1/include/fmt/compile.h
-fmtinclude_HEADERS += extern/fmt-8.0.1/include/fmt/core.h
-fmtinclude_HEADERS += extern/fmt-8.0.1/include/fmt/format-inl.h
-fmtinclude_HEADERS += extern/fmt-8.0.1/include/fmt/format.h
-fmtinclude_HEADERS += extern/fmt-8.0.1/include/fmt/locale.h
-fmtinclude_HEADERS += extern/fmt-8.0.1/include/fmt/os.h
-fmtinclude_HEADERS += extern/fmt-8.0.1/include/fmt/ostream.h
-fmtinclude_HEADERS += extern/fmt-8.0.1/include/fmt/printf.h
-fmtinclude_HEADERS += extern/fmt-8.0.1/include/fmt/ranges.h
-fmtinclude_HEADERS += extern/fmt-8.0.1/include/fmt/xchar.h
+fmtinclude_HEADERS =  extern/fmt-8.1.1/include/fmt/args.h
+fmtinclude_HEADERS += extern/fmt-8.1.1/include/fmt/chrono.h
+fmtinclude_HEADERS += extern/fmt-8.1.1/include/fmt/color.h
+fmtinclude_HEADERS += extern/fmt-8.1.1/include/fmt/compile.h
+fmtinclude_HEADERS += extern/fmt-8.1.1/include/fmt/core.h
+fmtinclude_HEADERS += extern/fmt-8.1.1/include/fmt/format-inl.h
+fmtinclude_HEADERS += extern/fmt-8.1.1/include/fmt/format.h
+fmtinclude_HEADERS += extern/fmt-8.1.1/include/fmt/locale.h
+fmtinclude_HEADERS += extern/fmt-8.1.1/include/fmt/os.h
+fmtinclude_HEADERS += extern/fmt-8.1.1/include/fmt/ostream.h
+fmtinclude_HEADERS += extern/fmt-8.1.1/include/fmt/printf.h
+fmtinclude_HEADERS += extern/fmt-8.1.1/include/fmt/ranges.h
+fmtinclude_HEADERS += extern/fmt-8.1.1/include/fmt/xchar.h
 endif
 
 ## Define eigenincludedir outside the conditional
