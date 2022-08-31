@@ -234,7 +234,7 @@ jobs:
            run: |
                 ./test_all "[quick]"
    valgrind:
-      timeout-minutes: 20
+      timeout-minutes: 25
       runs-on: ubuntu-latest
       env:
         CXX: "ccache g++"
