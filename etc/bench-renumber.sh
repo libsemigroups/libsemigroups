@@ -24,7 +24,7 @@ else
   export START=0
 fi
 
-FNAME="$1" python - <<END
+FNAME="$1" python3 - <<END
 import os, re, sys
 p1 = re.compile(r'\[\d\d\d\]"')
 p2 = re.compile(r'TEST_CASE')
