@@ -79,11 +79,13 @@ libsemigroups::ActionDigraph:
   - cend_scc(scc_index_type) const
   - cbegin_scc_roots() const
   - cend_scc_roots() const
-- Spanning forests:
+- Subdigraphs:
   - ["This page contains information about the functionality of the
-      :cpp:any:`ActionDigraph` class for finding spanning forests."]
+      :cpp:any:`ActionDigraph` class for finding spanning forests and other
+      subdigraphs."]
   - spanning_forest() const
   - reverse_spanning_forest() const
+  - induced_subdigraph(node_type,node_type)
 - Path iterators:
   - ["This page contains information about the functionality of the
       :cpp:any:`ActionDigraph` class for iterating through paths."]

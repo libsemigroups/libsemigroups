@@ -1516,7 +1516,6 @@ namespace libsemigroups {
       if (W.size() == 5) {
         auto result = *it;
         result.induced_subdigraph(1, result.number_of_active_nodes());
-        std::for_each(result.begin(), result.end(), [](auto &val) { --val; });
         result.number_of_active_nodes(result.number_of_active_nodes() - 1);
         if (action_digraph_helper::is_strictly_cyclic(result)) {
           strictly_cyclic_count++;

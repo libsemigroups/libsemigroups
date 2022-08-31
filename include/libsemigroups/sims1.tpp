@@ -927,7 +927,6 @@ namespace libsemigroups {
         result.restrict(result.number_of_active_nodes());
       } else {
         result.induced_subdigraph(1, result.number_of_active_nodes());
-        std::for_each(result.begin(), result.end(), [](auto &val) { --val; });
         result.number_of_active_nodes(result.number_of_active_nodes() - 1);
       }
     }
