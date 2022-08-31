@@ -341,7 +341,7 @@ ad.add_edge(4, 5, 0);
     REQUIRE_THROWS_AS(action_digraph_helper::make<uint8_t>(
                           5, {{0, 0}, {1, 1, 1}, {2}, {3, 3}}),
                       LibsemigroupsException);
-    ad = action_digraph_helper::make<uint8_t>(5, 2);
+    ad = ActionDigraph<uint8_t>(5, 2);
     REQUIRE(detail::to_string(ad)
             == "{{-, -}, {-, -}, {-, -}, {-, -}, {-, -}}");
   }
