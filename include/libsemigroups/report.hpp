@@ -56,7 +56,7 @@
 #define REPORT_DEFAULT_V3(...) \
   REPORTER(__VA_ARGS__).prefix(nullptr).thread_color().flush()
 #else
-#define REPORT_DEFAULT_V3(...) REPORTER(__VA_ARGS__).prefix().flush();
+#define REPORT_DEFAULT_V3(...) REPORTER(__VA_ARGS__).prefix(nullptr).flush();
 #endif
 
 #ifdef LIBSEMIGROUPS_FMT_ENABLED
@@ -328,7 +328,7 @@ namespace libsemigroups {
 #ifdef LIBSEMIGROUPS_FMT_ENABLED
                 fmt::sprintf("%s: ", string_class_name(ptr));
 #else
-                string_format("%s: ", string_class_name(ptr));
+                string_format("%s: ", string_class_name(ptr).c_str());
 #endif
           }
         }

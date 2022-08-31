@@ -44,4 +44,4 @@ The classes in ``libsemigroups`` for congruences are:
    _generated/libsemigroups__congruence__knuthbendix
    _generated/libsemigroups__congruence__kambites
    _generated/libsemigroups__knuthbendixcongruencebypairs 
-   _generated/libsemigroups__sims1
+   sims1

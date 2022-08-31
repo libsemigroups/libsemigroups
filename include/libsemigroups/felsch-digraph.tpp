@@ -18,7 +18,7 @@
 
 namespace libsemigroups {
   template <typename W, typename N>
-  FelschDigraph<W, N>::FelschDigraph(Presentation<word_type> const &p,
+  FelschDigraph<W, N>::FelschDigraph(Presentation<word_type> const& p,
                                      size_type                      n)
       : DigraphWithSources<node_type>(p.contains_empty_word() ? n : n + 1,
                                       p.alphabet().size()),
@@ -50,7 +50,7 @@ namespace libsemigroups {
   template <typename W, typename N>
   bool FelschDigraph<W, N>::process_definitions(size_t start) {
     for (size_t i = start; i < _definitions.size(); ++i) {
-      auto const &d = _definitions[i];
+      auto const& d = _definitions[i];
       _felsch_tree.push_back(d.second);
       if (!process_definitions_dfs_v1(d.first)) {
         return false;
@@ -62,7 +62,7 @@ namespace libsemigroups {
   template <typename W, typename N>
   void FelschDigraph<W, N>::reduce_number_of_edges_to(size_type n) {
     while (_definitions.size() > n) {
-      auto const &p = _definitions.back();
+      auto const& p = _definitions.back();
       this->remove_edge_nc(p.first, p.second);
       _definitions.pop_back();
     }
@@ -70,11 +70,11 @@ namespace libsemigroups {
 
   template <typename W, typename N>
   bool FelschDigraph<W, N>::compatible(node_type        c,
-                                       word_type const &u,
-                                       word_type const &v) noexcept {
+                                       word_type const& u,
+                                       word_type const& v) noexcept {
     LIBSEMIGROUPS_ASSERT(c < this->number_of_nodes());
 
-    node_type x, xa;
+    node_type x = UNDEFINED, xa;
     if (u.empty()) {
       xa = c;
     } else {
@@ -88,7 +88,7 @@ namespace libsemigroups {
       xa = this->unsafe_neighbor(x, u.back());
     }
 
-    node_type y, yb;
+    node_type y = UNDEFINED, yb;
     if (v.empty()) {
       yb = c;
     } else {
@@ -141,13 +141,13 @@ namespace libsemigroups {
   namespace felsch_digraph {
     template <typename W, typename N>
     bool
-    compatible(FelschDigraph<W, N> &                   fd,
+    compatible(FelschDigraph<W, N>&                    fd,
                typename FelschDigraph<W, N>::node_type first_node,
                typename FelschDigraph<W, N>::node_type last_node,
                typename std::vector<W>::const_iterator first_rule,
                typename std::vector<W>::const_iterator last_rule) noexcept {
       LIBSEMIGROUPS_ASSERT(first_node < fd.number_of_nodes());
-      LIBSEMIGROUPS_ASSERT(last_node < fd.number_of_nodes());
+      LIBSEMIGROUPS_ASSERT(last_node <= fd.number_of_nodes());
       LIBSEMIGROUPS_ASSERT(std::distance(first_rule, last_rule) % 2 == 0);
 
       using node_type = typename FelschDigraph<W, N>::node_type;
@@ -163,7 +163,7 @@ namespace libsemigroups {
 
     template <typename W, typename N>
     bool
-    compatible(FelschDigraph<W, N> &                   fd,
+    compatible(FelschDigraph<W, N>&                    fd,
                typename FelschDigraph<W, N>::node_type node,
                typename std::vector<W>::const_iterator first_rule,
                typename std::vector<W>::const_iterator last_rule) noexcept {

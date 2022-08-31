@@ -1,29 +1,44 @@
 libsemigroups::Sims1:
 - Member types:
   - ["This page contains information about the member types of the
-     :cpp:any:`Sims1` class."]
+     :cpp:any:`Sims1` class template."]
   - node_type
   - letter_type
   - size_type
   - digraph_type
+  - iterator
 - Constructors:
   - ["This page contains information about the constructors of the
-     :cpp:any:`Sims1` class."]
-  - Sims1(congruence_kind, Presentation<word_type> const&)
-  - Sims1(congruence_kind, Presentation<word_type> const&, Presentation<word_type> const&)
-  - Sims1(congruence_kind, P const&)
-  - Sims1(congruence_kind, P const&, P const&)
+     :cpp:any:`Sims1` class template."]
+  - Sims1(congruence_kind)
   - Sims1() = delete
   - Sims1(Sims1 const&) = default
   - Sims1(Sims1&&) = default
   - operator=(Sims1 const&) = default
   - operator=(Sims1&&) = default
+- Settings:
+  - ["This page contains information about the various settings for the
+     :cpp:any:`Sims1` class template."]
+  - number_of_threads(size_t)
+  - number_of_threads() const noexcept
+  - report_interval() const noexcept
+  - report_interval(size_t) noexcept
+  - short_rules() const noexcept
+  - short_rules(P const&)
+  - long_rules() const noexcept
+  - long_rules(P const&)
+  - stats() const noexcept
+  - split_at(size_t)
+  - long_rule_length(size_t)
+  - settings() const noexcept
+  - settings(Sims1Settings const&)
+  - extra() const noexcept
+  - extra(P const&)
 - Member functions:
   - ["This page contains information about the member functions of the
-     :cpp:any:`Sims1` class."]
+     :cpp:any:`Sims1` class template."]
   - cbegin(size_type) const
   - cend(size_type) const
   - number_of_congruences(size_type) const
-  - presentation() const noexcept
-  - extra() const noexcept
-  - split_at(size_type)
+  - for_each(size_type,std::function<void(digraph_type const &)>) const
+  - find_if(size_type,std::function<bool(digraph_type const &)>) const

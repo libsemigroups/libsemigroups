@@ -29,7 +29,7 @@
 #include "libsemigroups/types.hpp"    // for relation_type
 
 namespace libsemigroups {
-  enum class author { Moore, Carmichael, Sutov, Aizenstat, Machine };
+  enum class author { Machine, Aizenstat, Carmichael, East, Moore, Sutov };
 
   std::vector<relation_type> RookMonoid(size_t l, int q);
 
@@ -49,7 +49,7 @@ namespace libsemigroups {
   std::vector<relation_type> SymmetricGroup(size_t n, author val);
   std::vector<relation_type> DualSymmetricInverseMonoidEEF(size_t n);
   std::vector<relation_type> UniformBlockBijectionMonoidF(size_t n);
-  std::vector<relation_type> PartitionMonoidEast41(size_t n);
+  std::vector<relation_type> PartitionMonoid(size_t n, author val);
   std::vector<relation_type> SingularBrauer(size_t n);
   std::vector<relation_type> OrientationPreserving(size_t n);
   std::vector<relation_type> OrientationReversing(size_t n);

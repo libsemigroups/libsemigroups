@@ -1,0 +1,29 @@
+libsemigroups::MinimalRepOrc:
+- Constructors:
+  - ["This page contains information about the constructors for the
+     :cpp:any:`MinimalRepOrc` class."]
+  - MinimalRepOrc() = default
+- Settings:
+  - ["This page contains information about the various common settings for the
+     :cpp:any:`MinimalRepOrc` class and the :cpp:any:`Sims1` class template."]
+  - number_of_threads(size_t)
+  - number_of_threads() const noexcept
+  - report_interval() const noexcept
+  - report_interval(size_t) noexcept
+  - short_rules() const noexcept
+  - short_rules(P const&)
+  - long_rules() const noexcept
+  - long_rules(P const&)
+  - stats() const noexcept
+  - split_at(size_t)
+  - long_rule_length(size_t)
+  - settings() const noexcept
+  - settings(Sims1Settings const &)
+  - extra() const noexcept
+  - extra(P const&)
+- Settings specifically for MinimalRepOrc:
+  - ["This page contains information about the various settings specifically
+      for the :cpp:any:`MinimalRepOrc` class."]
+  - target_size(size_t) noexcept
+  - target_size() const noexcept
+  - digraph() const

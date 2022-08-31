@@ -16,7 +16,7 @@ delete_gcda_files() {
   printf "\033[0m";
 }
 
-if [ -x "$(command -v ccache)" ]; then  
+if [ -x "$(command -v ccache)" ]; then
   bold "using ccache. . ."
   MYCXX="ccache g++"
   MYCXXFLAGS="-fdiagnostics-color --coverage"
@@ -26,17 +26,17 @@ else
   MYCXXFLAGS="$CXXFLAGS --coverage"
 fi
 
-bold "$MYCXX --version . . ." 
+bold "$MYCXX --version . . ."
 printf "\033[2m";
 $MYCXX --version
 printf "\033[0m"
 
-bold "gcov --version . . ." 
+bold "gcov --version . . ."
 printf "\033[2m";
 gcov --version
 printf "\033[0m"
 
-bold "lcov --version . . ." 
+bold "lcov --version . . ."
 printf "\033[2m";
 lcov --version
 printf "\033[0m"

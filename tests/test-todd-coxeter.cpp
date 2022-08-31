@@ -2354,7 +2354,7 @@ namespace libsemigroups {
       auto         rg = ReportGuard(REPORT);
       size_t const n  = 4;
       ToddCoxeter  tc(congruence_kind::twosided);
-      setup(tc, 5, PartitionMonoidEast41, n);
+      setup(tc, 5, PartitionMonoid, n, author::East);
       check_hlt(tc);
       check_felsch(tc);
       check_random(tc);
@@ -2445,7 +2445,7 @@ namespace libsemigroups {
       auto rg = ReportGuard(false);
       for (size_t n = 4; n <= 6; ++n) {
         ToddCoxeter tc(congruence_kind::twosided);
-        setup(tc, 5, PartitionMonoidEast41, n);
+        setup(tc, 5, PartitionMonoid, n, author::East);
         tc.save(true);
         output_gap_benchmark_file("partition-" + std::to_string(n) + ".g", tc);
       }
