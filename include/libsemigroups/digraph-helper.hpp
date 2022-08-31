@@ -18,18 +18,21 @@
 #ifndef LIBSEMIGROUPS_DIGRAPH_HELPER_HPP_
 #define LIBSEMIGROUPS_DIGRAPH_HELPER_HPP_
 
-#include <cstddef>  // for size_t
-#include <cstdint>  // for uint8_t
-#include <stack>    // for stack
-#include <string>   // for string
-#include <tuple>    // for tie
-#include <utility>  // for pair
-#include <vector>   // for vector
+#include <algorithm>         // for fill
+#include <cstddef>           // for size_t
+#include <cstdint>           // for uint8_t
+#include <initializer_list>  // for initializer_list
+#include <stack>             // for stack
+#include <string>            // for to_string, string
+#include <tuple>             // for tie
+#include <utility>           // for pair
+#include <vector>            // for vector
 
 #include "constants.hpp"  // for UNDEFINED
 #include "debug.hpp"      // for LIBSEMIGROUPS_ASSERT
 #include "exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
 #include "types.hpp"      // for word_type
+#include "uf.hpp"         // for Duf
 
 namespace libsemigroups {
   template <typename T>
@@ -697,6 +700,32 @@ namespace libsemigroups {
       }
     }  // namespace detail
 
+    //! Constructs a digraph from number of nodes and an initializer_list.
+    //!
+    //! This function constructs an ActionDigraph from its arguments whose
+    //! out-degree is specified by the length of the first initializer_list in
+    //! 2nd parameter.
+    //!
+    //! \tparam T the type of the nodes of the digraph
+    //!
+    //! \param num_nodes the number of nodes in the digraph.
+    //! \param il the out-neighbors of digraph.
+    //!
+    //! \returns A value of type ActionDigraph.
+    //!
+    //! \throws LibsemigroupsException
+    //! if ActionDigraph<T>::add_edge throws when adding edges from \p il.
+    //!
+    //! \complexity
+    //! \f$O(mn)\f$ where \f$m\f$ is the length of `il.begin()` and \f$n\f$ is
+    //! the parameter \p num_nodes.
+    //!
+    //! \par Example
+    //! \code
+    //! // Construct an action digraph with 5 nodes and 10 edges (7 specified)
+    //! action_digraph_helper::make<uint8_t>(
+    //!     5, {{0, 0}, {1, 1}, {2}, {3, 3}});
+    //! \endcode
     template <typename T>
     ActionDigraph<T> make(size_t num_nodes,
                           std::initializer_list<std::initializer_list<T>> il) {
@@ -712,9 +741,127 @@ namespace libsemigroups {
       return result;
     }
 
+    //! Check if a digraph is connected.
+    //!
+    //! \tparam T the type used as the template parameter for the
+    //! ActionDigraph.
+    //!
+    //! \param ad the ActionDigraph object to check.
+    //!
+    //! \returns
+    //! A value of type `bool`.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \par Complexity
+    //! \f$O(m + n)\f$ where \f$m\f$ is the number of nodes in the
+    //! ActionDigraph \p ad and \f$n\f$ is the number of edges. Note that for
+    //! ActionDigraph objects the number of edges is always at most \f$mk\f$
+    //! where \f$k\f$ is the ActionDigraph::out_degree.
+    //!
+    //! A digraph is *connected* if for every pair of nodes \f$u\f$ and \f$v\f$
+    //! there exists a sequence \f$u_0 := u, \ldots, u_{n - 1} := v\f$ such that
+    //! either  \f$(u_i, u_{i + 1})\f$ or \f$(u_{i + 1}, u_i)\f$ is an edge.
+    //! Note that \f$u\f$ and \f$v\f$ can be equal, and the sequence above can
+    //! be of length \f$0\f$.
+    //!
+    //! \par Example
+    //! \code
+    //! auto ad = action_digraph_helper::make<uint8_t>(
+    //!     5, {{0, 0}, {1, 1}, {2}, {3, 3}});
+    //! action_digraph_helper::is_connected(ad);  // returns false
+    //! \endcode
     template <typename T>
     ActionDigraph<T> make(size_t num_nodes, size_t out_degree) {
       return ActionDigraph<T>(num_nodes, out_degree);
+    }
+
+    // TODO(Sims1) doc
+    template <typename T>
+    bool is_connected(ActionDigraph<T> const& ad) {
+      using node_type = typename ActionDigraph<T>::node_type;
+
+      auto const N = ad.number_of_nodes();
+      if (N == 0) {
+        return true;
+      }
+
+      ::libsemigroups::detail::Duf<> uf(N);
+      for (node_type n = 0; n < N; ++n) {
+        for (auto it = ad.cbegin_edges(n); it != ad.cend_edges(n); ++it) {
+          if (*it != UNDEFINED) {
+            uf.unite(n, *it);
+          }
+        }
+      }
+      return uf.number_of_blocks() == 1;
+    }
+
+    //! Check if a digraph is strictly cyclic.
+    //!
+    //! \tparam T the type used as the template parameter for the
+    //! ActionDigraph.
+    //!
+    //! \param ad the ActionDigraph object to check.
+    //!
+    //! \returns
+    //! A value of type `bool`.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \par Complexity
+    //! \f$O(m + n)\f$ where \f$m\f$ is the number of nodes in the
+    //! ActionDigraph \p ad and \f$n\f$ is the number of edges. Note that for
+    //! ActionDigraph objects the number of edges is always at most \f$mk\f$
+    //! where \f$k\f$ is the ActionDigraph::out_degree.
+    //!
+    //! A digraph is *strictly cyclic* if there exists a node \f$v\f$ from
+    //! which every node is reachable (including \f$v\f$). There must be a path
+    //! of length at least \f$1\f$ from the original node \f$v\f$ to itself
+    //! (i.e. \f$v\f$ is not considered to be reachable from itself by
+    //! default).
+    //!
+    //! \par Example
+    //! \code
+    //! auto ad = action_digraph_helper::make<uint8_t>(
+    //!     5, {{0, 0}, {1, 1}, {2}, {3, 3}});
+    //! action_digraph_helper::is_strictly_cyclic(ad);  // returns false
+    //! \endcode
+    template <typename T>
+    bool is_strictly_cyclic(ActionDigraph<T> const& ad) {
+      using node_type = typename ActionDigraph<T>::node_type;
+      auto const N    = ad.number_of_nodes();
+
+      if (N == 0) {
+        return true;
+      }
+
+      std::vector<bool> seen(N, false);
+      std::stack<T>     stack;
+
+      for (node_type m = 0; m < N; ++m) {
+        stack.push(m);
+        size_t count = 0;
+        while (!stack.empty()) {
+          auto n = stack.top();
+          stack.pop();
+          if (!seen[n]) {
+            seen[n] = true;
+            if (++count == N) {
+              return true;
+            }
+            for (auto it = ad.cbegin_edges(n); it != ad.cend_edges(n); ++it) {
+              if (*it != UNDEFINED) {
+                stack.push(*it);
+              }
+            }
+          }
+        }
+        std::fill(seen.begin(), seen.end(), false);
+      }
+      return false;
     }
   }  // namespace action_digraph_helper
 }  // namespace libsemigroups
