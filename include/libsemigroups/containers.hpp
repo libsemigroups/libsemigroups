@@ -19,12 +19,17 @@
 #ifndef LIBSEMIGROUPS_CONTAINERS_HPP_
 #define LIBSEMIGROUPS_CONTAINERS_HPP_
 
-#include <array>        // for array
-#include <cstddef>      // for size_t
-#include <iterator>     // for reverse_iterator
-#include <sstream>      // for ostream, ostr...
-#include <type_traits>  // for is_default_constructible
-#include <vector>       // for vector, allocator
+#include <algorithm>         // for max
+#include <array>             // for array
+#include <cstddef>           // for size_t
+#include <functional>        // for hash
+#include <initializer_list>  // for initializer_list
+#include <iterator>          // for reverse_iterator, distance
+#include <sstream>           // for operator<<, ostream
+#include <string>            // for to_string
+#include <type_traits>       // for decay_t, false_type, is_def...
+#include <utility>           // for forward
+#include <vector>            // for vector, allocator
 
 #include "debug.hpp"     // for LIBSEMIGROUPS_ASSERT
 #include "iterator.hpp"  // for ConstIteratorStateful, ConstItera...
@@ -200,11 +205,20 @@ namespace libsemigroups {
       // Throws if the assignment operator of T throws
       void shrink_rows_to(size_type n) {
         if (n < _nr_rows) {
-          _vec.erase(_vec.begin() + n * (_nr_used_cols + _nr_unused_cols),
-                     _vec.end());
-          _vec.shrink_to_fit();
-          _nr_rows = n;
+          shrink_rows_to(0, n);
         }
+      }
+
+      void shrink_rows_to(size_type first, size_type last) {
+        LIBSEMIGROUPS_ASSERT(first <= last);
+        LIBSEMIGROUPS_ASSERT(first <= _nr_rows);
+        LIBSEMIGROUPS_ASSERT(last <= _nr_rows);
+
+        auto nr_cols = _nr_used_cols + _nr_unused_cols;
+        _vec.erase(_vec.begin() + last * nr_cols, _vec.end());
+        _vec.erase(_vec.begin(), _vec.begin() + first * nr_cols);
+        _vec.shrink_to_fit();
+        _nr_rows = last - first;
       }
 
       // Throws if the assignment operator of T throws
