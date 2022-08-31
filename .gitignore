@@ -18,6 +18,7 @@
 .!*
 .DS_Store
 .VERSION
+.ccls
 .deps
 .dirstamp
 .ipynb_checkpoints
