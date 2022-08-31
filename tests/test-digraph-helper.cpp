@@ -15,14 +15,22 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include <cstddef>
+#include <algorithm>  // for all_of
+#include <cstddef>    // for size_t
+#include <cstdint>    // for uint8_t
+#include <iterator>   // for reverse_iterator, operat...
+#include <stdexcept>  // for runtime_error
+#include <string>     // for basic_string, operator==
+#include <utility>    // for pair
+#include <vector>     // for vector, operator==
 
-#include "catch.hpp"  // for REQUIRE, REQUIRE_NOTHROW, REQUIRE_THROWS_AS
-#include "libsemigroups/digraph-helper.hpp"  // for is_acyclic
-#include "libsemigroups/digraph.hpp"         // for ActionDigraph
-#include "libsemigroups/order.hpp"           // for LexicographicalCompare
-#include "libsemigroups/wilo.hpp"            // for cbegin/end_wilo
-#include "test-main.hpp"                     // for LIBSEMIGROUPS_TEST_CASE
+#include "catch.hpp"      // for REQUIRE, REQUIRE_NOTHROW, REQUIRE_THROWS_AS
+#include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
+
+#include "libsemigroups/digraph-helper.hpp"  // for is_acyclic, topological_...
+#include "libsemigroups/digraph.hpp"         // for ActionDigraph, operator<<
+#include "libsemigroups/string.hpp"          // for to_string
+#include "libsemigroups/types.hpp"           // for word_type
 
 namespace libsemigroups {
   namespace {
@@ -276,6 +284,8 @@ namespace libsemigroups {
     for (auto it = ad.cbegin_panilo(0); it != ad.cend_panilo(); ++it) {
       REQUIRE(action_digraph_helper::follow_path(ad, 0, it->first)
               == it->second);
+      REQUIRE(action_digraph_helper::follow_path_nc(ad, 0, it->first)
+              == it->second);
     }
   }
 
@@ -283,5 +293,98 @@ namespace libsemigroups {
     ActionDigraph<size_t> ad = path(20);
     REQUIRE_THROWS_AS(action_digraph_helper::validate_label(ad, 10),
                       LibsemigroupsException);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("last_node_on_path_nc",
+                          "014",
+                          "20 node path",
+                          "[quick]") {
+    ActionDigraph<size_t> ad   = path(20);
+    word_type             path = {};
+    for (size_t i = 0; i < 19; ++i) {
+      path.push_back(0);
+      REQUIRE(action_digraph_helper::last_node_on_path_nc(
+                  ad, 0, path.cbegin(), path.cend())
+                  .first
+              == i + 1);
+    }
+    path.push_back(0);
+    auto p = action_digraph_helper::last_node_on_path_nc(
+        ad, 0, path.cbegin(), path.cend());
+    REQUIRE(p.first == 19);
+    REQUIRE(p.second == path.cend() - 1);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("action_digraph_helper",
+                          "015",
+                          "detail::to_string",
+                          "[quick]") {
+    ActionDigraph<size_t> ad = path(6);
+    REQUIRE(detail::to_string(ad) == "{{1}, {2}, {3}, {4}, {5}, {-}}");
+    REQUIRE(action_digraph_helper::detail::to_string(ad)
+            == R"V0G0N(ActionDigraph<size_t> ad;
+ad.add_nodes(6);
+ad.add_to_out_degree(1);
+ad.add_edge(0, 1, 0);
+ad.add_edge(1, 2, 0);
+ad.add_edge(2, 3, 0);
+ad.add_edge(3, 4, 0);
+ad.add_edge(4, 5, 0);
+)V0G0N");
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("action_digraph_helper", "016", "make", "[quick]") {
+    auto ad = action_digraph_helper::make<uint8_t>(
+        5, {{0, 0}, {1, 1}, {2}, {3, 3}});
+    REQUIRE(detail::to_string(ad)
+            == "{{0, 0}, {1, 1}, {2, -}, {3, 3}, {-, -}}");
+    REQUIRE_THROWS_AS(action_digraph_helper::make<uint8_t>(
+                          5, {{0, 0}, {1, 1, 1}, {2}, {3, 3}}),
+                      LibsemigroupsException);
+    ad = action_digraph_helper::make<uint8_t>(5, 2);
+    REQUIRE(detail::to_string(ad)
+            == "{{-, -}, {-, -}, {-, -}, {-, -}, {-, -}}");
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("action_digraph_helper",
+                          "017",
+                          "is_connected",
+                          "[quick]") {
+    auto ad
+        = action_digraph_helper::make<size_t>(5, {{0, 0}, {1, 1}, {2}, {3, 3}});
+    REQUIRE(!action_digraph_helper::is_connected(ad));
+    ad = path(1'000);
+    REQUIRE(action_digraph_helper::is_connected(ad));
+    REQUIRE(ad.number_of_nodes() == 1'000);
+    action_digraph_helper::add_cycle(ad, 100);
+    REQUIRE(ad.number_of_nodes() == 1'100);
+
+    REQUIRE(!action_digraph_helper::is_connected(ad));
+    ad.add_to_out_degree(1);
+    ad.add_edge(0, 1'000, 1);
+    REQUIRE(action_digraph_helper::is_connected(ad));
+    ad = ActionDigraph<size_t>();
+    REQUIRE(action_digraph_helper::is_connected(ad));
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("action_digraph_helper",
+                          "018",
+                          "is_strictly_cyclic",
+                          "[quick]") {
+    auto ad
+        = action_digraph_helper::make<size_t>(5, {{0, 0}, {1, 1}, {2}, {3, 3}});
+    REQUIRE(!action_digraph_helper::is_strictly_cyclic(ad));
+    ad = path(1'000);
+    REQUIRE(action_digraph_helper::is_strictly_cyclic(ad));
+    REQUIRE(ad.number_of_nodes() == 1'000);
+    action_digraph_helper::add_cycle(ad, 100);
+    REQUIRE(ad.number_of_nodes() == 1'100);
+
+    REQUIRE(!action_digraph_helper::is_strictly_cyclic(ad));
+    ad.add_to_out_degree(1);
+    ad.add_edge(0, 1'000, 1);
+    REQUIRE(action_digraph_helper::is_strictly_cyclic(ad));
+    ad = ActionDigraph<size_t>();
+    REQUIRE(action_digraph_helper::is_strictly_cyclic(ad));
   }
 }  // namespace libsemigroups

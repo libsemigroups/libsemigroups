@@ -53,3 +53,9 @@ Full API
 
 .. doxygenfunction:: libsemigroups::action_digraph_helper::add_cycle(ActionDigraph<T>&, size_t)
    :project: libsemigroups
+
+.. doxygenfunction:: libsemigroups::action_digraph_helper::make(size_t, std::initializer_list<std::initializer_list<T>>)
+   :project: libsemigroups
+
+.. doxygenfunction:: libsemigroups::action_digraph_helper::is_connected(ActionDigraph<T> const&)
+   :project: libsemigroups
