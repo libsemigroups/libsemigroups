@@ -72,6 +72,13 @@ namespace libsemigroups {
                     word_type const& u,
                     word_type const& v) noexcept;
 
+    bool operator==(FelschDigraph const& that) const {
+      size_type const m = this->number_of_active_nodes();
+      size_type const n = that.number_of_active_nodes();
+      return (m == 0 && n == 0)
+             || (m == n && this->ActionDigraph<node_type>::operator==(that));
+    }
+
    private:
     bool process_definitions_dfs_v1(node_type c);
 
