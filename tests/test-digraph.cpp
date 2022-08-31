@@ -16,6 +16,9 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
+// TODO(v3):
+// * renumber the tests
+
 #define CATCH_CONFIG_ENABLE_PAIR_STRINGMAKER
 
 #include <cstddef>        // for size_t
@@ -853,6 +856,9 @@ namespace libsemigroups {
     REQUIRE(ad.number_of_paths(4, 1, 0, N) == 0);
     REQUIRE(ad.number_of_paths(0, 0, POSITIVE_INFINITY) == POSITIVE_INFINITY);
     REQUIRE(ad.number_of_paths(0, 0, 10) == 1023);
+
+    auto it = ad.cend_pstilo();
+    ++it;  // for code coverage
   }
 
   LIBSEMIGROUPS_TEST_CASE("ActionDigraph",
@@ -1450,6 +1456,20 @@ namespace libsemigroups {
     REQUIRE(action_digraph_helper::is_acyclic(ad));
     REQUIRE(ad.number_of_paths_algorithm(0) == algorithm::acyclic);
     REQUIRE(ad.number_of_paths(0) == std::pow(2, n) - 1);
+
+    // The following tests for code coverage
+    ad.add_edge(19, 0, 0);
+    REQUIRE(
+        ad.number_of_paths(
+            0, 0, 0, POSITIVE_INFINITY, ActionDigraph<size_t>::algorithm::dfs)
+        == POSITIVE_INFINITY);
+    // 0 not reachable from 10
+    REQUIRE(ad.number_of_paths(10,
+                               0,
+                               0,
+                               POSITIVE_INFINITY,
+                               ActionDigraph<size_t>::algorithm::matrix)
+            == 0);
   }
 
   LIBSEMIGROUPS_TEST_CASE("ActionDigraph",
@@ -1868,5 +1888,71 @@ namespace libsemigroups {
     REQUIRE(ad.number_of_paths(0, 1, 0, POSITIVE_INFINITY, algorithm::matrix)
             == POSITIVE_INFINITY);
     REQUIRE(ad.number_of_paths(0, 1, 0, 10, algorithm::matrix) == 5);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("ActionDigraph", "011", "restrict", "[quick]") {
+    ActionDigraph<size_t> ad;
+    ad.add_nodes(3);
+    ad.add_to_out_degree(2);
+    ad.add_edge(0, 1, 0);
+    ad.add_edge(1, 0, 0);
+    ad.add_edge(2, 0, 0);
+
+    ad.restrict(2);
+    REQUIRE(ad
+            == action_digraph_helper::make<size_t>(2, {{1, UNDEFINED}, {0}}));
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("ActionDigraph", "012", "remove_edge_nc", "[quick]") {
+    ActionDigraph<size_t> ad;
+    ad.add_nodes(3);
+    ad.add_to_out_degree(2);
+    ad.add_edge(0, 1, 0);
+    ad.add_edge(1, 0, 0);
+    ad.add_edge(2, 0, 0);
+
+    ad.remove_edge_nc(0, 0);  // remove edge from 0 labelled 0
+    REQUIRE(ad
+            == action_digraph_helper::make<size_t>(
+                3, {{UNDEFINED, UNDEFINED}, {0}, {0}}));
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("ActionDigraph", "043", "swap_edge_nc", "[quick]") {
+    ActionDigraph<size_t> ad;
+    ad.add_nodes(3);
+    ad.add_to_out_degree(2);
+    ad.add_edge(0, 1, 0);
+    ad.add_edge(1, 0, 0);
+    ad.add_edge(2, 2, 0);
+
+    // swap edge from 0 labelled 0 with edge from 1 labelled 0
+    ad.swap_edges_nc(0, 1, 0);
+    REQUIRE(
+        ad
+        == action_digraph_helper::make<size_t>(3, {{0, UNDEFINED}, {1}, {2}}));
+  }
+
+#ifdef LIBSEMIGROUPS_EIGEN_ENABLED
+  LIBSEMIGROUPS_TEST_CASE("ActionDigraph",
+                          "044",
+                          "detail::pow for non-square Eigen matrix",
+                          "[quick]") {
+    Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> x;
+    x.resize(3, 2);
+    REQUIRE_THROWS_AS(detail::pow(x, 2), LibsemigroupsException);
+  }
+#endif
+
+  LIBSEMIGROUPS_TEST_CASE("ActionDigraph", "045", "operator<<", "[quick]") {
+    ActionDigraph<size_t> ad;
+    ad.add_nodes(3);
+    ad.add_to_out_degree(2);
+    ad.add_edge(0, 1, 0);
+    ad.add_edge(1, 0, 0);
+    ad.add_edge(2, 2, 0);
+
+    std::ostringstream oss;
+    oss << ad;
+    REQUIRE(oss.str() == "{{1, -}, {0, -}, {2, -}}");
   }
 }  // namespace libsemigroups
