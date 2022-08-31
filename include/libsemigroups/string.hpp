@@ -23,11 +23,12 @@
 
 #include <algorithm>  // for equal
 #include <array>      // for array
+
 #include <cstddef>    // for size_t
-#include <exception>  // for runtime_error
+#include <iterator>   // for reverse_iterator
 #include <memory>     // for unique_ptr
-#include <numeric>    // for accumulate
 #include <sstream>    // for ostream, ostr...
+#include <stdexcept>  // for runtime_error
 #include <string>     // for string
 #include <utility>    // for make_pair, pair
 #include <vector>     // for vector
@@ -255,6 +256,8 @@ namespace libsemigroups {
     // Returns the string s to the power N, not optimized, complexity is O(N *
     // |s|)
     std::string power_string(std::string const& s, size_t N);
+
+    std::string group_digits(size_t num);
 
   }  // namespace detail
 }  // namespace libsemigroups
