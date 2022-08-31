@@ -423,9 +423,22 @@ namespace libsemigroups {
     //! - 1\f$ to nodes larger than \f$n - 1\f$.
     // TODO(later) this is the nc version do a non-nc version also
     // Means restrict the number of nodes to the first 0, ... ,n - 1.
+    // TODO(v3) rename to shrink_nodes_to
     void inline restrict(size_t n) {
       _nr_nodes = n;
       _dynamic_array_2.shrink_rows_to(n);
+    }
+
+    // Only valid if no edges incident to nodes in [first, last) point outside
+    // [first, last)
+    void inline induced_subdigraph(node_type first, node_type last) {
+      _nr_nodes = last - first;
+      _dynamic_array_2.shrink_rows_to(first, last);
+      if (first != 0) {
+        std::for_each(_dynamic_array_2.begin(),
+                      _dynamic_array_2.end(),
+                      [&first](node_type& x) { x -= first; });
+      }
     }
 
     //! Adds to the out-degree.
