@@ -543,6 +543,49 @@ namespace libsemigroups {
       REQUIRE(ad.number_of_paths(0, 0, 10) == 13044);
     }
 
+    LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
+                            "013",
+                            "redundant_rule (std::string)",
+                            "[quick][knuth-bendix][fpsemigroup][fpsemi]") {
+      auto                      rg = ReportGuard(REPORT);
+      Presentation<std::string> p;
+      p.alphabet("abc");
+      presentation::add_rule_and_check(p, "a", "abb");
+      presentation::add_rule_and_check(p, "b", "baa");
+      presentation::add_rule_and_check(p, "c", "abbabababaaababababab");
+
+      auto it = presentation::redundant_rule(p, std::chrono::milliseconds(100));
+      REQUIRE(it == p.rules.cend());
+
+      presentation::add_rule_and_check(p, "b", "baa");
+      it = presentation::redundant_rule(p, std::chrono::milliseconds(100));
+      REQUIRE(it != p.rules.cend());
+      REQUIRE(*it == "b");
+      REQUIRE(*(it + 1) == "baa");
+    }
+
+    LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
+                            "014",
+                            "redundant_rule (word_type)",
+                            "[quick][knuth-bendix][fpsemigroup][fpsemi]") {
+      auto                    rg = ReportGuard(REPORT);
+      Presentation<word_type> p;
+      p.alphabet(3);
+      presentation::add_rule_and_check(p, {0}, {0, 1, 1});
+      presentation::add_rule_and_check(p, {1}, {1, 0, 0});
+      presentation::add_rule_and_check(p, {2}, {0, 1, 1, 0, 1, 0, 1, 0, 1, 0, 0,
+                                                0, 1, 0, 1, 0, 1, 0, 1, 0, 1});
+
+      auto it = presentation::redundant_rule(p, std::chrono::milliseconds(10));
+      REQUIRE(it == p.rules.cend());
+
+      presentation::add_rule_and_check(p, {1}, {1, 0, 0});
+      it = presentation::redundant_rule(p, std::chrono::milliseconds(10));
+      REQUIRE(it != p.rules.cend());
+      REQUIRE(*it == word_type({1}));
+      REQUIRE(*(it + 1) == word_type({1, 0, 0}));
+    }
+
     ////////////////////////////////////////////////////////////////////////
     // Commented out test cases
     ////////////////////////////////////////////////////////////////////////

@@ -34,6 +34,7 @@
 #include "digraph.hpp"       // for ActionDigraph
 #include "fpsemi-intf.hpp"   // for FpSemigroupInterface
 #include "froidure-pin.hpp"  // for FroidurePin
+#include "make-present.hpp"  // for Presentation
 #include "present.hpp"       // for Presentation
 #include "types.hpp"         // for word_type
 #include "word.hpp"          // for word_to_string
@@ -836,56 +837,6 @@ namespace libsemigroups {
   }  // namespace congruence
 
   namespace presentation {
-    // TODO(later) Write a RedundantRules object with iterator
-    //! Return an iterator pointing at the left hand side of a redundant rule.
-    //!
-    //! This function is defined in ``knuth-bendix.hpp``.
-    //!
-    //! Starting with the last rule in the presentation, this function attempts
-    //! to run the Knuth-Bendix algorithm on the rules of the presentation
-    //! except for the given omitted rule. For every such omitted rule,
-    //! Knuth-Bendix is run for the length of time indicated by the second
-    //! parameter \p t, and then it is checked if the omitted rule can be shown
-    //! to be redundant (rewriting both sides of the omitted rule using the
-    //! other rules using the output of the, not necessarily finished,
-    //! Knuth-Bendix algorithm).
-    //!
-    //! If the omitted rule can be shown to be redundant in this way, then an
-    //! iterator pointing to its left hand side is returned.
-    //!
-    //! If no rule can be shown to be redundant in this way, then an iterator
-    //! pointing to `p.cend()` is returned.
-    //!
-    //! \tparam T type of the 2nd parameter (time to try running Knuth-Bendix).
-    //! \param p the presentation
-    //! \param t time to run KnuthBendix for every omitted rule
-    //!
-    //! \warning The progress of the Knuth-Bendix algorithm may differ between
-    //! different calls to this function even if the parameters are identical.
-    //! As such this is non-deterministic, and may produce different results
-    //! with the same input.
-    template <typename T>
-    auto redundant_rule(Presentation<word_type>& p, T t) {
-      p.validate();
-      for (auto omit = p.rules.crbegin(); omit != p.rules.crend(); omit += 2) {
-        congruence::KnuthBendix kb;
-        kb.set_number_of_generators(p.alphabet().size());
-
-        for (auto it = p.rules.crbegin(); it != omit; it += 2) {
-          kb.add_pair(*it, *(it + 1));
-        }
-        for (auto it = omit + 2; it < p.rules.crend(); it += 2) {
-          kb.add_pair(*it, *(it + 1));
-        }
-        kb.run_for(t);
-        if (kb.knuth_bendix().rewrite(kb.knuth_bendix().word_to_string(*omit))
-            == kb.knuth_bendix().rewrite(
-                kb.knuth_bendix().word_to_string(*(omit + 1)))) {
-          return (omit + 1).base() - 1;
-        }
-      }
-      return p.rules.cend();
-    }
 
     //! Return an iterator pointing at the left hand side of a redundant rule.
     //!
@@ -933,6 +884,41 @@ namespace libsemigroups {
         }
       }
       return p.rules.cend();
+    }
+
+    //! Return an iterator pointing at the left hand side of a redundant rule.
+    //!
+    //! This function is defined in ``knuth-bendix.hpp``.
+    //!
+    //! Starting with the last rule in the presentation, this function attempts
+    //! to run the Knuth-Bendix algorithm on the rules of the presentation
+    //! except for the given omitted rule. For every such omitted rule,
+    //! Knuth-Bendix is run for the length of time indicated by the second
+    //! parameter \p t, and then it is checked if the omitted rule can be shown
+    //! to be redundant (rewriting both sides of the omitted rule using the
+    //! other rules using the output of the, not necessarily finished,
+    //! Knuth-Bendix algorithm).
+    //!
+    //! If the omitted rule can be shown to be redundant in this way, then an
+    //! iterator pointing to its left hand side is returned.
+    //!
+    //! If no rule can be shown to be redundant in this way, then an iterator
+    //! pointing to `p.cend()` is returned.
+    //!
+    //! \tparam W type of words in the Presentation
+    //! \tparam T type of the 2nd parameter (time to try running Knuth-Bendix).
+    //! \param p the presentation
+    //! \param t time to run KnuthBendix for every omitted rule
+    //!
+    //! \warning The progress of the Knuth-Bendix algorithm may differ between
+    //! different calls to this function even if the parameters are identical.
+    //! As such this is non-deterministic, and may produce different results
+    //! with the same input.
+    template <typename W, typename T>
+    auto redundant_rule(Presentation<W>& p, T t) {
+      auto pp = make<Presentation<std::string>>(p);
+      return p.rules.cbegin()
+             + std::distance(pp.rules.cbegin(), redundant_rule(pp, t));
     }
   }  // namespace presentation
 }  // namespace libsemigroups

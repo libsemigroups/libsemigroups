@@ -1646,5 +1646,4 @@ namespace libsemigroups {
               == std::vector<size_t>({11, 11, 11}));
     }
   }  // namespace detail
-
 }  // namespace libsemigroups

@@ -817,6 +817,24 @@ namespace libsemigroups {
         return _array[pos];
       }
 
+      template <class InputIt>
+      iterator insert(const_iterator pos, InputIt first, InputIt last) {
+        size_type const M = std::distance(first, last);
+        LIBSEMIGROUPS_ASSERT(_size + M <= N);
+        LIBSEMIGROUPS_ASSERT(cend() - pos <= _array.cend() - cend());
+        // Is there a better way of initialising it?
+        iterator pos_copy = begin() + std::distance(cbegin(), pos);
+        for (iterator it = end(); it-- > pos_copy;) {
+          *(it + M) = std::move(*it);
+        }
+        iterator it = pos_copy;
+        for (auto copy = first; copy != last; ++it, ++copy) {
+          *it = *copy;
+        }
+        _size += M;
+        return it - M;
+      }
+
      private:
       std::array<T, N> _array;
       size_t           _size;
