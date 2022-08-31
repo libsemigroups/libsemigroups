@@ -1,4 +1,4 @@
-.. Copyright (c) 2019-2021, J. D. Mitchell
+.. Copyright (c) 2019-2022, J. D. Mitchell
 
    Distributed under the terms of the GPL license version 3.
 
@@ -32,6 +32,7 @@ The classes for semigroups and monoids in ``libsemigroups`` are:
 
    _generated/libsemigroups__froidurepinbase
    _generated/libsemigroups__froidurepin
+   api/make-froidure-pin
    _generated/libsemigroups__froidurepintraits
    konieczny
    _generated/libsemigroups__schreiersims
