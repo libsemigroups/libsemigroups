@@ -46,7 +46,7 @@ libsemigroups::SchreierSims:
   - empty()
   - finished() const
   - number_of_generators() const noexcept
-  - number_of_strong_generators(index_type) const noexcept
+  - number_of_strong_generators(index_type) const
   - strong_generator(index_type,index_type) const
   - size()
   - identity() const
