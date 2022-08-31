@@ -18,7 +18,7 @@ fi
 
 ./$EXEC $TAG -l | perl -ne 'print if s/^.*(\d\d\d):.*$/\1/' > tmp.txt
 
-python - <<END
+python3 - <<END
 import os, sys
 f = open('tmp.txt', 'r')
 l = sorted([int(x.strip()) for x in f.readlines()])
