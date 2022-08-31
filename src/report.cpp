@@ -105,7 +105,18 @@ namespace libsemigroups {
     void Reporter::flush() {
       if (_report) {
         std::lock_guard<std::mutex> lg(_mtx);
-        size_t tid = THREAD_ID_MANAGER.tid(std::this_thread::get_id());
+        size_t      tid  = THREAD_ID_MANAGER.tid(std::this_thread::get_id());
+        auto const& prfx = _options[tid].prefix;
+        // TODO(Sims1) handle case when ":" is -1
+        auto pos = prfx.find(":");
+        if (pos != std::string::npos && pos + 2 <= prfx.size() - 1) {
+          std::string class_name(prfx.cbegin() + prfx.find(":") + 2,
+                                 prfx.cend() - 2);
+          if (_suppressions.find(class_name) != _suppressions.cend()) {
+            return;
+          }
+        }
+
         size_t pad = 0;
         _msg[tid]  = _options[tid].prefix + _msg[tid];
         if (_options[tid].flush_right
@@ -140,6 +151,14 @@ namespace libsemigroups {
   namespace report {
     bool should_report() noexcept {
       return REPORTER.report();
+    }
+
+    void suppress(std::string const& class_name) {
+      REPORTER.suppress(class_name);
+    }
+
+    void clear_suppressions() {
+      REPORTER.clear_suppressions();
     }
 
   }  // namespace report
