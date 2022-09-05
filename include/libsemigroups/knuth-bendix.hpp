@@ -241,7 +241,7 @@ struct KnuthBendixState {
     std::vector<bool> active;
 
     /// The number of active rules.
-    int n_active {0};
+    size_t n_active {0};
 
     /// The rule lookup struct.
     LookUp lookup;
@@ -352,6 +352,7 @@ template<class LookUp, size_t ALPHABET_SIZE>
 class KnuthBendix final : public CongruenceInterface {
 private:
     bool finished {false};
+    const size_t MAX_REMOVED {1'000};
 
     /// Internal Knuth-Bendix procedure state.
     KnuthBendixState<LookUp, ALPHABET_SIZE> state;
@@ -381,6 +382,37 @@ private:
 
     /*     return external; */
     /* } */
+
+    void rebuild_lookup() {
+        for (size_t i = 0; i < state.rules.size(); i++) {
+            // All rules must be active
+            LIBSEMIGROUPS_ASSERT(state.active(i));
+
+            Rule const& rule = state.rules[i];
+            state.lookup.remove(rule);
+            state.lookup.insert(rule, i);
+        }
+    }
+
+    size_t prune(size_t i) {
+        i++;
+
+        size_t idx = 0;
+        while (state.rules.size() != state.n_active) {
+            if (state.active[idx]) {
+                idx++;
+                continue;
+            }
+
+            state.rules.erase(state.rules.begin() + idx);
+            state.active.erase(state.active.begin() + idx);
+            if (idx < i) i--;
+        }
+
+        rebuild_lookup();
+
+        return i;
+    }
 
     void init() {
         for (auto it = cbegin_generating_pairs(); it < cend_generating_pairs(); it++) {
@@ -445,6 +477,12 @@ public:
                 if (j < i && state.is_active(j) && state.is_active(i)) {
                     state.overlap(j, i);
                 }
+            }
+
+            // TODO: benchmark to determine sensible value of MAX_REMOVED and optimise
+            if (state.rules.size() - state.n_active > MAX_REMOVED) {
+                i = prune(i);
+                continue;
             }
         }
 
