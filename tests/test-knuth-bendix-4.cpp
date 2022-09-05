@@ -1,3 +1,4 @@
+/*
 // libsemigroups - C++ library for semigroups and monoids
 // Copyright (C) 2020 James D. Mitchell
 //
@@ -677,3 +678,4 @@ namespace libsemigroups {
     }
   }  // namespace fpsemigroup
 }  // namespace libsemigroups
+*/
