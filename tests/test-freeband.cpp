@@ -134,6 +134,9 @@ namespace libsemigroups {
   */
 
   LIBSEMIGROUPS_TEST_CASE("freeband_equal_to", "001", "", "[freeband][quick]") {
+    REQUIRE(freeband_equal_to({}, {}));
+    REQUIRE(!freeband_equal_to({0, 0}, {}));
+    REQUIRE(!freeband_equal_to({}, {0}));
     REQUIRE(freeband_equal_to({0, 0}, {0}));
     REQUIRE(!freeband_equal_to({0, 1}, {0}));
     REQUIRE(
