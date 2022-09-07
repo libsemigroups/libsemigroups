@@ -1645,6 +1645,54 @@ namespace libsemigroups {
       REQUIRE(std::vector<size_t>(rry.begin(2), rry.end(2))
               == std::vector<size_t>({11, 11, 11}));
     }
+
+    LIBSEMIGROUPS_TEST_CASE("StaticTriVector2",
+                            "045",
+                            "all",
+                            "[containers][quick]") {
+      StaticTriVector2<size_t, 3> stv;
+      REQUIRE(stv.size(0) == 0);
+      REQUIRE(stv.size(1) == 0);
+      REQUIRE(stv.size(2) == 0);
+      stv.push_back(0, 0);
+      stv.push_back(0, 1);
+      stv.push_back(0, 2);
+      stv.push_back(1, 3);
+      stv.push_back(1, 4);
+      stv.push_back(2, 5);
+      REQUIRE(stv.size(0) == 3);
+      REQUIRE(stv.size(1) == 2);
+      REQUIRE(stv.size(2) == 1);
+      stv.clear();
+      REQUIRE(stv.size(0) == 0);
+      REQUIRE(stv.size(1) == 0);
+      REQUIRE(stv.size(2) == 0);
+      stv.push_back(0, 0);
+      stv.push_back(0, 1);
+      stv.push_back(0, 2);
+      stv.push_back(1, 3);
+      stv.push_back(1, 4);
+      stv.push_back(2, 5);
+      REQUIRE(stv.back(0) == 2);
+      REQUIRE(stv.back(1) == 4);
+      REQUIRE(stv.back(2) == 5);
+      REQUIRE(stv.at(2, 0) == 5);
+      REQUIRE(stv.at(1, 0) == 3);
+      REQUIRE(stv.at(0, 0) == 0);
+      REQUIRE(std::vector<size_t>(stv.cbegin(0), stv.cend(0))
+              == std::vector<size_t>({0, 1, 2}));
+      REQUIRE(std::vector<size_t>(stv.cbegin(1), stv.cend(1))
+              == std::vector<size_t>({3, 4}));
+      REQUIRE(std::vector<size_t>(stv.cbegin(2), stv.cend(2))
+              == std::vector<size_t>({5}));
+      REQUIRE(std::vector<size_t>(stv.begin(0), stv.end(0))
+              == std::vector<size_t>({0, 1, 2}));
+      REQUIRE(std::vector<size_t>(stv.begin(1), stv.end(1))
+              == std::vector<size_t>({3, 4}));
+      REQUIRE(std::vector<size_t>(stv.begin(2), stv.end(2))
+              == std::vector<size_t>({5}));
+    }
+
   }  // namespace detail
 
 }  // namespace libsemigroups

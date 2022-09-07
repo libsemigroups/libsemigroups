@@ -36,8 +36,88 @@
 
 namespace libsemigroups {
   namespace detail {
+    template <typename T, size_t N>
+    class StaticTriVector2 {
+      // So that StaticTriVector2<T, N> can access private data members
+      // of StaticTriVector2<S, M> and vice versa.
+      template <typename S, size_t M>
+      friend class StaticTriVector2;
 
-    // Template class for 2-dimnensional dynamic arrays.
+     public:
+      // Aliases for iterators
+      using const_iterator =
+          typename std::array<T, N*(N + 1) / 2>::const_iterator;
+
+      StaticTriVector2(StaticTriVector2 const&) = default;
+      StaticTriVector2(StaticTriVector2&&)      = default;
+      StaticTriVector2& operator=(StaticTriVector2 const&) = default;
+      StaticTriVector2& operator=(StaticTriVector2&&) = default;
+      ~StaticTriVector2()                            = default;
+
+      StaticTriVector2() : _data(), _sizes() {
+        clear();
+      }
+
+      // Not noexcept since std::array::fill is not.
+      void clear() {
+        _sizes.fill(0);
+      }
+
+      // Not noexcept because std::array::operator[] isn't
+      void push_back(size_t depth, T x) {
+        LIBSEMIGROUPS_ASSERT(depth < N);
+        LIBSEMIGROUPS_ASSERT(_sizes[depth] < N - depth);
+        _data[depth * (2 * N - depth + 1) / 2 + _sizes[depth]] = x;
+        _sizes[depth]++;
+      }
+
+      // Not noexcept because std::array::operator[] isn't
+      inline T back(size_t depth) const {
+        LIBSEMIGROUPS_ASSERT(depth < N);
+        return _data[depth * (2 * N - depth + 1) / 2 + _sizes[depth] - 1];
+      }
+
+      // Not noexcept because std::array::operator[] isn't
+      inline T const& at(size_t depth, size_t index) const {
+        LIBSEMIGROUPS_ASSERT(depth < N);
+        LIBSEMIGROUPS_ASSERT(index < _sizes[depth]);
+        return _data[depth * (2 * N - depth + 1) / 2 + index];
+      }
+
+      // Not noexcept because std::array::operator[] isn't
+      inline size_t size(size_t depth) const {
+        LIBSEMIGROUPS_ASSERT(depth < N);
+        return _sizes[depth];
+      }
+
+      inline const_iterator cbegin(size_t depth) const noexcept {
+        LIBSEMIGROUPS_ASSERT(depth < N);
+        return _data.cbegin() + depth * (2 * N - depth + 1) / 2;
+      }
+
+      // Not noexcept because std::array::operator[] isn't
+      inline const_iterator cend(size_t depth) const {
+        LIBSEMIGROUPS_ASSERT(depth < N);
+        return _data.cbegin() + depth * (2 * N - depth + 1) / 2 + _sizes[depth];
+      }
+
+      inline const_iterator begin(size_t depth) const noexcept {
+        LIBSEMIGROUPS_ASSERT(depth < N);
+        return _data.begin() + depth * (2 * N - depth + 1) / 2;
+      }
+
+      // Not noexcept because std::array::operator[] isn't
+      inline const_iterator end(size_t depth) const {
+        LIBSEMIGROUPS_ASSERT(depth < N);
+        return _data.begin() + depth * (2 * N - depth + 1) / 2 + _sizes[depth];
+      }
+
+     private:
+      std::array<T, N*(N + 1) / 2> _data;
+      std::array<size_t, N>        _sizes;
+    };
+
+    // Template class for 2-dimensional dynamic arrays.
     template <typename T, typename A = std::allocator<T>>
     class DynamicArray2 final {
       // So that DynamicArray2<T> can access private data members of
@@ -145,7 +225,7 @@ namespace libsemigroups {
         return _vec.max_size();
       }
 
-      // Not noexcept, since std::filll can throw
+      // Not noexcept, since std::fill can throw
       void fill(T const& val) {
         std::fill(_vec.begin(), _vec.end(), val);
       }
