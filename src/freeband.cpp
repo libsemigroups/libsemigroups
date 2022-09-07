@@ -238,6 +238,11 @@ namespace libsemigroups {
     if (x == y) {
       return true;
     }
+    if (x.empty() || y.empty()) {
+      // FIXME: Code segfaults without this check, its possible there is some
+      // unsafe memory access further in the code.
+      return false;
+    }
     size_t N = content_size(x);
     if (N != content_size(y)) {
       return false;
