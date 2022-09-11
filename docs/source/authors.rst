@@ -9,41 +9,58 @@
 Authors
 =======
 
-`J. D. Mitchell`_
+`James Mitchell`_ (jdm3@st-andrews.ac.uk)
 
-.. _J. D. Mitchell: https://jdbm.me
+.. _James Mitchell: https://jdbm.me
 
 Contributors
 ------------
 
-- `R. Cirpons`_ contributed to ``IsObviouslyInfinite``, to integrating
-  ``eigen``, and contributed an implementation of the Radoszewski-Rytter
-  algorithm for testing equivalence of words in free bands.
-- `F. Hivert`_ contributed many helpful ideas to ``libsemigroups``, an
-  allocator implementation (to be included in a future version), and
-  ``HPCombi``.
-- `J. James`_ contributed some bugfixes.
-- `J. Jonušas`_ contributed to the implementation of the Froidure-Pin algorithm.
-- `D. V. Pasechnik`_ contributed to the build system.
-- `F. Smith`_ contributed the implementation of the Konieczny and
-  Lallement-McFadden algorithm, to the Todd-Coxeter implementation, and to
-  BMat8s.
-- `N. Thiery`_ contributed to the build system, packaging ``libsemigroups`` via
-  conda, the python bindings and many helpful conversations and suggestions. 
-- `M. Torpey`_ contributed to the congruences code in the v0.0.1 to v0.6.7.
-- `M. Tsalakou`_ contributed to the Knuth-Bendix implementation, related
-  algorithms for the class :cpp:any:`ActionDigraph`, and to the implementation
-  of the :cpp:any:`Kambites` class.
+- `Reinis Cirpons`_ (rc234@st-andrews.ac.uk) contributed to
+  ``IsObviouslyInfinite``, to integrating ``eigen``, and contributed an
+  implementation of the Radoszewski-Rytter algorithm for testing equivalence of
+  words in free bands.
+- Joseph Edwards (jde1@st-andrews.ac.uk) contributed the container
+  ``StaticTriVector2``.
+- Luke Elliot (le27@st-andrews.ac.uk) contributed to the Schreier-Sims
+  implementation.
+- Ilya Finkelshteyn (ilyaf@appveyor.com) contributed to the continuous
+  integration in AppVeyor.
+- Isuru Fernando (isuruf@gmail.com) contributed to the build system.
+- `Florent Hivert`_ (Florent.Hivert@lri.fr) contributed many helpful ideas to
+  ``libsemigroups``, an allocator implementation (to be included in a future
+  version), and ``HPCombi``.
+- Max Horn (max@quendi.de) contributed some fixes.
+- `Jerry James`_ (loganjerry@gmail.com) contributed some bugfixes.
+- `Julius Jonušas`_ contributed to the implementation of the Froidure-Pin
+  algorithm.
+- `Alex Levine`  contributed to the Schreier-Sims implementation.
+- `Dima Pasechnik`_ (dimpase@gmail.com) contributed to the build system.
+- Chris Russell contributed some tests for finitely presented semigroups.
+- `Finn Smith`_ (fls3@st-andrews.ac.uk) contributed the implementation of the
+  Konieczny and Lallement-McFadden algorithm, to the Todd-Coxeter
+  implementation, and to BMat8s.
+- `Nicolas Thiéry`_ (nthiery@users.sf.net) contributed to the build system,
+  packaging ``libsemigroups`` via conda, the python bindings and many helpful
+  conversations and suggestions.
+- `Maria Tsalakou`_ (mt200@st-andrews.ac.uk) contributed to the Knuth-Bendix
+  implementation, related algorithms for the class :cpp:any:`ActionDigraph`,
+  and to the implementation of the :cpp:any:`Kambites` class.
+- Wilf Wilson (wilf@wilf-wilson.net) contributed some fixes.
+- Murray Whyte (mw231@st-andrews.ac.uk) contributed to the documentation and
+  reported a number of bugs.
+- `Michael Young`_ (mct25@st-andrews.ac.uk) contributed to the congruences code
+  in the v0.0.1 to v0.6.7.
 
-.. _R. Cirpons: https://reinisc.id.lv
-.. _F. Hivert: https://www.lri.fr/~hivert/
-.. _J. James: http://www.jamezone.org/
-.. _J. Jonušas: http://julius.jonusas.work/
-.. _D. V. Pasechnik:  http://users.ox.ac.uk/~coml0531
-.. _F. Smith: https://flsmith.github.io
-.. _N. Thiery: http://nicolas.thiery.name/
-.. _M. Torpey: https://mtorpey.github.io/
-.. _M. Tsalakou: https://mariatsalakou.github.io/
+.. _Reinis Cirpons: https://reinisc.id.lv
+.. _Florent Hivert: https://www.lri.fr/~hivert/
+.. _Jerry James: http://www.jamezone.org/
+.. _Julius Jonušas: http://julius.jonusas.work/
+.. _Dima Pasechnik:  http://users.ox.ac.uk/~coml0531
+.. _Finn Smith: https://flsmith.github.io
+.. _Nicolas Thiéry: http://nicolas.thiery.name/
+.. _Maria Tsalakou: https://mariatsalakou.github.io/
+.. _Michael Young: https://mtorpey.github.io/
 
 Acknowledgements
 ----------------
@@ -53,11 +70,11 @@ European Research Infrastructures project (#676541) (primarily for the
 python bindings).
 
 We thank the `Carnegie Trust for the Universities of Scotland`_ for funding
-the PhD scholarship of `J. Jonušas`_ when he worked on this project.
+the PhD scholarship of `Julius Jonušas`_ when he worked on this project.
 
 We thank the `Engineering and Physical Sciences Research Council (EPSRC)`_ for
-funding the PhD scholarships of `M. Torpey`_ and `F. Smith`_ when they worked
-on this project (EP/M506631/1, EP/N509759/1).
+funding the PhD scholarships of `Michael Young`_ and `Finn Smith`_ when they
+worked on this project (EP/M506631/1, EP/N509759/1).
 
 .. _OpenDreamKit: https://opendreamkit.org/
 .. _Carnegie Trust for the Universities of Scotland: https://www.carnegie-trust.org/
