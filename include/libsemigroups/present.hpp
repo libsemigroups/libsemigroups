@@ -698,7 +698,7 @@ namespace libsemigroups {
     //! \no_libsemigroups_except
     // TODO(later) complexity
     template <typename W>
-    auto longest_common_subword(Presentation<W>& p);
+    W longest_common_subword(Presentation<W>& p);
 
     //! Replace non-overlapping instances of a subword via iterators.
     //!
