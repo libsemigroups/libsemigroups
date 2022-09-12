@@ -404,7 +404,7 @@ namespace libsemigroups {
     }
 
     template <typename W>
-    auto longest_common_subword(Presentation<W>& p) {
+    W longest_common_subword(Presentation<W>& p) {
       detail::SuffixTree st;
       detail::suffix_tree_helper::add_words(
           st, p.rules.cbegin(), p.rules.cend());

@@ -1692,6 +1692,5 @@ namespace libsemigroups {
       REQUIRE(std::vector<size_t>(stv.begin(2), stv.end(2))
               == std::vector<size_t>({5}));
     }
-
   }  // namespace detail
 }  // namespace libsemigroups

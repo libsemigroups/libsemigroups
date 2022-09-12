@@ -52,7 +52,7 @@ namespace libsemigroups {
       StaticTriVector2(StaticTriVector2&&)      = default;
       StaticTriVector2& operator=(StaticTriVector2 const&) = default;
       StaticTriVector2& operator=(StaticTriVector2&&) = default;
-      ~StaticTriVector2()                            = default;
+      ~StaticTriVector2()                             = default;
 
       StaticTriVector2() : _data(), _sizes() {
         clear();
