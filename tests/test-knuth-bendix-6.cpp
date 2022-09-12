@@ -40,6 +40,7 @@
 #include "catch.hpp"      // for REQUIRE, REQUIRE_NOTHROW, REQUIRE_THROWS_AS
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
+#include "fpsemi-examples.hpp"             // for Plactic
 #include "libsemigroups/knuth-bendix.hpp"  // for KnuthBendix, operator<<
 #include "libsemigroups/report.hpp"        // for ReportGuard
 #include "libsemigroups/types.hpp"         // for word_type
@@ -407,6 +408,20 @@ namespace libsemigroups {
       kb.add_pair({1, 2}, {1});
       kb.add_pair({2, 1}, {1});
       kb.add_pair({0}, {1});
+      REQUIRE(kb.is_quotient_obviously_infinite());
+      REQUIRE(kb.number_of_classes() == POSITIVE_INFINITY);
+    }
+
+    LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
+                            "020",
+                            "(cong) Plactic monoid",
+                            "[quick][congruence][knuth-bendix][cong]") {
+      auto        rg = ReportGuard(REPORT);
+      KnuthBendix kb;
+      kb.set_number_of_generators(10);
+      for (auto const& rel : Plactic(10)) {
+        kb.add_pair(rel.first, rel.second);
+      }
       REQUIRE(kb.is_quotient_obviously_infinite());
       REQUIRE(kb.number_of_classes() == POSITIVE_INFINITY);
     }

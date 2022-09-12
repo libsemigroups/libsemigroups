@@ -895,6 +895,7 @@ test_knuth_bendix_SOURCES += tests/test-knuth-bendix-3.cpp
 test_knuth_bendix_SOURCES += tests/test-knuth-bendix-4.cpp
 test_knuth_bendix_SOURCES += tests/test-knuth-bendix-5.cpp
 test_knuth_bendix_SOURCES += tests/test-knuth-bendix-6.cpp
+test_knuth_bendix_SOURCES += tests/fpsemi-examples.cpp
 test_knuth_bendix_SOURCES += tests/test-main.cpp
 
 test_konieczny_SOURCES =  tests/test-konieczny-bmat8-1.cpp
