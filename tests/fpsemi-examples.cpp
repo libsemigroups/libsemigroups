@@ -25,6 +25,7 @@
 #include <cstdint>    // for int64_t
 #include <cstdlib>    // for abs
 #include <numeric>    // for iota
+#include <iostream>
 
 #include "libsemigroups/exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
 #include "libsemigroups/types.hpp"      // for word_type, relation_type
@@ -933,6 +934,7 @@ namespace libsemigroups {
     return result;
   }
 
+
   // From Proposition 4.2 in
   // https://link.springer.com/content/pdf/10.1007/s002339910016.pdf
   std::vector<relation_type> RectangularBand(size_t m, size_t n) {
@@ -1106,6 +1108,27 @@ namespace libsemigroups {
       return result;
     }
     return {};
+  }
+
+
+  // Chinese monoid
+  // See: The Chinese Monoid - Cassaigne, Espie, Krob, Novelli and Hivert, 2001
+  std::vector<relation_type> ChineseMonoid(size_t n) {
+    std::vector<relation_type> result;
+
+    for (size_t a = 0; a < n; a++) {
+      for (size_t b = a; b < n; b++) {
+        for (size_t c = b; c < n; c++) {
+          if (a != b) {
+            result.emplace_back(word_type({c, b, a}), word_type({c, a, b}));
+          }
+          if (b != c) {
+            result.emplace_back(word_type({c, b, a}), word_type({b, c, a}));
+          }
+        }
+      }
+    }
+    return result;
   }
 
 }  // namespace libsemigroups
