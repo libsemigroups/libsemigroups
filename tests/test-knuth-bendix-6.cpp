@@ -35,7 +35,7 @@
 //
 // 6: contains tests for congruence::KnuthBendix.
 
-// #define CATCH_CONFIG_ENABLE_PAIR_STRINGMAKER
+#define CATCH_CONFIG_ENABLE_PAIR_STRINGMAKER
 
 #include "catch.hpp"      // for REQUIRE, REQUIRE_NOTHROW, REQUIRE_THROWS_AS
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
@@ -418,12 +418,24 @@ namespace libsemigroups {
                             "[quick][congruence][knuth-bendix][cong]") {
       auto        rg = ReportGuard(REPORT);
       KnuthBendix kb;
-      kb.set_number_of_generators(4);
-      for (auto const& rel : ChineseMonoid(4)) {
+      kb.set_number_of_generators(3);
+      for (auto const& rel : ChineseMonoid(3)) {
         kb.add_pair(rel.first, rel.second);
       }
       REQUIRE(kb.is_quotient_obviously_infinite());
       REQUIRE(kb.number_of_classes() == POSITIVE_INFINITY);
+      REQUIRE(kb.number_of_generating_pairs() == 8);
+      REQUIRE(std::vector<relation_type>(kb.cbegin_generating_pairs(),
+                                         kb.cend_generating_pairs())
+              == std::vector<relation_type>({{{1, 0, 0}, {0, 1, 0}},
+                                             {{2, 0, 0}, {0, 2, 0}},
+                                             {{1, 1, 0}, {1, 0, 1}},
+                                             {{2, 1, 0}, {2, 0, 1}},
+                                             {{2, 1, 0}, {1, 2, 0}},
+                                             {{2, 2, 0}, {2, 0, 2}},
+                                             {{2, 1, 1}, {1, 2, 1}},
+                                             {{2, 2, 1}, {2, 1, 2}}}));
+      REQUIRE(kb.knuth_bendix().number_of_normal_forms(0, 10) == 1175);
     }
   }  // namespace congruence
 }  // namespace libsemigroups
