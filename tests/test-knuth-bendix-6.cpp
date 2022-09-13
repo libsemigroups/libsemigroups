@@ -40,7 +40,7 @@
 #include "catch.hpp"      // for REQUIRE, REQUIRE_NOTHROW, REQUIRE_THROWS_AS
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
-#include "fpsemi-examples.hpp"             // for Plactic
+#include "fpsemi-examples.hpp"             // for ChineseMonoid
 #include "libsemigroups/knuth-bendix.hpp"  // for KnuthBendix, operator<<
 #include "libsemigroups/report.hpp"        // for ReportGuard
 #include "libsemigroups/types.hpp"         // for word_type
@@ -414,12 +414,12 @@ namespace libsemigroups {
 
     LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
                             "020",
-                            "(cong) Plactic monoid",
+                            "(cong) Chinese monoid",
                             "[quick][congruence][knuth-bendix][cong]") {
       auto        rg = ReportGuard(REPORT);
       KnuthBendix kb;
-      kb.set_number_of_generators(10);
-      for (auto const& rel : Plactic(10)) {
+      kb.set_number_of_generators(4);
+      for (auto const& rel : ChineseMonoid(4)) {
         kb.add_pair(rel.first, rel.second);
       }
       REQUIRE(kb.is_quotient_obviously_infinite());
