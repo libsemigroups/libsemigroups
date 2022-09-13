@@ -24,7 +24,6 @@
 #include <algorithm>  // for max, for_each
 #include <cstdint>    // for int64_t
 #include <cstdlib>    // for abs
-#include <iostream>
 #include <numeric>  // for iota
 
 #include "libsemigroups/exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
