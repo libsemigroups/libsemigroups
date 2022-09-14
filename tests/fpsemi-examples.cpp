@@ -1085,12 +1085,9 @@ namespace libsemigroups {
         pi.push_back({i});
       }
       std::vector<word_type> epsilon;
-      for (size_t i = n - 1; i <= 2 * n - 2; ++i) {
-        epsilon.push_back({i});
-      }
-
-      for (size_t k = 0; k <= n - 2; ++k) {
-        result.emplace_back(epsilon[k + 1], pi[k] * epsilon[0] * pi[k]);
+      epsilon.push_back({n - 1});
+      for (size_t i = 0; i <= n - 2; ++i) {
+        epsilon.push_back(pi[i] * epsilon[0] * pi[i]);
       }
 
       result.emplace_back(epsilon[0] ^ 2, epsilon[0]);
