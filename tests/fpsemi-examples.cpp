@@ -24,7 +24,7 @@
 #include <algorithm>  // for max, for_each
 #include <cstdint>    // for int64_t
 #include <cstdlib>    // for abs
-#include <numeric>  // for iota
+#include <numeric>    // for iota
 
 #include "libsemigroups/exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
 #include "libsemigroups/types.hpp"      // for word_type, relation_type

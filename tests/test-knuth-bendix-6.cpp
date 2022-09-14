@@ -35,7 +35,7 @@
 //
 // 6: contains tests for congruence::KnuthBendix.
 
-#define CATCH_CONFIG_ENABLE_PAIR_STRINGMAKER
+// #define CATCH_CONFIG_ENABLE_PAIR_STRINGMAKER
 
 #include "catch.hpp"      // for REQUIRE, REQUIRE_NOTHROW, REQUIRE_THROWS_AS
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
