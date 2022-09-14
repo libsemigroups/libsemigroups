@@ -1101,8 +1101,8 @@ namespace libsemigroups {
         result.emplace_back(epsilon[k + 1] * pi[0], pi[0] * epsilon[k + 1]);
       }
 
-      result.emplace_back(pi[0] * epsilon[0] * epsilon[1],
-                          epsilon[0] * epsilon[1]);
+      result.emplace_back(epsilon[1] * epsilon[0] * pi[0],
+                          epsilon[1] * epsilon[0]);
       return result;
     }
     return {};
