@@ -40,6 +40,7 @@
 #include "catch.hpp"      // for REQUIRE, REQUIRE_NOTHROW, REQUIRE_THROWS_AS
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
+#include "fpsemi-examples.hpp"             // for ChineseMonoid
 #include "libsemigroups/knuth-bendix.hpp"  // for KnuthBendix, operator<<
 #include "libsemigroups/report.hpp"        // for ReportGuard
 #include "libsemigroups/types.hpp"         // for word_type
@@ -409,6 +410,32 @@ namespace libsemigroups {
       kb.add_pair({0}, {1});
       REQUIRE(kb.is_quotient_obviously_infinite());
       REQUIRE(kb.number_of_classes() == POSITIVE_INFINITY);
+    }
+
+    LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
+                            "020",
+                            "(cong) Chinese monoid",
+                            "[quick][congruence][knuth-bendix][cong]") {
+      auto        rg = ReportGuard(REPORT);
+      KnuthBendix kb;
+      kb.set_number_of_generators(3);
+      for (auto const& rel : ChineseMonoid(3)) {
+        kb.add_pair(rel.first, rel.second);
+      }
+      REQUIRE(kb.is_quotient_obviously_infinite());
+      REQUIRE(kb.number_of_classes() == POSITIVE_INFINITY);
+      REQUIRE(kb.number_of_generating_pairs() == 8);
+      REQUIRE(std::vector<relation_type>(kb.cbegin_generating_pairs(),
+                                         kb.cend_generating_pairs())
+              == std::vector<relation_type>({{{1, 0, 0}, {0, 1, 0}},
+                                             {{2, 0, 0}, {0, 2, 0}},
+                                             {{1, 1, 0}, {1, 0, 1}},
+                                             {{2, 1, 0}, {2, 0, 1}},
+                                             {{2, 1, 0}, {1, 2, 0}},
+                                             {{2, 2, 0}, {2, 0, 2}},
+                                             {{2, 1, 1}, {1, 2, 1}},
+                                             {{2, 2, 1}, {2, 1, 2}}}));
+      REQUIRE(kb.knuth_bendix().number_of_normal_forms(0, 10) == 1175);
     }
   }  // namespace congruence
 }  // namespace libsemigroups

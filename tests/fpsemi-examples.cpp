@@ -1108,4 +1108,24 @@ namespace libsemigroups {
     return {};
   }
 
+  // Chinese monoid
+  // See: The Chinese Monoid - Cassaigne, Espie, Krob, Novelli and Hivert, 2001
+  std::vector<relation_type> ChineseMonoid(size_t n) {
+    std::vector<relation_type> result;
+
+    for (size_t a = 0; a < n; a++) {
+      for (size_t b = a; b < n; b++) {
+        for (size_t c = b; c < n; c++) {
+          if (a != b) {
+            result.emplace_back(word_type({c, b, a}), word_type({c, a, b}));
+          }
+          if (b != c) {
+            result.emplace_back(word_type({c, b, a}), word_type({b, c, a}));
+          }
+        }
+      }
+    }
+    return result;
+  }
+
 }  // namespace libsemigroups
