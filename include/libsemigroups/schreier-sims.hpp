@@ -60,7 +60,7 @@
 #include "adapters.hpp"          // for action, degree, inverse
 #include "bruidhinn-traits.hpp"  // for detail::BruidhinnTraits
 #include "config.hpp"            // for LIBSEMIGROUPS_HPCOMBI_ENABLED
-#include "containers.hpp"        // for Array2, StaticVector2
+#include "containers.hpp"        // for Array2, StaticTriVector2
 #include "debug.hpp"             // for LIBSEMIGROUPS_ASSERT
 #include "exception.hpp"         // for LIBSEMIGROUPS_EXCEPTION
 #include "int-range.hpp"         // for IntegralRange
@@ -495,7 +495,7 @@ namespace libsemigroups {
     //!
     //! \exceptions
     //! \no_libsemigroups_except
-    // Not noexcept because StaticVector2::size isn't
+    // Not noexcept because StaticTriVector2::size isn't
     bool empty() {
       return _strong_gens.size(0) == 0;
     }
@@ -901,18 +901,18 @@ namespace libsemigroups {
       return _domain.cend();
     }
 
-    std::array<point_type, N>                       _base;
-    index_type                                      _base_size;
-    domain_type                                     _domain;
-    bool                                            _finished;
-    internal_element_type                           _one;
-    detail::StaticVector2<point_type, N>            _orbits;
-    detail::Array2<bool, N>                         _orbits_lookup;
-    detail::StaticVector2<internal_element_type, N> _strong_gens;
-    internal_element_type                           _tmp_element1;
-    internal_element_type                           _tmp_element2;
-    detail::Array2<internal_element_type, N>        _transversal;
-    detail::Array2<internal_element_type, N>        _inversal;
+    std::array<point_type, N>                          _base;
+    index_type                                         _base_size;
+    domain_type                                        _domain;
+    bool                                               _finished;
+    internal_element_type                              _one;
+    detail::StaticTriVector2<point_type, N>            _orbits;
+    detail::Array2<bool, N>                            _orbits_lookup;
+    detail::StaticTriVector2<internal_element_type, N> _strong_gens;
+    internal_element_type                              _tmp_element1;
+    internal_element_type                              _tmp_element2;
+    detail::Array2<internal_element_type, N>           _transversal;
+    detail::Array2<internal_element_type, N>           _inversal;
   };
 }  // namespace libsemigroups
 
