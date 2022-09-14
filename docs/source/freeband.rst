@@ -20,7 +20,7 @@ The functions in ``libsemigroups`` for free bands are described on this page.
 
 .. cpp:namespace-pop::
 
-.. doxygenfunction:: libsemigroups::freeband_equal_to(word_type&&, word_type&&)
+.. doxygenfunction:: libsemigroups::freeband_equal_to(word_type const &, word_type const &)
    :project: libsemigroups
 
 .. doxygenfunction:: libsemigroups::freeband_equal_to(T, T)
