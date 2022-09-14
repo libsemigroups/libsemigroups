@@ -234,7 +234,7 @@ namespace libsemigroups {
     }
   }  // namespace
 
-  bool freeband_equal_to(word_type&& x, word_type&& y) {
+  bool freeband_equal_to(word_type const& x, word_type const& y) {
     if (x == y) {
       return true;
     }

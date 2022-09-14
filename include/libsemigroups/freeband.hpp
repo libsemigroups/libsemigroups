@@ -34,6 +34,7 @@
 
 namespace libsemigroups {
 
+
   //! Check if two given words represent the same element in the free band.
   //!
   //! The free band is the free object in the variety of bands or idempotent
@@ -73,7 +74,7 @@ namespace libsemigroups {
   //!                    0, 2, 1, 3, 2, 1, 2, 3, 2, 1, 0, 2, 0, 1,
   //!                    0, 2, 0, 3, 2, 0, 1, 2, 2, 3, 0, 1}); // true
   //! \endcode
-  bool freeband_equal_to(word_type&& x, word_type&& y);
+  bool freeband_equal_to(word_type const& x, word_type const& y);
 
   //! Check if two given words represent the same element in the free band.
   //!
@@ -95,7 +96,8 @@ namespace libsemigroups {
   //! number of distinct letters appearing in \p x and \p y.
   template <typename T>
   bool freeband_equal_to(T x, T y) {
-    return freeband_equal_to(word_type(x), word_type(y));
+    word_type x1(x), y1(y);
+    return freeband_equal_to(x1, y1);
   }
 
   //! Check if two given words represent the same element in the free band.
