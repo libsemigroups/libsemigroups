@@ -17,8 +17,9 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include <random>  // for mt19937, random_device
-#include <string>  // for tests with strings
+#include <random>   // for mt19937, random_device
+#include <string>   // for tests with strings
+#include <utility>  // for std::move
 
 #include "catch.hpp"      // for REQUIRE etc
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
@@ -179,6 +180,8 @@ namespace libsemigroups {
     a = "adbcZ";
     b = "adadbcZ";
     REQUIRE(freeband_equal_to(a.begin(), a.end(), b.begin(), b.end()));
+    word_type w = {0, 1, 0}, x = {0, 1, 1, 0};
+    REQUIRE(freeband_equal_to(std::move(w), std::move(x)));
   }
 
 }  // namespace libsemigroups
