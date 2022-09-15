@@ -1178,6 +1178,7 @@ namespace libsemigroups {
       auto                   result  = SymmetricInverseMonoid(n, author::Sutov);
       word_type              e12     = {n};
       std::vector<word_type> epsilon = {{n - 1}, {0, n - 1, 0}, {1, n - 1, 1}};
+      result.emplace_back(e12, e12 ^ 2);
       result.emplace_back(e12 * epsilon[1], e12);
       result.emplace_back(epsilon[1] * e12, epsilon[1]);
 
@@ -1217,7 +1218,6 @@ namespace libsemigroups {
         result.emplace_back(epsilon[1] * pi[k], pi[k] * epsilon[1]);
         result.emplace_back(epsilon[k + 1] * pi[0], pi[0] * epsilon[k + 1]);
       }
-
       result.emplace_back(epsilon[1] * epsilon[0] * pi[0],
                           epsilon[1] * epsilon[0]);
       return result;
