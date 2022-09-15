@@ -2605,6 +2605,33 @@ namespace libsemigroups {
       }
       REQUIRE(tc.number_of_classes() == 1546);
     }
+    LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
+                            "114",
+                            "PartialTransformationMonoid",
+                            "[todd-coxeter][quick]") {
+      auto   rg = ReportGuard(false);
+      size_t n  = 4;
+      auto   s  = PartialTransformationMonoid(n, author::Aizenstat);
+      for (auto& rel : s) {
+        if (rel.first.empty()) {
+          rel.first = {n + 1};
+        }
+        if (rel.second.empty()) {
+          rel.second = {n + 1};
+        }
+      }
+      auto p = make<Presentation<word_type>>(s);
+      p.alphabet(n + 2);
+      presentation::add_identity_rules(p, n + 1);
+      p.validate();
+
+      ToddCoxeter tc(congruence_kind::twosided);
+      tc.set_number_of_generators(n + 2);
+      for (size_t i = 0; i < p.rules.size() - 1; i += 2) {
+        tc.add_pair(p.rules[i], p.rules[i + 1]);
+      }
+      REQUIRE(tc.number_of_classes() == 625);
+    }
 
   }  // namespace congruence
 
