@@ -1173,17 +1173,16 @@ namespace libsemigroups {
               {{3, 1, 1, 2, 1}, {3, 1, 0, 2}},
               {{1, 2, 1, 2, 0, 2}, {2, 1, 2, 0, 2}}};
     } else if (n >= 4 && val == author::Aizenstat) {
-      LIBSEMIGROUPS_EXCEPTION("not yet implemented");
-      // FIXME this is missing the relations from T_n
       // From Theorem 9.4.1, p169, (Ganyushkin + Mazorchuk)
       // https://link.springer.com/book/10.1007/978-1-84800-281-4
       auto                   result  = SymmetricInverseMonoid(n, author::Sutov);
-      word_type              e12     = {2 * n - 1};
-      std::vector<word_type> epsilon = {{n - 1}, {n}, {n + 1}};
-      result.emplace_back(epsilon[1] * e12, e12);
-      result.emplace_back(e12 * epsilon[1], epsilon[1]);
-      result.emplace_back(epsilon[0] * e12, e12 * epsilon[0] * epsilon[1]);
-      result.emplace_back(epsilon[2] * e12, e12 * epsilon[2]);
+      word_type              e12     = {n};
+      std::vector<word_type> epsilon = {{n - 1}, {0, n - 1, 0}, {1, n - 1, 1}};
+      result.emplace_back(e12 * epsilon[1], e12);
+      result.emplace_back(epsilon[1] * e12, epsilon[1]);
+
+      result.emplace_back(e12 * epsilon[0], epsilon[1] * epsilon[0] * e12);
+      result.emplace_back(e12 * epsilon[2], epsilon[2] * e12);
       return result;
     }
     LIBSEMIGROUPS_EXCEPTION("not yet implemented");
