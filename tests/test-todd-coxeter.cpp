@@ -2583,29 +2583,28 @@ namespace libsemigroups {
                             "113",
                             "SymmetricInverseMonoid",
                             "[todd-coxeter][quick]") {
-      auto        rg = ReportGuard(REPORT);
-      auto s = SymmetricInverseMonoid(5, author::Sutov);
-      for (auto & rel : s) {
+      auto rg = ReportGuard(REPORT);
+      auto s  = SymmetricInverseMonoid(5, author::Sutov);
+      for (auto& rel : s) {
         if (rel.first.empty()) {
           rel.first = {5};
         }
         if (rel.second.empty()) {
-           rel.second = {5};
+          rel.second = {5};
         }
       }
       auto p = make<Presentation<word_type>>(s);
       p.alphabet(6);
       presentation::add_identity_rules(p, 5);
       p.validate();
-      
+
       ToddCoxeter tc(congruence_kind::twosided);
       tc.set_number_of_generators(6);
       for (size_t i = 0; i < p.rules.size() - 1; i += 2) {
         tc.add_pair(p.rules[i], p.rules[i + 1]);
       }
-        REQUIRE(tc.number_of_classes() == 1546);
+      REQUIRE(tc.number_of_classes() == 1546);
     }
-
 
   }  // namespace congruence
 
