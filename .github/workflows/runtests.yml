@@ -83,7 +83,7 @@ jobs:
            run: |
                 ./test_all "[quick],[standard]"
    config-options:
-      timeout-minutes: 35
+      timeout-minutes: 45
       runs-on: ubuntu-latest
       env:
         PKG_CONFIG_PATH: "/usr/share/miniconda/lib/pkgconfig:/usr/share/miniconda/share/pkgconfig"
@@ -184,7 +184,7 @@ jobs:
                 sudo -H pip3 install --upgrade --ignore-installed pyyaml
          - name: "Install latest doxygen . . ."
            run: |
-                bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+                brew install gcc
                 brew install doxygen
          - name: "Configure . . ."
            run: |
