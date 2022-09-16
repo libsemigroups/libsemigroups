@@ -193,7 +193,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("SchreierSimsHelper",
                           "010",
                           "S17 and A39 intersection",
-                          "[quick][schreier-sims][no-valgrind]") {
+                          "[standard][schreier-sims][no-valgrind]") {
     auto             rg = ReportGuard(REPORT);
     SchreierSims<50> S, T, U;
     using Perm = SchreierSims<50>::element_type;
@@ -228,7 +228,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("SchreierSimsHelper",
                           "011",
                           "A50 and PGL(2, 49) intersection",
-                          "[quick][schreier-sims][no-valgrind]") {
+                          "[extreme][schreier-sims][no-valgrind]") {
     auto             rg = ReportGuard(REPORT);
     SchreierSims<50> S, T, U;
     using Perm = SchreierSims<50>::element_type;
@@ -316,7 +316,7 @@ namespace libsemigroups {
       "SchreierSimsHelper",
       "013",
       "PGamma(2, 9) wreath Sym(2) and Alt(6)^2.D_8 intersection",
-      "[quick][schreier-sims][no-valgrind]") {
+      "[standard][schreier-sims][no-valgrind]") {
     auto              rg = ReportGuard(REPORT);
     SchreierSims<100> S, T, U;
     using Perm = SchreierSims<100>::element_type;
@@ -369,7 +369,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("SchreierSimsHelper",
                           "014",
                           "Alt(6)^2.2^2:4 and Alt(6)^2.4 intersection",
-                          "[quick][schreier-sims][no-valgrind]") {
+                          "[standard][schreier-sims][no-valgrind]") {
     auto              rg = ReportGuard(REPORT);
     SchreierSims<100> S, T, U;
     using Perm = SchreierSims<100>::element_type;
@@ -664,7 +664,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("SchreierSimsHelper",
                           "021",
                           "AGL(7, 2) and PGL(2, 127) intersection",
-                          "[quick][schreier-sims][no-valgrind]") {
+                          "[extreme][schreier-sims][no-valgrind]") {
     auto              rg = ReportGuard(REPORT);
     SchreierSims<128> S, T, U;
     using Perm = SchreierSims<128>::element_type;
