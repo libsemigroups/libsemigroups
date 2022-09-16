@@ -160,7 +160,7 @@ namespace libsemigroups {
         // Find largest depth that has an unvisited node and increment its
         // index. Adjust stabilizer depth as depths are exhausted.
         for (;; --depth) {
-          LIBSEMIGROUPS_ASSERT((depth >= 0) && (depth < base_size));
+          LIBSEMIGROUPS_ASSERT(depth < base_size);
           state_index[depth]++;
           if (state_index[depth] < refined_orbit.size(depth)) {
             break;
