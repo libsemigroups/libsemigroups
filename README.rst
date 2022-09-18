@@ -141,7 +141,7 @@ Contributors
   words in free bands.
 - Joseph Edwards (jde1@st-andrews.ac.uk) contributed the container
   ``StaticTriVector2``.
-- Luke Elliot (le27@st-andrews.ac.uk) - contributed to the Schreier-Sims
+- Luke Elliott (le27@st-andrews.ac.uk) contributed to the Schreier-Sims
   implementation.
 - Ilya Finkelshteyn (ilyaf@appveyor.com) contributed to the continuous
   integration in AppVeyor.
@@ -163,10 +163,10 @@ Contributors
   packaging ``libsemigroups`` via conda, the python bindings and many helpful
   conversations and suggestions.
 - `Maria Tsalakou`_ (mt200@st-andrews.ac.uk) contributed to the Knuth-Bendix
-  implementation, related algorithms for the class :cpp:any:`ActionDigraph`,
-  and to the implementation of the :cpp:any:`Kambites` class.
+  implementation, related algorithms for the class ``ActionDigraph``,
+  and to the implementation of the ``Kambites`` class.
 - Wilf Wilson (wilf@wilf-wilson.net) contributed some fixes.
-- `Murray Whyte`_ (mw231@st-andrews.ac.uk) contributed to the documentation and
+- Murray Whyte (mw231@st-andrews.ac.uk) contributed to the documentation and
   reported a number of bugs.
 - `Michael Young`_ (mct25@st-andrews.ac.uk) contributed to the congruences code
   in the v0.0.1 to v0.6.7.
@@ -189,10 +189,10 @@ European Research Infrastructures project (#676541) (primarily for the
 python bindings).
 
 We thank the `Carnegie Trust for the Universities of Scotland`_ for funding
-the PhD scholarship of `J. Jonušas`_ when he worked on this project.
+the PhD scholarship of `Julius Jonušas`_ when he worked on this project.
 
 We thank the `Engineering and Physical Sciences Research Council (EPSRC)`_ for
-funding the PhD scholarships of `M. Torpey`_ and `F. Smith`_ when they worked
+funding the PhD scholarships of `Michael Young`_ and `Finn Smith`_ when they worked
 on this project (EP/M506631/1, EP/N509759/1).
 
 .. _OpenDreamKit: https://opendreamkit.org/
