@@ -1175,75 +1175,152 @@ namespace libsemigroups {
     } else if (n >= 4 && val == author::Aizenstat) {
       // From Theorem 9.4.1, p169, (Ganyushkin + Mazorchuk)
       // https://link.springer.com/book/10.1007/978-1-84800-281-4
-      auto                   result  = SymmetricInverseMonoid(n, author::Sutov);
-      word_type              e12     = {n};
-      std::vector<word_type> epsilon = {{n - 1}, {0, n - 1, 0}, {1, n - 1, 1}};
-      result.emplace_back(e12, e12 ^ 2);
-      result.emplace_back(e12 * epsilon[1], e12);
-      result.emplace_back(epsilon[1] * e12, epsilon[1]);
-
-      result.emplace_back(e12 * epsilon[0], epsilon[1] * epsilon[0] * e12);
-      result.emplace_back(e12 * epsilon[2], epsilon[2] * e12);
-      return result;
-    }
-    LIBSEMIGROUPS_EXCEPTION("not yet implemented");
-  }
-
-  // From Theorem 9.2.2, p156
-  // https://link.springer.com/book/10.1007/978-1-84800-281-4 (Ganyushkin +
-  // Mazorchuk)
-  std::vector<relation_type> SymmetricInverseMonoid(size_t n, author val) {
-    if (val == author::Sutov) {
-      if (n < 4) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "the 1st argument (size_t) must be at least 4, found %llu",
-            uint64_t(n));
-      }
-      auto result = SymmetricGroup(n, author::Carmichael);
-
+      auto                   result = SymmetricInverseMonoid(n, author::Sutov);
+      word_type              e12    = {n};
       std::vector<word_type> pi;
       for (size_t i = 0; i <= n - 2; ++i) {
         pi.push_back({i});
       }
-      std::vector<word_type> epsilon;
-      epsilon.push_back({n - 1});
-      for (size_t i = 0; i <= n - 2; ++i) {
-        epsilon.push_back(pi[i] * epsilon[0] * pi[i]);
-      }
 
-      result.emplace_back(epsilon[0] ^ 2, epsilon[0]);
-      result.emplace_back(epsilon[0] * epsilon[1], epsilon[1] * epsilon[0]);
+      // The following expresses the epsilon idempotents in terms of the generating set
+      auto eps = [=] (size_t i, size_t j) -> word_type {
+        if (i == j) {LIBSEMIGROUPS_EXCEPTION(
+                      "the indices i and j should not be equal");}
+        else if (i == 1 and j == 2) {
+          return e12;}
+        else if (i == 2 and j == 1) {
+          return pi[0] * e12 * pi[0];
+        } else if (i == 1) {
+          return pi[0] * pi[j - 2] * pi[0] * e12 * pi[0] * pi[j - 2] * pi[0];
+        } else if (j == 2) {
+          return pi[i - 2] * e12 * pi[i - 2];
+        } else if (j == 1) {
+          return pi[0] * pi[i - 2] * e12 * pi[i - 2] * pi[0];
+        } else if (i == 2) {
+          return pi[j - 2] * pi[0] * e12 * pi[0] * pi[j - 2];
+        } else {
+          return pi[i - 2] * pi[0] * pi[j - 2] * pi[0] * e12 * pi[0] * pi[j - 2]
+                 * pi[0] * pi[i - 2];
+        }};
+      
+      auto transp = [=] (size_t i, size_t j) -> word_type {
+         if (i == j) {LIBSEMIGROUPS_EXCEPTION("i and j must not be equal");}
+         if (i > j) {
+           size_t k = i;
+           i = j;
+           j = k;}
+         if (i == 1) {return pi[j - 2];}
+         else {return pi[i - 2] * pi[j - 2] * pi[i - 2];}};
+           
 
-      for (size_t k = 1; k <= n - 2; ++k) {
-        result.emplace_back(epsilon[1] * pi[k], pi[k] * epsilon[1]);
-        result.emplace_back(epsilon[k + 1] * pi[0], pi[0] * epsilon[k + 1]);
+        
+  //      //FIXME Delete the following comments later
+  //      std::vector<relation_type> test_eps;
+  //      test_eps.emplace_back(eps(3, 4), eps(1, 4));
+  //      test_eps.emplace_back(eps(4, 2), eps(3, 1));
+  //      test_eps.emplace_back(eps(2, 1), eps(2, 3));
+  //      return test_eps;
+
+        // Relations a
+        for (size_t i = 1; i <= n; ++i) {
+          for (size_t j = 1; j <= n; ++j) {
+            if (j == i) {continue;}
+            // Relations (k)
+            result.emplace_back(transp(i, j) * eps(i, j), eps(i, j));
+            // Relations (j)
+            result.emplace_back(eps(j, i) * eps(i, j), eps(i, j));
+            // Relations (i)
+            result.emplace_back(eps(i, j) * eps(i, j), eps(i, j));
+            // Relations (d)
+            result.emplace_back(transp(i, j) * eps(i, j) * transp(i, j), eps(j, i));
+            for (size_t k = 1; k <= n; ++k) {
+              if (k == i or k == j) {continue;}
+              // Relations (h)
+              result.emplace_back(eps(k, j) * eps(i, j), eps(k, j));
+              // Relations (g)
+              result.emplace_back(eps(k, i) * eps(i, j), transp(i, j) * eps(k, j));
+              // Relations (f)
+              result.emplace_back(eps(j, k) * eps(i, j), eps(i, j) * eps(i, k));
+              result.emplace_back(eps(j, k) * eps(i, j), eps(i, k) * eps(i, j));
+              // Relations (c)
+              result.emplace_back(transp(k, i) * eps(i, j) * transp(k, i), eps(k, j));
+              // Relations (b)
+              result.emplace_back(transp(j, k) * eps(i, j) * eps(j, k), eps(i, k));
+              for (size_t l = 1; l <= n; ++l) {
+                if (l == i or l == j or l == k){continue;}
+                // Relations (e)
+                result.emplace_back(eps(l, k) * eps(i, j), eps(i, j) * eps(l, k));
+                // Relations (a)
+                result.emplace_back(transp(k, l) * eps(i, j) * transp(k, l), eps(i, j));
+}}}}
+       
+        std::vector<word_type> epsilon
+            = {{n - 1}, {0, n - 1, 0}, {1, n - 1, 1}};
+        result.emplace_back(e12, e12 ^ 2);
+        result.emplace_back(e12 * epsilon[1], e12);
+        result.emplace_back(epsilon[1] * e12, epsilon[1]);
+
+        result.emplace_back(e12 * epsilon[0], epsilon[1] * epsilon[0] * e12);
+        result.emplace_back(e12 * epsilon[2], epsilon[2] * e12);
+
+        return result;
       }
-      result.emplace_back(epsilon[1] * epsilon[0] * pi[0],
-                          epsilon[1] * epsilon[0]);
-      return result;
     }
-    return {};
-  }
+
+    // From Theorem 9.2.2, p156
+    // https://link.springer.com/book/10.1007/978-1-84800-281-4 (Ganyushkin +
+    // Mazorchuk)
+    std::vector<relation_type> SymmetricInverseMonoid(size_t n, author val) {
+      if (val == author::Sutov) {
+        if (n < 4) {
+          LIBSEMIGROUPS_EXCEPTION(
+              "the 1st argument (size_t) must be at least 4, found %llu",
+              uint64_t(n));
+        }
+        auto result = SymmetricGroup(n, author::Carmichael);
+
+        std::vector<word_type> pi;
+        for (size_t i = 0; i <= n - 2; ++i) {
+          pi.push_back({i});
+        }
+        std::vector<word_type> epsilon;
+        epsilon.push_back({n - 1});
+        for (size_t i = 0; i <= n - 2; ++i) {
+          epsilon.push_back(pi[i] * epsilon[0] * pi[i]);
+        }
+
+        result.emplace_back(epsilon[0] ^ 2, epsilon[0]);
+        result.emplace_back(epsilon[0] * epsilon[1], epsilon[1] * epsilon[0]);
+
+        for (size_t k = 1; k <= n - 2; ++k) {
+          result.emplace_back(epsilon[1] * pi[k], pi[k] * epsilon[1]);
+          result.emplace_back(epsilon[k + 1] * pi[0], pi[0] * epsilon[k + 1]);
+        }
+        result.emplace_back(epsilon[1] * epsilon[0] * pi[0],
+                            epsilon[1] * epsilon[0]);
+        return result;
+      }
+      return {};
+    }
 
   // Chinese monoid
   // See: The Chinese Monoid - Cassaigne, Espie, Krob, Novelli and Hivert,
   // 2001
   std::vector<relation_type> ChineseMonoid(size_t n) {
     std::vector<relation_type> result;
-
-    for (size_t a = 0; a < n; a++) {
-      for (size_t b = a; b < n; b++) {
-        for (size_t c = b; c < n; c++) {
-          if (a != b) {
-            result.emplace_back(word_type({c, b, a}), word_type({c, a, b}));
-          }
-          if (b != c) {
-            result.emplace_back(word_type({c, b, a}), word_type({b, c, a}));
+      for (size_t a = 0; a < n; a++) {
+        for (size_t b = a; b < n; b++) {
+          for (size_t c = b; c < n; c++) {
+            if (a != b) {
+              result.emplace_back(word_type({c, b, a}), word_type({c, a, b}));
+            }
+            if (b != c) {
+              result.emplace_back(word_type({c, b, a}), word_type({b, c, a}));
+            }
           }
         }
       }
+      return result;
     }
-    return result;
-  }
 
-}  // namespace libsemigroups
+  }  // namespace libsemigroups
