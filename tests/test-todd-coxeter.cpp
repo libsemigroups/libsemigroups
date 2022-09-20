@@ -2609,7 +2609,7 @@ namespace libsemigroups {
                             "114",
                             "PartialTransformationMonoid",
                             "[todd-coxeter][quick]") {
-      auto   rg = ReportGuard(true);
+      auto   rg = ReportGuard(REPORT);
       size_t n  = 4;
       auto   s  = PartialTransformationMonoid(n, author::Aizenstat);
       for (auto& rel : s) {

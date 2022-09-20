@@ -442,7 +442,7 @@ namespace libsemigroups {
                             "083",
                             "(cong) PartialTransformationMonoid",
                             "[quick][congruence][knuth-bendix][cong]") {
-      auto rg = ReportGuard(true);
+      auto rg = ReportGuard(REPORT);
 
       size_t n = 4;
       auto   s = PartialTransformationMonoid(n, author::Aizenstat);
