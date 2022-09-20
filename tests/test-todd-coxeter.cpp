@@ -2610,7 +2610,7 @@ namespace libsemigroups {
                             "PartialTransformationMonoid",
                             "[todd-coxeter][quick]") {
       auto   rg = ReportGuard(REPORT);
-      size_t n  = 4;
+      size_t n  = 5;
       auto   s  = PartialTransformationMonoid(n, author::Aizenstat);
       for (auto& rel : s) {
         if (rel.first.empty()) {
@@ -2630,7 +2630,7 @@ namespace libsemigroups {
       for (size_t i = 0; i < p.rules.size() - 1; i += 2) {
         tc.add_pair(p.rules[i], p.rules[i + 1]);
       }
-      REQUIRE(tc.number_of_classes() == 625);
+      REQUIRE(tc.number_of_classes() == 7776);
     }
 
   }  // namespace congruence
