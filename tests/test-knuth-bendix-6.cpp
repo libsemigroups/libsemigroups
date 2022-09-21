@@ -441,7 +441,7 @@ namespace libsemigroups {
     LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
                             "083",
                             "(cong) PartialTransformationMonoid",
-                            "[quick][congruence][knuth-bendix][cong]") {
+                            "[standard][congruence][knuth-bendix][cong]") {
       auto rg = ReportGuard(REPORT);
 
       size_t n = 4;

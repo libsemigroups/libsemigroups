@@ -2608,7 +2608,7 @@ namespace libsemigroups {
     LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                             "114",
                             "PartialTransformationMonoid",
-                            "[todd-coxeter][quick]") {
+                            "[todd-coxeter][standard]") {
       auto   rg = ReportGuard(REPORT);
       size_t n  = 5;
       auto   s  = PartialTransformationMonoid(n, author::Aizenstat);
