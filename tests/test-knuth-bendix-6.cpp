@@ -496,6 +496,5 @@ namespace libsemigroups {
       REQUIRE(kb.number_of_classes() == 7776);
     }
 
-
   }  // namespace congruence
 }  // namespace libsemigroups
