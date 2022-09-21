@@ -1275,6 +1275,7 @@ namespace libsemigroups {
 
       return result;
     }
+    LIBSEMIGROUPS_EXCEPTION("not yet implemented");
   }
 
   // From Theorem 9.2.2, p156
