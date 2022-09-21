@@ -1184,7 +1184,7 @@ namespace libsemigroups {
 
       // The following expresses the epsilon idempotents in terms of the
       // generating set
-      auto eps = [=](size_t i, size_t j) -> word_type {
+      auto eps = [&e12, &pi](size_t i, size_t j) -> word_type {
         if (i == j) {
           LIBSEMIGROUPS_EXCEPTION("the indices i and j should not be equal");
         } else if (i == 1 and j == 2) {
@@ -1204,7 +1204,7 @@ namespace libsemigroups {
                * pi[0] * pi[i - 2];
       };
 
-      auto transp = [=](size_t i, size_t j) -> word_type {
+      auto transp = [&pi](size_t i, size_t j) -> word_type {
         if (i == j) {
           LIBSEMIGROUPS_EXCEPTION("i and j must not be equal");
         }
