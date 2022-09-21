@@ -440,7 +440,7 @@ namespace libsemigroups {
 
     LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
                             "083",
-                            "(cong) PartialTransformationMonoid",
+                            "(cong) PartialTransformationMonoid4",
                             "[standard][congruence][knuth-bendix][cong]") {
       auto rg = ReportGuard(REPORT);
 
@@ -466,6 +466,36 @@ namespace libsemigroups {
       REQUIRE(not kb.is_quotient_obviously_infinite());
       REQUIRE(kb.number_of_classes() == 625);
     }
+
+    LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
+                            "118",
+                            "(cong) PartialTransformationMonoid5",
+                            "[extreme][congruence][knuth-bendix][cong]") {
+      auto rg = ReportGuard(REPORT);
+
+      size_t n = 5;
+      auto   s = PartialTransformationMonoid(n, author::Aizenstat);
+      for (auto& rel : s) {
+        if (rel.first.empty()) {
+          rel.first = {n + 1};
+        }
+        if (rel.second.empty()) {
+          rel.second = {n + 1};
+        }
+      }
+      auto p = make<Presentation<word_type>>(s);
+      p.alphabet(n + 2);
+      presentation::add_identity_rules(p, n + 1);
+
+      KnuthBendix kb;
+      kb.set_number_of_generators(n + 2);
+      for (size_t i = 0; i < p.rules.size() - 1; i += 2) {
+        kb.add_pair(p.rules[i], p.rules[i + 1]);
+      }
+      REQUIRE(not kb.is_quotient_obviously_infinite());
+      REQUIRE(kb.number_of_classes() == 7776);
+    }
+
 
   }  // namespace congruence
 }  // namespace libsemigroups
