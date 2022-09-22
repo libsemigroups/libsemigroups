@@ -1296,7 +1296,7 @@ namespace libsemigroups {
               {{3, 1, 1, 2, 0}, {3, 1, 1, 2}},
               {{3, 1, 1, 2, 1}, {3, 1, 0, 2}},
               {{1, 2, 1, 2, 0, 2}, {2, 1, 2, 0, 2}}};
-    } else if (n >= 4 && val == author::Aizenstat) {
+    } else if (n >= 4 && val == author::Sutov) {
       // From Theorem 9.4.1, p169, (Ganyushkin + Mazorchuk)
       // https://link.springer.com/book/10.1007/978-1-84800-281-4
       auto result = SymmetricInverseMonoid(n, author::Sutov);

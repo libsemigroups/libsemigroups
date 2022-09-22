@@ -445,7 +445,7 @@ namespace libsemigroups {
       auto rg = ReportGuard(REPORT);
 
       size_t n = 4;
-      auto   s = PartialTransformationMonoid(n, author::Aizenstat);
+      auto   s = PartialTransformationMonoid(n, author::Sutov);
       for (auto& rel : s) {
         if (rel.first.empty()) {
           rel.first = {n + 1};
@@ -474,7 +474,7 @@ namespace libsemigroups {
       auto rg = ReportGuard(REPORT);
 
       size_t n = 5;
-      auto   s = PartialTransformationMonoid(n, author::Aizenstat);
+      auto   s = PartialTransformationMonoid(n, author::Sutov);
       for (auto& rel : s) {
         if (rel.first.empty()) {
           rel.first = {n + 1};

@@ -2611,7 +2611,7 @@ namespace libsemigroups {
                             "[todd-coxeter][standard]") {
       auto   rg = ReportGuard(REPORT);
       size_t n  = 5;
-      auto   s  = PartialTransformationMonoid(n, author::Aizenstat);
+      auto   s  = PartialTransformationMonoid(n, author::Sutov);
       for (auto& rel : s) {
         if (rel.first.empty()) {
           rel.first = {n + 1};
