@@ -23,8 +23,8 @@ libsemigroups::Bipartition:
      :cpp:any:`Bipartition` class."]
   - identity(size_t)
   - make(T const&) 
-  - make(std::initializer_list< uint32_t > const&)
-  - make(std::initializer_list< std::vector< int32_t >> const&)
+  - make(std::initializer_list<uint32_t> const&)
+  - make(std::initializer_list<std::vector<int32_t>> const &)
 - Operators:
   - ["This page contains information about the comparison operators for the  
      :cpp:any:`Bipartition` class."]

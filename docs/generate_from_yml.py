@@ -4,17 +4,17 @@ This module generates the documentation pages in docs/source/_generated from
 the yml files in docs/yml.
 """
 
-from datetime import datetime
-import bs4
 import itertools
 import os
 import re
 import sys
-import yaml
-
-from bs4 import BeautifulSoup
-from os.path import isfile
+from datetime import datetime
 from functools import lru_cache
+from os.path import isfile
+
+import bs4
+import yaml
+from bs4 import BeautifulSoup
 
 # Function names follow the pattern outputtype_something_inputtype, so
 # e.g. rst_something_yml
@@ -23,7 +23,7 @@ from functools import lru_cache
 # Global variables
 ########################################################################
 
-_COPYRIGHT_NOTICE = """.. Copyright (c) 2019-21, J. D. Mitchell
+_COPYRIGHT_NOTICE = """.. Copyright (c) 2019-22, J. D. Mitchell
 
    Distributed under the terms of the GPL license version 3.
 
@@ -64,7 +64,7 @@ def __warn(fname, msg):
     global __WARNINGS
     __WARNINGS += 1
     sys.stderr.write(
-        "\033[38;5;208mWARNING in %s: %s\033[0m\n" % ("docs/" + fname, msg)
+        "\033[38;5;208mWARNING in {}: {}\033[0m\n".format("docs/" + fname, msg)
     )
 
 
@@ -94,7 +94,6 @@ def __write_file_if_changed(fname, contents):
         with open(fname, "r") as f:
             file_contents = f.read()
             if file_contents == contents:
-                __info("NOT rewriting docs/%s  ..." % fname)
                 return
     with open(fname, "w") as f:
         __info("Rewriting docs/%s ..." % fname)
@@ -102,26 +101,13 @@ def __write_file_if_changed(fname, contents):
         f.write(contents)
 
 
-@__accepts(int)
-def __lines_o_hash(n=1):
-    cols = 0
-    try:
-        cols = os.get_terminal_size().columns
-    except:
-        pass
-    for i in range(n):
-        __info("\033[1m" + "#" * cols + "\033[0m")
-
-
 def __summary():
     global __REWRITES_ACTUAL, __REWRITES_ATTEMPTED, __WARNINGS
-    __lines_o_hash(2)
     __info(
         "Summary: %d / %d files rewritten"
         % (__REWRITES_ACTUAL, __REWRITES_ATTEMPTED)
         + " and %d warnings!!" % __WARNINGS
     )
-    __lines_o_hash(2)
 
 
 def __clean_up():
@@ -225,12 +211,6 @@ def compare_yml_to_doxy(ymlfname, ymldic):
         if k.startswith(class_ + "::" or k == class_)
     ]
     doxy = [(k, v.keys()) if isinstance(v, dict) else (k, v) for k, v in doxy]
-    # doxy = [
-    #     (k, [x for x in v if not doxy_is_inherited(ymlfname, k, x)])
-    #     if isinstance(v, dict_keys)
-    #     else (k, None)
-    #     for k, v in doxy
-    # ]
     doxy = [
         ["".join([k, x]) for x in v] if isinstance(v, dict_keys) else (k, None)
         for k, v in doxy
@@ -295,9 +275,9 @@ def doxy_run():
                     last_changed_source = [os.path.getmtime(f), f]
 
     __info(
-        "the last changed header file is:  "
+        "The last changed header file is:\t"
         + last_changed_source[1]
-        + "\nlast modified:  "
+        + "\nLast modified:\t\t\t\t"
         + __time_since_epoch_to_human(last_changed_source[0])
     )
     last_changed_source = last_changed_source[0]
@@ -308,9 +288,9 @@ def doxy_run():
             if os.path.getmtime(f) < first_built_file[0]:
                 first_built_file = [os.path.getmtime(f), f]
     __info(
-        "\nthe first built xml file is:  "
+        "The first built xml file is:\t\t"
         + first_built_file[1]
-        + "\nlast modified:  "
+        + "\nlast modified:\t\t\t\t"
         + __time_since_epoch_to_human(first_built_file[0])
     )
     first_built_file = first_built_file[0]
@@ -464,6 +444,15 @@ def doxy_is_typedef(ymlfname, name, params=None):
 
 
 @lru_cache(maxsize=None)
+@__accepts(bs4.element.Tag)
+def xml_is_deprecated(xml):
+    if xml.find("definition") is not None:
+        defn = xml.find("definition").text
+        return defn.startswith("LIBSEMIGROUPS_DEPRECATED")
+    return False
+
+
+@lru_cache(maxsize=None)
 @__accepts(str)
 def doxy_normalize_yml_params(params):
     params = params.strip()
@@ -479,7 +468,12 @@ def doxy_normalize_yml_params(params):
     params = re.sub("(?<=[\&])(?=[^\s\&])", " ", params)
     # remove whitespace around commas
     params = re.sub("\s*,\s*", ",", params)
-    params = re.sub("> >", ">>", params)
+
+    # remove some of the spaces introduced above if for example the parameters
+    # are: std::function<void(bool&)>, then doxygen does not want the spaces at
+    # the end in "& ) >" for some reason
+    if params.endswith("& ) >"):
+        params = re.sub("\& \) >$", "&)>", params)
     return params
 
 
@@ -861,11 +855,9 @@ def rst_generate_subpages(ymlfname):
 def main():
     if sys.version_info[0] < 3:
         raise Exception("Python 3 is required")
-    __lines_o_hash(2)
     if doxy_run():
-        __lines_o_hash(2)
-        sys.stdout.write("\033[94m")
-        sys.stderr.write("\033[93m")
+        sys.stdout.write("\033[2m")
+        sys.stderr.write("\033[2m")
         __info("Running doxygen!")
         os.system("doxygen")
         os.system("touch build/xml/*.xml")
@@ -873,7 +865,6 @@ def main():
         sys.stdout.write("\033[0m")
     else:
         __info("Not running doxygen!")
-    __lines_o_hash(2)
     __info("Generating sphinx rst files from docs/yml . . .")
     try:
         os.mkdir("source/_generated")
@@ -881,9 +872,7 @@ def main():
         pass
     for fname in sorted(os.listdir("yml")):
         if fname[0] != ".":
-            __lines_o_hash(1)
             __info("Processing %s . . ." % fname)
-            __lines_o_hash(1)
             fname = os.path.join("yml", fname)
             rst_generate_overview(fname)
             rst_generate_subpages(fname)

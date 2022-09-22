@@ -36,7 +36,7 @@ EXTRACT_LOCAL_CLASSES = NO
 EXTRACT_PRIVATE       = NO
 ALIASES               =  exceptions="\throws (None)"
 ALIASES               += noexcept="This function is `noexcept` and is guaranteed never to throw."
-ALIASES               += no_libsemigroups_except="This function guarantees not to throw a LibsemigroupsException."
+ALIASES               += no_libsemigroups_except="This function guarantees not to throw a `LibsemigroupsException`."
 ALIASES               += no_libsemigroups_except_detail="This function guarantees not to throw a \ref libsemigroups::LibsemigroupsException."
 ALIASES               += strong_guarantee="If an exception is thrown, \c this is guaranteed not to be modified (strong exception guarantee)."
 ALIASES               += basic_guarantee="If an exception is thrown, \c this might be modified but is guaranteed to be in a valid state (basic exception guarantee)."
