@@ -57,6 +57,7 @@ namespace libsemigroups {
   std::vector<relation_type> Brauer(size_t n);
   std::vector<relation_type> RectangularBand(size_t m, size_t n);
   std::vector<relation_type> FullTransformationMonoidAizenstat(size_t n);
+  std::vector<relation_type> FullTransformationMonoidSutov(size_t n);
   std::vector<relation_type> PartialTransformationMonoid(size_t n, author val);
   std::vector<relation_type> SymmetricInverseMonoid(size_t n, author val);
 

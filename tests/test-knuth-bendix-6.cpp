@@ -496,5 +496,34 @@ namespace libsemigroups {
       REQUIRE(kb.number_of_classes() == 7776);
     }
 
+    LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
+                            "119",
+                            "(cong) FullTransformationMonoidSutov",
+                            "[extreme][congruence][knuth-bendix][cong]") {
+      auto rg = ReportGuard(REPORT);
+
+      size_t n = 4;
+      auto   s = FullTransformationMonoidSutov(5);
+      for (auto& rel : s) {
+        if (rel.first.empty()) {
+          rel.first = {n};
+        }
+        if (rel.second.empty()) {
+          rel.second = {n};
+        }
+      }
+      auto p = make<Presentation<word_type>>(s);
+      p.alphabet(n + 1);
+      presentation::add_identity_rules(p, n);
+      REQUIRE(p.rules != p.rules);
+      KnuthBendix kb;
+      kb.set_number_of_generators(n + 1);
+      for (size_t i = 0; i < p.rules.size() - 1; i += 2) {
+        kb.add_pair(p.rules[i], p.rules[i + 1]);
+      }
+      REQUIRE(not kb.is_quotient_obviously_infinite());
+      REQUIRE(kb.number_of_classes() == 3125);
+    }
+
   }  // namespace congruence
 }  // namespace libsemigroups
