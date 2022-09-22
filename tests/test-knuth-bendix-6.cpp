@@ -498,12 +498,12 @@ namespace libsemigroups {
 
     LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
                             "119",
-                            "(cong) FullTransformationMonoidSutov",
+                            "(cong) FullTransformationMonoid Iwahori",
                             "[extreme][congruence][knuth-bendix][cong]") {
       auto rg = ReportGuard(REPORT);
 
-      size_t n = 4;
-      auto   s = FullTransformationMonoidSutov(5);
+      size_t n = 5;
+      auto   s = FullTransformationMonoid(n, author::Iwahori);
       for (auto& rel : s) {
         if (rel.first.empty()) {
           rel.first = {n};
@@ -515,7 +515,6 @@ namespace libsemigroups {
       auto p = make<Presentation<word_type>>(s);
       p.alphabet(n + 1);
       presentation::add_identity_rules(p, n);
-      REQUIRE(p.rules != p.rules);
       KnuthBendix kb;
       kb.set_number_of_generators(n + 1);
       for (size_t i = 0; i < p.rules.size() - 1; i += 2) {

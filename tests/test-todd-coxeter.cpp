@@ -2638,7 +2638,7 @@ namespace libsemigroups {
                             "[todd-coxeter][extreme]") {
       auto   rg = ReportGuard(true);
       size_t n  = 7;
-      auto   s  = FullTransformationMonoidSutov(n);
+      auto   s  = FullTransformationMonoid(n, author::Iwahori);
       for (auto& rel : s) {
         if (rel.first.empty()) {
           rel.first = {n};
@@ -2659,8 +2659,6 @@ namespace libsemigroups {
       }
       REQUIRE(tc.number_of_classes() == 823543);
     }
-
-
 
   }  // namespace congruence
 
