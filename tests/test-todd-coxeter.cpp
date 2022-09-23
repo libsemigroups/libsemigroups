@@ -2636,7 +2636,7 @@ namespace libsemigroups {
                             "115",
                             "FullTransformationMonoid5",
                             "[todd-coxeter][extreme]") {
-      auto   rg = ReportGuard(true);
+      auto   rg = ReportGuard(REPORT);
       size_t n  = 7;
       auto   s  = FullTransformationMonoid(n, author::Iwahori);
       for (auto& rel : s) {
