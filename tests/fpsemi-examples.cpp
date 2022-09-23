@@ -103,13 +103,22 @@ void add_Iwahori_full_transformation_monoid_relations(
       std::vector<relation_type>& result,
       size_t                      n,
       size_t                      m) {
-    // This function adds the full transformation monoid relations TODO explain
-    // this more, with reference to relevant parts of the book.
+    // This function adds the full transformation monoid relations due to Iwahori,
+    // from Section 9.3, p161-162, (Ganyushkin + Mazorchuk), expressed in terms
+    // of the generating set {pi_2, ..., pi_n, epsilon_{12} using the notation of
+    // that chapter.
+    // https://link.springer.com/book/10.1007/978-1-84800-281-4
+
 
     // The argument m specifies the letter value the idempotent e12 corresponds
     // to. When adding these relations for the full transformation monoid
     // presentation, we want m = n - 1. For the partial transformation monoid
     // presentaiton, we want n = m.
+
+    // It is useful to have this as a separate function, to avoid computing
+    // duplicate presentations for the underlying symmetric group, when
+    // combining relations from the symmetric inverse and full transformation
+    // monoids.
 
     word_type              e12 = {m};
     std::vector<word_type> pi;
