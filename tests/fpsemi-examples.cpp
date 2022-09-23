@@ -140,7 +140,7 @@ void add_Iwahori_full_transformation_monoid_relations(
 
     auto transp = [&pi](size_t i, size_t j) -> word_type {
       LIBSEMIGROUPS_ASSERT(i != j);
-      if (i > j) {
+      if (i > j) {  // FIXME Want to do: return transp(j, i);, but can't do this with auto
         size_t k = i;
         i        = j;
         j        = k;
