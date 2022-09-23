@@ -29,118 +29,6 @@
 #include "libsemigroups/exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
 #include "libsemigroups/types.hpp"      // for word_type, relation_type
 
-namespace {
-  using namespace libsemigroups;
-
-  word_type operator*(word_type const& lhs, word_type const& rhs) {
-    word_type result(lhs);
-    result.insert(result.end(), rhs.cbegin(), rhs.cend());
-    return result;
-  }
-  // The above is a total hack, and I will delete it when I figure out how
-
-  void add_Iwahori_full_transformation_monoid_relations(
-      std::vector<relation_type>& result,
-      size_t                      n,
-      size_t                      m) {
-    // This function adds the full transformation monoid relations TODO explain
-    // this more, with reference to relevant parts of the book.
-
-    // The argument m specifies the letter value the idempotent e12 corresponds
-    // to. When adding these relations for the full transformation monoid
-    // presentation, we want m = n - 1. For the partial transformation monoid
-    // presentaiton, we want n = m.
-
-    word_type              e12 = {m};
-    std::vector<word_type> pi;
-    for (size_t i = 0; i <= n - 2; ++i) {
-      pi.push_back({i});
-    }
-
-    // The following expresses the epsilon idempotents in terms of the
-    // generating set
-    auto eps = [&e12, &pi](size_t i, size_t j) -> word_type {
-      // TODO: Figure out how to get assertions in unnamed namespace, to assert
-      // i != j.
-      if (i == 1 and j == 2) {
-        return e12;
-      } else if (i == 2 and j == 1) {
-        return pi[0] * e12 * pi[0];
-      } else if (i == 1) {
-        return pi[0] * pi[j - 2] * pi[0] * e12 * pi[0] * pi[j - 2] * pi[0];
-      } else if (j == 2) {
-        return pi[i - 2] * e12 * pi[i - 2];
-      } else if (j == 1) {
-        return pi[0] * pi[i - 2] * e12 * pi[i - 2] * pi[0];
-      } else if (i == 2) {
-        return pi[j - 2] * pi[0] * e12 * pi[0] * pi[j - 2];
-      }
-      return pi[i - 2] * pi[0] * pi[j - 2] * pi[0] * e12 * pi[0] * pi[j - 2]
-             * pi[0] * pi[i - 2];
-    };
-
-    auto transp = [&pi](size_t i, size_t j) -> word_type {
-      // TODO: Figure out how to get assertions in unnamed namespace, to assert
-      // i != j.
-      if (i > j) {
-        size_t k = i;
-        i        = j;
-        j        = k;
-      }
-      if (i == 1) {
-        return pi[j - 2];
-      }
-      return pi[i - 2] * pi[j - 2] * pi[i - 2];
-    };
-
-    // Relations a
-    for (size_t i = 1; i <= n; ++i) {
-      for (size_t j = 1; j <= n; ++j) {
-        if (j == i) {
-          continue;
-        }
-        // Relations (k)
-        result.emplace_back(transp(i, j) * eps(i, j), eps(i, j));
-        // Relations (j)
-        result.emplace_back(eps(j, i) * eps(i, j), eps(i, j));
-        // Relations (i)
-        result.emplace_back(eps(i, j) * eps(i, j), eps(i, j));
-        // Relations (d)
-        result.emplace_back(transp(i, j) * eps(i, j) * transp(i, j), eps(j, i));
-        for (size_t k = 1; k <= n; ++k) {
-          if (k == i or k == j) {
-            continue;
-          }
-          // Relations (h)
-          result.emplace_back(eps(k, j) * eps(i, j), eps(k, j));
-          // Relations (g)
-          result.emplace_back(eps(k, i) * eps(i, j), transp(i, j) * eps(k, j));
-          // Relations (f)
-          result.emplace_back(eps(j, k) * eps(i, j), eps(i, j) * eps(i, k));
-          result.emplace_back(eps(j, k) * eps(i, j), eps(i, k) * eps(i, j));
-          // Relations (c)
-          result.emplace_back(transp(k, i) * eps(i, j) * transp(k, i),
-                              eps(k, j));
-          // Relations (b)
-          result.emplace_back(transp(j, k) * eps(i, j) * transp(j, k),
-                              eps(i, k));
-          for (size_t l = 1; l <= n; ++l) {
-            if (l == i or l == j or l == k) {
-              continue;
-            }
-            // Relations (e)
-            result.emplace_back(eps(l, k) * eps(i, j), eps(i, j) * eps(l, k));
-            // Relations (a)
-            result.emplace_back(transp(k, l) * eps(i, j) * transp(k, l),
-                                eps(i, j));
-          }
-        }
-      }
-    }
-  }
-
-}  // unnamed namespace
-
 namespace libsemigroups {
   namespace {
     template <typename T>
@@ -211,6 +99,104 @@ namespace libsemigroups {
         }
       }
     }
+void add_Iwahori_full_transformation_monoid_relations(
+      std::vector<relation_type>& result,
+      size_t                      n,
+      size_t                      m) {
+    // This function adds the full transformation monoid relations TODO explain
+    // this more, with reference to relevant parts of the book.
+
+    // The argument m specifies the letter value the idempotent e12 corresponds
+    // to. When adding these relations for the full transformation monoid
+    // presentation, we want m = n - 1. For the partial transformation monoid
+    // presentaiton, we want n = m.
+
+    word_type              e12 = {m};
+    std::vector<word_type> pi;
+    for (size_t i = 0; i <= n - 2; ++i) {
+      pi.push_back({i});
+    }
+
+    // The following expresses the epsilon idempotents in terms of the
+    // generating set
+    auto eps = [&e12, &pi](size_t i, size_t j) -> word_type {
+      LIBSEMIGROUPS_ASSERT(i != j);
+      if (i == 1 and j == 2) {
+        return e12;
+      } else if (i == 2 and j == 1) {
+        return pi[0] * e12 * pi[0];
+      } else if (i == 1) {
+        return pi[0] * pi[j - 2] * pi[0] * e12 * pi[0] * pi[j - 2] * pi[0];
+      } else if (j == 2) {
+        return pi[i - 2] * e12 * pi[i - 2];
+      } else if (j == 1) {
+        return pi[0] * pi[i - 2] * e12 * pi[i - 2] * pi[0];
+      } else if (i == 2) {
+        return pi[j - 2] * pi[0] * e12 * pi[0] * pi[j - 2];
+      }
+      return pi[i - 2] * pi[0] * pi[j - 2] * pi[0] * e12 * pi[0] * pi[j - 2]
+             * pi[0] * pi[i - 2];
+    };
+
+    auto transp = [&pi](size_t i, size_t j) -> word_type {
+      LIBSEMIGROUPS_ASSERT(i != j);
+      if (i > j) {
+        size_t k = i;
+        i        = j;
+        j        = k;
+      }
+      if (i == 1) {
+        return pi[j - 2];
+      }
+      return pi[i - 2] * pi[j - 2] * pi[i - 2];
+    };
+
+    // Relations a
+    for (size_t i = 1; i <= n; ++i) {
+      for (size_t j = 1; j <= n; ++j) {
+        if (j == i) {
+          continue;
+        }
+        // Relations (k)
+        result.emplace_back(transp(i, j) * eps(i, j), eps(i, j));
+        // Relations (j)
+        result.emplace_back(eps(j, i) * eps(i, j), eps(i, j));
+        // Relations (i)
+        result.emplace_back(eps(i, j) * eps(i, j), eps(i, j));
+        // Relations (d)
+        result.emplace_back(transp(i, j) * eps(i, j) * transp(i, j), eps(j, i));
+        for (size_t k = 1; k <= n; ++k) {
+          if (k == i or k == j) {
+            continue;
+          }
+          // Relations (h)
+          result.emplace_back(eps(k, j) * eps(i, j), eps(k, j));
+          // Relations (g)
+          result.emplace_back(eps(k, i) * eps(i, j), transp(i, j) * eps(k, j));
+          // Relations (f)
+          result.emplace_back(eps(j, k) * eps(i, j), eps(i, j) * eps(i, k));
+          result.emplace_back(eps(j, k) * eps(i, j), eps(i, k) * eps(i, j));
+          // Relations (c)
+          result.emplace_back(transp(k, i) * eps(i, j) * transp(k, i),
+                              eps(k, j));
+          // Relations (b)
+          result.emplace_back(transp(j, k) * eps(i, j) * transp(j, k),
+                              eps(i, k));
+          for (size_t l = 1; l <= n; ++l) {
+            if (l == i or l == j or l == k) {
+              continue;
+            }
+            // Relations (e)
+            result.emplace_back(eps(l, k) * eps(i, j), eps(i, j) * eps(l, k));
+            // Relations (a)
+            result.emplace_back(transp(k, l) * eps(i, j) * transp(k, l),
+                                eps(i, j));
+          }
+        }
+      }
+    }
+  }
+
   }  // namespace
 
   std::vector<relation_type> RookMonoid(size_t l, int q) {
