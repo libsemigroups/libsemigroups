@@ -105,14 +105,14 @@ namespace libsemigroups {
         size_t                      m) {
       // This function adds the full transformation monoid relations due to
       // Iwahori, from Section 9.3, p161-162, (Ganyushkin + Mazorchuk),
-      // expressed in terms of the generating set {pi_2, ..., pi_n, epsilon_{12}
-      // using the notation of that chapter.
+      // expressed in terms of the generating set {pi_2, ..., pi_n,
+      // epsilon_{12}} using the notation of that chapter.
       // https://link.springer.com/book/10.1007/978-1-84800-281-4
 
       // The argument m specifies the letter value the idempotent e12
       // corresponds to. When adding these relations for the full transformation
       // monoid presentation, we want m = n - 1. For the partial transformation
-      // monoid presentaiton, we want n = m.
+      // monoid presentaiton, we want m = n.
 
       // It is useful to have this as a separate function, to avoid computing
       // duplicate presentations for the underlying symmetric group, when
