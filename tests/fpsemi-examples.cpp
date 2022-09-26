@@ -148,8 +148,7 @@ namespace libsemigroups {
 
       auto transp = [&pi](size_t i, size_t j) -> word_type {
         LIBSEMIGROUPS_ASSERT(i != j);
-        if (i > j) {  // FIXME Want to do: return transp(j, i);, but can't do
-                      // this with auto
+        if (i > j) {
           size_t k = i;
           i        = j;
           j        = k;
