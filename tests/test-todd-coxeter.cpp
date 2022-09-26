@@ -2170,12 +2170,12 @@ namespace libsemigroups {
 
     LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                             "043",
-                            "SymmetricGroup2",
+                            "SymmetricGroup Coxeter + Moser",
                             "[todd-coxeter][quick][no-valgrind]") {
       auto        rg = ReportGuard(REPORT);
       ToddCoxeter tc(twosided);
       tc.set_number_of_generators(7);
-      for (auto const& w : SymmetricGroup2(7)) {
+      for (auto const& w : SymmetricGroup(7, author::CoxeterMoser)) {
         tc.add_pair(w.first, w.second);
       }
       tc.run_for(std::chrono::microseconds(1));

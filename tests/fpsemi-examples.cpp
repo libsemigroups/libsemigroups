@@ -607,31 +607,10 @@ namespace libsemigroups {
     return result;
   }
 
-  // From Proposition 1.2 in https://bit.ly/3R5ZpKW (Ruskuc thesis)
-  std::vector<relation_type> SymmetricGroup2(size_t n) {
-    std::vector<word_type> alphabet = {{0}};
-    for (size_t i = 0; i < n; ++i) {
-      alphabet.push_back({i});
-    }
-    std::vector<relation_type> result;
-    add_group_relations(alphabet, {0}, alphabet, result);
-
-    for (size_t j = 1; j <= n - 2; ++j) {
-      result.emplace_back(word_type({j, j + 1, j, j + 1, j, j + 1}),
-                          word_type({0}));
-    }
-    for (size_t l = 3; l <= n - 1; ++l) {
-      for (size_t k = 1; k <= l - 2; ++k) {
-        result.emplace_back(word_type({k, l, k, l}), word_type({0}));
-      }
-    }
-    return result;
-  }
-
-  // Exercise 9.5.2, p172 of
-  // https://link.springer.com/book/10.1007/978-1-84800-281-4
   std::vector<relation_type> SymmetricGroup(size_t n, author val) {
     if (val == author::Carmichael) {
+        // Exercise 9.5.2, p172 of
+  // https://link.springer.com/book/10.1007/978-1-84800-281-4
       std::vector<word_type> pi;
       for (size_t i = 0; i <= n - 2; ++i) {
         pi.push_back({i});
@@ -660,8 +639,30 @@ namespace libsemigroups {
                             word_type({}));
       }
       return result;
-    } else {
-      LIBSEMIGROUPS_EXCEPTION("the 2nd argument (author) should be Carmichael");
+    } else if (val == author::CoxeterMoser) {
+       // TODO Set up addition of authors
+       // From Chapter 3, Proposition 1.2 in https://bit.ly/3R5ZpKW (Ruskuc thesis)
+   
+    std::vector<word_type> alphabet = {{0}};
+    for (size_t i = 0; i < n; ++i) {
+      alphabet.push_back({i});
+    }
+    std::vector<relation_type> result;
+    add_group_relations(alphabet, {0}, alphabet, result);
+
+    for (size_t j = 1; j <= n - 2; ++j) {
+      result.emplace_back(word_type({j, j + 1, j, j + 1, j, j + 1}),
+                          word_type({0}));
+    }
+    for (size_t l = 3; l <= n - 1; ++l) {
+      for (size_t k = 1; k <= l - 2; ++k) {
+        result.emplace_back(word_type({k, l, k, l}), word_type({0}));
+      }
+    }
+    return result;
+
+      } else {
+      LIBSEMIGROUPS_EXCEPTION("not yet implemented");
     }
   }
 

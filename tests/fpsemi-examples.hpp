@@ -33,6 +33,7 @@ namespace libsemigroups {
     Machine,
     Aizenstat,
     Carmichael,
+    CoxeterMoser,
     East,
     Iwahori,
     Moore,
@@ -53,7 +54,6 @@ namespace libsemigroups {
   std::vector<relation_type> Stylic(size_t n);
 
   std::vector<relation_type> SymmetricGroup1(size_t n);
-  std::vector<relation_type> SymmetricGroup2(size_t n);
   std::vector<relation_type> SymmetricGroup(size_t n, author val);
   std::vector<relation_type> DualSymmetricInverseMonoidEEF(size_t n);
   std::vector<relation_type> UniformBlockBijectionMonoidF(size_t n);
