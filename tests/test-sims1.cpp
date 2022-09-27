@@ -22,15 +22,15 @@
 #include <unordered_set>  // for unordered_set
 #include <vector>         // for vector
 
-#include "catch.hpp"            // for REQUIRE, REQUIRE_THROWS_AS, REQUI...
-#include "fpsemi-examples.hpp"  // for Brauer etc
-#include "test-main.hpp"        // for LIBSEMIGROUPS_TEST_CASE
+#include "catch.hpp"      // for REQUIRE, REQUIRE_THROWS_AS, REQUI...
+#include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
-#include "libsemigroups/bipart.hpp"          // for Bipartition
-#include "libsemigroups/config.hpp"          // for LIBSEMIGROUPS_ENABLE_STATS
-#include "libsemigroups/digraph-helper.hpp"  // for action_digraph_helper
-#include "libsemigroups/froidure-pin.hpp"    // for FroidurePin
-#include "libsemigroups/knuth-bendix.hpp"    // for redundant_rule
+#include "libsemigroups/bipart.hpp"           // for Bipartition
+#include "libsemigroups/config.hpp"           // for LIBSEMIGROUPS_ENABLE_STATS
+#include "libsemigroups/digraph-helper.hpp"   // for action_digraph_helper
+#include "libsemigroups/fpsemi-examples.hpp"  // for Brauer etc
+#include "libsemigroups/froidure-pin.hpp"     // for FroidurePin
+#include "libsemigroups/knuth-bendix.hpp"     // for redundant_rule
 #include "libsemigroups/make-froidure-pin.hpp"  // for make
 #include "libsemigroups/make-present.hpp"       // for make
 #include "libsemigroups/sims1.hpp"              // for Sims1

@@ -32,6 +32,7 @@
 #include "libsemigroups/cong-intf.hpp"  // for congruence_kind, congruenc...
 #include "libsemigroups/cong-wrap.hpp"  // for CongruenceWrapper
 #include "libsemigroups/constants.hpp"  // for PositiveInfinity, POSITIVE...
+#include "libsemigroups/fpsemi-examples.hpp"
 #include "libsemigroups/froidure-pin-base.hpp"  // for FroidurePinBase
 #include "libsemigroups/report.hpp"             // for ReportGuard
 #include "libsemigroups/todd-coxeter.hpp"  // for ToddCoxeter, ToddCoxeter::...
@@ -39,7 +40,6 @@
 
 #include "examples/cong-intf.hpp"
 #include "examples/fpsemi-intf.hpp"
-#include "tests/fpsemi-examples.hpp"
 
 namespace libsemigroups {
 

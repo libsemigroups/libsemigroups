@@ -33,6 +33,7 @@
 #include "libsemigroups/cong-wrap.hpp"  // for CongruenceWrapper
 #include "libsemigroups/constants.hpp"  // for PositiveInfinity, POSITIVE...
 #include "libsemigroups/fastest-bmat.hpp"
+#include "libsemigroups/fpsemi-examples.hpp"
 #include "libsemigroups/froidure-pin.hpp"  // for FroidurePinBase
 #include "libsemigroups/make-present.hpp"  // for make
 #include "libsemigroups/report.hpp"        // for ReportGuard
@@ -42,7 +43,6 @@
 
 #include "examples/cong-intf.hpp"
 #include "examples/fpsemi-intf.hpp"
-#include "tests/fpsemi-examples.hpp"
 
 namespace libsemigroups {
 
