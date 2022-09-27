@@ -182,6 +182,8 @@ jobs:
                 sudo -H pip3 install setuptools
                 sudo -H pip3 install -r docs/requirements.txt
                 sudo -H pip3 install --upgrade --ignore-installed pyyaml
+         - name: "Set up Homebrew . . ."
+           uses: Homebrew/actions/setup-homebrew@master
          - name: "Install latest doxygen . . ."
            run: |
                 brew install gcc
