@@ -463,7 +463,7 @@ namespace libsemigroups {
       for (size_t i = 0; i < p.rules.size() - 1; i += 2) {
         kb.add_pair(p.rules[i], p.rules[i + 1]);
       }
-      REQUIRE(not kb.is_quotient_obviously_infinite());
+      REQUIRE(!kb.is_quotient_obviously_infinite());
       REQUIRE(kb.number_of_classes() == 625);
     }
 
@@ -492,7 +492,7 @@ namespace libsemigroups {
       for (size_t i = 0; i < p.rules.size() - 1; i += 2) {
         kb.add_pair(p.rules[i], p.rules[i + 1]);
       }
-      REQUIRE(not kb.is_quotient_obviously_infinite());
+      REQUIRE(!kb.is_quotient_obviously_infinite());
       REQUIRE(kb.number_of_classes() == 7776);
     }
 
@@ -520,7 +520,7 @@ namespace libsemigroups {
       for (size_t i = 0; i < p.rules.size() - 1; i += 2) {
         kb.add_pair(p.rules[i], p.rules[i + 1]);
       }
-      REQUIRE(not kb.is_quotient_obviously_infinite());
+      REQUIRE(!kb.is_quotient_obviously_infinite());
       REQUIRE(kb.number_of_classes() == 3125);
     }
 
