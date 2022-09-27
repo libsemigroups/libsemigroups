@@ -1,6 +1,13 @@
 Changelog - version 2
 =====================
 
+v2.3.0 (released 28/09/2022)
+----------------------------
+
+In this release a number of minor issues a fixed, some improvements are made,
+and the `Sims1` class has been redesigned and improved to implement a parallel
+version of the low index congruences algorithm.
+
 v2.2.3 (released 22/09/2022)
 ----------------------------
 
