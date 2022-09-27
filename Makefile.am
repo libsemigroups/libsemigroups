@@ -71,6 +71,7 @@ pkginclude_HEADERS += include/libsemigroups/felsch-tree.hpp
 pkginclude_HEADERS += include/libsemigroups/felsch-digraph.hpp
 pkginclude_HEADERS += include/libsemigroups/felsch-digraph.tpp
 pkginclude_HEADERS += include/libsemigroups/forest.hpp
+pkginclude_HEADERS += include/libsemigroups/fpsemi-examples.hpp
 pkginclude_HEADERS += include/libsemigroups/fpsemi-intf.hpp
 pkginclude_HEADERS += include/libsemigroups/fpsemi.hpp
 pkginclude_HEADERS += include/libsemigroups/freeband.hpp
@@ -565,6 +566,7 @@ libsemigroups_la_SOURCES += src/constants.cpp
 libsemigroups_la_SOURCES += src/coset.cpp
 libsemigroups_la_SOURCES += src/felsch-tree.cpp
 libsemigroups_la_SOURCES += src/forest.cpp
+libsemigroups_la_SOURCES += src/fpsemi-examples.cpp
 libsemigroups_la_SOURCES += src/fpsemi-intf.cpp
 libsemigroups_la_SOURCES += src/fpsemi.cpp
 libsemigroups_la_SOURCES += src/freeband.cpp
@@ -617,7 +619,6 @@ EXTRA_DIST += extern/textflowcpp/README.md
 EXTRA_DIST += src/kbe-impl.hpp
 EXTRA_DIST += src/knuth-bendix-impl.hpp
 EXTRA_DIST += tests/catch.hpp
-EXTRA_DIST += tests/fpsemi-examples.hpp
 EXTRA_DIST += tests/bmat-data.hpp
 EXTRA_DIST += tests/test-main.hpp
 EXTRA_DIST += benchmarks/bench-main.hpp
@@ -720,7 +721,6 @@ LDADD = libsemigroups.la
 ## takes a serious amount of time.
 
 test_all_SOURCES =  tests/bmat-data.cpp
-test_all_SOURCES += tests/fpsemi-examples.cpp
 test_all_SOURCES += tests/test-action.cpp
 test_all_SOURCES += tests/test-bipart.cpp
 test_all_SOURCES += tests/test-bitset.cpp
@@ -810,7 +810,6 @@ test_cong_pair_SOURCES =  tests/test-cong-pair.cpp
 test_cong_pair_SOURCES += tests/test-main.cpp
 
 test_cong_SOURCES =  tests/test-cong.cpp
-test_cong_SOURCES += tests/fpsemi-examples.cpp
 test_cong_SOURCES += tests/test-main.cpp
 
 test_constants_SOURCES =  tests/test-constants.cpp
@@ -832,7 +831,6 @@ test_felsch_tree_SOURCES =  tests/test-felsch-tree.cpp
 test_felsch_tree_SOURCES += tests/test-main.cpp
 
 test_fpsemi_SOURCES =  tests/test-fpsemi.cpp
-test_fpsemi_SOURCES += tests/fpsemi-examples.cpp
 test_fpsemi_SOURCES += tests/test-main.cpp
 
 test_fpsemi_intf_SOURCES =  tests/test-fpsemi-intf.cpp
@@ -896,7 +894,6 @@ test_knuth_bendix_SOURCES += tests/test-knuth-bendix-3.cpp
 test_knuth_bendix_SOURCES += tests/test-knuth-bendix-4.cpp
 test_knuth_bendix_SOURCES += tests/test-knuth-bendix-5.cpp
 test_knuth_bendix_SOURCES += tests/test-knuth-bendix-6.cpp
-test_knuth_bendix_SOURCES += tests/fpsemi-examples.cpp
 test_knuth_bendix_SOURCES += tests/test-main.cpp
 
 test_konieczny_SOURCES =  tests/test-konieczny-bmat8-1.cpp
@@ -946,7 +943,6 @@ test_schreier_sims_helper_SOURCES += tests/test-main.cpp
 
 test_sims1_SOURCES =  tests/test-sims1.cpp
 test_sims1_SOURCES += tests/test-main.cpp
-test_sims1_SOURCES += tests/fpsemi-examples.cpp
 
 test_siso_SOURCES =  tests/test-siso.cpp
 test_siso_SOURCES += tests/test-main.cpp
@@ -963,8 +959,7 @@ test_suffix_tree_SOURCES += tests/test-main.cpp
 test_timer_SOURCES =  tests/test-timer.cpp
 test_timer_SOURCES += tests/test-main.cpp
 
-test_todd_coxeter_SOURCES =  tests/fpsemi-examples.cpp
-test_todd_coxeter_SOURCES += tests/test-todd-coxeter.cpp
+test_todd_coxeter_SOURCES = tests/test-todd-coxeter.cpp
 test_todd_coxeter_SOURCES += tests/test-main.cpp
 
 test_transf_SOURCES =  tests/test-transf.cpp
@@ -1003,7 +998,6 @@ bench_all_SOURCES += benchmarks/bench-wilo.cpp
 bench_all_SOURCES += benchmarks/bench-wislo.cpp
 bench_all_SOURCES += benchmarks/uf-old.cpp
 bench_all_SOURCES += tests/bmat-data.cpp
-bench_all_SOURCES += tests/fpsemi-examples.cpp
 
 bench_action_SOURCES =  benchmarks/bench-action.cpp
 bench_action_SOURCES += benchmarks/bench-main.cpp
@@ -1034,7 +1028,6 @@ bench_konieczny_SOURCES += benchmarks/bench-main.cpp
 
 bench_sims1_SOURCES =  benchmarks/bench-sims1.cpp
 bench_sims1_SOURCES += benchmarks/bench-main.cpp
-bench_sims1_SOURCES += tests/fpsemi-examples.cpp
 
 bench_siso_SOURCES =  benchmarks/bench-siso.cpp
 bench_siso_SOURCES += benchmarks/bench-main.cpp
@@ -1046,7 +1039,6 @@ bench_todd_coxeter_SOURCES =  benchmarks/bench-todd-coxeter.cpp
 bench_todd_coxeter_SOURCES += benchmarks/examples/fpsemi-intf.cpp
 bench_todd_coxeter_SOURCES += benchmarks/examples/cong-intf.cpp
 bench_todd_coxeter_SOURCES += benchmarks/bench-main.cpp
-bench_todd_coxeter_SOURCES += tests/fpsemi-examples.cpp
 
 bench_uf_SOURCES =  benchmarks/bench-uf.cpp
 bench_uf_SOURCES += benchmarks/bench-main.cpp

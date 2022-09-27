@@ -1,6 +1,6 @@
 //
 // libsemigroups - C++ library for semigroups and monoids
-// Copyright (C) 2922 James D. Mitchell
+// Copyright (C) 2022 James D. Mitchell
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -25,12 +25,12 @@
 
 #include <iostream>
 
-#include "catch.hpp"  // for REQUIRE, REQUIRE_THROWS_AS, REQUI...
-#include "fpsemi-examples.hpp"
+#include "catch.hpp"      // for REQUIRE, REQUIRE_THROWS_AS, REQUI...
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
 #include "libsemigroups/bipart.hpp"
 #include "libsemigroups/digraph-helper.hpp"
+#include "libsemigroups/fpsemi-examples.hpp"
 #include "libsemigroups/froidure-pin.hpp"
 #include "libsemigroups/knuth-bendix.hpp"  // for redundant_rule
 #include "libsemigroups/make-present.hpp"
