@@ -29,7 +29,15 @@
 #include "libsemigroups/types.hpp"    // for relation_type
 
 namespace libsemigroups {
-  enum class author { Machine, Aizenstat, Carmichael, East, Iwahori, Moore, Sutov };
+  enum class author {
+    Machine,
+    Aizenstat,
+    Carmichael,
+    East,
+    Iwahori,
+    Moore,
+    Sutov
+  };
 
   std::vector<relation_type> RookMonoid(size_t l, int q);
 
