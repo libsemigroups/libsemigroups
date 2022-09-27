@@ -99,7 +99,7 @@ namespace libsemigroups {
         }
       }
     }
-    void add_Iwahori_full_transformation_monoid_relations(
+    void add_iwahori_full_transformation_monoid_relations(
         std::vector<relation_type>& result,
         size_t                      n,
         size_t                      m) {
@@ -112,7 +112,7 @@ namespace libsemigroups {
       // The argument m specifies the letter value the idempotent e12
       // corresponds to. When adding these relations for the full transformation
       // monoid presentation, we want m = n - 1. For the partial transformation
-      // monoid presentaiton, we want m = n.
+      // monoid presentation, we want m = n.
 
       // It is useful to have this as a separate function, to avoid computing
       // duplicate presentations for the underlying symmetric group, when
@@ -129,9 +129,9 @@ namespace libsemigroups {
       // generating set
       auto eps = [&e12, &pi](size_t i, size_t j) -> word_type {
         LIBSEMIGROUPS_ASSERT(i != j);
-        if (i == 1 and j == 2) {
+        if (i == 1 && j == 2) {
           return e12;
-        } else if (i == 2 and j == 1) {
+        } else if (i == 2 && j == 1) {
           return pi[0] * e12 * pi[0];
         } else if (i == 1) {
           return pi[0] * pi[j - 2] * pi[0] * e12 * pi[0] * pi[j - 2] * pi[0];
@@ -149,9 +149,7 @@ namespace libsemigroups {
       auto transp = [&pi](size_t i, size_t j) -> word_type {
         LIBSEMIGROUPS_ASSERT(i != j);
         if (i > j) {
-          size_t k = i;
-          i        = j;
-          j        = k;
+          std::swap(i, j);
         }
         if (i == 1) {
           return pi[j - 2];
@@ -175,7 +173,7 @@ namespace libsemigroups {
           result.emplace_back(transp(i, j) * eps(i, j) * transp(i, j),
                               eps(j, i));
           for (size_t k = 1; k <= n; ++k) {
-            if (k == i or k == j) {
+            if (k == i || k == j) {
               continue;
             }
             // Relations (h)
@@ -193,7 +191,7 @@ namespace libsemigroups {
             result.emplace_back(transp(j, k) * eps(i, j) * transp(j, k),
                                 eps(i, k));
             for (size_t l = 1; l <= n; ++l) {
-              if (l == i or l == j or l == k) {
+              if (l == i || l == j || l == k) {
                 continue;
               }
               // Relations (e)
@@ -1235,7 +1233,7 @@ namespace libsemigroups {
       // of the pi_i and e_12.
       // https://link.springer.com/book/10.1007/978-1-84800-281-4
       auto result = SymmetricGroup(n, author::Carmichael);
-      add_Iwahori_full_transformation_monoid_relations(result, n, n - 1);
+      add_iwahori_full_transformation_monoid_relations(result, n, n - 1);
       return result;
     }
     LIBSEMIGROUPS_EXCEPTION("not yet implemented");
@@ -1296,7 +1294,7 @@ namespace libsemigroups {
       // https://link.springer.com/book/10.1007/978-1-84800-281-4
       auto result = SymmetricInverseMonoid(n, author::Sutov);
 
-      add_Iwahori_full_transformation_monoid_relations(result, n, n);
+      add_iwahori_full_transformation_monoid_relations(result, n, n);
       word_type              e12     = {n};
       std::vector<word_type> epsilon = {{n - 1}, {0, n - 1, 0}, {1, n - 1, 1}};
       result.emplace_back(e12 * epsilon[1], e12);
@@ -1347,8 +1345,7 @@ namespace libsemigroups {
   }
 
   // Chinese monoid
-  // See: The Chinese Monoid - Cassaigne, Espie, Krob, Novelli and Hivert,
-  // 2001
+  // See: The Chinese Monoid - Cassaigne, Espie, Krob, Novelli and Hivert, 2001
   std::vector<relation_type> ChineseMonoid(size_t n) {
     std::vector<relation_type> result;
       for (size_t a = 0; a < n; a++) {
