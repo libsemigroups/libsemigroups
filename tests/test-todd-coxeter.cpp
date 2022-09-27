@@ -2153,14 +2153,14 @@ namespace libsemigroups {
       REQUIRE(!tc.stats_string().empty());
     }
 
-    // Takes about 1m7s
+    // Takes about 6m
     LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                             "042",
                             "SymmetricGroup1",
                             "[todd-coxeter][extreme]") {
       auto        rg = ReportGuard(true);
       ToddCoxeter tc(twosided);
-      tc.set_number_of_generators(4);
+      tc.set_number_of_generators(3);
       for (auto const& w : SymmetricGroup1(10)) {
         tc.add_pair(w.first, w.second);
       }
