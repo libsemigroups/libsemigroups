@@ -2156,12 +2156,12 @@ namespace libsemigroups {
     // Takes about 6m
     LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                             "042",
-                            "SymmetricGroup1",
+                            "SymmetricGroup Moore",
                             "[todd-coxeter][extreme]") {
       auto        rg = ReportGuard(true);
       ToddCoxeter tc(twosided);
       tc.set_number_of_generators(3);
-      for (auto const& w : SymmetricGroup1(10)) {
+      for (auto const& w : SymmetricGroup(10, author::Moore)) {
         tc.add_pair(w.first, w.second);
       }
       REQUIRE(tc.number_of_classes() == 3'628'800);
