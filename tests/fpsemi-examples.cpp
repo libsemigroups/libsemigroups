@@ -71,6 +71,7 @@ namespace libsemigroups {
       result.insert(result.end(), rhs.cbegin(), rhs.cend());
       return result;
     }
+
     void add_group_relations(std::vector<word_type> const& alphabet,
                              word_type                     id,
                              std::vector<word_type> const& inverse,
@@ -621,7 +622,7 @@ namespace libsemigroups {
                             word_type({}));
       }
       return result;
-    } else if (val == author::CoxeterMoser) {
+    } else if (val == author::Coxeter + author::Moser) {
        // TODO Set up addition of authors
        // From Chapter 3, Proposition 1.2 in https://bit.ly/3R5ZpKW (Ruskuc thesis)
    
