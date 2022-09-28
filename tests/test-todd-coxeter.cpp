@@ -2605,6 +2605,60 @@ namespace libsemigroups {
       }
       REQUIRE(tc.number_of_classes() == 1546);
     }
+    LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
+                            "114",
+                            "PartialTransformationMonoid",
+                            "[todd-coxeter][standard]") {
+      auto   rg = ReportGuard(REPORT);
+      size_t n  = 5;
+      auto   s  = PartialTransformationMonoid(n, author::Sutov);
+      for (auto& rel : s) {
+        if (rel.first.empty()) {
+          rel.first = {n + 1};
+        }
+        if (rel.second.empty()) {
+          rel.second = {n + 1};
+        }
+      }
+      auto p = make<Presentation<word_type>>(s);
+      p.alphabet(n + 2);
+      presentation::add_identity_rules(p, n + 1);
+      p.validate();
+
+      ToddCoxeter tc(congruence_kind::twosided);
+      tc.set_number_of_generators(n + 2);
+      for (size_t i = 0; i < p.rules.size() - 1; i += 2) {
+        tc.add_pair(p.rules[i], p.rules[i + 1]);
+      }
+      REQUIRE(tc.number_of_classes() == 7776);
+    }
+    LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
+                            "115",
+                            "FullTransformationMonoid5",
+                            "[todd-coxeter][extreme]") {
+      auto   rg = ReportGuard(REPORT);
+      size_t n  = 7;
+      auto   s  = FullTransformationMonoid(n, author::Iwahori);
+      for (auto& rel : s) {
+        if (rel.first.empty()) {
+          rel.first = {n};
+        }
+        if (rel.second.empty()) {
+          rel.second = {n};
+        }
+      }
+      auto p = make<Presentation<word_type>>(s);
+      p.alphabet(n + 1);
+      presentation::add_identity_rules(p, n);
+      p.validate();
+
+      ToddCoxeter tc(congruence_kind::twosided);
+      tc.set_number_of_generators(n + 1);
+      for (size_t i = 0; i < p.rules.size() - 1; i += 2) {
+        tc.add_pair(p.rules[i], p.rules[i + 1]);
+      }
+      REQUIRE(tc.number_of_classes() == 823543);
+    }
 
   }  // namespace congruence
 

@@ -321,8 +321,8 @@ namespace libsemigroups {
     REQUIRE(S.size() == 256);
     auto p = make<Presentation<word_type>>(S);
     REQUIRE(p.rules.size() == 132);
-    auto q
-        = make<Presentation<word_type>>(FullTransformationMonoidAizenstat(4));
+    auto q = make<Presentation<word_type>>(
+        FullTransformationMonoid(4, author::Aizenstat));
     // q.rules.insert(q.rules.end(), p.rules.cbegin(), p.rules.cbegin() + 100);
     // Using this presentation makes this perform terribly slowly.
 

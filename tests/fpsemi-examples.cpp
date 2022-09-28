@@ -99,6 +99,112 @@ namespace libsemigroups {
         }
       }
     }
+    void add_iwahori_full_transformation_monoid_relations(
+        std::vector<relation_type>& result,
+        size_t                      n,
+        size_t                      m) {
+      // This function adds the full transformation monoid relations due to
+      // Iwahori, from Section 9.3, p161-162, (Ganyushkin + Mazorchuk),
+      // expressed in terms of the generating set {pi_2, ..., pi_n,
+      // epsilon_{12}} using the notation of that chapter.
+      // https://link.springer.com/book/10.1007/978-1-84800-281-4
+
+      // The argument m specifies the letter value the idempotent e12
+      // corresponds to. When adding these relations for the full transformation
+      // monoid presentation, we want m = n - 1. For the partial transformation
+      // monoid presentation, we want m = n.
+
+      // It is useful to have this as a separate function, to avoid computing
+      // duplicate presentations for the underlying symmetric group, when
+      // combining relations from the symmetric inverse and full transformation
+      // monoids.
+
+      word_type              e12 = {m};
+      std::vector<word_type> pi;
+      for (size_t i = 0; i <= n - 2; ++i) {
+        pi.push_back({i});
+      }
+
+      // The following expresses the epsilon idempotents in terms of the
+      // generating set
+      auto eps = [&e12, &pi](size_t i, size_t j) -> word_type {
+        LIBSEMIGROUPS_ASSERT(i != j);
+        if (i == 1 && j == 2) {
+          return e12;
+        } else if (i == 2 && j == 1) {
+          return pi[0] * e12 * pi[0];
+        } else if (i == 1) {
+          return pi[0] * pi[j - 2] * pi[0] * e12 * pi[0] * pi[j - 2] * pi[0];
+        } else if (j == 2) {
+          return pi[i - 2] * e12 * pi[i - 2];
+        } else if (j == 1) {
+          return pi[0] * pi[i - 2] * e12 * pi[i - 2] * pi[0];
+        } else if (i == 2) {
+          return pi[j - 2] * pi[0] * e12 * pi[0] * pi[j - 2];
+        }
+        return pi[i - 2] * pi[0] * pi[j - 2] * pi[0] * e12 * pi[0] * pi[j - 2]
+               * pi[0] * pi[i - 2];
+      };
+
+      auto transp = [&pi](size_t i, size_t j) -> word_type {
+        LIBSEMIGROUPS_ASSERT(i != j);
+        if (i > j) {
+          std::swap(i, j);
+        }
+        if (i == 1) {
+          return pi[j - 2];
+        }
+        return pi[i - 2] * pi[j - 2] * pi[i - 2];
+      };
+
+      // Relations a
+      for (size_t i = 1; i <= n; ++i) {
+        for (size_t j = 1; j <= n; ++j) {
+          if (j == i) {
+            continue;
+          }
+          // Relations (k)
+          result.emplace_back(transp(i, j) * eps(i, j), eps(i, j));
+          // Relations (j)
+          result.emplace_back(eps(j, i) * eps(i, j), eps(i, j));
+          // Relations (i)
+          result.emplace_back(eps(i, j) * eps(i, j), eps(i, j));
+          // Relations (d)
+          result.emplace_back(transp(i, j) * eps(i, j) * transp(i, j),
+                              eps(j, i));
+          for (size_t k = 1; k <= n; ++k) {
+            if (k == i || k == j) {
+              continue;
+            }
+            // Relations (h)
+            result.emplace_back(eps(k, j) * eps(i, j), eps(k, j));
+            // Relations (g)
+            result.emplace_back(eps(k, i) * eps(i, j),
+                                transp(i, j) * eps(k, j));
+            // Relations (f)
+            result.emplace_back(eps(j, k) * eps(i, j), eps(i, j) * eps(i, k));
+            result.emplace_back(eps(j, k) * eps(i, j), eps(i, k) * eps(i, j));
+            // Relations (c)
+            result.emplace_back(transp(k, i) * eps(i, j) * transp(k, i),
+                                eps(k, j));
+            // Relations (b)
+            result.emplace_back(transp(j, k) * eps(i, j) * transp(j, k),
+                                eps(i, k));
+            for (size_t l = 1; l <= n; ++l) {
+              if (l == i || l == j || l == k) {
+                continue;
+              }
+              // Relations (e)
+              result.emplace_back(eps(l, k) * eps(i, j), eps(i, j) * eps(l, k));
+              // Relations (a)
+              result.emplace_back(transp(k, l) * eps(i, j) * transp(k, l),
+                                  eps(i, j));
+            }
+          }
+        }
+      }
+    }
+
   }  // namespace
 
   std::vector<relation_type> RookMonoid(size_t l, int q) {
@@ -1092,34 +1198,45 @@ namespace libsemigroups {
     return result;
   }
 
-  // From Proposition 1.7 in https://bit.ly/3R5ZpKW
-  std::vector<relation_type> FullTransformationMonoidAizenstat(size_t n) {
+  std::vector<relation_type> FullTransformationMonoid(size_t n, author val) {
     if (n < 4) {
       LIBSEMIGROUPS_EXCEPTION(
           "the 1st argument (size_t) must be at least 4, found %llu",
           uint64_t(n));
     }
-    auto result = SymmetricGroup1(n);
+    if (val == author::Aizenstat) {
+      // From Proposition 1.7 in https://bit.ly/3R5ZpKW
+      auto result = SymmetricGroup1(n);
 
-    word_type const a = {1};
-    word_type const b = {2};
-    word_type const t = {3};
+      word_type const a = {1};
+      word_type const b = {2};
+      word_type const t = {3};
 
-    result.emplace_back(a * t, t);
-    result.emplace_back(
-        (b ^ (n - 2)) * a * (b ^ 2) * t * (b ^ (n - 2)) * a * (b ^ 2), t);
-    result.emplace_back(b * a * (b ^ (n - 1)) * a * b * t * (b ^ (n - 1)) * a
-                            * b * a * (b ^ (n - 1)),
-                        t);
-    result.emplace_back((t * b * a * (b ^ (n - 1))) ^ 2, t);
-    result.emplace_back(((b ^ (n - 1)) * a * b * t) ^ 2,
-                        t * (b ^ (n - 1)) * a * b * t);
+      result.emplace_back(a * t, t);
+      result.emplace_back(
+          (b ^ (n - 2)) * a * (b ^ 2) * t * (b ^ (n - 2)) * a * (b ^ 2), t);
+      result.emplace_back(b * a * (b ^ (n - 1)) * a * b * t * (b ^ (n - 1)) * a
+                              * b * a * (b ^ (n - 1)),
+                          t);
+      result.emplace_back((t * b * a * (b ^ (n - 1))) ^ 2, t);
+      result.emplace_back(((b ^ (n - 1)) * a * b * t) ^ 2,
+                          t * (b ^ (n - 1)) * a * b * t);
 
-    result.emplace_back((t * (b ^ (n - 1)) * a * b) ^ 2,
-                        t * (b ^ (n - 1)) * a * b * t);
-    result.emplace_back((t * b * a * (b ^ (n - 2)) * a * b) ^ 2,
-                        (b * a * (b ^ (n - 2)) * a * b * t) ^ 2);
-    return result;
+      result.emplace_back((t * (b ^ (n - 1)) * a * b) ^ 2,
+                          t * (b ^ (n - 1)) * a * b * t);
+      result.emplace_back((t * b * a * (b ^ (n - 2)) * a * b) ^ 2,
+                          (b * a * (b ^ (n - 2)) * a * b * t) ^ 2);
+      return result;
+    } else if (val == author::Iwahori) {
+      // From Theorem 9.3.1, p161-162, (Ganyushkin + Mazorchuk)
+      // using Theorem 9.1.4 to express presentation in terms
+      // of the pi_i and e_12.
+      // https://link.springer.com/book/10.1007/978-1-84800-281-4
+      auto result = SymmetricGroup(n, author::Carmichael);
+      add_iwahori_full_transformation_monoid_relations(result, n, n - 1);
+      return result;
+    }
+    LIBSEMIGROUPS_EXCEPTION("not yet implemented");
   }
 
   std::vector<relation_type> PartialTransformationMonoid(size_t n, author val) {
@@ -1172,18 +1289,20 @@ namespace libsemigroups {
               {{3, 1, 1, 2, 0}, {3, 1, 1, 2}},
               {{3, 1, 1, 2, 1}, {3, 1, 0, 2}},
               {{1, 2, 1, 2, 0, 2}, {2, 1, 2, 0, 2}}};
-    } else if (n >= 4 && val == author::Aizenstat) {
-      LIBSEMIGROUPS_EXCEPTION("not yet implemented");
-      // FIXME this is missing the relations from T_n
+    } else if (n >= 4 && val == author::Sutov) {
       // From Theorem 9.4.1, p169, (Ganyushkin + Mazorchuk)
       // https://link.springer.com/book/10.1007/978-1-84800-281-4
-      auto                   result  = SymmetricInverseMonoid(n, author::Sutov);
-      word_type              e12     = {2 * n - 1};
-      std::vector<word_type> epsilon = {{n - 1}, {n}, {n + 1}};
-      result.emplace_back(epsilon[1] * e12, e12);
-      result.emplace_back(e12 * epsilon[1], epsilon[1]);
-      result.emplace_back(epsilon[0] * e12, e12 * epsilon[0] * epsilon[1]);
-      result.emplace_back(epsilon[2] * e12, e12 * epsilon[2]);
+      auto result = SymmetricInverseMonoid(n, author::Sutov);
+
+      add_iwahori_full_transformation_monoid_relations(result, n, n);
+      word_type              e12     = {n};
+      std::vector<word_type> epsilon = {{n - 1}, {0, n - 1, 0}, {1, n - 1, 1}};
+      result.emplace_back(e12 * epsilon[1], e12);
+      result.emplace_back(epsilon[1] * e12, epsilon[1]);
+
+      result.emplace_back(e12 * epsilon[0], epsilon[1] * epsilon[0] * e12);
+      result.emplace_back(e12 * epsilon[2], epsilon[2] * e12);
+
       return result;
     }
     LIBSEMIGROUPS_EXCEPTION("not yet implemented");
@@ -1218,7 +1337,6 @@ namespace libsemigroups {
         result.emplace_back(epsilon[1] * pi[k], pi[k] * epsilon[1]);
         result.emplace_back(epsilon[k + 1] * pi[0], pi[0] * epsilon[k + 1]);
       }
-
       result.emplace_back(epsilon[1] * epsilon[0] * pi[0],
                           epsilon[1] * epsilon[0]);
       return result;
@@ -1227,11 +1345,9 @@ namespace libsemigroups {
   }
 
   // Chinese monoid
-  // See: The Chinese Monoid - Cassaigne, Espie, Krob, Novelli and Hivert,
-  // 2001
+  // See: The Chinese Monoid - Cassaigne, Espie, Krob, Novelli and Hivert, 2001
   std::vector<relation_type> ChineseMonoid(size_t n) {
     std::vector<relation_type> result;
-
     for (size_t a = 0; a < n; a++) {
       for (size_t b = a; b < n; b++) {
         for (size_t c = b; c < n; c++) {
