@@ -626,20 +626,23 @@ namespace libsemigroups {
       // From Chapter 3, Proposition 1.2 in https://bit.ly/3R5ZpKW (Ruskuc
       // thesis)
 
-      std::vector<word_type> alphabet = {{0}};
-      for (size_t i = 0; i < n; ++i) {
-        alphabet.push_back({i});
+      std::vector<word_type> a;
+      for (size_t i = 0; i < n - 1; ++i) {
+        a.push_back({i});
       }
       std::vector<relation_type> result;
-      add_group_relations(alphabet, {0}, alphabet, result);
 
-      for (size_t j = 1; j <= n - 2; ++j) {
-        result.emplace_back(word_type({j, j + 1, j, j + 1, j, j + 1}),
-                            word_type({0}));
+      for (size_t i = 0; i < n - 1; i++) {
+        result.emplace_back(a[i]^2, word_type({}));
       }
-      for (size_t l = 3; l <= n - 1; ++l) {
-        for (size_t k = 1; k <= l - 2; ++k) {
-          result.emplace_back(word_type({k, l, k, l}), word_type({0}));
+
+      for (size_t j = 0; j < n - 2; ++j) {
+        result.emplace_back((a[j] * a[j + 1])^3,
+                            word_type({}));
+      }
+      for (size_t l = 2; l < n - 1; ++l) {
+        for (size_t k = 0; k <= l - 2; ++k) {
+          result.emplace_back((a[k] * a[l])^2, word_type({}));
         }
       }
       return result;

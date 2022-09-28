@@ -2173,11 +2173,28 @@ namespace libsemigroups {
                             "SymmetricGroup(7, Coxeter + Moser)",
                             "[todd-coxeter][quick][no-valgrind]") {
       auto        rg = ReportGuard(REPORT);
-      ToddCoxeter tc(twosided);
-      tc.set_number_of_generators(7);
-      for (auto const& w : SymmetricGroup(7, author::Coxeter + author::Moser)) {
-        tc.add_pair(w.first, w.second);
+
+      size_t n = 7;
+      auto   s  = SymmetricGroup(n, author::Coxeter + author::Moser);
+      for (auto& rel : s) {
+        if (rel.first.empty()) {
+          rel.first = {n - 1};
+        }
+        if (rel.second.empty()) {
+          rel.second = {n - 1};
+        }
       }
+      auto p = make<Presentation<word_type>>(s);
+      p.alphabet(n);
+      presentation::add_identity_rules(p, n - 1);
+      p.validate();
+
+      ToddCoxeter tc(twosided);
+      tc.set_number_of_generators(n);
+      for (size_t i = 0; i < p.rules.size() - 1; i += 2) {
+        tc.add_pair(p.rules[i], p.rules[i + 1]);
+      }
+
       tc.run_for(std::chrono::microseconds(1));
       REQUIRE(tc.is_non_trivial() == tril::TRUE);
       REQUIRE(!tc.finished());
