@@ -72,22 +72,6 @@ namespace libsemigroups {
       return result;
     }
 
-    void add_group_relations(std::vector<word_type> const& alphabet,
-                             word_type                     id,
-                             std::vector<word_type> const& inverse,
-                             std::vector<relation_type>&   relations) {
-      for (size_t i = 0; i < alphabet.size(); ++i) {
-        relations.emplace_back(alphabet[i] * inverse[i], id);
-        if (alphabet[i] != inverse[i]) {
-          relations.emplace_back(inverse[i] * alphabet[i], id);
-        }
-        if (alphabet[i] != id) {
-          relations.emplace_back(alphabet[i] * id, alphabet[i]);
-          relations.emplace_back(id * alphabet[i], alphabet[i]);
-        }
-      }
-    }
-
     void add_monoid_relations(std::vector<word_type> const& alphabet,
                               word_type                     id,
                               std::vector<relation_type>&   relations) {
@@ -633,16 +617,15 @@ namespace libsemigroups {
       std::vector<relation_type> result;
 
       for (size_t i = 0; i < n - 1; i++) {
-        result.emplace_back(a[i]^2, word_type({}));
+        result.emplace_back(a[i] ^ 2, word_type({}));
       }
 
       for (size_t j = 0; j < n - 2; ++j) {
-        result.emplace_back((a[j] * a[j + 1])^3,
-                            word_type({}));
+        result.emplace_back((a[j] * a[j + 1]) ^ 3, word_type({}));
       }
       for (size_t l = 2; l < n - 1; ++l) {
         for (size_t k = 0; k <= l - 2; ++k) {
-          result.emplace_back((a[k] * a[l])^2, word_type({}));
+          result.emplace_back((a[k] * a[l]) ^ 2, word_type({}));
         }
       }
       return result;
@@ -650,12 +633,11 @@ namespace libsemigroups {
     } else if (val == author::Moore) {
       // From Chapter 3, Proposition 1.1 in https://bit.ly/3R5ZpKW (Ruskuc
       // thesis)
-      word_type const e = {0};
-      word_type const a = {1};
-      word_type const b = {2};
+      word_type const e = {};
+      word_type const a = {0};
+      word_type const b = {1};
 
       std::vector<relation_type> result;
-      add_monoid_relations({e, a, b}, e, result);
       result.emplace_back(a ^ 2, e);
       result.emplace_back(b ^ n, e);
       result.emplace_back((a * b) ^ (n - 1), e);

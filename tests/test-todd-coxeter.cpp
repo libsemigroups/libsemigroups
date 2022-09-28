@@ -2158,12 +2158,28 @@ namespace libsemigroups {
                             "042",
                             "SymmetricGroup Moore",
                             "[todd-coxeter][extreme]") {
-      auto        rg = ReportGuard(true);
+      auto rg = ReportGuard(true);
+
+      auto s = SymmetricGroup(10, author::Moore);
+      for (auto& rel : s) {
+        if (rel.first.empty()) {
+          rel.first = {2};
+        }
+        if (rel.second.empty()) {
+          rel.second = {2};
+        }
+      }
+      auto p = make<Presentation<word_type>>(s);
+      p.alphabet(3);
+      presentation::add_identity_rules(p, 2);
+      p.validate();
+
       ToddCoxeter tc(twosided);
       tc.set_number_of_generators(3);
-      for (auto const& w : SymmetricGroup(10, author::Moore)) {
-        tc.add_pair(w.first, w.second);
+      for (size_t i = 0; i < p.rules.size() - 1; i += 2) {
+        tc.add_pair(p.rules[i], p.rules[i + 1]);
       }
+
       REQUIRE(tc.number_of_classes() == 3'628'800);
       std::cout << tc.stats_string();
     }
@@ -2172,10 +2188,10 @@ namespace libsemigroups {
                             "043",
                             "SymmetricGroup(7, Coxeter + Moser)",
                             "[todd-coxeter][quick][no-valgrind]") {
-      auto        rg = ReportGuard(REPORT);
+      auto rg = ReportGuard(REPORT);
 
       size_t n = 7;
-      auto   s  = SymmetricGroup(n, author::Coxeter + author::Moser);
+      auto   s = SymmetricGroup(n, author::Coxeter + author::Moser);
       for (auto& rel : s) {
         if (rel.first.empty()) {
           rel.first = {n - 1};
