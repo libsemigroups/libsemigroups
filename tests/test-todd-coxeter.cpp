@@ -2156,7 +2156,7 @@ namespace libsemigroups {
     // Takes about 6m
     LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                             "042",
-                            "SymmetricGroup Moore",
+                            "SymmetricGroup(10, Moore)",
                             "[todd-coxeter][extreme]") {
       auto rg = ReportGuard(true);
 
