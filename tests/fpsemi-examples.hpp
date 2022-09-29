@@ -32,13 +32,15 @@ namespace libsemigroups {
   enum class author : uint64_t {
     Machine    = 0,
     Aizenstat  = 1,
-    Carmichael = 2,
-    Coxeter    = 4,
-    East       = 8,
-    Iwahori    = 16,
-    Moore      = 32,
-    Moser      = 64,
-    Sutov      = 128
+    Burnside   = 2,
+    Carmichael = 4,
+    Coxeter    = 8,
+    East       = 16,
+    Iwahori    = 32,
+    Miller     = 64,
+    Moore      = 128,
+    Moser      = 256,
+    Sutov      = 512
   };
 
   inline author operator+(author auth1, author auth2) {
