@@ -646,6 +646,44 @@ namespace libsemigroups {
         result.emplace_back((a * ((b ^ (n - 1)) ^ j) * a * (b ^ j)) ^ 2, e);
       }
       return result;
+    } else if (val == author::Burnside + author::Miller) {
+      // See Eq 2.6 of 'Presentations of finite simple groups: A quantitative
+      // approach' J. Amer. Math. Soc. 21 (2008), 711-774
+      std::vector<word_type> a;
+      for (size_t i = 0; i <= n - 2; ++i) {
+        a.push_back({i});
+      }
+
+      std::vector<relation_type> result;
+
+      for (size_t i = 0; i <= n - 2; ++i) {
+        result.emplace_back(a[i] ^ 2, word_type({}));
+      }
+
+      for (size_t i = 0; i <= n - 2; ++i) {
+        for (size_t j = 0; j <= n - 2; ++j) {
+          if (i == j) {
+            continue;
+          }
+          result.emplace_back((a[i] * a[j]) ^ 3, word_type({}));
+        }
+      }
+
+      for (size_t i = 0; i <= n - 2; ++i) {
+        for (size_t j = 0; j <= n - 2; ++j) {
+          if (i == j) {
+            continue;
+          }
+          for (size_t k = 0; k <= n - 2; ++k) {
+            if (k == i || k == j) {
+              continue;
+            }
+            result.emplace_back((a[i] * a[j] * a[i] * a[k]) ^ 2, word_type({}));
+          }
+        }
+      }
+      return result;
+
     } else {
       LIBSEMIGROUPS_EXCEPTION("not yet implemented");
     }
