@@ -453,6 +453,9 @@ namespace libsemigroups {
     void replace_subword(Presentation<W>& p,
                          W const&         existing,
                          W const&         replacement) {
+      if (existing.cbegin() == existing.cend()) {
+        LIBSEMIGROUPS_EXCEPTION("the second argument must not be the empty word");
+      }
       auto rplc_sbwrd = [&existing, &replacement](W& word) {
         auto it = std::search(
             word.begin(), word.end(), existing.cbegin(), existing.cend());
