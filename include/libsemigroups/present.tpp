@@ -454,7 +454,7 @@ namespace libsemigroups {
                          W const&         existing,
                          W const&         replacement) {
       if (existing.empty()) {
-        LIBSEMIGROUPS_EXCEPTION("the second argument must not be the empty word");
+        LIBSEMIGROUPS_EXCEPTION("the second argument must not be empty");
       }
       auto rplc_sbwrd = [&existing, &replacement](W& word) {
         auto it = std::search(
