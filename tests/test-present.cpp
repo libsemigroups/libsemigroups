@@ -1006,4 +1006,18 @@ namespace libsemigroups {
     check_in_alphabet<std::string>();
   }
 
+  LIBSEMIGROUPS_TEST_CASE("Presentation",
+                          "029",
+                          "replace_subword with empty word",
+                          "[quick][presentation]") {
+    auto                      rg = ReportGuard(false);
+    Presentation<std::string> p;
+    p.alphabet(2);
+    p.contains_empty_word(true);
+    presentation::add_rule(p, {0, 0, 0}, {});
+    p.validate();
+    REQUIRE_THROWS_AS(presentation::replace_subword(p, {}, {2}),
+                      LibsemigroupsException);
+  }
+
 }  // namespace libsemigroups
