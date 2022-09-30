@@ -2251,6 +2251,36 @@ namespace libsemigroups {
     }
 
     LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
+                            "117",
+                            "SymmetricGroup(7, Guralnick)",
+                            "[todd-coxeter][quick]") {
+      auto rg = ReportGuard(REPORT);
+
+      size_t n = 7;
+      auto   s = SymmetricGroup(n, author::Burnside + author::Miller);
+      for (auto& rel : s) {
+        if (rel.first.empty()) {
+          rel.first = {n - 1};
+        }
+        if (rel.second.empty()) {
+          rel.second = {n - 1};
+        }
+      }
+      auto p = make<Presentation<word_type>>(s);
+      p.alphabet(n);
+      presentation::add_identity_rules(p, n - 1);
+      p.validate();
+
+      ToddCoxeter tc(twosided);
+      tc.set_number_of_generators(n);
+      for (size_t i = 0; i < p.rules.size() - 1; i += 2) {
+        tc.add_pair(p.rules[i], p.rules[i + 1]);
+      }
+
+      REQUIRE(tc.number_of_classes() == 5'040);
+    }
+
+    LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                             "044",
                             "Option exceptions",
                             "[todd-coxeter][quick]") {

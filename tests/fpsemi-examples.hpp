@@ -36,11 +36,12 @@ namespace libsemigroups {
     Carmichael = 4,
     Coxeter    = 8,
     East       = 16,
-    Iwahori    = 32,
-    Miller     = 64,
-    Moore      = 128,
-    Moser      = 256,
-    Sutov      = 512
+    Guralnick  = 32,
+    Iwahori    = 64,
+    Miller     = 128,
+    Moore      = 256,
+    Moser      = 512,
+    Sutov      = 1024
   };
 
   inline author operator+(author auth1, author auth2) {
