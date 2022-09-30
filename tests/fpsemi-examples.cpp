@@ -71,21 +71,6 @@ namespace libsemigroups {
       result.insert(result.end(), rhs.cbegin(), rhs.cend());
       return result;
     }
-    void add_group_relations(std::vector<word_type> const& alphabet,
-                             word_type                     id,
-                             std::vector<word_type> const& inverse,
-                             std::vector<relation_type>&   relations) {
-      for (size_t i = 0; i < alphabet.size(); ++i) {
-        relations.emplace_back(alphabet[i] * inverse[i], id);
-        if (alphabet[i] != inverse[i]) {
-          relations.emplace_back(inverse[i] * alphabet[i], id);
-        }
-        if (alphabet[i] != id) {
-          relations.emplace_back(alphabet[i] * id, alphabet[i]);
-          relations.emplace_back(id * alphabet[i], alphabet[i]);
-        }
-      }
-    }
 
     void add_monoid_relations(std::vector<word_type> const& alphabet,
                               word_type                     id,
@@ -589,49 +574,10 @@ namespace libsemigroups {
     return result;
   }
 
-  // From Proposition 1.1 in https://bit.ly/3R5ZpKW (Ruskuc thesis)
-  std::vector<relation_type> SymmetricGroup1(size_t n) {
-    word_type const e = {0};
-    word_type const a = {1};
-    word_type const b = {2};
-
-    std::vector<relation_type> result;
-    add_monoid_relations({e, a, b}, e, result);
-    result.emplace_back(a ^ 2, e);
-    result.emplace_back(b ^ n, e);
-    result.emplace_back((a * b) ^ (n - 1), e);
-    result.emplace_back((a * (b ^ (n - 1)) * a * b) ^ 3, e);
-    for (size_t j = 2; j <= n - 2; ++j) {
-      result.emplace_back((a * ((b ^ (n - 1)) ^ j) * a * (b ^ j)) ^ 2, e);
-    }
-    return result;
-  }
-
-  // From Proposition 1.2 in https://bit.ly/3R5ZpKW (Ruskuc thesis)
-  std::vector<relation_type> SymmetricGroup2(size_t n) {
-    std::vector<word_type> alphabet = {{0}};
-    for (size_t i = 0; i < n; ++i) {
-      alphabet.push_back({i});
-    }
-    std::vector<relation_type> result;
-    add_group_relations(alphabet, {0}, alphabet, result);
-
-    for (size_t j = 1; j <= n - 2; ++j) {
-      result.emplace_back(word_type({j, j + 1, j, j + 1, j, j + 1}),
-                          word_type({0}));
-    }
-    for (size_t l = 3; l <= n - 1; ++l) {
-      for (size_t k = 1; k <= l - 2; ++k) {
-        result.emplace_back(word_type({k, l, k, l}), word_type({0}));
-      }
-    }
-    return result;
-  }
-
-  // Exercise 9.5.2, p172 of
-  // https://link.springer.com/book/10.1007/978-1-84800-281-4
   std::vector<relation_type> SymmetricGroup(size_t n, author val) {
     if (val == author::Carmichael) {
+      // Exercise 9.5.2, p172 of
+      // https://link.springer.com/book/10.1007/978-1-84800-281-4
       std::vector<word_type> pi;
       for (size_t i = 0; i <= n - 2; ++i) {
         pi.push_back({i});
@@ -660,8 +606,48 @@ namespace libsemigroups {
                             word_type({}));
       }
       return result;
+    } else if (val == author::Coxeter + author::Moser) {
+      // From Chapter 3, Proposition 1.2 in https://bit.ly/3R5ZpKW (Ruskuc
+      // thesis)
+
+      std::vector<word_type> a;
+      for (size_t i = 0; i < n - 1; ++i) {
+        a.push_back({i});
+      }
+      std::vector<relation_type> result;
+
+      for (size_t i = 0; i < n - 1; i++) {
+        result.emplace_back(a[i] ^ 2, word_type({}));
+      }
+
+      for (size_t j = 0; j < n - 2; ++j) {
+        result.emplace_back((a[j] * a[j + 1]) ^ 3, word_type({}));
+      }
+      for (size_t l = 2; l < n - 1; ++l) {
+        for (size_t k = 0; k <= l - 2; ++k) {
+          result.emplace_back((a[k] * a[l]) ^ 2, word_type({}));
+        }
+      }
+      return result;
+
+    } else if (val == author::Moore) {
+      // From Chapter 3, Proposition 1.1 in https://bit.ly/3R5ZpKW (Ruskuc
+      // thesis)
+      word_type const e = {};
+      word_type const a = {0};
+      word_type const b = {1};
+
+      std::vector<relation_type> result;
+      result.emplace_back(a ^ 2, e);
+      result.emplace_back(b ^ n, e);
+      result.emplace_back((a * b) ^ (n - 1), e);
+      result.emplace_back((a * (b ^ (n - 1)) * a * b) ^ 3, e);
+      for (size_t j = 2; j <= n - 2; ++j) {
+        result.emplace_back((a * ((b ^ (n - 1)) ^ j) * a * (b ^ j)) ^ 2, e);
+      }
+      return result;
     } else {
-      LIBSEMIGROUPS_EXCEPTION("the 2nd argument (author) should be Carmichael");
+      LIBSEMIGROUPS_EXCEPTION("not yet implemented");
     }
   }
 
@@ -1206,7 +1192,7 @@ namespace libsemigroups {
     }
     if (val == author::Aizenstat) {
       // From Proposition 1.7 in https://bit.ly/3R5ZpKW
-      auto result = SymmetricGroup1(n);
+      auto result = SymmetricGroup(n, author::Moore);
 
       word_type const a = {1};
       word_type const b = {2};

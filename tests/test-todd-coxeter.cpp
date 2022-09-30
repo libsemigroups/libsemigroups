@@ -2156,28 +2156,61 @@ namespace libsemigroups {
     // Takes about 6m
     LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                             "042",
-                            "SymmetricGroup1",
+                            "SymmetricGroup(10, Moore)",
                             "[todd-coxeter][extreme]") {
-      auto        rg = ReportGuard(true);
+      auto rg = ReportGuard(true);
+
+      auto s = SymmetricGroup(10, author::Moore);
+      for (auto& rel : s) {
+        if (rel.first.empty()) {
+          rel.first = {2};
+        }
+        if (rel.second.empty()) {
+          rel.second = {2};
+        }
+      }
+      auto p = make<Presentation<word_type>>(s);
+      p.alphabet(3);
+      presentation::add_identity_rules(p, 2);
+      p.validate();
+
       ToddCoxeter tc(twosided);
       tc.set_number_of_generators(3);
-      for (auto const& w : SymmetricGroup1(10)) {
-        tc.add_pair(w.first, w.second);
+      for (size_t i = 0; i < p.rules.size() - 1; i += 2) {
+        tc.add_pair(p.rules[i], p.rules[i + 1]);
       }
+
       REQUIRE(tc.number_of_classes() == 3'628'800);
       std::cout << tc.stats_string();
     }
 
     LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                             "043",
-                            "SymmetricGroup2",
+                            "SymmetricGroup(7, Coxeter + Moser)",
                             "[todd-coxeter][quick][no-valgrind]") {
-      auto        rg = ReportGuard(REPORT);
-      ToddCoxeter tc(twosided);
-      tc.set_number_of_generators(7);
-      for (auto const& w : SymmetricGroup2(7)) {
-        tc.add_pair(w.first, w.second);
+      auto rg = ReportGuard(REPORT);
+
+      size_t n = 7;
+      auto   s = SymmetricGroup(n, author::Coxeter + author::Moser);
+      for (auto& rel : s) {
+        if (rel.first.empty()) {
+          rel.first = {n - 1};
+        }
+        if (rel.second.empty()) {
+          rel.second = {n - 1};
+        }
       }
+      auto p = make<Presentation<word_type>>(s);
+      p.alphabet(n);
+      presentation::add_identity_rules(p, n - 1);
+      p.validate();
+
+      ToddCoxeter tc(twosided);
+      tc.set_number_of_generators(n);
+      for (size_t i = 0; i < p.rules.size() - 1; i += 2) {
+        tc.add_pair(p.rules[i], p.rules[i + 1]);
+      }
+
       tc.run_for(std::chrono::microseconds(1));
       REQUIRE(tc.is_non_trivial() == tril::TRUE);
       REQUIRE(!tc.finished());

@@ -29,15 +29,22 @@
 #include "libsemigroups/types.hpp"    // for relation_type
 
 namespace libsemigroups {
-  enum class author {
-    Machine,
-    Aizenstat,
-    Carmichael,
-    East,
-    Iwahori,
-    Moore,
-    Sutov
+  enum class author : uint64_t {
+    Machine    = 0,
+    Aizenstat  = 1,
+    Carmichael = 2,
+    Coxeter    = 4,
+    East       = 8,
+    Iwahori    = 16,
+    Moore      = 32,
+    Moser      = 64,
+    Sutov      = 128
   };
+
+  inline author operator+(author auth1, author auth2) {
+    return static_cast<author>(static_cast<uint64_t>(auth1)
+                               + static_cast<uint64_t>(auth2));
+  }
 
   std::vector<relation_type> RookMonoid(size_t l, int q);
 
@@ -52,8 +59,6 @@ namespace libsemigroups {
   std::vector<relation_type> Plactic(size_t n);
   std::vector<relation_type> Stylic(size_t n);
 
-  std::vector<relation_type> SymmetricGroup1(size_t n);
-  std::vector<relation_type> SymmetricGroup2(size_t n);
   std::vector<relation_type> SymmetricGroup(size_t n, author val);
   std::vector<relation_type> DualSymmetricInverseMonoidEEF(size_t n);
   std::vector<relation_type> UniformBlockBijectionMonoidF(size_t n);
