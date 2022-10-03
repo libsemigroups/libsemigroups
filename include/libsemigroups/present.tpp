@@ -476,6 +476,18 @@ namespace libsemigroups {
     }
 
     template <typename W>
+    void replace_word(Presentation<W>& p,
+                      W const&         existing,
+                      W const&         replacement) {
+      auto rplc_wrd = [&existing, &replacement](W& word) {
+        if (word == existing) {
+          word = replacement;
+        }
+      };
+      std::for_each(p.rules.begin(), p.rules.end(), rplc_wrd);
+    }
+
+    template <typename W>
     void normalize_alphabet(Presentation<W>& p) {
       using size_type   = typename Presentation<W>::size_type;
       using letter_type = typename Presentation<W>::letter_type;
