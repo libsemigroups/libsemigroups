@@ -792,6 +792,27 @@ namespace libsemigroups {
       replace_subword(p, w.cbegin(), w.cend());
     }
 
+    //! Replace instances of a word on either side of a rule by another word.
+    //!
+    //! If \p existing and \p replacement are words, then this function
+    //! replaces every instance of \p existing in every rule of the form
+    //! \p existing \f$= w\f$ or \f$w = \f$ \p existing, with the word
+    //! \p replacement. The presentation \p p is changed in-place.
+    //!
+    //! \tparam W the type of the words in the presentation
+    //! \param p the presentation
+    //! \param existing the word to be replaced
+    //! \param replacement the replacement word
+    //!
+    //! \returns (None)
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    template <typename W>
+    void replace_word(Presentation<W>& p,
+                      W const&         existing,
+                      W const&         replacement);
+
     //! Return the sum of the lengths of the rules.
     //!
     //! \tparam W the type of the words in the presentation
@@ -801,6 +822,7 @@ namespace libsemigroups {
     //!
     //! \exceptions
     //! \no_libsemigroups_except
+
     template <typename W>
     size_t length(Presentation<W> const& p) {
       auto op = [](size_t val, W const& x) { return val + x.size(); };

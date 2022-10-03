@@ -448,6 +448,40 @@ namespace libsemigroups {
     }
 
     template <typename W>
+    void check_replace_word() {
+      Presentation<W> p;
+      presentation::add_rule(p, {0, 1, 0}, {});
+      p.alphabet_from_rules();
+      presentation::replace_word(p, W({}), W({2}));
+      REQUIRE(p.rules == std::vector<W>{{0, 1, 0}, {2}});
+
+      p.rules.clear();
+      presentation::add_rule(p, {0, 1, 0}, {2, 1});
+      presentation::add_rule(p, {1, 1, 2}, {1, 2, 1});
+      presentation::add_rule(p, {2, 1, 2, 1}, {2, 2});
+      presentation::add_rule(p, {2, 1}, {0, 1, 1});
+      p.alphabet_from_rules();
+      presentation::replace_word(p, W({2, 1}), W({1, 2}));
+      REQUIRE(p.rules
+              == std::vector<W>{{0, 1, 0},
+                                {1, 2},
+                                {1, 1, 2},
+                                {1, 2, 1},
+                                {2, 1, 2, 1},
+                                {2, 2},
+                                {1, 2},
+                                {0, 1, 1}});
+
+      p.rules.clear();
+      presentation::add_rule(p, {0, 1, 0}, {1, 0, 1});
+      presentation::add_rule(p, {0, 1, 1}, {1, 0, 1, 0});
+      p.alphabet_from_rules();
+      presentation::replace_word(p, W({1, 0, 1}), W({}));
+      REQUIRE(p.rules
+              == std::vector<W>{{0, 1, 0}, {}, {0, 1, 1}, {1, 0, 1, 0}});
+    }
+
+    template <typename W>
     void check_longest_rule() {
       Presentation<W> p;
       p.rules.push_back(W({0, 1, 2, 1}));
@@ -954,6 +988,16 @@ namespace libsemigroups {
     check_replace_subword<word_type>();
     check_replace_subword<StaticVector1<uint16_t, 64>>();
     check_replace_subword<std::string>();
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Presentation",
+                          "030",
+                          "helpers replace_word",
+                          "[quick][presentation]") {
+    auto rg = ReportGuard(false);
+    check_replace_word<word_type>();
+    check_replace_word<StaticVector1<uint16_t, 10>>();
+    check_replace_word<std::string>();
   }
 
   LIBSEMIGROUPS_TEST_CASE("Presentation",

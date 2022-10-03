@@ -69,6 +69,9 @@ Contents
    * - :cpp:any:`replace_subword`
      - Replace non-overlapping instances of a subword.
 
+   * - :cpp:any:`replace_word`
+     - Replace instances of a word occupying either side of a rule.
+
    * - :cpp:any:`length`
      - Return the sum of the lengths of the rules.
 
