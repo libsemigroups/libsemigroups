@@ -172,7 +172,7 @@ the above by doing:
 ::
 
     brew install doxygen sphinx
-    pip3 install -r docs/requirements
+    pip3 install -r docs/requirements.txt
 
 .. TODO add ubuntu instructions
 
