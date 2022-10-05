@@ -100,6 +100,24 @@ namespace libsemigroups {
       }
       return ad;
     }
+
+    void check_hopkroftKarp_with_PSTILO_paths(ActionDigraph<size_t> d1,
+                                              size_t                q0,
+                                              ActionDigraph<size_t> d2,
+                                              size_t                p0,
+                                              int max_path_length) {
+      auto          N1 = d1.number_of_nodes();
+      detail::Duf<> uf = HopcroftKarp()(d1, q0, d2, p0);
+
+      for (auto t = d1.cbegin_nodes(); t != d1.cend_nodes(); ++t) {
+        for (auto path_it = d1.cbegin_pstilo(q0, *t, 0, max_path_length);
+             path_it != d1.cend_pstilo();
+             ++path_it) {
+          auto node = action_digraph_helper::follow_path(d2, p0, *path_it);
+          REQUIRE(uf.find(*t) == uf.find(N1 + node));
+        }
+      }
+    }
   }  // namespace
 
   LIBSEMIGROUPS_TEST_CASE("ActionDigraph",
@@ -1954,5 +1972,106 @@ namespace libsemigroups {
     std::ostringstream oss;
     oss << ad;
     REQUIRE(oss.str() == "{{1, -}, {0, -}, {2, -}}");
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("ActionDigraph", "046", "HopcroftKarp", "[quick]") {
+    ActionDigraph<size_t> d1;
+    d1.add_nodes(3);
+    d1.add_to_out_degree(3);
+    d1.add_edge(0, 0, 0);
+    d1.add_edge(0, 1, 1);
+    d1.add_edge(0, 2, 2);
+    d1.add_edge(1, 0, 0);
+    d1.add_edge(1, 1, 1);
+    d1.add_edge(1, 2, 2);
+    d1.add_edge(2, 0, 0);
+    d1.add_edge(2, 1, 1);
+    d1.add_edge(2, 2, 2);
+
+    ActionDigraph<size_t> d2;
+    d2.add_nodes(3);
+    d2.add_to_out_degree(3);
+    d2.add_edge(0, 0, 0);
+    d2.add_edge(0, 1, 1);
+    d2.add_edge(0, 2, 2);
+    d2.add_edge(1, 0, 0);
+    d2.add_edge(1, 1, 1);
+    d2.add_edge(1, 2, 2);
+    d2.add_edge(2, 0, 0);
+    d2.add_edge(2, 1, 1);
+    d2.add_edge(2, 2, 2);
+
+    detail::Duf<> output_uf;
+    output_uf.resize(6);
+    output_uf.unite(0, 3);
+    output_uf.unite(1, 4);
+    output_uf.unite(2, 5);
+
+    detail::Duf<> uf = HopcroftKarp()(d1, 0, d2, 0);
+    REQUIRE(uf == output_uf);
+  }
+<<<<<<< HEAD
+=======
+
+  LIBSEMIGROUPS_TEST_CASE("ActionDigraph", "047", "quotient", "[quick]") {
+    ActionDigraph<size_t> ad(3, 2);
+    ad.add_edge(0, 1, 0);
+    ad.add_edge(0, 2, 1);
+    ad.add_edge(1, 1, 0);
+    ad.add_edge(1, 2, 1);
+    ad.add_edge(2, 2, 0);
+    ad.add_edge(2, 2, 1);
+
+    detail::Duf<> uf;
+    uf.resize(3);
+    uf.unite(0, 2);
+
+    ActionDigraph<size_t> output = QuotientDigraph<size_t>(ad, uf);
+    REQUIRE(output == action_digraph_helper::make<size_t>(1, {{0, 0}}));
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("ActionDigraph", "048", "quotient", "[quick]") {
+    auto ad = action_digraph_helper::make<size_t>(
+        4, {{1, 0}, {2, 1}, {3, 2}, {2, 1}});
+
+    detail::Duf<> uf1;
+    uf1.resize(4);
+    uf1.unite(1, 3);
+
+    detail::Duf<> uf2;
+    uf2.resize(4);
+    uf2.unite(0, 3);
+
+    detail::Duf<> uf3;
+    uf3.resize(4);
+
+    REQUIRE(
+        QuotientDigraph<size_t>(ad, uf1)
+        == action_digraph_helper::make<size_t>(3, {{1, 0}, {2, 1}, {1, 2}}));
+
+    REQUIRE(QuotientDigraph<size_t>(ad, uf2)
+            == action_digraph_helper::make<size_t>(1, {{0, 0}}));
+
+    REQUIRE(QuotientDigraph<size_t>(ad, uf3)
+            == action_digraph_helper::make<size_t>(
+                4, {{1, 0}, {2, 1}, {3, 2}, {2, 1}}));
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("ActionDigraph",
+                          "049",
+                          "HopkroftKarp",
+                          "[standard]") {
+    unsigned int seed = 1;
+    for (int i = 0; i != 1000; i++) {
+      int out_deg = rand_r(&seed) % 10 + 1;
+      int size_1  = rand_r(&seed) % 20 + 1;
+      int start_1 = rand_r(&seed) % size_1;
+      int size_2  = rand_r(&seed) % 20 + 1;
+      int start_2 = rand_r(&seed) % size_2;
+
+      ActionDigraph<size_t> d1 = ActionDigraph<size_t>::random(size_1, out_deg);
+      ActionDigraph<size_t> d2 = ActionDigraph<size_t>::random(size_2, out_deg);
+      check_hopkroftKarp_with_PSTILO_paths(d1, start_1, d2, start_2, 5);
+    }
   }
 }  // namespace libsemigroups

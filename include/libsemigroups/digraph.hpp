@@ -3326,37 +3326,31 @@ namespace libsemigroups {
    private:
     detail::Duf<> _uf;
 
-
    public:
     HopcroftKarp() = default;
 
     // Change d in-place to contain the quotient of d1 (or d2) by the partition
     // returned by the HopcroftKarp Algorithm.
     template <typename T>
-    detail::Duf<> const& operator()(ActionDigraph<T> const& d1,
-                    typename ActionDigraph<T>::node_type               p0,
-                    ActionDigraph<T> const& d2,
-                    typename ActionDigraph<T>::node_type               q0) {
-
+    detail::Duf<> const& operator()(ActionDigraph<T> const&              d1,
+                                    typename ActionDigraph<T>::node_type p0,
+                                    ActionDigraph<T> const&              d2,
+                                    typename ActionDigraph<T>::node_type q0) {
       using node_type  = typename ActionDigraph<T>::node_type;
       using label_type = typename ActionDigraph<T>::label_type;
 
       auto N1 = d1.number_of_nodes();
       auto N2 = d2.number_of_nodes();
-      
+
       if (d1.out_degree() != d2.out_degree()) {
-        LIBSEMIGROUPS_EXCEPTION("arguments d1 and d2 must have the same out degree");
+        LIBSEMIGROUPS_EXCEPTION(
+            "arguments d1 and d2 must have the same out degree");
       }
-      if (p0 < 0 or p0 >= N1) {
+      if (p0 < 0 || p0 >= N1) {
         LIBSEMIGROUPS_EXCEPTION("argument p0 must be a node of d1");
       }
-      if (q0 < 0 or q0 >= N2) {
+      if (q0 < 0 || q0 >= N2) {
         LIBSEMIGROUPS_EXCEPTION("argument q0 must be a node of d2");
-      }
-
-
-      if (N1 > N2) {
-        return operator()(d2, d1);
       }
 
       auto M = d1.out_degree();
@@ -3364,37 +3358,34 @@ namespace libsemigroups {
       _uf.unite(p0, q0 + N1);
       // 0 .. N1 - 1, N1  .. N1 + N2 -1
       std::stack<std::pair<node_type, node_type>> stck;
-      stck.emplace(p0, q0);
+      stck.emplace(p0, q0 + N1);
 
       while (!stck.empty()) {
         node_type q1, q2;
         std::tie(q1, q2) = stck.top();
         stck.pop();
         for (label_type a = 0; a < M; ++a) {
-          node_type t1, t2; 
-          if (q1 < N1){
-            t1 = _uf.find(d1.unsafe_neighbor(q1, a));
-          } else {t1 = _uf.find(d2.unsafe_neighbor(q1 - N1, a));
+          node_type r1, r2;
+          if (q1 < N1) {
+            r1 = _uf.find(d1.unsafe_neighbor(q1, a));
+          } else {
+            r1 = _uf.find(d2.unsafe_neighbor(q1 - N1, a) + N1);
           }
-          if (q2 < N2){
-            t2 = _uf.find(d2.unsafe_neighbor(q2, a));
-          } else {t2 = _uf.find(d2.unsafe_neighbor(q2 - N2, a));
+          if (q2 < N1) {
+            r2 = _uf.find(d1.unsafe_neighbor(q2, a));
+          } else {
+            r2 = _uf.find(d2.unsafe_neighbor(q2 - N1, a) + N1);
           }
 
-          if (t1 != t2) {
-            _uf.unite(t1, t2);
-            stck.emplace(t1, t2);
+          if (r1 != r2) {
+            _uf.unite(r1, r2);
+            stck.emplace(r1, r2);
           }
         }
       }
-      // [0, 1, 3], [2, 4], [5]]
-      // [6, 6, 1, 6, 1, 2] 
-      //
-      // [0, 1, 2, 3, 4, 5]
-      // [0, 1, 2, 1, 4, 5] 
-      // [0, 0, 2, 1, 4, 5] 
-      // 3 -> 0
-      //d = quotient_digraph(d1, _uf);  // quotient_digraph doesn't exist
+
+      // d = quotient_digraph(d1, _uf);  // quotient_digraph doesn't exist
+      // TODO: Change uf to be able to restrict to a subset
       return _uf;
     }
   };
