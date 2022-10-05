@@ -78,6 +78,12 @@ namespace libsemigroups {
 
   std::vector<relation_type> ChineseMonoid(size_t n);
 
+  void
+  add_full_transformation_monoid_relations(std::vector<relation_type>& result,
+                                           size_t                      n,
+                                           size_t                      pi_start,
+                                           size_t e12_value);
+
   template <typename T, typename F, typename... Args>
   void setup(T& tc, size_t num_gens, F func, Args... args) {
     tc.set_number_of_generators(num_gens);
