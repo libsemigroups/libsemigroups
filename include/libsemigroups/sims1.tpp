@@ -229,6 +229,10 @@ namespace libsemigroups {
   template <typename T>
   void Sims1<T>::for_each(size_type                                n,
                           std::function<void(digraph_type const&)> pred) const {
+    if (n == 0) {
+      LIBSEMIGROUPS_EXCEPTION(
+          "expected the 1st argument (size_type) to be non-zero");
+    }
     report_at_start(short_rules(), long_rules(), n, number_of_threads());
     if (number_of_threads() == 1) {
       if (!report::should_report()) {
@@ -284,6 +288,10 @@ namespace libsemigroups {
   typename Sims1<T>::digraph_type
   Sims1<T>::find_if(size_type                                n,
                     std::function<bool(digraph_type const&)> pred) const {
+    if (n == 0) {
+      LIBSEMIGROUPS_EXCEPTION(
+          "expected the 1st argument (size_type) to be non-zero");
+    }
     report_at_start(short_rules(), long_rules(), n, number_of_threads());
     if (number_of_threads() == 1) {
       if (!report::should_report()) {
@@ -461,6 +469,7 @@ namespace libsemigroups {
         _felsch_graph(p, n),
         _mtx(),
         _pending() {
+    // n == 0 only when the iterator is cend
     _felsch_graph.number_of_active_nodes(n == 0 ? 0 : 1);
     // = 0 indicates iterator is done
   }
@@ -469,11 +478,13 @@ namespace libsemigroups {
   // called in the constructor of every thread_iterator
   template <typename T>
   void Sims1<T>::iterator_base::init(size_type n) {
-    if (n > 1) {
-      _pending.emplace_back(0, 0, 1, 0, 2);
-    }
-    if (_min_target_node == 0) {
-      _pending.emplace_back(0, 0, 0, 0, 1);
+    if (n != 0) {
+      if (n > 1 || _min_target_node == 1) {
+        _pending.emplace_back(0, 0, 1, 0, 2);
+      }
+      if (_min_target_node == 0) {
+        _pending.emplace_back(0, 0, 0, 0, 1);
+      }
     }
   }
 
@@ -880,7 +891,7 @@ namespace libsemigroups {
         "searching for a faithful rep. o.r.c. on [%llu, %llu) points\n",
         _min,
         _max + 1);
-    if (_min > _max) {
+    if (_min > _max || _max == 0) {
       REPORT_DEFAULT(
           "no faithful rep. o.r.c. exists in [%llu, %llu) = \u2205\n",
           _min,
