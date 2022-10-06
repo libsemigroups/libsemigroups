@@ -91,8 +91,19 @@ namespace libsemigroups {
       Sims1_ S(congruence_kind::right);
       REQUIRE(S.short_rules(p).number_of_threads(2).number_of_congruences(5)
               == 6);
+      REQUIRE_THROWS_AS(S.number_of_congruences(0), LibsemigroupsException);
+      REQUIRE_THROWS_AS(S.find_if(0, [](auto) { return false; }),
+                        LibsemigroupsException);
+      REQUIRE_THROWS_AS(S.for_each(0, [](auto) { return false; }),
+                        LibsemigroupsException);
+      REQUIRE_THROWS_AS(S.cbegin(0), LibsemigroupsException);
+      REQUIRE_THROWS_AS(S.cend(0), LibsemigroupsException);
+      REQUIRE(S.number_of_congruences(1) == 1);
 
-      auto it = S.cbegin(5);
+      auto it = S.cbegin(1);
+      REQUIRE(*it == action_digraph_helper::make<node_type>(1, {{0, 0}}));
+
+      it = S.cbegin(5);
       REQUIRE(*(it++) == action_digraph_helper::make<node_type>(5, {{0, 0}}));
       REQUIRE(*(it++)
               == action_digraph_helper::make<node_type>(5, {{1, 0}, {1, 1}}));
@@ -197,6 +208,7 @@ namespace libsemigroups {
     presentation::add_rule_and_check(p, {1, 3, 0, 2, 4, 4, 4}, {6});
     Sims1_ S(congruence_kind::right);
     S.short_rules(p);
+    REQUIRE(S.number_of_congruences(1) == 1);
     REQUIRE(S.number_of_congruences(3) == 14);
     REQUIRE(S.number_of_congruences(4) == 14);
     REQUIRE(S.number_of_congruences(5) == 14);
@@ -969,6 +981,8 @@ namespace libsemigroups {
 
     C.number_of_threads(2);
     REQUIRE(C.number_of_congruences(3) == 5);
+    REQUIRE_THROWS_AS(C.find_if(0, [](auto const&) { return true; }),
+                      LibsemigroupsException);
   }
 
   LIBSEMIGROUPS_TEST_CASE("Sims1",
@@ -1238,11 +1252,12 @@ namespace libsemigroups {
       // There are no relations containing the empty word so we just manually
       // add it.
       p.contains_empty_word(true);
-      auto d = MinimalRepOrc()
-                   .short_rules(p)
-                   .number_of_threads(2)
-                   .target_size(sizes[n])
-                   .digraph();
+      auto orc
+          = MinimalRepOrc().short_rules(p).number_of_threads(2).target_size(
+              sizes[n]);
+
+      auto d = orc.digraph();
+      REQUIRE(orc.target_size() == sizes[n]);
       REQUIRE(action_digraph_helper::is_strictly_cyclic(d));
       auto S = make<FroidurePin<Transf<0, node_type>>>(d);
       S.add_generator(S.generator(0).identity());
@@ -1274,6 +1289,21 @@ namespace libsemigroups {
     presentation::add_rule_and_check(p, {2, 3, 2, 3, 2, 3}, {});
     presentation::add_rule_and_check(p, {2, 4, 2, 4}, {});
     presentation::add_rule_and_check(p, {3, 4, 3, 4, 3, 4}, {});
+    REQUIRE(MinimalRepOrc()
+                .short_rules(p)
+                .target_size(0)
+                .digraph()
+                .number_of_nodes()
+            == 0);
+
+    REQUIRE(RepOrc()
+                .short_rules(p)
+                .min_nodes(0)
+                .max_nodes(0)
+                .target_size(0)
+                .digraph()
+                .number_of_nodes()
+            == 0);
 
     auto d = MinimalRepOrc().short_rules(p).target_size(720).digraph();
     REQUIRE(d.number_of_nodes() == 6);

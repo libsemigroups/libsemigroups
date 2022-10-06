@@ -846,8 +846,7 @@ namespace libsemigroups {
     //! An iterator \c it of type \c iterator pointing to an
     //! ActionDigraph with at most \p n nodes.
     //!
-    //! \exceptions
-    //! \no_libsemigroups_except
+    //! \throws LibsemigroupsException if \p n is \c 0.
     //!
     //! \warning
     //! Copying iterators of this type is expensive.  As a consequence, prefix
@@ -859,6 +858,9 @@ namespace libsemigroups {
     // TODO(Sims1) it'd be good to remove node 0 to avoid confusion. This seems
     // complicated however, and so isn't done at present.
     iterator cbegin(size_type n) const {
+      if (n == 0) {
+        LIBSEMIGROUPS_EXCEPTION("the argument (size_type) must be non-zero");
+      }
       return iterator(short_rules(), extra(), long_rules(), n);
     }
 
@@ -874,8 +876,7 @@ namespace libsemigroups {
     //! An iterator \c it of type \c iterator pointing to an
     //! ActionDigraph with at most \p 0 nodes.
     //!
-    //! \exceptions
-    //! \no_libsemigroups_except
+    //! \throws LibsemigroupsException if \p n is \c 0.
     //!
     //! \warning
     //! Copying iterators of this type is expensive.  As a consequence, prefix
@@ -885,46 +886,46 @@ namespace libsemigroups {
     //! \sa
     //! \ref cbegin
     iterator cend(size_type n) const {
-      (void) n;
+      if (n == 0) {
+        LIBSEMIGROUPS_EXCEPTION("the argument (size_type) must be non-zero");
+      }
       return iterator(short_rules(), extra(), long_rules(), 0);
     }
 
     //! Returns the number of one-sided congruences with up to a given number
     //! of classes.
     //!
-    //! This function is similar to `std::distance(begin(), end())` and exists
-    //! to:
+    //! This function is similar to `std::distance(begin(n), end(n))` and
+    //! exists to:
     //! * provide some feedback on the progress of the computation if it runs
     //! for more than 1 second.
-    //! * allow for the computation of `std::distance(begin(), end())` to be
+    //! * allow for the computation of `std::distance(begin(n), end(n))` to be
     //! performed using \ref number_of_threads in parallel.
     //!
     //! \param n the maximum number of congruence classes.
     //!
     //! \returns A value of type \c uint64_t.
     //!
-    //! \exceptions
-    //! \no_libsemigroups_except
+    //! \throws LibsemigroupsException if \p n is \c 0.
     // TODO(v3): this should be in the sims1 helper namespace
     uint64_t number_of_congruences(size_type n) const;
 
     //! Apply the function \p pred to every one-sided congruence with at
     //! most \p n classes
     //!
-    //! This function is similar to `std::for_each(begin(), end(), pred)` and
+    //! This function is similar to `std::for_each(begin(n), end(n), pred)` and
     //! exists to:
     //! * provide some feedback on the progress of the computation if it runs
     //! for more than 1 second.
-    //! * allow for the computation of `std::for_each(begin(), end(), pred)` to
-    //! be performed using \ref number_of_threads in parallel.
+    //! * allow for the computation of `std::for_each(begin(n), end(n), pred)`
+    //! to be performed using \ref number_of_threads in parallel.
     //!
     //! \param n the maximum number of congruence classes.
     //! \param pred the predicate applied to every congruence found.
     //!
     //! \returns (None)
     //!
-    //! \exceptions
-    //! \no_libsemigroups_except
+    //! \throws LibsemigroupsException if \p n is \c 0.
     // TODO(v3): this should be in the sims1 helper namespace
     void for_each(size_type                                n,
                   std::function<void(digraph_type const&)> pred) const;
@@ -932,11 +933,11 @@ namespace libsemigroups {
     //! Apply the function \p pred to every one-sided congruence with at
     //! most \p n classes, until it returns \c true.
     //!
-    //! This function is similar to `std::find_if(begin(), end(), pred)` and
+    //! This function is similar to `std::find_if(begin(n), end(n), pred)` and
     //! exists to:
     //! * provide some feedback on the progress of the computation if it runs
     //! for more than 1 second.
-    //! * allow for the computation of `std::find_if(begin(), end(), pred)` to
+    //! * allow for the computation of `std::find_if(begin(n), end(n), pred)` to
     //! be performed using \ref number_of_threads in parallel.
     //!
     //! \param n the maximum number of congruence classes.
@@ -945,8 +946,7 @@ namespace libsemigroups {
     //! \returns The first congruence whose ActionDigraph for which \p pred
     //! returns \c true.
     //!
-    //! \exceptions
-    //! \no_libsemigroups_except
+    //! \throws LibsemigroupsException if \p n is \c 0.
     // TODO(v3): this should be in the sims1 helper namespace
     digraph_type find_if(size_type                                n,
                          std::function<bool(digraph_type const&)> pred) const;
