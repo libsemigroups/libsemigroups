@@ -73,6 +73,10 @@ namespace libsemigroups {
                   "PresentationBase");
     // This normalises the rules in the case they are of the right type but
     // not normalised
+    if (p.alphabet().empty()) {
+      LIBSEMIGROUPS_EXCEPTION(
+          "the argument (Presentation) must not have 0 generators");
+    }
     auto normal_p = make<Presentation<word_type>>(p);
     validate_presentation(normal_p, long_rules());
     validate_presentation(normal_p, extra());
