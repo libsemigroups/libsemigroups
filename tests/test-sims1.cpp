@@ -476,6 +476,8 @@ namespace libsemigroups {
     // #45: Sims1: found 1'314'588'296 congruences in 487405.000000!
     // #20: Sims1: found 4'619'043'843 congruences in 2'334'184.500000!
     // #49: Sims1: found 5'582'499'404 congruences in 2'912'877.000000!
+    // #10: Sims1: found 6'825'113'083 congruences in 3705611.250000!
+    //
   }
 
   LIBSEMIGROUPS_TEST_CASE("Sims1",
@@ -1998,7 +2000,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("Sims1",
                           "067",
-                          "FreeSemigroup(n) up to index 2",
+                          "FreeSemigroup(n) up to index 3",
                           "[extreme][low-index]") {
     // (27^n - 9^n)/2 - 12^n + 6^n
     std::array<uint64_t, 10> const num = {0, 2, 229, 8022, 243241, 6904866};
@@ -2153,6 +2155,16 @@ namespace libsemigroups {
       C.short_rules(p).number_of_threads(4);
       REQUIRE(C.number_of_congruences(factorial(n)) == num[n]);
     }
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Sims1",
+                          "073",
+                          "corner case no generators + no relations",
+                          "[quick][low-index]") {
+    Presentation<word_type> p;
+    p.alphabet(0);
+    Sims1_ S(congruence_kind::right);
+    REQUIRE_THROWS_AS(S.short_rules(p), LibsemigroupsException);
   }
 
 }  // namespace libsemigroups
