@@ -711,16 +711,26 @@ namespace libsemigroups {
       // WARNING <that> must be locked before calling this function
       std::lock_guard<std::mutex> lock(this->_mtx);
       LIBSEMIGROUPS_ASSERT(this->_pending.empty());
+      size_t const n = that._pending.size();
+      if (n == 1) {
+        return;
+      }
       // Copy the FelschDigraph from that into *this
       copy_felsch_graph(that);
 
       // Unzip that._pending into _pending and that._pending, this seems to
       // give better performance in the search than splitting that._pending
       // into [begin, begin + size / 2) and [begin + size / 2, end)
-      for (size_t i = 0; i < that._pending.size(); i += 2) {
+      size_t i = 0;
+      for (; i < n - 2; i += 2) {
         this->_pending.push_back(std::move(that._pending[i]));
         that._pending[i / 2] = std::move(that._pending[i + 1]);
       }
+      this->_pending.push_back(std::move(that._pending[i]));
+      if (i == n - 2) {
+        that._pending[i / 2] = std::move(that._pending[i + 1]);
+      }
+
       that._pending.erase(that._pending.cbegin() + that._pending.size() / 2,
                           that._pending.cend());
     }
