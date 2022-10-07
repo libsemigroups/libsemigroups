@@ -69,6 +69,8 @@ namespace libsemigroups {
   std::vector<relation_type> SymmetricInverseMonoid(size_t n, author val);
 
   std::vector<relation_type> ChineseMonoid(size_t n);
+  // The monogenic semigroup a ^ m + r = a ^ m
+  std::vector<relation_type> MonogenicSemigroup(size_t m, size_t r);
 
   template <typename T, typename F, typename... Args>
   void setup(T& tc, size_t num_gens, F func, Args... args) {
