@@ -2144,7 +2144,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("Sims1",
                           "072",
-                          "SymmetricGroup(n) for n = ...",
+                          "SymmetricGroup(n) for n = 3, 4",
                           "[quick][low-index]") {
     std::array<uint64_t, 10> const num = {0, 0, 0, 6, 30, 156, 1'455};
     auto                           rg  = ReportGuard(false);
