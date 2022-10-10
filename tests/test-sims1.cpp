@@ -335,7 +335,7 @@ namespace libsemigroups {
 
     auto w = presentation::longest_common_subword(p);
     while (!w.empty()) {
-      presentation::replace_subword(p, presentation::longest_common_subword(p));
+      presentation::replace_subword(p, w);
       w = presentation::longest_common_subword(p);
     }
 
@@ -2161,6 +2161,12 @@ namespace libsemigroups {
     p.alphabet(0);
     Sims1_ S(congruence_kind::right);
     REQUIRE_THROWS_AS(S.short_rules(p), LibsemigroupsException);
+    REQUIRE_THROWS_AS(S.number_of_congruences(1), LibsemigroupsException);
+    REQUIRE_THROWS_AS(S.cbegin(2), LibsemigroupsException);
+    REQUIRE_THROWS_AS(S.cend(2), LibsemigroupsException);
+    REQUIRE_THROWS_AS(S.find_if(2, [](auto) { return true; }),
+                      LibsemigroupsException);
+    REQUIRE_THROWS_AS(S.for_each(2, [](auto) {}), LibsemigroupsException);
   }
 
   LIBSEMIGROUPS_TEST_CASE("Sims1",

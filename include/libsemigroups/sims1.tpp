@@ -236,6 +236,10 @@ namespace libsemigroups {
     if (n == 0) {
       LIBSEMIGROUPS_EXCEPTION(
           "expected the 1st argument (size_type) to be non-zero");
+    } else if (short_rules().rules.empty()
+               && short_rules().alphabet().empty()) {
+      LIBSEMIGROUPS_EXCEPTION(
+          "the short_rules() must be defined before calling this function");
     }
     report_at_start(short_rules(), long_rules(), n, number_of_threads());
     if (number_of_threads() == 1) {
@@ -295,6 +299,10 @@ namespace libsemigroups {
     if (n == 0) {
       LIBSEMIGROUPS_EXCEPTION(
           "expected the 1st argument (size_type) to be non-zero");
+    } else if (short_rules().rules.empty()
+               && short_rules().alphabet().empty()) {
+      LIBSEMIGROUPS_EXCEPTION(
+          "the short_rules() must be defined before calling this function");
     }
     report_at_start(short_rules(), long_rules(), n, number_of_threads());
     if (number_of_threads() == 1) {
