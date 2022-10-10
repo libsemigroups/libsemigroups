@@ -1,6 +1,20 @@
 Changelog - version 2
 =====================
 
+v2.3.1 (released 10/10/2022)
+----------------------------
+
+In this release a number of corner cases in the ``Sims1`` class are
+fixed: 
+* sometimes ``number_of_congruences`` erroneously returned ``0`` for the number
+of congruences with 1 class;
+* if an empty presentation (no generators or relations) was used to
+initialise ``short_rules``, then the ``Sims1::for_each`` and
+``Sims1::find_if`` could crash;
+* a more serious bug which could cause an invalid read beyond the end of a
+container (caused by the erroneous assumption that the containers were always
+of even length). Thanks to `J. James` for reporting this issue.
+
 v2.3.0 (released 28/09/2022)
 ----------------------------
 
