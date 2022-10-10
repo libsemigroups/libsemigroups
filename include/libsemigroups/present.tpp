@@ -466,10 +466,11 @@ namespace libsemigroups {
           word.insert(word.begin() + replacement_first,
                       replacement.cbegin(),
                       replacement.cend());
-          it = std::search(word.begin() + replacement_first + 1,
-                           word.end(),
-                           existing.cbegin(),
-                           existing.cend());
+          it = std::search(
+              word.begin() + replacement_first + replacement.size(),
+              word.end(),
+              existing.cbegin(),
+              existing.cend());
         }
       };
       std::for_each(p.rules.begin(), p.rules.end(), rplc_sbwrd);

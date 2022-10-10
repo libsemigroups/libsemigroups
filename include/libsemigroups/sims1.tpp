@@ -73,6 +73,10 @@ namespace libsemigroups {
                   "PresentationBase");
     // This normalises the rules in the case they are of the right type but
     // not normalised
+    if (p.alphabet().empty()) {
+      LIBSEMIGROUPS_EXCEPTION(
+          "the argument (Presentation) must not have 0 generators");
+    }
     auto normal_p = make<Presentation<word_type>>(p);
     validate_presentation(normal_p, long_rules());
     validate_presentation(normal_p, extra());
@@ -229,6 +233,14 @@ namespace libsemigroups {
   template <typename T>
   void Sims1<T>::for_each(size_type                                n,
                           std::function<void(digraph_type const&)> pred) const {
+    if (n == 0) {
+      LIBSEMIGROUPS_EXCEPTION(
+          "expected the 1st argument (size_type) to be non-zero");
+    } else if (short_rules().rules.empty()
+               && short_rules().alphabet().empty()) {
+      LIBSEMIGROUPS_EXCEPTION(
+          "the short_rules() must be defined before calling this function");
+    }
     report_at_start(short_rules(), long_rules(), n, number_of_threads());
     if (number_of_threads() == 1) {
       if (!report::should_report()) {
@@ -284,6 +296,14 @@ namespace libsemigroups {
   typename Sims1<T>::digraph_type
   Sims1<T>::find_if(size_type                                n,
                     std::function<bool(digraph_type const&)> pred) const {
+    if (n == 0) {
+      LIBSEMIGROUPS_EXCEPTION(
+          "expected the 1st argument (size_type) to be non-zero");
+    } else if (short_rules().rules.empty()
+               && short_rules().alphabet().empty()) {
+      LIBSEMIGROUPS_EXCEPTION(
+          "the short_rules() must be defined before calling this function");
+    }
     report_at_start(short_rules(), long_rules(), n, number_of_threads());
     if (number_of_threads() == 1) {
       if (!report::should_report()) {
@@ -461,6 +481,7 @@ namespace libsemigroups {
         _felsch_graph(p, n),
         _mtx(),
         _pending() {
+    // n == 0 only when the iterator is cend
     _felsch_graph.number_of_active_nodes(n == 0 ? 0 : 1);
     // = 0 indicates iterator is done
   }
@@ -469,11 +490,13 @@ namespace libsemigroups {
   // called in the constructor of every thread_iterator
   template <typename T>
   void Sims1<T>::iterator_base::init(size_type n) {
-    if (n > 1) {
-      _pending.emplace_back(0, 0, 1, 0, 2);
-    }
-    if (_min_target_node == 0) {
-      _pending.emplace_back(0, 0, 0, 0, 1);
+    if (n != 0) {
+      if (n > 1 || _min_target_node == 1) {
+        _pending.emplace_back(0, 0, 1, 0, 2);
+      }
+      if (_min_target_node == 0) {
+        _pending.emplace_back(0, 0, 0, 0, 1);
+      }
     }
   }
 
@@ -696,16 +719,26 @@ namespace libsemigroups {
       // WARNING <that> must be locked before calling this function
       std::lock_guard<std::mutex> lock(this->_mtx);
       LIBSEMIGROUPS_ASSERT(this->_pending.empty());
+      size_t const n = that._pending.size();
+      if (n == 1) {
+        return;
+      }
       // Copy the FelschDigraph from that into *this
       copy_felsch_graph(that);
 
       // Unzip that._pending into _pending and that._pending, this seems to
       // give better performance in the search than splitting that._pending
       // into [begin, begin + size / 2) and [begin + size / 2, end)
-      for (size_t i = 0; i < that._pending.size(); i += 2) {
+      size_t i = 0;
+      for (; i < n - 2; i += 2) {
         this->_pending.push_back(std::move(that._pending[i]));
         that._pending[i / 2] = std::move(that._pending[i + 1]);
       }
+      this->_pending.push_back(std::move(that._pending[i]));
+      if (i == n - 2) {
+        that._pending[i / 2] = std::move(that._pending[i + 1]);
+      }
+
       that._pending.erase(that._pending.cbegin() + that._pending.size() / 2,
                           that._pending.cend());
     }
@@ -880,7 +913,7 @@ namespace libsemigroups {
         "searching for a faithful rep. o.r.c. on [%llu, %llu) points\n",
         _min,
         _max + 1);
-    if (_min > _max) {
+    if (_min > _max || _max == 0) {
       REPORT_DEFAULT(
           "no faithful rep. o.r.c. exists in [%llu, %llu) = \u2205\n",
           _min,

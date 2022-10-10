@@ -1437,4 +1437,10 @@ namespace libsemigroups {
     }
   }
 
+  std::vector<relation_type> MonogenicSemigroup(size_t m, size_t r) {
+    std::vector<relation_type> result;
+    result.emplace_back(word_type({0}) ^ (m + r), word_type({0}) ^ m);
+    return result;
+  }
+
 }  // namespace libsemigroups

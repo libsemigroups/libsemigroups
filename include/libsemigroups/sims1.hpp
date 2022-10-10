@@ -277,6 +277,7 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException
     //! if the alphabet of `p` is non-empty and not equal to that of
     //! \ref long_rules or \ref extra.
+    //! \throws LibsemigroupsException if `p` has 0-generators and 0-relations.
     template <typename P>
     T& short_rules(P const& p);
 
@@ -846,8 +847,9 @@ namespace libsemigroups {
     //! An iterator \c it of type \c iterator pointing to an
     //! ActionDigraph with at most \p n nodes.
     //!
-    //! \exceptions
-    //! \no_libsemigroups_except
+    //! \throws LibsemigroupsException if \p n is \c 0.
+    //! \throws LibsemigroupsException if `short_rules()` has 0-generators and
+    //! 0-relations (i.e. it has not been initialised).
     //!
     //! \warning
     //! Copying iterators of this type is expensive.  As a consequence, prefix
@@ -859,6 +861,13 @@ namespace libsemigroups {
     // TODO(Sims1) it'd be good to remove node 0 to avoid confusion. This seems
     // complicated however, and so isn't done at present.
     iterator cbegin(size_type n) const {
+      if (n == 0) {
+        LIBSEMIGROUPS_EXCEPTION("the argument (size_type) must be non-zero");
+      } else if (short_rules().rules.empty()
+                 && short_rules().alphabet().empty()) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "the short_rules() must be defined before calling this function");
+      }
       return iterator(short_rules(), extra(), long_rules(), n);
     }
 
@@ -874,8 +883,9 @@ namespace libsemigroups {
     //! An iterator \c it of type \c iterator pointing to an
     //! ActionDigraph with at most \p 0 nodes.
     //!
-    //! \exceptions
-    //! \no_libsemigroups_except
+    //! \throws LibsemigroupsException if \p n is \c 0.
+    //! \throws LibsemigroupsException if `short_rules()` has 0-generators and
+    //! 0-relations (i.e. it has not been initialised).
     //!
     //! \warning
     //! Copying iterators of this type is expensive.  As a consequence, prefix
@@ -885,46 +895,54 @@ namespace libsemigroups {
     //! \sa
     //! \ref cbegin
     iterator cend(size_type n) const {
-      (void) n;
+      if (n == 0) {
+        LIBSEMIGROUPS_EXCEPTION("the argument (size_type) must be non-zero");
+      } else if (short_rules().rules.empty()
+                 && short_rules().alphabet().empty()) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "the short_rules() must be defined before calling this function");
+      }
       return iterator(short_rules(), extra(), long_rules(), 0);
     }
 
     //! Returns the number of one-sided congruences with up to a given number
     //! of classes.
     //!
-    //! This function is similar to `std::distance(begin(), end())` and exists
-    //! to:
+    //! This function is similar to `std::distance(begin(n), end(n))` and
+    //! exists to:
     //! * provide some feedback on the progress of the computation if it runs
     //! for more than 1 second.
-    //! * allow for the computation of `std::distance(begin(), end())` to be
+    //! * allow for the computation of `std::distance(begin(n), end(n))` to be
     //! performed using \ref number_of_threads in parallel.
     //!
     //! \param n the maximum number of congruence classes.
     //!
     //! \returns A value of type \c uint64_t.
     //!
-    //! \exceptions
-    //! \no_libsemigroups_except
+    //! \throws LibsemigroupsException if \p n is \c 0.
+    //! \throws LibsemigroupsException if `short_rules()` has 0-generators and
+    //! 0-relations (i.e. it has not been initialised).
     // TODO(v3): this should be in the sims1 helper namespace
     uint64_t number_of_congruences(size_type n) const;
 
     //! Apply the function \p pred to every one-sided congruence with at
     //! most \p n classes
     //!
-    //! This function is similar to `std::for_each(begin(), end(), pred)` and
-    //! exists to:
+    //! This function is similar to `std::for_each(begin(n), end(n), pred)`
+    //! and exists to:
     //! * provide some feedback on the progress of the computation if it runs
     //! for more than 1 second.
-    //! * allow for the computation of `std::for_each(begin(), end(), pred)` to
-    //! be performed using \ref number_of_threads in parallel.
+    //! * allow for the computation of `std::for_each(begin(n), end(n), pred)`
+    //! to be performed using \ref number_of_threads in parallel.
     //!
     //! \param n the maximum number of congruence classes.
     //! \param pred the predicate applied to every congruence found.
     //!
     //! \returns (None)
     //!
-    //! \exceptions
-    //! \no_libsemigroups_except
+    //! \throws LibsemigroupsException if \p n is \c 0.
+    //! \throws LibsemigroupsException if `short_rules()` has 0-generators and
+    //! 0-relations (i.e. it has not been initialised).
     // TODO(v3): this should be in the sims1 helper namespace
     void for_each(size_type                                n,
                   std::function<void(digraph_type const&)> pred) const;
@@ -932,12 +950,12 @@ namespace libsemigroups {
     //! Apply the function \p pred to every one-sided congruence with at
     //! most \p n classes, until it returns \c true.
     //!
-    //! This function is similar to `std::find_if(begin(), end(), pred)` and
+    //! This function is similar to `std::find_if(begin(n), end(n), pred)` and
     //! exists to:
     //! * provide some feedback on the progress of the computation if it runs
     //! for more than 1 second.
-    //! * allow for the computation of `std::find_if(begin(), end(), pred)` to
-    //! be performed using \ref number_of_threads in parallel.
+    //! * allow for the computation of `std::find_if(begin(n), end(n), pred)`
+    //! to be performed using \ref number_of_threads in parallel.
     //!
     //! \param n the maximum number of congruence classes.
     //! \param pred the predicate applied to every congruence found.
@@ -945,8 +963,9 @@ namespace libsemigroups {
     //! \returns The first congruence whose ActionDigraph for which \p pred
     //! returns \c true.
     //!
-    //! \exceptions
-    //! \no_libsemigroups_except
+    //! \throws LibsemigroupsException if \p n is \c 0.
+    //! \throws LibsemigroupsException if `short_rules()` has 0-generators and
+    //! 0-relations (i.e. it has not been initialised).
     // TODO(v3): this should be in the sims1 helper namespace
     digraph_type find_if(size_type                                n,
                          std::function<bool(digraph_type const&)> pred) const;
@@ -986,7 +1005,8 @@ namespace libsemigroups {
   //! attempts to find a right congruence, represented as an ActionDigraph, of
   //! the semigroup or monoid defined by the presentation consisting of its
   //! \ref short_rules and \ref long_rules with the following properties:
-  //! * the transformation semigroup defined by the ActionDigraph has size \ref
+  //! * the transformation semigroup defined by the ActionDigraph has size
+  //! \ref
   //!   target_size;
   //! * the number of nodes in the ActionDigraph is at least \ref min_nodes
   //!   and at most \ref max_nodes.
@@ -1037,8 +1057,8 @@ namespace libsemigroups {
 
     //! The current minimum number of nodes.
     //!
-    //! This function returns the current value for the minimum number of nodes
-    //! in the ActionDigraph that we are seeking.
+    //! This function returns the current value for the minimum number of
+    //! nodes in the ActionDigraph that we are seeking.
     //!
     //! \param (None) this function has no parameters.
     //!
@@ -1068,8 +1088,8 @@ namespace libsemigroups {
 
     //! The current maximum number of nodes.
     //!
-    //! This function returns the current value for the maximum number of nodes
-    //! in the ActionDigraph that we are seeking.
+    //! This function returns the current value for the maximum number of
+    //! nodes in the ActionDigraph that we are seeking.
     //!
     //! \param (None) this function has no parameters.
     //!
@@ -1084,8 +1104,8 @@ namespace libsemigroups {
     //! Set the target size.
     //!
     //! This function sets the target size, i.e. the desired size of the
-    //! transformation semigroup corresponding to the ActionDigraph returned by
-    //! the function \ref digraph.
+    //! transformation semigroup corresponding to the ActionDigraph returned
+    //! by the function \ref digraph.
     //!
     //! \param val the target size.
     //!
@@ -1150,12 +1170,12 @@ namespace libsemigroups {
 
   //! Defined in ``sims1.hpp``.
   //!
-  //! This class is a helper for `Sims1`, calling the `digraph` member function
-  //! attempts to find a right congruence, represented as an ActionDigraph,
-  //! with the minimum possible number of nodes such that the action of
-  //! the semigroup or monoid defined by the presentation consisting of its
-  //! \ref short_rules and \ref long_rules on the nodes of the ActionDigraph
-  //! corresponds to a semigroup of size \ref target_size.
+  //! This class is a helper for `Sims1`, calling the `digraph` member
+  //! function attempts to find a right congruence, represented as an
+  //! ActionDigraph, with the minimum possible number of nodes such that the
+  //! action of the semigroup or monoid defined by the presentation consisting
+  //! of its \ref short_rules and \ref long_rules on the nodes of the
+  //! ActionDigraph corresponds to a semigroup of size \ref target_size.
   //!
   //! If no such ActionDigraph can be found, then an empty ActionDigraph is
   //! returned (with `0` nodes and `0` edges).
@@ -1174,8 +1194,8 @@ namespace libsemigroups {
     //! Set the target size.
     //!
     //! This function sets the target size, i.e. the desired size of the
-    //! transformation semigroup corresponding to the ActionDigraph returned by
-    //! the function \ref digraph.
+    //! transformation semigroup corresponding to the ActionDigraph returned
+    //! by the function \ref digraph.
     //!
     //! \param val the target size.
     //!

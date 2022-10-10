@@ -110,12 +110,16 @@ fnam=${fnam/test_/}
 fnam=${fnam//_/-}
 dir=$(pwd)
 hpp=coverage${dir}/include/libsemigroups/${fnam}.hpp.gcov.html
+tpp=coverage${dir}/include/libsemigroups/${fnam}.tpp.gcov.html
 cpp=coverage${dir}/src/${fnam}.cpp.gcov.html
 if [[ -f $hpp ]]; then
   echo "See: $hpp"
 fi;
 if [[ -f $cpp ]]; then
   echo "See: $cpp"
+fi;
+if [[ -f $tpp ]]; then
+  echo "See: $tpp"
 fi;
 
 exit 0

@@ -445,6 +445,15 @@ namespace libsemigroups {
       REQUIRE(p.rules == std::vector<W>({{1, 2, 1, 1, 2, 1, 1}, {1, 1, 2, 1}}));
       presentation::replace_subword(p, W({1, 2, 1}), W({1}));
       REQUIRE(p.rules == std::vector<W>({{1, 1, 1}, {1, 1}}));
+      // Test for when existing is a suffix of replacement
+      p.rules.clear();
+      presentation::add_rule(
+          p, {1, 2, 1, 2, 1, 1, 2, 1, 2, 1, 1, 2, 1}, {1, 2, 1, 1, 2, 1, 2, 1});
+      presentation::replace_subword(p, W({1, 2}), W({1, 1, 2}));
+      REQUIRE(p.rules
+              == std::vector<W>(
+                  {{1, 1, 2, 1, 1, 2, 1, 1, 1, 2, 1, 1, 2, 1, 1, 1, 2, 1},
+                   {1, 1, 2, 1, 1, 1, 2, 1, 1, 2, 1}}));
     }
 
     template <typename W>
