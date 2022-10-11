@@ -761,7 +761,7 @@ namespace libsemigroups {
     //!
     //! \returns (None)
     //!
-    //! \throws LibsemigroupsException if `existing` is the empty word.
+    //! \throws LibsemigroupsException if `existing` is empty.
     // TODO(later) complexity
     template <typename W>
     void replace_subword(Presentation<W>& p,
