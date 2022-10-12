@@ -73,8 +73,13 @@ We thank the `Carnegie Trust for the Universities of Scotland`_ for funding
 the PhD scholarship of `Julius Jonušas`_ when he worked on this project.
 
 We thank the `Engineering and Physical Sciences Research Council (EPSRC)`_ for
+<<<<<<< HEAD
 funding the PhD scholarships of `Michael Young`_ and `Finn Smith`_ when they
 worked on this project (EP/M506631/1, EP/N509759/1).
+=======
+funding the PhD scholarships of `M. Young`_ and `F. Smith`_ when they worked
+on this project (EP/M506631/1, EP/N509759/1).
+>>>>>>> Update Torpey to Young
 
 .. _OpenDreamKit: https://opendreamkit.org/
 .. _Carnegie Trust for the Universities of Scotland: https://www.carnegie-trust.org/
