@@ -26,7 +26,6 @@
 #include <initializer_list>  // for initializer_list
 #include <iterator>          // for reverse_iterator, distance
 #include <sstream>           // for operator<<, ostream
-#include <string>            // for to_string
 #include <type_traits>       // for decay_t, false_type, is_def...
 #include <utility>           // for forward
 #include <vector>            // for vector, allocator
@@ -34,6 +33,7 @@
 #include "adapters.hpp"   // for Hash
 #include "debug.hpp"      // for LIBSEMIGROUPS_ASSERT
 #include "iterator.hpp"   // for ConstIteratorStateful, ConstItera...
+#include "string.hpp"     // for to_string
 
 namespace libsemigroups {
   namespace detail {
@@ -934,9 +934,9 @@ namespace libsemigroups {
       }
       os << "{{";  // {{ is an escaped single { for fmt
       for (auto it = vec.cbegin(); it < vec.cend() - 1; ++it) {
-        os << std::to_string(*it) << ", ";
+        os << detail::to_string(*it) << ", ";
       }
-      os << std::to_string(*(vec.cend() - 1)) << "}}";
+      os << detail::to_string(*(vec.cend() - 1)) << "}}";
       return os;
     }
 
