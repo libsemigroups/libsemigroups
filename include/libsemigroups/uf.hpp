@@ -24,7 +24,7 @@
 // package for GAP (v0.2.5) by Markus Pfeiffer, Max Horn, Christopher
 // Jefferson, Steve Linton.
 
-// An earlier version of the UF class was written by M. Torpey.
+// An earlier version of the UF class was written by M. Young.
 
 #ifndef LIBSEMIGROUPS_UF_HPP_
 #define LIBSEMIGROUPS_UF_HPP_
