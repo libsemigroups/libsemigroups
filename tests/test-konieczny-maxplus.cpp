@@ -50,7 +50,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE(
       "Konieczny",
-      "040",
+      "042",
       "Rank of small tropical max-plus mats (dim 2, threshold 9)",
       "[quick][konieczny][tropmaxplus]") {
     using Mat             = MaxPlusTruncMat<9, 2>;
@@ -75,7 +75,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE(
       "Konieczny",
-      "041",
+      "043",
       "Lambda of tropical max-plus mats (dim 5, threshold 6)",
       "[quick][konieczny][tropmaxplus]") {
     using Mat       = MaxPlusTruncMat<6, 5>;
@@ -159,7 +159,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Konieczny",
-                          "042",
+                          "044",
                           "Rho of tropical max-plus mats (dim 5, threshold 6)",
                           "[quick][konieczny][tropmaxplus]") {
     using Mat    = MaxPlusTruncMat<6, 5>;
@@ -248,7 +248,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE(
       "Konieczny",
-      "043",
+      "045",
       "Lambda/ImageRightAction for tropical max-plus mats (dim 5, threshold 6)",
       "[quick][konieczny][tropmaxplus]") {
     using Mat       = MaxPlusTruncMat<6, 5>;
@@ -304,7 +304,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE(
       "Konieczny",
-      "044",
+      "046",
       "Rho/ImageLeftAction for tropical max-plus mats (dim 5, threshold 6)",
       "[quick][konieczny][tropmaxplus]") {
     using Mat    = MaxPlusTruncMat<6, 5>;
@@ -359,7 +359,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Konieczny",
-                          "045",
+                          "047",
                           "small tropical max-plus (dim 3, threshold 9)",
                           "[quick][konieczny][tropmaxplus]") {
     using Mat             = MaxPlusTruncMat<9, 2>;
@@ -373,7 +373,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Konieczny",
-                          "046",
+                          "048",
                           "small tropical max-plus (dim 3, threshold 9)",
                           "[quick][konieczny][tropmaxplus]") {
     using Mat = MaxPlusTruncMat<9, 3>;
@@ -390,7 +390,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE(
       "Konieczny",
-      "047",
+      "049",
       "very large tropical max-plus example (dim 5, threshold 6)",
       "[extreme][konieczny][tropmaxplus]") {
     using Mat = MaxPlusTruncMat<6, 5>;
@@ -524,7 +524,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Konieczny",
-                          "048",
+                          "050",
                           "full tropical max-plus monoid (dim 2, threshold 8)",
                           "[standard][konieczny][tropmaxplus]") {
     using Mat             = MaxPlusTruncMat<8, 2>;
