@@ -4,7 +4,7 @@ Information for developers
 Building the documentation from source
 --------------------------------------
 
-See the [manual](https://libsemigroups.readthedocs.io/en/latest/installation.html)
+See the `manual <https://libsemigroups.readthedocs.io/en/latest/install.html>`_
 for details of how to do this.
 
 Naming conventions
