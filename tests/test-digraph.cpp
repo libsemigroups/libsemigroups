@@ -2010,8 +2010,6 @@ namespace libsemigroups {
     detail::Duf<> uf = HopcroftKarp()(d1, 0, d2, 0);
     REQUIRE(uf == output_uf);
   }
-<<<<<<< HEAD
-=======
 
   LIBSEMIGROUPS_TEST_CASE("ActionDigraph", "047", "quotient", "[quick]") {
     ActionDigraph<size_t> ad(3, 2);
@@ -2026,7 +2024,7 @@ namespace libsemigroups {
     uf.resize(3);
     uf.unite(0, 2);
 
-    ActionDigraph<size_t> output = QuotientDigraph<size_t>(ad, uf);
+    ActionDigraph<size_t> output = quotient_digraph<size_t>(ad, uf);
     REQUIRE(output == action_digraph_helper::make<size_t>(1, {{0, 0}}));
   }
 
@@ -2046,13 +2044,13 @@ namespace libsemigroups {
     uf3.resize(4);
 
     REQUIRE(
-        QuotientDigraph<size_t>(ad, uf1)
+        quotient_digraph<size_t>(ad, uf1)
         == action_digraph_helper::make<size_t>(3, {{1, 0}, {2, 1}, {1, 2}}));
 
-    REQUIRE(QuotientDigraph<size_t>(ad, uf2)
+    REQUIRE(quotient_digraph<size_t>(ad, uf2)
             == action_digraph_helper::make<size_t>(1, {{0, 0}}));
 
-    REQUIRE(QuotientDigraph<size_t>(ad, uf3)
+    REQUIRE(quotient_digraph<size_t>(ad, uf3)
             == action_digraph_helper::make<size_t>(
                 4, {{1, 0}, {2, 1}, {3, 2}, {2, 1}}));
   }

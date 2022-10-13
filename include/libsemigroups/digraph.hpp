@@ -3360,12 +3360,16 @@ namespace libsemigroups {
       std::stack<std::pair<node_type, node_type>> stck;
       stck.emplace(p0, q0 + N1);
 
+      // Traverse d1 and d2, uniting the output vertices at each stage
       while (!stck.empty()) {
         node_type q1, q2;
         std::tie(q1, q2) = stck.top();
         stck.pop();
         for (label_type a = 0; a < M; ++a) {
           node_type r1, r2;
+
+          // Check which digraph q1 and q2 belong to. Vertices with labels from
+          // 0 to N1 correspond to vertices in d1; above N1 corresponds to d2.
           if (q1 < N1) {
             r1 = _uf.find(d1.unsafe_neighbor(q1, a));
           } else {
@@ -3384,10 +3388,95 @@ namespace libsemigroups {
         }
       }
 
-      // d = quotient_digraph(d1, _uf);  // quotient_digraph doesn't exist
-      // TODO: Change uf to be able to restrict to a subset
+      // TODO: Decide what the output of this function should be
+      // d1 = quotient_digraph(d1, _uf);
       return _uf;
     }
   };
+
+  template <typename T>
+  ActionDigraph<T> quotient_digraph(ActionDigraph<T> const& d,
+                                    detail::Duf<>           uf) {
+    using node_type  = typename ActionDigraph<T>::node_type;
+    using label_type = typename ActionDigraph<T>::label_type;
+    // Check that uf and d match
+    auto N     = d.number_of_nodes();
+    auto n_out = d.out_degree();
+
+    if (N == 0) {
+      if (uf.empty()) {
+        return d;
+      } else {
+        LIBSEMIGROUPS_EXCEPTION(
+            "Empty digraph but non-empty partition. Expected empty partition.");
+      }
+    } else if (uf.size() != N) {
+      LIBSEMIGROUPS_EXCEPTION("Union find and digraph have a different number "
+                              "of vertices. Expected union find size and "
+                              "number of digraph vertices to be equal.");
+    }
+
+    node_type x_rep;
+    node_type y_rep;
+    node_type x_nb;
+    node_type y_nb;
+
+    detail::Duf<>                               edge_uf(N);
+    std::stack<std::pair<node_type, node_type>> coincidences;
+
+    // Make pairs of vertices that lie in the same part of a union find object
+    for (node_type i = 0; i < uf.size(); ++i) {
+      node_type j = uf.find(i);
+      if (i != j) {
+        coincidences.emplace(i, j);
+      }
+    }
+
+    // For each coincidence (x, y), unite each out neighbour of x with the
+    // corresponding out neighbour of y
+    while (!coincidences.empty()) {
+      int x, y;
+      std::tie(x, y) = coincidences.top();
+      coincidences.pop();
+      x_rep = edge_uf.find(x);
+      y_rep = edge_uf.find(y);
+      for (label_type a = 0; a < n_out; ++a) {
+        x_nb = edge_uf.find(d.unsafe_neighbor(x_rep, a));
+        y_nb = edge_uf.find(d.unsafe_neighbor(y_rep, a));
+        if (x_nb != y_nb) {
+          coincidences.emplace(x_nb, y_nb);
+        }
+      }
+      edge_uf.unite(x_rep, y_rep);
+    }
+
+    std::unordered_map<node_type, node_type> map;
+    node_type                                index = 0;
+    for (node_type i = 0; i < edge_uf.size(); ++i) {
+      if (map.emplace(edge_uf.find(i), index).second) {
+        ++index;
+      }
+    }
+
+    // Create the quotient digraph and populate edges
+    auto             M = edge_uf.number_of_blocks();
+    ActionDigraph<T> quotient(M, n_out);
+
+    for (node_type v = 0; v != N; ++v) {
+      node_type u = map.find(edge_uf.find(v))->second;
+      for (label_type a = 0; a != n_out; ++a) {
+        if (d.unsafe_neighbor(edge_uf.find(v), a) != UNDEFINED) {
+          quotient.add_edge(
+              u,
+              map.find(edge_uf.find(d.unsafe_neighbor(edge_uf.find(v), a)))
+                  ->second,
+              a);
+        }
+      }
+    }
+
+    return quotient;
+  }
+
 }  // namespace libsemigroups
 #endif  // LIBSEMIGROUPS_DIGRAPH_HPP_
