@@ -40,3 +40,4 @@ and monoids are:
    _generated/libsemigroups__fpsemigroup__knuthbendix
    _generated/libsemigroups__fpsemigroup__toddcoxeter
    present
+   api/fpsemi-examples

@@ -40,7 +40,7 @@
 #include "catch.hpp"      // for REQUIRE, REQUIRE_NOTHROW, REQUIRE_THROWS_AS
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
-#include "libsemigroups/fpsemi-examples.hpp"  // for ChineseMonoid
+#include "libsemigroups/fpsemi-examples.hpp"  // for chinese_monoid
 #include "libsemigroups/knuth-bendix.hpp"     // for KnuthBendix, operator<<
 #include "libsemigroups/report.hpp"           // for ReportGuard
 #include "libsemigroups/types.hpp"            // for word_type
@@ -419,7 +419,7 @@ namespace libsemigroups {
       auto        rg = ReportGuard(REPORT);
       KnuthBendix kb;
       kb.set_number_of_generators(3);
-      for (auto const& rel : ChineseMonoid(3)) {
+      for (auto const& rel : chinese_monoid(3)) {
         kb.add_pair(rel.first, rel.second);
       }
       REQUIRE(kb.is_quotient_obviously_infinite());
@@ -440,22 +440,15 @@ namespace libsemigroups {
 
     LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
                             "083",
-                            "(cong) PartialTransformationMonoid4",
+                            "(cong) partial_transformation_monoid4",
                             "[standard][congruence][knuth-bendix][cong]") {
       auto rg = ReportGuard(REPORT);
 
       size_t n = 4;
-      auto   s = PartialTransformationMonoid(n, author::Sutov);
-      for (auto& rel : s) {
-        if (rel.first.empty()) {
-          rel.first = {n + 1};
-        }
-        if (rel.second.empty()) {
-          rel.second = {n + 1};
-        }
-      }
-      auto p = make<Presentation<word_type>>(s);
+      auto   s = partial_transformation_monoid(n, author::Sutov);
+      auto   p = make<Presentation<word_type>>(s);
       p.alphabet(n + 2);
+      presentation::replace_word(p, word_type({}), {n + 1});
       presentation::add_identity_rules(p, n + 1);
 
       KnuthBendix kb;
@@ -469,22 +462,15 @@ namespace libsemigroups {
 
     LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
                             "118",
-                            "(cong) PartialTransformationMonoid5",
+                            "(cong) partial_transformation_monoid5",
                             "[extreme][congruence][knuth-bendix][cong]") {
       auto rg = ReportGuard(REPORT);
 
       size_t n = 5;
-      auto   s = PartialTransformationMonoid(n, author::Sutov);
-      for (auto& rel : s) {
-        if (rel.first.empty()) {
-          rel.first = {n + 1};
-        }
-        if (rel.second.empty()) {
-          rel.second = {n + 1};
-        }
-      }
-      auto p = make<Presentation<word_type>>(s);
+      auto   s = partial_transformation_monoid(n, author::Sutov);
+      auto   p = make<Presentation<word_type>>(s);
       p.alphabet(n + 2);
+      presentation::replace_word(p, word_type({}), {n + 1});
       presentation::add_identity_rules(p, n + 1);
 
       KnuthBendix kb;
@@ -498,22 +484,15 @@ namespace libsemigroups {
 
     LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
                             "119",
-                            "(cong) FullTransformationMonoid Iwahori",
+                            "(cong) full_transformation_monoid Iwahori",
                             "[extreme][congruence][knuth-bendix][cong]") {
       auto rg = ReportGuard(REPORT);
 
       size_t n = 5;
-      auto   s = FullTransformationMonoid(n, author::Iwahori);
-      for (auto& rel : s) {
-        if (rel.first.empty()) {
-          rel.first = {n};
-        }
-        if (rel.second.empty()) {
-          rel.second = {n};
-        }
-      }
-      auto p = make<Presentation<word_type>>(s);
+      auto   s = full_transformation_monoid(n, author::Iwahori);
+      auto   p = make<Presentation<word_type>>(s);
       p.alphabet(n + 1);
+      presentation::replace_word(p, word_type({}), {n});
       presentation::add_identity_rules(p, n);
       KnuthBendix kb;
       kb.set_number_of_generators(n + 1);

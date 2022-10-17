@@ -35,13 +35,19 @@ namespace libsemigroups {
     Burnside   = 2,
     Carmichael = 4,
     Coxeter    = 8,
-    East       = 16,
-    Guralnick  = 32,
-    Iwahori    = 64,
-    Miller     = 128,
-    Moore      = 256,
-    Moser      = 512,
-    Sutov      = 1024
+    Easdown    = 16,
+    East       = 32,
+    FitzGerald = 64,
+    Godelle    = 128,
+    Guralnick  = 256,
+    Iwahori    = 512,
+    Kantor     = 1024,
+    Kassabov   = 2048,
+    Lubotzky   = 4096,
+    Miller     = 8192,
+    Moore      = 16384,
+    Moser      = 32768,
+    Sutov      = 65536
   };
 
   inline author operator+(author auth1, author auth2) {
@@ -49,36 +55,374 @@ namespace libsemigroups {
                                + static_cast<uint64_t>(auth2));
   }
 
-  std::vector<relation_type> RookMonoid(size_t l, int q);
+  std::vector<relation_type> rook_monoid(size_t l, int q);
 
-  std::vector<relation_type> RennerCommonTypeBMonoid(size_t l, int q);
+  // Construct a presentation for the Renner common type B monoid.
+  //
+  // Returns a vector of relations defining the Renner common type B monoid with
+  // parameters `l` and `q`.
+  //
+  // \param l the degree
+  // \param q the parameter `q`
+  //
+  // \returns A `std::vector<relation_type>`
+  //
+  // \noexcept
+  std::vector<relation_type> renner_common_type_B_monoid(size_t l, int q);
+
   std::vector<relation_type> RennerTypeBMonoid(size_t l, int q);
-  std::vector<relation_type> EGTypeBMonoid(size_t l, int q);
-  std::vector<relation_type> RennerCommonTypeDMonoid(size_t l, int q);
-  std::vector<relation_type> EGTypeDMonoid(size_t l, int q);
+
+  // Construct a presentation for the Renner type B monoid.
+  //
+  // Returns a vector of relations defining the Renner type B monoid with
+  // parameters `l` and `q`.
+  //
+  // The argument `val` determines the specific presentation
+  // which is returned. The options are:
+  // * `author::Godelle` (described
+  // [here](https://doi.org/10.48550/arXiv.0904.0926), and is possibly
+  // incorrect)
+
+  // \param l the parameter `l`
+  // \param q the parameter `q`
+  // \param val the author value
+  //
+  // \returns A `std::vector<relation_type>`
+  //
+  // \throws LibsemigroupsException if the author value is not
+  // `author::Godelle`.
+  std::vector<relation_type> renner_type_B_monoid(size_t l, int q, author val);
+
+  // Construct a presentation for the Renner common type D monoid.
+  //
+  // Returns a vector of relations defining the Renner common type D monoid with
+  // parameters `l` and `q`.
+  //
+  // \param l the parameter `l`
+  // \param q the parameter `q`
+  //
+  // \returns A `std::vector<relation_type>`
+  //
+  // \noexcept
+  std::vector<relation_type> renner_common_type_D_monoid(size_t l, int q);
+
+  // Construct a presentation for the Renner type D monoid.
+  //
+  // Returns a vector of relations defining the Renner type D monoid with
+  // parameters `l` and `q`.
+  //
+  // The argument `val` determines the specific presentation
+  // which is returned. The options are:
+  // * `author::Godelle` (described
+  // in [10.48550/arXiv.0904.0926](https://doi.org/10.48550/arXiv.0904.0926),
+  // and is possibly incorrect)
+
+  // \param l the parameter `l`
+  // \param q the parameter `q`
+  // \param val the author value
+  //
+  // \returns A `std::vector<relation_type>`
+  //
+  // \throws LibsemigroupsException if the author value is not
+  // `author::Godelle`.
+  std::vector<relation_type> renner_type_D_monoid(size_t l, int q, author val);
+
   std::vector<relation_type> RennerTypeDMonoid(size_t l, int q);
-  std::vector<relation_type> Stell(size_t l);
-  std::vector<relation_type> Fibonacci(size_t r, size_t n);
-  std::vector<relation_type> Plactic(size_t n);
-  std::vector<relation_type> Stylic(size_t n);
 
-  std::vector<relation_type> SymmetricGroup(size_t n, author val);
-  std::vector<relation_type> DualSymmetricInverseMonoidEEF(size_t n);
-  std::vector<relation_type> UniformBlockBijectionMonoidF(size_t n);
-  std::vector<relation_type> PartitionMonoid(size_t n, author val);
-  std::vector<relation_type> SingularBrauer(size_t n);
-  std::vector<relation_type> OrientationPreserving(size_t n);
-  std::vector<relation_type> OrientationReversing(size_t n);
-  std::vector<relation_type> TemperleyLieb(size_t n);
-  std::vector<relation_type> Brauer(size_t n);
-  std::vector<relation_type> RectangularBand(size_t m, size_t n);
-  std::vector<relation_type> FullTransformationMonoid(size_t n, author val);
-  std::vector<relation_type> PartialTransformationMonoid(size_t n, author val);
-  std::vector<relation_type> SymmetricInverseMonoid(size_t n, author val);
+  //! Construct a presentation for the stellar monoid.
+  //!
+  //! Returns a vector of relations giving a semigroup presentation defining the
+  //! stellar monoid with `n` generators, as in Theorem 4.39 of
+  //! [10.48550/arXiv.1910.11740](https://doi.org/10.48550/arXiv.1910.11740).
+  //!
+  //! \param n the number of generators
+  //!
+  //! \returns A `std::vector<relation_type>`
+  //!
+  //! \throws LibsemigroupsException if `n < 3`, or the author value is not
+  //! `author::Easdown + author::East + author::FitzGerald`.
+  std::vector<relation_type> stellar_monoid(size_t l);
 
-  std::vector<relation_type> ChineseMonoid(size_t n);
-  // The monogenic semigroup a ^ m + r = a ^ m
-  std::vector<relation_type> MonogenicSemigroup(size_t m, size_t r);
+  //! Construct a presentation for the dual symmetric inverse monoid.
+  //!
+  //! Returns a vector of relations giving a semigroup presentation defining the
+  //! dual symmetric inverse monoid of degree `n`. The argument `val` determines
+  //! the specific presentation which is returned. The options are:
+  //! * `author::Easdown + author::East + author::FitzGerald` (from Section 3 of
+  //! [10.48550/arxiv.0707.2439](https://doi.org/10.48550/arxiv.0707.2439))
+  //!
+  //! \param n the degree
+  //! \param val the author of the presentation
+  //!
+  //! \returns A `std::vector<relation_type>`
+  //!
+  //! \throws LibsemigroupsException if `n < 3`, or the author value is not
+  //! `author::Easdown + author::East + author::FitzGerald`.
+  std::vector<relation_type> dual_symmetric_inverse_monoid(size_t n,
+                                                           author val);
+
+  //! Construct a presentation for the uniform block bijection monoid.
+  //!
+  //! Returns a vector of relations giving a semigroup presentation defining the
+  //! uniform block bijection monoid of degree `n`. The argument `val`
+  //! determines the specific presentation which is returned. The only option
+  //! is:
+  //! * `author::FitzGerald` (see
+  //! [10.1017/s0004972700037692](https://doi.org/10.1017/s0004972700037692))
+  //!
+  //! \param n the degree
+  //! \param val the author of the presentation
+  //!
+  //! \returns A `std::vector<relation_type>`
+  //!
+  //! \throws LibsemigroupsException if `n < 3`, or the author value is not
+  //! `author::FitzGerald`.
+  std::vector<relation_type> uniform_block_bijection_monoid(size_t n,
+                                                            author val);
+
+  //! Construct a presentation for the partition monoid.
+  //!
+  //! Returns a vector of relations giving a semigroup presentation defining the
+  //! partition monoid of degree `n`. The argument `val` determines the specific
+  //! presentation which is returned. The options are:
+  //! * `author::Machine`
+  //! * `author::East` (see Theorem 41 of
+  //! [10.1016/j.jalgebra.2011.04.008](https://doi.org/10.1016/j.jalgebra.2011.04.008))
+  //!
+  //! \param n the degree
+  //! \param val the author of the presentation
+  //!
+  //! \returns A `std::vector<relation_type>`
+  //!
+  //! \throws LibsemigroupsException if (`val = author::Machine` and `n != 3`),
+  //! or `(val = author::East` and `n < 4`).
+  std::vector<relation_type> partition_monoid(size_t n, author val);
+
+  //! Construct a presentation for the singular part of the Brauer monoid.
+  //!
+  //! Returns a vector of relations giving a semigroup presentation for the
+  //! singular part of the Brauer monoid of degree `n`, as in Theorem 5 of
+  //! [10.21136/MB.2007.134125](https://doi.org/10.21136/MB.2007.134125).
+  //!
+  //! \param n the degree
+  //!
+  //! \returns A `std::vector<relation_type>`
+  //!
+  //! \noexcept
+  std::vector<relation_type> singular_brauer_monoid(size_t n);
+
+  //! Construct a presentation for the monoid of orientation preserving
+  //! mappings.
+  //!
+  //! Returns a vector of relations giving a semigroup presentation defining the
+  //! monoid of orientation preserving mappings on a finite chain of order `n`,
+  //! as described in
+  //! [10.1007/s10012-000-0001-1](https://doi.org/10.1007/s10012-000-0001-1).
+  //!
+  //! \param n the order
+  //!
+  //! \returns A `std::vector<relation_type>`
+  //!
+  //! \noexcept
+  std::vector<relation_type> orientation_preserving_monoid(size_t n);
+
+  //! Construct a presentation for the monoid of orientation reversing mappings.
+  //!
+  //! Returns a vector of relations giving a semigroup presentation defining the
+  //! monoid of orientation reversing mappings on a finite chain of order `n`,
+  //! as described in
+  //! [10.1007/s10012-000-0001-1](https://doi.org/10.1007/s10012-000-0001-1).
+  //!
+  //! \param n the order
+  //!
+  //! \returns A `std::vector<relation_type>`
+  //!
+  //! \noexcept
+  std::vector<relation_type> orientation_reversing_monoid(size_t n);
+
+  //! Construct a presentation for the Temperley-Lieb monoid.
+  //!
+  //! Returns a vector of relations giving a semigroup presentation defining the
+  //! Temperley-Lieb monoid with `n` generators, as described in Theorem 2.2 of
+  //! [10.1093/qmath/haab001](https://doi.org/10.1093/qmath/haab001).
+  //!
+  //! \param n the number of generators
+  //!
+  //! \returns A `std::vector<relation_type>`
+  //!
+  //! \noexcept
+  std::vector<relation_type> temperley_lieb_monoid(size_t n);
+
+  //! Construct a presentation for the Brauer monoid.
+  //!
+  //! Returns a vector of relations giving a semigroup presentation defining the
+  //! Brauer monoid of degree `n`, as described in Theorem 3.1 of the paper
+  //! [10.2478/s11533-006-0017-6](https://doi.org/10.2478/s11533-006-0017-6).
+  //!
+  //! \param n the degree
+  //!
+  //! \returns A `std::vector<relation_type>`
+  //!
+  //! \noexcept
+  std::vector<relation_type> brauer_monoid(size_t n);
+
+  //! Construct a presentation for a Fibonacci semigroup.
+  //!
+  //! Returns a vector of relations giving a semigroup presentation defining the
+  //! Fibonacci semigroup \f$F(r, n)\f$, as described in
+  //! [10.1016/0022-4049(94)90005-1](https://doi.org/10.1016/0022-4049(94)90005-1).
+  //!
+  //! \param r the parameter `r`
+  //! \param n the number of generators
+  //!
+  //! \returns A `std::vector<relation_type>`
+  //!
+  //! \noexcept
+  std::vector<relation_type> fibonacci_semigroup(size_t r, size_t n);
+
+  //! Construct a presentation for the plactic monoid.
+  //!
+  //! Returns a vector of relations giving a semigroup presentation defining the
+  //! plactic monoid with `n` generators (see Section 3 of
+  //! [10.1007/s00233-022-10285-3](https://doi.org/10.1007/s00233-022-10285-3)).
+  //!
+  //! \param n the number of generators
+  //!
+  //! \returns A `std::vector<relation_type>`
+  //!
+  //! \noexcept
+  std::vector<relation_type> plactic_monoid(size_t n);
+
+  //! Construct a presentation for the stylic monoid.
+  //!
+  //! Returns a vector of relations giving a semigroup presentation defining the
+  //! stylic monoid with `n` generators (see Theorem 8.1 of
+  //! [10.1007/s00233-022-10285-3](https://doi.org/10.1007/s00233-022-10285-3)).
+  //!
+  //! \param n the number of generators
+  //!
+  //! \returns A `std::vector<relation_type>`
+  //!
+  //! \noexcept
+  std::vector<relation_type> stylic_monoid(size_t n);
+
+  //! Construct a presentation for the symmetric group.
+  //!
+  //! Returns a vector of relations giving a monoid presentation for the
+  //! symmetric group. The argument `val` determines the specific presentation
+  //! which is returned. The options are:
+  //! * `author::Burnside + author::Miller` (given on p.464 of
+  //! [10.1017/CBO9781139237253](https://doi.org/10.1017/CBO9781139237253))
+  //! * `author::Carmichael` (given in comment 9.5.2 of
+  //! [10.1007/978-1-84800-281-4](https://doi.org/10.1007/978-1-84800-281-4))
+  //! * `author::Coxeter + author::Moser`
+  //! * `author::Moore` (given in comment 9.5.3 of
+  //! [10.1007/978-1-84800-281-4](https://doi.org/10.1007/978-1-84800-281-4))
+  //!
+  //! \param n the degree of the symmetric group
+  //! \param val the author of the presentation
+  //!
+  //! \returns A `std::vector<relation_type>`
+  //!
+  //! \throws LibsemigroupsException if `val` is not listed above (modulo order
+  //! of author), or `n < 4`.
+  std::vector<relation_type> symmetric_group(size_t n, author val);
+
+  //! Construct a presentation for a rectangular band.
+  //!
+  //! Returns a vector of relations giving a semigroup presentation defining the
+  //! `m` by `n` rectangular band, as given in Proposition 4.2 of
+  //! [10.1007/s002339910016](https://doi.org/10.1007/s002339910016).
+  //!
+  //! \param m the value `m`
+  //! \param n the value `n`
+  //!
+  //! \returns A `std::vector<relation_type>`
+  //!
+  //! \noexcept
+  std::vector<relation_type> rectangular_band(size_t m, size_t n);
+
+  //! Construct a presentation for the full transformation monoid.
+  //!
+  //! Returns a vector of relations giving a monoid presentation defining the
+  //! full transformation monoid. The argument `val` determines the specific
+  //! presentation which is returned. The options are:
+  //! * `author::Aizenstat`
+  //! * `author::Iwahori` (see Theorem 9.3.1 of
+  //! [10.1007/978-1-84800-281-4](https://doi.org/10.1007/978-1-84800-281-4))
+  //!
+  //!
+  //! \param n the degree of the full transformation monoid
+  //! \param val the author of the presentation
+  //!
+  //! \returns A `std::vector<relation_type>`
+  //!
+  //! \throws LibsemigroupsException if `val` is not listed above (modulo order
+  //! of author).
+  std::vector<relation_type> full_transformation_monoid(size_t n, author val);
+
+  //! Construct a presentation for the partial transformation monoid.
+  //!
+  //! Returns a vector of relations giving a monoid presentation defining the
+  //! partial transformation monoid. The argument `val` determines the specific
+  //! presentation which is returned. The options are:
+  //! * `author::Machine`
+  //! * `author::Sutov` (see Theorem 9.4.1 of
+  //! [10.1007/978-1-84800-281-4](https://doi.org/10.1007/978-1-84800-281-4))
+  //!
+  //! \param n the degree of the partial transformation monoid
+  //! \param val the author of the presentation
+  //!
+  //! \returns A `std::vector<relation_type>`
+  //!
+  //! \throws LibsemigroupsException if `val` is not listed above (modulo order
+  //! of author).
+  std::vector<relation_type> partial_transformation_monoid(size_t n,
+                                                           author val);
+
+  //! Construct a presentation for the symmetric inverse monoid.
+  //!
+  //! Returns a vector of relations giving a monoid presentation defining the
+  //! symmetric inverse monoid. The argument `val` determines the specific
+  //! presentation which is returned. The options are:
+  //! * `author::Sutov` (see Theorem 9.2.2 of
+  //! [10.1007/978-1-84800-281-4](https://doi.org/10.1007/978-1-84800-281-4))
+  //!
+  //! \param n the degree of the symmetric inverse monoid
+  //! \param val the author of the presentation
+  //!
+  //! \returns A `std::vector<relation_type>`
+  //!
+  //! \throws LibsemigroupsException if `val` is not listed above (modulo order
+  //! of author).
+  std::vector<relation_type> symmetric_inverse_monoid(size_t n, author val);
+
+  //! Construct a presentation for the Chinese monoid.
+  //!
+  //! Returns a vector of relations giving a semigroup presentation defining the
+  //! Chinese monoid, as described in
+  //! [10.1142/S0218196701000425](https://doi.org/10.1142/S0218196701000425).
+  //!
+  //! \param n the number of generators
+  //!
+  //! \returns A `std::vector<relation_type>`
+  //!
+  //! \noexcept
+  std::vector<relation_type> chinese_monoid(size_t n);
+
+  //! Construct a presentation for a monogenic semigroup.
+  //!
+  //! Returns a vector of relations giving a semigroup presentation defining the
+  //! monogenic semigroup defined by the presentation \f$\langle a \mid a^{m +
+  //! r} = a^m \rangle\f$.
+  //!
+  //! \param m the parameter `m`
+  //! \param r the parameter `r`
+  //!
+  //! \returns A `std::vector<relation_type>`
+  //!
+  //! \noexcept
+  std::vector<relation_type> monogenic_semigroup(size_t m, size_t r);
 
   void
   add_full_transformation_monoid_relations(std::vector<relation_type>& result,

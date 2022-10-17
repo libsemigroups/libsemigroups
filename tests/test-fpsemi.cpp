@@ -45,7 +45,8 @@ namespace libsemigroups {
     FpSemigroup S;
     S.set_alphabet(6);
 
-    for (relation_type const& rl : EGTypeBMonoid(2, 1)) {
+    for (relation_type const& rl :
+         renner_type_B_monoid(2, 1, author::Godelle)) {
       S.add_rule(rl);
     }
     REQUIRE(!S.is_obviously_infinite());
@@ -72,7 +73,8 @@ namespace libsemigroups {
     auto        rg = ReportGuard(REPORT);
     FpSemigroup S;
     S.set_alphabet(6);
-    for (relation_type const& rl : EGTypeBMonoid(2, 0)) {
+    for (relation_type const& rl :
+         renner_type_B_monoid(2, 0, author::Godelle)) {
       S.add_rule(rl);
     }
     REQUIRE(!S.is_obviously_infinite());
@@ -90,7 +92,8 @@ namespace libsemigroups {
     FpSemigroup S;
     S.set_alphabet(8);
     S.max_threads(2);
-    for (relation_type const& rl : EGTypeBMonoid(3, 1)) {
+    for (relation_type const& rl :
+         renner_type_B_monoid(3, 1, author::Godelle)) {
       S.add_rule(rl);
     }
     REQUIRE(!S.is_obviously_infinite());
@@ -110,7 +113,8 @@ namespace libsemigroups {
     FpSemigroup S;
     S.set_alphabet(8);
     S.max_threads(2);
-    for (relation_type const& rl : EGTypeBMonoid(3, 0)) {
+    for (relation_type const& rl :
+         renner_type_B_monoid(3, 0, author::Godelle)) {
       S.add_rule(rl);
     }
     REQUIRE(!S.is_obviously_infinite());
@@ -284,7 +288,8 @@ namespace libsemigroups {
     auto        rg = ReportGuard(REPORT);
     FpSemigroup S;
     S.set_alphabet(7);
-    for (relation_type const& rl : EGTypeDMonoid(2, 1)) {
+    for (relation_type const& rl :
+         renner_type_D_monoid(2, 1, author::Godelle)) {
       S.add_rule(rl);
     }
     REQUIRE(S.number_of_rules() == 44);
@@ -302,7 +307,8 @@ namespace libsemigroups {
     auto        rg = ReportGuard(REPORT);
     FpSemigroup S;
     S.set_alphabet(7);
-    for (relation_type const& rl : EGTypeDMonoid(2, 0)) {
+    for (relation_type const& rl :
+         renner_type_D_monoid(2, 0, author::Godelle)) {
       S.add_rule(rl);
     }
     REQUIRE(S.number_of_rules() == 44);
@@ -320,7 +326,8 @@ namespace libsemigroups {
     auto        rg = ReportGuard(REPORT);
     FpSemigroup S;
     S.set_alphabet(9);
-    for (relation_type const& rl : EGTypeDMonoid(3, 1)) {
+    for (relation_type const& rl :
+         renner_type_D_monoid(3, 1, author::Godelle)) {
       S.add_rule(rl);
     }
     REQUIRE(S.number_of_rules() == 78);
@@ -338,7 +345,8 @@ namespace libsemigroups {
     auto        rg = ReportGuard(REPORT);
     FpSemigroup S;
     S.set_alphabet(9);
-    for (relation_type const& rl : EGTypeDMonoid(3, 0)) {
+    for (relation_type const& rl :
+         renner_type_D_monoid(3, 0, author::Godelle)) {
       S.add_rule(rl);
     }
     REQUIRE(S.number_of_rules() == 78);
@@ -357,7 +365,8 @@ namespace libsemigroups {
     FpSemigroup S;
     S.set_alphabet(11);
     S.max_threads(2);
-    for (relation_type const& rl : EGTypeDMonoid(4, 1)) {
+    for (relation_type const& rl :
+         renner_type_D_monoid(4, 1, author::Godelle)) {
       S.add_rule(rl);
     }
     REQUIRE(S.number_of_rules() == 119);
@@ -380,7 +389,8 @@ namespace libsemigroups {
     FpSemigroup S;
     S.set_alphabet(11);
     S.max_threads(2);
-    for (relation_type const& rl : EGTypeDMonoid(4, 0)) {
+    for (relation_type const& rl :
+         renner_type_D_monoid(4, 0, author::Godelle)) {
       S.add_rule(rl);
     }
     REQUIRE(S.number_of_rules() == 119);
@@ -590,7 +600,7 @@ namespace libsemigroups {
     auto        rg = ReportGuard(REPORT);
     FpSemigroup S;
     S.set_alphabet(6);
-    for (relation_type const& rl : RookMonoid(5, 0)) {
+    for (relation_type const& rl : rook_monoid(5, 0)) {
       S.add_rule(rl);
     }
     REQUIRE(S.number_of_rules() == 33);
@@ -607,7 +617,7 @@ namespace libsemigroups {
     auto        rg = ReportGuard(REPORT);
     FpSemigroup S;
     S.set_alphabet(6);
-    for (relation_type const& rl : RookMonoid(5, 1)) {
+    for (relation_type const& rl : rook_monoid(5, 1)) {
       S.add_rule(rl);
     }
     REQUIRE(S.number_of_rules() == 33);
@@ -624,7 +634,7 @@ namespace libsemigroups {
     auto        rg = ReportGuard(REPORT);
     FpSemigroup S;
     S.set_alphabet(7);
-    for (relation_type const& rl : RookMonoid(6, 0)) {
+    for (relation_type const& rl : rook_monoid(6, 0)) {
       S.add_rule(rl);
     }
     REQUIRE(S.number_of_rules() == 45);
@@ -641,7 +651,7 @@ namespace libsemigroups {
     auto        rg = ReportGuard(REPORT);
     FpSemigroup S;
     S.set_alphabet(7);
-    for (relation_type const& rl : RookMonoid(6, 1)) {
+    for (relation_type const& rl : rook_monoid(6, 1)) {
       S.add_rule(rl);
     }
     REQUIRE(S.number_of_rules() == 45);

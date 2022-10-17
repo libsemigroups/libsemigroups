@@ -651,6 +651,7 @@ EXTRA_PROGRAMS += test_digraph
 EXTRA_PROGRAMS += test_felsch_tree
 EXTRA_PROGRAMS += test_forest
 EXTRA_PROGRAMS += test_fpsemi
+EXTRA_PROGRAMS += test_fpsemi_examples
 EXTRA_PROGRAMS += test_fpsemi_intf
 EXTRA_PROGRAMS += test_freeband
 EXTRA_PROGRAMS += test_froidure_pin_bipart
@@ -832,6 +833,10 @@ test_felsch_tree_SOURCES += tests/test-main.cpp
 
 test_fpsemi_SOURCES =  tests/test-fpsemi.cpp
 test_fpsemi_SOURCES += tests/test-main.cpp
+
+test_fpsemi_examples_SOURCES = tests/test-fpsemi-examples-1.cpp
+test_fpsemi_examples_SOURCES += tests/test-fpsemi-examples-2.cpp
+test_fpsemi_examples_SOURCES += tests/test-main.cpp
 
 test_fpsemi_intf_SOURCES =  tests/test-fpsemi-intf.cpp
 test_fpsemi_intf_SOURCES += tests/test-main.cpp

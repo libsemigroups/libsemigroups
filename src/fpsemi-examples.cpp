@@ -87,7 +87,7 @@ namespace libsemigroups {
 
   }  // namespace
 
-  std::vector<relation_type> RookMonoid(size_t l, int q) {
+  std::vector<relation_type> rook_monoid(size_t l, int q) {
     if (l < 2) {
       LIBSEMIGROUPS_EXCEPTION(
           "the 1st argument (size_t) must at least 2, found %llu", uint64_t(l));
@@ -140,7 +140,7 @@ namespace libsemigroups {
     return rels;
   }
 
-  std::vector<relation_type> RennerCommonTypeBMonoid(size_t l, int q) {
+  std::vector<relation_type> renner_common_type_B_monoid(size_t l, int q) {
     // q is supposed to be 0 or 1
     std::vector<size_t> s;
     std::vector<size_t> e;
@@ -216,22 +216,26 @@ namespace libsemigroups {
     return rels;
   }
 
-  std::vector<relation_type> EGTypeBMonoid(size_t l, int q) {
-    std::vector<size_t> s;
-    std::vector<size_t> e;
-    for (size_t i = 0; i < l; ++i) {
-      s.push_back(i);
+  std::vector<relation_type> renner_type_B_monoid(size_t l, int q, author val) {
+    if (val == author::Godelle) {
+      std::vector<size_t> s;
+      std::vector<size_t> e;
+      for (size_t i = 0; i < l; ++i) {
+        s.push_back(i);
+      }
+      for (size_t i = l; i < 2 * l + 1; ++i) {
+        e.push_back(i);
+      }
+
+      std::vector<relation_type> rels = renner_common_type_B_monoid(l, q);
+
+      if (l >= 2)
+        rels.push_back({{e[0], s[0], s[1], s[0], e[0]}, {e[2]}});
+
+      return rels;
+    } else {
+      LIBSEMIGROUPS_EXCEPTION("not yet implemented");
     }
-    for (size_t i = l; i < 2 * l + 1; ++i) {
-      e.push_back(i);
-    }
-
-    std::vector<relation_type> rels = RennerCommonTypeBMonoid(l, q);
-
-    if (l >= 2)
-      rels.push_back({{e[0], s[0], s[1], s[0], e[0]}, {e[2]}});
-
-    return rels;
   }
 
   std::vector<relation_type> RennerTypeBMonoid(size_t l, int q) {
@@ -244,7 +248,7 @@ namespace libsemigroups {
       e.push_back(i);
     }
 
-    std::vector<relation_type> rels = RennerCommonTypeBMonoid(l, q);
+    std::vector<relation_type> rels = renner_common_type_B_monoid(l, q);
 
     for (size_t i = 1; i < l; i++) {
       std::vector<size_t> new_rel = max_elt_B(i);
@@ -256,7 +260,7 @@ namespace libsemigroups {
     return rels;
   }
 
-  std::vector<relation_type> RennerCommonTypeDMonoid(size_t l, int q) {
+  std::vector<relation_type> renner_common_type_D_monoid(size_t l, int q) {
     // q is supposed to be 0 or 1
     std::vector<size_t> s;
     std::vector<size_t> e;
@@ -358,24 +362,28 @@ namespace libsemigroups {
     return rels;
   }
 
-  std::vector<relation_type> EGTypeDMonoid(size_t l, int q) {
-    std::vector<size_t> s;
-    std::vector<size_t> e;
-    for (size_t i = 0; i < l; ++i) {
-      s.push_back(i);
-    }
-    for (size_t i = l; i < 2 * l + 1; ++i) {
-      e.push_back(i);
-    }
-    size_t f = 2 * l + 1;
+  std::vector<relation_type> renner_type_D_monoid(size_t l, int q, author val) {
+    if (val == author::Godelle) {
+      std::vector<size_t> s;
+      std::vector<size_t> e;
+      for (size_t i = 0; i < l; ++i) {
+        s.push_back(i);
+      }
+      for (size_t i = l; i < 2 * l + 1; ++i) {
+        e.push_back(i);
+      }
+      size_t f = 2 * l + 1;
 
-    std::vector<relation_type> rels = RennerCommonTypeDMonoid(l, q);
+      std::vector<relation_type> rels = renner_common_type_D_monoid(l, q);
 
-    if (l >= 3) {
-      rels.push_back({{e[0], s[0], s[2], s[1], f}, {e[3]}});
-      rels.push_back({{f, s[1], s[2], s[0], e[0]}, {e[3]}});
+      if (l >= 3) {
+        rels.push_back({{e[0], s[0], s[2], s[1], f}, {e[3]}});
+        rels.push_back({{f, s[1], s[2], s[0], e[0]}, {e[3]}});
+      }
+      return rels;
+    } else {
+      LIBSEMIGROUPS_EXCEPTION("not yet implemented");
     }
-    return rels;
   }
 
   std::vector<relation_type> RennerTypeDMonoid(size_t l, int q) {
@@ -389,7 +397,7 @@ namespace libsemigroups {
     }
     size_t f = 2 * l + 1;
 
-    std::vector<relation_type> rels = RennerCommonTypeDMonoid(l, q);
+    std::vector<relation_type> rels = renner_common_type_D_monoid(l, q);
 
     for (size_t i = 2; i < l; i++) {
       std::vector<size_t> new_rel_f = max_elt_D(i, 0);
@@ -416,7 +424,7 @@ namespace libsemigroups {
     return rels;
   }
 
-  std::vector<relation_type> Stell(size_t l) {
+  std::vector<relation_type> stellar_monoid(size_t l) {
     std::vector<size_t> pi;
     for (size_t i = 0; i < l; ++i) {
       pi.push_back(i);  // 0 est \pi_0
@@ -431,7 +439,7 @@ namespace libsemigroups {
     return rels;
   }
 
-  std::vector<relation_type> Fibonacci(size_t r, size_t n) {
+  std::vector<relation_type> fibonacci_semigroup(size_t r, size_t n) {
     std::vector<relation_type> result;
     for (size_t i = 0; i < n; ++i) {
       word_type lhs(r, 0);
@@ -442,7 +450,7 @@ namespace libsemigroups {
     return result;
   }
 
-  std::vector<relation_type> Plactic(size_t n) {
+  std::vector<relation_type> plactic_monoid(size_t n) {
     std::vector<relation_type> result;
     for (size_t c = 0; c < n; ++c) {
       for (size_t b = 0; b < c; ++b) {
@@ -461,15 +469,18 @@ namespace libsemigroups {
     return result;
   }
 
-  std::vector<relation_type> Stylic(size_t n) {
-    std::vector<relation_type> result = Plactic(n);
+  std::vector<relation_type> stylic_monoid(size_t n) {
+    std::vector<relation_type> result = plactic_monoid(n);
     for (size_t a = 0; a < n; ++a) {
       result.emplace_back(word_type({a, a}), word_type({a}));
     }
     return result;
   }
 
-  std::vector<relation_type> SymmetricGroup(size_t n, author val) {
+  std::vector<relation_type> symmetric_group(size_t n, author val) {
+    if (n < 4) {
+      LIBSEMIGROUPS_EXCEPTION("expected first argument to be at least 4");
+    }
     if (val == author::Carmichael) {
       // Exercise 9.5.2, p172 of
       // https://link.springer.com/book/10.1007/978-1-84800-281-4
@@ -578,7 +589,9 @@ namespace libsemigroups {
         }
       }
       return result;
-    } else if (val == author::Guralnick) {
+    } else if (val
+               == author::Guralnick + author::Kantor + author::Kassabov
+                      + author::Lubotzky) {
       // See Section 2.2 of 'Presentations of finite simple groups: A
       // quantitative approach' J. Amer. Math. Soc. 21 (2008), 711-774
       std::vector<word_type> a;
@@ -621,135 +634,145 @@ namespace libsemigroups {
   }
 
   // From https://core.ac.uk/reader/33304940
-  std::vector<relation_type> DualSymmetricInverseMonoidEEF(size_t n) {
+  std::vector<relation_type> dual_symmetric_inverse_monoid(size_t n,
+                                                           author val) {
     if (n < 3) {
-      LIBSEMIGROUPS_EXCEPTION("expected value of at least 3");
+      LIBSEMIGROUPS_EXCEPTION("expected first argument to be at least 3");
     }
-    auto mij = [](size_t i, size_t j) {
-      if (i == j) {
-        return 1;
-      } else if (std::abs(static_cast<int64_t>(i) - static_cast<int64_t>(j))
-                 == 1) {
-        return 3;
-      } else {
-        return 2;
-      }
-    };
+    if (val == author::Easdown + author::East + author::FitzGerald) {
+      auto mij = [](size_t i, size_t j) {
+        if (i == j) {
+          return 1;
+        } else if (std::abs(static_cast<int64_t>(i) - static_cast<int64_t>(j))
+                   == 1) {
+          return 3;
+        } else {
+          return 2;
+        }
+      };
 
-    std::vector<word_type> alphabet;
-    for (size_t i = 0; i < n + 1; ++i) {
-      alphabet.push_back({i});
-    }
-    auto                       x = alphabet.back();
-    auto                       e = alphabet.front();
-    std::vector<relation_type> result;
-    add_monoid_relations(alphabet, e, result);
-    auto s = alphabet.cbegin();
-
-    // R1
-    for (size_t i = 1; i <= n - 1; ++i) {
-      for (size_t j = 1; j <= n - 1; ++j) {
-        result.emplace_back((s[i] * s[j]) ^ mij(i, j), e);
+      std::vector<word_type> alphabet;
+      for (size_t i = 0; i < n + 1; ++i) {
+        alphabet.push_back({i});
       }
-    }
-    // R2
-    result.emplace_back(x ^ 3, x);
-    // R3
-    result.emplace_back(x * s[1], x);
-    result.emplace_back(s[1] * x, x);
-    // R4
-    result.emplace_back(x * s[2] * x, x * s[2] * x * s[2]);
-    result.emplace_back(x * s[2] * x * s[2], s[2] * x * s[2] * x);
-    result.emplace_back(s[2] * x * s[2] * x, x * s[2] * (x ^ 2));
-    result.emplace_back(x * s[2] * (x ^ 2), (x ^ 2) * s[2] * x);
-    if (n == 3) {
+      auto                       x = alphabet.back();
+      auto                       e = alphabet.front();
+      std::vector<relation_type> result;
+      add_monoid_relations(alphabet, e, result);
+      auto s = alphabet.cbegin();
+
+      // R1
+      for (size_t i = 1; i <= n - 1; ++i) {
+        for (size_t j = 1; j <= n - 1; ++j) {
+          result.emplace_back((s[i] * s[j]) ^ mij(i, j), e);
+        }
+      }
+      // R2
+      result.emplace_back(x ^ 3, x);
+      // R3
+      result.emplace_back(x * s[1], x);
+      result.emplace_back(s[1] * x, x);
+      // R4
+      result.emplace_back(x * s[2] * x, x * s[2] * x * s[2]);
+      result.emplace_back(x * s[2] * x * s[2], s[2] * x * s[2] * x);
+      result.emplace_back(s[2] * x * s[2] * x, x * s[2] * (x ^ 2));
+      result.emplace_back(x * s[2] * (x ^ 2), (x ^ 2) * s[2] * x);
+      if (n == 3) {
+        return result;
+      }
+      // R5
+      word_type const sigma = s[2] * s[3] * s[1] * s[2];
+      result.emplace_back((x ^ 2) * sigma * (x ^ 2) * sigma,
+                          sigma * (x ^ 2) * sigma * (x ^ 2));
+      result.emplace_back(sigma * (x ^ 2) * sigma * (x ^ 2),
+                          x * s[2] * s[3] * s[2] * x);
+      // R6
+      std::vector<word_type> l = {{}, {}, x * s[2] * s[1]};
+      for (size_t i = 3; i <= n - 1; ++i) {
+        l.push_back(s[i] * l[i - 1] * s[i] * s[i - 1]);
+      }
+      std::vector<word_type> y = {{}, {}, {}, x};
+      for (size_t i = 4; i <= n; ++i) {
+        y.push_back(l[i - 1] * y[i - 1] * s[i - 1]);
+      }
+      for (size_t i = 3; i <= n - 1; ++i) {
+        result.emplace_back(y[i] * s[i] * y[i], s[i] * y[i] * s[i]);
+      }
+      if (n == 4) {
+        return result;
+      }
+      // R7
+      for (size_t i = 4; i <= n - 1; ++i) {
+        result.emplace_back(x * s[i], s[i] * x);
+      }
       return result;
+    } else {
+      LIBSEMIGROUPS_EXCEPTION("not yet implemented");
     }
-    // R5
-    word_type const sigma = s[2] * s[3] * s[1] * s[2];
-    result.emplace_back((x ^ 2) * sigma * (x ^ 2) * sigma,
-                        sigma * (x ^ 2) * sigma * (x ^ 2));
-    result.emplace_back(sigma * (x ^ 2) * sigma * (x ^ 2),
-                        x * s[2] * s[3] * s[2] * x);
-    // R6
-    std::vector<word_type> l = {{}, {}, x * s[2] * s[1]};
-    for (size_t i = 3; i <= n - 1; ++i) {
-      l.push_back(s[i] * l[i - 1] * s[i] * s[i - 1]);
-    }
-    std::vector<word_type> y = {{}, {}, {}, x};
-    for (size_t i = 4; i <= n; ++i) {
-      y.push_back(l[i - 1] * y[i - 1] * s[i - 1]);
-    }
-    for (size_t i = 3; i <= n - 1; ++i) {
-      result.emplace_back(y[i] * s[i] * y[i], s[i] * y[i] * s[i]);
-    }
-    if (n == 4) {
-      return result;
-    }
-    // R7
-    for (size_t i = 4; i <= n - 1; ++i) {
-      result.emplace_back(x * s[i], s[i] * x);
-    }
-    return result;
   }
 
-  std::vector<relation_type> UniformBlockBijectionMonoidF(size_t n) {
+  std::vector<relation_type> uniform_block_bijection_monoid(size_t n,
+                                                            author val) {
     if (n < 3) {
       LIBSEMIGROUPS_EXCEPTION("expected value of at least 3");
     }
-    auto mij = [](size_t i, size_t j) {
-      if (i == j) {
-        return 1;
-      } else if (std::abs(static_cast<int64_t>(i) - static_cast<int64_t>(j))
-                 == 1) {
-        return 3;
-      } else {
-        return 2;
+    if (val == author::FitzGerald) {
+      auto mij = [](size_t i, size_t j) {
+        if (i == j) {
+          return 1;
+        } else if (std::abs(static_cast<int64_t>(i) - static_cast<int64_t>(j))
+                   == 1) {
+          return 3;
+        } else {
+          return 2;
+        }
+      };
+
+      std::vector<word_type> alphabet;
+      for (size_t i = 0; i < n + 1; ++i) {
+        alphabet.push_back({i});
       }
-    };
+      auto                       t = alphabet.back();
+      auto                       e = alphabet.front();
+      std::vector<relation_type> result;
+      add_monoid_relations(alphabet, e, result);
+      auto s = alphabet.cbegin();
 
-    std::vector<word_type> alphabet;
-    for (size_t i = 0; i < n + 1; ++i) {
-      alphabet.push_back({i});
-    }
-    auto                       t = alphabet.back();
-    auto                       e = alphabet.front();
-    std::vector<relation_type> result;
-    add_monoid_relations(alphabet, e, result);
-    auto s = alphabet.cbegin();
-
-    // S in Theorem 3 (same as DualSymmetricInverseMonoidEEF)
-    for (size_t i = 1; i <= n - 1; ++i) {
-      for (size_t j = 1; j <= n - 1; ++j) {
-        result.emplace_back((s[i] * s[j]) ^ mij(i, j), e);
+      // S in Theorem 3 (same as dual_symmetric_inverse_monoid)
+      for (size_t i = 1; i <= n - 1; ++i) {
+        for (size_t j = 1; j <= n - 1; ++j) {
+          result.emplace_back((s[i] * s[j]) ^ mij(i, j), e);
+        }
       }
+
+      // F2
+      result.emplace_back(t ^ 2, t);
+
+      // F3
+      result.emplace_back(t * s[1], t);
+      result.emplace_back(s[1] * t, t);
+
+      // F4
+      for (size_t i = 3; i <= n - 1; ++i) {
+        result.emplace_back(s[i] * t, t * s[i]);
+      }
+
+      // F5
+      result.emplace_back(s[2] * t * s[2] * t, t * s[2] * t * s[2]);
+
+      // F6
+      result.emplace_back(
+          s[2] * s[1] * s[3] * s[2] * t * s[2] * s[3] * s[1] * s[2] * t,
+          t * s[2] * s[1] * s[3] * s[2] * t * s[2] * s[3] * s[1] * s[2]);
+
+      return result;
+    } else {
+      LIBSEMIGROUPS_EXCEPTION("not yet implemented");
     }
-
-    // F2
-    result.emplace_back(t ^ 2, t);
-
-    // F3
-    result.emplace_back(t * s[1], t);
-    result.emplace_back(s[1] * t, t);
-
-    // F4
-    for (size_t i = 3; i <= n - 1; ++i) {
-      result.emplace_back(s[i] * t, t * s[i]);
-    }
-
-    // F5
-    result.emplace_back(s[2] * t * s[2] * t, t * s[2] * t * s[2]);
-
-    // F6
-    result.emplace_back(
-        s[2] * s[1] * s[3] * s[2] * t * s[2] * s[3] * s[1] * s[2] * t,
-        t * s[2] * s[1] * s[3] * s[2] * t * s[2] * s[3] * s[1] * s[2]);
-
-    return result;
   }
 
   // From Theorem 41 in doi:10.1016/j.jalgebra.2011.04.008
-  std::vector<relation_type> PartitionMonoid(size_t n, author val) {
+  std::vector<relation_type> partition_monoid(size_t n, author val) {
     std::vector<relation_type> result;
     if (val == author::Machine) {
       if (n != 3) {
@@ -872,9 +895,9 @@ namespace libsemigroups {
       return result;
     } else if (val == author::East) {
       if (n < 4) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "the 1st argument (size_t) must be at least 4, found %llu",
-            uint64_t(n));
+        LIBSEMIGROUPS_EXCEPTION("the 1st argument (size_t) must be at least 4 "
+                                "with author::East, found %llu",
+                                uint64_t(n));
       }
       word_type s  = {0};
       word_type c  = {1};
@@ -923,6 +946,8 @@ namespace libsemigroups {
       // V7
       result.emplace_back(t * (c ^ 2) * e * (c ^ (n - 2)),
                           (c ^ 2) * e * (c ^ (n - 2)) * t);
+    } else {
+      LIBSEMIGROUPS_EXCEPTION("not yet implemented");
     }
     return result;
   }
@@ -930,7 +955,7 @@ namespace libsemigroups {
   // From Theorem 5 in 10.21136/MB.2007.134125
   // https://dml.cz/bitstream/handle/10338.dmlcz/134125/MathBohem_132-2007-3_6.pdf
 
-  std::vector<relation_type> SingularBrauer(size_t n) {
+  std::vector<relation_type> singular_brauer_monoid(size_t n) {
     std::vector<std::vector<word_type>> t;
     size_t                              val = 0;
     for (size_t i = 0; i < n; ++i) {
@@ -988,7 +1013,7 @@ namespace libsemigroups {
   }
 
   // From https://doi.org/10.1007/s10012-000-0001-1
-  std::vector<relation_type> OrientationPreserving(size_t n) {
+  std::vector<relation_type> orientation_preserving_monoid(size_t n) {
     word_type                  b = {0};
     word_type                  u = {1};
     word_type                  e = {2};
@@ -1009,7 +1034,7 @@ namespace libsemigroups {
   }
 
   // Also from https://doi.org/10.1007/s10012-000-0001-1
-  std::vector<relation_type> OrientationReversing(size_t n) {
+  std::vector<relation_type> orientation_reversing_monoid(size_t n) {
     word_type                  e = {0};
     word_type                  b = {1};
     word_type                  u = {2};
@@ -1037,7 +1062,7 @@ namespace libsemigroups {
   }
 
   // From Theorem 2.2 in https://doi.org/10.1093/qmath/haab001
-  std::vector<relation_type> TemperleyLieb(size_t n) {
+  std::vector<relation_type> temperley_lieb_monoid(size_t n) {
     std::vector<word_type> e(n, word_type());
     for (size_t i = 0; i < n - 1; ++i) {
       e[i + 1] = {i};
@@ -1065,7 +1090,7 @@ namespace libsemigroups {
 
   // From Theorem 3.1 in
   // https://link.springer.com/content/pdf/10.2478/s11533-006-0017-6.pdf
-  std::vector<relation_type> Brauer(size_t n) {
+  std::vector<relation_type> brauer_monoid(size_t n) {
     word_type const e = {0};
 
     std::vector<word_type> sigma(n);
@@ -1117,7 +1142,7 @@ namespace libsemigroups {
 
   // From Proposition 4.2 in
   // https://link.springer.com/content/pdf/10.1007/s002339910016.pdf
-  std::vector<relation_type> RectangularBand(size_t m, size_t n) {
+  std::vector<relation_type> rectangular_band(size_t m, size_t n) {
     std::vector<word_type> a(m);
     std::vector<word_type> b(n);
     for (size_t i = 0; i < m; ++i) {
@@ -1153,7 +1178,7 @@ namespace libsemigroups {
     return result;
   }
 
-  std::vector<relation_type> FullTransformationMonoid(size_t n, author val) {
+  std::vector<relation_type> full_transformation_monoid(size_t n, author val) {
     if (n < 4) {
       LIBSEMIGROUPS_EXCEPTION(
           "the 1st argument (size_t) must be at least 4, found %llu",
@@ -1161,7 +1186,7 @@ namespace libsemigroups {
     }
     if (val == author::Aizenstat) {
       // From Proposition 1.7 in https://bit.ly/3R5ZpKW
-      auto result = SymmetricGroup(n, author::Moore);
+      auto result = symmetric_group(n, author::Moore);
 
       word_type const a = {1};
       word_type const b = {2};
@@ -1187,14 +1212,15 @@ namespace libsemigroups {
       // using Theorem 9.1.4 to express presentation in terms
       // of the pi_i and e_12.
       // https://link.springer.com/book/10.1007/978-1-84800-281-4
-      auto result = SymmetricGroup(n, author::Carmichael);
+      auto result = symmetric_group(n, author::Carmichael);
       add_full_transformation_monoid_relations(result, n, 0, n - 1);
       return result;
     }
     LIBSEMIGROUPS_EXCEPTION("not yet implemented");
   }
 
-  std::vector<relation_type> PartialTransformationMonoid(size_t n, author val) {
+  std::vector<relation_type> partial_transformation_monoid(size_t n,
+                                                           author val) {
     if (n < 3) {
       LIBSEMIGROUPS_EXCEPTION(
           "the 1st argument (size_t) must be at least 3, found %llu",
@@ -1247,7 +1273,7 @@ namespace libsemigroups {
     } else if (n >= 4 && val == author::Sutov) {
       // From Theorem 9.4.1, p169, (Ganyushkin + Mazorchuk)
       // https://link.springer.com/book/10.1007/978-1-84800-281-4
-      auto result = SymmetricInverseMonoid(n, author::Sutov);
+      auto result = symmetric_inverse_monoid(n, author::Sutov);
 
       add_full_transformation_monoid_relations(result, n, 0, n);
       word_type              e12     = {n};
@@ -1266,14 +1292,14 @@ namespace libsemigroups {
   // From Theorem 9.2.2, p156
   // https://link.springer.com/book/10.1007/978-1-84800-281-4 (Ganyushkin +
   // Mazorchuk)
-  std::vector<relation_type> SymmetricInverseMonoid(size_t n, author val) {
+  std::vector<relation_type> symmetric_inverse_monoid(size_t n, author val) {
     if (val == author::Sutov) {
       if (n < 4) {
         LIBSEMIGROUPS_EXCEPTION(
             "the 1st argument (size_t) must be at least 4, found %llu",
             uint64_t(n));
       }
-      auto result = SymmetricGroup(n, author::Carmichael);
+      auto result = symmetric_group(n, author::Carmichael);
 
       std::vector<word_type> pi;
       for (size_t i = 0; i <= n - 2; ++i) {
@@ -1296,12 +1322,12 @@ namespace libsemigroups {
                           epsilon[1] * epsilon[0]);
       return result;
     }
-    return {};
+    LIBSEMIGROUPS_EXCEPTION("not yet implemented");
   }
 
   // Chinese monoid
   // See: The Chinese Monoid - Cassaigne, Espie, Krob, Novelli and Hivert, 2001
-  std::vector<relation_type> ChineseMonoid(size_t n) {
+  std::vector<relation_type> chinese_monoid(size_t n) {
     std::vector<relation_type> result;
     for (size_t a = 0; a < n; a++) {
       for (size_t b = a; b < n; b++) {
@@ -1315,6 +1341,12 @@ namespace libsemigroups {
         }
       }
     }
+    return result;
+  }
+
+  std::vector<relation_type> monogenic_semigroup(size_t m, size_t r) {
+    std::vector<relation_type> result;
+    result.emplace_back(word_type({0}) ^ (m + r), word_type({0}) ^ m);
     return result;
   }
 
@@ -1341,12 +1373,6 @@ namespace libsemigroups {
 
     if (n < 4) {
       LIBSEMIGROUPS_EXCEPTION("n must be greater than or equal to 4");
-    }
-    if (pi_start < 0) {
-      LIBSEMIGROUPS_EXCEPTION("pi_start must be non-negative");
-    }
-    if (e12_value < 0) {
-      LIBSEMIGROUPS_EXCEPTION("e12_value must be non-negative");
     }
     if (e12_value >= pi_start && e12_value <= pi_start + n - 2) {
       LIBSEMIGROUPS_EXCEPTION(
@@ -1436,11 +1462,4 @@ namespace libsemigroups {
       }
     }
   }
-
-  std::vector<relation_type> MonogenicSemigroup(size_t m, size_t r) {
-    std::vector<relation_type> result;
-    result.emplace_back(word_type({0}) ^ (m + r), word_type({0}) ^ m);
-    return result;
-  }
-
 }  // namespace libsemigroups
