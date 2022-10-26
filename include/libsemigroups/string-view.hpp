@@ -835,9 +835,9 @@ namespace libsemigroups {
             // append so that we concatenate adjacent ranges!
             append(first.get_wrapped_iter(), ptr->_container.end(first_index));
             for (size_t pos = first_index + 1; pos < last_index; ++pos) {
-              LIBSEMIGROUPS_ASSERT(!_container.empty(pos));
-              _container.emplace_back(_container.begin(pos),
-                                      _container.end(pos));
+              LIBSEMIGROUPS_ASSERT(!ptr->_container.empty(pos));
+              _container.emplace_back(ptr->_container.begin(pos),
+                                      ptr->_container.end(pos));
             }
             _container.emplace_back(ptr->_container.begin(last_index),
                                     last.get_wrapped_iter());
