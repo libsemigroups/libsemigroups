@@ -43,7 +43,11 @@ namespace libsemigroups {
             _parent(1, state_type(UNDEFINED)),
             _length(0) {}
 
+      FelschTree()                  = delete;
       FelschTree(FelschTree const&) = default;
+      FelschTree(FelschTree&&)      = default;
+      FelschTree& operator=(FelschTree const&) = default;
+      FelschTree& operator=(FelschTree&&) = default;
 
       using word_iterator = typename std::vector<word_type>::const_iterator;
 

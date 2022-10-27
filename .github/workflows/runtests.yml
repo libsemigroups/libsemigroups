@@ -223,6 +223,9 @@ jobs:
          - name: "Install dependencies . . ."
            run: |
                 brew install ccache autoconf automake
+         - name: "Clang version . . ."
+           run: |
+                clang++ --version
          - name: "Configure . . ."
            run: |
                 mkdir -p m4 && ./autogen.sh && ./configure --disable-hpcombi
