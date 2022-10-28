@@ -1,6 +1,26 @@
 Changelog - version 2
 =====================
 
+v2.3.2 (released 28/10/2022)
+----------------------------
+
+In this release a number of bugs and other minor issues were resolved.
+
+* Fix inaccurate exception information for ``replace_subword`` by @MTWhyte in
+  https://github.com/libsemigroups/libsemigroups/pull/394
+* Fix broken link in `CONTRIBUTING.rst` by @MTWhyte in
+  https://github.com/libsemigroups/libsemigroups/pull/396
+* matrix: add case for some Apple clang weirdness by @james-d-mitchell in
+  https://github.com/libsemigroups/libsemigroups/pull/401 This might be a bug
+  in clang versions 13 and 14, which caused the ``identity`` static member
+  function of the ``StaticMatrix`` class template to not properly initialise the
+  matrix being constructed.
+* string-view: fix bug in append method by @james-d-mitchell in
+  https://github.com/libsemigroups/libsemigroups/pull/399
+  This bug sometimes caused the ``normal_form`` member function of the
+  ``Kambites`` class template to return incorrect results, or sometimes to
+  cause a crash.
+
 v2.3.1 (released 10/10/2022)
 ----------------------------
 
