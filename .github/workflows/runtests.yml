@@ -6,7 +6,7 @@ jobs:
       defaults:
         run:
           shell: C:\cygwin64\bin\bash.exe --login -o igncr '{0}'
-      timeout-minutes: 40
+      timeout-minutes: 60
       runs-on: windows-latest
       env:
         CHERE_INVOKING: 1
