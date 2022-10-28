@@ -1077,14 +1077,24 @@ namespace libsemigroups {
     ~StaticMatrix() = default;
 
     static StaticMatrix identity(size_t n = 0) {
-      (void) n;
       static_assert(C == R, "cannot create non-square identity matrix");
       // If specified the value of n must equal R or otherwise weirdness will
       // ensue...
       LIBSEMIGROUPS_ASSERT(n == 0 || n == R);
-      StaticMatrix x(R, R);
+      (void) n;
+#if defined(__APPLE__) && defined(__clang__) \
+    && (__clang_major__ == 13 || __clang_major__ == 14)
+      // With Apple clang version 13.1.6 (clang-1316.0.21.2.5) something goes
+      // wrong and the value R is optimized away somehow, meaning that the
+      // values on the diagonal aren't actually set. This only occurs when
+      // libsemigroups is compiled with -O2 or higher.
+      size_t volatile m = R;
+#else
+      size_t m = R;
+#endif
+      StaticMatrix x(m, m);
       std::fill(x.begin(), x.end(), ZeroOp()());
-      for (size_t r = 0; r < R; ++r) {
+      for (size_t r = 0; r < m; ++r) {
         x(r, r) = OneOp()();
       }
       return x;
