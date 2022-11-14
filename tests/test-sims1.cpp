@@ -2143,17 +2143,16 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("Sims1",
                           "072",
-                          "symmetric_group(n) for n = 3, 4",
+                          "symmetric_group(n) for n = 4",
                           "[quick][low-index]") {
     std::array<uint64_t, 10> const num = {0, 0, 0, 6, 30, 156, 1'455};
     auto                           rg  = ReportGuard(false);
-    for (size_t n = 3; n < 5; ++n) {
-      auto p = make<Presentation<word_type>>(
-          symmetric_group(n, author::Carmichael));
-      Sims1_ C(congruence_kind::right);
-      C.short_rules(p).number_of_threads(4);
-      REQUIRE(C.number_of_congruences(factorial(n)) == num[n]);
-    }
+    size_t                         n   = 4;
+    auto                           p
+        = make<Presentation<word_type>>(symmetric_group(n, author::Carmichael));
+    Sims1_ C(congruence_kind::right);
+    C.short_rules(p).number_of_threads(4);
+    REQUIRE(C.number_of_congruences(factorial(n)) == num[n]);
   }
 
   LIBSEMIGROUPS_TEST_CASE("Sims1",
