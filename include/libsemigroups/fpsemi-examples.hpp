@@ -315,7 +315,8 @@ namespace libsemigroups {
   //! [10.1017/CBO9781139237253](https://doi.org/10.1017/CBO9781139237253))
   //! * `author::Carmichael` (given in comment 9.5.2 of
   //! [10.1007/978-1-84800-281-4](https://doi.org/10.1007/978-1-84800-281-4))
-  //! * `author::Coxeter + author::Moser`
+  //! * `author::Coxeter + author::Moser` (see Ch. 3, Prop 1.2 of
+  //! [hdl.handle.net/10023/2821](http://hdl.handle.net/10023/2821))
   //! * `author::Moore` (given in comment 9.5.3 of
   //! [10.1007/978-1-84800-281-4](https://doi.org/10.1007/978-1-84800-281-4))
   //!
@@ -347,7 +348,8 @@ namespace libsemigroups {
   //! Returns a vector of relations giving a monoid presentation defining the
   //! full transformation monoid. The argument `val` determines the specific
   //! presentation which is returned. The options are:
-  //! * `author::Aizenstat`
+  //! * `author::Aizenstat` (see Ch. 3, Prop 1.7 of
+  //! [http://hdl.handle.net/10023/2821](http://hdl.handle.net/10023/2821))
   //! * `author::Iwahori` (see Theorem 9.3.1 of
   //! [10.1007/978-1-84800-281-4](https://doi.org/10.1007/978-1-84800-281-4))
   //!

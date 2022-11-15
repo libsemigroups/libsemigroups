@@ -23,7 +23,8 @@ These functions are available in the ``present.hpp`` file except
 
 Presentations from the following sources are implemented: :cite:`Gay1999aa`; :cite:`Godelle2009aa`; :cite:`East2022aa`; :cite:`Maltcev2007aa`;
 :cite:`Arthur2000aa`; :cite:`Kudryavtseva2006aa`; :cite:`Burnside2012aa`; :cite:`Ganyushkin2009aa`; :cite:`Cassaigne2001aa`; :cite:`Campbell1994aa`;
-:cite:`Abram2022aa`; :cite:`Easdown2007aa`; :cite:`FitzGerald2003aa`; :cite:`East2011aa`; :cite:`Ayik2000aa`.
+:cite:`Abram2022aa`; :cite:`Easdown2007aa`; :cite:`FitzGerald2003aa`; :cite:`East2011aa`; :cite:`Ayik2000aa`; :cite:`Ruskuc1995aa`; :cite:`Aizenstat1958aa`;
+:cite:`Coxeter1979aa`; :cite:`Knuth1970aa`.
 
 Contents
 ~~~~~~~~
