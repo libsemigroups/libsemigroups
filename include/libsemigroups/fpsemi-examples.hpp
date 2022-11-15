@@ -16,8 +16,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#ifndef LIBSEMIGROUPS_TESTS_FPSEMI_EXAMPLES_HPP_
-#define LIBSEMIGROUPS_TESTS_FPSEMI_EXAMPLES_HPP_
+#ifndef LIBSEMIGROUPS_FPSEMI_EXAMPLES_HPP_
+#define LIBSEMIGROUPS_FPSEMI_EXAMPLES_HPP_
 
 #include <cctype>         // for toupper
 #include <cstddef>        // for size_t
@@ -534,4 +534,4 @@ namespace libsemigroups {
   }
 
 }  // namespace libsemigroups
-#endif  // LIBSEMIGROUPS_TESTS_FPSEMI_EXAMPLES_HPP_
+#endif  // LIBSEMIGROUPS_FPSEMI_EXAMPLES_HPP_
