@@ -736,6 +736,7 @@ test_all_SOURCES += tests/test-digraph.cpp
 test_all_SOURCES += tests/test-felsch-tree.cpp
 test_all_SOURCES += tests/test-forest.cpp
 test_all_SOURCES += tests/test-fpsemi.cpp
+test_all_SOURCES += tests/test-fpsemi-examples.cpp
 test_all_SOURCES += tests/test-fpsemi-intf.cpp
 test_all_SOURCES += tests/test-freeband.cpp
 test_all_SOURCES += tests/test-froidure-pin-bipart.cpp
@@ -834,7 +835,7 @@ test_felsch_tree_SOURCES += tests/test-main.cpp
 test_fpsemi_SOURCES =  tests/test-fpsemi.cpp
 test_fpsemi_SOURCES += tests/test-main.cpp
 
-test_fpsemi_examples_SOURCES = tests/test-fpsemi-examples-1.cpp
+test_fpsemi_examples_SOURCES =  tests/test-fpsemi-examples-1.cpp
 test_fpsemi_examples_SOURCES += tests/test-fpsemi-examples-2.cpp
 test_fpsemi_examples_SOURCES += tests/test-main.cpp
 
@@ -964,7 +965,7 @@ test_suffix_tree_SOURCES += tests/test-main.cpp
 test_timer_SOURCES =  tests/test-timer.cpp
 test_timer_SOURCES += tests/test-main.cpp
 
-test_todd_coxeter_SOURCES = tests/test-todd-coxeter.cpp
+test_todd_coxeter_SOURCES =  tests/test-todd-coxeter.cpp
 test_todd_coxeter_SOURCES += tests/test-main.cpp
 
 test_transf_SOURCES =  tests/test-transf.cpp

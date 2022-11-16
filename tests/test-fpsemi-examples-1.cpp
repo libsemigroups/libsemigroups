@@ -17,7 +17,8 @@
 
 // This file is the first of two containing tests for the fpsemi-examples
 // functions. The presentations here define finite semigroups, and we use
-// ToddCoxeter in testing them.
+// ToddCoxeter in testing them. Exceptions and defaults are also checked in this
+// file.
 
 // #define CATCH_CONFIG_ENABLE_PAIR_STRINGMAKER
 
@@ -32,6 +33,26 @@
 namespace libsemigroups {
   struct LibsemigroupsException;
   constexpr bool REPORT = false;
+
+  LIBSEMIGROUPS_TEST_CASE("fpsemi-examples",
+                          "049",
+                          "test default values",
+                          "[fpsemi-examples][quick]") {
+    REQUIRE(symmetric_group(4) == symmetric_group(4, author::Carmichael));
+    REQUIRE(alternating_group(4) == alternating_group(4, author::Moore));
+    REQUIRE(full_transformation_monoid(4)
+            == full_transformation_monoid(4, author::Iwahori));
+    REQUIRE(partial_transformation_monoid(4)
+            == partial_transformation_monoid(4, author::Sutov));
+    REQUIRE(symmetric_inverse_monoid(4)
+            == symmetric_inverse_monoid(4, author::Sutov));
+    REQUIRE(dual_symmetric_inverse_monoid(4)
+            == dual_symmetric_inverse_monoid(
+                4, author::Easdown + author::East + author::FitzGerald));
+    REQUIRE(uniform_block_bijection_monoid(4)
+            == uniform_block_bijection_monoid(4, author::FitzGerald));
+    REQUIRE(partition_monoid(4) == partition_monoid(4, author::East));
+  }
 
   LIBSEMIGROUPS_TEST_CASE("fpsemi-examples",
                           "002",
@@ -147,10 +168,124 @@ namespace libsemigroups {
                       LibsemigroupsException);
   }
 
+  LIBSEMIGROUPS_TEST_CASE("fpsemi-examples",
+                          "036",
+                          "alternating_group auth except",
+                          "[fpsemi-examples][quick]") {
+    auto rg = ReportGuard(REPORT);
+    REQUIRE_THROWS_AS(alternating_group(5, author::Sutov),
+                      LibsemigroupsException);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("fpsemi-examples",
+                          "037",
+                          "alternating_group degree except",
+                          "[fpsemi-examples][quick]") {
+    auto rg = ReportGuard(REPORT);
+    REQUIRE_THROWS_AS(alternating_group(3, author::Moore),
+                      LibsemigroupsException);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("fpsemi-examples",
+                          "039",
+                          "chinese_monoid degree except",
+                          "[fpsemi-examples][quick]") {
+    auto rg = ReportGuard(REPORT);
+    REQUIRE_THROWS_AS(chinese_monoid(1), LibsemigroupsException);
+    REQUIRE_THROWS_AS(chinese_monoid(0), LibsemigroupsException);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("fpsemi-examples",
+                          "040",
+                          "monogenic_semigroup degree except",
+                          "[fpsemi-examples][quick]") {
+    auto rg = ReportGuard(REPORT);
+    REQUIRE_THROWS_AS(monogenic_semigroup(0, 0), LibsemigroupsException);
+    REQUIRE_THROWS_AS(monogenic_semigroup(5, 0), LibsemigroupsException);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("fpsemi-examples",
+                          "041",
+                          "rectangular_band degree except",
+                          "[fpsemi-examples][quick]") {
+    auto rg = ReportGuard(REPORT);
+    REQUIRE_THROWS_AS(rectangular_band(0, 0), LibsemigroupsException);
+    REQUIRE_THROWS_AS(rectangular_band(1, 0), LibsemigroupsException);
+    REQUIRE_THROWS_AS(rectangular_band(0, 1), LibsemigroupsException);
+    REQUIRE_THROWS_AS(rectangular_band(0, 100), LibsemigroupsException);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("fpsemi-examples",
+                          "042",
+                          "stellar_monoid degree except",
+                          "[fpsemi-examples][quick]") {
+    auto rg = ReportGuard(REPORT);
+    REQUIRE_THROWS_AS(stellar_monoid(0), LibsemigroupsException);
+    REQUIRE_THROWS_AS(stellar_monoid(1), LibsemigroupsException);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("fpsemi-examples",
+                          "043",
+                          "plactic_monoid degree except",
+                          "[fpsemi-examples][quick]") {
+    auto rg = ReportGuard(REPORT);
+    REQUIRE_THROWS_AS(plactic_monoid(0), LibsemigroupsException);
+    REQUIRE_THROWS_AS(plactic_monoid(1), LibsemigroupsException);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("fpsemi-examples",
+                          "044",
+                          "stylic_monoid degree except",
+                          "[fpsemi-examples][quick]") {
+    auto rg = ReportGuard(REPORT);
+    REQUIRE_THROWS_AS(stylic_monoid(0), LibsemigroupsException);
+    REQUIRE_THROWS_AS(stylic_monoid(1), LibsemigroupsException);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("fpsemi-examples",
+                          "045",
+                          "temperley_lieb_monoid degree except",
+                          "[fpsemi-examples][quick]") {
+    auto rg = ReportGuard(REPORT);
+    REQUIRE_THROWS_AS(temperley_lieb_monoid(0), LibsemigroupsException);
+    REQUIRE_THROWS_AS(temperley_lieb_monoid(1), LibsemigroupsException);
+    REQUIRE_THROWS_AS(temperley_lieb_monoid(2), LibsemigroupsException);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("fpsemi-examples",
+                          "046",
+                          "singular_brauer_monoid degree except",
+                          "[fpsemi-examples][quick]") {
+    auto rg = ReportGuard(REPORT);
+    REQUIRE_THROWS_AS(singular_brauer_monoid(0), LibsemigroupsException);
+    REQUIRE_THROWS_AS(singular_brauer_monoid(1), LibsemigroupsException);
+    REQUIRE_THROWS_AS(singular_brauer_monoid(2), LibsemigroupsException);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("fpsemi-examples",
+                          "047",
+                          "orientation_preserving_monoid degree except",
+                          "[fpsemi-examples][quick]") {
+    auto rg = ReportGuard(REPORT);
+    REQUIRE_THROWS_AS(orientation_preserving_monoid(0), LibsemigroupsException);
+    REQUIRE_THROWS_AS(orientation_preserving_monoid(1), LibsemigroupsException);
+    REQUIRE_THROWS_AS(orientation_preserving_monoid(2), LibsemigroupsException);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("fpsemi-examples",
+                          "048",
+                          "orientation_preserving_monoid degree except",
+                          "[fpsemi-examples][quick]") {
+    auto rg = ReportGuard(REPORT);
+    REQUIRE_THROWS_AS(orientation_reversing_monoid(0), LibsemigroupsException);
+    REQUIRE_THROWS_AS(orientation_reversing_monoid(1), LibsemigroupsException);
+    REQUIRE_THROWS_AS(orientation_reversing_monoid(2), LibsemigroupsException);
+  }
+
   namespace congruence {
     LIBSEMIGROUPS_TEST_CASE("fpsemi-examples",
                             "001",
-                            "full_transformation_monoid(5)",
+                            "full_transformation_monoid(5) Iwahori",
                             "[fpsemi-examples][standard]") {
       auto   rg = ReportGuard(REPORT);
       size_t n  = 5;
@@ -171,7 +306,7 @@ namespace libsemigroups {
 
     LIBSEMIGROUPS_TEST_CASE("fpsemi-examples",
                             "004",
-                            "partial_transformation_monoid(5)",
+                            "partial_transformation_monoid(5) Sutov",
                             "[fpsemi-examples][standard]") {
       auto   rg = ReportGuard(REPORT);
       size_t n  = 5;
@@ -188,6 +323,26 @@ namespace libsemigroups {
         tc.add_pair(p.rules[i], p.rules[i + 1]);
       }
       REQUIRE(tc.number_of_classes() == 7776);
+    }
+
+    LIBSEMIGROUPS_TEST_CASE("fpsemi-examples",
+                            "038",
+                            "partial_transformation_monoid(3) Machine",
+                            "[fpsemi-examples][quick]") {
+      auto rg = ReportGuard(REPORT);
+      auto s  = partial_transformation_monoid(3, author::Machine);
+      auto p  = make<Presentation<word_type>>(s);
+      p.alphabet(5);
+      presentation::replace_word(p, word_type({}), {4});
+      presentation::add_identity_rules(p, 4);
+      p.validate();
+
+      ToddCoxeter tc(congruence_kind::twosided);
+      tc.set_number_of_generators(5);
+      for (size_t i = 0; i < p.rules.size() - 1; i += 2) {
+        tc.add_pair(p.rules[i], p.rules[i + 1]);
+      }
+      REQUIRE(tc.number_of_classes() == 64);
     }
 
     LIBSEMIGROUPS_TEST_CASE("fpsemi-examples",
@@ -502,14 +657,34 @@ namespace libsemigroups {
       auto s  = rook_monoid(4, 1);
       auto p  = make<Presentation<word_type>>(s);
       p.validate();
-      REQUIRE(p.rules != p.rules);
       auto        m = p.alphabet().size();
       ToddCoxeter tc(congruence_kind::twosided);
       tc.set_number_of_generators(m);
       for (size_t i = 0; i < p.rules.size() - 1; i += 2) {
         tc.add_pair(p.rules[i], p.rules[i + 1]);
       }
-      REQUIRE(tc.number_of_classes() == 130922);
+      REQUIRE(tc.number_of_classes() == 209);
+    }
+
+    LIBSEMIGROUPS_TEST_CASE("fpsemi-examples",
+                            "035",
+                            "alternating_group(7) Moore",
+                            "[fpsemi-examples][quick]") {
+      auto   rg = ReportGuard(REPORT);
+      size_t n  = 7;
+      auto   s  = alternating_group(n, author::Moore);
+      auto   p  = make<Presentation<word_type>>(s);
+      p.alphabet(n - 1);
+      presentation::replace_word(p, word_type({}), {n - 2});
+      presentation::add_identity_rules(p, n - 2);
+      p.validate();
+
+      ToddCoxeter tc(congruence_kind::twosided);
+      tc.set_number_of_generators(n - 1);
+      for (size_t i = 0; i < p.rules.size() - 1; i += 2) {
+        tc.add_pair(p.rules[i], p.rules[i + 1]);
+      }
+      REQUIRE(tc.number_of_classes() == 2520);
     }
   }  // namespace congruence
 }  // namespace libsemigroups

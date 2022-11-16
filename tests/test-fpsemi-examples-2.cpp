@@ -15,7 +15,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-// This file is the seonc of two containing tests for the fpsemi-examples
+// This file is the second of two containing tests for the fpsemi-examples
 // functions. The presentations here define not necessarily finite semigroups,
 // and we use KnuthBendix in testing them.
 

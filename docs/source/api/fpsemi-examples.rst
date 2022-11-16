@@ -1,4 +1,4 @@
-.. Copyright (c) 2022, J. D. Mitchell
+.. Copyright (c) 2022, M. T. Whyte
 
    Distributed under the terms of the GPL license version 3.
 
@@ -10,21 +10,32 @@
 .. cpp:namespace:: libsemigroups
 
 Examples
---------------------
+--------
 
-Defined in ``present.hpp`` and ``knuth-bendix.hpp``.
+This page contains the documentation for various examples of presentations of
+finitely presented semigroups and monoids.
 
-This page contains the documentation for various helper functions for
-manipulating :cpp:type:`Presentation` objects. All such functions are contained in
-the namespace ``presentation``.
+Presentations from the following sources are implemented: :cite:`Gay1999aa`;
+:cite:`Godelle2009aa`; :cite:`East2022aa`; :cite:`Maltcev2007aa`;
+:cite:`Arthur2000aa`; :cite:`Kudryavtseva2006aa`; :cite:`Burnside2012aa`;
+:cite:`Ganyushkin2009aa`; :cite:`Cassaigne2001aa`; :cite:`Campbell1994aa`;
+:cite:`Abram2022aa`; :cite:`Easdown2007aa`; :cite:`FitzGerald2003aa`;
+:cite:`East2011aa`; :cite:`Ayik2000aa`; :cite:`Ruskuc1995aa`;
+:cite:`Aizenstat1958aa`; :cite:`Coxeter1979aa`; :cite:`Knuth1970aa`;
+:cite:`Lascoux1981aa`; :cite:`Moore1897aa`.
 
-These functions are available in the ``present.hpp`` file except
-:cpp:any:`redundant_rule` which is in ``knuth-bendix.hpp``.
+.. cpp:type:: libsemigroups::author
 
-Presentations from the following sources are implemented: :cite:`Gay1999aa`; :cite:`Godelle2009aa`; :cite:`East2022aa`; :cite:`Maltcev2007aa`;
-:cite:`Arthur2000aa`; :cite:`Kudryavtseva2006aa`; :cite:`Burnside2012aa`; :cite:`Ganyushkin2009aa`; :cite:`Cassaigne2001aa`; :cite:`Campbell1994aa`;
-:cite:`Abram2022aa`; :cite:`Easdown2007aa`; :cite:`FitzGerald2003aa`; :cite:`East2011aa`; :cite:`Ayik2000aa`; :cite:`Ruskuc1995aa`; :cite:`Aizenstat1958aa`;
-:cite:`Coxeter1979aa`; :cite:`Knuth1970aa`.
+   The values in this enum class are used to specify the authors of a
+   presentation. Where there are different presentations by different authors,
+   values of this type can be passed as an argument to disambiguate which
+   presentation is wanted.
+
+.. doxygenfunction:: libsemigroups::operator+(author, author)
+   :project: libsemigroups
+
+.. doxygenfunction:: libsemigroups::operator<<(std::ostringstream&, author)
+   :project: libsemigroups
 
 Contents
 ~~~~~~~~
@@ -36,67 +47,76 @@ Contents
    :header-rows: 0
 
    * - :cpp:any:`symmetric_group`
-     - Construct a presentation for the symmetric group.
+     - A presentation for the symmetric group.
+
+   * - :cpp:any:`alternating_group`
+     - A presentation for the alternating group.
 
    * - :cpp:any:`full_transformation_monoid`
-     - Construct a presentation for the full transformation monoid.
+     - A presentation for the full transformation monoid.
 
    * - :cpp:any:`partial_transformation_monoid`
-     - Construct a presentation for the partial transformation monoid.
+     - A presentation for the partial transformation monoid.
 
    * - :cpp:any:`symmetric_inverse_monoid`
-     - Construct a presentation for the symmetric inverse monoid.
+     - A presentation for the symmetric inverse monoid.
 
    * - :cpp:any:`dual_symmetric_inverse_monoid`
-     - Construct a presentation for the dual symmetric inverse monoid.
+     - A presentation for the dual symmetric inverse monoid.
 
    * - :cpp:any:`uniform_block_bijection_monoid`
-     - Construct a presentation for the uniform block bijection monoid.
+     - A presentation for the uniform block bijection monoid.
 
    * - :cpp:any:`partition_monoid`
-     - Construct a presentation for the partition monoid.
+     - A presentation for the partition monoid.
 
    * - :cpp:any:`brauer_monoid`
-     - Construct a presentation for the Brauer monoid.
+     - A presentation for the Brauer monoid.
 
    * - :cpp:any:`rectangular_band`
-     - Construct a presentation for a rectangular band.
+     - A presentation for a rectangular band.
 
    * - :cpp:any:`stellar_monoid`
-     - Construct a presentation for the stellar monoid.
+     - A presentation for the stellar monoid.
 
    * - :cpp:any:`chinese_monoid`
-     - Construct a presentation for the Chinese monoid.
+     - A presentation for the Chinese monoid.
 
    * - :cpp:any:`monogenic_semigroup`
-     - Construct a presentation for a monogenic semigroup.
+     - A presentation for a monogenic semigroup.
 
    * - :cpp:any:`plactic_monoid`
-     - Construct a presentation for the plactic monoid.
+     - A presentation for the plactic monoid.
 
    * - :cpp:any:`stylic_monoid`
-     - Construct a presentation for the stylic monoid.
+     - A presentation for the stylic monoid.
 
    * - :cpp:any:`fibonacci_semigroup`
-     - Construct a presentation for a Fibonacci semigroup.
+     - A presentation for a Fibonacci semigroup.
 
    * - :cpp:any:`temperley_lieb_monoid`
-     - Construct a presentation for the Temperley-Lieb monoid.
+     - A presentation for the Temperley-Lieb monoid.
 
    * - :cpp:any:`singular_brauer_monoid`
-     - Construct a presentation for the singular part of the Brauer monoid.
+     - A presentation for the singular part of the Brauer monoid.
 
    * - :cpp:any:`orientation_preserving_monoid`
-     - Construct a presentation for the monoid of orientation preserving mappings.
+     - A presentation for the monoid of orientation preserving
+       mappings.
 
    * - :cpp:any:`orientation_reversing_monoid`
-     - Construct a presentation for the monoid of orientation reversing mappings.
+     - A presentation for the monoid of orientation reversing
+       mappings.
+
 .. cpp:namespace-pop::
 
 Full API
 ~~~~~~~~
 
 .. doxygenfunction:: libsemigroups::symmetric_group
+   :project: libsemigroups
+
+.. doxygenfunction:: libsemigroups::alternating_group
    :project: libsemigroups
 
 .. doxygenfunction:: libsemigroups::full_transformation_monoid
