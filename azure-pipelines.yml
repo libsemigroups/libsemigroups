@@ -1,9 +1,9 @@
 pr:
-- master
+- main
 - stable-*.*
 
 trigger:
-- master
+- main
 - stable-*.*
 
 variables:
@@ -14,11 +14,10 @@ pool:
   vmImage: 'ubuntu-latest'
 
 jobs:
-  # This job should be re-enabled when GAP 4.12 is released
-  # - job: GAP
-  #   steps:
-  #   - script: ci/launch-gap-docker-container.sh
-  #     displayName: 'Running the Semigroups package for GAP tests in docker container. . .'
+- job: GAP
+  steps:
+  - script: ci/launch-gap-docker-container.sh
+    displayName: 'Running the Semigroups package for GAP tests in docker container. . .'
 
 - job: quick
   steps:
