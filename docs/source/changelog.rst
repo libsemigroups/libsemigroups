@@ -8,7 +8,7 @@ In this release a number of bugs and other minor issues were resolved.
 
 * Fix inaccurate exception information for ``replace_subword`` by @MTWhyte in
   https://github.com/libsemigroups/libsemigroups/pull/394
-* Fix broken link in `CONTRIBUTING.rst` by @MTWhyte in
+* Fix broken link in ``CONTRIBUTING.rst`` by @MTWhyte in
   https://github.com/libsemigroups/libsemigroups/pull/396
 * matrix: add case for some Apple clang weirdness by @james-d-mitchell in
   https://github.com/libsemigroups/libsemigroups/pull/401 This might be a bug
