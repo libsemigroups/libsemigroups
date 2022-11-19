@@ -8,3 +8,4 @@ Description: C++ library for semigroups and monoids
 Version: @PACKAGE_VERSION@
 Libs: -L${libdir} -lsemigroups
 Cflags: -I${includedir}
+Requires: @eigen_PCDEP@ @fmt_PCDEP@
