@@ -348,7 +348,7 @@ namespace libsemigroups {
     LIBSEMIGROUPS_TEST_CASE("fpsemi-examples",
                             "007",
                             "symmetric_inverse_monoid(5)",
-                            "[fpsemi-examples][quick]") {
+                            "[fpsemi-examples][quick][no-valgrind]") {
       auto   rg = ReportGuard(REPORT);
       size_t n  = 5;
       auto   s  = symmetric_inverse_monoid(n, author::Sutov);
@@ -369,7 +369,7 @@ namespace libsemigroups {
     LIBSEMIGROUPS_TEST_CASE("fpsemi-examples",
                             "010",
                             "symmetric_group(6) Burnside + Miller",
-                            "[fpsemi-examples][quick]") {
+                            "[fpsemi-examples][quick][no-valgrind]") {
       auto   rg = ReportGuard(REPORT);
       size_t n  = 6;
       auto   s  = symmetric_group(n, author::Burnside + author::Miller);
@@ -453,7 +453,7 @@ namespace libsemigroups {
     LIBSEMIGROUPS_TEST_CASE("fpsemi-examples",
                             "011",
                             "dual_symmetric_inverse_monoid(5)",
-                            "[fpsemi-examples][quick]") {
+                            "[fpsemi-examples][quick][no-valgrind]") {
       auto   rg = ReportGuard(REPORT);
       size_t n  = 5;
       auto   s  = dual_symmetric_inverse_monoid(
@@ -579,7 +579,7 @@ namespace libsemigroups {
     LIBSEMIGROUPS_TEST_CASE("fpsemi-examples",
                             "024",
                             "temperley_lieb_monoid(10)",
-                            "[fpsemi-examples][quick]") {
+                            "[fpsemi-examples][quick][no-valgrind]") {
       auto   rg = ReportGuard(REPORT);
       size_t n  = 10;
       auto   s  = temperley_lieb_monoid(n);
@@ -598,7 +598,7 @@ namespace libsemigroups {
     LIBSEMIGROUPS_TEST_CASE("fpsemi-examples",
                             "025",
                             "singular_brauer_monoid(6)",
-                            "[fpsemi-examples][quick]") {
+                            "[fpsemi-examples][quick][no-valgrind]") {
       auto   rg = ReportGuard(REPORT);
       size_t n  = 6;
       auto   s  = singular_brauer_monoid(n);
@@ -616,7 +616,7 @@ namespace libsemigroups {
     LIBSEMIGROUPS_TEST_CASE("fpsemi-examples",
                             "026",
                             "orientation_preserving_monoid(6)",
-                            "[fpsemi-examples][quick]") {
+                            "[fpsemi-examples][quick][no-valgrind]") {
       auto   rg = ReportGuard(REPORT);
       size_t n  = 6;
       auto   s  = orientation_preserving_monoid(n);
@@ -669,7 +669,7 @@ namespace libsemigroups {
     LIBSEMIGROUPS_TEST_CASE("fpsemi-examples",
                             "035",
                             "alternating_group(7) Moore",
-                            "[fpsemi-examples][quick]") {
+                            "[fpsemi-examples][quick][no-valgrind]") {
       auto   rg = ReportGuard(REPORT);
       size_t n  = 7;
       auto   s  = alternating_group(n, author::Moore);
