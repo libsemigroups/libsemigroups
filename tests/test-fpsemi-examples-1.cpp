@@ -686,5 +686,26 @@ namespace libsemigroups {
       }
       REQUIRE(tc.number_of_classes() == 2520);
     }
+
+    LIBSEMIGROUPS_TEST_CASE("fpsemi-examples",
+                            "050",
+                            "full_transformation_monoid(4) Aizenstat",
+                            "[fpsemi-examples][standard]") {
+      auto   rg = ReportGuard(REPORT);
+      size_t n  = 4;
+      auto   s  = full_transformation_monoid(n, author::Aizenstat);
+      auto   p  = make<Presentation<word_type>>(s);
+      p.alphabet(4);
+      presentation::replace_word(p, word_type({}), {3});
+      presentation::add_identity_rules(p, 3);
+      p.validate();
+
+      ToddCoxeter tc(congruence_kind::twosided);
+      tc.set_number_of_generators(4);
+      for (size_t i = 0; i < p.rules.size() - 1; i += 2) {
+        tc.add_pair(p.rules[i], p.rules[i + 1]);
+      }
+      REQUIRE(tc.number_of_classes() == 256);
+    }
   }  // namespace congruence
 }  // namespace libsemigroups

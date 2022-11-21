@@ -1068,9 +1068,9 @@ namespace libsemigroups {
       // From Proposition 1.7 in https://bit.ly/3R5ZpKW
       auto result = symmetric_group(n, author::Moore);
 
-      word_type const a = {1};
-      word_type const b = {2};
-      word_type const t = {3};
+      word_type const a = {0};
+      word_type const b = {1};
+      word_type const t = {2};
 
       result.emplace_back(a * t, t);
       result.emplace_back(
