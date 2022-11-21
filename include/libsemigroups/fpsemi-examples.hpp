@@ -354,12 +354,10 @@ namespace libsemigroups {
   //! Returns a vector of relations giving a monoid presentation defining the
   //! full transformation monoid. The argument `val` determines the specific
   //! presentation which is returned. The options are:
-  //! * `author::Aizenstat` (see Ch. 3, Prop 1.7 of
-  //! [http://hdl.handle.net/10023/2821][])
   //! * `author::Iwahori` (see Theorem 9.3.1 of
   //! [10.1007/978-1-84800-281-4][])
   //!
-  //! The default for `val` is `author::Iwahori`.
+  //! The default for `val` is the only option above.
   //!
   //! \param n the degree of the full transformation monoid
   //! \param val the author of the presentation
@@ -370,7 +368,6 @@ namespace libsemigroups {
   //! of author)
   //! \throws LibsemigroupsException if `n < 4`
   //!
-  //! [http://hdl.handle.net/10023/2821]: http://hdl.handle.net/10023/2821
   //! [10.1007/978-1-84800-281-4]: https://doi.org/10.1007/978-1-84800-281-4
   std::vector<relation_type> full_transformation_monoid(size_t n,
                                                         author val
