@@ -4263,21 +4263,5 @@ namespace libsemigroups {
       REQUIRE(tc.size() == 1'451'520);
       std::cout << tc.congruence().stats_string();
     }
-
-    LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
-                            "110",
-                            "Moore's Alt(7)",
-                            "[todd-coxeter][fail]") {
-      auto rg = ReportGuard(true);
-      // KnuthBendix kb = AlternatingGroupMoore<KnuthBendix>(5);
-      // kb.run();
-      // REQUIRE(kb.size() == POSITIVE_INFINITY);
-      ToddCoxeter tc = AlternatingGroupMoore<ToddCoxeter>(5);
-      std::cout << std::vector<FpSemigroup::rule_type>(tc.cbegin_rules(),
-                                                       tc.cend_rules())
-                << std::endl;
-      REQUIRE(tc.size() == 5'040 / 2);
-    }
   }  // namespace fpsemigroup
-
 }  // namespace libsemigroups
