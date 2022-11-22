@@ -1093,7 +1093,7 @@ distclean-local:
 
 uninstall-hook:
 	if test -d ${eigenincludedir}; then rm -rf ${eigenincludedir}; fi
-	if test -d ${hpcombiincludedir}; then rm -rf ${hpcombiincludedir}; fi
+	if test -d $(includedir)/libsemigroups/HPCombi; then rm -rf $(includedir)/libsemigroups/HPCombi; fi
 	if test -d ${fmtincludedir}; then rm -rf ${fmtincludedir}; fi
 	if test -d ${textflowcppincludedir}; then rm -rf ${textflowcppincludedir}; fi
 	if test -d ${includedir}/libsemigroups; then rmdir ${includedir}/libsemigroups; fi
