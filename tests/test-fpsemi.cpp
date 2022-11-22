@@ -37,6 +37,12 @@ namespace libsemigroups {
 
   constexpr congruence_kind twosided = congruence_kind::twosided;
 
+  using fpsemigroup::author;
+
+  using fpsemigroup::RennerTypeBMonoid;
+  using fpsemigroup::RennerTypeDMonoid;
+  using fpsemigroup::rook_monoid;
+
   LIBSEMIGROUPS_TEST_CASE("FpSemigroup",
                           "001",
                           "Renner monoid type B2 (E. G. presentation), q = 1",

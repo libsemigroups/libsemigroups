@@ -32,6 +32,11 @@
 namespace libsemigroups {
   struct LibsemigroupsException;
   constexpr bool REPORT = false;
+
+  using fpsemigroup::chinese_monoid;
+  using fpsemigroup::plactic_monoid;
+  using fpsemigroup::stylic_monoid;
+
   namespace congruence {
     LIBSEMIGROUPS_TEST_CASE("fpsemi-examples",
                             "028",

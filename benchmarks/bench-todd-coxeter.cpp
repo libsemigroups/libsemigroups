@@ -47,6 +47,20 @@ namespace libsemigroups {
   congruence_kind constexpr right    = congruence_kind::right;
   using options                      = congruence::ToddCoxeter::options;
 
+  using fpsemigroup::author;
+  using fpsemigroup::setup;
+
+  using fpsemigroup::dual_symmetric_inverse_monoid;
+  using fpsemigroup::orientation_preserving_monoid;
+  using fpsemigroup::orientation_reversing_monoid;
+  using fpsemigroup::partition_monoid;
+  using fpsemigroup::rook_monoid;
+  using fpsemigroup::singular_brauer_monoid;
+  using fpsemigroup::stellar_monoid;
+  using fpsemigroup::stylic_monoid;
+  using fpsemigroup::temperley_lieb_monoid;
+  using fpsemigroup::uniform_block_bijection_monoid;
+
   namespace {
     using order = congruence::ToddCoxeter::order;
     fpsemigroup::ToddCoxeter* before_normal_forms2(FpSemiIntfArgs const& p) {

@@ -34,6 +34,30 @@ namespace libsemigroups {
   struct LibsemigroupsException;
   constexpr bool REPORT = false;
 
+  using fpsemigroup::author;
+  using fpsemigroup::make;
+
+  using fpsemigroup::alternating_group;
+  using fpsemigroup::chinese_monoid;
+  using fpsemigroup::dual_symmetric_inverse_monoid;
+  using fpsemigroup::fibonacci_semigroup;
+  using fpsemigroup::full_transformation_monoid;
+  using fpsemigroup::monogenic_semigroup;
+  using fpsemigroup::orientation_preserving_monoid;
+  using fpsemigroup::orientation_reversing_monoid;
+  using fpsemigroup::partial_transformation_monoid;
+  using fpsemigroup::partition_monoid;
+  using fpsemigroup::plactic_monoid;
+  using fpsemigroup::rectangular_band;
+  using fpsemigroup::rook_monoid;
+  using fpsemigroup::singular_brauer_monoid;
+  using fpsemigroup::stellar_monoid;
+  using fpsemigroup::stylic_monoid;
+  using fpsemigroup::symmetric_group;
+  using fpsemigroup::symmetric_inverse_monoid;
+  using fpsemigroup::temperley_lieb_monoid;
+  using fpsemigroup::uniform_block_bijection_monoid;
+
   LIBSEMIGROUPS_TEST_CASE("fpsemi-examples",
                           "049",
                           "test default values",

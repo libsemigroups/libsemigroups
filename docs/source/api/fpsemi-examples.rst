@@ -24,23 +24,23 @@ Presentations from the following sources are implemented: :cite:`Gay1999aa`;
 :cite:`Aizenstat1958aa`; :cite:`Coxeter1979aa`; :cite:`Knuth1970aa`;
 :cite:`Lascoux1981aa`; :cite:`Moore1897aa`.
 
-.. cpp:type:: libsemigroups::author
+.. cpp:type:: libsemigroups::fpsemigroup::author
 
    The values in this enum class are used to specify the authors of a
    presentation. Where there are different presentations by different authors,
    values of this type can be passed as an argument to disambiguate which
    presentation is wanted.
 
-.. doxygenfunction:: libsemigroups::operator+(author, author)
+.. doxygenfunction:: libsemigroups::fpsemigroup::operator+(author, author)
    :project: libsemigroups
 
-.. doxygenfunction:: libsemigroups::operator<<(std::ostringstream&, author)
+.. doxygenfunction:: libsemigroups::fpsemigroup::operator<<(std::ostringstream&, author)
    :project: libsemigroups
 
 Contents
 ~~~~~~~~
 
-.. cpp:namespace:: libsemigroups
+.. cpp:namespace:: libsemigroups::fpsemigroup
 
 .. list-table::
    :widths: 50 50
@@ -113,62 +113,62 @@ Contents
 Full API
 ~~~~~~~~
 
-.. doxygenfunction:: libsemigroups::symmetric_group
+.. doxygenfunction:: libsemigroups::fpsemigroup::symmetric_group
    :project: libsemigroups
 
-.. doxygenfunction:: libsemigroups::alternating_group
+.. doxygenfunction:: libsemigroups::fpsemigroup::alternating_group
    :project: libsemigroups
 
-.. doxygenfunction:: libsemigroups::full_transformation_monoid
+.. doxygenfunction:: libsemigroups::fpsemigroup::full_transformation_monoid
    :project: libsemigroups
 
-.. doxygenfunction:: libsemigroups::partial_transformation_monoid
+.. doxygenfunction:: libsemigroups::fpsemigroup::partial_transformation_monoid
    :project: libsemigroups
 
-.. doxygenfunction:: libsemigroups::symmetric_inverse_monoid
+.. doxygenfunction:: libsemigroups::fpsemigroup::symmetric_inverse_monoid
    :project: libsemigroups
 
-.. doxygenfunction:: libsemigroups::dual_symmetric_inverse_monoid
+.. doxygenfunction:: libsemigroups::fpsemigroup::dual_symmetric_inverse_monoid
    :project: libsemigroups
 
-.. doxygenfunction:: libsemigroups::uniform_block_bijection_monoid
+.. doxygenfunction:: libsemigroups::fpsemigroup::uniform_block_bijection_monoid
    :project: libsemigroups
 
-.. doxygenfunction:: libsemigroups::partition_monoid
+.. doxygenfunction:: libsemigroups::fpsemigroup::partition_monoid
    :project: libsemigroups
 
-.. doxygenfunction:: libsemigroups::brauer_monoid
+.. doxygenfunction:: libsemigroups::fpsemigroup::brauer_monoid
    :project: libsemigroups
 
-.. doxygenfunction:: libsemigroups::rectangular_band
+.. doxygenfunction:: libsemigroups::fpsemigroup::rectangular_band
    :project: libsemigroups
 
-.. doxygenfunction:: libsemigroups::stellar_monoid
+.. doxygenfunction:: libsemigroups::fpsemigroup::stellar_monoid
    :project: libsemigroups
 
-.. doxygenfunction:: libsemigroups::chinese_monoid
+.. doxygenfunction:: libsemigroups::fpsemigroup::chinese_monoid
    :project: libsemigroups
 
-.. doxygenfunction:: libsemigroups::monogenic_semigroup
+.. doxygenfunction:: libsemigroups::fpsemigroup::monogenic_semigroup
    :project: libsemigroups
 
-.. doxygenfunction:: libsemigroups::plactic_monoid
+.. doxygenfunction:: libsemigroups::fpsemigroup::plactic_monoid
    :project: libsemigroups
 
-.. doxygenfunction:: libsemigroups::stylic_monoid
+.. doxygenfunction:: libsemigroups::fpsemigroup::stylic_monoid
    :project: libsemigroups
 
-.. doxygenfunction:: libsemigroups::fibonacci_semigroup
+.. doxygenfunction:: libsemigroups::fpsemigroup::fibonacci_semigroup
    :project: libsemigroups
 
-.. doxygenfunction:: libsemigroups::temperley_lieb_monoid
+.. doxygenfunction:: libsemigroups::fpsemigroup::temperley_lieb_monoid
    :project: libsemigroups
 
-.. doxygenfunction:: libsemigroups::singular_brauer_monoid
+.. doxygenfunction:: libsemigroups::fpsemigroup::singular_brauer_monoid
    :project: libsemigroups
 
-.. doxygenfunction:: libsemigroups::orientation_preserving_monoid
+.. doxygenfunction:: libsemigroups::fpsemigroup::orientation_preserving_monoid
    :project: libsemigroups
 
-.. doxygenfunction:: libsemigroups::orientation_reversing_monoid
+.. doxygenfunction:: libsemigroups::fpsemigroup::orientation_reversing_monoid
    :project: libsemigroups

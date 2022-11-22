@@ -43,6 +43,23 @@ namespace libsemigroups {
   using digraph_type = typename Sims1_::digraph_type;
   using node_type    = typename digraph_type::node_type;
 
+  using fpsemigroup::author;
+  using fpsemigroup::make;
+
+  using fpsemigroup::brauer_monoid;
+  using fpsemigroup::chinese_monoid;
+  using fpsemigroup::fibonacci_semigroup;
+  using fpsemigroup::full_transformation_monoid;
+  using fpsemigroup::monogenic_semigroup;
+  using fpsemigroup::partition_monoid;
+  using fpsemigroup::plactic_monoid;
+  using fpsemigroup::rectangular_band;
+  using fpsemigroup::rook_monoid;
+  using fpsemigroup::singular_brauer_monoid;
+  using fpsemigroup::stellar_monoid;
+  using fpsemigroup::stylic_monoid;
+  using fpsemigroup::temperley_lieb_monoid;
+
   namespace {
     template <typename P>
     void check_extra(congruence_kind ck, P const& p, P const& e, size_t n) {

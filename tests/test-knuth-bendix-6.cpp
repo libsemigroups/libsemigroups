@@ -49,6 +49,12 @@ namespace libsemigroups {
   struct LibsemigroupsException;
   constexpr bool REPORT = false;
 
+  using fpsemigroup::author;
+  using fpsemigroup::make;
+
+  using fpsemigroup::chinese_monoid;
+  using fpsemigroup::partial_transformation_monoid;
+
   namespace congruence {
 
     LIBSEMIGROUPS_TEST_CASE("KnuthBendix",

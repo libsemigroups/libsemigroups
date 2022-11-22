@@ -45,6 +45,9 @@ namespace libsemigroups {
   constexpr congruence_kind left     = congruence_kind::left;
   constexpr congruence_kind right    = congruence_kind::right;
 
+  using fpsemigroup::rook_monoid;
+  using fpsemigroup::stellar_monoid;
+
   LIBSEMIGROUPS_TEST_CASE("Congruence",
                           "000",
                           "left congruence on fp semigroup",
