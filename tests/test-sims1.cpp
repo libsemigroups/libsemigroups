@@ -22,15 +22,15 @@
 #include <unordered_set>  // for unordered_set
 #include <vector>         // for vector
 
-#include "catch.hpp"            // for REQUIRE, REQUIRE_THROWS_AS, REQUI...
-#include "fpsemi-examples.hpp"  // for Brauer etc
-#include "test-main.hpp"        // for LIBSEMIGROUPS_TEST_CASE
+#include "catch.hpp"      // for REQUIRE, REQUIRE_THROWS_AS, REQUI...
+#include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
-#include "libsemigroups/bipart.hpp"          // for Bipartition
-#include "libsemigroups/config.hpp"          // for LIBSEMIGROUPS_ENABLE_STATS
-#include "libsemigroups/digraph-helper.hpp"  // for action_digraph_helper
-#include "libsemigroups/froidure-pin.hpp"    // for FroidurePin
-#include "libsemigroups/knuth-bendix.hpp"    // for redundant_rule
+#include "libsemigroups/bipart.hpp"           // for Bipartition
+#include "libsemigroups/config.hpp"           // for LIBSEMIGROUPS_ENABLE_STATS
+#include "libsemigroups/digraph-helper.hpp"   // for action_digraph_helper
+#include "libsemigroups/fpsemi-examples.hpp"  // for brauer_monoid etc
+#include "libsemigroups/froidure-pin.hpp"     // for FroidurePin
+#include "libsemigroups/knuth-bendix.hpp"     // for redundant_rule
 #include "libsemigroups/make-froidure-pin.hpp"  // for make
 #include "libsemigroups/make-present.hpp"       // for make
 #include "libsemigroups/sims1.hpp"              // for Sims1
@@ -236,7 +236,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("Sims1",
                           "004",
-                          "PartitionMonoid(2) right",
+                          "partition_monoid(2) right",
                           "[quick][low-index]") {
     auto                    rg = ReportGuard(false);
     Presentation<word_type> p;
@@ -276,10 +276,11 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("Sims1",
                           "005",
-                          "PartitionMonoid(3)",
+                          "partition_monoid(3)",
                           "[standard][low-index][no-coverage]") {
     auto rg = ReportGuard(false);
-    auto p = make<Presentation<word_type>>(PartitionMonoid(3, author::Machine));
+    auto p
+        = make<Presentation<word_type>>(partition_monoid(3, author::Machine));
     REQUIRE(!p.contains_empty_word());
     REQUIRE(p.alphabet() == word_type({0, 1, 2, 3, 4}));
 
@@ -291,7 +292,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("Sims1",
                           "006",
-                          "FullTransformationMonoid(3) right",
+                          "full_transformation_monoid(3) right",
                           "[quick][low-index]") {
     auto                   rg = ReportGuard(false);
     FroidurePin<Transf<3>> S({Transf<3>::make({1, 2, 0}),
@@ -310,7 +311,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("Sims1",
                           "007",
-                          "FullTransformationMonoid(3) left",
+                          "full_transformation_monoid(3) left",
                           "[quick][low-index]") {
     auto                   rg = ReportGuard(false);
     FroidurePin<Transf<3>> S(
@@ -324,12 +325,12 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("Sims1",
                           "008",
-                          "FullTransformationMonoid(4) left",
+                          "full_transformation_monoid(4) left",
                           "[fail][low-index][babbage]") {
     auto rg = ReportGuard(true);
 
     auto p = make<Presentation<word_type>>(
-        FullTransformationMonoid(4, author::Iwahori));
+        full_transformation_monoid(4, author::Iwahori));
 
     REQUIRE(p.alphabet().size() == 4);
 
@@ -361,14 +362,14 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("Sims1",
                           "009",
-                          "RookMonoid(2, 1)",
+                          "rook_monoid(2, 1)",
                           "[quick][low-index]") {
     auto                    rg = ReportGuard(false);
     Presentation<word_type> p;
     p.contains_empty_word(false);
 
     p.alphabet(3);
-    for (auto const& rel : RookMonoid(2, 1)) {
+    for (auto const& rel : rook_monoid(2, 1)) {
       p.add_rule_and_check(rel.first.cbegin(),
                            rel.first.cend(),
                            rel.second.cbegin(),
@@ -381,7 +382,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("Sims1",
                           "010",
-                          "SymmetricInverseMonoid(2) from FroidurePin",
+                          "symmetric_inverse_monoid(2) from FroidurePin",
                           "[quick][low-index]") {
     auto                  rg = ReportGuard(false);
     FroidurePin<PPerm<2>> S({PPerm<2>({1, 0}), PPerm<2>({0}, {0}, 2)});
@@ -394,14 +395,14 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("Sims1",
                           "011",
-                          "SymmetricInverseMonoid(3)",
+                          "symmetric_inverse_monoid(3)",
                           "[quick][low-index]") {
     auto                    rg = ReportGuard(false);
     Presentation<word_type> p;
     p.contains_empty_word(false);
 
     p.alphabet(4);
-    for (auto const& rel : RookMonoid(3, 1)) {
+    for (auto const& rel : rook_monoid(3, 1)) {
       p.add_rule_and_check(rel.first.cbegin(),
                            rel.first.cend(),
                            rel.second.cbegin(),
@@ -414,14 +415,14 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("Sims1",
                           "012",
-                          "SymmetricInverseMonoid(4)",
+                          "symmetric_inverse_monoid(4)",
                           "[extreme][low-index]") {
     auto                    rg = ReportGuard(true);
     Presentation<word_type> p;
     p.contains_empty_word(false);
 
     p.alphabet(5);
-    for (auto const& rel : RookMonoid(4, 1)) {
+    for (auto const& rel : rook_monoid(4, 1)) {
       p.add_rule_and_check(rel.first.cbegin(),
                            rel.first.cend(),
                            rel.second.cbegin(),
@@ -446,7 +447,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("Sims1",
                           "013",
-                          "SymmetricInverseMonoid(5)",
+                          "symmetric_inverse_monoid(5)",
                           "[fail][low-index]") {
     // This might take an extremely long time to terminate
     auto                    rg = ReportGuard(true);
@@ -454,7 +455,7 @@ namespace libsemigroups {
     p.contains_empty_word(false);
 
     p.alphabet(6);
-    for (auto const& rel : RookMonoid(5, 1)) {
+    for (auto const& rel : rook_monoid(5, 1)) {
       p.add_rule_and_check(rel.first.cbegin(),
                            rel.first.cend(),
                            rel.second.cbegin(),
@@ -478,14 +479,14 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("Sims1",
                           "014",
-                          "TemperleyLieb(3) from presentation",
+                          "temperley_lieb_monoid(3) from presentation",
                           "[quick][low-index]") {
     auto                    rg = ReportGuard(false);
     Presentation<word_type> p;
     p.contains_empty_word(true);
 
     p.alphabet(2);
-    for (auto const& rel : TemperleyLieb(3)) {
+    for (auto const& rel : temperley_lieb_monoid(3)) {
       p.add_rule_and_check(rel.first.cbegin(),
                            rel.first.cend(),
                            rel.second.cbegin(),
@@ -505,14 +506,14 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("Sims1",
                           "015",
-                          "TemperleyLieb(4) from presentation",
+                          "temperley_lieb_monoid(4) from presentation",
                           "[quick][low-index]") {
     auto                    rg = ReportGuard(false);
     Presentation<word_type> p;
     p.contains_empty_word(true);
 
     p.alphabet(3);
-    for (auto const& rel : TemperleyLieb(4)) {
+    for (auto const& rel : temperley_lieb_monoid(4)) {
       p.add_rule_and_check(rel.first.cbegin(),
                            rel.first.cend(),
                            rel.second.cbegin(),
@@ -702,10 +703,10 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("Sims1",
                           "022",
-                          "SingularBrauer(4) (Maltcev-Mazorchuk)",
+                          "singular_brauer_monoid(4) (Maltcev-Mazorchuk)",
                           "[extreme][sims1]") {
     auto rg = ReportGuard(true);
-    auto p  = make<Presentation<word_type>>(SingularBrauer(4));
+    auto p  = make<Presentation<word_type>>(singular_brauer_monoid(4));
     REQUIRE(p.alphabet().size() == 12);
     REQUIRE(presentation::length(p) == 660);
 
@@ -789,10 +790,10 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("Sims1",
                           "024",
-                          "Brauer(4) (Kudryavtseva-Mazorchuk)",
+                          "brauer_monoid(4) (Kudryavtseva-Mazorchuk)",
                           "[extreme][sims1]") {
     auto rg = ReportGuard(true);
-    auto p  = make<Presentation<word_type>>(Brauer(4));
+    auto p  = make<Presentation<word_type>>(brauer_monoid(4));
     REQUIRE(p.alphabet().size() == 7);
     REQUIRE(presentation::length(p) == 182);
     presentation::remove_duplicate_rules(p);
@@ -856,10 +857,10 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("Sims1",
                           "025",
-                          "Brauer(5) (Kudryavtseva-Mazorchuk)",
+                          "brauer_monoid(5) (Kudryavtseva-Mazorchuk)",
                           "[extreme][sims1]") {
     auto rg = ReportGuard(true);
-    auto p  = make<Presentation<word_type>>(Brauer(5));
+    auto p  = make<Presentation<word_type>>(brauer_monoid(5));
 
     REQUIRE(presentation::length(p) == 295);
 
@@ -911,10 +912,11 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("Sims1",
                           "026",
-                          "UniformBlockBijection(4) (Fitzgerald)",
+                          "uniform_block_bijection_monoid(4) (Fitzgerald)",
                           "[extreme][sims1]") {
     auto rg = ReportGuard(true);
-    auto p  = make<Presentation<word_type>>(UniformBlockBijectionMonoidF(4));
+    auto p  = make<Presentation<word_type>>(
+        uniform_block_bijection_monoid(4, author::FitzGerald));
     presentation::remove_duplicate_rules(p);
     presentation::reduce_complements(p);
     presentation::sort_each_rule(p);
@@ -962,10 +964,10 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("Sims1",
                           "029",
-                          "Fibonacci(4, 6)",
+                          "fibonacci_semigroup(4, 6)",
                           "[standard][sims1][no-valgrind]") {
     auto rg = ReportGuard(true);  // for code coverage
-    auto p  = make<Presentation<word_type>>(Fibonacci(4, 6));
+    auto p  = make<Presentation<word_type>>(fibonacci_semigroup(4, 6));
     presentation::remove_duplicate_rules(p);
     presentation::sort_each_rule(p);
     presentation::sort_rules(p);
@@ -1165,10 +1167,10 @@ namespace libsemigroups {
   // Takes about 30s
   LIBSEMIGROUPS_TEST_CASE("Sims1",
                           "037",
-                          "RectangularBand(9, 2)",
+                          "rectangular_band(9, 2)",
                           "[extreme][sims1]") {
     auto rg = ReportGuard(true);
-    auto p  = make<Presentation<word_type>>(RectangularBand(9, 2));
+    auto p  = make<Presentation<word_type>>(rectangular_band(9, 2));
     presentation::remove_duplicate_rules(p);
     presentation::sort_each_rule(p);
     presentation::sort_rules(p);
@@ -1193,10 +1195,11 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("Sims1",
                           "038",
-                          "PartitionMonoid(3) - minimal o.r.c. rep",
+                          "partition_monoid(3) - minimal o.r.c. rep",
                           "[extreme][sims1]") {
     auto rg = ReportGuard(true);
-    auto p = make<Presentation<word_type>>(PartitionMonoid(3, author::Machine));
+    auto p
+        = make<Presentation<word_type>>(partition_monoid(3, author::Machine));
     REQUIRE(!p.contains_empty_word());
     REQUIRE(p.alphabet() == word_type({0, 1, 2, 3, 4}));
 
@@ -1235,7 +1238,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("Sims1",
                           "039",
-                          "TemperleyLieb(n) - n = 3 .. 6, minimal rep",
+                          "temperley_lieb_monoid(n) - n = 3 .. 6, minimal rep",
                           "[standard][sims1]") {
     auto rg = ReportGuard(false);
 
@@ -1246,7 +1249,7 @@ namespace libsemigroups {
     // The values 63 and 91 are not verified
 
     for (size_t n = 3; n <= 6; ++n) {
-      auto p = make<Presentation<word_type>>(TemperleyLieb(n));
+      auto p = make<Presentation<word_type>>(temperley_lieb_monoid(n));
       // There are no relations containing the empty word so we just manually
       // add it.
       p.contains_empty_word(true);
@@ -1310,10 +1313,10 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("Sims1",
                           "041",
-                          "RectangularBand(4, 4) - minimal o.r.c. rep",
+                          "rectangular_band(4, 4) - minimal o.r.c. rep",
                           "[standard][sims1]") {
     auto rg = ReportGuard(false);
-    auto p  = make<Presentation<word_type>>(RectangularBand(4, 4));
+    auto p  = make<Presentation<word_type>>(rectangular_band(4, 4));
     p.contains_empty_word(true);
     auto d = MinimalRepOrc()
                  .short_rules(p)
@@ -1337,7 +1340,7 @@ namespace libsemigroups {
   // unbuffer -p ./test_sims1 "[042]" | ag -v FroidurePin
   LIBSEMIGROUPS_TEST_CASE("Sims1",
                           "042",
-                          "RectangularBand(m, n) - m = 1 .. 5, n = 1 .. 5",
+                          "rectangular_band(m, n) - m = 1 .. 5, n = 1 .. 5",
                           "[fail][sims1]") {
     // This doesn't fail it's just very extreme
     std::vector<std::array<size_t, 6>> results = {{0, 0, 0, 0, 0, 0},
@@ -1354,7 +1357,7 @@ namespace libsemigroups {
                   << "CASE m, n = " << m << ", " << n << "\n"
                   << std::string(72, '#') << std::endl;
 
-        auto p = make<Presentation<word_type>>(RectangularBand(m, n));
+        auto p = make<Presentation<word_type>>(rectangular_band(m, n));
         p.contains_empty_word(true);
         auto d = MinimalRepOrc()
                      .short_rules(p)
@@ -1371,10 +1374,10 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("Sims1",
                           "043",
-                          "RectangularBand(2, 2) - with and without identity",
+                          "rectangular_band(2, 2) - with and without identity",
                           "[quick][sims1]") {
     auto   rg = ReportGuard(false);
-    auto   p  = make<Presentation<word_type>>(RectangularBand(2, 2));
+    auto   p  = make<Presentation<word_type>>(rectangular_band(2, 2));
     Sims1_ S(congruence_kind::right);
     S.short_rules(p);
 
@@ -1479,7 +1482,7 @@ namespace libsemigroups {
     // right representation.
     auto         rg = ReportGuard(false);
     size_t const n  = 5;
-    auto         p  = make<Presentation<word_type>>(RectangularBand(1, n));
+    auto         p  = make<Presentation<word_type>>(rectangular_band(1, n));
     auto         d  = MinimalRepOrc().short_rules(p).target_size(n).digraph();
     REQUIRE(action_digraph_helper::is_strictly_cyclic(d));
     auto S = make<FroidurePin<Transf<0, node_type>>>(d);
@@ -1566,7 +1569,7 @@ namespace libsemigroups {
   // Takes about 3 to 4 minutes
   LIBSEMIGROUPS_TEST_CASE("Sims1",
                           "047",
-                          "RectangularBand(m, n) - m = 1 .. 5, n = 1 .. 5",
+                          "rectangular_band(m, n) - m = 1 .. 5, n = 1 .. 5",
                           "[fail][sims1]") {
     // This doesn't fail it's just very extreme
     std::vector<std::array<size_t, 7>> left
@@ -1587,7 +1590,7 @@ namespace libsemigroups {
                   << "CASE m, n = " << m << ", " << n << "\n"
                   << std::string(72, '#') << std::endl;
 
-        auto   p = make<Presentation<word_type>>(RectangularBand(m, n));
+        auto   p = make<Presentation<word_type>>(rectangular_band(m, n));
         Sims1_ S(congruence_kind::left);
         S.short_rules(p);
         REQUIRE(S.number_of_threads(4).number_of_congruences(m * n)
@@ -1602,15 +1605,15 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("Sims1",
                           "048",
-                          "Stellar(n) n = 3 .. 4",
+                          "stellar_monoid(n) n = 3 .. 4",
                           "[fail][sims1][babbage]") {
     std::array<uint64_t, 10> const size      = {0, 0, 0, 16, 65};
     std::array<uint64_t, 10> const num_left  = {0, 0, 0, 1'550, 0};
     std::array<uint64_t, 10> const num_right = {0, 0, 0, 1'521, 0};
 
     for (size_t n = 3; n < 5; ++n) {
-      auto p = make<Presentation<word_type>>(RookMonoid(n, 0));
-      auto q = make<Presentation<word_type>>(Stell(n));
+      auto p = make<Presentation<word_type>>(rook_monoid(n, 0));
+      auto q = make<Presentation<word_type>>(stellar_monoid(n));
       p.rules.insert(p.rules.end(), q.rules.cbegin(), q.rules.cend());
       REQUIRE(p.alphabet().size() == n + 1);
       {
@@ -1628,7 +1631,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("Sims1",
                           "049",
-                          "Stylic(n) n = 3, 4",
+                          "stylic_monoid(n) n = 3, 4",
                           "[fail][sims1]") {
     auto                           rg   = ReportGuard(true);
     std::array<uint64_t, 10> const size = {0, 0, 0, 14, 51};
@@ -1637,7 +1640,7 @@ namespace libsemigroups {
     std::array<uint64_t, 10> const num_right = {0, 0, 0, 1'214, 1'429'455'689};
 
     for (size_t n = 3; n < 5; ++n) {
-      auto p = make<Presentation<word_type>>(Stylic(n));
+      auto p = make<Presentation<word_type>>(stylic_monoid(n));
       {
         Sims1_ S(congruence_kind::right);
         S.short_rules(p).number_of_threads(4);
@@ -1690,7 +1693,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("Sims1",
                           "052",
-                          "TemperleyLieb(n) - n = 3 .. 6",
+                          "temperley_lieb_monoid(n) - n = 3 .. 6",
                           "[extreme][low-index][babbage]") {
     std::array<uint64_t, 10> const size = {0, 0, 0, 5, 14, 42, 132, 429};
     std::array<uint64_t, 10> const num_right
@@ -1698,7 +1701,7 @@ namespace libsemigroups {
 
     auto rg = ReportGuard(true);
     for (size_t n = 3; n < 7; ++n) {
-      auto p = make<Presentation<word_type>>(TemperleyLieb(n));
+      auto p = make<Presentation<word_type>>(temperley_lieb_monoid(n));
       p.contains_empty_word(true);
       Sims1_ S(congruence_kind::right);
       S.short_rules(p).number_of_threads(4);
@@ -1708,11 +1711,11 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("Sims1",
                           "053",
-                          "PartialTransformationMonoid(3)",
+                          "partial_transformation_monoid(3)",
                           "[extreme][low-index]") {
     auto rg = ReportGuard(true);
     auto p  = make<Presentation<word_type>>(
-        PartialTransformationMonoid(3, author::Machine));
+        partial_transformation_monoid(3, author::Machine));
     {
       Sims1_ S(congruence_kind::right);
       S.short_rules(p).number_of_threads(4);
@@ -1727,7 +1730,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("Sims1",
                           "054",
-                          "PartialTransformationMonoid(4) from FroidurePin",
+                          "partial_transformation_monoid(4) from FroidurePin",
                           "[fail][low-index]") {
     using Transf_ = Transf<5>;
     auto rg       = ReportGuard(true);
@@ -1763,12 +1766,12 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("Sims1",
                           "055",
-                          "PlacticMonoid(3) up to index 8",
+                          "plactic_monoid(3) up to index 8",
                           "[extreme][low-index][plactic]") {
     std::array<uint64_t, 9> const num
         = {0, 1, 29, 484, 6'896, 103'204, 1'773'360, 35'874'182, 849'953'461};
     auto rg = ReportGuard(true);
-    auto p  = make<Presentation<word_type>>(Plactic(3));
+    auto p  = make<Presentation<word_type>>(plactic_monoid(3));
     for (size_t n = 2; n < 9; ++n) {
       {
         Sims1_ S(congruence_kind::right);
@@ -1785,13 +1788,13 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("Sims1",
                           "056",
-                          "PlacticMonoid(4) up to index 6",
+                          "plactic_monoid(4) up to index 6",
                           "[extreme][low-index][plactic]") {
     std::array<uint64_t, 8> const num
         = {0, 1, 67, 2'794, 106'264, 4'795'980, 278'253'841, 20'855'970'290};
     // Last value too 1h34m to compute so is not included.
     auto rg = ReportGuard(true);
-    auto p  = make<Presentation<word_type>>(Plactic(4));
+    auto p  = make<Presentation<word_type>>(plactic_monoid(4));
     for (size_t n = 2; n < 7; ++n) {
       {
         Sims1_ S(congruence_kind::right);
@@ -1808,13 +1811,13 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("Sims1",
                           "057",
-                          "PlacticMonoid(5) up to index 5",
+                          "plactic_monoid(5) up to index 5",
                           "[extreme][low-index][plactic]") {
     std::array<uint64_t, 7> const num
         = {0, 1, 145, 14'851, 1'496'113, 198'996'912, 37'585'675'984};
     // Last value took 5h11m to compute
     auto rg = ReportGuard(true);
-    auto p  = make<Presentation<word_type>>(Plactic(5));
+    auto p  = make<Presentation<word_type>>(plactic_monoid(5));
     for (size_t n = 3; n < 6; ++n) {
       {
         Sims1_ S(congruence_kind::right);
@@ -1831,13 +1834,13 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("Sims1",
                           "058",
-                          "PlacticMonoid(6) up to index 4",
+                          "plactic_monoid(6) up to index 4",
                           "[extreme][low-index][plactic]") {
     std::array<uint64_t, 6> const num
         = {0, 1, 303, 77'409, 20'526'128, 7'778'840'717};
     // The last value took 4h5m to run and is omitted.
     auto rg = ReportGuard(true);
-    auto p  = make<Presentation<word_type>>(Plactic(6));
+    auto p  = make<Presentation<word_type>>(plactic_monoid(6));
     for (size_t n = 2; n < 5; ++n) {
       {
         Sims1_ S(congruence_kind::right);
@@ -1854,13 +1857,13 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("Sims1",
                           "059",
-                          "PlacticMonoid(7) up to index 3",
+                          "plactic_monoid(7) up to index 3",
                           "[extreme][low-index][plactic]") {
     std::array<uint64_t, 5> const num = {0, 1, 621, 408'024, 281'600'130};
     // The last value took approx. 12m34s to run and is omitted from the
     // extreme test 12m34s to run and is omitted from the extreme test.
     auto rg = ReportGuard(true);
-    auto p  = make<Presentation<word_type>>(Plactic(7));
+    auto p  = make<Presentation<word_type>>(plactic_monoid(7));
     for (size_t n = 2; n < 4; ++n) {
       {
         Sims1_ S(congruence_kind::right);
@@ -1877,11 +1880,11 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("Sims1",
                           "060",
-                          "PlacticMonoid(8) up to index 3",
+                          "plactic_monoid(8) up to index 3",
                           "[extreme][low-index][plactic]") {
     std::array<uint64_t, 4> const num = {0, 1, 1'259, 2'201'564};
     auto                          rg  = ReportGuard(true);
-    auto                          p = make<Presentation<word_type>>(Plactic(8));
+    auto p = make<Presentation<word_type>>(plactic_monoid(8));
     for (size_t n = 2; n < 4; ++n) {
       {
         Sims1_ S(congruence_kind::right);
@@ -1898,14 +1901,14 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("Sims1",
                           "061",
-                          "ChineseMonoid(3) up to index 8",
+                          "chinese_monoid(3) up to index 8",
                           "[extreme][low-index][chinese]") {
     std::array<uint64_t, 9> const num
         = {0, 1, 31, 559, 8'904, 149'529, 2'860'018, 63'828'938, 1'654'488'307};
     // index 8 is doable and the value is included above, but it took about X
     // minutes to run, so isn't included in the loop below.
     auto rg = ReportGuard(true);
-    auto p  = make<Presentation<word_type>>(ChineseMonoid(3));
+    auto p  = make<Presentation<word_type>>(chinese_monoid(3));
     for (size_t n = 2; n < 8; ++n) {
       Sims1_ S(congruence_kind::right);
       S.short_rules(p).number_of_threads(4);
@@ -1915,7 +1918,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("Sims1",
                           "062",
-                          "ChineseMonoid(4) up to index 6",
+                          "chinese_monoid(4) up to index 6",
                           "[extreme][low-index][chinese]") {
     // n = 6 took between 3 and 4 minutes
     // n = 7 took 6h16m
@@ -1923,7 +1926,7 @@ namespace libsemigroups {
     std::array<uint64_t, 8> const num
         = {0, 1, 79, 3'809, 183'995, 10'759'706, 804'802'045, 77'489'765'654};
     auto rg = ReportGuard(true);
-    auto p  = make<Presentation<word_type>>(ChineseMonoid(4));
+    auto p  = make<Presentation<word_type>>(chinese_monoid(4));
     for (size_t n = 3; n < 7; ++n) {
       Sims1_ S(congruence_kind::right);
       S.short_rules(p).number_of_threads(4);
@@ -1933,14 +1936,14 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("Sims1",
                           "063",
-                          "ChineseMonoid(5) up to index 5",
+                          "chinese_monoid(5) up to index 5",
                           "[extreme][low-index][chinese]") {
     std::array<uint64_t, 7> const num
         = {0, 1, 191, 23'504, 3'382'921, 685'523'226, 199'011'439'587};
 
     // The last value took 21h32m and so is omitted
     auto rg = ReportGuard(true);
-    auto p  = make<Presentation<word_type>>(ChineseMonoid(5));
+    auto p  = make<Presentation<word_type>>(chinese_monoid(5));
     for (size_t n = 3; n < 6; ++n) {
       Sims1_ S(congruence_kind::right);
       S.short_rules(p).number_of_threads(4);
@@ -1950,14 +1953,14 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("Sims1",
                           "064",
-                          "ChineseMonoid(6) up to index 4",
+                          "chinese_monoid(6) up to index 4",
                           "[extreme][low-index][chinese]") {
     // 0 1 2 3 4
     std::array<uint64_t, 6> const num
         = {0, 1, 447, 137'694, 58'624'384, 40'823'448'867};
     // The last value took 9h54m to compute, and is omitted!
     auto rg = ReportGuard(true);
-    auto p  = make<Presentation<word_type>>(ChineseMonoid(6));
+    auto p  = make<Presentation<word_type>>(chinese_monoid(6));
     for (size_t n = 3; n < 5; ++n) {
       Sims1_ S(congruence_kind::right);
       S.short_rules(p).number_of_threads(4);
@@ -1967,12 +1970,12 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("Sims1",
                           "065",
-                          "ChineseMonoid(7) up to index 4",
+                          "chinese_monoid(7) up to index 4",
                           "[extreme][low-index][chinese]") {
     // Last value took about 50m to compute
     std::array<uint64_t, 5> const num = {0, 1, 1'023, 786'949, 988'827'143};
     auto                          rg  = ReportGuard(true);
-    auto p = make<Presentation<word_type>>(ChineseMonoid(7));
+    auto p = make<Presentation<word_type>>(chinese_monoid(7));
     for (size_t n = 2; n < 4; ++n) {
       Sims1_ S(congruence_kind::right);
       S.short_rules(p).number_of_threads(4);
@@ -1982,11 +1985,11 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("Sims1",
                           "066",
-                          "ChineseMonoid(8) up to index 3",
+                          "chinese_monoid(8) up to index 3",
                           "[extreme][low-index][chinese]") {
     std::array<uint64_t, 4> const num = {0, 1, 2'303, 4'459'599};
     auto                          rg  = ReportGuard(true);
-    auto p = make<Presentation<word_type>>(ChineseMonoid(8));
+    auto p = make<Presentation<word_type>>(chinese_monoid(8));
     for (size_t n = 2; n < 4; ++n) {
       Sims1_ S(congruence_kind::right);
       S.short_rules(p).number_of_threads(4);
@@ -2032,7 +2035,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("Sims1", "068", "RepOrc", "[quick][low-index]") {
     auto rg = ReportGuard(false);
 
-    auto p = make<Presentation<word_type>>(TemperleyLieb(9));
+    auto p = make<Presentation<word_type>>(temperley_lieb_monoid(9));
     // There are no relations containing the empty word so we just manually
     // add it.
     p.contains_empty_word(true);
@@ -2100,15 +2103,15 @@ namespace libsemigroups {
             == 9);
   }
 
-  LIBSEMIGROUPS_TEST_CASE(
-      "Sims1",
-      "070",
-      "TemperleyLieb(3) - n = minimal rep (single-threaded, reporting on)",
-      "[standard][sims1]") {
+  LIBSEMIGROUPS_TEST_CASE("Sims1",
+                          "070",
+                          "temperley_lieb_monoid(3) - n = minimal rep "
+                          "(single-threaded, reporting on)",
+                          "[standard][sims1]") {
     auto rg = ReportGuard(true);
 
     for (size_t n = 3; n <= 3; ++n) {
-      auto p = make<Presentation<word_type>>(TemperleyLieb(n));
+      auto p = make<Presentation<word_type>>(temperley_lieb_monoid(n));
       // There are no relations containing the empty word so we just manually
       // add it.
       p.contains_empty_word(true);
@@ -2140,17 +2143,16 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("Sims1",
                           "072",
-                          "SymmetricGroup(n) for n = 3, 4",
+                          "symmetric_group(n) for n = 4",
                           "[quick][low-index]") {
     std::array<uint64_t, 10> const num = {0, 0, 0, 6, 30, 156, 1'455};
     auto                           rg  = ReportGuard(false);
-    for (size_t n = 3; n < 5; ++n) {
-      auto p = make<Presentation<word_type>>(
-          SymmetricGroup(n, author::Carmichael));
-      Sims1_ C(congruence_kind::right);
-      C.short_rules(p).number_of_threads(4);
-      REQUIRE(C.number_of_congruences(factorial(n)) == num[n]);
-    }
+    size_t                         n   = 4;
+    auto                           p
+        = make<Presentation<word_type>>(symmetric_group(n, author::Carmichael));
+    Sims1_ C(congruence_kind::right);
+    C.short_rules(p).number_of_threads(4);
+    REQUIRE(C.number_of_congruences(factorial(n)) == num[n]);
   }
 
   LIBSEMIGROUPS_TEST_CASE("Sims1",
@@ -2171,7 +2173,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("Sims1",
                           "074",
-                          "MonogenicSemigroup(m, r) for m, r = 1 .. 10",
+                          "monogenic_semigroup(m, r) for m, r = 1 .. 10",
                           "[fail][low-index]") {
     auto                                        rg = ReportGuard(false);
     std::vector<std::array<uint64_t, 11>> const num
@@ -2191,7 +2193,7 @@ namespace libsemigroups {
     for (size_t m = 1; m <= 10; ++m) {
       for (size_t r = 1; r <= 10; ++r) {
         // Cyclic groups
-        auto p = make<Presentation<word_type>>(MonogenicSemigroup(m, r));
+        auto p = make<Presentation<word_type>>(monogenic_semigroup(m, r));
 
         Sims1_ C(congruence_kind::right);
         C.short_rules(p);
@@ -2203,11 +2205,11 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("Sims1",
                           "075",
-                          "PartialTransformationMonoid(4)",
+                          "partial_transformation_monoid(4)",
                           "[fail][low-index]") {
     auto rg = ReportGuard(true);
     auto p  = make<Presentation<word_type>>(
-        PartialTransformationMonoid(4, author::Sutov));
+        partial_transformation_monoid(4, author::Sutov));
     auto w = presentation::longest_common_subword(p);
     while (!w.empty()) {
       presentation::replace_subword(p, presentation::longest_common_subword(p));

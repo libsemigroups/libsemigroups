@@ -16,8 +16,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "catch.hpp"  // for REQUIRE, REQUIRE_THROWS_AS, REQUI...
-#include "fpsemi-examples.hpp"
+#include "catch.hpp"      // for REQUIRE, REQUIRE_THROWS_AS, REQUI...
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
 #include "libsemigroups/felsch-tree.hpp"  // for FelschTree

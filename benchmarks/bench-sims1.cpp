@@ -33,16 +33,16 @@
 #include "libsemigroups/cong-wrap.hpp"  // for CongruenceWrapper
 #include "libsemigroups/constants.hpp"  // for PositiveInfinity, POSITIVE...
 #include "libsemigroups/fastest-bmat.hpp"
-#include "libsemigroups/froidure-pin.hpp"  // for FroidurePinBase
-#include "libsemigroups/make-present.hpp"  // for make
-#include "libsemigroups/report.hpp"        // for ReportGuard
-#include "libsemigroups/sims1.hpp"         // for ReportGuard
-#include "libsemigroups/transf.hpp"        // for ReportGuard
-#include "libsemigroups/types.hpp"         // for word_type, letter_type
+#include "libsemigroups/fpsemi-examples.hpp"  // for singular_brauer_monoid, ...
+#include "libsemigroups/froidure-pin.hpp"     // for FroidurePinBase
+#include "libsemigroups/make-present.hpp"     // for make
+#include "libsemigroups/report.hpp"           // for ReportGuard
+#include "libsemigroups/sims1.hpp"            // for ReportGuard
+#include "libsemigroups/transf.hpp"           // for ReportGuard
+#include "libsemigroups/types.hpp"            // for word_type, letter_type
 
 #include "examples/cong-intf.hpp"
 #include "examples/fpsemi-intf.hpp"
-#include "tests/fpsemi-examples.hpp"
 
 namespace libsemigroups {
 
@@ -120,10 +120,10 @@ namespace libsemigroups {
     };
   }
 
-  TEST_CASE("SingularBrauer(3) (Maltcev-Mazorchuk)",
-            "[talk][SingularBrauer3]") {
+  TEST_CASE("singular_brauer_monoid(3) (Maltcev-Mazorchuk)",
+            "[talk][singular_brauer_monoid3]") {
     auto rg = ReportGuard(false);
-    auto p  = make<Presentation<word_type>>(SingularBrauer(3));
+    auto p  = make<Presentation<word_type>>(singular_brauer_monoid(3));
     REQUIRE(p.rules.size() == 48);
 
     BENCHMARK("Right congruences") {
@@ -136,10 +136,10 @@ namespace libsemigroups {
     };
   }
 
-  TEST_CASE("SingularBrauer(4) (Maltcev-Mazorchuk)",
-            "[talk][SingularBrauer4]") {
+  TEST_CASE("singular_brauer_monoid(4) (Maltcev-Mazorchuk)",
+            "[talk][singular_brauer_monoid4]") {
     auto rg = ReportGuard(true);
-    auto p  = make<Presentation<word_type>>(SingularBrauer(4));
+    auto p  = make<Presentation<word_type>>(singular_brauer_monoid(4));
     REQUIRE(presentation::length(p) == 660);
     presentation::remove_duplicate_rules(p);
     REQUIRE(presentation::length(p) == 600);
@@ -155,10 +155,10 @@ namespace libsemigroups {
     };
   }
 
-  TEST_CASE("SymmetricInverseMonoid(2) (Hivert)",
-            "[talk][SymmetricInverseMonoid2]") {
+  TEST_CASE("symmetric_inverse_monoid(2) (Hivert)",
+            "[talk][symmetric_inverse_monoid2]") {
     auto rg = ReportGuard(true);
-    auto p  = make<Presentation<word_type>>(RookMonoid(2, 1));
+    auto p  = make<Presentation<word_type>>(rook_monoid(2, 1));
     presentation::remove_duplicate_rules(p);
     presentation::sort_each_rule(p);
     presentation::sort_rules(p);
@@ -169,10 +169,10 @@ namespace libsemigroups {
     };
   }
 
-  TEST_CASE("SymmetricInverseMonoid(3) (Hivert)",
-            "[talk][SymmetricInverseMonoid3]") {
+  TEST_CASE("symmetric_inverse_monoid(3) (Hivert)",
+            "[talk][symmetric_inverse_monoid3]") {
     auto rg = ReportGuard(true);
-    auto p  = make<Presentation<word_type>>(RookMonoid(3, 1));
+    auto p  = make<Presentation<word_type>>(rook_monoid(3, 1));
     presentation::remove_duplicate_rules(p);
     presentation::sort_each_rule(p);
     presentation::sort_rules(p);
@@ -183,10 +183,10 @@ namespace libsemigroups {
     };
   }
 
-  TEST_CASE("SymmetricInverseMonoid(4) (Hivert)",
-            "[talk][SymmetricInverseMonoid4]") {
+  TEST_CASE("symmetric_inverse_monoid(4) (Hivert)",
+            "[talk][symmetric_inverse_monoid4]") {
     auto rg = ReportGuard(false);
-    auto p  = make<Presentation<word_type>>(RookMonoid(4, 1));
+    auto p  = make<Presentation<word_type>>(rook_monoid(4, 1));
     presentation::remove_duplicate_rules(p);
     presentation::sort_each_rule(p);
     presentation::sort_rules(p);

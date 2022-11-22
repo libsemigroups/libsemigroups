@@ -1,6 +1,6 @@
 //
 // libsemigroups - C++ library for semigroups and monoids
-// Copyright (C) 2922 James D. Mitchell
+// Copyright (C) 2022 James D. Mitchell
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -25,12 +25,12 @@
 
 #include <iostream>
 
-#include "catch.hpp"  // for REQUIRE, REQUIRE_THROWS_AS, REQUI...
-#include "fpsemi-examples.hpp"
+#include "catch.hpp"      // for REQUIRE, REQUIRE_THROWS_AS, REQUI...
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
 #include "libsemigroups/bipart.hpp"
 #include "libsemigroups/digraph-helper.hpp"
+#include "libsemigroups/fpsemi-examples.hpp"
 #include "libsemigroups/froidure-pin.hpp"
 #include "libsemigroups/knuth-bendix.hpp"  // for redundant_rule
 #include "libsemigroups/make-present.hpp"
@@ -212,7 +212,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("Sims1",
                           "904",
-                          "PartitionMonoid(2) right",
+                          "partition_monoid(2) right",
                           "[quick][low-index]") {
     auto                    rg = ReportGuard(false);
     Presentation<word_type> p;
@@ -251,7 +251,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("Sims1",
                           "905",
-                          "PartitionMonoid(3)",
+                          "partition_monoid(3)",
                           "[quick][low-index]") {
     auto                    rg = ReportGuard(false);
     Presentation<word_type> p;
@@ -364,7 +364,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("Sims1",
                           "906",
-                          "FullTransformationMonoid(3) right",
+                          "full_transformation_monoid(3) right",
                           "[quick][low-index]") {
     auto                   rg = ReportGuard(false);
     FroidurePin<Transf<3>> S({Transf<3>::make({1, 2, 0}),
@@ -382,7 +382,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("Sims1",
                           "907",
-                          "FullTransformationMonoid(3) left",
+                          "full_transformation_monoid(3) left",
                           "[quick][low-index]") {
     auto                   rg = ReportGuard(false);
     FroidurePin<Transf<3>> S(
@@ -395,7 +395,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("Sims1",
                           "908",
-                          "FullTransformationMonoid(4) left",
+                          "full_transformation_monoid(4) left",
                           "[fail][low-index]") {
     auto                   rg = ReportGuard(true);
     FroidurePin<Transf<4>> S({Transf<4>({1, 2, 3, 0}),
@@ -409,14 +409,14 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("Sims1",
                           "909",
-                          "RookMonoid(2, 1)",
+                          "rook_monoid(2, 1)",
                           "[quick][low-index]") {
     auto                    rg = ReportGuard(false);
     Presentation<word_type> p;
     p.contains_empty_word(false);
 
     p.alphabet(3);
-    for (auto const& rel : RookMonoid(2, 1)) {
+    for (auto const& rel : rook_monoid(2, 1)) {
       p.add_rule_and_check(rel.first.cbegin(),
                            rel.first.cend(),
                            rel.second.cbegin(),
@@ -428,7 +428,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("Sims1",
                           "910",
-                          "SymmetricInverseMonoid(2) from FroidurePin",
+                          "symmetric_inverse_monoid(2) from FroidurePin",
                           "[quick][low-index]") {
     auto                  rg = ReportGuard(false);
     FroidurePin<PPerm<2>> S({PPerm<2>({1, 0}), PPerm<2>({0}, {0}, 2)});
@@ -440,14 +440,14 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("Sims1",
                           "911",
-                          "SymmetricInverseMonoid(3)",
+                          "symmetric_inverse_monoid(3)",
                           "[quick][low-index]") {
     auto                    rg = ReportGuard(false);
     Presentation<word_type> p;
     p.contains_empty_word(false);
 
     p.alphabet(4);
-    for (auto const& rel : RookMonoid(3, 1)) {
+    for (auto const& rel : rook_monoid(3, 1)) {
       p.add_rule_and_check(rel.first.cbegin(),
                            rel.first.cend(),
                            rel.second.cbegin(),
@@ -459,14 +459,14 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("Sims1",
                           "912",
-                          "SymmetricInverseMonoid(4)",
+                          "symmetric_inverse_monoid(4)",
                           "[extreme][low-index]") {
     auto                    rg = ReportGuard(true);
     Presentation<word_type> p;
     p.contains_empty_word(false);
 
     p.alphabet(5);
-    for (auto const& rel : RookMonoid(4, 1)) {
+    for (auto const& rel : rook_monoid(4, 1)) {
       p.add_rule_and_check(rel.first.cbegin(),
                            rel.first.cend(),
                            rel.second.cbegin(),
@@ -482,14 +482,14 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("Sims1",
                           "913",
-                          "SymmetricInverseMonoid(5)",
+                          "symmetric_inverse_monoid(5)",
                           "[fail][low-index]") {
     auto                    rg = ReportGuard(true);
     Presentation<word_type> p;
     p.contains_empty_word(false);
 
     p.alphabet(6);
-    for (auto const& rel : RookMonoid(5, 1)) {
+    for (auto const& rel : rook_monoid(5, 1)) {
       p.add_rule_and_check(rel.first.cbegin(),
                            rel.first.cend(),
                            rel.second.cbegin(),
@@ -501,14 +501,14 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("Sims1",
                           "914",
-                          "TemperleyLieb(3) from presentation",
+                          "temperley_lieb_monoid(3) from presentation",
                           "[quick][low-index]") {
     auto                    rg = ReportGuard(false);
     Presentation<word_type> p;
     p.contains_empty_word(true);
 
     p.alphabet(2);
-    for (auto const& rel : TemperleyLieb(3)) {
+    for (auto const& rel : temperley_lieb_monoid(3)) {
       p.add_rule_and_check(rel.first.cbegin(),
                            rel.first.cend(),
                            rel.second.cbegin(),
@@ -526,14 +526,14 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("Sims1",
                           "915",
-                          "TemperleyLieb(4) from presentation",
+                          "temperley_lieb_monoid(4) from presentation",
                           "[quick][low-index]") {
     auto                    rg = ReportGuard(false);
     Presentation<word_type> p;
     p.contains_empty_word(true);
 
     p.alphabet(3);
-    for (auto const& rel : TemperleyLieb(4)) {
+    for (auto const& rel : temperley_lieb_monoid(4)) {
       p.add_rule_and_check(rel.first.cbegin(),
                            rel.first.cend(),
                            rel.second.cbegin(),
@@ -692,10 +692,10 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("Sims1",
                           "922",
-                          "SingularBrauer(4) (Maltcev-Mazorchuk)",
+                          "singular_brauer_monoid(4) (Maltcev-Mazorchuk)",
                           "[extreme][sims1]") {
     auto rg = ReportGuard(true);
-    auto p  = make<Presentation<word_type>>(SingularBrauer(4));
+    auto p  = make<Presentation<word_type>>(singular_brauer_monoid(4));
     REQUIRE(presentation::length(p) == 660);
     presentation::remove_duplicate_rules(p);
     REQUIRE(presentation::length(p) == 600);
@@ -745,10 +745,10 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("Sims1",
                           "924",
-                          "Brauer(4) (Kudryavtseva-Mazorchuk)",
+                          "brauer_monoid(4) (Kudryavtseva-Mazorchuk)",
                           "[extreme][sims1]") {
     auto rg = ReportGuard(true);
-    auto p  = make<Presentation<word_type>>(Brauer(4));
+    auto p  = make<Presentation<word_type>>(brauer_monoid(4));
     REQUIRE(presentation::length(p) == 182);
     presentation::remove_duplicate_rules(p);
     REQUIRE(presentation::length(p) == 162);
@@ -778,10 +778,11 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("Sims1",
                           "925",
-                          "UniformBlockBijection(4) (Fitzgerald)",
+                          "uniform_block_bijection_monoid(4) (Fitzgerald)",
                           "[extreme][sims1]") {
     auto rg = ReportGuard(true);
-    auto p  = make<Presentation<word_type>>(UniformBlockBijectionMonoidF(4));
+    auto p  = make<Presentation<word_type>>(
+        uniform_block_bijection_monoid(4, author::FitzGerald));
     presentation::remove_duplicate_rules(p);
     presentation::reduce_complements(p);
     presentation::sort_each_rule(p);
@@ -824,10 +825,10 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("Sims1",
                           "928",
-                          "Fibonacci(4, 6)",
+                          "fibonacci_semigroup(4, 6)",
                           "[standard][sims1][no-valgrind]") {
     auto rg = ReportGuard(false);
-    auto p  = make<Presentation<word_type>>(Fibonacci(4, 6));
+    auto p  = make<Presentation<word_type>>(fibonacci_semigroup(4, 6));
     presentation::remove_duplicate_rules(p);
     presentation::sort_each_rule(p);
     presentation::sort_rules(p);

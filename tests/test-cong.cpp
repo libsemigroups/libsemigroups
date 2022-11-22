@@ -16,19 +16,19 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "catch.hpp"            // for TEST_CASE
-#include "fpsemi-examples.hpp"  // for RookMonoid
-#include "test-main.hpp"        // for LIBSEMIGROUPS_TEST_CASE
+#include "catch.hpp"      // for TEST_CASE
+#include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
 #include "libsemigroups/cong-pair.hpp"     // for KnuthBendixCongruenceByPairs
 #include "libsemigroups/cong.hpp"          // for Congruence
 #include "libsemigroups/fastest-bmat.hpp"  // for FastestBMat
-#include "libsemigroups/fpsemi.hpp"        // for FpSemigroup
-#include "libsemigroups/froidure-pin.hpp"  // for FroidurePin
-#include "libsemigroups/pbr.hpp"           // for PBR
-#include "libsemigroups/report.hpp"        // for ReportGuard
-#include "libsemigroups/transf.hpp"        // for Transf<>
-#include "libsemigroups/types.hpp"         // for word_type
+#include "libsemigroups/fpsemi-examples.hpp"  // for rook_monoid
+#include "libsemigroups/fpsemi.hpp"           // for FpSemigroup
+#include "libsemigroups/froidure-pin.hpp"     // for FroidurePin
+#include "libsemigroups/pbr.hpp"              // for PBR
+#include "libsemigroups/report.hpp"           // for ReportGuard
+#include "libsemigroups/transf.hpp"           // for Transf<>
+#include "libsemigroups/types.hpp"            // for word_type
 
 CATCH_REGISTER_ENUM(libsemigroups::tril,
                     libsemigroups::tril::TRUE,
@@ -1039,11 +1039,14 @@ namespace libsemigroups {
     REQUIRE(!cong.contains({1, 1}, {1}));
   }
 
-  LIBSEMIGROUPS_TEST_CASE("Congruence", "033", "Stellar S2", "[quick][cong]") {
+  LIBSEMIGROUPS_TEST_CASE("Congruence",
+                          "033",
+                          "stellar_monoid S2",
+                          "[quick][cong]") {
     auto        rg = ReportGuard(REPORT);
     FpSemigroup S;
     S.set_alphabet(3);
-    for (relation_type const& rl : RookMonoid(2, 0)) {
+    for (relation_type const& rl : rook_monoid(2, 0)) {
       S.add_rule(rl);
     }
 
@@ -1054,7 +1057,7 @@ namespace libsemigroups {
     REQUIRE(S.froidure_pin()->size() == 7);
 
     Congruence cong(twosided, S);
-    for (relation_type const& rl : Stell(2)) {
+    for (relation_type const& rl : stellar_monoid(2)) {
       cong.add_pair(rl.first, rl.second);
     }
     REQUIRE(!cong.is_quotient_obviously_infinite());
@@ -1067,11 +1070,14 @@ namespace libsemigroups {
     REQUIRE(v == std::vector<word_type>({{0, 1, 0}, {1, 0}, {1, 0, 1}}));
   }
 
-  LIBSEMIGROUPS_TEST_CASE("Congruence", "034", "Stellar S3", "[quick][cong]") {
+  LIBSEMIGROUPS_TEST_CASE("Congruence",
+                          "034",
+                          "stellar_monoid S3",
+                          "[quick][cong]") {
     auto        rg = ReportGuard(REPORT);
     FpSemigroup S;
     S.set_alphabet(4);
-    for (relation_type const& rl : RookMonoid(3, 0)) {
+    for (relation_type const& rl : rook_monoid(3, 0)) {
       S.add_rule(rl);
     }
 
@@ -1082,7 +1088,7 @@ namespace libsemigroups {
     REQUIRE(S.froidure_pin()->size() == 34);
 
     Congruence cong(twosided, S);
-    for (relation_type const& rl : Stell(3)) {
+    for (relation_type const& rl : stellar_monoid(3)) {
       cong.add_pair(rl.first, rl.second);
     }
     REQUIRE(!cong.is_quotient_obviously_infinite());
@@ -1119,11 +1125,14 @@ namespace libsemigroups {
                   {2, 1, 0, 1, 2}}}));
   }
 
-  LIBSEMIGROUPS_TEST_CASE("Congruence", "035", "Stellar S4", "[quick][cong]") {
+  LIBSEMIGROUPS_TEST_CASE("Congruence",
+                          "035",
+                          "stellar_monoid S4",
+                          "[quick][cong]") {
     auto        rg = ReportGuard(REPORT);
     FpSemigroup S;
     S.set_alphabet(5);
-    for (relation_type const& rl : RookMonoid(4, 0)) {
+    for (relation_type const& rl : rook_monoid(4, 0)) {
       S.add_rule(rl);
     }
 
@@ -1134,7 +1143,7 @@ namespace libsemigroups {
     REQUIRE(S.froidure_pin()->size() == 209);
 
     Congruence cong(twosided, S);
-    for (relation_type const& rl : Stell(4)) {
+    for (relation_type const& rl : stellar_monoid(4)) {
       cong.add_pair(rl.first, rl.second);
     }
     REQUIRE(!cong.is_quotient_obviously_infinite());
@@ -1158,12 +1167,12 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("Congruence",
                           "036",
-                          "Stellar S5",
+                          "stellar_monoid S5",
                           "[quick][cong][no-valgrind]") {
     auto        rg = ReportGuard(REPORT);
     FpSemigroup S;
     S.set_alphabet(6);
-    for (relation_type const& rl : RookMonoid(5, 0)) {
+    for (relation_type const& rl : rook_monoid(5, 0)) {
       S.add_rule(rl);
     }
 
@@ -1174,7 +1183,7 @@ namespace libsemigroups {
     REQUIRE(S.froidure_pin()->size() == 1546);
 
     Congruence cong(twosided, S);
-    for (relation_type const& rl : Stell(5)) {
+    for (relation_type const& rl : stellar_monoid(5)) {
       cong.add_pair(rl.first, rl.second);
     }
     REQUIRE(!cong.is_quotient_obviously_infinite());
@@ -1198,12 +1207,12 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("Congruence",
                           "037",
-                          "Stellar S6",
+                          "stellar_monoid S6",
                           "[quick][cong][no-valgrind]") {
     auto        rg = ReportGuard(REPORT);
     FpSemigroup S;
     S.set_alphabet(7);
-    for (relation_type const& rl : RookMonoid(6, 0)) {
+    for (relation_type const& rl : rook_monoid(6, 0)) {
       S.add_rule(rl);
     }
 
@@ -1213,7 +1222,7 @@ namespace libsemigroups {
     REQUIRE(S.size() == 13327);
 
     Congruence cong(twosided, S);
-    for (relation_type const& rl : Stell(6)) {
+    for (relation_type const& rl : stellar_monoid(6)) {
       cong.add_pair(rl.first, rl.second);
     }
     REQUIRE(!cong.is_quotient_obviously_infinite());
@@ -1233,12 +1242,12 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("Congruence",
                           "038",
-                          "Stellar S7",
+                          "stellar_monoid S7",
                           "[quick][cong][no-valgrind]") {
     auto        rg = ReportGuard(REPORT);
     FpSemigroup S;
     S.set_alphabet(8);
-    for (relation_type const& rl : RookMonoid(7, 0)) {
+    for (relation_type const& rl : rook_monoid(7, 0)) {
       S.add_rule(rl);
     }
 
@@ -1248,7 +1257,7 @@ namespace libsemigroups {
     REQUIRE(S.size() == 130922);
 
     Congruence cong(twosided, S);
-    for (relation_type const& rl : Stell(7)) {
+    for (relation_type const& rl : stellar_monoid(7)) {
       cong.add_pair(rl.first, rl.second);
     }
     REQUIRE(!cong.is_quotient_obviously_infinite());

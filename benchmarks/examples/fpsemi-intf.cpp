@@ -93,7 +93,7 @@ namespace libsemigroups {
            .A    = "bc",
            .R    = {{"bc", ""}}},
           {.id   = 0xE98EAA9E59EADB12,
-           .name = "Plactic monoid degree 2",
+           .name = "plactic_monoid degree 2",
            .A    = "abc",
            .R    = {{"aba", "baa"},
                  {"bba", "bab"},
