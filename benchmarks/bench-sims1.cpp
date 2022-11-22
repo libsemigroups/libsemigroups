@@ -48,6 +48,11 @@ namespace libsemigroups {
 
   using Sims1_ = Sims1<uint32_t>;
 
+  using fpsemigroup::make;
+
+  using fpsemigroup::rook_monoid;
+  using fpsemigroup::singular_brauer_monoid;
+
   TEST_CASE("POI(3) from FroidurePin", "[POI3][Sim1][quick][talk]") {
     auto                  rg = ReportGuard(false);
     FroidurePin<PPerm<3>> S;

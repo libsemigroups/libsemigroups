@@ -203,1193 +203,1241 @@ namespace libsemigroups {
 
   }  // namespace
 
-  std::vector<relation_type> stellar_monoid(size_t l) {
-    if (l < 2) {
-      LIBSEMIGROUPS_EXCEPTION("expected argument to be at least 2, found %llu",
-                              uint64_t(l));
-    }
-    std::vector<size_t> pi;
-    for (size_t i = 0; i < l; ++i) {
-      pi.push_back(i);  // 0 est \pi_0
+  namespace fpsemigroup {
+
+    std::vector<relation_type> stellar_monoid(size_t l) {
+      if (l < 2) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "expected argument to be at least 2, found %llu", uint64_t(l));
+      }
+      std::vector<size_t> pi;
+      for (size_t i = 0; i < l; ++i) {
+        pi.push_back(i);  // 0 est \pi_0
+      }
+
+      std::vector<relation_type> rels{};
+      std::vector<size_t>        t{pi[0]};
+      for (int i = 1; i < static_cast<int>(l); ++i) {
+        t.insert(t.begin(), pi[i]);
+        rels.push_back({concat(t, {pi[i]}), t});
+      }
+      return rels;
     }
 
-    std::vector<relation_type> rels{};
-    std::vector<size_t>        t{pi[0]};
-    for (int i = 1; i < static_cast<int>(l); ++i) {
-      t.insert(t.begin(), pi[i]);
-      rels.push_back({concat(t, {pi[i]}), t});
+    std::vector<relation_type> fibonacci_semigroup(size_t r, size_t n) {
+      if (n == 0) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "expected 2nd argument to be strictly positive, found %llu",
+            uint64_t(n));
+      }
+      if (r == 0) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "expected 1st argument to be strictly positive, found %llu",
+            uint64_t(r));
+      }
+      std::vector<relation_type> result;
+      for (size_t i = 0; i < n; ++i) {
+        word_type lhs(r, 0);
+        std::iota(lhs.begin(), lhs.end(), i);
+        std::for_each(lhs.begin(), lhs.end(), [&n](size_t& x) { x %= n; });
+        result.emplace_back(lhs, word_type({(i + r) % n}));
+      }
+      return result;
     }
-    return rels;
-  }
 
-  std::vector<relation_type> fibonacci_semigroup(size_t r, size_t n) {
-    if (n == 0) {
-      LIBSEMIGROUPS_EXCEPTION(
-          "expected 2nd argument to be strictly positive, found %llu",
-          uint64_t(n));
-    }
-    if (r == 0) {
-      LIBSEMIGROUPS_EXCEPTION(
-          "expected 1st argument to be strictly positive, found %llu",
-          uint64_t(r));
-    }
-    std::vector<relation_type> result;
-    for (size_t i = 0; i < n; ++i) {
-      word_type lhs(r, 0);
-      std::iota(lhs.begin(), lhs.end(), i);
-      std::for_each(lhs.begin(), lhs.end(), [&n](size_t& x) { x %= n; });
-      result.emplace_back(lhs, word_type({(i + r) % n}));
-    }
-    return result;
-  }
-
-  std::vector<relation_type> plactic_monoid(size_t n) {
-    if (n < 2) {
-      LIBSEMIGROUPS_EXCEPTION("expected argument to be at least 2, found %llu",
-                              uint64_t(n));
-    }
-    std::vector<relation_type> result;
-    for (size_t c = 0; c < n; ++c) {
-      for (size_t b = 0; b < c; ++b) {
+    std::vector<relation_type> plactic_monoid(size_t n) {
+      if (n < 2) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "expected argument to be at least 2, found %llu", uint64_t(n));
+      }
+      std::vector<relation_type> result;
+      for (size_t c = 0; c < n; ++c) {
+        for (size_t b = 0; b < c; ++b) {
+          for (size_t a = 0; a < b; ++a) {
+            result.emplace_back(word_type({b, a, c}), word_type({b, c, a}));
+            result.emplace_back(word_type({a, c, b}), word_type({c, a, b}));
+          }
+        }
+      }
+      for (size_t b = 0; b < n; ++b) {
         for (size_t a = 0; a < b; ++a) {
-          result.emplace_back(word_type({b, a, c}), word_type({b, c, a}));
-          result.emplace_back(word_type({a, c, b}), word_type({c, a, b}));
+          result.emplace_back(word_type({b, a, a}), word_type({a, b, a}));
+          result.emplace_back(word_type({b, b, a}), word_type({b, a, b}));
         }
       }
+      return result;
     }
-    for (size_t b = 0; b < n; ++b) {
-      for (size_t a = 0; a < b; ++a) {
-        result.emplace_back(word_type({b, a, a}), word_type({a, b, a}));
-        result.emplace_back(word_type({b, b, a}), word_type({b, a, b}));
-      }
-    }
-    return result;
-  }
 
-  std::vector<relation_type> stylic_monoid(size_t n) {
-    if (n < 2) {
-      LIBSEMIGROUPS_EXCEPTION("expected argument to be at least 2, found %llu",
-                              uint64_t(n));
+    std::vector<relation_type> stylic_monoid(size_t n) {
+      if (n < 2) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "expected argument to be at least 2, found %llu", uint64_t(n));
+      }
+      std::vector<relation_type> result = plactic_monoid(n);
+      for (size_t a = 0; a < n; ++a) {
+        result.emplace_back(word_type({a, a}), word_type({a}));
+      }
+      return result;
     }
-    std::vector<relation_type> result = plactic_monoid(n);
-    for (size_t a = 0; a < n; ++a) {
-      result.emplace_back(word_type({a, a}), word_type({a}));
-    }
-    return result;
-  }
 
-  std::vector<relation_type> symmetric_group(size_t n, author val) {
-    if (n < 4) {
-      LIBSEMIGROUPS_EXCEPTION(
-          "expected 1st argument to be at least 4, found %llu", uint64_t(n));
-    }
-    if (val == author::Carmichael) {
-      // Exercise 9.5.2, p172 of
-      // https://link.springer.com/book/10.1007/978-1-84800-281-4
-      std::vector<word_type> pi;
-      for (size_t i = 0; i <= n - 2; ++i) {
-        pi.push_back({i});
+    std::vector<relation_type> symmetric_group(size_t n, author val) {
+      if (n < 4) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "expected 1st argument to be at least 4, found %llu", uint64_t(n));
       }
-      std::vector<relation_type> result;
+      if (val == author::Carmichael) {
+        // Exercise 9.5.2, p172 of
+        // https://link.springer.com/book/10.1007/978-1-84800-281-4
+        std::vector<word_type> pi;
+        for (size_t i = 0; i <= n - 2; ++i) {
+          pi.push_back({i});
+        }
+        std::vector<relation_type> result;
 
-      for (size_t i = 0; i <= n - 2; ++i) {
-        result.emplace_back(pi[i] ^ 2, word_type({}));
-      }
-      for (size_t i = 0; i < n - 2; ++i) {
-        result.emplace_back((pi[i] * pi[i + 1]) ^ 3, word_type({}));
-      }
-      result.emplace_back((pi[n - 2] * pi[0]) ^ 3, word_type({}));
-      for (size_t i = 0; i < n - 2; ++i) {
-        for (size_t j = 0; j < i; ++j) {
-          result.emplace_back((pi[i] * pi[i + 1] * pi[i] * pi[j]) ^ 2,
+        for (size_t i = 0; i <= n - 2; ++i) {
+          result.emplace_back(pi[i] ^ 2, word_type({}));
+        }
+        for (size_t i = 0; i < n - 2; ++i) {
+          result.emplace_back((pi[i] * pi[i + 1]) ^ 3, word_type({}));
+        }
+        result.emplace_back((pi[n - 2] * pi[0]) ^ 3, word_type({}));
+        for (size_t i = 0; i < n - 2; ++i) {
+          for (size_t j = 0; j < i; ++j) {
+            result.emplace_back((pi[i] * pi[i + 1] * pi[i] * pi[j]) ^ 2,
+                                word_type({}));
+          }
+          for (size_t j = i + 2; j <= n - 2; ++j) {
+            result.emplace_back((pi[i] * pi[i + 1] * pi[i] * pi[j]) ^ 2,
+                                word_type({}));
+          }
+        }
+        for (size_t j = 1; j < n - 2; ++j) {
+          result.emplace_back((pi[n - 2] * pi[0] * pi[n - 2] * pi[j]) ^ 2,
                               word_type({}));
         }
-        for (size_t j = i + 2; j <= n - 2; ++j) {
-          result.emplace_back((pi[i] * pi[i + 1] * pi[i] * pi[j]) ^ 2,
-                              word_type({}));
+        return result;
+      } else if (val == author::Coxeter + author::Moser) {
+        // From Chapter 3, Proposition 1.2 in https://bit.ly/3R5ZpKW (Ruskuc
+        // thesis)
+
+        std::vector<word_type> a;
+        for (size_t i = 0; i < n - 1; ++i) {
+          a.push_back({i});
         }
-      }
-      for (size_t j = 1; j < n - 2; ++j) {
-        result.emplace_back((pi[n - 2] * pi[0] * pi[n - 2] * pi[j]) ^ 2,
-                            word_type({}));
-      }
-      return result;
-    } else if (val == author::Coxeter + author::Moser) {
-      // From Chapter 3, Proposition 1.2 in https://bit.ly/3R5ZpKW (Ruskuc
-      // thesis)
+        std::vector<relation_type> result;
 
-      std::vector<word_type> a;
-      for (size_t i = 0; i < n - 1; ++i) {
-        a.push_back({i});
-      }
-      std::vector<relation_type> result;
-
-      for (size_t i = 0; i < n - 1; i++) {
-        result.emplace_back(a[i] ^ 2, word_type({}));
-      }
-
-      for (size_t j = 0; j < n - 2; ++j) {
-        result.emplace_back((a[j] * a[j + 1]) ^ 3, word_type({}));
-      }
-      for (size_t l = 2; l < n - 1; ++l) {
-        for (size_t k = 0; k <= l - 2; ++k) {
-          result.emplace_back((a[k] * a[l]) ^ 2, word_type({}));
+        for (size_t i = 0; i < n - 1; i++) {
+          result.emplace_back(a[i] ^ 2, word_type({}));
         }
-      }
-      return result;
 
-    } else if (val == author::Moore) {
-      // From Chapter 3, Proposition 1.1 in https://bit.ly/3R5ZpKW (Ruskuc
-      // thesis)
-      word_type const e = {};
-      word_type const a = {0};
-      word_type const b = {1};
-
-      std::vector<relation_type> result;
-      result.emplace_back(a ^ 2, e);
-      result.emplace_back(b ^ n, e);
-      result.emplace_back((a * b) ^ (n - 1), e);
-      result.emplace_back((a * (b ^ (n - 1)) * a * b) ^ 3, e);
-      for (size_t j = 2; j <= n - 2; ++j) {
-        result.emplace_back((a * ((b ^ (n - 1)) ^ j) * a * (b ^ j)) ^ 2, e);
-      }
-      return result;
-    } else if (val == author::Burnside + author::Miller) {
-      // See Eq 2.6 of 'Presentations of finite simple groups: A quantitative
-      // approach' J. Amer. Math. Soc. 21 (2008), 711-774
-      std::vector<word_type> a;
-      for (size_t i = 0; i <= n - 2; ++i) {
-        a.push_back({i});
-      }
-
-      std::vector<relation_type> result;
-
-      for (size_t i = 0; i <= n - 2; ++i) {
-        result.emplace_back(a[i] ^ 2, word_type({}));
-      }
-
-      for (size_t i = 0; i <= n - 2; ++i) {
-        for (size_t j = 0; j <= n - 2; ++j) {
-          if (i == j) {
-            continue;
+        for (size_t j = 0; j < n - 2; ++j) {
+          result.emplace_back((a[j] * a[j + 1]) ^ 3, word_type({}));
+        }
+        for (size_t l = 2; l < n - 1; ++l) {
+          for (size_t k = 0; k <= l - 2; ++k) {
+            result.emplace_back((a[k] * a[l]) ^ 2, word_type({}));
           }
-          result.emplace_back((a[i] * a[j]) ^ 3, word_type({}));
         }
-      }
+        return result;
 
-      for (size_t i = 0; i <= n - 2; ++i) {
-        for (size_t j = 0; j <= n - 2; ++j) {
-          if (i == j) {
-            continue;
-          }
-          for (size_t k = 0; k <= n - 2; ++k) {
-            if (k == i || k == j) {
+      } else if (val == author::Moore) {
+        // From Chapter 3, Proposition 1.1 in https://bit.ly/3R5ZpKW (Ruskuc
+        // thesis)
+        word_type const e = {};
+        word_type const a = {0};
+        word_type const b = {1};
+
+        std::vector<relation_type> result;
+        result.emplace_back(a ^ 2, e);
+        result.emplace_back(b ^ n, e);
+        result.emplace_back((a * b) ^ (n - 1), e);
+        result.emplace_back((a * (b ^ (n - 1)) * a * b) ^ 3, e);
+        for (size_t j = 2; j <= n - 2; ++j) {
+          result.emplace_back((a * ((b ^ (n - 1)) ^ j) * a * (b ^ j)) ^ 2, e);
+        }
+        return result;
+      } else if (val == author::Burnside + author::Miller) {
+        // See Eq 2.6 of 'Presentations of finite simple groups: A quantitative
+        // approach' J. Amer. Math. Soc. 21 (2008), 711-774
+        std::vector<word_type> a;
+        for (size_t i = 0; i <= n - 2; ++i) {
+          a.push_back({i});
+        }
+
+        std::vector<relation_type> result;
+
+        for (size_t i = 0; i <= n - 2; ++i) {
+          result.emplace_back(a[i] ^ 2, word_type({}));
+        }
+
+        for (size_t i = 0; i <= n - 2; ++i) {
+          for (size_t j = 0; j <= n - 2; ++j) {
+            if (i == j) {
               continue;
             }
-            result.emplace_back((a[i] * a[j] * a[i] * a[k]) ^ 2, word_type({}));
-          }
-        }
-      }
-      return result;
-    } else if (val
-               == author::Guralnick + author::Kantor + author::Kassabov
-                      + author::Lubotzky) {
-      // See Section 2.2 of 'Presentations of finite simple groups: A
-      // quantitative approach' J. Amer. Math. Soc. 21 (2008), 711-774
-      std::vector<word_type> a;
-      for (size_t i = 0; i <= n - 2; ++i) {
-        a.push_back({i});
-      }
-
-      std::vector<relation_type> result;
-
-      for (size_t i = 0; i <= n - 2; ++i) {
-        result.emplace_back(a[i] ^ 2, word_type({}));
-      }
-
-      for (size_t i = 0; i <= n - 2; ++i) {
-        for (size_t j = 0; j <= n - 2; ++j) {
-          if (i != j) {
             result.emplace_back((a[i] * a[j]) ^ 3, word_type({}));
           }
         }
-      }
 
-      for (size_t i = 0; i <= n - 2; ++i) {
-        for (size_t j = 0; j <= n - 2; ++j) {
-          if (i == j) {
-            continue;
-          }
-          for (size_t k = 0; k <= n - 2; ++k) {
-            if (k != i && k != j) {
-              result.emplace_back((a[i] * a[j] * a[k]) ^ 4, word_type({}));
+        for (size_t i = 0; i <= n - 2; ++i) {
+          for (size_t j = 0; j <= n - 2; ++j) {
+            if (i == j) {
+              continue;
+            }
+            for (size_t k = 0; k <= n - 2; ++k) {
+              if (k == i || k == j) {
+                continue;
+              }
+              result.emplace_back((a[i] * a[j] * a[i] * a[k]) ^ 2,
+                                  word_type({}));
             }
           }
         }
-      }
-
-      return result;
-
-    } else {
-      LIBSEMIGROUPS_EXCEPTION(
-          "expected 2nd argument to be one of: author::Burnside + "
-          "author::Miller, "
-          "author::Carmichael, author::Coxeter + author::Moser, or "
-          "author::Moore, found %s",
-          detail::to_string(val).c_str());
-    }
-  }
-
-  std::vector<relation_type> alternating_group(size_t n, author val) {
-    if (n < 4) {
-      LIBSEMIGROUPS_EXCEPTION(
-          "expected 1st argument to be at least 4, found %llu", uint64_t(n));
-    }
-    if (val == author::Moore) {
-      std::vector<relation_type> result;
-      std::vector<word_type>     a;
-
-      for (size_t i = 0; i <= n - 3; ++i) {
-        a.push_back(word_type({i}));
-      }
-
-      result.emplace_back(a[0] ^ 3, word_type({}));
-
-      for (size_t j = 1; j <= n - 3; ++j) {
-        result.emplace_back(a[j] ^ 2, word_type({}));
-      }
-
-      for (size_t i = 1; i <= n - 3; ++i) {
-        result.emplace_back((a[i - 1] * a[i]) ^ 3, word_type({}));
-      }
-
-      for (size_t k = 2; k <= n - 3; ++k) {
-        for (size_t j = 0; j <= k - 2; ++j) {
-          result.emplace_back((a[j] * a[k]) ^ 2, word_type({}));
-        }
-      }
-
-      return result;
-    }
-    LIBSEMIGROUPS_EXCEPTION(
-        "expected 2nd argument to be author::Moore, found %s",
-        detail::to_string(val).c_str());
-  }
-
-  // From https://core.ac.uk/reader/33304940
-  std::vector<relation_type> dual_symmetric_inverse_monoid(size_t n,
-                                                           author val) {
-    if (n < 3) {
-      LIBSEMIGROUPS_EXCEPTION(
-          "expected 1st argument to be at least 3, found %llu", uint64_t(n));
-    }
-    if (val == author::Easdown + author::East + author::FitzGerald) {
-      auto mij = [](size_t i, size_t j) {
-        if (i == j) {
-          return 1;
-        } else if (std::abs(static_cast<int64_t>(i) - static_cast<int64_t>(j))
-                   == 1) {
-          return 3;
-        } else {
-          return 2;
-        }
-      };
-
-      std::vector<word_type> alphabet;
-      for (size_t i = 0; i < n + 1; ++i) {
-        alphabet.push_back({i});
-      }
-      auto                       x = alphabet.back();
-      auto                       e = alphabet.front();
-      std::vector<relation_type> result;
-      add_monoid_relations(alphabet, e, result);
-      auto s = alphabet.cbegin();
-
-      // R1
-      for (size_t i = 1; i <= n - 1; ++i) {
-        for (size_t j = 1; j <= n - 1; ++j) {
-          result.emplace_back((s[i] * s[j]) ^ mij(i, j), e);
-        }
-      }
-      // R2
-      result.emplace_back(x ^ 3, x);
-      // R3
-      result.emplace_back(x * s[1], x);
-      result.emplace_back(s[1] * x, x);
-      // R4
-      result.emplace_back(x * s[2] * x, x * s[2] * x * s[2]);
-      result.emplace_back(x * s[2] * x * s[2], s[2] * x * s[2] * x);
-      result.emplace_back(s[2] * x * s[2] * x, x * s[2] * (x ^ 2));
-      result.emplace_back(x * s[2] * (x ^ 2), (x ^ 2) * s[2] * x);
-      if (n == 3) {
         return result;
-      }
-      // R5
-      word_type const sigma = s[2] * s[3] * s[1] * s[2];
-      result.emplace_back((x ^ 2) * sigma * (x ^ 2) * sigma,
-                          sigma * (x ^ 2) * sigma * (x ^ 2));
-      result.emplace_back(sigma * (x ^ 2) * sigma * (x ^ 2),
-                          x * s[2] * s[3] * s[2] * x);
-      // R6
-      std::vector<word_type> l = {{}, {}, x * s[2] * s[1]};
-      for (size_t i = 3; i <= n - 1; ++i) {
-        l.push_back(s[i] * l[i - 1] * s[i] * s[i - 1]);
-      }
-      std::vector<word_type> y = {{}, {}, {}, x};
-      for (size_t i = 4; i <= n; ++i) {
-        y.push_back(l[i - 1] * y[i - 1] * s[i - 1]);
-      }
-      for (size_t i = 3; i <= n - 1; ++i) {
-        result.emplace_back(y[i] * s[i] * y[i], s[i] * y[i] * s[i]);
-      }
-      if (n == 4) {
+      } else if (val
+                 == author::Guralnick + author::Kantor + author::Kassabov
+                        + author::Lubotzky) {
+        // See Section 2.2 of 'Presentations of finite simple groups: A
+        // quantitative approach' J. Amer. Math. Soc. 21 (2008), 711-774
+        std::vector<word_type> a;
+        for (size_t i = 0; i <= n - 2; ++i) {
+          a.push_back({i});
+        }
+
+        std::vector<relation_type> result;
+
+        for (size_t i = 0; i <= n - 2; ++i) {
+          result.emplace_back(a[i] ^ 2, word_type({}));
+        }
+
+        for (size_t i = 0; i <= n - 2; ++i) {
+          for (size_t j = 0; j <= n - 2; ++j) {
+            if (i != j) {
+              result.emplace_back((a[i] * a[j]) ^ 3, word_type({}));
+            }
+          }
+        }
+
+        for (size_t i = 0; i <= n - 2; ++i) {
+          for (size_t j = 0; j <= n - 2; ++j) {
+            if (i == j) {
+              continue;
+            }
+            for (size_t k = 0; k <= n - 2; ++k) {
+              if (k != i && k != j) {
+                result.emplace_back((a[i] * a[j] * a[k]) ^ 4, word_type({}));
+              }
+            }
+          }
+        }
+
         return result;
+
+      } else {
+        LIBSEMIGROUPS_EXCEPTION(
+            "expected 2nd argument to be one of: author::Burnside + "
+            "author::Miller, "
+            "author::Carmichael, author::Coxeter + author::Moser, or "
+            "author::Moore, found %s",
+            detail::to_string(val).c_str());
       }
-      // R7
-      for (size_t i = 4; i <= n - 1; ++i) {
-        result.emplace_back(x * s[i], s[i] * x);
-      }
-      return result;
-    } else {
-      LIBSEMIGROUPS_EXCEPTION(
-          "expected 2nd argument to be author::Easdown + author::East + "
-          "author::FitzGerald, found %s",
-          detail::to_string(val).c_str());
     }
-  }
 
-  std::vector<relation_type> uniform_block_bijection_monoid(size_t n,
-                                                            author val) {
-    if (n < 3) {
-      LIBSEMIGROUPS_EXCEPTION(
-          "expected 1st argument to be at least 3, found %llu", uint64_t(n));
-    }
-    if (val == author::FitzGerald) {
-      auto mij = [](size_t i, size_t j) {
-        if (i == j) {
-          return 1;
-        } else if (std::abs(static_cast<int64_t>(i) - static_cast<int64_t>(j))
-                   == 1) {
-          return 3;
-        } else {
-          return 2;
-        }
-      };
-
-      std::vector<word_type> alphabet;
-      for (size_t i = 0; i < n + 1; ++i) {
-        alphabet.push_back({i});
-      }
-      auto                       t = alphabet.back();
-      auto                       e = alphabet.front();
-      std::vector<relation_type> result;
-      add_monoid_relations(alphabet, e, result);
-      auto s = alphabet.cbegin();
-
-      // S in Theorem 3 (same as dual_symmetric_inverse_monoid)
-      for (size_t i = 1; i <= n - 1; ++i) {
-        for (size_t j = 1; j <= n - 1; ++j) {
-          result.emplace_back((s[i] * s[j]) ^ mij(i, j), e);
-        }
-      }
-
-      // F2
-      result.emplace_back(t ^ 2, t);
-
-      // F3
-      result.emplace_back(t * s[1], t);
-      result.emplace_back(s[1] * t, t);
-
-      // F4
-      for (size_t i = 3; i <= n - 1; ++i) {
-        result.emplace_back(s[i] * t, t * s[i]);
-      }
-
-      // F5
-      result.emplace_back(s[2] * t * s[2] * t, t * s[2] * t * s[2]);
-
-      // F6
-      result.emplace_back(
-          s[2] * s[1] * s[3] * s[2] * t * s[2] * s[3] * s[1] * s[2] * t,
-          t * s[2] * s[1] * s[3] * s[2] * t * s[2] * s[3] * s[1] * s[2]);
-
-      return result;
-    } else {
-      LIBSEMIGROUPS_EXCEPTION(
-          "expected 2nd argument to be author::FitzGerald, found %s",
-          detail::to_string(val).c_str());
-    }
-  }
-
-  // From Theorem 41 in doi:10.1016/j.jalgebra.2011.04.008
-  std::vector<relation_type> partition_monoid(size_t n, author val) {
-    std::vector<relation_type> result;
-    if (val == author::Machine) {
-      if (n != 3) {
-        LIBSEMIGROUPS_EXCEPTION("the 1st argument (size_t) must be 3 when the "
-                                "2nd argument is Machine, found %llu",
-                                uint64_t(n));
-      }
-      result.emplace_back<word_type, word_type>({0, 0}, {0});
-      result.emplace_back<word_type, word_type>({0, 1}, {1});
-      result.emplace_back<word_type, word_type>({0, 2}, {2});
-      result.emplace_back<word_type, word_type>({0, 3}, {3});
-      result.emplace_back<word_type, word_type>({0, 4}, {4});
-      result.emplace_back<word_type, word_type>({1, 0}, {1});
-      result.emplace_back<word_type, word_type>({2, 0}, {2});
-      result.emplace_back<word_type, word_type>({2, 2}, {0});
-      result.emplace_back<word_type, word_type>({2, 4}, {4});
-      result.emplace_back<word_type, word_type>({3, 0}, {3});
-      result.emplace_back<word_type, word_type>({3, 3}, {3});
-      result.emplace_back<word_type, word_type>({4, 0}, {4});
-      result.emplace_back<word_type, word_type>({4, 2}, {4});
-      result.emplace_back<word_type, word_type>({4, 4}, {4});
-      result.emplace_back<word_type, word_type>({1, 1, 1}, {0});
-      result.emplace_back<word_type, word_type>({1, 1, 2}, {2, 1});
-      result.emplace_back<word_type, word_type>({1, 2, 1}, {2});
-      result.emplace_back<word_type, word_type>({2, 1, 1}, {1, 2});
-      result.emplace_back<word_type, word_type>({2, 1, 2}, {1, 1});
-      result.emplace_back<word_type, word_type>({2, 1, 4}, {1, 1, 4});
-      result.emplace_back<word_type, word_type>({3, 1, 2}, {1, 2, 3});
-      result.emplace_back<word_type, word_type>({3, 4, 3}, {3});
-      result.emplace_back<word_type, word_type>({4, 1, 2}, {4, 1, 1});
-      result.emplace_back<word_type, word_type>({4, 3, 4}, {4});
-      result.emplace_back<word_type, word_type>({1, 1, 3, 1}, {2, 3, 2});
-      result.emplace_back<word_type, word_type>({1, 1, 3, 2}, {2, 3, 1});
-      result.emplace_back<word_type, word_type>({1, 2, 3, 1}, {3, 2});
-      result.emplace_back<word_type, word_type>({1, 2, 3, 2}, {3, 1});
-      result.emplace_back<word_type, word_type>({1, 2, 3, 4}, {3, 1, 4});
-      result.emplace_back<word_type, word_type>({1, 3, 2, 3}, {3, 1, 3});
-      result.emplace_back<word_type, word_type>({1, 4, 1, 4}, {4, 1, 4});
-      result.emplace_back<word_type, word_type>({2, 1, 3, 1}, {1, 3, 2});
-      result.emplace_back<word_type, word_type>({2, 1, 3, 2}, {1, 3, 1});
-      result.emplace_back<word_type, word_type>({2, 1, 3, 4}, {1, 3, 1, 4});
-      result.emplace_back<word_type, word_type>({2, 3, 1, 3}, {1, 3, 1, 3});
-      result.emplace_back<word_type, word_type>({2, 3, 1, 4}, {1, 1, 3, 4});
-      result.emplace_back<word_type, word_type>({2, 3, 2, 3}, {3, 2, 3});
-      result.emplace_back<word_type, word_type>({3, 1, 3, 2}, {3, 1, 3});
-      result.emplace_back<word_type, word_type>({3, 1, 4, 3}, {1, 2, 3});
-      result.emplace_back<word_type, word_type>({3, 2, 3, 2}, {3, 2, 3});
-      result.emplace_back<word_type, word_type>({4, 1, 1, 4}, {4, 1, 4});
-      result.emplace_back<word_type, word_type>({4, 1, 3, 2}, {4, 1, 3, 1});
-      result.emplace_back<word_type, word_type>({4, 1, 4, 1}, {4, 1, 4});
-      result.emplace_back<word_type, word_type>({1, 3, 1, 1, 3}, {3, 2, 1, 3});
-      result.emplace_back<word_type, word_type>({1, 3, 4, 1, 4}, {4, 1, 3, 4});
-      result.emplace_back<word_type, word_type>({2, 3, 1, 1, 3}, {3, 1, 1, 3});
-      result.emplace_back<word_type, word_type>({2, 3, 2, 1, 3},
-                                                {1, 3, 2, 1, 3});
-      result.emplace_back<word_type, word_type>({2, 3, 4, 1, 3},
-                                                {1, 3, 4, 1, 3});
-      result.emplace_back<word_type, word_type>({2, 3, 4, 1, 4},
-                                                {1, 4, 1, 3, 4});
-      result.emplace_back<word_type, word_type>({3, 1, 1, 4, 1},
-                                                {1, 1, 4, 1, 3});
-      result.emplace_back<word_type, word_type>({3, 1, 3, 1, 1}, {3, 2, 1, 3});
-      result.emplace_back<word_type, word_type>({3, 2, 3, 1, 1}, {3, 1, 1, 3});
-      result.emplace_back<word_type, word_type>({3, 4, 1, 1, 3}, {1, 2, 3});
-      result.emplace_back<word_type, word_type>({3, 4, 1, 4, 3},
-                                                {1, 1, 4, 1, 3});
-      result.emplace_back<word_type, word_type>({4, 1, 1, 3, 4}, {4, 3, 1, 4});
-      result.emplace_back<word_type, word_type>({4, 1, 3, 1, 1},
-                                                {1, 3, 1, 1, 4});
-      result.emplace_back<word_type, word_type>({4, 1, 3, 1, 3}, {4, 3, 1, 3});
-      result.emplace_back<word_type, word_type>({4, 1, 3, 1, 4}, {4, 1, 3, 4});
-      result.emplace_back<word_type, word_type>({4, 1, 3, 4, 1}, {4, 1, 3, 4});
-      result.emplace_back<word_type, word_type>({4, 1, 4, 3, 2},
-                                                {4, 1, 4, 3, 1});
-      result.emplace_back<word_type, word_type>({1, 1, 3, 4, 1, 3},
-                                                {3, 1, 4, 1, 3});
-      result.emplace_back<word_type, word_type>({1, 1, 4, 1, 3, 4},
-                                                {3, 4, 1, 4});
-      result.emplace_back<word_type, word_type>({1, 3, 1, 1, 4, 3},
-                                                {4, 3, 2, 1, 3});
-      result.emplace_back<word_type, word_type>({1, 3, 1, 3, 1, 3},
-                                                {3, 1, 3, 1, 3});
-      result.emplace_back<word_type, word_type>({1, 3, 1, 4, 1, 3},
-                                                {3, 4, 1, 3});
-      result.emplace_back<word_type, word_type>({1, 4, 3, 1, 1, 4},
-                                                {4, 3, 1, 1, 4});
-      result.emplace_back<word_type, word_type>({2, 3, 1, 1, 4, 3},
-                                                {1, 4, 3, 2, 1, 3});
-      result.emplace_back<word_type, word_type>({3, 1, 1, 3, 4, 1},
-                                                {3, 1, 4, 1, 3});
-      result.emplace_back<word_type, word_type>({3, 1, 1, 4, 3, 1},
-                                                {1, 1, 4, 3, 1, 3});
-      result.emplace_back<word_type, word_type>({3, 1, 3, 1, 3, 1},
-                                                {3, 1, 3, 1, 3});
-      result.emplace_back<word_type, word_type>({3, 1, 3, 1, 4, 1},
-                                                {3, 4, 1, 3});
-      result.emplace_back<word_type, word_type>({3, 1, 4, 1, 1, 3}, {3});
-      result.emplace_back<word_type, word_type>({4, 1, 4, 3, 1, 1},
-                                                {4, 3, 1, 1, 4});
-      result.emplace_back<word_type, word_type>({4, 1, 4, 3, 1, 4}, {4, 1, 4});
-      result.emplace_back<word_type, word_type>({4, 3, 1, 3, 1, 4},
-                                                {1, 3, 1, 1, 4});
-      result.emplace_back<word_type, word_type>({1, 1, 4, 3, 1, 3, 1},
-                                                {3, 1, 1, 4, 3, 2});
-      result.emplace_back<word_type, word_type>({1, 1, 4, 3, 2, 1, 3},
-                                                {3, 1, 1, 4, 3});
-      result.emplace_back<word_type, word_type>({1, 3, 1, 3, 4, 1, 3},
-                                                {3, 1, 3, 4, 1, 3});
-      result.emplace_back<word_type, word_type>({3, 1, 1, 4, 3, 2, 1},
-                                                {3, 1, 1, 4, 3});
-      result.emplace_back<word_type, word_type>({3, 1, 3, 1, 3, 4, 1},
-                                                {3, 1, 3, 4, 1, 3});
-      result.emplace_back<word_type, word_type>({4, 3, 1, 1, 4, 3, 2},
-                                                {4, 1, 4, 3, 1, 3, 1});
-      result.emplace_back<word_type, word_type>({3, 1, 1, 4, 3, 2, 3, 1},
-                                                {3, 1, 1, 4, 3, 2, 3});
-      result.emplace_back<word_type, word_type>({3, 1, 1, 4, 3, 2, 3, 4, 1},
-                                                {1, 1, 4, 3, 1, 3, 4, 1, 3});
-
-      return result;
-    } else if (val == author::East) {
+    std::vector<relation_type> alternating_group(size_t n, author val) {
       if (n < 4) {
         LIBSEMIGROUPS_EXCEPTION(
-            "the 1st argument (size_t) must be at least 4 "
-            "when the 2nd argument is author::East, found %llu",
-            uint64_t(n));
+            "expected 1st argument to be at least 4, found %llu", uint64_t(n));
       }
-      word_type s  = {0};
-      word_type c  = {1};
-      word_type e  = {2};
-      word_type t  = {3};
-      word_type id = {4};
+      if (val == author::Moore) {
+        std::vector<relation_type> result;
+        std::vector<word_type>     a;
 
-      std::vector<word_type> alphabet = {s, c, e, t, id};
-      add_monoid_relations(alphabet, id, result);
+        for (size_t i = 0; i <= n - 3; ++i) {
+          a.push_back(word_type({i}));
+        }
 
-      // V1
-      result.emplace_back(c ^ n, id);
-      result.emplace_back((s * c) ^ (n - 1), id);
-      result.emplace_back(s * s, id);
-      for (size_t i = 2; i <= n / 2; ++i) {
-        result.emplace_back(((c ^ i) * s * (c ^ (n - i)) * s) ^ 2, id);
+        result.emplace_back(a[0] ^ 3, word_type({}));
+
+        for (size_t j = 1; j <= n - 3; ++j) {
+          result.emplace_back(a[j] ^ 2, word_type({}));
+        }
+
+        for (size_t i = 1; i <= n - 3; ++i) {
+          result.emplace_back((a[i - 1] * a[i]) ^ 3, word_type({}));
+        }
+
+        for (size_t k = 2; k <= n - 3; ++k) {
+          for (size_t j = 0; j <= k - 2; ++j) {
+            result.emplace_back((a[j] * a[k]) ^ 2, word_type({}));
+          }
+        }
+
+        return result;
       }
-
-      // V2
-      result.emplace_back(e * e, e);
-      result.emplace_back(e * t * e, e);
-      result.emplace_back(s * c * e * (c ^ (n - 1)) * s, e);
-      result.emplace_back(c * s * (c ^ (n - 1)) * e * c * s * (c ^ (n - 1)), e);
-
-      // V3
-      result.emplace_back(t * t, t);
-      result.emplace_back(t * e * t, t);
-      result.emplace_back(t * s, t);
-      result.emplace_back(s * t, t);
-      result.emplace_back(
-          (c ^ 2) * s * (c ^ (n - 2)) * t * (c ^ 2) * s * (c ^ (n - 2)), t);
-      result.emplace_back((c ^ (n - 1)) * s * c * s * (c ^ (n - 1)) * t * c * s
-                              * (c ^ (n - 1)) * s * c,
-                          t);
-
-      // V4
-      result.emplace_back(s * e * s * e, e * s * e);
-      result.emplace_back(e * s * e * s, e * s * e);
-
-      // V5
-      result.emplace_back(t * c * t * (c ^ (n - 1)), c * t * (c ^ (n - 1)) * t);
-
-      // V6
-      result.emplace_back(t * (c ^ 2) * t * (c ^ (n - 2)),
-                          (c ^ 2) * t * (c ^ (n - 2)) * t);
-      // V7
-      result.emplace_back(t * (c ^ 2) * e * (c ^ (n - 2)),
-                          (c ^ 2) * e * (c ^ (n - 2)) * t);
-    } else {
       LIBSEMIGROUPS_EXCEPTION(
-          "expected 2nd argument to be author::East, found %s",
+          "expected 2nd argument to be author::Moore, found %s",
           detail::to_string(val).c_str());
     }
-    return result;
-  }
 
-  // From Theorem 5 in 10.21136/MB.2007.134125
-  // https://dml.cz/bitstream/handle/10338.dmlcz/134125/MathBohem_132-2007-3_6.pdf
+    // From https://core.ac.uk/reader/33304940
+    std::vector<relation_type> dual_symmetric_inverse_monoid(size_t n,
+                                                             author val) {
+      if (n < 3) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "expected 1st argument to be at least 3, found %llu", uint64_t(n));
+      }
+      if (val == author::Easdown + author::East + author::FitzGerald) {
+        auto mij = [](size_t i, size_t j) {
+          if (i == j) {
+            return 1;
+          } else if (std::abs(static_cast<int64_t>(i) - static_cast<int64_t>(j))
+                     == 1) {
+            return 3;
+          } else {
+            return 2;
+          }
+        };
 
-  std::vector<relation_type> singular_brauer_monoid(size_t n) {
-    if (n < 3) {
-      LIBSEMIGROUPS_EXCEPTION("expected argument to be at least 3, found %llu",
-                              uint64_t(n));
-    }
-    std::vector<std::vector<word_type>> t;
-    size_t                              val = 0;
-    for (size_t i = 0; i < n; ++i) {
-      t.push_back({});
-      for (size_t j = 0; j < n; ++j) {
-        if (i != j) {
-          t.back().push_back({val});
-          val++;
-        } else {
-          t.back().push_back({0});
+        std::vector<word_type> alphabet;
+        for (size_t i = 0; i < n + 1; ++i) {
+          alphabet.push_back({i});
         }
+        auto                       x = alphabet.back();
+        auto                       e = alphabet.front();
+        std::vector<relation_type> result;
+        add_monoid_relations(alphabet, e, result);
+        auto s = alphabet.cbegin();
+
+        // R1
+        for (size_t i = 1; i <= n - 1; ++i) {
+          for (size_t j = 1; j <= n - 1; ++j) {
+            result.emplace_back((s[i] * s[j]) ^ mij(i, j), e);
+          }
+        }
+        // R2
+        result.emplace_back(x ^ 3, x);
+        // R3
+        result.emplace_back(x * s[1], x);
+        result.emplace_back(s[1] * x, x);
+        // R4
+        result.emplace_back(x * s[2] * x, x * s[2] * x * s[2]);
+        result.emplace_back(x * s[2] * x * s[2], s[2] * x * s[2] * x);
+        result.emplace_back(s[2] * x * s[2] * x, x * s[2] * (x ^ 2));
+        result.emplace_back(x * s[2] * (x ^ 2), (x ^ 2) * s[2] * x);
+        if (n == 3) {
+          return result;
+        }
+        // R5
+        word_type const sigma = s[2] * s[3] * s[1] * s[2];
+        result.emplace_back((x ^ 2) * sigma * (x ^ 2) * sigma,
+                            sigma * (x ^ 2) * sigma * (x ^ 2));
+        result.emplace_back(sigma * (x ^ 2) * sigma * (x ^ 2),
+                            x * s[2] * s[3] * s[2] * x);
+        // R6
+        std::vector<word_type> l = {{}, {}, x * s[2] * s[1]};
+        for (size_t i = 3; i <= n - 1; ++i) {
+          l.push_back(s[i] * l[i - 1] * s[i] * s[i - 1]);
+        }
+        std::vector<word_type> y = {{}, {}, {}, x};
+        for (size_t i = 4; i <= n; ++i) {
+          y.push_back(l[i - 1] * y[i - 1] * s[i - 1]);
+        }
+        for (size_t i = 3; i <= n - 1; ++i) {
+          result.emplace_back(y[i] * s[i] * y[i], s[i] * y[i] * s[i]);
+        }
+        if (n == 4) {
+          return result;
+        }
+        // R7
+        for (size_t i = 4; i <= n - 1; ++i) {
+          result.emplace_back(x * s[i], s[i] * x);
+        }
+        return result;
+      } else {
+        LIBSEMIGROUPS_EXCEPTION(
+            "expected 2nd argument to be author::Easdown + author::East + "
+            "author::FitzGerald, found %s",
+            detail::to_string(val).c_str());
       }
     }
 
-    std::vector<relation_type> result;
-    // (3) + (4)
-    for (size_t i = 0; i < n; ++i) {
-      for (size_t j = 0; j < n; ++j) {
-        if (i != j) {
-          result.emplace_back(t[i][j], t[j][i]);
-          result.emplace_back(t[i][j] ^ 2, t[i][j]);
+    std::vector<relation_type> uniform_block_bijection_monoid(size_t n,
+                                                              author val) {
+      if (n < 3) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "expected 1st argument to be at least 3, found %llu", uint64_t(n));
+      }
+      if (val == author::FitzGerald) {
+        auto mij = [](size_t i, size_t j) {
+          if (i == j) {
+            return 1;
+          } else if (std::abs(static_cast<int64_t>(i) - static_cast<int64_t>(j))
+                     == 1) {
+            return 3;
+          } else {
+            return 2;
+          }
+        };
+
+        std::vector<word_type> alphabet;
+        for (size_t i = 0; i < n + 1; ++i) {
+          alphabet.push_back({i});
         }
+        auto                       t = alphabet.back();
+        auto                       e = alphabet.front();
+        std::vector<relation_type> result;
+        add_monoid_relations(alphabet, e, result);
+        auto s = alphabet.cbegin();
+
+        // S in Theorem 3 (same as dual_symmetric_inverse_monoid)
+        for (size_t i = 1; i <= n - 1; ++i) {
+          for (size_t j = 1; j <= n - 1; ++j) {
+            result.emplace_back((s[i] * s[j]) ^ mij(i, j), e);
+          }
+        }
+
+        // F2
+        result.emplace_back(t ^ 2, t);
+
+        // F3
+        result.emplace_back(t * s[1], t);
+        result.emplace_back(s[1] * t, t);
+
+        // F4
+        for (size_t i = 3; i <= n - 1; ++i) {
+          result.emplace_back(s[i] * t, t * s[i]);
+        }
+
+        // F5
+        result.emplace_back(s[2] * t * s[2] * t, t * s[2] * t * s[2]);
+
+        // F6
+        result.emplace_back(
+            s[2] * s[1] * s[3] * s[2] * t * s[2] * s[3] * s[1] * s[2] * t,
+            t * s[2] * s[1] * s[3] * s[2] * t * s[2] * s[3] * s[1] * s[2]);
+
+        return result;
+      } else {
+        LIBSEMIGROUPS_EXCEPTION(
+            "expected 2nd argument to be author::FitzGerald, found %s",
+            detail::to_string(val).c_str());
       }
     }
 
-    // (6) + (7)
-    for (size_t i = 0; i < n; ++i) {
-      for (size_t j = 0; j < n; ++j) {
-        for (size_t k = 0; k < n; ++k) {
-          if (i != j && j != k && i != k) {
-            result.emplace_back(t[i][j] * t[i][k] * t[j][k], t[i][j] * t[j][k]);
-            result.emplace_back(t[i][j] * t[j][k] * t[i][j], t[i][j]);
+    // From Theorem 41 in doi:10.1016/j.jalgebra.2011.04.008
+    std::vector<relation_type> partition_monoid(size_t n, author val) {
+      std::vector<relation_type> result;
+      if (val == author::Machine) {
+        if (n != 3) {
+          LIBSEMIGROUPS_EXCEPTION(
+              "the 1st argument (size_t) must be 3 when the "
+              "2nd argument is Machine, found %llu",
+              uint64_t(n));
+        }
+        result.emplace_back<word_type, word_type>({0, 0}, {0});
+        result.emplace_back<word_type, word_type>({0, 1}, {1});
+        result.emplace_back<word_type, word_type>({0, 2}, {2});
+        result.emplace_back<word_type, word_type>({0, 3}, {3});
+        result.emplace_back<word_type, word_type>({0, 4}, {4});
+        result.emplace_back<word_type, word_type>({1, 0}, {1});
+        result.emplace_back<word_type, word_type>({2, 0}, {2});
+        result.emplace_back<word_type, word_type>({2, 2}, {0});
+        result.emplace_back<word_type, word_type>({2, 4}, {4});
+        result.emplace_back<word_type, word_type>({3, 0}, {3});
+        result.emplace_back<word_type, word_type>({3, 3}, {3});
+        result.emplace_back<word_type, word_type>({4, 0}, {4});
+        result.emplace_back<word_type, word_type>({4, 2}, {4});
+        result.emplace_back<word_type, word_type>({4, 4}, {4});
+        result.emplace_back<word_type, word_type>({1, 1, 1}, {0});
+        result.emplace_back<word_type, word_type>({1, 1, 2}, {2, 1});
+        result.emplace_back<word_type, word_type>({1, 2, 1}, {2});
+        result.emplace_back<word_type, word_type>({2, 1, 1}, {1, 2});
+        result.emplace_back<word_type, word_type>({2, 1, 2}, {1, 1});
+        result.emplace_back<word_type, word_type>({2, 1, 4}, {1, 1, 4});
+        result.emplace_back<word_type, word_type>({3, 1, 2}, {1, 2, 3});
+        result.emplace_back<word_type, word_type>({3, 4, 3}, {3});
+        result.emplace_back<word_type, word_type>({4, 1, 2}, {4, 1, 1});
+        result.emplace_back<word_type, word_type>({4, 3, 4}, {4});
+        result.emplace_back<word_type, word_type>({1, 1, 3, 1}, {2, 3, 2});
+        result.emplace_back<word_type, word_type>({1, 1, 3, 2}, {2, 3, 1});
+        result.emplace_back<word_type, word_type>({1, 2, 3, 1}, {3, 2});
+        result.emplace_back<word_type, word_type>({1, 2, 3, 2}, {3, 1});
+        result.emplace_back<word_type, word_type>({1, 2, 3, 4}, {3, 1, 4});
+        result.emplace_back<word_type, word_type>({1, 3, 2, 3}, {3, 1, 3});
+        result.emplace_back<word_type, word_type>({1, 4, 1, 4}, {4, 1, 4});
+        result.emplace_back<word_type, word_type>({2, 1, 3, 1}, {1, 3, 2});
+        result.emplace_back<word_type, word_type>({2, 1, 3, 2}, {1, 3, 1});
+        result.emplace_back<word_type, word_type>({2, 1, 3, 4}, {1, 3, 1, 4});
+        result.emplace_back<word_type, word_type>({2, 3, 1, 3}, {1, 3, 1, 3});
+        result.emplace_back<word_type, word_type>({2, 3, 1, 4}, {1, 1, 3, 4});
+        result.emplace_back<word_type, word_type>({2, 3, 2, 3}, {3, 2, 3});
+        result.emplace_back<word_type, word_type>({3, 1, 3, 2}, {3, 1, 3});
+        result.emplace_back<word_type, word_type>({3, 1, 4, 3}, {1, 2, 3});
+        result.emplace_back<word_type, word_type>({3, 2, 3, 2}, {3, 2, 3});
+        result.emplace_back<word_type, word_type>({4, 1, 1, 4}, {4, 1, 4});
+        result.emplace_back<word_type, word_type>({4, 1, 3, 2}, {4, 1, 3, 1});
+        result.emplace_back<word_type, word_type>({4, 1, 4, 1}, {4, 1, 4});
+        result.emplace_back<word_type, word_type>({1, 3, 1, 1, 3},
+                                                  {3, 2, 1, 3});
+        result.emplace_back<word_type, word_type>({1, 3, 4, 1, 4},
+                                                  {4, 1, 3, 4});
+        result.emplace_back<word_type, word_type>({2, 3, 1, 1, 3},
+                                                  {3, 1, 1, 3});
+        result.emplace_back<word_type, word_type>({2, 3, 2, 1, 3},
+                                                  {1, 3, 2, 1, 3});
+        result.emplace_back<word_type, word_type>({2, 3, 4, 1, 3},
+                                                  {1, 3, 4, 1, 3});
+        result.emplace_back<word_type, word_type>({2, 3, 4, 1, 4},
+                                                  {1, 4, 1, 3, 4});
+        result.emplace_back<word_type, word_type>({3, 1, 1, 4, 1},
+                                                  {1, 1, 4, 1, 3});
+        result.emplace_back<word_type, word_type>({3, 1, 3, 1, 1},
+                                                  {3, 2, 1, 3});
+        result.emplace_back<word_type, word_type>({3, 2, 3, 1, 1},
+                                                  {3, 1, 1, 3});
+        result.emplace_back<word_type, word_type>({3, 4, 1, 1, 3}, {1, 2, 3});
+        result.emplace_back<word_type, word_type>({3, 4, 1, 4, 3},
+                                                  {1, 1, 4, 1, 3});
+        result.emplace_back<word_type, word_type>({4, 1, 1, 3, 4},
+                                                  {4, 3, 1, 4});
+        result.emplace_back<word_type, word_type>({4, 1, 3, 1, 1},
+                                                  {1, 3, 1, 1, 4});
+        result.emplace_back<word_type, word_type>({4, 1, 3, 1, 3},
+                                                  {4, 3, 1, 3});
+        result.emplace_back<word_type, word_type>({4, 1, 3, 1, 4},
+                                                  {4, 1, 3, 4});
+        result.emplace_back<word_type, word_type>({4, 1, 3, 4, 1},
+                                                  {4, 1, 3, 4});
+        result.emplace_back<word_type, word_type>({4, 1, 4, 3, 2},
+                                                  {4, 1, 4, 3, 1});
+        result.emplace_back<word_type, word_type>({1, 1, 3, 4, 1, 3},
+                                                  {3, 1, 4, 1, 3});
+        result.emplace_back<word_type, word_type>({1, 1, 4, 1, 3, 4},
+                                                  {3, 4, 1, 4});
+        result.emplace_back<word_type, word_type>({1, 3, 1, 1, 4, 3},
+                                                  {4, 3, 2, 1, 3});
+        result.emplace_back<word_type, word_type>({1, 3, 1, 3, 1, 3},
+                                                  {3, 1, 3, 1, 3});
+        result.emplace_back<word_type, word_type>({1, 3, 1, 4, 1, 3},
+                                                  {3, 4, 1, 3});
+        result.emplace_back<word_type, word_type>({1, 4, 3, 1, 1, 4},
+                                                  {4, 3, 1, 1, 4});
+        result.emplace_back<word_type, word_type>({2, 3, 1, 1, 4, 3},
+                                                  {1, 4, 3, 2, 1, 3});
+        result.emplace_back<word_type, word_type>({3, 1, 1, 3, 4, 1},
+                                                  {3, 1, 4, 1, 3});
+        result.emplace_back<word_type, word_type>({3, 1, 1, 4, 3, 1},
+                                                  {1, 1, 4, 3, 1, 3});
+        result.emplace_back<word_type, word_type>({3, 1, 3, 1, 3, 1},
+                                                  {3, 1, 3, 1, 3});
+        result.emplace_back<word_type, word_type>({3, 1, 3, 1, 4, 1},
+                                                  {3, 4, 1, 3});
+        result.emplace_back<word_type, word_type>({3, 1, 4, 1, 1, 3}, {3});
+        result.emplace_back<word_type, word_type>({4, 1, 4, 3, 1, 1},
+                                                  {4, 3, 1, 1, 4});
+        result.emplace_back<word_type, word_type>({4, 1, 4, 3, 1, 4},
+                                                  {4, 1, 4});
+        result.emplace_back<word_type, word_type>({4, 3, 1, 3, 1, 4},
+                                                  {1, 3, 1, 1, 4});
+        result.emplace_back<word_type, word_type>({1, 1, 4, 3, 1, 3, 1},
+                                                  {3, 1, 1, 4, 3, 2});
+        result.emplace_back<word_type, word_type>({1, 1, 4, 3, 2, 1, 3},
+                                                  {3, 1, 1, 4, 3});
+        result.emplace_back<word_type, word_type>({1, 3, 1, 3, 4, 1, 3},
+                                                  {3, 1, 3, 4, 1, 3});
+        result.emplace_back<word_type, word_type>({3, 1, 1, 4, 3, 2, 1},
+                                                  {3, 1, 1, 4, 3});
+        result.emplace_back<word_type, word_type>({3, 1, 3, 1, 3, 4, 1},
+                                                  {3, 1, 3, 4, 1, 3});
+        result.emplace_back<word_type, word_type>({4, 3, 1, 1, 4, 3, 2},
+                                                  {4, 1, 4, 3, 1, 3, 1});
+        result.emplace_back<word_type, word_type>({3, 1, 1, 4, 3, 2, 3, 1},
+                                                  {3, 1, 1, 4, 3, 2, 3});
+        result.emplace_back<word_type, word_type>({3, 1, 1, 4, 3, 2, 3, 4, 1},
+                                                  {1, 1, 4, 3, 1, 3, 4, 1, 3});
+
+        return result;
+      } else if (val == author::East) {
+        if (n < 4) {
+          LIBSEMIGROUPS_EXCEPTION(
+              "the 1st argument (size_t) must be at least 4 "
+              "when the 2nd argument is author::East, found %llu",
+              uint64_t(n));
+        }
+        word_type s  = {0};
+        word_type c  = {1};
+        word_type e  = {2};
+        word_type t  = {3};
+        word_type id = {4};
+
+        std::vector<word_type> alphabet = {s, c, e, t, id};
+        add_monoid_relations(alphabet, id, result);
+
+        // V1
+        result.emplace_back(c ^ n, id);
+        result.emplace_back((s * c) ^ (n - 1), id);
+        result.emplace_back(s * s, id);
+        for (size_t i = 2; i <= n / 2; ++i) {
+          result.emplace_back(((c ^ i) * s * (c ^ (n - i)) * s) ^ 2, id);
+        }
+
+        // V2
+        result.emplace_back(e * e, e);
+        result.emplace_back(e * t * e, e);
+        result.emplace_back(s * c * e * (c ^ (n - 1)) * s, e);
+        result.emplace_back(c * s * (c ^ (n - 1)) * e * c * s * (c ^ (n - 1)),
+                            e);
+
+        // V3
+        result.emplace_back(t * t, t);
+        result.emplace_back(t * e * t, t);
+        result.emplace_back(t * s, t);
+        result.emplace_back(s * t, t);
+        result.emplace_back(
+            (c ^ 2) * s * (c ^ (n - 2)) * t * (c ^ 2) * s * (c ^ (n - 2)), t);
+        result.emplace_back((c ^ (n - 1)) * s * c * s * (c ^ (n - 1)) * t * c
+                                * s * (c ^ (n - 1)) * s * c,
+                            t);
+
+        // V4
+        result.emplace_back(s * e * s * e, e * s * e);
+        result.emplace_back(e * s * e * s, e * s * e);
+
+        // V5
+        result.emplace_back(t * c * t * (c ^ (n - 1)),
+                            c * t * (c ^ (n - 1)) * t);
+
+        // V6
+        result.emplace_back(t * (c ^ 2) * t * (c ^ (n - 2)),
+                            (c ^ 2) * t * (c ^ (n - 2)) * t);
+        // V7
+        result.emplace_back(t * (c ^ 2) * e * (c ^ (n - 2)),
+                            (c ^ 2) * e * (c ^ (n - 2)) * t);
+      } else {
+        LIBSEMIGROUPS_EXCEPTION(
+            "expected 2nd argument to be author::East, found %s",
+            detail::to_string(val).c_str());
+      }
+      return result;
+    }
+
+    // From Theorem 5 in 10.21136/MB.2007.134125
+    // https://dml.cz/bitstream/handle/10338.dmlcz/134125/MathBohem_132-2007-3_6.pdf
+
+    std::vector<relation_type> singular_brauer_monoid(size_t n) {
+      if (n < 3) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "expected argument to be at least 3, found %llu", uint64_t(n));
+      }
+      std::vector<std::vector<word_type>> t;
+      size_t                              val = 0;
+      for (size_t i = 0; i < n; ++i) {
+        t.push_back({});
+        for (size_t j = 0; j < n; ++j) {
+          if (i != j) {
+            t.back().push_back({val});
+            val++;
+          } else {
+            t.back().push_back({0});
           }
         }
       }
-    }
 
-    // (5) + (8) + (9)
-    for (size_t i = 0; i < n; ++i) {
-      for (size_t j = 0; j < n; ++j) {
-        for (size_t k = 0; k < n; ++k) {
-          for (size_t l = 0; l < n; ++l) {
-            if (i != j && j != k && i != k && i != l && j != l && k != l) {
-              result.emplace_back(t[i][j] * t[j][k] * t[k][l],
-                                  t[i][j] * t[i][l] * t[k][l]);
-              result.emplace_back(t[i][j] * t[k][l] * t[i][k],
-                                  t[i][j] * t[j][l] * t[i][k]);
-              result.emplace_back(t[i][j] * t[k][l], t[k][l] * t[i][j]);
+      std::vector<relation_type> result;
+      // (3) + (4)
+      for (size_t i = 0; i < n; ++i) {
+        for (size_t j = 0; j < n; ++j) {
+          if (i != j) {
+            result.emplace_back(t[i][j], t[j][i]);
+            result.emplace_back(t[i][j] ^ 2, t[i][j]);
+          }
+        }
+      }
+
+      // (6) + (7)
+      for (size_t i = 0; i < n; ++i) {
+        for (size_t j = 0; j < n; ++j) {
+          for (size_t k = 0; k < n; ++k) {
+            if (i != j && j != k && i != k) {
+              result.emplace_back(t[i][j] * t[i][k] * t[j][k],
+                                  t[i][j] * t[j][k]);
+              result.emplace_back(t[i][j] * t[j][k] * t[i][j], t[i][j]);
             }
           }
         }
       }
-    }
-    return result;
-  }
 
-  // From https://doi.org/10.1007/s10012-000-0001-1
-  std::vector<relation_type> orientation_preserving_monoid(size_t n) {
-    if (n < 3) {
-      LIBSEMIGROUPS_EXCEPTION("expected argument to be at least 3, found %llu",
-                              uint64_t(n));
-    }
-    word_type                  b = {0};
-    word_type                  u = {1};
-    word_type                  e = {2};
-    std::vector<relation_type> result;
-
-    add_monoid_relations({b, u, e}, e, result);
-
-    result.emplace_back(b ^ n, e);
-    result.emplace_back(u ^ 2, u);
-    result.emplace_back((u * b) ^ n, u * b);
-    result.emplace_back(b * ((u * (b ^ (n - 1))) ^ (n - 1)),
-                        (u * (b ^ (n - 1))) ^ (n - 1));
-    for (size_t i = 2; i <= n - 1; ++i) {
-      result.emplace_back(u * (b ^ i) * ((u * b) ^ (n - 1)) * (b ^ (n - i)),
-                          (b ^ i) * ((u * b) ^ (n - 1)) * (b ^ (n - i)) * u);
-    }
-    return result;
-  }
-
-  // Also from https://doi.org/10.1007/s10012-000-0001-1
-  std::vector<relation_type> orientation_reversing_monoid(size_t n) {
-    if (n < 3) {
-      LIBSEMIGROUPS_EXCEPTION("expected argument to be at least 3, found %llu",
-                              uint64_t(n));
-    }
-    word_type                  e = {0};
-    word_type                  b = {1};
-    word_type                  u = {2};
-    word_type                  c = {3};
-    std::vector<relation_type> result;
-
-    add_monoid_relations({e, b, u, c}, e, result);
-
-    result.emplace_back(b ^ n, e);
-    result.emplace_back(u ^ 2, u);
-    result.emplace_back((u * b) ^ n, u * b);
-    result.emplace_back(b * ((u * (b ^ (n - 1))) ^ (n - 1)),
-                        (u * (b ^ (n - 1))) ^ (n - 1));
-    for (size_t i = 2; i <= n - 1; ++i) {
-      result.emplace_back(u * (b ^ i) * ((u * b) ^ (n - 1)) * (b ^ (n - i)),
-                          (b ^ i) * ((u * b) ^ (n - 1)) * (b ^ (n - i)) * u);
-    }
-    result.emplace_back(c ^ 2, e);
-    result.emplace_back(b * c, c * (b ^ (n - 1)));
-    result.emplace_back(u * c, c * ((b * u) ^ (n - 1)));
-    result.emplace_back(c * (u * (b ^ (n - 1)) ^ (n - 2)),
-                        (b ^ (n - 2)) * ((u * (b ^ (n - 1))) ^ (n - 2)));
-
-    return result;
-  }
-
-  // From Theorem 2.2 in https://doi.org/10.1093/qmath/haab001
-  std::vector<relation_type> temperley_lieb_monoid(size_t n) {
-    if (n < 3) {
-      LIBSEMIGROUPS_EXCEPTION("expected argument to be at least 3, found %llu",
-                              uint64_t(n));
-    }
-    std::vector<word_type> e(n, word_type());
-    for (size_t i = 0; i < n - 1; ++i) {
-      e[i + 1] = {i};
-    }
-    std::vector<relation_type> result;
-
-    // E1
-    for (size_t i = 1; i <= n - 1; ++i) {
-      result.emplace_back(e[i] ^ 2, e[i]);
-    }
-    // E2 + E3
-    for (size_t i = 1; i <= n - 1; ++i) {
-      for (size_t j = 1; j <= n - 1; ++j) {
-        auto d = std::abs(static_cast<int64_t>(i) - static_cast<int64_t>(j));
-        if (d > 1) {
-          result.emplace_back(e[i] * e[j], e[j] * e[i]);
-        } else if (d == 1) {
-          result.emplace_back(e[i] * e[j] * e[i], e[i]);
-        }
-      }
-    }
-
-    return result;
-  }
-
-  // From Theorem 3.1 in
-  // https://link.springer.com/content/pdf/10.2478/s11533-006-0017-6.pdf
-  std::vector<relation_type> brauer_monoid(size_t n) {
-    word_type const e = {0};
-
-    std::vector<word_type> sigma(n);
-    std::vector<word_type> theta(n);
-
-    std::vector<word_type> alphabet = {e};
-    for (size_t i = 1; i <= n - 1; ++i) {
-      sigma[i] = {i};
-      alphabet.push_back(sigma[i]);
-    }
-    for (size_t i = 1; i <= n - 1; ++i) {
-      theta[i] = {i + n - 1};
-      alphabet.push_back(theta[i]);
-    }
-    std::vector<relation_type> result;
-
-    add_monoid_relations(alphabet, e, result);
-
-    // E1
-    for (size_t i = 1; i <= n - 1; ++i) {
-      result.emplace_back(sigma[i] ^ 2, e);
-      result.emplace_back(theta[i] ^ 2, theta[i]);
-      result.emplace_back(theta[i] * sigma[i], sigma[i] * theta[i]);
-      result.emplace_back(sigma[i] * theta[i], theta[i]);
-    }
-
-    // E2 + E3
-    for (size_t i = 1; i <= n - 1; ++i) {
-      for (size_t j = 1; j <= n - 1; ++j) {
-        auto d = std::abs(static_cast<int64_t>(i) - static_cast<int64_t>(j));
-        if (d > 1) {
-          result.emplace_back(sigma[i] * sigma[j], sigma[j] * sigma[i]);
-          result.emplace_back(theta[i] * theta[j], theta[j] * theta[i]);
-          result.emplace_back(theta[i] * sigma[j], sigma[j] * theta[i]);
-        } else if (d == 1) {
-          result.emplace_back(sigma[i] * sigma[j] * sigma[i],
-                              sigma[j] * sigma[i] * sigma[j]);
-          result.emplace_back(theta[i] * theta[j] * theta[i], theta[i]);
-          result.emplace_back(sigma[i] * theta[j] * theta[i],
-                              sigma[j] * theta[i]);
-          result.emplace_back(theta[i] * theta[j] * sigma[i],
-                              theta[i] * sigma[j]);
-        }
-      }
-    }
-
-    return result;
-  }
-
-  // From Proposition 4.2 in
-  // https://link.springer.com/content/pdf/10.1007/s002339910016.pdf
-  std::vector<relation_type> rectangular_band(size_t m, size_t n) {
-    if (m == 0) {
-      LIBSEMIGROUPS_EXCEPTION(
-          "expected 1st argument to be strictly positive, found %llu",
-          uint64_t(m));
-    }
-    if (n == 0) {
-      LIBSEMIGROUPS_EXCEPTION(
-          "expected 2nd argument to be strictly positive, found %llu",
-          uint64_t(n));
-    }
-
-    std::vector<word_type> a(m);
-    std::vector<word_type> b(n);
-    for (size_t i = 0; i < m; ++i) {
-      a[i] = {i};
-    }
-    for (size_t i = 0; i < n; ++i) {
-      b[i] = {i + m};
-    }
-
-    std::vector<relation_type> result;
-    result.emplace_back(a[0], b[0]);
-
-    // (7)
-    for (size_t i = 1; i < m; ++i) {
-      result.emplace_back(a[i - 1] * a[i], a[i - 1]);
-    }
-
-    result.emplace_back(a[m - 1] * a[0], a[m - 1]);
-
-    // (8)
-    for (size_t i = 1; i < n; ++i) {
-      result.emplace_back(b[i - 1] * b[i], b[i]);
-    }
-
-    result.emplace_back(b[n - 1] * b[0], b[0]);
-
-    for (size_t i = 1; i < m; ++i) {
-      for (size_t j = 1; j < n; ++j) {
-        result.emplace_back(b[j] * a[i], a[0]);
-      }
-    }
-
-    return result;
-  }
-
-  std::vector<relation_type> full_transformation_monoid(size_t n, author val) {
-    if (n < 4) {
-      LIBSEMIGROUPS_EXCEPTION(
-          "the 1st argument (size_t) must be at least 4, found %llu",
-          uint64_t(n));
-    }
-    if (val == author::Aizenstat) {
-      // From Proposition 1.7 in https://bit.ly/3R5ZpKW
-      auto result = symmetric_group(n, author::Moore);
-
-      word_type const a = {0};
-      word_type const b = {1};
-      word_type const t = {2};
-
-      result.emplace_back(a * t, t);
-      result.emplace_back(
-          (b ^ (n - 2)) * a * (b ^ 2) * t * (b ^ (n - 2)) * a * (b ^ 2), t);
-      result.emplace_back(b * a * (b ^ (n - 1)) * a * b * t * (b ^ (n - 1)) * a
-                              * b * a * (b ^ (n - 1)),
-                          t);
-      result.emplace_back((t * b * a * (b ^ (n - 1))) ^ 2, t);
-      result.emplace_back(((b ^ (n - 1)) * a * b * t) ^ 2,
-                          t * (b ^ (n - 1)) * a * b * t);
-
-      result.emplace_back((t * (b ^ (n - 1)) * a * b) ^ 2,
-                          t * (b ^ (n - 1)) * a * b * t);
-      result.emplace_back((t * b * a * (b ^ (n - 2)) * a * b) ^ 2,
-                          (b * a * (b ^ (n - 2)) * a * b * t) ^ 2);
-      return result;
-    } else if (val == author::Iwahori) {
-      // From Theorem 9.3.1, p161-162, (Ganyushkin + Mazorchuk)
-      // using Theorem 9.1.4 to express presentation in terms
-      // of the pi_i and e_12.
-      // https://link.springer.com/book/10.1007/978-1-84800-281-4
-      auto result = symmetric_group(n, author::Carmichael);
-      add_full_transformation_monoid_relations(result, n, 0, n - 1);
-      return result;
-    }
-    LIBSEMIGROUPS_EXCEPTION("expected 2nd argument to be author::Aizenstat or "
-                            "author::Iwahori, found %s",
-                            detail::to_string(val).c_str());
-  }
-
-  std::vector<relation_type> partial_transformation_monoid(size_t n,
-                                                           author val) {
-    if (n < 3) {
-      LIBSEMIGROUPS_EXCEPTION(
-          "the 1st argument (size_t) must be at least 3, found %llu",
-          uint64_t(n));
-    } else if (val == author::Machine) {
-      if (n != 3) {
-        LIBSEMIGROUPS_EXCEPTION("the 1st argument must be 3 where the 2nd "
-                                "argument is author::Machine, found %llu",
-                                uint64_t(n));
-      }
-      return {{{0, 0}, {}},
-              {{0, 3}, {3}},
-              {{2, 2}, {2}},
-              {{2, 3}, {2}},
-              {{3, 2}, {3}},
-              {{3, 3}, {3}},
-              {{0, 1, 0}, {1, 1}},
-              {{0, 1, 1}, {1, 0}},
-              {{1, 0, 1}, {0}},
-              {{1, 1, 0}, {0, 1}},
-              {{1, 1, 1}, {}},
-              {{1, 1, 3}, {0, 1, 3}},
-              {{2, 0, 1}, {0, 1, 2}},
-              {{3, 0, 2}, {2, 0, 2}},
-              {{3, 1, 2}, {2, 1, 2}},
-              {{0, 1, 2, 0}, {2, 1, 1}},
-              {{0, 1, 2, 1}, {2, 1, 0}},
-              {{0, 2, 0, 2}, {2, 0, 2}},
-              {{0, 2, 1, 0}, {1, 2, 1}},
-              {{0, 2, 1, 1}, {1, 2, 0}},
-              {{0, 2, 1, 2}, {2, 1, 2}},
-              {{1, 2, 1, 0}, {0, 2, 1}},
-              {{1, 2, 1, 1}, {0, 2, 0}},
-              {{1, 2, 1, 3}, {0, 2, 1, 3}},
-              {{1, 3, 1, 3}, {3, 1, 3}},
-              {{2, 0, 2, 0}, {2, 0, 2}},
-              {{2, 0, 2, 1}, {2, 1, 2}},
-              {{2, 1, 2, 1}, {2, 1, 2, 0}},
-              {{2, 1, 3, 1}, {2, 1, 3, 0}},
-              {{3, 0, 1, 2}, {3, 0, 1}},
-              {{3, 0, 1, 3}, {3, 0, 1}},
-              {{3, 1, 3, 1}, {3, 1, 3, 0}},
-              {{1, 0, 2, 1, 3}, {3, 1, 0, 2}},
-              {{1, 1, 2, 0, 2}, {2, 1, 1, 2}},
-              {{1, 1, 2, 1, 2}, {2, 1, 0, 2}},
-              {{1, 3, 1, 0, 2}, {2, 1, 3}},
-              {{2, 1, 0, 2, 1}, {2, 1, 0, 2, 0}},
-              {{2, 1, 1, 2, 0}, {2, 1, 1, 2}},
-              {{2, 1, 1, 2, 1}, {2, 1, 0, 2}},
-              {{2, 1, 3, 0, 1}, {1, 3, 1, 1, 2}},
-              {{3, 1, 0, 2, 1}, {3, 1, 0, 2, 0}},
-              {{3, 1, 1, 2, 0}, {3, 1, 1, 2}},
-              {{3, 1, 1, 2, 1}, {3, 1, 0, 2}},
-              {{1, 2, 1, 2, 0, 2}, {2, 1, 2, 0, 2}}};
-    } else if (val == author::Sutov) {
-      // From Theorem 9.4.1, p169, (Ganyushkin + Mazorchuk)
-      // https://link.springer.com/book/10.1007/978-1-84800-281-4
-      if (n < 4) {
-        LIBSEMIGROUPS_EXCEPTION("the 1st argument must be at least 4 when the "
-                                "2nd argument is author::Sutov, found %llu",
-                                uint64_t(n));
-      }
-      auto result = symmetric_inverse_monoid(n, author::Sutov);
-
-      add_full_transformation_monoid_relations(result, n, 0, n);
-      word_type              e12     = {n};
-      std::vector<word_type> epsilon = {{n - 1}, {0, n - 1, 0}, {1, n - 1, 1}};
-      result.emplace_back(e12 * epsilon[1], e12);
-      result.emplace_back(epsilon[1] * e12, epsilon[1]);
-
-      result.emplace_back(e12 * epsilon[0], epsilon[1] * epsilon[0] * e12);
-      result.emplace_back(e12 * epsilon[2], epsilon[2] * e12);
-
-      return result;
-    }
-    LIBSEMIGROUPS_EXCEPTION("expected 2nd argument to be author::Machine or "
-                            "author::Sutov, found %s",
-                            detail::to_string(val).c_str());
-  }
-
-  // From Theorem 9.2.2, p156
-  // https://link.springer.com/book/10.1007/978-1-84800-281-4 (Ganyushkin +
-  // Mazorchuk)
-  std::vector<relation_type> symmetric_inverse_monoid(size_t n, author val) {
-    if (val == author::Sutov) {
-      if (n < 4) {
-        LIBSEMIGROUPS_EXCEPTION("the 1st argument must be at least 4 when the "
-                                "2nd argument is author::Sutov, found %llu",
-                                uint64_t(n));
-      }
-      auto result = symmetric_group(n, author::Carmichael);
-
-      std::vector<word_type> pi;
-      for (size_t i = 0; i <= n - 2; ++i) {
-        pi.push_back({i});
-      }
-      std::vector<word_type> epsilon;
-      epsilon.push_back({n - 1});
-      for (size_t i = 0; i <= n - 2; ++i) {
-        epsilon.push_back(pi[i] * epsilon[0] * pi[i]);
-      }
-
-      result.emplace_back(epsilon[0] ^ 2, epsilon[0]);
-      result.emplace_back(epsilon[0] * epsilon[1], epsilon[1] * epsilon[0]);
-
-      for (size_t k = 1; k <= n - 2; ++k) {
-        result.emplace_back(epsilon[1] * pi[k], pi[k] * epsilon[1]);
-        result.emplace_back(epsilon[k + 1] * pi[0], pi[0] * epsilon[k + 1]);
-      }
-      result.emplace_back(epsilon[1] * epsilon[0] * pi[0],
-                          epsilon[1] * epsilon[0]);
-      return result;
-    }
-    LIBSEMIGROUPS_EXCEPTION(
-        "expected 2nd argument to be author::Sutov, found %s",
-        detail::to_string(val).c_str());
-  }
-
-  // Chinese monoid
-  // See: The Chinese Monoid - Cassaigne, Espie, Krob, Novelli and Hivert,
-  // 2001
-  std::vector<relation_type> chinese_monoid(size_t n) {
-    if (n < 2) {
-      LIBSEMIGROUPS_EXCEPTION("expected argument to be at least 2, found %llu",
-                              uint64_t(n));
-    }
-    std::vector<relation_type> result;
-    for (size_t a = 0; a < n; a++) {
-      for (size_t b = a; b < n; b++) {
-        for (size_t c = b; c < n; c++) {
-          if (a != b) {
-            result.emplace_back(word_type({c, b, a}), word_type({c, a, b}));
-          }
-          if (b != c) {
-            result.emplace_back(word_type({c, b, a}), word_type({b, c, a}));
+      // (5) + (8) + (9)
+      for (size_t i = 0; i < n; ++i) {
+        for (size_t j = 0; j < n; ++j) {
+          for (size_t k = 0; k < n; ++k) {
+            for (size_t l = 0; l < n; ++l) {
+              if (i != j && j != k && i != k && i != l && j != l && k != l) {
+                result.emplace_back(t[i][j] * t[j][k] * t[k][l],
+                                    t[i][j] * t[i][l] * t[k][l]);
+                result.emplace_back(t[i][j] * t[k][l] * t[i][k],
+                                    t[i][j] * t[j][l] * t[i][k]);
+                result.emplace_back(t[i][j] * t[k][l], t[k][l] * t[i][j]);
+              }
+            }
           }
         }
       }
-    }
-    return result;
-  }
-
-  std::vector<relation_type> monogenic_semigroup(size_t m, size_t r) {
-    std::vector<relation_type> result;
-    if (r == 0) {
-      LIBSEMIGROUPS_EXCEPTION(
-          "expected 2nd argument to be strictly positive, found %llu",
-          uint64_t(r));
-    }
-    result.emplace_back(word_type({0}) ^ (m + r), word_type({0}) ^ m);
-    return result;
-  }
-
-  // The remaining presentation functions are currently undocumented, as we are
-  // not completely sure what they are.
-
-  std::vector<relation_type> rook_monoid(size_t l, int q) {
-    if (l < 2) {
-      LIBSEMIGROUPS_EXCEPTION(
-          "the 1st argument (size_t) must at least 2, found %llu", uint64_t(l));
-    } else if (q != 0 && q != 1) {
-      LIBSEMIGROUPS_EXCEPTION(
-          "the 2nd argument (int) must be 0 or 1, found %llu", uint64_t(q));
+      return result;
     }
 
-    std::vector<size_t> s;
-    for (size_t i = 0; i < l; ++i) {
-      s.push_back(i);  // 0 est \pi_0
-    }
-
-    // identity relations
-    size_t                     id   = l;
-    std::vector<relation_type> rels = {relation_type({id, id}, {id})};
-    for (size_t i = 0; i < l; ++i) {
-      rels.push_back({{s[i], id}, {s[i]}});
-      rels.push_back({{id, s[i]}, {s[i]}});
-    }
-
-    switch (q) {
-      case 0:
-        for (size_t i = 0; i < l; ++i)
-          rels.push_back({{s[i], s[i]}, {s[i]}});
-        break;
-      case 1:
-        rels.push_back({{s[0], s[0]}, {s[0]}});
-        for (size_t i = 1; i < l; ++i)
-          rels.push_back({{s[i], s[i]}, {id}});
-        break;
-      default: {
+    // From https://doi.org/10.1007/s10012-000-0001-1
+    std::vector<relation_type> orientation_preserving_monoid(size_t n) {
+      if (n < 3) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "expected argument to be at least 3, found %llu", uint64_t(n));
       }
+      word_type                  b = {0};
+      word_type                  u = {1};
+      word_type                  e = {2};
+      std::vector<relation_type> result;
+
+      add_monoid_relations({b, u, e}, e, result);
+
+      result.emplace_back(b ^ n, e);
+      result.emplace_back(u ^ 2, u);
+      result.emplace_back((u * b) ^ n, u * b);
+      result.emplace_back(b * ((u * (b ^ (n - 1))) ^ (n - 1)),
+                          (u * (b ^ (n - 1))) ^ (n - 1));
+      for (size_t i = 2; i <= n - 1; ++i) {
+        result.emplace_back(u * (b ^ i) * ((u * b) ^ (n - 1)) * (b ^ (n - i)),
+                            (b ^ i) * ((u * b) ^ (n - 1)) * (b ^ (n - i)) * u);
+      }
+      return result;
     }
-    for (int i = 0; i < static_cast<int>(l); ++i) {
-      for (int j = 0; j < static_cast<int>(l); ++j) {
-        if (std::abs(i - j) >= 2) {
-          rels.push_back({{s[i], s[j]}, {s[j], s[i]}});
+
+    // Also from https://doi.org/10.1007/s10012-000-0001-1
+    std::vector<relation_type> orientation_reversing_monoid(size_t n) {
+      if (n < 3) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "expected argument to be at least 3, found %llu", uint64_t(n));
+      }
+      word_type                  e = {0};
+      word_type                  b = {1};
+      word_type                  u = {2};
+      word_type                  c = {3};
+      std::vector<relation_type> result;
+
+      add_monoid_relations({e, b, u, c}, e, result);
+
+      result.emplace_back(b ^ n, e);
+      result.emplace_back(u ^ 2, u);
+      result.emplace_back((u * b) ^ n, u * b);
+      result.emplace_back(b * ((u * (b ^ (n - 1))) ^ (n - 1)),
+                          (u * (b ^ (n - 1))) ^ (n - 1));
+      for (size_t i = 2; i <= n - 1; ++i) {
+        result.emplace_back(u * (b ^ i) * ((u * b) ^ (n - 1)) * (b ^ (n - i)),
+                            (b ^ i) * ((u * b) ^ (n - 1)) * (b ^ (n - i)) * u);
+      }
+      result.emplace_back(c ^ 2, e);
+      result.emplace_back(b * c, c * (b ^ (n - 1)));
+      result.emplace_back(u * c, c * ((b * u) ^ (n - 1)));
+      result.emplace_back(c * (u * (b ^ (n - 1)) ^ (n - 2)),
+                          (b ^ (n - 2)) * ((u * (b ^ (n - 1))) ^ (n - 2)));
+
+      return result;
+    }
+
+    // From Theorem 2.2 in https://doi.org/10.1093/qmath/haab001
+    std::vector<relation_type> temperley_lieb_monoid(size_t n) {
+      if (n < 3) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "expected argument to be at least 3, found %llu", uint64_t(n));
+      }
+      std::vector<word_type> e(n, word_type());
+      for (size_t i = 0; i < n - 1; ++i) {
+        e[i + 1] = {i};
+      }
+      std::vector<relation_type> result;
+
+      // E1
+      for (size_t i = 1; i <= n - 1; ++i) {
+        result.emplace_back(e[i] ^ 2, e[i]);
+      }
+      // E2 + E3
+      for (size_t i = 1; i <= n - 1; ++i) {
+        for (size_t j = 1; j <= n - 1; ++j) {
+          auto d = std::abs(static_cast<int64_t>(i) - static_cast<int64_t>(j));
+          if (d > 1) {
+            result.emplace_back(e[i] * e[j], e[j] * e[i]);
+          } else if (d == 1) {
+            result.emplace_back(e[i] * e[j] * e[i], e[i]);
+          }
         }
       }
+
+      return result;
     }
 
-    for (size_t i = 1; i < l - 1; ++i) {
-      rels.push_back({{s[i], s[i + 1], s[i]}, {s[i + 1], s[i], s[i + 1]}});
-    }
+    // From Theorem 3.1 in
+    // https://link.springer.com/content/pdf/10.2478/s11533-006-0017-6.pdf
+    std::vector<relation_type> brauer_monoid(size_t n) {
+      word_type const e = {0};
 
-    rels.push_back({{s[1], s[0], s[1], s[0]}, {s[0], s[1], s[0], s[1]}});
-    rels.push_back({{s[1], s[0], s[1], s[0]}, {s[0], s[1], s[0]}});
+      std::vector<word_type> sigma(n);
+      std::vector<word_type> theta(n);
 
-    return rels;
-  }
-
-  std::vector<relation_type> renner_common_type_B_monoid(size_t l, int q) {
-    // q is supposed to be 0 or 1
-    std::vector<size_t> s;
-    std::vector<size_t> e;
-    for (size_t i = 0; i < l; ++i) {
-      s.push_back(i);
-    }
-    for (size_t i = l; i < 2 * l + 1; ++i) {
-      e.push_back(i);
-    }
-    size_t id = 2 * l + 1;
-
-    std::vector<relation_type> rels = {relation_type({id, id}, {id})};
-    // identity relations
-    for (size_t i = 0; i < l; ++i) {
-      rels.push_back({{s[i], id}, {s[i]}});
-      rels.push_back({{id, s[i]}, {s[i]}});
-      rels.push_back({{id, e[i]}, {e[i]}});
-      rels.push_back({{e[i], id}, {e[i]}});
-    }
-    rels.push_back({{id, e[l]}, {e[l]}});
-    rels.push_back({{e[l], id}, {e[l]}});
-
-    switch (q) {
-      case 0:
-        for (size_t i = 0; i < l; ++i)
-          rels.push_back({{s[i], s[i]}, {s[i]}});
-        break;
-      case 1:
-        for (size_t i = 0; i < l; ++i)
-          rels.push_back({{s[i], s[i]}, {id}});
-        break;
-      default: {
+      std::vector<word_type> alphabet = {e};
+      for (size_t i = 1; i <= n - 1; ++i) {
+        sigma[i] = {i};
+        alphabet.push_back(sigma[i]);
       }
-    }
-    for (int i = 0; i < static_cast<int>(l); ++i) {
-      for (int j = 0; j < static_cast<int>(l); ++j) {
-        if (std::abs(i - j) >= 2) {
-          rels.push_back({{s[i], s[j]}, {s[j], s[i]}});
+      for (size_t i = 1; i <= n - 1; ++i) {
+        theta[i] = {i + n - 1};
+        alphabet.push_back(theta[i]);
+      }
+      std::vector<relation_type> result;
+
+      add_monoid_relations(alphabet, e, result);
+
+      // E1
+      for (size_t i = 1; i <= n - 1; ++i) {
+        result.emplace_back(sigma[i] ^ 2, e);
+        result.emplace_back(theta[i] ^ 2, theta[i]);
+        result.emplace_back(theta[i] * sigma[i], sigma[i] * theta[i]);
+        result.emplace_back(sigma[i] * theta[i], theta[i]);
+      }
+
+      // E2 + E3
+      for (size_t i = 1; i <= n - 1; ++i) {
+        for (size_t j = 1; j <= n - 1; ++j) {
+          auto d = std::abs(static_cast<int64_t>(i) - static_cast<int64_t>(j));
+          if (d > 1) {
+            result.emplace_back(sigma[i] * sigma[j], sigma[j] * sigma[i]);
+            result.emplace_back(theta[i] * theta[j], theta[j] * theta[i]);
+            result.emplace_back(theta[i] * sigma[j], sigma[j] * theta[i]);
+          } else if (d == 1) {
+            result.emplace_back(sigma[i] * sigma[j] * sigma[i],
+                                sigma[j] * sigma[i] * sigma[j]);
+            result.emplace_back(theta[i] * theta[j] * theta[i], theta[i]);
+            result.emplace_back(sigma[i] * theta[j] * theta[i],
+                                sigma[j] * theta[i]);
+            result.emplace_back(theta[i] * theta[j] * sigma[i],
+                                theta[i] * sigma[j]);
+          }
         }
       }
+
+      return result;
     }
 
-    for (size_t i = 1; i < l - 1; ++i) {
-      rels.push_back({{s[i], s[i + 1], s[i]}, {s[i + 1], s[i], s[i + 1]}});
+    // From Proposition 4.2 in
+    // https://link.springer.com/content/pdf/10.1007/s002339910016.pdf
+    std::vector<relation_type> rectangular_band(size_t m, size_t n) {
+      if (m == 0) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "expected 1st argument to be strictly positive, found %llu",
+            uint64_t(m));
+      }
+      if (n == 0) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "expected 2nd argument to be strictly positive, found %llu",
+            uint64_t(n));
+      }
+
+      std::vector<word_type> a(m);
+      std::vector<word_type> b(n);
+      for (size_t i = 0; i < m; ++i) {
+        a[i] = {i};
+      }
+      for (size_t i = 0; i < n; ++i) {
+        b[i] = {i + m};
+      }
+
+      std::vector<relation_type> result;
+      result.emplace_back(a[0], b[0]);
+
+      // (7)
+      for (size_t i = 1; i < m; ++i) {
+        result.emplace_back(a[i - 1] * a[i], a[i - 1]);
+      }
+
+      result.emplace_back(a[m - 1] * a[0], a[m - 1]);
+
+      // (8)
+      for (size_t i = 1; i < n; ++i) {
+        result.emplace_back(b[i - 1] * b[i], b[i]);
+      }
+
+      result.emplace_back(b[n - 1] * b[0], b[0]);
+
+      for (size_t i = 1; i < m; ++i) {
+        for (size_t j = 1; j < n; ++j) {
+          result.emplace_back(b[j] * a[i], a[0]);
+        }
+      }
+
+      return result;
     }
 
-    rels.push_back({{s[1], s[0], s[1], s[0]}, {s[0], s[1], s[0], s[1]}});
+    std::vector<relation_type> full_transformation_monoid(size_t n,
+                                                          author val) {
+      if (n < 4) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "the 1st argument (size_t) must be at least 4, found %llu",
+            uint64_t(n));
+      }
+      if (val == author::Aizenstat) {
+        // From Proposition 1.7 in https://bit.ly/3R5ZpKW
+        auto result = symmetric_group(n, author::Moore);
 
-    for (size_t i = 1; i < l; ++i) {
-      for (size_t j = 0; j < i; ++j) {
-        rels.push_back({{s[i], e[j]}, {e[j], s[i]}});
+        word_type const a = {0};
+        word_type const b = {1};
+        word_type const t = {2};
+
+        result.emplace_back(a * t, t);
+        result.emplace_back(
+            (b ^ (n - 2)) * a * (b ^ 2) * t * (b ^ (n - 2)) * a * (b ^ 2), t);
+        result.emplace_back(b * a * (b ^ (n - 1)) * a * b * t * (b ^ (n - 1))
+                                * a * b * a * (b ^ (n - 1)),
+                            t);
+        result.emplace_back((t * b * a * (b ^ (n - 1))) ^ 2, t);
+        result.emplace_back(((b ^ (n - 1)) * a * b * t) ^ 2,
+                            t * (b ^ (n - 1)) * a * b * t);
+
+        result.emplace_back((t * (b ^ (n - 1)) * a * b) ^ 2,
+                            t * (b ^ (n - 1)) * a * b * t);
+        result.emplace_back((t * b * a * (b ^ (n - 2)) * a * b) ^ 2,
+                            (b * a * (b ^ (n - 2)) * a * b * t) ^ 2);
+        return result;
+      } else if (val == author::Iwahori) {
+        // From Theorem 9.3.1, p161-162, (Ganyushkin + Mazorchuk)
+        // using Theorem 9.1.4 to express presentation in terms
+        // of the pi_i and e_12.
+        // https://link.springer.com/book/10.1007/978-1-84800-281-4
+        auto result = symmetric_group(n, author::Carmichael);
+        add_full_transformation_monoid_relations(result, n, 0, n - 1);
+        return result;
+      }
+      LIBSEMIGROUPS_EXCEPTION(
+          "expected 2nd argument to be author::Aizenstat or "
+          "author::Iwahori, found %s",
+          detail::to_string(val).c_str());
+    }
+
+    std::vector<relation_type> partial_transformation_monoid(size_t n,
+                                                             author val) {
+      if (n < 3) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "the 1st argument (size_t) must be at least 3, found %llu",
+            uint64_t(n));
+      } else if (val == author::Machine) {
+        if (n != 3) {
+          LIBSEMIGROUPS_EXCEPTION("the 1st argument must be 3 where the 2nd "
+                                  "argument is author::Machine, found %llu",
+                                  uint64_t(n));
+        }
+        return {{{0, 0}, {}},
+                {{0, 3}, {3}},
+                {{2, 2}, {2}},
+                {{2, 3}, {2}},
+                {{3, 2}, {3}},
+                {{3, 3}, {3}},
+                {{0, 1, 0}, {1, 1}},
+                {{0, 1, 1}, {1, 0}},
+                {{1, 0, 1}, {0}},
+                {{1, 1, 0}, {0, 1}},
+                {{1, 1, 1}, {}},
+                {{1, 1, 3}, {0, 1, 3}},
+                {{2, 0, 1}, {0, 1, 2}},
+                {{3, 0, 2}, {2, 0, 2}},
+                {{3, 1, 2}, {2, 1, 2}},
+                {{0, 1, 2, 0}, {2, 1, 1}},
+                {{0, 1, 2, 1}, {2, 1, 0}},
+                {{0, 2, 0, 2}, {2, 0, 2}},
+                {{0, 2, 1, 0}, {1, 2, 1}},
+                {{0, 2, 1, 1}, {1, 2, 0}},
+                {{0, 2, 1, 2}, {2, 1, 2}},
+                {{1, 2, 1, 0}, {0, 2, 1}},
+                {{1, 2, 1, 1}, {0, 2, 0}},
+                {{1, 2, 1, 3}, {0, 2, 1, 3}},
+                {{1, 3, 1, 3}, {3, 1, 3}},
+                {{2, 0, 2, 0}, {2, 0, 2}},
+                {{2, 0, 2, 1}, {2, 1, 2}},
+                {{2, 1, 2, 1}, {2, 1, 2, 0}},
+                {{2, 1, 3, 1}, {2, 1, 3, 0}},
+                {{3, 0, 1, 2}, {3, 0, 1}},
+                {{3, 0, 1, 3}, {3, 0, 1}},
+                {{3, 1, 3, 1}, {3, 1, 3, 0}},
+                {{1, 0, 2, 1, 3}, {3, 1, 0, 2}},
+                {{1, 1, 2, 0, 2}, {2, 1, 1, 2}},
+                {{1, 1, 2, 1, 2}, {2, 1, 0, 2}},
+                {{1, 3, 1, 0, 2}, {2, 1, 3}},
+                {{2, 1, 0, 2, 1}, {2, 1, 0, 2, 0}},
+                {{2, 1, 1, 2, 0}, {2, 1, 1, 2}},
+                {{2, 1, 1, 2, 1}, {2, 1, 0, 2}},
+                {{2, 1, 3, 0, 1}, {1, 3, 1, 1, 2}},
+                {{3, 1, 0, 2, 1}, {3, 1, 0, 2, 0}},
+                {{3, 1, 1, 2, 0}, {3, 1, 1, 2}},
+                {{3, 1, 1, 2, 1}, {3, 1, 0, 2}},
+                {{1, 2, 1, 2, 0, 2}, {2, 1, 2, 0, 2}}};
+      } else if (val == author::Sutov) {
+        // From Theorem 9.4.1, p169, (Ganyushkin + Mazorchuk)
+        // https://link.springer.com/book/10.1007/978-1-84800-281-4
+        if (n < 4) {
+          LIBSEMIGROUPS_EXCEPTION(
+              "the 1st argument must be at least 4 when the "
+              "2nd argument is author::Sutov, found %llu",
+              uint64_t(n));
+        }
+        auto result = symmetric_inverse_monoid(n, author::Sutov);
+
+        add_full_transformation_monoid_relations(result, n, 0, n);
+        word_type              e12 = {n};
+        std::vector<word_type> epsilon
+            = {{n - 1}, {0, n - 1, 0}, {1, n - 1, 1}};
+        result.emplace_back(e12 * epsilon[1], e12);
+        result.emplace_back(epsilon[1] * e12, epsilon[1]);
+
+        result.emplace_back(e12 * epsilon[0], epsilon[1] * epsilon[0] * e12);
+        result.emplace_back(e12 * epsilon[2], epsilon[2] * e12);
+
+        return result;
+      }
+      LIBSEMIGROUPS_EXCEPTION("expected 2nd argument to be author::Machine or "
+                              "author::Sutov, found %s",
+                              detail::to_string(val).c_str());
+    }
+
+    // From Theorem 9.2.2, p156
+    // https://link.springer.com/book/10.1007/978-1-84800-281-4 (Ganyushkin +
+    // Mazorchuk)
+    std::vector<relation_type> symmetric_inverse_monoid(size_t n, author val) {
+      if (val == author::Sutov) {
+        if (n < 4) {
+          LIBSEMIGROUPS_EXCEPTION(
+              "the 1st argument must be at least 4 when the "
+              "2nd argument is author::Sutov, found %llu",
+              uint64_t(n));
+        }
+        auto result = symmetric_group(n, author::Carmichael);
+
+        std::vector<word_type> pi;
+        for (size_t i = 0; i <= n - 2; ++i) {
+          pi.push_back({i});
+        }
+        std::vector<word_type> epsilon;
+        epsilon.push_back({n - 1});
+        for (size_t i = 0; i <= n - 2; ++i) {
+          epsilon.push_back(pi[i] * epsilon[0] * pi[i]);
+        }
+
+        result.emplace_back(epsilon[0] ^ 2, epsilon[0]);
+        result.emplace_back(epsilon[0] * epsilon[1], epsilon[1] * epsilon[0]);
+
+        for (size_t k = 1; k <= n - 2; ++k) {
+          result.emplace_back(epsilon[1] * pi[k], pi[k] * epsilon[1]);
+          result.emplace_back(epsilon[k + 1] * pi[0], pi[0] * epsilon[k + 1]);
+        }
+        result.emplace_back(epsilon[1] * epsilon[0] * pi[0],
+                            epsilon[1] * epsilon[0]);
+        return result;
+      }
+      LIBSEMIGROUPS_EXCEPTION(
+          "expected 2nd argument to be author::Sutov, found %s",
+          detail::to_string(val).c_str());
+    }
+
+    // Chinese monoid
+    // See: The Chinese Monoid - Cassaigne, Espie, Krob, Novelli and Hivert,
+    // 2001
+    std::vector<relation_type> chinese_monoid(size_t n) {
+      if (n < 2) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "expected argument to be at least 2, found %llu", uint64_t(n));
+      }
+      std::vector<relation_type> result;
+      for (size_t a = 0; a < n; a++) {
+        for (size_t b = a; b < n; b++) {
+          for (size_t c = b; c < n; c++) {
+            if (a != b) {
+              result.emplace_back(word_type({c, b, a}), word_type({c, a, b}));
+            }
+            if (b != c) {
+              result.emplace_back(word_type({c, b, a}), word_type({b, c, a}));
+            }
+          }
+        }
+      }
+      return result;
+    }
+
+    std::vector<relation_type> monogenic_semigroup(size_t m, size_t r) {
+      std::vector<relation_type> result;
+      if (r == 0) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "expected 2nd argument to be strictly positive, found %llu",
+            uint64_t(r));
+      }
+      result.emplace_back(word_type({0}) ^ (m + r), word_type({0}) ^ m);
+      return result;
+    }
+
+    // The remaining presentation functions are currently undocumented, as we
+    // are not completely sure what they are.
+
+    std::vector<relation_type> rook_monoid(size_t l, int q) {
+      if (l < 2) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "the 1st argument (size_t) must at least 2, found %llu",
+            uint64_t(l));
+      } else if (q != 0 && q != 1) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "the 2nd argument (int) must be 0 or 1, found %llu", uint64_t(q));
+      }
+
+      std::vector<size_t> s;
+      for (size_t i = 0; i < l; ++i) {
+        s.push_back(i);  // 0 est \pi_0
+      }
+
+      // identity relations
+      size_t                     id   = l;
+      std::vector<relation_type> rels = {relation_type({id, id}, {id})};
+      for (size_t i = 0; i < l; ++i) {
+        rels.push_back({{s[i], id}, {s[i]}});
+        rels.push_back({{id, s[i]}, {s[i]}});
+      }
+
+      switch (q) {
+        case 0:
+          for (size_t i = 0; i < l; ++i)
+            rels.push_back({{s[i], s[i]}, {s[i]}});
+          break;
+        case 1:
+          rels.push_back({{s[0], s[0]}, {s[0]}});
+          for (size_t i = 1; i < l; ++i)
+            rels.push_back({{s[i], s[i]}, {id}});
+          break;
+        default: {
+        }
+      }
+      for (int i = 0; i < static_cast<int>(l); ++i) {
+        for (int j = 0; j < static_cast<int>(l); ++j) {
+          if (std::abs(i - j) >= 2) {
+            rels.push_back({{s[i], s[j]}, {s[j], s[i]}});
+          }
+        }
+      }
+
+      for (size_t i = 1; i < l - 1; ++i) {
+        rels.push_back({{s[i], s[i + 1], s[i]}, {s[i + 1], s[i], s[i + 1]}});
+      }
+
+      rels.push_back({{s[1], s[0], s[1], s[0]}, {s[0], s[1], s[0], s[1]}});
+      rels.push_back({{s[1], s[0], s[1], s[0]}, {s[0], s[1], s[0]}});
+
+      return rels;
+    }
+
+    std::vector<relation_type> renner_common_type_B_monoid(size_t l, int q) {
+      // q is supposed to be 0 or 1
+      std::vector<size_t> s;
+      std::vector<size_t> e;
+      for (size_t i = 0; i < l; ++i) {
+        s.push_back(i);
+      }
+      for (size_t i = l; i < 2 * l + 1; ++i) {
+        e.push_back(i);
+      }
+      size_t id = 2 * l + 1;
+
+      std::vector<relation_type> rels = {relation_type({id, id}, {id})};
+      // identity relations
+      for (size_t i = 0; i < l; ++i) {
+        rels.push_back({{s[i], id}, {s[i]}});
+        rels.push_back({{id, s[i]}, {s[i]}});
+        rels.push_back({{id, e[i]}, {e[i]}});
+        rels.push_back({{e[i], id}, {e[i]}});
+      }
+      rels.push_back({{id, e[l]}, {e[l]}});
+      rels.push_back({{e[l], id}, {e[l]}});
+
+      switch (q) {
+        case 0:
+          for (size_t i = 0; i < l; ++i)
+            rels.push_back({{s[i], s[i]}, {s[i]}});
+          break;
+        case 1:
+          for (size_t i = 0; i < l; ++i)
+            rels.push_back({{s[i], s[i]}, {id}});
+          break;
+        default: {
+        }
+      }
+      for (int i = 0; i < static_cast<int>(l); ++i) {
+        for (int j = 0; j < static_cast<int>(l); ++j) {
+          if (std::abs(i - j) >= 2) {
+            rels.push_back({{s[i], s[j]}, {s[j], s[i]}});
+          }
+        }
+      }
+
+      for (size_t i = 1; i < l - 1; ++i) {
+        rels.push_back({{s[i], s[i + 1], s[i]}, {s[i + 1], s[i], s[i + 1]}});
+      }
+
+      rels.push_back({{s[1], s[0], s[1], s[0]}, {s[0], s[1], s[0], s[1]}});
+
+      for (size_t i = 1; i < l; ++i) {
+        for (size_t j = 0; j < i; ++j) {
+          rels.push_back({{s[i], e[j]}, {e[j], s[i]}});
+        }
+      }
+
+      for (size_t i = 0; i < l; ++i) {
+        for (size_t j = i + 1; j < l + 1; ++j) {
+          rels.push_back({{s[i], e[j]}, {e[j], s[i]}});
+          rels.push_back({{s[i], e[j]}, {e[j]}});
+        }
+      }
+
+      for (size_t i = 0; i < l + 1; ++i) {
+        for (size_t j = 0; j < l + 1; ++j) {
+          rels.push_back({{e[i], e[j]}, {e[j], e[i]}});
+          rels.push_back({{e[i], e[j]}, {e[std::max(i, j)]}});
+        }
+      }
+
+      for (size_t i = 0; i < l; ++i) {
+        rels.push_back({{e[i], s[i], e[i]}, {e[i + 1]}});
+      }
+
+      return rels;
+    }
+
+    std::vector<relation_type> renner_type_B_monoid(size_t l,
+                                                    int    q,
+                                                    author val) {
+      if (val == author::Godelle) {
+        std::vector<size_t> s;
+        std::vector<size_t> e;
+        for (size_t i = 0; i < l; ++i) {
+          s.push_back(i);
+        }
+        for (size_t i = l; i < 2 * l + 1; ++i) {
+          e.push_back(i);
+        }
+
+        std::vector<relation_type> rels = renner_common_type_B_monoid(l, q);
+
+        if (l >= 2)
+          rels.push_back({{e[0], s[0], s[1], s[0], e[0]}, {e[2]}});
+
+        return rels;
+      } else {
+        LIBSEMIGROUPS_EXCEPTION(
+            "expected 2nd argument to be author::Godelle, found %s",
+            detail::to_string(val).c_str());
       }
     }
 
-    for (size_t i = 0; i < l; ++i) {
-      for (size_t j = i + 1; j < l + 1; ++j) {
-        rels.push_back({{s[i], e[j]}, {e[j], s[i]}});
-        rels.push_back({{s[i], e[j]}, {e[j]}});
-      }
-    }
-
-    for (size_t i = 0; i < l + 1; ++i) {
-      for (size_t j = 0; j < l + 1; ++j) {
-        rels.push_back({{e[i], e[j]}, {e[j], e[i]}});
-        rels.push_back({{e[i], e[j]}, {e[std::max(i, j)]}});
-      }
-    }
-
-    for (size_t i = 0; i < l; ++i) {
-      rels.push_back({{e[i], s[i], e[i]}, {e[i + 1]}});
-    }
-
-    return rels;
-  }
-
-  std::vector<relation_type> renner_type_B_monoid(size_t l, int q, author val) {
-    if (val == author::Godelle) {
+    std::vector<relation_type> RennerTypeBMonoid(size_t l, int q) {
       std::vector<size_t> s;
       std::vector<size_t> e;
       for (size_t i = 0; i < l; ++i) {
@@ -1401,143 +1449,147 @@ namespace libsemigroups {
 
       std::vector<relation_type> rels = renner_common_type_B_monoid(l, q);
 
-      if (l >= 2)
-        rels.push_back({{e[0], s[0], s[1], s[0], e[0]}, {e[2]}});
+      for (size_t i = 1; i < l; i++) {
+        std::vector<size_t> new_rel = max_elt_B(i);
+        new_rel.push_back(e[0]);
+        new_rel.insert(new_rel.begin(), e[0]);
+        rels.push_back({new_rel, {e[i + 1]}});
+      }
 
       return rels;
-    } else {
-      LIBSEMIGROUPS_EXCEPTION(
-          "expected 2nd argument to be author::Godelle, found %s",
-          detail::to_string(val).c_str());
-    }
-  }
-
-  std::vector<relation_type> RennerTypeBMonoid(size_t l, int q) {
-    std::vector<size_t> s;
-    std::vector<size_t> e;
-    for (size_t i = 0; i < l; ++i) {
-      s.push_back(i);
-    }
-    for (size_t i = l; i < 2 * l + 1; ++i) {
-      e.push_back(i);
     }
 
-    std::vector<relation_type> rels = renner_common_type_B_monoid(l, q);
-
-    for (size_t i = 1; i < l; i++) {
-      std::vector<size_t> new_rel = max_elt_B(i);
-      new_rel.push_back(e[0]);
-      new_rel.insert(new_rel.begin(), e[0]);
-      rels.push_back({new_rel, {e[i + 1]}});
-    }
-
-    return rels;
-  }
-
-  std::vector<relation_type> renner_common_type_D_monoid(size_t l, int q) {
-    // q is supposed to be 0 or 1
-    std::vector<size_t> s;
-    std::vector<size_t> e;
-    for (size_t i = 0; i < l; ++i) {
-      s.push_back(i);  // 0 est \pi_1^f et 1 est \pi_1^e
-    }
-    for (size_t i = l; i < 2 * l + 1; ++i) {
-      e.push_back(i);
-    }
-    size_t f  = 2 * l + 1;
-    size_t id = 2 * l + 2;
-
-    std::vector<relation_type> rels = {relation_type({id, id}, {id})};
-    // identity relations
-    for (size_t i = 0; i < l; ++i) {
-      rels.push_back({{s[i], id}, {s[i]}});
-      rels.push_back({{id, s[i]}, {s[i]}});
-      rels.push_back({{id, e[i]}, {e[i]}});
-      rels.push_back({{e[i], id}, {e[i]}});
-    }
-    rels.push_back({{id, e[l]}, {e[l]}});
-    rels.push_back({{e[l], id}, {e[l]}});
-    rels.push_back({{id, f}, {f}});
-    rels.push_back({{f, id}, {f}});
-
-    switch (q) {
-      case 0:
-        for (size_t i = 0; i < l; ++i)
-          rels.push_back({{s[i], s[i]}, {s[i]}});
-        break;
-      case 1:
-        for (size_t i = 0; i < l; ++i)
-          rels.push_back({{s[i], s[i]}, {id}});
-        break;
-      default: {
+    std::vector<relation_type> renner_common_type_D_monoid(size_t l, int q) {
+      // q is supposed to be 0 or 1
+      std::vector<size_t> s;
+      std::vector<size_t> e;
+      for (size_t i = 0; i < l; ++i) {
+        s.push_back(i);  // 0 est \pi_1^f et 1 est \pi_1^e
       }
-    }
-    for (int i = 1; i < static_cast<int>(l); ++i) {  // tout sauf \pi_1^f
-      for (int j = 1; j < static_cast<int>(l); ++j) {
-        if (std::abs(i - j) >= 2) {
-          rels.push_back({{s[i], s[j]}, {s[j], s[i]}});
+      for (size_t i = l; i < 2 * l + 1; ++i) {
+        e.push_back(i);
+      }
+      size_t f  = 2 * l + 1;
+      size_t id = 2 * l + 2;
+
+      std::vector<relation_type> rels = {relation_type({id, id}, {id})};
+      // identity relations
+      for (size_t i = 0; i < l; ++i) {
+        rels.push_back({{s[i], id}, {s[i]}});
+        rels.push_back({{id, s[i]}, {s[i]}});
+        rels.push_back({{id, e[i]}, {e[i]}});
+        rels.push_back({{e[i], id}, {e[i]}});
+      }
+      rels.push_back({{id, e[l]}, {e[l]}});
+      rels.push_back({{e[l], id}, {e[l]}});
+      rels.push_back({{id, f}, {f}});
+      rels.push_back({{f, id}, {f}});
+
+      switch (q) {
+        case 0:
+          for (size_t i = 0; i < l; ++i)
+            rels.push_back({{s[i], s[i]}, {s[i]}});
+          break;
+        case 1:
+          for (size_t i = 0; i < l; ++i)
+            rels.push_back({{s[i], s[i]}, {id}});
+          break;
+        default: {
         }
       }
-    }
-    for (int i = 3; i < static_cast<int>(l);
-         ++i) {  // \pi_1^f avec les \pi_i pour i>2
-      rels.push_back({{s[0], s[i]}, {s[i], s[0]}});
-    }
-    rels.push_back({{s[0], s[1]}, {s[1], s[0]}});  // \pi_1^f avec \pi_1^e
-
-    for (size_t i = 1; i < l - 1; ++i) {  // tresses
-      rels.push_back({{s[i], s[i + 1], s[i]}, {s[i + 1], s[i], s[i + 1]}});
-    }
-    if (l > 2) {
-      rels.push_back(
-          {{s[0], s[2], s[0]}, {s[2], s[0], s[2]}});  // tresse de \pi_1^f
-    }
-
-    for (size_t i = 2; i < l; ++i) {  // commutation, attention début à 2
-      for (size_t j = 0; j < i; ++j) {
-        rels.push_back({{s[i], e[j]}, {e[j], s[i]}});
-      }
-      rels.push_back({{s[i], f}, {f, s[i]}});
-    }
-    rels.push_back({{s[0], f}, {f, s[0]}});        // commutation \pi_1^f et f
-    rels.push_back({{s[1], e[0]}, {e[0], s[1]}});  // commutation \pi_1^e et e
-
-    for (size_t i = 1; i < l; ++i) {  // absorption
-      for (size_t j = i + 1; j < l + 1; ++j) {
-        rels.push_back({{s[i], e[j]}, {e[j], s[i]}});
-        rels.push_back({{s[i], e[j]}, {e[j]}});
-        if (i == 1) {  // cas particulier \pi_1^f
-          rels.push_back({{s[0], e[j]}, {e[j], s[0]}});
-          rels.push_back({{s[0], e[j]}, {e[j]}});
+      for (int i = 1; i < static_cast<int>(l); ++i) {  // tout sauf \pi_1^f
+        for (int j = 1; j < static_cast<int>(l); ++j) {
+          if (std::abs(i - j) >= 2) {
+            rels.push_back({{s[i], s[j]}, {s[j], s[i]}});
+          }
         }
       }
-    }
-
-    for (size_t i = 0; i < l + 1; ++i) {  // produit e_i
-      for (size_t j = 0; j < l + 1; ++j) {
-        rels.push_back({{e[i], e[j]}, {e[j], e[i]}});
-        rels.push_back({{e[i], e[j]}, {e[std::max(i, j)]}});
+      for (int i = 3; i < static_cast<int>(l);
+           ++i) {  // \pi_1^f avec les \pi_i pour i>2
+        rels.push_back({{s[0], s[i]}, {s[i], s[0]}});
       }
-      if (i > 1) {
-        rels.push_back({{f, e[i]}, {e[i], f}});
-        rels.push_back({{f, e[i]}, {e[i]}});
+      rels.push_back({{s[0], s[1]}, {s[1], s[0]}});  // \pi_1^f avec \pi_1^e
+
+      for (size_t i = 1; i < l - 1; ++i) {  // tresses
+        rels.push_back({{s[i], s[i + 1], s[i]}, {s[i + 1], s[i], s[i + 1]}});
+      }
+      if (l > 2) {
+        rels.push_back(
+            {{s[0], s[2], s[0]}, {s[2], s[0], s[2]}});  // tresse de \pi_1^f
+      }
+
+      for (size_t i = 2; i < l; ++i) {  // commutation, attention début à 2
+        for (size_t j = 0; j < i; ++j) {
+          rels.push_back({{s[i], e[j]}, {e[j], s[i]}});
+        }
+        rels.push_back({{s[i], f}, {f, s[i]}});
+      }
+      rels.push_back({{s[0], f}, {f, s[0]}});        // commutation \pi_1^f et f
+      rels.push_back({{s[1], e[0]}, {e[0], s[1]}});  // commutation \pi_1^e et e
+
+      for (size_t i = 1; i < l; ++i) {  // absorption
+        for (size_t j = i + 1; j < l + 1; ++j) {
+          rels.push_back({{s[i], e[j]}, {e[j], s[i]}});
+          rels.push_back({{s[i], e[j]}, {e[j]}});
+          if (i == 1) {  // cas particulier \pi_1^f
+            rels.push_back({{s[0], e[j]}, {e[j], s[0]}});
+            rels.push_back({{s[0], e[j]}, {e[j]}});
+          }
+        }
+      }
+
+      for (size_t i = 0; i < l + 1; ++i) {  // produit e_i
+        for (size_t j = 0; j < l + 1; ++j) {
+          rels.push_back({{e[i], e[j]}, {e[j], e[i]}});
+          rels.push_back({{e[i], e[j]}, {e[std::max(i, j)]}});
+        }
+        if (i > 1) {
+          rels.push_back({{f, e[i]}, {e[i], f}});
+          rels.push_back({{f, e[i]}, {e[i]}});
+        }
+      }
+      rels.push_back({{f, f}, {f}});
+      rels.push_back({{f, e[0]}, {e[1]}});
+      rels.push_back({{e[0], f}, {e[1]}});
+
+      for (size_t i = 2; i < l; ++i) {
+        rels.push_back({{e[i], s[i], e[i]}, {e[i + 1]}});
+      }
+      rels.push_back({{e[0], s[0], e[0]}, {e[2]}});
+      rels.push_back({{f, s[1], f}, {e[2]}});
+
+      return rels;
+    }
+
+    std::vector<relation_type> renner_type_D_monoid(size_t l,
+                                                    int    q,
+                                                    author val) {
+      if (val == author::Godelle) {
+        std::vector<size_t> s;
+        std::vector<size_t> e;
+        for (size_t i = 0; i < l; ++i) {
+          s.push_back(i);
+        }
+        for (size_t i = l; i < 2 * l + 1; ++i) {
+          e.push_back(i);
+        }
+        size_t f = 2 * l + 1;
+
+        std::vector<relation_type> rels = renner_common_type_D_monoid(l, q);
+
+        if (l >= 3) {
+          rels.push_back({{e[0], s[0], s[2], s[1], f}, {e[3]}});
+          rels.push_back({{f, s[1], s[2], s[0], e[0]}, {e[3]}});
+        }
+        return rels;
+      } else {
+        LIBSEMIGROUPS_EXCEPTION(
+            "expected 2nd argument to be author::Godelle, found %s",
+            detail::to_string(val).c_str());
       }
     }
-    rels.push_back({{f, f}, {f}});
-    rels.push_back({{f, e[0]}, {e[1]}});
-    rels.push_back({{e[0], f}, {e[1]}});
 
-    for (size_t i = 2; i < l; ++i) {
-      rels.push_back({{e[i], s[i], e[i]}, {e[i + 1]}});
-    }
-    rels.push_back({{e[0], s[0], e[0]}, {e[2]}});
-    rels.push_back({{f, s[1], f}, {e[2]}});
-
-    return rels;
-  }
-
-  std::vector<relation_type> renner_type_D_monoid(size_t l, int q, author val) {
-    if (val == author::Godelle) {
+    std::vector<relation_type> RennerTypeDMonoid(size_t l, int q) {
       std::vector<size_t> s;
       std::vector<size_t> e;
       for (size_t i = 0; i < l; ++i) {
@@ -1550,128 +1602,109 @@ namespace libsemigroups {
 
       std::vector<relation_type> rels = renner_common_type_D_monoid(l, q);
 
-      if (l >= 3) {
-        rels.push_back({{e[0], s[0], s[2], s[1], f}, {e[3]}});
-        rels.push_back({{f, s[1], s[2], s[0], e[0]}, {e[3]}});
+      for (size_t i = 2; i < l; i++) {
+        std::vector<size_t> new_rel_f = max_elt_D(i, 0);
+        std::vector<size_t> new_rel_e = max_elt_D(i, 1);
+
+        if (i % 2 == 0) {
+          new_rel_e.insert(new_rel_e.begin(), f);
+          new_rel_e.push_back(e[0]);
+          rels.push_back({new_rel_e, {e[i + 1]}});
+
+          new_rel_f.insert(new_rel_f.begin(), e[0]);
+          new_rel_f.push_back(f);
+          rels.push_back({new_rel_f, {e[i + 1]}});
+        } else {
+          new_rel_e.insert(new_rel_e.begin(), f);
+          new_rel_e.push_back(f);
+          rels.push_back({new_rel_e, {e[i + 1]}});
+
+          new_rel_f.insert(new_rel_f.begin(), e[0]);
+          new_rel_f.push_back(e[0]);
+          rels.push_back({new_rel_f, {e[i + 1]}});
+        }
       }
       return rels;
-    } else {
-      LIBSEMIGROUPS_EXCEPTION(
-          "expected 2nd argument to be author::Godelle, found %s",
-          detail::to_string(val).c_str());
     }
-  }
 
-  std::vector<relation_type> RennerTypeDMonoid(size_t l, int q) {
-    std::vector<size_t> s;
-    std::vector<size_t> e;
-    for (size_t i = 0; i < l; ++i) {
-      s.push_back(i);
-    }
-    for (size_t i = l; i < 2 * l + 1; ++i) {
-      e.push_back(i);
-    }
-    size_t f = 2 * l + 1;
-
-    std::vector<relation_type> rels = renner_common_type_D_monoid(l, q);
-
-    for (size_t i = 2; i < l; i++) {
-      std::vector<size_t> new_rel_f = max_elt_D(i, 0);
-      std::vector<size_t> new_rel_e = max_elt_D(i, 1);
-
-      if (i % 2 == 0) {
-        new_rel_e.insert(new_rel_e.begin(), f);
-        new_rel_e.push_back(e[0]);
-        rels.push_back({new_rel_e, {e[i + 1]}});
-
-        new_rel_f.insert(new_rel_f.begin(), e[0]);
-        new_rel_f.push_back(f);
-        rels.push_back({new_rel_f, {e[i + 1]}});
-      } else {
-        new_rel_e.insert(new_rel_e.begin(), f);
-        new_rel_e.push_back(f);
-        rels.push_back({new_rel_e, {e[i + 1]}});
-
-        new_rel_f.insert(new_rel_f.begin(), e[0]);
-        new_rel_f.push_back(e[0]);
-        rels.push_back({new_rel_f, {e[i + 1]}});
+    std::ostringstream& operator<<(std::ostringstream& oss, author val) {
+      std::string sep = "";
+      if (static_cast<uint64_t>(val) & static_cast<uint64_t>(author::Machine)) {
+        oss << sep << "author::Machine";
+        sep = " + ";
       }
+      if (static_cast<uint64_t>(val)
+          & static_cast<uint64_t>(author::Aizenstat)) {
+        oss << sep << "author::Aizenstat";
+        sep = " + ";
+      }
+      if (static_cast<uint64_t>(val)
+          & static_cast<uint64_t>(author::Burnside)) {
+        oss << sep << "author::Burnside";
+        sep = " + ";
+      }
+      if (static_cast<uint64_t>(val)
+          & static_cast<uint64_t>(author::Carmichael)) {
+        oss << sep << "author::Carmichael";
+        sep = " + ";
+      }
+      if (static_cast<uint64_t>(val) & static_cast<uint64_t>(author::Coxeter)) {
+        oss << sep << "author::Coxeter";
+        sep = " + ";
+      }
+      if (static_cast<uint64_t>(val) & static_cast<uint64_t>(author::Easdown)) {
+        oss << sep << "author::Easdown";
+        sep = " + ";
+      }
+      if (static_cast<uint64_t>(val)
+          & static_cast<uint64_t>(author::FitzGerald)) {
+        oss << sep << "author::FitzGerald";
+        sep = " + ";
+      }
+      if (static_cast<uint64_t>(val) & static_cast<uint64_t>(author::Godelle)) {
+        oss << sep << "author::Godelle";
+        sep = " + ";
+      }
+      if (static_cast<uint64_t>(val)
+          & static_cast<uint64_t>(author::Guralnick)) {
+        oss << sep << "author::Guralnick";
+        sep = " + ";
+      }
+      if (static_cast<uint64_t>(val) & static_cast<uint64_t>(author::Iwahori)) {
+        oss << sep << "author::Iwahori";
+        sep = " + ";
+      }
+      if (static_cast<uint64_t>(val) & static_cast<uint64_t>(author::Kantor)) {
+        oss << sep << "author::Kantor";
+        sep = " + ";
+      }
+      if (static_cast<uint64_t>(val)
+          & static_cast<uint64_t>(author::Kassabov)) {
+        oss << sep << "author::Kassabov";
+        sep = " + ";
+      }
+      if (static_cast<uint64_t>(val)
+          & static_cast<uint64_t>(author::Lubotzky)) {
+        oss << sep << "author::Lubotsky";
+        sep = " + ";
+      }
+      if (static_cast<uint64_t>(val) & static_cast<uint64_t>(author::Miller)) {
+        oss << sep << "author::Miller";
+        sep = " + ";
+      }
+      if (static_cast<uint64_t>(val) & static_cast<uint64_t>(author::Moore)) {
+        oss << sep << "author::Moore";
+        sep = " + ";
+      }
+      if (static_cast<uint64_t>(val) & static_cast<uint64_t>(author::Moser)) {
+        oss << sep << "author::Moser";
+        sep = " + ";
+      }
+      if (static_cast<uint64_t>(val) & static_cast<uint64_t>(author::Sutov)) {
+        oss << sep << "author::Sutov";
+        sep = " + ";
+      }
+      return oss;
     }
-    return rels;
-  }
-
-  std::ostringstream& operator<<(std::ostringstream& oss, author val) {
-    std::string sep = "";
-    if (static_cast<uint64_t>(val) & static_cast<uint64_t>(author::Machine)) {
-      oss << sep << "author::Machine";
-      sep = " + ";
-    }
-    if (static_cast<uint64_t>(val) & static_cast<uint64_t>(author::Aizenstat)) {
-      oss << sep << "author::Aizenstat";
-      sep = " + ";
-    }
-    if (static_cast<uint64_t>(val) & static_cast<uint64_t>(author::Burnside)) {
-      oss << sep << "author::Burnside";
-      sep = " + ";
-    }
-    if (static_cast<uint64_t>(val)
-        & static_cast<uint64_t>(author::Carmichael)) {
-      oss << sep << "author::Carmichael";
-      sep = " + ";
-    }
-    if (static_cast<uint64_t>(val) & static_cast<uint64_t>(author::Coxeter)) {
-      oss << sep << "author::Coxeter";
-      sep = " + ";
-    }
-    if (static_cast<uint64_t>(val) & static_cast<uint64_t>(author::Easdown)) {
-      oss << sep << "author::Easdown";
-      sep = " + ";
-    }
-    if (static_cast<uint64_t>(val)
-        & static_cast<uint64_t>(author::FitzGerald)) {
-      oss << sep << "author::FitzGerald";
-      sep = " + ";
-    }
-    if (static_cast<uint64_t>(val) & static_cast<uint64_t>(author::Godelle)) {
-      oss << sep << "author::Godelle";
-      sep = " + ";
-    }
-    if (static_cast<uint64_t>(val) & static_cast<uint64_t>(author::Guralnick)) {
-      oss << sep << "author::Guralnick";
-      sep = " + ";
-    }
-    if (static_cast<uint64_t>(val) & static_cast<uint64_t>(author::Iwahori)) {
-      oss << sep << "author::Iwahori";
-      sep = " + ";
-    }
-    if (static_cast<uint64_t>(val) & static_cast<uint64_t>(author::Kantor)) {
-      oss << sep << "author::Kantor";
-      sep = " + ";
-    }
-    if (static_cast<uint64_t>(val) & static_cast<uint64_t>(author::Kassabov)) {
-      oss << sep << "author::Kassabov";
-      sep = " + ";
-    }
-    if (static_cast<uint64_t>(val) & static_cast<uint64_t>(author::Lubotzky)) {
-      oss << sep << "author::Lubotsky";
-      sep = " + ";
-    }
-    if (static_cast<uint64_t>(val) & static_cast<uint64_t>(author::Miller)) {
-      oss << sep << "author::Miller";
-      sep = " + ";
-    }
-    if (static_cast<uint64_t>(val) & static_cast<uint64_t>(author::Moore)) {
-      oss << sep << "author::Moore";
-      sep = " + ";
-    }
-    if (static_cast<uint64_t>(val) & static_cast<uint64_t>(author::Moser)) {
-      oss << sep << "author::Moser";
-      sep = " + ";
-    }
-    if (static_cast<uint64_t>(val) & static_cast<uint64_t>(author::Sutov)) {
-      oss << sep << "author::Sutov";
-      sep = " + ";
-    }
-    return oss;
-  }
+  }  // namespace fpsemigroup
 }  // namespace libsemigroups

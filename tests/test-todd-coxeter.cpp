@@ -67,6 +67,27 @@ namespace libsemigroups {
   using tc_order                     = congruence::ToddCoxeter::order;
   using options                      = congruence::ToddCoxeter::options;
 
+  using fpsemigroup::author;
+  using fpsemigroup::make;
+  using fpsemigroup::setup;
+
+  using fpsemigroup::brauer_monoid;
+  using fpsemigroup::dual_symmetric_inverse_monoid;
+  using fpsemigroup::fibonacci_semigroup;
+  using fpsemigroup::full_transformation_monoid;
+  using fpsemigroup::orientation_preserving_monoid;
+  using fpsemigroup::orientation_reversing_monoid;
+  using fpsemigroup::partial_transformation_monoid;
+  using fpsemigroup::partition_monoid;
+  using fpsemigroup::rook_monoid;
+  using fpsemigroup::singular_brauer_monoid;
+  using fpsemigroup::stellar_monoid;
+  using fpsemigroup::stylic_monoid;
+  using fpsemigroup::symmetric_group;
+  using fpsemigroup::symmetric_inverse_monoid;
+  using fpsemigroup::temperley_lieb_monoid;
+  using fpsemigroup::uniform_block_bijection_monoid;
+
   namespace {
     // Test functions
     void check_felsch(congruence::ToddCoxeter& var) {
