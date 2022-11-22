@@ -3,7 +3,7 @@ dnl handle HPCombi checks
 AC_DEFUN([CHECK_INTRINSIC],
     [AC_MSG_CHECKING([for $1])
     saved_CXXFLAGS="$CXXFLAGS"
-    CXXFLAGS="-march=avx -flax-vector-conversions"
+    CXXFLAGS="-mavx -flax-vector-conversions"
     AC_LINK_IFELSE(
       [AC_LANG_PROGRAM(
         [[#include <x86intrin.h>]],
@@ -53,9 +53,9 @@ AC_DEFUN([AX_CHECK_HPCOMBI], [
   
   dnl # Check if the flags required for HPCombi are supported 
   AS_IF([test "x$enable_hpcombi" = xyes], 
-        [AX_CHECK_COMPILE_FLAG(-march=avx, 
-                               AX_APPEND_FLAG(-march=avx, [ax_hpcombi_cxxflags_variable]),
-                               [AC_MSG_WARN([flag -march=avx not supported, HPCombi is disabled])
+        [AX_CHECK_COMPILE_FLAG(-mavx, 
+                               AX_APPEND_FLAG(-mavx, [ax_hpcombi_cxxflags_variable]),
+                               [AC_MSG_WARN([flag -mavx not supported, HPCombi is disabled])
                               enable_hpcombi=no])])
 
   AS_IF([test "x$enable_hpcombi" = xyes], 
