@@ -32,7 +32,7 @@ cd semigroups
 # Move the libsemigroups to the correct location
 mv $HOME/libsemigroups . 
 ./autogen.sh
-./configure
+./configure --disable-hpcombi
 make -j4
 
 cd ..
