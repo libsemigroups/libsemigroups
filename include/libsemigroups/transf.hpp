@@ -703,9 +703,11 @@ namespace libsemigroups {
      protected:
       //! No doc
       template <typename SFINAE = void>
-      static auto resize(container_type&, size_t, value_type = 0)
+      static auto resize(container_type& c, size_t N, value_type val = 0)
           -> std::enable_if_t<detail::IsStdArray<container_type>::value,
-                              SFINAE> {}
+                              SFINAE> {
+        std::fill(c.begin() + N, c.end(), val);
+      }
 
       //! No doc
       template <typename SFINAE = void>
