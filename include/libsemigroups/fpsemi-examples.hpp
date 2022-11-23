@@ -448,6 +448,33 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if `r = 0`
     std::vector<relation_type> monogenic_semigroup(size_t m, size_t r);
 
+    //! A non-presentation for the symmetric group.
+    //!
+    //! Returns a vector of relations giving a monoid presentation which is
+    //! claimed to define the symmetric group of degree `n`, but does not. The
+    //! argument `val` determines the specific presentation which is returned.
+    //! The options are:
+    //! * `author::Guralnick + author::Kantor + author::Kassabov +
+    //! author::Lubotzky` [doi.org/10.1090/S0894-0347-08-00590-0][]
+    //!
+    //! The default for `val` is the only option above.
+    //!
+    //! \param n the claimed degree of the symmetric group
+    //! \param val the author of the presentation
+    //!
+    //! \returns A `std::vector<relation_type>`
+    //!
+    //! \throws LibsemigroupsException if `val` is not listed above (modulo
+    //! order of author)
+    //! \throws LibsemigroupsException if `n < 4`
+    //!
+    //! [doi.org/10.1090/S0894-0347-08-00590-0]:
+    //! https://doi.org/10.1090/S0894-0347-08-00590-0
+    std::vector<relation_type>
+    not_symmetric_group(size_t n,
+                        author val = author::Guralnick + author::Kantor
+                                     + author::Kassabov + author::Lubotzky);
+
     // The following block of 7 functions remains undocumented, as we are not
     // entirely sure what they are.
     std::vector<relation_type> rook_monoid(size_t l, int q);

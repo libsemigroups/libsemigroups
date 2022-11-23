@@ -738,6 +738,7 @@ test_all_SOURCES += tests/test-forest.cpp
 test_all_SOURCES += tests/test-fpsemi.cpp
 test_all_SOURCES += tests/test-fpsemi-examples-1.cpp
 test_all_SOURCES += tests/test-fpsemi-examples-2.cpp
+test_all_SOURCES += tests/test-fpsemi-examples-3.cpp
 test_all_SOURCES += tests/test-fpsemi-intf.cpp
 test_all_SOURCES += tests/test-freeband.cpp
 test_all_SOURCES += tests/test-froidure-pin-bipart.cpp
@@ -838,6 +839,7 @@ test_fpsemi_SOURCES += tests/test-main.cpp
 
 test_fpsemi_examples_SOURCES =  tests/test-fpsemi-examples-1.cpp
 test_fpsemi_examples_SOURCES += tests/test-fpsemi-examples-2.cpp
+test_fpsemi_examples_SOURCES += tests/test-fpsemi-examples-3.cpp
 test_fpsemi_examples_SOURCES += tests/test-main.cpp
 
 test_fpsemi_intf_SOURCES =  tests/test-fpsemi-intf.cpp
