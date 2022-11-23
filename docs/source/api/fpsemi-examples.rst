@@ -108,6 +108,8 @@ Contents
      - A presentation for the monoid of orientation reversing
        mappings.
 
+   * - :cpp:any:`not_symmetric_group`
+     - A non-presentation for the symmetric group.
 .. cpp:namespace-pop::
 
 Full API
@@ -171,4 +173,7 @@ Full API
    :project: libsemigroups
 
 .. doxygenfunction:: libsemigroups::fpsemigroup::orientation_reversing_monoid
+   :project: libsemigroups
+
+.. doxygenfunction:: libsemigroups::fpsemigroup::not_symmetric_group
    :project: libsemigroups

@@ -15,7 +15,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-// This file is the first of two containing tests for the fpsemi-examples
+// This file is the first of three containing tests for the fpsemi-examples
 // functions. The presentations here define finite semigroups, and we use
 // ToddCoxeter in testing them. Exceptions and defaults are also checked in this
 // file.
@@ -731,5 +731,29 @@ namespace libsemigroups {
       }
       REQUIRE(tc.number_of_classes() == 256);
     }
+
+    LIBSEMIGROUPS_TEST_CASE("fpsemi-examples",
+                            "051",
+                            "not_symmetric_group(4)",
+                            "[fpsemi-examples][standard]") {
+      auto   rg = ReportGuard(REPORT);
+      size_t n  = 4;
+      auto   s  = not_symmetric_group(n,
+                                   author::Guralnick + author::Kantor
+                                       + author::Kassabov + author::Lubotzky);
+      auto   p  = make<Presentation<word_type>>(s);
+      p.alphabet(n);
+      presentation::replace_word(p, word_type({}), {n - 1});
+      presentation::add_identity_rules(p, n - 1);
+      p.validate();
+
+      ToddCoxeter tc(congruence_kind::twosided);
+      tc.set_number_of_generators(n);
+      for (size_t i = 0; i < p.rules.size() - 1; i += 2) {
+        tc.add_pair(p.rules[i], p.rules[i + 1]);
+      }
+      REQUIRE(tc.number_of_classes() == 72);
+    }
+
   }  // namespace congruence
 }  // namespace libsemigroups

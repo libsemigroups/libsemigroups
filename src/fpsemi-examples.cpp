@@ -1278,6 +1278,58 @@ namespace libsemigroups {
       return result;
     }
 
+    std::vector<relation_type> not_symmetric_group(size_t n, author val) {
+      if (n < 4) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "expected 1st argument to be at least 4, found %llu", uint64_t(n));
+      }
+      if (val
+          == author::Guralnick + author::Kantor + author::Kassabov
+                 + author::Lubotzky) {
+        // See Section 2.2 of 'Presentations of finite simple groups: A
+        // quantitative approach' J. Amer. Math. Soc. 21 (2008), 711-774
+        std::vector<word_type> a;
+        for (size_t i = 0; i <= n - 2; ++i) {
+          a.push_back({i});
+        }
+
+        std::vector<relation_type> result;
+
+        for (size_t i = 0; i <= n - 2; ++i) {
+          result.emplace_back(a[i] ^ 2, word_type({}));
+        }
+
+        for (size_t i = 0; i <= n - 2; ++i) {
+          for (size_t j = 0; j <= n - 2; ++j) {
+            if (i != j) {
+              result.emplace_back((a[i] * a[j]) ^ 3, word_type({}));
+            }
+          }
+        }
+
+        for (size_t i = 0; i <= n - 2; ++i) {
+          for (size_t j = 0; j <= n - 2; ++j) {
+            if (i == j) {
+              continue;
+            }
+            for (size_t k = 0; k <= n - 2; ++k) {
+              if (k != i && k != j) {
+                result.emplace_back((a[i] * a[j] * a[k]) ^ 4, word_type({}));
+              }
+            }
+          }
+        }
+
+        return result;
+
+      } else {
+        LIBSEMIGROUPS_EXCEPTION(
+            "expected 2nd argument to be author::Guralnick + author::Kantor",
+            " + author::Kassabov + author::Lubotzky found %s",
+            detail::to_string(val).c_str());
+      }
+    }
+
     // The remaining presentation functions are currently undocumented, as we
     // are not completely sure what they are.
 
