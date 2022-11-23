@@ -1014,8 +1014,17 @@ namespace libsemigroups {
             "cannot add generators after the algorithm has begun!");
       }
       validate_element_collection(first, last);
+      // If the _one has already been pushed back into _gens
+      // (i.e. if data has been initialised), then we should shuffle it to
+      // the back of the new generators.
+      if (_data_initialised) {
+        _gens.pop_back();
+      }
       for (auto it = first; it < last; ++it) {
         _gens.push_back(this->internal_copy(this->to_internal_const(*it)));
+      }
+      if (_data_initialised) {
+        _gens.push_back(_one);
       }
     }
 

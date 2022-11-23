@@ -298,4 +298,21 @@ namespace libsemigroups {
     REQUIRE(S.current_number_of_D_classes() - S.number_of_regular_D_classes()
             == 2117);
   }
+
+  LIBSEMIGROUPS_TEST_CASE("Konieczny",
+                          "042",
+                          "add_generator",
+                          "[quick][transf][no-valgrind]") {
+    auto rg      = ReportGuard(REPORT);
+    using Transf = LeastTransf<16>;
+
+    Konieczny<Transf> S({Transf({1, 0, 2, 3, 4})});
+    S.add_generator(Transf({1, 2, 3, 4, 0}));
+    S.add_generator(Transf({0, 0, 2, 3, 4}));
+
+    REQUIRE(S.generator(0) == Transf({1, 0, 2, 3, 4}));
+    REQUIRE(S.generator(1) == Transf({1, 2, 3, 4, 0}));
+    REQUIRE(S.generator(2) == Transf({0, 0, 2, 3, 4}));
+    REQUIRE(S.number_of_generators() == 3);
+  }
 }  // namespace libsemigroups
