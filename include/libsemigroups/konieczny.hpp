@@ -1026,6 +1026,12 @@ namespace libsemigroups {
       if (_data_initialised) {
         _gens.push_back(_one);
       }
+      // Once generators are added, the data structures can be initialised.
+      // init_data() does nothing if it has already been run.
+      init_data();
+      // However, the next line does always do something; the rank state and rep
+      // vecs depend on the generators.
+      init_rank_state_and_rep_vecs();
     }
 
     ////////////////////////////////////////////////////////////////////////
@@ -1538,9 +1544,29 @@ namespace libsemigroups {
 
       _element_pool.init(_one);
 
+      init_rank_state_and_rep_vecs();
+
+      _data_initialised = true;
+    }
+
+    void init_rank_state_and_rep_vecs(){
+      if (started() || _run_initialised) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "too late to initialise rank/rep vecs!");
+      }
+
+      // We don't necessarily know how to update _rank_state with any
+      // new generators, so we will just delete it and create it anew.
+      if (_data_initialised) {
+        delete _rank_state;
+      }
+
       _rank_state = new rank_state_type(cbegin_generators(), cend_generators());
       LIBSEMIGROUPS_ASSERT((_rank_state == nullptr)
                            == (std::is_same<void, rank_state_type>::value));
+
+      // We can safely just replace the vectors without deleting their contents,
+      // since we know that the run has not been initialised and they are empty.
       _nonregular_reps = std::vector<std::vector<RepInfo>>(
           InternalRank()(_rank_state, this->to_external_const(_one)) + 1,
           std::vector<RepInfo>());
@@ -1548,8 +1574,6 @@ namespace libsemigroups {
       _reg_reps = std::vector<std::vector<RepInfo>>(
           InternalRank()(_rank_state, this->to_external_const(_one)) + 1,
           std::vector<RepInfo>());
-
-      _data_initialised = true;
     }
 
     void compute_orbs() {

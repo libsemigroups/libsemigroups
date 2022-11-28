@@ -314,5 +314,22 @@ namespace libsemigroups {
     REQUIRE(S.generator(1) == Transf({1, 2, 3, 4, 0}));
     REQUIRE(S.generator(2) == Transf({0, 0, 2, 3, 4}));
     REQUIRE(S.number_of_generators() == 3);
+    REQUIRE(S.degree() == Transf({1, 0, 2, 3, 4}).degree());
   }
+
+  LIBSEMIGROUPS_TEST_CASE("Konieczny",
+                          "043",
+                          "add_generator",
+                          "[quick][transf][no-valgrind]") {
+    auto rg      = ReportGuard(REPORT);
+    using Transf = LeastTransf<16>;
+
+    Konieczny<Transf> S;
+    S.add_generator(Transf({1, 2, 3, 4, 0}));
+    S.add_generator(Transf({0, 0, 2, 3, 4}));
+
+    REQUIRE(S.degree() == Transf({1, 2, 3, 4, 0}).degree());
+    REQUIRE(S.number_of_generators() == 2);
+  }
+
 }  // namespace libsemigroups
