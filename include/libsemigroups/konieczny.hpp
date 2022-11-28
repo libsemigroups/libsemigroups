@@ -1549,7 +1549,7 @@ namespace libsemigroups {
       _data_initialised = true;
     }
 
-    void init_rank_state_and_rep_vecs(){
+    void init_rank_state_and_rep_vecs() {
       if (started() || _run_initialised) {
         LIBSEMIGROUPS_EXCEPTION(
             "too late to initialise rank/rep vecs!");
