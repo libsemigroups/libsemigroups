@@ -1,6 +1,32 @@
 Changelog - version 2
 =====================
 
+v2.4.0 (released 01/12/2022)
+----------------------------
+
+In this release a number of bugs and other minor issues were resolved. The new
+features in this release are:
+
+New features:
+
+* Add `replace_word` presentation helper by @MTWhyte in
+  https://github.com/libsemigroups/libsemigroups/pull/388
+* A library of examples of finite presentations was added by @MTWhyte.
+
+Issues resolved:
+
+* Fix issue with `replace_subword` and the empty word by @MTWhyte in
+  https://github.com/libsemigroups/libsemigroups/pull/384
+* build: add missing eigen3 to pkg-config file by @jengelh in
+  https://github.com/libsemigroups/libsemigroups/pull/414
+* Fix `Konieczny::add_generators` by @flsmith in
+  https://github.com/libsemigroups/libsemigroups/pull/420
+
+New Contributors:
+
+* @jengelh made their first contribution in
+  https://github.com/libsemigroups/libsemigroups/pull/414
+
 v2.3.2 (released 28/10/2022)
 ----------------------------
 

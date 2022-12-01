@@ -4,7 +4,7 @@
 
    The full license is in the file LICENSE, distributed with this software.
 
-libsemigroups - Version 2.3.2
+libsemigroups - Version 2.4.0
 =============================
 
 .. image:: https://readthedocs.org/projects/libsemigroups/badge/?version=master
@@ -143,6 +143,8 @@ Contributors
   ``StaticTriVector2``.
 - Luke Elliott (le27@st-andrews.ac.uk) contributed to the Schreier-Sims
   implementation.
+- Jan Engelhardt (jengelh@inai.de) contributed some bug fixes to the build
+  system, and a number of helpful issues.
 - Ilya Finkelshteyn (ilyaf@appveyor.com) contributed to the continuous
   integration in AppVeyor.
 - Isuru Fernando (isuruf@gmail.com) contributed to the build system.
