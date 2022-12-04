@@ -1331,6 +1331,148 @@ namespace libsemigroups {
       return result;
     }
 
+    std::vector<relation_type> cyclic_inverse_monoid(size_t n,
+                                                     author val,
+                                                     size_t index) {
+      if (val == author::Fernandes) {
+        if (n < 3) {
+          LIBSEMIGROUPS_EXCEPTION(
+              "the 1st argument must be at least 3 where the 2nd argument is "
+              "author::Fernandes, found %llu",
+              uint64_t(n));
+        }
+        // See Theorem 2.6 of https://arxiv.org/pdf/2211.02155.pdf
+        if (index == 0) {
+          word_type              g = {0};
+          std::vector<word_type> e(n, {0});
+          size_t                 inc = 1;
+          std::for_each(e.begin(), e.end(), [&inc](auto& w) { w[0] += inc++; });
+          std::vector<relation_type> result;
+
+          // R1
+          result.emplace_back(g ^ n, word_type({}));
+          // R2
+          for (size_t i = 0; i < n; ++i) {
+            result.emplace_back(e[i] ^ 2, e[i]);
+          }
+          // R3
+          for (size_t i = 0; i < n - 1; ++i) {
+            for (size_t j = i + 1; j < n; ++j) {
+              result.emplace_back(e[i] * e[j], e[j] * e[i]);
+            }
+          }
+
+          // R4
+          result.emplace_back(g * e[0], e[n - 1] * g);
+          for (size_t i = 0; i < n - 1; ++i) {
+            result.emplace_back(g * e[i + 1], e[i] * g);
+          }
+
+          // R5
+          word_type prod(n, 0);
+          std::iota(prod.begin(), prod.end(), size_t(1));
+          result.emplace_back(g * prod, prod);
+
+          return result;
+        }
+        // See Theorem 2.7 of https://arxiv.org/pdf/2211.02155.pdf
+        if (index == 1) {
+          word_type g = {0};
+          word_type e = {1};
+
+          std::vector<relation_type> result;
+
+          result.emplace_back(g ^ n, word_type({}));  // relation Q1
+          result.emplace_back(e ^ 2, e);              // relation Q2
+
+          // relations Q3
+          for (size_t j = 2; j <= n; ++j)
+            for (size_t i = 1; i < j; ++i) {
+              result.emplace_back(e * (g ^ (n - j + i)) * e * (g ^ (n - i + j)),
+                                  (g ^ (n - j + i)) * e * (g ^ (n - i + j))
+                                      * e);
+            }
+
+          result.emplace_back(g * (e * (g ^ (n - 1)) ^ n),
+                              (e * (g ^ (n - 1))) ^ n);  // relation Q4
+
+          return result;
+        }
+        LIBSEMIGROUPS_EXCEPTION("3rd argument must be 0 or 1 where 2nd "
+                                "argument is author::Fernandes, found %llu",
+                                uint64_t(n));
+      }
+      LIBSEMIGROUPS_EXCEPTION(
+          "expected 2nd argument to be author::Fernandes, found %s",
+          detail::to_string(val).c_str());
+    }
+
+    // See Theorem 2.17 of https://arxiv.org/pdf/2211.02155.pdf
+    std::vector<relation_type>
+    order_preserving_cyclic_inverse_monoid(size_t n) {
+      if (n < 3) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "expected argument to be at least 3, found %llu", uint64_t(n));
+      }
+      word_type x = {0};
+      word_type y = {1};
+
+      std::vector<word_type> e;
+
+      for (size_t i = 2; i <= n - 1; ++i) {
+        e.push_back({i});
+      }
+
+      std::vector<relation_type> result;
+
+      // relations V1
+      for (size_t i = 0; i <= n - 3; ++i) {
+        result.emplace_back(e[i] ^ 2, e[i]);
+      }
+      // relations V2
+      result.emplace_back(x * y * x, x);
+      result.emplace_back(y * x * y, y);
+
+      // relations V3
+      result.emplace_back(y * (x ^ 2) * y, x * (y ^ 2) * x);
+
+      // relations V4
+      for (size_t j = 1; j <= n - 3; ++j) {
+        for (size_t i = 0; i < j; ++i) {
+          result.emplace_back(e[i] * e[j], e[j] * e[i]);
+        }
+      }
+
+      // relations V5
+      for (size_t i = 0; i <= n - 3; ++i) {
+        result.emplace_back(x * y * e[i], e[i] * x * y);
+        result.emplace_back(y * x * e[i], e[i] * y * x);
+      }
+
+      // relations V6
+      for (size_t i = 0; i <= n - 4; ++i) {
+        result.emplace_back(x * e[i + 1], e[i] * x);
+      }
+
+      // relations V7
+      result.emplace_back((x ^ 2) * y, e[n - 3] * x);
+      result.emplace_back(y * (x ^ 2), x * e[0]);
+
+      // relations V8
+      word_type lhs = y * x;
+      word_type rhs = x;
+      for (size_t i = 0; i <= n - 3; ++i) {
+        lhs = lhs * e[i];
+        rhs = rhs * e[i];
+      }
+      lhs = lhs * x * y;
+      rhs = rhs * x * y;
+
+      result.emplace_back(lhs, rhs);
+
+      return result;
+    }
+
     std::vector<relation_type> not_symmetric_group(size_t n, author val) {
       if (n < 4) {
         LIBSEMIGROUPS_EXCEPTION(

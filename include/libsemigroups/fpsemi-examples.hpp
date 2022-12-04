@@ -45,17 +45,18 @@ namespace libsemigroups {
       Coxeter    = 8,
       Easdown    = 16,
       East       = 32,
-      FitzGerald = 64,
-      Godelle    = 128,
-      Guralnick  = 256,
-      Iwahori    = 512,
-      Kantor     = 1024,
-      Kassabov   = 2048,
-      Lubotzky   = 4096,
-      Miller     = 8192,
-      Moore      = 16384,
-      Moser      = 32768,
-      Sutov      = 65536
+      Fernandes  = 64,
+      FitzGerald = 128,
+      Godelle    = 256,
+      Guralnick  = 512,
+      Iwahori    = 1024,
+      Kantor     = 2048,
+      Kassabov   = 4096,
+      Lubotzky   = 8192,
+      Miller     = 16'384,
+      Moore      = 32'768,
+      Moser      = 65'536,
+      Sutov      = 131'072
     };
 
     //! This operator can be used arbitrarily to combine author values (see \ref
@@ -465,6 +466,59 @@ namespace libsemigroups {
     //!
     //! [10.1007/s10012-000-0001-1]: https://doi.org/10.1007/s10012-000-0001-1
     std::vector<relation_type> order_preserving_monoid(size_t n);
+
+    //! A presentation for the cyclic inverse monoid.
+    //!
+    //! Returns a vector of relations giving a monoid presentation defining
+    //! the cyclic inverse monoid of degree `n`.
+    //!
+    //! The combination of `val` and `index` determines the specific
+    //! presentation which is returned. The options for these are:
+    //! * `val = author::Fernandes`
+    //!    * `index = 0` (see Theorem 2.6 of [10.48550/arxiv.2211.02155][])
+    //!    * `index = 1` (see Theorem 2.7 of [10.48550/arxiv.2211.02155][])
+    //!
+    //! \param n the degree
+    //! \param val the author
+    //! \param index the index
+    //!
+    //! \returns A `std::vector<relation_type>`
+    //!
+    //! \throws LibsemigroupsException if `n < 3`
+    //! \throws LibsemigroupsException if `val` is not `author::Fernandes`
+    //! \throws LibsemigroupsException if `val = author::Fernandes` and `index`
+    //! is not `0` or `1`
+    //!
+    //! The presentation with `val = author::Fernandes` and `index = 0` has
+    //! \f$n + 1\f$ generators and \f$\frac{1}{2} \left(n^2 + 3n + 4\right)\f$
+    //! relations.
+    //!
+    //! The presentation with `val = author::Fernandes` and `index = 1` has
+    //! \f$2\f$ generators and \f$\frac{1}{2}\left(n^2 - n + 6\right)\f$
+    //! relations.
+    //!
+    //! [10.48550/arxiv.2211.02155]: https://doi.org/10.48550/arxiv.2211.02155
+    std::vector<relation_type> cyclic_inverse_monoid(size_t n,
+                                                     author val
+                                                     = author::Fernandes,
+                                                     size_t index = 1);
+
+    //! A presentation for the order-preserving part of the cyclic inverse
+    //! monoid.
+    //!
+    //! Returns a vector of relations giving a semigroup presentation defining
+    //! the order-preserving part of the cyclic inverse monoid of degree `n`, as
+    //! described in Theorem 2.17 of
+    //! the paper [10.48550/arxiv.2211.02155][].
+    //!
+    //! \param n the degree
+    //!
+    //! \returns A `std::vector<relation_type>`
+    //!
+    //! \throws LibsemigroupsException if `n < 3`
+    //!
+    //! [10.48550/arxiv.2211.02155]: https://doi.org/10.48550/arxiv.2211.02155
+    std::vector<relation_type> order_preserving_cyclic_inverse_monoid(size_t n);
 
     //! A non-presentation for the symmetric group.
     //!
