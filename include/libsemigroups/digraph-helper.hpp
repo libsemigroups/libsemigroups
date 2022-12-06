@@ -700,16 +700,16 @@ namespace libsemigroups {
       }
     }  // namespace detail
 
-    //! Constructs a digraph from number of nodes and an initializer_list.
+    //! Constructs a digraph from number of nodes and an \c initializer_list.
     //!
     //! This function constructs an ActionDigraph from its arguments whose
-    //! out-degree is specified by the length of the first initializer_list in
-    //! 2nd parameter.
+    //! out-degree is specified by the length of the first \c initializer_list
+    //! in the 2nd parameter.
     //!
     //! \tparam T the type of the nodes of the digraph
     //!
     //! \param num_nodes the number of nodes in the digraph.
-    //! \param il the out-neighbors of digraph.
+    //! \param il the out-neighbors of the digraph.
     //!
     //! \returns A value of type ActionDigraph.
     //!
@@ -717,8 +717,8 @@ namespace libsemigroups {
     //! if ActionDigraph<T>::add_edge throws when adding edges from \p il.
     //!
     //! \complexity
-    //! \f$O(mn)\f$ where \f$m\f$ is the length of `il.begin()` and \f$n\f$ is
-    //! the parameter \p num_nodes.
+    //! \f$O(mn)\f$ where \f$m\f$ is the length of \p il and \f$n\f$ is the
+    //! parameter \p num_nodes.
     //!
     //! \par Example
     //! \code
