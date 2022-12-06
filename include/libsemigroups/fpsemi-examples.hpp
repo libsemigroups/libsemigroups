@@ -448,6 +448,22 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if `r = 0`
     std::vector<relation_type> monogenic_semigroup(size_t m, size_t r);
 
+    //! A presentation for the monoid of order-preserving mappings.
+    //!
+    //! Returns a vector of relations giving a semigroup presentation defining
+    //! the monoid of order-preserving transformations of degree `n`, as
+    //! described in Section 2 of the paper [10.1007/s10012-000-0001-1][].
+    //!
+    //! \param n the degree
+    //! \param val the author
+    //!
+    //! \returns A `std::vector<relation_type>`
+    //!
+    //! \throws LibsemigroupsException if `n < 3`
+    //!
+    //! [10.1007/s10012-000-0001-1]: https://doi.org/10.1007/s10012-000-0001-1
+    std::vector<relation_type> order_preserving_monoid(size_t n);
+
     //! A non-presentation for the symmetric group.
     //!
     //! Returns a vector of relations giving a monoid presentation which is

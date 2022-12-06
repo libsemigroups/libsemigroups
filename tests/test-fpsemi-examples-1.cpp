@@ -43,6 +43,7 @@ namespace libsemigroups {
   using fpsemigroup::fibonacci_semigroup;
   using fpsemigroup::full_transformation_monoid;
   using fpsemigroup::monogenic_semigroup;
+  using fpsemigroup::order_preserving_monoid;
   using fpsemigroup::orientation_preserving_monoid;
   using fpsemigroup::orientation_reversing_monoid;
   using fpsemigroup::partial_transformation_monoid;
@@ -304,6 +305,16 @@ namespace libsemigroups {
     REQUIRE_THROWS_AS(orientation_reversing_monoid(0), LibsemigroupsException);
     REQUIRE_THROWS_AS(orientation_reversing_monoid(1), LibsemigroupsException);
     REQUIRE_THROWS_AS(orientation_reversing_monoid(2), LibsemigroupsException);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("fpsemi-examples",
+                          "055",
+                          "order_preserving_monoid degree except",
+                          "[fpsemi-examples][quick]") {
+    auto rg = ReportGuard(REPORT);
+    REQUIRE_THROWS_AS(order_preserving_monoid(0), LibsemigroupsException);
+    REQUIRE_THROWS_AS(order_preserving_monoid(1), LibsemigroupsException);
+    REQUIRE_THROWS_AS(order_preserving_monoid(2), LibsemigroupsException);
   }
 
   namespace congruence {
@@ -730,6 +741,46 @@ namespace libsemigroups {
         tc.add_pair(p.rules[i], p.rules[i + 1]);
       }
       REQUIRE(tc.number_of_classes() == 256);
+    }
+
+    LIBSEMIGROUPS_TEST_CASE("fpsemi-examples",
+                            "053",
+                            "order_preserving_monoid(5)",
+                            "[fpsemi-examples][quick]") {
+      auto   rg = ReportGuard(REPORT);
+      size_t n  = 5;
+      auto   s  = order_preserving_monoid(n);
+      auto   p  = make<Presentation<word_type>>(s);
+      p.alphabet(2 * n - 1);
+      presentation::add_identity_rules(p, 2 * n - 2);
+      p.validate();
+
+      ToddCoxeter tc(congruence_kind::twosided);
+      tc.set_number_of_generators(2 * n - 1);
+      for (size_t i = 0; i < p.rules.size() - 1; i += 2) {
+        tc.add_pair(p.rules[i], p.rules[i + 1]);
+      }
+      REQUIRE(tc.number_of_classes() == 126);
+    }
+
+    LIBSEMIGROUPS_TEST_CASE("fpsemi-examples",
+                            "054",
+                            "order_preserving_monoid(10)",
+                            "[fpsemi-examples][standard]") {
+      auto   rg = ReportGuard(REPORT);
+      size_t n  = 10;
+      auto   s  = order_preserving_monoid(n);
+      auto   p  = make<Presentation<word_type>>(s);
+      p.alphabet(2 * n - 1);
+      presentation::add_identity_rules(p, 2 * n - 2);
+      p.validate();
+
+      ToddCoxeter tc(congruence_kind::twosided);
+      tc.set_number_of_generators(2 * n - 1);
+      for (size_t i = 0; i < p.rules.size() - 1; i += 2) {
+        tc.add_pair(p.rules[i], p.rules[i + 1]);
+      }
+      REQUIRE(tc.number_of_classes() == 92'378);
     }
 
     LIBSEMIGROUPS_TEST_CASE("fpsemi-examples",
