@@ -89,9 +89,6 @@ jobs:
    config-options:
       timeout-minutes: 45
       runs-on: ubuntu-latest
-      env:
-        PKG_CONFIG_PATH: "/usr/share/miniconda/lib/pkgconfig:/usr/share/miniconda/share/pkgconfig"
-        LD_LIBRARY_PATH: "/usr/share/miniconda/lib"
       steps:
          - uses: actions/checkout@v2
          - name: "Install other dependencies . . ."
