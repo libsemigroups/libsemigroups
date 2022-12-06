@@ -1,6 +1,15 @@
 Changelog - version 2
 =====================
 
+v2.4.1 (released 06/12/2022)
+----------------------------
+
+This is a minor release fixing some issues in the build system that should have
+been included in the last release. 
+
+* Change ``-march=avx`` -> ``-mavx`` by @james-d-mitchell in
+  https://github.com/libsemigroups/libsemigroups/pull/418
+
 v2.4.0 (released 01/12/2022)
 ----------------------------
 

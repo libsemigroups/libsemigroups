@@ -1,4 +1,3 @@
-
 // libsemigroups - C++ library for semigroups and monoids
 // Copyright (C) 2020 Finn Smith
 //
@@ -314,7 +313,7 @@ namespace libsemigroups {
     REQUIRE(S.generator(1) == Transf({1, 2, 3, 4, 0}));
     REQUIRE(S.generator(2) == Transf({0, 0, 2, 3, 4}));
     REQUIRE(S.number_of_generators() == 3);
-    REQUIRE(S.degree() == Transf({1, 0, 2, 3, 4}).degree());
+    REQUIRE(S.degree() == Degree<Transf>()(Transf({1, 0, 2, 3, 4})));
   }
 
   LIBSEMIGROUPS_TEST_CASE("Konieczny",
@@ -328,7 +327,7 @@ namespace libsemigroups {
     S.add_generator(Transf({1, 2, 3, 4, 0}));
     S.add_generator(Transf({0, 0, 2, 3, 4}));
 
-    REQUIRE(S.degree() == Transf({1, 2, 3, 4, 0}).degree());
+    REQUIRE(S.degree() == Degree<Transf>()(Transf({1, 2, 3, 4, 0})));
     REQUIRE(S.number_of_generators() == 2);
   }
 

@@ -302,7 +302,7 @@ namespace libsemigroups {
     if (n == 0) {
       return;
     } else if (started()) {
-      LIBSEMIGROUPS_EXCEPTION("cannot set add generators at this stage");
+      LIBSEMIGROUPS_EXCEPTION("cannot add generators at this stage");
     }
     _nr_gens += n;
     add_generators_impl(_nr_gens);
@@ -411,8 +411,8 @@ namespace libsemigroups {
             "letter index out of bounds in word %s, expected "
             "value in [0, %d), got %d",
             detail::to_string(w).c_str(),
-            l,
-            _nr_gens);
+            _nr_gens,
+            l);
       }
     }
   }
