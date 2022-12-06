@@ -299,7 +299,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("fpsemi-examples",
                           "048",
-                          "orientation_preserving_monoid degree except",
+                          "orientation_reversing_monoid degree except",
                           "[fpsemi-examples][quick]") {
     auto rg = ReportGuard(REPORT);
     REQUIRE_THROWS_AS(orientation_reversing_monoid(0), LibsemigroupsException);
