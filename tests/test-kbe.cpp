@@ -20,12 +20,12 @@
 
 #include "catch.hpp"                       // for LIBSEMIGROUPS_TEST_CASE
 #include "libsemigroups/froidure-pin.hpp"  // for FroidurePin
-#include "libsemigroups/kbe.hpp"           // for KBE
-#include "libsemigroups/knuth-bendix.hpp"  // for KnuthBendix
+/* #include "libsemigroups/kbe.hpp"           // for KBE */
+/* #include "libsemigroups/knuth-bendix.hpp"  // for KnuthBendix */
 #include "libsemigroups/transf.hpp"        // for Transf<>
 #include "test-main.hpp"                   // for LIBSEMIGROUPS_TEST_CASE
 
-namespace libsemigroups {
+/*namespace libsemigroups {
   namespace detail {
 
     using KnuthBendix = fpsemigroup::KnuthBendix;
@@ -141,4 +141,4 @@ namespace libsemigroups {
       REQUIRE(x.string(kb) == std::string(1, kb.alphabet()[0]));
     }
   }  // namespace detail
-}  // namespace libsemigroups
+}*/  // namespace libsemigroups
