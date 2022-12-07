@@ -454,6 +454,8 @@ namespace libsemigroups {
     //! the monoid of order-preserving transformations of degree `n`, as
     //! described in Section 2 of the paper [10.1007/s10012-000-0001-1][].
     //!
+    //! This presentation has \f$2n - 2\f$ generators and \f$n^2\f$ relations.
+    //!
     //! \param n the degree
     //! \param val the author
     //!
