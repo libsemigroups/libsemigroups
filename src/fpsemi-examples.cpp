@@ -1278,6 +1278,59 @@ namespace libsemigroups {
       return result;
     }
 
+    std::vector<relation_type> order_preserving_monoid(size_t n) {
+      if (n < 3) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "expected argument to be at least 3, found %llu", uint64_t(n));
+      }
+      std::vector<word_type> u;
+      std::vector<word_type> v;
+
+      for (size_t i = 0; i <= n - 2; ++i) {
+        u.push_back({i});
+        v.push_back({n - 1 + i});
+      }
+
+      std::vector<relation_type> result;
+
+      // relations 1
+      for (size_t i = 1; i <= n - 2; ++i) {
+        result.emplace_back(v[n - 2 - i] * u[i], u[i] * v[n - 1 - i]);
+      }
+
+      // relations 2
+      for (size_t i = 1; i <= n - 2; ++i) {
+        result.emplace_back(u[n - 2 - i] * v[i], v[i] * u[n - 1 - i]);
+      }
+
+      // relations 3
+      for (size_t i = 0; i <= n - 2; ++i) {
+        result.emplace_back(v[n - 2 - i] * u[i], u[i]);
+      }
+
+      // relations 4
+      for (size_t i = 0; i <= n - 2; ++i) {
+        result.emplace_back(u[n - 2 - i] * v[i], v[i]);
+      }
+
+      // relations 5
+      for (size_t i = 0; i <= n - 2; ++i) {
+        for (size_t j = 0; j <= n - 2; ++j) {
+          if (j != (n - 2) - i && j != n - i - 1) {
+            result.emplace_back(u[i] * v[j], v[j] * u[i]);
+          }
+        }
+      }
+
+      // relation 6
+      result.emplace_back(u[0] * u[1] * u[0], u[0] * u[1]);
+
+      // relation 7
+      result.emplace_back(v[0] * v[1] * v[0], v[0] * v[1]);
+
+      return result;
+    }
+
     std::vector<relation_type> not_symmetric_group(size_t n, author val) {
       if (n < 4) {
         LIBSEMIGROUPS_EXCEPTION(

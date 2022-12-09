@@ -22,7 +22,7 @@ Presentations from the following sources are implemented: :cite:`Gay1999aa`;
 :cite:`Abram2022aa`; :cite:`Easdown2007aa`; :cite:`FitzGerald2003aa`;
 :cite:`East2011aa`; :cite:`Ayik2000aa`; :cite:`Ruskuc1995aa`;
 :cite:`Aizenstat1958aa`; :cite:`Coxeter1979aa`; :cite:`Knuth1970aa`;
-:cite:`Lascoux1981aa`; :cite:`Moore1897aa`.
+:cite:`Lascoux1981aa`; :cite:`Moore1897aa`; :cite:`Aizenstat1962aa`.
 
 .. cpp:type:: libsemigroups::fpsemigroup::author
 
@@ -108,6 +108,10 @@ Contents
      - A presentation for the monoid of orientation reversing
        mappings.
 
+   * - :cpp:any:`order_preserving_monoid`
+     - A presentation for the monoid of order preserving
+       mappings.
+
    * - :cpp:any:`not_symmetric_group`
      - A non-presentation for the symmetric group.
 .. cpp:namespace-pop::
@@ -173,6 +177,9 @@ Full API
    :project: libsemigroups
 
 .. doxygenfunction:: libsemigroups::fpsemigroup::orientation_reversing_monoid
+   :project: libsemigroups
+
+.. doxygenfunction:: libsemigroups::fpsemigroup::order_preserving_monoid
    :project: libsemigroups
 
 .. doxygenfunction:: libsemigroups::fpsemigroup::not_symmetric_group
