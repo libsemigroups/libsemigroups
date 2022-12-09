@@ -229,7 +229,7 @@ namespace libsemigroups {
   //! Returns a forward iterator pointing to one after the end of the range
   //! from \p first to \p last.
   //!
-  //! The iterator returned by this function is still dereferencable and
+  //! The iterator returned by this function is still dereferenceable and
   //! incrementable, but does not point to a word in the correct range.
   //!
   //! \sa cbegin_wilo

@@ -151,7 +151,7 @@ namespace libsemigroups {
       }
       for (size_t j = 1; j < counts.size(); j++)
         counts[j] += counts[j - 1];
-      // This can also be reused and doesnt even have to be initialized if we
+      // This can also be reused and doesn't even have to be initialized if we
       // reuse it.
       word_type result_index_list(index_list.size(), 0);
       for (auto j = index_list.rbegin(); j != index_list.rend(); j++) {

@@ -9,7 +9,7 @@ Congruences
 
 .. cpp:namespace:: libsemigroups
 
-``libsemigroups`` implements serveral algorithms for computing a congruence of
+``libsemigroups`` implements several algorithms for computing a congruence of
 a semigroup or monoid. The main algorithms implemented are Todd-Coxeter,
 Knuth-Bendix, algorithms for C(4) small overlap monoids (by Kambites and
 Tsalakou),and brute-force enumeration; see the links below for further details.

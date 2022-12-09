@@ -309,7 +309,7 @@ namespace libsemigroups {
   //! \noexcept
   //!
   //! \warning
-  //! This function has signifcantly worse performance than all
+  //! This function has significantly worse performance than all
   //! the variants of \ref shortlex_compare
   //! and [std::lexicographical_compare].
   //!

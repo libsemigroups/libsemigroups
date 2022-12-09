@@ -129,7 +129,7 @@ namespace libsemigroups {
       s += "\\begin{document}\n";
       s += "\\definecolor{color0}{RGB}{127, 0, 255}\n";    // purple
       s += "\\definecolor{color1}{RGB}{128, 128, 128}\n";  // gray
-      s += "\\definecolor{color2}{RGB}{255, 0, 127}\n";    // fuschia
+      s += "\\definecolor{color2}{RGB}{255, 0, 127}\n";    // fuchsia
       s += "\\definecolor{color3}{RGB}{255, 0, 255}\n";    // pink
       s += "\\definecolor{color4}{RGB}{0, 0, 255}\n";      // blue
       s += "\\definecolor{color5}{RGB}{0, 255, 0}\n";      // green

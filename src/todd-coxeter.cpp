@@ -2087,7 +2087,7 @@ namespace libsemigroups {
                   new_edge_func(c, x);
                   _word_graph.ActionDigraph<coset_type>::add_edge_nc(c, d, x);
                 }
-                // Must readd the source, even if we don't need to reset
+                // Must re-add the source, even if we don't need to reset
                 // the target or stack the deduction
                 _word_graph.add_source(d, x, c);
                 LIBSEMIGROUPS_ASSERT(is_active_coset(d));
