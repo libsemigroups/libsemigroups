@@ -42,8 +42,8 @@
 // 5. The checks 2., 3. and 4. are a special case of a more general matrix based
 //    condition. We construct a matrix whose columns correspond to generators
 //    and rows correspond to relations. The (i, j)-th entry is the number of
-//    occurences of the j-th generator in the left hand side of the i-th
-//    relation minus the number of occurences of it on the right hand side.
+//    occurrences of the j-th generator in the left hand side of the i-th
+//    relation minus the number of occurrences of it on the right hand side.
 //    If this matrix has a non-trivial kernel, then we can construct a
 //    surjective homomorphism onto an infinite subsemigroup of the rationals
 //    under addition. So we check that the matrix is full rank.

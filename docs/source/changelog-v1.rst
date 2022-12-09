@@ -137,7 +137,7 @@ The major new features in this release are:
   in a given range over an alphabet of specified size.
 
 * the class template ``ActionDigraph`` gets new static member functions
-  ``random`` for outputing a random action digraph with a given number of
+  ``random`` for outputting a random action digraph with a given number of
   edges; and ``random_acyclic``.
 
 There were also several further minor improvements and bug fixes implemented in

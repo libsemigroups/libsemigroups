@@ -82,11 +82,11 @@ namespace libsemigroups {
           LIBSEMIGROUPS_ASSERT(_id < 0);
         }
 
-        // The Rule class does not support an assignment contructor to avoid
+        // The Rule class does not support an assignment constructor to avoid
         // accidental copying.
         Rule& operator=(Rule const& copy) = delete;
 
-        // The Rule class does not support a copy contructor to avoid
+        // The Rule class does not support a copy constructor to avoid
         // accidental copying.
         Rule(Rule const& copy) = delete;
 

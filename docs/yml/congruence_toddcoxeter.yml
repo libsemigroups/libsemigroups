@@ -122,7 +122,7 @@ libsemigroups::congruence::ToddCoxeter:
 - Properties:
   - ["This page contains information about the member functions of the 
      :cpp:any:`ToddCoxeter` class that can be used to check if the table is
-     compelte and compatible with the defining relations."]
+     complete and compatible with the defining relations."]
   - complete() const noexcept
   - compatible() const noexcept
   - is_non_trivial(size_t, std::chrono::milliseconds, float)
