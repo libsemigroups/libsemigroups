@@ -280,12 +280,19 @@ namespace libsemigroups {
       return result;
     }
 
-    std::vector<relation_type> symmetric_group(size_t n, author val) {
+    std::vector<relation_type> symmetric_group(size_t n,
+                                               author val,
+                                               size_t index) {
       if (n < 4) {
         LIBSEMIGROUPS_EXCEPTION(
             "expected 1st argument to be at least 4, found %llu", uint64_t(n));
       }
       if (val == author::Carmichael) {
+        if (index != 0) {
+          LIBSEMIGROUPS_EXCEPTION("expected 3rd argument to be 0 when 2nd "
+                                  "argument is author::Carmichael, found %llu",
+                                  uint64_t(index));
+        }
         // Exercise 9.5.2, p172 of
         // https://link.springer.com/book/10.1007/978-1-84800-281-4
         std::vector<word_type> pi;
@@ -319,6 +326,12 @@ namespace libsemigroups {
       } else if (val == author::Coxeter + author::Moser) {
         // From Chapter 3, Proposition 1.2 in https://bit.ly/3R5ZpKW (Ruskuc
         // thesis)
+        if (index != 0) {
+          LIBSEMIGROUPS_EXCEPTION(
+              "expected 3rd argument to be 0 when 2nd argument is "
+              "author::Coxeter + author::Moser, found %llu",
+              uint64_t(index));
+        }
 
         std::vector<word_type> a;
         for (size_t i = 0; i < n - 1; ++i) {
@@ -341,24 +354,61 @@ namespace libsemigroups {
         return result;
 
       } else if (val == author::Moore) {
-        // From Chapter 3, Proposition 1.1 in https://bit.ly/3R5ZpKW (Ruskuc
-        // thesis)
-        word_type const e = {};
-        word_type const a = {0};
-        word_type const b = {1};
+        if (index == 0) {
+          // From Chapter 3, Proposition 1.1 in https://bit.ly/3R5ZpKW (Ruskuc
+          // thesis)
+          word_type const e = {};
+          word_type const a = {0};
+          word_type const b = {1};
 
-        std::vector<relation_type> result;
-        result.emplace_back(a ^ 2, e);
-        result.emplace_back(b ^ n, e);
-        result.emplace_back((a * b) ^ (n - 1), e);
-        result.emplace_back((a * (b ^ (n - 1)) * a * b) ^ 3, e);
-        for (size_t j = 2; j <= n - 2; ++j) {
-          result.emplace_back((a * ((b ^ (n - 1)) ^ j) * a * (b ^ j)) ^ 2, e);
+          std::vector<relation_type> result;
+          result.emplace_back(a ^ 2, e);
+          result.emplace_back(b ^ n, e);
+          result.emplace_back((a * b) ^ (n - 1), e);
+          result.emplace_back((a * (b ^ (n - 1)) * a * b) ^ 3, e);
+          for (size_t j = 2; j <= n - 2; ++j) {
+            result.emplace_back((a * ((b ^ (n - 1)) ^ j) * a * (b ^ j)) ^ 2, e);
+          }
+          return result;
+        } else if (index == 1) {
+          // From https://core.ac.uk/download/pdf/82378951.pdf
+          // TODO: Get proper DOI of this paper
+
+          std::vector<relation_type> result;
+          std::vector<word_type>     s;
+
+          for (size_t i = 0; i <= n - 2; ++i) {
+            s.push_back({i});
+          }
+
+          for (size_t i = 0; i <= n - 2; ++i) {
+            result.emplace_back(s[i] ^ 2, word_type({}));
+          }
+
+          for (size_t i = 0; i <= n - 4; ++i) {
+            for (size_t j = i + 2; j <= n - 2; ++j) {
+              result.emplace_back(s[i] * s[j], s[j] * s[i]);
+            }
+          }
+
+          for (size_t i = 1; i <= n - 2; ++i) {
+            result.emplace_back(s[i] * s[i - 1] * s[i],
+                                s[i - 1] * s[i] * s[i - 1]);
+          }
+          return result;
         }
-        return result;
+        LIBSEMIGROUPS_EXCEPTION("expected 3rd argument to be 0 or 1 when 2nd "
+                                "argument is author::Moore, found %llu",
+                                uint64_t(index));
       } else if (val == author::Burnside + author::Miller) {
         // See Eq 2.6 of 'Presentations of finite simple groups: A quantitative
         // approach' J. Amer. Math. Soc. 21 (2008), 711-774
+        if (index != 0) {
+          LIBSEMIGROUPS_EXCEPTION(
+              "expected 3rd argument to be 0 when 2nd argument is "
+              "author::Burnside + author::Miller, found %llu",
+              uint64_t(index));
+        }
         std::vector<word_type> a;
         for (size_t i = 0; i <= n - 2; ++i) {
           a.push_back({i});
