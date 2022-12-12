@@ -270,7 +270,7 @@ namespace libsemigroups {
         }
       }
     }
-    std::cout << "\nNumber of C(4) presentations = " << number_c4 << std::endl;
+    std::cout << "\n Number of C(4) presentations = " << number_c4 << std::endl;
     std::cout << "Number of C(1,2,3) presentations = " << number_c123
               << std::endl;
     std::cout << "Number of confluent presentations = " << number_confluent
@@ -960,7 +960,7 @@ namespace libsemigroups {
       number_confluent += confluent;
       number_both += (c4 && confluent);
     }
-    std::cout << "\nNumber confluent = " << number_confluent << std::endl;
+    std::cout << "\n Number confluent = " << number_confluent << std::endl;
     std::cout << "Number C(4)      = " << number_c4 << std::endl;
     std::cout << "Number both      = " << number_both << std::endl;
   }
