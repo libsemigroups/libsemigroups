@@ -65,6 +65,7 @@ namespace libsemigroups {
                           "049",
                           "test default values",
                           "[fpsemi-examples][quick]") {
+    // author defaults
     REQUIRE(symmetric_group(4) == symmetric_group(4, author::Carmichael));
     REQUIRE(alternating_group(4) == alternating_group(4, author::Moore));
     REQUIRE(full_transformation_monoid(4)
@@ -79,6 +80,9 @@ namespace libsemigroups {
     REQUIRE(uniform_block_bijection_monoid(4)
             == uniform_block_bijection_monoid(4, author::FitzGerald));
     REQUIRE(partition_monoid(4) == partition_monoid(4, author::East));
+
+    // index defaults
+    REQUIRE(symmetric_group(4, author::Moore) == symmetric_group(4, author::Moore, 0));
   }
 
   LIBSEMIGROUPS_TEST_CASE("fpsemi-examples",
@@ -132,6 +136,17 @@ namespace libsemigroups {
                           "[fpsemi-examples][quick]") {
     auto rg = ReportGuard(REPORT);
     REQUIRE_THROWS_AS(symmetric_group(3, author::Carmichael),
+                      LibsemigroupsException);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("fpsemi-examples",
+                          "064",
+                          "symmetric_group index except",
+                          "[fpsemi-examples][quick]") {
+    auto rg = ReportGuard(REPORT);
+    REQUIRE_THROWS_AS(symmetric_group(5, author::Moore, 2),
+                      LibsemigroupsException);
+    REQUIRE_THROWS_AS(symmetric_group(5, author::Carmichael, 1),
                       LibsemigroupsException);
   }
 
@@ -487,7 +502,7 @@ namespace libsemigroups {
 
     LIBSEMIGROUPS_TEST_CASE("fpsemi-examples",
                             "032",
-                            "symmetric_group(6) Moore",
+                            "symmetric_group(6) Moore index 0",
                             "[fpsemi-examples][quick]") {
       auto   rg = ReportGuard(REPORT);
       size_t n  = 6;
@@ -504,6 +519,27 @@ namespace libsemigroups {
         tc.add_pair(p.rules[i], p.rules[i + 1]);
       }
       REQUIRE(tc.number_of_classes() == 720);
+    }
+
+    LIBSEMIGROUPS_TEST_CASE("fpsemi-examples",
+                            "065",
+                            "symmetric_group(7) Moore index 1",
+                            "[fpsemi-examples][quick]") {
+      auto   rg = ReportGuard(REPORT);
+      size_t n  = 7;
+      auto   s  = symmetric_group(n, author::Moore, 1);
+      auto   p  = make<Presentation<word_type>>(s);
+      p.alphabet(n);
+      presentation::replace_word(p, word_type({}), {n - 1});
+      presentation::add_identity_rules(p, n - 1);
+      p.validate();
+
+      ToddCoxeter tc(congruence_kind::twosided);
+      tc.set_number_of_generators(n);
+      for (size_t i = 0; i < p.rules.size() - 1; i += 2) {
+        tc.add_pair(p.rules[i], p.rules[i + 1]);
+      }
+      REQUIRE(tc.number_of_classes() == 5040);
     }
 
     LIBSEMIGROUPS_TEST_CASE("fpsemi-examples",

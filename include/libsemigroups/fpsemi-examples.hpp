@@ -291,10 +291,15 @@ namespace libsemigroups {
     //! [10.1007/978-1-84800-281-4])
     //! * `author::Coxeter + author::Moser` (see Ch. 3, Prop 1.2 of
     //! [hdl.handle.net/10023/2821])
-    //! * `author::Moore` (given in comment 9.5.3 of
-    //! [10.1007/978-1-84800-281-4])
+    //! * `author::Moore`
+    //!    * `index = 0` (given Ch. 3, Prop 1.1 of
+    //!    [hdl.handle.net/10023/2821][])
+    //!    * `index = 1` (given in comment 9.5.3 of
+    //!    [10.1007/978-1-84800-281-4][])
     //!
-    //! The default for `val` is `author::Carmichael`.
+    //! The default for `val` is `author::Carmichael`. The default for `index`
+    //! is `0`. If no `index` is listed above for an author, the only accepted
+    //! index for that author is `0`.
     //!
     //! \param n the degree of the symmetric group
     //! \param val the author of the presentation
@@ -302,13 +307,17 @@ namespace libsemigroups {
     //! \returns A `std::vector<relation_type>`
     //!
     //! \throws LibsemigroupsException if `val` is not listed above (modulo
-    //! order of author) \throws LibsemigroupsException if `n < 4`
+    //! order of author)
+    //! \throws LibsemigroupsException if `n < 4`
+    //! \throws LibsemigroupsException if `index` is not given above for the
+    //! author `val`
     //!
     //! [10.1017/CBO9781139237253]: https://doi.org/10.1017/CBO9781139237253
     //! [10.1007/978-1-84800-281-4]: https://doi.org/10.1007/978-1-84800-281-4
     //! [hdl.handle.net/10023/2821]: http://hdl.handle.net/10023/2821
     std::vector<relation_type> symmetric_group(size_t n,
-                                               author val = author::Carmichael);
+                                               author val = author::Carmichael,
+                                               size_t index = 0);
 
     //! A presentation for the alternating group.
     //!
