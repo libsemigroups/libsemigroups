@@ -80,9 +80,14 @@ namespace libsemigroups {
     REQUIRE(uniform_block_bijection_monoid(4)
             == uniform_block_bijection_monoid(4, author::FitzGerald));
     REQUIRE(partition_monoid(4) == partition_monoid(4, author::East));
+    REQUIRE(cyclic_inverse_monoid(4)
+            == cyclic_inverse_monoid(4, author::Fernandes));
 
     // index defaults
-    REQUIRE(symmetric_group(4, author::Moore) == symmetric_group(4, author::Moore, 0));
+    REQUIRE(symmetric_group(4, author::Moore)
+            == symmetric_group(4, author::Moore, 0));
+    REQUIRE(cyclic_inverse_monoid(4, author::Fernandes)
+            == cyclic_inverse_monoid(4, author::Fernandes, 1));
   }
 
   LIBSEMIGROUPS_TEST_CASE("fpsemi-examples",
