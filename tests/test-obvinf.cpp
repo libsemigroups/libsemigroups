@@ -69,7 +69,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE(
       "ObviouslyInfinite",
       "003",
-      "Preserves the number of occurences of the generator 'a'",
+      "Preserves the number of occurrences of the generator 'a'",
       "[quick]") {
     detail::IsObviouslyInfinite<char, std::string> ioi(2);
     std::vector<std::string> v = {"aba", "aa", "bb", "b", "abab", "abbba"};
@@ -209,7 +209,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE(
       "ObviouslyInfinite",
       "013",
-      "Preserves the number of occurences of the generator 'a'",
+      "Preserves the number of occurrences of the generator 'a'",
       "[quick][integer-alphabet]") {
     detail::IsObviouslyInfinite ioi(2);
     std::vector<word_type>      v
