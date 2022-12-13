@@ -14,7 +14,7 @@ representations for every type of matrix:
 1. those whose dimension and arithmetic operations can be defined at compile
    time: :cpp:any:`StaticMatrix`.
 2. those whose arithmetic operation can be defined at compile time but whose
-   dimesions can be set at run time: :cpp:any:`DynamicMatrix` 
+   dimensions can be set at run time: :cpp:any:`DynamicMatrix` 
 3. those whose arithmetic operation and dimensions can be set at run time:
    :cpp:any:`DynamicMatrix`
 
@@ -90,7 +90,7 @@ Adapters
 ---------------
 
 There are various specialisations of the adapters described on `this
-page<Adapters>` for the matrices desribed on this page:
+page<Adapters>` for the matrices described on this page:
 
 .. toctree::
    :maxdepth: 1

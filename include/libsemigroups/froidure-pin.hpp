@@ -523,7 +523,7 @@ namespace libsemigroups {
     //! * follows the path in the right or left Cayley graph from \p i to \p j,
     //!   whichever is shorter using \ref product_by_reduction; or
     //!
-    //! * multiplies the elements in postions \p i and \p j together;
+    //! * multiplies the elements in positions \p i and \p j together;
     //!
     //! whichever is better. The  function used is determined by comparing
     //! the output of the call operator of Complexity and the

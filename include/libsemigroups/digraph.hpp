@@ -511,7 +511,7 @@ namespace libsemigroups {
     //! Constant.
     //!
     //! \warning
-    //! No checks whatsoever on the validity of the arguments are peformed.
+    //! No checks whatsoever on the validity of the arguments are performed.
     void inline add_edge_nc(node_type i, node_type j, label_type lbl) {
       _dynamic_array_2.set(i, lbl, j);
       reset();
@@ -532,7 +532,7 @@ namespace libsemigroups {
     //! Constant.
     //!
     //! \warning
-    //! No checks whatsoever on the validity of the arguments are peformed.
+    //! No checks whatsoever on the validity of the arguments are performed.
     void inline remove_edge_nc(node_type i, label_type lbl) {
       _dynamic_array_2.set(i, lbl, UNDEFINED);
       reset();
@@ -585,7 +585,7 @@ namespace libsemigroups {
     //! Constant
     //!
     //! \warning
-    //! No checks whatsoever on the validity of the arguments are peformed.
+    //! No checks whatsoever on the validity of the arguments are performed.
     // swap u - a - > u' and v - a -> v'
     void swap_edges_nc(node_type u, node_type v, label_type a) {
       reset();
@@ -942,7 +942,7 @@ namespace libsemigroups {
     //! Constant.
     //!
     //! \warning
-    //! No checks whatsoever on the validity of the arguments are peformed.
+    //! No checks whatsoever on the validity of the arguments are performed.
     //!
     //! \sa
     //! \ref cbegin_edges.
@@ -983,7 +983,7 @@ namespace libsemigroups {
     //! Constant.
     //!
     //! \warning
-    //! No checks whatsoever on the validity of the arguments are peformed.
+    //! No checks whatsoever on the validity of the arguments are performed.
     //!
     //! \sa
     //! \ref cend_edges.
@@ -1398,7 +1398,7 @@ namespace libsemigroups {
 
       //! No doc
       // noexcept because comparison of std::vector<node_type>'s is noexcept
-      // because comparision of node_type's is noexcept
+      // because comparison of node_type's is noexcept
       bool operator==(const_panilo_iterator const& that) const noexcept {
         return _nodes == that._nodes;
       }
@@ -1550,7 +1550,7 @@ namespace libsemigroups {
     //! Returns a forward iterator pointing to one after the last path from any
     //! node in the digraph.
     //!
-    //! The iterator returned by this function may still dereferencable and
+    //! The iterator returned by this function may still dereferenceable and
     //! incrementable, but may not point to a path in the correct range.
     //!
     //! \sa cbegin_panilo
@@ -1751,7 +1751,7 @@ namespace libsemigroups {
     //! Returns a forward iterator pointing to one after the last path from any
     //! node in the digraph.
     //!
-    //! The iterator returned by this function may still dereferencable and
+    //! The iterator returned by this function may still dereferenceable and
     //! incrementable, but may not point to a path in the correct range.
     //!
     //! \sa cbegin_panislo
@@ -1865,7 +1865,7 @@ namespace libsemigroups {
     //! Returns a forward iterator pointing to one after the last path from any
     //! node in the digraph.
     //!
-    //! The iterator returned by this function may still dereferencable and
+    //! The iterator returned by this function may still dereferenceable and
     //! incrementable, but may not point to a path in the correct range.
     //!
     //! \sa cbegin_pilo
@@ -1938,7 +1938,7 @@ namespace libsemigroups {
     //! Returns a forward iterator pointing to one after the last path from any
     //! node in the digraph.
     //!
-    //! The iterator returned by this function may still dereferencable and
+    //! The iterator returned by this function may still dereferenceable and
     //! incrementable, but may not point to a path in the correct range.
     //!
     //! \sa cbegin_pislo
@@ -2008,7 +2008,7 @@ namespace libsemigroups {
 
       //! No doc
       // noexcept because comparison of std::vector<node_type> is noexcept
-      // because comparision of node_type's is noexcept
+      // because comparison of node_type's is noexcept
       bool operator==(const_pstilo_iterator const& that) const noexcept {
         return _nodes == that._nodes;
       }
@@ -2204,7 +2204,7 @@ namespace libsemigroups {
     //! Returns a forward iterator pointing to one after the last path from any
     //! node in the digraph.
     //!
-    //! The iterator returned by this function may still dereferencable and
+    //! The iterator returned by this function may still dereferenceable and
     //! incrementable, but may not point to a path in the correct range.
     //!
     //! \sa cbegin_pstilo
@@ -2346,7 +2346,7 @@ namespace libsemigroups {
     //! Returns a forward iterator pointing to one after the last path from any
     //! node in the digraph.
     //!
-    //! The iterator returned by this function may still dereferencable and
+    //! The iterator returned by this function may still dereferenceable and
     //! incrementable, but may not point to a path in the correct range.
     //!
     //! \sa cbegin_pstislo

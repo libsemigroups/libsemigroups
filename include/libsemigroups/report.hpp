@@ -312,8 +312,8 @@ namespace libsemigroups {
       Reporter& operator=(Reporter&&) = delete;
 
       template <typename TClass>
-      Reporter& prefix(TClass const* const ptr, bool overide = false) {
-        if (_report || overide) {
+      Reporter& prefix(TClass const* const ptr, bool override = false) {
+        if (_report || override) {
           std::lock_guard<std::mutex> lg(_mtx);
           uint64_t tid = THREAD_ID_MANAGER.tid(std::this_thread::get_id());
           resize(tid + 1);

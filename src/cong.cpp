@@ -91,7 +91,7 @@ namespace libsemigroups {
         // Todd-Coxeter. If the policy here is use_relations, then this is
         // the same as Method 1. Note that the froidure_pin
         // must be finite in this case, and it must be possible for the
-        // Froidure-Pin algoritm to complete in this case because
+        // Froidure-Pin algorithm to complete in this case because
         // Todd-Coxeter did.
         _race.add_runner(std::make_shared<ToddCoxeter>(
             type,

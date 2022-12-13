@@ -107,7 +107,7 @@ latter should be constructed using the dimensions.
      
       :throws: 
         :cpp:any:`LibsemigroupsException` if :cpp:any:`Scalar` is a
-        singed type and ``threshold`` is less than zero.
+        signed type and ``threshold`` is less than zero.
       
       :complexity: Constant.
     

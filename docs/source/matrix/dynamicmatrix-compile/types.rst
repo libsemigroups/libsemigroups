@@ -64,4 +64,4 @@ This page contains information about the member types of the
     
    The type of the semiring over which the matrix is defined is ``void``
    because there's no semiring object, the arithmetic is defined by the
-   template paramaters.
+   template parameters.

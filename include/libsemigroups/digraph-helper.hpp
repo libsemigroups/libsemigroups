@@ -119,7 +119,7 @@ namespace libsemigroups {
     //! \exception
     //! \noexcept
     //!
-    //! \returns A value of tyep ActionDigraph::node_type.
+    //! \returns A value of type ActionDigraph::node_type.
     //!
     //! \complexity
     //! At worst the distance from \p first to \p last.
@@ -153,7 +153,7 @@ namespace libsemigroups {
     //! \exception
     //! \noexcept
     //!
-    //! \returns A value of tyep ActionDigraph::node_type.
+    //! \returns A value of type ActionDigraph::node_type.
     //!
     //! \complexity
     //! At worst the length of \p path.

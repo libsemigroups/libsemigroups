@@ -459,7 +459,7 @@ namespace libsemigroups {
       //! return value of \ref cbegin_normal_forms with any parameters.
       //!
       //! \warning The iterator returned by this function may still
-      //! dereferencable and incrementable, but will not point to a normal form
+      //! dereferenceable and incrementable, but will not point to a normal form
       //! in the correct range.
       //!
       //! \sa
