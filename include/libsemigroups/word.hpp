@@ -62,15 +62,34 @@ namespace libsemigroups {
       return output;
     }
 
-    // TODO(later) doc, lots
+    // TODO(later) doc, check args etc
     class StringToWord {
      public:
+      StringToWord() : _lookup() {
+        clear();
+      }
+
       explicit StringToWord(std::string const& alphabet) : _lookup() {
-        _lookup.fill(0);
+        init(alphabet);
+      }
+
+      StringToWord& init(std::string const& alphabet) {
+        clear();
+        _lookup.back() = alphabet.size();
         for (letter_type l = 0; l < alphabet.size(); ++l) {
           _lookup[alphabet[l]] = l;
         }
+        return *this;
       }
+
+      bool empty() const {
+        return _lookup.back() == 0;
+      }
+
+      void clear() {
+        _lookup.fill(0);
+      }
+
       // TODO(later) doc
       void      operator()(std::string const& input, word_type& output) const;
       word_type operator()(std::string const& input) const;
