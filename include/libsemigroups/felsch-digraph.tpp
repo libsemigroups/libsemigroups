@@ -17,6 +17,8 @@
 //
 
 namespace libsemigroups {
+
+  // 2nd param is number of nodes
   template <typename W, typename N>
   FelschDigraph<W, N>::FelschDigraph(Presentation<word_type> const& p,
                                      size_type                      n)
@@ -27,6 +29,54 @@ namespace libsemigroups {
         _presentation(p) {
     _felsch_tree.add_relations(_presentation.rules.cbegin(),
                                _presentation.rules.cend());
+  }
+
+  // 2nd param is number of nodes
+  template <typename W, typename N>
+  FelschDigraph<W, N>::FelschDigraph(Presentation<word_type>&& p, size_type n)
+      : DigraphWithSources<node_type>(p.contains_empty_word() ? n : n + 1,
+                                      p.alphabet().size()),
+        _definitions(),
+        _felsch_tree(p.alphabet().size()),
+        _presentation(std::move(p)) {
+    _felsch_tree.add_relations(_presentation.rules.cbegin(),
+                               _presentation.rules.cend());
+  }
+
+  // 2nd param is number of nodes
+  template <typename W, typename N>
+  FelschDigraph<W, N>&
+  FelschDigraph<W, N>::init(Presentation<word_type> const& p, size_type n) {
+    if (&_presentation != &p) {
+      _presentation = p;
+    }
+    init(n);
+    return *this;
+  }
+
+  // 2nd param is number of nodes
+  template <typename W, typename N>
+  FelschDigraph<W, N>& FelschDigraph<W, N>::init(Presentation<word_type>&& p,
+                                                 size_type                 n) {
+    _presentation = std::move(p);
+    init(n);
+    return *this;
+  }
+
+  template <typename W, typename N>
+  void FelschDigraph<W, N>::init(size_type n) {
+    size_t r = (_presentation.contains_empty_word() ? n : n + 1);
+    size_t c = _presentation.alphabet().size();
+
+    DigraphWithSources<N>::init(r, c);
+    _felsch_tree.init(c);
+    _felsch_tree.add_relations(_presentation.rules.cbegin(),
+                               _presentation.rules.cend());
+  }
+
+  template <typename W, typename N>
+  Presentation<W> const& FelschDigraph<W, N>::presentation() const noexcept {
+    return _presentation;
   }
 
   template <typename W, typename N>
@@ -45,6 +95,15 @@ namespace libsemigroups {
     } else {
       return cx == d;
     }
+  }
+
+  template <typename W, typename N>
+  bool FelschDigraph<W, N>::process_definition(Definition& d) {
+    _felsch_tree.push_back(d.second);
+    if (!process_definitions_dfs_v1(d.first)) {
+      return false;
+    }
+    return true;
   }
 
   template <typename W, typename N>
@@ -112,6 +171,14 @@ namespace libsemigroups {
       return false;
     }
     return true;
+  }
+
+  template <typename W, typename N>
+  bool FelschDigraph<W, N>::operator==(FelschDigraph const& that) const {
+    size_type const m = this->number_of_active_nodes();
+    size_type const n = that.number_of_active_nodes();
+    return (m == 0 && n == 0)
+           || (m == n && this->ActionDigraph<node_type>::operator==(that));
   }
 
   template <typename W, typename N>

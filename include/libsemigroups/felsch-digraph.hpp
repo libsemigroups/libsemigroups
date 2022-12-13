@@ -50,6 +50,7 @@ namespace libsemigroups {
     using DigraphWithSources<node_type>::DigraphWithSources;
 
     FelschDigraph(Presentation<word_type> const& p, size_type n);
+    FelschDigraph(Presentation<word_type>&& p, size_type n);
 
     FelschDigraph()                     = default;
     FelschDigraph(FelschDigraph const&) = default;
@@ -57,13 +58,19 @@ namespace libsemigroups {
     FelschDigraph& operator=(FelschDigraph const&) = default;
     FelschDigraph& operator=(FelschDigraph&&) = default;
 
+    FelschDigraph& init(Presentation<word_type> const& p, size_type n);
+    FelschDigraph& init(Presentation<word_type>&& p, size_type n);
+
+    Presentation<word_type> const& presentation() const noexcept;
+
     bool def_edge(node_type c, letter_type x, node_type d) noexcept;
 
     // Returns true if no contradictions are found.
     bool process_definitions(size_t start);
+    bool process_definition(Definition&);
 
-    size_type number_of_edges() const noexcept {
-      return _definitions.size();
+    Definitions& definitions() {
+      return _definitions;
     }
 
     void reduce_number_of_edges_to(size_type n);
@@ -72,14 +79,11 @@ namespace libsemigroups {
                     word_type const& u,
                     word_type const& v) noexcept;
 
-    bool operator==(FelschDigraph const& that) const {
-      size_type const m = this->number_of_active_nodes();
-      size_type const n = that.number_of_active_nodes();
-      return (m == 0 && n == 0)
-             || (m == n && this->ActionDigraph<node_type>::operator==(that));
-    }
+    bool operator==(FelschDigraph const& that) const;
 
    private:
+    void init(size_type n);
+
     bool process_definitions_dfs_v1(node_type c);
 
     inline bool compatible(node_type const& c, size_t i) noexcept {
