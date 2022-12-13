@@ -16,6 +16,7 @@ libsemigroups::Forest:
   - number_of_nodes() const noexcept
   - parent(node_type) const
   - label(node_type) const
+  - empty() const noexcept
 - Iterators:
   - cbegin_parent() const noexcept
   - cend_parent() const noexcept

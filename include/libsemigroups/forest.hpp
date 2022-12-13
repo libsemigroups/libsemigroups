@@ -31,6 +31,7 @@ namespace libsemigroups {
   //!
   //! This class represents the collection of spanning trees of the strongly
   //! connected components of a digraph.
+  // TODO(later): template
   class Forest final {
    public:
     //! Alias for the type of nodes in a forest
@@ -112,6 +113,23 @@ namespace libsemigroups {
     void clear() noexcept {
       _edge_label.clear();
       _parent.clear();
+    }
+
+    //! Check if there are any nodes in the forest.
+    //!
+    //! \returns
+    //! A value of type `bool`.
+    //!
+    //! \exceptions
+    //! \noexcept
+    //!
+    //! \complexity
+    //! Constant
+    //!
+    //! \par Parameters
+    //! (None)
+    bool empty() const noexcept {
+      return _parent.empty();
     }
 
     //! Set the parent and edge label for a node.
@@ -230,7 +248,7 @@ namespace libsemigroups {
                                 v);
       }
     }
-
+    // TODO(later) combine into 1 using a struct
     std::vector<size_t> _edge_label;
     std::vector<size_t> _parent;
   };
