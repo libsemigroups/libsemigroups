@@ -282,6 +282,12 @@ namespace libsemigroups {
         _vec.clear();  // noexcept
       }
 
+      void reshape(size_t nr_cols, size_t nr_rows) {
+        clear();
+        add_cols(nr_cols);
+        add_rows(nr_rows);
+      }
+
       // Throws if the assignment operator of T throws
       void shrink_rows_to(size_type n) {
         if (n < _nr_rows) {
