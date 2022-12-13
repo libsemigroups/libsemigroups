@@ -180,6 +180,59 @@ namespace libsemigroups {
     void replace_target(node_type c, node_type d, size_t x);
     void replace_source(node_type c, node_type d, size_t x, node_type cx);
   };
+
+  namespace digraph_with_sources {
+    // Return value indicates whether or not the graph was modified.
+    template <typename T>
+    bool standardize(T& d, Forest& f) {
+      // TODO(later): should be DigraphWithSourcesBase, and really this should
+      // be in namespace  digraph_with_sources
+      static_assert(
+          std::is_base_of<ActionDigraphBase, T>::value,
+          "the template parameter T must be derived from ActionDigraphBase");
+      using node_type = typename T::node_type;
+      if (!f.empty()) {
+        f.clear();
+      }
+      if (d.number_of_nodes() == 0) {
+        return false;
+      }
+
+      f.add_nodes(1);
+
+      node_type    t      = 0;
+      size_t const n      = d.out_degree();
+      bool         result = false;
+
+      for (node_type s = 0; s <= t; ++s) {
+        for (letter_type x = 0; x < n; ++x) {
+          node_type const r = d.unsafe_neighbor(s, x);
+          if (r != UNDEFINED) {
+            if (r > t) {
+              t++;
+              f.add_nodes(1);
+              if (r > t) {
+                d.swap_nodes(t, r);
+                result = true;
+              }
+              f.set(t, (s == t ? r : s), x);
+            }
+          }
+        }
+      }
+      return result;
+    }
+
+    template <typename T>
+    std::pair<bool, Forest> standardize(T& d) {
+      static_assert(
+          std::is_base_of<ActionDigraphBase, T>::value,
+          "the template parameter T must be derived from ActionDigraphBase");
+      Forest f;
+      bool   result = standardize(d, f);
+      return std::make_pair(result, f);
+    }
+  }  // namespace digraph_with_sources
 }  // namespace libsemigroups
 
 #include "digraph-with-sources.tpp"
