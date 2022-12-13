@@ -540,6 +540,25 @@ namespace libsemigroups {
       reset();
     }
 
+    //! Remove all of the edges in the digraph.
+    //!
+    //! \returns
+    //! (None)
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \complexity
+    //! \f$O(mn)\f$ where \p m is the number of nodes and \p n is the
+    //! out-degree.
+    //!
+    //! \par Parameters
+    //! (None)
+    void inline remove_all_edges() {
+      std::fill(_dynamic_array_2.begin(), _dynamic_array_2.end(), UNDEFINED);
+      reset();
+    }
+
     //! Ensures that the digraph has capacity for a given number of nodes, and
     //! out-degree.
     //!
