@@ -43,7 +43,7 @@ namespace libsemigroups {
             _parent(1, state_type(UNDEFINED)),
             _length(0) {}
 
-      FelschTree()                  = delete;
+      FelschTree()                  = default;
       FelschTree(FelschTree const&) = default;
       FelschTree(FelschTree&&)      = default;
       FelschTree& operator=(FelschTree const&) = default;
