@@ -114,11 +114,37 @@ namespace libsemigroups {
       _state = other._state.load();
     }
 
-    //! Deleted.
-    Runner& operator=(Runner const&) = delete;
+    //! Copy assignment operator.
+    //!
+    //! Returns a runner that is initialised from \p other. The state of the
+    //! new runner is the same as \p copy, except that the function passed as
+    //! an argument to \ref run_until (if any) is not copied.
+    //!
+    //! \param other the Runner to move from.
+    Runner& operator=(Runner const& other) {
+      _last_report          = other._last_report;
+      _report_time_interval = other._report_time_interval;
+      _run_for              = other._run_for;
+      _start_time           = other._start_time;
+      _state                = other._state.load();
+      return *this;
+    }
 
-    //! Deleted.
-    Runner& operator=(Runner&&) = delete;
+    //! Move assignment operator.
+    //!
+    //! Returns a runner that is initialised from \p other. The state of the
+    //! new runner is the same as \p copy, except that the function passed as
+    //! an argument to \ref run_until (if any) is not copied.
+    //!
+    //! \param other the Runner to move from.
+    Runner& operator=(Runner&& other) {
+      _last_report          = std::move(other._last_report);
+      _report_time_interval = std::move(other._report_time_interval);
+      _run_for              = std::move(other._run_for);
+      _start_time           = std::move(other._start_time);
+      _state                = other._state.load();
+      return *this;
+    }
 
     virtual ~Runner() = default;
 

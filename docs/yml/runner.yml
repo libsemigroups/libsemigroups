@@ -3,9 +3,8 @@ libsemigroups::Runner:
   - Runner()
   - Runner(Runner const&) 
   - Runner(Runner&&)
-- Deleted constructors:
-  - operator=(Runner const&) = delete
-  - operator=(Runner&&) = delete
+  - operator=(Runner const&)
+  - operator=(Runner&&)
 - Reporting:
   - report_every(TIntType)
   - report_every(std::chrono::nanoseconds)
