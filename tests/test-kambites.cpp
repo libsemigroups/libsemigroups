@@ -500,12 +500,15 @@ namespace libsemigroups {
       REQUIRE(k.is_obviously_infinite());
 
       REQUIRE(k.equal_to("dfabcdf", "dfabcdg"));
+      REQUIRE(k.normal_form("dfabcdg") == "dfabcdf");
+
       REQUIRE(k.equal_to("abcdf", "ceg"));
       REQUIRE(k.equal_to("abcdf", "cef"));
       REQUIRE(k.equal_to("dfabcdf", "dfabcdg"));
       REQUIRE(k.equal_to("abcdf", "ceg"));
       REQUIRE(k.equal_to("abcdf", "cef"));
       REQUIRE(k.normal_form("abcdfceg") == "abcdfabcdf");
+      REQUIRE(k.equal_to("abcdfceg", "abcdfabcdf"));
 
       REQUIRE(k.size() == POSITIVE_INFINITY);
       REQUIRE(number_of_words(k.alphabet().size(), 0, 6) == 19608);
