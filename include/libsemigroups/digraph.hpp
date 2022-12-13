@@ -215,6 +215,23 @@ namespace libsemigroups {
     // Not noexcept
     explicit ActionDigraph(T m = 0, T n = 0);
 
+    //! Re-initialize the digraph to have \p m nodes and out-degree \p n
+    //!
+    //! This functions puts a digraph into the state that it would have been in
+    //! if it had just been newly constructed with the same parameters \p m and
+    //! \p n.
+    //!
+    //! \param m the number of nodes in the digraph.
+    //! \param n the out-degree of every node.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \par Complexity
+    //! \f$O(mn)\f$ where \p m is the number of nodes, and \p n is the
+    //! out-degree of the digraph.
+    void init(T m, T n);
+
     //! Default copy constructor
     ActionDigraph(ActionDigraph const&);
 
@@ -3085,6 +3102,16 @@ namespace libsemigroups {
         _scc_back_forest(),
         _scc_forest(),
         _scc() {}
+
+  template <typename T>
+  void ActionDigraph<T>::init(T m, T n) {
+    _degree           = n;
+    _nr_nodes         = m;
+    _num_active_nodes = 0;
+    _dynamic_array_2.reshape(n, m);
+    remove_all_edges();
+    reset();
+  }
 
   template <typename T>
   ActionDigraph<T>::ActionDigraph(ActionDigraph const&) = default;
