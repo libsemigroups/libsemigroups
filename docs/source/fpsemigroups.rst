@@ -38,6 +38,7 @@ and monoids are:
    _generated/libsemigroups__fpsemigroupbypairs
    _generated/libsemigroups__fpsemigroup__kambites
    _generated/libsemigroups__fpsemigroup__knuthbendix
+   stephen
    _generated/libsemigroups__fpsemigroup__toddcoxeter
    present
    api/fpsemi-examples

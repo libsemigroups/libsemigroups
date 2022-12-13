@@ -675,5 +675,21 @@ namespace libsemigroups {
         }
       } while (true);
     }
+
+    LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
+                            "120",
+                            "example with undecidable word problem",
+                            "[knuthbendix][fail]") {
+      KnuthBendix k;
+      k.set_alphabet("ab");
+      k.add_rule("abaabb", "bbaaba");
+      k.add_rule("aababba", "bbaaaba");
+      k.add_rule("abaaabb", "abbabaa");
+      k.add_rule("bbbaabbaaba", "bbbaabbaaaa");
+      k.add_rule("aaaabbaaba", "bbaaaa");
+      k.run_for(std::chrono::seconds(10));
+      REQUIRE(k.finished());
+    }
+
   }  // namespace fpsemigroup
 }  // namespace libsemigroups
