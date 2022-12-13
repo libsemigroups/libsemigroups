@@ -1,3 +1,3 @@
 [codespell]
-skip = ./extern,./.git,./benchmarks/catch.hpp,./tests/catch.hpp,./config,./autom4te.cache,./m4,./aclocal.m4,./configure,./libtool,./configure~,./tests/test-knuth-bendix-*.cpp
+skip = ./extern,./.git,./benchmarks/catch.hpp,./tests/catch.hpp,./config,./autom4te.cache,./m4,./aclocal.m4,./configure,./libtool,./configure~,./tests/test-knuth-bendix-*.cpp,./docs/build/*
 ignore-words-list=nd,nam,wit
