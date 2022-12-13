@@ -88,5 +88,14 @@ namespace libsemigroups {
     REQUIRE(detail::group_digits(1'000'000) == "1,000,000");
     REQUIRE(detail::group_digits(12'000'000) == "12,000,000");
     REQUIRE(detail::group_digits(123'000'000) == "123,000,000");
+    REQUIRE(detail::group_digits(-1) == "-1");
+    REQUIRE(detail::group_digits(-10) == "-10");
+    REQUIRE(detail::group_digits(-100) == "-100");
+    REQUIRE(detail::group_digits(-1'000) == "-1,000");
+    REQUIRE(detail::group_digits(-12'000) == "-12,000");
+    REQUIRE(detail::group_digits(-123'000) == "-123,000");
+    REQUIRE(detail::group_digits(-1'000'000) == "-1,000,000");
+    REQUIRE(detail::group_digits(-12'000'000) == "-12,000,000");
+    REQUIRE(detail::group_digits(-123'000'000) == "-123,000,000");
   }
 }  // namespace libsemigroups

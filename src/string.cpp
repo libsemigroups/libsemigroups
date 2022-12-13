@@ -82,21 +82,29 @@ namespace libsemigroups {
       return result;
     }
 
+    namespace {
 #ifdef LIBSEMIGROUPS_FMT_ENABLED
-    std::string group_digits(size_t num) {
-      return fmt::to_string(fmt::group_digits(num));
-    }
+      std::string group_digits(uint64_t num) {
+        return fmt::to_string(fmt::group_digits(num));
+      }
 #else
-    std::string group_digits(size_t num) {
-      std::string result = detail::to_string(num);
-      if (result.size() < 4) {
+      std::string group_digits(uint64_t num) {
+        std::string result = detail::to_string(num);
+        if (result.size() < 4) {
+          return result;
+        }
+        for (size_t i = 3; i < result.size(); i += 4) {
+          result.insert(result.size() - i, ",");
+        }
         return result;
       }
-      for (size_t i = 3; i < result.size(); i += 4) {
-        result.insert(result.size() - i, ",");
-      }
-      return result;
-    }
 #endif
+    }  // namespace
+    std::string group_digits(int64_t num) {
+      if (num < 0) {
+        return "-" + group_digits(static_cast<uint64_t>(-num));
+      }
+      return group_digits(static_cast<uint64_t>(num));
+    }
   }  // namespace detail
 }  // namespace libsemigroups
