@@ -20,6 +20,15 @@
 // congruence" algorithm for semigroups and monoid.
 
 namespace libsemigroups {
+
+  // number of nodes, out-degree
+  template <typename T>
+  void DigraphWithSources<T>::init(size_type m, size_type n) {
+    ActionDigraph<node_type>::init(m, n);
+    _preim_init.reshape(n, m);
+    _preim_next.reshape(n, m);
+  }
+
   template <typename T>
   void DigraphWithSources<T>::remove_source(node_type   cx,
                                             letter_type x,

@@ -62,6 +62,8 @@ namespace libsemigroups {
     DigraphWithSources& operator=(DigraphWithSources const&) = default;
     DigraphWithSources& operator=(DigraphWithSources&&) = default;
 
+    void init(size_type m, size_type n);
+
     void add_edge_nc(node_type c, node_type d, letter_type x) noexcept {
       ActionDigraph<node_type>::add_edge_nc(c, d, x);
       add_source(d, x, c);
