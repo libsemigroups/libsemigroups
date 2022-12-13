@@ -76,6 +76,8 @@ namespace libsemigroups {
 #endif
   }  // namespace detail
 
+  struct ActionDigraphBase {};
+
   //! Defined in ``digraph.hpp``.
   //!
   //! This class represents the digraph of an action of a semigroup on a set.
@@ -90,7 +92,7 @@ namespace libsemigroups {
   //!
   //! \sa Action.
   template <typename T>
-  class ActionDigraph {
+  class ActionDigraph : private ActionDigraphBase {
     static_assert(std::is_integral<T>(),
                   "the template parameter T must be an integral type!");
     static_assert(
