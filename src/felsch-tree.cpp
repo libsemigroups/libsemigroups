@@ -30,6 +30,13 @@
 namespace libsemigroups {
 
   namespace detail {
+    void FelschTree::init(size_t n) {
+      _automata.reshape(n, 1);
+      _automata.fill(0);
+      _index  = {std::vector<index_type>({})};
+      _parent = {state_type(UNDEFINED)};
+      _length = 0;
+    }
 
     void FelschTree::add_relations(word_iterator first, word_iterator last) {
       size_t number_of_words = 0;

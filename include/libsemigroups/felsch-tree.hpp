@@ -51,6 +51,8 @@ namespace libsemigroups {
 
       using word_iterator = typename std::vector<word_type>::const_iterator;
 
+      void init(size_t n);
+
       void add_relations(word_iterator first, word_iterator last);
 
       void push_back(letter_type x) {
