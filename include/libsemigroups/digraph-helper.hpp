@@ -35,6 +35,8 @@
 #include "uf.hpp"         // for Duf
 
 namespace libsemigroups {
+  struct ActionDigraphBase;  // forward decl
+
   template <typename T>
   class ActionDigraph;  // forward decl
 
@@ -199,6 +201,44 @@ namespace libsemigroups {
       for (; it < last && to != UNDEFINED; ++it) {
         prev = to;
         to   = ad.unsafe_neighbor(to, *it);
+      }
+      if (it != last || to == UNDEFINED) {
+        LIBSEMIGROUPS_ASSERT(prev != UNDEFINED);
+        return {prev, it - 1};
+      } else {
+        return {to, it};
+      }
+    }
+
+    //! Returns the last node on the path labelled by a word and an iterator to
+    //! the position in the word reached.
+    //!
+    //! \tparam T the node type of the action digraph
+    //! \tparam S the type of the iterators into a word
+    //!
+    //! \param ad an action digraph
+    //! \param from the source node
+    //! \param first iterator into a word
+    //! \param last iterator into a word.
+    //!
+    //! \throws LibsemigroupsException if any of the letters in word `[first,
+    //! last)` is out of bounds.
+    //!
+    //! \returns A pair consisting of ActionDigraph::node_type and \p S.
+    //!
+    //! \complexity
+    //! At worst the distance from \p first to \p last.
+    template <typename T, typename S>
+    std::pair<node_type<T>, S> last_node_on_path(ActionDigraph<T> const& ad,
+                                                 node_type<T>            from,
+                                                 S const&                first,
+                                                 S const&                last) {
+      auto         it   = first;
+      node_type<T> prev = from;
+      node_type<T> to   = from;
+      for (; it < last && to != UNDEFINED; ++it) {
+        prev = to;
+        to   = ad.neighbor(to, *it);
       }
       if (it != last || to == UNDEFINED) {
         LIBSEMIGROUPS_ASSERT(prev != UNDEFINED);
@@ -760,11 +800,11 @@ namespace libsemigroups {
     //! ActionDigraph objects the number of edges is always at most \f$mk\f$
     //! where \f$k\f$ is the ActionDigraph::out_degree.
     //!
-    //! A digraph is *connected* if for every pair of nodes \f$u\f$ and \f$v\f$
-    //! there exists a sequence \f$u_0 := u, \ldots, u_{n - 1} := v\f$ such that
-    //! either  \f$(u_i, u_{i + 1})\f$ or \f$(u_{i + 1}, u_i)\f$ is an edge.
-    //! Note that \f$u\f$ and \f$v\f$ can be equal, and the sequence above can
-    //! be of length \f$0\f$.
+    //! A digraph is *connected* if for every pair of nodes \f$u\f$ and
+    //! \f$v\f$ there exists a sequence \f$u_0 := u, \ldots, u_{n - 1} := v\f$
+    //! such that either  \f$(u_i, u_{i + 1})\f$ or \f$(u_{i + 1}, u_i)\f$ is
+    //! an edge. Note that \f$u\f$ and \f$v\f$ can be equal, and the sequence
+    //! above can be of length \f$0\f$.
     //!
     //! \par Example
     //! \code
@@ -812,9 +852,9 @@ namespace libsemigroups {
     //! where \f$k\f$ is the ActionDigraph::out_degree.
     //!
     //! A digraph is *strictly cyclic* if there exists a node \f$v\f$ from
-    //! which every node is reachable (including \f$v\f$). There must be a path
-    //! of length at least \f$1\f$ from the original node \f$v\f$ to itself
-    //! (i.e. \f$v\f$ is not considered to be reachable from itself by
+    //! which every node is reachable (including \f$v\f$). There must be a
+    //! path of length at least \f$1\f$ from the original node \f$v\f$ to
+    //! itself (i.e. \f$v\f$ is not considered to be reachable from itself by
     //! default).
     //!
     //! \par Example
