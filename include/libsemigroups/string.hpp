@@ -257,7 +257,7 @@ namespace libsemigroups {
     // |s|)
     std::string power_string(std::string const& s, size_t N);
 
-    std::string group_digits(size_t num);
+    std::string group_digits(int64_t num);
 
   }  // namespace detail
 }  // namespace libsemigroups
