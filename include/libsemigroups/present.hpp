@@ -389,6 +389,18 @@ namespace libsemigroups {
       validate_rules();
     }
 
+    //! Remove the alphabet and all rules.
+    //!
+    //! This function clears the alphabet and all rules from the presentation,
+    //! putting it back into the state it would be in if it was newly
+    //! constructed.
+    //!
+    //! \param (None)
+    //!
+    //! \returns
+    //! (None)
+    void clear();
+
    private:
     void try_set_alphabet(decltype(_alphabet_map)& alphabet_map,
                           word_type&               old_alphabet);

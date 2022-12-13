@@ -15,6 +15,7 @@ libsemigroups::Presentation:
   - Presentation(Presentation &&) = default
   - operator=(Presentation const &) = default
   - operator=(Presentation &&) = default
+  - clear()
 - Alphabet + letters:
   - ["This page contains information about the functionality for manipulating
     the alphabet of a :cpp:any:`Presentation` object."]
