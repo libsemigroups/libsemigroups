@@ -94,6 +94,14 @@ namespace libsemigroups {
       : _alphabet(), _alphabet_map(), _contains_empty_word(false), rules() {}
 
   template <typename W>
+  void Presentation<W>::clear() {
+    _alphabet.clear();
+    _alphabet_map.clear();
+    _contains_empty_word = false;
+    rules.clear();
+  }
+
+  template <typename W>
   Presentation<W>& Presentation<W>::alphabet(size_type n) {
     word_type lphbt(n, 0);
     std::iota(lphbt.begin(), lphbt.end(), 0);
@@ -466,11 +474,11 @@ namespace libsemigroups {
           word.insert(word.begin() + replacement_first,
                       replacement.cbegin(),
                       replacement.cend());
-          it = std::search(
-              word.begin() + replacement_first + replacement.size(),
-              word.end(),
-              existing.cbegin(),
-              existing.cend());
+          it = std::search(word.begin() + replacement_first
+                               + replacement.size(),
+                           word.end(),
+                           existing.cbegin(),
+                           existing.cend());
         }
       };
       std::for_each(p.rules.begin(), p.rules.end(), rplc_sbwrd);

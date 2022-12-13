@@ -1073,4 +1073,19 @@ namespace libsemigroups {
                       LibsemigroupsException);
   }
 
+  LIBSEMIGROUPS_TEST_CASE("Presentation",
+                          "031",
+                          "clear",
+                          "[quick][presentation]") {
+    auto                      rg = ReportGuard(false);
+    Presentation<std::string> p;
+    p.alphabet(2);
+    p.contains_empty_word(true);
+    presentation::add_rule(p, {0, 0, 0}, {});
+    p.validate();
+    p.clear();
+    REQUIRE(p.alphabet().empty());
+    REQUIRE(p.rules.empty());
+  }
+
 }  // namespace libsemigroups
