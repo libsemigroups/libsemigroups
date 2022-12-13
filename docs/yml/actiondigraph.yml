@@ -42,6 +42,7 @@ libsemigroups::ActionDigraph:
   - swap_edges_nc(node_type, node_type, label_type)
   - reserve(T, T) const
   - restrict(size_t)
+  - init(T,T)
 - Operators:
   - ["This page contains information about operators related to the
     :cpp:any:`ActionDigraph` class."]
