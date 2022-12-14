@@ -217,7 +217,11 @@ def pybind11_doc(class_n, mem_fn, params_t):
         paramitem = x.find_all("parameteritem")
         for y in paramitem:
             nam = y.find("parametername").text
-            des = y.find("parameterdescription").find("para").text
+            des = y.find("parameterdescription").find("para")
+            if des is not None:
+                des = des.text
+            else:
+                des = ""
             if not is_overloaded(class_n, mem_fn):
                 doc += "\n               :param %s: %s" % (nam, des)
                 doc += "\n               :type %s: ??" % nam
