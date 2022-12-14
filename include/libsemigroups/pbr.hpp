@@ -119,7 +119,7 @@ namespace libsemigroups {
         initializer_list_type<int32_t> right);
 
     // clang-format off
-    //! \copydoc PBR(initializer_list_type<int32_t>, initializer_list_type<int32_t>) NOLINT(whitespace/line_length)
+    //! \copydoc PBR(initializer_list_type<int32_t>, initializer_list_type<int32_t>) <!-- NOLINT(whitespace/line_length) -->
     // clang-format on
     PBR(vector_type<int32_t> left, vector_type<int32_t> right);
 
