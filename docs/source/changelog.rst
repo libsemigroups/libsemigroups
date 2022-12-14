@@ -1,11 +1,24 @@
 Changelog - version 2
 =====================
 
+v2.5.0 (released 14/12/2022)
+----------------------------
+
+In this release a small number of issues are resolved, and one major new
+feature is added. The features added in this release are:
+
+* Add `order_preserving_monoid` presentation by @MTWhyte in
+  https://github.com/libsemigroups/libsemigroups/pull/428
+* Add presentations for the cyclic inverse monoid, and its order-preserving
+  part by @MTWhyte in https://github.com/libsemigroups/libsemigroups/pull/426
+* Stephen's procedure for finitely presented semigroups by @james-d-mitchell in
+  https://github.com/libsemigroups/libsemigroups/pull/403
+
 v2.4.1 (released 06/12/2022)
 ----------------------------
 
 This is a minor release fixing some issues in the build system that should have
-been included in the last release. 
+been included in the last release.
 
 * Change ``-march=avx`` -> ``-mavx`` by @james-d-mitchell in
   https://github.com/libsemigroups/libsemigroups/pull/418
