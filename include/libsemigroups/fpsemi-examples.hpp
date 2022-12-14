@@ -285,36 +285,35 @@ namespace libsemigroups {
     //! Returns a vector of relations giving a monoid presentation for the
     //! symmetric group. The argument `val` determines the specific presentation
     //! which is returned. The options are:
-    //! * `author::Burnside + author::Miller` (given on p.464 of
-    //! [10.1017/CBO9781139237253][])
-    //! * `author::Carmichael` (given in comment 9.5.2 of
-    //! [10.1007/978-1-84800-281-4])
-    //! * `author::Coxeter + author::Moser` (see Ch. 3, Prop 1.2 of
-    //! [hdl.handle.net/10023/2821])
-    //! * `author::Moore`
-    //!    * `index = 0` (given Ch. 3, Prop 1.1 of
-    //!    [hdl.handle.net/10023/2821][])
-    //!    * `index = 1` (given in comment 9.5.3 of
-    //!    [10.1007/978-1-84800-281-4][])
+    //!
+    // clang-format off
+    //!
+    //! Author | Index | No. generators  | No. relations | Reference
+    //! ------ | ----- | --------------- | ------------- | ----------
+    //! `author::Burnside + author::Miller`| `0` | \f$n - 1\f$ | \f$n^3 - 5n^2 + 9n - 5\f$ | p.464 of [10.1017/CBO9781139237253][]   <!-- NOLINT -->
+    //! `author::Carmichael`               | `0` | \f$n - 1\f$ | \f$(n - 1)^2\f$  | Comment 9.5.2 of [10.1007/978-1-84800-281-4][]   <!-- NOLINT -->
+    //! `author::Coxeter + author::Moser`  | `0` | \f$n - 1\f$ | \f$n(n + 1)/2\f$ | Ch.3, Prop 1.2 of [hdl.handle.net/10023/2821][]  <!-- NOLINT --> 
+    //! `author::Moore`                    | `0` | \f$2\f$     | \f$n + 1\f$      | Ch. 3, Prop 1.1 of [hdl.handle.net/10023/2821][] <!-- NOLINT -->
+    //! ^                                  | `1` | \f$n - 1\f$ | \f$n(n + 1)/2\f$ | Comment 9.5.3 of [10.1007/978-1-84800-281-4][]   <!-- NOLINT --> 
+    //!
+    //! [10.1017/CBO9781139237253]: https://doi.org/10.1017/CBO9781139237253
+    //! [10.1007/978-1-84800-281-4]: https://doi.org/10.1007/978-1-84800-281-4
+    //! [hdl.handle.net/10023/2821]: http://hdl.handle.net/10023/2821
+    //!
+    // clang-format on
     //!
     //! The default for `val` is `author::Carmichael`. The default for `index`
-    //! is `0`. If no `index` is listed above for an author, the only accepted
-    //! index for that author is `0`.
+    //! is `0`.
     //!
     //! \param n the degree of the symmetric group
     //! \param val the author of the presentation
     //!
     //! \returns A `std::vector<relation_type>`
     //!
-    //! \throws LibsemigroupsException if `val` is not listed above (modulo
-    //! order of author)
     //! \throws LibsemigroupsException if `n < 4`
-    //! \throws LibsemigroupsException if `index` is not given above for the
-    //! author `val`
+    //! \throws LibsemigroupsException if the author-index combination is
+    //! invalid
     //!
-    //! [10.1017/CBO9781139237253]: https://doi.org/10.1017/CBO9781139237253
-    //! [10.1007/978-1-84800-281-4]: https://doi.org/10.1007/978-1-84800-281-4
-    //! [hdl.handle.net/10023/2821]: http://hdl.handle.net/10023/2821
     std::vector<relation_type> symmetric_group(size_t n,
                                                author val = author::Carmichael,
                                                size_t index = 0);
