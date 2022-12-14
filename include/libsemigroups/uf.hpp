@@ -188,7 +188,7 @@ namespace libsemigroups {
       }
 
       // noexcept because std::array::empty and std::vector::empty are noexcept
-      size_type empty() const noexcept {
+      bool empty() const noexcept {
         return _data.empty();
       }
 
