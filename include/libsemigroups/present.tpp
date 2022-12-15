@@ -441,52 +441,53 @@ namespace libsemigroups {
     // what it currently does
     template <typename W, typename T, typename>
     void replace_subword(Presentation<W>& p, T first, T last) {
-      using letter_type = typename Presentation<W>::letter_type;
-      // Find the minimum letter that is not currently in the alphabet
-      letter_type x = 0;
-      while (p.in_alphabet(x)) {
-        ++x;
-      }
-      W new_alphabet = p.alphabet();
+      auto x = first_unused_letter(p);
+      replace_subword(p, first, last, &x, &x + 1);
+      p.add_rule(&x, &x + 1, first, last);
+      auto new_alphabet = p.alphabet();
       new_alphabet.push_back(x);
       p.alphabet(new_alphabet);
-      auto rplc_sbwrd = [&first, &last, &x](W& word) {
-        auto it = std::search(word.begin(), word.end(), first, last);
-        while (it != word.end()) {
-          // found [first, last)
-          *it      = x;
-          auto pos = it - word.begin();
-          word.erase(it + 1, it + (last - first));  // it not valid
-          it = std::search(word.begin() + pos + 1, word.end(), first, last);
-        }
-      };
-      std::for_each(p.rules.begin(), p.rules.end(), rplc_sbwrd);
-      p.rules.emplace_back(W({x}));
-      p.rules.emplace_back(first, last);
     }
 
     template <typename W>
     void replace_subword(Presentation<W>& p,
                          W const&         existing,
                          W const&         replacement) {
-      if (existing.empty()) {
-        LIBSEMIGROUPS_EXCEPTION("the 2nd argument must not be empty");
+      replace_subword(p,
+                      existing.cbegin(),
+                      existing.cend(),
+                      replacement.cbegin(),
+                      replacement.cend());
+    }
+
+    template <typename W, typename S, typename T>
+    void replace_subword(Presentation<W>& p,
+                         S                first_existing,
+                         S                last_existing,
+                         T                first_replacement,
+                         T                last_replacement) {
+      if (first_existing == last_existing) {
+        LIBSEMIGROUPS_EXCEPTION("the 2nd and 3rd argument must not be equal");
       }
-      auto rplc_sbwrd = [&existing, &replacement](W& word) {
-        auto it = std::search(
-            word.begin(), word.end(), existing.cbegin(), existing.cend());
+      auto rplc_sbwrd = [&first_existing,
+                         &last_existing,
+                         &first_replacement,
+                         &last_replacement](W& word) {
+        size_t const M  = std::distance(first_existing, last_existing);
+        size_t const N  = std::distance(first_replacement, last_replacement);
+        auto         it = std::search(
+            word.begin(), word.end(), first_existing, last_existing);
         while (it != word.end()) {
           // found existing
           auto replacement_first = it - word.begin();
-          word.erase(it, it + existing.size());
+          word.erase(it, it + M);
           word.insert(word.begin() + replacement_first,
-                      replacement.cbegin(),
-                      replacement.cend());
-          it = std::search(word.begin() + replacement_first
-                               + replacement.size(),
+                      first_replacement,
+                      last_replacement);
+          it = std::search(word.begin() + replacement_first + N,
                            word.end(),
-                           existing.cbegin(),
-                           existing.cend());
+                           first_existing,
+                           last_existing);
         }
       };
       std::for_each(p.rules.begin(), p.rules.end(), rplc_sbwrd);
@@ -506,32 +507,51 @@ namespace libsemigroups {
 
     template <typename W>
     void normalize_alphabet(Presentation<W>& p) {
-      using size_type   = typename Presentation<W>::size_type;
       using letter_type = typename Presentation<W>::letter_type;
 
       p.validate();
-      W    norm_alpha;
-      bool requires_normalization = false;
-      for (auto const& letter : p.alphabet()) {
-        if (static_cast<size_type>(letter) != p.index(letter)) {
-          requires_normalization = true;
-          break;
-        }
+
+      for (auto& rule : p.rules) {
+        std::for_each(rule.begin(), rule.end(), [&p](letter_type& x) {
+          x = letter(p, p.index(x));
+        });
       }
-      if (!requires_normalization) {
+      W A(p.alphabet().size(), 0);
+
+      for (size_t i = 0; i < p.alphabet().size(); ++i) {
+        A[i] = letter(p, i);
+      }
+      p.alphabet(std::move(A));
+#ifdef LIBSEMIGROUPS_DEBUG
+      p.validate();
+#endif
+    }
+
+    template <typename W>
+    void change_alphabet(Presentation<W>& p, W const& new_alphabet) {
+      using letter_type = typename Presentation<W>::letter_type;
+
+      p.validate();
+
+      if (new_alphabet.size() != p.alphabet().size()) {
+        LIBSEMIGROUPS_EXCEPTION("expected an alphabet of size %llu, found %llu",
+                                uint64_t(p.alphabet().size()),
+                                uint64_t(new_alphabet.size()));
+      } else if (p.alphabet() == new_alphabet) {
         return;
       }
 
-      for (auto const& letter : p.alphabet()) {
-        norm_alpha.push_back(p.index(letter));
+      std::map<letter_type, letter_type> old_to_new;
+      for (size_t i = 0; i < p.alphabet().size(); ++i) {
+        old_to_new.emplace(p.letter(i), new_alphabet[i]);
       }
-
-      std::sort(norm_alpha.begin(), norm_alpha.end());
+      // Do this first so that it throws if new_alphabet contains repeats
+      p.alphabet(new_alphabet);
       for (auto& rule : p.rules) {
-        std::for_each(
-            rule.begin(), rule.end(), [&p](letter_type& x) { x = p.index(x); });
+        std::for_each(rule.begin(), rule.end(), [&old_to_new](letter_type& x) {
+          x = old_to_new.find(x)->second;
+        });
       }
-      p.alphabet(norm_alpha);
 #ifdef LIBSEMIGROUPS_DEBUG
       p.validate();
 #endif
@@ -610,5 +630,89 @@ namespace libsemigroups {
       remove_trivial_rules(p);
       p.alphabet_from_rules();
     }
+
+    template <typename W>
+    typename Presentation<W>::letter_type letter(Presentation<W> const&,
+                                                 size_t i) {
+      using letter_type = typename Presentation<W>::letter_type;
+      if (i >= std::numeric_limits<letter_type>::max()) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "expected a value in the range [0, %llu) found %llu",
+            uint64_t(std::numeric_limits<letter_type>::max()),
+            uint64_t(i));
+      }
+      return static_cast<typename Presentation<W>::letter_type>(i);
+    }
+
+    template <>
+    typename Presentation<std::string>::letter_type
+    letter(Presentation<std::string> const&, size_t i) {
+      using letter_type = typename Presentation<std::string>::letter_type;
+      // Choose visible characters a-zA-Z0-9 first before anything else
+      // The ascii ranges for these characters are: [97, 123), [65, 91),
+      // [48, 58) so the remaining range of chars that are appended to the end
+      // after these chars are [0,48), [58, 65), [91, 97), [123, 255)
+      if (i >= std::numeric_limits<letter_type>::max()
+                   - std::numeric_limits<letter_type>::min()) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "expected a value in the range [0, %llu) found %llu",
+            uint64_t(std::numeric_limits<letter_type>::max()
+                     - std::numeric_limits<letter_type>::min()),
+            uint64_t(i));
+      }
+      static std::string letters
+          = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+      static bool first_call = true;
+      if (first_call) {
+        letters.resize(255);
+        std::iota(letters.begin() + 62,
+                  letters.begin() + 110,
+                  static_cast<letter_type>(0));
+        std::iota(letters.begin() + 110,
+                  letters.begin() + 117,
+                  static_cast<letter_type>(58));
+        std::iota(letters.begin() + 117,
+                  letters.begin() + 123,
+                  static_cast<letter_type>(91));
+        std::iota(letters.begin() + 123,
+                  letters.end(),
+                  static_cast<letter_type>(123));
+        first_call = false;
+        LIBSEMIGROUPS_ASSERT(letters.size()
+                             == std::numeric_limits<letter_type>::max()
+                                    - std::numeric_limits<letter_type>::min());
+        LIBSEMIGROUPS_ASSERT(letters.end() == letters.begin() + 255);
+      }
+
+      return letters[i];
+    }
+
+    template <typename W>
+    auto first_unused_letter(Presentation<W> const& p) {
+      using letter_type = typename Presentation<W>::letter_type;
+      using size_type   = typename W::size_type;
+
+      auto const max_letter
+          = static_cast<size_type>(std::numeric_limits<letter_type>::max()
+                                   - std::numeric_limits<letter_type>::min());
+
+      if (p.alphabet().size() == max_letter) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "the alphabet of the 1st argument already has the maximum size of "
+            "%llu, there are no unused generators",
+            uint64_t(std::numeric_limits<letter_type>::max()
+                     - std::numeric_limits<letter_type>::min()));
+      }
+
+      letter_type x;
+      for (size_type i = 0; i < max_letter; ++i) {
+        x = letter(p, i);
+        if (!p.in_alphabet(x)) {
+          break;
+        }
+      }
+      return x;
+    }
+
   }  // namespace presentation
 }  // namespace libsemigroups

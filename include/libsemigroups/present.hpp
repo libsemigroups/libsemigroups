@@ -27,6 +27,7 @@
 
 #include <algorithm>         // for reverse, sort
 #include <cstddef>           // for size_t
+#include <cstring>           // for strlen
 #include <initializer_list>  // for initializer_list
 #include <iterator>          // for distance
 #include <numeric>           // for accumulate
@@ -766,6 +767,46 @@ namespace libsemigroups {
               typename = std::enable_if_t<!std::is_same<T, W>::value>>
     void replace_subword(Presentation<W>& p, T first, T last);
 
+    //! Replace non-overlapping instances of a subword via const reference.
+    //!
+    //! If \f$w=\f$`[first, last)` is a word, then replaces every
+    //! non-overlapping instance (from left to right) of \f$w\f$ in every rule,
+    //! adds a new generator \f$z\f$, and the rule \f$w = z\f$. The new
+    //! generator and rule are added even if \f$w\f$ is not a subword of any
+    //! rule.
+    //!
+    //! \tparam W the type of the words in the presentation
+    //!
+    //! \param p the presentation
+    //! \param w the subword to replace
+    //!
+    //! \returns (None)
+    //!
+    //! \throws LibsemigroupsException if \p w is empty.
+    // TODO(later) complexity
+    template <typename W>
+    void replace_subword(Presentation<W>& p, W const& w) {
+      replace_subword(p, w.cbegin(), w.cend());
+    }
+
+    //! Replace non-overlapping instances of a subword via `char const*`.
+    //!
+    //! If \f$w=\f$`[first, last)` is a word, then replaces every
+    //! non-overlapping instance (from left to right) of \f$w\f$ in every rule,
+    //! adds a new generator \f$z\f$, and the rule \f$w = z\f$. The new
+    //! generator and rule are added even if \f$w\f$ is not a subword of any
+    //! rule.
+    //!
+    //! \param p the presentation
+    //! \param w the subword to replace
+    //!
+    //! \returns (None)
+    //!
+    //! \throws LibsemigroupsException if \p w is empty.
+    inline void replace_subword(Presentation<std::string>& p, char const* w) {
+      replace_subword(p, w, w + std::strlen(w));
+    }
+
     //! Replace non-overlapping instances of a subword by another word.
     //!
     //! If \p existing and \p replacement are words, then this function
@@ -786,28 +827,32 @@ namespace libsemigroups {
                          W const&         existing,
                          W const&         replacement);
 
-    //! Replace non-overlapping instances of a subword via const reference.
+    //! Replace non-overlapping instances of a subword by another word.
     //!
-    //! If \f$w=\f$`[first, last)` is a word, then replaces every
-    //! non-overlapping instance (from left to right) of \f$w\f$ in every rule,
-    //! adds a new generator \f$z\f$, and the rule \f$w = z\f$. The new
-    //! generator and rule are added even if \f$w\f$ is not a subword of any
-    //! rule.
+    //! Adds the rule with left hand side `[lhs_begin, lhs_end)` and
+    //! right hand side `[rhs_begin, rhs_end)` to the rules.
     //!
-    //! \tparam W the type of the words in the presentation
-    //! \tparam T the type of the 2nd and 3rd parameters (iterators)
-    //! \param p the presentation
-    //! \param w the subword to replace
+    //! \tparam S the type of the first two parameters (iterators, or pointers)
+    //! \tparam T the type of the second two parameters (iterators, or pointers)
+    //!
+    //! \param first_existing an iterator pointing to the first letter of the
+    //! existing subword to be replaced
+    //! \param last_existing an iterator pointing one past the last letter of
+    //! the existing subword to be replaced
+    //! \param first_replacement an iterator pointing to the first letter of
+    //! the replacement word
+    //! \param last_replacement an iterator pointing one past the last letter
+    //! of the replacement word
     //!
     //! \returns (None)
     //!
-    //! \exceptions
-    //! \no_libsemigroups_except
-    // TODO(later) complexity
-    template <typename W>
-    void replace_subword(Presentation<W>& p, W const& w) {
-      replace_subword(p, w.cbegin(), w.cend());
-    }
+    //! \throws LibsemigroupsException if `first_existing == last_existing`.
+    template <typename W, typename S, typename T>
+    void replace_subword(Presentation<W>& p,
+                         S                first_existing,
+                         S                last_existing,
+                         T                first_replacement,
+                         T                last_replacement);
 
     //! Replace instances of a word on either side of a rule by another word.
     //!
@@ -877,6 +922,41 @@ namespace libsemigroups {
     //! presentation.
     template <typename W>
     void normalize_alphabet(Presentation<W>& p);
+
+    //! Change or re-order the alphabet.
+    //!
+    //! This function replaces `p.alphabet()` with \p new_alphabet, where
+    //! possible, and re-writes the rules in the presentation using the new
+    //! alphabet.
+    //!
+    //! \tparam W the type of the words in the presentation
+    //!
+    //! \param p the presentation
+    //! \param new_alphabet the replacement alphabet
+    //!
+    //! \returns (None).
+    //!
+    //! \throws LibsemigroupsException if the size of `p.alphabet()` and \p
+    //! new_alphabet do not agree.
+    template <typename W>
+    void change_alphabet(Presentation<W>& p, W const& new_alphabet);
+
+    //! Change or re-order the alphabet.
+    //!
+    //! This function replaces `p.alphabet()` with \p new_alphabet where
+    //! possible.
+    //!
+    //! \param p the presentation
+    //! \param new_alphabet the replacement alphabet
+    //!
+    //! \returns (None).
+    //!
+    //! \throws LibsemigroupsException if the size of `p.alphabet()` and \p
+    //! new_alphabet do not agree.
+    inline void change_alphabet(Presentation<std::string>& p,
+                                char const*                new_alphabet) {
+      change_alphabet(p, std::string(new_alphabet));
+    }
 
     //! Returns an iterator pointing at the left hand side of the first
     //! rule of maximal length in the given range.
@@ -1025,6 +1105,56 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if `p.rules.size()` is odd.
     template <typename W>
     void remove_redundant_generators(Presentation<W>& p);
+
+    //! Return a possible letter by index.
+    //!
+    //! This function returns the \f$i\f$-th letter in the alphabet consisting
+    //! of all possible letters of type Presentation<W>::letter_type. This
+    //! function exists so that visible ASCII characters occur before invisible
+    //! ones, so that when manipulating presentations over `std::string`s the
+    //! human readable characters are used before non-readable ones.
+    //!
+    //! \tparam W the type of the words in the presentation
+    //!
+    //! \returns A `letter_type`.
+    //!
+    //! \throws LibsemigroupsException if `i` exceeds the number of letters in
+    //! supported by `letter_type`.
+    template <typename W>
+    typename Presentation<W>::letter_type letter(Presentation<W> const&,
+                                                 size_t i);
+
+    //! Return a possible letter by index.
+    //!
+    //! This function returns the \f$i\f$-th letter in the alphabet consisting
+    //! of all possible letters of type Presentation<std::string>::letter_type.
+    //! This function exists so that visible ASCII characters occur before
+    //! invisible ones, so that when manipulating presentations over
+    //! `std::string`s the human readable characters are used before
+    //! non-readable ones.
+    //!
+    //! \tparam W the type of the words in the presentation
+    //!
+    //! \returns A `letter_type`.
+    //!
+    //! \throws LibsemigroupsException if `i` exceeds the number of letters in
+    //! supported by `letter_type`.
+    template <>
+    inline typename Presentation<std::string>::letter_type
+    letter(Presentation<std::string> const&, size_t i);
+
+    //! Returns the first letter **not** in the alphabet of a presentation.
+    //!
+    //! This function returns `letter(p, i)` when `i` is the least possible
+    //! value such that `!p.in_alphabet(letter(p, i))` if such a letter exists.
+    //!
+    //! \returns A `letter_type`.
+    //!
+    //! \throws LibsemigroupsException if \p p already has an alphabet of
+    //! the maximum possible size supported by `letter_type`.
+    template <typename W>
+    auto first_unused_letter(Presentation<W> const& p);
+
   }  // namespace presentation
 }  // namespace libsemigroups
 
