@@ -60,7 +60,10 @@ monoids. Namely:
   `Mitchell-Tsalakou
   <http://arxiv.org/abs/2105.12125>`__
 - a version of Sims low index subgroup algorithm for computing one-sided
-  congruences of a semigroup or monoid.
+  congruences of a semigroup or monoid;
+- a version of `Stephen's procedure`_ for finitely presented semigroups and
+  monoids (for a given word :math:`w` this procedure is for determining words
+  equivalent to :math:`w` or that are left divisors of :math:`w`).
 
 .. _Froidure-Pin algorithm: https://www.irif.fr/~jep/PDF/Rio.pdf
 .. _Todd-Coxeter algorithm: https://en.wikipedia.org/wiki/Todd%E2%80%93Coxeter_algorithm
@@ -69,6 +72,7 @@ monoids. Namely:
 .. _Konieczny: https://link.springer.com/article/10.1007/BF02573672
 .. _Lallement-McFadden: https://www.sciencedirect.com/science/article/pii/S0747717108800570
 .. _Radoszewski-Rytter: https://link.springer.com/chapter/10.1007/978-3-642-11266-9_55
+.. _Stephen's procedure: https://rb.gy/brsuvc
 
 ``libsemigroups`` is partly based on `Algorithms for computing finite
 semigroups`_, `Expository Slides`_, and `Semigroupe 2.01`_ by `Jean-Eric Pin`_.
@@ -94,7 +98,9 @@ implement; see, for example,  ``libsemigroups::FroidurePin``,
 ``libsemigroups::congruence::ToddCoxeter``,
 ``libsemigroups::fpsemigroup::Kambites``,
 ``libsemigroups::fpsemigroup::KnuthBendix``, and
-``libsemigroups::SchreierSims``.
+``libsemigroups::SchreierSims``,
+``libsemigroups::Sims1``, or
+``libsemigroups::Stephen``.
 
 The implementations in ``libsemigroups::FroidurePin``,
 ``libsemigroups::Konieczny``, and ``libsemigroups::SchreierSims``

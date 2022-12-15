@@ -34,6 +34,7 @@
 #include <type_traits>       // for enable_if_t, is_same
 #include <unordered_map>     // for unordered_map
 #include <unordered_set>     // for unordered_set
+#include <utility>           // for move
 #include <vector>            // for vector
 
 #include "constants.hpp"    // for UNDEFINED
@@ -127,8 +128,8 @@ namespace libsemigroups {
     //!
     //! \returns A const reference to \c *this
     //!
-    //! \exceptions
-    //! \no_libsemigroups_except
+    //! \throws LibsemigroupsException if the value of \p n is greater than the
+    //! maximum number of letters supported by \ref letter_type.
     //!
     //! \warning
     //! No checks are performed by this function, in particular, it is not
@@ -239,6 +240,9 @@ namespace libsemigroups {
     //! Adds the rule with left hand side `[lhs_begin, lhs_end)` and
     //! right hand side `[rhs_begin, rhs_end)` to the rules.
     //!
+    //! \tparam S the type of the first two parameters (iterators, or pointers)
+    //! \tparam T the type of the second two parameters (iterators, or pointers)
+    //!
     //! \param lhs_begin an iterator pointing to the first letter of the left
     //! hand side of the rule to be added
     //! \param lhs_end an iterator pointing one past the last letter of the left
@@ -259,8 +263,8 @@ namespace libsemigroups {
     //!
     //! \sa
     //! add_rule_and_check
-    template <typename T>
-    Presentation& add_rule(T lhs_begin, T lhs_end, T rhs_begin, T rhs_end) {
+    template <typename S, typename T>
+    Presentation& add_rule(S lhs_begin, S lhs_end, T rhs_begin, T rhs_end) {
       rules.emplace_back(lhs_begin, lhs_end);
       rules.emplace_back(rhs_begin, rhs_end);
       return *this;
@@ -273,6 +277,9 @@ namespace libsemigroups {
     //! contain letters in \ref alphabet. It is possible to add rules directly
     //! via the data member \ref rules, this function just exists to encourage
     //! adding rules with both sides defined at the same time.
+    //!
+    //! \tparam S the type of the first two parameters (iterators, or pointers)
+    //! \tparam T the type of the second two parameters (iterators, or pointers)
     //!
     //! \param lhs_begin an iterator pointing to the first letter of the left
     //! hand side of the rule to be added
@@ -293,9 +300,9 @@ namespace libsemigroups {
     //!
     //! \sa
     //! add_rule
-    template <typename T>
+    template <typename S, typename T>
     Presentation&
-    add_rule_and_check(T lhs_begin, T lhs_end, T rhs_begin, T rhs_end) {
+    add_rule_and_check(S lhs_begin, S lhs_end, T rhs_begin, T rhs_end) {
       validate_word(lhs_begin, lhs_end);
       validate_word(rhs_begin, rhs_end);
       return add_rule(lhs_begin, lhs_end, rhs_begin, rhs_end);
@@ -593,15 +600,15 @@ namespace libsemigroups {
     //! \tparam W the type of the words in the presentation
     //! \param p the presentation to add rules to
     //! \param vals the inverses
-    //! \param e the identity element (defaults to UNDEFINED, meaning use the
-    //! empty word)
+    //! \param e the identity element (defaults to \ref UNDEFINED, meaning use
+    //! the empty word)
     //!
     //! \returns (None)
     //!
     //! \throws LibsemigroupsException if any of the following apply:
     //! * the length of \p vals is not equal to `alphabet().size()`;
-    //! * the letters in \p val are not exactly those in alphabet() (perhaps in
-    //! a different order);
+    //! * the letters in \p vals are not exactly those in `alphabet()` (perhaps
+    //! in a different order);
     //! * \f$(a_i ^ {-1}) ^ {-1} = a_i\f$ does not hold for some \f$i\f$;
     //! * \f$e ^ {-1} = e\f$ does not hold
     //!
@@ -622,15 +629,15 @@ namespace libsemigroups {
     //! \tparam W the type of the words in the presentation
     //! \param p the presentation to add rules to
     //! \param vals the inverses
-    //! \param e the identity element (defaults to UNDEFINED meaning use the
-    //! empty word)
+    //! \param e the identity element (defaults to \ref UNDEFINED meaning use
+    //! the empty word)
     //!
     //! \returns (None)
     //!
     //! \throws LibsemigroupsException if any of the following apply:
     //! * the length of \p vals is not equal to `alphabet().size()`;
-    //! * the letters in \p val are not exactly those in alphabet() (perhaps in
-    //! a different order);
+    //! * the letters in \p vals are not exactly those in `alphabet()` (perhaps
+    //! in a different order);
     //! * \f$(a_i ^ {-1}) ^ {-1} = a_i\f$ does not hold for some \f$i\f$;
     //! * \f$e ^ {-1} = e\f$ does not hold
     //!
@@ -722,7 +729,7 @@ namespace libsemigroups {
     //!
     //! If it is possible to find a subword \f$w\f$ of the rules \f$u_1 = v_1,
     //! \ldots, u_n = v_n\f$ such that the introduction of a new generator
-    //! \f$z\f$ and the relation \f$z = w\f$ reduces the presentation::length
+    //! \f$z\f$ and the relation \f$z = w\f$ reduces the `presentation::length`
     //! of the presentation, then this function returns the word \f$w\f$. If no
     //! such word can be found, then a word of length \f$0\f$ is returned.
     //!
@@ -752,8 +759,7 @@ namespace libsemigroups {
     //!
     //! \returns (None)
     //!
-    //! \exceptions
-    //! \no_libsemigroups_except
+    //! \throws LibsemigroupsException if `first == last`.
     // TODO(later) complexity
     template <typename W,
               typename T,
@@ -811,6 +817,7 @@ namespace libsemigroups {
     //! \p replacement. The presentation \p p is changed in-place.
     //!
     //! \tparam W the type of the words in the presentation
+    //!
     //! \param p the presentation
     //! \param existing the word to be replaced
     //! \param replacement the replacement word
@@ -833,7 +840,6 @@ namespace libsemigroups {
     //!
     //! \exceptions
     //! \no_libsemigroups_except
-
     template <typename W>
     size_t length(Presentation<W> const& p) {
       auto op = [](size_t val, W const& x) { return val + x.size(); };

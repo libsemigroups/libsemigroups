@@ -272,6 +272,7 @@ namespace libsemigroups {
     //! labels a path in Stephen::word_graph with source \c 0 and target
     //! Stephen::accept_state.
     //!
+    //! \param s the Stephen instance
     //! \param w a const reference to the input word.
     //!
     //! \returns A \c bool.
@@ -292,6 +293,7 @@ namespace libsemigroups {
     //! Stephen::presentation. A word is a left factor of Stephen::word if it
     //! labels a path in Stephen::word_graph with source \c 0.
     //!
+    //! \param s the Stephen instance
     //! \param w a const reference to the input word.
     //!
     //! \returns A \c bool.
@@ -310,6 +312,7 @@ namespace libsemigroups {
     //! This function triggers the algorithm implemented in this class (if it
     //! hasn't been triggered already).
     //!
+    //! \param s the Stephen instance
     //! \param min the minimum length of an equivalent word (default: 0)
     //! \param max the maximum length of an equivalent word (default:
     //! POSITIVE_INFINITY)
