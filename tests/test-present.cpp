@@ -20,7 +20,8 @@
 
 #include <cstddef>  // for size_t
 
-#include "catch.hpp"  // for REQUIRE, REQUIRE_THROWS_AS, REQUI...
+#include "catch.hpp"      // for REQUIRE, REQUIRE_THROWS_AS, REQUI...
+#include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
 #include "libsemigroups/bipart.hpp"        // for Bipartition
 #include "libsemigroups/containers.hpp"    // for StaticVector1
@@ -28,8 +29,8 @@
 #include "libsemigroups/knuth-bendix.hpp"  // for redundant_rule
 #include "libsemigroups/make-present.hpp"  // for make
 #include "libsemigroups/present.hpp"       // for Presentation
+#include "libsemigroups/siso.hpp"          // for Sislo
 #include "libsemigroups/types.hpp"         // for word_type
-#include "test-main.hpp"                   // for LIBSEMIGROUPS_TEST_CASE
 
 namespace libsemigroups {
 
@@ -88,6 +89,9 @@ namespace libsemigroups {
       presentation::add_rule(p, {4, 1}, {});
       p.alphabet_from_rules();
       REQUIRE(p.contains_empty_word());
+
+      p.alphabet({0, 1, 2, 3});
+      REQUIRE(p.alphabet() == W({0, 1, 2, 3}));
     }
 
     template <typename W>
@@ -297,7 +301,8 @@ namespace libsemigroups {
         presentation::add_rule(p, {1, 2, 1}, {0});
         p.alphabet_from_rules();
         REQUIRE(presentation::longest_common_subword(p) == W({1, 2, 1}));
-        presentation::replace_subword(p, W({1, 2, 1}));
+        presentation::replace_subword(p, W({1, 2, 1}), W({3}));
+        presentation::add_rule(p, {3}, {1, 2, 1});
         REQUIRE(p.rules
                 == std::vector<W>({{0, 3},
                                    {3},
@@ -322,7 +327,8 @@ namespace libsemigroups {
         presentation::add_rule(p, {2, 4, 2}, {1});
         p.alphabet_from_rules();
         REQUIRE(presentation::longest_common_subword(p) == W({2, 4, 2}));
-        presentation::replace_subword(p, W({2, 4, 2}));
+        presentation::replace_subword(p, W({2, 4, 2}), W({0}));
+        presentation::add_rule(p, W({0}), W({2, 4, 2}));
         REQUIRE(p.rules
                 == std::vector<W>({{1, 0},
                                    {0},
@@ -913,13 +919,13 @@ namespace libsemigroups {
                 {"bb", "a", "bcb", "a", "abcb", "a", "bbcb", "a"}));
     REQUIRE(p.alphabet() == "abc");
     presentation::normalize_alphabet(p);
-    REQUIRE(p.letter(0) == 0);
-    REQUIRE(p.letter(1) == 1);
-    REQUIRE(p.letter(2) == 2);
+    REQUIRE(p.letter(0) == presentation::letter(p, 0));
+    REQUIRE(p.letter(1) == presentation::letter(p, 1));
+    REQUIRE(p.letter(2) == presentation::letter(p, 2));
     p.validate();
 
-    Presentation<std::string> q;
-    presentation::add_rule(p, "abcb", "bcb");
+    presentation::add_rule(p, "abcb", "ecb");
+    REQUIRE(!p.in_alphabet('e'));
     // Not valid
     REQUIRE_THROWS_AS(presentation::normalize_alphabet(p),
                       LibsemigroupsException);
@@ -1086,6 +1092,97 @@ namespace libsemigroups {
     p.clear();
     REQUIRE(p.alphabet().empty());
     REQUIRE(p.rules.empty());
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Presentation",
+                          "040",
+                          "change_alphabet",
+                          "[quick][presentation]") {
+    Presentation<std::string> p;
+    p.alphabet("ab");
+    presentation::add_rule_and_check(p, "ba", "abaaabaa");
+    presentation::replace_subword(p, "ba");
+    presentation::change_alphabet(p, "abc");
+    REQUIRE(p.rules == std::vector<std::string>({"c", "acaaca", "c", "ba"}));
+    REQUIRE(p.alphabet() == "abc");
+    REQUIRE_NOTHROW(p.validate());
+    // Alphabet wrong size
+    REQUIRE_THROWS_AS(presentation::change_alphabet(p, "ab"),
+                      LibsemigroupsException);
+    REQUIRE_THROWS_AS(presentation::change_alphabet(p, "aab"),
+                      LibsemigroupsException);
+    REQUIRE(p.alphabet() == "abc");
+    REQUIRE(p.rules == std::vector<std::string>({"c", "acaaca", "c", "ba"}));
+    presentation::change_alphabet(p, "bac");
+    REQUIRE(p.rules == std::vector<std::string>({"c", "bcbbcb", "c", "ab"}));
+    REQUIRE(p.alphabet() == "bac");
+
+    presentation::change_alphabet(p, "xyz");
+    REQUIRE(p.rules == std::vector<std::string>({"z", "xzxxzx", "z", "yx"}));
+    REQUIRE(p.alphabet() == "xyz");
+
+    presentation::change_alphabet(p, "xyt");
+    REQUIRE(p.rules == std::vector<std::string>({"t", "xtxxtx", "t", "yx"}));
+    REQUIRE(p.alphabet() == "xyt");
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Presentation",
+                          "032",
+                          "letter",
+                          "[quick][presentation]") {
+    Presentation<std::vector<uint16_t>> p;
+    REQUIRE_THROWS_AS(presentation::letter(p, 65536), LibsemigroupsException);
+    REQUIRE(presentation::letter(p, 10) == 10);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Presentation",
+                          "033",
+                          "normalize_alphabet",
+                          "[quick][presentation]") {
+    Presentation<std::string> p;
+    p.alphabet("axy");
+    presentation::normalize_alphabet(p);
+    REQUIRE(p.alphabet() == "abc");
+    Presentation<word_type> q;
+    q.alphabet({0, 10, 12});
+    presentation::normalize_alphabet(q);
+    REQUIRE(q.alphabet() == word_type({0, 1, 2}));
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Presentation",
+                          "042",
+                          "first_unused_letter/letter",
+                          "[quick][presentation]") {
+    Presentation<std::string> p;
+    p.alphabet("ab");
+
+    presentation::add_rule_and_check(p, "baabaa", "ababa");
+    REQUIRE(presentation::first_unused_letter(p) == 'c');
+    p.alphabet("abcdefghijklmnopq");
+    REQUIRE(presentation::first_unused_letter(p) == 'r');
+    p.alphabet("abcdefghijklmnopqrstuvwxyz");
+    REQUIRE(presentation::first_unused_letter(p) == 'A');
+    p.alphabet("abcdefgijklmnopqrstuvwxyz");
+    REQUIRE(presentation::first_unused_letter(p) == 'h');
+    p.alphabet("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ");
+    REQUIRE(presentation::first_unused_letter(p) == '0');
+    p.alphabet("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ02");
+    REQUIRE(presentation::first_unused_letter(p) == '1');
+    std::string const letters
+        = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    std::unordered_set<letter_type> set;
+    for (size_t i = 0; i < letters.size(); ++i) {
+      REQUIRE(letters[i] == presentation::letter(p, i));
+      REQUIRE(set.insert(letters[i]).second);
+    }
+    for (size_t i = letters.size(); i < 255; ++i) {
+      REQUIRE(set.insert(presentation::letter(p, i)).second);
+    }
+    REQUIRE_THROWS_AS(presentation::letter(p, 255), LibsemigroupsException);
+    p.alphabet(255);
+    REQUIRE_THROWS_AS(presentation::first_unused_letter(p),
+                      LibsemigroupsException);
+    REQUIRE_THROWS_AS(p.alphabet(256), LibsemigroupsException);
   }
 
 }  // namespace libsemigroups
