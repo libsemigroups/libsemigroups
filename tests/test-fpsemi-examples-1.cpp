@@ -1034,7 +1034,7 @@ namespace libsemigroups {
     LIBSEMIGROUPS_TEST_CASE("fpsemi-examples",
                             "068",
                             "partial_isometries_cycle_graph_monoid(10)",
-                            "[fpsemi-examples][quick]") {
+                            "[fpsemi-examples][quick][no-valgrind]") {
       auto   rg = ReportGuard(REPORT);
       size_t n  = 10;
       auto   s  = partial_isometries_cycle_graph_monoid(n);
