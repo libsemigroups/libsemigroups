@@ -103,6 +103,14 @@ namespace libsemigroups {
 
   template <typename W>
   Presentation<W>& Presentation<W>::alphabet(size_type n) {
+    if (n > std::numeric_limits<letter_type>::max()
+                - std::numeric_limits<letter_type>::min()) {
+      LIBSEMIGROUPS_EXCEPTION(
+          "expected a value in the range [0, %llu) found %llu",
+          uint64_t(std::numeric_limits<letter_type>::max()
+                   - std::numeric_limits<letter_type>::min()),
+          uint64_t(n));
+    }
     word_type lphbt(n, 0);
     std::iota(lphbt.begin(), lphbt.end(), 0);
     return alphabet(lphbt);
@@ -201,11 +209,11 @@ namespace libsemigroups {
                                          word_type& old_alphabet) {
     try {
       validate_alphabet(alphabet_map);
+      _alphabet_map = std::move(alphabet_map);
     } catch (LibsemigroupsException& e) {
       _alphabet = std::move(old_alphabet);
       throw;
     }
-    _alphabet_map = std::move(alphabet_map);
   }
 
   namespace presentation {
@@ -462,7 +470,7 @@ namespace libsemigroups {
                          W const&         existing,
                          W const&         replacement) {
       if (existing.empty()) {
-        LIBSEMIGROUPS_EXCEPTION("the second argument must not be empty");
+        LIBSEMIGROUPS_EXCEPTION("the 2nd argument must not be empty");
       }
       auto rplc_sbwrd = [&existing, &replacement](W& word) {
         auto it = std::search(
