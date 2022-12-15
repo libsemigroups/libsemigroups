@@ -23,7 +23,7 @@ Presentations from the following sources are implemented: :cite:`Gay1999aa`;
 :cite:`East2011aa`; :cite:`Ayik2000aa`; :cite:`Ruskuc1995aa`;
 :cite:`Aizenstat1958aa`; :cite:`Coxeter1979aa`; :cite:`Knuth1970aa`;
 :cite:`Lascoux1981aa`; :cite:`Moore1897aa`; :cite:`Aizenstat1962aa`;
-:cite:`Fernandes2022aa`.
+:cite:`Fernandes2022aa`; :cite:`Fernandes2022ab`.
 
 .. cpp:type:: libsemigroups::fpsemigroup::author
 
@@ -119,6 +119,9 @@ Contents
    * - :cpp:any:`order_preserving_cyclic_inverse_monoid`
      - A presentation for the order-preserving part of the cyclic inverse monoid.
 
+   * - :cpp:any:`partial_isometries_cycle_graph_monoid`
+     - A presentation for the monoid of partial isometries of a cycle graph.
+
    * - :cpp:any:`not_symmetric_group`
      - A non-presentation for the symmetric group.
 .. cpp:namespace-pop::
@@ -193,6 +196,9 @@ Full API
    :project: libsemigroups
 
 .. doxygenfunction:: libsemigroups::fpsemigroup::order_preserving_cyclic_inverse_monoid
+   :project: libsemigroups
+
+.. doxygenfunction:: libsemigroups::fpsemigroup::partial_isometries_cycle_graph_monoid
    :project: libsemigroups
 
 .. doxygenfunction:: libsemigroups::fpsemigroup::not_symmetric_group
