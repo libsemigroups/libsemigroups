@@ -57,7 +57,7 @@
 #include "matrix.hpp"          // for IntMat
 #include "order.hpp"           // for order
 #include "types.hpp"           // for word_type
-#include "words.hpp"            // for number_of_words
+#include "words.hpp"           // for number_of_words
 
 #include <rx/ranges.hpp>
 
