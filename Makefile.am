@@ -4,7 +4,7 @@
 
 AM_CXXFLAGS =  -I$(abs_top_srcdir)/include
 AM_CXXFLAGS += -I$(abs_top_srcdir)/extern  ## for HPCombi
-AM_CXXFLAGS += -std=gnu++14 -O3 -Wall -Wextra
+AM_CXXFLAGS += -std=gnu++17 -O3 -Wall -Wextra
 AM_CXXFLAGS += $(WARNING_CXXFLAGS)
 AM_CXXFLAGS += $(FMT_CFLAGS)
 AM_CXXFLAGS += $(EIGEN3_CFLAGS)
