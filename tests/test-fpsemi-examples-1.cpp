@@ -1032,9 +1032,32 @@ namespace libsemigroups {
     }
 
     LIBSEMIGROUPS_TEST_CASE("fpsemi-examples",
-                            "068",
-                            "partial_isometries_cycle_graph_monoid(10)",
-                            "[fpsemi-examples][quick][no-valgrind]") {
+                            "070",
+                            "partial_isometries_cycle_graph_monoid(4)",
+                            "[fpsemi-examples][quick]") {
+      auto   rg = ReportGuard(REPORT);
+      size_t n  = 4;
+      auto   s  = partial_isometries_cycle_graph_monoid(n);
+      REQUIRE(s.size() == 13);
+      auto p = make<Presentation<word_type>>(s);
+      p.alphabet(4);
+      presentation::replace_word(p, word_type({}), {3});
+      presentation::add_identity_rules(p, 3);
+      p.validate();
+
+      ToddCoxeter tc(congruence_kind::twosided);
+      tc.set_number_of_generators(4);
+      for (size_t i = 0; i < p.rules.size() - 1; i += 2) {
+        tc.add_pair(p.rules[i], p.rules[i + 1]);
+      }
+      REQUIRE(tc.number_of_classes() == 97);
+    }
+
+    LIBSEMIGROUPS_TEST_CASE(
+        "fpsemi-examples",
+        "068",
+        "partial_isometries_cycle_graph_monoid(10)",
+        "[fpsemi-examples][quick][no-valgrind][no-coverage]") {
       auto   rg = ReportGuard(REPORT);
       size_t n  = 10;
       auto   s  = partial_isometries_cycle_graph_monoid(n);
