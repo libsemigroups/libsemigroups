@@ -69,7 +69,12 @@
 #include "uf.hpp"      // for Duf
 
 #ifdef LIBSEMIGROUPS_EIGEN_ENABLED
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+#define _SILENCE_ALL_CXX17_DEPRECATION_WARNINGS
 #include <Eigen/Core>
+#undef _SILENCE_ALL_CXX17_DEPRECATION_WARNINGS
+#pragma clang diagnostic pop
 #endif
 
 namespace libsemigroups {
