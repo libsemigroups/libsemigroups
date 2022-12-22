@@ -95,11 +95,10 @@ namespace libsemigroups {
                                          "bba",
                                          "bbb"}));
     REQUIRE(w.size() == 14);
-    REQUIRE(std::is_sorted(
-        w.cbegin(), w.cend(), LexicographicalCompare<std::string>()));
+    REQUIRE(std::is_sorted(w.cbegin(), w.cend(), LexicographicalCompare()));
     REQUIRE(std::is_sorted(cbegin_silo("ab", 4, "a", "bbbbb"),
                            cend_silo("ab", 4, "a", "bbbbb"),
-                           LexicographicalCompare<std::string>()));
+                           LexicographicalCompare()));
     w = std::vector<std::string>(cbegin_silo("ba", 4, "b", "aaaaa"),
                                  cend_silo("ba", 4, "b", "aaaaa"));
     REQUIRE(w
@@ -128,8 +127,7 @@ namespace libsemigroups {
         cend_silo("abc", 13, "", std::string(13, 'c')));
     REQUIRE(w.size() == number_of_words(3, 0, 13));
     REQUIRE(w.size() == 797161);
-    REQUIRE(std::is_sorted(
-        w.cbegin(), w.cend(), LexicographicalCompare<std::string>()));
+    REQUIRE(std::is_sorted(w.cbegin(), w.cend(), LexicographicalCompare()));
   }
 
   LIBSEMIGROUPS_TEST_CASE("silo", "004", "code coverage", "[silo][quick]") {
@@ -251,11 +249,10 @@ namespace libsemigroups {
                                          "bba",
                                          "bbb"}));
     REQUIRE(w.size() == 14);
-    REQUIRE(
-        std::is_sorted(w.cbegin(), w.cend(), ShortLexCompare<std::string>()));
+    REQUIRE(std::is_sorted(w.cbegin(), w.cend(), ShortLexCompare()));
     REQUIRE(std::is_sorted(cbegin_sislo("ab", "a", "bbbbb"),
                            cend_sislo("ab", "a", "bbbbb"),
-                           ShortLexCompare<std::string>()));
+                           ShortLexCompare()));
     w = std::vector<std::string>(cbegin_sislo("ba", "b", "bbbb"),
                                  cend_sislo("ba", "b", "bbbb"));
     REQUIRE(w
@@ -284,8 +281,7 @@ namespace libsemigroups {
         cend_sislo("abc", "", std::string(13, 'a')));
     REQUIRE(w.size() == number_of_words(3, 0, 13));
     REQUIRE(w.size() == 797161);
-    REQUIRE(
-        std::is_sorted(w.cbegin(), w.cend(), ShortLexCompare<std::string>()));
+    REQUIRE(std::is_sorted(w.cbegin(), w.cend(), ShortLexCompare()));
   }
 
   LIBSEMIGROUPS_TEST_CASE("sislo", "009", "code coverage", "[sislo][quick]") {

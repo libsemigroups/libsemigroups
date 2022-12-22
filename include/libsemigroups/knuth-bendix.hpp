@@ -921,5 +921,19 @@ namespace libsemigroups {
              + std::distance(pp.rules.cbegin(), redundant_rule(pp, t));
     }
   }  // namespace presentation
+
+  // TODO should be in make-present.hpp
+  template <typename T,
+            typename = std::enable_if_t<
+                std::is_base_of<Presentation<std::string>, T>::value>>
+  Presentation<std::string> make(fpsemigroup::KnuthBendix const& kb) {
+    Presentation<std::string> p;
+    p.alphabet(kb.alphabet());
+    for (auto it = kb.cbegin_rules(); it != kb.cend_rules(); ++it) {
+      presentation::add_rule(p, it->first, it->second);
+    }
+    return p;
+  }
+
 }  // namespace libsemigroups
 #endif  // LIBSEMIGROUPS_KNUTH_BENDIX_HPP_

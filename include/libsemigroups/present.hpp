@@ -556,6 +556,12 @@ namespace libsemigroups {
       p.add_rule_and_check(lhop.begin(), lhop.end(), rhop.begin(), rhop.end());
     }
 
+    template <typename W, typename T>
+    void add_rules(Presentation<W>& p, T first, T last) {
+      for (auto it = first; it != last; it += 2) {
+        add_rule(p, *it, *(it + 1));
+      }
+    }
     //! Add a rule to the presentation from another presentation.
     //!
     //! Adds all the rules of the second argument to the first argument
@@ -571,9 +577,7 @@ namespace libsemigroups {
     //! \no_libsemigroups_except
     template <typename W>
     void add_rules(Presentation<W>& p, Presentation<W> const& q) {
-      for (auto it = q.rules.cbegin(); it != q.rules.cend(); it += 2) {
-        add_rule(p, *it, *(it + 1));
-      }
+      add_rules(p, q.rules.cbegin(), q.rules.cend());
     }
 
     //! Add rules for an identity element.

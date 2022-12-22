@@ -30,7 +30,9 @@
 
 #include "libsemigroups/constants.hpp"  // for UNDEFINED
 #include "libsemigroups/debug.hpp"      // for LIBSEMIGROUPS_ASSERT
-#include "libsemigroups/word.hpp"       // for StringToWord
+#include "libsemigroups/todd-coxeter-digraph.hpp"
+#include "libsemigroups/todd-coxeter-new.hpp"
+#include "libsemigroups/word.hpp"  // for StringToWord
 
 #ifdef LIBSEMIGROUPS_EIGEN_ENABLED
 #include <Eigen/QR>  // for dimensionOfKernel
@@ -170,4 +172,15 @@ namespace libsemigroups {
       }
     }
   }  // namespace detail
+
+  bool is_obviously_infinite(ToddCoxeter const& tc) {
+    if (tc.finished() || todd_coxeter_digraph::complete(tc.word_graph())) {
+      return false;
+    }
+    auto const&                 p = tc.presentation();
+    detail::IsObviouslyInfinite ioi(p.alphabet().size());
+    ioi.add_rules(p.rules.cbegin(), p.rules.cend());
+    ioi.add_rules(tc.cbegin_generating_pairs(), tc.cend_generating_pairs());
+    return ioi.result();
+  }
 }  // namespace libsemigroups

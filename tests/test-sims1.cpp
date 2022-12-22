@@ -216,7 +216,7 @@ namespace libsemigroups {
     Presentation<word_type> p;
     p.contains_empty_word(false);
 
-    //              a  A  b  B  c  C  e
+    //          a  A  b  B  c  C  e
     p.alphabet({0, 1, 2, 3, 4, 5, 6});
     presentation::add_identity_rules(p, 6);
     presentation::add_inverse_rules(p, {1, 0, 3, 2, 5, 4, 6}, 6);

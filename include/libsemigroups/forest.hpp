@@ -25,6 +25,9 @@
 
 #include "constants.hpp"  // for UNDEFINED
 #include "exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
+#include "int-range.hpp"  // for IntegralRange
+#include "iterator.hpp"   // for ConstIteratorTraits
+#include "types.hpp"      // for word_type
 
 namespace libsemigroups {
   //! Defined in ``forest.hpp``.
@@ -252,6 +255,102 @@ namespace libsemigroups {
     std::vector<size_t> _edge_label;
     std::vector<size_t> _parent;
   };
+
+  namespace detail {
+    struct PathIteratorTraits
+        : ConstIteratorTraits<IntegralRange<typename Forest::node_type>> {
+      using value_type      = word_type;
+      using const_reference = value_type const;
+      using reference       = value_type;
+      using const_pointer   = value_type const*;
+      using pointer         = value_type*;
+
+      // TODO store a word_type here too
+      using state_type = Forest const*;
+      using node_type  = typename Forest::node_type;
+
+      struct Deref {
+        // TODO to cpp
+        // Not noexcept because it allocates
+        value_type
+        operator()(state_type                               f,
+                   IntegralRange<node_type>::const_iterator it) const {
+          word_type w;
+          node_type i = *it;
+          while (f->parent(i) != UNDEFINED) {
+            w.push_back(f->label(i));
+            i = f->parent(i);
+          }
+          return w;
+        }
+      };
+
+      // TODO to cpp
+      struct AddressOf {
+        pointer operator()(state_type,
+                           IntegralRange<node_type>::const_iterator) {
+          // TODO if a word_type is part of the state, then we can return it's
+          // address here.
+          LIBSEMIGROUPS_ASSERT(false);
+          return nullptr;
+        }
+      };
+    };
+  }  // namespace detail
+
+  namespace forest {
+
+    //! The type of a const iterator pointing to a normal form.
+    //!
+    //! Iterators of this type point to a \ref word_type.
+    //!
+    //! \sa cbegin_normal_forms, cend_normal_forms.
+    // TODO(refactor): goes to same place as standardize
+    using path_iterator
+        = detail::ConstIteratorStateful<detail::PathIteratorTraits>;
+
+    //! Returns a \ref normal_form_iterator pointing at the first normal
+    //! form.
+    //!
+    //! Returns a const iterator pointing to the normal form of the first
+    //! class of the congruence represented by an instance of ToddCoxeter.
+    //! The order of the classes, and the normal form, that is returned are
+    //! controlled by standardize(order).
+    //!
+    //! \parameters
+    //! (None)
+    //!
+    //! \returns A value of type \ref normal_form_iterator.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    // TODO(refactor): update the doc
+    inline path_iterator cbegin_paths(Forest const& f) {
+      IntegralRange<typename Forest::node_type> range(0, f.number_of_nodes());
+      return path_iterator(&f, range.cbegin());
+    }
+
+    //! Returns a \ref normal_form_iterator pointing one past the last normal
+    //! form.
+    //!
+    //! Returns a const iterator one past the normal form of the last class
+    //! of the congruence represented by an instance of ToddCoxeter. The
+    //! order of the classes, and the normal form, that is returned are
+    //! controlled by standardize(order).
+    //!
+    //! \parameters
+    //! (None)
+    //!
+    //! \returns A value of type \ref normal_form_iterator.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    // TODO(refactor): update the doc
+    inline path_iterator cend_paths(Forest const& f) {
+      IntegralRange<typename Forest::node_type> range(0, f.number_of_nodes());
+      return path_iterator(&f, range.cend());
+    }
+  }  // namespace forest
 
 }  // namespace libsemigroups
 

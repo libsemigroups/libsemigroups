@@ -593,8 +593,8 @@ namespace libsemigroups {
     }
 
     template <typename T,
-              typename = std::enable_if_t<
-                  std::is_same<Presentation<word_type>, T>::value>>
+              typename
+              = std::enable_if_t<std::is_same_v<Presentation<word_type>, T>>>
     T make(std::vector<relation_type> const& rels) {
       Presentation<word_type> p;
       for (auto const& rel : rels) {

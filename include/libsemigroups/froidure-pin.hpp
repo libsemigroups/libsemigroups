@@ -43,6 +43,11 @@
 //! Namespace for everything in the libsemigroups library.
 namespace libsemigroups {
 
+  template <typename T>
+  struct FroidurePinState {
+    using type = void;
+  };
+
   //! Defined in ``froidure-pin.hpp``.
   //!
   //! This is a traits class for use with FroidurePin.
@@ -52,7 +57,8 @@ namespace libsemigroups {
   //! meaning none).
   //!
   //! \sa FroidurePinBase and FroidurePin.
-  template <typename TElementType, typename TStateType = void>
+  template <typename TElementType,
+            typename TStateType = typename FroidurePinState<TElementType>::type>
   struct FroidurePinTraits {
     // Require to get the value_type from detail::BruidhinnTraits to remove
     // pointer to const.

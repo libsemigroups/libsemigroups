@@ -64,7 +64,6 @@ namespace libsemigroups {
 #ifdef LIBSEMIGROUPS_VERBOSE
     _nr_products = 0;
 #endif
-    _right.set_default_value(UNDEFINED);
   }
 
   TEMPLATE
@@ -300,12 +299,12 @@ namespace libsemigroups {
     _final.reserve(nn);
     _first.reserve(nn);
     _enumerate_order.reserve(nn);
-    _left.reserve(nn);
+    _left.reserve(nn, _left.out_degree());
     _length.reserve(nn);
     _map.reserve(nn);
     _prefix.reserve(nn);
     _reduced.reserve(nn);
-    _right.reserve(nn);
+    _right.reserve(nn, _right.out_degree());
     _suffix.reserve(nn);
   }
 
@@ -414,7 +413,7 @@ namespace libsemigroups {
           auto it = _map.find(_tmp_product);
 
           if (it != _map.end()) {
-            _right.set(i, j, it->second);
+            _right.def_edge_nc(i, j, it->second);
             _nr_rules++;
           } else {
             is_one(_tmp_product, _nr);
@@ -426,7 +425,7 @@ namespace libsemigroups {
             _map.emplace(_elements.back(), _nr);
             _prefix.push_back(i);
             _reduced.set(i, j, true);
-            _right.set(i, j, _nr);
+            _right.def_edge_nc(i, j, _nr);
             _suffix.push_back(_letter_to_pos[j]);
             _nr++;
           }
@@ -436,7 +435,9 @@ namespace libsemigroups {
       for (enumerate_index_type i = 0; i != _pos; ++i) {
         letter_type b = _final[_enumerate_order[i]];
         for (letter_type j = 0; j != number_of_generators(); ++j) {
-          _left.set(_enumerate_order[i], j, _right.get(_letter_to_pos[j], b));
+          _left.def_edge_nc(_enumerate_order[i],
+                            j,
+                            _right.unsafe_neighbor(_letter_to_pos[j], b));
         }
       }
       _wordlen++;
@@ -453,13 +454,18 @@ namespace libsemigroups {
         element_index_type s = _suffix[i];
         for (letter_type j = 0; j != number_of_generators(); ++j) {
           if (!_reduced.get(s, j)) {
-            element_index_type r = _right.get(s, j);
+            element_index_type r = _right.unsafe_neighbor(s, j);
             if (_found_one && r == _pos_one) {
-              _right.set(i, j, _letter_to_pos[b]);
+              _right.def_edge_nc(i, j, _letter_to_pos[b]);
             } else if (_prefix[r] != UNDEFINED) {  // r is not a generator
-              _right.set(i, j, _right.get(_left.get(_prefix[r], b), _final[r]));
+              _right.def_edge_nc(
+                  i,
+                  j,
+                  _right.unsafe_neighbor(_left.unsafe_neighbor(_prefix[r], b),
+                                         _final[r]));
             } else {
-              _right.set(i, j, _right.get(_letter_to_pos[b], _final[r]));
+              _right.def_edge_nc(
+                  i, j, _right.unsafe_neighbor(_letter_to_pos[b], _final[r]));
             }
           } else {
             InternalProduct()(this->to_external(_tmp_product),
@@ -473,7 +479,7 @@ namespace libsemigroups {
             auto it = _map.find(_tmp_product);
 
             if (it != _map.end()) {
-              _right.set(i, j, it->second);
+              _right.def_edge_nc(i, j, it->second);
               _nr_rules++;
             } else {
               is_one(_tmp_product, _nr);
@@ -484,8 +490,8 @@ namespace libsemigroups {
               _map.emplace(_elements.back(), _nr);
               _prefix.push_back(i);
               _reduced.set(i, j, true);
-              _right.set(i, j, _nr);
-              _suffix.push_back(_right.get(s, j));
+              _right.def_edge_nc(i, j, _nr);
+              _suffix.push_back(_right.unsafe_neighbor(s, j));
               _enumerate_order.push_back(_nr);
               _nr++;
             }
@@ -500,7 +506,10 @@ namespace libsemigroups {
           element_index_type p = _prefix[_enumerate_order[i]];
           letter_type        b = _final[_enumerate_order[i]];
           for (letter_type j = 0; j != number_of_generators(); ++j) {
-            _left.set(_enumerate_order[i], j, _right.get(_left.get(p, j), b));
+            _left.def_edge_nc(
+                _enumerate_order[i],
+                j,
+                _right.unsafe_neighbor(_left.unsafe_neighbor(p, j), b));
           }
         }
         _wordlen++;
@@ -618,9 +627,9 @@ namespace libsemigroups {
     expand(number_of_new_elements);
     LIBSEMIGROUPS_ASSERT(_lenindex.size() > 1);
     _lenindex[1] += number_of_new_elements;
-    _left.add_cols(m);
+    _left.add_to_out_degree(m);
     _reduced.add_cols(m);
-    _right.add_cols(m);
+    _right.add_to_out_degree(m);
   }
 
   TEMPLATE
@@ -671,12 +680,12 @@ namespace libsemigroups {
         element_index_type i = _enumerate_order[_pos];  // position in _elements
         letter_type        b = _first[i];
         element_index_type s = _suffix[i];
-        if (_right.get(i, 0) != UNDEFINED) {
+        if (_right.unsafe_neighbor(i, 0) != UNDEFINED) {
           number_of_old_left--;
           // _elements[i] is in old semigroup, and its descendants are
           // known
           for (letter_type j = 0; j < old_nrgens; j++) {
-            element_index_type k = _right.get(i, j);
+            element_index_type k = _right.unsafe_neighbor(i, j);
             if (!old_new[k]) {  // it's new!
               is_one(_elements[k], k);
               _first[k]  = _first[i];
@@ -687,7 +696,7 @@ namespace libsemigroups {
               if (_wordlen == 0) {
                 _suffix[k] = _letter_to_pos[j];
               } else {
-                _suffix[k] = _right.get(s, j);
+                _suffix[k] = _right.unsafe_neighbor(s, j);
               }
               _enumerate_order.push_back(k);
               old_new[k] = true;
@@ -716,8 +725,9 @@ namespace libsemigroups {
             size_t b = _final[_enumerate_order[i]];
             for (letter_type j = 0; j < number_of_generators(); j++) {
               // TODO(JDM) reuse old info here!
-              _left.set(
-                  _enumerate_order[i], j, _right.get(_letter_to_pos[j], b));
+              _left.def_edge_nc(_enumerate_order[i],
+                                j,
+                                _right.unsafe_neighbor(_letter_to_pos[j], b));
             }
           }
         } else {
@@ -726,7 +736,10 @@ namespace libsemigroups {
             letter_type        b = _final[_enumerate_order[i]];
             for (letter_type j = 0; j < number_of_generators(); j++) {
               // TODO(JDM) reuse old info here!
-              _left.set(_enumerate_order[i], j, _right.get(_left.get(p, j), b));
+              _left.def_edge_nc(
+                  _enumerate_order[i],
+                  j,
+                  _right.unsafe_neighbor(_left.unsafe_neighbor(p, j), b));
             }
           }
         }
@@ -861,9 +874,9 @@ namespace libsemigroups {
 
   // Expand the data structures in the semigroup with space for nr elements
   VOID FROIDURE_PIN::expand(size_type nr) {
-    _left.add_rows(nr);
+    _left.add_nodes(nr);
+    _right.add_nodes(nr);
     _reduced.add_rows(nr);
-    _right.add_rows(nr);
   }
 
   // Check if an element is the identity, x should be in the position pos
@@ -914,13 +927,18 @@ namespace libsemigroups {
                                     std::vector<bool>& old_new,
                                     state_type*        ptr) {
     if (_wordlen != 0 && !_reduced.get(s, j)) {
-      element_index_type r = _right.get(s, j);
+      element_index_type r = _right.unsafe_neighbor(s, j);
       if (_found_one && r == _pos_one) {
-        _right.set(i, j, _letter_to_pos[b]);
+        _right.def_edge_nc(i, j, _letter_to_pos[b]);
       } else if (_prefix[r] != UNDEFINED) {
-        _right.set(i, j, _right.get(_left.get(_prefix[r], b), _final[r]));
+        _right.def_edge_nc(
+            i,
+            j,
+            _right.unsafe_neighbor(_left.unsafe_neighbor(_prefix[r], b),
+                                   _final[r]));
       } else {
-        _right.set(i, j, _right.get(_letter_to_pos[b], _final[r]));
+        _right.def_edge_nc(
+            i, j, _right.unsafe_neighbor(_letter_to_pos[b], _final[r]));
       }
     } else {
       InternalProduct()(this->to_external(_tmp_product),
@@ -938,11 +956,11 @@ namespace libsemigroups {
         _map.emplace(_elements.back(), _nr);
         _prefix.push_back(i);
         _reduced.set(i, j, true);
-        _right.set(i, j, _nr);
+        _right.def_edge_nc(i, j, _nr);
         if (_wordlen == 0) {
           _suffix.push_back(_letter_to_pos[j]);
         } else {
-          _suffix.push_back(_right.get(s, j));
+          _suffix.push_back(_right.unsafe_neighbor(s, j));
         }
         _enumerate_order.push_back(_nr);
         _nr++;
@@ -954,17 +972,17 @@ namespace libsemigroups {
         _length[it->second] = _wordlen + 2;
         _prefix[it->second] = i;
         _reduced.set(i, j, true);
-        _right.set(i, j, it->second);
+        _right.def_edge_nc(i, j, it->second);
         if (_wordlen == 0) {
           _suffix[it->second] = _letter_to_pos[j];
         } else {
-          _suffix[it->second] = _right.get(s, j);
+          _suffix[it->second] = _right.unsafe_neighbor(s, j);
         }
         _enumerate_order.push_back(it->second);
         old_new[it->second] = true;
       } else {  // it->second >= old->_nr || old_new[it->second]
         // it's old
-        _right.set(i, j, it->second);
+        _right.def_edge_nc(i, j, it->second);
         _nr_rules++;
       }
     }
@@ -1159,7 +1177,7 @@ namespace libsemigroups {
         // lengths because they are equal!!
         element_index_type i = k, j = k;
         while (j != UNDEFINED) {
-          i = _right.get(i, _first[j]);
+          i = _right.unsafe_neighbor(i, _first[j]);
           // TODO(later) improve this if R/L-classes are known to stop
           // performing the product if we fall out of the R/L-class of the
           // initial element.

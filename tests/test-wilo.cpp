@@ -72,11 +72,10 @@ namespace libsemigroups {
                                        {1, 1, 0},
                                        {1, 1, 1}}));
     REQUIRE(w.size() == 14);
-    REQUIRE(std::is_sorted(
-        w.cbegin(), w.cend(), LexicographicalCompare<word_type>()));
+    REQUIRE(std::is_sorted(w.cbegin(), w.cend(), LexicographicalCompare()));
     REQUIRE(std::is_sorted(cbegin_wilo(2, 4, {0}, {1, 1, 1, 1}),
                            cend_wilo(2, 4, {0}, {1, 1, 1, 1}),
-                           LexicographicalCompare<word_type>()));
+                           LexicographicalCompare()));
   }
 
   LIBSEMIGROUPS_TEST_CASE("wilo",
@@ -99,11 +98,10 @@ namespace libsemigroups {
              {1, 2, 1}, {1, 2, 2}, {2},       {2, 0},    {2, 0, 0}, {2, 0, 1},
              {2, 0, 2}, {2, 1},    {2, 1, 0}, {2, 1, 1}, {2, 1, 2}, {2, 2},
              {2, 2, 0}, {2, 2, 1}, {2, 2, 2}}));
-    REQUIRE(std::is_sorted(
-        w.cbegin(), w.cend(), LexicographicalCompare<word_type>()));
+    REQUIRE(std::is_sorted(w.cbegin(), w.cend(), LexicographicalCompare()));
     REQUIRE(std::is_sorted(cbegin_wilo(3, 4, first, last),
                            cend_wilo(3, 4, first, last),
-                           LexicographicalCompare<word_type>()));
+                           LexicographicalCompare()));
   }
 
   LIBSEMIGROUPS_TEST_CASE("wilo",
@@ -116,11 +114,10 @@ namespace libsemigroups {
                                     cend_wilo(3, 10, first, last));
     REQUIRE(w.size() == number_of_words(3, 0, 10));
     REQUIRE(w.size() == 29524);
-    REQUIRE(std::is_sorted(
-        w.cbegin(), w.cend(), LexicographicalCompare<word_type>()));
+    REQUIRE(std::is_sorted(w.cbegin(), w.cend(), LexicographicalCompare()));
     REQUIRE(std::is_sorted(cbegin_wilo(3, 10, first, last),
                            cend_wilo(3, 10, first, last),
-                           LexicographicalCompare<word_type>()));
+                           LexicographicalCompare()));
   }
 
   LIBSEMIGROUPS_TEST_CASE("wilo",
@@ -134,8 +131,7 @@ namespace libsemigroups {
                              cend_wilo(3, 13, first, last));
     REQUIRE(w.size() == 797161);
     REQUIRE(w.size() == number_of_words(3, 0, 13));
-    REQUIRE(std::is_sorted(
-        w.cbegin(), w.cend(), LexicographicalCompare<word_type>()));
+    REQUIRE(std::is_sorted(w.cbegin(), w.cend(), LexicographicalCompare()));
   }
 
   LIBSEMIGROUPS_TEST_CASE("wilo",
@@ -157,8 +153,7 @@ namespace libsemigroups {
              cbegin_wilo(3, 13, first, last),
              cend_wilo(3, 13, first, last));
     REQUIRE(w.size() == number_of_words(3, 1, 13));
-    REQUIRE(std::is_sorted(
-        w.cbegin(), w.cend(), LexicographicalCompare<word_type>()));
+    REQUIRE(std::is_sorted(w.cbegin(), w.cend(), LexicographicalCompare()));
   }
 
   LIBSEMIGROUPS_TEST_CASE("wilo", "007", "more corner cases", "[wilo][quick]") {

@@ -30,6 +30,7 @@
 #include "word.hpp"               // for word_to_string
 
 namespace libsemigroups {
+
   //! Make presentation from a FroidurePin object.
   //!
   //! This function constructs and returns a Presentation object using the

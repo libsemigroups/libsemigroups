@@ -57,7 +57,6 @@ namespace libsemigroups {
 #ifdef LIBSEMIGROUPS_VERBOSE
     _nr_products = 0;
 #endif
-    _right.set_default_value(UNDEFINED);
   }
 
   FroidurePinBase::FroidurePinBase(FroidurePinBase const& S)
@@ -175,7 +174,7 @@ namespace libsemigroups {
     }
     element_index_type out = _letter_to_pos[w[0]];
     for (auto it = w.cbegin() + 1; it < w.cend() && out != UNDEFINED; ++it) {
-      out = _right.get(out, *it);
+      out = _right.unsafe_neighbor(out, *it);
     }
     return out;
   }
@@ -188,13 +187,13 @@ namespace libsemigroups {
 
     if (current_length(i) <= current_length(j)) {
       while (i != UNDEFINED) {
-        j = _left.get(j, _final[i]);
+        j = _left.unsafe_neighbor(j, _final[i]);
         i = _prefix[i];
       }
       return j;
     } else {
       while (j != UNDEFINED) {
-        i = _right.get(i, _first[j]);
+        i = _right.unsafe_neighbor(i, _first[j]);
         j = _suffix[j];
       }
       return i;

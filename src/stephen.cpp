@@ -165,7 +165,7 @@ namespace libsemigroups {
             } else if (u_end != v_end) {
               did_def = true;
               _word_graph.coincide_nodes(u_end, v_end);
-              _word_graph.process_coincidences();
+              _word_graph.process_coincidences<false>();
             }
             --it;
           } else {
@@ -199,7 +199,7 @@ namespace libsemigroups {
   }
 
   void Stephen::standardize() {
-    digraph_with_sources::standardize(_word_graph);
+    action_digraph::standardize(_word_graph);
     _word_graph.shrink_to_fit(_word_graph.number_of_nodes_active());
   }
 

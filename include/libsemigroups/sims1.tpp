@@ -535,7 +535,7 @@ namespace libsemigroups {
 
       auto first = _extra.rules.cbegin();
       auto last  = _extra.rules.cend();
-      if (!felsch_digraph::compatible(_felsch_graph, 0, first, last)
+      if (!felsch_digraph::make_compatible(_felsch_graph, 0, 1, first, last)
           || !_felsch_graph.process_definitions(start)) {
         // Seems to be important to check _extra first then
         // process_definitions
@@ -576,7 +576,7 @@ namespace libsemigroups {
 
     auto first = _longs.rules.cbegin();
     auto last  = _longs.rules.cend();
-    return felsch_digraph::compatible(_felsch_graph, 0, M, first, last);
+    return felsch_digraph::make_compatible(_felsch_graph, 0, M, first, last);
   }
 
   template <typename T>

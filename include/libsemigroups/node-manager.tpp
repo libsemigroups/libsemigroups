@@ -1,6 +1,6 @@
 //
 // libsemigroups - C++ library for semigroups and monoids
-// Copyright (C) 2019 James D. Mitchell
+// Copyright (C) 2023 James D. Mitchell
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -18,18 +18,6 @@
 
 // This file contains the implementation for a class to manage nodes for a
 // ToddCoxeterDigraph instance.
-
-#include "libsemigroups/node-manager.hpp"
-
-#include <cstddef>  // for size_t
-#include <numeric>  // for iota
-
-#include "libsemigroups/debug.hpp"      // for LIBSEMIGROUPS_ASSERT
-#include "libsemigroups/exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
-
-#ifdef LIBSEMIGROUPS_DEBUG
-#include "libsemigroups/report.hpp"  // for REPORT_DEBUG
-#endif
 
 ////////////////////////////////////////////////////////////////////////////////
 //
@@ -74,14 +62,15 @@ namespace libsemigroups {
     // Typedefs/aliases
     ////////////////////////////////////////////////////////////////////////
 
-    using node_type = NodeManager::node_type;
-    constexpr node_type NodeManager::_id_node;
+    template <typename NodeType>
+    constexpr NodeType NodeManager<NodeType>::_id_node;
 
     ////////////////////////////////////////////////////////////////////////
     // Helper free function
     ////////////////////////////////////////////////////////////////////////
 
-    static inline node_type ff(node_type c, node_type d, node_type r) {
+    template <typename NodeType>
+    static inline NodeType ff(NodeType c, NodeType d, NodeType r) {
       return (r == c ? d : (r == d ? c : r));
       // return (r == c) * d + (r == d) * c + (r != c && r != d) * r;
     }
@@ -89,8 +78,8 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////
     // NodeManager - constructors - public
     ////////////////////////////////////////////////////////////////////////
-
-    NodeManager::NodeManager()
+    template <typename NodeType>
+    NodeManager<NodeType>::NodeManager()
         :  // protected
           _current(0),
           _current_la(0),
@@ -103,13 +92,15 @@ namespace libsemigroups {
           // private - data
           _bckwd(1, 0),
           _first_free_node(UNDEFINED),
-          _forwd(1, static_cast<node_type>(UNDEFINED)),
+          _forwd(1, static_cast<NodeType>(UNDEFINED)),
           _ident(1, 0),
           _last_active_node(0) {}
 
-    NodeManager::~NodeManager() = default;
+    template <typename NodeType>
+    NodeManager<NodeType>::~NodeManager() = default;
 
-    NodeManager& NodeManager::growth_factor(float val) {
+    template <typename NodeType>
+    NodeManager<NodeType>& NodeManager<NodeType>::growth_factor(float val) {
       if (val < 1.0) {
         LIBSEMIGROUPS_EXCEPTION("expected a value of at least 1.0, found %f",
                                 val);
@@ -122,7 +113,8 @@ namespace libsemigroups {
     // NodeManager - member functions - protected
     ////////////////////////////////////////////////////////////////////////
 
-    void NodeManager::add_active_nodes(size_t n) {
+    template <typename NodeType>
+    void NodeManager<NodeType>::add_active_nodes(size_t n) {
       if (n > (node_capacity() - number_of_nodes_active())) {
         size_t const m = n - (node_capacity() - number_of_nodes_active());
         add_free_nodes(m);
@@ -146,15 +138,16 @@ namespace libsemigroups {
       }
     }
 
-    void NodeManager::add_free_nodes(size_t n) {
+    template <typename NodeType>
+    void NodeManager<NodeType>::add_free_nodes(size_t n) {
       // We add n new free nodes at the end of the current list, and link them
       // in as follows:
       //
       // 0 <-> ... <-> _last_active_node <-> old_capacity <-> new free node 1
       //   <-> ... <-> new free node n   <-> old_first_free_node
       //   <-> remaining old free nodes
-      size_t const    old_capacity        = _forwd.size();
-      node_type const old_first_free_node = _first_free_node;
+      size_t const   old_capacity        = _forwd.size();
+      NodeType const old_first_free_node = _first_free_node;
 
       _forwd.resize(_forwd.size() + n, UNDEFINED);
       std::iota(
@@ -178,17 +171,18 @@ namespace libsemigroups {
 #endif
     }
 
-    void NodeManager::erase_free_nodes() {
+    template <typename NodeType>
+    void NodeManager<NodeType>::erase_free_nodes() {
 #ifdef LIBSEMIGROUPS_DEBUG
       size_t sum = 0;
-      for (node_type c = _id_node; c != _first_free_node; c = _forwd[c]) {
+      for (NodeType c = _id_node; c != _first_free_node; c = _forwd[c]) {
         LIBSEMIGROUPS_ASSERT(c < number_of_nodes_active());
         sum += c;
       }
       LIBSEMIGROUPS_ASSERT(
           sum == number_of_nodes_active() * (number_of_nodes_active() - 1) / 2);
-      std::vector<node_type> copy(_forwd.cbegin(),
-                                  _forwd.cbegin() + number_of_nodes_active());
+      std::vector<NodeType> copy(_forwd.cbegin(),
+                                 _forwd.cbegin() + number_of_nodes_active());
       std::sort(copy.begin(), copy.end());
       LIBSEMIGROUPS_ASSERT(std::unique(copy.begin(), copy.end()) == copy.end());
 #endif
@@ -205,7 +199,8 @@ namespace libsemigroups {
 #endif
     }
 
-    node_type NodeManager::new_active_node() {
+    template <typename NodeType>
+    NodeType NodeManager<NodeType>::new_active_node() {
       if (_first_free_node == UNDEFINED) {
         // There are no free nodes to recycle: make new ones.
         // It seems to be marginally faster to make lots like this, than to
@@ -216,9 +211,10 @@ namespace libsemigroups {
       return _last_active_node;
     }
 
-    void NodeManager::switch_nodes(node_type c, node_type d) {
+    template <typename NodeType>
+    void NodeManager<NodeType>::switch_nodes(NodeType c, NodeType d) {
       LIBSEMIGROUPS_ASSERT(is_active_node(c) || is_active_node(d));
-      node_type fc = _forwd[c], fd = _forwd[d], bc = _bckwd[c], bd = _bckwd[d];
+      NodeType fc = _forwd[c], fd = _forwd[d], bc = _bckwd[c], bd = _bckwd[d];
 
       if (fc != d) {
         _forwd[d]  = fc;
@@ -265,10 +261,11 @@ namespace libsemigroups {
 
     // The permutation p ^ -1 must map the active nodes to the [0, ..
     // , number_of_nodes_active())
-    void NodeManager::apply_permutation(NodeManager::Perm& p) {
+    template <typename NodeType>
+    void NodeManager<NodeType>::apply_permutation(NodeManager::Perm& p) {
       size_t const n = p.size();
-      for (node_type i = 0; i < n; ++i) {
-        node_type current = i;
+      for (NodeType i = 0; i < n; ++i) {
+        NodeType current = i;
         while (i != p[current]) {
           size_t next = p[current];
           switch_nodes(current, next);
@@ -283,7 +280,8 @@ namespace libsemigroups {
     // NodeManager - member functions - private
     ////////////////////////////////////////////////////////////////////////
 
-    void NodeManager::free_node(node_type c) {
+    template <typename NodeType>
+    void NodeManager<NodeType>::free_node(NodeType c) {
       _active--;
       _nodes_killed++;
       LIBSEMIGROUPS_ASSERT(is_active_node(c));
@@ -318,7 +316,8 @@ namespace libsemigroups {
     }
 
     // Basically free all nodes
-    void NodeManager::clear() {
+    template <typename NodeType>
+    void NodeManager<NodeType>::clear() {
       _nodes_killed += (_active - 1);
       _active = 1;
       std::iota(_forwd.begin(), _forwd.end() - 1, 1);
@@ -340,12 +339,12 @@ namespace libsemigroups {
     // NodeManager - member functions (debug only) - protected
     ////////////////////////////////////////////////////////////////////////
 
-    void NodeManager::debug_validate_forwd_bckwd() const {
-      REPORT_DEBUG_DEFAULT("validating the doubly linked list of nodes...\n");
+    template <typename NodeType>
+    void NodeManager<NodeType>::debug_validate_forwd_bckwd() const {
       LIBSEMIGROUPS_ASSERT(_forwd.size() == _bckwd.size());
       LIBSEMIGROUPS_ASSERT(_bckwd.size() == _ident.size());
-      node_type number_of_nodes = 0;
-      node_type e               = _id_node;
+      NodeType number_of_nodes = 0;
+      NodeType e               = _id_node;
       while (e != _first_free_node) {
         LIBSEMIGROUPS_ASSERT(e == _id_node || _forwd[_bckwd[e]] == e);
         LIBSEMIGROUPS_ASSERT(_forwd[e] == _first_free_node
@@ -365,7 +364,6 @@ namespace libsemigroups {
       LIBSEMIGROUPS_ASSERT(number_of_nodes == _forwd.size());
       LIBSEMIGROUPS_ASSERT(number_of_nodes == _bckwd.size());
       LIBSEMIGROUPS_ASSERT(number_of_nodes == _ident.size());
-      REPORT_DEBUG_DEFAULT("...doubly linked list of nodes ok\n");
     }
 #endif
   }  // namespace detail

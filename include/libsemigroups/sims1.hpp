@@ -652,7 +652,11 @@ namespace libsemigroups {
 
      protected:
       // short_rules is stored in _felsch_graph
-      FelschDigraph<word_type, node_type> _felsch_graph;
+      FelschDigraph<word_type, node_type> _felsch_graph;  // TODO ensure that
+                                                          // _felsch_graph's
+                                                          // settings are
+                                                          // properly
+                                                          // initialised
       // This mutex does nothing for iterator, only does something for
       // thread_iterator
       std::mutex              _mtx;

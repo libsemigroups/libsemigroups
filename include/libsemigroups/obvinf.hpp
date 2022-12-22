@@ -69,10 +69,17 @@
 #include "uf.hpp"      // for Duf
 
 #ifdef LIBSEMIGROUPS_EIGEN_ENABLED
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+#define _SILENCE_ALL_CXX17_DEPRECATION_WARNINGS
 #include <Eigen/Core>
+#undef _SILENCE_ALL_CXX17_DEPRECATION_WARNINGS
+#pragma clang diagnostic pop
 #endif
 
 namespace libsemigroups {
+  class ToddCoxeter;  // forward decl
+
   namespace detail {
     class IsObviouslyInfinite final {
       using const_iterator_word_type =
@@ -159,5 +166,8 @@ namespace libsemigroups {
 #endif
     };
   }  // namespace detail
+
+  bool is_obviously_infinite(ToddCoxeter const& tc);
+
 }  // namespace libsemigroups
 #endif  // LIBSEMIGROUPS_OBVINF_HPP_

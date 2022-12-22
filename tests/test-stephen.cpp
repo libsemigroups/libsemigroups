@@ -109,9 +109,7 @@ namespace libsemigroups {
             return detail::word_to_string(p.alphabet(), w.cbegin(), w.cend());
           });
 
-      std::sort(strings.begin(),
-                strings.end(),
-                LexicographicalCompare<std::string>());
+      std::sort(strings.begin(), strings.end(), LexicographicalCompare());
       REQUIRE(strings.front() == nf);
 
       REQUIRE(std::all_of(strings.cbegin(),
@@ -646,8 +644,7 @@ namespace libsemigroups {
                                          "dfabcdg",
                                          "dgabcdf",
                                          "dgabcdg"}));
-    std::sort(
-        strings.begin(), strings.end(), LexicographicalCompare<std::string>());
+    std::sort(strings.begin(), strings.end(), LexicographicalCompare());
     REQUIRE(strings.front() == "dfabcdf");
 
     REQUIRE(std::all_of(
@@ -667,8 +664,7 @@ namespace libsemigroups {
           return detail::word_to_string(p.alphabet(), w.cbegin(), w.cend());
         });
 
-    std::sort(
-        strings.begin(), strings.end(), LexicographicalCompare<std::string>());
+    std::sort(strings.begin(), strings.end(), LexicographicalCompare());
     REQUIRE(strings
             == std::vector<std::string>({"abcdfabcdf",
                                          "abcdfabcdg",

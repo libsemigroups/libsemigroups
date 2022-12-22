@@ -51,7 +51,7 @@ namespace libsemigroups {
   //! monoids](https://rb.gy/brsuvc) by J. B. Stephen.
   class Stephen : public Runner {
     using internal_digraph_type
-        = detail::ToddCoxeterDigraph<DigraphWithSources<size_t>>;
+        = ToddCoxeterDigraph<DigraphWithSources<size_t>>;
 
    public:
     //! The return type of the function \ref word_graph.

@@ -31,6 +31,7 @@
 
 namespace libsemigroups {
   namespace detail {
+    template <typename NodeType>
     class NodeManager {
      public:
       ////////////////////////////////////////////////////////////////////////
@@ -38,7 +39,7 @@ namespace libsemigroups {
       ////////////////////////////////////////////////////////////////////////
 
       //! Type of nodes
-      using node_type = size_t;
+      using node_type = NodeType;
       using Perm      = std::vector<node_type>;
 
       ////////////////////////////////////////////////////////////////////////
@@ -291,6 +292,10 @@ namespace libsemigroups {
       // NodeManager - data - protected
       ////////////////////////////////////////////////////////////////////////
 
+      constexpr node_type initial_node() const noexcept {
+        return _id_node;
+      }
+
       static constexpr node_type _id_node = 0;
       node_type                  _current;
       node_type                  _current_la;
@@ -331,5 +336,7 @@ namespace libsemigroups {
 
   }  // namespace detail
 }  // namespace libsemigroups
+
+#include "node-manager.tpp"
 
 #endif  // LIBSEMIGROUPS_NODE_MANAGER_HPP_

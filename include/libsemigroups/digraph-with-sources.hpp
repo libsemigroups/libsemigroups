@@ -1,6 +1,6 @@
 //
 // libsemigroups - C++ library for semigroups and monoids
-// Copyright (C) 2022 James D. Mitchell
+// Copyright (C) 2022-23 James D. Mitchell
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -16,8 +16,9 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-// This file contains a declaration of a class for performing the "low-index
-// congruence" algorithm for semigroups and monoid.
+// This file contains a declaration of a class for ActionDigraphs with
+// additional information about the edges leading into every node (not only
+// those leaving every node).
 //
 // In the comments in this file we refer to "valid nodes", this means nodes in
 // the graph where the values returned by first_source and next_source are
@@ -30,6 +31,9 @@
 #ifndef LIBSEMIGROUPS_DIGRAPH_WITH_SOURCES_HPP_
 #define LIBSEMIGROUPS_DIGRAPH_WITH_SOURCES_HPP_
 
+// TODO:
+// 3) test file
+
 #include <cstddef>  // for size_t
 #include <stack>    // for stack
 #include <utility>  // for pair
@@ -40,28 +44,30 @@
 #include "containers.hpp"  // for DynamicArray2
 #include "digraph.hpp"     // for ActionDigraph
 #include "types.hpp"       // for letter_type
-                           //
-namespace libsemigroups {
-  class Forest;  // forward decl
 
-  template <typename T>
-  class DigraphWithSources : public ActionDigraph<T> {
+namespace libsemigroups {
+  template <typename NodeType>
+  class DigraphWithSources : public ActionDigraph<NodeType> {
    public:
-    using node_type = T;
-    using size_type = node_type;
+    using node_type  = NodeType;
+    using label_type = typename ActionDigraph<NodeType>::label_type;
+    using size_type  = node_type;
 
    private:
-    using table_type = detail::DynamicArray2<node_type>;
-    table_type _preim_init;
-    table_type _preim_next;
+    detail::DynamicArray2<node_type> _preim_init;
+    detail::DynamicArray2<node_type> _preim_next;
 
    public:
-    using ActionDigraph<T>::ActionDigraph;
-
     explicit DigraphWithSources(size_type m = 0, size_type n = 0)
         : ActionDigraph<node_type>(m, n),
           _preim_init(n, m, UNDEFINED),
           _preim_next(n, m, UNDEFINED) {}
+
+    template <typename ThatNodeType>
+    explicit DigraphWithSources(ActionDigraph<ThatNodeType> const& that);
+
+    template <typename ThatNodeType>
+    explicit DigraphWithSources(ActionDigraph<ThatNodeType>&& that);
 
     DigraphWithSources(DigraphWithSources&&)                 = default;
     DigraphWithSources(DigraphWithSources const&)            = default;
@@ -70,12 +76,18 @@ namespace libsemigroups {
 
     void init(size_type m, size_type n);
 
-    void add_edge_nc(node_type c, node_type d, letter_type x) noexcept {
+    template <typename ThatNodeType>
+    void init(ActionDigraph<ThatNodeType> const& that);
+
+    template <typename ThatNodeType>
+    void init(ActionDigraph<ThatNodeType>&& that);
+
+    void add_edge_nc(node_type c, node_type d, label_type x) noexcept {
       ActionDigraph<node_type>::add_edge_nc(c, d, x);
       add_source(d, x, c);
     }
 
-    void remove_edge_nc(node_type c, letter_type x) noexcept {
+    void remove_edge_nc(node_type c, label_type x) noexcept {
       remove_source(this->unsafe_neighbor(c, x), x, c);
       ActionDigraph<node_type>::remove_edge_nc(c, x);
     }
@@ -106,52 +118,45 @@ namespace libsemigroups {
       return _preim_next.get(c, x);
     }
 
-    // The permutation q must map the valid nodes to the [0, .. , n), where n
-    // is the number of valid nodes, and p = q ^ -1.
+    // TODO remove when removing the old ToddCoxeter
+    // The permutation q must map the valid nodes to the [0, .. , n), where
+    // n is the number of valid nodes, and p = q ^ -1.
     void permute_nodes_nc(std::vector<node_type>& p,
                           std::vector<node_type>& q,
                           size_t                  n);
 
-    // Swaps valid nodes c and d, if c or d is not valid, then this will fail
-    // spectacularly (no checks are performed)
+    // Swaps valid nodes c and d, if c or d is not valid, then this will
+    // fail spectacularly (no checks are performed)
     void swap_nodes(node_type c, node_type d);
 
-    // Rename c to d, i.e. node d has the exact same in- and out-neighbours as
-    // c after this is called. Assumed that c is valid when this function is
-    // called, and that d is valid after it is called. This is a one-sided
-    // version of swap nodes.
+    // Rename c to d, i.e. node d has the exact same in- and out-neighbours
+    // as c after this is called. Assumed that c is valid when this function
+    // is called, and that d is valid after it is called. This is a
+    // one-sided version of swap nodes.
     void rename_node(node_type c, node_type d);
 
     template <typename NewEdgeFunc, typename IncompatibleFunc>
     void merge_nodes(node_type          min,
                      node_type          max,
-                     NewEdgeFunc&&      new_edge_func,
-                     IncompatibleFunc&& incompat_func);
+                     NewEdgeFunc&&      new_edge,
+                     IncompatibleFunc&& incompat);
 
-#ifdef LIBSEMIGROUPS_DEBUG
-    // Is d a source of c under x?
-    bool is_source(node_type c, node_type d, letter_type x) const;
-#endif
+    // Is d a source of c under x? This is costly!
+    bool is_source(node_type c, node_type d, label_type x) const;
 
     void clear_sources_and_targets(node_type c);
     void clear_sources(node_type c);
-    void add_source(node_type c, letter_type x, node_type d) noexcept;
+
+    void add_source(node_type c, label_type x, node_type d) noexcept;
+
+    template <typename It>
+    void rebuild_sources(It first, It last);
 
    private:
-    void remove_source(node_type cx, letter_type x, node_type d);
+    void remove_source(node_type cx, label_type x, node_type d);
     void replace_target(node_type c, node_type d, size_t x);
     void replace_source(node_type c, node_type d, size_t x, node_type cx);
   };
-
-  namespace digraph_with_sources {
-    // Return value indicates whether or not the graph was modified.
-    template <typename T>
-    bool standardize(T& d, Forest& f);
-
-    template <typename T>
-    std::pair<bool, Forest> standardize(T& d);
-
-  }  // namespace digraph_with_sources
 }  // namespace libsemigroups
 
 #include "digraph-with-sources.tpp"

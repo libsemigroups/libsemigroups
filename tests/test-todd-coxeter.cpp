@@ -459,11 +459,11 @@ namespace libsemigroups {
       REQUIRE(tc.word_to_class_index(tc.class_index_to_word(3)) == 3);
       REQUIRE(tc.word_to_class_index(tc.class_index_to_word(4)) == 4);
       REQUIRE(tc.word_to_class_index({0, 1}) == 3);
-      REQUIRE(LexicographicalCompare<word_type>{}({0, 0, 1}, {0, 1}));
+      REQUIRE(LexicographicalCompare{}({0, 0, 1}, {0, 1}));
 
       REQUIRE(std::is_sorted(tc.cbegin_normal_forms(),
                              tc.cend_normal_forms(),
-                             LexicographicalCompare<word_type>{}));
+                             LexicographicalCompare{}));
 
       tc.standardize(tc_order::shortlex);
       REQUIRE(std::vector<word_type>(tc.cbegin_normal_forms(),
@@ -474,9 +474,8 @@ namespace libsemigroups {
       REQUIRE(tc.word_to_class_index(tc.class_index_to_word(2)) == 2);
       REQUIRE(tc.word_to_class_index(tc.class_index_to_word(3)) == 3);
       REQUIRE(tc.word_to_class_index(tc.class_index_to_word(4)) == 4);
-      REQUIRE(std::is_sorted(tc.cbegin_normal_forms(),
-                             tc.cend_normal_forms(),
-                             ShortLexCompare<word_type>{}));
+      REQUIRE(std::is_sorted(
+          tc.cbegin_normal_forms(), tc.cend_normal_forms(), ShortLexCompare{}));
 
       auto nf = std::vector<word_type>(tc.cbegin_normal_forms(),
                                        tc.cend_normal_forms());
@@ -491,7 +490,7 @@ namespace libsemigroups {
           auto v = std::vector<word_type>(
               cbegin_wislo(i, {0}, word_type(j + 1, 0)),
               cend_wislo(i, {0}, word_type(j + 1, 0)));
-          std::sort(v.begin(), v.end(), RecursivePathCompare<word_type>{});
+          std::sort(v.begin(), v.end(), RecursivePathCompare{});
           REQUIRE(v == recursive_path_words(i, j));
         }
       }
@@ -503,7 +502,7 @@ namespace libsemigroups {
       REQUIRE(tc.class_index_to_word(4) == word_type({1, 0, 0}));
       REQUIRE(std::is_sorted(tc.cbegin_normal_forms(),
                              tc.cend_normal_forms(),
-                             RecursivePathCompare<word_type>{}));
+                             RecursivePathCompare{}));
     }
 
     // Felsch is actually faster here!
@@ -564,7 +563,7 @@ namespace libsemigroups {
       tc.standardize(tc_order::recursive);
       REQUIRE(std::is_sorted(tc.cbegin_normal_forms(),
                              tc.cend_normal_forms(),
-                             RecursivePathCompare<word_type>{}));
+                             RecursivePathCompare{}));
       REQUIRE(std::vector<word_type>(tc.cbegin_normal_forms(),
                                      tc.cbegin_normal_forms() + 10)
               == std::vector<word_type>({{{0},
@@ -584,7 +583,7 @@ namespace libsemigroups {
       }
       REQUIRE(std::is_sorted(tc.cbegin_normal_forms(),
                              tc.cend_normal_forms(),
-                             LexicographicalCompare<word_type>{}));
+                             LexicographicalCompare{}));
       REQUIRE(std::vector<word_type>(tc.cbegin_normal_forms(),
                                      tc.cbegin_normal_forms() + 10)
               == std::vector<word_type>({{0},
@@ -601,9 +600,8 @@ namespace libsemigroups {
       for (size_t c = 0; c < tc.number_of_classes(); ++c) {
         REQUIRE(tc.word_to_class_index(tc.class_index_to_word(c)) == c);
       }
-      REQUIRE(std::is_sorted(tc.cbegin_normal_forms(),
-                             tc.cend_normal_forms(),
-                             ShortLexCompare<word_type>{}));
+      REQUIRE(std::is_sorted(
+          tc.cbegin_normal_forms(), tc.cend_normal_forms(), ShortLexCompare{}));
       REQUIRE(std::vector<word_type>(tc.cbegin_normal_forms(),
                                      tc.cbegin_normal_forms() + 10)
               == std::vector<word_type>({{0},
@@ -741,7 +739,7 @@ namespace libsemigroups {
       REQUIRE(std::unique(w.begin(), w.end()) == w.end());
       REQUIRE(std::is_sorted(tc.cbegin_normal_forms(),
                              tc.cend_normal_forms(),
-                             RecursivePathCompare<word_type>{}));
+                             RecursivePathCompare{}));
       REQUIRE(std::all_of(
           tc.cbegin_normal_forms(),
           tc.cend_normal_forms(),
@@ -3131,15 +3129,15 @@ namespace libsemigroups {
       tc.congruence().standardize(tc_order::shortlex);
       REQUIRE(std::is_sorted(tc.congruence().cbegin_normal_forms(),
                              tc.congruence().cend_normal_forms(),
-                             ShortLexCompare<word_type>{}));
+                             ShortLexCompare{}));
       tc.congruence().standardize(tc_order::lex);
       REQUIRE(std::is_sorted(tc.congruence().cbegin_normal_forms(),
                              tc.congruence().cend_normal_forms(),
-                             LexicographicalCompare<word_type>{}));
+                             LexicographicalCompare{}));
       tc.congruence().standardize(tc_order::recursive);
       REQUIRE(std::is_sorted(tc.congruence().cbegin_normal_forms(),
                              tc.congruence().cend_normal_forms(),
-                             RecursivePathCompare<word_type>{}));
+                             RecursivePathCompare{}));
     }
 
     // The following example is a good one for using the lookahead.
@@ -3592,17 +3590,17 @@ namespace libsemigroups {
       tc.congruence().standardize(tc_order::shortlex);
       REQUIRE(std::is_sorted(tc.congruence().cbegin_normal_forms(),
                              tc.congruence().cend_normal_forms(),
-                             ShortLexCompare<word_type>{}));
+                             ShortLexCompare{}));
       tc.congruence().standardize(tc_order::lex);
       REQUIRE(std::is_sorted(tc.congruence().cbegin_normal_forms(),
                              tc.congruence().cend_normal_forms(),
-                             LexicographicalCompare<word_type>{}));
+                             LexicographicalCompare{}));
       // The next section is very slow
       // SECTION("standardizing with recursive order") {
       //  tc.congruence().standardize(tc_order::recursive);
       //  REQUIRE(std::is_sorted(tc.congruence().cbegin_normal_forms(),
       //                         tc.congruence().cend_normal_forms(),
-      //                         RecursivePathCompare<word_type>{}));
+      //                         RecursivePathCompare{}));
       // }
     }
 

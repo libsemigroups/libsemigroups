@@ -68,4 +68,121 @@ namespace libsemigroups {
     REQUIRE_THROWS(make<FroidurePin<Transf<0, uint8_t>>>(ad, 0, 11));
   }
 
+  /*
+  LIBSEMIGROUPS_TEST_CASE("make<FroidurePin<TCE>>",
+                          "002",
+                          "from Todd-Coxeter",
+                          "[quick][make]") {
+    using TCE            = v3::detail::TCE;
+    using FroidurePinTCE = FroidurePin<TCE>;
+
+    auto rg = ReportGuard(false);
+
+    Presentation<word_type> p;
+    p.alphabet(4);
+    presentation::add_rule_and_check(p, {0, 0}, {0});
+    presentation::add_rule_and_check(p, {1, 0}, {1});
+    presentation::add_rule_and_check(p, {0, 1}, {1});
+    presentation::add_rule_and_check(p, {2, 0}, {2});
+    presentation::add_rule_and_check(p, {0, 2}, {2});
+    presentation::add_rule_and_check(p, {3, 0}, {3});
+    presentation::add_rule_and_check(p, {0, 3}, {3});
+    presentation::add_rule_and_check(p, {1, 1}, {0});
+    presentation::add_rule_and_check(p, {2, 3}, {0});
+    presentation::add_rule_and_check(p, {2, 2, 2}, {0});
+    presentation::add_rule_and_check(
+        p, {1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2}, {0});
+    presentation::add_rule_and_check(p,
+                                     {1, 2, 1, 3, 1, 2, 1, 3, 1, 2, 1,
+                                      3, 1, 2, 1, 3, 1, 2, 1, 3, 1, 2,
+                                      1, 3, 1, 2, 1, 3, 1, 2, 1, 3},
+                                     {0});
+    // TODO
+    ToddCoxeter tc(twosided, p);
+
+    section_felsch(tc);
+
+    // check_hlt(tc);
+    // check_felsch(tc);
+    // check_random(tc);
+    // check_Rc_style(tc);
+    // check_R_over_C_style(tc);
+    // check_CR_style(tc);
+    // check_Cr_style(tc);
+    REQUIRE(tc.number_of_classes() == 10'752);
+    check_complete_compatible(tc);
+  }
+      // Take a copy to test copy constructor
+      auto& S = static_cast<FroidurePinTCE&>(*tc.quotient_froidure_pin());
+      auto  T = S.copy_closure({S.generator(0)});
+
+      REQUIRE(T.size() == S.size());
+      REQUIRE(T.number_of_generators() == S.number_of_generators());
+
+      REQUIRE(S.size() == 10'752);
+      REQUIRE(S.number_of_idempotents() == 1);
+      for (size_t c = 0; c < tc.number_of_classes(); ++c) {
+        REQUIRE(tc.class_index_to_word(c) == S.factorisation(c));
+        REQUIRE(tc.word_to_class_index(tc.class_index_to_word(c)) == c);
+      }
+      REQUIRE(tc.finished());
+
+      tc.standardize(order::recursive);
+      REQUIRE(std::is_sorted(tc.cbegin_normal_forms(),
+                             tc.cend_normal_forms(),
+                             RecursivePathCompare<word_type>{}));
+      REQUIRE(std::vector<word_type>(tc.cbegin_normal_forms(),
+                                     tc.cbegin_normal_forms() + 10)
+              == std::vector<word_type>({{{0},
+                                          {1},
+                                          {2},
+                                          {2, 1},
+                                          {1, 2},
+                                          {1, 2, 1},
+                                          {2, 2},
+                                          {2, 2, 1},
+                                          {2, 1, 2},
+                                          {2, 1, 2, 1}}}));
+
+      tc.standardize(order::lex);
+      for (size_t c = 0; c < tc.number_of_classes(); ++c) {
+        REQUIRE(tc.word_to_class_index(tc.class_index_to_word(c)) == c);
+      }
+      REQUIRE(std::is_sorted(tc.cbegin_normal_forms(),
+                             tc.cend_normal_forms(),
+                             LexicographicalCompare<word_type>{}));
+      REQUIRE(std::vector<word_type>(tc.cbegin_normal_forms(),
+                                     tc.cbegin_normal_forms() + 10)
+              == std::vector<word_type>({{0},
+                                         {0, 1},
+                                         {0, 1, 2},
+                                         {0, 1, 2, 1},
+                                         {0, 1, 2, 1, 2},
+                                         {0, 1, 2, 1, 2, 1},
+                                         {0, 1, 2, 1, 2, 1, 2},
+                                         {0, 1, 2, 1, 2, 1, 2, 1},
+                                         {0, 1, 2, 1, 2, 1, 2, 1, 2},
+                                         {0, 1, 2, 1, 2, 1, 2, 1, 2, 1}}));
+      tc.standardize(order::shortlex);
+      for (size_t c = 0; c < tc.number_of_classes(); ++c) {
+        REQUIRE(tc.word_to_class_index(tc.class_index_to_word(c)) == c);
+      }
+      REQUIRE(std::is_sorted(tc.cbegin_normal_forms(),
+                             tc.cend_normal_forms(),
+                             ShortLexCompare<word_type>{}));
+      REQUIRE(std::vector<word_type>(tc.cbegin_normal_forms(),
+                                     tc.cbegin_normal_forms() + 10)
+              == std::vector<word_type>({{0},
+                                         {1},
+                                         {2},
+                                         {3},
+                                         {1, 2},
+                                         {1, 3},
+                                         {2, 1},
+                                         {3, 1},
+                                         {1, 2, 1},
+                                         {1, 3, 1}}));
+    }
+*/
+
 }  // namespace libsemigroups

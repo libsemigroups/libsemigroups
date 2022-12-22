@@ -51,11 +51,17 @@
 #include "int-range.hpp"       // for IntegralRange
 #include "iterator.hpp"        // for ConstIteratorStateless
 #include "matrix.hpp"          // for IntMat
+#include "order.hpp"           // for order
 #include "types.hpp"           // for word_type
 #include "word.hpp"            // for number_of_words
 
 #ifdef LIBSEMIGROUPS_EIGEN_ENABLED
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+#define _SILENCE_ALL_CXX17_DEPRECATION_WARNINGS
 #include <Eigen/Core>
+#undef _SILENCE_ALL_CXX17_DEPRECATION_WARNINGS
+#pragma clang diagnostic pop
 #endif
 
 namespace libsemigroups {
@@ -98,6 +104,9 @@ namespace libsemigroups {
     static_assert(
         std::is_unsigned<T>(),
         "the template parameter T must be an unsigned integral type!");
+
+    template <typename N>
+    friend class ActionDigraph;
 
     ////////////////////////////////////////////////////////////////////////
     // ActionDigraph - iterator - private
@@ -234,6 +243,9 @@ namespace libsemigroups {
 
     //! Default copy constructor
     ActionDigraph(ActionDigraph const&);
+
+    template <typename N>
+    ActionDigraph(ActionDigraph<N> const&);
 
     //! Default move constructor
     ActionDigraph(ActionDigraph&&);
@@ -514,6 +526,13 @@ namespace libsemigroups {
       add_edge_nc(i, j, lbl);
     }
 
+    void inline def_edge(node_type i, label_type lbl, node_type j) {
+      action_digraph_helper::validate_node(*this, i);
+      action_digraph_helper::validate_node(*this, j);
+      action_digraph_helper::validate_label(*this, lbl);
+      def_edge_nc(i, lbl, j);
+    }
+
     //! Add an edge from one node to another with a given label.
     //!
     //! \param i the source node
@@ -531,7 +550,14 @@ namespace libsemigroups {
     //!
     //! \warning
     //! No checks whatsoever on the validity of the arguments are performed.
+
+    // TODO remove this in v3
     void inline add_edge_nc(node_type i, node_type j, label_type lbl) {
+      _dynamic_array_2.set(i, lbl, j);
+      reset();
+    }
+
+    void inline def_edge_nc(node_type i, label_type lbl, node_type j) {
       _dynamic_array_2.set(i, lbl, j);
       reset();
     }
@@ -574,6 +600,10 @@ namespace libsemigroups {
     void inline remove_all_edges() {
       std::fill(_dynamic_array_2.begin(), _dynamic_array_2.end(), UNDEFINED);
       reset();
+    }
+
+    void inline remove_label(label_type a) {
+      _dynamic_array_2.erase_column(a);
     }
 
     //! Ensures that the digraph has capacity for a given number of nodes, and
@@ -3116,6 +3146,13 @@ namespace libsemigroups {
   ActionDigraph<T>::ActionDigraph(ActionDigraph const&) = default;
 
   template <typename T>
+  template <typename N>
+  ActionDigraph<T>::ActionDigraph(ActionDigraph<N> const& ad)
+      : ActionDigraph(ad.number_of_nodes(), ad.out_degree()) {
+    _dynamic_array_2 = ad._dynamic_array_2;
+  }
+
+  template <typename T>
   ActionDigraph<T>::ActionDigraph(ActionDigraph&&) = default;
 
   template <typename T>
@@ -3321,5 +3358,218 @@ namespace libsemigroups {
     os << "}";
     return os;
   }
+
+  namespace action_digraph {
+
+    namespace detail {
+      // TODO(now) to tpp file
+      template <typename T>
+      bool shortlex_standardize(T& d, Forest& f) {
+        LIBSEMIGROUPS_ASSERT(d.number_of_nodes() != 0);
+        LIBSEMIGROUPS_ASSERT(f.number_of_nodes() == 0);
+
+        using node_type = typename T::node_type;
+        f.add_nodes(1);
+
+        node_type    t      = 0;
+        size_t const n      = d.out_degree();
+        bool         result = false;
+
+        for (node_type s = 0; s <= t; ++s) {
+          for (letter_type x = 0; x < n; ++x) {
+            node_type const r = d.unsafe_neighbor(s, x);
+            if (r != UNDEFINED) {
+              if (r > t) {
+                t++;
+                f.add_nodes(1);
+                if (r > t) {
+                  d.swap_nodes(t, r);
+                  result = true;
+                }
+                f.set(t, (s == t ? r : s), x);
+              }
+            }
+          }
+        }
+        return result;
+      }
+
+      template <typename T>
+      bool lex_standardize(T& d, Forest& f) {
+        LIBSEMIGROUPS_ASSERT(d.number_of_nodes() != 0);
+        LIBSEMIGROUPS_ASSERT(f.number_of_nodes() == 0);
+
+        using node_type  = typename T::node_type;
+        using label_type = typename T::label_type;
+
+        f.add_nodes(1);
+
+        node_type  s = 0, t = 0;
+        label_type x      = 0;
+        auto const n      = d.out_degree();
+        bool       result = false;
+
+        // Perform a DFS through d
+        while (s <= t) {
+          node_type r = d.unsafe_neighbor(s, x);
+          if (r != UNDEFINED) {
+            if (r > t) {
+              t++;
+              f.add_nodes(1);
+              if (r > t) {
+                d.swap_nodes(t, r);
+                result = true;
+              }
+              f.set(t, (s == t ? r : s), x);
+              s = t;
+              x = 0;
+              continue;
+            }
+          }
+          x++;
+          if (x == n) {  // backtrack
+            x = f.label(s);
+            s = f.parent(s);
+          }
+        }
+        return result;
+      }
+
+      template <typename T>
+      bool recursive_standardize(T& d, Forest& f) {
+        LIBSEMIGROUPS_ASSERT(d.number_of_nodes() != 0);
+        LIBSEMIGROUPS_ASSERT(f.number_of_nodes() == 0);
+
+        using node_type = typename T::node_type;
+
+        auto swap_if_necessary
+            = [&d, &f](node_type const s, node_type& t, letter_type const x) {
+                node_type r      = d.unsafe_neighbor(s, x);
+                bool      result = false;
+                if (r != UNDEFINED) {
+                  if (r > t) {
+                    t++;
+                    f.add_nodes(1);
+                    if (r > t) {
+                      d.swap_nodes(t, r);
+                    }
+                    f.set(t, (s == t ? r : s), x);
+                    result = true;
+                  }
+                }
+                return result;
+              };
+
+        f.add_nodes(1);
+
+        std::vector<word_type> words;
+        size_t const           n = d.out_degree();
+        letter_type            a = 0;
+        node_type              s = 0, t = 0;
+
+        bool result = false;
+
+        while (s <= t) {
+          if (swap_if_necessary(s, t, 0)) {
+            words.push_back(word_type(t, a));
+            result = true;
+          }
+          s++;
+        }
+        a++;
+        bool new_generator = true;
+        int  x, u, w;
+        while (a < n && t < d.number_of_nodes() - 1) {
+          if (new_generator) {
+            w = -1;  // -1 is the empty word
+            if (swap_if_necessary(0, t, a)) {
+              result = true;
+              words.push_back({a});
+            }
+            x             = words.size() - 1;
+            u             = words.size() - 1;
+            new_generator = false;
+          }
+
+          node_type const uu = action_digraph_helper::follow_path_nc(
+              d, 0, words[u].begin(), words[u].end());
+          if (uu != UNDEFINED) {
+            for (int v = 0; v < x; v++) {
+              node_type const uuv = action_digraph_helper::follow_path_nc(
+                  d, uu, words[v].begin(), words[v].end() - 1);
+              if (uuv != UNDEFINED) {
+                s = uuv;
+                if (swap_if_necessary(s, t, words[v].back())) {
+                  result        = true;
+                  word_type nxt = words[u];
+                  nxt.insert(nxt.end(), words[v].begin(), words[v].end());
+                  words.push_back(std::move(nxt));
+                }
+              }
+            }
+          }
+          w++;
+          if (static_cast<size_t>(w) < words.size()) {
+            node_type const ww = action_digraph_helper::follow_path_nc(
+                d, 0, words[w].begin(), words[w].end());
+            if (ww != UNDEFINED) {
+              s = ww;
+              if (swap_if_necessary(s, t, a)) {
+                result        = true;
+                u             = words.size();
+                word_type nxt = words[w];
+                nxt.push_back(a);
+                words.push_back(std::move(nxt));
+              }
+            }
+          } else {
+            a++;
+            new_generator = true;
+          }
+        }
+        return result;
+      }
+    }  // namespace detail
+
+    // Return value indicates whether or not the graph was modified.
+    // TODO(now) to tpp file
+    template <typename T>
+    bool standardize(T& d, Forest& f, order val) {
+      // TODO(later): should be DigraphWithSourcesBase
+      static_assert(
+          std::is_base_of<ActionDigraphBase, T>::value,
+          "the template parameter T must be derived from ActionDigraphBase");
+      if (!f.empty()) {
+        f.clear();
+      }
+      if (d.number_of_nodes() == 0) {
+        return false;
+      }
+
+      switch (val) {
+        case order::none:
+          return false;
+        case order::shortlex:
+          return detail::shortlex_standardize(d, f);
+        case order::lex:
+          return detail::lex_standardize(d, f);
+        case order::recursive:
+          return detail::recursive_standardize(d, f);
+        default:
+          return false;
+      }
+    }
+
+    template <typename T>
+    std::pair<bool, Forest> standardize(T& d, order val = order::shortlex) {
+      static_assert(
+          std::is_base_of<ActionDigraphBase, T>::value,
+          "the template parameter T must be derived from ActionDigraphBase");
+      Forest f;
+      bool   result = standardize(d, f, val);
+      return std::make_pair(result, f);
+    }
+  }  // namespace action_digraph
+
 }  // namespace libsemigroups
 #endif  // LIBSEMIGROUPS_DIGRAPH_HPP_

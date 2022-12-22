@@ -1819,9 +1819,11 @@ namespace libsemigroups {
       LIBSEMIGROUPS_ASSERT(S.number_of_generators() == number_of_generators());
       auto generator_to_row = [&S](size_t i) { return S.current_position(i); };
       if (kind() == congruence_kind::left) {
-        prefill_and_validate(S.left_cayley_graph(), false, generator_to_row);
+        prefill_and_validate(
+            S.left_cayley_graph().table(), false, generator_to_row);
       } else {
-        prefill_and_validate(S.right_cayley_graph(), false, generator_to_row);
+        prefill_and_validate(
+            S.right_cayley_graph().table(), false, generator_to_row);
       }
     }
 

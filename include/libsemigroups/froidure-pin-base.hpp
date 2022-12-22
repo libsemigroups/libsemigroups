@@ -25,6 +25,7 @@
 
 #include "constants.hpp"   // for UNDEFINED
 #include "containers.hpp"  // for DynamicArray2
+#include "digraph.hpp"     // for ActionDigraph
 #include "exception.hpp"   // for LIBSEMIGROUPS_EXCEPTION
 #include "runner.hpp"      // for Runner
 #include "types.hpp"       // for word_type, letter_type, tril
@@ -51,7 +52,7 @@ namespace libsemigroups {
     // It should be possible to change this type and everything will just work,
     // provided the size of the semigroup is less than the maximum value of
     // this type of integer.
-    using size_type = size_t;
+    using size_type = size_t;  // TODO(v3) -> uint32_t
 
     //! Type for the index of an element.
     //!
@@ -60,7 +61,7 @@ namespace libsemigroups {
     using element_index_type = size_type;
 
     //! Type for a left or right Cayley graph.
-    using cayley_graph_type = detail::DynamicArray2<element_index_type>;
+    using cayley_graph_type = ActionDigraph<element_index_type>;
 
    private:
     // See comments in FroidurePin
@@ -671,7 +672,7 @@ namespace libsemigroups {
       validate_letter_index(j);
       run();
       validate_element_index(i);
-      return _right.get(i, j);
+      return _right.unsafe_neighbor(i, j);
     }
 
     //! Returns a const reference to the right Cayley graph.
@@ -690,7 +691,7 @@ namespace libsemigroups {
     //! None.
     cayley_graph_type const& right_cayley_graph() {
       run();
-      _right.shrink_rows_to(size());
+      _right.restrict(size());
       return _right;
     }
 
@@ -720,7 +721,7 @@ namespace libsemigroups {
       validate_letter_index(j);
       run();
       validate_element_index(i);
-      return _left.get(i, j);
+      return _left.unsafe_neighbor(i, j);
     }
 
     //! Returns a const reference to the left Cayley graph.
@@ -739,7 +740,7 @@ namespace libsemigroups {
     //! None.
     cayley_graph_type const& left_cayley_graph() {
       run();
-      _left.shrink_rows_to(size());
+      _left.restrict(size());
       return _left;
     }
 
@@ -975,8 +976,8 @@ namespace libsemigroups {
                           ptr->_suffix[ptr->_enumerate_order[_pos]], _gen))) {
                 _current[0] = ptr->_enumerate_order[_pos];
                 _current[1] = _gen;
-                _current[2]
-                    = ptr->_right.get(ptr->_enumerate_order[_pos], _gen);
+                _current[2] = ptr->_right.unsafe_neighbor(
+                    ptr->_enumerate_order[_pos], _gen);
                 if (_current[2] != UNDEFINED) {
                   _gen++;
                   return *this;
@@ -1191,6 +1192,140 @@ namespace libsemigroups {
     // clang-format on
     const_rule_iterator cend_rules() const {
       return const_rule_iterator(this, current_size(), 0);
+    }
+
+    class const_normal_form_iterator {
+      // Private data
+      mutable FroidurePinBase const* _froidure_pin;
+      enumerate_index_type           _pos;
+      mutable word_type              _word;
+
+     public:
+      using size_type       = typename std::vector<word_type>::size_type;
+      using difference_type = typename std::vector<word_type>::difference_type;
+      using const_pointer   = typename std::vector<word_type>::const_pointer;
+      using pointer         = typename std::vector<word_type>::pointer;
+      using const_reference = typename std::vector<word_type>::const_reference;
+      using reference       = typename std::vector<word_type>::reference;
+      using value_type      = word_type;
+      using iterator_category = std::random_access_iterator_tag;
+
+      const_normal_form_iterator()                                  = default;
+      const_normal_form_iterator(const_normal_form_iterator const&) = default;
+      const_normal_form_iterator(const_normal_form_iterator&&)      = default;
+      const_normal_form_iterator& operator=(const_normal_form_iterator const&)
+          = default;
+      const_normal_form_iterator& operator=(const_normal_form_iterator&&)
+          = default;
+
+      ~const_normal_form_iterator() = default;
+
+      const_normal_form_iterator(FroidurePinBase const* ptr,
+                                 enumerate_index_type   pos)
+          : _froidure_pin(ptr), _pos(pos), _word() {}
+
+      bool operator==(const_normal_form_iterator const& that) const noexcept {
+        return _pos == that._pos;
+      }
+
+      bool operator!=(const_normal_form_iterator const& that) const noexcept {
+        return !(*this == that);
+      }
+
+      bool operator<(const_normal_form_iterator const& that) const noexcept {
+        return _pos < that._pos;
+      }
+
+      bool operator>(const_normal_form_iterator const& that) const noexcept {
+        return _pos > that._pos;
+      }
+
+      bool operator<=(const_normal_form_iterator const& that) const noexcept {
+        return _pos < that._pos;
+      }
+
+      bool operator>=(const_normal_form_iterator const& that) const noexcept {
+        return _pos > that._pos;
+      }
+
+      const_reference operator*() const noexcept {
+        populate_word();
+        return _word;
+      }
+
+      const_pointer operator->() const noexcept {
+        populate_word();
+        return &_word;
+      }
+
+      const_reference operator[](size_type index) const {
+        const_cast<const_normal_form_iterator*>(this)->_pos += index;
+        populate_word();
+        const_cast<const_normal_form_iterator*>(this)->_pos -= index;
+        return _word;
+      }
+
+      // prefix
+      const_normal_form_iterator const& operator++() noexcept {
+        _pos++;
+        return *this;
+      }
+
+      const_normal_form_iterator operator++(int) noexcept {
+        const_normal_form_iterator copy(*this);
+        ++(*this);
+        return copy;
+      }
+
+      const_normal_form_iterator const& operator--() noexcept {
+        _pos--;
+        return *this;
+      }
+
+      const_normal_form_iterator operator--(int) noexcept {
+        const_normal_form_iterator copy(*this);
+        --(*this);
+        return copy;
+      }
+
+      void operator+=(size_type val) noexcept {
+        _pos += val;
+      }
+
+      void operator-=(size_type val) noexcept {
+        _pos -= val;
+      }
+
+      const_normal_form_iterator operator+(size_type val) const noexcept {
+        const_normal_form_iterator copy(*this);
+        copy += val;
+        return copy;
+      }
+
+      const_normal_form_iterator operator-(size_type val) const noexcept {
+        const_normal_form_iterator copy(*this);
+        copy -= val;
+        return copy;
+      }
+
+      void swap(const_normal_form_iterator& that) noexcept {
+        std::swap(_froidure_pin, that._froidure_pin);
+        std::swap(_pos, that._pos);
+        std::swap(_word, that._word);
+      }
+
+     private:
+      void populate_word() const {
+        _froidure_pin->minimal_factorisation(_word, _pos);
+      }
+    };
+
+    const_normal_form_iterator cbegin_normal_forms() const {
+      return const_normal_form_iterator(this, 0);
+    }
+
+    const_normal_form_iterator cend_normal_forms() const {
+      return const_normal_form_iterator(this, current_size());
     }
 
    private:

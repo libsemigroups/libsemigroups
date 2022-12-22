@@ -31,6 +31,30 @@
 #include <vector>   // for vector
 
 namespace libsemigroups {
+  // TODO(v3): redo the doc
+  //! The possible arguments for standardize(order).
+  //!
+  //! The values in this enum can be used as the argument for
+  //! standardize(order) to specify which ordering should be used.  The
+  //! normal forms for congruence classes are given with respect to one of
+  //! the orders specified by the values in this enum.
+  enum class order : uint8_t {
+    //! No standardization has been done.
+    none = 0,
+    //! Normal forms are the short-lex least word belonging to a given
+    //! congruence class.
+    shortlex,
+    //! The congruence classes are ordered lexicographically by their
+    //! normal form. The normal forms themselves are essentially arbitrary
+    //! because there is not necessarily a lexicographically least word in
+    //! every class.
+    lex,
+    //! Normal forms are the recursive-path least word belonging to a given
+    //! congruence class.
+    recursive
+    // wreath TODO(later)
+  };
+
   //! Defined in ``order.hpp``.
   //!
   //! A stateless struct with binary call operator using
@@ -46,7 +70,6 @@ namespace libsemigroups {
   //!
   //! [std::lexicographical_compare]:
   //! https://en.cppreference.com/w/cpp/algorithm/lexicographical_compare
-  template <typename T>
   struct LexicographicalCompare {
     //! Call operator that compares \p x and \p y using
     //! [std::lexicographical_compare].
@@ -64,9 +87,17 @@ namespace libsemigroups {
     //!
     //! [std::lexicographical_compare]:
     //! https://en.cppreference.com/w/cpp/algorithm/lexicographical_compare
+    template <typename T>
     bool operator()(T const& x, T const& y) const {
       return std::lexicographical_compare(
           x.cbegin(), x.cend(), y.cbegin(), y.cend());
+    }
+
+    template <typename T>
+    bool operator()(std::initializer_list<T> x,
+                    std::initializer_list<T> y) const {
+      return std::lexicographical_compare(
+          x.begin(), x.end(), y.begin(), y.end());
     }
 
     //! Call operator that compares iterators using
@@ -259,7 +290,6 @@ namespace libsemigroups {
   //!
   //! \sa
   //! shortlex_compare(T const, T const, S const, S const)
-  template <typename T>
   struct ShortLexCompare {
     //! Call operator that compares \p x and \p y using
     //! \ref shortlex_compare.
@@ -274,6 +304,7 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! See shortlex_compare(T const, T const, S const, S const).
+    template <typename T>
     bool operator()(T const& x, T const& y) {
       return shortlex_compare(x.cbegin(), x.cend(), y.cbegin(), y.cend());
     }
@@ -411,7 +442,6 @@ namespace libsemigroups {
   //!
   //! \sa
   //! recursive_path_compare(T const, T const, S const, S const)
-  template <typename T>
   struct RecursivePathCompare {
     //! Call operator that compares \p x and \p y using
     //! \ref recursive_path_compare.
@@ -423,10 +453,24 @@ namespace libsemigroups {
     //!
     //! \exceptions
     //! \noexcept
+    template <typename T>
     bool operator()(T const& x, T const& y) noexcept {
       return recursive_path_compare(x.cbegin(), x.cend(), y.cbegin(), y.cend());
     }
   };
+
+  template <order val>
+  struct Compare {};
+
+  template <>
+  struct Compare<order::shortlex> : ShortLexCompare {};
+
+  template <>
+  struct Compare<order::lex> : LexicographicalCompare {};
+
+  template <>
+  struct Compare<order::recursive> : RecursivePathCompare {};
+
 }  // namespace libsemigroups
 
 #endif  // LIBSEMIGROUPS_ORDER_HPP_

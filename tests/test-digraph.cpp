@@ -827,8 +827,7 @@ namespace libsemigroups {
                                        {0, 0, 1, 0},
                                        {0, 1, 0, 0}};
 
-    std::sort(
-        expected.begin(), expected.end(), LexicographicalCompare<word_type>());
+    std::sort(expected.begin(), expected.end(), LexicographicalCompare());
     REQUIRE(
         std::vector<word_type>(ad.cbegin_pstilo(0, 4, 0, 5), ad.cend_pstilo())
         == expected);
@@ -918,8 +917,7 @@ namespace libsemigroups {
       }
     }
 
-    std::sort(
-        lprime.begin(), lprime.end(), LexicographicalCompare<word_type>());
+    std::sort(lprime.begin(), lprime.end(), LexicographicalCompare());
 
     REQUIRE(lprime.size() == 15);
     REQUIRE(lprime
@@ -1012,7 +1010,7 @@ namespace libsemigroups {
                                        {0, 0, 1, 0},
                                        {0, 1, 0, 0}};
 
-    std::sort(expected.begin(), expected.end(), ShortLexCompare<word_type>());
+    std::sort(expected.begin(), expected.end(), ShortLexCompare());
     REQUIRE(
         std::vector<word_type>(ad.cbegin_pstislo(0, 4, 0, 5), ad.cend_pstislo())
         == expected);
@@ -1054,9 +1052,8 @@ namespace libsemigroups {
     ad.add_edge(4, 5, 1);
     ad.add_edge(5, 3, 0);
 
-    REQUIRE(std::is_sorted(ad.cbegin_pislo(0, 0, 10),
-                           ad.cend_pislo(),
-                           ShortLexCompare<word_type>()));
+    REQUIRE(std::is_sorted(
+        ad.cbegin_pislo(0, 0, 10), ad.cend_pislo(), ShortLexCompare()));
     REQUIRE(std::distance(ad.cbegin_pislo(0, 0, 10), ad.cend_pislo()) == 75);
     REQUIRE(!action_digraph_helper::is_acyclic(ad));
     REQUIRE(ad.number_of_paths(0, 0, 10) == 75);
@@ -1140,8 +1137,7 @@ namespace libsemigroups {
 
     auto expected
         = std::vector<word_type>(ad.cbegin_pislo(0, 0, 10), ad.cend_pislo());
-    std::sort(
-        expected.begin(), expected.end(), LexicographicalCompare<word_type>());
+    std::sort(expected.begin(), expected.end(), LexicographicalCompare());
     REQUIRE(
         expected
         == std::vector<word_type>(ad.cbegin_pilo(0, 0, 10), ad.cend_pilo()));
