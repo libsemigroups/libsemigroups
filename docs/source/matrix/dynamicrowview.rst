@@ -39,56 +39,56 @@ semirings.
                          typename Scalar> \
    DynamicRowView final
    :tparam-line-spec:
-  
+
    This class is the type of row views into a :cpp:any:`DynamicMatrix` with the
    same template parameters; see the documentation for :cpp:any:`DynamicMatrix`
    for further details.
-  
+
    .. warning::
      If the underlying matrix is destroyed, then any row views for that matrix
      are invalidated.
 
-   :tparam PlusOp: 
+   :tparam PlusOp:
       a stateless type with a call operator of signature :code:`scalar_type
       operator()(scalar_type, scalar_type)` implementing the addition of the
       semiring
 
-   :tparam ProdOp: 
+   :tparam ProdOp:
       a stateless type with a call operator of signature :code:`scalar_type
       operator()(scalar_type, scalar_type)` implementing the multiplication of
       the semiring
 
-   :tparam ZeroOp: 
+   :tparam ZeroOp:
       a stateless type with a call operator of signature :code:`scalar_type
       operator()()` returning the zero of the semiring (the additive identity
       element)
 
-   :tparam OneOp: 
+   :tparam OneOp:
       a stateless type with a call operator of signature :code:`scalar_type
       operator()()` returning the one of the semiring (the multiplicative
       identity element)
 
-   :tparam Scalar: 
+   :tparam Scalar:
       the type of the entries in the matrices (the type of elements in the
       underlying semiring)
 
 
 .. cpp:class:: template <typename Semiring, typename Scalar> \
                DynamicRowView final
-  
+
    This class is the type of row views into a :cpp:any:`DynamicMatrix` with the
    same template parameters; see the documentation for :cpp:any:`DynamicMatrix`
    for further details.
-  
+
    .. warning::
      If the underlying matrix is destroyed, then any row views for that matrix
      are invalidated.
 
-   :tparam Semiring: 
+   :tparam Semiring:
       the type of a semiring object which defines the semiring arithmetic (see
       requirements below).
 
-   :tparam Scalar: 
+   :tparam Scalar:
       the type of the entries in the matrices (the type of elements in the
       underlying semiring)
 
@@ -113,7 +113,7 @@ semirings.
 Member types
 ------------
 
-.. list-table:: 
+.. list-table::
    :widths: 50 50
    :header-rows: 1
 
@@ -137,7 +137,7 @@ Member types
 Member functions
 ----------------
 
-.. list-table:: 
+.. list-table::
    :widths: 50 50
 
    * - :ref:`(constructor)<dynamicrowview_constructors>`
@@ -148,7 +148,7 @@ Member functions
 Iterators
 ---------
 
-.. list-table:: 
+.. list-table::
    :widths: 50 50
 
    * - :ref:`begin/cbegin<dynamicrowview_begin>`
@@ -159,9 +159,9 @@ Iterators
 Accessors
 ---------
 
-.. list-table:: 
+.. list-table::
    :widths: 50 50
-   
+
    * - :ref:`operator()<dynamicrowview_call_operator>`
      - access specified element
    * - :ref:`operator[]<dynamicrowview_subscript_operator>`
@@ -170,7 +170,7 @@ Accessors
 Arithmetic operators
 --------------------
 
-.. list-table:: 
+.. list-table::
    :widths: 50 50
 
    * - :ref:`operator+=<dynamicrowview_operator_plus_equals>`
@@ -185,7 +185,7 @@ Arithmetic operators
 Comparison operators
 --------------------
 
-.. list-table:: 
+.. list-table::
    :widths: 50 50
 
    * - :ref:`operator==<dynamicrowview_operator_equals>`

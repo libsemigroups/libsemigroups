@@ -42,7 +42,7 @@ libsemigroups::FroidurePin:
   - operator=(FroidurePin const &) = delete
   - operator=(FroidurePin &&) = delete
 - Initialisation:
-  - ["This page contains information about the member functions of the 
+  - ["This page contains information about the member functions of the
      :cpp:any:`FroidurePin` class that can be used for initialisation."]
   - add_generator(const_reference)
   - add_generators(T const&)
@@ -56,14 +56,14 @@ libsemigroups::FroidurePin:
   - copy_closure(std::initializer_list< element_type >)
   - state() const
 - Factorisation and relations:
-  - ["This page contains information about the member functions of the  
+  - ["This page contains information about the member functions of the
      :cpp:any:`FroidurePin` class related to factorising elements, products, and
      defining relations."]
   - minimal_factorisation(const_reference)
   - factorisation(const_reference)
   - word_to_element(word_type const &) const
 - Membership:
-  - ["This page contains information about the member functions of the  
+  - ["This page contains information about the member functions of the
      :cpp:any:`FroidurePin` class related to testing membership."]
   - generator(letter_type) const
   - contains(const_reference)
@@ -74,7 +74,7 @@ libsemigroups::FroidurePin:
   - at(element_index_type)
   - operator[](element_index_type) const
 - Iterators:
-  - ["This page contains information about the member functions of the  
+  - ["This page contains information about the member functions of the
      :cpp:any:`FroidurePin` class related to iterators."]
   - cbegin() const
   - begin() const

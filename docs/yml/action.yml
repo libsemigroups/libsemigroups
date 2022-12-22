@@ -1,4 +1,4 @@
-libsemigroups::Action: 
+libsemigroups::Action:
 - Member types:
   - ["This page contains information about the member types of the
      :cpp:any:`Action` class."]
@@ -27,7 +27,7 @@ libsemigroups::Action:
   - reserve(size_t)
   - add_seed(const_reference_point_type)
   - add_generator(element_type)
-- Position, size, empty...: 
+- Position, size, empty...:
   - ["This page contains information about accessing the values in an instance
      of the :cpp:any:`Action` class."]
   - position(const_reference_point_type) const

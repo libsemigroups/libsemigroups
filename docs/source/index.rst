@@ -69,7 +69,7 @@ implement; see, for example,  :cpp:any:`libsemigroups::FroidurePin`,
 :cpp:any:`libsemigroups::fpsemigroup::Kambites`,
 :cpp:any:`libsemigroups::fpsemigroup::KnuthBendix`,
 :cpp:any:`libsemigroups::SchreierSims`,
-:cpp:any:`libsemigroups::Sims1`, or 
+:cpp:any:`libsemigroups::Sims1`, or
 :cpp:any:`libsemigroups::Stephen`.
 
 The implementations in :cpp:any:`libsemigroups::FroidurePin`,

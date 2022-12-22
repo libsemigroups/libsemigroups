@@ -13,13 +13,13 @@ Product
                 Product<T, std::enable_if_t<IsMatrix<T>>>
 
    Defined in ``matrix.hpp``.
-   
+
    Specialization of the adapter :cpp:any:`Product` for types ``T`` such
-   that the value of :cpp:any:`IsMatrix\<T>` is ``true``. 
-   
+   that the value of :cpp:any:`IsMatrix\<T>` is ``true``.
+
    :tparam: T the type of matrices.
-   
-   .. cpp:function:: inline void operator()(T& xy, T const& x, T const& y, size_t = 0) const 
+
+   .. cpp:function:: inline void operator()(T& xy, T const& x, T const& y, size_t = 0) const
 
       Replaces the value of ``xy`` by the product of the matrices ``x`` and ``y``.
 
@@ -35,11 +35,11 @@ Product
 
       :complexity:
        :math:`O(m ^ 2)` where :math:`m` is the number of rows of the matrix ``x``.
-     
-      .. warning:: 
+
+      .. warning::
          This function only works for square matrices.
-        
-      .. seealso:: 
+
+      .. seealso::
         For further details see: :cpp:any:`void
         StaticMatrix::product_inplace(StaticMatrix const& A, StaticMatrix
         const& B)`, :cpp:any:`void DynamicMatrix::product_inplace(DynamicMatrix

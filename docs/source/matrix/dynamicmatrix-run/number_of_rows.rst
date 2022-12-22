@@ -17,11 +17,11 @@ number_of_rows, number_of_cols
 
    :returns:
      A value of type ``size_t``.
-   
+
    :complexity: Constant
-   
-   :exceptions: 
-     this function is ``noexcept`` and is guaranteed never to throw.   
+
+   :exceptions:
+     this function is ``noexcept`` and is guaranteed never to throw.
 
    :parameters: (None)
 
@@ -32,11 +32,11 @@ number_of_rows, number_of_cols
 
    :returns:
      A value of type ``size_t``.
-   
+
    :complexity: Constant
-   
-   :exceptions: 
-     this function is ``noexcept`` and is guaranteed never to throw.   
+
+   :exceptions:
+     this function is ``noexcept`` and is guaranteed never to throw.
 
    :parameters: (None)
-   
+

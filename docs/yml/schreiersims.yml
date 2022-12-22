@@ -1,4 +1,4 @@
-libsemigroups::SchreierSims: 
+libsemigroups::SchreierSims:
 - Member types:
   - ["This page contains the documentation for member types of the
      :cpp:any:`SchreierSims` class."]
@@ -17,18 +17,18 @@ libsemigroups::SchreierSims:
   - Product
   - Swap
 - Constructors:
-  - ["This page contains the documentation for constructors for the 
+  - ["This page contains the documentation for constructors for the
      :cpp:any:`SchreierSims` class."]
   - SchreierSims()
   - SchreierSims(SchreierSims &&) = default
 - Deleted constructors:
-  - ["This page lists the deleted constructors for the 
+  - ["This page lists the deleted constructors for the
      :cpp:any:`SchreierSims` class."]
   - SchreierSims(SchreierSims const &) = delete
   - operator=(SchreierSims const &) = delete
   - operator=(SchreierSims &&) = delete
 - Initialisation:
-  - ["This page contains information about the member functions of the 
+  - ["This page contains information about the member functions of the
      :cpp:any:`SchreierSims` class that can be used for initialisation."]
   - add_base_point(point_type)
   - add_generator(const_element_reference)
@@ -39,7 +39,7 @@ libsemigroups::SchreierSims:
      algorithm on an initialized :cpp:any:`SchreierSims` object."]
   - run()
 - Attributes:
-  - ["This page contains information about non-const attributes of the  
+  - ["This page contains information about non-const attributes of the
      :cpp:any:`SchreierSims` class."]
   - base(index_type) const
   - base_size() const noexcept
@@ -54,8 +54,8 @@ libsemigroups::SchreierSims:
   - transversal_element(index_type, point_type)
   - inversal_element(index_type, point_type)
   - orbits_lookup(index_type, point_type)
-- Membership: 
-  - ["This page contains information about the member functions of the  
+- Membership:
+  - ["This page contains information about the member functions of the
      :cpp:any:`SchreierSims` class related to checking membership."]
   - contains(const_element_reference)
   - sift(const_element_reference)

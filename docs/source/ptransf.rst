@@ -25,7 +25,7 @@ Helper variable templates
 
 .. toctree::
    :maxdepth: 1
-   
+
    _generated/libsemigroups__isderivedfromptransf
    _generated/libsemigroups__isstatic
    _generated/libsemigroups__isdynamic

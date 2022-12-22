@@ -17,11 +17,11 @@ begin, cbegin
    :parameters: (None)
 
    :returns: A value of type :cpp:any:`iterator`.
-   
+
    :complexity: Constant
-   
-   :exceptions: 
-     This function is ``noexcept`` and is guaranteed never to throw.   
+
+   :exceptions:
+     This function is ``noexcept`` and is guaranteed never to throw.
 
 
 .. cpp:function:: const_iterator cbegin()
@@ -32,8 +32,8 @@ begin, cbegin
    :parameters: (None)
 
    :returns: A value of type :cpp:any:`const_iterator`.
-   
+
    :complexity: Constant
-   
-   :exceptions: 
-     This function is ``noexcept`` and is guaranteed never to throw.   
+
+   :exceptions:
+     This function is ``noexcept`` and is guaranteed never to throw.

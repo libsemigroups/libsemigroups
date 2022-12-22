@@ -10,17 +10,17 @@ libsemigroups::CongruenceWrapper:
   - CongruenceWrapper()
   - CongruenceWrapper(std::shared_ptr<FroidurePinBase>)
   - CongruenceWrapper(S const&)
-  - CongruenceWrapper(CongruenceWrapper const&) 
+  - CongruenceWrapper(CongruenceWrapper const&)
   - CongruenceWrapper(CongruenceWrapper&&) = default
 - Deleted constructors:
   - ["This page lists the deleted constructors for the
      :cpp:any:`CongruenceWrapper` class."]
-  - operator=(CongruenceWrapper const&) = delete 
+  - operator=(CongruenceWrapper const&) = delete
   - operator=(CongruenceWrapper&&) = delete
 - CongruenceWrapper member functions:
   - ["This page lists the member functions of the :cpp:any:`CongruenceWrapper`
       class that are not present in its base classes."]
-  - congruence() const 
+  - congruence() const
 - Member functions and types inherited from FpSemigroupInterface:
   - ["This page contains a description of the member functions of the
      :cpp:any:`CongruenceWrapper` class inherited from
@@ -65,7 +65,7 @@ libsemigroups::CongruenceWrapper:
   - normal_form(std::string const&) override
   - normal_form(word_type const&) override
   - normal_form(std::initializer_list<letter_type>)
-  - equal_to(std::initializer_list<letter_type>, std::initializer_list<letter_type>) 
+  - equal_to(std::initializer_list<letter_type>, std::initializer_list<letter_type>)
   - equal_to(std::string const&, std::string const&) override
   - equal_to(word_type const&, word_type const&) override
   - has_identity() const noexcept

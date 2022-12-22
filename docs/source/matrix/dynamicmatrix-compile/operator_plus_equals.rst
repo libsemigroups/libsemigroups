@@ -13,16 +13,16 @@ operator+=
 
 .. cpp:function:: void operator+=(DynamicMatrix const& that)
 
-   Redefines ``this`` to be the sum of ``*this`` and ``that``. 
+   Redefines ``this`` to be the sum of ``*this`` and ``that``.
 
    :param that: the matrix to add to ``this``.
-    
+
    :returns: (None)
 
-   :throws: 
+   :throws:
       if the implementation of the semiring plus throws.
 
-   :complexity: 
+   :complexity:
       :math:`O(mn)` where :math:`m` is :cpp:any:`DynamicMatrix::number_of_rows`
       and :math:`m` is :cpp:any:`DynamicMatrix::number_of_cols`
 
@@ -32,16 +32,16 @@ operator+=
 
 .. cpp:function:: void operator+=(RowView const& that)
 
-   Redefines ``this`` to be the sum of ``*this`` and ``that``. 
+   Redefines ``this`` to be the sum of ``*this`` and ``that``.
 
    :param that: the matrix to add to ``this``.
-    
+
    :returns: (None)
 
-   :throws: 
+   :throws:
       if the implementation of the semiring plus throws.
 
-   :complexity: 
+   :complexity:
       :math:`O(mn)` where :math:`m` is :cpp:any:`DynamicMatrix::number_of_rows`
       and :math:`m` is :cpp:any:`DynamicMatrix::number_of_cols`
 
@@ -54,13 +54,13 @@ operator+=
    Adds a scalar to every entry of the matrix in-place.
 
    :param a: the scalar to add to ``this``.
-    
+
    :returns: (None)
 
-   :throws: 
+   :throws:
       if the implementation of the semiring plus throws.
 
-   :complexity: 
+   :complexity:
       :math:`O(mn)` where :math:`m` is :cpp:any:`DynamicMatrix::number_of_rows`
       and :math:`m` is :cpp:any:`DynamicMatrix::number_of_cols`
 

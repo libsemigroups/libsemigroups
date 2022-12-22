@@ -8,7 +8,7 @@ Miscellaneous
 =============
 
 In this section we describe some miscellaneous functionality in
-``libsemigroups``. 
+``libsemigroups``.
 
 .. toctree::
    :maxdepth: 1

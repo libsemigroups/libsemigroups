@@ -8,7 +8,7 @@ Elements
 ========
 
 This page contains an overview summary of the functionality in
-``libsemigroups`` for defining elements of semigroups. 
+``libsemigroups`` for defining elements of semigroups.
 
 If ``libsemigroups`` is compiled with HPCombi_ support enabled (see
 :ref:`Installation` for details), then the types defined in HPCombi_ (which use
@@ -25,7 +25,7 @@ HPCombi_ documentation.
    perm
    pperm
    pbr
-  
+
 Adapters
 ~~~~~~~~
 
@@ -49,7 +49,7 @@ The following helpers:
 
 can be used to get the smallest/fastest type representing a permutation,
 partial permutation, or transformation, and can be used independently of
-whether or not ``libsemigroups`` is compiled with HPCombi_ support enabled. 
+whether or not ``libsemigroups`` is compiled with HPCombi_ support enabled.
 
 
 

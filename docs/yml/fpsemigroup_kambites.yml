@@ -1,4 +1,4 @@
-libsemigroups::fpsemigroup::Kambites: 
+libsemigroups::fpsemigroup::Kambites:
 - Member type:
   - ["This page contains information about the member types of the
      :cpp:any:`fpsemigroup::Kambites` class."]
@@ -61,9 +61,9 @@ libsemigroups::fpsemigroup::Kambites:
   - validate_word(std::string const&) const
   - to_gap_string()
   - normal_form(string_type const&) override
-  - normal_form(word_type const&) 
+  - normal_form(word_type const&)
   - normal_form(std::initializer_list<letter_type>)
-  - equal_to(std::initializer_list<letter_type>, std::initializer_list<letter_type>) 
+  - equal_to(std::initializer_list<letter_type>, std::initializer_list<letter_type>)
   - equal_to(string_type const&, string_type const&) override
   - equal_to(word_type const&, word_type const&)
   - has_identity() const noexcept

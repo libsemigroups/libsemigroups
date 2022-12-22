@@ -10,7 +10,7 @@ Validation
 .. cpp:namespace:: libsemigroups
 
 The function :cpp:any:`validate_matrix` can be used to check that a matrix is
-valid (i.e. that its entries belong to the underlying semiring). 
+valid (i.e. that its entries belong to the underlying semiring).
 
 
 .. cpp:function:: template <typename Mat> \
@@ -18,21 +18,21 @@ valid (i.e. that its entries belong to the underlying semiring).
 
    Throws an exception if the matrix is invalid.
 
-   The overloaded static member functions :cpp:any:`DynamicMatrix::make` and 
+   The overloaded static member functions :cpp:any:`DynamicMatrix::make` and
    :cpp:any:`StaticMatrix::make` use this function to verify that the
-   constructed matrix is valid. 
+   constructed matrix is valid.
 
-   :tparam Mat: a type for which :cpp:any:`IsMatrix<Mat>` is ``true``. 
+   :tparam Mat: a type for which :cpp:any:`IsMatrix<Mat>` is ``true``.
 
    :param m: the matrix to validate.
-   
+
    :returns: (None).
 
-   :throws: A :cpp:any:`LibsemigroupsException` if the matrix ``m`` is invalid. 
+   :throws: A :cpp:any:`LibsemigroupsException` if the matrix ``m`` is invalid.
 
-   :complexity: 
+   :complexity:
      At worst :math:`O(nk)` where :math:`n` is the number of rows in the matrix
-     ``m`` and :math:`k` is the number of columns. 
+     ``m`` and :math:`k` is the number of columns.
 
 
 Threshold and period
@@ -45,18 +45,18 @@ Threshold and period
 
    This value is only defined for :cpp:any:`MaxPlusTruncMat`,
    :cpp:any:`MinPlusTruncMat`, and :cpp:any:`NTPMat`. If ``Mat`` is another
-   type of matrix, then :cpp:any:`UNDEFINED` is returned. 
+   type of matrix, then :cpp:any:`UNDEFINED` is returned.
 
-   :tparam Mat: a type for which :cpp:any:`IsMatrix<Mat>` is ``true``. 
+   :tparam Mat: a type for which :cpp:any:`IsMatrix<Mat>` is ``true``.
 
    :param m: the matrix.
-   
+
    :returns: A value of type ``typename Mat::scalar_type``.
 
-   :exceptions: 
+   :exceptions:
      This function is ``noexcept`` and is guaranteed never to throw.
 
-   :complexity: 
+   :complexity:
      Constant.
 
 
@@ -66,17 +66,17 @@ Threshold and period
    Returns the period of a matrix (if any).
 
    This value is only defined for :cpp:any:`NTPMat`. If ``Mat`` is another
-   type of matrix, then :cpp:any:`UNDEFINED` is returned. 
+   type of matrix, then :cpp:any:`UNDEFINED` is returned.
 
-   :tparam Mat: a type for which :cpp:any:`IsMatrix<Mat>` is ``true``. 
+   :tparam Mat: a type for which :cpp:any:`IsMatrix<Mat>` is ``true``.
 
    :param m: the matrix.
-   
+
    :returns: A value of type ``typename Mat::scalar_type``.
 
-   :exceptions: 
+   :exceptions:
      This function is ``noexcept`` and is guaranteed never to throw.
 
-   :complexity: 
+   :complexity:
      Constant.
 

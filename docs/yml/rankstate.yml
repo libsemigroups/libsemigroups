@@ -7,7 +7,7 @@ libsemigroups::RankState:
   - ["This page contains information about the constructors of the
      :cpp:any:`RankState` class."]
   - RankState() noexcept = default
-  - RankState(T, T) noexcept 
+  - RankState(T, T) noexcept
 - Deleted constructors:
   - ["This page lists the deleted constructors of the
      :cpp:any:`RankState` class."]

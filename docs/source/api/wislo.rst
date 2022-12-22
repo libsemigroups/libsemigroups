@@ -9,7 +9,7 @@ Words in short-lex order (wislo)
 
 The functions :cpp:any:`libsemigroups::cbegin_wislo` and
 :cpp:any:`libsemigroups::cend_wislo` can be used to iterate through words in
-short-lex order in some range. 
+short-lex order in some range.
 
 .. doxygenfunction:: libsemigroups::cbegin_wislo(size_t, word_type&&, word_type&&)
    :project: libsemigroups

@@ -11,7 +11,7 @@ The following classes in ``libsemigroups`` represent boolean matrices:
 
 .. toctree::
    :maxdepth: 1
-   
+
    bmat8
    bmat
 
@@ -19,22 +19,22 @@ Boolean matrix helpers
 ----------------------
 
 The following helper struct can be used to determine the smallest type of
-boolean matrix of specified dimension. 
+boolean matrix of specified dimension.
 
 .. toctree::
    :maxdepth: 1
-   
+
    ../../_generated/libsemigroups__fastestbmat
 
 Boolean matrix adapters
 -----------------------
 
 The following adapters are implemented to so that :cpp:any:`BMat<N>` can be
-used with :cpp:any:`Konieczny`. 
+used with :cpp:any:`Konieczny`.
 
 .. toctree::
    :maxdepth: 1
-   
+
    adapters/imagerightaction
    adapters/imageleftaction
    adapters/lambda

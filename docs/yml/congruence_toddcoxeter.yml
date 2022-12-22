@@ -91,24 +91,24 @@ libsemigroups::congruence::ToddCoxeter:
   - min_lookahead() const noexcept
   - simplify(size_t)
 - Statistics:
-  - ["This page contains information about the member functions of the 
+  - ["This page contains information about the member functions of the
      :cpp:any:`ToddCoxeter` class for enumeration statistics."]
   - stats() const noexcept
   - stats_string() const
 - Container-like:
-  - ["This page contains information about the member functions of the 
+  - ["This page contains information about the member functions of the
      :cpp:any:`ToddCoxeter` class that are similar to stl containers."]
   - empty() const
   - reserve(size_t)
   - shrink_to_fit()
 - Standardization:
-  - ["This page contains information about the member functions of the 
+  - ["This page contains information about the member functions of the
      :cpp:any:`ToddCoxeter` class related to standardization."]
   - is_standardized() const noexcept
   - standardize(order)
   - standardization_order() const noexcept
 - Iterators:
-  - ["This page contains information about the member functions of the 
+  - ["This page contains information about the member functions of the
      :cpp:any:`ToddCoxeter` class providing iterators to normal forms."]
   - cbegin_normal_forms()
   - cend_normal_forms()
@@ -120,7 +120,7 @@ libsemigroups::congruence::ToddCoxeter:
   - cbegin_extra() const noexcept
   - cend_extra() const noexcept
 - Properties:
-  - ["This page contains information about the member functions of the 
+  - ["This page contains information about the member functions of the
      :cpp:any:`ToddCoxeter` class that can be used to check if the table is
      complete and compatible with the defining relations."]
   - complete() const noexcept
@@ -129,7 +129,7 @@ libsemigroups::congruence::ToddCoxeter:
   - length_of_generating_pairs()
   - felsch_tree_height()
   - felsch_tree_number_of_nodes()
-  - number_of_words(class_index_type) const 
+  - number_of_words(class_index_type) const
   - number_of_words(word_type const&)
   - to_gap_string()
 - Member functions inherited from CosetManager:
@@ -168,7 +168,7 @@ libsemigroups::congruence::ToddCoxeter:
   - cbegin_generating_pairs() const noexcept
   - cend_generating_pairs() const noexcept
   - cbegin_ntc()
-  - cend_ntc() 
+  - cend_ntc()
   - add_pair(std::initializer_list<size_t>, std::initializer_list<size_t>)
   - add_pair(word_type const&, word_type const&)
   - less(word_type const&, word_type const&)

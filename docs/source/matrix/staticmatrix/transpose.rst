@@ -13,19 +13,19 @@ transpose
 
 .. cpp:function::  void transpose() noexcept
 
-   Transposes the matrix in-place. 
+   Transposes the matrix in-place.
 
    :parameters: (None)
 
    :returns: (None)
-   
-   :exceptions: 
-     this function guarantees not to throw a :cpp:any:`LibsemigroupsException`. 
-   
-   :complexity: 
-     :math:`O(mn)` where :math:`m` is the template parameter :code:`R` and
-     :math:`n` is the template parameter :code:`C`. 
 
-   .. warning:: 
+   :exceptions:
+     this function guarantees not to throw a :cpp:any:`LibsemigroupsException`.
+
+   :complexity:
+     :math:`O(mn)` where :math:`m` is the template parameter :code:`R` and
+     :math:`n` is the template parameter :code:`C`.
+
+   .. warning::
      This only works when the template parameters ``R`` and ``C`` are equal
      (i.e. for square matrices).

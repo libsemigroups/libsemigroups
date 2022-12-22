@@ -19,9 +19,9 @@ DynamicMatrix comparison operators
 
    :param that: matrix for comparison.
 
-   :returns: 
+   :returns:
     ``true`` if ``*this`` and ``that`` are equal and ``false`` if they are
-    not. 
+    not.
 
    :complexity:
      At worst :math:`O(mn)` where :math:`m` is the number of rows and
@@ -33,32 +33,32 @@ DynamicMatrix comparison operators
 
    :param that: the row view for comparison.
 
-   :returns: 
+   :returns:
      ``true`` if ``*this`` and ``that`` are equal and ``false`` if they are
      not.  In particular, if ``*this`` has more than one row, then ``false``
      is returned.
 
    :complexity:
      At worst :math:`O(n)` where :math:`n` is the number of columns of the
-     matrix. 
+     matrix.
 
 .. _dynamicmatrix_run_operator_not_equals:
 
 .. cpp:function:: template <typename T> \
                   bool operator!=(T const& that) const
-  
+
    Inequality operator.
 
-   :tparam T: 
+   :tparam T:
      either :cpp:any:`DynamicMatrix` or :cpp:any:`RowView`
-   
+
    :param that: the matrix or row view for comparison.
 
    :returns:
      the negation of ``operator==(that)``.
-  
+
    :complexity:
-     see :cpp:any:`operator==` 
+     see :cpp:any:`operator==`
 
 .. _dynamicmatrix_run_operator_less:
 
@@ -71,25 +71,25 @@ DynamicMatrix comparison operators
 
    :param that: the matrix for comparison.
 
-   :returns: 
-     ``true`` if ``*this`` is less than ``that`` and ``false`` if it is not.  
+   :returns:
+     ``true`` if ``*this`` is less than ``that`` and ``false`` if it is not.
 
    :complexity:
      At worst :math:`O(mn)` where :math:`m` is
      :cpp:any:`number_of_rows`
      and :math:`n` is :cpp:any:`number_of_cols`
 
-.. cpp:function:: bool operator<(RowView const& that) const 
+.. cpp:function:: bool operator<(RowView const& that) const
 
    Less than operator.
 
    :param that: the row view for comparison.
 
-   :returns: 
+   :returns:
       ``true`` if ``*this`` is less than ``that``, and ``false``
-      otherwise. In particular, if ``*this`` has more than one row, then 
+      otherwise. In particular, if ``*this`` has more than one row, then
       ``false`` is returned.
-      
+
    :complexity:
      At worst :math:`O(n)` where :math:`n` is
      :cpp:any:`number_of_cols`
@@ -105,8 +105,8 @@ DynamicMatrix comparison operators
 
    :param that: the matrix for comparison.
 
-   :returns: 
-     ``true`` if ``*this`` is less than ``that`` and ``false`` if it is not.  
+   :returns:
+     ``true`` if ``*this`` is less than ``that`` and ``false`` if it is not.
 
    :complexity:
      At worst :math:`O(mn)` where :math:`m` is

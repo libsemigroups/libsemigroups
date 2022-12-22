@@ -13,15 +13,15 @@ Complexity
                 Complexity<T, std::enable_if_t<IsMatrix<T>>>
 
    Defined in ``matrix.hpp``.
-   
+
    Specialization of the adapter :cpp:any:`Complexity` for types ``T`` such
-   that the value of :cpp:any:`IsMatrix\<T>` is ``true``. 
-   
+   that the value of :cpp:any:`IsMatrix\<T>` is ``true``.
+
    :tparam: T the type of matrices.
-   
+
    .. cpp:function:: constexpr size_t operator()(T const& x) const noexcept
-      
-      Returns ``x.number_of_rows()`` cubed. 
+
+      Returns ``x.number_of_rows()`` cubed.
 
       :param x: a matrix of type ``T``.
 

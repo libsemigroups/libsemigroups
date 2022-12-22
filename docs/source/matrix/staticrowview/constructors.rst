@@ -22,15 +22,15 @@ Default constructors
 --------------------
 
 .. cpp:function:: StaticRowView() = default
-   
+
    Default constructor.
 
 .. cpp:function:: StaticRowView(StaticRowView const&) = default
-   
+
    Default copy constructor.
 
 .. cpp:function:: StaticRowView(StaticRowView&&) = default
-   
+
    Default move constructor.
 
 .. cpp:function:: StaticRowView& operator=(StaticRowView const&) = default
@@ -47,11 +47,11 @@ Constructor from Row
 .. cpp:function:: explicit StaticRowView(Row const& r)
 
    Construct a row view from a Row.
-   
+
    :param r: the row.
 
-   :exceptions: 
-     This function guarantees not to throw a :cpp:any:`LibsemigroupsException`. 
-    
-   :complexity: 
+   :exceptions:
+     This function guarantees not to throw a :cpp:any:`LibsemigroupsException`.
+
+   :complexity:
      Constant.

@@ -12,16 +12,16 @@ coords
 .. cpp:namespace:: libsemigroups::StaticMatrix<PlusOp, ProdOp, ZeroOp, OneOp, R, C, Scalar>
 
 .. cpp:function:: std::pair<scalar_type, scalar_type> \
-                  coords(const_iterator it) const 
+                  coords(const_iterator it) const
 
    Returns a pair containing the row and columns corresponding to an iterator.
-   
-   :param it: the iterator 
+
+   :param it: the iterator
 
    :returns:
      A value of type ``std::pair<scalar_type, scalar_type>``.
-   
+
    :complexity: Constant
-   
-   :exceptions: 
-     this function guarantees not to throw a :cpp:any:`LibsemigroupsException`. 
+
+   :exceptions:
+     this function guarantees not to throw a :cpp:any:`LibsemigroupsException`.

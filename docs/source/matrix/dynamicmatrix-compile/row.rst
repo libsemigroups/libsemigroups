@@ -12,14 +12,14 @@ row
 .. cpp:namespace:: libsemigroups::DynamicMatrix<PlusOp, ProdOp, ZeroOp, OneOp, Scalar>
 
 .. cpp:function::  RowView row(size_t i) const
-   
+
    Returns a row view into the specified row.
 
-   :param i: the row 
+   :param i: the row
 
    :returns: A value of type :cpp:any:`RowView`.
-   
-   :exceptions: 
-     This function guarantees not to throw a :cpp:any:`LibsemigroupsException`. 
-   
+
+   :exceptions:
+     This function guarantees not to throw a :cpp:any:`LibsemigroupsException`.
+
    :complexity: Constant

@@ -30,7 +30,7 @@ from the every finite entry.
 The alias :cpp:any:`ProjMaxPlusMat\<T, R, C, Scalar>` is neither
 :cpp:any:`StaticMatrix` nor :cpp:any:`DynamicMatrix`, but has the same
 interface as each of these types.  An instance of :cpp:any:`ProjMaxPlusMat\<T,
-R, C, Scalar>` wraps a :cpp:any:`MaxPlusMat`.  
+R, C, Scalar>` wraps a :cpp:any:`MaxPlusMat`.
 
 .. note::
    The types :cpp:any:`RowView` and :cpp:any:`Row` are the same as those in the
@@ -42,7 +42,7 @@ R, C, Scalar>` wraps a :cpp:any:`MaxPlusMat`.
 Please refer to the documentation of these class templates for more details.
 The only substantial difference in the interface of :cpp:any:`StaticMatrix` and
 :cpp:any:`DynamicMatrix` is that the former can be default constructed and the
-latter should be constructed using the dimensions. 
+latter should be constructed using the dimensions.
 
 **Example**
 
@@ -50,27 +50,27 @@ latter should be constructed using the dimensions.
 
    ProjMaxPlusMat<3> m;       // default construct an uninitialized 3 x 3 static matrix
    ProjMaxPlusMat<>  m(4, 4); // construct an uninitialized 4 x 4 dynamic matrix
-  
+
 
 .. cpp:type:: template <size_t R, size_t C, typename Scalar> \
               StaticProjMaxPlusMat                           \
               = detail::ProjMaxPlusMat<StaticMaxPlusMat<R, C, Scalar>>
-   
+
    Alias for static projective max-plus matrices whose arithmetic and
    dimensions are defined at compile-time.
-   
-   :tparam R: the number of rows.  
 
-   :tparam C: the number of columns.  
+   :tparam R: the number of rows.
+
+   :tparam C: the number of columns.
 
    :tparam Scalar: The type of the entries in the matrix.
 
 .. cpp:type:: template <typename Scalar> \
               DynamicProjMaxPlusMat      \
               = detail::ProjMaxPlusMat<DynamicMaxPlusMat<Scalar>>
-   
+
    Alias for the type of dynamic projective max-plus matrices where the
-   dimensions of the matrices can be defined at run time. 
+   dimensions of the matrices can be defined at run time.
 
    :tparam Scalar: The type of the entries in the matrix.
 
@@ -82,20 +82,20 @@ latter should be constructed using the dimensions.
 
    Alias template for projective max-plus matrices.
 
-   :tparam R: 
+   :tparam R:
      the number of rows.  A value of ``0`` indicates that the value will be set
      at run time (default: ``0``).
 
-   :tparam C: 
+   :tparam C:
      the number of columns.  A value of ``0`` indicates that the value will be
      set at run time (default: ``R``).
 
-   :tparam Scalar: 
-     The type of the entries in the matrix (default: ``int``). 
-  
+   :tparam Scalar:
+     The type of the entries in the matrix (default: ``int``).
+
 .. cpp:var:: template <typename T> \
              static constexpr bool IsProjMaxPlusMat
 
    This variable has value ``true`` if the template parameter ``T`` is the same
    as :cpp:any:`ProjMaxPlusMat\<R, C, Scalar>` for some values of ``R``, ``C``,
-   and ``Scalar``; and ``false`` if it is not. 
+   and ``Scalar``; and ``false`` if it is not.

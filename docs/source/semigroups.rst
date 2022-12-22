@@ -12,7 +12,7 @@ Semigroups
 ``libsemigroups`` implements several algorithms for computing the structure of
 a finite semigroup or monoid. The main implementations are of the Froidure-Pin,
 Konieczny, and Schreier-Sims (for permutation groups) algorithms; see the links
-below for further details. 
+below for further details.
 
 The implementations of these algorithms are generic, and can be easily adapted
 for user-defined types.  In other words, it is possible to directly apply these
@@ -21,7 +21,7 @@ classes and/or the adapters described here.
 
 Many of the classes for semigroups in ``libsemigroups`` can be used
 "interactively", in the sense that they can be run for a particular amount of
-time, or until some condition is met; for further details see, for example, 
+time, or until some condition is met; for further details see, for example,
 :cpp:any:`void Runner::run_for(std::chrono::nanoseconds)` and
 :cpp:func:`Runner::run_until`.
 

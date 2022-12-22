@@ -9,35 +9,35 @@
 operator[]
 ==========
 
-.. cpp:function:: scalar_reference operator[](size_t const i) 
+.. cpp:function:: scalar_reference operator[](size_t const i)
 
-   Returns a reference to the specified entry of the matrix. 
+   Returns a reference to the specified entry of the matrix.
 
    :param i: the index of the entry
-    
+
    :returns: A value of type :cpp:any:`scalar_reference`.
 
-   :exceptions: 
-     This function guarantees not to throw a :cpp:any:`LibsemigroupsException`. 
+   :exceptions:
+     This function guarantees not to throw a :cpp:any:`LibsemigroupsException`.
 
-   :complexity: 
+   :complexity:
      Constant
 
    .. warning::
       No checks on the validity of the parameter ``i`` is performed.
 
-.. cpp:function:: scalar_const_reference operator[](size_t const i) const 
+.. cpp:function:: scalar_const_reference operator[](size_t const i) const
 
-   Returns a const reference to the specified entry of the matrix. 
+   Returns a const reference to the specified entry of the matrix.
 
    :param i: the index of the entry
-    
+
    :returns: A value of type :cpp:any:`scalar_const_reference`.
 
-   :exceptions: 
-     This function guarantees not to throw a :cpp:any:`LibsemigroupsException`. 
+   :exceptions:
+     This function guarantees not to throw a :cpp:any:`LibsemigroupsException`.
 
-   :complexity: 
+   :complexity:
      Constant
 
    .. warning::

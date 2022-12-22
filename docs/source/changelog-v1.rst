@@ -5,7 +5,7 @@ v1.3.7 (released 28/02/2021)
 ----------------------------
 
 This is a minor release for with a bug in ``Konieczny`` fixed by
-`Finn Smith`_, and a limit added to ``CongruenceByPairs`` to try to resolve 
+`Finn Smith`_, and a limit added to ``CongruenceByPairs`` to try to resolve
 https://github.com/semigroups/Semigroups/issues/634 (again).
 
 v1.3.6 (released 04/02/2021)
@@ -31,7 +31,7 @@ This is a minor release resolving the following issues:
 * there were some bugs in the string formatting in exceptions on 32-bit
   systems
 * the disjoint sets data structures were refactored completely, and their
-  performance improved. 
+  performance improved.
 
 v1.3.3 (released 07/10/2020)
 ----------------------------
@@ -94,7 +94,7 @@ The major improvements in this release are:
   infinite. ``eigen`` is used to perform the computation of the rank of this
   matrix if available (`Reinis Cirpons`_ and `J. D. Mitchell`_).
 
-* the time it takes to compile ``libsemigroups`` has be reduced. 
+* the time it takes to compile ``libsemigroups`` has be reduced.
 
 v1.2.1 (released 28/06/2020)
 ----------------------------
@@ -119,14 +119,14 @@ The major new features in this release are:
   of strings in a ``KnuthBendix`` instance. This automaton is accessible via
   the member function ``gilman_digraph``.  Using this approach significantly
   improves the performance of the ``size`` member function of ``KnuthBendix``
-  and allows a ``KnuthBendix`` instance to know whether or not it is infinite. 
+  and allows a ``KnuthBendix`` instance to know whether or not it is infinite.
 
 * improvements to the algorithm used by the ``number_of_paths`` member function
   of the class template ``ActionDigraph``, and the ability to specify the
   algorithm to be used.
 
 * the class template ``ActionDigraph`` gets new member functions: ``number_of_edges``
-  for a node; ``number_of_paths`` with a single node as argument; 
+  for a node; ``number_of_paths`` with a single node as argument;
   ``number_of_paths_algorithm`` which returns a value in an enum describing the
   algorithm used by ``number_of_paths`` by default.
 
@@ -142,16 +142,16 @@ The major new features in this release are:
 
 There were also several further minor improvements and bug fixes implemented in
 this version, many of which arose while developing `libsemigroups_cppyy`_.
-Thanks to Murray Whyte for pointing out several of these bugs. 
+Thanks to Murray Whyte for pointing out several of these bugs.
 
 One major bug was also resolved: sometimes a ``KnuthBendix`` instance refusing
 to run even though the rules it contained were not reduced (but were
-confluent). 
+confluent).
 
 v1.1.0 (released 28/05/2020)
 ----------------------------
 
-This is a minor release which adds some new features and fixes some bugs. 
+This is a minor release which adds some new features and fixes some bugs.
 
 The more major new features in this release are:
 
@@ -160,9 +160,9 @@ The more major new features in this release are:
 * the class template ``FroidurePin`` now has member functions for iterating
   through its rules (``cbegin_rules``)
 * the namespace ``action_digraph_helper`` is introduced. This namespace
-  contains the helper functions ``follow_path``, ``is_acyclic``, 
+  contains the helper functions ``follow_path``, ``is_acyclic``,
   ``is_reachable``, ``validate_node``, and ``validate_label`` for the class
-  template ``ActionDigraph``.  
+  template ``ActionDigraph``.
 * the class template ``ActionDigraph`` has new member functions for iterating
   through nodes in reverse (``crbegin_nodes``); for iterating through paths
   (``cbegin_panilo``, ``cbegin_panislo``, ``cbegin_pilo``, ``cbegin_pislo``,
@@ -181,13 +181,13 @@ The more major bugs fixed are:
 
 There were also several further minor improvements and bug fixes implemented in
 this version, many of which arose while developing `libsemigroups_cppyy`_.
-Thanks to Murray Whyte for pointing out several of these bugs. 
+Thanks to Murray Whyte for pointing out several of these bugs.
 
 v1.0.9 (released 20/04/2020)
 ----------------------------
 
 This is an exceedingly minor release removing some extraneous files from the
-distro. 
+distro.
 
 v1.0.8 (released 20/04/2020)
 ----------------------------
@@ -216,7 +216,7 @@ v1.0.4 (released 11/01/2020)
 ----------------------------
 
 This is a minor release with several improvements to the build system. It is
-now possible to build ``libsemigroups`` using an external installation of ``fmt`` 
+now possible to build ``libsemigroups`` using an external installation of ``fmt``
 with the configure option ``--with-external-fmt``, and it should also be
 possible to build ``libsemigroups`` on non-x86 architectures.
 
@@ -224,7 +224,7 @@ v1.0.3 (released 07/12/2019)
 ----------------------------
 
 This is a minor release that includes some fixes that caused tests to fail on
-32-bit systems. The non-trivial changes in this release were made by 
+32-bit systems. The non-trivial changes in this release were made by
 `J.  James`_
 
 v1.0.2 (released 30/11/2019)
@@ -244,7 +244,7 @@ v1.0.0 (released 27/11/2019)
 
 This is a major release that dramatically expands the scope of
 ``libsemigroups``.  In v1.0.0, ``libsemigroups`` has been almost completely
-rewritten, generalised, and some new features have been added. 
+rewritten, generalised, and some new features have been added.
 
 .. _J. James: http://www.jamezone.org/
 .. _Isuru Fernando: https://github.com/isuruf

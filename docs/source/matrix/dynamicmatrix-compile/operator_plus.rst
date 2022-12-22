@@ -13,18 +13,18 @@ operator+
 
 .. cpp:function:: DynamicMatrix operator+(DynamicMatrix const& that)
 
-   Returns the sum of ``*this`` and ``that``. 
+   Returns the sum of ``*this`` and ``that``.
 
    :param that: the matrix to add to ``this``.
-    
+
    :returns:
       a value of type ``DynamicMatrix``.
 
-   :throws: 
+   :throws:
       if the implementation of the semiring plus throws, or ``std::bad_alloc``
-      if memory cannot be allocated for the result. 
+      if memory cannot be allocated for the result.
 
-   :complexity: 
+   :complexity:
       :math:`O(mn)` where :math:`m` is :cpp:any:`DynamicMatrix::number_of_rows`
       and :math:`m` is :cpp:any:`DynamicMatrix::number_of_cols`
 

@@ -19,15 +19,15 @@ begin, cbegin
 
    :returns:
      A value of type ``iterator``.
-   
+
    :complexity: Constant
-   
-   :throws: 
-     this function is ``noexcept`` and is guaranteed never to throw.   
+
+   :throws:
+     this function is ``noexcept`` and is guaranteed never to throw.
 
    :parameters: (None)
-   
-   .. warning:: 
+
+   .. warning::
      The order in which entries in the matrix are iterated over is not
      specified.
 
@@ -39,15 +39,15 @@ begin, cbegin
 
    :returns:
      A value of type ``const_iterator``.
-   
+
    :complexity: Constant
-   
-   :throws: 
-     this function is ``noexcept`` and is guaranteed never to throw.   
+
+   :throws:
+     this function is ``noexcept`` and is guaranteed never to throw.
 
    :parameters: (None)
 
-   .. warning:: 
+   .. warning::
      The order in which entries in the matrix are iterated over is not
      specified.
 

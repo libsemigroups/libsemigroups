@@ -11,14 +11,14 @@ libsemigroups::DynamicPTransf:
      :cpp:any:`DynamicPTransf` class."]
   - DynamicPTransf(size_t)
 - Static member functions:
-  - ["This page contains information about the static member functions of the  
+  - ["This page contains information about the static member functions of the
      :cpp:any:`DynamicPTransf` class."]
   - identity() const
   - identity(size_t)
   - make(TContainerAgain &&)
   - make(std::initializer_list< value_type > const &)
 - Modifiers and accessors:
-  - ["This page contains information about the member functions of the  
+  - ["This page contains information about the member functions of the
      :cpp:any:`DynamicPTransf` class for modifying and accessing values."]
   - increase_degree_by(size_t)
   - swap(PTransfBase &) noexcept
@@ -27,7 +27,7 @@ libsemigroups::DynamicPTransf:
   - at(size_t)
   - at(size_t) const
 - Iterators:
-  - ["This page contains information about the member functions of the  
+  - ["This page contains information about the member functions of the
      :cpp:any:`DynamicPTransf` class related to iterators."]
   - begin() noexcept
   - end() noexcept
@@ -36,7 +36,7 @@ libsemigroups::DynamicPTransf:
   - begin() const noexcept
   - end() const noexcept
 - Operators:
-  - ["This page contains information about the operators for the  
+  - ["This page contains information about the operators for the
      :cpp:any:`DynamicPTransf` class."]
   - operator>(PTransfBase const &) const
   - operator<(PTransfBase const &) const
@@ -46,7 +46,7 @@ libsemigroups::DynamicPTransf:
   - operator!=(PTransfBase const &) const
   - operator*(TSubclass const &) const
 - Other member functions:
-  - ["This page contains information about the other member functions of the  
+  - ["This page contains information about the other member functions of the
      :cpp:any:`DynamicPTransf` class not covered on another page."]
   - rank() const
   - hash_value() const

@@ -12,7 +12,7 @@ BMat8 helpers
 
 Defined in ``bmat8.hpp``.
 
-This page contains the documentation for various helper functions for 
+This page contains the documentation for various helper functions for
 :cpp:type:`libsemigroups::BMat8`, and :cpp:type:`HPCombi::BMat8`.
 
 .. doxygennamespace:: libsemigroups::bmat8_helpers

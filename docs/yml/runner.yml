@@ -1,7 +1,7 @@
-libsemigroups::Runner: 
+libsemigroups::Runner:
 - Constructors:
   - Runner()
-  - Runner(Runner const&) 
+  - Runner(Runner const&)
   - Runner(Runner&&)
   - operator=(Runner const&)
   - operator=(Runner&&)

@@ -14,7 +14,7 @@ libsemigroups::PPerm:
   - identity(size_t)
   - make(T&&)
   - make(std::initializer_list<value_type>&&)
-  - make(std::vector<value_type> const&, 
+  - make(std::vector<value_type> const&,
          std::vector<value_type> const&,
          size_t const)
 - Member functions:
