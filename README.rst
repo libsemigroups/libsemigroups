@@ -21,9 +21,6 @@ libsemigroups - Version 2.5.0
 .. image:: https://img.shields.io/conda/dn/conda-forge/libsemigroups
   :target: https://github.com/conda-forge/libsemigroups-feedstock
 
-.. image:: https://anaconda.org/conda-forge/libsemigroups/badges/installer/conda.svg
-  :target: https://conda.anaconda.org/conda-forge
-
 .. image:: https://zenodo.org/badge/DOI/10.5281/zenodo.1437752.svg
   :target: https://doi.org/10.5281/zenodo.1437752
 
