@@ -4,7 +4,7 @@
 
    The full license is in the file LICENSE, distributed with this software.
 
-Number of words 
+Number of words
 ===============
 
 The function :cpp:any:`libsemigroups::number_of_words` can be used to compute

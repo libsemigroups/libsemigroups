@@ -20,14 +20,14 @@ end, cend
 
    :returns:
      A value of type ``iterator``.
-   
-   :complexity: Constant
-   
-   :exceptions: 
-     This function is ``noexcept`` and is guaranteed never to throw.   
 
-   
-   .. warning:: 
+   :complexity: Constant
+
+   :exceptions:
+     This function is ``noexcept`` and is guaranteed never to throw.
+
+
+   .. warning::
      The order in which entries in the matrix are iterated over is not
      specified.
 
@@ -41,13 +41,13 @@ end, cend
 
    :returns:
      A value of type ``const_iterator``.
-   
-   :complexity: Constant
-   
-   :exceptions: 
-     This function is ``noexcept`` and is guaranteed never to throw.   
 
-   .. warning:: 
+   :complexity: Constant
+
+   :exceptions:
+     This function is ``noexcept`` and is guaranteed never to throw.
+
+   .. warning::
      The order in which entries in the matrix are iterated over is not
      specified.
 

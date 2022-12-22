@@ -11,38 +11,38 @@ operator()
 
 .. cpp:namespace:: libsemigroups::DynamicMatrix<PlusOp, ProdOp, ZeroOp, OneOp, Scalar>
 
-.. cpp:function:: scalar_reference operator()(size_t const r, size_t const c) 
+.. cpp:function:: scalar_reference operator()(size_t const r, size_t const c)
 
-   Returns a reference to the specified entry of the matrix. 
+   Returns a reference to the specified entry of the matrix.
 
    :param r: the index of the row of the entry
    :param c: the index of the column of the entry
-    
+
    :returns: A value of type :cpp:any:`scalar_reference`.
 
-   :exceptions: 
-     this function guarantees not to throw a :cpp:any:`LibsemigroupsException`. 
+   :exceptions:
+     this function guarantees not to throw a :cpp:any:`LibsemigroupsException`.
 
-   :complexity: 
+   :complexity:
      Constant
 
    .. warning::
       No checks on the validity of the parameters ``r`` and ``c`` are
       performed.
 
-.. cpp:function:: scalar_const_reference operator()(size_t const r, size_t const c) const 
+.. cpp:function:: scalar_const_reference operator()(size_t const r, size_t const c) const
 
-   Returns a const reference to the specified entry of the matrix. 
+   Returns a const reference to the specified entry of the matrix.
 
    :param r: the index of the row of the entry
    :param c: the index of the column of the entry
-    
+
    :returns: A value of type :cpp:any:`scalar_const_reference`.
 
-   :exceptions: 
-     this function guarantees not to throw a :cpp:any:`LibsemigroupsException`. 
+   :exceptions:
+     this function guarantees not to throw a :cpp:any:`LibsemigroupsException`.
 
-   :complexity: 
+   :complexity:
      Constant
 
    .. warning::

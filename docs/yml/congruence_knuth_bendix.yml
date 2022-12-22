@@ -1,4 +1,4 @@
-libsemigroups::congruence::KnuthBendix: 
+libsemigroups::congruence::KnuthBendix:
 - Constructors:
   - ["This page contains information about the constructors for the
      :cpp:any:`KnuthBendix` class."]
@@ -15,7 +15,7 @@ libsemigroups::congruence::KnuthBendix:
   - operator=(KnuthBendix const&) = delete
 - Member functions:
   - ["This page contains a description of the member functions of the
-     :cpp:any:`KnuthBendix` class that are not inherited from 
+     :cpp:any:`KnuthBendix` class that are not inherited from
      :cpp:any:`CongruenceInterface` or :cpp:any:`Runner`."]
   - knuth_bendix() const
 - Member functions and types inherited from CongruenceInterface:
@@ -39,7 +39,7 @@ libsemigroups::congruence::KnuthBendix:
   - cbegin_generating_pairs() const noexcept
   - cend_generating_pairs() const noexcept
   - cbegin_ntc()
-  - cend_ntc() 
+  - cend_ntc()
   - add_pair(std::initializer_list<size_t>, std::initializer_list<size_t>)
   - add_pair(word_type const&, word_type const&)
   - less(word_type const&, word_type const&)

@@ -1,13 +1,18 @@
 Changelog - version 2
 =====================
 
+v2.5.1 (released 22/12/2022)
+----------------------------
+
+This is a minor release that resolves a number of minor issues.
+
 v2.5.0 (released 14/12/2022)
 ----------------------------
 
 In this release a small number of issues are resolved, and one major new
 feature is added. The features added in this release are:
 
-* Add `order_preserving_monoid` presentation by @MTWhyte in
+* Add ``order_preserving_monoid`` presentation by @MTWhyte in
   https://github.com/libsemigroups/libsemigroups/pull/428
 * Add presentations for the cyclic inverse monoid, and its order-preserving
   part by @MTWhyte in https://github.com/libsemigroups/libsemigroups/pull/426
@@ -31,17 +36,17 @@ features in this release are:
 
 New features:
 
-* Add `replace_word` presentation helper by @MTWhyte in
+* Add ``replace_word`` presentation helper by @MTWhyte in
   https://github.com/libsemigroups/libsemigroups/pull/388
 * A library of examples of finite presentations was added by @MTWhyte.
 
 Issues resolved:
 
-* Fix issue with `replace_subword` and the empty word by @MTWhyte in
+* Fix issue with ``replace_subword`` and the empty word by @MTWhyte in
   https://github.com/libsemigroups/libsemigroups/pull/384
 * build: add missing eigen3 to pkg-config file by @jengelh in
   https://github.com/libsemigroups/libsemigroups/pull/414
-* Fix `Konieczny::add_generators` by @flsmith in
+* Fix ``Konieczny::add_generators`` by @flsmith in
   https://github.com/libsemigroups/libsemigroups/pull/420
 
 New Contributors:

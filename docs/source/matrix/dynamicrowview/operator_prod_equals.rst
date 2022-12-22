@@ -14,11 +14,11 @@ operator*=
    Multiplies every entry of the row by a scalar in-place.
 
    :param a: the scalar to add to every entry of ``this``.
-    
+
    :returns: (None)
 
-   :throws: 
+   :throws:
       If the implementation of the semiring multiplication throws.
-   
-   :complexity: 
+
+   :complexity:
       :math:`O(m)` where :math:`m` is :cpp:any:`size`

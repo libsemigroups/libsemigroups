@@ -15,13 +15,13 @@ operator*
 
    :param a: the scalar.
 
-   :returns: 
+   :returns:
      A value of type Row containing the original row multiplied by the scalar
      ``a``.
-    
-   :complexity: 
+
+   :complexity:
       :math:`O(m)` where :math:`m` is :cpp:any:`size`
 
-   :throws: 
+   :throws:
       If the implementation of the semiring addition throws or
       ``std::bad_alloc`` is thrown.

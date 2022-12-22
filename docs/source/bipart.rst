@@ -8,7 +8,7 @@ Bipartitions
 ============
 
 This page contains an overview summary of the functionality in
-``libsemigroups`` for :cpp:any:`Bipartitions`. 
+``libsemigroups`` for :cpp:any:`Bipartitions`.
 
 .. toctree::
    :maxdepth: 3

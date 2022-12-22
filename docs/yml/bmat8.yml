@@ -13,7 +13,7 @@ libsemigroups::BMat8:
   - one(size_t) noexcept
 - Initialization:
   - set(size_t, size_t, bool)
-  - swap(BMat8&) noexcept 
+  - swap(BMat8&) noexcept
 - Operators:
   - operator*(BMat8 const&) const noexcept
   - operator!=(BMat8 const&) const noexcept
@@ -22,7 +22,7 @@ libsemigroups::BMat8:
   - operator>(BMat8 const&) const noexcept
   - get(size_t, size_t) const noexcept
   - transpose() const noexcept
-  - to_int() const noexcept 
+  - to_int() const noexcept
   - operator<<(std::ostringstream&, BMat8 const&)
   - operator<<(std::ostream&, BMat8 const&)
 - Column and row space:

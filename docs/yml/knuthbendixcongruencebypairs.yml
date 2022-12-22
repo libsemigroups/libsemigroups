@@ -31,7 +31,7 @@ libsemigroups::KnuthBendixCongruenceByPairs:
   - cbegin_generating_pairs() const noexcept
   - cend_generating_pairs() const noexcept
   - cbegin_ntc()
-  - cend_ntc() 
+  - cend_ntc()
   - add_pair(std::initializer_list<size_t>, std::initializer_list<size_t>)
   - add_pair(word_type const&, word_type const&)
   - less(word_type const&, word_type const&)

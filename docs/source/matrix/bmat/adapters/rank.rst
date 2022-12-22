@@ -8,7 +8,7 @@ Rank
 ====
 
 This page contains details of the specialisations of the :ref:`adapters<Adapters>`
-:cpp:any:`Rank` and :cpp:any:`RankState` for boolean matrices. 
+:cpp:any:`Rank` and :cpp:any:`RankState` for boolean matrices.
 
 .. cpp:class:: template <typename Mat> \
                RankState<Mat>
@@ -16,15 +16,15 @@ This page contains details of the specialisations of the :ref:`adapters<Adapters
    This class is a specialization of the adapter :cpp:any:`RankState` for
    instances of :cpp:any:`BMat<N>`. The :cpp:any:`RankState` is used as part of
    the computation of the rank of a boolean matrix in :cpp:any:`Rank<Mat>`
-   which is used by :cpp:any:`Konieczny`. 
-   
-   :tparam Mat: 
-     a type such that :cpp:any:`IsBMat<Mat>` is ``true``. 
+   which is used by :cpp:any:`Konieczny`.
+
+   :tparam Mat:
+     a type such that :cpp:any:`IsBMat<Mat>` is ``true``.
 
    .. cpp:type:: MaxBitSet = BitSet<BitSet<1>::max_size()>
-      
-      Type of the maximum possible size of :cpp:any:`BitSet`. 
-   
+
+      Type of the maximum possible size of :cpp:any:`BitSet`.
+
    .. cpp:type:: type = RightAction<Mat,       \
                                     MaxBitSet, \
                                     ImageRightAction<Mat, MaxBitSet>>
@@ -32,14 +32,14 @@ This page contains details of the specialisations of the :ref:`adapters<Adapters
       The type of additional data used by :cpp:any:`Rank<Mat>`: the right
       action consisting of all possible rows of matrices belonging to the
       underlying semigroup.
-   
+
    .. cpp:function:: RankState() = default
-      
+
       Default constructor. The other standard constructors (copy constructor,
-      move constructor, etc) are deleted. 
-    
+      move constructor, etc) are deleted.
+
    .. cpp:function:: template <typename T>      \
-                     RankState(T first, T last) 
+                     RankState(T first, T last)
 
       Construct from const iterators to the generators of the semigroup.
 
@@ -49,20 +49,20 @@ This page contains details of the specialisations of the :ref:`adapters<Adapters
 
       :param last:  const iterator pointing one passed the last generator
 
-      :throws: 
+      :throws:
         :cpp:any:`LibsemigroupsException` if the distance between
-        ``first`` and ``last`` is ``0``. 
-  
-   .. cpp:function:: type const& get() const 
- 
+        ``first`` and ``last`` is ``0``.
+
+   .. cpp:function:: type const& get() const
+
       Returns the fully enumerated row orbit.
- 
+
       :parameters: (None)
- 
-      :returns: 
+
+      :returns:
         A const reference to the fully enumerated row orbit, a value of type
         :cpp:any:`type`.
- 
+
       :complexity:
         :math:`O(mn)` where :math:`m` is the number of generators added at the
         time of construction (i.e. ``std::distance(first, last)``) and :math:`n`
@@ -73,11 +73,11 @@ This page contains details of the specialisations of the :ref:`adapters<Adapters
                 Rank<Mat, RankState<Mat>>
 
    Specialization of the adapter :cpp:any:`Rank` for instances of
-   :cpp:any:`BMat<N>`. 
+   :cpp:any:`BMat<N>`.
 
-   :tparam Mat: 
-     a type such that :cpp:any:`IsBMat<Mat>` is ``true``. 
-  
+   :tparam Mat:
+     a type such that :cpp:any:`IsBMat<Mat>` is ``true``.
+
    .. cpp:function:: size_t operator()(RankState<Mat> const& state, Mat const& x) const
 
       Returns the rank of ``x``.
@@ -86,7 +86,7 @@ This page contains details of the specialisations of the :ref:`adapters<Adapters
 
       :param x: the matrix
 
-      :returns: 
+      :returns:
         the rank of the parameter ``x``, which is a value of type ``size_t``.
 
       :complexity:

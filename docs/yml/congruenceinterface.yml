@@ -34,15 +34,15 @@ libsemigroups::CongruenceInterface:
   - cbegin_generating_pairs() const noexcept
   - cend_generating_pairs() const noexcept
   - cbegin_ntc()
-  - cend_ntc() 
+  - cend_ntc()
 - Words and class indices:
-  - ["This page contains information about the member functions of 
+  - ["This page contains information about the member functions of
       the :cpp:any:`CongruenceInterface` class for converting a word in the
       generators to a class index and vice versa."]
   - word_to_class_index(word_type const&)
   - class_index_to_word(class_index_type)
 - Numbers of classes, and comparisons:
-  - ["This page contains information about the member functions of 
+  - ["This page contains information about the member functions of
       the :cpp:any:`CongruenceInterface` class for comparing words, checking
       membership, and counting the number of classes of several types."]
   - less(word_type const&, word_type const&)

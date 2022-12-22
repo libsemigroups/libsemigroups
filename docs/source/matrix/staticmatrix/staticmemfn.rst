@@ -11,21 +11,21 @@ StaticMatrix static member functions
 
 .. _staticmatrix_identity:
 .. cpp:function:: static StaticMatrix identity()
-   
+
    Construct the identity matrix.
 
    :parameters: (None)
-   
+
    :returns: The identity matrix with ``R = C`` rows and columns.
-   
+
    :exceptions:
-     this function guarantees not to throw a :cpp:any:`LibsemigroupsException`. 
-   
-   :complexity: 
+     this function guarantees not to throw a :cpp:any:`LibsemigroupsException`.
+
+   :complexity:
      :math:`O(n ^ 2)` where :math:`n` is the template parameter :code:`R` and
-     :code:`C`. 
-   
-   .. warning:: 
+     :code:`C`.
+
+   .. warning::
      This only works when the template parameters ``R`` and ``C`` are equal
      (i.e. for square matrices).
 
@@ -34,39 +34,39 @@ StaticMatrix static member functions
       make(std::initializer_list<std::initializer_list<scalar_type>> il)
 
    Validates the arguments, constructs a matrix and validates it.
-   
+
    :param il: the values to be copied into the matrix.
-   
+
    :returns: the constructed matrix if valid.
-   
-   :throws: 
+
+   :throws:
      :cpp:any:`LibsemigroupsException` if ``il`` does not represent a
      matrix of the correct dimensions.
-   
-   :throws: 
+
+   :throws:
      :cpp:any:`LibsemigroupsException` if the constructed matrix
      contains values that do not belong to the underlying semiring.
-   
+
    :complexity:
      :math:`O(mn)` where :math:`m` is the number of rows and
      :math:`n` is the number of columns of the matrix.
-      
+
 .. cpp:function:: static StaticMatrix make(std::initializer_list<scalar_type> il)
 
    Constructs a row and validates it.
-   
+
    :param il: the values to be copied into the row.
-   
+
    :returns: the constructed row if valid.
-   
-   :throws: 
+
+   :throws:
      :cpp:any:`LibsemigroupsException` if the constructed row contains
      values that do not belong to the underlying semiring.
-   
+
    :complexity:
      :math:`O(n)` where :math:`n` is the number of columns of the matrix.
-   
-   .. warning:: 
+
+   .. warning::
 
      This constructor only works for rows, i.e. when the template parameter
      :code:`R` is :code:`1`.

@@ -20,7 +20,7 @@ StaticRowView comparison operators
    :tparam U: either :cpp:any:`Row` or :cpp:any:`RowView`
 
    :param that: :cpp:any:`Row` or :cpp:any:`RowView` object for comparison.
-  
+
    :returns:
      Returns ``true`` if the first :cpp:any:`size()` entries of ``that`` equal
      the entries of ``this``, and ``false`` if not.
@@ -38,7 +38,7 @@ StaticRowView comparison operators
    :tparam U: either :cpp:any:`Row` or :cpp:any:`RowView`
 
    :param that: :cpp:any:`Row` or :cpp:any:`RowView` object for comparison.
-  
+
    :returns:
      Returns ``true`` if the first :cpp:any:`size()` entries of ``that`` dp not
      equal the entries of ``this``, and ``false`` otherwise.
@@ -56,7 +56,7 @@ StaticRowView comparison operators
    :tparam U: either :cpp:any:`Row` or :cpp:any:`RowView`
 
    :param that: :cpp:any:`Row` or :cpp:any:`RowView` object for comparison.
-  
+
    :returns:
      Returns ``true`` if ``this`` is lex less than that ``that`` and ``false``
      otherwise.
@@ -74,7 +74,7 @@ StaticRowView comparison operators
    :tparam U: either :cpp:any:`Row` or :cpp:any:`RowView`
 
    :param that: :cpp:any:`Row` or :cpp:any:`RowView` object for comparison.
-  
+
    :returns:
      Returns ``true`` if ``this`` is lex greater than that ``that`` and
      ``false`` otherwise.

@@ -12,7 +12,7 @@ Orders
 Declared in ``order.hpp``.
 
 This file contains documentation for several class and function templates for
-comparing words or strings with respect to certain reduction orderings. 
+comparing words or strings with respect to certain reduction orderings.
 
 Functions
 ~~~~~~~~~

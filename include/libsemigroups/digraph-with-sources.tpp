@@ -178,4 +178,115 @@ namespace libsemigroups {
       _preim_next.swap(c, x, d, x);
     }
   }
+
+  template <typename T>
+  template <typename NewEdgeFunc, typename IncompatibleFunc>
+  void DigraphWithSources<T>::merge_nodes(node_type          min,
+                                          node_type          max,
+                                          NewEdgeFunc&&      new_edge_func,
+                                          IncompatibleFunc&& incompat_func) {
+    LIBSEMIGROUPS_ASSERT(min < max);
+    for (letter_type i = 0; i < this->out_degree(); ++i) {
+      // v -> max is an edge
+      node_type v = first_source(max, i);
+      while (v != UNDEFINED) {
+        auto w = next_source(v, i);
+        add_edge_nc(v, min, i);
+        new_edge_func(v, i);
+        v = w;
+      }
+
+      // Now let <v> be the IMAGE of <max>
+      v = this->unsafe_neighbor(max, i);
+      if (v != UNDEFINED) {
+        remove_source(v, i, max);
+        // Let <u> be the image of <min>, and ensure <u> = <v>
+        node_type u = this->unsafe_neighbor(min, i);
+        if (u == UNDEFINED) {
+          add_edge_nc(min, v, i);
+          new_edge_func(min, i);
+        } else if (u != v) {
+          incompat_func(u, v);
+        }
+      }
+    }
+  }
+
+#ifdef LIBSEMIGROUPS_DEBUG
+  template <typename T>
+  bool DigraphWithSources<T>::is_source(node_type   c,
+                                        node_type   d,
+                                        letter_type x) const {
+    c = first_source(c, x);
+    while (c != d && c != UNDEFINED) {
+      c = next_source(c, x);
+    }
+    return c == d;
+  }
+#endif
+
+  template <typename T>
+  void DigraphWithSources<T>::add_source(node_type   c,
+                                         letter_type x,
+                                         node_type   d) noexcept {
+    LIBSEMIGROUPS_ASSERT(x < this->out_degree());
+    // If d = _preim_init(c, x), then preim_next(d, x) = d, which means that
+    // if we try to loop over preimages we'll enter an infinite loop.
+    if (d != _preim_init.get(c, x)) {
+      // c -> e -> ... -->  c -> d -> e -> ..
+      _preim_next.set(d, x, _preim_init.get(c, x));
+      _preim_init.set(c, x, d);
+    }
+  }
+
+  namespace digraph_with_sources {
+    template <typename T>
+    bool standardize(T& d, Forest& f) {
+      // TODO(later): should be DigraphWithSourcesBase
+      static_assert(
+          std::is_base_of<ActionDigraphBase, T>::value,
+          "the template parameter T must be derived from ActionDigraphBase");
+      using node_type = typename T::node_type;
+      if (!f.empty()) {
+        f.clear();
+      }
+      if (d.number_of_nodes() == 0) {
+        return false;
+      }
+
+      f.add_nodes(1);
+
+      node_type    t      = 0;
+      size_t const n      = d.out_degree();
+      bool         result = false;
+
+      for (node_type s = 0; s <= t; ++s) {
+        for (letter_type x = 0; x < n; ++x) {
+          node_type const r = d.unsafe_neighbor(s, x);
+          if (r != UNDEFINED) {
+            if (r > t) {
+              t++;
+              f.add_nodes(1);
+              if (r > t) {
+                d.swap_nodes(t, r);
+                result = true;
+              }
+              f.set(t, (s == t ? r : s), x);
+            }
+          }
+        }
+      }
+      return result;
+    }
+
+    template <typename T>
+    std::pair<bool, Forest> standardize(T& d) {
+      static_assert(
+          std::is_base_of<ActionDigraphBase, T>::value,
+          "the template parameter T must be derived from ActionDigraphBase");
+      Forest f;
+      bool   result = standardize(d, f);
+      return std::make_pair(result, f);
+    }
+  }  // namespace digraph_with_sources
 }  // namespace libsemigroups

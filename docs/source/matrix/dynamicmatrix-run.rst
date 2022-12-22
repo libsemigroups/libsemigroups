@@ -18,20 +18,20 @@ Defined in ``matrix.hpp``.
    This is a class for matrices where both the arithmetic operations in the
    underlying semiring and the dimensions of the matrix can be set at run time.
 
-   :tparam Semiring: 
+   :tparam Semiring:
       the type of a semiring object which defines the semiring arithmetic (see
       requirements below).
 
-   :tparam Scalar: 
+   :tparam Scalar:
       the type of the entries in the matrices (the type of elements in the
       underlying semiring)
 
    .. note::
       Certain member functions only work for square matrices and some only work
-      for rows. 
+      for rows.
 
    **Semiring requirements**
-    
+
    The template parameter :cpp:any:`Semiring` must have the following member
    functions:
 
@@ -44,7 +44,7 @@ Defined in ``matrix.hpp``.
    * ``scalar_type prod(scalar_type x, scalar_type y)``
      that returns the product in the semiring of the scalars ``x`` and ``y``.
 
-   See, for example, :cpp:any:`MaxPlusTruncSemiring`. 
+   See, for example, :cpp:any:`MaxPlusTruncSemiring`.
 
 .. toctree::
    :hidden:
@@ -71,7 +71,7 @@ Defined in ``matrix.hpp``.
 Member types
 ------------
 
-.. list-table:: 
+.. list-table::
    :widths: 50 50
    :header-rows: 1
 
@@ -84,16 +84,16 @@ Member types
    * - :ref:`scalar_const_reference<dynamicmatrix_run_scalar_const_reference>`
      - the type of const references to scalars contained in the matrix
    * - :ref:`Row<dynamicmatrix_run_row_type>`
-     - type of a row of the matrix 
+     - type of a row of the matrix
    * - :ref:`RowView<dynamicmatrix_run_rowview_type>`
-     - type of a row view int the matrix 
+     - type of a row view int the matrix
    * - :ref:`semiring_type<dynamicmatrix_run_semiring_type>`
      - the template parameter ``Semiring``.
 
 Member functions
 ----------------
 
-.. list-table:: 
+.. list-table::
    :widths: 50 50
 
    * - :ref:`(constructor)<dynamicmatrix_run_constructors>`
@@ -106,7 +106,7 @@ Member functions
 Static member functions
 -----------------------
 
-.. list-table:: 
+.. list-table::
    :widths: 50 50
 
    * - :ref:`make<dynamicmatrix_run_make>`
@@ -117,7 +117,7 @@ Static member functions
 Iterators
 ---------
 
-.. list-table:: 
+.. list-table::
    :widths: 50 50
 
    * - :ref:`begin/cbegin<dynamicmatrix_run_begin>`
@@ -130,9 +130,9 @@ Iterators
 Accessors
 ---------
 
-.. list-table:: 
+.. list-table::
    :widths: 50 50
-   
+
    * - :ref:`operator()<dynamicmatrix_run_call_operator>`
      - access specified element
    * - :ref:`row<dynamicmatrix_run_row>`
@@ -143,7 +143,7 @@ Accessors
 Arithmetic operators
 --------------------
 
-.. list-table:: 
+.. list-table::
    :widths: 50 50
 
    * - :ref:`operator+=<dynamicmatrix_run_operator_plus_equals>`
@@ -158,7 +158,7 @@ Arithmetic operators
 Comparison operators
 --------------------
 
-.. list-table:: 
+.. list-table::
    :widths: 50 50
 
    * - :ref:`operator==<dynamicmatrix_run_operator_equals>`
@@ -169,11 +169,11 @@ Comparison operators
      - compare matrices
    * - :ref:`operator\><dynamicmatrix_run_operator_more>`
      - compare matrices
-   
+
 Modifiers
 ---------
 
-.. list-table:: 
+.. list-table::
    :widths: 50 50
 
    * - :ref:`swap<dynamicmatrix_run_swap>`

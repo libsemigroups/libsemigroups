@@ -7,7 +7,7 @@ semigroups <https://www.irif.fr/~jep/PDF/Rio.pdf>`__, `Expository
 Slides <https://www.irif.fr/~jep/PDF/Exposes/StAndrews.pdf>`__, and
 `Semigroupe
 2.01 <https://www.irif.fr/~jep/Logiciels/Semigroupe2.0/semigroupe2.html>`__
-by Jean-Eric Pin. 
+by Jean-Eric Pin.
 
 Some of the features of `Semigroupe
 2.01 <https://www.irif.fr/~jep/Logiciels/Semigroupe2.0/semigroupe2.html>`__

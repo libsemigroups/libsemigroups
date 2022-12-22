@@ -9,7 +9,7 @@ libsemigroups::FpSemigroupInterface:
 - Constructors:
   - ["This page contains information about the constructors for the
      :cpp:any:`FpSemigroupInterface` class."]
-  - FpSemigroupInterface() 
+  - FpSemigroupInterface()
   - FpSemigroupInterface(FpSemigroupInterface const&) = default
   - FpSemigroupInterface(FpSemigroupInterface&&) = default
 - Deleted constructors:
@@ -52,7 +52,7 @@ libsemigroups::FpSemigroupInterface:
   - number_of_rules() const noexcept
   - has_identity() const noexcept
 - Normal forms and equality testing:
-  - ["This page contains information about the member functions of 
+  - ["This page contains information about the member functions of
       the :cpp:any:`FpSemigroupInterface` class for computing normal forms and
       equality testing."]
   - normal_form(word_type const&)
@@ -60,7 +60,7 @@ libsemigroups::FpSemigroupInterface:
   - equal_to(std::initializer_list<letter_type>, std::initializer_list<letter_type>)
   - equal_to(word_type const&, word_type const&)
 - Words to strings and vice versa:
-  - ["This page contains information about the functions in 
+  - ["This page contains information about the functions in
       the :cpp:any:`FpSemigroupInterface` class for converting from words to
       strings and vice versa."]
   - word_to_string(word_type const&) const
@@ -85,7 +85,7 @@ libsemigroups::FpSemigroupInterface:
   - cbegin_rules() const noexcept
   - cend_rules() const noexcept
 - Miscellanea:
-  - ["This page contains information about member functions of 
+  - ["This page contains information about member functions of
       the :cpp:any:`FpSemigroupInterface` class that doesn't fall into any of
       the other categories."]
   - to_gap_string()

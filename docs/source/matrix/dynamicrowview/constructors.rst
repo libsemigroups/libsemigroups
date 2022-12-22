@@ -23,15 +23,15 @@ Default constructors
 --------------------
 
 .. cpp:function:: DynamicRowView() = default
-   
+
    Default constructor.
 
 .. cpp:function:: DynamicRowView(DynamicRowView const&) = default
-   
+
    Default copy constructor.
 
 .. cpp:function:: DynamicRowView(DynamicRowView&&) = default
-   
+
    Default move constructor.
 
 .. cpp:function:: DynamicRowView& operator=(DynamicRowView const&) = default
@@ -48,11 +48,11 @@ Constructor from Row
 .. cpp:function:: explicit DynamicRowView(Row const& r)
 
    Construct a row view from a Row.
-   
+
    :param r: the row.
 
-   :exceptions: 
-     This function guarantees not to throw a :cpp:any:`LibsemigroupsException`. 
-    
-   :complexity: 
+   :exceptions:
+     This function guarantees not to throw a :cpp:any:`LibsemigroupsException`.
+
+   :complexity:
      Constant.

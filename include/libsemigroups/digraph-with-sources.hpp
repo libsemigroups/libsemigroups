@@ -30,19 +30,25 @@
 #ifndef LIBSEMIGROUPS_DIGRAPH_WITH_SOURCES_HPP_
 #define LIBSEMIGROUPS_DIGRAPH_WITH_SOURCES_HPP_
 
-#include "digraph.hpp"  // for ActionDigraph
+#include <cstddef>  // for size_t
+#include <stack>    // for stack
+#include <utility>  // for pair
+#include <vector>   // for vector
 
+#include "config.hpp"      // for LIBSEMIGROUPS_DEBUG
+#include "constants.hpp"   // for UNDEFINED
+#include "containers.hpp"  // for DynamicArray2
+#include "digraph.hpp"     // for ActionDigraph
+#include "types.hpp"       // for letter_type
+                           //
 namespace libsemigroups {
+  class Forest;  // forward decl
+
   template <typename T>
   class DigraphWithSources : public ActionDigraph<T> {
    public:
     using node_type = T;
     using size_type = node_type;
-
-    using Coincidence  = std::pair<node_type, node_type>;
-    using Coincidences = std::stack<Coincidence>;
-
-    class Deductions;  // Forward declaration
 
    private:
     using table_type = detail::DynamicArray2<node_type>;
@@ -92,11 +98,11 @@ namespace libsemigroups {
       _preim_next.shrink_rows_to(m);
     }
 
-    node_type first_source(node_type c, letter_type x) const noexcept {
+    inline node_type first_source(node_type c, letter_type x) const noexcept {
       return _preim_init.get(c, x);
     }
 
-    node_type next_source(node_type c, letter_type x) const noexcept {
+    inline node_type next_source(node_type c, letter_type x) const noexcept {
       return _preim_next.get(c, x);
     }
 
@@ -116,64 +122,20 @@ namespace libsemigroups {
     // version of swap nodes.
     void rename_node(node_type c, node_type d);
 
-    // TODO(Sims) move to .tpp file + make the actions on Conincicdences and
-    // Deductions less prescriptive.
-    // I.e. pass a function to be called when ever a new edge is defined, or a
-    // contradiction is obtained. Or even move coincidences in here so that we
-    // can determinise the graph
     template <typename NewEdgeFunc, typename IncompatibleFunc>
     void merge_nodes(node_type          min,
                      node_type          max,
                      NewEdgeFunc&&      new_edge_func,
-                     IncompatibleFunc&& incompat_func) {
-      LIBSEMIGROUPS_ASSERT(min < max);
-      for (letter_type i = 0; i < this->out_degree(); ++i) {
-        // v -> max is an edge
-        node_type v = first_source(max, i);
-        while (v != UNDEFINED) {
-          auto w = next_source(v, i);
-          add_edge_nc(v, min, i);
-          new_edge_func(v, i);
-          v = w;
-        }
-
-        // Now let <v> be the IMAGE of <max>
-        v = this->unsafe_neighbor(max, i);
-        if (v != UNDEFINED) {
-          remove_source(v, i, max);
-          // Let <u> be the image of <min>, and ensure <u> = <v>
-          node_type u = this->unsafe_neighbor(min, i);
-          if (u == UNDEFINED) {
-            add_edge_nc(min, v, i);
-            new_edge_func(min, i);
-          } else if (u != v) {
-            incompat_func(u, v);
-          }
-        }
-      }
-    }
+                     IncompatibleFunc&& incompat_func);
 
 #ifdef LIBSEMIGROUPS_DEBUG
     // Is d a source of c under x?
-    bool is_source(node_type c, node_type d, letter_type x) const {
-      c = first_source(c, x);
-      while (c != d && c != UNDEFINED) {
-        c = next_source(c, x);
-      }
-      return c == d;
-    }
+    bool is_source(node_type c, node_type d, letter_type x) const;
 #endif
+
     void clear_sources_and_targets(node_type c);
     void clear_sources(node_type c);
-
-    // Add d to the list of preimages of c under x, i.e.
-    // _word_graph.target(d, x) = c
-    void add_source(node_type c, letter_type x, node_type d) noexcept {
-      LIBSEMIGROUPS_ASSERT(x < this->out_degree());
-      // c -> e -> ... -->  c -> d -> e -> ..
-      _preim_next.set(d, x, _preim_init.get(c, x));
-      _preim_init.set(c, x, d);
-    }
+    void add_source(node_type c, letter_type x, node_type d) noexcept;
 
    private:
     void remove_source(node_type cx, letter_type x, node_type d);
@@ -184,54 +146,11 @@ namespace libsemigroups {
   namespace digraph_with_sources {
     // Return value indicates whether or not the graph was modified.
     template <typename T>
-    bool standardize(T& d, Forest& f) {
-      // TODO(later): should be DigraphWithSourcesBase, and really this should
-      // be in namespace  digraph_with_sources
-      static_assert(
-          std::is_base_of<ActionDigraphBase, T>::value,
-          "the template parameter T must be derived from ActionDigraphBase");
-      using node_type = typename T::node_type;
-      if (!f.empty()) {
-        f.clear();
-      }
-      if (d.number_of_nodes() == 0) {
-        return false;
-      }
-
-      f.add_nodes(1);
-
-      node_type    t      = 0;
-      size_t const n      = d.out_degree();
-      bool         result = false;
-
-      for (node_type s = 0; s <= t; ++s) {
-        for (letter_type x = 0; x < n; ++x) {
-          node_type const r = d.unsafe_neighbor(s, x);
-          if (r != UNDEFINED) {
-            if (r > t) {
-              t++;
-              f.add_nodes(1);
-              if (r > t) {
-                d.swap_nodes(t, r);
-                result = true;
-              }
-              f.set(t, (s == t ? r : s), x);
-            }
-          }
-        }
-      }
-      return result;
-    }
+    bool standardize(T& d, Forest& f);
 
     template <typename T>
-    std::pair<bool, Forest> standardize(T& d) {
-      static_assert(
-          std::is_base_of<ActionDigraphBase, T>::value,
-          "the template parameter T must be derived from ActionDigraphBase");
-      Forest f;
-      bool   result = standardize(d, f);
-      return std::make_pair(result, f);
-    }
+    std::pair<bool, Forest> standardize(T& d);
+
   }  // namespace digraph_with_sources
 }  // namespace libsemigroups
 

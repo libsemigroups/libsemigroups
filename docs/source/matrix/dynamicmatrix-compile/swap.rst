@@ -13,13 +13,13 @@ swap
 
 .. cpp:function::  void swap(DynamicMatrix& that) noexcept
 
-   Swaps the contents of ``this`` with the contents of ``that``. 
+   Swaps the contents of ``this`` with the contents of ``that``.
 
    :param that: the matrix to swap contents with
 
    :returns: (None)
-   
+
    :complexity: Constant
-   
-   :exceptions: 
-     this function is ``noexcept`` and is guaranteed never to throw.   
+
+   :exceptions:
+     this function is ``noexcept`` and is guaranteed never to throw.

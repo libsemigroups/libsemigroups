@@ -13,18 +13,18 @@ transpose
 
 .. cpp:function::  void transpose() noexcept
 
-   Transposes the matrix in-place. 
+   Transposes the matrix in-place.
 
    :parameters: (None)
 
    :returns: (None)
-   
-   :exceptions: 
-     this function guarantees not to throw a :cpp:any:`LibsemigroupsException`. 
-   
-   :complexity: 
-     :math:`O(n ^ 2)` where :math:`n` is the number of rows and
-     the number of columns in the matrix. 
 
-   .. warning:: 
-     This only works for square matrices. 
+   :exceptions:
+     this function guarantees not to throw a :cpp:any:`LibsemigroupsException`.
+
+   :complexity:
+     :math:`O(n ^ 2)` where :math:`n` is the number of rows and
+     the number of columns in the matrix.
+
+   .. warning::
+     This only works for square matrices.

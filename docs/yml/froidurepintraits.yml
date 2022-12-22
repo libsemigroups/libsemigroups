@@ -5,7 +5,7 @@ libsemigroups::FroidurePinTraits:
   - element_type
   - state_type
 - Adapters:
-  - ["This page contains information about the adapters contained in the 
+  - ["This page contains information about the adapters contained in the
      :cpp:any:`FroidurePinTraits` class."]
   - Complexity
   - Degree

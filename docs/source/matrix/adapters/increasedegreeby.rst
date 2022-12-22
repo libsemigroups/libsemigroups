@@ -10,25 +10,25 @@ IncreaseDegree
 .. cpp:namespace:: libsemigroups
 
 .. cpp:struct:: template <typename T> \
-                IncreaseDegree<T, std::enable_if_t<IsMatrix<T>>> 
+                IncreaseDegree<T, std::enable_if_t<IsMatrix<T>>>
 
    Defined in ``matrix.hpp``.
-   
+
    Specialization of the adapter :cpp:any:`IncreaseDegree` for types ``T`` such
-   that the value of :cpp:any:`IsMatrix\<T>` is ``true``.  
-   
+   that the value of :cpp:any:`IsMatrix\<T>` is ``true``.
+
    :tparam T: the type of matrices.
 
-   .. warning:: 
+   .. warning::
      It is not possible to increase the degree of any of the types for which
      :cpp:any:`IsMatrix\<T>` is ``true``, and as such the call operator of this
-     type does nothing. 
-   
-   
+     type does nothing.
+
+
    .. cpp:function:: constexpr void operator()(T&, size_t) const noexcept
 
-      Returns (None). 
-      
+      Returns (None).
+
       :parameters: (None)
 
       :returns: Does not do anything, do not use.

@@ -10,7 +10,7 @@ row_space_size
 .. cpp:namespace:: libsemigroups::matrix_helpers
 
 .. cpp:function:: template <typename Mat> \
-                  size_t row_space_size(Mat const& x) 
+                  size_t row_space_size(Mat const& x)
 
    Returns the size of the row space of the matrix ``x``. This is currently
    only implemented for types of matrix ``Mat`` where :cpp:any:`IsBMat\<Mat>` is
@@ -19,25 +19,25 @@ row_space_size
 
    :param x: the matrix
 
-   :returns: A value of type ``size_t``. 
+   :returns: A value of type ``size_t``.
 
-   :exceptions: 
+   :exceptions:
      This function guarantees not to throw a :cpp:any:`LibsemigroupsException`.
      It might throw ``std::bad_alloc`` if the algorithm cannot allocate enough
      memory.
 
-   :complexity: 
+   :complexity:
      :math:`O(mn)` where :math:`m` is the size of the row basis of ``x`` and
-     :math:`n` is the size of the row space. 
+     :math:`n` is the size of the row space.
 
      .. warning::
 
-         If :math:`k` is the dimension of the matrix ``x``, then :math:`n` 
+         If :math:`k` is the dimension of the matrix ``x``, then :math:`n`
          can be as large as :math:`2 ^ k`.
 
-   **Example** 
+   **Example**
 
-   .. code-block::  
+   .. code-block::
 
       auto x = BMat<>::make({{1, 0, 0}, {0, 0, 1}, {0, 1, 0}});
       matrix_helpers::row_space_size(x); // returns 7

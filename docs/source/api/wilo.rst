@@ -9,7 +9,7 @@ Words in lexicographic order (wilo)
 
 The functions :cpp:any:`libsemigroups::cbegin_wilo` and
 :cpp:any:`libsemigroups::cend_wilo` can be used to iterate through words in
-lexicographic order in some range. 
+lexicographic order in some range.
 
 .. doxygenfunction:: libsemigroups::cbegin_wilo(size_t, size_t, word_type&&, word_type&&)
    :project: libsemigroups

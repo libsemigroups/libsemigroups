@@ -18,15 +18,15 @@ Default constructors
 --------------------
 
 .. cpp:function:: DynamicMatrix() = default
-   
+
    Default constructor.
 
 .. cpp:function:: DynamicMatrix(DynamicMatrix const&) = default
-   
+
    Default copy constructor.
 
 .. cpp:function:: DynamicMatrix(DynamicMatrix&&) = default
-   
+
    Default move constructor.
 
 .. cpp:function:: DynamicMatrix& \
@@ -46,16 +46,16 @@ Matrix constructors
 .. cpp:function:: DynamicMatrix(size_t r, size_t c)
 
    Construct a matrix.
-    
+
    :param r: the number of rows in the matrix being constructed
    :param c: the number of columns in the matrix being constructed
-    
-   :exceptions: 
-     This function guarantees not to throw a 
-     :cpp:any:`LibsemigroupsException`. 
-    
+
+   :exceptions:
+     This function guarantees not to throw a
+     :cpp:any:`LibsemigroupsException`.
+
    :complexity: Constant
-  
+
    **Example**
 
    .. code-block:: cpp
@@ -67,17 +67,17 @@ Matrix constructors
         std::initializer_list<std::initializer_list<scalar_type>> m)
 
    Construct a matrix.
-    
+
    :param m: the values to be copied into the matrix.
-    
-   :exceptions: 
-     this function guarantees not to throw a 
-     :cpp:any:`LibsemigroupsException`. 
-    
-   :complexity: 
-     :math:`O(mn)` where :math:`m` is the number of rows and 
+
+   :exceptions:
+     this function guarantees not to throw a
+     :cpp:any:`LibsemigroupsException`.
+
+   :complexity:
+     :math:`O(mn)` where :math:`m` is the number of rows and
      :math:`n` is the number of columns in the matrix being constructed.
-  
+
    **Example**
 
    .. code-block:: cpp
@@ -87,17 +87,17 @@ Matrix constructors
 
 .. cpp:function:: DynamicMatrix( \
         std::vector<std::vector<scalar_type>> const& m)
-    
+
    Construct a matrix.
-    
+
    :param m: the values to be copied into the matrix.
-    
-   :exceptions: 
-     this function guarantees not to throw a 
-     :cpp:any:`LibsemigroupsException`. 
-    
-   :complexity: 
-     :math:`O(mn)` where :math:`m` is the number of rows and 
+
+   :exceptions:
+     this function guarantees not to throw a
+     :cpp:any:`LibsemigroupsException`.
+
+   :complexity:
+     :math:`O(mn)` where :math:`m` is the number of rows and
      :math:`n` is the number of columns in the matrix being constructed.
 
 Row constructors
@@ -107,27 +107,27 @@ Row constructors
                   std::initializer_list<scalar_type> c)
 
    Construct a row.
-   
+
    :param c: the values to be copied into the row.
-  
-   :exceptions: 
-     this function guarantees not to throw a 
-     :cpp:any:`LibsemigroupsException`. 
-   
-   :complexity: 
+
+   :exceptions:
+     this function guarantees not to throw a
+     :cpp:any:`LibsemigroupsException`.
+
+   :complexity:
      :math:`O(n)` where :math:`n` is the size of the row being
      constructed.
-   
+
 .. cpp:function:: DynamicMatrix(RowView const& rv)
 
    Construct a row from a row view.
-   
+
    :param rv: the row view.
-   
-   :exceptions: 
-     this function guarantees not to throw a 
-     :cpp:any:`LibsemigroupsException`. 
-   
-   :complexity: 
+
+   :exceptions:
+     this function guarantees not to throw a
+     :cpp:any:`LibsemigroupsException`.
+
+   :complexity:
      :math:`O(n)` where :math:`n` is the size of the row being
      constructed.

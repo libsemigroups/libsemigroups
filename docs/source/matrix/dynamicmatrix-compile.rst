@@ -23,33 +23,33 @@ Defined in ``matrix.hpp``.
    underlying semiring are known at compile time, and the dimensions of the
    matrix can be set at run time.
 
-   :tparam PlusOp: 
+   :tparam PlusOp:
       a stateless type with a call operator of signature :code:`scalar_type
       operator()(scalar_type, scalar_type)` implementing the addition of the
       semiring
 
-   :tparam ProdOp: 
+   :tparam ProdOp:
       a stateless type with a call operator of signature :code:`scalar_type
       operator()(scalar_type, scalar_type)` implementing the multiplication of
       the semiring
 
-   :tparam ZeroOp: 
+   :tparam ZeroOp:
       a stateless type with a call operator of signature :code:`scalar_type
       operator()()` returning the zero of the semiring (the additive identity
       element)
 
-   :tparam OneOp: 
+   :tparam OneOp:
       a stateless type with a call operator of signature :code:`scalar_type
       operator()()` returning the one of the semiring (the multiplicative
       identity element)
 
-   :tparam Scalar: 
+   :tparam Scalar:
       the type of the entries in the matrices (the type of elements in the
       underlying semiring)
 
    .. note::
       Certain member functions only work for square matrices and some only work
-      for rows. 
+      for rows.
 
 .. toctree::
    :hidden:
@@ -75,7 +75,7 @@ Defined in ``matrix.hpp``.
 Member types
 ------------
 
-.. list-table:: 
+.. list-table::
    :widths: 50 50
    :header-rows: 1
 
@@ -88,9 +88,9 @@ Member types
    * - :ref:`scalar_const_reference<dynamicmatrix_compile_scalar_const_reference>`
      - the type of const references to scalars contained in the matrix
    * - :ref:`Row<dynamicmatrix_compile_row_type>`
-     - type of a row of the matrix 
+     - type of a row of the matrix
    * - :ref:`RowView<dynamicmatrix_compile_rowview_type>`
-     - type of a row view int the matrix 
+     - type of a row view int the matrix
    * - :ref:`Plus<dynamicmatrix_compile_plus>`
      - the template parameter :cpp:any:`PlusOp`
    * - :ref:`Prod<dynamicmatrix_compile_prod>`
@@ -106,7 +106,7 @@ Member types
 Member functions
 ----------------
 
-.. list-table:: 
+.. list-table::
    :widths: 50 50
 
    * - :ref:`(constructor)<dynamicmatrix_compile_constructors>`
@@ -117,7 +117,7 @@ Member functions
 Static member functions
 -----------------------
 
-.. list-table:: 
+.. list-table::
    :widths: 50 50
 
    * - :ref:`make<dynamicmatrix_compile_make>`
@@ -128,7 +128,7 @@ Static member functions
 Iterators
 ---------
 
-.. list-table:: 
+.. list-table::
    :widths: 50 50
 
    * - :ref:`begin/cbegin<dynamicmatrix_compile_begin>`
@@ -141,9 +141,9 @@ Iterators
 Accessors
 ---------
 
-.. list-table:: 
+.. list-table::
    :widths: 50 50
-   
+
    * - :ref:`operator()<dynamicmatrix_compile_call_operator>`
      - access specified element
    * - :ref:`row<dynamicmatrix_compile_row>`
@@ -154,7 +154,7 @@ Accessors
 Arithmetic operators
 --------------------
 
-.. list-table:: 
+.. list-table::
    :widths: 50 50
 
    * - :ref:`operator+=<dynamicmatrix_compile_operator_plus_equals>`
@@ -169,7 +169,7 @@ Arithmetic operators
 Comparison operators
 --------------------
 
-.. list-table:: 
+.. list-table::
    :widths: 50 50
 
    * - :ref:`operator==<dynamicmatrix_compile_operator_equals>`
@@ -180,11 +180,11 @@ Comparison operators
      - compare matrices
    * - :ref:`operator\><dynamicmatrix_compile_operator_more>`
      - compare matrices
-   
+
 Modifiers
 ---------
 
-.. list-table:: 
+.. list-table::
    :widths: 50 50
 
    * - :ref:`swap<dynamicmatrix_compile_swap>`

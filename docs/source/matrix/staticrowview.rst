@@ -19,42 +19,42 @@ Defined in ``matrix.hpp``.
                          typename Scalar> \
    StaticRowView final
    :tparam-line-spec:
-  
+
    This is a class for views into a row of a matrix over a semiring. An
    instance of this class provides access to the elements in a row of a matrix
    and is cheap to create and copy. Addition, scalar multiplication, and other
    standard vector operations are defined for row views.
-  
+
    This class is the type of row views into a :cpp:any:`StaticMatrix`; see the
    documentation for :cpp:any:`StaticMatrix` for further details.
-  
+
    \warning
    If the underlying matrix is destroyed, then any row views for that matrix
    are invalidated.
 
-   :tparam PlusOp: 
+   :tparam PlusOp:
       a stateless type with a call operator of signature :code:`scalar_type
       operator()(scalar_type, scalar_type)` implementing the addition of the
       semiring
 
-   :tparam ProdOp: 
+   :tparam ProdOp:
       a stateless type with a call operator of signature :code:`scalar_type
       operator()(scalar_type, scalar_type)` implementing the multiplication of
       the semiring
 
-   :tparam ZeroOp: 
+   :tparam ZeroOp:
       a stateless type with a call operator of signature :code:`scalar_type
       operator()()` returning the zero of the semiring (the additive identity
       element)
 
-   :tparam OneOp: 
+   :tparam OneOp:
       a stateless type with a call operator of signature :code:`scalar_type
       operator()()` returning the one of the semiring (the multiplicative
       identity element)
 
-   :tparam C: the number of columns of the underlying matrix 
+   :tparam C: the number of columns of the underlying matrix
 
-   :tparam Scalar: 
+   :tparam Scalar:
       the type of the entries in the matrices (the type of elements in the
       underlying semiring)
 
@@ -77,7 +77,7 @@ Defined in ``matrix.hpp``.
 Member types
 ------------
 
-.. list-table:: 
+.. list-table::
    :widths: 50 50
    :header-rows: 1
 
@@ -101,7 +101,7 @@ Member types
 Member functions
 ----------------
 
-.. list-table:: 
+.. list-table::
    :widths: 50 50
 
    * - :ref:`(constructor)<staticrowview_constructors>`
@@ -112,7 +112,7 @@ Member functions
 Iterators
 ---------
 
-.. list-table:: 
+.. list-table::
    :widths: 50 50
 
    * - :ref:`begin/cbegin<staticrowview_begin>`
@@ -123,9 +123,9 @@ Iterators
 Accessors
 ---------
 
-.. list-table:: 
+.. list-table::
    :widths: 50 50
-   
+
    * - :ref:`operator()<staticrowview_call_operator>`
      - access specified element
    * - :ref:`operator[]<staticrowview_subscript_operator>`
@@ -134,7 +134,7 @@ Accessors
 Arithmetic operators
 --------------------
 
-.. list-table:: 
+.. list-table::
    :widths: 50 50
 
    * - :ref:`operator+=<staticrowview_operator_plus_equals>`
@@ -149,7 +149,7 @@ Arithmetic operators
 Comparison operators
 --------------------
 
-.. list-table:: 
+.. list-table::
    :widths: 50 50
 
    * - :ref:`operator==<staticrowview_operator_equals>`

@@ -3071,7 +3071,7 @@ namespace libsemigroups {
 #ifdef LIBSEMIGROUPS_DEBUG
     // Validates the coset table.
     void ToddCoxeter::debug_validate_table() const {
-      REPORT_DEBUG_DEFAULT("validating the coset table... ");
+      REPORT_DEBUG_DEFAULT("validating the coset table...\n");
       size_t const n = number_of_generators();
       coset_type   c = _id_coset;
       while (c != first_free_coset()) {

@@ -19,14 +19,14 @@ libsemigroups::Bipartition:
   - Bipartition(std::initializer_list<uint32_t> const&)
   - Bipartition(std::initializer_list<std::vector<int32_t>> const&)
 - Static member functions:
-  - ["This page contains information about the static member functions of the  
+  - ["This page contains information about the static member functions of the
      :cpp:any:`Bipartition` class."]
   - identity(size_t)
-  - make(T const&) 
+  - make(T const&)
   - make(std::initializer_list<uint32_t> const&)
   - make(std::initializer_list<std::vector<int32_t>> const &)
 - Operators:
-  - ["This page contains information about the comparison operators for the  
+  - ["This page contains information about the comparison operators for the
      :cpp:any:`Bipartition` class."]
   - operator==(Bipartition const&) const
   - operator<(Bipartition const&) const
@@ -65,6 +65,6 @@ libsemigroups::Bipartition:
 - Setters:
   - ["This page contains information about functions that allow attributes of a
      :cpp:any:`Bipartition` to be set."]
-  - set_number_of_blocks(size_t) noexcept 
-  - set_number_of_left_blocks(size_t) noexcept 
+  - set_number_of_blocks(size_t) noexcept
+  - set_number_of_left_blocks(size_t) noexcept
   - set_rank(size_t) noexcept

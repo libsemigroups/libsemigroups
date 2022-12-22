@@ -9,7 +9,7 @@ Strings in short-lex order (sislo)
 
 The functions :cpp:any:`libsemigroups::cbegin_sislo` and
 :cpp:any:`libsemigroups::cend_sislo` can be used to iterate through strings in
-short-lex order in some range. 
+short-lex order in some range.
 
 .. doxygenfunction:: libsemigroups::cbegin_sislo
    :project: libsemigroups

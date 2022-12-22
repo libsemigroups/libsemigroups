@@ -14,7 +14,7 @@ libsemigroups::Konieczny:
   - D_class_index_type
   - const_iterator
 - Adapter member types:
-  - ["This page contains information about the adapters contained in the 
+  - ["This page contains information about the adapters contained in the
      :cpp:any:`Konieczny` class."]
   - Degree
   - EqualTo
@@ -38,19 +38,19 @@ libsemigroups::Konieczny:
   - operator=(Konieczny const &) = delete
   - operator=(Konieczny &&) = delete
 - Initialisation:
-  - ["This page contains information about the member functions of the 
+  - ["This page contains information about the member functions of the
      :cpp:any:`Konieczny` class that can be used for initialisation."]
   - add_generator(const_reference)
   - add_generators(T const&)
   - add_generators(std::initializer_list<const_element_type>)
   - add_generators(T const&, T const&)
 - Elements:
-  - ["This page contains information about the member functions of the  
+  - ["This page contains information about the member functions of the
      :cpp:any:`Konieczny` class related to elements."]
   - is_regular_element(const_reference)
   - contains(const_reference)
 - Attributes:
-  - ["This page contains information about non-const attributes of the  
+  - ["This page contains information about non-const attributes of the
      :cpp:any:`Konieczny` class."]
   - size()
   - number_of_D_classes()
@@ -64,7 +64,7 @@ libsemigroups::Konieczny:
   - D_class_of_element(const_reference)
   - number_of_idempotents()
 - Const Attributes:
-  - ["This page contains information about non-const attributes of the  
+  - ["This page contains information about non-const attributes of the
      :cpp:any:`Konieczny` class."]
   - generator(size_t) const
   - number_of_generators() const noexcept
@@ -76,11 +76,11 @@ libsemigroups::Konieczny:
   - current_number_of_R_classes() const
   - current_number_of_H_classes() const
   - current_number_of_regular_D_classes() const
-  - current_number_of_regular_L_classes() const 
+  - current_number_of_regular_L_classes() const
   - current_number_of_regular_R_classes() const
   - current_number_of_regular_elements() const
 - Iterators:
-  - ["This page contains information about the member functions of the  
+  - ["This page contains information about the member functions of the
      :cpp:any:`Konieczny` class related to iterators."]
   - cbegin_generators() const noexcept
   - cend_generators() const noexcept

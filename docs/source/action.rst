@@ -12,7 +12,7 @@ Actions
 This page contains an overview summary of the functionality in
 ``libsemigroups`` for finding actions of semigroups, or groups, on sets.  The
 notion of an "action" in the context of ``libsemigroups`` is analogous to the
-notion of an orbit of a group.  
+notion of an orbit of a group.
 
 You are unlikely to want to use :cpp:class:`Action` directly, but rather via
 the more convenient aliases :cpp:any:`RightAction` and :cpp:any:`LeftAction`.
@@ -20,7 +20,7 @@ To use :cpp:any:`RightAction` and :cpp:any:`LeftAction` with custom types,
 actions, and so on, see :cpp:class:`ActionTraits`.
 See also :cpp:any:`ImageLeftAction` and :cpp:any:`ImageRightAction`.
 
-.. code-block:: cpp 
+.. code-block:: cpp
 
     using namespace libsemigroups;
     RightAction<PPerm<16>, PPerm<16>, ImageRightAction<PPerm<16>, PPerm<16>>> o;

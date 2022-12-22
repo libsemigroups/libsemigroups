@@ -14,13 +14,13 @@ operator+=
    Sums a row view with another row view in-place.
 
    :param that: the row view to add to ``this``.
-    
+
    :returns: (None)
 
-   :throws: 
+   :throws:
       If the implementation of the semiring addition throws.
 
-   :complexity: 
+   :complexity:
       :math:`O(m)` where :math:`m` is :cpp:any:`size`
 
    .. warning::
@@ -31,13 +31,13 @@ operator+=
 .. cpp:function:: void operator+=(scalar_type const a)
 
    Adds a scalar to every entry of the row in-place.
-   
+
    :param a: the scalar to add to ``this``.
-   
+
    :returns: (None)
 
-   :complexity: 
+   :complexity:
       :math:`O(m)` where :math:`m` is :cpp:any:`size`
-   
-   :throws: 
+
+   :throws:
       If the implementation of the semiring addition throws.

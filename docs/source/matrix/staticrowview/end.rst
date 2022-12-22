@@ -20,11 +20,11 @@ end, cend
 
    :returns:
      A value of type ``iterator``.
-   
+
    :complexity: Constant
-   
-   :exceptions: 
-     This function is ``noexcept`` and is guaranteed never to throw.   
+
+   :exceptions:
+     This function is ``noexcept`` and is guaranteed never to throw.
 
 .. cpp:function:: const_iterator cend()
 
@@ -35,8 +35,8 @@ end, cend
 
    :returns:
      A value of type ``const_iterator``.
-   
+
    :complexity: Constant
-   
-   :exceptions: 
-     This function is ``noexcept`` and is guaranteed never to throw.   
+
+   :exceptions:
+     This function is ``noexcept`` and is guaranteed never to throw.

@@ -10,9 +10,9 @@ Constants
 ``libsemigroups`` contains certain constant values, which are described in this
 section.  The values below correspond to integer values (in some sense).  All
 of the constants in this section can be implicitly converted to any integral
-type, and have a value specified by 
+type, and have a value specified by
 
-.. code-block:: cpp 
+.. code-block:: cpp
 
     std::numeric_limits<T>::max/min()
 
@@ -31,7 +31,7 @@ implicitly converted to two different integral types and then these are
 compared, this will yield :code:`false`, and so :code:`==` of
 :cpp:any:`UNDEFINED` and itself is not transitive, so beware.
 
-.. code-block:: cpp 
+.. code-block:: cpp
 
     using namespace libsemigroups;
     UNDEFINED != 0;                        // true

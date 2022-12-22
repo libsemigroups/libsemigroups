@@ -13,15 +13,15 @@ One
                 One<T, std::enable_if_t<IsMatrix<T>>>
 
    Defined in ``matrix.hpp``.
-   
+
    Specialization of the adapter :cpp:any:`One` for types ``T`` such
-   that the value of :cpp:any:`IsMatrix\<T>` is ``true``. 
-   
+   that the value of :cpp:any:`IsMatrix\<T>` is ``true``.
+
    :tparam: T the type of matrices.
-   
-   .. cpp:function:: inline T operator()(T const& x) const 
-      
-      Returns the identity matrix. 
+
+   .. cpp:function:: inline T operator()(T const& x) const
+
+      Returns the identity matrix.
 
       :param x: a matrix of type ``T``.
 
@@ -31,13 +31,13 @@ One
         This function guarantees not to throw a
         :cpp:any:`LibsemigroupsException`.
 
-     :complexity: 
+     :complexity:
        :math:`O(m ^ 2)` where :math:`m` is the number of rows of the matrix ``x``.
 
-     .. warning:: 
+     .. warning::
         This function only works for square matrices.
 
-     .. seealso:: 
+     .. seealso::
        See :cpp:any:`static StaticMatrix StaticMatrix::identity()`, or
        :cpp:any:`static DynamicMatrix DynamicMatrix::identity(size_t n)` for
        further details.

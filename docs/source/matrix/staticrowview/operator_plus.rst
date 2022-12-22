@@ -13,17 +13,17 @@ operator+
 
 .. cpp:function:: Row operator+(StaticRowView const& that)
 
-   Sums a row view with another row view and returns a newly allocated Row. 
+   Sums a row view with another row view and returns a newly allocated Row.
 
    :param that: the row view to add to ``this``.
-    
+
    :returns: A value of type :cpp:any:`Row`
 
-   :throws: 
+   :throws:
       If the implementation of the semiring addition throws or
       ``std::bad_alloc`` is thrown.
 
-   :complexity: 
+   :complexity:
       :math:`O(m)` where :math:`m` is :cpp:any:`size`
 
    .. warning::

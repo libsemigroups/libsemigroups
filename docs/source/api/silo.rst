@@ -9,7 +9,7 @@ Strings in lexicographic order (silo)
 
 The functions :cpp:any:`libsemigroups::cbegin_silo` and
 :cpp:any:`libsemigroups::cend_silo` can be used to iterate through strings in
-lexicographic order in some range. 
+lexicographic order in some range.
 
 .. doxygenfunction:: libsemigroups::cbegin_silo
    :project: libsemigroups

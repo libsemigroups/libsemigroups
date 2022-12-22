@@ -28,7 +28,7 @@ libsemigroups::StaticPTransf:
   - operator<=(PTransfBase const &) const
   - operator>=(PTransfBase const &) const
   - operator!=(PTransfBase const &) const
-  - operator[](size_t) 
+  - operator[](size_t)
   - operator[](size_t) const
   - at(size_t)
   - at(size_t) const

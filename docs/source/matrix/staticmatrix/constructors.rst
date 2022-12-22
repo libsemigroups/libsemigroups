@@ -18,15 +18,15 @@ Default constructors
 --------------------
 
 .. cpp:function:: StaticMatrix() = default
-   
+
    Default constructor.
 
 .. cpp:function:: StaticMatrix(StaticMatrix const&) = default
-   
+
    Default copy constructor.
 
 .. cpp:function:: StaticMatrix(StaticMatrix&&) = default
-   
+
    Default move constructor.
 
 .. cpp:function:: StaticMatrix& operator=(StaticMatrix const&) = default
@@ -45,16 +45,16 @@ Matrix constructors
         std::initializer_list<std::initializer_list<scalar_type>> m)
 
    Construct a matrix.
-    
+
    :param m: the values to be copied into the matrix.
-    
-   :exceptions: 
-     this function guarantees not to throw a :cpp:any:`LibsemigroupsException`. 
-    
-   :complexity: 
+
+   :exceptions:
+     this function guarantees not to throw a :cpp:any:`LibsemigroupsException`.
+
+   :complexity:
      :math:`O(mn)` where :math:`m` is the template parameter :code:`R` and
-     :math:`n` is the template parameter :code:`C`. 
-  
+     :math:`n` is the template parameter :code:`C`.
+
    **Example**
 
    .. code-block:: cpp
@@ -64,18 +64,18 @@ Matrix constructors
 
 .. cpp:function:: StaticMatrix( \
         std::vector<std::vector<scalar_type>> const& m)
-    
+
    Construct a matrix.
-    
+
    :param m: the values to be copied into the matrix.
-    
-   :exceptions: 
-     this function guarantees not to throw a :cpp:any:`LibsemigroupsException`. 
-    
-   :complexity: 
+
+   :exceptions:
+     this function guarantees not to throw a :cpp:any:`LibsemigroupsException`.
+
+   :complexity:
      :math:`O(mn)` where :math:`m` is the template parameter :code:`R` and
-     :math:`n` is the template parameter :code:`C`. 
-    
+     :math:`n` is the template parameter :code:`C`.
+
 
 Row constructors
 ----------------
@@ -83,35 +83,35 @@ Row constructors
 .. cpp:function:: StaticMatrix(std::initializer_list<scalar_type> c)
 
    Construct a row.
-   
+
    :param c: the values to be copied into the row.
-  
-   :exceptions: 
-     this function guarantees not to throw a :cpp:any:`LibsemigroupsException`. 
-   
-   :complexity: 
+
+   :exceptions:
+     this function guarantees not to throw a :cpp:any:`LibsemigroupsException`.
+
+   :complexity:
      :math:`O(n)` where :math:`n` is the size of the row being
      constructed.
-   
-   .. warning:: 
+
+   .. warning::
 
      This constructor only works for rows, i.e. when the template parameter
      :code:`R` is :code:`1`.
-   
+
 .. cpp:function:: StaticMatrix(RowView const& rv)
 
    Construct a row from a row view.
-   
+
    :param rv: the row view.
-   
-   :exceptions: 
-     this function guarantees not to throw a :cpp:any:`LibsemigroupsException`. 
-   
-   :complexity: 
+
+   :exceptions:
+     this function guarantees not to throw a :cpp:any:`LibsemigroupsException`.
+
+   :complexity:
      :math:`O(n)` where :math:`n` is the size of the row being
      constructed.
-   
-   .. warning:: 
+
+   .. warning::
 
      This constructor only works for rows, i.e. when the template parameter
      :code:`R` is :code:`1`.
