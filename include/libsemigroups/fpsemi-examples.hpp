@@ -308,7 +308,8 @@ namespace libsemigroups {
     //! [10.1007/978-1-84800-281-4]: https://doi.org/10.1007/978-1-84800-281-4
     //! [hdl.handle.net/10023/2821]: http://hdl.handle.net/10023/2821
     std::vector<relation_type> symmetric_group(size_t n,
-                                               author val = author::Carmichael);
+                                               author val = author::Carmichael,
+                                               size_t     = 0);
 
     //! A presentation for the alternating group.
     //!

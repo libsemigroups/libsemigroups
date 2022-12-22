@@ -280,7 +280,7 @@ namespace libsemigroups {
       return result;
     }
 
-    std::vector<relation_type> symmetric_group(size_t n, author val) {
+    std::vector<relation_type> symmetric_group(size_t n, author val, size_t) {
       if (n < 4) {
         LIBSEMIGROUPS_EXCEPTION(
             "expected 1st argument to be at least 4, found %llu", uint64_t(n));
