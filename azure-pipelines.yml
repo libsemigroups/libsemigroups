@@ -50,16 +50,18 @@ jobs:
   steps:
   - bash: echo "##vso[task.prependpath]$CONDA/bin"
     displayName: Add conda to PATH
-  - bash: conda install -c conda-forge --yes mamba
-    displayName: "conda install mamba . . ."
-  - script: rm -f /usr/share/miniconda/pkgs/cache/*.json
-    displayName: 'Workaround for mamba-org/mamba#488'
-  - bash: mamba install -c conda-forge --yes fmt
-    displayName: "mamba install fmt"
-  - script: rm -f /usr/share/miniconda/pkgs/cache/*.json
-    displayName: 'Workaround for mamba-org/mamba#488'
-  - bash: mamba install -c conda-forge --yes eigen
-    displayName: "mamba install eigen"
+  - bash: conda update conda
+    displayName: "Update conda . . ."
+      # - bash: conda install -c conda-forge --yes mamba
+      # displayName: "conda install mamba . . ."
+      #  - script: rm -f /usr/share/miniconda/pkgs/cache/*.json
+      # displayName: 'Workaround for mamba-org/mamba#488'
+  - bash: conda install -c conda-forge --yes fmt
+    displayName: "conda install fmt"
+      # - script: rm -f /usr/share/miniconda/pkgs/cache/*.json
+      #   displayName: 'Workaround for mamba-org/mamba#488'
+  - bash: conda install -c conda-forge --yes eigen
+    displayName: "conda install eigen"
   - bash: |
       sudo apt-get install -y ccache
       echo "##vso[task.prependpath]/usr/lib/ccache"
