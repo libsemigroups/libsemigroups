@@ -22,7 +22,7 @@ Contributors
   words in free bands.
 - Joseph Edwards (jde1@st-andrews.ac.uk) contributed the container
   ``StaticTriVector2``.
-- Luke Elliot (le27@st-andrews.ac.uk) contributed to the Schreier-Sims
+- Luke Elliott (le27@st-andrews.ac.uk) contributed to the Schreier-Sims
   implementation.
 - Jan Engelhardt (jengelh@inai.de) contributed some bug fixes to the build
   system, and a number of helpful issues.
