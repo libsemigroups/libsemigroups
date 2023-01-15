@@ -18,12 +18,13 @@
 
 // This file contains some performance benchmarks.
 
-#include "src/semigroup.h"
 #include "catch.hpp"
+#include "src/semigroup.h"
 
 using namespace libsemigroups;
 
-template <typename T> static inline void really_delete_cont(T cont) {
+template <typename T>
+static inline void really_delete_cont(T cont) {
   for (Element* x : cont) {
     x->really_delete();
     delete x;
@@ -164,10 +165,10 @@ TEST_CASE("Benchmark 02: add_generators versus enumerate example 2",
                                                 {0, 1, 0, 1, 0},
                                                 {1, 0, 1, 0, 0},
                                                 {1, 1, 0, 0, 0}})};
-  std::vector<size_t> ag_times;
-  std::vector<size_t> en_times;
-  std::vector<size_t> cu_times;
-  size_t              counter = 0;
+  std::vector<size_t>   ag_times;
+  std::vector<size_t>   en_times;
+  std::vector<size_t>   cu_times;
+  size_t                counter = 0;
 
   for (size_t limit = example2_step; limit < 663336; limit += example2_step) {
     std::vector<size_t> t = bench(gens, coll, limit, example2_setup, 3);
