@@ -6,14 +6,10 @@ if [[ $# -ne 0 ]]; then
   exit 1
 fi
 
-find include/libsemigroups/*.hpp -type f -exec clang-format -i --verbose {} \;
-find src/*.hpp -type f -exec clang-format -i --verbose {} \;
-find src/*.cpp -type f -exec clang-format -i --verbose {} \;
-find tests/*.hpp -type f ! -iname "catch.hpp" -exec clang-format -i --verbose {} \;
-find tests/*.cpp -type f -exec clang-format -i --verbose {} \;
-find benchmarks/*.hpp -type f ! -iname "catch.hpp" -exec clang-format -i --verbose {} \;
-find benchmarks/*.cpp -type f -exec clang-format -i --verbose {} \;
-find benchmarks/examples/*.hpp -type f -exec clang-format -i --verbose {} \;
-find benchmarks/examples/*.cpp -type f -exec clang-format -i --verbose {} \;
+find include/libsemigroups/*.*pp -type f -exec clang-format -i --verbose {} \;
+find src/*.*pp -type f -exec clang-format -i --verbose {} \;
+find tests/*.*pp -type f ! -iname "catch.hpp" -exec clang-format -i --verbose {} \;
+find benchmarks/*.*pp -type f ! -iname "catch.hpp" -exec clang-format -i --verbose {} \;
+find benchmarks/examples/*.*pp -type f -exec clang-format -i --verbose {} \;
 
 exit 0
