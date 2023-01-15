@@ -1551,8 +1551,7 @@ namespace libsemigroups {
 
     void init_rank_state_and_rep_vecs() {
       if (started() || _run_initialised) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "too late to initialise rank/rep vecs!");
+        LIBSEMIGROUPS_EXCEPTION("too late to initialise rank/rep vecs!");
       }
 
       // We don't necessarily know how to update _rank_state with any

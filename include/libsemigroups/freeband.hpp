@@ -34,7 +34,6 @@
 
 namespace libsemigroups {
 
-
   //! Check if two given words represent the same element in the free band.
   //!
   //! The free band is the free object in the variety of bands or idempotent
