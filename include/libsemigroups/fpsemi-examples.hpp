@@ -528,6 +528,21 @@ namespace libsemigroups {
     //! [10.48550/arxiv.2211.02155]: https://doi.org/10.48550/arxiv.2211.02155
     std::vector<relation_type> order_preserving_cyclic_inverse_monoid(size_t n);
 
+    //! A presentation for the monoid of partial isometries of a cycle graph.
+    //!
+    //! Returns a vector of relations giving a monoid presentation defining
+    //! the monoid of partial isometries of an \f$n\f$-cycle graph, as described
+    //! in Theorem 2.8 of [10.48550/arxiv.2205.02196][].
+    //!
+    //! \param n the number of vertices of the cycle graph
+    //!
+    //! \returns A `std::vector<relation_type>`
+    //!
+    //! \throws LibsemigroupsException if `n < 3`
+    //!
+    //! [10.48550/arxiv.2205.02196]: https://doi.org/10.48550/arxiv.2205.02196
+    std::vector<relation_type> partial_isometries_cycle_graph_monoid(size_t n);
+
     //! A non-presentation for the symmetric group.
     //!
     //! Returns a vector of relations giving a monoid presentation which is

@@ -1523,6 +1523,53 @@ namespace libsemigroups {
       return result;
     }
 
+    // See Theorem 2.8 of https://arxiv.org/pdf/2205.02196.pdf
+    std::vector<relation_type> partial_isometries_cycle_graph_monoid(size_t n) {
+      if (n < 3) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "expected argument to be at least 3, found %llu", uint64_t(n));
+      }
+
+      std::vector<relation_type> result;
+
+      word_type g = {0};
+      word_type h = {1};
+      word_type e = {2};
+
+      // Q1
+      result.emplace_back(g ^ n, word_type({}));
+      result.emplace_back(h ^ 2, word_type({}));
+      result.emplace_back(h * g, (g ^ (n - 1)) * h);
+
+      // Q2
+      result.emplace_back(e ^ 2, e);
+      result.emplace_back(g * h * e * g * h, e);
+
+      // Q3
+
+      for (size_t j = 2; j <= n; ++j) {
+        for (size_t i = 1; i < j; ++i) {
+          result.emplace_back(e * (g ^ (j - i)) * e * (g ^ (n - j + i)),
+                              (g ^ (j - i)) * e * (g ^ (n - j + i)) * e);
+        }
+      }
+
+      if (n % 2 == 1) {
+        // Q4
+        result.emplace_back(h * g * ((e * g) ^ (n - 2)) * e,
+                            ((e * g) ^ (n - 2)) * e);
+      } else {
+        // Q5
+        result.emplace_back(
+            h * g * ((e * g) ^ (n / 2 - 1)) * g * ((e * g) ^ (n / 2 - 2)) * e,
+            ((e * g) ^ (n / 2 - 1)) * g * ((e * g) ^ (n / 2 - 2)) * e);
+        result.emplace_back(h * ((e * g) ^ (n - 1)) * e,
+                            ((e * g) ^ (n - 1)) * e);
+      }
+
+      return result;
+    }
+
     std::vector<relation_type> not_symmetric_group(size_t n, author val) {
       if (n < 4) {
         LIBSEMIGROUPS_EXCEPTION(
