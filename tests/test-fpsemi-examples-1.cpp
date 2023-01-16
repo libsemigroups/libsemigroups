@@ -925,7 +925,7 @@ namespace libsemigroups {
     LIBSEMIGROUPS_TEST_CASE("fpsemi-examples",
                             "058",
                             "cyclic_inverse_monoid Fernandes index 0",
-                            "[fpsemi-examples][quick]") {
+                            "[fpsemi-examples][quick][no-valgrind]") {
       auto rg = ReportGuard(REPORT);
       for (size_t n = 3; n < 10; ++n) {
         auto p = make<Presentation<word_type>>(
@@ -970,7 +970,7 @@ namespace libsemigroups {
     LIBSEMIGROUPS_TEST_CASE("fpsemi-examples",
                             "060",
                             "order_preserving_cyclic_inverse_monoid(10)",
-                            "[fpsemi-examples][quick]") {
+                            "[fpsemi-examples][quick][no-valgrind]") {
       auto   rg = ReportGuard(REPORT);
       size_t n  = 11;
       auto   s  = order_preserving_cyclic_inverse_monoid(n);
@@ -991,7 +991,7 @@ namespace libsemigroups {
     LIBSEMIGROUPS_TEST_CASE("fpsemi-examples",
                             "066",
                             "order_preserving_cyclic_inverse_monoid(10)",
-                            "[fpsemi-examples][quick]") {
+                            "[fpsemi-examples][quick][no-valgrind]") {
       auto   rg = ReportGuard(REPORT);
       size_t n  = 11;
       auto   s  = order_preserving_cyclic_inverse_monoid(n);
