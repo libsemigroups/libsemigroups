@@ -78,11 +78,11 @@ BENCHMARK(BM_Transf_Except_Move)->MinTime(1);
 static void BM_Transf_Identity(benchmark::State& state) {
   while (state.KeepRunning()) {
     std::vector<uint32_t> vec(65536, 17);
-    auto                   x     = Transformation<uint32_t>(std::move(vec));
-    auto                   start = std::chrono::high_resolution_clock::now();
-    auto                   y     = x.identity();
-    auto                   end   = std::chrono::high_resolution_clock::now();
-    auto                   elapsed_seconds
+    auto                  x     = Transformation<uint32_t>(std::move(vec));
+    auto                  start = std::chrono::high_resolution_clock::now();
+    auto                  y     = x.identity();
+    auto                  end   = std::chrono::high_resolution_clock::now();
+    auto                  elapsed_seconds
         = std::chrono::duration_cast<std::chrono::duration<double>>(end
                                                                     - start);
     state.SetIterationTime(elapsed_seconds.count());
@@ -235,7 +235,7 @@ BENCHMARK(BM_Bipart_Identity)->UseManualTime()->MinTime(1);
 
 // TODO this is way too slow!
 static void BM_Matrix_No_Except_No_Move(benchmark::State& state) {
-  Semiring<int64_t>*    sr = new Integers();
+  Semiring<int64_t>* sr = new Integers();
 
   while (state.KeepRunning()) {
     std::vector<int64_t> vec(65536, 17);
@@ -251,7 +251,7 @@ BENCHMARK(BM_Matrix_No_Except_No_Move)->MinTime(1);
 
 // TODO this is way too slow!
 static void BM_Matrix_No_Except_Move(benchmark::State& state) {
-  Semiring<int64_t>*    sr = new Integers();
+  Semiring<int64_t>* sr = new Integers();
 
   while (state.KeepRunning()) {
     std::vector<int64_t> vec(65536, 17);

@@ -34,9 +34,10 @@
 
 void BM_orb_perm_on_tuples_10_5_vector(benchmark::State& st) {
   using Perm = libsemigroups::Perm<10>::type;
-  using Action  = libsemigroups::Action<Perm,
-                                 std::vector<u_int8_t>,
-                                 libsemigroups::on_tuples<Perm, u_int8_t>>;
+  using Action
+      = libsemigroups::Action<Perm,
+                              std::vector<u_int8_t>,
+                              libsemigroups::on_tuples<Perm, u_int8_t>>;
   for (auto _ : st) {
     Action o;
     o.add_seed({0, 1, 2, 3, 4});
@@ -49,8 +50,8 @@ void BM_orb_perm_on_tuples_10_5_vector(benchmark::State& st) {
 BENCHMARK(BM_orb_perm_on_tuples_10_5_vector)->Unit(benchmark::kMillisecond);
 
 void BM_orb_perm_on_tuples_10_5_array(benchmark::State& st) {
-  using Perm = libsemigroups::Perm<10>::type;
-  using Action  = libsemigroups::Action<
+  using Perm   = libsemigroups::Perm<10>::type;
+  using Action = libsemigroups::Action<
       Perm,
       std::array<u_int8_t, 5>,
       libsemigroups::on_tuples<Perm, u_int8_t, std::array<u_int8_t, 5>>>;
@@ -67,9 +68,10 @@ BENCHMARK(BM_orb_perm_on_tuples_10_5_array)->Unit(benchmark::kMillisecond);
 
 void BM_orb_perm_on_tuples_15_5_vector(benchmark::State& st) {
   using Perm = libsemigroups::Perm<15>::type;
-  using Action  = libsemigroups::Action<Perm,
-                                 std::vector<u_int8_t>,
-                                 libsemigroups::on_tuples<Perm, u_int8_t>>;
+  using Action
+      = libsemigroups::Action<Perm,
+                              std::vector<u_int8_t>,
+                              libsemigroups::on_tuples<Perm, u_int8_t>>;
   for (auto _ : st) {
     Action o;
     o.add_seed({0, 1, 2, 3, 4});
@@ -82,8 +84,8 @@ void BM_orb_perm_on_tuples_15_5_vector(benchmark::State& st) {
 BENCHMARK(BM_orb_perm_on_tuples_15_5_vector)->Unit(benchmark::kMillisecond);
 
 void BM_orb_perm_on_tuples_15_5_array(benchmark::State& st) {
-  using Perm = libsemigroups::Perm<15>::type;
-  using Action  = libsemigroups::Action<
+  using Perm   = libsemigroups::Perm<15>::type;
+  using Action = libsemigroups::Action<
       Perm,
       std::array<u_int8_t, 5>,
       libsemigroups::on_tuples<Perm, u_int8_t, std::array<u_int8_t, 5>>>;
