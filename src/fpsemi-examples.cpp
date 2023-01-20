@@ -944,10 +944,8 @@ namespace libsemigroups {
       }
       word_type                  b = {0};
       word_type                  u = {1};
-      word_type                  e = {2};
+      word_type                  e = {};
       std::vector<relation_type> result;
-
-      add_monoid_relations({b, u, e}, e, result);
 
       result.emplace_back(b ^ n, e);
       result.emplace_back(u ^ 2, u);
