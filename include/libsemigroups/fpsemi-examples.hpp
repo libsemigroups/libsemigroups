@@ -189,7 +189,7 @@ namespace libsemigroups {
 
     //! A presentation for the monoid of orientation reversing mappings.
     //!
-    //! Returns a vector of relations giving a semigroup presentation defining
+    //! Returns a vector of relations giving a monoid presentation defining
     //! the monoid of orientation reversing mappings on a finite chain of order
     //! `n`, as described in [10.1007/s10012-000-0001-1][].
     //!
