@@ -25,6 +25,7 @@
 
 #include "constants.hpp"   // for UNDEFINED
 #include "containers.hpp"  // for DynamicArray2
+#include "digraph.hpp"     // for ActionDigraph
 #include "exception.hpp"   // for LIBSEMIGROUPS_EXCEPTION
 #include "runner.hpp"      // for Runner
 #include "types.hpp"       // for word_type, letter_type, tril
@@ -51,7 +52,7 @@ namespace libsemigroups {
     // It should be possible to change this type and everything will just work,
     // provided the size of the semigroup is less than the maximum value of
     // this type of integer.
-    using size_type = size_t;
+    using size_type = size_t;  // TODO(v3) -> uint32_t
 
     //! Type for the index of an element.
     //!
@@ -60,7 +61,7 @@ namespace libsemigroups {
     using element_index_type = size_type;
 
     //! Type for a left or right Cayley graph.
-    using cayley_graph_type = detail::DynamicArray2<element_index_type>;
+    using cayley_graph_type = ActionDigraph<element_index_type>;
 
    private:
     // See comments in FroidurePin
@@ -270,7 +271,8 @@ namespace libsemigroups {
     virtual size_t number_of_generators() const = 0;
 
     virtual element_index_type fast_product(element_index_type,
-                                            element_index_type) const = 0;
+                                            element_index_type) const
+        = 0;
 
     virtual size_t number_of_idempotents() = 0;
 
@@ -670,7 +672,7 @@ namespace libsemigroups {
       validate_letter_index(j);
       run();
       validate_element_index(i);
-      return _right.get(i, j);
+      return _right.unsafe_neighbor(i, j);
     }
 
     //! Returns a const reference to the right Cayley graph.
@@ -689,7 +691,7 @@ namespace libsemigroups {
     //! None.
     cayley_graph_type const& right_cayley_graph() {
       run();
-      _right.shrink_rows_to(size());
+      _right.restrict(size());
       return _right;
     }
 
@@ -719,7 +721,7 @@ namespace libsemigroups {
       validate_letter_index(j);
       run();
       validate_element_index(i);
-      return _left.get(i, j);
+      return _left.unsafe_neighbor(i, j);
     }
 
     //! Returns a const reference to the left Cayley graph.
@@ -738,7 +740,7 @@ namespace libsemigroups {
     //! None.
     cayley_graph_type const& left_cayley_graph() {
       run();
-      _left.shrink_rows_to(size());
+      _left.restrict(size());
       return _left;
     }
 
@@ -917,11 +919,11 @@ namespace libsemigroups {
 
       // None of the constructors are noexcept because the corresponding
       // constructors for std::vector aren't (until C++17).
-      const_rule_iterator()                           = default;
-      const_rule_iterator(const_rule_iterator const&) = default;
-      const_rule_iterator(const_rule_iterator&&)      = default;
+      const_rule_iterator()                                      = default;
+      const_rule_iterator(const_rule_iterator const&)            = default;
+      const_rule_iterator(const_rule_iterator&&)                 = default;
       const_rule_iterator& operator=(const_rule_iterator const&) = default;
-      const_rule_iterator& operator=(const_rule_iterator&&) = default;
+      const_rule_iterator& operator=(const_rule_iterator&&)      = default;
 
       const_rule_iterator(FroidurePinBase const* ptr,
                           enumerate_index_type   pos,
@@ -974,8 +976,8 @@ namespace libsemigroups {
                           ptr->_suffix[ptr->_enumerate_order[_pos]], _gen))) {
                 _current[0] = ptr->_enumerate_order[_pos];
                 _current[1] = _gen;
-                _current[2]
-                    = ptr->_right.get(ptr->_enumerate_order[_pos], _gen);
+                _current[2] = ptr->_right.unsafe_neighbor(
+                    ptr->_enumerate_order[_pos], _gen);
                 if (_current[2] != UNDEFINED) {
                   _gen++;
                   return *this;

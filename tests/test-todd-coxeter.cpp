@@ -1990,7 +1990,7 @@ namespace libsemigroups {
       tc.add_pair({0}, {1});
       tc.add_pair({0, 0}, {0});
       REQUIRE(tc.number_of_classes() == 1);
-      REQUIRE_THROWS_AS(tc.prefill(S.right_cayley_graph()),
+      REQUIRE_THROWS_AS(tc.prefill(S.right_cayley_graph().table()),
                         LibsemigroupsException);
     }
 

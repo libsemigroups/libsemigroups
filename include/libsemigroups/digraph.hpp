@@ -519,6 +519,13 @@ namespace libsemigroups {
       add_edge_nc(i, j, lbl);
     }
 
+    void inline def_edge(node_type i, label_type lbl, node_type j) {
+      action_digraph_helper::validate_node(*this, i);
+      action_digraph_helper::validate_node(*this, j);
+      action_digraph_helper::validate_label(*this, lbl);
+      def_edge_nc(i, lbl, j);
+    }
+
     //! Add an edge from one node to another with a given label.
     //!
     //! \param i the source node
@@ -536,7 +543,14 @@ namespace libsemigroups {
     //!
     //! \warning
     //! No checks whatsoever on the validity of the arguments are performed.
+
+    // TODO remove this in v3
     void inline add_edge_nc(node_type i, node_type j, label_type lbl) {
+      _dynamic_array_2.set(i, lbl, j);
+      reset();
+    }
+
+    void inline def_edge_nc(node_type i, label_type lbl, node_type j) {
       _dynamic_array_2.set(i, lbl, j);
       reset();
     }

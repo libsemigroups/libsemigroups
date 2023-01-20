@@ -672,6 +672,7 @@ EXTRA_PROGRAMS += test_froidure_pin_pbr
 EXTRA_PROGRAMS += test_froidure_pin_pperm
 EXTRA_PROGRAMS += test_froidure_pin_projmaxplus
 EXTRA_PROGRAMS += test_froidure_pin_transf
+EXTRA_PROGRAMS += test_froidure_pin
 EXTRA_PROGRAMS += test_hpcombi
 EXTRA_PROGRAMS += test_iterator
 EXTRA_PROGRAMS += test_kambites
@@ -892,6 +893,21 @@ test_froidure_pin_transf_SOURCES += tests/test-main.cpp
 
 test_froidure_pin_maxplustrunc_SOURCES =  tests/test-froidure-pin-maxplustrunc.cpp
 test_froidure_pin_maxplustrunc_SOURCES += tests/test-main.cpp
+
+test_froidure_pin_SOURCES =  tests/test-main.cpp
+test_froidure_pin_SOURCES += tests/test-froidure-pin-bipart.cpp
+test_froidure_pin_SOURCES += tests/test-froidure-pin-bmat8.cpp
+test_froidure_pin_SOURCES += tests/test-froidure-pin-bmat.cpp
+test_froidure_pin_SOURCES += tests/bmat-data.cpp
+test_froidure_pin_SOURCES += tests/test-froidure-pin-integers.cpp
+test_froidure_pin_SOURCES += tests/test-froidure-pin-intmat.cpp
+test_froidure_pin_SOURCES += tests/test-froidure-pin-intpairs.cpp
+test_froidure_pin_SOURCES += tests/test-froidure-pin-matrix.cpp
+test_froidure_pin_SOURCES += tests/test-froidure-pin-pbr.cpp
+test_froidure_pin_SOURCES += tests/test-froidure-pin-pperm.cpp
+test_froidure_pin_SOURCES += tests/test-froidure-pin-projmaxplus.cpp
+test_froidure_pin_SOURCES += tests/test-froidure-pin-transf.cpp
+test_froidure_pin_SOURCES += tests/test-froidure-pin-maxplustrunc.cpp
 
 test_hpcombi_SOURCES =  tests/test-hpcombi.cpp
 test_hpcombi_SOURCES += tests/test-main.cpp
