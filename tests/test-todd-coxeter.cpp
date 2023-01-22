@@ -2470,8 +2470,16 @@ namespace libsemigroups {
         "[todd-coxeter][quick][no-valgrind][no-coverage]") {
       auto         rg = ReportGuard(REPORT);
       size_t const n  = 6;
-      ToddCoxeter  tc(congruence_kind::twosided);
-      setup(tc, 3, orientation_preserving_monoid, n);
+      auto p = make<Presentation<word_type>>(orientation_preserving_monoid(n));
+      p.alphabet(3);
+      presentation::replace_word(p, word_type({}), {2});
+      presentation::add_identity_rules(p, 2);
+
+      ToddCoxeter tc(congruence_kind::twosided);
+      tc.set_number_of_generators(3);
+      for (size_t i = 0; i < p.rules.size() - 1; i += 2) {
+        tc.add_pair(p.rules[i], p.rules[i + 1]);
+      }
       check_hlt(tc);
       check_felsch(tc);
       check_random(tc);
@@ -2487,8 +2495,17 @@ namespace libsemigroups {
                             "[todd-coxeter][quick][no-valgrind][no-coverage]") {
       auto         rg = ReportGuard(REPORT);
       size_t const n  = 5;
-      ToddCoxeter  tc(congruence_kind::twosided);
-      setup(tc, 4, orientation_reversing_monoid, n);
+      auto p = make<Presentation<word_type>>(orientation_reversing_monoid(n));
+      p.alphabet(4);
+      presentation::replace_word(p, word_type({}), {3});
+      presentation::add_identity_rules(p, 3);
+
+      ToddCoxeter tc(congruence_kind::twosided);
+      tc.set_number_of_generators(4);
+      for (size_t i = 0; i < p.rules.size() - 1; i += 2) {
+        tc.add_pair(p.rules[i], p.rules[i + 1]);
+      }
+
       check_hlt(tc);
       check_felsch(tc);
       check_random(tc);
@@ -2590,8 +2607,17 @@ namespace libsemigroups {
                             "[todd-coxeter][fail]") {
       auto rg = ReportGuard(false);
       for (size_t n = 3; n <= 9; ++n) {
+        auto p
+            = make<Presentation<word_type>>(orientation_preserving_monoid(n));
+        p.alphabet(3);
+        presentation::replace_word(p, word_type({}), {2});
+        presentation::add_identity_rules(p, 2);
+
         ToddCoxeter tc(congruence_kind::twosided);
-        setup(tc, 3, orientation_preserving_monoid, n);
+        tc.set_number_of_generators(3);
+        for (size_t i = 0; i < p.rules.size() - 1; i += 2) {
+          tc.add_pair(p.rules[i], p.rules[i + 1]);
+        }
         output_gap_benchmark_file("orient-" + std::to_string(n) + ".g", tc);
       }
     }
@@ -2602,8 +2628,16 @@ namespace libsemigroups {
                             "[todd-coxeter][fail]") {
       auto rg = ReportGuard(false);
       for (size_t n = 3; n <= 8; ++n) {
+        auto p = make<Presentation<word_type>>(orientation_reversing_monoid(n));
+        p.alphabet(4);
+        presentation::replace_word(p, word_type({}), {3});
+        presentation::add_identity_rules(p, 3);
+
         ToddCoxeter tc(congruence_kind::twosided);
-        setup(tc, 4, orientation_reversing_monoid, n);
+        tc.set_number_of_generators(4);
+        for (size_t i = 0; i < p.rules.size() - 1; i += 2) {
+          tc.add_pair(p.rules[i], p.rules[i + 1]);
+        }
         output_gap_benchmark_file("orient-reverse-" + std::to_string(n) + ".g",
                                   tc);
       }
