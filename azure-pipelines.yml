@@ -93,7 +93,7 @@ jobs:
 
 - job: libsemigroups_pybind11
   variables:
-    URL: "https://github.com/libsemigroups/libsemigroups_pybind11.git"
+    URL: "https://github.com/MTWhyte/libsemigroups_pybind11.git"
     LD_LIBRARY_PATH: "/usr/local/lib/"
   steps:
   - bash: |
@@ -112,8 +112,7 @@ jobs:
       ccache -z && sudo make install -j4 && ccache -s
     displayName: "Build libsemigroups . . ."
   - bash: |
-      VERSION=$(git ls-remote --tags "$URL" | grep -o 'refs/tags/v[0-9]*\.[0-9]*\.[0-9]*' | sort -r | head -n 1 | grep -o '[^\/]*$')
-      git clone --depth 1 --branch "$VERSION" "$URL"
+      git clone "$URL" --depth 1 --branch orientation-pres-rev
     displayName: "Clone libsemigroups_pybind11 . . ."
   - bash: |
       cd libsemigroups_pybind11
