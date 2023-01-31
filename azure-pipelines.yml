@@ -1,10 +1,12 @@
 pr:
 - main
 - stable-*.*
+- v3
 
 trigger:
 - main
 - stable-*.*
+- v3
 
 variables:
   CCACHE_DIR: $(Pipeline.Workspace)/ccache
