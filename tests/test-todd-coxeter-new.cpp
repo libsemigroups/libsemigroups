@@ -1698,12 +1698,17 @@ namespace libsemigroups {
     using fpsemigroup::make;
     using fpsemigroup::stylic_monoid;
 
-    auto rg = ReportGuard(false);
+    auto rg = ReportGuard(true);
 
     auto p = make<Presentation<word_type>>(stylic_monoid(9));
     presentation::remove_duplicate_rules(p);
     presentation::sort_rules(p);
     presentation::sort_each_rule(p);
+    REQUIRE(presentation::length(p) == 1'467);
+    SECTION("preprocessing of the presentation . . .") {
+      presentation::greedy_reduce_length(p);
+      REQUIRE(presentation::length(p) == 1'095);
+    }
     std::reverse(p.rules.begin(), p.rules.end());
 
     ToddCoxeter tc(twosided, p);
@@ -1820,11 +1825,7 @@ namespace libsemigroups {
 
     REQUIRE(presentation::length(p) == 570);
 
-    auto w = presentation::longest_common_subword(p);
-    while (!w.empty()) {
-      presentation::replace_subword(p, w);
-      w = presentation::longest_common_subword(p);
-    }
+    presentation::greedy_reduce_length(p);
 
     REQUIRE(presentation::length(p) == 81);
     REQUIRE(p.alphabet().size() == 11);
@@ -2357,10 +2358,10 @@ std::to_string(n) + ".g", tc);
                           "[todd-coxeter][quick]") {
     auto rg = ReportGuard(false);
     {
-      ToddCoxeter tc;
-      tc.set_alphabet("ab");
-      tc.add_rule("aaa", "a");
-      tc.add_rule("a", "bb");
+          ToddCoxeter tc(twosided, p);
+      p.alphabet("ab");
+      presentation::add_rule_and_check(p, "aaa", "a");
+      presentation::add_rule_and_check(p, "a", "bb");
       // check_hlt(tc);
       section_felsch(tc);
       // check_random(tc);
@@ -2369,44 +2370,44 @@ std::to_string(n) + ".g", tc);
       // check_CR_style(tc);
       // check_Cr_style(tc);
       SECTION("R/C + Felsch lookahead") {
-        tc.congruence()
+        tc
             .strategy(options::strategy::R_over_C)
             .lookahead(options::lookahead::felsch |
-options::lookahead::full); tc.congruence().run();
+options::lookahead::full); tc.run();
       }
       SECTION("HLT + Felsch lookahead + save") {
-        tc.congruence()
+        tc
             .strategy(options::strategy::hlt)
             .save(true)
             .lookahead(options::lookahead::felsch |
-options::lookahead::full) .next_lookahead(2); tc.congruence().run();
+options::lookahead::full) .next_lookahead(2); tc.run();
       }
       SECTION("Cr + small number of f_defs") {
-        tc.congruence().strategy(options::strategy::Cr).f_defs(3);
-        tc.congruence().run();
+        tc.strategy(options::strategy::Cr).f_defs(3);
+        tc.run();
       }
       SECTION("Rc + small number of deductions") {
-        tc.congruence().strategy(options::strategy::Rc).max_deductions(0);
-        tc.congruence().run();
+        tc.strategy(options::strategy::Rc).max_deductions(0);
+        tc.run();
       }
       using digraph_type =
           typename ::libsemigroups::ToddCoxeter::digraph_type;
       SECTION("Felsch + v2 + no preferred defs") {
-        tc.congruence()
+        tc
             .strategy(options::strategy::felsch)
             .deduction_version(digraph_type::process_defs::v2)
             .deduction_policy(DefinitionOptions::definitions::purge_all)
             .preferred_defs(options::preferred_defs::none);
       }
       SECTION("Felsch + v2 + immediate no stack") {
-        tc.congruence()
+        tc
             .strategy(options::strategy::felsch)
             .deduction_version(digraph_type::process_defs::v2)
             .deduction_policy(DefinitionOptions::definitions::purge_from_top)
             .preferred_defs(options::preferred_defs::immediate_no_stack);
       }
       SECTION("Felsch + v1 + immediate no stack") {
-        tc.congruence()
+        tc
             .strategy(options::strategy::felsch)
             .deduction_version(digraph_type::process_defs::v1)
             .deduction_policy(
@@ -2414,7 +2415,7 @@ options::lookahead::full) .next_lookahead(2); tc.congruence().run();
             .preferred_defs(options::preferred_defs::immediate_no_stack);
       }
       SECTION("Felsch + v1 + immediate yes stack") {
-        tc.congruence()
+        tc
             .strategy(options::strategy::felsch)
             .deduction_version(digraph_type::process_defs::v1)
             .deduction_policy(
@@ -2422,17 +2423,18 @@ options::lookahead::full) .next_lookahead(2); tc.congruence().run();
             .preferred_defs(options::preferred_defs::immediate_yes_stack);
       }
       SECTION("large collapse") {
-        tc.congruence().large_collapse(0);
+        tc.large_collapse(0);
       }
 
       REQUIRE(tc.number_of_classes() == 5);
     }
     {
-      ToddCoxeter tc;
-      tc.set_alphabet("ab");
-      tc.add_rule("aaa", "a");
-      tc.add_rule("a", "bb");
-      tc.congruence().next_lookahead(1);
+          ToddCoxeter tc(twosided, p);
+      Presentation<std::string> p;
+p.alphabet("ab");
+      presentation::add_rule_and_check(p, "aaa", "a");
+      presentation::add_rule_and_check(p, "a", "bb");
+      tc.next_lookahead(1);
       // check_hlt(tc);
       section_felsch(tc);
       // check_random(tc);
@@ -2502,20 +2504,20 @@ options::lookahead::full) .next_lookahead(2); tc.congruence().run();
     presentation::add_rule_and_check(p, "aafdcdbaeefacddbbdeabbdea", "");
 
     REQUIRE(presentation::length(p) == 87);
-    auto w = presentation::longest_common_subword(p);
-    REQUIRE(w == "ccefb");
-    while (!w.empty()) {
-      presentation::replace_subword(p, w);
-      w = presentation::longest_common_subword(p);
-    }
+    presentation::greedy_reduce_length(p);
     REQUIRE(presentation::length(p) == 63);
-    REQUIRE(p.alphabet() == "");
+    REQUIRE(p.alphabet() == "abcdefghijkl");
 
     presentation::remove_trivial_rules(p);
     presentation::remove_duplicate_rules(p);
     presentation::sort_rules(p);
     presentation::sort_each_rule(p);
-    REQUIRE(p.rules == std::vector<std::string>());
+    REQUIRE(p.rules
+            == std::vector<std::string>(
+                {"ad",    "",  "be",    "",  "cf",    "",  "da",    "",
+                 "eb",    "",  "fc",    "",  "gjkii", "",  "hklgg", "",
+                 "iljhh", "",  "ccefb", "g", "bbdea", "h", "aafdc", "i",
+                 "dbaee", "l", "facdd", "j", "ecbff", "k"}));
 
     ToddCoxeter tc(twosided, p);
 
@@ -2526,587 +2528,747 @@ options::lookahead::full) .next_lookahead(2); tc.congruence().run();
     REQUIRE(tc.number_of_classes() == 1);
   }
 
+  LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
+                          "067",
+                          "Repeated construction from same FroidurePin",
+                          "[todd-coxeter][quick]") {
+    auto rg = ReportGuard(false);
+
+    using Transf = LeastTransf<5>;
+
+    FroidurePin<Transf> S({Transf({1, 3, 4, 2, 3}), Transf({3, 2, 1, 3, 3})});
+    REQUIRE(S.size() == 88);
+    REQUIRE(S.number_of_rules() == 18);
+
+    word_type w1, w2, w3, w4;
+    S.factorisation(w1, S.position(Transf({3, 4, 4, 4, 4})));
+    S.factorisation(w2, S.position(Transf({3, 1, 3, 3, 3})));
+    S.factorisation(w3, S.position(Transf({1, 3, 1, 3, 3})));
+    S.factorisation(w4, S.position(Transf({4, 2, 4, 4, 2})));
+
+    auto p = make<Presentation<word_type>>(S);
+
+    ToddCoxeter tc1(twosided, p);
+    tc1.add_pair(w1, w2);
+
+    // check_hlt_no_save(tc1);
+    // check_hlt_save_throws(tc1);
+    section_felsch(tc1);
+    // check_random(tc1);
+
+    REQUIRE(tc1.number_of_classes() == 21);
+    REQUIRE(tc1.number_of_classes() == make<FroidurePin<TCE>>(tc1).size());
+    REQUIRE(tc1.contains(w3, w4));
+    REQUIRE(todd_coxeter::normal_form(tc1, w3)
+            == todd_coxeter::normal_form(tc1, w4));
+
+    ToddCoxeter tc2(twosided, p);
+    tc2.add_pair(w1, w2);
+
+    // check_hlt_no_save(tc2);
+    // check_hlt_save_throws(tc2);
+    section_felsch(tc2);
+
+    REQUIRE(tc2.number_of_classes() == 21);
+    REQUIRE(tc2.number_of_classes() == make<FroidurePin<TCE>>(tc2).size());
+    REQUIRE(tc2.contains(w3, w4));
+    REQUIRE(todd_coxeter::normal_form(tc2, w3)
+            == todd_coxeter::normal_form(tc2, w4));
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
+                          "068",
+                          "Sym(5) from Chapter 3, Proposition 1.1 in NR",
+                          "[todd-coxeter][quick]") {
+    auto rg = ReportGuard(false);
+
+    Presentation<std::string> p;
+    p.alphabet("ABabe");
+    presentation::add_identity_rules(p, 'e');
+    presentation::add_rule_and_check(p, "aa", "e");
+    presentation::add_rule_and_check(p, "bbbbb", "e");
+    presentation::add_rule_and_check(p, "babababa", "e");
+    presentation::add_rule_and_check(p, "bB", "e");
+    presentation::add_rule_and_check(p, "Bb", "e");
+    presentation::add_rule_and_check(p, "BabBab", "e");
+    presentation::add_rule_and_check(p, "aBBabbaBBabb", "e");
+    presentation::add_rule_and_check(p, "aBBBabbbaBBBabbb", "e");
+    presentation::add_rule_and_check(p, "aA", "e");
+    presentation::add_rule_and_check(p, "Aa", "e");
+
+    ToddCoxeter tc(twosided, p);
+    // TODO uncomment
+    // SECTION("definition policy == purge_from_top") {
+    //   tc
+    //       .max_definitions(2)
+    //       .strategy(options::strategy::felsch)
+    //       .max_preferred_defs(3);
+    //   REQUIRE_THROWS_AS(tc.definition_policy(
+    //                         DefinitionOptions::definitions::purge_from_top),
+    //                     LibsemigroupsException);
+    //   tc
+    //       .definition_version(digraph_type::process_defs::v1)
+    //       .definition_policy(DefinitionOptions::definitions::purge_from_top);
+    // }
+    // SECTION("definition policy == purge_all") {
+    //   tc.max_definitions(2).strategy(options::strategy::felsch);
+    //   tc
+    //       .definition_version(digraph_type::process_defs::v1)
+    //       .definition_policy(DefinitionOptions::definitions::purge_all);
+    // }
+    // SECTION("definition policy == discard_all_if_no_space") {
+    //   tc.max_definitions(2).strategy(options::strategy::felsch);
+    //   tc
+    //       .definition_version(digraph_type::process_defs::v2)
+    //       .definition_policy(
+    //           DefinitionOptions::definitions::discard_all_if_no_space);
+    // }
+    // check_hlt(tc);
+    section_felsch(tc);
+    // check_random(tc);
+    // check_Rc_style(tc);
+    // check_R_over_C_style(tc);
+    // check_CR_style(tc);
+    // check_Cr_style(tc);
+
+    REQUIRE(tc.number_of_classes() == 120);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
+                          "069",
+                          "Chapter 7, Theorem 3.6 in NR (size 243)",
+                          "[no-valgrind][todd-coxeter][quick]") {
+    auto                      rg = ReportGuard(false);
+    Presentation<std::string> p;
+    p.alphabet("ab");
+    presentation::add_rule_and_check(p, "aaa", "a");
+    presentation::add_rule_and_check(p, "bbbb", "b");
+    presentation::add_rule_and_check(p, "ababababab", "aa");
+
+    ToddCoxeter tc(twosided, p);
+
+    // check_hlt(tc);
+    section_felsch(tc);
+    // check_random(tc);
+    // check_Rc_style(tc);
+    // check_R_over_C_style(tc);
+    // check_CR_style(tc);
+    // check_Cr_style(tc);
+
+    REQUIRE(tc.number_of_classes() == 243);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
+                          "070",
+                          "finite semigroup (size 99)",
+                          "[todd-coxeter][quick]") {
+    auto                      rg = ReportGuard(true);
+    Presentation<std::string> p;
+    p.alphabet("ab");
+    presentation::add_rule_and_check(p, "aaa", "a");
+    presentation::add_rule_and_check(p, "bbbb", "b");
+    presentation::add_rule_and_check(p, "abababab", "aa");
+
+    ToddCoxeter tc(twosided, p);
+    REQUIRE(!is_obviously_infinite(tc));
+
+    // check_hlt(tc);
+    section_felsch(tc);
+    // check_random(tc);
+    // check_Rc_style(tc);
+    // check_R_over_C_style(tc);
+    // check_CR_style(tc);
+    // check_Cr_style(tc);
+
+    REQUIRE(tc.number_of_classes() == 99);
+    REQUIRE(tc.finished());
+    // REQUIRE(tc.is_obviously_finite());
+  }
+
+  // The following 8 examples are from Trevor Walker's Thesis: Semigroup
+  // enumeration - computer implementation and applications, p41.
+  LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
+                          "071",
+                          "Walker 1",
+                          "[todd-coxeter][standard]") {
+    auto                      rg = ReportGuard(true);
+    Presentation<std::string> p;
+    p.alphabet("abcABCDEFGHIXYZ");
+    presentation::add_rule_and_check(p, "A", "aaaaaaaaaaaaaa");
+    presentation::add_rule_and_check(p, "B", "bbbbbbbbbbbbbb");
+    presentation::add_rule_and_check(p, "C", "cccccccccccccc");
+    presentation::add_rule_and_check(p, "D", "aaaaba");
+    presentation::add_rule_and_check(p, "E", "bbbbab");
+    presentation::add_rule_and_check(p, "F", "aaaaca");
+    presentation::add_rule_and_check(p, "G", "ccccac");
+    presentation::add_rule_and_check(p, "H", "bbbbcb");
+    presentation::add_rule_and_check(p, "I", "ccccbc");
+    presentation::add_rule_and_check(p, "X", "aaa");
+    presentation::add_rule_and_check(p, "Y", "bbb");
+    presentation::add_rule_and_check(p, "Z", "ccc");
+
+    presentation::add_rule_and_check(p, "A", "a");
+    presentation::add_rule_and_check(p, "B", "b");
+    presentation::add_rule_and_check(p, "C", "c");
+    presentation::add_rule_and_check(p, "D", "Y");
+    presentation::add_rule_and_check(p, "E", "X");
+    presentation::add_rule_and_check(p, "F", "Z");
+    presentation::add_rule_and_check(p, "G", "X");
+    presentation::add_rule_and_check(p, "H", "Z");
+    presentation::add_rule_and_check(p, "I", "Y");
+
+    REQUIRE(presentation::length(p) == 117);
+
+    presentation::sort_rules(p);
+    presentation::reduce_complements(p);
+    presentation::remove_redundant_generators(p);
+    presentation::remove_trivial_rules(p);
+    REQUIRE(presentation::length(p) == 105);
+
+    presentation::normalize_alphabet(p);
+    REQUIRE(p.alphabet() == "abc");
+
+    presentation::sort_rules(p);
+    presentation::sort_each_rule(p);
+    REQUIRE(p.rules
+            == std::vector<std::string>({"bbbbab",
+                                         "aaa",
+                                         "aaaaba",
+                                         "bbb",
+                                         "bbbbcb",
+                                         "ccc",
+                                         "ccccac",
+                                         "aaa",
+                                         "bbbbcb",
+                                         "aaaaca",
+                                         "ccccbc",
+                                         "aaaaba",
+                                         "aaaaaaaaaaaaaa",
+                                         "a",
+                                         "bbbbbbbbbbbbbb",
+                                         "b",
+                                         "cccccccccccccc",
+                                         "c"}));
+
+    ToddCoxeter tc(twosided, p);
+    tc.run_until([&tc]() -> bool {
+      return tc.word_graph().number_of_nodes() >= 10'000;
+    });
+    // .next_lookahead(500'000)
+    REQUIRE(!tc.finished());
+    REQUIRE(!is_obviously_infinite(tc));
+    tc.standardize(order::shortlex);
+    REQUIRE(!tc.finished());
+    tc.standardize(order::lex);
+    REQUIRE(!tc.finished());
+    tc.standardize(order::recursive);
+    REQUIRE(!tc.finished());
+
+    // check_hlt(tc);
+    section_felsch(tc);
+    // check_random(tc);
+    // check_Rc_style(tc);
+    // check_R_over_C_style(tc);
+    // check_CR_style(tc);
+    // check_Cr_style(tc);
+
+    // This takes approx 1 seconds with Felsch . . .
+    REQUIRE(tc.number_of_classes() == 1);
+    tc.standardize(order::shortlex);
+    REQUIRE(std::is_sorted(todd_coxeter::cbegin_normal_forms(tc),
+                           todd_coxeter::cend_normal_forms(tc),
+                           ShortLexCompare()));
+    tc.standardize(order::lex);
+    REQUIRE(std::is_sorted(todd_coxeter::cbegin_normal_forms(tc),
+                           todd_coxeter::cend_normal_forms(tc),
+                           LexicographicalCompare()));
+    tc.standardize(order::recursive);
+    REQUIRE(std::is_sorted(todd_coxeter::cbegin_normal_forms(tc),
+                           todd_coxeter::cend_normal_forms(tc),
+                           RecursivePathCompare()));
+  }
+
+  // The following example is a good one for using the lookahead.
+  LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
+                          "072",
+                          "Walker 2",
+                          "[todd-coxeter][extreme]") {
+    auto                      rg = ReportGuard(true);
+    Presentation<std::string> p;
+    p.alphabet("ab");
+    presentation::add_rule_and_check(
+        p, "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "a");
+    presentation::add_rule_and_check(p, "bbb", "b");
+    presentation::add_rule_and_check(p, "ababa", "b");
+    presentation::add_rule_and_check(
+        p, "aaaaaaaaaaaaaaaabaaaabaaaaaaaaaaaaaaaabaaaa", "b");
+
+    REQUIRE(presentation::length(p) == 87);
+    presentation::greedy_reduce_length(p);
+    REQUIRE(presentation::length(p) == 31);
+    REQUIRE(p.alphabet() == "abcd");
+    REQUIRE(p.rules
+            == std::vector<std::string>({"cc",
+                                         "a",
+                                         "bbb",
+                                         "b",
+                                         "ababa",
+                                         "b",
+                                         "cbdbcbd",
+                                         "b",
+                                         "c",
+                                         "dddd",
+                                         "d",
+                                         "aaaa"}));
+
+    ToddCoxeter tc(twosided, p);
+
+    REQUIRE(!is_obviously_infinite(tc));
+
+    // TODO uncomment
+    // SECTION("custom HLT") {
+    // tc
+    //     .sort_generating_pairs()
+    //     .next_lookahead(1'000'000)
+    //     .max_deductions(2'000)
+    //     .use_relations_in_extra(true)
+    //     .strategy(options::strategy::hlt)
+    //     .lookahead(options::lookahead::partial | options::lookahead::felsch)
+    //     .deduction_version(digraph_type::process_defs::v2)
+    //     .deduction_policy(
+    //         DefinitionOptions::definitions::no_stack_if_no_space);
+    // }
+
+    // check_hlt(tc);
+    section_felsch(tc);
+    // check_random(tc);
+    // check_Rc_style(tc);
+    // check_R_over_C_style(tc);
+    // check_CR_style(tc);
+    // check_Cr_style(tc);
+    REQUIRE(tc.number_of_classes() == 14'911);
+    // check_standardize(tc);
+  }
+
+  // TODO This is much slower than in v2
+  LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
+                          "073",
+                          "Walker 3",
+                          "[todd-coxeter][standard]") {
+    auto                      rg = ReportGuard(true);
+    Presentation<std::string> p;
+    p.alphabet("abc");
+    presentation::add_rule_and_check(p, "cc", "a");
+    presentation::add_rule_and_check(p, "aaaaaaaa", "c");
+    presentation::add_rule_and_check(p, "bbbbbbbbbbbbbbbb", "b");
+    presentation::add_rule_and_check(p, "abb", "baa");
+
+    REQUIRE(presentation::length(p) == 35);
+    SECTION("preprocess the presentation") {
+      // FIXME this doesn't seem to work here
+      presentation::greedy_reduce_length(p);
+      REQUIRE(presentation::length(p) == 35);
+      REQUIRE(p.alphabet() == "abc");
+    }
+    // TODO uncomment tc.next_lookahead(2'000'000);
+    ToddCoxeter tc(twosided, p);
+    REQUIRE(!is_obviously_infinite(tc));
+
+    // check_hlt(tc);
+    section_felsch(tc);
+    // check_random(tc);
+    // check_Rc_style(tc); // Rc_style + partial lookahead works very badly
+    // 2m30s
+    // check_R_over_C_style(tc);
+    // check_Cr_style(tc);
+
+    REQUIRE(tc.number_of_classes() == 20'490);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
+                          "074",
+                          "Walker 4",
+                          "[todd-coxeter][extreme]") {
+    auto                      rg = ReportGuard();
+    Presentation<std::string> p;
+    p.alphabet("ab");
+    presentation::add_rule_and_check(p, "aaa", "a");
+    presentation::add_rule_and_check(p, "bbbbbb", "b");
+    presentation::add_rule_and_check(
+        p, "ababbbbababbbbababbbbababbbbababbbbababbbbababbbbabba", "bb");
+
+    REQUIRE(presentation::length(p) == 66);
+    presentation::greedy_reduce_length(p);
+    REQUIRE(presentation::length(p) == 31);
+    REQUIRE(p.alphabet() == "abcd");
+    p.rules = std::vector<std::string>({"aaa",
+                                        "a",
+                                        "dbb",
+                                        "b",
+                                        "abeceba",
+                                        "bb",
+                                        "c",
+                                        "adab",
+                                        "d",
+                                        "bbbb",
+                                        "ccc",
+                                        "e"});
+    p.alphabet_from_rules();
+    REQUIRE(presentation::length(p) == 31);
+    // TODO uncomment tc.next_lookahead(3'000'000);
+
+    ToddCoxeter tc(twosided, p);
+    REQUIRE(!is_obviously_infinite(tc));
+
+    // check_hlt(tc);
+    // check_random(tc);
+    // TODO uncomment
+    // SECTION("custom R/C") {
+    //   tc.next_lookahead(3'000'000)
+    //       .strategy(options::strategy::R_over_C)
+    //       .max_deductions(100'000);
+    // }
+    //  Felsch very slow without preprocessing
+    // section_felsch(tc);
+    REQUIRE(tc.number_of_classes() == 36'412);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
+                          "075",
+                          "Walker 5",
+                          "[todd-coxeter][extreme]") {
+    auto                      rg = ReportGuard(true);
+    Presentation<std::string> p;
+    p.alphabet("ab");
+    presentation::add_rule_and_check(p, "aaa", "a");
+    presentation::add_rule_and_check(p, "bbbbbb", "b");
+    presentation::add_rule_and_check(
+        p,
+        "ababbbbababbbbababbbbababbbbababbbbababbbbababbbbabbabbbbbaa",
+        "bb");
+    REQUIRE(presentation::length(p) == 73);
+    presentation::greedy_reduce_length(p);
+    REQUIRE(presentation::length(p) == 35);
+    REQUIRE(p.alphabet() == "abcd");
+    REQUIRE(p.rules
+            == std::vector<std::string>({"aaa",
+                                         "a",
+                                         "dbb",
+                                         "b",
+                                         "abcccccccbadbaa",
+                                         "bb",
+                                         "c",
+                                         "adab",
+                                         "d",
+                                         "bbbb"}));
+    presentation::replace_subword(p, "ccc");
+    REQUIRE(presentation::length(p) == 35);
+
+    ToddCoxeter tc(twosided, p);
+    // TODO uncomment tc.next_lookahead(5'000'000);
+    REQUIRE(!is_obviously_infinite(tc));
+
+    // This example is extremely slow with Felsch (even with the preprocessing)
+    // check_hlt(tc);
+    // check_random(tc);
+    // check_Rc_style(tc);
+    // check_R_over_C_style(tc);
+    // check_CR_style(tc);
+    // check_Cr_style(tc);
+
+    REQUIRE(tc.number_of_classes() == 72'822);
+    check_complete_compatible(tc);
+    // TODO uncomment std::cout << tc.stats_string();
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
+                          "076",
+                          "not Walker 6",
+                          "[todd-coxeter][extreme]") {
+    auto                      rg = ReportGuard();
+    Presentation<std::string> p;
+    p.alphabet("ab");
+    presentation::add_rule_and_check(p, "aaa", "a");
+    presentation::add_rule_and_check(p, "bbbbbbbbb", "b");
+    presentation::add_rule_and_check(
+        p,
+        "ababbbbababbbbababbbbababbbbababbbbababbbbababbbbabbabbbbbbbb",
+        "bb");
+    REQUIRE(presentation::length(p) == 77);
+    presentation::greedy_reduce_length(p);
+    REQUIRE(presentation::length(p) == 34);
+    REQUIRE(p.alphabet() == "abcde");
+    REQUIRE(p.rules
+            == std::vector<std::string>({"aaa",
+                                         "a",
+                                         "db",
+                                         "b",
+                                         "abcccccccbad",
+                                         "bb",
+                                         "c",
+                                         "aeab",
+                                         "d",
+                                         "ee",
+                                         "e",
+                                         "bbbb"}));
+    presentation::replace_subword(p, "ccc");
+    REQUIRE(presentation::length(p) == 34);
+
+    ToddCoxeter tc(twosided, p);
+    // TODO uncomment tc.next_lookahead(5'000'000);
+    REQUIRE(!is_obviously_infinite(tc));
+
+    // This example is extremely slow with Felsch, not with the preprocessing
+    // steps above terminates in under 5 seconds
+    //
+    // the random strategy
+    // strategy is typically fastest
+    // check_hlt(tc);
+    // check_random(tc);
+    // check_Rc_style(tc);
+    // check_R_over_C_style(tc);
+    // check_CR_style(tc);
+    // check_Cr_style(tc);
+
+    REQUIRE(tc.number_of_classes() == 8);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
+                          "077",
+                          "Walker 6",
+                          "[todd-coxeter][standard]") {
+    auto                      rg = ReportGuard(true);
+    Presentation<std::string> p;
+    p.alphabet("ab");
+    presentation::add_rule_and_check(p, "aaa", "a");
+    presentation::add_rule_and_check(p, "bbbbbbbbb", "b");
+    std::string lng("ababbbbbbb");
+    lng += lng;
+    lng += "abbabbbbbbbb";
+    presentation::add_rule_and_check(p, lng, std::string("bb"));
+
+    REQUIRE(presentation::length(p) == 48);
+    presentation::greedy_reduce_length(p);
+    REQUIRE(presentation::length(p) == 30);
+    REQUIRE(p.alphabet() == "abcd");
+    REQUIRE(p.rules
+            == std::vector<std::string>({"aaa",
+                                         "a",
+                                         "cbb",
+                                         "b",
+                                         "adadabdb",
+                                         "bb",
+                                         "c",
+                                         "bbbbbbb",
+                                         "d",
+                                         "bac"}));
+
+    presentation::replace_subword(p, "bbb");
+    REQUIRE(presentation::length(p) == 30);
+
+    ToddCoxeter tc(twosided, p);
+    REQUIRE(!is_obviously_infinite(tc));
+
+    // This example is extremely slow with Felsch, not anymore with the
+    // preprocessing above
+    // check_hlt(tc);
+    // check_random(tc);
+    // check_Rc_style(tc); // partial lookahead is too slow
+    // check_Cr_style(tc); // very slow
+    // check_R_over_C_style(tc);
+
+    REQUIRE(tc.number_of_classes() == 78'722);
+  }
+
+  // Felsch is faster here too!
+  LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
+                          "078",
+                          "Walker 7",
+                          "[todd-coxeter][standard]") {
+    auto                      rg = ReportGuard(false);
+    Presentation<std::string> p;
+    p.alphabet("abcde");
+    presentation::add_rule_and_check(p, "aaa", "a");
+    presentation::add_rule_and_check(p, "bbb", "b");
+    presentation::add_rule_and_check(p, "ccc", "c");
+    presentation::add_rule_and_check(p, "ddd", "d");
+    presentation::add_rule_and_check(p, "eee", "e");
+    presentation::add_rule_and_check(p, "ababab", "aa");
+    presentation::add_rule_and_check(p, "bcbcbc", "bb");
+    presentation::add_rule_and_check(p, "cdcdcd", "cc");
+    presentation::add_rule_and_check(p, "dedede", "dd");
+    presentation::add_rule_and_check(p, "ac", "ca");
+    presentation::add_rule_and_check(p, "ad", "da");
+    presentation::add_rule_and_check(p, "ae", "ea");
+    presentation::add_rule_and_check(p, "bd", "db");
+    presentation::add_rule_and_check(p, "be", "eb");
+    presentation::add_rule_and_check(p, "ce", "ec");
+
+    ToddCoxeter tc(twosided, p);
+    REQUIRE(!is_obviously_infinite(tc));
+
+    SECTION("def_version == one") {
+      tc.definition_version(felsch_digraph::def_version::one);
+    }
+    SECTION("def_version == two") {
+      tc.definition_version(felsch_digraph::def_version::two);
+    }
+
+    // check_hlt(tc);
+    section_felsch(tc);
+    // check_random(tc);
+    // check_Rc_style(tc); // partial lookahead very slow ~8s
+    // check_R_over_C_style(tc);
+    // check_Cr_style(tc);
+
+    //      .deduction_policy(
+    //          DefinitionOptions::definitions::no_stack_if_no_space)
+    //      .preferred_defs(options::preferred_defs::none);
+
+    REQUIRE(tc.number_of_classes() == 153'500);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
+                          "079",
+                          "Walker 8",
+                          "[todd-coxeter][standard]") {
+    auto rg = ReportGuard(true);
+
+    Presentation<std::string> p;
+    p.alphabet("ab");
+    presentation::add_rule_and_check(p, "aaa", "a");
+    presentation::add_rule_and_check(p, "bbbbbbbbbbbbbbbbbbbbbbb", "b");
+    presentation::add_rule_and_check(p, "abbbbbbbbbbbabb", "bba");
+
+    REQUIRE(presentation::length(p) == 46);
+    presentation::greedy_reduce_length(p);
+    REQUIRE(presentation::length(p) == 28);
+    REQUIRE(p.alphabet() == "abc");
+    REQUIRE(p.rules
+            == std::vector<std::string>(
+                {"aaa", "a", "ccb", "b", "acabb", "bba", "c", "bbbbbbbbbbb"}));
+    presentation::replace_subword(p, "bbbbb");
+
+    ToddCoxeter tc(twosided, p);
+    REQUIRE(!is_obviously_infinite(tc));
+
+    // TODO uncomment tc.next_lookahead(500'000);
+    // This example is extremely slow with Felsch only 4 seconds with
+    // preprocessing above
+    // check_hlt(tc);
+    // check_random(tc);
+    // check_Rc_style(tc); + partial lookahead too slow
+    // check_Cr_style(tc); // too slow
+    // check_R_over_C_style(tc);
+
+    REQUIRE(tc.number_of_classes() == 270'272);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
+                          "080",
+                          "KnuthBendix 098",
+                          "[todd-coxeter][quick][no-valgrind]") {
+    auto                      rg = ReportGuard(false);
+    Presentation<std::string> p;
+    p.alphabet("aAbBcCdDyYfFgG");
+    p.contains_empty_word(true);
+    presentation::add_inverse_rules(p, "AaBbCcDdYyFfGg");
+    presentation::add_rule_and_check(p, "ab", "c");
+    presentation::add_rule_and_check(p, "bc", "d");
+    presentation::add_rule_and_check(p, "cd", "y");
+    presentation::add_rule_and_check(p, "dy", "f");
+    presentation::add_rule_and_check(p, "yf", "g");
+    presentation::add_rule_and_check(p, "fg", "a");
+    presentation::add_rule_and_check(p, "ga", "b");
+    ToddCoxeter tc(twosided, p);
+
+    // check_hlt(tc);
+    section_felsch(tc);
+    // check_random(tc);
+    // check_Rc_style(tc);
+    // check_R_over_C_style(tc);
+    // check_CR_style(tc);
+    // check_Cr_style(tc);
+
+    REQUIRE(tc.number_of_classes() == 29);
+  }
   /*
-    LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
-                            "066",
-                            "test validate",
-                            "[todd-coxeter][quick]") {
-      auto rg = ReportGuard(false);
 
-      ToddCoxeter tc;
-      tc.set_alphabet("ab");
-      tc.add_rule("a", "b");
-      tc.add_rule("bb", "b");
-
-      REQUIRE_THROWS_AS(tc.add_rule("b", "c"), LibsemigroupsException);
-    }
-
-    LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
-                            "067",
-                            "add_rules after construct. from semigroup",
-                            "[todd-coxeter][quick]") {
-      auto rg = ReportGuard(false);
-
-      using Transf = LeastTransf<5>;
-
-      FroidurePin<Transf> S({Transf({1, 3, 4, 2, 3}), Transf({3, 2, 1, 3,
-  3})}); REQUIRE(S.size() == 88); REQUIRE(S.number_of_rules() == 18);
-
-      word_type w1, w2, w3, w4;
-      S.factorisation(w1, S.position(Transf({3, 4, 4, 4, 4})));
-      S.factorisation(w2, S.position(Transf({3, 1, 3, 3, 3})));
-      S.factorisation(w3, S.position(Transf({1, 3, 1, 3, 3})));
-      S.factorisation(w4, S.position(Transf({4, 2, 4, 4, 2})));
-
-      ToddCoxeter tc1(S);
-      tc1.add_rule(w1, w2);
-
-      // check_hlt_no_save(tc1);
-      // check_hlt_save_throws(tc1);
-      section_felsch_throws(tc1);
-      // check_random(tc1);
-
-      REQUIRE(tc1.number_of_classes() == 21);
-      REQUIRE(tc1.number_of_classes() == tc1.froidure_pin()->size());
-      REQUIRE(tc1.equal_to(w3, w4));
-      REQUIRE(tc1.normal_form(w3) == tc1.normal_form(w4));
-
-      ToddCoxeter tc2(S);
-      tc2.add_rule(w1, w2);
-
-      // check_hlt_no_save(tc2);
-      // check_hlt_save_throws(tc2);
-      section_felsch_throws(tc2);
-
-      REQUIRE(tc2.number_of_classes() == 21);
-      REQUIRE(tc2.number_of_classes() == tc2.froidure_pin()->size());
-      REQUIRE(tc2.equal_to(w3, w4));
-      REQUIRE(tc2.normal_form(w3) == tc2.normal_form(w4));
-    }
-
-    LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
-                            "068",
-                            "Sym(5) from Chapter 3, Proposition 1.1 in NR",
-                            "[todd-coxeter][quick]") {
-      auto rg = ReportGuard(false);
-
-      ToddCoxeter tc;
-      tc.set_alphabet("ABabe");
-      tc.set_identity("e");
-      tc.add_rule("aa", "e");
-      tc.add_rule("bbbbb", "e");
-      tc.add_rule("babababa", "e");
-      tc.add_rule("bB", "e");
-      tc.add_rule("Bb", "e");
-      tc.add_rule("BabBab", "e");
-      tc.add_rule("aBBabbaBBabb", "e");
-      tc.add_rule("aBBBabbbaBBBabbb", "e");
-      tc.add_rule("aA", "e");
-      tc.add_rule("Aa", "e");
-
-      using digraph_type = typename
-  ::libsemigroups::ToddCoxeter::digraph_type;
-
-      SECTION("Deduction policy == purge_from_top") {
-        tc.congruence()
-            .max_deductions(2)
-            .strategy(options::strategy::felsch)
-            .max_preferred_defs(3);
-        REQUIRE_THROWS_AS(tc.congruence().deduction_policy(
-                              DefinitionOptions::definitions::purge_from_top),
-                          LibsemigroupsException);
-        tc.congruence()
-            .deduction_version(digraph_type::process_defs::v1)
-            .deduction_policy(DefinitionOptions::definitions::purge_from_top);
-      }
-      SECTION("Deduction policy == purge_all") {
-        tc.congruence().max_deductions(2).strategy(options::strategy::felsch);
-        tc.congruence()
-            .deduction_version(digraph_type::process_defs::v1)
-            .deduction_policy(DefinitionOptions::definitions::purge_all);
-      }
-      SECTION("Deduction policy == discard_all_if_no_space") {
-        tc.congruence().max_deductions(2).strategy(options::strategy::felsch);
-        tc.congruence()
-            .deduction_version(digraph_type::process_defs::v2)
-            .deduction_policy(
-                DefinitionOptions::definitions::discard_all_if_no_space);
-      }
-      // check_hlt(tc);
-      section_felsch(tc);
-      // check_random(tc);
-      // check_Rc_style(tc);
-      // check_R_over_C_style(tc);
-      // check_CR_style(tc);
-      // check_Cr_style(tc);
-
-      REQUIRE(tc.number_of_classes() == 120);
-    }
-
-    LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
-                            "069",
-                            "Chapter 7, Theorem 3.6 in NR (size 243)",
-                            "[no-valgrind][todd-coxeter][quick]") {
-      auto        rg = ReportGuard(false);
-      ToddCoxeter tc;
-      tc.set_alphabet("ab");
-      tc.add_rule("aaa", "a");
-      tc.add_rule("bbbb", "b");
-      tc.add_rule("ababababab", "aa");
-
-      // check_hlt(tc);
-      section_felsch(tc);
-      // check_random(tc);
-      // check_Rc_style(tc);
-      // check_R_over_C_style(tc);
-      // check_CR_style(tc);
-      // check_Cr_style(tc);
-
-      REQUIRE(tc.number_of_classes() == 243);
-    }
-
-    LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
-                            "070",
-                            "finite semigroup (size 99)",
-                            "[todd-coxeter][quick]") {
-      auto        rg = ReportGuard(false);
-      ToddCoxeter tc;
-      tc.set_alphabet("ab");
-      tc.add_rule("aaa", "a");
-      tc.add_rule("bbbb", "b");
-      tc.add_rule("abababab", "aa");
-
-      REQUIRE(!tc.is_obviously_finite());
-
-      // check_hlt(tc);
-      section_felsch(tc);
-      // check_random(tc);
-      // check_Rc_style(tc);
-      // check_R_over_C_style(tc);
-      // check_CR_style(tc);
-      // check_Cr_style(tc);
-
-      REQUIRE(tc.number_of_classes() == 99);
-      REQUIRE(tc.finished());
-      REQUIRE(tc.is_obviously_finite());
-    }
-
-    // The following 8 examples are from Trevor Walker's Thesis: Semigroup
-    // enumeration - computer implementation and applications, p41.
-    LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
-                            "071",
-                            "Walker 1",
-                            "[todd-coxeter][standard]") {
-      auto        rg = ReportGuard(false);
-      ToddCoxeter tc;
-      tc.set_alphabet("abcABCDEFGHIXYZ");
-      tc.add_rule("A", "aaaaaaaaaaaaaa");
-      tc.add_rule("B", "bbbbbbbbbbbbbb");
-      tc.add_rule("C", "cccccccccccccc");
-      tc.add_rule("D", "aaaaba");
-      tc.add_rule("E", "bbbbab");
-      tc.add_rule("F", "aaaaca");
-      tc.add_rule("G", "ccccac");
-      tc.add_rule("H", "bbbbcb");
-      tc.add_rule("I", "ccccbc");
-      tc.add_rule("X", "aaa");
-      tc.add_rule("Y", "bbb");
-      tc.add_rule("Z", "ccc");
-
-      tc.add_rule("A", "a");
-      tc.add_rule("B", "b");
-      tc.add_rule("C", "c");
-      tc.add_rule("D", "Y");
-      tc.add_rule("E", "X");
-      tc.add_rule("F", "Z");
-      tc.add_rule("G", "X");
-      tc.add_rule("H", "Z");
-      tc.add_rule("I", "Y");
-
-      tc.congruence()
-          .sort_generating_pairs(shortlex_compare)
-          .next_lookahead(500'000)
-          .run_until([&tc]() -> bool {
-            return tc.congruence().coset_capacity() >= 10'000;
-          });
-      REQUIRE(!tc.finished());
-      REQUIRE(!tc.is_obviously_finite());
-      tc.congruence().standardize(order::shortlex);
-      REQUIRE(!tc.finished());
-      tc.congruence().standardize(order::lex);
-      REQUIRE(!tc.finished());
-      tc.congruence().standardize(order::recursive);
-      REQUIRE(!tc.finished());
-
-      // check_hlt(tc);
-      section_felsch(tc);
-      // check_random(tc);
-      // check_Rc_style(tc);
-      // check_R_over_C_style(tc);
-      // check_CR_style(tc);
-      // check_Cr_style(tc);
-
-      // This takes approx 1 seconds with Felsch . . .
-      REQUIRE(tc.number_of_classes() == 1);
-      tc.congruence().standardize(order::shortlex);
-      REQUIRE(std::is_sorted(tc.congruence().cbegin_normal_forms(),
-                             tc.congruence().cend_normal_forms(),
-                             ShortLexCompare<word_type>{}));
-      tc.congruence().standardize(order::lex);
-      REQUIRE(std::is_sorted(tc.congruence().cbegin_normal_forms(),
-                             tc.congruence().cend_normal_forms(),
-                             LexicographicalCompare<word_type>{}));
-      tc.congruence().standardize(order::recursive);
-      REQUIRE(std::is_sorted(tc.congruence().cbegin_normal_forms(),
-                             tc.congruence().cend_normal_forms(),
-                             RecursivePathCompare<word_type>{}));
-    }
-
-    // The following example is a good one for using the lookahead.
-    LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
-                            "072",
-                            "Walker 2",
-                            "[todd-coxeter][extreme]") {
-      auto        rg = ReportGuard(false);
-      ToddCoxeter tc;
-      tc.set_alphabet("ab");
-      tc.add_rule("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "a");
-      tc.add_rule("bbb", "b");
-      tc.add_rule("ababa", "b");
-      tc.add_rule("aaaaaaaaaaaaaaaabaaaabaaaaaaaaaaaaaaaabaaaa", "b");
-
-      REQUIRE(!tc.is_obviously_finite());
-      using digraph_type = typename
-  ::libsemigroups::ToddCoxeter::digraph_type;
-
-      SECTION("custom HLT") {
-        tc.congruence()
-            .sort_generating_pairs()
-            .next_lookahead(1'000'000)
-            .max_deductions(2'000)
-            .use_relations_in_extra(true)
-            .strategy(options::strategy::hlt)
-            .lookahead(options::lookahead::partial |
-  options::lookahead::felsch) .deduction_version(digraph_type::process_defs::v2)
-            .deduction_policy(
-                DefinitionOptions::definitions::no_stack_if_no_space);
-      }
-
-      // check_hlt(tc);
-      section_felsch(tc);
-      // check_random(tc);
-      // check_Rc_style(tc);
-      // check_R_over_C_style(tc);
-      // check_CR_style(tc);
-      // check_Cr_style(tc);
-      REQUIRE(tc.number_of_classes() == 14'911);
-      tc.congruence().standardize(order::shortlex);
-    }
-
-    LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
-                            "073",
-                            "Walker 3",
-                            "[todd-coxeter][standard]") {
-      auto        rg = ReportGuard(false);
-      ToddCoxeter tc;
-      tc.set_alphabet("ab");
-      tc.add_rule("aaaaaaaaaaaaaaaa", "a");
-      tc.add_rule("bbbbbbbbbbbbbbbb", "b");
-      tc.add_rule("abb", "baa");
-      tc.congruence().next_lookahead(2'000'000);
-      tc.congruence().simplify();
-      REQUIRE(!tc.is_obviously_finite());
-
-      // check_hlt(tc);
-      section_felsch(tc);
-      // check_random(tc);
-      // check_Rc_style(tc); // Rc_style + partial lookahead works very
-      badly
-          // 2m30s
-          // check_R_over_C_style(tc);
-          // check_Cr_style(tc);
-
-          REQUIRE(tc.number_of_classes() == 20'490);
-    }
-
-    LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
-                            "074",
-                            "Walker 4",
-                            "[todd-coxeter][extreme]") {
+  LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
+                          "081",
+                          "Holt 2 - SL(2, p)",
+                          "[todd-coxeter][extreme]") {
       auto        rg = ReportGuard();
-      ToddCoxeter tc;
-      tc.set_alphabet("ab");
-      tc.add_rule("aaa", "a");
-      tc.add_rule("bbbbbb", "b");
-      tc.add_rule("ababbbbababbbbababbbbababbbbababbbbababbbbababbbbabba",
-                  "bb");
+          ToddCoxeter tc(twosided, p);
 
-      tc.congruence().next_lookahead(3'000'000);
-
-      REQUIRE(!tc.is_obviously_finite());
-
-      // check_hlt(tc);
-      //  Felsch very slow
-      // check_random(tc);
-      SECTION("custom R/C") {
-        tc.congruence()
-            .next_lookahead(3'000'000)
-            .strategy(options::strategy::R_over_C)
-            .max_deductions(100'000);
-      }
-      tc.congruence().run();
-      REQUIRE(tc.number_of_classes() == 36'412);
-    }
-
-    LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
-                            "075",
-                            "Walker 5",
-                            "[todd-coxeter][extreme]") {
-      auto        rg = ReportGuard(false);
-      ToddCoxeter tc;
-      tc.set_alphabet("ab");
-      tc.add_rule("aaa", "a");
-      tc.add_rule("bbbbbb", "b");
-      tc.add_rule(
-          "ababbbbababbbbababbbbababbbbababbbbababbbbababbbbabbabbbbbaa",
-  "bb"); tc.congruence().next_lookahead(5'000'000);
-      REQUIRE(!tc.is_obviously_finite());
-
-      // This example is extremely slow with Felsch
-      // check_hlt(tc);
-      // check_random(tc);
-      // check_Rc_style(tc);
-      // check_R_over_C_style(tc);
-      // check_CR_style(tc);
-      // check_Cr_style(tc);
-
-      tc.congruence().run();
-      REQUIRE(tc.congruence().complete());
-      REQUIRE(tc.congruence().compatible());
-
-      REQUIRE(tc.number_of_classes() == 72'822);
-      std::cout << tc.congruence().stats_string();
-    }
-
-    LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
-                            "076",
-                            "not Walker 6",
-                            "[todd-coxeter][extreme]") {
-      auto        rg = ReportGuard();
-      ToddCoxeter tc;
-      tc.set_alphabet("ab");
-      tc.add_rule("aaa", "a");
-      tc.add_rule("bbbbbbbbb", "b");
-      tc.add_rule(
-          "ababbbbababbbbababbbbababbbbababbbbababbbbababbbbabbabbbbbbbb",
-          "bb");
-      tc.congruence().next_lookahead(5'000'000);
-      REQUIRE(!tc.is_obviously_finite());
-
-      // This example is extremely slow with Felsch, the random strategy
-      // strategy is typically fastest
-      // check_hlt(tc);
-      // check_random(tc);
-      // check_Rc_style(tc);
-      // check_R_over_C_style(tc);
-      // check_CR_style(tc);
-      // check_Cr_style(tc);
-
-      REQUIRE(tc.number_of_classes() == 8);
-    }
-
-    LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
-                            "077",
-                            "Walker 6",
-                            "[todd-coxeter][standard]") {
-      auto        rg = ReportGuard(false);
-      ToddCoxeter tc;
-      tc.set_alphabet("ab");
-      tc.add_rule("aaa", "a");
-      tc.add_rule("bbbbbbbbb", "b");
-      std::string lng("ababbbbbbb");
-      lng += lng;
-      lng += "abbabbbbbbbb";
-      tc.add_rule(lng, "bb");
-      REQUIRE(!tc.is_obviously_finite());
-
-      // This example is extremely slow with Felsch
-      // check_hlt(tc);
-      // check_random(tc);
-      // check_Rc_style(tc); // partial lookahead is too slow
-      // check_Cr_style(tc); // very slow
-      // check_R_over_C_style(tc);
-
-      REQUIRE(tc.number_of_classes() == 78'722);
-    }
-
-    // Felsch is faster here too!
-    LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
-                            "078",
-                            "Walker 7",
-                            "[todd-coxeter][standard]") {
-      auto        rg = ReportGuard(false);
-      ToddCoxeter tc;
-      tc.set_alphabet("abcde");
-      tc.add_rule("aaa", "a");
-      tc.add_rule("bbb", "b");
-      tc.add_rule("ccc", "c");
-      tc.add_rule("ddd", "d");
-      tc.add_rule("eee", "e");
-      tc.add_rule("ababab", "aa");
-      tc.add_rule("bcbcbc", "bb");
-      tc.add_rule("cdcdcd", "cc");
-      tc.add_rule("dedede", "dd");
-      tc.add_rule("ac", "ca");
-      tc.add_rule("ad", "da");
-      tc.add_rule("ae", "ea");
-      tc.add_rule("bd", "db");
-      tc.add_rule("be", "eb");
-      tc.add_rule("ce", "ec");
-      REQUIRE(!tc.is_obviously_finite());
-
-      // check_hlt(tc);
-      section_felsch(tc);
-      // check_random(tc);
-      // check_Rc_style(tc); // partial lookahead very slow ~8s
-      // check_R_over_C_style(tc);
-      // check_Cr_style(tc);
-
-      using digraph_type = typename
-  ::libsemigroups::ToddCoxeter::digraph_type; tc.congruence()
-          .deduction_version(digraph_type::process_defs::v1)
-          .deduction_policy(
-              DefinitionOptions::definitions::no_stack_if_no_space)
-          .preferred_defs(options::preferred_defs::none);
-
-      REQUIRE(tc.number_of_classes() == 153'500);
-    }
-
-    LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
-                            "079",
-                            "Walker 8",
-                            "[todd-coxeter][standard]") {
-      auto        rg = ReportGuard(false);
-      ToddCoxeter tc;
-      tc.set_alphabet("ab");
-      tc.add_rule("aaa", "a");
-      tc.add_rule("bbbbbbbbbbbbbbbbbbbbbbb", "b");
-      tc.add_rule("abbbbbbbbbbbabb", "bba");
-
-      REQUIRE(tc.congruence().length_of_generating_pairs() == 46);
-      REQUIRE(!tc.is_obviously_finite());
-
-      tc.congruence().next_lookahead(500'000);
-      // This example is extremely slow with Felsch
-      // check_hlt(tc);
-      // check_random(tc);
-      // check_Rc_style(tc); + partial lookahead too slow
-      // check_Cr_style(tc); // too slow
-      // check_R_over_C_style(tc);
-
-      REQUIRE(tc.congruence().number_of_classes() == 270'272);
-    }
-
-    LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
-                            "080",
-                            "KnuthBendix 098",
-                            "[todd-coxeter][quick][no-valgrind]") {
-      auto        rg = ReportGuard(false);
-      ToddCoxeter tc;
-      tc.set_alphabet("aAbBcCdDyYfFgGe");
+    Presentation<std::string> p;
+      Presentation<std::string> p;
+p.alphabet("xXyYe");
       tc.set_identity("e");
-      tc.set_inverses("AaBbCcDdYyFfGge");
+      presentation::add_inverse_rules(p, "XxYye");
 
-      tc.add_rule("ab", "c");
-      tc.add_rule("bc", "d");
-      tc.add_rule("cd", "y");
-      tc.add_rule("dy", "f");
-      tc.add_rule("yf", "g");
-      tc.add_rule("fg", "a");
-      tc.add_rule("ga", "b");
-
-      // check_hlt(tc);
-      //  section_felsch(tc);
-      // check_random(tc);
-      // check_Rc_style(tc);
-      // check_R_over_C_style(tc);
-      // check_CR_style(tc);
-      // check_Cr_style(tc);
-
-      REQUIRE(tc.number_of_classes() == 29);
-    }
-
-    LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
-                            "081",
-                            "Holt 2 - SL(2, p)",
-                            "[todd-coxeter][extreme]") {
-      auto        rg = ReportGuard();
-      ToddCoxeter tc;
-
-      tc.set_alphabet("xXyYe");
-      tc.set_identity("e");
-      tc.set_inverses("XxYye");
-
-      tc.add_rule("xxYXYXYX", "e");
+      presentation::add_rule_and_check(p, "xxYXYXYX", "e");
 
       auto second = [](size_t p) -> std::string {
-        std::string s = "xyyyyx";
-        s += std::string((p + 1) / 2, 'y');
-        s += s;
-        s += std::string(p, 'y');
-        s += std::string(2 * (p / 3), 'x');
-        return s;
+      std::string s = "xyyyyx";
+      s += std::string((p + 1) / 2, 'y');
+      s += s;
+      s += std::string(p, 'y');
+      s += std::string(2 * (p / 3), 'x');
+      return s;
       };
 
       REQUIRE(second(3) == "xyyyyxyyxyyyyxyyyyyxx");
       SECTION("p = 3") {
-        tc.add_rule(second(3), "e");
+      presentation::add_rule_and_check(p, second(3), "e");
 
-        // check_hlt(tc);
-        section_felsch(tc);
+      // check_hlt(tc);
+      section_felsch(tc);
 
-        REQUIRE(tc.number_of_classes() == 24);
+      REQUIRE(tc.number_of_classes() == 24);
       }
       SECTION("p = 5") {
-        tc.add_rule(second(5), "e");
+      presentation::add_rule_and_check(p, second(5), "e");
 
-        // check_hlt(tc);
-        section_felsch(tc);
+      // check_hlt(tc);
+      section_felsch(tc);
 
-        REQUIRE(tc.number_of_classes() == 120);
+      REQUIRE(tc.number_of_classes() == 120);
       }
       SECTION("p = 7") {
-        tc.add_rule(second(7), "e");
+      presentation::add_rule_and_check(p, second(7), "e");
 
-        // check_hlt(tc);
-        section_felsch(tc);
+      // check_hlt(tc);
+      section_felsch(tc);
 
-        REQUIRE(tc.number_of_classes() == 336);
+      REQUIRE(tc.number_of_classes() == 336);
       }
       SECTION("p = 11") {
-        tc.add_rule(second(11), "e");
+      presentation::add_rule_and_check(p, second(11), "e");
 
-        // check_hlt(tc);
-        // check_random(tc);
+      // check_hlt(tc);
+      // check_random(tc);
 
-        REQUIRE(tc.number_of_classes() == 1'320);
+      REQUIRE(tc.number_of_classes() == 1'320);
       }
-    }
+  }
 
-    LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
-                            "082",
-                            "Holt 3",
-                            "[todd-coxeter][standard]") {
+  LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
+                          "082",
+                          "Holt 3",
+                          "[todd-coxeter][standard]") {
       auto        rg = ReportGuard(false);
-      ToddCoxeter tc;
-      tc.set_alphabet("aAbBcCe");
+          ToddCoxeter tc(twosided, p);
+    Presentation<std::string> p;
+      Presentation<std::string> p;
+p.alphabet("aAbBcCe");
       tc.set_identity("e");
-      tc.set_inverses("AaBbCce");
+      presentation::add_inverse_rules(p, "AaBbCce");
 
-      tc.add_rule("bbCbc", "e");
-      tc.add_rule("aaBab", "e");
-      tc.add_rule("cABcabc", "e");
-      REQUIRE(tc.congruence().is_non_trivial() == tril::TRUE);
+      presentation::add_rule_and_check(p, "bbCbc", "e");
+      presentation::add_rule_and_check(p, "aaBab", "e");
+      presentation::add_rule_and_check(p, "cABcabc", "e");
+      REQUIRE(tc.is_non_trivial() == tril::TRUE);
 
       // check_hlt(tc);
       section_felsch(tc);
@@ -3117,48 +3279,50 @@ options::lookahead::full) .next_lookahead(2); tc.congruence().run();
       // check_Cr_style(tc);
 
       REQUIRE(tc.number_of_classes() == 6'561);
-    }
+  }
 
-    LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
-                            "083",
-                            "Holt 3",
-                            "[todd-coxeter][fail]") {
+  LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
+                          "083",
+                          "Holt 3",
+                          "[todd-coxeter][fail]") {
       auto        rg = ReportGuard();
-      ToddCoxeter tc;
-      tc.set_alphabet("aAbBcCe");
+          ToddCoxeter tc(twosided, p);
+      Presentation<std::string> p;
+p.alphabet("aAbBcCe");
       tc.set_identity("e");
-      tc.set_inverses("AaBbCce");
+      presentation::add_inverse_rules(p, "AaBbCce");
 
-      tc.add_rule("aaCac", "e");
-      tc.add_rule("acbbACb", "e");
-      tc.add_rule("ABabccc", "e");
-      REQUIRE(!tc.is_obviously_infinite());
-      REQUIRE(tc.congruence().number_of_generating_pairs() == 22);
-      tc.congruence().strategy(options::strategy::R_over_C);
-      tc.congruence()
+      presentation::add_rule_and_check(p, "aaCac", "e");
+      presentation::add_rule_and_check(p, "acbbACb", "e");
+      presentation::add_rule_and_check(p, "ABabccc", "e");
+      REQUIRE(!is_obviously_infinite(tc));
+      REQUIRE(tc.number_of_generating_pairs() == 22);
+      tc.strategy(options::strategy::R_over_C);
+      tc
           .sort_generating_pairs()
           .remove_duplicate_generating_pairs();
-      REQUIRE(tc.congruence().number_of_generating_pairs() == 22);
-      tc.congruence()
+      REQUIRE(tc.number_of_generating_pairs() == 22);
+      tc
           .lookahead(options::lookahead::partial | options::lookahead::hlt)
           .lookahead_growth_factor(1.01)
           .lookahead_growth_threshold(10)
           .f_defs(250'000)
           .hlt_defs(20'000'000);
-      // REQUIRE(tc.congruence().is_non_trivial() == tril::TRUE);
-      tc.congruence().run();
+      // REQUIRE(tc.is_non_trivial() == tril::TRUE);
+      tc.run();
       REQUIRE(tc.number_of_classes() == 6'561);
-    }
+  }
 
-    LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
-                            "084",
-                            "Campbell-Reza 1",
-                            "[todd-coxeter][quick]") {
+  LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
+                          "084",
+                          "Campbell-Reza 1",
+                          "[todd-coxeter][quick]") {
       auto        rg = ReportGuard(false);
-      ToddCoxeter tc;
-      tc.set_alphabet("ab");
-      tc.add_rule("aa", "bb");
-      tc.add_rule("ba", "aaaaaab");
+          ToddCoxeter tc(twosided, p);
+      Presentation<std::string> p;
+p.alphabet("ab");
+      presentation::add_rule_and_check(p, "aa", "bb");
+      presentation::add_rule_and_check(p, "ba", "aaaaaab");
 
       // check_hlt(tc);
       section_felsch(tc);
@@ -3169,9 +3333,9 @@ options::lookahead::full) .next_lookahead(2); tc.congruence().run();
       // check_Cr_style(tc);
 
       REQUIRE(tc.number_of_classes() == 14);
-      tc.congruence().standardize(order::shortlex);
-      REQUIRE(std::vector<word_type>(tc.congruence().cbegin_normal_forms(),
-                                     tc.congruence().cend_normal_forms())
+      tc.standardize(order::shortlex);
+      REQUIRE(std::vector<word_type>(tc.cbegin_normal_forms(),
+                                     tc.cend_normal_forms())
               == std::vector<word_type>({{0},
                                          {1},
                                          {0, 0},
@@ -3189,19 +3353,21 @@ options::lookahead::full) .next_lookahead(2); tc.congruence().run();
       REQUIRE(tc.froidure_pin()->number_of_rules() == 6);
       REQUIRE(tc.normal_form("aaaaaaab") == "aab");
       REQUIRE(tc.normal_form("bab") == "aaa");
-    }
+  }
 
-    // The next example demonstrates why we require deferred standardization
-    LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
-                            "085",
-                            "Renner monoid type D4 (Gay-Hivert), q = 1",
-                            "[no-valgrind][quick][todd-coxeter][no-coverage]")
-  { auto        rg = ReportGuard(false); ToddCoxeter tc; tc.set_alphabet(11);
+  // The next example demonstrates why we require deferred standardization
+  LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
+                          "085",
+                          "Renner monoid type D4 (Gay-Hivert), q = 1",
+                          "[no-valgrind][quick][todd-coxeter][no-coverage]") {
+      auto        rg = ReportGuard(false);
+          ToddCoxeter tc(twosided, p); Presentation<std::string> p;
+p.alphabet(11);
       for (relation_type const& rl : RennerTypeDMonoid(4, 1)) {
-        tc.add_rule(rl);
+      presentation::add_rule_and_check(p, rl);
       }
       REQUIRE(tc.number_of_rules() == 121);
-      REQUIRE(!tc.is_obviously_infinite());
+      REQUIRE(!is_obviously_infinite(tc));
 
       REQUIRE(tc.number_of_classes() == 10'625);
 
@@ -3213,58 +3379,59 @@ options::lookahead::full) .next_lookahead(2); tc.congruence().run();
       // check_CR_style(tc);
       // check_Cr_style(tc);
 
-      tc.congruence().standardize(order::shortlex);
-      REQUIRE(std::is_sorted(tc.congruence().cbegin_normal_forms(),
-                             tc.congruence().cend_normal_forms(),
+      tc.standardize(order::shortlex);
+      REQUIRE(std::is_sorted(tc.cbegin_normal_forms(),
+                             tc.cend_normal_forms(),
                              ShortLexCompare<word_type>{}));
-      tc.congruence().standardize(order::lex);
-      REQUIRE(std::is_sorted(tc.congruence().cbegin_normal_forms(),
-                             tc.congruence().cend_normal_forms(),
+      tc.standardize(order::lex);
+      REQUIRE(std::is_sorted(tc.cbegin_normal_forms(),
+                             tc.cend_normal_forms(),
                              LexicographicalCompare<word_type>{}));
       // The next section is very slow
       // SECTION("standardizing with recursive order") {
-      //  tc.congruence().standardize(order::recursive);
-      //  REQUIRE(std::is_sorted(tc.congruence().cbegin_normal_forms(),
-      //                         tc.congruence().cend_normal_forms(),
+      //  tc.standardize(order::recursive);
+      //  REQUIRE(std::is_sorted(tc.cbegin_normal_forms(),
+      //                         tc.cend_normal_forms(),
       //                         RecursivePathCompare<word_type>{}));
       // }
-    }
+  }
 
-    // Felsch very slow here
-    LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
-                            "086",
-                            "trivial semigroup",
-                            "[no-valgrind][todd-coxeter][quick][no-coverage]")
-  { auto rg = ReportGuard(true);
+  // Felsch very slow here
+  LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
+                          "086",
+                          "trivial semigroup",
+                          "[no-valgrind][todd-coxeter][quick][no-coverage]") {
+      auto rg = ReportGuard(true);
 
       for (size_t N = 2; N < 1000; N += 199) {
-        ToddCoxeter tc;
-        tc.set_alphabet("eab");
+            ToddCoxeter tc(twosided, p);
+        Presentation<std::string> p;
+p.alphabet("eab");
         tc.set_identity("e");
         std::string lhs = "a" + std::string(N, 'b');
         std::string rhs = "e";
-        tc.add_rule(lhs, rhs);
+        presentation::add_rule_and_check(p, lhs, rhs);
 
         lhs = std::string(N, 'a');
         rhs = std::string(N + 1, 'b');
-        tc.add_rule(lhs, rhs);
+        presentation::add_rule_and_check(p, lhs, rhs);
 
         lhs = "ba";
         rhs = std::string(N, 'b') + "a";
-        tc.add_rule(lhs, rhs);
+        presentation::add_rule_and_check(p, lhs, rhs);
         tc.run();
         if (N % 3 == 1) {
-          REQUIRE(tc.number_of_classes() == 3);
+        REQUIRE(tc.number_of_classes() == 3);
         } else {
-          REQUIRE(tc.number_of_classes() == 1);
+        REQUIRE(tc.number_of_classes() == 1);
         }
       }
-    }
+  }
 
-    LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
-                            "087",
-                            "ACE --- 2p17-2p14 - HLT",
-                            "[todd-coxeter][standard][ace]") {
+  LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
+                          "087",
+                          "ACE --- 2p17-2p14 - HLT",
+                          "[todd-coxeter][standard][ace]") {
       auto        rg = ReportGuard(false);
       ToddCoxeter G;
       G.set_alphabet("abcABCe");
@@ -3279,12 +3446,12 @@ options::lookahead::full) .next_lookahead(2); tc.congruence().run();
       H.next_lookahead(1'000'000);
 
       REQUIRE(H.number_of_classes() == 16'384);
-    }
+  }
 
-    LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
-                            "088",
-                            "ACE --- 2p17-2p3 - HLT",
-                            "[todd-coxeter][standard][ace]") {
+  LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
+                          "088",
+                          "ACE --- 2p17-2p3 - HLT",
+                          "[todd-coxeter][standard][ace]") {
       auto        rg = ReportGuard(false);
       ToddCoxeter G;
       G.set_alphabet("abcABCe");
@@ -3310,12 +3477,12 @@ options::lookahead::full) .next_lookahead(2); tc.congruence().run();
           .lookahead(options::lookahead::partial);
 
       REQUIRE(H.number_of_classes() == 8);
-    }
+  }
 
-    LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
-                            "089",
-                            "ACE --- 2p17-1a - HLT",
-                            "[todd-coxeter][standard][ace]") {
+  LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
+                          "089",
+                          "ACE --- 2p17-1a - HLT",
+                          "[todd-coxeter][standard][ace]") {
       auto        rg = ReportGuard(false);
       ToddCoxeter G;
       G.set_alphabet("abcABCe");
@@ -3343,12 +3510,12 @@ options::lookahead::full) .next_lookahead(2); tc.congruence().run();
           .save(true)
           .lookahead(options::lookahead::partial);
       REQUIRE(H.number_of_classes() == 1);
-    }
+  }
 
-    LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
-                            "090",
-                            "ACE --- F27",
-                            "[todd-coxeter][standard][ace]") {
+  LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
+                          "090",
+                          "ACE --- F27",
+                          "[todd-coxeter][standard][ace]") {
       auto        rg = ReportGuard(false);
       ToddCoxeter G;
       G.set_alphabet("abcdxyzABCDXYZe");
@@ -3368,12 +3535,12 @@ options::lookahead::full) .next_lookahead(2); tc.congruence().run();
       // check_random(H);
 
       REQUIRE(H.number_of_classes() == 29);
-    }
+  }
 
-    LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
-                            "091",
-                            "ACE --- SL219 - HLT",
-                            "[todd-coxeter][standard][ace]") {
+  LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
+                          "091",
+                          "ACE --- SL219 - HLT",
+                          "[todd-coxeter][standard][ace]") {
       auto        rg = ReportGuard(false);
       ToddCoxeter G;
       G.set_alphabet("abABe");
@@ -3395,12 +3562,12 @@ options::lookahead::full) .next_lookahead(2); tc.congruence().run();
           .save(false)
           .lookahead(options::lookahead::partial);
       REQUIRE(H.number_of_classes() == 180);
-    }
+  }
 
-    LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
-                            "092",
-                            "ACE --- perf602p5 - HLT",
-                            "[no-valgrind][todd-coxeter][quick][ace]") {
+  LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
+                          "092",
+                          "ACE --- perf602p5 - HLT",
+                          "[no-valgrind][todd-coxeter][quick][ace]") {
       auto        rg = ReportGuard(false);
       ToddCoxeter G;
       G.set_alphabet("abstuvdABSTUVDe");
@@ -3448,12 +3615,12 @@ options::lookahead::full) .next_lookahead(2); tc.congruence().run();
       section_felsch(H);
 
       REQUIRE(H.number_of_classes() == 480);
-    }
+  }
 
-    LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
-                            "093",
-                            "ACE --- M12",
-                            "[todd-coxeter][standard][ace]") {
+  LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
+                          "093",
+                          "ACE --- M12",
+                          "[todd-coxeter][standard][ace]") {
       auto        rg = ReportGuard(false);
       ToddCoxeter G;
       G.set_alphabet("abcABCe");
@@ -3481,12 +3648,12 @@ options::lookahead::full) .next_lookahead(2); tc.congruence().run();
       section_felsch(H);
 
       REQUIRE(H.number_of_classes() == 95'040);
-    }
+  }
 
-    LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
-                            "094",
-                            "ACE --- C5 - HLT",
-                            "[todd-coxeter][quick][ace]") {
+  LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
+                          "094",
+                          "ACE --- C5 - HLT",
+                          "[todd-coxeter][quick][ace]") {
       auto        rg = ReportGuard(false);
       ToddCoxeter G;
       G.set_alphabet("abABe");
@@ -3502,12 +3669,12 @@ options::lookahead::full) .next_lookahead(2); tc.congruence().run();
       section_felsch(H);
 
       REQUIRE(H.number_of_classes() == 5);
-    }
+  }
 
-    LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
-                            "095",
-                            "ACE --- A5-C5",
-                            "[todd-coxeter][quick][ace]") {
+  LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
+                          "095",
+                          "ACE --- A5-C5",
+                          "[todd-coxeter][quick][ace]") {
       auto        rg = ReportGuard(false);
       ToddCoxeter G;
       G.set_alphabet("abABe");
@@ -3527,12 +3694,12 @@ options::lookahead::full) .next_lookahead(2); tc.congruence().run();
       // check_random(H);
       section_felsch(H);
       REQUIRE(H.number_of_classes() == 12);
-    }
+  }
 
-    LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
-                            "096",
-                            "ACE --- A5",
-                            "[todd-coxeter][quick][ace]") {
+  LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
+                          "096",
+                          "ACE --- A5",
+                          "[todd-coxeter][quick][ace]") {
       auto        rg = ReportGuard(false);
       ToddCoxeter G;
       G.set_alphabet("abABe");
@@ -3552,129 +3719,132 @@ options::lookahead::full) .next_lookahead(2); tc.congruence().run();
       REQUIRE(H.number_of_classes() == 60);
       REQUIRE_THROWS_AS(H.random_shuffle_generating_pairs(),
                         LibsemigroupsException);
-    }
+  }
 
-    // Felsch is much much better here
-    LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
-                            "097",
-                            "relation ordering",
-                            "[todd-coxeter][extreme]") {
+  // Felsch is much much better here
+  LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
+                          "097",
+                          "relation ordering",
+                          "[todd-coxeter][extreme]") {
       auto        rg = ReportGuard();
-      ToddCoxeter tc;
-      tc.set_alphabet(13);
+          ToddCoxeter tc(twosided, p);
+      Presentation<std::string> p;
+p.alphabet(13);
       for (relation_type const& rl : RennerTypeDMonoid(5, 1)) {
-        tc.add_rule(rl);
+      presentation::add_rule_and_check(p, rl);
       }
       REQUIRE(tc.number_of_rules() == 173);
-      REQUIRE(!tc.is_obviously_infinite());
-      tc.congruence()
+      REQUIRE(!is_obviously_infinite(tc));
+      tc
           .sort_generating_pairs(&shortlex_compare)
           .sort_generating_pairs(recursive_path_compare)
           .remove_duplicate_generating_pairs();
       REQUIRE(tc.number_of_rules() == 173);
 
-      tc.congruence().strategy(options::strategy::felsch).f_defs(100'000).run();
+      tc.strategy(options::strategy::felsch).f_defs(100'000).run();
       REQUIRE(tc.number_of_classes() == 258'661);
-    }
+  }
 
-    LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
-                            "098",
-                            "relation ordering",
-                            "[todd-coxeter][quick]") {
-      ToddCoxeter tc;
-      tc.set_alphabet(10);
-      tc.add_rule({0, 1}, {0});
-      tc.add_rule({0, 2}, {0});
-      tc.add_rule({0, 3}, {0});
-      tc.add_rule({0, 4}, {0});
-      tc.add_rule({0, 5}, {0});
-      tc.add_rule({0, 6}, {0});
-      tc.add_rule({0, 7}, {0});
-      tc.add_rule({0, 8}, {0});
-      tc.add_rule({0, 9}, {0});
-      tc.add_rule({1, 0}, {1});
-      tc.add_rule({1, 1}, {1});
-      tc.add_rule({1, 2}, {1});
-      tc.add_rule({1, 3}, {1});
-      tc.add_rule({1, 4}, {1});
-      tc.add_rule({1, 5}, {1});
-      tc.add_rule({1, 6}, {1});
-      tc.add_rule({1, 7}, {1});
-      tc.add_rule({1, 8}, {1});
-      tc.add_rule({1, 9}, {1});
-      tc.add_rule({2, 0}, {2});
-      tc.add_rule({2, 1}, {2});
-      tc.add_rule({2, 2}, {2});
-      tc.add_rule({2, 3}, {2});
-      tc.add_rule({2, 4}, {2});
-      tc.add_rule({2, 5}, {2});
-      tc.add_rule({2, 6}, {2});
-      tc.add_rule({2, 7}, {2});
-      tc.add_rule({2, 8}, {2});
-      tc.add_rule({2, 9}, {2});
-      tc.add_rule({3, 0}, {3});
-      tc.add_rule({3, 1}, {3});
-      tc.add_rule({3, 2}, {3});
-      tc.add_rule({3, 3}, {3});
-      tc.add_rule({3, 4}, {3});
-      tc.add_rule({3, 5}, {3});
-      tc.add_rule({3, 6}, {3});
-      tc.add_rule({3, 7}, {3});
-      tc.add_rule({3, 8}, {3});
-      tc.add_rule({3, 9}, {3});
-      tc.add_rule({4, 0}, {4});
-      tc.add_rule({4, 1}, {4});
-      tc.add_rule({4, 2}, {4});
-      tc.add_rule({4, 3}, {4});
-      tc.add_rule({4, 4}, {4});
-      tc.add_rule({4, 5}, {4});
-      tc.add_rule({4, 6}, {4});
-      tc.add_rule({4, 7}, {4});
-      tc.add_rule({4, 8}, {4});
-      tc.add_rule({4, 9}, {4});
-      tc.add_rule({5, 0}, {5});
-      tc.add_rule({5, 1}, {5});
-      tc.add_rule({5, 2}, {5});
-      tc.add_rule({5, 3}, {5});
-      tc.add_rule({5, 4}, {5});
-      tc.add_rule({5, 5}, {5});
-      tc.add_rule({5, 6}, {5});
-      tc.add_rule({5, 7}, {5});
-      tc.add_rule({5, 8}, {5});
-      tc.add_rule({5, 9}, {5});
-      tc.add_rule({6, 0}, {6});
-      tc.add_rule({6, 1}, {6});
-      tc.add_rule({6, 2}, {6});
-      tc.add_rule({6, 3}, {6});
-      tc.add_rule({6, 4}, {6});
-      tc.add_rule({6, 5}, {6});
-      tc.add_rule({6, 6}, {6});
-      tc.add_rule({6, 7}, {6});
-      tc.add_rule({6, 8}, {6});
-      tc.add_rule({6, 9}, {6});
-      tc.add_rule({7, 0}, {7});
-      tc.add_rule({7, 1}, {7});
-      tc.add_rule({7}, {7, 2});
-      tc.add_rule({7, 3}, {7});
-      tc.add_rule({7, 4}, {7});
-      tc.add_rule({7, 5}, {7});
-      tc.add_rule({7, 6}, {7});
-      tc.add_rule({7, 7}, {7});
-      tc.add_rule({7, 8}, {7});
-      tc.add_rule({7, 9}, {7});
-      tc.add_rule({8, 0}, {8});
-      tc.add_rule({8, 1}, {8});
-      tc.add_rule({8, 2}, {8});
-      tc.add_rule({8, 3}, {8});
-      tc.add_rule({8, 4}, {8});
-      tc.add_rule({8, 5}, {8});
-      tc.add_rule({8, 6}, {8});
-      tc.add_rule({8, 7}, {8});
-      tc.add_rule({8, 8}, {8});
-      tc.add_rule({8, 9}, {8});
-      tc.add_rule({9, 0}, {9});
-      tc.add_rule({9, 0, 1, 2, 3, 4, 5, 5, 1, 5, 6, 9, 8, 8, 8, 8, 8, 0},
-  {9}); tc.congruence().sort_generating_pairs(recursive_path_compare);
+  LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
+                          "098",
+                          "relation ordering",
+                          "[todd-coxeter][quick]") {
+          ToddCoxeter tc(twosided, p);
+      Presentation<std::string> p;
+p.alphabet(10);
+      presentation::add_rule_and_check(p, {0, 1}, {0});
+      presentation::add_rule_and_check(p, {0, 2}, {0});
+      presentation::add_rule_and_check(p, {0, 3}, {0});
+      presentation::add_rule_and_check(p, {0, 4}, {0});
+      presentation::add_rule_and_check(p, {0, 5}, {0});
+      presentation::add_rule_and_check(p, {0, 6}, {0});
+      presentation::add_rule_and_check(p, {0, 7}, {0});
+      presentation::add_rule_and_check(p, {0, 8}, {0});
+      presentation::add_rule_and_check(p, {0, 9}, {0});
+      presentation::add_rule_and_check(p, {1, 0}, {1});
+      presentation::add_rule_and_check(p, {1, 1}, {1});
+      presentation::add_rule_and_check(p, {1, 2}, {1});
+      presentation::add_rule_and_check(p, {1, 3}, {1});
+      presentation::add_rule_and_check(p, {1, 4}, {1});
+      presentation::add_rule_and_check(p, {1, 5}, {1});
+      presentation::add_rule_and_check(p, {1, 6}, {1});
+      presentation::add_rule_and_check(p, {1, 7}, {1});
+      presentation::add_rule_and_check(p, {1, 8}, {1});
+      presentation::add_rule_and_check(p, {1, 9}, {1});
+      presentation::add_rule_and_check(p, {2, 0}, {2});
+      presentation::add_rule_and_check(p, {2, 1}, {2});
+      presentation::add_rule_and_check(p, {2, 2}, {2});
+      presentation::add_rule_and_check(p, {2, 3}, {2});
+      presentation::add_rule_and_check(p, {2, 4}, {2});
+      presentation::add_rule_and_check(p, {2, 5}, {2});
+      presentation::add_rule_and_check(p, {2, 6}, {2});
+      presentation::add_rule_and_check(p, {2, 7}, {2});
+      presentation::add_rule_and_check(p, {2, 8}, {2});
+      presentation::add_rule_and_check(p, {2, 9}, {2});
+      presentation::add_rule_and_check(p, {3, 0}, {3});
+      presentation::add_rule_and_check(p, {3, 1}, {3});
+      presentation::add_rule_and_check(p, {3, 2}, {3});
+      presentation::add_rule_and_check(p, {3, 3}, {3});
+      presentation::add_rule_and_check(p, {3, 4}, {3});
+      presentation::add_rule_and_check(p, {3, 5}, {3});
+      presentation::add_rule_and_check(p, {3, 6}, {3});
+      presentation::add_rule_and_check(p, {3, 7}, {3});
+      presentation::add_rule_and_check(p, {3, 8}, {3});
+      presentation::add_rule_and_check(p, {3, 9}, {3});
+      presentation::add_rule_and_check(p, {4, 0}, {4});
+      presentation::add_rule_and_check(p, {4, 1}, {4});
+      presentation::add_rule_and_check(p, {4, 2}, {4});
+      presentation::add_rule_and_check(p, {4, 3}, {4});
+      presentation::add_rule_and_check(p, {4, 4}, {4});
+      presentation::add_rule_and_check(p, {4, 5}, {4});
+      presentation::add_rule_and_check(p, {4, 6}, {4});
+      presentation::add_rule_and_check(p, {4, 7}, {4});
+      presentation::add_rule_and_check(p, {4, 8}, {4});
+      presentation::add_rule_and_check(p, {4, 9}, {4});
+      presentation::add_rule_and_check(p, {5, 0}, {5});
+      presentation::add_rule_and_check(p, {5, 1}, {5});
+      presentation::add_rule_and_check(p, {5, 2}, {5});
+      presentation::add_rule_and_check(p, {5, 3}, {5});
+      presentation::add_rule_and_check(p, {5, 4}, {5});
+      presentation::add_rule_and_check(p, {5, 5}, {5});
+      presentation::add_rule_and_check(p, {5, 6}, {5});
+      presentation::add_rule_and_check(p, {5, 7}, {5});
+      presentation::add_rule_and_check(p, {5, 8}, {5});
+      presentation::add_rule_and_check(p, {5, 9}, {5});
+      presentation::add_rule_and_check(p, {6, 0}, {6});
+      presentation::add_rule_and_check(p, {6, 1}, {6});
+      presentation::add_rule_and_check(p, {6, 2}, {6});
+      presentation::add_rule_and_check(p, {6, 3}, {6});
+      presentation::add_rule_and_check(p, {6, 4}, {6});
+      presentation::add_rule_and_check(p, {6, 5}, {6});
+      presentation::add_rule_and_check(p, {6, 6}, {6});
+      presentation::add_rule_and_check(p, {6, 7}, {6});
+      presentation::add_rule_and_check(p, {6, 8}, {6});
+      presentation::add_rule_and_check(p, {6, 9}, {6});
+      presentation::add_rule_and_check(p, {7, 0}, {7});
+      presentation::add_rule_and_check(p, {7, 1}, {7});
+      presentation::add_rule_and_check(p, {7}, {7, 2});
+      presentation::add_rule_and_check(p, {7, 3}, {7});
+      presentation::add_rule_and_check(p, {7, 4}, {7});
+      presentation::add_rule_and_check(p, {7, 5}, {7});
+      presentation::add_rule_and_check(p, {7, 6}, {7});
+      presentation::add_rule_and_check(p, {7, 7}, {7});
+      presentation::add_rule_and_check(p, {7, 8}, {7});
+      presentation::add_rule_and_check(p, {7, 9}, {7});
+      presentation::add_rule_and_check(p, {8, 0}, {8});
+      presentation::add_rule_and_check(p, {8, 1}, {8});
+      presentation::add_rule_and_check(p, {8, 2}, {8});
+      presentation::add_rule_and_check(p, {8, 3}, {8});
+      presentation::add_rule_and_check(p, {8, 4}, {8});
+      presentation::add_rule_and_check(p, {8, 5}, {8});
+      presentation::add_rule_and_check(p, {8, 6}, {8});
+      presentation::add_rule_and_check(p, {8, 7}, {8});
+      presentation::add_rule_and_check(p, {8, 8}, {8});
+      presentation::add_rule_and_check(p, {8, 9}, {8});
+      presentation::add_rule_and_check(p, {9, 0}, {9});
+      presentation::add_rule_and_check(p, {9, 0, 1, 2, 3, 4, 5, 5, 1, 5, 6, 9,
+  8, 8, 8, 8, 8, 0}, {9});
+  tc.sort_generating_pairs(recursive_path_compare);
 
       section_felsch(tc);
       // check_hlt(tc);
@@ -3682,122 +3852,132 @@ options::lookahead::full) .next_lookahead(2); tc.congruence().run();
 
       REQUIRE(tc.number_of_classes() == 10);
 
-      REQUIRE_THROWS_AS(tc.congruence().sort_generating_pairs(shortlex_compare),
+      REQUIRE_THROWS_AS(tc.sort_generating_pairs(shortlex_compare),
                         LibsemigroupsException);
-    }
+  }
 
-    LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
-                            "099",
-                            "short circuit size in obviously infinite",
-                            "[todd-coxeter][quick]") {
+  LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
+                          "099",
+                          "short circuit size in obviously infinite",
+                          "[todd-coxeter][quick]") {
       auto        rg = ReportGuard(false);
-      ToddCoxeter tc;
-      tc.set_alphabet("abc");
-      tc.add_rule("aaaa", "a");
+          ToddCoxeter tc(twosided, p);
+      Presentation<std::string> p;
+p.alphabet("abc");
+      presentation::add_rule_and_check(p, "aaaa", "a");
       REQUIRE(tc.number_of_classes() == POSITIVE_INFINITY);
-    }
+  }
 
-    LIBSEMIGROUPS_TEST_CASE(
-        "v3::ToddCoxeter",
-        "100",
-        "http://brauer.maths.qmul.ac.uk/Atlas/misc/24A8/mag/24A8G1-P1.M",
-        "[todd-coxeter][standard]") {
-      ToddCoxeter tc;
-      tc.set_alphabet("xyXYe");
+  LIBSEMIGROUPS_TEST_CASE(
+      "v3::ToddCoxeter",
+      "100",
+      "http://brauer.maths.qmul.ac.uk/Atlas/misc/24A8/mag/24A8G1-P1.M",
+      "[todd-coxeter][standard]") {
+          ToddCoxeter tc(twosided, p);
+      Presentation<std::string> p;
+p.alphabet("xyXYe");
       tc.set_identity("e");
-      tc.set_inverses("XYxye");
-      tc.add_rule("xx", "X");
-      tc.add_rule("yyyyyy", "Y");
-      tc.add_rule("YXyx", "XYxy");
-      tc.add_rule("xYYYxYYYxYY", "yyXyyyXyyyX");
-      tc.add_rule("xyxyyXyxYYxyyyx", "yyyXyyy");
-      tc.congruence()
+      presentation::add_inverse_rules(p, "XYxye");
+      presentation::add_rule_and_check(p, "xx", "X");
+      presentation::add_rule_and_check(p, "yyyyyy", "Y");
+      presentation::add_rule_and_check(p, "YXyx", "XYxy");
+      presentation::add_rule_and_check(p, "xYYYxYYYxYY", "yyXyyyXyyyX");
+      presentation::add_rule_and_check(p, "xyxyyXyxYYxyyyx", "yyyXyyy");
+      tc
           .next_lookahead(2'000'000)
           .strategy(options::strategy::hlt)
           .sort_generating_pairs()
           .lookahead(options::lookahead::partial)
           .standardize(true);
-      tc.congruence().run();
+      tc.run();
 
       REQUIRE(tc.number_of_classes() == 322'560);
-    }
+  }
 
-    LIBSEMIGROUPS_TEST_CASE(
-        "v3::ToddCoxeter",
-        "101",
-        "http://brauer.maths.qmul.ac.uk/Atlas/spor/M11/mag/M11G1-P1.M",
-        "[todd-coxeter][quick][no-coverage][no-valgrind]") {
-      ToddCoxeter tc;
-      tc.set_alphabet("xyXYe");
+  LIBSEMIGROUPS_TEST_CASE(
+      "v3::ToddCoxeter",
+      "101",
+      "http://brauer.maths.qmul.ac.uk/Atlas/spor/M11/mag/M11G1-P1.M",
+      "[todd-coxeter][quick][no-coverage][no-valgrind]") {
+          ToddCoxeter tc(twosided, p);
+      Presentation<std::string> p;
+p.alphabet("xyXYe");
       tc.set_identity("e");
-      tc.set_inverses("XYxye");
-      tc.add_rule("xx", "e");
-      tc.add_rule("yyyy", "e");
-      tc.add_rule("xyxyxyxyxyxyxyxyxyxyxy", "e");
-      tc.add_rule("xyyxyyxyyxyyxyyxyy", "e");
-      tc.add_rule("xyxyxYxyxyyxYxyxYxY", "e");
+      presentation::add_inverse_rules(p, "XYxye");
+      presentation::add_rule_and_check(p, "xx", "e");
+      presentation::add_rule_and_check(p, "yyyy", "e");
+      presentation::add_rule_and_check(p, "xyxyxyxyxyxyxyxyxyxyxy", "e");
+      presentation::add_rule_and_check(p, "xyyxyyxyyxyyxyyxyy", "e");
+      presentation::add_rule_and_check(p, "xyxyxYxyxyyxYxyxYxY", "e");
       REQUIRE(tc.number_of_classes() == 7'920);
-    }
+  }
 
-    LIBSEMIGROUPS_TEST_CASE(
-        "v3::ToddCoxeter",
-        "102",
-        "http://brauer.maths.qmul.ac.uk/Atlas/spor/M12/mag/M12G1-P1.M",
-        "[todd-coxeter][standard]") {
-      ToddCoxeter tc;
-      tc.set_alphabet("xyXYe");
+  LIBSEMIGROUPS_TEST_CASE(
+      "v3::ToddCoxeter",
+      "102",
+      "http://brauer.maths.qmul.ac.uk/Atlas/spor/M12/mag/M12G1-P1.M",
+      "[todd-coxeter][standard]") {
+          ToddCoxeter tc(twosided, p);
+      Presentation<std::string> p;
+p.alphabet("xyXYe");
       tc.set_identity("e");
-      tc.set_inverses("XYxye");
-      tc.add_rule("xx", "e");
-      tc.add_rule("yyy", "e");
-      tc.add_rule("xyxyxyxyxyxyxyxyxyxyxy", "e");
-      tc.add_rule("XYxyXYxyXYxyXYxyXYxyXYxy", "e");
-      tc.add_rule("xyxyxYxyxyxYxyxyxYxyxyxYxyxyxYxyxyxY", "e");
-      tc.add_rule("XYXYxyxyXYXYxyxyXYXYxyxyXYXYxyxyXYXYxyxy", "e");
+      presentation::add_inverse_rules(p, "XYxye");
+      presentation::add_rule_and_check(p, "xx", "e");
+      presentation::add_rule_and_check(p, "yyy", "e");
+      presentation::add_rule_and_check(p, "xyxyxyxyxyxyxyxyxyxyxy", "e");
+      presentation::add_rule_and_check(p, "XYxyXYxyXYxyXYxyXYxyXYxy", "e");
+      presentation::add_rule_and_check(p,
+  "xyxyxYxyxyxYxyxyxYxyxyxYxyxyxYxyxyxY", "e");
+      presentation::add_rule_and_check(p,
+  "XYXYxyxyXYXYxyxyXYXYxyxyXYXYxyxyXYXYxyxy", "e");
       REQUIRE(tc.number_of_classes() == 95'040);
-    }
+  }
 
-    LIBSEMIGROUPS_TEST_CASE(
-        "v3::ToddCoxeter",
-        "103",
-        "http://brauer.maths.qmul.ac.uk/Atlas/spor/M22/mag/M22G1-P1.M",
-        "[todd-coxeter][extreme]") {
-      ToddCoxeter tc;
-      tc.set_alphabet("xyXYe");
+  LIBSEMIGROUPS_TEST_CASE(
+      "v3::ToddCoxeter",
+      "103",
+      "http://brauer.maths.qmul.ac.uk/Atlas/spor/M22/mag/M22G1-P1.M",
+      "[todd-coxeter][extreme]") {
+          ToddCoxeter tc(twosided, p);
+      Presentation<std::string> p;
+p.alphabet("xyXYe");
       tc.set_identity("e");
-      tc.set_inverses("XYxye");
-      tc.add_rule("xx", "e");
-      tc.add_rule("yyyy", "e");
-      tc.add_rule("xyxyxyxyxyxyxyxyxyxyxy", "e");
-      tc.add_rule("xyyxyyxyyxyyxyy", "e");
-      tc.add_rule("XYxyXYxyXYxyXYxyXYxyXYxy", "e");
-      tc.add_rule("XYXYxyxyXYXYxyxyXYXYxyxy", "e");
-      tc.add_rule("xyxyxYxyxyxYxyxyxYxyxyxYxyxyxY", "e");
-      REQUIRE(tc.number_of_classes() == 443'520);
-    }
+      presentation::add_inverse_rules(p, "XYxye");
+      presentation::add_rule_and_check(p, "xx", "e");
+      presentation::add_rule_and_check(p, "yyyy", "e");
+      presentation::add_rule_and_check(p, "xyxyxyxyxyxyxyxyxyxyxy", "e");
+      presentation::add_rule_and_check(p, "xyyxyyxyyxyyxyy", "e");
+      presentation::add_rule_and_check(p, "XYxyXYxyXYxyXYxyXYxyXYxy", "e");
+      presentation::add_rule_and_check(p, "XYXYxyxyXYXYxyxyXYXYxyxy", "e");
+      presentation::add_rule_and_check(p, "xyxyxYxyxyxYxyxyxYxyxyxYxyxyxY",
+  "e"); REQUIRE(tc.number_of_classes() == 443'520);
+  }
 
-    // Takes about 4 minutes (2021 - MacBook Air M1 - 8GB RAM)
-    // with Felsch (3.5mins or 2.5mins with lowerbound) or HLT (4.5mins)
-    LIBSEMIGROUPS_TEST_CASE(
-        "v3::ToddCoxeter",
-        "104",
-        "http://brauer.maths.qmul.ac.uk/Atlas/spor/M23/mag/M23G1-P1.M",
-        "[todd-coxeter][extreme]") {
-      ToddCoxeter tc;
-      tc.set_alphabet("xyXYe");
+  // Takes about 4 minutes (2021 - MacBook Air M1 - 8GB RAM)
+  // with Felsch (3.5mins or 2.5mins with lowerbound) or HLT (4.5mins)
+  LIBSEMIGROUPS_TEST_CASE(
+      "v3::ToddCoxeter",
+      "104",
+      "http://brauer.maths.qmul.ac.uk/Atlas/spor/M23/mag/M23G1-P1.M",
+      "[todd-coxeter][extreme]") {
+          ToddCoxeter tc(twosided, p);
+      Presentation<std::string> p;
+p.alphabet("xyXYe");
       tc.set_identity("e");
-      tc.set_inverses("XYxye");
-      tc.add_rule("xx", "e");
-      tc.add_rule("yyyy", "e");
-      tc.add_rule("xyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxy", "e");
-      tc.add_rule("xyyxyyxyyxyyxyyxyy", "e");
-      tc.add_rule("XYxyXYxyXYxyXYxyXYxyXYxy", "e");
-      tc.add_rule("xyxYxyyxyxYxyyxyxYxyyxyxYxyy", "e");
-      tc.add_rule("xyxyxyxYxyyxyxYxyxYxyxyxyxYxYxY", "e");
-      tc.add_rule("xyxyyxyyxyxyyxyyxyxyyxyyxyxyyxyyxyxyyxyyxyxyyxyy", "e");
-      tc.add_rule("xyxyyxyxyyxyxyyxyyxYxyyxYxyxyyxyxYxyy", "e");
-      using digraph_type = typename
-  ::libsemigroups::ToddCoxeter::digraph_type; tc.congruence()
+      presentation::add_inverse_rules(p, "XYxye");
+      presentation::add_rule_and_check(p, "xx", "e");
+      presentation::add_rule_and_check(p, "yyyy", "e");
+      presentation::add_rule_and_check(p,
+  "xyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxy", "e");
+      presentation::add_rule_and_check(p, "xyyxyyxyyxyyxyyxyy", "e");
+      presentation::add_rule_and_check(p, "XYxyXYxyXYxyXYxyXYxyXYxy", "e");
+      presentation::add_rule_and_check(p, "xyxYxyyxyxYxyyxyxYxyyxyxYxyy",
+  "e"); presentation::add_rule_and_check(p, "xyxyxyxYxyyxyxYxyxYxyxyxyxYxYxY",
+  "e"); presentation::add_rule_and_check(p,
+  "xyxyyxyyxyxyyxyyxyxyyxyyxyxyyxyyxyxyyxyyxyxyyxyy", "e");
+      presentation::add_rule_and_check(p,
+  "xyxyyxyxyyxyxyyxyyxYxyyxYxyxyyxyxYxyy", "e"); using digraph_type = typename
+  ::libsemigroups::ToddCoxeter::digraph_type; tc
           .sort_generating_pairs()
           .strategy(options::strategy::felsch)
           .use_relations_in_extra(true)
@@ -3806,12 +3986,12 @@ options::lookahead::full) .next_lookahead(2); tc.congruence().run();
           .deduction_policy(
               DefinitionOptions::definitions::no_stack_if_no_space)
           .reserve(50'000'000);
-      std::cout << tc.congruence().settings_string();
-      tc.congruence().run();
+      std::cout << tc.settings_string();
+      tc.run();
 
       REQUIRE(tc.number_of_classes() == 10'200'960);
-    }
-    */
+  }
+  */
   // Takes about 3 minutes (doesn't currently run with v3)
   LIBSEMIGROUPS_TEST_CASE(
       "v3::ToddCoxeter",
@@ -3849,26 +4029,32 @@ options::lookahead::full) .next_lookahead(2); tc.congruence().run();
   //      "http://brauer.maths.qmul.ac.uk/Atlas/spor/HS/mag/HSG1-P1.M",
   //      "[todd-coxeter][extreme]") {
   //    auto        rg = ReportGuard();
-  //    ToddCoxeter tc;
-  //    tc.set_alphabet("xyXYe");
+  //        ToddCoxeter tc(twosided, p);
+  //    p.alphabet("xyXYe");
   //    tc.set_identity("e");
-  //    tc.set_inverses("XYxye");
-  //    tc.add_rule("xx", "e");
-  //    tc.add_rule("yyyyy", "e");
-  //    tc.add_rule("xyxyxyxyxyxyxyxyxyxyxy", "e");
-  //    tc.add_rule("xyyxyyxyyxyyxyyxyyxyyxyyxyyxyy", "e");
-  //    tc.add_rule("XYxyXYxyXYxyXYxyXYxy", "e");
-  //    tc.add_rule("XYXYxyxyXYXYxyxyXYXYxyxy", "e");
-  //    tc.add_rule("XYYxyyXYYxyyXYYxyyXYYxyyXYYxyyXYYxyy", "e");
-  //    tc.add_rule("xyxyxyyxYxYYxYxyyxyxyxYYxYYxYYxYY", "e");
-  //    tc.add_rule("xyxyyxYYxYYxyyxYYxYYxyyxyxyyxYxyyxYxyy", "e");
-  //    tc.add_rule("xyxyxyyxyyxyxYxYxyxyyxyyxyxyxYYxYxYY", "e");
-  //    tc.add_rule("xyxyxyyxYxYYxyxyxYxyxyxyyxYxYYxyxyxY", "e");
-  //    tc.add_rule("xyxyxyyxyxyxyyxyxyxYxyxyxyyxyyxyyxyxyxY", "e");
-  //    tc.add_rule("xyxyxyyxyxyyxyxyyxyxyxyyxYxyxYYxyxYxyy", "e");
-  //    ToddCoxeter tc2(congruence_kind::right, tc);
-  //    tc2.add_pair(tc.string_to_word("xy"), tc.string_to_word("e"));
-  //    tc2.sort_generating_pairs()
+  //    presentation::add_inverse_rules(p, "XYxye");
+  //    presentation::add_rule_and_check(p, "xx", "e");
+  //    presentation::add_rule_and_check(p, "yyyyy", "e");
+  //    presentation::add_rule_and_check(p, "xyxyxyxyxyxyxyxyxyxyxy", "e");
+  //    presentation::add_rule_and_check(p, "xyyxyyxyyxyyxyyxyyxyyxyyxyyxyy",
+  //    "e"); presentation::add_rule_and_check(p, "XYxyXYxyXYxyXYxyXYxy",
+  //    "e"); presentation::add_rule_and_check(p, "XYXYxyxyXYXYxyxyXYXYxyxy",
+  //    "e"); presentation::add_rule_and_check(p,
+  //    "XYYxyyXYYxyyXYYxyyXYYxyyXYYxyyXYYxyy", "e");
+  //    presentation::add_rule_and_check(p,
+  //    "xyxyxyyxYxYYxYxyyxyxyxYYxYYxYYxYY", "e");
+  //    presentation::add_rule_and_check(p,
+  //    "xyxyyxYYxYYxyyxYYxYYxyyxyxyyxYxyyxYxyy", "e");
+  //    presentation::add_rule_and_check(p,
+  //    "xyxyxyyxyyxyxYxYxyxyyxyyxyxyxYYxYxYY", "e");
+  //    presentation::add_rule_and_check(p,
+  //    "xyxyxyyxYxYYxyxyxYxyxyxyyxYxYYxyxyxY", "e");
+  //    presentation::add_rule_and_check(p,
+  //    "xyxyxyyxyxyxyyxyxyxYxyxyxyyxyyxyyxyxyxY", "e");
+  //    presentation::add_rule_and_check(p,
+  //    "xyxyxyyxyxyyxyxyyxyxyxyyxYxyxYYxyxYxyy", "e"); ToddCoxeter
+  //    tc2(congruence_kind::right, tc); tc2.add_pair(tc.string_to_word("xy"),
+  //    tc.string_to_word("e")); tc2.sort_generating_pairs()
   //        .use_relations_in_extra(true)
   //        .strategy(options::strategy::hlt)
   //        .lookahead(options::lookahead::felsch |
@@ -3944,6 +4130,6 @@ options::lookahead::full) .next_lookahead(2); tc.congruence().run();
     ToddCoxeter tc(twosided, p);
     REQUIRE(tc.number_of_classes() == 1'451'520);
     // TODO uncomment
-    // std::cout << tc.congruence().stats_string();
+    // std::cout << tc.stats_string();
   }
 }  // namespace libsemigroups

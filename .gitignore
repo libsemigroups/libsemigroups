@@ -1,3 +1,5 @@
+tmp/*
+*.bmp*
 !libsemigroups.pc.in
 *.bmp
 *.gcda
