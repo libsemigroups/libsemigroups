@@ -21,6 +21,6 @@ jobs:
     - name: Run clang-format style check for C/C++/Protobuf programs.
       uses: jidicula/clang-format-action@v4.10.1
       with:
-        clang-format-version: '11'
+        clang-format-version: '15'
         exclude-regex: '(tests\/catch.hpp|benchmarks\/catch.hpp)'
         check-path: ${{ matrix.path }}
