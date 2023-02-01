@@ -358,13 +358,13 @@ namespace libsemigroups {
     bool process_definition(Definition const& d,
                             IncompatibleFunc& incompat,
                             PreferredDefs&    pref_defs) {
-      // if (definition_version() == felsch_digraph::def_version::two) {
-      return process_definition_v2(d, incompat, pref_defs);
-      // } else {
-      //   LIBSEMIGROUPS_ASSERT(definition_version()
-      //                        == felsch_digraph::def_version::one);
-      //   return process_definition_v1(d, incompat, pref_defs);
-      //}
+      if (definition_version() == felsch_digraph::def_version::two) {
+        return process_definition_v2(d, incompat, pref_defs);
+      } else {
+        LIBSEMIGROUPS_ASSERT(definition_version()
+                             == felsch_digraph::def_version::one);
+        return process_definition_v1(d, incompat, pref_defs);
+      }
     }
 
     bool process_definitions(size_t start = 0) {

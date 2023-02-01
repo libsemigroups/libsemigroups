@@ -3654,6 +3654,7 @@ namespace libsemigroups {
 
       congruence::ToddCoxeter H(right, G.congruence());
       H.add_pair({1, 2}, {6});
+      H.strategy(options::strategy::felsch);
       H.next_lookahead(1'000'000);
 
       REQUIRE(H.number_of_classes() == 16'384);

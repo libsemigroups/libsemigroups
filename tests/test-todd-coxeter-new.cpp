@@ -19,6 +19,8 @@
 
 #define CATCH_CONFIG_ENABLE_PAIR_STRINGMAKER
 
+#include <cstdlib>
+
 #include "catch.hpp"      // for TEST_CASE
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
@@ -47,6 +49,15 @@ namespace libsemigroups {
   congruence_kind constexpr twosided = congruence_kind::twosided;
   congruence_kind constexpr left     = congruence_kind::left;
   congruence_kind constexpr right    = congruence_kind::right;
+
+  word_type operator"" _w(const char* w) {
+    size_t const n = std::strlen(w);
+    word_type    result;
+    for (size_t i = 0; i < n; ++i) {
+      result.push_back(static_cast<letter_type>(std::atoi(w + i)));
+    }
+    return result;
+  }
 
   namespace {
     void section_felsch(ToddCoxeter& tc) {
@@ -179,7 +190,7 @@ namespace libsemigroups {
 
     Presentation<word_type> p;
     p.alphabet(2);
-    presentation::add_rule_and_check(p, {0, 0, 0}, {0});
+    presentation::add_rule_and_check(p, 000_w, {0});
     presentation::add_rule_and_check(p, {1, 1, 1, 1}, {1});
     presentation::add_rule_and_check(p, {0, 1, 0, 1}, {0, 0});
     ToddCoxeter tc(twosided, p);
@@ -3192,208 +3203,221 @@ p.alphabet("ab");
 
     REQUIRE(tc.number_of_classes() == 29);
   }
-  /*
 
+  // TODO add to fpsemi-examples
   LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
                           "081",
                           "Holt 2 - SL(2, p)",
                           "[todd-coxeter][extreme]") {
-      auto        rg = ReportGuard();
-          ToddCoxeter tc(twosided, p);
+    auto rg = ReportGuard();
 
     Presentation<std::string> p;
-      Presentation<std::string> p;
-p.alphabet("xXyYe");
-      tc.set_identity("e");
-      presentation::add_inverse_rules(p, "XxYye");
+    p.alphabet("xXyY");
+    p.contains_empty_word(true);
+    presentation::add_inverse_rules(p, "XxYy");
+    presentation::add_rule_and_check(p, "xxYXYXYX", "");
 
-      presentation::add_rule_and_check(p, "xxYXYXYX", "e");
-
-      auto second = [](size_t p) -> std::string {
+    auto second = [](size_t p) -> std::string {
       std::string s = "xyyyyx";
       s += std::string((p + 1) / 2, 'y');
       s += s;
       s += std::string(p, 'y');
       s += std::string(2 * (p / 3), 'x');
       return s;
-      };
+    };
 
-      REQUIRE(second(3) == "xyyyyxyyxyyyyxyyyyyxx");
-      SECTION("p = 3") {
-      presentation::add_rule_and_check(p, second(3), "e");
+    std::string id = "";
+    REQUIRE(second(3) == "xyyyyxyyxyyyyxyyyyyxx");
+    SECTION("p = 3") {
+      presentation::add_rule_and_check(p, second(3), id);
+      ToddCoxeter tc(twosided, p);
 
       // check_hlt(tc);
       section_felsch(tc);
 
       REQUIRE(tc.number_of_classes() == 24);
-      }
-      SECTION("p = 5") {
-      presentation::add_rule_and_check(p, second(5), "e");
+    }
+    SECTION("p = 5") {
+      presentation::add_rule_and_check(p, second(5), id);
 
+      ToddCoxeter tc(twosided, p);
       // check_hlt(tc);
       section_felsch(tc);
 
       REQUIRE(tc.number_of_classes() == 120);
-      }
-      SECTION("p = 7") {
-      presentation::add_rule_and_check(p, second(7), "e");
+    }
+    SECTION("p = 7") {
+      presentation::add_rule_and_check(p, second(7), id);
 
+      ToddCoxeter tc(twosided, p);
       // check_hlt(tc);
       section_felsch(tc);
 
       REQUIRE(tc.number_of_classes() == 336);
-      }
-      SECTION("p = 11") {
-      presentation::add_rule_and_check(p, second(11), "e");
+    }
+    // TODO the next case fails with feslch
+    // SECTION("p = 11") {
+    //   presentation::add_rule_and_check(p, second(11), id);
+    //   REQUIRE(presentation::length(p) == 57);
+    //   presentation::greedy_reduce_length(p);
+    //   REQUIRE(presentation::length(p) == 40);
+    //   REQUIRE(p.alphabet() == "xXyYab");
+    //   presentation::replace_subword(p, "xayyaabb");
 
-      // check_hlt(tc);
-      // check_random(tc);
+    //   ToddCoxeter tc(twosided, p);
+    //   // check_hlt(tc);
+    //   // check_random(tc);
 
-      REQUIRE(tc.number_of_classes() == 1'320);
-      }
+    //   REQUIRE(tc.number_of_classes() == 1'320);
+    // }
   }
 
   LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
                           "082",
                           "Holt 3",
                           "[todd-coxeter][standard]") {
-      auto        rg = ReportGuard(false);
-          ToddCoxeter tc(twosided, p);
+    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
-      Presentation<std::string> p;
-p.alphabet("aAbBcCe");
-      tc.set_identity("e");
-      presentation::add_inverse_rules(p, "AaBbCce");
+    p.alphabet("aAbBcC");
+    p.contains_empty_word(true);
+    presentation::add_inverse_rules(p, "AaBbCc");
 
-      presentation::add_rule_and_check(p, "bbCbc", "e");
-      presentation::add_rule_and_check(p, "aaBab", "e");
-      presentation::add_rule_and_check(p, "cABcabc", "e");
-      REQUIRE(tc.is_non_trivial() == tril::TRUE);
+    presentation::add_rule_and_check(p, "bbCbc", "");
+    presentation::add_rule_and_check(p, "aaBab", "");
+    presentation::add_rule_and_check(p, "cABcabc", "");
 
-      // check_hlt(tc);
-      section_felsch(tc);
-      // check_random(tc);
-      // check_Rc_style(tc);
-      // check_R_over_C_style(tc);
-      // check_CR_style(tc);
-      // check_Cr_style(tc);
+    ToddCoxeter tc(twosided, p);
+    // TODO implement
+    // REQUIRE(tc.is_non_trivial() == tril::TRUE);
 
-      REQUIRE(tc.number_of_classes() == 6'561);
+    // check_hlt(tc);
+    section_felsch(tc);
+    // check_random(tc);
+    // check_Rc_style(tc);
+    // check_R_over_C_style(tc);
+    // check_CR_style(tc);
+    // check_Cr_style(tc);
+
+    REQUIRE(tc.number_of_classes() == 6'561);
   }
 
   LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
                           "083",
                           "Holt 3",
                           "[todd-coxeter][fail]") {
-      auto        rg = ReportGuard();
-          ToddCoxeter tc(twosided, p);
-      Presentation<std::string> p;
-p.alphabet("aAbBcCe");
-      tc.set_identity("e");
-      presentation::add_inverse_rules(p, "AaBbCce");
+    auto                      rg = ReportGuard();
+    Presentation<std::string> p;
+    p.alphabet("aAbBcC");
+    p.contains_empty_word(true);
+    presentation::add_inverse_rules(p, "AaBbCc");
 
-      presentation::add_rule_and_check(p, "aaCac", "e");
-      presentation::add_rule_and_check(p, "acbbACb", "e");
-      presentation::add_rule_and_check(p, "ABabccc", "e");
-      REQUIRE(!is_obviously_infinite(tc));
-      REQUIRE(tc.number_of_generating_pairs() == 22);
-      tc.strategy(options::strategy::R_over_C);
-      tc
-          .sort_generating_pairs()
-          .remove_duplicate_generating_pairs();
-      REQUIRE(tc.number_of_generating_pairs() == 22);
-      tc
-          .lookahead(options::lookahead::partial | options::lookahead::hlt)
-          .lookahead_growth_factor(1.01)
-          .lookahead_growth_threshold(10)
-          .f_defs(250'000)
-          .hlt_defs(20'000'000);
-      // REQUIRE(tc.is_non_trivial() == tril::TRUE);
-      tc.run();
-      REQUIRE(tc.number_of_classes() == 6'561);
+    presentation::add_rule_and_check(p, "aaCac", "");
+    presentation::add_rule_and_check(p, "acbbACb", "");
+    presentation::add_rule_and_check(p, "ABabccc", "");
+    presentation::remove_duplicate_rules(p);
+    presentation::sort_rules(p);
+    REQUIRE(p.rules.size() == 18);
+
+    ToddCoxeter tc(twosided, p);
+    REQUIRE(!is_obviously_infinite(tc));
+    // TODO uncomment tc.strategy(options::strategy::R_over_C);
+
+    // TODO uncomment
+    // tc.lookahead(options::lookahead::partial | options::lookahead::hlt)
+    //     .lookahead_growth_factor(1.01)
+    //     .lookahead_growth_threshold(10)
+    //     .f_defs(250'000)
+    //     .hlt_defs(20'000'000);
+    // TODO implement
+    // REQUIRE(tc.is_non_trivial() == tril::TRUE);
+    REQUIRE(tc.number_of_classes() == 6'561);
   }
 
   LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
                           "084",
                           "Campbell-Reza 1",
                           "[todd-coxeter][quick]") {
-      auto        rg = ReportGuard(false);
-          ToddCoxeter tc(twosided, p);
-      Presentation<std::string> p;
-p.alphabet("ab");
-      presentation::add_rule_and_check(p, "aa", "bb");
-      presentation::add_rule_and_check(p, "ba", "aaaaaab");
+    auto                      rg = ReportGuard(false);
+    Presentation<std::string> p;
+    p.alphabet("ab");
+    presentation::add_rule_and_check(p, "aa", "bb");
+    presentation::add_rule_and_check(p, "ba", "aaaaaab");
 
-      // check_hlt(tc);
-      section_felsch(tc);
-      // check_random(tc);
-      // check_Rc_style(tc);
-      // check_R_over_C_style(tc);
-      // check_CR_style(tc);
-      // check_Cr_style(tc);
+    ToddCoxeter tc(twosided, p);
+    // check_hlt(tc);
+    section_felsch(tc);
+    // check_random(tc);
+    // check_Rc_style(tc);
+    // check_R_over_C_style(tc);
+    // check_CR_style(tc);
+    // check_Cr_style(tc);
 
-      REQUIRE(tc.number_of_classes() == 14);
-      tc.standardize(order::shortlex);
-      REQUIRE(std::vector<word_type>(tc.cbegin_normal_forms(),
-                                     tc.cend_normal_forms())
-              == std::vector<word_type>({{0},
-                                         {1},
-                                         {0, 0},
-                                         {0, 1},
-                                         {1, 0},
-                                         {0, 0, 0},
-                                         {0, 0, 1},
-                                         {0, 0, 0, 0},
-                                         {0, 0, 0, 1},
-                                         {0, 0, 0, 0, 0},
-                                         {0, 0, 0, 0, 1},
-                                         {0, 0, 0, 0, 0, 0},
-                                         {0, 0, 0, 0, 0, 1},
-                                         {0, 0, 0, 0, 0, 0, 0}}));
-      REQUIRE(tc.froidure_pin()->number_of_rules() == 6);
-      REQUIRE(tc.normal_form("aaaaaaab") == "aab");
-      REQUIRE(tc.normal_form("bab") == "aaa");
+    REQUIRE(tc.number_of_classes() == 14);
+    tc.standardize(order::shortlex);
+    REQUIRE(std::vector<word_type>(todd_coxeter::cbegin_normal_forms(tc),
+                                   todd_coxeter::cend_normal_forms(tc))
+            == std::vector<word_type>({{0},
+                                       {1},
+                                       {0, 0},
+                                       {0, 1},
+                                       {1, 0},
+                                       {0, 0, 0},
+                                       {0, 0, 1},
+                                       {0, 0, 0, 0},
+                                       {0, 0, 0, 1},
+                                       {0, 0, 0, 0, 0},
+                                       {0, 0, 0, 0, 1},
+                                       {0, 0, 0, 0, 0, 0},
+                                       {0, 0, 0, 0, 0, 1},
+                                       {0, 0, 0, 0, 0, 0, 0}}));
+    REQUIRE(make<FroidurePin<TCE>>(tc).number_of_rules() == 6);
+    detail::StringToWord string_to_word(p.alphabet());
+    REQUIRE(todd_coxeter::normal_form(tc, string_to_word("aaaaaaab"))
+            == string_to_word("aab"));
+    REQUIRE(todd_coxeter::normal_form(tc, string_to_word("bab"))
+            == string_to_word("aaa"));
   }
 
   // The next example demonstrates why we require deferred standardization
+  // FIXME this is also very slow in v3 (661ms vs 45ms in v2)
   LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
                           "085",
                           "Renner monoid type D4 (Gay-Hivert), q = 1",
                           "[no-valgrind][quick][todd-coxeter][no-coverage]") {
-      auto        rg = ReportGuard(false);
-          ToddCoxeter tc(twosided, p); Presentation<std::string> p;
-p.alphabet(11);
-      for (relation_type const& rl : RennerTypeDMonoid(4, 1)) {
-      presentation::add_rule_and_check(p, rl);
-      }
-      REQUIRE(tc.number_of_rules() == 121);
-      REQUIRE(!is_obviously_infinite(tc));
+    using fpsemigroup::make;
+    using fpsemigroup::RennerTypeDMonoid;
 
-      REQUIRE(tc.number_of_classes() == 10'625);
+    auto rg = ReportGuard(false);
+    auto p  = make<Presentation<word_type>>(RennerTypeDMonoid(4, 1));
+    REQUIRE(p.rules.size() == 252);
 
-      // check_hlt(tc);
-      section_felsch(tc);
-      // check_random(tc);
-      // check_Rc_style(tc);
-      // check_R_over_C_style(tc);
-      // check_CR_style(tc);
-      // check_Cr_style(tc);
+    ToddCoxeter tc(twosided, p);
+    REQUIRE(!is_obviously_infinite(tc));
 
-      tc.standardize(order::shortlex);
-      REQUIRE(std::is_sorted(tc.cbegin_normal_forms(),
-                             tc.cend_normal_forms(),
-                             ShortLexCompare<word_type>{}));
-      tc.standardize(order::lex);
-      REQUIRE(std::is_sorted(tc.cbegin_normal_forms(),
-                             tc.cend_normal_forms(),
-                             LexicographicalCompare<word_type>{}));
-      // The next section is very slow
-      // SECTION("standardizing with recursive order") {
-      //  tc.standardize(order::recursive);
-      //  REQUIRE(std::is_sorted(tc.cbegin_normal_forms(),
-      //                         tc.cend_normal_forms(),
-      //                         RecursivePathCompare<word_type>{}));
-      // }
+    section_felsch(tc);
+
+    REQUIRE(tc.number_of_classes() == 10'625);
+
+    // check_hlt(tc);
+    // check_random(tc);
+    // check_Rc_style(tc);
+    // check_R_over_C_style(tc);
+    // check_CR_style(tc);
+    // check_Cr_style(tc);
+
+    tc.standardize(order::shortlex);
+    REQUIRE(std::is_sorted(todd_coxeter::cbegin_normal_forms(tc),
+                           todd_coxeter::cend_normal_forms(tc),
+                           ShortLexCompare()));
+    tc.standardize(order::lex);
+    REQUIRE(std::is_sorted(todd_coxeter::cbegin_normal_forms(tc),
+                           todd_coxeter::cend_normal_forms(tc),
+                           LexicographicalCompare()));
+    // The next section is very slow
+    // tc.standardize(order::recursive);
+    // REQUIRE(std::is_sorted(todd_coxeter::cbegin_normal_forms(tc),
+    //                        todd_coxeter::cend_normal_forms(tc),
+    //                        RecursivePathCompare()));
   }
 
   // Felsch very slow here
@@ -3401,154 +3425,145 @@ p.alphabet(11);
                           "086",
                           "trivial semigroup",
                           "[no-valgrind][todd-coxeter][quick][no-coverage]") {
-      auto rg = ReportGuard(true);
+    auto rg = ReportGuard(true);
 
-      for (size_t N = 2; N < 1000; N += 199) {
-            ToddCoxeter tc(twosided, p);
-        Presentation<std::string> p;
-p.alphabet("eab");
-        tc.set_identity("e");
-        std::string lhs = "a" + std::string(N, 'b');
-        std::string rhs = "e";
-        presentation::add_rule_and_check(p, lhs, rhs);
+    for (size_t N = 2; N < 1000; N += 199) {
+      Presentation<std::string> p;
+      p.alphabet("ab");
+      p.contains_empty_word(true);
+      std::string lhs = "a" + std::string(N, 'b');
+      presentation::add_rule_and_check(p, lhs, std::string(""));
 
-        lhs = std::string(N, 'a');
-        rhs = std::string(N + 1, 'b');
-        presentation::add_rule_and_check(p, lhs, rhs);
+      lhs = std::string(N, 'a');
+      std::string rhs(N + 1, 'b');
+      presentation::add_rule_and_check(p, lhs, rhs);
 
-        lhs = "ba";
-        rhs = std::string(N, 'b') + "a";
-        presentation::add_rule_and_check(p, lhs, rhs);
-        tc.run();
-        if (N % 3 == 1) {
+      lhs = "ba";
+      rhs = std::string(N, 'b') + "a";
+      presentation::add_rule_and_check(p, lhs, rhs);
+      presentation::greedy_reduce_length(p);
+
+      ToddCoxeter tc(twosided, p);
+      tc.run();
+      if (N % 3 == 1) {
         REQUIRE(tc.number_of_classes() == 3);
-        } else {
+      } else {
         REQUIRE(tc.number_of_classes() == 1);
-        }
       }
+    }
   }
 
   LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
                           "087",
                           "ACE --- 2p17-2p14 - HLT",
                           "[todd-coxeter][standard][ace]") {
-      auto        rg = ReportGuard(false);
-      ToddCoxeter G;
-      G.set_alphabet("abcABCe");
-      G.set_identity("e");
-      G.set_inverses("ABCabce");
-      G.add_rule("aBCbac", "e");
-      G.add_rule("bACbaacA", "e");
-      G.add_rule("accAABab", "e");
+    auto                      rg = ReportGuard(false);
+    Presentation<std::string> p;
+    p.alphabet("abcABC");
+    p.contains_empty_word(true);
+    presentation::add_inverse_rules(p, "ABCabc");
+    presentation::add_rule_and_check(p, "aBCbac", "");
+    presentation::add_rule_and_check(p, "bACbaacA", "");
+    presentation::add_rule_and_check(p, "accAABab", "");
 
-      ToddCoxeter H(right, G.congruence());
-      H.add_pair({1, 2}, {6});
-      H.next_lookahead(1'000'000);
+    ToddCoxeter H(right, p);
+    H.add_pair({1, 2}, {});
+    // H.next_lookahead(1'000'000);
 
-      REQUIRE(H.number_of_classes() == 16'384);
+    REQUIRE(H.number_of_classes() == 16'384);
   }
 
   LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
                           "088",
                           "ACE --- 2p17-2p3 - HLT",
                           "[todd-coxeter][standard][ace]") {
-      auto        rg = ReportGuard(false);
-      ToddCoxeter G;
-      G.set_alphabet("abcABCe");
-      G.set_identity("e");
-      G.set_inverses("ABCabce");
-      G.add_rule("aBCbac", "e");
-      G.add_rule("bACbaacA", "e");
-      G.add_rule("accAABab", "e");
+    auto                      rg = ReportGuard(false);
+    Presentation<std::string> p;
+    p.alphabet("abcABC");
+    p.contains_empty_word(true);
+    presentation::add_inverse_rules(p, "ABCabc");
+    presentation::add_rule_and_check(p, "aBCbac", "");
+    presentation::add_rule_and_check(p, "bACbaacA", "");
+    presentation::add_rule_and_check(p, "accAABab", "");
 
-      letter_type a = 0;
-      letter_type b = 1;
-      letter_type c = 2;
-      letter_type A = 3;
-      letter_type B = 4;
-      letter_type C = 5;
-      letter_type e = 6;
-      ToddCoxeter H(right, G.congruence());
-      H.add_pair({b, c}, {e});
-      H.add_pair({b, c}, {A, B, A, A, b, c, a, b, C});
+    detail::StringToWord string_to_word(p.alphabet());
+    ToddCoxeter          H(right, p);
+    H.add_pair(string_to_word("bc"), string_to_word(""));
+    H.add_pair(string_to_word("bc"), string_to_word("ABAAbcabC"));
 
-      H.strategy(options::strategy::hlt)
-          .save(true)
-          .lookahead(options::lookahead::partial);
+    // TODO uncomment
+    //   H.strategy(options::strategy::hlt)
+    // .save(true).lookahead(options::lookahead::partial);
 
-      REQUIRE(H.number_of_classes() == 8);
+    REQUIRE(H.number_of_classes() == 8);
   }
 
   LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
                           "089",
                           "ACE --- 2p17-1a - HLT",
                           "[todd-coxeter][standard][ace]") {
-      auto        rg = ReportGuard(false);
-      ToddCoxeter G;
-      G.set_alphabet("abcABCe");
-      G.set_identity("e");
-      G.set_inverses("ABCabce");
-      G.add_rule("aBCbac", "e");
-      G.add_rule("bACbaacA", "e");
-      G.add_rule("accAABab", "e");
+    auto rg = ReportGuard(false);
 
-      letter_type a = 0;
-      letter_type b = 1;
-      letter_type c = 2;
-      letter_type A = 3;
-      letter_type B = 4;
-      letter_type C = 5;
-      letter_type e = 6;
+    Presentation<std::string> p;
+    p.alphabet("abcABC");
 
-      ToddCoxeter H(right, G.congruence());
-      H.add_pair({b, c}, {e});
-      H.add_pair({A, B, A, A, b, c, a, b, C}, {e});
-      H.add_pair({A, c, c, c, a, c, B, c, A}, {e});
-      H.large_collapse(10'000);
+    presentation::add_inverse_rules(p, "ABCabc");
+    presentation::add_rule_and_check(p, "aBCbac", "");
+    presentation::add_rule_and_check(p, "bACbaacA", "");
+    presentation::add_rule_and_check(p, "accAABab", "");
 
-      H.strategy(options::strategy::hlt)
-          .save(true)
-          .lookahead(options::lookahead::partial);
-      REQUIRE(H.number_of_classes() == 1);
+    detail::StringToWord string_to_word(p.alphabet());
+    ToddCoxeter          H(right, p);
+    H.add_pair(string_to_word("bc"), string_to_word(""));
+    H.add_pair(string_to_word("ABAAbcabC"), string_to_word(""));
+    H.add_pair(string_to_word("AcccacBcA"), string_to_word(""));
+    // TODO uncomment
+    // H.large_collapse(10'000);
+    // H.strategy(options::strategy::hlt)
+    //    .save(true)
+    //    .lookahead(options::lookahead::partial);
+    REQUIRE(H.number_of_classes() == 1);
   }
 
   LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
                           "090",
                           "ACE --- F27",
                           "[todd-coxeter][standard][ace]") {
-      auto        rg = ReportGuard(false);
-      ToddCoxeter G;
-      G.set_alphabet("abcdxyzABCDXYZe");
-      G.set_identity("e");
-      G.set_inverses("ABCDXYZabcdxyze");
-      G.add_rule("abC", "e");
-      G.add_rule("bcD", "e");
-      G.add_rule("cdX", "e");
-      G.add_rule("dxY", "e");
-      G.add_rule("xyZ", "e");
-      G.add_rule("yzA", "e");
-      G.add_rule("zaB", "e");
+    auto                      rg = ReportGuard(false);
+    Presentation<std::string> p;
+    p.alphabet("abcdxyzABCDXYZ");
+    p.contains_empty_word(true);
 
-      ToddCoxeter H(twosided, G);
-      section_felsch(H);
-      // check_hlt(H);
-      // check_random(H);
+    presentation::add_inverse_rules(p, "ABCDXYZabcdxyz");
+    presentation::add_rule_and_check(p, "abC", "");
+    presentation::add_rule_and_check(p, "bcD", "");
+    presentation::add_rule_and_check(p, "cdX", "");
+    presentation::add_rule_and_check(p, "dxY", "");
+    presentation::add_rule_and_check(p, "xyZ", "");
+    presentation::add_rule_and_check(p, "yzA", "");
+    presentation::add_rule_and_check(p, "zaB", "");
 
-      REQUIRE(H.number_of_classes() == 29);
+    ToddCoxeter H(twosided, p);
+    section_felsch(H);
+    // check_hlt(H);
+    // check_random(H);
+
+    REQUIRE(H.number_of_classes() == 29);
   }
 
+  /*
   LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
                           "091",
                           "ACE --- SL219 - HLT",
                           "[todd-coxeter][standard][ace]") {
       auto        rg = ReportGuard(false);
       ToddCoxeter G;
-      G.set_alphabet("abABe");
-      G.set_identity("e");
-      G.set_inverses("ABabe");
-      G.add_rule("aBABAB", "e");
-      G.add_rule("BAAbaa", "e");
-      G.add_rule(
+      p.alphabet("abABe");
+
+      presentation::add_inverse_rules(p, "ABabe");
+      presentation::add_rule_and_check(p,"aBABAB", "e");
+      presentation::add_rule_and_check(p,"BAAbaa", "e");
+      presentation::add_rule_and_check(p,
           "abbbbabbbbbbbbbbabbbbabbbbbbbbbbbbbbbbbbbbbbbbbbbbbaaaaaaaaaaaa",
           "e");
 
@@ -3570,38 +3585,38 @@ p.alphabet("eab");
                           "[no-valgrind][todd-coxeter][quick][ace]") {
       auto        rg = ReportGuard(false);
       ToddCoxeter G;
-      G.set_alphabet("abstuvdABSTUVDe");
-      G.set_identity("e");
-      G.set_inverses("ABSTUVDabstuvde");
+      p.alphabet("abstuvdABSTUVDe");
 
-      G.add_rule("aaD", "e");
-      G.add_rule("bbb", "e");
-      G.add_rule("ababababab", "e");
-      G.add_rule("ss", "e");
-      G.add_rule("tt", "e");
-      G.add_rule("uu", "e");
-      G.add_rule("vv", "e");
-      G.add_rule("dd", "e");
-      G.add_rule("STst", "e");
-      G.add_rule("UVuv", "e");
-      G.add_rule("SUsu", "e");
-      G.add_rule("SVsv", "e");
-      G.add_rule("TUtu", "e");
-      G.add_rule("TVtv", "e");
-      G.add_rule("AsaU", "e");
-      G.add_rule("AtaV", "e");
-      G.add_rule("AuaS", "e");
-      G.add_rule("AvaT", "e");
-      G.add_rule("BsbDVT", "e");
-      G.add_rule("BtbVUTS", "e");
-      G.add_rule("BubVU", "e");
-      G.add_rule("BvbU", "e");
-      G.add_rule("DAda", "e");
-      G.add_rule("DBdb", "e");
-      G.add_rule("DSds", "e");
-      G.add_rule("DTdt", "e");
-      G.add_rule("DUdu", "e");
-      G.add_rule("DVdv", "e");
+      presentation::add_inverse_rules(p, "ABSTUVDabstuvde");
+
+      presentation::add_rule_and_check(p,"aaD", "e");
+      presentation::add_rule_and_check(p,"bbb", "e");
+      presentation::add_rule_and_check(p,"ababababab", "e");
+      presentation::add_rule_and_check(p,"ss", "e");
+      presentation::add_rule_and_check(p,"tt", "e");
+      presentation::add_rule_and_check(p,"uu", "e");
+      presentation::add_rule_and_check(p,"vv", "e");
+      presentation::add_rule_and_check(p,"dd", "e");
+      presentation::add_rule_and_check(p,"STst", "e");
+      presentation::add_rule_and_check(p,"UVuv", "e");
+      presentation::add_rule_and_check(p,"SUsu", "e");
+      presentation::add_rule_and_check(p,"SVsv", "e");
+      presentation::add_rule_and_check(p,"TUtu", "e");
+      presentation::add_rule_and_check(p,"TVtv", "e");
+      presentation::add_rule_and_check(p,"AsaU", "e");
+      presentation::add_rule_and_check(p,"AtaV", "e");
+      presentation::add_rule_and_check(p,"AuaS", "e");
+      presentation::add_rule_and_check(p,"AvaT", "e");
+      presentation::add_rule_and_check(p,"BsbDVT", "e");
+      presentation::add_rule_and_check(p,"BtbVUTS", "e");
+      presentation::add_rule_and_check(p,"BubVU", "e");
+      presentation::add_rule_and_check(p,"BvbU", "e");
+      presentation::add_rule_and_check(p,"DAda", "e");
+      presentation::add_rule_and_check(p,"DBdb", "e");
+      presentation::add_rule_and_check(p,"DSds", "e");
+      presentation::add_rule_and_check(p,"DTdt", "e");
+      presentation::add_rule_and_check(p,"DUdu", "e");
+      presentation::add_rule_and_check(p,"DVdv", "e");
 
       ToddCoxeter H(right, G);
 
@@ -3623,16 +3638,16 @@ p.alphabet("eab");
                           "[todd-coxeter][standard][ace]") {
       auto        rg = ReportGuard(false);
       ToddCoxeter G;
-      G.set_alphabet("abcABCe");
-      G.set_identity("e");
-      G.set_inverses("ABCabce");
-      G.add_rule("aaaaaaaaaaa", "e");
-      G.add_rule("bb", "e");
-      G.add_rule("cc", "e");
-      G.add_rule("ababab", "e");
-      G.add_rule("acacac", "e");
-      G.add_rule("bcbcbcbcbcbcbcbcbcbc", "e");
-      G.add_rule("cbcbabcbcAAAAA", "e");
+      p.alphabet("abcABCe");
+
+      presentation::add_inverse_rules(p, "ABCabce");
+      presentation::add_rule_and_check(p,"aaaaaaaaaaa", "e");
+      presentation::add_rule_and_check(p,"bb", "e");
+      presentation::add_rule_and_check(p,"cc", "e");
+      presentation::add_rule_and_check(p,"ababab", "e");
+      presentation::add_rule_and_check(p,"acacac", "e");
+      presentation::add_rule_and_check(p,"bcbcbcbcbcbcbcbcbcbc", "e");
+      presentation::add_rule_and_check(p,"cbcbabcbcAAAAA", "e");
 
       ToddCoxeter H(twosided, G);
 
@@ -3656,11 +3671,11 @@ p.alphabet("eab");
                           "[todd-coxeter][quick][ace]") {
       auto        rg = ReportGuard(false);
       ToddCoxeter G;
-      G.set_alphabet("abABe");
-      G.set_identity("e");
-      G.set_inverses("ABabe");
-      G.add_rule("aaaaa", "e");
-      G.add_rule("b", "e");
+      p.alphabet("abABe");
+
+      presentation::add_inverse_rules(p, "ABabe");
+      presentation::add_rule_and_check(p,"aaaaa", "e");
+      presentation::add_rule_and_check(p,"b", "e");
 
       ToddCoxeter H(twosided, G);
 
@@ -3677,12 +3692,12 @@ p.alphabet("eab");
                           "[todd-coxeter][quick][ace]") {
       auto        rg = ReportGuard(false);
       ToddCoxeter G;
-      G.set_alphabet("abABe");
-      G.set_identity("e");
-      G.set_inverses("ABabe");
-      G.add_rule("aa", "e");
-      G.add_rule("bbb", "e");
-      G.add_rule("ababababab", "e");
+      p.alphabet("abABe");
+
+      presentation::add_inverse_rules(p, "ABabe");
+      presentation::add_rule_and_check(p,"aa", "e");
+      presentation::add_rule_and_check(p,"bbb", "e");
+      presentation::add_rule_and_check(p,"ababababab", "e");
 
       ToddCoxeter H(right, G);
 
@@ -3702,12 +3717,12 @@ p.alphabet("eab");
                           "[todd-coxeter][quick][ace]") {
       auto        rg = ReportGuard(false);
       ToddCoxeter G;
-      G.set_alphabet("abABe");
-      G.set_identity("e");
-      G.set_inverses("ABabe");
-      G.add_rule("aa", "e");
-      G.add_rule("bbb", "e");
-      G.add_rule("ababababab", "e");
+      p.alphabet("abABe");
+
+      presentation::add_inverse_rules(p, "ABabe");
+      presentation::add_rule_and_check(p,"aa", "e");
+      presentation::add_rule_and_check(p,"bbb", "e");
+      presentation::add_rule_and_check(p,"ababababab", "e");
 
       ToddCoxeter H(twosided, G);
 
@@ -3729,7 +3744,7 @@ p.alphabet("eab");
       auto        rg = ReportGuard();
           ToddCoxeter tc(twosided, p);
       Presentation<std::string> p;
-p.alphabet(13);
+  p.alphabet(13);
       for (relation_type const& rl : RennerTypeDMonoid(5, 1)) {
       presentation::add_rule_and_check(p, rl);
       }
@@ -3751,7 +3766,7 @@ p.alphabet(13);
                           "[todd-coxeter][quick]") {
           ToddCoxeter tc(twosided, p);
       Presentation<std::string> p;
-p.alphabet(10);
+  p.alphabet(10);
       presentation::add_rule_and_check(p, {0, 1}, {0});
       presentation::add_rule_and_check(p, {0, 2}, {0});
       presentation::add_rule_and_check(p, {0, 3}, {0});
@@ -3863,7 +3878,7 @@ p.alphabet(10);
       auto        rg = ReportGuard(false);
           ToddCoxeter tc(twosided, p);
       Presentation<std::string> p;
-p.alphabet("abc");
+  p.alphabet("abc");
       presentation::add_rule_and_check(p, "aaaa", "a");
       REQUIRE(tc.number_of_classes() == POSITIVE_INFINITY);
   }
@@ -3875,8 +3890,8 @@ p.alphabet("abc");
       "[todd-coxeter][standard]") {
           ToddCoxeter tc(twosided, p);
       Presentation<std::string> p;
-p.alphabet("xyXYe");
-      tc.set_identity("e");
+  p.alphabet("xyXYe");
+
       presentation::add_inverse_rules(p, "XYxye");
       presentation::add_rule_and_check(p, "xx", "X");
       presentation::add_rule_and_check(p, "yyyyyy", "Y");
@@ -3901,8 +3916,8 @@ p.alphabet("xyXYe");
       "[todd-coxeter][quick][no-coverage][no-valgrind]") {
           ToddCoxeter tc(twosided, p);
       Presentation<std::string> p;
-p.alphabet("xyXYe");
-      tc.set_identity("e");
+  p.alphabet("xyXYe");
+
       presentation::add_inverse_rules(p, "XYxye");
       presentation::add_rule_and_check(p, "xx", "e");
       presentation::add_rule_and_check(p, "yyyy", "e");
@@ -3919,8 +3934,8 @@ p.alphabet("xyXYe");
       "[todd-coxeter][standard]") {
           ToddCoxeter tc(twosided, p);
       Presentation<std::string> p;
-p.alphabet("xyXYe");
-      tc.set_identity("e");
+  p.alphabet("xyXYe");
+
       presentation::add_inverse_rules(p, "XYxye");
       presentation::add_rule_and_check(p, "xx", "e");
       presentation::add_rule_and_check(p, "yyy", "e");
@@ -3940,8 +3955,8 @@ p.alphabet("xyXYe");
       "[todd-coxeter][extreme]") {
           ToddCoxeter tc(twosided, p);
       Presentation<std::string> p;
-p.alphabet("xyXYe");
-      tc.set_identity("e");
+  p.alphabet("xyXYe");
+
       presentation::add_inverse_rules(p, "XYxye");
       presentation::add_rule_and_check(p, "xx", "e");
       presentation::add_rule_and_check(p, "yyyy", "e");
@@ -3962,8 +3977,8 @@ p.alphabet("xyXYe");
       "[todd-coxeter][extreme]") {
           ToddCoxeter tc(twosided, p);
       Presentation<std::string> p;
-p.alphabet("xyXYe");
-      tc.set_identity("e");
+  p.alphabet("xyXYe");
+
       presentation::add_inverse_rules(p, "XYxye");
       presentation::add_rule_and_check(p, "xx", "e");
       presentation::add_rule_and_check(p, "yyyy", "e");
@@ -4031,7 +4046,7 @@ p.alphabet("xyXYe");
   //    auto        rg = ReportGuard();
   //        ToddCoxeter tc(twosided, p);
   //    p.alphabet("xyXYe");
-  //    tc.set_identity("e");
+
   //    presentation::add_inverse_rules(p, "XYxye");
   //    presentation::add_rule_and_check(p, "xx", "e");
   //    presentation::add_rule_and_check(p, "yyyyy", "e");
