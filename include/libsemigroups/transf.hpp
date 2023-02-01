@@ -47,6 +47,7 @@
 #include "constants.hpp"  // for UNDEFINED, Undefined
 #include "exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
 #include "hpcombi.hpp"    // for HPCombi::Transf16
+#include "stl.hpp"        // for detail:IsStdArray
 #include "types.hpp"      // for SmallestInteger
 
 namespace libsemigroups {
@@ -75,12 +76,6 @@ namespace libsemigroups {
       = detail::IsDerivedFromPTransfHelper<T>::value;
 
   namespace detail {
-
-    template <typename... Args>
-    struct IsStdArray final : std::false_type {};
-
-    template <typename T, size_t N>
-    struct IsStdArray<std::array<T, N>> final : std::true_type {};
 
     template <typename T>
     struct IsStaticHelper : std::false_type {};

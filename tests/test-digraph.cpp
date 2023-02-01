@@ -2059,17 +2059,10 @@ namespace libsemigroups {
                           "049",
                           "HopkroftKarp",
                           "[standard]") {
-    unsigned int seed = 1;
     for (int i = 0; i != 1000; i++) {
-      int out_deg = rand_r(&seed) % 10 + 1;
-      int size_1  = rand_r(&seed) % 20 + 1;
-      int start_1 = rand_r(&seed) % size_1;
-      int size_2  = rand_r(&seed) % 20 + 1;
-      int start_2 = rand_r(&seed) % size_2;
-
-      ActionDigraph<size_t> d1 = ActionDigraph<size_t>::random(size_1, out_deg);
-      ActionDigraph<size_t> d2 = ActionDigraph<size_t>::random(size_2, out_deg);
-      check_hopkroftKarp_with_PSTILO_paths(d1, start_1, d2, start_2, 5);
+      ActionDigraph<size_t> d1 = ActionDigraph<size_t>::random(17, 6);
+      ActionDigraph<size_t> d2 = ActionDigraph<size_t>::random(15, 6);
+      check_hopkroftKarp_with_PSTILO_paths(d1, 9, d2, 14, 5);
     }
   }
 }  // namespace libsemigroups

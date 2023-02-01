@@ -40,6 +40,7 @@
 #include "config.hpp"    // for LIBSEMIGROUPS_SIZEOF_VOID_P
 #include "debug.hpp"     // for LIBSEMIGROUPS_ASSERT
 #include "iterator.hpp"  // for ConstIteratorStateless
+#include "stl.hpp"       // for detail::IsStdArray
 #include "types.hpp"     // for SmallestInteger
 
 namespace libsemigroups {
@@ -94,11 +95,11 @@ namespace libsemigroups {
 
       // not noexcept because the constructors of std::vector and std::array
       // aren't
-      UF(UF const&)            = default;
+      UF(UF const&) = default;
       UF& operator=(UF const&) = default;
       UF(UF&&)                 = default;
-      UF& operator=(UF&&)      = default;
-      ~UF()                    = default;
+      UF& operator=(UF&&) = default;
+      ~UF()               = default;
 
       ////////////////////////////////////////////////////////////////////////
       // Union-Find
@@ -434,7 +435,7 @@ namespace libsemigroups {
       }
 
       mutable container_type _data;
-    };
+    };  // namespace detail
 
     template <typename T>
     inline void swap(UF<T>& x, UF<T>& y) noexcept {
@@ -446,7 +447,8 @@ namespace libsemigroups {
     class Duf : public UF<std::vector<T>> {
      public:
       using UF<std::vector<T>>::UF;
-      using size_type = typename UF<std::vector<T>>::size_type;
+      using size_type  = typename UF<std::vector<T>>::size_type;
+      using index_type = typename UF<std::vector<T>>::index_type;
       // not noexcept because std::vector::resize can throw
       void resize(size_type N) {
         size_type const M = this->size();
@@ -456,6 +458,26 @@ namespace libsemigroups {
         this->_data.resize(N);
         std::iota(this->_data.begin() + M, this->_data.end(), M);
         this->init_data(this->_data.begin() + M, this->_data.end());
+      }
+
+      // not no except because compress() isn't
+      void restrict(size_t n) {
+        LIBSEMIGROUPS_ASSERT(n <= this->size());
+        this->compress();
+        // old -> new class indexing
+        std::unordered_map<index_type, index_type> lookup;
+        std::vector<T>                             data(n);
+        for (index_type i = 0; i < n; ++i) {
+          index_type j  = this->find(i);
+          auto       it = lookup.find(j);
+          if (it == lookup.end()) {
+            lookup.emplace(j, i);
+            data[i] = i << RANK_BITS;  // rank 0
+          } else {
+            data[i] = (it->second) << RANK_BITS | 1;
+          }
+        }
+        std::swap(this->_data, data);
       }
     };
 

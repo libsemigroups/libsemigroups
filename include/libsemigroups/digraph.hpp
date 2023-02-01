@@ -3416,12 +3416,12 @@ namespace libsemigroups {
                               "number of digraph vertices to be equal.");
     }
 
-    node_type x_rep;
-    node_type y_rep;
+    // TODO: Check whether the number of blocks is equal to the number of
+    // vertices, or whether the number of blocks is equal to 1.
+
     node_type x_nb;
     node_type y_nb;
 
-    detail::Duf<>                               edge_uf(N);
     std::stack<std::pair<node_type, node_type>> coincidences;
 
     // Make pairs of vertices that lie in the same part of a union find object
@@ -3435,41 +3435,38 @@ namespace libsemigroups {
     // For each coincidence (x, y), unite each out neighbour of x with the
     // corresponding out neighbour of y
     while (!coincidences.empty()) {
-      int x, y;
+      node_type x, y;
       std::tie(x, y) = coincidences.top();
       coincidences.pop();
-      x_rep = edge_uf.find(x);
-      y_rep = edge_uf.find(y);
       for (label_type a = 0; a < n_out; ++a) {
-        x_nb = edge_uf.find(d.unsafe_neighbor(x_rep, a));
-        y_nb = edge_uf.find(d.unsafe_neighbor(y_rep, a));
+        x_nb = uf.find(d.unsafe_neighbor(x, a));
+        y_nb = uf.find(d.unsafe_neighbor(y, a));
         if (x_nb != y_nb) {
           coincidences.emplace(x_nb, y_nb);
         }
       }
-      edge_uf.unite(x_rep, y_rep);
+      uf.unite(x, y);
     }
 
     std::unordered_map<node_type, node_type> map;
     node_type                                index = 0;
-    for (node_type i = 0; i < edge_uf.size(); ++i) {
-      if (map.emplace(edge_uf.find(i), index).second) {
+    for (node_type i = 0; i < uf.size(); ++i) {
+      if (map.emplace(uf.find(i), index).second) {
         ++index;
       }
     }
 
     // Create the quotient digraph and populate edges
-    auto             M = edge_uf.number_of_blocks();
+    auto             M = uf.number_of_blocks();
     ActionDigraph<T> quotient(M, n_out);
 
     for (node_type v = 0; v != N; ++v) {
-      node_type u = map.find(edge_uf.find(v))->second;
+      node_type u = map.find(uf.find(v))->second;
       for (label_type a = 0; a != n_out; ++a) {
-        if (d.unsafe_neighbor(edge_uf.find(v), a) != UNDEFINED) {
+        if (d.unsafe_neighbor(uf.find(v), a) != UNDEFINED) {
           quotient.add_edge(
               u,
-              map.find(edge_uf.find(d.unsafe_neighbor(edge_uf.find(v), a)))
-                  ->second,
+              map.find(uf.find(d.unsafe_neighbor(uf.find(v), a)))->second,
               a);
         }
       }
