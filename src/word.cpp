@@ -85,5 +85,4 @@ namespace libsemigroups {
       return operator"" _w(w, std::strlen(w));
     }
   }  // namespace literals
-
 }  // namespace libsemigroups
