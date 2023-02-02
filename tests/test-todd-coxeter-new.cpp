@@ -1,4 +1,3 @@
-//
 // libsemigroups - C++ library for semigroups and monoids
 // Copyright (C) 2019-2023 James D. Mitchell
 //
@@ -18,7 +17,6 @@
 // The purpose of this file is to test the ToddCoxeter class.
 
 // TODO
-// * remove string_to_word use make instead
 // * an option for ToddCoxeter that doesn't stack deductions in
 // process_coincidences (but does elsewhere) this seems to be good when running
 // Felsch
@@ -56,6 +54,7 @@ namespace libsemigroups {
   congruence_kind constexpr left     = congruence_kind::left;
   congruence_kind constexpr right    = congruence_kind::right;
 
+  // This doesn't really work
   word_type operator"" _w(const char* w) {
     size_t const n = std::strlen(w);
     word_type    result;
@@ -2494,11 +2493,11 @@ p.alphabet("ab");
     // check_CR_style(tc);
     // check_Cr_style(tc);
     //
-    detail::StringToWord string_to_word(p.alphabet());
 
     REQUIRE(tc.number_of_classes() == 24);
-    REQUIRE(todd_coxeter::normal_form(tc, string_to_word("aaaaaaaaaaaaaaaaaaa"))
-            == string_to_word("a"));
+    REQUIRE(
+        todd_coxeter::normal_form(tc, make<word_type>(p, "aaaaaaaaaaaaaaaaaaa"))
+        == make<word_type>(p, "a"));
     auto S = make<FroidurePin<TCE>>(tc);
     REQUIRE(KnuthBendix(S).confluent());
   }
@@ -3377,11 +3376,10 @@ p.alphabet("ab");
                                        {0, 0, 0, 0, 0, 1},
                                        {0, 0, 0, 0, 0, 0, 0}}));
     REQUIRE(make<FroidurePin<TCE>>(tc).number_of_rules() == 6);
-    detail::StringToWord string_to_word(p.alphabet());
-    REQUIRE(todd_coxeter::normal_form(tc, string_to_word("aaaaaaab"))
-            == string_to_word("aab"));
-    REQUIRE(todd_coxeter::normal_form(tc, string_to_word("bab"))
-            == string_to_word("aaa"));
+    REQUIRE(todd_coxeter::normal_form(tc, make<word_type>(p, "aaaaaaab"))
+            == make<word_type>(p, "aab"));
+    REQUIRE(todd_coxeter::normal_form(tc, make<word_type>(p, "bab"))
+            == make<word_type>(p, "aaa"));
   }
 
   // The next example demonstrates why we require deferred standardization
@@ -3492,10 +3490,9 @@ p.alphabet("ab");
     presentation::add_rule_and_check(p, "bACbaacA", "");
     presentation::add_rule_and_check(p, "accAABab", "");
 
-    detail::StringToWord string_to_word(p.alphabet());
-    ToddCoxeter          H(right, p);
-    H.add_pair(string_to_word("bc"), string_to_word(""));
-    H.add_pair(string_to_word("bc"), string_to_word("ABAAbcabC"));
+    ToddCoxeter H(right, p);
+    H.add_pair(make<word_type>(p, "bc"), make<word_type>(p, ""));
+    H.add_pair(make<word_type>(p, "bc"), make<word_type>(p, "ABAAbcabC"));
 
     // TODO uncomment
     //   H.strategy(options::strategy::hlt)
@@ -3518,11 +3515,10 @@ p.alphabet("ab");
     presentation::add_rule_and_check(p, "bACbaacA", "");
     presentation::add_rule_and_check(p, "accAABab", "");
 
-    detail::StringToWord string_to_word(p.alphabet());
-    ToddCoxeter          H(right, p);
-    H.add_pair(string_to_word("bc"), string_to_word(""));
-    H.add_pair(string_to_word("ABAAbcabC"), string_to_word(""));
-    H.add_pair(string_to_word("AcccacBcA"), string_to_word(""));
+    ToddCoxeter H(right, p);
+    H.add_pair(make<word_type>(p, "bc"), make<word_type>(p, ""));
+    H.add_pair(make<word_type>(p, "ABAAbcabC"), make<word_type>(p, ""));
+    H.add_pair(make<word_type>(p, "AcccacBcA"), make<word_type>(p, ""));
     // TODO uncomment
     // H.large_collapse(10'000);
     // H.strategy(options::strategy::hlt)
@@ -3612,9 +3608,8 @@ p.alphabet("ab");
                  "ccdegg", "",    "c",      "afad", "d",      "eb",
                  "e",      "ffb", "f",      "bbbb", "g",      "aaaaaa"}));
 
-    detail::StringToWord string_to_word(p.alphabet());
-    ToddCoxeter          H(right, p);
-    H.add_pair(string_to_word("b"), string_to_word(""));
+    ToddCoxeter H(right, p);
+    H.add_pair(make<word_type>(p, "b"), make<word_type>(p, ""));
 
     // TODO uncomment
     // H.strategy(options::strategy::hlt)
