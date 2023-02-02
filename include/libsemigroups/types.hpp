@@ -22,9 +22,13 @@
 #include <cstddef>  // for size_t
 
 #include <cstdint>      // for uint8_t, uint16_t, uint32_t, uint64_t
+#include <string_view>  // for string_view
 #include <type_traits>  // for conditional
 #include <utility>      // for pair
 #include <vector>       // for vector
+
+#include <fmt/format.h>
+#include <magic_enum/magic_enum.hpp>
 
 namespace libsemigroups {
   //! The values in this enum can be used to indicate a result is true, false,
@@ -70,4 +74,14 @@ namespace libsemigroups {
   using relation_type = std::pair<word_type, word_type>;
 }  // namespace libsemigroups
 
+template <>
+struct fmt::formatter<libsemigroups::congruence_kind>
+    : fmt::formatter<std::string_view> {
+  // parse is inherited from formatter<string_view>.
+  template <typename FormatContext>
+  auto format(libsemigroups::congruence_kind knd, FormatContext& ctx) const {
+    auto name = magic_enum::enum_name(knd);
+    return formatter<string_view>::format(name, ctx);
+  }
+};
 #endif  // LIBSEMIGROUPS_TYPES_HPP_

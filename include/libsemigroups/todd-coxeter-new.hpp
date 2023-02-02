@@ -131,7 +131,7 @@ namespace libsemigroups {
     // TODO init version
     ToddCoxeter(congruence_kind knd, ToddCoxeter const& tc) : ToddCoxeter(knd) {
       if (tc.kind() != congruence_kind::twosided && knd != tc.kind()) {
-        LIBSEMIGROUPS_EXCEPTION(
+        LIBSEMIGROUPS_EXCEPTION_V3(
             "incompatible types of congruence, found ({} / {}) but only (left "
             "/ left), (right / right), (two-sided / *) are valid",
             tc.kind(),

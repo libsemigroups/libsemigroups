@@ -25,6 +25,8 @@
 
 #include "string.hpp"  // for string_format
 
+#include "fmt/core.h"
+
 namespace libsemigroups {
   //! Exception class deriving from std::runtime_error.
   //!
@@ -69,6 +71,12 @@ namespace libsemigroups {
         __LINE__,                                             \
         __func__,                                             \
         ::libsemigroups::detail::string_format(__VA_ARGS__)); \
+  }
+
+#define LIBSEMIGROUPS_EXCEPTION_V3(...)                          \
+  {                                                              \
+    throw LibsemigroupsException(                                \
+        __FILE__, __LINE__, __func__, fmt::format(__VA_ARGS__)); \
   }
 
 #endif  // LIBSEMIGROUPS_EXCEPTION_HPP_
