@@ -41,4 +41,14 @@ namespace libsemigroups {
     REQUIRE(string_to_word("A") == word_type({2}));
   }
 
+  LIBSEMIGROUPS_TEST_CASE("operator\"\" _w", "003", "literal", "[quick]") {
+    using namespace literals;
+    REQUIRE(0120210_w == word_type({0, 1, 2, 0, 2, 1, 0}));
+    REQUIRE(0_w == word_type({0}));
+    REQUIRE(1_w == word_type({1}));
+    REQUIRE(2_w == word_type({2}));
+    // Require ""s to avoid interpretation as bad octal.
+    REQUIRE("08"_w == word_type({0, 8}));
+  }
+
 }  // namespace libsemigroups

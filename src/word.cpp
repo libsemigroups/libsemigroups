@@ -21,9 +21,11 @@
 
 #include "libsemigroups/word.hpp"
 
-#include <cmath>  // for std::pow
+#include <cmath>    // for std::pow
+#include <cstring>  // for std::strlen
 
-#include "libsemigroups/exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
+#include "libsemigroups/config.hpp"     // for LIBSEMIGROUPS_DEBUG
+#include "libsemigroups/debug.hpp"      // for LIBSEMIGROUPS_ASSERT
 #include "libsemigroups/int-range.hpp"  // for IntegralRange
 #include "libsemigroups/types.hpp"      // for word_type
 
@@ -65,5 +67,23 @@ namespace libsemigroups {
               operator()(input, output);
     return output;
   }
+
+  namespace literals {
+    word_type operator"" _w(const char* w, size_t n) {
+      word_type result;
+#if LIBSEMIGROUPS_DEBUG
+      static const std::string valid_chars = "0123456789";
+#endif
+      for (size_t i = 0; i < n; ++i) {
+        LIBSEMIGROUPS_ASSERT(valid_chars.find(w[i]) != std::string::npos);
+        result.push_back(static_cast<letter_type>(w[i] - 48));
+      }
+      return result;
+    }
+
+    word_type operator"" _w(const char* w) {
+      return operator"" _w(w, std::strlen(w));
+    }
+  }  // namespace literals
 
 }  // namespace libsemigroups

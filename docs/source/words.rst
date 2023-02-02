@@ -23,3 +23,4 @@ Functions
    api/wilo.rst
    api/wislo.rst
    api/number_of_words.rst
+   api/literals.rst

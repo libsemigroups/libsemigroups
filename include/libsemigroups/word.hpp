@@ -24,6 +24,7 @@
 
 #include <array>    // for std::array
 #include <cstddef>  // for size_t
+#include <cstdint>  // for uint64_t
 #include <string>   // for std::string
 
 #include "types.hpp"  // for word_type
@@ -98,6 +99,40 @@ namespace libsemigroups {
       std::array<letter_type, 256> _lookup;
     };
   }  // namespace detail
+
+  namespace literals {
+    //! Literal for defining \ref word_type over integers less than 10.
+    //!
+    //! This operator provides a convenient brief means of constructing a  \ref
+    //! word_type from an sequence of literal integer digits or a string. For
+    //! example, `0123_w` produces the same output as `word_type({0, 1, 2,
+    //! 3})`.
+    //!
+    //! There are some gotchas and this operator should be used with some care:
+    //!
+    //! * the parameter \p w must only consist of the integers \f$\{0, \ldots,
+    //! 9\}\f$. For example, there are no guarantees about the value of
+    //! `"abc"_w`.
+    //! * if \p w starts with `0` and is follows by a value greater than `7`,
+    //! then it is necessary to enclose \p w in quotes. For example, `08_w`
+    //! will not compile because it is interpreted as an invalid octal. However
+    //! `"08"_w` behaves as expected.
+    //!
+    //! \param w the letters of the word
+    //! \param n the length of \p w (defaults to the length of \p w)
+    //!
+    //! \warning
+    //! This operator performs no checks on its arguments whatsoever.
+    //!
+    //! \returns A value of type \ref word_type.
+    //!
+    //! \exceptions \no_libsemigroups_except
+    word_type operator"" _w(const char* w, size_t n);
+
+    //! \copydoc operator""_w
+    word_type operator"" _w(const char* w);
+  }  // namespace literals
+
 }  // namespace libsemigroups
 
 #endif  // LIBSEMIGROUPS_WORD_HPP_
