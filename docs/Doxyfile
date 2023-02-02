@@ -26,8 +26,7 @@ EXCLUDE_SYMBOLS       = std::hash \
                         THREAD_ID_MANAGER \
                         REPORTER \
                         libsemigroups::congruence::ToddCoxeter::NormalFormIteratorTraits \
-                        libsemigroups::detail::IteratorTraitsBase \
-                        _*
+                        libsemigroups::detail::IteratorTraitsBase
 EXCLUDE               = iterator.hpp \
                         string.hpp
 EXCLUDE_PATTERNS      = *-impl.hpp *KBE* string.hpp
