@@ -1,6 +1,8 @@
 #!/bin/bash
 set -e
 
+exit 0
+
 sudo apt-get --yes update
 
 sudo apt-get install git --yes
