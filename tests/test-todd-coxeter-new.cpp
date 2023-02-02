@@ -43,6 +43,7 @@
 
 #include "libsemigroups/make-froidure-pin.hpp"  // for make
 #include "libsemigroups/tce.hpp"                // for TCE
+#include "libsemigroups/word.hpp"               // for operator"" _w
 
 namespace libsemigroups {
 
@@ -53,16 +54,6 @@ namespace libsemigroups {
   congruence_kind constexpr twosided = congruence_kind::twosided;
   congruence_kind constexpr left     = congruence_kind::left;
   congruence_kind constexpr right    = congruence_kind::right;
-
-  // This doesn't really work
-  word_type operator"" _w(const char* w) {
-    size_t const n = std::strlen(w);
-    word_type    result;
-    for (size_t i = 0; i < n; ++i) {
-      result.push_back(static_cast<letter_type>(std::atoi(w + i)));
-    }
-    return result;
-  }
 
   namespace {
     void section_felsch(ToddCoxeter& tc) {
@@ -195,9 +186,9 @@ namespace libsemigroups {
 
     Presentation<word_type> p;
     p.alphabet(2);
-    presentation::add_rule_and_check(p, 000_w, {0});
-    presentation::add_rule_and_check(p, {1, 1, 1, 1}, {1});
-    presentation::add_rule_and_check(p, {0, 1, 0, 1}, {0, 0});
+    presentation::add_rule_and_check(p, 000_w, 0_w);
+    presentation::add_rule_and_check(p, 1111_w, 1_w);
+    presentation::add_rule_and_check(p, 0101_w, 00_w);
     ToddCoxeter tc(twosided, p);
 
     section_felsch(tc);
@@ -216,18 +207,12 @@ namespace libsemigroups {
 
     auto words = std::vector<word_type>(
         todd_coxeter::cbegin_class(tc, 1, 0, 10), todd_coxeter::cend_class(tc));
-    REQUIRE(words
-            == std::vector<word_type>({word_type({1}),
-                                       word_type({1, 1, 1, 1}),
-                                       word_type({1, 1, 1, 1, 1, 1, 1})}));
+    REQUIRE(words == std::vector<word_type>({1_w, 1111_w, 1111111_w}));
 
-    words = std::vector<word_type>(
-        todd_coxeter::cbegin_class(tc, word_type({1, 1, 1, 1}), 0, 10),
-        todd_coxeter::cend_class(tc));
-    REQUIRE(words
-            == std::vector<word_type>({word_type({1}),
-                                       word_type({1, 1, 1, 1}),
-                                       word_type({1, 1, 1, 1, 1, 1, 1})}));
+    words
+        = std::vector<word_type>(todd_coxeter::cbegin_class(tc, 1111_w, 0, 10),
+                                 todd_coxeter::cend_class(tc));
+    REQUIRE(words == std::vector<word_type>({1_w, 1111_w, 1111111_w}));
 
     for (size_t i = 0; i < tc.number_of_classes(); ++i) {
       REQUIRE(todd_coxeter::number_of_words(tc, i) == POSITIVE_INFINITY);
