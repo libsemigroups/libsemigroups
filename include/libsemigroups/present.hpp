@@ -1331,9 +1331,7 @@ namespace libsemigroups {
     bool reduce_to_2_generators(Presentation<W>& p, size_t index = 0);
 
   }  // namespace presentation
-     //
-  // Should this be make<word_type>(Presentation, string)?
-  // Probably
+
   template <typename T,
             typename = std::enable_if_t<std::is_same_v<T, word_type>>>
   inline word_type make(Presentation<std::string> const& p,
