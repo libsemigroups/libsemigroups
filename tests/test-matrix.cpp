@@ -501,10 +501,10 @@ namespace libsemigroups {
       using Row         = typename Mat::Row;
 
       auto m  = Mat::make(sr,
-                         {{2, 2, 0, 1},
-                          {0, 0, 1, 3},
-                          {1, NEGATIVE_INFINITY, 0, 0},
-                          {0, 1, 0, 1}});
+                          {{2, 2, 0, 1},
+                           {0, 0, 1, 3},
+                           {1, NEGATIVE_INFINITY, 0, 0},
+                           {0, 1, 0, 1}});
       auto rg = ReportGuard(REPORT);
       auto r  = matrix_helpers::row_basis(m);
       REQUIRE(r.size() == 4);

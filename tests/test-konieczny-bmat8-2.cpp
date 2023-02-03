@@ -600,9 +600,9 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("Konieczny", "024", "exceptions", "[quick][bmat8]") {
     auto                     rg    = ReportGuard(REPORT);
     const std::vector<BMat8> gens  = {BMat8({{0, 1, 0}, {0, 0, 1}, {1, 0, 0}}),
-                                     BMat8({{0, 1, 0}, {1, 0, 0}, {0, 0, 1}}),
-                                     BMat8({{1, 0, 0}, {1, 1, 0}, {0, 0, 1}}),
-                                     BMat8({{1, 1, 0}, {0, 1, 1}, {1, 0, 1}})};
+                                      BMat8({{0, 1, 0}, {1, 0, 0}, {0, 0, 1}}),
+                                      BMat8({{1, 0, 0}, {1, 1, 0}, {0, 0, 1}}),
+                                      BMat8({{1, 1, 0}, {0, 1, 1}, {1, 0, 1}})};
     const std::vector<BMat8> idems = {BMat8({{1, 0, 0}, {0, 1, 0}, {0, 0, 1}}),
                                       BMat8({{1, 0, 0}, {1, 1, 0}, {0, 0, 1}}),
                                       BMat8({{1, 0, 0}, {1, 1, 1}, {0, 0, 1}}),

@@ -51,7 +51,7 @@ namespace libsemigroups {
       CosetManager(CosetManager&&)      = default;
 
       CosetManager& operator=(CosetManager const&) = delete;
-      CosetManager& operator=(CosetManager&&) = delete;
+      CosetManager& operator=(CosetManager&&)      = delete;
 
       ~CosetManager();
 

@@ -34,11 +34,11 @@ namespace libsemigroups {
       // Default constructor, timer starts when object is created
       Timer() : _start(std::chrono::high_resolution_clock::now()) {}
 
-      Timer(Timer const&) = default;
-      Timer(Timer&&)      = default;
+      Timer(Timer const&)            = default;
+      Timer(Timer&&)                 = default;
       Timer& operator=(Timer const&) = default;
-      Timer& operator=(Timer&&) = default;
-      ~Timer()                  = default;
+      Timer& operator=(Timer&&)      = default;
+      ~Timer()                       = default;
 
       // Reset the timer (i.e. time from this point on)
       void reset() {

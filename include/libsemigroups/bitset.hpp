@@ -121,10 +121,10 @@ namespace libsemigroups {
 
     explicit constexpr BitSet(block_type block) noexcept : _block(block) {}
     constexpr BitSet() noexcept : BitSet(0) {}
-    constexpr BitSet(BitSet const&) noexcept = default;
-    constexpr BitSet(BitSet&&) noexcept      = default;
+    constexpr BitSet(BitSet const&) noexcept  = default;
+    constexpr BitSet(BitSet&&) noexcept       = default;
     BitSet& operator=(BitSet const&) noexcept = default;
-    BitSet& operator=(BitSet&&) noexcept = default;
+    BitSet& operator=(BitSet&&) noexcept      = default;
 
     template <typename T>
     BitSet(T first, T last) : BitSet() {

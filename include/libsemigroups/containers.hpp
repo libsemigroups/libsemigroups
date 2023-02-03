@@ -48,11 +48,11 @@ namespace libsemigroups {
       using const_iterator =
           typename std::array<T, N*(N + 1) / 2>::const_iterator;
 
-      StaticTriVector2(StaticTriVector2 const&) = default;
-      StaticTriVector2(StaticTriVector2&&)      = default;
+      StaticTriVector2(StaticTriVector2 const&)            = default;
+      StaticTriVector2(StaticTriVector2&&)                 = default;
       StaticTriVector2& operator=(StaticTriVector2 const&) = default;
-      StaticTriVector2& operator=(StaticTriVector2&&) = default;
-      ~StaticTriVector2()                             = default;
+      StaticTriVector2& operator=(StaticTriVector2&&)      = default;
+      ~StaticTriVector2()                                  = default;
 
       StaticTriVector2() : _data(), _sizes() {
         clear();
@@ -135,10 +135,10 @@ namespace libsemigroups {
       using const_pointer   = typename std::vector<T, A>::const_pointer;
       using pointer         = typename std::vector<T, A>::pointer;
 
-      DynamicArray2(DynamicArray2 const&) = default;
-      DynamicArray2(DynamicArray2&&)      = default;
+      DynamicArray2(DynamicArray2 const&)            = default;
+      DynamicArray2(DynamicArray2&&)                 = default;
       DynamicArray2& operator=(DynamicArray2 const&) = default;
-      DynamicArray2& operator=(DynamicArray2&&) = default;
+      DynamicArray2& operator=(DynamicArray2&&)      = default;
 
       ~DynamicArray2() = default;
 
@@ -767,10 +767,10 @@ namespace libsemigroups {
         }
       }
 
-      StaticVector1(StaticVector1 const&) = default;
-      StaticVector1(StaticVector1&&)      = default;
+      StaticVector1(StaticVector1 const&)            = default;
+      StaticVector1(StaticVector1&&)                 = default;
       StaticVector1& operator=(StaticVector1 const&) = default;
-      StaticVector1& operator=(StaticVector1&&) = default;
+      StaticVector1& operator=(StaticVector1&&)      = default;
 
       ~StaticVector1() = default;
 
@@ -953,11 +953,11 @@ namespace libsemigroups {
         clear();
       }
 
-      StaticVector2(StaticVector2 const&) = default;
-      StaticVector2(StaticVector2&&)      = default;
+      StaticVector2(StaticVector2 const&)            = default;
+      StaticVector2(StaticVector2&&)                 = default;
       StaticVector2& operator=(StaticVector2 const&) = default;
-      StaticVector2& operator=(StaticVector2&&) = default;
-      ~StaticVector2()                          = default;
+      StaticVector2& operator=(StaticVector2&&)      = default;
+      ~StaticVector2()                               = default;
 
       // Not noexcept since std::array::fill is not.
       void clear() {
@@ -1031,12 +1031,12 @@ namespace libsemigroups {
       friend class Array2;
 
      public:
-      Array2()              = default;
-      Array2(Array2 const&) = default;
-      Array2(Array2&&)      = default;
+      Array2()                         = default;
+      Array2(Array2 const&)            = default;
+      Array2(Array2&&)                 = default;
       Array2& operator=(Array2 const&) = default;
-      Array2& operator=(Array2&&) = default;
-      ~Array2()                   = default;
+      Array2& operator=(Array2&&)      = default;
+      ~Array2()                        = default;
 
       // Not noexcept cos std::array::fill isn't
       inline void fill(T const& value) {

@@ -69,11 +69,11 @@ namespace libsemigroups {
       using BaseDigraph::out_degree;
       using BaseDigraph::unsafe_neighbor;
 
-      ToddCoxeterDigraph()                          = default;
-      ToddCoxeterDigraph(ToddCoxeterDigraph const&) = default;
-      ToddCoxeterDigraph(ToddCoxeterDigraph&&)      = default;
+      ToddCoxeterDigraph()                                     = default;
+      ToddCoxeterDigraph(ToddCoxeterDigraph const&)            = default;
+      ToddCoxeterDigraph(ToddCoxeterDigraph&&)                 = default;
       ToddCoxeterDigraph& operator=(ToddCoxeterDigraph const&) = default;
-      ToddCoxeterDigraph& operator=(ToddCoxeterDigraph&&) = default;
+      ToddCoxeterDigraph& operator=(ToddCoxeterDigraph&&)      = default;
 
       ToddCoxeterDigraph& init(Presentation<word_type> const& p) {
         NodeManager::clear();

@@ -58,12 +58,12 @@ namespace libsemigroups {
                         || std::is_same<TMaxOrMin, Min>::value,
                     "template parameter TMaxOrMin must be Max or Min");
 
-      Constant()                = default;
-      Constant(Constant const&) = default;
-      Constant(Constant&&)      = default;
+      Constant()                           = default;
+      Constant(Constant const&)            = default;
+      Constant(Constant&&)                 = default;
       Constant& operator=(Constant const&) = default;
-      Constant& operator=(Constant&&) = default;
-      ~Constant()                     = default;
+      Constant& operator=(Constant&&)      = default;
+      ~Constant()                          = default;
 
       template <typename T,
                 typename = std::enable_if_t<!std::is_enum<T>::value, T>>

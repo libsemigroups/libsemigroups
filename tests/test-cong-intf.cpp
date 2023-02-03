@@ -567,8 +567,8 @@ namespace libsemigroups {
                             "[quick][cong]") {
       auto rg = ReportGuard(REPORT);
       auto S  = FroidurePin<Transf<>>({Transf<>({1, 3, 4, 2, 3}),
-                                      Transf<>({1, 3, 4, 2, 3}),
-                                      Transf<>({3, 2, 1, 3, 3})});
+                                       Transf<>({1, 3, 4, 2, 3}),
+                                       Transf<>({3, 2, 1, 3, 3})});
 
       REQUIRE(S.size() == 88);
       REQUIRE(S.number_of_rules() == 21);

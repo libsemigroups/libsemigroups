@@ -64,12 +64,12 @@ namespace libsemigroups {
       using internal_reference        = pointer;
       using internal_const_reference  = const_pointer;
 
-      BruidhinnTraits() noexcept                       = default;
-      BruidhinnTraits(BruidhinnTraits const&) noexcept = default;
-      BruidhinnTraits(BruidhinnTraits&&) noexcept      = default;
+      BruidhinnTraits() noexcept                                  = default;
+      BruidhinnTraits(BruidhinnTraits const&) noexcept            = default;
+      BruidhinnTraits(BruidhinnTraits&&) noexcept                 = default;
       BruidhinnTraits& operator=(BruidhinnTraits const&) noexcept = default;
-      BruidhinnTraits& operator=(BruidhinnTraits&&) noexcept = default;
-      ~BruidhinnTraits()                                     = default;
+      BruidhinnTraits& operator=(BruidhinnTraits&&) noexcept      = default;
+      ~BruidhinnTraits()                                          = default;
 
       inline internal_const_value_type
       to_internal_const(const_reference x) const {
@@ -128,12 +128,12 @@ namespace libsemigroups {
       using internal_reference        = reference;
       using internal_const_reference  = const_reference;
 
-      BruidhinnTraits() noexcept                       = default;
-      BruidhinnTraits(BruidhinnTraits const&) noexcept = default;
-      BruidhinnTraits(BruidhinnTraits&&) noexcept      = default;
+      BruidhinnTraits() noexcept                                  = default;
+      BruidhinnTraits(BruidhinnTraits const&) noexcept            = default;
+      BruidhinnTraits(BruidhinnTraits&&) noexcept                 = default;
       BruidhinnTraits& operator=(BruidhinnTraits const&) noexcept = default;
-      BruidhinnTraits& operator=(BruidhinnTraits&&) noexcept = default;
-      ~BruidhinnTraits()                                     = default;
+      BruidhinnTraits& operator=(BruidhinnTraits&&) noexcept      = default;
+      ~BruidhinnTraits()                                          = default;
 
       inline internal_const_reference
       to_internal_const(const_reference x) const {
@@ -186,12 +186,12 @@ namespace libsemigroups {
       using internal_reference        = reference;
       using internal_const_reference  = const_reference;
 
-      BruidhinnTraits() noexcept                       = default;
-      BruidhinnTraits(BruidhinnTraits const&) noexcept = default;
-      BruidhinnTraits(BruidhinnTraits&&) noexcept      = default;
+      BruidhinnTraits() noexcept                                  = default;
+      BruidhinnTraits(BruidhinnTraits const&) noexcept            = default;
+      BruidhinnTraits(BruidhinnTraits&&) noexcept                 = default;
       BruidhinnTraits& operator=(BruidhinnTraits const&) noexcept = default;
-      BruidhinnTraits& operator=(BruidhinnTraits&&) noexcept = default;
-      ~BruidhinnTraits()                                     = default;
+      BruidhinnTraits& operator=(BruidhinnTraits&&) noexcept      = default;
+      ~BruidhinnTraits()                                          = default;
 
       inline internal_const_reference
       to_internal_const(const_reference x) const {

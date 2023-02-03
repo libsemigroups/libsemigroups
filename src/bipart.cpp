@@ -212,10 +212,10 @@ namespace libsemigroups {
         _rank(UNDEFINED),
         _vector() {}
 
-  Bipartition::Bipartition(Bipartition const&) = default;
-  Bipartition::Bipartition(Bipartition&&)      = default;
+  Bipartition::Bipartition(Bipartition const&)            = default;
+  Bipartition::Bipartition(Bipartition&&)                 = default;
   Bipartition& Bipartition::operator=(Bipartition const&) = default;
-  Bipartition& Bipartition::operator=(Bipartition&&) = default;
+  Bipartition& Bipartition::operator=(Bipartition&&)      = default;
 
   Bipartition::Bipartition(size_t degree) : Bipartition() {
     _vector.resize(2 * degree);

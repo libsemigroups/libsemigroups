@@ -39,8 +39,8 @@ namespace libsemigroups {
   struct ImageRightAction<
       Mat,
       Container,
-      std::enable_if_t<
-          IsBMat<Mat> && IsBitSet<typename Container::value_type>>> {
+      std::enable_if_t<IsBMat<Mat>
+                       && IsBitSet<typename Container::value_type>>> {
     // not noexcept because BitSet<N>::apply isn'Container
     void operator()(Container& res, Container const& pt, Mat const& x) const {
       using value_type = typename Container::value_type;
@@ -183,11 +183,11 @@ namespace libsemigroups {
     using MaxBitSet = BitSet<BitSet<1>::max_size()>;
     using type = RightAction<Mat, MaxBitSet, ImageRightAction<Mat, MaxBitSet>>;
 
-    RankState()                 = delete;
-    RankState(RankState const&) = delete;
-    RankState(RankState&&)      = delete;
+    RankState()                            = delete;
+    RankState(RankState const&)            = delete;
+    RankState(RankState&&)                 = delete;
     RankState& operator=(RankState const&) = delete;
-    RankState& operator=(RankState&&) = delete;
+    RankState& operator=(RankState&&)      = delete;
 
     template <typename T>
     RankState(T first, T last) {

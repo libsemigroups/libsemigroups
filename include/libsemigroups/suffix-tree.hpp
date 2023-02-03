@@ -119,11 +119,11 @@ namespace libsemigroups {
       struct State {
         node_index_type v;
         edge_index_type pos;
-        State()             = default;
-        State(State const&) = default;
-        State(State&&)      = default;
+        State()                        = default;
+        State(State const&)            = default;
+        State(State&&)                 = default;
         State& operator=(State const&) = default;
-        State& operator=(State&&) = default;
+        State& operator=(State&&)      = default;
 
         State(node_index_type vv, edge_index_type ppos) : v(vv), pos(ppos) {}
 

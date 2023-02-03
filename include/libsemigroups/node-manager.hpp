@@ -51,7 +51,7 @@ namespace libsemigroups {
       NodeManager(NodeManager&&)      = default;
 
       NodeManager& operator=(NodeManager const&) = default;
-      NodeManager& operator=(NodeManager&&) = default;
+      NodeManager& operator=(NodeManager&&)      = default;
 
       ~NodeManager();
 
