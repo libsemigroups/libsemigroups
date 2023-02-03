@@ -55,12 +55,16 @@
 #include "word.hpp"            // for number_of_words
 
 #ifdef LIBSEMIGROUPS_EIGEN_ENABLED
+#if defined(__clang__)
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
+#endif
 #define _SILENCE_ALL_CXX17_DEPRECATION_WARNINGS
 #include <Eigen/Core>
 #undef _SILENCE_ALL_CXX17_DEPRECATION_WARNINGS
+#if defined(__clang__)
 #pragma clang diagnostic pop
+#endif
 #endif
 
 namespace libsemigroups {
