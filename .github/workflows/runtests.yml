@@ -118,6 +118,46 @@ jobs:
                 ./configure --enable-verbose
                 make test_all -j4 || exit 1
                 ./test_all "[quick]"
+   config-external-deps:
+      timeout-minutes: 45
+      runs-on: ubuntu-latest
+      env:
+        PKG_CONFIG_PATH: "/home/runner/micromamba-root/envs/libsemigroups/lib/pkgconfig:/home/runner/micromamba-root/envs/libsemigroups/share/pkgconfig/"
+        LD_LIBRARY_PATH: "/home/runner/micromamba-root/envs/libsemigroups/lib"
+      steps:
+        - uses: actions/checkout@v3
+        - name: "Install conda environment from environment.yml . . ."
+          uses: mamba-org/provision-with-micromamba@main
+        - name: "Run ./autogen.sh . . ."
+          run: |
+            ./autogen.sh
+        - name: "Test flag: --with-external-fmt --enable-fmt"
+          run: |
+            ./configure --with-external-fmt --enable-fmt
+            make test_all -j4 || exit 1
+            ./test_all "[quick]"
+        - name: "Test flag: --enable-fmt"
+          run: |
+            make clean
+            ./configure --enable-fmt
+            make test_all -j4 || exit 1
+            ./test_all "[quick]"
+        - name: "Test flag: --with-external-eigen"
+          run: |
+            make clean
+            ./configure --with-external-eigen
+            make test_obvinf -j4 || exit 1
+            make test_digraph -j4 || exit 1
+            ./test_obvinf "[quick]"
+            ./test_digraph "[quick]"
+        - name: "Test flag: --disable-eigen"
+          run: |
+            make clean
+            ./configure --disable-eigen
+            make test_obvinf -j4 || exit 1
+            make test_digraph -j4 || exit 1
+            ./test_obvinf "[quick]"
+            ./test_digraph "[quick]"
    coverage:
       timeout-minutes: 20
       runs-on: ubuntu-latest
