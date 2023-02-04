@@ -119,11 +119,11 @@ namespace libsemigroups {
       struct State {
         node_index_type v;
         edge_index_type pos;
-        State()             = default;
-        State(State const&) = default;
-        State(State&&)      = default;
+        State()                        = default;
+        State(State const&)            = default;
+        State(State&&)                 = default;
         State& operator=(State const&) = default;
-        State& operator=(State&&) = default;
+        State& operator=(State&&)      = default;
 
         State(node_index_type vv, edge_index_type ppos) : v(vv), pos(ppos) {}
 
@@ -483,6 +483,14 @@ namespace libsemigroups {
     };
 
     class DFSHelper {
+     private:
+      size_t              _best;
+      int                 _best_goodness;
+      std::vector<size_t> _distance_from_root;
+      std::vector<size_t> _num_leafs;
+      std::vector<size_t> _scratch;
+      std::vector<size_t> _suffix_index;
+
      public:
       using const_iterator = typename detail::SuffixTree::const_iterator;
       explicit DFSHelper(detail::SuffixTree& st)
@@ -490,6 +498,7 @@ namespace libsemigroups {
             _best_goodness(),
             _distance_from_root(st.number_of_nodes(), 0),
             _num_leafs(st.number_of_nodes(), 0),
+            _scratch(),
             _suffix_index() {}
 
       void pre_order(detail::SuffixTree const& st, size_t v) {
@@ -506,7 +515,7 @@ namespace libsemigroups {
       }
 
       void post_order(detail::SuffixTree const& st, size_t v) {
-        if (st.is_leaf(v)) {
+        if (st.is_leaf(v) || st.is_root(v)) {
           return;
         }
 
@@ -518,11 +527,19 @@ namespace libsemigroups {
         std::sort(_scratch.begin(), _scratch.end());
         // number of non-overlapping subwords corresponding to the node v
         size_t num_non_overlap = st.multiplicity(_scratch[0]);
-        for (size_t i = 0; i < _scratch.size() - 1; ++i) {
-          if (_scratch[i] + _distance_from_root[v] <= _scratch[i + 1]) {
-            num_non_overlap += st.multiplicity(_scratch[i]);
+
+        // Only try greedily matching non-overlapping subwords from left to
+        // right
+        auto subword_begin = _scratch[0];
+        auto it            = _scratch.cbegin();
+        do {
+          auto subword_end = subword_begin + _distance_from_root[v];
+          it               = std::lower_bound(it, _scratch.cend(), subword_end);
+          if (it != _scratch.cend()) {
+            subword_begin = *it;
+            num_non_overlap += st.multiplicity(subword_begin);
           }
-        }
+        } while (it != _scratch.cend());
         int goodness = (_distance_from_root[v] * num_non_overlap)
                        - num_non_overlap - (_distance_from_root[v] + 1);
         if (goodness > _best_goodness) {
@@ -539,14 +556,6 @@ namespace libsemigroups {
         return st.word(st.left(_best) - _distance_from_root[st.parent(_best)],
                        st.right(_best));
       }
-
-     private:
-      size_t              _best;
-      int                 _best_goodness;
-      std::vector<size_t> _distance_from_root;
-      std::vector<size_t> _num_leafs;
-      std::vector<size_t> _scratch;
-      std::vector<size_t> _suffix_index;
     };
 
     namespace suffix_tree_helper {

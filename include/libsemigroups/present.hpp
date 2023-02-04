@@ -769,7 +769,7 @@ namespace libsemigroups {
 
     //! Replace non-overlapping instances of a subword via const reference.
     //!
-    //! If \f$w=\f$`[first, last)` is a word, then replaces every
+    //! If \f$w=\f$`[first, last)` is a word, then this function replaces every
     //! non-overlapping instance (from left to right) of \f$w\f$ in every rule,
     //! adds a new generator \f$z\f$, and the rule \f$w = z\f$. The new
     //! generator and rule are added even if \f$w\f$ is not a subword of any

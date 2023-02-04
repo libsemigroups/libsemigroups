@@ -1185,4 +1185,56 @@ namespace libsemigroups {
     REQUIRE_THROWS_AS(p.alphabet(256), LibsemigroupsException);
   }
 
+  LIBSEMIGROUPS_TEST_CASE("Presentation",
+                          "034",
+                          "longest_common_subword issue",
+                          "[quick][presentation]") {
+    Presentation<std::string> p;
+    p.alphabet("a");
+    presentation::add_rule_and_check(p, "aaaaaaaaaaaaaaaaaaa", "a");
+    REQUIRE(presentation::longest_common_subword(p) == "aaaaaa");
+    presentation::replace_subword(p, "aaaaaa");
+    REQUIRE(presentation::longest_common_subword(p) == "");
+    REQUIRE(p.rules == std::vector<std::string>({"bbba", "a", "b", "aaaaaa"}));
+    REQUIRE(presentation::length(p) == 12);
+    p.rules = std::vector<std::string>({"bba", "a", "b", "aaaaaaaa"});
+    REQUIRE(presentation::length(p) == 13);
+
+    p.alphabet("ab");
+    presentation::add_rule_and_check(p, "baaaaaaaaaaaaaaaaaaa", "a");
+    REQUIRE(presentation::longest_common_subword(p) == "aaaaaa");
+
+    p.alphabet("ab");
+    p.rules.clear();
+    presentation::add_rule_and_check(p, "aaaaaaaaaaaaaaaa", "a");
+    presentation::add_rule_and_check(p, "bbbbbbbbbbbbbbbb", "b");
+    presentation::add_rule_and_check(p, "abb", "baa");
+    REQUIRE(presentation::length(p) == 40);
+    auto w = presentation::longest_common_subword(p);
+    REQUIRE(w == "bbbb");
+    presentation::replace_subword(p, w);
+    REQUIRE(presentation::length(p) == 33);
+    REQUIRE(
+        p.rules
+        == std::vector<std::string>(
+            {"aaaaaaaaaaaaaaaa", "a", "cccc", "b", "abb", "baa", "c", "bbbb"}));
+    w = presentation::longest_common_subword(p);
+    REQUIRE(w == "aaaa");
+    presentation::replace_subword(p, w);
+    REQUIRE(presentation::length(p) == 26);
+    REQUIRE(p.rules
+            == std::vector<std::string>({"dddd",
+                                         "a",
+                                         "cccc",
+                                         "b",
+                                         "abb",
+                                         "baa",
+                                         "c",
+                                         "bbbb",
+                                         "d",
+                                         "aaaa"}));
+    w = presentation::longest_common_subword(p);
+    REQUIRE(w == "");
+  }
+
 }  // namespace libsemigroups
