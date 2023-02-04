@@ -481,7 +481,7 @@ namespace libsemigroups {
                 1, 2, 1, 3, 1, 2, 1, 3, 1, 2, 1, 3, 1, 2, 1, 3});
     const_iterator first, last;
     std::tie(first, last) = best_subword(t);
-    REQUIRE(word_type(first, last) == word_type({1, 2, 1, 3}));
+    REQUIRE(word_type(first, last) == word_type({1, 2, 1, 3, 1, 2, 1, 3}));
   }
 
   LIBSEMIGROUPS_TEST_CASE("SuffixTree",
@@ -530,7 +530,7 @@ namespace libsemigroups {
     t.add_word({1, 2});
     const_iterator first, last;
     std::tie(first, last) = best_subword(t);
-    REQUIRE(word_type(first, last) == word_type());
+    REQUIRE(word_type(first, last) == word_type({4, 4, 4, 4}));
   }
 
   LIBSEMIGROUPS_TEST_CASE("SuffixTree",
@@ -596,10 +596,13 @@ namespace libsemigroups {
     t.add_word(std::string("aaaaaaaaaaaaaaaabaaaabaaaaaaaaaaaaaaaabaaaa"));
     const_iterator first, last;
     std::tie(first, last) = best_subword(t);
-    REQUIRE(
-        word_type(first, last)
-        == word_type(
-            {97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97}));
+    REQUIRE(word_type(first, last)
+            == word_type({
+                97,
+                97,
+                97,
+                97,
+            }));
   }
 
   LIBSEMIGROUPS_TEST_CASE("SuffixTree",
