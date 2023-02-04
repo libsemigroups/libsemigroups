@@ -160,6 +160,7 @@ namespace libsemigroups {
     if (_alphabet.empty()) {
       LIBSEMIGROUPS_EXCEPTION("no alphabet has been defined");
     } else if (_alphabet_map.find(c) == _alphabet_map.cend()) {
+      // TODO(v3) constexpr
       if (std::is_same<letter_type, char>::value) {
         LIBSEMIGROUPS_EXCEPTION("invalid letter %c, valid letters are %s",
                                 c,
@@ -771,5 +772,39 @@ namespace libsemigroups {
       }
     }
 
+    template <typename W, typename Iterator, typename>
+    word_type make(Presentation<std::string> const& p,
+                   Iterator                         first,
+                   Iterator                         last) {
+      for (auto it = first; it != last; ++it) {
+        // Validate because otherwise index can fail . . .
+        // Don't use validate_word because we don't care if s is empty or not.
+        p.validate_letter(*it);
+      }
+      word_type result(std::distance(first, last), 0);
+      std::transform(
+          first, last, result.begin(), [&p](auto val) { return p.index(val); });
+      return result;
+    }
+
+    template <typename W, typename Iterator, typename>
+    std::string make(Presentation<std::string> const& p,
+                     Iterator                         first,
+                     Iterator                         last) {
+      for (auto it = first; it != last; ++it) {
+        auto const c = *it;
+        if (static_cast<size_t>(c) >= p.alphabet().size()) {
+          LIBSEMIGROUPS_EXCEPTION("invalid letter %llu, valid letter are %s",
+                                  uint64_t(c),
+                                  detail::to_string(p.alphabet()).c_str());
+        }
+      }
+      std::string result(std::distance(first, last), 0);
+      std::transform(first, last, result.begin(), [&p](auto val) {
+        return p.letter(val);
+      });
+      return result;
+    }
   }  // namespace presentation
+
 }  // namespace libsemigroups

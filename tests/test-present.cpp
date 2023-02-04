@@ -32,8 +32,10 @@
 #include "libsemigroups/present.hpp"       // for Presentation
 #include "libsemigroups/siso.hpp"          // for Sislo
 #include "libsemigroups/types.hpp"         // for word_type
+#include "libsemigroups/word.hpp"          // for operator""_w
 
 namespace libsemigroups {
+  using namespace literals;
 
   struct LibsemigroupsException;  // forward decl
 
@@ -1374,7 +1376,6 @@ namespace libsemigroups {
                           "[quick][presentation]") {
     Presentation<std::string> p;
     p.alphabet("ab");
-    p.rules.clear();
     presentation::add_rule_and_check(p, "aaaaaaaaaaaaaaaa", "a");
     presentation::add_rule_and_check(p, "bbbbbbbbbbbbbbbb", "b");
     presentation::add_rule_and_check(p, "abb", "baa");
@@ -1393,6 +1394,34 @@ namespace libsemigroups {
                                          "d",
                                          "aaaa"}));
     REQUIRE(presentation::longest_common_subword(p) == "");
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Presentation",
+                          "039",
+                          "make<word_type>",
+                          "[quick][presentation]") {
+    Presentation<std::string> p;
+    p.alphabet("ab");
+    REQUIRE(presentation::make<word_type>(p, "ab") == 01_w);
+    REQUIRE(presentation::make<word_type>(p, "ba") == 10_w);
+    REQUIRE_THROWS_AS(presentation::make<word_type>(p, "bax"),
+                      LibsemigroupsException);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Presentation",
+                          "041",
+                          "make<std::string>",
+                          "[quick][presentation]") {
+    Presentation<std::string> p;
+    p.alphabet("ab");
+    REQUIRE(presentation::make<std::string>(p, 01_w) == "ab");
+    REQUIRE(presentation::make<std::string>(p, 10_w) == "ba");
+    REQUIRE_THROWS_AS(presentation::make<std::string>(p, 02_w),
+                      LibsemigroupsException);
+    p.alphabet("ab");
+
+    std::vector<char> s = {1, 0};
+    REQUIRE(presentation::make<std::string>(p, s.cbegin(), s.cend()) == "ba");
   }
 
 }  // namespace libsemigroups

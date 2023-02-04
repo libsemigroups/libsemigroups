@@ -285,6 +285,62 @@ namespace libsemigroups {
     //! function may never terminate.
     bool accepts(Stephen& s, word_type const& w);
 
+    //! Check if a word is equivalent to Stephen::word.
+    //!
+    //! This function triggers the algorithm implemented in this class (if it
+    //! hasn't been triggered already), and then returns \c true if the input
+    //! word \p w is equivalent to Stephen::word in the semigroup defined by
+    //! Stephen::presentation. A word is equivalent to Stephen::word if it
+    //! labels a path in Stephen::word_graph with source \c 0 and target
+    //! Stephen::accept_state.
+    //!
+    //! \param s the Stephen instance
+    //! \param w an rvalue reference to the input word.
+    //!
+    //! \returns A \c bool.
+    //!
+    //! \throws LibsemigroupsException if no presentation was set at
+    //! the construction of \p s or with Stephen::init.
+    //!
+    //! \warning The problem of determining whether two words are equal in
+    //! a finitely presented semigroup is undecidable in general, and this
+    //! function may never terminate.
+    // TODO uncomment or delete!
+    // bool accepts(Stephen& s, word_type&& w);
+
+    //! Check if a word is equivalent to Stephen::word.
+    //!
+    //! This function triggers the algorithm implemented in this class (if it
+    //! hasn't been triggered already), and then returns \c true if the input
+    //! word \p w is equivalent to Stephen::word in the semigroup defined by
+    //! Stephen::presentation. A word is equivalent to Stephen::word if it
+    //! labels a path in Stephen::word_graph with source \c 0 and target
+    //! Stephen::accept_state.
+    //!
+    //! \tparam Iterator the type of the 2nd and 3rd arguments
+    //!
+    //! \param s the Stephen instance
+    //! \param first an iterator pointing at the first letter of the word to
+    //! check
+    //! \param last an iterator pointing one past the last letter of the word
+    //! to check
+    //!
+    //! \returns A \c bool.
+    //!
+    //! \throws LibsemigroupsException if no presentation was set at
+    //! the construction of \p s or with Stephen::init.
+    //!
+    //! \warning The problem of determining whether two words are equal in
+    //! a finitely presented semigroup is undecidable in general, and this
+    //! function may never terminate.
+    template <typename Iterator>
+    bool accepts(Stephen& s, Iterator first, Iterator last) {
+      using action_digraph_helper::last_node_on_path;
+      s.run();
+      return s.accept_state()
+             == last_node_on_path(s.word_graph(), 0, first, last).first;
+    }
+
     //! Check if a word is a left factor of Stephen::word.
     //!
     //! This function triggers the algorithm implemented in this class (if it

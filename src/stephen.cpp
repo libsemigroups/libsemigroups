@@ -213,11 +213,7 @@ namespace libsemigroups {
   namespace stephen {
 
     bool accepts(Stephen& s, word_type const& w) {
-      using action_digraph_helper::last_node_on_path;
-      s.run();
-      return s.accept_state()
-             == last_node_on_path(s.word_graph(), 0, w.cbegin(), w.cend())
-                    .first;
+      return accepts(s, w.cbegin(), w.cend());
     }
 
     bool is_left_factor(Stephen& s, word_type const& w) {

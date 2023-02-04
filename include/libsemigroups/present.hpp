@@ -1252,7 +1252,119 @@ namespace libsemigroups {
     template <typename W>
     void greedy_reduce_length(Presentation<W>& p);
 
+    //! Construct a `word_type` from a presentation and iterators pointing to a
+    //! `std::string`.
+    //!
+    //! This function returns the `word_type` corresponding to the presentation
+    //! \p p and iterators \p first and \p last. More precisely, if \p first and
+    //! \p last point at a string \c s of length \c n, then the `word_type`
+    //! returned by this function is `{p.index(s[0]), p.index(s[1]), ...,
+    //! p.index(s[n - 1])}`.
+    //!
+    //! \tparam W the return type `word_type`.
+    //! \tparam Iterator the type of the iterators
+    //!
+    //! \param p the presentation
+    //! \param first iterator pointing to the start of the string to convert.
+    //! \param last iterator pointing one past the end of the string to convert.
+    //!
+    //! \throws LibsemigroupsException if Presentation::validate_letter throws
+    //! on any value between \p first and \p last.
+    template <typename W,
+              typename Iterator,
+              typename = std::enable_if_t<std::is_same<W, word_type>::value>>
+    word_type make(Presentation<std::string> const& p,
+                   Iterator                         first,
+                   Iterator                         last);
+
+    //! Construct a `word_type` from a presentation and string.
+    //!
+    //! This function returns the `word_type` corresponding to the presentation
+    //! \p p and \p s. More precisely, if \p s has length \c n, then the
+    //! `word_type` returned by this function is `{p.index(s[0]), p.index(s[1]),
+    //! ..., p.index(s[n - 1])}`.
+    //!
+    //! \tparam W the return type `word_type`.
+    //!
+    //! \param p the presentation
+    //! \param s the string
+    //!
+    //! \throws LibsemigroupsException if Presentation::validate_letter throws
+    //! on any value between \p s.
+    template <typename W,
+              typename = std::enable_if_t<std::is_same<W, word_type>::value>>
+    word_type make(Presentation<std::string> const& p, std::string const& s) {
+      return make<word_type>(p, s.cbegin(), s.cend());
+    }
+
+    //! Construct a `word_type` from a presentation and string.
+    //!
+    //! This function returns the `word_type` corresponding to the presentation
+    //! \p p and \p s. More precisely, if \p s has length \c n, then the
+    //! `word_type` returned by this function is `{p.index(s[0]), p.index(s[1]),
+    //! ..., p.index(s[n - 1])}`.
+    //!
+    //! \tparam W the return type `word_type`.
+    //!
+    //! \param p the presentation
+    //! \param s the string
+    //!
+    //! \throws LibsemigroupsException if Presentation::validate_letter throws
+    //! on any value between \p s.
+    template <typename W,
+              typename = std::enable_if_t<std::is_same<W, word_type>::value>>
+    word_type make(Presentation<std::string> const& p, char const* s) {
+      return make<word_type>(p, s, s + std::strlen(s));
+    }
+
+    //! Construct a `std::string` from a presentation and iterators pointing to
+    //! a `word_type`.
+    //!
+    //! This function returns the `std::string` corresponding to the
+    //! presentation \p p and iterators \p first and \p last. More precisely, if
+    //! \p first and \p last point at a `word_type` \c w of length \c n, then
+    //! the `std::string` returned by this function is `{p.letter(w[0]),
+    //! p.letter(w[1]), ..., p.letter(w[n - 1])}`.
+    //!
+    //! \tparam W the return type `std::string`.
+    //! \tparam Iterator the type of the iterators.
+    //!
+    //! \param p the presentation
+    //! \param first iterator pointing to the start of the word to convert.
+    //! \param last iterator pointing one past the end of the word to convert.
+    //!
+    //! \throws LibsemigroupsException if any value between \p first and \p last
+    //! exceeds `p.alphabet().size()`.
+    template <typename W,
+              typename Iterator,
+              typename = std::enable_if_t<std::is_same<W, std::string>::value>>
+    std::string make(Presentation<std::string> const& p,
+                     Iterator                         first,
+                     Iterator                         last);
+
+    //! Construct a `std::string` from a presentation and iterators pointing to
+    //! a `word_type`.
+    //!
+    //! This function returns the `std::string` corresponding to the
+    //! presentation \p p and word \p w. More precisely, if \p w has length \c
+    //! n, then the `std::string` returned by this function is
+    //! `{p.letter(w[0]), p.letter(w[1]), ..., p.letter(w[n - 1])}`.
+    //!
+    //! \tparam W the return type `std::string`.
+    //!
+    //! \param p the presentation
+    //! \param w the word
+    //!
+    //! \throws LibsemigroupsException if any value in \p w exceeds
+    //! `p.alphabet().size()`.
+    template <typename W,
+              typename = std::enable_if_t<std::is_same<W, std::string>::value>>
+    std::string make(Presentation<std::string> const& p, word_type const& w) {
+      return make<std::string>(p, w.cbegin(), w.cend());
+    }
+
   }  // namespace presentation
+
 }  // namespace libsemigroups
 
 #include "present.tpp"

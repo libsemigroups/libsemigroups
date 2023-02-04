@@ -27,7 +27,6 @@
 
 #include "froidure-pin-base.hpp"  // for FroidurePinBase::const_rule_i...
 #include "present.hpp"            // for Presentation
-#include "word.hpp"               // for word_to_string
 
 namespace libsemigroups {
   //! Make presentation from a FroidurePin object.

@@ -51,7 +51,7 @@ Contents
 
    * - :cpp:any:`change_alphabet`
      - change or re-order the alphabet.
-   
+
    * - :cpp:any:`character`
      - Return a `char` by index (ordered for readability).
 
@@ -124,6 +124,9 @@ Contents
    * - :cpp:any:`sort_rules`
      - Sort the rules :math:`u_1 = v_1, \ldots, u_n = v_n` so that
        :math:`u_1v_1 < \cdots < u_nv_n`.
+
+   * - :cpp:any:`make`
+     - Make a string or word from a word or string.
 
 .. cpp:namespace-pop::
 

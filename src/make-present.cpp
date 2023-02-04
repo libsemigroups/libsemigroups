@@ -23,7 +23,6 @@
 #include "libsemigroups/exception.hpp"          // for LIBSEMIGROUPS_EXCEPTION
 #include "libsemigroups/froidure-pin-base.hpp"  // for FroidurePinBase::cons...
 #include "libsemigroups/present.hpp"            // for Presentation<>::word_...
-#include "libsemigroups/word.hpp"               // for word_to_string
 
 namespace libsemigroups {
   Presentation<std::string> make(FroidurePinBase&   fp,
@@ -37,12 +36,9 @@ namespace libsemigroups {
     Presentation<std::string> p;
     p.alphabet(alphabet);
     for (auto it = fp.cbegin_rules(); it != fp.cend_rules(); ++it) {
-      presentation::add_rule(
-          p,
-          detail::word_to_string(
-              alphabet, it->first.cbegin(), it->first.cend()),
-          detail::word_to_string(
-              alphabet, it->second.cbegin(), it->second.cend()));
+      presentation::add_rule(p,
+                             presentation::make<std::string>(p, it->first),
+                             presentation::make<std::string>(p, it->second));
     }
 
     return p;
