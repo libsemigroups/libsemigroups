@@ -40,6 +40,7 @@
 
 #include "constants.hpp"    // for UNDEFINED
 #include "debug.hpp"        // for LIBSEMIGROUPS_ASSERT
+#include "int-range.hpp"    // for IntegralRange
 #include "order.hpp"        // for shortlex_compare
 #include "suffix-tree.hpp"  // for SuffixTree
 #include "uf.hpp"           // for Duf
@@ -725,6 +726,18 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if `p.rules.size()` is odd.
     template <typename W>
     void sort_rules(Presentation<W>& p);
+
+    //! Check if the rules \f$u_1 = v_1, \ldots, u_n = v_n\f$ satisfy \f$u_1v_1
+    //! < \cdots < u_nv_n\f$ where \f$<\f$ is the shortlex order.
+    //!
+    //! \tparam W the type of the words in the presentation
+    //! \param p the presentation
+    //!
+    //! \returns A value of type `bool`.
+    //!
+    //! \throws LibsemigroupsException if `p.rules.size()` is odd.
+    template <typename W>
+    bool are_rules_sorted(Presentation<W> const& p);
 
     //! Returns the longest common subword of the rules.
     //!

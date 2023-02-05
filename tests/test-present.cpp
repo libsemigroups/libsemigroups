@@ -285,6 +285,7 @@ namespace libsemigroups {
                                  {1, 2, 1},
                                  {1, 2, 1},
                                  {1, 1, 2, 1}}));
+      REQUIRE(presentation::are_rules_sorted(p));
     }
 
     template <typename W>
@@ -885,6 +886,7 @@ namespace libsemigroups {
              "ec", "c",  "Ce",    "C",  "eC",      "C",  "ee",      "e",  "aA",
              "e",  "Aa", "e",     "bB", "e",       "Bb", "e",       "cC", "e",
              "Cc", "e",  "aaCac", "e",  "acbbACb", "e",  "ABabccc", "e"}));
+    REQUIRE(!presentation::are_rules_sorted(p));
   }
 
   LIBSEMIGROUPS_TEST_CASE("Presentation",
