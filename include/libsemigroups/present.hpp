@@ -1185,6 +1185,25 @@ namespace libsemigroups {
     template <typename W>
     auto first_unused_letter(Presentation<W> const& p);
 
+    //! Convert a monoid presentation to a semigroup presentation.
+    //!
+    //! This function modifies its argument in-place by replacing the empty
+    //! word in all relations by a new generator, and the identity rules for
+    //! that new generator. If `p.contains_empty_word()` is `false`, then the
+    //! presentation is not modified and \ref UNDEFINED is returned. If a new
+    //! generator is added as the identity, then this generator is returned.
+    //!
+    //! \tparam W the type of the words in the presentation
+    //!
+    //! \param p the presentation
+    //!
+    //! \returns The new generator added, if any, and \ref UNDEFINED if not.
+    //!
+    //! \throws LibsemigroupsException if `replace_word` or
+    //!  `add_identity_rules` does.
+    template <typename W>
+    typename Presentation<W>::letter_type make_semigroup(Presentation<W>& p);
+
   }  // namespace presentation
 }  // namespace libsemigroups
 

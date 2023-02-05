@@ -921,6 +921,10 @@ namespace libsemigroups {
         return it - M;
       }
 
+      iterator insert(const_iterator pos, const_reference value) {
+        return insert(pos, &value, &value + 1);
+      }
+
      private:
       std::array<T, N> _array;
       size_t           _size;
