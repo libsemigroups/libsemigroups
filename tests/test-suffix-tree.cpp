@@ -19,18 +19,19 @@
 #include <cstddef>    // for size_t
 #include <fstream>    // for ofstream
 #include <string>     // for basic_string, operator==, operator!=, operator+
+#include <tuple>      // for tie
 #include <vector>     // for vector
 
 #include "catch.hpp"      // for REQUIRE, REQUIRE_THROWS_AS
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
 #include "libsemigroups/constants.hpp"    // for operator==, POSITIVE_INFINITY
+#include "libsemigroups/exception.hpp"    // for LIBSEMIGROUPS_EXCEPTION
 #include "libsemigroups/suffix-tree.hpp"  // for SuffixTree, SuffixTree::State
 #include "libsemigroups/types.hpp"        // for word_type
 #include "libsemigroups/wislo.hpp"        // for const_wislo_iterator, cbegi...
 
 namespace libsemigroups {
-  struct LibsemigroupsException;  // forward decl
 
   using detail::SuffixTree;
 

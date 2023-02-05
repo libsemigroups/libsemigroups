@@ -27,12 +27,13 @@
 #include <algorithm>      // for equal, find_if
 #include <cstddef>        // for size_t
 #include <cstdint>        // for uint64_t
+#include <functional>     // for hash
 #include <iosfwd>         // for string
 #include <iterator>       // for operator+
 #include <map>            // for map
 #include <stack>          // for stack
 #include <unordered_map>  // for unordered_map
-#include <utility>        // for hash
+#include <utility>        // for pair, make_pair
 #include <vector>         // for vector
 
 #include "adapters.hpp"   // for Hash, EqualTo
