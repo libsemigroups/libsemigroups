@@ -461,7 +461,7 @@ namespace libsemigroups {
       p.add_rule_and_check(lhop.begin(), lhop.end(), rhop.begin(), rhop.end());
     }
 
-    //! Add a rule to the presentation by char const pointer.
+    //! Add a rule to the presentation by `char const*`.
     //!
     //! Adds the rule with left hand side `lhop` and right hand side `rhop`
     //! to the rules.
@@ -485,7 +485,7 @@ namespace libsemigroups {
       add_rule(p, std::string(lhop), std::string(rhop));
     }
 
-    //! Add a rule to the presentation by char const pointer.
+    //! Add a rule to the presentation by `char const*`.
     //!
     //! Adds the rule with left hand side `lhop` and right hand side `rhop`
     //! to the rules.
@@ -506,7 +506,7 @@ namespace libsemigroups {
       add_rule_and_check(p, std::string(lhop), std::string(rhop));
     }
 
-    //! Add a rule to the presentation by initializer_list.
+    //! Add a rule to the presentation by `initializer_list`.
     //!
     //! Adds the rule with left hand side `lhop` and right hand side `rhop`
     //! to the rules.
@@ -531,7 +531,7 @@ namespace libsemigroups {
       p.add_rule(lhop.begin(), lhop.end(), rhop.begin(), rhop.end());
     }
 
-    //! Add a rule to the presentation by initializer_list.
+    //! Add a rule to the presentation by `initializer_list`.
     //!
     //! Adds the rule with left hand side `lhop` and right hand side `rhop`
     //! to the rules.
@@ -612,9 +612,9 @@ namespace libsemigroups {
     //! Add rules for inverses.
     //!
     //! The letter in \c a with index \c i in \p vals is the inverse of the
-    //! letter in alphabet() with index \c i. The rules added are \f$a_ib_i =
-    //! e\f$ where the alphabet is \f$\{a_1, \ldots, a_n\}\f$; the parameter \p
-    //! vals is \f$\{b_1, \ldots, b_n\}\f$; and \f$e\f$ is the 3rd parameter.
+    //! letter in `alphabet()` with index \c i. The rules added are \f$a_ib_i =
+    //! e\f$ where the alphabet is \f$\{a_1, \ldots, a_n\}\f$; the 2nd parameter
+    //! \p vals is \f$\{b_1, \ldots, b_n\}\f$; and \f$e\f$ is the 3rd parameter.
     //!
     //! \tparam W the type of the words in the presentation
     //! \param p the presentation to add rules to
@@ -632,7 +632,7 @@ namespace libsemigroups {
     //! * \f$e ^ {-1} = e\f$ does not hold
     //!
     //! \complexity
-    //! \f$O(n)\f$ where \f$n\f$ is alphabet().size().
+    //! \f$O(n)\f$ where \f$n\f$ is `alphabet().size()`.
     template <typename W>
     void add_inverse_rules(Presentation<W>&                      p,
                            W const&                              vals,
@@ -641,9 +641,10 @@ namespace libsemigroups {
     //! Add rules for inverses.
     //!
     //! The letter in \c a with index \c i in \p vals is the inverse of the
-    //! letter in alphabet() with index \c i. The rules added are \f$a_ib_i =
-    //! e\f$ where the alphabet is \f$\{a_1, \ldots, a_n\}\f$; the parameter \p
-    //! vals is \f$\{b_1, \ldots, b_n\}\f$; and \f$e\f$ is the 3rd parameter.
+    //! letter in `alphabet()` with index \c i. The rules added are \f$a_ib_i =
+    //! e\f$ where the alphabet is \f$\{a_1, \ldots, a_n\}\f$; the 2nd
+    //! parameter \p vals is \f$\{b_1, \ldots, b_n\}\f$; and \f$e\f$ is the 3rd
+    //! parameter.
     //!
     //! \tparam W the type of the words in the presentation
     //! \param p the presentation to add rules to
@@ -865,6 +866,7 @@ namespace libsemigroups {
     //! \tparam S the type of the first two parameters (iterators, or pointers)
     //! \tparam T the type of the second two parameters (iterators, or pointers)
     //!
+    //! \param p the presentation
     //! \param first_existing an iterator pointing to the first letter of the
     //! existing subword to be replaced
     //! \param last_existing an iterator pointing one past the last letter of
@@ -1177,6 +1179,8 @@ namespace libsemigroups {
     //!
     //! This function returns `letter(p, i)` when `i` is the least possible
     //! value such that `!p.in_alphabet(letter(p, i))` if such a letter exists.
+    //!
+    //! \tparam W the type of the words in the presentation
     //!
     //! \returns A `letter_type`.
     //!
