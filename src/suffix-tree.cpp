@@ -20,17 +20,19 @@
 
 #include "libsemigroups/suffix-tree.hpp"
 
-#include <array>    // for array
-#include <cstddef>  // for size_t
-#include <numeric>  // for accumulate
-#include <string>   // for operator+, char_traits, to_st...
-#include <tuple>    // for tie, tuple
+#include <algorithm>  // for lower_bound, sort, max
+#include <array>      // for array
+#include <cstddef>    // for size_t
+#include <numeric>    // for accumulate
+#include <string>     // for operator+, char_traits, to_st...
+#include <tuple>      // for tie, tuple
 
 #include "libsemigroups/adapters.hpp"   // for EqualTo, Hash
 #include "libsemigroups/constants.hpp"  // for UNDEFINED
 #include "libsemigroups/debug.hpp"      // for LIBSEMIGROUPS_ASSERT
 #include "libsemigroups/exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
 #include "libsemigroups/string.hpp"     // for to_string
+#include "libsemigroups/types.hpp"      // for word_type
 
 namespace libsemigroups {
   namespace detail {
