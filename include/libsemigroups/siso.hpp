@@ -249,11 +249,11 @@ namespace libsemigroups {
 
   class Sislo {
    public:
-    Sislo()             = default;
-    Sislo(Sislo const&) = default;
-    Sislo(Sislo&&)      = default;
+    Sislo()                        = default;
+    Sislo(Sislo const&)            = default;
+    Sislo(Sislo&&)                 = default;
     Sislo& operator=(Sislo const&) = default;
-    Sislo& operator=(Sislo&&) = default;
+    Sislo& operator=(Sislo&&)      = default;
 
     Sislo& alphabet(std::string const& lphbt) {
       _alphabet = lphbt;

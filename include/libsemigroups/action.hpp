@@ -849,10 +849,10 @@ namespace libsemigroups {
         _map;
     struct Options {
       Options() : _cache_scc_multipliers(false) {}
-      Options(Options const&) = default;
-      Options(Options&&)      = default;
+      Options(Options const&)            = default;
+      Options(Options&&)                 = default;
       Options& operator=(Options const&) = default;
-      Options& operator=(Options&&) = default;
+      Options& operator=(Options&&)      = default;
 
       bool _cache_scc_multipliers;
     } _options;

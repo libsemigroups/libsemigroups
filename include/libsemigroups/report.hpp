@@ -104,10 +104,10 @@ namespace libsemigroups {
     class ThreadIdManager final {
      public:
       ThreadIdManager();
-      ThreadIdManager(ThreadIdManager const&) = delete;
-      ThreadIdManager(ThreadIdManager&&)      = delete;
+      ThreadIdManager(ThreadIdManager const&)            = delete;
+      ThreadIdManager(ThreadIdManager&&)                 = delete;
       ThreadIdManager& operator=(ThreadIdManager const&) = delete;
-      ThreadIdManager& operator=(ThreadIdManager&&) = delete;
+      ThreadIdManager& operator=(ThreadIdManager&&)      = delete;
 
       void   reset();
       size_t tid(std::thread::id t);
@@ -306,10 +306,10 @@ namespace libsemigroups {
      public:
       explicit Reporter(bool report = true);
 
-      Reporter(Reporter const&) = delete;
-      Reporter(Reporter&&)      = delete;
+      Reporter(Reporter const&)            = delete;
+      Reporter(Reporter&&)                 = delete;
       Reporter& operator=(Reporter const&) = delete;
-      Reporter& operator=(Reporter&&) = delete;
+      Reporter& operator=(Reporter&&)      = delete;
 
       template <typename TClass>
       Reporter& prefix(TClass const* const ptr, bool override = false) {

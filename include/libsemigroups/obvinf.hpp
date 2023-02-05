@@ -86,10 +86,10 @@ namespace libsemigroups {
       explicit IsObviouslyInfinite(std::string const& lphbt)
           : IsObviouslyInfinite(lphbt.size()) {}
 
-      IsObviouslyInfinite(IsObviouslyInfinite const&) = delete;
-      IsObviouslyInfinite(IsObviouslyInfinite&&)      = delete;
+      IsObviouslyInfinite(IsObviouslyInfinite const&)            = delete;
+      IsObviouslyInfinite(IsObviouslyInfinite&&)                 = delete;
       IsObviouslyInfinite& operator=(IsObviouslyInfinite const&) = delete;
-      IsObviouslyInfinite& operator=(IsObviouslyInfinite&&) = delete;
+      IsObviouslyInfinite& operator=(IsObviouslyInfinite&&)      = delete;
 
       ~IsObviouslyInfinite();
 

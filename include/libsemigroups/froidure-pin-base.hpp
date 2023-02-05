@@ -270,7 +270,8 @@ namespace libsemigroups {
     virtual size_t number_of_generators() const = 0;
 
     virtual element_index_type fast_product(element_index_type,
-                                            element_index_type) const = 0;
+                                            element_index_type) const
+        = 0;
 
     virtual size_t number_of_idempotents() = 0;
 
@@ -917,11 +918,11 @@ namespace libsemigroups {
 
       // None of the constructors are noexcept because the corresponding
       // constructors for std::vector aren't (until C++17).
-      const_rule_iterator()                           = default;
-      const_rule_iterator(const_rule_iterator const&) = default;
-      const_rule_iterator(const_rule_iterator&&)      = default;
+      const_rule_iterator()                                      = default;
+      const_rule_iterator(const_rule_iterator const&)            = default;
+      const_rule_iterator(const_rule_iterator&&)                 = default;
       const_rule_iterator& operator=(const_rule_iterator const&) = default;
-      const_rule_iterator& operator=(const_rule_iterator&&) = default;
+      const_rule_iterator& operator=(const_rule_iterator&&)      = default;
 
       const_rule_iterator(FroidurePinBase const* ptr,
                           enumerate_index_type   pos,

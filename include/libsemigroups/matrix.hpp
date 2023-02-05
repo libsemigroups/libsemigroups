@@ -138,11 +138,11 @@ namespace libsemigroups {
       ////////////////////////////////////////////////////////////////////////
 
       // none of the constructors are noexcept because they allocate
-      MatrixCommon()                    = default;
-      MatrixCommon(MatrixCommon const&) = default;
-      MatrixCommon(MatrixCommon&&)      = default;
+      MatrixCommon()                               = default;
+      MatrixCommon(MatrixCommon const&)            = default;
+      MatrixCommon(MatrixCommon&&)                 = default;
       MatrixCommon& operator=(MatrixCommon const&) = default;
-      MatrixCommon& operator=(MatrixCommon&&) = default;
+      MatrixCommon& operator=(MatrixCommon&&)      = default;
 
       explicit MatrixCommon(std::initializer_list<scalar_type> const& c)
           : MatrixCommon() {
@@ -540,10 +540,10 @@ namespace libsemigroups {
     class MatrixDynamicDim {
      public:
       MatrixDynamicDim() : _number_of_cols(0), _number_of_rows(0) {}
-      MatrixDynamicDim(MatrixDynamicDim const&) = default;
-      MatrixDynamicDim(MatrixDynamicDim&&)      = default;
+      MatrixDynamicDim(MatrixDynamicDim const&)            = default;
+      MatrixDynamicDim(MatrixDynamicDim&&)                 = default;
       MatrixDynamicDim& operator=(MatrixDynamicDim const&) = default;
-      MatrixDynamicDim& operator=(MatrixDynamicDim&&) = default;
+      MatrixDynamicDim& operator=(MatrixDynamicDim&&)      = default;
 
       MatrixDynamicDim(size_t r, size_t c)
           : _number_of_cols(c), _number_of_rows(r) {}
@@ -644,11 +644,11 @@ namespace libsemigroups {
       }
 
      public:
-      RowViewCommon()                     = default;
-      RowViewCommon(RowViewCommon const&) = default;
-      RowViewCommon(RowViewCommon&&)      = default;
+      RowViewCommon()                                = default;
+      RowViewCommon(RowViewCommon const&)            = default;
+      RowViewCommon(RowViewCommon&&)                 = default;
       RowViewCommon& operator=(RowViewCommon const&) = default;
-      RowViewCommon& operator=(RowViewCommon&&) = default;
+      RowViewCommon& operator=(RowViewCommon&&)      = default;
 
       explicit RowViewCommon(Row const& r)
           : RowViewCommon(const_cast<Row&>(r).begin()) {}
@@ -1039,11 +1039,11 @@ namespace libsemigroups {
           "cannot construct Matrix with more than one row from RowView!");
     }
 
-    StaticMatrix()                    = default;
-    StaticMatrix(StaticMatrix const&) = default;
-    StaticMatrix(StaticMatrix&&)      = default;
+    StaticMatrix()                               = default;
+    StaticMatrix(StaticMatrix const&)            = default;
+    StaticMatrix(StaticMatrix&&)                 = default;
     StaticMatrix& operator=(StaticMatrix const&) = default;
-    StaticMatrix& operator=(StaticMatrix&&) = default;
+    StaticMatrix& operator=(StaticMatrix&&)      = default;
 
     // For uniformity of interface, the first arg does nothing
     StaticMatrix(void const* ptr, std::initializer_list<scalar_type> const& c)
@@ -1165,11 +1165,11 @@ namespace libsemigroups {
     using Row     = DynamicMatrix;
     using RowView = DynamicRowView<PlusOp, ProdOp, ZeroOp, OneOp, Scalar>;
 
-    DynamicMatrix()                     = default;
-    DynamicMatrix(DynamicMatrix const&) = default;
-    DynamicMatrix(DynamicMatrix&&)      = default;
+    DynamicMatrix()                                = default;
+    DynamicMatrix(DynamicMatrix const&)            = default;
+    DynamicMatrix(DynamicMatrix&&)                 = default;
     DynamicMatrix& operator=(DynamicMatrix const&) = default;
-    DynamicMatrix& operator=(DynamicMatrix&&) = default;
+    DynamicMatrix& operator=(DynamicMatrix&&)      = default;
 
     DynamicMatrix(size_t r, size_t c) : MatrixDynamicDim(r, c), MatrixCommon() {
       resize(number_of_rows(), number_of_cols());
@@ -1276,11 +1276,11 @@ namespace libsemigroups {
     using RowView = DynamicRowView<Semiring, Scalar>;
     friend RowView;
 
-    DynamicMatrix()                     = delete;
-    DynamicMatrix(DynamicMatrix const&) = default;
-    DynamicMatrix(DynamicMatrix&&)      = default;
+    DynamicMatrix()                                = delete;
+    DynamicMatrix(DynamicMatrix const&)            = default;
+    DynamicMatrix(DynamicMatrix&&)                 = default;
     DynamicMatrix& operator=(DynamicMatrix const&) = default;
-    DynamicMatrix& operator=(DynamicMatrix&&) = default;
+    DynamicMatrix& operator=(DynamicMatrix&&)      = default;
 
     DynamicMatrix(Semiring const* semiring, size_t r, size_t c)
         : MatrixDynamicDim(r, c), MatrixCommon(), _semiring(semiring) {
@@ -1803,8 +1803,8 @@ namespace libsemigroups {
     MaxPlusTruncSemiring()                                     = delete;
     MaxPlusTruncSemiring(MaxPlusTruncSemiring const&) noexcept = default;
     MaxPlusTruncSemiring(MaxPlusTruncSemiring&&) noexcept      = default;
-    MaxPlusTruncSemiring& operator                             =(
-        MaxPlusTruncSemiring const&) noexcept = default;  // NOLINT(whitespace/line_length)
+    MaxPlusTruncSemiring& operator=(MaxPlusTruncSemiring const&) noexcept
+        = default;  // NOLINT(whitespace/line_length)
     MaxPlusTruncSemiring& operator=(MaxPlusTruncSemiring&&) noexcept = default;
     ~MaxPlusTruncSemiring()                                          = default;
 
@@ -1970,8 +1970,8 @@ namespace libsemigroups {
     MinPlusTruncSemiring() noexcept                            = delete;
     MinPlusTruncSemiring(MinPlusTruncSemiring const&) noexcept = default;
     MinPlusTruncSemiring(MinPlusTruncSemiring&&) noexcept      = default;
-    MinPlusTruncSemiring& operator                             =(
-        MinPlusTruncSemiring const&) noexcept = default;  // NOLINT(whitespace/line_length)
+    MinPlusTruncSemiring& operator=(MinPlusTruncSemiring const&) noexcept
+        = default;  // NOLINT(whitespace/line_length)
     MinPlusTruncSemiring& operator=(MinPlusTruncSemiring&&) noexcept = default;
     ~MinPlusTruncSemiring()                                          = default;
 
@@ -2160,7 +2160,7 @@ namespace libsemigroups {
     NTPSemiring(NTPSemiring&&)      = default;
 
     NTPSemiring& operator=(NTPSemiring const&) = default;
-    NTPSemiring& operator=(NTPSemiring&&) = default;
+    NTPSemiring& operator=(NTPSemiring&&)      = default;
 
     ~NTPSemiring() = default;
 
@@ -2361,10 +2361,10 @@ namespace libsemigroups {
       ////////////////////////////////////////////////////////////////////////
 
       ProjMaxPlusMat() : _is_normalized(false), _underlying_mat() {}
-      ProjMaxPlusMat(ProjMaxPlusMat const&) = default;
-      ProjMaxPlusMat(ProjMaxPlusMat&&)      = default;
+      ProjMaxPlusMat(ProjMaxPlusMat const&)            = default;
+      ProjMaxPlusMat(ProjMaxPlusMat&&)                 = default;
       ProjMaxPlusMat& operator=(ProjMaxPlusMat const&) = default;
-      ProjMaxPlusMat& operator=(ProjMaxPlusMat&&) = default;
+      ProjMaxPlusMat& operator=(ProjMaxPlusMat&&)      = default;
 
       ProjMaxPlusMat(size_t r, size_t c)
           : _is_normalized(false), _underlying_mat(r, c) {}

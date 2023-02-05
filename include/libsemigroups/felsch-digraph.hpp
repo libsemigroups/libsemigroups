@@ -52,11 +52,11 @@ namespace libsemigroups {
     FelschDigraph(Presentation<word_type> const& p, size_type n);
     FelschDigraph(Presentation<word_type>&& p, size_type n);
 
-    FelschDigraph()                     = default;
-    FelschDigraph(FelschDigraph const&) = default;
-    FelschDigraph(FelschDigraph&&)      = default;
+    FelschDigraph()                                = default;
+    FelschDigraph(FelschDigraph const&)            = default;
+    FelschDigraph(FelschDigraph&&)                 = default;
     FelschDigraph& operator=(FelschDigraph const&) = default;
-    FelschDigraph& operator=(FelschDigraph&&) = default;
+    FelschDigraph& operator=(FelschDigraph&&)      = default;
 
     FelschDigraph& init(Presentation<word_type> const& p, size_type n);
     FelschDigraph& init(Presentation<word_type>&& p, size_type n);

@@ -63,10 +63,10 @@ namespace libsemigroups {
           _preim_init(n, m, UNDEFINED),
           _preim_next(n, m, UNDEFINED) {}
 
-    DigraphWithSources(DigraphWithSources&&)      = default;
-    DigraphWithSources(DigraphWithSources const&) = default;
+    DigraphWithSources(DigraphWithSources&&)                 = default;
+    DigraphWithSources(DigraphWithSources const&)            = default;
     DigraphWithSources& operator=(DigraphWithSources const&) = default;
-    DigraphWithSources& operator=(DigraphWithSources&&) = default;
+    DigraphWithSources& operator=(DigraphWithSources&&)      = default;
 
     void init(size_type m, size_type n);
 
