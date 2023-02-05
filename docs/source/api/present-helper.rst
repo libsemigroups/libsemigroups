@@ -71,6 +71,9 @@ Contents
    * - :cpp:any:`longest_rule_length`
      - Returns the maximum length of a rule.
 
+   * - :cpp:any:`make_semigroup`
+     - Convert a monoid presentation to a semigroup presentation.
+
    * - :cpp:any:`normalize_alphabet`
      - Modify the presentation so that the alphabet is :math:`\{0, \ldots, n -
        1\}` (or equivalent) and rewrites the rules to use this alphabet.

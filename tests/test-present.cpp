@@ -665,6 +665,53 @@ namespace libsemigroups {
       REQUIRE(!p.in_alphabet(3));
       REQUIRE(!p.in_alphabet(42));
     }
+
+    template <typename W>
+    void check_make_semigroup() {
+      Presentation<W> p;
+      presentation::add_rule(p, {0, 0}, {});
+      presentation::add_rule(p, {1, 1}, {});
+      presentation::add_rule(p, {2, 2}, {});
+      presentation::add_rule(p, {0, 1, 0, 1, 0, 1}, {});
+      presentation::add_rule(p, {1, 2, 1, 0, 1, 2, 1, 0}, {});
+      presentation::add_rule(p, {2, 0, 2, 1, 2, 0, 2, 1}, {0, 3});
+
+      p.alphabet_from_rules();
+      auto e = presentation::make_semigroup(p);
+      REQUIRE(p.rules
+              == std::vector<W>({{0, 0},
+                                 {e},
+                                 {1, 1},
+                                 {e},
+                                 {2, 2},
+                                 {e},
+                                 {0, 1, 0, 1, 0, 1},
+                                 {e},
+                                 {1, 2, 1, 0, 1, 2, 1, 0},
+                                 {e},
+                                 {2, 0, 2, 1, 2, 0, 2, 1},
+                                 {0, 3},
+                                 {0, e},
+                                 {0},
+                                 {e, 0},
+                                 {0},
+                                 {1, e},
+                                 {1},
+                                 {e, 1},
+                                 {1},
+                                 {2, e},
+                                 {2},
+                                 {e, 2},
+                                 {2},
+                                 {3, e},
+                                 {3},
+                                 {e, 3},
+                                 {3},
+                                 {e, e},
+                                 {e}}));
+      REQUIRE(presentation::make_semigroup(p) == UNDEFINED);
+    }
+
   }  // namespace
 
   using detail::StaticVector1;
@@ -1299,6 +1346,15 @@ namespace libsemigroups {
                                          "aaaa"}));
     w = presentation::longest_common_subword(p);
     REQUIRE(w == "");
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Presentation",
+                          "037",
+                          "make_semigroup",
+                          "[quick][presentation]") {
+    check_make_semigroup<word_type>();
+    check_make_semigroup<StaticVector1<uint16_t, 10>>();
+    check_make_semigroup<std::string>();
   }
 
 }  // namespace libsemigroups

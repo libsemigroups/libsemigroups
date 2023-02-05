@@ -742,5 +742,20 @@ namespace libsemigroups {
       return x;
     }
 
+    template <typename W>
+    typename Presentation<W>::letter_type make_semigroup(Presentation<W>& p) {
+      if (!p.contains_empty_word()) {
+        return UNDEFINED;
+      }
+      auto e         = first_unused_letter(p);
+      W    new_alpha = p.alphabet();
+      new_alpha.insert(new_alpha.end(), e);
+      p.alphabet(new_alpha);
+      presentation::replace_word(p, {}, {e});
+      presentation::add_identity_rules(p, e);
+      p.contains_empty_word(false);
+      return e;
+    }
+
   }  // namespace presentation
 }  // namespace libsemigroups
