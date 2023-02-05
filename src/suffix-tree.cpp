@@ -490,6 +490,73 @@ namespace libsemigroups {
         }
       }
     }
+
+    DFSHelper::DFSHelper(detail::SuffixTree& st)
+        : _best(),
+          _best_goodness(),
+          _distance_from_root(st.number_of_nodes(), 0),
+          _num_leafs(st.number_of_nodes(), 0),
+          _scratch(),
+          _suffix_index() {}
+
+    void DFSHelper::pre_order(detail::SuffixTree const& st, size_t v) {
+      // This is a tree so we've never seen v before!
+      if (!st.is_root(v)) {
+        _distance_from_root[v]
+            = _distance_from_root[st.parent(v)] + st.length(v);
+      }
+      if (st.is_leaf(v)) {
+        _num_leafs[v]++;
+        // Starting index of the suffix that the leaf corresponds to
+        _suffix_index.push_back(st.right(v) - _distance_from_root[v]);
+      }
+    }
+
+    void DFSHelper::post_order(detail::SuffixTree const& st, size_t v) {
+      if (st.is_leaf(v) || st.is_root(v)) {
+        return;
+      }
+
+      for (auto const& child : st.node(v).children) {
+        _num_leafs[v] += _num_leafs[child.second];
+      }
+      _scratch.assign(_suffix_index.cend() - _num_leafs[v],
+                      _suffix_index.cend());
+      std::sort(_scratch.begin(), _scratch.end());
+      // number of non-overlapping subwords corresponding to the node v
+      size_t num_non_overlap = st.multiplicity(_scratch[0]);
+
+      // Only try greedily matching non-overlapping subwords from left to
+      // right
+      auto subword_begin = _scratch[0];
+      auto it            = _scratch.cbegin();
+      do {
+        auto subword_end = subword_begin + _distance_from_root[v];
+        it               = std::lower_bound(it, _scratch.cend(), subword_end);
+        if (it != _scratch.cend()) {
+          subword_begin = *it;
+          num_non_overlap += st.multiplicity(subword_begin);
+        }
+      } while (it != _scratch.cend());
+      int goodness = (_distance_from_root[v] * num_non_overlap)
+                     - num_non_overlap - (_distance_from_root[v] + 1);
+      if (goodness > _best_goodness) {
+        _best          = v;
+        _best_goodness = goodness;
+      }
+    }
+
+    using const_iterator = typename detail::SuffixTree::const_iterator;
+
+    std::pair<const_iterator, const_iterator>
+    DFSHelper::yield(detail::SuffixTree const& st) {
+      if (st.is_root(_best)) {
+        return st.word(0, 0);
+      }
+      return st.word(st.left(_best) - _distance_from_root[st.parent(_best)],
+                     st.right(_best));
+    }
+
     namespace suffix_tree_helper {
       void add_words(SuffixTree& st, std::vector<word_type> const& words) {
         for (auto const& word : words) {
