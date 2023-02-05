@@ -1172,7 +1172,7 @@ namespace libsemigroups {
                           "[quick][presentation]") {
     auto rg = ReportGuard(false);
     check_in_alphabet<word_type>();
-    check_reverse<StaticVector1<uint16_t, 10>>();
+    check_in_alphabet<StaticVector1<uint16_t, 10>>();
     check_in_alphabet<std::string>();
   }
 
