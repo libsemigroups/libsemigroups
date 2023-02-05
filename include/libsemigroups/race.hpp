@@ -54,9 +54,9 @@ namespace libsemigroups {
         _winner      = other._winner;
       }
 
-      Race(Race&&)  = delete;
+      Race(Race&&)                 = delete;
       Race& operator=(Race const&) = delete;
-      Race& operator=(Race&&) = delete;
+      Race& operator=(Race&&)      = delete;
 
       ~Race();
 

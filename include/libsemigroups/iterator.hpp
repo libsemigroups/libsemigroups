@@ -121,10 +121,10 @@ namespace libsemigroups {
           std::is_nothrow_copy_constructible<internal_iterator_type>::value)
           : _wrapped_iter(it) {}
 
-      IteratorBase(IteratorBase const&) = default;
+      IteratorBase(IteratorBase const&)            = default;
       IteratorBase& operator=(IteratorBase const&) = default;
 
-      IteratorBase(IteratorBase&&) = default;
+      IteratorBase(IteratorBase&&)            = default;
       IteratorBase& operator=(IteratorBase&&) = default;
 
       virtual ~IteratorBase() = default;
@@ -465,10 +465,10 @@ namespace libsemigroups {
           std::is_nothrow_copy_constructible<IteratorBaseAlias>::value)
           : IteratorBaseAlias(it) {}
 
-      IteratorStatelessBase(IteratorStatelessBase const&) = default;
+      IteratorStatelessBase(IteratorStatelessBase const&)            = default;
       IteratorStatelessBase& operator=(IteratorStatelessBase const&) = default;
 
-      IteratorStatelessBase(IteratorStatelessBase&&) = default;
+      IteratorStatelessBase(IteratorStatelessBase&&)            = default;
       IteratorStatelessBase& operator=(IteratorStatelessBase&&) = default;
 
       virtual ~IteratorStatelessBase() = default;
@@ -614,10 +614,10 @@ namespace libsemigroups {
           std::is_nothrow_copy_constructible<IteratorStatefulBaseAlias>::value)
           : IteratorStatefulBaseAlias(stt, it) {}
 
-      ConstIteratorStateful(ConstIteratorStateful const&) = default;
+      ConstIteratorStateful(ConstIteratorStateful const&)            = default;
       ConstIteratorStateful& operator=(ConstIteratorStateful const&) = default;
 
-      ConstIteratorStateful(ConstIteratorStateful&&) = default;
+      ConstIteratorStateful(ConstIteratorStateful&&)            = default;
       ConstIteratorStateful& operator=(ConstIteratorStateful&&) = default;
 
       ~ConstIteratorStateful() = default;
@@ -702,7 +702,7 @@ namespace libsemigroups {
       ConstIteratorStateless& operator=(ConstIteratorStateless const&)
           = default;
 
-      ConstIteratorStateless(ConstIteratorStateless&&) = default;
+      ConstIteratorStateless(ConstIteratorStateless&&)            = default;
       ConstIteratorStateless& operator=(ConstIteratorStateless&&) = default;
 
       ~ConstIteratorStateless() = default;
@@ -785,10 +785,10 @@ namespace libsemigroups {
                                    IteratorStatefulBaseAlias>::value)
           : IteratorStatefulBaseAlias(stt, it) {}
 
-      IteratorStateful(IteratorStateful const&) = default;
+      IteratorStateful(IteratorStateful const&)            = default;
       IteratorStateful& operator=(IteratorStateful const&) = default;
 
-      IteratorStateful(IteratorStateful&&) = default;
+      IteratorStateful(IteratorStateful&&)            = default;
       IteratorStateful& operator=(IteratorStateful&&) = default;
 
       ~IteratorStateful() = default;
@@ -877,10 +877,10 @@ namespace libsemigroups {
           std::is_nothrow_copy_constructible<IteratorStatelessBaseAlias>::value)
           : IteratorStatelessBaseAlias(it) {}
 
-      IteratorStateless(IteratorStateless const&) = default;
+      IteratorStateless(IteratorStateless const&)            = default;
       IteratorStateless& operator=(IteratorStateless const&) = default;
 
-      IteratorStateless(IteratorStateless&&) = default;
+      IteratorStateless(IteratorStateless&&)            = default;
       IteratorStateless& operator=(IteratorStateless&&) = default;
 
       ~IteratorStateless() = default;

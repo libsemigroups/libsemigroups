@@ -166,10 +166,10 @@ namespace libsemigroups {
       class Short {
        public:
         Short() : _begin1(), _begin2(), _length1(0), _length2(0) {}
-        Short(Short const&) = default;
-        Short(Short&&)      = default;
+        Short(Short const&)            = default;
+        Short(Short&&)                 = default;
         Short& operator=(Short const&) = default;
-        Short& operator=(Short&&) = default;
+        Short& operator=(Short&&)      = default;
 
         const_iterator_string const& begin(size_t i) const {
           if (i == 0) {
@@ -749,10 +749,10 @@ namespace libsemigroups {
       // MultiStringView - constructors + destructor - public
       ////////////////////////////////////////////////////////////////////////
 
-      MultiStringView()                            = default;
-      MultiStringView(MultiStringView const& that) = default;
-      MultiStringView(MultiStringView&& that)      = default;
-      MultiStringView& operator=(MultiStringView&& that) = default;
+      MultiStringView()                                       = default;
+      MultiStringView(MultiStringView const& that)            = default;
+      MultiStringView(MultiStringView&& that)                 = default;
+      MultiStringView& operator=(MultiStringView&& that)      = default;
       MultiStringView& operator=(MultiStringView const& that) = default;
 
       // construct from std::string::const_iterators

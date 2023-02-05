@@ -52,7 +52,7 @@ namespace libsemigroups {
       KBE(KBE&&)      = default;
 
       KBE& operator=(KBE const&) = default;
-      KBE& operator=(KBE&&) = default;
+      KBE& operator=(KBE&&)      = default;
 
       ~KBE() = default;
 

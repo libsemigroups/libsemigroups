@@ -50,12 +50,12 @@ namespace libsemigroups {
       using coset_type = typename ToddCoxeter::coset_type;
       using Table      = typename ToddCoxeter::table_type;
 
-      TCE() noexcept           = default;
-      TCE(TCE const&) noexcept = default;
-      TCE(TCE&&) noexcept      = default;
+      TCE() noexcept                      = default;
+      TCE(TCE const&) noexcept            = default;
+      TCE(TCE&&) noexcept                 = default;
       TCE& operator=(TCE const&) noexcept = default;
-      TCE& operator=(TCE&&) noexcept = default;
-      ~TCE()                         = default;
+      TCE& operator=(TCE&&) noexcept      = default;
+      ~TCE()                              = default;
 
       explicit TCE(coset_type i) noexcept : _index(i) {}
 

@@ -1230,12 +1230,12 @@ namespace libsemigroups {
       KE(string_type&&);
 
      public:
-      KE()          = default;
-      KE(KE const&) = default;
-      KE(KE&&)      = default;
+      KE()                     = default;
+      KE(KE const&)            = default;
+      KE(KE&&)                 = default;
       KE& operator=(KE const&) = default;
-      KE& operator=(KE&&) = default;
-      ~KE()               = default;
+      KE& operator=(KE&&)      = default;
+      ~KE()                    = default;
 
       template <typename T>
       KE(fpsemigroup::Kambites<T>& k, string_type const& w)

@@ -494,21 +494,21 @@ namespace libsemigroups {
                     HPCombi::Transf16 const& x,
                     HPCombi::Vect16 const&   y) const noexcept {
       HPCombi::Vect16 buf  = {0xff,
-                             0xff,
-                             0xff,
-                             0xff,
-                             0xff,
-                             0xff,
-                             0xff,
-                             0xff,
-                             0xff,
-                             0xff,
-                             0xff,
-                             0xff,
-                             0xff,
-                             0xff,
-                             0xff,
-                             0xff};
+                              0xff,
+                              0xff,
+                              0xff,
+                              0xff,
+                              0xff,
+                              0xff,
+                              0xff,
+                              0xff,
+                              0xff,
+                              0xff,
+                              0xff,
+                              0xff,
+                              0xff,
+                              0xff,
+                              0xff};
       size_t          next = 0;
       for (size_t i = 0; i < 16; ++i) {
         if (buf[x[y[i]]] == 0xff) {
@@ -570,21 +570,21 @@ namespace libsemigroups {
     void operator()(HPCombi::Vect16&         res,
                     HPCombi::Transf16 const& x) const noexcept {
       HPCombi::Vect16 buf  = {0xff,
-                             0xff,
-                             0xff,
-                             0xff,
-                             0xff,
-                             0xff,
-                             0xff,
-                             0xff,
-                             0xff,
-                             0xff,
-                             0xff,
-                             0xff,
-                             0xff,
-                             0xff,
-                             0xff,
-                             0xff};
+                              0xff,
+                              0xff,
+                              0xff,
+                              0xff,
+                              0xff,
+                              0xff,
+                              0xff,
+                              0xff,
+                              0xff,
+                              0xff,
+                              0xff,
+                              0xff,
+                              0xff,
+                              0xff,
+                              0xff};
       size_t          next = 0;
       for (size_t i = 0; i < 16; ++i) {
         if (buf[x[i]] == 0xff) {

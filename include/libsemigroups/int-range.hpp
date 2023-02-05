@@ -50,10 +50,10 @@ namespace libsemigroups {
     IntegralRange(value_type begin, value_type end) noexcept
         : _begin(begin), _end(end) {}
 
-    IntegralRange(IntegralRange const&) noexcept = default;
-    IntegralRange(IntegralRange&&) noexcept      = default;
+    IntegralRange(IntegralRange const&) noexcept            = default;
+    IntegralRange(IntegralRange&&) noexcept                 = default;
     IntegralRange& operator=(IntegralRange const&) noexcept = default;
-    IntegralRange& operator=(IntegralRange&&) noexcept = default;
+    IntegralRange& operator=(IntegralRange&&) noexcept      = default;
 
     value_type operator[](size_t i) const noexcept {
       return _begin + i;
@@ -72,11 +72,11 @@ namespace libsemigroups {
       using reference       = value_type;
       using iterator_category = std::random_access_iterator_tag;
 
-      const_iterator() noexcept                      = default;
-      const_iterator(const_iterator const&) noexcept = default;
-      const_iterator(const_iterator&&) noexcept      = default;
+      const_iterator() noexcept                                 = default;
+      const_iterator(const_iterator const&) noexcept            = default;
+      const_iterator(const_iterator&&) noexcept                 = default;
       const_iterator& operator=(const_iterator const&) noexcept = default;
-      const_iterator& operator=(const_iterator&&) noexcept = default;
+      const_iterator& operator=(const_iterator&&) noexcept      = default;
 
       ~const_iterator() = default;
 

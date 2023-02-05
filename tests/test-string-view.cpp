@@ -100,8 +100,8 @@ namespace libsemigroups {
     REQUIRE(msv.number_of_views() == 5);
     auto it1 = msv.cbegin();
     auto it2 = msv.cbegin();
-    ++++++++++++it1;
-    ++++++++++++++++++++++++++++++it2;
+    std::advance(it1, 6);
+    std::advance(it2, 15);
     REQUIRE(it2 - it1 == 9);
     auto it3 = (msv.cbegin() + 6);
     REQUIRE(it3 == it1);

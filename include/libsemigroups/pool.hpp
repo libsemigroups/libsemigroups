@@ -62,10 +62,10 @@ namespace libsemigroups {
       ~Pool() = default;
 
       // Deleted other constructors to avoid unintentional copying
-      Pool(Pool const&) = delete;
-      Pool(Pool&&)      = delete;
+      Pool(Pool const&)            = delete;
+      Pool(Pool&&)                 = delete;
       Pool& operator=(Pool const&) = delete;
-      Pool& operator=(Pool&&) = delete;
+      Pool& operator=(Pool&&)      = delete;
 
       T acquire() {
         return T();
@@ -91,10 +91,10 @@ namespace libsemigroups {
       }
 
       // Deleted other constructors to avoid unintentional copying
-      Pool(Pool const&) = delete;
-      Pool(Pool&&)      = delete;
+      Pool(Pool const&)            = delete;
+      Pool(Pool&&)                 = delete;
       Pool& operator=(Pool const&) = delete;
-      Pool& operator=(Pool&&) = delete;
+      Pool& operator=(Pool&&)      = delete;
 
       // Not noexcept because it can throw
       T acquire() {
@@ -162,11 +162,11 @@ namespace libsemigroups {
       ~PoolGuard() = default;
 
       // Deleted other constructors to avoid unintentional copying
-      PoolGuard()                 = delete;
-      PoolGuard(PoolGuard const&) = delete;
-      PoolGuard(PoolGuard&&)      = delete;
+      PoolGuard()                            = delete;
+      PoolGuard(PoolGuard const&)            = delete;
+      PoolGuard(PoolGuard&&)                 = delete;
       PoolGuard& operator=(PoolGuard const&) = delete;
-      PoolGuard& operator=(PoolGuard&&) = delete;
+      PoolGuard& operator=(PoolGuard&&)      = delete;
 
       // Get the element acquired from the pool
       T get() const noexcept {
@@ -188,11 +188,11 @@ namespace libsemigroups {
       }
 
       // Deleted other constructors to avoid unintentional copying
-      PoolGuard()                 = delete;
-      PoolGuard(PoolGuard const&) = delete;
-      PoolGuard(PoolGuard&&)      = delete;
+      PoolGuard()                            = delete;
+      PoolGuard(PoolGuard const&)            = delete;
+      PoolGuard(PoolGuard&&)                 = delete;
       PoolGuard& operator=(PoolGuard const&) = delete;
-      PoolGuard& operator=(PoolGuard&&) = delete;
+      PoolGuard& operator=(PoolGuard&&)      = delete;
 
       // Get the element acquired from the pool
       T get() const noexcept {
