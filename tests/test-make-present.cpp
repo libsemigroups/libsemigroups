@@ -149,11 +149,38 @@ namespace libsemigroups {
     REQUIRE(p.alphabet() == word_type({0, 1, 2}));
     p.validate();
     REQUIRE(p.contains_empty_word());
-    auto q = make(p, "abc");
+    auto q = make<Presentation<std::string>>(p, "abc");
     REQUIRE(q.alphabet() == "abc");
     REQUIRE(q.contains_empty_word());
     REQUIRE(q.rules == std::vector<std::string>({"abc", "ab", "abc", ""}));
     q.validate();
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("make",
+                          "004",
+                          "argument checks issue",
+                          "[quick][presentation]") {
+    Presentation<word_type> p;
+    p.contains_empty_word(true);
+    presentation::add_rule(p, {0, 0}, {1});
+    REQUIRE_THROWS_AS(make<Presentation<std::string>>(p, "a"),
+                      LibsemigroupsException);
+    REQUIRE_THROWS_AS(make<Presentation<std::string>>(p, "aa"),
+                      LibsemigroupsException);
+    REQUIRE_THROWS_AS(make<Presentation<std::string>>(p, "aaa"),
+                      LibsemigroupsException);
+    // Alphabet not set for p, so can't know if the 2nd arg has the correct
+    // size or not.
+    REQUIRE_THROWS_AS(make<Presentation<std::string>>(p, "ab"),
+                      LibsemigroupsException);
+    REQUIRE_THROWS_AS(make<Presentation<std::string>>(p, "abc"),
+                      LibsemigroupsException);
+    p.alphabet_from_rules();
+    REQUIRE_NOTHROW(make<Presentation<std::string>>(p, "ab"));
+    REQUIRE_THROWS_AS(make<Presentation<std::string>>(p, "a"),
+                      LibsemigroupsException);
+    REQUIRE_THROWS_AS(make<Presentation<std::string>>(p, "aa"),
+                      LibsemigroupsException);
   }
 
 }  // namespace libsemigroups

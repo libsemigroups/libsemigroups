@@ -19,10 +19,11 @@
 #ifndef LIBSEMIGROUPS_MAKE_PRESENT_HPP_
 #define LIBSEMIGROUPS_MAKE_PRESENT_HPP_
 
-#include <algorithm>    // for transform
-#include <string>       // for string
-#include <type_traits>  // for is_base_of, enable_if_t
-#include <vector>       // for vector
+#include <algorithm>      // for transform
+#include <string>         // for string
+#include <type_traits>    // for is_base_of, enable_if_t
+#include <unordered_set>  // for unordered_set
+#include <vector>         // for vector
 
 #include "froidure-pin-base.hpp"  // for FroidurePinBase::const_rule_i...
 #include "present.hpp"            // for Presentation
@@ -78,12 +79,11 @@ namespace libsemigroups {
   //! semigroup as \p fp, run FroidurePin::run (or any other function that
   //! fully enumerates \p fp) prior to calling this function.
   //!
-  //! \tparam T the type of the presentation to construct (must be a type of
-  //! Presentation).
   //! \param fp the FroidurePin object from which to obtain the rules.
+  //!
   //! \param alphabet the alphabet of the presentation to be constructed.
   //!
-  //! \returns An object of type \c T.
+  //! \returns An object of type `Presentation<std::string>`.
   //!
   //! \throws LibsemigroupsException if the length of \p alphabet is not equal
   //! to `fp.number_of_generators()`.
@@ -100,22 +100,22 @@ namespace libsemigroups {
   //! presentation to the other.
   //!
   //! \tparam S the type of the returned presentation, must be a type of
-  //! Presentation and distinct from \p T
-  //! \tparam T the type of the input presentation, must be a type of
-  //! Presentation and distinct from \p S
+  //! Presentation
+  //! \tparam W the type of the words in the input presentation
   //! \tparam F the type of a function from transforming letters
   //! \param p the input presentation
-  //! \param f a function mapping S::letter_type to T::letter_type
+  //! \param f a function mapping S::letter_type to Presentation<W>::letter_type
   //!
   //! \returns A value of type \p S.
   //! \throws LibsemigroupsException if `p.validate()` throws.
   template <typename S,
-            typename T,
+            typename W,
             typename F,
-            typename
-            = std::enable_if_t<std::is_base_of<PresentationBase, S>::value
-                               && std::is_base_of<PresentationBase, T>::value>>
-  S make(T const& p, F&& f) {
+            typename = std::enable_if_t<
+                std::is_base_of<PresentationBase, S>::value
+                && !std::is_same<std::decay_t<F>, std::string>::value>>
+  // TODO(v3) use std::is_invokable
+  S make(Presentation<W> const& p, F&& f) {
     using s_word_type = typename S::word_type;
     p.validate();
     // Must call p.validate otherwise p.index(val) might seg fault below
@@ -140,27 +140,25 @@ namespace libsemigroups {
   //! Make a presentation from a different type of presentation.
   //!
   //! Returns a presentation equivalent to the input presentation but of a
-  //! different type (for example, can be used to convert from
-  //! \string to \ref word_type).
+  //! different type (for example, can be used to convert from \string to \ref
+  //! word_type).
   //!
   //! The alphabet of the returned presentation is \f$\{0, \ldots, n - 1\}\f$
   //! where \f$n\f$ is the size of the alphabet of the input presentation.
   //!
   //! \tparam S the type of the returned presentation, must be a type of
-  //! Presentation and distinct from \p T
-  //! \tparam T the type of the input presentation, must be a type of
-  //! Presentation and distinct from \p S
+  //! Presentation.
+  //! \tparam W the type of the words in the input presentation
   //!
   //! \param p the input presentation
   //!
   //! \returns A value of type \p S.
   //! \throws LibsemigroupsException if `p.validate()` throws.
   template <typename S,
-            typename T,
+            typename W,
             typename
-            = std::enable_if_t<std::is_base_of<PresentationBase, S>::value
-                               && std::is_base_of<PresentationBase, T>::value>>
-  S make(T const& p) {
+            = std::enable_if_t<std::is_base_of<PresentationBase, S>::value>>
+  S make(Presentation<W> const& p) {
     return make<S>(p, [&p](auto val) { return p.index(val); });
   }
 
@@ -174,8 +172,7 @@ namespace libsemigroups {
   //! alphabet where \f$n\f$ is the size of the alphabet of the input
   //! presentation.
   //!
-  //! \tparam T the type of the input presentation, must be a type of
-  //! Presentation and distinct from \p S
+  //! \tparam W the type of the words in the input presentation
   //!
   //! \param p the input presentation
   //! \param alphabet the output presentations alphabet
@@ -183,16 +180,46 @@ namespace libsemigroups {
   //! \returns A value of type Presentation<std::string>.
   //!
   //! \throws LibsemigroupsException if `p.validate()` throws.
-  template <typename T,
-            typename
-            = std::enable_if_t<std::is_base_of<PresentationBase, T>::value>>
-  // The first parameter is passed by value intentionally since
-  // normalize_alphabet rewrites the presentation
-  Presentation<std::string> make(T p, std::string const& alphabet) {
+  //! \throws LibsemigroupsException if `p.alphabet().size()` and \p alphabet
+  //! have different sizes
+  //! \throws LibsemigroupsException if \p alphabet contains duplicates.
+  template <typename S,
+            typename W,
+            typename = std::enable_if_t<
+                std::is_same<Presentation<std::string>, S>::value>>
+  Presentation<std::string> make(Presentation<W> const& p,
+                                 std::string const&     alphabet) {
+    if (p.alphabet().size() != alphabet.size()) {
+      LIBSEMIGROUPS_EXCEPTION(
+          "incompatible alphabet sizes, the 1st argument (presentation) uses "
+          "%llu letters, 2nd argument (string) has size %llu",
+          uint64_t(p.alphabet().size()),
+          uint64_t(alphabet.size()));
+    }
+
+    std::unordered_set<char> letters;
+    letters.insert(alphabet.cbegin(), alphabet.cend());
+    if (letters.size() != alphabet.size()) {
+      LIBSEMIGROUPS_EXCEPTION(
+          "expected the 2nd argument to be duplicate-free, found \"%s\"",
+          alphabet.c_str());
+    }
+
     // to ensure that alphabet is 0, .., n - 1.
-    presentation::normalize_alphabet(p);
+    Presentation<W> q(p);
+    presentation::normalize_alphabet(q);
     return make<Presentation<std::string>>(
-        p, [&alphabet](auto val) { return alphabet[val]; });
+        q, [&alphabet](auto val) { return alphabet[val]; });
+  }
+
+  template <typename S,
+            typename W,
+            typename = std::enable_if_t<
+                std::is_same<Presentation<std::string>, S>::value>>
+  Presentation<std::string> make(Presentation<W> const& p,
+                                 char const*            alphabet) {
+    std::string alpha(alphabet);
+    return make<Presentation<std::string>>(p, alpha);
   }
 
 }  // namespace libsemigroups
