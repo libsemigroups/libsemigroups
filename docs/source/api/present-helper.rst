@@ -42,6 +42,9 @@ Contents
    * - :cpp:any:`add_inverse_rules`
      - Add rules for inverses.
 
+   * - :cpp:any:`add_zero_rules`
+     - Add rules for a zero element.
+
    * - :cpp:any:`are_rules_sorted`
      - Check if the rules :math:`u_1 = v_1, \ldots, u_n = v_n` satisfy
        :math:`u_1v_1 < \cdots < u_nv_n` where :math:`<` is the shortlex order.
