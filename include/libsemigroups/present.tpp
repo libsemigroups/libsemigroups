@@ -233,6 +233,21 @@ namespace libsemigroups {
     }
 
     template <typename W>
+    void add_zero_rules(Presentation<W>&                      p,
+                        typename Presentation<W>::letter_type z) {
+      p.validate_letter(z);
+      for (auto it = p.alphabet().cbegin(); it != p.alphabet().cend(); ++it) {
+        W       lhs = {*it, z};
+        W const rhs = {z};
+        add_rule(p, lhs, rhs);
+        if (*it != z) {
+          lhs = {z, *it};
+          add_rule(p, lhs, rhs);
+        }
+      }
+    }
+
+    template <typename W>
     void add_inverse_rules(Presentation<W>&                      p,
                            W const&                              vals,
                            typename Presentation<W>::letter_type id) {

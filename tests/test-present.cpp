@@ -157,6 +157,29 @@ namespace libsemigroups {
     }
 
     template <typename W>
+    void check_add_zero_rules() {
+      Presentation<W> p;
+      presentation::add_rule(p, {0, 1, 2, 1}, {0, 0});
+      REQUIRE_THROWS_AS(presentation::add_zero_rules(p, 0),
+                        LibsemigroupsException);
+      p.alphabet_from_rules();
+      presentation::add_zero_rules(p, 0);
+      REQUIRE(p.rules
+              == std::vector<W>({{0, 1, 2, 1},
+                                 {0, 0},
+                                 {0, 0},
+                                 {0},
+                                 {1, 0},
+                                 {0},
+                                 {0, 1},
+                                 {0},
+                                 {2, 0},
+                                 {0},
+                                 {0, 2},
+                                 {0}}));
+    }
+
+    template <typename W>
     void check_add_inverse_rules() {
       Presentation<W> p;
       presentation::add_rule(p, {0, 1, 2, 1}, {0, 0});
@@ -828,6 +851,15 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Presentation",
+                          "035",
+                          "helpers add_zero_rules (std::vector/StaticVector1)",
+                          "[quick][presentation]") {
+    auto rg = ReportGuard(false);
+    check_add_zero_rules<word_type>();
+    check_add_zero_rules<StaticVector1<uint16_t, 10>>();
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Presentation",
                           "012",
                           "helpers add_identity_rules (std::string)",
                           "[quick][presentation]") {
@@ -851,6 +883,36 @@ namespace libsemigroups {
                                          "c",
                                          "ac",
                                          "c"}));
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Presentation",
+                          "036",
+                          "helpers add_zero_rules (std::string)",
+                          "[quick][presentation]") {
+    auto                      rg = ReportGuard(false);
+    Presentation<std::string> p;
+    presentation::add_rule(p, "abcb", "aa");
+    REQUIRE_THROWS_AS(presentation::add_zero_rules(p, '0'),
+                      LibsemigroupsException);
+    p.alphabet("abc0");
+    presentation::add_zero_rules(p, '0');
+    REQUIRE(p.rules
+            == std::vector<std::string>({"abcb",
+                                         "aa",
+                                         "a0",
+                                         "0",
+                                         "0a",
+                                         "0",
+                                         "b0",
+                                         "0",
+                                         "0b",
+                                         "0",
+                                         "c0",
+                                         "0",
+                                         "0c",
+                                         "0",
+                                         "00",
+                                         "0"}));
   }
 
   LIBSEMIGROUPS_TEST_CASE("Presentation",

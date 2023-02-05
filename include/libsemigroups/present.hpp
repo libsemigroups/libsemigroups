@@ -592,6 +592,23 @@ namespace libsemigroups {
     void add_identity_rules(Presentation<W>&                      p,
                             typename Presentation<W>::letter_type e);
 
+    //! Add rules for a zero element.
+    //!
+    //! Adds rules of the form \f$az = za = z\f$ for every letter \f$a\f$ in
+    //! the alphabet of \p p, and where \f$z\f$ is the second parameter.
+    //!
+    //! \tparam W the type of the words in the presentation
+    //! \param p the presentation to add rules to
+    //! \param z the zero element
+    //!
+    //! \returns (None)
+    //!
+    //! \throws LibsemigroupsException if \p z is not a letter in
+    //! `p.alphabet()`.
+    template <typename W>
+    void add_zero_rules(Presentation<W>&                      p,
+                        typename Presentation<W>::letter_type z);
+
     //! Add rules for inverses.
     //!
     //! The letter in \c a with index \c i in \p vals is the inverse of the
