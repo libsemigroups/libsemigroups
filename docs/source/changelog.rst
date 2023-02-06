@@ -17,9 +17,9 @@ for semigroups and monoids.
   https://github.com/libsemigroups/libsemigroups/pull/451
 * word: implement user-defined literal ``_w`` for ``word_type`` by
   @james-d-mitchell in https://github.com/libsemigroups/libsemigroups/pull/449
-* New helper functions for `Presentation` by @james-d-mitchell in
+* New helper functions for ``Presentation`` by @james-d-mitchell in
   https://github.com/libsemigroups/libsemigroups/pull/453
-* Add `congruence_kind` argument check to `ToddCoxeter` function
+* Add ``congruence_kind`` argument check to ``ToddCoxeter`` function
   `to_gap_string` by @MTWhyte in
   https://github.com/libsemigroups/libsemigroups/pull/455
 
