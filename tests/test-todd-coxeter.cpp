@@ -2735,6 +2735,26 @@ namespace libsemigroups {
       REQUIRE(tc.number_of_classes() == 823543);
     }
 
+    LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
+                            "110",
+                            "to_gap_string",
+                            "[todd-coxeter][quick]") {
+      ToddCoxeter tc1(congruence_kind::right);
+      tc1.set_number_of_generators(2);
+      tc1.add_pair({0, 1}, {1, 0});
+      REQUIRE_THROWS_AS(tc1.to_gap_string(), LibsemigroupsException);
+
+      ToddCoxeter tc2(congruence_kind::left);
+      tc2.set_number_of_generators(2);
+      tc2.add_pair({0, 1}, {1, 0});
+      REQUIRE_THROWS_AS(tc2.to_gap_string(), LibsemigroupsException);
+
+      ToddCoxeter tc3(congruence_kind::twosided);
+      tc3.set_number_of_generators(2);
+      tc3.add_pair({0, 1}, {1, 0});
+      REQUIRE(tc3.to_gap_string().size() > 0);
+    }
+
   }  // namespace congruence
 
   namespace fpsemigroup {
@@ -4284,5 +4304,6 @@ namespace libsemigroups {
       REQUIRE(tc.size() == 1'451'520);
       std::cout << tc.congruence().stats_string();
     }
+
   }  // namespace fpsemigroup
 }  // namespace libsemigroups
