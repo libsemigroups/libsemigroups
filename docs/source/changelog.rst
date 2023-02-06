@@ -1,6 +1,28 @@
 Changelog - version 2
 =====================
 
+v2.6.0 (released 06/02/2023)
+----------------------------
+
+This is a minor releast including some new features related to presentations
+for semigroups and monoids.
+
+* Add a second symmetric group presentation due to Moore by @MTWhyte in
+  https://github.com/libsemigroups/libsemigroups/pull/431
+* Add three functions to ``presentation`` namespace by @james-d-mitchell in
+  https://github.com/libsemigroups/libsemigroups/pull/436
+* Add presentation for the monoid of partial isometries of a cycle graph by
+  @MTWhyte in https://github.com/libsemigroups/libsemigroups/pull/433
+* suffix-tree: fix longest common subword issue by @james-d-mitchell in
+  https://github.com/libsemigroups/libsemigroups/pull/451
+* word: implement user-defined literal ``_w`` for ``word_type`` by
+  @james-d-mitchell in https://github.com/libsemigroups/libsemigroups/pull/449
+* New helper functions for `Presentation` by @james-d-mitchell in
+  https://github.com/libsemigroups/libsemigroups/pull/453
+* Add `congruence_kind` argument check to `ToddCoxeter` function
+  `to_gap_string` by @MTWhyte in
+  https://github.com/libsemigroups/libsemigroups/pull/455
+
 v2.5.1 (released 22/12/2022)
 ----------------------------
 
