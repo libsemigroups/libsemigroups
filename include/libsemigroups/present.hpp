@@ -58,7 +58,7 @@ namespace libsemigroups {
   //! the rules of the presentation. The Presentation class template also
   //! provide some checks that the rules really defines a presentation, (i.e.
   //! it's consistent with its alphabet), and some related functionality is
-  //! available in the namespace libsemigroups::presentation.
+  //! available in the namespace `libsemigroups::presentation`.
   //!
   //! \tparam W the type of the underlying words.
   template <typename W>
