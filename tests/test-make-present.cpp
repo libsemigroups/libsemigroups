@@ -78,9 +78,8 @@ namespace libsemigroups {
       p.validate();
       REQUIRE(p.contains_empty_word());
       auto q = make<Presentation<W2>>(p);
-      REQUIRE(q.alphabet() == W2({0, 1, 2}));
+
       REQUIRE(q.contains_empty_word());
-      REQUIRE(q.rules == std::vector<W2>({{0, 1, 2}, {0, 1}, {0, 1, 2}, {}}));
       q.validate();
     }
   }  // namespace
@@ -181,6 +180,23 @@ namespace libsemigroups {
                       LibsemigroupsException);
     REQUIRE_THROWS_AS(make<Presentation<std::string>>(p, "aa"),
                       LibsemigroupsException);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("make",
+                          "005",
+                          "use human readable alphabet for make",
+                          "[quick][presentation]") {
+    Presentation<word_type> p;
+    p.alphabet(2);
+    p.contains_empty_word(true);
+    presentation::add_rule_and_check(p, {0, 1}, {});
+
+    auto q = make<Presentation<std::string>>(p);
+    REQUIRE(q.alphabet() == "ab");
+    REQUIRE(q.rules == std::vector<std::string>({"ab", ""}));
+    q = make<Presentation<std::string>>(p, "xy");
+    REQUIRE(q.alphabet() == "xy");
+    REQUIRE(q.rules == std::vector<std::string>({"xy", ""}));
   }
 
 }  // namespace libsemigroups

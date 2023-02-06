@@ -104,7 +104,8 @@ namespace libsemigroups {
   //! \tparam W the type of the words in the input presentation
   //! \tparam F the type of a function from transforming letters
   //! \param p the input presentation
-  //! \param f a function mapping S::letter_type to Presentation<W>::letter_type
+  //! \param f a function mapping `S::letter_type` to
+  //! Presentation<W>::letter_type
   //!
   //! \returns A value of type \p S.
   //! \throws LibsemigroupsException if `p.validate()` throws.
@@ -137,29 +138,28 @@ namespace libsemigroups {
     return result;
   }
 
-  //! Make a presentation from a different type of presentation.
-  //!
-  //! Returns a presentation equivalent to the input presentation but of a
-  //! different type (for example, can be used to convert from \string to \ref
-  //! word_type).
-  //!
-  //! The alphabet of the returned presentation is \f$\{0, \ldots, n - 1\}\f$
-  //! where \f$n\f$ is the size of the alphabet of the input presentation.
-  //!
-  //! \tparam S the type of the returned presentation, must be a type of
-  //! Presentation.
-  //! \tparam W the type of the words in the input presentation
-  //!
-  //! \param p the input presentation
-  //!
-  //! \returns A value of type \p S.
-  //! \throws LibsemigroupsException if `p.validate()` throws.
+  //! No doc
+  // Really the doc is in docs/source/api/present-helper.rst since JDM couldn't
+  // figure out how to use doxygenfunction in this case (since there are
+  // multiple function templates with the same arguments, just different type
+  // constraints).
   template <typename S,
             typename W,
-            typename
-            = std::enable_if_t<std::is_base_of<PresentationBase, S>::value>>
+            typename = std::enable_if_t<
+                std::is_base_of<PresentationBase, S>::value
+                && !std::is_same<Presentation<std::string>, S>::value>>
   S make(Presentation<W> const& p) {
     return make<S>(p, [&p](auto val) { return p.index(val); });
+  }
+
+  //! No doc
+  template <typename S,
+            typename W,
+            typename = std::enable_if_t<
+                std::is_same<Presentation<std::string>, S>::value>>
+  Presentation<std::string> make(Presentation<W> const& p) {
+    return make<Presentation<std::string>>(
+        p, [&p](auto val) { return presentation::character(p.index(val)); });
   }
 
   //! Make a string presentation from a different type of presentation.
@@ -212,6 +212,7 @@ namespace libsemigroups {
         q, [&alphabet](auto val) { return alphabet[val]; });
   }
 
+  //! No doc
   template <typename S,
             typename W,
             typename = std::enable_if_t<
