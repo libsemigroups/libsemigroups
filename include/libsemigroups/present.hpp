@@ -1204,6 +1204,25 @@ namespace libsemigroups {
     template <typename W>
     typename Presentation<W>::letter_type make_semigroup(Presentation<W>& p);
 
+    //! Greedily reduce the length of the presentation using
+    //! `longest_common_subword`.
+    //!
+    //! This function repeatedly calls `longest_common_subword` and
+    //! `replace_subword` to introduce a new generator and reduce the length of
+    //! the presentation \p p until `longest_common_subword` returns the empty
+    //! word.
+    //!
+    //! \tparam W the type of the words in the presentation
+    //!
+    //! \param p the presentation
+    //!
+    //! \returns (None)
+    //!
+    //! \throws LibsemigroupsException if `longest_common_subword` or
+    //!  `replace_word` does.
+    template <typename W>
+    void greedy_reduce_length(Presentation<W>& p);
+
   }  // namespace presentation
 }  // namespace libsemigroups
 

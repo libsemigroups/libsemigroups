@@ -55,6 +55,10 @@ Contents
    * - :cpp:any:`first_unused_letter`
      - Returns the first letter **not** in the alphabet of a presentation.
 
+   * - :cpp:any:`greedy_reduce_length`
+     - Greedily reduce the length of the presentation using
+       :cpp:any:`longest_common_subword`.
+
    * - :cpp:any:`length`
      - Return the sum of the lengths of the rules.
 

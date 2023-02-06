@@ -1357,4 +1357,31 @@ namespace libsemigroups {
     check_make_semigroup<std::string>();
   }
 
+  LIBSEMIGROUPS_TEST_CASE("Presentation",
+                          "038",
+                          "greedy_reduce_length",
+                          "[quick][presentation]") {
+    Presentation<std::string> p;
+    p.alphabet("ab");
+    p.rules.clear();
+    presentation::add_rule_and_check(p, "aaaaaaaaaaaaaaaa", "a");
+    presentation::add_rule_and_check(p, "bbbbbbbbbbbbbbbb", "b");
+    presentation::add_rule_and_check(p, "abb", "baa");
+    REQUIRE(presentation::length(p) == 40);
+    presentation::greedy_reduce_length(p);
+    REQUIRE(presentation::length(p) == 26);
+    REQUIRE(p.rules
+            == std::vector<std::string>({"dddd",
+                                         "a",
+                                         "cccc",
+                                         "b",
+                                         "abb",
+                                         "baa",
+                                         "c",
+                                         "bbbb",
+                                         "d",
+                                         "aaaa"}));
+    REQUIRE(presentation::longest_common_subword(p) == "");
+  }
+
 }  // namespace libsemigroups
