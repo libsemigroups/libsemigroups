@@ -50,7 +50,10 @@ Contents
        :math:`u_1v_1 < \cdots < u_nv_n` where :math:`<` is the shortlex order.
 
    * - :cpp:any:`change_alphabet`
-     - Change or re-order the alphabet.
+     - change or re-order the alphabet.
+   
+   * - :cpp:any:`character`
+     - Return a `char` by index (ordered for readability).
 
    * - :cpp:any:`first_unused_letter`
      - Returns the first letter **not** in the alphabet of a presentation.

@@ -1165,15 +1165,37 @@ namespace libsemigroups {
     //! `std::string`s the human readable characters are used before
     //! non-readable ones.
     //!
+    //! \param p a presentation (unused)
+    //! \param i the index
+    //!
+    //! \returns A `letter_type`.
+    //!
+    //! \throws LibsemigroupsException if \p i exceeds the number of letters in
+    //! supported by `letter_type`.
+    //!
+    //! \sa `character(size_t)`
+    template <>
+    inline typename Presentation<std::string>::letter_type
+    letter(Presentation<std::string> const& p, size_t i);
+
+    //! Return a possible character by index.
+    //!
+    //! This function returns the \f$i\f$-th letter in the alphabet consisting
+    //! of all possible letters of type Presentation<std::string>::letter_type.
+    //! This function exists so that visible ASCII characters occur before
+    //! invisible ones, so that when manipulating presentations over
+    //! `std::string`s the human readable characters are used before
+    //! non-readable ones.
+    //!
     //! \tparam W the type of the words in the presentation
     //!
     //! \returns A `letter_type`.
     //!
-    //! \throws LibsemigroupsException if `i` exceeds the number of letters in
+    //! \throws LibsemigroupsException if \p i exceeds the number of letters in
     //! supported by `letter_type`.
-    template <>
-    inline typename Presentation<std::string>::letter_type
-    letter(Presentation<std::string> const&, size_t i);
+    //!
+    //! \sa `letter(Presentation<std::string> const&, size_t)`
+    inline typename Presentation<std::string>::letter_type character(size_t i);
 
     //! Returns the first letter **not** in the alphabet of a presentation.
     //!
