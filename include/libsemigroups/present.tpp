@@ -757,5 +757,14 @@ namespace libsemigroups {
       return e;
     }
 
+    template <typename W>
+    void greedy_reduce_length(Presentation<W>& p) {
+      auto w = longest_common_subword(p);
+      while (!w.empty()) {
+        replace_subword(p, w);
+        w = longest_common_subword(p);
+      }
+    }
+
   }  // namespace presentation
 }  // namespace libsemigroups
