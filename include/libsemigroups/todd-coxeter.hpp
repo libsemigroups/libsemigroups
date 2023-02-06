@@ -1706,8 +1706,9 @@ namespace libsemigroups {
       //! \returns
       //! A \c std::string.
       //!
-      //! \throws LibsemigroupsException if the number of generators exceeds
-      //! 49.
+      //! \throws LibsemigroupsException if the ToddCoxeter instance does not
+      //! have kind `twosided`.
+      //! \throws LibsemigroupsException if the number of generators exceeds 49.
       std::string to_gap_string();
 
      private:

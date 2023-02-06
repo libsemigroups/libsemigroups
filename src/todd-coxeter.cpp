@@ -1502,6 +1502,11 @@ namespace libsemigroups {
     std::string ToddCoxeter::to_gap_string() {
       std::string const alphabet
           = "abcdefghijklmnopqrstuvwxyzABCDFGHIJKLMNOPQRSTUVWY";
+      if (kind() != congruence_kind::twosided) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "expected congruence kind to be twosided, found "
+            + congruence_kind_to_string(kind()));
+      }
       if (number_of_generators() > 49) {
         LIBSEMIGROUPS_EXCEPTION("expected at most 49 generators, found %llu!",
                                 uint64_t(number_of_generators()));
