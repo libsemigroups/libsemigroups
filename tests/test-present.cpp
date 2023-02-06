@@ -26,6 +26,7 @@
 #include "libsemigroups/bipart.hpp"        // for Bipartition
 #include "libsemigroups/containers.hpp"    // for StaticVector1
 #include "libsemigroups/froidure-pin.hpp"  // for FroidurePin
+#include "libsemigroups/int-range.hpp"     // for IntegralRange
 #include "libsemigroups/knuth-bendix.hpp"  // for redundant_rule
 #include "libsemigroups/make-present.hpp"  // for make
 #include "libsemigroups/present.hpp"       // for Presentation
@@ -1244,6 +1245,16 @@ namespace libsemigroups {
     Presentation<std::vector<uint16_t>> p;
     REQUIRE_THROWS_AS(presentation::letter(p, 65536), LibsemigroupsException);
     REQUIRE(presentation::letter(p, 10) == 10);
+    REQUIRE_THROWS_AS(presentation::character(65536), LibsemigroupsException);
+    REQUIRE(presentation::character(0) == 'a');
+    REQUIRE(presentation::character(10) == 'k');
+
+    IntegralRange<size_t>     ir(0, 255);
+    Presentation<std::string> q;
+
+    REQUIRE(std::all_of(ir.cbegin(), ir.cend(), [&q](size_t i) {
+      return presentation::character(i) == presentation::letter(q, i);
+    }));
   }
 
   LIBSEMIGROUPS_TEST_CASE("Presentation",

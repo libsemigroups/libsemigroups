@@ -675,6 +675,10 @@ namespace libsemigroups {
     template <>
     typename Presentation<std::string>::letter_type
     letter(Presentation<std::string> const&, size_t i) {
+      return character(i);
+    }
+
+    typename Presentation<std::string>::letter_type character(size_t i) {
       using letter_type = typename Presentation<std::string>::letter_type;
       // Choose visible characters a-zA-Z0-9 first before anything else
       // The ascii ranges for these characters are: [97, 123), [65, 91),
