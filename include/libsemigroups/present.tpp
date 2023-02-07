@@ -21,6 +21,75 @@
 
 namespace libsemigroups {
 
+  template <typename T>
+  T operator<<(T const& u, T const& w) {
+    T result(u);
+    result.insert(result.end(), w.cbegin(), w.cend());
+    return result;
+  }
+
+  static inline std::string operator<<(std::string const& u, char const* w) {
+    return std::string(u) << std::string(w);
+  }
+
+  template <typename T>
+  void operator<<=(T& u, T const& v) {
+    u.insert(u.end(), v.cbegin(), v.cend());
+  }
+
+  template <typename T>
+  T pow(T const& x, size_t n) {
+    T y(x);
+    T z(n % 2 == 0 ? T({}) : y);
+    z.reserve(x.size() * n);
+
+    while (n > 1) {
+      y <<= y;
+      n /= 2;
+      if (n % 2 == 1) {
+        z <<= y;
+      }
+    }
+    return z;
+  }
+
+  static inline std::string pow(char const* w, size_t n) {
+    return pow(std::string(w), n);
+  }
+  static inline word_type pow(std::initializer_list<size_t> ilist, size_t n) {
+    return pow(word_type(ilist), n);
+  }
+
+  template <typename T>
+  T prod(T const& elts, size_t first, size_t last, int step) {
+    if (step == 0) {
+      LIBSEMIGROUPS_EXCEPTION("the 4th argument must not be 0");
+    } else if (((first < last && step > 0) || (first > last && step < 0))
+               && elts.size() == 0) {
+      LIBSEMIGROUPS_EXCEPTION(
+          "1st argument must be empty if the given range is nonempty");
+    }
+    T result;
+
+    if (first < last) {
+      if (step < 0) {
+        return result;
+      }
+      for (size_t i = first; i < last; i += step) {
+        result.push_back(elts[i % elts.size()]);
+      }
+    } else {
+      if (step > 0) {
+        return result;
+      }
+      size_t steppos = static_cast<size_t>(-step);
+      for (size_t i = first; i > last; i -= steppos) {
+        result.push_back(elts[i % elts.size()]);
+      }
+    }
+    return result;
+  }
+
   namespace detail {
     template <typename W>
     void validate_rules_length(Presentation<W> const& p) {
