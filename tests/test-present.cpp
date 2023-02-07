@@ -2039,4 +2039,69 @@ namespace libsemigroups {
     }
   }
 
+  LIBSEMIGROUPS_TEST_CASE("word_functions",
+                          "043",
+                          "operator<<",
+                          "[quick][word_functions]") {
+    word_type w = {0, 1};
+    word_type v = {2};
+    REQUIRE((w << v) == word_type({0, 1, 2}));
+    REQUIRE((w << v << w) == word_type({0, 1, 2, 0, 1}));
+
+    REQUIRE((word_type({0, 1, 0}) << word_type({2}))
+            == word_type({0, 1, 0, 2}));
+    REQUIRE((word_type({0}) << word_type({})) == word_type({0}));
+    REQUIRE((word_type({}) << word_type({0})) == word_type({0}));
+
+    std::string x = "ab";
+    std::string y = "c";
+    REQUIRE((x << y) == "abc");
+    REQUIRE((std::string("") << "a") == "a");
+    REQUIRE((std::string("a") << "bcb"
+                              << "ad")
+            == "abcbad");
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("word_functions",
+                          "044",
+                          "pow",
+                          "[quick][word_functions]") {
+    word_type w = {0, 1};
+    REQUIRE(pow(w, 0) == word_type({}));
+    REQUIRE(pow(w, 1) == w);
+    REQUIRE(pow(w, 2) == word_type({0, 1, 0, 1}));
+    REQUIRE(pow(pow(w, 2), 3)
+            == word_type({0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1}));
+    for (size_t i = 0; i <= 1'000'000; i += 1000) {
+      REQUIRE(pow(word_type({0}), i) == word_type(i, 0));
+    }
+
+    REQUIRE(pow(std::string("ab"), 2) == std::string("abab"));
+
+    REQUIRE(pow("a", 5) == "aaaaa");
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("word_functions",
+                          "045",
+                          "prod",
+                          "[quick][word_functions]") {
+    word_type eps = {0, 1, 2, 3, 4, 5};
+    REQUIRE(prod(eps, 1, 6, 2) == word_type({1, 3, 5}));
+    REQUIRE(prod(eps, 0, 6, 1) == eps);
+    REQUIRE(prod(eps, 5, 0, -1) == word_type({5, 4, 3, 2, 1}));
+    REQUIRE(prod(eps, 5, 3, 1) == word_type({}));
+    REQUIRE(prod(eps, 3, 10, -1) == word_type({}));
+
+    REQUIRE(prod({1, 2, 4, 5}, 0, 8, 3) == word_type({1, 5, 4}));
+    REQUIRE(prod({0, 1}, 0, 0, 1) == word_type({}));
+
+    REQUIRE(prod(std::string("abcdef"), 0, 6, 2) == "ace");
+
+    REQUIRE_THROWS_AS(prod({}, 0, 1, 1), LibsemigroupsException);
+
+    REQUIRE(prod({}, 0, 0, 1) == word_type({}));
+    REQUIRE(prod({0}, 1, 1, -1) == word_type({}));
+
+    REQUIRE_THROWS_AS(prod({0, 1}, 0, 1, 0), LibsemigroupsException);
+  }
 }  // namespace libsemigroups
