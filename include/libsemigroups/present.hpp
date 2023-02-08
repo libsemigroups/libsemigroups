@@ -75,6 +75,8 @@ namespace libsemigroups {
     template <typename T>
     T operator<<(T const& u, T const& w);
 
+    std::string operator<<(std::string const& u, char const* w);
+
     //! Take a power of a word.
     //!
     //! Returns the `n`th power of the word given by `u` .
@@ -99,18 +101,16 @@ namespace libsemigroups {
     //! \returns A word_type
     //!
     //! \noexcept
-    static inline word_type pow(std::initializer_list<size_t> ilist, size_t n);
-    static inline std::string pow(char const* w, size_t n);
+    word_type pow(std::initializer_list<size_t> ilist, size_t n);
+    std::string pow(char const* w, size_t n);
 
     template <typename T>
     T prod(T const& elts, size_t first, size_t last, int step);
 
-    static inline word_type prod(std::initializer_list<size_t> ilist,
+    word_type prod(std::initializer_list<size_t> ilist,
                                  size_t                        first,
                                  size_t                        last,
-                                 size_t                        step) {
-      return prod(word_type(ilist), first, last, step);
-    }
+                                 size_t                        step);
   }  // namespace presentation
 
   //! No doc
