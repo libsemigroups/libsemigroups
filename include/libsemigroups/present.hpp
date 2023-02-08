@@ -47,55 +47,71 @@
 
 namespace libsemigroups {
 
-  //! Concatenate two words or strings.
-  //!
-  //! Returns the concatenation of `u` and `w`.
-  //!
-  //! \param u a word or string
-  //! \param n a word or string
-  //!
-  //! \returns A word_type or string
-  //!
-  //! \noexcept
   template <typename T>
-  T operator<<(T const& u, T const& w);
+  struct IsWord {
+    static constexpr bool value = false;
+  };
+  template <>
+  struct IsWord<word_type> {
+    static constexpr bool value = true;
+  };
+  template <>
+  struct IsWord<std::string> {
+    static constexpr bool value = true;
+  };
 
-  //! Take a power of a word.
-  //!
-  //! Returns the `n`th power of the word given by `u` .
-  //!
-  //! \param a word
-  //! \param n the power
-  //!
-  //! \returns A word_type
-  //!
-  //! \noexcept
-  template <typename T>
-  T pow(T const& w, size_t n);
+  namespace presentation {
 
-  //! Take a power of a word.
-  //!
-  //! Returns the `n`th power of the word corresponding to the initializer list
-  //! `ilist`.
-  //!
-  //! \param ilist the initializer list
-  //! \param n the power
-  //!
-  //! \returns A word_type
-  //!
-  //! \noexcept
-  static inline word_type   pow(std::initializer_list<size_t> ilist, size_t n);
-  static inline std::string pow(char const* w, size_t n);
+    //! Concatenate two words or strings.
+    //!
+    //! Returns the concatenation of `u` and `w`.
+    //!
+    //! \param u a word or string
+    //! \param n a word or string
+    //!
+    //! \returns A word_type or string
+    //!
+    //! \noexcept
+    template <typename T>
+    T operator<<(T const& u, T const& w);
 
-  template <typename T>
-  T prod(T const& elts, size_t first, size_t last, int step);
+    //! Take a power of a word.
+    //!
+    //! Returns the `n`th power of the word given by `u` .
+    //!
+    //! \param a word
+    //! \param n the power
+    //!
+    //! \returns A word_type
+    //!
+    //! \noexcept
+    template <typename T>
+    T pow(T const& w, size_t n);
 
-  static inline word_type prod(std::initializer_list<size_t> ilist,
-                               size_t                        first,
-                               size_t                        last,
-                               size_t                        step) {
-    return prod(word_type(ilist), first, last, step);
-  }
+    //! Take a power of a word.
+    //!
+    //! Returns the `n`th power of the word corresponding to the initializer
+    //! list `ilist`.
+    //!
+    //! \param ilist the initializer list
+    //! \param n the power
+    //!
+    //! \returns A word_type
+    //!
+    //! \noexcept
+    static inline word_type pow(std::initializer_list<size_t> ilist, size_t n);
+    static inline std::string pow(char const* w, size_t n);
+
+    template <typename T>
+    T prod(T const& elts, size_t first, size_t last, int step);
+
+    static inline word_type prod(std::initializer_list<size_t> ilist,
+                                 size_t                        first,
+                                 size_t                        last,
+                                 size_t                        step) {
+      return prod(word_type(ilist), first, last, step);
+    }
+  }  // namespace presentation
 
   //! No doc
   struct PresentationBase {};
