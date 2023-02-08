@@ -1399,8 +1399,9 @@ namespace libsemigroups {
                           "043",
                           "operator<<",
                           "[quick][word_functions]") {
-    word_type w = {0, 1};
-    word_type v = {2};
+    using presentation::operator<<;
+    word_type           w = {0, 1};
+    word_type           v = {2};
     REQUIRE((w << v) == word_type({0, 1, 2}));
     REQUIRE((w << v << w) == word_type({0, 1, 2, 0, 1}));
 
@@ -1422,6 +1423,7 @@ namespace libsemigroups {
                           "044",
                           "pow",
                           "[quick][word_functions]") {
+    using presentation::pow;
     word_type w = {0, 1};
     REQUIRE(pow(w, 0) == word_type({}));
     REQUIRE(pow(w, 1) == w);
@@ -1441,6 +1443,7 @@ namespace libsemigroups {
                           "045",
                           "prod",
                           "[quick][word_functions]") {
+    using presentation::prod;
     word_type eps = {0, 1, 2, 3, 4, 5};
     REQUIRE(prod(eps, 1, 6, 2) == word_type({1, 3, 5}));
     REQUIRE(prod(eps, 0, 6, 1) == eps);
