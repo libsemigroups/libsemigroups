@@ -581,6 +581,7 @@ libsemigroups_la_SOURCES += src/make-present.cpp
 libsemigroups_la_SOURCES += src/node-manager.cpp
 libsemigroups_la_SOURCES += src/obvinf.cpp
 libsemigroups_la_SOURCES += src/pbr.cpp
+libsemigroups_la_SOURCES += src/present.cpp
 libsemigroups_la_SOURCES += src/race.cpp
 libsemigroups_la_SOURCES += src/report.cpp
 libsemigroups_la_SOURCES += src/runner.cpp

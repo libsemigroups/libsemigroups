@@ -29,10 +29,6 @@ namespace libsemigroups {
       return result;
     }
 
-    static inline std::string operator<<(std::string const& u, char const* w) {
-      return std::string(u) << std::string(w);
-    }
-
     // Add stuff here to make sure T is
     template <typename T, typename = std::enable_if_t<IsWord<T>::value>>
     void operator<<=(T& u, T const& v) {
@@ -53,13 +49,6 @@ namespace libsemigroups {
         }
       }
       return z;
-    }
-
-    static inline std::string pow(char const* w, size_t n) {
-      return pow(std::string(w), n);
-    }
-    static inline word_type pow(std::initializer_list<size_t> ilist, size_t n) {
-      return pow(word_type(ilist), n);
     }
 
     template <typename T>
