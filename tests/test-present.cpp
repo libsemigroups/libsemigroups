@@ -31,6 +31,7 @@
 #include "libsemigroups/make-present.hpp"  // for make
 #include "libsemigroups/present.hpp"       // for Presentation
 #include "libsemigroups/types.hpp"         // for word_type
+#include "libsemigroups/word.hpp"
 
 namespace libsemigroups {
 
@@ -2043,6 +2044,7 @@ namespace libsemigroups {
                           "043",
                           "operator<<",
                           "[quick][word_functions]") {
+    using namespace literals;
     using presentation::operator<<;
     word_type           w = {0, 1};
     word_type           v = {2};
@@ -2067,13 +2069,13 @@ namespace libsemigroups {
                           "044",
                           "pow",
                           "[quick][word_functions]") {
+    using namespace literals;
     using presentation::pow;
-    word_type w = {0, 1};
+    word_type w = 01_w;
     REQUIRE(pow(w, 0) == word_type({}));
     REQUIRE(pow(w, 1) == w);
-    REQUIRE(pow(w, 2) == word_type({0, 1, 0, 1}));
-    REQUIRE(pow(pow(w, 2), 3)
-            == word_type({0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1}));
+    REQUIRE(pow(w, 2) == 0101_w);
+    REQUIRE(pow(pow(w, 2), 3) == 010101010101_w);
     for (size_t i = 0; i <= 1'000'000; i += 1000) {
       REQUIRE(pow(word_type({0}), i) == word_type(i, 0));
     }
@@ -2087,15 +2089,16 @@ namespace libsemigroups {
                           "045",
                           "prod",
                           "[quick][word_functions]") {
+    using namespace literals;
     using presentation::prod;
-    word_type eps = {0, 1, 2, 3, 4, 5};
-    REQUIRE(prod(eps, 1, 6, 2) == word_type({1, 3, 5}));
+    word_type eps = 012345_w;
+    REQUIRE(prod(eps, 1, 6, 2) == 135_w);
     REQUIRE(prod(eps, 0, 6, 1) == eps);
-    REQUIRE(prod(eps, 5, 0, -1) == word_type({5, 4, 3, 2, 1}));
+    REQUIRE(prod(eps, 5, 0, -1) == 54321_w);
     REQUIRE(prod(eps, 5, 3, 1) == word_type({}));
     REQUIRE(prod(eps, 3, 10, -1) == word_type({}));
 
-    REQUIRE(prod({1, 2, 4, 5}, 0, 8, 3) == word_type({1, 5, 4}));
+    REQUIRE(prod({1, 2, 4, 5}, 0, 8, 3) == 154_w);
     REQUIRE(prod({0, 1}, 0, 0, 1) == word_type({}));
 
     REQUIRE(prod(std::string("abcdef"), 0, 6, 2) == "ace");
