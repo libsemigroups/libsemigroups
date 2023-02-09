@@ -37,9 +37,9 @@ namespace libsemigroups {
     }
 
     word_type prod(std::initializer_list<size_t> ilist,
-                                 size_t                        first,
-                                 size_t                        last,
-                                 size_t                        step) {
+                   size_t                        first,
+                   size_t                        last,
+                   size_t                        step) {
       return prod(word_type(ilist), first, last, step);
     }
   }  // namespace presentation

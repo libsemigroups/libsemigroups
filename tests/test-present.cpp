@@ -1466,4 +1466,39 @@ namespace libsemigroups {
 
     REQUIRE_THROWS_AS(prod({0, 1}, 0, 1, 0), LibsemigroupsException);
   }
+
+  LIBSEMIGROUPS_TEST_CASE("word_functions",
+                          "046",
+                          "insert_prod",
+                          "[quick][word_functions]") {
+    using namespace literals;
+    using presentation::insert_prod;
+    using presentation::operator<<;
+    word_type           eps = 012345_w;
+
+    word_type w1 = 11_w;
+    insert_prod(w1, eps, 1, 6, 2);
+    REQUIRE(w1 == 11135_w);
+
+    word_type w2 = 11_w;
+    insert_prod(w2, eps, 0, 6, 1);
+    REQUIRE(w2 == 11_w << eps);
+
+    word_type w3 = 01_w;
+    insert_prod(w3, eps, 5, 0, -1);
+    REQUIRE(w3 == 0154321_w);
+
+    word_type w4 = 00_w;
+    insert_prod(w4, {1, 2, 4, 5}, 0, 8, 3);
+    REQUIRE(w4 == 00154_w);
+
+    std::string eps2 = "abcdef";
+    std::string u    = "a";
+    insert_prod(u, eps2, 0, 6, 2);
+    REQUIRE(u == "aace");
+
+    word_type w5 = 0_w;
+    REQUIRE_THROWS_AS(insert_prod(w5, {}, 0, 1, 1), LibsemigroupsException);
+    REQUIRE_THROWS_AS(insert_prod(w5, {0, 1}, 0, 1, 0), LibsemigroupsException);
+  }
 }  // namespace libsemigroups
