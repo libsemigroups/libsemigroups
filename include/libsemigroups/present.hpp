@@ -101,16 +101,28 @@ namespace libsemigroups {
     //! \returns A word_type
     //!
     //! \noexcept
-    word_type pow(std::initializer_list<size_t> ilist, size_t n);
+    word_type   pow(std::initializer_list<size_t> ilist, size_t n);
     std::string pow(char const* w, size_t n);
 
     template <typename T>
     T prod(T const& elts, size_t first, size_t last, int step);
 
     word_type prod(std::initializer_list<size_t> ilist,
-                                 size_t                        first,
-                                 size_t                        last,
-                                 size_t                        step);
+                   size_t                        first,
+                   size_t                        last,
+                   size_t                        step);
+
+    template <typename T>
+    void insert_prod(T& w, T const& elts, size_t first, size_t last, int step);
+
+    template <typename T>
+    void insert_prod(T&                            w,
+                     std::initializer_list<size_t> ilist,
+                     size_t                        first,
+                     size_t                        last,
+                     int                           step) {
+      insert_prod(w, word_type(ilist), first, last, step);
+    }
   }  // namespace presentation
 
   //! No doc

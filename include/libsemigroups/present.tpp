@@ -82,6 +82,12 @@ namespace libsemigroups {
       }
       return result;
     }
+
+    template <typename T>
+    void insert_prod(T& w, T const& elts, size_t first, size_t last, int step) {
+      T u = prod(elts, first, last, step);
+      w.insert(w.cend(), u.cbegin(), u.cend());
+    }
   }  // namespace presentation
 
   namespace detail {
