@@ -40,6 +40,15 @@ namespace libsemigroups {
         _standardized(order::none),
         _word_graph() {}
 
+  void ToddCoxeter::init(congruence_kind knd) {
+    v3::CongruenceInterface::init(knd);
+    _finished = false;
+    _forest.init();
+    _settings     = Settings();
+    _standardized = order::none;
+    _word_graph.init();
+  }
+
   ToddCoxeter::ToddCoxeter(congruence_kind knd, Presentation<word_type>&& p)
       : v3::CongruenceInterface(knd),
         _finished(false),
@@ -47,6 +56,14 @@ namespace libsemigroups {
         _settings(),
         _standardized(order::none),
         _word_graph() {
+    if (knd == congruence_kind::left) {
+      presentation::reverse(p);
+    }
+    _word_graph.init2(std::move(p));  // FIXME
+  }
+
+  void ToddCoxeter::init(congruence_kind knd, Presentation<word_type>&& p) {
+    init(knd);
     if (knd == congruence_kind::left) {
       presentation::reverse(p);
     }
@@ -61,6 +78,18 @@ namespace libsemigroups {
         _settings(),
         _standardized(order::none),
         _word_graph() {
+    if (knd == congruence_kind::left) {
+      Presentation<word_type> pp(p);
+      presentation::reverse(pp);
+      _word_graph.init2(std::move(pp));  // FIXME
+    } else {
+      _word_graph.init2(p);  // FIXME
+    }
+  }
+
+  void ToddCoxeter::init(congruence_kind                knd,
+                         Presentation<word_type> const& p) {
+    init(knd);
     if (knd == congruence_kind::left) {
       Presentation<word_type> pp(p);
       presentation::reverse(pp);
@@ -99,6 +128,58 @@ namespace libsemigroups {
 
   ToddCoxeter::options::strategy ToddCoxeter::strategy() const noexcept {
     return _settings.strategy;
+  }
+
+  // ToddCoxeter& ToddCoxeter::lookahead(options::lookahead x) noexcept {
+  //   if (!(x & options::lookahead::felsch) && !(x & options::lookahead::hlt))
+  //   {
+  //     x = x | options::lookahead::hlt;
+  //   }
+  //   _settings->lookahead = x;
+  //   return *this;
+  // }
+
+  // ToddCoxeter::options::lookahead ToddCoxeter::lookahead() const noexcept {
+  //   return _settings->lookahead;
+  // }
+
+  ToddCoxeter& ToddCoxeter::lookahead_next(size_t n) noexcept {
+    _settings.lookahead_next = n;
+    return *this;
+  }
+
+  size_t ToddCoxeter::lookahead_next() const noexcept {
+    return _settings.lookahead_next;
+  }
+
+  ToddCoxeter& ToddCoxeter::lookahead_min(size_t n) noexcept {
+    _settings.lookahead_min = n;
+    return *this;
+  }
+
+  size_t ToddCoxeter::lookahead_min() const noexcept {
+    return _settings.lookahead_min;
+  }
+
+  ToddCoxeter& ToddCoxeter::lookahead_growth_factor(float val) {
+    if (val < 1.0) {
+      LIBSEMIGROUPS_EXCEPTION_V3("Expected a value >= 1.0, found {}", val);
+    }
+    _settings.lookahead_growth_factor = val;
+    return *this;
+  }
+
+  float ToddCoxeter::lookahead_growth_factor() const noexcept {
+    return _settings.lookahead_growth_factor;
+  }
+
+  ToddCoxeter& ToddCoxeter::lookahead_growth_threshold(size_t val) noexcept {
+    _settings.lookahead_growth_threshold = val;
+    return *this;
+  }
+
+  size_t ToddCoxeter::lookahead_growth_threshold() const noexcept {
+    return _settings.lookahead_growth_threshold;
   }
 
   ////////////////////////////////////////////////////////////////////////
@@ -223,30 +304,41 @@ namespace libsemigroups {
       //     _deduct->clear();
       //   }
       // }
-      // if ((!save() || _deduct->any_skipped())
-      //     && number_of_cosets_active() > next_lookahead()) {
-      //   // If save() == true and no deductions were skipped, then we have
-      //   // already run process_deductions, and so there's no point in
-      //   doing
-      //   // a lookahead.
-      //   perform_lookahead();
-      // }
+      // if ((!save() || _word_graph.deductions().any_skipped())
+      if (_word_graph.number_of_nodes_active() > lookahead_next()) {
+        // If save() == true and no deductions were skipped, then we have
+        // already run process_deductions, and so there's no point in doing a
+        // lookahead.
+        perform_lookahead();
+      }
       if (report()) {
         report_active_nodes();
       }
       current = _word_graph.next_active_node(current);
     }
-    // finalise_run(tmr);
     // if (do_pop_settings) {
     //   pop_settings();
     // }
   }
 
+  void ToddCoxeter::report_next_lookahead(size_t old_value) const {
+    if (report::should_report()) {
+      std::string fmt = "\t{:12L} {:+12L}\n";
+      REPORT_DEFAULT(FORMAT("next lookahead at \t{:12L} ({:+12L})\n",
+                            fmt::group_digits(lookahead_next()),
+                            int64_t(lookahead_next() - old_value)));
+    }
+  }
+
   void ToddCoxeter::perform_lookahead() {
+    if (report::should_report()) {
+      fmt::print("#0: ToddCoxeter: performing {} {} lookahead . . .\n",
+                 lookahead_extent(),
+                 lookahead_style());
+    }
     auto  old_cursor = _word_graph.cursor();
     auto& current    = _word_graph.cursor();
 
-    // TODO report starting lookahead
     if (lookahead_extent() == options::lookahead_extent::partial) {
       // Start lookahead from the coset after _current
       current = _word_graph.next_active_node(current);
@@ -264,29 +356,28 @@ namespace libsemigroups {
       number_of_killed = felsch_lookahead();
     }
 
-    current = old_cursor;
+    current = _word_graph.find_node(old_cursor);
 
-    // TODO report_cosets_killed(__func__, number_of_killed);
-    // TODO reenable the below
-    // if (number_of_cosets_active()
-    //         < (next_lookahead() / lookahead_growth_factor())
-    //     && next_lookahead() > min_lookahead()) {
-    //   // If the next_lookahead is much bigger than the current number of
-    //   // cosets, then reduce the next lookahead.
-    //   report_inc_lookahead(
-    //       __func__, lookahead_growth_factor() * number_of_cosets_active());
-    //   next_lookahead(lookahead_growth_factor() * number_of_cosets_active());
-    // } else if (number_of_cosets_active() > next_lookahead()
-    //            || number_of_killed < (number_of_cosets_active()
-    //                                   / lookahead_growth_threshold())) {
-    //   // Otherwise, if we already exceed the next_lookahead or too few
-    //   // cosets were killed, then increase the next lookahead.
-    //   report_inc_lookahead(__func__,
-    //                        next_lookahead() * lookahead_growth_factor());
-    //   _settings->next_lookahead *= lookahead_growth_factor();
-    // }
-    // report_time(__func__, t);
-    // _state = old_state;
+    // TODO report_cosets_killed(__func__, number_of_killed;
+
+    size_t const num_nodes  = _word_graph.number_of_nodes_active();
+    size_t const num_killed = _word_graph.number_of_nodes_killed();
+
+    size_t const old_lookahead_next = lookahead_next();
+
+    if (num_nodes < (lookahead_next() / lookahead_growth_factor())
+        && lookahead_next() > lookahead_min()) {
+      // If the lookahead_next is much bigger than the current number of
+      // nodes, then reduce the next lookahead.
+
+      lookahead_next(lookahead_growth_factor() * num_nodes);
+    } else if (num_nodes > lookahead_next()
+               || num_killed < (num_nodes / lookahead_growth_threshold())) {
+      // Otherwise, if we already exceed the lookahead_next or too few
+      // nodes were killed, then increase the next lookahead.
+      _settings.lookahead_next *= lookahead_growth_factor();
+    }
+    report_next_lookahead(old_lookahead_next);
   }
 
   size_t ToddCoxeter::hlt_lookahead() {
@@ -302,30 +393,31 @@ namespace libsemigroups {
     return _word_graph.number_of_nodes_killed() - old_number_of_killed;
   }
 
-  //  size_t ToddCoxeter::felsch_lookahead(state const& old_state) {
-  //    report_active_cosets(__func__);
-  // #ifdef LIBSEMIGROUPS_ENABLE_STATS
-  //    _stats.f_lookahead_calls++;
-  // #endif
-  //    size_t const old_number_of_killed = number_of_cosets_killed();
-  //    init_felsch_tree();
-  //    while (_current_la != first_free_coset()
-  //           // when running certain strategies the state is finished at
-  //           // this point, and so stopped() == true, but we anyway want to
-  //           // perform a full lookahead, which is why "_state ==
-  //           // state::finished" is in the next line.
-  //           && (old_state == state::finished || !stopped())) {
-  //      for (size_t a = 0; a < number_of_generators(); ++a) {
-  //        _deduct->emplace(_current_la, a);
-  //      }
-  //      process_deductions();
-  //      _current_la = next_active_coset(_current_la);
-  //      if (report()) {
-  //        report_active_cosets(__func__);
-  //      }
-  //    }
-  //    return number_of_cosets_killed() - old_number_of_killed;
-  //  }
+  size_t ToddCoxeter::felsch_lookahead() {
+    // TODO implement
+    //    report_active_cosets(__func__);
+    // #ifdef LIBSEMIGROUPS_ENABLE_STATS
+    //    _stats.f_lookahead_calls++;
+    // #endif
+    //    size_t const old_number_of_killed = number_of_cosets_killed();
+    //    init_felsch_tree();
+    //    while (_current_la != first_free_coset()
+    //           // when running certain strategies the state is finished at
+    //           // this point, and so stopped() == true, but we anyway want to
+    //           // perform a full lookahead, which is why "_state ==
+    //           // state::finished" is in the next line.
+    //           && (old_state == state::finished || !stopped())) {
+    //      for (size_t a = 0; a < number_of_generators(); ++a) {
+    //        _deduct->emplace(_current_la, a);
+    //      }
+    //      process_deductions();
+    //      _current_la = next_active_coset(_current_la);
+    //      if (report()) {
+    //        report_active_cosets(__func__);
+    //      }
+    //    }
+    //    return number_of_cosets_killed() - old_number_of_killed;
+  }
 
   bool ToddCoxeter::contains(word_type const& lhs, word_type const& rhs) {
     validate_word(lhs);

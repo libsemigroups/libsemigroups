@@ -61,8 +61,8 @@ namespace libsemigroups {
       size_t            lookahead_growth_threshold = 4;
       size_t            lower_bound                = UNDEFINED;
       size_t            max_preferred_defs         = 256;
-      size_t            min_lookahead              = 10'000;
-      size_t            next_lookahead             = 5'000'000;
+      size_t            lookahead_min              = 10'000;
+      size_t            lookahead_next             = 5'000'000;
       bool              restandardize              = false;
       bool              save                       = false;
       bool              standardize                = false;
@@ -90,12 +90,13 @@ namespace libsemigroups {
    public:
     // Private constructor
     ToddCoxeter(congruence_kind knd);
+    void init(congruence_kind knd);
 
-    // TODO init version
     ToddCoxeter(congruence_kind knd, Presentation<word_type>&& p);
+    void init(congruence_kind knd, Presentation<word_type>&& p);
 
-    // TODO init version
     ToddCoxeter(congruence_kind knd, Presentation<word_type> const& p);
+    void init(congruence_kind knd, Presentation<word_type> const& p);
 
     // This is a constructor and not a helper so that everything that takes a
     // presentation has the same constructors, regardless of what they use
@@ -104,6 +105,11 @@ namespace libsemigroups {
     template <typename T>
     ToddCoxeter(congruence_kind knd, Presentation<T> const& p)
         : ToddCoxeter(knd, make<Presentation<word_type>>(p)) {}
+
+    template <typename T>
+    void init(congruence_kind knd, Presentation<T> const& p) {
+      init(knd, make<Presentation<word_type>>(p));
+    }
 
     // TODO init version
     template <typename N>
@@ -200,6 +206,136 @@ namespace libsemigroups {
     options::lookahead_extent lookahead_extent() const noexcept {
       return _settings._lookahead_extent;
     }
+
+    //! Set the threshold that will trigger a lookahead in HLT.
+    //!
+    //! If the number of cosets active exceeds the value set by this
+    //! function, then a lookahead, of the type set using the function
+    //! \ref lookahead, is triggered. This only applies when using
+    //! the HLT strategy.
+    //!
+    //! The default value is 5 million.
+    //!
+    //! \param val value indicating the initial threshold.
+    //!
+    //! \returns A reference to `*this`.
+    //!
+    //! \exceptions
+    //! \noexcept
+    ToddCoxeter& lookahead_next(size_t val) noexcept;
+
+    //! The current value of the next lookahead setting.
+    //!
+    //! \parameters
+    //! None
+    //!
+    //! \returns A value of type `size_t`.
+    //!
+    //! \exceptions
+    //! \noexcept
+    //!
+    //! \sa lookahead_next(size_t)
+    size_t lookahead_next() const noexcept;
+
+    //! Set the minimum value of lookahead_next().
+    //!
+    //! After a lookahead is performed the value of lookahead_next() is
+    //! modified depending on the outcome of the current lookahead. If the
+    //! return value of lookahead_next() is too small or too large, then the
+    //! value is adjusted according to lookahead_growth_factor() and
+    //! lookahead_growth_threshold(). This setting specified the minimum
+    //! possible value for lookahead_next().
+    //!
+    //! The default value is \c 10'000.
+    //!
+    //! \param val value indicating the minimum value of lookahead_next().
+    //!
+    //! \returns A reference to `*this`.
+    //!
+    //! \exceptions
+    //! \noexcept
+    ToddCoxeter& lookahead_min(size_t val) noexcept;
+
+    //! The current value of the minimum lookahead setting.
+    //!
+    //! \parameters
+    //! None
+    //!
+    //! \returns A value of type `size_t`.
+    //!
+    //! \exceptions
+    //! \noexcept
+    //!
+    //! \sa lookahead_min(size_t)
+    size_t lookahead_min() const noexcept;
+
+    //! Set the lookahead growth factor.
+    //!
+    //! This setting determines by what factor the number of nodes required
+    //! to trigger a lookahead grows. More specifically, at the end of any
+    //! lookahead if the number of active nodes already exceeds the value of
+    //! lookahead_next() or the number of nodes killed during the lookahead
+    //! is less than the number of active nodes divided by
+    //! lookahead_growth_threshold(), then the value of
+    //! ToddCoxeter::next_lookhead is increased by a multiple of the \p value.
+    //!
+    //! \param val the value indicating the lookahead growth factor.
+    //! The default value is ``2.0``.
+    //!
+    //! \returns A reference to `*this`.
+    //!
+    //! \throws LibsemigroupsException if \p val is less than ``1.0``.
+    ToddCoxeter& lookahead_growth_factor(float val);
+
+    //! The current value of the lookahead growth factor.
+    //!
+    //! \parameters
+    //! None
+    //!
+    //! \returns A value of type `float`.
+    //!
+    //! \exceptions
+    //! \noexcept
+    //!
+    //! \sa lookahead_growth_factor(float)
+    float lookahead_growth_factor() const noexcept;
+
+    //! Set the lookahead growth threshold.
+    //!
+    //! This setting determines by what threshold for changing the number of
+    //! nodes required to trigger a lookahead grows. More specifically, at
+    //! the end of any lookahead if the number of active nodes already
+    //! exceeds the value of lookahead_next() or the number of nodes killed
+    //! during the lookahead is less than the number of active nodes divided
+    //! by \ref lookahead_growth_threshold, then the value of
+    //! ToddCoxeter::next_lookhead() is increased.
+    //!
+    //! The default value is ``4``.
+    //!
+    //! \param val the value indicating the lookahead growth threshold.
+    //!
+    //! \returns A reference to `*this`.
+    //!
+    //! \exceptions
+    //! \noexcept
+    ToddCoxeter& lookahead_growth_threshold(size_t val) noexcept;
+
+    //! The current value of the lookahead growth threshold.
+    //!
+    //! \parameters
+    //! None
+    //!
+    //! \returns A value of type `size_t`.
+    //!
+    //! \exceptions
+    //! \noexcept
+    //!
+    //! \sa lookahead_growth_threshold()
+    size_t lookahead_growth_threshold() const noexcept;
+
+    ////////////////////////////////////////////////////////////////////////
+    // Settings end
+    ////////////////////////////////////////////////////////////////////////
 
     digraph_type const& word_graph() const noexcept {
       return _word_graph;
@@ -312,7 +448,8 @@ namespace libsemigroups {
     void felsch();
     void hlt();
 
-    void report_active_nodes();
+    void report_active_nodes();  // TODO const
+    void report_next_lookahead(size_t old_value) const;
 
     ////////////////////////////////////////////////////////////////////////
     // ToddCoxeter - member functions (lookahead) - private

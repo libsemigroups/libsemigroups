@@ -39,10 +39,16 @@ namespace libsemigroups {
         // Non-mutable
         _type(type) {
     // Mutable
-    // TODO _init_ntc_done(),
-    // TODO _quotient(nullptr),
-    // TODO _non_trivial_classes() {
     // TODO reset();
+  }
+
+  void v3::CongruenceInterface::init() {
+    Runner::init();
+  }
+
+  void v3::CongruenceInterface::init(congruence_kind type) {
+    Runner::init();
+    _type = type;
   }
 
   v3::CongruenceInterface::~CongruenceInterface() = default;

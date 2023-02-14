@@ -79,6 +79,7 @@ namespace libsemigroups {
     //! \par Parameters
     //! (None)
     Runner();
+    void init();  // TODO the other inits
 
     //! Copy constructor.
     //!

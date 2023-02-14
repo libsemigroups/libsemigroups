@@ -40,6 +40,7 @@
 #include "string.hpp"  // for string_format, to_string
 
 #include "textflowcpp/TextFlow.hpp"
+#include <magic_enum/magic_enum.hpp>
 
 #ifdef LIBSEMIGROUPS_FMT_ENABLED
 #include "fmt/color.h"
@@ -526,4 +527,16 @@ namespace libsemigroups {
   };
 
 }  // namespace libsemigroups
+
+template <typename T, typename Char>
+struct fmt::formatter<T, Char, std::enable_if_t<std::is_enum_v<T>>>
+    : fmt::formatter<std::string> {
+  // parse is inherited from formatter<string_view>.
+  template <typename FormatContext>
+  auto format(T knd, FormatContext& ctx) const {
+    auto name = magic_enum::enum_name(knd);
+    return formatter<string_view>::format(name, ctx);
+  }
+};
+
 #endif  // LIBSEMIGROUPS_REPORT_HPP_

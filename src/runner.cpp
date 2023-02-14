@@ -35,6 +35,16 @@ namespace libsemigroups {
     report_every(std::chrono::seconds(1));
   }
 
+  void Runner::init() {
+    _last_report          = std::chrono::high_resolution_clock::now();
+    _report_time_interval = decltype(_report_time_interval)();
+    _run_for              = FOREVER;
+    _start_time           = decltype(_start_time)();
+    _state                = state::never_run;
+    _stopper              = decltype(_stopper)();
+    report_every(std::chrono::seconds(1));
+  }
+
   void Runner::run_for(std::chrono::nanoseconds val) {
     if (!finished() && !dead()) {
       if (val != FOREVER) {

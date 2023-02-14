@@ -77,8 +77,10 @@ namespace libsemigroups {
 
       //! Constructs a congruence of the specified type.
       explicit CongruenceInterface(congruence_kind);
+      void init(congruence_kind);
 
       CongruenceInterface() = default;
+      void init();
 
       //! Default copy constructor.
       CongruenceInterface(CongruenceInterface const&)            = default;

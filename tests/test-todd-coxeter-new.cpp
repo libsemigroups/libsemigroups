@@ -131,11 +131,11 @@ namespace libsemigroups {
         size_t const n     = tc.presentation().alphabet().size();
         auto         first = cbegin_wilo(n,
                                  tc.number_of_classes() + 1,
-                                         {0},
+                                 {0},
                                  word_type(tc.number_of_classes() + 1, 0));
         auto         last  = cend_wilo(n,
                               tc.number_of_classes() + 1,
-                                       {0},
+                              {0},
                               word_type(tc.number_of_classes() + 1, 0));
 
         std::unordered_map<node_type, word_type> map;
@@ -1130,59 +1130,36 @@ namespace libsemigroups {
     REQUIRE(tc.word_to_class_index({3}) == tc.word_to_class_index({9}));
   }
 
-  /*
   LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
                           "018",
                           "test lookahead",
                           "[todd-coxeter][quick]") {
     auto rg = ReportGuard(false);
-    {
-      ToddCoxeter tc(twosided);
-      tc.set_number_of_generators(2);
-      tc.next_lookahead(10);
-      tc.add_pair({0, 0, 0}, {0});
-      tc.add_pair({1, 0, 0}, {1, 0});
-      tc.add_pair({1, 0, 1, 1, 1}, {1, 0});
-      tc.add_pair({1, 1, 1, 1, 1}, {1, 1});
-      tc.add_pair({1, 1, 0, 1, 1, 0}, {1, 0, 1, 0, 1, 1});
-      tc.add_pair({0, 0, 1, 0, 1, 1, 0}, {0, 1, 0, 1, 1, 0});
-      tc.add_pair({0, 0, 1, 1, 0, 1, 0}, {0, 1, 1, 0, 1, 0});
-      tc.add_pair({0, 1, 0, 1, 0, 1, 0}, {1, 0, 1, 0, 1, 0});
-      tc.add_pair({1, 0, 1, 0, 1, 0, 1}, {1, 0, 1, 0, 1, 0});
-      tc.add_pair({1, 0, 1, 0, 1, 1, 0}, {1, 0, 1, 0, 1, 1});
-      tc.add_pair({1, 0, 1, 1, 0, 1, 0}, {1, 0, 1, 1, 0, 1});
-      tc.add_pair({1, 1, 0, 1, 0, 1, 0}, {1, 0, 1, 0, 1, 0});
-      tc.add_pair({1, 1, 1, 1, 0, 1, 0}, {1, 0, 1, 0});
-      tc.add_pair({0, 0, 1, 1, 1, 0, 1, 0}, {1, 1, 1, 0, 1, 0});
+    for (auto knd : {left, right, twosided}) {
+      Presentation<word_type> p;
+      p.alphabet(2);
+      presentation::add_rule_and_check(p, 000_w, 0_w);
+      presentation::add_rule_and_check(p, 100_w, 10_w);
+      presentation::add_rule_and_check(p, 10111_w, 10_w);
+      presentation::add_rule_and_check(p, 11111_w, 11_w);
+      presentation::add_rule_and_check(p, 110110_w, 101011_w);
+      presentation::add_rule_and_check(p, 0010110_w, 010110_w);
+      presentation::add_rule_and_check(p, 0011010_w, 011010_w);
+      presentation::add_rule_and_check(p, 0101010_w, 101010_w);
+      presentation::add_rule_and_check(p, 1010101_w, 101010_w);
+      presentation::add_rule_and_check(p, 1010110_w, 101011_w);
+      presentation::add_rule_and_check(p, 1011010_w, 101101_w);
+      presentation::add_rule_and_check(p, 1101010_w, 101010_w);
+      presentation::add_rule_and_check(p, 1111010_w, 1010_w);
+      presentation::add_rule_and_check(p, 00111010_w, 111010_w);
 
+      ToddCoxeter tc(knd, p);
+      tc.lookahead_next(10);
       section_hlt(tc);
       REQUIRE(tc.number_of_classes() == 78);
-      tc.standardize(order::shortlex);
+      check_standardize(tc);
     }
-    {
-      ToddCoxeter tc(left);
-      tc.set_number_of_generators(2);
-      tc.next_lookahead(10);
-      tc.add_pair({0, 0, 0}, {0});
-      tc.add_pair({1, 0, 0}, {1, 0});
-      tc.add_pair({1, 0, 1, 1, 1}, {1, 0});
-      tc.add_pair({1, 1, 1, 1, 1}, {1, 1});
-      tc.add_pair({1, 1, 0, 1, 1, 0}, {1, 0, 1, 0, 1, 1});
-      tc.add_pair({0, 0, 1, 0, 1, 1, 0}, {0, 1, 0, 1, 1, 0});
-      tc.add_pair({0, 0, 1, 1, 0, 1, 0}, {0, 1, 1, 0, 1, 0});
-      tc.add_pair({0, 1, 0, 1, 0, 1, 0}, {1, 0, 1, 0, 1, 0});
-      tc.add_pair({1, 0, 1, 0, 1, 0, 1}, {1, 0, 1, 0, 1, 0});
-      tc.add_pair({1, 0, 1, 0, 1, 1, 0}, {1, 0, 1, 0, 1, 1});
-      tc.add_pair({1, 0, 1, 1, 0, 1, 0}, {1, 0, 1, 1, 0, 1});
-      tc.add_pair({1, 1, 0, 1, 0, 1, 0}, {1, 0, 1, 0, 1, 0});
-      tc.add_pair({1, 1, 1, 1, 0, 1, 0}, {1, 0, 1, 0});
-      tc.add_pair({0, 0, 1, 1, 1, 0, 1, 0}, {1, 1, 1, 0, 1, 0});
-
-      section_hlt(tc);
-      REQUIRE(tc.number_of_classes() == 78);
-      tc.standardize(order::shortlex);
-    }
-  }*/
+  }
 
   LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
                           "020",
@@ -1432,7 +1409,7 @@ namespace libsemigroups {
         REQUIRE(tc.empty());
       }
     }
-*/
+  */
   LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
                           "028",
                           "quotient ToddCoxeter",
@@ -1552,9 +1529,10 @@ namespace libsemigroups {
     REQUIRE(tc1.number_of_classes() == 5);
 
     ToddCoxeter tc2(left, tc1);
-    // tc2.next_lookahead(1);
+    tc2.lookahead_next(1);
     tc2.report_every(1);
     section_hlt(tc2);
+    section_felsch(tc2);
     // section_random(tc2);
     tc2.add_pair({0}, {0, 0});
 
@@ -1718,20 +1696,26 @@ namespace libsemigroups {
     presentation::sort_rules(p);
     presentation::sort_each_rule(p);
     REQUIRE(presentation::length(p) == 1'467);
-    SECTION("preprocessing of the presentation . . .") {
-      presentation::greedy_reduce_length(p);
-      REQUIRE(presentation::length(p) == 1'095);
-    }
-    std::reverse(p.rules.begin(), p.rules.end());
 
+    // Makes this an extreme test
+    // SECTION("preprocessing of the presentation . . .") {
+    //   // presentation::greedy_reduce_length(p);
+    //   // REQUIRE(presentation::length(p) == 1'095);
+    //   // reducing the
+    //   ToddCoxeter tc(twosided, p);
+    //   tc.strategy(options::strategy::felsch);
+    //   REQUIRE(tc.number_of_classes() == 115'974);
+    // }
     ToddCoxeter tc(twosided, p);
+    tc.strategy(options::strategy::hlt)
+        .lookahead_extent(options::lookahead_extent::partial)
+        .lookahead_style(options::lookahead_style::hlt);
+    REQUIRE(tc.number_of_classes() == 115'974);
+
     // TODO uncomment
     // tc.strategy(options::strategy::random);
     // REQUIRE_THROWS_AS(tc.run_for(std::chrono::milliseconds(100)),
     //                   LibsemigroupsException);
-    // tc.strategy(options::strategy::hlt)
-    //     .lookahead(options::lookahead::partial | options::lookahead::hlt);
-    REQUIRE(tc.number_of_classes() == 115'974);
   }
 
   LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
@@ -2165,7 +2149,7 @@ namespace libsemigroups {
         setup(tc, 5, partition_monoid, n, author::East);
         tc.save(true);
         output_gap_benchmark_file("partition-" + std::to_string(n) + ".g",
-tc);
+  tc);
       }
     }
 
@@ -2196,8 +2180,8 @@ tc);
       for (size_t n = 3; n <= 7; ++n) {
         ToddCoxeter tc(congruence_kind::twosided);
         setup(tc, n + 1, uniform_block_bijection_monoid, n,
-author::FitzGerald); output_gap_benchmark_file( "uniform-block-bijection-" +
-std::to_string(n) + ".g", tc);
+  author::FitzGerald); output_gap_benchmark_file( "uniform-block-bijection-" +
+  std::to_string(n) + ".g", tc);
       }
     }
 
@@ -2234,7 +2218,7 @@ std::to_string(n) + ".g", tc);
         ToddCoxeter tc(congruence_kind::twosided);
         setup(tc, 4, orientation_reversing_monoid, n);
         output_gap_benchmark_file("orient-reverse-" + std::to_string(n) +
-".g", tc);
+  ".g", tc);
       }
     }
 
@@ -2248,7 +2232,7 @@ std::to_string(n) + ".g", tc);
         ToddCoxeter tc(congruence_kind::twosided);
         setup(tc, n - 1, temperley_lieb_monoid, n);
         output_gap_benchmark_file("temperley-lieb-" + std::to_string(n) +
-".g", tc);
+  ".g", tc);
       }
     }
 
@@ -2262,10 +2246,10 @@ std::to_string(n) + ".g", tc);
         ToddCoxeter tc(congruence_kind::twosided);
         setup(tc, n * n - n, singular_brauer_monoid, n);
         output_gap_benchmark_file("singular-brauer-" + std::to_string(n) +
-".g", tc);
+  ".g", tc);
       }
     }
-*/
+  */
   // TODO move the definition to fpsemi-examples.
   LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
                           "111",
@@ -2386,14 +2370,14 @@ std::to_string(n) + ".g", tc);
         tc
             .strategy(options::strategy::R_over_C)
             .lookahead(options::lookahead::felsch |
-options::lookahead::full); tc.run();
+  options::lookahead::full); tc.run();
       }
       SECTION("HLT + Felsch lookahead + save") {
         tc
             .strategy(options::strategy::hlt)
             .save(true)
             .lookahead(options::lookahead::felsch |
-options::lookahead::full) .next_lookahead(2); tc.run();
+  options::lookahead::full) .lookahead_next(2); tc.run();
       }
       SECTION("Cr + small number of f_defs") {
         tc.strategy(options::strategy::Cr).f_defs(3);
@@ -2444,10 +2428,10 @@ options::lookahead::full) .next_lookahead(2); tc.run();
     {
           ToddCoxeter tc(twosided, p);
       Presentation<std::string> p;
-p.alphabet("ab");
+  p.alphabet("ab");
       presentation::add_rule_and_check(p, "aaa", "a");
       presentation::add_rule_and_check(p, "a", "bb");
-      tc.next_lookahead(1);
+      tc.lookahead_next(1);
       section_hlt(tc);
       section_felsch(tc);
       // section_random(tc);
@@ -2459,7 +2443,7 @@ p.alphabet("ab");
       REQUIRE(tc.number_of_classes() == 5);
     }
   }
-*/
+  */
   // KnuthBendix methods fail for this one
   LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
                           "064",
@@ -2534,9 +2518,9 @@ p.alphabet("ab");
 
     ToddCoxeter tc(twosided, p);
 
-    // TODO uncomment
-    // tc.lookahead(options::lookahead::full
-    //                          | options::lookahead::felsch);
+    tc.lookahead_extent(options::lookahead_extent::full)
+        .lookahead_style(options::lookahead_style::felsch);
+
     REQUIRE(!is_obviously_infinite(tc));
     REQUIRE(tc.number_of_classes() == 1);
   }
@@ -2767,7 +2751,7 @@ p.alphabet("ab");
     tc.run_until([&tc]() -> bool {
       return tc.word_graph().number_of_nodes() >= 10'000;
     });
-    // .next_lookahead(500'000)
+    tc.lookahead_next(100'000);
     REQUIRE(!tc.finished());
     REQUIRE(!is_obviously_infinite(tc));
     tc.standardize(order::shortlex);
@@ -2785,7 +2769,6 @@ p.alphabet("ab");
     // section_CR_style(tc);
     // section_Cr_style(tc);
 
-    // This takes approx 1 seconds with Felsch . . .
     REQUIRE(tc.number_of_classes() == 1);
     tc.standardize(order::shortlex);
     REQUIRE(std::is_sorted(todd_coxeter::cbegin_normal_forms(tc),
@@ -2802,10 +2785,11 @@ p.alphabet("ab");
   }
 
   // The following example is a good one for using the lookahead.
+  // This is no longer extreme with the preprocessing
   LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
                           "072",
                           "Walker 2",
-                          "[todd-coxeter][extreme]") {
+                          "[todd-coxeter][quick]") {
     auto                      rg = ReportGuard(true);
     Presentation<std::string> p;
     p.alphabet("ab");
@@ -2821,36 +2805,34 @@ p.alphabet("ab");
     REQUIRE(presentation::length(p) == 31);
     REQUIRE(p.alphabet() == "abcd");
     REQUIRE(p.rules
-            == std::vector<std::string>({"cc",
+            == std::vector<std::string>({"dd",
                                          "a",
                                          "bbb",
                                          "b",
                                          "ababa",
                                          "b",
-                                         "cbdbcbd",
+                                         "dbcbdbc",
                                          "b",
                                          "c",
-                                         "dddd",
+                                         "aaaa",
                                          "d",
-                                         "aaaa"}));
+                                         "cccc"}));
 
     ToddCoxeter tc(twosided, p);
 
     REQUIRE(!is_obviously_infinite(tc));
 
-    // TODO uncomment
-    // SECTION("custom HLT") {
-    // tc
-    //     .sort_generating_pairs()
-    //     .next_lookahead(1'000'000)
-    //     .max_deductions(2'000)
-    //     .use_relations_in_extra(true)
-    //     .strategy(options::strategy::hlt)
-    //     .lookahead(options::lookahead::partial | options::lookahead::felsch)
-    //     .deduction_version(digraph_type::process_defs::v2)
-    //     .deduction_policy(
-    //         DefinitionOptions::definitions::no_stack_if_no_space);
-    // }
+    SECTION("custom HLT") {
+      tc.lookahead_next(1'000'000)
+          .max_definitions(2'000)
+          // .use_relations_in_extra(true)
+          .strategy(options::strategy::hlt)
+          .lookahead_extent(options::lookahead_extent::partial);
+      // .lookahead_style(options::lookahead_style::felsch);
+      // .deduction_version(digraph_type::process_defs::v2)
+      // .deduction_policy(
+      //     DefinitionOptions::definitions::no_stack_if_no_space);
+    }
 
     section_hlt(tc);
     section_felsch(tc);
@@ -2882,8 +2864,8 @@ p.alphabet("ab");
       REQUIRE(presentation::length(p) == 26);
       REQUIRE(p.alphabet() == "abcde");
     }
-    // TODO uncomment tc.next_lookahead(2'000'000);
     ToddCoxeter tc(twosided, p);
+    tc.lookahead_next(2'000'000);
     REQUIRE(!is_obviously_infinite(tc));
 
     section_hlt(tc);
@@ -2910,38 +2892,42 @@ p.alphabet("ab");
         p, "ababbbbababbbbababbbbababbbbababbbbababbbbababbbbabba", "bb");
 
     REQUIRE(presentation::length(p) == 66);
-    presentation::greedy_reduce_length(p);
-    REQUIRE(presentation::length(p) == 31);
-    REQUIRE(p.alphabet() == "abcd");
-    p.rules = std::vector<std::string>({"aaa",
-                                        "a",
-                                        "dbb",
-                                        "b",
-                                        "abeceba",
-                                        "bb",
-                                        "c",
-                                        "adab",
-                                        "d",
-                                        "bbbb",
-                                        "ccc",
-                                        "e"});
-    p.alphabet_from_rules();
-    REQUIRE(presentation::length(p) == 31);
-    // TODO uncomment tc.next_lookahead(3'000'000);
 
     ToddCoxeter tc(twosided, p);
+    tc.lookahead_next(3'000'000);
+
     REQUIRE(!is_obviously_infinite(tc));
 
     section_hlt(tc);
-    // section_random(tc);
+
+    // Felsch very slow without preprocessing
+    SECTION("preprocessing + Felsch") {
+      presentation::greedy_reduce_length(p);
+      REQUIRE(presentation::length(p) == 29);
+      REQUIRE(p.alphabet() == "abcd");
+      p.rules = std::vector<std::string>({"aaa",
+                                          "a",
+                                          "dbb",
+                                          "b",
+                                          "abeceba",
+                                          "bb",
+                                          "c",
+                                          "adab",
+                                          "d",
+                                          "bbbb",
+                                          "ccc",
+                                          "e"});
+      p.alphabet_from_rules();
+      tc.init(twosided, p);
+      tc.strategy(options::strategy::felsch);
+    }
     // TODO uncomment
+    // section_random(tc);
     // SECTION("custom R/C") {
-    //   tc.next_lookahead(3'000'000)
+    //   tc.lookahead_next(3'000'000)
     //       .strategy(options::strategy::R_over_C)
     //       .max_deductions(100'000);
     // }
-    //  Felsch very slow without preprocessing
-    // section_felsch(tc);
     REQUIRE(tc.number_of_classes() == 36'412);
   }
 
@@ -2960,24 +2946,24 @@ p.alphabet("ab");
         "bb");
     REQUIRE(presentation::length(p) == 73);
     presentation::greedy_reduce_length(p);
-    REQUIRE(presentation::length(p) == 35);
+    REQUIRE(presentation::length(p) == 34);
     REQUIRE(p.alphabet() == "abcd");
     REQUIRE(p.rules
             == std::vector<std::string>({"aaa",
                                          "a",
-                                         "dbb",
+                                         "ddd",
                                          "b",
-                                         "abcccccccbadbaa",
-                                         "bb",
-                                         "c",
-                                         "adab",
+                                         "abcccccccbaddbaa",
                                          "d",
-                                         "bbbb"}));
+                                         "c",
+                                         "addab",
+                                         "d",
+                                         "bb"}));
     presentation::replace_subword(p, "ccc");
-    REQUIRE(presentation::length(p) == 35);
+    REQUIRE(presentation::length(p) == 34);
 
     ToddCoxeter tc(twosided, p);
-    // TODO uncomment tc.next_lookahead(5'000'000);
+    tc.lookahead_next(5'000'000);
     REQUIRE(!is_obviously_infinite(tc));
 
     // This example is extremely slow with Felsch (even with the preprocessing)
@@ -3007,35 +2993,34 @@ p.alphabet("ab");
         "ababbbbababbbbababbbbababbbbababbbbababbbbababbbbabbabbbbbbbb",
         "bb");
     REQUIRE(presentation::length(p) == 77);
-    presentation::greedy_reduce_length(p);
-    REQUIRE(presentation::length(p) == 34);
-    REQUIRE(p.alphabet() == "abcde");
-    REQUIRE(p.rules
-            == std::vector<std::string>({"aaa",
-                                         "a",
-                                         "db",
-                                         "b",
-                                         "abcccccccbad",
-                                         "bb",
-                                         "c",
-                                         "aeab",
-                                         "d",
-                                         "ee",
-                                         "e",
-                                         "bbbb"}));
-    presentation::replace_subword(p, "ccc");
-    REQUIRE(presentation::length(p) == 34);
 
     ToddCoxeter tc(twosided, p);
-    // TODO uncomment tc.next_lookahead(5'000'000);
+    tc.lookahead_next(5'000'000);
     REQUIRE(!is_obviously_infinite(tc));
 
-    // This example is extremely slow with Felsch, not with the preprocessing
-    // steps above terminates in under 5 seconds
-    //
     // the random strategy
     // strategy is typically fastest
     section_hlt(tc);
+    // Takes about 3.5s with preprocessing
+    SECTION("preprocessing + Felsch") {
+      presentation::greedy_reduce_length(p);
+      REQUIRE(presentation::length(p) == 33);
+      REQUIRE(p.alphabet() == "abcd");
+      REQUIRE(p.rules
+              == std::vector<std::string>({"aaa",
+                                           "a",
+                                           "ddb",
+                                           "b",
+                                           "abcccccccbadd",
+                                           "bb",
+                                           "c",
+                                           "adab",
+                                           "d",
+                                           "bbbb"}));
+      presentation::replace_subword(p, "ccc");
+      REQUIRE(presentation::length(p) == 33);
+      tc.init(twosided, p);
+    }
     // section_random(tc);
     // section_rc_style(tc);
     // section_R_over_C_style(tc);
@@ -3061,22 +3046,24 @@ p.alphabet("ab");
 
     REQUIRE(presentation::length(p) == 48);
     presentation::greedy_reduce_length(p);
-    REQUIRE(presentation::length(p) == 30);
-    REQUIRE(p.alphabet() == "abcd");
+    REQUIRE(presentation::length(p) == 28);
+    REQUIRE(p.alphabet() == "abcde");
     REQUIRE(p.rules
             == std::vector<std::string>({"aaa",
                                          "a",
-                                         "cbb",
+                                         "cd",
                                          "b",
-                                         "adadabdb",
-                                         "bb",
-                                         "c",
-                                         "bbbbbbb",
+                                         "aeedacb",
                                          "d",
-                                         "bac"}));
+                                         "c",
+                                         "dddb",
+                                         "d",
+                                         "bb",
+                                         "e",
+                                         "baca"}));
 
     presentation::replace_subword(p, "bbb");
-    REQUIRE(presentation::length(p) == 30);
+    REQUIRE(presentation::length(p) == 32);
 
     ToddCoxeter tc(twosided, p);
     REQUIRE(!is_obviously_infinite(tc));
@@ -3084,6 +3071,7 @@ p.alphabet("ab");
     // This example is extremely slow with Felsch, not anymore with the
     // preprocessing above
     section_hlt(tc);
+    section_felsch(tc);
     // section_random(tc);
     // section_rc_style(tc); // partial lookahead is too slow
     // section_Cr_style(tc); // very slow
@@ -3154,20 +3142,21 @@ p.alphabet("ab");
 
     REQUIRE(presentation::length(p) == 46);
     presentation::greedy_reduce_length(p);
-    REQUIRE(presentation::length(p) == 28);
-    REQUIRE(p.alphabet() == "abc");
-    REQUIRE(p.rules
-            == std::vector<std::string>(
-                {"aaa", "a", "ccb", "b", "acabb", "bba", "c", "bbbbbbbbbbb"}));
-    presentation::replace_subword(p, "bbbbb");
+    REQUIRE(presentation::length(p) == 24);
+    REQUIRE(p.alphabet() == "abcd");
+    REQUIRE(
+        p.rules
+        == std::vector<std::string>(
+            {"aaa", "a", "ccb", "b", "acad", "da", "c", "dddddb", "d", "bb"}));
 
     ToddCoxeter tc(twosided, p);
     REQUIRE(!is_obviously_infinite(tc));
 
-    // TODO uncomment tc.next_lookahead(500'000);
+    tc.lookahead_next(500'000);
     // This example is extremely slow with Felsch only 4 seconds with
     // preprocessing above
     section_hlt(tc);
+    section_felsch(tc);
     // section_random(tc);
     // section_rc_style(tc); + partial lookahead too slow
     // section_Cr_style(tc); // too slow
@@ -3468,7 +3457,7 @@ p.alphabet("ab");
 
     ToddCoxeter H(right, p);
     H.add_pair({1, 2}, {});
-    // H.next_lookahead(1'000'000);
+    // H.lookahead_next(1'000'000);
 
     REQUIRE(H.number_of_classes() == 16'384);
   }
@@ -3934,7 +3923,7 @@ p.alphabet("ab");
 
     ToddCoxeter tc(twosided, p);
 
-    // tc.next_lookahead(2'000'000)
+    // tc.lookahead_next(2'000'000)
     //     .strategy(options::strategy::hlt)
     //     .sort_generating_pairs()
     //     .lookahead(options::lookahead::partial)
@@ -4193,6 +4182,9 @@ p.alphabet("ab");
     presentation::add_rule_and_check(
         p, "xyxyxyyxYxyxyxyyxYxyxyxyyxYxyxyxyyxYxyxyxyyxY", "");
     ToddCoxeter tc(twosided, p);
+
+    section_felsch(tc);
+    section_hlt(tc);
     REQUIRE(tc.number_of_classes() == 20'160);
   }
 

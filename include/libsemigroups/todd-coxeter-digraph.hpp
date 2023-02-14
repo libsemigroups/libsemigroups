@@ -100,6 +100,12 @@ namespace libsemigroups {
     ToddCoxeterDigraph& operator=(ToddCoxeterDigraph const&) = default;
     ToddCoxeterDigraph& operator=(ToddCoxeterDigraph&&)      = default;
 
+    void init() {
+      _coinc    = decltype(_coinc)();
+      _settings = Settings();
+      _stats    = Stats();
+    }
+
     // TODO corresponding init + rvalue ref version
     template <typename N>
     ToddCoxeterDigraph(ActionDigraph<N> const& ad)
@@ -342,8 +348,8 @@ namespace libsemigroups {
         // Using NoPreferredDefs is just a (more or less) arbitrary
         // choice, could allow the other choices here too (which works,
         // but didn't seem to be very useful).
+        current = NodeManager_::next_active_node(current);
       }
-      current = NodeManager_::next_active_node(current);
 
       return NodeManager_::number_of_nodes_killed() - old_number_of_killed;
     }

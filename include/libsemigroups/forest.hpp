@@ -53,6 +53,17 @@ namespace libsemigroups {
         : _edge_label(n, static_cast<size_t>(UNDEFINED)),
           _parent(n, static_cast<size_t>(UNDEFINED)) {}
 
+    void init(size_t n = 0) {
+      _edge_label.resize(n);
+      std::fill(std::begin(_edge_label),
+                std::end(_edge_label),
+                static_cast<size_t>(UNDEFINED));
+      _parent.resize(n);
+      std::fill(std::begin(_parent),
+                std::end(_parent),
+                static_cast<size_t>(UNDEFINED));
+    }
+
     //! Default copy constructor
     Forest(Forest const&) = default;
 

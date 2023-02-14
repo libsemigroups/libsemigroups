@@ -74,14 +74,4 @@ namespace libsemigroups {
   using relation_type = std::pair<word_type, word_type>;
 }  // namespace libsemigroups
 
-template <>
-struct fmt::formatter<libsemigroups::congruence_kind>
-    : fmt::formatter<std::string_view> {
-  // parse is inherited from formatter<string_view>.
-  template <typename FormatContext>
-  auto format(libsemigroups::congruence_kind knd, FormatContext& ctx) const {
-    auto name = magic_enum::enum_name(knd);
-    return formatter<string_view>::format(name, ctx);
-  }
-};
 #endif  // LIBSEMIGROUPS_TYPES_HPP_
