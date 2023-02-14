@@ -85,7 +85,10 @@ namespace libsemigroups {
     FelschDigraphSettings& init() {
       _max_definitions = 2'000;
       _policy          = felsch_digraph::def_policy::unlimited;
-      _version         = felsch_digraph::def_version::two;
+      // TODO change back to def_policy::no_stack_if_no_space, can't at present
+      // because we haven't yet reimplemented lookaheads
+
+      _version = felsch_digraph::def_version::two;
       return *this;
     }
 
@@ -302,6 +305,7 @@ namespace libsemigroups {
     using NoPreferredDefs = Noop;
     struct ReturnFalse;
 
+    // TODO remove second arg
     FelschDigraph(Presentation<word_type> const& p, size_type n);
     FelschDigraph(Presentation<word_type>&& p, size_type n);
 

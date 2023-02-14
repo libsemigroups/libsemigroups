@@ -28,6 +28,83 @@ namespace libsemigroups {
     bool constexpr StackDeductions      = true;
   }  // namespace
 
+  ////////////////////////////////////////////////////////////////////////
+  // Constructors
+  ////////////////////////////////////////////////////////////////////////
+
+  ToddCoxeter::ToddCoxeter(congruence_kind knd)
+      : v3::CongruenceInterface(knd),
+        _finished(false),
+        _forest(),
+        _settings(),
+        _standardized(order::none),
+        _word_graph() {}
+
+  ToddCoxeter::ToddCoxeter(congruence_kind knd, Presentation<word_type>&& p)
+      : v3::CongruenceInterface(knd),
+        _finished(false),
+        _forest(),
+        _settings(),
+        _standardized(order::none),
+        _word_graph() {
+    if (knd == congruence_kind::left) {
+      presentation::reverse(p);
+    }
+    _word_graph.init2(std::move(p));  // FIXME
+  }
+
+  ToddCoxeter::ToddCoxeter(congruence_kind                knd,
+                           Presentation<word_type> const& p)
+      : v3::CongruenceInterface(knd),
+        _finished(false),
+        _forest(),
+        _settings(),
+        _standardized(order::none),
+        _word_graph() {
+    if (knd == congruence_kind::left) {
+      Presentation<word_type> pp(p);
+      presentation::reverse(pp);
+      _word_graph.init2(std::move(pp));  // FIXME
+    } else {
+      _word_graph.init2(p);  // FIXME
+    }
+  }
+
+  ToddCoxeter::ToddCoxeter(congruence_kind knd, ToddCoxeter const& tc)
+      : ToddCoxeter(knd) {
+    if (tc.kind() != congruence_kind::twosided && knd != tc.kind()) {
+      LIBSEMIGROUPS_EXCEPTION_V3(
+          "incompatible types of congruence, found ({} / {}) but only (left "
+          "/ left), (right / right), (two-sided / *) are valid",
+          tc.kind(),
+          knd);
+    }
+    _word_graph.init2(tc.presentation());
+    auto& rules = _word_graph.presentation().rules;
+    rules.insert(
+        rules.end(), tc.cbegin_generating_pairs(), tc.cend_generating_pairs());
+    if (kind() == congruence_kind::left && tc.kind() != congruence_kind::left) {
+      presentation::reverse(_word_graph.presentation());
+    }
+  }
+
+  ////////////////////////////////////////////////////////////////////////
+  // Settings
+  ////////////////////////////////////////////////////////////////////////
+
+  ToddCoxeter& ToddCoxeter::strategy(options::strategy x) {
+    _settings.strategy = x;
+    return *this;
+  }
+
+  ToddCoxeter::options::strategy ToddCoxeter::strategy() const noexcept {
+    return _settings.strategy;
+  }
+
+  ////////////////////////////////////////////////////////////////////////
+  // Reporting
+  ////////////////////////////////////////////////////////////////////////
+
   void ToddCoxeter::report_active_nodes() {
     using detail::group_digits;
 
@@ -72,6 +149,11 @@ namespace libsemigroups {
     }
   }
 
+  void ToddCoxeter::finalise_run() {
+    if (!stopped()) {
+      _finished = true;
+    }
+  }
   void ToddCoxeter::felsch() {
     _word_graph.process_definitions();
 
@@ -96,6 +178,70 @@ namespace libsemigroups {
     }
   }
 
+  void ToddCoxeter::hlt() {
+    // bool do_pop_settings = false;
+    // if (save() && preferred_defs() == options::preferred_defs::deferred)
+    // {
+    //   push_settings();
+    //   do_pop_settings = true;
+    //   // The call to process_deductions in the main loop below could
+    //   // potentially accummulate large numbers of preferred definitions
+    //   in
+    //   // the queue if the preferred_defs() setting is
+    //   // options::preferred_defs::deferred, so we change it.
+    //   preferred_defs(options::preferred_defs::none);
+    // }
+
+    auto& current = _word_graph.cursor();
+    current       = _word_graph.initial_node();
+    while (current != _word_graph.first_free_node() && !stopped()) {
+      // if (!save()) {
+      auto const first = presentation().rules.cbegin();
+      auto const last  = presentation().rules.cend();
+      for (auto it = first; it < last; it += 2) {
+        _word_graph.push_definition_hlt<DoNotStackDeductions>(
+            current, *it, *(it + 1));
+        _word_graph.process_coincidences<DoNotStackDeductions>();
+      }
+      // } else {
+      //   for (auto it = _relations.cbegin(); it < _relations.cend(); it +=
+      //   2)
+      //   {
+      //     push_definition_hlt<StackDeductions, DoNotProcessCoincidences>(
+      //         _current, *it, *(it + 1));
+      //     process_deductions();
+      //     // See the comments in ToddCoxeter::felsch about the meaning of
+      //     // standardize_immediate.
+      //   }
+      // }
+      // if (standardize()) {
+      //   bool any_changes = false;
+      //   for (letter_type x = 0; x < n; ++x) {
+      //     any_changes |= standardize_immediate(_current, x);
+      //   }
+      //   if (any_changes) {
+      //     _deduct->clear();
+      //   }
+      // }
+      // if ((!save() || _deduct->any_skipped())
+      //     && number_of_cosets_active() > next_lookahead()) {
+      //   // If save() == true and no deductions were skipped, then we have
+      //   // already run process_deductions, and so there's no point in
+      //   doing
+      //   // a lookahead.
+      //   perform_lookahead();
+      // }
+      if (report()) {
+        report_active_nodes();
+      }
+      current = _word_graph.next_active_node(current);
+    }
+    // finalise_run(tmr);
+    // if (do_pop_settings) {
+    //   pop_settings();
+    // }
+  }
+
   bool ToddCoxeter::contains(word_type const& lhs, word_type const& rhs) {
     validate_word(lhs);
     validate_word(rhs);
@@ -115,6 +261,7 @@ namespace libsemigroups {
     standardize(order::shortlex);
     _word_graph.shrink_to_fit(_word_graph.number_of_nodes_active());
     _word_graph.erase_free_nodes();
+    _word_graph.restrict(_word_graph.number_of_nodes_active());
   }
 
   bool ToddCoxeter::standardize(order val) {

@@ -39,6 +39,32 @@
 namespace libsemigroups {
   class ToddCoxeter : public v3::CongruenceInterface,
                       public FelschDigraphSettings<ToddCoxeter> {
+   public:
+    struct Stats;  // forward decl
+
+    struct options {
+      enum class strategy { hlt, felsch };
+      enum class lookahead_extent { full, partial };
+      enum class lookahead_style { hlt, felsch };
+    };
+
+   private:
+    struct Settings {
+      bool use_relations_in_extra = false;
+      // TODO uncomment
+      // options::lookahead    lookahead
+      //    = options::lookahead::partial | options::lookahead::hlt;
+      float             lookahead_growth_factor    = 2.0;
+      size_t            lookahead_growth_threshold = 4;
+      size_t            lower_bound                = UNDEFINED;
+      size_t            max_preferred_defs         = 256;
+      size_t            min_lookahead              = 10'000;
+      size_t            next_lookahead             = 5'000'000;
+      bool              restandardize              = false;
+      bool              save                       = false;
+      bool              standardize                = false;
+      options::strategy strategy                   = options::strategy::hlt;
+    };
     using FelschDigraphSettings_ = FelschDigraphSettings<ToddCoxeter>;
 
    public:
@@ -50,65 +76,23 @@ namespace libsemigroups {
     // ToddCoxeter - data - private
     ////////////////////////////////////////////////////////////////////////
 
-    // std::unique_ptr<Settings>            _settings;
     // std::stack<Settings*>                _setting_stack;
     // Stats                                _stats;
     bool         _finished;
     Forest       _forest;
+    Settings     _settings;
     order        _standardized;
     digraph_type _word_graph;
 
-    // Private constructor
-    ToddCoxeter(congruence_kind knd)
-        : v3::CongruenceInterface(knd),
-          _finished(false),
-          _forest(),
-          _standardized(order::none),
-          _word_graph() {}
-
    public:
-    struct Stats;  // forward decl
-
-    struct options {
-      enum class strategy { hlt, felsch };
-      enum class lookahead_extent { full, partial };
-      enum class lookahead_style { hlt, felsch };
-    };
-
-    // ToddCoxeter()
-    //     : v3::CongruenceInterface(),
-    //       _finished(false),
-    //       _forest(),
-    //       _standardized(order::none),
-    //       _word_graph() {}
-    // TODO init version
-    ToddCoxeter(congruence_kind knd, Presentation<word_type>&& p)
-        : v3::CongruenceInterface(knd),
-          _finished(false),
-          _forest(),
-          _standardized(order::none),
-          _word_graph() {
-      if (knd == congruence_kind::left) {
-        presentation::reverse(p);
-      }
-      _word_graph.init2(std::move(p));
-    }
+    // Private constructor
+    ToddCoxeter(congruence_kind knd);
 
     // TODO init version
-    ToddCoxeter(congruence_kind knd, Presentation<word_type> const& p)
-        : v3::CongruenceInterface(knd),
-          _finished(false),
-          _forest(),
-          _standardized(order::none),
-          _word_graph() {
-      if (knd == congruence_kind::left) {
-        Presentation<word_type> pp(p);
-        presentation::reverse(pp);
-        _word_graph.init2(std::move(pp));
-      } else {
-        _word_graph.init2(p);
-      }
-    }
+    ToddCoxeter(congruence_kind knd, Presentation<word_type>&& p);
+
+    // TODO init version
+    ToddCoxeter(congruence_kind knd, Presentation<word_type> const& p);
 
     // This is a constructor and not a helper so that everything that takes a
     // presentation has the same constructors, regardless of what they use
@@ -122,33 +106,23 @@ namespace libsemigroups {
     template <typename N>
     ToddCoxeter(congruence_kind knd, ActionDigraph<N> const& ad)
         : ToddCoxeter(knd) {
-      // TODO is this the right way to init _word_graph
+      // TODO is this the right way to init _word_graph?
       _word_graph = ad;
       _word_graph.presentation().alphabet(ad.out_degree());
     }
 
-    // TODO this could be a helper?
     // TODO init version
-    ToddCoxeter(congruence_kind knd, ToddCoxeter const& tc) : ToddCoxeter(knd) {
-      if (tc.kind() != congruence_kind::twosided && knd != tc.kind()) {
-        LIBSEMIGROUPS_EXCEPTION_V3(
-            "incompatible types of congruence, found ({} / {}) but only (left "
-            "/ left), (right / right), (two-sided / *) are valid",
-            tc.kind(),
-            knd);
-      }
-      _word_graph.init2(tc.presentation());
-      auto& rules = _word_graph.presentation().rules;
-      rules.insert(rules.end(),
-                   tc.cbegin_generating_pairs(),
-                   tc.cend_generating_pairs());
-      if (kind() == congruence_kind::left
-          && tc.kind() != congruence_kind::left) {
-        presentation::reverse(_word_graph.presentation());
-      }
-    }
+    ToddCoxeter(congruence_kind knd, ToddCoxeter const& tc);
 
-    ToddCoxeter()                              = default;
+    // TODO init version
+    // ToddCoxeter() = default;
+    // TODO probably do want a default constructor
+    // ToddCoxeter()
+    //     : v3::CongruenceInterface(),
+    //       _finished(false),
+    //       _forest(),
+    //       _standardized(order::none),
+    //       _word_graph() {}
     ToddCoxeter(ToddCoxeter const& that)       = default;
     ToddCoxeter(ToddCoxeter&&)                 = default;
     ToddCoxeter& operator=(ToddCoxeter const&) = default;
@@ -167,7 +141,7 @@ namespace libsemigroups {
 
     // TODO(v3): keep
     // TODO(refactor): keep
-    // ToddCoxeter& strategy(options::strategy val);
+    ToddCoxeter& strategy(options::strategy val);
 
     //! The current strategy for enumeration.
     //!
@@ -178,7 +152,7 @@ namespace libsemigroups {
     //!
     //! \exceptions
     //! \noexcept
-    // options::strategy strategy() const noexcept;
+    options::strategy strategy() const noexcept;
 
     digraph_type const& word_graph() const noexcept {
       return _word_graph;
@@ -221,8 +195,45 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////
 
     void run_impl() override {
+      if (is_obviously_infinite(*this)) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "there are infinitely many classes in the congruence and "
+            "Todd-Coxeter will never terminate");
+      }
       init_run();
-      felsch();
+
+      if (strategy() == options::strategy::felsch) {
+        felsch();
+      } else if (strategy() == options::strategy::hlt) {
+        hlt();
+      }
+
+      finalise_run();
+
+      /*else if (strategy() == options::strategy::random) {
+        if (running_for()) {
+          LIBSEMIGROUPS_EXCEPTION(
+              "the strategy \"%s\" is incompatible with run_for!",
+              detail::to_string(strategy()).c_str());
+        }
+        random();
+      } else {
+        if (running_until()) {
+          LIBSEMIGROUPS_EXCEPTION(
+              "the strategy \"%s\" is incompatible with run_until!",
+              detail::to_string(strategy()).c_str());
+        }
+
+        if (strategy() == options::strategy::CR) {
+          CR_style();
+        } else if (strategy() == options::strategy::R_over_C) {
+          R_over_C_style();
+        } else if (strategy() == options::strategy::Cr) {
+          Cr_style();
+        } else if (strategy() == options::strategy::Rc) {
+          Rc_style();
+        }
+      }*/
     }
 
     bool finished_impl() const override {
@@ -249,6 +260,7 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////
 
     void init_run();
+    void finalise_run();
 
     void felsch();
     void hlt();
@@ -312,7 +324,7 @@ namespace libsemigroups {
                              node_type    n,
                              size_t       min = 0,
                              size_t       max = POSITIVE_INFINITY) {
-      // TODO don't add 1 if tc contains empty word
+      // TODO don't add 1 if tc contains empty word?
       return tc.word_graph().cbegin_pstislo(0, n + 1, min, max);
     }
 
@@ -329,6 +341,7 @@ namespace libsemigroups {
       return tc.word_graph().cend_pstislo();
     }
 
+    // TODO -> size_of_class?
     inline auto number_of_words(ToddCoxeter const& tc, node_type i) {
       return tc.word_graph().number_of_paths(0, i + 1, 0, POSITIVE_INFINITY);
     }
@@ -360,6 +373,7 @@ namespace libsemigroups {
     // TODO(refactor): redo the doc
     inline normal_form_iterator cbegin_normal_forms(ToddCoxeter& tc) {
       auto range = IntegralRange<node_type>(0, tc.number_of_classes());
+      // TODO use rx::range instead
       return normal_form_iterator(&tc, range.cbegin());
     }
 

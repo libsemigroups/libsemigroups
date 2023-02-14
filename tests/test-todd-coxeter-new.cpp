@@ -49,6 +49,9 @@ namespace libsemigroups {
 
   using TCE         = v3::detail::TCE;
   using KnuthBendix = fpsemigroup::KnuthBendix;
+  using options     = ToddCoxeter::options;
+
+  using namespace literals;
 
   struct LibsemigroupsException;  // Forward declaration
   congruence_kind constexpr twosided = congruence_kind::twosided;
@@ -58,8 +61,13 @@ namespace libsemigroups {
   namespace {
     void section_felsch(ToddCoxeter& tc) {
       SECTION("Felsch + no standardisation") {
-        tc.run();
-        // var.strategy(options::strategy::felsch);
+        tc.strategy(options::strategy::felsch);
+      }
+    }
+
+    void section_hlt(ToddCoxeter& tc) {
+      SECTION("HLT + no standardisation") {
+        tc.strategy(options::strategy::hlt);
       }
     }
 
@@ -182,7 +190,7 @@ namespace libsemigroups {
                           "000",
                           "small 2-sided congruence",
                           "[todd-coxeter][quick]") {
-    auto rg = ReportGuard(false);
+    auto rg = ReportGuard(true);
 
     Presentation<word_type> p;
     p.alphabet(2);
@@ -192,18 +200,20 @@ namespace libsemigroups {
     ToddCoxeter tc(twosided, p);
 
     section_felsch(tc);
+    section_hlt(tc);
 
     REQUIRE(tc.number_of_classes() == 27);
 
     check_complete_compatible(tc);
     check_standardize(tc);
 
-    // check_hlt(tc);
-    // check_random(tc);
-    // check_Rc_style(tc);
-    // check_R_over_C_style(tc);
-    // check_CR_style(tc);
-    // check_Cr_style(tc);
+    // section_random(tc);
+    // section_rc_style(tc);
+    // section_R_over_C_style(tc);
+    // section_CR_style(tc);
+    // section_Cr_style(tc);
+
+    tc.standardize(order::shortlex);
 
     auto words = std::vector<word_type>(
         todd_coxeter::cbegin_class(tc, 1, 0, 10), todd_coxeter::cend_class(tc));
@@ -237,13 +247,13 @@ namespace libsemigroups {
     ToddCoxeter tc(twosided, p);
 
     section_felsch(tc);
+    section_hlt(tc);
 
-    // check_hlt(tc);
-    // check_random(tc);
-    // check_Rc_style(tc);
-    // check_R_over_C_style(tc);
-    // check_CR_style(tc);
-    // check_Cr_style(tc);
+    // section_random(tc);
+    // section_rc_style(tc);
+    // section_R_over_C_style(tc);
+    // section_CR_style(tc);
+    // section_Cr_style(tc);
 
     REQUIRE(tc.number_of_classes() == 5);
     REQUIRE(tc.finished());
@@ -332,6 +342,7 @@ namespace libsemigroups {
   }
 
   // Felsch is actually faster here!
+  // FIXME this example is much slower in v3
   LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
                           "002",
                           "Example 6.6 in Sims (see also KnuthBendix 013)",
@@ -360,15 +371,14 @@ namespace libsemigroups {
 
     ToddCoxeter tc(twosided, p);
 
+    section_hlt(tc);
     section_felsch(tc);
 
-    // check_hlt(tc);
-    //  section_felsch(tc);
-    // check_random(tc);
-    // check_Rc_style(tc);
-    // check_R_over_C_style(tc);
-    // check_CR_style(tc);
-    // check_Cr_style(tc);
+    // section_random(tc);
+    // section_rc_style(tc);
+    // section_R_over_C_style(tc);
+    // section_CR_style(tc);
+    // section_Cr_style(tc);
     REQUIRE(tc.number_of_classes() == 10'752);
     // check_complete_compatible(tc);
 
@@ -450,12 +460,12 @@ namespace libsemigroups {
     tc.add_pair({0}, {1});
 
     section_felsch(tc);
-    //  check_hlt(tc);
-    //  check_random(tc);
-    //  check_Rc_style(tc);
-    //  check_R_over_C_style(tc);
-    //  check_CR_style(tc);
-    //  check_Cr_style(tc);
+    section_hlt(tc);
+    //  section_random(tc);
+    //  section_rc_style(tc);
+    //  section_R_over_C_style(tc);
+    //  section_CR_style(tc);
+    //  section_Cr_style(tc);
 
     // tc.random_interval(std::chrono::milliseconds(100));
     // tc.lower_bound(3);
@@ -518,6 +528,7 @@ namespace libsemigroups {
     REQUIRE(!tc.finished());
 
     section_felsch(tc);
+    section_hlt(tc);
 
     REQUIRE(tc.number_of_classes() == 21);
     tc.shrink_to_fit();
@@ -582,12 +593,12 @@ namespace libsemigroups {
     ToddCoxeter tc(twosided, p);
 
     section_felsch(tc);
-    // check_hlt(tc);
-    // check_random(tc);
-    // check_Rc_style(tc);
-    // check_R_over_C_style(tc);
-    // check_CR_style(tc);
-    // check_Cr_style(tc);
+    section_hlt(tc);
+    // section_random(tc);
+    // section_rc_style(tc);
+    // section_R_over_C_style(tc);
+    // section_CR_style(tc);
+    // section_Cr_style(tc);
 
     REQUIRE(tc.number_of_classes() == 2);
     check_standardize(tc);
@@ -606,12 +617,12 @@ namespace libsemigroups {
     ToddCoxeter tc(right, p);
 
     section_felsch(tc);
-    // check_hlt(tc);
-    // check_random(tc);
-    // check_Rc_style(tc);
-    // check_R_over_C_style(tc);
-    // check_CR_style(tc);
-    // check_Cr_style(tc);
+    section_hlt(tc);
+    // section_random(tc);
+    // section_rc_style(tc);
+    // section_R_over_C_style(tc);
+    // section_CR_style(tc);
+    // section_Cr_style(tc);
 
     REQUIRE(tc.number_of_classes() == 5);
     REQUIRE(tc.finished());
@@ -632,12 +643,12 @@ namespace libsemigroups {
       // TODO uncomment tc.growth_factor(1.5);
 
       section_felsch(tc);
-      // check_hlt(tc);
-      // check_random(tc);
-      // check_Rc_style(tc);
-      // check_R_over_C_style(tc);
-      // check_CR_style(tc);
-      // check_Cr_style(tc);
+      section_hlt(tc);
+      // section_random(tc);
+      // section_rc_style(tc);
+      // section_R_over_C_style(tc);
+      // section_CR_style(tc);
+      // section_Cr_style(tc);
 
       REQUIRE(!tc.is_standardized());
       REQUIRE(tc.word_to_class_index({0, 0, 1})
@@ -671,12 +682,12 @@ namespace libsemigroups {
     ToddCoxeter tc(twosided, p);
 
     section_felsch(tc);
-    // check_hlt(tc);
-    // check_random(tc);
-    // check_Rc_style(tc);
-    // check_R_over_C_style(tc);
-    // check_CR_style(tc);
-    // check_Cr_style(tc);
+    section_hlt(tc);
+    // section_random(tc);
+    // section_rc_style(tc);
+    // section_R_over_C_style(tc);
+    // section_CR_style(tc);
+    // section_Cr_style(tc);
 
     REQUIRE(tc.word_to_class_index({0, 0, 1})
             == tc.word_to_class_index({0, 0, 0, 0, 1}));
@@ -712,12 +723,12 @@ namespace libsemigroups {
                 S.factorisation(Transf<>({3, 1, 3, 3, 3})));
 
     section_felsch(tc);
-    // check_hlt(tc);
-    // check_random(tc);
-    // check_Rc_style(tc);
-    // check_R_over_C_style(tc);
-    // check_CR_style(tc);
-    // check_Cr_style(tc);
+    section_hlt(tc);
+    // section_random(tc);
+    // section_rc_style(tc);
+    // section_R_over_C_style(tc);
+    // section_CR_style(tc);
+    // section_Cr_style(tc);
 
     check_complete_compatible(tc);
     check_standardize(tc);
@@ -831,12 +842,12 @@ namespace libsemigroups {
                 S.factorisation(Transf<>({3, 1, 3, 3, 3})));
 
     section_felsch(tc);
-    // check_hlt(tc);
-    // check_random(tc);
-    // check_Rc_style(tc);
-    // check_R_over_C_style(tc);
-    // check_CR_style(tc);
-    // check_Cr_style(tc);
+    section_hlt(tc);
+    // section_random(tc);
+    // section_rc_style(tc);
+    // section_R_over_C_style(tc);
+    // section_CR_style(tc);
+    // section_Cr_style(tc);
 
     REQUIRE(
         tc.word_to_class_index(S.factorisation(Transf<>({1, 3, 1, 3, 3})))
@@ -891,12 +902,12 @@ namespace libsemigroups {
                 S.factorisation(Transf<>({3, 1, 3, 3, 3})));
 
     section_felsch(tc);
-    // check_hlt(tc);
-    // check_random(tc);
-    // check_Rc_style(tc);
-    // check_R_over_C_style(tc);
-    // check_CR_style(tc);
-    // check_Cr_style(tc);
+    section_hlt(tc);
+    // section_random(tc);
+    // section_rc_style(tc);
+    // section_R_over_C_style(tc);
+    // section_CR_style(tc);
+    // section_Cr_style(tc);
 
     REQUIRE(tc.number_of_classes() == 72);
     REQUIRE(tc.number_of_classes() == 72);
@@ -957,9 +968,9 @@ namespace libsemigroups {
 
     section_felsch(tc);
 
-    // check_hlt_no_save(tc);
-    // check_hlt_save_throws(tc);
-    // check_random(tc);
+    // section_hlt_no_save(tc);
+    // section_hlt_save_throws(tc);
+    // section_random(tc);
 
     REQUIRE(tc.number_of_classes() == 21);
     REQUIRE(tc.number_of_classes() == 21);
@@ -987,12 +998,12 @@ namespace libsemigroups {
     ToddCoxeter tc(twosided, p);
     section_felsch(tc);
 
-    // check_hlt(tc);
-    // check_random(tc);
-    // check_Rc_style(tc);
-    // check_R_over_C_style(tc);
-    // check_CR_style(tc);
-    // check_Cr_style(tc);
+    section_hlt(tc);
+    // section_random(tc);
+    // section_rc_style(tc);
+    // section_R_over_C_style(tc);
+    // section_CR_style(tc);
+    // section_Cr_style(tc);
 
     REQUIRE(tc.number_of_classes() == 6);
     REQUIRE(tc.word_to_class_index({1}) == tc.word_to_class_index({2}));
@@ -1030,12 +1041,12 @@ namespace libsemigroups {
     ToddCoxeter tc(twosided, p);
 
     section_felsch(tc);
-    // check_hlt(tc);
-    // check_random(tc);
-    // check_Rc_style(tc);
-    // check_R_over_C_style(tc);
-    // check_CR_style(tc);
-    // check_Cr_style(tc);
+    section_hlt(tc);
+    // section_random(tc);
+    // section_rc_style(tc);
+    // section_R_over_C_style(tc);
+    // section_CR_style(tc);
+    // section_Cr_style(tc);
 
     REQUIRE(tc.number_of_classes() == 16);
     REQUIRE(tc.word_to_class_index({2}) == tc.word_to_class_index({3}));
@@ -1101,12 +1112,12 @@ namespace libsemigroups {
     ToddCoxeter tc(twosided, p);
 
     section_felsch(tc);
-    // check_hlt(tc);
-    // check_random(tc);
-    // check_Rc_style(tc);
-    // check_R_over_C_style(tc);
-    // check_CR_style(tc);
-    // check_Cr_style(tc);
+    section_hlt(tc);
+    // section_random(tc);
+    // section_rc_style(tc);
+    // section_R_over_C_style(tc);
+    // section_CR_style(tc);
+    // section_Cr_style(tc);
 
     REQUIRE(tc.number_of_classes() == 16);
     REQUIRE(tc.word_to_class_index({0}) == tc.word_to_class_index({5}));
@@ -1144,7 +1155,7 @@ namespace libsemigroups {
       tc.add_pair({1, 1, 1, 1, 0, 1, 0}, {1, 0, 1, 0});
       tc.add_pair({0, 0, 1, 1, 1, 0, 1, 0}, {1, 1, 1, 0, 1, 0});
 
-      //check_hlt(tc);
+      section_hlt(tc);
       REQUIRE(tc.number_of_classes() == 78);
       tc.standardize(order::shortlex);
     }
@@ -1167,7 +1178,7 @@ namespace libsemigroups {
       tc.add_pair({1, 1, 1, 1, 0, 1, 0}, {1, 0, 1, 0});
       tc.add_pair({0, 0, 1, 1, 1, 0, 1, 0}, {1, 1, 1, 0, 1, 0});
 
-      //check_hlt(tc);
+      section_hlt(tc);
       REQUIRE(tc.number_of_classes() == 78);
       tc.standardize(order::shortlex);
     }
@@ -1182,8 +1193,8 @@ namespace libsemigroups {
     p.alphabet(1);
     ToddCoxeter tc(twosided, p);
 
-    // check_hlt(tc);
-    // check_random(tc);
+    section_hlt(tc);
+    // section_random(tc);
 
     REQUIRE(tc.contains({0, 0}, {0, 0}));
     REQUIRE(!tc.contains({0, 0}, {0}));
@@ -1197,8 +1208,8 @@ namespace libsemigroups {
     p.alphabet(5);
     ToddCoxeter tc(twosided, p);
 
-    // check_hlt(tc);
-    // check_random(tc);
+    section_hlt(tc);
+    // section_random(tc);
 
     REQUIRE_THROWS_AS(tc.run(), LibsemigroupsException);
   }
@@ -1229,13 +1240,13 @@ namespace libsemigroups {
 
     ToddCoxeter tc(twosided, std::move(p));
 
-    // check_hlt(tc);
+    section_hlt(tc);
     section_felsch(tc);
-    // check_random(tc);
-    // check_Rc_style(tc);
-    // check_R_over_C_style(tc);
-    // check_CR_style(tc);
-    // check_Cr_style(tc);
+    // section_random(tc);
+    // section_rc_style(tc);
+    // section_R_over_C_style(tc);
+    // section_CR_style(tc);
+    // section_Cr_style(tc);
 
     REQUIRE(tc.number_of_classes() == 34);
 
@@ -1282,13 +1293,13 @@ namespace libsemigroups {
 
     ToddCoxeter tc(left, p);
 
-    // check_hlt(tc);
+    section_hlt(tc);
     section_felsch(tc);
-    // check_random(tc);
-    // check_Rc_style(tc);
-    // check_R_over_C_style(tc);
-    // check_CR_style(tc);
-    // check_Cr_style(tc);
+    // section_random(tc);
+    // section_rc_style(tc);
+    // section_R_over_C_style(tc);
+    // section_CR_style(tc);
+    // section_Cr_style(tc);
 
     REQUIRE(tc.number_of_classes() == 5);
   }
@@ -1316,19 +1327,20 @@ namespace libsemigroups {
       tc2.add_pair({0}, {1});
 
       section_felsch(tc2);
-
-      // check_hlt(tc2);
-      // check_random(tc2);
-      // check_Rc_style(tc2);
-      // check_R_over_C_style(tc2);
-      // check_CR_style(tc2);
-      // check_Cr_style(tc2);
+      section_hlt(tc2);
+      // section_random(tc2);
+      // section_rc_style(tc2);
+      // section_R_over_C_style(tc2);
+      // section_CR_style(tc2);
+      // section_Cr_style(tc2);
 
       REQUIRE(tc2.number_of_classes() == 1);
+      tc2.shrink_to_fit();
 
       presentation::add_rule_and_check(p, {0}, {1});
       ToddCoxeter tc3(knd, p);
       REQUIRE(tc3.number_of_classes() == 1);
+      tc3.shrink_to_fit();
       REQUIRE(tc3.word_graph() == tc2.word_graph());
     }
   }
@@ -1344,8 +1356,8 @@ namespace libsemigroups {
     for (auto knd : {left, right, twosided}) {
       ToddCoxeter tc(knd, p);
 
-      // check_hlt(tc);
-      // check_random(tc);
+      section_hlt(tc);
+      // section_random(tc);
 
       REQUIRE(tc.number_of_classes() == POSITIVE_INFINITY);
       REQUIRE(is_obviously_infinite(tc));
@@ -1364,7 +1376,7 @@ namespace libsemigroups {
 
     {
       ToddCoxeter tc(right, p);
-      // check_hlt(tc);
+      section_hlt(tc);
       section_felsch(tc);
 
       REQUIRE(tc.number_of_classes() == 5);
@@ -1374,13 +1386,13 @@ namespace libsemigroups {
     }
     {
       ToddCoxeter tc(twosided, p);
-      // check_hlt(tc);
+      section_hlt(tc);
       section_felsch(tc);
-      // check_random(tc);
-      // check_Rc_style(tc);
-      // check_R_over_C_style(tc);
-      // check_CR_style(tc);
-      // check_Cr_style(tc);
+      // section_random(tc);
+      // section_rc_style(tc);
+      // section_R_over_C_style(tc);
+      // section_CR_style(tc);
+      // section_Cr_style(tc);
 
       REQUIRE(tc.number_of_classes() == 5);
       REQUIRE(tc.class_index_to_word(0) == word_type({0}));
@@ -1435,10 +1447,10 @@ namespace libsemigroups {
     ToddCoxeter tc2(left, tc1);
     tc2.add_pair({0}, {1});
     REQUIRE_THROWS_AS(tc2.add_pair({0}, {2}), LibsemigroupsException);
-    // check_hlt_no_save(tc2);
-    // check_hlt_save_throws(tc2);
+    // section_hlt_no_save(tc2);
+    // section_hlt_save_throws(tc2);
     section_felsch(tc2);
-    // check_random(tc2);
+    // section_random(tc2);
     REQUIRE(tc2.number_of_classes() == 1);
   }
 
@@ -1465,8 +1477,8 @@ namespace libsemigroups {
     }
 
     ToddCoxeter tc(make<ToddCoxeter>(twosided, kb));
-    // check_random(*tc);
-    // check_hlt(*tc);
+    // section_random(*tc);
+    // section_hlt(*tc);
     tc.add_pair({1}, {2});
     REQUIRE(is_obviously_infinite(tc));
     REQUIRE(tc.number_of_classes() == POSITIVE_INFINITY);
@@ -1542,8 +1554,8 @@ namespace libsemigroups {
     ToddCoxeter tc2(left, tc1);
     // tc2.next_lookahead(1);
     tc2.report_every(1);
-    // check_hlt(tc2);
-    // check_random(tc2);
+    section_hlt(tc2);
+    // section_random(tc2);
     tc2.add_pair({0}, {0, 0});
 
     REQUIRE(tc2.number_of_classes() == 3);
@@ -1559,9 +1571,9 @@ namespace libsemigroups {
     REQUIRE(S.size() == 88);
     REQUIRE(S.number_of_rules() == 18);
     ToddCoxeter tc = make<ToddCoxeter>(twosided, S);  // use Cayley graph
-    // check_hlt_no_save(tc);
-    // check_hlt_save_throws(tc);
-    // check_random(tc);
+    // section_hlt_no_save(tc);
+    // section_hlt_save_throws(tc);
+    // section_random(tc);
     tc.add_pair({0}, {1, 1});
     section_felsch(tc);
     REQUIRE(tc.number_of_classes() == 1);
@@ -1586,13 +1598,13 @@ namespace libsemigroups {
 
     ToddCoxeter tc1(left, p);
     tc1.add_pair({0}, {1, 1, 1});
-    // check_hlt(tc1);
+    section_hlt(tc1);
     section_felsch(tc1);
-    // check_random(tc1);
-    // check_Rc_style(tc1);
-    // check_R_over_C_style(tc1);
-    // check_CR_style(tc1);
-    // check_Cr_style(tc1);
+    // section_random(tc1);
+    // section_rc_style(tc1);
+    // section_R_over_C_style(tc1);
+    // section_CR_style(tc1);
+    // section_Cr_style(tc1);
 
     REQUIRE(tc1.number_of_classes() == 11);
     REQUIRE(std::vector<word_type>(todd_coxeter::cbegin_normal_forms(tc1),
@@ -2004,11 +2016,11 @@ namespace libsemigroups {
 
     ToddCoxeter tc(twosided, p);
 
-    // check_hlt(tc);
+    section_hlt(tc);
     section_felsch(tc);
-    // check_random(tc);
-    // check_R_over_C_style(tc);
-    // check_Rc_style(tc);
+    // section_random(tc);
+    // section_R_over_C_style(tc);
+    // section_rc_style(tc);
     //
     REQUIRE(tc.number_of_classes() == 1496);
   }
@@ -2043,10 +2055,10 @@ namespace libsemigroups {
     ToddCoxeter tc(twosided, p);
 
     section_felsch(tc);
-    // check_hlt(tc);
-    // check_random(tc);
-    // check_R_over_C_style(tc);
-    // check_Rc_style(tc);
+    section_hlt(tc);
+    // section_random(tc);
+    // section_R_over_C_style(tc);
+    // section_rc_style(tc);
     check_complete_compatible(tc);
     REQUIRE(tc.number_of_classes() == 4'140);
   }
@@ -2082,11 +2094,11 @@ namespace libsemigroups {
     // TODO uncomment
     // tc.strategy(options::strategy::hlt);
     // tc.standardize(false).lookahead(options::lookahead::partial).save(true);
-    // check_hlt(tc);
+    section_hlt(tc);
     section_felsch(tc);
-    // check_random(tc);
-    // check_R_over_C_style(tc);
-    // check_Rc_style(tc);
+    // section_random(tc);
+    // section_R_over_C_style(tc);
+    // section_rc_style(tc);
 
     REQUIRE(tc.number_of_classes() == 128);
   }
@@ -2101,13 +2113,13 @@ namespace libsemigroups {
     size_t const n  = 5;
     auto p = make<Presentation<word_type>>(orientation_reversing_monoid(n));
     ToddCoxeter tc(congruence_kind::twosided, p);
-    // check_hlt(tc);
+    section_hlt(tc);
     section_felsch(tc);
-    // check_random(tc);
-    // check_Rc_style(tc);
-    // check_R_over_C_style(tc);
-    // check_CR_style(tc);
-    // check_Cr_style(tc);
+    // section_random(tc);
+    // section_rc_style(tc);
+    // section_R_over_C_style(tc);
+    // section_CR_style(tc);
+    // section_Cr_style(tc);
 
     REQUIRE(tc.number_of_classes() == 1'015);
   }
@@ -2363,13 +2375,13 @@ std::to_string(n) + ".g", tc);
       p.alphabet("ab");
       presentation::add_rule_and_check(p, "aaa", "a");
       presentation::add_rule_and_check(p, "a", "bb");
-      // check_hlt(tc);
+      section_hlt(tc);
       section_felsch(tc);
-      // check_random(tc);
-      // check_Rc_style(tc);
-      // check_R_over_C_style(tc);
-      // check_CR_style(tc);
-      // check_Cr_style(tc);
+      // section_random(tc);
+      // section_rc_style(tc);
+      // section_R_over_C_style(tc);
+      // section_CR_style(tc);
+      // section_Cr_style(tc);
       SECTION("R/C + Felsch lookahead") {
         tc
             .strategy(options::strategy::R_over_C)
@@ -2436,13 +2448,13 @@ p.alphabet("ab");
       presentation::add_rule_and_check(p, "aaa", "a");
       presentation::add_rule_and_check(p, "a", "bb");
       tc.next_lookahead(1);
-      // check_hlt(tc);
+      section_hlt(tc);
       section_felsch(tc);
-      // check_random(tc);
-      // check_Rc_style(tc);
-      // check_R_over_C_style(tc);
-      // check_CR_style(tc);
-      // check_Cr_style(tc);
+      // section_random(tc);
+      // section_rc_style(tc);
+      // section_R_over_C_style(tc);
+      // section_CR_style(tc);
+      // section_Cr_style(tc);
 
       REQUIRE(tc.number_of_classes() == 5);
     }
@@ -2470,13 +2482,13 @@ p.alphabet("ab");
     presentation::add_rule_and_check(p, "dc", "c");
 
     ToddCoxeter tc(twosided, p);
-    // check_hlt(tc);
+    section_hlt(tc);
     section_felsch(tc);
-    // check_random(tc);
-    // check_Rc_style(tc);
-    // check_R_over_C_style(tc);
-    // check_CR_style(tc);
-    // check_Cr_style(tc);
+    // section_random(tc);
+    // section_rc_style(tc);
+    // section_R_over_C_style(tc);
+    // section_CR_style(tc);
+    // section_Cr_style(tc);
     //
 
     REQUIRE(tc.number_of_classes() == 24);
@@ -2552,10 +2564,10 @@ p.alphabet("ab");
     ToddCoxeter tc1(twosided, p);
     tc1.add_pair(w1, w2);
 
-    // check_hlt_no_save(tc1);
-    // check_hlt_save_throws(tc1);
+    // section_hlt_no_save(tc1);
+    // section_hlt_save_throws(tc1);
     section_felsch(tc1);
-    // check_random(tc1);
+    // section_random(tc1);
 
     REQUIRE(tc1.number_of_classes() == 21);
     REQUIRE(tc1.number_of_classes() == make<FroidurePin<TCE>>(tc1).size());
@@ -2566,8 +2578,8 @@ p.alphabet("ab");
     ToddCoxeter tc2(twosided, p);
     tc2.add_pair(w1, w2);
 
-    // check_hlt_no_save(tc2);
-    // check_hlt_save_throws(tc2);
+    // section_hlt_no_save(tc2);
+    // section_hlt_save_throws(tc2);
     section_felsch(tc2);
 
     REQUIRE(tc2.number_of_classes() == 21);
@@ -2624,13 +2636,13 @@ p.alphabet("ab");
     //       .definition_policy(
     //           DefinitionOptions::definitions::discard_all_if_no_space);
     // }
-    // check_hlt(tc);
+    section_hlt(tc);
     section_felsch(tc);
-    // check_random(tc);
-    // check_Rc_style(tc);
-    // check_R_over_C_style(tc);
-    // check_CR_style(tc);
-    // check_Cr_style(tc);
+    // section_random(tc);
+    // section_rc_style(tc);
+    // section_R_over_C_style(tc);
+    // section_CR_style(tc);
+    // section_Cr_style(tc);
 
     REQUIRE(tc.number_of_classes() == 120);
   }
@@ -2648,13 +2660,13 @@ p.alphabet("ab");
 
     ToddCoxeter tc(twosided, p);
 
-    // check_hlt(tc);
+    section_hlt(tc);
     section_felsch(tc);
-    // check_random(tc);
-    // check_Rc_style(tc);
-    // check_R_over_C_style(tc);
-    // check_CR_style(tc);
-    // check_Cr_style(tc);
+    // section_random(tc);
+    // section_rc_style(tc);
+    // section_R_over_C_style(tc);
+    // section_CR_style(tc);
+    // section_Cr_style(tc);
 
     REQUIRE(tc.number_of_classes() == 243);
   }
@@ -2673,13 +2685,13 @@ p.alphabet("ab");
     ToddCoxeter tc(twosided, p);
     REQUIRE(!is_obviously_infinite(tc));
 
-    // check_hlt(tc);
+    section_hlt(tc);
     section_felsch(tc);
-    // check_random(tc);
-    // check_Rc_style(tc);
-    // check_R_over_C_style(tc);
-    // check_CR_style(tc);
-    // check_Cr_style(tc);
+    // section_random(tc);
+    // section_rc_style(tc);
+    // section_R_over_C_style(tc);
+    // section_CR_style(tc);
+    // section_Cr_style(tc);
 
     REQUIRE(tc.number_of_classes() == 99);
     REQUIRE(tc.finished());
@@ -2765,13 +2777,13 @@ p.alphabet("ab");
     tc.standardize(order::recursive);
     REQUIRE(!tc.finished());
 
-    // check_hlt(tc);
+    section_hlt(tc);
     section_felsch(tc);
-    // check_random(tc);
-    // check_Rc_style(tc);
-    // check_R_over_C_style(tc);
-    // check_CR_style(tc);
-    // check_Cr_style(tc);
+    // section_random(tc);
+    // section_rc_style(tc);
+    // section_R_over_C_style(tc);
+    // section_CR_style(tc);
+    // section_Cr_style(tc);
 
     // This takes approx 1 seconds with Felsch . . .
     REQUIRE(tc.number_of_classes() == 1);
@@ -2840,13 +2852,13 @@ p.alphabet("ab");
     //         DefinitionOptions::definitions::no_stack_if_no_space);
     // }
 
-    // check_hlt(tc);
+    section_hlt(tc);
     section_felsch(tc);
-    // check_random(tc);
-    // check_Rc_style(tc);
-    // check_R_over_C_style(tc);
-    // check_CR_style(tc);
-    // check_Cr_style(tc);
+    // section_random(tc);
+    // section_rc_style(tc);
+    // section_R_over_C_style(tc);
+    // section_CR_style(tc);
+    // section_Cr_style(tc);
     REQUIRE(tc.number_of_classes() == 14'911);
     // check_standardize(tc);
   }
@@ -2866,22 +2878,21 @@ p.alphabet("ab");
 
     REQUIRE(presentation::length(p) == 35);
     SECTION("preprocess the presentation") {
-      // FIXME this doesn't seem to work here
       presentation::greedy_reduce_length(p);
-      REQUIRE(presentation::length(p) == 35);
-      REQUIRE(p.alphabet() == "abc");
+      REQUIRE(presentation::length(p) == 26);
+      REQUIRE(p.alphabet() == "abcde");
     }
     // TODO uncomment tc.next_lookahead(2'000'000);
     ToddCoxeter tc(twosided, p);
     REQUIRE(!is_obviously_infinite(tc));
 
-    // check_hlt(tc);
+    section_hlt(tc);
     section_felsch(tc);
-    // check_random(tc);
-    // check_Rc_style(tc); // Rc_style + partial lookahead works very badly
+    // section_random(tc);
+    // section_rc_style(tc); // Rc_style + partial lookahead works very badly
     // 2m30s
-    // check_R_over_C_style(tc);
-    // check_Cr_style(tc);
+    // section_R_over_C_style(tc);
+    // section_Cr_style(tc);
 
     REQUIRE(tc.number_of_classes() == 20'490);
   }
@@ -2921,8 +2932,8 @@ p.alphabet("ab");
     ToddCoxeter tc(twosided, p);
     REQUIRE(!is_obviously_infinite(tc));
 
-    // check_hlt(tc);
-    // check_random(tc);
+    section_hlt(tc);
+    // section_random(tc);
     // TODO uncomment
     // SECTION("custom R/C") {
     //   tc.next_lookahead(3'000'000)
@@ -2970,12 +2981,12 @@ p.alphabet("ab");
     REQUIRE(!is_obviously_infinite(tc));
 
     // This example is extremely slow with Felsch (even with the preprocessing)
-    // check_hlt(tc);
-    // check_random(tc);
-    // check_Rc_style(tc);
-    // check_R_over_C_style(tc);
-    // check_CR_style(tc);
-    // check_Cr_style(tc);
+    section_hlt(tc);
+    // section_random(tc);
+    // section_rc_style(tc);
+    // section_R_over_C_style(tc);
+    // section_CR_style(tc);
+    // section_Cr_style(tc);
 
     REQUIRE(tc.number_of_classes() == 72'822);
     check_complete_compatible(tc);
@@ -3024,12 +3035,12 @@ p.alphabet("ab");
     //
     // the random strategy
     // strategy is typically fastest
-    // check_hlt(tc);
-    // check_random(tc);
-    // check_Rc_style(tc);
-    // check_R_over_C_style(tc);
-    // check_CR_style(tc);
-    // check_Cr_style(tc);
+    section_hlt(tc);
+    // section_random(tc);
+    // section_rc_style(tc);
+    // section_R_over_C_style(tc);
+    // section_CR_style(tc);
+    // section_Cr_style(tc);
 
     REQUIRE(tc.number_of_classes() == 8);
   }
@@ -3072,11 +3083,11 @@ p.alphabet("ab");
 
     // This example is extremely slow with Felsch, not anymore with the
     // preprocessing above
-    // check_hlt(tc);
-    // check_random(tc);
-    // check_Rc_style(tc); // partial lookahead is too slow
-    // check_Cr_style(tc); // very slow
-    // check_R_over_C_style(tc);
+    section_hlt(tc);
+    // section_random(tc);
+    // section_rc_style(tc); // partial lookahead is too slow
+    // section_Cr_style(tc); // very slow
+    // section_R_over_C_style(tc);
 
     REQUIRE(tc.number_of_classes() == 78'722);
   }
@@ -3115,12 +3126,12 @@ p.alphabet("ab");
       tc.definition_version(felsch_digraph::def_version::two);
     }
 
-    // check_hlt(tc);
+    section_hlt(tc);
     section_felsch(tc);
-    // check_random(tc);
-    // check_Rc_style(tc); // partial lookahead very slow ~8s
-    // check_R_over_C_style(tc);
-    // check_Cr_style(tc);
+    // section_random(tc);
+    // section_rc_style(tc); // partial lookahead very slow ~8s
+    // section_R_over_C_style(tc);
+    // section_Cr_style(tc);
 
     //      .deduction_policy(
     //          DefinitionOptions::definitions::no_stack_if_no_space)
@@ -3156,11 +3167,11 @@ p.alphabet("ab");
     // TODO uncomment tc.next_lookahead(500'000);
     // This example is extremely slow with Felsch only 4 seconds with
     // preprocessing above
-    // check_hlt(tc);
-    // check_random(tc);
-    // check_Rc_style(tc); + partial lookahead too slow
-    // check_Cr_style(tc); // too slow
-    // check_R_over_C_style(tc);
+    section_hlt(tc);
+    // section_random(tc);
+    // section_rc_style(tc); + partial lookahead too slow
+    // section_Cr_style(tc); // too slow
+    // section_R_over_C_style(tc);
 
     REQUIRE(tc.number_of_classes() == 270'272);
   }
@@ -3183,13 +3194,13 @@ p.alphabet("ab");
     presentation::add_rule_and_check(p, "ga", "b");
     ToddCoxeter tc(twosided, p);
 
-    // check_hlt(tc);
+    section_hlt(tc);
     section_felsch(tc);
-    // check_random(tc);
-    // check_Rc_style(tc);
-    // check_R_over_C_style(tc);
-    // check_CR_style(tc);
-    // check_Cr_style(tc);
+    // section_random(tc);
+    // section_rc_style(tc);
+    // section_R_over_C_style(tc);
+    // section_CR_style(tc);
+    // section_Cr_style(tc);
 
     REQUIRE(tc.number_of_classes() == 29);
   }
@@ -3222,7 +3233,7 @@ p.alphabet("ab");
       presentation::add_rule_and_check(p, second(3), id);
       ToddCoxeter tc(twosided, p);
 
-      // check_hlt(tc);
+      section_hlt(tc);
       section_felsch(tc);
 
       REQUIRE(tc.number_of_classes() == 24);
@@ -3231,7 +3242,7 @@ p.alphabet("ab");
       presentation::add_rule_and_check(p, second(5), id);
 
       ToddCoxeter tc(twosided, p);
-      // check_hlt(tc);
+      section_hlt(tc);
       section_felsch(tc);
 
       REQUIRE(tc.number_of_classes() == 120);
@@ -3240,7 +3251,7 @@ p.alphabet("ab");
       presentation::add_rule_and_check(p, second(7), id);
 
       ToddCoxeter tc(twosided, p);
-      // check_hlt(tc);
+      section_hlt(tc);
       section_felsch(tc);
 
       REQUIRE(tc.number_of_classes() == 336);
@@ -3255,8 +3266,8 @@ p.alphabet("ab");
     //   presentation::replace_subword(p, "xayyaabb");
 
     //   ToddCoxeter tc(twosided, p);
-    //   // check_hlt(tc);
-    //   // check_random(tc);
+    // section_hlt(tc);
+    //   // section_random(tc);
 
     //   REQUIRE(tc.number_of_classes() == 1'320);
     // }
@@ -3280,13 +3291,13 @@ p.alphabet("ab");
     // TODO implement
     // REQUIRE(tc.is_non_trivial() == tril::TRUE);
 
-    // check_hlt(tc);
+    section_hlt(tc);
     section_felsch(tc);
-    // check_random(tc);
-    // check_Rc_style(tc);
-    // check_R_over_C_style(tc);
-    // check_CR_style(tc);
-    // check_Cr_style(tc);
+    // section_random(tc);
+    // section_rc_style(tc);
+    // section_R_over_C_style(tc);
+    // section_CR_style(tc);
+    // section_Cr_style(tc);
 
     REQUIRE(tc.number_of_classes() == 6'561);
   }
@@ -3334,13 +3345,13 @@ p.alphabet("ab");
     presentation::add_rule_and_check(p, "ba", "aaaaaab");
 
     ToddCoxeter tc(twosided, p);
-    // check_hlt(tc);
+    section_hlt(tc);
     section_felsch(tc);
-    // check_random(tc);
-    // check_Rc_style(tc);
-    // check_R_over_C_style(tc);
-    // check_CR_style(tc);
-    // check_Cr_style(tc);
+    // section_random(tc);
+    // section_rc_style(tc);
+    // section_R_over_C_style(tc);
+    // section_CR_style(tc);
+    // section_Cr_style(tc);
 
     REQUIRE(tc.number_of_classes() == 14);
     tc.standardize(order::shortlex);
@@ -3387,12 +3398,12 @@ p.alphabet("ab");
 
     REQUIRE(tc.number_of_classes() == 10'625);
 
-    // check_hlt(tc);
-    // check_random(tc);
-    // check_Rc_style(tc);
-    // check_R_over_C_style(tc);
-    // check_CR_style(tc);
-    // check_Cr_style(tc);
+    section_hlt(tc);
+    // section_random(tc);
+    // section_rc_style(tc);
+    // section_R_over_C_style(tc);
+    // section_CR_style(tc);
+    // section_Cr_style(tc);
 
     tc.standardize(order::shortlex);
     REQUIRE(std::is_sorted(todd_coxeter::cbegin_normal_forms(tc),
@@ -3532,8 +3543,8 @@ p.alphabet("ab");
 
     ToddCoxeter H(twosided, p);
     section_felsch(H);
-    // check_hlt(H);
-    // check_random(H);
+    section_hlt(H);
+    // section_random(H);
 
     REQUIRE(H.number_of_classes() == 29);
   }
@@ -3644,8 +3655,8 @@ p.alphabet("ab");
     ToddCoxeter H(right, p);
     H.add_pair(make<word_type>(p, "a"), make<word_type>(p, ""));
 
-    // check_hlt(H);
-    // check_random(H);
+    section_hlt(H);
+    // section_random(H);
     section_felsch(H);
 
     REQUIRE(H.number_of_classes() == 480);
@@ -3700,8 +3711,8 @@ p.alphabet("ab");
 
     ToddCoxeter H(twosided, p);
 
-    // check_hlt(H);
-    // check_random(H);
+    section_hlt(H);
+    // section_random(H);
     section_felsch(H);
 
     REQUIRE(H.number_of_classes() == 5);
@@ -3725,8 +3736,8 @@ p.alphabet("ab");
 
     H.add_pair(make<word_type>(p, "ab"), make<word_type>(p, ""));
 
-    // check_hlt(H);
-    // check_random(H);
+    section_hlt(H);
+    // section_random(H);
     section_felsch(H);
     REQUIRE(H.number_of_classes() == 12);
   }
@@ -3747,8 +3758,8 @@ p.alphabet("ab");
 
     ToddCoxeter H(twosided, p);
 
-    // check_hlt(H);
-    // check_random(H);
+    section_hlt(H);
+    // section_random(H);
     section_felsch(H);
     // TODO uncommentH.random_shuffle_generating_pairs();
 
@@ -3882,12 +3893,12 @@ p.alphabet("ab");
 
     ToddCoxeter tc(twosided, p);
     section_felsch(tc);
-    // check_hlt(tc);
-    // check_random(tc);
+    section_hlt(tc);
+    // section_random(tc);
 
     section_felsch(tc);
-    // check_hlt(tc);
-    // check_random(tc);
+    section_hlt(tc);
+    // section_random(tc);
 
     REQUIRE(tc.number_of_classes() == 10);
   }
