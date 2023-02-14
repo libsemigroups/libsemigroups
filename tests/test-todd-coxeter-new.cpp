@@ -3132,7 +3132,7 @@ namespace libsemigroups {
                           "079",
                           "Walker 8",
                           "[todd-coxeter][standard]") {
-    auto rg = ReportGuard(true);
+    auto rg = ReportGuard(false);
 
     Presentation<std::string> p;
     p.alphabet("ab");
@@ -3150,17 +3150,18 @@ namespace libsemigroups {
             {"aaa", "a", "ccb", "b", "acad", "da", "c", "dddddb", "d", "bb"}));
 
     ToddCoxeter tc(twosided, p);
+    tc.lookahead_next(500'000);
+
     REQUIRE(!is_obviously_infinite(tc));
 
-    tc.lookahead_next(500'000);
-    // This example is extremely slow with Felsch only 4 seconds with
-    // preprocessing above
     section_hlt(tc);
     section_felsch(tc);
     // section_random(tc);
     // section_rc_style(tc); + partial lookahead too slow
     // section_Cr_style(tc); // too slow
     // section_R_over_C_style(tc);
+
+    check_complete_compatible(tc);
 
     REQUIRE(tc.number_of_classes() == 270'272);
   }
@@ -3245,21 +3246,20 @@ namespace libsemigroups {
 
       REQUIRE(tc.number_of_classes() == 336);
     }
-    // TODO the next case fails with feslch
-    // SECTION("p = 11") {
-    //   presentation::add_rule_and_check(p, second(11), id);
-    //   REQUIRE(presentation::length(p) == 57);
-    //   presentation::greedy_reduce_length(p);
-    //   REQUIRE(presentation::length(p) == 40);
-    //   REQUIRE(p.alphabet() == "xXyYab");
-    //   presentation::replace_subword(p, "xayyaabb");
+    SECTION("p = 11") {
+      presentation::add_rule_and_check(p, second(11), id);
+      // REQUIRE(presentation::length(p) == 57);
+      // presentation::greedy_reduce_length(p);
+      // REQUIRE(presentation::length(p) == 40);
+      // REQUIRE(p.alphabet() == "xXyYab");
+      // presentation::replace_subword(p, "xayyaabb");
 
-    //   ToddCoxeter tc(twosided, p);
-    // section_hlt(tc);
-    //   // section_random(tc);
+      ToddCoxeter tc(twosided, p);
+      section_hlt(tc);
+      // section_random(tc);
 
-    //   REQUIRE(tc.number_of_classes() == 1'320);
-    // }
+      REQUIRE(tc.number_of_classes() == 1'320);
+    }
   }
 
   LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
@@ -3923,11 +3923,12 @@ namespace libsemigroups {
 
     ToddCoxeter tc(twosided, p);
 
-    // tc.lookahead_next(2'000'000)
+    tc.lookahead_next(2'000'000)
+        .lookahead_extent(options::lookahead_extent::partial)
+        .strategy(options::strategy::hlt);
     //     .strategy(options::strategy::hlt)
-    //     .sort_generating_pairs()
-    //     .lookahead(options::lookahead::partial)
     //     .standardize(true);
+    section_hlt(tc);
     section_felsch(tc);  // about 6s with Felsch
     REQUIRE(tc.number_of_classes() == 322'560);
   }
@@ -3983,6 +3984,7 @@ namespace libsemigroups {
       "103",
       "http://brauer.maths.qmul.ac.uk/Atlas/spor/M22/mag/M22G1-P1.M",
       "[todd-coxeter][extreme]") {
+    ReportGuard               rg(true);
     Presentation<std::string> p;
     p.alphabet("xyXY");
     p.contains_empty_word(true);
@@ -3997,6 +3999,7 @@ namespace libsemigroups {
     presentation::add_rule_and_check(p, "xyxyxYxyxyxYxyxyxYxyxyxYxyxyxY", "");
 
     ToddCoxeter tc(twosided, p);
+    section_hlt(tc);
     section_felsch(tc);  // 2s with Felsch
     REQUIRE(tc.number_of_classes() == 443'520);
   }

@@ -448,8 +448,9 @@ namespace libsemigroups {
     void felsch();
     void hlt();
 
-    void report_active_nodes();  // TODO const
+    void report_active_nodes() const;
     void report_next_lookahead(size_t old_value) const;
+    void report_nodes_killed(int64_t number) const;
 
     ////////////////////////////////////////////////////////////////////////
     // ToddCoxeter - member functions (lookahead) - private

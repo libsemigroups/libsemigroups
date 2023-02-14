@@ -162,6 +162,10 @@ namespace libsemigroups {
       return NodeManager_::_current;
     }
 
+    node_type& lookahead_cursor() {
+      return NodeManager_::_current_la;
+    }
+
     void reserve(size_t n);
 
     std::pair<bool, node_type>
@@ -333,11 +337,12 @@ namespace libsemigroups {
 
     template <typename Iterator>
     size_t make_compatible(Iterator first, Iterator last) {
+      // This relies on lookahead_cursor being in the right place, this is bad
       // _stats.hlt_lookahead_calls++; TODO re-enable
 
       size_t const old_number_of_killed
           = NodeManager_::number_of_nodes_killed();
-      auto&                                 current = cursor();
+      auto&                                 current = lookahead_cursor();
       ReturnTrue                            incompat(_coinc);
       typename BaseDigraph::NoPreferredDefs prefdefs;
       while (current != NodeManager_::first_free_node()) {

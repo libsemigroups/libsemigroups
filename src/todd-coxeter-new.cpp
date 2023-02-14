@@ -186,13 +186,12 @@ namespace libsemigroups {
   // Reporting
   ////////////////////////////////////////////////////////////////////////
 
-  void ToddCoxeter::report_active_nodes() {
+  void ToddCoxeter::report_active_nodes() const {
     using detail::group_digits;
 
     if (report::should_report()) {
       fmt::print(
-          FORMAT(fmt::emphasis::bold,
-                 "#0: ToddCoxeter: nodes {:>11} (active) | {:>11} (killed) | "
+          FORMAT("#0: ToddCoxeter: nodes {:>11} (active) | {:>11} (killed) | "
                  "{:>11} (defined)\n",
                  group_digits(word_graph().number_of_nodes_active()),
                  group_digits(word_graph().number_of_nodes_killed()),
@@ -323,45 +322,53 @@ namespace libsemigroups {
 
   void ToddCoxeter::report_next_lookahead(size_t old_value) const {
     if (report::should_report()) {
-      std::string fmt = "\t{:12L} {:+12L}\n";
-      REPORT_DEFAULT(FORMAT("next lookahead at \t{:12L} ({:+12L})\n",
-                            fmt::group_digits(lookahead_next()),
-                            int64_t(lookahead_next() - old_value)));
+      static const std::string pad(8, ' ');
+      int64_t                  diff = int64_t(lookahead_next()) - old_value;
+      fmt::print(FORMAT("#0: ToddCoxeter: next lookahead at {0} | {1:>11} {0} "
+                        "|{2:>12} (diff)\n",
+                        pad,
+                        fmt::group_digits(lookahead_next()),
+                        detail::group_digits(diff)));
+    }
+  }
+
+  void ToddCoxeter::report_nodes_killed(int64_t N) const {
+    if (report::should_report()) {
+      fmt::print(FORMAT(
+          "#0: ToddCoxeter: lookahead complete with    | {:>11} (killed) |\n",
+          detail::group_digits(-1 * N)));
     }
   }
 
   void ToddCoxeter::perform_lookahead() {
     if (report::should_report()) {
+      fmt::print("{:-<90}\n", "");
       fmt::print("#0: ToddCoxeter: performing {} {} lookahead . . .\n",
                  lookahead_extent(),
                  lookahead_style());
     }
-    auto  old_cursor = _word_graph.cursor();
-    auto& current    = _word_graph.cursor();
+    auto& current = _word_graph.lookahead_cursor();
 
     if (lookahead_extent() == options::lookahead_extent::partial) {
       // Start lookahead from the coset after _current
-      current = _word_graph.next_active_node(current);
+      current = _word_graph.next_active_node(_word_graph.cursor());
     } else {
       LIBSEMIGROUPS_ASSERT(lookahead_extent()
                            == options::lookahead_extent::full);
       current = _word_graph.initial_node();
     }
-    size_t number_of_killed = 0;
+    size_t num_killed_by_me = 0;
     if (lookahead_style() == options::lookahead_style::hlt) {
-      number_of_killed = hlt_lookahead();
+      num_killed_by_me = hlt_lookahead();
     } else {
       LIBSEMIGROUPS_ASSERT(lookahead_style()
                            == options::lookahead_style::felsch);
-      number_of_killed = felsch_lookahead();
+      num_killed_by_me = felsch_lookahead();
     }
 
-    current = _word_graph.find_node(old_cursor);
+    report_nodes_killed(num_killed_by_me);
 
-    // TODO report_cosets_killed(__func__, number_of_killed;
-
-    size_t const num_nodes  = _word_graph.number_of_nodes_active();
-    size_t const num_killed = _word_graph.number_of_nodes_killed();
+    size_t const num_nodes = _word_graph.number_of_nodes_active();
 
     size_t const old_lookahead_next = lookahead_next();
 
@@ -372,12 +379,16 @@ namespace libsemigroups {
 
       lookahead_next(lookahead_growth_factor() * num_nodes);
     } else if (num_nodes > lookahead_next()
-               || num_killed < (num_nodes / lookahead_growth_threshold())) {
+               || num_killed_by_me
+                      < (num_nodes / lookahead_growth_threshold())) {
       // Otherwise, if we already exceed the lookahead_next or too few
       // nodes were killed, then increase the next lookahead.
       _settings.lookahead_next *= lookahead_growth_factor();
     }
     report_next_lookahead(old_lookahead_next);
+    if (report::should_report()) {
+      fmt::print("{:-<90}\n", "");
+    }
   }
 
   size_t ToddCoxeter::hlt_lookahead() {
@@ -387,6 +398,7 @@ namespace libsemigroups {
     size_t const old_number_of_killed = _word_graph.number_of_nodes_killed();
     _word_graph.make_compatible(presentation().rules.cbegin(),
                                 presentation().rules.cend());
+    _word_graph.process_coincidences<DoNotStackDeductions>();
     if (report()) {
       report_active_nodes();
     }
