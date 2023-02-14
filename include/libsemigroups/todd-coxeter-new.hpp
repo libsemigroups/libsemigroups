@@ -50,7 +50,10 @@ namespace libsemigroups {
 
    private:
     struct Settings {
-      bool use_relations_in_extra = false;
+      bool                     use_relations_in_extra = false;
+      options::lookahead_style _lookahead_style = options::lookahead_style::hlt;
+      options::lookahead_extent _lookahead_extent
+          = options::lookahead_extent::partial;
       // TODO uncomment
       // options::lookahead    lookahead
       //    = options::lookahead::partial | options::lookahead::hlt;
@@ -139,8 +142,9 @@ namespace libsemigroups {
       return _word_graph.presentation();
     }
 
-    // TODO(v3): keep
-    // TODO(refactor): keep
+    ////////////////////////////////////////////////////////////////////////
+    // Settings
+    ////////////////////////////////////////////////////////////////////////
     ToddCoxeter& strategy(options::strategy val);
 
     //! The current strategy for enumeration.
@@ -153,6 +157,49 @@ namespace libsemigroups {
     //! \exceptions
     //! \noexcept
     options::strategy strategy() const noexcept;
+
+    //! Set the style of lookahead to use in HLT.
+    //!
+    //! If the strategy is not HLT, then the value of this setting is
+    //! ignored.
+    //!
+    //! The default value is options::lookahead::partial |
+    //! options::lookahead::hlt. The other
+    //! possible value are documented in options::lookahead.
+    //!
+    //! \param val value indicating whether to perform a full or partial
+    //! lookahead in HLT or Felsch style.
+    //!
+    //! \returns A reference to `*this`.
+    //!
+    //! \exceptions
+    //! \noexcept
+    ToddCoxeter& lookahead_style(options::lookahead_style val) noexcept {
+      _settings._lookahead_style = val;
+      return *this;
+    }
+
+    ToddCoxeter& lookahead_extent(options::lookahead_extent val) noexcept {
+      _settings._lookahead_extent = val;
+      return *this;
+    }
+
+    //! The current value of the setting for lookaheads.
+    //!
+    //! \parameters
+    //! (None)
+    //!
+    //! \returns A value of type options::lookahead.
+    //!
+    //! \exceptions
+    //! \noexcept
+    options::lookahead_style lookahead_style() const noexcept {
+      return _settings._lookahead_style;
+    }
+
+    options::lookahead_extent lookahead_extent() const noexcept {
+      return _settings._lookahead_extent;
+    }
 
     digraph_type const& word_graph() const noexcept {
       return _word_graph;
@@ -272,17 +319,11 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////
 
     // TODO(refactor) move to digraph (largest_compatible_quotient or similar)
-    // void perform_lookahead();
+    void perform_lookahead();
     // TODO(refactor) move to digraph
-    // size_t hlt_lookahead();
+    size_t hlt_lookahead();
     // TODO(refactor) move to digraph
-    // size_t felsch_lookahead();
-
-    ////////////////////////////////////////////////////////////////////////
-    // ToddCoxeter - inner classes - private
-    ////////////////////////////////////////////////////////////////////////
-
-    // struct Settings;  // Forward declaration
+    size_t felsch_lookahead();
   };
 
   namespace detail {

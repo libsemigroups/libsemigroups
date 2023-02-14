@@ -39,10 +39,11 @@
 
 #include "digraph-with-sources.hpp"  // for DigraphWithSources
 #include "digraph.hpp"               // for ActionDigraph
-#include "node-manager.hpp"          // for NodeManager
-#include "present.hpp"               // for Presentation, Presentation<>:...
-#include "report.hpp"                // for REPORT_DEFAULT
-#include "types.hpp"                 // for word_type
+#include "felsch-digraph.hpp"
+#include "node-manager.hpp"  // for NodeManager
+#include "present.hpp"       // for Presentation, Presentation<>:...
+#include "report.hpp"        // for REPORT_DEFAULT
+#include "types.hpp"         // for word_type
 
 namespace libsemigroups {
 
@@ -324,6 +325,29 @@ namespace libsemigroups {
           x, a, y, b, incompat, pref_defs);
     }
 
+    template <typename Iterator>
+    size_t make_compatible(Iterator first, Iterator last) {
+      // _stats.hlt_lookahead_calls++; TODO re-enable
+
+      size_t const old_number_of_killed
+          = NodeManager_::number_of_nodes_killed();
+      auto&                                 current = cursor();
+      ReturnTrue                            incompat(_coinc);
+      typename BaseDigraph::NoPreferredDefs prefdefs;
+      while (current != NodeManager_::first_free_node()) {
+        // TODO when we have an iterator into the active nodes, we should
+        // remove the while loop, and use that in make_compatible instead
+        felsch_digraph::make_compatible(
+            *this, current, current + 1, first, last, incompat, prefdefs);
+        // Using NoPreferredDefs is just a (more or less) arbitrary
+        // choice, could allow the other choices here too (which works,
+        // but didn't seem to be very useful).
+      }
+      current = NodeManager_::next_active_node(current);
+
+      return NodeManager_::number_of_nodes_killed() - old_number_of_killed;
+    }
+
    private:
     struct ReturnTrue {
       ReturnTrue(Coincidences& c) : _coinc(c) {}
@@ -342,6 +366,7 @@ namespace libsemigroups {
     // TODO this should take ActionDigraph const & and iterators to a range of
     // nodes, and NodeManager should have
     // cbegin_active_nodes/cend_active_nodes.
+    // TODO rename is_complete
     template <typename BaseDigraph>
     bool complete(ToddCoxeterDigraph<BaseDigraph> const& tcd) {
       using node_type   = typename std::decay_t<decltype(tcd)>::node_type;
@@ -357,6 +382,7 @@ namespace libsemigroups {
       return true;
     }
 
+    // TODO rename is_compatible
     template <typename BaseDigraph, typename Iterator>
     bool compatible(ToddCoxeterDigraph<BaseDigraph> const& tcd,
                     Iterator                               first,

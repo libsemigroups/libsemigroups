@@ -490,13 +490,19 @@ namespace libsemigroups {
     // Check that [first_node, last_node) is compatible with [first_rule,
     // last_rule) or if there are edges missing in paths labelled by rules,
     // then try to fill those in so that fd is compatible.
-    template <typename W, typename N>
-    bool
-    make_compatible(FelschDigraph<W, N>&                    fd,
-                    typename FelschDigraph<W, N>::node_type first_node,
-                    typename FelschDigraph<W, N>::node_type last_node,
-                    typename std::vector<W>::const_iterator first_rule,
-                    typename std::vector<W>::const_iterator last_rule) noexcept;
+    template <typename Word,
+              typename Node,
+              typename Incompatible,
+              typename PrefDefs>
+    bool make_compatible(
+        FelschDigraph<Word, Node>&                    fd,
+        typename FelschDigraph<Word, Node>::node_type first_node,
+        typename FelschDigraph<Word, Node>::node_type last_node,
+        typename std::vector<Word>::const_iterator    first_rule,
+        typename std::vector<Word>::const_iterator    last_rule,
+        Incompatible&& incompat = FelschDigraph<Word, Node>::ReturnFalse(),
+        PrefDefs&&     pref_defs
+        = FelschDigraph<Word, Node>::NoPreferredDefs()) noexcept;
 
   }  // namespace felsch_digraph
 }  // namespace libsemigroups

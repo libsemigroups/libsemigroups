@@ -242,6 +242,91 @@ namespace libsemigroups {
     // }
   }
 
+  void ToddCoxeter::perform_lookahead() {
+    auto  old_cursor = _word_graph.cursor();
+    auto& current    = _word_graph.cursor();
+
+    // TODO report starting lookahead
+    if (lookahead_extent() == options::lookahead_extent::partial) {
+      // Start lookahead from the coset after _current
+      current = _word_graph.next_active_node(current);
+    } else {
+      LIBSEMIGROUPS_ASSERT(lookahead_extent()
+                           == options::lookahead_extent::full);
+      current = _word_graph.initial_node();
+    }
+    size_t number_of_killed = 0;
+    if (lookahead_style() == options::lookahead_style::hlt) {
+      number_of_killed = hlt_lookahead();
+    } else {
+      LIBSEMIGROUPS_ASSERT(lookahead_style()
+                           == options::lookahead_style::felsch);
+      number_of_killed = felsch_lookahead();
+    }
+
+    current = old_cursor;
+
+    // TODO report_cosets_killed(__func__, number_of_killed);
+    // TODO reenable the below
+    // if (number_of_cosets_active()
+    //         < (next_lookahead() / lookahead_growth_factor())
+    //     && next_lookahead() > min_lookahead()) {
+    //   // If the next_lookahead is much bigger than the current number of
+    //   // cosets, then reduce the next lookahead.
+    //   report_inc_lookahead(
+    //       __func__, lookahead_growth_factor() * number_of_cosets_active());
+    //   next_lookahead(lookahead_growth_factor() * number_of_cosets_active());
+    // } else if (number_of_cosets_active() > next_lookahead()
+    //            || number_of_killed < (number_of_cosets_active()
+    //                                   / lookahead_growth_threshold())) {
+    //   // Otherwise, if we already exceed the next_lookahead or too few
+    //   // cosets were killed, then increase the next lookahead.
+    //   report_inc_lookahead(__func__,
+    //                        next_lookahead() * lookahead_growth_factor());
+    //   _settings->next_lookahead *= lookahead_growth_factor();
+    // }
+    // report_time(__func__, t);
+    // _state = old_state;
+  }
+
+  size_t ToddCoxeter::hlt_lookahead() {
+    report_active_nodes();
+    // _stats.hlt_lookahead_calls++; TODO reanebla
+
+    size_t const old_number_of_killed = _word_graph.number_of_nodes_killed();
+    _word_graph.make_compatible(presentation().rules.cbegin(),
+                                presentation().rules.cend());
+    if (report()) {
+      report_active_nodes();
+    }
+    return _word_graph.number_of_nodes_killed() - old_number_of_killed;
+  }
+
+  //  size_t ToddCoxeter::felsch_lookahead(state const& old_state) {
+  //    report_active_cosets(__func__);
+  // #ifdef LIBSEMIGROUPS_ENABLE_STATS
+  //    _stats.f_lookahead_calls++;
+  // #endif
+  //    size_t const old_number_of_killed = number_of_cosets_killed();
+  //    init_felsch_tree();
+  //    while (_current_la != first_free_coset()
+  //           // when running certain strategies the state is finished at
+  //           // this point, and so stopped() == true, but we anyway want to
+  //           // perform a full lookahead, which is why "_state ==
+  //           // state::finished" is in the next line.
+  //           && (old_state == state::finished || !stopped())) {
+  //      for (size_t a = 0; a < number_of_generators(); ++a) {
+  //        _deduct->emplace(_current_la, a);
+  //      }
+  //      process_deductions();
+  //      _current_la = next_active_coset(_current_la);
+  //      if (report()) {
+  //        report_active_cosets(__func__);
+  //      }
+  //    }
+  //    return number_of_cosets_killed() - old_number_of_killed;
+  //  }
+
   bool ToddCoxeter::contains(word_type const& lhs, word_type const& rhs) {
     validate_word(lhs);
     validate_word(rhs);

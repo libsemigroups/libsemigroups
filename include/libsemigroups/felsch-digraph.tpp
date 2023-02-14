@@ -467,25 +467,26 @@ namespace libsemigroups {
   // Helper namespace
 
   namespace felsch_digraph {
-    template <typename W, typename N>
-    bool make_compatible(
-        FelschDigraph<W, N>&                    fd,
-        typename FelschDigraph<W, N>::node_type first_node,
-        typename FelschDigraph<W, N>::node_type last_node,
-        typename std::vector<W>::const_iterator first_rule,
-        typename std::vector<W>::const_iterator last_rule) noexcept {
+    template <typename Word,
+              typename Node,
+              typename Incompatible,
+              typename PrefDefs>
+    bool
+    make_compatible(FelschDigraph<Word, Node>&                    fd,
+                    typename FelschDigraph<Word, Node>::node_type first_node,
+                    typename FelschDigraph<Word, Node>::node_type last_node,
+                    typename std::vector<Word>::const_iterator    first_rule,
+                    typename std::vector<Word>::const_iterator    last_rule,
+                    Incompatible&&                                incompat,
+                    PrefDefs&& pref_defs) noexcept {
       LIBSEMIGROUPS_ASSERT(first_node < fd.number_of_nodes());
       LIBSEMIGROUPS_ASSERT(last_node <= fd.number_of_nodes());
       LIBSEMIGROUPS_ASSERT(std::distance(first_rule, last_rule) % 2 == 0);
 
       // return false if the graph is incompatible with [first_rule,
       // last_rule)
-      typename FelschDigraph<W, N>::ReturnFalse     incompat;
-      typename FelschDigraph<W, N>::NoPreferredDefs pref_defs;
 
-      using node_type = typename FelschDigraph<W, N>::node_type;
-
-      for (node_type n = first_node; n < last_node; ++n) {
+      for (Node n = first_node; n < last_node; ++n) {
         for (auto it = first_rule; it != last_rule; it += 2) {
           if (!fd.merge_targets_of_paths_if_possible(n,
                                                      it->cbegin(),
