@@ -1187,7 +1187,7 @@ namespace libsemigroups {
     //! `std::string`s the human readable characters are used before
     //! non-readable ones.
     //!
-    //! \tparam W the type of the words in the presentation
+    //! \param i the index
     //!
     //! \returns A `letter_type`.
     //!
@@ -1203,6 +1203,8 @@ namespace libsemigroups {
     //! value such that `!p.in_alphabet(letter(p, i))` if such a letter exists.
     //!
     //! \tparam W the type of the words in the presentation
+    //!
+    //! \param p the presentation
     //!
     //! \returns A `letter_type`.
     //!
