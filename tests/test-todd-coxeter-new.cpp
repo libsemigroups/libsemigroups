@@ -60,14 +60,67 @@ namespace libsemigroups {
 
   namespace {
     void section_felsch(ToddCoxeter& tc) {
-      SECTION("Felsch + no standardisation") {
+      SECTION("Felsch + no standardize") {
         tc.strategy(options::strategy::felsch);
       }
     }
 
     void section_hlt(ToddCoxeter& tc) {
-      SECTION("HLT") {
-        tc.strategy(options::strategy::hlt);
+      SECTION("HLT + no standardize + full hlt lookahead + no save") {
+        tc.strategy(options::strategy::hlt)
+            .standardize(false)
+            .lookahead_extent(options::lookahead_extent::full)
+            .lookahead_style(options::lookahead_style::hlt)
+            .save(false);
+      }
+      SECTION("HLT + standardise + full hlt lookahead + no save") {
+        tc.strategy(options::strategy::hlt)
+            .standardize(true)
+            .lookahead_extent(options::lookahead_extent::full)
+            .lookahead_style(options::lookahead_style::hlt)
+            .save(false);
+      }
+      SECTION("HLT + no standardise + partial hlt lookahead + no save") {
+        tc.strategy(options::strategy::hlt)
+            .standardize(false)
+            .lookahead_extent(options::lookahead_extent::partial)
+            .lookahead_style(options::lookahead_style::hlt)
+            .save(false);
+      }
+      SECTION("HLT + standardise + partial hlt lookahead + no save") {
+        tc.strategy(options::strategy::hlt)
+            .standardize(true)
+            .lookahead_extent(options::lookahead_extent::partial)
+            .lookahead_style(options::lookahead_style::hlt)
+            .save(false);
+      }
+      SECTION("HLT + no standardise + full lookahead + save") {
+        tc.strategy(options::strategy::hlt)
+            .standardize(false)
+            .lookahead_extent(options::lookahead_extent::partial)
+            .lookahead_style(options::lookahead_style::hlt)
+            .save(true);
+      }
+      SECTION("HLT + standardise + full hlt lookahead + save") {
+        tc.strategy(options::strategy::hlt)
+            .standardize(true)
+            .lookahead_extent(options::lookahead_extent::full)
+            .lookahead_style(options::lookahead_style::hlt)
+            .save(true);
+      }
+      SECTION("HLT + no standardise + partial hlt lookahead + save") {
+        tc.strategy(options::strategy::hlt)
+            .standardize(false)
+            .lookahead_extent(options::lookahead_extent::partial)
+            .lookahead_style(options::lookahead_style::hlt)
+            .save(true);
+      }
+      SECTION("HLT + standardise + partial hlt lookahead + save") {
+        tc.strategy(options::strategy::hlt)
+            .standardize(true)
+            .lookahead_extent(options::lookahead_extent::partial)
+            .lookahead_style(options::lookahead_style::hlt)
+            .save(true);
       }
     }
 
@@ -190,7 +243,7 @@ namespace libsemigroups {
                           "000",
                           "small 2-sided congruence",
                           "[todd-coxeter][quick]") {
-    auto rg = ReportGuard(true);
+    auto rg = ReportGuard(false);
 
     Presentation<word_type> p;
     p.alphabet(2);
@@ -508,7 +561,7 @@ namespace libsemigroups {
                           "004",
                           "2-sided congruence from FroidurePin",
                           "[todd-coxeter][quick]") {
-    auto rg = ReportGuard(true);
+    auto rg = ReportGuard(false);
 
     using Transf = LeastTransf<5>;
     FroidurePin<Transf> S({Transf({1, 3, 4, 2, 3}), Transf({3, 2, 1, 3, 3})});
@@ -968,8 +1021,10 @@ namespace libsemigroups {
 
     tc.add_pair(w1, w2);
 
+    section_hlt(tc);
     section_felsch(tc);
 
+    // TODO uncomment
     // section_hlt_no_save(tc);
     // section_hlt_save_throws(tc);
     // section_random(tc);
@@ -1691,7 +1746,7 @@ namespace libsemigroups {
     using fpsemigroup::make;
     using fpsemigroup::stylic_monoid;
 
-    auto rg = ReportGuard(true);
+    auto rg = ReportGuard(false);
 
     auto p = make<Presentation<word_type>>(stylic_monoid(9));
     presentation::remove_duplicate_rules(p);
@@ -1975,7 +2030,7 @@ namespace libsemigroups {
                           "046",
                           "Easdown-East-FitzGerald DualSymInv(5)",
                           "[todd-coxeter][quick][no-valgrind][no-coverage]") {
-    auto       rg = ReportGuard(true);
+    auto       rg = ReportGuard(false);
     auto const n  = 5;
     auto       p  = fpsemigroup::make<Presentation<word_type>>(
         fpsemigroup::dual_symmetric_inverse_monoid(n));
@@ -2030,7 +2085,7 @@ namespace libsemigroups {
                           "049",
                           "partition_monoid(4) (East)",
                           "[todd-coxeter][quick][no-valgrind][no-coverage]") {
-    auto rg = ReportGuard(true);
+    auto rg = ReportGuard(false);
     using fpsemigroup::author;
     using fpsemigroup::make;
     using fpsemigroup::partition_monoid;
@@ -2056,7 +2111,7 @@ namespace libsemigroups {
     using fpsemigroup::make;
     using fpsemigroup::singular_brauer_monoid;
 
-    auto         rg = ReportGuard(true);
+    auto         rg = ReportGuard(false);
     size_t const n  = 6;
     auto         p  = make<Presentation<word_type>>(singular_brauer_monoid(n));
     presentation::remove_duplicate_rules(p);
@@ -2324,7 +2379,7 @@ namespace libsemigroups {
     using fpsemigroup::make;
     using fpsemigroup::partial_transformation_monoid;
 
-    auto   rg = ReportGuard(true);
+    auto   rg = ReportGuard(false);
     size_t n  = 5;
     auto   p  = make<Presentation<word_type>>(
         partial_transformation_monoid(n, author::Sutov));
@@ -2662,7 +2717,7 @@ namespace libsemigroups {
                           "070",
                           "finite semigroup (size 99)",
                           "[todd-coxeter][quick]") {
-    auto                      rg = ReportGuard(true);
+    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("ab");
     presentation::add_rule_and_check(p, "aaa", "a");
@@ -2691,7 +2746,7 @@ namespace libsemigroups {
                           "071",
                           "Walker 1",
                           "[todd-coxeter][standard]") {
-    auto                      rg = ReportGuard(true);
+    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("abcABCDEFGHIXYZ");
     presentation::add_rule_and_check(p, "A", "aaaaaaaaaaaaaa");
@@ -2793,7 +2848,7 @@ namespace libsemigroups {
                           "072",
                           "Walker 2",
                           "[todd-coxeter][quick]") {
-    auto                      rg = ReportGuard(true);
+    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("ab");
     presentation::add_rule_and_check(
@@ -2853,7 +2908,7 @@ namespace libsemigroups {
                           "073",
                           "Walker 3",
                           "[todd-coxeter][standard]") {
-    auto                      rg = ReportGuard(true);
+    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("abc");
     presentation::add_rule_and_check(p, "cc", "a");
@@ -3037,7 +3092,7 @@ namespace libsemigroups {
                           "077",
                           "Walker 6",
                           "[todd-coxeter][standard]") {
-    auto                      rg = ReportGuard(true);
+    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("ab");
     presentation::add_rule_and_check(p, "aaa", "a");
@@ -3417,7 +3472,7 @@ namespace libsemigroups {
                           "086",
                           "trivial semigroup",
                           "[no-valgrind][todd-coxeter][quick][no-coverage]") {
-    auto rg = ReportGuard(true);
+    auto rg = ReportGuard(false);
 
     for (size_t N = 2; N < 1000; N += 199) {
       Presentation<std::string> p;
@@ -3484,8 +3539,12 @@ namespace libsemigroups {
 
     H.strategy(options::strategy::hlt)
         .lookahead_extent(options::lookahead_extent::partial);
-    // TODO uncomment
-    // .save(true);
+    SECTION("save") {
+      H.save(true);
+    }
+    SECTION("no save") {
+      H.save(false);
+    }
 
     REQUIRE(H.number_of_classes() == 8);
   }
@@ -3509,11 +3568,16 @@ namespace libsemigroups {
     H.add_pair(make<word_type>(p, "bc"), make<word_type>(p, ""));
     H.add_pair(make<word_type>(p, "ABAAbcabC"), make<word_type>(p, ""));
     H.add_pair(make<word_type>(p, "AcccacBcA"), make<word_type>(p, ""));
-    // TODO uncomment
+    // TODO uncomment or remove
     // H.large_collapse(10'000);
     H.strategy(options::strategy::hlt)
-        //    .save(true)
         .lookahead_extent(options::lookahead_extent::partial);
+    SECTION("save") {
+      H.save(true);
+    }
+    SECTION("no save") {
+      H.save(false);
+    }
     REQUIRE(H.number_of_classes() == 1);
   }
 
@@ -3547,7 +3611,7 @@ namespace libsemigroups {
                           "091",
                           "ACE --- SL219 - HLT",
                           "[todd-coxeter][standard][ace]") {
-    auto                      rg = ReportGuard(true);
+    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("abAB");
     p.contains_empty_word(true);
@@ -3565,21 +3629,18 @@ namespace libsemigroups {
       presentation::greedy_reduce_length(p);
       REQUIRE(presentation::length(p) == 49);
       H.init(right, p);
-      section_hlt(H);
       // section_felsch(H); TOO slow
     }
     SECTION("no preprocessing") {
       REQUIRE(presentation::length(p) == 83);
       H.init(right, p);
-      section_hlt(H);
       // section_felsch(H);  TOO slow
     }
     H.add_pair(make<word_type>(p, "b"), make<word_type>(p, ""));
 
-    // H.strategy(options::strategy::hlt)
-    //     .lookahead_extent(options::lookahead_extent::partial);
-    // TODO uncomment
-    //     .save(false)
+    H.strategy(options::strategy::hlt)
+        .lookahead_extent(options::lookahead_extent::partial)
+        .save(false);
     REQUIRE(H.number_of_classes() == 180);
   }
 
@@ -3652,7 +3713,7 @@ namespace libsemigroups {
 
     SECTION("HLT + save + partial lookahead") {
       H.strategy(options::strategy::hlt)
-          //       .save(true)
+          .save(true)
           .lookahead_extent(options::lookahead_extent::partial);
     }
     // TODO uncomment
@@ -3660,6 +3721,7 @@ namespace libsemigroups {
     //   H.strategy(options::strategy::random)
     //       .random_interval(std::chrono::milliseconds(100));
     // }
+    section_hlt(H);
     section_felsch(H);
 
     REQUIRE(H.number_of_classes() == 95'040);

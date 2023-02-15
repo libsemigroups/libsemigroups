@@ -659,9 +659,6 @@ namespace libsemigroups {
       LIBSEMIGROUPS_ASSERT(last_node <= fd.number_of_nodes());
       LIBSEMIGROUPS_ASSERT(std::distance(first_rule, last_rule) % 2 == 0);
 
-      // return false if the graph is incompatible with [first_rule,
-      // last_rule)
-
       for (Node n = first_node; n < last_node; ++n) {
         for (auto it = first_rule; it != last_rule; it += 2) {
           if (!fd.merge_targets_of_paths_if_possible(n,

@@ -24,8 +24,8 @@
 
 namespace libsemigroups {
   namespace {
-    bool constexpr DoNotStackDeductions = false;
-    bool constexpr StackDeductions      = true;
+    bool constexpr DoNotRegisterDefs = false;
+    bool constexpr RegisterDefs      = true;
   }  // namespace
 
   using class_index_type = v3::CongruenceInterface::class_index_type;
@@ -201,6 +201,15 @@ namespace libsemigroups {
     return _settings.save;
   }
 
+  ToddCoxeter& ToddCoxeter::standardize(bool x) noexcept {
+    _settings.standardize = x;
+    return *this;
+  }
+
+  bool ToddCoxeter::standardize() const noexcept {
+    return _settings.standardize;
+  }
+
   ////////////////////////////////////////////////////////////////////////
   // ToddCoxeter - accessors - public
   ////////////////////////////////////////////////////////////////////////
@@ -266,6 +275,11 @@ namespace libsemigroups {
           "there are infinitely many classes in the congruence and "
           "Todd-Coxeter will never terminate");
     }
+    if (report::should_report()) {
+      fmt::print(
+          FORMAT("#0: ToddCoxeter: using {} strategy . . .\n", strategy()));
+    }
+
     init_run();
 
     if (strategy() == options::strategy::felsch) {
@@ -405,7 +419,7 @@ namespace libsemigroups {
     while (current != _word_graph.first_free_node() && !stopped()) {
       for (letter_type a = 0; a < n; ++a) {
         if (_word_graph.unsafe_neighbor(current, a) == UNDEFINED) {
-          _word_graph.def_edge_nc<StackDeductions>(
+          _word_graph.def_edge_nc<RegisterDefs>(
               current, a, _word_graph.new_node());
           _word_graph.process_definitions();
         }
@@ -434,28 +448,27 @@ namespace libsemigroups {
     //   preferred_defs(options::preferred_defs::none);
     // }
 
-    auto& current = _word_graph.cursor();
-    current       = _word_graph.initial_node();
+    auto& current    = _word_graph.cursor();
+    current          = _word_graph.initial_node();
+    auto const first = presentation().rules.cbegin();
+    auto const last  = presentation().rules.cend();
     while (current != _word_graph.first_free_node() && !stopped()) {
       // if (!save()) {
-      auto const first = presentation().rules.cbegin();
-      auto const last  = presentation().rules.cend();
-      for (auto it = first; it < last; it += 2) {
-        _word_graph.push_definition_hlt<DoNotStackDeductions>(
-            current, *it, *(it + 1));
-        _word_graph.process_coincidences<DoNotStackDeductions>();
+      if (!save()) {
+        for (auto it = first; it < last; it += 2) {
+          // TODO check that the DoNotRegisterDefs honoured
+          _word_graph.push_definition_hlt<DoNotRegisterDefs>(
+              current, *it, *(it + 1));
+          _word_graph.process_coincidences<DoNotRegisterDefs>();
+        }
+      } else {
+        for (auto it = first; it < last; it += 2) {
+          // TODO check that the RegisterDefs honoured
+          _word_graph.push_definition_hlt<RegisterDefs>(
+              current, *it, *(it + 1));
+          _word_graph.process_definitions();
+        }
       }
-      // } else {
-      //   for (auto it = _relations.cbegin(); it < _relations.cend(); it +=
-      //   2)
-      //   {
-      //     push_definition_hlt<StackDeductions, DoNotProcessCoincidences>(
-      //         _current, *it, *(it + 1));
-      //     process_deductions();
-      //     // See the comments in ToddCoxeter::felsch about the meaning of
-      //     // standardize_immediate.
-      //   }
-      // }
       // if (standardize()) {
       //   bool any_changes = false;
       //   for (letter_type x = 0; x < n; ++x) {
@@ -476,10 +489,10 @@ namespace libsemigroups {
         report_active_nodes();
       }
       current = _word_graph.next_active_node(current);
+      // if (do_pop_settings) {
+      //   pop_settings();
+      // }
     }
-    // if (do_pop_settings) {
-    //   pop_settings();
-    // }
   }
 
   ////////////////////////////////////////////////////////////////////////
@@ -583,7 +596,7 @@ namespace libsemigroups {
     size_t const old_number_of_killed = _word_graph.number_of_nodes_killed();
     _word_graph.make_compatible(presentation().rules.cbegin(),
                                 presentation().rules.cend());
-    _word_graph.process_coincidences<DoNotStackDeductions>();
+    _word_graph.process_coincidences<DoNotRegisterDefs>();
     if (report()) {
       report_active_nodes();
     }
