@@ -344,6 +344,31 @@ namespace libsemigroups {
     //! \sa lookahead_growth_threshold()
     size_t lookahead_growth_threshold() const noexcept;
 
+    //! Process deductions during HLT.
+    //!
+    //! If the argument of this function is \c true and the HLT strategy is
+    //! being used, then deductions are processed during the enumeration.
+    //!
+    //! The default value is \c false.
+    //!
+    //! \param val value indicating whether or not to process deductions.
+    //!
+    //! \returns A reference to `*this`.
+    ToddCoxeter& save(bool val);
+
+    //! The current value of save setting.
+    //!
+    //! \parameters
+    //! None
+    //!
+    //! \returns A value of type `bool`.
+    //!
+    //! \exceptions
+    //! \noexcept
+    //!
+    //! \sa save(bool)
+    bool save() const noexcept;
+
     ////////////////////////////////////////////////////////////////////////
     // ToddCoxeter - accessors - public
     ////////////////////////////////////////////////////////////////////////

@@ -192,6 +192,15 @@ namespace libsemigroups {
     return _settings.lookahead_growth_threshold;
   }
 
+  ToddCoxeter& ToddCoxeter::save(bool x) {
+    _settings.save = x;
+    return *this;
+  }
+
+  bool ToddCoxeter::save() const noexcept {
+    return _settings.save;
+  }
+
   ////////////////////////////////////////////////////////////////////////
   // ToddCoxeter - accessors - public
   ////////////////////////////////////////////////////////////////////////
