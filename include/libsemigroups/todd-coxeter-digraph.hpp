@@ -90,6 +90,17 @@ namespace libsemigroups {
     };
 
    public:
+    // TODO move to tpp file
+    struct IsInActiveNode {
+      ToddCoxeterDigraph& _word_graph;
+
+      explicit IsInActiveNode(ToddCoxeterDigraph& wg) : _word_graph(wg) {}
+
+      template <typename T>  // FIXME remove this
+      bool operator()(T const& x) const {
+        return !_word_graph.is_active_node(x.first);
+      }
+    };
     using BaseDigraph::BaseDigraph;
     using BaseDigraph::out_degree;
     using BaseDigraph::unsafe_neighbor;
@@ -196,8 +207,9 @@ namespace libsemigroups {
       if (_coinc.empty()) {
         return;
       }
-      ReturnTrue incompat_func(_coinc);
-      auto const coinc_max_size = large_collapse();
+      ReturnTrue     incompat_func(_coinc);
+      auto const     coinc_max_size = large_collapse();
+      IsInActiveNode inactive(*this);
 
       while (!_coinc.empty() && _coinc.size() < coinc_max_size) {
         Coincidence c = _coinc.top();
@@ -211,8 +223,8 @@ namespace libsemigroups {
             BaseDigraph::merge_nodes(
                 min,
                 max,
-                [this](node_type n, letter_type x) {
-                  this->definitions().emplace(n, x);
+                [this, &inactive](node_type n, letter_type x) {
+                  this->definitions().emplace(n, x, inactive);
                 },
                 incompat_func);
           } else {
@@ -271,7 +283,7 @@ namespace libsemigroups {
             auto d = NodeManager_::find_node(cx);
             if (cx != d) {
               if constexpr (RegisterDefs) {
-                this->definitions().emplace(c, x);
+                this->definitions().emplace(c, x, inactive);
               }
               ActionDigraph<node_type>::add_edge_nc(c, d, x);
             }
@@ -393,13 +405,14 @@ namespace libsemigroups {
     // TODO rename is_complete
     template <typename BaseDigraph>
     bool complete(ToddCoxeterDigraph<BaseDigraph> const& tcd) {
-      using node_type   = typename std::decay_t<decltype(tcd)>::node_type;
-      node_type current = 0;
+      using node_type      = typename std::decay_t<decltype(tcd)>::node_type;
+      node_type    current = 0;
+      size_t const n       = tcd.out_degree();
       while (current != tcd.first_free_node()) {
-        if (std::any_of(tcd.cbegin_edges(current),
-                        tcd.cend_edges(current),
-                        [](node_type const& x) { return x == UNDEFINED; })) {
-          return false;
+        for (size_t a = 0; a < n; ++a) {
+          if (tcd.unsafe_neighbor(current, a) == UNDEFINED) {
+            return false;
+          }
         }
         current = tcd.next_active_node(current);
       }

@@ -49,7 +49,15 @@ namespace libsemigroups {
     }
 
     Definition pop();
-    void       emplace(node_type c, typename FelschDigraph_::label_type x);
+    template <typename IsInActiveNode>
+    void emplace(node_type                           c,
+                 typename FelschDigraph_::label_type x,
+                 IsInActiveNode&);
+
+    void emplace(node_type c, typename FelschDigraph_::label_type x) {
+      ReturnFalse rf;
+      emplace(c, x, rf);
+    }
 
     Definition const& operator[](size_t i) {
       return _definitions[i];
@@ -113,14 +121,15 @@ namespace libsemigroups {
     return res;
   }
 
+  // TODO this is awkward with the is_inactive_node, try to refactor to remove
+  // it
   template <typename Word, typename Node>
+  template <typename IsInActiveNode>
   void FelschDigraph<Word, Node>::Definitions::emplace(
       typename FelschDigraph<Word, Node>::node_type  c,
-      typename FelschDigraph<Word, Node>::label_type x) {
+      typename FelschDigraph<Word, Node>::label_type x,
+      IsInActiveNode&                                is_inactive_node) {
     using def_policy = typename options::def_policy;
-
-    // TODO remove this
-    auto is_inactive_node = [](auto const&) { return false; };
 
     if (_settings->def_policy() == def_policy::unlimited
         || _definitions.size() < _settings->def_max()) {
@@ -128,17 +137,20 @@ namespace libsemigroups {
       return;
     }
 
-    _any_skipped = true;
     switch (_settings->def_policy()) {
       case def_policy::purge_from_top: {
-        while (!_definitions.empty() && is_inactive_node(_definitions.back())) {
+        while (!_definitions.empty()
+               && !is_inactive_node(_definitions.back())) {
+          _any_skipped = true;
           _definitions.pop_back();
         }
         break;
       }
       case def_policy::purge_all: {
+        size_t const prev_size = _definitions.size();
         std::remove_if(
             _definitions.begin(), _definitions.end(), is_inactive_node);
+        _any_skipped |= (_definitions.size() < prev_size);
         break;
       }
       case def_policy::discard_all_if_no_space: {

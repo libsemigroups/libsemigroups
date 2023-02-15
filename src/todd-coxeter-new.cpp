@@ -441,14 +441,16 @@ namespace libsemigroups {
   void ToddCoxeter::finalise_run() {
     if (!stopped()) {
       if (_word_graph.definitions().any_skipped()) {
-        // if (_word_graph.number_of_nodes_active() != lower_bound() + 1
-        //     || !complete()) {
-        // push_settings();
-        lookahead_extent(options::lookahead_extent::full);
-        lookahead_style(options::lookahead_style::hlt);
-        perform_lookahead();
-        // pop_settings();
-        // }
+        if (!todd_coxeter_digraph::complete(_word_graph)) {
+          // || _word_graph.number_of_nodes_active() != lower_bound() + 1)
+          // TODO uncomment
+          // push_settings();
+          lookahead_extent(options::lookahead_extent::full);
+          lookahead_style(options::lookahead_style::hlt);
+          perform_lookahead();
+          // pop_settings();
+          // }
+        }
       }
       _finished = true;
     }
@@ -653,10 +655,14 @@ namespace libsemigroups {
     size_t const old_number_of_killed = _word_graph.number_of_nodes_killed();
     node_type&   current              = _word_graph.lookahead_cursor();
     size_t const n                    = _word_graph.out_degree();
+
+    typename decltype(_word_graph)::IsInActiveNode is_inactive_node(
+        _word_graph);
+
     while (current != _word_graph.first_free_node()) {
       _word_graph.definitions().clear();
       for (size_t a = 0; a < n; ++a) {
-        _word_graph.definitions().emplace(current, a);
+        _word_graph.definitions().emplace(current, a, is_inactive_node);
       }
       _word_graph.process_definitions();
       current = _word_graph.next_active_node(current);
