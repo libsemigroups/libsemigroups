@@ -17,6 +17,11 @@
 //
 
 namespace libsemigroups {
+
+  ////////////////////////////////////////////////////////////////////////////
+  // Definitions
+  ////////////////////////////////////////////////////////////////////////////
+
   template <typename Word, typename Node>
   class FelschDigraph<Word, Node>::Definitions {
    private:
@@ -102,10 +107,6 @@ namespace libsemigroups {
     _def_version = options::def_version::two;
     return *this;
   }
-
-  ////////////////////////////////////////////////////////////////////////////
-  // Definitions
-  ////////////////////////////////////////////////////////////////////////////
 
   template <typename Word, typename Node>
   typename FelschDigraph<Word, Node>::Definition
@@ -273,7 +274,7 @@ namespace libsemigroups {
     LIBSEMIGROUPS_ASSERT(d < ActionDigraph<Node>::number_of_nodes());
     node_type cx = ActionDigraph<Node>::unsafe_neighbor(c, x);
     if (cx == UNDEFINED) {
-      def_edge_nc(c, x, d);
+      def_edge_nc<RegisterDefs>(c, x, d);
       return true;
     } else {
       return cx == d;
@@ -296,6 +297,9 @@ namespace libsemigroups {
 
   template <typename Word, typename Node>
   void FelschDigraph<Word, Node>::reduce_number_of_edges_to(size_type n) {
+    LIBSEMIGROUPS_ASSERT(ActionDigraph<Node>::number_of_edges()
+                         == _definitions.size());
+
     while (_definitions.size() > n) {
       auto const& p = _definitions.back();
       this->remove_edge_nc(p.first, p.second);
@@ -309,6 +313,7 @@ namespace libsemigroups {
     _presentation = p;
     size_t c      = _presentation.alphabet().size();
     if (c > ActionDigraph<Node>::out_degree()) {
+      // Not sure this is required
       ActionDigraph<Node>::add_to_out_degree(
           c - ActionDigraph<Node>::out_degree());
     }
