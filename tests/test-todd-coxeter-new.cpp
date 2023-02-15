@@ -4007,14 +4007,17 @@ namespace libsemigroups {
 
     REQUIRE(presentation::length(p) == 246);
     presentation::greedy_reduce_length(p);
-    REQUIRE(presentation::length(p) == 102);
+    REQUIRE(presentation::length(p) == 91);
+
+    presentation::sort_each_rule(p);
+    presentation::sort_rules(p);
 
     ToddCoxeter tc(twosided, p);
 
     // TODO uncomment
     // using digraph_type = typename
-    // ::libsemigroups::ToddCoxeter::digraph_type; tc.sort_generating_pairs()
-    //     .strategy(options::strategy::felsch)
+    // ::libsemigroups::ToddCoxeter::digraph_type;
+    // tc.strategy(options::strategy::felsch);
     //     .use_relations_in_extra(true)
     //     .lower_bound(10'200'960)
     //     .deduction_version(digraph_type::process_defs::v2)
@@ -4100,15 +4103,15 @@ namespace libsemigroups {
     presentation::sort_rules(p);
 
     REQUIRE(presentation::length(p) == 367);
-    presentation::greedy_reduce_length(p);
-    REQUIRE(presentation::length(p) == 135);
+    // presentation::greedy_reduce_length(p);
+    // REQUIRE(presentation::length(p) == 135);
 
     ToddCoxeter tc(right, p);
     tc.add_pair(make<word_type>(p, "xy"), make<word_type>(p, ""));
     // section_felsch(tc);
     SECTION("custom HLT") {
-      tc.lookahead_style(options::lookahead_style::hlt)
-          .lookahead_extent(options::lookahead_extent::full)
+      tc.lookahead_style(options::lookahead_style::felsch)
+          .lookahead_extent(options::lookahead_extent::partial)
           .strategy(options::strategy::hlt);
       // TODO uncomment
       //     .use_relations_in_extra(true)
@@ -4142,6 +4145,7 @@ namespace libsemigroups {
     // Greedy reducing the presentation here makes this slower
     ToddCoxeter tc(twosided, p);
     section_felsch(tc);
+    section_hlt(tc);
     REQUIRE(tc.number_of_classes() == 175'560);
   }
 
@@ -4176,18 +4180,24 @@ namespace libsemigroups {
       "http://brauer.maths.qmul.ac.uk/Atlas/clas/S62/mag/S62G1-P1.M",
       "[todd-coxeter][extreme]") {
     Presentation<std::string> p;
-    p.alphabet("xyXYe");
-    presentation::add_identity_rules(p, 'e');
-    presentation::add_inverse_rules(p, "XYxye", 'e');
-    presentation::add_rule_and_check(p, "xx", "e");
-    presentation::add_rule_and_check(p, "yyyyyyy", "e");
-    presentation::add_rule_and_check(p, "xyxyxyxyxyxyxyxyxy", "e");
+    p.alphabet("xyXY");
+    p.contains_empty_word(true);
+    presentation::add_inverse_rules(p, "XYxy");
+    presentation::add_rule_and_check(p, "xx", "");
+    presentation::add_rule_and_check(p, "yyyyyyy", "");
+    presentation::add_rule_and_check(p, "xyxyxyxyxyxyxyxyxy", "");
     presentation::add_rule_and_check(
-        p, "xyyxyyxyyxyyxyyxyyxyyxyyxyyxyyxyyxyy", "e");
-    presentation::add_rule_and_check(p, "XYXYXYxyxyxyXYXYXYxyxyxy", "e");
-    presentation::add_rule_and_check(p, "XYxyXYxyXYxy", "e");
-    presentation::add_rule_and_check(p, "XYYxyyXYYxyy", "e");
+        p, "xyyxyyxyyxyyxyyxyyxyyxyyxyyxyyxyyxyy", "");
+    presentation::add_rule_and_check(p, "XYXYXYxyxyxyXYXYXYxyxyxy", "");
+    presentation::add_rule_and_check(p, "XYxyXYxyXYxy", "");
+    presentation::add_rule_and_check(p, "XYYxyyXYYxyy", "");
+    // presentation::greedy_reduce_length(p); makes this slower for both hlt
+    // and Felsch
+
     ToddCoxeter tc(twosided, p);
+    section_felsch(tc);
+    section_hlt(tc);
+
     REQUIRE(tc.number_of_classes() == 1'451'520);
     // TODO uncomment
     // std::cout << tc.stats_string();
