@@ -185,6 +185,12 @@ namespace libsemigroups {
       _coinc.emplace(x, y);
     }
 
+    void report_coincidences() const {
+      if (report::should_report()) {
+        fmt::print(FORMAT("#0: ToddCoxeter: coincidences {}", _coinc.size()));
+      }
+    }
+
     template <bool RegisterDefs>
     void process_coincidences() {
       if (_coinc.empty()) {
@@ -201,10 +207,6 @@ namespace libsemigroups {
         if (min != max) {
           std::tie(min, max) = std::minmax({min, max});
           NodeManager_::union_nodes(min, max);
-          // TODO why not union_nodes for all coincidences, then we will know if
-          // there's a "large" collapse or not before we even start?
-          // TODO(later)  new_edge_func + incompat_func should be template
-          // params again
           if constexpr (RegisterDefs) {
             BaseDigraph::merge_nodes(
                 min,
@@ -222,6 +224,9 @@ namespace libsemigroups {
 
       if (_coinc.empty()) {
         return;
+      } else {
+        fmt::print("#0: ToddCoxeter: large collapse detected!\n");
+        report_coincidences();
       }
 
       while (!_coinc.empty()) {

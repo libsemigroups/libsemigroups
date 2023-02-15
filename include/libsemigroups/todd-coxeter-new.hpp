@@ -403,6 +403,35 @@ namespace libsemigroups {
     //! \sa standardize(bool)
     bool standardize() const noexcept;
 
+    //! Perform an HLT-style push of the defining relations at the identity.
+    //!
+    //! If a ToddCoxeter instance is defined over a finitely presented
+    //! semigroup and the Felsch strategy is being used, it can be useful
+    //! to follow all the paths from the identity labelled by the underlying
+    //! relations of the semigroup (if any). The setting specifies whether or
+    //! not to do this.
+    //!
+    //! The default value of this setting is \c false.
+    //!
+    //! \param val the boolean value.
+    //!
+    //! \returns A reference to `*this`.
+    //!
+    //! \exceptions
+    //! \noexcept
+    ToddCoxeter& use_relations_in_extra(bool val) noexcept;
+
+    //! The current value of the setting for using relations.
+    //!
+    //! \parameters
+    //! (None)
+    //!
+    //! \returns The current value of the setting, a value of type ``bool``.
+    //!
+    //! \exceptions
+    //! \noexcept
+    bool use_relations_in_extra() const noexcept;
+
     ////////////////////////////////////////////////////////////////////////
     // ToddCoxeter - accessors - public
     ////////////////////////////////////////////////////////////////////////

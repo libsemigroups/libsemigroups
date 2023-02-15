@@ -485,6 +485,8 @@ namespace libsemigroups {
     _felsch_graph.number_of_active_nodes(n == 0 ? 0 : 1);
     // = 0 indicates iterator is done
     _felsch_graph.add_nodes(n);
+    _felsch_graph.def_policy(
+        decltype(_felsch_graph)::options::def_policy::unlimited);
   }
 
   // The following function is separated from the constructor so that it isn't

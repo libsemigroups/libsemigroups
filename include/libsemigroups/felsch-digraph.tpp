@@ -99,11 +99,8 @@ namespace libsemigroups {
 
   template <typename Subclass>
   FelschDigraphSettings<Subclass>& FelschDigraphSettings<Subclass>::init() {
-    _def_max    = 2'000;
-    _def_policy = options::def_policy::unlimited;
-    // TODO change back to def_policy::no_stack_if_no_space, can't at
-    // present because we haven't yet reimplemented lookaheads
-
+    _def_max     = 2'000;
+    _def_policy  = options::def_policy::no_stack_if_no_space;
     _def_version = options::def_version::two;
     return *this;
   }
@@ -120,8 +117,10 @@ namespace libsemigroups {
   void FelschDigraph<Word, Node>::Definitions::emplace(
       typename FelschDigraph<Word, Node>::node_type  c,
       typename FelschDigraph<Word, Node>::label_type x) {
-    using def_policy    = typename options::def_policy;
-    auto is_active_node = [](auto const&) { return true; };
+    using def_policy = typename options::def_policy;
+
+    // TODO remove this
+    auto is_inactive_node = [](auto const&) { return false; };
 
     if (_settings->def_policy() == def_policy::unlimited
         || _definitions.size() < _settings->def_max()) {
@@ -132,21 +131,14 @@ namespace libsemigroups {
     _any_skipped = true;
     switch (_settings->def_policy()) {
       case def_policy::purge_from_top: {
-        while (!_definitions.empty()
-               && !is_active_node(_definitions.back().first)) {
+        while (!_definitions.empty() && is_inactive_node(_definitions.back())) {
           _definitions.pop_back();
         }
         break;
       }
       case def_policy::purge_all: {
-        std::vector<Definition> copy;
-        while (!_definitions.empty()) {
-          auto& d = _definitions.back();
-          if (is_active_node(d.first)) {
-            copy.push_back(std::move(d));
-          }
-        }
-        std::swap(copy, _definitions);
+        std::remove_if(
+            _definitions.begin(), _definitions.end(), is_inactive_node);
         break;
       }
       case def_policy::discard_all_if_no_space: {

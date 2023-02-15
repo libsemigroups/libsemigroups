@@ -3363,6 +3363,11 @@ namespace libsemigroups {
 
     namespace detail {
       // TODO(now) to tpp file
+      // FIXME this is current slow, this is equivalent to
+      // standardize_immediate from ToddCoxeter, when we might really want to
+      // do standardize_deferred (i.e. permute a vector then permute all nodes
+      // in the digraph at the same time rather than swapping pairs of nodes)
+      // ToddCoxeter test 085 is a good one for this
       template <typename T>
       bool shortlex_standardize(T& d, Forest& f) {
         LIBSEMIGROUPS_ASSERT(d.number_of_nodes() != 0);

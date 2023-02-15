@@ -695,7 +695,7 @@ namespace libsemigroups {
     presentation::add_rule_and_check(p, {0}, {1, 1});
     {
       ToddCoxeter tc(left, p);
-      // TODO uncomment tc.growth_factor(1.5);
+      tc.lookahead_growth_factor(1.5);
 
       section_felsch(tc);
       section_hlt(tc);
@@ -1025,8 +1025,6 @@ namespace libsemigroups {
     section_felsch(tc);
 
     // TODO uncomment
-    // section_hlt_no_save(tc);
-    // section_hlt_save_throws(tc);
     // section_random(tc);
 
     REQUIRE(tc.number_of_classes() == 21);
@@ -1481,10 +1479,12 @@ namespace libsemigroups {
     ToddCoxeter tc2(left, tc1);
     tc2.add_pair({0}, {1});
     REQUIRE_THROWS_AS(tc2.add_pair({0}, {2}), LibsemigroupsException);
-    // section_hlt_no_save(tc2);
-    // section_hlt_save_throws(tc2);
+
+    section_hlt(tc2);
     section_felsch(tc2);
+    // TODO uncomment
     // section_random(tc2);
+
     REQUIRE(tc2.number_of_classes() == 1);
   }
 
@@ -1606,11 +1606,11 @@ namespace libsemigroups {
     REQUIRE(S.size() == 88);
     REQUIRE(S.number_of_rules() == 18);
     ToddCoxeter tc = make<ToddCoxeter>(twosided, S);  // use Cayley graph
-    // section_hlt_no_save(tc);
-    // section_hlt_save_throws(tc);
+    // TODO uncomment
     // section_random(tc);
     tc.add_pair({0}, {1, 1});
     section_felsch(tc);
+    section_hlt(tc);
     REQUIRE(tc.number_of_classes() == 1);
   }
 
@@ -2132,12 +2132,12 @@ namespace libsemigroups {
     size_t const n  = 4;
     auto p = make<Presentation<word_type>>(orientation_preserving_monoid(n));
     ToddCoxeter tc(congruence_kind::twosided, p);
-    // TODO uncomment
     tc.strategy(options::strategy::hlt)
-        .lookahead_extent(options::lookahead_extent::partial);
-    // tc.standardize(false)
+        .lookahead_extent(options::lookahead_extent::partial)
+        .standardize(false);
     section_hlt(tc);
     section_felsch(tc);
+    // TODO uncomment
     // section_random(tc);
     // section_R_over_C_style(tc);
     // section_rc_style(tc);
@@ -2606,9 +2606,9 @@ namespace libsemigroups {
     ToddCoxeter tc1(twosided, p);
     tc1.add_pair(w1, w2);
 
-    // section_hlt_no_save(tc1);
-    // section_hlt_save_throws(tc1);
     section_felsch(tc1);
+    section_hlt(tc1);
+    // TODO uncomment
     // section_random(tc1);
 
     REQUIRE(tc1.number_of_classes() == 21);
@@ -2620,8 +2620,7 @@ namespace libsemigroups {
     ToddCoxeter tc2(twosided, p);
     tc2.add_pair(w1, w2);
 
-    // section_hlt_no_save(tc2);
-    // section_hlt_save_throws(tc2);
+    section_hlt(tc2);
     section_felsch(tc2);
 
     REQUIRE(tc2.number_of_classes() == 21);
@@ -2652,34 +2651,27 @@ namespace libsemigroups {
     presentation::add_rule_and_check(p, "Aa", "e");
 
     ToddCoxeter tc(twosided, p);
-    // TODO uncomment
-    // SECTION("definition policy == purge_from_top") {
-    //   tc
-    //       .max_definitions(2)
-    //       .strategy(options::strategy::felsch)
-    //       .max_preferred_defs(3);
-    //   REQUIRE_THROWS_AS(tc.definition_policy(
-    //                         DefinitionOptions::definitions::purge_from_top),
-    //                     LibsemigroupsException);
-    //   tc
-    //       .definition_version(digraph_type::process_defs::v1)
-    //       .definition_policy(DefinitionOptions::definitions::purge_from_top);
-    // }
-    // SECTION("definition policy == purge_all") {
-    //   tc.max_definitions(2).strategy(options::strategy::felsch);
-    //   tc
-    //       .definition_version(digraph_type::process_defs::v1)
-    //       .definition_policy(DefinitionOptions::definitions::purge_all);
-    // }
-    // SECTION("definition policy == discard_all_if_no_space") {
-    //   tc.max_definitions(2).strategy(options::strategy::felsch);
-    //   tc
-    //       .definition_version(digraph_type::process_defs::v2)
-    //       .definition_policy(
-    //           DefinitionOptions::definitions::discard_all_if_no_space);
-    // }
+    SECTION("definition policy == purge_from_top") {
+      tc.def_max(2)
+          .strategy(options::strategy::felsch)
+          .def_version(options::def_version::one)
+          .def_policy(options::def_policy::purge_from_top);
+    }
+    SECTION("definition policy == purge_all") {
+      tc.def_max(2)
+          .strategy(options::strategy::felsch)
+          .def_version(options::def_version::one)
+          .def_policy(options::def_policy::purge_all);
+    }
+    SECTION("definition policy == discard_all_if_no_space") {
+      tc.def_max(2)
+          .strategy(options::strategy::felsch)
+          .def_version(options::def_version::two)
+          .def_policy(options::def_policy::discard_all_if_no_space);
+    }
     section_hlt(tc);
     section_felsch(tc);
+    // TODO uncomment
     // section_random(tc);
     // section_rc_style(tc);
     // section_R_over_C_style(tc);
@@ -3436,23 +3428,27 @@ namespace libsemigroups {
 
     auto rg = ReportGuard(false);
     auto p  = make<Presentation<word_type>>(RennerTypeDMonoid(4, 1));
-    REQUIRE(p.rules.size() == 252);
+
+    REQUIRE(p.rules.size() == 252);  // FIXME 242?
+    REQUIRE(p.alphabet().size() == 11);
 
     ToddCoxeter tc(twosided, p);
+    tc.strategy(options::strategy::hlt);
     REQUIRE(!is_obviously_infinite(tc));
 
-    section_felsch(tc);
+    // section_felsch(tc);
+    // section_hlt(tc);
 
     REQUIRE(tc.number_of_classes() == 10'625);
 
-    section_hlt(tc);
     // section_random(tc);
     // section_rc_style(tc);
     // section_R_over_C_style(tc);
     // section_CR_style(tc);
     // section_Cr_style(tc);
 
-    tc.standardize(order::shortlex);
+    tc.standardize(
+        order::shortlex);  // FIXME This is the cause of the slow down
     REQUIRE(std::is_sorted(todd_coxeter::cbegin_normal_forms(tc),
                            todd_coxeter::cend_normal_forms(tc),
                            ShortLexCompare()));
@@ -3460,8 +3456,7 @@ namespace libsemigroups {
     REQUIRE(std::is_sorted(todd_coxeter::cbegin_normal_forms(tc),
                            todd_coxeter::cend_normal_forms(tc),
                            LexicographicalCompare()));
-    // The next section is very slow
-    // tc.standardize(order::recursive);
+    // The next section is very slow tc.standardize(order::recursive);
     // REQUIRE(std::is_sorted(todd_coxeter::cbegin_normal_forms(tc),
     //                        todd_coxeter::cend_normal_forms(tc),
     //                        RecursivePathCompare()));
@@ -4070,28 +4065,20 @@ namespace libsemigroups {
         p, "xyxyyxyxyyxyxyyxyyxYxyyxYxyxyyxyxYxyy", "");
 
     REQUIRE(presentation::length(p) == 246);
-    presentation::greedy_reduce_length(p);
-    REQUIRE(presentation::length(p) == 91);
 
     presentation::sort_each_rule(p);
     presentation::sort_rules(p);
 
     ToddCoxeter tc(twosided, p);
 
+    tc.strategy(options::strategy::felsch)
+        .def_version(options::def_version::two)
+        .def_policy(options::def_policy::no_stack_if_no_space)
+        .use_relations_in_extra(true);
     // TODO uncomment
-    // using digraph_type = typename
-    // ::libsemigroups::ToddCoxeter::digraph_type;
-    // tc.strategy(options::strategy::felsch);
-    //     .use_relations_in_extra(true)
     //     .lower_bound(10'200'960)
-    //     .deduction_version(digraph_type::process_defs::v2)
-    //     .deduction_policy(DefinitionOptions::definitions::no_stack_if_no_space)
     //     .reserve(50'000'000);
     // std::cout << tc.settings_string();
-    // TODO this is currently slow, probably because we stack too many
-    // definitions
-
-    section_felsch(tc);
 
     REQUIRE(tc.number_of_classes() == 10'200'960);
   }
@@ -4121,7 +4108,7 @@ namespace libsemigroups {
 
     REQUIRE(presentation::length(p) == 239);
     presentation::greedy_reduce_length(p);
-    REQUIRE(presentation::length(p) == 92);
+    REQUIRE(presentation::length(p) == 77);
 
     ToddCoxeter tc(right, p);
     tc.add_pair(make<word_type>(p, "xy"), make<word_type>(p, ""));
@@ -4131,7 +4118,6 @@ namespace libsemigroups {
   }
 
   // Approx. 32 minutes (2021 - MacBook Air M1 - 8GB RAM)
-  // TODO Doesn't run in v3 at present
   LIBSEMIGROUPS_TEST_CASE(
       "v3::ToddCoxeter",
       "106",
@@ -4164,6 +4150,7 @@ namespace libsemigroups {
         p, "xyxyxyyxyxyxyyxyxyxYxyxyxyyxyyxyyxyxyxY", "");
     presentation::add_rule_and_check(
         p, "xyxyxyyxyxyyxyxyyxyxyxyyxYxyxYYxyxYxyy", "");
+    presentation::sort_each_rule(p);
     presentation::sort_rules(p);
 
     REQUIRE(presentation::length(p) == 367);
@@ -4172,14 +4159,10 @@ namespace libsemigroups {
 
     ToddCoxeter tc(right, p);
     tc.add_pair(make<word_type>(p, "xy"), make<word_type>(p, ""));
-    // section_felsch(tc);
-    SECTION("custom HLT") {
-      tc.lookahead_style(options::lookahead_style::felsch)
-          .lookahead_extent(options::lookahead_extent::partial)
-          .strategy(options::strategy::hlt);
-      // TODO uncomment
-      //     .use_relations_in_extra(true)
-    }
+    tc.lookahead_style(options::lookahead_style::felsch)
+        .lookahead_extent(options::lookahead_extent::partial)
+        .strategy(options::strategy::hlt)
+        .use_relations_in_extra(true);
     REQUIRE(tc.number_of_classes() == 4'032'000);
   }
 

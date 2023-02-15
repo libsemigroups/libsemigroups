@@ -201,13 +201,24 @@ namespace libsemigroups {
     return _settings.save;
   }
 
+  // TODO not currently used for anything
   ToddCoxeter& ToddCoxeter::standardize(bool x) noexcept {
     _settings.standardize = x;
     return *this;
   }
 
+  // TODO not currently used for anything
   bool ToddCoxeter::standardize() const noexcept {
     return _settings.standardize;
+  }
+
+  ToddCoxeter& ToddCoxeter::use_relations_in_extra(bool val) noexcept {
+    _settings.use_relations_in_extra = val;
+    return *this;
+  }
+
+  bool ToddCoxeter::use_relations_in_extra() const noexcept {
+    return _settings.use_relations_in_extra;
   }
 
   ////////////////////////////////////////////////////////////////////////
@@ -385,10 +396,28 @@ namespace libsemigroups {
     }
 
     _word_graph.settings(*this);
-    for (auto it = cbegin_generating_pairs(); it < cend_generating_pairs();
-         it += 2) {
-      _word_graph.push_definition_hlt(
-          word_graph().initial_node(), *it, *(it + 1));
+    auto       first = cbegin_generating_pairs();
+    auto       last  = cend_generating_pairs();
+    auto const id    = word_graph().initial_node();
+    if (save() || strategy() == options::strategy::felsch) {
+      for (auto it = first; it < last; it += 2) {
+        _word_graph.push_definition_hlt<RegisterDefs>(id, *it, *(it + 1));
+        _word_graph.process_coincidences<RegisterDefs>();
+      }
+    } else {
+      for (auto it = first; it < last; it += 2) {
+        _word_graph.push_definition_hlt<DoNotRegisterDefs>(id, *it, *(it + 1));
+        _word_graph.process_coincidences<DoNotRegisterDefs>();
+      }
+    }
+    if (strategy() == options::strategy::felsch && use_relations_in_extra()) {
+      first = presentation().rules.cbegin();
+      last  = presentation().rules.cend();
+
+      for (auto it = first; it < last; it += 2) {
+        _word_graph.push_definition_hlt<RegisterDefs>(id, *it, *(it + 1));
+        _word_graph.process_coincidences<RegisterDefs>();
+      }
     }
 
     if (kind() == congruence_kind::twosided
@@ -403,10 +432,24 @@ namespace libsemigroups {
           p, cbegin_generating_pairs(), cend_generating_pairs());
       _word_graph.presentation(p);  // TODO std::move
     }
+
+    if (save() || strategy() == options::strategy::felsch) {
+      _word_graph.process_definitions();
+    }
   }
 
   void ToddCoxeter::finalise_run() {
     if (!stopped()) {
+      if (_word_graph.definitions().any_skipped()) {
+        // if (_word_graph.number_of_nodes_active() != lower_bound() + 1
+        //     || !complete()) {
+        // push_settings();
+        lookahead_extent(options::lookahead_extent::full);
+        lookahead_style(options::lookahead_style::hlt);
+        perform_lookahead();
+        // pop_settings();
+        // }
+      }
       _finished = true;
     }
   }
@@ -518,11 +561,12 @@ namespace libsemigroups {
     if (report::should_report()) {
       static const std::string pad(8, ' ');
       int64_t                  diff = int64_t(lookahead_next()) - old_value;
-      fmt::print(FORMAT("#0: ToddCoxeter: next lookahead at {0} | {1:>11} {0} "
-                        "|{2:>12} (diff)\n",
-                        pad,
-                        fmt::group_digits(lookahead_next()),
-                        detail::group_digits(diff)));
+      fmt::print(
+          FORMAT("#0: ToddCoxeter: next lookahead at {0} | {1:>11} (nodes)  "
+                 "|{2:>12} (diff)\n",
+                 pad,
+                 fmt::group_digits(lookahead_next()),
+                 detail::group_digits(diff)));
     }
   }
 
