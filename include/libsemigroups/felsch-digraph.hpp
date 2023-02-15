@@ -37,7 +37,7 @@ namespace libsemigroups {
 
   // This struct exists to avoid having to write typename before
   // options::def_policy etc everywhere below
-  struct FelschDigraphSettingsEnums {
+  struct FelschDigraphEnums {
     struct options {
       enum class def_policy : uint8_t {
         //! Do not put newly generated definitions in the stack if the stack
@@ -67,11 +67,10 @@ namespace libsemigroups {
     };
   };
 
-  template <typename T>  // TODO better tparam name
-  class FelschDigraphSettings {
-   public:
-    using options = FelschDigraphSettingsEnums::options;
-
+  // This class exists so that both FelschDigraph and ToddCoxeter can use the
+  // same settings/options without code duplication
+  template <typename Subclass>
+  class FelschDigraphSettings : public FelschDigraphEnums {
    private:
     size_t               _def_max;
     options::def_policy  _def_policy;
@@ -81,30 +80,29 @@ namespace libsemigroups {
     FelschDigraphSettings() : _def_max(), _def_policy(), _def_version() {
       init();
     }
+    // TODO to tpp file
+    FelschDigraphSettings& init() {
+      _def_max    = 2'000;
+      _def_policy = options::def_policy::unlimited;
+      // TODO change back to def_policy::no_stack_if_no_space, can'Subclass at
+      // present because we haven'Subclass yet reimplemented lookaheads
+
+      _def_version = options::def_version::two;
+      return *this;
+    }
 
     FelschDigraphSettings(FelschDigraphSettings const&)            = default;
     FelschDigraphSettings(FelschDigraphSettings&&)                 = default;
     FelschDigraphSettings& operator=(FelschDigraphSettings const&) = default;
     FelschDigraphSettings& operator=(FelschDigraphSettings&&)      = default;
 
-    // TODO to tpp file
-    FelschDigraphSettings& init() {
-      _def_max    = 2'000;
-      _def_policy = options::def_policy::unlimited;
-      // TODO change back to def_policy::no_stack_if_no_space, can't at present
-      // because we haven't yet reimplemented lookaheads
-
-      _def_version = options::def_version::two;
-      return *this;
-    }
-
     // TODO this should really be a constructor or assignment operator
     template <typename S>
-    T& settings(FelschDigraphSettings<S>& that) {
+    Subclass& settings(FelschDigraphSettings<S>& that) {
       _def_max     = that.def_max();
       _def_policy  = that.def_policy();
       _def_version = that.def_version();
-      return static_cast<T&>(*this);
+      return static_cast<Subclass&>(*this);
     }
 
     FelschDigraphSettings const& settings() const noexcept {
@@ -127,9 +125,9 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if \p val is not valid (i.e. if for
     //! example ``options::definitions::v1 & options::definitions::v2`` returns
     //! ``true``).
-    T& def_policy(options::def_policy val) {
+    Subclass& def_policy(options::def_policy val) {
       _def_policy = val;
-      return static_cast<T&>(*this);
+      return static_cast<Subclass&>(*this);
     }
 
     //! The current value of the definition policy setting.
@@ -161,9 +159,9 @@ namespace libsemigroups {
     //!
     //! \exceptions
     //! \noexcept
-    T& def_max(size_t val) noexcept {
+    Subclass& def_max(size_t val) noexcept {
       _def_max = val;
-      return static_cast<T&>(*this);
+      return static_cast<Subclass&>(*this);
     }
 
     //! The current value of the setting for the maximum number of
@@ -181,9 +179,9 @@ namespace libsemigroups {
       return _def_max;
     }
 
-    T& def_version(options::def_version val) {
+    Subclass& def_version(options::def_version val) {
       _def_version = val;
-      return static_cast<T&>(*this);
+      return static_cast<Subclass&>(*this);
     }
 
     //! The current value of the definition policy setting.
@@ -211,10 +209,11 @@ namespace libsemigroups {
     struct Noop;
 
    public:
-    using options      = typename FelschDigraphSettings_::options;
+    using options     = typename FelschDigraphSettings_::options;
+    using letter_type = typename W::value_type;
+    // TODO remove letter_type use digraph_type::label_type instead
     using node_type    = N;
     using word_type    = W;
-    using letter_type  = typename W::value_type;
     using digraph_type = DigraphWithSources<node_type>;
     using size_type    = typename digraph_type::size_type;
 
