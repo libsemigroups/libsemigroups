@@ -18,6 +18,7 @@
 
 // TODO
 // * tidy this up, and organise the file
+// * rename W -> Word, N -> Node as in hpp
 
 namespace libsemigroups {
   template <typename W, typename N>
@@ -160,15 +161,27 @@ namespace libsemigroups {
     }
   }
 
-  ////////////////////////////////////////////////////////////////////////////
-  // FelschDigraph
-  ////////////////////////////////////////////////////////////////////////////
+  ////////////////////////////////////////////////////////////////////////
+  // FelschDigraph - constructors + initializers
+  ////////////////////////////////////////////////////////////////////////
 
-  // 2nd param is number of nodes
   template <typename W, typename N>
-  FelschDigraph<W, N>::FelschDigraph(Presentation<word_type> const& p,
-                                     size_type                      n)
-      : DigraphWithSources<node_type>(p.contains_empty_word() ? n : n + 1,
+  FelschDigraph<W, N>& FelschDigraph<W, N>::init() {
+    size_t r = (_presentation.contains_empty_word() ? 0 : 1);
+    size_t c = _presentation.alphabet().size();
+
+    DigraphWithSources<N>::init(r, c);
+    FelschDigraphSettings_::init();
+    _definitions.init(this);
+    _felsch_tree.init(c);
+    _felsch_tree.add_relations(_presentation.rules.cbegin(),
+                               _presentation.rules.cend());
+    return *this;
+  }
+
+  template <typename W, typename N>
+  FelschDigraph<W, N>::FelschDigraph(Presentation<W> const& p)
+      : DigraphWithSources<node_type>(p.contains_empty_word() ? 0 : 1,
                                       p.alphabet().size()),
         FelschDigraphSettings<FelschDigraph<W, N>>(),
         _definitions(this),  // pass through settings
@@ -178,10 +191,17 @@ namespace libsemigroups {
                                _presentation.rules.cend());
   }
 
-  // 2nd param is number of nodes
   template <typename W, typename N>
-  FelschDigraph<W, N>::FelschDigraph(Presentation<word_type>&& p, size_type n)
-      : DigraphWithSources<node_type>(p.contains_empty_word() ? n : n + 1,
+  FelschDigraph<W, N>& FelschDigraph<W, N>::init(Presentation<W> const& p) {
+    if (&_presentation != &p) {
+      _presentation = p;
+    }
+    return init();
+  }
+
+  template <typename W, typename N>
+  FelschDigraph<W, N>::FelschDigraph(Presentation<W>&& p)
+      : DigraphWithSources<node_type>(p.contains_empty_word() ? 0 : 1,
                                       p.alphabet().size()),
         FelschDigraphSettings<FelschDigraph<W, N>>(),
         _definitions(this),  // pass through settings
@@ -189,6 +209,12 @@ namespace libsemigroups {
         _presentation(std::move(p)) {
     _felsch_tree.add_relations(_presentation.rules.cbegin(),
                                _presentation.rules.cend());
+  }
+
+  template <typename W, typename N>
+  FelschDigraph<W, N>& FelschDigraph<W, N>::init(Presentation<W>&& p) {
+    _presentation = std::move(p);
+    return init();
   }
 
   template <typename W, typename N>
@@ -208,38 +234,21 @@ namespace libsemigroups {
     }
   }
 
-  // 2nd param is number of nodes
-  template <typename W, typename N>
-  FelschDigraph<W, N>&
-  FelschDigraph<W, N>::init(Presentation<word_type> const& p, size_type n) {
-    if (&_presentation != &p) {
-      _presentation = p;
-    }
-    init(n);
-    return *this;
-  }
-
-  // 2nd param is number of nodes
-  template <typename W, typename N>
-  FelschDigraph<W, N>& FelschDigraph<W, N>::init(Presentation<word_type>&& p,
-                                                 size_type                 n) {
-    _presentation = std::move(p);
-    init(n);
-    return *this;
-  }
+  ////////////////////////////////////////////////////////////////////////
+  // FelschDigraph - operators
+  ////////////////////////////////////////////////////////////////////////
 
   template <typename W, typename N>
-  void FelschDigraph<W, N>::init(size_type n) {
-    size_t r = (_presentation.contains_empty_word() ? n : n + 1);
-    size_t c = _presentation.alphabet().size();
-
-    DigraphWithSources<N>::init(r, c);
-    FelschDigraphSettings_::init();
-    _definitions.init(this);
-    _felsch_tree.init(c);
-    _felsch_tree.add_relations(_presentation.rules.cbegin(),
-                               _presentation.rules.cend());
+  bool FelschDigraph<W, N>::operator==(FelschDigraph const& that) const {
+    size_type const m = this->number_of_active_nodes();
+    size_type const n = that.number_of_active_nodes();
+    return (m == 0 && n == 0)
+           || (m == n && this->ActionDigraph<node_type>::operator==(that));
   }
+
+  ////////////////////////////////////////////////////////////////////////
+  // FelschDigraph - accessors
+  ////////////////////////////////////////////////////////////////////////
 
   template <typename W, typename N>
   Presentation<W>& FelschDigraph<W, N>::presentation() noexcept {
@@ -251,19 +260,9 @@ namespace libsemigroups {
     return _presentation;
   }
 
-  template <typename W, typename N>
-  FelschDigraph<W, N>&
-  FelschDigraph<W, N>::presentation(Presentation<W> const& p) {
-    _presentation = p;
-    size_t c      = _presentation.alphabet().size();
-    if (c > ActionDigraph<N>::out_degree()) {
-      ActionDigraph<N>::add_to_out_degree(c - ActionDigraph<N>::out_degree());
-    }
-    _felsch_tree.init(c);
-    _felsch_tree.add_relations(_presentation.rules.cbegin(),
-                               _presentation.rules.cend());
-    return *this;
-  }
+  ////////////////////////////////////////////////////////////////////////
+  // FelschDigraph - modifiers
+  ////////////////////////////////////////////////////////////////////////
 
   // TODO rename try_def_edge
   template <typename W, typename N>
@@ -285,6 +284,33 @@ namespace libsemigroups {
       return cx == d;
     }
   }
+
+  template <typename W, typename N>
+  void FelschDigraph<W, N>::reduce_number_of_edges_to(size_type n) {
+    while (_definitions.size() > n) {
+      auto const& p = _definitions.back();
+      this->remove_edge_nc(p.first, p.second);
+      _definitions.pop_back();
+    }
+  }
+
+  template <typename W, typename N>
+  FelschDigraph<W, N>&
+  FelschDigraph<W, N>::presentation(Presentation<W> const& p) {
+    _presentation = p;
+    size_t c      = _presentation.alphabet().size();
+    if (c > ActionDigraph<N>::out_degree()) {
+      ActionDigraph<N>::add_to_out_degree(c - ActionDigraph<N>::out_degree());
+    }
+    _felsch_tree.init(c);
+    _felsch_tree.add_relations(_presentation.rules.cbegin(),
+                               _presentation.rules.cend());
+    return *this;
+  }
+
+  ////////////////////////////////////////////////////////////////////////
+  // FelschDigraph - process definitions
+  ////////////////////////////////////////////////////////////////////////
 
   template <typename W, typename N>
   template <typename IncompatibleFunc, typename PreferredDefs>
@@ -419,15 +445,6 @@ namespace libsemigroups {
   }
 
   template <typename W, typename N>
-  void FelschDigraph<W, N>::reduce_number_of_edges_to(size_type n) {
-    while (_definitions.size() > n) {
-      auto const& p = _definitions.back();
-      this->remove_edge_nc(p.first, p.second);
-      _definitions.pop_back();
-    }
-  }
-
-  template <typename W, typename N>
   template <typename IncompatibleFunc, typename PreferredDefs>
   bool FelschDigraph<W, N>::merge_targets_of_paths_if_possible(
       node_type                          u_node,
@@ -475,8 +492,6 @@ namespace libsemigroups {
     return merge_targets_of_nodes_if_possible(x, a, y, b, incompat, pref_defs);
   }
 
-  // This is more or less equivalent to push_definition(4 args) in
-  // ToddCoxeterOld
   template <typename W, typename N>
   template <typename IncompatibleFunc, typename PreferredDefs>
   bool FelschDigraph<W, N>::merge_targets_of_nodes_if_possible(
@@ -513,14 +528,6 @@ namespace libsemigroups {
       pref_def(x, a, y, b);
     }
     return true;
-  }
-
-  template <typename W, typename N>
-  bool FelschDigraph<W, N>::operator==(FelschDigraph const& that) const {
-    size_type const m = this->number_of_active_nodes();
-    size_type const n = that.number_of_active_nodes();
-    return (m == 0 && n == 0)
-           || (m == n && this->ActionDigraph<node_type>::operator==(that));
   }
 
   template <typename W, typename N>

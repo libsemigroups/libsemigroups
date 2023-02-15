@@ -478,12 +478,13 @@ namespace libsemigroups {
         _max_num_classes(p.contains_empty_word() ? n : n + 1),
         _min_target_node(p.contains_empty_word() ? 0 : 1),
         // protected
-        _felsch_graph(p, n),
+        _felsch_graph(p),
         _mtx(),
         _pending() {
     // n == 0 only when the iterator is cend
     _felsch_graph.number_of_active_nodes(n == 0 ? 0 : 1);
     // = 0 indicates iterator is done
+    _felsch_graph.add_nodes(n);
   }
 
   // The following function is separated from the constructor so that it isn't

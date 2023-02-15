@@ -236,20 +236,19 @@ namespace libsemigroups {
     // Constructors + initializers
     ////////////////////////////////////////////////////////////////////////
 
-    FelschDigraph()                                = default;
+    FelschDigraph() = default;
+    FelschDigraph& init();
+
     FelschDigraph(FelschDigraph const&)            = default;
     FelschDigraph(FelschDigraph&&)                 = default;
     FelschDigraph& operator=(FelschDigraph const&) = default;
     FelschDigraph& operator=(FelschDigraph&&)      = default;
 
-    // TODO remove second arg
-    FelschDigraph(Presentation<word_type> const& p, size_type n);
-    FelschDigraph& init(Presentation<word_type> const& p, size_type n);
+    FelschDigraph(Presentation<Word> const& p);
+    FelschDigraph& init(Presentation<Word> const& p);
 
-    FelschDigraph(Presentation<word_type>&& p, size_type n);
-    FelschDigraph& init(Presentation<word_type>&& p, size_type n);
-    // TODO shouldn't this be called init?
-    FelschDigraph& presentation(Presentation<word_type> const& p);
+    FelschDigraph(Presentation<Word>&& p);
+    FelschDigraph& init(Presentation<Word>&& p);
 
     // TODO rvalue reference version + init
     template <typename M>
@@ -298,15 +297,24 @@ namespace libsemigroups {
 
     void reduce_number_of_edges_to(size_type n);
 
-    template <typename IncompatibleFunc, typename PreferredDefs>
-    bool process_definitions(size_t            start,
-                             IncompatibleFunc& incompat,
-                             PreferredDefs&    pref_defs);
+    // This is *not* the same as init(p) since we only replace the presentation
+    // but otherwise do not modify the graph, whereas init(p) returns this to
+    // the same state as FelschDigraph(p);
+    FelschDigraph& presentation(Presentation<Word> const& p);
+    // TODO rvalue ref version
 
-    // TODO to tpp
-    template <typename IncompatibleFunc, typename PreferredDefs>
+    ////////////////////////////////////////////////////////////////////////
+    // Process definitions
+    ////////////////////////////////////////////////////////////////////////
+
+    template <typename Incompatible, typename PreferredDefs>
+    bool process_definitions(size_t         start,
+                             Incompatible&  incompat,
+                             PreferredDefs& pref_defs);
+
+    template <typename Incompatible, typename PreferredDefs>
     bool process_definition(Definition const& d,
-                            IncompatibleFunc& incompat,
+                            Incompatible&     incompat,
                             PreferredDefs&    pref_defs) {
       if (def_version() == options::def_version::two) {
         return process_definition_v2(d, incompat, pref_defs);
@@ -323,40 +331,39 @@ namespace libsemigroups {
       return process_definitions(start, incompat, pref_defs);
     }
 
+    // TODO protected?
     // Returns false if the targets of the edges (x, a, xa) and (y, b, yb)
     // cannot be merged (i.e. if xa != yb and incompat(x, a, y, b) returns
     // false), otherwise returns true. Always modifies the graph if xa !=
     // UNDEFINED and yb = UNDEFINED, or vice versa, and pref_defs(x, a, y,
     // b) is called if xa = UNDEFINED and yb = UNDEFINED.
-    template <typename IncompatibleFunc, typename PreferredDefs>
-    bool merge_targets_of_nodes_if_possible(node_type         x,
-                                            letter_type       a,
-                                            node_type         y,
-                                            letter_type       b,
-                                            IncompatibleFunc& incompat,
-                                            PreferredDefs&    pref_defs);
+    template <typename Incompatible, typename PreferredDefs>
+    bool merge_targets_of_nodes_if_possible(node_type      x,
+                                            letter_type    a,
+                                            node_type      y,
+                                            letter_type    b,
+                                            Incompatible&  incompat,
+                                            PreferredDefs& pref_defs);
 
     using word_iterator = typename word_type::const_iterator;
 
-    template <typename IncompatibleFunc, typename PreferredDefs>
-    bool merge_targets_of_paths_if_possible(node_type         u_node,
-                                            word_iterator     u_first,
-                                            word_iterator     u_last,
-                                            node_type         v_node,
-                                            word_iterator     v_first,
-                                            word_iterator     v_last,
-                                            IncompatibleFunc& incompat,
+    template <typename Incompatible, typename PreferredDefs>
+    bool merge_targets_of_paths_if_possible(node_type      u_node,
+                                            word_iterator  u_first,
+                                            word_iterator  u_last,
+                                            node_type      v_node,
+                                            word_iterator  v_first,
+                                            word_iterator  v_last,
+                                            Incompatible&  incompat,
                                             PreferredDefs& pref_defs) noexcept;
 
    private:
-    void init(size_type n);
-
     // TODO to tpp
     // TODO can we use a reference here?
-    template <typename IncompatibleFunc, typename PreferredDefs>
-    bool process_definition_v2(Definition        d,
-                               IncompatibleFunc& incompat,
-                               PreferredDefs&    pref_defs) {
+    template <typename Incompatible, typename PreferredDefs>
+    bool process_definition_v2(Definition     d,
+                               Incompatible&  incompat,
+                               PreferredDefs& pref_defs) {
       _felsch_tree.push_back(d.second);
       for (auto it = _felsch_tree.cbegin(); it < _felsch_tree.cend(); ++it) {
         // Using anything other than NoPreferredDefs here seems to be bad
@@ -375,10 +382,10 @@ namespace libsemigroups {
 
     // TODO to tpp
     // TODO can we use a reference here?
-    template <typename IncompatibleFunc, typename PreferredDefs>
-    bool process_definition_v1(Definition        d,
-                               IncompatibleFunc& incompat,
-                               PreferredDefs&    pref_defs) {
+    template <typename Incompatible, typename PreferredDefs>
+    bool process_definition_v1(Definition     d,
+                               Incompatible&  incompat,
+                               PreferredDefs& pref_defs) {
       _felsch_tree.push_back(d.second);
       if (!process_definitions_dfs_v1(d.first, incompat, pref_defs)) {
         return false;
@@ -390,12 +397,12 @@ namespace libsemigroups {
     // of the i-th rule, and returns merge_targets on the last but one nodes
     // and letters.
     // TODO to tpp
-    template <typename IncompatibleFunc, typename PreferredDefs>
+    template <typename Incompatible, typename PreferredDefs>
     inline bool merge_targets_of_paths_labelled_by_rules_if_possible(
-        node_type const&  c,
-        size_t            i,
-        IncompatibleFunc& incompat,
-        PreferredDefs&    pref_defs) noexcept {
+        node_type const& c,
+        size_t           i,
+        Incompatible&    incompat,
+        PreferredDefs&   pref_defs) noexcept {
       auto j = (i % 2 == 0 ? i + 1 : i - 1);
       return merge_targets_of_paths_if_possible(c,
                                                 _presentation.rules[i].cbegin(),
@@ -408,26 +415,20 @@ namespace libsemigroups {
     }
 
     // Returns true if no contradictions are found.
-    template <typename IncompatibleFunc, typename PreferredDefs>
-    bool process_definitions_v1(size_t start,
-                                IncompatibleFunc&,
-                                PreferredDefs&);
+    template <typename Incompatible, typename PreferredDefs>
+    bool process_definitions_v1(size_t start, Incompatible&, PreferredDefs&);
 
-    template <typename IncompatibleFunc, typename PreferredDefs>
-    bool process_definitions_v2(size_t start,
-                                IncompatibleFunc&,
-                                PreferredDefs&);
+    template <typename Incompatible, typename PreferredDefs>
+    bool process_definitions_v2(size_t start, Incompatible&, PreferredDefs&);
 
     // Returns true if no contradictions are found.
-    template <typename IncompatibleFunc, typename PreferredDefs>
-    bool process_definitions_dfs_v1(node_type c,
-                                    IncompatibleFunc&,
-                                    PreferredDefs&);
+    template <typename Incompatible, typename PreferredDefs>
+    bool process_definitions_dfs_v1(node_type c, Incompatible&, PreferredDefs&);
 
-    template <typename IncompatibleFunc, typename PreferredDefs>
+    template <typename Incompatible, typename PreferredDefs>
     bool process_definitions_dfs_v2(node_type root,
                                     node_type c,
-                                    IncompatibleFunc&,
+                                    Incompatible&,
                                     PreferredDefs&);
   };
 

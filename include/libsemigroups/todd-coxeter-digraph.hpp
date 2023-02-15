@@ -126,7 +126,11 @@ namespace libsemigroups {
     // FelschDigraph
     ToddCoxeterDigraph& init2(Presentation<word_type> const& p) {
       NodeManager_::clear();
-      BaseDigraph::init(p, NodeManager_::node_capacity());
+      BaseDigraph::init(p);
+      // FIXME shouldn't add nodes here because then there'll be more than
+      // there should be (i.e. NodeManager and BaseDigraph will have different
+      // numbers of nodes
+      BaseDigraph::add_nodes(NodeManager_::node_capacity());
       return *this;
     }
 
@@ -141,7 +145,11 @@ namespace libsemigroups {
     // FelschDigraph
     ToddCoxeterDigraph init2(Presentation<word_type>&& p) {
       NodeManager_::clear();
-      BaseDigraph::init(std::move(p), NodeManager_::node_capacity());
+      BaseDigraph::init(std::move(p));
+      // FIXME shouldn't add nodes here because then there'll be more than
+      // there should be (i.e. NodeManager and BaseDigraph will have different
+      // numbers of nodes
+      BaseDigraph::add_nodes(NodeManager_::node_capacity());
       return *this;
     }
 

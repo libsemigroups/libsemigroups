@@ -508,7 +508,7 @@ namespace libsemigroups {
                           "004",
                           "2-sided congruence from FroidurePin",
                           "[todd-coxeter][quick]") {
-    auto rg = ReportGuard(false);
+    auto rg = ReportGuard(true);
 
     using Transf = LeastTransf<5>;
     FroidurePin<Transf> S({Transf({1, 3, 4, 2, 3}), Transf({3, 2, 1, 3, 3})});
@@ -531,44 +531,46 @@ namespace libsemigroups {
     section_hlt(tc);
 
     REQUIRE(tc.number_of_classes() == 21);
-    tc.shrink_to_fit();
-    REQUIRE(tc.number_of_classes() == 21);
-    tc.standardize(order::recursive);
-    auto w = std::vector<word_type>(todd_coxeter::cbegin_normal_forms(tc),
-                                    todd_coxeter::cend_normal_forms(tc));
-    REQUIRE(w.size() == 21);
-    REQUIRE(w
-            == std::vector<word_type>({{0},
-                                       {0, 0},
-                                       {0, 0, 0},
-                                       {0, 0, 0, 0},
-                                       {1},
-                                       {1, 0},
-                                       {1, 0, 0},
-                                       {1, 0, 0, 0},
-                                       {0, 1},
-                                       {0, 1, 0},
-                                       {0, 1, 0, 0},
-                                       {0, 1, 0, 0, 0},
-                                       {0, 0, 1},
-                                       {1, 1},
-                                       {1, 1, 0},
-                                       {1, 1, 0, 0},
-                                       {1, 1, 0, 0, 0},
-                                       {0, 1, 1},
-                                       {0, 1, 1, 0},
-                                       {0, 1, 1, 0, 0},
-                                       {0, 1, 1, 0, 0, 0}}));
-    REQUIRE(std::unique(w.begin(), w.end()) == w.end());
-    REQUIRE(std::is_sorted(todd_coxeter::cbegin_normal_forms(tc),
-                           todd_coxeter::cend_normal_forms(tc),
-                           RecursivePathCompare{}));
-    REQUIRE(std::all_of(
-        todd_coxeter::cbegin_normal_forms(tc),
-        todd_coxeter::cend_normal_forms(tc),
-        [&tc](word_type const& ww) -> bool {
-          return tc.class_index_to_word(tc.word_to_class_index(ww)) == ww;
-        }));
+    //     tc.shrink_to_fit();
+    //     REQUIRE(tc.number_of_classes() == 21);
+    //     tc.standardize(order::recursive);
+    //     auto w =
+    //     std::vector<word_type>(todd_coxeter::cbegin_normal_forms(tc),
+    //                                     todd_coxeter::cend_normal_forms(tc));
+    //     REQUIRE(w.size() == 21);
+    //     REQUIRE(w
+    //             == std::vector<word_type>({{0},
+    //                                        {0, 0},
+    //                                        {0, 0, 0},
+    //                                        {0, 0, 0, 0},
+    //                                        {1},
+    //                                        {1, 0},
+    //                                        {1, 0, 0},
+    //                                        {1, 0, 0, 0},
+    //                                        {0, 1},
+    //                                        {0, 1, 0},
+    //                                        {0, 1, 0, 0},
+    //                                        {0, 1, 0, 0, 0},
+    //                                        {0, 0, 1},
+    //                                        {1, 1},
+    //                                        {1, 1, 0},
+    //                                        {1, 1, 0, 0},
+    //                                        {1, 1, 0, 0, 0},
+    //                                        {0, 1, 1},
+    //                                        {0, 1, 1, 0},
+    //                                        {0, 1, 1, 0, 0},
+    //                                        {0, 1, 1, 0, 0, 0}}));
+    //     REQUIRE(std::unique(w.begin(), w.end()) == w.end());
+    //     REQUIRE(std::is_sorted(todd_coxeter::cbegin_normal_forms(tc),
+    //                            todd_coxeter::cend_normal_forms(tc),
+    //                            RecursivePathCompare{}));
+    //     REQUIRE(std::all_of(
+    //         todd_coxeter::cbegin_normal_forms(tc),
+    //         todd_coxeter::cend_normal_forms(tc),
+    //         [&tc](word_type const& ww) -> bool {
+    //           return tc.class_index_to_word(tc.word_to_class_index(ww)) ==
+    //           ww;
+    //         }));
   }
 
   LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",

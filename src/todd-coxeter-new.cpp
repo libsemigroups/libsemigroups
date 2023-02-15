@@ -387,7 +387,7 @@ namespace libsemigroups {
       }
       presentation::add_rules(
           p, cbegin_generating_pairs(), cend_generating_pairs());
-      _word_graph.presentation(p);
+      _word_graph.presentation(p);  // TODO std::move
     }
   }
 
