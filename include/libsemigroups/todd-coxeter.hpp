@@ -713,6 +713,7 @@ namespace libsemigroups {
 
       //! Set the threshold that will trigger a lookahead in HLT.
       //!
+      //!
       //! If the number of cosets active exceeds the value set by this
       //! function, then a lookahead, of the type set using the function
       //! \ref lookahead, is triggered. This only applies when using
@@ -745,7 +746,7 @@ namespace libsemigroups {
       //!
       //! After a lookahead is performed the value of next_lookahead() is
       //! modified depending on the outcome of the current lookahead. If the
-      //! return value next_lookahead() of is too small or too large, then the
+      //! return value of next_lookahead() is too small or too large, then the
       //! value is adjusted according to lookahead_growth_factor() and
       //! lookahead_growth_threshold(). This setting specified the minimum
       //! possible value for next_lookahead().

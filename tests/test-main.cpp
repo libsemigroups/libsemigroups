@@ -115,7 +115,13 @@ struct LibsemigroupsListener : Catch::TestEventListenerBase {
   }
 
   void sectionEnded(Catch::SectionStats const& sectionStats) override {
-    if (_one != sectionStats.sectionInfo.name) {
+    static constexpr size_t one_width = 59;
+    auto                    name      = sectionStats.sectionInfo.name;
+    size_t                  k         = std::min(one_width, _one.size());
+    if (!std::equal(_one.cbegin(),
+                    _one.cbegin() + k,
+                    name.cbegin(),
+                    name.cbegin() + k)) {
       _two = " . . .\n";
       if (_three.empty()) {
         _three = "  -- with " + sectionStats.sectionInfo.name;

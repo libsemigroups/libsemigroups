@@ -28,25 +28,40 @@ namespace libsemigroups {
     bool constexpr StackDeductions      = true;
   }  // namespace
 
+  using class_index_type = v3::CongruenceInterface::class_index_type;
+
   ////////////////////////////////////////////////////////////////////////
-  // Constructors
+  // ToddCoxeter - constructors + initializers - public
   ////////////////////////////////////////////////////////////////////////
 
-  ToddCoxeter::ToddCoxeter(congruence_kind knd)
-      : v3::CongruenceInterface(knd),
+  ToddCoxeter::ToddCoxeter()
+      : v3::CongruenceInterface(),
         _finished(false),
         _forest(),
-        _settings(),
         _standardized(order::none),
         _word_graph() {}
 
-  void ToddCoxeter::init(congruence_kind knd) {
+  ToddCoxeter& ToddCoxeter::init() {
+    v3::CongruenceInterface::init();
+    _finished = false;
+    _forest.init();
+    _standardized = order::none;
+    _word_graph.init();
+    return *this;
+  }
+
+  ToddCoxeter::ToddCoxeter(congruence_kind knd) {
+    init(knd);
+  }
+
+  ToddCoxeter& ToddCoxeter::init(congruence_kind knd) {
     v3::CongruenceInterface::init(knd);
     _finished = false;
     _forest.init();
     _settings     = Settings();
     _standardized = order::none;
     _word_graph.init();
+    return *this;
   }
 
   ToddCoxeter::ToddCoxeter(congruence_kind knd, Presentation<word_type>&& p)
@@ -62,12 +77,14 @@ namespace libsemigroups {
     _word_graph.init2(std::move(p));  // FIXME
   }
 
-  void ToddCoxeter::init(congruence_kind knd, Presentation<word_type>&& p) {
+  ToddCoxeter& ToddCoxeter::init(congruence_kind           knd,
+                                 Presentation<word_type>&& p) {
     init(knd);
     if (knd == congruence_kind::left) {
       presentation::reverse(p);
     }
     _word_graph.init2(std::move(p));  // FIXME
+    return *this;
   }
 
   ToddCoxeter::ToddCoxeter(congruence_kind                knd,
@@ -87,8 +104,8 @@ namespace libsemigroups {
     }
   }
 
-  void ToddCoxeter::init(congruence_kind                knd,
-                         Presentation<word_type> const& p) {
+  ToddCoxeter& ToddCoxeter::init(congruence_kind                knd,
+                                 Presentation<word_type> const& p) {
     init(knd);
     if (knd == congruence_kind::left) {
       Presentation<word_type> pp(p);
@@ -97,10 +114,15 @@ namespace libsemigroups {
     } else {
       _word_graph.init2(p);  // FIXME
     }
+    return *this;
   }
 
-  ToddCoxeter::ToddCoxeter(congruence_kind knd, ToddCoxeter const& tc)
-      : ToddCoxeter(knd) {
+  ToddCoxeter::ToddCoxeter(congruence_kind knd, ToddCoxeter const& tc) {
+    init(knd, tc);
+  }
+
+  ToddCoxeter& ToddCoxeter::init(congruence_kind knd, ToddCoxeter const& tc) {
+    init(knd);
     if (tc.kind() != congruence_kind::twosided && knd != tc.kind()) {
       LIBSEMIGROUPS_EXCEPTION_V3(
           "incompatible types of congruence, found ({} / {}) but only (left "
@@ -108,17 +130,18 @@ namespace libsemigroups {
           tc.kind(),
           knd);
     }
-    _word_graph.init2(tc.presentation());
+    _word_graph.init2(tc.presentation());  // FIXME
     auto& rules = _word_graph.presentation().rules;
     rules.insert(
         rules.end(), tc.cbegin_generating_pairs(), tc.cend_generating_pairs());
     if (kind() == congruence_kind::left && tc.kind() != congruence_kind::left) {
       presentation::reverse(_word_graph.presentation());
     }
+    return *this;
   }
 
   ////////////////////////////////////////////////////////////////////////
-  // Settings
+  // ToddCoxeter - settings - public
   ////////////////////////////////////////////////////////////////////////
 
   ToddCoxeter& ToddCoxeter::strategy(options::strategy x) {
@@ -129,19 +152,6 @@ namespace libsemigroups {
   ToddCoxeter::options::strategy ToddCoxeter::strategy() const noexcept {
     return _settings.strategy;
   }
-
-  // ToddCoxeter& ToddCoxeter::lookahead(options::lookahead x) noexcept {
-  //   if (!(x & options::lookahead::felsch) && !(x & options::lookahead::hlt))
-  //   {
-  //     x = x | options::lookahead::hlt;
-  //   }
-  //   _settings->lookahead = x;
-  //   return *this;
-  // }
-
-  // ToddCoxeter::options::lookahead ToddCoxeter::lookahead() const noexcept {
-  //   return _settings->lookahead;
-  // }
 
   ToddCoxeter& ToddCoxeter::lookahead_next(size_t n) noexcept {
     _settings.lookahead_next = n;
@@ -183,23 +193,166 @@ namespace libsemigroups {
   }
 
   ////////////////////////////////////////////////////////////////////////
-  // Reporting
+  // ToddCoxeter - accessors - public
   ////////////////////////////////////////////////////////////////////////
 
-  void ToddCoxeter::report_active_nodes() const {
-    using detail::group_digits;
-
-    if (report::should_report()) {
-      fmt::print(
-          FORMAT("#0: ToddCoxeter: nodes {:>11} (active) | {:>11} (killed) | "
-                 "{:>11} (defined)\n",
-                 group_digits(word_graph().number_of_nodes_active()),
-                 group_digits(word_graph().number_of_nodes_killed()),
-                 group_digits(word_graph().number_of_nodes_defined())));
+  bool ToddCoxeter::contains(word_type const& lhs, word_type const& rhs) {
+    validate_word(lhs);
+    validate_word(rhs);
+    if (presentation().rules.empty()
+        && cbegin_generating_pairs() == cend_generating_pairs()
+        && word_graph().number_of_nodes_active() == 1) {
+      return lhs == rhs;
     }
+    return v3::CongruenceInterface::contains(lhs, rhs);
   }
 
-  using class_index_type = v3::CongruenceInterface::class_index_type;
+  bool ToddCoxeter::is_standardized(order val) const {
+    // TODO this is probably not always valid
+    return val == _standardized
+           && _forest.number_of_nodes()
+                  == word_graph().number_of_nodes_active();
+  }
+
+  bool ToddCoxeter::is_standardized() const {
+    // TODO this is probably not always valid, i.e. if we are standardized,
+    // then grow, then collapse, but end up with the same number of nodes
+    // again.
+    return _standardized != order::none
+           && _forest.number_of_nodes()
+                  == word_graph().number_of_nodes_active();
+  }
+
+  ////////////////////////////////////////////////////////////////////////
+  // ToddCoxeter - modifiers - public
+  ////////////////////////////////////////////////////////////////////////
+
+  void ToddCoxeter::shrink_to_fit() {
+    if (!finished()) {
+      // TODO Throw?
+      return;
+    }
+    standardize(order::shortlex);
+    _word_graph.shrink_to_fit(_word_graph.number_of_nodes_active());
+    _word_graph.erase_free_nodes();
+    _word_graph.restrict(_word_graph.number_of_nodes_active());
+  }
+
+  bool ToddCoxeter::standardize(order val) {
+    if (is_standardized(val)) {
+      return false;
+    }
+    bool result   = action_digraph::standardize(_word_graph, _forest, val);
+    _standardized = val;
+    return result;
+  }
+
+  ////////////////////////////////////////////////////////////////////////
+  // Runner - pure virtual member functions - private
+  ////////////////////////////////////////////////////////////////////////
+
+  void ToddCoxeter::run_impl() {
+    if (is_obviously_infinite(*this)) {
+      LIBSEMIGROUPS_EXCEPTION(
+          "there are infinitely many classes in the congruence and "
+          "Todd-Coxeter will never terminate");
+    }
+    init_run();
+
+    if (strategy() == options::strategy::felsch) {
+      felsch();
+    } else if (strategy() == options::strategy::hlt) {
+      hlt();
+    }
+
+    finalise_run();
+
+    /*else if (strategy() == options::strategy::random) {
+      if (running_for()) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "the strategy \"%s\" is incompatible with run_for!",
+            detail::to_string(strategy()).c_str());
+      }
+      random();
+    } else {
+      if (running_until()) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "the strategy \"%s\" is incompatible with run_until!",
+            detail::to_string(strategy()).c_str());
+      }
+
+      if (strategy() == options::strategy::CR) {
+        CR_style();
+      } else if (strategy() == options::strategy::R_over_C) {
+        R_over_C_style();
+      } else if (strategy() == options::strategy::Cr) {
+        Cr_style();
+      } else if (strategy() == options::strategy::Rc) {
+        Rc_style();
+      }
+    }*/
+  }
+
+  ////////////////////////////////////////////////////////////////////////
+  // CongruenceInterface - pure virtual member functions - private
+  ////////////////////////////////////////////////////////////////////////
+
+  word_type ToddCoxeter::class_index_to_word_impl(class_index_type i) {
+    run();
+    LIBSEMIGROUPS_ASSERT(finished());
+    if (!is_standardized()) {
+      standardize(order::shortlex);
+    }
+
+    word_type w = *(forest::cbegin_paths(_forest) + i + 1);
+    if (kind() != congruence_kind::left) {
+      std::reverse(w.begin(), w.end());
+    }
+    return w;
+  }
+
+  size_t ToddCoxeter::number_of_classes_impl() {
+    if (is_obviously_infinite(*this)) {
+      return POSITIVE_INFINITY;
+    }
+    run();
+    size_t const offset = (presentation().contains_empty_word() ? 0 : 1);
+    return _word_graph.number_of_nodes_active() - offset;
+  }
+
+  class_index_type ToddCoxeter::word_to_class_index_impl(word_type const& w) {
+    run();
+    LIBSEMIGROUPS_ASSERT(finished());
+    if (!is_standardized()) {
+      standardize(order::shortlex);
+    }
+    return const_word_to_class_index(w);
+    // c is in the range 1, ..., number_of_cosets_active() because 0
+    // represents the identity coset, and does not correspond to an element.
+  }
+
+  class_index_type
+  ToddCoxeter::const_word_to_class_index(word_type const& w) const {
+    validate_word(w);
+    node_type c = _word_graph.initial_node();
+
+    if (kind() == congruence_kind::left) {
+      c = action_digraph_helper::follow_path_nc(
+          _word_graph, c, w.crbegin(), w.crend());
+    } else {
+      c = action_digraph_helper::follow_path_nc(
+          _word_graph, c, w.cbegin(), w.cend());
+    }
+    return (c == UNDEFINED ? UNDEFINED : static_cast<node_type>(c - 1));
+  }
+
+  void ToddCoxeter::validate_word(word_type const& w) const {
+    presentation().validate_word(w.cbegin(), w.cend());
+  }
+
+  ////////////////////////////////////////////////////////////////////////
+  // ToddCoxeter - main strategies - private
+  ////////////////////////////////////////////////////////////////////////
 
   void ToddCoxeter::init_run() {
     if (is_obviously_infinite(*this)) {
@@ -320,6 +473,25 @@ namespace libsemigroups {
     // }
   }
 
+  ////////////////////////////////////////////////////////////////////////
+  // ToddCoxeter - reporting - private
+  ////////////////////////////////////////////////////////////////////////
+
+  void ToddCoxeter::report_active_nodes() const {
+    using detail::group_digits;
+
+    if (report::should_report()) {
+      fmt::print(
+          FORMAT("#0: ToddCoxeter: nodes {:>11} (active) | {:>11} (killed) | "
+                 "{:>11} (defined)\n",
+                 group_digits(word_graph().number_of_nodes_active()),
+                 group_digits(word_graph().number_of_nodes_killed()),
+                 group_digits(word_graph().number_of_nodes_defined())));
+    }
+  }
+
+  using class_index_type = v3::CongruenceInterface::class_index_type;
+
   void ToddCoxeter::report_next_lookahead(size_t old_value) const {
     if (report::should_report()) {
       static const std::string pad(8, ' ');
@@ -339,6 +511,10 @@ namespace libsemigroups {
           detail::group_digits(-1 * N)));
     }
   }
+
+  ////////////////////////////////////////////////////////////////////////
+  // ToddCoxeter - lookahead - private
+  ////////////////////////////////////////////////////////////////////////
 
   void ToddCoxeter::perform_lookahead() {
     if (report::should_report()) {
@@ -393,7 +569,7 @@ namespace libsemigroups {
 
   size_t ToddCoxeter::hlt_lookahead() {
     report_active_nodes();
-    // _stats.hlt_lookahead_calls++; TODO reanebla
+    // _stats.hlt_lookahead_calls++; TODO re-enable
 
     size_t const old_number_of_killed = _word_graph.number_of_nodes_killed();
     _word_graph.make_compatible(presentation().rules.cbegin(),
@@ -406,112 +582,23 @@ namespace libsemigroups {
   }
 
   size_t ToddCoxeter::felsch_lookahead() {
-    // TODO implement
-    //    report_active_cosets(__func__);
-    // #ifdef LIBSEMIGROUPS_ENABLE_STATS
+    report_active_nodes();
     //    _stats.f_lookahead_calls++;
-    // #endif
-    //    size_t const old_number_of_killed = number_of_cosets_killed();
-    //    init_felsch_tree();
-    //    while (_current_la != first_free_coset()
-    //           // when running certain strategies the state is finished at
-    //           // this point, and so stopped() == true, but we anyway want to
-    //           // perform a full lookahead, which is why "_state ==
-    //           // state::finished" is in the next line.
-    //           && (old_state == state::finished || !stopped())) {
-    //      for (size_t a = 0; a < number_of_generators(); ++a) {
-    //        _deduct->emplace(_current_la, a);
-    //      }
-    //      process_deductions();
-    //      _current_la = next_active_coset(_current_la);
-    //      if (report()) {
-    //        report_active_cosets(__func__);
-    //      }
-    //    }
-    //    return number_of_cosets_killed() - old_number_of_killed;
-  }
-
-  bool ToddCoxeter::contains(word_type const& lhs, word_type const& rhs) {
-    validate_word(lhs);
-    validate_word(rhs);
-    if (presentation().rules.empty()
-        && cbegin_generating_pairs() == cend_generating_pairs()
-        && word_graph().number_of_nodes_active() == 1) {
-      return lhs == rhs;
+    size_t const old_number_of_killed = _word_graph.number_of_nodes_killed();
+    node_type&   current              = _word_graph.lookahead_cursor();
+    size_t const n                    = _word_graph.out_degree();
+    while (current != _word_graph.first_free_node()) {
+      _word_graph.definitions().clear();
+      for (size_t a = 0; a < n; ++a) {
+        _word_graph.definitions().emplace(current, a);
+      }
+      _word_graph.process_definitions();
+      current = _word_graph.next_active_node(current);
+      if (report()) {
+        report_active_nodes();
+      }
     }
-    return v3::CongruenceInterface::contains(lhs, rhs);
+    return _word_graph.number_of_nodes_killed() - old_number_of_killed;
   }
 
-  void ToddCoxeter::shrink_to_fit() {
-    if (!finished()) {
-      // TODO Throw
-      return;
-    }
-    standardize(order::shortlex);
-    _word_graph.shrink_to_fit(_word_graph.number_of_nodes_active());
-    _word_graph.erase_free_nodes();
-    _word_graph.restrict(_word_graph.number_of_nodes_active());
-  }
-
-  bool ToddCoxeter::standardize(order val) {
-    if (is_standardized(val)) {
-      return false;
-    }
-    bool result   = action_digraph::standardize(_word_graph, _forest, val);
-    _standardized = val;
-    return result;
-  }
-
-  word_type ToddCoxeter::class_index_to_word_impl(class_index_type i) {
-    run();
-    LIBSEMIGROUPS_ASSERT(finished());
-    if (!is_standardized()) {
-      standardize(order::shortlex);
-    }
-
-    word_type w = *(forest::cbegin_paths(_forest) + i + 1);
-    if (kind() != congruence_kind::left) {
-      std::reverse(w.begin(), w.end());
-    }
-    return w;
-  }
-
-  size_t ToddCoxeter::number_of_classes_impl() {
-    if (is_obviously_infinite(*this)) {
-      return POSITIVE_INFINITY;
-    }
-    run();
-    size_t const offset = (presentation().contains_empty_word() ? 0 : 1);
-    return _word_graph.number_of_nodes_active() - offset;
-  }
-
-  class_index_type ToddCoxeter::word_to_class_index_impl(word_type const& w) {
-    run();
-    LIBSEMIGROUPS_ASSERT(finished());
-    if (!is_standardized()) {
-      standardize(order::shortlex);
-    }
-    return const_word_to_class_index(w);
-    // c is in the range 1, ..., number_of_cosets_active() because 0
-    // represents the identity coset, and does not correspond to an element.
-  }
-
-  class_index_type
-  ToddCoxeter::const_word_to_class_index(word_type const& w) const {
-    validate_word(w);
-    node_type c = _word_graph.initial_node();
-
-    if (kind() == congruence_kind::left) {
-      c = action_digraph_helper::follow_path_nc(
-          _word_graph, c, w.crbegin(), w.crend());
-    } else {
-      c = action_digraph_helper::follow_path_nc(
-          _word_graph, c, w.cbegin(), w.cend());
-    }
-    return (c == UNDEFINED ? UNDEFINED : static_cast<node_type>(c - 1));
-  }
-
-  void ToddCoxeter::validate_word(word_type const& w) const {
-    presentation().validate_word(w.cbegin(), w.cend());
-  }
 }  // namespace libsemigroups

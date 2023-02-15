@@ -3753,7 +3753,7 @@ namespace libsemigroups {
                             "091",
                             "ACE --- SL219 - HLT",
                             "[todd-coxeter][standard][ace]") {
-      auto        rg = ReportGuard(REPORT);
+      auto        rg = ReportGuard();
       ToddCoxeter G;
       G.set_alphabet("abABe");
       G.set_identity("e");
@@ -3774,6 +3774,8 @@ namespace libsemigroups {
           .save(false)
           .lookahead(options::lookahead::partial);
       REQUIRE(H.number_of_classes() == 180);
+      std::cout << H.stats_string();
+      std::cout << H.settings_string();
     }
 
     LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",

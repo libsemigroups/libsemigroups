@@ -54,9 +54,6 @@ namespace libsemigroups {
       options::lookahead_style _lookahead_style = options::lookahead_style::hlt;
       options::lookahead_extent _lookahead_extent
           = options::lookahead_extent::partial;
-      // TODO uncomment
-      // options::lookahead    lookahead
-      //    = options::lookahead::partial | options::lookahead::hlt;
       float             lookahead_growth_factor    = 2.0;
       size_t            lookahead_growth_threshold = 4;
       size_t            lower_bound                = UNDEFINED;
@@ -88,50 +85,13 @@ namespace libsemigroups {
     digraph_type _word_graph;
 
    public:
-    // Private constructor
-    ToddCoxeter(congruence_kind knd);
-    void init(congruence_kind knd);
+    ////////////////////////////////////////////////////////////////////////
+    // ToddCoxeter - constructors + initializers - public
+    ////////////////////////////////////////////////////////////////////////
 
-    ToddCoxeter(congruence_kind knd, Presentation<word_type>&& p);
-    void init(congruence_kind knd, Presentation<word_type>&& p);
+    ToddCoxeter();
+    ToddCoxeter& init();
 
-    ToddCoxeter(congruence_kind knd, Presentation<word_type> const& p);
-    void init(congruence_kind knd, Presentation<word_type> const& p);
-
-    // This is a constructor and not a helper so that everything that takes a
-    // presentation has the same constructors, regardless of what they use
-    // inside.
-    // TODO init version
-    template <typename T>
-    ToddCoxeter(congruence_kind knd, Presentation<T> const& p)
-        : ToddCoxeter(knd, make<Presentation<word_type>>(p)) {}
-
-    template <typename T>
-    void init(congruence_kind knd, Presentation<T> const& p) {
-      init(knd, make<Presentation<word_type>>(p));
-    }
-
-    // TODO init version
-    template <typename N>
-    ToddCoxeter(congruence_kind knd, ActionDigraph<N> const& ad)
-        : ToddCoxeter(knd) {
-      // TODO is this the right way to init _word_graph?
-      _word_graph = ad;
-      _word_graph.presentation().alphabet(ad.out_degree());
-    }
-
-    // TODO init version
-    ToddCoxeter(congruence_kind knd, ToddCoxeter const& tc);
-
-    // TODO init version
-    // ToddCoxeter() = default;
-    // TODO probably do want a default constructor
-    // ToddCoxeter()
-    //     : v3::CongruenceInterface(),
-    //       _finished(false),
-    //       _forest(),
-    //       _standardized(order::none),
-    //       _word_graph() {}
     ToddCoxeter(ToddCoxeter const& that)       = default;
     ToddCoxeter(ToddCoxeter&&)                 = default;
     ToddCoxeter& operator=(ToddCoxeter const&) = default;
@@ -139,18 +99,67 @@ namespace libsemigroups {
 
     ~ToddCoxeter() = default;
 
+    ToddCoxeter(congruence_kind knd);
+    ToddCoxeter& init(congruence_kind knd);
+
+    ToddCoxeter(congruence_kind knd, Presentation<word_type>&& p);
+    ToddCoxeter& init(congruence_kind knd, Presentation<word_type>&& p);
+
+    ToddCoxeter(congruence_kind knd, Presentation<word_type> const& p);
+    ToddCoxeter& init(congruence_kind knd, Presentation<word_type> const& p);
+
+    // This is a constructor and not a helper so that everything that takes a
+    // presentation has the same constructors, regardless of what they use
+    // inside.
+    template <typename Word>
+    ToddCoxeter(congruence_kind knd, Presentation<Word> const& p)
+        : ToddCoxeter(knd, make<Presentation<word_type>>(p)) {}
+
+    template <typename Word>
+    ToddCoxeter& init(congruence_kind knd, Presentation<Word> const& p) {
+      init(knd, make<Presentation<word_type>>(p));
+      return *this;
+    }
+
+    template <typename Node>
+    ToddCoxeter(congruence_kind knd, ActionDigraph<Node> const& ad)
+        : ToddCoxeter(knd) {
+      // TODO is this the right way to init _word_graph?
+      _word_graph = ad;
+      _word_graph.presentation().alphabet(ad.out_degree());
+    }
+
+    template <typename Node>
+    ToddCoxeter& init(congruence_kind knd, ActionDigraph<Node> const& ad) {
+      init(knd);
+      // TODO is this the right way to init _word_graph?
+      _word_graph = ad;
+      _word_graph.presentation().alphabet(ad.out_degree());
+      return *this;
+    }
+
+    ToddCoxeter(congruence_kind knd, ToddCoxeter const& tc);
+    ToddCoxeter& init(congruence_kind knd, ToddCoxeter const& tc);
+
     using FelschDigraphSettings_::definition_policy;
     using FelschDigraphSettings_::definition_version;
     using FelschDigraphSettings_::max_definitions;
     using FelschDigraphSettings_::settings;
 
-    Presentation<word_type> const& presentation() const noexcept {
-      return _word_graph.presentation();
-    }
+    ////////////////////////////////////////////////////////////////////////
+    // ToddCoxeter - settings - public
+    ////////////////////////////////////////////////////////////////////////
 
-    ////////////////////////////////////////////////////////////////////////
-    // Settings
-    ////////////////////////////////////////////////////////////////////////
+    //! Specify the strategy.
+    //!
+    //! The strategy used during the enumeration can be specified using
+    //! this function.
+    //!
+    //! The default value is options::strategy::hlt.
+    //!
+    //! \param val value indicating which strategy to use
+    //!
+    //! \returns A reference to `*this`.
     ToddCoxeter& strategy(options::strategy val);
 
     //! The current strategy for enumeration.
@@ -185,6 +194,7 @@ namespace libsemigroups {
       return *this;
     }
 
+    // TODO doc
     ToddCoxeter& lookahead_extent(options::lookahead_extent val) noexcept {
       _settings._lookahead_extent = val;
       return *this;
@@ -203,6 +213,7 @@ namespace libsemigroups {
       return _settings._lookahead_style;
     }
 
+    // TODO doc
     options::lookahead_extent lookahead_extent() const noexcept {
       return _settings._lookahead_extent;
     }
@@ -302,12 +313,12 @@ namespace libsemigroups {
 
     //! Set the lookahead growth threshold.
     //!
-    //! This setting determines by what threshold for changing the number of
-    //! nodes required to trigger a lookahead grows. More specifically, at
-    //! the end of any lookahead if the number of active nodes already
-    //! exceeds the value of lookahead_next() or the number of nodes killed
-    //! during the lookahead is less than the number of active nodes divided
-    //! by \ref lookahead_growth_threshold, then the value of
+    //! This setting determines the threshold for the number of nodes required
+    //! to trigger a lookahead. More specifically, at the end of any lookahead
+    //! if the number of active nodes already exceeds the value of
+    //! lookahead_next() or the number of nodes killed during the lookahead is
+    //! less than the number of active nodes divided by \ref
+    //! lookahead_growth_threshold, then the value of
     //! ToddCoxeter::next_lookhead() is increased.
     //!
     //! The default value is ``4``.
@@ -334,8 +345,12 @@ namespace libsemigroups {
     size_t lookahead_growth_threshold() const noexcept;
 
     ////////////////////////////////////////////////////////////////////////
-    // Settings end
+    // ToddCoxeter - accessors - public
     ////////////////////////////////////////////////////////////////////////
+
+    Presentation<word_type> const& presentation() const noexcept {
+      return _word_graph.presentation();
+    }
 
     digraph_type const& word_graph() const noexcept {
       return _word_graph;
@@ -345,79 +360,30 @@ namespace libsemigroups {
       return _forest;
     }
 
-    void shrink_to_fit();
-
-    // Returns true if anything changed
-    bool standardize(order val);
-
-    inline bool is_standardized(order val) const {
-      // TODO this is probably not always valid
-      return val == _standardized
-             && _forest.number_of_nodes()
-                    == word_graph().number_of_nodes_active();
-    }
-
-    inline bool is_standardized() const {
-      // TODO this is probably not always valid, i.e. if we are standardized,
-      // then grow, then collapse, but end up with the same number of nodes
-      // again.
-      return _standardized != order::none
-             && _forest.number_of_nodes()
-                    == word_graph().number_of_nodes_active();
-    }
-
     inline order standardization_order() const noexcept {
       return _standardized;
     }
 
     bool contains(word_type const& lhs, word_type const& rhs) override;
 
+    bool is_standardized(order val) const;
+    bool is_standardized() const;
+
+    ////////////////////////////////////////////////////////////////////////
+    // ToddCoxeter - modifiers - public
+    ////////////////////////////////////////////////////////////////////////
+
+    void shrink_to_fit();
+
+    // Returns true if anything changed
+    bool standardize(order val);
+
    private:
     ////////////////////////////////////////////////////////////////////////
     // Runner - pure virtual member functions - private
     ////////////////////////////////////////////////////////////////////////
 
-    void run_impl() override {
-      if (is_obviously_infinite(*this)) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "there are infinitely many classes in the congruence and "
-            "Todd-Coxeter will never terminate");
-      }
-      init_run();
-
-      if (strategy() == options::strategy::felsch) {
-        felsch();
-      } else if (strategy() == options::strategy::hlt) {
-        hlt();
-      }
-
-      finalise_run();
-
-      /*else if (strategy() == options::strategy::random) {
-        if (running_for()) {
-          LIBSEMIGROUPS_EXCEPTION(
-              "the strategy \"%s\" is incompatible with run_for!",
-              detail::to_string(strategy()).c_str());
-        }
-        random();
-      } else {
-        if (running_until()) {
-          LIBSEMIGROUPS_EXCEPTION(
-              "the strategy \"%s\" is incompatible with run_until!",
-              detail::to_string(strategy()).c_str());
-        }
-
-        if (strategy() == options::strategy::CR) {
-          CR_style();
-        } else if (strategy() == options::strategy::R_over_C) {
-          R_over_C_style();
-        } else if (strategy() == options::strategy::Cr) {
-          Cr_style();
-        } else if (strategy() == options::strategy::Rc) {
-          Rc_style();
-        }
-      }*/
-    }
+    void run_impl() override;
 
     bool finished_impl() const override {
       return _finished;
@@ -439,7 +405,7 @@ namespace libsemigroups {
     void validate_word(word_type const& w) const override;
 
     ////////////////////////////////////////////////////////////////////////
-    // ToddCoxeter - member functions (main strategies) - private
+    // ToddCoxeter - main strategies - private
     ////////////////////////////////////////////////////////////////////////
 
     void init_run();
@@ -448,19 +414,20 @@ namespace libsemigroups {
     void felsch();
     void hlt();
 
+    ////////////////////////////////////////////////////////////////////////
+    // ToddCoxeter - reporting - private
+    ////////////////////////////////////////////////////////////////////////
+
     void report_active_nodes() const;
     void report_next_lookahead(size_t old_value) const;
     void report_nodes_killed(int64_t number) const;
 
     ////////////////////////////////////////////////////////////////////////
-    // ToddCoxeter - member functions (lookahead) - private
+    // ToddCoxeter - lookahead - private
     ////////////////////////////////////////////////////////////////////////
 
-    // TODO(refactor) move to digraph (largest_compatible_quotient or similar)
-    void perform_lookahead();
-    // TODO(refactor) move to digraph
+    void   perform_lookahead();
     size_t hlt_lookahead();
-    // TODO(refactor) move to digraph
     size_t felsch_lookahead();
   };
 
