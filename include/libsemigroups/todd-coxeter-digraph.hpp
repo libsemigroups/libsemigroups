@@ -82,9 +82,9 @@ namespace libsemigroups {
       void
       operator()(node_type x, letter_type a, node_type y, letter_type b) const {
         node_type d = _word_graph.new_node();
-        _word_graph.template def_edge<RegisterDefs>(x, a, d);
+        _word_graph.template def_edge_nc<RegisterDefs>(x, a, d);
         if (a != b || x != y) {
-          _word_graph.template def_edge<RegisterDefs>(y, b, d);
+          _word_graph.template def_edge_nc<RegisterDefs>(y, b, d);
         }
       }
     };

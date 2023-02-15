@@ -295,7 +295,10 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////
 
     template <bool RegisterDefs = true>
-    bool def_edge(node_type c, label_type x, node_type d) noexcept;
+    bool try_def_edge_nc(node_type c, label_type x, node_type d) noexcept;
+
+    template <bool RegisterDefs = true>
+    void def_edge_nc(node_type c, label_type x, node_type d) noexcept;
 
     void reduce_number_of_edges_to(size_type n);
 

@@ -532,7 +532,8 @@ namespace libsemigroups {
 
       size_type const start = _felsch_graph.number_of_edges();
 
-      _felsch_graph.def_edge(current.source, current.generator, current.target);
+      _felsch_graph.try_def_edge_nc(
+          current.source, current.generator, current.target);
 
       auto first = _extra.rules.cbegin();
       auto last  = _extra.rules.cend();

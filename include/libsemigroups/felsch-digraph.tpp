@@ -263,25 +263,35 @@ namespace libsemigroups {
   // FelschDigraph - modifiers
   ////////////////////////////////////////////////////////////////////////
 
-  // TODO rename try_def_edge
   template <typename Word, typename Node>
   template <bool RegisterDefs>
-  bool FelschDigraph<Word, Node>::def_edge(node_type  c,
-                                           label_type x,
-                                           node_type  d) noexcept {
+  bool FelschDigraph<Word, Node>::try_def_edge_nc(node_type  c,
+                                                  label_type x,
+                                                  node_type  d) noexcept {
     LIBSEMIGROUPS_ASSERT(c < ActionDigraph<Node>::number_of_nodes());
     LIBSEMIGROUPS_ASSERT(x < ActionDigraph<Node>::out_degree());
     LIBSEMIGROUPS_ASSERT(d < ActionDigraph<Node>::number_of_nodes());
     node_type cx = ActionDigraph<Node>::unsafe_neighbor(c, x);
     if (cx == UNDEFINED) {
-      if constexpr (RegisterDefs) {
-        _definitions.emplace(c, x);
-      }
-      DigraphWithSources<Node>::add_edge_nc(c, d, x);
+      def_edge_nc(c, x, d);
       return true;
     } else {
       return cx == d;
     }
+  }
+
+  template <typename Word, typename Node>
+  template <bool RegisterDefs>
+  void FelschDigraph<Word, Node>::def_edge_nc(node_type  c,
+                                              label_type x,
+                                              node_type  d) noexcept {
+    LIBSEMIGROUPS_ASSERT(c < ActionDigraph<Node>::number_of_nodes());
+    LIBSEMIGROUPS_ASSERT(x < ActionDigraph<Node>::out_degree());
+    LIBSEMIGROUPS_ASSERT(d < ActionDigraph<Node>::number_of_nodes());
+    if constexpr (RegisterDefs) {
+      _definitions.emplace(c, x);
+    }
+    DigraphWithSources<Node>::add_edge_nc(c, d, x);
   }
 
   template <typename Word, typename Node>
@@ -536,10 +546,10 @@ namespace libsemigroups {
 
     if (xa == UNDEFINED && yb != UNDEFINED) {
       LIBSEMIGROUPS_ASSERT(a < ActionDigraph<Node>::out_degree());
-      return def_edge(x, a, yb);
+      def_edge_nc(x, a, yb);
     } else if (xa != UNDEFINED && yb == UNDEFINED) {
       LIBSEMIGROUPS_ASSERT(b < ActionDigraph<Node>::out_degree());
-      return def_edge(y, b, xa);
+      def_edge_nc(y, b, xa);
     } else if (xa != UNDEFINED && yb != UNDEFINED && xa != yb) {
       return incompat(xa, yb);
     } else if (xa == UNDEFINED && yb == UNDEFINED) {
@@ -591,7 +601,6 @@ namespace libsemigroups {
     return true;
   }
 
-  // TODO can we use a reference here?
   template <typename Word, typename Node>
   template <typename Incompatible, typename PreferredDefs>
   bool
