@@ -2895,7 +2895,7 @@ namespace libsemigroups {
     // check_standardize(tc);
   }
 
-  // TODO This is much slower than in v2
+  // FIXME This is much slower than in v2
   LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
                           "073",
                           "Walker 3",
@@ -2915,10 +2915,14 @@ namespace libsemigroups {
       REQUIRE(p.alphabet() == "abcde");
     }
     ToddCoxeter tc(twosided, p);
-    tc.lookahead_next(2'000'000);
+    // tc.lookahead_next(2'000'000);
+    tc.strategy(options::strategy::felsch)
+        .def_policy(options::def_policy::unlimited)
+        .def_version(options::def_version::one);
+
     REQUIRE(!is_obviously_infinite(tc));
 
-    section_hlt(tc);
+    // section_hlt(tc);
     section_felsch(tc);
     // section_random(tc);
     // section_rc_style(tc); // Rc_style + partial lookahead works very badly
@@ -3362,10 +3366,11 @@ namespace libsemigroups {
     REQUIRE(!is_obviously_infinite(tc));
     // TODO uncomment tc.strategy(options::strategy::R_over_C);
 
+    tc.lookahead_extent(options::lookahead_extent::partial)
+        .lookahead_style(options::lookahead_style::hlt)
+        .lookahead_growth_factor(1.01)
+        .lookahead_growth_threshold(10);
     // TODO uncomment
-    // tc.lookahead(options::lookahead::partial | options::lookahead::hlt)
-    //     .lookahead_growth_factor(1.01)
-    //     .lookahead_growth_threshold(10)
     //     .f_defs(250'000)
     //     .hlt_defs(20'000'000);
     // TODO implement
@@ -3801,6 +3806,7 @@ namespace libsemigroups {
     auto rg = ReportGuard();
     auto p  = make<Presentation<word_type>>(RennerTypeDMonoid(5, 1));
     REQUIRE(p.rules.size() == 358);
+    presentation::sort_each_rule(p);
     presentation::sort_rules(p);
     presentation::remove_duplicate_rules(p);
     REQUIRE(p.rules.size() == 322);
