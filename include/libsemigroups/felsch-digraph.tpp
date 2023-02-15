@@ -20,58 +20,59 @@
 // * tidy this up, and organise the file
 
 namespace libsemigroups {
-  namespace detail {
-    ////////////////////////////////////////////////////////////////////////////
-    // Definitions
-    ////////////////////////////////////////////////////////////////////////////
+  ////////////////////////////////////////////////////////////////////////////
+  // Definitions
+  ////////////////////////////////////////////////////////////////////////////
 
-    template <typename N>
-    typename Definitions<N>::Definition Definitions<N>::pop() {
-      auto res = _definitions.back();
-      _definitions.pop_back();
-      return res;
+  template <typename W, typename N>
+  typename FelschDigraph<W, N>::Definitions::Definition
+  FelschDigraph<W, N>::Definitions::pop() {
+    auto res = _definitions.back();
+    _definitions.pop_back();
+    return res;
+  }
+
+  template <typename W, typename N>
+  void FelschDigraph<W, N>::Definitions::emplace(
+      typename FelschDigraph<W, N>::node_type  c,
+      typename FelschDigraph<W, N>::label_type x) {
+    using def_policy    = typename options::def_policy;
+    auto is_active_node = [](auto const&) { return true; };
+
+    if (_settings->def_policy() == def_policy::unlimited
+        || _definitions.size() < _settings->def_max()) {
+      _definitions.emplace_back(c, x);
+      return;
     }
 
-    template <typename N>
-    void Definitions<N>::emplace(node_type c, letter_type x) {
-      using def_policy    = felsch_digraph::def_policy;
-      auto is_active_node = [](auto const&) { return true; };
-
-      if (_settings->definition_policy() == def_policy::unlimited
-          || _definitions.size() < _settings->max_definitions()) {
-        _definitions.emplace_back(c, x);
-        return;
+    _any_skipped = true;
+    switch (_settings->def_policy()) {
+      case def_policy::purge_from_top: {
+        while (!_definitions.empty()
+               && !is_active_node(_definitions.back().first)) {
+          _definitions.pop_back();
+        }
+        break;
       }
-
-      _any_skipped = true;
-      switch (_settings->definition_policy()) {
-        case def_policy::purge_from_top: {
-          while (!_definitions.empty()
-                 && !is_active_node(_definitions.back().first)) {
-            _definitions.pop_back();
+      case def_policy::purge_all: {
+        std::vector<Definition> copy;
+        while (!_definitions.empty()) {
+          auto& d = _definitions.back();
+          if (is_active_node(d.first)) {
+            copy.push_back(std::move(d));
           }
-          break;
         }
-        case def_policy::purge_all: {
-          std::vector<Definition> copy;
-          while (!_definitions.empty()) {
-            auto& d = _definitions.back();
-            if (is_active_node(d.first)) {
-              copy.push_back(std::move(d));
-            }
-          }
-          std::swap(copy, _definitions);
-          break;
-        }
-        case def_policy::discard_all_if_no_space: {
-          clear();
-          break;
-        }
-        default: {
-        }
+        std::swap(copy, _definitions);
+        break;
+      }
+      case def_policy::discard_all_if_no_space: {
+        clear();
+        break;
+      }
+      default: {
       }
     }
-  }  // namespace detail
+  }
 
   template <typename W, typename N>
   struct FelschDigraph<W, N>::ReturnFalse {
@@ -455,11 +456,10 @@ namespace libsemigroups {
   bool FelschDigraph<W, N>::process_definitions(size_t            start,
                                                 IncompatibleFunc& incompat,
                                                 PreferredDefs&    pref_defs) {
-    if (definition_version() == felsch_digraph::def_version::two) {
+    if (def_version() == options::def_version::two) {
       return process_definitions_v2(start, incompat, pref_defs);
     } else {
-      LIBSEMIGROUPS_ASSERT(definition_version()
-                           == felsch_digraph::def_version::one);
+      LIBSEMIGROUPS_ASSERT(def_version() == options::def_version::one);
       return process_definitions_v1(start, incompat, pref_defs);
     }
   }

@@ -24,7 +24,7 @@
 
 // TODO
 // * iwyu
-// * use definition and not deduction everywhere here!
+// * use definition and not definition everywhere here!
 
 #include <cstddef>
 
@@ -35,44 +35,50 @@
 
 namespace libsemigroups {
 
-  namespace felsch_digraph {
-    enum class def_policy : uint8_t {
-      //! Do not put newly generated deductions in the stack if the stack
-      //! already has size max_deductions().
-      no_stack_if_no_space,
-      //! If the deduction stack has size max_deductions() and a new
-      //! deduction is generated, then deductions with dead source node are
-      //! are popped from the top of the stack (if any).
-      purge_from_top,
-      //! If the deduction stack has size max_deductions() and a new
-      //! deduction is generated, then deductions with dead source node are
-      //! are popped from the entire of the stack (if any).
-      purge_all,
-      //! If the deduction stack has size max_deductions() and a new
-      //! deduction is generated, then all deductions in the stack are
-      //! discarded.
-      discard_all_if_no_space,
-      //! There is no limit to the number of deductions that can be put in
-      //! the stack.
-      unlimited
+  // This struct exists to avoid having to write typename before
+  // options::def_policy etc everywhere below
+  struct FelschDigraphSettingsEnums {
+    struct options {
+      enum class def_policy : uint8_t {
+        //! Do not put newly generated definitions in the stack if the stack
+        //! already has size max_definitions().
+        no_stack_if_no_space,
+        //! If the definition stack has size max_definitions() and a new
+        //! definition is generated, then definitions with dead source node are
+        //! are popped from the top of the stack (if any).
+        purge_from_top,
+        //! If the definition stack has size max_definitions() and a new
+        //! definition is generated, then definitions with dead source node are
+        //! are popped from the entire of the stack (if any).
+        purge_all,
+        //! If the definition stack has size max_definitions() and a new
+        //! definition is generated, then all definitions in the stack are
+        //! discarded.
+        discard_all_if_no_space,
+        //! There is no limit to the number of definitions that can be put in
+        //! the stack.
+        unlimited
+      };
 
+      enum class def_version : uint8_t {
+        one,
+        two,
+      };
     };
+  };
 
-    enum class def_version : uint8_t {
-      one,
-      two,
-    };
-  }  // namespace felsch_digraph
-
-  template <typename T>
+  template <typename T>  // TODO better tparam name
   class FelschDigraphSettings {
+   public:
+    using options = FelschDigraphSettingsEnums::options;
+
    private:
-    size_t                      _max_definitions;
-    felsch_digraph::def_policy  _policy;
-    felsch_digraph::def_version _version;
+    size_t               _def_max;
+    options::def_policy  _def_policy;
+    options::def_version _def_version;
 
    public:
-    FelschDigraphSettings() : _max_definitions(), _policy(), _version() {
+    FelschDigraphSettings() : _def_max(), _def_policy(), _def_version() {
       init();
     }
 
@@ -83,21 +89,21 @@ namespace libsemigroups {
 
     // TODO to tpp file
     FelschDigraphSettings& init() {
-      _max_definitions = 2'000;
-      _policy          = felsch_digraph::def_policy::unlimited;
+      _def_max    = 2'000;
+      _def_policy = options::def_policy::unlimited;
       // TODO change back to def_policy::no_stack_if_no_space, can't at present
       // because we haven't yet reimplemented lookaheads
 
-      _version = felsch_digraph::def_version::two;
+      _def_version = options::def_version::two;
       return *this;
     }
 
     // TODO this should really be a constructor or assignment operator
     template <typename S>
     T& settings(FelschDigraphSettings<S>& that) {
-      _max_definitions = that.max_definitions();
-      _policy          = that.definition_policy();
-      _version         = that.definition_version();
+      _def_max     = that.def_max();
+      _def_policy  = that.def_policy();
+      _def_version = that.def_version();
       return static_cast<T&>(*this);
     }
 
@@ -105,63 +111,63 @@ namespace libsemigroups {
       return *this;
     }
 
-    //! Specify how to handle deductions.
+    //! Specify how to handle definitions.
     //!
-    //! This function can be used to specify how to handle deductions. For
-    //! details see options::deductions.
+    //! This function can be used to specify how to handle definitions. For
+    //! details see options::definitions.
     //!
     //! The default value of this setting is
-    //! ``options::deductions::no_stack_if_no_space |
-    //! options::deductions::v2``.
+    //! ``options::definitions::no_stack_if_no_space |
+    //! options::definitions::v2``.
     //!
     //! \param val the policy to use.
     //!
     //! \returns A reference to `*this`.
     //!
     //! \throws LibsemigroupsException if \p val is not valid (i.e. if for
-    //! example ``options::deductions::v1 & options::deductions::v2`` returns
+    //! example ``options::definitions::v1 & options::definitions::v2`` returns
     //! ``true``).
-    T& definition_policy(felsch_digraph::def_policy val) {
-      _policy = val;
+    T& def_policy(options::def_policy val) {
+      _def_policy = val;
       return static_cast<T&>(*this);
     }
 
-    //! The current value of the deduction policy setting.
+    //! The current value of the definition policy setting.
     //!
     //! \parameters
     //! (None)
     //!
     //! \returns The current value of the setting, a value of type
-    //! ``options::deductions``.
+    //! ``options::definitions``.
     //!
     //! \exceptions
     //! \noexcept
-    felsch_digraph::def_policy definition_policy() const noexcept {
-      return _policy;
+    options::def_policy def_policy() const noexcept {
+      return _def_policy;
     }
 
-    //! The maximum number of deductions in the stack.
+    //! The maximum number of definitions in the stack.
     //!
-    //! This setting specifies the maximum number of deductions that can be
+    //! This setting specifies the maximum number of definitions that can be
     //! in the stack at any given time. What happens if there are the maximum
-    //! number of deductions in the stack and a new deduction is generated is
-    //! governed by deduction_policy().
+    //! number of definitions in the stack and a new definition is generated is
+    //! governed by definition_policy().
     //!
     //! The default value of this setting is \c 2'000.
     //!
-    //! \param val the maximum size of the deduction stack.
+    //! \param val the maximum size of the definition stack.
     //!
     //! \returns A reference to `*this`.
     //!
     //! \exceptions
     //! \noexcept
-    T& max_definitions(size_t val) noexcept {
-      _max_definitions = val;
+    T& def_max(size_t val) noexcept {
+      _def_max = val;
       return static_cast<T&>(*this);
     }
 
     //! The current value of the setting for the maximum number of
-    //! deductions.
+    //! definitions.
     //!
     //! \parameters
     //! (None)
@@ -171,42 +177,57 @@ namespace libsemigroups {
     //!
     //! \exceptions
     //! \noexcept
-    size_t max_definitions() const noexcept {
-      return _max_definitions;
+    size_t def_max() const noexcept {
+      return _def_max;
     }
 
-    T& definition_version(felsch_digraph::def_version val) {
-      _version = val;
+    T& def_version(options::def_version val) {
+      _def_version = val;
       return static_cast<T&>(*this);
     }
 
-    //! The current value of the deduction policy setting.
+    //! The current value of the definition policy setting.
     //!
     //! \parameters
     //! (None)
     //!
     //! \returns The current value of the setting, a value of type
-    //! ``options::deductions``.
+    //! ``options::definitions``.
     //!
     //! \exceptions
     //! \noexcept
-    felsch_digraph::def_version definition_version() const noexcept {
-      return _version;
+    options::def_version def_version() const noexcept {
+      return _def_version;
     }
   };
 
-  namespace detail {
-    // TODO move this into FelschDigraph itself
-    template <typename S>
+  template <typename W, typename N>
+  class FelschDigraph : public DigraphWithSources<N>,
+                        public FelschDigraphSettings<FelschDigraph<W, N>> {
+   private:
+    using FelschDigraph_         = FelschDigraph<W, N>;
+    using FelschDigraphSettings_ = FelschDigraphSettings<FelschDigraph_>;
+
+    struct Noop;
+
+   public:
+    using options      = typename FelschDigraphSettings_::options;
+    using node_type    = N;
+    using word_type    = W;
+    using letter_type  = typename W::value_type;
+    using digraph_type = DigraphWithSources<node_type>;
+    using size_type    = typename digraph_type::size_type;
+
+   private:
     class Definitions {
      public:
-      using node_type  = typename S::node_type;
+      using node_type  = N;
       using Definition = std::pair<node_type, letter_type>;
 
      private:
-      bool                      _any_skipped;
-      std::vector<Definition>   _definitions;
-      FelschDigraphSettings<S>* _settings;
+      bool                    _any_skipped;
+      std::vector<Definition> _definitions;
+      FelschDigraphSettings_* _settings;
 
      public:
       template <typename T>
@@ -229,7 +250,7 @@ namespace libsemigroups {
 
       Definition pop();
 
-      void emplace(node_type c, letter_type x);
+      void emplace(node_type c, typename FelschDigraph_::label_type x);
 
       Definition const& operator[](size_t i) {
         return _definitions[i];
@@ -276,30 +297,15 @@ namespace libsemigroups {
       void erase(iterator first, iterator last) {
         _definitions.erase(first, last);
       }
-    };
-  }  // namespace detail
-
-  template <typename W, typename N>
-  class FelschDigraph : public DigraphWithSources<N>,
-                        public FelschDigraphSettings<FelschDigraph<W, N>> {
-    using FelschDigraph_         = FelschDigraph<W, N>;
-    using FelschDigraphSettings_ = FelschDigraphSettings<FelschDigraph_>;
-
-    struct Noop;
+    };  // Definitions
 
    public:
-    using node_type    = N;
-    using word_type    = W;
-    using letter_type  = typename W::value_type;
-    using digraph_type = DigraphWithSources<node_type>;
-    using size_type    = typename digraph_type::size_type;
-
-    using Definition = typename detail::Definitions<FelschDigraph_>::Definition;
+    using Definition = typename Definitions::Definition;
 
    private:
-    detail::Definitions<FelschDigraph_> _definitions;
-    detail::FelschTree                  _felsch_tree;
-    Presentation<word_type>             _presentation;
+    Definitions             _definitions;
+    detail::FelschTree      _felsch_tree;
+    Presentation<word_type> _presentation;
 
    public:
     using NoPreferredDefs = Noop;
@@ -319,9 +325,9 @@ namespace libsemigroups {
     FelschDigraph& operator=(FelschDigraph const&) = default;
     FelschDigraph& operator=(FelschDigraph&&)      = default;
 
-    using FelschDigraphSettings_::definition_policy;
-    using FelschDigraphSettings_::definition_version;
-    using FelschDigraphSettings_::max_definitions;
+    using FelschDigraphSettings_::def_max;
+    using FelschDigraphSettings_::def_policy;
+    using FelschDigraphSettings_::def_version;
     using FelschDigraphSettings_::settings;
 
     FelschDigraph& init(Presentation<word_type> const& p, size_type n);
@@ -362,11 +368,10 @@ namespace libsemigroups {
     bool process_definition(Definition const& d,
                             IncompatibleFunc& incompat,
                             PreferredDefs&    pref_defs) {
-      if (definition_version() == felsch_digraph::def_version::two) {
+      if (def_version() == options::def_version::two) {
         return process_definition_v2(d, incompat, pref_defs);
       } else {
-        LIBSEMIGROUPS_ASSERT(definition_version()
-                             == felsch_digraph::def_version::one);
+        LIBSEMIGROUPS_ASSERT(def_version() == options::def_version::one);
         return process_definition_v1(d, incompat, pref_defs);
       }
     }
@@ -494,15 +499,31 @@ namespace libsemigroups {
               typename Node,
               typename Incompatible,
               typename PrefDefs>
-    bool make_compatible(
-        FelschDigraph<Word, Node>&                    fd,
-        typename FelschDigraph<Word, Node>::node_type first_node,
-        typename FelschDigraph<Word, Node>::node_type last_node,
-        typename std::vector<Word>::const_iterator    first_rule,
-        typename std::vector<Word>::const_iterator    last_rule,
-        Incompatible&& incompat = FelschDigraph<Word, Node>::ReturnFalse(),
-        PrefDefs&&     pref_defs
-        = FelschDigraph<Word, Node>::NoPreferredDefs()) noexcept;
+    bool
+    make_compatible(FelschDigraph<Word, Node>&                    fd,
+                    typename FelschDigraph<Word, Node>::node_type first_node,
+                    typename FelschDigraph<Word, Node>::node_type last_node,
+                    typename std::vector<Word>::const_iterator    first_rule,
+                    typename std::vector<Word>::const_iterator    last_rule,
+                    Incompatible&&                                incompat,
+                    PrefDefs&& pref_defs) noexcept;
+
+    template <typename Word, typename Node>
+    bool
+    make_compatible(FelschDigraph<Word, Node>&                    fd,
+                    typename FelschDigraph<Word, Node>::node_type first_node,
+                    typename FelschDigraph<Word, Node>::node_type last_node,
+                    typename std::vector<Word>::const_iterator    first_rule,
+                    typename std::vector<Word>::const_iterator    last_rule) {
+      return make_compatible(
+          fd,
+          first_node,
+          last_node,
+          first_rule,
+          last_rule,
+          typename FelschDigraph<Word, Node>::ReturnFalse(),
+          typename FelschDigraph<Word, Node>::NoPreferredDefs());
+    }
 
   }  // namespace felsch_digraph
 }  // namespace libsemigroups

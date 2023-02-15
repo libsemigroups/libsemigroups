@@ -2825,7 +2825,7 @@ namespace libsemigroups {
 
     SECTION("custom HLT") {
       tc.lookahead_next(1'000'000)
-          .max_definitions(2'000)
+          .def_max(2'000)
           // .use_relations_in_extra(true)
           .strategy(options::strategy::hlt)
           .lookahead_extent(options::lookahead_extent::partial)
@@ -3109,10 +3109,10 @@ namespace libsemigroups {
     REQUIRE(!is_obviously_infinite(tc));
 
     SECTION("def_version == one") {
-      tc.definition_version(felsch_digraph::def_version::one);
+      tc.def_version(options::def_version::one);
     }
     SECTION("def_version == two") {
-      tc.definition_version(felsch_digraph::def_version::two);
+      tc.def_version(options::def_version::two);
     }
 
     section_hlt(tc);

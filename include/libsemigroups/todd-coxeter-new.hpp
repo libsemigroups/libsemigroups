@@ -40,15 +40,16 @@ namespace libsemigroups {
   class ToddCoxeter : public v3::CongruenceInterface,
                       public FelschDigraphSettings<ToddCoxeter> {
    public:
-    struct Stats;  // forward decl
+    struct Stats;  // forward decl TODO not currently used
 
-    struct options {
+    struct options : public FelschDigraphSettings<ToddCoxeter>::options {
       enum class strategy { hlt, felsch };
       enum class lookahead_extent { full, partial };
       enum class lookahead_style { hlt, felsch };
     };
 
    private:
+    // TODO add _ to start of all variable names here
     struct Settings {
       bool                     use_relations_in_extra = false;
       options::lookahead_style _lookahead_style = options::lookahead_style::hlt;
@@ -141,14 +142,14 @@ namespace libsemigroups {
     ToddCoxeter(congruence_kind knd, ToddCoxeter const& tc);
     ToddCoxeter& init(congruence_kind knd, ToddCoxeter const& tc);
 
-    using FelschDigraphSettings_::definition_policy;
-    using FelschDigraphSettings_::definition_version;
-    using FelschDigraphSettings_::max_definitions;
-    using FelschDigraphSettings_::settings;
-
     ////////////////////////////////////////////////////////////////////////
     // ToddCoxeter - settings - public
     ////////////////////////////////////////////////////////////////////////
+
+    using FelschDigraphSettings_::def_max;
+    using FelschDigraphSettings_::def_policy;
+    using FelschDigraphSettings_::def_version;
+    using FelschDigraphSettings_::settings;
 
     //! Specify the strategy.
     //!
