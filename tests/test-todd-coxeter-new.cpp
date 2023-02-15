@@ -1731,7 +1731,7 @@ namespace libsemigroups {
     auto p  = make<Presentation<word_type>>(fibonacci_semigroup(4, 6));
 
     ToddCoxeter tc(twosided, p);
-    // tc.strategy(options::strategy::felsch);
+    // tc.strategy(ptions::strategy::felsch);
     REQUIRE(tc.number_of_classes() == 0);
   }
 

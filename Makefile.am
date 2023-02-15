@@ -576,7 +576,6 @@ libsemigroups_la_SOURCES += src/cong.cpp
 libsemigroups_la_SOURCES += src/constants.cpp
 libsemigroups_la_SOURCES += src/coset.cpp
 libsemigroups_la_SOURCES += src/exception.cpp
-libsemigroups_la_SOURCES += src/felsch-digraph.cpp
 libsemigroups_la_SOURCES += src/felsch-tree.cpp
 libsemigroups_la_SOURCES += src/forest.cpp
 libsemigroups_la_SOURCES += src/fpsemi-examples.cpp

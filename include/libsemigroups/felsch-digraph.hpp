@@ -1,6 +1,6 @@
 //
 // libsemigroups - C++ library for semigroups and monoids
-// Copyright (C) 2022 James D. Mitchell
+// Copyright (C) 2022-23 James D. Mitchell
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -22,18 +22,18 @@
 #ifndef LIBSEMIGROUPS_FELSCH_DIGRAPH_HPP_
 #define LIBSEMIGROUPS_FELSCH_DIGRAPH_HPP_
 
-// TODO
-// * iwyu
-// * use definition and not definition everywhere here!
+#include <cstddef>  // for size_t
+#include <cstdint>  // for uint8_t
+#include <utility>  // for pair
+#include <vector>   // for vector
 
-#include <cstddef>
-
-#include "digraph-helper.hpp"
-#include "digraph-with-sources.hpp"
-#include "felsch-tree.hpp"
-#include "present.hpp"
+#include "digraph-with-sources.hpp"  // for DigraphWithSources
+#include "felsch-tree.hpp"           // for FelschTree
+#include "libsemigroups/debug.hpp"   // for LIBSEMIGROUPS_ASSERT
+#include "present.hpp"               // for Presentation
 
 namespace libsemigroups {
+  // TODO move this somewhere else
   struct ReturnFalse {
     template <typename... Args>
     constexpr bool operator()(Args...) const noexcept {
@@ -41,6 +41,7 @@ namespace libsemigroups {
     }
   };
 
+  // TODO move this somewhere else
   struct Noop {
     template <typename... Args>
     constexpr void operator()(Args...) const noexcept {}
@@ -180,6 +181,7 @@ namespace libsemigroups {
       return _def_max;
     }
 
+    // TODO doc
     Subclass& def_version(options::def_version val) {
       _def_version = val;
       return static_cast<Subclass&>(*this);
@@ -293,7 +295,7 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////
 
     template <bool RegisterDefs = true>
-    bool def_edge(node_type c, letter_type x, node_type d) noexcept;
+    bool def_edge(node_type c, label_type x, node_type d) noexcept;
 
     void reduce_number_of_edges_to(size_type n);
 
@@ -301,21 +303,16 @@ namespace libsemigroups {
     // but otherwise do not modify the graph, whereas init(p) returns this to
     // the same state as FelschDigraph(p);
     FelschDigraph& presentation(Presentation<Word> const& p);
-    // TODO rvalue ref version
+    FelschDigraph& presentation(Presentation<Word>&& p);
 
     ////////////////////////////////////////////////////////////////////////
     // Process definitions
     ////////////////////////////////////////////////////////////////////////
 
     template <typename Incompatible, typename PreferredDefs>
-    bool process_definitions(size_t         start,
-                             Incompatible&  incompat,
-                             PreferredDefs& pref_defs);
-
-    template <typename Incompatible, typename PreferredDefs>
-    bool process_definition(Definition const& d,
-                            Incompatible&     incompat,
-                            PreferredDefs&    pref_defs) {
+    inline bool process_definition(Definition const& d,
+                                   Incompatible&     incompat,
+                                   PreferredDefs&    pref_defs) {
       if (def_version() == options::def_version::two) {
         return process_definition_v2(d, incompat, pref_defs);
       } else {
@@ -324,14 +321,13 @@ namespace libsemigroups {
       }
     }
 
-    // TODO to tpp
-    bool process_definitions(size_t start = 0) {
-      StopIfIncompatible incompat;
-      NoPreferredDefs    pref_defs;
-      return process_definitions(start, incompat, pref_defs);
-    }
+    template <typename Incompatible, typename PreferredDefs>
+    bool process_definitions(size_t         start,
+                             Incompatible&  incompat,
+                             PreferredDefs& pref_defs);
 
-    // TODO protected?
+    bool process_definitions(size_t start = 0);
+
     // Returns false if the targets of the edges (x, a, xa) and (y, b, yb)
     // cannot be merged (i.e. if xa != yb and incompat(x, a, y, b) returns
     // false), otherwise returns true. Always modifies the graph if xa !=
@@ -339,9 +335,9 @@ namespace libsemigroups {
     // b) is called if xa = UNDEFINED and yb = UNDEFINED.
     template <typename Incompatible, typename PreferredDefs>
     bool merge_targets_of_nodes_if_possible(node_type      x,
-                                            letter_type    a,
+                                            label_type     a,
                                             node_type      y,
-                                            letter_type    b,
+                                            label_type     b,
                                             Incompatible&  incompat,
                                             PreferredDefs& pref_defs);
 
@@ -358,61 +354,26 @@ namespace libsemigroups {
                                             PreferredDefs& pref_defs) noexcept;
 
    private:
-    // TODO to tpp
     // TODO can we use a reference here?
     template <typename Incompatible, typename PreferredDefs>
     bool process_definition_v2(Definition     d,
                                Incompatible&  incompat,
-                               PreferredDefs& pref_defs) {
-      _felsch_tree.push_back(d.second);
-      for (auto it = _felsch_tree.cbegin(); it < _felsch_tree.cend(); ++it) {
-        // Using anything other than NoPreferredDefs here seems to be bad
-        // in test case "ACE --- perf602p5 - Felsch", maybe this is a good
-        // example where the fill factor would be useful?
-        if (!merge_targets_of_paths_labelled_by_rules_if_possible(
-                d.first, *it, incompat, pref_defs)) {
-          return false;
-        }
-      }
-      if (!process_definitions_dfs_v2(d.first, d.first, incompat, pref_defs)) {
-        return false;
-      }
-      return true;
-    }
-
-    // TODO to tpp
+                               PreferredDefs& pref_defs);
     // TODO can we use a reference here?
     template <typename Incompatible, typename PreferredDefs>
     bool process_definition_v1(Definition     d,
                                Incompatible&  incompat,
-                               PreferredDefs& pref_defs) {
-      _felsch_tree.push_back(d.second);
-      if (!process_definitions_dfs_v1(d.first, incompat, pref_defs)) {
-        return false;
-      }
-      return true;
-    }
+                               PreferredDefs& pref_defs);
 
     // Follows the paths from node c labelled by the left and right handsides
     // of the i-th rule, and returns merge_targets on the last but one nodes
     // and letters.
-    // TODO to tpp
     template <typename Incompatible, typename PreferredDefs>
     inline bool merge_targets_of_paths_labelled_by_rules_if_possible(
         node_type const& c,
         size_t           i,
         Incompatible&    incompat,
-        PreferredDefs&   pref_defs) noexcept {
-      auto j = (i % 2 == 0 ? i + 1 : i - 1);
-      return merge_targets_of_paths_if_possible(c,
-                                                _presentation.rules[i].cbegin(),
-                                                _presentation.rules[i].cend(),
-                                                c,
-                                                _presentation.rules[j].cbegin(),
-                                                _presentation.rules[j].cend(),
-                                                incompat,
-                                                pref_defs);
-    }
+        PreferredDefs&   pref_defs) noexcept;
 
     // Returns true if no contradictions are found.
     template <typename Incompatible, typename PreferredDefs>
