@@ -20,12 +20,98 @@
 // * tidy this up, and organise the file
 
 namespace libsemigroups {
+  template <typename W, typename N>
+  class FelschDigraph<W, N>::Definitions {
+   private:
+    bool                    _any_skipped;
+    std::vector<Definition> _definitions;
+    FelschDigraphSettings_* _settings;
+
+   public:
+    template <typename T>
+    explicit Definitions(FelschDigraphSettings<T>* settings) : Definitions() {
+      _settings = settings;
+    }
+
+    Definitions() : _any_skipped(false), _definitions(), _settings(nullptr) {}
+    Definitions(Definitions const&)                 = default;
+    Definitions(Definitions&&)                      = default;
+    Definitions& operator=(Definitions const& that) = default;
+    Definitions& operator=(Definitions&&)           = default;
+
+    template <typename T>
+    void init(FelschDigraphSettings<T>* settings) {
+      _any_skipped = false;
+      _definitions.clear();
+      _settings = settings;
+    }
+
+    Definition pop();
+    void       emplace(node_type c, typename FelschDigraph_::label_type x);
+
+    Definition const& operator[](size_t i) {
+      return _definitions[i];
+    }
+
+    bool any_skipped() const noexcept {
+      return _any_skipped;
+    }
+
+    bool empty() const noexcept {
+      return _definitions.empty();
+    }
+
+    size_t size() const noexcept {
+      return _definitions.size();
+    }
+
+    void clear() {
+      _any_skipped |= !_definitions.empty();
+      _definitions.clear();
+    }
+
+    Definition const& back() {
+      LIBSEMIGROUPS_ASSERT(!empty());
+      return _definitions.back();
+    }
+
+    void pop_back() {
+      LIBSEMIGROUPS_ASSERT(!empty());
+      _definitions.pop_back();
+    }
+
+    using iterator = decltype(_definitions.begin());
+
+    iterator begin() {
+      return _definitions.begin();
+    }
+
+    iterator end() {
+      return _definitions.end();
+    }
+
+    void erase(iterator first, iterator last) {
+      _definitions.erase(first, last);
+    }
+  };  // Definitions
+
+  template <typename Subclass>
+  FelschDigraphSettings<Subclass>& FelschDigraphSettings<Subclass>::init() {
+    _def_max    = 2'000;
+    _def_policy = options::def_policy::unlimited;
+    // TODO change back to def_policy::no_stack_if_no_space, can't at
+    // present because we haven'Subclass yet reimplemented lookaheads
+
+    _def_version = options::def_version::two;
+    return *this;
+  }
+
   ////////////////////////////////////////////////////////////////////////////
   // Definitions
   ////////////////////////////////////////////////////////////////////////////
 
   template <typename W, typename N>
-  typename FelschDigraph<W, N>::Definitions::Definition
+  typename FelschDigraph<W, N>::Definition
   FelschDigraph<W, N>::Definitions::pop() {
     auto res = _definitions.back();
     _definitions.pop_back();
@@ -73,20 +159,6 @@ namespace libsemigroups {
       }
     }
   }
-
-  template <typename W, typename N>
-  struct FelschDigraph<W, N>::ReturnFalse {
-    template <typename... Args>
-    constexpr bool operator()(Args...) const noexcept {
-      return false;
-    }
-  };
-
-  template <typename W, typename N>
-  struct FelschDigraph<W, N>::Noop {
-    template <typename... Args>
-    constexpr void operator()(Args...) const noexcept {}
-  };
 
   ////////////////////////////////////////////////////////////////////////////
   // FelschDigraph
@@ -278,7 +350,7 @@ namespace libsemigroups {
                                                   PreferredDefs&    pref_defs) {
     size_t const n = this->out_degree();
     for (size_t x = 0; x < n; ++x) {
-      node_type e = digraph_type::first_source(c, x);
+      node_type e = DigraphWithSources_::first_source(c, x);
       if (e != UNDEFINED && _felsch_tree.push_front(x)) {
         // We only need to push the side (the good side) of the relation
         // that corresponds to the prefix in the tree through one preimage,
@@ -318,7 +390,7 @@ namespace libsemigroups {
           }
           u_first = u.cend() - 1;
           u_last  = u.cend();
-          e       = digraph_type::first_source(c, x);
+          e       = DigraphWithSources_::first_source(c, x);
           while (e != UNDEFINED) {
             if (!merge_targets_of_paths_if_possible(y,
                                                     u_first,
@@ -330,15 +402,15 @@ namespace libsemigroups {
                                                     pref_defs)) {
               return false;
             }
-            e = digraph_type::next_source(e, x);
+            e = DigraphWithSources_::next_source(e, x);
           }
         }
-        e = digraph_type::first_source(c, x);
+        e = DigraphWithSources_::first_source(c, x);
         while (e != UNDEFINED) {
           if (!process_definitions_dfs_v2(root, e, incompat, pref_defs)) {
             return false;
           }
-          e = digraph_type::next_source(e, x);
+          e = DigraphWithSources_::next_source(e, x);
         }
         _felsch_tree.pop_front();
       }

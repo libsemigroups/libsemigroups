@@ -34,6 +34,17 @@
 #include "present.hpp"
 
 namespace libsemigroups {
+  struct ReturnFalse {
+    template <typename... Args>
+    constexpr bool operator()(Args...) const noexcept {
+      return false;
+    }
+  };
+
+  struct Noop {
+    template <typename... Args>
+    constexpr void operator()(Args...) const noexcept {}
+  };
 
   // This struct exists to avoid having to write typename before
   // options::def_policy etc everywhere below
@@ -80,23 +91,13 @@ namespace libsemigroups {
     FelschDigraphSettings() : _def_max(), _def_policy(), _def_version() {
       init();
     }
-    // TODO to tpp file
-    FelschDigraphSettings& init() {
-      _def_max    = 2'000;
-      _def_policy = options::def_policy::unlimited;
-      // TODO change back to def_policy::no_stack_if_no_space, can'Subclass at
-      // present because we haven'Subclass yet reimplemented lookaheads
-
-      _def_version = options::def_version::two;
-      return *this;
-    }
+    FelschDigraphSettings& init();
 
     FelschDigraphSettings(FelschDigraphSettings const&)            = default;
     FelschDigraphSettings(FelschDigraphSettings&&)                 = default;
     FelschDigraphSettings& operator=(FelschDigraphSettings const&) = default;
     FelschDigraphSettings& operator=(FelschDigraphSettings&&)      = default;
 
-    // TODO this should really be a constructor or assignment operator
     template <typename S>
     Subclass& settings(FelschDigraphSettings<S>& that) {
       _def_max     = that.def_max();
@@ -199,124 +200,41 @@ namespace libsemigroups {
     }
   };
 
-  template <typename W, typename N>
-  class FelschDigraph : public DigraphWithSources<N>,
-                        public FelschDigraphSettings<FelschDigraph<W, N>> {
+  template <typename Word, typename Node>
+  class FelschDigraph
+      : public DigraphWithSources<Node>,
+        public FelschDigraphSettings<FelschDigraph<Word, Node>> {
    private:
-    using FelschDigraph_         = FelschDigraph<W, N>;
+    using FelschDigraph_         = FelschDigraph<Word, Node>;
     using FelschDigraphSettings_ = FelschDigraphSettings<FelschDigraph_>;
-
-    struct Noop;
-
-   public:
-    using options     = typename FelschDigraphSettings_::options;
-    using letter_type = typename W::value_type;
-    // TODO remove letter_type use digraph_type::label_type instead
-    using node_type    = N;
-    using word_type    = W;
-    using digraph_type = DigraphWithSources<node_type>;
-    using size_type    = typename digraph_type::size_type;
-
-   private:
-    class Definitions {
-     public:
-      using node_type  = N;
-      using Definition = std::pair<node_type, letter_type>;
-
-     private:
-      bool                    _any_skipped;
-      std::vector<Definition> _definitions;
-      FelschDigraphSettings_* _settings;
-
-     public:
-      template <typename T>
-      explicit Definitions(FelschDigraphSettings<T>* settings) : Definitions() {
-        _settings = settings;
-      }
-
-      Definitions() : _any_skipped(false), _definitions(), _settings(nullptr) {}
-      Definitions(Definitions const&)                 = default;
-      Definitions(Definitions&&)                      = default;
-      Definitions& operator=(Definitions const& that) = default;
-      Definitions& operator=(Definitions&&)           = default;
-
-      template <typename T>
-      void init(FelschDigraphSettings<T>* settings) {
-        _any_skipped = false;
-        _definitions.clear();
-        _settings = settings;
-      }
-
-      Definition pop();
-
-      void emplace(node_type c, typename FelschDigraph_::label_type x);
-
-      Definition const& operator[](size_t i) {
-        return _definitions[i];
-      }
-
-      bool any_skipped() const noexcept {
-        return _any_skipped;
-      }
-
-      // TODO noexcept correct?
-      bool empty() const noexcept {
-        return _definitions.empty();
-      }
-
-      size_t size() const noexcept {
-        return _definitions.size();
-      }
-
-      void clear() {
-        _any_skipped |= !_definitions.empty();
-        _definitions.clear();
-      }
-
-      Definition const& back() {
-        LIBSEMIGROUPS_ASSERT(!empty());
-        return _definitions.back();
-      }
-
-      void pop_back() {
-        LIBSEMIGROUPS_ASSERT(!empty());
-        _definitions.pop_back();
-      }
-
-      using iterator = decltype(_definitions.begin());
-
-      iterator begin() {
-        return _definitions.begin();
-      }
-
-      iterator end() {
-        return _definitions.end();
-      }
-
-      void erase(iterator first, iterator last) {
-        _definitions.erase(first, last);
-      }
-    };  // Definitions
+    using DigraphWithSources_    = DigraphWithSources<Node>;
 
    public:
-    using Definition = typename Definitions::Definition;
+    using options = typename FelschDigraphSettings_::options;
+
+    using node_type  = Node;
+    using word_type  = Word;
+    using label_type = typename DigraphWithSources_::label_type;
+    using size_type  = typename DigraphWithSources_::size_type;
+
+    using NoPreferredDefs    = Noop;
+    using StopIfIncompatible = ReturnFalse;
+
+    static constexpr bool RegisterDefs      = true;
+    static constexpr bool DoNotRegisterDefs = false;
 
    private:
+    using Definition = std::pair<node_type, label_type>;
+    class Definitions;  // forward decl
+
     Definitions             _definitions;
     detail::FelschTree      _felsch_tree;
     Presentation<word_type> _presentation;
 
    public:
-    using NoPreferredDefs = Noop;
-    struct ReturnFalse;
-
-    // TODO remove second arg
-    FelschDigraph(Presentation<word_type> const& p, size_type n);
-    FelschDigraph(Presentation<word_type>&& p, size_type n);
-
-    // TODO rvalue reference version + init
-    template <typename M>
-    FelschDigraph(ActionDigraph<M> const& ad);
+    ////////////////////////////////////////////////////////////////////////
+    // Constructors + initializers
+    ////////////////////////////////////////////////////////////////////////
 
     FelschDigraph()                                = default;
     FelschDigraph(FelschDigraph const&)            = default;
@@ -324,16 +242,37 @@ namespace libsemigroups {
     FelschDigraph& operator=(FelschDigraph const&) = default;
     FelschDigraph& operator=(FelschDigraph&&)      = default;
 
+    // TODO remove second arg
+    FelschDigraph(Presentation<word_type> const& p, size_type n);
+    FelschDigraph& init(Presentation<word_type> const& p, size_type n);
+
+    FelschDigraph(Presentation<word_type>&& p, size_type n);
+    FelschDigraph& init(Presentation<word_type>&& p, size_type n);
+    // TODO shouldn't this be called init?
+    FelschDigraph& presentation(Presentation<word_type> const& p);
+
+    // TODO rvalue reference version + init
+    template <typename M>
+    FelschDigraph(ActionDigraph<M> const& ad);
+
+    ////////////////////////////////////////////////////////////////////////
+    // Settings
+    ////////////////////////////////////////////////////////////////////////
+
     using FelschDigraphSettings_::def_max;
     using FelschDigraphSettings_::def_policy;
     using FelschDigraphSettings_::def_version;
     using FelschDigraphSettings_::settings;
 
-    FelschDigraph& init(Presentation<word_type> const& p, size_type n);
-    FelschDigraph& init(Presentation<word_type>&& p, size_type n);
+    ////////////////////////////////////////////////////////////////////////
+    // Operators
+    ////////////////////////////////////////////////////////////////////////
 
-    // TODO shouldn't this be called init?
-    FelschDigraph& presentation(Presentation<word_type> const& p);
+    bool operator==(FelschDigraph const& that) const;
+
+    ////////////////////////////////////////////////////////////////////////
+    // Accessors
+    ////////////////////////////////////////////////////////////////////////
 
     Presentation<word_type>&       presentation() noexcept;
     Presentation<word_type> const& presentation() const noexcept;
@@ -350,19 +289,21 @@ namespace libsemigroups {
       return _definitions;
     }
 
-    // Other stuff
+    ////////////////////////////////////////////////////////////////////////
+    // Modifiers
+    ////////////////////////////////////////////////////////////////////////
+
     template <bool RegisterDefs = true>
     bool def_edge(node_type c, letter_type x, node_type d) noexcept;
 
     void reduce_number_of_edges_to(size_type n);
-
-    bool operator==(FelschDigraph const& that) const;
 
     template <typename IncompatibleFunc, typename PreferredDefs>
     bool process_definitions(size_t            start,
                              IncompatibleFunc& incompat,
                              PreferredDefs&    pref_defs);
 
+    // TODO to tpp
     template <typename IncompatibleFunc, typename PreferredDefs>
     bool process_definition(Definition const& d,
                             IncompatibleFunc& incompat,
@@ -375,9 +316,10 @@ namespace libsemigroups {
       }
     }
 
+    // TODO to tpp
     bool process_definitions(size_t start = 0) {
-      ReturnFalse     incompat;
-      NoPreferredDefs pref_defs;
+      StopIfIncompatible incompat;
+      NoPreferredDefs    pref_defs;
       return process_definitions(start, incompat, pref_defs);
     }
 
@@ -447,6 +389,7 @@ namespace libsemigroups {
     // Follows the paths from node c labelled by the left and right handsides
     // of the i-th rule, and returns merge_targets on the last but one nodes
     // and letters.
+    // TODO to tpp
     template <typename IncompatibleFunc, typename PreferredDefs>
     inline bool merge_targets_of_paths_labelled_by_rules_if_possible(
         node_type const&  c,
@@ -520,7 +463,7 @@ namespace libsemigroups {
           last_node,
           first_rule,
           last_rule,
-          typename FelschDigraph<Word, Node>::ReturnFalse(),
+          typename FelschDigraph<Word, Node>::StopIfIncompatible(),
           typename FelschDigraph<Word, Node>::NoPreferredDefs());
     }
 
