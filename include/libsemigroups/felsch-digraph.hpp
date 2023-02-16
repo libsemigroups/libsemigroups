@@ -58,6 +58,9 @@ namespace libsemigroups {
     };
   };
 
+  bool constexpr DoNotRegisterDefs = false;
+  bool constexpr RegisterDefs      = true;
+
   // This class exists so that both FelschDigraph and ToddCoxeter can use the
   // same settings/options without code duplication
   template <typename Subclass>
@@ -204,10 +207,10 @@ namespace libsemigroups {
     // Modifiers
     ////////////////////////////////////////////////////////////////////////
 
-    template <bool RegisterDefs = true>
+    template <bool RegDefs = true>
     bool try_def_edge_nc(node_type c, label_type x, node_type d) noexcept;
 
-    template <bool RegisterDefs = true>
+    template <bool RegDefs = true>
     void def_edge_nc(node_type c, label_type x, node_type d) noexcept;
 
     void reduce_number_of_edges_to(size_type n);
@@ -246,7 +249,7 @@ namespace libsemigroups {
     // false), otherwise returns true. Always modifies the graph if xa !=
     // UNDEFINED and yb = UNDEFINED, or vice versa, and pref_defs(x, a, y,
     // b) is called if xa = UNDEFINED and yb = UNDEFINED.
-    template <typename Incompatible, typename PreferredDefs>
+    template <bool RegDefs, typename Incompatible, typename PreferredDefs>
     bool merge_targets_of_nodes_if_possible(node_type      x,
                                             label_type     a,
                                             node_type      y,
@@ -256,7 +259,7 @@ namespace libsemigroups {
 
     using word_iterator = typename word_type::const_iterator;
 
-    template <typename Incompatible, typename PreferredDefs>
+    template <bool RegDefs, typename Incompatible, typename PreferredDefs>
     bool merge_targets_of_paths_if_possible(node_type      u_node,
                                             word_iterator  u_first,
                                             word_iterator  u_last,
@@ -281,7 +284,7 @@ namespace libsemigroups {
     // Follows the paths from node c labelled by the left and right handsides
     // of the i-th rule, and returns merge_targets on the last but one nodes
     // and letters.
-    template <typename Incompatible, typename PreferredDefs>
+    template <bool RegDefs, typename Incompatible, typename PreferredDefs>
     inline bool merge_targets_of_paths_labelled_by_rules_if_possible(
         node_type const& c,
         size_t           i,
@@ -312,7 +315,8 @@ namespace libsemigroups {
     // Check that [first_node, last_node) is compatible with [first_rule,
     // last_rule) or if there are edges missing in paths labelled by rules,
     // then try to fill those in so that fd is compatible.
-    template <typename Word,
+    template <bool RegDefs,
+              typename Word,
               typename Node,
               typename Definitions,
               typename Incompatible,
@@ -326,14 +330,14 @@ namespace libsemigroups {
         Incompatible&&                                             incompat,
         PrefDefs&& pref_defs) noexcept;
 
-    template <typename Word, typename Node, typename Definitions>
+    template <bool RegDefs, typename Word, typename Node, typename Definitions>
     bool make_compatible(
         FelschDigraph<Word, Node, Definitions>&                    fd,
         typename FelschDigraph<Word, Node, Definitions>::node_type first_node,
         typename FelschDigraph<Word, Node, Definitions>::node_type last_node,
         typename std::vector<Word>::const_iterator                 first_rule,
         typename std::vector<Word>::const_iterator                 last_rule) {
-      return make_compatible(
+      return make_compatible<RegDefs>(
           fd,
           first_node,
           last_node,

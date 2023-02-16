@@ -19,10 +19,6 @@
 // This file contains the declaration of the ToddCoxeterDigraph class, used
 // by Stephen and (by ToddCoxeter in the future).
 
-// TODO either fix this so it works properly for both Stephen and
-// ToddCoxeter or split this into three:
-// BaseDigraph (Collapsible?), ToddCoxeterDigraph, and StephenDigraph,
-
 #ifndef LIBSEMIGROUPS_TODD_COXETER_DIGRAPH_HPP_
 #define LIBSEMIGROUPS_TODD_COXETER_DIGRAPH_HPP_
 
@@ -299,7 +295,8 @@ namespace libsemigroups {
             BaseDigraph::process_definition(defs[i], incompat, pref_defs);
           }
         }
-        defs.clear();
+        defs.clear();  // TODO doesn't this result in any_skipped always being
+                       // true?
         process_coincidences<true>();
       }
     }
@@ -343,15 +340,14 @@ namespace libsemigroups {
       CollectCoincidences        incompat(_coinc);
       ImmediateDef<RegisterDefs> pref_defs(*this);
 
-      // TODO pass through Registerfs
-      BaseDigraph::merge_targets_of_nodes_if_possible(
+      BaseDigraph::template merge_targets_of_nodes_if_possible<RegisterDefs>(
           x, a, y, b, incompat, pref_defs);
     }
 
     template <typename Iterator>
     size_t make_compatible(Iterator first, Iterator last) {
-      // This relies on lookahead_cursor being in the right place, this is bad
-      // _stats.hlt_lookahead_calls++; TODO re-enable
+      // FIXME This relies on lookahead_cursor being in the right place, this is
+      // bad _stats.hlt_lookahead_calls++; TODO re-enable
 
       size_t const old_number_of_killed
           = NodeManager_::number_of_nodes_killed();
@@ -361,7 +357,7 @@ namespace libsemigroups {
       while (current != NodeManager_::first_free_node()) {
         // TODO when we have an iterator into the active nodes, we should
         // remove the while loop, and use that in make_compatible instead
-        felsch_digraph::make_compatible(
+        felsch_digraph::make_compatible<DoNotRegisterDefs>(
             *this, current, current + 1, first, last, incompat, prefdefs);
         // Using NoPreferredDefs is just a (more or less) arbitrary
         // choice, could allow the other choices here too (which works,

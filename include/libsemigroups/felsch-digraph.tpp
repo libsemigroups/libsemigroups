@@ -136,7 +136,7 @@ namespace libsemigroups {
   ////////////////////////////////////////////////////////////////////////
 
   template <typename Word, typename Node, typename Definitions>
-  template <bool RegisterDefs>
+  template <bool RegDefs>
   bool FelschDigraph<Word, Node, Definitions>::try_def_edge_nc(
       node_type  c,
       label_type x,
@@ -146,7 +146,7 @@ namespace libsemigroups {
     LIBSEMIGROUPS_ASSERT(d < ActionDigraph<Node>::number_of_nodes());
     node_type cx = ActionDigraph<Node>::unsafe_neighbor(c, x);
     if (cx == UNDEFINED) {
-      def_edge_nc<RegisterDefs>(c, x, d);
+      def_edge_nc<RegDefs>(c, x, d);
       return true;
     } else {
       return cx == d;
@@ -154,7 +154,7 @@ namespace libsemigroups {
   }
 
   template <typename Word, typename Node, typename Definitions>
-  template <bool RegisterDefs>
+  template <bool RegDefs>
   void
   FelschDigraph<Word, Node, Definitions>::def_edge_nc(node_type  c,
                                                       label_type x,
@@ -162,7 +162,7 @@ namespace libsemigroups {
     LIBSEMIGROUPS_ASSERT(c < ActionDigraph<Node>::number_of_nodes());
     LIBSEMIGROUPS_ASSERT(x < ActionDigraph<Node>::out_degree());
     LIBSEMIGROUPS_ASSERT(d < ActionDigraph<Node>::number_of_nodes());
-    if constexpr (RegisterDefs) {
+    if constexpr (RegDefs) {
       _definitions.emplace_back(c, x);
     }
     DigraphWithSources<Node>::add_edge_nc(c, d, x);
@@ -247,7 +247,7 @@ namespace libsemigroups {
       Incompatible&  incompat,
       PreferredDefs& pref_defs) {
     for (auto it = _felsch_tree.cbegin(); it < _felsch_tree.cend(); ++it) {
-      if (!merge_targets_of_paths_labelled_by_rules_if_possible(
+      if (!merge_targets_of_paths_labelled_by_rules_if_possible<RegisterDefs>(
               c, *it, incompat, pref_defs)) {
         return false;
       }
@@ -334,14 +334,14 @@ namespace libsemigroups {
           u_last  = u.cend();
           e       = DigraphWithSources_::first_source(c, x);
           while (e != UNDEFINED) {
-            if (!merge_targets_of_paths_if_possible(y,
-                                                    u_first,
-                                                    u_last,
-                                                    e,
-                                                    v.cbegin(),
-                                                    v.cend(),
-                                                    incompat,
-                                                    pref_defs)) {
+            if (!merge_targets_of_paths_if_possible<RegisterDefs>(y,
+                                                                  u_first,
+                                                                  u_last,
+                                                                  e,
+                                                                  v.cbegin(),
+                                                                  v.cend(),
+                                                                  incompat,
+                                                                  pref_defs)) {
               return false;
             }
             e = DigraphWithSources_::next_source(e, x);
@@ -361,7 +361,7 @@ namespace libsemigroups {
   }
 
   template <typename Word, typename Node, typename Definitions>
-  template <typename Incompatible, typename PreferredDefs>
+  template <bool RegDefs, typename Incompatible, typename PreferredDefs>
   bool
   FelschDigraph<Word, Node, Definitions>::merge_targets_of_paths_if_possible(
       node_type                          u_node,
@@ -406,11 +406,12 @@ namespace libsemigroups {
       LIBSEMIGROUPS_ASSERT(y < this->number_of_nodes());
       LIBSEMIGROUPS_ASSERT(b < _presentation.alphabet().size());
     }
-    return merge_targets_of_nodes_if_possible(x, a, y, b, incompat, pref_defs);
+    return merge_targets_of_nodes_if_possible<RegDefs>(
+        x, a, y, b, incompat, pref_defs);
   }
 
   template <typename Word, typename Node, typename Definitions>
-  template <typename Incompatible, typename PreferredDefs>
+  template <bool RegDefs, typename Incompatible, typename PreferredDefs>
   bool
   FelschDigraph<Word, Node, Definitions>::merge_targets_of_nodes_if_possible(
       node_type      x,
@@ -429,10 +430,10 @@ namespace libsemigroups {
 
     if (xa == UNDEFINED && yb != UNDEFINED) {
       LIBSEMIGROUPS_ASSERT(a < ActionDigraph<Node>::out_degree());
-      def_edge_nc(x, a, yb);
+      def_edge_nc<RegDefs>(x, a, yb);
     } else if (xa != UNDEFINED && yb == UNDEFINED) {
       LIBSEMIGROUPS_ASSERT(b < ActionDigraph<Node>::out_degree());
-      def_edge_nc(y, b, xa);
+      def_edge_nc<RegDefs>(y, b, xa);
     } else if (xa != UNDEFINED && yb != UNDEFINED && xa != yb) {
       return incompat(xa, yb);
     } else if (xa == UNDEFINED && yb == UNDEFINED) {
@@ -473,7 +474,7 @@ namespace libsemigroups {
       // Using anything other than NoPreferredDefs here seems to be bad
       // in test case "ACE --- perf602p5 - Felsch", maybe this is a good
       // example where the fill factor would be useful?
-      if (!merge_targets_of_paths_labelled_by_rules_if_possible(
+      if (!merge_targets_of_paths_labelled_by_rules_if_possible<RegisterDefs>(
               d.first, *it, incompat, pref_defs)) {
         return false;
       }
@@ -501,7 +502,7 @@ namespace libsemigroups {
   // of the i-th rule, and returns merge_targets on the last but one nodes
   // and letters.
   template <typename Word, typename Node, typename Definitions>
-  template <typename Incompatible, typename PreferredDefs>
+  template <bool RegDefs, typename Incompatible, typename PreferredDefs>
   inline bool FelschDigraph<Word, Node, Definitions>::
       merge_targets_of_paths_labelled_by_rules_if_possible(
           node_type const& c,
@@ -509,19 +510,21 @@ namespace libsemigroups {
           Incompatible&    incompat,
           PreferredDefs&   pref_defs) noexcept {
     auto j = (i % 2 == 0 ? i + 1 : i - 1);
-    return merge_targets_of_paths_if_possible(c,
-                                              _presentation.rules[i].cbegin(),
-                                              _presentation.rules[i].cend(),
-                                              c,
-                                              _presentation.rules[j].cbegin(),
-                                              _presentation.rules[j].cend(),
-                                              incompat,
-                                              pref_defs);
+    return merge_targets_of_paths_if_possible<RegDefs>(
+        c,
+        _presentation.rules[i].cbegin(),
+        _presentation.rules[i].cend(),
+        c,
+        _presentation.rules[j].cbegin(),
+        _presentation.rules[j].cend(),
+        incompat,
+        pref_defs);
   }
 
   // Helper namespace
   namespace felsch_digraph {
-    template <typename Word,
+    template <bool RegDefs,
+              typename Word,
               typename Node,
               typename Definitions,
               typename Incompatible,
@@ -540,14 +543,17 @@ namespace libsemigroups {
 
       for (Node n = first_node; n < last_node; ++n) {
         for (auto it = first_rule; it != last_rule; it += 2) {
-          if (!fd.merge_targets_of_paths_if_possible(n,
-                                                     it->cbegin(),
-                                                     it->cend(),
-                                                     n,
-                                                     (it + 1)->cbegin(),
-                                                     (it + 1)->cend(),
-                                                     incompat,
-                                                     pref_defs)) {
+          if (!fd.template merge_targets_of_paths_if_possible<RegDefs,
+                                                              Incompatible,
+                                                              PrefDefs>(
+                  n,
+                  it->cbegin(),
+                  it->cend(),
+                  n,
+                  (it + 1)->cbegin(),
+                  (it + 1)->cend(),
+                  incompat,
+                  pref_defs)) {
             return false;
           }
         }

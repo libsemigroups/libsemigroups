@@ -23,10 +23,6 @@
 #include "libsemigroups/obvinf.hpp"
 
 namespace libsemigroups {
-  namespace {
-    bool constexpr DoNotRegisterDefs = false;
-    bool constexpr RegisterDefs      = true;
-  }  // namespace
 
   using class_index_type = v3::CongruenceInterface::class_index_type;
 
@@ -446,7 +442,7 @@ namespace libsemigroups {
       }
       presentation::add_rules(
           p, cbegin_generating_pairs(), cend_generating_pairs());
-      _word_graph.presentation(p);  // TODO std::move
+      _word_graph.presentation(std::move(p));
     }
 
     if (save() || strategy() == options::strategy::felsch) {
