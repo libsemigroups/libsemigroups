@@ -72,7 +72,7 @@ namespace libsemigroups {
     if (knd == congruence_kind::left) {
       presentation::reverse(p);
     }
-    _word_graph.init2(std::move(p));  // FIXME
+    _word_graph.init(std::move(p));
     _word_graph.definitions().init(this);
   }
 
@@ -82,7 +82,7 @@ namespace libsemigroups {
     if (knd == congruence_kind::left) {
       presentation::reverse(p);
     }
-    _word_graph.init2(std::move(p));  // FIXME
+    _word_graph.init(std::move(p));
     _word_graph.definitions().init(this);
     return *this;
   }
@@ -98,9 +98,9 @@ namespace libsemigroups {
     if (knd == congruence_kind::left) {
       Presentation<word_type> pp(p);
       presentation::reverse(pp);
-      _word_graph.init2(std::move(pp));  // FIXME
+      _word_graph.init(std::move(pp));
     } else {
-      _word_graph.init2(p);  // FIXME
+      _word_graph.init(p);
     }
     _word_graph.definitions().init(this);
   }
@@ -111,9 +111,9 @@ namespace libsemigroups {
     if (knd == congruence_kind::left) {
       Presentation<word_type> pp(p);
       presentation::reverse(pp);
-      _word_graph.init2(std::move(pp));  // FIXME
+      _word_graph.init(std::move(pp));
     } else {
-      _word_graph.init2(p);  // FIXME
+      _word_graph.init(p);
     }
     _word_graph.definitions().init(this);
     return *this;
@@ -132,7 +132,7 @@ namespace libsemigroups {
           tc.kind(),
           knd);
     }
-    _word_graph.init2(tc.presentation());  // FIXME
+    _word_graph.init(tc.presentation());
     auto& rules = _word_graph.presentation().rules;
     rules.insert(
         rules.end(), tc.cbegin_generating_pairs(), tc.cend_generating_pairs());

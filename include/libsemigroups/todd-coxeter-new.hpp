@@ -216,8 +216,126 @@ namespace libsemigroups {
     };
 
    public:
-    using digraph_type
-        = NodeManagedDigraph<FelschDigraph<word_type, uint32_t, Definitions>>;
+    class ToddCoxeterDigraph
+        : public NodeManagedDigraph<
+              FelschDigraph<word_type, uint32_t, Definitions>> {
+      using BaseDigraph = FelschDigraph<word_type, uint32_t, Definitions>;
+      using NodeManagedDigraph_ = NodeManagedDigraph<BaseDigraph>;
+      using NodeManager_        = typename NodeManagedDigraph_::NodeManager_;
+
+     public:
+      using NodeManagedDigraph_::NodeManagedDigraph;
+
+      NodeManagedDigraph& init(Presentation<word_type> const& p) {
+        NodeManager_::clear();
+        BaseDigraph::init(p);
+        // FIXME shouldn't add nodes here because then there'll be more than
+        // there should be (i.e. NodeManager and BaseDigraph will have different
+        // numbers of nodes
+        BaseDigraph::add_nodes(NodeManager_::node_capacity());
+        return *this;
+      }
+
+      NodeManagedDigraph init(Presentation<word_type>&& p) {
+        NodeManager_::clear();
+        BaseDigraph::init(std::move(p));
+        // FIXME shouldn't add nodes here because then there'll be more than
+        // there should be (i.e. NodeManager and BaseDigraph will have different
+        // numbers of nodes
+        BaseDigraph::add_nodes(NodeManager_::node_capacity());
+        return *this;
+      }
+
+      // to ToddCoxeterDigraph
+      template <bool RegisterDefs = true>
+      void push_definition_hlt(node_type const& c,
+                               word_type const& u,
+                               word_type const& v) noexcept {
+        LIBSEMIGROUPS_ASSERT(NodeManager_::is_active_node(c));
+
+        node_type   x, y;
+        letter_type a, b;
+
+        if (!u.empty()) {
+          x = complete_path(c, u.begin(), u.cend() - 1).second;
+          a = u.back();
+        } else {
+          x = c;
+          a = UNDEFINED;
+        }
+
+        if (!v.empty()) {
+          y = complete_path(c, v.begin(), v.cend() - 1).second;
+          b = v.back();
+        } else {
+          y = c;
+          b = UNDEFINED;
+        }
+
+        CollectCoincidences incompat(_coinc);
+        auto                pref_defs
+            = [this](node_type x, letter_type a, node_type y, letter_type b) {
+                node_type d = new_node();
+                this->template def_edge_nc<RegisterDefs>(x, a, d);
+                if (a != b || x != y) {
+                  this->template def_edge_nc<RegisterDefs>(y, b, d);
+                }
+              };
+
+        BaseDigraph::template merge_targets_of_nodes_if_possible<RegisterDefs>(
+            x, a, y, b, incompat, pref_defs);
+      }
+
+      // to ToddCoxeterDigraph
+      template <typename Iterator>
+      size_t make_compatible(Iterator first, Iterator last) {
+        // FIXME This relies on lookahead_cursor being in the right place, this
+        // is bad _stats.hlt_lookahead_calls++; TODO re-enable
+
+        size_t const old_number_of_killed
+            = NodeManager_::number_of_nodes_killed();
+        auto&                                 current = lookahead_cursor();
+        CollectCoincidences                   incompat(_coinc);
+        typename BaseDigraph::NoPreferredDefs prefdefs;
+        while (current != NodeManager_::first_free_node()) {
+          // TODO when we have an iterator into the active nodes, we should
+          // remove the while loop, and use that in make_compatible instead
+          felsch_digraph::make_compatible<DoNotRegisterDefs>(
+              *this, current, current + 1, first, last, incompat, prefdefs);
+          // Using NoPreferredDefs is just a (more or less) arbitrary
+          // choice, could allow the other choices here too (which works,
+          // but didn't seem to be very useful).
+          current = NodeManager_::next_active_node(current);
+        }
+
+        return NodeManager_::number_of_nodes_killed() - old_number_of_killed;
+      }
+
+      // to ToddCoxeterDigraph
+      void process_definitions() {
+        CollectCoincidences incompat(_coinc);
+        using NoPreferredDefs = typename BaseDigraph::NoPreferredDefs;
+        NoPreferredDefs pref_defs;
+
+        // debug_validate_word_graph();
+
+        auto& defs = BaseDigraph::definitions();
+        while (!defs.empty()) {
+          for (size_t i = 0; i < defs.size(); ++i) {
+            if (NodeManager_::is_active_node(defs[i].first)) {
+              BaseDigraph::process_definition(defs[i], incompat, pref_defs);
+            }
+          }
+          defs.clear();  // TODO doesn't this result in any_skipped always being
+                         // true?
+          process_coincidences<true>();
+        }
+      }
+
+     private:
+    };
+
+    using digraph_type = ToddCoxeterDigraph;
 
    private:
     ////////////////////////////////////////////////////////////////////////
@@ -226,11 +344,11 @@ namespace libsemigroups {
 
     // std::stack<Settings*>                _setting_stack;
     // Stats                                _stats;
-    bool         _finished;
-    Forest       _forest;
-    Settings     _settings;
-    order        _standardized;
-    digraph_type _word_graph;
+    bool               _finished;
+    Forest             _forest;
+    Settings           _settings;
+    order              _standardized;
+    ToddCoxeterDigraph _word_graph;
 
    public:
     ////////////////////////////////////////////////////////////////////////
@@ -690,7 +808,7 @@ namespace libsemigroups {
       return _word_graph.presentation();
     }
 
-    digraph_type const& word_graph() const noexcept {
+    ToddCoxeterDigraph const& word_graph() const noexcept {
       return _word_graph;
     }
 
