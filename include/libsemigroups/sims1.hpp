@@ -505,7 +505,8 @@ namespace libsemigroups {
   class Sims1 : public Sims1Settings<Sims1<T>> {
    public:
     //! Type for the nodes in the associated ActionDigraph objects.
-    using node_type = T;
+    using node_type  = T;
+    using label_type = typename ActionDigraph<node_type>::label_type;
 
     //! Type for letters in the underlying presentation.
     using letter_type = typename word_type::value_type;
@@ -652,11 +653,10 @@ namespace libsemigroups {
 
      protected:
       // short_rules is stored in _felsch_graph
-      FelschDigraph<word_type, node_type> _felsch_graph;  // TODO ensure that
-                                                          // _felsch_graph's
-                                                          // settings are
-                                                          // properly
-                                                          // initialised
+      // TODO ensure that _felsch_graph's settings are properly initialised
+      using Definition = std::pair<node_type, label_type>;
+      FelschDigraph<word_type, node_type, std::vector<Definition>>
+          _felsch_graph;
       // This mutex does nothing for iterator, only does something for
       // thread_iterator
       std::mutex              _mtx;

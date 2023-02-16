@@ -90,17 +90,6 @@ namespace libsemigroups {
     };
 
    public:
-    // TODO move to tpp file
-    struct IsInActiveNode {
-      ToddCoxeterDigraph& _word_graph;
-
-      explicit IsInActiveNode(ToddCoxeterDigraph& wg) : _word_graph(wg) {}
-
-      template <typename T>  // FIXME remove this
-      bool operator()(T const& x) const {
-        return !_word_graph.is_active_node(x.first);
-      }
-    };
     using BaseDigraph::BaseDigraph;
     using BaseDigraph::out_degree;
     using BaseDigraph::unsafe_neighbor;
@@ -207,9 +196,8 @@ namespace libsemigroups {
       if (_coinc.empty()) {
         return;
       }
-      ReturnTrue     incompat_func(_coinc);
-      auto const     coinc_max_size = large_collapse();
-      IsInActiveNode inactive(*this);
+      CollectCoincidences incompat_func(_coinc);
+      auto const          coinc_max_size = large_collapse();
 
       while (!_coinc.empty() && _coinc.size() < coinc_max_size) {
         Coincidence c = _coinc.top();
@@ -223,8 +211,8 @@ namespace libsemigroups {
             BaseDigraph::merge_nodes(
                 min,
                 max,
-                [this, &inactive](node_type n, letter_type x) {
-                  this->definitions().emplace(n, x, inactive);
+                [this](node_type n, letter_type x) {
+                  this->definitions().emplace_back(n, x);
                 },
                 incompat_func);
           } else {
@@ -283,7 +271,7 @@ namespace libsemigroups {
             auto d = NodeManager_::find_node(cx);
             if (cx != d) {
               if constexpr (RegisterDefs) {
-                this->definitions().emplace(c, x, inactive);
+                this->definitions().emplace_back(c, x);
               }
               ActionDigraph<node_type>::add_edge_nc(c, d, x);
             }
@@ -298,7 +286,7 @@ namespace libsemigroups {
     }
 
     void process_definitions() {
-      ReturnTrue incompat(_coinc);
+      CollectCoincidences incompat(_coinc);
       using NoPreferredDefs = typename BaseDigraph::NoPreferredDefs;
       NoPreferredDefs pref_defs;
 
@@ -352,7 +340,7 @@ namespace libsemigroups {
         b = UNDEFINED;
       }
 
-      ReturnTrue                 incompat(_coinc);
+      CollectCoincidences        incompat(_coinc);
       ImmediateDef<RegisterDefs> pref_defs(*this);
 
       // TODO pass through Registerfs
@@ -368,7 +356,7 @@ namespace libsemigroups {
       size_t const old_number_of_killed
           = NodeManager_::number_of_nodes_killed();
       auto&                                 current = lookahead_cursor();
-      ReturnTrue                            incompat(_coinc);
+      CollectCoincidences                   incompat(_coinc);
       typename BaseDigraph::NoPreferredDefs prefdefs;
       while (current != NodeManager_::first_free_node()) {
         // TODO when we have an iterator into the active nodes, we should
@@ -385,8 +373,8 @@ namespace libsemigroups {
     }
 
    private:
-    struct ReturnTrue {
-      ReturnTrue(Coincidences& c) : _coinc(c) {}
+    struct CollectCoincidences {
+      CollectCoincidences(Coincidences& c) : _coinc(c) {}
 
       bool operator()(node_type x, node_type y) {
         _coinc.emplace(x, y);

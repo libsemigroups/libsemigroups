@@ -39,7 +39,9 @@ namespace libsemigroups {
         _finished(false),
         _forest(),
         _standardized(order::none),
-        _word_graph() {}
+        _word_graph() {
+    _word_graph.definitions(Definitions(this));
+  }
 
   ToddCoxeter& ToddCoxeter::init() {
     v3::CongruenceInterface::init();
@@ -47,6 +49,7 @@ namespace libsemigroups {
     _forest.init();
     _standardized = order::none;
     _word_graph.init();
+    _word_graph.definitions(Definitions(this));
     return *this;
   }
 
@@ -61,6 +64,7 @@ namespace libsemigroups {
     _settings     = Settings();
     _standardized = order::none;
     _word_graph.init();
+    _word_graph.definitions(Definitions(this));
     return *this;
   }
 
@@ -75,6 +79,7 @@ namespace libsemigroups {
       presentation::reverse(p);
     }
     _word_graph.init2(std::move(p));  // FIXME
+    _word_graph.definitions(Definitions(this));
   }
 
   ToddCoxeter& ToddCoxeter::init(congruence_kind           knd,
@@ -84,6 +89,7 @@ namespace libsemigroups {
       presentation::reverse(p);
     }
     _word_graph.init2(std::move(p));  // FIXME
+    _word_graph.definitions(Definitions(this));
     return *this;
   }
 
@@ -102,6 +108,7 @@ namespace libsemigroups {
     } else {
       _word_graph.init2(p);  // FIXME
     }
+    _word_graph.definitions(Definitions(this));
   }
 
   ToddCoxeter& ToddCoxeter::init(congruence_kind                knd,
@@ -114,6 +121,7 @@ namespace libsemigroups {
     } else {
       _word_graph.init2(p);  // FIXME
     }
+    _word_graph.definitions(Definitions(this));
     return *this;
   }
 
@@ -137,6 +145,7 @@ namespace libsemigroups {
     if (kind() == congruence_kind::left && tc.kind() != congruence_kind::left) {
       presentation::reverse(_word_graph.presentation());
     }
+    _word_graph.definitions(Definitions(this));
     return *this;
   }
 
@@ -667,13 +676,10 @@ namespace libsemigroups {
     node_type&   current              = _word_graph.lookahead_cursor();
     size_t const n                    = _word_graph.out_degree();
 
-    typename decltype(_word_graph)::IsInActiveNode is_inactive_node(
-        _word_graph);
-
     while (current != _word_graph.first_free_node()) {
       _word_graph.definitions().clear();
       for (size_t a = 0; a < n; ++a) {
-        _word_graph.definitions().emplace(current, a, is_inactive_node);
+        _word_graph.definitions().emplace_back(current, a);
       }
       _word_graph.process_definitions();
       current = _word_graph.next_active_node(current);

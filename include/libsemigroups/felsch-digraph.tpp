@@ -19,219 +19,88 @@
 namespace libsemigroups {
 
   ////////////////////////////////////////////////////////////////////////////
-  // Definitions
+  // FelschDigraphSettings
   ////////////////////////////////////////////////////////////////////////////
-
-  template <typename Word, typename Node>
-  class FelschDigraph<Word, Node>::Definitions {
-   private:
-    bool                    _any_skipped;
-    std::vector<Definition> _definitions;
-    FelschDigraphSettings_* _settings;
-
-   public:
-    template <typename T>
-    explicit Definitions(FelschDigraphSettings<T>* settings) : Definitions() {
-      _settings = settings;
-    }
-
-    Definitions() : _any_skipped(false), _definitions(), _settings(nullptr) {}
-    Definitions(Definitions const&)                 = default;
-    Definitions(Definitions&&)                      = default;
-    Definitions& operator=(Definitions const& that) = default;
-    Definitions& operator=(Definitions&&)           = default;
-
-    template <typename T>
-    void init(FelschDigraphSettings<T>* settings) {
-      _any_skipped = false;
-      _definitions.clear();
-      _settings = settings;
-    }
-
-    Definition pop();
-    template <typename IsInActiveNode>
-    void emplace(node_type                           c,
-                 typename FelschDigraph_::label_type x,
-                 IsInActiveNode&);
-
-    void emplace(node_type c, typename FelschDigraph_::label_type x) {
-      ReturnFalse rf;
-      emplace(c, x, rf);
-    }
-
-    Definition const& operator[](size_t i) {
-      return _definitions[i];
-    }
-
-    bool any_skipped() const noexcept {
-      return _any_skipped;
-    }
-
-    bool empty() const noexcept {
-      return _definitions.empty();
-    }
-
-    size_t size() const noexcept {
-      return _definitions.size();
-    }
-
-    void clear() {
-      _any_skipped |= !_definitions.empty();
-      _definitions.clear();
-    }
-
-    Definition const& back() {
-      LIBSEMIGROUPS_ASSERT(!empty());
-      return _definitions.back();
-    }
-
-    void pop_back() {
-      LIBSEMIGROUPS_ASSERT(!empty());
-      _definitions.pop_back();
-    }
-
-    using iterator = decltype(_definitions.begin());
-
-    iterator begin() {
-      return _definitions.begin();
-    }
-
-    iterator end() {
-      return _definitions.end();
-    }
-
-    void erase(iterator first, iterator last) {
-      _definitions.erase(first, last);
-    }
-  };  // Definitions
 
   template <typename Subclass>
   FelschDigraphSettings<Subclass>& FelschDigraphSettings<Subclass>::init() {
-    _def_max     = 2'000;
-    _def_policy  = options::def_policy::no_stack_if_no_space;
     _def_version = options::def_version::two;
     return *this;
-  }
-
-  template <typename Word, typename Node>
-  typename FelschDigraph<Word, Node>::Definition
-  FelschDigraph<Word, Node>::Definitions::pop() {
-    auto res = _definitions.back();
-    _definitions.pop_back();
-    return res;
-  }
-
-  // TODO this is awkward with the is_inactive_node, try to refactor to remove
-  // it
-  template <typename Word, typename Node>
-  template <typename IsInActiveNode>
-  void FelschDigraph<Word, Node>::Definitions::emplace(
-      typename FelschDigraph<Word, Node>::node_type  c,
-      typename FelschDigraph<Word, Node>::label_type x,
-      IsInActiveNode&                                is_inactive_node) {
-    using def_policy = typename options::def_policy;
-
-    if (_settings->def_policy() == def_policy::unlimited
-        || _definitions.size() < _settings->def_max()) {
-      _definitions.emplace_back(c, x);
-      return;
-    }
-
-    switch (_settings->def_policy()) {
-      case def_policy::purge_from_top: {
-        while (!_definitions.empty()
-               && !is_inactive_node(_definitions.back())) {
-          _any_skipped = true;
-          _definitions.pop_back();
-        }
-        break;
-      }
-      case def_policy::purge_all: {
-        size_t const prev_size = _definitions.size();
-        std::remove_if(
-            _definitions.begin(), _definitions.end(), is_inactive_node);
-        _any_skipped |= (_definitions.size() < prev_size);
-        break;
-      }
-      case def_policy::discard_all_if_no_space: {
-        clear();
-        break;
-      }
-      default: {
-      }
-    }
   }
 
   ////////////////////////////////////////////////////////////////////////
   // FelschDigraph - constructors + initializers
   ////////////////////////////////////////////////////////////////////////
 
-  template <typename Word, typename Node>
-  FelschDigraph<Word, Node>& FelschDigraph<Word, Node>::init() {
+  template <typename Word, typename Node, typename Definitions>
+  FelschDigraph<Word, Node, Definitions>&
+  FelschDigraph<Word, Node, Definitions>::init() {
     size_t r = (_presentation.contains_empty_word() ? 0 : 1);
     size_t c = _presentation.alphabet().size();
 
     DigraphWithSources<Node>::init(r, c);
     FelschDigraphSettings_::init();
-    _definitions.init(this);
+    // _definitions.init(this); TODO
     _felsch_tree.init(c);
     _felsch_tree.add_relations(_presentation.rules.cbegin(),
                                _presentation.rules.cend());
     return *this;
   }
 
-  template <typename Word, typename Node>
-  FelschDigraph<Word, Node>::FelschDigraph(Presentation<Word> const& p)
+  template <typename Word, typename Node, typename Definitions>
+  FelschDigraph<Word, Node, Definitions>::FelschDigraph(
+      Presentation<Word> const& p)
       : DigraphWithSources<node_type>(p.contains_empty_word() ? 0 : 1,
                                       p.alphabet().size()),
-        FelschDigraphSettings<FelschDigraph<Word, Node>>(),
-        _definitions(this),  // pass through settings
+        FelschDigraphSettings<FelschDigraph<Word, Node, Definitions>>(),
+        // _definitions(this),  // pass through settings TODO
         _felsch_tree(p.alphabet().size()),
         _presentation(p) {
     _felsch_tree.add_relations(_presentation.rules.cbegin(),
                                _presentation.rules.cend());
   }
 
-  template <typename Word, typename Node>
-  FelschDigraph<Word, Node>&
-  FelschDigraph<Word, Node>::init(Presentation<Word> const& p) {
+  template <typename Word, typename Node, typename Definitions>
+  FelschDigraph<Word, Node, Definitions>&
+  FelschDigraph<Word, Node, Definitions>::init(Presentation<Word> const& p) {
     if (&_presentation != &p) {
       _presentation = p;
     }
     return init();
   }
 
-  template <typename Word, typename Node>
-  FelschDigraph<Word, Node>::FelschDigraph(Presentation<Word>&& p)
+  template <typename Word, typename Node, typename Definitions>
+  FelschDigraph<Word, Node, Definitions>::FelschDigraph(Presentation<Word>&& p)
       : DigraphWithSources<node_type>(p.contains_empty_word() ? 0 : 1,
                                       p.alphabet().size()),
-        FelschDigraphSettings<FelschDigraph<Word, Node>>(),
-        _definitions(this),  // pass through settings
+        FelschDigraphSettings<FelschDigraph<Word, Node, Definitions>>(),
+        // _definitions(this),  // pass through settings TODO
         _felsch_tree(p.alphabet().size()),
         _presentation(std::move(p)) {
     _felsch_tree.add_relations(_presentation.rules.cbegin(),
                                _presentation.rules.cend());
   }
 
-  template <typename Word, typename Node>
-  FelschDigraph<Word, Node>&
-  FelschDigraph<Word, Node>::init(Presentation<Word>&& p) {
+  template <typename Word, typename Node, typename Definitions>
+  FelschDigraph<Word, Node, Definitions>&
+  FelschDigraph<Word, Node, Definitions>::init(Presentation<Word>&& p) {
     _presentation = std::move(p);
     return init();
   }
 
-  template <typename Word, typename Node>
+  template <typename Word, typename Node, typename Definitions>
   template <typename M>
-  FelschDigraph<Word, Node>::FelschDigraph(ActionDigraph<M> const& ad)
+  FelschDigraph<Word, Node, Definitions>::FelschDigraph(
+      ActionDigraph<M> const& ad)
       : DigraphWithSources<node_type>(ad),
-        FelschDigraphSettings<FelschDigraph<Word, Node>>(),
-        _definitions(this),  // pass through settings
+        FelschDigraphSettings<FelschDigraph<Word, Node, Definitions>>(),
+        // _definitions(this),  // pass through settings TODO
         _felsch_tree(0),
         _presentation() {
     for (node_type n = 0; n < ad.number_of_nodes(); ++n) {
       for (label_type a = 0; a != ad.out_degree(); ++a) {
         if (ad.unsafe_neighbor(n, a) != UNDEFINED) {
-          _definitions.emplace(n, a);
+          _definitions.emplace_back(n, a);
         }
       }
     }
@@ -241,8 +110,9 @@ namespace libsemigroups {
   // FelschDigraph - operators
   ////////////////////////////////////////////////////////////////////////
 
-  template <typename Word, typename Node>
-  bool FelschDigraph<Word, Node>::operator==(FelschDigraph const& that) const {
+  template <typename Word, typename Node, typename Definitions>
+  bool FelschDigraph<Word, Node, Definitions>::operator==(
+      FelschDigraph const& that) const {
     size_type const m = this->number_of_active_nodes();
     size_type const n = that.number_of_active_nodes();
     return (m == 0 && n == 0)
@@ -253,14 +123,15 @@ namespace libsemigroups {
   // FelschDigraph - accessors
   ////////////////////////////////////////////////////////////////////////
 
-  template <typename Word, typename Node>
-  Presentation<Word>& FelschDigraph<Word, Node>::presentation() noexcept {
+  template <typename Word, typename Node, typename Definitions>
+  Presentation<Word>&
+  FelschDigraph<Word, Node, Definitions>::presentation() noexcept {
     return _presentation;
   }
 
-  template <typename Word, typename Node>
+  template <typename Word, typename Node, typename Definitions>
   Presentation<Word> const&
-  FelschDigraph<Word, Node>::presentation() const noexcept {
+  FelschDigraph<Word, Node, Definitions>::presentation() const noexcept {
     return _presentation;
   }
 
@@ -268,11 +139,12 @@ namespace libsemigroups {
   // FelschDigraph - modifiers
   ////////////////////////////////////////////////////////////////////////
 
-  template <typename Word, typename Node>
+  template <typename Word, typename Node, typename Definitions>
   template <bool RegisterDefs>
-  bool FelschDigraph<Word, Node>::try_def_edge_nc(node_type  c,
-                                                  label_type x,
-                                                  node_type  d) noexcept {
+  bool FelschDigraph<Word, Node, Definitions>::try_def_edge_nc(
+      node_type  c,
+      label_type x,
+      node_type  d) noexcept {
     LIBSEMIGROUPS_ASSERT(c < ActionDigraph<Node>::number_of_nodes());
     LIBSEMIGROUPS_ASSERT(x < ActionDigraph<Node>::out_degree());
     LIBSEMIGROUPS_ASSERT(d < ActionDigraph<Node>::number_of_nodes());
@@ -285,22 +157,24 @@ namespace libsemigroups {
     }
   }
 
-  template <typename Word, typename Node>
+  template <typename Word, typename Node, typename Definitions>
   template <bool RegisterDefs>
-  void FelschDigraph<Word, Node>::def_edge_nc(node_type  c,
-                                              label_type x,
-                                              node_type  d) noexcept {
+  void
+  FelschDigraph<Word, Node, Definitions>::def_edge_nc(node_type  c,
+                                                      label_type x,
+                                                      node_type  d) noexcept {
     LIBSEMIGROUPS_ASSERT(c < ActionDigraph<Node>::number_of_nodes());
     LIBSEMIGROUPS_ASSERT(x < ActionDigraph<Node>::out_degree());
     LIBSEMIGROUPS_ASSERT(d < ActionDigraph<Node>::number_of_nodes());
     if constexpr (RegisterDefs) {
-      _definitions.emplace(c, x);
+      _definitions.emplace_back(c, x);
     }
     DigraphWithSources<Node>::add_edge_nc(c, d, x);
   }
 
-  template <typename Word, typename Node>
-  void FelschDigraph<Word, Node>::reduce_number_of_edges_to(size_type n) {
+  template <typename Word, typename Node, typename Definitions>
+  void FelschDigraph<Word, Node, Definitions>::reduce_number_of_edges_to(
+      size_type n) {
     LIBSEMIGROUPS_ASSERT(ActionDigraph<Node>::number_of_edges()
                          == _definitions.size());
 
@@ -311,9 +185,10 @@ namespace libsemigroups {
     }
   }
 
-  template <typename Word, typename Node>
-  FelschDigraph<Word, Node>&
-  FelschDigraph<Word, Node>::presentation(Presentation<Word> const& p) {
+  template <typename Word, typename Node, typename Definitions>
+  FelschDigraph<Word, Node, Definitions>&
+  FelschDigraph<Word, Node, Definitions>::presentation(
+      Presentation<Word> const& p) {
     _presentation = p;
     size_t c      = _presentation.alphabet().size();
     if (c > ActionDigraph<Node>::out_degree()) {
@@ -327,9 +202,9 @@ namespace libsemigroups {
     return *this;
   }
 
-  template <typename Word, typename Node>
-  FelschDigraph<Word, Node>&
-  FelschDigraph<Word, Node>::presentation(Presentation<Word>&& p) {
+  template <typename Word, typename Node, typename Definitions>
+  FelschDigraph<Word, Node, Definitions>&
+  FelschDigraph<Word, Node, Definitions>::presentation(Presentation<Word>&& p) {
     // TODO avoid code dupl with previous fn
     _presentation = std::move(p);
     size_t c      = _presentation.alphabet().size();
@@ -347,19 +222,20 @@ namespace libsemigroups {
   // FelschDigraph - process definitions
   ////////////////////////////////////////////////////////////////////////
 
-  template <typename Word, typename Node>
-  bool FelschDigraph<Word, Node>::process_definitions(size_t start) {
+  template <typename Word, typename Node, typename Definitions>
+  bool
+  FelschDigraph<Word, Node, Definitions>::process_definitions(size_t start) {
     StopIfIncompatible incompat;
     NoPreferredDefs    pref_defs;
     return process_definitions(start, incompat, pref_defs);
   }
 
-  template <typename Word, typename Node>
+  template <typename Word, typename Node, typename Definitions>
   template <typename Incompatible, typename PreferredDefs>
-  bool
-  FelschDigraph<Word, Node>::process_definitions_v1(size_t         start,
-                                                    Incompatible&  incompat,
-                                                    PreferredDefs& pref_defs) {
+  bool FelschDigraph<Word, Node, Definitions>::process_definitions_v1(
+      size_t         start,
+      Incompatible&  incompat,
+      PreferredDefs& pref_defs) {
     for (size_t i = start; i < _definitions.size(); ++i) {
       if (!process_definition_v1(_definitions[i], incompat, pref_defs)) {
         return false;
@@ -368,9 +244,9 @@ namespace libsemigroups {
     return true;
   }
 
-  template <typename Word, typename Node>
+  template <typename Word, typename Node, typename Definitions>
   template <typename Incompatible, typename PreferredDefs>
-  bool FelschDigraph<Word, Node>::process_definitions_dfs_v1(
+  bool FelschDigraph<Word, Node, Definitions>::process_definitions_dfs_v1(
       node_type      c,
       Incompatible&  incompat,
       PreferredDefs& pref_defs) {
@@ -397,12 +273,12 @@ namespace libsemigroups {
     return true;
   }
 
-  template <typename Word, typename Node>
+  template <typename Word, typename Node, typename Definitions>
   template <typename Incompatible, typename PreferredDefs>
-  bool
-  FelschDigraph<Word, Node>::process_definitions_v2(size_t         start,
-                                                    Incompatible&  incompat,
-                                                    PreferredDefs& pref_defs) {
+  bool FelschDigraph<Word, Node, Definitions>::process_definitions_v2(
+      size_t         start,
+      Incompatible&  incompat,
+      PreferredDefs& pref_defs) {
     for (size_t i = start; i < _definitions.size(); ++i) {
       if (!process_definition_v2(_definitions[i], incompat, pref_defs)) {
         return false;
@@ -411,9 +287,9 @@ namespace libsemigroups {
     return true;
   }
 
-  template <typename Word, typename Node>
+  template <typename Word, typename Node, typename Definitions>
   template <typename Incompatible, typename PreferredDefs>
-  bool FelschDigraph<Word, Node>::process_definitions_dfs_v2(
+  bool FelschDigraph<Word, Node, Definitions>::process_definitions_dfs_v2(
       node_type      root,
       node_type      c,
       Incompatible&  incompat,
@@ -488,9 +364,10 @@ namespace libsemigroups {
     return true;
   }
 
-  template <typename Word, typename Node>
+  template <typename Word, typename Node, typename Definitions>
   template <typename Incompatible, typename PreferredDefs>
-  bool FelschDigraph<Word, Node>::merge_targets_of_paths_if_possible(
+  bool
+  FelschDigraph<Word, Node, Definitions>::merge_targets_of_paths_if_possible(
       node_type                          u_node,
       typename word_type::const_iterator u_first,
       typename word_type::const_iterator u_last,
@@ -536,9 +413,10 @@ namespace libsemigroups {
     return merge_targets_of_nodes_if_possible(x, a, y, b, incompat, pref_defs);
   }
 
-  template <typename Word, typename Node>
+  template <typename Word, typename Node, typename Definitions>
   template <typename Incompatible, typename PreferredDefs>
-  bool FelschDigraph<Word, Node>::merge_targets_of_nodes_if_possible(
+  bool
+  FelschDigraph<Word, Node, Definitions>::merge_targets_of_nodes_if_possible(
       node_type      x,
       label_type     a,
       node_type      y,
@@ -574,12 +452,12 @@ namespace libsemigroups {
     return true;
   }
 
-  template <typename Word, typename Node>
+  template <typename Word, typename Node, typename Definitions>
   template <typename Incompatible, typename PreferredDefs>
-  bool
-  FelschDigraph<Word, Node>::process_definitions(size_t         start,
-                                                 Incompatible&  incompat,
-                                                 PreferredDefs& pref_defs) {
+  bool FelschDigraph<Word, Node, Definitions>::process_definitions(
+      size_t         start,
+      Incompatible&  incompat,
+      PreferredDefs& pref_defs) {
     if (def_version() == options::def_version::two) {
       return process_definitions_v2(start, incompat, pref_defs);
     } else {
@@ -588,12 +466,12 @@ namespace libsemigroups {
     }
   }
 
-  template <typename Word, typename Node>
+  template <typename Word, typename Node, typename Definitions>
   template <typename Incompatible, typename PreferredDefs>
-  bool
-  FelschDigraph<Word, Node>::process_definition_v2(Definition     d,
-                                                   Incompatible&  incompat,
-                                                   PreferredDefs& pref_defs) {
+  bool FelschDigraph<Word, Node, Definitions>::process_definition_v2(
+      Definition     d,
+      Incompatible&  incompat,
+      PreferredDefs& pref_defs) {
     _felsch_tree.push_back(d.second);
     for (auto it = _felsch_tree.cbegin(); it < _felsch_tree.cend(); ++it) {
       // Using anything other than NoPreferredDefs here seems to be bad
@@ -610,12 +488,12 @@ namespace libsemigroups {
     return true;
   }
 
-  template <typename Word, typename Node>
+  template <typename Word, typename Node, typename Definitions>
   template <typename Incompatible, typename PreferredDefs>
-  bool
-  FelschDigraph<Word, Node>::process_definition_v1(Definition     d,
-                                                   Incompatible&  incompat,
-                                                   PreferredDefs& pref_defs) {
+  bool FelschDigraph<Word, Node, Definitions>::process_definition_v1(
+      Definition     d,
+      Incompatible&  incompat,
+      PreferredDefs& pref_defs) {
     _felsch_tree.push_back(d.second);
     if (!process_definitions_dfs_v1(d.first, incompat, pref_defs)) {
       return false;
@@ -626,9 +504,9 @@ namespace libsemigroups {
   // Follows the paths from node c labelled by the left and right handsides
   // of the i-th rule, and returns merge_targets on the last but one nodes
   // and letters.
-  template <typename Word, typename Node>
+  template <typename Word, typename Node, typename Definitions>
   template <typename Incompatible, typename PreferredDefs>
-  inline bool FelschDigraph<Word, Node>::
+  inline bool FelschDigraph<Word, Node, Definitions>::
       merge_targets_of_paths_labelled_by_rules_if_possible(
           node_type const& c,
           size_t           i,
@@ -649,16 +527,17 @@ namespace libsemigroups {
   namespace felsch_digraph {
     template <typename Word,
               typename Node,
+              typename Definitions,
               typename Incompatible,
               typename PrefDefs>
-    bool
-    make_compatible(FelschDigraph<Word, Node>&                    fd,
-                    typename FelschDigraph<Word, Node>::node_type first_node,
-                    typename FelschDigraph<Word, Node>::node_type last_node,
-                    typename std::vector<Word>::const_iterator    first_rule,
-                    typename std::vector<Word>::const_iterator    last_rule,
-                    Incompatible&&                                incompat,
-                    PrefDefs&& pref_defs) noexcept {
+    bool make_compatible(
+        FelschDigraph<Word, Node, Definitions>&                    fd,
+        typename FelschDigraph<Word, Node, Definitions>::node_type first_node,
+        typename FelschDigraph<Word, Node, Definitions>::node_type last_node,
+        typename std::vector<Word>::const_iterator                 first_rule,
+        typename std::vector<Word>::const_iterator                 last_rule,
+        Incompatible&&                                             incompat,
+        PrefDefs&& pref_defs) noexcept {
       LIBSEMIGROUPS_ASSERT(first_node < fd.number_of_nodes());
       LIBSEMIGROUPS_ASSERT(last_node <= fd.number_of_nodes());
       LIBSEMIGROUPS_ASSERT(std::distance(first_rule, last_rule) % 2 == 0);
@@ -679,6 +558,5 @@ namespace libsemigroups {
       }
       return true;
     }
-
   }  // namespace felsch_digraph
 }  // namespace libsemigroups

@@ -40,12 +40,158 @@ namespace libsemigroups {
   class ToddCoxeter : public v3::CongruenceInterface,
                       public FelschDigraphSettings<ToddCoxeter> {
    public:
+    using node_type  = typename ActionDigraph<uint32_t>::node_type;
+    using label_type = typename ActionDigraph<uint32_t>::label_type;
+
+    using FelschDigraphSettings_ = FelschDigraphSettings<ToddCoxeter>;
+
     struct Stats;  // forward decl TODO not currently used
+
+    // TODO move this somewhere better
+    class Definitions {
+      using Definition = std::pair<node_type, label_type>;
+
+     private:
+      bool                    _any_skipped;
+      std::vector<Definition> _definitions;
+      ToddCoxeter const*      _settings;
+
+     public:
+      explicit Definitions(ToddCoxeter const* settings) : Definitions() {
+        _settings = settings;
+      }
+
+      Definitions() : _any_skipped(false), _definitions(), _settings(nullptr) {}
+      Definitions(Definitions const&)                 = default;
+      Definitions(Definitions&&)                      = default;
+      Definitions& operator=(Definitions const& that) = default;
+      Definitions& operator=(Definitions&&)           = default;
+
+      void init(ToddCoxeter const* settings) {
+        _any_skipped = false;
+        _definitions.clear();
+        _settings = settings;
+      }
+
+      Definition pop() {
+        auto res = _definitions.back();
+        _definitions.pop_back();
+        return res;
+      }
+
+      void emplace_back(node_type c, label_type x) {
+        using def_policy = typename options::def_policy;
+
+        if (_settings == nullptr
+            || _settings->def_policy() == def_policy::unlimited
+            || _definitions.size() < _settings->def_max()) {
+          _definitions.emplace_back(c, x);
+          return;
+        }
+
+        switch (_settings->def_policy()) {
+          case def_policy::purge_from_top: {
+            while (!_definitions.empty()
+                   && is_active_node(_definitions.back().first)) {
+              _any_skipped = true;
+              _definitions.pop_back();
+            }
+            break;
+          }
+          case def_policy::purge_all: {
+            size_t const prev_size = _definitions.size();
+            std::remove_if(_definitions.begin(),
+                           _definitions.end(),
+                           [this](Definition const& d) {
+                             return not is_active_node(d.first);
+                           });
+            _any_skipped |= (_definitions.size() < prev_size);
+            break;
+          }
+          case def_policy::discard_all_if_no_space: {
+            clear();
+            break;
+          }
+          default: {
+          }
+        }
+      }
+
+      bool is_active_node(node_type n) const noexcept {
+        // TODO impl
+        return true;
+      }
+
+      Definition const& operator[](size_t i) {
+        return _definitions[i];
+      }
+
+      bool any_skipped() const noexcept {
+        return _any_skipped;
+      }
+
+      bool empty() const noexcept {
+        return _definitions.empty();
+      }
+
+      size_t size() const noexcept {
+        return _definitions.size();
+      }
+
+      void clear() {
+        _any_skipped |= !_definitions.empty();
+        _definitions.clear();
+      }
+
+      Definition const& back() {
+        LIBSEMIGROUPS_ASSERT(!empty());
+        return _definitions.back();
+      }
+
+      void pop_back() {
+        LIBSEMIGROUPS_ASSERT(!empty());
+        _definitions.pop_back();
+      }
+
+      using iterator = decltype(_definitions.begin());
+
+      iterator begin() {
+        return _definitions.begin();
+      }
+
+      iterator end() {
+        return _definitions.end();
+      }
+
+      void erase(iterator first, iterator last) {
+        _definitions.erase(first, last);
+      }
+    };  // Definitions
 
     struct options : public FelschDigraphSettings<ToddCoxeter>::options {
       enum class strategy { hlt, felsch };
       enum class lookahead_extent { full, partial };
       enum class lookahead_style { hlt, felsch };
+      enum class def_policy : uint8_t {
+        //! Do not put newly generated definitions in the stack if the stack
+        //! already has size max_definitions().
+        no_stack_if_no_space,
+        //! If the definition stack has size max_definitions() and a new
+        //! definition is generated, then definitions with dead source node are
+        //! are popped from the top of the stack (if any).
+        purge_from_top,
+        //! If the definition stack has size max_definitions() and a new
+        //! definition is generated, then definitions with dead source node are
+        //! are popped from the entire of the stack (if any).
+        purge_all,
+        //! If the definition stack has size max_definitions() and a new
+        //! definition is generated, then all definitions in the stack are
+        //! discarded.
+        discard_all_if_no_space,
+        //! There is no limit to the number of definitions that can be put in
+        //! the stack.
+        unlimited
+      };
     };
 
    private:
@@ -55,22 +201,24 @@ namespace libsemigroups {
       options::lookahead_style _lookahead_style = options::lookahead_style::hlt;
       options::lookahead_extent _lookahead_extent
           = options::lookahead_extent::partial;
-      float             lookahead_growth_factor    = 2.0;
-      size_t            lookahead_growth_threshold = 4;
-      size_t            lower_bound                = UNDEFINED;
-      size_t            max_preferred_defs         = 256;
-      size_t            lookahead_min              = 10'000;
-      size_t            lookahead_next             = 5'000'000;
-      bool              restandardize              = false;
-      bool              save                       = false;
-      bool              standardize                = false;
-      options::strategy strategy                   = options::strategy::hlt;
+      float               lookahead_growth_factor    = 2.0;
+      size_t              lookahead_growth_threshold = 4;
+      size_t              lower_bound                = UNDEFINED;
+      size_t              max_preferred_defs         = 256;
+      size_t              lookahead_min              = 10'000;
+      size_t              lookahead_next             = 5'000'000;
+      bool                restandardize              = false;
+      bool                save                       = false;
+      bool                standardize                = false;
+      options::strategy   strategy                   = options::strategy::hlt;
+      size_t              _def_max                   = 2'000;
+      options::def_policy _def_policy
+          = options::def_policy::no_stack_if_no_space;
     };
-    using FelschDigraphSettings_ = FelschDigraphSettings<ToddCoxeter>;
 
    public:
-    using digraph_type = ToddCoxeterDigraph<FelschDigraph<word_type, uint32_t>>;
-    using node_type    = typename digraph_type::node_type;
+    using digraph_type
+        = ToddCoxeterDigraph<FelschDigraph<word_type, uint32_t, Definitions>>;
 
    private:
     ////////////////////////////////////////////////////////////////////////
@@ -148,8 +296,76 @@ namespace libsemigroups {
 
     // TODO add nodiscard to all getters
 
-    using FelschDigraphSettings_::def_max;
-    using FelschDigraphSettings_::def_policy;
+    //! Specify how to handle definitions.
+    //!
+    //! This function can be used to specify how to handle definitions. For
+    //! details see options::definitions.
+    //!
+    //! The default value of this setting is
+    //! ``options::definitions::no_stack_if_no_space |
+    //! options::definitions::v2``.
+    //!
+    //! \param val the policy to use.
+    //!
+    //! \returns A reference to `*this`.
+    //!
+    //! \throws LibsemigroupsException if \p val is not valid (i.e. if for
+    //! example ``options::definitions::v1 & options::definitions::v2`` returns
+    //! ``true``).
+    ToddCoxeter& def_policy(options::def_policy val) {
+      _settings._def_policy = val;
+      return *this;
+    }
+
+    //! The current value of the definition policy setting.
+    //!
+    //! \parameters
+    //! (None)
+    //!
+    //! \returns The current value of the setting, a value of type
+    //! ``options::definitions``.
+    //!
+    //! \exceptions
+    //! \noexcept
+    [[nodiscard]] options::def_policy def_policy() const noexcept {
+      return _settings._def_policy;
+    }
+
+    //! The maximum number of definitions in the stack.
+    //!
+    //! This setting specifies the maximum number of definitions that can be
+    //! in the stack at any given time. What happens if there are the maximum
+    //! number of definitions in the stack and a new definition is generated is
+    //! governed by definition_policy().
+    //!
+    //! The default value of this setting is \c 2'000.
+    //!
+    //! \param val the maximum size of the definition stack.
+    //!
+    //! \returns A reference to `*this`.
+    //!
+    //! \exceptions
+    //! \noexcept
+    ToddCoxeter& def_max(size_t val) noexcept {
+      _settings._def_max = val;
+      return *this;
+    }
+
+    //! The current value of the setting for the maximum number of
+    //! definitions.
+    //!
+    //! \parameters
+    //! (None)
+    //!
+    //! \returns The current value of the setting, a value of type
+    //! ``size_t``.
+    //!
+    //! \exceptions
+    //! \noexcept
+    [[nodiscard]] size_t def_max() const noexcept {
+      return _settings._def_max;
+    }
+
     using FelschDigraphSettings_::def_version;
     using FelschDigraphSettings_::settings;
 
@@ -569,9 +785,9 @@ namespace libsemigroups {
       struct Deref {
         value_type operator()(state_type                               tc,
                               IntegralRange<node_type>::const_iterator it) {
-          // It might seem better to just use forest::cbegin_paths, but we can't
-          // because tc.kind() (runtime) determines whether or not the paths
-          // should be reversed.
+          // It might seem better to just use forest::cbegin_paths, but we
+          // can't because tc.kind() (runtime) determines whether or not the
+          // paths should be reversed.
           return tc->class_index_to_word(*it);
         }
       };
