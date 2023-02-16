@@ -33,7 +33,7 @@
 #include "make-present.hpp"          // for make
 #include "present.hpp"               // for Presentation
 #include "runner.hpp"                // for Runner
-#include "todd-coxeter-digraph.hpp"  // for ToddCoxeterDigraph
+#include "todd-coxeter-digraph.hpp"  // for StephenDigraph
 #include "types.hpp"                 // for word_type
 
 namespace libsemigroups {
@@ -50,8 +50,7 @@ namespace libsemigroups {
   //! [Applications of automata theory to presentations of monoids and inverse
   //! monoids](https://rb.gy/brsuvc) by J. B. Stephen.
   class Stephen : public Runner {
-    using internal_digraph_type
-        = ToddCoxeterDigraph<DigraphWithSources<size_t>>;
+    using internal_digraph_type = StephenDigraph;
 
    public:
     //! The return type of the function \ref word_graph.

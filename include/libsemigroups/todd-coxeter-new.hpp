@@ -217,7 +217,7 @@ namespace libsemigroups {
 
    public:
     using digraph_type
-        = ToddCoxeterDigraph<FelschDigraph<word_type, uint32_t, Definitions>>;
+        = NodeManagedDigraph<FelschDigraph<word_type, uint32_t, Definitions>>;
 
    private:
     ////////////////////////////////////////////////////////////////////////

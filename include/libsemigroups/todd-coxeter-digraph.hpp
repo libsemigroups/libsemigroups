@@ -16,7 +16,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-// This file contains the declaration of the ToddCoxeterDigraph class, used
+// This file contains the declaration of the NodeManagedDigraph class, used
 // by Stephen and (by ToddCoxeter in the future).
 
 #ifndef LIBSEMIGROUPS_TODD_COXETER_DIGRAPH_HPP_
@@ -44,7 +44,7 @@
 namespace libsemigroups {
 
   template <typename BaseDigraph>
-  class ToddCoxeterDigraph
+  class NodeManagedDigraph
       : public BaseDigraph,
         public detail::NodeManager<typename BaseDigraph::node_type> {
    public:
@@ -73,11 +73,11 @@ namespace libsemigroups {
     using BaseDigraph::out_degree;
     using BaseDigraph::unsafe_neighbor;
 
-    ToddCoxeterDigraph()                                     = default;
-    ToddCoxeterDigraph(ToddCoxeterDigraph const&)            = default;
-    ToddCoxeterDigraph(ToddCoxeterDigraph&&)                 = default;
-    ToddCoxeterDigraph& operator=(ToddCoxeterDigraph const&) = default;
-    ToddCoxeterDigraph& operator=(ToddCoxeterDigraph&&)      = default;
+    NodeManagedDigraph()                                     = default;
+    NodeManagedDigraph(NodeManagedDigraph const&)            = default;
+    NodeManagedDigraph(NodeManagedDigraph&&)                 = default;
+    NodeManagedDigraph& operator=(NodeManagedDigraph const&) = default;
+    NodeManagedDigraph& operator=(NodeManagedDigraph&&)      = default;
 
     void init() {
       _coinc    = decltype(_coinc)();
@@ -87,7 +87,7 @@ namespace libsemigroups {
 
     // TODO corresponding init + rvalue ref version
     template <typename N>
-    ToddCoxeterDigraph(ActionDigraph<N> const& ad)
+    NodeManagedDigraph(ActionDigraph<N> const& ad)
         : BaseDigraph(ad), NodeManager_() {
       // NodeManager always has one node active
       NodeManager_::add_active_nodes(ActionDigraph<node_type>::number_of_nodes()
@@ -95,7 +95,8 @@ namespace libsemigroups {
     }
 
     // TODO this doesn't work when BaseDigraph is FelschDigraph
-    ToddCoxeterDigraph& init(Presentation<word_type> const& p) {
+    // TODO split into StephenDigraph
+    NodeManagedDigraph& init(Presentation<word_type> const& p) {
       NodeManager_::clear();
       BaseDigraph::init(NodeManager_::node_capacity(), p.alphabet().size());
       return *this;
@@ -103,7 +104,8 @@ namespace libsemigroups {
 
     // TODO fix this, only exists because previous function doesn't work for
     // FelschDigraph
-    ToddCoxeterDigraph& init2(Presentation<word_type> const& p) {
+    // TODO split into ToddCoxeterDigraph
+    NodeManagedDigraph& init2(Presentation<word_type> const& p) {
       NodeManager_::clear();
       BaseDigraph::init(p);
       // FIXME shouldn't add nodes here because then there'll be more than
@@ -114,7 +116,8 @@ namespace libsemigroups {
     }
 
     // TODO this doesn't work when BaseDigraph is FelschDigraph
-    ToddCoxeterDigraph init(Presentation<word_type>&& p) {
+    // TODO split into StephenDigraph
+    NodeManagedDigraph init(Presentation<word_type>&& p) {
       NodeManager_::clear();
       BaseDigraph::init(NodeManager_::node_capacity(), p.alphabet().size());
       return *this;
@@ -122,7 +125,8 @@ namespace libsemigroups {
 
     // TODO fix this, only exists because previous function doesn't work for
     // FelschDigraph
-    ToddCoxeterDigraph init2(Presentation<word_type>&& p) {
+    // TODO split into ToddCoxeterDigraph
+    NodeManagedDigraph init2(Presentation<word_type>&& p) {
       NodeManager_::clear();
       BaseDigraph::init(std::move(p));
       // FIXME shouldn't add nodes here because then there'll be more than
@@ -136,7 +140,7 @@ namespace libsemigroups {
       return static_cast<ActionDigraph<node_type> const&>(*this) == that;
     }
 
-    ToddCoxeterDigraph& large_collapse(size_t val) noexcept {
+    NodeManagedDigraph& large_collapse(size_t val) noexcept {
       _settings.large_collapse = val;
       return *this;
     }
@@ -160,6 +164,7 @@ namespace libsemigroups {
                   word_type::const_iterator first,
                   word_type::const_iterator last) noexcept;
 
+    // to StephenDigraph
     void coincide_nodes(node_type x, node_type y) {
       _coinc.emplace(x, y);
     }
@@ -171,98 +176,9 @@ namespace libsemigroups {
     }
 
     template <bool RegisterDefs>
-    void process_coincidences() {
-      if (_coinc.empty()) {
-        return;
-      }
-      CollectCoincidences incompat_func(_coinc);
-      auto const          coinc_max_size = large_collapse();
+    void process_coincidences();
 
-      while (!_coinc.empty() && _coinc.size() < coinc_max_size) {
-        Coincidence c = _coinc.top();
-        _coinc.pop();
-        node_type min = NodeManager_::find_node(c.first);
-        node_type max = NodeManager_::find_node(c.second);
-        if (min != max) {
-          std::tie(min, max) = std::minmax({min, max});
-          NodeManager_::union_nodes(min, max);
-          if constexpr (RegisterDefs) {
-            BaseDigraph::merge_nodes(
-                min,
-                max,
-                [this](node_type n, letter_type x) {
-                  this->definitions().emplace_back(n, x);
-                },
-                incompat_func);
-          } else {
-            BaseDigraph::merge_nodes(min, max, Noop(), incompat_func);
-          }
-        }
-      }
-
-      if (_coinc.empty()) {
-        return;
-      } else {
-        fmt::print("#0: ToddCoxeter: large collapse detected!\n");
-        report_coincidences();
-      }
-
-      while (!_coinc.empty()) {
-        Coincidence c = _coinc.top();
-        _coinc.pop();
-        node_type min = NodeManager_::find_node(c.first);
-        node_type max = NodeManager_::find_node(c.second);
-        if (min != max) {
-          std::tie(min, max) = std::minmax({min, max});
-          NodeManager_::union_nodes(min, max);
-          for (letter_type i = 0; i < out_degree(); ++i) {
-            node_type const v = unsafe_neighbor(max, i);
-            if (v != UNDEFINED) {
-              node_type const u = unsafe_neighbor(min, i);
-              if (u == UNDEFINED) {
-                ActionDigraph<node_type>::add_edge_nc(min, v, i);
-              } else if (u != v) {
-                _coinc.emplace(u, v);
-              }
-            }
-          }
-        }
-      }
-
-      // Remove all sources of all remaining active cosets
-      auto c = NodeManager_::_id_node;
-      while (c != NodeManager_::first_free_node()) {
-        BaseDigraph::clear_sources(c);
-        c = NodeManager_::next_active_node(c);
-      }
-
-      // TODO use rebuild_sources, when I've implemented NodeManager_::cbegin(),
-      // NodeManager_::cend()
-      c        = NodeManager_::_id_node;
-      size_t m = 0;
-
-      while (c != NodeManager_::first_free_node()) {
-        m++;
-        for (letter_type x = 0; x < out_degree(); ++x) {
-          auto cx = unsafe_neighbor(c, x);
-          if (cx != UNDEFINED) {
-            auto d = NodeManager_::find_node(cx);
-            if (cx != d) {
-              if constexpr (RegisterDefs) {
-                this->definitions().emplace_back(c, x);
-              }
-              ActionDigraph<node_type>::add_edge_nc(c, d, x);
-            }
-            // Must re-add the source, even if we don't need to reset
-            // the target or stack the deduction
-            BaseDigraph::add_source(d, x, c);
-            LIBSEMIGROUPS_ASSERT(NodeManager_::is_active_node(d));
-          }
-        }
-        c = NodeManager_::next_active_node(c);
-      }
-    }
-
+    // to ToddCoxeterDigraph
     void process_definitions() {
       CollectCoincidences incompat(_coinc);
       using NoPreferredDefs = typename BaseDigraph::NoPreferredDefs;
@@ -294,6 +210,7 @@ namespace libsemigroups {
     // TODO should be private again
     node_type new_node();
 
+    // to ToddCoxeterDigraph
     template <bool RegisterDefs = true>
     void push_definition_hlt(node_type const& c,
                              word_type const& u,
@@ -333,6 +250,7 @@ namespace libsemigroups {
           x, a, y, b, incompat, pref_defs);
     }
 
+    // to ToddCoxeterDigraph
     template <typename Iterator>
     size_t make_compatible(Iterator first, Iterator last) {
       // FIXME This relies on lookahead_cursor being in the right place, this is
@@ -358,6 +276,7 @@ namespace libsemigroups {
     }
 
    private:
+    // to ToddCoxeterDigraph
     struct CollectCoincidences {
       CollectCoincidences(Coincidences& c) : _coinc(c) {}
 
@@ -369,6 +288,8 @@ namespace libsemigroups {
       Coincidences& _coinc;
     };
   };
+
+  using StephenDigraph = NodeManagedDigraph<DigraphWithSources<size_t>>;
 
 }  // namespace libsemigroups
 

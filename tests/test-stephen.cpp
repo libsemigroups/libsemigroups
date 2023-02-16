@@ -46,7 +46,7 @@
 #include "libsemigroups/present.hpp"               // for add_rule_and_check
 #include "libsemigroups/report.hpp"                // for ReportGuard
 #include "libsemigroups/stephen.hpp"               // for Stephen, Stephen::...
-#include "libsemigroups/todd-coxeter-digraph.hpp"  // for ToddCoxeterDigraph
+#include "libsemigroups/todd-coxeter-digraph.hpp"  // for StephenDigraph
 #include "libsemigroups/types.hpp"                 // for word_type
 #include "libsemigroups/word.hpp"                  // for StringToWord, word...
 
