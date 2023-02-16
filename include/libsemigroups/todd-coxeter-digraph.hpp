@@ -68,23 +68,6 @@ namespace libsemigroups {
     Settings     _settings;
     Stats        _stats;
 
-    // TODO move to tpp file
-    template <bool RegisterDefs>
-    struct ImmediateDef {
-      ToddCoxeterDigraph& _word_graph;
-
-      explicit ImmediateDef(ToddCoxeterDigraph& wg) : _word_graph(wg) {}
-
-      void
-      operator()(node_type x, letter_type a, node_type y, letter_type b) const {
-        node_type d = _word_graph.new_node();
-        _word_graph.template def_edge_nc<RegisterDefs>(x, a, d);
-        if (a != b || x != y) {
-          _word_graph.template def_edge_nc<RegisterDefs>(y, b, d);
-        }
-      }
-    };
-
    public:
     using BaseDigraph::BaseDigraph;
     using BaseDigraph::out_degree;
@@ -212,8 +195,7 @@ namespace libsemigroups {
                 },
                 incompat_func);
           } else {
-            BaseDigraph::merge_nodes(
-                min, max, [](node_type, letter_type) {}, incompat_func);
+            BaseDigraph::merge_nodes(min, max, Noop(), incompat_func);
           }
         }
       }
@@ -337,8 +319,15 @@ namespace libsemigroups {
         b = UNDEFINED;
       }
 
-      CollectCoincidences        incompat(_coinc);
-      ImmediateDef<RegisterDefs> pref_defs(*this);
+      CollectCoincidences incompat(_coinc);
+      auto                pref_defs
+          = [this](node_type x, letter_type a, node_type y, letter_type b) {
+              node_type d = new_node();
+              this->template def_edge_nc<RegisterDefs>(x, a, d);
+              if (a != b || x != y) {
+                this->template def_edge_nc<RegisterDefs>(y, b, d);
+              }
+            };
 
       BaseDigraph::template merge_targets_of_nodes_if_possible<RegisterDefs>(
           x, a, y, b, incompat, pref_defs);
