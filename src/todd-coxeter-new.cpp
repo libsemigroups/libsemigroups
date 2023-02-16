@@ -441,10 +441,13 @@ namespace libsemigroups {
   void ToddCoxeter::finalise_run() {
     if (!stopped()) {
       if (_word_graph.definitions().any_skipped()) {
+        // auto const& d = word_graph();
+        // if (!action_digraph::is_complete(
+        //         d, d.cbegin_active_nodes(), d.cend_active_nodes())) {
         if (!todd_coxeter_digraph::complete(_word_graph)) {
-          // || _word_graph.number_of_nodes_active() != lower_bound() + 1)
-          // TODO uncomment
-          // push_settings();
+          //  || _word_graph.number_of_nodes_active() != lower_bound() + 1)
+          //  TODO uncomment
+          //  push_settings();
           lookahead_extent(options::lookahead_extent::full);
           lookahead_style(options::lookahead_style::hlt);
           perform_lookahead();

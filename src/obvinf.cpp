@@ -174,7 +174,10 @@ namespace libsemigroups {
   }  // namespace detail
 
   bool is_obviously_infinite(ToddCoxeter const& tc) {
-    if (tc.finished() || todd_coxeter_digraph::complete(tc.word_graph())) {
+    auto const& d = tc.word_graph();
+    if (tc.finished()
+        || action_digraph::is_complete(
+            d, d.cbegin_active_nodes(), d.cend_active_nodes())) {
       return false;
     }
     auto const&                 p = tc.presentation();

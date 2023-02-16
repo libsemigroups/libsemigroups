@@ -47,6 +47,15 @@
 
 namespace libsemigroups {
 
+  template <typename It1, typename It2>
+  uint64_t distance(It1 first, It2 last) {
+    uint64_t result = 0;
+    for (auto it = first; it != last; ++it) {
+      result++;
+    }
+    return result;
+  }
+
   using TCE         = v3::detail::TCE;
   using KnuthBendix = fpsemigroup::KnuthBendix;
   using options     = ToddCoxeter::options;
@@ -127,13 +136,16 @@ namespace libsemigroups {
     void check_complete_compatible(ToddCoxeter& tc) {
       auto const& p = tc.presentation();
       tc.run();
-      REQUIRE(todd_coxeter_digraph::complete(tc.word_graph()));
+      auto const& d = tc.word_graph();
+      REQUIRE(action_digraph::is_complete(
+          d, d.cbegin_active_nodes(), d.cend_active_nodes()));
       REQUIRE(todd_coxeter_digraph::compatible(
-          tc.word_graph(), p.rules.cbegin(), p.rules.cend()));
+          d, p.rules.cbegin(), p.rules.cend()));
       tc.shrink_to_fit();
-      REQUIRE(todd_coxeter_digraph::complete(tc.word_graph()));
+      REQUIRE(action_digraph::is_complete(
+          d, d.cbegin_active_nodes(), d.cend_active_nodes()));
       REQUIRE(todd_coxeter_digraph::compatible(
-          tc.word_graph(), p.rules.cbegin(), p.rules.cend()));
+          d, p.rules.cbegin(), p.rules.cend()));
     }
 
     void check_standardize(ToddCoxeter& tc) {
@@ -1717,14 +1729,17 @@ namespace libsemigroups {
     ToddCoxeter tc(twosided, p);
     // tc.strategy(options::strategy::felsch);
     // REQUIRE(tc.strategy() == options::strategy::felsch);
-    REQUIRE(!todd_coxeter_digraph::complete(tc.word_graph()));
+    auto const& d = tc.word_graph();
+    REQUIRE(!action_digraph::is_complete(
+        d, d.cbegin_active_nodes(), d.cend_active_nodes()));
     REQUIRE(todd_coxeter_digraph::compatible(
         tc.word_graph(), p.rules.cbegin(), p.rules.cend()));
     REQUIRE(tc.number_of_classes() == 1);
     REQUIRE(std::vector<word_type>(todd_coxeter::cbegin_normal_forms(tc),
                                    todd_coxeter::cend_normal_forms(tc))
             == std::vector<word_type>(1, {0}));
-    REQUIRE(todd_coxeter_digraph::complete(tc.word_graph()));
+    REQUIRE(action_digraph::is_complete(
+        d, d.cbegin_active_nodes(), d.cend_active_nodes()));
     REQUIRE(todd_coxeter_digraph::compatible(
         tc.word_graph(), p.rules.cbegin(), p.rules.cend()));
 
@@ -1733,7 +1748,10 @@ namespace libsemigroups {
     REQUIRE(copy.presentation().alphabet() == p.alphabet());
     REQUIRE(copy.finished());
     REQUIRE(copy.number_of_classes() == 1);
-    REQUIRE(todd_coxeter_digraph::complete(copy.word_graph()));
+
+    auto const& dd = copy.word_graph();
+    REQUIRE(action_digraph::is_complete(
+        dd, dd.cbegin_active_nodes(), dd.cend_active_nodes()));
     REQUIRE(todd_coxeter_digraph::compatible(
         copy.word_graph(), p.rules.cbegin(), p.rules.cend()));
     REQUIRE(tc.word_graph() == copy.word_graph());
@@ -2840,7 +2858,7 @@ namespace libsemigroups {
                           "072",
                           "Walker 2",
                           "[todd-coxeter][quick]") {
-    auto                      rg = ReportGuard(false);
+    auto                      rg = ReportGuard(true);
     Presentation<std::string> p;
     p.alphabet("ab");
     presentation::add_rule_and_check(
@@ -2872,25 +2890,39 @@ namespace libsemigroups {
 
     REQUIRE(!is_obviously_infinite(tc));
 
-    SECTION("custom HLT") {
-      tc.lookahead_next(1'000'000)
-          .def_max(2'000)
-          // .use_relations_in_extra(true)
-          .strategy(options::strategy::hlt)
-          .lookahead_extent(options::lookahead_extent::partial)
-          .lookahead_style(options::lookahead_style::felsch);
-      // .deduction_version(digraph_type::process_defs::v2)
-      // .deduction_policy(
-      //     DefinitionOptions::definitions::no_stack_if_no_space);
-    }
+    // SECTION("custom HLT") {
+    //   tc.lookahead_next(1'000'000)
+    //       .def_max(2'000)
+    //       .use_relations_in_extra(true)
+    //       .strategy(options::strategy::hlt)
+    //       .lookahead_extent(options::lookahead_extent::partial)
+    //       .lookahead_style(options::lookahead_style::felsch)
+    //       .def_version(options::def_version::two)
+    //       .def_policy(options::def_policy::no_stack_if_no_space);
+    // }
 
-    section_hlt(tc);
+    // section_hlt(tc);
     section_felsch(tc);
     // section_random(tc);
     // section_rc_style(tc);
     // section_R_over_C_style(tc);
     // section_CR_style(tc);
     // section_Cr_style(tc);
+    tc.run();
+    tc.standardize(order::shortlex);
+    auto const& d = tc.word_graph();
+
+    std::vector<uint32_t> expected(14'971, 0);
+    std::iota(expected.begin(), expected.end(), uint32_t(0));
+    std::vector<uint32_t> found = d.active_nodes_range() | rx::to_vector();
+    std::sort(found.begin(), found.end());
+    REQUIRE(found.size() == 14'971);
+
+    REQUIRE(found == expected);
+    REQUIRE(d.number_of_nodes_active()
+            == libsemigroups::distance(d.cbegin_active_nodes(),
+                                       d.cend_active_nodes()));
+    REQUIRE(d.number_of_nodes_active() == 14'911);
     REQUIRE(tc.number_of_classes() == 14'911);
     // check_standardize(tc);
   }
@@ -4255,4 +4287,10 @@ namespace libsemigroups {
     // TODO uncomment
     // std::cout << tc.stats_string();
   }
+
+  // TODO move to test-node-manager
+  LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
+                          "013",
+                          "cbegin_active_nodes/cend_active_nodes",
+                          "[todd-coxeter][quick]") {}
 }  // namespace libsemigroups

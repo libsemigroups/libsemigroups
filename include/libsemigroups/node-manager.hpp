@@ -26,6 +26,8 @@
 #include <cstdint>  // for uint32_t
 #include <vector>   // for vector
 
+#include <rx/ranges.hpp>
+
 #include "constants.hpp"  // for UNDEFINED
 #include "debug.hpp"      // for LIBSEMIGROUPS_ASSERT/DEBUG
 
@@ -156,6 +158,18 @@ namespace libsemigroups {
       inline node_type next_active_node(node_type c) const {
         LIBSEMIGROUPS_ASSERT(is_active_node(c));
         return _forwd[c];
+      }
+
+      // Note that these iterators are invalidated by any changes to the
+      // container, i.e. they can't be used as a substitute for cursors.
+      auto cbegin_active_nodes() const {
+        return rx::begin(ActiveNodesRange(this));
+      }
+
+      // Note that these iterators are invalidated by any changes to the
+      // container, i.e. they can't be used as a substitute for cursors.
+      auto cend_active_nodes() const {
+        return rx::end(ActiveNodesRange(this));
       }
 
       //! Returns the number of active nodes.
@@ -301,6 +315,42 @@ namespace libsemigroups {
       node_type                  _current_la;
 
      private:
+      struct ActiveNodesRange {
+        using output_type = node_type;
+
+        NodeManager const* _node_manager;
+        output_type        _current;
+
+        ActiveNodesRange(NodeManager const* nm)
+            : _node_manager(nm), _current(nm->initial_node()) {}
+
+        output_type get() const noexcept {
+          return _current;
+        }
+
+        void next() noexcept {
+          _current = _node_manager->next_active_node(_current);
+        }
+
+        bool at_end() const noexcept {
+          return _current == _node_manager->first_free_node();
+        }
+
+        size_t size_hint() const noexcept {
+          return _node_manager->number_of_nodes_active();
+        }
+
+        static constexpr bool is_finite     = true;
+        static constexpr bool is_idempotent = true;
+      };
+
+     public:
+      // TODO remove just for testing
+      ActiveNodesRange active_nodes_range() const {
+        return ActiveNodesRange(this);
+      }
+
+     private:
       ////////////////////////////////////////////////////////////////////////
       // NodeManager - member functions - private
       ////////////////////////////////////////////////////////////////////////
@@ -336,6 +386,12 @@ namespace libsemigroups {
 
   }  // namespace detail
 }  // namespace libsemigroups
+
+// TODO replace uint32_t by Node
+template <>
+struct rx::is_input_range<
+    typename libsemigroups::detail::NodeManager<uint32_t>::ActiveNodesRange>
+    : std::true_type {};
 
 #include "node-manager.tpp"
 

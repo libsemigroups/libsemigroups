@@ -146,6 +146,8 @@ namespace libsemigroups {
     // ToddCoxeter - settings - public
     ////////////////////////////////////////////////////////////////////////
 
+    // TODO add nodiscard to all getters
+
     using FelschDigraphSettings_::def_max;
     using FelschDigraphSettings_::def_policy;
     using FelschDigraphSettings_::def_version;
@@ -401,7 +403,7 @@ namespace libsemigroups {
     //! \noexcept
     //!
     //! \sa standardize(bool)
-    bool standardize() const noexcept;
+    [[nodiscard]] bool standardize() const noexcept;
 
     //! Perform an HLT-style push of the defining relations at the identity.
     //!
@@ -430,7 +432,7 @@ namespace libsemigroups {
     //!
     //! \exceptions
     //! \noexcept
-    bool use_relations_in_extra() const noexcept;
+    [[nodiscard]] bool use_relations_in_extra() const noexcept;
 
     ////////////////////////////////////////////////////////////////////////
     // ToddCoxeter - accessors - public

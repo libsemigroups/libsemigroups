@@ -3574,6 +3574,52 @@ namespace libsemigroups {
       bool   result = standardize(d, f, val);
       return std::make_pair(result, f);
     }
+
+    template <typename Node, typename Iterator1, typename Iterator2>
+    bool is_complete(ActionDigraph<Node> const& d,
+                     Iterator1                  first_node,
+                     Iterator2                  last_node) {
+      size_t const n = d.out_degree();
+      for (auto it = first_node; it != last_node; ++it) {
+        for (size_t a = 0; a < n; ++a) {
+          if (d.unsafe_neighbor(*it, a) == UNDEFINED) {
+            return false;
+          }
+        }
+      }
+      return true;
+    }
+
+    template <typename Node,
+              typename Iterator1,
+              typename Iterator2,
+              typename Iterator3>
+    bool is_compatible(ActionDigraph<Node> const& d,
+                       Iterator1                  first_node,
+                       Iterator2                  last_node,
+                       Iterator3                  first_rule,
+                       Iterator3                  last_rule) {
+      for (auto nit = first_node; nit != last_node; ++nit) {
+        for (auto rit = first_rule; rit != last_rule; ++rit) {
+          auto l = action_digraph_helper::follow_path_nc(
+              d, *nit, rit->cbegin(), rit->cend());
+          if (l == UNDEFINED) {
+            return true;
+          }
+          ++rit;
+          auto r = action_digraph_helper::follow_path_nc(
+              d, *nit, rit->cbegin(), rit->cend());
+          if (r == UNDEFINED) {
+            return true;
+          }
+          if (l != r) {
+            return false;
+          }
+        }
+      }
+      return true;
+    }
+
   }  // namespace action_digraph
 
 }  // namespace libsemigroups
