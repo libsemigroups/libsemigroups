@@ -40,7 +40,6 @@ namespace libsemigroups {
 
     DigraphWithSources<Node>::init(r, c);
     FelschDigraphSettings_::init();
-    // _definitions.init(this); TODO
     _felsch_tree.init(c);
     _felsch_tree.add_relations(_presentation.rules.cbegin(),
                                _presentation.rules.cend());
@@ -53,7 +52,6 @@ namespace libsemigroups {
       : DigraphWithSources<node_type>(p.contains_empty_word() ? 0 : 1,
                                       p.alphabet().size()),
         FelschDigraphSettings<FelschDigraph<Word, Node, Definitions>>(),
-        // _definitions(this),  // pass through settings TODO
         _felsch_tree(p.alphabet().size()),
         _presentation(p) {
     _felsch_tree.add_relations(_presentation.rules.cbegin(),
@@ -74,7 +72,6 @@ namespace libsemigroups {
       : DigraphWithSources<node_type>(p.contains_empty_word() ? 0 : 1,
                                       p.alphabet().size()),
         FelschDigraphSettings<FelschDigraph<Word, Node, Definitions>>(),
-        // _definitions(this),  // pass through settings TODO
         _felsch_tree(p.alphabet().size()),
         _presentation(std::move(p)) {
     _felsch_tree.add_relations(_presentation.rules.cbegin(),
@@ -94,7 +91,6 @@ namespace libsemigroups {
       ActionDigraph<M> const& ad)
       : DigraphWithSources<node_type>(ad),
         FelschDigraphSettings<FelschDigraph<Word, Node, Definitions>>(),
-        // _definitions(this),  // pass through settings TODO
         _felsch_tree(0),
         _presentation() {
     for (node_type n = 0; n < ad.number_of_nodes(); ++n) {

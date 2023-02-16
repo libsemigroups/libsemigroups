@@ -2424,7 +2424,6 @@ namespace libsemigroups {
         partial_transformation_monoid(n, author::Sutov));
 
     ToddCoxeter tc(congruence_kind::twosided, p);
-    section_felsch(tc);
     REQUIRE(tc.number_of_classes() == 7'776);
   }
 

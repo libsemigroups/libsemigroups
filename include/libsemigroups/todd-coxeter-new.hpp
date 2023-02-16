@@ -57,11 +57,8 @@ namespace libsemigroups {
       ToddCoxeter const*      _settings;
 
      public:
-      explicit Definitions(ToddCoxeter const* settings) : Definitions() {
-        _settings = settings;
-      }
-
       Definitions() : _any_skipped(false), _definitions(), _settings(nullptr) {}
+
       Definitions(Definitions const&)                 = default;
       Definitions(Definitions&&)                      = default;
       Definitions& operator=(Definitions const& that) = default;
@@ -82,7 +79,10 @@ namespace libsemigroups {
       void emplace_back(node_type c, label_type x) {
         using def_policy = typename options::def_policy;
 
-        if (_settings == nullptr
+        if (_settings == nullptr  // this can be the case if for example we're
+                                  // in the FelschDigraph constructor from
+                                  // ActionDigraph, in that case we any want
+                                  // all of the definitions
             || _settings->def_policy() == def_policy::unlimited
             || _definitions.size() < _settings->def_max()) {
           _definitions.emplace_back(c, x);
@@ -118,8 +118,7 @@ namespace libsemigroups {
       }
 
       bool is_active_node(node_type n) const noexcept {
-        // TODO impl
-        return true;
+        return _settings->word_graph().is_active_node(n);
       }
 
       Definition const& operator[](size_t i) {

@@ -40,7 +40,7 @@ namespace libsemigroups {
         _forest(),
         _standardized(order::none),
         _word_graph() {
-    _word_graph.definitions(Definitions(this));
+    _word_graph.definitions().init(this);
   }
 
   ToddCoxeter& ToddCoxeter::init() {
@@ -48,8 +48,7 @@ namespace libsemigroups {
     _finished = false;
     _forest.init();
     _standardized = order::none;
-    _word_graph.init();
-    _word_graph.definitions(Definitions(this));
+    _word_graph.definitions().init(this);
     return *this;
   }
 
@@ -63,8 +62,7 @@ namespace libsemigroups {
     _forest.init();
     _settings     = Settings();
     _standardized = order::none;
-    _word_graph.init();
-    _word_graph.definitions(Definitions(this));
+    _word_graph.definitions().init(this);
     return *this;
   }
 
@@ -79,7 +77,7 @@ namespace libsemigroups {
       presentation::reverse(p);
     }
     _word_graph.init2(std::move(p));  // FIXME
-    _word_graph.definitions(Definitions(this));
+    _word_graph.definitions().init(this);
   }
 
   ToddCoxeter& ToddCoxeter::init(congruence_kind           knd,
@@ -89,7 +87,7 @@ namespace libsemigroups {
       presentation::reverse(p);
     }
     _word_graph.init2(std::move(p));  // FIXME
-    _word_graph.definitions(Definitions(this));
+    _word_graph.definitions().init(this);
     return *this;
   }
 
@@ -108,7 +106,7 @@ namespace libsemigroups {
     } else {
       _word_graph.init2(p);  // FIXME
     }
-    _word_graph.definitions(Definitions(this));
+    _word_graph.definitions().init(this);
   }
 
   ToddCoxeter& ToddCoxeter::init(congruence_kind                knd,
@@ -121,7 +119,7 @@ namespace libsemigroups {
     } else {
       _word_graph.init2(p);  // FIXME
     }
-    _word_graph.definitions(Definitions(this));
+    _word_graph.definitions().init(this);
     return *this;
   }
 
@@ -145,7 +143,7 @@ namespace libsemigroups {
     if (kind() == congruence_kind::left && tc.kind() != congruence_kind::left) {
       presentation::reverse(_word_graph.presentation());
     }
-    _word_graph.definitions(Definitions(this));
+    _word_graph.definitions().init(this);
     return *this;
   }
 

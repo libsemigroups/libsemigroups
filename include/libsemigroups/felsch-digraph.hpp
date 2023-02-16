@@ -192,14 +192,12 @@ namespace libsemigroups {
       return _definitions;
     }
 
-    FelschDigraph& definitions(Definitions const& d) {
-      _definitions = d;
-      return *this;
-    }
-
-    FelschDigraph& definitions(Definitions&& d) {
-      _definitions = std::move(d);
-      return *this;
+    template <typename T>
+    void init_definitions(T const& thing) {
+      // For example this calls ToddCoxeter::init(Definitions&) so that
+      // the settings in the _definitions object is set to be the same as that
+      // of the ToddCoxeter instance.
+      thing.init_definitions(_definitions);
     }
 
     ////////////////////////////////////////////////////////////////////////
