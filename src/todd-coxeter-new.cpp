@@ -221,6 +221,15 @@ namespace libsemigroups {
     return _settings.use_relations_in_extra;
   }
 
+  ToddCoxeter& ToddCoxeter::lower_bound(size_t n) noexcept {
+    _settings.lower_bound = n;
+    return *this;
+  }
+
+  size_t ToddCoxeter::lower_bound() const noexcept {
+    return _settings.lower_bound;
+  }
+
   ////////////////////////////////////////////////////////////////////////
   // ToddCoxeter - accessors - public
   ////////////////////////////////////////////////////////////////////////
@@ -441,11 +450,10 @@ namespace libsemigroups {
   void ToddCoxeter::finalise_run() {
     if (!stopped()) {
       if (_word_graph.definitions().any_skipped()) {
-        // auto const& d = word_graph();
-        // if (!action_digraph::is_complete(
-        //         d, d.cbegin_active_nodes(), d.cend_active_nodes())) {
-        if (!todd_coxeter_digraph::complete(_word_graph)) {
-          //  || _word_graph.number_of_nodes_active() != lower_bound() + 1)
+        auto const& d = word_graph();
+        if (d.number_of_nodes_active() != lower_bound() + 1
+            || !action_digraph::is_complete(
+                d, d.cbegin_active_nodes(), d.cend_active_nodes())) {
           //  TODO uncomment
           //  push_settings();
           lookahead_extent(options::lookahead_extent::full);

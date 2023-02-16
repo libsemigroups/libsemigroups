@@ -174,7 +174,7 @@ namespace libsemigroups {
     //!
     //! \exceptions
     //! \noexcept
-    options::strategy strategy() const noexcept;
+    [[nodiscard]] options::strategy strategy() const noexcept;
 
     //! Set the style of lookahead to use in HLT.
     //!
@@ -212,12 +212,12 @@ namespace libsemigroups {
     //!
     //! \exceptions
     //! \noexcept
-    options::lookahead_style lookahead_style() const noexcept {
+    [[nodiscard]] options::lookahead_style lookahead_style() const noexcept {
       return _settings._lookahead_style;
     }
 
     // TODO doc
-    options::lookahead_extent lookahead_extent() const noexcept {
+    [[nodiscard]] options::lookahead_extent lookahead_extent() const noexcept {
       return _settings._lookahead_extent;
     }
 
@@ -249,7 +249,7 @@ namespace libsemigroups {
     //! \noexcept
     //!
     //! \sa lookahead_next(size_t)
-    size_t lookahead_next() const noexcept;
+    [[nodiscard]] size_t lookahead_next() const noexcept;
 
     //! Set the minimum value of lookahead_next().
     //!
@@ -281,7 +281,7 @@ namespace libsemigroups {
     //! \noexcept
     //!
     //! \sa lookahead_min(size_t)
-    size_t lookahead_min() const noexcept;
+    [[nodiscard]] size_t lookahead_min() const noexcept;
 
     //! Set the lookahead growth factor.
     //!
@@ -312,7 +312,7 @@ namespace libsemigroups {
     //! \noexcept
     //!
     //! \sa lookahead_growth_factor(float)
-    float lookahead_growth_factor() const noexcept;
+    [[nodiscard]] float lookahead_growth_factor() const noexcept;
 
     //! Set the lookahead growth threshold.
     //!
@@ -345,7 +345,7 @@ namespace libsemigroups {
     //! \noexcept
     //!
     //! \sa lookahead_growth_threshold()
-    size_t lookahead_growth_threshold() const noexcept;
+    [[nodiscard]] size_t lookahead_growth_threshold() const noexcept;
 
     //! Process deductions during HLT.
     //!
@@ -370,7 +370,7 @@ namespace libsemigroups {
     //! \noexcept
     //!
     //! \sa save(bool)
-    bool save() const noexcept;
+    [[nodiscard]] bool save() const noexcept;
 
     //! Partially short-lex standardize the table during enumeration.
     //!
@@ -433,6 +433,39 @@ namespace libsemigroups {
     //! \exceptions
     //! \noexcept
     [[nodiscard]] bool use_relations_in_extra() const noexcept;
+
+    //! Specify minimum number of classes that may trigger early stop.
+    //!
+    //! Set a lower bound for the number of classes of the congruence
+    //! represented by a ToddCoxeter instance. If the number of active cosets
+    //! becomes at least the value of the argument, and the table is complete
+    //! (\ref complete returns \c true), then the enumeration is terminated.
+    //! When the given bound is equal to the number of classes, this may save
+    //! tracing relations at many cosets when there is no possibility of
+    //! finding coincidences.
+    //!
+    //! The default value is \ref UNDEFINED.
+    //!
+    //! \param val value indicating the lower bound.
+    //!
+    //! \returns A reference to `*this`.
+    //!
+    //! \exceptions
+    //! \noexcept
+    ToddCoxeter& lower_bound(size_t val) noexcept;
+
+    //! The current value of the lower bound setting.
+    //!
+    //! \parameters
+    //! None
+    //!
+    //! \returns A value of type `size_t`.
+    //!
+    //! \exceptions
+    //! \noexcept
+    //!
+    //! \sa lower_bound(size_t)
+    [[nodiscard]] size_t lower_bound() const noexcept;
 
     ////////////////////////////////////////////////////////////////////////
     // ToddCoxeter - accessors - public

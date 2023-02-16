@@ -397,59 +397,6 @@ namespace libsemigroups {
     };
   };
 
-  namespace todd_coxeter_digraph {
-
-    // TODO this should take ActionDigraph const & and iterators to a range of
-    // nodes, and NodeManager should have
-    // cbegin_active_nodes/cend_active_nodes.
-    // TODO rename is_complete
-    template <typename BaseDigraph>
-    bool complete(ToddCoxeterDigraph<BaseDigraph> const& tcd) {
-      using node_type      = typename std::decay_t<decltype(tcd)>::node_type;
-      node_type    current = 0;
-      size_t const n       = tcd.out_degree();
-      while (current != tcd.first_free_node()) {
-        for (size_t a = 0; a < n; ++a) {
-          if (tcd.unsafe_neighbor(current, a) == UNDEFINED) {
-            return false;
-          }
-        }
-        current = tcd.next_active_node(current);
-      }
-      return true;
-    }
-
-    // TODO rename is_compatible
-    template <typename BaseDigraph, typename Iterator>
-    bool compatible(ToddCoxeterDigraph<BaseDigraph> const& tcd,
-                    Iterator                               first,
-                    Iterator                               last) {
-      using node_type   = typename std::decay_t<decltype(tcd)>::node_type;
-      node_type current = 0;
-      while (current != tcd.first_free_node()) {
-        for (auto it = first; it != last; ++it) {
-          auto l = action_digraph_helper::follow_path_nc(
-              tcd, current, it->cbegin(), it->cend());
-          if (l == UNDEFINED) {
-            return true;
-          }
-          ++it;
-          auto r = action_digraph_helper::follow_path_nc(
-              tcd, current, it->cbegin(), it->cend());
-          if (r == UNDEFINED) {
-            return true;
-          }
-          if (l != r) {
-            return false;
-          }
-        }
-        current = tcd.next_active_node(current);
-      }
-      return true;
-    }
-
-  }  // namespace todd_coxeter_digraph
-
 }  // namespace libsemigroups
 
 #include "todd-coxeter-digraph.tpp"
