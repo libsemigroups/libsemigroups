@@ -107,6 +107,7 @@ namespace libsemigroups {
       return NodeManager_::new_active_node();
     }
   }
+
   template <typename BaseDigraph>
   template <bool RegisterDefs>
   void NodeManagedDigraph<BaseDigraph>::process_coincidences() {
@@ -114,9 +115,9 @@ namespace libsemigroups {
       return;
     }
     CollectCoincidences incompat_func(_coinc);
-    auto const          coinc_max_size = large_collapse();
 
-    while (!_coinc.empty() && _coinc.size() < coinc_max_size) {
+    size_t prev_num_nodes = this->number_of_nodes_active();
+    while (!_coinc.empty()) {  // && _coinc.size() < large_collapse()) {
       Coincidence c = _coinc.top();
       _coinc.pop();
       node_type min = NodeManager_::find_node(c.first);
@@ -135,6 +136,13 @@ namespace libsemigroups {
         } else {
           BaseDigraph::merge_nodes(min, max, Noop(), incompat_func);
         }
+      }
+      size_t num_nodes = this->number_of_nodes_active();
+      size_t cost_pairwise
+          = 2 * out_degree() * out_degree() * (prev_num_nodes - num_nodes);
+      size_t cost_bigcrush = 2 * num_nodes * out_degree() + num_nodes;
+      if (cost_bigcrush < cost_pairwise) {
+        break;
       }
     }
 

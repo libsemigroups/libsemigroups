@@ -131,7 +131,7 @@ namespace libsemigroups {
 
     void report_coincidences() const {
       if (report::should_report()) {
-        fmt::print(FORMAT("#0: ToddCoxeter: coincidences {}", _coinc.size()));
+        fmt::print(FORMAT("#0: ToddCoxeter: coincidences {}\n", _coinc.size()));
       }
     }
 

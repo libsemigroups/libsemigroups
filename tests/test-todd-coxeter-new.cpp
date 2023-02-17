@@ -4116,6 +4116,8 @@ namespace libsemigroups {
 
     presentation::sort_each_rule(p);
     presentation::sort_rules(p);
+    REQUIRE(presentation::longest_common_subword(p) == "xy");
+    presentation::replace_subword(p, "xy");
 
     ToddCoxeter tc(twosided, p);
 
@@ -4123,6 +4125,7 @@ namespace libsemigroups {
         .def_version(options::def_version::two)
         .def_policy(options::def_policy::no_stack_if_no_space)
         .use_relations_in_extra(true);
+
     // TODO uncomment
     //     .lower_bound(10'200'960)
     //     .reserve(50'000'000);
