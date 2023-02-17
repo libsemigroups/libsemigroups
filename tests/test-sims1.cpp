@@ -36,7 +36,7 @@
 #include "libsemigroups/sims1.hpp"              // for Sims1
 #include "libsemigroups/transf.hpp"             // for Transf
 #include "libsemigroups/types.hpp"              // for word_type
-                                                //
+
 namespace libsemigroups {
 
   using Sims1_       = Sims1<uint32_t>;
@@ -2253,10 +2253,6 @@ namespace libsemigroups {
                           "uninitialized RepOrc",
                           "[quick][low-index]") {
     auto rg = ReportGuard(false);
-
-    Presentation<std::string> p;
-    p.alphabet("abc");
-
     presentation::add_rule_and_check(p, "cc", "c");
     presentation::add_rule_and_check(p, "abb", "a");
     presentation::add_rule_and_check(p, "aca", "aba");
@@ -2267,6 +2263,105 @@ namespace libsemigroups {
     REQUIRE(orc.max_nodes() == 0);
     REQUIRE(orc.target_size() == 0);
     REQUIRE(orc.digraph().number_of_nodes() == 0);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Sims1",
+                          "077",
+                          "2x2 simple semigroups over S(4)",
+                          "[extreme][sims1]") {
+    auto rg = ReportGuard(true);
+
+    Presentation<std::string> p;
+    p.alphabet("abc");
+
+    // S := ReesMatrixSemigroup(SymmetricGroup(4), [[(1, 2), ()], [(), ()]]);
+    presentation::add_rule_and_check(p, "cc", "c");
+    presentation::add_rule_and_check(p, "abb", "a");
+    presentation::add_rule_and_check(p, "aca", "aba");
+    presentation::add_rule_and_check(p, "acb", "a");
+    presentation::add_rule_and_check(p, "bba", "a");
+    presentation::add_rule_and_check(p, "bbb", "b");
+    presentation::add_rule_and_check(p, "bca", "a");
+    presentation::add_rule_and_check(p, "bcb", "b");
+    presentation::add_rule_and_check(p, "cbc", "c");
+    presentation::add_rule_and_check(p, "aaaa", "bb");
+    presentation::add_rule_and_check(p, "baaa", "abab");
+    presentation::add_rule_and_check(p, "baba", "aaab");
+    presentation::add_rule_and_check(p, "abaaba", "baab");
+    presentation::add_rule_and_check(p, "baabaa", "aabaab");
+    presentation::add_rule_and_check(p, "baabab", "aaabaa");
+    presentation::add_rule_and_check(p, "aaabaab", "baaba");
+    // Minimum rep. o.r.c. 6
+
+    // S := ReesMatrixSemigroup(SymmetricGroup(4), [[(1, 2, 3, 4), ()], [(),
+    // ()]]);
+    // presentation::add_rule_and_check(p, "cc", "c");
+    // presentation::add_rule_and_check(p, "abb", "a");
+    // presentation::add_rule_and_check(p, "aca", "a");
+    // presentation::add_rule_and_check(p, "acb", "b");
+    // presentation::add_rule_and_check(p, "bba", "a");
+    // presentation::add_rule_and_check(p, "bbb", "b");
+    // presentation::add_rule_and_check(p, "bca", "b");
+    // presentation::add_rule_and_check(p, "bcb", "aba");
+    // presentation::add_rule_and_check(p, "cac", "c");
+    // presentation::add_rule_and_check(p, "aaaa", "bb");
+    // presentation::add_rule_and_check(p, "baaa", "abab");
+    // presentation::add_rule_and_check(p, "baba", "aaab");
+    // presentation::add_rule_and_check(p, "abaaba", "baab");
+    // presentation::add_rule_and_check(p, "baabaa", "aabaab");
+    // presentation::add_rule_and_check(p, "baabab", "aaabaa");
+    // presentation::add_rule_and_check(p, "aaabaab", "baaba");
+    // Minimum rep. o.r.c. 8
+
+    // S := ReesMatrixSemigroup(SymmetricGroup(4), [[(1, 2, 3), ()], [(), ()]]);
+    // presentation::add_rule_and_check(p, "cc", "c");
+    // presentation::add_rule_and_check(p, "abb", "a");
+    // presentation::add_rule_and_check(p, "bba", "a");
+    // presentation::add_rule_and_check(p, "bbb", "b");
+    // presentation::add_rule_and_check(p, "bcb", "aca");
+    // presentation::add_rule_and_check(p, "aaaa", "bb");
+    // presentation::add_rule_and_check(p, "aaca", "bab");
+    // presentation::add_rule_and_check(p, "abca", "baa");
+    // presentation::add_rule_and_check(p, "acaa", "aab");
+    // presentation::add_rule_and_check(p, "baaa", "abab");
+    // presentation::add_rule_and_check(p, "baba", "aaab");
+    // presentation::add_rule_and_check(p, "baca", "acba");
+    // presentation::add_rule_and_check(p, "bacb", "acbb");
+    // presentation::add_rule_and_check(p, "bcaa", "bab");
+    // presentation::add_rule_and_check(p, "bcab", "aacb");
+    // presentation::add_rule_and_check(p, "aaaba", "acab");
+    // presentation::add_rule_and_check(p, "aaacb", "baab");
+    // presentation::add_rule_and_check(p, "aabaa", "acbb");
+    // presentation::add_rule_and_check(p, "aabab", "bbca");
+    // presentation::add_rule_and_check(p, "aacba", "acb");
+    // presentation::add_rule_and_check(p, "aacbb", "bca");
+    // presentation::add_rule_and_check(p, "abaab", "acba");
+    // presentation::add_rule_and_check(p, "acaba", "bca");
+    // presentation::add_rule_and_check(p, "acaca", "a");
+    // presentation::add_rule_and_check(p, "acacb", "b");
+    // presentation::add_rule_and_check(p, "acbaa", "baab");
+    // presentation::add_rule_and_check(p, "acbab", "abaa");
+    // presentation::add_rule_and_check(p, "acbca", "aba");
+    // presentation::add_rule_and_check(p, "baaba", "aacb");
+    // presentation::add_rule_and_check(p, "baacb", "aaba");
+    // presentation::add_rule_and_check(p, "bcaca", "b");
+    // presentation::add_rule_and_check(p, "bcacb", "aba");
+    // presentation::add_rule_and_check(p, "cacac", "c");
+    // presentation::add_rule_and_check(p, "acbbca", "aaab");
+    // min. rep. o.r.c. is 7
+
+    presentation::sort_each_rule(p);
+    presentation::sort_rules(p);
+
+    p.validate();
+
+    MinimalRepOrc orc;
+    auto          d = orc.short_rules(p)
+                 .target_size(96)
+                 .number_of_threads(std::thread::hardware_concurrency())
+                 .digraph();
+    REQUIRE(d.number_of_nodes() == 7);
+    REQUIRE(orc.target_size() == 96);
   }
 
 }  // namespace libsemigroups
