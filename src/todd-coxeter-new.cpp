@@ -21,6 +21,9 @@
 
 #include "libsemigroups/todd-coxeter-new.hpp"
 #include "libsemigroups/obvinf.hpp"
+#include "libsemigroups/report.hpp"
+
+#include <fmt/compile.h>
 
 namespace libsemigroups {
 
@@ -298,10 +301,7 @@ namespace libsemigroups {
           "there are infinitely many classes in the congruence and "
           "Todd-Coxeter will never terminate");
     }
-    if (report::should_report()) {
-      fmt::print(
-          FORMAT("#0: ToddCoxeter: using {} strategy . . .\n", strategy()));
-    }
+    report_default("ToddCoxeter: using {} strategy . . .\n", strategy());
 
     init_run();
 
@@ -561,37 +561,29 @@ namespace libsemigroups {
   void ToddCoxeter::report_active_nodes() const {
     using detail::group_digits;
 
-    if (report::should_report()) {
-      fmt::print(
-          FORMAT("#0: ToddCoxeter: nodes {:>11} (active) | {:>11} (killed) | "
-                 "{:>11} (defined)\n",
-                 group_digits(word_graph().number_of_nodes_active()),
-                 group_digits(word_graph().number_of_nodes_killed()),
-                 group_digits(word_graph().number_of_nodes_defined())));
-    }
+    report_default("ToddCoxeter: nodes {:>11} (active) | {:>11} (killed) | "
+                   "{:>11} (defined)\n",
+                   group_digits(word_graph().number_of_nodes_active()),
+                   group_digits(word_graph().number_of_nodes_killed()),
+                   group_digits(word_graph().number_of_nodes_defined()));
   }
 
   using class_index_type = v3::CongruenceInterface::class_index_type;
 
   void ToddCoxeter::report_next_lookahead(size_t old_value) const {
-    if (report::should_report()) {
-      static const std::string pad(8, ' ');
-      int64_t                  diff = int64_t(lookahead_next()) - old_value;
-      fmt::print(
-          FORMAT("#0: ToddCoxeter: next lookahead at {0} | {1:>11} (nodes)  "
-                 "|{2:>12} (diff)\n",
-                 pad,
-                 fmt::group_digits(lookahead_next()),
-                 detail::group_digits(diff)));
-    }
+    static const std::string pad(8, ' ');
+    int64_t                  diff = int64_t(lookahead_next()) - old_value;
+    report_default("ToddCoxeter: next lookahead at {0} | {1:>11} (nodes)  "
+                   "|{2:>12} (diff)\n",
+                   pad,
+                   fmt::group_digits(lookahead_next()),
+                   detail::group_digits(diff));
   }
 
   void ToddCoxeter::report_nodes_killed(int64_t N) const {
-    if (report::should_report()) {
-      fmt::print(FORMAT(
-          "#0: ToddCoxeter: lookahead complete with    | {:>11} (killed) |\n",
-          detail::group_digits(-1 * N)));
-    }
+    report_default(
+        "ToddCoxeter: lookahead complete with    | {:>11} (killed) |\n",
+        detail::group_digits(-1 * N));
   }
 
   ////////////////////////////////////////////////////////////////////////
@@ -599,12 +591,10 @@ namespace libsemigroups {
   ////////////////////////////////////////////////////////////////////////
 
   void ToddCoxeter::perform_lookahead() {
-    if (report::should_report()) {
-      fmt::print("{:-<90}\n", "");
-      fmt::print("#0: ToddCoxeter: performing {} {} lookahead . . .\n",
-                 lookahead_extent(),
-                 lookahead_style());
-    }
+    report_no_prefix("{:-<90}\n", "");
+    report_default("ToddCoxeter: performing {} {} lookahead . . .\n",
+                   lookahead_extent(),
+                   lookahead_style());
     auto& current = _word_graph.lookahead_cursor();
 
     if (lookahead_extent() == options::lookahead_extent::partial) {
@@ -644,9 +634,7 @@ namespace libsemigroups {
       _settings.lookahead_next *= lookahead_growth_factor();
     }
     report_next_lookahead(old_lookahead_next);
-    if (report::should_report()) {
-      fmt::print("{:-<90}\n", "");
-    }
+    report_no_prefix("{:-<90}\n", "");
   }
 
   size_t ToddCoxeter::hlt_lookahead() {
@@ -684,4 +672,53 @@ namespace libsemigroups {
     return _word_graph.number_of_nodes_killed() - old_number_of_killed;
   }
 
+  namespace todd_coxeter {
+    tril is_non_trivial(ToddCoxeter&              tc,
+                        size_t                    tries,
+                        std::chrono::milliseconds try_for,
+                        float                     threshold) {
+      static std::random_device rd;
+      static std::mt19937       g(rd());
+
+      if (is_obviously_infinite(tc)) {
+        return tril::TRUE;
+      } else if (tc.finished()) {
+        return tc.number_of_classes() == 1 ? tril::FALSE : tril::TRUE;
+      }
+
+      for (size_t try_ = 0; try_ < tries; ++try_) {
+        report_default(
+            "trying to show non-triviality: {} / {}\n", try_ + 1, tries);
+        ToddCoxeter copy(tc);
+        copy.standardize(true).save(true);
+        while (!copy.finished()) {
+          copy.run_for(try_for);
+          size_t limit = copy.word_graph().number_of_nodes_active();
+          while (copy.word_graph().number_of_nodes_active() >= threshold * limit
+                 && !copy.finished()) {
+            std::uniform_int_distribution<> d(
+                0, copy.word_graph().number_of_nodes_active() - 1);
+            auto r = copy.word_graph().active_nodes();
+            rx::advance_by(r, d(g));
+            node_type c1 = r.get();
+            r            = copy.word_graph().active_nodes();
+            rx::advance_by(r, d(g));
+            node_type c2 = r.get();
+            auto      wg = copy.word_graph();
+            wg.coincide_nodes(c1, c2);
+            wg.process_coincidences<RegisterDefs>();
+            wg.process_definitions();
+            copy = ToddCoxeter(tc.kind(), wg);
+            copy.run_for(try_for);
+          }
+        }
+        if (copy.number_of_classes() > 1) {
+          report_default("successfully showed non-triviality!\n");
+          return tril::TRUE;
+        }
+      }
+      report_default("failed to show non-triviality!\n");
+      return tril::unknown;
+    }
+  }  // namespace todd_coxeter
 }  // namespace libsemigroups

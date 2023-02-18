@@ -43,9 +43,10 @@
 #include <magic_enum/magic_enum.hpp>
 
 #ifdef LIBSEMIGROUPS_FMT_ENABLED
-#include "fmt/color.h"
-#include "fmt/printf.h"
 #include <array>  // for array
+#include <fmt/color.h>
+#include <fmt/compile.h>
+#include <fmt/printf.h>
 #endif
 
 // To avoid computing the parameters __VA_ARGS__ when we aren't even
@@ -525,6 +526,30 @@ namespace libsemigroups {
       REPORTER.report(false);
     }
   };
+
+  template <typename... Args>
+  void report_no_prefix(char const* s, Args&&... args) {
+    static std::mutex mtx;
+
+    if (report::should_report()) {
+      std::lock_guard<std::mutex> lg(mtx);
+      fmt::print(s, std::forward<Args>(args)...);
+    }
+  }
+
+  template <typename... Args>
+  void report_no_prefix(std::string const& s, Args&&... args) {
+    report_no_prefix(s.c_str(), std::forward<Args>(args)...);
+  }
+
+  template <typename... Args>
+  void report_default(char const* s, Args&&... args) {
+    if (report::should_report()) {
+      uint64_t    tid    = THREAD_ID_MANAGER.tid(std::this_thread::get_id());
+      std::string prefix = fmt::format("#{}: ", tid);
+      report_no_prefix(prefix + s, std::forward<Args>(args)...);
+    }
+  }
 
 }  // namespace libsemigroups
 

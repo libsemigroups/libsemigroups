@@ -346,7 +346,7 @@ namespace libsemigroups {
 
      public:
       // TODO remove just for testing
-      ActiveNodesRange active_nodes_range() const {
+      ActiveNodesRange active_nodes() const {
         return ActiveNodesRange(this);
       }
 

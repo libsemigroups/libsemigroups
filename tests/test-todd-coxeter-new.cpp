@@ -1898,7 +1898,7 @@ namespace libsemigroups {
      REQUIRE(!tc.stats_string().empty());
    }*/
 
-  // Takes about 6m
+  // Takes about 1.8s
   LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
                           "042",
                           "symmetric_group(9, Moore)",
@@ -1920,10 +1920,12 @@ namespace libsemigroups {
 
     presentation::greedy_reduce_length(p);
 
-    REQUIRE(presentation::length(p) == 81);
-    REQUIRE(p.alphabet().size() == 11);
+    REQUIRE(presentation::length(p) == 79);
+    REQUIRE(p.alphabet().size() == 10);
 
     ToddCoxeter tc(twosided, p);
+
+    section_felsch(tc);
 
     REQUIRE(tc.number_of_classes() == 362'880);
     // TODO uncomment std::cout << tc.stats_string();
@@ -1946,7 +1948,7 @@ namespace libsemigroups {
     ToddCoxeter tc(twosided, p);
 
     tc.run_for(std::chrono::microseconds(1));
-    // TODO uncomment REQUIRE(tc.is_non_trivial() == tril::TRUE);
+    REQUIRE(todd_coxeter::is_non_trivial(tc) == tril::TRUE);
     REQUIRE(!tc.finished());
     tc.standardize(order::shortlex);
     tc.standardize(order::none);
@@ -3362,7 +3364,7 @@ namespace libsemigroups {
                           "082",
                           "Holt 3",
                           "[todd-coxeter][standard]") {
-    auto                      rg = ReportGuard(false);
+    auto                      rg = ReportGuard(true);
     Presentation<std::string> p;
     p.alphabet("aAbBcC");
     p.contains_empty_word(true);
@@ -3373,8 +3375,7 @@ namespace libsemigroups {
     presentation::add_rule_and_check(p, "cABcabc", "");
 
     ToddCoxeter tc(twosided, p);
-    // TODO implement
-    // REQUIRE(tc.is_non_trivial() == tril::TRUE);
+    REQUIRE(todd_coxeter::is_non_trivial(tc) == tril::TRUE);
 
     section_hlt(tc);
     section_felsch(tc);
@@ -3415,8 +3416,7 @@ namespace libsemigroups {
     // TODO uncomment
     //     .f_defs(250'000)
     //     .hlt_defs(20'000'000);
-    // TODO implement
-    // REQUIRE(tc.is_non_trivial() == tril::TRUE);
+    REQUIRE(todd_coxeter::is_non_trivial(tc) == tril::TRUE);
     REQUIRE(tc.number_of_classes() == 6'561);
   }
 

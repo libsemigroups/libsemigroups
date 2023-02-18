@@ -42,7 +42,7 @@
 #include "types.hpp"         // for word_type
 
 namespace libsemigroups {
-
+  // TODO merge this with NodeManager
   template <typename BaseDigraph>
   class NodeManagedDigraph
       : public BaseDigraph,

@@ -90,29 +90,44 @@ namespace libsemigroups {
         }
 
         switch (_settings->def_policy()) {
+          case def_policy::no_stack_if_no_space: {
+            // If we reach here, then _definitions.size() >= def_max and so we
+            // are skipping the currently emplaced definition
+            _any_skipped = true;
+            break;
+          }
           case def_policy::purge_from_top: {
+            // _any_skipped does not need to be set to true here because we are
+            // only removing inactive nodes
             while (!_definitions.empty()
-                   && is_active_node(_definitions.back().first)) {
-              _any_skipped = true;
+                   && !is_active_node(_definitions.back().first)) {
               _definitions.pop_back();
             }
             break;
           }
           case def_policy::purge_all: {
-            size_t const prev_size = _definitions.size();
+            // _any_skipped does not need to be set to true here because we are
+            // only removing inactive nodes
             std::remove_if(_definitions.begin(),
                            _definitions.end(),
                            [this](Definition const& d) {
-                             return not is_active_node(d.first);
+                             return !is_active_node(d.first);
                            });
-            _any_skipped |= (_definitions.size() < prev_size);
             break;
           }
           case def_policy::discard_all_if_no_space: {
+            // _any_skipped depends on whether there are any definitions where
+            // the node is active.
+            _any_skipped |= std::any_of(_definitions.cbegin(),
+                                        _definitions.cend(),
+                                        [this](Definition const& d) {
+                                          return is_active_node(d.first);
+                                        });
             clear();
             break;
           }
           default: {
+            break;
           }
         }
       }
@@ -138,7 +153,7 @@ namespace libsemigroups {
       }
 
       void clear() {
-        _any_skipped |= !_definitions.empty();
+        // _any_skipped |= !_definitions.empty();
         _definitions.clear();
       }
 
@@ -1032,6 +1047,40 @@ namespace libsemigroups {
           result.end());
       return result;
     }
+
+    //! Check if the congruence has more than one class.
+    //!
+    //! Returns tril::TRUE if it is possible to show that the congruence is
+    //! non-trivial; tril::FALSE if the congruence is already known to be
+    //! trivial; and tril::unknown if it is not possible to show that the
+    //! congruence is non-trivial.
+    //!
+    //! This function attempts to find a non-trivial congruence containing
+    //! the congruence represented by a ToddCoxeter instance by repeating the
+    //! following steps on a copy until the enumeration concludes:
+    //! 1. running the enumeration for the specified amount of time
+    //! 2. repeatedly choosing a random pair of cosets and identifying them,
+    //!    until the number of cosets left in the quotient is smaller than
+    //!    \p threshold times the initial number of cosets for this step.
+    //! If at the end of this process, the ToddCoxeter instance is
+    //! non-trivial, then the original ToddCoxeter is also non-trivial.
+    //! Otherwise, the entire process is repeated again up to a total of \p
+    //! tries times.
+    //!
+    //! \param tries the number of attempts to find non-trivial
+    //! super-congruence.
+    //! \param try_for the amount of time in millisecond to enumerate the
+    //! congruence after choosing a random pair of representatives and
+    //! identifying them.
+    //! \param threshold the threshold (see description).
+    //!
+    //! \returns A value of type \ref tril
+    // TODO redo the doc
+    tril is_non_trivial(ToddCoxeter&              tc,
+                        size_t                    tries = 10,
+                        std::chrono::milliseconds try_for
+                        = std::chrono::milliseconds(100),
+                        float threshold = 0.99);
   }  // namespace todd_coxeter
 
 }  // namespace libsemigroups
