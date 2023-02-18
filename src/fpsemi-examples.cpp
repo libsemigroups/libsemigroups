@@ -27,9 +27,12 @@
 #include <numeric>    // for iota
 
 #include "libsemigroups/exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
+#include "libsemigroups/report.hpp"     // for magic_enum support
 #include "libsemigroups/types.hpp"      // for word_type, relation_type
+#include "libsemigroups/word.hpp"       // for operator""_w
 
 namespace libsemigroups {
+  using namespace literals;
   namespace {
     template <typename T>
     std::vector<T> concat(std::vector<T> lhs, const std::vector<T>& rhs) {
@@ -676,198 +679,181 @@ namespace libsemigroups {
 
     // From Theorem 41 in doi:10.1016/j.jalgebra.2011.04.008
     std::vector<relation_type> partition_monoid(size_t n, author val) {
-      std::vector<relation_type> result;
       if (val == author::Machine) {
-        if (n != 3) {
-          LIBSEMIGROUPS_EXCEPTION(
-              "the 1st argument (size_t) must be 3 when the "
-              "2nd argument is Machine, found %llu",
-              uint64_t(n));
+        if (n != 2 && n != 3) {
+          LIBSEMIGROUPS_EXCEPTION_V3(
+              "the 1st argument (size_t) must be 2 or 3 when the "
+              "2nd argument is author::Machine, found {}",
+              n);
         }
-        result.emplace_back<word_type, word_type>({0, 0}, {0});
-        result.emplace_back<word_type, word_type>({0, 1}, {1});
-        result.emplace_back<word_type, word_type>({0, 2}, {2});
-        result.emplace_back<word_type, word_type>({0, 3}, {3});
-        result.emplace_back<word_type, word_type>({0, 4}, {4});
-        result.emplace_back<word_type, word_type>({1, 0}, {1});
-        result.emplace_back<word_type, word_type>({2, 0}, {2});
-        result.emplace_back<word_type, word_type>({2, 2}, {0});
-        result.emplace_back<word_type, word_type>({2, 4}, {4});
-        result.emplace_back<word_type, word_type>({3, 0}, {3});
-        result.emplace_back<word_type, word_type>({3, 3}, {3});
-        result.emplace_back<word_type, word_type>({4, 0}, {4});
-        result.emplace_back<word_type, word_type>({4, 2}, {4});
-        result.emplace_back<word_type, word_type>({4, 4}, {4});
-        result.emplace_back<word_type, word_type>({1, 1, 1}, {0});
-        result.emplace_back<word_type, word_type>({1, 1, 2}, {2, 1});
-        result.emplace_back<word_type, word_type>({1, 2, 1}, {2});
-        result.emplace_back<word_type, word_type>({2, 1, 1}, {1, 2});
-        result.emplace_back<word_type, word_type>({2, 1, 2}, {1, 1});
-        result.emplace_back<word_type, word_type>({2, 1, 4}, {1, 1, 4});
-        result.emplace_back<word_type, word_type>({3, 1, 2}, {1, 2, 3});
-        result.emplace_back<word_type, word_type>({3, 4, 3}, {3});
-        result.emplace_back<word_type, word_type>({4, 1, 2}, {4, 1, 1});
-        result.emplace_back<word_type, word_type>({4, 3, 4}, {4});
-        result.emplace_back<word_type, word_type>({1, 1, 3, 1}, {2, 3, 2});
-        result.emplace_back<word_type, word_type>({1, 1, 3, 2}, {2, 3, 1});
-        result.emplace_back<word_type, word_type>({1, 2, 3, 1}, {3, 2});
-        result.emplace_back<word_type, word_type>({1, 2, 3, 2}, {3, 1});
-        result.emplace_back<word_type, word_type>({1, 2, 3, 4}, {3, 1, 4});
-        result.emplace_back<word_type, word_type>({1, 3, 2, 3}, {3, 1, 3});
-        result.emplace_back<word_type, word_type>({1, 4, 1, 4}, {4, 1, 4});
-        result.emplace_back<word_type, word_type>({2, 1, 3, 1}, {1, 3, 2});
-        result.emplace_back<word_type, word_type>({2, 1, 3, 2}, {1, 3, 1});
-        result.emplace_back<word_type, word_type>({2, 1, 3, 4}, {1, 3, 1, 4});
-        result.emplace_back<word_type, word_type>({2, 3, 1, 3}, {1, 3, 1, 3});
-        result.emplace_back<word_type, word_type>({2, 3, 1, 4}, {1, 1, 3, 4});
-        result.emplace_back<word_type, word_type>({2, 3, 2, 3}, {3, 2, 3});
-        result.emplace_back<word_type, word_type>({3, 1, 3, 2}, {3, 1, 3});
-        result.emplace_back<word_type, word_type>({3, 1, 4, 3}, {1, 2, 3});
-        result.emplace_back<word_type, word_type>({3, 2, 3, 2}, {3, 2, 3});
-        result.emplace_back<word_type, word_type>({4, 1, 1, 4}, {4, 1, 4});
-        result.emplace_back<word_type, word_type>({4, 1, 3, 2}, {4, 1, 3, 1});
-        result.emplace_back<word_type, word_type>({4, 1, 4, 1}, {4, 1, 4});
-        result.emplace_back<word_type, word_type>({1, 3, 1, 1, 3},
-                                                  {3, 2, 1, 3});
-        result.emplace_back<word_type, word_type>({1, 3, 4, 1, 4},
-                                                  {4, 1, 3, 4});
-        result.emplace_back<word_type, word_type>({2, 3, 1, 1, 3},
-                                                  {3, 1, 1, 3});
-        result.emplace_back<word_type, word_type>({2, 3, 2, 1, 3},
-                                                  {1, 3, 2, 1, 3});
-        result.emplace_back<word_type, word_type>({2, 3, 4, 1, 3},
-                                                  {1, 3, 4, 1, 3});
-        result.emplace_back<word_type, word_type>({2, 3, 4, 1, 4},
-                                                  {1, 4, 1, 3, 4});
-        result.emplace_back<word_type, word_type>({3, 1, 1, 4, 1},
-                                                  {1, 1, 4, 1, 3});
-        result.emplace_back<word_type, word_type>({3, 1, 3, 1, 1},
-                                                  {3, 2, 1, 3});
-        result.emplace_back<word_type, word_type>({3, 2, 3, 1, 1},
-                                                  {3, 1, 1, 3});
-        result.emplace_back<word_type, word_type>({3, 4, 1, 1, 3}, {1, 2, 3});
-        result.emplace_back<word_type, word_type>({3, 4, 1, 4, 3},
-                                                  {1, 1, 4, 1, 3});
-        result.emplace_back<word_type, word_type>({4, 1, 1, 3, 4},
-                                                  {4, 3, 1, 4});
-        result.emplace_back<word_type, word_type>({4, 1, 3, 1, 1},
-                                                  {1, 3, 1, 1, 4});
-        result.emplace_back<word_type, word_type>({4, 1, 3, 1, 3},
-                                                  {4, 3, 1, 3});
-        result.emplace_back<word_type, word_type>({4, 1, 3, 1, 4},
-                                                  {4, 1, 3, 4});
-        result.emplace_back<word_type, word_type>({4, 1, 3, 4, 1},
-                                                  {4, 1, 3, 4});
-        result.emplace_back<word_type, word_type>({4, 1, 4, 3, 2},
-                                                  {4, 1, 4, 3, 1});
-        result.emplace_back<word_type, word_type>({1, 1, 3, 4, 1, 3},
-                                                  {3, 1, 4, 1, 3});
-        result.emplace_back<word_type, word_type>({1, 1, 4, 1, 3, 4},
-                                                  {3, 4, 1, 4});
-        result.emplace_back<word_type, word_type>({1, 3, 1, 1, 4, 3},
-                                                  {4, 3, 2, 1, 3});
-        result.emplace_back<word_type, word_type>({1, 3, 1, 3, 1, 3},
-                                                  {3, 1, 3, 1, 3});
-        result.emplace_back<word_type, word_type>({1, 3, 1, 4, 1, 3},
-                                                  {3, 4, 1, 3});
-        result.emplace_back<word_type, word_type>({1, 4, 3, 1, 1, 4},
-                                                  {4, 3, 1, 1, 4});
-        result.emplace_back<word_type, word_type>({2, 3, 1, 1, 4, 3},
-                                                  {1, 4, 3, 2, 1, 3});
-        result.emplace_back<word_type, word_type>({3, 1, 1, 3, 4, 1},
-                                                  {3, 1, 4, 1, 3});
-        result.emplace_back<word_type, word_type>({3, 1, 1, 4, 3, 1},
-                                                  {1, 1, 4, 3, 1, 3});
-        result.emplace_back<word_type, word_type>({3, 1, 3, 1, 3, 1},
-                                                  {3, 1, 3, 1, 3});
-        result.emplace_back<word_type, word_type>({3, 1, 3, 1, 4, 1},
-                                                  {3, 4, 1, 3});
-        result.emplace_back<word_type, word_type>({3, 1, 4, 1, 1, 3}, {3});
-        result.emplace_back<word_type, word_type>({4, 1, 4, 3, 1, 1},
-                                                  {4, 3, 1, 1, 4});
-        result.emplace_back<word_type, word_type>({4, 1, 4, 3, 1, 4},
-                                                  {4, 1, 4});
-        result.emplace_back<word_type, word_type>({4, 3, 1, 3, 1, 4},
-                                                  {1, 3, 1, 1, 4});
-        result.emplace_back<word_type, word_type>({1, 1, 4, 3, 1, 3, 1},
-                                                  {3, 1, 1, 4, 3, 2});
-        result.emplace_back<word_type, word_type>({1, 1, 4, 3, 2, 1, 3},
-                                                  {3, 1, 1, 4, 3});
-        result.emplace_back<word_type, word_type>({1, 3, 1, 3, 4, 1, 3},
-                                                  {3, 1, 3, 4, 1, 3});
-        result.emplace_back<word_type, word_type>({3, 1, 1, 4, 3, 2, 1},
-                                                  {3, 1, 1, 4, 3});
-        result.emplace_back<word_type, word_type>({3, 1, 3, 1, 3, 4, 1},
-                                                  {3, 1, 3, 4, 1, 3});
-        result.emplace_back<word_type, word_type>({4, 3, 1, 1, 4, 3, 2},
-                                                  {4, 1, 4, 3, 1, 3, 1});
-        result.emplace_back<word_type, word_type>({3, 1, 1, 4, 3, 2, 3, 1},
-                                                  {3, 1, 1, 4, 3, 2, 3});
-        result.emplace_back<word_type, word_type>({3, 1, 1, 4, 3, 2, 3, 4, 1},
-                                                  {1, 1, 4, 3, 1, 3, 4, 1, 3});
-
-        return result;
       } else if (val == author::East) {
         if (n < 4) {
-          LIBSEMIGROUPS_EXCEPTION(
-              "the 1st argument (size_t) must be at least 4 "
-              "when the 2nd argument is author::East, found %llu",
-              uint64_t(n));
+          LIBSEMIGROUPS_EXCEPTION_V3(
+              "the 1st argument (degree) must be at least 4 "
+              "when the 2nd argument is author::East, found {}",
+              n);
         }
-        word_type s  = {0};
-        word_type c  = {1};
-        word_type e  = {2};
-        word_type t  = {3};
-        word_type id = {4};
-
-        std::vector<word_type> alphabet = {s, c, e, t, id};
-        add_monoid_relations(alphabet, id, result);
-
-        // V1
-        result.emplace_back(c ^ n, id);
-        result.emplace_back((s * c) ^ (n - 1), id);
-        result.emplace_back(s * s, id);
-        for (size_t i = 2; i <= n / 2; ++i) {
-          result.emplace_back(((c ^ i) * s * (c ^ (n - i)) * s) ^ 2, id);
-        }
-
-        // V2
-        result.emplace_back(e * e, e);
-        result.emplace_back(e * t * e, e);
-        result.emplace_back(s * c * e * (c ^ (n - 1)) * s, e);
-        result.emplace_back(c * s * (c ^ (n - 1)) * e * c * s * (c ^ (n - 1)),
-                            e);
-
-        // V3
-        result.emplace_back(t * t, t);
-        result.emplace_back(t * e * t, t);
-        result.emplace_back(t * s, t);
-        result.emplace_back(s * t, t);
-        result.emplace_back(
-            (c ^ 2) * s * (c ^ (n - 2)) * t * (c ^ 2) * s * (c ^ (n - 2)), t);
-        result.emplace_back((c ^ (n - 1)) * s * c * s * (c ^ (n - 1)) * t * c
-                                * s * (c ^ (n - 1)) * s * c,
-                            t);
-
-        // V4
-        result.emplace_back(s * e * s * e, e * s * e);
-        result.emplace_back(e * s * e * s, e * s * e);
-
-        // V5
-        result.emplace_back(t * c * t * (c ^ (n - 1)),
-                            c * t * (c ^ (n - 1)) * t);
-
-        // V6
-        result.emplace_back(t * (c ^ 2) * t * (c ^ (n - 2)),
-                            (c ^ 2) * t * (c ^ (n - 2)) * t);
-        // V7
-        result.emplace_back(t * (c ^ 2) * e * (c ^ (n - 2)),
-                            (c ^ 2) * e * (c ^ (n - 2)) * t);
       } else {
-        LIBSEMIGROUPS_EXCEPTION(
-            "expected 2nd argument to be author::East, found %s",
-            detail::to_string(val).c_str());
+        LIBSEMIGROUPS_EXCEPTION_V3("the 2nd argument must be author::Machine "
+                                   "or author::East, found {}",
+                                   val);
       }
+
+      std::vector<relation_type> result;
+
+      if (val == author::Machine && n == 2) {
+        result.emplace_back(01_w, 1_w);
+        result.emplace_back(10_w, 1_w);
+        result.emplace_back(02_w, 2_w);
+        result.emplace_back(20_w, 2_w);
+        result.emplace_back(03_w, 3_w);
+        result.emplace_back(30_w, 3_w);
+        result.emplace_back(11_w, 0_w);
+        result.emplace_back(13_w, 3_w);
+        result.emplace_back(22_w, 2_w);
+        result.emplace_back(31_w, 3_w);
+        result.emplace_back(33_w, 3_w);
+        result.emplace_back(232_w, 2_w);
+        result.emplace_back(323_w, 3_w);
+        result.emplace_back(1212_w, 212_w);
+        result.emplace_back(2121_w, 212_w);
+        return result;
+      }
+      if (val == author::Machine && n == 3) {
+        result.emplace_back(00_w, 0_w);
+        result.emplace_back(01_w, 1_w);
+        result.emplace_back(02_w, 2_w);
+        result.emplace_back(03_w, 3_w);
+        result.emplace_back(04_w, 4_w);
+        result.emplace_back(10_w, 1_w);
+        result.emplace_back(20_w, 2_w);
+        result.emplace_back(22_w, 0_w);
+        result.emplace_back(24_w, 4_w);
+        result.emplace_back(30_w, 3_w);
+        result.emplace_back(33_w, 3_w);
+        result.emplace_back(40_w, 4_w);
+        result.emplace_back(42_w, 4_w);
+        result.emplace_back(44_w, 4_w);
+        result.emplace_back(111_w, 0_w);
+        result.emplace_back(112_w, 21_w);
+        result.emplace_back(121_w, 2_w);
+        result.emplace_back(211_w, 12_w);
+        result.emplace_back(212_w, 11_w);
+        result.emplace_back(214_w, 114_w);
+        result.emplace_back(312_w, 123_w);
+        result.emplace_back(343_w, 3_w);
+        result.emplace_back(412_w, 411_w);
+        result.emplace_back(434_w, 4_w);
+        result.emplace_back(1131_w, 232_w);
+        result.emplace_back(1132_w, 231_w);
+        result.emplace_back(1231_w, 32_w);
+        result.emplace_back(1232_w, 31_w);
+        result.emplace_back(1234_w, 314_w);
+        result.emplace_back(1323_w, 313_w);
+        result.emplace_back(1414_w, 414_w);
+        result.emplace_back(2131_w, 132_w);
+        result.emplace_back(2132_w, 131_w);
+        result.emplace_back(2134_w, 1314_w);
+        result.emplace_back(2313_w, 1313_w);
+        result.emplace_back(2314_w, 1134_w);
+        result.emplace_back(2323_w, 323_w);
+        result.emplace_back(3132_w, 313_w);
+        result.emplace_back(3143_w, 123_w);
+        result.emplace_back(3232_w, 323_w);
+        result.emplace_back(4114_w, 414_w);
+        result.emplace_back(4132_w, 4131_w);
+        result.emplace_back(4141_w, 414_w);
+        result.emplace_back(13113_w, 3213_w);
+        result.emplace_back(13414_w, 4134_w);
+        result.emplace_back(23113_w, 3113_w);
+        result.emplace_back(23213_w, 13213_w);
+        result.emplace_back(23413_w, 13413_w);
+        result.emplace_back(23414_w, 14134_w);
+        result.emplace_back(31141_w, 11413_w);
+        result.emplace_back(31311_w, 3213_w);
+        result.emplace_back(32311_w, 3113_w);
+        result.emplace_back(34113_w, 123_w);
+        result.emplace_back(34143_w, 11413_w);
+        result.emplace_back(41134_w, 4314_w);
+        result.emplace_back(41311_w, 13114_w);
+        result.emplace_back(41313_w, 4313_w);
+        result.emplace_back(41314_w, 4134_w);
+        result.emplace_back(41341_w, 4134_w);
+        result.emplace_back(41432_w, 41431_w);
+        result.emplace_back(113413_w, 31413_w);
+        result.emplace_back(114134_w, 3414_w);
+        result.emplace_back(131143_w, 43213_w);
+        result.emplace_back(131313_w, 31313_w);
+        result.emplace_back(131413_w, 3413_w);
+        result.emplace_back(143114_w, 43114_w);
+        result.emplace_back(231143_w, 143213_w);
+        result.emplace_back(311341_w, 31413_w);
+        result.emplace_back(311431_w, 114313_w);
+        result.emplace_back(313131_w, 31313_w);
+        result.emplace_back(313141_w, 3413_w);
+        result.emplace_back(314113_w, 3_w);
+        result.emplace_back(414311_w, 43114_w);
+        result.emplace_back(414314_w, 414_w);
+        result.emplace_back(431314_w, 13114_w);
+        result.emplace_back(1143131_w, 311432_w);
+        result.emplace_back(1143213_w, 31143_w);
+        result.emplace_back(1313413_w, 313413_w);
+        result.emplace_back(3114321_w, 31143_w);
+        result.emplace_back(3131341_w, 313413_w);
+        result.emplace_back(4311432_w, 4143131_w);
+        result.emplace_back(31143231_w, 3114323_w);
+        result.emplace_back(311432341_w, 114313413_w);
+        return result;
+      }
+
+      // author::East and n >= 4_w
+      word_type s  = {0};
+      word_type c  = {1};
+      word_type e  = {2};
+      word_type t  = {3};
+      word_type id = {4};
+
+      std::vector<word_type> alphabet = {s, c, e, t, id};
+      add_monoid_relations(alphabet, id, result);
+
+      // V1
+      result.emplace_back(c ^ n, id);
+      result.emplace_back((s * c) ^ (n - 1), id);
+      result.emplace_back(s * s, id);
+      for (size_t i = 2; i <= n / 2; ++i) {
+        result.emplace_back(((c ^ i) * s * (c ^ (n - i)) * s) ^ 2, id);
+      }
+
+      // V2
+      result.emplace_back(e * e, e);
+      result.emplace_back(e * t * e, e);
+      result.emplace_back(s * c * e * (c ^ (n - 1)) * s, e);
+      result.emplace_back(c * s * (c ^ (n - 1)) * e * c * s * (c ^ (n - 1)), e);
+
+      // V3
+      result.emplace_back(t * t, t);
+      result.emplace_back(t * e * t, t);
+      result.emplace_back(t * s, t);
+      result.emplace_back(s * t, t);
+      result.emplace_back(
+          (c ^ 2) * s * (c ^ (n - 2)) * t * (c ^ 2) * s * (c ^ (n - 2)), t);
+      result.emplace_back((c ^ (n - 1)) * s * c * s * (c ^ (n - 1)) * t * c * s
+                              * (c ^ (n - 1)) * s * c,
+                          t);
+
+      // V4
+      result.emplace_back(s * e * s * e, e * s * e);
+      result.emplace_back(e * s * e * s, e * s * e);
+
+      // V5
+      result.emplace_back(t * c * t * (c ^ (n - 1)), c * t * (c ^ (n - 1)) * t);
+
+      // V6
+      result.emplace_back(t * (c ^ 2) * t * (c ^ (n - 2)),
+                          (c ^ 2) * t * (c ^ (n - 2)) * t);
+      // V7
+      result.emplace_back(t * (c ^ 2) * e * (c ^ (n - 2)),
+                          (c ^ 2) * e * (c ^ (n - 2)) * t);
       return result;
     }
 
