@@ -39,14 +39,16 @@
 #include "node-manager.hpp"  // for NodeManager
 #include "present.hpp"       // for Presentation, Presentation<>:...
 #include "report.hpp"        // for REPORT_DEFAULT
-#include "types.hpp"         // for word_type
+#include "runner.hpp"
+#include "types.hpp"  // for word_type
 
 namespace libsemigroups {
   // TODO merge this with NodeManager
   template <typename BaseDigraph>
   class NodeManagedDigraph
       : public BaseDigraph,
-        public detail::NodeManager<typename BaseDigraph::node_type> {
+        public detail::NodeManager<typename BaseDigraph::node_type>,
+        public Runner {
    public:
     using node_type         = typename BaseDigraph::node_type;
     using base_digraph_type = BaseDigraph;
@@ -64,12 +66,12 @@ namespace libsemigroups {
     struct Settings;  // forward decl TODO is this really used?
     struct Stats;     // forward decl
 
-   protected:
     Coincidences _coinc;
 
    private:
-    Settings _settings;
-    Stats    _stats;
+    std::string _prefix;
+    Settings    _settings;
+    Stats       _stats;
 
    public:
     using BaseDigraph::BaseDigraph;
@@ -101,6 +103,11 @@ namespace libsemigroups {
       return static_cast<ActionDigraph<node_type> const&>(*this) == that;
     }
 
+    NodeManagedDigraph& set_prefix(std::string const& val) {
+      _prefix = val;
+      return *this;
+    }
+
     NodeManagedDigraph& large_collapse(size_t val) noexcept {
       _settings.large_collapse = val;
       return *this;
@@ -130,10 +137,10 @@ namespace libsemigroups {
     }
 
     void report_coincidences() const {
-      if (report::should_report()) {
-        fmt::print(FORMAT("#0: ToddCoxeter: coincidences {}\n", _coinc.size()));
-      }
+      report_default("{}: coincidences {}\n", _prefix, _coinc.size());
     }
+
+    void report_active_nodes() const;
 
     template <bool RegisterDefs>
     void process_coincidences();
@@ -160,6 +167,12 @@ namespace libsemigroups {
 
       Coincidences& _coinc;
     };
+
+   private:
+    void run_impl() {}
+    bool finished_impl() const {
+      return false;
+    }
   };
 }  // namespace libsemigroups
 

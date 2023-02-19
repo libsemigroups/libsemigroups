@@ -3981,8 +3981,9 @@ namespace libsemigroups {
 
     tc.strategy(options::strategy::felsch)
         .def_version(options::def_version::two)
-        .def_policy(options::def_policy::no_stack_if_no_space)
-        .use_relations_in_extra(true);
+        .def_policy(options::def_policy::discard_all_if_no_space)
+        .use_relations_in_extra(true)
+        .def_max(10'000);
 
     // TODO uncomment
     //     .lower_bound(10'200'960)
@@ -3992,7 +3993,7 @@ namespace libsemigroups {
     REQUIRE(tc.number_of_classes() == 10'200'960);
   }
 
-  // Takes about 3 minutes (doesn't currently run with v3)
+  // Takes about 3 minutes (with HLT)
   LIBSEMIGROUPS_TEST_CASE(
       "v3::ToddCoxeter",
       "105",
@@ -4016,11 +4017,21 @@ namespace libsemigroups {
         p, "xyxyxYxyxYxyxYxyxyxYxyxYxyxYxyxyxYxyxYxyxYxyxyxYxyxYxyxY", "");
 
     REQUIRE(presentation::length(p) == 239);
-    presentation::greedy_reduce_length(p);
-    REQUIRE(presentation::length(p) == 77);
+    REQUIRE(presentation::longest_common_subword(p) == "xy");
+    presentation::replace_subword(p, "xy");
+    REQUIRE(presentation::longest_common_subword(p) == "axY");
+    presentation::replace_subword(p, "axY");
+    REQUIRE(presentation::length(p) == 140);
+    // presentation::greedy_reduce_length(p);
+    // REQUIRE(presentation::length(p) == 77);
 
     ToddCoxeter tc(right, p);
     tc.add_pair(make<word_type>(p, "xy"), make<word_type>(p, ""));
+    REQUIRE(!tc.save());
+    // FIXME this example runs a full HLT lookahead at the end, when
+    // running HLT which it
+    // shouldn't, it seems that it's stacking definitions, when it shouldn't
+    // be
     section_felsch(tc);
 
     REQUIRE(tc.number_of_classes() == 10'644'480);

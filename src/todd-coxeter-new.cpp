@@ -40,6 +40,7 @@ namespace libsemigroups {
         _standardized(order::none),
         _word_graph() {
     _word_graph.definitions().init(this);
+    _word_graph.set_prefix("ToddCoxeter");
   }
 
   ToddCoxeter& ToddCoxeter::init() {
@@ -48,6 +49,7 @@ namespace libsemigroups {
     _forest.init();
     _standardized = order::none;
     _word_graph.definitions().init(this);
+    _word_graph.set_prefix("ToddCoxeter");
     return *this;
   }
 
@@ -62,6 +64,7 @@ namespace libsemigroups {
     _settings     = Settings();
     _standardized = order::none;
     _word_graph.definitions().init(this);
+    _word_graph.set_prefix("ToddCoxeter");
     return *this;
   }
 
@@ -77,6 +80,7 @@ namespace libsemigroups {
     }
     _word_graph.init(std::move(p));
     _word_graph.definitions().init(this);
+    _word_graph.set_prefix("ToddCoxeter");
   }
 
   ToddCoxeter& ToddCoxeter::init(congruence_kind           knd,
@@ -87,6 +91,7 @@ namespace libsemigroups {
     }
     _word_graph.init(std::move(p));
     _word_graph.definitions().init(this);
+    _word_graph.set_prefix("ToddCoxeter");
     return *this;
   }
 
@@ -106,6 +111,7 @@ namespace libsemigroups {
       _word_graph.init(p);
     }
     _word_graph.definitions().init(this);
+    _word_graph.set_prefix("ToddCoxeter");
   }
 
   ToddCoxeter& ToddCoxeter::init(congruence_kind                knd,
@@ -119,6 +125,7 @@ namespace libsemigroups {
       _word_graph.init(p);
     }
     _word_graph.definitions().init(this);
+    _word_graph.set_prefix("ToddCoxeter");
     return *this;
   }
 
@@ -143,6 +150,7 @@ namespace libsemigroups {
       presentation::reverse(_word_graph.presentation());
     }
     _word_graph.definitions().init(this);
+    _word_graph.set_prefix("ToddCoxeter");
     return *this;
   }
 
@@ -452,6 +460,7 @@ namespace libsemigroups {
 
   void ToddCoxeter::finalise_run() {
     if (!stopped()) {
+      fmt::print("{}\n", _word_graph.definitions().size());
       if (_word_graph.definitions().any_skipped()) {
         auto const& d = word_graph();
         if (d.number_of_nodes_active() != lower_bound() + 1
@@ -484,9 +493,6 @@ namespace libsemigroups {
         }
       }
       current = _word_graph.next_active_node(current);
-      if (report()) {
-        report_active_nodes();
-      }
     }
     if (!stopped()) {
       _finished = true;
@@ -537,15 +543,12 @@ namespace libsemigroups {
       //     _deduct->clear();
       //   }
       // }
-      // if ((!save() || _word_graph.deductions().any_skipped())
-      if (_word_graph.number_of_nodes_active() > lookahead_next()) {
+      if ((!save() || _word_graph.definitions().any_skipped())
+          && (_word_graph.number_of_nodes_active() > lookahead_next())) {
         // If save() == true and no deductions were skipped, then we have
         // already run process_deductions, and so there's no point in doing a
         // lookahead.
         perform_lookahead();
-      }
-      if (report()) {
-        report_active_nodes();
       }
       current = _word_graph.next_active_node(current);
       // if (do_pop_settings) {
@@ -557,16 +560,6 @@ namespace libsemigroups {
   ////////////////////////////////////////////////////////////////////////
   // ToddCoxeter - reporting - private
   ////////////////////////////////////////////////////////////////////////
-
-  void ToddCoxeter::report_active_nodes() const {
-    using detail::group_digits;
-
-    report_default("ToddCoxeter: nodes {:>11} (active) | {:>11} (killed) | "
-                   "{:>11} (defined)\n",
-                   group_digits(word_graph().number_of_nodes_active()),
-                   group_digits(word_graph().number_of_nodes_killed()),
-                   group_digits(word_graph().number_of_nodes_defined()));
-  }
 
   using class_index_type = v3::CongruenceInterface::class_index_type;
 
@@ -638,21 +631,18 @@ namespace libsemigroups {
   }
 
   size_t ToddCoxeter::hlt_lookahead() {
-    report_active_nodes();
+    _word_graph.report_active_nodes();
     // _stats.hlt_lookahead_calls++; TODO re-enable
 
     size_t const old_number_of_killed = _word_graph.number_of_nodes_killed();
     _word_graph.make_compatible(presentation().rules.cbegin(),
                                 presentation().rules.cend());
     _word_graph.process_coincidences<DoNotRegisterDefs>();
-    if (report()) {
-      report_active_nodes();
-    }
     return _word_graph.number_of_nodes_killed() - old_number_of_killed;
   }
 
   size_t ToddCoxeter::felsch_lookahead() {
-    report_active_nodes();
+    _word_graph.report_active_nodes();
     //    _stats.f_lookahead_calls++;
     size_t const old_number_of_killed = _word_graph.number_of_nodes_killed();
     node_type&   current              = _word_graph.lookahead_cursor();
@@ -666,7 +656,7 @@ namespace libsemigroups {
       _word_graph.process_definitions();
       current = _word_graph.next_active_node(current);
       if (report()) {
-        report_active_nodes();
+        _word_graph.report_active_nodes();
       }
     }
     return _word_graph.number_of_nodes_killed() - old_number_of_killed;

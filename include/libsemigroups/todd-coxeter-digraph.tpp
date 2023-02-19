@@ -109,6 +109,18 @@ namespace libsemigroups {
   }
 
   template <typename BaseDigraph>
+  void NodeManagedDigraph<BaseDigraph>::report_active_nodes() const {
+    using detail::group_digits;
+
+    report_default("{}: nodes {:>11} (active) | {:>11} (killed) | "
+                   "{:>11} (defined)\n",
+                   _prefix,
+                   group_digits(this->number_of_nodes_active()),
+                   group_digits(this->number_of_nodes_killed()),
+                   group_digits(this->number_of_nodes_defined()));
+  }
+
+  template <typename BaseDigraph>
   template <bool RegisterDefs>
   void NodeManagedDigraph<BaseDigraph>::process_coincidences() {
     if (_coinc.empty()) {
@@ -136,21 +148,24 @@ namespace libsemigroups {
         } else {
           BaseDigraph::merge_nodes(min, max, Noop(), incompat_func);
         }
-      }
-      if (_coinc.size() > large_collapse()) {
-        size_t num_nodes = this->number_of_nodes_active();
-        size_t cost_pairwise
-            = 2 * out_degree() * out_degree() * (prev_num_nodes - num_nodes);
-        size_t cost_bigcrush = 2 * num_nodes * out_degree() + num_nodes;
-        if (cost_bigcrush < cost_pairwise) {
-          report_default("ToddCoxeter: large collapse {} -> {} nodes\n",
-                         fmt::group_digits(prev_num_nodes),
-                         fmt::group_digits(num_nodes));
-          report_default("ToddCoxeter: {} (coincidences)\n",
-                         fmt::group_digits(_coinc.size()));
-          break;
+        if (report()) {
+          report_active_nodes();
         }
       }
+      // if (_coinc.size() > large_collapse()) {
+      //   size_t num_nodes = this->number_of_nodes_active();
+      //   size_t cost_pairwise
+      //       = 2 * out_degree() * out_degree() * (prev_num_nodes - num_nodes);
+      //   size_t cost_bigcrush = 2 * num_nodes * out_degree() + num_nodes;
+      //   if (cost_bigcrush < cost_pairwise) {
+      //     report_default("ToddCoxeter: large collapse {} -> {} nodes\n",
+      //                    fmt::group_digits(prev_num_nodes),
+      //                    fmt::group_digits(num_nodes));
+      //     report_default("ToddCoxeter: {} (coincidences)\n",
+      //                    fmt::group_digits(_coinc.size()));
+      //     break;
+      //   }
+      // }
     }
 
     if (_coinc.empty()) {
@@ -175,6 +190,9 @@ namespace libsemigroups {
               _coinc.emplace(u, v);
             }
           }
+        }
+        if (report()) {
+          report_active_nodes();
         }
       }
     }

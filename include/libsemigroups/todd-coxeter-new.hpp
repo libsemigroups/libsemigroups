@@ -89,16 +89,10 @@ namespace libsemigroups {
           return;
         }
 
+        // We will skip the input definition (c, x)!
+        _any_skipped = true;
         switch (_settings->def_policy()) {
-          case def_policy::no_stack_if_no_space: {
-            // If we reach here, then _definitions.size() >= def_max and so we
-            // are skipping the currently emplaced definition
-            _any_skipped = true;
-            break;
-          }
           case def_policy::purge_from_top: {
-            // _any_skipped does not need to be set to true here because we are
-            // only removing inactive nodes
             while (!_definitions.empty()
                    && !is_active_node(_definitions.back().first)) {
               _definitions.pop_back();
@@ -106,8 +100,6 @@ namespace libsemigroups {
             break;
           }
           case def_policy::purge_all: {
-            // _any_skipped does not need to be set to true here because we are
-            // only removing inactive nodes
             std::remove_if(_definitions.begin(),
                            _definitions.end(),
                            [this](Definition const& d) {
@@ -116,13 +108,6 @@ namespace libsemigroups {
             break;
           }
           case def_policy::discard_all_if_no_space: {
-            // _any_skipped depends on whether there are any definitions where
-            // the node is active.
-            _any_skipped |= std::any_of(_definitions.cbegin(),
-                                        _definitions.cend(),
-                                        [this](Definition const& d) {
-                                          return is_active_node(d.first);
-                                        });
             clear();
             break;
           }
@@ -321,6 +306,9 @@ namespace libsemigroups {
           // choice, could allow the other choices here too (which works,
           // but didn't seem to be very useful).
           current = NodeManager_::next_active_node(current);
+          if (report()) {
+            report_active_nodes();
+          }
         }
 
         return NodeManager_::number_of_nodes_killed() - old_number_of_killed;
@@ -889,7 +877,6 @@ namespace libsemigroups {
     // ToddCoxeter - reporting - private
     ////////////////////////////////////////////////////////////////////////
 
-    void report_active_nodes() const;
     void report_next_lookahead(size_t old_value) const;
     void report_nodes_killed(int64_t number) const;
 
