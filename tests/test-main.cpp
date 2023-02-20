@@ -34,8 +34,26 @@
 
 #include "catch.hpp"  // for Colour, Colour::Code::BrightRed, CATCH_REGISTER...
 
-#include "libsemigroups/string.hpp"  // for to_string, unicode_string_length
-#include "libsemigroups/timer.hpp"   // for Timer
+#include "backward-cpp/backward.hpp"  // for backward
+#include "libsemigroups/string.hpp"   // for to_string, unicode_string_length
+#include "libsemigroups/timer.hpp"    // for Timer
+
+namespace {
+  struct InstallSIGINTHandler {
+    InstallSIGINTHandler() {
+      signal(SIGINT, signalHandler);
+    }
+
+    static void signalHandler(int signum) {
+      using namespace backward;
+      StackTrace st;
+      st.load_here(32);
+      Printer p;
+      p.print(st);
+      exit(signum);
+    }
+  } InstallSIGINTHandler_;
+}  // namespace
 
 struct LibsemigroupsLineInfo {
   explicit LibsemigroupsLineInfo(Catch::TestCaseInfo const& testInfo)

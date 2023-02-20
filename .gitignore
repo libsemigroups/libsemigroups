@@ -1,4 +1,5 @@
 !libsemigroups.pc.in
+*.bmp
 *.gcda
 *.gcno
 *.gz
@@ -11,6 +12,7 @@
 *.o.*
 *.pyc
 *.status
+*.summary
 *.swo
 *.swp
 *.tmp
