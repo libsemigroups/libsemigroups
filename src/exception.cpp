@@ -35,7 +35,7 @@ namespace libsemigroups {
       // Initialise runtime_error message in case something goes wrong below
       : std::runtime_error(fname + ":" + std::to_string(linenum) + ":"
                            + funcname + ": " + msg) {
-#if !BACKWARD_SYSTEM_WINDOWS
+#if !defined(__CYGWIN__) && !defined(__CYGWIN32__)
     std::string          full_msg;
     backward::StackTrace st;
     st.load_here();

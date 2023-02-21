@@ -39,6 +39,8 @@
 #include "libsemigroups/timer.hpp"    // for Timer
 
 namespace {
+
+#if !defined(__CYGWIN__) && !defined(__CYGWIN32__)
   struct InstallSIGINTHandler {
     InstallSIGINTHandler() {
       signal(SIGINT, signalHandler);
@@ -53,6 +55,7 @@ namespace {
       exit(signum);
     }
   } InstallSIGINTHandler_;
+#endif
 }  // namespace
 
 struct LibsemigroupsLineInfo {
