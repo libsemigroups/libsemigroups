@@ -106,5 +106,11 @@ namespace libsemigroups {
       }
       return group_digits(static_cast<uint64_t>(num));
     }
+    std::string signed_group_digits(int64_t num) {
+      if (num < 0) {
+        return "-" + group_digits(static_cast<uint64_t>(-num));
+      }
+      return "+" + group_digits(static_cast<uint64_t>(num));
+    }
   }  // namespace detail
 }  // namespace libsemigroups

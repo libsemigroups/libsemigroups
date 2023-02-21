@@ -82,6 +82,8 @@ namespace libsemigroups {
     template <typename ThatNodeType>
     void init(ActionDigraph<ThatNodeType>&& that);
 
+    // the template is for uniformity of interface with FelschDigraph
+    template <bool = true>
     void add_edge_nc(node_type c, node_type d, label_type x) noexcept {
       ActionDigraph<node_type>::add_edge_nc(c, d, x);
       add_source(d, x, c);

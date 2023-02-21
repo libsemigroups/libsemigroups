@@ -1782,17 +1782,19 @@ namespace libsemigroups {
 
     REQUIRE(presentation::length(p) == 570);
 
-    presentation::greedy_reduce_length(p);
-
-    REQUIRE(presentation::length(p) == 79);
-    REQUIRE(p.alphabet().size() == 10);
-
-    ToddCoxeter tc(twosided, p);
-
-    section_felsch(tc);
-
-    REQUIRE(tc.number_of_classes() == 362'880);
-    // TODO uncomment std::cout << tc.stats_string();
+    SECTION("preprocess + Felsch") {
+      presentation::greedy_reduce_length(p);
+      REQUIRE(presentation::length(p) == 79);
+      REQUIRE(p.alphabet().size() == 10);
+      ToddCoxeter tc(twosided, p);
+      tc.strategy(options::strategy::felsch);
+      REQUIRE(tc.number_of_classes() == 362'880);
+    }
+    // {
+    //   ToddCoxeter tc(twosided, p);
+    //   section_hlt(tc);
+    //   REQUIRE(tc.number_of_classes() == 362'880);
+    // }
   }
 
   LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
@@ -4017,24 +4019,31 @@ namespace libsemigroups {
         p, "xyxyxYxyxYxyxYxyxyxYxyxYxyxYxyxyxYxyxYxyxYxyxyxYxyxYxyxY", "");
 
     REQUIRE(presentation::length(p) == 239);
-    REQUIRE(presentation::longest_common_subword(p) == "xy");
-    presentation::replace_subword(p, "xy");
-    REQUIRE(presentation::longest_common_subword(p) == "axY");
-    presentation::replace_subword(p, "axY");
-    REQUIRE(presentation::length(p) == 140);
-    // presentation::greedy_reduce_length(p);
-    // REQUIRE(presentation::length(p) == 77);
 
-    ToddCoxeter tc(right, p);
-    tc.add_pair(make<word_type>(p, "xy"), make<word_type>(p, ""));
-    REQUIRE(!tc.save());
-    // FIXME this example runs a full HLT lookahead at the end, when
-    // running HLT which it
-    // shouldn't, it seems that it's stacking definitions, when it shouldn't
-    // be
-    section_felsch(tc);
+    SECTION("custom HLT") {
+      ToddCoxeter tc(right, p);
+      tc.add_pair(make<word_type>(p, "xy"), make<word_type>(p, ""));
+      tc.strategy(options::strategy::hlt)
+          .standardize(false)
+          .lookahead_extent(options::lookahead_extent::partial)
+          .lookahead_style(options::lookahead_style::hlt)
+          .save(false);
+      REQUIRE(tc.number_of_classes() == 10'644'480);
+    }
 
-    REQUIRE(tc.number_of_classes() == 10'644'480);
+    SECTION("preprocess + Felsch") {
+      REQUIRE(presentation::longest_common_subword(p) == "xy");
+      presentation::replace_subword(p, "xy");
+      REQUIRE(presentation::longest_common_subword(p) == "axY");
+      presentation::replace_subword(p, "axY");
+      REQUIRE(presentation::length(p) == 140);
+      // presentation::greedy_reduce_length(p);
+      // REQUIRE(presentation::length(p) == 77);
+      ToddCoxeter tc(right, p);
+      tc.add_pair(make<word_type>(p, "xy"), make<word_type>(p, ""));
+      tc.strategy(options::strategy::felsch);
+      REQUIRE(tc.number_of_classes() == 10'644'480);
+    }
   }
 
   // Approx. 32 minutes (2021 - MacBook Air M1 - 8GB RAM)
@@ -4091,6 +4100,7 @@ namespace libsemigroups {
       "107",
       "http://brauer.maths.qmul.ac.uk/Atlas/spor/J1/mag/J1G1-P1.M",
       "[todd-coxeter][standard]") {
+    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("xyXY");
     p.contains_empty_word(true);

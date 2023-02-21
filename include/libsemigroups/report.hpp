@@ -44,6 +44,7 @@
 
 #ifdef LIBSEMIGROUPS_FMT_ENABLED
 #include <array>  // for array
+#include <fmt/chrono.h>
 #include <fmt/color.h>
 #include <fmt/compile.h>
 #include <fmt/printf.h>
@@ -549,6 +550,62 @@ namespace libsemigroups {
       std::string prefix = fmt::format("#{}: ", tid);
       report_no_prefix(prefix + s, std::forward<Args>(args)...);
     }
+  }
+
+  namespace detail {
+    template <typename T>
+    bool string_time_incremental(std::string&              result,
+                                 std::chrono::nanoseconds& elapsed) {
+      T x = std::chrono::duration_cast<T>(elapsed);
+      if (x > T(0)) {
+        result += fmt::format("{}", x);
+        elapsed -= std::chrono::nanoseconds(x);
+        return true;
+      }
+      return false;
+    };
+
+    // TODO put in cpp file
+    template <>
+    inline bool string_time_incremental<std::chrono::seconds>(
+        std::string&              result,
+        std::chrono::nanoseconds& elapsed) {
+      using seconds = std::chrono::seconds;
+      seconds x     = std::chrono::duration_cast<seconds>(elapsed);
+      if (x.count() > 0) {
+        if (x.count() < 10) {
+          double x_float = static_cast<double>(elapsed.count()) / 1'000'000'000;
+          result += fmt::format("{:.3f}s", x_float);
+        } else {
+          result += fmt::format("{}", x);
+        }
+        elapsed -= std::chrono::nanoseconds(x);
+        return true;
+      }
+      return false;
+    }
+  }  // namespace detail
+
+  template <typename Time>
+  std::string string_time(Time elapsed) {
+    using detail::string_time_incremental;
+
+    std::string out;
+    // TODO add day, months etc
+    if (string_time_incremental<std::chrono::hours>(out, elapsed)) {
+      string_time_incremental<std::chrono::minutes>(out, elapsed);
+      string_time_incremental<std::chrono::seconds>(out, elapsed);
+    } else if (string_time_incremental<std::chrono::minutes>(out, elapsed)) {
+      string_time_incremental<std::chrono::seconds>(out, elapsed);
+    } else if (string_time_incremental<std::chrono::seconds>(out, elapsed)) {
+    } else if (string_time_incremental<std::chrono::milliseconds>(out,
+                                                                  elapsed)) {
+    } else if (string_time_incremental<std::chrono::microseconds>(out,
+                                                                  elapsed)) {
+    } else if (string_time_incremental<std::chrono::nanoseconds>(out,
+                                                                 elapsed)) {
+    }
+    return out;
   }
 
 }  // namespace libsemigroups

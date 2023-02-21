@@ -161,4 +161,5 @@ namespace libsemigroups {
     }
 
   }  // namespace report
+
 }  // namespace libsemigroups

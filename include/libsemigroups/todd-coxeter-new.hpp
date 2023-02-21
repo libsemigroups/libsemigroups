@@ -247,7 +247,7 @@ namespace libsemigroups {
       }
 
       // to ToddCoxeterDigraph
-      template <bool RegisterDefs = true>
+      template <bool RegDefs = true>
       void push_definition_hlt(node_type const& c,
                                word_type const& u,
                                word_type const& v) noexcept {
@@ -257,7 +257,7 @@ namespace libsemigroups {
         letter_type a, b;
 
         if (!u.empty()) {
-          x = complete_path(c, u.begin(), u.cend() - 1).second;
+          x = complete_path<RegDefs>(c, u.begin(), u.cend() - 1).second;
           a = u.back();
         } else {
           x = c;
@@ -265,7 +265,7 @@ namespace libsemigroups {
         }
 
         if (!v.empty()) {
-          y = complete_path(c, v.begin(), v.cend() - 1).second;
+          y = complete_path<RegDefs>(c, v.begin(), v.cend() - 1).second;
           b = v.back();
         } else {
           y = c;
@@ -276,25 +276,25 @@ namespace libsemigroups {
         auto                pref_defs
             = [this](node_type x, letter_type a, node_type y, letter_type b) {
                 node_type d = new_node();
-                this->template def_edge_nc<RegisterDefs>(x, a, d);
+                this->template def_edge_nc<RegDefs>(x, a, d);
                 if (a != b || x != y) {
-                  this->template def_edge_nc<RegisterDefs>(y, b, d);
+                  this->template def_edge_nc<RegDefs>(y, b, d);
                 }
               };
 
-        BaseDigraph::template merge_targets_of_nodes_if_possible<RegisterDefs>(
+        BaseDigraph::template merge_targets_of_nodes_if_possible<RegDefs>(
             x, a, y, b, incompat, pref_defs);
       }
 
       // to ToddCoxeterDigraph
       template <typename Iterator>
-      size_t make_compatible(Iterator first, Iterator last) {
-        // FIXME This relies on lookahead_cursor being in the right place, this
-        // is bad _stats.hlt_lookahead_calls++; TODO re-enable
+      size_t make_compatible(node_type& current,
+                             Iterator   first,
+                             Iterator   last) {
+        // _stats.hlt_lookahead_calls++; TODO(maybe) re-enable
 
         size_t const old_number_of_killed
             = NodeManager_::number_of_nodes_killed();
-        auto&                                 current = lookahead_cursor();
         CollectCoincidences                   incompat(_coinc);
         typename BaseDigraph::NoPreferredDefs prefdefs;
         while (current != NodeManager_::first_free_node()) {
@@ -305,6 +305,7 @@ namespace libsemigroups {
           // Using NoPreferredDefs is just a (more or less) arbitrary
           // choice, could allow the other choices here too (which works,
           // but didn't seem to be very useful).
+          process_coincidences<DoNotRegisterDefs>();
           current = NodeManager_::next_active_node(current);
           if (report()) {
             report_active_nodes();

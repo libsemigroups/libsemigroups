@@ -28,9 +28,11 @@ namespace libsemigroups {
 
   template <typename BaseDigraph>
   struct NodeManagedDigraph<BaseDigraph>::Stats {
-    uint64_t prev_active_nodes;
-    uint64_t prev_nodes_killed;
-    uint64_t prev_nodes_defined;
+    using time_point = std::chrono::high_resolution_clock::time_point;
+    uint64_t   prev_active_nodes;
+    uint64_t   prev_nodes_killed;
+    uint64_t   prev_nodes_defined;
+    time_point start_time = std::chrono::high_resolution_clock::now();
   };
 
   template <typename BaseDigraph>
@@ -44,6 +46,7 @@ namespace libsemigroups {
   }
 
   template <typename BaseDigraph>
+  template <bool RegisterDefs>
   std::pair<bool, typename NodeManagedDigraph<BaseDigraph>::node_type>
   NodeManagedDigraph<BaseDigraph>::complete_path(
       node_type                 c,
@@ -60,7 +63,7 @@ namespace libsemigroups {
     for (; it < last; ++it) {
       LIBSEMIGROUPS_ASSERT(unsafe_neighbor(c, *it) == UNDEFINED);
       node_type d = new_node();
-      BaseDigraph::add_edge_nc(c, d, *it);
+      BaseDigraph::template add_edge_nc<RegisterDefs>(c, d, *it);
       result = true;
       c      = d;
     }
@@ -88,7 +91,7 @@ namespace libsemigroups {
   }
 
   template <typename BaseDigraph>
-  void NodeManagedDigraph<BaseDigraph>::stats_check_point() {
+  void NodeManagedDigraph<BaseDigraph>::stats_check_point() const {
     _stats.prev_active_nodes  = NodeManager_::number_of_nodes_active();
     _stats.prev_nodes_killed  = NodeManager_::number_of_nodes_killed();
     _stats.prev_nodes_defined = NodeManager_::number_of_nodes_defined();
@@ -111,13 +114,39 @@ namespace libsemigroups {
   template <typename BaseDigraph>
   void NodeManagedDigraph<BaseDigraph>::report_active_nodes() const {
     using detail::group_digits;
+    using detail::signed_group_digits;
+    using std::chrono::duration_cast;
+    using high_resolution_clock = std::chrono::high_resolution_clock;
+    using nanoseconds           = std::chrono::nanoseconds;
 
-    report_default("{}: nodes {:>11} (active) | {:>11} (killed) | "
-                   "{:>11} (defined)\n",
+    auto const active  = this->number_of_nodes_active();
+    auto const killed  = this->number_of_nodes_killed();
+    auto const defined = this->number_of_nodes_defined();
+
+    auto run_time = duration_cast<nanoseconds>(high_resolution_clock::now()
+                                               - this->_stats.start_time);
+
+    report_default("{}: nodes {:>12} (active) | {:>12} (killed) | "
+                   "{:>12} (defined)\n",
                    _prefix,
-                   group_digits(this->number_of_nodes_active()),
-                   group_digits(this->number_of_nodes_killed()),
-                   group_digits(this->number_of_nodes_defined()));
+                   group_digits(active),
+                   group_digits(killed),
+                   group_digits(defined));
+    report_default("{}: diff  {:>12} (active) | {:>12} (killed) | "
+                   "{:>12} (defined)\n",
+                   _prefix,
+                   signed_group_digits(active - _stats.prev_active_nodes),
+                   signed_group_digits(killed - _stats.prev_nodes_killed),
+                   signed_group_digits(defined - _stats.prev_nodes_defined));
+    report_default(
+        "{}: time  {:>12} (total)  | {:>10}/s (killed) | {:>10}/s "
+        "(defined)\n",
+        _prefix,
+        string_time(run_time),
+        group_digits(std::pow(10, 9) * double(killed) / run_time.count()),
+        group_digits(std::pow(10, 9) * double(defined) / run_time.count()));
+    report_no_prefix("{:-<93}\n", "");
+    stats_check_point();
   }
 
   template <typename BaseDigraph>

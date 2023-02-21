@@ -40,6 +40,7 @@
 #include "present.hpp"       // for Presentation, Presentation<>:...
 #include "report.hpp"        // for REPORT_DEFAULT
 #include "runner.hpp"
+#include "timer.hpp"  // for Timer
 #include "types.hpp"  // for word_type
 
 namespace libsemigroups {
@@ -69,9 +70,9 @@ namespace libsemigroups {
     Coincidences _coinc;
 
    private:
-    std::string _prefix;
-    Settings    _settings;
-    Stats       _stats;
+    std::string   _prefix;
+    Settings      _settings;
+    mutable Stats _stats;
 
    public:
     using BaseDigraph::BaseDigraph;
@@ -127,6 +128,7 @@ namespace libsemigroups {
 
     void reserve(size_t n);
 
+    template <bool RegisterDefs = false>
     std::pair<bool, node_type>
     complete_path(node_type                 c,
                   word_type::const_iterator first,
@@ -152,7 +154,7 @@ namespace libsemigroups {
       return _stats;
     }
 
-    void stats_check_point();
+    void stats_check_point() const;
 
     node_type new_node();
 
