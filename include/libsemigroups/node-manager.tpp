@@ -262,7 +262,7 @@ namespace libsemigroups {
     // The permutation p ^ -1 must map the active nodes to the [0, ..
     // , number_of_nodes_active())
     template <typename NodeType>
-    void NodeManager<NodeType>::apply_permutation(NodeManager::Perm& p) {
+    void NodeManager<NodeType>::apply_permutation(NodeManager::Perm p) {
       size_t const n = p.size();
       for (NodeType i = 0; i < n; ++i) {
         NodeType current = i;

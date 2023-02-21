@@ -157,7 +157,7 @@ namespace libsemigroups {
     }
     CollectCoincidences incompat_func(_coinc);
 
-    size_t prev_num_nodes = this->number_of_nodes_active();
+    // TODO re-enable  size_t prev_num_nodes = this->number_of_nodes_active();
     while (!_coinc.empty()) {  // && _coinc.size() < large_collapse()) {
       Coincidence c = _coinc.top();
       _coinc.pop();

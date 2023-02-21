@@ -138,7 +138,6 @@ namespace libsemigroups {
       }
 
       void clear() {
-        // _any_skipped |= !_definitions.empty();
         _definitions.clear();
       }
 
@@ -246,7 +245,6 @@ namespace libsemigroups {
         return *this;
       }
 
-      // to ToddCoxeterDigraph
       template <bool RegDefs = true>
       void push_definition_hlt(node_type const& c,
                                word_type const& u,
@@ -286,7 +284,6 @@ namespace libsemigroups {
             x, a, y, b, incompat, pref_defs);
       }
 
-      // to ToddCoxeterDigraph
       template <typename Iterator>
       size_t make_compatible(node_type& current,
                              Iterator   first,
@@ -335,8 +332,6 @@ namespace libsemigroups {
           process_coincidences<true>();
         }
       }
-
-     private:
     };
 
     using digraph_type = ToddCoxeterDigraph;

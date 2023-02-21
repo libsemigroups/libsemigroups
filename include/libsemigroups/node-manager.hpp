@@ -295,7 +295,7 @@ namespace libsemigroups {
       void      erase_free_nodes();
       node_type new_active_node();
       void      switch_nodes(node_type const, node_type const);
-      void      apply_permutation(Perm& p);
+      void      apply_permutation(Perm p);
 
       // not noexcept since std::vector::operator[] isn't.
       void free_node(node_type const);

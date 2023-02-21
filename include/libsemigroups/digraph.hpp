@@ -3380,15 +3380,22 @@ namespace libsemigroups {
         size_t const n      = d.out_degree();
         bool         result = false;
 
+        // p : new -> old and q : old -> new
+        std::vector<node_type> p(d.number_of_nodes(), 0);
+        std::iota(p.begin(), p.end(), 0);
+        std::vector<node_type> q(p);
+
         for (node_type s = 0; s <= t; ++s) {
           for (letter_type x = 0; x < n; ++x) {
-            node_type const r = d.unsafe_neighbor(s, x);
+            node_type r = d.unsafe_neighbor(p[s], x);
             if (r != UNDEFINED) {
+              r = q[r];  // new
               if (r > t) {
                 t++;
                 f.add_nodes(1);
                 if (r > t) {
-                  d.swap_nodes(t, r);
+                  std::swap(p[t], p[r]);
+                  std::swap(q[p[t]], q[p[r]]);
                   result = true;
                 }
                 f.set(t, (s == t ? r : s), x);
@@ -3396,6 +3403,7 @@ namespace libsemigroups {
             }
           }
         }
+        d.permute_nodes_nc(p, q);
         return result;
       }
 
@@ -3414,15 +3422,22 @@ namespace libsemigroups {
         auto const n      = d.out_degree();
         bool       result = false;
 
+        // p : new -> old and q : old -> new
+        std::vector<node_type> p(d.number_of_nodes(), 0);
+        std::iota(p.begin(), p.end(), 0);
+        std::vector<node_type> q(p);
+
         // Perform a DFS through d
         while (s <= t) {
-          node_type r = d.unsafe_neighbor(s, x);
+          node_type r = d.unsafe_neighbor(p[s], x);
           if (r != UNDEFINED) {
+            r = q[r];  // new
             if (r > t) {
               t++;
               f.add_nodes(1);
               if (r > t) {
-                d.swap_nodes(t, r);
+                std::swap(p[t], p[r]);
+                std::swap(q[p[t]], q[p[r]]);
                 result = true;
               }
               f.set(t, (s == t ? r : s), x);
@@ -3437,6 +3452,7 @@ namespace libsemigroups {
             s = f.parent(s);
           }
         }
+        d.permute_nodes_nc(p, q);
         return result;
       }
 
@@ -3539,8 +3555,7 @@ namespace libsemigroups {
     // Return value indicates whether or not the graph was modified.
     // TODO(now) to tpp file
     template <typename T>
-    bool standardize(T& d, Forest& f, order val) {
-      // TODO(later): should be DigraphWithSourcesBase
+    bool standardize(T& d, Forest& f, order val, size_t num_nodes) {
       static_assert(
           std::is_base_of<ActionDigraphBase, T>::value,
           "the template parameter T must be derived from ActionDigraphBase");
@@ -3566,12 +3581,14 @@ namespace libsemigroups {
     }
 
     template <typename T>
-    std::pair<bool, Forest> standardize(T& d, order val = order::shortlex) {
+    std::pair<bool, Forest> standardize(T&     d,
+                                        order  val = order::shortlex,
+                                        size_t num_nodes) {
       static_assert(
           std::is_base_of<ActionDigraphBase, T>::value,
           "the template parameter T must be derived from ActionDigraphBase");
       Forest f;
-      bool   result = standardize(d, f, val);
+      bool   result = standardize(d, f, val, num_nodes);
       return std::make_pair(result, f);
     }
 

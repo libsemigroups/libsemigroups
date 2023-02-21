@@ -158,6 +158,12 @@ namespace libsemigroups {
 
     node_type new_node();
 
+    void permute_nodes_nc(std::vector<node_type> const& p,
+                          std::vector<node_type> const& q) {
+      BaseDigraph::permute_nodes_nc(p, q, this->number_of_nodes_active());
+      NodeManager_::apply_permutation(p);
+    }
+
    protected:
     struct CollectCoincidences {
       CollectCoincidences(Coincidences& c) : _coinc(c) {}

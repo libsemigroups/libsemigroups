@@ -3340,13 +3340,15 @@ namespace libsemigroups {
     REQUIRE(p.alphabet().size() == 11);
 
     ToddCoxeter tc(twosided, p);
-    tc.strategy(options::strategy::hlt);
+    tc.strategy(options::strategy::hlt)
+        .lookahead_extent(options::lookahead_extent::partial);
     REQUIRE(!is_obviously_infinite(tc));
 
-    // section_felsch(tc);
-    // section_hlt(tc);
+    section_felsch(tc);
+    section_hlt(tc);
 
     REQUIRE(tc.number_of_classes() == 10'625);
+    REQUIRE(tc.word_graph().node_capacity() == 10'625);
 
     // section_random(tc);
     // section_rc_style(tc);

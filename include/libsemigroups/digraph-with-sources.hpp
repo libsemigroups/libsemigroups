@@ -120,12 +120,11 @@ namespace libsemigroups {
       return _preim_next.get(c, x);
     }
 
-    // TODO remove when removing the old ToddCoxeter
     // The permutation q must map the valid nodes to the [0, .. , n), where
     // n is the number of valid nodes, and p = q ^ -1.
-    void permute_nodes_nc(std::vector<node_type>& p,
-                          std::vector<node_type>& q,
-                          size_t                  n);
+    void permute_nodes_nc(std::vector<node_type> const& p,
+                          std::vector<node_type> const& q,
+                          size_t                        n);
 
     // Swaps valid nodes c and d, if c or d is not valid, then this will
     // fail spectacularly (no checks are performed)

@@ -92,9 +92,10 @@ namespace libsemigroups {
   ////////////////////////////////////////////////////////////////////////////
 
   template <typename NodeType>
-  void DigraphWithSources<NodeType>::permute_nodes_nc(std::vector<node_type>& p,
-                                                      std::vector<node_type>& q,
-                                                      size_t m) {
+  void DigraphWithSources<NodeType>::permute_nodes_nc(
+      std::vector<node_type> const& p,
+      std::vector<node_type> const& q,
+      size_t                        m) {
     // p : new -> old, q = p ^ -1
     node_type    c = 0;
     size_t const n = this->out_degree();

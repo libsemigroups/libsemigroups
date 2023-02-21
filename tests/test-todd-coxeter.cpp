@@ -3581,8 +3581,6 @@ namespace libsemigroups {
       REQUIRE(tc.number_of_rules() == 121);
       REQUIRE(!tc.is_obviously_infinite());
 
-      REQUIRE(tc.size() == 10'625);
-
       check_hlt(tc);
       check_felsch(tc);
       check_random(tc);
@@ -3590,6 +3588,8 @@ namespace libsemigroups {
       check_R_over_C_style(tc);
       check_CR_style(tc);
       check_Cr_style(tc);
+
+      REQUIRE(tc.size() == 10'625);
 
       tc.congruence().standardize(tc_order::shortlex);
       REQUIRE(std::is_sorted(tc.congruence().cbegin_normal_forms(),

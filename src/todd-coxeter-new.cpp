@@ -39,6 +39,8 @@ namespace libsemigroups {
         _forest(),
         _standardized(order::none),
         _word_graph() {
+    // This is where we pass through from _settings to the
+    // _word_graph.definitions
     _word_graph.definitions().init(this);
     _word_graph.set_prefix("ToddCoxeter");
   }
@@ -284,7 +286,7 @@ namespace libsemigroups {
       // TODO Throw?
       return;
     }
-    standardize(order::shortlex);
+    standardize(order::shortlex, _word_graph.number_of_nodes_active());
     _word_graph.shrink_to_fit(_word_graph.number_of_nodes_active());
     _word_graph.erase_free_nodes();
     _word_graph.restrict(_word_graph.number_of_nodes_active());
@@ -573,7 +575,7 @@ namespace libsemigroups {
                    "| {:>12} (diff)\n",
                    pad,
                    fmt::group_digits(lookahead_next()),
-                   detail::group_digits(diff));
+                   detail::signed_group_digits(diff));
     report_no_prefix("{:-<93}\n", "");
   }
 
