@@ -157,8 +157,11 @@ namespace libsemigroups {
     }
     CollectCoincidences incompat_func(_coinc);
 
-    // TODO re-enable  size_t prev_num_nodes = this->number_of_nodes_active();
-    while (!_coinc.empty()) {  // && _coinc.size() < large_collapse()) {
+    // TODO re-enable
+    // size_t        prev_num_nodes = this->number_of_nodes_active();
+    static size_t total_coinc = 0;
+    while (!_coinc.empty() && _coinc.size() < large_collapse()) {
+      total_coinc++;
       Coincidence c = _coinc.top();
       _coinc.pop();
       node_type min = NodeManager_::find_node(c.first);
@@ -198,6 +201,7 @@ namespace libsemigroups {
     }
 
     if (_coinc.empty()) {
+      // fmt::print("Position 1, total coincidences is {}\n", total_coinc);
       return;
     }
 
@@ -258,6 +262,7 @@ namespace libsemigroups {
       }
       c = NodeManager_::next_active_node(c);
     }
+    // fmt::print("Position 2, total coincidences is {}\n", total_coinc);
   }
 
 }  // namespace libsemigroups

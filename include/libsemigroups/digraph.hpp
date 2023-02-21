@@ -3555,7 +3555,8 @@ namespace libsemigroups {
     // Return value indicates whether or not the graph was modified.
     // TODO(now) to tpp file
     template <typename T>
-    bool standardize(T& d, Forest& f, order val, size_t num_nodes) {
+    bool standardize(T& d, Forest& f, order val) {
+      // TODO(later): should be DigraphWithSourcesBase
       static_assert(
           std::is_base_of<ActionDigraphBase, T>::value,
           "the template parameter T must be derived from ActionDigraphBase");
@@ -3581,14 +3582,12 @@ namespace libsemigroups {
     }
 
     template <typename T>
-    std::pair<bool, Forest> standardize(T&     d,
-                                        order  val = order::shortlex,
-                                        size_t num_nodes) {
+    std::pair<bool, Forest> standardize(T& d, order val = order::shortlex) {
       static_assert(
           std::is_base_of<ActionDigraphBase, T>::value,
           "the template parameter T must be derived from ActionDigraphBase");
       Forest f;
-      bool   result = standardize(d, f, val, num_nodes);
+      bool   result = standardize(d, f, val);
       return std::make_pair(result, f);
     }
 

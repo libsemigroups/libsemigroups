@@ -511,6 +511,7 @@ namespace libsemigroups {
 
     section_felsch(tc);
     section_hlt(tc);
+    // TODO uncomment
     //  section_random(tc);
     //  section_rc_style(tc);
     //  section_R_over_C_style(tc);
@@ -627,6 +628,7 @@ namespace libsemigroups {
 
     section_felsch(tc);
     section_hlt(tc);
+    // TODO uncomment
     // section_random(tc);
     // section_rc_style(tc);
     // section_R_over_C_style(tc);
@@ -651,6 +653,7 @@ namespace libsemigroups {
 
     section_felsch(tc);
     section_hlt(tc);
+    // TODO uncomment
     // section_random(tc);
     // section_rc_style(tc);
     // section_R_over_C_style(tc);
@@ -677,6 +680,7 @@ namespace libsemigroups {
 
       section_felsch(tc);
       section_hlt(tc);
+      // TODO uncomment
       // section_random(tc);
       // section_rc_style(tc);
       // section_R_over_C_style(tc);
@@ -713,6 +717,7 @@ namespace libsemigroups {
 
     section_felsch(tc);
     section_hlt(tc);
+    // TODO uncomment
     // section_random(tc);
     // section_rc_style(tc);
     // section_R_over_C_style(tc);
@@ -751,6 +756,7 @@ namespace libsemigroups {
 
     section_felsch(tc);
     section_hlt(tc);
+    // TODO uncomment
     // section_random(tc);
     // section_rc_style(tc);
     // section_R_over_C_style(tc);
@@ -819,6 +825,7 @@ namespace libsemigroups {
 
     section_felsch(tc);
     section_hlt(tc);
+    // TODO uncomment
     // section_random(tc);
     // section_rc_style(tc);
     // section_R_over_C_style(tc);
@@ -865,6 +872,7 @@ namespace libsemigroups {
 
     section_felsch(tc);
     section_hlt(tc);
+    // TODO uncomment
     // section_random(tc);
     // section_rc_style(tc);
     // section_R_over_C_style(tc);
@@ -961,6 +969,7 @@ namespace libsemigroups {
     section_felsch(tc);
 
     section_hlt(tc);
+    // TODO uncomment
     // section_random(tc);
     // section_rc_style(tc);
     // section_R_over_C_style(tc);
@@ -1004,6 +1013,7 @@ namespace libsemigroups {
 
     section_felsch(tc);
     section_hlt(tc);
+    // TODO uncomment
     // section_random(tc);
     // section_rc_style(tc);
     // section_R_over_C_style(tc);
@@ -1075,6 +1085,7 @@ namespace libsemigroups {
 
     section_felsch(tc);
     section_hlt(tc);
+    // TODO uncomment
     // section_random(tc);
     // section_rc_style(tc);
     // section_R_over_C_style(tc);
@@ -1133,6 +1144,7 @@ namespace libsemigroups {
     ToddCoxeter tc(twosided, p);
 
     section_hlt(tc);
+    // TODO uncomment
     // section_random(tc);
 
     REQUIRE(tc.contains(00_w, 00_w));
@@ -1148,6 +1160,7 @@ namespace libsemigroups {
     ToddCoxeter tc(twosided, p);
 
     section_hlt(tc);
+    // TODO uncomment
     // section_random(tc);
 
     REQUIRE_THROWS_AS(tc.run(), LibsemigroupsException);
@@ -1181,6 +1194,7 @@ namespace libsemigroups {
 
     section_hlt(tc);
     section_felsch(tc);
+    // TODO uncomment
     // section_random(tc);
     // section_rc_style(tc);
     // section_R_over_C_style(tc);
@@ -1234,6 +1248,7 @@ namespace libsemigroups {
 
     section_hlt(tc);
     section_felsch(tc);
+    // TODO uncomment
     // section_random(tc);
     // section_rc_style(tc);
     // section_R_over_C_style(tc);
@@ -1267,6 +1282,7 @@ namespace libsemigroups {
 
       section_felsch(tc2);
       section_hlt(tc2);
+      // TODO uncomment
       // section_random(tc2);
       // section_rc_style(tc2);
       // section_R_over_C_style(tc2);
@@ -1296,6 +1312,7 @@ namespace libsemigroups {
       ToddCoxeter tc(knd, p);
 
       section_hlt(tc);
+      // TODO uncomment
       // section_random(tc);
 
       REQUIRE(tc.number_of_classes() == POSITIVE_INFINITY);
@@ -1346,6 +1363,7 @@ namespace libsemigroups {
   }
 
   /*
+    // TODO uncomment
     LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
                             "027",
                             "empty",
@@ -1546,6 +1564,7 @@ namespace libsemigroups {
     tc1.add_pair(0_w, 111_w);
     section_hlt(tc1);
     section_felsch(tc1);
+    // TODO uncomment
     // section_random(tc1);
     // section_rc_style(tc1);
     // section_R_over_C_style(tc1);
@@ -1603,8 +1622,8 @@ namespace libsemigroups {
     presentation::add_rule_and_check(p, 00_w, 0_w);
 
     ToddCoxeter tc(twosided, p);
-    // tc.strategy(options::strategy::felsch);
-    // REQUIRE(tc.strategy() == options::strategy::felsch);
+    tc.strategy(options::strategy::felsch);
+    REQUIRE(tc.strategy() == options::strategy::felsch);
     auto const& d = tc.word_graph();
     REQUIRE(!action_digraph::is_complete(
         d, d.cbegin_active_nodes(), d.cend_active_nodes()));
@@ -1693,7 +1712,8 @@ namespace libsemigroups {
     REQUIRE(tc.number_of_classes() == 0);
   }
 
-  /* LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
+  /* // TODO uncomment
+   * LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
                            "041",
                            "some finite classes",
                            "[todd-coxeter][quick]") {
@@ -1790,11 +1810,11 @@ namespace libsemigroups {
       tc.strategy(options::strategy::felsch);
       REQUIRE(tc.number_of_classes() == 362'880);
     }
-    // {
-    //   ToddCoxeter tc(twosided, p);
-    //   section_hlt(tc);
-    //   REQUIRE(tc.number_of_classes() == 362'880);
-    // }
+    {
+      ToddCoxeter tc(twosided, p);
+      section_hlt(tc);
+      REQUIRE(tc.number_of_classes() == 362'880);
+    }
   }
 
   LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
@@ -1839,7 +1859,7 @@ namespace libsemigroups {
 
     REQUIRE(tc.number_of_classes() == 5'040);
   }
-  /*
+  /* TODO uncomment
     LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
                             "045",
                             "Options operator<<",
@@ -1944,7 +1964,7 @@ namespace libsemigroups {
     ToddCoxeter tc(twosided, p);
     section_felsch(tc);
     REQUIRE(tc.number_of_classes() == 6'721);
-    // check_complete_compatible(tc);
+    check_complete_compatible(tc);
   }
 
   LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
@@ -1969,11 +1989,12 @@ namespace libsemigroups {
     // section_random(tc);
     // section_R_over_C_style(tc);
     // section_rc_style(tc);
-    //
+    // TODO uncomment
     REQUIRE(tc.number_of_classes() == 1496);
   }
 
   /*
+    // TODO uncomment
   LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
                           "048",
                           "stellar_monoid(7) (Gay-Hivert)",
@@ -2004,6 +2025,7 @@ namespace libsemigroups {
 
     section_felsch(tc);
     section_hlt(tc);
+    // TODO uncomment
     // section_random(tc);
     // section_R_over_C_style(tc);
     // section_rc_style(tc);
@@ -2064,6 +2086,7 @@ namespace libsemigroups {
     ToddCoxeter tc(congruence_kind::twosided, p);
     section_hlt(tc);
     section_felsch(tc);
+    // TODO uncomment
     // section_random(tc);
     // section_rc_style(tc);
     // section_R_over_C_style(tc);
@@ -2088,6 +2111,7 @@ namespace libsemigroups {
   }
 
   /*
+    // TODO uncomment
   LIBSEMIGROUPS_TEST_CASE(
       "v3::ToddCoxeter",
       "054",
@@ -2215,7 +2239,6 @@ namespace libsemigroups {
       }
     }
   */
-  // TODO move the definition to fpsemi-examples.
   LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
                           "111",
                           "partition_monoid(2)",
@@ -2301,7 +2324,7 @@ namespace libsemigroups {
     REQUIRE(tc.number_of_classes() == 823'543);
   }
   /*
-
+TODO uncomment
   LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
                           "063",
                           "add_rule",
@@ -2421,12 +2444,12 @@ namespace libsemigroups {
     ToddCoxeter tc(twosided, p);
     section_hlt(tc);
     section_felsch(tc);
+    // TODO uncomment
     // section_random(tc);
     // section_rc_style(tc);
     // section_R_over_C_style(tc);
     // section_CR_style(tc);
     // section_Cr_style(tc);
-    //
 
     REQUIRE(tc.number_of_classes() == 24);
     REQUIRE(
@@ -2711,6 +2734,7 @@ namespace libsemigroups {
 
     section_hlt(tc);
     section_felsch(tc);
+    // TODO uncomment
     // section_random(tc);
     // section_rc_style(tc);
     // section_R_over_C_style(tc);
@@ -2738,7 +2762,7 @@ namespace libsemigroups {
                           "072",
                           "Walker 2",
                           "[todd-coxeter][quick]") {
-    auto                      rg = ReportGuard(false);
+    auto                      rg = ReportGuard(true);
     Presentation<std::string> p;
     p.alphabet("ab");
     presentation::add_rule_and_check(
@@ -2789,44 +2813,35 @@ namespace libsemigroups {
     // section_R_over_C_style(tc);
     // section_CR_style(tc);
     // section_Cr_style(tc);
-    tc.run();
 
     REQUIRE(tc.number_of_classes() == 14'911);
-    // TODO uncomment
-    // check_standardize(tc);
   }
 
-  // FIXME This is much slower than in v2
   LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
                           "073",
                           "Walker 3",
                           "[todd-coxeter][standard]") {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
-    p.alphabet("abc");
-    presentation::add_rule_and_check(p, "cc", "a");
-    presentation::add_rule_and_check(p, "aaaaaaaa", "c");
+    p.alphabet("ab");
+    presentation::add_rule_and_check(p, "aaaaaaaaaaaaaaaa", "a");
     presentation::add_rule_and_check(p, "bbbbbbbbbbbbbbbb", "b");
     presentation::add_rule_and_check(p, "abb", "baa");
 
-    REQUIRE(presentation::length(p) == 35);
-    SECTION("preprocess the presentation") {
-      presentation::greedy_reduce_length(p);
-      REQUIRE(presentation::length(p) == 26);
-      REQUIRE(p.alphabet() == "abcde");
-    }
     ToddCoxeter tc(twosided, p);
-    // tc.lookahead_next(2'000'000);
-    tc.strategy(options::strategy::felsch)
-        .def_policy(options::def_policy::unlimited)
-        .def_version(options::def_version::one);
 
     REQUIRE(!is_obviously_infinite(tc));
     section_hlt(tc);
     section_felsch(tc);
+    SECTION("custom Felsch") {
+      tc.strategy(options::strategy::felsch)
+          .def_version(options::def_version::one)
+          .def_policy(options::def_policy::unlimited);
+    }
     // TODO uncomment
     // section_random(tc);
-    // section_rc_style(tc); // Rc_style + partial lookahead works very badly
+    // section_rc_style(tc); // Rc_style +
+    // partial lookahead works very badly
     // 2m30s
     // section_R_over_C_style(tc);
     // section_Cr_style(tc);
@@ -2924,6 +2939,7 @@ namespace libsemigroups {
     // This example is extremely slow with Felsch (even with the
     // preprocessing)
     section_hlt(tc);
+    // TODO uncomment
     // section_random(tc);
     // section_rc_style(tc);
     // section_R_over_C_style(tc);
@@ -2954,8 +2970,7 @@ namespace libsemigroups {
     tc.lookahead_next(5'000'000);
     REQUIRE(!is_obviously_infinite(tc));
 
-    // the random strategy
-    // strategy is typically fastest
+    // the random strategy is typically fastest
     section_hlt(tc);
     // Takes about 3.5s with preprocessing
     SECTION("preprocessing + Felsch") {
@@ -2977,6 +2992,7 @@ namespace libsemigroups {
       REQUIRE(presentation::length(p) == 33);
       tc.init(twosided, p);
     }
+    // TODO uncomment
     // section_random(tc);
     // section_rc_style(tc);
     // section_R_over_C_style(tc);
@@ -3028,6 +3044,7 @@ namespace libsemigroups {
     // preprocessing above
     section_hlt(tc);
     section_felsch(tc);
+    // TODO uncomment
     // section_random(tc);
     // section_rc_style(tc); // partial lookahead is too slow
     // section_Cr_style(tc); // very slow
@@ -3072,11 +3089,13 @@ namespace libsemigroups {
 
     section_hlt(tc);
     section_felsch(tc);
+    // TODO uncomment
     // section_random(tc);
     // section_rc_style(tc); // partial lookahead very slow ~8s
     // section_R_over_C_style(tc);
     // section_Cr_style(tc);
 
+    // TODO uncomment
     //      .deduction_policy(
     //          DefinitionOptions::definitions::no_stack_if_no_space)
     //      .preferred_defs(options::preferred_defs::none);
@@ -3112,6 +3131,7 @@ namespace libsemigroups {
 
     section_hlt(tc);
     section_felsch(tc);
+    // TODO uncomment
     // section_random(tc);
     // section_rc_style(tc); + partial lookahead too slow
     // section_Cr_style(tc); // too slow
@@ -3122,15 +3142,17 @@ namespace libsemigroups {
     REQUIRE(tc.number_of_classes() == 270'272);
   }
 
+  // This is a good example of why large collapse is required
   LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
                           "080",
                           "KnuthBendix 098",
                           "[todd-coxeter][quick][no-valgrind]") {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
-    p.alphabet("aAbBcCdDyYfFgG");
-    p.contains_empty_word(true);
-    presentation::add_inverse_rules(p, "AaBbCcDdYyFfGg");
+    p.alphabet("aAbBcCdDyYfFgGe");
+    p.contains_empty_word(false);
+    presentation::add_identity_rules(p, 'e');
+    presentation::add_inverse_rules(p, "AaBbCcDdYyFfGge", 'e');
     presentation::add_rule_and_check(p, "ab", "c");
     presentation::add_rule_and_check(p, "bc", "d");
     presentation::add_rule_and_check(p, "cd", "y");
@@ -3142,6 +3164,7 @@ namespace libsemigroups {
 
     section_hlt(tc);
     section_felsch(tc);
+    // TODO uncomment
     // section_random(tc);
     // section_rc_style(tc);
     // section_R_over_C_style(tc);
@@ -3204,14 +3227,10 @@ namespace libsemigroups {
     }
     SECTION("p = 11") {
       presentation::add_rule_and_check(p, second(11), id);
-      // REQUIRE(presentation::length(p) == 57);
-      // presentation::greedy_reduce_length(p);
-      // REQUIRE(presentation::length(p) == 40);
-      // REQUIRE(p.alphabet() == "xXyYab");
-      // presentation::replace_subword(p, "xayyaabb");
 
       ToddCoxeter tc(twosided, p);
       section_hlt(tc);
+      // TODO uncomment
       // section_random(tc);
 
       REQUIRE(tc.number_of_classes() == 1'320);
@@ -3325,7 +3344,6 @@ namespace libsemigroups {
   }
 
   // The next example demonstrates why we require deferred standardization
-  // FIXME this is also very slow in v3 (661ms vs 45ms in v2)
   LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
                           "085",
                           "Renner monoid type D4 (Gay-Hivert), q = 1",
@@ -3348,16 +3366,15 @@ namespace libsemigroups {
     section_hlt(tc);
 
     REQUIRE(tc.number_of_classes() == 10'625);
-    REQUIRE(tc.word_graph().node_capacity() == 10'625);
 
+    // TODO uncomment
     // section_random(tc);
     // section_rc_style(tc);
     // section_R_over_C_style(tc);
     // section_CR_style(tc);
     // section_Cr_style(tc);
 
-    tc.standardize(
-        order::shortlex);  // FIXME This is the cause of the slow down
+    tc.standardize(order::shortlex);
     REQUIRE(std::is_sorted(todd_coxeter::cbegin_normal_forms(tc),
                            todd_coxeter::cend_normal_forms(tc),
                            ShortLexCompare()));
@@ -3453,6 +3470,8 @@ namespace libsemigroups {
     REQUIRE(H.number_of_classes() == 8);
   }
 
+  // In this example large_collapse makes a huge difference to the run time,
+  // 73ms versus 1173ms for the save case.
   LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
                           "089",
                           "ACE --- 2p17-1a - HLT",
@@ -3472,9 +3491,8 @@ namespace libsemigroups {
     H.add_pair(make<word_type>(p, "bc"), make<word_type>(p, ""));
     H.add_pair(make<word_type>(p, "ABAAbcabC"), make<word_type>(p, ""));
     H.add_pair(make<word_type>(p, "AcccacBcA"), make<word_type>(p, ""));
-    // TODO uncomment or remove
-    // H.large_collapse(10'000);
-    H.strategy(options::strategy::hlt)
+    H.large_collapse(10'000)
+        .strategy(options::strategy::hlt)
         .lookahead_extent(options::lookahead_extent::partial);
     SECTION("save") {
       H.save(true);
@@ -3506,6 +3524,7 @@ namespace libsemigroups {
     ToddCoxeter H(twosided, p);
     section_felsch(H);
     section_hlt(H);
+    // TODO uncomment
     // section_random(H);
 
     REQUIRE(H.number_of_classes() == 29);
@@ -3533,12 +3552,10 @@ namespace libsemigroups {
       presentation::greedy_reduce_length(p);
       REQUIRE(presentation::length(p) == 49);
       H.init(right, p);
-      // section_felsch(H); TOO slow
     }
     SECTION("no preprocessing") {
       REQUIRE(presentation::length(p) == 83);
       H.init(right, p);
-      // section_felsch(H);  TOO slow
     }
     H.add_pair(make<word_type>(p, "b"), make<word_type>(p, ""));
 
@@ -3590,6 +3607,7 @@ namespace libsemigroups {
     H.add_pair(make<word_type>(p, "a"), make<word_type>(p, ""));
 
     section_hlt(H);
+    // TODO uncomment
     // section_random(H);
     section_felsch(H);
 
@@ -3647,6 +3665,7 @@ namespace libsemigroups {
     ToddCoxeter H(twosided, p);
 
     section_hlt(H);
+    // TODO uncomment
     // section_random(H);
     section_felsch(H);
 
@@ -3672,6 +3691,7 @@ namespace libsemigroups {
     H.add_pair(make<word_type>(p, "ab"), make<word_type>(p, ""));
 
     section_hlt(H);
+    // TODO uncomment
     // section_random(H);
     section_felsch(H);
     REQUIRE(H.number_of_classes() == 12);
@@ -3694,6 +3714,7 @@ namespace libsemigroups {
     ToddCoxeter H(twosided, p);
 
     section_hlt(H);
+    // TODO uncomment
     // section_random(H);
     section_felsch(H);
 
@@ -3822,15 +3843,15 @@ namespace libsemigroups {
     presentation::add_rule_and_check(
         p, {9, 0, 1, 2, 3, 4, 5, 5, 1, 5, 6, 9, 8, 8, 8, 8, 8, 0}, {9});
 
-    // TODO uncomment tc.sort_generating_pairs(recursive_path_compare);
-
     ToddCoxeter tc(twosided, p);
     section_felsch(tc);
     section_hlt(tc);
+    // TODO uncomment
     // section_random(tc);
 
     section_felsch(tc);
     section_hlt(tc);
+    // TODO uncomment
     // section_random(tc);
 
     REQUIRE(tc.number_of_classes() == 10);
@@ -4039,8 +4060,6 @@ namespace libsemigroups {
       REQUIRE(presentation::longest_common_subword(p) == "axY");
       presentation::replace_subword(p, "axY");
       REQUIRE(presentation::length(p) == 140);
-      // presentation::greedy_reduce_length(p);
-      // REQUIRE(presentation::length(p) == 77);
       ToddCoxeter tc(right, p);
       tc.add_pair(make<word_type>(p, "xy"), make<word_type>(p, ""));
       tc.strategy(options::strategy::felsch);
@@ -4085,8 +4104,6 @@ namespace libsemigroups {
     presentation::sort_rules(p);
 
     REQUIRE(presentation::length(p) == 367);
-    // presentation::greedy_reduce_length(p);
-    // REQUIRE(presentation::length(p) == 135);
 
     ToddCoxeter tc(right, p);
     tc.add_pair(make<word_type>(p, "xy"), make<word_type>(p, ""));

@@ -3193,6 +3193,7 @@ namespace libsemigroups {
                                        | options::deductions::unlimited);
       // tc.congruence().next_lookahead(2'000'000);
       // tc.congruence().simplify();
+      tc.congruence().preferred_defs(options::preferred_defs::none);
       REQUIRE(!tc.is_obviously_finite());
 
       // check_hlt(tc);
@@ -3949,12 +3950,13 @@ namespace libsemigroups {
       REQUIRE(tc.number_of_rules() == 173);
       REQUIRE(!tc.is_obviously_infinite());
       tc.congruence()
-          .sort_generating_pairs(&shortlex_compare)
-          .sort_generating_pairs(recursive_path_compare)
+          //.sort_generating_pairs(&shortlex_compare)
+          //.sort_generating_pairs(recursive_path_compare)
           .remove_duplicate_generating_pairs();
       REQUIRE(tc.number_of_rules() == 173);
 
-      tc.congruence().strategy(options::strategy::felsch).f_defs(100'000).run();
+      tc.congruence().strategy(
+          options::strategy::felsch);  // .f_defs(100'000).run();
       REQUIRE(tc.size() == 258'661);
     }
 

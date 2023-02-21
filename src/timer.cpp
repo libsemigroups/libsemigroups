@@ -61,5 +61,6 @@ namespace libsemigroups {
         return out;
       }
     }
+
   }  // namespace detail
 }  // namespace libsemigroups

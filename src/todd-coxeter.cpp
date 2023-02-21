@@ -2731,6 +2731,7 @@ namespace libsemigroups {
         for (auto it = _relations.cbegin(); it < _relations.cend(); it += 2) {
           push_definition_felsch<DoNotStackDeductions,
                                  ProcessCoincidences<stack_deductions::no>,
+
                                  NoPreferredDefs>(
               // Using NoPreferredDefs is just a (more or less) arbitrary
               // choice, could allow the other choices here too (which works,

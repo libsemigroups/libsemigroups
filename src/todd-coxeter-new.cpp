@@ -246,6 +246,15 @@ namespace libsemigroups {
     return _settings.lower_bound;
   }
 
+  ToddCoxeter& ToddCoxeter::large_collapse(size_t n) noexcept {
+    _word_graph.large_collapse(n);
+    return *this;
+  }
+
+  size_t ToddCoxeter::large_collapse() const noexcept {
+    return _word_graph.large_collapse();
+  }
+
   ////////////////////////////////////////////////////////////////////////
   // ToddCoxeter - accessors - public
   ////////////////////////////////////////////////////////////////////////
@@ -286,7 +295,7 @@ namespace libsemigroups {
       // TODO Throw?
       return;
     }
-    standardize(order::shortlex, _word_graph.number_of_nodes_active());
+    standardize(order::shortlex);
     _word_graph.shrink_to_fit(_word_graph.number_of_nodes_active());
     _word_graph.erase_free_nodes();
     _word_graph.restrict(_word_graph.number_of_nodes_active());

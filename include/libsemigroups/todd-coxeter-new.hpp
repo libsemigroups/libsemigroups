@@ -799,6 +799,49 @@ namespace libsemigroups {
     //! \sa lower_bound(size_t)
     [[nodiscard]] size_t lower_bound() const noexcept;
 
+    //! Specify what should be considered a large collapse.
+    //!
+    //! By default when processing coincidences nodes are merged in the word
+    //! graph one pair at a time, and the in-neighbours of the surviving node
+    //! are updated at the same time. If the number of coincidences is
+    //! large, then it might be that a pair of nodes are merged at one step,
+    //! then the surviving node is merged with another node at a future step,
+    //! and this may happen many many times. This results in the
+    //! in-neighbours of the surviving nodes being repeatedly traversed,
+    //! which can result in a significant performance penalty.
+    //! It can be beneficial to stop updating the in-neighbours as nodes are
+    //! merged, and to just rebuild the entire in-neighbours data structure
+    //! by traversing the entire word graph after all coincidences have been
+    //! processed. This is beneficial if the number of surviving nodes is
+    //! relatively small in comparison to the number of nodes merged.
+    //! The purpose of this setting is to specify what should be
+    //! considered a \"large\" collapse, or more precisely, what number of
+    //! coincidences in the stack will trigger a change from updating the
+    //! in-neighbours one-by-one to traversing the entire graph once after
+    //! all coincidences have been processed.
+    //!
+    //! The default value of this setting is \c 100'000.
+    //!
+    //! \param val the value to use.
+    //!
+    //! \returns A reference to `*this`.
+    //!
+    //! \exceptions
+    //! \noexcept
+    ToddCoxeter& large_collapse(size_t val) noexcept;
+
+    //! The current value of the large collapse setting.
+    //!
+    //! \parameters
+    //! (None)
+    //!
+    //! \returns The current value of the setting, a value of type
+    //! ``size_t``.
+    //!
+    //! \exceptions
+    //! \noexcept
+    [[nodiscard]] size_t large_collapse() const noexcept;
+
     ////////////////////////////////////////////////////////////////////////
     // ToddCoxeter - accessors - public
     ////////////////////////////////////////////////////////////////////////
