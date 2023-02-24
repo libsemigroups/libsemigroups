@@ -2,7 +2,7 @@ libsemigroups::RepOrc:
 - Constructors:
   - ["This page contains information about the constructors for the
      :cpp:any:`RepOrc` class."]
-  - RepOrc() = default
+  - RepOrc()
   - RepOrc(Sims1Settings< S > const &)
 - Settings in common with Sims1:
   - ["This page contains information about the various common settings for the
