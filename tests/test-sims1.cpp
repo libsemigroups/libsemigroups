@@ -2248,6 +2248,27 @@ namespace libsemigroups {
     REQUIRE(C.number_of_congruences(624) == 0);
   }
 
+  LIBSEMIGROUPS_TEST_CASE("Sims1",
+                          "076",
+                          "uninitialized RepOrc",
+                          "[quick][low-index]") {
+    auto rg = ReportGuard(false);
+
+    Presentation<std::string> p;
+    p.alphabet("abc");
+
+    presentation::add_rule_and_check(p, "cc", "c");
+    presentation::add_rule_and_check(p, "abb", "a");
+    presentation::add_rule_and_check(p, "aca", "aba");
+
+    RepOrc orc;
+    orc.short_rules(p).number_of_threads(std::thread::hardware_concurrency());
+    REQUIRE(orc.min_nodes() == 0);
+    REQUIRE(orc.max_nodes() == 0);
+    REQUIRE(orc.target_size() == 0);
+    REQUIRE(orc.digraph().number_of_nodes() == 0);
+  }
+
 }  // namespace libsemigroups
 
 // [[[0, 0, 0]],            #1#
