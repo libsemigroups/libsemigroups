@@ -1211,7 +1211,8 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if \p p already has an alphabet of
     //! the maximum possible size supported by `letter_type`.
     template <typename W>
-    auto first_unused_letter(Presentation<W> const& p);
+    typename Presentation<W>::letter_type
+    first_unused_letter(Presentation<W> const& p);
 
     //! Convert a monoid presentation to a semigroup presentation.
     //!

@@ -720,7 +720,8 @@ namespace libsemigroups {
     }
 
     template <typename W>
-    auto first_unused_letter(Presentation<W> const& p) {
+    typename Presentation<W>::letter_type
+    first_unused_letter(Presentation<W> const& p) {
       using letter_type = typename Presentation<W>::letter_type;
       using size_type   = typename W::size_type;
 
