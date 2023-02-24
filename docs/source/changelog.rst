@@ -1,10 +1,23 @@
 Changelog - version 2
 =====================
 
+v2.6.1 (released 24/02/2023)
+----------------------------
+
+This is a minor release with some fixes and improvements to exception messages,
+the documentation, and:
+
+* backward-cpp: add backward files by @james-d-mitchell in
+  https://github.com/libsemigroups/libsemigroups/pull/462
+* Remove auto return type from ``first_unused_letter`` by @james-d-mitchell in
+  https://github.com/libsemigroups/libsemigroups/pull/464
+* Properly initialise ``RepOrc`` by @james-d-mitchell in
+  https://github.com/libsemigroups/libsemigroups/pull/465
+
 v2.6.0 (released 06/02/2023)
 ----------------------------
 
-This is a minor releast including some new features related to presentations
+This is a minor release including some new features related to presentations
 for semigroups and monoids.
 
 * Add a second symmetric group presentation due to Moore by @MTWhyte in

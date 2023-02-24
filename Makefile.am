@@ -125,6 +125,9 @@ pkginclude_HEADERS += include/libsemigroups/word.hpp
 textflowcppincludedir = $(includedir)/libsemigroups/textflowcpp
 textflowcppinclude_HEADERS=extern/textflowcpp/TextFlow.hpp
 
+backwardcppincludedir = $(includedir)/libsemigroups/backward-cpp
+backwardcppinclude_HEADERS=extern/backward-cpp/backward.hpp
+
 ## Define hpcombiincludedir outside the conditional
 ## LIBSEMIGROUPS_HPCOMBI_ENABLED because it is used by
 ## uninstall-hook
@@ -568,6 +571,7 @@ libsemigroups_la_SOURCES += src/cong-pair.cpp
 libsemigroups_la_SOURCES += src/cong.cpp
 libsemigroups_la_SOURCES += src/constants.cpp
 libsemigroups_la_SOURCES += src/coset.cpp
+libsemigroups_la_SOURCES += src/exception.cpp
 libsemigroups_la_SOURCES += src/felsch-tree.cpp
 libsemigroups_la_SOURCES += src/forest.cpp
 libsemigroups_la_SOURCES += src/fpsemi-examples.cpp
@@ -1108,6 +1112,7 @@ uninstall-hook:
 	if test -d $(includedir)/libsemigroups/HPCombi; then rm -rf $(includedir)/libsemigroups/HPCombi; fi
 	if test -d ${fmtincludedir}; then rm -rf ${fmtincludedir}; fi
 	if test -d ${textflowcppincludedir}; then rm -rf ${textflowcppincludedir}; fi
+	if test -d ${backwardcppincludedir}; then rm -rf ${backwardcppincludedir}; fi
 	if test -d ${includedir}/libsemigroups; then rmdir ${includedir}/libsemigroups; fi
 .PHONY: uninstall-hook
 

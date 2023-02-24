@@ -1,4 +1,5 @@
 !libsemigroups.pc.in
+*.bmp
 *.gcda
 *.gcno
 *.gz
@@ -11,6 +12,7 @@
 *.o.*
 *.pyc
 *.status
+*.summary
 *.swo
 *.swp
 *.tmp
@@ -74,3 +76,4 @@ m4/ltversion.m4
 m4/lt~obsolete.m4
 tags
 test_*
+tmp/

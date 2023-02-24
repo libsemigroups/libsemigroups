@@ -161,11 +161,11 @@ namespace libsemigroups {
       LIBSEMIGROUPS_EXCEPTION("no alphabet has been defined");
     } else if (_alphabet_map.find(c) == _alphabet_map.cend()) {
       if (std::is_same<letter_type, char>::value) {
-        LIBSEMIGROUPS_EXCEPTION("invalid letter %c, valid letter are %s",
+        LIBSEMIGROUPS_EXCEPTION("invalid letter %c, valid letters are %s",
                                 c,
                                 detail::to_string(_alphabet).c_str());
       } else {
-        LIBSEMIGROUPS_EXCEPTION("invalid letter %llu, valid letter are %s",
+        LIBSEMIGROUPS_EXCEPTION("invalid letter %llu, valid letters are %s",
                                 uint64_t(c),
                                 detail::to_string(_alphabet).c_str());
       }
@@ -720,7 +720,8 @@ namespace libsemigroups {
     }
 
     template <typename W>
-    auto first_unused_letter(Presentation<W> const& p) {
+    typename Presentation<W>::letter_type
+    first_unused_letter(Presentation<W> const& p) {
       using letter_type = typename Presentation<W>::letter_type;
       using size_type   = typename W::size_type;
 

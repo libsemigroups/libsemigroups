@@ -1187,7 +1187,7 @@ namespace libsemigroups {
     //! `std::string`s the human readable characters are used before
     //! non-readable ones.
     //!
-    //! \tparam W the type of the words in the presentation
+    //! \param i the index
     //!
     //! \returns A `letter_type`.
     //!
@@ -1204,12 +1204,15 @@ namespace libsemigroups {
     //!
     //! \tparam W the type of the words in the presentation
     //!
+    //! \param p the presentation
+    //!
     //! \returns A `letter_type`.
     //!
     //! \throws LibsemigroupsException if \p p already has an alphabet of
     //! the maximum possible size supported by `letter_type`.
     template <typename W>
-    auto first_unused_letter(Presentation<W> const& p);
+    typename Presentation<W>::letter_type
+    first_unused_letter(Presentation<W> const& p);
 
     //! Convert a monoid presentation to a semigroup presentation.
     //!

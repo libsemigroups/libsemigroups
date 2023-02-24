@@ -1,4 +1,6 @@
 coverage:
+  github_checks:
+    annotations: false
   precision: 2
   round: down
   range: "90...100"
@@ -17,7 +19,7 @@ coverage:
         informational: true # Don't fail the check
 
 # Comment to post on PRs
-comment: false
+comment: true
 
 ignore:
  - "extern"
