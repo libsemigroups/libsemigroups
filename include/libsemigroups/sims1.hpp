@@ -1021,7 +1021,7 @@ namespace libsemigroups {
 
    public:
     //! Default constructor.
-    RepOrc() = default;
+    RepOrc() : _min(0), _max(0), _size(0) {}
 
     //! Construct from Sims1 or MinimalRepOrc.
     //!
@@ -1037,7 +1037,7 @@ namespace libsemigroups {
     //! \no_libsemigroups_except
     template <typename S>
     explicit RepOrc(Sims1Settings<S> const& s)
-        : Sims1Settings<RepOrc>(s), _min(), _max(), _size() {}
+        : Sims1Settings<RepOrc>(s), _min(0), _max(0), _size(0) {}
 
     //! Set the minimum number of nodes.
     //!
