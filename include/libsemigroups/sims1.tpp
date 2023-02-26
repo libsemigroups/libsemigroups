@@ -1000,7 +1000,7 @@ namespace libsemigroups {
     }
 
     hi                    = best.number_of_nodes();
-    ActionDigraph<T> next = std::move(cr.max_nodes(hi - 1).digraph());
+    ActionDigraph<T> next = cr.max_nodes(hi - 1).digraph();
     while (next.number_of_nodes() != 0) {
       hi   = next.number_of_nodes();
       best = std::move(next);
