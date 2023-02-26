@@ -312,7 +312,7 @@
 // The default is:
 // #define BACKWARD_HAS_BACKTRACE_SYMBOL == 1
 //
-#if BACKWARD_HAS_BACKTRACE_SYMBOL == 1
+#if defined(BACKWARD_HAS_BACKTRACE_SYMBOL) && BACKWARD_HAS_BACKTRACE_SYMBOL == 1
 #else
 #undef BACKWARD_HAS_BACKTRACE_SYMBOL
 #define BACKWARD_HAS_BACKTRACE_SYMBOL 1
@@ -325,7 +325,8 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
-#if (BACKWARD_HAS_BACKTRACE == 1) || (BACKWARD_HAS_BACKTRACE_SYMBOL == 1)
+#if defined(BACKWARD_HAS_BACKTRACE) && (BACKWARD_HAS_BACKTRACE == 1) \
+    || (BACKWARD_HAS_BACKTRACE_SYMBOL == 1)
 #include <execinfo.h>
 #endif
 #endif  // defined(BACKWARD_SYSTEM_DARWIN)
@@ -406,7 +407,7 @@ extern "C" uintptr_t _Unwind_GetIPInfo(_Unwind_Context*, int*);
 
 #endif  // BACKWARD_HAS_UNWIND == 1
 
-#if BACKWARD_HAS_LIBUNWIND == 1
+#if defined(BACKWARD_HAS_LIBUNWIND) && BACKWARD_HAS_LIBUNWIND == 1
 #define UNW_LOCAL_ONLY
 #include <libunwind.h>
 #endif  // BACKWARD_HAS_LIBUNWIND == 1
@@ -629,7 +630,7 @@ namespace backward {
       typedef typename rm_ptr<T>::type&       ref_t;
       typedef const typename rm_ptr<T>::type& const_ref_t;
       ref_t                                   operator*() {
-                                          return *_val;
+        return *_val;
       }
       const_ref_t operator*() const {
         return *_val;
@@ -1994,7 +1995,7 @@ namespace backward {
       }
 #endif
 
-//#define BACKWARD_I_DO_NOT_RECOMMEND_TO_ENABLE_THIS_HORRIBLE_PIECE_OF_CODE
+// #define BACKWARD_I_DO_NOT_RECOMMEND_TO_ENABLE_THIS_HORRIBLE_PIECE_OF_CODE
 #ifdef BACKWARD_I_DO_NOT_RECOMMEND_TO_ENABLE_THIS_HORRIBLE_PIECE_OF_CODE
       if (!cudie) {
         // If it's still not enough, lets dive deeper in the shit, and try

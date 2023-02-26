@@ -34,13 +34,21 @@
 
 #include "catch.hpp"  // for Colour, Colour::Code::BrightRed, CATCH_REGISTER...
 
-#include "backward-cpp/backward.hpp"  // for backward
-#include "libsemigroups/string.hpp"   // for to_string, unicode_string_length
-#include "libsemigroups/timer.hpp"    // for Timer
+#include "libsemigroups/config.hpp"  // for LIBSEMIGROUPS_BACKWARD_ENABLED
+#include "libsemigroups/string.hpp"  // for to_string, unicode_string_length
+#include "libsemigroups/timer.hpp"   // for Timer
+
+#ifdef LIBSEMIGROUPS_BACKWARD_ENABLED
+#if defined(__CYGWIN__) || defined(__CYGWIN32__)
+#undef LIBSEMIGROUPS_BACKWARD_ENABLED
+#else
+#include "backward-cpp/backward.hpp"  // for StackTrace, TraceResolver, Reso...
+#endif
+#endif
 
 namespace {
 
-#if !defined(__CYGWIN__) && !defined(__CYGWIN32__)
+#ifdef LIBSEMIGROUPS_BACKWARD_ENABLED
   struct InstallSIGINTHandler {
     InstallSIGINTHandler() {
       signal(SIGINT, signalHandler);

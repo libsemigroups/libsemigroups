@@ -24,10 +24,17 @@
 #include <stdexcept>  // for std::runtime_error
 #include <string>     // for char_traits, allocator, operator+
 
+#include "libsemigroups/config.hpp"  // for LIBSEMIGROUPS_BACKWARD_ENABLED
+                                     //
+#ifdef LIBSEMIGROUPS_BACKWARD_ENABLED
+#if defined(__CYGWIN__) || defined(__CYGWIN32__)
+#undef LIBSEMIGROUPS_BACKWARD_ENABLED
+#else
 #include "backward-cpp/backward.hpp"  // for StackTrace, TraceResolver, Reso...
+#endif
+#endif
 
 namespace libsemigroups {
-
   LibsemigroupsException::LibsemigroupsException(std::string const& fname,
                                                  int                linenum,
                                                  std::string const& funcname,
@@ -35,7 +42,7 @@ namespace libsemigroups {
       // Initialise runtime_error message in case something goes wrong below
       : std::runtime_error(fname + ":" + std::to_string(linenum) + ":"
                            + funcname + ": " + msg) {
-#if !defined(__CYGWIN__) && !defined(__CYGWIN32__)
+#ifdef LIBSEMIGROUPS_BACKWARD_ENABLED
     std::string          full_msg;
     backward::StackTrace st;
     st.load_here();
@@ -66,6 +73,8 @@ namespace libsemigroups {
   }
 }  // namespace libsemigroups
 
+#ifdef LIBSEMIGROUPS_BACKWARD_ENABLED
 namespace backward {
   backward::SignalHandling sh;
 }  // namespace backward
+#endif

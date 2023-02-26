@@ -103,6 +103,21 @@ AS_IF([test "x$enable_stats" == "xyes"], [
   AC_DEFINE([ENABLE_STATS], [1], [define if building with stats mode])
 ])
 
+# Check if backward-cpp should be enabled
+AC_ARG_ENABLE([backward],
+    [AS_HELP_STRING([--disable-backward], [disable backward])],
+    [],
+    [enable_backward=yes]
+  )
+AC_MSG_CHECKING([whether to enable backward mode])
+AC_MSG_RESULT([$enable_backward])
+
+AS_IF([test "x$enable_backward" != "xno"], [
+  AC_CHECK_HEADER(execinfo.h,
+    [AC_DEFINE([BACKWARD_ENABLED], [1], [define if building with backward-cpp enabled])],
+    [AC_MSG_WARN([backward enabled but execinfo.h not found, disabling backward!])])
+])
+
 # Check if code coverage mode is enabled
 AX_CODE_COVERAGE()
 
