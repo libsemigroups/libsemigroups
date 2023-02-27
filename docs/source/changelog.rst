@@ -1,6 +1,12 @@
 Changelog - version 2
 =====================
 
+v2.6.2 (released 27/02/2023)
+----------------------------
+
+This is a minor release adding the configuration options ``--enable-backward``,
+and ``--disable-backward``, and some related changes to the build system.
+
 v2.6.1 (released 24/02/2023)
 ----------------------------
 
