@@ -1,10 +1,10 @@
-.. Copyright (c) 2019-2022, J. D. Mitchell
+.. Copyright (c) 2019-2023, J. D. Mitchell
 
    Distributed under the terms of the GPL license version 3.
 
    The full license is in the file LICENSE, distributed with this software.
 
-libsemigroups - Version 2.6.1
+libsemigroups - Version 2.6.2
 =============================
 
 .. image:: https://readthedocs.org/projects/libsemigroups/badge/?version=master

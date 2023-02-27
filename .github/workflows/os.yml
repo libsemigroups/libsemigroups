@@ -1,0 +1,34 @@
+name: os
+on: [pull_request]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  alpine:
+      defaults:
+        run:
+          shell: alpine.sh {0}
+      runs-on: ubuntu-latest
+      steps:
+        - uses: actions/checkout@v3
+        - uses: jirutka/setup-alpine@v1
+          with:
+            branch: v3.15
+        - name: "Alpine/musl versions . . ."
+          run: |
+               cat /etc/alpine-release
+               apk info musl
+        - name: "Install autotools etc . . ."
+          run: |
+                apk add build-base autoconf automake libtool
+          shell: alpine.sh --root {0}
+        - name: "Configure . . ."
+          run: ./autogen.sh && ./configure
+        - name: "Build libsemigroups . . ."
+          run: make -j4
+        - name: "Build test_all . . ."
+          run: make check -j4
+        - name: "Run the quick tests . . ."
+          run: ./test_all "[quick]"
