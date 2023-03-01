@@ -42,4 +42,3 @@ and monoids are:
    _generated/libsemigroups__fpsemigroup__toddcoxeter
    present
    api/fpsemi-examples
-   api/word-functions

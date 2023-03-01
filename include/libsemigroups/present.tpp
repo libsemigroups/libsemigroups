@@ -29,7 +29,6 @@ namespace libsemigroups {
       return result;
     }
 
-    // Add stuff here to make sure T is
     template <typename T, typename = std::enable_if_t<IsWord<T>::value>>
     void operator<<=(T& u, T const& v) {
       u.insert(u.end(), v.cbegin(), v.cend());
@@ -51,6 +50,8 @@ namespace libsemigroups {
       return z;
     }
 
+    // Note: we could do a version of the below using insert on words, where
+    // the step is +/- 1.
     template <typename T>
     T prod(T const& elts, size_t first, size_t last, int step) {
       if (step == 0) {
