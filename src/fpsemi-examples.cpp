@@ -944,29 +944,72 @@ namespace libsemigroups {
     }
 
     // From https://doi.org/10.1007/s10012-000-0001-1
-    std::vector<relation_type> orientation_preserving_monoid(size_t n) {
+    std::vector<relation_type> orientation_preserving_monoid(size_t n,
+                                                             author val) {
       if (n < 3) {
         LIBSEMIGROUPS_EXCEPTION(
             "expected argument to be at least 3, found %llu", uint64_t(n));
       }
-      word_type                  b = {0};
-      word_type                  u = {1};
-      word_type                  e = {2};
-      std::vector<relation_type> result;
+      if (val == author::Arthur + author::Ruskuc) {
+        word_type                  b = {0};
+        word_type                  u = {1};
+        word_type                  e = {2};
+        std::vector<relation_type> result;
 
-      add_monoid_relations({b, u, e}, e, result);
+        add_monoid_relations({b, u, e}, e, result);
 
-      result.emplace_back(b ^ n, e);
-      result.emplace_back(u ^ 2, u);
-      result.emplace_back((u * b) ^ n, u * b);
-      result.emplace_back(b * ((u * (pow(b, n - 1))) ^ (n - 1)),
-                          (u * (pow(b, n - 1))) ^ (n - 1));
-      for (size_t i = 2; i <= n - 1; ++i) {
-        result.emplace_back(u * (b ^ i) * ((u * b) ^ (n - 1)) * (pow(b, n - i)),
-                            (b ^ i) * ((u * b) ^ (n - 1)) * (pow(b, n - i))
-                                * u);
+        result.emplace_back(b ^ n, e);
+        result.emplace_back(u ^ 2, u);
+        result.emplace_back((u * b) ^ n, u * b);
+        result.emplace_back(b * ((u * (pow(b, n - 1))) ^ (n - 1)),
+                            (u * (pow(b, n - 1))) ^ (n - 1));
+        for (size_t i = 2; i <= n - 1; ++i) {
+          result.emplace_back(
+              u * (b ^ i) * ((u * b) ^ (n - 1)) * (pow(b, n - i)),
+              (b ^ i) * ((u * b) ^ (n - 1)) * (pow(b, n - i)) * u);
+        }
+        return result;
+      } else if (val == author::Catarino) {
+        std::vector<relation_type> result = order_preserving_monoid(n);
+        word_type                  a      = {2 * n - 2};
+        std::vector<word_type>     u;
+        std::vector<word_type>     v;
+
+        for (size_t i = 0; i <= n - 2; ++i) {
+          u.push_back({i});
+          v.push_back({n - 1 + i});
+        }
+
+        // rule 8
+        result.emplace_back(pow(a, n), ""_w);
+
+        // rules 9
+        for (size_t i = 0; i <= n - 3; ++i) {
+          result.emplace_back(u[i] + a, a + u[i + 1]);
+        }
+
+        // rules 10
+        for (size_t i = 0; i <= n - 3; ++i) {
+          result.emplace_back(v[i + 1] + a, a + v[i]);
+        }
+
+        // rule 11
+        result.emplace_back(u[n - 2] + a,
+                            pow(a, 2) + prod(v, n - 2, 0, -1) + v[0]);
+
+        // rule 12
+        result.emplace_back(v[0] + a, prod(u, n - 2, 0, -1) + u[0]);
+
+        // rule 13
+        result.emplace_back(a + prod(u, 0, n - 1, 1), prod(u, 0, n - 1, 1));
+
+        return result;
       }
-      return result;
+
+      LIBSEMIGROUPS_EXCEPTION("expected 2nd argument to be one of "
+                              "author::Arthur + author::Ruskuc, "
+                              "or author::Catarino; found %s",
+                              detail::to_string(val).c_str());
     }
 
     // Also from https://doi.org/10.1007/s10012-000-0001-1

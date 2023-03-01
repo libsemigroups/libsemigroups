@@ -747,7 +747,7 @@ namespace libsemigroups {
 
     LIBSEMIGROUPS_TEST_CASE("fpsemi-examples",
                             "026",
-                            "orientation_preserving_monoid(6)",
+                            "orientation_preserving_monoid(6) Arthur + Ruskuc",
                             "[fpsemi-examples][quick][no-valgrind]") {
       auto   rg = ReportGuard(REPORT);
       size_t n  = 6;
@@ -757,6 +757,30 @@ namespace libsemigroups {
       auto        m = p.alphabet().size();
       ToddCoxeter tc(congruence_kind::twosided);
       tc.set_number_of_generators(m);
+      for (size_t i = 0; i < p.rules.size() - 1; i += 2) {
+        tc.add_pair(p.rules[i], p.rules[i + 1]);
+      }
+      REQUIRE(tc.number_of_classes() == 2742);
+    }
+
+    LIBSEMIGROUPS_TEST_CASE("fpsemi-examples",
+                            "071",
+                            "orientation_preserving_monoid(6) Catarino",
+                            "[fpsemi-examples][quick][no-valgrind]") {
+      using literals::operator""_w;
+      auto            rg = ReportGuard(REPORT);
+      size_t          n  = 6;
+      auto            s  = orientation_preserving_monoid(n, author::Catarino);
+      auto            p  = make<Presentation<word_type>>(s);
+      p.validate();
+      auto m = p.alphabet().size();
+      p.alphabet(m + 1);
+      presentation::replace_word(p, ""_w, {m});
+      presentation::add_identity_rules(p, m);
+      p.validate();
+
+      ToddCoxeter tc(congruence_kind::twosided);
+      tc.set_number_of_generators(m + 1);
       for (size_t i = 0; i < p.rules.size() - 1; i += 2) {
         tc.add_pair(p.rules[i], p.rules[i + 1]);
       }

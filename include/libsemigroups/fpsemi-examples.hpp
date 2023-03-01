@@ -40,23 +40,26 @@ namespace libsemigroups {
     enum class author : uint64_t {
       Machine    = 0,
       Aizenstat  = 1,
-      Burnside   = 2,
-      Carmichael = 4,
-      Coxeter    = 8,
-      Easdown    = 16,
-      East       = 32,
-      Fernandes  = 64,
-      FitzGerald = 128,
-      Godelle    = 256,
-      Guralnick  = 512,
-      Iwahori    = 1024,
-      Kantor     = 2048,
-      Kassabov   = 4096,
-      Lubotzky   = 8192,
-      Miller     = 16'384,
-      Moore      = 32'768,
-      Moser      = 65'536,
-      Sutov      = 131'072
+      Arthur     = 2,
+      Burnside   = 4,
+      Carmichael = 8,
+      Catarino   = 16,
+      Coxeter    = 32,
+      Easdown    = 64,
+      East       = 128,
+      Fernandes  = 256,
+      FitzGerald = 512,
+      Godelle    = 1024,
+      Guralnick  = 2048,
+      Iwahori    = 4096,
+      Kantor     = 8192,
+      Kassabov   = 16'384,
+      Lubotzky   = 32'769,
+      Miller     = 65'536,
+      Moore      = 131'072,
+      Moser      = 262'144,
+      Ruskuc     = 524'288,
+      Sutov      = 1'048'576
     };
 
     //! This operator can be used arbitrarily to combine author values (see \ref
@@ -185,7 +188,9 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if `n < 3`
     //!
     //! [10.1007/s10012-000-0001-1]: https://doi.org/10.1007/s10012-000-0001-1
-    std::vector<relation_type> orientation_preserving_monoid(size_t n);
+    std::vector<relation_type>
+    orientation_preserving_monoid(size_t n,
+                                  author val = author::Arthur + author::Ruskuc);
 
     //! A presentation for the monoid of orientation reversing mappings.
     //!
