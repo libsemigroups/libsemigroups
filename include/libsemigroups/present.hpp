@@ -77,9 +77,9 @@ namespace libsemigroups {
 
     std::string operator<<(std::string const& u, char const* w);
 
-    //! Take a power of a word.
+    //! Take a power of a word or string.
     //!
-    //! Returns the `n`th power of the word given by `u` .
+    //! Returns the `n`th power of the word/string given by `u` .
     //!
     //! \param a word
     //! \param n the power
@@ -98,23 +98,64 @@ namespace libsemigroups {
     //! \param ilist the initializer list
     //! \param n the power
     //!
-    //! \returns A word_type
+    //! \returns A word_type or std::string
     //!
     //! \noexcept
-    word_type   pow(std::initializer_list<size_t> ilist, size_t n);
+    word_type pow(std::initializer_list<size_t> ilist, size_t n);
+
+    //! See \ref pow(T const&, size_t)
     std::string pow(char const* w, size_t n);
 
+    //! Take a product from a collection of letters.
+    //!
+    //! Let \p elts correspond to the ordered set \f$a_0, a_1, \ldots, a_{n -
+    //! 1}\f$, \p first to \f$f\f$, \p last to \f$l\f$, and \p step to \f$s\f$.
+    //! If \f$f \leq l\f$, let \f$k\f$ be the greatest positive integer such
+    //! that \f$f + ks < l\f$. Then the function `prod` returns the word
+    //! corresponding to \f$a_f a_{f + s} a_{f + 2s} \cdots a_{f + ks}\f$. All
+    //! subscripts are taken modulo \f$n\f$.
+    //!
+    //! If there is no such \f$k\f$ (i.e. \f$s < 0\f$, or \f$f = l\f$), then the
+    //! empty word is returned. Where \f$f > l\f$, the function works
+    //! analogously, where \f$k\f$ is the greatest positive integer such that
+    //! \f$f + k s > l\f$.
+    //!
+    //! \return A word_type or std::string
+    //!
+    //! \throws LibsemigroupsException if `step = 0`
+    //! \throws LibsemigroupsException if \p elts is empty, but the specified
+    //! range is not
+    //!
+    //! \par Examples
+    //! \code
+    //! word_type w = 012345_w
+    //! prod(w, 0, 5, 2)  // Gives the word {0, 2, 4}
+    //! prod(w, 1, 9, 2)  // Gives the word {1, 3, 5, 1}
+    //! prod(std::string("abcde", 4, 1, -1)  // Gives the string "edc")
+    //! \endcode
+    //!
     template <typename T>
     T prod(T const& elts, size_t first, size_t last, int step);
 
+    //! See \ref prod(T const&, size_t, size_t, int)
     word_type prod(std::initializer_list<size_t> ilist,
                    size_t                        first,
                    size_t                        last,
                    size_t                        step);
 
+    //! Insert a product from a collection of letters into a word.
+    //!
+    //! Takes the output of \ref prod and concatenates it onto the end of the
+    //! word or string \p w. The word/string \p w is modified in place.
+    //!
+    //! \returns
+    //! (None)
+    //!
+    //! \throws LibsemigroupsException where \ref prod does.
     template <typename T>
     void insert_prod(T& w, T const& elts, size_t first, size_t last, int step);
 
+    //! See \ref insert_prod(T&, T const&, size_t, size_t, int)
     template <typename T>
     void insert_prod(T&                            w,
                      std::initializer_list<size_t> ilist,
@@ -660,7 +701,7 @@ namespace libsemigroups {
 
     //! Add rules for an identity element.
     //!
-    //! Adds rules of the form \f$ae = ea = a\f$ for every letter \f$a\f$ in
+    //! Adds rules of the form \f$ae e ea = a\f$ for every letter \f$a\f$ in
     //! the alphabet of \p p, and where \f$e\f$ is the second parameter.
     //!
     //! \tparam W the type of the words in the presentation

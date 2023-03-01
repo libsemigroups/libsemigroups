@@ -30,6 +30,18 @@ Contents
    :widths: 50 50
    :header-rows: 0
 
+   * - :cpp:any:`operator<<`
+     - Concatenate two words or strings.
+
+   * - :cpp:any:`pow`
+     - Take a power of a word or string.
+
+   * - :cpp:any:`prod`
+     - Take a product from a collection of letters.
+
+   * - :cpp:any:`insert_prod`
+     - Insert a product from a collection of letters into a word.
+
    * - :cpp:any:`add_rule`
      - Add a rule to the presentation.
 
