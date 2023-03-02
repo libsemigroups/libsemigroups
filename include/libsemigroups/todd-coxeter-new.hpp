@@ -22,6 +22,7 @@
 // TODO:
 // *  ensure that normal_forms etc work properly for monoid presentations (i.e.
 //    when p.contains_empty_word() is true (see test case 101 for example)
+// * implement reserve
 
 #ifndef LIBSEMIGROUPS_TODD_COXETER_NEW_HPP_
 #define LIBSEMIGROUPS_TODD_COXETER_NEW_HPP_
@@ -45,7 +46,37 @@ namespace libsemigroups {
     using label_type = typename ActionDigraph<uint32_t>::label_type;
 
     struct options : public FelschDigraphSettings_::options {
-      enum class strategy { hlt, felsch };
+      enum class strategy {
+        hlt,
+        felsch,
+        //! This strategy is meant to mimic the
+        //! [ACE](https://staff.itee.uq.edu.au/havas/) strategy of the same
+        //! name. The Felsch is run until at least f_defs() nodes are
+        //! defined, then the HLT strategy is run until at least hlt_defs()
+        //! divided by length_of_generating_pairs() nodes have been defined.
+        //! These steps are repeated until the enumeration terminates.
+        CR,
+        //! This strategy is meant to mimic the
+        //! [ACE](https://staff.itee.uq.edu.au/havas/) strategy R/C. The HLT
+        //! strategy is run until the first lookahead is triggered (when
+        //! number_of_cosets_active() is at least next_lookhead()). A full
+        //! lookahead is then performed, and then the CR strategy is used.
+        R_over_C,
+        //! This strategy is meant to mimic the
+        //! [ACE](https://staff.itee.uq.edu.au/havas/) strategy Cr. The Felsch
+        //! strategy is run until at least f_defs() new nodes have been
+        //! defined, the HLT strategy is then run until at least hlt_defs()
+        //! divided by length_of_generating_pairs() new nodes are defined,
+        //! and then the Felsch strategy is run.
+        Cr,
+        //! This strategy is meant to mimic the
+        //! [ACE](https://staff.itee.uq.edu.au/havas/) strategy Rc. The HLT
+        //! strategy is run until at least hlt_defs() divided by
+        //! length_of_generating_pairs() new nodes have been
+        //! defined, the Felsch strategy is then run until at least f_defs()
+        //! new nodes are defined, and then the HLT strategy is run.
+        Rc
+      };
       enum class lookahead_extent { full, partial };
       enum class lookahead_style { hlt, felsch };
       enum class def_policy : uint8_t {
@@ -86,6 +117,8 @@ namespace libsemigroups {
       size_t              def_max                    = 2'000;
       options::def_policy def_policy
           = options::def_policy::no_stack_if_no_space;
+      size_t hlt_defs = 200'000;
+      size_t f_defs   = 100'000;
     };
 
     class Definitions {
@@ -631,6 +664,65 @@ namespace libsemigroups {
     //! \noexcept
     [[nodiscard]] size_t large_collapse() const noexcept;
 
+    //! The approx number of Felsch style definitions in
+    //! [ACE](https://staff.itee.uq.edu.au/havas/) strategies.
+    //!
+    //! If the strategy being used is any of those mimicking
+    //! [ACE](https://staff.itee.uq.edu.au/havas/), then the value of this
+    //! setting is used to determine the number of nodes defined in any Felsch
+    //! phase of the strategy.
+    //!
+    //! The default value of this setting is \c 100'000.
+    //!
+    //! \param val the value to use.
+    //!
+    //! \returns A reference to `*this`.
+    //!
+    //! \throws LibsemigroupsException if \p val is \c 0.
+    ToddCoxeter& f_defs(size_t val);
+
+    //! The current value of the f_defs setting.
+    //!
+    //! \parameters
+    //! (None)
+    //!
+    //! \returns The current value of the setting, a value of type
+    //! ``size_t``.
+    //!
+    //! \exceptions
+    //! \noexcept
+    [[nodiscard]] size_t f_defs() const noexcept;
+
+    //! The approx number of HLT style definitions in
+    //! [ACE](https://staff.itee.uq.edu.au/havas/) strategies.
+    //!
+    //! If the strategy being used is any of those mimicking
+    //! [ACE](https://staff.itee.uq.edu.au/havas/), then the value of this
+    //! setting is used to determine the number of nodes defined in any HLT
+    //! phase of the strategy.
+    //!
+    //! The default value of this setting is \c 200'000.
+    //!
+    //! \param val the value to use.
+    //!
+    //! \returns A reference to `*this`.
+    //!
+    //! \throws LibsemigroupsException if \p val is less than
+    //! length_of_generating_pairs().
+    ToddCoxeter& hlt_defs(size_t val);
+
+    //! The current value of the hlt_defs setting.
+    //!
+    //! \parameters
+    //! (None)
+    //!
+    //! \returns The current value of the setting, a value of type
+    //! ``size_t``.
+    //!
+    //! \exceptions
+    //! \noexcept
+    [[nodiscard]] size_t hlt_defs() const noexcept;
+
     ////////////////////////////////////////////////////////////////////////
     // ToddCoxeter - accessors - public
     ////////////////////////////////////////////////////////////////////////
@@ -700,6 +792,7 @@ namespace libsemigroups {
 
     void felsch();
     void hlt();
+    void CR_style();
 
     ////////////////////////////////////////////////////////////////////////
     // ToddCoxeter - reporting - private

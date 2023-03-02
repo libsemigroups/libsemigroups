@@ -21,12 +21,8 @@
 
 #include "libsemigroups/todd-coxeter-new.hpp"
 
-#include <iostream>
-
 #include "libsemigroups/obvinf.hpp"
 #include "libsemigroups/report.hpp"
-
-#include <fmt/compile.h>
 
 namespace libsemigroups {
 
@@ -402,6 +398,33 @@ namespace libsemigroups {
     return _word_graph.large_collapse();
   }
 
+  ToddCoxeter& ToddCoxeter::hlt_defs(size_t val) {
+    auto l = presentation::length(presentation());
+    if (val == 0) {
+      LIBSEMIGROUPS_EXCEPTION("Expected a value != 0!");
+    } else if (val < l) {
+      LIBSEMIGROUPS_EXCEPTION("Expected a value >= {}, found {}!", l, val);
+    }
+    _settings.hlt_defs = val;
+    return *this;
+  }
+
+  size_t ToddCoxeter::hlt_defs() const noexcept {
+    return _settings.hlt_defs;
+  }
+
+  ToddCoxeter& ToddCoxeter::f_defs(size_t val) {
+    if (val == 0) {
+      LIBSEMIGROUPS_EXCEPTION("Expected a value != 0!");
+    }
+    _settings.f_defs = val;
+    return *this;
+  }
+
+  size_t ToddCoxeter::f_defs() const noexcept {
+    return _settings.f_defs;
+  }
+
   ////////////////////////////////////////////////////////////////////////
   // ToddCoxeter - accessors - public
   ////////////////////////////////////////////////////////////////////////
@@ -476,34 +499,25 @@ namespace libsemigroups {
       felsch();
     } else if (strategy() == options::strategy::hlt) {
       hlt();
-    }
-
-    finalise_run();
-
-    /*else if (strategy() == options::strategy::random) {
-      if (running_for()) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "the strategy \"%s\" is incompatible with run_for!",
-            detail::to_string(strategy()).c_str());
-      }
-      random();
     } else {
       if (running_until()) {
         LIBSEMIGROUPS_EXCEPTION(
-            "the strategy \"%s\" is incompatible with run_until!",
-            detail::to_string(strategy()).c_str());
+            "the strategy {} is cannot be used with run_until!", strategy());
       }
 
       if (strategy() == options::strategy::CR) {
         CR_style();
-      } else if (strategy() == options::strategy::R_over_C) {
-        R_over_C_style();
-      } else if (strategy() == options::strategy::Cr) {
-        Cr_style();
-      } else if (strategy() == options::strategy::Rc) {
-        Rc_style();
       }
-    }*/
+      // else if (strategy() == options::strategy::R_over_C) {
+      //   R_over_C_style();
+      // } else if (strategy() == options::strategy::Cr) {
+      //   Cr_style();
+      // } else if (strategy() == options::strategy::Rc) {
+      //   Rc_style();
+      // }
+    }
+
+    finalise_run();
   }
 
   ////////////////////////////////////////////////////////////////////////
@@ -705,6 +719,32 @@ namespace libsemigroups {
       //   pop_settings();
       // }
     }
+  }
+
+  void ToddCoxeter::CR_style() {
+    size_t N = presentation::length(presentation());
+    // push_settings();
+    while (!finished()) {
+      strategy(options::strategy::felsch);
+      auto M = _word_graph.number_of_nodes_active();
+      run_until([this, &M]() -> bool {
+        return word_graph().number_of_nodes_active() >= M + f_defs();
+      });
+      word_graph().report_active_nodes();
+      if (finished()) {
+        break;
+      }
+      strategy(options::strategy::hlt);
+      M = _word_graph.number_of_nodes_active();
+      run_until([this, &M, &N]() -> bool {
+        return word_graph().number_of_nodes_active() >= M + (hlt_defs() / N);
+      });
+      word_graph().report_active_nodes();
+    }
+    lookahead_extent(options::lookahead_extent::full);
+    lookahead_style(options::lookahead_style::hlt);
+    perform_lookahead();
+    // pop_settings();
   }
 
   ////////////////////////////////////////////////////////////////////////

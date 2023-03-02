@@ -460,13 +460,9 @@ namespace libsemigroups {
         return _generating_pairs.cend();
       }
 
-     protected:
-      /////////////////////////////////////////////////////////////////////////
-      // CongruenceInterface - non-virtual static functions - protected
-      /////////////////////////////////////////////////////////////////////////
-
-      //! No doc
-      // static std::string const& congruence_kind_to_string(congruence_kind);
+      size_t number_of_generating_pairs() const noexcept {
+        return _generating_pairs.size();
+      }
 
      private:
       /////////////////////////////////////////////////////////////////////////

@@ -3201,6 +3201,7 @@ namespace libsemigroups {
 
       // check_hlt(tc);
       check_felsch(tc);
+      check_CR_style(tc);
       // check_random(tc);
       // check_Rc_style(tc); // Rc_style + partial lookahead works very badly
       // 2m30s
