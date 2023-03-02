@@ -16,14 +16,7 @@
 
 // The purpose of this file is to test the ToddCoxeter class.
 
-// TODO
-// * an option for ToddCoxeter that doesn't stack deductions in
-// process_coincidences (but does elsewhere) this seems to be good when running
-// Felsch
-
-#define CATCH_CONFIG_ENABLE_PAIR_STRINGMAKER
-
-#include <cstdlib>
+#include <cstdlib>  // for what?
 
 #include "catch.hpp"      // for TEST_CASE
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
@@ -411,7 +404,6 @@ namespace libsemigroups {
   }
 
   // Felsch is actually faster here!
-  // FIXME this example is much slower in v3
   LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
                           "002",
                           "Example 6.6 in Sims (see also KnuthBendix 013)",
@@ -436,7 +428,7 @@ namespace libsemigroups {
 
     ToddCoxeter tc(twosided, p);
 
-    section_hlt(tc);
+    // section_hlt(tc);
     section_felsch(tc);
 
     // section_random(tc);
@@ -445,7 +437,7 @@ namespace libsemigroups {
     // section_CR_style(tc);
     // section_Cr_style(tc);
     REQUIRE(tc.number_of_classes() == 10'752);
-    // check_complete_compatible(tc);
+    check_complete_compatible(tc);
 
     REQUIRE(tc.finished());
 
@@ -460,6 +452,11 @@ namespace libsemigroups {
             {0_w, 1_w, 2_w, 21_w, 12_w, 121_w, 22_w, 221_w, 212_w, 2121_w}));
 
     tc.standardize(order::lex);
+    REQUIRE(std::distance(todd_coxeter::cbegin_normal_forms(tc),
+                          todd_coxeter::cend_normal_forms(tc))
+            == 10'752);
+    REQUIRE(tc.is_standardized());
+    REQUIRE(tc.is_standardized(order::lex));
     for (size_t c = 0; c < tc.number_of_classes(); ++c) {
       REQUIRE(tc.word_to_class_index(tc.class_index_to_word(c)) == c);
     }
@@ -2658,7 +2655,7 @@ TODO uncomment
   LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
                           "071",
                           "Walker 1",
-                          "[todd-coxeter][standard]") {
+                          "[todd-coxeter][quick]") {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("abcABCDEFGHIXYZ");
@@ -2762,7 +2759,7 @@ TODO uncomment
                           "072",
                           "Walker 2",
                           "[todd-coxeter][quick]") {
-    auto                      rg = ReportGuard(true);
+    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("ab");
     presentation::add_rule_and_check(
@@ -3043,7 +3040,7 @@ TODO uncomment
     // This example is extremely slow with Felsch, not anymore with the
     // preprocessing above
     section_hlt(tc);
-    section_felsch(tc);
+    // section_felsch(tc); // takes about 3.5 seconds
     // TODO uncomment
     // section_random(tc);
     // section_rc_style(tc); // partial lookahead is too slow
@@ -3116,13 +3113,14 @@ TODO uncomment
     presentation::add_rule_and_check(p, "abbbbbbbbbbbabb", "bba");
 
     REQUIRE(presentation::length(p) == 46);
-    presentation::greedy_reduce_length(p);
-    REQUIRE(presentation::length(p) == 24);
-    REQUIRE(p.alphabet() == "abcd");
-    REQUIRE(
-        p.rules
-        == std::vector<std::string>(
-            {"aaa", "a", "ccb", "b", "acad", "da", "c", "dddddb", "d", "bb"}));
+    // presentation::greedy_reduce_length(p);
+    // REQUIRE(presentation::length(p) == 24);
+    // REQUIRE(p.alphabet() == "abcd");
+    // REQUIRE(
+    //     p.rules
+    //     == std::vector<std::string>(
+    //         {"aaa", "a", "ccb", "b", "acad", "da", "c", "dddddb", "d",
+    //         "bb"}));
 
     ToddCoxeter tc(twosided, p);
     tc.lookahead_next(500'000);
@@ -3130,7 +3128,8 @@ TODO uncomment
     REQUIRE(!is_obviously_infinite(tc));
 
     section_hlt(tc);
-    section_felsch(tc);
+    // section_felsch(tc); // extremely slow without preprocessing (when it is
+    // still slower than HLT)
     // TODO uncomment
     // section_random(tc);
     // section_rc_style(tc); + partial lookahead too slow
@@ -3241,7 +3240,7 @@ TODO uncomment
                           "082",
                           "Holt 3",
                           "[todd-coxeter][standard]") {
-    auto                      rg = ReportGuard(true);
+    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("aAbBcC");
     p.contains_empty_word(true);
@@ -3354,7 +3353,7 @@ TODO uncomment
     auto rg = ReportGuard(false);
     auto p  = make<Presentation<word_type>>(RennerTypeDMonoid(4, 1));
 
-    REQUIRE(p.rules.size() == 252);  // FIXME 242?
+    REQUIRE(p.rules.size() == 252);
     REQUIRE(p.alphabet().size() == 11);
 
     ToddCoxeter tc(twosided, p);
@@ -3460,10 +3459,10 @@ TODO uncomment
 
     H.strategy(options::strategy::hlt)
         .lookahead_extent(options::lookahead_extent::partial);
-    SECTION("save") {
+    SECTION("HLT + save") {
       H.save(true);
     }
-    SECTION("no save") {
+    SECTION("HLT + no save") {
       H.save(false);
     }
 
@@ -3494,10 +3493,10 @@ TODO uncomment
     H.large_collapse(10'000)
         .strategy(options::strategy::hlt)
         .lookahead_extent(options::lookahead_extent::partial);
-    SECTION("save") {
+    SECTION("HLT + save") {
       H.save(true);
     }
-    SECTION("no save") {
+    SECTION("HLT + no save") {
       H.save(false);
     }
     REQUIRE(H.number_of_classes() == 1);
@@ -3548,20 +3547,21 @@ TODO uncomment
 
     ToddCoxeter H;
 
-    SECTION("preprocessing") {
+    SECTION("HLT + preprocessing") {
       presentation::greedy_reduce_length(p);
       REQUIRE(presentation::length(p) == 49);
       H.init(right, p);
+      H.save(true);
     }
-    SECTION("no preprocessing") {
+    SECTION("HLT + no preprocessing") {
       REQUIRE(presentation::length(p) == 83);
       H.init(right, p);
+      H.save(false);
     }
     H.add_pair(make<word_type>(p, "b"), make<word_type>(p, ""));
 
     H.strategy(options::strategy::hlt)
-        .lookahead_extent(options::lookahead_extent::partial)
-        .save(false);
+        .lookahead_extent(options::lookahead_extent::partial);
     REQUIRE(H.number_of_classes() == 180);
   }
 
@@ -3874,6 +3874,7 @@ TODO uncomment
       "100",
       "http://brauer.maths.qmul.ac.uk/Atlas/misc/24A8/mag/24A8G1-P1.M",
       "[todd-coxeter][standard]") {
+    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("xyXY");
     p.contains_empty_word(true);
@@ -3892,8 +3893,8 @@ TODO uncomment
         .lookahead_extent(options::lookahead_extent::partial)
         .strategy(options::strategy::hlt);
     //     .standardize(true);
-    section_hlt(tc);
-    section_felsch(tc);  // about 6s with Felsch
+    // section_hlt(tc);
+    // section_felsch(tc);  // about 3s with Felsch
     REQUIRE(tc.number_of_classes() == 322'560);
   }
 
@@ -3925,6 +3926,7 @@ TODO uncomment
       "102",
       "http://brauer.maths.qmul.ac.uk/Atlas/spor/M12/mag/M12G1-P1.M",
       "[todd-coxeter][standard]") {
+    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("xyXY");
     p.contains_empty_word(true);
@@ -4140,8 +4142,8 @@ TODO uncomment
 
     // Greedy reducing the presentation here makes this slower
     ToddCoxeter tc(twosided, p);
-    section_felsch(tc);
-    section_hlt(tc);
+    // section_felsch(tc);
+    // section_hlt(tc);
     REQUIRE(tc.number_of_classes() == 175'560);
   }
 

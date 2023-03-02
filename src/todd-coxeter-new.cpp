@@ -305,6 +305,7 @@ namespace libsemigroups {
     if (is_standardized(val)) {
       return false;
     }
+    _word_graph.number_of_active_nodes(_word_graph.number_of_nodes_active());
     bool result   = action_digraph::standardize(_word_graph, _forest, val);
     _standardized = val;
     return result;
@@ -370,8 +371,9 @@ namespace libsemigroups {
     if (!is_standardized()) {
       standardize(order::shortlex);
     }
-
-    word_type w = *(forest::cbegin_paths(_forest) + i + 1);
+    auto it = forest::cbegin_paths(_forest);
+    it += i + 1;
+    word_type w = *it;
     if (kind() != congruence_kind::left) {
       std::reverse(w.begin(), w.end());
     }
@@ -403,12 +405,12 @@ namespace libsemigroups {
     validate_word(w);
     node_type c = _word_graph.initial_node();
 
-    if (kind() == congruence_kind::left) {
-      c = action_digraph_helper::follow_path_nc(
-          _word_graph, c, w.crbegin(), w.crend());
-    } else {
+    if (kind() != congruence_kind::left) {
       c = action_digraph_helper::follow_path_nc(
           _word_graph, c, w.cbegin(), w.cend());
+    } else {
+      c = action_digraph_helper::follow_path_nc(
+          _word_graph, c, w.crbegin(), w.crend());
     }
     return (c == UNDEFINED ? UNDEFINED : static_cast<node_type>(c - 1));
   }

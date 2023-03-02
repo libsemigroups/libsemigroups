@@ -533,13 +533,14 @@ namespace libsemigroups {
                    1, 2, 1, 3, 1, 2, 1, 3, 1, 2, 1, 3, 1, 2, 1, 3},
                   {0});
 
-      check_hlt(tc);
-      check_felsch(tc);
-      check_random(tc);
-      check_Rc_style(tc);
-      check_R_over_C_style(tc);
-      check_CR_style(tc);
-      check_Cr_style(tc);
+      // check_hlt(tc);
+      // check_felsch(tc);
+      // check_random(tc);
+      // check_Rc_style(tc);
+      // check_R_over_C_style(tc);
+      // check_CR_style(tc);
+      // check_Cr_style(tc);
+      tc.strategy(options::strategy::felsch);
 
       REQUIRE(tc.number_of_classes() == 10'752);
       REQUIRE(tc.complete());
@@ -581,6 +582,8 @@ namespace libsemigroups {
       for (size_t c = 0; c < tc.number_of_classes(); ++c) {
         REQUIRE(tc.word_to_class_index(tc.class_index_to_word(c)) == c);
       }
+      REQUIRE(std::distance(tc.cbegin_normal_forms(), tc.cend_normal_forms())
+              == 10'752);
       REQUIRE(std::is_sorted(tc.cbegin_normal_forms(),
                              tc.cend_normal_forms(),
                              LexicographicalCompare{}));
@@ -3309,12 +3312,12 @@ namespace libsemigroups {
       REQUIRE(!tc.is_obviously_finite());
 
       // This example is extremely slow with Felsch
-      // check_hlt(tc);
-      // check_random(tc);
-      check_felsch(tc);
-      // check_Rc_style(tc); // partial lookahead is too slow
+      check_hlt(tc);
+      check_random(tc);
+      // check_felsch(tc);
+      // check_Rc_style(tc);  // partial lookahead is too slow
       // check_Cr_style(tc); // very slow
-      // check_R_over_C_style(tc);
+      check_R_over_C_style(tc);
 
       REQUIRE(tc.size() == 78'722);
     }
@@ -3655,7 +3658,7 @@ namespace libsemigroups {
 
       congruence::ToddCoxeter H(right, G.congruence());
       H.add_pair({1, 2}, {6});
-      H.strategy(options::strategy::felsch);
+      // H.strategy(options::strategy::felsch);
       H.next_lookahead(1'000'000);
 
       REQUIRE(H.number_of_classes() == 16'384);

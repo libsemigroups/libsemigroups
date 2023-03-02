@@ -25,6 +25,7 @@
 #include <stack>             // for stack
 #include <string>            // for to_string, string
 #include <tuple>             // for tie
+#include <unordered_set>     // for unordered_set
 #include <utility>           // for pair
 #include <vector>            // for vector
 
@@ -896,6 +897,35 @@ namespace libsemigroups {
         std::fill(seen.begin(), seen.end(), false);
       }
       return false;
+    }
+
+    // TODO doc
+    // TODO tests
+    template <typename T>
+    size_t number_of_nodes_reachable_from(
+        ActionDigraph<T> const&              ad,
+        typename ActionDigraph<T>::node_type source) {
+      using node_type = typename ActionDigraph<T>::node_type;
+
+      std::unordered_set<node_type> seen;
+      std::stack<node_type>         stack;
+      stack.push(source);
+
+      size_t count = 0;
+
+      while (!stack.empty()) {
+        auto n = stack.top();
+        stack.pop();
+        if (seen.insert(n).second) {
+          ++count;
+          for (auto it = ad.cbegin_edges(n); it != ad.cend_edges(n); ++it) {
+            if (*it != UNDEFINED) {
+              stack.push(*it);
+            }
+          }
+        }
+      }
+      return count;
     }
   }  // namespace action_digraph_helper
 }  // namespace libsemigroups

@@ -3363,11 +3363,6 @@ namespace libsemigroups {
 
     namespace detail {
       // TODO(now) to tpp file
-      // FIXME this is current slow, this is equivalent to
-      // standardize_immediate from ToddCoxeter, when we might really want to
-      // do standardize_deferred (i.e. permute a vector then permute all nodes
-      // in the digraph at the same time rather than swapping pairs of nodes)
-      // ToddCoxeter test 085 is a good one for this
       template <typename T>
       bool shortlex_standardize(T& d, Forest& f) {
         LIBSEMIGROUPS_ASSERT(d.number_of_nodes() != 0);
@@ -3463,30 +3458,42 @@ namespace libsemigroups {
 
         using node_type = typename T::node_type;
 
-        auto swap_if_necessary
-            = [&d, &f](node_type const s, node_type& t, letter_type const x) {
-                node_type r      = d.unsafe_neighbor(s, x);
-                bool      result = false;
-                if (r != UNDEFINED) {
-                  if (r > t) {
-                    t++;
-                    f.add_nodes(1);
-                    if (r > t) {
-                      d.swap_nodes(t, r);
-                    }
-                    f.set(t, (s == t ? r : s), x);
-                    result = true;
-                  }
-                }
-                return result;
-              };
-
         f.add_nodes(1);
 
         std::vector<word_type> words;
         size_t const           n = d.out_degree();
         letter_type            a = 0;
         node_type              s = 0, t = 0;
+
+        std::vector<node_type> p(d.number_of_nodes(), 0);
+        std::iota(p.begin(), p.end(), 0);
+        std::vector<node_type> q(p);
+
+        size_t max_t
+            = action_digraph_helper::number_of_nodes_reachable_from(d, 0) - 1;
+
+        // TODO move this out of here and use it in the other standardize
+        // functions
+        auto swap_if_necessary = [&d, &f, &p, &q](node_type const   s,
+                                                  node_type&        t,
+                                                  letter_type const x) {
+          node_type r      = d.unsafe_neighbor(p[s], x);
+          bool      result = false;
+          if (r != UNDEFINED) {
+            r = q[r];  // new
+            if (r > t) {
+              t++;
+              f.add_nodes(1);
+              if (r > t) {
+                std::swap(p[t], p[r]);
+                std::swap(q[p[t]], q[p[r]]);
+              }
+              result = true;
+              f.set(t, (s == t ? r : s), x);
+            }
+          }
+          return result;
+        };
 
         bool result = false;
 
@@ -3500,7 +3507,7 @@ namespace libsemigroups {
         a++;
         bool new_generator = true;
         int  x, u, w;
-        while (a < n && t < d.number_of_nodes() - 1) {
+        while (a < n && t < max_t) {
           if (new_generator) {
             w = -1;  // -1 is the empty word
             if (swap_if_necessary(0, t, a)) {
@@ -3519,7 +3526,7 @@ namespace libsemigroups {
               node_type const uuv = action_digraph_helper::follow_path_nc(
                   d, uu, words[v].begin(), words[v].end() - 1);
               if (uuv != UNDEFINED) {
-                s = uuv;
+                s = q[uuv];
                 if (swap_if_necessary(s, t, words[v].back())) {
                   result        = true;
                   word_type nxt = words[u];
@@ -3534,7 +3541,7 @@ namespace libsemigroups {
             node_type const ww = action_digraph_helper::follow_path_nc(
                 d, 0, words[w].begin(), words[w].end());
             if (ww != UNDEFINED) {
-              s = ww;
+              s = q[ww];
               if (swap_if_necessary(s, t, a)) {
                 result        = true;
                 u             = words.size();
@@ -3548,6 +3555,7 @@ namespace libsemigroups {
             new_generator = true;
           }
         }
+        d.permute_nodes_nc(p, q);
         return result;
       }
     }  // namespace detail

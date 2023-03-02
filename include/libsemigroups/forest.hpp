@@ -202,6 +202,10 @@ namespace libsemigroups {
       return _parent[i];
     }
 
+    node_type parent_nc(node_type i) const {
+      return _parent[i];
+    }
+
     //! Returns the label of the edge from a node to its parent.
     //!
     //! \param i the node whose label is sought.
@@ -216,6 +220,10 @@ namespace libsemigroups {
     // not noexcept because std::vector::operator[] isn't.
     label_type label(node_type i) const {
       validate_node(i);
+      return _edge_label[i];
+    }
+
+    label_type label_nc(node_type i) const {
       return _edge_label[i];
     }
 
@@ -288,9 +296,9 @@ namespace libsemigroups {
                    IntegralRange<node_type>::const_iterator it) const {
           word_type w;
           node_type i = *it;
-          while (f->parent(i) != UNDEFINED) {
-            w.push_back(f->label(i));
-            i = f->parent(i);
+          while (f->parent_nc(i) != UNDEFINED) {
+            w.push_back(f->label_nc(i));
+            i = f->parent_nc(i);
           }
           return w;
         }

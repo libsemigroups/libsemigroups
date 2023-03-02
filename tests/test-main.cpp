@@ -38,34 +38,6 @@
 #include "libsemigroups/string.hpp"  // for to_string, unicode_string_length
 #include "libsemigroups/timer.hpp"   // for Timer
 
-#ifdef LIBSEMIGROUPS_BACKWARD_ENABLED
-#if defined(__CYGWIN__) || defined(__CYGWIN32__)
-#undef LIBSEMIGROUPS_BACKWARD_ENABLED
-#else
-#include "backward-cpp/backward.hpp"  // for StackTrace, TraceResolver, Reso...
-#endif
-#endif
-
-namespace {
-
-#ifdef LIBSEMIGROUPS_BACKWARD_ENABLED
-  struct InstallSIGINTHandler {
-    InstallSIGINTHandler() {
-      signal(SIGINT, signalHandler);
-    }
-
-    static void signalHandler(int signum) {
-      using namespace backward;
-      StackTrace st;
-      st.load_here(32);
-      Printer p;
-      p.print(st);
-      exit(signum);
-    }
-  } InstallSIGINTHandler_;
-#endif
-}  // namespace
-
 struct LibsemigroupsLineInfo {
   explicit LibsemigroupsLineInfo(Catch::TestCaseInfo const& testInfo)
       : _file(testInfo.lineInfo.file),
