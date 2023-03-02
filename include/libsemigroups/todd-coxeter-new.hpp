@@ -20,9 +20,8 @@
 // algorithm for semigroups and monoids.
 //
 // TODO:
-// 1) Seems like not stacking deductions in coincidences when doing Felsch
-//    makes some examples much quicker (like [003]) while being mostly correct
-//    too (one example that requires this is partition_monoid(4, East))
+// *  ensure that normal_forms etc work properly for monoid presentations (i.e.
+//    when p.contains_empty_word() is true (see test case 101 for example)
 
 #ifndef LIBSEMIGROUPS_TODD_COXETER_NEW_HPP_
 #define LIBSEMIGROUPS_TODD_COXETER_NEW_HPP_
@@ -44,8 +43,6 @@ namespace libsemigroups {
     using label_type = typename ActionDigraph<uint32_t>::label_type;
 
     using FelschDigraphSettings_ = FelschDigraphSettings<ToddCoxeter>;
-
-    struct Stats;  // forward decl TODO not currently used
 
     // TODO move this somewhere better
     // TODO not sure if all the mem fns of Definitions are really required or
@@ -207,16 +204,13 @@ namespace libsemigroups {
       size_t              max_preferred_defs         = 256;
       size_t              lookahead_min              = 10'000;
       size_t              lookahead_next             = 5'000'000;
-      bool                restandardize              = false;
       bool                save                       = false;
-      bool                standardize                = false;
       options::strategy   strategy                   = options::strategy::hlt;
       size_t              _def_max                   = 2'000;
       options::def_policy _def_policy
           = options::def_policy::no_stack_if_no_space;
     };
 
-   public:
     class ToddCoxeterDigraph
         : public NodeManagedDigraph<
               FelschDigraph<word_type, uint32_t, Definitions>> {
@@ -290,15 +284,17 @@ namespace libsemigroups {
       size_t make_compatible(node_type& current,
                              Iterator   first,
                              Iterator   last) {
-        // _stats.hlt_lookahead_calls++; TODO(maybe) re-enable
-
         size_t const old_number_of_killed
             = NodeManager_::number_of_nodes_killed();
         CollectCoincidences                   incompat(_coinc);
         typename BaseDigraph::NoPreferredDefs prefdefs;
         while (current != NodeManager_::first_free_node()) {
-          // TODO when we have an iterator into the active nodes, we should
-          // remove the while loop, and use that in make_compatible instead
+          // TODO(later) when we have an iterator into the active nodes, we
+          // should remove the while loop, and use that in make_compatible
+          // instead. At present there is a cbegin/cend_active_nodes in
+          // NodeManager but the iterators returned by them are invalidated by
+          // any changes to the graph, such as those made by
+          // felsch_digraph::make_compatible.
           felsch_digraph::make_compatible<DoNotRegisterDefs>(
               *this, current, current + 1, first, last, incompat, prefdefs);
           // Using NoPreferredDefs is just a (more or less) arbitrary
@@ -310,11 +306,9 @@ namespace libsemigroups {
             report_active_nodes();
           }
         }
-
         return NodeManager_::number_of_nodes_killed() - old_number_of_killed;
       }
 
-      // to ToddCoxeterDigraph
       void process_definitions() {
         CollectCoincidences incompat(_coinc);
         using NoPreferredDefs = typename BaseDigraph::NoPreferredDefs;
@@ -329,13 +323,14 @@ namespace libsemigroups {
               BaseDigraph::process_definition(defs[i], incompat, pref_defs);
             }
           }
-          defs.clear();  // TODO doesn't this result in any_skipped always being
-                         // true?
+          defs.clear();
+          // true?
           process_coincidences<true>();
         }
       }
     };
 
+   public:
     using digraph_type = ToddCoxeterDigraph;
 
    private:
@@ -344,7 +339,6 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////
 
     // std::stack<Settings*>                _setting_stack;
-    // Stats                                _stats;
     bool               _finished;
     Forest             _forest;
     Settings           _settings;

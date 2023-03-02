@@ -119,8 +119,8 @@ namespace libsemigroups {
       using node_type = typename ToddCoxeter::node_type;
       order old_val   = tc.standardization_order();
 
+      tc.run();
       for (auto val : {order::shortlex, order::lex, order::recursive}) {
-        tc.run();
         tc.standardize(val);
         REQUIRE(tc.is_standardized(val));
         REQUIRE(tc.is_standardized());
@@ -196,25 +196,26 @@ namespace libsemigroups {
       }
 
       tc.standardize(old_val);
-      // TODO use these for check_normal_forms
-      //   REQUIRE(std::all_of(
-      //       todd_coxeter::cbegin_normal_forms(tc),
-      //       todd_coxeter::cend_normal_forms(tc),
-      //       [&tc](word_type const& w) {
-      //         return w == *todd_coxeter::cbegin_class(tc, w, 0, w.size() +
-      //         1);
-      //       }));
-      // REQUIRE(std::is_sorted(todd_coxeter::cbegin_normal_forms(tc),
-      //                        todd_coxeter::cend_normal_forms(tc),
-      //                        ShortLexCompare{}));
-      // tc.standardize(order::lex);
-      // REQUIRE(std::is_sorted(todd_coxeter::cbegin_normal_forms(tc),
-      //                        todd_coxeter::cend_normal_forms(tc),
-      //                        LexicographicalCompare{}));
-      // tc.standardize(order::recursive);
-      // REQUIRE(std::is_sorted(todd_coxeter::cbegin_normal_forms(tc),
-      //                        todd_coxeter::cend_normal_forms(tc),
-      //                        RecursivePathCompare{}));
+    }
+
+    void check_normal_forms(ToddCoxeter& tc) {
+      REQUIRE(std::all_of(
+          todd_coxeter::cbegin_normal_forms(tc),
+          todd_coxeter::cend_normal_forms(tc),
+          [&tc](word_type const& w) {
+            return w == *todd_coxeter::cbegin_class(tc, w, 0, w.size() + 1);
+          }));
+      REQUIRE(std::is_sorted(todd_coxeter::cbegin_normal_forms(tc),
+                             todd_coxeter::cend_normal_forms(tc),
+                             ShortLexCompare{}));
+      tc.standardize(order::lex);
+      REQUIRE(std::is_sorted(todd_coxeter::cbegin_normal_forms(tc),
+                             todd_coxeter::cend_normal_forms(tc),
+                             LexicographicalCompare{}));
+      tc.standardize(order::recursive);
+      REQUIRE(std::is_sorted(todd_coxeter::cbegin_normal_forms(tc),
+                             todd_coxeter::cend_normal_forms(tc),
+                             RecursivePathCompare{}));
     }
   }  // namespace
 
@@ -3886,6 +3887,15 @@ TODO uncomment
     section_felsch(tc);
     section_hlt(tc);
     REQUIRE(tc.number_of_classes() == 7'920);
+
+    // FIXME this doesn't work
+    // REQUIRE(todd_coxeter::normal_form(tc, {}) == word_type({}));
+    // REQUIRE(tc.contains(0_w, word_type({})));
+    // REQUIRE(tc.contains(11_w, word_type({})));
+    // REQUIRE(std::distance(todd_coxeter::cbegin_normal_forms(tc),
+    //                       todd_coxeter::cend_normal_forms(tc))
+    //         == tc.number_of_classes());
+    // REQUIRE(*todd_coxeter::cbegin_normal_forms(tc) == word_type({}));
   }
 
   LIBSEMIGROUPS_TEST_CASE(
@@ -4137,6 +4147,7 @@ TODO uncomment
     section_felsch(tc);
     section_hlt(tc);
     REQUIRE(tc.number_of_classes() == 20'160);
+    check_complete_compatible(tc);
   }
 
   // Takes about 10 seconds (2021 - MacBook Air M1 - 8GB RAM)
