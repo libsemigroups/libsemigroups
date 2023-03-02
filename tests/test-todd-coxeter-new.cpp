@@ -3234,6 +3234,7 @@ namespace libsemigroups {
     }
   }
 
+  // FIXME this test regularly fails
   LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
                           "082",
                           "Holt 3",
@@ -3522,8 +3523,7 @@ namespace libsemigroups {
     ToddCoxeter H(twosided, p);
     section_felsch(H);
     section_hlt(H);
-    // TODO uncomment
-    // section_random(H);
+    section_CR_style(H);
 
     REQUIRE(H.number_of_classes() == 29);
   }
@@ -3544,23 +3544,26 @@ namespace libsemigroups {
         "abbbbabbbbbbbbbbabbbbabbbbbbbbbbbbbbbbbbbbbbbbbbbbbaaaaaaaaaaaa",
         "");
 
-    ToddCoxeter H;
+    ToddCoxeter H(right, p);
 
-    SECTION("HLT + preprocessing") {
+    SECTION("HLT + preprocessing + save") {
       presentation::greedy_reduce_length(p);
       REQUIRE(presentation::length(p) == 49);
       H.init(right, p);
-      H.save(true);
+      H.strategy(options::strategy::hlt)
+          .lookahead_extent(options::lookahead_extent::partial)
+          .save(true);
     }
-    SECTION("HLT + no preprocessing") {
+    SECTION("HLT + no preprocessing + no save") {
       REQUIRE(presentation::length(p) == 83);
-      H.init(right, p);
-      H.save(false);
+      H.strategy(options::strategy::hlt)
+          .lookahead_extent(options::lookahead_extent::partial)
+          .save(false);
     }
+    // section_CR_style(H); // too slow
+
     H.add_pair(make<word_type>(p, "b"), make<word_type>(p, ""));
 
-    H.strategy(options::strategy::hlt)
-        .lookahead_extent(options::lookahead_extent::partial);
     REQUIRE(H.number_of_classes() == 180);
   }
 
@@ -3606,8 +3609,7 @@ namespace libsemigroups {
     H.add_pair(make<word_type>(p, "a"), make<word_type>(p, ""));
 
     section_hlt(H);
-    // TODO uncomment
-    // section_random(H);
+    section_CR_style(H);
     section_felsch(H);
 
     REQUIRE(H.number_of_classes() == 480);
@@ -3637,13 +3639,9 @@ namespace libsemigroups {
           .save(true)
           .lookahead_extent(options::lookahead_extent::partial);
     }
-    // TODO uncomment
-    // SECTION("random") {
-    //   H.strategy(options::strategy::random)
-    //       .random_interval(std::chrono::milliseconds(100));
-    // }
     section_hlt(H);
     section_felsch(H);
+    section_CR_style(H);
 
     REQUIRE(H.number_of_classes() == 95'040);
   }
@@ -3893,6 +3891,7 @@ namespace libsemigroups {
         .strategy(options::strategy::hlt);
     // section_hlt(tc);
     // section_felsch(tc);  // about 3s with Felsch
+    // section_CR_style(tc); // about 2.7s
     REQUIRE(tc.number_of_classes() == 322'560);
   }
 
@@ -3917,6 +3916,8 @@ namespace libsemigroups {
 
     section_felsch(tc);
     section_hlt(tc);
+    section_CR_style(tc);
+
     REQUIRE(tc.number_of_classes() == 7'920);
 
     // FIXME this doesn't work
@@ -3952,6 +3953,7 @@ namespace libsemigroups {
     ToddCoxeter tc(twosided, p);
     section_felsch(tc);
     section_hlt(tc);
+    section_CR_style(tc);
     REQUIRE(tc.number_of_classes() == 95'040);
     // REQUIRE(tc.word_graph().node_capacity() == 0);
   }
