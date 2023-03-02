@@ -33,6 +33,161 @@ namespace libsemigroups {
   using class_index_type = v3::CongruenceInterface::class_index_type;
 
   ////////////////////////////////////////////////////////////////////////
+  // Digraph
+  ////////////////////////////////////////////////////////////////////////
+
+  ToddCoxeter::Digraph&
+  ToddCoxeter::Digraph::init(Presentation<word_type> const& p) {
+    NodeManager_::clear();
+    FelschDigraph_::init(p);
+    // FIXME shouldn't add nodes here because then there'll be more than
+    // there should be (i.e. NodeManager and FelschDigraph_ will have
+    // different numbers of nodes
+    FelschDigraph_::add_nodes(NodeManager_::node_capacity());
+    return *this;
+  }
+
+  ToddCoxeter::Digraph&
+  ToddCoxeter::Digraph::init(Presentation<word_type>&& p) {
+    NodeManager_::clear();
+    FelschDigraph_::init(std::move(p));
+    // FIXME shouldn't add nodes here because then there'll be more than
+    // there should be (i.e. NodeManager and FelschDigraph_ will have
+    // different numbers of nodes
+    FelschDigraph_::add_nodes(NodeManager_::node_capacity());
+    return *this;
+  }
+
+  void ToddCoxeter::Digraph::process_definitions() {
+    CollectCoincidences incompat(_coinc);
+    using NoPreferredDefs = typename FelschDigraph_::NoPreferredDefs;
+    NoPreferredDefs pref_defs;
+
+    auto&      defs = FelschDigraph_::definitions();
+    Definition d;
+    while (!defs.empty()) {
+      while (!defs.empty()) {
+        defs.pop(d);
+        if (NodeManager_::is_active_node(d.first)) {
+          FelschDigraph_::process_definition(d, incompat, pref_defs);
+        }
+      }
+      process_coincidences<RegisterDefs>();
+    }
+  }
+
+  template <bool RegDefs>
+  void ToddCoxeter::Digraph::push_definition_hlt(node_type const& c,
+                                                 word_type const& u,
+                                                 word_type const& v) noexcept {
+    LIBSEMIGROUPS_ASSERT(NodeManager_::is_active_node(c));
+
+    node_type   x, y;
+    letter_type a, b;
+
+    if (!u.empty()) {
+      x = complete_path<RegDefs>(c, u.begin(), u.cend() - 1).second;
+      a = u.back();
+    } else {
+      x = c;
+      a = UNDEFINED;
+    }
+
+    if (!v.empty()) {
+      y = complete_path<RegDefs>(c, v.begin(), v.cend() - 1).second;
+      b = v.back();
+    } else {
+      y = c;
+      b = UNDEFINED;
+    }
+
+    CollectCoincidences incompat(_coinc);
+    auto                pref_defs
+        = [this](node_type x, letter_type a, node_type y, letter_type b) {
+            node_type d = new_node();
+            def_edge_nc<RegDefs>(x, a, d);
+            if (a != b || x != y) {
+              def_edge_nc<RegDefs>(y, b, d);
+            }
+          };
+
+    FelschDigraph_::merge_targets_of_nodes_if_possible<RegDefs>(
+        x, a, y, b, incompat, pref_defs);
+  }
+
+  template <typename RuleIterator>
+  size_t ToddCoxeter::Digraph::make_compatible(node_type&   current,
+                                               RuleIterator first,
+                                               RuleIterator last) {
+    size_t const old_number_of_killed = NodeManager_::number_of_nodes_killed();
+    CollectCoincidences                      incompat(_coinc);
+    typename FelschDigraph_::NoPreferredDefs prefdefs;
+    while (current != NodeManager_::first_free_node()) {
+      // TODO(later) when we have an RuleIterator into the active nodes, we
+      // should remove the while loop, and use that in make_compatible
+      // instead. At present there is a cbegin/cend_active_nodes in
+      // NodeManager but the RuleIterators returned by them are invalidated by
+      // any changes to the graph, such as those made by
+      // felsch_digraph::make_compatible.
+      felsch_digraph::make_compatible<DoNotRegisterDefs>(
+          *this, current, current + 1, first, last, incompat, prefdefs);
+      // Using NoPreferredDefs is just a (more or less) arbitrary
+      // choice, could allow the other choices here too (which works,
+      // but didn't seem to be very useful).
+      process_coincidences<DoNotRegisterDefs>();
+      current = NodeManager_::next_active_node(current);
+      if (report()) {
+        report_active_nodes();
+      }
+    }
+    return NodeManager_::number_of_nodes_killed() - old_number_of_killed;
+  }
+
+  ////////////////////////////////////////////////////////////////////////
+  // Definitions
+  ////////////////////////////////////////////////////////////////////////
+
+  void ToddCoxeter::Definitions::emplace_back(node_type c, label_type x) {
+    using def_policy = typename options::def_policy;
+
+    if (_tc == nullptr  // this can be the case if for example we're
+                        // in the FelschDigraph constructor from
+                        // ActionDigraph, in that case we any want
+                        // all of the definitions
+        || _tc->def_policy() == def_policy::unlimited
+        || _definitions.size() < _tc->def_max()) {
+      _definitions.emplace_back(c, x);
+      return;
+    }
+
+    // We will skip the input definition (c, x)!
+    _any_skipped = true;
+    switch (_tc->def_policy()) {
+      case def_policy::purge_from_top: {
+        while (!_definitions.empty()
+               && !is_active_node(_definitions.back().first)) {
+          _definitions.pop_back();
+        }
+        break;
+      }
+      case def_policy::purge_all: {
+        std::remove_if(
+            _definitions.begin(),
+            _definitions.end(),
+            [this](Definition const& d) { return !is_active_node(d.first); });
+        break;
+      }
+      case def_policy::discard_all_if_no_space: {
+        clear();
+        break;
+      }
+      default: {
+        break;
+      }
+    }
+  }
+
+  ////////////////////////////////////////////////////////////////////////
   // ToddCoxeter - constructors + initializers - public
   ////////////////////////////////////////////////////////////////////////
 
@@ -627,7 +782,6 @@ namespace libsemigroups {
 
   size_t ToddCoxeter::hlt_lookahead() {
     _word_graph.report_active_nodes();
-    // _stats.hlt_lookahead_calls++; TODO re-enable
 
     size_t const old_number_of_killed = _word_graph.number_of_nodes_killed();
     _word_graph.make_compatible(_word_graph.lookahead_cursor(),
@@ -638,7 +792,6 @@ namespace libsemigroups {
 
   size_t ToddCoxeter::felsch_lookahead() {
     _word_graph.report_active_nodes();
-    //    _stats.f_lookahead_calls++;
     size_t const old_number_of_killed = _word_graph.number_of_nodes_killed();
     node_type&   current              = _word_graph.lookahead_cursor();
     size_t const n                    = _word_graph.out_degree();

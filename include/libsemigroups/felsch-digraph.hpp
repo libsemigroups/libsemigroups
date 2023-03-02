@@ -133,9 +133,9 @@ namespace libsemigroups {
     static constexpr bool RegisterDefs      = true;
     static constexpr bool DoNotRegisterDefs = false;
 
-   private:
     using Definition = std::pair<node_type, label_type>;
 
+   private:
     Definitions             _definitions;
     detail::FelschTree      _felsch_tree;
     Presentation<word_type> _presentation;

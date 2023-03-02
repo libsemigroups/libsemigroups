@@ -2726,7 +2726,7 @@ TODO uncomment
   LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
                           "072",
                           "Walker 2",
-                          "[todd-coxeter][quick]") {
+                          "[todd-coxeter][quick][no-coverage]") {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("ab");
@@ -3113,7 +3113,7 @@ TODO uncomment
   LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
                           "080",
                           "KnuthBendix 098",
-                          "[todd-coxeter][quick][no-valgrind]") {
+                          "[todd-coxeter][quick][no-valgrind][no-coverage]") {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("aAbBcCdDyYfFgGe");
