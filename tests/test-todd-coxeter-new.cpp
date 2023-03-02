@@ -258,7 +258,8 @@ namespace libsemigroups {
     REQUIRE(words == std::vector<word_type>({1_w, 1111_w, 1111111_w}));
 
     for (size_t i = 0; i < tc.number_of_classes(); ++i) {
-      REQUIRE(todd_coxeter::number_of_words(tc, i) == POSITIVE_INFINITY);
+      REQUIRE(todd_coxeter::number_of_words_in_class(tc, i)
+              == POSITIVE_INFINITY);
     }
     REQUIRE(tc.word_to_class_index(words[0]) == 1);
     REQUIRE(

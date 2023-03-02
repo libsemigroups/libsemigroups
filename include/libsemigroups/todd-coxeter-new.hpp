@@ -71,22 +71,20 @@ namespace libsemigroups {
     };
 
    private:
-    // TODO add _ to start of all variable names here
     struct Settings {
-      bool                     use_relations_in_extra = false;
-      options::lookahead_style _lookahead_style = options::lookahead_style::hlt;
-      options::lookahead_extent _lookahead_extent
+      bool                      use_relations_in_extra = false;
+      options::lookahead_style  lookahead_style = options::lookahead_style::hlt;
+      options::lookahead_extent lookahead_extent
           = options::lookahead_extent::partial;
       float               lookahead_growth_factor    = 2.0;
       size_t              lookahead_growth_threshold = 4;
       size_t              lower_bound                = UNDEFINED;
-      size_t              max_preferred_defs         = 256;  // Not yet used
       size_t              lookahead_min              = 10'000;
       size_t              lookahead_next             = 5'000'000;
       bool                save                       = false;
       options::strategy   strategy                   = options::strategy::hlt;
-      size_t              _def_max                   = 2'000;
-      options::def_policy _def_policy
+      size_t              def_max                    = 2'000;
+      options::def_policy def_policy
           = options::def_policy::no_stack_if_no_space;
     };
 
@@ -217,7 +215,6 @@ namespace libsemigroups {
     template <typename Node>
     ToddCoxeter(congruence_kind knd, ActionDigraph<Node> const& ad)
         : ToddCoxeter(knd) {
-      // TODO is this the right way to init _word_graph?
       _word_graph = ad;
       _word_graph.presentation().alphabet(ad.out_degree());
     }
@@ -225,7 +222,6 @@ namespace libsemigroups {
     template <typename Node>
     ToddCoxeter& init(congruence_kind knd, ActionDigraph<Node> const& ad) {
       init(knd);
-      // TODO is this the right way to init _word_graph?
       _word_graph = ad;
       _word_graph.presentation().alphabet(ad.out_degree());
       return *this;
@@ -237,8 +233,6 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////
     // ToddCoxeter - settings - public
     ////////////////////////////////////////////////////////////////////////
-
-    // TODO add nodiscard to all getters
 
     //! Specify how to handle definitions.
     //!
@@ -257,7 +251,7 @@ namespace libsemigroups {
     //! example ``options::definitions::v1 & options::definitions::v2`` returns
     //! ``true``).
     ToddCoxeter& def_policy(options::def_policy val) {
-      _settings._def_policy = val;
+      _settings.def_policy = val;
       return *this;
     }
 
@@ -272,7 +266,7 @@ namespace libsemigroups {
     //! \exceptions
     //! \noexcept
     [[nodiscard]] options::def_policy def_policy() const noexcept {
-      return _settings._def_policy;
+      return _settings.def_policy;
     }
 
     //! The maximum number of definitions in the stack.
@@ -291,7 +285,7 @@ namespace libsemigroups {
     //! \exceptions
     //! \noexcept
     ToddCoxeter& def_max(size_t val) noexcept {
-      _settings._def_max = val;
+      _settings.def_max = val;
       return *this;
     }
 
@@ -307,7 +301,7 @@ namespace libsemigroups {
     //! \exceptions
     //! \noexcept
     [[nodiscard]] size_t def_max() const noexcept {
-      return _settings._def_max;
+      return _settings.def_max;
     }
 
     using FelschDigraphSettings_::def_version;
@@ -353,13 +347,13 @@ namespace libsemigroups {
     //! \exceptions
     //! \noexcept
     ToddCoxeter& lookahead_style(options::lookahead_style val) noexcept {
-      _settings._lookahead_style = val;
+      _settings.lookahead_style = val;
       return *this;
     }
 
     // TODO doc
     ToddCoxeter& lookahead_extent(options::lookahead_extent val) noexcept {
-      _settings._lookahead_extent = val;
+      _settings.lookahead_extent = val;
       return *this;
     }
 
@@ -373,12 +367,12 @@ namespace libsemigroups {
     //! \exceptions
     //! \noexcept
     [[nodiscard]] options::lookahead_style lookahead_style() const noexcept {
-      return _settings._lookahead_style;
+      return _settings.lookahead_style;
     }
 
     // TODO doc
     [[nodiscard]] options::lookahead_extent lookahead_extent() const noexcept {
-      return _settings._lookahead_extent;
+      return _settings.lookahead_extent;
     }
 
     //! Set the threshold that will trigger a lookahead in HLT.
@@ -779,8 +773,7 @@ namespace libsemigroups {
       return tc.word_graph().cend_pstislo();
     }
 
-    // TODO -> size_of_class?
-    inline auto number_of_words(ToddCoxeter const& tc, node_type i) {
+    inline auto number_of_words_in_class(ToddCoxeter const& tc, node_type i) {
       return tc.word_graph().number_of_paths(0, i + 1, 0, POSITIVE_INFINITY);
     }
 
