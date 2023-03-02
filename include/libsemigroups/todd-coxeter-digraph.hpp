@@ -164,6 +164,18 @@ namespace libsemigroups {
       NodeManager_::apply_permutation(p);
     }
 
+    // TODO to t/cpp file
+    node_type random_active_node() const {
+      static std::random_device rd;
+      static std::mt19937       g(rd());
+
+      std::uniform_int_distribution<> d(
+          0, NodeManager_::number_of_nodes_active() - 1);
+      auto r = NodeManager_::active_nodes();
+      rx::advance_by(r, d(g));
+      return r.get();
+    }
+
    protected:
     struct CollectCoincidences {
       CollectCoincidences(Coincidences& c) : _coinc(c) {}

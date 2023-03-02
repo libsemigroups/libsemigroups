@@ -260,6 +260,16 @@ namespace libsemigroups {
       return *this;
     }
 
+    // init version?
+    template <typename Node>
+    ToddCoxeter(congruence_kind                knd,
+                Presentation<word_type> const& p,
+                ActionDigraph<Node> const&     ad)
+        : ToddCoxeter(knd, p) {
+      _word_graph = ad;
+      _word_graph.presentation(p);
+    }
+
     ToddCoxeter(congruence_kind knd, ToddCoxeter const& tc);
     ToddCoxeter& init(congruence_kind knd, ToddCoxeter const& tc);
 

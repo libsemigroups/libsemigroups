@@ -40,6 +40,7 @@
 
 namespace libsemigroups {
 
+  // FIXME remove this
   template <typename It1, typename It2>
   uint64_t distance(It1 first, It2 last) {
     uint64_t result = 0;
@@ -3234,7 +3235,6 @@ namespace libsemigroups {
     }
   }
 
-  // FIXME this test regularly fails
   LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
                           "082",
                           "Holt 3",
@@ -3264,6 +3264,7 @@ namespace libsemigroups {
     REQUIRE(tc.number_of_classes() == 6'561);
   }
 
+  // FIXME this printing is messed up here
   LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
                           "083",
                           "Holt 3",
@@ -3955,7 +3956,6 @@ namespace libsemigroups {
     section_hlt(tc);
     section_CR_style(tc);
     REQUIRE(tc.number_of_classes() == 95'040);
-    // REQUIRE(tc.word_graph().node_capacity() == 0);
   }
 
   LIBSEMIGROUPS_TEST_CASE(

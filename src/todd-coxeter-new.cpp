@@ -187,6 +187,8 @@ namespace libsemigroups {
   // ToddCoxeter - constructors + initializers - public
   ////////////////////////////////////////////////////////////////////////
 
+  // TODO remove overlap between these, and ensure that thye really work
+
   ToddCoxeter::ToddCoxeter()
       : v3::CongruenceInterface(),
         _finished(false),
@@ -855,9 +857,6 @@ namespace libsemigroups {
                         size_t                    tries,
                         std::chrono::milliseconds try_for,
                         float                     threshold) {
-      static std::random_device rd;
-      static std::mt19937       g(rd());
-
       if (is_obviously_infinite(tc)) {
         return tril::TRUE;
       } else if (tc.finished()) {
@@ -868,24 +867,19 @@ namespace libsemigroups {
         report_default(
             "trying to show non-triviality: {} / {}\n", try_ + 1, tries);
         ToddCoxeter copy(tc);
+        copy.save(true);
         while (!copy.finished()) {
           copy.run_for(try_for);
           size_t limit = copy.word_graph().number_of_nodes_active();
           while (copy.word_graph().number_of_nodes_active() >= threshold * limit
                  && !copy.finished()) {
-            std::uniform_int_distribution<> d(
-                0, copy.word_graph().number_of_nodes_active() - 1);
-            auto r = copy.word_graph().active_nodes();
-            rx::advance_by(r, d(g));
-            node_type c1 = r.get();
-            r            = copy.word_graph().active_nodes();
-            rx::advance_by(r, d(g));
-            node_type c2 = r.get();
-            auto      wg = copy.word_graph();
+            node_type c1 = copy.word_graph().random_active_node();
+            node_type c2 = copy.word_graph().random_active_node();
+            auto&     wg
+                = const_cast<ToddCoxeter::digraph_type&>(copy.word_graph());
             wg.coincide_nodes(c1, c2);
             wg.process_coincidences<RegisterDefs>();
             wg.process_definitions();
-            copy = ToddCoxeter(tc.kind(), wg);
             copy.run_for(try_for);
           }
         }
