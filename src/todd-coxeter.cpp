@@ -2277,6 +2277,7 @@ namespace libsemigroups {
         // options::preferred_defs::deferred, so we change it.
         preferred_defs(options::preferred_defs::none);
       }
+      size_t standardize_interval = 100;
       while (_current != first_free_coset() && !stopped()) {
         if (!save()) {
           for (auto it = _relations.cbegin(); it < _relations.cend(); it += 2) {
@@ -2293,14 +2294,13 @@ namespace libsemigroups {
             // standardize_immediate.
           }
         }
-        if (standardize()) {
-          bool any_changes = false;
-          for (letter_type x = 0; x < number_of_generators(); ++x) {
-            any_changes |= standardize_immediate(_current, x);
-          }
-          if (any_changes) {
+        standardize_interval--;
+
+        if (standardize() && standardize_interval == 0) {
+          if (standardize(order::shortlex)) {
             _deduct->clear();
           }
+          standardize_interval = 100;
         }
         if ((!save() || _deduct->any_skipped())
             && number_of_cosets_active() > next_lookahead()) {

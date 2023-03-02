@@ -220,19 +220,6 @@ namespace libsemigroups {
     return _settings.save;
   }
 
-  // TODO not currently used for anything
-  // TODO rename to standardize_during_run or something
-  ToddCoxeter& ToddCoxeter::standardize(bool x) noexcept {
-    _settings.standardize = x;
-    return *this;
-  }
-
-  // TODO not currently used for anything
-  // TODO rename to standardize_during_run or something
-  bool ToddCoxeter::standardize() const noexcept {
-    return _settings.standardize;
-  }
-
   ToddCoxeter& ToddCoxeter::use_relations_in_extra(bool val) noexcept {
     _settings.use_relations_in_extra = val;
     return *this;
@@ -688,7 +675,6 @@ namespace libsemigroups {
         report_default(
             "trying to show non-triviality: {} / {}\n", try_ + 1, tries);
         ToddCoxeter copy(tc);
-        copy.standardize(true).save(true);
         while (!copy.finished()) {
           copy.run_for(try_for);
           size_t limit = copy.word_graph().number_of_nodes_active();

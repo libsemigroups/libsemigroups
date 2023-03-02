@@ -62,64 +62,32 @@ namespace libsemigroups {
 
   namespace {
     void section_felsch(ToddCoxeter& tc) {
-      SECTION("Felsch + no standardize") {
+      SECTION("Felsch") {
         tc.strategy(options::strategy::felsch);
       }
     }
 
     void section_hlt(ToddCoxeter& tc) {
-      SECTION("HLT + no standardize + full hlt lookahead + no save") {
+      SECTION("HLT + full hlt lookahead + no save") {
         tc.strategy(options::strategy::hlt)
-            .standardize(false)
             .lookahead_extent(options::lookahead_extent::full)
             .lookahead_style(options::lookahead_style::hlt)
             .save(false);
       }
-      SECTION("HLT + standardise + full hlt lookahead + no save") {
+      SECTION("HLT + partial hlt lookahead + no save") {
         tc.strategy(options::strategy::hlt)
-            .standardize(true)
-            .lookahead_extent(options::lookahead_extent::full)
-            .lookahead_style(options::lookahead_style::hlt)
-            .save(false);
-      }
-      SECTION("HLT + no standardise + partial hlt lookahead + no save") {
-        tc.strategy(options::strategy::hlt)
-            .standardize(false)
             .lookahead_extent(options::lookahead_extent::partial)
             .lookahead_style(options::lookahead_style::hlt)
             .save(false);
       }
-      SECTION("HLT + standardise + partial hlt lookahead + no save") {
+      SECTION("HLT + full lookahead + save") {
         tc.strategy(options::strategy::hlt)
-            .standardize(true)
-            .lookahead_extent(options::lookahead_extent::partial)
-            .lookahead_style(options::lookahead_style::hlt)
-            .save(false);
-      }
-      SECTION("HLT + no standardise + full lookahead + save") {
-        tc.strategy(options::strategy::hlt)
-            .standardize(false)
             .lookahead_extent(options::lookahead_extent::partial)
             .lookahead_style(options::lookahead_style::hlt)
             .save(true);
       }
-      SECTION("HLT + standardise + full hlt lookahead + save") {
+      SECTION("HLT + partial hlt lookahead + save") {
         tc.strategy(options::strategy::hlt)
-            .standardize(true)
-            .lookahead_extent(options::lookahead_extent::full)
-            .lookahead_style(options::lookahead_style::hlt)
-            .save(true);
-      }
-      SECTION("HLT + no standardise + partial hlt lookahead + save") {
-        tc.strategy(options::strategy::hlt)
-            .standardize(false)
-            .lookahead_extent(options::lookahead_extent::partial)
-            .lookahead_style(options::lookahead_style::hlt)
-            .save(true);
-      }
-      SECTION("HLT + standardise + partial hlt lookahead + save") {
-        tc.strategy(options::strategy::hlt)
-            .standardize(true)
             .lookahead_extent(options::lookahead_extent::partial)
             .lookahead_style(options::lookahead_style::hlt)
             .save(true);
@@ -1726,7 +1694,6 @@ namespace libsemigroups {
      tc.add_pair(000000_w, 0000_w);
      tc.strategy(options::strategy::random)
          .remove_duplicate_generating_pairs()
-         .standardize(true);
      REQUIRE(!tc.compatible());
      REQUIRE_THROWS_AS(tc.run_for(std::chrono::microseconds(1)),
                        LibsemigroupsException);
@@ -1738,7 +1705,6 @@ namespace libsemigroups {
          .use_relations_in_extra(true)
          .deduction_policy(DefinitionOptions::definitions::unlimited)
          .deduction_version(digraph_type::process_defs::v1)
-         .restandardize(true)
          .max_preferred_defs(0);
      REQUIRE_THROWS_AS(tc.hlt_defs(0), LibsemigroupsException);
      REQUIRE_THROWS_AS(tc.f_defs(0), LibsemigroupsException);
@@ -2061,8 +2027,7 @@ namespace libsemigroups {
     auto p = make<Presentation<word_type>>(orientation_preserving_monoid(n));
     ToddCoxeter tc(congruence_kind::twosided, p);
     tc.strategy(options::strategy::hlt)
-        .lookahead_extent(options::lookahead_extent::partial)
-        .standardize(false);
+        .lookahead_extent(options::lookahead_extent::partial);
     section_hlt(tc);
     section_felsch(tc);
     // TODO uncomment
@@ -3894,7 +3859,6 @@ TODO uncomment
     tc.lookahead_next(2'000'000)
         .lookahead_extent(options::lookahead_extent::partial)
         .strategy(options::strategy::hlt);
-    //     .standardize(true);
     // section_hlt(tc);
     // section_felsch(tc);  // about 3s with Felsch
     REQUIRE(tc.number_of_classes() == 322'560);
@@ -3905,6 +3869,7 @@ TODO uncomment
       "101",
       "http://brauer.maths.qmul.ac.uk/Atlas/spor/M11/mag/M11G1-P1.M",
       "[todd-coxeter][quick][no-coverage][no-valgrind]") {
+    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("xyXY");
     p.contains_empty_word(true);
@@ -3947,6 +3912,7 @@ TODO uncomment
     section_felsch(tc);
     section_hlt(tc);
     REQUIRE(tc.number_of_classes() == 95'040);
+    // REQUIRE(tc.word_graph().node_capacity() == 0);
   }
 
   LIBSEMIGROUPS_TEST_CASE(
@@ -4051,7 +4017,6 @@ TODO uncomment
       ToddCoxeter tc(right, p);
       tc.add_pair(make<word_type>(p, "xy"), make<word_type>(p, ""));
       tc.strategy(options::strategy::hlt)
-          .standardize(false)
           .lookahead_extent(options::lookahead_extent::partial)
           .lookahead_style(options::lookahead_style::hlt)
           .save(false);
@@ -4154,6 +4119,7 @@ TODO uncomment
       "108",
       "http://brauer.maths.qmul.ac.uk/Atlas/lin/L34/mag/L34G1-P1.M",
       "[todd-coxeter][quick][no-coverage][no-valgrind]") {
+    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("xyXY");
     p.contains_empty_word(true);

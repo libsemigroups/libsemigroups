@@ -706,39 +706,6 @@ namespace libsemigroups {
     //! \sa save(bool)
     [[nodiscard]] bool save() const noexcept;
 
-    //! Partially short-lex standardize the table during enumeration.
-    //!
-    //! If the argument of this function is \c true, then the coset table is
-    //! partially standardized (according to the short-lex order) during the
-    //! coset enumeration.
-    //!
-    //! The default value is \c false.
-    //!
-    //! \param val value indicating whether or not to standardize.
-    //!
-    //! \returns A reference to `*this`.
-    //!
-    //! \exceptions
-    //! \noexcept
-    // Note to self: the word "partially" is added above because the table
-    // might actually not be standardized after deduction or coincidence
-    // processing because it's too difficult to keep track of standardization
-    // during these processes.
-    ToddCoxeter& standardize(bool val) noexcept;
-
-    //! The current value of the standardize setting.
-    //!
-    //! \parameters
-    //! None
-    //!
-    //! \returns A value of type `bool`.
-    //!
-    //! \exceptions
-    //! \noexcept
-    //!
-    //! \sa standardize(bool)
-    [[nodiscard]] bool standardize() const noexcept;
-
     //! Perform an HLT-style push of the defining relations at the identity.
     //!
     //! If a ToddCoxeter instance is defined over a finitely presented
