@@ -48,6 +48,8 @@ namespace libsemigroups {
     struct Stats;  // forward decl TODO not currently used
 
     // TODO move this somewhere better
+    // TODO not sure if all the mem fns of Definitions are really required or
+    // not
     class Definitions {
       using Definition = std::pair<node_type, label_type>;
 
@@ -125,7 +127,7 @@ namespace libsemigroups {
         return _definitions[i];
       }
 
-      bool any_skipped() const noexcept {
+      [[nodiscard]] bool any_skipped() const noexcept {
         return _any_skipped;
       }
 

@@ -302,6 +302,25 @@ namespace libsemigroups {
 
       void clear();
 
+      // TODO this doesn't currently seem to work
+      // void compact() {
+      //   std::iota(_forwd.begin(), _forwd.end() - 1, 1);
+      //   _forwd.back() = UNDEFINED;
+      //   std::iota(_bckwd.begin() + 1, _bckwd.end(), 0);
+      //   std::iota(_ident.begin(), _ident.begin() + number_of_nodes_active(),
+      //   0); std::fill(
+      //       _ident.begin() + number_of_nodes_active(), _ident.end(),
+      //       _id_node);
+      //   _current    = _id_node;
+      //   _current_la = _id_node;
+      //   if (number_of_nodes_active() == node_capacity()) {
+      //     _first_free_node = UNDEFINED;
+      //   } else {
+      //     _first_free_node = number_of_nodes_active();
+      //   }
+      //   _last_active_node = number_of_nodes_active() - 1;
+      // }
+
       ////////////////////////////////////////////////////////////////////////
       // NodeManager - data - protected
       ////////////////////////////////////////////////////////////////////////
@@ -345,7 +364,6 @@ namespace libsemigroups {
       };
 
      public:
-      // TODO remove just for testing
       ActiveNodesRange active_nodes() const {
         return ActiveNodesRange(this);
       }

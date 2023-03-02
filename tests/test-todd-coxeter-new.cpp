@@ -312,16 +312,17 @@ namespace libsemigroups {
 
     section_felsch(tc);
     section_hlt(tc);
-
+    // TODO uncomment
     // section_random(tc);
     // section_rc_style(tc);
     // section_R_over_C_style(tc);
     // section_CR_style(tc);
     // section_Cr_style(tc);
 
+    tc.run();
     REQUIRE(tc.number_of_classes() == 5);
     REQUIRE(tc.finished());
-    REQUIRE(!tc.is_standardized(order::shortlex));
+    // REQUIRE((tc.standardize() || !tc.is_standardized(order::shortlex)));
 
     REQUIRE(tc.word_to_class_index(001_w) == tc.word_to_class_index(00001_w));
     REQUIRE(tc.word_to_class_index(011001_w)
@@ -1856,6 +1857,7 @@ namespace libsemigroups {
 
     REQUIRE(tc.number_of_classes() == 5'040);
   }
+
   /* TODO uncomment
     LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
                             "045",

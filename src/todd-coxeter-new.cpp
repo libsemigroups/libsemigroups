@@ -20,6 +20,9 @@
 // semigroups and monoids.
 
 #include "libsemigroups/todd-coxeter-new.hpp"
+
+#include <iostream>
+
 #include "libsemigroups/obvinf.hpp"
 #include "libsemigroups/report.hpp"
 
@@ -218,12 +221,14 @@ namespace libsemigroups {
   }
 
   // TODO not currently used for anything
+  // TODO rename to standardize_during_run or something
   ToddCoxeter& ToddCoxeter::standardize(bool x) noexcept {
     _settings.standardize = x;
     return *this;
   }
 
   // TODO not currently used for anything
+  // TODO rename to standardize_during_run or something
   bool ToddCoxeter::standardize() const noexcept {
     return _settings.standardize;
   }
@@ -292,7 +297,6 @@ namespace libsemigroups {
 
   void ToddCoxeter::shrink_to_fit() {
     if (!finished()) {
-      // TODO Throw?
       return;
     }
     standardize(order::shortlex);
@@ -305,7 +309,6 @@ namespace libsemigroups {
     if (is_standardized(val)) {
       return false;
     }
-    _word_graph.number_of_active_nodes(_word_graph.number_of_nodes_active());
     bool result   = action_digraph::standardize(_word_graph, _forest, val);
     _standardized = val;
     return result;
@@ -458,7 +461,7 @@ namespace libsemigroups {
 
     if (kind() == congruence_kind::twosided
         && cbegin_generating_pairs() != cend_generating_pairs()) {
-      // TODO avoid copy of presentation here
+      // TODO(later) avoid copy of presentation here, if possible
       Presentation<word_type> p = presentation();
       if (p.alphabet().size() != _word_graph.out_degree()) {
         LIBSEMIGROUPS_ASSERT(p.alphabet().size() == 0);
@@ -494,6 +497,7 @@ namespace libsemigroups {
       _finished = true;
     }
   }
+
   void ToddCoxeter::felsch() {
     _word_graph.process_definitions();
 
@@ -534,35 +538,23 @@ namespace libsemigroups {
     auto const first = presentation().rules.cbegin();
     auto const last  = presentation().rules.cend();
     while (current != _word_graph.first_free_node() && !stopped()) {
-      // if (!save()) {
       if (!save()) {
         for (auto it = first; it < last; it += 2) {
-          // TODO check that the DoNotRegisterDefs honoured
           _word_graph.push_definition_hlt<DoNotRegisterDefs>(
               current, *it, *(it + 1));
           _word_graph.process_coincidences<DoNotRegisterDefs>();
         }
       } else {
         for (auto it = first; it < last; it += 2) {
-          // TODO check that the RegisterDefs honoured
           _word_graph.push_definition_hlt<RegisterDefs>(
               current, *it, *(it + 1));
           _word_graph.process_definitions();
         }
       }
-      // if (standardize()) {
-      //   bool any_changes = false;
-      //   for (letter_type x = 0; x < n; ++x) {
-      //     any_changes |= standardize_immediate(_current, x);
-      //   }
-      //   if (any_changes) {
-      //     _deduct->clear();
-      //   }
-      // }
       if ((!save() || _word_graph.definitions().any_skipped())
           && (_word_graph.number_of_nodes_active() > lookahead_next())) {
         // If save() == true and no deductions were skipped, then we have
-        // already run process_deductions, and so there's no point in doing a
+        // already run process_definitions, and so there's no point in doing a
         // lookahead.
         perform_lookahead();
       }
