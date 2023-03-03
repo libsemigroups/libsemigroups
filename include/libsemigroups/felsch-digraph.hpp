@@ -136,9 +136,10 @@ namespace libsemigroups {
     using Definition = std::pair<node_type, label_type>;
 
    private:
-    Definitions             _definitions;
-    detail::FelschTree      _felsch_tree;
-    Presentation<word_type> _presentation;
+    Definitions                _definitions;
+    mutable detail::FelschTree _felsch_tree;
+    mutable bool               _felsch_tree_initted;
+    Presentation<word_type>    _presentation;
 
    public:
     ////////////////////////////////////////////////////////////////////////
@@ -184,7 +185,16 @@ namespace libsemigroups {
     Presentation<word_type> const& presentation() const noexcept;
 
     detail::FelschTree const& felsch_tree() const {
+      init_felsch_tree();
       return _felsch_tree;
+    }
+
+    void init_felsch_tree() const {
+      if (!_felsch_tree_initted) {
+        _felsch_tree_initted = true;
+        _felsch_tree.add_relations(_presentation.rules.cbegin(),
+                                   _presentation.rules.cend());
+      }
     }
 
     [[nodiscard]] auto& definitions() noexcept {
@@ -270,6 +280,11 @@ namespace libsemigroups {
                                             PreferredDefs& pref_defs) noexcept;
 
    private:
+    detail::FelschTree& felsch_tree() {
+      init_felsch_tree();
+      return _felsch_tree;
+    }
+
     // TODO can we use a reference here?
     template <typename Incompatible, typename PreferredDefs>
     bool process_definition_v2(Definition     d,

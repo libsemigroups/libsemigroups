@@ -2252,7 +2252,9 @@ namespace libsemigroups {
                           "076",
                           "uninitialized RepOrc",
                           "[quick][low-index]") {
-    auto rg = ReportGuard(false);
+    auto                      rg = ReportGuard(false);
+    Presentation<std::string> p;
+    p.alphabet("abc");
     presentation::add_rule_and_check(p, "cc", "c");
     presentation::add_rule_and_check(p, "abb", "a");
     presentation::add_rule_and_check(p, "aca", "aba");

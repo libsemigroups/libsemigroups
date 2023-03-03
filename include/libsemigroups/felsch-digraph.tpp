@@ -41,8 +41,8 @@ namespace libsemigroups {
     DigraphWithSources<Node>::init(r, c);
     FelschDigraphSettings_::init();
     _felsch_tree.init(c);
-    _felsch_tree.add_relations(_presentation.rules.cbegin(),
-                               _presentation.rules.cend());
+    // _felsch_tree.add_relations(_presentation.rules.cbegin(),
+    //                           _presentation.rules.cend());
     return *this;
   }
 
@@ -54,8 +54,8 @@ namespace libsemigroups {
         FelschDigraphSettings<FelschDigraph<Word, Node, Definitions>>(),
         _felsch_tree(p.alphabet().size()),
         _presentation(p) {
-    _felsch_tree.add_relations(_presentation.rules.cbegin(),
-                               _presentation.rules.cend());
+    // _felsch_tree.add_relations(_presentation.rules.cbegin(),
+    //                            _presentation.rules.cend());
   }
 
   template <typename Word, typename Node, typename Definitions>
@@ -74,8 +74,8 @@ namespace libsemigroups {
         FelschDigraphSettings<FelschDigraph<Word, Node, Definitions>>(),
         _felsch_tree(p.alphabet().size()),
         _presentation(std::move(p)) {
-    _felsch_tree.add_relations(_presentation.rules.cbegin(),
-                               _presentation.rules.cend());
+    // _felsch_tree.add_relations(_presentation.rules.cbegin(),
+    //                            _presentation.rules.cend());
   }
 
   template <typename Word, typename Node, typename Definitions>
@@ -193,8 +193,8 @@ namespace libsemigroups {
           c - ActionDigraph<Node>::out_degree());
     }
     _felsch_tree.init(c);
-    _felsch_tree.add_relations(_presentation.rules.cbegin(),
-                               _presentation.rules.cend());
+    // _felsch_tree.add_relations(_presentation.rules.cbegin(),
+    //                            _presentation.rules.cend());
     return *this;
   }
 
@@ -209,8 +209,8 @@ namespace libsemigroups {
           c - ActionDigraph<Node>::out_degree());
     }
     _felsch_tree.init(c);
-    _felsch_tree.add_relations(_presentation.rules.cbegin(),
-                               _presentation.rules.cend());
+    // _felsch_tree.add_relations(_presentation.rules.cbegin(),
+    //                            _presentation.rules.cend());
     return *this;
   }
 
@@ -246,7 +246,7 @@ namespace libsemigroups {
       node_type      c,
       Incompatible&  incompat,
       PreferredDefs& pref_defs) {
-    for (auto it = _felsch_tree.cbegin(); it < _felsch_tree.cend(); ++it) {
+    for (auto it = felsch_tree().cbegin(); it < felsch_tree().cend(); ++it) {
       if (!merge_targets_of_paths_labelled_by_rules_if_possible<RegisterDefs>(
               c, *it, incompat, pref_defs)) {
         return false;
@@ -255,7 +255,7 @@ namespace libsemigroups {
 
     size_t const n = _presentation.alphabet().size();
     for (size_t x = 0; x < n; ++x) {
-      if (_felsch_tree.push_front(x)) {
+      if (felsch_tree().push_front(x)) {
         node_type e = this->first_source(c, x);
         while (e != UNDEFINED) {
           if (!process_definitions_dfs_v1(e, incompat, pref_defs)) {
@@ -263,7 +263,7 @@ namespace libsemigroups {
           }
           e = this->next_source(e, x);
         }
-        _felsch_tree.pop_front();
+        felsch_tree().pop_front();
       }
     }
     return true;
@@ -293,7 +293,7 @@ namespace libsemigroups {
     size_t const n = this->out_degree();
     for (size_t x = 0; x < n; ++x) {
       node_type e = DigraphWithSources_::first_source(c, x);
-      if (e != UNDEFINED && _felsch_tree.push_front(x)) {
+      if (e != UNDEFINED && felsch_tree().push_front(x)) {
         // We only need to push the side (the good side) of the relation
         // that corresponds to the prefix in the tree through one preimage,
         // because pushing it through any preimage leads to the same place
@@ -304,7 +304,8 @@ namespace libsemigroups {
         // pushing of the good side once here and pass the result to the dfs
         // function. Update the pushing above to only do the other (bad)
         // side of the relations.
-        for (auto it = _felsch_tree.cbegin(); it < _felsch_tree.cend(); ++it) {
+        for (auto it = felsch_tree().cbegin(); it < felsch_tree().cend();
+             ++it) {
           auto        i = *it;  // good
           auto        j = (i % 2 == 0 ? *it + 1 : *it - 1);
           auto const& u = _presentation.rules[i];
@@ -322,7 +323,7 @@ namespace libsemigroups {
           if (u.empty()) {
             continue;
           }
-          auto u_first = u.cbegin() + _felsch_tree.length() - 1;
+          auto u_first = u.cbegin() + felsch_tree().length() - 1;
           auto u_last  = u.cend() - 1;
 
           node_type y = action_digraph_helper::follow_path_nc(
@@ -354,7 +355,7 @@ namespace libsemigroups {
           }
           e = DigraphWithSources_::next_source(e, x);
         }
-        _felsch_tree.pop_front();
+        felsch_tree().pop_front();
       }
     }
     return true;
@@ -469,8 +470,8 @@ namespace libsemigroups {
       Definition     d,
       Incompatible&  incompat,
       PreferredDefs& pref_defs) {
-    _felsch_tree.push_back(d.second);
-    for (auto it = _felsch_tree.cbegin(); it < _felsch_tree.cend(); ++it) {
+    felsch_tree().push_back(d.second);
+    for (auto it = felsch_tree().cbegin(); it < felsch_tree().cend(); ++it) {
       // Using anything other than NoPreferredDefs here seems to be bad
       // in test case "ACE --- perf602p5 - Felsch", maybe this is a good
       // example where the fill factor would be useful?
@@ -491,7 +492,7 @@ namespace libsemigroups {
       Definition     d,
       Incompatible&  incompat,
       PreferredDefs& pref_defs) {
-    _felsch_tree.push_back(d.second);
+    felsch_tree().push_back(d.second);
     if (!process_definitions_dfs_v1(d.first, incompat, pref_defs)) {
       return false;
     }
