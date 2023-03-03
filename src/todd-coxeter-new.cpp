@@ -504,7 +504,7 @@ namespace libsemigroups {
     } else {
       if (running_until()) {
         LIBSEMIGROUPS_EXCEPTION(
-            "the strategy {} is cannot be used with run_until!", strategy());
+            "the strategy {} cannot be used with run_until!", strategy());
       }
 
       if (strategy() == options::strategy::CR) {
@@ -513,11 +513,10 @@ namespace libsemigroups {
         R_over_C_style();
       } else if (strategy() == options::strategy::Cr) {
         Cr_style();
-      }  // else if (strategy() == options::strategy::Rc) {
-      //   Rc_style();
-      // }
+      } else if (strategy() == options::strategy::Rc) {
+        Rc_style();
+      }
     }
-
     finalise_run();
   }
 
@@ -767,13 +766,38 @@ namespace libsemigroups {
     run_until([this, &M]() -> bool {
       return word_graph().number_of_nodes_active() >= M + f_defs();
     });
+    word_graph().report_active_nodes();
     strategy(options::strategy::hlt);
     M        = word_graph().number_of_nodes_active();
     size_t N = presentation::length(presentation());
     run_until([this, &M, &N]() -> bool {
       return word_graph().number_of_nodes_active() >= (hlt_defs() / N) + M;
     });
+    word_graph().report_active_nodes();
     strategy(options::strategy::felsch);
+    run();
+    lookahead_extent(options::lookahead_extent::full);
+    lookahead_style(options::lookahead_style::hlt);
+    perform_lookahead();
+    // pop_settings();
+  }
+
+  void ToddCoxeter::Rc_style() {
+    // push_settings();
+    strategy(options::strategy::hlt);
+    auto   M = word_graph().number_of_nodes_active();
+    size_t N = presentation::length(presentation());
+    run_until([this, &M, &N]() -> bool {
+      return word_graph().number_of_nodes_active() >= (hlt_defs() / N) + M;
+    });
+    word_graph().report_active_nodes();
+    strategy(options::strategy::felsch);
+    M = word_graph().number_of_nodes_active();
+    run_until([this, &M]() -> bool {
+      return word_graph().number_of_nodes_active() >= f_defs() + M;
+    });
+    word_graph().report_active_nodes();
+    strategy(options::strategy::hlt);
     run();
     lookahead_extent(options::lookahead_extent::full);
     lookahead_style(options::lookahead_style::hlt);
