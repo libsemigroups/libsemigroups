@@ -190,6 +190,7 @@ namespace libsemigroups {
     }
 
     void init_felsch_tree() const {
+      // FIXME this change and those in this PR broke Sims1 completely
       if (!_felsch_tree_initted) {
         _felsch_tree_initted = true;
         _felsch_tree.add_relations(_presentation.rules.cbegin(),
