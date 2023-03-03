@@ -804,6 +804,7 @@ namespace libsemigroups {
     void hlt();
     void CR_style();
     void R_over_C_style();
+    void Cr_style();
 
     ////////////////////////////////////////////////////////////////////////
     // ToddCoxeter - reporting - private

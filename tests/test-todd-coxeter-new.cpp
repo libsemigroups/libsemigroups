@@ -97,6 +97,12 @@ namespace libsemigroups {
       }
     }
 
+    void section_Cr_style(ToddCoxeter& tc) {
+      SECTION("Cr style") {
+        tc.strategy(options::strategy::Cr);
+      }
+    }
+
     void check_complete_compatible(ToddCoxeter& tc) {
       auto const& p = tc.presentation();
       tc.run();
@@ -242,7 +248,7 @@ namespace libsemigroups {
 
     // TODO uncomment
     // section_rc_style(tc);
-    // section_Cr_style(tc);
+    section_Cr_style(tc);
 
     REQUIRE(tc.number_of_classes() == 27);
 
@@ -289,7 +295,7 @@ namespace libsemigroups {
     // section_rc_style(tc);
     section_R_over_C_style(tc);
     section_CR_style(tc);
-    // section_Cr_style(tc);
+    section_Cr_style(tc);
 
     tc.run();
     REQUIRE(tc.number_of_classes() == 5);
@@ -407,7 +413,7 @@ namespace libsemigroups {
     // TODO uncomment
     // section_rc_style(tc);
     section_R_over_C_style(tc);
-    // section_Cr_style(tc);
+    section_Cr_style(tc);
 
     REQUIRE(tc.number_of_classes() == 10'752);
     check_complete_compatible(tc);
@@ -485,14 +491,13 @@ namespace libsemigroups {
     // TODO uncomment
     //  section_rc_style(tc);
     section_R_over_C_style(tc);
-    //  section_Cr_style(tc);
+    section_Cr_style(tc);
 
-    // tc.random_interval(std::chrono::milliseconds(100));
-    // tc.lower_bound(3);
-    // tc.run();
+    tc.lower_bound(3);
+    tc.run();
 
-    // check_complete_compatible(tc);
-    // check_standardize(tc);
+    check_complete_compatible(tc);
+    check_standardize(tc);
 
     REQUIRE(tc.number_of_classes() == 3);
     REQUIRE(tc.contains(0_w, 1_w));
@@ -550,6 +555,7 @@ namespace libsemigroups {
     section_felsch(tc);
     section_hlt(tc);
     section_CR_style(tc);
+    section_Cr_style(tc);
     section_R_over_C_style(tc);
 
     REQUIRE(tc.number_of_classes() == 21);
@@ -603,7 +609,7 @@ namespace libsemigroups {
     // TODO uncomment
     // section_rc_style(tc);
     section_R_over_C_style(tc);
-    // section_Cr_style(tc);
+    section_Cr_style(tc);
 
     REQUIRE(tc.number_of_classes() == 2);
     check_standardize(tc);
@@ -627,7 +633,7 @@ namespace libsemigroups {
     // section_rc_style(tc);
     section_R_over_C_style(tc);
     section_CR_style(tc);
-    // section_Cr_style(tc);
+    section_Cr_style(tc);
 
     REQUIRE(tc.number_of_classes() == 5);
     REQUIRE(tc.finished());
@@ -653,7 +659,7 @@ namespace libsemigroups {
       // section_rc_style(tc);
       section_R_over_C_style(tc);
       section_CR_style(tc);
-      // section_Cr_style(tc);
+      section_Cr_style(tc);
 
       REQUIRE(!tc.is_standardized());
       REQUIRE(tc.word_to_class_index(001_w) == tc.word_to_class_index(00001_w));
@@ -689,7 +695,7 @@ namespace libsemigroups {
     // section_rc_style(tc);
     section_R_over_C_style(tc);
     section_CR_style(tc);
-    // section_Cr_style(tc);
+    section_Cr_style(tc);
 
     REQUIRE(tc.word_to_class_index(001_w) == tc.word_to_class_index(00001_w));
     REQUIRE(tc.word_to_class_index(011001_w)
@@ -727,7 +733,7 @@ namespace libsemigroups {
     // section_rc_style(tc);
     section_R_over_C_style(tc);
     section_CR_style(tc);
-    // section_Cr_style(tc);
+    section_Cr_style(tc);
 
     check_complete_compatible(tc);
     check_standardize(tc);
@@ -795,7 +801,7 @@ namespace libsemigroups {
     // section_rc_style(tc);
     section_R_over_C_style(tc);
     section_CR_style(tc);
-    // section_Cr_style(tc);
+    section_Cr_style(tc);
 
     REQUIRE(
         tc.word_to_class_index(S.factorisation(Transf<>({1, 3, 1, 3, 3})))
@@ -841,7 +847,7 @@ namespace libsemigroups {
     // section_rc_style(tc);
     section_R_over_C_style(tc);
     section_CR_style(tc);
-    // section_Cr_style(tc);
+    section_Cr_style(tc);
 
     REQUIRE(tc.number_of_classes() == 72);
     REQUIRE(tc.number_of_classes() == 72);
@@ -903,6 +909,7 @@ namespace libsemigroups {
     section_hlt(tc);
     section_felsch(tc);
     section_CR_style(tc);
+    section_Cr_style(tc);
     section_R_over_C_style(tc);
 
     // TODO uncomment
@@ -938,7 +945,7 @@ namespace libsemigroups {
     // section_rc_style(tc);
     section_R_over_C_style(tc);
     section_CR_style(tc);
-    // section_Cr_style(tc);
+    section_Cr_style(tc);
 
     REQUIRE(tc.number_of_classes() == 6);
     REQUIRE(tc.word_to_class_index({1}) == tc.word_to_class_index({2}));
@@ -981,7 +988,7 @@ namespace libsemigroups {
     // section_rc_style(tc);
     section_R_over_C_style(tc);
     section_CR_style(tc);
-    // section_Cr_style(tc);
+    section_Cr_style(tc);
 
     REQUIRE(tc.number_of_classes() == 16);
     REQUIRE(tc.word_to_class_index({2}) == tc.word_to_class_index({3}));
@@ -1052,7 +1059,7 @@ namespace libsemigroups {
     // section_rc_style(tc);
     section_R_over_C_style(tc);
     section_CR_style(tc);
-    // section_Cr_style(tc);
+    section_Cr_style(tc);
 
     REQUIRE(tc.number_of_classes() == 16);
     REQUIRE(tc.word_to_class_index({0}) == tc.word_to_class_index({5}));
@@ -1108,6 +1115,7 @@ namespace libsemigroups {
     section_hlt(tc);
     section_felsch(tc);
     section_CR_style(tc);
+    section_Cr_style(tc);
     section_R_over_C_style(tc);
 
     REQUIRE(tc.contains(00_w, 00_w));
@@ -1125,6 +1133,7 @@ namespace libsemigroups {
     section_hlt(tc);
     section_felsch(tc);
     section_CR_style(tc);
+    section_Cr_style(tc);
     section_R_over_C_style(tc);
 
     REQUIRE_THROWS_AS(tc.run(), LibsemigroupsException);
@@ -1162,7 +1171,7 @@ namespace libsemigroups {
     // section_rc_style(tc);
     section_R_over_C_style(tc);
     section_CR_style(tc);
-    // section_Cr_style(tc);
+    section_Cr_style(tc);
 
     REQUIRE(tc.number_of_classes() == 34);
 
@@ -1215,7 +1224,7 @@ namespace libsemigroups {
     // section_rc_style(tc);
     section_R_over_C_style(tc);
     section_CR_style(tc);
-    // section_Cr_style(tc);
+    section_Cr_style(tc);
 
     REQUIRE(tc.number_of_classes() == 5);
   }
@@ -1248,7 +1257,7 @@ namespace libsemigroups {
       // section_rc_style(tc2);
       section_R_over_C_style(tc2);
       section_CR_style(tc2);
-      // section_Cr_style(tc2);
+      section_Cr_style(tc2);
 
       REQUIRE(tc2.number_of_classes() == 1);
       tc2.shrink_to_fit();
@@ -1275,6 +1284,7 @@ namespace libsemigroups {
       section_hlt(tc);
       section_felsch(tc);
       section_CR_style(tc);
+      section_Cr_style(tc);
       section_R_over_C_style(tc);
       // TODO uncomment
 
@@ -1301,7 +1311,7 @@ namespace libsemigroups {
       // section_rc_style(tc);
       section_R_over_C_style(tc);
       section_CR_style(tc);
-      // section_Cr_style(tc);
+      section_Cr_style(tc);
 
       REQUIRE(tc.number_of_classes() == 5);
       REQUIRE(tc.class_index_to_word(0) == 0_w);
@@ -1316,7 +1326,7 @@ namespace libsemigroups {
       // section_rc_style(tc);
       section_R_over_C_style(tc);
       section_CR_style(tc);
-      // section_Cr_style(tc);
+      section_Cr_style(tc);
 
       REQUIRE(tc.number_of_classes() == 5);
       REQUIRE(tc.class_index_to_word(0) == 0_w);
@@ -1348,6 +1358,7 @@ namespace libsemigroups {
     section_felsch(tc2);
     section_CR_style(tc2);
     section_R_over_C_style(tc2);
+    section_Cr_style(tc2);
 
     REQUIRE(tc2.number_of_classes() == 1);
   }
@@ -1379,6 +1390,7 @@ namespace libsemigroups {
     section_felsch(tc);
     section_CR_style(tc);
     section_R_over_C_style(tc);
+    section_Cr_style(tc);
 
     tc.add_pair({1}, {2});
     REQUIRE(is_obviously_infinite(tc));
@@ -1460,6 +1472,7 @@ namespace libsemigroups {
     section_hlt(tc2);
     section_felsch(tc2);
     section_CR_style(tc2);
+    section_Cr_style(tc2);
     section_R_over_C_style(tc2);
 
     REQUIRE(tc2.number_of_classes() == 3);
@@ -1480,6 +1493,7 @@ namespace libsemigroups {
     section_felsch(tc);
     section_hlt(tc);
     section_CR_style(tc);
+    section_Cr_style(tc);
     section_R_over_C_style(tc);
 
     REQUIRE(tc.number_of_classes() == 1);
@@ -1510,7 +1524,7 @@ namespace libsemigroups {
     // section_rc_style(tc1);
     section_R_over_C_style(tc1);
     section_CR_style(tc1);
-    // section_Cr_style(tc1);
+    section_Cr_style(tc1);
 
     REQUIRE(tc1.number_of_classes() == 11);
     REQUIRE(std::vector<word_type>(todd_coxeter::cbegin_normal_forms(tc1),
@@ -1756,6 +1770,7 @@ namespace libsemigroups {
     }
     // section_hlt(tc); // slow
     // section_CR_style(tc); // slow
+    // section_Cr_style(tc); // slow
     REQUIRE(tc.number_of_classes() == 362'880);
   }
 
@@ -1778,6 +1793,7 @@ namespace libsemigroups {
     section_hlt(tc);
     section_felsch(tc);
     section_CR_style(tc);
+    section_Cr_style(tc);
     section_R_over_C_style(tc);
 
     tc.run_for(std::chrono::microseconds(1));
@@ -1806,6 +1822,7 @@ namespace libsemigroups {
     section_hlt(tc);
     section_felsch(tc);
     section_CR_style(tc);
+    section_Cr_style(tc);
     section_R_over_C_style(tc);
 
     REQUIRE(tc.number_of_classes() == 5'040);
@@ -1907,6 +1924,7 @@ namespace libsemigroups {
     section_felsch(tc);
     section_hlt(tc);
     section_CR_style(tc);
+    section_Cr_style(tc);
     section_R_over_C_style(tc);
 
     REQUIRE(tc.number_of_classes() == 6'721);
@@ -1933,6 +1951,7 @@ namespace libsemigroups {
     section_hlt(tc);
     section_felsch(tc);
     section_CR_style(tc);
+    section_Cr_style(tc);
     section_R_over_C_style(tc);
     // TODO uncomment
     // section_rc_style(tc);
@@ -1974,6 +1993,7 @@ namespace libsemigroups {
     section_CR_style(tc);
     // TODO uncomment
     section_R_over_C_style(tc);
+    section_Cr_style(tc);
     // section_rc_style(tc);
     check_complete_compatible(tc);
     REQUIRE(tc.number_of_classes() == 4'140);
@@ -2013,6 +2033,7 @@ namespace libsemigroups {
     section_hlt(tc);
     section_felsch(tc);
     section_CR_style(tc);
+    section_Cr_style(tc);
     // TODO uncomment
     section_R_over_C_style(tc);
     // section_rc_style(tc);
@@ -2036,7 +2057,7 @@ namespace libsemigroups {
     // section_rc_style(tc);
     section_R_over_C_style(tc);
     section_CR_style(tc);
-    // section_Cr_style(tc);
+    section_Cr_style(tc);
 
     REQUIRE(tc.number_of_classes() == 1'015);
   }
@@ -2062,6 +2083,7 @@ namespace libsemigroups {
     section_felsch(tc);
     section_hlt(tc);
     section_CR_style(tc);
+    section_Cr_style(tc);
     section_R_over_C_style(tc);
 
     REQUIRE(tc.number_of_classes() == 16'795);
@@ -2212,6 +2234,7 @@ namespace libsemigroups {
     section_felsch(tc);
     section_hlt(tc);
     section_CR_style(tc);
+    section_Cr_style(tc);
     section_R_over_C_style(tc);
     REQUIRE(tc.number_of_classes() == 15);
   }
@@ -2232,6 +2255,7 @@ namespace libsemigroups {
     section_felsch(tc);
     section_hlt(tc);
     section_CR_style(tc);
+    section_Cr_style(tc);
     section_R_over_C_style(tc);
     REQUIRE(tc.number_of_classes() == 105);
   }
@@ -2252,6 +2276,7 @@ namespace libsemigroups {
     section_felsch(tc);
     section_hlt(tc);
     section_CR_style(tc);
+    section_Cr_style(tc);
     section_R_over_C_style(tc);
     REQUIRE(tc.number_of_classes() == 1'546);
   }
@@ -2273,6 +2298,7 @@ namespace libsemigroups {
     section_felsch(tc);
     section_hlt(tc);
     section_CR_style(tc);
+    section_Cr_style(tc);
     section_R_over_C_style(tc);
     REQUIRE(tc.number_of_classes() == 7'776);
   }
@@ -2319,7 +2345,7 @@ namespace libsemigroups {
       // section_rc_style(tc);
       section_R_over_C_style(tc);
       section_CR_style(tc);
-      // section_Cr_style(tc);
+      section_Cr_style(tc);
 
       // SECTION("R/C + Felsch lookahead") {
       //   tc.strategy(options::strategy::R_over_C)
@@ -2393,7 +2419,7 @@ namespace libsemigroups {
       // section_rc_style(tc);
       section_R_over_C_style(tc);
       section_CR_style(tc);
-      // section_Cr_style(tc);
+      section_Cr_style(tc);
 
       REQUIRE(tc.number_of_classes() == 5);
     }
@@ -2427,7 +2453,7 @@ namespace libsemigroups {
     // section_rc_style(tc);
     section_R_over_C_style(tc);
     section_CR_style(tc);
-    // section_Cr_style(tc);
+    section_Cr_style(tc);
 
     REQUIRE(tc.number_of_classes() == 24);
     REQUIRE(
@@ -2570,7 +2596,7 @@ namespace libsemigroups {
     // section_rc_style(tc);
     section_R_over_C_style(tc);
     section_CR_style(tc);
-    // section_Cr_style(tc);
+    section_Cr_style(tc);
 
     REQUIRE(tc.number_of_classes() == 120);
   }
@@ -2594,7 +2620,7 @@ namespace libsemigroups {
     // section_rc_style(tc);
     section_R_over_C_style(tc);
     section_CR_style(tc);
-    // section_Cr_style(tc);
+    section_Cr_style(tc);
 
     REQUIRE(tc.number_of_classes() == 243);
   }
@@ -2619,7 +2645,7 @@ namespace libsemigroups {
     // section_rc_style(tc);
     section_R_over_C_style(tc);
     section_CR_style(tc);
-    // section_Cr_style(tc);
+    section_Cr_style(tc);
 
     REQUIRE(tc.number_of_classes() == 99);
     REQUIRE(tc.finished());
@@ -2712,7 +2738,7 @@ namespace libsemigroups {
     // TODO uncomment
     // section_rc_style(tc);
     section_R_over_C_style(tc);
-    // section_Cr_style(tc);
+    section_Cr_style(tc);
 
     REQUIRE(tc.number_of_classes() == 1);
     tc.standardize(order::shortlex);
@@ -2784,7 +2810,7 @@ namespace libsemigroups {
     // TODO uncomment
     // section_rc_style(tc);
     section_R_over_C_style(tc);
-    // section_Cr_style(tc);
+    section_Cr_style(tc);
 
     REQUIRE(tc.number_of_classes() == 14'911);
   }
@@ -2816,7 +2842,7 @@ namespace libsemigroups {
     // partial lookahead works very badly
     // 2m30s
     section_R_over_C_style(tc);
-    // section_Cr_style(tc);
+    section_Cr_style(tc);
 
     REQUIRE(tc.number_of_classes() == 20'490);
   }
@@ -2914,7 +2940,7 @@ namespace libsemigroups {
     // section_rc_style(tc);
     section_R_over_C_style(tc);
     section_CR_style(tc);
-    // section_Cr_style(tc);
+    section_Cr_style(tc);
 
     REQUIRE(tc.number_of_classes() == 72'822);
     check_complete_compatible(tc);
@@ -2966,7 +2992,7 @@ namespace libsemigroups {
     // section_rc_style(tc);
     section_R_over_C_style(tc);
     section_CR_style(tc);
-    // section_Cr_style(tc);
+    section_Cr_style(tc);
 
     REQUIRE(tc.number_of_classes() == 8);
   }
@@ -3017,7 +3043,7 @@ namespace libsemigroups {
     // section_felsch(tc); // takes about 3.5 seconds
     // TODO uncomment
     // section_rc_style(tc); // partial lookahead is too slow
-    // section_Cr_style(tc); // very slow
+    // section_Cr_style(tc);  // very slow
     section_R_over_C_style(tc);
 
     REQUIRE(tc.number_of_classes() == 78'722);
@@ -3063,7 +3089,7 @@ namespace libsemigroups {
     // TODO uncomment
     // section_rc_style(tc); // partial lookahead very slow ~8s
     section_R_over_C_style(tc);
-    // section_Cr_style(tc);
+    section_Cr_style(tc);
 
     REQUIRE(tc.number_of_classes() == 153'500);
   }
@@ -3097,11 +3123,11 @@ namespace libsemigroups {
 
     section_hlt(tc);
     // section_CR_style(tc); // Too slow
-    // section_felsch(tc); // extremely slow without preprocessing (when it is
-    // still slower than HLT)
-    // TODO uncomment
-    // section_rc_style(tc); + partial lookahead too slow
-    // section_Cr_style(tc); // too slow
+    // section_felsch(tc);
+    // // extremely slow without preprocessing (when it is
+    // // still slower than HLT)
+    // section_rc_style(tc);  // + partial lookahead too slow
+    // section_Cr_style(tc);  // too slow
     section_R_over_C_style(tc);
 
     check_complete_compatible(tc);
@@ -3135,7 +3161,7 @@ namespace libsemigroups {
     // section_rc_style(tc);
     section_R_over_C_style(tc);
     section_CR_style(tc);
-    // section_Cr_style(tc);
+    section_Cr_style(tc);
 
     REQUIRE(tc.number_of_classes() == 29);
   }
@@ -3224,7 +3250,7 @@ namespace libsemigroups {
     // section_rc_style(tc);
     section_R_over_C_style(tc);
     section_CR_style(tc);
-    // section_Cr_style(tc);
+    section_Cr_style(tc);
 
     REQUIRE(tc.number_of_classes() == 6'561);
   }
@@ -3279,7 +3305,7 @@ namespace libsemigroups {
     // section_rc_style(tc);
     section_R_over_C_style(tc);
     section_CR_style(tc);
-    // section_Cr_style(tc);
+    section_Cr_style(tc);
 
     REQUIRE(tc.number_of_classes() == 14);
     tc.standardize(order::shortlex);
@@ -3331,7 +3357,7 @@ namespace libsemigroups {
     section_R_over_C_style(tc);
     // TODO uncomment
     // section_rc_style(tc);
-    // section_Cr_style(tc);
+    section_Cr_style(tc);
 
     REQUIRE(tc.number_of_classes() == 10'625);
 
@@ -3488,6 +3514,7 @@ namespace libsemigroups {
     section_felsch(H);
     section_hlt(H);
     section_CR_style(H);
+    section_Cr_style(H);
     section_R_over_C_style(H);
 
     REQUIRE(H.number_of_classes() == 29);
@@ -3527,6 +3554,7 @@ namespace libsemigroups {
     }
     // section_CR_style(H); // too slow
     section_R_over_C_style(H);
+    // section_Cr_style(H); // too slow
 
     H.add_pair(make<word_type>(p, "b"), make<word_type>(p, ""));
 
@@ -3576,6 +3604,7 @@ namespace libsemigroups {
 
     section_hlt(H);
     section_CR_style(H);
+    section_Cr_style(H);
     section_R_over_C_style(H);
     section_felsch(H);
 
@@ -3609,6 +3638,7 @@ namespace libsemigroups {
     section_hlt(H);
     section_felsch(H);
     section_CR_style(H);
+    section_Cr_style(H);
     section_R_over_C_style(H);
 
     REQUIRE(H.number_of_classes() == 95'040);
@@ -3809,6 +3839,7 @@ namespace libsemigroups {
     section_felsch(tc);
     section_hlt(tc);
     section_CR_style(tc);
+    section_Cr_style(tc);
     section_R_over_C_style(tc);
 
     REQUIRE(tc.number_of_classes() == 10);
@@ -3851,10 +3882,10 @@ namespace libsemigroups {
           .lookahead_extent(options::lookahead_extent::partial)
           .strategy(options::strategy::hlt);
     }
-    // section_hlt(tc);
     // section_felsch(tc);  // about 3s with Felsch
     // section_CR_style(tc); // about 2.7s
     section_R_over_C_style(tc);
+    section_Cr_style(tc);  // about 3.1s
     REQUIRE(tc.number_of_classes() == 322'560);
   }
 
@@ -3880,6 +3911,7 @@ namespace libsemigroups {
     section_felsch(tc);
     section_hlt(tc);
     section_CR_style(tc);
+    section_Cr_style(tc);
     section_R_over_C_style(tc);
 
     REQUIRE(tc.number_of_classes() == 7'920);
@@ -3918,6 +3950,7 @@ namespace libsemigroups {
     section_felsch(tc);
     section_hlt(tc);
     section_CR_style(tc);
+    section_Cr_style(tc);
     section_R_over_C_style(tc);
     REQUIRE(tc.number_of_classes() == 95'040);
   }
@@ -4144,6 +4177,7 @@ namespace libsemigroups {
     section_felsch(tc);
     section_hlt(tc);
     section_CR_style(tc);
+    section_Cr_style(tc);
     section_R_over_C_style(tc);
 
     REQUIRE(tc.number_of_classes() == 20'160);

@@ -511,10 +511,9 @@ namespace libsemigroups {
         CR_style();
       } else if (strategy() == options::strategy::R_over_C) {
         R_over_C_style();
-      }
-      // else if (strategy() == options::strategy::Cr) {
-      //   Cr_style();
-      // } else if (strategy() == options::strategy::Rc) {
+      } else if (strategy() == options::strategy::Cr) {
+        Cr_style();
+      }  // else if (strategy() == options::strategy::Rc) {
       //   Rc_style();
       // }
     }
@@ -758,6 +757,27 @@ namespace libsemigroups {
     lookahead_extent(options::lookahead_extent::full);
     perform_lookahead();
     CR_style();
+    // pop_settings();
+  }
+
+  void ToddCoxeter::Cr_style() {
+    // push_settings();
+    strategy(options::strategy::felsch);
+    auto M = word_graph().number_of_nodes_active();
+    run_until([this, &M]() -> bool {
+      return word_graph().number_of_nodes_active() >= M + f_defs();
+    });
+    strategy(options::strategy::hlt);
+    M        = word_graph().number_of_nodes_active();
+    size_t N = presentation::length(presentation());
+    run_until([this, &M, &N]() -> bool {
+      return word_graph().number_of_nodes_active() >= (hlt_defs() / N) + M;
+    });
+    strategy(options::strategy::felsch);
+    run();
+    lookahead_extent(options::lookahead_extent::full);
+    lookahead_style(options::lookahead_style::hlt);
+    perform_lookahead();
     // pop_settings();
   }
 
