@@ -17,6 +17,7 @@
 // The purpose of this file is to test the ToddCoxeter class.
 
 #include <cstdlib>  // for what?
+#include <fstream>  // for ofstream
 
 #include "catch.hpp"      // for TEST_CASE
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
@@ -39,6 +40,23 @@
 #include "libsemigroups/word.hpp"               // for operator"" _w
 
 namespace libsemigroups {
+
+  namespace {
+    void output_gap_benchmark_file(std::string const& fname, ToddCoxeter& tc) {
+      std::ofstream file;
+      file.open(fname);
+      file << "local free, rules, RR, SS, TT, a, b, c, d, e, f, g, h, i, j, k, "
+              "l, m, n, o, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, "
+              "G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z;\n";
+      file << presentation::to_gap_string(tc.presentation(), "SS");
+      file << "RR := RightMagmaCongruenceByGeneratingPairs(SS, []);\n";
+      file << "TT := CosetTableOfFpSemigroup(RR);;\n";
+      file << "Assert(0, Length(TT) = Size(GeneratorsOfSemigroup(SS)));\n";
+      file << "Assert(0, Length(TT[1]) - 1 = "
+           << std::to_string(tc.number_of_classes()) << ");\n";
+      file.close();
+    }
+  }  // namespace
 
   using TCE         = v3::detail::TCE;
   using KnuthBendix = fpsemigroup::KnuthBendix;
@@ -1995,6 +2013,7 @@ namespace libsemigroups {
     section_R_over_C_style(tc);
     section_Cr_style(tc);
     section_Rc_style(tc);
+
     check_complete_compatible(tc);
     REQUIRE(tc.number_of_classes() == 4'140);
   }
@@ -2030,6 +2049,7 @@ namespace libsemigroups {
     ToddCoxeter tc(congruence_kind::twosided, p);
     tc.strategy(options::strategy::hlt)
         .lookahead_extent(options::lookahead_extent::partial);
+
     section_hlt(tc);
     section_felsch(tc);
     section_CR_style(tc);
@@ -2050,6 +2070,7 @@ namespace libsemigroups {
     size_t const n  = 5;
     auto p = make<Presentation<word_type>>(orientation_reversing_monoid(n));
     ToddCoxeter tc(congruence_kind::twosided, p);
+
     section_hlt(tc);
     section_felsch(tc);
     section_Rc_style(tc);
@@ -2088,135 +2109,160 @@ namespace libsemigroups {
     REQUIRE(tc.number_of_classes() == 16'795);
   }
 
-  /*
-    // TODO uncomment
   LIBSEMIGROUPS_TEST_CASE(
       "v3::ToddCoxeter",
       "054",
       "Generate GAP benchmarks for stellar_monoid(n) (Gay-Hivert)",
       "[todd-coxeter][fail]") {
-    auto rg = ReportGuard(false);
-    for (size_t n = 3; n <= 9; ++n) {
-      ToddCoxeter tc1(congruence_kind::twosided);
-      setup(tc1, n + 1, rook_monoid, n, 0);
-      ToddCoxeter tc2(congruence_kind::twosided, tc1);
-      setup(tc2, n + 1, stellar_monoid, n);
-      output_gap_benchmark_file("stellar-" + std::to_string(n) + ".g", tc2);
+    using fpsemigroup::make;
+    using fpsemigroup::rook_monoid;
+    using fpsemigroup::stellar_monoid;
+    auto rg = ReportGuard(true);
+    for (size_t n = 3; n <= 9; ++n) {  // TODO was 9
+      auto p = make<Presentation<word_type>>(rook_monoid(n, 0));
+      auto q = make<Presentation<word_type>>(stellar_monoid(n));
+      presentation::add_rules(p, q);
+      ToddCoxeter tc(congruence_kind::twosided, p);
+      output_gap_benchmark_file("stellar-" + std::to_string(n) + ".g", tc);
     }
   }
 
-    LIBSEMIGROUPS_TEST_CASE(
-        "v3::ToddCoxeter",
-        "055",
-        "Generate GAP benchmarks for partition_monoid(n) (East)",
-        "[todd-coxeter][fail]") {
-      auto rg = ReportGuard(false);
-      for (size_t n = 4; n <= 6; ++n) {
-        ToddCoxeter tc(congruence_kind::twosided);
-        setup(tc, 5, partition_monoid, n, author::East);
-        tc.save(true);
-        output_gap_benchmark_file("partition-" + std::to_string(n) + ".g",
-  tc);
-      }
-    }
+  LIBSEMIGROUPS_TEST_CASE(
+      "v3::ToddCoxeter",
+      "055",
+      "Generate GAP benchmarks for partition_monoid(n) (East)",
+      "[todd-coxeter][fail]") {
+    using fpsemigroup::author;
+    using fpsemigroup::make;
+    using fpsemigroup::partition_monoid;
+    auto rg = ReportGuard(true);
 
-    LIBSEMIGROUPS_TEST_CASE(
-        "v3::ToddCoxeter",
-        "056",
-        "Generate GAP benchmarks for dual symmetric inverse monoid (East)",
-        "[todd-coxeter][fail]") {
-      auto rg = ReportGuard(false);
-      for (size_t n = 3; n <= 6; ++n) {
-        ToddCoxeter tc(congruence_kind::twosided);
-        setup(tc,
-              n + 1,
-              dual_symmetric_inverse_monoid,
-              n,
-              author::Easdown + author::East + author::FitzGerald);
-        output_gap_benchmark_file("dual-sym-inv-" + std::to_string(n) + ".g",
-                                  tc);
-      }
+    for (size_t n = 4; n <= 6; ++n) {
+      auto p = make<Presentation<word_type>>(partition_monoid(n, author::East));
+      ToddCoxeter tc(congruence_kind::twosided, p);
+      tc.save(true);
+      output_gap_benchmark_file("partition-" + std::to_string(n) + ".g", tc);
     }
+  }
 
-    LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
-                            "057",
-                            "Generate GAP benchmarks for "
-                            "uniform_block_bijection_monoid (FitzGerald)",
-                            "[todd-coxeter][fail]") {
-      auto rg = ReportGuard(false);
-      for (size_t n = 3; n <= 7; ++n) {
-        ToddCoxeter tc(congruence_kind::twosided);
-        setup(tc, n + 1, uniform_block_bijection_monoid, n,
-  author::FitzGerald); output_gap_benchmark_file( "uniform-block-bijection-" +
-  std::to_string(n) + ".g", tc);
-      }
-    }
+  LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
+                          "056",
+                          "Generate GAP benchmarks for dual symmetric inverse "
+                          "monoid (Easdown + East + FitzGerald)",
+                          "[todd-coxeter][fail]") {
+    using fpsemigroup::author;
+    using fpsemigroup::dual_symmetric_inverse_monoid;
+    using fpsemigroup::make;
+    auto rg = ReportGuard(true);
 
-    LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
-                            "058",
-                            "Generate GAP benchmarks for stylic monoids",
-                            "[todd-coxeter][fail]") {
-      auto rg = ReportGuard(false);
-      for (size_t n = 3; n <= 9; ++n) {
-        ToddCoxeter tc(congruence_kind::twosided);
-        setup(tc, n, stylic_monoid, n);
-        output_gap_benchmark_file("stylic-" + std::to_string(n) + ".g", tc);
-      }
+    for (size_t n = 3; n <= 6; ++n) {
+      auto p = make<Presentation<word_type>>(dual_symmetric_inverse_monoid(
+          n, author::Easdown + author::East + author::FitzGerald));
+      ToddCoxeter tc(congruence_kind::twosided, p);
+      output_gap_benchmark_file("dual-sym-inv-" + std::to_string(n) + ".g", tc);
     }
+  }
 
-    LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
-                            "059",
-                            "Generate GAP benchmarks for OP_n",
-                            "[todd-coxeter][fail]") {
-      auto rg = ReportGuard(false);
-      for (size_t n = 3; n <= 9; ++n) {
-        ToddCoxeter tc(congruence_kind::twosided);
-        setup(tc, 3, orientation_preserving_monoid, n);
-        output_gap_benchmark_file("orient-" + std::to_string(n) + ".g", tc);
-      }
-    }
+  LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
+                          "057",
+                          "Generate GAP benchmarks for "
+                          "uniform_block_bijection_monoid (FitzGerald)",
+                          "[todd-coxeter][fail]") {
+    using fpsemigroup::author;
+    using fpsemigroup::make;
+    using fpsemigroup::uniform_block_bijection_monoid;
 
-    LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
-                            "060",
-                            "Generate GAP benchmarks for OR_n",
-                            "[todd-coxeter][fail]") {
-      auto rg = ReportGuard(false);
-      for (size_t n = 3; n <= 8; ++n) {
-        ToddCoxeter tc(congruence_kind::twosided);
-        setup(tc, 4, orientation_reversing_monoid, n);
-        output_gap_benchmark_file("orient-reverse-" + std::to_string(n) +
-  ".g", tc);
-      }
-    }
+    auto rg = ReportGuard(true);
 
-    LIBSEMIGROUPS_TEST_CASE(
-        "v3::ToddCoxeter",
-        "061",
-        "Generate GAP benchmarks for temperley_lieb_monoid(n)",
-        "[todd-coxeter][fail]") {
-      auto rg = ReportGuard(false);
-      for (size_t n = 3; n <= 13; ++n) {
-        ToddCoxeter tc(congruence_kind::twosided);
-        setup(tc, n - 1, temperley_lieb_monoid, n);
-        output_gap_benchmark_file("temperley-lieb-" + std::to_string(n) +
-  ".g", tc);
-      }
+    for (size_t n = 3; n <= 7; ++n) {
+      auto p = make<Presentation<word_type>>(
+          uniform_block_bijection_monoid(n, author::FitzGerald));
+      ToddCoxeter tc(congruence_kind::twosided, p);
+      output_gap_benchmark_file(
+          "uniform-block-bijection-" + std::to_string(n) + ".g", tc);
     }
+  }
 
-    LIBSEMIGROUPS_TEST_CASE(
-        "v3::ToddCoxeter",
-        "062",
-        "Generate GAP benchmarks for singular_brauer_monoid(n)",
-        "[todd-coxeter][fail]") {
-      auto rg = ReportGuard(false);
-      for (size_t n = 3; n <= 7; ++n) {
-        ToddCoxeter tc(congruence_kind::twosided);
-        setup(tc, n * n - n, singular_brauer_monoid, n);
-        output_gap_benchmark_file("singular-brauer-" + std::to_string(n) +
-  ".g", tc);
-      }
+  LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
+                          "058",
+                          "Generate GAP benchmarks for stylic monoids",
+                          "[todd-coxeter][fail]") {
+    using fpsemigroup::make;
+    using fpsemigroup::stylic_monoid;
+
+    auto rg = ReportGuard(true);
+    for (size_t n = 3; n <= 9; ++n) {
+      auto        p = make<Presentation<word_type>>(stylic_monoid(n));
+      ToddCoxeter tc(congruence_kind::twosided, p);
+      output_gap_benchmark_file("stylic-" + std::to_string(n) + ".g", tc);
     }
-  */
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
+                          "059",
+                          "Generate GAP benchmarks for OP_n",
+                          "[todd-coxeter][fail]") {
+    using fpsemigroup::make;
+    using fpsemigroup::orientation_preserving_monoid;
+
+    auto rg = ReportGuard(true);
+    for (size_t n = 3; n <= 9; ++n) {
+      auto p = make<Presentation<word_type>>(orientation_preserving_monoid(n));
+      ToddCoxeter tc(congruence_kind::twosided, p);
+      output_gap_benchmark_file("orient-" + std::to_string(n) + ".g", tc);
+    }
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
+                          "060",
+                          "Generate GAP benchmarks for OR_n",
+                          "[todd-coxeter][fail]") {
+    using fpsemigroup::make;
+    using fpsemigroup::orientation_reversing_monoid;
+
+    auto rg = ReportGuard(true);
+    for (size_t n = 3; n <= 8; ++n) {
+      auto p = make<Presentation<word_type>>(orientation_reversing_monoid(n));
+      ToddCoxeter tc(congruence_kind::twosided, p);
+      output_gap_benchmark_file("orient-reverse-" + std::to_string(n) + ".g",
+                                tc);
+    }
+  }
+
+  LIBSEMIGROUPS_TEST_CASE(
+      "v3::ToddCoxeter",
+      "061",
+      "Generate GAP benchmarks for temperley_lieb_monoid(n)",
+      "[todd-coxeter][fail]") {
+    using fpsemigroup::make;
+    using fpsemigroup::temperley_lieb_monoid;
+
+    auto rg = ReportGuard(true);
+    for (size_t n = 3; n <= 13; ++n) {
+      auto        p = make<Presentation<word_type>>(temperley_lieb_monoid(n));
+      ToddCoxeter tc(congruence_kind::twosided, p);
+      output_gap_benchmark_file("temperley-lieb-" + std::to_string(n) + ".g",
+                                tc);
+    }
+  }
+
+  LIBSEMIGROUPS_TEST_CASE(
+      "v3::ToddCoxeter",
+      "062",
+      "Generate GAP benchmarks for singular_brauer_monoid(n)",
+      "[todd-coxeter][fail]") {
+    using fpsemigroup::make;
+    using fpsemigroup::singular_brauer_monoid;
+
+    auto rg = ReportGuard(true);
+    for (size_t n = 3; n <= 7; ++n) {
+      auto        p = make<Presentation<word_type>>(singular_brauer_monoid(n));
+      ToddCoxeter tc(congruence_kind::twosided, p);
+      output_gap_benchmark_file("singular-brauer-" + std::to_string(n) + ".g",
+                                tc);
+    }
+  }
+
   LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
                           "111",
                           "partition_monoid(2)",
