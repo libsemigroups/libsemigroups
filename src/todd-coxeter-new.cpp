@@ -509,10 +509,10 @@ namespace libsemigroups {
 
       if (strategy() == options::strategy::CR) {
         CR_style();
+      } else if (strategy() == options::strategy::R_over_C) {
+        R_over_C_style();
       }
-      // else if (strategy() == options::strategy::R_over_C) {
-      //   R_over_C_style();
-      // } else if (strategy() == options::strategy::Cr) {
+      // else if (strategy() == options::strategy::Cr) {
       //   Cr_style();
       // } else if (strategy() == options::strategy::Rc) {
       //   Rc_style();
@@ -639,7 +639,7 @@ namespace libsemigroups {
     if (!stopped()) {
       if (_word_graph.definitions().any_skipped()) {
         auto const& d = word_graph();
-        if (d.number_of_nodes_active() != lower_bound() + 1
+        if (d.number_of_nodes_active() != lower_bound()
             || !action_digraph::is_complete(
                 d, d.cbegin_active_nodes(), d.cend_active_nodes())) {
           //  TODO uncomment
@@ -746,6 +746,18 @@ namespace libsemigroups {
     lookahead_extent(options::lookahead_extent::full);
     lookahead_style(options::lookahead_style::hlt);
     perform_lookahead();
+    // pop_settings();
+  }
+
+  void ToddCoxeter::R_over_C_style() {
+    // push_settings();
+    strategy(options::strategy::hlt);
+    run_until([this]() -> bool {
+      return word_graph().number_of_nodes_active() >= lookahead_next();
+    });
+    lookahead_extent(options::lookahead_extent::full);
+    perform_lookahead();
+    CR_style();
     // pop_settings();
   }
 

@@ -803,6 +803,7 @@ namespace libsemigroups {
     void felsch();
     void hlt();
     void CR_style();
+    void R_over_C_style();
 
     ////////////////////////////////////////////////////////////////////////
     // ToddCoxeter - reporting - private
