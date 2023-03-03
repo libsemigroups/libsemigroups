@@ -676,19 +676,6 @@ namespace libsemigroups {
   }
 
   void ToddCoxeter::hlt() {
-    // bool do_pop_settings = false;
-    // if (save() && preferred_defs() == options::preferred_defs::deferred)
-    // {
-    //   push_settings();
-    //   do_pop_settings = true;
-    //   // The call to process_deductions in the main loop below could
-    //   // potentially accummulate large numbers of preferred definitions
-    //   in
-    //   // the queue if the preferred_defs() setting is
-    //   // options::preferred_defs::deferred, so we change it.
-    //   preferred_defs(options::preferred_defs::none);
-    // }
-
     auto& current    = _word_graph.cursor();
     current          = _word_graph.initial_node();
     auto const first = presentation().rules.cbegin();
@@ -715,9 +702,6 @@ namespace libsemigroups {
         perform_lookahead();
       }
       current = _word_graph.next_active_node(current);
-      // if (do_pop_settings) {
-      //   pop_settings();
-      // }
     }
   }
 

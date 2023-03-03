@@ -3620,28 +3620,31 @@ namespace libsemigroups {
                             "[no-valgrind][todd-coxeter][quick][no-coverage]") {
       auto rg = ReportGuard(REPORT);
 
-      for (size_t N = 2; N < 1000; N += 199) {
-        ToddCoxeter tc;
-        tc.set_alphabet("eab");
-        tc.set_identity("e");
-        std::string lhs = "a" + std::string(N, 'b');
-        std::string rhs = "e";
-        tc.add_rule(lhs, rhs);
+      size_t N = 1000;
+      //  for (size_t N = 2; N < 1000; N += 199) {
+      ToddCoxeter tc;
+      tc.set_alphabet("eab");
+      tc.set_identity("e");
+      std::string lhs = "a" + std::string(N, 'b');
+      std::string rhs = "e";
+      tc.add_rule(lhs, rhs);
 
-        lhs = std::string(N, 'a');
-        rhs = std::string(N + 1, 'b');
-        tc.add_rule(lhs, rhs);
+      lhs = std::string(N, 'a');
+      rhs = std::string(N + 1, 'b');
+      tc.add_rule(lhs, rhs);
 
-        lhs = "ba";
-        rhs = std::string(N, 'b') + "a";
-        tc.add_rule(lhs, rhs);
-        tc.run();
-        if (N % 3 == 1) {
-          REQUIRE(tc.size() == 3);
-        } else {
-          REQUIRE(tc.size() == 1);
-        }
+      lhs = "ba";
+      rhs = std::string(N, 'b') + "a";
+      tc.add_rule(lhs, rhs);
+      REQUIRE(tc.congruence().length_of_generating_pairs() == 4'021);
+
+      tc.run();
+      if (N % 3 == 1) {
+        REQUIRE(tc.size() == 3);
+      } else {
+        REQUIRE(tc.size() == 1);
       }
+      // }
     }
 
     LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
