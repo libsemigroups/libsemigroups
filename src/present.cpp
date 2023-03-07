@@ -25,15 +25,22 @@
 namespace libsemigroups {
   namespace presentation {
 
+    word_type operator+(word_type const& u, word_type const& w) {
+      word_type result(u);
+      result.insert(result.end(), w.cbegin(), w.cend());
+      return result;
+    }
+
+    void operator+=(word_type& u, word_type const& v) {
+      u.insert(u.end(), v.cbegin(), v.cend());
+    }
+
     std::string pow(char const* w, size_t n) {
       return pow(std::string(w), n);
     }
+
     word_type pow(std::initializer_list<size_t> ilist, size_t n) {
       return pow(word_type(ilist), n);
-    }
-
-    std::string operator<<(std::string const& u, char const* w) {
-      return std::string(u) << std::string(w);
     }
 
     word_type prod(std::initializer_list<size_t> ilist,

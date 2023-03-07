@@ -21,38 +21,33 @@
 
 namespace libsemigroups {
   namespace presentation {
-
-    template <typename T>
-    T operator<<(T const& u, T const& w) {
-      T result(u);
-      result.insert(result.end(), w.cbegin(), w.cend());
-      return result;
-    }
-
-    template <typename T, typename = std::enable_if_t<IsWord<T>::value>>
-    void operator<<=(T& u, T const& v) {
-      u.insert(u.end(), v.cbegin(), v.cend());
-    }
-
-    template <typename T>
+    template <typename T, typename>
     T pow(T const& x, size_t n) {
       T y(x);
-      T z(n % 2 == 0 ? T({}) : y);
-      z.reserve(x.size() * n);
+      pow_inplace(y, n);
+      return y;
+    }
+
+    template <typename T, typename>
+    void pow_inplace(T& x, size_t n) {
+      T y(x);
+      x.reserve(x.size() * n);
+      if (n % 2 == 0) {
+        x = T({});
+      }
 
       while (n > 1) {
-        y <<= y;
+        y += y;
         n /= 2;
         if (n % 2 == 1) {
-          z <<= y;
+          x += y;
         }
       }
-      return z;
     }
 
     // Note: we could do a version of the below using insert on words, where
     // the step is +/- 1.
-    template <typename T>
+    template <typename T, typename>
     T prod(T const& elts, size_t first, size_t last, int step) {
       if (step == 0) {
         LIBSEMIGROUPS_EXCEPTION("the 4th argument must not be 0");
@@ -82,12 +77,6 @@ namespace libsemigroups {
         }
       }
       return result;
-    }
-
-    template <typename T>
-    void insert_prod(T& w, T const& elts, size_t first, size_t last, int step) {
-      T u = prod(elts, first, last, step);
-      w.insert(w.end(), u.cbegin(), u.cend());
     }
   }  // namespace presentation
 
