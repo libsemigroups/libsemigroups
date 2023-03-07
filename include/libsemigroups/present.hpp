@@ -67,28 +67,49 @@ namespace libsemigroups {
     //! Returns the concatenation of `u` and `w`.
     //!
     //! \param u a word or string
-    //! \param n a word or string
+    //! \param w a word or string
     //!
     //! \returns A word_type or string
     //!
     //! \noexcept
-    template <typename T>
-    T operator<<(T const& u, T const& w);
+    word_type operator+(word_type const& u, word_type const& w);
 
-    std::string operator<<(std::string const& u, char const* w);
+    //! Concatenate a word/string with another word/string in-place.
+    //!
+    //! Changes `u` to `u + w` in-place. See \ref operator+
+    //!
+    //! \param u a word or string
+    //! \param w a word or string
+    //!
+    //! \noexcept
+    void operator+=(word_type& u, word_type const& w);
 
     //! Take a power of a word or string.
     //!
-    //! Returns the `n`th power of the word/string given by `u` .
+    //! Returns the `n`th power of the word/string given by `w` .
     //!
-    //! \param a word
+    //! \param w a word
     //! \param n the power
     //!
     //! \returns A word_type
     //!
     //! \noexcept
-    template <typename T>
+    template <typename T, typename = std::enable_if_t<IsWord<T>::value>>
     T pow(T const& w, size_t n);
+
+    //! Take a power of a word.
+    //!
+    //! Change the word/string `w` to its `n`th power, in-place.
+    //!
+    //! \param w the word
+    //! \param n the power
+    //!
+    //! \returns
+    //! (None)
+    //!
+    //! \noexcept
+    template <typename T, typename = std::enable_if_t<IsWord<T>::value>>
+    void pow_inplace(T& w, size_t n);
 
     //! Take a power of a word.
     //!
@@ -134,7 +155,7 @@ namespace libsemigroups {
     //! prod(std::string("abcde", 4, 1, -1)  // Gives the string "edc")
     //! \endcode
     //!
-    template <typename T>
+    template <typename T, typename = std::enable_if_t<IsWord<T>::value>>
     T prod(T const& elts, size_t first, size_t last, int step);
 
     //! See \ref prod(T const&, size_t, size_t, int)
@@ -142,28 +163,6 @@ namespace libsemigroups {
                    size_t                        first,
                    size_t                        last,
                    size_t                        step);
-
-    //! Insert a product from a collection of letters into a word.
-    //!
-    //! Takes the output of \ref prod and concatenates it onto the end of the
-    //! word or string \p w. The word/string \p w is modified in place.
-    //!
-    //! \returns
-    //! (None)
-    //!
-    //! \throws LibsemigroupsException where \ref prod does.
-    template <typename T>
-    void insert_prod(T& w, T const& elts, size_t first, size_t last, int step);
-
-    //! See \ref insert_prod(T&, T const&, size_t, size_t, int)
-    template <typename T>
-    void insert_prod(T&                            w,
-                     std::initializer_list<size_t> ilist,
-                     size_t                        first,
-                     size_t                        last,
-                     int                           step) {
-      insert_prod(w, word_type(ilist), first, last, step);
-    }
   }  // namespace presentation
 
   //! No doc
@@ -697,7 +696,7 @@ namespace libsemigroups {
 
     //! Add rules for an identity element.
     //!
-    //! Adds rules of the form \f$ae e ea = a\f$ for every letter \f$a\f$ in
+    //! Adds rules of the form \f$ae = ea = a\f$ for every letter \f$a\f$ in
     //! the alphabet of \p p, and where \f$e\f$ is the second parameter.
     //!
     //! \tparam W the type of the words in the presentation

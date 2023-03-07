@@ -30,17 +30,20 @@ Contents
    :widths: 50 50
    :header-rows: 0
 
-   * - :cpp:any:`operator<<`
+   * - :cpp:any:`word_type operator+(word_type const& u, word_type const& w)`
      - Concatenate two words or strings.
 
-   * - :cpp:any:`pow`
+   * - :cpp:any:`void operator+=(word_type& u, word_type const& w)`
+     - Concatenate a word/string with another word/string in-place.
+
+   * - :cpp:any:`template \<typename T, typename = std::enable_if_t\<IsWord\<T>::value>> T pow(T const&, size_t)`
      - Take a power of a word or string.
 
-   * - :cpp:any:`prod`
-     - Take a product from a collection of letters.
+   * - :cpp:any:`template \<typename T, typename = std::enable_if_t\<IsWord\<T>::value>> void pow_inplace(T&, size_t)`
+     - Take a power of a word or string.
 
-   * - :cpp:any:`insert_prod`
-     - Insert a product from a collection of letters into a word.
+   * - :cpp:any:`template \<typename T, typename = std::enable_if_t\<IsWord\<T>::value>> T prod(T const&, size_t, size_t, int)`
+     - Take a product from a collection of letters.
 
    * - :cpp:any:`add_rule`
      - Add a rule to the presentation.
