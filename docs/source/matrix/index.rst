@@ -15,7 +15,7 @@ representations for every type of matrix:
    time: :cpp:any:`StaticMatrix`.
 2. those whose arithmetic operation can be defined at compile time but whose
    dimensions can be set at run time: :cpp:any:`DynamicMatrix`
-3. those whose arithmetic operation and dimensions can be set at run time:
+3. those whose arithmetic operations and dimensions can be set at run time:
    :cpp:any:`DynamicMatrix`
 
 It's unlikely that you will want to use the classes described on this page
