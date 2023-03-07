@@ -60,7 +60,7 @@ matrices over arbitrary semirings:
 Row views
 ---------
 
-A row view is a lightweight representations of a row of matrix.  The following
+A row view is a lightweight representation of a row of a matrix.  The following
 row view classes are provided:
 
 .. toctree::
