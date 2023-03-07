@@ -32,7 +32,7 @@
 #include "libsemigroups/debug.hpp"      // for LIBSEMIGROUPS_ASSERT
 #include "libsemigroups/todd-coxeter-digraph.hpp"
 #include "libsemigroups/todd-coxeter-new.hpp"
-#include "libsemigroups/word.hpp"  // for StringToWord
+#include "libsemigroups/words.hpp"  // for StringToWord
 
 #ifdef LIBSEMIGROUPS_EIGEN_ENABLED
 #include <Eigen/QR>  // for dimensionOfKernel

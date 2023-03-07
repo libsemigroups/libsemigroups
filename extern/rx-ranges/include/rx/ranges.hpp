@@ -283,19 +283,24 @@ namespace RX_NAMESPACE {
   /*!
       @brief Convert input range or sink to standard iterators.
   */
-  struct input_range_iterator_end {};
+
+  // TODO(JDM) remove the things added here
   template <class R>
   struct input_range_iterator {
     R range;
+    input_range_iterator() = default;
     template <class Arg>
     constexpr explicit input_range_iterator(Arg&& range) noexcept
         : range(std::forward<Arg>(range)) {}
 
-    constexpr bool operator==(input_range_iterator_end) const noexcept {
-      return range.at_end();
+    constexpr bool
+    operator==(input_range_iterator<R> const& that) const noexcept {
+      return (range.at_end() && that.range.at_end())
+             || range.get() == that.range.get();
     }
-    constexpr bool operator!=(input_range_iterator_end) const noexcept {
-      return !range.at_end();
+    constexpr bool
+    operator!=(input_range_iterator<R> const& that) const noexcept {
+      return !operator==(that);
     }
 
     constexpr auto& operator++() noexcept {
@@ -312,7 +317,17 @@ namespace RX_NAMESPACE {
     [[nodiscard]] constexpr auto operator->() const noexcept {
       return &range.get();
     }
+
+    void swap(input_range_iterator<R>& that) noexcept {
+      range.swap(that.range);
+    }
   };
+
+  template <class R>
+  void swap(input_range_iterator<R>& x, input_range_iterator<R>& y) noexcept {
+    x.swap(y);
+  }
+
   template <class R>
   input_range_iterator(R&&) -> input_range_iterator<remove_cvref_t<R>>;
 
@@ -412,8 +427,8 @@ namespace RX_NAMESPACE {
   constexpr void
   sink(In&& in,
        Out& out,
-       std::enable_if_t<!std::is_lvalue_reference_v<
-                            In> && is_input_range_v<In>>* = nullptr) noexcept {
+       std::enable_if_t<!std::is_lvalue_reference_v<In>
+                        && is_input_range_v<In>>* = nullptr) noexcept {
     RX_TYPE_ASSERT(is_finite<remove_cvref_t<In>>);
 
     if constexpr (has_reserve_v<Out>) {
@@ -518,16 +533,16 @@ namespace RX_NAMESPACE {
     }
 
     constexpr size_t size_hint() const noexcept {
-      if constexpr (std::is_same_v<It,
-                                   EndIt> && is_random_access_iterator_v<It>) {
+      if constexpr (std::is_same_v<It, EndIt>
+                    && is_random_access_iterator_v<It>) {
         return end_ - current_;
       } else {
         return 0;
       }
     }
     constexpr size_t advance_by(size_t n) noexcept {
-      if constexpr (std::is_same_v<It,
-                                   EndIt> && is_random_access_iterator_v<It>) {
+      if constexpr (std::is_same_v<It, EndIt>
+                    && is_random_access_iterator_v<It>) {
         if (RX_LIKELY(size_t(end_ - current_) >= n)) {
           current_ += n;
           return n;
@@ -1756,16 +1771,16 @@ namespace RX_NAMESPACE {
       if (RX_LIKELY(!input.at_end())) {
         type first = input.get();
         input.next();
-        auto folder = foldl(
-            std::move(first), [this](auto&& accum, auto&& x) constexpr {
-              // Note: Can't use std::max(), because it takes the comparison
-              // function by-value.
-              const Compare& cmp    = *this;
-              const auto&    accum_ = accum;
-              const auto&    x_     = x;
-              return cmp(x_, accum_) ? std::forward<decltype(accum)>(accum)
-                                     : std::forward<decltype(x)>(x);
-            });
+        auto folder
+            = foldl(std::move(first), [this](auto&& accum, auto&& x) constexpr {
+                // Note: Can't use std::max(), because it takes the comparison
+                // function by-value.
+                const Compare& cmp    = *this;
+                const auto&    accum_ = accum;
+                const auto&    x_     = x;
+                return cmp(x_, accum_) ? std::forward<decltype(accum)>(accum)
+                                       : std::forward<decltype(x)>(x);
+              });
         return RX_OPTIONAL<type>{
             std::move(folder)(std::forward<range_type>(input))};
       } else {
@@ -1789,16 +1804,15 @@ namespace RX_NAMESPACE {
       decltype(auto) input = as_input_range(std::forward<R>(range));
       using range_type     = decltype(input);
       if (RX_LIKELY(!input.at_end())) {
-        auto folder = foldl(
-            type{}, [this](auto&& accum, auto&& x) constexpr {
-              // Note: Can't use std::min(), because it takes the comparison
-              // function by-value.
-              const Compare& cmp    = *this;
-              const auto&    accum_ = accum;
-              const auto&    x_     = x;
-              return cmp(accum_, x_) ? std::forward<decltype(accum)>(accum)
-                                     : std::forward<decltype(x)>(x);
-            });
+        auto folder = foldl(type{}, [this](auto&& accum, auto&& x) constexpr {
+          // Note: Can't use std::min(), because it takes the comparison
+          // function by-value.
+          const Compare& cmp    = *this;
+          const auto&    accum_ = accum;
+          const auto&    x_     = x;
+          return cmp(accum_, x_) ? std::forward<decltype(accum)>(accum)
+                                 : std::forward<decltype(x)>(x);
+        });
         return RX_OPTIONAL<type>{
             std::move(folder)(std::forward<range_type>(input))};
       } else {
@@ -2647,6 +2661,7 @@ namespace RX_NAMESPACE {
     template <class... V>
     constexpr void emplace_back(V&&...) const noexcept {}
   };
+
   template <class R, class = std::enable_if_t<is_input_or_sink_v<R>>>
   [[nodiscard]] constexpr auto begin(R&& range) noexcept {
     return input_range_iterator(as_input_range(std::forward<R>(range)));
@@ -2655,9 +2670,19 @@ namespace RX_NAMESPACE {
   [[nodiscard]] constexpr auto end(const R&) noexcept {
     // Note: The first argument may be moved-from, but that's OK, we just need
     // its type.
-    return input_range_iterator_end{};
+    return input_range_iterator<R>{};
   }
 
 }  // namespace RX_NAMESPACE
+
+namespace std {
+  template <class R>
+  struct std::iterator_traits<rx::input_range_iterator<R>> {
+    using difference_type = std::ptrdiff_t;
+    using value_type      = std::decay_t<typename R::output_type>;
+    // TODO should be input iterator
+    using iterator_category = std::forward_iterator_tag;
+  };
+}  // namespace std
 
 #endif  // RX_RANGES_HPP_INCLUDED

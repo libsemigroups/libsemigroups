@@ -18,8 +18,8 @@
 
 // This file contains a base class for congruence-like classes.
 
-#ifndef LIBSEMIGROUPS_V3_CONG_INTF_HPP_
-#define LIBSEMIGROUPS_V3_CONG_INTF_HPP_
+#ifndef LIBSEMIGROUPS_CONG_INTF_NEW_HPP_
+#define LIBSEMIGROUPS_CONG_INTF_NEW_HPP_
 
 #include <cstddef>           // for size_t
 #include <initializer_list>  // for initializer_list
@@ -503,4 +503,4 @@ namespace libsemigroups {
     };
   }  // namespace v3
 }  // namespace libsemigroups
-#endif  // LIBSEMIGROUPS_V3_CONG_INTF_HPP_
+#endif  // LIBSEMIGROUPS_CONG_INTF_NEW_HPP_

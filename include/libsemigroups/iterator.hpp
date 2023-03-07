@@ -36,6 +36,12 @@
 
 namespace libsemigroups {
   namespace detail {
+    template <typename Iterator>
+    Iterator default_postfix_increment(Iterator& it) {
+      Iterator copy(it);
+      ++it;
+      return copy;
+    }
 
     template <typename TInternalType,
               typename TIteratorCategory = std::random_access_iterator_tag>

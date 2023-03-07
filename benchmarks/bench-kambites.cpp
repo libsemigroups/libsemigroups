@@ -26,8 +26,6 @@
 
 #include "libsemigroups/kambites.hpp"      // for Kambites
 #include "libsemigroups/knuth-bendix.hpp"  // for KnuthBendix
-#include "libsemigroups/knuth-bendix.hpp"  // for random_string
-#include "libsemigroups/siso.hpp"          // for cbegin_sislo
 
 // TODO:
 // - include number of recursive calls to wp-prefix.

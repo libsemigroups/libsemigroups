@@ -640,8 +640,8 @@ namespace libsemigroups {
         if (d.number_of_nodes_active() != lower_bound()
             || !action_digraph::is_complete(
                 d, d.cbegin_active_nodes(), d.cend_active_nodes())) {
-          //  TODO uncomment
-          //  push_settings();
+          // TODO uncomment
+          // push_settings();
           lookahead_extent(options::lookahead_extent::full);
           lookahead_style(options::lookahead_style::hlt);
           perform_lookahead();

@@ -34,13 +34,13 @@
 #include "libsemigroups/kambites.hpp"           // for Kambites
 #include "libsemigroups/knuth-bendix.hpp"       // for KnuthBendix
 #include "libsemigroups/report.hpp"             // for ReportGuard
-#include "libsemigroups/siso.hpp"               // for const_sislo_iterator
 #include "libsemigroups/string.hpp"             // for random_string etc
 #include "libsemigroups/transf.hpp"             // for LeastTransf
 #include "libsemigroups/types.hpp"              // for tril etc
-#include "libsemigroups/word.hpp"               // for number_of_words
+#include "libsemigroups/words.hpp"              // for number_of_words
 
 namespace libsemigroups {
+  using namespace rx;
   struct LibsemigroupsException;  // Forward decl
 
   constexpr bool REPORT = false;
@@ -549,15 +549,15 @@ namespace libsemigroups {
       REQUIRE(k.equal_to("aabcabc", "aabccba"));
 
       REQUIRE(k.size() == POSITIVE_INFINITY);
-      REQUIRE(number_of_words(3, 4, 16) == 21523320);
-      REQUIRE(std::distance(cbegin_sislo("cab", "aabc", "aaabc"),
-                            cend_sislo("cab", "aabc", "aaabc"))
-              == 162);
+      REQUIRE(number_of_words(3, 4, 16) == 21'523'320);
 
-      REQUIRE(std::count_if(
-                  cbegin_sislo("cab", "cccc", "ccccc"),
-                  cend_sislo("cab", "cccc", "ccccc"),
-                  [&k](std::string const& w) { return k.equal_to(w, "acba"); })
+      Strings s;
+      s.letters("cab").first("aabc").last("aaabc");
+      REQUIRE((s | count()) == 162);
+
+      s.first("cccc").last("ccccc");
+      REQUIRE((s | filter([&k](auto& w) { return k.equal_to(w, "acba"); })
+               | count())
               == 2);
     }
 
@@ -741,15 +741,13 @@ namespace libsemigroups {
 
       REQUIRE(k.size() == POSITIVE_INFINITY);
 
-      size_t N = std::distance(cbegin_sislo("abcdefghijkl", "a", "bgdk"),
-                               cend_sislo("abcdefghijkl", "a", "bgdk"));
-      REQUIRE(N == 4522);
+      Strings s;
+      s.letters("abcdefghijkl").first("a").last("bgdk");
+      REQUIRE((s | count()) == 4522);
+      size_t N = 4522;
       size_t M = 0;
-      for (auto it1 = cbegin_sislo("abcdefghijkl", "a", "bgdk");
-           it1 != cend_sislo("abcdefghijkl", "a", "bgdk");
-           ++it1) {
-        for (auto it2 = cbegin_sislo("abcdefghijkl", "a", "bgdk"); it2 != it1;
-             ++it2) {
+      for (auto it1 = begin(s); it1 != end(s); ++it1) {
+        for (auto it2 = begin(s); it2 != it1; ++it2) {
           M++;
           if (k.equal_to(*it1, *it2)) {
             N--;
@@ -759,7 +757,7 @@ namespace libsemigroups {
       }
       REQUIRE(M == 10052729);
       REQUIRE(N == 4392);
-      REQUIRE(k.number_of_normal_forms(0, 6) == 255932);
+      REQUIRE(k.number_of_normal_forms(0, 6) == 255'932);
 
       // TODO(later) include when we have cbegin_normal_forms,
       // cend_normal_forms
@@ -929,63 +927,30 @@ namespace libsemigroups {
       k.set_alphabet("abcd");
       k.add_rule("abcd", "acca");
 
-      REQUIRE(std::all_of(
-          cbegin_sislo("abcd", "a", "aaaa"),
-          cend_sislo("abcd", "a", "aaaa"),
-          [&k](std::string const& w) { return k.normal_form(w) == w; }));
-      REQUIRE(std::count_if(
-                  cbegin_sislo("abcd", "aaaa", "aaaaa"),
-                  cend_sislo("abcd", "aaaa", "aaaaa"),
-                  [&k](std::string const& w) { return k.normal_form(w) != w; })
+      Strings s;
+      s.letters("abcd").first("a").last("aaaa");
+      REQUIRE((s | all_of([&k](auto& w) { return k.normal_form(w) == w; })));
+
+      s.first("aaaa").last("aaaaa");
+      REQUIRE((s | filter([&k](auto& w) { return k.normal_form(w) != w; })
+               | count())
               == 1);
-      REQUIRE(std::count_if(
-                  cbegin_sislo("abcd", "aaaaa", "aaaaaa"),
-                  cend_sislo("abcd", "aaaaa", "aaaaaa"),
-                  [&k](std::string const& w) { return k.normal_form(w) != w; })
+
+      s.first("aaaaa").last("aaaaaa");
+      REQUIRE((s | filter([&k](auto& w) { return k.normal_form(w) != w; })
+               | count())
               == 8);
-      REQUIRE(std::count_if(
-                  cbegin_sislo("abcd", "aaaaaa", "aaaaaaa"),
-                  cend_sislo("abcd", "aaaaaa", "aaaaaaa"),
-                  [&k](std::string const& w) { return k.normal_form(w) != w; })
+      s.first("aaaaaa").last("aaaaaaa");
+      REQUIRE((s | filter([&k](auto& w) { return k.normal_form(w) != w; })
+               | count())
               == 48);
-      {
-        std::string w = k.normal_form("accaccabd");
 
-        REQUIRE(w == "abcdbcdbd");
-
-        REQUIRE(std::count_if(cbegin_sislo("abcd", "aaaaaaaaa", w),
-                              cend_sislo("abcd", "aaaaaaaaa", w),
-                              [&k, &w](std::string const& u) {
-                                return !k.equal_to(u, w);
-                              })
-                == std::distance(cbegin_sislo("abcd", "aaaaaaaaa", w),
-                                 cend_sislo("abcd", "aaaaaaaaa", w)));
-      }
-      {
-        std::string w = k.normal_form("accbaccad");
-        REQUIRE(w == "accbabcdd");
-
-        REQUIRE(std::count_if(cbegin_sislo("abcd", "aaaaaaaaa", w),
-                              cend_sislo("abcd", "aaaaaaaaa", w),
-                              [&k, &w](std::string const& u) {
-                                return !k.equal_to(u, w);
-                              })
-                == std::distance(cbegin_sislo("abcd", "aaaaaaaaa", w),
-                                 cend_sislo("abcd", "aaaaaaaaa", w)));
-      }
-      {
-        std::string w = k.normal_form("abcdbcacca");
-        REQUIRE(w == "abcdbcabcd");
-        REQUIRE(k.equal_to(w, "abcdbcacca"));
-
+      for (auto& w :
+           std::vector<std::string>({"accaccabd", "accbaccad", "abcdbcacca"})) {
+        auto nf = k.normal_form(w);
+        s.min(w.size()).last(nf);
         REQUIRE(
-            std::count_if(
-                cbegin_sislo("abcd", std::string(w.size(), 'a'), w),
-                cend_sislo("abcd", std::string(w.size(), 'a'), w),
-                [&k, &w](std::string const& u) { return !k.equal_to(u, w); })
-            == std::distance(
-                cbegin_sislo("abcd", std::string(w.size(), 'a'), w),
-                cend_sislo("abcd", std::string(w.size(), 'a'), w)));
+            (s | all_of([&k, &nf](auto& u) { return !k.equal_to(u, nf); })));
       }
     }
 
@@ -1364,10 +1329,10 @@ namespace libsemigroups {
       REQUIRE(k.equal_to("adbbbd", "aaabc"));
       REQUIRE(number_of_words(4, 4, 6) == 1280);
 
-      REQUIRE(std::count_if(
-                  cbegin_sislo("abcd", "aaaa", "aaaaaa"),
-                  cend_sislo("abcd", "aaaa", "aaaaaa"),
-                  [&k](std::string const& w) { return k.equal_to("acba", w); })
+      Strings s;
+      s.letters("abcd").first("aaaa").last("aaaaaa");
+      REQUIRE((s | filter([&k](auto& w) { return k.equal_to("acba", w); })
+               | count())
               == 3);
 
       REQUIRE(k.equal_to("aaabcadbbbd", "adbbbdadbbbd"));
@@ -1406,10 +1371,11 @@ namespace libsemigroups {
       REQUIRE(k.equal_to(k.normal_form("acbacba"), "aabcabc"));
       REQUIRE(k.equal_to("aabcabc", k.normal_form("acbacba")));
 
-      REQUIRE(std::count_if(
-                  cbegin_sislo("abcd", "aaaa", "aaaaaa"),
-                  cend_sislo("abcd", "aaaa", "aaaaaa"),
-                  [&k](std::string const& w) { return k.equal_to("acba", w); })
+      Strings s;
+      s.letters("abcd").first("aaaa").last("aaaaaa");
+
+      REQUIRE((s | filter([&k](auto& w) { return k.equal_to("acba", w); })
+               | count())
               == 3);
     }
 
@@ -1441,10 +1407,11 @@ namespace libsemigroups {
       REQUIRE(k.equal_to(k.normal_form("bceacdabcd"), "aeebbcaeebbc"));
       REQUIRE(k.equal_to("aeebbcaeebbc", k.normal_form("bceacdabcd")));
 
-      REQUIRE(std::count_if(
-                  cbegin_sislo("abcd", "aaaa", "aaaaaa"),
-                  cend_sislo("abcd", "aaaa", "aaaaaa"),
-                  [&k](std::string const& w) { return k.equal_to("acba", w); })
+      Strings s;
+      s.letters("abcd").first("aaaa").last("aaaaaa");
+
+      REQUIRE((s | filter([&k](auto& w) { return k.equal_to("acba", w); })
+               | count())
               == 1);
     }
 
@@ -1619,19 +1586,19 @@ namespace libsemigroups {
     // TODO(v3) reuse the same Kambites in-place rather than this
     template <typename T>
     auto count_2_gen_1_rel(size_t min, size_t max) {
-      Sislo x;
-      x.alphabet("ab");
-      x.first(min);
-      x.last(max);
+      Strings x;
+      x.letters("ab").min(min).max(max);
 
-      auto last = x.cbegin();
-      std::advance(last, std::distance(x.cbegin(), x.cend()) - 1);
+      auto last = x.begin();
+      std::advance(last, std::distance(x.begin(), x.end()) - 1);
 
       uint64_t total_c4 = 0;
       uint64_t total    = 0;
 
-      for (auto it1 = x.cbegin(); it1 != last; ++it1) {
-        for (auto it2 = it1 + 1; it2 != x.cend(); ++it2) {
+      for (auto it1 = x.begin(); it1 != last; ++it1) {
+        auto it2 = it1;
+        ++it2;
+        for (; it2 != x.end(); ++it2) {
           total++;
           Kambites<std::string> k;
           k.set_alphabet("ab");
@@ -1648,7 +1615,7 @@ namespace libsemigroups {
         "Kambites",
         "069",
         "(fpsemi) almost all 2-generated 1-relation monoids are C(4)",
-        "[extreme][kambites][fpsemigroup][fpsemi]") {
+        "[quick][kambites][fpsemigroup][fpsemi]") {
       auto x = count_2_gen_1_rel<std::string>(1, 7);
       REQUIRE(x.first == 1);
       REQUIRE(x.second == 7875);
@@ -1712,36 +1679,34 @@ namespace libsemigroups {
     // semigroups
     ////////////////////////////////////////////////////////////////////////
 
+    // TODO implement "cartesian" combinator for rx-ranges
+    // takes about 15s
     LIBSEMIGROUPS_TEST_CASE("Kambites",
                             "074",
                             "(fpsemi) 3-generated 1-relation C(4)-semigroups",
                             "[extreme][kambites][fpsemigroup][fpsemi]") {
-      auto   first = cbegin_sislo("abc", "a", std::string(8, 'a'));
-      auto   last  = cbegin_sislo("abc", "a", std::string(8, 'a'));
-      size_t N
-          = std::distance(first, cend_sislo("abc", "a", std::string(8, 'a')));
-      REQUIRE(N == 3279);
-      std::advance(last, N - 1);
+      Strings s1;
+      s1.letters("abc").min(1).max(8);
+      REQUIRE((s1 | count()) == 3279);
+      Strings s2;
+      s2.letters("abc").max(8);
 
-      size_t total_c4 = 0;
-      size_t total    = 0;
-      auto   llast    = last;
-      ++llast;
+      size_t                          total_c4 = 0;
+      size_t                          total    = 0;
       std::unordered_set<std::string> set;
 
-      for (auto it1 = first; it1 != last; ++it1) {
-        auto it2 = it1;
-        ++it2;
-        for (; it2 != llast; ++it2) {
+      for (auto const& lhs : s1) {
+        s2.first(lhs);
+        for (auto const& rhs : s2 | skip_n(1)) {
           total++;
           Kambites<std::string> k;
           k.set_alphabet("abc");
-          k.add_rule(*it1, *it2);
+          k.add_rule(lhs, rhs);
           if (k.small_overlap_class() >= 4) {
-            auto tmp = *it1 + "#" + *it2;
+            auto tmp = lhs + "#" + rhs;
             if (set.insert(tmp).second) {
-              auto u = swap_a_b_c(*it1);
-              auto v = swap_a_b_c(*it2);
+              auto u = swap_a_b_c(lhs);
+              auto v = swap_a_b_c(rhs);
               for (size_t i = 0; i < 5; ++i) {
                 if (shortlex_compare(u[i], v[i])) {
                   set.insert(u[i] + "#" + v[i]);
@@ -1749,408 +1714,768 @@ namespace libsemigroups {
                   set.insert(v[i] + "#" + u[i]);
                 }
               }
-              std::cout << *it1 << " = " << *it2 << std::endl;
+              // std::cout << lhs << " = " << rhs << std::endl;
               total_c4++;
             }
           }
         }
       }
-      REQUIRE(total_c4 == 307511);
-      REQUIRE(total == 5374281);
+      REQUIRE(total_c4 == 307'511);
+      REQUIRE(total == 5'374'281);
     }
 
     LIBSEMIGROUPS_TEST_CASE("Kambites",
                             "079",
                             "(fpsemi) normal form possible bug",
                             "[standard][kambites][fpsemigroup][fpsemi]") {
-      // There was a bug in MultiStringView::append, that caused this test to
-      // fail, so we keep this test to check that the bug in
+      // There was a bug in MultiStringView::append, that caused this
+      // test to fail, so we keep this test to check that the bug in
       // MultiStringView::append is resolved.
       Kambites<MultiStringView> k;
       k.set_alphabet("ab");
       k.add_rule("aaabbab", "bbbaaba");
 
-      std::vector<std::string> words = {
-          "bbbaabaabbbbbaabaabaaabbaabbbbbaaabaaabababbbbaaabbabababbaabbabaabb"
-          "aaabbabbaaaabbabbbbbbaabbbbaabbabaaabaaaaabbaabababababaaaabaabbabba"
-          "bbaaabbabababbabaabbbbbbabaabbabaaaababbababbabbabbabbbabbbabbbabbbb"
-          "aaaaaabbabbaababbbaaababbbbababababbabaabbbbbabaaaababaaabbaaabbaaab"
-          "babaabbbaababbbaaabbaabbbbaabbbbaaaaababbabbbaaaaaababbbbaaabbbabbba"
-          "babbbbbbaabaabababbabbbbbaaaabbbbabbababbbaaaabbbbaabbbbbabbbbbabaab"
-          "bbaaabaaabbababbbabbaaaaaabbbbabababbaabbabbbbabbabbaabbbaaabaaabbab"
-          "abbbabbbbaabaaababbabbaababbbabbaababbabbbbabbbbabaabaaaabaaaabababa"
-          "abababbaaabbabbbbbbaaaaaabbbbabbabbabaaaaabaabbaababbbbaabaaabbabaaa"
-          "abaaabbbaaaabbabbababaaaabbbbaaabbababababaabbaaaabaabbababbabbaaaba"
-          "bbaaabbbbbabbbaababaaabbababbbbbaabbbabaaaaabbbbabbabaaaababbabbabab"
-          "aabbaababbaaabbabbbbabbbaaabbabbbaabbababbaabbaaaaaabaaabbbaababbaaa"
-          "ababaabbaaabbbaabababbbbbababbbbbbbaabbbbaabababbbaabbbbbbbaabbbbaaa"
-          "babaaaabaababbbaabaaabaaabaaaaabaabbbbabbabaaabbabbaabbaabbabaaabbbb"
-          "baaabababbaabbbaababababaababbaabbabaaaaabaaabaaababaababaaaaaababaa"
-          "aaaaaabaababbbbaabaabbabbabaaaaaabaabbabbbabbaabbbbbbbaaaababababbbb"
-          "ababbbabbbaaabbabbabbaabbbbbbbababaabaabababbaaabbaabbbaabbbabbbbbab"
-          "aaabbbababbbaabaaaabaabbaaaabbabbbabababbaaabbbbaabaabbababaaaabbbaa"
-          "aabbbaabaa",
-          "aaabbababbbbbaabaabaaabbaabbbbbaaabaaabababbbbaaabbabababbaabbabaabb"
-          "bbbaababaaaabbabbbbbbaabbbbaabbabaaabaaaaabbaabababababaaaabaabbabba"
-          "bbaaabbabababbabaabbbbbbabaabbabaaaababbababbabbabbabbbabbbabbbabbbb"
-          "aaabbbaababaababbbaaababbbbababababbabaabbbbbabaaaababaaabbaaabbaaab"
-          "babaabbbaababbbaaabbaabbbbaabbbbaaaaababbabbbaaaaaababbbbaaabbbabbba"
-          "babbbbbbaabaabababbabbbbbaaaabbbbabbababbbaaaabbbbaabbbbbabbbbbabaab"
-          "bbaaabbbbaabaabbbabbaaaaaabbbbabababbaabbabbbbabbabbaabbbaaabaaabbab"
-          "abbbabbbbaabaaababbabbaababbbabbaababbabbbbabbbbabaabaaaabaaaabababa"
-          "abababbaaabbabbbbbbaaaaaabbbbabbabbabaaaaabaabbaababbbbaabaaabbabaaa"
-          "abaaabbbabbbaababababaaaabbbbaaabbababababaabbaaaabaabbababbabbaaaba"
-          "bbaaabbbbbabbbaababaaabbababbbbbaabbbabaaaaabbbbabbabaaaababbabbabab"
-          "aabbaababbbbbaababbbabbbaaabbabbbaabbababbaabbaaaaaabaaabbbaababbaaa"
-          "ababaabbaaabbbaabababbbbbababbbbbbbaabbbbaabababbbaabbbbbbbaabbbbaaa"
-          "babaaaabaabaaaabbabaabaaabaaaaabaabbbbabbabaaabbabbaabbaabbabaaabbbb"
-          "baaabababbaaaaabbabbababaababbaabbabaaaaabaaabaaababaababaaaaaababaa"
-          "aaaaaabaababbbbaabaabbabbabaaaaaabaabbabbbabbaabbbbbbbaaaababababbbb"
-          "ababbbabbbaaabbabbabbaabbbbbbbababaabaabababbaaabbaabbbaabbbabbbbbab"
-          "aaabbbabaaaabbabaaabaabbaaaabbabbbabababbaaabbbbaabaabbababaaaabbbaa"
-          "aabbbaabaa",
-          "bbbaabaabbbbabaaaaababbbaababbabbabbaabaaabbaaabbabbbabbbaaaababaaab"
-          "baaabbabbbbaaabbabaaaaaaababbaaabbaabbaabaabbabbaabaabbababbbbbbbbaa"
-          "aaaaaabbabbbabaaababbbbbabababbbaaabbaaaaaabbbbbbabbabbbaaaaabbabbab"
-          "bbbaaaaabbabbabbbbababbbababbbaaabaabbabaabbaaaaabbababbaabbbababbaa"
-          "abbabaaabbabaaaaaaabbaababbaabbbabbabaaaabaabaaabbbbaaaabbbaaaaaaabb"
-          "aabaaabbbaababbaaabbbbaabbabbbbabbbababbabbbbababbbbbbaaabaabaababab"
-          "aabbabbbaaabbabbaaabaabbbbaabbaabaabaababbabbaabaabbabbbbbaaabbaaabb"
-          "abbbbababbaaabbabbbaabaaabaaaaaababbaaabbbbbababbaabbaaaabbaaaaabaaa"
-          "aaabbbaaaaaaaabbabbbaabaaaabaababbaaabbbbbabaaaabbbabaaaaabbaabbaabb"
-          "bbaaabbbbaabaabbaaabbbbaabbbaaaaaabbbabbaabbaabbabbbabaabbbbaabababa"
-          "abbbbbbaaaabbabbbbabbaaabbbabbabaaabbabbabbbabbbaaaabbbaaabbbaabaabb"
-          "aaabaabbabbbbaabaaabaabbaaababaabbabaaabaabbaaabaaababbaabbbbbababba"
-          "abbabbabbbaaabbabaaaabbbaaaaabbbbbbbabbbabbbababbbabaaababababaaaaba"
-          "aaaaaaaabbabaaabbabbbabbaaababababaaabbabbbbababbbaaaaababaaaabbabaa"
-          "babbaaaaabaaaaabbabbbbbbbbbaabbaabaabbabbaabbabaabaaaabaababaababbaa"
-          "aabaabaababbaaaaabbabbababbabbbaabbbbbaaabbbaabaaaaabaaabbbaaabbbaba"
-          "bbbbbabbabbaaaabbbaababbababbabaabaabbbbaaabaaabbbabbbbbabaaaabaabaa"
-          "bbbabbbbaabbbaaabbbbaabaababbaabbabbabaaabbaaaababbabbaabbbabaabbbba"
-          "aaabbbaaaaabaaabab",
-          "aaabbababbbbabaaaaababbbaababbabbabbaabaaabbaaabbabbbabbbaaaababaaab"
-          "baaabbabbbbaaabbabaaaaaaababbaaabbaabbaabaabbabbaabaabbababbbbbbbbaa"
-          "aaabbbaababbabaaababbbbbabababbbaaabbaaaaaabbbbbbabbabbbaaaaabbabbab"
-          "bbbaaaaabbabbabbbbababbbababbbaaabaabbabaabbaaaaabbababbaabbbababbaa"
-          "abbabbbbaabaaaaaaaabbaababbaabbbabbabaaaabaabaaabbbbaaaabbbaaaaaaabb"
-          "aabaaabbbaababbaaabbbbaabbabbbbabbbababbabbbbababbbbbbaaabaabaababab"
-          "aabbabbbaaabbabbaaabaabbbbaabbaabaabaababbabbaabaabbabbbbbaaabbaaabb"
-          "abbbbababbbbbaababbaabaaabaaaaaababbaaabbbbbababbaabbaaaabbaaaaabaaa"
-          "aaabbbaaaaaaaabbabbbaabaaaabaababbaaabbbbbabaaaabbbabaaaaabbaabbaabb"
-          "bbaaabbbbaabaabbaaabbbbaabbbaaaaaabbbabbaabbaabbabbbabaabbbbaabababa"
-          "abbbbbbabbbaababbbabbaaabbbabbabaaabbabbabbbabbbaaaabbbaaabbbaabaabb"
-          "aaabaabbabbbbaabaaabaabbaaababaabbabaaabaabbaaabaaababbaabbbbbababba"
-          "abbabbabbbbbbaabaaaaabbbaaaaabbbbbbbabbbabbbababbbabaaababababaaaaba"
-          "aaaaaaaabbabaaabbabbbabbaaababababaaabbabbbbababbbaaaaababaaaabbabaa"
-          "babbaaaaabaabbbaababbbbbbbbaabbaabaabbabbaabbabaabaaaabaababaababbaa"
-          "aabaabaababbaaaaabbabbababbabbbaabbbbbaaabbbaabaaaaabaaabbbaaabbbaba"
-          "bbbbbabbabbaaaabbbaababbababbabaabaabbbbaaabaaabbbabbbbbabaaaabaabaa"
-          "bbbabbbbaabbbaaabbbbaabaababbaabbabbabaaabbaaaababbabbaabbbabaabbbba"
-          "aaabbbaaaaabaaabab",
-          "bbbaababbaabbababbbaabbbbaaaaaaabbaabbbbbabaababaababbbbabaabbbaabbb"
-          "aabaaabbbaabbbabbabbbbabbbabbbbbaaaaaaabaabbbbaabbbbbbaabbaabaabaaba"
-          "aabbabbaababbbbababaaaabaababbaababbbbabaabbbabbabaababaaabaaabbbaba"
-          "bbbaabaababbbbaaaaabaaaababaababbababaaabaaaaaabbaabaababbbbaaabaaaa"
-          "bbaaabbabaaabbababbbabbbbbbababbaabbaaaababbbbaabbbaababbaabaababbbb"
-          "aabbbbaabababbbabaabbaaaabaabbbabbbaabaabbabbaababbbbbbbabbbbbbbabaa"
-          "bbbaaaaabbabbbbabbbbabbbaaabbbbaabbbabaabaabaabbaaaaabbbababaaabbaaa"
-          "bbbbbabaaabbabbaabbbaaabbabbbbbbabbabaaabbbabbbabaabbabbabababbabbaa"
-          "ababaabbbbbbaababbbbbbbaaaaaaabaababbaaababbbbbaaaaaaaabbbbabaabbbab"
-          "babaabababaaaabbababbabaabbaababaabbbbbabaaabbbbabaababaaaaaaababbbb"
-          "bbbbbbbbbaaabbabbbbaaabaabbbabaabaabaaaabaabbbbbbabbaaabbabaaabbbaba"
-          "abaaabbbbabbbaababaaabbaaabaabababbabababaaabbabaabbabbaaaabbbbabbab"
-          "abbabbababbbbbaababbaabbabaabbaaabaaaababbbbaaaabbabbaaaabaaabbbbaba"
-          "bbbbbaaabbaaaabbabbabaaaabbabbaaaababbbaababbabbbaababaaabababbabbab"
-          "babbbabbbaababbbaababbbbbbbbababbbabababbababbbaaabbaababaabbbaaabbb"
-          "bbaaabababaaabbbbbaabaaababababaabbbbbbabbbabaaabaabababbbabaaabaabb"
-          "bbaabbaababbbabaaabbabaaaaaabbaaaababbaabbbaababbaaababbbaabaabbbbbb"
-          "ababbbbbbbbaabaabbbaabaaaabababbaaabaabaababaabababbabbabbbaabbbbaba"
-          "baaababbbbabbaaa",
-          "aaabbabbbaabbababbbaabbbbaaaaaaabbaabbbbbabaababaababbbbabaabbbaaaaa"
-          "bbabaabbbaabbbabbabbbbabbbabbbbbaaaaaaabaabbbbaabbbbbbaabbaabaabaabb"
-          "bbaababaababbbbababaaaabaababbaababbbbabaabbbabbabaababaaabaaabbbaba"
-          "bbbaabaababbbbaaaaabaaaababaababbababaaabaaaaaabbaabaababbbbaaabaaaa"
-          "bbaaabbabaaabbababbbabbbbbbababbaabbaaaababbbbaabbbaababbaabaababbbb"
-          "aabbbbaabababbbabaabbaaaabaabbbabbbaabaabbabbaababbbbbbbabbbbbbbabaa"
-          "bbbaabbbaababbbabbbbabbbaaabbbbaabbbabaabaabaabbaaaaabbbababaaabbaaa"
-          "bbbbbabbbbaababaabbbaaabbabbbbbbabbabaaabbbabbbabaabbabbabababbabbaa"
-          "ababaabbbaaabbabbbbbbbbaaaaaaabaababbaaababbbbbaaaaaaaabbbbabaabbbab"
-          "babaababababbbaabaabbabaabbaababaabbbbbabaaabbbbabaababaaaaaaababbbb"
-          "bbbbbbbbbaaabbabbbbaaabaabbbabaabaabaaaabaabbbbbbabbaaabbabaaabbbaba"
-          "abaaabbbbaaaabbabbaaabbaaabaabababbabababaaabbabaabbabbaaaabbbbabbab"
-          "abbabbababbaaabbabbbaabbabaabbaaabaaaababbbbaaaabbabbaaaabaaabbbbaba"
-          "bbbbbaaabbabbbaabababaaaabbabbaaaababbbaababbabbbaababaaabababbabbab"
-          "babbbabbbaabaaaabbabbbbbbbbbababbbabababbababbbaaabbaababaabbbaaabbb"
-          "bbaaabababaaabbbbbaabaaababababaabbbbbbabbbabaaabaabababbbabaaabaabb"
-          "bbaabbaababbbabaaabbabaaaaaabbaaaababbaabbbaababbaaababbbaabaabbbbbb"
-          "ababbbbbbbbaabaaaaabbabaaabababbaaabaabaababaabababbabbabbbaabbbbaba"
-          "baaababbbbabbaaa",
-          "bbbaabaaaabababaabbbbbbbabbbaaabbbabbabbbbbabaaaabaaaabaabbbaabbbbbb"
-          "bbaaabbabbabaaabbaaaaaabbbabaaaaabababbbbabbbaaaabbbabbaaabbbabbbabb"
-          "aababbbaababaaaaabaaaaababaabbaaaaaaabbbaaaaaaaaaaaaaabbaabbababbabb"
-          "bababaaaabbababbabbabbbaaaabbaaaababaabaababaabbaababaaaabbbbbbbbaba"
-          "babbbbbabbbaabaabaabaaababbababaababaaaaaababbabaabaabbbabaaaabbbabb"
-          "aaabbbaabbaaabbabbbabababbabbbaaaaabbaaabaaabaabbaabbbbbbbbaaabaaaab"
-          "babbbbbbaaabaaabbabbbbabbbbbaabbabaabbbaaaaababaaaaababbbabbabbabbbb"
-          "bbababaaabbaaabbbaababaabaaabbaabababbbbaabbaabbabaaaabbbabbbaabaabb"
-          "baaababbbbbbbbaababbaabbbbaaaaaabababababbaababbbabaaaabbbaaabbbbaba"
-          "baaaaaabbbabbbbbaabaaaaabbabbaabaaaabbbaaabaaabbabaabaabbbababaaaabb"
-          "babbabaabababaaaaabbabbbaabbbaababbaaaababbbabbaaabababbbaaabbababab"
-          "baaabbbbbbbbaaabbbbaabababaaaaaabaaabbabaabbabbababbaabaaabaababaaab"
-          "babaabbbbbbbbbbbbbbaabaababbbababaaaaaaabababbbbababbaababababbbabbb"
-          "abbaabaaaabbabaaaaaaabbabbabaaabaaabbabbababbaaaaaababbababbaababbbb"
-          "aababbbbbbaabbbabaabaaabbabaababbabaaaaabbbabaabaaababaaaaaaaaabaaab"
-          "bbabbbbabaaabaaaabbaabbbaabaaabbaabbbbaaabbbbbbaabbbabbababbbabaaabb"
-          "baaaabbabababbababbabbabbbaababaaabaaabbabaaaabbbbabaaabaababbbaabba"
-          "babbbbbbabbababaabaabbbabaaabbabababbbbbabaaababbbabaabbbbaabbbbabba"
-          "abaabbaabaaaaabaaabaabbbaaa",
-          "aaabbabaaabababaabbbbbbbabbbaaabbbabbabbbbbabaaaabaaaabaabbbaabbbbbb"
-          "bbbbbaabababaaabbaaaaaabbbabaaaaabababbbbabbbaaaabbbabbaaabbbabbbabb"
-          "aababbbaababaaaaabaaaaababaabbaaaaaaabbbaaaaaaaaaaaaaabbaabbababbabb"
-          "babababbbaabaabbabbabbbaaaabbaaaababaabaababaabbaababaaaabbbbbbbbaba"
-          "babbbbbaaaabbababaabaaababbababaababaaaaaababbabaabaabbbabaaaabbbabb"
-          "aaabbbaabbbbbaababbabababbabbbaaaaabbaaabaaabaabbaabbbbbbbbaaabaaaab"
-          "babbbbbbaaabbbbaababbbabbbbbaabbabaabbbaaaaababaaaaababbbabbabbabbbb"
-          "bbababaaabbaaaaaabbabbaabaaabbaabababbbbaabbaabbabaaaabbbabbbaabaabb"
-          "baaababbbbbaaabbabbbaabbbbaaaaaabababababbaababbbabaaaabbbaaabbbbaba"
-          "baaaaaabbbabbbbbaabaaaaabbabbaabaaaabbbaaabaaabbabaabaabbbababaaaabb"
-          "babbabaabababaaaaabbabbbaabbbaababbaaaababbbabbaaabababbbaaabbababab"
-          "baaabbbbbbbbaaabbbbaabababaaaaaabaaabbabaabbabbababbaabaaabaababaaab"
-          "babaabbbbbbbbbbbbbbaabaababbbababaaaaaaabababbbbababbaababababbbabbb"
-          "abbaabaaaabbabaaaabbbaabababaaabaaabbabbababbaaaaaababbababbaababbbb"
-          "aababbbbbbaabbbabaabbbbaabaaababbabaaaaabbbabaabaaababaaaaaaaaabaaab"
-          "bbabbbbabaaabaaaabbaaaaabbabaabbaabbbbaaabbbbbbaabbbabbababbbabaaabb"
-          "baaaabbabababbababbabbaaaabbabbaaabaaabbabaaaabbbbabaaabaababbbaabba"
-          "babbbbbbabbababaabaabbbabaaabbabababbbbbabaaababbbabaabbbbaabbbbabba"
-          "abaabbaabaaaaabaaabaabbbaaa, "
-          "bbbaababbababbaaaabbaabbabbbbaababbabbbabbbababbbbbaaababbabbababaaa"
-          "abbabbabbbbaaaaaaaaabbbabaaabbbbababaaaabaabbbbbbaababbaaaaabbababab"
-          "aaabbabbbbbbabbbbbaababbbbaabaabaaabbababaaabaaabbbaaaaabbbaababbbba"
-          "abaaabbababaabababbababbbababbbabbababbabaabbbabbabbaaaabbbbabbbbbbb"
-          "ababbbaabaaaabaaaaaaaaabbabbabaaaabbbaabbaababababaaabbbabbaabbbbaba"
-          "aaabbabbabbaaaababababaabbbbaabbababbbbbabbabbbbbbaabbabaabbabbbbabb"
-          "abbbaabaaabbbbbbabbaaabbaaabbbababaabababbabbbaababaabbaabbabbbbaabb"
-          "babbbbaabaabaaaabaaabbbbaaaaaaaabbbbbbabaabbabbbaaabababbbabaaababbb"
-          "bbabaaabbabaabbbbbabbabaababbabbabbabaabbbaaaaabbbaabbbaaaabaabababb"
-          "bbabaaaaabbabaaaabbbaabbbbbbbabbabbababbaaaaabababaaabbbbbabaabbbabb"
-          "bbaabaaaaabbabaabbabbaabbbabaabbbaaaaabbababbbaaaabaabababaaabbbbbaa"
-          "abbaaababbbaabaaaaaaababbbbabbbabaaaababbaababaababaaababbabbbabbaba"
-          "ababbbaabbaaabbabaabaaaabbbbbababbbbabbababbbabaabaabbbabbabbabaaaaa"
-          "abbabaababaaaaabbabbaaaaaaabaaaabbaaabaababbaababaaabbbbaaaababaaaba"
-          "abbabababaababaaabbabbbaababbbabbbbabbaaaabaabbbababbbbbbabaabbbbaba"
-          "abbbaabbbbbabbbbbaabababbbbaabbbbbabbbbabbaaababbabaabbabababaababab"
-          "bbbbaaaabbaaabaaaaabbabaaaaaaaabbbaababbaaabbbabbbbaaabaababbaababbb"
-          "ababbaaaabbbbaaaaaaaabbabbbbbababaabbababbaabbaaaaaaaabbabbbabbbbaab"
-          "aabbbaabbbaaabaaaabb",
-          "bbbaababbababbaaaabbaabbabbbbaababbabbbabbbababbbbbaaababbabbababaaa"
-          "abbabbabbbbaaaaaaaaabbbabaaabbbbababaaaabaabbbbbbaababbaaaaabbababab"
-          "aaabbabbbbbbabbbbbaababbbbaabaabaaabbababaaabaaabbbaaaaabbbaababbbba"
-          "abaaabbababaabababbababbbababbbabbababbabaabbbabbabbaaaabbbbabbbbbbb"
-          "ababbbaabaaaabaaaaaaaaabbabbabaaaabbbaabbaababababaaabbbabbaabbbbaba"
-          "bbbaabababbaaaababababaabbbbaabbababbbbbabbabbbbbbaabbabaabbabbbbabb"
-          "abbbaabaaabbbbbbabbaaabbaaabbbababaabababbabbbaababaabbaabbabbbbaabb"
-          "babbbbaabaabaaaabaaabbbbaaaaaaaabbbbbbabaabbabbbaaabababbbabaaababbb"
-          "bbabbbbaabaaabbbbbabbabaababbabbabbabaabbbaaaaabbbaabbbaaaabaabababb"
-          "bbabaaaaabbabaaaabbbaabbbbbbbabbabbababbaaaaabababaaabbbbbabaabbbabb"
-          "bbaabaabbbaabaaabbabbaabbbabaabbbaaaaabbababbbaaaabaabababaaabbbbbaa"
-          "abbaaabaaaabbabaaaaaababbbbabbbabaaaababbaababaababaaababbabbbabbaba"
-          "ababbbaabbbbbaabaaabaaaabbbbbababbbbabbababbbabaabaabbbabbabbabaaaaa"
-          "abbabaababaabbbaababaaaaaaabaaaabbaaabaababbaababaaabbbbaaaababaaaba"
-          "abbabababaababaaabbabbbaababbbabbbbabbaaaabaabbbababbbbbbabaabbbbaba"
-          "abbbaabbbbbabbaaabbabbabbbbaabbbbbabbbbabbaaababbabaabbabababaababab"
-          "bbbbaaaabbaaabaaaaabbabaaaaaaaabbbaababbaaabbbabbbbaaabaababbaababbb"
-          "ababbaaaabbbbaaaaaaaabbabbbbbababaabbababbaabbaaaaaaaabbabbbabbbbaab"
-          "aabbbaabbbaaabaaaabb, "
-          "aaabbabababbbbbbbabbbbaaaabbbabbabaaabbaaaabbbbbababbabbbbbbbbbabbab"
-          "abbbbaabaabababaabbababaababbbaaaabbbbbbbbaaabbbaaabaaabbbbbaaaaabba"
-          "babaaabbabbbbabaabbabaababaabababaaabbbbbaaabaabbbbaabbbbbbabaaabbbb"
-          "bbaabaababaabbbbaabaabbabbbbbababaaababababbababaabaabbbbbbbbabaabaa"
-          "baaabbabaababbabbabbbbbbaaabababbabbbbbbababaabbaaabaabaaabababbbaba"
-          "babbbbaabaababaababababaabbbabababbbbabbbbabbbaaaabaaaaaaabbbbabbabb"
-          "abbbabbbaabaabbaabbbbaaabbaabbaabaabaababbabababbbbbabaaaaaaababaaba"
-          "bbababbbbbaababbaaaabaaaabbbbbbabbbabbbaabbabababbbabbbbbbbbabaabaab"
-          "bbaababaaaaabbabbabbbbabbbbbaababbbbbbbbaabbaabbababbbabaaabbbababaa"
-          "aaaaabbabbbbaabaabbabbbbabaabababbaaabbbbbaaabaaabbbaaabbbabaaabaaab"
-          "aabbbbaabaaaaaaaaabbbbbaabbaabbbabbaaabaabbbbababaaaaabaaabbaaababbb"
-          "bbbbbaaabbababbabaabaabababaabaabaaabaabbbaabaabbaabaaaabaabbbbbbbaa"
-          "bbaaabaaaabbabbabbabbaaabbabaaaabbbbababbbaabaaaabbbababbbbababbbaaa"
-          "baababbbaaaabbabababbbbbbaaaabaabaaababbaaabbaaaaabaaaaabbabbaababab"
-          "abaabbbabbaaabbababaaaababbbbabbabbabababaabbbbabbaabaaabbbabbabaaab"
-          "abbabaaaabbbbbbaabaaaabaaaaaababbbbbaaaabbabbbbbbbbabbbabbababbbabaa"
-          "bbbaaaaaaabaaaaaabbababbbaabbaaabaaaaaabbbababbaabbbaaaabbaabaaaaaab"
-          "ababbabbabbababbbbbaabaaabbabababbbabbbabbabbbabaababbbbbabbabbabaab"
-          "abababbabbbab, "
-          "bbbaabaababbbbbbbabbbbaaaabbbabbabaaabbaaaabbbbbababbabbbbbbbbbabbab"
-          "abaaabbababababaabbababaababbbaaaabbbbbbbbaaabbbaaabaaabbbbbaaaaabba"
-          "babbbbaababbbabaabbabaababaabababaaabbbbbaaabaabbbbaabbbbbbabaaabbba"
-          "aabbabababaabbbbaabaabbabbbbbababaaababababbababaabaabbbbbbbbabaabaa"
-          "bbbbaabaaababbabbabbbbbbaaabababbabbbbbbababaabbaaabaabaaabababbbaba"
-          "babbbbaabaababaababababaabbbabababbbbabbbbabbbaaaabaaaaaaabbbbabbabb"
-          "abbbaaaabbababbaabbbbaaabbaabbaabaabaababbabababbbbbabaaaaaaababaaba"
-          "bbababbaaabbabbbaaaabaaaabbbbbbabbbabbbaabbabababbbabbbbbbbbabaabaab"
-          "bbaababaabbbaabababbbbabbbbbaababbbbbbbbaabbaabbababbbabaaabbbababaa"
-          "aaaaabbabbbbaabaabbabbbbabaabababbaaabbbbbaaabaaabbbaaabbbabaaabaaab"
-          "aabaaabbabaaaaaaaabbbbbaabbaabbbabbaaabaabbbbababaaaaabaaabbaaababbb"
-          "bbbbbbbbaabaabbabaabaabababaabaabaaabaabbbaabaabbaabaaaabaabbbbbbbaa"
-          "bbaaababbbaabababbabbaaabbabaaaabbbbababbbaabaaaabbbababbbbababbbaaa"
-          "baababbbabbbaabaababbbbbbaaaabaabaaababbaaabbaaaaabaaaaabbabbaababab"
-          "abaabbbabbaaabbababaaaababbbbabbabbabababaabbbbabbaabaaabbbabbabaaab"
-          "abbabaaaabbbaaabbabaaabaaaaaababbbbbaaaabbabbbbbbbbabbbabbababbbabaa"
-          "bbbaaaaaaabaaabbbaabaabbbaabbaaabaaaaaabbbababbaabbbaaaabbaabaaaaaab"
-          "ababbabbabbababbbbbaabaaabbabababbbabbbabbabbbabaababbbbbabbabbabaab"
-          "abababbabbbab, "
-          "aaabbabaabbabbbbabbaabbaabaaaabbababbbbaaababbbbabbbaaabbabaaabbabba"
-          "babbbaababbbaabbbbaabbbbbbbbbaaabbaaabaababbabaaabaabaabaaabaabaaaba"
-          "abbabbbaabaababbbbabbbaaababbababaaaaaaabbbabbbbbaaaabbaaabbbbbbabab"
-          "bababbbbbaabababbbabbabaaabbabbabaaabbbbabaaaaababbbbabbbbabbabaabba"
-          "aaaaabbbbbaabaababbbabbabaabbaababbabaaaaaaabbbbbabbbbbbbbbbbaababab"
-          "ababbbbbbbaabababababaabbbbbaabbabbbbbaabbabbbbbaabaabbbbbabaaaaaaab"
-          "aabbbababbbbaabaaabbbaaaaaabbbabbabaaabbbabaababbabbbaaabababbabaaba"
-          "ababaabbaaaaaabbababbaaabbbabbaabaababbabaabaabaababababaaaaaaaaaaba"
-          "aababbaababbaaaabbabbbaabaaababaaabaabaaabbbaabbababbabaaaaaaabababb"
-          "abbaabbbbabbaabbbbaabaaabbaabaaaaababbabbaaaabbaabaabbabaababaabaaaa"
-          "aabbbbaabababbbabaaabbabaabbaababbaabaaabaababbabbbbaabbaaabbbbbabba"
-          "abbbaabaabaaaaaabbaaabbabaabbbbabbababaabbaabbbabbaaabaaaababbaabbab"
-          "babbbaabaaaabbababaabbbaababaaaabbbaaabaaaaaaaaaaaaabbabaabaaabbabbb"
-          "bbabbababaababaaabbbbbbaabababbabbbbbbbbabbbaaaaabbbababaabaaabbbaba"
-          "bbaaabaaabaaaababbaaabbabbbabbbbbbabababbbaaabbabaabbabbabaaaabbabaa"
-          "aaaaaabbbbbabaabbbaaaabbababbbbbabbbbbaaaaabbabbbabaabaaabaaaabbaaba"
-          "baabbaababaabaaabbabbbbbaabaabaaaaabbaabaababbabbabbbbbbabbbaabbbbab"
-          "aaababbbbbbbababbbbbbabbbaabaabaaaaaaaaaaaaabbbabbbabbbaababbbababaa"
-          "abaaaaaabbabbaaabaaa, "
-          "bbbaabaaabbabbbbabbaabbaabaaaabbababbbbaaababbbbabbbaaabbabaaabbabba"
-          "baaaabbabbbbaabbbbaabbbbbbbbbaaabbaaabaababbabaaabaabaabaaabaabaaaba"
-          "abbaaaabbabababbbbabbbaaababbababaaaaaaabbbabbbbbaaaabbaaabbbbbbabab"
-          "bababbaaabbabbabbbabbabaaabbabbabaaabbbbabaaaaababbbbabbbbabbabaabba"
-          "aaaaabbbbbaabaababbbabbabaabbaababbabaaaaaaabbbbbabbbbbbbbbbbaababab"
-          "ababbbbaaabbabbabababaabbbbbaabbabbbbbaabbabbbbbaabaabbbbbabaaaaaaab"
-          "aabbbababaaabbabaabbbaaaaaabbbabbabaaabbbabaababbabbbaaabababbabaaba"
-          "ababaabbaaaaaabbababbaaabbbabbaabaababbabaabaabaababababaaaaaaaaaaba"
-          "aababbaababbabbbaababbaabaaababaaabaabaaabbbaabbababbabaaaaaaabababb"
-          "abbaabbbbabbaabaaabbabaabbaabaaaaababbabbaaaabbaabaabbabaababaabaaaa"
-          "aabbbbaabababbbabbbbaabaaabbaababbaabaaabaababbabbbbaabbaaabbbbbabba"
-          "abbbaabaabaaaaaabbaaabbabaabbbbabbababaabbaabbbabbaaabaaaababbaabbab"
-          "babbbaabaaaabbababaaaaabbabbaaaabbbaaabaaaaaaaaaaaaabbabaabaaabbabbb"
-          "bbabbababaababaaabbbaaabbabbabbabbbbbbbbabbbaaaaabbbababaabaaabbbaba"
-          "bbaaabaaabaaaababbaaabbabbbabbbbbbabababbbaaabbabaabbabbabaaaabbabaa"
-          "aaaaaabbbbbabaabbbaaaabbababbbbbabbbbbaaaaabbabbbabaabaaabaaaabbaaba"
-          "baabbaababaabaaabbabbbbbaabaabaaaaabbaabaababbabbabbbbbbabbbaabbbbab"
-          "aaababbbbbbbababbbbbbabbbaabaabaaaaaaaaaaaaabbbabbbabbbaababbbababaa"
-          "abaaaaaabbabbaaabaaa",
-          "bbbaabaabbaabbababbbbabaabaaaaabaabbbbaabbbbbbbabaababbaabaabaaabaaa"
-          "abbbaabaaaabbaabbaaaabababbaaaaabbbbabbaabababbbbbabbaaaaabbabbbbabb"
-          "babbbbaababaaaaabbbbaaaabababbaaabbabaaaabaabbabaababbbabbbaaabaabba"
-          "abbbbaaabbababbbbabababbaabbabbaaabbbbabbabababbbbbbabbbabbbbaaabaab"
-          "aababbbaaabbababbbaabbaaabaabbabbaaaaaaaaaaabbbbabbaaabaabaaaababaaa"
-          "aabbbabaaabbababaaaaabaaaababbabaabbabbababbaabbbabbabaabbabaaaababb"
-          "babbbaaaabbbaabaaababbabaaaababbbbaaaaabaabbabaababaaaaaaaaabbabbbba"
-          "baabaaaaaaabbababbbaabbbbaabbbbaabbbbaabaababbaabbbaaaaabbaabaabbaaa"
-          "abaaaabbabaabbbbbabababaababbbbbabbbabbaabaabbaaaaaabbaaabbaabbbbbbb"
-          "baabaaaabbabbbabbbaabbababaaabbbbbbbabbaaabbbabbaaaaaabaababbaababba"
-          "aaaababaaabbabbaababbabbababbabaaaaabbbababbababaabaaabababbbaabaaab"
-          "aabbbabbbbbbaabaaaaababbbabbbabaabababbababbbabaaabbbbbbbabbaaaaaaaa"
-          "babbbaabaaabbabaaabaabaaabbbaaaaaaaabbbbaaabaaaabaaabaabbabbaaaabbaa"
-          "bbabbaaaabaaabbababbbbaababaabbbbbbababaabababbbabbbaaabbbabbbaabaab"
-          "bbabaabbbababbbaababaabaababaaabbbaabbabbaaaaabbbababbababbaaaaababa"
-          "bbbaabbbaababbbbbaababaaababbbaabaaabaabbbaaabbbbabaaabbbbabbaaabaab"
-          "babaaabbaaabbaaaabbabaaabbbbaabaabbbabaabbbaaabbbabaaabbbaabaaaababa"
-          "bbbbaabaaabbbaabaabaaabbaaaabaabbabbabaabbbaaababbbaababaaaabbaaabba"
-          "baaaababbab",
-          "aaabbababbaabbababbbbabaabaaaaabaabbbbaabbbbbbbabaababbaabaabaaabaaa"
-          "abbbaabaaaabbaabbaaaabababbaaaaabbbbabbaabababbbbbabbaaaaabbabbbbabb"
-          "babbbbaababaaaaabbbbaaaabababbaaabbabaaaabaabbabaababbbabbbaaabaabba"
-          "abbbbbbbaabaabbbbabababbaabbabbaaabbbbabbabababbbbbbabbbabbbbaaabaab"
-          "aababbbaaabbababbbaabbaaabaabbabbaaaaaaaaaaabbbbabbaaabaabaaaababaaa"
-          "aabbbabaaabbababaaaaabaaaababbabaabbabbababbaabbbabbabaabbabaaaababb"
-          "babbbaaaabbbaabaaababbabaaaababbbbaaaaabaabbabaababaaaaaaaaabbabbbba"
-          "baabaaaabbbaabaabbbaabbbbaabbbbaabbbbaabaababbaabbbaaaaabbaabaabbaaa"
-          "ababbbaabaaabbbbbabababaababbbbbabbbabbaabaabbaaaaaabbaaabbaabbbbbbb"
-          "baabaaaabbabbbabbbaabbababaaabbbbbbbabbaaabbbabbaaaaaabaababbaababba"
-          "aaaababbbbaababaababbabbababbabaaaaabbbababbababaabaaabababbbaabaaab"
-          "aabbbabbbbbbaabaaaaababbbabbbabaabababbababbbabaaabbbbbbbabbaaaaaaaa"
-          "babbbaabbbbaabaaaabaabaaabbbaaaaaaaabbbbaaabaaaabaaabaabbabbaaaabbaa"
-          "bbabbaaaabbbbaabaabbbbaababaabbbbbbababaabababbbabbbaaabbbabbbaabaab"
-          "bbabaabbbababbbaababaabaababaaabbbaabbabbaaaaabbbababbababbaaaaababa"
-          "bbbaabbbaababbaaabbabbaaababbbaabaaabaabbbaaabbbbabaaabbbbabbaaabaab"
-          "babaaabbaaabbabbbaabaaaabbbbaabaabbbabaabbbaaabbbabaaabbbaabaaaababa"
-          "bbbbaabaaabbbaabaabaaabbaaaabaabbabbabaabbbaaababbbaababaaaabbaaabba"
-          "baaaababbab",
-          "aaabbabbbbaaabaaaabaabbaaabbabaabababaaaaabbaabbabaabbaaabbbbabbbbbb"
-          "baababaaababbbbbababababaaabbbaabbbabaaabbbbbbbaaaaabbbbababbbabaaab"
-          "bbaabababababaaabbbaabbbbbaaabbaababbbaabbbaababaaaababbaabbaaababba"
-          "baaabbababbbaaaaababaabbbbbaaaabbbaaabaabaababaaabbabbbbbbabbbbbaaaa"
-          "bbaaabbabaabbbbbaabbbbbbbaabaabbabbbbbabbbaabbbaababababbbabaaaaabbb"
-          "bbaaabbabbabaabaaaaaabbaabbbaabbbaabbbbaababaaababbbaababaabaaabaaba"
-          "aaaaabbababaaabbbbaaabbabbabbbbbbabbaaababbbabaababbbbaaaabababbabba"
-          "aabbaaabbabbbbbabbaaabaaaabbbaaabbabbababababbbbbabbbbbbbbabaaababba"
-          "aaaabbaaabbabbababbbbbaabbaaaabaaababbbbabaabaabbbbabaaaabbbbbbbabab"
-          "abababaaabbabbabaaababaaabbaaababbbabaabaaaabaaaaabbabaabbabbaabbabb"
-          "bbabaabbbbaabaaaabbabbabbabbaaaaaababaaaaaabbabbaabaaababaaaabaaaaaa"
-          "aabbaabbaaaabbabaababbabbababbaabbbbababaabaaaabaaaaabaaabbabbaaabaa"
-          "aaaaaaaabbbaabaababaabbbbbaababaabbaaaabbbbabaabbabaabbabaabaaaaaabb"
-          "aababbbabaaaabbababbbbbaababbaabbbabbaabaabbbabababbaabbbaaaaaaabaaa"
-          "aaaababbaaabbbaabaaababaaabbbaaaaabaaaabbbbbbbabbbaaaababaababbababb"
-          "bbaaaabbbababbbbaabaaabbababbbabaaabbbbbaabbababbaabbbbaaababbbbbbab"
-          "babbababaabaaabbbbaababbbaababbabbbbabbbbbbabbbaaabbbabaaaaaabbbbaba"
-          "bbbbabaaaaabaababbbaababbabbbabaaababbaaabaabbbabaaaabbaabbbbaababaa"
-          "baabbaabaaabbaa",
-          "bbbaababbbaaabaaaabaabbaaabbabaabababaaaaabbaabbabaabbaaabbbbabbbbbb"
-          "baababaaababbbbbababababaaabbbaabbbabaaabbbbbbbaaaaabbbbababbbabaaab"
-          "bbaabababababaaabbbaabbbbbaaabbaababbbaabbbaababaaaababbaabbaaababba"
-          "baaabbababbbaaaaababaabbbbbaaaabbbaaabaabaababaaabbabbbbbbabbbbbaaaa"
-          "bbaaabbabaabbbbbaabbbbbbbaabaabbabbbbbabbbaabbbaababababbbabaaaaabbb"
-          "bbaaabbabbabaabaaaaaabbaabbbaabbbaabbbbaababaaababbbaababaabaaabaaba"
-          "aabbbaabaabaaabbbbaaabbabbabbbbbbabbaaababbbabaababbbbaaaabababbabba"
-          "aabbbbbaababbbbabbaaabaaaabbbaaabbabbababababbbbbabbbbbbbbabaaababba"
-          "aaaabbbbbaababababbbbbaabbaaaabaaababbbbabaabaabbbbabaaaabbbbbbbabab"
-          "abababaaabbabbabaaababaaabbaaababbbabaabaaaabaaaaabbabaabbabbaabbabb"
-          "bbabaabbbbaabaaaabbabbabbabbaaaaaababaaaaaabbabbaabaaababaaaabaaaaaa"
-          "aabbaabbaaaabbabaababbabbababbaabbbbababaabaaaabaaaaabaaabbabbaaabaa"
-          "aaaaaaaabbbaabaababaabbbbbaababaabbaaaabbbbabaabbabaabbabaabaaaaaabb"
-          "aababbbabaaaabbababbbbbaababbaabbbabbaabaabbbabababbaabbbaaaaaaabaaa"
-          "aaaababbaaaaaabbabaababaaabbbaaaaabaaaabbbbbbbabbbaaaababaababbababb"
-          "bbaaaabbbababbbbaabaaabbababbbabaaabbbbbaabbababbaabbbbaaababbbbbbab"
-          "babbababaabaaabaaabbabbbbaababbabbbbabbbbbbabbbaaabbbabaaaaaabbbbaba"
-          "bbbbabaaaaabaabaaaabbabbbabbbabaaababbaaabaabbbabaaaabbaabbbbaababaa"
-          "baabbaabaaabbaa",
-          "bbbaababababaabbbabbaabbbbabbabbbbbbbaaabbaabbbbbbbaaabbaabaabaaabbb"
-          "abbbbaabaabbbabbaaabababbaabaaaaaaaabbbbbabbbbbbababaababababbbbabba"
-          "baaabbbaabaabbbababbabbbaaababbbabbbbbaababbaababaaaaababaaabababbbb"
-          "ababaaaaabbababaabaabbaaaaabbbbbbabaabbabaaabaaaaabbabbbbbaaaaaabaaa"
-          "babbbbabaaabbabbbaaaabaaaabababbbbaaaabbabbbabbbbababaabbaaabbaababa"
-          "baaaabbbbaaaabbabbbbabbbbbbbaaabbaabbbbbabaabbbbababbabaaababbabbaab"
-          "bbbbbabbaaabaaabbababaabbbbaaaaababaaabaaaababaaaabbaabbaabbaaaabbbb"
-          "abaabaabaaaaaabbbaababababaabbbbbabaaabbbbaabaabbabaababbababbabbbbb"
-          "bbbabaabbabaaabaaabbabbabbbabbbabababbaaabaaabbbbbbabaabbaababbabbaa"
-          "aaaabaaabbbabbbbbaababbbbbabaababbababaabaaaaabbbbbaaabbbaaaabababba"
-          "abaaabaabbbabbaaabbabaabaabbbaaaaaabbbbaabbaabbbaababaabbaabaaaaaabb"
-          "bbaaababaabbaaabbbaabaabaabbbbbbbbababaaaaaabbaabaabbaabbbabaaaaabaa"
-          "babbbabaababababbbbaabaaaabbababbaabababbbababbabbbbbaaabaaaaabababb"
-          "babaaaababbabbbbabbbaababaababbaaaaaaaaaaababbababbbabaabbaaaaaabaaa"
-          "aaaaaaaaaabaaaabbabbbbaababaabaababbbbbbbaababaaaaaabababbabbbabbaba"
-          "baaabaababaaaabaabbaaaaabbababaabbabaaaabbbbaabaabbabbaabaabaabbabbb"
-          "abaabbbbbbaababbaabaaaabbabbababaabbaabaabbabbbbbabaababbbbaabbabaaa"
-          "baabaababbaaabababaabbbbaababaaababbbbbbbaaaaabbbbbaababbbaaabbbbbaa"
-          "bbaabbaaaabbbabaababb",
-          "aaabbabbababaabbbabbaabbbbabbabbbbbbbaaabbaabbbbbbbaaabbaabaabaaabbb"
-          "abaaabbababbbabbaaabababbaabaaaaaaaabbbbbabbbbbbababaababababbbbabba"
-          "baaabbbaabaabbbababbabbbaaababbbabbbbbaababbaababaaaaababaaabababbbb"
-          "ababaabbbaabaabaabaabbaaaaabbbbbbabaabbabaaabaaaaabbabbbbbaaaaaabaaa"
-          "babbbbabaaabbabbbaaaabaaaabababbbbaaaabbabbbabbbbababaabbaaabbaababa"
-          "baaaabbbbabbbaababbbabbbbbbbaaabbaabbbbbabaabbbbababbabaaababbabbaab"
-          "bbbbbabbaaabbbbaabaabaabbbbaaaaababaaabaaaababaaaabbaabbaabbaaaabbbb"
-          "abaabaabaaaaaabbbaababababaabbbbbabaaabbbbaabaabbabaababbababbabbbbb"
-          "bbbabaabbabaaabaaabbabbabbbabbbabababbaaabaaabbbbbbabaabbaababbabbaa"
-          "aaaabaaabbbabbbbbaababbbbbabaababbababaabaaaaabbbbbaaabbbaaaabababba"
-          "abaaabaabbbabbbbbaabaaabaabbbaaaaaabbbbaabbaabbbaababaabbaabaaaaaabb"
-          "bbaaababaabbaaabbbaabaabaabbbbbbbbababaaaaaabbaabaabbaabbbabaaaaabaa"
-          "babbbabaababababaaabbabaaabbababbaabababbbababbabbbbbaaabaaaaabababb"
-          "babaaaababbabbbbabbbaababaababbaaaaaaaaaaababbababbbabaabbaaaaaabaaa"
-          "aaaaaaaaaabaaaabbabaaabbabbaabaababbbbbbbaababaaaaaabababbabbbabbaba"
-          "baaabaababaaaabaabbaaaaabbababaabbabaaaabbbbaabaabbabbaabaabaabbabbb"
-          "abaabbbbbbaababbaababbbaababababaabbaabaabbabbbbbabaababbbbaabbabaaa"
-          "baabaababbaaabababaabaaabbabbaaababbbbbbbaaaaabbbbbaababbbaaabbbbbaa"
-          "bbaabbaaaabbbabaababb"};
+      std::vector<std::string> words
+          = {"bbbaabaabbbbbaabaabaaabbaabbbbbaaabaaabababbbbaaabbababab"
+             "baabbabaabb"
+             "aaabbabbaaaabbabbbbbbaabbbbaabbabaaabaaaaabbaabababababaa"
+             "aabaabbabba"
+             "bbaaabbabababbabaabbbbbbabaabbabaaaababbababbabbabbabbbab"
+             "bbabbbabbbb"
+             "aaaaaabbabbaababbbaaababbbbababababbabaabbbbbabaaaababaaa"
+             "bbaaabbaaab"
+             "babaabbbaababbbaaabbaabbbbaabbbbaaaaababbabbbaaaaaababbbb"
+             "aaabbbabbba"
+             "babbbbbbaabaabababbabbbbbaaaabbbbabbababbbaaaabbbbaabbbbb"
+             "abbbbbabaab"
+             "bbaaabaaabbababbbabbaaaaaabbbbabababbaabbabbbbabbabbaabbb"
+             "aaabaaabbab"
+             "abbbabbbbaabaaababbabbaababbbabbaababbabbbbabbbbabaabaaaa"
+             "baaaabababa"
+             "abababbaaabbabbbbbbaaaaaabbbbabbabbabaaaaabaabbaababbbbaa"
+             "baaabbabaaa"
+             "abaaabbbaaaabbabbababaaaabbbbaaabbababababaabbaaaabaabbab"
+             "abbabbaaaba"
+             "bbaaabbbbbabbbaababaaabbababbbbbaabbbabaaaaabbbbabbabaaaa"
+             "babbabbabab"
+             "aabbaababbaaabbabbbbabbbaaabbabbbaabbababbaabbaaaaaabaaab"
+             "bbaababbaaa"
+             "ababaabbaaabbbaabababbbbbababbbbbbbaabbbbaabababbbaabbbbb"
+             "bbaabbbbaaa"
+             "babaaaabaababbbaabaaabaaabaaaaabaabbbbabbabaaabbabbaabbaa"
+             "bbabaaabbbb"
+             "baaabababbaabbbaababababaababbaabbabaaaaabaaabaaababaabab"
+             "aaaaaababaa"
+             "aaaaaabaababbbbaabaabbabbabaaaaaabaabbabbbabbaabbbbbbbaaa"
+             "ababababbbb"
+             "ababbbabbbaaabbabbabbaabbbbbbbababaabaabababbaaabbaabbbaa"
+             "bbbabbbbbab"
+             "aaabbbababbbaabaaaabaabbaaaabbabbbabababbaaabbbbaabaabbab"
+             "abaaaabbbaa"
+             "aabbbaabaa",
+             "aaabbababbbbbaabaabaaabbaabbbbbaaabaaabababbbbaaabbababab"
+             "baabbabaabb"
+             "bbbaababaaaabbabbbbbbaabbbbaabbabaaabaaaaabbaabababababaa"
+             "aabaabbabba"
+             "bbaaabbabababbabaabbbbbbabaabbabaaaababbababbabbabbabbbab"
+             "bbabbbabbbb"
+             "aaabbbaababaababbbaaababbbbababababbabaabbbbbabaaaababaaa"
+             "bbaaabbaaab"
+             "babaabbbaababbbaaabbaabbbbaabbbbaaaaababbabbbaaaaaababbbb"
+             "aaabbbabbba"
+             "babbbbbbaabaabababbabbbbbaaaabbbbabbababbbaaaabbbbaabbbbb"
+             "abbbbbabaab"
+             "bbaaabbbbaabaabbbabbaaaaaabbbbabababbaabbabbbbabbabbaabbb"
+             "aaabaaabbab"
+             "abbbabbbbaabaaababbabbaababbbabbaababbabbbbabbbbabaabaaaa"
+             "baaaabababa"
+             "abababbaaabbabbbbbbaaaaaabbbbabbabbabaaaaabaabbaababbbbaa"
+             "baaabbabaaa"
+             "abaaabbbabbbaababababaaaabbbbaaabbababababaabbaaaabaabbab"
+             "abbabbaaaba"
+             "bbaaabbbbbabbbaababaaabbababbbbbaabbbabaaaaabbbbabbabaaaa"
+             "babbabbabab"
+             "aabbaababbbbbaababbbabbbaaabbabbbaabbababbaabbaaaaaabaaab"
+             "bbaababbaaa"
+             "ababaabbaaabbbaabababbbbbababbbbbbbaabbbbaabababbbaabbbbb"
+             "bbaabbbbaaa"
+             "babaaaabaabaaaabbabaabaaabaaaaabaabbbbabbabaaabbabbaabbaa"
+             "bbabaaabbbb"
+             "baaabababbaaaaabbabbababaababbaabbabaaaaabaaabaaababaabab"
+             "aaaaaababaa"
+             "aaaaaabaababbbbaabaabbabbabaaaaaabaabbabbbabbaabbbbbbbaaa"
+             "ababababbbb"
+             "ababbbabbbaaabbabbabbaabbbbbbbababaabaabababbaaabbaabbbaa"
+             "bbbabbbbbab"
+             "aaabbbabaaaabbabaaabaabbaaaabbabbbabababbaaabbbbaabaabbab"
+             "abaaaabbbaa"
+             "aabbbaabaa",
+             "bbbaabaabbbbabaaaaababbbaababbabbabbaabaaabbaaabbabbbabbb"
+             "aaaababaaab"
+             "baaabbabbbbaaabbabaaaaaaababbaaabbaabbaabaabbabbaabaabbab"
+             "abbbbbbbbaa"
+             "aaaaaabbabbbabaaababbbbbabababbbaaabbaaaaaabbbbbbabbabbba"
+             "aaaabbabbab"
+             "bbbaaaaabbabbabbbbababbbababbbaaabaabbabaabbaaaaabbababba"
+             "abbbababbaa"
+             "abbabaaabbabaaaaaaabbaababbaabbbabbabaaaabaabaaabbbbaaaab"
+             "bbaaaaaaabb"
+             "aabaaabbbaababbaaabbbbaabbabbbbabbbababbabbbbababbbbbbaaa"
+             "baabaababab"
+             "aabbabbbaaabbabbaaabaabbbbaabbaabaabaababbabbaabaabbabbbb"
+             "baaabbaaabb"
+             "abbbbababbaaabbabbbaabaaabaaaaaababbaaabbbbbababbaabbaaaa"
+             "bbaaaaabaaa"
+             "aaabbbaaaaaaaabbabbbaabaaaabaababbaaabbbbbabaaaabbbabaaaa"
+             "abbaabbaabb"
+             "bbaaabbbbaabaabbaaabbbbaabbbaaaaaabbbabbaabbaabbabbbabaab"
+             "bbbaabababa"
+             "abbbbbbaaaabbabbbbabbaaabbbabbabaaabbabbabbbabbbaaaabbbaa"
+             "abbbaabaabb"
+             "aaabaabbabbbbaabaaabaabbaaababaabbabaaabaabbaaabaaababbaa"
+             "bbbbbababba"
+             "abbabbabbbaaabbabaaaabbbaaaaabbbbbbbabbbabbbababbbabaaaba"
+             "bababaaaaba"
+             "aaaaaaaabbabaaabbabbbabbaaababababaaabbabbbbababbbaaaaaba"
+             "baaaabbabaa"
+             "babbaaaaabaaaaabbabbbbbbbbbaabbaabaabbabbaabbabaabaaaabaa"
+             "babaababbaa"
+             "aabaabaababbaaaaabbabbababbabbbaabbbbbaaabbbaabaaaaabaaab"
+             "bbaaabbbaba"
+             "bbbbbabbabbaaaabbbaababbababbabaabaabbbbaaabaaabbbabbbbba"
+             "baaaabaabaa"
+             "bbbabbbbaabbbaaabbbbaabaababbaabbabbabaaabbaaaababbabbaab"
+             "bbabaabbbba"
+             "aaabbbaaaaabaaabab",
+             "aaabbababbbbabaaaaababbbaababbabbabbaabaaabbaaabbabbbabbb"
+             "aaaababaaab"
+             "baaabbabbbbaaabbabaaaaaaababbaaabbaabbaabaabbabbaabaabbab"
+             "abbbbbbbbaa"
+             "aaabbbaababbabaaababbbbbabababbbaaabbaaaaaabbbbbbabbabbba"
+             "aaaabbabbab"
+             "bbbaaaaabbabbabbbbababbbababbbaaabaabbabaabbaaaaabbababba"
+             "abbbababbaa"
+             "abbabbbbaabaaaaaaaabbaababbaabbbabbabaaaabaabaaabbbbaaaab"
+             "bbaaaaaaabb"
+             "aabaaabbbaababbaaabbbbaabbabbbbabbbababbabbbbababbbbbbaaa"
+             "baabaababab"
+             "aabbabbbaaabbabbaaabaabbbbaabbaabaabaababbabbaabaabbabbbb"
+             "baaabbaaabb"
+             "abbbbababbbbbaababbaabaaabaaaaaababbaaabbbbbababbaabbaaaa"
+             "bbaaaaabaaa"
+             "aaabbbaaaaaaaabbabbbaabaaaabaababbaaabbbbbabaaaabbbabaaaa"
+             "abbaabbaabb"
+             "bbaaabbbbaabaabbaaabbbbaabbbaaaaaabbbabbaabbaabbabbbabaab"
+             "bbbaabababa"
+             "abbbbbbabbbaababbbabbaaabbbabbabaaabbabbabbbabbbaaaabbbaa"
+             "abbbaabaabb"
+             "aaabaabbabbbbaabaaabaabbaaababaabbabaaabaabbaaabaaababbaa"
+             "bbbbbababba"
+             "abbabbabbbbbbaabaaaaabbbaaaaabbbbbbbabbbabbbababbbabaaaba"
+             "bababaaaaba"
+             "aaaaaaaabbabaaabbabbbabbaaababababaaabbabbbbababbbaaaaaba"
+             "baaaabbabaa"
+             "babbaaaaabaabbbaababbbbbbbbaabbaabaabbabbaabbabaabaaaabaa"
+             "babaababbaa"
+             "aabaabaababbaaaaabbabbababbabbbaabbbbbaaabbbaabaaaaabaaab"
+             "bbaaabbbaba"
+             "bbbbbabbabbaaaabbbaababbababbabaabaabbbbaaabaaabbbabbbbba"
+             "baaaabaabaa"
+             "bbbabbbbaabbbaaabbbbaabaababbaabbabbabaaabbaaaababbabbaab"
+             "bbabaabbbba"
+             "aaabbbaaaaabaaabab",
+             "bbbaababbaabbababbbaabbbbaaaaaaabbaabbbbbabaababaababbbba"
+             "baabbbaabbb"
+             "aabaaabbbaabbbabbabbbbabbbabbbbbaaaaaaabaabbbbaabbbbbbaab"
+             "baabaabaaba"
+             "aabbabbaababbbbababaaaabaababbaababbbbabaabbbabbabaababaa"
+             "abaaabbbaba"
+             "bbbaabaababbbbaaaaabaaaababaababbababaaabaaaaaabbaabaabab"
+             "bbbaaabaaaa"
+             "bbaaabbabaaabbababbbabbbbbbababbaabbaaaababbbbaabbbaababb"
+             "aabaababbbb"
+             "aabbbbaabababbbabaabbaaaabaabbbabbbaabaabbabbaababbbbbbba"
+             "bbbbbbbabaa"
+             "bbbaaaaabbabbbbabbbbabbbaaabbbbaabbbabaabaabaabbaaaaabbba"
+             "babaaabbaaa"
+             "bbbbbabaaabbabbaabbbaaabbabbbbbbabbabaaabbbabbbabaabbabba"
+             "bababbabbaa"
+             "ababaabbbbbbaababbbbbbbaaaaaaabaababbaaababbbbbaaaaaaaabb"
+             "bbabaabbbab"
+             "babaabababaaaabbababbabaabbaababaabbbbbabaaabbbbabaababaa"
+             "aaaaababbbb"
+             "bbbbbbbbbaaabbabbbbaaabaabbbabaabaabaaaabaabbbbbbabbaaabb"
+             "abaaabbbaba"
+             "abaaabbbbabbbaababaaabbaaabaabababbabababaaabbabaabbabbaa"
+             "aabbbbabbab"
+             "abbabbababbbbbaababbaabbabaabbaaabaaaababbbbaaaabbabbaaaa"
+             "baaabbbbaba"
+             "bbbbbaaabbaaaabbabbabaaaabbabbaaaababbbaababbabbbaababaaa"
+             "bababbabbab"
+             "babbbabbbaababbbaababbbbbbbbababbbabababbababbbaaabbaabab"
+             "aabbbaaabbb"
+             "bbaaabababaaabbbbbaabaaababababaabbbbbbabbbabaaabaabababb"
+             "babaaabaabb"
+             "bbaabbaababbbabaaabbabaaaaaabbaaaababbaabbbaababbaaababbb"
+             "aabaabbbbbb"
+             "ababbbbbbbbaabaabbbaabaaaabababbaaabaabaababaabababbabbab"
+             "bbaabbbbaba"
+             "baaababbbbabbaaa",
+             "aaabbabbbaabbababbbaabbbbaaaaaaabbaabbbbbabaababaababbbba"
+             "baabbbaaaaa"
+             "bbabaabbbaabbbabbabbbbabbbabbbbbaaaaaaabaabbbbaabbbbbbaab"
+             "baabaabaabb"
+             "bbaababaababbbbababaaaabaababbaababbbbabaabbbabbabaababaa"
+             "abaaabbbaba"
+             "bbbaabaababbbbaaaaabaaaababaababbababaaabaaaaaabbaabaabab"
+             "bbbaaabaaaa"
+             "bbaaabbabaaabbababbbabbbbbbababbaabbaaaababbbbaabbbaababb"
+             "aabaababbbb"
+             "aabbbbaabababbbabaabbaaaabaabbbabbbaabaabbabbaababbbbbbba"
+             "bbbbbbbabaa"
+             "bbbaabbbaababbbabbbbabbbaaabbbbaabbbabaabaabaabbaaaaabbba"
+             "babaaabbaaa"
+             "bbbbbabbbbaababaabbbaaabbabbbbbbabbabaaabbbabbbabaabbabba"
+             "bababbabbaa"
+             "ababaabbbaaabbabbbbbbbbaaaaaaabaababbaaababbbbbaaaaaaaabb"
+             "bbabaabbbab"
+             "babaababababbbaabaabbabaabbaababaabbbbbabaaabbbbabaababaa"
+             "aaaaababbbb"
+             "bbbbbbbbbaaabbabbbbaaabaabbbabaabaabaaaabaabbbbbbabbaaabb"
+             "abaaabbbaba"
+             "abaaabbbbaaaabbabbaaabbaaabaabababbabababaaabbabaabbabbaa"
+             "aabbbbabbab"
+             "abbabbababbaaabbabbbaabbabaabbaaabaaaababbbbaaaabbabbaaaa"
+             "baaabbbbaba"
+             "bbbbbaaabbabbbaabababaaaabbabbaaaababbbaababbabbbaababaaa"
+             "bababbabbab"
+             "babbbabbbaabaaaabbabbbbbbbbbababbbabababbababbbaaabbaabab"
+             "aabbbaaabbb"
+             "bbaaabababaaabbbbbaabaaababababaabbbbbbabbbabaaabaabababb"
+             "babaaabaabb"
+             "bbaabbaababbbabaaabbabaaaaaabbaaaababbaabbbaababbaaababbb"
+             "aabaabbbbbb"
+             "ababbbbbbbbaabaaaaabbabaaabababbaaabaabaababaabababbabbab"
+             "bbaabbbbaba"
+             "baaababbbbabbaaa",
+             "bbbaabaaaabababaabbbbbbbabbbaaabbbabbabbbbbabaaaabaaaabaa"
+             "bbbaabbbbbb"
+             "bbaaabbabbabaaabbaaaaaabbbabaaaaabababbbbabbbaaaabbbabbaa"
+             "abbbabbbabb"
+             "aababbbaababaaaaabaaaaababaabbaaaaaaabbbaaaaaaaaaaaaaabba"
+             "abbababbabb"
+             "bababaaaabbababbabbabbbaaaabbaaaababaabaababaabbaababaaaa"
+             "bbbbbbbbaba"
+             "babbbbbabbbaabaabaabaaababbababaababaaaaaababbabaabaabbba"
+             "baaaabbbabb"
+             "aaabbbaabbaaabbabbbabababbabbbaaaaabbaaabaaabaabbaabbbbbb"
+             "bbaaabaaaab"
+             "babbbbbbaaabaaabbabbbbabbbbbaabbabaabbbaaaaababaaaaababbb"
+             "abbabbabbbb"
+             "bbababaaabbaaabbbaababaabaaabbaabababbbbaabbaabbabaaaabbb"
+             "abbbaabaabb"
+             "baaababbbbbbbbaababbaabbbbaaaaaabababababbaababbbabaaaabb"
+             "baaabbbbaba"
+             "baaaaaabbbabbbbbaabaaaaabbabbaabaaaabbbaaabaaabbabaabaabb"
+             "bababaaaabb"
+             "babbabaabababaaaaabbabbbaabbbaababbaaaababbbabbaaabababbb"
+             "aaabbababab"
+             "baaabbbbbbbbaaabbbbaabababaaaaaabaaabbabaabbabbababbaabaa"
+             "abaababaaab"
+             "babaabbbbbbbbbbbbbbaabaababbbababaaaaaaabababbbbababbaaba"
+             "bababbbabbb"
+             "abbaabaaaabbabaaaaaaabbabbabaaabaaabbabbababbaaaaaababbab"
+             "abbaababbbb"
+             "aababbbbbbaabbbabaabaaabbabaababbabaaaaabbbabaabaaababaaa"
+             "aaaaaabaaab"
+             "bbabbbbabaaabaaaabbaabbbaabaaabbaabbbbaaabbbbbbaabbbabbab"
+             "abbbabaaabb"
+             "baaaabbabababbababbabbabbbaababaaabaaabbabaaaabbbbabaaaba"
+             "ababbbaabba"
+             "babbbbbbabbababaabaabbbabaaabbabababbbbbabaaababbbabaabbb"
+             "baabbbbabba"
+             "abaabbaabaaaaabaaabaabbbaaa",
+             "aaabbabaaabababaabbbbbbbabbbaaabbbabbabbbbbabaaaabaaaabaa"
+             "bbbaabbbbbb"
+             "bbbbbaabababaaabbaaaaaabbbabaaaaabababbbbabbbaaaabbbabbaa"
+             "abbbabbbabb"
+             "aababbbaababaaaaabaaaaababaabbaaaaaaabbbaaaaaaaaaaaaaabba"
+             "abbababbabb"
+             "babababbbaabaabbabbabbbaaaabbaaaababaabaababaabbaababaaaa"
+             "bbbbbbbbaba"
+             "babbbbbaaaabbababaabaaababbababaababaaaaaababbabaabaabbba"
+             "baaaabbbabb"
+             "aaabbbaabbbbbaababbabababbabbbaaaaabbaaabaaabaabbaabbbbbb"
+             "bbaaabaaaab"
+             "babbbbbbaaabbbbaababbbabbbbbaabbabaabbbaaaaababaaaaababbb"
+             "abbabbabbbb"
+             "bbababaaabbaaaaaabbabbaabaaabbaabababbbbaabbaabbabaaaabbb"
+             "abbbaabaabb"
+             "baaababbbbbaaabbabbbaabbbbaaaaaabababababbaababbbabaaaabb"
+             "baaabbbbaba"
+             "baaaaaabbbabbbbbaabaaaaabbabbaabaaaabbbaaabaaabbabaabaabb"
+             "bababaaaabb"
+             "babbabaabababaaaaabbabbbaabbbaababbaaaababbbabbaaabababbb"
+             "aaabbababab"
+             "baaabbbbbbbbaaabbbbaabababaaaaaabaaabbabaabbabbababbaabaa"
+             "abaababaaab"
+             "babaabbbbbbbbbbbbbbaabaababbbababaaaaaaabababbbbababbaaba"
+             "bababbbabbb"
+             "abbaabaaaabbabaaaabbbaabababaaabaaabbabbababbaaaaaababbab"
+             "abbaababbbb"
+             "aababbbbbbaabbbabaabbbbaabaaababbabaaaaabbbabaabaaababaaa"
+             "aaaaaabaaab"
+             "bbabbbbabaaabaaaabbaaaaabbabaabbaabbbbaaabbbbbbaabbbabbab"
+             "abbbabaaabb"
+             "baaaabbabababbababbabbaaaabbabbaaabaaabbabaaaabbbbabaaaba"
+             "ababbbaabba"
+             "babbbbbbabbababaabaabbbabaaabbabababbbbbabaaababbbabaabbb"
+             "baabbbbabba"
+             "abaabbaabaaaaabaaabaabbbaaa, "
+             "bbbaababbababbaaaabbaabbabbbbaababbabbbabbbababbbbbaaabab"
+             "babbababaaa"
+             "abbabbabbbbaaaaaaaaabbbabaaabbbbababaaaabaabbbbbbaababbaa"
+             "aaabbababab"
+             "aaabbabbbbbbabbbbbaababbbbaabaabaaabbababaaabaaabbbaaaaab"
+             "bbaababbbba"
+             "abaaabbababaabababbababbbababbbabbababbabaabbbabbabbaaaab"
+             "bbbabbbbbbb"
+             "ababbbaabaaaabaaaaaaaaabbabbabaaaabbbaabbaababababaaabbba"
+             "bbaabbbbaba"
+             "aaabbabbabbaaaababababaabbbbaabbababbbbbabbabbbbbbaabbaba"
+             "abbabbbbabb"
+             "abbbaabaaabbbbbbabbaaabbaaabbbababaabababbabbbaababaabbaa"
+             "bbabbbbaabb"
+             "babbbbaabaabaaaabaaabbbbaaaaaaaabbbbbbabaabbabbbaaabababb"
+             "babaaababbb"
+             "bbabaaabbabaabbbbbabbabaababbabbabbabaabbbaaaaabbbaabbbaa"
+             "aabaabababb"
+             "bbabaaaaabbabaaaabbbaabbbbbbbabbabbababbaaaaabababaaabbbb"
+             "babaabbbabb"
+             "bbaabaaaaabbabaabbabbaabbbabaabbbaaaaabbababbbaaaabaababa"
+             "baaabbbbbaa"
+             "abbaaababbbaabaaaaaaababbbbabbbabaaaababbaababaababaaabab"
+             "babbbabbaba"
+             "ababbbaabbaaabbabaabaaaabbbbbababbbbabbababbbabaabaabbbab"
+             "babbabaaaaa"
+             "abbabaababaaaaabbabbaaaaaaabaaaabbaaabaababbaababaaabbbba"
+             "aaababaaaba"
+             "abbabababaababaaabbabbbaababbbabbbbabbaaaabaabbbababbbbbb"
+             "abaabbbbaba"
+             "abbbaabbbbbabbbbbaabababbbbaabbbbbabbbbabbaaababbabaabbab"
+             "ababaababab"
+             "bbbbaaaabbaaabaaaaabbabaaaaaaaabbbaababbaaabbbabbbbaaabaa"
+             "babbaababbb"
+             "ababbaaaabbbbaaaaaaaabbabbbbbababaabbababbaabbaaaaaaaabba"
+             "bbbabbbbaab"
+             "aabbbaabbbaaabaaaabb",
+             "bbbaababbababbaaaabbaabbabbbbaababbabbbabbbababbbbbaaabab"
+             "babbababaaa"
+             "abbabbabbbbaaaaaaaaabbbabaaabbbbababaaaabaabbbbbbaababbaa"
+             "aaabbababab"
+             "aaabbabbbbbbabbbbbaababbbbaabaabaaabbababaaabaaabbbaaaaab"
+             "bbaababbbba"
+             "abaaabbababaabababbababbbababbbabbababbabaabbbabbabbaaaab"
+             "bbbabbbbbbb"
+             "ababbbaabaaaabaaaaaaaaabbabbabaaaabbbaabbaababababaaabbba"
+             "bbaabbbbaba"
+             "bbbaabababbaaaababababaabbbbaabbababbbbbabbabbbbbbaabbaba"
+             "abbabbbbabb"
+             "abbbaabaaabbbbbbabbaaabbaaabbbababaabababbabbbaababaabbaa"
+             "bbabbbbaabb"
+             "babbbbaabaabaaaabaaabbbbaaaaaaaabbbbbbabaabbabbbaaabababb"
+             "babaaababbb"
+             "bbabbbbaabaaabbbbbabbabaababbabbabbabaabbbaaaaabbbaabbbaa"
+             "aabaabababb"
+             "bbabaaaaabbabaaaabbbaabbbbbbbabbabbababbaaaaabababaaabbbb"
+             "babaabbbabb"
+             "bbaabaabbbaabaaabbabbaabbbabaabbbaaaaabbababbbaaaabaababa"
+             "baaabbbbbaa"
+             "abbaaabaaaabbabaaaaaababbbbabbbabaaaababbaababaababaaabab"
+             "babbbabbaba"
+             "ababbbaabbbbbaabaaabaaaabbbbbababbbbabbababbbabaabaabbbab"
+             "babbabaaaaa"
+             "abbabaababaabbbaababaaaaaaabaaaabbaaabaababbaababaaabbbba"
+             "aaababaaaba"
+             "abbabababaababaaabbabbbaababbbabbbbabbaaaabaabbbababbbbbb"
+             "abaabbbbaba"
+             "abbbaabbbbbabbaaabbabbabbbbaabbbbbabbbbabbaaababbabaabbab"
+             "ababaababab"
+             "bbbbaaaabbaaabaaaaabbabaaaaaaaabbbaababbaaabbbabbbbaaabaa"
+             "babbaababbb"
+             "ababbaaaabbbbaaaaaaaabbabbbbbababaabbababbaabbaaaaaaaabba"
+             "bbbabbbbaab"
+             "aabbbaabbbaaabaaaabb, "
+             "aaabbabababbbbbbbabbbbaaaabbbabbabaaabbaaaabbbbbababbabbb"
+             "bbbbbbabbab"
+             "abbbbaabaabababaabbababaababbbaaaabbbbbbbbaaabbbaaabaaabb"
+             "bbbaaaaabba"
+             "babaaabbabbbbabaabbabaababaabababaaabbbbbaaabaabbbbaabbbb"
+             "bbabaaabbbb"
+             "bbaabaababaabbbbaabaabbabbbbbababaaababababbababaabaabbbb"
+             "bbbbabaabaa"
+             "baaabbabaababbabbabbbbbbaaabababbabbbbbbababaabbaaabaabaa"
+             "abababbbaba"
+             "babbbbaabaababaababababaabbbabababbbbabbbbabbbaaaabaaaaaa"
+             "abbbbabbabb"
+             "abbbabbbaabaabbaabbbbaaabbaabbaabaabaababbabababbbbbabaaa"
+             "aaaababaaba"
+             "bbababbbbbaababbaaaabaaaabbbbbbabbbabbbaabbabababbbabbbbb"
+             "bbbabaabaab"
+             "bbaababaaaaabbabbabbbbabbbbbaababbbbbbbbaabbaabbababbbaba"
+             "aabbbababaa"
+             "aaaaabbabbbbaabaabbabbbbabaabababbaaabbbbbaaabaaabbbaaabb"
+             "babaaabaaab"
+             "aabbbbaabaaaaaaaaabbbbbaabbaabbbabbaaabaabbbbababaaaaabaa"
+             "abbaaababbb"
+             "bbbbbaaabbababbabaabaabababaabaabaaabaabbbaabaabbaabaaaab"
+             "aabbbbbbbaa"
+             "bbaaabaaaabbabbabbabbaaabbabaaaabbbbababbbaabaaaabbbababb"
+             "bbababbbaaa"
+             "baababbbaaaabbabababbbbbbaaaabaabaaababbaaabbaaaaabaaaaab"
+             "babbaababab"
+             "abaabbbabbaaabbababaaaababbbbabbabbabababaabbbbabbaabaaab"
+             "bbabbabaaab"
+             "abbabaaaabbbbbbaabaaaabaaaaaababbbbbaaaabbabbbbbbbbabbbab"
+             "bababbbabaa"
+             "bbbaaaaaaabaaaaaabbababbbaabbaaabaaaaaabbbababbaabbbaaaab"
+             "baabaaaaaab"
+             "ababbabbabbababbbbbaabaaabbabababbbabbbabbabbbabaababbbbb"
+             "abbabbabaab"
+             "abababbabbbab, "
+             "bbbaabaababbbbbbbabbbbaaaabbbabbabaaabbaaaabbbbbababbabbb"
+             "bbbbbbabbab"
+             "abaaabbababababaabbababaababbbaaaabbbbbbbbaaabbbaaabaaabb"
+             "bbbaaaaabba"
+             "babbbbaababbbabaabbabaababaabababaaabbbbbaaabaabbbbaabbbb"
+             "bbabaaabbba"
+             "aabbabababaabbbbaabaabbabbbbbababaaababababbababaabaabbbb"
+             "bbbbabaabaa"
+             "bbbbaabaaababbabbabbbbbbaaabababbabbbbbbababaabbaaabaabaa"
+             "abababbbaba"
+             "babbbbaabaababaababababaabbbabababbbbabbbbabbbaaaabaaaaaa"
+             "abbbbabbabb"
+             "abbbaaaabbababbaabbbbaaabbaabbaabaabaababbabababbbbbabaaa"
+             "aaaababaaba"
+             "bbababbaaabbabbbaaaabaaaabbbbbbabbbabbbaabbabababbbabbbbb"
+             "bbbabaabaab"
+             "bbaababaabbbaabababbbbabbbbbaababbbbbbbbaabbaabbababbbaba"
+             "aabbbababaa"
+             "aaaaabbabbbbaabaabbabbbbabaabababbaaabbbbbaaabaaabbbaaabb"
+             "babaaabaaab"
+             "aabaaabbabaaaaaaaabbbbbaabbaabbbabbaaabaabbbbababaaaaabaa"
+             "abbaaababbb"
+             "bbbbbbbbaabaabbabaabaabababaabaabaaabaabbbaabaabbaabaaaab"
+             "aabbbbbbbaa"
+             "bbaaababbbaabababbabbaaabbabaaaabbbbababbbaabaaaabbbababb"
+             "bbababbbaaa"
+             "baababbbabbbaabaababbbbbbaaaabaabaaababbaaabbaaaaabaaaaab"
+             "babbaababab"
+             "abaabbbabbaaabbababaaaababbbbabbabbabababaabbbbabbaabaaab"
+             "bbabbabaaab"
+             "abbabaaaabbbaaabbabaaabaaaaaababbbbbaaaabbabbbbbbbbabbbab"
+             "bababbbabaa"
+             "bbbaaaaaaabaaabbbaabaabbbaabbaaabaaaaaabbbababbaabbbaaaab"
+             "baabaaaaaab"
+             "ababbabbabbababbbbbaabaaabbabababbbabbbabbabbbabaababbbbb"
+             "abbabbabaab"
+             "abababbabbbab, "
+             "aaabbabaabbabbbbabbaabbaabaaaabbababbbbaaababbbbabbbaaabb"
+             "abaaabbabba"
+             "babbbaababbbaabbbbaabbbbbbbbbaaabbaaabaababbabaaabaabaaba"
+             "aabaabaaaba"
+             "abbabbbaabaababbbbabbbaaababbababaaaaaaabbbabbbbbaaaabbaa"
+             "abbbbbbabab"
+             "bababbbbbaabababbbabbabaaabbabbabaaabbbbabaaaaababbbbabbb"
+             "babbabaabba"
+             "aaaaabbbbbaabaababbbabbabaabbaababbabaaaaaaabbbbbabbbbbbb"
+             "bbbbaababab"
+             "ababbbbbbbaabababababaabbbbbaabbabbbbbaabbabbbbbaabaabbbb"
+             "babaaaaaaab"
+             "aabbbababbbbaabaaabbbaaaaaabbbabbabaaabbbabaababbabbbaaab"
+             "ababbabaaba"
+             "ababaabbaaaaaabbababbaaabbbabbaabaababbabaabaabaababababa"
+             "aaaaaaaaaba"
+             "aababbaababbaaaabbabbbaabaaababaaabaabaaabbbaabbababbabaa"
+             "aaaaabababb"
+             "abbaabbbbabbaabbbbaabaaabbaabaaaaababbabbaaaabbaabaabbaba"
+             "ababaabaaaa"
+             "aabbbbaabababbbabaaabbabaabbaababbaabaaabaababbabbbbaabba"
+             "aabbbbbabba"
+             "abbbaabaabaaaaaabbaaabbabaabbbbabbababaabbaabbbabbaaabaaa"
+             "ababbaabbab"
+             "babbbaabaaaabbababaabbbaababaaaabbbaaabaaaaaaaaaaaaabbaba"
+             "abaaabbabbb"
+             "bbabbababaababaaabbbbbbaabababbabbbbbbbbabbbaaaaabbbababa"
+             "abaaabbbaba"
+             "bbaaabaaabaaaababbaaabbabbbabbbbbbabababbbaaabbabaabbabba"
+             "baaaabbabaa"
+             "aaaaaabbbbbabaabbbaaaabbababbbbbabbbbbaaaaabbabbbabaabaaa"
+             "baaaabbaaba"
+             "baabbaababaabaaabbabbbbbaabaabaaaaabbaabaababbabbabbbbbba"
+             "bbbaabbbbab"
+             "aaababbbbbbbababbbbbbabbbaabaabaaaaaaaaaaaaabbbabbbabbbaa"
+             "babbbababaa"
+             "abaaaaaabbabbaaabaaa, "
+             "bbbaabaaabbabbbbabbaabbaabaaaabbababbbbaaababbbbabbbaaabb"
+             "abaaabbabba"
+             "baaaabbabbbbaabbbbaabbbbbbbbbaaabbaaabaababbabaaabaabaaba"
+             "aabaabaaaba"
+             "abbaaaabbabababbbbabbbaaababbababaaaaaaabbbabbbbbaaaabbaa"
+             "abbbbbbabab"
+             "bababbaaabbabbabbbabbabaaabbabbabaaabbbbabaaaaababbbbabbb"
+             "babbabaabba"
+             "aaaaabbbbbaabaababbbabbabaabbaababbabaaaaaaabbbbbabbbbbbb"
+             "bbbbaababab"
+             "ababbbbaaabbabbabababaabbbbbaabbabbbbbaabbabbbbbaabaabbbb"
+             "babaaaaaaab"
+             "aabbbababaaabbabaabbbaaaaaabbbabbabaaabbbabaababbabbbaaab"
+             "ababbabaaba"
+             "ababaabbaaaaaabbababbaaabbbabbaabaababbabaabaabaababababa"
+             "aaaaaaaaaba"
+             "aababbaababbabbbaababbaabaaababaaabaabaaabbbaabbababbabaa"
+             "aaaaabababb"
+             "abbaabbbbabbaabaaabbabaabbaabaaaaababbabbaaaabbaabaabbaba"
+             "ababaabaaaa"
+             "aabbbbaabababbbabbbbaabaaabbaababbaabaaabaababbabbbbaabba"
+             "aabbbbbabba"
+             "abbbaabaabaaaaaabbaaabbabaabbbbabbababaabbaabbbabbaaabaaa"
+             "ababbaabbab"
+             "babbbaabaaaabbababaaaaabbabbaaaabbbaaabaaaaaaaaaaaaabbaba"
+             "abaaabbabbb"
+             "bbabbababaababaaabbbaaabbabbabbabbbbbbbbabbbaaaaabbbababa"
+             "abaaabbbaba"
+             "bbaaabaaabaaaababbaaabbabbbabbbbbbabababbbaaabbabaabbabba"
+             "baaaabbabaa"
+             "aaaaaabbbbbabaabbbaaaabbababbbbbabbbbbaaaaabbabbbabaabaaa"
+             "baaaabbaaba"
+             "baabbaababaabaaabbabbbbbaabaabaaaaabbaabaababbabbabbbbbba"
+             "bbbaabbbbab"
+             "aaababbbbbbbababbbbbbabbbaabaabaaaaaaaaaaaaabbbabbbabbbaa"
+             "babbbababaa"
+             "abaaaaaabbabbaaabaaa",
+             "bbbaabaabbaabbababbbbabaabaaaaabaabbbbaabbbbbbbabaababbaa"
+             "baabaaabaaa"
+             "abbbaabaaaabbaabbaaaabababbaaaaabbbbabbaabababbbbbabbaaaa"
+             "abbabbbbabb"
+             "babbbbaababaaaaabbbbaaaabababbaaabbabaaaabaabbabaababbbab"
+             "bbaaabaabba"
+             "abbbbaaabbababbbbabababbaabbabbaaabbbbabbabababbbbbbabbba"
+             "bbbbaaabaab"
+             "aababbbaaabbababbbaabbaaabaabbabbaaaaaaaaaaabbbbabbaaabaa"
+             "baaaababaaa"
+             "aabbbabaaabbababaaaaabaaaababbabaabbabbababbaabbbabbabaab"
+             "babaaaababb"
+             "babbbaaaabbbaabaaababbabaaaababbbbaaaaabaabbabaababaaaaaa"
+             "aaabbabbbba"
+             "baabaaaaaaabbababbbaabbbbaabbbbaabbbbaabaababbaabbbaaaaab"
+             "baabaabbaaa"
+             "abaaaabbabaabbbbbabababaababbbbbabbbabbaabaabbaaaaaabbaaa"
+             "bbaabbbbbbb"
+             "baabaaaabbabbbabbbaabbababaaabbbbbbbabbaaabbbabbaaaaaabaa"
+             "babbaababba"
+             "aaaababaaabbabbaababbabbababbabaaaaabbbababbababaabaaabab"
+             "abbbaabaaab"
+             "aabbbabbbbbbaabaaaaababbbabbbabaabababbababbbabaaabbbbbbb"
+             "abbaaaaaaaa"
+             "babbbaabaaabbabaaabaabaaabbbaaaaaaaabbbbaaabaaaabaaabaabb"
+             "abbaaaabbaa"
+             "bbabbaaaabaaabbababbbbaababaabbbbbbababaabababbbabbbaaabb"
+             "babbbaabaab"
+             "bbabaabbbababbbaababaabaababaaabbbaabbabbaaaaabbbababbaba"
+             "bbaaaaababa"
+             "bbbaabbbaababbbbbaababaaababbbaabaaabaabbbaaabbbbabaaabbb"
+             "babbaaabaab"
+             "babaaabbaaabbaaaabbabaaabbbbaabaabbbabaabbbaaabbbabaaabbb"
+             "aabaaaababa"
+             "bbbbaabaaabbbaabaabaaabbaaaabaabbabbabaabbbaaababbbaababa"
+             "aaabbaaabba"
+             "baaaababbab",
+             "aaabbababbaabbababbbbabaabaaaaabaabbbbaabbbbbbbabaababbaa"
+             "baabaaabaaa"
+             "abbbaabaaaabbaabbaaaabababbaaaaabbbbabbaabababbbbbabbaaaa"
+             "abbabbbbabb"
+             "babbbbaababaaaaabbbbaaaabababbaaabbabaaaabaabbabaababbbab"
+             "bbaaabaabba"
+             "abbbbbbbaabaabbbbabababbaabbabbaaabbbbabbabababbbbbbabbba"
+             "bbbbaaabaab"
+             "aababbbaaabbababbbaabbaaabaabbabbaaaaaaaaaaabbbbabbaaabaa"
+             "baaaababaaa"
+             "aabbbabaaabbababaaaaabaaaababbabaabbabbababbaabbbabbabaab"
+             "babaaaababb"
+             "babbbaaaabbbaabaaababbabaaaababbbbaaaaabaabbabaababaaaaaa"
+             "aaabbabbbba"
+             "baabaaaabbbaabaabbbaabbbbaabbbbaabbbbaabaababbaabbbaaaaab"
+             "baabaabbaaa"
+             "ababbbaabaaabbbbbabababaababbbbbabbbabbaabaabbaaaaaabbaaa"
+             "bbaabbbbbbb"
+             "baabaaaabbabbbabbbaabbababaaabbbbbbbabbaaabbbabbaaaaaabaa"
+             "babbaababba"
+             "aaaababbbbaababaababbabbababbabaaaaabbbababbababaabaaabab"
+             "abbbaabaaab"
+             "aabbbabbbbbbaabaaaaababbbabbbabaabababbababbbabaaabbbbbbb"
+             "abbaaaaaaaa"
+             "babbbaabbbbaabaaaabaabaaabbbaaaaaaaabbbbaaabaaaabaaabaabb"
+             "abbaaaabbaa"
+             "bbabbaaaabbbbaabaabbbbaababaabbbbbbababaabababbbabbbaaabb"
+             "babbbaabaab"
+             "bbabaabbbababbbaababaabaababaaabbbaabbabbaaaaabbbababbaba"
+             "bbaaaaababa"
+             "bbbaabbbaababbaaabbabbaaababbbaabaaabaabbbaaabbbbabaaabbb"
+             "babbaaabaab"
+             "babaaabbaaabbabbbaabaaaabbbbaabaabbbabaabbbaaabbbabaaabbb"
+             "aabaaaababa"
+             "bbbbaabaaabbbaabaabaaabbaaaabaabbabbabaabbbaaababbbaababa"
+             "aaabbaaabba"
+             "baaaababbab",
+             "aaabbabbbbaaabaaaabaabbaaabbabaabababaaaaabbaabbabaabbaaa"
+             "bbbbabbbbbb"
+             "baababaaababbbbbababababaaabbbaabbbabaaabbbbbbbaaaaabbbba"
+             "babbbabaaab"
+             "bbaabababababaaabbbaabbbbbaaabbaababbbaabbbaababaaaababba"
+             "abbaaababba"
+             "baaabbababbbaaaaababaabbbbbaaaabbbaaabaabaababaaabbabbbbb"
+             "babbbbbaaaa"
+             "bbaaabbabaabbbbbaabbbbbbbaabaabbabbbbbabbbaabbbaababababb"
+             "babaaaaabbb"
+             "bbaaabbabbabaabaaaaaabbaabbbaabbbaabbbbaababaaababbbaabab"
+             "aabaaabaaba"
+             "aaaaabbababaaabbbbaaabbabbabbbbbbabbaaababbbabaababbbbaaa"
+             "abababbabba"
+             "aabbaaabbabbbbbabbaaabaaaabbbaaabbabbababababbbbbabbbbbbb"
+             "babaaababba"
+             "aaaabbaaabbabbababbbbbaabbaaaabaaababbbbabaabaabbbbabaaaa"
+             "bbbbbbbabab"
+             "abababaaabbabbabaaababaaabbaaababbbabaabaaaabaaaaabbabaab"
+             "babbaabbabb"
+             "bbabaabbbbaabaaaabbabbabbabbaaaaaababaaaaaabbabbaabaaabab"
+             "aaaabaaaaaa"
+             "aabbaabbaaaabbabaababbabbababbaabbbbababaabaaaabaaaaabaaa"
+             "bbabbaaabaa"
+             "aaaaaaaabbbaabaababaabbbbbaababaabbaaaabbbbabaabbabaabbab"
+             "aabaaaaaabb"
+             "aababbbabaaaabbababbbbbaababbaabbbabbaabaabbbabababbaabbb"
+             "aaaaaaabaaa"
+             "aaaababbaaabbbaabaaababaaabbbaaaaabaaaabbbbbbbabbbaaaabab"
+             "aababbababb"
+             "bbaaaabbbababbbbaabaaabbababbbabaaabbbbbaabbababbaabbbbaa"
+             "ababbbbbbab"
+             "babbababaabaaabbbbaababbbaababbabbbbabbbbbbabbbaaabbbabaa"
+             "aaaabbbbaba"
+             "bbbbabaaaaabaababbbaababbabbbabaaababbaaabaabbbabaaaabbaa"
+             "bbbbaababaa"
+             "baabbaabaaabbaa",
+             "bbbaababbbaaabaaaabaabbaaabbabaabababaaaaabbaabbabaabbaaa"
+             "bbbbabbbbbb"
+             "baababaaababbbbbababababaaabbbaabbbabaaabbbbbbbaaaaabbbba"
+             "babbbabaaab"
+             "bbaabababababaaabbbaabbbbbaaabbaababbbaabbbaababaaaababba"
+             "abbaaababba"
+             "baaabbababbbaaaaababaabbbbbaaaabbbaaabaabaababaaabbabbbbb"
+             "babbbbbaaaa"
+             "bbaaabbabaabbbbbaabbbbbbbaabaabbabbbbbabbbaabbbaababababb"
+             "babaaaaabbb"
+             "bbaaabbabbabaabaaaaaabbaabbbaabbbaabbbbaababaaababbbaabab"
+             "aabaaabaaba"
+             "aabbbaabaabaaabbbbaaabbabbabbbbbbabbaaababbbabaababbbbaaa"
+             "abababbabba"
+             "aabbbbbaababbbbabbaaabaaaabbbaaabbabbababababbbbbabbbbbbb"
+             "babaaababba"
+             "aaaabbbbbaababababbbbbaabbaaaabaaababbbbabaabaabbbbabaaaa"
+             "bbbbbbbabab"
+             "abababaaabbabbabaaababaaabbaaababbbabaabaaaabaaaaabbabaab"
+             "babbaabbabb"
+             "bbabaabbbbaabaaaabbabbabbabbaaaaaababaaaaaabbabbaabaaabab"
+             "aaaabaaaaaa"
+             "aabbaabbaaaabbabaababbabbababbaabbbbababaabaaaabaaaaabaaa"
+             "bbabbaaabaa"
+             "aaaaaaaabbbaabaababaabbbbbaababaabbaaaabbbbabaabbabaabbab"
+             "aabaaaaaabb"
+             "aababbbabaaaabbababbbbbaababbaabbbabbaabaabbbabababbaabbb"
+             "aaaaaaabaaa"
+             "aaaababbaaaaaabbabaababaaabbbaaaaabaaaabbbbbbbabbbaaaabab"
+             "aababbababb"
+             "bbaaaabbbababbbbaabaaabbababbbabaaabbbbbaabbababbaabbbbaa"
+             "ababbbbbbab"
+             "babbababaabaaabaaabbabbbbaababbabbbbabbbbbbabbbaaabbbabaa"
+             "aaaabbbbaba"
+             "bbbbabaaaaabaabaaaabbabbbabbbabaaababbaaabaabbbabaaaabbaa"
+             "bbbbaababaa"
+             "baabbaabaaabbaa",
+             "bbbaababababaabbbabbaabbbbabbabbbbbbbaaabbaabbbbbbbaaabba"
+             "abaabaaabbb"
+             "abbbbaabaabbbabbaaabababbaabaaaaaaaabbbbbabbbbbbababaabab"
+             "ababbbbabba"
+             "baaabbbaabaabbbababbabbbaaababbbabbbbbaababbaababaaaaabab"
+             "aaabababbbb"
+             "ababaaaaabbababaabaabbaaaaabbbbbbabaabbabaaabaaaaabbabbbb"
+             "baaaaaabaaa"
+             "babbbbabaaabbabbbaaaabaaaabababbbbaaaabbabbbabbbbababaabb"
+             "aaabbaababa"
+             "baaaabbbbaaaabbabbbbabbbbbbbaaabbaabbbbbabaabbbbababbabaa"
+             "ababbabbaab"
+             "bbbbbabbaaabaaabbababaabbbbaaaaababaaabaaaababaaaabbaabba"
+             "abbaaaabbbb"
+             "abaabaabaaaaaabbbaababababaabbbbbabaaabbbbaabaabbabaababb"
+             "ababbabbbbb"
+             "bbbabaabbabaaabaaabbabbabbbabbbabababbaaabaaabbbbbbabaabb"
+             "aababbabbaa"
+             "aaaabaaabbbabbbbbaababbbbbabaababbababaabaaaaabbbbbaaabbb"
+             "aaaabababba"
+             "abaaabaabbbabbaaabbabaabaabbbaaaaaabbbbaabbaabbbaababaabb"
+             "aabaaaaaabb"
+             "bbaaababaabbaaabbbaabaabaabbbbbbbbababaaaaaabbaabaabbaabb"
+             "babaaaaabaa"
+             "babbbabaababababbbbaabaaaabbababbaabababbbababbabbbbbaaab"
+             "aaaaabababb"
+             "babaaaababbabbbbabbbaababaababbaaaaaaaaaaababbababbbabaab"
+             "baaaaaabaaa"
+             "aaaaaaaaaabaaaabbabbbbaababaabaababbbbbbbaababaaaaaababab"
+             "babbbabbaba"
+             "baaabaababaaaabaabbaaaaabbababaabbabaaaabbbbaabaabbabbaab"
+             "aabaabbabbb"
+             "abaabbbbbbaababbaabaaaabbabbababaabbaabaabbabbbbbabaababb"
+             "bbaabbabaaa"
+             "baabaababbaaabababaabbbbaababaaababbbbbbbaaaaabbbbbaababb"
+             "baaabbbbbaa"
+             "bbaabbaaaabbbabaababb",
+             "aaabbabbababaabbbabbaabbbbabbabbbbbbbaaabbaabbbbbbbaaabba"
+             "abaabaaabbb"
+             "abaaabbababbbabbaaabababbaabaaaaaaaabbbbbabbbbbbababaabab"
+             "ababbbbabba"
+             "baaabbbaabaabbbababbabbbaaababbbabbbbbaababbaababaaaaabab"
+             "aaabababbbb"
+             "ababaabbbaabaabaabaabbaaaaabbbbbbabaabbabaaabaaaaabbabbbb"
+             "baaaaaabaaa"
+             "babbbbabaaabbabbbaaaabaaaabababbbbaaaabbabbbabbbbababaabb"
+             "aaabbaababa"
+             "baaaabbbbabbbaababbbabbbbbbbaaabbaabbbbbabaabbbbababbabaa"
+             "ababbabbaab"
+             "bbbbbabbaaabbbbaabaabaabbbbaaaaababaaabaaaababaaaabbaabba"
+             "abbaaaabbbb"
+             "abaabaabaaaaaabbbaababababaabbbbbabaaabbbbaabaabbabaababb"
+             "ababbabbbbb"
+             "bbbabaabbabaaabaaabbabbabbbabbbabababbaaabaaabbbbbbabaabb"
+             "aababbabbaa"
+             "aaaabaaabbbabbbbbaababbbbbabaababbababaabaaaaabbbbbaaabbb"
+             "aaaabababba"
+             "abaaabaabbbabbbbbaabaaabaabbbaaaaaabbbbaabbaabbbaababaabb"
+             "aabaaaaaabb"
+             "bbaaababaabbaaabbbaabaabaabbbbbbbbababaaaaaabbaabaabbaabb"
+             "babaaaaabaa"
+             "babbbabaababababaaabbabaaabbababbaabababbbababbabbbbbaaab"
+             "aaaaabababb"
+             "babaaaababbabbbbabbbaababaababbaaaaaaaaaaababbababbbabaab"
+             "baaaaaabaaa"
+             "aaaaaaaaaabaaaabbabaaabbabbaabaababbbbbbbaababaaaaaababab"
+             "babbbabbaba"
+             "baaabaababaaaabaabbaaaaabbababaabbabaaaabbbbaabaabbabbaab"
+             "aabaabbabbb"
+             "abaabbbbbbaababbaababbbaababababaabbaabaabbabbbbbabaababb"
+             "bbaabbabaaa"
+             "baabaababbaaabababaabaaabbabbaaababbbbbbbaaaaabbbbbaababb"
+             "baaabbbbbaa"
+             "bbaabbaaaabbbabaababb"};
 
       for (auto const& w : words) {
         REQUIRE(k.equal_to(k.normal_form(w), w));

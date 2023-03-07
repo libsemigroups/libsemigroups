@@ -44,6 +44,7 @@
 #include "int-range.hpp"             // for IntegralRange
 #include "iterator.hpp"              // for ConstIteratorStateful
 #include "order.hpp"                 // shortlex_compare
+#include "paths.hpp"                 // for cbegin_pislo etc
 #include "types.hpp"                 // for word_type, letter_type...
 
 namespace libsemigroups {
@@ -1814,8 +1815,7 @@ namespace libsemigroups {
       //! Iterators of this type point to a \ref word_type.
       //!
       //! \sa cbegin_class, cend_class.
-      using class_iterator =
-          typename DigraphWithSources<coset_type>::const_pstislo_iterator;
+      using class_iterator = const_pstislo_iterator<coset_type>;
 
       //! Returns a \ref class_iterator pointing at the shortlex least word in
       //! an class.
@@ -1841,7 +1841,8 @@ namespace libsemigroups {
       class_iterator cbegin_class(class_index_type i,
                                   size_t           min = 0,
                                   size_t max = POSITIVE_INFINITY) const {
-        return _word_graph.cbegin_pstislo(_id_coset, i + 1, min, max);
+        return cbegin_pstislo(
+            _word_graph, _id_coset, static_cast<coset_type>(i + 1), min, max);
       }
 
       //! Returns a \ref class_iterator pointing at the shortlex least word in
@@ -1886,7 +1887,7 @@ namespace libsemigroups {
       //! \warning
       //! This function does not trigger any enumeration!
       class_iterator cend_class() const {
-        return _word_graph.cend_pstislo();
+        return cend_pstislo(_word_graph);
       }
 
       //! Returns the size of the specified class.
@@ -1901,7 +1902,11 @@ namespace libsemigroups {
       //! \warning
       //! This function does not trigger any enumeration!
       size_t number_of_words(class_index_type i) const {
-        return _word_graph.number_of_paths(0, i + 1, 0, POSITIVE_INFINITY);
+        return number_of_paths(_word_graph,
+                               static_cast<coset_type>(0),
+                               static_cast<coset_type>(i + 1),
+                               static_cast<coset_type>(0),
+                               POSITIVE_INFINITY);
       }
 
       //! Returns the size of the specified class.

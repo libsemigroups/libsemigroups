@@ -28,10 +28,11 @@
 #define LIBSEMIGROUPS_TODD_COXETER_NEW_HPP_
 
 #include "cong-intf-new.hpp"
-#include "felsch-digraph.hpp"        // for FelschDigraph
-#include "make-present.hpp"          // for make
-#include "obvinf.hpp"                // for is_obviously_infinite
-#include "order.hpp"                 // for order
+#include "felsch-digraph.hpp"  // for FelschDigraph
+#include "make-present.hpp"    // for make
+#include "obvinf.hpp"          // for is_obviously_infinite
+#include "order.hpp"           // for order
+#include "paths.hpp"
 #include "present.hpp"               // for Presentation
 #include "todd-coxeter-digraph.hpp"  // for Digraph
 #include "types.hpp"                 // for word_type
@@ -223,7 +224,7 @@ namespace libsemigroups {
 
     ~ToddCoxeter() = default;
 
-    ToddCoxeter(congruence_kind knd);
+    explicit ToddCoxeter(congruence_kind knd);
     ToddCoxeter& init(congruence_kind knd);
 
     ToddCoxeter(congruence_kind knd, Presentation<word_type>&& p);
@@ -863,7 +864,7 @@ namespace libsemigroups {
                              size_t       min = 0,
                              size_t       max = POSITIVE_INFINITY) {
       // TODO don't add 1 if tc contains empty word?
-      return tc.word_graph().cbegin_pstislo(0, n + 1, min, max);
+      return cbegin_pstislo(tc.word_graph(), node_type(0), n + 1, min, max);
     }
 
     inline auto cbegin_class(ToddCoxeter&     tc,
@@ -871,16 +872,23 @@ namespace libsemigroups {
                              size_t           min = 0,
                              size_t           max = POSITIVE_INFINITY) {
       // TODO don't add 1 if tc contains empty word
-      return tc.word_graph().cbegin_pstislo(
-          0, tc.word_to_class_index(w) + 1, min, max);
+      return cbegin_pstislo(tc.word_graph(),
+                            node_type(0),
+                            node_type(tc.word_to_class_index(w) + 1),
+                            min,
+                            max);
     }
 
     inline auto cend_class(ToddCoxeter& tc) {
-      return tc.word_graph().cend_pstislo();
+      return cend_pstislo(tc.word_graph());
     }
 
     inline auto number_of_words_in_class(ToddCoxeter const& tc, node_type i) {
-      return tc.word_graph().number_of_paths(0, i + 1, 0, POSITIVE_INFINITY);
+      return number_of_paths(tc.word_graph(),
+                             static_cast<node_type>(0),
+                             static_cast<node_type>(i + 1),
+                             static_cast<node_type>(0),
+                             POSITIVE_INFINITY);
     }
 
     //! The type of a const iterator pointing to a normal form.
@@ -1004,4 +1012,4 @@ namespace libsemigroups {
   }  // namespace todd_coxeter
 
 }  // namespace libsemigroups
-#endif  // LIBSEMIGROUPS_TODD_COXETER_HPP_
+#endif  // LIBSEMIGROUPS_TODD_COXETER_NEW_HPP_

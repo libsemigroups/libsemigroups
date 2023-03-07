@@ -47,7 +47,6 @@
 #include "libsemigroups/constants.hpp"     // for POSITIVE_INFINITY
 #include "libsemigroups/knuth-bendix.hpp"  // for KnuthBendix, operator<<
 #include "libsemigroups/report.hpp"        // for ReportGuard
-#include "libsemigroups/siso.hpp"          // for cbegin_sislo
 #include "libsemigroups/types.hpp"         // for word_type
 
 namespace libsemigroups {
@@ -213,11 +212,12 @@ namespace libsemigroups {
       REQUIRE(
           std::distance(kb.cbegin_normal_forms(0, 6), kb.cend_normal_forms())
           == 62);
+      Strings s;
+      s.letters(kb.alphabet()).min(1).max(6);
       REQUIRE(std::equal(kb.cbegin_normal_forms(0, 6),
                          kb.cend_normal_forms(),
-                         cbegin_sislo(kb.alphabet(),
-                                      kb.alphabet(0),
-                                      std::string(6, kb.alphabet(1)[0]))));
+                         rx::begin(s),
+                         rx::end(s)));
     }
 
     LIBSEMIGROUPS_TEST_CASE(
@@ -393,23 +393,6 @@ namespace libsemigroups {
                                    kb.cend_normal_forms())
           == std::vector<std::string>(
               {"a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l"}));
-      // The following is for comparison with the Kambites class.
-      // size_t N = std::distance(cbegin_sislo("abcdefghijkl", "a", "bgdk"),
-      //                          cend_sislo("abcdefghijkl", "a", "bgdk"));
-      // REQUIRE(N == 4522);
-      // for (auto it1 = cbegin_sislo("abcdefghijkl", "a", "bgdk");
-      //      it1 != cend_sislo("abcdefghijkl", "a", "bgdk");
-      //      ++it1) {
-      //   for (auto it2 = cbegin_sislo("abcdefghijkl", "a", "bgdk"); it2 !=
-      //   it1;
-      //        ++it2) {
-      //     if (kb.equal_to(*it1, *it2)) {
-      //       N--;
-      //       break;
-      //     }
-      //   }
-      // }
-      // REQUIRE(N == 4392);
     }
 
     LIBSEMIGROUPS_TEST_CASE(

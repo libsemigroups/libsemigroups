@@ -26,18 +26,17 @@
 #include "libsemigroups/fpsemi-examples.hpp"  // for dual_symmetric_...
 #include "libsemigroups/froidure-pin.hpp"
 #include "libsemigroups/make-present.hpp"       // for Presentation
-#include "libsemigroups/make-todd-coxeter.hpp"  // for cbegin_wislo
+#include "libsemigroups/make-todd-coxeter.hpp"  // for ??
 #include "libsemigroups/obvinf.hpp"             // for is_obviously_infinite
 #include "libsemigroups/present.hpp"            // for Presentation
 #include "libsemigroups/report.hpp"             // for ReportGuard
 #include "libsemigroups/todd-coxeter-new.hpp"   // for ToddCoxeter
 #include "libsemigroups/transf.hpp"             // for Transf
-#include "libsemigroups/wilo.hpp"               // for cbegin_wilo
-#include "libsemigroups/wislo.hpp"              // for cbegin_wislo
+#include "libsemigroups/words.hpp"               // for cbegin_wislo
 
 #include "libsemigroups/make-froidure-pin.hpp"  // for make
 #include "libsemigroups/tce.hpp"                // for TCE
-#include "libsemigroups/word.hpp"               // for operator"" _w
+#include "libsemigroups/words.hpp"               // for operator"" _w
 
 namespace libsemigroups {
 
@@ -149,6 +148,9 @@ namespace libsemigroups {
     }
 
     void check_standardize(ToddCoxeter& tc) {
+      using namespace rx;
+      using action_digraph_helper::follow_path_nc;
+
       using node_type = typename ToddCoxeter::node_type;
       order old_val   = tc.standardization_order();
 
@@ -161,23 +163,22 @@ namespace libsemigroups {
       }
       {
         tc.standardize(order::shortlex);
+        size_t const m = tc.number_of_classes();
         size_t const n = tc.presentation().alphabet().size();
-        auto         first
-            = cbegin_wislo(n, {0}, word_type(tc.number_of_classes() + 1, 0));
-        auto last
-            = cend_wislo(n, {0}, word_type(tc.number_of_classes() + 1, 0));
+
+        Words words;
+        words.letters(n).min(1).max(m + 1);
 
         std::unordered_map<node_type, word_type> map;
-        for (auto it = first; it != last; ++it) {
-          node_type n = action_digraph_helper::follow_path_nc(
-              tc.word_graph(), 0, it->cbegin(), it->cend());
+        for (auto const& w : words) {
+          node_type n = follow_path_nc(tc.word_graph(), 0, w);
           REQUIRE(n != UNDEFINED);
           if (n != 0) {
-            word_type w = *it;
+            auto ww = w;
             if (tc.kind() == congruence_kind::left) {
-              std::reverse(w.begin(), w.end());
+              std::reverse(ww.begin(), ww.end());
             }
-            map.emplace(n - 1, std::move(w));
+            map.emplace(n - 1, std::move(ww));
             if (map.size() == tc.number_of_classes()) {
               break;
             }
@@ -193,27 +194,24 @@ namespace libsemigroups {
       }
       {
         tc.standardize(order::lex);
-        size_t const n     = tc.presentation().alphabet().size();
-        auto         first = cbegin_wilo(n,
-                                 tc.number_of_classes() + 1,
-                                 {0},
-                                 word_type(tc.number_of_classes() + 1, 0));
-        auto         last  = cend_wilo(n,
-                              tc.number_of_classes() + 1,
-                              {0},
-                              word_type(tc.number_of_classes() + 1, 0));
+
+        size_t const m = tc.number_of_classes();
+        size_t const n = tc.presentation().alphabet().size();
+
+        Words words;
+        words.order(order::lex).letters(n).upper_bound(m + 1).min(1).max(m + 1);
 
         std::unordered_map<node_type, word_type> map;
-        for (auto it = first; it != last; ++it) {
-          node_type n = action_digraph_helper::follow_path_nc(
-              tc.word_graph(), 0, it->cbegin(), it->cend());
-          REQUIRE(n != UNDEFINED);
+
+        for (auto const& w : words) {
+          node_type n
+              = action_digraph_helper::follow_path_nc(tc.word_graph(), 0, w);
           if (n != 0) {
-            word_type w = *it;
+            auto ww = w;
             if (tc.kind() == congruence_kind::left) {
-              std::reverse(w.begin(), w.end());
+              std::reverse(ww.begin(), ww.end());
             }
-            map.emplace(n - 1, std::move(w));
+            map.emplace(n - 1, std::move(ww));
             if (map.size() == tc.number_of_classes()) {
               break;
             }
@@ -227,7 +225,6 @@ namespace libsemigroups {
           REQUIRE(nf[p.first] == p.second);
         }
       }
-
       tc.standardize(old_val);
     }
 
@@ -1866,8 +1863,8 @@ namespace libsemigroups {
         tc.settings_string();
         tc.lookahead(options::lookahead::full | options::lookahead::hlt);
         tc.settings_string();
-        tc.lookahead(options::lookahead::partial | options::lookahead::felsch);
-        tc.settings_string();
+        tc.lookahead(options::lookahead::partial |
+    options::lookahead::felsch); tc.settings_string();
         tc.lookahead(options::lookahead::partial | options::lookahead::hlt);
         tc.settings_string();
       }

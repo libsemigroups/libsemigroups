@@ -47,11 +47,13 @@
 #include "libsemigroups/constants.hpp"     // for POSITIVE_INFINITY
 #include "libsemigroups/knuth-bendix.hpp"  // for KnuthBendix, operator<<
 #include "libsemigroups/report.hpp"        // for ReportGuard
-#include "libsemigroups/siso.hpp"          // for XXX
 #include "libsemigroups/stl.hpp"           // for XXX
 #include "libsemigroups/string.hpp"        // for random_string
+#include "libsemigroups/words.hpp"         // for Strings
 
 namespace libsemigroups {
+  using namespace rx;
+
   constexpr bool REPORT = false;
 
   using rule_type = fpsemigroup::KnuthBendix::rule_type;
@@ -362,7 +364,7 @@ namespace libsemigroups {
       REQUIRE(ad.number_of_nodes() == 6021);
       REQUIRE(ad.number_of_edges() == 7435);
       REQUIRE(action_digraph_helper::is_acyclic(ad));
-      REQUIRE(ad.number_of_paths(0, 0, 100) == 10752);
+      REQUIRE(number_of_paths(ad, 0, 0, 100) == 10752);
     }
 
     ////////////////////////////////////////////////////////////////////////
@@ -542,15 +544,15 @@ namespace libsemigroups {
 
       template <typename T>
       void register_relation(T const& it1, T const& it2, size_t& nr) {
-        auto tmp = *it1 + "#" + *it2;
-        auto u   = swap_a_and_b(*it1);
-        auto v   = swap_a_and_b(*it2);
+        auto tmp = it1 + "#" + it2;
+        auto u   = swap_a_and_b(it1);
+        auto v   = swap_a_and_b(it2);
         if (shortlex_compare(u, v)) {
           get_set().insert(u + "#" + v);
         } else {
           get_set().insert(v + "#" + u);
         }
-        std::cout << *it1 << " = " << *it2 << std::endl;
+        std::cout << it1 << " = " << it2 << std::endl;
         nr++;
       }
     }  // namespace
@@ -561,33 +563,30 @@ namespace libsemigroups {
         "(fpsemi) all 2-generated 1-relation semigroups 1 to 10",
         "[extreme][kambites][fpsemigroup][fpsemi][xxx]") {
       auto rg = ReportGuard(false);
-      auto first
-          = cbegin_sislo("ab", std::string(1, 'a'), std::string(11, 'a'));
-      auto last = cbegin_sislo("ab", std::string(1, 'a'), std::string(11, 'a'));
-      size_t N  = std::distance(
-          first, cend_sislo("ab", std::string(1, 'a'), std::string(11, 'a')));
-      REQUIRE(N == 2046);
-      std::advance(last, N - 1);
+
+      Strings lhss;
+      lhss.letters("ab").min(1).max(11);
+      REQUIRE((lhss | count()) == 2'046);
+
+      Strings rhss;
+      rhss.letters("ab").max(11);
 
       size_t total_c4 = 0;
       size_t total    = 0;
-      auto   llast    = last;
-      ++llast;
 
-      for (auto it1 = first; it1 != last; ++it1) {
-        auto it2 = it1;
-        ++it2;
-        for (; it2 != llast; ++it2) {
-          auto tmp = *it1 + "#" + *it2;
+      for (auto const& lhs : lhss) {
+        rhss.first(lhs);
+        for (auto const& rhs : rhss | skip_n(1)) {
+          auto tmp = lhs + "#" + rhs;
           if (get_set().insert(tmp).second) {
             bool try_again = false;
             {
               KnuthBendix k;
               k.set_alphabet("ab");
-              k.add_rule(*it1, *it2);
+              k.add_rule(lhs, rhs);
               k.run_for(std::chrono::milliseconds(10));
               if (k.confluent()) {
-                register_relation(it1, it2, total_c4);
+                register_relation(lhs, rhs, total_c4);
               } else {
                 try_again = true;
               }
@@ -595,17 +594,17 @@ namespace libsemigroups {
             if (try_again) {
               KnuthBendix k;
               k.set_alphabet("ba");
-              k.add_rule(*it1, *it2);
+              k.add_rule(lhs, rhs);
               k.run_for(std::chrono::milliseconds(10));
               if (k.confluent()) {
-                register_relation(it1, it2, total_c4);
+                register_relation(lhs, rhs, total_c4);
               }
             }
           }
         }
       }
-      REQUIRE(total_c4 == 471479);
-      REQUIRE(total == 2092035);
+      REQUIRE(total_c4 == 471'479);
+      REQUIRE(total == 2'092'035);
     }
 
     LIBSEMIGROUPS_TEST_CASE(

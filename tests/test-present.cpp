@@ -30,7 +30,6 @@
 #include "libsemigroups/knuth-bendix.hpp"  // for redundant_rule
 #include "libsemigroups/make-present.hpp"  // for make
 #include "libsemigroups/present.hpp"       // for Presentation
-#include "libsemigroups/siso.hpp"          // for Sislo
 #include "libsemigroups/types.hpp"         // for word_type
 
 namespace libsemigroups {

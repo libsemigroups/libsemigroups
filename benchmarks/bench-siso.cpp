@@ -20,11 +20,11 @@
 #include "catch.hpp"       // for REQUIRE, REQUIRE_NOTHROW, REQUIRE_THROWS_AS
 
 #include "libsemigroups/order.hpp"  // for LexicographicalCompare
-#include "libsemigroups/siso.hpp"   // for cbegin_siso
-#include "libsemigroups/word.hpp"   // for number_of_words
+#include "libsemigroups/words.hpp"  // for number_of_words
 
 namespace libsemigroups {
 
+  // TODO use Strings
   TEST_CASE("siso", "[quick]") {
     BENCHMARK("silo: words length 0 to 13 using iterators") {
       std::string first = "";

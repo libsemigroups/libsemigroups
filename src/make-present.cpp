@@ -23,7 +23,7 @@
 #include "libsemigroups/exception.hpp"          // for LIBSEMIGROUPS_EXCEPTION
 #include "libsemigroups/froidure-pin-base.hpp"  // for FroidurePinBase::cons...
 #include "libsemigroups/present.hpp"            // for Presentation<>::word_...
-#include "libsemigroups/word.hpp"               // for word_to_string
+#include "libsemigroups/words.hpp"               // for word_to_string
 
 namespace libsemigroups {
   Presentation<std::string> make(FroidurePinBase&   fp,

@@ -563,7 +563,7 @@ namespace libsemigroups {
         return true;
       }
       return false;
-    };
+    }
 
     bool string_time_incremental(std::string&              result,
                                  std::chrono::nanoseconds& elapsed,

@@ -31,6 +31,7 @@
 #include "digraph.hpp"               // for ActionDigraph, Act...
 #include "int-range.hpp"             // for IntegralRange<>::v...
 #include "make-present.hpp"          // for make
+#include "paths.hpp"                 // for Paths
 #include "present.hpp"               // for Presentation
 #include "runner.hpp"                // for Runner
 #include "todd-coxeter-digraph.hpp"  // for StephenDigraph
@@ -251,16 +252,16 @@ namespace libsemigroups {
   }
 
   namespace stephen {
+    using node_type = Stephen::node_type;
+
     //! The return type of \ref cbegin_words_accepted and \ref
     //! cend_words_accepted. This is the same as
     //! \ref ActionDigraph::const_pstislo_iterator.
-    using const_iterator_words_accepted =
-        typename Stephen::digraph_type::const_pstislo_iterator;
+    using const_iterator_words_accepted = const_pstislo_iterator<node_type>;
 
     //! The return type of \ref cbegin_left_factors and \ref cend_left_factors.
     //! This is the same as \ref ActionDigraph::const_pislo_iterator.
-    using const_iterator_left_factors =
-        typename Stephen::digraph_type::const_pislo_iterator;
+    using const_iterator_left_factors = const_pislo_iterator<node_type>;
 
     //! Check if a word is equivalent to Stephen::word.
     //!
@@ -332,7 +333,11 @@ namespace libsemigroups {
                                                         size_t   max
                                                         = POSITIVE_INFINITY) {
       s.run();
-      return s.word_graph().cbegin_pstislo(0, s.accept_state(), min, max);
+      return cbegin_pstislo(s.word_graph(),
+                            static_cast<node_type>(0),
+                            s.accept_state(),
+                            min,
+                            max);
     }
 
     //! Returns an iterator pointing one past the last word equivalent to
@@ -342,7 +347,7 @@ namespace libsemigroups {
     // Not noexcept because cend_pstislo isn't
     const_iterator_words_accepted cend_words_accepted(Stephen& s) {
       s.run();
-      return s.word_graph().cend_pstislo();
+      return cend_pstislo(s.word_graph());
     }
 
     //! Returns an iterator pointing at the first word (in short-lex order)
@@ -372,8 +377,10 @@ namespace libsemigroups {
                                                     size_t   min = 0,
                                                     size_t   max
                                                     = POSITIVE_INFINITY) {
+      using node_type =
+          typename std::decay_t<decltype(s.word_graph())>::node_type;
       s.run();
-      return s.word_graph().cbegin_pislo(0, min, max);
+      return cbegin_pislo(s.word_graph(), node_type(0), min, max);
     }
 
     //! Returns an iterator pointing one past the last word that is a left
@@ -383,7 +390,7 @@ namespace libsemigroups {
     // Not noexcept because cend_pislo isn't
     const_iterator_left_factors cend_left_factors(Stephen& s) {
       s.run();
-      return s.word_graph().cend_pislo();
+      return cend_pislo(s.word_graph());
     }
 
     //! Returns the number of words accepted with length in a given range.
@@ -411,7 +418,11 @@ namespace libsemigroups {
                                       size_t   min = 0,
                                       size_t   max = POSITIVE_INFINITY) {
       s.run();
-      return s.word_graph().number_of_paths(0, s.accept_state(), min, max);
+      return number_of_paths(s.word_graph(),
+                             static_cast<node_type>(0),
+                             s.accept_state(),
+                             min,
+                             max);
     }
 
     //! Returns the number of left factors with length in a given range.
@@ -441,7 +452,7 @@ namespace libsemigroups {
                                     size_t   min = 0,
                                     size_t   max = POSITIVE_INFINITY) {
       s.run();
-      return s.word_graph().number_of_paths(0, min, max);
+      return number_of_paths(s.word_graph(), 0, min, max);
     }
   }  // namespace stephen
 }  // namespace libsemigroups

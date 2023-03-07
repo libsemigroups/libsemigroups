@@ -29,6 +29,7 @@
 
 #include "libsemigroups/digraph-helper.hpp"  // for is_acyclic, topological_...
 #include "libsemigroups/digraph.hpp"         // for ActionDigraph, operator<<
+#include "libsemigroups/paths.hpp"           // for cbegin_pilo
 #include "libsemigroups/string.hpp"          // for to_string
 #include "libsemigroups/types.hpp"           // for word_type
 
@@ -281,11 +282,9 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("follow_path", "012", "20 node path", "[quick]") {
     ActionDigraph<size_t> ad = path(20);
-    for (auto it = ad.cbegin_panilo(0); it != ad.cend_panilo(); ++it) {
-      REQUIRE(action_digraph_helper::follow_path(ad, 0, it->first)
-              == it->second);
-      REQUIRE(action_digraph_helper::follow_path_nc(ad, 0, it->first)
-              == it->second);
+    for (auto it = cbegin_pilo(ad, 0); it != cend_pilo(ad); ++it) {
+      REQUIRE(action_digraph_helper::follow_path(ad, 0, *it) == it.target());
+      REQUIRE(action_digraph_helper::follow_path_nc(ad, 0, *it) == it.target());
     }
   }
 

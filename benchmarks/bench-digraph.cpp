@@ -24,6 +24,7 @@
 #include "catch.hpp"       // for BENCHMARK, REQUIRE, TEST_CASE
 
 #include "libsemigroups/digraph.hpp"  // for ActionDigraph
+#include "libsemigroups/paths.hpp"    // for Paths etc
 #include "libsemigroups/types.hpp"    // for word_type
 
 namespace libsemigroups {
@@ -170,18 +171,17 @@ namespace libsemigroups {
     return ad;
   }
 
-  TEST_CASE("const_panilo_iterator", "[quick][000]") {
+  TEST_CASE("const_pilo_iterator", "[quick][000]") {
     using node_type = size_t;
     auto   ad       = test_digraph();
     size_t N        = 20;
 
-    BENCHMARK("const_panilo_iterator") {
-      std::vector<std::pair<word_type, node_type>> v(ad.cbegin_panilo(0, 0, N),
-                                                     ad.cend_panilo());
-      REQUIRE(v.size() == 1048575);
+    BENCHMARK("const_pilo_iterator") {
+      std::vector<word_type> v(cbegin_pilo(ad, 0, 0, N), cend_pilo(ad));
+      REQUIRE(v.size() == 1'048'575);
     };
 
-    BENCHMARK("free function for comparison with const_panilo_iterator") {
+    BENCHMARK("free function for comparison with const_pilo_iterator") {
       std::pair<std::vector<word_type>, std::vector<node_type>> v
           = paths_in_lex_order(ad, 0, 0, N);
       REQUIRE(v.first.size() == 1048575);
@@ -194,7 +194,7 @@ namespace libsemigroups {
     size_t N        = 20;
 
     BENCHMARK("const_pilo_iterator") {
-      std::vector<word_type> v(ad.cbegin_pilo(0, 0, N), ad.cend_pilo());
+      std::vector<word_type> v(cbegin_pilo(ad, 0, 0, N), cend_pilo(ad));
       REQUIRE(v.size() == 1048575);
     };
 
@@ -210,7 +210,7 @@ namespace libsemigroups {
     size_t N  = 20;
 
     BENCHMARK("const_pstilo_iterator") {
-      std::vector<word_type> v(ad.cbegin_pstilo(0, 4, 0, N), ad.cend_pstilo());
+      std::vector<word_type> v(cbegin_pstilo(ad, 0, 4, 0, N), cend_pstilo(ad));
       REQUIRE(v.size() == 524277);
     };
 
@@ -221,54 +221,33 @@ namespace libsemigroups {
   }
 
   TEST_CASE("number_of_paths", "[quick][003]") {
-    using node_type = size_t;
-    auto ad         = test_digraph();
+    auto ad = test_digraph();
     BENCHMARK("number_of_paths (uses pstilo)") {
-      REQUIRE(ad.number_of_paths(0, 4, 0, 24) == 8388595);
+      REQUIRE(number_of_paths(ad, 0, 4, 0, 24) == 8388595);
     };
 
-    BENCHMARK("number of paths (via panilo)") {
-      REQUIRE(std::count_if(ad.cbegin_panilo(0, 0, 24),
-                            ad.cend_panilo(),
-                            [](std::pair<word_type, node_type> const& p) {
-                              return p.second == 4;
-                            })
-              == 8388595);
-    };
-  }
+    BENCHMARK("number of paths (via pilo)") {
+      auto     first = cbegin_pilo(ad, 0, 0, 24);
+      auto     last  = cend_pilo(ad);
+      uint64_t count = 0;
 
-  TEST_CASE("const_panislo_iterator", "[quick][004]") {
-    using node_type = size_t;
-    auto   ad       = test_digraph();
-    size_t N        = 20;
+      for (auto it = first; it != last; ++it) {
+        if (it.target() == 4) {
+          count++;
+        }
+      }
 
-    BENCHMARK("const_panislo_iterator") {
-      std::vector<std::pair<word_type, node_type>> v(ad.cbegin_panislo(0, 0, N),
-                                                     ad.cend_panislo());
-      REQUIRE(v.size() == 1048575);
-    };
-
-    BENCHMARK("free function for comparison with const_panislo_iterator") {
-      std::pair<std::vector<word_type>, std::vector<node_type>> v
-          = paths_in_shortlex_order(ad, 0, 0, N);
-      REQUIRE(v.first.size() == 1048575);
-    };
-
-    BENCHMARK(
-        "const_panilo_iterator for comparison with const_panislo_iterator") {
-      std::vector<std::pair<word_type, node_type>> v(ad.cbegin_panilo(0, 0, N),
-                                                     ad.cend_panilo());
-      REQUIRE(v.size() == 1048575);
+      REQUIRE(count == 8'388'595);
     };
   }
 
-  TEST_CASE("const_pislo_iterator", "[quick][005]") {
+  TEST_CASE("const_pislo_iterator", "[quick][004]") {
     using node_type = size_t;
     auto   ad       = test_digraph();
     size_t N        = 20;
 
     BENCHMARK("const_pislo_iterator") {
-      std::vector<word_type> v(ad.cbegin_pislo(0, 0, N), ad.cend_pislo());
+      std::vector<word_type> v(cbegin_pislo(ad, 0, 0, N), cend_pislo(ad));
       REQUIRE(v.size() == 1048575);
     };
 
@@ -279,7 +258,29 @@ namespace libsemigroups {
     };
 
     BENCHMARK("const_pilo_iterator for comparison with const_pislo_iterator") {
-      std::vector<word_type> v(ad.cbegin_pilo(0, 0, N), ad.cend_pilo());
+      std::vector<word_type> v(cbegin_pilo(ad, 0, 0, N), cend_pilo(ad));
+      REQUIRE(v.size() == 1048575);
+    };
+  }
+
+  TEST_CASE("const_pislo_iterator", "[quick][005]") {
+    using node_type = size_t;
+    auto   ad       = test_digraph();
+    size_t N        = 20;
+
+    BENCHMARK("const_pislo_iterator") {
+      std::vector<word_type> v(cbegin_pislo(ad, 0, 0, N), cend_pislo(ad));
+      REQUIRE(v.size() == 1048575);
+    };
+
+    BENCHMARK("free function for comparison with const_pislo_iterator") {
+      std::pair<std::vector<word_type>, std::vector<node_type>> v
+          = paths_in_shortlex_order(ad, 0, 0, N);
+      REQUIRE(v.first.size() == 1048575);
+    };
+
+    BENCHMARK("const_pilo_iterator for comparison with const_pislo_iterator") {
+      std::vector<word_type> v(cbegin_pilo(ad, 0, 0, N), cend_pilo(ad));
       REQUIRE(v.size() == 1048575);
     };
   }
@@ -289,21 +290,21 @@ namespace libsemigroups {
     size_t N  = 20;
 
     BENCHMARK("const_pstislo_iterator") {
-      std::vector<word_type> v(ad.cbegin_pstislo(0, 4, 0, N),
-                               ad.cend_pstislo());
+      std::vector<word_type> v(cbegin_pstislo(ad, 0, 4, 0, N),
+                               cend_pstislo(ad));
       REQUIRE(v.size() == 524277);
     };
 
     BENCHMARK(
         "const_pstilo_iterator for comparison with const_pstislo_iterator") {
-      std::vector<word_type> v(ad.cbegin_pstilo(0, 4, 0, N), ad.cend_pstilo());
+      std::vector<word_type> v(cbegin_pstilo(ad, 0, 4, 0, N), cend_pstilo(ad));
       REQUIRE(v.size() == 524277);
     };
   }
 
   // Best with a sample size of 1
   TEST_CASE("number_of_paths matrix vs dfs", "[standard][007]") {
-    using algorithm = ActionDigraph<size_t>::algorithm;
+    using algorithm = paths::algorithm;
     std::mt19937 mt;
     for (size_t M = 100; M < 1000; M += 100) {
       std::uniform_int_distribution<size_t> source(0, M - 1);
@@ -316,19 +317,19 @@ namespace libsemigroups {
           std::string m = std::to_string(ad.number_of_edges());
           size_t      w = source(mt);
           uint64_t    expected
-              = ad.number_of_paths(w, 0, 16, algorithm::automatic);
+              = number_of_paths(ad, w, 0, 16, algorithm::automatic);
           BENCHMARK("algorithm::matrix: " + std::to_string(M) + " nodes, "
                     + std::to_string(N) + " out-degree, " + m + " edges") {
-            REQUIRE(ad.number_of_paths(w, 0, 16, algorithm::matrix)
+            REQUIRE(number_of_paths(ad, w, 0, 16, algorithm::matrix)
                     == expected);
           };
           BENCHMARK("algorithm::dfs: " + std::to_string(M) + " nodes, "
                     + std::to_string(N) + " out-degree, " + m + " edges") {
-            REQUIRE(ad.number_of_paths(w, 0, 16, algorithm::dfs) == expected);
+            REQUIRE(number_of_paths(ad, w, 0, 16, algorithm::dfs) == expected);
           };
           BENCHMARK("algorithm::automatic: " + std::to_string(M) + " nodes, "
                     + std::to_string(N) + " out-degree, " + m + " edges") {
-            REQUIRE(ad.number_of_paths(w, 0, 16, algorithm::automatic)
+            REQUIRE(number_of_paths(ad, w, 0, 16, algorithm::automatic)
                     == expected);
           };
           std::cout << std::endl << std::string(72, '#') << std::endl;

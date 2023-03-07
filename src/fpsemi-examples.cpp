@@ -29,10 +29,10 @@
 #include "libsemigroups/exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
 #include "libsemigroups/report.hpp"     // for magic_enum support
 #include "libsemigroups/types.hpp"      // for word_type, relation_type
-#include "libsemigroups/word.hpp"       // for operator""_w
+#include "libsemigroups/words.hpp"      // for operator""_w
 
 namespace libsemigroups {
-  using namespace literals;
+  using literals::operator""_w;
   namespace {
     template <typename T>
     std::vector<T> concat(std::vector<T> lhs, const std::vector<T>& rhs) {

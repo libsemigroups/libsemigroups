@@ -61,7 +61,7 @@
 #include "types.hpp"    // for word_type, tril, letter_type
 #include "uf.hpp"       // for Duf<>
 #include "ukkonen.hpp"  // for Ukkonen
-#include "word.hpp"     // for word_to_string
+#include "words.hpp"    // for word_to_string
 
 namespace libsemigroups {
   class FroidurePinBase;  // Forward decl

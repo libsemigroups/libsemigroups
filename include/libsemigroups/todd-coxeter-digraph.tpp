@@ -138,13 +138,14 @@ namespace libsemigroups {
                    signed_group_digits(active - _stats.prev_active_nodes),
                    signed_group_digits(killed - _stats.prev_nodes_killed),
                    signed_group_digits(defined - _stats.prev_nodes_defined));
-    report_default(
-        "{}: time  {:>12} (total)  | {:>10}/s (killed) | {:>10}/s "
-        "(defined)\n",
-        _prefix,
-        string_time(run_time),
-        group_digits(std::pow(10, 9) * double(killed) / run_time.count()),
-        group_digits(std::pow(10, 9) * double(defined) / run_time.count()));
+    report_default("{}: time  {:>12} (total)  | {:>10}/s (killed) | {:>10}/s "
+                   "(defined)\n",
+                   _prefix,
+                   string_time(run_time),
+                   group_digits(std::pow(10, 9) * static_cast<double>(killed)
+                                / run_time.count()),
+                   group_digits(std::pow(10, 9) * static_cast<double>(defined)
+                                / run_time.count()));
     report_no_prefix("{:-<93}\n", "");
     stats_check_point();
   }

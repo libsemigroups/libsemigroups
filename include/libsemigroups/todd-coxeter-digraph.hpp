@@ -93,7 +93,7 @@ namespace libsemigroups {
 
     // TODO corresponding init + rvalue ref version
     template <typename N>
-    NodeManagedDigraph(ActionDigraph<N> const& ad)
+    explicit NodeManagedDigraph(ActionDigraph<N> const& ad)
         : BaseDigraph(ad), NodeManager_() {
       // NodeManager always has one node active
       NodeManager_::add_active_nodes(ActionDigraph<node_type>::number_of_nodes()
@@ -178,7 +178,7 @@ namespace libsemigroups {
 
    protected:
     struct CollectCoincidences {
-      CollectCoincidences(Coincidences& c) : _coinc(c) {}
+      explicit CollectCoincidences(Coincidences& c) : _coinc(c) {}
 
       bool operator()(node_type x, node_type y) {
         _coinc.emplace(x, y);

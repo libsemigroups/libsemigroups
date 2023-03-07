@@ -144,7 +144,7 @@ namespace libsemigroups {
                                      size_t const       max) {
       using state_type = NormalFormsIteratorTraits::state_type;
       auto it          = const_normal_form_iterator(
-          state_type(lphbt, ""), gilman_digraph().cbegin_pislo(0, min, max));
+          state_type(lphbt, ""), cbegin_pislo(gilman_digraph(), 0, min, max));
       if (min == 0 && !contains_empty_string()) {
         ++it;
       }
@@ -158,7 +158,7 @@ namespace libsemigroups {
         return 0;
       } else {
         int const  modifier = (contains_empty_string() ? 0 : -1);
-        auto const out      = gilman_digraph().number_of_paths(0);
+        auto const out      = number_of_paths(gilman_digraph(), 0);
         return (out == POSITIVE_INFINITY ? out : out + modifier);
       }
     }
@@ -238,7 +238,7 @@ namespace libsemigroups {
       } else {
         int const modifier = (contains_empty_string() ? 0 : -1);
 
-        auto const out = gilman_digraph().number_of_paths(0, min, max);
+        auto const out = number_of_paths(gilman_digraph(), 0, min, max);
         return (out == POSITIVE_INFINITY ? out : out + modifier);
       }
     }

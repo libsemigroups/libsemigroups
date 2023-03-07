@@ -32,11 +32,11 @@
 #include "libsemigroups/string.hpp"  // for to_string of rule_type for debugging
 #include "libsemigroups/todd-coxeter.hpp"  // for fpsemigroup::ToddCoxeter
 #include "libsemigroups/transf.hpp"        // for fpsemigroup::ToddCoxeter
-#include "libsemigroups/wislo.hpp"         // for cbegin_wislo
-#include "libsemigroups/word.hpp"          // for number_of_words
+#include "libsemigroups/words.hpp"          // for number_of_words
 
 namespace libsemigroups {
   struct LibsemigroupsException;  // Forward declaration
+  using namespace literals;
 
   constexpr bool REPORT = false;
 
@@ -100,12 +100,15 @@ namespace libsemigroups {
       }
       REQUIRE(fp->equal_to({0, 0, 0}, {0}));
       REQUIRE(!fp->equal_to({1, 1, 1, 1, 1, 1}, {0}));
-      REQUIRE(number_of_words(2, 1, 11) == 2046);
-      REQUIRE(size_t(std::count_if(cbegin_wislo(2, {0}, word_type(11, 0)),
-                                   cend_wislo(2, {0}, word_type(11, 0)),
-                                   [&fp](word_type const& w) -> bool {
-                                     return fp->equal_to(w, {0});
-                                   }))
+
+      Words words;
+      words.letters(2).min(1).max(11);
+
+      REQUIRE(words.count() == 2046);
+      REQUIRE((words | rx::filter([&fp](auto const& w) {
+                 return fp->equal_to(w, 0_w);
+               })
+               | rx::count())
               == N);
     }
 
@@ -133,78 +136,28 @@ namespace libsemigroups {
       // Not yet implemented
       // SECTION("FpSemigroupByPairs") {
       // }
-      REQUIRE(fp->normal_form({0, 0, 0}) == word_type({0}));
-      REQUIRE(fp->normal_form({1, 1, 1, 1, 1, 1}) == word_type({1, 1, 1}));
-      REQUIRE(number_of_words(2, 1, 6) == 62);
-      std::vector<word_type> w(62, word_type({}));
-      std::transform(
-          cbegin_wislo(2, {0}, word_type(6, 0)),
-          cend_wislo(2, {0}, word_type(6, 0)),
-          w.begin(),
-          [&fp](word_type const& ww) { return fp->normal_form(ww); });
-      REQUIRE(w
-              == std::vector<word_type>({{0},
-                                         {1},
-                                         {0, 0},
-                                         {0, 1},
-                                         {1, 0},
-                                         {1, 1},
-                                         {0},
-                                         {0, 0, 1},
-                                         {0, 1, 0},
-                                         {0, 1, 1},
-                                         {1, 0, 0},
-                                         {1, 0, 1},
-                                         {1, 1, 0},
-                                         {1, 1, 1},
-                                         {0, 0},
-                                         {0, 1},
-                                         {0, 1, 1},
-                                         {0, 1, 0},
-                                         {0, 1},
-                                         {0, 0},
-                                         {0, 0, 1},
-                                         {0},
-                                         {1, 0},
-                                         {1, 0, 0, 1},
-                                         {1, 0, 1, 0},
-                                         {1, 0, 1, 1},
-                                         {1, 1, 0, 0},
-                                         {1, 1, 0, 1},
-                                         {1, 1, 1, 0},
-                                         {1},
-                                         {0},
-                                         {0, 0, 1},
-                                         {0, 1, 0},
-                                         {0, 1, 1},
-                                         {0, 0, 1},
-                                         {0},
-                                         {0, 1},
-                                         {0, 0},
-                                         {0, 1, 0},
-                                         {0, 1, 1},
-                                         {0},
-                                         {0, 0, 1},
-                                         {0, 1, 1},
-                                         {0, 1, 0},
-                                         {0, 0},
-                                         {0, 1},
-                                         {1, 0, 0},
-                                         {1, 0, 1},
-                                         {1, 0, 1, 1},
-                                         {1, 0, 1, 0},
-                                         {1, 0, 1},
-                                         {1, 0, 0},
-                                         {1, 0, 0, 1},
-                                         {1, 0},
-                                         {1, 1, 0},
-                                         {1, 1, 0, 0, 1},
-                                         {1, 1, 0, 1, 0},
-                                         {1, 1, 0, 1, 1},
-                                         {1, 1, 1, 0, 0},
-                                         {1, 1, 1, 0, 1},
-                                         {1, 0},
-                                         {1, 1}}));
+      REQUIRE(fp->normal_form(000_w) == 0_w);
+      REQUIRE(fp->normal_form(111111_w) == 111_w);
+
+      Words words;
+      words.letters(2).min(1).max(6);
+
+      REQUIRE(words.count() == 62);
+
+      REQUIRE((words | rx::transform([&fp](word_type const& w) {
+                 return fp->normal_form(w);
+               })
+               | rx::to_vector())
+              == std::vector<word_type>(
+                  {0_w,     1_w,     00_w,    01_w,    10_w,   11_w,   0_w,
+                   001_w,   010_w,   011_w,   100_w,   101_w,  110_w,  111_w,
+                   00_w,    01_w,    011_w,   010_w,   01_w,   00_w,   001_w,
+                   0_w,     10_w,    1001_w,  1010_w,  1011_w, 1100_w, 1101_w,
+                   1110_w,  1_w,     0_w,     001_w,   010_w,  011_w,  001_w,
+                   0_w,     01_w,    00_w,    010_w,   011_w,  0_w,    001_w,
+                   011_w,   010_w,   00_w,    01_w,    100_w,  101_w,  1011_w,
+                   1010_w,  101_w,   100_w,   1001_w,  10_w,   110_w,  11001_w,
+                   11010_w, 11011_w, 11100_w, 11101_w, 10_w,   11_w}));
     }
 
     LIBSEMIGROUPS_TEST_CASE("FpSemigroupInterface",

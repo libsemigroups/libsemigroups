@@ -37,7 +37,7 @@
 #include "libsemigroups/string.hpp"  // for is_prefix, maximum_common_suffix
 #include "libsemigroups/types.hpp"   // for word_type, tril
 #include "libsemigroups/uf.hpp"      // for Duf<>
-#include "libsemigroups/word.hpp"    // for word_to_string
+#include "libsemigroups/words.hpp"    // for word_to_string
 
 namespace libsemigroups {
   using MultiStringView = std::string;  // detail::MultiStringView;

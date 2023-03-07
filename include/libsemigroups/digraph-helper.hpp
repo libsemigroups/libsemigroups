@@ -135,7 +135,7 @@ namespace libsemigroups {
                                 S                       first,
                                 S                       last) noexcept {
       node_type<T> to = from;
-      for (auto it = first; it < last && to != UNDEFINED; ++it) {
+      for (auto it = first; it != last && to != UNDEFINED; ++it) {
         to = ad.unsafe_neighbor(to, *it);
       }
       return to;

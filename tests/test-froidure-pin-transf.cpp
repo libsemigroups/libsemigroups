@@ -238,7 +238,7 @@ namespace libsemigroups {
                                   Transf<>({5, 1, 2, 3, 4, 5}),
                                   Transf<>({1, 1, 2, 3, 4, 5})};
     FroidurePin<Transf<>> U(gens);
-    REQUIRE(U.size() == 7776);
+    REQUIRE(U.size() == 7'776);
 
     for (size_t i = 0; i < U.size(); ++i) {
       REQUIRE_NOTHROW(U.suffix(i));

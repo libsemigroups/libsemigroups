@@ -35,9 +35,10 @@
 #include "fpsemi-intf.hpp"   // for FpSemigroupInterface
 #include "froidure-pin.hpp"  // for FroidurePin
 #include "make-present.hpp"  // for Presentation
+#include "paths.hpp"         // for const_pislo_iterator
 #include "present.hpp"       // for Presentation
 #include "types.hpp"         // for word_type
-#include "word.hpp"          // for word_to_string
+#include "words.hpp"          // for word_to_string
 
 namespace libsemigroups {
   // Forward declarations
@@ -316,17 +317,16 @@ namespace libsemigroups {
 
       struct NormalFormsIteratorTraits {
         // state_type::first = this, state_type::second = current value
-        using state_type = std::pair<std::string, std::string>;
-        using internal_iterator_type
-            = ActionDigraph<size_t>::const_pislo_iterator;
-        using value_type        = std::string;
-        using reference         = std::string&;
-        using const_reference   = std::string const&;
-        using difference_type   = std::ptrdiff_t;
-        using size_type         = std::size_t;
-        using const_pointer     = std::string const*;
-        using pointer           = std::string*;
-        using iterator_category = std::forward_iterator_tag;
+        using state_type             = std::pair<std::string, std::string>;
+        using internal_iterator_type = const_pislo_iterator<size_t>;
+        using value_type             = std::string;
+        using reference              = std::string&;
+        using const_reference        = std::string const&;
+        using difference_type        = std::ptrdiff_t;
+        using size_type              = std::size_t;
+        using const_pointer          = std::string const*;
+        using pointer                = std::string*;
+        using iterator_category      = std::forward_iterator_tag;
 
         struct Deref {
           const_reference
@@ -467,7 +467,7 @@ namespace libsemigroups {
       const_normal_form_iterator cend_normal_forms() {
         using state_type = NormalFormsIteratorTraits::state_type;
         return const_normal_form_iterator(state_type("", ""),
-                                          gilman_digraph().cend_pislo());
+                                          cend_pislo(gilman_digraph()));
       }
 
       //! Rewrite a word in-place.

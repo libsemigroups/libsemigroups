@@ -439,8 +439,8 @@ namespace libsemigroups {
       }
 
       std::vector<word_type> result(
-          ad.cbegin_pislo(0, 1, fp.current_max_word_length() + 1),
-          ad.cend_pislo());
+          cbegin_pislo(ad, 0, 1, fp.current_max_word_length() + 1),
+          cend_pislo(ad));
       for (size_t i = 0; i < expected.size(); ++i) {
         REQUIRE(expected[i] == result[i]);
       }
@@ -490,7 +490,7 @@ namespace libsemigroups {
       REQUIRE(ad.number_of_nodes() == 232);
       REQUIRE(ad.number_of_edges() == 265);
       REQUIRE(action_digraph_helper::is_acyclic(ad));
-      REQUIRE(ad.number_of_paths(0, 0, 13) == 336);
+      REQUIRE(number_of_paths(ad, 0, 0, 13) == 336);
     }
 
     LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
@@ -518,7 +518,7 @@ namespace libsemigroups {
       REQUIRE(ad.number_of_nodes() == 8);
       REQUIRE(ad.number_of_edges() == 11);
       REQUIRE(action_digraph_helper::is_acyclic(ad));
-      REQUIRE(ad.number_of_paths(0, 0, 5) == 12);
+      REQUIRE(number_of_paths(ad, 0, 0, 5) == 12);
     }
 
     LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
@@ -540,7 +540,7 @@ namespace libsemigroups {
       REQUIRE(ad.number_of_nodes() == 7);
       REQUIRE(ad.number_of_edges() == 17);
       REQUIRE(!action_digraph_helper::is_acyclic(ad));
-      REQUIRE(ad.number_of_paths(0, 0, 10) == 13044);
+      REQUIRE(number_of_paths(ad, 0, 0, 10) == 13044);
     }
 
     LIBSEMIGROUPS_TEST_CASE("KnuthBendix",

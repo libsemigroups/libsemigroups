@@ -20,8 +20,7 @@
 #include "catch.hpp"       // for REQUIRE, REQUIRE_NOTHROW, REQUIRE_THROWS_AS
 
 #include "libsemigroups/order.hpp"  // for shortlex_compare
-#include "libsemigroups/wislo.hpp"  // for cbegin_wislo
-#include "libsemigroups/word.hpp"   // for number_of_words
+#include "libsemigroups/words.hpp"  // for number_of_words
 
 namespace libsemigroups {
   namespace {
@@ -52,8 +51,7 @@ namespace libsemigroups {
       auto      w = words_in_shortlex_order(3, first, last);
       REQUIRE(w.size() == number_of_words(3, 0, 13));
       REQUIRE(w.size() == 797161);
-      REQUIRE(
-          std::is_sorted(w.cbegin(), w.cend(), ShortLexCompare<word_type>()));
+      REQUIRE(std::is_sorted(w.cbegin(), w.cend(), ShortLexCompare()));
     };
 
     BENCHMARK("vector of all words length 0 to 13 using iterators") {
@@ -65,8 +63,7 @@ namespace libsemigroups {
       w.assign(cbegin_wislo(3, first, last), cend_wislo(3, first, last));
       REQUIRE(w.size() == number_of_words(3, 0, 13));
       REQUIRE(w.size() == 797161);
-      REQUIRE(
-          std::is_sorted(w.cbegin(), w.cend(), ShortLexCompare<word_type>()));
+      REQUIRE(std::is_sorted(w.cbegin(), w.cend(), ShortLexCompare()));
     };
   }
 }  // namespace libsemigroups

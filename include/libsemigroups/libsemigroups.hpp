@@ -63,7 +63,6 @@
 #include "report.hpp"
 #include "runner.hpp"
 #include "schreier-sims.hpp"
-#include "siso.hpp"
 #include "stl.hpp"
 #include "string.hpp"
 #include "tce.hpp"
@@ -72,8 +71,6 @@
 #include "transf.hpp"
 #include "types.hpp"
 #include "uf.hpp"
-#include "wilo.hpp"
-#include "wislo.hpp"
-#include "word.hpp"
+#include "words.hpp"
 
 #endif  // LIBSEMIGROUPS_LIBSEMIGROUPS_HPP_

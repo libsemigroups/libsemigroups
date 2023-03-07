@@ -340,7 +340,9 @@ namespace libsemigroups {
         NodeManager const* _node_manager;
         output_type        _current;
 
-        ActiveNodesRange(NodeManager const* nm)
+        ActiveNodesRange() : _node_manager(nullptr), _current(UNDEFINED) {}
+
+        explicit ActiveNodesRange(NodeManager const* nm)
             : _node_manager(nm), _current(nm->initial_node()) {}
 
         output_type get() const noexcept {

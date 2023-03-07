@@ -95,6 +95,8 @@ pkginclude_HEADERS += include/libsemigroups/matrix.hpp
 pkginclude_HEADERS += include/libsemigroups/node-manager.hpp
 pkginclude_HEADERS += include/libsemigroups/obvinf.hpp
 pkginclude_HEADERS += include/libsemigroups/order.hpp
+pkginclude_HEADERS += include/libsemigroups/paths.hpp
+pkginclude_HEADERS += include/libsemigroups/paths.tpp
 pkginclude_HEADERS += include/libsemigroups/pbr.hpp
 pkginclude_HEADERS += include/libsemigroups/pool.hpp
 pkginclude_HEADERS += include/libsemigroups/present.hpp
@@ -106,7 +108,6 @@ pkginclude_HEADERS += include/libsemigroups/schreier-sims.hpp
 pkginclude_HEADERS += include/libsemigroups/schreier-sims-helper.hpp
 pkginclude_HEADERS += include/libsemigroups/sims1.hpp
 pkginclude_HEADERS += include/libsemigroups/sims1.tpp
-pkginclude_HEADERS += include/libsemigroups/siso.hpp
 pkginclude_HEADERS += include/libsemigroups/stl.hpp
 pkginclude_HEADERS += include/libsemigroups/stephen.hpp
 pkginclude_HEADERS += include/libsemigroups/string-view.hpp
@@ -122,9 +123,7 @@ pkginclude_HEADERS += include/libsemigroups/types.hpp
 pkginclude_HEADERS += include/libsemigroups/uf.hpp
 pkginclude_HEADERS += include/libsemigroups/ukkonen.hpp
 pkginclude_HEADERS += include/libsemigroups/ukkonen.tpp
-pkginclude_HEADERS += include/libsemigroups/wilo.hpp
-pkginclude_HEADERS += include/libsemigroups/wislo.hpp
-pkginclude_HEADERS += include/libsemigroups/word.hpp
+pkginclude_HEADERS += include/libsemigroups/words.hpp
 
 textflowcppincludedir = $(includedir)/libsemigroups/textflowcpp
 textflowcppinclude_HEADERS=extern/textflowcpp/TextFlow.hpp
@@ -592,16 +591,13 @@ libsemigroups_la_SOURCES += src/pbr.cpp
 libsemigroups_la_SOURCES += src/race.cpp
 libsemigroups_la_SOURCES += src/report.cpp
 libsemigroups_la_SOURCES += src/runner.cpp
-libsemigroups_la_SOURCES += src/siso.cpp
 libsemigroups_la_SOURCES += src/string.cpp
 libsemigroups_la_SOURCES += src/stephen.cpp
 libsemigroups_la_SOURCES += src/timer.cpp
 libsemigroups_la_SOURCES += src/todd-coxeter.cpp
 libsemigroups_la_SOURCES += src/todd-coxeter-new.cpp
 libsemigroups_la_SOURCES += src/ukkonen.cpp
-libsemigroups_la_SOURCES += src/wilo.cpp
-libsemigroups_la_SOURCES += src/wislo.cpp
-libsemigroups_la_SOURCES += src/word.cpp
+libsemigroups_la_SOURCES += src/words.cpp
 
 libsemigroups_la_CPPFLAGS = $(AM_CPPFLAGS)
 libsemigroups_la_CXXFLAGS = $(AM_CXXFLAGS)
@@ -693,6 +689,7 @@ EXTRA_PROGRAMS += test_make_present
 EXTRA_PROGRAMS += test_matrix
 EXTRA_PROGRAMS += test_obvinf
 EXTRA_PROGRAMS += test_order
+EXTRA_PROGRAMS += test_paths
 EXTRA_PROGRAMS += test_pbr
 EXTRA_PROGRAMS += test_pool
 EXTRA_PROGRAMS += test_present
@@ -701,7 +698,6 @@ EXTRA_PROGRAMS += test_runner
 EXTRA_PROGRAMS += test_schreier_sims
 EXTRA_PROGRAMS += test_sims1
 EXTRA_PROGRAMS += test_schreier_sims_helper
-EXTRA_PROGRAMS += test_siso
 EXTRA_PROGRAMS += test_stephen
 EXTRA_PROGRAMS += test_string
 EXTRA_PROGRAMS += test_string_view
@@ -714,7 +710,7 @@ EXTRA_PROGRAMS += test_uf
 EXTRA_PROGRAMS += test_ukkonen
 EXTRA_PROGRAMS += test_wilo
 EXTRA_PROGRAMS += test_wislo
-EXTRA_PROGRAMS += test_word
+EXTRA_PROGRAMS += test_words
 
 EXTRA_PROGRAMS += bench_all
 EXTRA_PROGRAMS += bench_action
@@ -726,7 +722,6 @@ EXTRA_PROGRAMS += bench_kambites
 EXTRA_PROGRAMS += bench_knuth_bendix
 EXTRA_PROGRAMS += bench_konieczny
 EXTRA_PROGRAMS += bench_sims1
-EXTRA_PROGRAMS += bench_siso
 EXTRA_PROGRAMS += bench_string_view
 EXTRA_PROGRAMS += bench_todd_coxeter
 EXTRA_PROGRAMS += bench_uf
@@ -793,6 +788,7 @@ test_all_SOURCES += tests/test-make-froidure-pin.cpp
 test_all_SOURCES += tests/test-matrix.cpp
 test_all_SOURCES += tests/test-obvinf.cpp
 test_all_SOURCES += tests/test-order.cpp
+test_all_SOURCES += tests/test-paths.cpp
 test_all_SOURCES += tests/test-pbr.cpp
 test_all_SOURCES += tests/test-pool.cpp
 test_all_SOURCES += tests/test-present.cpp
@@ -801,7 +797,6 @@ test_all_SOURCES += tests/test-runner.cpp
 test_all_SOURCES += tests/test-schreier-sims.cpp
 test_all_SOURCES += tests/test-schreier-sims-helper.cpp
 test_all_SOURCES += tests/test-sims1.cpp
-test_all_SOURCES += tests/test-siso.cpp
 test_all_SOURCES += tests/test-stephen.cpp
 test_all_SOURCES += tests/test-string.cpp
 test_all_SOURCES += tests/test-string-view.cpp
@@ -811,9 +806,7 @@ test_all_SOURCES += tests/test-todd-coxeter-new.cpp
 test_all_SOURCES += tests/test-types.cpp
 test_all_SOURCES += tests/test-uf.cpp
 test_all_SOURCES += tests/test-ukkonen.cpp
-test_all_SOURCES += tests/test-wilo.cpp
-test_all_SOURCES += tests/test-wislo.cpp
-test_all_SOURCES += tests/test-word.cpp
+test_all_SOURCES += tests/test-words.cpp
 
 test_action_SOURCES =  tests/test-action.cpp
 test_action_SOURCES += tests/test-main.cpp
@@ -964,6 +957,9 @@ test_obvinf_SOURCES += tests/test-main.cpp
 test_order_SOURCES =  tests/test-order.cpp
 test_order_SOURCES += tests/test-main.cpp
 
+test_paths_SOURCES =  tests/test-paths.cpp
+test_paths_SOURCES += tests/test-main.cpp
+
 test_pbr_SOURCES =  tests/test-pbr.cpp
 test_pbr_SOURCES += tests/test-main.cpp
 
@@ -987,9 +983,6 @@ test_schreier_sims_helper_SOURCES += tests/test-main.cpp
 
 test_sims1_SOURCES =  tests/test-sims1.cpp
 test_sims1_SOURCES += tests/test-main.cpp
-
-test_siso_SOURCES =  tests/test-siso.cpp
-test_siso_SOURCES += tests/test-main.cpp
 
 test_stephen_SOURCES =  tests/test-stephen.cpp
 test_stephen_SOURCES += tests/test-main.cpp
@@ -1027,8 +1020,8 @@ test_wilo_SOURCES += tests/test-main.cpp
 test_wislo_SOURCES =  tests/test-wislo.cpp
 test_wislo_SOURCES += tests/test-main.cpp
 
-test_word_SOURCES =  tests/test-word.cpp
-test_word_SOURCES += tests/test-main.cpp
+test_words_SOURCES =  tests/test-words.cpp
+test_words_SOURCES += tests/test-main.cpp
 
 bench_all_SOURCES =  benchmarks/examples/cong-intf.cpp
 bench_all_SOURCES += benchmarks/examples/fpsemi-intf.cpp
@@ -1041,7 +1034,6 @@ bench_all_SOURCES += benchmarks/bench-konieczny.cpp
 bench_all_SOURCES += benchmarks/bench-main.cpp
 bench_all_SOURCES += benchmarks/bench-string-view.cpp
 bench_all_SOURCES += benchmarks/bench-sims1.cpp
-bench_all_SOURCES += benchmarks/bench-siso.cpp
 bench_all_SOURCES += benchmarks/bench-todd-coxeter.cpp
 bench_all_SOURCES += benchmarks/bench-uf.cpp
 bench_all_SOURCES += benchmarks/bench-wilo.cpp
@@ -1078,9 +1070,6 @@ bench_konieczny_SOURCES += benchmarks/bench-main.cpp
 
 bench_sims1_SOURCES =  benchmarks/bench-sims1.cpp
 bench_sims1_SOURCES += benchmarks/bench-main.cpp
-
-bench_siso_SOURCES =  benchmarks/bench-siso.cpp
-bench_siso_SOURCES += benchmarks/bench-main.cpp
 
 bench_string_view_SOURCES =  benchmarks/bench-string-view.cpp
 bench_string_view_SOURCES += benchmarks/bench-main.cpp

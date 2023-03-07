@@ -154,15 +154,15 @@ namespace libsemigroups {
     FelschDigraph& operator=(FelschDigraph const&) = default;
     FelschDigraph& operator=(FelschDigraph&&)      = default;
 
-    FelschDigraph(Presentation<Word> const& p);
+    explicit FelschDigraph(Presentation<Word> const& p);
     FelschDigraph& init(Presentation<Word> const& p);
 
-    FelschDigraph(Presentation<Word>&& p);
+    explicit FelschDigraph(Presentation<Word>&& p);
     FelschDigraph& init(Presentation<Word>&& p);
 
     // TODO rvalue reference version + init
     template <typename M>
-    FelschDigraph(ActionDigraph<M> const& ad);
+    explicit FelschDigraph(ActionDigraph<M> const& ad);
 
     ////////////////////////////////////////////////////////////////////////
     // Settings

@@ -55,7 +55,7 @@
 #include "libsemigroups/todd-coxeter.hpp"  // for ToddCoxeter, operator|
 #include "libsemigroups/transf.hpp"        // for Transf, LeastTransf
 #include "libsemigroups/types.hpp"         // for word_type, relation_type
-#include "libsemigroups/wislo.hpp"         // for const_wislo_iterator, cbeg...
+#include "libsemigroups/words.hpp"         // for const_wislo_iterator, cbeg...
 
 namespace libsemigroups {
   struct LibsemigroupsException;  // Forward declaration
@@ -459,7 +459,7 @@ namespace libsemigroups {
       REQUIRE(tc.word_to_class_index(tc.class_index_to_word(3)) == 3);
       REQUIRE(tc.word_to_class_index(tc.class_index_to_word(4)) == 4);
       REQUIRE(tc.word_to_class_index({0, 1}) == 3);
-      REQUIRE(LexicographicalCompare{}({0, 0, 1}, {0, 1}));
+      REQUIRE(LexicographicalCompare()({0, 0, 1}, {0, 1}));
 
       REQUIRE(std::is_sorted(tc.cbegin_normal_forms(),
                              tc.cend_normal_forms(),
@@ -3957,8 +3957,8 @@ namespace libsemigroups {
       REQUIRE(tc.number_of_rules() == 173);
       REQUIRE(!tc.is_obviously_infinite());
       tc.congruence()
-          //.sort_generating_pairs(&shortlex_compare)
-          //.sort_generating_pairs(recursive_path_compare)
+          // .sort_generating_pairs(&shortlex_compare)
+          // .sort_generating_pairs(recursive_path_compare)
           .remove_duplicate_generating_pairs();
       REQUIRE(tc.number_of_rules() == 173);
 
