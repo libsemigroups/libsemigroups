@@ -18,7 +18,7 @@ representations for every type of matrix:
 3. those whose arithmetic operation and dimensions can be set at run time:
    :cpp:any:`DynamicMatrix`
 
-It's unlikely that you will want to use the classes in described on this page
+It's unlikely that you will want to use the classes described on this page
 directly, but rather through the aliases described on the other matrix pages
 (such as, for example, :cpp:any:`BMat`).
 
