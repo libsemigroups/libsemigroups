@@ -101,7 +101,7 @@ namespace libsemigroups {
       return ad;
     }
 
-    void check_hopkroftKarp_with_PSTILO_paths(ActionDigraph<size_t> d1,
+    void check_HopcroftKarp_with_PSTILO_paths(ActionDigraph<size_t> d1,
                                               size_t                q0,
                                               ActionDigraph<size_t> d2,
                                               size_t                p0,
@@ -2012,14 +2012,13 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("ActionDigraph",
-                          "049",
-                          "HopkroftKarp",
+                          "047",
+                          "HopcroftKarp",
                           "[standard]") {
     for (int i = 0; i != 1000; i++) {
       ActionDigraph<size_t> d1 = ActionDigraph<size_t>::random(17, 6);
       ActionDigraph<size_t> d2 = ActionDigraph<size_t>::random(15, 6);
-      check_hopkroftKarp_with_PSTILO_paths(d1, 9, d2, 14, 5);
+      check_HopcroftKarp_with_PSTILO_paths(d1, 9, d2, 14, 5);
     }
   }
-  // TODO: Make a test that has non-complete digraphs
 }  // namespace libsemigroups

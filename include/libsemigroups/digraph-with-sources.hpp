@@ -63,10 +63,10 @@ namespace libsemigroups {
           _preim_init(n, m, UNDEFINED),
           _preim_next(n, m, UNDEFINED) {}
 
-    DigraphWithSources(DigraphWithSources&&)      = default;
-    DigraphWithSources(DigraphWithSources const&) = default;
+    DigraphWithSources(DigraphWithSources&&)                 = default;
+    DigraphWithSources(DigraphWithSources const&)            = default;
     DigraphWithSources& operator=(DigraphWithSources const&) = default;
-    DigraphWithSources& operator=(DigraphWithSources&&) = default;
+    DigraphWithSources& operator=(DigraphWithSources&&)      = default;
 
     void init(size_type m, size_type n);
 
@@ -131,8 +131,8 @@ namespace libsemigroups {
     // Take the quotient with respect to the node partition defined in uf.
     void quotient_digraph(detail::Duf<> uf);
 
-    // Quotient with respect to the partion created upon performing Hopcroft and
-    // Karp's algorithm
+    // Quotient with respect to the partition created upon performing Hopcroft
+    // and Karp's algorithm
     void hopcroft_karp_quotient(DigraphWithSources<T> const& d2,
                                 node_type                    p0,
                                 node_type                    q0);

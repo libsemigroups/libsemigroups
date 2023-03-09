@@ -95,11 +95,11 @@ namespace libsemigroups {
 
       // not noexcept because the constructors of std::vector and std::array
       // aren't
-      UF(UF const&) = default;
+      UF(UF const&)            = default;
       UF& operator=(UF const&) = default;
       UF(UF&&)                 = default;
-      UF& operator=(UF&&) = default;
-      ~UF()               = default;
+      UF& operator=(UF&&)      = default;
+      ~UF()                    = default;
 
       ////////////////////////////////////////////////////////////////////////
       // Union-Find

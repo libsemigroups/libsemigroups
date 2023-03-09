@@ -239,8 +239,9 @@ namespace libsemigroups {
       return;
     } else if (M == 1) {
       this->init(1, n_out);
-      this->add_edge_nc(0, 0, 0);
-      this->add_edge_nc(0, 0, 1);
+      for (label_type a = 0; a < n_out; ++a) {
+        this->add_edge_nc(0, 0, a);
+      }
       return;
     }
 
