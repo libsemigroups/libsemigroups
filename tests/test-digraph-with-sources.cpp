@@ -2065,5 +2065,49 @@ namespace libsemigroups {
                 4, {{1, 0}, {2, 1}, {3, 2}, {2, 1}}));
     REQUIRE(dws4 == action_digraph_helper::make<size_t>(1, {{0, 0}}));
   }
+
+  LIBSEMIGROUPS_TEST_CASE("DigraphWithSources",
+                          "049",
+                          "out-of-place quotient",
+                          "[quick]") {
+    DigraphWithSources<size_t> dws(4, 2);
+    dws.add_edge_nc(0, 1, 0);
+    dws.add_edge_nc(0, 0, 1);
+    dws.add_edge_nc(1, 2, 0);
+    dws.add_edge_nc(1, 1, 1);
+    dws.add_edge_nc(2, 3, 0);
+    dws.add_edge_nc(2, 2, 1);
+    dws.add_edge_nc(3, 2, 0);
+    dws.add_edge_nc(3, 1, 1);
+
+    detail::Duf<> uf1(4);
+    uf1.unite(1, 3);
+    auto dws1 = dws.get_quotient(uf1);
+
+    REQUIRE(
+        dws1
+        == action_digraph_helper::make<size_t>(3, {{1, 0}, {2, 1}, {1, 2}}));
+
+    detail::Duf<> uf2(4);
+    uf2.unite(0, 3);
+    auto dws2 = dws.get_quotient(uf2);
+
+    REQUIRE(dws2 == action_digraph_helper::make<size_t>(1, {{0, 0}}));
+
+    detail::Duf<> uf3(4);
+    auto          dws3 = dws.get_quotient(uf3);
+
+    REQUIRE(dws3
+            == action_digraph_helper::make<size_t>(
+                4, {{1, 0}, {2, 1}, {3, 2}, {2, 1}}));
+
+    detail::Duf<> uf4(4);
+    uf4.unite(0, 1);
+    uf4.unite(0, 2);
+    uf4.unite(0, 3);
+    auto dws4 = dws.get_quotient(uf4);
+
+    REQUIRE(dws4 == action_digraph_helper::make<size_t>(1, {{0, 0}}));
+  }
   // TODO: Make a test that has non-complete digraphs
 }  // namespace libsemigroups

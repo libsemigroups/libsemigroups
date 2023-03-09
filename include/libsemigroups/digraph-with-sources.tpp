@@ -319,6 +319,13 @@ namespace libsemigroups {
     this->restrict(uf.number_of_blocks());
   }
 
+  template <typename T>
+  DigraphWithSources<T> DigraphWithSources<T>::get_quotient(detail::Duf<> uf) {
+    auto d2 = *this;
+    d2.quotient_digraph(uf);
+    return d2;
+  }
+
 #ifdef LIBSEMIGROUPS_DEBUG
   template <typename T>
   bool DigraphWithSources<T>::is_source(node_type   c,

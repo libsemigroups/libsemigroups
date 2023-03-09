@@ -3387,9 +3387,6 @@ namespace libsemigroups {
           }
         }
       }
-
-      // TODO: Decide what the output of this function should be
-      // d1 = quotient_digraph(d1, _uf);
       return _uf;
     }
   };

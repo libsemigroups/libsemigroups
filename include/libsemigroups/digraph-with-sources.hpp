@@ -131,6 +131,10 @@ namespace libsemigroups {
     // Take the quotient with respect to the node partition defined in uf.
     void quotient_digraph(detail::Duf<> uf);
 
+    // Out-of-place returns the quotient with respect to the node partition
+    // defined in uf
+    inline DigraphWithSources<T> get_quotient(detail::Duf<> uf);
+
 #ifdef LIBSEMIGROUPS_DEBUG
     // Is d a source of c under x?
     bool is_source(node_type c, node_type d, letter_type x) const;
