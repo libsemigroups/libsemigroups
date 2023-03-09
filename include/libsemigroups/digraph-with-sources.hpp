@@ -38,7 +38,7 @@
 #include "config.hpp"      // for LIBSEMIGROUPS_DEBUG
 #include "constants.hpp"   // for UNDEFINED
 #include "containers.hpp"  // for DynamicArray2
-#include "digraph.hpp"     // for ActionDigraph
+#include "digraph.hpp"     // for ActionDigraph and HopcroftKarp
 #include "types.hpp"       // for letter_type
                            //
 namespace libsemigroups {
@@ -130,6 +130,12 @@ namespace libsemigroups {
 
     // Take the quotient with respect to the node partition defined in uf.
     void quotient_digraph(detail::Duf<> uf);
+
+    // Quotient with respect to the partion created upon performing Hopcroft and
+    // Karp's algorithm
+    void hopcroft_karp_quotient(DigraphWithSources<T> const& d2,
+                                node_type                    p0,
+                                node_type                    q0);
 
     // Out-of-place returns the quotient with respect to the node partition
     // defined in uf

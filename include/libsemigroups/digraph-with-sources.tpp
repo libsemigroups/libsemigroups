@@ -320,6 +320,16 @@ namespace libsemigroups {
   }
 
   template <typename T>
+  void
+  DigraphWithSources<T>::hopcroft_karp_quotient(DigraphWithSources<T> const& d2,
+                                                node_type                    p0,
+                                                node_type q0) {
+    auto uf = HopcroftKarp()(*this, p0, d2, q0);
+    uf.restrict(this->ActionDigraph<T>::number_of_nodes());
+    this->quotient_digraph(uf);
+  }
+
+  template <typename T>
   DigraphWithSources<T> DigraphWithSources<T>::get_quotient(detail::Duf<> uf) {
     auto d2 = *this;
     d2.quotient_digraph(uf);

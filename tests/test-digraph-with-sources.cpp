@@ -2109,5 +2109,38 @@ namespace libsemigroups {
 
     REQUIRE(dws4 == action_digraph_helper::make<size_t>(1, {{0, 0}}));
   }
+
+  LIBSEMIGROUPS_TEST_CASE("DigraphWithSources",
+                          "050",
+                          "hopcroft_karp_quotient",
+                          "[quick]") {
+    DigraphWithSources<size_t> d1(3, 3);
+    d1.add_edge_nc(0, 0, 0);
+    d1.add_edge_nc(0, 1, 1);
+    d1.add_edge_nc(0, 2, 2);
+    d1.add_edge_nc(1, 0, 0);
+    d1.add_edge_nc(1, 1, 1);
+    d1.add_edge_nc(1, 2, 2);
+    d1.add_edge_nc(2, 0, 0);
+    d1.add_edge_nc(2, 1, 1);
+    d1.add_edge_nc(2, 2, 2);
+
+    DigraphWithSources<size_t> d2(3, 3);
+    d2.add_edge_nc(0, 0, 0);
+    d2.add_edge_nc(0, 1, 1);
+    d2.add_edge_nc(0, 2, 2);
+    d2.add_edge_nc(1, 0, 0);
+    d2.add_edge_nc(1, 1, 1);
+    d2.add_edge_nc(1, 2, 2);
+    d2.add_edge_nc(2, 0, 0);
+    d2.add_edge_nc(2, 1, 1);
+    d2.add_edge_nc(2, 2, 2);
+
+    d1.hopcroft_karp_quotient(d2, 0, 0);
+
+    REQUIRE(d1
+            == action_digraph_helper::make<size_t>(
+                3, {{0, 1, 2}, {0, 1, 2}, {0, 1, 2}}));
+  }
   // TODO: Make a test that has non-complete digraphs
 }  // namespace libsemigroups
