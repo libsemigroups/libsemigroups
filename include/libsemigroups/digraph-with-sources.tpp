@@ -212,6 +212,113 @@ namespace libsemigroups {
     }
   }
 
+  template <typename T>
+  void DigraphWithSources<T>::quotient_digraph(detail::Duf<> uf) {
+    using node_type  = typename DigraphWithSources<T>::node_type;
+    using label_type = typename DigraphWithSources<T>::label_type;
+    auto N           = this->number_of_nodes();
+    auto n_out       = this->out_degree();
+    auto M           = uf.number_of_blocks();
+
+    // Check that uf and d match
+    if (N == 0) {
+      if (uf.empty()) {
+        return;
+      } else {
+        LIBSEMIGROUPS_EXCEPTION("Empty digraph but non-empty partition. "
+                                "Expected empty partition.");
+      }
+    } else if (uf.size() != N) {
+      LIBSEMIGROUPS_EXCEPTION("Union find and digraph have a different number "
+                              "of nodes. Expected union find size and number "
+                              "of digraph nodes to be equal.");
+    }
+
+    // Check if partition is trivial or discrete
+    if (M == N) {
+      return;
+    } else if (M == 1) {
+      this->init(1, n_out);
+      this->add_edge_nc(0, 0, 0);
+      this->add_edge_nc(0, 0, 1);
+      return;
+    }
+
+    node_type                                   x_nb;
+    node_type                                   y_nb;
+    std::stack<std::pair<node_type, node_type>> coincidences;
+
+    // Make pairs of vertices that lie in the same part of a union find object
+    for (node_type i = 0; i < uf.size(); ++i) {
+      node_type j = uf.find(i);
+      if (i != j) {
+        coincidences.emplace(i, j);
+      }
+    }
+
+    // For each coincidence (x, y), unite each out neighbour of x with the
+    // corresponding out neighbour of y
+    while (!coincidences.empty()) {
+      node_type x, y;
+      std::tie(x, y) = coincidences.top();
+      coincidences.pop();
+      for (label_type a = 0; a < n_out; ++a) {
+        x_nb = uf.find(this->unsafe_neighbor(x, a));
+        y_nb = uf.find(this->unsafe_neighbor(y, a));
+        if (x_nb != y_nb) {
+          coincidences.emplace(x_nb, y_nb);
+        }
+      }
+      uf.unite(x, y);
+    }
+
+    // Identify the representative for each part in uf with a number in 0 ...
+    // number_of_blocks
+    std::unordered_map<node_type, node_type> map;
+    node_type                                index = 0;
+    for (node_type i = 0; i < uf.size(); ++i) {
+      if (map.emplace(uf.find(i), index).second) {
+        ++index;
+      }
+    }
+
+    for (node_type v = 0; v != N; ++v) {
+      node_type rep = uf.find(v);
+      if (v != rep) {
+        // Populate representative row with any missing values
+        for (label_type a = 0; a != n_out; ++a) {
+          node_type va = this->unsafe_neighbor(v, a);
+          if (this->unsafe_neighbor(rep, a) == UNDEFINED && va != UNDEFINED) {
+            this->add_edge_nc(rep, uf.find(va), a);
+          }
+        }
+      } else {
+        // Replace out-neighbours of representatives with their representative
+        for (label_type a = 0; a != n_out; ++a) {
+          node_type va     = this->unsafe_neighbor(v, a);
+          node_type va_rep = uf.find(va);
+          if (va != va_rep) {
+            this->remove_edge_nc(v, a);
+            this->add_edge_nc(v, va_rep, a);
+          }
+        }
+      }
+    }
+
+    // Rename representative rows to be 0 ... number_of_blocks
+    for (node_type v = 0; v != N; ++v) {
+      node_type rep   = uf.find(v);
+      auto      index = map.find(rep);
+      if (index != map.end() && rep != index->second) {
+        auto new_name = index->second;
+        this->rename_node(rep, new_name);
+        map.erase(index);
+      }
+    }
+
+    this->restrict(uf.number_of_blocks());
+  }
+
 #ifdef LIBSEMIGROUPS_DEBUG
   template <typename T>
   bool DigraphWithSources<T>::is_source(node_type   c,

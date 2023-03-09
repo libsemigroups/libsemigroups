@@ -1,6 +1,6 @@
 //
 // libsemigroups - C++ library for semigroups and monoids
-// Copyright (C) 2019 Finn Smith
+// Copyright (C) 2023 Joseph Edwards
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -16,9 +16,6 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-// TODO(v3):
-// * renumber the tests
-
 #define CATCH_CONFIG_ENABLE_PAIR_STRINGMAKER
 
 #include <cstddef>        // for size_t
@@ -27,21 +24,23 @@
 #include <vector>         // for vector
 
 #include "catch.hpp"  // for REQUIRE, REQUIRE_THROWS_AS, REQUI...
-#include "libsemigroups/digraph-helper.hpp"  // for follow_path
-#include "libsemigroups/digraph.hpp"         // for ActionDigraph
-#include "libsemigroups/forest.hpp"          // for Forest
-#include "libsemigroups/kbe.hpp"             // for KBE
-#include "libsemigroups/knuth-bendix.hpp"    // for KnuthBendix
-#include "libsemigroups/wilo.hpp"            // for cbegin_wilo
-#include "libsemigroups/wislo.hpp"           // for cbegin_wislo
-#include "test-main.hpp"                     // for LIBSEMIGROUPS_TEST_CASE
+#include "libsemigroups/digraph-helper.hpp"        // for follow_path
+#include "libsemigroups/digraph-with-sources.hpp"  // for DigraphWithSources
+#include "libsemigroups/digraph.hpp"               // for ActionDigraph
+#include "libsemigroups/forest.hpp"                // for Forest
+#include "libsemigroups/kbe.hpp"                   // for KBE
+#include "libsemigroups/knuth-bendix.hpp"          // for KnuthBendix
+#include "libsemigroups/wilo.hpp"                  // for cbegin_wilo
+#include "libsemigroups/wislo.hpp"                 // for cbegin_wislo
+#include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
-CATCH_REGISTER_ENUM(libsemigroups::ActionDigraph<size_t>::algorithm,
-                    libsemigroups::ActionDigraph<size_t>::algorithm::dfs,
-                    libsemigroups::ActionDigraph<size_t>::algorithm::matrix,
-                    libsemigroups::ActionDigraph<size_t>::algorithm::acyclic,
-                    libsemigroups::ActionDigraph<size_t>::algorithm::automatic,
-                    libsemigroups::ActionDigraph<size_t>::algorithm::trivial)
+CATCH_REGISTER_ENUM(
+    libsemigroups::DigraphWithSources<size_t>::algorithm,
+    libsemigroups::DigraphWithSources<size_t>::algorithm::dfs,
+    libsemigroups::DigraphWithSources<size_t>::algorithm::matrix,
+    libsemigroups::DigraphWithSources<size_t>::algorithm::acyclic,
+    libsemigroups::DigraphWithSources<size_t>::algorithm::automatic,
+    libsemigroups::DigraphWithSources<size_t>::algorithm::trivial)
 
 namespace libsemigroups {
   using KnuthBendix = fpsemigroup::KnuthBendix;
@@ -49,7 +48,7 @@ namespace libsemigroups {
   struct LibsemigroupsException;  // forward decl
 
   namespace {
-    void add_chain(ActionDigraph<size_t>& digraph, size_t n) {
+    void add_chain(DigraphWithSources<size_t>& digraph, size_t n) {
       size_t old_nodes = digraph.number_of_nodes();
       digraph.add_nodes(n);
       for (size_t i = old_nodes; i < digraph.number_of_nodes() - 1; ++i) {
@@ -57,13 +56,13 @@ namespace libsemigroups {
       }
     }
 
-    ActionDigraph<size_t> chain(size_t n) {
-      ActionDigraph<size_t> g(0, 1);
+    DigraphWithSources<size_t> chain(size_t n) {
+      DigraphWithSources<size_t> g(0, 1);
       add_chain(g, n);
       return g;
     }
 
-    void add_clique(ActionDigraph<size_t>& digraph, size_t n) {
+    void add_clique(DigraphWithSources<size_t>& digraph, size_t n) {
       if (n != digraph.out_degree()) {
         throw std::runtime_error("can't do it!");
       }
@@ -77,14 +76,14 @@ namespace libsemigroups {
       }
     }
 
-    ActionDigraph<size_t> clique(size_t n) {
-      ActionDigraph<size_t> g(0, n);
+    DigraphWithSources<size_t> clique(size_t n) {
+      DigraphWithSources<size_t> g(0, n);
       add_clique(g, n);
       return g;
     }
 
-    ActionDigraph<size_t> binary_tree(size_t number_of_levels) {
-      ActionDigraph<size_t> ad;
+    DigraphWithSources<size_t> binary_tree(size_t number_of_levels) {
+      DigraphWithSources<size_t> ad;
       ad.add_nodes(std::pow(2, number_of_levels) - 1);
       ad.add_to_out_degree(2);
       ad.add_edge(0, 1, 0);
@@ -100,51 +99,32 @@ namespace libsemigroups {
       }
       return ad;
     }
-
-    void check_hopkroftKarp_with_PSTILO_paths(ActionDigraph<size_t> d1,
-                                              size_t                q0,
-                                              ActionDigraph<size_t> d2,
-                                              size_t                p0,
-                                              int max_path_length) {
-      auto          N1 = d1.number_of_nodes();
-      detail::Duf<> uf = HopcroftKarp()(d1, q0, d2, p0);
-
-      for (auto t = d1.cbegin_nodes(); t != d1.cend_nodes(); ++t) {
-        for (auto path_it = d1.cbegin_pstilo(q0, *t, 0, max_path_length);
-             path_it != d1.cend_pstilo();
-             ++path_it) {
-          auto node = action_digraph_helper::follow_path(d2, p0, *path_it);
-          REQUIRE(uf.find(*t) == uf.find(N1 + node));
-        }
-      }
-    }
   }  // namespace
-
-  LIBSEMIGROUPS_TEST_CASE("ActionDigraph",
+  LIBSEMIGROUPS_TEST_CASE("DigraphWithSources",
                           "000",
                           "constructor with 1  default arg",
                           "[quick][digraph]") {
-    ActionDigraph<size_t> g;
+    DigraphWithSources<size_t> g;
     REQUIRE(g.number_of_nodes() == 0);
     REQUIRE(g.number_of_edges() == 0);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("ActionDigraph",
+  LIBSEMIGROUPS_TEST_CASE("DigraphWithSources",
                           "001",
                           "constructor with 0 default args",
                           "[quick][digraph]") {
     for (size_t j = 0; j < 100; ++j) {
-      ActionDigraph<size_t> g(j);
+      DigraphWithSources<size_t> g(j);
       REQUIRE(g.number_of_nodes() == j);
       REQUIRE(g.number_of_edges() == 0);
     }
   }
 
-  LIBSEMIGROUPS_TEST_CASE("ActionDigraph",
+  LIBSEMIGROUPS_TEST_CASE("DigraphWithSources",
                           "002",
                           "add nodes",
                           "[quick][digraph]") {
-    ActionDigraph<size_t> g(3);
+    DigraphWithSources<size_t> g(3);
     REQUIRE(g.number_of_nodes() == 3);
     REQUIRE(g.number_of_edges() == 0);
 
@@ -154,15 +134,15 @@ namespace libsemigroups {
     }
   }
 
-  LIBSEMIGROUPS_TEST_CASE("ActionDigraph",
+  LIBSEMIGROUPS_TEST_CASE("DigraphWithSources",
                           "003",
                           "add edges",
                           "[quick][digraph]") {
-    ActionDigraph<size_t> g(17, 31);
+    DigraphWithSources<size_t> g(17, 31);
 
     for (size_t i = 0; i < 17; ++i) {
       // The digraph isn't fully defined
-      REQUIRE_NOTHROW(g.number_of_scc());
+      REQUIRE_THROWS_AS(g.number_of_scc(), LibsemigroupsException);
       for (size_t j = 0; j < 31; ++j) {
         g.add_edge(i, (7 * i + 23 * j) % 17, j);
       }
@@ -193,15 +173,15 @@ namespace libsemigroups {
     REQUIRE(g.number_of_nodes() == 17);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("ActionDigraph",
+  LIBSEMIGROUPS_TEST_CASE("DigraphWithSources",
                           "004",
                           "strongly connected components - cycles",
                           "[quick][digraph]") {
-    ActionDigraph<size_t> g;
+    DigraphWithSources<size_t> g;
     g.add_to_out_degree(1);
     action_digraph_helper::add_cycle(g, 32);
     REQUIRE(g.scc_id(0) == 0);
-    g = ActionDigraph<size_t>();
+    g = DigraphWithSources<size_t>();
     g.add_to_out_degree(1);
     action_digraph_helper::add_cycle(g, 33);
     REQUIRE(std::vector<std::vector<size_t>>(g.cbegin_sccs(), g.cend_sccs())
@@ -214,11 +194,11 @@ namespace libsemigroups {
     }
   }
 
-  LIBSEMIGROUPS_TEST_CASE("ActionDigraph",
+  LIBSEMIGROUPS_TEST_CASE("DigraphWithSources",
                           "005",
                           "strongly connected components - no edges",
                           "[quick][digraph][no-valgrind]") {
-    ActionDigraph<size_t> graph = ActionDigraph<size_t>(0);
+    DigraphWithSources<size_t> graph = DigraphWithSources<size_t>(0);
     for (size_t j = 1; j < 100; ++j) {
       graph.add_nodes(j);
 
@@ -228,14 +208,14 @@ namespace libsemigroups {
     }
   }
 
-  LIBSEMIGROUPS_TEST_CASE("ActionDigraph",
+  LIBSEMIGROUPS_TEST_CASE("DigraphWithSources",
                           "006",
                           "strongly connected components - disjoint cycles",
                           "[quick][digraph]") {
-    ActionDigraph<size_t> g;
+    DigraphWithSources<size_t> g;
     g.add_to_out_degree(1);
     using difference_type = typename std::iterator_traits<
-        ActionDigraph<size_t>::const_iterator_nodes>::difference_type;
+        DigraphWithSources<size_t>::const_iterator_nodes>::difference_type;
     for (size_t j = 2; j < 50; ++j) {
       action_digraph_helper::add_cycle(g, j);
       REQUIRE(std::count_if(
@@ -250,12 +230,12 @@ namespace libsemigroups {
     REQUIRE(g.validate());
   }
 
-  LIBSEMIGROUPS_TEST_CASE("ActionDigraph",
+  LIBSEMIGROUPS_TEST_CASE("DigraphWithSources",
                           "007",
                           "strongly connected components - complete graphs",
                           "[quick][digraph]") {
     for (size_t k = 2; k < 50; ++k) {
-      ActionDigraph<size_t> graph(k, k);
+      DigraphWithSources<size_t> graph(k, k);
 
       for (size_t i = 0; i < k; ++i) {
         for (size_t j = 0; j < k; ++j) {
@@ -269,11 +249,11 @@ namespace libsemigroups {
     }
   }
 
-  LIBSEMIGROUPS_TEST_CASE("ActionDigraph",
+  LIBSEMIGROUPS_TEST_CASE("DigraphWithSources",
                           "008",
                           "exceptions",
                           "[quick][digraph]") {
-    ActionDigraph<size_t> graph(10, 5);
+    DigraphWithSources<size_t> graph(10, 5);
     REQUIRE_THROWS_AS(graph.neighbor(10, 0), LibsemigroupsException);
     REQUIRE(graph.neighbor(0, 1) == UNDEFINED);
 
@@ -289,12 +269,12 @@ namespace libsemigroups {
     REQUIRE_THROWS_AS(graph.scc_id(10), LibsemigroupsException);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("ActionDigraph",
+  LIBSEMIGROUPS_TEST_CASE("DigraphWithSources",
                           "009",
                           "spanning forest - complete graphs",
                           "[quick][digraph]") {
     for (size_t k = 2; k < 50; ++k) {
-      ActionDigraph<size_t> graph(k, k);
+      DigraphWithSources<size_t> graph(k, k);
 
       for (size_t i = 0; i < k; ++i) {
         for (size_t j = 0; j < k; ++j) {
@@ -310,12 +290,12 @@ namespace libsemigroups {
     }
   }
 
-  LIBSEMIGROUPS_TEST_CASE("ActionDigraph",
+  LIBSEMIGROUPS_TEST_CASE("DigraphWithSources",
                           "010",
                           "spanning forest - disjoint cycles",
                           "[quick][digraph]") {
-    size_t                j = 33;
-    ActionDigraph<size_t> graph;
+    size_t                     j = 33;
+    DigraphWithSources<size_t> graph;
     graph.add_to_out_degree(1);
 
     for (size_t k = 0; k < 10; ++k) {
@@ -365,12 +345,12 @@ namespace libsemigroups {
   }
 
   // TODO(FLS) uncomment this
-  //  LIBSEMIGROUPS_TEST_CASE("ActionDigraph",
+  //  LIBSEMIGROUPS_TEST_CASE("DigraphWithSources",
   //                          "011",
   //                          "scc root paths - complete graphs",
   //                          "[quick][digraph]") {
   //    for (size_t k = 2; k < 50; ++k) {
-  //      ActionDigraph<size_t> graph(k);
+  //      DigraphWithSources<size_t> graph(k);
   //
   //      for (size_t i = 0; i < k; ++i) {
   //        for (size_t j = 0; j < k; ++j) {
@@ -389,12 +369,12 @@ namespace libsemigroups {
   //    }
   //  }
 
-  // LIBSEMIGROUPS_TEST_CASE("ActionDigraph",
+  // LIBSEMIGROUPS_TEST_CASE("DigraphWithSources",
   //                         "012",
   //                         "scc root paths - disjoint cycles",
   //                         "[quick][digraph]") {
   //   for (size_t j = 2; j < 35; ++j) {
-  //     ActionDigraph<size_t> graph;
+  //     DigraphWithSources<size_t> graph;
 
   //     for (size_t k = 0; k < 6; ++k) {
   //       graph.add_nodes(j);
@@ -416,11 +396,11 @@ namespace libsemigroups {
   //   }
   // }
 
-  LIBSEMIGROUPS_TEST_CASE("ActionDigraph",
+  LIBSEMIGROUPS_TEST_CASE("DigraphWithSources",
                           "013",
                           "scc large cycle",
                           "[quick][digraph]") {
-    ActionDigraph<size_t> graph;
+    DigraphWithSources<size_t> graph;
     graph.add_to_out_degree(1);
     action_digraph_helper::add_cycle(graph, 100000);
     using node_type = decltype(graph)::node_type;
@@ -440,20 +420,11 @@ namespace libsemigroups {
         [&graph](node_type i) -> bool { return graph.scc_id(i) == 1; }));
   }
 
-  LIBSEMIGROUPS_TEST_CASE("ActionDigraph",
-                          "014",
-                          "random",
-                          "[quick][digraph]") {
-    ActionDigraph<size_t> graph = ActionDigraph<size_t>::random(10, 10);
-    REQUIRE(graph.number_of_nodes() == 10);
-    REQUIRE(graph.number_of_edges() == 100);
-  }
-
-  LIBSEMIGROUPS_TEST_CASE("ActionDigraph",
+  LIBSEMIGROUPS_TEST_CASE("DigraphWithSources",
                           "015",
                           "reserve",
                           "[quick][digraph]") {
-    ActionDigraph<size_t> graph;
+    DigraphWithSources<size_t> graph;
     graph.reserve(10, 10);
     REQUIRE(graph.number_of_nodes() == 0);
     REQUIRE(graph.number_of_edges() == 0);
@@ -464,11 +435,11 @@ namespace libsemigroups {
     REQUIRE(graph.number_of_edges() == 0);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("ActionDigraph",
+  LIBSEMIGROUPS_TEST_CASE("DigraphWithSources",
                           "016",
                           "default constructors",
                           "[quick][digraph]") {
-    auto g1 = ActionDigraph<size_t>();
+    auto g1 = DigraphWithSources<size_t>();
     g1.add_to_out_degree(1);
     action_digraph_helper::add_cycle(g1, 10);
 
@@ -491,7 +462,7 @@ namespace libsemigroups {
     REQUIRE(g2.number_of_scc() == 1);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("ActionDigraph",
+  LIBSEMIGROUPS_TEST_CASE("DigraphWithSources",
                           "017",
                           "scc iterators",
                           "[quick][digraph]") {
@@ -553,7 +524,7 @@ namespace libsemigroups {
     }
   }
 
-  LIBSEMIGROUPS_TEST_CASE("ActionDigraph",
+  LIBSEMIGROUPS_TEST_CASE("DigraphWithSources",
                           "018",
                           "iterator to edges",
                           "[quick][digraph]") {
@@ -577,7 +548,7 @@ namespace libsemigroups {
     }
   }
 
-  LIBSEMIGROUPS_TEST_CASE("ActionDigraph",
+  LIBSEMIGROUPS_TEST_CASE("DigraphWithSources",
                           "019",
                           "root of scc",
                           "[quick][digraph]") {
@@ -599,11 +570,11 @@ namespace libsemigroups {
     REQUIRE_THROWS_AS(g.root_of_scc(1000), LibsemigroupsException);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("ActionDigraph",
+  LIBSEMIGROUPS_TEST_CASE("DigraphWithSources",
                           "020",
                           "cbegin/end_panislo - 100 node path",
                           "[quick]") {
-    ActionDigraph<size_t> ad;
+    DigraphWithSources<size_t> ad;
     using node_type = decltype(ad)::node_type;
     size_t const n  = 100;
     ad.add_nodes(n);
@@ -624,11 +595,11 @@ namespace libsemigroups {
     REQUIRE(std::distance(ad.cbegin_panislo(50), ad.cend_panislo()) == 50);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("ActionDigraph",
+  LIBSEMIGROUPS_TEST_CASE("DigraphWithSources",
                           "021",
                           "cbegin/end_pislo",
                           "[quick]") {
-    ActionDigraph<size_t> ad;
+    DigraphWithSources<size_t> ad;
     ad.add_nodes(9);
     ad.add_to_out_degree(3);
     ad.add_edge(0, 1, 0);
@@ -676,11 +647,11 @@ namespace libsemigroups {
             == std::vector<word_type>({{1, 0}, {1, 1}, {1, 2}}));
   }
 
-  LIBSEMIGROUPS_TEST_CASE("ActionDigraph",
+  LIBSEMIGROUPS_TEST_CASE("DigraphWithSources",
                           "022",
                           "cbegin/end_pani(s)lo - 100 node cycle",
                           "[quick]") {
-    ActionDigraph<size_t> ad;
+    DigraphWithSources<size_t> ad;
     ad.add_to_out_degree(1);
     action_digraph_helper::add_cycle(ad, 100);
 
@@ -690,11 +661,11 @@ namespace libsemigroups {
             == 200);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("ActionDigraph",
+  LIBSEMIGROUPS_TEST_CASE("DigraphWithSources",
                           "023",
                           "cbegin/cend_pilo - tree 14 nodes",
                           "[quick]") {
-    ActionDigraph<size_t> ad;
+    DigraphWithSources<size_t> ad;
     ad.add_nodes(15);
     ad.add_to_out_degree(2);
 
@@ -807,11 +778,11 @@ namespace libsemigroups {
             == std::vector<word_type>({{0, 0}, {0, 1}, {1, 0}, {1, 1}}));
   }
 
-  LIBSEMIGROUPS_TEST_CASE("ActionDigraph",
+  LIBSEMIGROUPS_TEST_CASE("DigraphWithSources",
                           "024",
                           "cbegin/end_pstilo - Cayley digraph",
                           "[quick][no-valgrind]") {
-    ActionDigraph<size_t> ad;
+    DigraphWithSources<size_t> ad;
     ad.add_nodes(6);
     ad.add_to_out_degree(2);
 
@@ -879,7 +850,7 @@ namespace libsemigroups {
     ++it;  // for code coverage
   }
 
-  LIBSEMIGROUPS_TEST_CASE("ActionDigraph",
+  LIBSEMIGROUPS_TEST_CASE("DigraphWithSources",
                           "025",
                           "cbegin_pstilo - Tsalakou",
                           "[quick]") {
@@ -894,7 +865,7 @@ namespace libsemigroups {
     REQUIRE(kb.size() == 9);
     auto S = static_cast<KnuthBendix::froidure_pin_type&>(*kb.froidure_pin());
 
-    ActionDigraph<size_t> ad;
+    DigraphWithSources<size_t> ad;
     ad.add_to_out_degree(S.number_of_generators());
     ad.add_nodes(S.size() + 1);
 
@@ -995,11 +966,11 @@ namespace libsemigroups {
                 {{{0, 1}, {1}}, {{1, 1}, {1}}, {{0, 0, 0, 0, 0}, {0, 0}}}));
   }
 
-  LIBSEMIGROUPS_TEST_CASE("ActionDigraph",
+  LIBSEMIGROUPS_TEST_CASE("DigraphWithSources",
                           "026",
                           "cbegin/end_pstislo - Cayley digraph",
                           "[quick]") {
-    ActionDigraph<size_t> ad;
+    DigraphWithSources<size_t> ad;
     ad.add_nodes(6);
     ad.add_to_out_degree(2);
 
@@ -1054,11 +1025,11 @@ namespace libsemigroups {
     REQUIRE(result == expected);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("ActionDigraph",
+  LIBSEMIGROUPS_TEST_CASE("DigraphWithSources",
                           "027",
                           "cbegin/end_pstislo - Cayley digraph",
                           "[quick]") {
-    ActionDigraph<size_t> ad;
+    DigraphWithSources<size_t> ad;
     ad.add_nodes(6);
     ad.add_to_out_degree(3);
 
@@ -1165,11 +1136,11 @@ namespace libsemigroups {
         == std::vector<word_type>(ad.cbegin_pilo(0, 0, 10), ad.cend_pilo()));
   }
 
-  LIBSEMIGROUPS_TEST_CASE("ActionDigraph",
+  LIBSEMIGROUPS_TEST_CASE("DigraphWithSources",
                           "028",
                           "path iterators corner cases",
                           "[quick]") {
-    ActionDigraph<size_t> ad;
+    DigraphWithSources<size_t> ad;
     ad.add_nodes(6);
     ad.add_to_out_degree(3);
 
@@ -1211,12 +1182,12 @@ namespace libsemigroups {
     verify_forward_iterator_requirements(ad.cbegin_pstislo(0, 1));
   }
 
-  LIBSEMIGROUPS_TEST_CASE("ActionDigraph",
+  LIBSEMIGROUPS_TEST_CASE("DigraphWithSources",
                           "029",
                           "reverse node iterator",
                           "[quick]") {
-    using node_type = ActionDigraph<size_t>::node_type;
-    ActionDigraph<size_t> ad;
+    using node_type = DigraphWithSources<size_t>::node_type;
+    DigraphWithSources<size_t> ad;
     ad.add_nodes(10);
     REQUIRE(ad.number_of_nodes() == 10);
     REQUIRE(std::vector<node_type>(ad.cbegin_nodes(), ad.cend_nodes())
@@ -1234,11 +1205,11 @@ namespace libsemigroups {
             == std::vector<node_type>({9, 8, 7, 6, 5, 4, 3, 2, 1, 0}));
   }
 
-  LIBSEMIGROUPS_TEST_CASE("ActionDigraph",
+  LIBSEMIGROUPS_TEST_CASE("DigraphWithSources",
                           "030",
                           "pstilo corner case",
                           "[quick]") {
-    ActionDigraph<size_t> ad;
+    DigraphWithSources<size_t> ad;
     ad.add_nodes(5);
     ad.add_to_out_degree(2);
     ad.add_edge(0, 1, 1);
@@ -1261,7 +1232,7 @@ namespace libsemigroups {
     REQUIRE(std::distance(ad.cbegin_pstilo(0, 0, 4, 100), ad.cend_pstilo())
             == 0);
 
-    ad = ActionDigraph<size_t>();
+    ad = DigraphWithSources<size_t>();
     ad.add_to_out_degree(1);
     action_digraph_helper::add_cycle(ad, 5);
     REQUIRE(std::distance(ad.cbegin_pstilo(0, 0, 0, 6), ad.cend_pstilo()) == 2);
@@ -1275,12 +1246,12 @@ namespace libsemigroups {
     REQUIRE(std::distance(ad.cbegin_pstilo(0, 0, 0, 2), ad.cend_pstilo()) == 1);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("ActionDigraph",
+  LIBSEMIGROUPS_TEST_CASE("DigraphWithSources",
                           "031",
                           "number_of_paths corner cases",
                           "[quick]") {
-    using algorithm = ActionDigraph<size_t>::algorithm;
-    ActionDigraph<size_t> ad;
+    using algorithm = DigraphWithSources<size_t>::algorithm;
+    DigraphWithSources<size_t> ad;
     REQUIRE_THROWS_AS(ad.number_of_paths(0, 0, POSITIVE_INFINITY),
                       LibsemigroupsException);
     size_t const n = 20;
@@ -1296,12 +1267,12 @@ namespace libsemigroups {
     REQUIRE(ad.number_of_paths(19) == 1);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("ActionDigraph",
+  LIBSEMIGROUPS_TEST_CASE("DigraphWithSources",
                           "032",
                           "number_of_paths acyclic digraph",
                           "[quick]") {
-    using node_type = ActionDigraph<size_t>::node_type;
-    ActionDigraph<size_t> ad;
+    using node_type = DigraphWithSources<size_t>::node_type;
+    DigraphWithSources<size_t> ad;
     ad.add_nodes(8);
     ad.add_to_out_degree(3);
     ad.add_edge(0, 3, 0);
@@ -1403,7 +1374,7 @@ namespace libsemigroups {
     REQUIRE(
         std::vector<word_type>(ad.cbegin_pstilo(0, 3, 0, 2), ad.cend_pstilo())
         == std::vector<word_type>({{0}, {2}}));
-    using algorithm = ActionDigraph<size_t>::algorithm;
+    using algorithm = DigraphWithSources<size_t>::algorithm;
     REQUIRE(ad.number_of_paths(0, 3, 0, 2, algorithm::acyclic)
             == size_t(
                 std::distance(ad.cbegin_pstilo(0, 3, 0, 2), ad.cend_pstilo())));
@@ -1421,14 +1392,14 @@ namespace libsemigroups {
     }
   }
 
-  LIBSEMIGROUPS_TEST_CASE("ActionDigraph",
+  LIBSEMIGROUPS_TEST_CASE("DigraphWithSources",
                           "033",
                           "number_of_paths binary tree",
                           "[quick][no-valgrind]") {
-    using algorithm          = ActionDigraph<size_t>::algorithm;
-    using node_type          = ActionDigraph<size_t>::node_type;
-    size_t const          n  = 6;
-    ActionDigraph<size_t> ad = binary_tree(n);
+    using algorithm               = DigraphWithSources<size_t>::algorithm;
+    using node_type               = DigraphWithSources<size_t>::node_type;
+    size_t const               n  = 6;
+    DigraphWithSources<size_t> ad = binary_tree(n);
     REQUIRE(ad.number_of_nodes() == std::pow(2, n) - 1);
     REQUIRE(ad.number_of_edges() == std::pow(2, n) - 2);
     REQUIRE(action_digraph_helper::is_acyclic(ad));
@@ -1462,13 +1433,13 @@ namespace libsemigroups {
     }
   }
 
-  LIBSEMIGROUPS_TEST_CASE("ActionDigraph",
+  LIBSEMIGROUPS_TEST_CASE("DigraphWithSources",
                           "034",
                           "number_of_paths large binary tree",
                           "[quick][no-valgrind]") {
-    using algorithm          = ActionDigraph<size_t>::algorithm;
-    size_t const          n  = 20;
-    ActionDigraph<size_t> ad = binary_tree(n);
+    using algorithm               = DigraphWithSources<size_t>::algorithm;
+    size_t const               n  = 20;
+    DigraphWithSources<size_t> ad = binary_tree(n);
     REQUIRE(ad.number_of_nodes() == std::pow(2, n) - 1);
     REQUIRE(ad.number_of_edges() == std::pow(2, n) - 2);
     REQUIRE(action_digraph_helper::is_acyclic(ad));
@@ -1477,43 +1448,45 @@ namespace libsemigroups {
 
     // The following tests for code coverage
     ad.add_edge(19, 0, 0);
-    REQUIRE(
-        ad.number_of_paths(
-            0, 0, 0, POSITIVE_INFINITY, ActionDigraph<size_t>::algorithm::dfs)
-        == POSITIVE_INFINITY);
+    REQUIRE(ad.number_of_paths(0,
+                               0,
+                               0,
+                               POSITIVE_INFINITY,
+                               DigraphWithSources<size_t>::algorithm::dfs)
+            == POSITIVE_INFINITY);
     // 0 not reachable from 10
     REQUIRE(ad.number_of_paths(10,
                                0,
                                0,
                                POSITIVE_INFINITY,
-                               ActionDigraph<size_t>::algorithm::matrix)
+                               DigraphWithSources<size_t>::algorithm::matrix)
             == 0);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("ActionDigraph",
+  LIBSEMIGROUPS_TEST_CASE("DigraphWithSources",
                           "035",
                           "number_of_paths 400 node random digraph",
                           "[quick]") {
-    size_t const n  = 400;
-    auto         ad = ActionDigraph<size_t>::random(n, 20, n, std::mt19937());
+    size_t const n = 400;
+    auto ad = DigraphWithSources<size_t>::random(n, 20, n, std::mt19937());
     action_digraph_helper::add_cycle(ad, ad.cbegin_nodes(), ad.cend_nodes());
     REQUIRE(!action_digraph_helper::is_acyclic(ad));
     REQUIRE(!ad.validate());
     REQUIRE(ad.number_of_paths_algorithm(0, 0, 16)
-            == ActionDigraph<size_t>::algorithm::dfs);
+            == DigraphWithSources<size_t>::algorithm::dfs);
     REQUIRE(ad.number_of_paths(0, 0, 16) != 0);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("ActionDigraph",
+  LIBSEMIGROUPS_TEST_CASE("DigraphWithSources",
                           "036",
                           "number_of_paths 10 node acyclic digraph",
                           "[quick]") {
-    using algorithm = ActionDigraph<size_t>::algorithm;
+    using algorithm = DigraphWithSources<size_t>::algorithm;
     // size_t const n  = 10;
-    // auto ad = ActionDigraph<size_t>::random_acyclic(n, 20, n,
+    // auto ad = DigraphWithSources<size_t>::random_acyclic(n, 20, n,
     // std::mt19937()); std::cout <<
     // action_digraph_helper::detail::to_string(ad);
-    ActionDigraph<size_t> ad;
+    DigraphWithSources<size_t> ad;
     ad.add_nodes(10);
     ad.add_to_out_degree(20);
     ad.add_edge(0, 7, 5);
@@ -1536,16 +1509,16 @@ namespace libsemigroups {
     REQUIRE(ad.number_of_paths(1, 9, 0, 10, algorithm::matrix) == 3);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("ActionDigraph",
+  LIBSEMIGROUPS_TEST_CASE("DigraphWithSources",
                           "037",
                           "number_of_paths node digraph",
                           "[quick]") {
-    using algorithm = ActionDigraph<size_t>::algorithm;
+    using algorithm = DigraphWithSources<size_t>::algorithm;
     size_t const n  = 10;
-    // auto         ad = ActionDigraph<size_t>::random(n, 20, 200,
+    // auto         ad = DigraphWithSources<size_t>::random(n, 20, 200,
     // std::mt19937()); std::cout <<
     // action_digraph_helper::detail::to_string(ad);
-    ActionDigraph<size_t> ad;
+    DigraphWithSources<size_t> ad;
     ad.add_nodes(10);
     ad.add_to_out_degree(20);
     ad.add_edge(0, 9, 0);
@@ -1776,35 +1749,35 @@ namespace libsemigroups {
     }) == 1023);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("ActionDigraph",
+  LIBSEMIGROUPS_TEST_CASE("DigraphWithSources",
                           "038",
                           "random/random_acyclic exceptions",
                           "[quick]") {
     // Too few nodes
-    REQUIRE_THROWS_AS(ActionDigraph<size_t>::random(0, 0, 0),
+    REQUIRE_THROWS_AS(DigraphWithSources<size_t>::random(0, 0, 0),
                       LibsemigroupsException);
-    REQUIRE_THROWS_AS(ActionDigraph<size_t>::random_acyclic(0, 0, 0),
+    REQUIRE_THROWS_AS(DigraphWithSources<size_t>::random_acyclic(0, 0, 0),
                       LibsemigroupsException);
     // Out degree too low
-    REQUIRE_THROWS_AS(ActionDigraph<size_t>::random(2, 0, 0),
+    REQUIRE_THROWS_AS(DigraphWithSources<size_t>::random(2, 0, 0),
                       LibsemigroupsException);
-    REQUIRE_THROWS_AS(ActionDigraph<size_t>::random_acyclic(2, 0, 0),
+    REQUIRE_THROWS_AS(DigraphWithSources<size_t>::random_acyclic(2, 0, 0),
                       LibsemigroupsException);
     // Number of edges too high
-    REQUIRE_THROWS_AS(ActionDigraph<size_t>::random(2, 2, 5),
+    REQUIRE_THROWS_AS(DigraphWithSources<size_t>::random(2, 2, 5),
                       LibsemigroupsException);
-    REQUIRE_THROWS_AS(ActionDigraph<size_t>::random_acyclic(2, 2, 5),
+    REQUIRE_THROWS_AS(DigraphWithSources<size_t>::random_acyclic(2, 2, 5),
                       LibsemigroupsException);
     // Number of edges = 0
-    auto ad = ActionDigraph<size_t>::random(2, 2, 0);
+    auto ad = DigraphWithSources<size_t>::random(2, 2, 0);
     REQUIRE(ad.number_of_edges() == 0);
-    ad = ActionDigraph<size_t>::random_acyclic(2, 2, 0);
+    ad = DigraphWithSources<size_t>::random_acyclic(2, 2, 0);
     REQUIRE(ad.number_of_edges() == 0);
-    ad = ActionDigraph<size_t>::random_acyclic(10, 10, 41);
+    ad = DigraphWithSources<size_t>::random_acyclic(10, 10, 41);
     REQUIRE(ad.number_of_edges() == 41);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("ActionDigraph",
+  LIBSEMIGROUPS_TEST_CASE("DigraphWithSources",
                           "039",
                           "unsafe (next) neighbour",
                           "[quick]") {
@@ -1813,7 +1786,7 @@ namespace libsemigroups {
     REQUIRE(ad.unsafe_next_neighbor(0, 1) == ad.next_neighbor(0, 1));
   }
 
-  LIBSEMIGROUPS_TEST_CASE("ActionDigraph",
+  LIBSEMIGROUPS_TEST_CASE("DigraphWithSources",
                           "040",
                           "number_of_egdes incident to a node",
                           "[quick]") {
@@ -1826,15 +1799,15 @@ namespace libsemigroups {
         == 511);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("ActionDigraph",
+  LIBSEMIGROUPS_TEST_CASE("DigraphWithSources",
                           "041",
                           "number_of_paths (matrix)",
                           "[quick]") {
-    using algorithm = ActionDigraph<size_t>::algorithm;
+    using algorithm = DigraphWithSources<size_t>::algorithm;
     // REQUIRE(detail::magic_number(6) * 6 == 14.634);
-    // auto ad = ActionDigraph<size_t>::random(6, 3, 15, std::mt19937());
+    // auto ad = DigraphWithSources<size_t>::random(6, 3, 15, std::mt19937());
     // std::cout << action_digraph_helper::detail::to_string(ad);
-    ActionDigraph<size_t> ad;
+    DigraphWithSources<size_t> ad;
     ad.add_nodes(6);
     ad.add_to_out_degree(3);
     ad.add_edge(0, 0, 0);
@@ -1892,12 +1865,12 @@ namespace libsemigroups {
         std::all_of(ad.cbegin_pstilo(1, 1, 0, 10), ad.cend_pstilo(), checker2));
   }
 
-  LIBSEMIGROUPS_TEST_CASE("ActionDigraph",
+  LIBSEMIGROUPS_TEST_CASE("DigraphWithSources",
                           "042",
                           "number_of_paths (matrix)",
                           "[quick]") {
-    using algorithm = ActionDigraph<size_t>::algorithm;
-    ActionDigraph<size_t> ad;
+    using algorithm = DigraphWithSources<size_t>::algorithm;
+    DigraphWithSources<size_t> ad;
     ad.add_nodes(2);
     ad.add_to_out_degree(2);
     ad.add_edge(0, 1, 0);
@@ -1908,8 +1881,8 @@ namespace libsemigroups {
     REQUIRE(ad.number_of_paths(0, 1, 0, 10, algorithm::matrix) == 5);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("ActionDigraph", "011", "restrict", "[quick]") {
-    ActionDigraph<size_t> ad;
+  LIBSEMIGROUPS_TEST_CASE("DigraphWithSources", "011", "restrict", "[quick]") {
+    DigraphWithSources<size_t> ad;
     ad.add_nodes(3);
     ad.add_to_out_degree(2);
     ad.add_edge(0, 1, 0);
@@ -1921,22 +1894,11 @@ namespace libsemigroups {
             == action_digraph_helper::make<size_t>(2, {{1, UNDEFINED}, {0}}));
   }
 
-  LIBSEMIGROUPS_TEST_CASE("ActionDigraph", "012", "remove_edge_nc", "[quick]") {
-    ActionDigraph<size_t> ad;
-    ad.add_nodes(3);
-    ad.add_to_out_degree(2);
-    ad.add_edge(0, 1, 0);
-    ad.add_edge(1, 0, 0);
-    ad.add_edge(2, 0, 0);
-
-    ad.remove_edge_nc(0, 0);  // remove edge from 0 labelled 0
-    REQUIRE(ad
-            == action_digraph_helper::make<size_t>(
-                3, {{UNDEFINED, UNDEFINED}, {0}, {0}}));
-  }
-
-  LIBSEMIGROUPS_TEST_CASE("ActionDigraph", "043", "swap_edge_nc", "[quick]") {
-    ActionDigraph<size_t> ad;
+  LIBSEMIGROUPS_TEST_CASE("DigraphWithSources",
+                          "043",
+                          "swap_edge_nc",
+                          "[quick]") {
+    DigraphWithSources<size_t> ad;
     ad.add_nodes(3);
     ad.add_to_out_degree(2);
     ad.add_edge(0, 1, 0);
@@ -1951,7 +1913,7 @@ namespace libsemigroups {
   }
 
 #ifdef LIBSEMIGROUPS_EIGEN_ENABLED
-  LIBSEMIGROUPS_TEST_CASE("ActionDigraph",
+  LIBSEMIGROUPS_TEST_CASE("DigraphWithSources",
                           "044",
                           "detail::pow for non-square Eigen matrix",
                           "[quick]") {
@@ -1961,8 +1923,11 @@ namespace libsemigroups {
   }
 #endif
 
-  LIBSEMIGROUPS_TEST_CASE("ActionDigraph", "045", "operator<<", "[quick]") {
-    ActionDigraph<size_t> ad;
+  LIBSEMIGROUPS_TEST_CASE("DigraphWithSources",
+                          "045",
+                          "operator<<",
+                          "[quick]") {
+    DigraphWithSources<size_t> ad;
     ad.add_nodes(3);
     ad.add_to_out_degree(2);
     ad.add_edge(0, 1, 0);
@@ -1974,8 +1939,11 @@ namespace libsemigroups {
     REQUIRE(oss.str() == "{{1, -}, {0, -}, {2, -}}");
   }
 
-  LIBSEMIGROUPS_TEST_CASE("ActionDigraph", "046", "HopcroftKarp", "[quick]") {
-    ActionDigraph<size_t> d1;
+  LIBSEMIGROUPS_TEST_CASE("DigraphWithSources",
+                          "046",
+                          "HopcroftKarp",
+                          "[quick]") {
+    DigraphWithSources<size_t> d1;
     d1.add_nodes(3);
     d1.add_to_out_degree(3);
     d1.add_edge(0, 0, 0);
@@ -1988,7 +1956,7 @@ namespace libsemigroups {
     d1.add_edge(2, 1, 1);
     d1.add_edge(2, 2, 2);
 
-    ActionDigraph<size_t> d2;
+    DigraphWithSources<size_t> d2;
     d2.add_nodes(3);
     d2.add_to_out_degree(3);
     d2.add_edge(0, 0, 0);
@@ -2011,15 +1979,91 @@ namespace libsemigroups {
     REQUIRE(uf == output_uf);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("ActionDigraph",
-                          "049",
-                          "HopkroftKarp",
-                          "[standard]") {
-    for (int i = 0; i != 1000; i++) {
-      ActionDigraph<size_t> d1 = ActionDigraph<size_t>::random(17, 6);
-      ActionDigraph<size_t> d2 = ActionDigraph<size_t>::random(15, 6);
-      check_hopkroftKarp_with_PSTILO_paths(d1, 9, d2, 14, 5);
-    }
+  LIBSEMIGROUPS_TEST_CASE("DigraphWithSources", "047", "quotient", "[quick]") {
+    DigraphWithSources<size_t> dws(3, 2);
+    dws.add_edge_nc(0, 1, 0);
+    dws.add_edge_nc(0, 2, 1);
+    dws.add_edge_nc(1, 1, 0);
+    dws.add_edge_nc(1, 2, 1);
+    dws.add_edge_nc(2, 2, 0);
+    dws.add_edge_nc(2, 2, 1);
+
+    detail::Duf<> uf;
+    uf.resize(3);
+    uf.unite(0, 2);
+
+    dws.quotient_digraph(uf);
+    REQUIRE(dws == action_digraph_helper::make<size_t>(1, {{0, 0}}));
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("DigraphWithSources", "048", "quotient", "[quick]") {
+    DigraphWithSources<size_t> dws1(4, 2);
+    dws1.add_edge_nc(0, 1, 0);
+    dws1.add_edge_nc(0, 0, 1);
+    dws1.add_edge_nc(1, 2, 0);
+    dws1.add_edge_nc(1, 1, 1);
+    dws1.add_edge_nc(2, 3, 0);
+    dws1.add_edge_nc(2, 2, 1);
+    dws1.add_edge_nc(3, 2, 0);
+    dws1.add_edge_nc(3, 1, 1);
+
+    DigraphWithSources<size_t> dws2(4, 2);
+    dws2.add_edge_nc(0, 1, 0);
+    dws2.add_edge_nc(0, 0, 1);
+    dws2.add_edge_nc(1, 2, 0);
+    dws2.add_edge_nc(1, 1, 1);
+    dws2.add_edge_nc(2, 3, 0);
+    dws2.add_edge_nc(2, 2, 1);
+    dws2.add_edge_nc(3, 2, 0);
+    dws2.add_edge_nc(3, 1, 1);
+
+    DigraphWithSources<size_t> dws3(4, 2);
+    dws3.add_edge_nc(0, 1, 0);
+    dws3.add_edge_nc(0, 0, 1);
+    dws3.add_edge_nc(1, 2, 0);
+    dws3.add_edge_nc(1, 1, 1);
+    dws3.add_edge_nc(2, 3, 0);
+    dws3.add_edge_nc(2, 2, 1);
+    dws3.add_edge_nc(3, 2, 0);
+    dws3.add_edge_nc(3, 1, 1);
+
+    DigraphWithSources<size_t> dws4(4, 2);
+    dws4.add_edge_nc(0, 1, 0);
+    dws4.add_edge_nc(0, 0, 1);
+    dws4.add_edge_nc(1, 2, 0);
+    dws4.add_edge_nc(1, 1, 1);
+    dws4.add_edge_nc(2, 3, 0);
+    dws4.add_edge_nc(2, 2, 1);
+    dws4.add_edge_nc(3, 2, 0);
+    dws4.add_edge_nc(3, 1, 1);
+
+    detail::Duf<> uf1(4);
+    uf1.unite(1, 3);
+    dws1.quotient_digraph(uf1);
+
+    detail::Duf<> uf2(4);
+    uf2.unite(0, 3);
+    dws2.quotient_digraph(uf2);
+
+    detail::Duf<> uf3(4);
+    dws3.quotient_digraph(uf3);
+
+    detail::Duf<> uf4(4);
+    uf4.unite(0, 1);
+    uf4.unite(0, 2);
+    uf4.unite(0, 3);
+    dws4.quotient_digraph(uf4);
+
+    REQUIRE(
+        dws1
+        == action_digraph_helper::make<size_t>(3, {{1, 0}, {2, 1}, {1, 2}}));
+
+    REQUIRE(dws2 == action_digraph_helper::make<size_t>(1, {{0, 0}}));
+
+    REQUIRE(dws3
+            == action_digraph_helper::make<size_t>(
+                4, {{1, 0}, {2, 1}, {3, 2}, {2, 1}}));
+    REQUIRE(dws4 == action_digraph_helper::make<size_t>(1, {{0, 0}}));
   }
   // TODO: Make a test that has non-complete digraphs
 }  // namespace libsemigroups

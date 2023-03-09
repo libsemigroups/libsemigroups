@@ -63,10 +63,10 @@ namespace libsemigroups {
           _preim_init(n, m, UNDEFINED),
           _preim_next(n, m, UNDEFINED) {}
 
-    DigraphWithSources(DigraphWithSources&&)                 = default;
-    DigraphWithSources(DigraphWithSources const&)            = default;
+    DigraphWithSources(DigraphWithSources&&)      = default;
+    DigraphWithSources(DigraphWithSources const&) = default;
     DigraphWithSources& operator=(DigraphWithSources const&) = default;
-    DigraphWithSources& operator=(DigraphWithSources&&)      = default;
+    DigraphWithSources& operator=(DigraphWithSources&&) = default;
 
     void init(size_type m, size_type n);
 
@@ -127,6 +127,9 @@ namespace libsemigroups {
                      node_type          max,
                      NewEdgeFunc&&      new_edge_func,
                      IncompatibleFunc&& incompat_func);
+
+    // Take the quotient with respect to the node partition defined in uf.
+    void quotient_digraph(detail::Duf<> uf);
 
 #ifdef LIBSEMIGROUPS_DEBUG
     // Is d a source of c under x?

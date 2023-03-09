@@ -658,6 +658,7 @@ EXTRA_PROGRAMS += test_cong_intf
 EXTRA_PROGRAMS += test_constants
 EXTRA_PROGRAMS += test_containers
 EXTRA_PROGRAMS += test_digraph_helper
+EXTRA_PROGRAMS += test_digraph_with_sources
 EXTRA_PROGRAMS += test_digraph
 EXTRA_PROGRAMS += test_felsch_tree
 EXTRA_PROGRAMS += test_forest
@@ -744,6 +745,7 @@ test_all_SOURCES += tests/test-cong.cpp
 test_all_SOURCES += tests/test-constants.cpp
 test_all_SOURCES += tests/test-containers.cpp
 test_all_SOURCES += tests/test-digraph-helper.cpp
+test_all_SOURCES += tests/test-digraph-with-sources.cpp
 test_all_SOURCES += tests/test-digraph.cpp
 test_all_SOURCES += tests/test-felsch-tree.cpp
 test_all_SOURCES += tests/test-forest.cpp
@@ -837,6 +839,9 @@ test_containers_SOURCES += tests/test-main.cpp
 
 test_digraph_helper_SOURCES  = tests/test-digraph-helper.cpp
 test_digraph_helper_SOURCES += tests/test-main.cpp
+
+test_digraph_with_sources_SOURCES =  tests/test-digraph-with-sources.cpp
+test_digraph_with_sources_SOURCES += tests/test-main.cpp
 
 test_digraph_SOURCES =  tests/test-digraph.cpp
 test_digraph_SOURCES += tests/test-main.cpp
