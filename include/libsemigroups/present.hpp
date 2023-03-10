@@ -62,6 +62,7 @@ namespace libsemigroups {
 
   namespace presentation {
 
+    //! \anchor operator_plus
     //! Concatenate two words or strings.
     //!
     //! Returns the concatenation of `u` and `w`.
@@ -71,17 +72,21 @@ namespace libsemigroups {
     //!
     //! \returns A word_type or string
     //!
+    //! \exceptions
     //! \noexcept
     word_type operator+(word_type const& u, word_type const& w);
 
     //! Concatenate a word/string with another word/string in-place.
     //!
-    //! Changes `u` to `u + w` in-place. See \ref operator+
+    //! Changes `u` to `u + w` in-place. See \ref operator_plus "operator+".
     //!
     //! \param u a word or string
     //! \param w a word or string
     //!
+    //! \exceptions
     //! \noexcept
+    //!
+    //! \sa \ref operator_plus "operator+"
     void operator+=(word_type& u, word_type const& w);
 
     //! Take a power of a word or string.
@@ -93,6 +98,7 @@ namespace libsemigroups {
     //!
     //! \returns A word_type
     //!
+    //! \exceptions
     //! \noexcept
     template <typename T, typename = std::enable_if_t<IsWord<T>::value>>
     T pow(T const& w, size_t n);
@@ -107,6 +113,7 @@ namespace libsemigroups {
     //! \returns
     //! (None)
     //!
+    //! \exceptions
     //! \noexcept
     template <typename T, typename = std::enable_if_t<IsWord<T>::value>>
     void pow_inplace(T& w, size_t n);
@@ -121,12 +128,14 @@ namespace libsemigroups {
     //!
     //! \returns A word_type or std::string
     //!
+    //! \exceptions
     //! \noexcept
     word_type pow(std::initializer_list<size_t> ilist, size_t n);
 
     //! See \ref pow(T const&, size_t)
     std::string pow(char const* w, size_t n);
 
+    //! \anchor prod
     //! Take a product from a collection of letters.
     //!
     //! Let \p elts correspond to the ordered set \f$a_0, a_1, \ldots, a_{n -
@@ -158,7 +167,7 @@ namespace libsemigroups {
     template <typename T, typename = std::enable_if_t<IsWord<T>::value>>
     T prod(T const& elts, size_t first, size_t last, int step);
 
-    //! See \ref prod(T const&, size_t, size_t, int)
+    //! See \ref prod "prod".
     word_type prod(std::initializer_list<size_t> ilist,
                    size_t                        first,
                    size_t                        last,
