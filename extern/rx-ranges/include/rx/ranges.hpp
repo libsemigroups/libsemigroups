@@ -295,8 +295,7 @@ namespace RX_NAMESPACE {
 
     constexpr bool
     operator==(input_range_iterator<R> const& that) const noexcept {
-      return (range.at_end() && that.range.at_end())
-             || range.get() == that.range.get();
+      return range.at_end() && that.range.at_end();
     }
     constexpr bool
     operator!=(input_range_iterator<R> const& that) const noexcept {
@@ -2667,10 +2666,10 @@ namespace RX_NAMESPACE {
     return input_range_iterator(as_input_range(std::forward<R>(range)));
   }
   template <class R, class = std::enable_if_t<is_input_or_sink_v<R>>>
-  [[nodiscard]] constexpr auto end(R&& range) noexcept {
+  [[nodiscard]] constexpr auto end(R const&) noexcept {
     // Note: The first argument may be moved-from, but that's OK, we just need
     // its type.
-    return input_range_iterator(as_input_range(std::forward<R>(range)));
+    return input_range_iterator<R>{};
   }
 
 }  // namespace RX_NAMESPACE
