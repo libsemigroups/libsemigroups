@@ -37,6 +37,10 @@ namespace libsemigroups {
       return result;
     }
 
+    word_type operator+(size_t w, word_type const& u) {
+      return word_type({w}) + u;
+    }
+
     void operator+=(word_type& u, word_type const& v) {
       u.insert(u.end(), v.cbegin(), v.cend());
     }
