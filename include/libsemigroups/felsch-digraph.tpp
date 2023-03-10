@@ -41,6 +41,7 @@ namespace libsemigroups {
     DigraphWithSources<Node>::init(r, c);
     FelschDigraphSettings_::init();
     _felsch_tree.init(c);
+    _felsch_tree_initted = false;
     // _felsch_tree.add_relations(_presentation.rules.cbegin(),
     //                           _presentation.rules.cend());
     return *this;
@@ -53,7 +54,8 @@ namespace libsemigroups {
                                       p.alphabet().size()),
         FelschDigraphSettings<FelschDigraph<Word, Node, Definitions>>(),
         _felsch_tree(p.alphabet().size()),
-        _presentation(p) {
+        _presentation(p),
+        _felsch_tree_initted(false) {
     // _felsch_tree.add_relations(_presentation.rules.cbegin(),
     //                            _presentation.rules.cend());
   }
@@ -74,6 +76,7 @@ namespace libsemigroups {
         FelschDigraphSettings<FelschDigraph<Word, Node, Definitions>>(),
         _felsch_tree(p.alphabet().size()),
         _presentation(std::move(p)) {
+    _felsch_tree_initted = false;
     // _felsch_tree.add_relations(_presentation.rules.cbegin(),
     //                            _presentation.rules.cend());
   }
@@ -92,6 +95,7 @@ namespace libsemigroups {
       : DigraphWithSources<node_type>(ad),
         FelschDigraphSettings<FelschDigraph<Word, Node, Definitions>>(),
         _felsch_tree(0),
+        _felsch_tree_initted(false),
         _presentation() {
     for (node_type n = 0; n < ad.number_of_nodes(); ++n) {
       for (label_type a = 0; a != ad.out_degree(); ++a) {
@@ -193,6 +197,7 @@ namespace libsemigroups {
           c - ActionDigraph<Node>::out_degree());
     }
     _felsch_tree.init(c);
+    _felsch_tree_initted = false;
     // _felsch_tree.add_relations(_presentation.rules.cbegin(),
     //                            _presentation.rules.cend());
     return *this;
@@ -209,6 +214,7 @@ namespace libsemigroups {
           c - ActionDigraph<Node>::out_degree());
     }
     _felsch_tree.init(c);
+    _felsch_tree_initted = false;
     // _felsch_tree.add_relations(_presentation.rules.cbegin(),
     //                            _presentation.rules.cend());
     return *this;

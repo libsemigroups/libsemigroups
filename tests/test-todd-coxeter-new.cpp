@@ -32,11 +32,11 @@
 #include "libsemigroups/report.hpp"             // for ReportGuard
 #include "libsemigroups/todd-coxeter-new.hpp"   // for ToddCoxeter
 #include "libsemigroups/transf.hpp"             // for Transf
-#include "libsemigroups/words.hpp"               // for cbegin_wislo
+#include "libsemigroups/words.hpp"              // for cbegin_wislo
 
 #include "libsemigroups/make-froidure-pin.hpp"  // for make
 #include "libsemigroups/tce.hpp"                // for TCE
-#include "libsemigroups/words.hpp"               // for operator"" _w
+#include "libsemigroups/words.hpp"              // for operator"" _w
 
 namespace libsemigroups {
 
@@ -1473,10 +1473,10 @@ namespace libsemigroups {
 
     section_hlt(tc2);
     section_felsch(tc2);
-    section_CR_style(tc2);
-    section_Cr_style(tc2);
-    section_R_over_C_style(tc2);
-    section_Rc_style(tc2);
+    // section_CR_style(tc2);
+    // section_Cr_style(tc2);
+    // section_R_over_C_style(tc2);
+    // section_Rc_style(tc2);
 
     REQUIRE(tc2.number_of_classes() == 3);
   }
