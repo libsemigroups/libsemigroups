@@ -3414,38 +3414,31 @@ namespace libsemigroups {
                           "086",
                           "trivial semigroup",
                           "[no-valgrind][todd-coxeter][quick][no-coverage]") {
-    auto rg = ReportGuard(true);
+    auto rg = ReportGuard(false);
 
-    size_t N = 10000;
-    // for (size_t N = 2; N < 1000; N += 199) {
-    Presentation<std::string> p;
-    p.alphabet("eab");
-    presentation::add_identity_rules(p, 'e');
-    // ToddCoxeter tc(twosided, p);
+    for (size_t N = 2; N < 1000; N += 199) {
+      Presentation<std::string> p;
+      p.alphabet("eab");
+      presentation::add_identity_rules(p, 'e');
 
-    std::string lhs = "a" + std::string(N, 'b');
-    std::string rhs = "e";
-    // tc.add_pair(make<word_type>(p, lhs), make<word_type>(p, rhs));
-    presentation::add_rule(p, lhs, rhs);
+      std::string lhs = "a" + std::string(N, 'b');
+      std::string rhs = "e";
+      presentation::add_rule(p, lhs, rhs);
 
-    lhs = std::string(N, 'a');
-    rhs = std::string(N + 1, 'b');
-    // tc.add_pair(make<word_type>(p, lhs), make<word_type>(p, rhs));
-    presentation::add_rule(p, lhs, rhs);
+      lhs = std::string(N, 'a');
+      rhs = std::string(N + 1, 'b');
+      presentation::add_rule(p, lhs, rhs);
 
-    lhs = "ba";
-    rhs = std::string(N, 'b') + "a";
-    // tc.add_pair(make<word_type>(p, lhs), make<word_type>(p, rhs));
-    presentation::add_rule(p, lhs, rhs);
-    // presentation::greedy_reduce_length(p);
-    ToddCoxeter tc(twosided, p);
-    // REQUIRE(presentation::length(tc.presentation()) == 4'021);
-    if (N % 3 == 1) {
-      REQUIRE(tc.number_of_classes() == 3);
-    } else {
-      REQUIRE(tc.number_of_classes() == 1);
+      lhs = "ba";
+      rhs = std::string(N, 'b') + "a";
+      presentation::add_rule(p, lhs, rhs);
+      ToddCoxeter tc(twosided, std::move(p));
+      if (N % 3 == 1) {
+        REQUIRE(tc.number_of_classes() == 3);
+      } else {
+        REQUIRE(tc.number_of_classes() == 1);
+      }
     }
-    // }
   }
 
   LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",

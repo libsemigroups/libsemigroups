@@ -98,20 +98,6 @@ namespace libsemigroups {
   }
 
   template <typename BaseDigraph>
-  typename NodeManagedDigraph<BaseDigraph>::node_type
-  NodeManagedDigraph<BaseDigraph>::new_node() {
-    if (NodeManager_::has_free_nodes()) {
-      node_type const c = NodeManager_::new_active_node();
-      // Clear the new node's row in each table
-      BaseDigraph::clear_sources_and_targets(c);
-      return c;
-    } else {
-      reserve(2 * NodeManager_::node_capacity());
-      return NodeManager_::new_active_node();
-    }
-  }
-
-  template <typename BaseDigraph>
   void NodeManagedDigraph<BaseDigraph>::report_active_nodes() const {
     using detail::group_digits;
     using detail::signed_group_digits;
@@ -160,7 +146,9 @@ namespace libsemigroups {
 
     // TODO re-enable
     // size_t        prev_num_nodes = this->number_of_nodes_active();
-    static size_t total_coinc = 0;
+    static size_t total_coinc   = 0;
+    bool const    should_report = report::should_report();
+    size_t        report_tick   = 0;
     while (!_coinc.empty() && _coinc.size() < large_collapse()) {
       total_coinc++;
       Coincidence c = _coinc.top();
@@ -168,6 +156,7 @@ namespace libsemigroups {
       node_type min = NodeManager_::find_node(c.first);
       node_type max = NodeManager_::find_node(c.second);
       if (min != max) {
+        report_tick++;
         std::tie(min, max) = std::minmax({min, max});
         NodeManager_::union_nodes(min, max);
         if constexpr (RegisterDefs) {
@@ -181,7 +170,9 @@ namespace libsemigroups {
         } else {
           BaseDigraph::merge_nodes(min, max, Noop(), incompat_func);
         }
-        if (report()) {
+        // TODO checking report here can be rather time consuming
+        if (should_report && report_tick > 10'000 && report()) {
+          report_tick = 0;
           report_active_nodes();
         }
       }
@@ -212,6 +203,7 @@ namespace libsemigroups {
       node_type min = NodeManager_::find_node(c.first);
       node_type max = NodeManager_::find_node(c.second);
       if (min != max) {
+        report_tick++;
         std::tie(min, max) = std::minmax({min, max});
         NodeManager_::union_nodes(min, max);
         for (letter_type i = 0; i < out_degree(); ++i) {
@@ -225,7 +217,9 @@ namespace libsemigroups {
             }
           }
         }
-        if (report()) {
+        // TODO checking report here can be rather time consuming
+        if (should_report && report_tick > 10'000 && report()) {
+          report_tick = 0;
           report_active_nodes();
         }
       }
