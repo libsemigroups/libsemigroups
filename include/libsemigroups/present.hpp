@@ -75,6 +75,7 @@ namespace libsemigroups {
     //! \exceptions
     //! \noexcept
     word_type operator+(word_type const& u, word_type const& w);
+    word_type operator+(word_type const& u, size_t w);
 
     //! Concatenate a word/string with another word/string in-place.
     //!
@@ -87,7 +88,10 @@ namespace libsemigroups {
     //! \noexcept
     //!
     //! \sa \ref operator_plus "operator+"
-    void operator+=(word_type& u, word_type const& w);
+    void        operator+=(word_type& u, word_type const& w);
+    inline void operator+=(word_type& u, letter_type a) {
+      u.push_back(a);
+    }
 
     //! Take a power of a word or string.
     //!
@@ -164,8 +168,23 @@ namespace libsemigroups {
     //! prod(std::string("abcde", 4, 1, -1)  // Gives the string "edc")
     //! \endcode
     //!
+    template <typename T,
+              typename S = T,
+              typename   = std::enable_if_t<IsWord<T>::value>>
+    S prod(T const& elts, size_t first, size_t last, int step = 1);
+
     template <typename T, typename = std::enable_if_t<IsWord<T>::value>>
-    T prod(T const& elts, size_t first, size_t last, int step);
+    T prod(std::vector<T> const& elts,
+           size_t                first,
+           size_t                last,
+           int                   step = 1) {
+      return prod<std::vector<T>, T, void>(elts, first, last, step);
+    }
+
+    template <typename T, typename = std::enable_if_t<IsWord<T>::value>>
+    T prod(T const& elts, size_t last) {
+      return prod(elts, 0, last, 1);
+    }
 
     //! See \ref prod "prod".
     word_type prod(std::initializer_list<size_t> ilist,

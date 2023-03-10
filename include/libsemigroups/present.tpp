@@ -47,8 +47,8 @@ namespace libsemigroups {
 
     // Note: we could do a version of the below using insert on words, where
     // the step is +/- 1.
-    template <typename T, typename>
-    T prod(T const& elts, size_t first, size_t last, int step) {
+    template <typename T, typename S, typename>
+    S prod(T const& elts, size_t first, size_t last, int step) {
       if (step == 0) {
         LIBSEMIGROUPS_EXCEPTION("the 4th argument must not be 0");
       } else if (((first < last && step > 0) || (first > last && step < 0))
@@ -56,7 +56,7 @@ namespace libsemigroups {
         LIBSEMIGROUPS_EXCEPTION(
             "1st argument must be empty if the given range is not empty");
       }
-      T result;
+      S result;
 
       if (first < last) {
         if (step < 0) {
@@ -64,7 +64,7 @@ namespace libsemigroups {
         }
         result.reserve((last - first) / step);
         for (size_t i = first; i < last; i += step) {
-          result.push_back(elts[i % elts.size()]);
+          result += elts[i % elts.size()];
         }
       } else {
         if (step > 0) {
@@ -73,7 +73,7 @@ namespace libsemigroups {
         result.reserve((first - last) / step);
         size_t steppos = static_cast<size_t>(-step);
         for (size_t i = first; i > last; i -= steppos) {
-          result.push_back(elts[i % elts.size()]);
+          result += elts[i % elts.size()];
         }
       }
       return result;
