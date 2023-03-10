@@ -61,6 +61,20 @@ namespace libsemigroups {
   };
 
   namespace presentation {
+    // TODO this entire block of code should go at the end of the file
+
+    inline word_type range(size_t first, size_t last, size_t step = 1) {
+      word_type result;
+      result.reserve((last - first) / step);
+      for (letter_type i = first; i < last; i += step) {
+        result.push_back(i);
+      }
+      return result;
+    }
+
+    inline word_type range(size_t last) {
+      return range(0, last);
+    }
 
     //! \anchor operator_plus
     //! Concatenate two words or strings.
@@ -75,7 +89,8 @@ namespace libsemigroups {
     //! \exceptions
     //! \noexcept
     word_type operator+(word_type const& u, word_type const& w);
-    word_type operator+(word_type const& u, size_t w);
+    word_type operator+(word_type const& u, letter_type w);
+    word_type operator+(letter_type w, word_type const& u);
 
     //! Concatenate a word/string with another word/string in-place.
     //!
@@ -91,6 +106,9 @@ namespace libsemigroups {
     void        operator+=(word_type& u, word_type const& w);
     inline void operator+=(word_type& u, letter_type a) {
       u.push_back(a);
+    }
+    inline void operator+=(letter_type a, word_type& u) {
+      u.insert(u.begin(), a);
     }
 
     //! Take a power of a word or string.

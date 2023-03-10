@@ -844,17 +844,18 @@ namespace libsemigroups {
                             "053",
                             "order_preserving_monoid(5)",
                             "[fpsemi-examples][quick]") {
-      auto   rg = ReportGuard(REPORT);
-      size_t n  = 5;
-      auto   s  = order_preserving_monoid(n);
-      auto   p  = make<Presentation<word_type>>(s);
+      using literals::operator""_w;
+      auto            rg = ReportGuard(REPORT);
+      size_t          n  = 5;
+      auto            s  = order_preserving_monoid(n);
+      auto            p  = make<Presentation<word_type>>(s);
       p.alphabet(2 * n - 1);
       presentation::add_identity_rules(p, 2 * n - 2);
       p.validate();
 
       ToddCoxeter tc(congruence_kind::twosided);
       tc.set_number_of_generators(2 * n - 1);
-      for (size_t i = 0; i < p.rules.size() - 1; i += 2) {
+      for (size_t i = 0; i < p.rules.size(); i += 2) {
         tc.add_pair(p.rules[i], p.rules[i + 1]);
       }
       REQUIRE(tc.number_of_classes() == 126);
@@ -926,7 +927,8 @@ namespace libsemigroups {
                             "058",
                             "cyclic_inverse_monoid Fernandes index 0",
                             "[fpsemi-examples][quick][no-valgrind]") {
-      auto rg = ReportGuard(REPORT);
+      using literals::operator""_w;
+      auto            rg = ReportGuard(REPORT);
       for (size_t n = 3; n < 10; ++n) {
         auto p = make<Presentation<word_type>>(
             fpsemigroup::cyclic_inverse_monoid(n, author::Fernandes, 0));
@@ -936,6 +938,16 @@ namespace libsemigroups {
         presentation::add_identity_rules(p, n + 1);
         p.alphabet_from_rules();
         p.validate();
+
+        if (n == 3) {
+          REQUIRE(p.rules
+                  == std::vector<word_type>(
+                      {000_w, 4_w,  11_w, 1_w,  22_w,   2_w,   33_w, 3_w,
+                       12_w,  21_w, 13_w, 31_w, 23_w,   32_w,  01_w, 30_w,
+                       02_w,  10_w, 03_w, 20_w, 0123_w, 123_w, 04_w, 0_w,
+                       40_w,  0_w,  14_w, 1_w,  41_w,   1_w,   24_w, 2_w,
+                       42_w,  2_w,  34_w, 3_w,  43_w,   3_w,   44_w, 4_w}));
+        }
 
         ToddCoxeter tc(congruence_kind::twosided);
         tc.set_number_of_generators(n + 2);

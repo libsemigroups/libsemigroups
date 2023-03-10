@@ -29,6 +29,7 @@
 #include "libsemigroups/exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
 #include "libsemigroups/present.hpp"
 #include "libsemigroups/types.hpp"  // for word_type, relation_type
+#include "libsemigroups/wislo.hpp"
 #include "libsemigroups/word.hpp"
 
 namespace libsemigroups {
@@ -61,6 +62,7 @@ namespace libsemigroups {
       }
       return t;
     }
+
     word_type operator^(word_type const& w, size_t exp) {
       word_type result;
       for (size_t i = 0; i < exp; ++i) {
@@ -84,6 +86,47 @@ namespace libsemigroups {
           relations.emplace_back(id * alphabet[i], alphabet[i]);
         } else {
           relations.emplace_back(id * id, id);
+        }
+      }
+    }
+
+    void add_idempotent_rules(std::vector<relation_type>& relations,
+                              word_type const&            letters) {
+      using presentation::operator+;
+      for (auto x : letters) {
+        word_type w = {x};
+        relations.emplace_back(w + w, w);
+      }
+    }
+
+    void add_commutes_rules(std::vector<relation_type>& relations,
+                            word_type const&            letters) {
+      using presentation::operator+;
+      size_t const        n = letters.size();
+
+      for (size_t i = 0; i < n - 1; ++i) {
+        word_type u = {letters[i]};
+        for (size_t j = i + 1; j < n; ++j) {
+          word_type v = {letters[j]};
+          relations.emplace_back(u + v, v + u);
+        }
+      }
+    }
+
+    void add_commutes_rules(std::vector<relation_type>&      relations,
+                            word_type const&                 letters1,
+                            std::initializer_list<word_type> letters2) {
+      using presentation::operator+;
+      size_t const        m = letters1.size();
+      size_t const        n = letters2.size();
+      // TODO so far this assumes that letters1 and letters2 have empty
+      // intersection
+
+      for (size_t i = 0; i < m; ++i) {
+        word_type u = {letters1[i]};
+        for (size_t j = 0; j < n; ++j) {
+          word_type v = *(letters2.begin() + j);
+          relations.emplace_back(u + v, v + u);
         }
       }
     }
@@ -214,6 +257,7 @@ namespace libsemigroups {
     using presentation::prod;
     using presentation::operator+;
     using presentation::operator+=;
+    using presentation::range;
 
     std::vector<relation_type> stellar_monoid(size_t l) {
       if (l < 2) {
@@ -235,21 +279,19 @@ namespace libsemigroups {
     }
 
     std::vector<relation_type> fibonacci_semigroup(size_t r, size_t n) {
-      if (n == 0) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "expected 2nd argument to be strictly positive, found %llu",
-            uint64_t(n));
-      } else if (r == 0) {
+      if (r == 0) {
         LIBSEMIGROUPS_EXCEPTION(
             "expected 1st argument to be strictly positive, found %llu",
             uint64_t(r));
+      } else if (n == 0) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "expected 2nd argument to be strictly positive, found %llu",
+            uint64_t(n));
       }
       std::vector<relation_type> result;
       for (size_t i = 0; i < n; ++i) {
-        word_type lhs(r, 0);
-        std::iota(lhs.begin(), lhs.end(), i);
-        std::for_each(lhs.begin(), lhs.end(), [&n](size_t& x) { x %= n; });
-        result.emplace_back(lhs, word_type({(i + r) % n}));
+        result.emplace_back(prod(range(n), i, i + r, 1),
+                            word_type({(i + r) % n}));
       }
       return result;
     }
@@ -507,36 +549,29 @@ namespace libsemigroups {
       if (n < 4) {
         LIBSEMIGROUPS_EXCEPTION(
             "expected 1st argument to be at least 4, found %llu", uint64_t(n));
+      } else if (val != author::Moore) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "expected 2nd argument to be author::Moore, found %s",
+            detail::to_string(val).c_str());
       }
-      if (val == author::Moore) {
-        std::vector<relation_type> result;
-        std::vector<word_type>     a;
 
-        for (size_t i = 0; i <= n - 3; ++i) {
-          a.push_back(word_type({i}));
-        }
+      std::vector<relation_type> result;
+      result.emplace_back(pow({0}, 3), ""_w);
 
-        result.emplace_back(a[0] ^ 3, word_type({}));
-
-        for (size_t j = 1; j <= n - 3; ++j) {
-          result.emplace_back(a[j] ^ 2, word_type({}));
-        }
-
-        for (size_t i = 1; i <= n - 3; ++i) {
-          result.emplace_back((a[i - 1] * a[i]) ^ 3, word_type({}));
-        }
-
-        for (size_t k = 2; k <= n - 3; ++k) {
-          for (size_t j = 0; j <= k - 2; ++j) {
-            result.emplace_back((a[j] * a[k]) ^ 2, word_type({}));
-          }
-        }
-
-        return result;
+      for (size_t j = 1; j <= n - 3; ++j) {
+        result.emplace_back(pow({j}, 2), ""_w);
       }
-      LIBSEMIGROUPS_EXCEPTION(
-          "expected 2nd argument to be author::Moore, found %s",
-          detail::to_string(val).c_str());
+      for (size_t i = 1; i <= n - 3; ++i) {
+        result.emplace_back(pow({i - 1, i}, 3), ""_w);
+      }
+
+      for (size_t k = 2; k <= n - 3; ++k) {
+        for (size_t j = 0; j <= k - 2; ++j) {
+          result.emplace_back(pow({j, k}, 2), ""_w);
+        }
+      }
+
+      return result;
     }
 
     // From https://core.ac.uk/reader/33304940
@@ -545,80 +580,79 @@ namespace libsemigroups {
       if (n < 3) {
         LIBSEMIGROUPS_EXCEPTION(
             "expected 1st argument to be at least 3, found %llu", uint64_t(n));
-      }
-      if (val == author::Easdown + author::East + author::FitzGerald) {
-        auto mij = [](size_t i, size_t j) {
-          if (i == j) {
-            return 1;
-          } else if (std::abs(static_cast<int64_t>(i) - static_cast<int64_t>(j))
-                     == 1) {
-            return 3;
-          } else {
-            return 2;
-          }
-        };
-
-        std::vector<word_type> alphabet;
-        for (size_t i = 0; i < n + 1; ++i) {
-          alphabet.push_back({i});
-        }
-        auto                       x = alphabet.back();
-        auto                       e = alphabet.front();
-        std::vector<relation_type> result;
-        add_monoid_relations(alphabet, e, result);
-        auto s = alphabet.cbegin();
-
-        // R1
-        for (size_t i = 1; i <= n - 1; ++i) {
-          for (size_t j = 1; j <= n - 1; ++j) {
-            result.emplace_back((s[i] * s[j]) ^ mij(i, j), e);
-          }
-        }
-        // R2
-        result.emplace_back(x ^ 3, x);
-        // R3
-        result.emplace_back(x * s[1], x);
-        result.emplace_back(s[1] * x, x);
-        // R4
-        result.emplace_back(x * s[2] * x, x * s[2] * x * s[2]);
-        result.emplace_back(x * s[2] * x * s[2], s[2] * x * s[2] * x);
-        result.emplace_back(s[2] * x * s[2] * x, x * s[2] * (x ^ 2));
-        result.emplace_back(x * s[2] * (x ^ 2), (x ^ 2) * s[2] * x);
-        if (n == 3) {
-          return result;
-        }
-        // R5
-        word_type const sigma = s[2] * s[3] * s[1] * s[2];
-        result.emplace_back((x ^ 2) * sigma * (x ^ 2) * sigma,
-                            sigma * (x ^ 2) * sigma * (x ^ 2));
-        result.emplace_back(sigma * (x ^ 2) * sigma * (x ^ 2),
-                            x * s[2] * s[3] * s[2] * x);
-        // R6
-        std::vector<word_type> l = {{}, {}, x * s[2] * s[1]};
-        for (size_t i = 3; i <= n - 1; ++i) {
-          l.push_back(s[i] * l[i - 1] * s[i] * s[i - 1]);
-        }
-        std::vector<word_type> y = {{}, {}, {}, x};
-        for (size_t i = 4; i <= n; ++i) {
-          y.push_back(l[i - 1] * y[i - 1] * s[i - 1]);
-        }
-        for (size_t i = 3; i <= n - 1; ++i) {
-          result.emplace_back(y[i] * s[i] * y[i], s[i] * y[i] * s[i]);
-        }
-        if (n == 4) {
-          return result;
-        }
-        // R7
-        for (size_t i = 4; i <= n - 1; ++i) {
-          result.emplace_back(x * s[i], s[i] * x);
-        }
-        return result;
-      } else {
+      } else if (val != author::Easdown + author::East + author::FitzGerald) {
         LIBSEMIGROUPS_EXCEPTION(
             "expected 2nd argument to be author::Easdown + author::East + "
             "author::FitzGerald, found %s",
             detail::to_string(val).c_str());
       }
+
+      auto mij = [](size_t i, size_t j) {
+        if (i == j) {
+          return 1;
+        } else if (std::abs(static_cast<int64_t>(i) - static_cast<int64_t>(j))
+                   == 1) {
+          return 3;
+        } else {
+          return 2;
+        }
+      };
+
+      std::vector<word_type> alphabet;
+      for (size_t i = 0; i < n + 1; ++i) {
+        alphabet.push_back({i});
+      }
+      auto                       x = alphabet.back();
+      auto                       e = alphabet.front();
+      std::vector<relation_type> result;
+      add_monoid_relations(alphabet, e, result);
+      auto s = alphabet.cbegin();
+
+      // R1
+      for (size_t i = 1; i <= n - 1; ++i) {
+        for (size_t j = 1; j <= n - 1; ++j) {
+          result.emplace_back(pow(s[i] + s[j], mij(i, j)), e);
+        }
+      }
+      // R2
+      result.emplace_back(pow(x, 3), x);
+      // R3
+      result.emplace_back(x + s[1], x);
+      result.emplace_back(s[1] + x, x);
+      // R4
+      result.emplace_back(x + s[2] + x, x + s[2] + x + s[2]);
+      result.emplace_back(x + s[2] + x + s[2], s[2] + x + s[2] + x);
+      result.emplace_back(s[2] + x + s[2] + x, x + s[2] + (x ^ 2));
+      result.emplace_back(x + s[2] + pow(x, 2), pow(x, 2) + s[2] + x);
+      if (n == 3) {
+        return result;
+      }
+      // R5
+      word_type const sigma = s[2] * s[3] * s[1] * s[2];
+      result.emplace_back(pow(x, 2) + sigma + pow(x, 2) + sigma,
+                          sigma + pow(x, 2) + sigma + pow(x, 2));
+      result.emplace_back(sigma + pow(x, 2) + sigma + pow(x, 2),
+                          x + s[2] + s[3] + s[2] + x);
+      // R6
+      std::vector<word_type> l = {{}, {}, x * s[2] * s[1]};
+      for (size_t i = 3; i <= n - 1; ++i) {
+        l.push_back(s[i] + l[i - 1] + s[i] + s[i - 1]);
+      }
+      std::vector<word_type> y = {{}, {}, {}, x};
+      for (size_t i = 4; i <= n; ++i) {
+        y.push_back(l[i - 1] + y[i - 1] + s[i - 1]);
+      }
+      for (size_t i = 3; i <= n - 1; ++i) {
+        result.emplace_back(y[i] + s[i] + y[i], s[i] + y[i] + s[i]);
+      }
+      if (n == 4) {
+        return result;
+      }
+      // R7
+      for (size_t i = 4; i <= n - 1; ++i) {
+        result.emplace_back(x + s[i], s[i] + x);
+      }
+      return result;
     }
 
     std::vector<relation_type> uniform_block_bijection_monoid(size_t n,
@@ -1158,50 +1192,21 @@ namespace libsemigroups {
                                   "argument is author::Machine, found %llu",
                                   uint64_t(n));
         }
-        return {{{0, 0}, {}},
-                {{0, 3}, {3}},
-                {{2, 2}, {2}},
-                {{2, 3}, {2}},
-                {{3, 2}, {3}},
-                {{3, 3}, {3}},
-                {{0, 1, 0}, {1, 1}},
-                {{0, 1, 1}, {1, 0}},
-                {{1, 0, 1}, {0}},
-                {{1, 1, 0}, {0, 1}},
-                {{1, 1, 1}, {}},
-                {{1, 1, 3}, {0, 1, 3}},
-                {{2, 0, 1}, {0, 1, 2}},
-                {{3, 0, 2}, {2, 0, 2}},
-                {{3, 1, 2}, {2, 1, 2}},
-                {{0, 1, 2, 0}, {2, 1, 1}},
-                {{0, 1, 2, 1}, {2, 1, 0}},
-                {{0, 2, 0, 2}, {2, 0, 2}},
-                {{0, 2, 1, 0}, {1, 2, 1}},
-                {{0, 2, 1, 1}, {1, 2, 0}},
-                {{0, 2, 1, 2}, {2, 1, 2}},
-                {{1, 2, 1, 0}, {0, 2, 1}},
-                {{1, 2, 1, 1}, {0, 2, 0}},
-                {{1, 2, 1, 3}, {0, 2, 1, 3}},
-                {{1, 3, 1, 3}, {3, 1, 3}},
-                {{2, 0, 2, 0}, {2, 0, 2}},
-                {{2, 0, 2, 1}, {2, 1, 2}},
-                {{2, 1, 2, 1}, {2, 1, 2, 0}},
-                {{2, 1, 3, 1}, {2, 1, 3, 0}},
-                {{3, 0, 1, 2}, {3, 0, 1}},
-                {{3, 0, 1, 3}, {3, 0, 1}},
-                {{3, 1, 3, 1}, {3, 1, 3, 0}},
-                {{1, 0, 2, 1, 3}, {3, 1, 0, 2}},
-                {{1, 1, 2, 0, 2}, {2, 1, 1, 2}},
-                {{1, 1, 2, 1, 2}, {2, 1, 0, 2}},
-                {{1, 3, 1, 0, 2}, {2, 1, 3}},
-                {{2, 1, 0, 2, 1}, {2, 1, 0, 2, 0}},
-                {{2, 1, 1, 2, 0}, {2, 1, 1, 2}},
-                {{2, 1, 1, 2, 1}, {2, 1, 0, 2}},
-                {{2, 1, 3, 0, 1}, {1, 3, 1, 1, 2}},
-                {{3, 1, 0, 2, 1}, {3, 1, 0, 2, 0}},
-                {{3, 1, 1, 2, 0}, {3, 1, 1, 2}},
-                {{3, 1, 1, 2, 1}, {3, 1, 0, 2}},
-                {{1, 2, 1, 2, 0, 2}, {2, 1, 2, 0, 2}}};
+        return {{00_w, {}},         {03_w, 3_w},        {22_w, 2_w},
+                {23_w, 2_w},        {32_w, 3_w},        {33_w, 3_w},
+                {010_w, 11_w},      {011_w, 10_w},      {101_w, 0_w},
+                {110_w, 01_w},      {111_w, {}},        {113_w, 013_w},
+                {201_w, 012_w},     {302_w, 202_w},     {312_w, 212_w},
+                {0120_w, 211_w},    {0121_w, 210_w},    {0202_w, 202_w},
+                {0210_w, 121_w},    {0211_w, 120_w},    {0212_w, 212_w},
+                {1210_w, 021_w},    {1211_w, 020_w},    {1213_w, 0213_w},
+                {1313_w, 313_w},    {2020_w, 202_w},    {2021_w, 212_w},
+                {2121_w, 2120_w},   {2131_w, 2130_w},   {3012_w, 301_w},
+                {3013_w, 301_w},    {3131_w, 3130_w},   {10213_w, 3102_w},
+                {11202_w, 2112_w},  {11212_w, 2102_w},  {13102_w, 213_w},
+                {21021_w, 21020_w}, {21120_w, 2112_w},  {21121_w, 2102_w},
+                {21301_w, 13112_w}, {31021_w, 31020_w}, {31120_w, 3112_w},
+                {31121_w, 3102_w},  {121202_w, 21202_w}};
       } else if (val == author::Sutov) {
         // From Theorem 9.4.1, p169, (Ganyushkin + Mazorchuk)
         // https://link.springer.com/book/10.1007/978-1-84800-281-4
@@ -1234,39 +1239,38 @@ namespace libsemigroups {
     // https://link.springer.com/book/10.1007/978-1-84800-281-4 (Ganyushkin +
     // Mazorchuk)
     std::vector<relation_type> symmetric_inverse_monoid(size_t n, author val) {
-      if (val == author::Sutov) {
-        if (n < 4) {
-          LIBSEMIGROUPS_EXCEPTION(
-              "the 1st argument must be at least 4 when the "
-              "2nd argument is author::Sutov, found %llu",
-              uint64_t(n));
-        }
-        auto result = symmetric_group(n, author::Carmichael);
-
-        std::vector<word_type> pi;
-        for (size_t i = 0; i <= n - 2; ++i) {
-          pi.push_back({i});
-        }
-        std::vector<word_type> epsilon;
-        epsilon.push_back({n - 1});
-        for (size_t i = 0; i <= n - 2; ++i) {
-          epsilon.push_back(pi[i] * epsilon[0] * pi[i]);
-        }
-
-        result.emplace_back(epsilon[0] ^ 2, epsilon[0]);
-        result.emplace_back(epsilon[0] * epsilon[1], epsilon[1] * epsilon[0]);
-
-        for (size_t k = 1; k <= n - 2; ++k) {
-          result.emplace_back(epsilon[1] * pi[k], pi[k] * epsilon[1]);
-          result.emplace_back(epsilon[k + 1] * pi[0], pi[0] * epsilon[k + 1]);
-        }
-        result.emplace_back(epsilon[1] * epsilon[0] * pi[0],
-                            epsilon[1] * epsilon[0]);
-        return result;
+      if (val != author::Sutov) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "expected 2nd argument to be author::Sutov, found %s",
+            detail::to_string(val).c_str());
+      } else if (n < 4) {
+        LIBSEMIGROUPS_EXCEPTION("the 1st argument must be at least 4 when the "
+                                "2nd argument is author::Sutov, found %llu",
+                                uint64_t(n));
       }
-      LIBSEMIGROUPS_EXCEPTION(
-          "expected 2nd argument to be author::Sutov, found %s",
-          detail::to_string(val).c_str());
+      auto result = symmetric_group(n, author::Carmichael);
+
+      std::vector<word_type> pi;
+      for (size_t i = 0; i <= n - 2; ++i) {
+        pi.push_back({i});
+      }
+      std::vector<word_type> epsilon;
+      epsilon.push_back({n - 1});
+      for (size_t i = 0; i <= n - 2; ++i) {
+        epsilon.push_back(pi[i] + epsilon[0] + pi[i]);
+      }
+
+      result.emplace_back(pow(epsilon[0], 2), epsilon[0]);
+      result.emplace_back(epsilon[0] + epsilon[1], epsilon[1] + epsilon[0]);
+
+      for (size_t k = 1; k <= n - 2; ++k) {
+        // TODO use add_commutes_rules
+        result.emplace_back(epsilon[1] + pi[k], pi[k] + epsilon[1]);
+        result.emplace_back(epsilon[k + 1] + pi[0], pi[0] + epsilon[k + 1]);
+      }
+      result.emplace_back(epsilon[1] + epsilon[0] + pi[0],
+                          epsilon[1] + epsilon[0]);
+      return result;
     }
 
     // Chinese monoid
@@ -1294,65 +1298,53 @@ namespace libsemigroups {
     }
 
     std::vector<relation_type> monogenic_semigroup(size_t m, size_t r) {
-      std::vector<relation_type> result;
       if (r == 0) {
         LIBSEMIGROUPS_EXCEPTION(
             "expected 2nd argument to be strictly positive, found %llu",
             uint64_t(r));
       }
-      result.emplace_back(word_type({0}) ^ (m + r), word_type({0}) ^ m);
-      return result;
+      return {{pow({0}, (m + r)), pow({0}, m)}};
     }
 
+    // TODO reference
     std::vector<relation_type> order_preserving_monoid(size_t n) {
       if (n < 3) {
         LIBSEMIGROUPS_EXCEPTION(
             "expected argument to be at least 3, found %llu", uint64_t(n));
       }
-      std::vector<word_type> u;
-      std::vector<word_type> v;
-
-      for (size_t i = 0; i <= n - 2; ++i) {
-        u.push_back({i});
-        v.push_back({n - 1 + i});
-      }
+      std::vector<word_type> u(cbegin_wislo(n - 1, {0}, {0, 0}),
+                               cend_wislo(n - 1, {0}, {0, 0}));
+      std::vector<word_type> v(cbegin_wislo(2 * n - 2, {n - 1}, {0, 0}),
+                               cend_wislo(2 * n - 2, {n - 1}, {0, 0}));
 
       std::vector<relation_type> result;
 
-      // relations 1
       for (size_t i = 1; i <= n - 2; ++i) {
-        result.emplace_back(v[n - 2 - i] * u[i], u[i] * v[n - 1 - i]);
+        // relations 1
+        result.emplace_back(v[n - 2 - i] + u[i], u[i] + v[n - 1 - i]);
+        // relations 2
+        result.emplace_back(u[n - 2 - i] + v[i], v[i] + u[n - 1 - i]);
       }
 
-      // relations 2
-      for (size_t i = 1; i <= n - 2; ++i) {
-        result.emplace_back(u[n - 2 - i] * v[i], v[i] * u[n - 1 - i]);
-      }
-
-      // relations 3
       for (size_t i = 0; i <= n - 2; ++i) {
-        result.emplace_back(v[n - 2 - i] * u[i], u[i]);
-      }
+        // relations 3
+        result.emplace_back(v[n - 2 - i] + u[i], u[i]);
+        // relations 4
+        result.emplace_back(u[n - 2 - i] + v[i], v[i]);
 
-      // relations 4
-      for (size_t i = 0; i <= n - 2; ++i) {
-        result.emplace_back(u[n - 2 - i] * v[i], v[i]);
-      }
-
-      // relations 5
-      for (size_t i = 0; i <= n - 2; ++i) {
+        // relations 5
         for (size_t j = 0; j <= n - 2; ++j) {
           if (j != (n - 2) - i && j != n - i - 1) {
-            result.emplace_back(u[i] * v[j], v[j] * u[i]);
+            result.emplace_back(u[i] + v[j], v[j] + u[i]);
           }
         }
       }
 
       // relation 6
-      result.emplace_back(u[0] * u[1] * u[0], u[0] * u[1]);
+      result.emplace_back(u[0] + u[1] + u[0], u[0] + u[1]);
 
       // relation 7
-      result.emplace_back(v[0] * v[1] * v[0], v[0] * v[1]);
+      result.emplace_back(v[0] + v[1] + v[0], v[0] + v[1]);
 
       return result;
     }
@@ -1360,77 +1352,64 @@ namespace libsemigroups {
     std::vector<relation_type> cyclic_inverse_monoid(size_t n,
                                                      author val,
                                                      size_t index) {
-      if (val == author::Fernandes) {
-        if (n < 3) {
-          LIBSEMIGROUPS_EXCEPTION(
-              "the 1st argument must be at least 3 where the 2nd argument is "
-              "author::Fernandes, found %llu",
-              uint64_t(n));
-        }
-        // See Theorem 2.6 of https://arxiv.org/pdf/2211.02155.pdf
-        if (index == 0) {
-          word_type              g = {0};
-          std::vector<word_type> e(n, {0});
-          size_t                 inc = 1;
-          std::for_each(e.begin(), e.end(), [&inc](auto& w) { w[0] += inc++; });
-          std::vector<relation_type> result;
-
-          // R1
-          result.emplace_back(g ^ n, word_type({}));
-          // R2
-          for (size_t i = 0; i < n; ++i) {
-            result.emplace_back(e[i] ^ 2, e[i]);
-          }
-          // R3
-          for (size_t i = 0; i < n - 1; ++i) {
-            for (size_t j = i + 1; j < n; ++j) {
-              result.emplace_back(e[i] * e[j], e[j] * e[i]);
-            }
-          }
-
-          // R4
-          result.emplace_back(g * e[0], e[n - 1] * g);
-          for (size_t i = 0; i < n - 1; ++i) {
-            result.emplace_back(g * e[i + 1], e[i] * g);
-          }
-
-          // R5
-          word_type prod(n, 0);
-          std::iota(prod.begin(), prod.end(), size_t(1));
-          result.emplace_back(g * prod, prod);
-
-          return result;
-        }
-        // See Theorem 2.7 of https://arxiv.org/pdf/2211.02155.pdf
-        if (index == 1) {
-          word_type g = {0};
-          word_type e = {1};
-
-          std::vector<relation_type> result;
-
-          result.emplace_back(g ^ n, word_type({}));  // relation Q1
-          result.emplace_back(e ^ 2, e);              // relation Q2
-
-          // relations Q3
-          for (size_t j = 2; j <= n; ++j)
-            for (size_t i = 1; i < j; ++i) {
-              result.emplace_back(
-                  e * (pow(g, n - j + i)) * e * (pow(g, n - i + j)),
-                  (pow(g, n - j + i)) * e * (pow(g, n - i + j)) * e);
-            }
-
-          result.emplace_back(g * (e * (pow(g, n - 1)) ^ n),
-                              (e * (pow(g, n - 1))) ^ n);  // relation Q4
-
-          return result;
-        }
-        LIBSEMIGROUPS_EXCEPTION("3rd argument must be 0 or 1 where 2nd "
+      if (val != author::Fernandes) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "expected 2nd argument to be author::Fernandes, found %s",
+            detail::to_string(val).c_str());
+      }
+      if (n < 3) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "the 1st argument must be at least 3 when the 2nd argument is "
+            "author::Fernandes, found %llu",
+            uint64_t(n));
+      } else if (index != 0 && index != 1) {
+        LIBSEMIGROUPS_EXCEPTION("the 3rd argument must be 0 or 1 when the 2nd "
                                 "argument is author::Fernandes, found %llu",
                                 uint64_t(n));
       }
-      LIBSEMIGROUPS_EXCEPTION(
-          "expected 2nd argument to be author::Fernandes, found %s",
-          detail::to_string(val).c_str());
+
+      std::vector<relation_type> result;
+      auto                       g = 0_w;
+      // See Theorem 2.6 of https://arxiv.org/pdf/2211.02155.pdf
+      if (index == 0) {
+        word_type e = range(1, n + 1);
+
+        // R1
+        result.emplace_back(pow(g, n), ""_w);
+
+        // R2
+        add_idempotent_rules(result, e);
+
+        // R3
+        add_commutes_rules(result, e);
+
+        // R4
+        result.emplace_back(g + e[0], e[n - 1] + g);
+        for (size_t i = 0; i < n - 1; ++i) {
+          result.emplace_back(g + e[i + 1], e[i] + g);
+        }
+
+        // R5
+        result.emplace_back(g + e, e);
+
+      } else if (index == 1) {
+        // See Theorem 2.7 of https://arxiv.org/pdf/2211.02155.pdf
+        auto e = 1_w;
+
+        result.emplace_back(pow(g, n), ""_w);  // relation Q1
+        result.emplace_back(pow(e, 2), e);     // relation Q2
+
+        // relations Q3
+        for (size_t j = 2; j <= n; ++j) {
+          for (size_t i = 1; i < j; ++i) {
+            result.emplace_back(e + pow(g, n - j + i) + e + pow(g, n - i + j),
+                                pow(g, n - j + i) + e + pow(g, n - i + j) + e);
+          }
+        }
+        result.emplace_back(g + pow(e + pow(g, n - 1), n),
+                            pow(e + pow(g, n - 1), n));  // relation Q4
+      }
+      return result;
     }
 
     // See Theorem 2.17 of https://arxiv.org/pdf/2211.02155.pdf
@@ -1440,21 +1419,13 @@ namespace libsemigroups {
         LIBSEMIGROUPS_EXCEPTION(
             "expected argument to be at least 3, found %llu", uint64_t(n));
       }
-      word_type x = 0_w;
-      word_type y = 1_w;
-
-      std::vector<word_type> e;
-
-      for (size_t i = 2; i <= n - 1; ++i) {
-        e.push_back({i});
-      }
 
       std::vector<relation_type> result;
 
+      word_type x = 0_w, y = 1_w, e = range(2, n);
+
       // relations V1
-      for (size_t i = 0; i <= n - 3; ++i) {
-        result.emplace_back(pow(e[i], 2), e[i]);
-      }
+      add_idempotent_rules(result, e);
 
       // relations V2
       result.emplace_back(x + y + x, x);
@@ -1464,17 +1435,9 @@ namespace libsemigroups {
       result.emplace_back(y + pow(x, 2) + y, x + pow(y, 2) + x);
 
       // relations V4
-      for (size_t j = 1; j <= n - 3; ++j) {
-        for (size_t i = 0; i < j; ++i) {
-          result.emplace_back(e[i] + e[j], e[j] + e[i]);
-        }
-      }
-
-      // relations V5
-      for (size_t i = 0; i <= n - 3; ++i) {
-        result.emplace_back(x + y + e[i], e[i] + x + y);
-        result.emplace_back(y + x + e[i], e[i] + y + x);
-      }
+      add_commutes_rules(result, e);
+      add_commutes_rules(result, e, {x + y});
+      add_commutes_rules(result, e, {y + x});
 
       // relations V6
       for (size_t i = 0; i <= n - 4; ++i) {
