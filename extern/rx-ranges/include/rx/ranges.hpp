@@ -2667,10 +2667,10 @@ namespace RX_NAMESPACE {
     return input_range_iterator(as_input_range(std::forward<R>(range)));
   }
   template <class R, class = std::enable_if_t<is_input_or_sink_v<R>>>
-  [[nodiscard]] constexpr auto end(const R&) noexcept {
+  [[nodiscard]] constexpr auto end(R&& range) noexcept {
     // Note: The first argument may be moved-from, but that's OK, we just need
     // its type.
-    return input_range_iterator<R>{};
+    return input_range_iterator(as_input_range(std::forward<R>(range)));
   }
 
 }  // namespace RX_NAMESPACE
