@@ -157,17 +157,7 @@ namespace libsemigroups {
 
     void stats_check_point() const;
 
-    node_type new_node() {
-      if (NodeManager_::has_free_nodes()) {
-        node_type const c = NodeManager_::new_active_node();
-        // Clear the new node's row in each table
-        BaseDigraph::clear_sources_and_targets(c);
-        return c;
-      } else {
-        reserve(2 * NodeManager_::node_capacity());
-        return NodeManager_::new_active_node();
-      }
-    }
+    node_type new_node();
 
     void permute_nodes_nc(std::vector<node_type> const& p,
                           std::vector<node_type> const& q) {

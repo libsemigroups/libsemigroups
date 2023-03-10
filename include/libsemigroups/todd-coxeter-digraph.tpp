@@ -98,6 +98,20 @@ namespace libsemigroups {
   }
 
   template <typename BaseDigraph>
+  typename NodeManagedDigraph<BaseDigraph>::node_type
+  NodeManagedDigraph<BaseDigraph>::new_node() {
+    if (NodeManager_::has_free_nodes()) {
+      node_type const c = NodeManager_::new_active_node();
+      // Clear the new node's row in each table
+      BaseDigraph::clear_sources_and_targets(c);
+      return c;
+    } else {
+      reserve(2 * NodeManager_::node_capacity());
+      return NodeManager_::new_active_node();
+    }
+  }
+
+  template <typename BaseDigraph>
   void NodeManagedDigraph<BaseDigraph>::report_active_nodes() const {
     using detail::group_digits;
     using detail::signed_group_digits;
