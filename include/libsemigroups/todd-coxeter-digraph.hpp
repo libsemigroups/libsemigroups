@@ -92,8 +92,9 @@ namespace libsemigroups {
     }
 
     // TODO corresponding init + rvalue ref version
+    // TODO this should be marked explicit but then compilation fails
     template <typename N>
-    explicit NodeManagedDigraph(ActionDigraph<N> const& ad)
+    NodeManagedDigraph(ActionDigraph<N> const& ad)
         : BaseDigraph(ad), NodeManager_() {
       // NodeManager always has one node active
       NodeManager_::add_active_nodes(ActionDigraph<node_type>::number_of_nodes()
