@@ -42,8 +42,6 @@ namespace libsemigroups {
     FelschDigraphSettings_::init();
     _felsch_tree.init(c);
     _felsch_tree_initted = false;
-    // _felsch_tree.add_relations(_presentation.rules.cbegin(),
-    //                           _presentation.rules.cend());
     return *this;
   }
 
@@ -54,11 +52,8 @@ namespace libsemigroups {
                                       p.alphabet().size()),
         FelschDigraphSettings<FelschDigraph<Word, Node, Definitions>>(),
         _felsch_tree(p.alphabet().size()),
-        _presentation(p),
-        _felsch_tree_initted(false) {
-    // _felsch_tree.add_relations(_presentation.rules.cbegin(),
-    //                            _presentation.rules.cend());
-  }
+        _felsch_tree_initted(false),
+        _presentation(p) {}
 
   template <typename Word, typename Node, typename Definitions>
   FelschDigraph<Word, Node, Definitions>&
@@ -77,8 +72,6 @@ namespace libsemigroups {
         _felsch_tree(p.alphabet().size()),
         _presentation(std::move(p)) {
     _felsch_tree_initted = false;
-    // _felsch_tree.add_relations(_presentation.rules.cbegin(),
-    //                            _presentation.rules.cend());
   }
 
   template <typename Word, typename Node, typename Definitions>
@@ -198,15 +191,13 @@ namespace libsemigroups {
     }
     _felsch_tree.init(c);
     _felsch_tree_initted = false;
-    // _felsch_tree.add_relations(_presentation.rules.cbegin(),
-    //                            _presentation.rules.cend());
     return *this;
   }
 
   template <typename Word, typename Node, typename Definitions>
   FelschDigraph<Word, Node, Definitions>&
   FelschDigraph<Word, Node, Definitions>::presentation(Presentation<Word>&& p) {
-    // TODO avoid code dupl with previous fn
+    // TODO avoid code dupl in constructors and init
     _presentation = std::move(p);
     size_t c      = _presentation.alphabet().size();
     if (c > ActionDigraph<Node>::out_degree()) {
@@ -215,8 +206,6 @@ namespace libsemigroups {
     }
     _felsch_tree.init(c);
     _felsch_tree_initted = false;
-    // _felsch_tree.add_relations(_presentation.rules.cbegin(),
-    //                            _presentation.rules.cend());
     return *this;
   }
 
