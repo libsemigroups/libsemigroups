@@ -129,13 +129,25 @@ namespace libsemigroups {
     //!
     //! \warning
     //! No checks on the arguments of this function are performed.
+    namespace detail {  // TODO put this in stl or somewhere else
+      template <typename A,
+                typename B,
+                typename = decltype(std::declval<A>() <= std::declval<B>())>
+      struct has_less_equal : std::true_type {};
+    }  // namespace detail
+
     template <typename T, typename S>
     node_type<T> follow_path_nc(ActionDigraph<T> const& ad,
                                 node_type<T> const      from,
                                 S                       first,
                                 S                       last) noexcept {
+      if constexpr (detail::has_less_equal<S, S>::value) {
+        if (last <= first) {
+          return from;
+        }
+      }
       node_type<T> to = from;
-      for (auto it = first; it < last && to != UNDEFINED; ++it) {
+      for (auto it = first; it != last && to != UNDEFINED; ++it) {
         to = ad.unsafe_neighbor(to, *it);
       }
       return to;
