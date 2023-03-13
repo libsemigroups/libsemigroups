@@ -27,9 +27,13 @@
 #include <numeric>    // for iota
 
 #include "libsemigroups/exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
-#include "libsemigroups/types.hpp"      // for word_type, relation_type
+#include "libsemigroups/present.hpp"
+#include "libsemigroups/types.hpp"  // for word_type, relation_type
+#include "libsemigroups/wislo.hpp"
+#include "libsemigroups/word.hpp"
 
 namespace libsemigroups {
+
   namespace {
     template <typename T>
     std::vector<T> concat(std::vector<T> lhs, const std::vector<T>& rhs) {
@@ -58,6 +62,7 @@ namespace libsemigroups {
       }
       return t;
     }
+
     word_type operator^(word_type const& w, size_t exp) {
       word_type result;
       for (size_t i = 0; i < exp; ++i) {
@@ -84,6 +89,48 @@ namespace libsemigroups {
         }
       }
     }
+
+    void add_idempotent_rules(std::vector<relation_type>& relations,
+                              word_type const&            letters) {
+      using presentation::operator+;
+      for (auto x : letters) {
+        word_type w = {x};
+        relations.emplace_back(w + w, w);
+      }
+    }
+
+    void add_commutes_rules(std::vector<relation_type>& relations,
+                            word_type const&            letters) {
+      using presentation::operator+;
+      size_t const        n = letters.size();
+
+      for (size_t i = 0; i < n - 1; ++i) {
+        word_type u = {letters[i]};
+        for (size_t j = i + 1; j < n; ++j) {
+          word_type v = {letters[j]};
+          relations.emplace_back(u + v, v + u);
+        }
+      }
+    }
+
+    void add_commutes_rules(std::vector<relation_type>&      relations,
+                            word_type const&                 letters1,
+                            std::initializer_list<word_type> letters2) {
+      using presentation::operator+;
+      size_t const        m = letters1.size();
+      size_t const        n = letters2.size();
+      // TODO so far this assumes that letters1 and letters2 have empty
+      // intersection
+
+      for (size_t i = 0; i < m; ++i) {
+        word_type u = {letters1[i]};
+        for (size_t j = 0; j < n; ++j) {
+          word_type v = *(letters2.begin() + j);
+          relations.emplace_back(u + v, v + u);
+        }
+      }
+    }
+
     void
     add_full_transformation_monoid_relations(std::vector<relation_type>& result,
                                              size_t                      n,
@@ -205,6 +252,13 @@ namespace libsemigroups {
 
   namespace fpsemigroup {
 
+    using literals::operator""_w;
+    using presentation::pow;
+    using presentation::prod;
+    using presentation::operator+;
+    using presentation::operator+=;
+    using presentation::range;
+
     std::vector<relation_type> stellar_monoid(size_t l) {
       if (l < 2) {
         LIBSEMIGROUPS_EXCEPTION(
@@ -225,22 +279,19 @@ namespace libsemigroups {
     }
 
     std::vector<relation_type> fibonacci_semigroup(size_t r, size_t n) {
-      if (n == 0) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "expected 2nd argument to be strictly positive, found %llu",
-            uint64_t(n));
-      }
       if (r == 0) {
         LIBSEMIGROUPS_EXCEPTION(
             "expected 1st argument to be strictly positive, found %llu",
             uint64_t(r));
+      } else if (n == 0) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "expected 2nd argument to be strictly positive, found %llu",
+            uint64_t(n));
       }
       std::vector<relation_type> result;
       for (size_t i = 0; i < n; ++i) {
-        word_type lhs(r, 0);
-        std::iota(lhs.begin(), lhs.end(), i);
-        std::for_each(lhs.begin(), lhs.end(), [&n](size_t& x) { x %= n; });
-        result.emplace_back(lhs, word_type({(i + r) % n}));
+        result.emplace_back(prod(range(n), i, i + r, 1),
+                            word_type({(i + r) % n}));
       }
       return result;
     }
@@ -365,9 +416,10 @@ namespace libsemigroups {
           result.emplace_back(a ^ 2, e);
           result.emplace_back(b ^ n, e);
           result.emplace_back((a * b) ^ (n - 1), e);
-          result.emplace_back((a * (b ^ (n - 1)) * a * b) ^ 3, e);
+          result.emplace_back((a * (pow(b, n - 1)) * a * b) ^ 3, e);
           for (size_t j = 2; j <= n - 2; ++j) {
-            result.emplace_back((a * ((b ^ (n - 1)) ^ j) * a * (b ^ j)) ^ 2, e);
+            result.emplace_back((a * ((pow(b, n - 1)) ^ j) * a * (b ^ j)) ^ 2,
+                                e);
           }
           return result;
         } else if (index == 1) {
@@ -497,36 +549,29 @@ namespace libsemigroups {
       if (n < 4) {
         LIBSEMIGROUPS_EXCEPTION(
             "expected 1st argument to be at least 4, found %llu", uint64_t(n));
+      } else if (val != author::Moore) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "expected 2nd argument to be author::Moore, found %s",
+            detail::to_string(val).c_str());
       }
-      if (val == author::Moore) {
-        std::vector<relation_type> result;
-        std::vector<word_type>     a;
 
-        for (size_t i = 0; i <= n - 3; ++i) {
-          a.push_back(word_type({i}));
-        }
+      std::vector<relation_type> result;
+      result.emplace_back(pow({0}, 3), ""_w);
 
-        result.emplace_back(a[0] ^ 3, word_type({}));
-
-        for (size_t j = 1; j <= n - 3; ++j) {
-          result.emplace_back(a[j] ^ 2, word_type({}));
-        }
-
-        for (size_t i = 1; i <= n - 3; ++i) {
-          result.emplace_back((a[i - 1] * a[i]) ^ 3, word_type({}));
-        }
-
-        for (size_t k = 2; k <= n - 3; ++k) {
-          for (size_t j = 0; j <= k - 2; ++j) {
-            result.emplace_back((a[j] * a[k]) ^ 2, word_type({}));
-          }
-        }
-
-        return result;
+      for (size_t j = 1; j <= n - 3; ++j) {
+        result.emplace_back(pow({j}, 2), ""_w);
       }
-      LIBSEMIGROUPS_EXCEPTION(
-          "expected 2nd argument to be author::Moore, found %s",
-          detail::to_string(val).c_str());
+      for (size_t i = 1; i <= n - 3; ++i) {
+        result.emplace_back(pow({i - 1, i}, 3), ""_w);
+      }
+
+      for (size_t k = 2; k <= n - 3; ++k) {
+        for (size_t j = 0; j <= k - 2; ++j) {
+          result.emplace_back(pow({j, k}, 2), ""_w);
+        }
+      }
+
+      return result;
     }
 
     // From https://core.ac.uk/reader/33304940
@@ -535,80 +580,79 @@ namespace libsemigroups {
       if (n < 3) {
         LIBSEMIGROUPS_EXCEPTION(
             "expected 1st argument to be at least 3, found %llu", uint64_t(n));
-      }
-      if (val == author::Easdown + author::East + author::FitzGerald) {
-        auto mij = [](size_t i, size_t j) {
-          if (i == j) {
-            return 1;
-          } else if (std::abs(static_cast<int64_t>(i) - static_cast<int64_t>(j))
-                     == 1) {
-            return 3;
-          } else {
-            return 2;
-          }
-        };
-
-        std::vector<word_type> alphabet;
-        for (size_t i = 0; i < n + 1; ++i) {
-          alphabet.push_back({i});
-        }
-        auto                       x = alphabet.back();
-        auto                       e = alphabet.front();
-        std::vector<relation_type> result;
-        add_monoid_relations(alphabet, e, result);
-        auto s = alphabet.cbegin();
-
-        // R1
-        for (size_t i = 1; i <= n - 1; ++i) {
-          for (size_t j = 1; j <= n - 1; ++j) {
-            result.emplace_back((s[i] * s[j]) ^ mij(i, j), e);
-          }
-        }
-        // R2
-        result.emplace_back(x ^ 3, x);
-        // R3
-        result.emplace_back(x * s[1], x);
-        result.emplace_back(s[1] * x, x);
-        // R4
-        result.emplace_back(x * s[2] * x, x * s[2] * x * s[2]);
-        result.emplace_back(x * s[2] * x * s[2], s[2] * x * s[2] * x);
-        result.emplace_back(s[2] * x * s[2] * x, x * s[2] * (x ^ 2));
-        result.emplace_back(x * s[2] * (x ^ 2), (x ^ 2) * s[2] * x);
-        if (n == 3) {
-          return result;
-        }
-        // R5
-        word_type const sigma = s[2] * s[3] * s[1] * s[2];
-        result.emplace_back((x ^ 2) * sigma * (x ^ 2) * sigma,
-                            sigma * (x ^ 2) * sigma * (x ^ 2));
-        result.emplace_back(sigma * (x ^ 2) * sigma * (x ^ 2),
-                            x * s[2] * s[3] * s[2] * x);
-        // R6
-        std::vector<word_type> l = {{}, {}, x * s[2] * s[1]};
-        for (size_t i = 3; i <= n - 1; ++i) {
-          l.push_back(s[i] * l[i - 1] * s[i] * s[i - 1]);
-        }
-        std::vector<word_type> y = {{}, {}, {}, x};
-        for (size_t i = 4; i <= n; ++i) {
-          y.push_back(l[i - 1] * y[i - 1] * s[i - 1]);
-        }
-        for (size_t i = 3; i <= n - 1; ++i) {
-          result.emplace_back(y[i] * s[i] * y[i], s[i] * y[i] * s[i]);
-        }
-        if (n == 4) {
-          return result;
-        }
-        // R7
-        for (size_t i = 4; i <= n - 1; ++i) {
-          result.emplace_back(x * s[i], s[i] * x);
-        }
-        return result;
-      } else {
+      } else if (val != author::Easdown + author::East + author::FitzGerald) {
         LIBSEMIGROUPS_EXCEPTION(
             "expected 2nd argument to be author::Easdown + author::East + "
             "author::FitzGerald, found %s",
             detail::to_string(val).c_str());
       }
+
+      auto mij = [](size_t i, size_t j) {
+        if (i == j) {
+          return 1;
+        } else if (std::abs(static_cast<int64_t>(i) - static_cast<int64_t>(j))
+                   == 1) {
+          return 3;
+        } else {
+          return 2;
+        }
+      };
+
+      std::vector<word_type> alphabet;
+      for (size_t i = 0; i < n + 1; ++i) {
+        alphabet.push_back({i});
+      }
+      auto                       x = alphabet.back();
+      auto                       e = alphabet.front();
+      std::vector<relation_type> result;
+      add_monoid_relations(alphabet, e, result);
+      auto s = alphabet.cbegin();
+
+      // R1
+      for (size_t i = 1; i <= n - 1; ++i) {
+        for (size_t j = 1; j <= n - 1; ++j) {
+          result.emplace_back(pow(s[i] + s[j], mij(i, j)), e);
+        }
+      }
+      // R2
+      result.emplace_back(pow(x, 3), x);
+      // R3
+      result.emplace_back(x + s[1], x);
+      result.emplace_back(s[1] + x, x);
+      // R4
+      result.emplace_back(x + s[2] + x, x + s[2] + x + s[2]);
+      result.emplace_back(x + s[2] + x + s[2], s[2] + x + s[2] + x);
+      result.emplace_back(s[2] + x + s[2] + x, x + s[2] + (x ^ 2));
+      result.emplace_back(x + s[2] + pow(x, 2), pow(x, 2) + s[2] + x);
+      if (n == 3) {
+        return result;
+      }
+      // R5
+      word_type const sigma = s[2] * s[3] * s[1] * s[2];
+      result.emplace_back(pow(x, 2) + sigma + pow(x, 2) + sigma,
+                          sigma + pow(x, 2) + sigma + pow(x, 2));
+      result.emplace_back(sigma + pow(x, 2) + sigma + pow(x, 2),
+                          x + s[2] + s[3] + s[2] + x);
+      // R6
+      std::vector<word_type> l = {{}, {}, x * s[2] * s[1]};
+      for (size_t i = 3; i <= n - 1; ++i) {
+        l.push_back(s[i] + l[i - 1] + s[i] + s[i - 1]);
+      }
+      std::vector<word_type> y = {{}, {}, {}, x};
+      for (size_t i = 4; i <= n; ++i) {
+        y.push_back(l[i - 1] + y[i - 1] + s[i - 1]);
+      }
+      for (size_t i = 3; i <= n - 1; ++i) {
+        result.emplace_back(y[i] + s[i] + y[i], s[i] + y[i] + s[i]);
+      }
+      if (n == 4) {
+        return result;
+      }
+      // R7
+      for (size_t i = 4; i <= n - 1; ++i) {
+        result.emplace_back(x + s[i], s[i] + x);
+      }
+      return result;
     }
 
     std::vector<relation_type> uniform_block_bijection_monoid(size_t n,
@@ -684,127 +728,89 @@ namespace libsemigroups {
               "2nd argument is Machine, found %llu",
               uint64_t(n));
         }
-        result.emplace_back<word_type, word_type>({0, 0}, {0});
-        result.emplace_back<word_type, word_type>({0, 1}, {1});
-        result.emplace_back<word_type, word_type>({0, 2}, {2});
-        result.emplace_back<word_type, word_type>({0, 3}, {3});
-        result.emplace_back<word_type, word_type>({0, 4}, {4});
-        result.emplace_back<word_type, word_type>({1, 0}, {1});
-        result.emplace_back<word_type, word_type>({2, 0}, {2});
-        result.emplace_back<word_type, word_type>({2, 2}, {0});
-        result.emplace_back<word_type, word_type>({2, 4}, {4});
-        result.emplace_back<word_type, word_type>({3, 0}, {3});
-        result.emplace_back<word_type, word_type>({3, 3}, {3});
-        result.emplace_back<word_type, word_type>({4, 0}, {4});
-        result.emplace_back<word_type, word_type>({4, 2}, {4});
-        result.emplace_back<word_type, word_type>({4, 4}, {4});
-        result.emplace_back<word_type, word_type>({1, 1, 1}, {0});
-        result.emplace_back<word_type, word_type>({1, 1, 2}, {2, 1});
-        result.emplace_back<word_type, word_type>({1, 2, 1}, {2});
-        result.emplace_back<word_type, word_type>({2, 1, 1}, {1, 2});
-        result.emplace_back<word_type, word_type>({2, 1, 2}, {1, 1});
-        result.emplace_back<word_type, word_type>({2, 1, 4}, {1, 1, 4});
-        result.emplace_back<word_type, word_type>({3, 1, 2}, {1, 2, 3});
-        result.emplace_back<word_type, word_type>({3, 4, 3}, {3});
-        result.emplace_back<word_type, word_type>({4, 1, 2}, {4, 1, 1});
-        result.emplace_back<word_type, word_type>({4, 3, 4}, {4});
-        result.emplace_back<word_type, word_type>({1, 1, 3, 1}, {2, 3, 2});
-        result.emplace_back<word_type, word_type>({1, 1, 3, 2}, {2, 3, 1});
-        result.emplace_back<word_type, word_type>({1, 2, 3, 1}, {3, 2});
-        result.emplace_back<word_type, word_type>({1, 2, 3, 2}, {3, 1});
-        result.emplace_back<word_type, word_type>({1, 2, 3, 4}, {3, 1, 4});
-        result.emplace_back<word_type, word_type>({1, 3, 2, 3}, {3, 1, 3});
-        result.emplace_back<word_type, word_type>({1, 4, 1, 4}, {4, 1, 4});
-        result.emplace_back<word_type, word_type>({2, 1, 3, 1}, {1, 3, 2});
-        result.emplace_back<word_type, word_type>({2, 1, 3, 2}, {1, 3, 1});
-        result.emplace_back<word_type, word_type>({2, 1, 3, 4}, {1, 3, 1, 4});
-        result.emplace_back<word_type, word_type>({2, 3, 1, 3}, {1, 3, 1, 3});
-        result.emplace_back<word_type, word_type>({2, 3, 1, 4}, {1, 1, 3, 4});
-        result.emplace_back<word_type, word_type>({2, 3, 2, 3}, {3, 2, 3});
-        result.emplace_back<word_type, word_type>({3, 1, 3, 2}, {3, 1, 3});
-        result.emplace_back<word_type, word_type>({3, 1, 4, 3}, {1, 2, 3});
-        result.emplace_back<word_type, word_type>({3, 2, 3, 2}, {3, 2, 3});
-        result.emplace_back<word_type, word_type>({4, 1, 1, 4}, {4, 1, 4});
-        result.emplace_back<word_type, word_type>({4, 1, 3, 2}, {4, 1, 3, 1});
-        result.emplace_back<word_type, word_type>({4, 1, 4, 1}, {4, 1, 4});
-        result.emplace_back<word_type, word_type>({1, 3, 1, 1, 3},
-                                                  {3, 2, 1, 3});
-        result.emplace_back<word_type, word_type>({1, 3, 4, 1, 4},
-                                                  {4, 1, 3, 4});
-        result.emplace_back<word_type, word_type>({2, 3, 1, 1, 3},
-                                                  {3, 1, 1, 3});
-        result.emplace_back<word_type, word_type>({2, 3, 2, 1, 3},
-                                                  {1, 3, 2, 1, 3});
-        result.emplace_back<word_type, word_type>({2, 3, 4, 1, 3},
-                                                  {1, 3, 4, 1, 3});
-        result.emplace_back<word_type, word_type>({2, 3, 4, 1, 4},
-                                                  {1, 4, 1, 3, 4});
-        result.emplace_back<word_type, word_type>({3, 1, 1, 4, 1},
-                                                  {1, 1, 4, 1, 3});
-        result.emplace_back<word_type, word_type>({3, 1, 3, 1, 1},
-                                                  {3, 2, 1, 3});
-        result.emplace_back<word_type, word_type>({3, 2, 3, 1, 1},
-                                                  {3, 1, 1, 3});
-        result.emplace_back<word_type, word_type>({3, 4, 1, 1, 3}, {1, 2, 3});
-        result.emplace_back<word_type, word_type>({3, 4, 1, 4, 3},
-                                                  {1, 1, 4, 1, 3});
-        result.emplace_back<word_type, word_type>({4, 1, 1, 3, 4},
-                                                  {4, 3, 1, 4});
-        result.emplace_back<word_type, word_type>({4, 1, 3, 1, 1},
-                                                  {1, 3, 1, 1, 4});
-        result.emplace_back<word_type, word_type>({4, 1, 3, 1, 3},
-                                                  {4, 3, 1, 3});
-        result.emplace_back<word_type, word_type>({4, 1, 3, 1, 4},
-                                                  {4, 1, 3, 4});
-        result.emplace_back<word_type, word_type>({4, 1, 3, 4, 1},
-                                                  {4, 1, 3, 4});
-        result.emplace_back<word_type, word_type>({4, 1, 4, 3, 2},
-                                                  {4, 1, 4, 3, 1});
-        result.emplace_back<word_type, word_type>({1, 1, 3, 4, 1, 3},
-                                                  {3, 1, 4, 1, 3});
-        result.emplace_back<word_type, word_type>({1, 1, 4, 1, 3, 4},
-                                                  {3, 4, 1, 4});
-        result.emplace_back<word_type, word_type>({1, 3, 1, 1, 4, 3},
-                                                  {4, 3, 2, 1, 3});
-        result.emplace_back<word_type, word_type>({1, 3, 1, 3, 1, 3},
-                                                  {3, 1, 3, 1, 3});
-        result.emplace_back<word_type, word_type>({1, 3, 1, 4, 1, 3},
-                                                  {3, 4, 1, 3});
-        result.emplace_back<word_type, word_type>({1, 4, 3, 1, 1, 4},
-                                                  {4, 3, 1, 1, 4});
-        result.emplace_back<word_type, word_type>({2, 3, 1, 1, 4, 3},
-                                                  {1, 4, 3, 2, 1, 3});
-        result.emplace_back<word_type, word_type>({3, 1, 1, 3, 4, 1},
-                                                  {3, 1, 4, 1, 3});
-        result.emplace_back<word_type, word_type>({3, 1, 1, 4, 3, 1},
-                                                  {1, 1, 4, 3, 1, 3});
-        result.emplace_back<word_type, word_type>({3, 1, 3, 1, 3, 1},
-                                                  {3, 1, 3, 1, 3});
-        result.emplace_back<word_type, word_type>({3, 1, 3, 1, 4, 1},
-                                                  {3, 4, 1, 3});
-        result.emplace_back<word_type, word_type>({3, 1, 4, 1, 1, 3}, {3});
-        result.emplace_back<word_type, word_type>({4, 1, 4, 3, 1, 1},
-                                                  {4, 3, 1, 1, 4});
-        result.emplace_back<word_type, word_type>({4, 1, 4, 3, 1, 4},
-                                                  {4, 1, 4});
-        result.emplace_back<word_type, word_type>({4, 3, 1, 3, 1, 4},
-                                                  {1, 3, 1, 1, 4});
-        result.emplace_back<word_type, word_type>({1, 1, 4, 3, 1, 3, 1},
-                                                  {3, 1, 1, 4, 3, 2});
-        result.emplace_back<word_type, word_type>({1, 1, 4, 3, 2, 1, 3},
-                                                  {3, 1, 1, 4, 3});
-        result.emplace_back<word_type, word_type>({1, 3, 1, 3, 4, 1, 3},
-                                                  {3, 1, 3, 4, 1, 3});
-        result.emplace_back<word_type, word_type>({3, 1, 1, 4, 3, 2, 1},
-                                                  {3, 1, 1, 4, 3});
-        result.emplace_back<word_type, word_type>({3, 1, 3, 1, 3, 4, 1},
-                                                  {3, 1, 3, 4, 1, 3});
-        result.emplace_back<word_type, word_type>({4, 3, 1, 1, 4, 3, 2},
-                                                  {4, 1, 4, 3, 1, 3, 1});
-        result.emplace_back<word_type, word_type>({3, 1, 1, 4, 3, 2, 3, 1},
-                                                  {3, 1, 1, 4, 3, 2, 3});
-        result.emplace_back<word_type, word_type>({3, 1, 1, 4, 3, 2, 3, 4, 1},
-                                                  {1, 1, 4, 3, 1, 3, 4, 1, 3});
+        result.emplace_back(00_w, 0_w);
+        result.emplace_back(01_w, 1_w);
+        result.emplace_back(02_w, 2_w);
+        result.emplace_back(03_w, 3_w);
+        result.emplace_back(04_w, 4_w);
+        result.emplace_back(10_w, 1_w);
+        result.emplace_back(20_w, 2_w);
+        result.emplace_back(22_w, 0_w);
+        result.emplace_back(24_w, 4_w);
+        result.emplace_back(30_w, 3_w);
+        result.emplace_back(33_w, 3_w);
+        result.emplace_back(40_w, 4_w);
+        result.emplace_back(42_w, 4_w);
+        result.emplace_back(44_w, 4_w);
+        result.emplace_back(111_w, 0_w);
+        result.emplace_back(112_w, 21_w);
+        result.emplace_back(121_w, 2_w);
+        result.emplace_back(211_w, 12_w);
+        result.emplace_back(212_w, 11_w);
+        result.emplace_back(214_w, 114_w);
+        result.emplace_back(312_w, 123_w);
+        result.emplace_back(343_w, 3_w);
+        result.emplace_back(412_w, 411_w);
+        result.emplace_back(434_w, 4_w);
+        result.emplace_back(1131_w, 232_w);
+        result.emplace_back(1132_w, 231_w);
+        result.emplace_back(1231_w, 32_w);
+        result.emplace_back(1232_w, 31_w);
+        result.emplace_back(1234_w, 314_w);
+        result.emplace_back(1323_w, 313_w);
+        result.emplace_back(1414_w, 414_w);
+        result.emplace_back(2131_w, 132_w);
+        result.emplace_back(2132_w, 131_w);
+        result.emplace_back(2134_w, 1314_w);
+        result.emplace_back(2313_w, 1313_w);
+        result.emplace_back(2314_w, 1134_w);
+        result.emplace_back(2323_w, 323_w);
+        result.emplace_back(3132_w, 313_w);
+        result.emplace_back(3143_w, 123_w);
+        result.emplace_back(3232_w, 323_w);
+        result.emplace_back(4114_w, 414_w);
+        result.emplace_back(4132_w, 4131_w);
+        result.emplace_back(4141_w, 414_w);
+        result.emplace_back(13113_w, 3213_w);
+        result.emplace_back(13414_w, 4134_w);
+        result.emplace_back(23113_w, 3113_w);
+        result.emplace_back(23213_w, 13213_w);
+        result.emplace_back(23413_w, 13413_w);
+        result.emplace_back(23414_w, 14134_w);
+        result.emplace_back(31141_w, 11413_w);
+        result.emplace_back(31311_w, 3213_w);
+        result.emplace_back(32311_w, 3113_w);
+        result.emplace_back(34113_w, 123_w);
+        result.emplace_back(34143_w, 11413_w);
+        result.emplace_back(41134_w, 4314_w);
+        result.emplace_back(41311_w, 13114_w);
+        result.emplace_back(41313_w, 4313_w);
+        result.emplace_back(41314_w, 4134_w);
+        result.emplace_back(41341_w, 4134_w);
+        result.emplace_back(41432_w, 41431_w);
+        result.emplace_back(113413_w, 31413_w);
+        result.emplace_back(114134_w, 3414_w);
+        result.emplace_back(131143_w, 43213_w);
+        result.emplace_back(131313_w, 31313_w);
+        result.emplace_back(131413_w, 3413_w);
+        result.emplace_back(143114_w, 43114_w);
+        result.emplace_back(231143_w, 143213_w);
+        result.emplace_back(311341_w, 31413_w);
+        result.emplace_back(311431_w, 114313_w);
+        result.emplace_back(313131_w, 31313_w);
+        result.emplace_back(313141_w, 3413_w);
+        result.emplace_back(314113_w, 3_w);
+        result.emplace_back(414311_w, 43114_w);
+        result.emplace_back(414314_w, 414_w);
+        result.emplace_back(431314_w, 13114_w);
+        result.emplace_back(1143131_w, 311432_w);
+        result.emplace_back(1143213_w, 31143_w);
+        result.emplace_back(1313413_w, 313413_w);
+        result.emplace_back(3114321_w, 31143_w);
+        result.emplace_back(3131341_w, 313413_w);
+        result.emplace_back(4311432_w, 4143131_w);
+        result.emplace_back(31143231_w, 3114323_w);
+        result.emplace_back(311432341_w, 114313413_w);
 
         return result;
       } else if (val == author::East) {
@@ -828,25 +834,26 @@ namespace libsemigroups {
         result.emplace_back((s * c) ^ (n - 1), id);
         result.emplace_back(s * s, id);
         for (size_t i = 2; i <= n / 2; ++i) {
-          result.emplace_back(((c ^ i) * s * (c ^ (n - i)) * s) ^ 2, id);
+          result.emplace_back(((c ^ i) * s * (pow(c, n - i)) * s) ^ 2, id);
         }
 
         // V2
         result.emplace_back(e * e, e);
         result.emplace_back(e * t * e, e);
-        result.emplace_back(s * c * e * (c ^ (n - 1)) * s, e);
-        result.emplace_back(c * s * (c ^ (n - 1)) * e * c * s * (c ^ (n - 1)),
-                            e);
+        result.emplace_back(s * c * e * (pow(c, n - 1)) * s, e);
+        result.emplace_back(
+            c * s * (pow(c, n - 1)) * e * c * s * (pow(c, n - 1)), e);
 
         // V3
         result.emplace_back(t * t, t);
         result.emplace_back(t * e * t, t);
         result.emplace_back(t * s, t);
         result.emplace_back(s * t, t);
-        result.emplace_back(
-            (c ^ 2) * s * (c ^ (n - 2)) * t * (c ^ 2) * s * (c ^ (n - 2)), t);
-        result.emplace_back((c ^ (n - 1)) * s * c * s * (c ^ (n - 1)) * t * c
-                                * s * (c ^ (n - 1)) * s * c,
+        result.emplace_back((c ^ 2) * s * (pow(c, n - 2)) * t * (c ^ 2) * s
+                                * (pow(c, n - 2)),
+                            t);
+        result.emplace_back((pow(c, n - 1)) * s * c * s * (pow(c, n - 1)) * t
+                                * c * s * (pow(c, n - 1)) * s * c,
                             t);
 
         // V4
@@ -854,15 +861,15 @@ namespace libsemigroups {
         result.emplace_back(e * s * e * s, e * s * e);
 
         // V5
-        result.emplace_back(t * c * t * (c ^ (n - 1)),
-                            c * t * (c ^ (n - 1)) * t);
+        result.emplace_back(t * c * t * (pow(c, n - 1)),
+                            c * t * (pow(c, n - 1)) * t);
 
         // V6
-        result.emplace_back(t * (c ^ 2) * t * (c ^ (n - 2)),
-                            (c ^ 2) * t * (c ^ (n - 2)) * t);
+        result.emplace_back(t * (c ^ 2) * t * (pow(c, n - 2)),
+                            (c ^ 2) * t * (pow(c, n - 2)) * t);
         // V7
-        result.emplace_back(t * (c ^ 2) * e * (c ^ (n - 2)),
-                            (c ^ 2) * e * (c ^ (n - 2)) * t);
+        result.emplace_back(t * (c ^ 2) * e * (pow(c, n - 2)),
+                            (c ^ 2) * e * (pow(c, n - 2)) * t);
       } else {
         LIBSEMIGROUPS_EXCEPTION(
             "expected 2nd argument to be author::East, found %s",
@@ -937,28 +944,72 @@ namespace libsemigroups {
     }
 
     // From https://doi.org/10.1007/s10012-000-0001-1
-    std::vector<relation_type> orientation_preserving_monoid(size_t n) {
+    std::vector<relation_type> orientation_preserving_monoid(size_t n,
+                                                             author val) {
       if (n < 3) {
         LIBSEMIGROUPS_EXCEPTION(
             "expected argument to be at least 3, found %llu", uint64_t(n));
       }
-      word_type                  b = {0};
-      word_type                  u = {1};
-      word_type                  e = {2};
-      std::vector<relation_type> result;
+      if (val == author::Arthur + author::Ruskuc) {
+        word_type                  b = {0};
+        word_type                  u = {1};
+        word_type                  e = {2};
+        std::vector<relation_type> result;
 
-      add_monoid_relations({b, u, e}, e, result);
+        add_monoid_relations({b, u, e}, e, result);
 
-      result.emplace_back(b ^ n, e);
-      result.emplace_back(u ^ 2, u);
-      result.emplace_back((u * b) ^ n, u * b);
-      result.emplace_back(b * ((u * (b ^ (n - 1))) ^ (n - 1)),
-                          (u * (b ^ (n - 1))) ^ (n - 1));
-      for (size_t i = 2; i <= n - 1; ++i) {
-        result.emplace_back(u * (b ^ i) * ((u * b) ^ (n - 1)) * (b ^ (n - i)),
-                            (b ^ i) * ((u * b) ^ (n - 1)) * (b ^ (n - i)) * u);
+        result.emplace_back(b ^ n, e);
+        result.emplace_back(u ^ 2, u);
+        result.emplace_back((u * b) ^ n, u * b);
+        result.emplace_back(b * ((u * (pow(b, n - 1))) ^ (n - 1)),
+                            (u * (pow(b, n - 1))) ^ (n - 1));
+        for (size_t i = 2; i <= n - 1; ++i) {
+          result.emplace_back(
+              u * (b ^ i) * ((u * b) ^ (n - 1)) * (pow(b, n - i)),
+              (b ^ i) * ((u * b) ^ (n - 1)) * (pow(b, n - i)) * u);
+        }
+        return result;
+      } else if (val == author::Catarino) {
+        std::vector<relation_type> result = order_preserving_monoid(n);
+        word_type                  a      = {2 * n - 2};
+        std::vector<word_type>     u;
+        std::vector<word_type>     v;
+
+        for (size_t i = 0; i <= n - 2; ++i) {
+          u.push_back({i});
+          v.push_back({n - 1 + i});
+        }
+
+        // rule 8
+        result.emplace_back(pow(a, n), ""_w);
+
+        // rules 9
+        for (size_t i = 0; i <= n - 3; ++i) {
+          result.emplace_back(u[i] + a, a + u[i + 1]);
+        }
+
+        // rules 10
+        for (size_t i = 0; i <= n - 3; ++i) {
+          result.emplace_back(v[i + 1] + a, a + v[i]);
+        }
+
+        // rule 11
+        result.emplace_back(u[n - 2] + a,
+                            pow(a, 2) + prod(v, n - 2, 0, -1) + v[0]);
+
+        // rule 12
+        result.emplace_back(v[0] + a, prod(u, n - 2, 0, -1) + u[0]);
+
+        // rule 13
+        result.emplace_back(a + prod(u, 0, n - 1, 1), prod(u, 0, n - 1, 1));
+
+        return result;
       }
-      return result;
+
+      LIBSEMIGROUPS_EXCEPTION("expected 2nd argument to be one of "
+                              "author::Arthur + author::Ruskuc, "
+                              "or author::Catarino; found %s",
+                              detail::to_string(val).c_str());
     }
 
     // Also from https://doi.org/10.1007/s10012-000-0001-1
@@ -978,17 +1029,18 @@ namespace libsemigroups {
       result.emplace_back(b ^ n, e);
       result.emplace_back(u ^ 2, u);
       result.emplace_back((u * b) ^ n, u * b);
-      result.emplace_back(b * ((u * (b ^ (n - 1))) ^ (n - 1)),
-                          (u * (b ^ (n - 1))) ^ (n - 1));
+      result.emplace_back(b * ((u * (pow(b, n - 1))) ^ (n - 1)),
+                          (u * (pow(b, n - 1))) ^ (n - 1));
       for (size_t i = 2; i <= n - 1; ++i) {
-        result.emplace_back(u * (b ^ i) * ((u * b) ^ (n - 1)) * (b ^ (n - i)),
-                            (b ^ i) * ((u * b) ^ (n - 1)) * (b ^ (n - i)) * u);
+        result.emplace_back(u * (b ^ i) * ((u * b) ^ (n - 1)) * (pow(b, n - i)),
+                            (b ^ i) * ((u * b) ^ (n - 1)) * (pow(b, n - i))
+                                * u);
       }
       result.emplace_back(c ^ 2, e);
-      result.emplace_back(b * c, c * (b ^ (n - 1)));
+      result.emplace_back(b * c, c * (pow(b, n - 1)));
       result.emplace_back(u * c, c * ((b * u) ^ (n - 1)));
-      result.emplace_back(c * (u * (b ^ (n - 1)) ^ (n - 2)),
-                          (b ^ (n - 2)) * ((u * (b ^ (n - 1))) ^ (n - 2)));
+      result.emplace_back(c * (u * (pow(b, n - 1)) ^ (n - 2)),
+                          (pow(b, n - 2)) * ((u * (pow(b, n - 1))) ^ (n - 2)));
 
       return result;
     }
@@ -1141,19 +1193,20 @@ namespace libsemigroups {
         word_type const t = {2};
 
         result.emplace_back(a * t, t);
-        result.emplace_back(
-            (b ^ (n - 2)) * a * (b ^ 2) * t * (b ^ (n - 2)) * a * (b ^ 2), t);
-        result.emplace_back(b * a * (b ^ (n - 1)) * a * b * t * (b ^ (n - 1))
-                                * a * b * a * (b ^ (n - 1)),
+        result.emplace_back((pow(b, n - 2)) * a * (b ^ 2) * t * (pow(b, n - 2))
+                                * a * (b ^ 2),
                             t);
-        result.emplace_back((t * b * a * (b ^ (n - 1))) ^ 2, t);
-        result.emplace_back(((b ^ (n - 1)) * a * b * t) ^ 2,
-                            t * (b ^ (n - 1)) * a * b * t);
+        result.emplace_back(b * a * (pow(b, n - 1)) * a * b * t
+                                * (pow(b, n - 1)) * a * b * a * (pow(b, n - 1)),
+                            t);
+        result.emplace_back((t * b * a * (pow(b, n - 1))) ^ 2, t);
+        result.emplace_back(((pow(b, n - 1)) * a * b * t) ^ 2,
+                            t * (pow(b, n - 1)) * a * b * t);
 
-        result.emplace_back((t * (b ^ (n - 1)) * a * b) ^ 2,
-                            t * (b ^ (n - 1)) * a * b * t);
-        result.emplace_back((t * b * a * (b ^ (n - 2)) * a * b) ^ 2,
-                            (b * a * (b ^ (n - 2)) * a * b * t) ^ 2);
+        result.emplace_back((t * (pow(b, n - 1)) * a * b) ^ 2,
+                            t * (pow(b, n - 1)) * a * b * t);
+        result.emplace_back((t * b * a * (pow(b, n - 2)) * a * b) ^ 2,
+                            (b * a * (pow(b, n - 2)) * a * b * t) ^ 2);
         return result;
       } else if (val == author::Iwahori) {
         // From Theorem 9.3.1, p161-162, (Ganyushkin + Mazorchuk)
@@ -1182,50 +1235,21 @@ namespace libsemigroups {
                                   "argument is author::Machine, found %llu",
                                   uint64_t(n));
         }
-        return {{{0, 0}, {}},
-                {{0, 3}, {3}},
-                {{2, 2}, {2}},
-                {{2, 3}, {2}},
-                {{3, 2}, {3}},
-                {{3, 3}, {3}},
-                {{0, 1, 0}, {1, 1}},
-                {{0, 1, 1}, {1, 0}},
-                {{1, 0, 1}, {0}},
-                {{1, 1, 0}, {0, 1}},
-                {{1, 1, 1}, {}},
-                {{1, 1, 3}, {0, 1, 3}},
-                {{2, 0, 1}, {0, 1, 2}},
-                {{3, 0, 2}, {2, 0, 2}},
-                {{3, 1, 2}, {2, 1, 2}},
-                {{0, 1, 2, 0}, {2, 1, 1}},
-                {{0, 1, 2, 1}, {2, 1, 0}},
-                {{0, 2, 0, 2}, {2, 0, 2}},
-                {{0, 2, 1, 0}, {1, 2, 1}},
-                {{0, 2, 1, 1}, {1, 2, 0}},
-                {{0, 2, 1, 2}, {2, 1, 2}},
-                {{1, 2, 1, 0}, {0, 2, 1}},
-                {{1, 2, 1, 1}, {0, 2, 0}},
-                {{1, 2, 1, 3}, {0, 2, 1, 3}},
-                {{1, 3, 1, 3}, {3, 1, 3}},
-                {{2, 0, 2, 0}, {2, 0, 2}},
-                {{2, 0, 2, 1}, {2, 1, 2}},
-                {{2, 1, 2, 1}, {2, 1, 2, 0}},
-                {{2, 1, 3, 1}, {2, 1, 3, 0}},
-                {{3, 0, 1, 2}, {3, 0, 1}},
-                {{3, 0, 1, 3}, {3, 0, 1}},
-                {{3, 1, 3, 1}, {3, 1, 3, 0}},
-                {{1, 0, 2, 1, 3}, {3, 1, 0, 2}},
-                {{1, 1, 2, 0, 2}, {2, 1, 1, 2}},
-                {{1, 1, 2, 1, 2}, {2, 1, 0, 2}},
-                {{1, 3, 1, 0, 2}, {2, 1, 3}},
-                {{2, 1, 0, 2, 1}, {2, 1, 0, 2, 0}},
-                {{2, 1, 1, 2, 0}, {2, 1, 1, 2}},
-                {{2, 1, 1, 2, 1}, {2, 1, 0, 2}},
-                {{2, 1, 3, 0, 1}, {1, 3, 1, 1, 2}},
-                {{3, 1, 0, 2, 1}, {3, 1, 0, 2, 0}},
-                {{3, 1, 1, 2, 0}, {3, 1, 1, 2}},
-                {{3, 1, 1, 2, 1}, {3, 1, 0, 2}},
-                {{1, 2, 1, 2, 0, 2}, {2, 1, 2, 0, 2}}};
+        return {{00_w, {}},         {03_w, 3_w},        {22_w, 2_w},
+                {23_w, 2_w},        {32_w, 3_w},        {33_w, 3_w},
+                {010_w, 11_w},      {011_w, 10_w},      {101_w, 0_w},
+                {110_w, 01_w},      {111_w, {}},        {113_w, 013_w},
+                {201_w, 012_w},     {302_w, 202_w},     {312_w, 212_w},
+                {0120_w, 211_w},    {0121_w, 210_w},    {0202_w, 202_w},
+                {0210_w, 121_w},    {0211_w, 120_w},    {0212_w, 212_w},
+                {1210_w, 021_w},    {1211_w, 020_w},    {1213_w, 0213_w},
+                {1313_w, 313_w},    {2020_w, 202_w},    {2021_w, 212_w},
+                {2121_w, 2120_w},   {2131_w, 2130_w},   {3012_w, 301_w},
+                {3013_w, 301_w},    {3131_w, 3130_w},   {10213_w, 3102_w},
+                {11202_w, 2112_w},  {11212_w, 2102_w},  {13102_w, 213_w},
+                {21021_w, 21020_w}, {21120_w, 2112_w},  {21121_w, 2102_w},
+                {21301_w, 13112_w}, {31021_w, 31020_w}, {31120_w, 3112_w},
+                {31121_w, 3102_w},  {121202_w, 21202_w}};
       } else if (val == author::Sutov) {
         // From Theorem 9.4.1, p169, (Ganyushkin + Mazorchuk)
         // https://link.springer.com/book/10.1007/978-1-84800-281-4
@@ -1258,39 +1282,38 @@ namespace libsemigroups {
     // https://link.springer.com/book/10.1007/978-1-84800-281-4 (Ganyushkin +
     // Mazorchuk)
     std::vector<relation_type> symmetric_inverse_monoid(size_t n, author val) {
-      if (val == author::Sutov) {
-        if (n < 4) {
-          LIBSEMIGROUPS_EXCEPTION(
-              "the 1st argument must be at least 4 when the "
-              "2nd argument is author::Sutov, found %llu",
-              uint64_t(n));
-        }
-        auto result = symmetric_group(n, author::Carmichael);
-
-        std::vector<word_type> pi;
-        for (size_t i = 0; i <= n - 2; ++i) {
-          pi.push_back({i});
-        }
-        std::vector<word_type> epsilon;
-        epsilon.push_back({n - 1});
-        for (size_t i = 0; i <= n - 2; ++i) {
-          epsilon.push_back(pi[i] * epsilon[0] * pi[i]);
-        }
-
-        result.emplace_back(epsilon[0] ^ 2, epsilon[0]);
-        result.emplace_back(epsilon[0] * epsilon[1], epsilon[1] * epsilon[0]);
-
-        for (size_t k = 1; k <= n - 2; ++k) {
-          result.emplace_back(epsilon[1] * pi[k], pi[k] * epsilon[1]);
-          result.emplace_back(epsilon[k + 1] * pi[0], pi[0] * epsilon[k + 1]);
-        }
-        result.emplace_back(epsilon[1] * epsilon[0] * pi[0],
-                            epsilon[1] * epsilon[0]);
-        return result;
+      if (val != author::Sutov) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "expected 2nd argument to be author::Sutov, found %s",
+            detail::to_string(val).c_str());
+      } else if (n < 4) {
+        LIBSEMIGROUPS_EXCEPTION("the 1st argument must be at least 4 when the "
+                                "2nd argument is author::Sutov, found %llu",
+                                uint64_t(n));
       }
-      LIBSEMIGROUPS_EXCEPTION(
-          "expected 2nd argument to be author::Sutov, found %s",
-          detail::to_string(val).c_str());
+      auto result = symmetric_group(n, author::Carmichael);
+
+      std::vector<word_type> pi;
+      for (size_t i = 0; i <= n - 2; ++i) {
+        pi.push_back({i});
+      }
+      std::vector<word_type> epsilon;
+      epsilon.push_back({n - 1});
+      for (size_t i = 0; i <= n - 2; ++i) {
+        epsilon.push_back(pi[i] + epsilon[0] + pi[i]);
+      }
+
+      result.emplace_back(pow(epsilon[0], 2), epsilon[0]);
+      result.emplace_back(epsilon[0] + epsilon[1], epsilon[1] + epsilon[0]);
+
+      for (size_t k = 1; k <= n - 2; ++k) {
+        // TODO use add_commutes_rules
+        result.emplace_back(epsilon[1] + pi[k], pi[k] + epsilon[1]);
+        result.emplace_back(epsilon[k + 1] + pi[0], pi[0] + epsilon[k + 1]);
+      }
+      result.emplace_back(epsilon[1] + epsilon[0] + pi[0],
+                          epsilon[1] + epsilon[0]);
+      return result;
     }
 
     // Chinese monoid
@@ -1318,65 +1341,53 @@ namespace libsemigroups {
     }
 
     std::vector<relation_type> monogenic_semigroup(size_t m, size_t r) {
-      std::vector<relation_type> result;
       if (r == 0) {
         LIBSEMIGROUPS_EXCEPTION(
             "expected 2nd argument to be strictly positive, found %llu",
             uint64_t(r));
       }
-      result.emplace_back(word_type({0}) ^ (m + r), word_type({0}) ^ m);
-      return result;
+      return {{pow({0}, (m + r)), pow({0}, m)}};
     }
 
+    // TODO reference
     std::vector<relation_type> order_preserving_monoid(size_t n) {
       if (n < 3) {
         LIBSEMIGROUPS_EXCEPTION(
             "expected argument to be at least 3, found %llu", uint64_t(n));
       }
-      std::vector<word_type> u;
-      std::vector<word_type> v;
-
-      for (size_t i = 0; i <= n - 2; ++i) {
-        u.push_back({i});
-        v.push_back({n - 1 + i});
-      }
+      std::vector<word_type> u(cbegin_wislo(n - 1, {0}, {0, 0}),
+                               cend_wislo(n - 1, {0}, {0, 0}));
+      std::vector<word_type> v(cbegin_wislo(2 * n - 2, {n - 1}, {0, 0}),
+                               cend_wislo(2 * n - 2, {n - 1}, {0, 0}));
 
       std::vector<relation_type> result;
 
-      // relations 1
       for (size_t i = 1; i <= n - 2; ++i) {
-        result.emplace_back(v[n - 2 - i] * u[i], u[i] * v[n - 1 - i]);
+        // relations 1
+        result.emplace_back(v[n - 2 - i] + u[i], u[i] + v[n - 1 - i]);
+        // relations 2
+        result.emplace_back(u[n - 2 - i] + v[i], v[i] + u[n - 1 - i]);
       }
 
-      // relations 2
-      for (size_t i = 1; i <= n - 2; ++i) {
-        result.emplace_back(u[n - 2 - i] * v[i], v[i] * u[n - 1 - i]);
-      }
-
-      // relations 3
       for (size_t i = 0; i <= n - 2; ++i) {
-        result.emplace_back(v[n - 2 - i] * u[i], u[i]);
-      }
+        // relations 3
+        result.emplace_back(v[n - 2 - i] + u[i], u[i]);
+        // relations 4
+        result.emplace_back(u[n - 2 - i] + v[i], v[i]);
 
-      // relations 4
-      for (size_t i = 0; i <= n - 2; ++i) {
-        result.emplace_back(u[n - 2 - i] * v[i], v[i]);
-      }
-
-      // relations 5
-      for (size_t i = 0; i <= n - 2; ++i) {
+        // relations 5
         for (size_t j = 0; j <= n - 2; ++j) {
           if (j != (n - 2) - i && j != n - i - 1) {
-            result.emplace_back(u[i] * v[j], v[j] * u[i]);
+            result.emplace_back(u[i] + v[j], v[j] + u[i]);
           }
         }
       }
 
       // relation 6
-      result.emplace_back(u[0] * u[1] * u[0], u[0] * u[1]);
+      result.emplace_back(u[0] + u[1] + u[0], u[0] + u[1]);
 
       // relation 7
-      result.emplace_back(v[0] * v[1] * v[0], v[0] * v[1]);
+      result.emplace_back(v[0] + v[1] + v[0], v[0] + v[1]);
 
       return result;
     }
@@ -1384,77 +1395,64 @@ namespace libsemigroups {
     std::vector<relation_type> cyclic_inverse_monoid(size_t n,
                                                      author val,
                                                      size_t index) {
-      if (val == author::Fernandes) {
-        if (n < 3) {
-          LIBSEMIGROUPS_EXCEPTION(
-              "the 1st argument must be at least 3 where the 2nd argument is "
-              "author::Fernandes, found %llu",
-              uint64_t(n));
-        }
-        // See Theorem 2.6 of https://arxiv.org/pdf/2211.02155.pdf
-        if (index == 0) {
-          word_type              g = {0};
-          std::vector<word_type> e(n, {0});
-          size_t                 inc = 1;
-          std::for_each(e.begin(), e.end(), [&inc](auto& w) { w[0] += inc++; });
-          std::vector<relation_type> result;
-
-          // R1
-          result.emplace_back(g ^ n, word_type({}));
-          // R2
-          for (size_t i = 0; i < n; ++i) {
-            result.emplace_back(e[i] ^ 2, e[i]);
-          }
-          // R3
-          for (size_t i = 0; i < n - 1; ++i) {
-            for (size_t j = i + 1; j < n; ++j) {
-              result.emplace_back(e[i] * e[j], e[j] * e[i]);
-            }
-          }
-
-          // R4
-          result.emplace_back(g * e[0], e[n - 1] * g);
-          for (size_t i = 0; i < n - 1; ++i) {
-            result.emplace_back(g * e[i + 1], e[i] * g);
-          }
-
-          // R5
-          word_type prod(n, 0);
-          std::iota(prod.begin(), prod.end(), size_t(1));
-          result.emplace_back(g * prod, prod);
-
-          return result;
-        }
-        // See Theorem 2.7 of https://arxiv.org/pdf/2211.02155.pdf
-        if (index == 1) {
-          word_type g = {0};
-          word_type e = {1};
-
-          std::vector<relation_type> result;
-
-          result.emplace_back(g ^ n, word_type({}));  // relation Q1
-          result.emplace_back(e ^ 2, e);              // relation Q2
-
-          // relations Q3
-          for (size_t j = 2; j <= n; ++j)
-            for (size_t i = 1; i < j; ++i) {
-              result.emplace_back(e * (g ^ (n - j + i)) * e * (g ^ (n - i + j)),
-                                  (g ^ (n - j + i)) * e * (g ^ (n - i + j))
-                                      * e);
-            }
-
-          result.emplace_back(g * (e * (g ^ (n - 1)) ^ n),
-                              (e * (g ^ (n - 1))) ^ n);  // relation Q4
-
-          return result;
-        }
-        LIBSEMIGROUPS_EXCEPTION("3rd argument must be 0 or 1 where 2nd "
+      if (val != author::Fernandes) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "expected 2nd argument to be author::Fernandes, found %s",
+            detail::to_string(val).c_str());
+      }
+      if (n < 3) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "the 1st argument must be at least 3 when the 2nd argument is "
+            "author::Fernandes, found %llu",
+            uint64_t(n));
+      } else if (index != 0 && index != 1) {
+        LIBSEMIGROUPS_EXCEPTION("the 3rd argument must be 0 or 1 when the 2nd "
                                 "argument is author::Fernandes, found %llu",
                                 uint64_t(n));
       }
-      LIBSEMIGROUPS_EXCEPTION(
-          "expected 2nd argument to be author::Fernandes, found %s",
-          detail::to_string(val).c_str());
+
+      std::vector<relation_type> result;
+      auto                       g = 0_w;
+      // See Theorem 2.6 of https://arxiv.org/pdf/2211.02155.pdf
+      if (index == 0) {
+        word_type e = range(1, n + 1);
+
+        // R1
+        result.emplace_back(pow(g, n), ""_w);
+
+        // R2
+        add_idempotent_rules(result, e);
+
+        // R3
+        add_commutes_rules(result, e);
+
+        // R4
+        result.emplace_back(g + e[0], e[n - 1] + g);
+        for (size_t i = 0; i < n - 1; ++i) {
+          result.emplace_back(g + e[i + 1], e[i] + g);
+        }
+
+        // R5
+        result.emplace_back(g + e, e);
+
+      } else if (index == 1) {
+        // See Theorem 2.7 of https://arxiv.org/pdf/2211.02155.pdf
+        auto e = 1_w;
+
+        result.emplace_back(pow(g, n), ""_w);  // relation Q1
+        result.emplace_back(pow(e, 2), e);     // relation Q2
+
+        // relations Q3
+        for (size_t j = 2; j <= n; ++j) {
+          for (size_t i = 1; i < j; ++i) {
+            result.emplace_back(e + pow(g, n - j + i) + e + pow(g, n - i + j),
+                                pow(g, n - j + i) + e + pow(g, n - i + j) + e);
+          }
+        }
+        result.emplace_back(g + pow(e + pow(g, n - 1), n),
+                            pow(e + pow(g, n - 1), n));  // relation Q4
+      }
+      return result;
     }
 
     // See Theorem 2.17 of https://arxiv.org/pdf/2211.02155.pdf
@@ -1464,61 +1462,38 @@ namespace libsemigroups {
         LIBSEMIGROUPS_EXCEPTION(
             "expected argument to be at least 3, found %llu", uint64_t(n));
       }
-      word_type x = {0};
-      word_type y = {1};
-
-      std::vector<word_type> e;
-
-      for (size_t i = 2; i <= n - 1; ++i) {
-        e.push_back({i});
-      }
 
       std::vector<relation_type> result;
 
+      word_type x = 0_w, y = 1_w, e = range(2, n);
+
       // relations V1
-      for (size_t i = 0; i <= n - 3; ++i) {
-        result.emplace_back(e[i] ^ 2, e[i]);
-      }
+      add_idempotent_rules(result, e);
+
       // relations V2
-      result.emplace_back(x * y * x, x);
-      result.emplace_back(y * x * y, y);
+      result.emplace_back(x + y + x, x);
+      result.emplace_back(y + x + y, y);
 
       // relations V3
-      result.emplace_back(y * (x ^ 2) * y, x * (y ^ 2) * x);
+      result.emplace_back(y + pow(x, 2) + y, x + pow(y, 2) + x);
 
       // relations V4
-      for (size_t j = 1; j <= n - 3; ++j) {
-        for (size_t i = 0; i < j; ++i) {
-          result.emplace_back(e[i] * e[j], e[j] * e[i]);
-        }
-      }
-
-      // relations V5
-      for (size_t i = 0; i <= n - 3; ++i) {
-        result.emplace_back(x * y * e[i], e[i] * x * y);
-        result.emplace_back(y * x * e[i], e[i] * y * x);
-      }
+      add_commutes_rules(result, e);
+      add_commutes_rules(result, e, {x + y});
+      add_commutes_rules(result, e, {y + x});
 
       // relations V6
       for (size_t i = 0; i <= n - 4; ++i) {
-        result.emplace_back(x * e[i + 1], e[i] * x);
+        result.emplace_back(x + e[i + 1], e[i] + x);
       }
 
       // relations V7
-      result.emplace_back((x ^ 2) * y, e[n - 3] * x);
-      result.emplace_back(y * (x ^ 2), x * e[0]);
+      result.emplace_back(pow(x, 2) + y, e[n - 3] + x);
+      result.emplace_back(y + pow(x, 2), x + e[0]);
 
       // relations V8
-      word_type lhs = y * x;
-      word_type rhs = x;
-      for (size_t i = 0; i <= n - 3; ++i) {
-        lhs = lhs * e[i];
-        rhs = rhs * e[i];
-      }
-      lhs = lhs * x * y;
-      rhs = rhs * x * y;
-
-      result.emplace_back(lhs, rhs);
+      result.emplace_back(y + x + prod(e, 0, n - 2, 1) + x + y,
+                          x + prod(e, 0, n - 2, 1) + x + y);
 
       return result;
     }
@@ -1537,34 +1512,33 @@ namespace libsemigroups {
       word_type e = {2};
 
       // Q1
-      result.emplace_back(g ^ n, word_type({}));
-      result.emplace_back(h ^ 2, word_type({}));
-      result.emplace_back(h * g, (g ^ (n - 1)) * h);
+      result.emplace_back(pow(g, n), ""_w);
+      result.emplace_back(pow(h, 2), ""_w);
+      result.emplace_back(h + g, pow(g, n - 1) + h);
 
       // Q2
-      result.emplace_back(e ^ 2, e);
-      result.emplace_back(g * h * e * g * h, e);
+      result.emplace_back(pow(e, 2), e);
+      result.emplace_back(g + h + e + g + h, e);
 
       // Q3
 
       for (size_t j = 2; j <= n; ++j) {
         for (size_t i = 1; i < j; ++i) {
-          result.emplace_back(e * (g ^ (j - i)) * e * (g ^ (n - j + i)),
-                              (g ^ (j - i)) * e * (g ^ (n - j + i)) * e);
+          result.emplace_back(e + pow(g, j - i) + e + pow(g, n - j + i),
+                              pow(g, j - i) + e + pow(g, n - j + i) + e);
         }
       }
 
       if (n % 2 == 1) {
         // Q4
-        result.emplace_back(h * g * ((e * g) ^ (n - 2)) * e,
-                            ((e * g) ^ (n - 2)) * e);
+        result.emplace_back(h + g + pow(e + g, n - 2) + e,
+                            pow(e + g, n - 2) + e);
       } else {
         // Q5
         result.emplace_back(
-            h * g * ((e * g) ^ (n / 2 - 1)) * g * ((e * g) ^ (n / 2 - 2)) * e,
-            ((e * g) ^ (n / 2 - 1)) * g * ((e * g) ^ (n / 2 - 2)) * e);
-        result.emplace_back(h * ((e * g) ^ (n - 1)) * e,
-                            ((e * g) ^ (n - 1)) * e);
+            h + g + pow(e + g, n / 2 - 1) + g + pow(e + g, n / 2 - 2) + e,
+            pow(e + g, n / 2 - 1) + g + pow(e + g, n / 2 - 2) + e);
+        result.emplace_back(h + pow(e + g, n - 1) + e, pow(e + g, n - 1) + e);
       }
 
       return result;
@@ -1580,33 +1554,28 @@ namespace libsemigroups {
                  + author::Lubotzky) {
         // See Section 2.2 of 'Presentations of finite simple groups: A
         // quantitative approach' J. Amer. Math. Soc. 21 (2008), 711-774
-        std::vector<word_type> a;
-        for (size_t i = 0; i <= n - 2; ++i) {
-          a.push_back({i});
-        }
 
         std::vector<relation_type> result;
 
         for (size_t i = 0; i <= n - 2; ++i) {
-          result.emplace_back(a[i] ^ 2, word_type({}));
+          result.emplace_back(pow({i}, 2), ""_w);
         }
 
         for (size_t i = 0; i <= n - 2; ++i) {
           for (size_t j = 0; j <= n - 2; ++j) {
             if (i != j) {
-              result.emplace_back((a[i] * a[j]) ^ 3, word_type({}));
+              result.emplace_back(pow({i, j}, 3), ""_w);
             }
           }
         }
 
         for (size_t i = 0; i <= n - 2; ++i) {
           for (size_t j = 0; j <= n - 2; ++j) {
-            if (i == j) {
-              continue;
-            }
-            for (size_t k = 0; k <= n - 2; ++k) {
-              if (k != i && k != j) {
-                result.emplace_back((a[i] * a[j] * a[k]) ^ 4, word_type({}));
+            if (i != j) {
+              for (size_t k = 0; k <= n - 2; ++k) {
+                if (k != i && k != j) {
+                  result.emplace_back(pow({i, j, k}, 4), ""_w);
+                }
               }
             }
           }
