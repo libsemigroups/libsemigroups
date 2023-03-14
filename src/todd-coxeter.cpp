@@ -95,11 +95,11 @@
 #include "libsemigroups/obvinf.hpp"             // for IsObviouslyInfinite
 #include "libsemigroups/report.hpp"             // for PrintTable, Reporter
 #include "libsemigroups/string.hpp"             // for to_string
-#include "libsemigroups/suffix-tree.hpp"        // for SuffixTree
 #include "libsemigroups/tce.hpp"                // for TCE
 #include "libsemigroups/timer.hpp"              // for detail::Timer
 #include "libsemigroups/types.hpp"              // for letter_type
 #include "libsemigroups/uf.hpp"                 // for Duf
+#include "libsemigroups/ukkonen.hpp"            // for Ukkonen
 
 // This file is organised as follows:
 //
@@ -1140,24 +1140,24 @@ namespace libsemigroups {
 
     bool ToddCoxeter::reduce_length_once() {
       LIBSEMIGROUPS_ASSERT(_felsch_tree == nullptr);
-      using detail::SuffixTree;
-      using const_iterator_word = typename detail::DFSHelper::const_iterator;
+      using const_iterator_word =
+          typename ukkonen::detail::GreedyReduceHelper::const_iterator;
 
       if (_relations.empty() && _extra.empty()) {
         return false;
       }
-      SuffixTree st;
-      detail::suffix_tree_helper::add_words(st, _relations);
-      detail::suffix_tree_helper::add_words(st, _extra);
+      Ukkonen u;
+      ukkonen::add_words(u, _relations);
+      ukkonen::add_words(u, _extra);
 
-      detail::DFSHelper   helper(st);
-      const_iterator_word first, last;
+      ukkonen::detail::GreedyReduceHelper helper(u);
+      const_iterator_word                 first, last;
       // Get the best word [first, last) so that replacing every
       // non-overlapping occurrence of [first, last) in _relations and
       // _extra with a new generator "x", and adding "x = [first, last)" as
       // a relation reduces the length of the presentation as much as
       // possible.
-      std::tie(first, last) = st.dfs(helper);
+      std::tie(first, last) = ukkonen::dfs(u, helper);
       if (first == last) {
         return false;  // no change
       }

@@ -62,10 +62,13 @@ namespace libsemigroups {
   };
 }  // namespace libsemigroups
 
-#define LIBSEMIGROUPS_EXCEPTION(...)                                       \
-  {                                                                        \
-    throw LibsemigroupsException(                                          \
-        __FILE__, __LINE__, __func__, detail::string_format(__VA_ARGS__)); \
+#define LIBSEMIGROUPS_EXCEPTION(...)                          \
+  {                                                           \
+    throw LibsemigroupsException(                             \
+        __FILE__,                                             \
+        __LINE__,                                             \
+        __func__,                                             \
+        ::libsemigroups::detail::string_format(__VA_ARGS__)); \
   }
 
 #endif  // LIBSEMIGROUPS_EXCEPTION_HPP_

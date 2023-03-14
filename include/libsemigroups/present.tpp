@@ -449,18 +449,17 @@ namespace libsemigroups {
 
     template <typename W>
     W longest_common_subword(Presentation<W>& p) {
-      detail::SuffixTree st;
-      detail::suffix_tree_helper::add_words(
-          st, p.rules.cbegin(), p.rules.cend());
-      detail::DFSHelper helper(st);
+      Ukkonen u;
+      ukkonen::add_words(u, p.rules.cbegin(), p.rules.cend());
+      ukkonen::detail::GreedyReduceHelper helper(u);
       // Get the best word [first, last) so that replacing every
       // non-overlapping occurrence of [first, last) in p.rules with a new
       // generator "x", and adding "x = [first, last)" as a relation reduces
       // the length of the presentation as much as possible.
       word_type::const_iterator first, last;
-      std::tie(first, last) = st.dfs(helper);
+      std::tie(first, last) = ukkonen::dfs(u, helper);
       // It'd be more pleasing to return first and last here, but they point at
-      // the word contained in the SuffixTree st, which is destroyed after we
+      // the word contained in the Ukkonen u, which is destroyed after we
       // exit this function.
       return W(first, last);
     }

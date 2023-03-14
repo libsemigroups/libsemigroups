@@ -19,3 +19,4 @@ In this section we describe some miscellaneous functionality in
    report
    _generated/libsemigroups__runner
    types
+   ukkonen

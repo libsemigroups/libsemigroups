@@ -19,6 +19,7 @@ libsemigroups::fpsemigroup::Kambites:
   - number_of_pieces(size_t) const
   - number_of_normal_forms(size_t, size_t)
   - equal_to(string_type&&, string_type&&)
+  - ukkonen() noexcept
 - Member functions and types inherited from FpSemigroupInterface:
   - ["This page contains a description of the member functions of the
      :cpp:any:`fpsemigroup::Kambites` class inherited from

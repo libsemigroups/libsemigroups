@@ -26,6 +26,7 @@
 #define LIBSEMIGROUPS_PRESENT_HPP_
 
 #include <algorithm>         // for reverse, sort
+#include <cmath>             // for std::pow
 #include <cstddef>           // for size_t
 #include <cstring>           // for strlen
 #include <initializer_list>  // for initializer_list
@@ -38,14 +39,12 @@
 #include <utility>           // for move
 #include <vector>            // for vector
 
-#include "constants.hpp"       // for UNDEFINED
-#include "debug.hpp"           // for LIBSEMIGROUPS_ASSERT
-#include "digraph-helper.hpp"  // for symmetric_closure
-#include "digraph.hpp"         // for ActionDigraph
-#include "int-range.hpp"       // for IntegralRange
-#include "order.hpp"           // for shortlex_compare
-#include "suffix-tree.hpp"     // for SuffixTree
-#include "uf.hpp"              // for Duf
+#include "constants.hpp"  // for UNDEFINED
+#include "debug.hpp"      // for LIBSEMIGROUPS_ASSERT
+#include "int-range.hpp"  // for IntegralRange
+#include "order.hpp"      // for shortlex_compare
+#include "uf.hpp"         // for Duf
+#include "ukkonen.hpp"    // for Ukkonen
 
 namespace libsemigroups {
   //! No doc
