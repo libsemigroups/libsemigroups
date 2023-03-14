@@ -185,13 +185,16 @@ namespace libsemigroups {
       return is_prefix(u.cbegin(), u.cend(), v.cbegin(), v.cend());
     }
 
-    template <typename T>
-    std::pair<T, T> maximum_common_prefix(T first_word1,
-                                          T last_word1,
+    template <typename S, typename T>
+    std::pair<S, T> maximum_common_prefix(S first_word1,
+                                          S last_word1,
                                           T first_word2,
                                           T last_word2) {
-      while (*first_word1 == *first_word2 && first_word1 < last_word1
-             && first_word2 < last_word2) {
+      // TODO there must be a better way of doing the static_casts in the next
+      // line
+      while (first_word1 < last_word1 && first_word2 < last_word2
+             && static_cast<uint64_t>(*first_word1)
+                    == static_cast<uint64_t>(*first_word2)) {
         ++first_word1;
         ++first_word2;
       }

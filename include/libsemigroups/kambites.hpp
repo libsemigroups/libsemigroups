@@ -38,10 +38,9 @@
 #ifndef LIBSEMIGROUPS_KAMBITES_HPP_
 #define LIBSEMIGROUPS_KAMBITES_HPP_
 
-#include <stdint.h>  // for uint64_t
-
 #include <algorithm>    // for min
 #include <cstddef>      // for size_t
+#include <cstdint>      // for uint64_t
 #include <functional>   // for equal_to
 #include <memory>       // for shared_ptr, unique_ptr, make_shared
 #include <string>       // for string
@@ -58,11 +57,11 @@
 #include "int-range.hpp"
 #include "order.hpp"  // for lexicographical_compare
 #include "string-view.hpp"
-#include "string.hpp"       // for is_prefix
-#include "suffix-tree.hpp"  // for SuffixTree
-#include "types.hpp"        // for word_type, tril, letter_type
-#include "uf.hpp"           // for Duf<>
-#include "word.hpp"         // for word_to_string
+#include "string.hpp"   // for is_prefix
+#include "types.hpp"    // for word_type, tril, letter_type
+#include "uf.hpp"       // for Duf<>
+#include "ukkonen.hpp"  // for Ukkonen
+#include "word.hpp"     // for word_to_string
 
 namespace libsemigroups {
   class FroidurePinBase;  // Forward decl
@@ -266,6 +265,24 @@ namespace libsemigroups {
       // Returns the number of pieces in the i-th relation word
       // Not noexcept, throws
       size_t number_of_pieces(size_t i) const;
+
+      //! Returns the Ukkonen suffix tree object used to compute pieces.
+      //!
+      //! This function returns a reference to the Ukkonen generalised suffix
+      //! tree object containing the relation words of a Kambites object, that
+      //! is used to determine the pieces, and decompositions of the relation
+      //! words.
+      //!
+      //! \parameters (None)
+      //!
+      //! \returns A const reference to a \ref Ukkonen object.
+      //!
+      //! \exceptions
+      //! \noexcept
+      auto const& ukkonen() noexcept {
+        run();
+        return _suffix_tree;
+      }
 
      private:
       ////////////////////////////////////////////////////////////////////////
@@ -583,7 +600,7 @@ namespace libsemigroups {
       mutable std::vector<RelationWords> _XYZ_data;
 
       std::vector<string_type> _relation_words;
-      detail::SuffixTree       _suffix_tree;
+      Ukkonen                  _suffix_tree;
     };
 
     ////////////////////////////////////////////////////////////////////////
@@ -673,8 +690,9 @@ namespace libsemigroups {
       if (!_have_class) {
         size_t result = POSITIVE_INFINITY;
         for (auto const& w : _relation_words) {
-          result = std::min(
-              result, _suffix_tree.number_of_pieces(w.cbegin(), w.cend()));
+          result = std::min(result,
+                            ukkonen::number_of_pieces_no_checks(
+                                _suffix_tree, w.cbegin(), w.cend()));
         }
         _have_class = true;
         _class      = result;
@@ -703,11 +721,12 @@ namespace libsemigroups {
       return last - first;
     }
 
+    // TODO(v3) remove this
     template <typename T>
     size_t Kambites<T>::number_of_pieces(size_t i) const {
       validate_relation_word_index(i);
-      return _suffix_tree.number_of_pieces(_relation_words[i].cbegin(),
-                                           _relation_words[i].cend());
+      return ukkonen::number_of_pieces_no_checks(
+          _suffix_tree, _relation_words[i].cbegin(), _relation_words[i].cend());
     }
 
     ////////////////////////////////////////////////////////////////////////
@@ -739,22 +758,17 @@ namespace libsemigroups {
 
     template <typename T>
     void Kambites<T>::really_init_XYZ_data(size_t i) const {
-      size_t const X_size = _suffix_tree.maximal_piece_prefix(
-          _relation_words[i].cbegin(), _relation_words[i].cend());
-      size_t const Z_size = _suffix_tree.maximal_piece_suffix(
-          _relation_words[i].cbegin(), _relation_words[i].cend());
+      auto const X_end = ukkonen::maximal_piece_prefix_no_checks(
+          _suffix_tree, _relation_words[i].cbegin(), _relation_words[i].cend());
+      auto const Z_begin = ukkonen::maximal_piece_suffix_no_checks(
+          _suffix_tree, _relation_words[i].cbegin(), _relation_words[i].cend());
 
       _XYZ_data[i].is_initialized = true;
-      _XYZ_data[i].X              = internal_type(_relation_words[i].cbegin(),
-                                     _relation_words[i].cbegin() + X_size);
-      _XYZ_data[i].Y   = internal_type(_relation_words[i].cbegin() + X_size,
-                                     _relation_words[i].cend() - Z_size);
-      _XYZ_data[i].Z   = internal_type(_relation_words[i].cend() - Z_size,
-                                     _relation_words[i].cend());
-      _XYZ_data[i].XY  = internal_type(_relation_words[i].cbegin(),
-                                      _relation_words[i].cend() - Z_size);
-      _XYZ_data[i].YZ  = internal_type(_relation_words[i].cbegin() + X_size,
-                                      _relation_words[i].cend());
+      _XYZ_data[i].X   = internal_type(_relation_words[i].cbegin(), X_end);
+      _XYZ_data[i].Y   = internal_type(X_end, Z_begin);
+      _XYZ_data[i].Z   = internal_type(Z_begin, _relation_words[i].cend());
+      _XYZ_data[i].XY  = internal_type(_relation_words[i].cbegin(), Z_begin);
+      _XYZ_data[i].YZ  = internal_type(X_end, _relation_words[i].cend());
       _XYZ_data[i].XYZ = internal_type(_relation_words[i]);
     }
 
@@ -1032,8 +1046,8 @@ namespace libsemigroups {
       _have_class = false;
       _relation_words.push_back(u);
       _relation_words.push_back(v);
-      _suffix_tree.add_word(u.cbegin(), u.cend());
-      _suffix_tree.add_word(v.cbegin(), v.cend());
+      _suffix_tree.add_word_no_checks(u.cbegin(), u.cend());
+      _suffix_tree.add_word_no_checks(v.cbegin(), v.cend());
     }
 
     template <typename T>

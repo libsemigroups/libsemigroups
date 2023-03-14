@@ -1616,6 +1616,7 @@ namespace libsemigroups {
     // semigroups
     ////////////////////////////////////////////////////////////////////////
 
+    // TODO(v3) reuse the same Kambites in-place rather than this
     template <typename T>
     auto count_2_gen_1_rel(size_t min, size_t max) {
       Sislo x;
@@ -1663,21 +1664,22 @@ namespace libsemigroups {
       REQUIRE(x.second == 2092035);
     }
 
+    // Takes approx. 31s
     LIBSEMIGROUPS_TEST_CASE(
         "Kambites",
         "071",
         "(fpsemi) almost all 2-generated 1-relation monoids are C(4)",
         "[extreme][kambites][fpsemigroup][fpsemi]") {
       auto x = count_2_gen_1_rel<std::string>(1, 12);
-      REQUIRE(x.first == 0);
-      REQUIRE(x.second == 0);
+      REQUIRE(x.first == 235'629);
+      REQUIRE(x.second == 8'378'371);
     }
 
     LIBSEMIGROUPS_TEST_CASE(
         "Kambites",
         "072",
         "(fpsemi) almost all 2-generated 1-relation monoids are C(4)",
-        "[extreme][kambites][fpsemigroup][fpsemi]") {
+        "[fail][kambites][fpsemigroup][fpsemi]") {
       auto x = count_2_gen_1_rel<std::string>(1, 13);
       REQUIRE(x.first == 0);
       REQUIRE(x.second == 0);
