@@ -11,7 +11,7 @@ set -e
 # This script is based on GAP's cnf/GAP-VERSION-GEN script,
 # which is based on git.git's GIT-VERSION-GEN script
 
-DEF_VER=v1.dev
+DEF_VER=v2.dev
 
 LF='
 '
