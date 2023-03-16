@@ -23,11 +23,13 @@
 
 #include <algorithm>  // for equal
 #include <array>      // for array
-
 #include <cstddef>    // for size_t
+#include <cstdint>    // for int64_t
+#include <cstdio>     // for snprintf
+#include <cstring>    // for size_t, strlen
 #include <iterator>   // for reverse_iterator
 #include <memory>     // for unique_ptr
-#include <sstream>    // for ostream, ostr...
+#include <sstream>    // for string, ostream, operator<<
 #include <stdexcept>  // for runtime_error
 #include <string>     // for string
 #include <utility>    // for make_pair, pair
@@ -164,10 +166,7 @@ namespace libsemigroups {
     // last_word).
     // Not noexcept, because std::equal isn't
     template <typename S, typename T>
-    bool is_prefix(S const& first_word,
-                   S const& last_word,
-                   T const& first_prefix,
-                   T const& last_prefix) {
+    bool is_prefix(S first_word, S last_word, T first_prefix, T last_prefix) {
       LIBSEMIGROUPS_ASSERT(first_word <= last_word);
       // Check if [first_prefix, last_prefix) equals [first_word, first_word +
       // (last_prefix - first_prefix))
@@ -187,10 +186,10 @@ namespace libsemigroups {
     }
 
     template <typename T>
-    std::pair<T, T> maximum_common_prefix(T        first_word1,
-                                          T const& last_word1,
-                                          T        first_word2,
-                                          T const& last_word2) {
+    std::pair<T, T> maximum_common_prefix(T first_word1,
+                                          T last_word1,
+                                          T first_word2,
+                                          T last_word2) {
       while (*first_word1 == *first_word2 && first_word1 < last_word1
              && first_word2 < last_word2) {
         ++first_word1;
@@ -200,39 +199,44 @@ namespace libsemigroups {
     }
 
     template <typename T>
-    std::pair<T, T> maximum_common_suffix(T        first_word1,
-                                          T const& last_word1,
-                                          T        first_word2,
-                                          T const& last_word2) {
-      using reverse_iterator = std::reverse_iterator<T>;
-      auto p = maximum_common_prefix(reverse_iterator(last_word1),
-                                     reverse_iterator(first_word1),
-                                     reverse_iterator(last_word2),
-                                     reverse_iterator(first_word2));
+    std::pair<T, T> maximum_common_suffix(T first_word1,
+                                          T last_word1,
+                                          T first_word2,
+                                          T last_word2) {
+      auto p = maximum_common_prefix(std::make_reverse_iterator(last_word1),
+                                     std::make_reverse_iterator(first_word1),
+                                     std::make_reverse_iterator(last_word2),
+                                     std::make_reverse_iterator(first_word2));
       return std::make_pair(p.first.base(), p.second.base());
     }
 
-    static inline std::string maximum_common_suffix(std::string const& u,
-                                                    std::string const& v) {
+    template <typename W>
+    static inline auto maximum_common_suffix(W const& u, W const& v) {
+      return W(maximum_common_suffix(u.cbegin(), u.cend(), v.cbegin(), v.cend())
+                   .first,
+               u.cend());
+    }
+
+    static inline auto maximum_common_suffix(char const* u, char const* v) {
       return std::string(
-          maximum_common_suffix(u.cbegin(), u.cend(), v.cbegin(), v.cend())
+          maximum_common_suffix(u, u + std::strlen(u), v, v + std::strlen(v))
               .first,
-          u.cend());
+          u + std::strlen(u));
+    }
+
+    template <typename W>
+    static inline auto maximum_common_prefix(W const& u, W const& v) {
+      return maximum_common_prefix(u.cbegin(), u.cend(), v.cbegin(), v.cend());
     }
 
     // Returns true if [first_suffix, last_suffix) is a suffix of [first_word,
     // last_word).
-    static inline bool
-    is_suffix(std::string::const_iterator const& first_word,
-              std::string::const_iterator const& last_word,
-              std::string::const_iterator const& first_suffix,
-              std::string::const_iterator const& last_suffix) {
-      using reverse_iterator
-          = std::reverse_iterator<std::string::const_iterator>;
-      return is_prefix(reverse_iterator(last_word),
-                       reverse_iterator(first_word),
-                       reverse_iterator(last_suffix),
-                       reverse_iterator(first_suffix));
+    template <typename S, typename T>
+    bool is_suffix(S first_word, S last_word, T first_suffix, T last_suffix) {
+      return is_prefix(std::make_reverse_iterator(last_word),
+                       std::make_reverse_iterator(first_word),
+                       std::make_reverse_iterator(last_suffix),
+                       std::make_reverse_iterator(first_suffix));
     }
 
     // Check if v is a suffix of u
