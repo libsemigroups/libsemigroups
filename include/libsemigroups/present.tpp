@@ -771,5 +771,90 @@ namespace libsemigroups {
       }
     }
 
+    template <typename W>
+    bool is_strongly_compressible(Presentation<W> const& p) {
+      if (p.rules.size() != 2) {
+        return false;
+      }
+      auto const& u = p.rules[0];
+      auto const& v = p.rules[1];
+      return !(u.empty() || v.empty() || u.front() != v.front()
+               || u.back() != v.back());
+    }
+
+    template <typename W>
+    bool strongly_compress(Presentation<W>& p) {
+      if (!is_strongly_compressible(p)) {
+        return false;
+      }
+
+      auto const& u = p.rules[0];
+      auto const& v = p.rules[1];
+
+      size_t k = std::min(static_cast<size_t>(
+                              detail::maximum_common_prefix(u, v).first
+                              - u.cbegin()),
+                          detail::maximum_common_suffix(u, v).size())
+                 // TODO(later): ensure maximum_common_prefix/suffix have
+                 // same return type
+                 + 1;
+
+      size_t const n = p.alphabet().size();
+
+      auto word_to_num = [&k, &n](auto first, auto last) {
+        LIBSEMIGROUPS_ASSERT(static_cast<size_t>(std::distance(first, last))
+                             == k);
+        (void) k;
+        size_t result = 0;
+        for (auto it = first; it != last; ++it) {
+          result += std::pow(n, it - first) * (*it);
+        }
+        return result;
+      };
+
+      auto compress_word = [&k, &word_to_num](W const& word) {
+        W result;
+        for (auto it = word.cbegin(); it <= word.cend() - k; ++it) {
+          result.push_back(word_to_num(it, it + k));
+        }
+        return result;
+      };
+
+      p.rules[0] = compress_word(p.rules[0]);
+      p.rules[1] = compress_word(p.rules[1]);
+      p.alphabet_from_rules();
+      normalize_alphabet(p);
+      return true;
+    }
+
+    template <typename W>
+    bool reduce_to_2_generators(Presentation<W>& p, size_t index) {
+      if (index > 1) {
+        LIBSEMIGROUPS_EXCEPTION("the 2nd argument must be 0 or 1, found %llu",
+                                uint64_t(index));
+      } else if (p.rules.size() != 2) {
+        return false;
+      }
+      auto const& u = p.rules[0];
+      auto const& v = p.rules[1];
+      if (u.empty() || v.empty() || u.front() == v.front()) {
+        return false;
+      }
+
+      std::vector<typename Presentation<W>::letter_type> non_trivial_scc
+          = {u.front(), v.front()};
+
+      auto const other = non_trivial_scc[(index + 1) % 2];
+
+      for (auto const& x : p.alphabet()) {
+        if (x != other) {
+          replace_subword(p, {x}, {letter(p, non_trivial_scc[index])});
+        }
+      }
+      p.alphabet_from_rules();
+      normalize_alphabet(p);
+      return true;
+    }
+
   }  // namespace presentation
 }  // namespace libsemigroups
