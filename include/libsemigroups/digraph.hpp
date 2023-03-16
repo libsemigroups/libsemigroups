@@ -2983,9 +2983,6 @@ namespace libsemigroups {
     void gabow_scc() const {
       if (_scc._defined) {
         return;
-      } else if (!validate()) {
-        LIBSEMIGROUPS_EXCEPTION("digraph not fully defined, cannot find "
-                                "strongly connected components");
       }
 
       static std::stack<T>               stack1;
@@ -3018,14 +3015,16 @@ namespace libsemigroups {
           dfs_end:
             LIBSEMIGROUPS_ASSERT(v < number_of_nodes() && i < _degree);
             T u = _dynamic_array_2.get(v, i);
-            if (preorder[u] == UNDEFINED) {
-              frame.top().second = i;
-              frame.emplace(u, 0);
-              goto dfs_start;
-            } else if (_scc._id[u] == UNDEFINED) {
-              LIBSEMIGROUPS_ASSERT(!stack2.empty());
-              while (preorder[stack2.top()] > preorder[u]) {
-                stack2.pop();
+            if (u != UNDEFINED) {
+              if (preorder[u] == UNDEFINED) {
+                frame.top().second = i;
+                frame.emplace(u, 0);
+                goto dfs_start;
+              } else if (_scc._id[u] == UNDEFINED) {
+                LIBSEMIGROUPS_ASSERT(!stack2.empty());
+                while (preorder[stack2.top()] > preorder[u]) {
+                  stack2.pop();
+                }
               }
             }
           }
