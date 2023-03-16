@@ -50,10 +50,10 @@ Contents
        :math:`u_1v_1 < \cdots < u_nv_n` where :math:`<` is the shortlex order.
 
    * - :cpp:any:`change_alphabet`
-     - change or re-order the alphabet.
-   
+     - Change or re-order the alphabet.
+
    * - :cpp:any:`character`
-     - Return a `char` by index (ordered for readability).
+     - Return a ``char`` by index (ordered for readability).
 
    * - :cpp:any:`first_unused_letter`
      - Returns the first letter **not** in the alphabet of a presentation.
@@ -61,6 +61,10 @@ Contents
    * - :cpp:any:`greedy_reduce_length`
      - Greedily reduce the length of the presentation using
        :cpp:any:`longest_common_subword`.
+
+   * - :cpp:any:`is_strongly_compressible`
+     - Returns ``true`` if the 1-relation presentation can be strongly
+       compressed.
 
    * - :cpp:any:`length`
      - Return the sum of the lengths of the rules.
@@ -83,11 +87,14 @@ Contents
 
    * - :cpp:any:`normalize_alphabet`
      - Modify the presentation so that the alphabet is :math:`\{0, \ldots, n -
-       1\}` (or equivalent) and rewrites the rules to use this alphabet.
+       1\}` (or equivalent) and rewrites the rules.
 
    * - :cpp:any:`reduce_complements`
      - If there are rules :math:`u = v` and :math:`v = w` where
-       :math:`|w| < |v|`, then replace :math:`u = v` by :math:`u = w`.
+       :math:`|w| < |v| `, then replace :math:`u = v` by :math:`u = w`.
+
+   * - :cpp:any:`reduce_to_2_generators`
+     - Reduce the number of generators in a \f$1\f$-relation presentation to `2`.
 
    * - :cpp:any:`redundant_rule`
      - Return an iterator pointing at the left hand side of a redundant rule.
@@ -124,6 +131,9 @@ Contents
    * - :cpp:any:`sort_rules`
      - Sort the rules :math:`u_1 = v_1, \ldots, u_n = v_n` so that
        :math:`u_1v_1 < \cdots < u_nv_n`.
+
+   * - :cpp:any:`strongly_compress`
+     - Strongly compress a 1-relation presentation.
 
 .. cpp:namespace-pop::
 

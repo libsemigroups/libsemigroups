@@ -1395,4 +1395,101 @@ namespace libsemigroups {
     REQUIRE(presentation::longest_common_subword(p) == "");
   }
 
+  LIBSEMIGROUPS_TEST_CASE("Presentation",
+                          "039",
+                          "aaaaaaaab = aaaaaaaaab strong compression",
+                          "[quick][presentation]") {
+    Presentation<std::string> p;
+    p.alphabet("ab");
+    presentation::add_rule_and_check(p, "aaaaaaaab", "aaaaaaaaab");
+    REQUIRE(presentation::strongly_compress(p));
+    REQUIRE(p.rules == decltype(p.rules)({"a", "aa"}));
+
+    p.rules = {"adadnadnasnamdnamdna", "akdjskadjksajdaldja"};
+    p.alphabet_from_rules();
+
+    REQUIRE(presentation::strongly_compress(p));
+    REQUIRE(presentation::reduce_to_2_generators(p));
+    REQUIRE(
+        p.rules
+        == decltype(p.rules)({"aaaaaaaaaaaaaaaaaaa", "baaaaaaaaaaaaaaaaa"}));
+
+    // Only works for 1-relation monoids at present
+    p.alphabet("ab");
+    presentation::add_rule_and_check(p, "aaaaaaaab", "aaaaaaaaab");
+    presentation::add_rule_and_check(p, "aaaaaaaab", "aaaaaaaaab");
+    REQUIRE(!presentation::strongly_compress(p));
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Presentation",
+                          "043",
+                          "case where strong compression doesn't work",
+                          "[quick][presentation]") {
+    Presentation<std::string> p;
+    p.alphabet("ab");
+    presentation::add_rule_and_check(p, "abaaaabab", "abbabaaaab");
+    REQUIRE(presentation::strongly_compress(p));
+    REQUIRE(p.rules == decltype(p.rules)({"abccdae", "fgeabccd"}));
+
+    auto q = p;
+    REQUIRE(presentation::reduce_to_2_generators(q));
+    REQUIRE(q.rules == decltype(q.rules)({"aaaaaaa", "baaaaaaa"}));
+
+    q = p;
+    REQUIRE(presentation::reduce_to_2_generators(q, 1));
+    REQUIRE(q.rules == decltype(q.rules)({"abbbbab", "bbbabbbb"}));
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Presentation",
+                          "044",
+                          "proof that",
+                          "[quick][presentation]") {
+    Presentation<std::string> p;
+    p.alphabet("ab");
+    presentation::add_rule_and_check(p, "aabb", "aaabaaab");
+    REQUIRE(presentation::strongly_compress(p));
+    presentation::reverse(p);
+    REQUIRE(p.rules == decltype(p.rules)({"cba", "baadbaa"}));
+
+    auto q = p;
+    REQUIRE(presentation::reduce_to_2_generators(q));
+    REQUIRE(q.rules == decltype(q.rules)({"aba", "baaabaa"}));
+
+    q = p;
+    REQUIRE(presentation::reduce_to_2_generators(q, 1));
+    REQUIRE(q.rules == decltype(q.rules)({"abb", "bbbbbbb"}));
+
+    // Wrong index
+    REQUIRE_THROWS_AS(presentation::reduce_to_2_generators(q, 2),
+                      LibsemigroupsException);
+    q = p;
+    presentation::add_rule_and_check(q, "aabb", "aaabaaab");
+    // not 1-relation
+    REQUIRE(!presentation::reduce_to_2_generators(q, 1));
+
+    q.rules = {"aaaaa", "a"};
+    REQUIRE(!presentation::reduce_to_2_generators(q));
+
+    q.rules = {"aaaaa", ""};
+    REQUIRE(!presentation::reduce_to_2_generators(q));
+
+    q.rules = {"abcacbabab", ""};
+    REQUIRE(!presentation::reduce_to_2_generators(q));
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Presentation",
+                          "045",
+                          "decompression",
+                          "[quick][presentation]") {
+    Presentation<std::string> p;
+    p.alphabet("ab");
+    p.rules = {"aabb", "aaabaab"};
+    REQUIRE(presentation::strongly_compress(p));
+    REQUIRE(p.rules == decltype(p.rules)({"abc", "aabdab"}));
+    REQUIRE(!presentation::reduce_to_2_generators(p));
+    presentation::reverse(p);
+    REQUIRE(presentation::reduce_to_2_generators(p));
+    REQUIRE(p.rules == decltype(p.rules)({"aba", "baabaa"}));
+  }
+
 }  // namespace libsemigroups
