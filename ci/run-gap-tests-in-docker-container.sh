@@ -4,11 +4,11 @@ set -e
 sudo apt-get --yes update
 
 sudo apt-get install git --yes
-sudo apt-get install libtool-bin --yes 
+sudo apt-get install libtool-bin --yes
 
 # Next commands executed in the container...
-GAP_SEMIGROUPS_BRANCH=main
-GAP_SEMIGROUPS_REPO=semigroups
+GAP_SEMIGROUPS_BRANCH="stable-5.2"
+GAP_SEMIGROUPS_REPO="semigroups"
 GAP_VERSION=$(ls inst)
 GAP_SH="$HOME/inst/$GAP_VERSION/bin/gap.sh"
 
@@ -30,13 +30,13 @@ git clone -b $GAP_SEMIGROUPS_BRANCH --depth=1 https://github.com/$GAP_SEMIGROUPS
 cd semigroups
 
 # Move the libsemigroups to the correct location
-mv $HOME/libsemigroups . 
+mv $HOME/libsemigroups .
 ./autogen.sh
 ./configure --disable-hpcombi
 make -j4
 
 cd ..
-git clone -b master --depth=1 https://github.com/gap-packages/PackageManager.git 
+git clone -b master --depth=1 https://github.com/gap-packages/PackageManager.git
 
 INSTALL_PKGS="if not InstallPackage(\"https://digraphs.github.io/Digraphs/PackageInfo.g\", false) then QuitGap(1); fi;"
 INSTALL_PKGS+="if not InstallPackage(\"io\", false) then QuitGap(1); fi;"
