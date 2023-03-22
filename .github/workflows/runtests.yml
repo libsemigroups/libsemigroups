@@ -159,7 +159,7 @@ jobs:
             ./test_obvinf "[quick]"
             ./test_digraph "[quick]"
    coverage:
-      timeout-minutes: 20
+      timeout-minutes: 60
       runs-on: ubuntu-latest
       steps:
          - name: "Restore cache . . ."
