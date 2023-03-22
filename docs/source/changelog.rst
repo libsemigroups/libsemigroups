@@ -1,6 +1,21 @@
 Changelog - version 2
 =====================
 
+v2.7.0 (released 22/03/2023)
+----------------------------
+
+This is a minor release with some new features and bug fixes:
+
+* Remove a pessimizing move by @jamesjer in
+  https://github.com/libsemigroups/libsemigroups/pull/467
+* More new features for presentations by @james-d-mitchell in
+  https://github.com/libsemigroups/libsemigroups/pull/473
+* Allow computation of strongly connected components of non-complete word
+  graphs by @james-d-mitchell in
+  https://github.com/libsemigroups/libsemigroups/pull/474
+* Ukkonen: expose suffix tree impl by @james-d-mitchell in
+  https://github.com/libsemigroups/libsemigroups/pull/476
+
 v2.6.2 (released 27/02/2023)
 ----------------------------
 
@@ -39,7 +54,7 @@ for semigroups and monoids.
 * New helper functions for ``Presentation`` by @james-d-mitchell in
   https://github.com/libsemigroups/libsemigroups/pull/453
 * Add ``congruence_kind`` argument check to ``ToddCoxeter`` function
-  `to_gap_string` by @MTWhyte in
+  ``to_gap_string`` by @MTWhyte in
   https://github.com/libsemigroups/libsemigroups/pull/455
 
 v2.5.1 (released 22/12/2022)
@@ -134,7 +149,7 @@ v2.3.0 (released 28/09/2022)
 ----------------------------
 
 In this release a number of minor issues a fixed, some improvements are made,
-and the `Sims1` class has been redesigned and improved to implement a parallel
+and the ``Sims1`` class has been redesigned and improved to implement a parallel
 version of the low index congruences algorithm.
 
 v2.2.3 (released 22/09/2022)
