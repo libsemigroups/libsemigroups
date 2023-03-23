@@ -753,10 +753,12 @@ namespace libsemigroups {
       size_t n  = 6;
       auto   s  = orientation_preserving_monoid(n);
       auto   p  = make<Presentation<word_type>>(s);
+      p.alphabet(3);
+      presentation::replace_word(p, word_type({}), {2});
+      presentation::add_identity_rules(p, 2);
       p.validate();
-      auto        m = p.alphabet().size();
       ToddCoxeter tc(congruence_kind::twosided);
-      tc.set_number_of_generators(m);
+      tc.set_number_of_generators(3);
       for (size_t i = 0; i < p.rules.size() - 1; i += 2) {
         tc.add_pair(p.rules[i], p.rules[i + 1]);
       }
@@ -771,10 +773,11 @@ namespace libsemigroups {
       size_t n  = 5;
       auto   s  = orientation_reversing_monoid(n);
       auto   p  = make<Presentation<word_type>>(s);
-      p.validate();
-      auto        m = p.alphabet().size();
+      p.alphabet(4);
+      presentation::replace_word(p, word_type({}), {3});
+      presentation::add_identity_rules(p, 3);
       ToddCoxeter tc(congruence_kind::twosided);
-      tc.set_number_of_generators(m);
+      tc.set_number_of_generators(4);
       for (size_t i = 0; i < p.rules.size() - 1; i += 2) {
         tc.add_pair(p.rules[i], p.rules[i + 1]);
       }

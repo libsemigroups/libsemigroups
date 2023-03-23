@@ -930,10 +930,8 @@ namespace libsemigroups {
       }
       word_type                  b = {0};
       word_type                  u = {1};
-      word_type                  e = {2};
+      word_type                  e = {};
       std::vector<relation_type> result;
-
-      add_monoid_relations({b, u, e}, e, result);
 
       result.emplace_back(b ^ n, e);
       result.emplace_back(u ^ 2, u);
@@ -953,13 +951,11 @@ namespace libsemigroups {
         LIBSEMIGROUPS_EXCEPTION(
             "expected argument to be at least 3, found %llu", uint64_t(n));
       }
-      word_type                  e = {0};
-      word_type                  b = {1};
-      word_type                  u = {2};
-      word_type                  c = {3};
+      word_type                  e = {};
+      word_type                  b = {0};
+      word_type                  u = {1};
+      word_type                  c = {2};
       std::vector<relation_type> result;
-
-      add_monoid_relations({e, b, u, c}, e, result);
 
       result.emplace_back(b ^ n, e);
       result.emplace_back(u ^ 2, u);
