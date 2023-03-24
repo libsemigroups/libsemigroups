@@ -38,12 +38,12 @@
 #include <utility>           // for move
 #include <vector>            // for vector
 
-#include "constants.hpp"    // for UNDEFINED
-#include "debug.hpp"        // for LIBSEMIGROUPS_ASSERT
-#include "int-range.hpp"    // for IntegralRange
-#include "order.hpp"        // for shortlex_compare
-#include "suffix-tree.hpp"  // for SuffixTree
-#include "uf.hpp"           // for Duf
+#include "constants.hpp"  // for UNDEFINED
+#include "debug.hpp"      // for LIBSEMIGROUPS_ASSERT
+#include "int-range.hpp"  // for IntegralRange
+#include "order.hpp"      // for shortlex_compare
+#include "uf.hpp"         // for Duf
+#include "ukkonen.hpp"    // for SuffixTree
 
 namespace libsemigroups {
   //! No doc
