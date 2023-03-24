@@ -35,11 +35,11 @@ namespace libsemigroups {
 
   using ToddCoxeter = fpsemigroup::ToddCoxeter;
   using KnuthBendix = fpsemigroup::KnuthBendix;
-  using Kambites    = fpsemigroup::Kambites<std::string>;
+  using Kambites_   = Kambites<std::string>;
 
   FpSemigroup::FpSemigroup(use_kambites val) : FpSemigroupInterface(), _race() {
     if (val == use_kambites::yes) {
-      _race.add_runner(std::make_shared<Kambites>());
+      _race.add_runner(std::make_shared<Kambites_>());
     }
     _race.add_runner(std::make_shared<ToddCoxeter>());
     _race.add_runner(std::make_shared<KnuthBendix>());

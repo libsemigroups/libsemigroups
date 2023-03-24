@@ -145,7 +145,7 @@ namespace libsemigroups {
       uint64_t total_c4        = 0;
       uint64_t total_confluent = 0;
       for (size_t j = 0; j < sample_size; ++j) {
-        fpsemigroup::Kambites<std::string> k;
+        Kambites<std::string> k;
         k.set_alphabet(A);
         fpsemigroup::KnuthBendix kb1;
         kb1.set_alphabet(A);

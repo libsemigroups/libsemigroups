@@ -69,450 +69,443 @@ namespace libsemigroups {
     class KE;  // Forward decl
   }
 
-  namespace fpsemigroup {
+  //! Defined in ``kambites.hpp``.
+  //!
+  //! On this page we describe the functionality relating to the algorithms
+  //! for small overlap monoids by
+  //! [Kambites](https://doi.org/10.1016/j.jalgebra.2008.09.038) and the
+  //! authors of ``libsemigroups``.
+  //!
+  //! This page describes the implementation in the class
+  //! Kambites which uses the FpSemigroupInterface, which is
+  //! also documented on this page.
+  // TODO(later) example
+  template <typename T>
+  class Kambites : public FpSemigroupInterface {
+   public:
+    ////////////////////////////////////////////////////////////////////////
+    // Kambites - aliases - public
+    ////////////////////////////////////////////////////////////////////////
 
-    //! Defined in ``kambites.hpp``.
+    //! The type of strings used by a Kambites instance.
+    using string_type = std::string;
+
+    //! The template parameter \p T.
+    using internal_type = T;
+
+   private:
+    using internal_type_iterator = typename internal_type::const_iterator;
+
+   public:
+    ////////////////////////////////////////////////////////////////////////
+    // Kambites - Constructors and destructor - public
+    ////////////////////////////////////////////////////////////////////////
+
+    //! Default constructor.
     //!
-    //! On this page we describe the functionality relating to the algorithms
-    //! for small overlap monoids by
-    //! [Kambites](https://doi.org/10.1016/j.jalgebra.2008.09.038) and the
-    //! authors of ``libsemigroups``.
+    //! \par Parameters
+    //! (None)
     //!
-    //! This page describes the implementation in the class
-    //! fpsemigroup::Kambites which uses the FpSemigroupInterface, which is
-    //! also documented on this page.
-    // TODO(later) example
-    template <typename T>
-    class Kambites : public FpSemigroupInterface {
-     public:
-      ////////////////////////////////////////////////////////////////////////
-      // Kambites - aliases - public
-      ////////////////////////////////////////////////////////////////////////
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \complexity
+    //! Constant
+    Kambites();
 
-      //! The type of strings used by a Kambites instance.
-      using string_type = std::string;
+    //! Default copy constructor.
+    Kambites(Kambites const&);
 
-      //! The template parameter \p T.
-      using internal_type = T;
+    //! Default move constructor.
+    Kambites(Kambites&&) = default;
 
-     private:
-      using internal_type_iterator = typename internal_type::const_iterator;
+    //! Default copy assignment operator.
+    Kambites& operator=(Kambites const&) = default;
 
-     public:
-      ////////////////////////////////////////////////////////////////////////
-      // Kambites - Constructors and destructor - public
-      ////////////////////////////////////////////////////////////////////////
+    //! Default move assignment operator.
+    Kambites& operator=(Kambites&&) = default;
 
-      //! Default constructor.
-      //!
-      //! \par Parameters
-      //! (None)
-      //!
-      //! \exceptions
-      //! \no_libsemigroups_except
-      //!
-      //! \complexity
-      //! Constant
-      Kambites();
+    ~Kambites();
 
-      //! Default copy constructor.
-      Kambites(Kambites const&);
+    ////////////////////////////////////////////////////////////////////////
+    // FpSemigroupInterface - pure virtual member functions - public
+    ////////////////////////////////////////////////////////////////////////
 
-      //! Default move constructor.
-      Kambites(Kambites&&) = default;
-
-      //! Default copy assignment operator.
-      Kambites& operator=(Kambites const&) = default;
-
-      //! Default move assignment operator.
-      Kambites& operator=(Kambites&&) = default;
-
-      ~Kambites();
-
-      ////////////////////////////////////////////////////////////////////////
-      // FpSemigroupInterface - pure virtual member functions - public
-      ////////////////////////////////////////////////////////////////////////
-
-      //! \copydoc FpSemigroupInterface::size
-      //!
-      //! \throws LibsemigroupsException if the small overlap class is not at
-      //! least \f$4\f$.
-      // Not noexcept, throws
-      uint64_t size() override {
-        validate_small_overlap_class();
-        return POSITIVE_INFINITY;
-      }
+    //! \copydoc FpSemigroupInterface::size
+    //!
+    //! \throws LibsemigroupsException if the small overlap class is not at
+    //! least \f$4\f$.
+    // Not noexcept, throws
+    uint64_t size() override {
+      validate_small_overlap_class();
+      return POSITIVE_INFINITY;
+    }
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
-      using FpSemigroupInterface::equal_to;
+    using FpSemigroupInterface::equal_to;
 #endif
 
-      //! \copydoc FpSemigroupInterface::equal_to
-      //!
-      //! \throws LibsemigroupsException if the small overlap class is not at
-      //! least \f$4\f$.
-      // Not noexcept, throws
-      bool equal_to(string_type const& u, string_type const& v) override {
-        validate_small_overlap_class();
-        // Words aren't validated, the below returns false if they contain
-        // letters not in the alphabet.
-        return wp_prefix(internal_type(u), internal_type(v), internal_type());
+    //! \copydoc FpSemigroupInterface::equal_to
+    //!
+    //! \throws LibsemigroupsException if the small overlap class is not at
+    //! least \f$4\f$.
+    // Not noexcept, throws
+    bool equal_to(string_type const& u, string_type const& v) override {
+      validate_small_overlap_class();
+      // Words aren't validated, the below returns false if they contain
+      // letters not in the alphabet.
+      return wp_prefix(internal_type(u), internal_type(v), internal_type());
+    }
+
+    // Not noexcept, equal_to above throws
+    //! \copydoc FpSemigroupInterface::equal_to
+    //!
+    //! \throws LibsemigroupsException if the small overlap class is not at
+    //! least \f$4\f$.
+    bool equal_to(string_type&& u, string_type&& v) {
+      string_type uu = u;
+      string_type vv = v;
+      return equal_to(uu, vv);
+    }
+
+    //! \copydoc FpSemigroupInterface::normal_form
+    //!
+    //! \throws LibsemigroupsException if the small overlap class is not at
+    //! least \f$4\f$.
+    // Not noexcept, lots of allocations
+    string_type normal_form(string_type const& w) override;
+
+    ////////////////////////////////////////////////////////////////////////
+    // Kambites - member functions - public
+    ////////////////////////////////////////////////////////////////////////
+
+    // not noexcept because number_of_pieces_unsafe isn't
+    //! Get the small overlap class of the finitely presented semigroup
+    //! represented by \c this.
+    //!
+    //! If \f$S\f$ is a finitely presented semigroup with generating set
+    //! \f$A\f$, then a word \f$w\f$ over \f$A\f$ is a *piece* if \f$w\f$
+    //! occurs as a factor in at least two of the relations defining \f$S\f$
+    //! or if it occurs as a factor of one relation in two different
+    //! positions (possibly overlapping).
+    //!
+    //! A finitely presented semigroup \f$S\f$ satisfies the condition
+    //! \f$C(n)\f$, for a positive integer \f$n\f$ if the minimum number of
+    //! pieces in any factorisation of a word occurring as the left or right
+    //! hand side of a relation of \f$S\f$ is at least \f$n\f$.
+    //!
+    //! \par Parameters
+    //! (None)
+    //!
+    //! \returns
+    //! The greatest positive integer \f$n\f$ such that the finitely
+    //! semigroup represented by \c this satisfies the condition \f$C(n)\f$;
+    //! or \ref POSITIVE_INFINITY if no word occurring in a
+    //! relation can be written as a product of pieces.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \complexity
+    //! The current implementation has complexity no worse than \f$O(m ^
+    //! 3)\f$ where \f$m\f$ is the sum of the lengths of the words occurring
+    //! in the relations of the semigroup.
+    //!
+    //! \warning
+    //! The member functions \ref equal_to and \ref normal_form only work if
+    //! the return value of this function is at least \f$4\f$.
+    size_t small_overlap_class() const;
+
+    //! Returns the number of normal forms with length in a given range.
+    //!
+    //! \param min the minimum length of a normal form to count
+    //! \param max one larger than the maximum length of a normal form to
+    //! count.
+    //!
+    //! \returns
+    //! A value of type `uint64_t`.
+    //!
+    //! \throws LibsemigroupsException if the small overlap class is not at
+    //! least \f$4\f$.
+    //!
+    //! \complexity
+    //! Assuming that \c this has been run until finished, the complexity of
+    //! this function is at worst \f$O(mnk ^ 6)\f$ where \f$m\f$ is the
+    //! number of letters in the alphabet, \f$n\f$ is the number of normal
+    //! forms with length in the range \f$[min, max)\f$, and \f$k\f$ is the
+    //! parameter \p max.
+    // Not noexcept because FroidurePin::run isn't
+    uint64_t number_of_normal_forms(size_t min, size_t max);
+
+    //! Returns the minimum number of pieces required to factorise the
+    //! \f$i\f$-th relation word.
+    //!
+    //! \param i the index of the relation word
+    //!
+    //! \returns
+    //! A value of type `size_t`.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \complexity
+    //! The current implementation has complexity no worse than \f$O(m)\f$
+    //! where \f$m\f$ is the sum of the lengths of the words occurring in the
+    //! relations of the semigroup.
+    // Returns the number of pieces in the i-th relation word
+    // Not noexcept, throws
+    size_t number_of_pieces(size_t i) const;
+
+    //! Returns the Ukkonen suffix tree object used to compute pieces.
+    //!
+    //! This function returns a reference to the Ukkonen generalised suffix
+    //! tree object containing the relation words of a Kambites object, that
+    //! is used to determine the pieces, and decompositions of the relation
+    //! words.
+    //!
+    //! \parameters (None)
+    //!
+    //! \returns A const reference to a \ref Ukkonen object.
+    //!
+    //! \exceptions
+    //! \noexcept
+    auto const& ukkonen() noexcept {
+      run();
+      return _suffix_tree;
+    }
+
+   private:
+    ////////////////////////////////////////////////////////////////////////
+    // Kambites - validation functions - private
+    ////////////////////////////////////////////////////////////////////////
+
+    // Throws exception if the index i is not in the range [0,
+    // _relation_words.size())
+    //
+    // Not noexcept, throws
+    void validate_relation_word_index(size_t i) const;
+
+    // Throws exception if the small_overlap_class is < 4.
+    //
+    // Not noexcept, throws
+    void validate_small_overlap_class() const;
+
+    ////////////////////////////////////////////////////////////////////////
+    // Kambites - XYZ functions - private
+    ////////////////////////////////////////////////////////////////////////
+
+    void really_init_XYZ_data(size_t i) const;
+
+    // init_XYZ_data is split into the function that really does the work
+    // (really_init_XYZ_data) which is called once, and init_XYZ_data which
+    // can be called very often.
+    inline void init_XYZ_data(size_t i) const {
+      LIBSEMIGROUPS_ASSERT(i < _relation_words.size());
+      if (_XYZ_data.empty()) {
+        _XYZ_data.resize(_relation_words.size());
       }
-
-      // Not noexcept, equal_to above throws
-      //! \copydoc FpSemigroupInterface::equal_to
-      //!
-      //! \throws LibsemigroupsException if the small overlap class is not at
-      //! least \f$4\f$.
-      bool equal_to(string_type&& u, string_type&& v) {
-        string_type uu = u;
-        string_type vv = v;
-        return equal_to(uu, vv);
+      if (!_XYZ_data[i].is_initialized) {
+        really_init_XYZ_data(i);
       }
+    }
 
-      //! \copydoc FpSemigroupInterface::normal_form
-      //!
-      //! \throws LibsemigroupsException if the small overlap class is not at
-      //! least \f$4\f$.
-      // Not noexcept, lots of allocations
-      string_type normal_form(string_type const& w) override;
+    internal_type const& X(size_t i) const;
 
-      ////////////////////////////////////////////////////////////////////////
-      // Kambites - member functions - public
-      ////////////////////////////////////////////////////////////////////////
+    internal_type const& Y(size_t i) const;
 
-      // not noexcept because number_of_pieces_unsafe isn't
-      //! Get the small overlap class of the finitely presented semigroup
-      //! represented by \c this.
-      //!
-      //! If \f$S\f$ is a finitely presented semigroup with generating set
-      //! \f$A\f$, then a word \f$w\f$ over \f$A\f$ is a *piece* if \f$w\f$
-      //! occurs as a factor in at least two of the relations defining \f$S\f$
-      //! or if it occurs as a factor of one relation in two different
-      //! positions (possibly overlapping).
-      //!
-      //! A finitely presented semigroup \f$S\f$ satisfies the condition
-      //! \f$C(n)\f$, for a positive integer \f$n\f$ if the minimum number of
-      //! pieces in any factorisation of a word occurring as the left or right
-      //! hand side of a relation of \f$S\f$ is at least \f$n\f$.
-      //!
-      //! \par Parameters
-      //! (None)
-      //!
-      //! \returns
-      //! The greatest positive integer \f$n\f$ such that the finitely
-      //! semigroup represented by \c this satisfies the condition \f$C(n)\f$;
-      //! or \ref POSITIVE_INFINITY if no word occurring in a
-      //! relation can be written as a product of pieces.
-      //!
-      //! \exceptions
-      //! \no_libsemigroups_except
-      //!
-      //! \complexity
-      //! The current implementation has complexity no worse than \f$O(m ^
-      //! 3)\f$ where \f$m\f$ is the sum of the lengths of the words occurring
-      //! in the relations of the semigroup.
-      //!
-      //! \warning
-      //! The member functions \ref equal_to and \ref normal_form only work if
-      //! the return value of this function is at least \f$4\f$.
-      size_t small_overlap_class() const;
+    internal_type const& Z(size_t i) const;
 
-      //! Returns the number of normal forms with length in a given range.
-      //!
-      //! \param min the minimum length of a normal form to count
-      //! \param max one larger than the maximum length of a normal form to
-      //! count.
-      //!
-      //! \returns
-      //! A value of type `uint64_t`.
-      //!
-      //! \throws LibsemigroupsException if the small overlap class is not at
-      //! least \f$4\f$.
-      //!
-      //! \complexity
-      //! Assuming that \c this has been run until finished, the complexity of
-      //! this function is at worst \f$O(mnk ^ 6)\f$ where \f$m\f$ is the
-      //! number of letters in the alphabet, \f$n\f$ is the number of normal
-      //! forms with length in the range \f$[min, max)\f$, and \f$k\f$ is the
-      //! parameter \p max.
-      // Not noexcept because FroidurePin::run isn't
-      uint64_t number_of_normal_forms(size_t min, size_t max);
+    internal_type const& XY(size_t i) const;
 
-      //! Returns the minimum number of pieces required to factorise the
-      //! \f$i\f$-th relation word.
-      //!
-      //! \param i the index of the relation word
-      //!
-      //! \returns
-      //! A value of type `size_t`.
-      //!
-      //! \exceptions
-      //! \no_libsemigroups_except
-      //!
-      //! \complexity
-      //! The current implementation has complexity no worse than \f$O(m)\f$
-      //! where \f$m\f$ is the sum of the lengths of the words occurring in the
-      //! relations of the semigroup.
-      // Returns the number of pieces in the i-th relation word
-      // Not noexcept, throws
-      size_t number_of_pieces(size_t i) const;
+    internal_type const& YZ(size_t i) const;
 
-      //! Returns the Ukkonen suffix tree object used to compute pieces.
-      //!
-      //! This function returns a reference to the Ukkonen generalised suffix
-      //! tree object containing the relation words of a Kambites object, that
-      //! is used to determine the pieces, and decompositions of the relation
-      //! words.
-      //!
-      //! \parameters (None)
-      //!
-      //! \returns A const reference to a \ref Ukkonen object.
-      //!
-      //! \exceptions
-      //! \noexcept
-      auto const& ukkonen() noexcept {
-        run();
-        return _suffix_tree;
-      }
+    internal_type const& XYZ(size_t i) const;
 
-     private:
-      ////////////////////////////////////////////////////////////////////////
-      // Kambites - validation functions - private
-      ////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////
+    // Kambites - helpers - private
+    ////////////////////////////////////////////////////////////////////////
 
-      // Throws exception if the index i is not in the range [0,
-      // _relation_words.size())
-      //
-      // Not noexcept, throws
-      void validate_relation_word_index(size_t i) const;
+    // Returns the index of the relation word r_i = X_iY_iZ_i if [first,
+    // last) = X_iY_iw for some w. If no such exists, then UNDEFINED is
+    // returned.
+    // Not noexcept because is_prefix isn't
+    size_t relation_prefix(internal_type_iterator const& first,
+                           internal_type_iterator const& last) const;
 
-      // Throws exception if the small_overlap_class is < 4.
-      //
-      // Not noexcept, throws
-      void validate_small_overlap_class() const;
+    // Returns the index of the relation word r_i = X_iY_iZ_i such that
+    // X_iY_i is a clean overlap prefix of <s>, i.e. <s> = X_iY_iw for some
+    // w, and there's no factor of <s> of the form X_jY_j starting before the
+    // beginning of Y_i. If no such exists, UNDEFINED is returned.
+    // Not noexcept because relation_prefix isn't
+    inline size_t clean_overlap_prefix(internal_type const& s) const {
+      return clean_overlap_prefix(s.cbegin(), s.cend());
+    }
 
-      ////////////////////////////////////////////////////////////////////////
-      // Kambites - XYZ functions - private
-      ////////////////////////////////////////////////////////////////////////
+    size_t clean_overlap_prefix(internal_type_iterator const& first,
+                                internal_type_iterator const& last) const;
 
-      void really_init_XYZ_data(size_t i) const;
+    // Calls clean_overlap_prefix on every suffix of <s> starting within the
+    // range [0, n), and returns a std::pair p where:
+    //
+    // * <p.first> is the starting index of the suffix of <s> that contains a
+    //   clean_overlap_prefix.
+    //
+    // * <p.second> is the index of the relation word that's a clear overlap
+    //   prefix of a suffix of <s>
+    std::pair<size_t, size_t> clean_overlap_prefix_mod(internal_type const& s,
+                                                       size_t n) const;
 
-      // init_XYZ_data is split into the function that really does the work
-      // (really_init_XYZ_data) which is called once, and init_XYZ_data which
-      // can be called very often.
-      inline void init_XYZ_data(size_t i) const {
-        LIBSEMIGROUPS_ASSERT(i < _relation_words.size());
-        if (_XYZ_data.empty()) {
-          _XYZ_data.resize(_relation_words.size());
-        }
-        if (!_XYZ_data[i].is_initialized) {
-          really_init_XYZ_data(i);
-        }
-      }
+    // If x + [first, last) = aX_sY_sw words a, w and for some index s, where
+    // X_s = X_s'X_s'', x = aX_s', and [first, last) = X_s''Y_sw, then this
+    // function returns a tuple <t> where:
+    //
+    // 1. std::get<0>(t) is the index <s>
+    //
+    // 2. std::get<1>(t) is an iterator <it1> into <x>, such that
+    //    [it1, x.cend()) = X_s'
+    //
+    // 3. std::get<2>(t) is an iterator <it2> into [first, last), such that
+    //    [it2, last) = w
+    //
+    // If no such relation word exists, then
+    //
+    //    (UNDEFINED, first.cend(), second.cend())
+    //
+    // is returned.
+    //
+    // Not noexcept because relation_prefix isn't
+    std::tuple<size_t, internal_type_iterator, internal_type_iterator>
+    p_active(internal_type const&          x,
+             internal_type_iterator const& first,
+             internal_type_iterator const& last) const;
 
-      internal_type const& X(size_t i) const;
+    // Returns a word equal to w in this, starting with the piece p, no checks
+    // are performed. Used in the normal_form function.
+    // Not noexcept because detail::is_prefix isn't
+    void replace_prefix(internal_type& w, internal_type const& p) const;
 
-      internal_type const& Y(size_t i) const;
+    ////////////////////////////////////////////////////////////////////////
+    // Kambites - complement helpers - private
+    ////////////////////////////////////////////////////////////////////////
 
-      internal_type const& Z(size_t i) const;
+    // Returns j among the complements of i such that [first,
+    // last) is a prefix of X_jY_jZ_j, and UNDEFINED otherwise.
+    size_t prefix_of_complement(size_t                        i,
+                                internal_type_iterator const& first,
+                                internal_type_iterator const& last) const;
 
-      internal_type const& XY(size_t i) const;
+    // Helper for the above
+    size_t prefix_of_complement(size_t i, internal_type const& w) const {
+      return prefix_of_complement(i, w.cbegin(), w.cend());
+    }
 
-      internal_type const& YZ(size_t i) const;
+    // Returns the index j of a complement of X_iY_iZ_i such that X_jY_j is a
+    // prefix of w. Otherwise, UNDEFINED is returned.
+    size_t complementary_XY_prefix(size_t i, internal_type const& w) const;
 
-      internal_type const& XYZ(size_t i) const;
+    // Returns j such that w is Z_j-active for some Z_j in the
+    // complements of Z_i.  Otherwise it returns UNDEFINED.
+    //
+    // See also: p_active.
+    size_t Z_active_complement(size_t i, internal_type const& w) const;
 
-      ////////////////////////////////////////////////////////////////////////
-      // Kambites - helpers - private
-      ////////////////////////////////////////////////////////////////////////
+    // Returns j such that w is Z_j-active for some Z_j in the
+    // proper (j != i) complements of Z_i.  Otherwise it returns UNDEFINED.
+    size_t Z_active_proper_complement(size_t i, internal_type const& w) const;
 
-      // Returns the index of the relation word r_i = X_iY_iZ_i if [first,
-      // last) = X_iY_iw for some w. If no such exists, then UNDEFINED is
-      // returned.
-      // Not noexcept because is_prefix isn't
-      size_t relation_prefix(internal_type_iterator const& first,
-                             internal_type_iterator const& last) const;
+    size_t Z_active_proper_complement(size_t                        i,
+                                      internal_type_iterator const& first,
+                                      internal_type_iterator const& last) const;
 
-      // Returns the index of the relation word r_i = X_iY_iZ_i such that
-      // X_iY_i is a clean overlap prefix of <s>, i.e. <s> = X_iY_iw for some
-      // w, and there's no factor of <s> of the form X_jY_j starting before the
-      // beginning of Y_i. If no such exists, UNDEFINED is returned.
-      // Not noexcept because relation_prefix isn't
-      inline size_t clean_overlap_prefix(internal_type const& s) const {
-        return clean_overlap_prefix(s.cbegin(), s.cend());
-      }
+    ////////////////////////////////////////////////////////////////////////
+    // Kambites - static functions - private
+    ////////////////////////////////////////////////////////////////////////
 
-      size_t clean_overlap_prefix(internal_type_iterator const& first,
-                                  internal_type_iterator const& last) const;
+    static size_t complementary_relation_word(size_t i) {
+      return (i % 2 == 0 ? i + 1 : i - 1);
+    }
 
-      // Calls clean_overlap_prefix on every suffix of <s> starting within the
-      // range [0, n), and returns a std::pair p where:
-      //
-      // * <p.first> is the starting index of the suffix of <s> that contains a
-      //   clean_overlap_prefix.
-      //
-      // * <p.second> is the index of the relation word that's a clear overlap
-      //   prefix of a suffix of <s>
-      std::pair<size_t, size_t> clean_overlap_prefix_mod(internal_type const& s,
-                                                         size_t n) const;
+    static void pop_front(std::string& x) {
+      x.erase(x.begin());
+    }
 
-      // If x + [first, last) = aX_sY_sw words a, w and for some index s, where
-      // X_s = X_s'X_s'', x = aX_s', and [first, last) = X_s''Y_sw, then this
-      // function returns a tuple <t> where:
-      //
-      // 1. std::get<0>(t) is the index <s>
-      //
-      // 2. std::get<1>(t) is an iterator <it1> into <x>, such that
-      //    [it1, x.cend()) = X_s'
-      //
-      // 3. std::get<2>(t) is an iterator <it2> into [first, last), such that
-      //    [it2, last) = w
-      //
-      // If no such relation word exists, then
-      //
-      //    (UNDEFINED, first.cend(), second.cend())
-      //
-      // is returned.
-      //
-      // Not noexcept because relation_prefix isn't
-      std::tuple<size_t, internal_type_iterator, internal_type_iterator>
-      p_active(internal_type const&          x,
-               internal_type_iterator const& first,
-               internal_type_iterator const& last) const;
+    static void pop_front(detail::MultiStringView& x) {
+      x.pop_front();
+    }
 
-      // Returns a word equal to w in this, starting with the piece p, no checks
-      // are performed. Used in the normal_form function.
-      // Not noexcept because detail::is_prefix isn't
-      void replace_prefix(internal_type& w, internal_type const& p) const;
+    ////////////////////////////////////////////////////////////////////////
+    // Kambites - main functions - private
+    ////////////////////////////////////////////////////////////////////////
 
-      ////////////////////////////////////////////////////////////////////////
-      // Kambites - complement helpers - private
-      ////////////////////////////////////////////////////////////////////////
+    // copies u, v, and/or p if they are an rrvalue ref or a const ref.
 
-      // Returns j among the complements of i such that [first,
-      // last) is a prefix of X_jY_jZ_j, and UNDEFINED otherwise.
-      size_t prefix_of_complement(size_t                        i,
-                                  internal_type_iterator const& first,
-                                  internal_type_iterator const& last) const;
+    // Implementation of the function of the same name in: Kambites, M.
+    // (2009). Small overlap monoids. I. The word problem. J. Algebra,
+    // 321(8), 2187–2205.
+    //
+    // Returns true if u and v represent the same element of the fp semigroup
+    // represented by this, and p is a possible prefix of u, and v.
+    //
+    // Parameters are given by value because they are modified by wp_prefix,
+    // and it was too difficult to untangle the different cases (when u, v
+    // are equal, not equal, references, rvalue references etc). It's
+    // possible that it could be modified to only copy when necessary, but
+    // this doesn't seem worth it at present.
+    bool wp_prefix(internal_type u, internal_type v, internal_type p) const;
 
-      // Helper for the above
-      size_t prefix_of_complement(size_t i, internal_type const& w) const {
-        return prefix_of_complement(i, w.cbegin(), w.cend());
-      }
+    // Implementational detail
+    // Not noexcept because nothing else is and lots allocations
+    void normal_form_inner(size_t& r, internal_type& v, internal_type& w) const;
 
-      // Returns the index j of a complement of X_iY_iZ_i such that X_jY_j is a
-      // prefix of w. Otherwise, UNDEFINED is returned.
-      size_t complementary_XY_prefix(size_t i, internal_type const& w) const;
+    ////////////////////////////////////////////////////////////////////////
+    // FpSemigroupInterface - pure virtual member functions - private
+    ////////////////////////////////////////////////////////////////////////
 
-      // Returns j such that w is Z_j-active for some Z_j in the
-      // complements of Z_i.  Otherwise it returns UNDEFINED.
-      //
-      // See also: p_active.
-      size_t Z_active_complement(size_t i, internal_type const& w) const;
+    void run_impl() override {
+      small_overlap_class();
+    }
 
-      // Returns j such that w is Z_j-active for some Z_j in the
-      // proper (j != i) complements of Z_i.  Otherwise it returns UNDEFINED.
-      size_t Z_active_proper_complement(size_t i, internal_type const& w) const;
+    bool finished_impl() const override {
+      return _have_class && small_overlap_class() >= 4;
+    }
 
-      size_t
-      Z_active_proper_complement(size_t                        i,
-                                 internal_type_iterator const& first,
-                                 internal_type_iterator const& last) const;
+    void add_rule_impl(std::string const& u, std::string const& v) override;
 
-      ////////////////////////////////////////////////////////////////////////
-      // Kambites - static functions - private
-      ////////////////////////////////////////////////////////////////////////
+    std::shared_ptr<FroidurePinBase> froidure_pin_impl() override;
 
-      static size_t complementary_relation_word(size_t i) {
-        return (i % 2 == 0 ? i + 1 : i - 1);
-      }
+    bool is_obviously_infinite_impl() override {
+      return small_overlap_class() >= 3;
+    }
 
-      static void pop_front(std::string& x) {
-        x.erase(x.begin());
-      }
+    ////////////////////////////////////////////////////////////////////////
+    // Kambites - inner classes - private
+    ////////////////////////////////////////////////////////////////////////
 
-      static void pop_front(detail::MultiStringView& x) {
-        x.pop_front();
-      }
+    // Data structure for caching the regularly accessed parts of the
+    // relation words.
+    struct RelationWords;
 
-      ////////////////////////////////////////////////////////////////////////
-      // Kambites - main functions - private
-      ////////////////////////////////////////////////////////////////////////
+    // Data structure for caching the complements of each relation word.
+    //
+    // We say that a relation word u' is a *complement* of a relation word u
+    // if there are relation words u = r_1,r_2, ..., r_n = u'$ such that
+    // either (r_i,r_{i+1}) \in R or (r_{i+1},r_i) \in R for $1 \leq i \leq
+    // n$. We say that $u'$ is a *proper complement* of the relation word u
+    // if it is a complement of u and u is not equal to u'.
+    class Complements;
 
-      // copies u, v, and/or p if they are an rrvalue ref or a const ref.
+    ////////////////////////////////////////////////////////////////////////
+    // Kambites - data members - private
+    ////////////////////////////////////////////////////////////////////////
 
-      // Implementation of the function of the same name in: Kambites, M.
-      // (2009). Small overlap monoids. I. The word problem. J. Algebra,
-      // 321(8), 2187–2205.
-      //
-      // Returns true if u and v represent the same element of the fp semigroup
-      // represented by this, and p is a possible prefix of u, and v.
-      //
-      // Parameters are given by value because they are modified by wp_prefix,
-      // and it was too difficult to untangle the different cases (when u, v
-      // are equal, not equal, references, rvalue references etc). It's
-      // possible that it could be modified to only copy when necessary, but
-      // this doesn't seem worth it at present.
-      bool wp_prefix(internal_type u, internal_type v, internal_type p) const;
+    mutable size_t                     _class;
+    mutable Complements                _complements;
+    mutable bool                       _have_class;
+    mutable std::vector<RelationWords> _XYZ_data;
 
-      // Implementational detail
-      // Not noexcept because nothing else is and lots allocations
-      void normal_form_inner(size_t&        r,
-                             internal_type& v,
-                             internal_type& w) const;
-
-      ////////////////////////////////////////////////////////////////////////
-      // FpSemigroupInterface - pure virtual member functions - private
-      ////////////////////////////////////////////////////////////////////////
-
-      void run_impl() override {
-        small_overlap_class();
-      }
-
-      bool finished_impl() const override {
-        return _have_class && small_overlap_class() >= 4;
-      }
-
-      void add_rule_impl(std::string const& u, std::string const& v) override;
-
-      std::shared_ptr<FroidurePinBase> froidure_pin_impl() override;
-
-      bool is_obviously_infinite_impl() override {
-        return small_overlap_class() >= 3;
-      }
-
-      ////////////////////////////////////////////////////////////////////////
-      // Kambites - inner classes - private
-      ////////////////////////////////////////////////////////////////////////
-
-      // Data structure for caching the regularly accessed parts of the
-      // relation words.
-      struct RelationWords;
-
-      // Data structure for caching the complements of each relation word.
-      //
-      // We say that a relation word u' is a *complement* of a relation word u
-      // if there are relation words u = r_1,r_2, ..., r_n = u'$ such that
-      // either (r_i,r_{i+1}) \in R or (r_{i+1},r_i) \in R for $1 \leq i \leq
-      // n$. We say that $u'$ is a *proper complement* of the relation word u
-      // if it is a complement of u and u is not equal to u'.
-      class Complements;
-
-      ////////////////////////////////////////////////////////////////////////
-      // Kambites - data members - private
-      ////////////////////////////////////////////////////////////////////////
-
-      mutable size_t                     _class;
-      mutable Complements                _complements;
-      mutable bool                       _have_class;
-      mutable std::vector<RelationWords> _XYZ_data;
-
-      std::vector<string_type> _relation_words;
-      Ukkonen                  _suffix_tree;
-    };
-
-  }  // namespace fpsemigroup
+    std::vector<string_type> _relation_words;
+    Ukkonen                  _suffix_tree;
+  };
 
   // namespace congruence {
   //   //! Defined in ``kambites.hpp``.
@@ -543,19 +536,19 @@ namespace libsemigroups {
   //     //! Constant
   //     Kambites();
 
-  //     //! Construct from fpsemigroup::Kambites.
+  //     //! Construct from Kambites.
   //     //!
   //     //! This function constructs a new congruence::Kambites object
-  //     //! initialised with existing data in fpsemigroup::Kambites.
+  //     //! initialised with existing data in Kambites.
   //     //!
-  //     //! \param copy the fpsemigroup::Kambites.
+  //     //! \param copy the Kambites.
   //     //!
   //     //! \exceptions
   //     //! \no_libsemigroups_except
   //     //!
   //     //! \complexity
   //     //! Constant
-  //     explicit Kambites(fpsemigroup::Kambites<std::string> const& copy);
+  //     explicit Kambites(Kambites<std::string> const& copy);
 
   //     //! Default copy constructor.
   //     Kambites(Kambites const& copy) : Kambites(*copy._k) {}
@@ -582,7 +575,7 @@ namespace libsemigroups {
   //     // Kambites - member functions - public
   //     ////////////////////////////////////////////////////////////////////////////
 
-  //     //! Get the underlying fpsemigroup::Kambites.
+  //     //! Get the underlying Kambites.
   //     //!
   //     //! \par Parameters
   //     //! (None)
@@ -594,8 +587,8 @@ namespace libsemigroups {
   //     //! Constant
   //     //!
   //     //! \returns
-  //     //! A reference to the underlying fpsemigroup::Kambites of \c this.
-  //     fpsemigroup::Kambites<std::string>& kambites() const {
+  //     //! A reference to the underlying Kambites of \c this.
+  //     Kambites<std::string>& kambites() const {
   //       return *_k;
   //     }
 
@@ -629,7 +622,7 @@ namespace libsemigroups {
   //     // Kambites - data - private
   //     ////////////////////////////////////////////////////////////////////////////
 
-  //     std::unique_ptr<fpsemigroup::Kambites<std::string>> _k;
+  //     std::unique_ptr<Kambites<std::string>> _k;
   //   };
   // }  // namespace congruence
 
@@ -639,8 +632,6 @@ namespace libsemigroups {
     // This class is used to wrap libsemigroups::Kambites::string_type into an
     // object that can be used as generators for a FroidurePin object.
     class KE final {
-      template <typename T>
-      using Kambites    = fpsemigroup::Kambites<T>;
       using string_type = std::string;
 
       KE(string_type const&);
@@ -655,19 +646,17 @@ namespace libsemigroups {
       ~KE()                    = default;
 
       template <typename T>
-      KE(fpsemigroup::Kambites<T>& k, string_type const& w)
-          : _string(k.normal_form(w)) {}
+      KE(Kambites<T>& k, string_type const& w) : _string(k.normal_form(w)) {}
 
       template <typename T>
-      KE(fpsemigroup::Kambites<T>& k, string_type&& w)
+      KE(Kambites<T>& k, string_type&& w)
           : _string(k.normal_form(std::move(w))) {}
 
       template <typename T>
-      KE(fpsemigroup::Kambites<T>& k, letter_type const& a)
-          : KE(k, k.alphabet(a)) {}
+      KE(Kambites<T>& k, letter_type const& a) : KE(k, k.alphabet(a)) {}
 
       template <typename T>
-      KE(fpsemigroup::Kambites<T>& k, word_type const& w) : KE() {
+      KE(Kambites<T>& k, word_type const& w) : KE() {
         detail::word_to_string(k.alphabet(), w, _string);
         _string = k.normal_form(_string);
       }
@@ -741,10 +730,10 @@ namespace libsemigroups {
   template <>
   struct Product<detail::KE> {
     template <typename T>
-    void operator()(detail::KE&               xy,
-                    detail::KE const&         x,
-                    detail::KE const&         y,
-                    fpsemigroup::Kambites<T>* kb,
+    void operator()(detail::KE&       xy,
+                    detail::KE const& x,
+                    detail::KE const& y,
+                    Kambites<T>*      kb,
                     size_t) {
       std::string w(x.string());  // string_type
       w += y.string();
@@ -754,30 +743,28 @@ namespace libsemigroups {
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   template <>
-  word_type FroidurePin<
-      detail::KE,
-      FroidurePinTraits<detail::KE, fpsemigroup::Kambites<std::string>>>::
+  word_type FroidurePin<detail::KE,
+                        FroidurePinTraits<detail::KE, Kambites<std::string>>>::
       factorisation(detail::KE const& x);
 
   template <>
   word_type FroidurePin<
       detail::KE,
-      FroidurePinTraits<detail::KE,
-                        fpsemigroup::Kambites<detail::MultiStringView>>>::
+      FroidurePinTraits<detail::KE, Kambites<detail::MultiStringView>>>::
       factorisation(detail::KE const& x);
 
   template <>
-  tril FroidurePin<
-      detail::KE,
-      FroidurePinTraits<detail::KE,
-                        fpsemigroup::Kambites<std::string>>>::is_finite() const;
+  tril
+  FroidurePin<detail::KE,
+              FroidurePinTraits<detail::KE, Kambites<std::string>>>::is_finite()
+      const;
 
   template <>
-  tril FroidurePin<
-      detail::KE,
-      FroidurePinTraits<detail::KE,
-                        fpsemigroup::Kambites<detail::MultiStringView>>>::
-      is_finite() const;
+  tril
+  FroidurePin<detail::KE,
+              FroidurePinTraits<detail::KE,
+                                Kambites<detail::MultiStringView>>>::is_finite()
+      const;
 #endif
 }  // namespace libsemigroups
 

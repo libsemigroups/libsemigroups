@@ -40,11 +40,12 @@
 #include "libsemigroups/words.hpp"   // for word_to_string
 
 namespace libsemigroups {
+  // TODO what's this doing here?
   using MultiStringView = std::string;  // detail::MultiStringView;
 
-  using froidure_pin_type = FroidurePin<
-      detail::KE,
-      FroidurePinTraits<detail::KE, fpsemigroup::Kambites<std::string>>>;
+  using froidure_pin_type
+      = FroidurePin<detail::KE,
+                    FroidurePinTraits<detail::KE, Kambites<std::string>>>;
 
   namespace detail {
 
@@ -78,9 +79,9 @@ namespace libsemigroups {
 
     //     Kambites::Kambites()
     //         : CongruenceInterface(congruence_kind::twosided),
-    //           _k(std::make_unique<fpsemigroup::Kambites<std::string>>()) {}
+    //           _k(std::make_unique<Kambites<std::string>>()) {}
     //
-    //     Kambites::Kambites(fpsemigroup::Kambites<std::string> const& k)
+    //     Kambites::Kambites(Kambites<std::string> const& k)
     //         : Kambites() {
     //       if (!k.alphabet().empty()) {
     //         _k->set_alphabet(k.alphabet());
@@ -179,9 +180,8 @@ namespace libsemigroups {
   }  // namespace congruence
 
   template <>
-  word_type FroidurePin<
-      detail::KE,
-      FroidurePinTraits<detail::KE, fpsemigroup::Kambites<std::string>>>::
+  word_type FroidurePin<detail::KE,
+                        FroidurePinTraits<detail::KE, Kambites<std::string>>>::
       factorisation(detail::KE const& x) {
     return x.word(*state());
   }
@@ -189,26 +189,25 @@ namespace libsemigroups {
   template <>
   word_type FroidurePin<
       detail::KE,
-      FroidurePinTraits<detail::KE,
-                        fpsemigroup::Kambites<detail::MultiStringView>>>::
+      FroidurePinTraits<detail::KE, Kambites<detail::MultiStringView>>>::
       factorisation(detail::KE const& x) {
     return x.word(*state());
   }
 
   template <>
-  tril FroidurePin<
-      detail::KE,
-      FroidurePinTraits<detail::KE, fpsemigroup::Kambites<std::string>>>::
-      is_finite() const {
+  tril
+  FroidurePin<detail::KE,
+              FroidurePinTraits<detail::KE, Kambites<std::string>>>::is_finite()
+      const {
     return tril::FALSE;
   }
 
   template <>
-  tril FroidurePin<
-      detail::KE,
-      FroidurePinTraits<detail::KE,
-                        fpsemigroup::Kambites<detail::MultiStringView>>>::
-      is_finite() const {
+  tril
+  FroidurePin<detail::KE,
+              FroidurePinTraits<detail::KE,
+                                Kambites<detail::MultiStringView>>>::is_finite()
+      const {
     return tril::FALSE;
   }
 }  // namespace libsemigroups

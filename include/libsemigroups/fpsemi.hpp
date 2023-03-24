@@ -60,7 +60,7 @@ namespace libsemigroups {
   class FpSemigroup final : public FpSemigroupInterface {
     using KnuthBendix = fpsemigroup::KnuthBendix;
     using ToddCoxeter = fpsemigroup::ToddCoxeter;
-    using Kambites    = fpsemigroup::Kambites<std::string>;
+    using Kambites    = Kambites<std::string>;
 
     enum class use_kambites : bool { yes = true, no = false };
     FpSemigroup(use_kambites);
@@ -214,7 +214,7 @@ namespace libsemigroups {
       return todd_coxeter() != nullptr;
     }
 
-    //! Returns the fpsemigroup::Kambites instance used to compute the
+    //! Returns the Kambites instance used to compute the
     //! finitely presented semigroup (if any).
     //!
     //! \returns A shared_ptr to a congruence::Kambites or nullptr.
@@ -233,7 +233,7 @@ namespace libsemigroups {
       return _race.find_runner<Kambites>();
     }
 
-    //! Checks if a fpsemigroup::Kambites instance is being used to compute
+    //! Checks if a Kambites instance is being used to compute
     //! the finitely presented semigroup represented by \c this.
     //!
     //! \parameters
