@@ -102,6 +102,7 @@ pkginclude_HEADERS += include/libsemigroups/pool.hpp
 pkginclude_HEADERS += include/libsemigroups/present.hpp
 pkginclude_HEADERS += include/libsemigroups/present.tpp
 pkginclude_HEADERS += include/libsemigroups/race.hpp
+pkginclude_HEADERS += include/libsemigroups/ranges.hpp
 pkginclude_HEADERS += include/libsemigroups/report.hpp
 pkginclude_HEADERS += include/libsemigroups/runner.hpp
 pkginclude_HEADERS += include/libsemigroups/schreier-sims.hpp

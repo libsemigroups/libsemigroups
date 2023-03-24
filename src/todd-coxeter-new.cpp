@@ -530,8 +530,10 @@ namespace libsemigroups {
     if (!is_standardized()) {
       standardize(order::shortlex);
     }
-    auto it = forest::cbegin_paths(_forest);
-    it += i + 1;
+    auto it = forest::cbegin_paths(_forest) + i;
+    if (!presentation().contains_empty_word()) {
+      ++it;
+    }
     word_type w = *it;
     if (kind() != congruence_kind::left) {
       std::reverse(w.begin(), w.end());
@@ -571,7 +573,8 @@ namespace libsemigroups {
       c = action_digraph_helper::follow_path_nc(
           _word_graph, c, w.crbegin(), w.crend());
     }
-    return (c == UNDEFINED ? UNDEFINED : static_cast<node_type>(c - 1));
+    size_t const offset = (presentation().contains_empty_word() ? 0 : 1);
+    return (c == UNDEFINED ? UNDEFINED : static_cast<node_type>(c - offset));
   }
 
   void ToddCoxeter::validate_word(word_type const& w) const {

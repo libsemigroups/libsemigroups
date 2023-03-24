@@ -60,7 +60,19 @@ namespace libsemigroups {
         _current_state = _automata.get(initial_state, x);
       }
 
-      bool push_front(letter_type x);
+      // There are some examples where it is important that this function is
+      // inlined (such as ToddCoxeter 097)
+      inline bool push_front(letter_type x) {
+        LIBSEMIGROUPS_ASSERT(x < _automata.number_of_cols());
+        auto y = _automata.get(_current_state, x);
+        if (y != initial_state) {
+          _length++;
+          _current_state = y;
+          return true;
+        } else {
+          return false;
+        }
+      }
 
       void pop_front() {
         LIBSEMIGROUPS_ASSERT(_length > 0);

@@ -29,6 +29,7 @@
 #include "libsemigroups/make-todd-coxeter.hpp"  // for ??
 #include "libsemigroups/obvinf.hpp"             // for is_obviously_infinite
 #include "libsemigroups/present.hpp"            // for Presentation
+#include "libsemigroups/ranges.hpp"             // for TODO
 #include "libsemigroups/report.hpp"             // for ReportGuard
 #include "libsemigroups/todd-coxeter-new.hpp"   // for ToddCoxeter
 #include "libsemigroups/transf.hpp"             // for Transf
@@ -185,8 +186,7 @@ namespace libsemigroups {
           }
         }
 
-        std::vector<word_type> nf(todd_coxeter::cbegin_normal_forms(tc),
-                                  todd_coxeter::cend_normal_forms(tc));
+        auto nf = todd_coxeter::normal_forms(tc) | rx::to_vector();
 
         for (auto const& p : map) {
           REQUIRE(nf[p.first] == p.second);
@@ -217,9 +217,7 @@ namespace libsemigroups {
             }
           }
         }
-
-        std::vector<word_type> nf(todd_coxeter::cbegin_normal_forms(tc),
-                                  todd_coxeter::cend_normal_forms(tc));
+        auto nf = todd_coxeter::normal_forms(tc) | rx::to_vector();
 
         for (auto const& p : map) {
           REQUIRE(nf[p.first] == p.second);
@@ -228,24 +226,36 @@ namespace libsemigroups {
       tc.standardize(old_val);
     }
 
-    void check_normal_forms(ToddCoxeter& tc) {
-      REQUIRE(std::all_of(
-          todd_coxeter::cbegin_normal_forms(tc),
-          todd_coxeter::cend_normal_forms(tc),
-          [&tc](word_type const& w) {
-            return w == *todd_coxeter::cbegin_class(tc, w, 0, w.size() + 1);
-          }));
-      REQUIRE(std::is_sorted(todd_coxeter::cbegin_normal_forms(tc),
-                             todd_coxeter::cend_normal_forms(tc),
-                             ShortLexCompare{}));
+    void check_contains(ToddCoxeter& tc) {
+      auto const& p = tc.presentation();
+      for (auto it = p.rules.cbegin(); it < p.rules.cend(); it += 2) {
+        REQUIRE(tc.contains(*it, *(it + 1)));
+      }
+    }
+
+    void check_word_to_class_index(ToddCoxeter& tc) {
+      for (size_t i = 0; i < tc.number_of_classes(); ++i) {
+        REQUIRE(tc.word_to_class_index(tc.class_index_to_word(i)) == i);
+      }
+    }
+
+    // TODO this seems a bit slow, it could be faster if we didn't repeatedly
+    // re-traverse the forest, and we didn't repeatedly copy the word returned
+    // by "class_index_to_word"
+    void check_normal_forms(ToddCoxeter& tc, size_t i) {
+      tc.standardize(order::shortlex);
+      REQUIRE((todd_coxeter::normal_forms(tc) | rx::take(i)
+               | rx::all_of([&tc](word_type const& w) {
+                   return w
+                          == todd_coxeter::class_of(tc, w)
+                                 .min(0)
+                                 .max(w.size() + 1)
+                                 .get();
+                 })));
+      REQUIRE(is_sorted(todd_coxeter::normal_forms(tc), ShortLexCompare{}));
       tc.standardize(order::lex);
-      REQUIRE(std::is_sorted(todd_coxeter::cbegin_normal_forms(tc),
-                             todd_coxeter::cend_normal_forms(tc),
-                             LexicographicalCompare{}));
-      tc.standardize(order::recursive);
-      REQUIRE(std::is_sorted(todd_coxeter::cbegin_normal_forms(tc),
-                             todd_coxeter::cend_normal_forms(tc),
-                             RecursivePathCompare{}));
+      REQUIRE(
+          is_sorted(todd_coxeter::normal_forms(tc), LexicographicalCompare{}));
     }
   }  // namespace
 
@@ -253,6 +263,7 @@ namespace libsemigroups {
                           "000",
                           "small 2-sided congruence",
                           "[todd-coxeter][quick]") {
+    using namespace rx;
     auto rg = ReportGuard(false);
 
     Presentation<word_type> p;
@@ -276,24 +287,23 @@ namespace libsemigroups {
 
     tc.standardize(order::shortlex);
 
-    auto words = std::vector<word_type>(
-        todd_coxeter::cbegin_class(tc, 1, 0, 10), todd_coxeter::cend_class(tc));
-    REQUIRE(words == std::vector<word_type>({1_w, 1111_w, 1111111_w}));
+    auto c = todd_coxeter::class_of(tc, 1);
+    REQUIRE(c.count() == POSITIVE_INFINITY);
 
-    words
-        = std::vector<word_type>(todd_coxeter::cbegin_class(tc, 1111_w, 0, 10),
-                                 todd_coxeter::cend_class(tc));
-    REQUIRE(words == std::vector<word_type>({1_w, 1111_w, 1111111_w}));
+    REQUIRE((c.min(0).max(8) | to_vector())
+            == std::vector<word_type>({1_w, 1111_w, 1111111_w}));
+    REQUIRE((c.min(0).max(10) | to_vector())
+            == std::vector<word_type>({1_w, 1111_w, 1111111_w}));
 
-    for (size_t i = 0; i < tc.number_of_classes(); ++i) {
-      REQUIRE(todd_coxeter::number_of_words_in_class(tc, i)
-              == POSITIVE_INFINITY);
-    }
-    REQUIRE(tc.word_to_class_index(words[0]) == 1);
-    REQUIRE(
-        std::all_of(words.cbegin(), words.cend(), [&tc](word_type const& w) {
-          return tc.word_to_class_index(w) == 1;
-        }));
+    REQUIRE((seq() | take(tc.number_of_classes()) | all_of([&tc](size_t i) {
+               return todd_coxeter::class_of(tc, i).count()
+                      == POSITIVE_INFINITY;
+             })));
+
+    REQUIRE((c | all_of([&tc](auto const& w) {
+               return tc.word_to_class_index(w) == 1;
+             })));
+    check_normal_forms(tc, tc.number_of_classes());
   }
 
   LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
@@ -348,29 +358,25 @@ namespace libsemigroups {
     REQUIRE(tc.word_to_class_index(01_w) == 3);
     REQUIRE(LexicographicalCompare()(001_w, 01_w));
 
-    REQUIRE(std::is_sorted(todd_coxeter::cbegin_normal_forms(tc),
-                           todd_coxeter::cend_normal_forms(tc),
-                           LexicographicalCompare{}));
+    REQUIRE(
+        is_sorted(todd_coxeter::normal_forms(tc), LexicographicalCompare{}));
 
     tc.standardize(order::shortlex);
     REQUIRE(tc.is_standardized(order::shortlex));
-    REQUIRE(std::vector<word_type>(todd_coxeter::cbegin_normal_forms(tc),
-                                   todd_coxeter::cend_normal_forms(tc))
+    REQUIRE((todd_coxeter::normal_forms(tc) | rx::to_vector())
             == std::vector<word_type>({0_w, 1_w, 00_w, 01_w, 001_w}));
     REQUIRE(tc.word_to_class_index(tc.class_index_to_word(0)) == 0);
     REQUIRE(tc.word_to_class_index(tc.class_index_to_word(1)) == 1);
     REQUIRE(tc.word_to_class_index(tc.class_index_to_word(2)) == 2);
     REQUIRE(tc.word_to_class_index(tc.class_index_to_word(3)) == 3);
     REQUIRE(tc.word_to_class_index(tc.class_index_to_word(4)) == 4);
-    REQUIRE(std::is_sorted(todd_coxeter::cbegin_normal_forms(tc),
-                           todd_coxeter::cend_normal_forms(tc),
-                           ShortLexCompare()));
+    REQUIRE(is_sorted(todd_coxeter::normal_forms(tc), ShortLexCompare()));
 
-    auto nf = std::vector<word_type>(todd_coxeter::cbegin_normal_forms(tc),
-                                     todd_coxeter::cend_normal_forms(tc));
+    auto nf = todd_coxeter::normal_forms(tc) | rx::to_vector();
+
     REQUIRE(nf == std::vector<word_type>({0_w, 1_w, 00_w, 01_w, 001_w}));
     REQUIRE(std::all_of(nf.begin(), nf.end(), [&tc](word_type& w) {
-      return w == *todd_coxeter::cbegin_class(tc, w, 0, w.size() + 1);
+      return w == todd_coxeter::class_of(tc, w).min(0).max(w.size() + 1).get();
     }));
 
     // TODO implement cbegin/cend_wirpo (words in recursive path order
@@ -394,9 +400,9 @@ namespace libsemigroups {
     REQUIRE(tc.class_index_to_word(2) == 1_w);
     REQUIRE(tc.class_index_to_word(3) == 10_w);
     REQUIRE(tc.class_index_to_word(4) == 100_w);
-    REQUIRE(std::is_sorted(todd_coxeter::cbegin_normal_forms(tc),
-                           todd_coxeter::cend_normal_forms(tc),
-                           RecursivePathCompare{}));
+    REQUIRE(is_sorted(todd_coxeter::normal_forms(tc), RecursivePathCompare{}));
+
+    check_normal_forms(tc, tc.number_of_classes());
   }
 
   // Felsch is actually faster here!
@@ -437,29 +443,22 @@ namespace libsemigroups {
     REQUIRE(tc.finished());
 
     tc.standardize(order::recursive);
-    REQUIRE(std::is_sorted(todd_coxeter::cbegin_normal_forms(tc),
-                           todd_coxeter::cend_normal_forms(tc),
-                           RecursivePathCompare{}));
+    REQUIRE(is_sorted(todd_coxeter::normal_forms(tc), RecursivePathCompare{}));
     REQUIRE(
-        std::vector<word_type>(todd_coxeter::cbegin_normal_forms(tc),
-                               todd_coxeter::cbegin_normal_forms(tc) + 10)
+        (todd_coxeter::normal_forms(tc) | rx::take(10) | rx::to_vector())
         == std::vector<word_type>(
             {0_w, 1_w, 2_w, 21_w, 12_w, 121_w, 22_w, 221_w, 212_w, 2121_w}));
 
     tc.standardize(order::lex);
-    REQUIRE(std::distance(todd_coxeter::cbegin_normal_forms(tc),
-                          todd_coxeter::cend_normal_forms(tc))
-            == 10'752);
+    REQUIRE(todd_coxeter::normal_forms(tc).size_hint() == 10'752);
     REQUIRE(tc.is_standardized());
     REQUIRE(tc.is_standardized(order::lex));
     for (size_t c = 0; c < tc.number_of_classes(); ++c) {
       REQUIRE(tc.word_to_class_index(tc.class_index_to_word(c)) == c);
     }
-    REQUIRE(std::is_sorted(todd_coxeter::cbegin_normal_forms(tc),
-                           todd_coxeter::cend_normal_forms(tc),
-                           LexicographicalCompare{}));
-    REQUIRE(std::vector<word_type>(todd_coxeter::cbegin_normal_forms(tc),
-                                   todd_coxeter::cbegin_normal_forms(tc) + 10)
+    REQUIRE(
+        is_sorted(todd_coxeter::normal_forms(tc), LexicographicalCompare{}));
+    REQUIRE((todd_coxeter::normal_forms(tc) | rx::take(10) | rx::to_vector())
             == std::vector<word_type>({0_w,
                                        01_w,
                                        012_w,
@@ -474,11 +473,8 @@ namespace libsemigroups {
     for (size_t c = 0; c < tc.number_of_classes(); ++c) {
       REQUIRE(tc.word_to_class_index(tc.class_index_to_word(c)) == c);
     }
-    REQUIRE(std::is_sorted(todd_coxeter::cbegin_normal_forms(tc),
-                           todd_coxeter::cend_normal_forms(tc),
-                           ShortLexCompare{}));
-    REQUIRE(std::vector<word_type>(todd_coxeter::cbegin_normal_forms(tc),
-                                   todd_coxeter::cbegin_normal_forms(tc) + 10)
+    REQUIRE(is_sorted(todd_coxeter::normal_forms(tc), ShortLexCompare{}));
+    REQUIRE((todd_coxeter::normal_forms(tc) | rx::take(10) | rx::to_vector())
             == std::vector<word_type>(
                 {0_w, 1_w, 2_w, 3_w, 12_w, 13_w, 21_w, 31_w, 121_w, 131_w}));
   }
@@ -542,6 +538,8 @@ namespace libsemigroups {
     REQUIRE(tc.class_index_to_word(0) == 0_w);
     REQUIRE(tc.class_index_to_word(1) == 2_w);
     REQUIRE(tc.class_index_to_word(2) == 00_w);
+
+    check_normal_forms(tc, tc.number_of_classes());
   }
 
   LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
@@ -578,8 +576,7 @@ namespace libsemigroups {
     tc.shrink_to_fit();
     REQUIRE(tc.number_of_classes() == 21);
     tc.standardize(order::recursive);
-    auto w = std::vector<word_type>(todd_coxeter::cbegin_normal_forms(tc),
-                                    todd_coxeter::cend_normal_forms(tc));
+    auto w = (todd_coxeter::normal_forms(tc) | rx::to_vector());
     REQUIRE(w.size() == 21);
     REQUIRE(w
             == std::vector<word_type>(
@@ -587,15 +584,11 @@ namespace libsemigroups {
                  1000_w, 01_w,   010_w,   0100_w, 01000_w, 001_w,   11_w,
                  110_w,  1100_w, 11000_w, 011_w,  0110_w,  01100_w, 011000_w}));
     REQUIRE(std::unique(w.begin(), w.end()) == w.end());
-    REQUIRE(std::is_sorted(todd_coxeter::cbegin_normal_forms(tc),
-                           todd_coxeter::cend_normal_forms(tc),
-                           RecursivePathCompare{}));
-    REQUIRE(std::all_of(
-        todd_coxeter::cbegin_normal_forms(tc),
-        todd_coxeter::cend_normal_forms(tc),
-        [&tc](word_type const& ww) -> bool {
-          return tc.class_index_to_word(tc.word_to_class_index(ww)) == ww;
-        }));
+    REQUIRE(std::is_sorted(w.cbegin(), w.cend(), RecursivePathCompare{}));
+    REQUIRE((todd_coxeter::normal_forms(tc) | rx::all_of([&tc](auto const& w) {
+               return tc.class_index_to_word(tc.word_to_class_index(w)) == w;
+             })));
+    check_normal_forms(tc, tc.number_of_classes());
   }
 
   LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
@@ -628,6 +621,7 @@ namespace libsemigroups {
 
     REQUIRE(tc.number_of_classes() == 2);
     check_standardize(tc);
+    check_normal_forms(tc, tc.number_of_classes());
   }
 
   LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
@@ -652,6 +646,7 @@ namespace libsemigroups {
     REQUIRE(tc.number_of_classes() == 5);
     REQUIRE(tc.finished());
     check_standardize(tc);
+    check_normal_forms(tc, tc.number_of_classes());
   }
 
   LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
@@ -1530,8 +1525,7 @@ namespace libsemigroups {
     section_Cr_style(tc1);
 
     REQUIRE(tc1.number_of_classes() == 11);
-    REQUIRE(std::vector<word_type>(todd_coxeter::cbegin_normal_forms(tc1),
-                                   todd_coxeter::cend_normal_forms(tc1))
+    REQUIRE((todd_coxeter::normal_forms(tc1) | rx::to_vector())
             == std::vector<word_type>({0_w,
                                        1_w,
                                        2_w,
@@ -1546,9 +1540,7 @@ namespace libsemigroups {
 
     ToddCoxeter tc2(twosided, p);
     REQUIRE(tc2.number_of_classes() == 40);
-    auto part = todd_coxeter::partition(tc1,
-                                        todd_coxeter::cbegin_normal_forms(tc2),
-                                        todd_coxeter::cend_normal_forms(tc2));
+    auto part = todd_coxeter::partition(tc1, todd_coxeter::normal_forms(tc2));
     REQUIRE(part
             == decltype(part)(
                 {{0_w,       00_w,      10_w,       11_w,       000_w,
@@ -1591,8 +1583,7 @@ namespace libsemigroups {
                                           p.rules.cbegin(),
                                           p.rules.cend()));
     REQUIRE(tc.number_of_classes() == 1);
-    REQUIRE(std::vector<word_type>(todd_coxeter::cbegin_normal_forms(tc),
-                                   todd_coxeter::cend_normal_forms(tc))
+    REQUIRE((todd_coxeter::normal_forms(tc) | rx::to_vector())
             == std::vector<word_type>({0_w}));
     REQUIRE(action_digraph::is_complete(
         d, d.cbegin_active_nodes(), d.cend_active_nodes()));
@@ -1716,11 +1707,11 @@ namespace libsemigroups {
 
     REQUIRE(tc.word_graph().felsch_tree().height() == 6);
     REQUIRE(tc.number_of_classes() == 5);
-    REQUIRE(todd_coxeter::number_of_words_in_class(tc, 0) == 1);
-    REQUIRE(todd_coxeter::number_of_words_in_class(tc, 1) == 1);
-    REQUIRE(todd_coxeter::number_of_words_in_class(tc, 2) == 1);
-    REQUIRE(todd_coxeter::number_of_words_in_class(tc, 3) == POSITIVE_INFINITY);
-    REQUIRE(todd_coxeter::number_of_words_in_class(tc, 4) == POSITIVE_INFINITY);
+    REQUIRE(todd_coxeter::class_of(tc, 0).count() == 1);
+    REQUIRE(todd_coxeter::class_of(tc, 1).count() == 1);
+    REQUIRE(todd_coxeter::class_of(tc, 2).count() == 1);
+    REQUIRE(todd_coxeter::class_of(tc, 3).count() == POSITIVE_INFINITY);
+    REQUIRE(todd_coxeter::class_of(tc, 4).count() == POSITIVE_INFINITY);
     REQUIRE(!tc.is_standardized());
     REQUIRE(tc.word_graph().felsch_tree().number_of_nodes() == 7);
 
@@ -2791,17 +2782,12 @@ namespace libsemigroups {
 
     REQUIRE(tc.number_of_classes() == 1);
     tc.standardize(order::shortlex);
-    REQUIRE(std::is_sorted(todd_coxeter::cbegin_normal_forms(tc),
-                           todd_coxeter::cend_normal_forms(tc),
-                           ShortLexCompare()));
+    REQUIRE(is_sorted(todd_coxeter::normal_forms(tc), ShortLexCompare{}));
     tc.standardize(order::lex);
-    REQUIRE(std::is_sorted(todd_coxeter::cbegin_normal_forms(tc),
-                           todd_coxeter::cend_normal_forms(tc),
-                           LexicographicalCompare()));
+    REQUIRE(
+        is_sorted(todd_coxeter::normal_forms(tc), LexicographicalCompare()));
     tc.standardize(order::recursive);
-    REQUIRE(std::is_sorted(todd_coxeter::cbegin_normal_forms(tc),
-                           todd_coxeter::cend_normal_forms(tc),
-                           RecursivePathCompare()));
+    REQUIRE(is_sorted(todd_coxeter::normal_forms(tc), RecursivePathCompare()));
   }
 
   // The following example is a good one for using the lookahead.
@@ -3291,6 +3277,7 @@ namespace libsemigroups {
     section_Cr_style(tc);
 
     REQUIRE(tc.number_of_classes() == 6'561);
+    check_normal_forms(tc, 0);
   }
 
   // FIXME this printing is messed up here
@@ -3342,22 +3329,21 @@ namespace libsemigroups {
 
     REQUIRE(tc.number_of_classes() == 14);
     tc.standardize(order::shortlex);
-    REQUIRE(std::vector<word_type>(todd_coxeter::cbegin_normal_forms(tc),
-                                   todd_coxeter::cend_normal_forms(tc))
-            == std::vector<word_type>({{0},
-                                       {1},
-                                       {0, 0},
-                                       {0, 1},
-                                       {1, 0},
-                                       {0, 0, 0},
-                                       {0, 0, 1},
-                                       {0, 0, 0, 0},
-                                       {0, 0, 0, 1},
-                                       {0, 0, 0, 0, 0},
-                                       {0, 0, 0, 0, 1},
-                                       {0, 0, 0, 0, 0, 0},
-                                       {0, 0, 0, 0, 0, 1},
-                                       {0, 0, 0, 0, 0, 0, 0}}));
+    REQUIRE((todd_coxeter::normal_forms(tc) | rx::to_vector())
+            == std::vector<word_type>({0_w,
+                                       1_w,
+                                       00_w,
+                                       01_w,
+                                       10_w,
+                                       000_w,
+                                       001_w,
+                                       0000_w,
+                                       0001_w,
+                                       00000_w,
+                                       00001_w,
+                                       000000_w,
+                                       000001_w,
+                                       0000000_w}));
     REQUIRE(make<FroidurePin<TCE>>(tc).number_of_rules() == 6);
     REQUIRE(todd_coxeter::normal_form(tc, make<word_type>(p, "aaaaaaab"))
             == make<word_type>(p, "aab"));
@@ -3394,22 +3380,13 @@ namespace libsemigroups {
     REQUIRE(tc.number_of_classes() == 10'625);
 
     tc.standardize(order::shortlex);
-    REQUIRE(std::is_sorted(todd_coxeter::cbegin_normal_forms(tc),
-                           todd_coxeter::cend_normal_forms(tc),
-                           ShortLexCompare()));
+    REQUIRE(is_sorted(todd_coxeter::normal_forms(tc), ShortLexCompare()));
     tc.standardize(order::lex);
-    REQUIRE(std::is_sorted(todd_coxeter::cbegin_normal_forms(tc),
-                           todd_coxeter::cend_normal_forms(tc),
-                           LexicographicalCompare()));
-    // The next section is very slow tc.standardize(order::recursive);
-    // REQUIRE(std::is_sorted(todd_coxeter::cbegin_normal_forms(tc),
-    //                        todd_coxeter::cend_normal_forms(tc),
-    //                        RecursivePathCompare()));
+    REQUIRE(
+        is_sorted(todd_coxeter::normal_forms(tc), LexicographicalCompare()));
   }
 
   // Felsch very slow here
-  // FIXME this is slower than in v2, probably because we always create the
-  // FelschTree even though it's not used here at all
   LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
                           "086",
                           "trivial semigroup",
@@ -3758,7 +3735,9 @@ namespace libsemigroups {
     REQUIRE(H.number_of_classes() == 60);
   }
 
-  // Felsch is much much better here (TODO slightly slower in v3)
+  // Felsch is much much better here, slightly slower in v3, nothing obvious
+  // stands out as being the cause of this, in v2 this takes about 1.4s in v3
+  // 1.5s or so.
   LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
                           "097",
                           "relation ordering",
@@ -3768,8 +3747,9 @@ namespace libsemigroups {
     auto rg = ReportGuard();
     auto p  = make<Presentation<word_type>>(RennerTypeDMonoid(5, 1));
     REQUIRE(p.rules.size() == 358);
-    presentation::sort_each_rule(p);
-    presentation::sort_rules(p);
+    // Sorting the rules makes this twice as slow...
+    // presentation::sort_each_rule(p);
+    // presentation::sort_rules(p);
     presentation::remove_duplicate_rules(p);
     REQUIRE(p.rules.size() == 322);
 
@@ -3963,14 +3943,20 @@ namespace libsemigroups {
 
     REQUIRE(tc.number_of_classes() == 7'920);
 
-    // FIXME this doesn't work
-    // REQUIRE(todd_coxeter::normal_form(tc, {}) == word_type({}));
-    // REQUIRE(tc.contains(0_w, word_type({})));
-    // REQUIRE(tc.contains(11_w, word_type({})));
-    // REQUIRE(std::distance(todd_coxeter::cbegin_normal_forms(tc),
-    //                       todd_coxeter::cend_normal_forms(tc))
-    //         == tc.number_of_classes());
-    // REQUIRE(*todd_coxeter::cbegin_normal_forms(tc) == word_type({}));
+    REQUIRE(tc.contains(00_w, {}));
+    REQUIRE(!tc.contains(11_w, {}));
+    REQUIRE(!tc.contains(111_w, {}));
+    REQUIRE(tc.contains(1111_w, {}));
+
+    REQUIRE(tc.class_index_to_word(0) == ""_w);
+
+    check_contains(tc);
+    check_word_to_class_index(tc);
+
+    REQUIRE(todd_coxeter::normal_form(tc, {}) == word_type({}));
+    REQUIRE(todd_coxeter::normal_forms(tc).size_hint()
+            == tc.number_of_classes());
+    REQUIRE(todd_coxeter::normal_forms(tc).get() == word_type({}));
   }
 
   LIBSEMIGROUPS_TEST_CASE(

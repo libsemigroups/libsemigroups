@@ -276,42 +276,41 @@ namespace libsemigroups {
   };
 
   namespace detail {
+    // TODO use range instead
     struct PathIteratorTraits
         : ConstIteratorTraits<IntegralRange<typename Forest::node_type>> {
       using value_type      = word_type;
-      using const_reference = value_type const;
-      using reference       = value_type;
+      using const_reference = value_type const&;
+      using reference       = value_type&;
       using const_pointer   = value_type const*;
       using pointer         = value_type*;
 
       // TODO store a word_type here too
-      using state_type = Forest const*;
+      using state_type = std::pair<Forest const*, word_type>;
       using node_type  = typename Forest::node_type;
 
       struct Deref {
         // TODO to cpp
         // Not noexcept because it allocates
-        value_type
-        operator()(state_type                               f,
+        const_reference
+        operator()(state_type&                              state,
                    IntegralRange<node_type>::const_iterator it) const {
-          word_type w;
-          node_type i = *it;
+          auto      f    = state.first;
+          auto&     word = state.second;
+          node_type i    = *it;
           while (f->parent_nc(i) != UNDEFINED) {
-            w.push_back(f->label_nc(i));
+            word.push_back(f->label_nc(i));
             i = f->parent_nc(i);
           }
-          return w;
+          return word;
         }
       };
 
       // TODO to cpp
       struct AddressOf {
-        pointer operator()(state_type,
-                           IntegralRange<node_type>::const_iterator) {
-          // TODO if a word_type is part of the state, then we can return it's
-          // address here.
-          LIBSEMIGROUPS_ASSERT(false);
-          return nullptr;
+        const_pointer operator()(state_type& state,
+                                 IntegralRange<node_type>::const_iterator) {
+          return &state.second;
         }
       };
     };
@@ -346,7 +345,7 @@ namespace libsemigroups {
     // TODO(refactor): update the doc
     inline path_iterator cbegin_paths(Forest const& f) {
       IntegralRange<typename Forest::node_type> range(0, f.number_of_nodes());
-      return path_iterator(&f, range.cbegin());
+      return path_iterator(std::make_pair(&f, word_type()), range.cbegin());
     }
 
     //! Returns a \ref normal_form_iterator pointing one past the last normal
@@ -367,7 +366,7 @@ namespace libsemigroups {
     // TODO(refactor): update the doc
     inline path_iterator cend_paths(Forest const& f) {
       IntegralRange<typename Forest::node_type> range(0, f.number_of_nodes());
-      return path_iterator(&f, range.cend());
+      return path_iterator(std::make_pair(&f, word_type()), range.cend());
     }
   }  // namespace forest
 

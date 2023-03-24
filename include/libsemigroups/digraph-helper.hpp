@@ -138,7 +138,7 @@ namespace libsemigroups {
 
     template <typename T, typename S>
     node_type<T> follow_path_nc(ActionDigraph<T> const& ad,
-                                node_type<T> const      from,
+                                node_type<T>            from,
                                 S                       first,
                                 S                       last) noexcept {
       if constexpr (detail::has_less_equal<S, S>::value) {

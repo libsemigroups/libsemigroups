@@ -20,9 +20,9 @@
 // algorithm for semigroups and monoids.
 //
 // TODO:
-// *  ensure that normal_forms etc work properly for monoid presentations (i.e.
-//    when p.contains_empty_word() is true (see test case 101 for example)
 // * implement reserve
+// * remove preferred_defs from FelschDigraph etc (except where they are really
+// needed)
 
 #ifndef LIBSEMIGROUPS_TODD_COXETER_NEW_HPP_
 #define LIBSEMIGROUPS_TODD_COXETER_NEW_HPP_
@@ -824,81 +824,17 @@ namespace libsemigroups {
     size_t felsch_lookahead();
   };
 
-  namespace detail {
-    using node_type = typename ToddCoxeter::node_type;
-    struct NormalFormIteratorTraits
-        : ConstIteratorTraits<IntegralRange<node_type>> {
-      using value_type      = word_type;
-      using const_reference = value_type const;
-      using reference       = value_type;
-      using const_pointer   = value_type const*;
-      using pointer         = value_type*;
-
-      using state_type = ToddCoxeter*;
-
-      struct Deref {
-        value_type operator()(state_type                               tc,
-                              IntegralRange<node_type>::const_iterator it) {
-          // It might seem better to just use forest::cbegin_paths, but we
-          // can't because tc.kind() (runtime) determines whether or not the
-          // paths should be reversed.
-          return tc->class_index_to_word(*it);
-        }
-      };
-
-      struct AddressOf {
-        pointer operator()(state_type,
-                           IntegralRange<node_type>::const_iterator) {
-          LIBSEMIGROUPS_ASSERT(false);
-          return nullptr;
-        }
-      };
-    };
-  }  // namespace detail
-
   namespace todd_coxeter {
     using node_type = typename ToddCoxeter::node_type;
 
-    inline auto cbegin_class(ToddCoxeter& tc,
-                             node_type    n,
-                             size_t       min = 0,
-                             size_t       max = POSITIVE_INFINITY) {
-      // TODO don't add 1 if tc contains empty word?
-      return cbegin_pstislo(tc.word_graph(), node_type(0), n + 1, min, max);
+    inline auto class_of(ToddCoxeter& tc, node_type n) {
+      size_t const offset = (tc.presentation().contains_empty_word() ? 0 : 1);
+      return Paths(tc.word_graph()).from(0).to(n + offset);
     }
 
-    inline auto cbegin_class(ToddCoxeter&     tc,
-                             word_type const& w,
-                             size_t           min = 0,
-                             size_t           max = POSITIVE_INFINITY) {
-      // TODO don't add 1 if tc contains empty word
-      return cbegin_pstislo(tc.word_graph(),
-                            node_type(0),
-                            node_type(tc.word_to_class_index(w) + 1),
-                            min,
-                            max);
+    inline auto class_of(ToddCoxeter& tc, word_type const& w) {
+      return class_of(tc, tc.word_to_class_index(w));
     }
-
-    inline auto cend_class(ToddCoxeter& tc) {
-      return cend_pstislo(tc.word_graph());
-    }
-
-    inline auto number_of_words_in_class(ToddCoxeter const& tc, node_type i) {
-      return number_of_paths(tc.word_graph(),
-                             static_cast<node_type>(0),
-                             static_cast<node_type>(i + 1),
-                             static_cast<node_type>(0),
-                             POSITIVE_INFINITY);
-    }
-
-    //! The type of a const iterator pointing to a normal form.
-    //!
-    //! Iterators of this type point to a \ref word_type.
-    //!
-    //! \sa cbegin_normal_forms, cend_normal_forms.
-    // TODO(refactor): redo the doc
-    using normal_form_iterator
-        = detail::ConstIteratorStateful<detail::NormalFormIteratorTraits>;
 
     //! Returns a \ref normal_form_iterator pointing at the first normal
     //! form.
@@ -916,37 +852,17 @@ namespace libsemigroups {
     //! \exceptions
     //! \no_libsemigroups_except
     // TODO(refactor): redo the doc
-    inline normal_form_iterator cbegin_normal_forms(ToddCoxeter& tc) {
-      auto range = IntegralRange<node_type>(0, tc.number_of_classes());
-      // TODO use rx::range instead
-      return normal_form_iterator(&tc, range.cbegin());
-    }
-
-    //! Returns a \ref normal_form_iterator pointing one past the last normal
-    //! form.
-    //!
-    //! Returns a const iterator one past the normal form of the last class
-    //! of the congruence represented by an instance of ToddCoxeter. The
-    //! order of the classes, and the normal form, that is returned are
-    //! controlled by standardize(order).
-    //!
-    //! \parameters
-    //! (None)
-    //!
-    //! \returns A value of type \ref normal_form_iterator.
-    //!
-    //! \exceptions
-    //! \no_libsemigroups_except
-    // TODO(refactor): redo the doc
-    inline normal_form_iterator cend_normal_forms(ToddCoxeter& tc) {
-      auto range = IntegralRange<node_type>(0, tc.number_of_classes());
-      return normal_form_iterator(&tc, range.cend());
+    inline auto normal_forms(ToddCoxeter& tc) {
+      using namespace rx;
+      return (seq() | take(tc.number_of_classes())
+              | transform([&tc](auto i) { return tc.class_index_to_word(i); }));
     }
 
     inline word_type normal_form(ToddCoxeter& tc, word_type const& w) {
       return tc.class_index_to_word(tc.word_to_class_index(w));
     }
 
+    // TODO avoid code dupl with the next function
     template <typename It>
     std::vector<std::vector<word_type>> partition(ToddCoxeter& tc,
                                                   It           first,
@@ -958,6 +874,22 @@ namespace libsemigroups {
       for (auto it = first; it != last; ++it) {
         LIBSEMIGROUPS_ASSERT(tc.word_to_class_index(*it) < result.size());
         result[tc.word_to_class_index(*it)].push_back(*it);
+      }
+      return result;
+    }
+
+    template <typename Range>
+    std::vector<std::vector<word_type>> partition(ToddCoxeter& tc, Range r) {
+      // static assert that the return type  of r.next() is word_type TODO
+      using return_type = std::vector<std::vector<word_type>>;
+
+      return_type result(tc.number_of_classes(), std::vector<word_type>());
+
+      while (!r.at_end()) {
+        auto next = r.get();
+        LIBSEMIGROUPS_ASSERT(tc.word_to_class_index(next) < result.size());
+        result[tc.word_to_class_index(next)].push_back(next);
+        r.next();
       }
       return result;
     }

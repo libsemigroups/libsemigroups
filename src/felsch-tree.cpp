@@ -95,18 +95,6 @@ namespace libsemigroups {
       LIBSEMIGROUPS_ASSERT(_index[0].empty());
     }
 
-    bool FelschTree::push_front(letter_type x) {
-      LIBSEMIGROUPS_ASSERT(x < _automata.number_of_cols());
-      auto y = _automata.get(_current_state, x);
-      if (y != initial_state) {
-        _length++;
-        _current_state = y;
-        return true;
-      } else {
-        return false;
-      }
-    }
-
     size_t FelschTree::height() const noexcept {
       size_t result = 0;
       for (state_type s = 1; s < _parent.size(); ++s) {
