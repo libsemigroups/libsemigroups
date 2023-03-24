@@ -269,10 +269,10 @@ namespace libsemigroups {
     //! Constant.
     //!
     //! \sa has_kambites().
-    std::shared_ptr<congruence::Kambites> kambites() const {
-      using congruence::Kambites;
-      return _race.find_runner<Kambites>();
-    }
+    // std::shared_ptr<congruence::Kambites> kambites() const {
+    //   using congruence::Kambites;
+    //   return _race.find_runner<Kambites>();
+    // }
 
     //! Checks if a ToddCoxeter instance is being used to compute
     //! the congruence.
@@ -308,9 +308,9 @@ namespace libsemigroups {
     //! Constant.
     //!
     //! \sa \ref kambites.
-    bool has_kambites() const {
-      return kambites() != nullptr;
-    }
+    // bool has_kambites() const {
+    //   return kambites() != nullptr;
+    // }
 
     // The next function is required by the GAP package Semigroups.
     //! Adds a class derived from CongruenceInterface to the algorithms used to
@@ -388,14 +388,14 @@ namespace libsemigroups {
     class_index_type word_to_class_index_impl(word_type const&) override;
 
     void run_impl() override {
-      if (kambites() != nullptr) {
-        if (kambites()->kambites().small_overlap_class() >= 4) {
-          // Race always checks for finished in the other runners, and the
-          // kambites is finished and will be declared the winner.
-        } else {
-          _race.erase_runners(_race.cbegin());
-        }
-      }
+      // if (kambites() != nullptr) {
+      //   if (kambites()->kambites().small_overlap_class() >= 4) {
+      //     // Race always checks for finished in the other runners, and the
+      //     // kambites is finished and will be declared the winner.
+      //   } else {
+      //     _race.erase_runners(_race.cbegin());
+      //   }
+      // }
       _race.run_until([this]() { return this->stopped(); });
     }
 

@@ -34,9 +34,9 @@
 
 namespace libsemigroups {
 
-  using ToddCoxeter      = congruence::ToddCoxeter;
-  using KnuthBendix      = congruence::KnuthBendix;
-  using Kambites         = congruence::Kambites;
+  using ToddCoxeter = congruence::ToddCoxeter;
+  using KnuthBendix = congruence::KnuthBendix;
+  //  using Kambites         = congruence::Kambites;
   using class_index_type = CongruenceInterface::class_index_type;
   using options          = ToddCoxeter::options;
 
@@ -75,9 +75,9 @@ namespace libsemigroups {
     set_number_of_generators(S.alphabet().size());
     LIBSEMIGROUPS_ASSERT(!has_parent_froidure_pin());
     set_parent_froidure_pin(S);
-    if (type == congruence_kind::twosided && S.has_kambites()) {
-      _race.add_runner(std::make_shared<Kambites>(*S.kambites()));
-    }
+    // if (type == congruence_kind::twosided && S.has_kambites()) {
+    //   _race.add_runner(std::make_shared<Kambites>(*S.kambites()));
+    // }
     _race.max_threads(POSITIVE_INFINITY);
     if (S.has_todd_coxeter()) {
       // Method 1: use only the relations used to define S and genpairs to

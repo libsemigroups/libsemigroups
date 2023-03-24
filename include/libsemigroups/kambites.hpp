@@ -83,7 +83,7 @@ namespace libsemigroups {
     //! also documented on this page.
     // TODO(later) example
     template <typename T>
-    class Kambites final : public FpSemigroupInterface {
+    class Kambites : public FpSemigroupInterface {
      public:
       ////////////////////////////////////////////////////////////////////////
       // Kambites - aliases - public
@@ -311,47 +311,17 @@ namespace libsemigroups {
         }
       }
 
-      internal_type const& X(size_t i) const {
-        LIBSEMIGROUPS_ASSERT(i < _relation_words.size());
-        LIBSEMIGROUPS_ASSERT(finished_impl());
-        init_XYZ_data(i);
-        return _XYZ_data[i].X;
-      }
+      internal_type const& X(size_t i) const;
 
-      internal_type const& Y(size_t i) const {
-        LIBSEMIGROUPS_ASSERT(i < _relation_words.size());
-        LIBSEMIGROUPS_ASSERT(finished_impl());
-        init_XYZ_data(i);
-        return _XYZ_data[i].Y;
-      }
+      internal_type const& Y(size_t i) const;
 
-      internal_type const& Z(size_t i) const {
-        LIBSEMIGROUPS_ASSERT(i < _relation_words.size());
-        LIBSEMIGROUPS_ASSERT(finished_impl());
-        init_XYZ_data(i);
-        return _XYZ_data[i].Z;
-      }
+      internal_type const& Z(size_t i) const;
 
-      internal_type const& XY(size_t i) const {
-        LIBSEMIGROUPS_ASSERT(i < _relation_words.size());
-        LIBSEMIGROUPS_ASSERT(finished_impl());
-        init_XYZ_data(i);
-        return _XYZ_data[i].XY;
-      }
+      internal_type const& XY(size_t i) const;
 
-      internal_type const& YZ(size_t i) const {
-        LIBSEMIGROUPS_ASSERT(i < _relation_words.size());
-        LIBSEMIGROUPS_ASSERT(finished_impl());
-        init_XYZ_data(i);
-        return _XYZ_data[i].YZ;
-      }
+      internal_type const& YZ(size_t i) const;
 
-      internal_type const& XYZ(size_t i) const {
-        LIBSEMIGROUPS_ASSERT(i < _relation_words.size());
-        LIBSEMIGROUPS_ASSERT(finished_impl());
-        init_XYZ_data(i);
-        return _XYZ_data[i].XYZ;
-      }
+      internal_type const& XYZ(size_t i) const;
 
       ////////////////////////////////////////////////////////////////////////
       // Kambites - helpers - private
@@ -409,23 +379,7 @@ namespace libsemigroups {
       std::tuple<size_t, internal_type_iterator, internal_type_iterator>
       p_active(internal_type const&          x,
                internal_type_iterator const& first,
-               internal_type_iterator const& last) const {
-        // The following should hold but can't be checked when internal_type is
-        // MultiStringView.
-        // LIBSEMIGROUPS_ASSERT(x.cend() < first || x.cbegin() >= last);
-        internal_type y = x;
-        y.append(first, last);
-        for (auto it = y.cbegin(); it < y.cbegin() + x.size(); ++it) {
-          size_t i = relation_prefix(it, y.cend());
-          if (i != UNDEFINED) {
-            size_t n = it - y.cbegin();
-            y.erase(y.begin() + x.size(), y.end());
-            return std::make_tuple(
-                i, x.cbegin() + n, first + (XY(i).size() - (x.size() - n)));
-          }
-        }
-        return std::make_tuple(UNDEFINED, x.cend(), last);
-      }
+               internal_type_iterator const& last) const;
 
       // Returns a word equal to w in this, starting with the piece p, no checks
       // are performed. Used in the normal_form function.
@@ -486,20 +440,6 @@ namespace libsemigroups {
       // Kambites - main functions - private
       ////////////////////////////////////////////////////////////////////////
 
-      // copy if const_reference, or rrvalue reference
-      template <typename S>
-      struct ForwardingTypeHelper {
-        using type = std::conditional_t<
-            std::is_rvalue_reference<S>::value
-                || (std::is_reference<S>::value
-                    && std::is_const<std::remove_reference_t<S>>::value),
-            std::remove_const_t<std::remove_reference_t<S>>,
-            std::remove_reference_t<S>&>;
-      };
-
-      template <typename S>
-      using ForwardingType = typename ForwardingTypeHelper<S>::type;
-
       // copies u, v, and/or p if they are an rrvalue ref or a const ref.
 
       // Implementation of the function of the same name in: Kambites, M.
@@ -548,16 +488,7 @@ namespace libsemigroups {
 
       // Data structure for caching the regularly accessed parts of the
       // relation words.
-      struct RelationWords {
-        using internal_type          = Kambites::internal_type;
-        bool          is_initialized = false;
-        internal_type X;
-        internal_type Y;
-        internal_type Z;
-        internal_type XY;
-        internal_type YZ;
-        internal_type XYZ;
-      };
+      struct RelationWords;
 
       // Data structure for caching the complements of each relation word.
       //
@@ -566,21 +497,7 @@ namespace libsemigroups {
       // either (r_i,r_{i+1}) \in R or (r_{i+1},r_i) \in R for $1 \leq i \leq
       // n$. We say that $u'$ is a *proper complement* of the relation word u
       // if it is a complement of u and u is not equal to u'.
-      class Complements {
-       public:
-        Complements() = default;
-        void init(std::vector<string_type> const&);
-
-        std::vector<size_t> const& of(size_t i) const {
-          LIBSEMIGROUPS_ASSERT(i < _lookup.size());
-          LIBSEMIGROUPS_ASSERT(_lookup[i] < _complements.size());
-          return _complements[_lookup[i]];
-        }
-
-       private:
-        std::vector<std::vector<size_t>> _complements;
-        std::vector<size_t>              _lookup;
-      };
+      class Complements;
 
       ////////////////////////////////////////////////////////////////////////
       // Kambites - data members - private
@@ -597,124 +514,124 @@ namespace libsemigroups {
 
   }  // namespace fpsemigroup
 
-  namespace congruence {
-    //! Defined in ``kambites.hpp``.
-    //!
-    //! On this page we describe the functionality relating to the algorithms
-    //! for small overlap monoids by
-    //! [Kambites](https://doi.org/10.1016/j.jalgebra.2008.09.038) and the
-    //! authors of ``libsemigroups``.
-    //!
-    //! This page describes the implementation in the class
-    //! congruence::Kambites which uses the CongruenceInterface, which is
-    //! also documented on this page.
-    class Kambites final : public CongruenceInterface {
-     public:
-      ////////////////////////////////////////////////////////////////////////////
-      // Kambites - constructors - public
-      ////////////////////////////////////////////////////////////////////////////
+  // namespace congruence {
+  //   //! Defined in ``kambites.hpp``.
+  //   //!
+  //   //! On this page we describe the functionality relating to the algorithms
+  //   //! for small overlap monoids by
+  //   //! [Kambites](https://doi.org/10.1016/j.jalgebra.2008.09.038) and the
+  //   //! authors of ``libsemigroups``.
+  //   //!
+  //   //! This page describes the implementation in the class
+  //   //! congruence::Kambites which uses the CongruenceInterface, which is
+  //   //! also documented on this page.
+  //   class Kambites final : public CongruenceInterface {
+  //    public:
+  //     ////////////////////////////////////////////////////////////////////////////
+  //     // Kambites - constructors - public
+  //     ////////////////////////////////////////////////////////////////////////////
 
-      //! Default constructor.
-      //!
-      //! \par Parameters
-      //! (None)
-      //!
-      //! \exceptions
-      //! \no_libsemigroups_except
-      //!
-      //! \complexity
-      //! Constant
-      Kambites();
+  //     //! Default constructor.
+  //     //!
+  //     //! \par Parameters
+  //     //! (None)
+  //     //!
+  //     //! \exceptions
+  //     //! \no_libsemigroups_except
+  //     //!
+  //     //! \complexity
+  //     //! Constant
+  //     Kambites();
 
-      //! Construct from fpsemigroup::Kambites.
-      //!
-      //! This function constructs a new congruence::Kambites object
-      //! initialised with existing data in fpsemigroup::Kambites.
-      //!
-      //! \param copy the fpsemigroup::Kambites.
-      //!
-      //! \exceptions
-      //! \no_libsemigroups_except
-      //!
-      //! \complexity
-      //! Constant
-      explicit Kambites(fpsemigroup::Kambites<std::string> const& copy);
+  //     //! Construct from fpsemigroup::Kambites.
+  //     //!
+  //     //! This function constructs a new congruence::Kambites object
+  //     //! initialised with existing data in fpsemigroup::Kambites.
+  //     //!
+  //     //! \param copy the fpsemigroup::Kambites.
+  //     //!
+  //     //! \exceptions
+  //     //! \no_libsemigroups_except
+  //     //!
+  //     //! \complexity
+  //     //! Constant
+  //     explicit Kambites(fpsemigroup::Kambites<std::string> const& copy);
 
-      //! Default copy constructor.
-      Kambites(Kambites const& copy) : Kambites(*copy._k) {}
+  //     //! Default copy constructor.
+  //     Kambites(Kambites const& copy) : Kambites(*copy._k) {}
 
-      //! Deleted.
-      Kambites(Kambites&&) = delete;
+  //     //! Deleted.
+  //     Kambites(Kambites&&) = delete;
 
-      //! Deleted.
-      Kambites& operator=(Kambites const&) = delete;
+  //     //! Deleted.
+  //     Kambites& operator=(Kambites const&) = delete;
 
-      //! Deleted.
-      Kambites& operator=(Kambites&&) = delete;
+  //     //! Deleted.
+  //     Kambites& operator=(Kambites&&) = delete;
 
-      ~Kambites();
+  //     ~Kambites();
 
-      ////////////////////////////////////////////////////////////////////////////
-      // CongruenceInterface - non-pure virtual member functions - public
-      ////////////////////////////////////////////////////////////////////////////
+  //     ////////////////////////////////////////////////////////////////////////////
+  //     // CongruenceInterface - non-pure virtual member functions - public
+  //     ////////////////////////////////////////////////////////////////////////////
 
-      tril const_contains(word_type const&, word_type const&) const override;
-      bool contains(word_type const&, word_type const&) override;
+  //     tril const_contains(word_type const&, word_type const&) const override;
+  //     bool contains(word_type const&, word_type const&) override;
 
-      ////////////////////////////////////////////////////////////////////////////
-      // Kambites - member functions - public
-      ////////////////////////////////////////////////////////////////////////////
+  //     ////////////////////////////////////////////////////////////////////////////
+  //     // Kambites - member functions - public
+  //     ////////////////////////////////////////////////////////////////////////////
 
-      //! Get the underlying fpsemigroup::Kambites.
-      //!
-      //! \par Parameters
-      //! (None)
-      //!
-      //! \exceptions
-      //! \no_libsemigroups_except
-      //!
-      //! \complexity
-      //! Constant
-      //!
-      //! \returns
-      //! A reference to the underlying fpsemigroup::Kambites of \c this.
-      fpsemigroup::Kambites<std::string>& kambites() const {
-        return *_k;
-      }
+  //     //! Get the underlying fpsemigroup::Kambites.
+  //     //!
+  //     //! \par Parameters
+  //     //! (None)
+  //     //!
+  //     //! \exceptions
+  //     //! \no_libsemigroups_except
+  //     //!
+  //     //! \complexity
+  //     //! Constant
+  //     //!
+  //     //! \returns
+  //     //! A reference to the underlying fpsemigroup::Kambites of \c this.
+  //     fpsemigroup::Kambites<std::string>& kambites() const {
+  //       return *_k;
+  //     }
 
-     private:
-      ////////////////////////////////////////////////////////////////////////////
-      // Runner - pure virtual member functions - protected
-      ////////////////////////////////////////////////////////////////////////////
+  //    private:
+  //     ////////////////////////////////////////////////////////////////////////////
+  //     // Runner - pure virtual member functions - protected
+  //     ////////////////////////////////////////////////////////////////////////////
 
-      bool finished_impl() const override;
+  //     bool finished_impl() const override;
 
-      ////////////////////////////////////////////////////////////////////////////
-      // CongruenceInterface - pure virtual methods - private
-      ////////////////////////////////////////////////////////////////////////////
+  //     ////////////////////////////////////////////////////////////////////////////
+  //     // CongruenceInterface - pure virtual methods - private
+  //     ////////////////////////////////////////////////////////////////////////////
 
-      word_type class_index_to_word_impl(class_index_type) override;
-      size_t    number_of_classes_impl() override;
-      std::shared_ptr<FroidurePinBase> quotient_impl() override;
-      class_index_type word_to_class_index_impl(word_type const&) override;
-      void             run_impl() override;
+  //     word_type class_index_to_word_impl(class_index_type) override;
+  //     size_t    number_of_classes_impl() override;
+  //     std::shared_ptr<FroidurePinBase> quotient_impl() override;
+  //     class_index_type word_to_class_index_impl(word_type const&) override;
+  //     void             run_impl() override;
 
-      ////////////////////////////////////////////////////////////////////////////
-      // CongruenceInterface - non-pure virtual methods - private
-      ////////////////////////////////////////////////////////////////////////////
+  //     ////////////////////////////////////////////////////////////////////////////
+  //     // CongruenceInterface - non-pure virtual methods - private
+  //     ////////////////////////////////////////////////////////////////////////////
 
-      void add_pair_impl(word_type const&, word_type const&) override;
-      void set_number_of_generators_impl(size_t) override;
-      bool is_quotient_obviously_finite_impl() override;
-      bool is_quotient_obviously_infinite_impl() override;
+  //     void add_pair_impl(word_type const&, word_type const&) override;
+  //     void set_number_of_generators_impl(size_t) override;
+  //     bool is_quotient_obviously_finite_impl() override;
+  //     bool is_quotient_obviously_infinite_impl() override;
 
-      ////////////////////////////////////////////////////////////////////////////
-      // Kambites - data - private
-      ////////////////////////////////////////////////////////////////////////////
+  //     ////////////////////////////////////////////////////////////////////////////
+  //     // Kambites - data - private
+  //     ////////////////////////////////////////////////////////////////////////////
 
-      std::unique_ptr<fpsemigroup::Kambites<std::string>> _k;
-    };
-  }  // namespace congruence
+  //     std::unique_ptr<fpsemigroup::Kambites<std::string>> _k;
+  //   };
+  // }  // namespace congruence
 
   // TODO(later) remove code dup with KBE.
 

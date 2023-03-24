@@ -592,9 +592,9 @@ namespace libsemigroups {
     REQUIRE(*++it == "aaaa");
 
     auto it2 = it;
-    REQUIRE(it == it2);
+    REQUIRE(*it == *it2);
     ++it;
-    REQUIRE(it2 != it);
+    REQUIRE(*it2 != *it);
     REQUIRE(*it == "aaab");
     REQUIRE(*it2 == "aaaa");
 
@@ -608,10 +608,10 @@ namespace libsemigroups {
     REQUIRE(*it == "aaab");
     REQUIRE(*it2 == "aaaa");
     ++it2;
-    REQUIRE(it == it2);
-    REQUIRE(++it == ++it2);
-    REQUIRE(it == it2);
-    REQUIRE(++it == ++it2);
+    REQUIRE(*it == *it2);
+    REQUIRE(*(++it) == *(++it2));
+    REQUIRE(*it == *it2);
+    REQUIRE(*(++it) == *(++it2));
   }
 
   LIBSEMIGROUPS_TEST_CASE("Strings",
@@ -753,9 +753,9 @@ namespace libsemigroups {
     REQUIRE(*++it == "aab");
 
     auto it2 = it;
-    REQUIRE(it == it2);
+    REQUIRE(*it == *it2);
     ++it;
-    REQUIRE(it2 != it);
+    REQUIRE(*it2 != *it);
     REQUIRE(*it == "aba");
     REQUIRE(*it2 == "aab");
 
@@ -765,14 +765,14 @@ namespace libsemigroups {
     REQUIRE(*it2 == "aba");
 
     std::swap(it, it2);
-    REQUIRE(it2 != it);
+    REQUIRE(*it2 != *it);
     REQUIRE(*it == "aba");
     REQUIRE(*it2 == "aab");
     ++it2;
-    REQUIRE(it == it2);
-    REQUIRE(++it == ++it2);
-    REQUIRE(it == it2);
-    REQUIRE(++it == ++it2);
+    REQUIRE(*it == *it2);
+    REQUIRE(*(++it) == *(++it2));
+    REQUIRE(*it == *it2);
+    REQUIRE(*(++it) == *(++it2));
   }
 
 }  // namespace libsemigroups
