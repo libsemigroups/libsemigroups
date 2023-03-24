@@ -48,14 +48,14 @@
 #include <utility>      // for pair
 #include <vector>       // for vector
 
-#include "adapters.hpp"      // for One
-#include "cong-intf.hpp"     // for CongruenceInterface
-#include "constants.hpp"     // for UNDEFINED, POSITIVE_INFINITY
-#include "exception.hpp"     // for LIBSEMIGROUPS_EXCEPTION
-#include "fpsemi-intf.hpp"   // for FpSemigroupInterface
-#include "froidure-pin.hpp"  // for FroidurePin, FroidurePinTraits
+#include "adapters.hpp"       // for One
+#include "cong-intf-new.hpp"  // for CongruenceInterface
+#include "constants.hpp"      // for UNDEFINED, POSITIVE_INFINITY
+#include "exception.hpp"      // for LIBSEMIGROUPS_EXCEPTION
+#include "froidure-pin.hpp"   // for FroidurePin, FroidurePinTraits
 #include "int-range.hpp"
-#include "order.hpp"  // for lexicographical_compare
+#include "order.hpp"    // for lexicographical_compare
+#include "present.hpp"  // for Presentation
 #include "string-view.hpp"
 #include "string.hpp"   // for is_prefix
 #include "types.hpp"    // for word_type, tril, letter_type
@@ -81,7 +81,7 @@ namespace libsemigroups {
   //! also documented on this page.
   // TODO(later) example
   template <typename T>
-  class Kambites : public FpSemigroupInterface {
+  class Kambites : public Runner {
    public:
     ////////////////////////////////////////////////////////////////////////
     // Kambites - aliases - public
@@ -127,6 +127,14 @@ namespace libsemigroups {
 
     ~Kambites();
 
+    Kambites(Presentation<std::string> const& p) : Runner(), _presentation(p) {
+      _presentation.validate();
+      for (auto const& r : _presentation.rules) {
+        _relation_words.push_back(r);
+        _suffix_tree.add_word_no_checks(r.cbegin(), r.cend());
+      }
+    }
+
     ////////////////////////////////////////////////////////////////////////
     // FpSemigroupInterface - pure virtual member functions - public
     ////////////////////////////////////////////////////////////////////////
@@ -136,21 +144,17 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if the small overlap class is not at
     //! least \f$4\f$.
     // Not noexcept, throws
-    uint64_t size() override {
+    size_t size() {
       validate_small_overlap_class();
       return POSITIVE_INFINITY;
     }
-
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
-    using FpSemigroupInterface::equal_to;
-#endif
 
     //! \copydoc FpSemigroupInterface::equal_to
     //!
     //! \throws LibsemigroupsException if the small overlap class is not at
     //! least \f$4\f$.
     // Not noexcept, throws
-    bool equal_to(string_type const& u, string_type const& v) override {
+    bool equal_to(string_type const& u, string_type const& v) {
       validate_small_overlap_class();
       // Words aren't validated, the below returns false if they contain
       // letters not in the alphabet.
@@ -173,7 +177,7 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if the small overlap class is not at
     //! least \f$4\f$.
     // Not noexcept, lots of allocations
-    string_type normal_form(string_type const& w) override;
+    string_type normal_form(string_type const& w);
 
     ////////////////////////////////////////////////////////////////////////
     // Kambites - member functions - public
@@ -469,13 +473,16 @@ namespace libsemigroups {
       return _have_class && small_overlap_class() >= 4;
     }
 
-    void add_rule_impl(std::string const& u, std::string const& v) override;
+    // TODO rm
+    // void add_rule_impl(std::string const& u, std::string const& v) override;
 
-    std::shared_ptr<FroidurePinBase> froidure_pin_impl() override;
+    // TODO rm
+    // std::shared_ptr<FroidurePinBase> froidure_pin_impl() override;
 
-    bool is_obviously_infinite_impl() override {
-      return small_overlap_class() >= 3;
-    }
+    // TODO impl elsewhere
+    // bool is_obviously_infinite_impl() override {
+    //   return small_overlap_class() >= 3;
+    // }
 
     ////////////////////////////////////////////////////////////////////////
     // Kambites - inner classes - private
@@ -503,8 +510,10 @@ namespace libsemigroups {
     mutable bool                       _have_class;
     mutable std::vector<RelationWords> _XYZ_data;
 
-    std::vector<string_type> _relation_words;
-    Ukkonen                  _suffix_tree;
+    Presentation<std::string> _presentation;
+    std::vector<string_type>  _relation_words;  // TODO this should be required
+                                                // any longer
+    Ukkonen _suffix_tree;
   };
 
   // namespace congruence {
