@@ -32,7 +32,6 @@
 #include "types.hpp"   // for word_type, relation_type, letter_type, tril
 
 namespace libsemigroups {
-  class FroidurePinBase;  // Forward declaration, for member functions
 
   namespace v3 {
 
@@ -57,15 +56,6 @@ namespace libsemigroups {
 
       //! Type for indices of congruence class indices.
       using class_index_type = size_t;
-
-      //! Type for non-trivial classes.
-      //! \sa cbegin_ntc and cend_ntc.
-      using non_trivial_classes_type = std::vector<std::vector<word_type>>;
-
-      //! Type for a `const_iterator` to non-trivial classes.
-      //! \sa cbegin_ntc and cend_ntc.
-      using non_trivial_class_iterator
-          = non_trivial_classes_type::const_iterator;
 
       //! Type for a `const_iterator` to the generating pairs.
       //! \sa cbegin_generating_pairs and cend_generating_pairs.
@@ -273,11 +263,7 @@ namespace libsemigroups {
       //!
       //! \par Parameters
       //! (None)
-      // TODO
-      // non_trivial_class_iterator cbegin_ntc() {
-      //   init_non_trivial_classes();
-      //   return _non_trivial_classes->cbegin();
-      // }
+      // TODO copy doc
 
       //! Returns a const iterator pointing one-past-the-end of the last
       //! non-singleton class.
@@ -297,21 +283,9 @@ namespace libsemigroups {
       //!
       //! \par Parameters
       //! (None)
-      // TODO
-      // non_trivial_class_iterator cend_ntc() {
-      //   init_non_trivial_classes();
-      //   return _non_trivial_classes->cend();
-      // }
+      // TODO copy doc
 
-      //! Returns a shared pointer to the non-trivial classes.
-      //!
-      //! \returns A \shared_ptr to \ref non_trivial_classes_type.
-      // TODO
-      // std::shared_ptr<non_trivial_classes_type const> non_trivial_classes() {
-      //   init_non_trivial_classes();
-      //   return _non_trivial_classes;
-      // }
-
+      // TODO copy doc?
       //! The number of non-singleton classes.
       //!
       //! \returns The number of non-singleton classes of the congruence.
@@ -327,21 +301,8 @@ namespace libsemigroups {
       //!
       //! \par Parameters
       //! (None)
-      // TODO
-      // size_t number_of_non_trivial_classes() {
-      //   // TODO(later) this could be better, for example, if
-      //   number_of_classes is
-      //   // finite, then we can count the number of non-trivial classes, by
-      //   // counting the number of paths in the right Cayley graph (right
-      //   action
-      //   // digraph if left or right) from the root to every vertex.
-      //   // TODO(later) double check if we know that the number of classes is
-      //   // finite and the parent semigroup is infinite, meaning that the
-      //   // init_non_trivial_classes will run forever
-      //   init_non_trivial_classes();
-      //   return _non_trivial_classes->size();
-      // }
 
+      // TODO copy doc?
       //! Returns a semigroup represented as an instance of a derived class of
       //! FroidurePinBase that is isomorphic to the quotient of the parent
       //! semigroup of \c this by the 2-sided congruence that \c this
@@ -369,8 +330,8 @@ namespace libsemigroups {
       //!
       //! \par Parameters
       //! (None)
-      // TODO std::shared_ptr<FroidurePinBase> quotient_froidure_pin();
 
+      // TODO copy doc?
       //! Check if the quotient semigroup has been computed.
       //!
       //! Returns \c true if the congruence represented by this object knows an
@@ -387,9 +348,6 @@ namespace libsemigroups {
       //!
       //! \par Parameters
       //! (None)
-      // TODO bool has_quotient_froidure_pin() const noexcept {
-      //   return _quotient != nullptr;
-      // }
 
       //! The handedness of the congruence (left, right, or 2-sided).
       //!
@@ -425,6 +383,7 @@ namespace libsemigroups {
       //!
       //! \par Parameters
       //! (None)
+      // FIXME since this passes right through it shouldn't exist at all
       size_t number_of_classes();
 
       // TODO add_pair with checks
@@ -469,10 +428,14 @@ namespace libsemigroups {
       // CongruenceInterface - pure virtual functions - private
       /////////////////////////////////////////////////////////////////////////
 
-      virtual word_type        class_index_to_word_impl(class_index_type i) = 0;
-      virtual size_t           number_of_classes_impl()                     = 0;
+      // TODO _impl -> no_checks and make them public
+      virtual word_type class_index_to_word_impl(class_index_type i) = 0;
+      // TODO _impl -> nothing
+      virtual size_t number_of_classes_impl() = 0;
+      // TODO _impl -> no_checks and make them public
       virtual class_index_type word_to_class_index_impl(word_type const& w) = 0;
-      virtual void             validate_word(word_type const& w) const      = 0;
+
+      virtual void validate_word(word_type const& w) const = 0;
 
       /////////////////////////////////////////////////////////////////////////
       // CongruenceInterface - non-pure virtual functions - private
@@ -483,23 +446,6 @@ namespace libsemigroups {
       // (i.e the return value should not change).
       virtual class_index_type
       const_word_to_class_index(word_type const&) const;
-      // TODO virtual std::shared_ptr<non_trivial_classes_type const>
-      // non_trivial_classes_impl();
-
-      /////////////////////////////////////////////////////////////////////////
-      // CongruenceInterface - non-virtual functions - private
-      /////////////////////////////////////////////////////////////////////////
-
-      // TODO void init_non_trivial_classes();
-
-      /////////////////////////////////////////////////////////////////////////
-      // CongruenceInterface - mutable data members - private
-      /////////////////////////////////////////////////////////////////////////
-
-      // mutable bool                             _init_ntc_done;
-      // mutable std::shared_ptr<FroidurePinBase> _quotient;
-      // mutable std::shared_ptr<non_trivial_classes_type const>
-      //     _non_trivial_classes;
     };
   }  // namespace v3
 }  // namespace libsemigroups

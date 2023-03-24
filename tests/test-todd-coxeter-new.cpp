@@ -29,7 +29,7 @@
 #include "libsemigroups/make-todd-coxeter.hpp"  // for ??
 #include "libsemigroups/obvinf.hpp"             // for is_obviously_infinite
 #include "libsemigroups/present.hpp"            // for Presentation
-#include "libsemigroups/ranges.hpp"             // for TODO
+#include "libsemigroups/ranges.hpp"             // for is_sorted
 #include "libsemigroups/report.hpp"             // for ReportGuard
 #include "libsemigroups/todd-coxeter-new.hpp"   // for ToddCoxeter
 #include "libsemigroups/transf.hpp"             // for Transf
@@ -1825,89 +1825,6 @@ namespace libsemigroups {
     REQUIRE(tc.number_of_classes() == 5'040);
   }
 
-  /* TODO uncomment
-    LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
-                            "045",
-                            "Options operator<<",
-                            "[todd-coxeter][quick]") {
-      auto rg = ReportGuard(false);
-      {
-        ToddCoxeter tc(twosided);
-        tc.strategy(options::strategy::hlt);
-        tc.settings_string();
-        tc.strategy(options::strategy::felsch);
-        tc.settings_string();
-        tc.strategy(options::strategy::random);
-        tc.settings_string();
-        tc.strategy(options::strategy::CR);
-        tc.settings_string();
-        tc.strategy(options::strategy::R_over_C);
-        tc.settings_string();
-        tc.strategy(options::strategy::Cr);
-        tc.settings_string();
-        tc.strategy(options::strategy::Rc);
-        tc.settings_string();
-      }
-      {
-        ToddCoxeter tc(twosided);
-        tc.lookahead(options::lookahead::full | options::lookahead::felsch);
-        tc.settings_string();
-        tc.lookahead(options::lookahead::full | options::lookahead::hlt);
-        tc.settings_string();
-        tc.lookahead(options::lookahead::partial |
-    options::lookahead::felsch); tc.settings_string();
-        tc.lookahead(options::lookahead::partial | options::lookahead::hlt);
-        tc.settings_string();
-      }
-      {
-        using digraph_type = typename ToddCoxeter::digraph_type;
-        ToddCoxeter tc(twosided);
-        tc.deduction_version(digraph_type::process_defs::v1)
-            .deduction_policy(
-                DefinitionOptions::definitions::no_stack_if_no_space);
-        tc.settings_string();
-        tc.deduction_version(digraph_type::process_defs::v1)
-            .deduction_policy(DefinitionOptions::definitions::purge_all);
-        tc.settings_string();
-        tc.deduction_version(digraph_type::process_defs::v1)
-            .deduction_policy(DefinitionOptions::definitions::purge_from_top);
-        tc.settings_string();
-        tc.deduction_version(digraph_type::process_defs::v1)
-            .deduction_policy(
-                DefinitionOptions::definitions::discard_all_if_no_space);
-        tc.settings_string();
-        tc.deduction_version(digraph_type::process_defs::v1)
-            .deduction_policy(DefinitionOptions::definitions::unlimited);
-        tc.settings_string();
-        tc.deduction_version(digraph_type::process_defs::v2)
-            .deduction_policy(
-                DefinitionOptions::definitions::no_stack_if_no_space);
-        tc.settings_string();
-        tc.deduction_version(digraph_type::process_defs::v2)
-            .deduction_policy(DefinitionOptions::definitions::purge_all);
-        tc.settings_string();
-        tc.deduction_version(digraph_type::process_defs::v2)
-            .deduction_policy(DefinitionOptions::definitions::purge_from_top);
-        tc.deduction_version(digraph_type::process_defs::v2)
-            .deduction_policy(
-                DefinitionOptions::definitions::discard_all_if_no_space);
-        tc.settings_string();
-        tc.deduction_version(digraph_type::process_defs::v2)
-            .deduction_policy(DefinitionOptions::definitions::unlimited);
-        tc.settings_string();
-      }
-      {
-        ToddCoxeter tc(twosided);
-        tc.froidure_pin_policy(options::froidure_pin::none);
-        tc.settings_string();
-        tc.froidure_pin_policy(options::froidure_pin::use_cayley_graph);
-        tc.settings_string();
-        tc.froidure_pin_policy(options::froidure_pin::use_relations);
-        tc.settings_string();
-      }
-    }
-    */
-
   LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
                           "046",
                           "Easdown-East-FitzGerald DualSymInv(5)",
@@ -2973,7 +2890,6 @@ namespace libsemigroups {
 
     REQUIRE(tc.number_of_classes() == 72'822);
     check_complete_compatible(tc);
-    // TODO uncomment std::cout << tc.stats_string();
   }
 
   LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
@@ -4057,7 +3973,6 @@ namespace libsemigroups {
 
     // TODO uncomment
     //     .reserve(50'000'000);
-    // std::cout << tc.settings_string();
 
     REQUIRE(tc.number_of_classes() == 10'200'960);
   }
@@ -4245,8 +4160,6 @@ namespace libsemigroups {
     section_hlt(tc);
 
     REQUIRE(tc.number_of_classes() == 1'451'520);
-    // TODO uncomment
-    // std::cout << tc.stats_string();
   }
 
 }  // namespace libsemigroups

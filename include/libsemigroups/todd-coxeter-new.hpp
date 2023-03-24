@@ -20,7 +20,8 @@
 // algorithm for semigroups and monoids.
 //
 // TODO:
-// * implement reserve
+// * re-implement SettingsGuard (push_settings and pop_settings)
+// * re-implement reserve
 // * remove preferred_defs from FelschDigraph etc (except where they are really
 // needed)
 
@@ -862,25 +863,10 @@ namespace libsemigroups {
       return tc.class_index_to_word(tc.word_to_class_index(w));
     }
 
-    // TODO avoid code dupl with the next function
-    template <typename It>
-    std::vector<std::vector<word_type>> partition(ToddCoxeter& tc,
-                                                  It           first,
-                                                  It           last) {
-      using return_type = std::vector<std::vector<word_type>>;
-
-      return_type result(tc.number_of_classes(), std::vector<word_type>());
-
-      for (auto it = first; it != last; ++it) {
-        LIBSEMIGROUPS_ASSERT(tc.word_to_class_index(*it) < result.size());
-        result[tc.word_to_class_index(*it)].push_back(*it);
-      }
-      return result;
-    }
-
     template <typename Range>
     std::vector<std::vector<word_type>> partition(ToddCoxeter& tc, Range r) {
-      // static assert that the return type  of r.next() is word_type TODO
+      static_assert(
+          std::is_same_v<std::decay_t<typename Range::output_type>, word_type>);
       using return_type = std::vector<std::vector<word_type>>;
 
       return_type result(tc.number_of_classes(), std::vector<word_type>());
@@ -892,6 +878,13 @@ namespace libsemigroups {
         r.next();
       }
       return result;
+    }
+
+    template <typename It>
+    std::vector<std::vector<word_type>> partition(ToddCoxeter& tc,
+                                                  It           first,
+                                                  It           last) {
+      return partition(tc, rx::iterator_range(first, last));
     }
 
     template <typename It>
