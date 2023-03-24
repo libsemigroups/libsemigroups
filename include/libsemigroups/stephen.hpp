@@ -29,7 +29,6 @@
 #include "constants.hpp"             // for PositiveInfinity
 #include "digraph-with-sources.hpp"  // for DigraphWithSources
 #include "digraph.hpp"               // for ActionDigraph, Act...
-#include "int-range.hpp"             // for IntegralRange<>::v...
 #include "make-present.hpp"          // for make
 #include "paths.hpp"                 // for Paths
 #include "present.hpp"               // for Presentation

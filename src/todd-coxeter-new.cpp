@@ -558,7 +558,8 @@ namespace libsemigroups {
     }
     return const_word_to_class_index(w);
     // c is in the range 1, ..., number_of_cosets_active() because 0
-    // represents the identity coset, and does not correspond to an element.
+    // represents the identity coset, and does not correspond to an element,
+    // unless presentation().contains_empty_word()
   }
 
   class_index_type
