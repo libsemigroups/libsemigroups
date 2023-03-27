@@ -148,7 +148,7 @@ namespace libsemigroups {
       }
       // line 16
       v += Z(r);
-      v.append(w.cbegin() + Z(r).size(), it_wp);
+      append(v, w.cbegin() + Z(r).size(), it_wp);
       std::swap(w, wp);
       r = s;
     }
@@ -173,29 +173,6 @@ namespace libsemigroups {
     }
     return _class;
   }
-
-  // TODO make helper
-  // template <typename Word>
-  // uint64_t Kambites<Word>::number_of_normal_forms(size_t mn, size_t
-  // mx) {
-  //   validate_small_overlap_class();
-  //   if (mn >= mx) {
-  //     return 0;
-  //   }
-  //   mn = std::max(size_t(1),
-  //                 mn);  // FroidurePin's have no words of length 0
-  //   froidure_pin()->run_until([this, mx]() {
-  //     return this->froidure_pin()->current_max_word_length() == mx;
-  //   });
-  //   auto r     = IntegralRange<size_t>(0, froidure_pin()->current_size());
-  //   auto first = std::find_if(r.cbegin(), r.cend(), [this, mn](size_t i) {
-  //     return this->froidure_pin()->current_length(i) == mn;
-  //   });
-  //   auto last  = std::find_if(first, r.cend(), [this, mx](size_t i) {
-  //     return this->froidure_pin()->current_length(i) == mx;
-  //   });
-  //   return last - first;
-  // }
 
   ////////////////////////////////////////////////////////////////////////
   // Kambites - validation functions impl - private
@@ -253,7 +230,7 @@ namespace libsemigroups {
   //
   // TODO(later): we tried multiple things here to try and improve this, but
   // none of them were better than the current function. Two things that we
-  // never tried or didn'String get to work were:
+  // never tried or didn't get to work were:
   // 1) Binary search
   // 2) Using the original suffix tree (without the unique characters)
   template <typename Word>
@@ -318,7 +295,7 @@ namespace libsemigroups {
     // MultiStringView.
     // LIBSEMIGROUPS_ASSERT(x.cend() < first || x.cbegin() >= last);
     internal_type y = x;
-    y.append(first, last);
+    append(y, first, last);
     for (auto it = y.cbegin(); it < y.cbegin() + x.size(); ++it) {
       size_t i = relation_prefix(it, y.cend());
       if (i != UNDEFINED) {
@@ -515,7 +492,7 @@ namespace libsemigroups {
     }
 
     internal_type wp(w.cbegin() + i + XY(j).size(), w.cend());
-    v.append(w.cbegin(), w.cbegin() + i);  // a
+    append(v, w.cbegin(), w.cbegin() + i);  // a
 
     if (!wp_prefix(wp, wp, Z(j))) {
       // line 23
@@ -528,39 +505,9 @@ namespace libsemigroups {
       replace_prefix(wp, Z(j));
       v += XY(r);
       w = Z(r);
-      w.append(wp.cbegin() + Z(j).size(), wp.cend());
+      append(w, wp.cbegin() + Z(j).size(), wp.cend());
     }
   }
-
-  ////////////////////////////////////////////////////////////////////////
-  // FpSemigroupInterface - pure virtual functions impl - private
-  ////////////////////////////////////////////////////////////////////////
-
-  // template <typename Word>
-  // void Kambites<Word>::add_rule_impl(std::string const& u,
-  //                                      std::string const& v) {
-  //   _have_class = false;
-  //   _presentation.rules.push_back(u);
-  //   _presentation.rules.push_back(v);
-  //   _suffix_tree.add_word_no_checks(u.cbegin(), u.cend());
-  //   _suffix_tree.add_word_no_checks(v.cbegin(), v.cend());
-  // }
-
-  // template <typename Word>
-  // std::shared_ptr<FroidurePinBase> Kambites<String,
-  // Word>::froidure_pin_impl() {
-  //   using KE = detail::KE;
-  //   using froidure_pin_type
-  //       = FroidurePin<KE, FroidurePinTraits<KE, Kambites<Word>>>;
-  //   LIBSEMIGROUPS_ASSERT(!alphabet().empty());
-  //   run();
-  //   validate_small_overlap_class();
-  //   auto ptr = std::make_shared<froidure_pin_type>(*this);
-  //   for (size_t i = 0; i < alphabet().size(); ++i) {
-  //     ptr->add_generator(KE(*this, i));
-  //   }
-  //   return ptr;
-  // }
 
   ////////////////////////////////////////////////////////////////////////
   // Kambites - inner classes - private
@@ -659,4 +606,180 @@ namespace libsemigroups {
     init_XYZ_data(i);
     return _XYZ_data[i].XYZ;
   }
+  namespace detail {
+    // This class is used to wrap libsemigroups::Kambites::value_type into an
+    // object that can be used as generators for a FroidurePin object.
+    template <typename Word>
+    class KE {
+     public:
+      using value_type = typename Kambites<Word>::value_type;
+
+     private:
+      value_type _value;
+
+      KE(value_type const& w) : _value(w) {}
+      KE(value_type&& w) : _value(std::move(w)) {}
+
+     public:
+      KE()                     = default;
+      KE(KE const&)            = default;
+      KE(KE&&)                 = default;
+      KE& operator=(KE const&) = default;
+      KE& operator=(KE&&)      = default;
+      ~KE()                    = default;
+
+      KE(Kambites<Word>& k, value_type const& w) : _value(k.normal_form(w)) {}
+
+      KE(Kambites<Word>& k, value_type&& w)
+          : _value(k.normal_form(std::move(w))) {}
+
+      KE(Kambites<Word>& k, letter_type a)
+          : KE(k, value_type({k.presentation().letter(a)})) {}
+
+      bool operator==(KE const& that) const {
+        return that._value == this->_value;
+      }
+
+      bool operator<(KE const& that) const {
+        return shortlex_compare(_value, that._value);
+      }
+
+      void swap(KE& x) {
+        std::swap(x._value, _value);
+      }
+
+      value_type const& value() const noexcept {
+        return _value;
+      }
+
+      // TODO rename to_word + make helper
+      word_type word(Kambites<Word> const& k) const {
+        return to_word(k.presentation(), _value);
+      }
+
+      // TODO rename to_string
+      // TODO rename to_word + make helper
+      std::string string(Kambites<Word> const& k) const noexcept {
+        return to_string(k.presentation(), _value);
+      }
+
+      friend std::ostringstream& operator<<(std::ostringstream& os,
+                                            KE const&           KE) {
+        os << KE.string();
+        return os;
+      }
+    };
+
+    // The following are not really required but are here as a reminder that
+    // KE are used in BruidhinnTraits which depends on the values in the
+    // static_asserts below.
+    static_assert(!std::is_trivial<KE<std::string>>::value,
+                  "KE is not trivial!!!");
+    static_assert(
+        std::integral_constant<bool, (sizeof(KE<std::string>) <= 32)>::value,
+        "KE's sizeof exceeds 32!!");
+
+  }  // namespace detail
+
+  template <typename Word>
+  struct FroidurePinState<detail::KE<Word>> {
+    using type = Kambites<Word>;
+  };
+
+  ////////////////////////////////////////////////////////////////////////
+  // Adapters for KE class
+  ////////////////////////////////////////////////////////////////////////
+
+  template <typename Word>
+  struct Complexity<detail::KE<Word>> {
+    constexpr size_t operator()(detail::KE<Word> const&) const noexcept {
+      return LIMIT_MAX;
+    }
+  };
+
+  template <typename Word>
+  struct Degree<detail::KE<Word>> {
+    constexpr size_t operator()(detail::KE<Word> const&) const noexcept {
+      return 0;
+    }
+  };
+
+  template <typename Word>
+  struct IncreaseDegree<detail::KE<Word>> {
+    void operator()(detail::KE<Word> const&) const noexcept {}
+  };
+
+  template <typename Word>
+  struct One<detail::KE<Word>> {
+    detail::KE<Word> operator()(detail::KE<Word> const&) {
+      return detail::KE<Word>();
+    }
+
+    detail::KE<Word> operator()(size_t = 0) const {
+      return detail::KE<Word>();
+    }
+  };
+
+  template <typename Word>
+  struct Product<detail::KE<Word>> {
+    void operator()(detail::KE<Word>&       xy,
+                    detail::KE<Word> const& x,
+                    detail::KE<Word> const& y,
+                    Kambites<Word>*         k,
+                    size_t) {
+      using value_type = typename detail::KE<Word>::value_type;
+      value_type w(x.value());  // string_type
+      w += y.value();
+      xy = detail::KE<Word>(*k, w);
+    }
+  };
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
+  template <>
+  word_type FroidurePin<
+      detail::KE<std::string>,
+      FroidurePinTraits<detail::KE<std::string>, Kambites<std::string>>>::
+      factorisation(detail::KE<std::string> const& x);
+
+  template <>
+  word_type FroidurePin<detail::KE<detail::MultiStringView>,
+                        FroidurePinTraits<detail::KE<detail::MultiStringView>,
+                                          Kambites<detail::MultiStringView>>>::
+      factorisation(detail::KE<detail::MultiStringView> const& x);
+
+  template <>
+  tril FroidurePin<detail::KE<std::string>,
+                   FroidurePinTraits<detail::KE<std::string>,
+                                     Kambites<std::string>>>::is_finite() const;
+
+  template <>
+  tril
+  FroidurePin<detail::KE<detail::MultiStringView>,
+              FroidurePinTraits<detail::KE<detail::MultiStringView>,
+                                Kambites<detail::MultiStringView>>>::is_finite()
+      const;
+#endif
+
 }  // namespace libsemigroups
+
+////////////////////////////////////////////////////////////////////////
+// Specializations of std::hash and std::equal_to
+////////////////////////////////////////////////////////////////////////
+
+namespace std {
+  template <typename Word>
+  struct hash<libsemigroups::detail::KE<Word>> {
+    size_t operator()(libsemigroups::detail::KE<Word> const& x) const {
+      using value_type = typename libsemigroups::detail::KE<Word>::value_type;
+      return hash<value_type>()(x.value());
+    }
+  };
+
+  template <typename Word>
+  struct equal_to<libsemigroups::detail::KE<Word>> {
+    bool operator()(libsemigroups::detail::KE<Word> const& x,
+                    libsemigroups::detail::KE<Word> const& y) const {
+      return x == y;
+    }
+  };
+}  // namespace std

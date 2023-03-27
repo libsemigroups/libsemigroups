@@ -180,8 +180,9 @@ namespace libsemigroups {
       return true;
     }
 
+    template <typename Word>
     // Check if v is a prefix of u
-    static inline bool is_prefix(std::string const& u, std::string const& v) {
+    static inline bool is_prefix(Word const& u, Word const& v) {
       return is_prefix(u.cbegin(), u.cend(), v.cbegin(), v.cend());
     }
 

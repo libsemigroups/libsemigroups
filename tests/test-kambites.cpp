@@ -540,15 +540,18 @@ namespace {
 
     REQUIRE(k.size() == POSITIVE_INFINITY);
     REQUIRE(number_of_words(p.alphabet().size(), 0, 6) == 19'608);
-    // TODO uncomment
-    // REQUIRE(k.number_of_normal_forms(0, 6) == 17'921);
+
+    auto s = to_froidure_pin(k);
+
+    s.run_until([&s]() { return s.current_max_word_length() >= 6; });
+
+    REQUIRE(s.number_of_elements_of_length(0, 6) == 17'921);
 
     REQUIRE(ukkonen::number_of_distinct_subwords(k.ukkonen()) == 17);
-    // TODO uncomment
-    // REQUIRE(std::vector<std::string>(k.cbegin_normal_forms(0, 2),
-    //                                 k.cend_normal_forms())
-    //        == std::vector<std::string>({"a", "b", "c", "d", "e", "f",
-    //        "g"}));
+    REQUIRE(
+        (iterator_range(s.cbegin(), s.cbegin() + 8)
+         | transform([](auto const& val) { return val.value(); }) | to_vector())
+        == std::vector<std::string>({"a", "b", "c", "d", "e", "f", "g", "aa"}));
   }
 
   LIBSEMIGROUPS_TEST_CASE("Kambites",
@@ -663,12 +666,11 @@ namespace {
     REQUIRE(p.letter(0) == 'a');
     REQUIRE(k.presentation().letter(0) == 'a');
 
-    REQUIRE(s[0].string() == std::string({'a'}));
+    REQUIRE(s[0].value() == std::string({'a'}));
 
     REQUIRE(
         (iterator_range(s.cbegin(), s.cbegin() + 8)
-         | transform([](auto const& val) { return val.string(); })
-         | to_vector())
+         | transform([](auto const& val) { return val.value(); }) | to_vector())
         == std::vector<std::string>({"a", "b", "c", "d", "e", "f", "g", "h"}));
 
     s.run_until([&s]() { return s.current_max_word_length() >= 6; });
@@ -830,7 +832,7 @@ namespace {
     REQUIRE(s.number_of_elements_of_length(0, 6) == 255'932);
 
     REQUIRE((iterator_range(s.cbegin(), s.cbegin() + p.alphabet().size())
-             | transform([](auto const& val) { return val.string(); })
+             | transform([](auto const& val) { return val.value(); })
              | to_vector())
             == std::vector<std::string>(
                 {"a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l"}));
@@ -2548,82 +2550,75 @@ namespace {
     }
   }
 
-  // LIBSEMIGROUPS_TEST_CASE("Kambites", "075", "example 1",
-  // "[quick][kambites]") {
-  //   auto                    rg = ReportGuard(REPORT);
-  //   Presentation<word_type> p;
-  //   p.alphabet(2);
-  //   presentation::add_rule_and_check(p, 000_w, 0_w);
-  //   presentation::add_rule_and_check(p, 0_w, 11_w);
+  LIBSEMIGROUPS_TEST_CASE("Kambites", "075", "example 1", "[quick][kambites]") {
+    auto                    rg = ReportGuard(REPORT);
+    Presentation<word_type> p;
+    p.alphabet(2);
+    presentation::add_rule_and_check(p, 000_w, 0_w);
+    presentation::add_rule_and_check(p, 0_w, 11_w);
 
-  //   Kambites k(p);
+    Kambites k(p);
 
-  //   REQUIRE(is_obviously_infinite(k));
-  //   REQUIRE(k.size() == POSITIVE_INFINITY);
-  //   REQUIRE(k.small_overlap_class() == 1);
-  //   //    REQUIRE(k.equal_to(00_w, 0_w) == tril::unknown);
-  // }
+    REQUIRE_THROWS_AS(k.size(), LibsemigroupsException);
+    REQUIRE(k.small_overlap_class() == 1);
+    REQUIRE(!is_obviously_infinite(k));
+    REQUIRE_THROWS_AS(k.equal_to(00_w, 0_w), LibsemigroupsException);
+  }
 
-  //  LIBSEMIGROUPS_TEST_CASE("Kambites",
-  //                          "076",
-  //                          "example 2",
-  //                          "[quick][kambites][cong][congruence]") {
-  //    auto     rg = ReportGuard(REPORT);
-  //    Kambites k;
-  //    k.set_number_of_generators(7);
-  //    k.add_pair({0, 1, 2, 3}, {0, 0, 0, 4, 0, 0});
-  //    k.add_pair({4, 5}, {3, 6});
-  //    REQUIRE(k.kambites().small_overlap_class() == 4);
-  //    REQUIRE(k.number_of_classes() == POSITIVE_INFINITY);
-  //    REQUIRE_THROWS_AS(k.number_of_non_trivial_classes(),
-  //                      LibsemigroupsException);
+  LIBSEMIGROUPS_TEST_CASE("Kambites", "076", "example 2", "[quick][kambites]") {
+    auto                    rg = ReportGuard(REPORT);
+    Presentation<word_type> p;
+    p.alphabet(7);
+    presentation::add_rule_and_check(p, 0123_w, 000400_w);
+    presentation::add_rule_and_check(p, 45_w, 36_w);
 
-  //    REQUIRE(k.contains({0, 1, 2, 3}, {0, 0, 0, 4, 0, 0}));
-  //    REQUIRE(k.contains({4, 5}, {3, 6}));
-  //    REQUIRE(k.contains({0, 0, 0, 0, 0, 4, 5}, {0, 0, 0, 0, 0, 3, 6}));
-  //    REQUIRE(k.contains({4, 5, 0, 1, 0, 1, 0}, {3, 6, 0, 1, 0, 1, 0}));
-  //    REQUIRE_NOTHROW(k.quotient_froidure_pin());
-  //  }
+    Kambites k(p);
+    REQUIRE(k.small_overlap_class() == 4);
+    REQUIRE(k.size() == POSITIVE_INFINITY);
 
-  //  LIBSEMIGROUPS_TEST_CASE("Kambites",
-  //                          "077",
-  //                          "code coverage",
-  //                          "[quick][kambites][cong][congruence]") {
-  //    fpsemigroup::Kambites<std::string> k;
-  //    p.alphabet("abcd");
-  //    presentation::add_rule_and_check(p, "ababbabbbabbbb",
-  //    "abbbbbabbbbbbabbbbbbbabbbbbbbb");
-  //    presentation::add_rule_and_check(p, "cdcddcdddcdddd",
-  //   "cdddddcddddddcdddddddcdddddddd");
-  //    Kambites l(k);
-  //    l.run();
-  //    REQUIRE(l.contains({0, 1, 1, 1, 0}, {0, 1, 1, 1, 0}));
-  //    REQUIRE(l.contains(
-  //        {0, 1, 1, 1, 0, 2, 3, 3, 3, 3, 3, 2, 3, 3, 3, 3, 3, 3,
-  //         2, 3, 3, 3, 3, 3, 3, 3, 2, 3, 3, 3, 3, 3, 3, 3, 3},
-  //        {0, 1, 1, 1, 0, 2, 3, 2, 3, 3, 2, 3, 3, 3, 2, 3, 3, 3, 3}));
-  //    REQUIRE(l.finished());
-  //    REQUIRE(l.is_quotient_obviously_infinite());
-  //    REQUIRE(!l.is_quotient_obviously_finite());
-  //    REQUIRE(l.number_of_classes() == POSITIVE_INFINITY);
-  //    REQUIRE(l.class_index_to_word(100) == word_type({0, 1, 0, 0}));
-  //    REQUIRE_NOTHROW(l.quotient_froidure_pin());
-  //    REQUIRE(l.word_to_class_index({0, 1, 0, 0}) == 100);
-  //  }
+    REQUIRE(k.equal_to(0123_w, 000400_w));
+    REQUIRE(k.equal_to(45_w, 36_w));
+    REQUIRE(k.equal_to(0000045_w, 0000036_w));
+    REQUIRE(k.equal_to(4501010_w, 3601010_w));
+  }
 
-  //  LIBSEMIGROUPS_TEST_CASE("Kambites",
-  //                          "078",
-  //                          "large number of rules",
-  //                          "[quick][kambites][cong][congruence]") {
-  //    FroidurePin<LeastTransf<6>> S({LeastTransf<6>({1, 2, 3, 4, 5, 0}),
-  //                                   LeastTransf<6>({1, 0, 2, 3, 4, 5}),
-  //                                   LeastTransf<6>({0, 1, 2, 3, 4, 0})});
-  //    REQUIRE(S.size() == 46'656);
-  //    Kambites k;
-  //    k.set_number_of_generators(3);
-  //    for (auto it = S.cbegin_rules(); it != S.cend_rules(); ++it) {
-  //      k.add_pair(it->first, it->second);
-  //    }
-  //    REQUIRE(k.kambites().small_overlap_class() == 1);
-  //  }
+  LIBSEMIGROUPS_TEST_CASE("Kambites",
+                          "077",
+                          "code coverage",
+                          "[quick][kambites]") {
+    Presentation<word_type> p;
+    p.alphabet(4);
+    presentation::add_rule_and_check(
+        p, 01011011101111_w, 011111011111101111111011111111_w);
+    presentation::add_rule_and_check(
+        p, 23233233323333_w, 233333233333323333333233333333_w);
+
+    Kambites k(p);
+    REQUIRE(k.small_overlap_class() == 4);
+    REQUIRE(k.equal_to(01110_w, 01110_w));
+    REQUIRE(k.equal_to(01110233333233333323333333233333333_w,
+                       0111023233233323333_w));
+    // REQUIRE(k.finished()); // TODO fixme
+    REQUIRE(is_obviously_infinite(k));
+    REQUIRE(k.size() == POSITIVE_INFINITY);
+
+    using element_type = typename decltype(to_froidure_pin(k))::element_type;
+    auto s             = to_froidure_pin(k);
+    REQUIRE(s.minimal_factorisation(100) == 0100_w);
+    REQUIRE(s.position(element_type(k, 0100_w)) == 100);
+    REQUIRE(s.current_size() == 8196);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Kambites",
+                          "078",
+                          "large number of rules",
+                          "[quick][kambites]") {
+    FroidurePin<LeastTransf<6>> S({LeastTransf<6>({1, 2, 3, 4, 5, 0}),
+                                   LeastTransf<6>({1, 0, 2, 3, 4, 5}),
+                                   LeastTransf<6>({0, 1, 2, 3, 4, 0})});
+    REQUIRE(S.size() == 46'656);
+    auto     p = make<Presentation<word_type>>(S);
+    Kambites k(p);
+    REQUIRE(k.small_overlap_class() == 1);
+  }
 }  // namespace libsemigroups

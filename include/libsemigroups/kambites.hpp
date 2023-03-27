@@ -29,11 +29,8 @@
 // * check code coverage
 // * check iwyu
 // * check const
-// * check final
 // * check noexcept
 // * C(3)?
-// * allow arbitrary alphabet orders
-// * implement cbegin_normal_forms, cend_normal_forms
 
 #ifndef LIBSEMIGROUPS_KAMBITES_HPP_
 #define LIBSEMIGROUPS_KAMBITES_HPP_
@@ -74,10 +71,8 @@ namespace libsemigroups {
   //! authors of ``libsemigroups``.
   //!
   //! This page describes the implementation in the class
-  //! Kambites which uses the FpSemigroupInterface, which is
-  //! also documented on this page.
+  //! Kambites.
   // TODO(later) example
-  // TODO template the type of word for the presentation too
   template <typename Word>
   class Kambites : public Runner {
    public:
@@ -92,11 +87,11 @@ namespace libsemigroups {
                              std::string,
                              Word>;
 
+   private:
     //! The template parameter \p Word.
     // TODO private?
     using internal_type = Word;
 
-   private:
     ////////////////////////////////////////////////////////////////////////
     // Kambites - inner classes - private
     ////////////////////////////////////////////////////////////////////////
@@ -186,10 +181,6 @@ namespace libsemigroups {
       return _presentation;
     }
 
-    ////////////////////////////////////////////////////////////////////////
-    // FpSemigroupInterface - pure virtual member functions - public
-    ////////////////////////////////////////////////////////////////////////
-
     //! \copydoc FpSemigroupInterface::size
     //!
     //! \throws LibsemigroupsException if the small overlap class is not at
@@ -217,11 +208,11 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if the small overlap class is not at
     //! least \f$4\f$.
-    bool equal_to(value_type&& u, value_type&& v) {
-      value_type uu = u;
-      value_type vv = v;
-      return equal_to(uu, vv);
-    }
+    // bool equal_to(value_type&& u, value_type&& v) {
+    //   value_type uu = u;
+    //   value_type vv = v;
+    //   return equal_to(uu, vv);
+    // }
 
     //! \copydoc FpSemigroupInterface::normal_form
     //!
@@ -270,28 +261,6 @@ namespace libsemigroups {
     //! The member functions \ref equal_to and \ref normal_form only work if
     //! the return value of this function is at least \f$4\f$.
     size_t small_overlap_class() const;
-
-    //! Returns the number of normal forms with length in a given range.
-    //!
-    //! \param min the minimum length of a normal form to count
-    //! \param max one larger than the maximum length of a normal form to
-    //! count.
-    //!
-    //! \returns
-    //! A value of type `uint64_t`.
-    //!
-    //! \throws LibsemigroupsException if the small overlap class is not at
-    //! least \f$4\f$.
-    //!
-    //! \complexity
-    //! Assuming that \c this has been run until finished, the complexity of
-    //! this function is at worst \f$O(mnk ^ 6)\f$ where \f$m\f$ is the
-    //! number of letters in the alphabet, \f$n\f$ is the number of normal
-    //! forms with length in the range \f$[min, max)\f$, and \f$k\f$ is the
-    //! parameter \p max.
-    // Not noexcept because FroidurePin::run isn'Word
-    // TODO Should be a helper for FroidurePin
-    // uint64_t number_of_normal_forms(size_t min, size_t max);
 
     //! Returns the Ukkonen suffix tree object used to compute pieces.
     //!
@@ -457,7 +426,8 @@ namespace libsemigroups {
       return (i % 2 == 0 ? i + 1 : i - 1);
     }
 
-    static void pop_front(std::string& x) {
+    template <typename value_type>
+    static void pop_front(value_type& x) {
       x.erase(x.begin());
     }
 
@@ -465,8 +435,21 @@ namespace libsemigroups {
       x.pop_front();
     }
 
-    static void pop_front(word_type& x) {
-      x.erase(x.begin());
+    template <typename Iterator>
+    static void append(std::string& w, Iterator first, Iterator last) {
+      w.append(first, last);
+    }
+
+    template <typename Iterator>
+    static void append(detail::MultiStringView& w,
+                       Iterator                 first,
+                       Iterator                 last) {
+      w.append(first, last);
+    }
+
+    template <typename Iterator>
+    static void append(word_type& w, Iterator first, Iterator last) {
+      w.insert(w.end(), first, last);
     }
 
     ////////////////////////////////////////////////////////////////////////
@@ -494,7 +477,7 @@ namespace libsemigroups {
     void normal_form_inner(size_t& r, internal_type& v, internal_type& w) const;
 
     ////////////////////////////////////////////////////////////////////////
-    // FpSemigroupInterface - pure virtual member functions - private
+    // Runner - pure virtual member functions - private
     ////////////////////////////////////////////////////////////////////////
 
     void run_impl() override {
@@ -506,307 +489,10 @@ namespace libsemigroups {
     }
   };
 
-  // namespace congruence {
-  //   //! Defined in ``kambites.hpp``.
-  //   //!
-  //   //! On this page we describe the functionality relating to the algorithms
-  //   //! for small overlap monoids by
-  //   //! [Kambites](https://doi.org/10.1016/j.jalgebra.2008.09.038) and the
-  //   //! authors of ``libsemigroups``.
-  //   //!
-  //   //! This page describes the implementation in the class
-  //   //! congruence::Kambites which uses the CongruenceInterface, which is
-  //   //! also documented on this page.
-  //   class Kambites final : public CongruenceInterface {
-  //    public:
-  //     ////////////////////////////////////////////////////////////////////////////
-  //     // Kambites - constructors - public
-  //     ////////////////////////////////////////////////////////////////////////////
-
-  //     //! Default constructor.
-  //     //!
-  //     //! \par Parameters
-  //     //! (None)
-  //     //!
-  //     //! \exceptions
-  //     //! \no_libsemigroups_except
-  //     //!
-  //     //! \complexity
-  //     //! Constant
-  //     Kambites();
-
-  //     //! Construct from Kambites.
-  //     //!
-  //     //! This function constructs a new congruence::Kambites object
-  //     //! initialised with existing data in Kambites.
-  //     //!
-  //     //! \param copy the Kambites.
-  //     //!
-  //     //! \exceptions
-  //     //! \no_libsemigroups_except
-  //     //!
-  //     //! \complexity
-  //     //! Constant
-  //     explicit Kambites(Kambites<std::string> const& copy);
-
-  //     //! Default copy constructor.
-  //     Kambites(Kambites const& copy) : Kambites(*copy._k) {}
-
-  //     //! Deleted.
-  //     Kambites(Kambites&&) = delete;
-
-  //     //! Deleted.
-  //     Kambites& operator=(Kambites const&) = delete;
-
-  //     //! Deleted.
-  //     Kambites& operator=(Kambites&&) = delete;
-
-  //     ~Kambites();
-
-  //     ////////////////////////////////////////////////////////////////////////////
-  //     // CongruenceInterface - non-pure virtual member functions - public
-  //     ////////////////////////////////////////////////////////////////////////////
-
-  //     tril const_contains(word_type const&, word_type const&) const override;
-  //     bool contains(word_type const&, word_type const&) override;
-
-  //     ////////////////////////////////////////////////////////////////////////////
-  //     // Kambites - member functions - public
-  //     ////////////////////////////////////////////////////////////////////////////
-
-  //     //! Get the underlying Kambites.
-  //     //!
-  //     //! \par Parameters
-  //     //! (None)
-  //     //!
-  //     //! \exceptions
-  //     //! \no_libsemigroups_except
-  //     //!
-  //     //! \complexity
-  //     //! Constant
-  //     //!
-  //     //! \returns
-  //     //! A reference to the underlying Kambites of \c this.
-  //     Kambites<std::string>& kambites() const {
-  //       return *_k;
-  //     }
-
-  //    private:
-  //     ////////////////////////////////////////////////////////////////////////////
-  //     // Runner - pure virtual member functions - protected
-  //     ////////////////////////////////////////////////////////////////////////////
-
-  //     bool finished_impl() const override;
-
-  //     ////////////////////////////////////////////////////////////////////////////
-  //     // CongruenceInterface - pure virtual methods - private
-  //     ////////////////////////////////////////////////////////////////////////////
-
-  //     word_type class_index_to_word_impl(class_index_type) override;
-  //     size_t    number_of_classes_impl() override;
-  //     std::shared_ptr<FroidurePinBase> quotient_impl() override;
-  //     class_index_type word_to_class_index_impl(word_type const&) override;
-  //     void             run_impl() override;
-
-  //     ////////////////////////////////////////////////////////////////////////////
-  //     // CongruenceInterface - non-pure virtual methods - private
-  //     ////////////////////////////////////////////////////////////////////////////
-
-  //     void add_pair_impl(word_type const&, word_type const&) override;
-  //     void set_number_of_generators_impl(size_t) override;
-  //     bool is_quotient_obviously_finite_impl() override;
-  //     bool is_quotient_obviously_infinite_impl() override;
-
-  //     //////////////////////////////////////////////////////////////////////////
-  //     // Kambites - data - private
-  //     ////////////////////////////////////////////////////////////////////////////
-
-  //     std::unique_ptr<Kambites<std::string>> _k;
-  //   };
-  // }  // namespace congruence
-
-  // TODO(later) remove code dup with KBE.
-
-  namespace detail {
-    // TODO move this to its own file or at least into the tpp file
-    // This class is used to wrap libsemigroups::Kambites::string_type into an
-    // object that can be used as generators for a FroidurePin object.
-    template <typename Word>
-    class KE {
-      using string_type = std::string;
-
-      KE(KE::string_type const& w) : _string(w) {}
-      KE(KE::string_type&& w) : _string(std::move(w)) {}
-
-     public:
-      KE()                     = default;
-      KE(KE const&)            = default;
-      KE(KE&&)                 = default;
-      KE& operator=(KE const&) = default;
-      KE& operator=(KE&&)      = default;
-      ~KE()                    = default;
-
-      KE(Kambites<Word>& k, string_type const& w) : _string(k.normal_form(w)) {}
-
-      KE(Kambites<Word>& k, string_type&& w)
-          : _string(k.normal_form(std::move(w))) {}
-
-      KE(Kambites<Word>& k, letter_type a)
-          : KE(k, std::string({k.presentation().letter(a)})) {}
-
-      KE(Kambites<Word>& k, word_type const& w) : KE() {
-        detail::word_to_string(k.alphabet(), w, _string);
-        _string = k.normal_form(_string);
-      }
-
-      // TODO rename to_word
-      word_type word(Kambites<Word> const& k) const {
-        return to_word(k.presentation(), _string);
-      }
-
-      bool operator==(KE const& that) const {
-        return that._string == this->_string;
-      }
-
-      bool operator<(KE const& that) const {
-        return shortlex_compare(_string, that._string);
-      }
-
-      void swap(KE& x) {
-        std::swap(x._string, _string);
-      }
-
-      // TODO rename to_string
-      string_type const& string() const noexcept {
-        return _string;
-      }
-
-      string_type& string() noexcept {
-        return _string;
-      }
-
-      friend std::ostringstream& operator<<(std::ostringstream& os,
-                                            KE const&           KE) {
-        os << KE.string();
-        return os;
-      }
-
-     private:
-      string_type _string;
-    };
-
-    // The following are not really required but are here as a reminder that
-    // KE are used in BruidhinnTraits which depends on the values in the
-    // static_asserts below.
-    static_assert(!std::is_trivial<KE<std::string>>::value,
-                  "KE is not trivial!!!");
-    static_assert(
-        std::integral_constant<bool, (sizeof(KE<std::string>) <= 32)>::value,
-        "KE's sizeof exceeds 32!!");
-
-  }  // namespace detail
-
   template <typename Word>
-  struct FroidurePinState<detail::KE<Word>> {
-    using type = Kambites<Word>;
-  };
-
-  ////////////////////////////////////////////////////////////////////////
-  // Adapters for KE class
-  ////////////////////////////////////////////////////////////////////////
-
-  template <typename Word>
-  struct Complexity<detail::KE<Word>> {
-    constexpr size_t operator()(detail::KE<Word> const&) const noexcept {
-      return LIMIT_MAX;
-    }
-  };
-
-  template <typename Word>
-  struct Degree<detail::KE<Word>> {
-    constexpr size_t operator()(detail::KE<Word> const&) const noexcept {
-      return 0;
-    }
-  };
-
-  template <typename Word>
-  struct IncreaseDegree<detail::KE<Word>> {
-    void operator()(detail::KE<Word> const&) const noexcept {}
-  };
-
-  template <typename Word>
-  struct One<detail::KE<Word>> {
-    detail::KE<Word> operator()(detail::KE<Word> const&) {
-      return detail::KE<Word>();
-    }
-
-    detail::KE<Word> operator()(size_t = 0) const {
-      return detail::KE<Word>();
-    }
-  };
-
-  template <typename Word>
-  struct Product<detail::KE<Word>> {
-    void operator()(detail::KE<Word>&       xy,
-                    detail::KE<Word> const& x,
-                    detail::KE<Word> const& y,
-                    Kambites<Word>*         k,
-                    size_t) {
-      std::string w(x.string());  // string_type
-      w += y.string();
-      xy = detail::KE<Word>(*k, w);
-    }
-  };
-
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
-  template <>
-  word_type FroidurePin<
-      detail::KE<std::string>,
-      FroidurePinTraits<detail::KE<std::string>, Kambites<std::string>>>::
-      factorisation(detail::KE<std::string> const& x);
-
-  template <>
-  word_type FroidurePin<detail::KE<detail::MultiStringView>,
-                        FroidurePinTraits<detail::KE<detail::MultiStringView>,
-                                          Kambites<detail::MultiStringView>>>::
-      factorisation(detail::KE<detail::MultiStringView> const& x);
-
-  template <>
-  tril FroidurePin<detail::KE<std::string>,
-                   FroidurePinTraits<detail::KE<std::string>,
-                                     Kambites<std::string>>>::is_finite() const;
-
-  template <>
-  tril
-  FroidurePin<detail::KE<detail::MultiStringView>,
-              FroidurePinTraits<detail::KE<detail::MultiStringView>,
-                                Kambites<detail::MultiStringView>>>::is_finite()
-      const;
-#endif
-
+  Kambites(Presentation<Word> const&) -> Kambites<Word>;
 }  // namespace libsemigroups
 
 #include "kambites.tpp"
-
-////////////////////////////////////////////////////////////////////////
-// Specializations of std::hash and std::equal_to
-////////////////////////////////////////////////////////////////////////
-
-namespace std {
-  template <typename Word>
-  struct hash<libsemigroups::detail::KE<Word>> {
-    size_t operator()(libsemigroups::detail::KE<Word> const& x) const {
-      return hash<string>()(x.string());
-    }
-  };
-
-  template <typename Word>
-  struct equal_to<libsemigroups::detail::KE<Word>> {
-    bool operator()(libsemigroups::detail::KE<Word> const& x,
-                    libsemigroups::detail::KE<Word> const& y) const {
-      return x == y;
-    }
-  };
-}  // namespace std
 
 #endif  // LIBSEMIGROUPS_KAMBITES_HPP_

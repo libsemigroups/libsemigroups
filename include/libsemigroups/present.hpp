@@ -1329,6 +1329,16 @@ namespace libsemigroups {
     to_word(p, w, s);
     return w;
   }
+
+  inline word_type operator+(word_type const& u, word_type const& w) {
+    word_type result(u);
+    result.insert(result.end(), w.cbegin(), w.cend());
+    return result;
+  }
+
+  inline void operator+=(word_type& u, word_type const& v) {
+    u.insert(u.end(), v.cbegin(), v.cend());
+  }
 }  // namespace libsemigroups
 
 #include "present.tpp"
