@@ -54,6 +54,7 @@
 #include "exception.hpp"      // for LIBSEMIGROUPS_EXCEPTION
 #include "froidure-pin.hpp"   // for FroidurePin, FroidurePinTraits
 #include "int-range.hpp"
+#include "obvinf.hpp"   // for is_obviously_infinite
 #include "order.hpp"    // for lexicographical_compare
 #include "present.hpp"  // for Presentation
 #include "string-view.hpp"
@@ -64,10 +65,6 @@
 #include "words.hpp"    // for word_to_string
 
 namespace libsemigroups {
-  class FroidurePinBase;  // Forward decl
-  namespace detail {
-    class KE;  // Forward decl
-  }
 
   //! Defined in ``kambites.hpp``.
   //!
@@ -80,6 +77,7 @@ namespace libsemigroups {
   //! Kambites which uses the FpSemigroupInterface, which is
   //! also documented on this page.
   // TODO(later) example
+  // TODO template the type of word for the presentation too
   template <typename T>
   class Kambites : public Runner {
    public:
@@ -113,6 +111,8 @@ namespace libsemigroups {
     //! Constant
     Kambites();
 
+    Kambites& init();
+
     //! Default copy constructor.
     Kambites(Kambites const&);
 
@@ -127,12 +127,27 @@ namespace libsemigroups {
 
     ~Kambites();
 
-    Kambites(Presentation<std::string> const& p) : Runner(), _presentation(p) {
-      _presentation.validate();
-      for (auto const& r : _presentation.rules) {
-        _relation_words.push_back(r);
-        _suffix_tree.add_word_no_checks(r.cbegin(), r.cend());
-      }
+    // To tpp TODO
+    Kambites(Presentation<std::string> const& p) : Kambites() {
+      p.validate();
+      _presentation = p;
+      ukkonen::add_words_no_checks(_suffix_tree,
+                                   _presentation.rules.cbegin(),
+                                   _presentation.rules.cend());
+    }
+
+    Kambites& init(Presentation<std::string> const& p) {
+      p.validate();
+      init();
+      _presentation = p;
+      ukkonen::add_words_no_checks(_suffix_tree,
+                                   _presentation.rules.cbegin(),
+                                   _presentation.rules.cend());
+      return *this;
+    }
+
+    Presentation<std::string> const& presentation() const noexcept {
+      return _presentation;
     }
 
     ////////////////////////////////////////////////////////////////////////
@@ -239,26 +254,8 @@ namespace libsemigroups {
     //! forms with length in the range \f$[min, max)\f$, and \f$k\f$ is the
     //! parameter \p max.
     // Not noexcept because FroidurePin::run isn't
-    uint64_t number_of_normal_forms(size_t min, size_t max);
-
-    //! Returns the minimum number of pieces required to factorise the
-    //! \f$i\f$-th relation word.
-    //!
-    //! \param i the index of the relation word
-    //!
-    //! \returns
-    //! A value of type `size_t`.
-    //!
-    //! \exceptions
-    //! \no_libsemigroups_except
-    //!
-    //! \complexity
-    //! The current implementation has complexity no worse than \f$O(m)\f$
-    //! where \f$m\f$ is the sum of the lengths of the words occurring in the
-    //! relations of the semigroup.
-    // Returns the number of pieces in the i-th relation word
-    // Not noexcept, throws
-    size_t number_of_pieces(size_t i) const;
+    // TODO Should be a helper for FroidurePin
+    // uint64_t number_of_normal_forms(size_t min, size_t max);
 
     //! Returns the Ukkonen suffix tree object used to compute pieces.
     //!
@@ -304,9 +301,9 @@ namespace libsemigroups {
     // (really_init_XYZ_data) which is called once, and init_XYZ_data which
     // can be called very often.
     inline void init_XYZ_data(size_t i) const {
-      LIBSEMIGROUPS_ASSERT(i < _relation_words.size());
+      LIBSEMIGROUPS_ASSERT(i < _presentation.rules.size());
       if (_XYZ_data.empty()) {
-        _XYZ_data.resize(_relation_words.size());
+        _XYZ_data.resize(_presentation.rules.size());
       }
       if (!_XYZ_data[i].is_initialized) {
         really_init_XYZ_data(i);
@@ -314,15 +311,10 @@ namespace libsemigroups {
     }
 
     internal_type const& X(size_t i) const;
-
     internal_type const& Y(size_t i) const;
-
     internal_type const& Z(size_t i) const;
-
     internal_type const& XY(size_t i) const;
-
     internal_type const& YZ(size_t i) const;
-
     internal_type const& XYZ(size_t i) const;
 
     ////////////////////////////////////////////////////////////////////////
@@ -473,17 +465,6 @@ namespace libsemigroups {
       return _have_class && small_overlap_class() >= 4;
     }
 
-    // TODO rm
-    // void add_rule_impl(std::string const& u, std::string const& v) override;
-
-    // TODO rm
-    // std::shared_ptr<FroidurePinBase> froidure_pin_impl() override;
-
-    // TODO impl elsewhere
-    // bool is_obviously_infinite_impl() override {
-    //   return small_overlap_class() >= 3;
-    // }
-
     ////////////////////////////////////////////////////////////////////////
     // Kambites - inner classes - private
     ////////////////////////////////////////////////////////////////////////
@@ -511,9 +492,7 @@ namespace libsemigroups {
     mutable std::vector<RelationWords> _XYZ_data;
 
     Presentation<std::string> _presentation;
-    std::vector<string_type>  _relation_words;  // TODO this should be required
-                                                // any longer
-    Ukkonen _suffix_tree;
+    Ukkonen                   _suffix_tree;
   };
 
   // namespace congruence {
@@ -627,7 +606,7 @@ namespace libsemigroups {
   //     bool is_quotient_obviously_finite_impl() override;
   //     bool is_quotient_obviously_infinite_impl() override;
 
-  //     ////////////////////////////////////////////////////////////////////////////
+  //     //////////////////////////////////////////////////////////////////////////
   //     // Kambites - data - private
   //     ////////////////////////////////////////////////////////////////////////////
 
@@ -638,13 +617,15 @@ namespace libsemigroups {
   // TODO(later) remove code dup with KBE.
 
   namespace detail {
+    // TODO move this to its own file or at least into the tpp file
     // This class is used to wrap libsemigroups::Kambites::string_type into an
     // object that can be used as generators for a FroidurePin object.
-    class KE final {
+    template <typename String>
+    class KE {
       using string_type = std::string;
 
-      KE(string_type const&);
-      KE(string_type&&);
+      KE(KE::string_type const& w) : _string(w) {}
+      KE(KE::string_type&& w) : _string(std::move(w)) {}
 
      public:
       KE()                     = default;
@@ -654,34 +635,45 @@ namespace libsemigroups {
       KE& operator=(KE&&)      = default;
       ~KE()                    = default;
 
-      template <typename T>
-      KE(Kambites<T>& k, string_type const& w) : _string(k.normal_form(w)) {}
+      KE(Kambites<String>& k, string_type const& w)
+          : _string(k.normal_form(w)) {}
 
-      template <typename T>
-      KE(Kambites<T>& k, string_type&& w)
+      KE(Kambites<String>& k, string_type&& w)
           : _string(k.normal_form(std::move(w))) {}
 
-      template <typename T>
-      KE(Kambites<T>& k, letter_type const& a) : KE(k, k.alphabet(a)) {}
+      KE(Kambites<String>& k, letter_type a)
+          : KE(k, std::string({k.presentation().letter(a)})) {}
 
-      template <typename T>
-      KE(Kambites<T>& k, word_type const& w) : KE() {
+      KE(Kambites<String>& k, word_type const& w) : KE() {
         detail::word_to_string(k.alphabet(), w, _string);
         _string = k.normal_form(_string);
       }
 
-      template <typename T>
-      word_type word(Kambites<T> const& k) const {
-        return k.string_to_word(_string);
+      // TODO rename to_word
+      word_type word(Kambites<String> const& k) const {
+        return to_word(k.presentation(), _string);
       }
 
-      // Construct from letters or words
+      bool operator==(KE const& that) const {
+        return that._string == this->_string;
+      }
 
-      bool operator==(KE const&) const;
-      bool operator<(KE const&) const;
-      void swap(KE&);
+      bool operator<(KE const& that) const {
+        return shortlex_compare(_string, that._string);
+      }
 
-      string_type const& string() const noexcept;
+      void swap(KE& x) {
+        std::swap(x._string, _string);
+      }
+
+      // TODO rename to_string
+      string_type const& string() const noexcept {
+        return _string;
+      }
+
+      string_type& string() noexcept {
+        return _string;
+      }
 
       friend std::ostringstream& operator<<(std::ostringstream& os,
                                             KE const&           KE) {
@@ -696,85 +688,92 @@ namespace libsemigroups {
     // The following are not really required but are here as a reminder that
     // KE are used in BruidhinnTraits which depends on the values in the
     // static_asserts below.
-    static_assert(!std::is_trivial<KE>::value, "KE is not trivial!!!");
-    static_assert(std::integral_constant<bool, (sizeof(KE) <= 32)>::value,
-                  "KE's sizeof exceeds 32!!");
+    static_assert(!std::is_trivial<KE<std::string>>::value,
+                  "KE is not trivial!!!");
+    static_assert(
+        std::integral_constant<bool, (sizeof(KE<std::string>) <= 32)>::value,
+        "KE's sizeof exceeds 32!!");
 
   }  // namespace detail
+
+  template <typename String>
+  struct FroidurePinState<detail::KE<String>> {
+    using type = Kambites<String>;
+  };
 
   ////////////////////////////////////////////////////////////////////////
   // Adapters for KE class
   ////////////////////////////////////////////////////////////////////////
 
-  template <>
-  struct Complexity<detail::KE> {
-    constexpr size_t operator()(detail::KE const&) const noexcept {
+  template <typename String>
+  struct Complexity<detail::KE<String>> {
+    constexpr size_t operator()(detail::KE<String> const&) const noexcept {
       return LIMIT_MAX;
     }
   };
 
-  template <>
-  struct Degree<detail::KE> {
-    constexpr size_t operator()(detail::KE const&) const noexcept {
+  template <typename String>
+  struct Degree<detail::KE<String>> {
+    constexpr size_t operator()(detail::KE<String> const&) const noexcept {
       return 0;
     }
   };
 
-  template <>
-  struct IncreaseDegree<detail::KE> {
-    void operator()(detail::KE const&) const noexcept {}
+  template <typename String>
+  struct IncreaseDegree<detail::KE<String>> {
+    void operator()(detail::KE<String> const&) const noexcept {}
   };
 
-  template <>
-  struct One<detail::KE> {
-    detail::KE operator()(detail::KE const&) const noexcept {
-      return detail::KE();
+  template <typename String>
+  struct One<detail::KE<String>> {
+    detail::KE<String> operator()(detail::KE<String> const&) {
+      return detail::KE<String>();
     }
 
-    detail::KE operator()(size_t = 0) const noexcept {
-      return detail::KE();
+    detail::KE<String> operator()(size_t = 0) const {
+      return detail::KE<String>();
     }
   };
 
-  template <>
-  struct Product<detail::KE> {
-    template <typename T>
-    void operator()(detail::KE&       xy,
-                    detail::KE const& x,
-                    detail::KE const& y,
-                    Kambites<T>*      kb,
+  template <typename String>
+  struct Product<detail::KE<String>> {
+    void operator()(detail::KE<String>&       xy,
+                    detail::KE<String> const& x,
+                    detail::KE<String> const& y,
+                    Kambites<String>*         k,
                     size_t) {
       std::string w(x.string());  // string_type
       w += y.string();
-      xy = detail::KE(*kb, w);
+      xy = detail::KE<String>(*k, w);
     }
   };
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   template <>
-  word_type FroidurePin<detail::KE,
-                        FroidurePinTraits<detail::KE, Kambites<std::string>>>::
-      factorisation(detail::KE const& x);
-
-  template <>
   word_type FroidurePin<
-      detail::KE,
-      FroidurePinTraits<detail::KE, Kambites<detail::MultiStringView>>>::
-      factorisation(detail::KE const& x);
+      detail::KE<std::string>,
+      FroidurePinTraits<detail::KE<std::string>, Kambites<std::string>>>::
+      factorisation(detail::KE<std::string> const& x);
+
+  template <>
+  word_type FroidurePin<detail::KE<detail::MultiStringView>,
+                        FroidurePinTraits<detail::KE<detail::MultiStringView>,
+                                          Kambites<detail::MultiStringView>>>::
+      factorisation(detail::KE<detail::MultiStringView> const& x);
+
+  template <>
+  tril FroidurePin<detail::KE<std::string>,
+                   FroidurePinTraits<detail::KE<std::string>,
+                                     Kambites<std::string>>>::is_finite() const;
 
   template <>
   tril
-  FroidurePin<detail::KE,
-              FroidurePinTraits<detail::KE, Kambites<std::string>>>::is_finite()
-      const;
-
-  template <>
-  tril
-  FroidurePin<detail::KE,
-              FroidurePinTraits<detail::KE,
+  FroidurePin<detail::KE<detail::MultiStringView>,
+              FroidurePinTraits<detail::KE<detail::MultiStringView>,
                                 Kambites<detail::MultiStringView>>>::is_finite()
       const;
 #endif
+
 }  // namespace libsemigroups
 
 #include "kambites.tpp"
@@ -784,17 +783,17 @@ namespace libsemigroups {
 ////////////////////////////////////////////////////////////////////////
 
 namespace std {
-  template <>
-  struct hash<libsemigroups::detail::KE> {
-    size_t operator()(libsemigroups::detail::KE const& x) const {
+  template <typename String>
+  struct hash<libsemigroups::detail::KE<String>> {
+    size_t operator()(libsemigroups::detail::KE<String> const& x) const {
       return hash<string>()(x.string());
     }
   };
 
-  template <>
-  struct equal_to<libsemigroups::detail::KE> {
-    bool operator()(libsemigroups::detail::KE const& x,
-                    libsemigroups::detail::KE const& y) const {
+  template <typename String>
+  struct equal_to<libsemigroups::detail::KE<String>> {
+    bool operator()(libsemigroups::detail::KE<String> const& x,
+                    libsemigroups::detail::KE<String> const& y) const {
       return x == y;
     }
   };

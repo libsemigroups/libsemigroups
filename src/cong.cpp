@@ -30,15 +30,14 @@
 #include "libsemigroups/froidure-pin-base.hpp"  // for FroidurePinBase
 #include "libsemigroups/kambites.hpp"           // for Kambites
 #include "libsemigroups/knuth-bendix.hpp"       // for KnuthBendix
-#include "libsemigroups/todd-coxeter.hpp"       // for ToddCoxeter
+#include "libsemigroups/todd-coxeter.hpp"       // for congruence::ToddCoxeter
 
 namespace libsemigroups {
 
-  using ToddCoxeter = congruence::ToddCoxeter;
   using KnuthBendix = congruence::KnuthBendix;
   //  using Kambites         = congruence::Kambites;
   using class_index_type = CongruenceInterface::class_index_type;
-  using options          = ToddCoxeter::options;
+  using options          = congruence::ToddCoxeter::options;
 
   //////////////////////////////////////////////////////////////////////////
   // Congruence - constructors - public
@@ -47,7 +46,7 @@ namespace libsemigroups {
   Congruence::Congruence(congruence_kind type, options::runners p)
       : CongruenceInterface(type), _race() {
     if (p == options::runners::standard) {
-      _race.add_runner(std::make_shared<ToddCoxeter>(type));
+      _race.add_runner(std::make_shared<congruence::ToddCoxeter>(type));
       if (type == congruence_kind::twosided) {
         _race.add_runner(std::make_shared<KnuthBendix>());
       }
@@ -57,12 +56,12 @@ namespace libsemigroups {
   Congruence::Congruence(congruence_kind                  type,
                          std::shared_ptr<FroidurePinBase> S)
       : Congruence(type, options::runners::none) {
-    auto tc = std::make_shared<ToddCoxeter>(type, S);
+    auto tc = std::make_shared<congruence::ToddCoxeter>(type, S);
     tc->froidure_pin_policy(
         congruence::ToddCoxeter::options::froidure_pin::use_relations);
     _race.add_runner(tc);
 
-    tc = std::make_shared<ToddCoxeter>(type, S);
+    tc = std::make_shared<congruence::ToddCoxeter>(type, S);
     tc->froidure_pin_policy(
         congruence::ToddCoxeter::options::froidure_pin::use_cayley_graph);
     _race.add_runner(tc);
@@ -84,7 +83,8 @@ namespace libsemigroups {
       // run Todd-Coxeter. This runs whether or not we have computed a data
       // structure for S.
       // TODO(later) change the next line to S, instead of S.todd_coxeter!
-      _race.add_runner(std::make_shared<ToddCoxeter>(type, *S.todd_coxeter()));
+      _race.add_runner(
+          std::make_shared<congruence::ToddCoxeter>(type, *S.todd_coxeter()));
 
       if (S.todd_coxeter()->finished()) {
         // Method 2: use the Cayley graph of S and genpairs to run
@@ -93,7 +93,7 @@ namespace libsemigroups {
         // must be finite in this case, and it must be possible for the
         // Froidure-Pin algorithm to complete in this case because
         // Todd-Coxeter did.
-        _race.add_runner(std::make_shared<ToddCoxeter>(
+        _race.add_runner(std::make_shared<congruence::ToddCoxeter>(
             type,
             S.todd_coxeter()->froidure_pin(),
             congruence::ToddCoxeter::options::froidure_pin::use_cayley_graph));
@@ -106,14 +106,14 @@ namespace libsemigroups {
     if (S.has_knuth_bendix()) {
       if (S.knuth_bendix()->finished()) {
         // TODO(later) remove the if-condition, make it so that if the
-        // ToddCoxeter's below are killed then so too is the enumeration of
-        // S.knuth_bendix().froidure_pin()
+        // congruence::ToddCoxeter's below are killed then so too is the
+        // enumeration of S.knuth_bendix().froidure_pin()
         if (S.knuth_bendix()->froidure_pin()->finished()) {
           // Method 3: Note that the
           // S.knuth_bendix().froidure_pin() must be finite
           // in this case, because otherwise it would not return true from
           // FroidurePin::finished. This is similar to Method 2.
-          _race.add_runner(std::make_shared<ToddCoxeter>(
+          _race.add_runner(std::make_shared<congruence::ToddCoxeter>(
               type,
               S.knuth_bendix()->froidure_pin(),
               congruence::ToddCoxeter::options::froidure_pin::
@@ -127,10 +127,11 @@ namespace libsemigroups {
           // - check if the relations are really the same as those in
           //   S.todd_coxeter(), if it exists. This is probably too
           //   expensive!
-          // - use the active rules of KnuthBendix in the ToddCoxeter
-          // constructor, currently uses the relations in S.knuth_bendix()
-          // which are guaranteed to equal those in S.todd_coxeter()!
-          // _race.add_runner(new ToddCoxeter(type, S.knuth_bendix()));
+          // - use the active rules of KnuthBendix in the
+          // congruence::ToddCoxeter constructor, currently uses the relations
+          // in S.knuth_bendix() which are guaranteed to equal those in
+          // S.todd_coxeter()! _race.add_runner(new
+          // congruence::ToddCoxeter(type, S.knuth_bendix()));
 
           // Return here since we know that we can definitely complete at this
           // point.

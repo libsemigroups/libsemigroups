@@ -107,6 +107,30 @@ namespace libsemigroups {
       _nr_letter_components = _letter_components.number_of_blocks();
     }
 
+    void IsObviouslyInfinite::add_rules(std::string const&    lphbt,
+                                        const_iterator_string first,
+                                        const_iterator_string last) {
+#ifdef LIBSEMIGROUPS_EIGEN_ENABLED
+      auto matrix_start = _matrix.rows();
+      _matrix.conservativeResize(matrix_start + (last - first) / 2,
+                                 Eigen::NoChange);
+      _matrix.block(matrix_start, 0, (last - first) / 2, _matrix.cols())
+          .setZero();
+#else
+      auto matrix_start = 0;
+      std::fill(_matrix.begin(), _matrix.end(), 0);
+#endif
+
+      StringToWord stw(lphbt);
+      word_type    lhs, rhs;
+      for (auto it = first; it < last; ++it) {
+        stw(*it++, lhs);  // lhs changed in-place
+        stw(*it, rhs);    // rhs changed in-place
+        private_add_rule(matrix_start + (it - first) / 2, lhs, rhs);
+      }
+      _nr_letter_components = _letter_components.number_of_blocks();
+    }
+
     bool IsObviouslyInfinite::result() const {
 #ifdef LIBSEMIGROUPS_EIGEN_ENABLED
       LIBSEMIGROUPS_ASSERT(_matrix.rows() >= 0);
@@ -180,10 +204,14 @@ namespace libsemigroups {
             d, d.cbegin_active_nodes(), d.cend_active_nodes())) {
       return false;
     }
-    auto const&                 p = tc.presentation();
+    return is_obviously_infinite(tc.presentation());
+  }
+
+  template <>
+  bool is_obviously_infinite(Presentation<std::string> const& p) {
     detail::IsObviouslyInfinite ioi(p.alphabet().size());
-    ioi.add_rules(p.rules.cbegin(), p.rules.cend());
-    ioi.add_rules(tc.cbegin_generating_pairs(), tc.cend_generating_pairs());
+    ioi.add_rules(p.alphabet(), p.rules.cbegin(), p.rules.cend());
     return ioi.result();
   }
+
 }  // namespace libsemigroups

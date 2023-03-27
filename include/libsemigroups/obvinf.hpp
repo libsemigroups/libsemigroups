@@ -80,12 +80,21 @@
 namespace libsemigroups {
   class ToddCoxeter;  // forward decl
 
+  template <typename String>
+  class Kambites;  // forward decl
+
+  template <typename Word>
+  class Presentation;  // forward decl
+
   namespace detail {
     class IsObviouslyInfinite final {
       using const_iterator_word_type =
           typename std::vector<word_type>::const_iterator;
       using const_iterator_pair_string = typename std::vector<
           std::pair<std::string, std::string>>::const_iterator;
+
+      using const_iterator_string =
+          typename std::vector<std::string>::const_iterator;
 
      public:
       explicit IsObviouslyInfinite(size_t);
@@ -102,6 +111,10 @@ namespace libsemigroups {
 
       void add_rules(const_iterator_word_type first,
                      const_iterator_word_type last);
+
+      void add_rules(std::string const&,
+                     const_iterator_string first,
+                     const_iterator_string last);
 
       void add_rules(std::string const&         lphbt,
                      const_iterator_pair_string first,
@@ -167,7 +180,28 @@ namespace libsemigroups {
     };
   }  // namespace detail
 
+  template <typename Word>
+  bool is_obviously_infinite(Presentation<Word> const& p) {
+    detail::IsObviouslyInfinite ioi(p.alphabet().size());
+    ioi.add_rules(p.rules.cbegin(), p.rules.cend());
+    return ioi.result();
+  }
+
+  template <>
+  bool is_obviously_infinite(Presentation<std::string> const& p);
+
   bool is_obviously_infinite(ToddCoxeter const& tc);
+
+  template <typename String>
+  bool is_obviously_infinite(Kambites<String> const& k) {
+    if (k.finished() && k.small_overlap_class() >= 3) {
+      return true;
+    }
+    if (is_obviously_infinite(k.presentation())) {
+      return true;
+    }
+    return k.small_overlap_class() >= 3;
+  }
 
 }  // namespace libsemigroups
 #endif  // LIBSEMIGROUPS_OBVINF_HPP_

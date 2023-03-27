@@ -25,6 +25,7 @@
 #include "debug.hpp"      // for LIBSEMIGROUPS_ASSERT
 #include "digraph.hpp"    // for ActionDigraph
 #include "exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
+#include "kambites.hpp"   // for KE
 #include "tce.hpp"        // for TCE
 
 namespace libsemigroups {
@@ -152,6 +153,23 @@ namespace libsemigroups {
       // We use _word_graph.unsafe_neighbor instead of just i, because there
       // might be more generators than cosets.
       result.add_generator(TCE(tc.word_graph().unsafe_neighbor(0, i)));
+    }
+    return result;
+  }
+
+  template <typename String>
+  auto to_froidure_pin(Kambites<String>& k) {
+    if (k.small_overlap_class() < 4) {
+      LIBSEMIGROUPS_EXCEPTION_V3(
+          "the small overlap class of the argument must be >= 4, found {}",
+          k.small_overlap_class());
+    }
+
+    FroidurePin<detail::KE<String>> result(k);
+
+    size_t const n = k.presentation().alphabet().size();
+    for (size_t i = 0; i < n; ++i) {
+      result.add_generator(detail::KE<String>(k, i));
     }
     return result;
   }

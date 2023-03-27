@@ -18,6 +18,8 @@
 
 // This file contains TODO
 
+// TODO implement "cartesian" combinator for rx-ranges
+
 #ifndef LIBSEMIGROUPS_RANGES_HPP_
 #define LIBSEMIGROUPS_RANGES_HPP_
 

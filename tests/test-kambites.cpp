@@ -15,9 +15,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include <stddef.h>  // for size_t
-
 #include <algorithm>      // for count_if, all_of
+#include <cstddef>        // for size_t
 #include <iostream>       // for string, char_traits
 #include <iterator>       // for distance
 #include <memory>         // for allocator, shared_ptr
@@ -39,52 +38,18 @@
 #include "libsemigroups/types.hpp"              // for tril etc
 #include "libsemigroups/words.hpp"              // for number_of_words
 
+#include "libsemigroups/make-froidure-pin.hpp"
+
 namespace libsemigroups {
   using namespace rx;
+  using namespace literals;
   struct LibsemigroupsException;  // Forward decl
 
   constexpr bool REPORT = false;
   using detail::MultiStringView;
   using detail::random_string;
 
-#ifdef false
   namespace {
-    // TODO(later) remove this, or put it in test-suffix-tree.cpp
-    template <typename T>
-    size_t number_of_subwords(T first, T last) {
-      std::unordered_set<std::string> mp;
-
-      for (auto it = first; it < last; ++it) {
-        {
-          auto& w = it->first;
-          for (auto suffix = w.cbegin(); suffix < w.cend(); ++suffix) {
-            for (auto prefix = suffix + 1; prefix < w.cend(); ++prefix) {
-              mp.emplace(suffix, prefix);
-            }
-          }
-        }
-        {
-          auto& w = it->second;
-          for (auto suffix = w.cbegin(); suffix < w.cend(); ++suffix) {
-            for (auto prefix = suffix + 1; prefix < w.cend(); ++prefix) {
-              mp.emplace(suffix, prefix);
-            }
-          }
-        }
-      }
-      return mp.size();
-    }
-
-    // TODO(later) remove this
-    template <typename T>
-    size_t sum_lengths(T first, T last) {
-      size_t result = 0;
-      for (auto it = first; it < last; ++it) {
-        result += it->first.size();
-        result += it->second.size();
-      }
-      return result;
-    }
 
     std::string random_power_string(std::string const& s,
                                     std::string const& t,
@@ -114,21 +79,6 @@ namespace libsemigroups {
       }
       return result;
     }
-
-    // std::string swap_a_and_b(std::string const& w) {
-    //   std::string result;
-    //   for (auto l : w) {
-    //     if (l == 'a') {
-    //       result += "b";
-    //     } else if (l == '#') {
-    //       result += '#';
-    //     } else {
-    //       result += "a";
-    //     }
-    //   }
-    //   return result;
-    // }
-
     auto sample(std::string A,
                 size_t      R,
                 size_t      min,
@@ -142,12 +92,15 @@ namespace libsemigroups {
         LIBSEMIGROUPS_EXCEPTION(
             "the minimum and maximum values must be at least 2 apart");
       }
-      auto     rg              = ReportGuard(false);
-      uint64_t total_c4        = 0;
-      uint64_t total_confluent = 0;
+      auto                      rg              = ReportGuard(false);
+      uint64_t                  total_c4        = 0;
+      uint64_t                  total_confluent = 0;
+      Presentation<std::string> p;
+      p.alphabet(A);
+
+      Kambites<std::string> k;
+
       for (size_t j = 0; j < sample_size; ++j) {
-        Kambites<std::string> k;
-        k.set_alphabet(A);
         fpsemigroup::KnuthBendix kb1;
         kb1.set_alphabet(A);
         fpsemigroup::KnuthBendix kb2;
@@ -163,7 +116,8 @@ namespace libsemigroups {
             rhs = random_string(A, min, lhs.size());
           }
 
-          k.add_rule(lhs, rhs);
+          p.rules = {lhs, rhs};
+          k.init(p);
           kb1.add_rule(lhs, rhs);
           kb2.add_rule(lhs, rhs);
         }
@@ -178,64 +132,79 @@ namespace libsemigroups {
       }
       return std::make_tuple(total_c4, total_confluent);
     }
+  }  // namespace
 
-    std::array<std::string, 5> swap_a_b_c(std::string const& w) {
-      static std::array<std::string, 5> perms
-          = {"bac", "acb", "cba", "bca", "cab"};
-      std::array<std::string, 5> result;
-      size_t                     count = 0;
-      for (auto const& p : perms) {
-        std::string ww;
-        for (auto l : w) {
-          if (l == 'a') {
-            ww += p[0];
-          } else if (l == 'b') {
-            ww += p[1];
-          } else {
-            ww += p[2];
-          }
+#ifdef false
+  // std::string swap_a_and_b(std::string const& w) {
+  //   std::string result;
+  //   for (auto l : w) {
+  //     if (l == 'a') {
+  //       result += "b";
+  //     } else if (l == '#') {
+  //       result += '#';
+  //     } else {
+  //       result += "a";
+  //     }
+  //   }
+  //   return result;
+  // }
+
+  std::array<std::string, 5> swap_a_b_c(std::string const& w) {
+    static std::array<std::string, 5> perms
+        = {"bac", "acb", "cba", "bca", "cab"};
+    std::array<std::string, 5> result;
+    size_t                     count = 0;
+    for (auto const& p : perms) {
+      std::string ww;
+      for (auto l : w) {
+        if (l == 'a') {
+          ww += p[0];
+        } else if (l == 'b') {
+          ww += p[1];
+        } else {
+          ww += p[2];
         }
-        result[count] = ww;
-        count++;
       }
-      return result;
+      result[count] = ww;
+      count++;
+    }
+    return result;
+  }
+
+}  // namespace
+
+namespace {
+
+  Kambites<> random_example(std::string const& alphabet) {
+    static std::random_device       rd;
+    static std::mt19937             generator(rd());
+    std::uniform_int_distribution<> distribution(1, 25);
+
+    Kambites<> k;
+    k.set_alphabet(alphabet);
+
+    std::vector<std::string> pieces;
+    for (size_t i = 0; i < 13; ++i) {
+      pieces.push_back(random_string(alphabet, distribution(generator)));
     }
 
-  }  // namespace
+    k.add_rule(pieces[0] + pieces[1] + pieces[2] + pieces[3],
+               pieces[2] + pieces[0] + pieces[7] + pieces[4]);
+    k.add_rule(pieces[4] + pieces[0] + pieces[5], pieces[6]);
+    k.add_rule(pieces[7] + pieces[1] + pieces[8], pieces[9]);
+    k.add_rule(pieces[10] + pieces[3] + pieces[11], pieces[12]);
 
-  namespace {
-
-    Kambites<> random_example(std::string const& alphabet) {
-      static std::random_device       rd;
-      static std::mt19937             generator(rd());
-      std::uniform_int_distribution<> distribution(1, 25);
-
-      Kambites<> k;
-      k.set_alphabet(alphabet);
-
-      std::vector<std::string> pieces;
-      for (size_t i = 0; i < 13; ++i) {
-        pieces.push_back(random_string(alphabet, distribution(generator)));
-      }
-
-      k.add_rule(pieces[0] + pieces[1] + pieces[2] + pieces[3],
-                 pieces[2] + pieces[0] + pieces[7] + pieces[4]);
-      k.add_rule(pieces[4] + pieces[0] + pieces[5], pieces[6]);
-      k.add_rule(pieces[7] + pieces[1] + pieces[8], pieces[9]);
-      k.add_rule(pieces[10] + pieces[3] + pieces[11], pieces[12]);
-
-      std::cout << "k.add_rule(\""
-                << pieces[0] + pieces[1] + pieces[2] + pieces[3] << "\", \""
-                << pieces[2] + pieces[0] + pieces[7] + pieces[4] << "\");\n";
-      std::cout << "k.add_rule(\"" << pieces[4] + pieces[0] + pieces[5]
-                << "\", \"" << pieces[6] << "\");\n";
-      std::cout << "k.add_rule(\"" << pieces[7] + pieces[1] + pieces[8]
-                << "\", \"" << pieces[9] << "\");\n";
-      std::cout << "k.add_rule(\"" << pieces[10] + pieces[3] + pieces[11]
-                << "\", \"" << pieces[12] << "\");\n";
-      return k;
-    }
-  }  // namespace
+    std::cout << "k.add_rule(\""
+              << pieces[0] + pieces[1] + pieces[2] + pieces[3] << "\", \""
+              << pieces[2] + pieces[0] + pieces[7] + pieces[4] << "\");\n";
+    std::cout << "k.add_rule(\"" << pieces[4] + pieces[0] + pieces[5]
+              << "\", \"" << pieces[6] << "\");\n";
+    std::cout << "k.add_rule(\"" << pieces[7] + pieces[1] + pieces[8]
+              << "\", \"" << pieces[9] << "\");\n";
+    std::cout << "k.add_rule(\"" << pieces[10] + pieces[3] + pieces[11]
+              << "\", \"" << pieces[12] << "\");\n";
+    return k;
+  }
 #endif
 
   ////////////////////////////////////////////////////////////////////////
@@ -255,382 +224,472 @@ namespace libsemigroups {
     REQUIRE(k.equal_to("ef", "dg"));
     REQUIRE(k.equal_to("aaaaaef", "aaaaadg"));
     REQUIRE(k.equal_to("efababa", "dgababa"));
-    // k.froidure_pin()->enumerate(100);
-    // REQUIRE(k.froidure_pin()->current_size() == 8205);
+
+    auto s = to_froidure_pin(k);
+    s.enumerate(100);
+    REQUIRE(s.current_size() == 8205);
   }
 
   LIBSEMIGROUPS_TEST_CASE("Kambites",
                           "000",
                           "(fpsemi) MT test 4 (std::string)",
-                          "[quick][kambites][fpsemigroup][fpsemi]") {
+                          "[quick][kambites][fpsemi]") {
     test_case_mt_4<std::string>();
   }
 
   LIBSEMIGROUPS_TEST_CASE("Kambites",
                           "001",
                           "(fpsemi) MT test 4 (MultiStringView)",
-                          "[quick][kambites][fpsemigroup][fpsemi]") {
+                          "[quick][kambites][fpsemi]") {
     test_case_mt_4<detail::MultiStringView>();
   }
-  /*
-      ////////////////////////////////////////////////////////////////////////
 
-      template <typename T>
-      void test_case_no_name_1() {
-        auto        rg = ReportGuard(REPORT);
-        Kambites<T> k;
-        k.set_alphabet("aAbBcCe");
+  ////////////////////////////////////////////////////////////////////////
 
-        k.add_rule("aaa", "e");
-        k.add_rule("bbb", "e");
-        k.add_rule("ccc", "e");
-        k.add_rule("ABa", "BaB");
-        k.add_rule("bcB", "cBc");
-        k.add_rule("caC", "aCa");
-        k.add_rule("abcABCabcABCabcABC", "e");
-        k.add_rule("BcabCABcabCABcabCA", "e");
-        k.add_rule("cbACBacbACBacbACBa", "e");
+  template <typename T>
+  void test_case_no_name_1() {
+    auto rg = ReportGuard(REPORT);
 
-        REQUIRE(k.number_of_pieces(0) == 2);
-        REQUIRE(k.number_of_pieces(1) == POSITIVE_INFINITY);
+    Presentation<std::string> p;
+    p.alphabet("aAbBcCe");
+    presentation::add_rule_and_check(p, "aaa", "e");
+    presentation::add_rule_and_check(p, "bbb", "e");
+    presentation::add_rule_and_check(p, "ccc", "e");
+    presentation::add_rule_and_check(p, "ABa", "BaB");
+    presentation::add_rule_and_check(p, "bcB", "cBc");
+    presentation::add_rule_and_check(p, "caC", "aCa");
+    presentation::add_rule_and_check(p, "abcABCabcABCabcABC", "e");
+    presentation::add_rule_and_check(p, "BcabCABcabCABcabCA", "e");
+    presentation::add_rule_and_check(p, "cbACBacbACBacbACBa", "e");
 
-        REQUIRE(k.number_of_pieces(2) == 2);
-        REQUIRE(k.number_of_pieces(3) == POSITIVE_INFINITY);
+    REQUIRE(p.rules.size() == 18);
 
-        REQUIRE(k.number_of_pieces(4) == 2);
-        REQUIRE(k.number_of_pieces(5) == POSITIVE_INFINITY);
+    Kambites<T> k(p);
 
-        REQUIRE(k.number_of_pieces(6) == 2);
-        REQUIRE(k.number_of_pieces(7) == 2);
+    REQUIRE(ukkonen::number_of_pieces(k.ukkonen(), p.rules[0]) == 2);
+    REQUIRE(ukkonen::number_of_pieces(k.ukkonen(), p.rules[1])
+            == POSITIVE_INFINITY);
 
-        REQUIRE(k.number_of_pieces(8) == 2);
-        REQUIRE(k.number_of_pieces(9) == 2);
+    REQUIRE(ukkonen::number_of_pieces(k.ukkonen(), p.rules[2]) == 2);
+    REQUIRE(ukkonen::number_of_pieces(k.ukkonen(), p.rules[3])
+            == POSITIVE_INFINITY);
 
-        REQUIRE(k.number_of_pieces(10) == 2);
-        REQUIRE(k.number_of_pieces(11) == 2);
+    REQUIRE(ukkonen::number_of_pieces(k.ukkonen(), p.rules[4]) == 2);
+    REQUIRE(ukkonen::number_of_pieces(k.ukkonen(), p.rules[5])
+            == POSITIVE_INFINITY);
 
-        REQUIRE(k.number_of_pieces(12) == 2);
-        REQUIRE(k.number_of_pieces(13) == POSITIVE_INFINITY);
+    REQUIRE(ukkonen::number_of_pieces(k.ukkonen(), p.rules[6]) == 2);
+    REQUIRE(ukkonen::number_of_pieces(k.ukkonen(), p.rules[7]) == 2);
 
-        REQUIRE(k.number_of_pieces(14) == 2);
-        REQUIRE(k.number_of_pieces(15) == POSITIVE_INFINITY);
+    REQUIRE(ukkonen::number_of_pieces(k.ukkonen(), p.rules[8]) == 2);
+    REQUIRE(ukkonen::number_of_pieces(k.ukkonen(), p.rules[9]) == 2);
 
-        REQUIRE(k.number_of_pieces(16) == 2);
-        REQUIRE(k.number_of_pieces(17) == POSITIVE_INFINITY);
+    REQUIRE(ukkonen::number_of_pieces(k.ukkonen(), p.rules[10]) == 2);
+    REQUIRE(ukkonen::number_of_pieces(k.ukkonen(), p.rules[11]) == 2);
 
-        REQUIRE(k.small_overlap_class() == 2);
+    REQUIRE(ukkonen::number_of_pieces(k.ukkonen(), p.rules[12]) == 2);
+    REQUIRE(ukkonen::number_of_pieces(k.ukkonen(), p.rules[13])
+            == POSITIVE_INFINITY);
+
+    REQUIRE(ukkonen::number_of_pieces(k.ukkonen(), p.rules[14]) == 2);
+    REQUIRE(ukkonen::number_of_pieces(k.ukkonen(), p.rules[15])
+            == POSITIVE_INFINITY);
+
+    REQUIRE(ukkonen::number_of_pieces(k.ukkonen(), p.rules[16]) == 2);
+    REQUIRE(ukkonen::number_of_pieces(k.ukkonen(), p.rules[17])
+            == POSITIVE_INFINITY);
+
+    REQUIRE(k.small_overlap_class() == 2);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Kambites",
+                          "002",
+                          "(fpsemi) number_of_pieces (std::string)",
+                          "[quick][kambites][fpsemi]") {
+    test_case_no_name_1<std::string>();
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Kambites",
+                          "003",
+                          "(fpsemi) number_of_pieces (MultiStringView)",
+                          "[quick][kambites][fpsemi]") {
+    test_case_no_name_1<detail::MultiStringView>();
+  }
+
+  ////////////////////////////////////////////////////////////////////////
+
+  template <typename T>
+  void test_case_no_name_2() {
+    auto rg = ReportGuard(REPORT);
+    for (size_t i = 4; i < 20; ++i) {
+      std::string lhs;
+      for (size_t b = 1; b <= i; ++b) {
+        lhs += "a" + std::string(b, 'b');
+      }
+      std::string rhs;
+      for (size_t b = i + 1; b <= 2 * i; ++b) {
+        rhs += "a" + std::string(b, 'b');
       }
 
-      LIBSEMIGROUPS_TEST_CASE("Kambites",
-                              "002",
-                              "(fpsemi) number_of_pieces (std::string)",
-                              "[quick][kambites][fpsemigroup][fpsemi]") {
-        test_case_no_name_1<std::string>();
-      }
+      Presentation<std::string> p;
+      p.alphabet("ab");
+      presentation::add_rule_and_check(p, lhs, rhs);
 
-      LIBSEMIGROUPS_TEST_CASE("Kambites",
-                              "003",
-                              "(fpsemi) number_of_pieces (MultiStringView)",
-                              "[quick][kambites][fpsemigroup][fpsemi]") {
-        test_case_no_name_1<detail::MultiStringView>();
-      }
+      Kambites<T> k(p);
+      REQUIRE(ukkonen::number_of_pieces(k.ukkonen(), lhs) == i);
+      REQUIRE(ukkonen::number_of_pieces(k.ukkonen(), rhs) == i + 1);
+      REQUIRE(k.small_overlap_class() == i);
+    }
+  }
 
-      ////////////////////////////////////////////////////////////////////////
+  LIBSEMIGROUPS_TEST_CASE("Kambites",
+                          "004",
+                          "(fpsemi) small_overlap_class (std::string)",
+                          "[quick][kambites][fpsemi]") {
+    test_case_no_name_2<std::string>();
+  }
 
-      template <typename T>
-      void test_case_no_name_2() {
-        auto rg = ReportGuard(REPORT);
-        for (size_t i = 4; i < 20; ++i) {
-          std::string lhs;
-          for (size_t b = 1; b <= i; ++b) {
-            lhs += "a" + std::string(b, 'b');
-          }
-          std::string rhs;
-          for (size_t b = i + 1; b <= 2 * i; ++b) {
-            rhs += "a" + std::string(b, 'b');
-          }
+  LIBSEMIGROUPS_TEST_CASE("Kambites",
+                          "005",
+                          "(fpsemi) small_overlap_class (MultiStringView) ",
+                          "[quick][kambites][fpsemi]") {
+    test_case_no_name_2<detail::MultiStringView>();
+  }
 
-          Kambites<T> k;
+  ////////////////////////////////////////////////////////////////////////
 
-          k.set_alphabet("ab");
-          k.add_rule(lhs, rhs);
+  template <typename T>
+  void test_case_random() {
+    auto rg = ReportGuard(REPORT);
+    {
+      Presentation<std::string> p;
+      p.alphabet("abcdefghi");
+      presentation::add_rule_and_check(
+          p,
+          "eiehiegiggfaigcdfdfdgiidcebacgfaf",
+          "cgfaeiehiegiggfaigcdfdfdgigcccbddchbbhgaaedfiiahhehihcba");
+      presentation::add_rule_and_check(
+          p, "hihcbaeiehiegiggfaigcdfdfdgiefhbidhbdgb", "chhfgafiiddg");
+      presentation::add_rule_and_check(
+          p,
+          "gcccbddchbbhgaaedfiiahheidcebacbdefegcehgffedacddiaiih",
+          "eddfcfhbedecacheahcdeeeda");
+      presentation::add_rule_and_check(
+          p, "dfbiccfeagaiffcfifg", "dceibahghaedhefh");
 
-          REQUIRE(k.number_of_pieces(0) == i);
-          REQUIRE(k.number_of_pieces(1) == i + 1);
+      Kambites<T> k(p);
 
-          REQUIRE(k.small_overlap_class() == i);
-        }
-      }
+      REQUIRE(k.small_overlap_class() == 4);
+      REQUIRE(ukkonen::number_of_distinct_subwords(k.ukkonen()) == 3'996);
 
-      LIBSEMIGROUPS_TEST_CASE("Kambites",
-                              "004",
-                              "(fpsemi) small_overlap_class (std::string)",
-                              "[quick][kambites][fpsemigroup][fpsemi]") {
-        test_case_no_name_2<std::string>();
-      }
+      size_t n = presentation::length(p);
+      REQUIRE(n == 254);
+      REQUIRE(n * n == 64'516);
+    }
+    {
+      Presentation<std::string> p;
+      p.alphabet("abcdefghi");
+      presentation::add_rule_and_check(
+          p,
+          "feffgccdgcfbeagiifheabecdfbgebfcibeifibccahaafabeihfgfieade"
+          "bciheddeigbaf",
+          "ifibccahaafabeihfgfiefeffgccdgcfbeagiifheabecfeibghddfgbaia"
+          "acghhdhggagaide");
+      presentation::add_rule_and_check(
+          p,
+          "ghhdhggagaidefeffgccdgcfbeagiifheabeccbeiddgdcbcf",
+          "ahccccffdeb");
+      presentation::add_rule_and_check(
+          p, "feibghddfgbaiaacdfbgebfcibeieaacdbdb", "gahdfgbghhhbcci");
+      presentation::add_rule_and_check(
+          p,
+          "dgibafaahiabfgeiiibadebciheddeigbaficfbfdbfbbiddgdcifbe",
+          "iahcfgdbggaciih");
 
-      LIBSEMIGROUPS_TEST_CASE("Kambites",
-                              "005",
-                              "(fpsemi) small_overlap_class
-     (MultiStringView)",
-                              "[quick][kambites][fpsemigroup][fpsemi]") {
-        test_case_no_name_2<detail::MultiStringView>();
-      }
+      Kambites<T> k(p);
+      REQUIRE(k.small_overlap_class() == 4);
 
-      ////////////////////////////////////////////////////////////////////////
+      REQUIRE(ukkonen::number_of_distinct_subwords(k.ukkonen()) == 7'482);
+      size_t n = presentation::length(p);
 
-      template <typename T>
-      void test_case_random() {
-        auto rg = ReportGuard(REPORT);
-        {
-          Kambites<T> k;
-          k.set_alphabet("abcdefghi");
-          k.add_rule("eiehiegiggfaigcdfdfdgiidcebacgfaf",
-                     "cgfaeiehiegiggfaigcdfdfdgigcccbddchbbhgaaedfiiahhehihcba");
-          k.add_rule("hihcbaeiehiegiggfaigcdfdfdgiefhbidhbdgb",
-     "chhfgafiiddg");
-          k.add_rule("gcccbddchbbhgaaedfiiahheidcebacbdefegcehgffedacddiaiih",
-                     "eddfcfhbedecacheahcdeeeda");
-          k.add_rule("dfbiccfeagaiffcfifg", "dceibahghaedhefh");
+      REQUIRE(n == 327);
+      REQUIRE(n * n == 106'929);
+    }
+    {
+      Presentation<std::string> p;
+      p.alphabet("abcdefghi");
+      presentation::add_rule_and_check(
+          p,
+          "adichhbhibfchbfbbibaidfibifgagcgdedfeeibhggdbchfdaefbefcbaa"
+          "hcbhbidgaahbahhahhb",
+          "edfeeibhggdbchfdaefbeadichhbhibfchbfbbibaiihebabeabahcgdbic"
+          "bgiciffhfggbfadf");
+      presentation::add_rule_and_check(
+          p,
+          "bgiciffhfggbfadfadichhbhibfchbfbbibaaggfdcfcebehhbdegiaeaf",
+          "hebceeicbhidcgahhcfbb");
+      presentation::add_rule_and_check(p,
+                                       "iihebabeabahcgdbicidfibifgagcgdedehed",
+                                       "ecbcgaieieicdcdfdbgagdbf");
+      presentation::add_rule_and_check(
+          p, "iagaadbfcbaahcbhbidgaahbahhahhbd", "ddddh");
 
-          REQUIRE(k.small_overlap_class() == 4);
-          REQUIRE(number_of_subwords(k.cbegin_rules(), k.cend_rules()) ==
-     3762); size_t n = sum_lengths(k.cbegin_rules(), k.cend_rules());
-          REQUIRE(n == 254);
-          REQUIRE(n * n == 64516);
-        }
-        {
-          Kambites<T> k;
-          k.set_alphabet("abcdefghi");
-          k.add_rule("feffgccdgcfbeagiifheabecdfbgebfcibeifibccahaafabeihfgfieade"
-                     "bciheddeigbaf",
-                     "ifibccahaafabeihfgfiefeffgccdgcfbeagiifheabecfeibghddfgbaia"
-                     "acghhdhggagaide");
-          k.add_rule("ghhdhggagaidefeffgccdgcfbeagiifheabeccbeiddgdcbcf",
-                     "ahccccffdeb");
-          k.add_rule("feibghddfgbaiaacdfbgebfcibeieaacdbdb",
-     "gahdfgbghhhbcci");
-          k.add_rule("dgibafaahiabfgeiiibadebciheddeigbaficfbfdbfbbiddgdcifbe",
-                     "iahcfgdbggaciih");
-          REQUIRE(k.small_overlap_class() == 4);
-          REQUIRE(number_of_subwords(k.cbegin_rules(), k.cend_rules()) ==
-     7197); size_t n = sum_lengths(k.cbegin_rules(), k.cend_rules());
-          REQUIRE(n == 327);
-          REQUIRE(n * n == 106929);
-        }
-        {
-          Kambites<T> k;
-          k.set_alphabet("abcdefghi");
-          k.add_rule("adichhbhibfchbfbbibaidfibifgagcgdedfeeibhggdbchfdaefbefcbaa"
-                     "hcbhbidgaahbahhahhb",
-                     "edfeeibhggdbchfdaefbeadichhbhibfchbfbbibaiihebabeabahcgdbic"
-                     "bgiciffhfggbfadf");
-          k.add_rule("bgiciffhfggbfadfadichhbhibfchbfbbibaaggfdcfcebehhbdegiaeaf",
-                     "hebceeicbhidcgahhcfbb");
-          k.add_rule("iihebabeabahcgdbicidfibifgagcgdedehed",
-                     "ecbcgaieieicdcdfdbgagdbf");
-          k.add_rule("iagaadbfcbaahcbhbidgaahbahhahhbd", "ddddh");
-          REQUIRE(k.small_overlap_class() == 3);
-          REQUIRE(number_of_subwords(k.cbegin_rules(), k.cend_rules()) ==
-     7408); size_t n = sum_lengths(k.cbegin_rules(), k.cend_rules());
-          REQUIRE(n == 330);
-          REQUIRE(n * n == 108900);
-        }
-        {
-          Kambites<T> k;
-          k.set_alphabet("abcdefghi");
-          k.add_rule("ibddgdgddiabcahbidbedffeddciiabahbbiacbfehdfccacbhgafbgcdg",
-                     "iabahibddgdgddbdfacbafhcgfhdheieihd");
-          k.add_rule("hdheieihdibddgdgddebhaeaicciidebegg", "giaeehdeeec");
-          k.add_rule("bdfacbafhcgfiabcahbidbedffeddcifdfcdcdadhhcbcbebhei",
-                     "icaebehdff");
-          k.add_rule("aggiiacdbbiacbfehdfccacbhgafbgcdghiahfccdchaiagaha",
-                     "hhafbagbhghhihg");
+      Kambites<T> k(p);
+      REQUIRE(k.small_overlap_class() == 3);
+      REQUIRE(ukkonen::number_of_distinct_subwords(k.ukkonen()) == 7'685);
 
-          REQUIRE(k.small_overlap_class() == 4);
-          REQUIRE(number_of_subwords(k.cbegin_rules(), k.cend_rules()) ==
-     4560); size_t n = sum_lengths(k.cbegin_rules(), k.cend_rules());
-          REQUIRE(n == 265);
-          REQUIRE(n * n == 70225);
-        }
-        {
-          Kambites<T> k;
-          k.set_alphabet("abcdefghi");
-          k.add_rule(
-              "fibehffegdeggaddgfdaeaiacbhbgbbccceaibfcabbiedhecggbbdgihddd",
-              "ceafibehffegdeggafidbaefcebegahcbhciheceaehaaehih");
-          k.add_rule("haaehihfibehffegdeggaecbedccaeabifeafi",
-                     "bfcccibgefiidgaih");
-          k.add_rule("fidbaefcebegahcbhciheceaeddgfdaeaiacbhbgbbcccgiahbibehgbgab"
-                     "efdieiggc",
-                     "abigdadaecdfdeeciggbdfdf");
-          k.add_rule("eeaaiicigieiabibfcabbiedhecggbbdgihdddifadgbgidbfeg",
-                     "daheebdgdiaeceeiicddg");
-          REQUIRE(k.small_overlap_class() == 4);
-          REQUIRE(number_of_subwords(k.cbegin_rules(), k.cend_rules()) ==
-     6398); size_t n = sum_lengths(k.cbegin_rules(), k.cend_rules());
-          REQUIRE(n == 328);
-          REQUIRE(n * n == 107584);
-        }
-      }
+      size_t n = presentation::length(p);
+      REQUIRE(n == 330);
+      REQUIRE(n * n == 108'900);
+    }
+    {
+      Presentation<std::string> p;
+      p.alphabet("abcdefghi");
+      presentation::add_rule_and_check(
+          p,
+          "ibddgdgddiabcahbidbedffeddciiabahbbiacbfehdfccacbhgafbgcdg",
+          "iabahibddgdgddbdfacbafhcgfhdheieihd");
+      presentation::add_rule_and_check(
+          p, "hdheieihdibddgdgddebhaeaicciidebegg", "giaeehdeeec");
+      presentation::add_rule_and_check(
+          p,
+          "bdfacbafhcgfiabcahbidbedffeddcifdfcdcdadhhcbcbebhei",
+          "icaebehdff");
+      presentation::add_rule_and_check(
+          p,
+          "aggiiacdbbiacbfehdfccacbhgafbgcdghiahfccdchaiagaha",
+          "hhafbagbhghhihg");
 
-      LIBSEMIGROUPS_TEST_CASE("Kambites",
-                              "006",
-                              "(fpsemi) random (std::string)",
-                              "[quick][kambites][fpsemigroup][fpsemi]") {
-        test_case_random<std::string>();
-      }
+      Kambites<T> k(p);
+      REQUIRE(k.small_overlap_class() == 4);
+      REQUIRE(ukkonen::number_of_distinct_subwords(k.ukkonen()) == 4'779);
 
-      LIBSEMIGROUPS_TEST_CASE("Kambites",
-                              "007",
-                              "(fpsemi) random (MultiStringView)",
-                              "[quick][kambites][fpsemigroup][fpsemi]") {
-        test_case_random<detail::MultiStringView>();
-      }
+      size_t n = presentation::length(p);
+      REQUIRE(n == 265);
+      REQUIRE(n * n == 70'225);
+    }
+    {
+      Presentation<std::string> p;
+      p.alphabet("abcdefghi");
+      presentation::add_rule_and_check(
+          p,
+          "fibehffegdeggaddgfdaeaiacbhbgbbccceaibfcabbiedhecggbbdgihddd",
+          "ceafibehffegdeggafidbaefcebegahcbhciheceaehaaehih");
+      presentation::add_rule_and_check(
+          p, "haaehihfibehffegdeggaecbedccaeabifeafi", "bfcccibgefiidgaih");
+      presentation::add_rule_and_check(
+          p,
+          "fidbaefcebegahcbhciheceaeddgfdaeaiacbhbgbbcccgiahbibehgbgab"
+          "efdieiggc",
+          "abigdadaecdfdeeciggbdfdf");
+      presentation::add_rule_and_check(
+          p,
+          "eeaaiicigieiabibfcabbiedhecggbbdgihdddifadgbgidbfeg",
+          "daheebdgdiaeceeiicddg");
 
-      ////////////////////////////////////////////////////////////////////////
+      Kambites<T> k(p);
+      REQUIRE(k.small_overlap_class() == 4);
 
-      template <typename T>
-      void test_case_knuth_bendix_055() {
-        auto        rg = ReportGuard(REPORT);
-        Kambites<T> k;
-        k.set_alphabet("abcdefg");
+      REQUIRE(ukkonen::number_of_distinct_subwords(k.ukkonen()) == 6'681);
 
-        k.add_rule("abcd", "ce");
-        k.add_rule("df", "dg");
+      size_t n = presentation::length(p);
+      REQUIRE(n == 328);
+      REQUIRE(n * n == 107'584);
+    }
+  }
 
-        REQUIRE(k.small_overlap_class() == POSITIVE_INFINITY);
-        REQUIRE(k.is_obviously_infinite());
+  LIBSEMIGROUPS_TEST_CASE("Kambites",
+                          "006",
+                          "(fpsemi) random (std::string)",
+                          "[quick][kambites][fpsemi]") {
+    test_case_random<std::string>();
+  }
 
-        REQUIRE(k.equal_to("dfabcdf", "dfabcdg"));
-        REQUIRE(k.normal_form("dfabcdg") == "dfabcdf");
+  LIBSEMIGROUPS_TEST_CASE("Kambites",
+                          "007",
+                          "(fpsemi) random (MultiStringView)",
+                          "[quick][kambites][fpsemi]") {
+    test_case_random<detail::MultiStringView>();
+  }
+  ////////////////////////////////////////////////////////////////////////
 
-        REQUIRE(k.equal_to("abcdf", "ceg"));
-        REQUIRE(k.equal_to("abcdf", "cef"));
-        REQUIRE(k.equal_to("dfabcdf", "dfabcdg"));
-        REQUIRE(k.equal_to("abcdf", "ceg"));
-        REQUIRE(k.equal_to("abcdf", "cef"));
-        REQUIRE(k.normal_form("abcdfceg") == "abcdfabcdf");
-        REQUIRE(k.equal_to("abcdfceg", "abcdfabcdf"));
+  template <typename T>
+  void test_case_knuth_bendix_055() {
+    auto rg = ReportGuard(REPORT);
 
-        REQUIRE(k.size() == POSITIVE_INFINITY);
-        REQUIRE(number_of_words(k.alphabet().size(), 0, 6) == 19608);
-        REQUIRE(k.number_of_normal_forms(0, 6) == 17921);
+    Presentation<std::string> p;
+    p.alphabet("abcdefg");
+    presentation::add_rule_and_check(p, "abcd", "ce");
+    presentation::add_rule_and_check(p, "df", "dg");
 
-        REQUIRE(number_of_subwords(k.cbegin_rules(), k.cend_rules()) == 7);
-        // REQUIRE(std::vector<std::string>(k.cbegin_normal_forms(0, 2),
-        //                                 k.cend_normal_forms())
-        //        == std::vector<std::string>({"a", "b", "c", "d", "e", "f",
-        //        "g"}));
-      }
+    Kambites<T> k(p);
 
-      LIBSEMIGROUPS_TEST_CASE("Kambites",
-                              "008",
-                              "(fpsemi) KnuthBendix 055 (std::string)",
-                              "[quick][kambites][fpsemigroup][fpsemi]") {
-        test_case_knuth_bendix_055<std::string>();
-      }
+    REQUIRE(k.small_overlap_class() == POSITIVE_INFINITY);
+    REQUIRE(is_obviously_infinite(k));
 
-      LIBSEMIGROUPS_TEST_CASE(
-          "Kambites",
-          "009",
-          "(fpsemi) KnuthBendix 055 (MultiStringView)",
-          "[quick][kambites][fpsemigroup][fpsemi][no-valgrind]") {
-        test_case_knuth_bendix_055<detail::MultiStringView>();
-      }
+    REQUIRE(k.equal_to("dfabcdf", "dfabcdg"));
+    REQUIRE(k.normal_form("dfabcdg") == "dfabcdf");
 
-      ////////////////////////////////////////////////////////////////////////
+    REQUIRE(k.equal_to("abcdf", "ceg"));
+    REQUIRE(k.equal_to("abcdf", "cef"));
+    REQUIRE(k.equal_to("dfabcdf", "dfabcdg"));
+    REQUIRE(k.equal_to("abcdf", "ceg"));
+    REQUIRE(k.equal_to("abcdf", "cef"));
+    REQUIRE(k.normal_form("abcdfceg") == "abcdfabcdf");
+    REQUIRE(k.equal_to("abcdfceg", "abcdfabcdf"));
 
-      template <typename T>
-      void test_case_gap_smalloverlap_85() {
-        auto        rg = ReportGuard(REPORT);
-        Kambites<T> k;
-        k.set_alphabet("cab");
+    REQUIRE(k.size() == POSITIVE_INFINITY);
+    REQUIRE(number_of_words(p.alphabet().size(), 0, 6) == 19'608);
+    // TODO uncomment
+    // REQUIRE(k.number_of_normal_forms(0, 6) == 17'921);
 
-        k.add_rule("aabc", "acba");
-        REQUIRE(!k.equal_to("a", "b"));
-        REQUIRE(k.equal_to("aabcabc", "aabccba"));
+    REQUIRE(ukkonen::number_of_distinct_subwords(k.ukkonen()) == 17);
+    // TODO uncomment
+    // REQUIRE(std::vector<std::string>(k.cbegin_normal_forms(0, 2),
+    //                                 k.cend_normal_forms())
+    //        == std::vector<std::string>({"a", "b", "c", "d", "e", "f",
+    //        "g"}));
+  }
 
-        REQUIRE(k.size() == POSITIVE_INFINITY);
-        REQUIRE(number_of_words(3, 4, 16) == 21'523'320);
+  LIBSEMIGROUPS_TEST_CASE("Kambites",
+                          "008",
+                          "(fpsemi) KnuthBendix 055 (std::string)",
+                          "[quick][kambites][fpsemi]") {
+    test_case_knuth_bendix_055<std::string>();
+  }
 
-        Strings s;
-        s.letters("cab").first("aabc").last("aaabc");
-        REQUIRE((s | count()) == 162);
+  LIBSEMIGROUPS_TEST_CASE("Kambites",
+                          "009",
+                          "(fpsemi) KnuthBendix 055 (MultiStringView)",
+                          "[quick][kambites][fpsemi][no-valgrind]") {
+    test_case_knuth_bendix_055<detail::MultiStringView>();
+  }
 
-        s.first("cccc").last("ccccc");
-        REQUIRE((s | filter([&k](auto& w) { return k.equal_to(w, "acba"); })
-                 | count())
-                == 2);
-      }
+  ////////////////////////////////////////////////////////////////////////
 
-      LIBSEMIGROUPS_TEST_CASE(
-          "Kambites",
-          "010",
-          "(fpsemi) smalloverlap/gap/test.gi:85 (std::string)",
-          "[quick][kambites][fpsemigroup][fpsemi]") {
-        test_case_gap_smalloverlap_85<std::string>();
-      }
+  template <typename T>
+  void test_case_gap_smalloverlap_85() {
+    auto rg = ReportGuard(REPORT);
 
-      LIBSEMIGROUPS_TEST_CASE(
-          "Kambites",
-          "011",
-          "(fpsemi) smalloverlap/gap/test.gi:85 (MultiStringView)",
-          "[quick][kambites][fpsemigroup][fpsemi]") {
-        test_case_gap_smalloverlap_85<detail::MultiStringView>();
-      }
+    Presentation<std::string> p;
+    p.alphabet("cab");
+    presentation::add_rule_and_check(p, "aabc", "acba");
 
-      ////////////////////////////////////////////////////////////////////////
+    Kambites<T> k(p);
 
-      LIBSEMIGROUPS_TEST_CASE("Kambites",
-                              "012",
-                              "(fpsemi) free semigroup",
-                              "[quick][kambites][fpsemigroup][fpsemi]") {
-        Kambites<std::string> k;
-        k.set_alphabet("cab");
-        REQUIRE(k.small_overlap_class() == POSITIVE_INFINITY);
+    REQUIRE(!k.equal_to("a", "b"));
+    REQUIRE(k.equal_to("aabcabc", "aabccba"));
 
-        Kambites<detail::MultiStringView> kk;
-        kk.set_alphabet("cab");
-        REQUIRE(kk.small_overlap_class() == POSITIVE_INFINITY);
-      }
+    REQUIRE(k.size() == POSITIVE_INFINITY);
+    REQUIRE(number_of_words(3, 4, 16) == 21'523'320);
 
-      ////////////////////////////////////////////////////////////////////////
+    Strings s;
+    s.letters("cab").first("aabc").last("aaabc");
+    REQUIRE((s | count()) == 162);
 
-      template <typename T>
-      void test_case_gap_smalloverlap_49() {
-        auto        rg = ReportGuard(REPORT);
-        Kambites<T> k;
-        k.set_alphabet("abcdefgh");
+    s.first("cccc").last("ccccc");
+    REQUIRE(
+        (s | filter([&k](auto& w) { return k.equal_to(w, "acba"); }) | count())
+        == 2);
+  }
 
-        k.add_rule("abcd", "ce");
-        k.add_rule("df", "hd");
+  LIBSEMIGROUPS_TEST_CASE("Kambites",
+                          "010",
+                          "(fpsemi) smalloverlap/gap/test.gi:85 (std::string)",
+                          "[quick][kambites][fpsemi]") {
+    test_case_gap_smalloverlap_85<std::string>();
+  }
 
-        REQUIRE(k.is_obviously_infinite());
+  LIBSEMIGROUPS_TEST_CASE(
+      "Kambites",
+      "011",
+      "(fpsemi) smalloverlap/gap/test.gi:85 (MultiStringView)",
+      "[quick][kambites][fpsemi]") {
+    test_case_gap_smalloverlap_85<detail::MultiStringView>();
+  }
 
-        REQUIRE(k.equal_to("abchd", "abcdf"));
-        REQUIRE(!k.equal_to("abchf", "abcdf"));
-        REQUIRE(k.equal_to("abchd", "abchd"));
-        REQUIRE(k.equal_to("abchdf", "abchhd"));
-        // Test cases (4) and (5)
-        REQUIRE(k.equal_to("abchd", "cef"));
-        REQUIRE(k.equal_to("cef", "abchd"));
+  ////////////////////////////////////////////////////////////////////////
 
-        REQUIRE(k.size() == POSITIVE_INFINITY);
-        REQUIRE(k.number_of_normal_forms(0, 6) == 35199);
-        REQUIRE(k.normal_form("hdfabce") == "dffababcd");
-        REQUIRE(k.equal_to("hdfabce", "dffababcd"));
-        // TODO(later) include when we have cbegin_normal_forms,
-        // cend_normal_forms
-        //  REQUIRE(std::vector<std::string>(k.cbegin_normal_forms(0, 2),
-        //                                   k.cend_normal_forms())
-        //          == std::vector<std::string>(
-        //              {"a", "b", "c", "d", "e", "f", "g", "h"}));
+  LIBSEMIGROUPS_TEST_CASE("Kambites",
+                          "012",
+                          "(fpsemi) free semigroup",
+                          "[quick][kambites][fpsemi]") {
+    Presentation<std::string> p;
+    p.alphabet("cab");
+    Kambites<std::string> k(p);
+    REQUIRE(k.small_overlap_class() == POSITIVE_INFINITY);
+
+    Kambites<detail::MultiStringView> kk(p);
+    REQUIRE(kk.small_overlap_class() == POSITIVE_INFINITY);
+  }
+  ////////////////////////////////////////////////////////////////////////
+
+  template <typename T>
+  void test_case_gap_smalloverlap_49() {
+    auto                      rg = ReportGuard(false);
+    Presentation<std::string> p;
+    p.alphabet("abcdefgh");
+    presentation::add_rule_and_check(p, "abcd", "ce");
+    presentation::add_rule_and_check(p, "df", "hd");
+
+    Kambites<T> k(p);
+
+    REQUIRE(k.small_overlap_class() >= 4);
+    REQUIRE(is_obviously_infinite(k));
+
+    REQUIRE(k.equal_to("abchd", "abcdf"));
+    REQUIRE(!k.equal_to("abchf", "abcdf"));
+    REQUIRE(k.equal_to("abchd", "abchd"));
+    REQUIRE(k.equal_to("abchdf", "abchhd"));
+    // Test cases (4) and (5)
+    REQUIRE(k.equal_to("abchd", "cef"));
+    REQUIRE(k.equal_to("cef", "abchd"));
+
+    REQUIRE(k.size() == POSITIVE_INFINITY);
+    REQUIRE(k.normal_form("hdfabce") == "dffababcd");
+    REQUIRE(k.equal_to("hdfabce", "dffababcd"));
+
+    auto s = to_froidure_pin(k);
+
+    // s.run_until(
+    //     [&s]() { return s.current_position(355010123_w) != UNDEFINED; });
+    // s.enumerate(10'000);
+
+    // REQUIRE(s.number_of_generators() == p.alphabet().size());
+    // REQUIRE(to_word(p, "hdfabce") == 7350124_w);
+    // REQUIRE(to_word(p, "dffababcd") == 355010123_w);
+    // REQUIRE(s.current_position(to_word(p, "hdfabce")) == 1'175'302);
+    // REQUIRE(s.current_position(to_word(p, "dffababcd")) == 2'253'468);
+
+    REQUIRE(p.letter(0) == 'a');
+    REQUIRE(k.presentation().letter(0) == 'a');
+
+    REQUIRE(s[0].string() == std::string({'a'}));
+
+    REQUIRE(
+        (iterator_range(s.cbegin(), s.cbegin() + 8)
+         | transform([](auto const& val) { return val.string(); })
+         | to_vector())
+        == std::vector<std::string>({"a", "b", "c", "d", "e", "f", "g", "h"}));
+
+    s.run_until([&s]() { return s.current_max_word_length() >= 6; });
+    {
+      auto r
+          = seq() | filter([&s](size_t i) { return s.current_length(i) == 6; });
+      REQUIRE(r.get() == 35'199);
+    }
+    {
+      auto r
+          = seq() | filter([&s](size_t i) { return s.current_length(i) == 1; });
+      REQUIRE(r.get() == 0);
+    }
+    REQUIRE(s.number_of_elements_of_length(0, 6) == 35'199);
+  }
 
   LIBSEMIGROUPS_TEST_CASE("Kambites",
                           "013",
                           "(fpsemi) smalloverlap/gap/test.gi:49 (std::string)",
-                          "[quick][kambites][fpsemigroup][fpsemi]") {
+                          "[quick][kambites][fpsemi]") {
     test_case_gap_smalloverlap_49<std::string>();
   }
 
@@ -638,7 +697,7 @@ namespace libsemigroups {
       "Kambites",
       "014",
       "(fpsemi) smalloverlap/gap/test.gi:49 (MultiStringView)",
-      "[quick][kambites][fpsemigroup][fpsemi][no-valgrind]") {
+      "[quick][kambites][fpsemi][no-valgrind]") {
     test_case_gap_smalloverlap_49<detail::MultiStringView>();
   }
 
@@ -646,28 +705,32 @@ namespace libsemigroups {
 
   template <typename T>
   void test_case_gap_smalloverlap_63() {
-    auto        rg = ReportGuard(REPORT);
-    Kambites<T> k;
-    k.set_alphabet("abcdefgh");
+    auto                      rg = ReportGuard(REPORT);
+    Presentation<std::string> p;
+    p.alphabet("abcdefgh");
 
-    k.add_rule("afh", "bgh");
-    k.add_rule("hc", "d");
+    presentation::add_rule_and_check(p, "afh", "bgh");
+    presentation::add_rule_and_check(p, "hc", "d");
 
-    REQUIRE(k.is_obviously_infinite());
+    Kambites<T> k(p);
+
+    REQUIRE(is_obviously_infinite(k));
 
     // Test case (6)
     REQUIRE(k.equal_to("afd", "bgd"));
     REQUIRE(k.equal_to("bghcafhbgd", "afdafhafd"));
     REQUIRE(k.normal_form("bghcafhbgd") == "afdafhafd");
-    REQUIRE(k.number_of_normal_forms(0, 6) == 34819);
+    auto s = to_froidure_pin(k);
+    s.run_until([&s]() { return s.current_max_word_length() >= 6; });
+    REQUIRE(s.number_of_elements_of_length(0, 6) == 34'819);
 
     REQUIRE(k.size() == POSITIVE_INFINITY);
   }
-  LIBSEMIGROUPS_TEST_CASE(
-      "Kambites",
-      "015",
-      "(fpsemi) smalloverlap/gap/test.gi:63 (std::string)",
-      "[quick][kambites][fpsemigroup][fpsemi][no-valgrind]") {
+
+  LIBSEMIGROUPS_TEST_CASE("Kambites",
+                          "015",
+                          "(fpsemi) smalloverlap/gap/test.gi:63 (std::string)",
+                          "[quick][kambites][fpsemi][no-valgrind]") {
     test_case_gap_smalloverlap_63<std::string>();
   }
 
@@ -675,7 +738,7 @@ namespace libsemigroups {
       "Kambites",
       "016",
       "(fpsemi) smalloverlap/gap/test.gi:63 (MultiStringView)",
-      "[quick][kambites][fpsemigroup][fpsemi][no-valgrind]") {
+      "[quick][kambites][fpsemi][no-valgrind]") {
     test_case_gap_smalloverlap_63<detail::MultiStringView>();
   }
 
@@ -687,25 +750,28 @@ namespace libsemigroups {
     // The following permits a more complex test of case (6), which also
     // involves using the case (2) code to change the prefix being looked
     // for:
-    Kambites<T> k;
-    k.set_alphabet("abcdefghij");
+    Presentation<std::string> p;
+    p.alphabet("abcdefghij");
+    presentation::add_rule_and_check(p, "afh", "bgh");
+    presentation::add_rule_and_check(p, "hc", "de");
+    presentation::add_rule_and_check(p, "ei", "j");
 
-    k.add_rule("afh", "bgh");
-    k.add_rule("hc", "de");
-    k.add_rule("ei", "j");
+    Kambites<T> k(p);
 
-    REQUIRE(k.number_of_normal_forms(0, 6) == 102255);
-    REQUIRE(k.is_obviously_infinite());
+    REQUIRE(is_obviously_infinite(k));
 
     REQUIRE(k.equal_to("afdj", "bgdj"));
     REQUIRE(!k.equal_to("xxxxxxxxxxxxxxxxxxxxxxx", "b"));
+
+    auto s = to_froidure_pin(k);
+    s.run_until([&s]() { return s.current_max_word_length() >= 6; });
+    REQUIRE(s.number_of_elements_of_length(0, 6) == 102'255);
   }
 
-  LIBSEMIGROUPS_TEST_CASE(
-      "Kambites",
-      "017",
-      "(fpsemi) smalloverlap/gap/test.gi:70 (std::string)",
-      "[quick][kambites][fpsemigroup][fpsemi][no-valgrind]") {
+  LIBSEMIGROUPS_TEST_CASE("Kambites",
+                          "017",
+                          "(fpsemi) smalloverlap/gap/test.gi:70 (std::string)",
+                          "[quick][kambites][fpsemi][no-valgrind]") {
     test_case_gap_smalloverlap_70<std::string>();
   }
 
@@ -713,10 +779,9 @@ namespace libsemigroups {
       "Kambites",
       "018",
       "(fpsemi) smalloverlap/gap/test.gi:70 (MultiStringView)",
-      "[quick][kambites][fpsemigroup][fpsemi][no-valgrind]") {
+      "[quick][kambites][fpsemi][no-valgrind]") {
     test_case_gap_smalloverlap_70<detail::MultiStringView>();
   }
-
   ////////////////////////////////////////////////////////////////////////
 
   template <typename T>
@@ -725,15 +790,16 @@ namespace libsemigroups {
     // A slightly more complicated presentation for testing case (6), in
     // which the max piece suffixes of the first two relation words no
     // longer agree (since fh and gh are now pieces).
-    Kambites<T> k;
-    k.set_alphabet("abcdefghijkl");
+    Presentation<std::string> p;
+    p.alphabet("abcdefghijkl");
 
-    k.add_rule("afh", "bgh");
-    k.add_rule("hc", "de");
-    k.add_rule("ei", "j");
-    k.add_rule("fhk", "ghl");
+    presentation::add_rule_and_check(p, "afh", "bgh");
+    presentation::add_rule_and_check(p, "hc", "de");
+    presentation::add_rule_and_check(p, "ei", "j");
+    presentation::add_rule_and_check(p, "fhk", "ghl");
 
-    REQUIRE(k.is_obviously_infinite());
+    Kambites<T> k(p);
+    REQUIRE(is_obviously_infinite(k));
 
     REQUIRE(k.equal_to("afdj", "bgdj"));
     REQUIRE(k.equal_to("afdj", "afdj"));
@@ -742,48 +808,51 @@ namespace libsemigroups {
 
     REQUIRE(k.size() == POSITIVE_INFINITY);
 
-    Strings s;
-    s.letters("abcdefghijkl").first("a").last("bgdk");
-    REQUIRE((s | count()) == 4522);
-    size_t N = 4522;
+    Strings lhs;
+    lhs.letters("abcdefghijkl").first("a").last("bgdk");
+    Strings rhs = lhs;
+
+    REQUIRE((lhs | count()) == 4'522);
+    size_t N = 4'522;
     size_t M = 0;
-    for (auto it1 = begin(s); it1 != end(s); ++it1) {
-      for (auto it2 = begin(s); it2 != it1; ++it2) {
+
+    for (auto const& u : lhs) {
+      for (auto const& v : (rhs | skip_n(1))) {
         M++;
-        if (k.equal_to(*it1, *it2)) {
+        if (k.equal_to(u, v)) {
           N--;
           break;
         }
       }
     }
-    REQUIRE(M == 10052729);
-    REQUIRE(N == 4392);
-    REQUIRE(k.number_of_normal_forms(0, 6) == 255'932);
 
-    // TODO(later) include when we have cbegin_normal_forms,
-    // cend_normal_forms
-    // REQUIRE(
-    //     std::vector<std::string>(k.cbegin_normal_forms(0, 2),
-    //                              k.cend_normal_forms())
-    //     == std::vector<std::string>(
-    //         {"a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k",
-    // "l"}));
+    REQUIRE(M == 10'052'729);
+    REQUIRE(N == 4392);
+
+    auto s = to_froidure_pin(k);
+    s.run_until([&s]() { return s.current_max_word_length() >= 6; });
+    REQUIRE(s.number_of_elements_of_length(0, 6) == 255'932);
+
+    REQUIRE((iterator_range(s.cbegin(), s.cbegin() + p.alphabet().size())
+             | transform([](auto const& val) { return val.string(); })
+             | to_vector())
+            == std::vector<std::string>(
+                {"a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l"}));
   }
 
   LIBSEMIGROUPS_TEST_CASE("Kambites",
                           "019",
-                          "(fpsemi) std::string smalloverlap/gap/test.gi:77 "
+                          "(fpsemi) std::string smalloverlap/gap/test.gi:77"
                           "(infinite) (KnuthBendix 059)",
-                          "[standard][kambites][fpsemigroup][fpsemi]") {
+                          "[standard][kambites][fpsemi]") {
     test_case_1_million_equals<std::string>();
   }
 
-  LIBSEMIGROUPS_TEST_CASE(
-      "Kambites",
-      "020",
-      "(fpsemi) MultiStringView smalloverlap/gap/test.gi:77 "
-      "(infinite) (KnuthBendix 059)",
-      "[standard][kambites][fpsemigroup][fpsemi]") {
+  LIBSEMIGROUPS_TEST_CASE("Kambites",
+                          "020",
+                          "(fpsemi) MultiStringView smalloverlap/gap/test.gi:77"
+                          "(infinite) (KnuthBendix 059)",
+                          "[standard][kambites][fpsemi]") {
     test_case_1_million_equals<detail::MultiStringView>();
   }
 
@@ -795,23 +864,25 @@ namespace libsemigroups {
     // A slightly more complicated presentation for testing case (6), in
     // which the max piece suffixes of the first two relation words no
     // longer agree (since fh and gh are now pieces).
-    Kambites<T> k;
-    k.set_alphabet("abcde");
-    k.add_rule("cadeca", "baedba");
+    Presentation<std::string> p;
+    p.alphabet("abcde");
+    presentation::add_rule_and_check(p, "cadeca", "baedba");
+
+    Kambites<T> k(p);
     REQUIRE(!k.equal_to("cadece", "baedce"));
   }
 
   LIBSEMIGROUPS_TEST_CASE("Kambites",
                           "021",
                           "(fpsemi) code coverage (std::string)",
-                          "[quick][kambites][fpsemigroup][fpsemi]") {
+                          "[quick][kambites][fpsemi]") {
     test_case_code_cov<std::string>();
   }
 
   LIBSEMIGROUPS_TEST_CASE("Kambites",
                           "022",
                           "(fpsemi) code coverage (MultiStringView)",
-                          "[quick][kambites][fpsemigroup][fpsemi]") {
+                          "[quick][kambites][fpsemi]") {
     test_case_code_cov<detail::MultiStringView>();
   }
 
@@ -821,10 +892,12 @@ namespace libsemigroups {
   void test_case_ex_3_13_14() {
     auto rg = ReportGuard(REPORT);
     // Example 3.13 + 3.14
-    Kambites<T> k;
-    k.set_alphabet("abcd");
-    k.add_rule("abbba", "cdc");
-    std::string p = "c";
+    Presentation<std::string> p;
+    p.alphabet("abcd");
+    presentation::add_rule_and_check(p, "abbba", "cdc");
+
+    Kambites<T> k(p);
+
     REQUIRE(k.normal_form("cdcdcabbbabbbabbcd") == "abbbadcabbbabbbabbcd");
     REQUIRE(
         k.equal_to(k.normal_form("cdcdcabbbabbbabbcd"), "cdcdcabbbabbbabbcd"));
@@ -836,14 +909,14 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("Kambites",
                           "023",
                           "(fpsemi) prefix (std::string)",
-                          "[quick][kambites][fpsemigroup][fpsemi]") {
+                          "[quick][kambites][fpsemi]") {
     test_case_ex_3_13_14<std::string>();
   }
 
   LIBSEMIGROUPS_TEST_CASE("Kambites",
                           "024",
                           "(fpsemi) prefix (MultiStringView)",
-                          "[quick][kambites][fpsemigroup][fpsemi]") {
+                          "[quick][kambites][fpsemi]") {
     test_case_ex_3_13_14<MultiStringView>();
   }
 
@@ -853,9 +926,12 @@ namespace libsemigroups {
   void test_case_ex_3_15() {
     auto rg = ReportGuard(REPORT);
     // Example 3.15
-    Kambites<T> k;
-    k.set_alphabet("abcd");
-    k.add_rule("aabc", "acba");
+    Presentation<std::string> p;
+    p.alphabet("abcd");
+    presentation::add_rule_and_check(p, "aabc", "acba");
+
+    Kambites<T> k(p);
+
     std::string original = "cbacbaabcaabcacbacba";
     std::string expected = "cbaabcabcaabcaabcabc";
 
@@ -874,7 +950,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("Kambites",
                           "025",
                           "(fpsemi) normal_form (Example 3.15) (std::string)",
-                          "[quick][kambites][fpsemigroup][fpsemi]") {
+                          "[quick][kambites][fpsemi]") {
     test_case_ex_3_15<std::string>();
   }
 
@@ -882,7 +958,7 @@ namespace libsemigroups {
       "Kambites",
       "026",
       "(fpsemi) normal_form (Example 3.15) (MultiStringView)",
-      "[quick][kambites][fpsemigroup][fpsemi]") {
+      "[quick][kambites][fpsemi]") {
     test_case_ex_3_15<MultiStringView>();
   }
 
@@ -890,10 +966,12 @@ namespace libsemigroups {
 
   template <typename T>
   void test_case_ex_3_16() {
-    auto        rg = ReportGuard(REPORT);
-    Kambites<T> k;
-    k.set_alphabet("abcd");
-    k.add_rule("abcd", "acca");
+    auto                      rg = ReportGuard(REPORT);
+    Presentation<std::string> p;
+    p.alphabet("abcd");
+    presentation::add_rule_and_check(p, "abcd", "acca");
+
+    Kambites<T> k(p);
     std::string original = "bbcabcdaccaccabcddd";
     std::string expected = "bbcabcdabcdbcdbcddd";
 
@@ -906,8 +984,8 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("Kambites",
                           "027",
-                          "(fpsemi) normal_form (Example 3.16) (std::string)",
-                          "[quick][kambites][fpsemigroup][fpsemi]") {
+                          "(fpsemi) normal_form (Example 3.16) (std::string) ",
+                          "[quick][kambites][fpsemi]") {
     test_case_ex_3_16<std::string>();
   }
 
@@ -915,7 +993,7 @@ namespace libsemigroups {
       "Kambites",
       "028",
       "(fpsemi) normal_form (Example 3.16) (MultiStringView)",
-      "[quick][kambites][fpsemigroup][fpsemi]") {
+      "[quick][kambites][fpsemi]") {
     test_case_ex_3_16<MultiStringView>();
   }
 
@@ -923,10 +1001,12 @@ namespace libsemigroups {
 
   template <typename T>
   void test_case_ex_3_16_again() {
-    auto        rg = ReportGuard(REPORT);
-    Kambites<T> k;
-    k.set_alphabet("abcd");
-    k.add_rule("abcd", "acca");
+    auto                      rg = ReportGuard(REPORT);
+    Presentation<std::string> p;
+    p.alphabet("abcd");
+    presentation::add_rule_and_check(p, "abcd", "acca");
+
+    Kambites<T> k(p);
 
     Strings s;
     s.letters("abcd").first("a").last("aaaa");
@@ -958,7 +1038,7 @@ namespace libsemigroups {
       "Kambites",
       "029",
       "(fpsemi) normal_form (Example 3.16) more exhaustive (std::string)",
-      "[quick][kambites][fpsemigroup][fpsemi][no-valgrind]") {
+      "[quick][kambites][fpsemi][no-valgrind]") {
     test_case_ex_3_16_again<std::string>();
   }
 
@@ -966,7 +1046,7 @@ namespace libsemigroups {
       "Kambites",
       "030",
       "(fpsemi) normal_form (Example 3.16) more exhaustive (MultiStringView)",
-      "[quick][kambites][fpsemigroup][fpsemi][no-valgrind]") {
+      "[quick][kambites][fpsemi][no-valgrind]") {
     test_case_ex_3_16_again<MultiStringView>();
   }
 
@@ -974,14 +1054,17 @@ namespace libsemigroups {
 
   template <typename T>
   void test_case_small() {
-    auto        rg = ReportGuard(REPORT);
-    Kambites<T> k;
-    k.set_alphabet("ab");
-    REQUIRE(k.is_obviously_infinite());
-    REQUIRE(k.size() == POSITIVE_INFINITY);
-    k.add_rule("aaa", "a");
-    k.add_rule("a", "bb");
+    auto                      rg = ReportGuard(REPORT);
+    Presentation<std::string> p;
+    p.alphabet("ab");
+    presentation::add_rule_and_check(p, "aaa", "a");
+    presentation::add_rule_and_check(p, "a", "bb");
+
+    Kambites<T> k(p);
+
     REQUIRE(k.small_overlap_class() == 1);
+    REQUIRE(!is_obviously_infinite(k));
+
     REQUIRE_THROWS_AS(k.size(), LibsemigroupsException);
     REQUIRE_THROWS_AS(k.equal_to("a", "aaa"), LibsemigroupsException);
     REQUIRE(!k.finished());
@@ -992,14 +1075,14 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("Kambites",
                           "031",
                           "(fpsemi) small presentation (std::string)",
-                          "[quick][kambites][fpsemigroup][fpsemi]") {
+                          "[quick][kambites][fpsemi]") {
     test_case_small<std::string>();
   }
 
   LIBSEMIGROUPS_TEST_CASE("Kambites",
                           "032",
                           "(fpsemi) small presentation (MultiStringView)",
-                          "[quick][kambites][fpsemigroup][fpsemi]") {
+                          "[quick][kambites][fpsemi]") {
     test_case_small<MultiStringView>();
   }
 
@@ -1007,12 +1090,15 @@ namespace libsemigroups {
 
   template <typename T>
   void test_case_non_smalloverlap() {
-    auto        rg = ReportGuard(REPORT);
-    Kambites<T> k;
-    k.set_alphabet("abcdefg");
-    k.add_rule("abcd", "aaaeaa");
-    k.add_rule("ef", "dg");
-    k.add_rule("a", "b");
+    auto                      rg = ReportGuard(REPORT);
+    Presentation<std::string> p;
+    p.alphabet("abcdefg");
+    presentation::add_rule_and_check(p, "abcd", "aaaeaa");
+    presentation::add_rule_and_check(p, "ef", "dg");
+    presentation::add_rule_and_check(p, "a", "b");
+
+    Kambites<T> k(p);
+
     REQUIRE(k.small_overlap_class() == 1);
     REQUIRE_THROWS_AS(k.size(), LibsemigroupsException);
     REQUIRE_THROWS_AS(k.equal_to("a", "aaa"), LibsemigroupsException);
@@ -1024,14 +1110,14 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("Kambites",
                           "033",
                           "(fpsemi) non-smalloverlap (std::string)",
-                          "[quick][kambites][fpsemigroup][fpsemi]") {
+                          "[quick][kambites][fpsemi]") {
     test_case_non_smalloverlap<std::string>();
   }
 
   LIBSEMIGROUPS_TEST_CASE("Kambites",
                           "034",
                           "(fpsemi) non-smalloverlap (MultiStringView)",
-                          "[quick][kambites][fpsemigroup][fpsemi]") {
+                          "[quick][kambites][fpsemi]") {
     test_case_non_smalloverlap<MultiStringView>();
   }
 
@@ -1039,12 +1125,15 @@ namespace libsemigroups {
 
   template <typename T>
   void test_case_mt_3() {
-    auto        rg = ReportGuard(REPORT);
-    Kambites<T> k;
-    k.set_alphabet("abcd");
-    k.add_rule("abcd", "accca");
-    REQUIRE(k.number_of_pieces(0) == POSITIVE_INFINITY);
-    REQUIRE(k.number_of_pieces(1) == 4);
+    auto                      rg = ReportGuard(REPORT);
+    Presentation<std::string> p;
+    p.alphabet("abcd");
+    presentation::add_rule_and_check(p, "abcd", "accca");
+    Kambites<T> k(p);
+
+    REQUIRE(ukkonen::number_of_pieces(k.ukkonen(), p.rules[0])
+            == POSITIVE_INFINITY);
+    REQUIRE(ukkonen::number_of_pieces(k.ukkonen(), p.rules[1]) == 4);
 
     REQUIRE(k.small_overlap_class() == 4);
     REQUIRE(k.normal_form("bbcabcdaccaccabcddd") == "bbcabcdaccaccabcddd");
@@ -1057,28 +1146,31 @@ namespace libsemigroups {
     REQUIRE(l.started());
     REQUIRE(l.finished());
 
-    REQUIRE(l.number_of_pieces(0) == POSITIVE_INFINITY);
-    REQUIRE(l.number_of_pieces(1) == 4);
+    REQUIRE(ukkonen::number_of_pieces(l.ukkonen(), p.rules[0])
+            == POSITIVE_INFINITY);
+    REQUIRE(ukkonen::number_of_pieces(l.ukkonen(), p.rules[1]) == 4);
 
     REQUIRE(l.small_overlap_class() == 4);
     REQUIRE(l.normal_form("bbcabcdaccaccabcddd") == "bbcabcdaccaccabcddd");
     REQUIRE(l.equal_to("bbcabcdaccaccabcddd", "bbcabcdaccaccabcddd"));
-    REQUIRE(l.number_of_normal_forms(0, 0) == 0);
-    REQUIRE(l.number_of_normal_forms(6, 6) == 0);
-    REQUIRE(l.number_of_normal_forms(10, 1) == 0);
+
+    auto s = to_froidure_pin(k);
+    REQUIRE(s.number_of_elements_of_length(0, 0) == 0);
+    REQUIRE(s.number_of_elements_of_length(6, 6) == 0);
+    REQUIRE(s.number_of_elements_of_length(10, 1) == 0);
   }
 
   LIBSEMIGROUPS_TEST_CASE("Kambites",
                           "035",
                           "(fpsemi) MT test 3 (std::string)",
-                          "[quick][kambites][fpsemigroup][fpsemi]") {
+                          "[quick][kambites][fpsemi]") {
     test_case_mt_3<std::string>();
   }
 
   LIBSEMIGROUPS_TEST_CASE("Kambites",
                           "036",
                           "(fpsemi) MT test 3 (MultiStringView)",
-                          "[quick][kambites][fpsemigroup][fpsemi]") {
+                          "[quick][kambites][fpsemi]") {
     test_case_mt_3<MultiStringView>();
   }
 
@@ -1086,10 +1178,12 @@ namespace libsemigroups {
 
   template <typename T>
   void test_case_mt_5() {
-    auto        rg = ReportGuard(REPORT);
-    Kambites<T> k;
-    k.set_alphabet("abc");
-    k.add_rule("ac", "cbbbbc");
+    auto                      rg = ReportGuard(REPORT);
+    Presentation<std::string> p;
+    p.alphabet("abc");
+    presentation::add_rule_and_check(p, "ac", "cbbbbc");
+    Kambites<T> k(p);
+
     REQUIRE(k.small_overlap_class() == 4);
 
     REQUIRE(k.normal_form("acbbbbc") == "aac");
@@ -1099,14 +1193,14 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("Kambites",
                           "037",
                           "(fpsemi) MT test 5 (std::string)",
-                          "[quick][kambites][fpsemigroup][fpsemi]") {
+                          "[quick][kambites][fpsemi]") {
     test_case_mt_5<std::string>();
   }
 
   LIBSEMIGROUPS_TEST_CASE("Kambites",
                           "038",
                           "(fpsemi) MT test 5 (MultiStringView)",
-                          "[quick][kambites][fpsemigroup][fpsemi]") {
+                          "[quick][kambites][fpsemi]") {
     test_case_mt_5<MultiStringView>();
   }
 
@@ -1114,10 +1208,11 @@ namespace libsemigroups {
 
   template <typename T>
   void test_case_mt_6() {
-    auto        rg = ReportGuard(REPORT);
-    Kambites<T> k;
-    k.set_alphabet("abc");
-    k.add_rule("ccab", "cbac");
+    auto                      rg = ReportGuard(REPORT);
+    Presentation<std::string> p;
+    p.alphabet("abc");
+    presentation::add_rule_and_check(p, "ccab", "cbac");
+    Kambites<T> k(p);
     REQUIRE(k.small_overlap_class() == 4);
 
     REQUIRE(k.normal_form("bacbaccabccabcbacbac") == "bacbacbaccbaccbacbac");
@@ -1129,14 +1224,14 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("Kambites",
                           "039",
                           "(fpsemi) MT test 6 (std::string)",
-                          "[quick][kambites][fpsemigroup][fpsemi]") {
+                          "[quick][kambites][fpsemi]") {
     test_case_mt_6<std::string>();
   }
 
   LIBSEMIGROUPS_TEST_CASE("Kambites",
                           "040",
                           "(fpsemi) MT test 6 (MultiStringView)",
-                          "[quick][kambites][fpsemigroup][fpsemi]") {
+                          "[quick][kambites][fpsemi]") {
     test_case_mt_6<MultiStringView>();
   }
 
@@ -1144,12 +1239,13 @@ namespace libsemigroups {
 
   template <typename T>
   void test_case_mt_10() {
-    auto        rg = ReportGuard(REPORT);
-    Kambites<T> k;
-    k.set_alphabet("abcdefghij");
-    k.add_rule("afh", "bgh");
-    k.add_rule("hc", "de");
-    k.add_rule("ei", "j");
+    auto                      rg = ReportGuard(REPORT);
+    Presentation<std::string> p;
+    p.alphabet("abcdefghij");
+    presentation::add_rule_and_check(p, "afh", "bgh");
+    presentation::add_rule_and_check(p, "hc", "de");
+    presentation::add_rule_and_check(p, "ei", "j");
+    Kambites<T> k(p);
     REQUIRE(k.small_overlap_class() == POSITIVE_INFINITY);
 
     REQUIRE(k.normal_form("bgdj") == "afdei");
@@ -1159,14 +1255,14 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("Kambites",
                           "041",
                           "(fpsemi) MT test 10 (std::string)",
-                          "[quick][kambites][fpsemigroup][fpsemi]") {
+                          "[quick][kambites][fpsemi]") {
     test_case_mt_6<std::string>();
   }
 
   LIBSEMIGROUPS_TEST_CASE("Kambites",
                           "042",
                           "(fpsemi) MT test 10 (MultiStringView)",
-                          "[quick][kambites][fpsemigroup][fpsemi]") {
+                          "[quick][kambites][fpsemi]") {
     test_case_mt_6<MultiStringView>();
   }
 
@@ -1174,10 +1270,11 @@ namespace libsemigroups {
 
   template <typename T>
   void test_case_mt_13() {
-    auto        rg = ReportGuard(REPORT);
-    Kambites<T> k;
-    k.set_alphabet("abcd");
-    k.add_rule("abcd", "dcba");
+    auto                      rg = ReportGuard(REPORT);
+    Presentation<std::string> p;
+    p.alphabet("abcd");
+    presentation::add_rule_and_check(p, "abcd", "dcba");
+    Kambites<T> k(p);
     REQUIRE(k.small_overlap_class() == 4);
 
     REQUIRE(k.normal_form("dcbdcba") == "abcdbcd");
@@ -1187,24 +1284,25 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("Kambites",
                           "043",
                           "(fpsemi) MT test 13 (std::string)",
-                          "[quick][kambites][fpsemigroup][fpsemi]") {
+                          "[quick][kambites][fpsemi]") {
     test_case_mt_13<std::string>();
   }
 
   LIBSEMIGROUPS_TEST_CASE("Kambites",
                           "044",
                           "(fpsemi) MT test 13 (MultiStringView)",
-                          "[quick][kambites][fpsemigroup][fpsemi]") {
+                          "[quick][kambites][fpsemi]") {
     test_case_mt_13<MultiStringView>();
   }
 
   ////////////////////////////////////////////////////////////////////////
   template <typename T>
   void test_case_mt_14() {
-    auto        rg = ReportGuard(REPORT);
-    Kambites<T> k;
-    k.set_alphabet("abcd");
-    k.add_rule("abca", "dcbd");
+    auto                      rg = ReportGuard(REPORT);
+    Presentation<std::string> p;
+    p.alphabet("abcd");
+    presentation::add_rule_and_check(p, "abca", "dcbd");
+    Kambites<T> k(p);
     REQUIRE(k.small_overlap_class() == 4);
 
     REQUIRE(k.normal_form("dcbabca") == "abcacbd");
@@ -1214,14 +1312,14 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("Kambites",
                           "045",
                           "(fpsemi) MT test 14 (std::string)",
-                          "[quick][kambites][fpsemigroup][fpsemi]") {
+                          "[quick][kambites][fpsemi]") {
     test_case_mt_14<std::string>();
   }
 
   LIBSEMIGROUPS_TEST_CASE("Kambites",
                           "046",
                           "(fpsemi) MT test 14 (MultiStringView)",
-                          "[quick][kambites][fpsemigroup][fpsemi]") {
+                          "[quick][kambites][fpsemi]") {
     test_case_mt_14<MultiStringView>();
   }
 
@@ -1229,11 +1327,13 @@ namespace libsemigroups {
 
   template <typename T>
   void test_case_mt_15() {
-    auto        rg = ReportGuard(REPORT);
-    Kambites<T> k;
-    k.set_alphabet("abcd");
-    k.add_rule("abcd", "dcba");
-    k.add_rule("adda", "dbbd");
+    auto                      rg = ReportGuard(REPORT);
+    Presentation<std::string> p;
+    p.alphabet("abcd");
+    presentation::add_rule_and_check(p, "abcd", "dcba");
+    presentation::add_rule_and_check(p, "adda", "dbbd");
+
+    Kambites<T> k(p);
     REQUIRE(k.small_overlap_class() == 4);
 
     REQUIRE(k.normal_form("dbbabcd") == "addacba");
@@ -1243,14 +1343,14 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("Kambites",
                           "047",
                           "(fpsemi) MT test 15 (std::string)",
-                          "[quick][kambites][fpsemigroup][fpsemi]") {
+                          "[quick][kambites][fpsemi]") {
     test_case_mt_15<std::string>();
   }
 
   LIBSEMIGROUPS_TEST_CASE("Kambites",
                           "048",
                           "(fpsemi) MT test 15 (MultiStringView)",
-                          "[quick][kambites][fpsemigroup][fpsemi]") {
+                          "[quick][kambites][fpsemi]") {
     test_case_mt_15<MultiStringView>();
   }
 
@@ -1258,11 +1358,12 @@ namespace libsemigroups {
 
   template <typename T>
   void test_case_mt_16() {
-    auto        rg = ReportGuard(REPORT);
-    Kambites<T> k;
-    k.set_alphabet("abcdefg");
-    k.add_rule("abcd", "acca");
-    k.add_rule("gf", "ge");
+    auto                      rg = ReportGuard(REPORT);
+    Presentation<std::string> p;
+    p.alphabet("abcdefg");
+    presentation::add_rule_and_check(p, "abcd", "acca");
+    presentation::add_rule_and_check(p, "gf", "ge");
+    Kambites<T> k(p);
     REQUIRE(k.small_overlap_class() == 4);
 
     REQUIRE(k.normal_form("accabcdgf") == "abcdbcdge");
@@ -1272,14 +1373,14 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("Kambites",
                           "049",
                           "(fpsemi) MT test 16 (std::string)",
-                          "[quick][kambites][fpsemigroup][fpsemi]") {
+                          "[quick][kambites][fpsemi]") {
     test_case_mt_16<std::string>();
   }
 
   LIBSEMIGROUPS_TEST_CASE("Kambites",
                           "050",
                           "(fpsemi) MT test 16 (MultiStringView)",
-                          "[quick][kambites][fpsemigroup][fpsemi]") {
+                          "[quick][kambites][fpsemi]") {
     test_case_mt_16<MultiStringView>();
   }
 
@@ -1287,11 +1388,15 @@ namespace libsemigroups {
 
   template <typename T>
   void test_case_mt_17() {
-    auto        rg = ReportGuard(REPORT);
-    Kambites<T> k;
-    k.set_alphabet("abcd");
-    k.add_rule("ababbabbbabbbb", "abbbbbabbbbbbabbbbbbbabbbbbbbb");
-    k.add_rule("cdcddcdddcdddd", "cdddddcddddddcdddddddcdddddddd");
+    auto                      rg = ReportGuard(REPORT);
+    Presentation<std::string> p;
+    p.alphabet("abcd");
+    presentation::add_rule_and_check(
+        p, "ababbabbbabbbb", "abbbbbabbbbbbabbbbbbbabbbbbbbb");
+    presentation::add_rule_and_check(
+        p, "cdcddcdddcdddd", "cdddddcddddddcdddddddcdddddddd");
+
+    Kambites<T> k(p);
     REQUIRE(k.small_overlap_class() == 4);
 
     REQUIRE(k.normal_form("abbbacdddddcddddddcdddddddcdddddddd")
@@ -1303,14 +1408,14 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("Kambites",
                           "051",
                           "(fpsemi) MT test 17 (std::string)",
-                          "[quick][kambites][fpsemigroup][fpsemi]") {
+                          "[quick][kambites][fpsemi]") {
     test_case_mt_17<std::string>();
   }
 
   LIBSEMIGROUPS_TEST_CASE("Kambites",
                           "052",
                           "(fpsemi) MT test 17 (MultiStringView)",
-                          "[quick][kambites][fpsemigroup][fpsemi]") {
+                          "[quick][kambites][fpsemi]") {
     test_case_mt_17<MultiStringView>();
   }
 
@@ -1318,11 +1423,12 @@ namespace libsemigroups {
 
   template <typename T>
   void test_case_weak_1() {
-    auto        rg = ReportGuard(REPORT);
-    Kambites<T> k;
-    k.set_alphabet("abcd");
-    k.add_rule("acba", "aabc");
-    k.add_rule("acba", "dbbbd");
+    auto                      rg = ReportGuard(REPORT);
+    Presentation<std::string> p;
+    p.alphabet("abcd");
+    presentation::add_rule_and_check(p, "acba", "aabc");
+    presentation::add_rule_and_check(p, "acba", "dbbbd");
+    Kambites<T> k(p);
 
     REQUIRE(k.small_overlap_class() == 4);
     REQUIRE(k.equal_to("aaabc", "adbbbd"));
@@ -1345,14 +1451,15 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("Kambites",
                           "053",
                           "(fpsemi) weak C(4) not strong x 1 (std::string)",
-                          "[quick][kambites][fpsemigroup][fpsemi]") {
+                          "[quick][kambites][fpsemi]") {
     test_case_weak_1<std::string>();
   }
 
-  LIBSEMIGROUPS_TEST_CASE("Kambites",
-                          "054",
-                          "(fpsemi) weak C(4) not strong x 1 (MultiStringView)",
-                          "[quick][kambites][fpsemigroup][fpsemi]") {
+  LIBSEMIGROUPS_TEST_CASE(
+      "Kambites",
+      "054",
+      "(fpsemi) weak C(4) not strong x 1 (MultiStringView) ",
+      "[quick][kambites][fpsemi]") {
     test_case_weak_1<MultiStringView>();
   }
 
@@ -1360,11 +1467,13 @@ namespace libsemigroups {
 
   template <typename T>
   void test_case_weak_2() {
-    auto        rg = ReportGuard(REPORT);
-    Kambites<T> k;
-    k.set_alphabet("abcd");
-    k.add_rule("acba", "aabc");
-    k.add_rule("acba", "adbd");
+    auto                      rg = ReportGuard(REPORT);
+    Presentation<std::string> p;
+    p.alphabet("abcd");
+    presentation::add_rule_and_check(p, "acba", "aabc");
+    presentation::add_rule_and_check(p, "acba", "adbd");
+
+    Kambites<T> k(p);
     REQUIRE(k.equal_to("acbacba", "aabcabc"));
     REQUIRE(k.normal_form("acbacba") == "aabcabc");
     REQUIRE(k.equal_to(k.normal_form("acbacba"), "aabcabc"));
@@ -1381,14 +1490,15 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("Kambites",
                           "055",
                           "(fpsemi) weak C(4) not strong x 2 (std::string)",
-                          "[quick][kambites][fpsemigroup][fpsemi]") {
+                          "[quick][kambites][fpsemi]") {
     test_case_weak_2<std::string>();
   }
 
-  LIBSEMIGROUPS_TEST_CASE("Kambites",
-                          "056",
-                          "(fpsemi) weak C(4) not strong x 2 (MultiStringView)",
-                          "[quick][kambites][fpsemigroup][fpsemi]") {
+  LIBSEMIGROUPS_TEST_CASE(
+      "Kambites",
+      "056",
+      "(fpsemi) weak C(4) not strong x 2 (MultiStringView) ",
+      "[quick][kambites][fpsemi]") {
     test_case_weak_2<MultiStringView>();
   }
 
@@ -1396,11 +1506,13 @@ namespace libsemigroups {
 
   template <typename T>
   void test_case_weak_3() {
-    auto        rg = ReportGuard(REPORT);
-    Kambites<T> k;
-    k.set_alphabet("abcde");
-    k.add_rule("bceac", "aeebbc");
-    k.add_rule("aeebbc", "dabcd");
+    auto rg = ReportGuard(REPORT);
+
+    Presentation<std::string> p;
+    p.alphabet("abcde");
+    presentation::add_rule_and_check(p, "bceac", "aeebbc");
+    presentation::add_rule_and_check(p, "aeebbc", "dabcd");
+    Kambites<T> k(p);
     REQUIRE(k.normal_form("bceacdabcd") == "aeebbcaeebbc");
     REQUIRE(k.equal_to(k.normal_form("bceacdabcd"), "aeebbcaeebbc"));
     REQUIRE(k.equal_to("aeebbcaeebbc", k.normal_form("bceacdabcd")));
@@ -1416,14 +1528,15 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("Kambites",
                           "057",
                           "(fpsemi) weak C(4) not strong x 3 (std::string)",
-                          "[quick][kambites][fpsemigroup][fpsemi]") {
+                          "[quick][kambites][fpsemi]") {
     test_case_weak_3<std::string>();
   }
 
-  LIBSEMIGROUPS_TEST_CASE("Kambites",
-                          "058",
-                          "(fpsemi) weak C(4) not strong x 3 (MultiStringView)",
-                          "[quick][kambites][fpsemigroup][fpsemi]") {
+  LIBSEMIGROUPS_TEST_CASE(
+      "Kambites",
+      "058",
+      "(fpsemi) weak C(4) not strong x 3 (MultiStringView) ",
+      "[quick][kambites][fpsemi]") {
     test_case_weak_3<MultiStringView>();
   }
 
@@ -1431,11 +1544,14 @@ namespace libsemigroups {
 
   template <typename T>
   void test_case_weak_4() {
-    auto        rg = ReportGuard(REPORT);
-    Kambites<T> k;
-    k.set_alphabet("abcd");
-    k.add_rule("acba", "aabc");
-    k.add_rule("acba", "dbbd");
+    auto rg = ReportGuard(REPORT);
+
+    Presentation<std::string> p;
+    p.alphabet("abcd");
+    presentation::add_rule_and_check(p, "acba", "aabc");
+    presentation::add_rule_and_check(p, "acba", "dbbd");
+
+    Kambites<T> k(p);
     REQUIRE(k.normal_form("bbacbcaaabcbbd") == "bbacbcaaabcbbd");
     REQUIRE(k.equal_to(k.normal_form("bbacbcaaabcbbd"), "bbacbcaaabcbbd"));
     REQUIRE(k.equal_to("bbacbcaaabcbbd", k.normal_form("bbacbcaaabcbbd")));
@@ -1447,14 +1563,15 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("Kambites",
                           "059",
                           "(fpsemi) weak C(4) not strong x 4 (std::string)",
-                          "[quick][kambites][fpsemigroup][fpsemi]") {
+                          "[quick][kambites][fpsemi]") {
     test_case_weak_4<std::string>();
   }
 
-  LIBSEMIGROUPS_TEST_CASE("Kambites",
-                          "060",
-                          "(fpsemi) weak C(4) not strong x 4 (MultiStringView)",
-                          "[quick][kambites][fpsemigroup][fpsemi]") {
+  LIBSEMIGROUPS_TEST_CASE(
+      "Kambites",
+      "060",
+      "(fpsemi) weak C(4) not strong x 4 (MultiStringView) ",
+      "[quick][kambites][fpsemi]") {
     test_case_weak_4<MultiStringView>();
   }
 
@@ -1462,11 +1579,14 @@ namespace libsemigroups {
 
   template <typename T>
   void test_case_weak_5() {
-    Kambites<T> k;
-    k.set_alphabet("abcde");
-    k.add_rule("abcd", "aaeaaa");
-    REQUIRE(number_of_subwords(k.cbegin_rules(), k.cend_rules()) == 16);
-    size_t n = sum_lengths(k.cbegin_rules(), k.cend_rules());
+    Presentation<std::string> p;
+    p.alphabet("abcde");
+    presentation::add_rule_and_check(p, "abcd", "aaeaaa");
+
+    Kambites<T> k(p);
+    REQUIRE(ukkonen::number_of_distinct_subwords(k.ukkonen()) == 25);
+
+    size_t n = presentation::length(p);
     REQUIRE(n == 10);
     REQUIRE(n * n == 100);
   }
@@ -1474,14 +1594,15 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("Kambites",
                           "061",
                           "(fpsemi) weak C(4) not strong x 5 (std::string)",
-                          "[quick][kambites][fpsemigroup][fpsemi]") {
+                          "[quick][kambites][fpsemi]") {
     test_case_weak_5<std::string>();
   }
 
-  LIBSEMIGROUPS_TEST_CASE("Kambites",
-                          "062",
-                          "(fpsemi) weak C(4) not strong x 5 (MultiStringView)",
-                          "[quick][kambites][fpsemigroup][fpsemi]") {
+  LIBSEMIGROUPS_TEST_CASE(
+      "Kambites",
+      "062",
+      "(fpsemi) weak C(4) not strong x 5 (MultiStringView) ",
+      "[quick][kambites][fpsemi]") {
     test_case_weak_5<MultiStringView>();
   }
 
@@ -1489,10 +1610,11 @@ namespace libsemigroups {
 
   template <typename T>
   void test_case_weak_6() {
-    Kambites<T> k;
-    k.set_alphabet("abcd");
-    k.add_rule("acba", "aabc");
-    k.add_rule("acba", "adbd");
+    Presentation<std::string> p;
+    p.alphabet("abcd");
+    presentation::add_rule_and_check(p, "acba", "aabc");
+    presentation::add_rule_and_check(p, "acba", "adbd");
+    Kambites<T> k(p);
     REQUIRE(k.normal_form("acbacba") == "aabcabc");
     REQUIRE(k.equal_to(k.normal_form("acbacba"), "aabcabc"));
   }
@@ -1500,14 +1622,15 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("Kambites",
                           "063",
                           "(fpsemi) weak C(4) not strong x 6 (std::string)",
-                          "[quick][kambites][fpsemigroup][fpsemi]") {
+                          "[quick][kambites][fpsemi]") {
     test_case_weak_6<std::string>();
   }
 
-  LIBSEMIGROUPS_TEST_CASE("Kambites",
-                          "064",
-                          "(fpsemi) weak C(4) not strong x 6 (MultiStringView)",
-                          "[quick][kambites][fpsemigroup][fpsemi]") {
+  LIBSEMIGROUPS_TEST_CASE(
+      "Kambites",
+      "064",
+      "(fpsemi) weak C(4) not strong x 6 (MultiStringView) ",
+      "[quick][kambites][fpsemi]") {
     test_case_weak_6<MultiStringView>();
   }
 
@@ -1515,24 +1638,26 @@ namespace libsemigroups {
 
   template <typename T>
   void test_case_konovalov() {
-    Kambites<T> k;
-    k.set_alphabet("abAB");
-    k.add_rule("Abba", "BB");
-    k.add_rule("Baab", "AA");
+    Presentation<std::string> p;
+    p.alphabet("abAB");
+    presentation::add_rule_and_check(p, "Abba", "BB");
+    presentation::add_rule_and_check(p, "Baab", "AA");
+
+    Kambites<T> k(p);
     REQUIRE(k.small_overlap_class() == 2);
   }
 
   LIBSEMIGROUPS_TEST_CASE("Kambites",
                           "065",
                           "(fpsemi) Konovalov example (std::string)",
-                          "[quick][kambites][fpsemigroup][fpsemi]") {
+                          "[quick][kambites][fpsemi]") {
     test_case_konovalov<std::string>();
   }
 
   LIBSEMIGROUPS_TEST_CASE("Kambites",
                           "066",
                           "(fpsemi) Konovalov example (MultiStringView)",
-                          "[quick][kambites][fpsemigroup][fpsemi]") {
+                          "[quick][kambites][fpsemi]") {
     test_case_konovalov<MultiStringView>();
   }
 
@@ -1540,10 +1665,12 @@ namespace libsemigroups {
 
   template <typename T>
   void test_case_long_words() {
-    Kambites<T> k;
-    k.set_alphabet("abcde");
-    k.add_rule("bceac", "aeebbc");
-    k.add_rule("aeebbc", "dabcd");
+    Presentation<std::string> p;
+    p.alphabet("abcde");
+    presentation::add_rule_and_check(p, "bceac", "aeebbc");
+    presentation::add_rule_and_check(p, "aeebbc", "dabcd");
+
+    Kambites<T> k(p);
     REQUIRE(k.small_overlap_class() == 4);
 
     std::string w1  = "bceac";
@@ -1556,19 +1683,17 @@ namespace libsemigroups {
     }
   }
 
-  LIBSEMIGROUPS_TEST_CASE(
-      "Kambites",
-      "067",
-      "(fpsemi) long words (std::string)",
-      "[quick][kambites][fpsemigroup][fpsemi][no-valgrind]") {
+  LIBSEMIGROUPS_TEST_CASE("Kambites",
+                          "067",
+                          "(fpsemi) long words (std::string)",
+                          "[quick][kambites][fpsemi][no-valgrind]") {
     test_case_long_words<std::string>();
   }
 
-  LIBSEMIGROUPS_TEST_CASE(
-      "Kambites",
-      "068",
-      "(fpsemi) long words (MultiStringView)",
-      "[quick][kambites][fpsemigroup][fpsemi][no-valgrind]") {
+  LIBSEMIGROUPS_TEST_CASE("Kambites",
+                          "068",
+                          "(fpsemi) long words (MultiStringView)",
+                          "[quick][kambites][fpsemi][no-valgrind]") {
     test_case_long_words<detail::MultiStringView>();
   }
 
@@ -1587,14 +1712,17 @@ namespace libsemigroups {
     uint64_t total_c4 = 0;
     uint64_t total    = 0;
 
+    Presentation<std::string> p;
+    p.alphabet("ab");
+    Kambites<std::string> k;
+
     for (auto const& lhs : x) {
       y.first(lhs);
       for (auto const& rhs : (y | skip_n(1))) {
         REQUIRE(lhs != rhs);
         total++;
-        Kambites<std::string> k;
-        k.set_alphabet("ab");
-        k.add_rule(lhs, rhs);
+        p.rules = {lhs, rhs};
+        k.init(p);
         if (k.small_overlap_class() >= 4) {
           total_c4++;
         }
@@ -1607,28 +1735,29 @@ namespace libsemigroups {
       "Kambites",
       "069",
       "(fpsemi) almost all 2-generated 1-relation monoids are C(4)",
-      "[quick][kambites][fpsemigroup][fpsemi]") {
+      "[quick][kambites][fpsemi]") {
     auto x = count_2_gen_1_rel<std::string>(1, 7);
     REQUIRE(x.first == 1);
-    REQUIRE(x.second == 7875);
+    REQUIRE(x.second == 7'875);
   }
 
+  // Takes approx 5s
   LIBSEMIGROUPS_TEST_CASE(
       "Kambites",
       "070",
       "(fpsemi) almost all 2-generated 1-relation monoids are C(4)",
-      "[extreme][kambites][fpsemigroup][fpsemi]") {
+      "[extreme][kambites][fpsemi]") {
     auto x = count_2_gen_1_rel<std::string>(1, 11);
-    REQUIRE(x.first == 18171);
-    REQUIRE(x.second == 2092035);
+    REQUIRE(x.first == 18'171);
+    REQUIRE(x.second == 2'092'035);
   }
 
-  // Takes approx. 31s
+  // Takes approx. 21s
   LIBSEMIGROUPS_TEST_CASE(
       "Kambites",
       "071",
       "(fpsemi) almost all 2-generated 1-relation monoids are C(4)",
-      "[extreme][kambites][fpsemigroup][fpsemi]") {
+      "[extreme][kambites][fpsemi]") {
     auto x = count_2_gen_1_rel<std::string>(1, 12);
     REQUIRE(x.first == 235'629);
     REQUIRE(x.second == 8'378'371);
@@ -1638,94 +1767,57 @@ namespace libsemigroups {
       "Kambites",
       "072",
       "(fpsemi) almost all 2-generated 1-relation monoids are C(4)",
-      "[fail][kambites][fpsemigroup][fpsemi]") {
+      "[fail][kambites][fpsemi]") {
     auto x = count_2_gen_1_rel<std::string>(1, 13);
     REQUIRE(x.first == 0);
     REQUIRE(x.second == 0);
   }
 
+  // Takes about 1m45s
   LIBSEMIGROUPS_TEST_CASE(
       "Kambites",
       "073",
       "(fpsemi) almost all 2-generated 1-relation monoids are C(4)",
-      "[extreme][kambites][fpsemigroup][fpsemi]") {
+      "[extreme][kambites][fpsemi]") {
     std::cout.precision(10);
     size_t const sample_size = 1000;
-    std::cout << "Sample size = " << sample_size << std::endl;
+    std::cout << std::string(69, '-') << std::endl;
+    fmt::print("Sample size = {}\n", sample_size);
+    std::cout << std::string(69, '-') << std::endl;
     for (size_t i = 8; i < 100; ++i) {
       size_t const min = 7;
       size_t const max = i + 1;
       auto         x   = sample("ab", 1, min, max, sample_size);
-      std::cout << "Estimate of C(4) / non-C(4) (length " << min << " to "
-                << max << ") =           " << std::fixed
-                << double(std::get<0>(x)) / sample_size << std::endl;
-      std::cout << "Estimate of confluent / non-confluent (length " << min
-                << " to " << max << ") = " << std::fixed
-                << double(std::get<1>(x)) / sample_size << std::endl
-                << std::endl;
+      fmt::print(
+          "Estimate of C(4) / non-C(4) {:<9} (length [{}, {:>2})) = {:.10f}\n",
+          " ",
+          min,
+          max + 1,
+          double(std::get<0>(x)) / sample_size);
+
+      fmt::print("Estimate of confluent / non-confluent (length "
+                 "[{}, {:>2})) = {:.10f}\n",
+                 min,
+                 max + 1,
+                 double(std::get<1>(x)) / sample_size);
+      std::cout << std::string(69, '-') << std::endl;
     }
   }
-
-  ////////////////////////////////////////////////////////////////////////
-  // Some tests for exploration of the space of all 3-generator 1-relation
-  // semigroups
-  ////////////////////////////////////////////////////////////////////////
 
   // TODO implement "cartesian" combinator for rx-ranges
-  // takes about 15s
-  LIBSEMIGROUPS_TEST_CASE("Kambites",
-                          "074",
-                          "(fpsemi) 3-generated 1-relation C(4)-semigroups",
-                          "[extreme][kambites][fpsemigroup][fpsemi]") {
-    Strings s1;
-    s1.letters("abc").min(1).max(8);
-    REQUIRE((s1 | count()) == 3279);
-    Strings s2;
-    s2.letters("abc").max(8);
-
-    size_t                          total_c4 = 0;
-    size_t                          total    = 0;
-    std::unordered_set<std::string> set;
-
-    for (auto const& lhs : s1) {
-      s2.first(lhs);
-      for (auto const& rhs : s2 | skip_n(1)) {
-        total++;
-        Kambites<std::string> k;
-        k.set_alphabet("abc");
-        k.add_rule(lhs, rhs);
-        if (k.small_overlap_class() >= 4) {
-          auto tmp = lhs + "#" + rhs;
-          if (set.insert(tmp).second) {
-            auto u = swap_a_b_c(lhs);
-            auto v = swap_a_b_c(rhs);
-            for (size_t i = 0; i < 5; ++i) {
-              if (shortlex_compare(u[i], v[i])) {
-                set.insert(u[i] + "#" + v[i]);
-              } else {
-                set.insert(v[i] + "#" + u[i]);
-              }
-            }
-            // std::cout << lhs << " = " << rhs << std::endl;
-            total_c4++;
-          }
-        }
-      }
-    }
-    REQUIRE(total_c4 == 307'511);
-    REQUIRE(total == 5'374'281);
-  }
 
   LIBSEMIGROUPS_TEST_CASE("Kambites",
                           "079",
                           "(fpsemi) normal form possible bug",
-                          "[standard][kambites][fpsemigroup][fpsemi]") {
+                          "[standard][kambites][fpsemi]") {
     // There was a bug in MultiStringView::append, that caused this
     // test to fail, so we keep this test to check that the bug in
     // MultiStringView::append is resolved.
-    Kambites<MultiStringView> k;
-    k.set_alphabet("ab");
-    k.add_rule("aaabbab", "bbbaaba");
+    Presentation<std::string> p;
+    p.alphabet("ab");
+    presentation::add_rule_and_check(p, "aaabbab", "bbbaaba");
+
+    Kambites<MultiStringView> k(p);
 
     std::vector<std::string> words
         = {"bbbaabaabbbbbaabaabaaabbaabbbbbaaabaaabababbbbaaabbababab"
@@ -2475,84 +2567,85 @@ namespace libsemigroups {
     }
   }
 
-}  // namespace fpsemigroup
+  /*
+      // namespace congruence {
+      //   LIBSEMIGROUPS_TEST_CASE("Kambites",
+      //                           "075",
+      //                           "(cong) example 1",
+      //                           "[quick][kambites][fpsemi]") {
+      //     auto     rg = ReportGuard(REPORT);
+      //     Kambites k;
+      //     k.set_number_of_generators(2);
+      //     REQUIRE(k.is_quotient_obviously_infinite());
+      //     REQUIRE(k.number_of_classes() == POSITIVE_INFINITY);
+      //     k.add_pair({0, 0, 0}, {0});
+      //     k.add_pair({0}, {1, 1});
+      //     REQUIRE(k.kambites().small_overlap_class() == 1);
+      //     REQUIRE(k.const_contains({0, 0}, {0}) == tril::unknown);
+      //   }
 
-// namespace congruence {
-//   LIBSEMIGROUPS_TEST_CASE("Kambites",
-//                           "075",
-//                           "(cong) example 1",
-//                           "[quick][kambites][fpsemigroup][fpsemi]") {
-//     auto     rg = ReportGuard(REPORT);
-//     Kambites k;
-//     k.set_number_of_generators(2);
-//     REQUIRE(k.is_quotient_obviously_infinite());
-//     REQUIRE(k.number_of_classes() == POSITIVE_INFINITY);
-//     k.add_pair({0, 0, 0}, {0});
-//     k.add_pair({0}, {1, 1});
-//     REQUIRE(k.kambites().small_overlap_class() == 1);
-//     REQUIRE(k.const_contains({0, 0}, {0}) == tril::unknown);
-//   }
+      //  LIBSEMIGROUPS_TEST_CASE("Kambites",
+      //                          "076",
+      //                          "(cong) example 2",
+      //                          "[quick][kambites][cong][congruence]") {
+      //    auto     rg = ReportGuard(REPORT);
+      //    Kambites k;
+      //    k.set_number_of_generators(7);
+      //    k.add_pair({0, 1, 2, 3}, {0, 0, 0, 4, 0, 0});
+      //    k.add_pair({4, 5}, {3, 6});
+      //    REQUIRE(k.kambites().small_overlap_class() == 4);
+      //    REQUIRE(k.number_of_classes() == POSITIVE_INFINITY);
+      //    REQUIRE_THROWS_AS(k.number_of_non_trivial_classes(),
+      //                      LibsemigroupsException);
 
-//  LIBSEMIGROUPS_TEST_CASE("Kambites",
-//                          "076",
-//                          "(cong) example 2",
-//                          "[quick][kambites][cong][congruence]") {
-//    auto     rg = ReportGuard(REPORT);
-//    Kambites k;
-//    k.set_number_of_generators(7);
-//    k.add_pair({0, 1, 2, 3}, {0, 0, 0, 4, 0, 0});
-//    k.add_pair({4, 5}, {3, 6});
-//    REQUIRE(k.kambites().small_overlap_class() == 4);
-//    REQUIRE(k.number_of_classes() == POSITIVE_INFINITY);
-//    REQUIRE_THROWS_AS(k.number_of_non_trivial_classes(),
-//                      LibsemigroupsException);
+      //    REQUIRE(k.contains({0, 1, 2, 3}, {0, 0, 0, 4, 0, 0}));
+      //    REQUIRE(k.contains({4, 5}, {3, 6}));
+      //    REQUIRE(k.contains({0, 0, 0, 0, 0, 4, 5}, {0, 0, 0, 0, 0, 3, 6}));
+      //    REQUIRE(k.contains({4, 5, 0, 1, 0, 1, 0}, {3, 6, 0, 1, 0, 1, 0}));
+      //    REQUIRE_NOTHROW(k.quotient_froidure_pin());
+      //  }
 
-//    REQUIRE(k.contains({0, 1, 2, 3}, {0, 0, 0, 4, 0, 0}));
-//    REQUIRE(k.contains({4, 5}, {3, 6}));
-//    REQUIRE(k.contains({0, 0, 0, 0, 0, 4, 5}, {0, 0, 0, 0, 0, 3, 6}));
-//    REQUIRE(k.contains({4, 5, 0, 1, 0, 1, 0}, {3, 6, 0, 1, 0, 1, 0}));
-//    REQUIRE_NOTHROW(k.quotient_froidure_pin());
-//  }
+      //  LIBSEMIGROUPS_TEST_CASE("Kambites",
+      //                          "077",
+      //                          "(cong) code coverage",
+      //                          "[quick][kambites][cong][congruence]") {
+      //    fpsemigroup::Kambites<std::string> k;
+      //    p.alphabet("abcd");
+      //    presentation::add_rule_and_check(p, "ababbabbbabbbb",
+      "abbbbbabbbbbbabbbbbbbabbbbbbbb");
+      //    presentation::add_rule_and_check(p, "cdcddcdddcdddd",
+      "cdddddcddddddcdddddddcdddddddd");
+      //    Kambites l(k);
+      //    l.run();
+      //    REQUIRE(l.contains({0, 1, 1, 1, 0}, {0, 1, 1, 1, 0}));
+      //    REQUIRE(l.contains(
+      //        {0, 1, 1, 1, 0, 2, 3, 3, 3, 3, 3, 2, 3, 3, 3, 3, 3, 3,
+      //         2, 3, 3, 3, 3, 3, 3, 3, 2, 3, 3, 3, 3, 3, 3, 3, 3},
+      //        {0, 1, 1, 1, 0, 2, 3, 2, 3, 3, 2, 3, 3, 3, 2, 3, 3, 3, 3}));
+      //    REQUIRE(l.finished());
+      //    REQUIRE(l.is_quotient_obviously_infinite());
+      //    REQUIRE(!l.is_quotient_obviously_finite());
+      //    REQUIRE(l.number_of_classes() == POSITIVE_INFINITY);
+      //    REQUIRE(l.class_index_to_word(100) == word_type({0, 1, 0, 0}));
+      //    REQUIRE_NOTHROW(l.quotient_froidure_pin());
+      //    REQUIRE(l.word_to_class_index({0, 1, 0, 0}) == 100);
+      //  }
 
-//  LIBSEMIGROUPS_TEST_CASE("Kambites",
-//                          "077",
-//                          "(cong) code coverage",
-//                          "[quick][kambites][cong][congruence]") {
-//    fpsemigroup::Kambites<std::string> k;
-//    k.set_alphabet("abcd");
-//    k.add_rule("ababbabbbabbbb", "abbbbbabbbbbbabbbbbbbabbbbbbbb");
-//    k.add_rule("cdcddcdddcdddd", "cdddddcddddddcdddddddcdddddddd");
-//    Kambites l(k);
-//    l.run();
-//    REQUIRE(l.contains({0, 1, 1, 1, 0}, {0, 1, 1, 1, 0}));
-//    REQUIRE(l.contains(
-//        {0, 1, 1, 1, 0, 2, 3, 3, 3, 3, 3, 2, 3, 3, 3, 3, 3, 3,
-//         2, 3, 3, 3, 3, 3, 3, 3, 2, 3, 3, 3, 3, 3, 3, 3, 3},
-//        {0, 1, 1, 1, 0, 2, 3, 2, 3, 3, 2, 3, 3, 3, 2, 3, 3, 3, 3}));
-//    REQUIRE(l.finished());
-//    REQUIRE(l.is_quotient_obviously_infinite());
-//    REQUIRE(!l.is_quotient_obviously_finite());
-//    REQUIRE(l.number_of_classes() == POSITIVE_INFINITY);
-//    REQUIRE(l.class_index_to_word(100) == word_type({0, 1, 0, 0}));
-//    REQUIRE_NOTHROW(l.quotient_froidure_pin());
-//    REQUIRE(l.word_to_class_index({0, 1, 0, 0}) == 100);
-//  }
-
-//  LIBSEMIGROUPS_TEST_CASE("Kambites",
-//                          "078",
-//                          "(cong) large number of rules",
-//                          "[quick][kambites][cong][congruence]") {
-//    FroidurePin<LeastTransf<6>> S({LeastTransf<6>({1, 2, 3, 4, 5, 0}),
-//                                   LeastTransf<6>({1, 0, 2, 3, 4, 5}),
-//                                   LeastTransf<6>({0, 1, 2, 3, 4, 0})});
-//    REQUIRE(S.size() == 46'656);
-//    Kambites k;
-//    k.set_number_of_generators(3);
-//    for (auto it = S.cbegin_rules(); it != S.cend_rules(); ++it) {
-//      k.add_pair(it->first, it->second);
-//    }
-//    REQUIRE(k.kambites().small_overlap_class() == 1);
-//  }
-//}  // namespace congruence
-      */
+      //  LIBSEMIGROUPS_TEST_CASE("Kambites",
+      //                          "078",
+      //                          "(cong) large number of rules",
+      //                          "[quick][kambites][cong][congruence]") {
+      //    FroidurePin<LeastTransf<6>> S({LeastTransf<6>({1, 2, 3, 4, 5, 0}),
+      //                                   LeastTransf<6>({1, 0, 2, 3, 4, 5}),
+      //                                   LeastTransf<6>({0, 1, 2, 3, 4, 0})});
+      //    REQUIRE(S.size() == 46'656);
+      //    Kambites k;
+      //    k.set_number_of_generators(3);
+      //    for (auto it = S.cbegin_rules(); it != S.cend_rules(); ++it) {
+      //      k.add_pair(it->first, it->second);
+      //    }
+      //    REQUIRE(k.kambites().small_overlap_class() == 1);
+      //  }
+      //}  // namespace congruence
+            */
 }  // namespace libsemigroups

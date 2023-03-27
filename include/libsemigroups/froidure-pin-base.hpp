@@ -901,6 +901,12 @@ namespace libsemigroups {
     //! return value of FroidurePin::number_of_generators.
     void enumerate(size_t limit);
 
+    // TODO doc
+    size_t number_of_elements_of_length(size_t min, size_t max) const;
+
+    // TODO doc
+    size_t number_of_elements_of_length(size_t len) const;
+
     //! Return type of \ref cbegin_rules and \ref cend_rules.
     class const_rule_iterator {
 #ifndef DOXYGEN_SHOULD_SKIP_THIS

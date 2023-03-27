@@ -68,15 +68,21 @@ namespace libsemigroups {
   // Ukkonen - constructors - public
   ////////////////////////////////////////////////////////////////////////
 
-  // TODO init all data members
-  Ukkonen::Ukkonen()
-      : _max_word_length(0),
-        _multiplicity(),
-        _next_unique_letter(static_cast<unique_letter_type>(-1)),
-        _nodes(1),
-        _ptr(0, 0),
-        _word_begin({0}),
-        _word() {}
+  Ukkonen::Ukkonen() {
+    init();
+  }
+
+  Ukkonen& Ukkonen::init() {
+    _max_word_length = 0;
+    _multiplicity.clear();
+    _next_unique_letter = static_cast<unique_letter_type>(-1);
+    _nodes              = {Node()};
+    _ptr                = State(0, 0);
+    _word_begin         = {0};
+    _word_index_lookup.clear();
+    _word.clear();
+    return *this;
+  }
 
   ////////////////////////////////////////////////////////////////////////
   // Ukkonen - initialisation - public

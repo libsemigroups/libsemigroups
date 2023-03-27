@@ -270,6 +270,9 @@ namespace libsemigroups {
     //! \no_libsemigroups_except
     Ukkonen();
 
+    // TODO(doc)
+    Ukkonen& init();
+
     //! Default constructor.
     Ukkonen(Ukkonen const&) = default;
 

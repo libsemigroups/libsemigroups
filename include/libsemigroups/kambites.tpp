@@ -44,6 +44,13 @@ namespace libsemigroups {
   class Kambites<String>::Complements {
    public:
     Complements() = default;
+
+    Complements& init() {
+      _complements.clear();
+      _lookup.clear();
+      return *this;
+    }
+
     void init(std::vector<string_type> const&);
 
     std::vector<size_t> const& of(size_t i) const {
@@ -62,15 +69,21 @@ namespace libsemigroups {
   ////////////////////////////////////////////////////////////////////////
   ///
   template <typename String>
-  Kambites<String>::Kambites()
-      :  // Mutable
-        _class(UNDEFINED),
-        _complements(),
-        _have_class(false),
-        _XYZ_data(),
-        // Non-mutable
-        _relation_words(),
-        _suffix_tree() {}
+  Kambites<String>::Kambites() {
+    init();
+  }
+
+  template <typename String>
+  Kambites<String>& Kambites<String>::init() {
+    // Mutable
+    _class = UNDEFINED;
+    _complements.init();
+    _have_class = false;
+    _XYZ_data.clear();
+    // Non-mutable
+    _suffix_tree.init();
+    return *this;
+  }
 
   template <typename String>
   Kambites<String>::Kambites(Kambites const&) = default;
@@ -105,7 +118,7 @@ namespace libsemigroups {
       internal_type_iterator it_zrb, it_wp;
       std::tie(s, it_zrb, it_wp)
           = p_active(Z(rb), w.cbegin() + Z(r).size(), w.cend());
-      LIBSEMIGROUPS_ASSERT(s < _relation_words.size());
+      LIBSEMIGROUPS_ASSERT(s < _presentation.rules.size());
       // we could just use w.erase(w.begin(), it_wp); if not for the
       // if-statement in the next line requiring the old w.
       internal_type wp(it_wp, w.cend());
@@ -150,7 +163,7 @@ namespace libsemigroups {
   size_t Kambites<String>::small_overlap_class() const {
     if (!_have_class) {
       size_t result = POSITIVE_INFINITY;
-      for (auto const& w : _relation_words) {
+      for (auto const& w : _presentation.rules) {
         result = std::min(result,
                           ukkonen::number_of_pieces_no_checks(
                               _suffix_tree, w.cbegin(), w.cend()));
@@ -183,24 +196,16 @@ namespace libsemigroups {
   //   return last - first;
   // }
 
-  // TODO(v3) remove this
-  template <typename String>
-  size_t Kambites<String>::number_of_pieces(size_t i) const {
-    validate_relation_word_index(i);
-    return ukkonen::number_of_pieces_no_checks(
-        _suffix_tree, _relation_words[i].cbegin(), _relation_words[i].cend());
-  }
-
   ////////////////////////////////////////////////////////////////////////
   // Kambites - validation functions impl - private
   ////////////////////////////////////////////////////////////////////////
 
   template <typename String>
   void Kambites<String>::validate_relation_word_index(size_t i) const {
-    if (i >= _relation_words.size()) {
+    if (i >= _presentation.rules.size()) {
       LIBSEMIGROUPS_EXCEPTION(
           "expected a value in the range [0, %llu), found %llu",
-          uint64_t(_relation_words.size()),
+          uint64_t(_presentation.rules.size()),
           uint64_t(i));
     }
   }
@@ -221,17 +226,21 @@ namespace libsemigroups {
   template <typename String>
   void Kambites<String>::really_init_XYZ_data(size_t i) const {
     auto const X_end = ukkonen::maximal_piece_prefix_no_checks(
-        _suffix_tree, _relation_words[i].cbegin(), _relation_words[i].cend());
+        _suffix_tree,
+        _presentation.rules[i].cbegin(),
+        _presentation.rules[i].cend());
     auto const Z_begin = ukkonen::maximal_piece_suffix_no_checks(
-        _suffix_tree, _relation_words[i].cbegin(), _relation_words[i].cend());
+        _suffix_tree,
+        _presentation.rules[i].cbegin(),
+        _presentation.rules[i].cend());
 
     _XYZ_data[i].is_initialized = true;
-    _XYZ_data[i].X   = internal_type(_relation_words[i].cbegin(), X_end);
+    _XYZ_data[i].X   = internal_type(_presentation.rules[i].cbegin(), X_end);
     _XYZ_data[i].Y   = internal_type(X_end, Z_begin);
-    _XYZ_data[i].Z   = internal_type(Z_begin, _relation_words[i].cend());
-    _XYZ_data[i].XY  = internal_type(_relation_words[i].cbegin(), Z_begin);
-    _XYZ_data[i].YZ  = internal_type(X_end, _relation_words[i].cend());
-    _XYZ_data[i].XYZ = internal_type(_relation_words[i]);
+    _XYZ_data[i].Z   = internal_type(Z_begin, _presentation.rules[i].cend());
+    _XYZ_data[i].XY  = internal_type(_presentation.rules[i].cbegin(), Z_begin);
+    _XYZ_data[i].YZ  = internal_type(X_end, _presentation.rules[i].cend());
+    _XYZ_data[i].XYZ = internal_type(_presentation.rules[i]);
   }
 
   ////////////////////////////////////////////////////////////////////////
@@ -250,11 +259,11 @@ namespace libsemigroups {
   size_t
   Kambites<String>::relation_prefix(internal_type_iterator const& first,
                                     internal_type_iterator const& last) const {
-    for (size_t i = 0; i < _relation_words.size(); ++i) {
+    for (size_t i = 0; i < _presentation.rules.size(); ++i) {
       if (detail::is_prefix(first,
                             last,
-                            _relation_words[i].cbegin(),
-                            _relation_words[i].cend() - Z(i).size())) {
+                            _presentation.rules[i].cbegin(),
+                            _presentation.rules[i].cend() - Z(i).size())) {
         return i;
       }
     }
@@ -416,7 +425,7 @@ namespace libsemigroups {
                                    internal_type p) const {
     using detail::is_prefix;
 
-    _complements.init(_relation_words);
+    _complements.init(_presentation.rules);
 
     while (!u.empty() && !v.empty()) {
       size_t i = clean_overlap_prefix(u);
@@ -531,8 +540,8 @@ namespace libsemigroups {
   // void Kambites<String>::add_rule_impl(std::string const& u,
   //                                      std::string const& v) {
   //   _have_class = false;
-  //   _relation_words.push_back(u);
-  //   _relation_words.push_back(v);
+  //   _presentation.rules.push_back(u);
+  //   _presentation.rules.push_back(v);
   //   _suffix_tree.add_word_no_checks(u.cbegin(), u.cend());
   //   _suffix_tree.add_word_no_checks(v.cbegin(), v.cend());
   // }
@@ -599,7 +608,7 @@ namespace libsemigroups {
   template <typename String>
   typename Kambites<String>::internal_type const&
   Kambites<String>::X(size_t i) const {
-    LIBSEMIGROUPS_ASSERT(i < _relation_words.size());
+    LIBSEMIGROUPS_ASSERT(i < _presentation.rules.size());
     LIBSEMIGROUPS_ASSERT(finished_impl());
     init_XYZ_data(i);
     return _XYZ_data[i].X;
@@ -608,7 +617,7 @@ namespace libsemigroups {
   template <typename String>
   typename Kambites<String>::internal_type const&
   Kambites<String>::Y(size_t i) const {
-    LIBSEMIGROUPS_ASSERT(i < _relation_words.size());
+    LIBSEMIGROUPS_ASSERT(i < _presentation.rules.size());
     LIBSEMIGROUPS_ASSERT(finished_impl());
     init_XYZ_data(i);
     return _XYZ_data[i].Y;
@@ -617,7 +626,7 @@ namespace libsemigroups {
   template <typename String>
   typename Kambites<String>::internal_type const&
   Kambites<String>::Z(size_t i) const {
-    LIBSEMIGROUPS_ASSERT(i < _relation_words.size());
+    LIBSEMIGROUPS_ASSERT(i < _presentation.rules.size());
     LIBSEMIGROUPS_ASSERT(finished_impl());
     init_XYZ_data(i);
     return _XYZ_data[i].Z;
@@ -626,7 +635,7 @@ namespace libsemigroups {
   template <typename String>
   typename Kambites<String>::internal_type const&
   Kambites<String>::XY(size_t i) const {
-    LIBSEMIGROUPS_ASSERT(i < _relation_words.size());
+    LIBSEMIGROUPS_ASSERT(i < _presentation.rules.size());
     LIBSEMIGROUPS_ASSERT(finished_impl());
     init_XYZ_data(i);
     return _XYZ_data[i].XY;
@@ -635,7 +644,7 @@ namespace libsemigroups {
   template <typename String>
   typename Kambites<String>::internal_type const&
   Kambites<String>::YZ(size_t i) const {
-    LIBSEMIGROUPS_ASSERT(i < _relation_words.size());
+    LIBSEMIGROUPS_ASSERT(i < _presentation.rules.size());
     LIBSEMIGROUPS_ASSERT(finished_impl());
     init_XYZ_data(i);
     return _XYZ_data[i].YZ;
@@ -644,7 +653,7 @@ namespace libsemigroups {
   template <typename String>
   typename Kambites<String>::internal_type const&
   Kambites<String>::XYZ(size_t i) const {
-    LIBSEMIGROUPS_ASSERT(i < _relation_words.size());
+    LIBSEMIGROUPS_ASSERT(i < _presentation.rules.size());
     LIBSEMIGROUPS_ASSERT(finished_impl());
     init_XYZ_data(i);
     return _XYZ_data[i].XYZ;

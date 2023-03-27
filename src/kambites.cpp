@@ -40,35 +40,6 @@
 #include "libsemigroups/words.hpp"   // for word_to_string
 
 namespace libsemigroups {
-  // TODO what's this doing here?
-  using MultiStringView = std::string;  // detail::MultiStringView;
-
-  using froidure_pin_type
-      = FroidurePin<detail::KE,
-                    FroidurePinTraits<detail::KE, Kambites<std::string>>>;
-
-  namespace detail {
-
-    KE::KE(KE::string_type const& w) : _string(w) {}
-    KE::KE(KE::string_type&& w) : _string(std::move(w)) {}
-
-    bool KE::operator==(KE const& that) const {
-      return that._string == this->_string;
-    }
-
-    bool KE::operator<(KE const& that) const {
-      return shortlex_compare(_string, that._string);
-    }
-
-    void KE::swap(KE& x) {
-      std::swap(x._string, _string);
-    }
-
-    typename KE::string_type const& KE::string() const noexcept {
-      return _string;
-    }
-
-  }  // namespace detail
 
   namespace congruence {
     using class_index_type = CongruenceInterface::class_index_type;
@@ -180,32 +151,33 @@ namespace libsemigroups {
   }  // namespace congruence
 
   template <>
-  word_type FroidurePin<detail::KE,
-                        FroidurePinTraits<detail::KE, Kambites<std::string>>>::
-      factorisation(detail::KE const& x) {
+  word_type FroidurePin<
+      detail::KE<std::string>,
+      FroidurePinTraits<detail::KE<std::string>, Kambites<std::string>>>::
+      factorisation(detail::KE<std::string> const& x) {
     return x.word(*state());
   }
 
   template <>
-  word_type FroidurePin<
-      detail::KE,
-      FroidurePinTraits<detail::KE, Kambites<detail::MultiStringView>>>::
-      factorisation(detail::KE const& x) {
+  word_type FroidurePin<detail::KE<detail::MultiStringView>,
+                        FroidurePinTraits<detail::KE<detail::MultiStringView>,
+                                          Kambites<detail::MultiStringView>>>::
+      factorisation(detail::KE<detail::MultiStringView> const& x) {
     return x.word(*state());
   }
 
   template <>
   tril
-  FroidurePin<detail::KE,
-              FroidurePinTraits<detail::KE, Kambites<std::string>>>::is_finite()
-      const {
+  FroidurePin<detail::KE<std::string>,
+              FroidurePinTraits<detail::KE<std::string>,
+                                Kambites<std::string>>>::is_finite() const {
     return tril::FALSE;
   }
 
   template <>
   tril
-  FroidurePin<detail::KE,
-              FroidurePinTraits<detail::KE,
+  FroidurePin<detail::KE<detail::MultiStringView>,
+              FroidurePinTraits<detail::KE<detail::MultiStringView>,
                                 Kambites<detail::MultiStringView>>>::is_finite()
       const {
     return tril::FALSE;

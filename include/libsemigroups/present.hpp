@@ -1303,6 +1303,7 @@ namespace libsemigroups {
 
   }  // namespace presentation
 
+  // TODO rm
   template <typename T,
             typename = std::enable_if_t<std::is_same_v<T, word_type>>>
   inline word_type make(Presentation<std::string> const& p,
@@ -1312,6 +1313,21 @@ namespace libsemigroups {
       return p.index(val);
     });
     return result;
+  }
+
+  inline void to_word(Presentation<std::string> const& p,
+                      word_type&                       w,
+                      std::string const&               s) {
+    w.resize(s.size(), 0);
+    std::transform(
+        s.cbegin(), s.cend(), w.begin(), [&p](auto i) { return p.index(i); });
+  }
+
+  inline word_type to_word(Presentation<std::string> const& p,
+                           std::string const&               s) {
+    word_type w;
+    to_word(p, w, s);
+    return w;
   }
 }  // namespace libsemigroups
 

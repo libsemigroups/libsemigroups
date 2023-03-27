@@ -173,10 +173,15 @@ namespace libsemigroups {
       validate_letter_index(x);
     }
     element_index_type out = _letter_to_pos[w[0]];
-    for (auto it = w.cbegin() + 1; it < w.cend() && out != UNDEFINED; ++it) {
-      out = _right.unsafe_neighbor(out, *it);
+    size_t const       n   = _right.number_of_nodes();
+    auto               it  = w.cbegin() + 1;
+    while (it < w.cend() && out < n) {
+      out = _right.unsafe_neighbor(out, *it++);
     }
-    return out;
+    if (out < n) {
+      return out;
+    }
+    return UNDEFINED;
   }
 
   element_index_type
@@ -211,6 +216,31 @@ namespace libsemigroups {
     REPORT_DEFAULT(
         "limit = %llu (%s)\n", static_cast<uint64_t>(limit), __func__);
     run_until([this, &limit]() -> bool { return current_size() >= limit; });
+  }
+
+  size_t FroidurePinBase::number_of_elements_of_length(size_t i) const {
+    // _lenindex[i - 1] is the element_index_type where words of length i begin
+    // so _lenindex[i] - _lenindex[i - 1]) is the number of words of length
+    // i.
+    if (i == 0 || i > _lenindex.size()) {
+      return 0;
+    } else if (i == _lenindex.size()) {
+      return current_size() - _lenindex[i - 1];
+    }
+    return _lenindex[i] - _lenindex[i - 1];
+  }
+
+  size_t FroidurePinBase::number_of_elements_of_length(size_t min,
+                                                       size_t max) const {
+    size_t result = 0;
+    for (size_t i = min; i < max; ++i) {
+      size_t next = number_of_elements_of_length(i);
+      result += next;
+      if (i != 0 && next == 0) {
+        break;
+      }
+    }
+    return result;
   }
 
   ////////////////////////////////////////////////////////////////////////
