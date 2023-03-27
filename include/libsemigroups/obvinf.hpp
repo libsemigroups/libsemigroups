@@ -80,7 +80,7 @@
 namespace libsemigroups {
   class ToddCoxeter;  // forward decl
 
-  template <typename String>
+  template <typename Word>
   class Kambites;  // forward decl
 
   template <typename Word>
@@ -192,8 +192,8 @@ namespace libsemigroups {
 
   bool is_obviously_infinite(ToddCoxeter const& tc);
 
-  template <typename String>
-  bool is_obviously_infinite(Kambites<String> const& k) {
+  template <typename Word>
+  bool is_obviously_infinite(Kambites<Word> const& k) {
     if (k.finished() && k.small_overlap_class() >= 3) {
       return true;
     }

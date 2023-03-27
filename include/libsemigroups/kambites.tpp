@@ -28,9 +28,9 @@
 namespace libsemigroups {
   // Data structure for caching the regularly accessed parts of the
   // relation words.
-  template <typename String>
-  struct Kambites<String>::RelationWords {
-    using internal_type          = typename Kambites<String>::internal_type;
+  template <typename Word>
+  struct Kambites<Word>::RelationWords {
+    using internal_type          = typename Kambites<Word>::internal_type;
     bool          is_initialized = false;
     internal_type X;
     internal_type Y;
@@ -40,8 +40,8 @@ namespace libsemigroups {
     internal_type XYZ;
   };
 
-  template <typename String>
-  class Kambites<String>::Complements {
+  template <typename Word>
+  class Kambites<Word>::Complements {
    public:
     Complements() = default;
 
@@ -51,7 +51,7 @@ namespace libsemigroups {
       return *this;
     }
 
-    void init(std::vector<string_type> const&);
+    void init(std::vector<value_type> const&);
 
     std::vector<size_t> const& of(size_t i) const {
       LIBSEMIGROUPS_ASSERT(i < _lookup.size());
@@ -68,13 +68,13 @@ namespace libsemigroups {
   // Kambites - constructor and destructor impl - public
   ////////////////////////////////////////////////////////////////////////
   ///
-  template <typename String>
-  Kambites<String>::Kambites() {
+  template <typename Word>
+  Kambites<Word>::Kambites() {
     init();
   }
 
-  template <typename String>
-  Kambites<String>& Kambites<String>::init() {
+  template <typename Word>
+  Kambites<Word>& Kambites<Word>::init() {
     // Mutable
     _class = UNDEFINED;
     _complements.init();
@@ -85,19 +85,19 @@ namespace libsemigroups {
     return *this;
   }
 
-  template <typename String>
-  Kambites<String>::Kambites(Kambites const&) = default;
+  template <typename Word>
+  Kambites<Word>::Kambites(Kambites const&) = default;
 
-  template <typename String>
-  Kambites<String>::~Kambites() = default;
+  template <typename Word>
+  Kambites<Word>::~Kambites() = default;
 
   ////////////////////////////////////////////////////////////////////////
   // FpSemigroupInterface - pure virtual functions impl - public
   ////////////////////////////////////////////////////////////////////////
 
-  template <typename String>
-  typename Kambites<String>::string_type
-  Kambites<String>::normal_form(string_type const& w0) {
+  template <typename Word>
+  typename Kambites<Word>::value_type
+  Kambites<Word>::normal_form(value_type const& w0) {
     validate_small_overlap_class();
     size_t        r = UNDEFINED;
     internal_type v, w(w0);
@@ -159,8 +159,8 @@ namespace libsemigroups {
   // Kambites - member functions impl - public
   ////////////////////////////////////////////////////////////////////////
 
-  template <typename String>
-  size_t Kambites<String>::small_overlap_class() const {
+  template <typename Word>
+  size_t Kambites<Word>::small_overlap_class() const {
     if (!_have_class) {
       size_t result = POSITIVE_INFINITY;
       for (auto const& w : _presentation.rules) {
@@ -175,8 +175,9 @@ namespace libsemigroups {
   }
 
   // TODO make helper
-  // template <typename String>
-  // uint64_t Kambites<String>::number_of_normal_forms(size_t mn, size_t mx) {
+  // template <typename Word>
+  // uint64_t Kambites<Word>::number_of_normal_forms(size_t mn, size_t
+  // mx) {
   //   validate_small_overlap_class();
   //   if (mn >= mx) {
   //     return 0;
@@ -200,8 +201,8 @@ namespace libsemigroups {
   // Kambites - validation functions impl - private
   ////////////////////////////////////////////////////////////////////////
 
-  template <typename String>
-  void Kambites<String>::validate_relation_word_index(size_t i) const {
+  template <typename Word>
+  void Kambites<Word>::validate_relation_word_index(size_t i) const {
     if (i >= _presentation.rules.size()) {
       LIBSEMIGROUPS_EXCEPTION(
           "expected a value in the range [0, %llu), found %llu",
@@ -210,8 +211,8 @@ namespace libsemigroups {
     }
   }
 
-  template <typename String>
-  void Kambites<String>::validate_small_overlap_class() const {
+  template <typename Word>
+  void Kambites<Word>::validate_small_overlap_class() const {
     if (small_overlap_class() < 4) {
       LIBSEMIGROUPS_EXCEPTION(
           "small overlap class must be at least 4, but found %llu",
@@ -223,8 +224,8 @@ namespace libsemigroups {
   // Kambites - XYZ functions impl - private
   ////////////////////////////////////////////////////////////////////////
 
-  template <typename String>
-  void Kambites<String>::really_init_XYZ_data(size_t i) const {
+  template <typename Word>
+  void Kambites<Word>::really_init_XYZ_data(size_t i) const {
     auto const X_end = ukkonen::maximal_piece_prefix_no_checks(
         _suffix_tree,
         _presentation.rules[i].cbegin(),
@@ -255,10 +256,10 @@ namespace libsemigroups {
   // never tried or didn'String get to work were:
   // 1) Binary search
   // 2) Using the original suffix tree (without the unique characters)
-  template <typename String>
+  template <typename Word>
   size_t
-  Kambites<String>::relation_prefix(internal_type_iterator const& first,
-                                    internal_type_iterator const& last) const {
+  Kambites<Word>::relation_prefix(internal_type_iterator const& first,
+                                  internal_type_iterator const& last) const {
     for (size_t i = 0; i < _presentation.rules.size(); ++i) {
       if (detail::is_prefix(first,
                             last,
@@ -272,8 +273,8 @@ namespace libsemigroups {
 
   // See explanation above.
   // Complexity: O(max|Y| * (last - first))
-  template <typename String>
-  size_t Kambites<String>::clean_overlap_prefix(
+  template <typename Word>
+  size_t Kambites<Word>::clean_overlap_prefix(
       internal_type_iterator const& first,
       internal_type_iterator const& last) const {
     size_t i = relation_prefix(first, last);
@@ -289,10 +290,10 @@ namespace libsemigroups {
   }
 
   // See explanation above.
-  template <typename String>
+  template <typename Word>
   std::pair<size_t, size_t>
-  Kambites<String>::clean_overlap_prefix_mod(internal_type const& w,
-                                             size_t               n) const {
+  Kambites<Word>::clean_overlap_prefix_mod(internal_type const& w,
+                                           size_t               n) const {
     size_t     i = 0, j = 0;
     auto       first = w.cbegin();
     auto const last  = w.cend();
@@ -306,13 +307,13 @@ namespace libsemigroups {
     return std::make_pair(i, j);
   }
 
-  template <typename String>
+  template <typename Word>
   std::tuple<size_t,
-             typename Kambites<String>::internal_type_iterator,
-             typename Kambites<String>::internal_type_iterator>
-  Kambites<String>::p_active(internal_type const&          x,
-                             internal_type_iterator const& first,
-                             internal_type_iterator const& last) const {
+             typename Kambites<Word>::internal_type_iterator,
+             typename Kambites<Word>::internal_type_iterator>
+  Kambites<Word>::p_active(internal_type const&          x,
+                           internal_type_iterator const& first,
+                           internal_type_iterator const& last) const {
     // The following should hold but can't be checked when internal_type is
     // MultiStringView.
     // LIBSEMIGROUPS_ASSERT(x.cend() < first || x.cbegin() >= last);
@@ -331,9 +332,9 @@ namespace libsemigroups {
   }
 
   // See explanation above.
-  template <typename String>
-  void Kambites<String>::replace_prefix(internal_type&       w,
-                                        internal_type const& p) const {
+  template <typename Word>
+  void Kambites<Word>::replace_prefix(internal_type&       w,
+                                      internal_type const& p) const {
     LIBSEMIGROUPS_ASSERT(wp_prefix(w, w, p));
     if (detail::is_prefix(w, p)) {
       return;
@@ -361,8 +362,8 @@ namespace libsemigroups {
   // Kambites - complement helpers impl - private
   ////////////////////////////////////////////////////////////////////////
 
-  template <typename String>
-  size_t Kambites<String>::prefix_of_complement(
+  template <typename Word>
+  size_t Kambites<Word>::prefix_of_complement(
       size_t                        i,
       internal_type_iterator const& first,
       internal_type_iterator const& last) const {
@@ -375,10 +376,9 @@ namespace libsemigroups {
     return UNDEFINED;
   }
 
-  template <typename String>
-  size_t
-  Kambites<String>::complementary_XY_prefix(size_t               i,
-                                            internal_type const& w) const {
+  template <typename Word>
+  size_t Kambites<Word>::complementary_XY_prefix(size_t               i,
+                                                 internal_type const& w) const {
     // TODO(later) use binary_search instead
     for (auto const& j : _complements.of(i)) {
       if (detail::is_prefix(w, XY(j))) {
@@ -388,9 +388,9 @@ namespace libsemigroups {
     return UNDEFINED;
   }
 
-  template <typename String>
-  size_t Kambites<String>::Z_active_complement(size_t               i,
-                                               internal_type const& w) const {
+  template <typename Word>
+  size_t Kambites<Word>::Z_active_complement(size_t               i,
+                                             internal_type const& w) const {
     auto const first = w.cbegin();
     auto const last  = w.cend();
 
@@ -402,8 +402,8 @@ namespace libsemigroups {
     return UNDEFINED;
   }
 
-  template <typename String>
-  size_t Kambites<String>::Z_active_proper_complement(
+  template <typename Word>
+  size_t Kambites<Word>::Z_active_proper_complement(
       size_t                        i,
       internal_type_iterator const& first,
       internal_type_iterator const& last) const {
@@ -419,10 +419,10 @@ namespace libsemigroups {
   // Kambites - main functions impl - private
   ////////////////////////////////////////////////////////////////////////
 
-  template <typename String>
-  bool Kambites<String>::wp_prefix(internal_type u,
-                                   internal_type v,
-                                   internal_type p) const {
+  template <typename Word>
+  bool Kambites<Word>::wp_prefix(internal_type u,
+                                 internal_type v,
+                                 internal_type p) const {
     using detail::is_prefix;
 
     _complements.init(_presentation.rules);
@@ -501,10 +501,10 @@ namespace libsemigroups {
     return u.empty() && v.empty() && p.empty();
   }
 
-  template <typename String>
-  void Kambites<String>::normal_form_inner(size_t&        r,
-                                           internal_type& v,
-                                           internal_type& w) const {
+  template <typename Word>
+  void Kambites<Word>::normal_form_inner(size_t&        r,
+                                         internal_type& v,
+                                         internal_type& w) const {
     size_t i, j;
     std::tie(i, j) = clean_overlap_prefix_mod(w, w.size());
     if (j == UNDEFINED) {
@@ -536,8 +536,8 @@ namespace libsemigroups {
   // FpSemigroupInterface - pure virtual functions impl - private
   ////////////////////////////////////////////////////////////////////////
 
-  // template <typename String>
-  // void Kambites<String>::add_rule_impl(std::string const& u,
+  // template <typename Word>
+  // void Kambites<Word>::add_rule_impl(std::string const& u,
   //                                      std::string const& v) {
   //   _have_class = false;
   //   _presentation.rules.push_back(u);
@@ -546,11 +546,12 @@ namespace libsemigroups {
   //   _suffix_tree.add_word_no_checks(v.cbegin(), v.cend());
   // }
 
-  // template <typename String>
-  // std::shared_ptr<FroidurePinBase> Kambites<String>::froidure_pin_impl() {
+  // template <typename Word>
+  // std::shared_ptr<FroidurePinBase> Kambites<String,
+  // Word>::froidure_pin_impl() {
   //   using KE = detail::KE;
   //   using froidure_pin_type
-  //       = FroidurePin<KE, FroidurePinTraits<KE, Kambites<String>>>;
+  //       = FroidurePin<KE, FroidurePinTraits<KE, Kambites<Word>>>;
   //   LIBSEMIGROUPS_ASSERT(!alphabet().empty());
   //   run();
   //   validate_small_overlap_class();
@@ -565,9 +566,9 @@ namespace libsemigroups {
   // Kambites - inner classes - private
   ////////////////////////////////////////////////////////////////////////
 
-  template <typename String>
-  void Kambites<String>::Complements::init(
-      std::vector<string_type> const& relation_words) {
+  template <typename Word>
+  void Kambites<Word>::Complements::init(
+      std::vector<value_type> const& relation_words) {
     if (relation_words.empty()) {
       return;
     }
@@ -605,54 +606,54 @@ namespace libsemigroups {
     }
   }
 
-  template <typename String>
-  typename Kambites<String>::internal_type const&
-  Kambites<String>::X(size_t i) const {
+  template <typename Word>
+  typename Kambites<Word>::internal_type const&
+  Kambites<Word>::X(size_t i) const {
     LIBSEMIGROUPS_ASSERT(i < _presentation.rules.size());
     LIBSEMIGROUPS_ASSERT(finished_impl());
     init_XYZ_data(i);
     return _XYZ_data[i].X;
   }
 
-  template <typename String>
-  typename Kambites<String>::internal_type const&
-  Kambites<String>::Y(size_t i) const {
+  template <typename Word>
+  typename Kambites<Word>::internal_type const&
+  Kambites<Word>::Y(size_t i) const {
     LIBSEMIGROUPS_ASSERT(i < _presentation.rules.size());
     LIBSEMIGROUPS_ASSERT(finished_impl());
     init_XYZ_data(i);
     return _XYZ_data[i].Y;
   }
 
-  template <typename String>
-  typename Kambites<String>::internal_type const&
-  Kambites<String>::Z(size_t i) const {
+  template <typename Word>
+  typename Kambites<Word>::internal_type const&
+  Kambites<Word>::Z(size_t i) const {
     LIBSEMIGROUPS_ASSERT(i < _presentation.rules.size());
     LIBSEMIGROUPS_ASSERT(finished_impl());
     init_XYZ_data(i);
     return _XYZ_data[i].Z;
   }
 
-  template <typename String>
-  typename Kambites<String>::internal_type const&
-  Kambites<String>::XY(size_t i) const {
+  template <typename Word>
+  typename Kambites<Word>::internal_type const&
+  Kambites<Word>::XY(size_t i) const {
     LIBSEMIGROUPS_ASSERT(i < _presentation.rules.size());
     LIBSEMIGROUPS_ASSERT(finished_impl());
     init_XYZ_data(i);
     return _XYZ_data[i].XY;
   }
 
-  template <typename String>
-  typename Kambites<String>::internal_type const&
-  Kambites<String>::YZ(size_t i) const {
+  template <typename Word>
+  typename Kambites<Word>::internal_type const&
+  Kambites<Word>::YZ(size_t i) const {
     LIBSEMIGROUPS_ASSERT(i < _presentation.rules.size());
     LIBSEMIGROUPS_ASSERT(finished_impl());
     init_XYZ_data(i);
     return _XYZ_data[i].YZ;
   }
 
-  template <typename String>
-  typename Kambites<String>::internal_type const&
-  Kambites<String>::XYZ(size_t i) const {
+  template <typename Word>
+  typename Kambites<Word>::internal_type const&
+  Kambites<Word>::XYZ(size_t i) const {
     LIBSEMIGROUPS_ASSERT(i < _presentation.rules.size());
     LIBSEMIGROUPS_ASSERT(finished_impl());
     init_XYZ_data(i);

@@ -78,7 +78,7 @@ namespace libsemigroups {
   //! also documented on this page.
   // TODO(later) example
   // TODO template the type of word for the presentation too
-  template <typename T>
+  template <typename Word>
   class Kambites : public Runner {
    public:
     ////////////////////////////////////////////////////////////////////////
@@ -86,10 +86,45 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////
 
     //! The type of strings used by a Kambites instance.
-    using string_type = std::string;
+    // TODO update doc
+    using value_type
+        = std::conditional_t<std::is_same_v<Word, detail::MultiStringView>,
+                             std::string,
+                             Word>;
 
-    //! The template parameter \p T.
-    using internal_type = T;
+    //! The template parameter \p Word.
+    // TODO private?
+    using internal_type = Word;
+
+   private:
+    ////////////////////////////////////////////////////////////////////////
+    // Kambites - inner classes - private
+    ////////////////////////////////////////////////////////////////////////
+
+    // Data structure for caching the regularly accessed parts of the
+    // relation words.
+    struct RelationWords;
+
+    // Data structure for caching the complements of each relation word.
+    //
+    // We say that a relation word u' is a *complement* of a relation word u
+    // if there are relation words u = r_1,r_2, ..., r_n = u'$ such that
+    // either (r_i,r_{i+1}) \in R or (r_{i+1},r_i) \in R for $1 \leq i \leq
+    // n$. We say that $u'$ is a *proper complement* of the relation word u
+    // if it is a complement of u and u is not equal to u'.
+    class Complements;
+
+    ////////////////////////////////////////////////////////////////////////
+    // Kambites - data members - private
+    ////////////////////////////////////////////////////////////////////////
+
+    mutable size_t                     _class;
+    mutable Complements                _complements;
+    mutable bool                       _have_class;
+    mutable std::vector<RelationWords> _XYZ_data;
+
+    Presentation<value_type> _presentation;
+    Ukkonen                  _suffix_tree;
 
    private:
     using internal_type_iterator = typename internal_type::const_iterator;
@@ -128,7 +163,8 @@ namespace libsemigroups {
     ~Kambites();
 
     // To tpp TODO
-    Kambites(Presentation<std::string> const& p) : Kambites() {
+    // TODO rval ref version
+    Kambites(Presentation<value_type> const& p) : Kambites() {
       p.validate();
       _presentation = p;
       ukkonen::add_words_no_checks(_suffix_tree,
@@ -136,7 +172,7 @@ namespace libsemigroups {
                                    _presentation.rules.cend());
     }
 
-    Kambites& init(Presentation<std::string> const& p) {
+    Kambites& init(Presentation<value_type> const& p) {
       p.validate();
       init();
       _presentation = p;
@@ -146,7 +182,7 @@ namespace libsemigroups {
       return *this;
     }
 
-    Presentation<std::string> const& presentation() const noexcept {
+    Presentation<value_type> const& presentation() const noexcept {
       return _presentation;
     }
 
@@ -169,9 +205,9 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if the small overlap class is not at
     //! least \f$4\f$.
     // Not noexcept, throws
-    bool equal_to(string_type const& u, string_type const& v) {
+    bool equal_to(value_type const& u, value_type const& v) {
       validate_small_overlap_class();
-      // Words aren't validated, the below returns false if they contain
+      // Words aren'Word validated, the below returns false if they contain
       // letters not in the alphabet.
       return wp_prefix(internal_type(u), internal_type(v), internal_type());
     }
@@ -181,9 +217,9 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if the small overlap class is not at
     //! least \f$4\f$.
-    bool equal_to(string_type&& u, string_type&& v) {
-      string_type uu = u;
-      string_type vv = v;
+    bool equal_to(value_type&& u, value_type&& v) {
+      value_type uu = u;
+      value_type vv = v;
       return equal_to(uu, vv);
     }
 
@@ -192,13 +228,13 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if the small overlap class is not at
     //! least \f$4\f$.
     // Not noexcept, lots of allocations
-    string_type normal_form(string_type const& w);
+    value_type normal_form(value_type const& w);
 
     ////////////////////////////////////////////////////////////////////////
     // Kambites - member functions - public
     ////////////////////////////////////////////////////////////////////////
 
-    // not noexcept because number_of_pieces_unsafe isn't
+    // not noexcept because number_of_pieces_unsafe isn'Word
     //! Get the small overlap class of the finitely presented semigroup
     //! represented by \c this.
     //!
@@ -253,7 +289,7 @@ namespace libsemigroups {
     //! number of letters in the alphabet, \f$n\f$ is the number of normal
     //! forms with length in the range \f$[min, max)\f$, and \f$k\f$ is the
     //! parameter \p max.
-    // Not noexcept because FroidurePin::run isn't
+    // Not noexcept because FroidurePin::run isn'Word
     // TODO Should be a helper for FroidurePin
     // uint64_t number_of_normal_forms(size_t min, size_t max);
 
@@ -324,7 +360,7 @@ namespace libsemigroups {
     // Returns the index of the relation word r_i = X_iY_iZ_i if [first,
     // last) = X_iY_iw for some w. If no such exists, then UNDEFINED is
     // returned.
-    // Not noexcept because is_prefix isn't
+    // Not noexcept because is_prefix isn'Word
     size_t relation_prefix(internal_type_iterator const& first,
                            internal_type_iterator const& last) const;
 
@@ -332,7 +368,7 @@ namespace libsemigroups {
     // X_iY_i is a clean overlap prefix of <s>, i.e. <s> = X_iY_iw for some
     // w, and there's no factor of <s> of the form X_jY_j starting before the
     // beginning of Y_i. If no such exists, UNDEFINED is returned.
-    // Not noexcept because relation_prefix isn't
+    // Not noexcept because relation_prefix isn'Word
     inline size_t clean_overlap_prefix(internal_type const& s) const {
       return clean_overlap_prefix(s.cbegin(), s.cend());
     }
@@ -353,14 +389,14 @@ namespace libsemigroups {
 
     // If x + [first, last) = aX_sY_sw words a, w and for some index s, where
     // X_s = X_s'X_s'', x = aX_s', and [first, last) = X_s''Y_sw, then this
-    // function returns a tuple <t> where:
+    // function returns a tuple <Word> where:
     //
-    // 1. std::get<0>(t) is the index <s>
+    // 1. std::get<0>(Word) is the index <s>
     //
-    // 2. std::get<1>(t) is an iterator <it1> into <x>, such that
+    // 2. std::get<1>(Word) is an iterator <it1> into <x>, such that
     //    [it1, x.cend()) = X_s'
     //
-    // 3. std::get<2>(t) is an iterator <it2> into [first, last), such that
+    // 3. std::get<2>(Word) is an iterator <it2> into [first, last), such that
     //    [it2, last) = w
     //
     // If no such relation word exists, then
@@ -369,7 +405,7 @@ namespace libsemigroups {
     //
     // is returned.
     //
-    // Not noexcept because relation_prefix isn't
+    // Not noexcept because relation_prefix isn'Word
     std::tuple<size_t, internal_type_iterator, internal_type_iterator>
     p_active(internal_type const&          x,
              internal_type_iterator const& first,
@@ -377,7 +413,7 @@ namespace libsemigroups {
 
     // Returns a word equal to w in this, starting with the piece p, no checks
     // are performed. Used in the normal_form function.
-    // Not noexcept because detail::is_prefix isn't
+    // Not noexcept because detail::is_prefix isn'Word
     void replace_prefix(internal_type& w, internal_type const& p) const;
 
     ////////////////////////////////////////////////////////////////////////
@@ -429,6 +465,10 @@ namespace libsemigroups {
       x.pop_front();
     }
 
+    static void pop_front(word_type& x) {
+      x.erase(x.begin());
+    }
+
     ////////////////////////////////////////////////////////////////////////
     // Kambites - main functions - private
     ////////////////////////////////////////////////////////////////////////
@@ -446,7 +486,7 @@ namespace libsemigroups {
     // and it was too difficult to untangle the different cases (when u, v
     // are equal, not equal, references, rvalue references etc). It's
     // possible that it could be modified to only copy when necessary, but
-    // this doesn't seem worth it at present.
+    // this doesn'Word seem worth it at present.
     bool wp_prefix(internal_type u, internal_type v, internal_type p) const;
 
     // Implementational detail
@@ -464,35 +504,6 @@ namespace libsemigroups {
     bool finished_impl() const override {
       return _have_class && small_overlap_class() >= 4;
     }
-
-    ////////////////////////////////////////////////////////////////////////
-    // Kambites - inner classes - private
-    ////////////////////////////////////////////////////////////////////////
-
-    // Data structure for caching the regularly accessed parts of the
-    // relation words.
-    struct RelationWords;
-
-    // Data structure for caching the complements of each relation word.
-    //
-    // We say that a relation word u' is a *complement* of a relation word u
-    // if there are relation words u = r_1,r_2, ..., r_n = u'$ such that
-    // either (r_i,r_{i+1}) \in R or (r_{i+1},r_i) \in R for $1 \leq i \leq
-    // n$. We say that $u'$ is a *proper complement* of the relation word u
-    // if it is a complement of u and u is not equal to u'.
-    class Complements;
-
-    ////////////////////////////////////////////////////////////////////////
-    // Kambites - data members - private
-    ////////////////////////////////////////////////////////////////////////
-
-    mutable size_t                     _class;
-    mutable Complements                _complements;
-    mutable bool                       _have_class;
-    mutable std::vector<RelationWords> _XYZ_data;
-
-    Presentation<std::string> _presentation;
-    Ukkonen                   _suffix_tree;
   };
 
   // namespace congruence {
@@ -620,7 +631,7 @@ namespace libsemigroups {
     // TODO move this to its own file or at least into the tpp file
     // This class is used to wrap libsemigroups::Kambites::string_type into an
     // object that can be used as generators for a FroidurePin object.
-    template <typename String>
+    template <typename Word>
     class KE {
       using string_type = std::string;
 
@@ -635,22 +646,21 @@ namespace libsemigroups {
       KE& operator=(KE&&)      = default;
       ~KE()                    = default;
 
-      KE(Kambites<String>& k, string_type const& w)
-          : _string(k.normal_form(w)) {}
+      KE(Kambites<Word>& k, string_type const& w) : _string(k.normal_form(w)) {}
 
-      KE(Kambites<String>& k, string_type&& w)
+      KE(Kambites<Word>& k, string_type&& w)
           : _string(k.normal_form(std::move(w))) {}
 
-      KE(Kambites<String>& k, letter_type a)
+      KE(Kambites<Word>& k, letter_type a)
           : KE(k, std::string({k.presentation().letter(a)})) {}
 
-      KE(Kambites<String>& k, word_type const& w) : KE() {
+      KE(Kambites<Word>& k, word_type const& w) : KE() {
         detail::word_to_string(k.alphabet(), w, _string);
         _string = k.normal_form(_string);
       }
 
       // TODO rename to_word
-      word_type word(Kambites<String> const& k) const {
+      word_type word(Kambites<Word> const& k) const {
         return to_word(k.presentation(), _string);
       }
 
@@ -696,55 +706,55 @@ namespace libsemigroups {
 
   }  // namespace detail
 
-  template <typename String>
-  struct FroidurePinState<detail::KE<String>> {
-    using type = Kambites<String>;
+  template <typename Word>
+  struct FroidurePinState<detail::KE<Word>> {
+    using type = Kambites<Word>;
   };
 
   ////////////////////////////////////////////////////////////////////////
   // Adapters for KE class
   ////////////////////////////////////////////////////////////////////////
 
-  template <typename String>
-  struct Complexity<detail::KE<String>> {
-    constexpr size_t operator()(detail::KE<String> const&) const noexcept {
+  template <typename Word>
+  struct Complexity<detail::KE<Word>> {
+    constexpr size_t operator()(detail::KE<Word> const&) const noexcept {
       return LIMIT_MAX;
     }
   };
 
-  template <typename String>
-  struct Degree<detail::KE<String>> {
-    constexpr size_t operator()(detail::KE<String> const&) const noexcept {
+  template <typename Word>
+  struct Degree<detail::KE<Word>> {
+    constexpr size_t operator()(detail::KE<Word> const&) const noexcept {
       return 0;
     }
   };
 
-  template <typename String>
-  struct IncreaseDegree<detail::KE<String>> {
-    void operator()(detail::KE<String> const&) const noexcept {}
+  template <typename Word>
+  struct IncreaseDegree<detail::KE<Word>> {
+    void operator()(detail::KE<Word> const&) const noexcept {}
   };
 
-  template <typename String>
-  struct One<detail::KE<String>> {
-    detail::KE<String> operator()(detail::KE<String> const&) {
-      return detail::KE<String>();
+  template <typename Word>
+  struct One<detail::KE<Word>> {
+    detail::KE<Word> operator()(detail::KE<Word> const&) {
+      return detail::KE<Word>();
     }
 
-    detail::KE<String> operator()(size_t = 0) const {
-      return detail::KE<String>();
+    detail::KE<Word> operator()(size_t = 0) const {
+      return detail::KE<Word>();
     }
   };
 
-  template <typename String>
-  struct Product<detail::KE<String>> {
-    void operator()(detail::KE<String>&       xy,
-                    detail::KE<String> const& x,
-                    detail::KE<String> const& y,
-                    Kambites<String>*         k,
+  template <typename Word>
+  struct Product<detail::KE<Word>> {
+    void operator()(detail::KE<Word>&       xy,
+                    detail::KE<Word> const& x,
+                    detail::KE<Word> const& y,
+                    Kambites<Word>*         k,
                     size_t) {
       std::string w(x.string());  // string_type
       w += y.string();
-      xy = detail::KE<String>(*k, w);
+      xy = detail::KE<Word>(*k, w);
     }
   };
 
@@ -783,17 +793,17 @@ namespace libsemigroups {
 ////////////////////////////////////////////////////////////////////////
 
 namespace std {
-  template <typename String>
-  struct hash<libsemigroups::detail::KE<String>> {
-    size_t operator()(libsemigroups::detail::KE<String> const& x) const {
+  template <typename Word>
+  struct hash<libsemigroups::detail::KE<Word>> {
+    size_t operator()(libsemigroups::detail::KE<Word> const& x) const {
       return hash<string>()(x.string());
     }
   };
 
-  template <typename String>
-  struct equal_to<libsemigroups::detail::KE<String>> {
-    bool operator()(libsemigroups::detail::KE<String> const& x,
-                    libsemigroups::detail::KE<String> const& y) const {
+  template <typename Word>
+  struct equal_to<libsemigroups::detail::KE<Word>> {
+    bool operator()(libsemigroups::detail::KE<Word> const& x,
+                    libsemigroups::detail::KE<Word> const& y) const {
       return x == y;
     }
   };

@@ -232,15 +232,15 @@ namespace {
 
   LIBSEMIGROUPS_TEST_CASE("Kambites",
                           "000",
-                          "(fpsemi) MT test 4 (std::string)",
-                          "[quick][kambites][fpsemi]") {
+                          "MT test 4 (std::string)",
+                          "[quick][kambites]") {
     test_case_mt_4<std::string>();
   }
 
   LIBSEMIGROUPS_TEST_CASE("Kambites",
                           "001",
-                          "(fpsemi) MT test 4 (MultiStringView)",
-                          "[quick][kambites][fpsemi]") {
+                          "MT test 4 (MultiStringView)",
+                          "[quick][kambites]") {
     test_case_mt_4<detail::MultiStringView>();
   }
 
@@ -304,15 +304,15 @@ namespace {
 
   LIBSEMIGROUPS_TEST_CASE("Kambites",
                           "002",
-                          "(fpsemi) number_of_pieces (std::string)",
-                          "[quick][kambites][fpsemi]") {
+                          "number_of_pieces (std::string)",
+                          "[quick][kambites]") {
     test_case_no_name_1<std::string>();
   }
 
   LIBSEMIGROUPS_TEST_CASE("Kambites",
                           "003",
-                          "(fpsemi) number_of_pieces (MultiStringView)",
-                          "[quick][kambites][fpsemi]") {
+                          "number_of_pieces (MultiStringView)",
+                          "[quick][kambites]") {
     test_case_no_name_1<detail::MultiStringView>();
   }
 
@@ -344,15 +344,15 @@ namespace {
 
   LIBSEMIGROUPS_TEST_CASE("Kambites",
                           "004",
-                          "(fpsemi) small_overlap_class (std::string)",
-                          "[quick][kambites][fpsemi]") {
+                          "small_overlap_class (std::string)",
+                          "[quick][kambites]") {
     test_case_no_name_2<std::string>();
   }
 
   LIBSEMIGROUPS_TEST_CASE("Kambites",
                           "005",
-                          "(fpsemi) small_overlap_class (MultiStringView) ",
-                          "[quick][kambites][fpsemi]") {
+                          "small_overlap_class (MultiStringView) ",
+                          "[quick][kambites]") {
     test_case_no_name_2<detail::MultiStringView>();
   }
 
@@ -500,15 +500,15 @@ namespace {
 
   LIBSEMIGROUPS_TEST_CASE("Kambites",
                           "006",
-                          "(fpsemi) random (std::string)",
-                          "[quick][kambites][fpsemi]") {
+                          "random (std::string)",
+                          "[quick][kambites]") {
     test_case_random<std::string>();
   }
 
   LIBSEMIGROUPS_TEST_CASE("Kambites",
                           "007",
-                          "(fpsemi) random (MultiStringView)",
-                          "[quick][kambites][fpsemi]") {
+                          "random (MultiStringView)",
+                          "[quick][kambites]") {
     test_case_random<detail::MultiStringView>();
   }
   ////////////////////////////////////////////////////////////////////////
@@ -553,15 +553,15 @@ namespace {
 
   LIBSEMIGROUPS_TEST_CASE("Kambites",
                           "008",
-                          "(fpsemi) KnuthBendix 055 (std::string)",
-                          "[quick][kambites][fpsemi]") {
+                          "KnuthBendix 055 (std::string)",
+                          "[quick][kambites]") {
     test_case_knuth_bendix_055<std::string>();
   }
 
   LIBSEMIGROUPS_TEST_CASE("Kambites",
                           "009",
-                          "(fpsemi) KnuthBendix 055 (MultiStringView)",
-                          "[quick][kambites][fpsemi][no-valgrind]") {
+                          "KnuthBendix 055 (MultiStringView)",
+                          "[quick][kambites][no-valgrind]") {
     test_case_knuth_bendix_055<detail::MultiStringView>();
   }
 
@@ -595,16 +595,15 @@ namespace {
 
   LIBSEMIGROUPS_TEST_CASE("Kambites",
                           "010",
-                          "(fpsemi) smalloverlap/gap/test.gi:85 (std::string)",
-                          "[quick][kambites][fpsemi]") {
+                          "smalloverlap/gap/test.gi:85 (std::string)",
+                          "[quick][kambites]") {
     test_case_gap_smalloverlap_85<std::string>();
   }
 
-  LIBSEMIGROUPS_TEST_CASE(
-      "Kambites",
-      "011",
-      "(fpsemi) smalloverlap/gap/test.gi:85 (MultiStringView)",
-      "[quick][kambites][fpsemi]") {
+  LIBSEMIGROUPS_TEST_CASE("Kambites",
+                          "011",
+                          "smalloverlap/gap/test.gi:85 (MultiStringView)",
+                          "[quick][kambites]") {
     test_case_gap_smalloverlap_85<detail::MultiStringView>();
   }
 
@@ -612,8 +611,8 @@ namespace {
 
   LIBSEMIGROUPS_TEST_CASE("Kambites",
                           "012",
-                          "(fpsemi) free semigroup",
-                          "[quick][kambites][fpsemi]") {
+                          "free semigroup",
+                          "[quick][kambites]") {
     Presentation<std::string> p;
     p.alphabet("cab");
     Kambites<std::string> k(p);
@@ -688,16 +687,15 @@ namespace {
 
   LIBSEMIGROUPS_TEST_CASE("Kambites",
                           "013",
-                          "(fpsemi) smalloverlap/gap/test.gi:49 (std::string)",
-                          "[quick][kambites][fpsemi]") {
+                          "smalloverlap/gap/test.gi:49 (std::string)",
+                          "[quick][kambites]") {
     test_case_gap_smalloverlap_49<std::string>();
   }
 
-  LIBSEMIGROUPS_TEST_CASE(
-      "Kambites",
-      "014",
-      "(fpsemi) smalloverlap/gap/test.gi:49 (MultiStringView)",
-      "[quick][kambites][fpsemi][no-valgrind]") {
+  LIBSEMIGROUPS_TEST_CASE("Kambites",
+                          "014",
+                          "smalloverlap/gap/test.gi:49 (MultiStringView)",
+                          "[quick][kambites][no-valgrind]") {
     test_case_gap_smalloverlap_49<detail::MultiStringView>();
   }
 
@@ -729,16 +727,15 @@ namespace {
 
   LIBSEMIGROUPS_TEST_CASE("Kambites",
                           "015",
-                          "(fpsemi) smalloverlap/gap/test.gi:63 (std::string)",
-                          "[quick][kambites][fpsemi][no-valgrind]") {
+                          "smalloverlap/gap/test.gi:63 (std::string)",
+                          "[quick][kambites][no-valgrind]") {
     test_case_gap_smalloverlap_63<std::string>();
   }
 
-  LIBSEMIGROUPS_TEST_CASE(
-      "Kambites",
-      "016",
-      "(fpsemi) smalloverlap/gap/test.gi:63 (MultiStringView)",
-      "[quick][kambites][fpsemi][no-valgrind]") {
+  LIBSEMIGROUPS_TEST_CASE("Kambites",
+                          "016",
+                          "smalloverlap/gap/test.gi:63 (MultiStringView)",
+                          "[quick][kambites][no-valgrind]") {
     test_case_gap_smalloverlap_63<detail::MultiStringView>();
   }
 
@@ -770,16 +767,15 @@ namespace {
 
   LIBSEMIGROUPS_TEST_CASE("Kambites",
                           "017",
-                          "(fpsemi) smalloverlap/gap/test.gi:70 (std::string)",
-                          "[quick][kambites][fpsemi][no-valgrind]") {
+                          "smalloverlap/gap/test.gi:70 (std::string)",
+                          "[quick][kambites][no-valgrind]") {
     test_case_gap_smalloverlap_70<std::string>();
   }
 
-  LIBSEMIGROUPS_TEST_CASE(
-      "Kambites",
-      "018",
-      "(fpsemi) smalloverlap/gap/test.gi:70 (MultiStringView)",
-      "[quick][kambites][fpsemi][no-valgrind]") {
+  LIBSEMIGROUPS_TEST_CASE("Kambites",
+                          "018",
+                          "smalloverlap/gap/test.gi:70 (MultiStringView)",
+                          "[quick][kambites][no-valgrind]") {
     test_case_gap_smalloverlap_70<detail::MultiStringView>();
   }
   ////////////////////////////////////////////////////////////////////////
@@ -842,17 +838,17 @@ namespace {
 
   LIBSEMIGROUPS_TEST_CASE("Kambites",
                           "019",
-                          "(fpsemi) std::string smalloverlap/gap/test.gi:77"
+                          "std::string smalloverlap/gap/test.gi:77"
                           "(infinite) (KnuthBendix 059)",
-                          "[standard][kambites][fpsemi]") {
+                          "[standard][kambites]") {
     test_case_1_million_equals<std::string>();
   }
 
   LIBSEMIGROUPS_TEST_CASE("Kambites",
                           "020",
-                          "(fpsemi) MultiStringView smalloverlap/gap/test.gi:77"
+                          "MultiStringView smalloverlap/gap/test.gi:77"
                           "(infinite) (KnuthBendix 059)",
-                          "[standard][kambites][fpsemi]") {
+                          "[standard][kambites]") {
     test_case_1_million_equals<detail::MultiStringView>();
   }
 
@@ -874,15 +870,15 @@ namespace {
 
   LIBSEMIGROUPS_TEST_CASE("Kambites",
                           "021",
-                          "(fpsemi) code coverage (std::string)",
-                          "[quick][kambites][fpsemi]") {
+                          "code coverage (std::string)",
+                          "[quick][kambites]") {
     test_case_code_cov<std::string>();
   }
 
   LIBSEMIGROUPS_TEST_CASE("Kambites",
                           "022",
-                          "(fpsemi) code coverage (MultiStringView)",
-                          "[quick][kambites][fpsemi]") {
+                          "code coverage (MultiStringView)",
+                          "[quick][kambites]") {
     test_case_code_cov<detail::MultiStringView>();
   }
 
@@ -908,15 +904,15 @@ namespace {
 
   LIBSEMIGROUPS_TEST_CASE("Kambites",
                           "023",
-                          "(fpsemi) prefix (std::string)",
-                          "[quick][kambites][fpsemi]") {
+                          "prefix (std::string)",
+                          "[quick][kambites]") {
     test_case_ex_3_13_14<std::string>();
   }
 
   LIBSEMIGROUPS_TEST_CASE("Kambites",
                           "024",
-                          "(fpsemi) prefix (MultiStringView)",
-                          "[quick][kambites][fpsemi]") {
+                          "prefix (MultiStringView)",
+                          "[quick][kambites]") {
     test_case_ex_3_13_14<MultiStringView>();
   }
 
@@ -949,16 +945,15 @@ namespace {
 
   LIBSEMIGROUPS_TEST_CASE("Kambites",
                           "025",
-                          "(fpsemi) normal_form (Example 3.15) (std::string)",
-                          "[quick][kambites][fpsemi]") {
+                          "normal_form (Example 3.15) (std::string)",
+                          "[quick][kambites]") {
     test_case_ex_3_15<std::string>();
   }
 
-  LIBSEMIGROUPS_TEST_CASE(
-      "Kambites",
-      "026",
-      "(fpsemi) normal_form (Example 3.15) (MultiStringView)",
-      "[quick][kambites][fpsemi]") {
+  LIBSEMIGROUPS_TEST_CASE("Kambites",
+                          "026",
+                          "normal_form (Example 3.15) (MultiStringView)",
+                          "[quick][kambites]") {
     test_case_ex_3_15<MultiStringView>();
   }
 
@@ -984,16 +979,15 @@ namespace {
 
   LIBSEMIGROUPS_TEST_CASE("Kambites",
                           "027",
-                          "(fpsemi) normal_form (Example 3.16) (std::string) ",
-                          "[quick][kambites][fpsemi]") {
+                          "normal_form (Example 3.16) (std::string) ",
+                          "[quick][kambites]") {
     test_case_ex_3_16<std::string>();
   }
 
-  LIBSEMIGROUPS_TEST_CASE(
-      "Kambites",
-      "028",
-      "(fpsemi) normal_form (Example 3.16) (MultiStringView)",
-      "[quick][kambites][fpsemi]") {
+  LIBSEMIGROUPS_TEST_CASE("Kambites",
+                          "028",
+                          "normal_form (Example 3.16) (MultiStringView)",
+                          "[quick][kambites]") {
     test_case_ex_3_16<MultiStringView>();
   }
 
@@ -1037,16 +1031,16 @@ namespace {
   LIBSEMIGROUPS_TEST_CASE(
       "Kambites",
       "029",
-      "(fpsemi) normal_form (Example 3.16) more exhaustive (std::string)",
-      "[quick][kambites][fpsemi][no-valgrind]") {
+      "normal_form (Example 3.16) more exhaustive (std::string)",
+      "[quick][kambites][no-valgrind]") {
     test_case_ex_3_16_again<std::string>();
   }
 
   LIBSEMIGROUPS_TEST_CASE(
       "Kambites",
       "030",
-      "(fpsemi) normal_form (Example 3.16) more exhaustive (MultiStringView)",
-      "[quick][kambites][fpsemi][no-valgrind]") {
+      "normal_form (Example 3.16) more exhaustive (MultiStringView)",
+      "[quick][kambites][no-valgrind]") {
     test_case_ex_3_16_again<MultiStringView>();
   }
 
@@ -1074,15 +1068,15 @@ namespace {
 
   LIBSEMIGROUPS_TEST_CASE("Kambites",
                           "031",
-                          "(fpsemi) small presentation (std::string)",
-                          "[quick][kambites][fpsemi]") {
+                          "small presentation (std::string)",
+                          "[quick][kambites]") {
     test_case_small<std::string>();
   }
 
   LIBSEMIGROUPS_TEST_CASE("Kambites",
                           "032",
-                          "(fpsemi) small presentation (MultiStringView)",
-                          "[quick][kambites][fpsemi]") {
+                          "small presentation (MultiStringView)",
+                          "[quick][kambites]") {
     test_case_small<MultiStringView>();
   }
 
@@ -1109,15 +1103,15 @@ namespace {
 
   LIBSEMIGROUPS_TEST_CASE("Kambites",
                           "033",
-                          "(fpsemi) non-smalloverlap (std::string)",
-                          "[quick][kambites][fpsemi]") {
+                          "non-smalloverlap (std::string)",
+                          "[quick][kambites]") {
     test_case_non_smalloverlap<std::string>();
   }
 
   LIBSEMIGROUPS_TEST_CASE("Kambites",
                           "034",
-                          "(fpsemi) non-smalloverlap (MultiStringView)",
-                          "[quick][kambites][fpsemi]") {
+                          "non-smalloverlap (MultiStringView)",
+                          "[quick][kambites]") {
     test_case_non_smalloverlap<MultiStringView>();
   }
 
@@ -1162,15 +1156,15 @@ namespace {
 
   LIBSEMIGROUPS_TEST_CASE("Kambites",
                           "035",
-                          "(fpsemi) MT test 3 (std::string)",
-                          "[quick][kambites][fpsemi]") {
+                          "MT test 3 (std::string)",
+                          "[quick][kambites]") {
     test_case_mt_3<std::string>();
   }
 
   LIBSEMIGROUPS_TEST_CASE("Kambites",
                           "036",
-                          "(fpsemi) MT test 3 (MultiStringView)",
-                          "[quick][kambites][fpsemi]") {
+                          "MT test 3 (MultiStringView)",
+                          "[quick][kambites]") {
     test_case_mt_3<MultiStringView>();
   }
 
@@ -1192,15 +1186,15 @@ namespace {
 
   LIBSEMIGROUPS_TEST_CASE("Kambites",
                           "037",
-                          "(fpsemi) MT test 5 (std::string)",
-                          "[quick][kambites][fpsemi]") {
+                          "MT test 5 (std::string)",
+                          "[quick][kambites]") {
     test_case_mt_5<std::string>();
   }
 
   LIBSEMIGROUPS_TEST_CASE("Kambites",
                           "038",
-                          "(fpsemi) MT test 5 (MultiStringView)",
-                          "[quick][kambites][fpsemi]") {
+                          "MT test 5 (MultiStringView)",
+                          "[quick][kambites]") {
     test_case_mt_5<MultiStringView>();
   }
 
@@ -1223,15 +1217,15 @@ namespace {
 
   LIBSEMIGROUPS_TEST_CASE("Kambites",
                           "039",
-                          "(fpsemi) MT test 6 (std::string)",
-                          "[quick][kambites][fpsemi]") {
+                          "MT test 6 (std::string)",
+                          "[quick][kambites]") {
     test_case_mt_6<std::string>();
   }
 
   LIBSEMIGROUPS_TEST_CASE("Kambites",
                           "040",
-                          "(fpsemi) MT test 6 (MultiStringView)",
-                          "[quick][kambites][fpsemi]") {
+                          "MT test 6 (MultiStringView)",
+                          "[quick][kambites]") {
     test_case_mt_6<MultiStringView>();
   }
 
@@ -1254,15 +1248,15 @@ namespace {
 
   LIBSEMIGROUPS_TEST_CASE("Kambites",
                           "041",
-                          "(fpsemi) MT test 10 (std::string)",
-                          "[quick][kambites][fpsemi]") {
+                          "MT test 10 (std::string)",
+                          "[quick][kambites]") {
     test_case_mt_6<std::string>();
   }
 
   LIBSEMIGROUPS_TEST_CASE("Kambites",
                           "042",
-                          "(fpsemi) MT test 10 (MultiStringView)",
-                          "[quick][kambites][fpsemi]") {
+                          "MT test 10 (MultiStringView)",
+                          "[quick][kambites]") {
     test_case_mt_6<MultiStringView>();
   }
 
@@ -1283,15 +1277,15 @@ namespace {
 
   LIBSEMIGROUPS_TEST_CASE("Kambites",
                           "043",
-                          "(fpsemi) MT test 13 (std::string)",
-                          "[quick][kambites][fpsemi]") {
+                          "MT test 13 (std::string)",
+                          "[quick][kambites]") {
     test_case_mt_13<std::string>();
   }
 
   LIBSEMIGROUPS_TEST_CASE("Kambites",
                           "044",
-                          "(fpsemi) MT test 13 (MultiStringView)",
-                          "[quick][kambites][fpsemi]") {
+                          "MT test 13 (MultiStringView)",
+                          "[quick][kambites]") {
     test_case_mt_13<MultiStringView>();
   }
 
@@ -1311,15 +1305,15 @@ namespace {
 
   LIBSEMIGROUPS_TEST_CASE("Kambites",
                           "045",
-                          "(fpsemi) MT test 14 (std::string)",
-                          "[quick][kambites][fpsemi]") {
+                          "MT test 14 (std::string)",
+                          "[quick][kambites]") {
     test_case_mt_14<std::string>();
   }
 
   LIBSEMIGROUPS_TEST_CASE("Kambites",
                           "046",
-                          "(fpsemi) MT test 14 (MultiStringView)",
-                          "[quick][kambites][fpsemi]") {
+                          "MT test 14 (MultiStringView)",
+                          "[quick][kambites]") {
     test_case_mt_14<MultiStringView>();
   }
 
@@ -1342,15 +1336,15 @@ namespace {
 
   LIBSEMIGROUPS_TEST_CASE("Kambites",
                           "047",
-                          "(fpsemi) MT test 15 (std::string)",
-                          "[quick][kambites][fpsemi]") {
+                          "MT test 15 (std::string)",
+                          "[quick][kambites]") {
     test_case_mt_15<std::string>();
   }
 
   LIBSEMIGROUPS_TEST_CASE("Kambites",
                           "048",
-                          "(fpsemi) MT test 15 (MultiStringView)",
-                          "[quick][kambites][fpsemi]") {
+                          "MT test 15 (MultiStringView)",
+                          "[quick][kambites]") {
     test_case_mt_15<MultiStringView>();
   }
 
@@ -1372,15 +1366,15 @@ namespace {
 
   LIBSEMIGROUPS_TEST_CASE("Kambites",
                           "049",
-                          "(fpsemi) MT test 16 (std::string)",
-                          "[quick][kambites][fpsemi]") {
+                          "MT test 16 (std::string)",
+                          "[quick][kambites]") {
     test_case_mt_16<std::string>();
   }
 
   LIBSEMIGROUPS_TEST_CASE("Kambites",
                           "050",
-                          "(fpsemi) MT test 16 (MultiStringView)",
-                          "[quick][kambites][fpsemi]") {
+                          "MT test 16 (MultiStringView)",
+                          "[quick][kambites]") {
     test_case_mt_16<MultiStringView>();
   }
 
@@ -1407,15 +1401,15 @@ namespace {
 
   LIBSEMIGROUPS_TEST_CASE("Kambites",
                           "051",
-                          "(fpsemi) MT test 17 (std::string)",
-                          "[quick][kambites][fpsemi]") {
+                          "MT test 17 (std::string)",
+                          "[quick][kambites]") {
     test_case_mt_17<std::string>();
   }
 
   LIBSEMIGROUPS_TEST_CASE("Kambites",
                           "052",
-                          "(fpsemi) MT test 17 (MultiStringView)",
-                          "[quick][kambites][fpsemi]") {
+                          "MT test 17 (MultiStringView)",
+                          "[quick][kambites]") {
     test_case_mt_17<MultiStringView>();
   }
 
@@ -1450,16 +1444,15 @@ namespace {
 
   LIBSEMIGROUPS_TEST_CASE("Kambites",
                           "053",
-                          "(fpsemi) weak C(4) not strong x 1 (std::string)",
-                          "[quick][kambites][fpsemi]") {
+                          "weak C(4) not strong x 1 (std::string)",
+                          "[quick][kambites]") {
     test_case_weak_1<std::string>();
   }
 
-  LIBSEMIGROUPS_TEST_CASE(
-      "Kambites",
-      "054",
-      "(fpsemi) weak C(4) not strong x 1 (MultiStringView) ",
-      "[quick][kambites][fpsemi]") {
+  LIBSEMIGROUPS_TEST_CASE("Kambites",
+                          "054",
+                          "weak C(4) not strong x 1 (MultiStringView) ",
+                          "[quick][kambites]") {
     test_case_weak_1<MultiStringView>();
   }
 
@@ -1489,16 +1482,15 @@ namespace {
 
   LIBSEMIGROUPS_TEST_CASE("Kambites",
                           "055",
-                          "(fpsemi) weak C(4) not strong x 2 (std::string)",
-                          "[quick][kambites][fpsemi]") {
+                          "weak C(4) not strong x 2 (std::string)",
+                          "[quick][kambites]") {
     test_case_weak_2<std::string>();
   }
 
-  LIBSEMIGROUPS_TEST_CASE(
-      "Kambites",
-      "056",
-      "(fpsemi) weak C(4) not strong x 2 (MultiStringView) ",
-      "[quick][kambites][fpsemi]") {
+  LIBSEMIGROUPS_TEST_CASE("Kambites",
+                          "056",
+                          "weak C(4) not strong x 2 (MultiStringView) ",
+                          "[quick][kambites]") {
     test_case_weak_2<MultiStringView>();
   }
 
@@ -1527,16 +1519,15 @@ namespace {
 
   LIBSEMIGROUPS_TEST_CASE("Kambites",
                           "057",
-                          "(fpsemi) weak C(4) not strong x 3 (std::string)",
-                          "[quick][kambites][fpsemi]") {
+                          "weak C(4) not strong x 3 (std::string)",
+                          "[quick][kambites]") {
     test_case_weak_3<std::string>();
   }
 
-  LIBSEMIGROUPS_TEST_CASE(
-      "Kambites",
-      "058",
-      "(fpsemi) weak C(4) not strong x 3 (MultiStringView) ",
-      "[quick][kambites][fpsemi]") {
+  LIBSEMIGROUPS_TEST_CASE("Kambites",
+                          "058",
+                          "weak C(4) not strong x 3 (MultiStringView) ",
+                          "[quick][kambites]") {
     test_case_weak_3<MultiStringView>();
   }
 
@@ -1562,16 +1553,15 @@ namespace {
 
   LIBSEMIGROUPS_TEST_CASE("Kambites",
                           "059",
-                          "(fpsemi) weak C(4) not strong x 4 (std::string)",
-                          "[quick][kambites][fpsemi]") {
+                          "weak C(4) not strong x 4 (std::string)",
+                          "[quick][kambites]") {
     test_case_weak_4<std::string>();
   }
 
-  LIBSEMIGROUPS_TEST_CASE(
-      "Kambites",
-      "060",
-      "(fpsemi) weak C(4) not strong x 4 (MultiStringView) ",
-      "[quick][kambites][fpsemi]") {
+  LIBSEMIGROUPS_TEST_CASE("Kambites",
+                          "060",
+                          "weak C(4) not strong x 4 (MultiStringView) ",
+                          "[quick][kambites]") {
     test_case_weak_4<MultiStringView>();
   }
 
@@ -1593,16 +1583,15 @@ namespace {
 
   LIBSEMIGROUPS_TEST_CASE("Kambites",
                           "061",
-                          "(fpsemi) weak C(4) not strong x 5 (std::string)",
-                          "[quick][kambites][fpsemi]") {
+                          "weak C(4) not strong x 5 (std::string)",
+                          "[quick][kambites]") {
     test_case_weak_5<std::string>();
   }
 
-  LIBSEMIGROUPS_TEST_CASE(
-      "Kambites",
-      "062",
-      "(fpsemi) weak C(4) not strong x 5 (MultiStringView) ",
-      "[quick][kambites][fpsemi]") {
+  LIBSEMIGROUPS_TEST_CASE("Kambites",
+                          "062",
+                          "weak C(4) not strong x 5 (MultiStringView) ",
+                          "[quick][kambites]") {
     test_case_weak_5<MultiStringView>();
   }
 
@@ -1621,16 +1610,15 @@ namespace {
 
   LIBSEMIGROUPS_TEST_CASE("Kambites",
                           "063",
-                          "(fpsemi) weak C(4) not strong x 6 (std::string)",
-                          "[quick][kambites][fpsemi]") {
+                          "weak C(4) not strong x 6 (std::string)",
+                          "[quick][kambites]") {
     test_case_weak_6<std::string>();
   }
 
-  LIBSEMIGROUPS_TEST_CASE(
-      "Kambites",
-      "064",
-      "(fpsemi) weak C(4) not strong x 6 (MultiStringView) ",
-      "[quick][kambites][fpsemi]") {
+  LIBSEMIGROUPS_TEST_CASE("Kambites",
+                          "064",
+                          "weak C(4) not strong x 6 (MultiStringView) ",
+                          "[quick][kambites]") {
     test_case_weak_6<MultiStringView>();
   }
 
@@ -1649,15 +1637,15 @@ namespace {
 
   LIBSEMIGROUPS_TEST_CASE("Kambites",
                           "065",
-                          "(fpsemi) Konovalov example (std::string)",
-                          "[quick][kambites][fpsemi]") {
+                          "Konovalov example (std::string)",
+                          "[quick][kambites]") {
     test_case_konovalov<std::string>();
   }
 
   LIBSEMIGROUPS_TEST_CASE("Kambites",
                           "066",
-                          "(fpsemi) Konovalov example (MultiStringView)",
-                          "[quick][kambites][fpsemi]") {
+                          "Konovalov example (MultiStringView)",
+                          "[quick][kambites]") {
     test_case_konovalov<MultiStringView>();
   }
 
@@ -1685,15 +1673,15 @@ namespace {
 
   LIBSEMIGROUPS_TEST_CASE("Kambites",
                           "067",
-                          "(fpsemi) long words (std::string)",
-                          "[quick][kambites][fpsemi][no-valgrind]") {
+                          "long words (std::string)",
+                          "[quick][kambites][no-valgrind]") {
     test_case_long_words<std::string>();
   }
 
   LIBSEMIGROUPS_TEST_CASE("Kambites",
                           "068",
-                          "(fpsemi) long words (MultiStringView)",
-                          "[quick][kambites][fpsemi][no-valgrind]") {
+                          "long words (MultiStringView)",
+                          "[quick][kambites][no-valgrind]") {
     test_case_long_words<detail::MultiStringView>();
   }
 
@@ -1731,54 +1719,49 @@ namespace {
     return std::make_pair(total_c4, total);
   }
 
-  LIBSEMIGROUPS_TEST_CASE(
-      "Kambites",
-      "069",
-      "(fpsemi) almost all 2-generated 1-relation monoids are C(4)",
-      "[quick][kambites][fpsemi]") {
+  LIBSEMIGROUPS_TEST_CASE("Kambites",
+                          "069",
+                          "almost all 2-generated 1-relation monoids are C(4)",
+                          "[quick][kambites]") {
     auto x = count_2_gen_1_rel<std::string>(1, 7);
     REQUIRE(x.first == 1);
     REQUIRE(x.second == 7'875);
   }
 
   // Takes approx 5s
-  LIBSEMIGROUPS_TEST_CASE(
-      "Kambites",
-      "070",
-      "(fpsemi) almost all 2-generated 1-relation monoids are C(4)",
-      "[extreme][kambites][fpsemi]") {
+  LIBSEMIGROUPS_TEST_CASE("Kambites",
+                          "070",
+                          "almost all 2-generated 1-relation monoids are C(4)",
+                          "[extreme][kambites]") {
     auto x = count_2_gen_1_rel<std::string>(1, 11);
     REQUIRE(x.first == 18'171);
     REQUIRE(x.second == 2'092'035);
   }
 
   // Takes approx. 21s
-  LIBSEMIGROUPS_TEST_CASE(
-      "Kambites",
-      "071",
-      "(fpsemi) almost all 2-generated 1-relation monoids are C(4)",
-      "[extreme][kambites][fpsemi]") {
+  LIBSEMIGROUPS_TEST_CASE("Kambites",
+                          "071",
+                          "almost all 2-generated 1-relation monoids are C(4)",
+                          "[extreme][kambites]") {
     auto x = count_2_gen_1_rel<std::string>(1, 12);
     REQUIRE(x.first == 235'629);
     REQUIRE(x.second == 8'378'371);
   }
 
-  LIBSEMIGROUPS_TEST_CASE(
-      "Kambites",
-      "072",
-      "(fpsemi) almost all 2-generated 1-relation monoids are C(4)",
-      "[fail][kambites][fpsemi]") {
+  LIBSEMIGROUPS_TEST_CASE("Kambites",
+                          "072",
+                          "almost all 2-generated 1-relation monoids are C(4)",
+                          "[fail][kambites]") {
     auto x = count_2_gen_1_rel<std::string>(1, 13);
     REQUIRE(x.first == 0);
     REQUIRE(x.second == 0);
   }
 
   // Takes about 1m45s
-  LIBSEMIGROUPS_TEST_CASE(
-      "Kambites",
-      "073",
-      "(fpsemi) almost all 2-generated 1-relation monoids are C(4)",
-      "[extreme][kambites][fpsemi]") {
+  LIBSEMIGROUPS_TEST_CASE("Kambites",
+                          "073",
+                          "almost all 2-generated 1-relation monoids are C(4)",
+                          "[extreme][kambites]") {
     std::cout.precision(10);
     size_t const sample_size = 1000;
     std::cout << std::string(69, '-') << std::endl;
@@ -1804,12 +1787,10 @@ namespace {
     }
   }
 
-  // TODO implement "cartesian" combinator for rx-ranges
-
   LIBSEMIGROUPS_TEST_CASE("Kambites",
                           "079",
-                          "(fpsemi) normal form possible bug",
-                          "[standard][kambites][fpsemi]") {
+                          "normal form possible bug",
+                          "[standard][kambites]") {
     // There was a bug in MultiStringView::append, that caused this
     // test to fail, so we keep this test to check that the bug in
     // MultiStringView::append is resolved.
@@ -2567,85 +2548,82 @@ namespace {
     }
   }
 
-  /*
-      // namespace congruence {
-      //   LIBSEMIGROUPS_TEST_CASE("Kambites",
-      //                           "075",
-      //                           "(cong) example 1",
-      //                           "[quick][kambites][fpsemi]") {
-      //     auto     rg = ReportGuard(REPORT);
-      //     Kambites k;
-      //     k.set_number_of_generators(2);
-      //     REQUIRE(k.is_quotient_obviously_infinite());
-      //     REQUIRE(k.number_of_classes() == POSITIVE_INFINITY);
-      //     k.add_pair({0, 0, 0}, {0});
-      //     k.add_pair({0}, {1, 1});
-      //     REQUIRE(k.kambites().small_overlap_class() == 1);
-      //     REQUIRE(k.const_contains({0, 0}, {0}) == tril::unknown);
-      //   }
+  // LIBSEMIGROUPS_TEST_CASE("Kambites", "075", "example 1",
+  // "[quick][kambites]") {
+  //   auto                    rg = ReportGuard(REPORT);
+  //   Presentation<word_type> p;
+  //   p.alphabet(2);
+  //   presentation::add_rule_and_check(p, 000_w, 0_w);
+  //   presentation::add_rule_and_check(p, 0_w, 11_w);
 
-      //  LIBSEMIGROUPS_TEST_CASE("Kambites",
-      //                          "076",
-      //                          "(cong) example 2",
-      //                          "[quick][kambites][cong][congruence]") {
-      //    auto     rg = ReportGuard(REPORT);
-      //    Kambites k;
-      //    k.set_number_of_generators(7);
-      //    k.add_pair({0, 1, 2, 3}, {0, 0, 0, 4, 0, 0});
-      //    k.add_pair({4, 5}, {3, 6});
-      //    REQUIRE(k.kambites().small_overlap_class() == 4);
-      //    REQUIRE(k.number_of_classes() == POSITIVE_INFINITY);
-      //    REQUIRE_THROWS_AS(k.number_of_non_trivial_classes(),
-      //                      LibsemigroupsException);
+  //   Kambites k(p);
 
-      //    REQUIRE(k.contains({0, 1, 2, 3}, {0, 0, 0, 4, 0, 0}));
-      //    REQUIRE(k.contains({4, 5}, {3, 6}));
-      //    REQUIRE(k.contains({0, 0, 0, 0, 0, 4, 5}, {0, 0, 0, 0, 0, 3, 6}));
-      //    REQUIRE(k.contains({4, 5, 0, 1, 0, 1, 0}, {3, 6, 0, 1, 0, 1, 0}));
-      //    REQUIRE_NOTHROW(k.quotient_froidure_pin());
-      //  }
+  //   REQUIRE(is_obviously_infinite(k));
+  //   REQUIRE(k.size() == POSITIVE_INFINITY);
+  //   REQUIRE(k.small_overlap_class() == 1);
+  //   //    REQUIRE(k.equal_to(00_w, 0_w) == tril::unknown);
+  // }
 
-      //  LIBSEMIGROUPS_TEST_CASE("Kambites",
-      //                          "077",
-      //                          "(cong) code coverage",
-      //                          "[quick][kambites][cong][congruence]") {
-      //    fpsemigroup::Kambites<std::string> k;
-      //    p.alphabet("abcd");
-      //    presentation::add_rule_and_check(p, "ababbabbbabbbb",
-      "abbbbbabbbbbbabbbbbbbabbbbbbbb");
-      //    presentation::add_rule_and_check(p, "cdcddcdddcdddd",
-      "cdddddcddddddcdddddddcdddddddd");
-      //    Kambites l(k);
-      //    l.run();
-      //    REQUIRE(l.contains({0, 1, 1, 1, 0}, {0, 1, 1, 1, 0}));
-      //    REQUIRE(l.contains(
-      //        {0, 1, 1, 1, 0, 2, 3, 3, 3, 3, 3, 2, 3, 3, 3, 3, 3, 3,
-      //         2, 3, 3, 3, 3, 3, 3, 3, 2, 3, 3, 3, 3, 3, 3, 3, 3},
-      //        {0, 1, 1, 1, 0, 2, 3, 2, 3, 3, 2, 3, 3, 3, 2, 3, 3, 3, 3}));
-      //    REQUIRE(l.finished());
-      //    REQUIRE(l.is_quotient_obviously_infinite());
-      //    REQUIRE(!l.is_quotient_obviously_finite());
-      //    REQUIRE(l.number_of_classes() == POSITIVE_INFINITY);
-      //    REQUIRE(l.class_index_to_word(100) == word_type({0, 1, 0, 0}));
-      //    REQUIRE_NOTHROW(l.quotient_froidure_pin());
-      //    REQUIRE(l.word_to_class_index({0, 1, 0, 0}) == 100);
-      //  }
+  //  LIBSEMIGROUPS_TEST_CASE("Kambites",
+  //                          "076",
+  //                          "example 2",
+  //                          "[quick][kambites][cong][congruence]") {
+  //    auto     rg = ReportGuard(REPORT);
+  //    Kambites k;
+  //    k.set_number_of_generators(7);
+  //    k.add_pair({0, 1, 2, 3}, {0, 0, 0, 4, 0, 0});
+  //    k.add_pair({4, 5}, {3, 6});
+  //    REQUIRE(k.kambites().small_overlap_class() == 4);
+  //    REQUIRE(k.number_of_classes() == POSITIVE_INFINITY);
+  //    REQUIRE_THROWS_AS(k.number_of_non_trivial_classes(),
+  //                      LibsemigroupsException);
 
-      //  LIBSEMIGROUPS_TEST_CASE("Kambites",
-      //                          "078",
-      //                          "(cong) large number of rules",
-      //                          "[quick][kambites][cong][congruence]") {
-      //    FroidurePin<LeastTransf<6>> S({LeastTransf<6>({1, 2, 3, 4, 5, 0}),
-      //                                   LeastTransf<6>({1, 0, 2, 3, 4, 5}),
-      //                                   LeastTransf<6>({0, 1, 2, 3, 4, 0})});
-      //    REQUIRE(S.size() == 46'656);
-      //    Kambites k;
-      //    k.set_number_of_generators(3);
-      //    for (auto it = S.cbegin_rules(); it != S.cend_rules(); ++it) {
-      //      k.add_pair(it->first, it->second);
-      //    }
-      //    REQUIRE(k.kambites().small_overlap_class() == 1);
-      //  }
-      //}  // namespace congruence
-            */
+  //    REQUIRE(k.contains({0, 1, 2, 3}, {0, 0, 0, 4, 0, 0}));
+  //    REQUIRE(k.contains({4, 5}, {3, 6}));
+  //    REQUIRE(k.contains({0, 0, 0, 0, 0, 4, 5}, {0, 0, 0, 0, 0, 3, 6}));
+  //    REQUIRE(k.contains({4, 5, 0, 1, 0, 1, 0}, {3, 6, 0, 1, 0, 1, 0}));
+  //    REQUIRE_NOTHROW(k.quotient_froidure_pin());
+  //  }
+
+  //  LIBSEMIGROUPS_TEST_CASE("Kambites",
+  //                          "077",
+  //                          "code coverage",
+  //                          "[quick][kambites][cong][congruence]") {
+  //    fpsemigroup::Kambites<std::string> k;
+  //    p.alphabet("abcd");
+  //    presentation::add_rule_and_check(p, "ababbabbbabbbb",
+  //    "abbbbbabbbbbbabbbbbbbabbbbbbbb");
+  //    presentation::add_rule_and_check(p, "cdcddcdddcdddd",
+  //   "cdddddcddddddcdddddddcdddddddd");
+  //    Kambites l(k);
+  //    l.run();
+  //    REQUIRE(l.contains({0, 1, 1, 1, 0}, {0, 1, 1, 1, 0}));
+  //    REQUIRE(l.contains(
+  //        {0, 1, 1, 1, 0, 2, 3, 3, 3, 3, 3, 2, 3, 3, 3, 3, 3, 3,
+  //         2, 3, 3, 3, 3, 3, 3, 3, 2, 3, 3, 3, 3, 3, 3, 3, 3},
+  //        {0, 1, 1, 1, 0, 2, 3, 2, 3, 3, 2, 3, 3, 3, 2, 3, 3, 3, 3}));
+  //    REQUIRE(l.finished());
+  //    REQUIRE(l.is_quotient_obviously_infinite());
+  //    REQUIRE(!l.is_quotient_obviously_finite());
+  //    REQUIRE(l.number_of_classes() == POSITIVE_INFINITY);
+  //    REQUIRE(l.class_index_to_word(100) == word_type({0, 1, 0, 0}));
+  //    REQUIRE_NOTHROW(l.quotient_froidure_pin());
+  //    REQUIRE(l.word_to_class_index({0, 1, 0, 0}) == 100);
+  //  }
+
+  //  LIBSEMIGROUPS_TEST_CASE("Kambites",
+  //                          "078",
+  //                          "large number of rules",
+  //                          "[quick][kambites][cong][congruence]") {
+  //    FroidurePin<LeastTransf<6>> S({LeastTransf<6>({1, 2, 3, 4, 5, 0}),
+  //                                   LeastTransf<6>({1, 0, 2, 3, 4, 5}),
+  //                                   LeastTransf<6>({0, 1, 2, 3, 4, 0})});
+  //    REQUIRE(S.size() == 46'656);
+  //    Kambites k;
+  //    k.set_number_of_generators(3);
+  //    for (auto it = S.cbegin_rules(); it != S.cend_rules(); ++it) {
+  //      k.add_pair(it->first, it->second);
+  //    }
+  //    REQUIRE(k.kambites().small_overlap_class() == 1);
+  //  }
 }  // namespace libsemigroups
