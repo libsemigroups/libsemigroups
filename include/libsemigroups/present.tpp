@@ -39,6 +39,23 @@ namespace libsemigroups {
       }
     }
 
+    template <typename Iterator>
+    int lex_compare(Iterator first1,
+                    Iterator last1,
+                    Iterator first2,
+                    Iterator last2) {
+      for (; (first1 != last1) && (first2 != last2);
+           ++first1, (void) ++first2) {
+        if (*first1 < *first2) {
+          return -1;
+        }
+        if (*first2 < *first1) {
+          return 1;
+        }
+      }
+      return 0;
+    }
+
     // Lex compare of
     // [first11, last11) + [first12, last12)
     // and
@@ -57,34 +74,52 @@ namespace libsemigroups {
 
       if (prefix1.size() < prefix2.size()) {
         size_t const k = prefix2.size() - prefix1.size();
-        return std::lexicographical_compare(prefix1.cbegin(),
-                                            prefix1.cend(),
-                                            prefix2.cbegin(),
-                                            prefix2.cbegin() + prefix1.size())
-               || std::lexicographical_compare(suffix1.cbegin(),
-                                               suffix1.cbegin() + k,
-                                               prefix2.cbegin()
-                                                   + prefix1.size(),
-                                               prefix2.cend())
-               || std::lexicographical_compare(suffix1.cbegin() + k,
-                                               suffix1.cend(),
-                                               suffix2.cbegin(),
-                                               suffix2.cend());
+
+        int cmp = lex_compare(prefix1.cbegin(),
+                              prefix1.cend(),
+                              prefix2.cbegin(),
+                              prefix2.cbegin() + prefix1.size());
+        if (cmp != 0) {
+          return cmp == -1;
+        }
+
+        cmp = lex_compare(suffix1.cbegin(),
+                          suffix1.cbegin() + k,
+                          prefix2.cbegin() + prefix1.size(),
+                          prefix2.cend());
+        if (cmp != 0) {
+          return cmp == -1;
+        }
+
+        cmp = lex_compare(suffix1.cbegin() + k,
+                          suffix1.cend(),
+                          suffix2.cbegin(),
+                          suffix2.cend());
+        return cmp == -1;
       } else {
-        size_t const k = prefix1.size() - prefix2.size();
-        return std::lexicographical_compare(prefix1.cbegin(),
-                                            prefix1.cbegin() + prefix2.size(),
-                                            prefix2.cbegin(),
-                                            prefix2.cend())
-               || std::lexicographical_compare(prefix1.cbegin()
-                                                   + prefix2.size(),
-                                               prefix1.cend(),
-                                               suffix2.cbegin(),
-                                               suffix2.cbegin() + k)
-               || std::lexicographical_compare(suffix1.cbegin(),
-                                               suffix1.cend(),
-                                               suffix2.cbegin() + k,
-                                               suffix2.cend());
+        size_t const k   = prefix1.size() - prefix2.size();
+        int          cmp = lex_compare(prefix1.cbegin(),
+                              prefix1.cbegin() + prefix2.size(),
+                              prefix2.cbegin(),
+                              prefix2.cend());
+        if (cmp != 0) {
+          return cmp == -1;
+        }
+
+        cmp = lex_compare(prefix1.cbegin() + prefix2.size(),
+                          prefix1.cend(),
+                          suffix2.cbegin(),
+                          suffix2.cbegin() + k);
+
+        if (cmp != 0) {
+          return cmp == -1;
+        }
+
+        cmp = lex_compare(suffix1.cbegin(),
+                          suffix1.cend(),
+                          suffix2.cbegin() + k,
+                          suffix2.cend());
+        return cmp == -1;
       }
     }
   }  // namespace detail
