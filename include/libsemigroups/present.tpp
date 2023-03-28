@@ -408,10 +408,9 @@ namespace libsemigroups {
     void sort_rules(Presentation<W>& p) {
       detail::validate_rules_length(p);
       // Create a permutation of the even indexed entries in vec
-      using letter_type = typename Presentation<W>::letter_type;
 
-      std::vector<letter_type> perm;
-      auto                     n = p.rules.size() / 2;
+      std::vector<size_t> perm;
+      size_t const        n = p.rules.size() / 2;
       perm.resize(n);
       std::iota(perm.begin(), perm.end(), 0);
       std::sort(perm.begin(), perm.end(), [&p](auto x, auto y) -> bool {
@@ -421,10 +420,10 @@ namespace libsemigroups {
                                                p.rules[2 * y + 1]);
       });
       // Apply the permutation (adapted from stl.hpp:apply_permutation)
-      for (letter_type i = 0; static_cast<decltype(n)>(i) < n; ++i) {
-        letter_type current = i;
+      for (size_t i = 0; i < n; ++i) {
+        size_t current = i;
         while (i != perm[current]) {
-          letter_type next = perm[current];
+          size_t next = perm[current];
           std::swap(p.rules[2 * current], p.rules[2 * next]);
           std::swap(p.rules[2 * current + 1], p.rules[2 * next + 1]);
           perm[current] = current;
