@@ -204,7 +204,11 @@ namespace libsemigroups {
             d, d.cbegin_active_nodes(), d.cend_active_nodes())) {
       return false;
     }
-    return is_obviously_infinite(tc.presentation());
+    auto const&                 p = tc.presentation();
+    detail::IsObviouslyInfinite ioi(p.alphabet().size());
+    ioi.add_rules(p.rules.cbegin(), p.rules.cend());
+    ioi.add_rules(tc.cbegin_generating_pairs(), tc.cend_generating_pairs());
+    return ioi.result();
   }
 
   template <>
