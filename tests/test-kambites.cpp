@@ -1692,7 +1692,6 @@ namespace {
   // semigroups
   ////////////////////////////////////////////////////////////////////////
 
-  // TODO(v3) reuse the same Kambites in-place rather than this
   template <typename T>
   auto count_2_gen_1_rel(size_t min, size_t max) {
     Strings x;

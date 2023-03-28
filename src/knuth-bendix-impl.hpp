@@ -978,29 +978,6 @@ namespace libsemigroups {
         }
       };
 
-     public:
-      ////////////////////////////////////////////////////////////////////////
-      // KnuthBendixImpl - iterators - public
-      ////////////////////////////////////////////////////////////////////////
-
-      /*using const_iterator = detail::ConstIteratorStateful<
-          KnuthBendixImpl const*,                  // state
-          IteratorMethods,                        // methods
-          std::list<Rule const*>::const_iterator,  // wrapped iterator
-          external_rule_type,                      // external value type
-          external_rule_type,                      // external const pointer
-          external_rule_type&&                     // external const reference
-          >;
-
-      const_iterator cbegin_active_rules() const {
-        return const_iterator(this, _active_rules.cbegin());
-      }
-
-      const_iterator cend_active_rules() const {
-        return const_iterator(this, _active_rules.cend());
-      }*/
-
-     private:
       ////////////////////////////////////////////////////////////////////////
       // KnuthBendixImpl - data - private
       ////////////////////////////////////////////////////////////////////////
