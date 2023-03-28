@@ -19,6 +19,8 @@
 #ifndef LIBSEMIGROUPS_TESTS_TEST_MAIN_HPP_
 #define LIBSEMIGROUPS_TESTS_TEST_MAIN_HPP_
 
+#include "libsemigroups/types.hpp"
+
 #define STR2(X) #X
 #define STR(X) STR2(X)
 
@@ -57,4 +59,10 @@ namespace libsemigroups {
     REQUIRE(*it == *copy);
   }
 }  // namespace libsemigroups
+
+CATCH_REGISTER_ENUM(libsemigroups::tril,
+                    libsemigroups::tril::TRUE,
+                    libsemigroups::tril::FALSE,
+                    libsemigroups::tril::unknown);
+
 #endif  // LIBSEMIGROUPS_TESTS_TEST_MAIN_HPP_

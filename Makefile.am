@@ -586,6 +586,7 @@ libsemigroups_la_SOURCES += src/freeband.cpp
 libsemigroups_la_SOURCES += src/froidure-pin-base.cpp
 libsemigroups_la_SOURCES += src/kambites.cpp
 libsemigroups_la_SOURCES += src/knuth-bendix.cpp
+libsemigroups_la_SOURCES += src/make-froidure-pin.cpp
 libsemigroups_la_SOURCES += src/make-present.cpp
 libsemigroups_la_SOURCES += src/obvinf.cpp
 libsemigroups_la_SOURCES += src/pbr.cpp

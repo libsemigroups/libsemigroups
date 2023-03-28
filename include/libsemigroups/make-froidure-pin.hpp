@@ -123,39 +123,7 @@ namespace libsemigroups {
     return make<S>(ad, 0, ad.number_of_nodes());
   }
 
-  template <typename S = FroidurePin<v3::detail::TCE>,
-            typename = std::enable_if_t<std::is_base_of_v<FroidurePinBase, S>>>
-  S make(ToddCoxeter& tc) {
-    using TCE          = v3::detail::TCE;
-    using digraph_type = typename ToddCoxeter::digraph_type;
-
-    if (tc.kind() != congruence_kind::twosided) {
-      LIBSEMIGROUPS_EXCEPTION(
-          "the argument must be a two-sided congruence, found {}", tc.kind());
-    }
-
-    tc.run();
-    tc.shrink_to_fit();
-    // Ensure class indices and letters are equal!
-    auto         wg = std::make_shared<digraph_type>(tc.word_graph());
-    size_t const n  = tc.word_graph().out_degree();
-    size_t       m  = n;
-    for (letter_type a = 0; a < m;) {
-      if (wg->unsafe_neighbor(0, a) != a + 1) {
-        wg->remove_label(a);
-        m--;
-      } else {
-        ++a;
-      }
-    }
-    FroidurePin<TCE> result(wg);
-    for (size_t i = 0; i < n; ++i) {
-      // We use _word_graph.unsafe_neighbor instead of just i, because there
-      // might be more generators than cosets.
-      result.add_generator(TCE(tc.word_graph().unsafe_neighbor(0, i)));
-    }
-    return result;
-  }
+  FroidurePin<v3::detail::TCE> to_froidure_pin(ToddCoxeter& tc);
 
   template <typename String>
   auto to_froidure_pin(Kambites<String>& k) {

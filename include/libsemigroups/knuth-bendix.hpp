@@ -19,9 +19,6 @@
 // This file contains a class KnuthBendix which implements the Knuth-Bendix
 // algorithm for finitely presented monoids.
 
-// TODO(later):
-// 1. Don't use Pimpl (what was I thinking??)
-
 #ifndef LIBSEMIGROUPS_KNUTH_BENDIX_HPP_
 #define LIBSEMIGROUPS_KNUTH_BENDIX_HPP_
 
@@ -38,7 +35,7 @@
 #include "paths.hpp"         // for const_pislo_iterator
 #include "present.hpp"       // for Presentation
 #include "types.hpp"         // for word_type
-#include "words.hpp"          // for word_to_string
+#include "words.hpp"         // for word_to_string
 
 namespace libsemigroups {
   // Forward declarations
@@ -108,6 +105,23 @@ namespace libsemigroups {
         };
       };
 
+     private:
+      struct Settings {
+        Settings();
+        size_t           _check_confluence_interval;
+        size_t           _max_overlap;
+        size_t           _max_rules;
+        options::overlap _overlap_policy;
+      } _settings;
+
+      // Forward declarations
+      class KnuthBendixImpl;
+
+      // TODO(v3) make helper
+      ActionDigraph<size_t>            _gilman_digraph;
+      std::unique_ptr<KnuthBendixImpl> _impl;
+
+     public:
       //! The type of the return value of froidure_pin().
       //!
       //! froidure_pin() returns a \shared_ptr to a FroidurePinBase,
@@ -656,20 +670,6 @@ namespace libsemigroups {
       //////////////////////////////////////////////////////////////////////////
       // KnuthBendix - data - private
       //////////////////////////////////////////////////////////////////////////
-
-      struct Settings {
-        Settings();
-        size_t           _check_confluence_interval;
-        size_t           _max_overlap;
-        size_t           _max_rules;
-        options::overlap _overlap_policy;
-      } _settings;
-
-      // Forward declarations
-      class KnuthBendixImpl;
-
-      ActionDigraph<size_t>            _gilman_digraph;
-      std::unique_ptr<KnuthBendixImpl> _impl;
     };
   }  // namespace fpsemigroup
 

@@ -65,6 +65,7 @@ namespace libsemigroups {
   }  // namespace
 
   namespace fpsemigroup {
+
     KnuthBendix::KnuthBendix(KnuthBendix&&) = default;
 
     //////////////////////////////////////////////////////////////////////////

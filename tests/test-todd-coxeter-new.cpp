@@ -513,7 +513,7 @@ namespace libsemigroups {
     REQUIRE(tc.number_of_classes() == 3);
     REQUIRE(tc.contains(0_w, 1_w));
 
-    auto T = make<FroidurePin<TCE>>(tc);
+    auto T = to_froidure_pin(tc);
     REQUIRE(T.size() == 3);
     REQUIRE(tc.class_index_to_word(0) == T.factorisation(0));
     REQUIRE(tc.class_index_to_word(1) == T.factorisation(1));
@@ -1174,7 +1174,7 @@ namespace libsemigroups {
 
     REQUIRE(tc.number_of_classes() == 34);
 
-    auto S = make(tc);  // Make a FroidurePin object from tc
+    auto S = to_froidure_pin(tc);  // Make a FroidurePin object from tc
     REQUIRE(S.size() == 34);
     using v3::detail::TCE;
 
@@ -1312,7 +1312,7 @@ namespace libsemigroups {
       REQUIRE(tc.number_of_classes() == 5);
       REQUIRE(tc.class_index_to_word(0) == 0_w);
       // This next one should throw
-      REQUIRE_THROWS_AS(make<FroidurePin<TCE>>(tc), LibsemigroupsException);
+      REQUIRE_THROWS_AS(to_froidure_pin(tc), LibsemigroupsException);
     }
     {
       ToddCoxeter tc(twosided, p);
@@ -1430,9 +1430,9 @@ namespace libsemigroups {
       tc.add_pair({1}, {2});
       REQUIRE(tc.number_of_classes() == 1);
       if (tc.kind() == twosided) {
-        REQUIRE(make(tc).size() == 1);
+        REQUIRE(to_froidure_pin(tc).size() == 1);
       } else {
-        REQUIRE_THROWS_AS(make(tc), LibsemigroupsException);
+        REQUIRE_THROWS_AS(to_froidure_pin(tc), LibsemigroupsException);
       }
     }
   }
@@ -2412,7 +2412,7 @@ namespace libsemigroups {
     REQUIRE(
         todd_coxeter::normal_form(tc, make<word_type>(p, "aaaaaaaaaaaaaaaaaaa"))
         == make<word_type>(p, "a"));
-    auto S = make<FroidurePin<TCE>>(tc);
+    auto S = to_froidure_pin(tc);
     REQUIRE(KnuthBendix(S).confluent());
   }
 
@@ -2488,7 +2488,7 @@ namespace libsemigroups {
       section_Cr_style(tc1);
 
       REQUIRE(tc1.number_of_classes() == 21);
-      REQUIRE(tc1.number_of_classes() == make<FroidurePin<TCE>>(tc1).size());
+      REQUIRE(tc1.number_of_classes() == to_froidure_pin(tc1).size());
       REQUIRE(tc1.contains(w3, w4));
       REQUIRE(todd_coxeter::normal_form(tc1, w3)
               == todd_coxeter::normal_form(tc1, w4));
@@ -2505,7 +2505,7 @@ namespace libsemigroups {
       section_Cr_style(tc2);
 
       REQUIRE(tc2.number_of_classes() == 21);
-      REQUIRE(tc2.number_of_classes() == make<FroidurePin<TCE>>(tc2).size());
+      REQUIRE(tc2.number_of_classes() == to_froidure_pin(tc2).size());
       REQUIRE(tc2.contains(w3, w4));
       REQUIRE(todd_coxeter::normal_form(tc2, w3)
               == todd_coxeter::normal_form(tc2, w4));
@@ -3260,7 +3260,7 @@ namespace libsemigroups {
                                        000000_w,
                                        000001_w,
                                        0000000_w}));
-    REQUIRE(make<FroidurePin<TCE>>(tc).number_of_rules() == 6);
+    REQUIRE(to_froidure_pin(tc).number_of_rules() == 6);
     REQUIRE(todd_coxeter::normal_form(tc, make<word_type>(p, "aaaaaaab"))
             == make<word_type>(p, "aab"));
     REQUIRE(todd_coxeter::normal_form(tc, make<word_type>(p, "bab"))
