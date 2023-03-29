@@ -138,11 +138,11 @@ namespace libsemigroups {
                           "003",
                           "add edges",
                           "[quick][digraph]") {
-    DigraphWithSources<size_t> g(17, 31);
+    ActionDigraph<size_t> g(17, 31);
 
     for (size_t i = 0; i < 17; ++i) {
       // The digraph isn't fully defined
-      REQUIRE_THROWS_AS(g.number_of_scc(), LibsemigroupsException);
+      REQUIRE_NOTHROW(g.number_of_scc());
       for (size_t j = 0; j < 31; ++j) {
         g.add_edge(i, (7 * i + 23 * j) % 17, j);
       }
