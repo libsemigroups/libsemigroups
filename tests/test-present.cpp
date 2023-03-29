@@ -31,7 +31,7 @@
 #include "libsemigroups/make-present.hpp"  // for make
 #include "libsemigroups/present.hpp"       // for Presentation
 #include "libsemigroups/types.hpp"         // for word_type
-#include "libsemigroups/word.hpp"
+#include "libsemigroups/words.hpp"
 
 namespace libsemigroups {
 
@@ -2033,7 +2033,7 @@ namespace libsemigroups {
       expected.push_back(*it + *(it + 1));
     }
     std::vector<std::string> found = expected;
-    std::sort(found.begin(), found.end(), ShortLexCompare<std::string>());
+    std::sort(found.begin(), found.end(), ShortLexCompare());
     REQUIRE(found == expected);
     for (size_t i = 0; i != found.size(); ++i) {
       REQUIRE(std::make_pair(found[i], i) == std::make_pair(expected[i], i));

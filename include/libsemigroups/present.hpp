@@ -1272,6 +1272,79 @@ namespace libsemigroups {
     template <typename W>
     void greedy_reduce_length(Presentation<W>& p);
 
+    //! Returns `true` if the \f$1\f$-relation presentation can be strongly
+    //! compressed.
+    //!
+    //! A \f$1\f$-relation presentation is *strongly compressible* if both
+    //! relation words start with the same letter and end with the same letter.
+    //! In other words, if the alphabet of the presentation \p p is \f$A\f$ and
+    //! the relation words are of the form \f$aub = avb\f$ where \f$a, b\in A\f$
+    //! (possibly \f$ a = b\f$) and \f$u, v\in A ^ *\f$, then \p p is strongly
+    //! compressible. See [Section
+    //! 3.2](https://doi.org/10.1007/s00233-021-10216-8) for details.
+    //!
+    //! \tparam W the type of the words in the presentation
+    //!
+    //! \param p the presentation
+    //!
+    //! \returns A value of type `bool`.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \sa `strongly_compress`
+    // not noexcept because std::vector::operator[] isn't
+    template <typename W>
+    bool is_strongly_compressible(Presentation<W> const& p);
+
+    //! Strongly compress a \f$1\f$-relation presentation.
+    //!
+    //! Returns `true` if the \f$1\f$-relation presentation \p p has been
+    //! modified and `false` if not. The word problem is solvable for the input
+    //! presentation if it is solvable for the modified version.
+    //!
+    //! \tparam W the type of the words in the presentation
+    //!
+    //! \param p the presentation
+    //!
+    //! \returns A value of type `bool`.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \sa `is_strongly_compressible`
+    // not noexcept because is_strongly_compressible isn't
+    template <typename W>
+    bool strongly_compress(Presentation<W>& p);
+
+    //! Reduce the number of generators in a \f$1\f$-relation presentation to
+    //! `2`.
+    //!
+    //! Returns `true` if the \f$1\f$-relation presentation \p p has been
+    //! modified and `false` if not.
+    //!
+    //! A \f$1\f$-relation presentation is *left cycle-free* if the
+    //! relation words start with distinct letters.
+    //! In other words, if the alphabet of the presentation \p p is \f$A\f$ and
+    //! the relation words are of the form \f$au = bv\f$ where \f$a, b\in A\f$
+    //! with \f$a \neq b\f$ and \f$u, v \in A ^ *\f$, then \p p is left
+    //! cycle-free. The word problem for a left cycle-free \f$1\f$-relation
+    //! monoid is solvable if the word problem for the modified version
+    //! obtained from this function is solvable.
+    //!
+    //! \tparam W the type of the words in the presentation
+    //!
+    //! \param p the presentation
+    //! \param index determines the choice of letter to use, `0` uses
+    //! `p.rules[0].front()` and `1` uses `p.rules[1].front()` (defaults to:
+    //! `0`).
+    //!
+    //! \returns A value of type `bool`.
+    //!
+    //! \throws LibsemigroupsException if \p index is not `0` or `1`.
+    template <typename W>
+    bool reduce_to_2_generators(Presentation<W>& p, size_t index = 0);
+
     // TODO to cpp file
     inline std::string to_gap_string(Presentation<word_type> const& p,
                                      std::string const&             var_name) {
