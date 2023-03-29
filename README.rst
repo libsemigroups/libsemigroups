@@ -4,7 +4,7 @@
 
    The full license is in the file LICENSE, distributed with this software.
 
-libsemigroups - Version 2.7.0
+libsemigroups - Version 2.7.1
 =============================
 
 .. image:: https://readthedocs.org/projects/libsemigroups/badge/?version=master
@@ -57,7 +57,8 @@ monoids. Namely:
   `Mitchell-Tsalakou
   <http://arxiv.org/abs/2105.12125>`__
 - a version of Sims low index subgroup algorithm for computing one-sided
-  congruences of a semigroup or monoid;
+  congruences of a semigroup or monoid; see `this paper
+  <https://arxiv.org/abs/2302.06295>`__ for details.
 - a version of `Stephen's procedure`_ for finitely presented semigroups and
   monoids (for a given word :math:`w` this procedure is for determining words
   equivalent to :math:`w` or that are left divisors of :math:`w`).
