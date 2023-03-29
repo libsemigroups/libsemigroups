@@ -1416,7 +1416,11 @@ namespace libsemigroups {
     //! \exceptions
     //! \noexcept
     word_type operator+(word_type const& u, word_type const& w);
+
+    //! See \ref operator_plus "operator+".
     word_type operator+(word_type const& u, letter_type w);
+
+    //! See \ref operator_plus "operator+".
     word_type operator+(letter_type w, word_type const& u);
 
     //! Concatenate a word/string with another word/string in-place.
@@ -1523,11 +1527,14 @@ namespace libsemigroups {
               typename   = std::enable_if_t<detail::IsWord<T>::value>>
     S prod(T const& elts, int first, int last, int step = 1);
 
+    //! Returns the output of `prod` where \p elts is treated as a `word_type`
+    //! instead of a vector. See \ref prod "prod".
     template <typename T, typename = std::enable_if_t<detail::IsWord<T>::value>>
     T prod(std::vector<T> const& elts, int first, int last, int step = 1) {
       return prod<std::vector<T>, T, void>(elts, first, last, step);
     }
 
+    //! Returns `prod(elts, 0, last, 1)` -- see \ref prod "prod".
     template <typename T, typename = std::enable_if_t<detail::IsWord<T>::value>>
     T prod(T const& elts, size_t last) {
       return prod(elts, 0, static_cast<int>(last), 1);

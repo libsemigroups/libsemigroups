@@ -931,7 +931,12 @@ namespace libsemigroups {
         }
         result.reserve((last - first) / step);
 
-        for (int i = first; i < last; i += step) {
+        int i = first;
+        for (; i < last && i < 0; i += step) {
+          size_t a = ((-i / elts.size()) + 1) * elts.size() + i;
+          result += elts[a];
+        }
+        for (; i < last; i += step) {
           result += elts[i % elts.size()];
         }
       } else {
@@ -940,8 +945,13 @@ namespace libsemigroups {
         }
         size_t steppos = static_cast<size_t>(-step);
         result.reserve((first - last) / steppos);
-        for (int i = first; i > last; i += step) {
+        int i = first;
+        for (; i > last && i >= 0; i += step) {
           result += elts[i % elts.size()];
+        }
+        for (; i > last; i += step) {
+          size_t a = ((-i / elts.size()) + 1) * elts.size() + i;
+          result += elts[a];
         }
       }
       return result;
