@@ -38,8 +38,12 @@ namespace libsemigroups {
   using literals::operator""_w;
   namespace {
 
+    word_type range(size_t first, size_t last, size_t step = 1) {
+      return rx::seq<letter_type>(first, step) | rx::take(last - first)
+             | rx::to_vector();
+    }
     word_type range(size_t n) {
-      return rx::seq<letter_type>() | rx::take(n) | rx::to_vector();
+      return range(0, n, 1);
     }
 
     template <typename T>
@@ -92,6 +96,47 @@ namespace libsemigroups {
           relations.emplace_back(id * alphabet[i], alphabet[i]);
         } else {
           relations.emplace_back(id * id, id);
+        }
+      }
+    }
+
+    void add_idempotent_rules(std::vector<relation_type>& relations,
+                              word_type const&            letters) {
+      using presentation::operator+;
+      for (auto x : letters) {
+        word_type w = {x};
+        relations.emplace_back(w + w, w);
+      }
+    }
+
+    void add_commutes_rules(std::vector<relation_type>& relations,
+                            word_type const&            letters) {
+      using presentation::operator+;
+      size_t const        n = letters.size();
+
+      for (size_t i = 0; i < n - 1; ++i) {
+        word_type u = {letters[i]};
+        for (size_t j = i + 1; j < n; ++j) {
+          word_type v = {letters[j]};
+          relations.emplace_back(u + v, v + u);
+        }
+      }
+    }
+
+    void add_commutes_rules(std::vector<relation_type>&      relations,
+                            word_type const&                 letters1,
+                            std::initializer_list<word_type> letters2) {
+      using presentation::operator+;
+      size_t const        m = letters1.size();
+      size_t const        n = letters2.size();
+      // TODO so far this assumes that letters1 and letters2 have empty
+      // intersection
+
+      for (size_t i = 0; i < m; ++i) {
+        word_type u = {letters1[i]};
+        for (size_t j = 0; j < n; ++j) {
+          word_type v = *(letters2.begin() + j);
+          relations.emplace_back(u + v, v + u);
         }
       }
     }
@@ -1381,79 +1426,67 @@ namespace libsemigroups {
     std::vector<relation_type> cyclic_inverse_monoid(size_t n,
                                                      author val,
                                                      size_t index) {
-      if (val == author::Fernandes) {
-        if (n < 3) {
-          LIBSEMIGROUPS_EXCEPTION(
-              "the 1st argument must be at least 3 where the 2nd argument is "
-              "author::Fernandes, found %llu",
-              uint64_t(n));
-        }
-        // See Theorem 2.6 of https://arxiv.org/pdf/2211.02155.pdf
-        if (index == 0) {
-          word_type              g = {0};
-          std::vector<word_type> e(n, {0});
-          size_t                 inc = 1;
-          std::for_each(e.begin(), e.end(), [&inc](auto& w) { w[0] += inc++; });
-          std::vector<relation_type> result;
-
-          // R1
-          result.emplace_back(g ^ n, word_type({}));
-          // R2
-          for (size_t i = 0; i < n; ++i) {
-            result.emplace_back(e[i] ^ 2, e[i]);
-          }
-          // R3
-          for (size_t i = 0; i < n - 1; ++i) {
-            for (size_t j = i + 1; j < n; ++j) {
-              result.emplace_back(e[i] * e[j], e[j] * e[i]);
-            }
-          }
-
-          // R4
-          result.emplace_back(g * e[0], e[n - 1] * g);
-          for (size_t i = 0; i < n - 1; ++i) {
-            result.emplace_back(g * e[i + 1], e[i] * g);
-          }
-
-          // R5
-          word_type prod(n, 0);
-          std::iota(prod.begin(), prod.end(), size_t(1));
-          result.emplace_back(g * prod, prod);
-
-          return result;
-        }
-        // See Theorem 2.7 of https://arxiv.org/pdf/2211.02155.pdf
-        if (index == 1) {
-          word_type g = {0};
-          word_type e = {1};
-
-          std::vector<relation_type> result;
-
-          result.emplace_back(g ^ n, word_type({}));  // relation Q1
-          result.emplace_back(e ^ 2, e);              // relation Q2
-
-          // relations Q3
-          for (size_t j = 2; j <= n; ++j)
-            for (size_t i = 1; i < j; ++i) {
-              result.emplace_back(
-                  e * (pow(g, n - j + i)) * e * (pow(g, n - i + j)),
-                  (pow(g, n - j + i)) * e * (pow(g, n - i + j)) * e);
-            }
-
-          result.emplace_back(g * (e * (pow(g, n - 1)) ^ n),
-                              (e * (pow(g, n - 1))) ^ n);  // relation Q4
-
-          return result;
-        }
-        LIBSEMIGROUPS_EXCEPTION("3rd argument must be 0 or 1 where 2nd "
+      if (val != author::Fernandes) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "expected 2nd argument to be author::Fernandes, found %s",
+            detail::to_string(val).c_str());
+      }
+      if (n < 3) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "the 1st argument must be at least 3 when the 2nd argument is "
+            "author::Fernandes, found %llu",
+            uint64_t(n));
+      } else if (index != 0 && index != 1) {
+        LIBSEMIGROUPS_EXCEPTION("the 3rd argument must be 0 or 1 when the 2nd "
                                 "argument is author::Fernandes, found %llu",
                                 uint64_t(n));
       }
-      LIBSEMIGROUPS_EXCEPTION(
-          "expected 2nd argument to be author::Fernandes, found %s",
-          detail::to_string(val).c_str());
+
+      std::vector<relation_type> result;
+      auto                       g = 0_w;
+      // See Theorem 2.6 of https://arxiv.org/pdf/2211.02155.pdf
+      if (index == 0) {
+        word_type e = range(1, n + 1);
+
+        // R1
+        result.emplace_back(pow(g, n), ""_w);
+
+        // R2
+        add_idempotent_rules(result, e);
+
+        // R3
+        add_commutes_rules(result, e);
+
+        // R4
+        result.emplace_back(g + e[0], e[n - 1] + g);
+        for (size_t i = 0; i < n - 1; ++i) {
+          result.emplace_back(g + e[i + 1], e[i] + g);
+        }
+
+        // R5
+        result.emplace_back(g + e, e);
+
+      } else if (index == 1) {
+        // See Theorem 2.7 of https://arxiv.org/pdf/2211.02155.pdf
+        auto e = 1_w;
+
+        result.emplace_back(pow(g, n), ""_w);  // relation Q1
+        result.emplace_back(pow(e, 2), e);     // relation Q2
+
+        // relations Q3
+        for (size_t j = 2; j <= n; ++j) {
+          for (size_t i = 1; i < j; ++i) {
+            result.emplace_back(e + pow(g, n - j + i) + e + pow(g, n - i + j),
+                                pow(g, n - j + i) + e + pow(g, n - i + j) + e);
+          }
+        }
+        result.emplace_back(g + pow(e + pow(g, n - 1), n),
+                            pow(e + pow(g, n - 1), n));  // relation Q4
+      }
+      return result;
     }
 
+    // See Theorem 2.17 of https://arxiv.org/pdf/2211.02155.pdf
     // See Theorem 2.17 of https://arxiv.org/pdf/2211.02155.pdf
     std::vector<relation_type>
     order_preserving_cyclic_inverse_monoid(size_t n) {
@@ -1461,21 +1494,13 @@ namespace libsemigroups {
         LIBSEMIGROUPS_EXCEPTION(
             "expected argument to be at least 3, found %llu", uint64_t(n));
       }
-      word_type x = 0_w;
-      word_type y = 1_w;
-
-      std::vector<word_type> e;
-
-      for (size_t i = 2; i <= n - 1; ++i) {
-        e.push_back({i});
-      }
 
       std::vector<relation_type> result;
 
+      word_type x = 0_w, y = 1_w, e = range(2, n);
+
       // relations V1
-      for (size_t i = 0; i <= n - 3; ++i) {
-        result.emplace_back(pow(e[i], 2), e[i]);
-      }
+      add_idempotent_rules(result, e);
 
       // relations V2
       result.emplace_back(x + y + x, x);
@@ -1485,17 +1510,9 @@ namespace libsemigroups {
       result.emplace_back(y + pow(x, 2) + y, x + pow(y, 2) + x);
 
       // relations V4
-      for (size_t j = 1; j <= n - 3; ++j) {
-        for (size_t i = 0; i < j; ++i) {
-          result.emplace_back(e[i] + e[j], e[j] + e[i]);
-        }
-      }
-
-      // relations V5
-      for (size_t i = 0; i <= n - 3; ++i) {
-        result.emplace_back(x + y + e[i], e[i] + x + y);
-        result.emplace_back(y + x + e[i], e[i] + y + x);
-      }
+      add_commutes_rules(result, e);
+      add_commutes_rules(result, e, {x + y});
+      add_commutes_rules(result, e, {y + x});
 
       // relations V6
       for (size_t i = 0; i <= n - 4; ++i) {
