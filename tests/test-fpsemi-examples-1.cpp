@@ -25,10 +25,11 @@
 #include "catch.hpp"      // for REQUIRE, REQUIRE_NOTHROW, REQUIRE_THROWS_AS
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
-#include "libsemigroups/fpsemi-examples.hpp"  // for the presentations
-#include "libsemigroups/report.hpp"           // for ReportGuard
-#include "libsemigroups/todd-coxeter.hpp"     // for ToddCoxeter
-#include "libsemigroups/types.hpp"            // for word_type
+#include "libsemigroups/fpsemi-examples.hpp"   // for the presentations
+#include "libsemigroups/report.hpp"            // for ReportGuard
+#include "libsemigroups/todd-coxeter-new.hpp"  // for ToddCoxeter
+#include "libsemigroups/todd-coxeter.hpp"      // for ToddCoxeter
+#include "libsemigroups/types.hpp"             // for word_type
 
 namespace libsemigroups {
   struct LibsemigroupsException;
@@ -391,6 +392,19 @@ namespace libsemigroups {
                       LibsemigroupsException);
     REQUIRE_THROWS_AS(partial_isometries_cycle_graph_monoid(2),
                       LibsemigroupsException);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("fpsemi-examples",
+                          "053",
+                          "order_preserving_monoid(5)",
+                          "[fpsemi-examples][quick]") {
+    auto   rg = ReportGuard(REPORT);
+    size_t n  = 5;
+    auto   p  = order_preserving_monoid(n);
+    p.validate();
+
+    ToddCoxeter tc(congruence_kind::twosided, p);
+    REQUIRE(tc.number_of_classes() == 126);
   }
 
   namespace congruence {
@@ -841,25 +855,6 @@ namespace libsemigroups {
         tc.add_pair(p.rules[i], p.rules[i + 1]);
       }
       REQUIRE(tc.number_of_classes() == 256);
-    }
-
-    LIBSEMIGROUPS_TEST_CASE("fpsemi-examples",
-                            "053",
-                            "order_preserving_monoid(5)",
-                            "[fpsemi-examples][quick]") {
-      using literals::operator""_w;
-      auto            rg = ReportGuard(REPORT);
-      size_t          n  = 5;
-      auto s = auto p = order_preserving_monoid(n);
-      presentation::add_identity_rules(p, 2 * n - 2);
-      p.validate();
-
-      ToddCoxeter tc(congruence_kind::twosided);
-      tc.set_number_of_generators(2 * n - 1);
-      for (size_t i = 0; i < p.rules.size(); i += 2) {
-        tc.add_pair(p.rules[i], p.rules[i + 1]);
-      }
-      REQUIRE(tc.number_of_classes() == 126);
     }
 
     LIBSEMIGROUPS_TEST_CASE("fpsemi-examples",

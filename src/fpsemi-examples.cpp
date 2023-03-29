@@ -1328,13 +1328,12 @@ namespace libsemigroups {
       return result;
     }
 
-    std::vector<relation_type> order_preserving_monoid(size_t n) {
+    Presentation<word_type> order_preserving_monoid(size_t n) {
       if (n < 3) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "expected argument to be at least 3, found %llu", uint64_t(n));
+        LIBSEMIGROUPS_EXCEPTION_V3(
+            "expected argument to be at least 3, found {}", n);
       }
-      std::vector<word_type> u;
-      std::vector<word_type> v;
+      std::vector<word_type> u, v;
 
       for (size_t i = 0; i <= n - 2; ++i) {
         u.push_back({i});
@@ -1346,30 +1345,29 @@ namespace libsemigroups {
       // relations 1
       for (size_t i = 1; i <= n - 2; ++i) {
         // relations 1
-        presentation::add_rule(p, (v[n - 2 - i] + u[i], u[i] + v[n - 1 - i]);
+        presentation::add_rule(p, v[n - 2 - i] + u[i], u[i] + v[n - 1 - i]);
         // relations 2
-        presentation::add_rule_and_check(
-            p, u[n - 2 - i] + v[i], v[i] + u[n - 1 - i]);
+        presentation::add_rule(p, u[n - 2 - i] + v[i], v[i] + u[n - 1 - i]);
         // relations 3
-        presentation::add_rule(p, (v[n - 2 - i] + u[i], u[i]);
+        presentation::add_rule(p, v[n - 2 - i] + u[i], u[i]);
         // relations 4
-        presentation::add_rule(p, (u[n - 2 - i] + v[i], v[i]);
+        presentation::add_rule(p, u[n - 2 - i] + v[i], v[i]);
       }
 
       // relations 5
       for (size_t i = 0; i <= n - 2; ++i) {
         for (size_t j = 0; j <= n - 2; ++j) {
           if (j != (n - 2) - i && j != n - i - 1) {
-            presentation::add_rule(p, (u[i] + v[j], v[j] + u[i]);
+            presentation::add_rule(p, u[i] + v[j], v[j] + u[i]);
           }
         }
       }
 
       // relation 6
-      presentation::add_rule(p, (u[0] + u[1] + u[0], u[0] + u[1]);
+      presentation::add_rule(p, u[0] + u[1] + u[0], u[0] + u[1]);
 
       // relation 7
-      presentation::add_rule(p, (v[0] + v[1] + v[0], v[0] + v[1]);
+      presentation::add_rule(p, v[0] + v[1] + v[0], v[0] + v[1]);
 
       p.alphabet_from_rules();
 
