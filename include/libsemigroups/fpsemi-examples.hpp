@@ -473,7 +473,7 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if `n < 3`
     //!
     //! [10.1007/s10012-000-0001-1]: https://doi.org/10.1007/s10012-000-0001-1
-    std::vector<relation_type> order_preserving_monoid(size_t n);
+    Presentation<word_type> order_preserving_monoid(size_t n);
 
     //! A presentation for the cyclic inverse monoid.
     //!

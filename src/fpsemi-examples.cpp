@@ -32,9 +32,16 @@
 #include "libsemigroups/types.hpp"   // for word_type, relation_type
 #include "libsemigroups/words.hpp"   // for operator""_w
 
+#include <rx/ranges.hpp>
+
 namespace libsemigroups {
   using literals::operator""_w;
   namespace {
+
+    word_type range(size_t n) {
+      return rx::seq<letter_type>() | rx::take(n) | rx::to_vector();
+    }
+
     template <typename T>
     std::vector<T> concat(std::vector<T> lhs, const std::vector<T>& rhs) {
       lhs.insert(lhs.end(), rhs.begin(), rhs.end());
@@ -1334,44 +1341,39 @@ namespace libsemigroups {
         v.push_back({n - 1 + i});
       }
 
-      std::vector<relation_type> result;
+      Presentation<word_type> p;
 
       // relations 1
       for (size_t i = 1; i <= n - 2; ++i) {
-        result.emplace_back(v[n - 2 - i] * u[i], u[i] * v[n - 1 - i]);
-      }
-
-      // relations 2
-      for (size_t i = 1; i <= n - 2; ++i) {
-        result.emplace_back(u[n - 2 - i] * v[i], v[i] * u[n - 1 - i]);
-      }
-
-      // relations 3
-      for (size_t i = 0; i <= n - 2; ++i) {
-        result.emplace_back(v[n - 2 - i] * u[i], u[i]);
-      }
-
-      // relations 4
-      for (size_t i = 0; i <= n - 2; ++i) {
-        result.emplace_back(u[n - 2 - i] * v[i], v[i]);
+        // relations 1
+        presentation::add_rule(p, (v[n - 2 - i] + u[i], u[i] + v[n - 1 - i]);
+        // relations 2
+        presentation::add_rule_and_check(
+            p, u[n - 2 - i] + v[i], v[i] + u[n - 1 - i]);
+        // relations 3
+        presentation::add_rule(p, (v[n - 2 - i] + u[i], u[i]);
+        // relations 4
+        presentation::add_rule(p, (u[n - 2 - i] + v[i], v[i]);
       }
 
       // relations 5
       for (size_t i = 0; i <= n - 2; ++i) {
         for (size_t j = 0; j <= n - 2; ++j) {
           if (j != (n - 2) - i && j != n - i - 1) {
-            result.emplace_back(u[i] * v[j], v[j] * u[i]);
+            presentation::add_rule(p, (u[i] + v[j], v[j] + u[i]);
           }
         }
       }
 
       // relation 6
-      result.emplace_back(u[0] * u[1] * u[0], u[0] * u[1]);
+      presentation::add_rule(p, (u[0] + u[1] + u[0], u[0] + u[1]);
 
       // relation 7
-      result.emplace_back(v[0] * v[1] * v[0], v[0] * v[1]);
+      presentation::add_rule(p, (v[0] + v[1] + v[0], v[0] + v[1]);
 
-      return result;
+      p.alphabet_from_rules();
+
+      return p;
     }
 
     std::vector<relation_type> cyclic_inverse_monoid(size_t n,

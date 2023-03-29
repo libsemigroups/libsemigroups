@@ -850,9 +850,7 @@ namespace libsemigroups {
       using literals::operator""_w;
       auto            rg = ReportGuard(REPORT);
       size_t          n  = 5;
-      auto            s  = order_preserving_monoid(n);
-      auto            p  = make<Presentation<word_type>>(s);
-      p.alphabet(2 * n - 1);
+      auto s = auto p = order_preserving_monoid(n);
       presentation::add_identity_rules(p, 2 * n - 2);
       p.validate();
 
