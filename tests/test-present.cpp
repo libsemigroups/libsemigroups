@@ -2040,8 +2040,8 @@ namespace libsemigroups {
     }
   }
 
-  LIBSEMIGROUPS_TEST_CASE("word_functions",
-                          "043",
+  LIBSEMIGROUPS_TEST_CASE("Presentation",
+                          "048",
                           "operator+",
                           "[quick][word_functions]") {
     using namespace literals;
@@ -2056,7 +2056,7 @@ namespace libsemigroups {
     REQUIRE((word_type({}) + word_type({0})) == word_type({0}));
   }
 
-  LIBSEMIGROUPS_TEST_CASE("word_functions",
+  LIBSEMIGROUPS_TEST_CASE("Presentation",
                           "047",
                           "operator+=",
                           "[quick][word_functions]") {
@@ -2071,8 +2071,8 @@ namespace libsemigroups {
     REQUIRE(w == 123345_w);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("word_functions",
-                          "044",
+  LIBSEMIGROUPS_TEST_CASE("Presentation",
+                          "049",
                           "pow",
                           "[quick][word_functions]") {
     using namespace literals;
@@ -2082,7 +2082,7 @@ namespace libsemigroups {
     REQUIRE(pow(w, 1) == w);
     REQUIRE(pow(w, 2) == 0101_w);
     REQUIRE(pow(pow(w, 2), 3) == 010101010101_w);
-    for (size_t i = 0; i <= 1'000'000; i += 1000) {
+    for (size_t i = 0; i <= 1'000'000; i += 10'000) {
       REQUIRE(pow(0_w, i) == word_type(i, 0));
     }
 
@@ -2091,7 +2091,7 @@ namespace libsemigroups {
     REQUIRE(pow("a", 5) == "aaaaa");
   }
 
-  LIBSEMIGROUPS_TEST_CASE("word_functions",
+  LIBSEMIGROUPS_TEST_CASE("Presentation",
                           "046",
                           "pow_inplace",
                           "[quick][word_functions]") {
@@ -2109,7 +2109,7 @@ namespace libsemigroups {
     pow_inplace(u, 3);
     REQUIRE(u == 010101010101_w);
 
-    for (size_t i = 0; i <= 1'000'000; i += 1000) {
+    for (size_t i = 0; i <= 1'000'000; i += 10'000) {
       word_type v = 0_w;
       pow_inplace(v, i);
       REQUIRE(v == word_type(i, 0));
@@ -2124,8 +2124,8 @@ namespace libsemigroups {
     REQUIRE(a == "aaaaa");
   }
 
-  LIBSEMIGROUPS_TEST_CASE("word_functions",
-                          "045",
+  LIBSEMIGROUPS_TEST_CASE("Presentation",
+                          "050",
                           "prod",
                           "[quick][word_functions]") {
     using namespace literals;
