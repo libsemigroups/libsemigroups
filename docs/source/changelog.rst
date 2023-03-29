@@ -1,6 +1,14 @@
 Changelog - version 2
 =====================
 
+v2.7.1 (released 29/03/2023)
+----------------------------
+
+In this release a couple of bugs in ``presentation::sort_rules`` are resolved:
+
+* present: fix sort_rules bug by @james-d-mitchell in
+  https://github.com/libsemigroups/libsemigroups/pull/478
+
 v2.7.0 (released 22/03/2023)
 ----------------------------
 
