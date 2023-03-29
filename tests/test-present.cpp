@@ -2148,5 +2148,7 @@ namespace libsemigroups {
     REQUIRE(prod({0}, 1, 1, -1) == word_type({}));
 
     REQUIRE_THROWS_AS(prod({0, 1}, 0, 1, 0), LibsemigroupsException);
+
+    REQUIRE(prod(eps, 2, -1, -1) == "210"_w);
   }
 }  // namespace libsemigroups

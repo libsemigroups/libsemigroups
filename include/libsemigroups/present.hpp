@@ -1426,6 +1426,11 @@ namespace libsemigroups {
     //! analogously, where \f$k\f$ is the greatest positive integer such that
     //! \f$f + k s > l\f$.
     //!
+    //! \param elts the ordered set
+    //! \param first the first index
+    //! \param last the last index
+    //! \param step the step
+    //!
     //! \return A word_type or std::string
     //!
     //! \throws LibsemigroupsException if `step = 0`
@@ -1443,13 +1448,10 @@ namespace libsemigroups {
     template <typename T,
               typename S = T,
               typename   = std::enable_if_t<detail::IsWord<T>::value>>
-    S prod(T const& elts, size_t first, size_t last, int step = 1);
+    S prod(T const& elts, int first, int last, int step = 1);
 
     template <typename T, typename = std::enable_if_t<detail::IsWord<T>::value>>
-    T prod(std::vector<T> const& elts,
-           size_t                first,
-           size_t                last,
-           int                   step = 1) {
+    T prod(std::vector<T> const& elts, int first, int last, int step = 1) {
       return prod<std::vector<T>, T, void>(elts, first, last, step);
     }
 

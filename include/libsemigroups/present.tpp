@@ -20,66 +20,6 @@
 // monoid presentations.
 
 namespace libsemigroups {
-  namespace presentation {
-    template <typename T, typename>
-    T pow(T const& x, size_t n) {
-      T y(x);
-      pow_inplace(y, n);
-      return y;
-    }
-
-    template <typename T, typename>
-    void pow_inplace(T& x, size_t n) {
-      T y(x);
-      x.reserve(x.size() * n);
-      if (n % 2 == 0) {
-        x = T({});
-      }
-
-      while (n > 1) {
-        y += y;
-        n /= 2;
-        if (n % 2 == 1) {
-          x += y;
-        }
-      }
-    }
-
-    // Note: we could do a version of the below using insert on words, where
-    // the step is +/- 1.
-    template <typename T, typename S, typename>
-    S prod(T const& elts, size_t first, size_t last, int step) {
-      if (step == 0) {
-        LIBSEMIGROUPS_EXCEPTION("the 4th argument must not be 0");
-      } else if (((first < last && step > 0) || (first > last && step < 0))
-                 && elts.size() == 0) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "1st argument must be empty if the given range is not empty");
-      }
-      S result;
-
-      if (first < last) {
-        if (step < 0) {
-          return result;
-        }
-        result.reserve((last - first) / step);
-        for (size_t i = first; i < last; i += step) {
-          result += elts[i % elts.size()];
-        }
-      } else {
-        if (step > 0) {
-          return result;
-        }
-        result.reserve((first - last) / step);
-        size_t steppos = static_cast<size_t>(-step);
-        for (size_t i = first; i > last; i -= steppos) {
-          result += elts[i % elts.size()];
-        }
-      }
-      return result;
-    }
-  }  // namespace presentation
-
   namespace detail {
     template <typename W>
     void validate_rules_length(Presentation<W> const& p) {
@@ -946,6 +886,64 @@ namespace libsemigroups {
       p.alphabet_from_rules();
       normalize_alphabet(p);
       return true;
+    }
+
+    template <typename T, typename>
+    T pow(T const& x, size_t n) {
+      T y(x);
+      pow_inplace(y, n);
+      return y;
+    }
+
+    template <typename T, typename>
+    void pow_inplace(T& x, size_t n) {
+      T y(x);
+      x.reserve(x.size() * n);
+      if (n % 2 == 0) {
+        x = T({});
+      }
+
+      while (n > 1) {
+        y += y;
+        n /= 2;
+        if (n % 2 == 1) {
+          x += y;
+        }
+      }
+    }
+
+    // Note: we could do a version of the below using insert on words, where
+    // the step is +/- 1.
+    template <typename T, typename S, typename>
+    S prod(T const& elts, int first, int last, int step) {
+      if (step == 0) {
+        LIBSEMIGROUPS_EXCEPTION("the 4th argument must not be 0");
+      } else if (((first < last && step > 0) || (first > last && step < 0))
+                 && elts.size() == 0) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "1st argument must be empty if the given range is not empty");
+      }
+      S result;
+
+      if (first < last) {
+        if (step < 0) {
+          return result;
+        }
+        result.reserve((last - first) / step);
+        for (size_t i = first; i < last; i += step) {
+          result += elts[i % elts.size()];
+        }
+      } else {
+        if (step > 0) {
+          return result;
+        }
+        result.reserve((first - last) / step);
+        size_t steppos = static_cast<size_t>(-step);
+        for (size_t i = first; i > last; i -= steppos) {
+          result += elts[i % elts.size()];
+        }
+      }
+      return result;
     }
 
   }  // namespace presentation
