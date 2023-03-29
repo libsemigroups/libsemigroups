@@ -1341,6 +1341,7 @@ namespace libsemigroups {
       }
 
       Presentation<word_type> p;
+      p.contains_empty_word(true);
 
       // relations 1
       for (size_t i = 1; i <= n - 2; ++i) {
@@ -1348,6 +1349,9 @@ namespace libsemigroups {
         presentation::add_rule(p, v[n - 2 - i] + u[i], u[i] + v[n - 1 - i]);
         // relations 2
         presentation::add_rule(p, u[n - 2 - i] + v[i], v[i] + u[n - 1 - i]);
+      }
+
+      for (size_t i = 0; i <= n - 2; ++i) {
         // relations 3
         presentation::add_rule(p, v[n - 2 - i] + u[i], u[i]);
         // relations 4
