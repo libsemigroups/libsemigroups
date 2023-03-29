@@ -33,39 +33,24 @@ namespace libsemigroups {
   using Sims1_ = Sims1<uint32_t>;
 
   using fpsemigroup::author;
-  using fpsemigroup::make;
-
   using fpsemigroup::not_symmetric_group;
+  using fpsemigroup::symmetric_group;
 
   LIBSEMIGROUPS_TEST_CASE(
       "fpsemi-examples",
-      "052",
+      "070",
       "not_symmetric_group(5) Guralnick + Kantor + Kassabov + Lubotzky",
       "[fpsemi-examples][quick]") {
     auto   rg = ReportGuard(false);
     size_t n  = 5;
 
-    auto p = make<Presentation<word_type>>(
-        not_symmetric_group(n,
-                            author::Guralnick + author::Kantor
-                                + author::Kassabov + author::Lubotzky));
-    p.alphabet(n);
-    presentation::replace_word(p, word_type({}), {n - 1});
-    presentation::add_identity_rules(p, n - 1);
-    p.validate();
     Sims1_ C(congruence_kind::right);
-    C.short_rules(p);
+    C.short_rules(not_symmetric_group(n));
 
-    auto q
-        = make<Presentation<word_type>>(symmetric_group(n, author::Carmichael));
-    q.alphabet(n);
-    presentation::replace_word(q, word_type({}), {n - 1});
-    presentation::add_identity_rules(q, n - 1);
-    q.validate();
     Sims1_ D(congruence_kind::right);
-    D.short_rules(q);
+    D.short_rules(symmetric_group(n, author::Carmichael));
 
-    REQUIRE(C.number_of_congruences(3) == 43);
-    REQUIRE(D.number_of_congruences(3) == 4);
+    REQUIRE(C.number_of_congruences(3) == 41);
+    REQUIRE(D.number_of_congruences(3) == 2);
   }
 }  // namespace libsemigroups

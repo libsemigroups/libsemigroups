@@ -44,7 +44,6 @@ namespace libsemigroups {
   using node_type    = typename digraph_type::node_type;
 
   using fpsemigroup::author;
-  using fpsemigroup::make;
 
   using fpsemigroup::brauer_monoid;
   using fpsemigroup::chinese_monoid;
@@ -381,19 +380,9 @@ namespace libsemigroups {
                           "009",
                           "rook_monoid(2, 1)",
                           "[quick][low-index]") {
-    auto                    rg = ReportGuard(false);
-    Presentation<word_type> p;
-    p.contains_empty_word(false);
-
-    p.alphabet(3);
-    for (auto const& rel : rook_monoid(2, 1)) {
-      p.add_rule_and_check(rel.first.cbegin(),
-                           rel.first.cend(),
-                           rel.second.cbegin(),
-                           rel.second.cend());
-    }
+    auto   rg = ReportGuard(false);
     Sims1_ C(congruence_kind::right);
-    C.short_rules(p);
+    C.short_rules(rook_monoid(2, 1));
     REQUIRE(C.number_of_congruences(7) == 10);  // Should be 10
   }
 
@@ -414,19 +403,9 @@ namespace libsemigroups {
                           "011",
                           "symmetric_inverse_monoid(3)",
                           "[quick][low-index]") {
-    auto                    rg = ReportGuard(false);
-    Presentation<word_type> p;
-    p.contains_empty_word(false);
-
-    p.alphabet(4);
-    for (auto const& rel : rook_monoid(3, 1)) {
-      p.add_rule_and_check(rel.first.cbegin(),
-                           rel.first.cend(),
-                           rel.second.cbegin(),
-                           rel.second.cend());
-    }
+    auto   rg = ReportGuard(false);
     Sims1_ C(congruence_kind::left);
-    C.short_rules(p);
+    C.short_rules(rook_monoid(3, 1));
     REQUIRE(C.number_of_congruences(34) == 274);
   }
 
@@ -434,17 +413,8 @@ namespace libsemigroups {
                           "012",
                           "symmetric_inverse_monoid(4)",
                           "[extreme][low-index]") {
-    auto                    rg = ReportGuard(true);
-    Presentation<word_type> p;
-    p.contains_empty_word(false);
-
-    p.alphabet(5);
-    for (auto const& rel : rook_monoid(4, 1)) {
-      p.add_rule_and_check(rel.first.cbegin(),
-                           rel.first.cend(),
-                           rel.second.cbegin(),
-                           rel.second.cend());
-    }
+    auto rg = ReportGuard(true);
+    auto p  = rook_monoid(4, 1);
     presentation::remove_duplicate_rules(p);
     presentation::sort_each_rule(p);
     presentation::sort_rules(p);
@@ -467,19 +437,9 @@ namespace libsemigroups {
                           "symmetric_inverse_monoid(5)",
                           "[fail][low-index]") {
     // This might take an extremely long time to terminate
-    auto                    rg = ReportGuard(true);
-    Presentation<word_type> p;
-    p.contains_empty_word(false);
-
-    p.alphabet(6);
-    for (auto const& rel : rook_monoid(5, 1)) {
-      p.add_rule_and_check(rel.first.cbegin(),
-                           rel.first.cend(),
-                           rel.second.cbegin(),
-                           rel.second.cend());
-    }
+    auto   rg = ReportGuard(true);
     Sims1_ C(congruence_kind::left);
-    C.short_rules(p);
+    C.short_rules(rook_monoid(5, 1));
     REQUIRE(C.number_of_threads(6).number_of_congruences(1'546) == 0);
     // On 24/08/2022 JDM ran this for approx. 16 hours overnight on his laptop,
     // the last line of output was:
@@ -498,25 +458,15 @@ namespace libsemigroups {
                           "014",
                           "temperley_lieb_monoid(3) from presentation",
                           "[quick][low-index]") {
-    auto                    rg = ReportGuard(false);
-    Presentation<word_type> p;
-    p.contains_empty_word(true);
-
-    p.alphabet(2);
-    for (auto const& rel : temperley_lieb_monoid(3)) {
-      p.add_rule_and_check(rel.first.cbegin(),
-                           rel.first.cend(),
-                           rel.second.cbegin(),
-                           rel.second.cend());
-    }
+    auto rg = ReportGuard(false);
     {
       Sims1_ S(congruence_kind::right);
-      S.short_rules(p);
+      S.short_rules(temperley_lieb_monoid(3));
       REQUIRE(S.number_of_congruences(14) == 9);
     }
     {
       Sims1_ S(congruence_kind::left);
-      S.short_rules(p);
+      S.short_rules(temperley_lieb_monoid(3));
       REQUIRE(S.number_of_congruences(14) == 9);
     }
   }
@@ -525,25 +475,15 @@ namespace libsemigroups {
                           "015",
                           "temperley_lieb_monoid(4) from presentation",
                           "[quick][low-index]") {
-    auto                    rg = ReportGuard(false);
-    Presentation<word_type> p;
-    p.contains_empty_word(true);
-
-    p.alphabet(3);
-    for (auto const& rel : temperley_lieb_monoid(4)) {
-      p.add_rule_and_check(rel.first.cbegin(),
-                           rel.first.cend(),
-                           rel.second.cbegin(),
-                           rel.second.cend());
-    }
+    auto rg = ReportGuard(false);
     {
       Sims1_ S(congruence_kind::right);
-      S.short_rules(p);
+      S.short_rules(temperley_lieb_monoid(4));
       REQUIRE(S.number_of_congruences(14) == 79);
     }
     {
       Sims1_ S(congruence_kind::left);
-      S.short_rules(p);
+      S.short_rules(temperley_lieb_monoid(4));
       REQUIRE(S.number_of_congruences(14) == 79);
     }
   }
@@ -984,7 +924,7 @@ namespace libsemigroups {
                           "fibonacci_semigroup(4, 6)",
                           "[standard][sims1][no-valgrind]") {
     auto rg = ReportGuard(true);  // for code coverage
-    auto p  = make<Presentation<word_type>>(fibonacci_semigroup(4, 6));
+    auto p  = fibonacci_semigroup(4, 6);
     presentation::remove_duplicate_rules(p);
     presentation::sort_each_rule(p);
     presentation::sort_rules(p);
@@ -1393,8 +1333,9 @@ namespace libsemigroups {
                           "043",
                           "rectangular_band(2, 2) - with and without identity",
                           "[quick][sims1]") {
-    auto   rg = ReportGuard(false);
-    auto   p  = make<Presentation<word_type>>(rectangular_band(2, 2));
+    auto rg = ReportGuard(false);
+    auto p  = rectangular_band(2, 2);
+    REQUIRE(!p.contains_empty_word());
     Sims1_ S(congruence_kind::right);
     S.short_rules(p);
 
@@ -1416,20 +1357,20 @@ namespace libsemigroups {
                 5, {{1, 1, 1, 2}, {1, 1, 1, 2}, {1, 1, 1, 2}}));  // Good
     REQUIRE(*it++
             == action_digraph_helper::make<node_type>(
-                5, {{1, 1, 2, 1}, {1, 1, 1, 1}, {2, 2, 2, 2}}));  // Good
+                5, {{1, 2, 1, 1}, {1, 1, 1, 1}, {2, 2, 2, 2}}));  // Good
     REQUIRE(
         *it++
         == action_digraph_helper::make<node_type>(
             5,
-            {{1, 1, 2, 1}, {1, 1, 1, 1}, {2, 2, 2, 3}, {2, 2, 2, 3}}));  // Good
+            {{1, 2, 1, 1}, {1, 1, 1, 1}, {2, 2, 2, 3}, {2, 2, 2, 3}}));  // Good
     REQUIRE(
         *it++
         == action_digraph_helper::make<node_type>(
             5,
-            {{1, 1, 2, 3}, {1, 1, 1, 3}, {2, 2, 2, 2}, {1, 1, 1, 3}}));  // Good
+            {{1, 2, 1, 3}, {1, 1, 1, 3}, {2, 2, 2, 2}, {1, 1, 1, 3}}));  // Good
     REQUIRE(*it++
             == action_digraph_helper::make<node_type>(5,
-                                                      {{1, 1, 2, 3},
+                                                      {{1, 2, 1, 3},
                                                        {1, 1, 1, 3},
                                                        {2, 2, 2, 4},
                                                        {1, 1, 1, 3},
@@ -1453,16 +1394,16 @@ namespace libsemigroups {
                 5, {{1, 1, 1, 2}, {1, 1, 1, 2}, {1, 1, 1, 2}}));
     REQUIRE(*it++
             == action_digraph_helper::make<node_type>(
-                5, {{1, 1, 2, 1}, {1, 1, 1, 1}, {2, 2, 2, 2}}));
+                5, {{1, 2, 1, 1}, {1, 1, 1, 1}, {2, 2, 2, 2}}));
     REQUIRE(*it++
             == action_digraph_helper::make<node_type>(
-                5, {{1, 1, 2, 1}, {1, 1, 1, 1}, {2, 2, 2, 3}, {2, 2, 2, 3}}));
+                5, {{1, 2, 1, 1}, {1, 1, 1, 1}, {2, 2, 2, 3}, {2, 2, 2, 3}}));
     REQUIRE(*it++
             == action_digraph_helper::make<node_type>(
-                5, {{1, 1, 2, 3}, {1, 1, 1, 3}, {2, 2, 2, 2}, {1, 1, 1, 3}}));
+                5, {{1, 2, 1, 3}, {1, 1, 1, 3}, {2, 2, 2, 2}, {1, 1, 1, 3}}));
     REQUIRE(*it++
             == action_digraph_helper::make<node_type>(5,
-                                                      {{1, 1, 2, 3},
+                                                      {{1, 2, 1, 3},
                                                        {1, 1, 1, 3},
                                                        {2, 2, 2, 4},
                                                        {1, 1, 1, 3},
@@ -1925,7 +1866,7 @@ namespace libsemigroups {
     // index 8 is doable and the value is included above, but it took about X
     // minutes to run, so isn't included in the loop below.
     auto rg = ReportGuard(true);
-    auto p  = make<Presentation<word_type>>(chinese_monoid(3));
+    auto p  = chinese_monoid(3);
     for (size_t n = 2; n < 8; ++n) {
       Sims1_ S(congruence_kind::right);
       S.short_rules(p).number_of_threads(4);
@@ -1943,7 +1884,7 @@ namespace libsemigroups {
     std::array<uint64_t, 8> const num
         = {0, 1, 79, 3'809, 183'995, 10'759'706, 804'802'045, 77'489'765'654};
     auto rg = ReportGuard(true);
-    auto p  = make<Presentation<word_type>>(chinese_monoid(4));
+    auto p  = chinese_monoid(4);
     for (size_t n = 3; n < 7; ++n) {
       Sims1_ S(congruence_kind::right);
       S.short_rules(p).number_of_threads(4);
@@ -1960,7 +1901,7 @@ namespace libsemigroups {
 
     // The last value took 21h32m and so is omitted
     auto rg = ReportGuard(true);
-    auto p  = make<Presentation<word_type>>(chinese_monoid(5));
+    auto p  = chinese_monoid(5);
     for (size_t n = 3; n < 6; ++n) {
       Sims1_ S(congruence_kind::right);
       S.short_rules(p).number_of_threads(4);
@@ -1977,7 +1918,7 @@ namespace libsemigroups {
         = {0, 1, 447, 137'694, 58'624'384, 40'823'448'867};
     // The last value took 9h54m to compute, and is omitted!
     auto rg = ReportGuard(true);
-    auto p  = make<Presentation<word_type>>(chinese_monoid(6));
+    auto p  = chinese_monoid(6);
     for (size_t n = 3; n < 5; ++n) {
       Sims1_ S(congruence_kind::right);
       S.short_rules(p).number_of_threads(4);
@@ -1992,7 +1933,7 @@ namespace libsemigroups {
     // Last value took about 50m to compute
     std::array<uint64_t, 5> const num = {0, 1, 1'023, 786'949, 988'827'143};
     auto                          rg  = ReportGuard(true);
-    auto p = make<Presentation<word_type>>(chinese_monoid(7));
+    auto                          p   = chinese_monoid(7);
     for (size_t n = 2; n < 4; ++n) {
       Sims1_ S(congruence_kind::right);
       S.short_rules(p).number_of_threads(4);
@@ -2006,7 +1947,7 @@ namespace libsemigroups {
                           "[extreme][low-index][chinese]") {
     std::array<uint64_t, 4> const num = {0, 1, 2'303, 4'459'599};
     auto                          rg  = ReportGuard(true);
-    auto p = make<Presentation<word_type>>(chinese_monoid(8));
+    auto                          p   = chinese_monoid(8);
     for (size_t n = 2; n < 4; ++n) {
       Sims1_ S(congruence_kind::right);
       S.short_rules(p).number_of_threads(4);

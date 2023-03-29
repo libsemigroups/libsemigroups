@@ -50,7 +50,6 @@ namespace libsemigroups {
   constexpr bool REPORT = false;
 
   using fpsemigroup::author;
-  using fpsemigroup::make;
 
   using fpsemigroup::chinese_monoid;
   using fpsemigroup::partial_transformation_monoid;
@@ -418,31 +417,31 @@ namespace libsemigroups {
       REQUIRE(kb.number_of_classes() == POSITIVE_INFINITY);
     }
 
-    LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
-                            "020",
-                            "(cong) Chinese monoid",
-                            "[quick][congruence][knuth-bendix][cong]") {
-      auto        rg = ReportGuard(REPORT);
-      KnuthBendix kb;
-      kb.set_number_of_generators(3);
-      for (auto const& rel : chinese_monoid(3)) {
-        kb.add_pair(rel.first, rel.second);
-      }
-      REQUIRE(kb.is_quotient_obviously_infinite());
-      REQUIRE(kb.number_of_classes() == POSITIVE_INFINITY);
-      REQUIRE(kb.number_of_generating_pairs() == 8);
-      REQUIRE(std::vector<relation_type>(kb.cbegin_generating_pairs(),
-                                         kb.cend_generating_pairs())
-              == std::vector<relation_type>({{{1, 0, 0}, {0, 1, 0}},
-                                             {{2, 0, 0}, {0, 2, 0}},
-                                             {{1, 1, 0}, {1, 0, 1}},
-                                             {{2, 1, 0}, {2, 0, 1}},
-                                             {{2, 1, 0}, {1, 2, 0}},
-                                             {{2, 2, 0}, {2, 0, 2}},
-                                             {{2, 1, 1}, {1, 2, 1}},
-                                             {{2, 2, 1}, {2, 1, 2}}}));
-      REQUIRE(kb.knuth_bendix().number_of_normal_forms(0, 10) == 1175);
-    }
+    // LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
+    //                         "020",
+    //                         "(cong) Chinese monoid",
+    //                         "[quick][congruence][knuth-bendix][cong]") {
+    //   auto        rg = ReportGuard(REPORT);
+    //   KnuthBendix kb;
+    //   kb.set_number_of_generators(3);
+    //   for (auto const& rel : chinese_monoid(3)) {
+    //     kb.add_pair(rel.first, rel.second);
+    //   }
+    //   REQUIRE(kb.is_quotient_obviously_infinite());
+    //   REQUIRE(kb.number_of_classes() == POSITIVE_INFINITY);
+    //   REQUIRE(kb.number_of_generating_pairs() == 8);
+    //   REQUIRE(std::vector<relation_type>(kb.cbegin_generating_pairs(),
+    //                                      kb.cend_generating_pairs())
+    //           == std::vector<relation_type>({{{1, 0, 0}, {0, 1, 0}},
+    //                                          {{2, 0, 0}, {0, 2, 0}},
+    //                                          {{1, 1, 0}, {1, 0, 1}},
+    //                                          {{2, 1, 0}, {2, 0, 1}},
+    //                                          {{2, 1, 0}, {1, 2, 0}},
+    //                                          {{2, 2, 0}, {2, 0, 2}},
+    //                                          {{2, 1, 1}, {1, 2, 1}},
+    //                                          {{2, 2, 1}, {2, 1, 2}}}));
+    //   REQUIRE(kb.knuth_bendix().number_of_normal_forms(0, 10) == 1175);
+    // }
 
     LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
                             "083",

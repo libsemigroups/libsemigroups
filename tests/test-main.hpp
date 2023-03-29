@@ -19,6 +19,7 @@
 #ifndef LIBSEMIGROUPS_TESTS_TEST_MAIN_HPP_
 #define LIBSEMIGROUPS_TESTS_TEST_MAIN_HPP_
 
+#include "libsemigroups/paths.hpp"
 #include "libsemigroups/types.hpp"
 
 #define STR2(X) #X
@@ -64,5 +65,12 @@ CATCH_REGISTER_ENUM(libsemigroups::tril,
                     libsemigroups::tril::TRUE,
                     libsemigroups::tril::FALSE,
                     libsemigroups::tril::unknown);
+
+CATCH_REGISTER_ENUM(libsemigroups::paths::algorithm,
+                    libsemigroups::paths::algorithm::dfs,
+                    libsemigroups::paths::algorithm::matrix,
+                    libsemigroups::paths::algorithm::acyclic,
+                    libsemigroups::paths::algorithm::automatic,
+                    libsemigroups::paths::algorithm::trivial)
 
 #endif  // LIBSEMIGROUPS_TESTS_TEST_MAIN_HPP_

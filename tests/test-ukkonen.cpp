@@ -29,8 +29,7 @@
 #include "libsemigroups/int-range.hpp"  // for IntegralRange
 #include "libsemigroups/types.hpp"      // for word_type
 #include "libsemigroups/ukkonen.hpp"    // for Ukkonen, Ukkonen::State
-#include "libsemigroups/wislo.hpp"      // for const_wislo_iterator, cbegi...
-#include "libsemigroups/word.hpp"       // for literals
+#include "libsemigroups/words.hpp"      // for literals
 
 namespace libsemigroups {
 
@@ -67,11 +66,12 @@ namespace libsemigroups {
     REQUIRE(!ukkonen::is_subword(t, 0000_w));
     REQUIRE(!ukkonen::is_subword(t, 1_w));
     REQUIRE(ukkonen::number_of_distinct_subwords(t) == 16);
-    REQUIRE(cbegin_wislo(5, {}, 0000000_w)->empty());
-    REQUIRE(std::count_if(
-                cbegin_wislo(6, {}, 00000000_w),
-                cend_wislo(6, {}, 00000000_w),
-                [&t](word_type const& w) { return ukkonen::is_subword(t, w); })
+    Words w;
+    w.letters(6).min(0).max(8);
+    REQUIRE((w | rx::filter([&t](word_type const& w) {
+               return ukkonen::is_subword(t, w);
+             })
+             | rx::count())
             == 16);
 
     REQUIRE(ukkonen::is_subword(t, ""_w));  // 1
@@ -155,10 +155,11 @@ namespace libsemigroups {
     REQUIRE(!ukkonen::is_suffix_no_checks(t, "ab"));
     REQUIRE(!ukkonen::is_suffix_no_checks(t, std::string("ab")));
 
-    REQUIRE(std::count_if(
-                cbegin_wislo(5, {}, 0000000_w),
-                cend_wislo(5, {}, 0000000_w),
-                [&t](word_type const& w) { return ukkonen::is_suffix(t, w); })
+    w.letters(5).min(0).max(7);
+    REQUIRE((w | rx::filter([&t](word_type const& w) {
+               return ukkonen::is_suffix(t, w);
+             })
+             | rx::count())
             == 11);
 
     REQUIRE(ukkonen::length_maximal_piece_prefix(t, 004000_w) == 2);
@@ -274,10 +275,12 @@ namespace libsemigroups {
     REQUIRE(!ukkonen::is_subword(t, 3_w));
     REQUIRE(!ukkonen::is_subword(t, 13_w));
 
-    REQUIRE(std::count_if(
-                cbegin_wislo(5, {}, 00000_w),
-                cend_wislo(5, {}, 00000_w),
-                [&t](word_type const& w) { return ukkonen::is_subword(t, w); })
+    Words words;
+    words.letters(5).min(0).max(5);
+    REQUIRE((words | rx::filter([&t](word_type const& w) {
+               return ukkonen::is_subword(t, w);
+             })
+             | rx::count())
             == 10);
 
     REQUIRE(ukkonen::is_suffix(t, ""_w));
@@ -436,8 +439,9 @@ namespace libsemigroups {
       Ukkonen u;
       // No words
       REQUIRE_THROWS_AS(ukkonen::dot(u), LibsemigroupsException);
-      ukkonen::add_words(
-          u, cbegin_wislo(2, ""_w, "00000"_w), cend_wislo(2, ""_w, "00000"_w));
+      Words words;
+      words.letters(2).min(0).max(5);
+      ukkonen::add_words(u, rx::begin(words), rx::end(words));
       REQUIRE(u.number_of_distinct_words() == 30);
       // Too many words
       REQUIRE_THROWS_AS(ukkonen::dot(u), LibsemigroupsException);

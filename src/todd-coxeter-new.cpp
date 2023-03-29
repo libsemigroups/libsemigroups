@@ -261,6 +261,7 @@ namespace libsemigroups {
         _settings(),
         _standardized(order::none),
         _word_graph() {
+    p.validate();  // TODO this is probably missing all over the place here
     if (knd == congruence_kind::left) {
       Presentation<word_type> pp(p);
       presentation::reverse(pp);

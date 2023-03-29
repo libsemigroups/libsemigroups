@@ -601,8 +601,7 @@ namespace libsemigroups {
                           "[stephen][extreme]") {
     using namespace fpsemigroup;
     auto    rg = ReportGuard(true);
-    auto    p  = make<Presentation<word_type>>(fibonacci_semigroup(4, 6));
-    Stephen S(p);
+    Stephen S(fibonacci_semigroup(4, 6));
     S.set_word({0, 1, 2, 3}).run_for(std::chrono::seconds(10));
     REQUIRE(!S.finished());
   }

@@ -66,10 +66,6 @@ namespace libsemigroups {
                                  + static_cast<uint64_t>(auth2));
     }
 
-    //! This operator can be used to produce string representations of author
-    //! values.
-    std::ostringstream& operator<<(std::ostringstream& oss, author val);
-
     //! A presentation for the stellar monoid.
     //!
     //! Returns a vector of relations giving a semigroup presentation defining
@@ -83,7 +79,7 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if `l < 2`
     //!
     //! [10.48550/arXiv.1910.11740]: https://doi.org/10.48550/arXiv.1910.11740
-    std::vector<relation_type> stellar_monoid(size_t l);
+    Presentation<word_type> stellar_monoid(size_t l);
 
     //! A presentation for the dual symmetric inverse monoid.
     //!
@@ -105,7 +101,7 @@ namespace libsemigroups {
     //! `author::Easdown + author::East + author::FitzGerald`
     //!
     //! [10.48550/arxiv.0707.2439]: https://doi.org/10.48550/arxiv.0707.2439
-    std::vector<relation_type> dual_symmetric_inverse_monoid(
+    Presentation<word_type> dual_symmetric_inverse_monoid(
         size_t n,
         author val = author::Easdown + author::East + author::FitzGerald);
 
@@ -129,7 +125,7 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if `val` is not `author::FitzGerald`
     //!
     //! [10.1017/s0004972700037692]: https://doi.org/10.1017/s0004972700037692
-    std::vector<relation_type>
+    Presentation<word_type>
     uniform_block_bijection_monoid(size_t n, author val = author::FitzGerald);
 
     //! A presentation for the partition monoid.
@@ -153,8 +149,8 @@ namespace libsemigroups {
     //!
     //! [10.1016/j.jalgebra.2011.04.008]:
     //! https://doi.org/10.1016/j.jalgebra.2011.04.008
-    std::vector<relation_type> partition_monoid(size_t n,
-                                                author val = author::East);
+    Presentation<word_type> partition_monoid(size_t n,
+                                             author val = author::East);
 
     //! A presentation for the singular part of the Brauer monoid.
     //!
@@ -169,7 +165,7 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if `n < 3`
     //!
     //! [10.21136/MB.2007.134125]: https://doi.org/10.21136/MB.2007.134125
-    std::vector<relation_type> singular_brauer_monoid(size_t n);
+    Presentation<word_type> singular_brauer_monoid(size_t n);
 
     //! A presentation for the monoid of orientation preserving
     //! mappings.
@@ -185,7 +181,7 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if `n < 3`
     //!
     //! [10.1007/s10012-000-0001-1]: https://doi.org/10.1007/s10012-000-0001-1
-    std::vector<relation_type> orientation_preserving_monoid(size_t n);
+    Presentation<word_type> orientation_preserving_monoid(size_t n);
 
     //! A presentation for the monoid of orientation reversing mappings.
     //!
@@ -200,7 +196,7 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if `n < 3`
     //!
     //! [10.1007/s10012-000-0001-1]: https://doi.org/10.1007/s10012-000-0001-1
-    std::vector<relation_type> orientation_reversing_monoid(size_t n);
+    Presentation<word_type> orientation_reversing_monoid(size_t n);
 
     //! A presentation for the Temperley-Lieb monoid.
     //!
@@ -215,7 +211,7 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if `n < 3`
     //!
     //! [10.1093/qmath/haab001]: https://doi.org/10.1093/qmath/haab001
-    std::vector<relation_type> temperley_lieb_monoid(size_t n);
+    Presentation<word_type> temperley_lieb_monoid(size_t n);
 
     //! A presentation for the Brauer monoid.
     //!
@@ -230,7 +226,7 @@ namespace libsemigroups {
     //! \noexcept
     //!
     //! [10.2478/s11533-006-0017-6]: https://doi.org/10.2478/s11533-006-0017-6
-    std::vector<relation_type> brauer_monoid(size_t n);
+    Presentation<word_type> brauer_monoid(size_t n);
 
     //! A presentation for a Fibonacci semigroup.
     //!
@@ -248,7 +244,7 @@ namespace libsemigroups {
     //!
     //! [10.1016/0022-4049(94)90005-1]:
     //! https://doi.org/10.1016/0022-4049(94)90005-1
-    std::vector<relation_type> fibonacci_semigroup(size_t r, size_t n);
+    Presentation<word_type> fibonacci_semigroup(size_t r, size_t n);
 
     //! A presentation for the plactic monoid.
     //!
@@ -263,7 +259,7 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if `n < 2`
     //!
     //! [10.1007/s00233-022-10285-3]: https://doi.org/10.1007/s00233-022-10285-3
-    std::vector<relation_type> plactic_monoid(size_t n);
+    Presentation<word_type> plactic_monoid(size_t n);
 
     //! A presentation for the stylic monoid.
     //!
@@ -278,7 +274,7 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if `n < 2`
     //!
     //! [10.1007/s00233-022-10285-3]: https://doi.org/10.1007/s00233-022-10285-3
-    std::vector<relation_type> stylic_monoid(size_t n);
+    Presentation<word_type> stylic_monoid(size_t n);
 
     //! A presentation for the symmetric group.
     //!
@@ -314,9 +310,9 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if the author-index combination is
     //! invalid
     //!
-    std::vector<relation_type> symmetric_group(size_t n,
-                                               author val = author::Carmichael,
-                                               size_t index = 0);
+    Presentation<word_type> symmetric_group(size_t n,
+                                            author val   = author::Carmichael,
+                                            size_t index = 0);
 
     //! A presentation for the alternating group.
     //!
@@ -336,8 +332,8 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if `n < 4`
     //!
     //! [hdl.handle.net/10023/2821]: http://hdl.handle.net/10023/2821
-    std::vector<relation_type> alternating_group(size_t n,
-                                                 author val = author::Moore);
+    Presentation<word_type> alternating_group(size_t n,
+                                              author val = author::Moore);
 
     //! A presentation for a rectangular band.
     //!
@@ -354,7 +350,7 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if `n = 0`
     //!
     //! [10.1007/s002339910016]: https://doi.org/10.1007/s002339910016
-    std::vector<relation_type> rectangular_band(size_t m, size_t n);
+    Presentation<word_type> rectangular_band(size_t m, size_t n);
 
     //! A presentation for the full transformation monoid.
     //!
@@ -378,9 +374,9 @@ namespace libsemigroups {
     //!
     //! [http://hdl.handle.net/10023/2821]: http://hdl.handle.net/10023/2821
     //! [10.1007/978-1-84800-281-4]: https://doi.org/10.1007/978-1-84800-281-4
-    std::vector<relation_type> full_transformation_monoid(size_t n,
-                                                          author val
-                                                          = author::Iwahori);
+    Presentation<word_type> full_transformation_monoid(size_t n,
+                                                       author val
+                                                       = author::Iwahori);
 
     //! A presentation for the partial transformation monoid.
     //!
@@ -402,9 +398,9 @@ namespace libsemigroups {
     //! order of author)
     //!
     //! [10.1007/978-1-84800-281-4]: https://doi.org/10.1007/978-1-84800-281-4
-    std::vector<relation_type> partial_transformation_monoid(size_t n,
-                                                             author val
-                                                             = author::Sutov);
+    Presentation<word_type> partial_transformation_monoid(size_t n,
+                                                          author val
+                                                          = author::Sutov);
 
     //! A presentation for the symmetric inverse monoid.
     //!
@@ -425,9 +421,9 @@ namespace libsemigroups {
     //! order of author)
     //!
     //! [10.1007/978-1-84800-281-4]: https://doi.org/10.1007/978-1-84800-281-4
-    std::vector<relation_type> symmetric_inverse_monoid(size_t n,
-                                                        author val
-                                                        = author::Sutov);
+    Presentation<word_type> symmetric_inverse_monoid(size_t n,
+                                                     author val
+                                                     = author::Sutov);
 
     //! A presentation for the Chinese monoid.
     //!
@@ -441,7 +437,7 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if `n < 2`
     //!
     //! [10.1142/S0218196701000425]: https://doi.org/10.1142/S0218196701000425
-    std::vector<relation_type> chinese_monoid(size_t n);
+    Presentation<word_type> chinese_monoid(size_t n);
 
     //! A presentation for a monogenic semigroup.
     //!
@@ -455,7 +451,7 @@ namespace libsemigroups {
     //! \returns A `std::vector<relation_type>`
     //!
     //! \throws LibsemigroupsException if `r = 0`
-    std::vector<relation_type> monogenic_semigroup(size_t m, size_t r);
+    Presentation<word_type> monogenic_semigroup(size_t m, size_t r);
 
     //! A presentation for the monoid of order-preserving mappings.
     //!
@@ -506,10 +502,10 @@ namespace libsemigroups {
     //! relations.
     //!
     //! [10.48550/arxiv.2211.02155]: https://doi.org/10.48550/arxiv.2211.02155
-    std::vector<relation_type> cyclic_inverse_monoid(size_t n,
-                                                     author val
-                                                     = author::Fernandes,
-                                                     size_t index = 1);
+    Presentation<word_type> cyclic_inverse_monoid(size_t n,
+                                                  author val
+                                                  = author::Fernandes,
+                                                  size_t index = 1);
 
     //! A presentation for the order-preserving part of the cyclic inverse
     //! monoid.
@@ -526,7 +522,7 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if `n < 3`
     //!
     //! [10.48550/arxiv.2211.02155]: https://doi.org/10.48550/arxiv.2211.02155
-    std::vector<relation_type> order_preserving_cyclic_inverse_monoid(size_t n);
+    Presentation<word_type> order_preserving_cyclic_inverse_monoid(size_t n);
 
     //! A presentation for the monoid of partial isometries of a cycle graph.
     //!
@@ -541,7 +537,7 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if `n < 3`
     //!
     //! [10.48550/arxiv.2205.02196]: https://doi.org/10.48550/arxiv.2205.02196
-    std::vector<relation_type> partial_isometries_cycle_graph_monoid(size_t n);
+    Presentation<word_type> partial_isometries_cycle_graph_monoid(size_t n);
 
     //! A non-presentation for the symmetric group.
     //!
@@ -565,14 +561,14 @@ namespace libsemigroups {
     //!
     //! [doi.org/10.1090/S0894-0347-08-00590-0]:
     //! https://doi.org/10.1090/S0894-0347-08-00590-0
-    std::vector<relation_type>
+    Presentation<word_type>
     not_symmetric_group(size_t n,
                         author val = author::Guralnick + author::Kantor
                                      + author::Kassabov + author::Lubotzky);
 
     // The following block of 7 functions remains undocumented, as we are not
     // entirely sure what they are.
-    std::vector<relation_type> rook_monoid(size_t l, int q);
+    Presentation<word_type>    rook_monoid(size_t l, int q);
     std::vector<relation_type> renner_common_type_B_monoid(size_t l, int q);
     std::vector<relation_type> RennerTypeBMonoid(size_t l, int q);
     std::vector<relation_type> renner_type_B_monoid(size_t l,
@@ -584,29 +580,6 @@ namespace libsemigroups {
                                                     author val);
     std::vector<relation_type> RennerTypeDMonoid(size_t l, int q);
 
-    template <typename T, typename F, typename... Args>
-    void setup(T& tc, size_t num_gens, F func, Args... args) {
-      tc.set_number_of_generators(num_gens);
-      for (auto const& w : func(args...)) {
-        tc.add_pair(w.first, w.second);
-      }
-    }
-
-    template <typename T,
-              typename
-              = std::enable_if_t<std::is_same_v<Presentation<word_type>, T>>>
-    T make(std::vector<relation_type> const& rels) {
-      Presentation<word_type> p;
-      for (auto const& rel : rels) {
-        p.add_rule(rel.first.cbegin(),
-                   rel.first.cend(),
-                   rel.second.cbegin(),
-                   rel.second.cend());
-      }
-      p.alphabet_from_rules();
-      p.validate();
-      return p;
-    }
   }  // namespace fpsemigroup
 }  // namespace libsemigroups
 #endif  // LIBSEMIGROUPS_FPSEMI_EXAMPLES_HPP_

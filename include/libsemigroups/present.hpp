@@ -118,7 +118,7 @@ namespace libsemigroups {
     //! \noexcept
     //!
     //! \param (None)
-    word_type const& alphabet() const noexcept {
+    [[nodiscard]] word_type const& alphabet() const noexcept {
       return _alphabet;
     }
 
@@ -201,7 +201,7 @@ namespace libsemigroups {
     //!
     //! \warning
     //! This function performs no bound checks on the argument \p i
-    letter_type letter(size_type i) const {
+    [[nodiscard]] letter_type letter(size_type i) const {
       LIBSEMIGROUPS_ASSERT(i < _alphabet.size());
       return _alphabet[i];
     }
@@ -222,7 +222,7 @@ namespace libsemigroups {
     //!
     //! \warning This function does not verify that its argument belongs to the
     //! alphabet.
-    size_type index(letter_type val) const {
+    [[nodiscard]] size_type index(letter_type val) const {
       return _alphabet_map.find(val)->second;
     }
 
@@ -234,7 +234,7 @@ namespace libsemigroups {
     //!
     //! \returns
     //! A value of type `bool`.
-    bool in_alphabet(letter_type val) const {
+    [[nodiscard]] bool in_alphabet(letter_type val) const {
       return _alphabet_map.find(val) != _alphabet_map.cend();
     }
 
@@ -319,7 +319,7 @@ namespace libsemigroups {
     //!
     //! \exceptions
     //! \noexcept
-    bool contains_empty_word() const noexcept {
+    [[nodiscard]] bool contains_empty_word() const noexcept {
       return _contains_empty_word;
     }
 
@@ -1544,6 +1544,65 @@ namespace libsemigroups {
     word_type
     prod(std::initializer_list<size_t> ilist, int first, int last, int step);
 
+    template <typename W>
+    void add_idempotent_rules(Presentation<W>& p, word_type const& letters) {
+      for (auto x : letters) {
+        add_rule(p, word_type({x}) + word_type({x}), word_type({x}));
+      }
+    }
+
+    template <typename W>
+    void add_commutes_rules(Presentation<W>& p, W const& letters) {
+      size_t const n = letters.size();
+
+      for (size_t i = 0; i < n - 1; ++i) {
+        word_type u = {letters[i]};
+        for (size_t j = i + 1; j < n; ++j) {
+          word_type v = {letters[j]};
+          presentation::add_rule(p, u + v, v + u);
+        }
+      }
+    }
+
+    template <typename W>
+    void add_commutes_rules(Presentation<W>& p,
+                            W const&         letters1,
+                            W const&         letters2) {
+      size_t const m = letters1.size();
+      size_t const n = letters2.size();
+      auto         q = p;
+      for (size_t i = 0; i < m; ++i) {
+        word_type u = {letters1[i]};
+        for (size_t j = 0; j < n; ++j) {
+          word_type v = {letters2[j]};
+          if (u != v) {
+            presentation::add_rule(p, u + v, v + u);
+          }
+        }
+      }
+      presentation::remove_duplicate_rules(q);
+      presentation::add_rules(p, q);
+    }
+
+    // TODO to cpp file
+    inline void add_commutes_rules(Presentation<word_type>&         p,
+                                   word_type const&                 letters,
+                                   std::initializer_list<word_type> words) {
+      size_t const m = letters.size();
+      size_t const n = words.size();
+      // TODO so far this assumes that letters and words have empty
+      // intersection
+
+      for (size_t i = 0; i < m; ++i) {
+        word_type u = {letters[i]};
+        for (size_t j = 0; j < n; ++j) {
+          word_type v = *(words.begin() + j);
+          presentation::add_rule(p, u + v, v + u);
+        }
+      }
+    }
+    // TODO more for init_lists?
+
   }  // namespace presentation
 
   // TODO rm
@@ -1556,6 +1615,17 @@ namespace libsemigroups {
       return p.index(val);
     });
     return result;
+  }
+
+  // TODO doc, also we could do a more sophisticated version of this
+  template <typename W>
+  bool operator==(Presentation<W> const& lhop, Presentation<W> const& rhop) {
+    return lhop.alphabet() == rhop.alphabet() && lhop.rules == rhop.rules;
+  }
+
+  template <typename W>
+  bool operator!=(Presentation<W> const& lhop, Presentation<W> const& rhop) {
+    return !(lhop == rhop);
   }
 
   inline void to_word(Presentation<std::string> const& p,
@@ -1582,6 +1652,7 @@ namespace libsemigroups {
   inline void operator+=(word_type& u, word_type const& v) {
     u.insert(u.end(), v.cbegin(), v.cend());
   }
+
 }  // namespace libsemigroups
 
 #include "present.tpp"

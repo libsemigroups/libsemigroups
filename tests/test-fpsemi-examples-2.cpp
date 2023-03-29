@@ -28,9 +28,14 @@
 #include "libsemigroups/knuth-bendix.hpp"     // for KnuthBendix
 #include "libsemigroups/report.hpp"           // for ReportGuard
 #include "libsemigroups/types.hpp"            // for word_type
+#include "libsemigroups/words.hpp"            // for literals
 
 namespace libsemigroups {
+
+  using literals::operator""_w;
+
   struct LibsemigroupsException;
+
   constexpr bool REPORT = false;
 
   using fpsemigroup::chinese_monoid;
@@ -38,56 +43,58 @@ namespace libsemigroups {
   using fpsemigroup::stylic_monoid;
 
   namespace congruence {
+    namespace {
+      void to_knuth_bendix(KnuthBendix& kb, Presentation<word_type> const& p) {
+        kb.set_number_of_generators(p.alphabet().size());
+        for (auto it = p.rules.cbegin(); it < p.rules.cend(); it += 2) {
+          kb.add_pair(*it, *(it + 1));
+        }
+      }
+    }  // namespace
+
     LIBSEMIGROUPS_TEST_CASE("fpsemi-examples",
-                            "028",
+                            "067",
                             "chinese_monoid(3)",
                             "[fpsemi-examples][quick]") {
-      auto        rg = ReportGuard(REPORT);
+      auto rg = ReportGuard(REPORT);
+
       KnuthBendix kb;
-      kb.set_number_of_generators(3);
-      for (auto const& rel : chinese_monoid(3)) {
-        kb.add_pair(rel.first, rel.second);
-      }
+      to_knuth_bendix(kb, chinese_monoid(3));
       REQUIRE(kb.is_quotient_obviously_infinite());
       REQUIRE(kb.number_of_classes() == POSITIVE_INFINITY);
       REQUIRE(std::vector<relation_type>(kb.cbegin_generating_pairs(),
                                          kb.cend_generating_pairs())
-              == std::vector<relation_type>({{{1, 0, 0}, {0, 1, 0}},
-                                             {{2, 0, 0}, {0, 2, 0}},
-                                             {{1, 1, 0}, {1, 0, 1}},
-                                             {{2, 1, 0}, {2, 0, 1}},
-                                             {{2, 1, 0}, {1, 2, 0}},
-                                             {{2, 2, 0}, {2, 0, 2}},
-                                             {{2, 1, 1}, {1, 2, 1}},
-                                             {{2, 2, 1}, {2, 1, 2}}}));
+              == std::vector<relation_type>({{100_w, 010_w},
+                                             {200_w, 020_w},
+                                             {110_w, 101_w},
+                                             {210_w, 201_w},
+                                             {210_w, 120_w},
+                                             {220_w, 202_w},
+                                             {211_w, 121_w},
+                                             {221_w, 212_w}}));
       REQUIRE(kb.knuth_bendix().number_of_normal_forms(0, 10) == 1175);
     }
 
     LIBSEMIGROUPS_TEST_CASE("fpsemi-examples",
-                            "029",
+                            "068",
                             "plactic_monoid(3)",
                             "[fpsemi-examples][quick]") {
       auto        rg = ReportGuard(REPORT);
       KnuthBendix kb;
-      kb.set_number_of_generators(3);
-      for (auto const& rel : plactic_monoid(3)) {
-        kb.add_pair(rel.first, rel.second);
-      }
+      to_knuth_bendix(kb, plactic_monoid(3));
       REQUIRE(kb.is_quotient_obviously_infinite());
       REQUIRE(kb.number_of_classes() == POSITIVE_INFINITY);
       REQUIRE(kb.knuth_bendix().number_of_normal_forms(0, 5) == 70);
     }
 
     LIBSEMIGROUPS_TEST_CASE("fpsemi-examples",
-                            "030",
-                            "stylic_monoid(3)",
+                            "069",
+                            "stylic_monoid(4)",
                             "[fpsemi-examples][quick]") {
       auto        rg = ReportGuard(REPORT);
       KnuthBendix kb;
-      kb.set_number_of_generators(4);
-      for (auto const& rel : stylic_monoid(4)) {
-        kb.add_pair(rel.first, rel.second);
-      }
+      to_knuth_bendix(kb, stylic_monoid(4));
+      REQUIRE(kb.number_of_classes() == 51);
       REQUIRE(kb.knuth_bendix().number_of_normal_forms(0, 6) == 49);
     }
   }  // namespace congruence

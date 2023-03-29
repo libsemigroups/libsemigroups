@@ -186,6 +186,11 @@ namespace libsemigroups {
       return is_prefix(u.cbegin(), u.cend(), v.cbegin(), v.cend());
     }
 
+    // Check if v is a prefix of u
+    static inline bool is_prefix(char const* u, char const* v) {
+      return is_prefix(u, u + std::strlen(u), v, v + std::strlen(v));
+    }
+
     template <typename S, typename T>
     std::pair<S, T> maximum_common_prefix(S first_word1,
                                           S last_word1,

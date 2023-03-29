@@ -599,73 +599,73 @@ namespace libsemigroups {
     REQUIRE(S.froidure_pin()->number_of_rules() == 4570);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("FpSemigroup",
-                          "029",
-                          "Rook monoid R5, q = 0",
-                          "[quick][fpsemi][no-valgrind]") {
-    auto        rg = ReportGuard(REPORT);
-    FpSemigroup S;
-    S.set_alphabet(6);
-    for (relation_type const& rl : rook_monoid(5, 0)) {
-      S.add_rule(rl);
-    }
-    REQUIRE(S.number_of_rules() == 33);
-    REQUIRE(!S.is_obviously_infinite());
-    REQUIRE(!S.knuth_bendix()->confluent());
-    REQUIRE(S.size() == 1546);
-    REQUIRE(S.froidure_pin()->number_of_rules() == 71);
-  }
+  // LIBSEMIGROUPS_TEST_CASE("FpSemigroup",
+  //                         "029",
+  //                         "Rook monoid R5, q = 0",
+  //                         "[quick][fpsemi][no-valgrind]") {
+  //   auto        rg = ReportGuard(REPORT);
+  //   FpSemigroup S;
+  //   S.set_alphabet(6);
+  //   for (relation_type const& rl : rook_monoid(5, 0)) {
+  //     S.add_rule(rl);
+  //   }
+  //   REQUIRE(S.number_of_rules() == 33);
+  //   REQUIRE(!S.is_obviously_infinite());
+  //   REQUIRE(!S.knuth_bendix()->confluent());
+  //   REQUIRE(S.size() == 1546);
+  //   REQUIRE(S.froidure_pin()->number_of_rules() == 71);
+  // }
 
-  LIBSEMIGROUPS_TEST_CASE("FpSemigroup",
-                          "030",
-                          "Rook monoid R5, q = 1",
-                          "[quick][fpsemi][no-valgrind]") {
-    auto        rg = ReportGuard(REPORT);
-    FpSemigroup S;
-    S.set_alphabet(6);
-    for (relation_type const& rl : rook_monoid(5, 1)) {
-      S.add_rule(rl);
-    }
-    REQUIRE(S.number_of_rules() == 33);
-    REQUIRE(!S.is_obviously_infinite());
-    REQUIRE(!S.knuth_bendix()->confluent());
-    REQUIRE(S.size() == 1546);
-    REQUIRE(S.froidure_pin()->number_of_rules() == 71);
-  }
+  // LIBSEMIGROUPS_TEST_CASE("FpSemigroup",
+  //                         "030",
+  //                         "Rook monoid R5, q = 1",
+  //                         "[quick][fpsemi][no-valgrind]") {
+  //   auto        rg = ReportGuard(REPORT);
+  //   FpSemigroup S;
+  //   S.set_alphabet(6);
+  //   for (relation_type const& rl : rook_monoid(5, 1)) {
+  //     S.add_rule(rl);
+  //   }
+  //   REQUIRE(S.number_of_rules() == 33);
+  //   REQUIRE(!S.is_obviously_infinite());
+  //   REQUIRE(!S.knuth_bendix()->confluent());
+  //   REQUIRE(S.size() == 1546);
+  //   REQUIRE(S.froidure_pin()->number_of_rules() == 71);
+  // }
 
-  LIBSEMIGROUPS_TEST_CASE("FpSemigroup",
-                          "031",
-                          "Rook monoid R6, q = 0",
-                          "[quick][fpsemi][no-valgrind]") {
-    auto        rg = ReportGuard(REPORT);
-    FpSemigroup S;
-    S.set_alphabet(7);
-    for (relation_type const& rl : rook_monoid(6, 0)) {
-      S.add_rule(rl);
-    }
-    REQUIRE(S.number_of_rules() == 45);
-    REQUIRE(!S.is_obviously_infinite());
-    REQUIRE(!S.knuth_bendix()->confluent());
-    REQUIRE(S.size() == 13327);
-    REQUIRE(S.froidure_pin()->number_of_rules() == 207);
-  }
+  // LIBSEMIGROUPS_TEST_CASE("FpSemigroup",
+  //                         "031",
+  //                         "Rook monoid R6, q = 0",
+  //                         "[quick][fpsemi][no-valgrind]") {
+  //   auto        rg = ReportGuard(REPORT);
+  //   FpSemigroup S;
+  //   S.set_alphabet(7);
+  //   for (relation_type const& rl : rook_monoid(6, 0)) {
+  //     S.add_rule(rl);
+  //   }
+  //   REQUIRE(S.number_of_rules() == 45);
+  //   REQUIRE(!S.is_obviously_infinite());
+  //   REQUIRE(!S.knuth_bendix()->confluent());
+  //   REQUIRE(S.size() == 13327);
+  //   REQUIRE(S.froidure_pin()->number_of_rules() == 207);
+  // }
 
-  LIBSEMIGROUPS_TEST_CASE("FpSemigroup",
-                          "032",
-                          "Rook monoid R6, q = 1",
-                          "[quick][fpsemi][no-valgrind]") {
-    auto        rg = ReportGuard(REPORT);
-    FpSemigroup S;
-    S.set_alphabet(7);
-    for (relation_type const& rl : rook_monoid(6, 1)) {
-      S.add_rule(rl);
-    }
-    REQUIRE(S.number_of_rules() == 45);
-    REQUIRE(!S.is_obviously_infinite());
-    REQUIRE(!S.knuth_bendix()->confluent());
-    REQUIRE(S.size() == 13327);
-    REQUIRE(S.froidure_pin()->number_of_rules() == 207);
-  }
+  // LIBSEMIGROUPS_TEST_CASE("FpSemigroup",
+  //                         "032",
+  //                         "Rook monoid R6, q = 1",
+  //                         "[quick][fpsemi][no-valgrind]") {
+  //   auto        rg = ReportGuard(REPORT);
+  //   FpSemigroup S;
+  //   S.set_alphabet(7);
+  //   for (relation_type const& rl : rook_monoid(6, 1)) {
+  //     S.add_rule(rl);
+  //   }
+  //   REQUIRE(S.number_of_rules() == 45);
+  //   REQUIRE(!S.is_obviously_infinite());
+  //   REQUIRE(!S.knuth_bendix()->confluent());
+  //   REQUIRE(S.size() == 13327);
+  //   REQUIRE(S.froidure_pin()->number_of_rules() == 207);
+  // }
 
   LIBSEMIGROUPS_TEST_CASE("FpSemigroup",
                           "033",

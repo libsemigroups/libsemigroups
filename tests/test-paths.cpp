@@ -47,16 +47,9 @@
 #include "libsemigroups/report.hpp"             // for ReportGuard
 #include "libsemigroups/stl.hpp"                // for hash
 #include "libsemigroups/types.hpp"              // for word_type, relation_type
-#include "libsemigroups/words.hpp"               // for operator""_w, Words
+#include "libsemigroups/words.hpp"              // for operator""_w, Words
 
 #include "rx/ranges.hpp"  // for operator|, begin, end
-
-CATCH_REGISTER_ENUM(libsemigroups::paths::algorithm,
-                    libsemigroups::paths::algorithm::dfs,
-                    libsemigroups::paths::algorithm::matrix,
-                    libsemigroups::paths::algorithm::acyclic,
-                    libsemigroups::paths::algorithm::automatic,
-                    libsemigroups::paths::algorithm::trivial)
 
 namespace libsemigroups {
 

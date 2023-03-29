@@ -48,8 +48,16 @@ namespace libsemigroups {
   using options                      = congruence::ToddCoxeter::options;
 
   using fpsemigroup::author;
-  using fpsemigroup::make;
-  using fpsemigroup::setup;
+
+  namespace {
+    template <typename T, typename F, typename... Args>
+    void setup(T& tc, size_t num_gens, F func, Args... args) {
+      tc.set_number_of_generators(num_gens);
+      for (auto const& w : func(args...)) {
+        tc.add_pair(w.first, w.second);
+      }
+    }
+  }  // namespace
 
   using fpsemigroup::dual_symmetric_inverse_monoid;
   using fpsemigroup::orientation_preserving_monoid;
