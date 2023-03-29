@@ -53,10 +53,8 @@ namespace libsemigroups {
       return pow(word_type(ilist), n);
     }
 
-    word_type prod(std::initializer_list<size_t> ilist,
-                   size_t                        first,
-                   int                           last,
-                   size_t                        step) {
+    word_type
+    prod(std::initializer_list<size_t> ilist, int first, int last, int step) {
       return prod(word_type(ilist), first, last, step);
     }
   }  // namespace presentation

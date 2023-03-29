@@ -930,16 +930,17 @@ namespace libsemigroups {
           return result;
         }
         result.reserve((last - first) / step);
-        for (size_t i = first; i < last; i += step) {
+
+        for (int i = first; i < last; i += step) {
           result += elts[i % elts.size()];
         }
       } else {
         if (step > 0) {
           return result;
         }
-        result.reserve((first - last) / step);
         size_t steppos = static_cast<size_t>(-step);
-        for (size_t i = first; i > last; i -= steppos) {
+        result.reserve((first - last) / steppos);
+        for (int i = first; i > last; i += step) {
           result += elts[i % elts.size()];
         }
       }

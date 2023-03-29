@@ -1457,14 +1457,12 @@ namespace libsemigroups {
 
     template <typename T, typename = std::enable_if_t<detail::IsWord<T>::value>>
     T prod(T const& elts, size_t last) {
-      return prod(elts, 0, last, 1);
+      return prod(elts, 0, static_cast<int>(last), 1);
     }
 
     //! See \ref prod "prod".
-    word_type prod(std::initializer_list<size_t> ilist,
-                   size_t                        first,
-                   size_t                        last,
-                   size_t                        step);
+    word_type
+    prod(std::initializer_list<size_t> ilist, int first, int last, int step);
 
   }  // namespace presentation
 
