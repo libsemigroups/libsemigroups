@@ -183,8 +183,7 @@ namespace libsemigroups {
       }
       auto p = rook_monoid(l, 0);
 
-      std::vector<relation_type> rels{};
-      word_type                  t = {0};
+      word_type t = {0};
       for (size_t i = 1; i < l; ++i) {
         t.insert(t.begin(), i);
         presentation::add_rule(p, t + word_type({i}), t);
