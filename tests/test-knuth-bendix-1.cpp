@@ -81,11 +81,11 @@ namespace libsemigroups {
       kb.add_rule({2, 1}, {1});
       kb.add_rule({0}, {1});
 
+      REQUIRE(kb.number_of_active_rules() == 4);
       REQUIRE(kb.confluent());
 #ifdef LIBSEMIGROUPS_DEBUG
       REQUIRE(kb.alphabet() == "abc");
 #endif
-      REQUIRE(kb.number_of_active_rules() == 4);
       REQUIRE(kb.normal_form({2, 0}) == word_type({0}));
       REQUIRE(kb.normal_form({0, 2}) == word_type({0}));
       REQUIRE(kb.equal_to(word_type({2, 0}), word_type({0})));

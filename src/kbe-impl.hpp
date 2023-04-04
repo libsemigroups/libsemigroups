@@ -31,18 +31,18 @@ namespace libsemigroups {
     KBE::KBE(internal_string_type&& w) : _kb_word(std::move(w)) {}
 
     KBE::KBE(KnuthBendix& kb, internal_string_type const& w) : KBE(w) {
-      kb._impl->internal_rewrite(&_kb_word);
+      kb.internal_rewrite(&_kb_word);
     }
 
     KBE::KBE(KnuthBendix& kb, internal_string_type&& w) : KBE(std::move(w)) {
-      kb._impl->internal_rewrite(&_kb_word);
+      kb.internal_rewrite(&_kb_word);
     }
 
     KBE::KBE(KnuthBendix& kb, letter_type const& a)
-        : KBE(kb, KnuthBendix::KnuthBendixImpl::uint_to_internal_string(a)) {}
+        : KBE(kb, KnuthBendix::uint_to_internal_string(a)) {}
 
     KBE::KBE(KnuthBendix& kb, word_type const& w)
-        : KBE(kb, KnuthBendix::KnuthBendixImpl::word_to_internal_string(w)) {}
+        : KBE(kb, KnuthBendix::word_to_internal_string(w)) {}
 
     bool KBE::operator==(KBE const& that) const {
       return that._kb_word == this->_kb_word;
@@ -61,12 +61,12 @@ namespace libsemigroups {
     }
 
     word_type KBE::word(KnuthBendix const& kb) const {
-      return kb._impl->internal_string_to_word(_kb_word);
+      return kb.internal_string_to_word(_kb_word);
     }
 
     std::string KBE::string(KnuthBendix const& kb) const {
       std::string out(_kb_word);
-      kb._impl->internal_to_external_string(out);  // changes out in-place
+      kb.internal_to_external_string(out);  // changes out in-place
       return out;
     }
 

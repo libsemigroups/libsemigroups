@@ -33,8 +33,6 @@
 #include "libsemigroups/obvinf.hpp"             // for IsObviouslyInfinitePairs
 #include "libsemigroups/types.hpp"              // for word_type
 
-#include "knuth-bendix-impl.hpp"
-
 // Include kbe-impl.hpp after knuth-bendix-impl.hpp since detail::KBE depends on
 // KnuthBendixImpl.
 #include "kbe-impl.hpp"
@@ -65,8 +63,7 @@ namespace libsemigroups {
   }  // namespace
 
   namespace fpsemigroup {
-
-    KnuthBendix::KnuthBendix(KnuthBendix&&) = default;
+    // KnuthBendix::KnuthBendix(KnuthBendix&&) = default;
 
     //////////////////////////////////////////////////////////////////////////
     // KnuthBendix::Settings - constructor - public
@@ -83,8 +80,23 @@ namespace libsemigroups {
     //////////////////////////////////////////////////////////////////////////
 
     KnuthBendix& KnuthBendix::overlap_policy(options::overlap p) {
-      _impl->set_overlap_policy(p);
-      // the next line must be after _impl->set_overlap_policy
+      if (p == _settings._overlap_policy && _overlap_measure != nullptr) {
+        return *this;
+      }
+      delete _overlap_measure;
+      switch (p) {
+        case options::overlap::ABC:
+          _overlap_measure = new ABC();
+          break;
+        case options::overlap::AB_BC:
+          _overlap_measure = new AB_BC();
+          break;
+        case options::overlap::MAX_AB_BC:
+          _overlap_measure = new MAX_AB_BC();
+          break;
+        default:
+          LIBSEMIGROUPS_ASSERT(false);
+      }
       _settings._overlap_policy = p;
       return *this;
     }
@@ -96,13 +108,49 @@ namespace libsemigroups {
     KnuthBendix::KnuthBendix()
         : FpSemigroupInterface(),
           _gilman_digraph(),
-          _impl(std::make_unique<KnuthBendixImpl>(this)) {}
+          _active_rules(),
+          _confluent(false),
+          _confluence_known(false),
+          _inactive_rules(),
+          _internal_is_same_as_external(false),
+          _contains_empty_string(false),
+          _min_length_lhs_rule(std::numeric_limits<size_t>::max()),
+          _overlap_measure(nullptr),
+          _stack(),
+          _tmp_word1(new internal_string_type()),
+          _tmp_word2(new internal_string_type()),
+          _total_rules(0) {
+      _next_rule_it1 = _active_rules.end();  // null
+      _next_rule_it2 = _active_rules.end();  // null
+      overlap_policy(options::overlap::ABC);
+#ifdef LIBSEMIGROUPS_VERBOSE
+      _max_stack_depth        = 0;
+      _max_word_length        = 0;
+      _max_active_word_length = 0;
+      _max_active_rules       = 0;
+#endif
+    }
 
     KnuthBendix::KnuthBendix(KnuthBendix const& kb) : KnuthBendix() {
       init_from(kb);
     }
 
-    KnuthBendix::~KnuthBendix() = default;
+    KnuthBendix::~KnuthBendix() {
+      delete _overlap_measure;
+      delete _tmp_word1;
+      delete _tmp_word2;
+      for (Rule const* rule : _active_rules) {
+        delete const_cast<Rule*>(rule);
+      }
+      for (Rule* rule : _inactive_rules) {
+        delete rule;
+      }
+      while (!_stack.empty()) {
+        Rule* rule = _stack.top();
+        _stack.pop();
+        delete rule;
+      }
+    }
 
     //////////////////////////////////////////////////////////////////////////
     // KnuthBendix - initialisers - private
@@ -167,7 +215,20 @@ namespace libsemigroups {
     bool KnuthBendix::equal_to(std::string const& u, std::string const& v) {
       validate_word(u);
       validate_word(v);
-      return _impl->equal_to(u, v);
+      if (u == v) {
+        return true;
+      }
+      external_string_type uu = rewrite(u);
+      external_string_type vv = rewrite(v);
+      if (uu == vv) {
+        return true;
+      }
+      run();
+      external_to_internal_string(uu);
+      external_to_internal_string(vv);
+      internal_rewrite(&uu);
+      internal_rewrite(&vv);
+      return uu == vv;
     }
 
     std::string KnuthBendix::normal_form(std::string const& w) {
@@ -180,24 +241,81 @@ namespace libsemigroups {
     // KnuthBendix public methods for rules and rewriting
     //////////////////////////////////////////////////////////////////////////
 
-    using const_iterator = FpSemigroupInterface::const_iterator;
-
-    // TODO(later)  implement these!
-    // const_iterator cbegin_active_rules() const {
-    //  return _impl->cbegin_active_rules();
-    // }
-
-    // const_iterator cend_active_rules() const {
-    //   return _impl->cend_active_rules();
-    // }
-
     std::vector<std::pair<std::string, std::string>>
     KnuthBendix::active_rules() const {
-      return _impl->rules();
+      std::vector<std::pair<external_string_type, external_string_type>> rules;
+      rules.reserve(_active_rules.size());
+      for (Rule const* rule : _active_rules) {
+        internal_string_type lhs = internal_string_type(*rule->lhs());
+        internal_string_type rhs = internal_string_type(*rule->rhs());
+        internal_to_external_string(lhs);
+        internal_to_external_string(rhs);
+        rules.emplace_back(lhs, rhs);
+      }
+      std::sort(
+          rules.begin(),
+          rules.end(),
+          [](std::pair<external_string_type, external_string_type> rule1,
+             std::pair<external_string_type, external_string_type> rule2) {
+            return shortlex_compare(rule1.first, rule2.first)
+                   || (rule1.first == rule2.first
+                       && shortlex_compare(rule1.second, rule2.second));
+          });
+      return rules;
     }
 
-    std::string* KnuthBendix::rewrite(std::string* w) const {
-      return _impl->rewrite(w);
+    KnuthBendix::external_string_type*
+    KnuthBendix::rewrite(external_string_type* w) const {
+      external_to_internal_string(*w);
+      internal_rewrite(w);
+      internal_to_external_string(*w);
+      return w;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    // KnuthBendixImpl - other methods - private
+    //////////////////////////////////////////////////////////////////////////
+
+    // REWRITE_FROM_LEFT from Sims, p67
+    // Caution: this uses the assumption that rules are length reducing, if it
+    // is not, then u might not have sufficient space!
+    void KnuthBendix::internal_rewrite(internal_string_type* u) const {
+      if (u->size() < _min_length_lhs_rule) {
+        return;
+      }
+      internal_string_type::iterator const& v_begin = u->begin();
+      internal_string_type::iterator        v_end
+          = u->begin() + _min_length_lhs_rule - 1;
+      internal_string_type::iterator        w_begin = v_end;
+      internal_string_type::iterator const& w_end   = u->end();
+
+      RuleLookup lookup;
+
+      while (w_begin != w_end) {
+        *v_end = *w_begin;
+        ++v_end;
+        ++w_begin;
+
+        auto it = _set_rules.find(lookup(v_begin, v_end));
+        if (it != _set_rules.end()) {
+          Rule const* rule = (*it).rule();
+          if (rule->lhs()->size() <= static_cast<size_t>(v_end - v_begin)) {
+            LIBSEMIGROUPS_ASSERT(detail::is_suffix(
+                v_begin, v_end, rule->lhs()->cbegin(), rule->lhs()->cend()));
+            v_end -= rule->lhs()->size();
+            w_begin -= rule->rhs()->size();
+            detail::string_replace(
+                w_begin, rule->rhs()->cbegin(), rule->rhs()->cend());
+          }
+        }
+        while (w_begin != w_end
+               && _min_length_lhs_rule - 1
+                      > static_cast<size_t>((v_end - v_begin))) {
+          *v_end = *w_begin;
+          ++v_end;
+          ++w_begin;
+        }
+      }
+      u->erase(v_end - u->cbegin());
     }
 
     std::ostream& operator<<(std::ostream& os, KnuthBendix const& kb) {
@@ -209,28 +327,173 @@ namespace libsemigroups {
     // KnuthBendix - main methods - public
     //////////////////////////////////////////////////////////////////////////
 
+    bool KnuthBendix::confluent_known() const noexcept {
+      return _confluence_known;
+    }
+
     bool KnuthBendix::confluent() const {
-      return _impl->confluent();
+      if (!_stack.empty()) {
+        return false;
+      }
+      if (!_confluence_known && (!running() || !stopped())) {
+        LIBSEMIGROUPS_ASSERT(_stack.empty());
+        _confluent        = true;
+        _confluence_known = true;
+        internal_string_type word1;
+        internal_string_type word2;
+        size_t               seen = 0;
+
+        for (auto it1 = _active_rules.cbegin();
+             it1 != _active_rules.cend() && (!running() || !stopped());
+             ++it1) {
+          Rule const* rule1 = *it1;
+          // Seems to be much faster to do this in reverse.
+          for (auto it2 = _active_rules.crbegin();
+               it2 != _active_rules.crend() && (!running() || !stopped());
+               ++it2) {
+            seen++;
+            Rule const* rule2 = *it2;
+            for (auto it = rule1->lhs()->cend() - 1;
+                 it >= rule1->lhs()->cbegin() && (!running() || !stopped());
+                 --it) {
+              // Find longest common prefix of suffix B of rule1.lhs() defined
+              // by it and R = rule2.lhs()
+              auto prefix
+                  = detail::maximum_common_prefix(it,
+                                                  rule1->lhs()->cend(),
+                                                  rule2->lhs()->cbegin(),
+                                                  rule2->lhs()->cend());
+              if (prefix.first == rule1->lhs()->cend()
+                  || prefix.second == rule2->lhs()->cend()) {
+                word1.clear();
+                word1.append(rule1->lhs()->cbegin(), it);          // A
+                word1.append(*rule2->rhs());                       // S
+                word1.append(prefix.first, rule1->lhs()->cend());  // D
+
+                word2.clear();
+                word2.append(*rule1->rhs());                        // Q
+                word2.append(prefix.second, rule2->lhs()->cend());  // E
+
+                if (word1 != word2) {
+                  internal_rewrite(&word1);
+                  internal_rewrite(&word2);
+                  if (word1 != word2) {
+                    _confluent = false;
+                    return _confluent;
+                  }
+                }
+              }
+            }
+          }
+          if (report()) {
+            REPORT_DEFAULT("checked %llu pairs of overlaps out of %llu\n",
+                           uint64_t(seen),
+                           uint64_t(_active_rules.size())
+                               * uint64_t(_active_rules.size()));
+          }
+        }
+        if (running() && stopped()) {
+          _confluence_known = false;
+        }
+      }
+      return _confluent;
     }
 
     bool KnuthBendix::finished_impl() const {
-      return _impl->confluent_known() && _impl->confluent();
+      return confluent_known() && confluent();
     }
 
     void KnuthBendix::run_impl() {
-      _impl->knuth_bendix();
-      report_why_we_stopped();
+      detail::Timer timer;
+      if (_stack.empty() && confluent() && !stopped()) {
+        // _stack can be non-empty if non-reduced rules were used to define
+        // the KnuthBendix.  If _stack is non-empty, then it means that the
+        // rules in _active_rules might not define the system.
+        REPORT_DEFAULT("the system is confluent already\n");
+        return;
+      } else if (_active_rules.size() >= _settings._max_rules) {
+        REPORT_DEFAULT("too many rules\n");
+        return;
+      }
+      // Reduce the rules
+      _next_rule_it1 = _active_rules.begin();
+      while (_next_rule_it1 != _active_rules.end() && !stopped()) {
+        // Copy *_next_rule_it1 and push_stack so that it is not modified by
+        // the call to clear_stack.
+        LIBSEMIGROUPS_ASSERT((*_next_rule_it1)->lhs()
+                             != (*_next_rule_it1)->rhs());
+        push_stack(new_rule(*_next_rule_it1));
+        ++_next_rule_it1;
+      }
+      _next_rule_it1 = _active_rules.begin();
+      size_t nr      = 0;
+      while (_next_rule_it1 != _active_rules.cend()
+             && _active_rules.size() < _settings._max_rules && !stopped()) {
+        Rule const* rule1 = *_next_rule_it1;
+        _next_rule_it2    = _next_rule_it1;
+        ++_next_rule_it1;
+        overlap(rule1, rule1);
+        while (_next_rule_it2 != _active_rules.begin() && rule1->active()) {
+          --_next_rule_it2;
+          Rule const* rule2 = *_next_rule_it2;
+          overlap(rule1, rule2);
+          ++nr;
+          if (rule1->active() && rule2->active()) {
+            ++nr;
+            overlap(rule2, rule1);
+          }
+        }
+        if (nr > _settings._check_confluence_interval) {
+          if (confluent()) {
+            break;
+          }
+          nr = 0;
+        }
+        if (_next_rule_it1 == _active_rules.cend()) {
+          clear_stack();
+        }
+      }
+      // LIBSEMIGROUPS_ASSERT(_stack.empty());
+      // Seems that the stack can be non-empty here in KnuthBendix 12, 14, 16
+      // and maybe more
+      if (_settings._max_overlap == POSITIVE_INFINITY
+          && _settings._max_rules == POSITIVE_INFINITY && !stopped()) {
+        _confluence_known = true;
+        _confluent        = true;
+        for (Rule* rule : _inactive_rules) {
+          delete rule;
+        }
+        _inactive_rules.clear();
+      }
+
+      REPORT_DEFAULT("stopping with active rules = %d, inactive rules = %d, "
+                     "rules defined = %d\n",
+                     _active_rules.size(),
+                     _inactive_rules.size(),
+                     _total_rules);
+      REPORT_VERBOSE_DEFAULT("max stack depth = %d", _max_stack_depth);
+      REPORT_TIME(timer);
     }
 
     void KnuthBendix::knuth_bendix_by_overlap_length() {
-      _impl->knuth_bendix_by_overlap_length();
+      detail::Timer timer;
+      size_t        max_overlap        = _settings._max_overlap;
+      size_t check_confluence_interval = _settings._check_confluence_interval;
+      _settings._max_overlap           = 1;
+      _settings._check_confluence_interval = POSITIVE_INFINITY;
+      while (!stopped() && !confluent()) {
+        run();
+        _settings._max_overlap++;
+      }
+      _settings._max_overlap               = max_overlap;
+      _settings._check_confluence_interval = check_confluence_interval;
+      REPORT_TIME(timer);
       report_why_we_stopped();
     }
 
     // TODO(later) noexcept?
     bool KnuthBendix::contains_empty_string() const {
-      return _impl->contains_empty_string()
-             || (has_identity() && identity().empty());
+      return _contains_empty_string || (has_identity() && identity().empty());
     }
 
     uint64_t KnuthBendix::number_of_normal_forms(size_t min, size_t max) {
@@ -245,7 +508,7 @@ namespace libsemigroups {
     }
 
     size_t KnuthBendix::number_of_active_rules() const noexcept {
-      return _impl->number_of_rules();
+      return _active_rules.size();
     }
 
     ActionDigraph<size_t> const& KnuthBendix::gilman_digraph() {
@@ -303,7 +566,43 @@ namespace libsemigroups {
 
     void KnuthBendix::add_rule_impl(std::string const& p,
                                     std::string const& q) {
-      _impl->add_rule(p, q);
+      LIBSEMIGROUPS_ASSERT(p != q);
+      auto pp = new external_string_type(p);
+      auto qq = new external_string_type(q);
+      external_to_internal_string(*pp);
+      external_to_internal_string(*qq);
+      push_stack(new_rule(pp, qq));
+    }
+
+    void KnuthBendix::add_rule(Rule* rule) {
+      LIBSEMIGROUPS_ASSERT(*rule->lhs() != *rule->rhs());
+#ifdef LIBSEMIGROUPS_VERBOSE
+      _max_word_length  = std::max(_max_word_length, rule->lhs()->size());
+      _max_active_rules = std::max(_max_active_rules, _active_rules.size());
+      _unique_lhs_rules.insert(*rule->lhs());
+#endif
+      LIBSEMIGROUPS_ASSERT(_set_rules.emplace(RuleLookup(rule)).second);
+#ifndef LIBSEMIGROUPS_DEBUG
+      _set_rules.emplace(RuleLookup(rule));
+#endif
+      rule->activate();
+      _active_rules.push_back(rule);
+      if (_next_rule_it1 == _active_rules.end()) {
+        --_next_rule_it1;
+      }
+      if (_next_rule_it2 == _active_rules.end()) {
+        --_next_rule_it2;
+      }
+      _confluence_known = false;
+      if (rule->lhs()->size() < _min_length_lhs_rule) {
+        // TODO(later) this is not valid when using non-length reducing
+        // orderings (such as RECURSIVE)
+        _min_length_lhs_rule = rule->lhs()->size();
+      }
+      if (!_contains_empty_string) {
+        _contains_empty_string = rule->lhs()->empty() || rule->rhs()->empty();
+      }
+      LIBSEMIGROUPS_ASSERT(_set_rules.size() == _active_rules.size());
     }
 
     std::shared_ptr<FroidurePinBase> KnuthBendix::froidure_pin_impl() {
@@ -341,11 +640,17 @@ namespace libsemigroups {
     //////////////////////////////////////////////////////////////////////////
 
     void KnuthBendix::set_alphabet_impl(std::string const& lphbt) {
-      _impl->set_internal_alphabet(lphbt);
+      _internal_is_same_as_external = true;
+      for (size_t i = 0; i < lphbt.size(); ++i) {
+        if (uint_to_internal_char(i) != lphbt[i]) {
+          _internal_is_same_as_external = false;
+          return;
+        }
+      }
     }
 
     void KnuthBendix::set_alphabet_impl(size_t) {
-      _impl->set_internal_alphabet();
+      set_alphabet_impl("");
     }
 
     bool KnuthBendix::validate_identity_impl(std::string const& id) const {
@@ -365,6 +670,288 @@ namespace libsemigroups {
     //////////////////////////////////////////////////////////////////////////
     // KnuthBendix - main member functions - public
     //////////////////////////////////////////////////////////////////////////
+
+    //////////////////////////////////////////////////////////////////////////
+    // KnuthBendixImpl - converting ints <-> string/char - private
+    //////////////////////////////////////////////////////////////////////////
+
+    size_t KnuthBendix::internal_char_to_uint(internal_char_type c) {
+#ifdef LIBSEMIGROUPS_DEBUG
+      LIBSEMIGROUPS_ASSERT(c >= 97);
+      return static_cast<size_t>(c - 97);
+#else
+      return static_cast<size_t>(c - 1);
+#endif
+    }
+
+    KnuthBendix::internal_char_type
+    KnuthBendix::uint_to_internal_char(size_t a) {
+      LIBSEMIGROUPS_ASSERT(
+          a <= size_t(std::numeric_limits<internal_char_type>::max()));
+#ifdef LIBSEMIGROUPS_DEBUG
+      LIBSEMIGROUPS_ASSERT(
+          a <= size_t(std::numeric_limits<internal_char_type>::max() - 97));
+      return static_cast<internal_char_type>(a + 97);
+#else
+      return static_cast<internal_char_type>(a + 1);
+#endif
+    }
+
+    KnuthBendix::internal_string_type
+    KnuthBendix::uint_to_internal_string(size_t i) {
+      LIBSEMIGROUPS_ASSERT(
+          i <= size_t(std::numeric_limits<internal_char_type>::max()));
+      return internal_string_type({uint_to_internal_char(i)});
+    }
+
+    word_type
+    KnuthBendix::internal_string_to_word(internal_string_type const& s) {
+      word_type w;
+      w.reserve(s.size());
+      for (internal_char_type const& c : s) {
+        w.push_back(internal_char_to_uint(c));
+      }
+      return w;
+    }
+
+    KnuthBendix::internal_string_type*
+    KnuthBendix::word_to_internal_string(word_type const&      w,
+                                         internal_string_type* ww) {
+      ww->clear();
+      for (size_t const& a : w) {
+        (*ww) += uint_to_internal_char(a);
+      }
+      return ww;
+    }
+
+    KnuthBendix::internal_string_type
+    KnuthBendix::word_to_internal_string(word_type const& u) {
+      internal_string_type v;
+      v.reserve(u.size());
+      for (size_t const& l : u) {
+        v += uint_to_internal_char(l);
+      }
+      return v;
+    }
+
+    KnuthBendix::internal_char_type
+    KnuthBendix::external_to_internal_char(external_char_type c) const {
+      LIBSEMIGROUPS_ASSERT(!_internal_is_same_as_external);
+      return uint_to_internal_char(char_to_uint(c));
+    }
+
+    KnuthBendix::external_char_type
+    KnuthBendix::internal_to_external_char(internal_char_type a) const {
+      LIBSEMIGROUPS_ASSERT(!_internal_is_same_as_external);
+      return uint_to_char(internal_char_to_uint(a));
+    }
+
+    void
+    KnuthBendix::external_to_internal_string(external_string_type& w) const {
+      if (_internal_is_same_as_external) {
+        return;
+      }
+      for (auto& a : w) {
+        a = external_to_internal_char(a);
+      }
+    }
+
+    void
+    KnuthBendix::internal_to_external_string(internal_string_type& w) const {
+      if (_internal_is_same_as_external) {
+        return;
+      }
+      for (auto& a : w) {
+        a = internal_to_external_char(a);
+      }
+    }
+
+    //////////////////////////////////////////////////////////////////////////
+    // KnuthBendixImpl - methods for rules - private
+    //////////////////////////////////////////////////////////////////////////
+
+    KnuthBendix::Rule* KnuthBendix::new_rule() const {
+      ++_total_rules;
+      Rule* rule;
+      if (!_inactive_rules.empty()) {
+        rule = _inactive_rules.front();
+        rule->clear();
+        rule->set_id(_total_rules);
+        _inactive_rules.erase(_inactive_rules.begin());
+      } else {
+        rule = new Rule(this, _total_rules);
+      }
+      LIBSEMIGROUPS_ASSERT(!rule->active());
+      return rule;
+    }
+
+    KnuthBendix::Rule* KnuthBendix::new_rule(internal_string_type* lhs,
+                                             internal_string_type* rhs) const {
+      Rule* rule = new_rule();
+      delete rule->_lhs;
+      delete rule->_rhs;
+      if (shortlex_compare(rhs, lhs)) {
+        rule->_lhs = lhs;
+        rule->_rhs = rhs;
+      } else {
+        rule->_lhs = rhs;
+        rule->_rhs = lhs;
+      }
+      return rule;
+    }
+
+    KnuthBendix::Rule* KnuthBendix::new_rule(Rule const* rule1) const {
+      Rule* rule2 = new_rule();
+      rule2->_lhs->append(*rule1->lhs());  // copies lhs
+      rule2->_rhs->append(*rule1->rhs());  // copies rhs
+      return rule2;
+    }
+
+    KnuthBendix::Rule*
+    KnuthBendix::new_rule(internal_string_type::const_iterator begin_lhs,
+                          internal_string_type::const_iterator end_lhs,
+                          internal_string_type::const_iterator begin_rhs,
+                          internal_string_type::const_iterator end_rhs) const {
+      Rule* rule = new_rule();
+      rule->_lhs->append(begin_lhs, end_lhs);
+      rule->_rhs->append(begin_rhs, end_rhs);
+      return rule;
+    }
+
+    // FIXME(later) there is a possibly infinite loop here clear_stack ->
+    // push_stack -> clear_stack and so on
+    void KnuthBendix::push_stack(Rule* rule) {
+      LIBSEMIGROUPS_ASSERT(!rule->active());
+      if (*rule->lhs() != *rule->rhs()) {
+        _stack.emplace(rule);
+        clear_stack();
+      } else {
+        _inactive_rules.push_back(rule);
+      }
+    }
+
+    // OVERLAP_2 from Sims, p77
+    void KnuthBendix::overlap(Rule const* u, Rule const* v) {
+      LIBSEMIGROUPS_ASSERT(u->active() && v->active());
+      auto limit
+          = u->lhs()->cend() - std::min(u->lhs()->size(), v->lhs()->size());
+      int64_t u_id = u->id();
+      int64_t v_id = v->id();
+      for (auto it = u->lhs()->cend() - 1;
+           it > limit && u_id == u->id() && v_id == v->id() && !stopped()
+           && (_settings._max_overlap == POSITIVE_INFINITY
+               || (*_overlap_measure)(u, v, it) <= _settings._max_overlap);
+           --it) {
+        // Check if B = [it, u->lhs()->cend()) is a prefix of v->lhs()
+        if (detail::is_prefix(
+                v->lhs()->cbegin(), v->lhs()->cend(), it, u->lhs()->cend())) {
+          // u = P_i = AB -> Q_i and v = P_j = BC -> Q_j
+          // This version of new_rule does not reorder
+          Rule* rule = new_rule(u->lhs()->cbegin(),
+                                it,
+                                u->rhs()->cbegin(),
+                                u->rhs()->cend());  // rule = A -> Q_i
+          rule->_lhs->append(*v->rhs());            // rule = AQ_j -> Q_i
+          rule->_rhs->append(v->lhs()->cbegin() + (u->lhs()->cend() - it),
+                             v->lhs()->cend());  // rule = AQ_j -> Q_iC
+          // rule is reordered during rewriting in clear_stack
+          push_stack(rule);
+          // It can be that the iterator `it` is invalidated by the call to
+          // push_stack (i.e. if `u` is deactivated, then rewritten, actually
+          // changed, and reactivated) and that is the reason for the checks
+          // in the for-loop above. If this is the case, then we should stop
+          // considering the overlaps of u and v here, and note that they will
+          // be considered later, because when the rule `u` is reactivated it
+          // is added to the end of the active rules list.
+        }
+      }
+    }
+
+    // TEST_2 from Sims, p76
+    void KnuthBendix::clear_stack() {
+      while (!_stack.empty() && !stopped()) {
+#ifdef LIBSEMIGROUPS_VERBOSE
+        _max_stack_depth = std::max(_max_stack_depth, _stack.size());
+#endif
+
+        Rule* rule1 = _stack.top();
+        _stack.pop();
+        LIBSEMIGROUPS_ASSERT(!rule1->active());
+        LIBSEMIGROUPS_ASSERT(*rule1->lhs() != *rule1->rhs());
+        // Rewrite both sides and reorder if necessary . . .
+        rule1->rewrite();
+
+        if (*rule1->lhs() != *rule1->rhs()) {
+          internal_string_type const* lhs = rule1->lhs();
+          for (auto it = _active_rules.begin(); it != _active_rules.end();) {
+            Rule* rule2 = const_cast<Rule*>(*it);
+            if (rule2->lhs()->find(*lhs) != external_string_type::npos) {
+              it = remove_rule(it);
+              LIBSEMIGROUPS_ASSERT(*rule2->lhs() != *rule2->rhs());
+              // rule2 is added to _inactive_rules by clear_stack
+              _stack.emplace(rule2);
+            } else {
+              if (rule2->rhs()->find(*lhs) != external_string_type::npos) {
+                internal_rewrite(rule2->rhs());
+              }
+              ++it;
+            }
+          }
+          add_rule(rule1);
+          // rule1 is activated, we do this after removing rules that rule1
+          // makes redundant to avoid failing to insert rule1 in _set_rules
+        } else {
+          _inactive_rules.push_back(rule1);
+        }
+        if (report()) {
+          REPORT_DEFAULT(
+              "active rules = %d, inactive rules = %d, rules defined = "
+              "%d\n",
+              _active_rules.size(),
+              _inactive_rules.size(),
+              _total_rules);
+          REPORT_VERBOSE_DEFAULT("max stack depth        = %d\n"
+                                 "max word length        = %d\n"
+                                 "max active word length = %d\n"
+                                 "max active rules       = %d\n"
+                                 "number of unique lhs   = %d\n",
+                                 _max_stack_depth,
+                                 _max_word_length,
+                                 max_active_word_length(),
+                                 _max_active_rules,
+                                 _unique_lhs_rules.size());
+        }
+      }
+    }
+
+    std::list<KnuthBendix::Rule const*>::iterator
+    KnuthBendix::remove_rule(std::list<Rule const*>::iterator it) {
+#ifdef LIBSEMIGROUPS_VERBOSE
+      _unique_lhs_rules.erase(*((*it)->lhs()));
+#endif
+      Rule* rule = const_cast<Rule*>(*it);
+      rule->deactivate();
+      if (it != _next_rule_it1 && it != _next_rule_it2) {
+        it = _active_rules.erase(it);
+      } else if (it == _next_rule_it1 && it != _next_rule_it2) {
+        _next_rule_it1 = _active_rules.erase(it);
+        it             = _next_rule_it1;
+      } else if (it != _next_rule_it1 && it == _next_rule_it2) {
+        _next_rule_it2 = _active_rules.erase(it);
+        it             = _next_rule_it2;
+      } else {
+        _next_rule_it1 = _active_rules.erase(it);
+        _next_rule_it2 = _next_rule_it1;
+        it             = _next_rule_it1;
+      }
+#ifdef LIBSEMIGROUPS_DEBUG
+      LIBSEMIGROUPS_ASSERT(_set_rules.erase(RuleLookup(rule)));
+#else
+      _set_rules.erase(RuleLookup(rule));
+#endif
+      LIBSEMIGROUPS_ASSERT(_set_rules.size() == _active_rules.size());
+      return it;
+    }
 
   }  // namespace fpsemigroup
 

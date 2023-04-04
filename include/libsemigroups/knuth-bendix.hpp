@@ -25,7 +25,9 @@
 #include <cstddef>  // for size_t
 #include <iosfwd>   // for string, ostream
 #include <memory>   // for unique_ptr
-#include <vector>   // for vector
+#include <set>
+#include <stack>
+#include <vector>  // for vector
 
 #include "cong-intf.hpp"     // for CongruenceInterface
 #include "digraph.hpp"       // for ActionDigraph
@@ -80,6 +82,212 @@ namespace libsemigroups {
       friend class ::libsemigroups::congruence::KnuthBendix;
       friend class ::libsemigroups::detail::KBE;  // defined in kbe.hpp
 
+      ////////////////////////////////////////////////////////////////////////
+      // KnuthBendix - typedefs/aliases - private
+      ////////////////////////////////////////////////////////////////////////
+
+      using external_string_type = std::string;
+      using internal_string_type = std::string;
+      using external_char_type   = char;
+      using internal_char_type   = char;
+
+      ////////////////////////////////////////////////////////////////////////
+      // KnuthBendix - nested subclasses - private
+      ////////////////////////////////////////////////////////////////////////
+
+      // Rule and RuleLookup classes
+      class Rule {
+       public:
+        // Construct from KnuthBendix with new but empty internal_string_type's
+        explicit Rule(KnuthBendix const* kbimpl, int64_t id)
+            : _kbimpl(kbimpl),
+              _lhs(new internal_string_type()),
+              _rhs(new internal_string_type()),
+              _id(-1 * id) {
+          LIBSEMIGROUPS_ASSERT(_id < 0);
+        }
+
+        // The Rule class does not support an assignment constructor to avoid
+        // accidental copying.
+        Rule& operator=(Rule const& copy) = delete;
+
+        // The Rule class does not support a copy constructor to avoid
+        // accidental copying.
+        Rule(Rule const& copy) = delete;
+
+        // Destructor, deletes pointers used to create the rule.
+        ~Rule() {
+          delete _lhs;
+          delete _rhs;
+        }
+
+        // Returns the left hand side of the rule, which is guaranteed to be
+        // greater than its right hand side according to the reduction ordering
+        // of the KnuthBendix used to construct this.
+        internal_string_type* lhs() const {
+          return _lhs;
+        }
+
+        // Returns the right hand side of the rule, which is guaranteed to be
+        // less than its left hand side according to the reduction ordering of
+        // the KnuthBendix used to construct this.
+        internal_string_type* rhs() const {
+          return _rhs;
+        }
+
+        void rewrite() {
+          LIBSEMIGROUPS_ASSERT(_id != 0);
+          _kbimpl->internal_rewrite(_lhs);
+          _kbimpl->internal_rewrite(_rhs);
+          // reorder if necessary
+          if (shortlex_compare(_lhs, _rhs)) {
+            std::swap(_lhs, _rhs);
+          }
+        }
+
+        void clear() {
+          LIBSEMIGROUPS_ASSERT(_id != 0);
+          _lhs->clear();
+          _rhs->clear();
+        }
+
+        inline bool active() const {
+          LIBSEMIGROUPS_ASSERT(_id != 0);
+          return (_id > 0);
+        }
+
+        void deactivate() {
+          LIBSEMIGROUPS_ASSERT(_id != 0);
+          if (active()) {
+            _id *= -1;
+          }
+        }
+
+        void activate() {
+          LIBSEMIGROUPS_ASSERT(_id != 0);
+          if (!active()) {
+            _id *= -1;
+          }
+        }
+
+        void set_id(int64_t id) {
+          LIBSEMIGROUPS_ASSERT(id > 0);
+          LIBSEMIGROUPS_ASSERT(!active());
+          _id = -1 * id;
+        }
+
+        int64_t id() const {
+          LIBSEMIGROUPS_ASSERT(_id != 0);
+          return _id;
+        }
+
+        KnuthBendix const*    _kbimpl;
+        internal_string_type* _lhs;
+        internal_string_type* _rhs;
+        int64_t               _id;
+      };  // struct Rule
+
+      // Simple class wrapping a two iterators to an internal_string_type and a
+      // Rule const*
+
+      class RuleLookup {
+       public:
+        RuleLookup() : _rule(nullptr) {}
+
+        explicit RuleLookup(Rule* rule)
+            : _first(rule->lhs()->cbegin()),
+              _last(rule->lhs()->cend()),
+              _rule(rule) {}
+
+        RuleLookup& operator()(internal_string_type::iterator const& first,
+                               internal_string_type::iterator const& last) {
+          _first = first;
+          _last  = last;
+          return *this;
+        }
+
+        Rule const* rule() const {
+          return _rule;
+        }
+
+        // This implements reverse lex comparison of this and that, which
+        // satisfies the requirement of std::set that equivalent items be
+        // incomparable, so, for example bcbc and abcbc are considered
+        // equivalent, but abcba and bcbc are not.
+        bool operator<(RuleLookup const& that) const {
+          auto it_this = _last - 1;
+          auto it_that = that._last - 1;
+          while (it_this > _first && it_that > that._first
+                 && *it_this == *it_that) {
+            --it_that;
+            --it_this;
+          }
+          return *it_this < *it_that;
+        }
+
+       private:
+        internal_string_type::const_iterator _first;
+        internal_string_type::const_iterator _last;
+        Rule const*                          _rule;
+      };  // class RuleLookup
+
+      // Overlap measures
+      struct OverlapMeasure {
+        virtual size_t operator()(Rule const*,
+                                  Rule const*,
+                                  internal_string_type::const_iterator const&)
+            = 0;
+        virtual ~OverlapMeasure() {}
+      };
+
+      struct ABC : OverlapMeasure {
+        size_t
+        operator()(Rule const*                                 AB,
+                   Rule const*                                 BC,
+                   internal_string_type::const_iterator const& it) override {
+          LIBSEMIGROUPS_ASSERT(AB->active() && BC->active());
+          LIBSEMIGROUPS_ASSERT(AB->lhs()->cbegin() <= it);
+          LIBSEMIGROUPS_ASSERT(it < AB->lhs()->cend());
+          // |A| + |BC|
+          return (it - AB->lhs()->cbegin()) + BC->lhs()->size();
+        }
+      };
+
+      struct AB_BC : OverlapMeasure {
+        size_t
+        operator()(Rule const*                                 AB,
+                   Rule const*                                 BC,
+                   internal_string_type::const_iterator const& it) override {
+          LIBSEMIGROUPS_ASSERT(AB->active() && BC->active());
+          LIBSEMIGROUPS_ASSERT(AB->lhs()->cbegin() <= it);
+          LIBSEMIGROUPS_ASSERT(it < AB->lhs()->cend());
+          (void) it;
+          // |AB| + |BC|
+          return AB->lhs()->size() + BC->lhs()->size();
+        }
+      };
+
+      struct MAX_AB_BC : OverlapMeasure {
+        size_t
+        operator()(Rule const*                                 AB,
+                   Rule const*                                 BC,
+                   internal_string_type::const_iterator const& it) override {
+          LIBSEMIGROUPS_ASSERT(AB->active() && BC->active());
+          LIBSEMIGROUPS_ASSERT(AB->lhs()->cbegin() <= it);
+          LIBSEMIGROUPS_ASSERT(it < AB->lhs()->cend());
+          (void) it;
+          // max(|AB|, |BC|)
+          return std::max(AB->lhs()->size(), BC->lhs()->size());
+        }
+      };
+
+      //////////////////////////////////////////////////////////////////////////
+      // KnuthBendix - friend declarations - private
+      //////////////////////////////////////////////////////////////////////////
+
+      friend class Rule;                          // defined in this file
+      friend class ::libsemigroups::detail::KBE;  // defined in detail::kbe.hpp
+
      public:
       //////////////////////////////////////////////////////////////////////////
       // KnuthBendix - types - public
@@ -114,12 +322,51 @@ namespace libsemigroups {
         options::overlap _overlap_policy;
       } _settings;
 
-      // Forward declarations
-      class KnuthBendixImpl;
-
       // TODO(v3) make helper
-      ActionDigraph<size_t>            _gilman_digraph;
-      std::unique_ptr<KnuthBendixImpl> _impl;
+      ActionDigraph<size_t> _gilman_digraph;
+      ////////////////////////////////////////////////////////////////////////
+      // KnuthBendix - data - private
+      ////////////////////////////////////////////////////////////////////////
+
+      std::list<Rule const*>           _active_rules;
+      mutable std::atomic<bool>        _confluent;
+      mutable std::atomic<bool>        _confluence_known;
+      mutable std::list<Rule*>         _inactive_rules;
+      bool                             _internal_is_same_as_external;
+      bool                             _contains_empty_string;
+      size_t                           _min_length_lhs_rule;
+      std::list<Rule const*>::iterator _next_rule_it1;
+      std::list<Rule const*>::iterator _next_rule_it2;
+      OverlapMeasure*                  _overlap_measure;
+      std::set<RuleLookup>             _set_rules;
+      std::stack<Rule*>                _stack;
+      internal_string_type*            _tmp_word1;
+      internal_string_type*            _tmp_word2;
+      mutable size_t                   _total_rules;
+
+#ifdef LIBSEMIGROUPS_VERBOSE
+      //////////////////////////////////////////////////////////////////////////
+      // ./configure --enable-verbose functions
+      //////////////////////////////////////////////////////////////////////////
+
+      size_t max_active_word_length() {
+        auto comp = [](Rule const* p, Rule const* q) -> bool {
+          return p->lhs()->size() < q->lhs()->size();
+        };
+        auto max = std::max_element(
+            _active_rules.cbegin(), _active_rules.cend(), comp);
+        if (max != _active_rules.cend()) {
+          _max_active_word_length
+              = std::max(_max_active_word_length, (*max)->lhs()->size());
+        }
+        return _max_active_word_length;
+      }
+      size_t                                   _max_stack_depth;
+      size_t                                   _max_word_length;
+      size_t                                   _max_active_word_length;
+      size_t                                   _max_active_rules;
+      std::unordered_set<internal_string_type> _unique_lhs_rules;
+#endif
 
      public:
       //! The type of the return value of froidure_pin().
@@ -177,13 +424,13 @@ namespace libsemigroups {
       KnuthBendix(KnuthBendix const& copy);
 
       //! Deleted.
-      KnuthBendix(KnuthBendix&&);
+      // KnuthBendix(KnuthBendix&&);
 
       //! Deleted.
       KnuthBendix& operator=(KnuthBendix const&) = delete;
 
       //! Deleted.
-      KnuthBendix& operator=(KnuthBendix&&) = delete;
+      // KnuthBendix& operator=(KnuthBendix&&) = delete;
 
       ~KnuthBendix();
 
@@ -510,9 +757,46 @@ namespace libsemigroups {
         return w;
       }
 
+      using FpSemigroupInterface::add_rule;
+
+     private:
+      void add_rule_impl(std::string const& p, std::string const& q) override;
+      void add_rule(Rule* rule);
+
+      void internal_rewrite(internal_string_type* u) const;
+
+      static size_t               internal_char_to_uint(internal_char_type c);
+      static internal_char_type   uint_to_internal_char(size_t a);
+      static internal_string_type uint_to_internal_string(size_t i);
+      static word_type internal_string_to_word(internal_string_type const& s);
+      static internal_string_type*
+      word_to_internal_string(word_type const& w, internal_string_type* ww);
+      static internal_string_type word_to_internal_string(word_type const& u);
+      internal_char_type external_to_internal_char(external_char_type c) const;
+      external_char_type internal_to_external_char(internal_char_type a) const;
+      void external_to_internal_string(external_string_type& w) const;
+      void internal_to_external_string(internal_string_type& w) const;
+
+      Rule* new_rule() const;
+      Rule* new_rule(internal_string_type* lhs,
+                     internal_string_type* rhs) const;
+      Rule* new_rule(Rule const* rule1) const;
+      Rule* new_rule(internal_string_type::const_iterator begin_lhs,
+                     internal_string_type::const_iterator end_lhs,
+                     internal_string_type::const_iterator begin_rhs,
+                     internal_string_type::const_iterator end_rhs) const;
+
+      void push_stack(Rule* rule);
+      void overlap(Rule const* u, Rule const* v);
+      void clear_stack();
+
+      std::list<Rule const*>::iterator
+      remove_rule(std::list<Rule const*>::iterator it);
+
+     public:
       //! This friend function allows a KnuthBendix object to be left shifted
-      //! into a std::ostream, such as std::cout. The currently active rules of
-      //! the system are represented in the output.
+      //! into a std::ostream, such as std::cout. The currently active rules
+      //! of the system are represented in the output.
       friend std::ostream& operator<<(std::ostream&, KnuthBendix const&);
 
       //////////////////////////////////////////////////////////////////////////
@@ -527,13 +811,14 @@ namespace libsemigroups {
       //! \parameters
       //! (None)
       bool confluent() const;
+      bool confluent_known() const noexcept;
 
       //! Run the Knuth-Bendix by considering all overlaps of a given length.
       //!
-      //! This function runs the Knuth-Bendix algorithm on the rewriting system
-      //! represented by a KnuthBendix instance by considering all overlaps of
-      //! a given length \f$n\f$ (according to the \ref options::overlap) before
-      //! those overlaps of length \f$n + 1\f$.
+      //! This function runs the Knuth-Bendix algorithm on the rewriting
+      //! system represented by a KnuthBendix instance by considering all
+      //! overlaps of a given length \f$n\f$ (according to the \ref
+      //! options::overlap) before those overlaps of length \f$n + 1\f$.
       //!
       //! \returns
       //! (None)
@@ -608,11 +893,11 @@ namespace libsemigroups {
       //! \copydoc FpSemigroupInterface::size
       //!
       //! \note If \c this has been run until finished, then this function can
-      //! determine the size of the semigroup represented by \c this even if it
-      //! is infinite. Moreover, the complexity of this function is at worst
-      //! \f$O(mn)\f$ where \f$m\f$ is the number of letters in the alphabet,
-      //! and \f$n\f$ is the number of nodes in the
-      //! \ref gilman_digraph.
+      //! determine the size of the semigroup represented by \c this even if
+      //! it is infinite. Moreover, the complexity of this function is at
+      //! worst \f$O(mn)\f$ where \f$m\f$ is the number of letters in the
+      //! alphabet, and \f$n\f$ is the number of nodes in the \ref
+      //! gilman_digraph.
       uint64_t size() override;
 
       bool equal_to(std::string const&, std::string const&) override;
@@ -626,8 +911,8 @@ namespace libsemigroups {
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
       // The following are required for overload resolution.
       // Documented in FpSemigroupInterface.
-      // Sphinx/doxygen get confused by this, so we don't allow Doxygen to parse
-      // these two declarations.
+      // Sphinx/doxygen get confused by this, so we don't allow Doxygen to
+      // parse these two declarations.
       using FpSemigroupInterface::equal_to;
       using FpSemigroupInterface::normal_form;
 #endif
@@ -644,7 +929,6 @@ namespace libsemigroups {
       // FpSemigroupInterface - pure virtual member functions - private
       //////////////////////////////////////////////////////////////////////////
 
-      void add_rule_impl(std::string const&, std::string const&) override;
       std::shared_ptr<FroidurePinBase> froidure_pin_impl() override;
 
       void run_impl() override;
@@ -723,8 +1007,8 @@ namespace libsemigroups {
       //! \param fp the FroidurePin instance.
       //!
       //! \complexity
-      //! \f$O(|S||A|)\f$ where \f$A\f$ is the set of generators used to define
-      //! \p S and \p S is the semigroup represented by the FroidurePin
+      //! \f$O(|S||A|)\f$ where \f$A\f$ is the set of generators used to
+      //! define \p S and \p S is the semigroup represented by the FroidurePin
       //! instance \p fp.
       //!
       //! \warning
@@ -758,8 +1042,8 @@ namespace libsemigroups {
       //! \param fpb the FroidurePin instance.
       //!
       //! \complexity
-      //! \f$O(|S||A|)\f$ where \f$A\f$ is the set of generators used to define
-      //! \p S.
+      //! \f$O(|S||A|)\f$ where \f$A\f$ is the set of generators used to
+      //! define \p S.
       //!
       //! \note
       //! The FroidurePin instance used in construction is not copied.
@@ -842,14 +1126,14 @@ namespace libsemigroups {
     //!
     //! This function is defined in ``knuth-bendix.hpp``.
     //!
-    //! Starting with the last rule in the presentation, this function attempts
-    //! to run the Knuth-Bendix algorithm on the rules of the presentation
-    //! except for the given omitted rule. For every such omitted rule,
-    //! Knuth-Bendix is run for the length of time indicated by the second
-    //! parameter \p t, and then it is checked if the omitted rule can be shown
-    //! to be redundant (rewriting both sides of the omitted rule using the
-    //! other rules using the output of the, not necessarily finished,
-    //! Knuth-Bendix algorithm).
+    //! Starting with the last rule in the presentation, this function
+    //! attempts to run the Knuth-Bendix algorithm on the rules of the
+    //! presentation except for the given omitted rule. For every such omitted
+    //! rule, Knuth-Bendix is run for the length of time indicated by the
+    //! second parameter \p t, and then it is checked if the omitted rule can
+    //! be shown to be redundant (rewriting both sides of the omitted rule
+    //! using the other rules using the output of the, not necessarily
+    //! finished, Knuth-Bendix algorithm).
     //!
     //! If the omitted rule can be shown to be redundant in this way, then an
     //! iterator pointing to its left hand side is returned.
@@ -857,9 +1141,9 @@ namespace libsemigroups {
     //! If no rule can be shown to be redundant in this way, then an iterator
     //! pointing to `p.cend()` is returned.
     //!
-    //! \tparam T type of the 2nd parameter (time to try running Knuth-Bendix).
-    //! \param p the presentation
-    //! \param t time to run KnuthBendix for every omitted rule
+    //! \tparam T type of the 2nd parameter (time to try running
+    //! Knuth-Bendix). \param p the presentation \param t time to run
+    //! KnuthBendix for every omitted rule
     //!
     //! \warning The progress of the Knuth-Bendix algorithm may differ between
     //! different calls to this function even if the parameters are identical.
@@ -890,14 +1174,14 @@ namespace libsemigroups {
     //!
     //! This function is defined in ``knuth-bendix.hpp``.
     //!
-    //! Starting with the last rule in the presentation, this function attempts
-    //! to run the Knuth-Bendix algorithm on the rules of the presentation
-    //! except for the given omitted rule. For every such omitted rule,
-    //! Knuth-Bendix is run for the length of time indicated by the second
-    //! parameter \p t, and then it is checked if the omitted rule can be shown
-    //! to be redundant (rewriting both sides of the omitted rule using the
-    //! other rules using the output of the, not necessarily finished,
-    //! Knuth-Bendix algorithm).
+    //! Starting with the last rule in the presentation, this function
+    //! attempts to run the Knuth-Bendix algorithm on the rules of the
+    //! presentation except for the given omitted rule. For every such omitted
+    //! rule, Knuth-Bendix is run for the length of time indicated by the
+    //! second parameter \p t, and then it is checked if the omitted rule can
+    //! be shown to be redundant (rewriting both sides of the omitted rule
+    //! using the other rules using the output of the, not necessarily
+    //! finished, Knuth-Bendix algorithm).
     //!
     //! If the omitted rule can be shown to be redundant in this way, then an
     //! iterator pointing to its left hand side is returned.
@@ -906,9 +1190,9 @@ namespace libsemigroups {
     //! pointing to `p.cend()` is returned.
     //!
     //! \tparam W type of words in the Presentation
-    //! \tparam T type of the 2nd parameter (time to try running Knuth-Bendix).
-    //! \param p the presentation
-    //! \param t time to run KnuthBendix for every omitted rule
+    //! \tparam T type of the 2nd parameter (time to try running
+    //! Knuth-Bendix). \param p the presentation \param t time to run
+    //! KnuthBendix for every omitted rule
     //!
     //! \warning The progress of the Knuth-Bendix algorithm may differ between
     //! different calls to this function even if the parameters are identical.
