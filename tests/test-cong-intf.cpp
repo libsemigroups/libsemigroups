@@ -29,11 +29,6 @@
 #include "libsemigroups/todd-coxeter.hpp"  // for ToddCoxeter
 #include "libsemigroups/transf.hpp"        // for Transf<>
 
-CATCH_REGISTER_ENUM(libsemigroups::tril,
-                    libsemigroups::tril::TRUE,
-                    libsemigroups::tril::FALSE,
-                    libsemigroups::tril::unknown);
-
 namespace libsemigroups {
   struct LibsemigroupsException;  // Forward declaration
 
