@@ -52,6 +52,7 @@ namespace libsemigroups {
   //! * permit the function \ref run to be killed from another thread
   //! (\ref kill).
   class Runner {
+   public:
     // Enum class for the state of the Runner.
     enum class state {
       never_run            = 0,
@@ -63,8 +64,6 @@ namespace libsemigroups {
       not_running          = 7,
       dead                 = 8
     };
-
-   public:
     ////////////////////////////////////////////////////////////////////////
     // Runner - constructors + destructor - public
     ////////////////////////////////////////////////////////////////////////
@@ -544,14 +543,14 @@ namespace libsemigroups {
       return _state == state::running_until;
     }
 
+    state get_state() const noexcept {
+      return _state;
+    }
+
    private:
     virtual void run_impl()            = 0;
     virtual bool finished_impl() const = 0;
     virtual void before_run() {}
-
-    state get_state() const noexcept {
-      return _state;
-    }
 
     void set_state(state stt) const {
       // We can set the state back to never_run if run_impl throws, and we are

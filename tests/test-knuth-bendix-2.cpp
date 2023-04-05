@@ -894,7 +894,7 @@ namespace libsemigroups {
                             "Example 5.4 in Sims (KnuthBendix 11 again) "
                             "(different overlap policy)",
                             "[quick][knuth-bendix][fpsemigroup]") {
-      auto        rg = ReportGuard(REPORT);
+      auto        rg = ReportGuard(true);
       KnuthBendix kb;
       kb.set_alphabet("Bab");
       kb.add_rule("aa", "");
@@ -906,6 +906,10 @@ namespace libsemigroups {
       REQUIRE(!kb.confluent());
 
       kb.knuth_bendix_by_overlap_length();
+      REQUIRE(kb.get_state() == Runner::state::not_running);
+      REQUIRE(kb.stopped_by_predicate());
+      REQUIRE(kb.stopped());
+      REQUIRE(kb.confluent());
       REQUIRE(kb.number_of_active_rules() == 11);
       REQUIRE(kb.confluent());
       REQUIRE(kb.size() == 12);

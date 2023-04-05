@@ -20,6 +20,7 @@
 #define LIBSEMIGROUPS_TESTS_TEST_MAIN_HPP_
 
 #include "libsemigroups/paths.hpp"
+#include "libsemigroups/runner.hpp"
 #include "libsemigroups/types.hpp"
 
 #define STR2(X) #X
@@ -72,5 +73,15 @@ CATCH_REGISTER_ENUM(libsemigroups::paths::algorithm,
                     libsemigroups::paths::algorithm::acyclic,
                     libsemigroups::paths::algorithm::automatic,
                     libsemigroups::paths::algorithm::trivial)
+
+CATCH_REGISTER_ENUM(libsemigroups::Runner::state,
+                    libsemigroups::Runner::state::never_run,
+                    libsemigroups::Runner::state::running_to_finish,
+                    libsemigroups::Runner::state::running_for,
+                    libsemigroups::Runner::state::running_until,
+                    libsemigroups::Runner::state::timed_out,
+                    libsemigroups::Runner::state::stopped_by_predicate,
+                    libsemigroups::Runner::state::not_running,
+                    libsemigroups::Runner::state::dead);
 
 #endif  // LIBSEMIGROUPS_TESTS_TEST_MAIN_HPP_
