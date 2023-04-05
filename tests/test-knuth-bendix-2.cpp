@@ -906,9 +906,6 @@ namespace libsemigroups {
       REQUIRE(!kb.confluent());
 
       kb.knuth_bendix_by_overlap_length();
-      REQUIRE(kb.get_state() == Runner::state::not_running);
-      REQUIRE(kb.stopped_by_predicate());
-      REQUIRE(kb.stopped());
       REQUIRE(kb.confluent());
       REQUIRE(kb.number_of_active_rules() == 11);
       REQUIRE(kb.confluent());

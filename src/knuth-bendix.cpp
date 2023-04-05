@@ -481,7 +481,7 @@ namespace libsemigroups {
       size_t check_confluence_interval = _settings._check_confluence_interval;
       _settings._max_overlap           = 1;
       _settings._check_confluence_interval = POSITIVE_INFINITY;
-      while (!stopped() && !confluent()) {
+      while (!confluent()) {
         run();
         _settings._max_overlap++;
       }
