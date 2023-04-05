@@ -43,11 +43,11 @@
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
 #include "libsemigroups/froidure-pin.hpp"  // for FroidurePin
-#include "libsemigroups/kbe.hpp"           // for detail::KBE
-#include "libsemigroups/knuth-bendix.hpp"  // for KnuthBendix, operator<<
-#include "libsemigroups/report.hpp"        // for ReportGuard
-#include "libsemigroups/transf.hpp"        // for Transf<>
-#include "libsemigroups/types.hpp"         // for word_type
+// #include "libsemigroups/kbe.hpp"               // for detail::KBE
+#include "libsemigroups/knuth-bendix-new.hpp"  // for KnuthBendix, operator<<
+#include "libsemigroups/report.hpp"            // for ReportGuard
+#include "libsemigroups/transf.hpp"            // for Transf<>
+#include "libsemigroups/types.hpp"             // for word_type
 
 namespace libsemigroups {
   constexpr bool REPORT = false;

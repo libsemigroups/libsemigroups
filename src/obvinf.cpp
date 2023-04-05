@@ -30,6 +30,7 @@
 
 #include "libsemigroups/constants.hpp"  // for UNDEFINED
 #include "libsemigroups/debug.hpp"      // for LIBSEMIGROUPS_ASSERT
+#include "libsemigroups/knuth-bendix-new.hpp"
 #include "libsemigroups/todd-coxeter-digraph.hpp"
 #include "libsemigroups/todd-coxeter-new.hpp"
 #include "libsemigroups/words.hpp"  // for StringToWord
@@ -209,6 +210,14 @@ namespace libsemigroups {
     ioi.add_rules(p.rules.cbegin(), p.rules.cend());
     ioi.add_rules(tc.cbegin_generating_pairs(), tc.cend_generating_pairs());
     return ioi.result();
+  }
+
+  // TODO re-add const when gilman_digraph is helper
+  bool is_obviously_infinite(KnuthBendix& kb) {
+    if (kb.finished()) {
+      return !action_digraph_helper::is_acyclic(kb.gilman_digraph());
+    }
+    return is_obviously_infinite(kb.presentation());
   }
 
   template <>

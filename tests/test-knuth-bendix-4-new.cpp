@@ -44,12 +44,12 @@
 #include "catch.hpp"      // for REQUIRE, REQUIRE_NOTHROW, REQUIRE_THROWS_AS
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
-#include "libsemigroups/constants.hpp"     // for POSITIVE_INFINITY
-#include "libsemigroups/knuth-bendix.hpp"  // for KnuthBendix, operator<<
-#include "libsemigroups/report.hpp"        // for ReportGuard
-#include "libsemigroups/stl.hpp"           // for XXX
-#include "libsemigroups/string.hpp"        // for random_string
-#include "libsemigroups/words.hpp"         // for Strings
+#include "libsemigroups/constants.hpp"         // for POSITIVE_INFINITY
+#include "libsemigroups/knuth-bendix-new.hpp"  // for KnuthBendix, operator<<
+#include "libsemigroups/report.hpp"            // for ReportGuard
+#include "libsemigroups/stl.hpp"               // for XXX
+#include "libsemigroups/string.hpp"            // for random_string
+#include "libsemigroups/words.hpp"             // for Strings
 
 namespace libsemigroups {
   using namespace rx;

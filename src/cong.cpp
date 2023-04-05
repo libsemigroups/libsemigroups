@@ -29,12 +29,12 @@
 #include "libsemigroups/fpsemi.hpp"     // for FpSemigroup
 #include "libsemigroups/froidure-pin-base.hpp"  // for FroidurePinBase
 #include "libsemigroups/kambites.hpp"           // for Kambites
-#include "libsemigroups/knuth-bendix.hpp"       // for KnuthBendix
+#include "libsemigroups/knuth-bendix.hpp"       // for KnuthBendix_
 #include "libsemigroups/todd-coxeter.hpp"       // for congruence::ToddCoxeter
 
 namespace libsemigroups {
 
-  using KnuthBendix = congruence::KnuthBendix;
+  using KnuthBendix_ = congruence::KnuthBendix;
   //  using Kambites         = congruence::Kambites;
   using class_index_type = CongruenceInterface::class_index_type;
   using options          = congruence::ToddCoxeter::options;
@@ -48,7 +48,7 @@ namespace libsemigroups {
     if (p == options::runners::standard) {
       _race.add_runner(std::make_shared<congruence::ToddCoxeter>(type));
       if (type == congruence_kind::twosided) {
-        _race.add_runner(std::make_shared<KnuthBendix>());
+        _race.add_runner(std::make_shared<KnuthBendix_>());
       }
     }
   }
@@ -127,7 +127,7 @@ namespace libsemigroups {
           // - check if the relations are really the same as those in
           //   S.todd_coxeter(), if it exists. This is probably too
           //   expensive!
-          // - use the active rules of KnuthBendix in the
+          // - use the active rules of KnuthBendix_ in the
           // congruence::ToddCoxeter constructor, currently uses the relations
           // in S.knuth_bendix() which are guaranteed to equal those in
           // S.todd_coxeter()! _race.add_runner(new
@@ -143,8 +143,7 @@ namespace libsemigroups {
         // Method 6 (KBFP)
         // S.knuth_bendix() must be copied because maybe we will add more
         // generating pairs.
-        _race.add_runner(
-            std::make_shared<congruence::KnuthBendix>(*S.knuth_bendix()));
+        _race.add_runner(std::make_shared<KnuthBendix_>(*S.knuth_bendix()));
       }
 
       // Method 7 (KBP)
@@ -196,7 +195,7 @@ namespace libsemigroups {
 
   word_type Congruence::class_index_to_word_impl(class_index_type i) {
     // TODO(later) it ought to be possible to answer this question without
-    // getting the winner(). Since, for example, if we can run KnuthBendix,
+    // getting the winner(). Since, for example, if we can run KnuthBendix_,
     // then start enumerating its FroidurePin, then we can find the word of any
     // (sufficiently small) class index without any of the runners in the race
     // winning.
@@ -232,7 +231,7 @@ namespace libsemigroups {
 
   class_index_type Congruence::word_to_class_index_impl(word_type const& word) {
     // TODO(later) it ought to be possible to answer this question without
-    // getting the winner(). Since, for example, if we can run KnuthBendix,
+    // getting the winner(). Since, for example, if we can run KnuthBendix_,
     // then start enumerating its FroidurePin, then we can find the class index
     // of any (sufficiently small) word without any of the runners in the race
     // winning.

@@ -19,8 +19,8 @@
 // This file contains a class KnuthBendix which implements the Knuth-Bendix
 // algorithm for finitely presented monoids.
 
-#ifndef LIBSEMIGROUPS_KNUTH_BENDIX_HPP_
-#define LIBSEMIGROUPS_KNUTH_BENDIX_HPP_
+#ifndef LIBSEMIGROUPS_KNUTH_BENDIX_NEW_HPP_
+#define LIBSEMIGROUPS_KNUTH_BENDIX_NEW_HPP_
 
 #include <cstddef>  // for size_t
 #include <iosfwd>   // for string, ostream
@@ -394,9 +394,9 @@ namespace libsemigroups {
     //! \complexity
     //! \f$O(|S||A|)\f$ where \f$A\f$ is the set of generators used to define
     //! \p S.
-    explicit KnuthBendix(FroidurePinBase& S) : KnuthBendix() {
-      init_from(S);
-    }
+    // explicit KnuthBendix(FroidurePinBase& S) : KnuthBendix() {
+    //   init_from(S);
+    // }
 
     //! Constructs from a shared pointer to a FroidurePin instance.
     //!
@@ -405,8 +405,8 @@ namespace libsemigroups {
     //! \complexity
     //! \f$O(|S||A|)\f$ where \f$A\f$ is the set of generators used to define
     //! \p S.
-    explicit KnuthBendix(std::shared_ptr<FroidurePinBase> S)
-        : KnuthBendix(*S) {}
+    // explicit KnuthBendix(std::shared_ptr<FroidurePinBase> S)
+    //     : KnuthBendix(*S) {}
 
     //! Copy constructor.
     //!
@@ -936,8 +936,8 @@ namespace libsemigroups {
     // KnuthBendix - initialisers - private
     //////////////////////////////////////////////////////////////////////////
 
-    void init_from(KnuthBendix const&, bool = true);
-    void init_from(FroidurePinBase&);
+    // void init_from(KnuthBendix const&, bool = true);
+    // void init_from(FroidurePinBase&);
 
     //////////////////////////////////////////////////////////////////////////
     // FpSemigroupInterface - pure virtual member functions - private
@@ -1235,4 +1235,4 @@ namespace libsemigroups {
   // }
 
 }  // namespace libsemigroups
-#endif  // LIBSEMIGROUPS_KNUTH_BENDIX_HPP_
+#endif  // LIBSEMIGROUPS_KNUTH_BENDIX_NEW_HPP_

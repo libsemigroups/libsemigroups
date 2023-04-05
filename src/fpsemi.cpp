@@ -29,19 +29,19 @@
 
 #include "libsemigroups/froidure-pin-base.hpp"  // for FroidurePinBase
 #include "libsemigroups/kambites.hpp"           // for Kambites
-#include "libsemigroups/knuth-bendix.hpp"       // for KnuthBendix
+#include "libsemigroups/knuth-bendix.hpp"       // for KnuthBendix_
 
 namespace libsemigroups {
 
-  using KnuthBendix = fpsemigroup::KnuthBendix;
-  using Kambites_   = Kambites<std::string>;
+  using KnuthBendix_ = fpsemigroup::KnuthBendix;
+  using Kambites_    = Kambites<std::string>;
 
   FpSemigroup::FpSemigroup(use_kambites val) : FpSemigroupInterface(), _race() {
     if (val == use_kambites::yes) {
       _race.add_runner(std::make_shared<Kambites_>());
     }
     _race.add_runner(std::make_shared<fpsemigroup::ToddCoxeter>());
-    _race.add_runner(std::make_shared<KnuthBendix>());
+    _race.add_runner(std::make_shared<KnuthBendix_>());
   }
 
   //////////////////////////////////////////////////////////////////////////

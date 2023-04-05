@@ -83,6 +83,7 @@
 
 namespace libsemigroups {
   class ToddCoxeter;  // forward decl
+  class KnuthBendix;  // forward decl
 
   template <typename Word>
   class Kambites;  // forward decl
@@ -195,6 +196,7 @@ namespace libsemigroups {
   bool is_obviously_infinite(Presentation<std::string> const& p);
 
   bool is_obviously_infinite(ToddCoxeter const& tc);
+  bool is_obviously_infinite(KnuthBendix & kb);
 
   template <typename Word>
   bool is_obviously_infinite(Kambites<Word> const& k) {

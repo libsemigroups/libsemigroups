@@ -48,12 +48,12 @@
 #include "catch.hpp"      // for REQUIRE, REQUIRE_NOTHROW, REQUIRE_THROWS_AS
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
-#include "libsemigroups/config.hpp"        // for LIBSEMIGROUPS_DEBUG
-#include "libsemigroups/constants.hpp"     // for POSITIVE_INFINITY
-#include "libsemigroups/kbe.hpp"           // for KBE
-#include "libsemigroups/knuth-bendix.hpp"  // for KnuthBendix, operator<<
-#include "libsemigroups/report.hpp"        // for ReportGuard
-#include "libsemigroups/types.hpp"         // for word_type
+#include "libsemigroups/config.hpp"            // for LIBSEMIGROUPS_DEBUG
+#include "libsemigroups/constants.hpp"         // for POSITIVE_INFINITY
+#include "libsemigroups/knuth-bendix-new.hpp"  // for KnuthBendix, operator<<
+#include "libsemigroups/obvinf.hpp"            // for word_type
+#include "libsemigroups/report.hpp"            // for ReportGuard
+#include "libsemigroups/types.hpp"             // for word_type
 
 namespace libsemigroups {
   struct LibsemigroupsException;
@@ -82,19 +82,17 @@ namespace libsemigroups {
 
     REQUIRE(kb.number_of_active_rules() == 4);
     REQUIRE(kb.confluent());
-    // REQUIRE(kb.normal_form({2, 0}) == word_type({0}));
-    // REQUIRE(kb.normal_form({0, 2}) == word_type({0}));
-    // REQUIRE(kb.equal_to(word_type({2, 0}), word_type({0})));
-    // REQUIRE(kb.equal_to(word_type({0, 2}), word_type({0})));
-#ifdef LIBSEMIGROUPS_DEBUG
-    // REQUIRE(kb.normal_form("ac") == "a");
-#endif
-    // REQUIRE(kb.is_obviously_infinite());
+    REQUIRE(kb.normal_form("ca") == "a");
+    REQUIRE(kb.normal_form("ac") == "a");
+    REQUIRE(kb.equal_to("ca", "a"));
+    REQUIRE(kb.equal_to("ac", "a"));
+    REQUIRE(kb.size() == POSITIVE_INFINITY);
+    REQUIRE(is_obviously_infinite(kb));
 
+    // TODO uncomment
     // REQUIRE(std::vector<std::string>(kb.cbegin_normal_forms("abc", 0, 5),
     //                                  kb.cend_normal_forms())
     //         == std::vector<std::string>({"a", "c", "cc", "ccc", "cccc"}));
-    // REQUIRE(kb.size() == POSITIVE_INFINITY);
   }
 
   //    LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
