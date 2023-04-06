@@ -222,6 +222,9 @@ namespace libsemigroups {
 
   template <>
   bool is_obviously_infinite(Presentation<std::string> const& p) {
+    if (p.alphabet().empty()) {
+      return false;
+    }
     detail::IsObviouslyInfinite ioi(p.alphabet().size());
     ioi.add_rules(p.alphabet(), p.rules.cbegin(), p.rules.cend());
     return ioi.result();

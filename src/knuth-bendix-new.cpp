@@ -62,19 +62,6 @@ namespace libsemigroups {
 
   }  // namespace
 
-  auto KnuthBendix::active_rules() const {
-    using namespace rx;
-    return iterator_range(_active_rules.cbegin(), _active_rules.cend())
-           | transform([this](auto const& rule) {
-               // TODO remove allocation
-               internal_string_type lhs = internal_string_type(*rule->lhs());
-               internal_string_type rhs = internal_string_type(*rule->rhs());
-               internal_to_external_string(lhs);
-               internal_to_external_string(rhs);
-               return std::make_pair(lhs, rhs);
-             });
-  }
-
   // KnuthBendix::KnuthBendix(KnuthBendix&&) = default;
 
   //////////////////////////////////////////////////////////////////////////
@@ -128,6 +115,7 @@ namespace libsemigroups {
         _contains_empty_string(false),
         _min_length_lhs_rule(std::numeric_limits<size_t>::max()),
         _overlap_measure(nullptr),
+        _presentation(),
         _stack(),
         _tmp_word1(new internal_string_type()),
         _tmp_word2(new internal_string_type()),
@@ -213,9 +201,9 @@ namespace libsemigroups {
 
     int const modifier = (contains_empty_string() ? 0 : -1);
     if (presentation().alphabet().empty()) {
-      return 1 - modifier;
+      return 1 + modifier;
     } else {
-      auto const out = knuth_bendix::normal_forms(*this).count();
+      uint64_t const out = knuth_bendix::normal_forms(*this).count();
       return (out == POSITIVE_INFINITY ? out : out + modifier);
     }
   }

@@ -30,6 +30,8 @@
 #include <cstddef>  // for size_t
 #include <vector>   // for vector
 
+#include <rx/ranges.hpp>
+
 namespace libsemigroups {
   // TODO(v3): redo the doc
   //! The possible arguments for standardize(order).
@@ -150,7 +152,7 @@ namespace libsemigroups {
   //!
   //! [std::lexicographical_compare]:
   //! https://en.cppreference.com/w/cpp/algorithm/lexicographical_compare
-  template <typename T>
+  template <typename T, typename = std::enable_if_t<!rx::is_input_or_sink_v<T>>>
   bool lexicographical_compare(T const& x, T const& y) {
     return std::lexicographical_compare(
         x.cbegin(), x.cend(), y.cbegin(), y.cend());
@@ -222,7 +224,9 @@ namespace libsemigroups {
   //!
   //! [std::lexicographical_compare]:
   //! https://en.cppreference.com/w/cpp/algorithm/lexicographical_compare
-  template <typename T, typename S>
+  template <typename T,
+            typename S,
+            typename = std::enable_if_t<!rx::is_input_or_sink_v<T>>>
   bool shortlex_compare(T const& first1,
                         T const& last1,
                         S const& first2,
@@ -250,7 +254,7 @@ namespace libsemigroups {
   //! \returns A `bool`.
   //!
   //! \sa shortlex_compare(T const, T const, S const, S const)
-  template <typename T>
+  template <typename T, typename = std::enable_if_t<!rx::is_input_or_sink_v<T>>>
   bool shortlex_compare(T const& x, T const& y) {
     return shortlex_compare(x.cbegin(), x.cend(), y.cbegin(), y.cend());
   }

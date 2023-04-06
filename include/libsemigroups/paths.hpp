@@ -935,9 +935,9 @@ namespace libsemigroups {
       return _current == _end;
     }
 
-    size_t size_hint() const noexcept;
+    uint64_t size_hint() const noexcept;
 
-    size_t count() const noexcept {
+    uint64_t count() const noexcept {
       return size_hint();
     }
 

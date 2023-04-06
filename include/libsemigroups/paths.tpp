@@ -590,7 +590,7 @@ namespace libsemigroups {
       return std::accumulate(number_paths.cbegin_row(source) + min,
                              number_paths.cbegin_row(source)
                                  + std::min(topo.size(), max),
-                             0);
+                             uint64_t(0));
     }
 
     template <typename Node1, typename Node2>
@@ -657,7 +657,7 @@ namespace libsemigroups {
       return std::accumulate(number_paths.cbegin_row(source) + min,
                              number_paths.cbegin_row(source)
                                  + std::min(topo.size(), max),
-                             0);
+                             uint64_t(0));
     }
 
   }  // namespace detail
@@ -831,7 +831,7 @@ namespace libsemigroups {
   }
 
   template <typename Node>
-  size_t Paths<Node>::size_hint() const noexcept {
+  uint64_t Paths<Node>::size_hint() const noexcept {
     if (_target != UNDEFINED) {
       return number_of_paths(*_digraph, _source, _target, _min, _max);
     } else {

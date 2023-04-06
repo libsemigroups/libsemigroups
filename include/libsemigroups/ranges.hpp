@@ -25,6 +25,10 @@
 
 #include <algorithm>
 
+#include <rx/ranges.hpp>
+
+// TODO add typename = std::enable_if_t<rx::is_input_or_sink_v<T>>> everywhere
+
 namespace libsemigroups {
 
   template <typename Range, typename Compare>
@@ -60,6 +64,32 @@ namespace libsemigroups {
     }
     return true;
   }
+
+  template <typename Range1, typename Range2>
+  bool lexicographical_compare(Range1 r1, Range2 r2) {
+    while (!r1.at_end() && !r2.at_end()) {
+      auto next1 = r1.get();
+      auto next2 = r2.get();
+      if (next1 < next2) {
+        return true;
+      }
+      if (next2 < next1) {
+        return false;
+      }
+      r1.next();
+      r2.next();
+    }
+    return r1.at_end() && !r2.at_end();
+  }
+
+  template <typename Range1, typename Range2>
+  bool shortlex_compare(Range1 r1, Range2 r2) {
+    if (rx::count()(r1) < rx::count()(r2)) {
+      return true;
+    }
+    return lexicographical_compare(r1, r2);
+  }
+
 }  // namespace libsemigroups
 
 #endif  // LIBSEMIGROUPS_RANGES_HPP_

@@ -187,6 +187,9 @@ namespace libsemigroups {
 
   template <typename Word>
   bool is_obviously_infinite(Presentation<Word> const& p) {
+    if (p.alphabet().empty()) {
+      return false;
+    }
     detail::IsObviouslyInfinite ioi(p.alphabet().size());
     ioi.add_rules(p.rules.cbegin(), p.rules.cend());
     return ioi.result();
@@ -196,7 +199,7 @@ namespace libsemigroups {
   bool is_obviously_infinite(Presentation<std::string> const& p);
 
   bool is_obviously_infinite(ToddCoxeter const& tc);
-  bool is_obviously_infinite(KnuthBendix & kb);
+  bool is_obviously_infinite(KnuthBendix& kb);
 
   template <typename Word>
   bool is_obviously_infinite(Kambites<Word> const& k) {

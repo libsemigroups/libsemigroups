@@ -583,7 +583,18 @@ namespace libsemigroups {
     //! \parameters
     //! (None)
     // TODO(v3): update the doc, now returns a Range
-    auto active_rules() const;
+    auto active_rules() const {
+      using namespace rx;
+      return iterator_range(_active_rules.cbegin(), _active_rules.cend())
+             | transform([this](auto const& rule) {
+                 // TODO remove allocation
+                 internal_string_type lhs = internal_string_type(*rule->lhs());
+                 internal_string_type rhs = internal_string_type(*rule->rhs());
+                 internal_to_external_string(lhs);
+                 internal_to_external_string(rhs);
+                 return std::make_pair(lhs, rhs);
+               });
+    }
 
     //! Rewrite a word in-place.
     //!
