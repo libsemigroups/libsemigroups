@@ -1010,6 +1010,12 @@ namespace libsemigroups {
     }
   };
 
+  template <typename Node>
+  Paths(ActionDigraph<Node> const&) -> Paths<Node>;
+
+  template <typename Node>
+  Paths(ActionDigraph<Node>&&) -> Paths<Node>;
+
 }  // namespace libsemigroups
 
 #include "paths.tpp"

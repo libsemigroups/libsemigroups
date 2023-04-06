@@ -533,22 +533,25 @@ namespace libsemigroups {
   // of a Words object into strings
   template <typename = void>
   struct to_strings {
+    explicit to_strings(std::string const& lttrs) : _letters(lttrs) {}
     explicit to_strings(std::string&& lttrs) : _letters(std::move(lttrs)) {}
     explicit to_strings(char const* lttrs) : _letters(lttrs) {}
 
     std::string _letters;
 
+    template <typename InputRange>
     struct Range {
       using output_type = std::string;
 
       static constexpr bool is_finite     = true;
       static constexpr bool is_idempotent = true;
 
-      Words      _input;
+      InputRange _input;
       to_strings _to_string;
 
-      constexpr Range(Words const& input, to_strings t_strng) noexcept
-          : _input(input), _to_string(std::move(t_strng)) {}
+      constexpr Range(InputRange&& input, to_strings t_strng) noexcept
+          : _input(std::forward<InputRange>(input)),
+            _to_string(std::move(t_strng)) {}
 
       [[nodiscard]] output_type get() const noexcept {
         return detail::word_to_string(_to_string._letters, _input.get());
@@ -567,8 +570,9 @@ namespace libsemigroups {
       }
     };
 
-    [[nodiscard]] constexpr auto operator()(Words const& input) const {
-      return Range(input, *this);
+    template <typename InputRange>
+    [[nodiscard]] constexpr auto operator()(InputRange&& input) const {
+      return Range<InputRange>(std::forward<InputRange>(input), *this);
     }
   };
 

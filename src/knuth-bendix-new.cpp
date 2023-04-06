@@ -206,29 +206,16 @@ namespace libsemigroups {
   // FpSemigroupInterface - non-pure virtual methods - public
   //////////////////////////////////////////////////////////////////////////
 
-  KnuthBendix::const_normal_form_iterator
-  KnuthBendix::cbegin_normal_forms(std::string const& lphbt,
-                                   size_t const       min,
-                                   size_t const       max) {
-    using state_type = NormalFormsIteratorTraits::state_type;
-    auto it          = const_normal_form_iterator(
-        state_type(lphbt, ""), cbegin_pislo(gilman_digraph(), 0, min, max));
-    if (min == 0 && !contains_empty_string()) {
-      ++it;
-    }
-    return it;
-  }
-
   uint64_t KnuthBendix::size() {
-    // if (is_obviously_infinite()) {
-    //   return POSITIVE_INFINITY;
-    // } else
+    if (is_obviously_infinite(*this)) {
+      return POSITIVE_INFINITY;
+    }
 
+    int const modifier = (contains_empty_string() ? 0 : -1);
     if (presentation().alphabet().empty()) {
-      return 0;  // FIXME depends if we include the empty word or not!
+      return 1 - modifier;
     } else {
-      int const  modifier = (contains_empty_string() ? 0 : -1);
-      auto const out      = number_of_paths(gilman_digraph(), 0);
+      auto const out = knuth_bendix::normal_forms(*this).count();
       return (out == POSITIVE_INFINITY ? out : out + modifier);
     }
   }
@@ -495,16 +482,16 @@ namespace libsemigroups {
     // return _contains_empty_string || (has_identity() && identity().empty());
   }
 
-  uint64_t KnuthBendix::number_of_normal_forms(size_t min, size_t max) {
-    if (presentation().alphabet().empty()) {
-      return 0;
-    } else {
-      int const modifier = (contains_empty_string() ? 0 : -1);
+  // uint64_t KnuthBendix::number_of_normal_forms(size_t min, size_t max) {
+  //   if (presentation().alphabet().empty()) {
+  //     return 0;
+  //   } else {
+  //     int const modifier = (contains_empty_string() ? 0 : -1);
 
-      auto const out = number_of_paths(gilman_digraph(), 0, min, max);
-      return (out == POSITIVE_INFINITY ? out : out + modifier);
-    }
-  }
+  //     auto const out = number_of_paths(gilman_digraph(), 0, min, max);
+  //     return (out == POSITIVE_INFINITY ? out : out + modifier);
+  //   }
+  // }
 
   size_t KnuthBendix::number_of_active_rules() const noexcept {
     return _active_rules.size();
@@ -555,7 +542,6 @@ namespace libsemigroups {
     }
     return _gilman_digraph;
   }
-
   //////////////////////////////////////////////////////////////////////////
   // FpSemigroupInterface - pure virtual methods - private
   //////////////////////////////////////////////////////////////////////////
@@ -600,30 +586,6 @@ namespace libsemigroups {
       _contains_empty_string = rule->lhs()->empty() || rule->rhs()->empty();
     }
     LIBSEMIGROUPS_ASSERT(_set_rules.size() == _active_rules.size());
-  }
-
-  // std::shared_ptr<FroidurePinBase> KnuthBendix::froidure_pin_impl() {
-  //   LIBSEMIGROUPS_ASSERT(!presentation().alphabet().empty());
-  //   run();
-  //   auto ptr = std::make_shared<froidure_pin_type>(*this);
-  //   for (size_t i = 0; i < presentation().alphabet().size(); ++i) {
-  //     ptr->add_generator(detail::KBE(*this, i));
-  //   }
-  //   return ptr;
-  // }
-
-  bool KnuthBendix::is_obviously_infinite_impl() {
-    if (finished()) {
-      return !action_digraph_helper::is_acyclic(gilman_digraph());
-    } else if (presentation().alphabet().size() > presentation().rules.size()) {
-      // TODO remove this clause it's a duplciate of what's in ioi
-      return true;
-    }
-    detail::IsObviouslyInfinite ioi(presentation().alphabet().size());
-    ioi.add_rules(presentation().alphabet(),
-                  presentation().rules.cbegin(),
-                  presentation().rules.cend());
-    return ioi.result();
   }
 
   // bool KnuthBendix::is_obviously_finite_impl() {

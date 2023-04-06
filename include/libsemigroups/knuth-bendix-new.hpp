@@ -33,7 +33,7 @@
 #include "digraph.hpp"       // for ActionDigraph
 #include "froidure-pin.hpp"  // for FroidurePin
 #include "make-present.hpp"  // for Presentation
-#include "paths.hpp"         // for const_pislo_iterator
+#include "paths.hpp"         // for Paths
 #include "present.hpp"       // for Presentation
 #include "runner.hpp"
 #include "types.hpp"  // for word_type
@@ -387,6 +387,8 @@ namespace libsemigroups {
     //! Constant.
     KnuthBendix();
 
+    // TODO init
+
     //! Constructs from a FroidurePin instance.
     //!
     //! \param S the FroidurePin instance.
@@ -420,14 +422,17 @@ namespace libsemigroups {
     //! Deleted.
     // KnuthBendix(KnuthBendix&&);
 
-    //! Deleted.
+    //! Deleted. TODO undelete
     KnuthBendix& operator=(KnuthBendix const&) = delete;
 
-    //! Deleted.
+    //! Deleted. TODO undelete
     // KnuthBendix& operator=(KnuthBendix&&) = delete;
 
     ~KnuthBendix();
 
+    // TODO init version
+    // TODO rvalue ref version
+    // TODO version for word_type
     KnuthBendix(Presentation<std::string> const& p) : KnuthBendix() {
       p.validate();
       _presentation    = p;
@@ -577,167 +582,8 @@ namespace libsemigroups {
     //!
     //! \parameters
     //! (None)
-    // TODO(later) delete this
+    // TODO(v3): update the doc, now returns a Range
     auto active_rules() const;
-
-    // TODO(later)
-    // using FpSemigroupInterface::const_iterator;
-    // const_iterator cbegin_active_rules() const;
-    // const_iterator cend_active_rules() const;
-
-    struct NormalFormsIteratorTraits {
-      // state_type::first = this, state_type::second = current value
-      using state_type             = std::pair<std::string, std::string>;
-      using internal_iterator_type = const_pislo_iterator<size_t>;
-      using value_type             = std::string;
-      using reference              = std::string&;
-      using const_reference        = std::string const&;
-      using difference_type        = std::ptrdiff_t;
-      using size_type              = std::size_t;
-      using const_pointer          = std::string const*;
-      using pointer                = std::string*;
-      using iterator_category      = std::forward_iterator_tag;
-
-      struct Deref {
-        const_reference
-        operator()(state_type&                   state,
-                   internal_iterator_type const& it) const noexcept {
-          if (state.second.empty()) {
-            detail::word_to_string(state.first, *it, state.second);
-          }
-          return state.second;
-        }
-      };
-
-      struct AddressOf {
-        const_pointer
-        operator()(state_type&                   state,
-                   internal_iterator_type const& it) const noexcept {
-          Deref()(state, it);  // to ensure that state.second is initialised
-          return &state.second;
-        }
-      };
-
-      struct PrefixIncrement {
-        void operator()(state_type&             state,
-                        internal_iterator_type& it) const noexcept {
-          ++it;
-          state.second.clear();
-        }
-      };
-
-      struct Swap {
-        void operator()(internal_iterator_type& it_this,
-                        internal_iterator_type& it_that,
-                        state_type&             state_this,
-                        state_type&             state_that) const noexcept {
-          swap(it_this, it_that);
-          swap(state_this, state_that);
-        }
-      };
-
-      using EqualTo          = void;
-      using NotEqualTo       = void;
-      using PostfixIncrement = void;
-    };
-
-    //! Type of an const iterator to a normal form.
-    using const_normal_form_iterator
-        = detail::ConstIteratorStateful<NormalFormsIteratorTraits>;
-
-    static_assert(
-        std::is_default_constructible<const_normal_form_iterator>::value,
-        "forward iterator requires default-constructible");
-    static_assert(std::is_copy_constructible<const_normal_form_iterator>::value,
-                  "forward iterator requires copy-constructible");
-    static_assert(std::is_copy_assignable<const_normal_form_iterator>::value,
-                  "forward iterator requires copy-assignable");
-    static_assert(std::is_destructible<const_normal_form_iterator>::value,
-                  "forward iterator requires destructible");
-
-    //! Returns a forward iterator pointing at the first normal form with
-    //! length in a given range.
-    //!
-    //! If incremented, the iterator will point to the next least short-lex
-    //! normal form (if it's less than \p max in length).  Iterators of the
-    //! type returned by this function should only be compared with other
-    //! iterators created from the same KnuthBendix instance.
-    //!
-    //! \param lphbt the alphabet to use for the normal forms
-    //! \param min the minimum length of a normal form
-    //! \param max one larger than the maximum length of a normal form.
-    //!
-    //! \returns
-    //! A value of type \ref const_normal_form_iterator.
-    //!
-    //! \exceptions
-    //! \no_libsemigroups_except
-    //!
-    //! \warning
-    //! Copying iterators of this type is relatively expensive.  As a
-    //! consequence, prefix incrementing \c ++it the iterator \c it returned
-    //! by \c cbegin_normal_forms is significantly cheaper than postfix
-    //! incrementing \c it++.
-    //!
-    //! \warning
-    //! If the finitely presented semigroup represented by \c this is
-    //! infinite, then \p max should be chosen with some care.
-    //!
-    //! \sa
-    //! \ref cend_normal_forms.
-    const_normal_form_iterator cbegin_normal_forms(std::string const& lphbt,
-                                                   size_t             min,
-                                                   size_t             max);
-
-    //! Returns a forward iterator pointing at the first normal form with
-    //! length in a given range.
-    //!
-    //! If incremented, the iterator will point to the next least short-lex
-    //! normal form (if it's less than \p max in length).  Iterators of the
-    //! type returned by this function should only be compared with other
-    //! iterators created from the same KnuthBendix instance.
-    //!
-    //! \param min the minimum length of a normal form
-    //! \param max one larger than the maximum length of a normal form.
-    //!
-    //! \returns
-    //! A value of type `const_normal_form_iterator`.
-    //!
-    //! \exceptions
-    //! \no_libsemigroups_except
-    //!
-    //! \warning
-    //! Copying iterators of this type is expensive.  As a consequence, prefix
-    //! incrementing \c ++it the iterator \c it returned by \c
-    //! cbegin_normal_forms is significantly cheaper than postfix
-    //! incrementing \c it++.
-    //!
-    //! \warning
-    //! If the finitely presented semigroup represented by \c this is infinite
-    //! then \p max should be chosen with some care.
-    //!
-    //! \sa
-    //! cend_normal_forms.
-    const_normal_form_iterator cbegin_normal_forms(size_t min, size_t max) {
-      return cbegin_normal_forms(presentation().alphabet(), min, max);
-    }
-
-    //! Returns a forward iterator pointing to one after the last normal form.
-    //!
-    //! The iterator returned by this function can be compared with the
-    //! return value of \ref cbegin_normal_forms with any parameters.
-    //!
-    //! \warning The iterator returned by this function may still
-    //! dereferenceable and incrementable, but will not point to a normal form
-    //! in the correct range.
-    //!
-    //! \sa
-    //! \ref cbegin_normal_forms.
-    const_normal_form_iterator cend_normal_forms() {
-      using state_type = NormalFormsIteratorTraits::state_type;
-      return const_normal_form_iterator(state_type("", ""),
-                                        cend_pislo(gilman_digraph()));
-    }
 
     //! Rewrite a word in-place.
     //!
@@ -970,169 +816,46 @@ namespace libsemigroups {
     //////////////////////////////////////////////////////////////////////////
   };
 
-  // namespace congruence {
-  //! Defined in ``knuth-bendix.hpp``.
-  //!
-  //! On this page we describe the functionality relating to the
-  //! Knuth-Bendix algorithm for computing congruences of semigroups and
-  //! monoids.
-  //!
-  //! This page contains details of the member functions of the class
-  //! congruence::KnuthBendix.
-  //!
-  //! \sa KnuthBendix.
-  //!
-  //! \note congruence::KnuthBendix can only be used to compute 2-sided
-  //! congruences.
-  //!
-  //! \par Example
-  //! \code
-  //! KnuthBendix kb;
-  //! kb.set_number_of_generators(2);
-  //! kb.add_pair({0, 0, 0}, {0});
-  //! kb.add_pair({0}, {1, 1});
-  //!
-  //! kb.number_of_classes();                            // 5
-  //! kb.word_to_class_index({0, 0, 1});          // 4
-  //! kb.word_to_class_index({0, 0, 0, 0, 1});    // 4
-  //! kb.word_to_class_index({0, 1, 1, 0, 0, 1}); // 4
-  //! kb.word_to_class_index({0, 0, 0});          // 0
-  //! kb.word_to_class_index({1});                // 1
-  //! kb.word_to_class_index({0, 0, 0, 0});       // 2
-  //! \endcode
-  // class KnuthBendix : public CongruenceInterface {
-  //   public:
-  //    ////////////////////////////////////////////////////////////////////////////
-  //    // KnuthBendix - constructors - public
-  //    ////////////////////////////////////////////////////////////////////////////
+  namespace knuth_bendix {
 
-  //    //! Default constructor.
-  //    //!
-  //    //! \parameters
-  //    //! (None)
-  //    //!
-  //    //! \complexity
-  //    //! Constant.
-  //    KnuthBendix();
-
-  //    //! Constructs from FroidurePin instance.
-  //    //!
-  //    //! \param fp the FroidurePin instance.
-  //    //!
-  //    //! \complexity
-  //    //! \f$O(|S||A|)\f$ where \f$A\f$ is the set of generators used to
-  //    //! define \p S and \p S is the semigroup represented by the
-  //    FroidurePin
-  //    //! instance \p fp.
-  //    //!
-  //    //! \warning
-  //    //! The FroidurePin instance used in construction is copied by this
-  //    //! constructor. Use KnuthBendix(std::shared_ptr<FroidurePinBase>) to
-  //    //! avoid making a copy.
-  //    template <typename T>
-  //    explicit KnuthBendix(T const& fp)
-  //        : KnuthBendix(static_cast<std::shared_ptr<FroidurePinBase>>(
-  //            std::make_shared<T>(fp))) {
-  //      static_assert(std::is_base_of<FroidurePinBase, T>::value,
-  //                    "the template parameter must be a derived class of "
-  //                    "FroidurePinBase");
-  //    }
-
-  //    //! Construct from KnuthBendix.
-  //    //!
-  //    //! A congruence::KnuthBendix instance simply wraps an
-  //    //! KnuthBendix, and provides an API compatible with the
-  //    //! other algorithms for congruences in libsemigroups.
-  //    //!
-  //    //! \param copy the KnuthBendix.
-  //    //!
-  //    //! \complexity
-  //    //! \f$O(n)\f$ where \f$n\f$ is the sum of the lengths of the words in
-  //    //! rules of \p copy.
-  //    explicit KnuthBendix(KnuthBendix const& copy);
-
-  //    //! Construct from \shared_ptr to FroidurePin instance.
-  //    //!
-  //    //! \param fpb the FroidurePin instance.
-  //    //!
-  //    //! \complexity
-  //    //! \f$O(|S||A|)\f$ where \f$A\f$ is the set of generators used to
-  //    //! define \p S.
-  //    //!
-  //    //! \note
-  //    //! The FroidurePin instance used in construction is not copied.
-  //    explicit KnuthBendix(std::shared_ptr<FroidurePinBase> fpb);
-
-  //    //! Copy constructor
-  //    //!
-  //    //! \param copy the congruence::KnuthBendix to be copied.
-  //    //!
-  //    //! \complexity
-  //    //! \f$O(n)\f$ where \f$n\f$ is the sum of the lengths of the words in
-  //    //! rules of \p copy.
-  //    KnuthBendix(KnuthBendix const& copy) : KnuthBendix(*copy._kb) {}
-
-  //    //! Deleted.
-  //    KnuthBendix(KnuthBendix&&) = delete;
-
-  //    //! Deleted.
-  //    KnuthBendix& operator=(KnuthBendix const&) = delete;
-
-  //    //! Deleted.
-  //    KnuthBendix& operator=(KnuthBendix&&) = delete;
-
-  //    ~KnuthBendix();
-
-  //    //! Returns the underlying KnuthBendix.
-  //    //!
-  //    //! \parameters
-  //    //! (None)
-  //    //!
-  //    //! \complexity
-  //    //! Constant.
-  //    KnuthBendix& knuth_bendix() const {
-  //      return *_kb;
-  //    }
-  //    ////////////////////////////////////////////////////////////////////////////
-  //    // CongruenceInterface - non-pure virtual member functions - public
-  //    ////////////////////////////////////////////////////////////////////////////
-
-  //    tril const_contains(word_type const&, word_type const&) const;
-  //    bool contains(word_type const&, word_type const&);
-
-  //   private:
-  //    ////////////////////////////////////////////////////////////////////////////
-  //    // Runner - pure virtual member functions - protected
-  //    ////////////////////////////////////////////////////////////////////////////
-
-  //    bool finished_impl() const;
-
-  //    ////////////////////////////////////////////////////////////////////////////
-  //    // CongruenceInterface - pure virtual methods - private
-  //    ////////////////////////////////////////////////////////////////////////////
-
-  //    word_type class_index_to_word_impl(class_index_type);
-  //    size_t    number_of_classes_impl();
-  //    std::shared_ptr<FroidurePinBase> quotient_impl();
-  //    class_index_type word_to_class_index_impl(word_type const&);
-  //    void             run_impl();
-
-  //    ////////////////////////////////////////////////////////////////////////////
-  //    // CongruenceInterface - non-pure virtual methods - private
-  //    ////////////////////////////////////////////////////////////////////////////
-
-  //    void add_pair_impl(word_type const&, word_type const&);
-  //    void set_number_of_generators_impl(size_t);
-  //    bool is_quotient_obviously_finite_impl();
-  //    bool is_quotient_obviously_infinite_impl();
-
-  //    ////////////////////////////////////////////////////////////////////////////
-  //    // KnuthBendix - data - private
-  //    ////////////////////////////////////////////////////////////////////////////
-
-  //    std::unique_ptr<KnuthBendix> _kb;
-  //  };
-  //}  // namespace congruence
+    //! Returns a forward iterator pointing at the first normal form with
+    //! length in a given range.
+    //!
+    //! If incremented, the iterator will point to the next least short-lex
+    //! normal form (if it's less than \p max in length).  Iterators of the
+    //! type returned by this function should only be compared with other
+    //! iterators created from the same KnuthBendix instance.
+    //!
+    //! \param lphbt the alphabet to use for the normal forms
+    //! \param min the minimum length of a normal form
+    //! \param max one larger than the maximum length of a normal form.
+    //!
+    //! \returns
+    //! A value of type \ref const_normal_form_iterator.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \warning
+    //! Copying iterators of this type is relatively expensive.  As a
+    //! consequence, prefix incrementing \c ++it the iterator \c it returned
+    //! by \c cbegin_normal_forms is significantly cheaper than postfix
+    //! incrementing \c it++.
+    //!
+    //! \warning
+    //! If the finitely presented semigroup represented by \c this is
+    //! infinite, then \p max should be chosen with some care.
+    //!
+    //! \sa
+    //! \ref cend_normal_forms.
+    // TODO update doc
+    inline auto normal_forms(KnuthBendix& kb) {
+      using namespace rx;
+      Paths paths(kb.gilman_digraph());
+      paths.from(0);
+      return paths;
+    }
+  }  // namespace knuth_bendix
 
   namespace presentation {
 

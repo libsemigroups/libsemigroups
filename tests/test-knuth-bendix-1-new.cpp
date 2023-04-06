@@ -159,12 +159,11 @@ namespace libsemigroups {
     REQUIRE(kb.number_of_active_rules() == 4);
     REQUIRE(kb.size() == POSITIVE_INFINITY);
 
-    REQUIRE(std::vector<std::string>(kb.cbegin_normal_forms(1, 2),
-                                     kb.cend_normal_forms())
+    auto nf = knuth_bendix::normal_forms(kb);
+    REQUIRE((nf.min(1).max(2) | to_strings(p.alphabet()) | to_vector())
             == std::vector<std::string>({"0", "2"}));
 
-    REQUIRE(std::vector<std::string>(kb.cbegin_normal_forms(1, 12),
-                                     kb.cend_normal_forms())
+    REQUIRE((nf.min(1).max(12) | to_strings(p.alphabet()) | to_vector())
             == std::vector<std::string>({"0",
                                          "2",
                                          "22",
@@ -201,16 +200,16 @@ namespace libsemigroups {
     REQUIRE(kb.confluent());
     REQUIRE(kb.size() == POSITIVE_INFINITY);
 
-    REQUIRE(std::vector<std::string>(
+    auto nf = knuth_bendix::normal_forms(kb);
+
+    REQUIRE((nf.min(0).max(5) | to_strings(p.alphabet()) | to_vector())
+            == std::vector<std::string>(
                 {"",     "0",    "1",    "00",   "01",   "10",   "11",
                  "001",  "010",  "011",  "100",  "101",  "110",  "0010",
-                 "0011", "0100", "0101", "0110", "1001", "1011", "1101"})
-            == std::vector<std::string>(kb.cbegin_normal_forms(0, 5),
-                                        kb.cend_normal_forms()));
-    REQUIRE(std::all_of(
-        kb.cbegin_normal_forms(0, 10),
-        kb.cend_normal_forms(),
-        [&kb](std::string const& w) { return kb.normal_form(w) == w; }));
+                 "0011", "0100", "0101", "0110", "1001", "1011", "1101"}));
+    REQUIRE(
+        (nf.min(0).max(10) | to_strings(p.alphabet())
+         | all_of([&kb](auto const& w) { return kb.normal_form(w) == w; })));
   }
 
   LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
@@ -235,19 +234,19 @@ namespace libsemigroups {
     REQUIRE(kb.number_of_active_rules() == 8);
     REQUIRE(kb.confluent());
     REQUIRE(kb.size() == POSITIVE_INFINITY);
-    REQUIRE(std::vector<std::string>(
+
+    auto nf = knuth_bendix::normal_forms(kb);
+    REQUIRE((nf.min(0).max(5) | to_strings(p.alphabet()) | to_vector())
+            == std::vector<std::string>(
                 {"",     "a",    "b",    "c",    "d",    "aa",   "ac",
                  "ad",   "bb",   "bc",   "bd",   "cc",   "dd",   "aaa",
                  "aac",  "aad",  "acc",  "add",  "bbb",  "bbc",  "bbd",
                  "bcc",  "bdd",  "ccc",  "ddd",  "aaaa", "aaac", "aaad",
                  "aacc", "aadd", "accc", "addd", "bbbb", "bbbc", "bbbd",
-                 "bbcc", "bbdd", "bccc", "bddd", "cccc", "dddd"})
-            == std::vector<std::string>(kb.cbegin_normal_forms(0, 5),
-                                        kb.cend_normal_forms()));
-    REQUIRE(std::all_of(
-        kb.cbegin_normal_forms(0, 6),
-        kb.cend_normal_forms(),
-        [&kb](std::string const& w) { return kb.normal_form(w) == w; }));
+                 "bbcc", "bbdd", "bccc", "bddd", "cccc", "dddd"}));
+    REQUIRE(
+        (nf.min(0).max(6) | to_strings(p.alphabet())
+         | all_of([&kb](auto const& w) { return kb.normal_form(w) == w; })));
   }
 
   LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
@@ -259,10 +258,7 @@ namespace libsemigroups {
     Presentation<std::string> p;
     p.contains_empty_word(true);
     p.alphabet("aAbB");
-    presentation::add_rule(p, "aA", "");
-    presentation::add_rule(p, "Aa", "");
-    presentation::add_rule(p, "bB", "");
-    presentation::add_rule(p, "Bb", "");
+    presentation::add_inverse_rules(p, "AaBb");
     presentation::add_rule(p, "ba", "ab");
 
     KnuthBendix kb(p);
@@ -272,19 +268,19 @@ namespace libsemigroups {
     REQUIRE(kb.number_of_active_rules() == 8);
     REQUIRE(kb.confluent());
     REQUIRE(kb.size() == POSITIVE_INFINITY);
-    REQUIRE(std::vector<std::string>(
+
+    auto nf = knuth_bendix::normal_forms(kb);
+    REQUIRE((nf.min(0).max(5) | to_strings("abcd") | to_vector())
+            == std::vector<std::string>(
                 {"",     "a",    "b",    "c",    "d",    "aa",   "ac",
                  "ad",   "bb",   "bc",   "bd",   "cc",   "dd",   "aaa",
                  "aac",  "aad",  "acc",  "add",  "bbb",  "bbc",  "bbd",
                  "bcc",  "bdd",  "ccc",  "ddd",  "aaaa", "aaac", "aaad",
                  "aacc", "aadd", "accc", "addd", "bbbb", "bbbc", "bbbd",
-                 "bbcc", "bbdd", "bccc", "bddd", "cccc", "dddd"})
-            == std::vector<std::string>(kb.cbegin_normal_forms("abcd", 0, 5),
-                                        kb.cend_normal_forms()));
-    REQUIRE(std::all_of(
-        kb.cbegin_normal_forms(0, 6),
-        kb.cend_normal_forms(),
-        [&kb](std::string const& w) { return kb.normal_form(w) == w; }));
+                 "bbcc", "bbdd", "bccc", "bddd", "cccc", "dddd"}));
+    REQUIRE(
+        (nf.min(0).max(6) | to_strings(p.alphabet())
+         | all_of([&kb](auto const& w) { return kb.normal_form(w) == w; })));
   }
 
   LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
@@ -307,30 +303,27 @@ namespace libsemigroups {
     REQUIRE(kb.number_of_active_rules() == 6);
     REQUIRE(kb.confluent());
     REQUIRE(kb.size() == 12);
-    REQUIRE(std::distance(kb.cbegin_normal_forms(0, POSITIVE_INFINITY),
-                          kb.cend_normal_forms())
-            == 12);
-    REQUIRE(std::vector<std::string>({"",
-                                      "a",
-                                      "b",
-                                      "ab",
-                                      "ba",
-                                      "bb",
-                                      "aba",
-                                      "abb",
-                                      "bab",
-                                      "bba",
-                                      "babb",
-                                      "bbab"})
-            == std::vector<std::string>(
-                kb.cbegin_normal_forms(0, POSITIVE_INFINITY),
-                kb.cend_normal_forms()));
-    REQUIRE(std::all_of(
-        kb.cbegin_normal_forms(0, 6),
-        kb.cend_normal_forms(),
-        [&kb](std::string const& w) { return kb.normal_form(w) == w; }));
-  }
 
+    auto nf = knuth_bendix::normal_forms(kb);
+    REQUIRE(nf.count() == 12);
+
+    REQUIRE((nf | to_strings(p.alphabet()) | to_vector())
+            == std::vector<std::string>({"",
+                                         "a",
+                                         "b",
+                                         "ab",
+                                         "ba",
+                                         "bb",
+                                         "aba",
+                                         "abb",
+                                         "bab",
+                                         "bba",
+                                         "babb",
+                                         "bbab"}));
+    REQUIRE(
+        (nf.min(0).max(6) | to_strings(p.alphabet())
+         | all_of([&kb](auto const& w) { return kb.normal_form(w) == w; })));
+  }
   LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
                           "007",
                           "Example 5.4 in Sims",
@@ -351,8 +344,10 @@ namespace libsemigroups {
     REQUIRE(kb.number_of_active_rules() == 11);
     REQUIRE(kb.confluent());
     REQUIRE(kb.size() == 12);
-    REQUIRE(std::vector<std::string>(kb.cbegin_normal_forms(1, 5),
-                                     kb.cend_normal_forms())
+
+    auto nf = knuth_bendix::normal_forms(kb).min(1).max(5)
+              | to_strings(p.alphabet());
+    REQUIRE((nf | to_vector())
             == std::vector<std::string>({"B",
                                          "a",
                                          "b",
@@ -394,8 +389,9 @@ namespace libsemigroups {
     REQUIRE(kb.normal_form("ccc") == "");
     REQUIRE(kb.size() == 168);
 
-    REQUIRE(std::vector<std::string>(kb.cbegin_normal_forms(1, 5),
-                                     kb.cend_normal_forms())
+    auto nf = knuth_bendix::normal_forms(kb).min(1).max(5)
+              | to_strings(p.alphabet());
+    REQUIRE((nf | to_vector())
             == std::vector<std::string>(
                 {"a",    "b",    "c",    "ab",   "ac",   "ba",   "ca",
                  "aba",  "aca",  "bab",  "bac",  "cab",  "cac",  "abab",
@@ -442,19 +438,20 @@ namespace libsemigroups {
 
     REQUIRE(equal(expected, paths));
 
-    REQUIRE(std::vector<std::string>(kb.cbegin_normal_forms(1, 5),
-                                     kb.cend_normal_forms())
+    auto nf = knuth_bendix::normal_forms(kb).min(1).max(5)
+              | to_strings(p.alphabet());
+    REQUIRE((nf | to_vector())
             == std::vector<std::string>(
                 {"0",    "1",    "2",    "00",   "01",   "10",   "11",
                  "001",  "010",  "011",  "100",  "101",  "110",  "0010",
                  "0011", "0100", "0101", "0110", "1001", "1011", "1101"}));
   }
 
-  LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
-                          "010",
-                          "SL(2, 7) from Chapter 3, Proposition 1.5 in NR "
-                          "(size 336)",
-                          "[no-valgrind][quick][knuth-bendix]") {
+  LIBSEMIGROUPS_TEST_CASE(
+      "KnuthBendix",
+      "010",
+      "SL(2, 7) from Chapter 3, Proposition 1.5 in NR (size 336)",
+      "[no-valgrind][quick][knuth-bendix]") {
     auto rg = ReportGuard(REPORT);
 
     Presentation<std::string> p;
@@ -600,9 +597,9 @@ namespace libsemigroups {
   // algorithm. The original presentation was <a,b| [b,a,b], [b,a,a,a,a],
   // [b,a,a,a,b,a,a] >. (where [] mean left-normed commutators). The
   // presentation here was derived by first applying the NQA to find the
-  // maximal nilpotent quotient, and then introducing new generators for the
-  // PCP generators. It is essential for success that reasonably low values of
-  // the maxstoredlen parameter are given.
+  // maximal nilpotent quotient, and then introducing new generators for
+  // the PCP generators. It is essential for success that reasonably low
+  // values of the maxstoredlen parameter are given.
   // LIBSEMIGROUPS_TEST_CASE(
   //     "KnuthBendix",
   //     "013",
@@ -641,8 +638,8 @@ namespace libsemigroups {
 
   // TODO(later): temporarily commented out to because of change to
   // FpSemigroupInterface that forbids adding rules after started(), and
-  // because the copy constructors for KnuthBendix et al. don't currently work
-  // LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
+  // because the copy constructors for KnuthBendix et al. don't currently
+  // work LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
   //                         "014",
   //                         "(cong) finite transformation semigroup "
   //                         "congruence (21 classes)",
@@ -660,7 +657,8 @@ namespace libsemigroups {
   //   REQUIRE(P.size() == 88);
   //   kb.add_pair(S.factorisation(Transf({3, 4, 4, 4, 4})),
   //               S.factorisation(Transf({3, 1, 3, 3, 3})));
-  //   // P is now invalid, it's a reference to something that was deleted in
+  //   // P is now invalid, it's a reference to something that was deleted
+  //   in
   //   // kb.
 
   //   REQUIRE(kb.number_of_classes() == 21);
@@ -697,7 +695,8 @@ namespace libsemigroups {
   //                                      {0, 1, 1, 0, 0, 0}}));
 
   //   REQUIRE(
-  //       kb.word_to_class_index(S.factorisation(Transf({1, 3, 1, 3, 3})))
+  //       kb.word_to_class_index(S.factorisation(Transf({1, 3, 1, 3,
+  //       3})))
   //       == kb.word_to_class_index(S.factorisation(Transf({4, 2, 4, 4,
   //       2}))));
 
@@ -759,8 +758,8 @@ namespace libsemigroups {
 
   // TODO(later): temporarily commented out to because of change to
   // FpSemigroupInterface that forbids adding rules after started(), and
-  // because the copy constructors for KnuthBendix et al. don't currently work
-  // LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
+  // because the copy constructors for KnuthBendix et al. don't currently
+  // work LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
   //                         "017",
   //                         "add_rule after knuth_bendix",
   //                         "[quick][knuth-bendix]") {
@@ -777,8 +776,8 @@ namespace libsemigroups {
   //   kb.run_for(FOREVER);
   //   REQUIRE(kb.finished());
   //   // The next line tests what happens when run_for is called when
-  //   finished. kb.run_for(FOREVER); REQUIRE(kb.number_of_active_rules() ==
-  //   11); REQUIRE(kb.confluent()); REQUIRE(kb.size() == 12);
+  //   finished. kb.run_for(FOREVER); REQUIRE(kb.number_of_active_rules()
+  //   == 11); REQUIRE(kb.confluent()); REQUIRE(kb.size() == 12);
 
   //   REQUIRE(kb.equal_to("aa", ""));
   //   REQUIRE(!kb.equal_to("a", "b"));
@@ -805,8 +804,8 @@ namespace libsemigroups {
   //   REQUIRE(kb2.size() == 1);
   //   REQUIRE(kb2.confluent());
   //   REQUIRE(kb2.number_of_active_rules() == 3);
-  //   REQUIRE(kb2.active_rules() == rules_type({{"B", ""}, {"a", ""}, {"b",
-  //   "a"}}));
+  //   REQUIRE(kb2.active_rules() == rules_type({{"B", ""}, {"a", ""},
+  //   {"b", "a"}}));
   // }
 
   // Free nilpotent group of rank 2 and class 2
@@ -829,8 +828,8 @@ namespace libsemigroups {
   // }
 
   // monoid presentation of F(2,7) - should produce a monoid of length 30
-  // which is the same as the group, together with the empty word. This is a
-  // very difficult calculation indeed, however.
+  // which is the same as the group, together with the empty word. This is
+  // a very difficult calculation indeed, however.
   //
   // KBMAG does not terminate when SHORTLEX order is used.
   // LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
@@ -855,18 +854,18 @@ namespace libsemigroups {
   // }
 
   // This example verifies the nilpotence of the group using the Sims
-  // algorithm. The original presentation was <a,b| [b,a,a,a], [b^-1,a,a,a],
-  // [a,b,b,b], [a^-1,b,b,b], [a,a*b,a*b,a*b], [a^-1,a*b,a*b,a*b] >. (where []
-  // mean left-normed commutators. The presentation here was derived by first
-  // applying the NQA to find the maximal nilpotent quotient, and then
-  // introducing new generators for the PCP generators.
-  // LIBSEMIGROUPS_TEST_CASE(
+  // algorithm. The original presentation was <a,b| [b,a,a,a],
+  // [b^-1,a,a,a], [a,b,b,b], [a^-1,b,b,b], [a,a*b,a*b,a*b],
+  // [a^-1,a*b,a*b,a*b] >. (where [] mean left-normed commutators. The
+  // presentation here was derived by first applying the NQA to find the
+  // maximal nilpotent quotient, and then introducing new generators for
+  // the PCP generators. LIBSEMIGROUPS_TEST_CASE(
   //     "KnuthBendix",
   //     "020",
   //     "(from kbmag/standalone/kb_data/heinnilp)",
   //     "[fail][knuth-bendix][kbmag][recursive]") {
-  //   // TODO(later) fails because internal_rewrite expect rules to be length
-  //   reducing KnuthBendix kb(new RECURSIVE(), "fFyYdDcCbBaA");
+  //   // TODO(later) fails because internal_rewrite expect rules to be
+  //   length reducing KnuthBendix kb(new RECURSIVE(), "fFyYdDcCbBaA");
   //   presentation::add_rule(p, "BAba", "c");
   //   presentation::add_rule(p, "CAca", "d");
   //   presentation::add_rule(p, "CBcb", "y");
