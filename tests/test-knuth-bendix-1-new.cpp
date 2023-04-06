@@ -48,21 +48,27 @@
 #include "catch.hpp"      // for REQUIRE, REQUIRE_NOTHROW, REQUIRE_THROWS_AS
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
-#include "libsemigroups/config.hpp"            // for LIBSEMIGROUPS_DEBUG
-#include "libsemigroups/constants.hpp"         // for POSITIVE_INFINITY
-#include "libsemigroups/knuth-bendix-new.hpp"  // for KnuthBendix, operator<<
-#include "libsemigroups/obvinf.hpp"            // for word_type
-#include "libsemigroups/report.hpp"            // for ReportGuard
-#include "libsemigroups/types.hpp"             // for word_type
+#include "libsemigroups/config.hpp"             // for LIBSEMIGROUPS_DEBUG
+#include "libsemigroups/constants.hpp"          // for POSITIVE_INFINITY
+#include "libsemigroups/knuth-bendix-new.hpp"   // for KnuthBendix, operator<<
+#include "libsemigroups/make-froidure-pin.hpp"  // for to_froidure_pin
+#include "libsemigroups/obvinf.hpp"             // for word_type
+#include "libsemigroups/ranges.hpp"             // for ReportGuard
+#include "libsemigroups/report.hpp"             // for ReportGuard
+#include "libsemigroups/types.hpp"              // for word_type
+
+#include <rx/ranges.hpp>
 
 namespace libsemigroups {
+  using namespace rx;
+
   struct LibsemigroupsException;
   constexpr bool REPORT = false;
 
   LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
                           "000",
-                          "(fpsemi) confluent fp semigroup 1 (infinite)",
-                          "[quick][knuth-bendix][fpsemi][fpsemigroup]") {
+                          "confluent fp semigroup 1 (infinite)",
+                          "[quick][knuth-bendix]") {
     auto                      rg = ReportGuard(REPORT);
     Presentation<std::string> p;
     p.alphabet("abc");
@@ -95,520 +101,496 @@ namespace libsemigroups {
     //         == std::vector<std::string>({"a", "c", "cc", "ccc", "cccc"}));
   }
 
-  //    LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
-  //                            "001",
-  //                            "(fpsemi) confluent fp semigroup 2
-  //                            (infinite)",
-  //                            "[quick][knuth-bendix][fpsemigroup][fpsemi]")
-  //                            {
-  //      auto rg = ReportGuard(REPORT);
-  //
-  //      KnuthBendix kb;
-  //      REQUIRE_THROWS_AS(kb.add_rule({0, 1}, {1, 0}),
-  //      LibsemigroupsException);
-  //
-  //      kb.set_alphabet(3);
-  //      kb.add_rule({0, 2}, {2, 0});
-  //      kb.add_rule({0, 0}, {0});
-  //      kb.add_rule({0, 2}, {0});
-  //      kb.add_rule({2, 0}, {0});
-  //      kb.add_rule({1, 1}, {1, 1});
-  //      kb.add_rule({1, 2}, {2, 1});
-  //      kb.add_rule({1, 1, 1}, {1});
-  //      kb.add_rule({1, 2}, {1});
-  //      kb.add_rule({2, 1}, {1});
-  //      kb.add_rule({0}, {1});
-  //
-  //      REQUIRE(kb.confluent());
-  //      REQUIRE(kb.number_of_active_rules() == 4);
-  //      REQUIRE(kb.is_obviously_infinite());
-  //      REQUIRE(std::vector<std::string>(kb.cbegin_normal_forms("abc", 0,
-  //      5),
-  //                                       kb.cend_normal_forms())
-  //              == std::vector<std::string>({"a", "c", "cc", "ccc",
-  //              "cccc"}));
-  //      REQUIRE(kb.size() == POSITIVE_INFINITY);
-  //    }
-  //
-  //    LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
-  //                            "002",
-  //                            "(fpsemi) confluent fp semigroup 3
-  //                            (infinite)",
-  //                            "[quick][knuth-bendix][fpsemigroup][fpsemi]")
-  //                            {
-  //      auto rg = ReportGuard(REPORT);
-  //
-  //      KnuthBendix kb;
-  //      kb.set_alphabet("012");
-  //
-  //      REQUIRE(kb.alphabet() == "012");
-  //      REQUIRE(kb.number_of_active_rules() == 0);
-  //
-  //      kb.add_rule("01", "10");
-  //      kb.add_rule("02", "20");
-  //      kb.add_rule("00", "0");
-  //      kb.add_rule("02", "0");
-  //      kb.add_rule("20", "0");
-  //      kb.add_rule("11", "11");
-  //      kb.add_rule("12", "21");
-  //      kb.add_rule("111", "1");
-  //      kb.add_rule("12", "1");
-  //      kb.add_rule("21", "1");
-  //      kb.add_rule("0", "1");
-  //
-  //      REQUIRE(kb.number_of_active_rules() == 4);
-  //      REQUIRE(kb.confluent());
-  //      REQUIRE(kb.number_of_active_rules() == 4);
-  //      REQUIRE(kb.size() == POSITIVE_INFINITY);
-  //
-  //      REQUIRE(std::vector<std::string>(kb.cbegin_normal_forms(1, 2),
-  //                                       kb.cend_normal_forms())
-  //              == std::vector<std::string>({"0", "2"}));
-  //
-  //      REQUIRE(std::vector<std::string>(kb.cbegin_normal_forms(1, 12),
-  //                                       kb.cend_normal_forms())
-  //              == std::vector<std::string>({"0",
-  //                                           "2",
-  //                                           "22",
-  //                                           "222",
-  //                                           "2222",
-  //                                           "22222",
-  //                                           "222222",
-  //                                           "2222222",
-  //                                           "22222222",
-  //                                           "222222222",
-  //                                           "2222222222",
-  //                                           "22222222222"}));
-  //    }
-  //
-  //    LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
-  //                            "003",
-  //                            "(fpsemi) non-confluent fp semigroup from "
-  //                            "wikipedia (infinite)",
-  //                            "[quick][knuth-bendix][fpsemigroup][fpsemi]")
-  //                            {
-  //      auto rg = ReportGuard(REPORT);
-  //
-  //      KnuthBendix kb;
-  //      kb.set_alphabet("01");
-  //
-  //      kb.add_rule("000", "");
-  //      kb.add_rule("111", "");
-  //      kb.add_rule("010101", "");
-  //
-  //      REQUIRE(kb.alphabet() == "01");
-  //      REQUIRE(!kb.confluent());
-  //      kb.run();
-  //      REQUIRE(kb.number_of_active_rules() == 4);
-  //      REQUIRE(kb.confluent());
-  //      REQUIRE(kb.size() == POSITIVE_INFINITY);
-  //
-  //      REQUIRE(std::vector<std::string>(
-  //                  {"",     "0",    "1",    "00",   "01",   "10",   "11",
-  //                   "001",  "010",  "011",  "100",  "101",  "110",  "0010",
-  //                   "0011", "0100", "0101", "0110", "1001", "1011",
-  //                   "1101"})
-  //              == std::vector<std::string>(kb.cbegin_normal_forms(0, 5),
-  //                                          kb.cend_normal_forms()));
-  //      REQUIRE(std::all_of(
-  //          kb.cbegin_normal_forms(0, 10),
-  //          kb.cend_normal_forms(),
-  //          [&kb](std::string const& w) { return kb.normal_form(w) == w;
-  //          }));
-  //    }
-  //
-  //    LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
-  //                            "004",
-  //                            "(fpsemi) Example 5.1 in Sims (infinite)",
-  //                            "[quick][knuth-bendix][fpsemigroup][fpsemi]")
-  //                            {
-  //      auto rg = ReportGuard(REPORT);
-  //
-  //      KnuthBendix kb;
-  //      kb.set_alphabet("abcd");
-  //
-  //      kb.add_rule("ab", "");
-  //      kb.add_rule("ba", "");
-  //      kb.add_rule("cd", "");
-  //      kb.add_rule("dc", "");
-  //      kb.add_rule("ca", "ac");
-  //
-  //      REQUIRE(!kb.confluent());
-  //      kb.run();
-  //      REQUIRE(kb.number_of_active_rules() == 8);
-  //      REQUIRE(kb.confluent());
-  //      REQUIRE(kb.size() == POSITIVE_INFINITY);
-  //      REQUIRE(std::vector<std::string>(
-  //                  {"",     "a",    "b",    "c",    "d",    "aa",   "ac",
-  //                   "ad",   "bb",   "bc",   "bd",   "cc",   "dd",   "aaa",
-  //                   "aac",  "aad",  "acc",  "add",  "bbb",  "bbc",  "bbd",
-  //                   "bcc",  "bdd",  "ccc",  "ddd",  "aaaa", "aaac", "aaad",
-  //                   "aacc", "aadd", "accc", "addd", "bbbb", "bbbc", "bbbd",
-  //                   "bbcc", "bbdd", "bccc", "bddd", "cccc", "dddd"})
-  //              == std::vector<std::string>(kb.cbegin_normal_forms(0, 5),
-  //                                          kb.cend_normal_forms()));
-  //      REQUIRE(std::all_of(
-  //          kb.cbegin_normal_forms(0, 6),
-  //          kb.cend_normal_forms(),
-  //          [&kb](std::string const& w) { return kb.normal_form(w) == w;
-  //          }));
-  //    }
-  //
-  //    LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
-  //                            "005",
-  //                            "(fpsemi) Example 5.1 in Sims (infinite)",
-  //                            "[quick][knuth-bendix][fpsemigroup][fpsemi]")
-  //                            {
-  //      auto rg = ReportGuard(REPORT);
-  //
-  //      KnuthBendix kb;
-  //      kb.set_alphabet("aAbB");
-  //
-  //      kb.add_rule("aA", "");
-  //      kb.add_rule("Aa", "");
-  //      kb.add_rule("bB", "");
-  //      kb.add_rule("Bb", "");
-  //      kb.add_rule("ba", "ab");
-  //
-  //      REQUIRE(!kb.confluent());
-  //      kb.run();
-  //      REQUIRE(kb.number_of_active_rules() == 8);
-  //      REQUIRE(kb.confluent());
-  //      REQUIRE(kb.size() == POSITIVE_INFINITY);
-  //      REQUIRE(std::vector<std::string>(
-  //                  {"",     "a",    "b",    "c",    "d",    "aa",   "ac",
-  //                   "ad",   "bb",   "bc",   "bd",   "cc",   "dd",   "aaa",
-  //                   "aac",  "aad",  "acc",  "add",  "bbb",  "bbc",  "bbd",
-  //                   "bcc",  "bdd",  "ccc",  "ddd",  "aaaa", "aaac", "aaad",
-  //                   "aacc", "aadd", "accc", "addd", "bbbb", "bbbc", "bbbd",
-  //                   "bbcc", "bbdd", "bccc", "bddd", "cccc", "dddd"})
-  //              == std::vector<std::string>(kb.cbegin_normal_forms("abcd",
-  //              0, 5),
-  //                                          kb.cend_normal_forms()));
-  //      REQUIRE(std::all_of(
-  //          kb.cbegin_normal_forms(0, 6),
-  //          kb.cend_normal_forms(),
-  //          [&kb](std::string const& w) { return kb.normal_form(w) == w;
-  //          }));
-  //    }
-  //
-  //    LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
-  //                            "006",
-  //                            "(fpsemi) Example 5.3 in Sims",
-  //                            "[quick][knuth-bendix][fpsemigroup][fpsemi]")
-  //                            {
-  //      auto        rg = ReportGuard(REPORT);
-  //      KnuthBendix kb;
-  //      kb.set_alphabet("ab");
-  //
-  //      kb.add_rule("aa", "");
-  //      kb.add_rule("bbb", "");
-  //      kb.add_rule("ababab", "");
-  //
-  //      REQUIRE(!kb.confluent());
-  //      kb.run();
-  //      REQUIRE(kb.number_of_active_rules() == 6);
-  //      REQUIRE(kb.confluent());
-  //      REQUIRE(kb.size() == 12);
-  //      REQUIRE(std::distance(kb.cbegin_normal_forms(0, POSITIVE_INFINITY),
-  //                            kb.cend_normal_forms())
-  //              == 12);
-  //      REQUIRE(std::vector<std::string>({"",
-  //                                        "a",
-  //                                        "b",
-  //                                        "ab",
-  //                                        "ba",
-  //                                        "bb",
-  //                                        "aba",
-  //                                        "abb",
-  //                                        "bab",
-  //                                        "bba",
-  //                                        "babb",
-  //                                        "bbab"})
-  //              == std::vector<std::string>(
-  //                  kb.cbegin_normal_forms(0, POSITIVE_INFINITY),
-  //                  kb.cend_normal_forms()));
-  //      REQUIRE(std::all_of(
-  //          kb.cbegin_normal_forms(0, 6),
-  //          kb.cend_normal_forms(),
-  //          [&kb](std::string const& w) { return kb.normal_form(w) == w;
-  //          }));
-  //    }
-  //
-  //    LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
-  //                            "007",
-  //                            "(fpsemi) Example 5.4 in Sims",
-  //                            "[quick][knuth-bendix][fpsemigroup][fpsemi]")
-  //                            {
-  //      auto        rg = ReportGuard(REPORT);
-  //      KnuthBendix kb;
-  //      kb.set_alphabet("Bab");
-  //
-  //      kb.add_rule("aa", "");
-  //      kb.add_rule("bB", "");
-  //      kb.add_rule("bbb", "");
-  //      kb.add_rule("ababab", "");
-  //
-  //      REQUIRE(!kb.confluent());
-  //      kb.run();
-  //      REQUIRE(kb.number_of_active_rules() == 11);
-  //      REQUIRE(kb.confluent());
-  //      REQUIRE(kb.size() == 12);
-  //      REQUIRE(std::vector<std::string>(kb.cbegin_normal_forms(1, 5),
-  //                                       kb.cend_normal_forms())
-  //              == std::vector<std::string>({"B",
-  //                                           "a",
-  //                                           "b",
-  //                                           "Ba",
-  //                                           "aB",
-  //                                           "ab",
-  //                                           "ba",
-  //                                           "BaB",
-  //                                           "Bab",
-  //                                           "aBa",
-  //                                           "baB"}));
-  //    }
-  //
-  //    LIBSEMIGROUPS_TEST_CASE(
-  //        "KnuthBendix",
-  //        "008",
-  //        "(fpsemi) Example 6.4 in Sims (size 168)",
-  //        "[no-valgrind][quick][knuth-bendix][fpsemigroup][fpsemi]") {
-  //      auto rg = ReportGuard(REPORT);
-  //
-  //      KnuthBendix kb;
-  //      kb.set_alphabet("abc");
-  //
-  //      kb.add_rule("aa", "");
-  //      kb.add_rule("bc", "");
-  //      kb.add_rule("bbb", "");
-  //      kb.add_rule("ababababababab", "");
-  //      kb.add_rule("abacabacabacabac", "");
-  //
-  //      REQUIRE(kb.alphabet() == "abc");
-  //      REQUIRE(!kb.confluent());
-  //      REQUIRE(!kb.is_obviously_infinite());
-  //      REQUIRE(!kb.is_obviously_finite());
-  //      kb.run();
-  //      REQUIRE(kb.number_of_active_rules() == 40);
-  //      REQUIRE(kb.confluent());
-  //      REQUIRE(kb.normal_form("cc") == "b");
-  //      REQUIRE(kb.normal_form("ccc") == "");
-  //      REQUIRE(kb.size() == 168);
-  //
-  //      REQUIRE(std::vector<std::string>(kb.cbegin_normal_forms(1, 5),
-  //                                       kb.cend_normal_forms())
-  //              == std::vector<std::string>(
-  //                  {"a",    "b",    "c",    "ab",   "ac",   "ba",   "ca",
-  //                   "aba",  "aca",  "bab",  "bac",  "cab",  "cac",  "abab",
-  //                   "abac", "acab", "acac", "baba", "baca", "caba",
-  //                   "caca"}));
-  //      using FroidurePinKBE = KnuthBendix::froidure_pin_type;
-  //      auto& S              =
-  //      static_cast<FroidurePinKBE&>(*kb.froidure_pin()); REQUIRE(S.size()
-  //      == 168); REQUIRE(S.generator(2).string(kb) == "c");
-  //      // FIXME(later) the next line compiles but leaves T in an invalid
-  //      state.
-  //      // auto T = FroidurePinKBE({S.generator(2)});
-  //
-  //      // Uncommenting the following adds ~3 seconds to the compile time of
-  //      this
-  //      // file.
-  //      // auto T = FroidurePinKBE(kb);
-  //      // T.add_generator(S.generator(2));
-  //      // REQUIRE(T.size() == 3);
-  //      // REQUIRE(get_strings(T) == std::vector<std::string>({"c", "b",
-  //      ""}));
-  //    }
-  //
-  //    LIBSEMIGROUPS_TEST_CASE(
-  //        "KnuthBendix",
-  //        "009",
-  //        "(fpsemi)",
-  //        "[quick][knuth-bendix][fpsemigroup][fpsemi][no-valgrind]") {
-  //      auto rg = ReportGuard(REPORT);
-  //
-  //      KnuthBendix kb;
-  //      kb.set_alphabet("012");
-  //
-  //      kb.add_rule("000", "2");
-  //      kb.add_rule("111", "2");
-  //      kb.add_rule("010101", "2");
-  //      kb.set_identity("2");
-  //
-  //      REQUIRE(kb.alphabet() == "012");
-  //      REQUIRE(!kb.confluent());
-  //      kb.run();
-  //      REQUIRE(kb.number_of_active_rules() == 9);
-  //      REQUIRE(kb.confluent());
-  //
-  //      auto& ad = kb.gilman_digraph();
-  //      REQUIRE(ad.number_of_nodes() == 9);
-  //      REQUIRE(ad.number_of_edges() == 13);
-  //      REQUIRE(!action_digraph_helper::is_acyclic(ad));
-  //
-  //      auto&                  fp = *kb.froidure_pin();
-  //      std::vector<word_type> expected;
-  //      fp.enumerate(100);
-  //      for (size_t i = 0; i < fp.current_size(); ++i) {
-  //        expected.push_back(fp.factorisation(i));
-  //      }
-  //
-  //      std::vector<word_type> result(
-  //          cbegin_pislo(ad, 0, 1, fp.current_max_word_length() + 1),
-  //          cend_pislo(ad));
-  //      for (size_t i = 0; i < expected.size(); ++i) {
-  //        REQUIRE(expected[i] == result[i]);
-  //      }
-  //      REQUIRE(std::vector<std::string>(kb.cbegin_normal_forms(1, 5),
-  //                                       kb.cend_normal_forms())
-  //              == std::vector<std::string>(
-  //                  {"0",    "1",    "2",    "00",   "01",   "10",   "11",
-  //                   "001",  "010",  "011",  "100",  "101",  "110",  "0010",
-  //                   "0011", "0100", "0101", "0110", "1001", "1011",
-  //                   "1101"}));
-  //    }
-  //
-  //    LIBSEMIGROUPS_TEST_CASE(
-  //        "KnuthBendix",
-  //        "010",
-  //        "(fpsemi) SL(2, 7) from Chapter 3, Proposition 1.5 in NR "
-  //        "(size 336)",
-  //        "[no-valgrind][quick][knuth-bendix][fpsemigroup][fpsemi]") {
-  //      using FroidurePinKBE = KnuthBendix::froidure_pin_type;
-  //      auto rg              = ReportGuard(REPORT);
-  //
-  //      KnuthBendix kb;
-  //      kb.set_alphabet("abAB");
-  //
-  //      kb.add_rule("aaaaaaa", "");
-  //      kb.add_rule("bb", "ababab");
-  //      kb.add_rule("bb", "aaaabaaaabaaaabaaaab");
-  //      kb.add_rule("aA", "");
-  //      kb.add_rule("Aa", "");
-  //      kb.add_rule("bB", "");
-  //      kb.add_rule("Bb", "");
-  //
-  //      REQUIRE(!kb.confluent());
-  //
-  //      kb.run();
-  //      REQUIRE(kb.number_of_active_rules() == 152);
-  //      REQUIRE(kb.confluent());
-  //      REQUIRE(kb.size() == 336);
-  //
-  //      // Test copy constructor
-  //      auto           T = static_cast<FroidurePinKBE&>(*kb.froidure_pin());
-  //      FroidurePinKBE S = T.copy_closure({T.generator(0)});
-  //
-  //      REQUIRE(S.size() == 336);
-  //      REQUIRE(S.number_of_generators() == 4);
-  //
-  //      auto& ad = kb.gilman_digraph();
-  //      REQUIRE(ad.number_of_nodes() == 232);
-  //      REQUIRE(ad.number_of_edges() == 265);
-  //      REQUIRE(action_digraph_helper::is_acyclic(ad));
-  //      REQUIRE(number_of_paths(ad, 0, 0, 13) == 336);
-  //    }
-  //
-  //    LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
-  //                            "011",
-  //                            "(fpsemi) F(2, 5) - Chapter 9, Section 1 in NR
-  //                            "
-  //                            "(size 11)",
-  //                            "[knuth-bendix][fpsemigroup][fpsemi][quick]")
-  //                            {
-  //      auto        rg = ReportGuard(REPORT);
-  //      KnuthBendix kb;
-  //      kb.set_alphabet("abcde");
-  //
-  //      kb.add_rule("ab", "c");
-  //      kb.add_rule("bc", "d");
-  //      kb.add_rule("cd", "e");
-  //      kb.add_rule("de", "a");
-  //      kb.add_rule("ea", "b");
-  //
-  //      REQUIRE(!kb.confluent());
-  //      kb.run();
-  //      REQUIRE(kb.number_of_active_rules() == 24);
-  //      REQUIRE(kb.confluent());
-  //      REQUIRE(kb.size() == 11);
-  //
-  //      auto& ad = kb.gilman_digraph();
-  //      REQUIRE(ad.number_of_nodes() == 8);
-  //      REQUIRE(ad.number_of_edges() == 11);
-  //      REQUIRE(action_digraph_helper::is_acyclic(ad));
-  //      REQUIRE(number_of_paths(ad, 0, 0, 5) == 12);
-  //    }
-  //
-  //    LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
-  //                            "012",
-  //                            "(fpsemi) Reinis example 1",
-  //                            "[quick][knuth-bendix][fpsemigroup][fpsemi]")
-  //                            {
-  //      auto        rg = ReportGuard(REPORT);
-  //      KnuthBendix kb;
-  //      kb.set_alphabet("abc");
-  //
-  //      kb.add_rule("a", "abb");
-  //      kb.add_rule("b", "baa");
-  //
-  //      REQUIRE(!kb.confluent());
-  //      kb.run();
-  //      REQUIRE(kb.number_of_active_rules() == 4);
-  //
-  //      auto& ad = kb.gilman_digraph();
-  //      REQUIRE(ad.number_of_nodes() == 7);
-  //      REQUIRE(ad.number_of_edges() == 17);
-  //      REQUIRE(!action_digraph_helper::is_acyclic(ad));
-  //      REQUIRE(number_of_paths(ad, 0, 0, 10) == 13044);
-  //    }
-  //
-  //    LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
-  //                            "013",
-  //                            "redundant_rule (std::string)",
-  //                            "[quick][knuth-bendix][fpsemigroup][fpsemi]")
-  //                            {
-  //      auto                      rg = ReportGuard(REPORT);
-  //      Presentation<std::string> p;
-  //      p.alphabet("abc");
-  //      presentation::add_rule_and_check(p, "a", "abb");
-  //      presentation::add_rule_and_check(p, "b", "baa");
-  //      presentation::add_rule_and_check(p, "c", "abbabababaaababababab");
-  //
-  //      auto it = presentation::redundant_rule(p,
-  //      std::chrono::milliseconds(100)); REQUIRE(it == p.rules.cend());
-  //
-  //      presentation::add_rule_and_check(p, "b", "baa");
-  //      it = presentation::redundant_rule(p,
-  //      std::chrono::milliseconds(100)); REQUIRE(it != p.rules.cend());
-  //      REQUIRE(*it == "b");
-  //      REQUIRE(*(it + 1) == "baa");
-  //    }
-  //
-  //    LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
-  //                            "014",
-  //                            "redundant_rule (word_type)",
-  //                            "[quick][knuth-bendix][fpsemigroup][fpsemi]")
-  //                            {
-  //      auto                    rg = ReportGuard(REPORT);
-  //      Presentation<word_type> p;
-  //      p.alphabet(3);
-  //      presentation::add_rule_and_check(p, {0}, {0, 1, 1});
-  //      presentation::add_rule_and_check(p, {1}, {1, 0, 0});
-  //      presentation::add_rule_and_check(p, {2}, {0, 1, 1, 0, 1, 0, 1, 0, 1,
-  //      0, 0,
-  //                                                0, 1, 0, 1, 0, 1, 0, 1, 0,
-  //                                                1});
-  //
-  //      auto it = presentation::redundant_rule(p,
-  //      std::chrono::milliseconds(10)); REQUIRE(it == p.rules.cend());
-  //
-  //      presentation::add_rule_and_check(p, {1}, {1, 0, 0});
-  //      it = presentation::redundant_rule(p, std::chrono::milliseconds(10));
-  //      REQUIRE(it != p.rules.cend());
-  //      REQUIRE(*it == word_type({1}));
-  //      REQUIRE(*(it + 1) == word_type({1, 0, 0}));
-  //    }
+  LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
+                          "001",
+                          "confluent fp semigroup 2 (infinite) ",
+                          "[quick][knuth-bendix]") {
+    auto rg = ReportGuard(REPORT);
+
+    Presentation<std::string> p;
+    p.alphabet("abc");
+    presentation::add_rule(p, "ac", "ca");
+    presentation::add_rule(p, "aa", "a");
+    presentation::add_rule(p, "ac", "a");
+    presentation::add_rule(p, "ca", "a");
+    presentation::add_rule(p, "bb", "bb");
+    presentation::add_rule(p, "bc", "cb");
+    presentation::add_rule(p, "bbb", "b");
+    presentation::add_rule(p, "bc", "b");
+    presentation::add_rule(p, "cb", "b");
+    presentation::add_rule(p, "a", "b");
+
+    KnuthBendix kb(p);
+
+    REQUIRE(kb.confluent());
+    REQUIRE(kb.number_of_active_rules() == 4);
+    REQUIRE(is_obviously_infinite(kb));
+    // TODO uncomment
+    // REQUIRE(std::vector<std::string>(kb.cbegin_normal_forms("abc", 0, 5),
+    //                                  kb.cend_normal_forms())
+    //         == std::vector<std::string>({"a", "c", "cc", "ccc", "cccc"}));
+    REQUIRE(kb.size() == POSITIVE_INFINITY);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
+                          "002",
+                          "confluent fp semigroup 3 (infinite) ",
+                          "[quick][knuth-bendix]") {
+    auto rg = ReportGuard(REPORT);
+
+    Presentation<std::string> p;
+    p.alphabet("012");
+    presentation::add_rule(p, "01", "10");
+    presentation::add_rule(p, "02", "20");
+    presentation::add_rule(p, "00", "0");
+    presentation::add_rule(p, "02", "0");
+    presentation::add_rule(p, "20", "0");
+    presentation::add_rule(p, "11", "11");
+    presentation::add_rule(p, "12", "21");
+    presentation::add_rule(p, "111", "1");
+    presentation::add_rule(p, "12", "1");
+    presentation::add_rule(p, "21", "1");
+    presentation::add_rule(p, "0", "1");
+
+    KnuthBendix kb(p);
+
+    REQUIRE(kb.number_of_active_rules() == 4);
+    REQUIRE(kb.confluent());
+    REQUIRE(kb.number_of_active_rules() == 4);
+    REQUIRE(kb.size() == POSITIVE_INFINITY);
+
+    REQUIRE(std::vector<std::string>(kb.cbegin_normal_forms(1, 2),
+                                     kb.cend_normal_forms())
+            == std::vector<std::string>({"0", "2"}));
+
+    REQUIRE(std::vector<std::string>(kb.cbegin_normal_forms(1, 12),
+                                     kb.cend_normal_forms())
+            == std::vector<std::string>({"0",
+                                         "2",
+                                         "22",
+                                         "222",
+                                         "2222",
+                                         "22222",
+                                         "222222",
+                                         "2222222",
+                                         "22222222",
+                                         "222222222",
+                                         "2222222222",
+                                         "22222222222"}));
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
+                          "003",
+                          "non-confluent fp semigroup from "
+                          "wikipedia (infinite)",
+                          "[quick][knuth-bendix]") {
+    auto rg = ReportGuard(REPORT);
+
+    Presentation<std::string> p;
+    p.contains_empty_word(true);
+    p.alphabet("01");
+    presentation::add_rule(p, "000", "");
+    presentation::add_rule(p, "111", "");
+    presentation::add_rule(p, "010101", "");
+
+    KnuthBendix kb(p);
+    REQUIRE(kb.presentation().alphabet() == "01");
+    REQUIRE(!kb.confluent());
+    kb.run();
+    REQUIRE(kb.number_of_active_rules() == 4);
+    REQUIRE(kb.confluent());
+    REQUIRE(kb.size() == POSITIVE_INFINITY);
+
+    REQUIRE(std::vector<std::string>(
+                {"",     "0",    "1",    "00",   "01",   "10",   "11",
+                 "001",  "010",  "011",  "100",  "101",  "110",  "0010",
+                 "0011", "0100", "0101", "0110", "1001", "1011", "1101"})
+            == std::vector<std::string>(kb.cbegin_normal_forms(0, 5),
+                                        kb.cend_normal_forms()));
+    REQUIRE(std::all_of(
+        kb.cbegin_normal_forms(0, 10),
+        kb.cend_normal_forms(),
+        [&kb](std::string const& w) { return kb.normal_form(w) == w; }));
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
+                          "004",
+                          "Example 5.1 in Sims (infinite)",
+                          "[quick][knuth-bendix]") {
+    auto rg = ReportGuard(REPORT);
+
+    Presentation<std::string> p;
+    p.contains_empty_word(true);
+    p.alphabet("abcd");
+    presentation::add_rule(p, "ab", "");
+    presentation::add_rule(p, "ba", "");
+    presentation::add_rule(p, "cd", "");
+    presentation::add_rule(p, "dc", "");
+    presentation::add_rule(p, "ca", "ac");
+
+    KnuthBendix kb(p);
+
+    REQUIRE(!kb.confluent());
+    kb.run();
+    REQUIRE(kb.number_of_active_rules() == 8);
+    REQUIRE(kb.confluent());
+    REQUIRE(kb.size() == POSITIVE_INFINITY);
+    REQUIRE(std::vector<std::string>(
+                {"",     "a",    "b",    "c",    "d",    "aa",   "ac",
+                 "ad",   "bb",   "bc",   "bd",   "cc",   "dd",   "aaa",
+                 "aac",  "aad",  "acc",  "add",  "bbb",  "bbc",  "bbd",
+                 "bcc",  "bdd",  "ccc",  "ddd",  "aaaa", "aaac", "aaad",
+                 "aacc", "aadd", "accc", "addd", "bbbb", "bbbc", "bbbd",
+                 "bbcc", "bbdd", "bccc", "bddd", "cccc", "dddd"})
+            == std::vector<std::string>(kb.cbegin_normal_forms(0, 5),
+                                        kb.cend_normal_forms()));
+    REQUIRE(std::all_of(
+        kb.cbegin_normal_forms(0, 6),
+        kb.cend_normal_forms(),
+        [&kb](std::string const& w) { return kb.normal_form(w) == w; }));
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
+                          "005",
+                          "Example 5.1 in Sims (infinite)",
+                          "[quick][knuth-bendix]") {
+    auto rg = ReportGuard(REPORT);
+
+    Presentation<std::string> p;
+    p.contains_empty_word(true);
+    p.alphabet("aAbB");
+    presentation::add_rule(p, "aA", "");
+    presentation::add_rule(p, "Aa", "");
+    presentation::add_rule(p, "bB", "");
+    presentation::add_rule(p, "Bb", "");
+    presentation::add_rule(p, "ba", "ab");
+
+    KnuthBendix kb(p);
+
+    REQUIRE(!kb.confluent());
+    kb.run();
+    REQUIRE(kb.number_of_active_rules() == 8);
+    REQUIRE(kb.confluent());
+    REQUIRE(kb.size() == POSITIVE_INFINITY);
+    REQUIRE(std::vector<std::string>(
+                {"",     "a",    "b",    "c",    "d",    "aa",   "ac",
+                 "ad",   "bb",   "bc",   "bd",   "cc",   "dd",   "aaa",
+                 "aac",  "aad",  "acc",  "add",  "bbb",  "bbc",  "bbd",
+                 "bcc",  "bdd",  "ccc",  "ddd",  "aaaa", "aaac", "aaad",
+                 "aacc", "aadd", "accc", "addd", "bbbb", "bbbc", "bbbd",
+                 "bbcc", "bbdd", "bccc", "bddd", "cccc", "dddd"})
+            == std::vector<std::string>(kb.cbegin_normal_forms("abcd", 0, 5),
+                                        kb.cend_normal_forms()));
+    REQUIRE(std::all_of(
+        kb.cbegin_normal_forms(0, 6),
+        kb.cend_normal_forms(),
+        [&kb](std::string const& w) { return kb.normal_form(w) == w; }));
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
+                          "006",
+                          "Example 5.3 in Sims",
+                          "[quick][knuth-bendix]") {
+    auto rg = ReportGuard(REPORT);
+
+    Presentation<std::string> p;
+    p.contains_empty_word(true);
+    p.alphabet("ab");
+    presentation::add_rule(p, "aa", "");
+    presentation::add_rule(p, "bbb", "");
+    presentation::add_rule(p, "ababab", "");
+
+    KnuthBendix kb(p);
+
+    REQUIRE(!kb.confluent());
+    kb.run();
+    REQUIRE(kb.number_of_active_rules() == 6);
+    REQUIRE(kb.confluent());
+    REQUIRE(kb.size() == 12);
+    REQUIRE(std::distance(kb.cbegin_normal_forms(0, POSITIVE_INFINITY),
+                          kb.cend_normal_forms())
+            == 12);
+    REQUIRE(std::vector<std::string>({"",
+                                      "a",
+                                      "b",
+                                      "ab",
+                                      "ba",
+                                      "bb",
+                                      "aba",
+                                      "abb",
+                                      "bab",
+                                      "bba",
+                                      "babb",
+                                      "bbab"})
+            == std::vector<std::string>(
+                kb.cbegin_normal_forms(0, POSITIVE_INFINITY),
+                kb.cend_normal_forms()));
+    REQUIRE(std::all_of(
+        kb.cbegin_normal_forms(0, 6),
+        kb.cend_normal_forms(),
+        [&kb](std::string const& w) { return kb.normal_form(w) == w; }));
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
+                          "007",
+                          "Example 5.4 in Sims",
+                          "[quick][knuth-bendix]") {
+    auto                      rg = ReportGuard(REPORT);
+    Presentation<std::string> p;
+    p.contains_empty_word(true);
+    p.alphabet("Bab");
+    presentation::add_rule(p, "aa", "");
+    presentation::add_rule(p, "bB", "");
+    presentation::add_rule(p, "bbb", "");
+    presentation::add_rule(p, "ababab", "");
+
+    KnuthBendix kb(p);
+
+    REQUIRE(!kb.confluent());
+    kb.run();
+    REQUIRE(kb.number_of_active_rules() == 11);
+    REQUIRE(kb.confluent());
+    REQUIRE(kb.size() == 12);
+    REQUIRE(std::vector<std::string>(kb.cbegin_normal_forms(1, 5),
+                                     kb.cend_normal_forms())
+            == std::vector<std::string>({"B",
+                                         "a",
+                                         "b",
+                                         "Ba",
+                                         "aB",
+                                         "ab",
+                                         "ba",
+                                         "BaB",
+                                         "Bab",
+                                         "aBa",
+                                         "baB"}));
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
+                          "008",
+                          "Example 6.4 in Sims (size 168)",
+                          "[no-valgrind][quick][knuth-bendix]") {
+    auto rg = ReportGuard(REPORT);
+
+    Presentation<std::string> p;
+    p.alphabet("abc");
+    p.contains_empty_word(true);
+
+    presentation::add_rule(p, "aa", "");
+    presentation::add_rule(p, "bc", "");
+    presentation::add_rule(p, "bbb", "");
+    presentation::add_rule(p, "ababababababab", "");
+    presentation::add_rule(p, "abacabacabacabac", "");
+
+    KnuthBendix kb(p);
+
+    REQUIRE(!kb.confluent());
+    REQUIRE(!is_obviously_infinite(kb));
+    // REQUIRE(!kb.is_obviously_finite());
+    kb.run();
+    REQUIRE(kb.number_of_active_rules() == 40);
+    REQUIRE(kb.confluent());
+    REQUIRE(kb.normal_form("cc") == "b");
+    REQUIRE(kb.normal_form("ccc") == "");
+    REQUIRE(kb.size() == 168);
+
+    REQUIRE(std::vector<std::string>(kb.cbegin_normal_forms(1, 5),
+                                     kb.cend_normal_forms())
+            == std::vector<std::string>(
+                {"a",    "b",    "c",    "ab",   "ac",   "ba",   "ca",
+                 "aba",  "aca",  "bab",  "bac",  "cab",  "cac",  "abab",
+                 "abac", "acab", "acac", "baba", "baca", "caba", "caca"}));
+    auto S = to_froidure_pin(kb);
+    REQUIRE(S.size() == 168);
+    REQUIRE(S.generator(2).string(kb) == "c");
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
+                          "009",
+                          "random example",
+                          "[quick][knuth-bendix][no-valgrind]") {
+    auto rg = ReportGuard(REPORT);
+
+    Presentation<std::string> p;
+    p.alphabet("012");
+
+    presentation::add_rule(p, "000", "2");
+    presentation::add_rule(p, "111", "2");
+    presentation::add_rule(p, "010101", "2");
+    presentation::add_identity_rules(p, '2');
+
+    KnuthBendix kb(p);
+
+    REQUIRE(!kb.confluent());
+    kb.run();
+    REQUIRE(kb.number_of_active_rules() == 9);
+    REQUIRE(kb.confluent());
+
+    auto& ad = kb.gilman_digraph();
+    REQUIRE(ad.number_of_nodes() == 9);
+    REQUIRE(ad.number_of_edges() == 13);
+    REQUIRE(!action_digraph_helper::is_acyclic(ad));
+
+    auto fp = to_froidure_pin(kb);
+    fp.enumerate(100);
+
+    auto expected
+        = iterator_range(fp.cbegin_normal_forms(), fp.cend_normal_forms());
+
+    Paths paths(ad);
+    paths.from(0).min(1).max(fp.current_max_word_length() + 1);
+
+    REQUIRE(equal(expected, paths));
+
+    REQUIRE(std::vector<std::string>(kb.cbegin_normal_forms(1, 5),
+                                     kb.cend_normal_forms())
+            == std::vector<std::string>(
+                {"0",    "1",    "2",    "00",   "01",   "10",   "11",
+                 "001",  "010",  "011",  "100",  "101",  "110",  "0010",
+                 "0011", "0100", "0101", "0110", "1001", "1011", "1101"}));
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
+                          "010",
+                          "SL(2, 7) from Chapter 3, Proposition 1.5 in NR "
+                          "(size 336)",
+                          "[no-valgrind][quick][knuth-bendix]") {
+    auto rg = ReportGuard(REPORT);
+
+    Presentation<std::string> p;
+    p.alphabet("abAB");
+    p.contains_empty_word(true);
+
+    presentation::add_rule(p, "aaaaaaa", "");
+    presentation::add_rule(p, "bb", "ababab");
+    presentation::add_rule(p, "bb", "aaaabaaaabaaaabaaaab");
+    presentation::add_rule(p, "aA", "");
+    presentation::add_rule(p, "Aa", "");
+    presentation::add_rule(p, "bB", "");
+    presentation::add_rule(p, "Bb", "");
+
+    KnuthBendix kb(p);
+
+    REQUIRE(!kb.confluent());
+
+    kb.run();
+    REQUIRE(kb.number_of_active_rules() == 152);
+    REQUIRE(kb.confluent());
+    REQUIRE(kb.size() == 336);
+
+    // Test copy constructor
+    auto T = to_froidure_pin(kb);
+    auto S = T.copy_closure({T.generator(0)});
+
+    REQUIRE(S.size() == 336);
+    REQUIRE(S.number_of_generators() == 4);
+
+    auto& ad = kb.gilman_digraph();
+    REQUIRE(ad.number_of_nodes() == 232);
+    REQUIRE(ad.number_of_edges() == 265);
+    REQUIRE(action_digraph_helper::is_acyclic(ad));
+    Paths paths(ad);
+    paths.from(0).min(0).max(13);
+    REQUIRE(paths.count() == 336);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
+                          "011",
+                          "F(2, 5) - Chapter 9, Section 1 in NR (size 11)",
+                          "[knuth-bendix][quick]") {
+    auto                      rg = ReportGuard(REPORT);
+    Presentation<std::string> p;
+    p.alphabet("abcde");
+
+    presentation::add_rule(p, "ab", "c");
+    presentation::add_rule(p, "bc", "d");
+    presentation::add_rule(p, "cd", "e");
+    presentation::add_rule(p, "de", "a");
+    presentation::add_rule(p, "ea", "b");
+    KnuthBendix kb(p);
+
+    REQUIRE(!kb.confluent());
+    kb.run();
+    REQUIRE(kb.number_of_active_rules() == 24);
+    REQUIRE(kb.confluent());
+    REQUIRE(kb.size() == 11);
+
+    auto& ad = kb.gilman_digraph();
+    REQUIRE(ad.number_of_nodes() == 8);
+    REQUIRE(ad.number_of_edges() == 11);
+    REQUIRE(action_digraph_helper::is_acyclic(ad));
+    Paths paths(ad);
+    paths.from(0).min(0).max(5);
+    REQUIRE(paths.count() == 12);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
+                          "012",
+                          "Reinis example 1",
+                          "[quick][knuth-bendix]") {
+    auto                      rg = ReportGuard(REPORT);
+    Presentation<std::string> p;
+    p.alphabet("abc");
+
+    presentation::add_rule(p, "a", "abb");
+    presentation::add_rule(p, "b", "baa");
+    KnuthBendix kb(p);
+
+    REQUIRE(!kb.confluent());
+    kb.run();
+    REQUIRE(kb.number_of_active_rules() == 4);
+
+    auto& ad = kb.gilman_digraph();
+    REQUIRE(ad.number_of_nodes() == 7);
+    REQUIRE(ad.number_of_edges() == 17);
+    REQUIRE(!action_digraph_helper::is_acyclic(ad));
+    Paths paths(ad);
+    paths.from(0).min(0).max(10);
+    REQUIRE(paths.count() == 13'044);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
+                          "013",
+                          "redundant_rule (std::string)",
+                          "[quick][knuth-bendix]") {
+    auto                      rg = ReportGuard(REPORT);
+    Presentation<std::string> p;
+    p.alphabet("abc");
+    presentation::add_rule_and_check(p, "a", "abb");
+    presentation::add_rule_and_check(p, "b", "baa");
+    presentation::add_rule_and_check(p, "c", "abbabababaaababababab");
+
+    auto it = presentation::redundant_rule(p, std::chrono::milliseconds(100));
+    REQUIRE(it == p.rules.cend());
+
+    presentation::add_rule_and_check(p, "b", "baa");
+    it = presentation::redundant_rule(p, std::chrono::milliseconds(100));
+    REQUIRE(it != p.rules.cend());
+    REQUIRE(*it == "b");
+    REQUIRE(*(it + 1) == "baa");
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
+                          "014",
+                          "redundant_rule (word_type)",
+                          "[quick][knuth-bendix]") {
+    using literals::        operator""_w;
+    auto                    rg = ReportGuard(REPORT);
+    Presentation<word_type> p;
+    p.alphabet(3);
+    presentation::add_rule_and_check(p, 0_w, 011_w);
+    presentation::add_rule_and_check(p, 1_w, 100_w);
+    presentation::add_rule_and_check(p, 2_w, 011010101000101010101_w);
+
+    auto it = presentation::redundant_rule(p, std::chrono::milliseconds(10));
+    REQUIRE(it == p.rules.cend());
+
+    presentation::add_rule_and_check(p, 1_w, 100_w);
+    it = presentation::redundant_rule(p, std::chrono::milliseconds(10));
+    REQUIRE(it != p.rules.cend());
+    REQUIRE(*it == 1_w);
+    REQUIRE(*(it + 1) == 100_w);
+  }
 
   ////////////////////////////////////////////////////////////////////////
   // Commented out test cases
@@ -624,18 +606,18 @@ namespace libsemigroups {
   // LIBSEMIGROUPS_TEST_CASE(
   //     "KnuthBendix",
   //     "013",
-  //     "(fpsemi) (from kbmag/standalone/kb_data/verifynilp)",
-  //     "[quick][knuth-bendix][fpsemigroup][fpsemi][kbmag][recursive]") {}
+  //     "(from kbmag/standalone/kb_data/verifynilp)",
+  //     "[quick][knuth-bendix][kbmag][recursive]") {}
   //   KnuthBendix kb(new RECURSIVE(), "hHgGfFyYdDcCbBaA");
-  //   kb.add_rule("BAba", "c");
-  //   kb.add_rule("CAca", "d");
-  //   kb.add_rule("DAda", "y");
-  //   kb.add_rule("YByb", "f");
-  //   kb.add_rule("FAfa", "g");
-  //   kb.add_rule("ga", "ag");
-  //   kb.add_rule("GBgb", "h");
-  //   kb.add_rule("cb", "bc");
-  //   kb.add_rule("ya", "ay");
+  //   presentation::add_rule(p, "BAba", "c");
+  //   presentation::add_rule(p, "CAca", "d");
+  //   presentation::add_rule(p, "DAda", "y");
+  //   presentation::add_rule(p, "YByb", "f");
+  //   presentation::add_rule(p, "FAfa", "g");
+  //   presentation::add_rule(p, "ga", "ag");
+  //   presentation::add_rule(p, "GBgb", "h");
+  //   presentation::add_rule(p, "cb", "bc");
+  //   presentation::add_rule(p, "ya", "ay");
   //   auto rg = ReportGuard(REPORT);
   //
   //   REQUIRE(kb.confluent());
@@ -730,7 +712,7 @@ namespace libsemigroups {
   //                         "(from kbmag/standalone/kb_data/nonhopf)",
   //                         "[quick][knuth-bendix][kbmag][recursive]") {
   //   KnuthBendix kb(new RECURSIVE(), "aAbB");
-  //   kb.add_rule("Baab", "aaa");
+  //   presentation::add_rule(p, "Baab", "aaa");
   //   auto rg = ReportGuard(REPORT);
 
   //   REQUIRE(kb.confluent());
@@ -749,13 +731,13 @@ namespace libsemigroups {
   //                         "(from kbmag/standalone/kb_data/freenilpc3)",
   //                         "[quick][knuth-bendix][kbmag][recursive]") {
   //   KnuthBendix kb(new RECURSIVE(), "yYdDcCbBaA");
-  //   kb.add_rule("BAba", "c");
-  //   kb.add_rule("CAca", "d");
-  //   kb.add_rule("CBcb", "y");
-  //   kb.add_rule("da", "ad");
-  //   kb.add_rule("ya", "ay");
-  //   kb.add_rule("db", "bd");
-  //   kb.add_rule("yb", "by");
+  //   presentation::add_rule(p, "BAba", "c");
+  //   presentation::add_rule(p, "CAca", "d");
+  //   presentation::add_rule(p, "CBcb", "y");
+  //   presentation::add_rule(p, "da", "ad");
+  //   presentation::add_rule(p, "ya", "ay");
+  //   presentation::add_rule(p, "db", "bd");
+  //   presentation::add_rule(p, "yb", "by");
   //   auto rg = ReportGuard(REPORT);
 
   //   REQUIRE(kb.confluent());
@@ -781,14 +763,15 @@ namespace libsemigroups {
   // LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
   //                         "017",
   //                         "add_rule after knuth_bendix",
-  //                         "[quick][knuth-bendix][fpsemigroup]") {
+  //                         "[quick][knuth-bendix]") {
   //   auto        rg = ReportGuard(REPORT);
   //   KnuthBendix kb;
-  //   kb.set_alphabet("Bab");
-  //   kb.add_rule("aa", "");
-  //   kb.add_rule("bB", "");
-  //   kb.add_rule("bbb", "");
-  //   kb.add_rule("ababab", "");
+  //   Presentation<std::string> p;
+  // //p.alphabet("Bab");
+  //   presentation::add_rule(p, "aa", "");
+  //   presentation::add_rule(p, "bB", "");
+  //   presentation::add_rule(p, "bbb", "");
+  //   presentation::add_rule(p, "ababab", "");
 
   //   REQUIRE(!kb.confluent());
   //   kb.run_for(FOREVER);
@@ -832,9 +815,9 @@ namespace libsemigroups {
   //                         "(from kbmag/standalone/kb_data/nilp2)",
   //                         "[quick][knuth-bendix][kbmag][recursive]") {
   //   KnuthBendix kb(new RECURSIVE(), "cCbBaA");
-  //   kb.add_rule("ba", "abc");
-  //   kb.add_rule("ca", "ac");
-  //   kb.add_rule("cb", "bc");
+  //   presentation::add_rule(p, "ba", "abc");
+  //   presentation::add_rule(p, "ca", "ac");
+  //   presentation::add_rule(p, "cb", "bc");
   //   auto rg = ReportGuard(REPORT);
   //
   //   REQUIRE(kb.confluent());
@@ -855,13 +838,13 @@ namespace libsemigroups {
   //                         "(from kbmag/standalone/kb_data/f27monoid)",
   //                         "[fail][knuth-bendix][kbmag][recursive]") {
   //   KnuthBendix kb(new RECURSIVE(), "abcdefg");
-  //   kb.add_rule("ab", "c");
-  //   kb.add_rule("bc", "d");
-  //   kb.add_rule("cd", "e");
-  //   kb.add_rule("de", "f");
-  //   kb.add_rule("ef", "g");
-  //   kb.add_rule("fg", "a");
-  //   kb.add_rule("ga", "b");
+  //   presentation::add_rule(p, "ab", "c");
+  //   presentation::add_rule(p, "bc", "d");
+  //   presentation::add_rule(p, "cd", "e");
+  //   presentation::add_rule(p, "de", "f");
+  //   presentation::add_rule(p, "ef", "g");
+  //   presentation::add_rule(p, "fg", "a");
+  //   presentation::add_rule(p, "ga", "b");
   //   auto rg = ReportGuard(REPORT);
 
   //   REQUIRE(!kb.confluent());
@@ -880,18 +863,18 @@ namespace libsemigroups {
   // LIBSEMIGROUPS_TEST_CASE(
   //     "KnuthBendix",
   //     "020",
-  //     "(fpsemi) (from kbmag/standalone/kb_data/heinnilp)",
-  //     "[fail][knuth-bendix][fpsemigroup][fpsemi][kbmag][recursive]") {
+  //     "(from kbmag/standalone/kb_data/heinnilp)",
+  //     "[fail][knuth-bendix][kbmag][recursive]") {
   //   // TODO(later) fails because internal_rewrite expect rules to be length
   //   reducing KnuthBendix kb(new RECURSIVE(), "fFyYdDcCbBaA");
-  //   kb.add_rule("BAba", "c");
-  //   kb.add_rule("CAca", "d");
-  //   kb.add_rule("CBcb", "y");
-  //   kb.add_rule("DBdb", "f");
-  //   kb.add_rule("cBCb", "bcBC");
-  //   kb.add_rule("babABaBA", "abABaBAb");
-  //   kb.add_rule("cBACab", "abcBAC");
-  //   kb.add_rule("BabABBAbab", "aabABBAb");
+  //   presentation::add_rule(p, "BAba", "c");
+  //   presentation::add_rule(p, "CAca", "d");
+  //   presentation::add_rule(p, "CBcb", "y");
+  //   presentation::add_rule(p, "DBdb", "f");
+  //   presentation::add_rule(p, "cBCb", "bcBC");
+  //   presentation::add_rule(p, "babABaBA", "abABaBAb");
+  //   presentation::add_rule(p, "cBACab", "abcBAC");
+  //   presentation::add_rule(p, "BabABBAbab", "aabABBAb");
   //   auto rg = ReportGuard(REPORT);
 
   //   REQUIRE(!kb.confluent());

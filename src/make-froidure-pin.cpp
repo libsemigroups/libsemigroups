@@ -21,6 +21,7 @@
 namespace libsemigroups {
 
   using TCE = v3::detail::TCE;
+
   FroidurePin<TCE> to_froidure_pin(ToddCoxeter& tc) {
     using digraph_type = typename ToddCoxeter::digraph_type;
 
@@ -49,6 +50,23 @@ namespace libsemigroups {
       // We use _word_graph.unsafe_neighbor instead of just i, because there
       // might be more generators than cosets.
       result.add_generator(TCE(tc.word_graph().unsafe_neighbor(0, i)));
+    }
+    return result;
+  }
+
+  using KBE = v3::detail::KBE;
+
+  FroidurePin<KBE> to_froidure_pin(KnuthBendix& kb) {
+    size_t const n = kb.presentation().alphabet().size();
+
+    if (n == 0) {
+      LIBSEMIGROUPS_EXCEPTION_V3("TODO");
+    }
+    kb.run();
+
+    FroidurePin<KBE> result(kb);
+    for (size_t i = 0; i < n; ++i) {
+      result.add_generator(KBE(kb, i));
     }
     return result;
   }

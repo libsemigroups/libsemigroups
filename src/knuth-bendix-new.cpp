@@ -130,9 +130,16 @@ namespace libsemigroups {
 #endif
   }
 
-  // KnuthBendix::KnuthBendix(KnuthBendix const& kb) : KnuthBendix() {
-  //   init_from(kb);
-  // }
+  KnuthBendix::KnuthBendix(KnuthBendix const& that) : KnuthBendix() {
+    _presentation = that.presentation();
+    // throws if rules contain letters that are not in the alphabet.
+    _presentation.validate();
+    for (auto const& rule : that.active_rules()) {
+      add_rule_impl(rule.first, rule.second);
+    }
+    // TODO(later) copy other settings
+    _settings._overlap_policy = that._settings._overlap_policy;
+  }
 
   KnuthBendix::~KnuthBendix() {
     delete _overlap_measure;

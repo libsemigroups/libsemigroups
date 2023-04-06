@@ -44,11 +44,22 @@ namespace libsemigroups {
     return true;
   }
 
-  template <class Range>
+  template <typename Range>
   constexpr bool is_sorted(Range r) {
     return std::is_sorted(r, std::less<>());
   }
 
+  template <typename Range1, typename Range2>
+  constexpr bool equal(Range1 r1, Range2 r2) {
+    while (!r1.at_end()) {
+      if (r1.get() != r2.get()) {
+        return false;
+      }
+      r1.next();
+      r2.next();
+    }
+    return true;
+  }
 }  // namespace libsemigroups
 
 #endif  // LIBSEMIGROUPS_RANGES_HPP_

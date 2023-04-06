@@ -26,11 +26,13 @@
 #include "digraph.hpp"    // for ActionDigraph
 #include "exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
 #include "kambites.hpp"   // for KE
+#include "kbe-new.hpp"    // for KBE
 #include "tce.hpp"        // for TCE
 
 namespace libsemigroups {
   class FroidurePinBase;  // forward decl
   class ToddCoxeter;
+  class KnuthBendix;
 
   //! Make a FroidurePin object from an ActionDigraph.
   //!
@@ -124,6 +126,7 @@ namespace libsemigroups {
   }
 
   FroidurePin<v3::detail::TCE> to_froidure_pin(ToddCoxeter& tc);
+  FroidurePin<v3::detail::KBE> to_froidure_pin(KnuthBendix& tc);
 
   template <typename String>
   auto to_froidure_pin(Kambites<String>& k) {

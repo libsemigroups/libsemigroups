@@ -41,9 +41,9 @@
 
 namespace libsemigroups {
   // Forward declarations
-  namespace detail {
+  namespace v3::detail {
     class KBE;
-  }
+  }  // namespace v3::detail
 
   //! Defined in ``knuth-bendix.hpp``.
   //!
@@ -74,8 +74,8 @@ namespace libsemigroups {
   //! kb.number_of_active_rules();  // 31
   //! kb.confluent();        // true
   //! \endcode
-  class KnuthBendix final : public Runner {
-    friend class ::libsemigroups::detail::KBE;  // defined in kbe.hpp
+  class KnuthBendix : public Runner {
+    friend class ::libsemigroups::v3::detail::KBE;  // defined in kbe.hpp
 
     ////////////////////////////////////////////////////////////////////////
     // KnuthBendix - typedefs/aliases - private
@@ -277,8 +277,7 @@ namespace libsemigroups {
     // KnuthBendix - friend declarations - private
     //////////////////////////////////////////////////////////////////////////
 
-    friend class Rule;                          // defined in this file
-    friend class ::libsemigroups::detail::KBE;  // defined in detail::kbe.hpp
+    friend class Rule;  // defined in this file
 
    public:
     using rule_type = std::pair<std::string, std::string>;
@@ -368,8 +367,9 @@ namespace libsemigroups {
     //!
     //! froidure_pin() returns a \shared_ptr to a FroidurePinBase,
     //! which is really of type \ref froidure_pin_type.
-    using froidure_pin_type
-        = FroidurePin<detail::KBE, FroidurePinTraits<detail::KBE, KnuthBendix>>;
+    // using froidure_pin_type
+    //     = FroidurePin<detail::KBE, FroidurePinTraits<detail::KBE,
+    //     KnuthBendix>>;
 
     //////////////////////////////////////////////////////////////////////////
     // KnuthBendix - constructors and destructor - public
@@ -1163,27 +1163,24 @@ namespace libsemigroups {
     //! different calls to this function even if the parameters are identical.
     //! As such this is non-deterministic, and may produce different results
     //! with the same input.
-    // template <typename T>
-    // auto redundant_rule(Presentation<std::string>& p, T t) {
-    //   p.validate();
-    //   for (auto omit = p.rules.crbegin(); omit != p.rules.crend(); omit += 2)
-    //   {
-    //     KnuthBendix kb;
-    //     kb.set_alphabet(p.alphabet());
-
-    //     for (auto it = p.rules.crbegin(); it != omit; it += 2) {
-    //       kb.add_rule(*it, *(it + 1));
-    //     }
-    //     for (auto it = omit + 2; it < p.rules.crend(); it += 2) {
-    //       kb.add_rule(*it, *(it + 1));
-    //     }
-    //     kb.run_for(t);
-    //     if (kb.rewrite(*omit) == kb.rewrite(*(omit + 1))) {
-    //       return (omit + 1).base() - 1;
-    //     }
-    //   }
-    //   return p.rules.cend();
-    // }
+    template <typename T>
+    auto redundant_rule(Presentation<std::string> const& p, T t) {
+      // TODO reuse the same KnuthBendix
+      p.validate();
+      Presentation<std::string> q;
+      q.alphabet(p.alphabet());
+      for (auto omit = p.rules.crbegin(); omit != p.rules.crend(); omit += 2) {
+        q.rules.clear();
+        q.rules.insert(q.rules.end(), p.rules.crbegin(), omit);
+        q.rules.insert(q.rules.end(), omit + 2, p.rules.crend());
+        KnuthBendix kb(q);
+        kb.run_for(t);
+        if (kb.rewrite(*omit) == kb.rewrite(*(omit + 1))) {
+          return (omit + 1).base() - 1;
+        }
+      }
+      return p.rules.cend();
+    }
 
     //! Return an iterator pointing at the left hand side of a redundant rule.
     //!
@@ -1214,25 +1211,11 @@ namespace libsemigroups {
     //! As such this is non-deterministic, and may produce different results
     //! with the same input.
     template <typename W, typename T>
-    auto redundant_rule(Presentation<W>& p, T t) {
+    auto redundant_rule(Presentation<W> const& p, T t) {
       auto pp = make<Presentation<std::string>>(p);
       return p.rules.cbegin()
              + std::distance(pp.rules.cbegin(), redundant_rule(pp, t));
     }
   }  // namespace presentation
-
-  // TODO should be in make-present.hpp
-  // template <typename T,
-  //           typename = std::enable_if_t<
-  //               std::is_base_of<Presentation<std::string>, T>::value>>
-  // Presentation<std::string> make(KnuthBendix const& kb) {
-  //   Presentation<std::string> p;
-  //   p.alphabet(kb.alphabet());
-  //   for (auto it = kb.cbegin_rules(); it != kb.cend_rules(); ++it) {
-  //     presentation::add_rule(p, it->first, it->second);
-  //   }
-  //   return p;
-  // }
-
 }  // namespace libsemigroups
 #endif  // LIBSEMIGROUPS_KNUTH_BENDIX_NEW_HPP_
