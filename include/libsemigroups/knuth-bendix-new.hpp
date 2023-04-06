@@ -578,7 +578,7 @@ namespace libsemigroups {
     //! \parameters
     //! (None)
     // TODO(later) delete this
-    std::vector<rule_type> active_rules() const;
+    auto active_rules() const;
 
     // TODO(later)
     // using FpSemigroupInterface::const_iterator;

@@ -283,23 +283,19 @@ namespace RX_NAMESPACE {
   /*!
       @brief Convert input range or sink to standard iterators.
   */
-
-  // TODO(JDM) remove the things added here
+  struct input_range_iterator_end {};
   template <class R>
   struct input_range_iterator {
     R range;
-    input_range_iterator() = default;
     template <class Arg>
     constexpr explicit input_range_iterator(Arg&& range) noexcept
         : range(std::forward<Arg>(range)) {}
 
-    constexpr bool
-    operator==(input_range_iterator<R> const& that) const noexcept {
-      return range.at_end() && that.range.at_end();
+    constexpr bool operator==(input_range_iterator_end) const noexcept {
+      return range.at_end();
     }
-    constexpr bool
-    operator!=(input_range_iterator<R> const& that) const noexcept {
-      return !operator==(that);
+    constexpr bool operator!=(input_range_iterator_end) const noexcept {
+      return !range.at_end();
     }
 
     constexpr auto& operator++() noexcept {
@@ -316,17 +312,7 @@ namespace RX_NAMESPACE {
     [[nodiscard]] constexpr auto operator->() const noexcept {
       return &range.get();
     }
-
-    void swap(input_range_iterator<R>& that) noexcept {
-      range.swap(that.range);
-    }
   };
-
-  template <class R>
-  void swap(input_range_iterator<R>& x, input_range_iterator<R>& y) noexcept {
-    x.swap(y);
-  }
-
   template <class R>
   input_range_iterator(R&&) -> input_range_iterator<remove_cvref_t<R>>;
 
@@ -2666,22 +2652,12 @@ namespace RX_NAMESPACE {
     return input_range_iterator(as_input_range(std::forward<R>(range)));
   }
   template <class R, class = std::enable_if_t<is_input_or_sink_v<R>>>
-  [[nodiscard]] constexpr auto end(R const&) noexcept {
+  [[nodiscard]] constexpr auto end(const R&) noexcept {
     // Note: The first argument may be moved-from, but that's OK, we just need
     // its type.
-    return input_range_iterator<R>{};
+    return input_range_iterator_end{};
   }
 
 }  // namespace RX_NAMESPACE
-
-namespace std {
-  template <class R>
-  struct std::iterator_traits<rx::input_range_iterator<R>> {
-    using difference_type = std::ptrdiff_t;
-    using value_type      = std::decay_t<typename R::output_type>;
-    // TODO should be input iterator
-    using iterator_category = std::forward_iterator_tag;
-  };
-}  // namespace std
 
 #endif  // RX_RANGES_HPP_INCLUDED

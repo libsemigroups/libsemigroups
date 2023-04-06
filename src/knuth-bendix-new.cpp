@@ -62,6 +62,19 @@ namespace libsemigroups {
 
   }  // namespace
 
+  auto KnuthBendix::active_rules() const {
+    using namespace rx;
+    return iterator_range(_active_rules.cbegin(), _active_rules.cend())
+           | transform([this](auto const& rule) {
+               // TODO remove allocation
+               internal_string_type lhs = internal_string_type(*rule->lhs());
+               internal_string_type rhs = internal_string_type(*rule->rhs());
+               internal_to_external_string(lhs);
+               internal_to_external_string(rhs);
+               return std::make_pair(lhs, rhs);
+             });
+  }
+
   // KnuthBendix::KnuthBendix(KnuthBendix&&) = default;
 
   //////////////////////////////////////////////////////////////////////////
@@ -249,28 +262,6 @@ namespace libsemigroups {
   // KnuthBendix public methods for rules and rewriting
   //////////////////////////////////////////////////////////////////////////
 
-  std::vector<std::pair<std::string, std::string>>
-  KnuthBendix::active_rules() const {
-    std::vector<std::pair<external_string_type, external_string_type>> rules;
-    rules.reserve(_active_rules.size());
-    for (Rule const* rule : _active_rules) {
-      internal_string_type lhs = internal_string_type(*rule->lhs());
-      internal_string_type rhs = internal_string_type(*rule->rhs());
-      internal_to_external_string(lhs);
-      internal_to_external_string(rhs);
-      rules.emplace_back(lhs, rhs);
-    }
-    std::sort(rules.begin(),
-              rules.end(),
-              [](std::pair<external_string_type, external_string_type> rule1,
-                 std::pair<external_string_type, external_string_type> rule2) {
-                return shortlex_compare(rule1.first, rule2.first)
-                       || (rule1.first == rule2.first
-                           && shortlex_compare(rule1.second, rule2.second));
-              });
-    return rules;
-  }
-
   KnuthBendix::external_string_type*
   KnuthBendix::rewrite(external_string_type* w) const {
     external_to_internal_string(*w);
@@ -326,7 +317,8 @@ namespace libsemigroups {
   }
 
   std::ostream& operator<<(std::ostream& os, KnuthBendix const& kb) {
-    os << detail::to_string(kb.active_rules()) << "\n";
+    // TODO remove to_vector
+    os << detail::to_string(kb.active_rules() | rx::to_vector()) << "\n";
     return os;
   }
 
@@ -545,12 +537,9 @@ namespace libsemigroups {
           if (it != prefixes.end()) {
             _gilman_digraph.add_edge(p.second, it->second, i);
           } else {
-            if (!std::any_of(
-                    rules.cbegin(),
-                    rules.cend(),
-                    [&s](std::pair<std::string, std::string> const& rule) {
-                      return is_subword(rule.first, s);
-                    })) {
+            if (!(rules | rx::any_of([&s](auto const& rule) {
+                    return is_subword(rule.first, s);
+                  }))) {
               while (!s.empty()) {
                 s  = std::string(s.begin() + 1, s.end());
                 it = prefixes.find(s);
