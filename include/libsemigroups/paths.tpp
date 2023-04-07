@@ -808,7 +808,7 @@ namespace libsemigroups {
 
   template <typename Node>
   void Paths<Node>::set_iterator() const {
-    if (!_current_valid) {
+    if (!_current_valid && _digraph->number_of_nodes() != 0) {
       _current_valid = true;
       if (_order == order::shortlex && _source != UNDEFINED) {
         if (_target != UNDEFINED) {
@@ -831,8 +831,10 @@ namespace libsemigroups {
   }
 
   template <typename Node>
-  uint64_t Paths<Node>::size_hint() const noexcept {
-    if (_target != UNDEFINED) {
+  uint64_t Paths<Node>::size_hint() const {
+    if (_digraph->number_of_nodes() == 0) {
+      return 0;
+    } else if (_target != UNDEFINED) {
       return number_of_paths(*_digraph, _source, _target, _min, _max);
     } else {
       return number_of_paths(*_digraph, _source, _min, _max);
@@ -852,7 +854,7 @@ namespace libsemigroups {
   }
 
   template <typename Node>
-  Node Paths<Node>::to() const noexcept {
+  Node Paths<Node>::to() const {
     if (_target != UNDEFINED) {
       return _target;
     } else {

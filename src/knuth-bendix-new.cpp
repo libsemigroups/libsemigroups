@@ -486,7 +486,8 @@ namespace libsemigroups {
   }
 
   ActionDigraph<size_t> const& KnuthBendix::gilman_digraph() {
-    if (_gilman_digraph.number_of_nodes() == 0) {
+    if (_gilman_digraph.number_of_nodes() == 0
+        && !presentation().alphabet().empty()) {
       // reset the settings so that we really run!
       max_rules(POSITIVE_INFINITY);
       run();

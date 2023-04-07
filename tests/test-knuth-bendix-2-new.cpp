@@ -772,9 +772,8 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
                           "035",
-                          "Example 5.1 in Sims (KnuthBendix 09 "
-                          "again)",
-                          "[quick][knuth-bendix][fpsemigroup]") {
+                          "Example 5.1 in Sims (KnuthBendix 09 again)",
+                          "[quick][knuth-bendix]") {
     auto rg = ReportGuard(REPORT);
 
     Presentation<std::string> p;
@@ -817,8 +816,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
                           "037",
                           "Example 6.4 in Sims",
-                          "[quick][knuth-bendix][fpsemigroup][no-"
-                          "valgrind]") {
+                          "[quick][knuth-bendix][no-valgrind]") {
     auto                      rg = ReportGuard(REPORT);
     Presentation<std::string> p;
     p.contains_empty_word(true);
@@ -933,7 +931,7 @@ namespace libsemigroups {
                           "Example 5.4 in Sims (KnuthBendix 11 "
                           "again) "
                           "(different overlap policy)",
-                          "[quick][knuth-bendix][fpsemigroup]") {
+                          "[quick][knuth-bendix]") {
     auto                      rg = ReportGuard(REPORT);
     Presentation<std::string> p;
     p.alphabet("Bab");
@@ -977,7 +975,7 @@ namespace libsemigroups {
                           "Example 5.4 in Sims (KnuthBendix 11 "
                           "again) "
                           "(different overlap policy)",
-                          "[quick][knuth-bendix][fpsemigroup]") {
+                          "[quick][knuth-bendix]") {
     auto rg = ReportGuard(REPORT);
 
     Presentation<std::string> p;
@@ -1060,10 +1058,10 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
                           "044",
-                          "(fpsemi) (from "
+                          "(from "
                           "kbmag/standalone/kb_data/d22) (2 / 3) "
                           "(finite)",
-                          "[quick][knuth-bendix][fpsemigroup]["
+                          "[quick][knuth-bendix]["
                           "fpsemi][kbmag][shortlex]") {
     auto rg = ReportGuard(REPORT);
 
@@ -1098,10 +1096,10 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
                           "045",
-                          "(fpsemi) (from "
+                          "(from "
                           "kbmag/standalone/kb_data/d22) (3 / 3) "
                           "(finite)",
-                          "[quick][knuth-bendix][fpsemigroup]["
+                          "[quick][knuth-bendix]["
                           "fpsemi][kbmag][shortlex]") {
     auto                      rg = ReportGuard(REPORT);
     Presentation<std::string> p;
@@ -1127,9 +1125,8 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
                           "046",
-                          "(fpsemi) small example",
-                          "[quick][knuth-bendix][fpsemigroup]["
-                          "fpsemi][shortlex]") {
+                          "small example",
+                          "[quick][knuth-bendix][shortlex]") {
     auto                      rg = ReportGuard(REPORT);
     Presentation<std::string> p;
     p.alphabet("ab");
@@ -1232,7 +1229,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
                           "019",
-                          "(fpsemi) C(4) monoid",
+                          "C(4) monoid",
                           "[quick][knuthbendix]") {
     Presentation<std::string> p;
     p.alphabet("abcde");

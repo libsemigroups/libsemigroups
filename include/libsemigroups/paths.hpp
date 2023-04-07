@@ -919,25 +919,25 @@ namespace libsemigroups {
     void set_iterator() const;
 
    public:
-    output_type get() const noexcept {
+    output_type get() const {
       set_iterator();
       return std::visit(
           [](auto& it) -> auto const& { return *it; }, _current);
     }
 
-    void next() noexcept {
+    void next() {
       set_iterator();
       std::visit([](auto& it) { ++it; }, _current);
     }
 
-    bool at_end() const noexcept {
+    bool at_end() const {
       set_iterator();
       return _current == _end;
     }
 
-    uint64_t size_hint() const noexcept;
+    uint64_t size_hint() const;
 
-    uint64_t count() const noexcept {
+    uint64_t count() const {
       return size_hint();
     }
 
@@ -975,15 +975,15 @@ namespace libsemigroups {
       return _source;
     }
 
-    Paths& to(node_type trgt) {
+    Paths& to(node_type trgt) noexcept {
       _current_valid &= (trgt == _target);
       _target = trgt;
       return *this;
     }
 
-    [[nodiscard]] node_type to() const noexcept;
+    [[nodiscard]] node_type to() const;
 
-    Paths& min(size_type min) {
+    Paths& min(size_type min) noexcept {
       _current_valid &= (min == _min);
       _min = min;
       return *this;
@@ -993,7 +993,7 @@ namespace libsemigroups {
       return _min;
     }
 
-    Paths& max(size_type max) {
+    Paths& max(size_type max) noexcept {
       _current_valid &= (max == _max);
       _max = max;
       return *this;
