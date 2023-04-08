@@ -1980,20 +1980,29 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("DigraphWithSources", "047", "quotient", "[quick]") {
-    DigraphWithSources<size_t> dws(3, 2);
-    dws.add_edge_nc(0, 1, 0);
-    dws.add_edge_nc(0, 2, 1);
-    dws.add_edge_nc(1, 1, 0);
-    dws.add_edge_nc(1, 2, 1);
-    dws.add_edge_nc(2, 2, 0);
-    dws.add_edge_nc(2, 2, 1);
+    DigraphWithSources<size_t> dws1(0, 0);
+    DigraphWithSources<size_t> dws1_q(0, 0);
+    detail::Duf<>              uf1;
+    REQUIRE(dws1.get_quotient(uf1) == dws1_q);
+    uf1.resize(7);
+    REQUIRE_THROWS_AS(dws1.get_quotient(uf1), LibsemigroupsException);
 
-    detail::Duf<> uf;
-    uf.resize(3);
-    uf.unite(0, 2);
+    DigraphWithSources<size_t> dws2(3, 2);
+    dws2.add_edge_nc(0, 1, 0);
+    dws2.add_edge_nc(0, 2, 1);
+    dws2.add_edge_nc(1, 1, 0);
+    dws2.add_edge_nc(1, 2, 1);
+    dws2.add_edge_nc(2, 2, 0);
+    dws2.add_edge_nc(2, 2, 1);
 
-    dws.quotient_digraph(uf);
-    REQUIRE(dws == action_digraph_helper::make<size_t>(1, {{0, 0}}));
+    detail::Duf<> uf2;
+    REQUIRE_THROWS_AS(dws2.get_quotient(uf2), LibsemigroupsException);
+
+    detail::Duf<> uf3(3);
+    uf3.unite(0, 2);
+
+    dws2.quotient_digraph(uf3);
+    REQUIRE(dws2 == action_digraph_helper::make<size_t>(1, {{0, 0}}));
   }
 
   LIBSEMIGROUPS_TEST_CASE("DigraphWithSources", "048", "quotient", "[quick]") {
