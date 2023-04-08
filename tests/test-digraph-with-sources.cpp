@@ -2142,5 +2142,67 @@ namespace libsemigroups {
             == action_digraph_helper::make<size_t>(
                 3, {{0, 1, 2}, {0, 1, 2}, {0, 1, 2}}));
   }
-  // TODO: Make a test that has non-complete digraphs
+
+  LIBSEMIGROUPS_TEST_CASE("DigraphWithSources",
+                          "051",
+                          "out-of-place quotient",
+                          "[quick]") {
+    DigraphWithSources<size_t> dws(4, 4);
+
+    detail::Duf<> uf1(4);
+    auto          dws1 = dws.get_quotient(uf1);
+
+    detail::Duf<> uf2(4);
+    uf2.unite(3, 1);
+    uf2.unite(2, 3);
+    auto dws2 = dws.get_quotient(uf2);
+
+    REQUIRE(dws1
+            == action_digraph_helper::make<size_t>(
+                4,
+                {{UNDEFINED, UNDEFINED, UNDEFINED, UNDEFINED},
+                 {UNDEFINED, UNDEFINED, UNDEFINED, UNDEFINED},
+                 {UNDEFINED, UNDEFINED, UNDEFINED, UNDEFINED},
+                 {UNDEFINED, UNDEFINED, UNDEFINED, UNDEFINED}}));
+    REQUIRE(dws2
+            == action_digraph_helper::make<size_t>(
+                2,
+                {{UNDEFINED, UNDEFINED, UNDEFINED, UNDEFINED},
+                 {UNDEFINED, UNDEFINED, UNDEFINED, UNDEFINED}}));
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("DigraphWithSources",
+                          "052",
+                          "out-of-place quotient",
+                          "[quick]") {
+    DigraphWithSources<size_t> dws(10, 1);
+    dws.add_edge_nc(0, 1, 0);
+    dws.add_edge_nc(2, 3, 0);
+    dws.add_edge_nc(4, 5, 0);
+    dws.add_edge_nc(6, 7, 0);
+    dws.add_edge_nc(8, 9, 0);
+
+    detail::Duf<> uf1(10);
+    uf1.unite(0, 2);
+    uf1.unite(0, 4);
+    uf1.unite(0, 6);
+    uf1.unite(0, 8);
+
+    auto dws_q1 = dws.get_quotient(uf1);
+
+    REQUIRE(dws_q1
+            == action_digraph_helper::make<size_t>(2, {{1}, {UNDEFINED}}));
+
+    detail::Duf<> uf2(10);
+    uf2.unite(1, 7);
+    uf2.unite(1, 3);
+    uf2.unite(1, 5);
+    uf2.unite(1, 9);
+
+    auto dws_q2 = dws.get_quotient(uf2);
+
+    REQUIRE(dws_q2
+            == action_digraph_helper::make<size_t>(
+                6, {{1}, {UNDEFINED}, {1}, {1}, {1}, {1}}));
+  }
 }  // namespace libsemigroups

@@ -245,8 +245,6 @@ namespace libsemigroups {
       return;
     }
 
-    node_type                                   x_nb;
-    node_type                                   y_nb;
     std::stack<std::pair<node_type, node_type>> coincidences;
 
     // Make pairs of vertices that lie in the same part of a union find object
@@ -260,14 +258,30 @@ namespace libsemigroups {
     // For each coincidence (x, y), unite each out neighbour of x with the
     // corresponding out neighbour of y
     while (!coincidences.empty()) {
-      node_type x, y;
+      node_type x, y, x_nb, y_nb, x_nb_rep, y_nb_rep;
       std::tie(x, y) = coincidences.top();
       coincidences.pop();
       for (label_type a = 0; a < n_out; ++a) {
-        x_nb = uf.find(this->unsafe_neighbor(x, a));
-        y_nb = uf.find(this->unsafe_neighbor(y, a));
-        if (x_nb != y_nb) {
-          coincidences.emplace(x_nb, y_nb);
+        x_nb = this->unsafe_neighbor(x, a);
+        y_nb = this->unsafe_neighbor(y, a);
+
+        // Handle missing edges
+        if (x_nb == UNDEFINED && y_nb == UNDEFINED) {
+          continue;
+        } else if (x_nb == UNDEFINED) {
+          y_nb_rep = uf.find(y_nb);
+          this->add_edge_nc(x, y_nb_rep, a);
+          continue;
+        } else if (y_nb == UNDEFINED) {
+          x_nb_rep = uf.find(x_nb);
+          this->add_edge_nc(y, x_nb_rep, a);
+          continue;
+        }
+
+        x_nb_rep = uf.find(x_nb);
+        y_nb_rep = uf.find(y_nb);
+        if (x_nb_rep != y_nb_rep) {
+          coincidences.emplace(x_nb_rep, y_nb_rep);
         }
       }
       uf.unite(x, y);
@@ -296,11 +310,13 @@ namespace libsemigroups {
       } else {
         // Replace out-neighbours of representatives with their representative
         for (label_type a = 0; a != n_out; ++a) {
-          node_type va     = this->unsafe_neighbor(v, a);
-          node_type va_rep = uf.find(va);
-          if (va != va_rep) {
-            this->remove_edge_nc(v, a);
-            this->add_edge_nc(v, va_rep, a);
+          node_type va = this->unsafe_neighbor(v, a);
+          if (va != UNDEFINED) {
+            node_type va_rep = uf.find(va);
+            if (va != va_rep) {
+              this->remove_edge_nc(v, a);
+              this->add_edge_nc(v, va_rep, a);
+            }
           }
         }
       }
