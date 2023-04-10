@@ -25,7 +25,7 @@
 #include "libsemigroups/bmat8.hpp"
 #include "libsemigroups/fpsemi-examples.hpp"  // for dual_symmetric_...
 #include "libsemigroups/froidure-pin.hpp"
-#include "libsemigroups/make-todd-coxeter.hpp"  // for ??
+#include "libsemigroups/to-todd-coxeter.hpp"  // for ??
 #include "libsemigroups/obvinf.hpp"             // for is_obviously_infinite
 #include "libsemigroups/present.hpp"            // for Presentation
 #include "libsemigroups/ranges.hpp"             // for is_sorted
@@ -35,9 +35,9 @@
 #include "libsemigroups/transf.hpp"             // for Transf
 #include "libsemigroups/words.hpp"              // for cbegin_wislo
 
+#include "libsemigroups/tce.hpp"              // for TCE
 #include "libsemigroups/to-froidure-pin.hpp"  // for make
-#include "libsemigroups/tce.hpp"                // for TCE
-#include "libsemigroups/words.hpp"              // for operator"" _w
+#include "libsemigroups/words.hpp"            // for operator"" _w
 
 namespace libsemigroups {
 
@@ -553,7 +553,7 @@ namespace libsemigroups {
     REQUIRE(S.size() == 88);
 
     // Construct from Cayley graph of S
-    auto tc = make<ToddCoxeter>(twosided, S);
+    auto tc = to_todd_coxeter(twosided, S);
     REQUIRE(tc.word_graph().number_of_nodes() == 89);
 
     tc.add_pair(S.factorisation(Transf({3, 4, 4, 4, 4})),
@@ -713,7 +713,7 @@ namespace libsemigroups {
     check_complete_compatible(tc);
   }
 
-  // TODO move to test-make-todd-coxeter
+  // TODO move to test-to-todd-coxeter
   LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
                           "009",
                           "2-sided cong. trans. semigroup",
@@ -782,7 +782,7 @@ namespace libsemigroups {
                   001000101_w, 010001000_w, 010001100_w}}));
   }
 
-  // TODO move to test-make-todd-coxeter.cpp
+  // TODO move to test-to-todd-coxeter.cpp
   LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
                           "010",
                           "left congruence on transformation semigroup",
@@ -901,7 +901,7 @@ namespace libsemigroups {
     REQUIRE(S.size() == 88);
     REQUIRE(S.number_of_rules() == 18);
 
-    ToddCoxeter tc = make<ToddCoxeter>(twosided, S);  // use the Cayley graph
+    ToddCoxeter tc = to_todd_coxeter(twosided, S);  // use the Cayley graph
 
     word_type w1 = S.factorisation(S.position(Transf<>({3, 4, 4, 4, 4})));
     word_type w2 = S.factorisation(S.position(Transf<>({3, 1, 3, 3, 3})));
@@ -1358,7 +1358,7 @@ namespace libsemigroups {
     REQUIRE(tc2.number_of_classes() == 1);
   }
 
-  // TODO move to make-todd-coxeter.hpp
+  // TODO move to to-todd-coxeter.hpp
   LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
                           "029",
                           "from KnuthBendix",
@@ -1382,7 +1382,8 @@ namespace libsemigroups {
       REQUIRE(kb.finished());
     }
 
-    ToddCoxeter tc(make<ToddCoxeter>(twosided, kb));
+    ToddCoxeter tc(twosided, kb.presentation());
+
     section_hlt(tc);
     section_felsch(tc);
     section_CR_style(tc);
@@ -1430,7 +1431,7 @@ namespace libsemigroups {
     REQUIRE(kb.finished());
 
     for (auto knd : {twosided, left, right}) {
-      ToddCoxeter tc(make<ToddCoxeter>(knd, kb));
+      ToddCoxeter tc(to_todd_coxeter(knd, kb));
       tc.add_pair({1}, {2});
       REQUIRE(tc.number_of_classes() == 1);
       if (tc.kind() == twosided) {
@@ -1489,7 +1490,7 @@ namespace libsemigroups {
     FroidurePin<Transf> S({Transf({1, 3, 4, 2, 3}), Transf({3, 2, 1, 3, 3})});
     REQUIRE(S.size() == 88);
     REQUIRE(S.number_of_rules() == 18);
-    ToddCoxeter tc = make<ToddCoxeter>(twosided, S);  // use Cayley graph
+    ToddCoxeter tc = to_todd_coxeter(twosided, S);  // use Cayley graph
     tc.add_pair({0}, {1, 1});
 
     section_felsch(tc);

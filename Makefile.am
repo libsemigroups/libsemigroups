@@ -598,6 +598,7 @@ libsemigroups_la_SOURCES += src/string.cpp
 libsemigroups_la_SOURCES += src/stephen.cpp
 libsemigroups_la_SOURCES += src/timer.cpp
 libsemigroups_la_SOURCES += src/to-froidure-pin.cpp
+libsemigroups_la_SOURCES += src/to-todd-coxeter.cpp
 libsemigroups_la_SOURCES += src/todd-coxeter.cpp
 libsemigroups_la_SOURCES += src/todd-coxeter-new.cpp
 libsemigroups_la_SOURCES += src/ukkonen.cpp

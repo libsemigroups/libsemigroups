@@ -16,28 +16,26 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#ifndef LIBSEMIGROUPS_MAKE_TODD_COXETER_HPP_
-#define LIBSEMIGROUPS_MAKE_TODD_COXETER_HPP_
+#include "libsemigroups/to-todd-coxeter.hpp"
 
-#include <cstddef>                // for size_t
-#include <type_traits>            // for enable_if_t, is_base_of
-                                  //
-#include "debug.hpp"              // for LIBSEMIGROUPS_ASSERT
-#include "digraph.hpp"            // for ActionDigraph
-#include "exception.hpp"          // for LIBSEMIGROUPS_EXCEPTION
-#include "froidure-pin-base.hpp"  // for FroidurePinBase
-#include "knuth-bendix-new.hpp"   // for KnuthBendix
-#include "todd-coxeter-new.hpp"   // for ToddCoxeter
+#include <utility>  // for move
+#include <vector>   // for allocator, vector
+
+#include "libsemigroups/constants.hpp"          // for Max, operator==, POSI...
+#include "libsemigroups/digraph.hpp"            // for ActionDigraph
+#include "libsemigroups/exception.hpp"          // for LIBSEMIGROUPS_EXCEPTI...
+#include "libsemigroups/froidure-pin-base.hpp"  // for FroidurePinBase
+#include "libsemigroups/froidure-pin.hpp"       // for FroidurePin
+#include "libsemigroups/knuth-bendix-new.hpp"   // for KnuthBendix
+#include "libsemigroups/to-froidure-pin.hpp"    // for to_froidure_pin
+#include "libsemigroups/todd-coxeter-new.hpp"   // for ToddCoxeter
+#include "libsemigroups/types.hpp"              // for congruence_kind
 
 namespace libsemigroups {
-  class FroidurePinBase;
 
-  template <typename T,
-            typename = std::enable_if_t<std::is_same_v<ToddCoxeter, T>>>
-  ToddCoxeter make(congruence_kind knd, FroidurePinBase& fp) {
+  ToddCoxeter to_todd_coxeter(congruence_kind knd, FroidurePinBase& fp) {
     using node_type         = typename ToddCoxeter::digraph_type::node_type;
     using label_type        = typename ToddCoxeter::digraph_type::label_type;
-    using digraph_type      = ActionDigraph<node_type>;
     using cayley_graph_type = typename FroidurePinBase::cayley_graph_type;
 
     cayley_graph_type const* ad;
@@ -47,7 +45,9 @@ namespace libsemigroups {
     } else {
       ad = &fp.right_cayley_graph();
     }
-    digraph_type tc_arg(ad->number_of_nodes() + 1, ad->out_degree());
+
+    ActionDigraph<node_type> tc_arg(ad->number_of_nodes() + 1,
+                                    ad->out_degree());
 
     for (label_type a = 0; a < tc_arg.out_degree(); ++a) {
       tc_arg.def_edge_nc(0, a, fp.current_position(a) + 1);
@@ -61,16 +61,13 @@ namespace libsemigroups {
     return ToddCoxeter(knd, std::move(tc_arg));
   }
 
-  template <typename T,
-            typename = std::enable_if_t<std::is_same_v<ToddCoxeter, T>>>
-  ToddCoxeter make(congruence_kind knd, KnuthBendix& kb) {
-    // TODO uncomment
-    // if (kb.finished() && kb.is_obviously_finite()) {
-    //   froidure_pin_policy(options::froidure_pin::use_cayley_graph);
-    // }
-
-    return ToddCoxeter(knd, kb.presentation());
+  ToddCoxeter to_todd_coxeter(congruence_kind knd, KnuthBendix& kb) {
+    if (kb.size() == POSITIVE_INFINITY) {
+      LIBSEMIGROUPS_EXCEPTION_V3(
+          "cannot construct a ToddCoxeter instance using the Cayley graph of "
+          "an infinite KnuthBendix object");
+    }
+    auto fp = to_froidure_pin(kb);
+    return to_todd_coxeter(knd, fp);
   }
-
 }  // namespace libsemigroups
-#endif  // LIBSEMIGROUPS_MAKE_TODD_COXETER_HPP_
