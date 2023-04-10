@@ -16,7 +16,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "libsemigroups/make-froidure-pin.hpp"
+#include "libsemigroups/to-froidure-pin.hpp"
 
 namespace libsemigroups {
 

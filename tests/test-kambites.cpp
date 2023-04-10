@@ -38,7 +38,7 @@
 #include "libsemigroups/types.hpp"              // for tril etc
 #include "libsemigroups/words.hpp"              // for number_of_words
 
-#include "libsemigroups/make-froidure-pin.hpp"
+#include "libsemigroups/to-froidure-pin.hpp"
 
 namespace libsemigroups {
   using namespace rx;

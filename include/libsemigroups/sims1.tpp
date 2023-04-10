@@ -933,7 +933,7 @@ namespace libsemigroups {
       ++count;
       if (x.number_of_active_nodes() >= _min) {
         auto first = (short_rules().contains_empty_word() ? 0 : 1);
-        auto S     = make<FroidurePin<Transf<0, node_type>>>(
+        auto S     = to_froidure_pin<Transf<0, node_type>>(
             x, first, x.number_of_active_nodes());
         if (short_rules().contains_empty_word()) {
           auto one = S.generator(0).identity();

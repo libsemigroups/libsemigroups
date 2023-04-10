@@ -51,7 +51,7 @@
 #include "libsemigroups/config.hpp"             // for LIBSEMIGROUPS_DEBUG
 #include "libsemigroups/constants.hpp"          // for POSITIVE_INFINITY
 #include "libsemigroups/knuth-bendix-new.hpp"   // for KnuthBendix, operator<<
-#include "libsemigroups/make-froidure-pin.hpp"  // for to_froidure_pin
+#include "libsemigroups/to-froidure-pin.hpp"  // for to_froidure_pin
 #include "libsemigroups/obvinf.hpp"             // for word_type
 #include "libsemigroups/ranges.hpp"             // for ReportGuard
 #include "libsemigroups/report.hpp"             // for ReportGuard

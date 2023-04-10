@@ -35,7 +35,7 @@
 #include "libsemigroups/transf.hpp"             // for Transf
 #include "libsemigroups/words.hpp"              // for cbegin_wislo
 
-#include "libsemigroups/make-froidure-pin.hpp"  // for make
+#include "libsemigroups/to-froidure-pin.hpp"  // for make
 #include "libsemigroups/tce.hpp"                // for TCE
 #include "libsemigroups/words.hpp"              // for operator"" _w
 

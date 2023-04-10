@@ -31,7 +31,7 @@
 namespace libsemigroups {
   template <typename T>
   FroidurePin<T>* before_bench(Generators<T> const& p) {
-    auto fp = make<FroidurePin<T>>(p);
+    auto fp = to_froidure_pin<T>(p);
     return fp;
   }
 

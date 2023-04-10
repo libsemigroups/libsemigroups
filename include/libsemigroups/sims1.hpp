@@ -65,7 +65,7 @@
 #include "exception.hpp"          // for LIBSEMIGROUPS_EXCEPTION
 #include "felsch-digraph.hpp"     // for FelschDigraph
 #include "froidure-pin.hpp"       // for FroidurePin
-#include "make-froidure-pin.hpp"  // for make
+#include "to-froidure-pin.hpp"  // for make
 #include "present.hpp"            // for Presentation, Presentati...
 #include "report.hpp"             // for REPORT_DEFAULT, Reporter
 #include "stl.hpp"                // for JoinThreads

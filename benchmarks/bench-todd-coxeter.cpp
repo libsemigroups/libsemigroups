@@ -606,8 +606,7 @@ namespace libsemigroups {
         std::string title = std::string("orientation_preserving_monoid(")
                             + std::to_string(n) + ") ";
         BENCHMARK((title + "+ HLT (default)").c_str()) {
-          auto p
-              = make<Presentation<word_type>>(orientation_preserving_monoid(n));
+          auto p = orientation_preserving_monoid(n);
           p.alphabet(3);
           presentation::replace_word(p, word_type({}), {2});
           presentation::add_identity_rules(p, 2);
@@ -621,8 +620,7 @@ namespace libsemigroups {
           REQUIRE(tc.number_of_classes() == sizes[n]);
         };
         BENCHMARK((title + "+ Felsch (default)").c_str()) {
-          auto p
-              = make<Presentation<word_type>>(orientation_preserving_monoid(n));
+          auto p = orientation_preserving_monoid(n);
           p.alphabet(3);
           presentation::replace_word(p, word_type({}), {2});
           presentation::add_identity_rules(p, 2);
@@ -644,8 +642,7 @@ namespace libsemigroups {
     namespace {
       void bench_orientation(size_t n, size_t size) {
         auto rg = ReportGuard(true);
-        auto p
-            = make<Presentation<word_type>>(orientation_preserving_monoid(n));
+        auto p  = orientation_preserving_monoid(n);
         p.alphabet(3);
         presentation::replace_word(p, word_type({}), {2});
         presentation::add_identity_rules(p, 2);
@@ -789,8 +786,7 @@ namespace libsemigroups {
         std::string title = std::string("orientation_reversing_monoid(")
                             + std::to_string(n) + ") ";
         BENCHMARK((title + "+ HLT (default)").c_str()) {
-          auto p
-              = make<Presentation<word_type>>(orientation_reversing_monoid(n));
+          auto p = orientation_reversing_monoid(n);
           p.alphabet(4);
           presentation::replace_word(p, word_type({}), {3});
           presentation::add_identity_rules(p, 3);
@@ -805,8 +801,7 @@ namespace libsemigroups {
           REQUIRE(tc.number_of_classes() == sizes[n]);
         };
         BENCHMARK((title + "+ Felsch (default)").c_str()) {
-          auto p
-              = make<Presentation<word_type>>(orientation_reversing_monoid(n));
+          auto p = orientation_reversing_monoid(n);
           p.alphabet(4);
           presentation::replace_word(p, word_type({}), {3});
           presentation::add_identity_rules(p, 3);
@@ -825,7 +820,7 @@ namespace libsemigroups {
     namespace {
       void bench_orient_reverse(size_t n, size_t size) {
         auto rg = ReportGuard(true);
-        auto p = make<Presentation<word_type>>(orientation_reversing_monoid(n));
+        auto p  = orientation_reversing_monoid(n);
         p.alphabet(4);
         presentation::replace_word(p, word_type({}), {3});
         presentation::add_identity_rules(p, 3);

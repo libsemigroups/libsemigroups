@@ -42,7 +42,7 @@
 #include "libsemigroups/froidure-pin.hpp"      // for FroidurePin
 #include "libsemigroups/kbe-new.hpp"           // for detail::KBE
 #include "libsemigroups/knuth-bendix-new.hpp"  // for KnuthBendix, operator<<
-#include "libsemigroups/make-froidure-pin.hpp"
+#include "libsemigroups/to-froidure-pin.hpp"
 #include "libsemigroups/report.hpp"  // for ReportGuard
 #include "libsemigroups/transf.hpp"  // for Transf<>
 #include "libsemigroups/types.hpp"   // for word_type

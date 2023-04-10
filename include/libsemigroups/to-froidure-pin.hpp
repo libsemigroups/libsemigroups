@@ -66,13 +66,11 @@ namespace libsemigroups {
   //! label and node for which there is no edge with the given label and given
   //! source) or if there is an edge label such that \f$\{a, \ldots, b - 1\}f
   //! \not\subseteq \{a, \ldots, b - 1\}\f$ for the corresponding \f$f\f$.
-  template <typename S,
-            typename T,
-            typename
-            = std::enable_if_t<std::is_base_of<FroidurePinBase, S>::value>>
-  S make(ActionDigraph<T> const& ad, size_t first, size_t last) {
-    using node_type    = typename ActionDigraph<T>::node_type;
-    using element_type = typename S::element_type;
+  template <typename Element, typename Node>
+  FroidurePin<Element> to_froidure_pin(ActionDigraph<Node> const& ad,
+                                       size_t                     first,
+                                       size_t                     last) {
+    using node_type = typename ActionDigraph<Node>::node_type;
 
     if (first > last) {
       LIBSEMIGROUPS_EXCEPTION("the 2nd argument (size_t) must be at most the"
@@ -94,8 +92,8 @@ namespace libsemigroups {
     }
 
     LIBSEMIGROUPS_ASSERT(ad.out_degree() > 0);
-    S            result;
-    element_type x(last - first);
+    FroidurePin<Element> result;
+    Element              x(last - first);
     // Each label corresponds to a generator of S
     for (node_type lbl = 0; lbl < ad.out_degree(); ++lbl) {
       for (size_t n = first; n < last; ++n) {
@@ -117,12 +115,9 @@ namespace libsemigroups {
   //! Make a FroidurePin object from an ActionDigraph.
   //!
   //! Calls `make(ad, 0, ad.number_of_nodes())`; see above.
-  template <typename S,
-            typename T,
-            typename
-            = std::enable_if_t<std::is_base_of<FroidurePinBase, S>::value>>
-  S make(ActionDigraph<T> const& ad) {
-    return make<S>(ad, 0, ad.number_of_nodes());
+  template <typename Element, typename Node>
+  FroidurePin<Element> to_froidure_pin(ActionDigraph<Node> const& ad) {
+    return to_froidure_pin<Element>(ad, 0, ad.number_of_nodes());
   }
 
   FroidurePin<v3::detail::TCE> to_froidure_pin(ToddCoxeter& tc);

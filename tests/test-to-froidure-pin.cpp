@@ -28,13 +28,13 @@
 #include "libsemigroups/digraph-helper.hpp"     // for make
 #include "libsemigroups/digraph.hpp"            // for ActionDigraph
 #include "libsemigroups/froidure-pin.hpp"       // for FroidurePin, Froidure...
-#include "libsemigroups/make-froidure-pin.hpp"  // for make
+#include "libsemigroups/to-froidure-pin.hpp"  // for make
 #include "libsemigroups/report.hpp"             // for ReportGuard
 #include "libsemigroups/transf.hpp"             // for Transf
 
 namespace libsemigroups {
 
-  LIBSEMIGROUPS_TEST_CASE("make<FroidurePin<Transf>>",
+  LIBSEMIGROUPS_TEST_CASE("to_froidure_pin<Transf>",
                           "000",
                           "from ActionDigraph",
                           "[quick][make]") {
@@ -42,19 +42,19 @@ namespace libsemigroups {
     auto ad = action_digraph_helper::make<uint8_t>(
         5,
         {{1, 3, 4, 1}, {0, 0, 1, 1}, {2, 1, 2, 2}, {3, 2, 3, 3}, {4, 4, 4, 4}});
-    auto S = make<FroidurePin<Transf<5>>>(ad);
+    auto S = to_froidure_pin<Transf<5>>(ad);
     REQUIRE(S.size() == 625);
-    auto T = make<FroidurePin<Transf<6>>>(ad);
+    auto T = to_froidure_pin<Transf<6>>(ad);
     REQUIRE(T.size() == 625);
-    auto U = make<FroidurePin<Transf<0, uint8_t>>>(ad);
+    auto U = to_froidure_pin<Transf<0, uint8_t>>(ad);
     REQUIRE(U.size() == 625);
-    auto V = make<FroidurePin<Transf<0, uint8_t>>>(ad, 4, 5);
+    auto V = to_froidure_pin<Transf<0, uint8_t>>(ad, 4, 5);
     REQUIRE(V.size() == 1);
-    auto W = make<FroidurePin<Transf<0, uint8_t>>>(ad, 0, 0);
+    auto W = to_froidure_pin<Transf<0, uint8_t>>(ad, 0, 0);
     REQUIRE(W.size() == 1);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("make<FroidurePin<Transf>>",
+  LIBSEMIGROUPS_TEST_CASE("to_froidure_pin<Transf>",
                           "001",
                           "from ActionDigraph (exceptions)",
                           "[quick][make]") {
@@ -63,13 +63,13 @@ namespace libsemigroups {
         5,
         {{1, 3, 4, 1}, {0, 0, 1, 1}, {2, 1, 2, 2}, {3, 2, 3, 3}, {4, 4, 4, 4}});
     // Couldn't use REQUIRE_THROWS_AS here for some reason
-    REQUIRE_THROWS(make<FroidurePin<Transf<0, uint8_t>>>(ad, 10, 0));
-    REQUIRE_THROWS(make<FroidurePin<Transf<0, uint8_t>>>(ad, 10, 11));
-    REQUIRE_THROWS(make<FroidurePin<Transf<0, uint8_t>>>(ad, 0, 11));
+    REQUIRE_THROWS(to_froidure_pin<Transf<0, uint8_t>>(ad, 10, 0));
+    REQUIRE_THROWS(to_froidure_pin<Transf<0, uint8_t>>(ad, 10, 11));
+    REQUIRE_THROWS(to_froidure_pin<Transf<0, uint8_t>>(ad, 0, 11));
   }
 
   /*
-  LIBSEMIGROUPS_TEST_CASE("make<FroidurePin<TCE>>",
+  LIBSEMIGROUPS_TEST_CASE("to_froidure_pin<TCE>",
                           "002",
                           "from Todd-Coxeter",
                           "[quick][make]") {
