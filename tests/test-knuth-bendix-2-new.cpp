@@ -1233,9 +1233,10 @@ namespace libsemigroups {
                           "[quick][knuthbendix]") {
     Presentation<std::string> p;
     p.alphabet("abcde");
+    presentation::add_rule(p, "bceac", "aeebbc");
+    presentation::add_rule(p, "aeebbc", "dabcd");
+
     KnuthBendix kb(p);
-    kb.add_rule("bceac", "aeebbc");
-    kb.add_rule("aeebbc", "dabcd");
     kb.run();
     REQUIRE(kb.confluent());
   }

@@ -101,7 +101,6 @@ namespace libsemigroups {
         _confluence_known(false),
         _inactive_rules(),
         _internal_is_same_as_external(false),
-        _contains_empty_string(false),
         _min_length_lhs_rule(std::numeric_limits<size_t>::max()),
         _overlap_measure(nullptr),
         _presentation(),
@@ -149,38 +148,7 @@ namespace libsemigroups {
   }
 
   //////////////////////////////////////////////////////////////////////////
-  // KnuthBendix - initialisers - private
-  //////////////////////////////////////////////////////////////////////////
-
-  // void KnuthBendix::init_from(FroidurePinBase& S) {
-  //   if (S.number_of_generators() != 0) {
-  //     if (presentation().alphabet().empty()) {
-  //       set_alphabet(S.number_of_generators());
-  //     }
-  //     // throws if rules contain letters that are not in the alphabet.
-  //     add_rules(S);
-  //   }
-  //   // Do not set froidure_pin so we are guaranteed that it
-  //   // returns a FroidurePin of detail::KBE's.
-  // }
-
-  // void KnuthBendix::init_from(KnuthBendix const& kb, bool add) {
-  //   // TODO(later)   set confluence if known? Other things?
-  //   if (!kb.alphabet().empty()) {
-  //     if (alphabet().empty()) {
-  //       set_alphabet(kb.alphabet());
-  //     }
-  //     // throws if rules contain letters that are not in the alphabet.
-  //     if (add) {
-  //       add_rules(kb.active_rules());
-  //     }
-  //   }
-  //   // TODO(later) copy other settings
-  //   _settings._overlap_policy = kb._settings._overlap_policy;
-  // }
-
-  //////////////////////////////////////////////////////////////////////////
-  // FpSemigroupInterface - non-pure virtual methods - public
+  // TODO - non-pure virtual methods - public
   //////////////////////////////////////////////////////////////////////////
 
   uint64_t KnuthBendix::size() {
@@ -188,7 +156,7 @@ namespace libsemigroups {
       return POSITIVE_INFINITY;
     }
 
-    int const modifier = (contains_empty_string() ? 0 : -1);
+    int const modifier = (presentation().contains_empty_word() ? 0 : -1);
     if (presentation().alphabet().empty()) {
       return 1 + modifier;
     } else {
@@ -453,23 +421,6 @@ namespace libsemigroups {
     report_why_we_stopped();
   }
 
-  // TODO(later) noexcept? TODO remove
-  bool KnuthBendix::contains_empty_string() const {
-    return presentation().contains_empty_word();
-    // return _contains_empty_string || (has_identity() && identity().empty());
-  }
-
-  // uint64_t KnuthBendix::number_of_normal_forms(size_t min, size_t max) {
-  //   if (presentation().alphabet().empty()) {
-  //     return 0;
-  //   } else {
-  //     int const modifier = (contains_empty_string() ? 0 : -1);
-
-  //     auto const out = number_of_paths(gilman_digraph(), 0, min, max);
-  //     return (out == POSITIVE_INFINITY ? out : out + modifier);
-  //   }
-  // }
-
   size_t KnuthBendix::number_of_active_rules() const noexcept {
     return _active_rules.size();
   }
@@ -560,56 +511,8 @@ namespace libsemigroups {
       // orderings (such as RECURSIVE)
       _min_length_lhs_rule = rule->lhs()->size();
     }
-    if (!_contains_empty_string) {
-      _contains_empty_string = rule->lhs()->empty() || rule->rhs()->empty();
-    }
     LIBSEMIGROUPS_ASSERT(_set_rules.size() == _active_rules.size());
   }
-
-  // bool KnuthBendix::is_obviously_finite_impl() {
-  //   if (finished()) {
-  //     return action_digraph_helper::is_acyclic(gilman_digraph());
-  //   } else if (has_froidure_pin() && froidure_pin()->finished()) {
-  //     return true;
-  //   }
-  //   return false;
-  // }
-
-  //////////////////////////////////////////////////////////////////////////
-  // FpSemigroupInterface - non-pure virtual methods - private
-  //////////////////////////////////////////////////////////////////////////
-
-  void KnuthBendix::set_alphabet_impl(std::string const& lphbt) {
-    _internal_is_same_as_external = true;
-    for (size_t i = 0; i < lphbt.size(); ++i) {
-      if (uint_to_internal_char(i) != lphbt[i]) {
-        _internal_is_same_as_external = false;
-        return;
-      }
-    }
-  }
-
-  void KnuthBendix::set_alphabet_impl(size_t) {
-    set_alphabet_impl("");
-  }
-
-  bool KnuthBendix::validate_identity_impl(std::string const& id) const {
-    if (id.length() > 1) {
-      LIBSEMIGROUPS_EXCEPTION(
-          "invalid identity, found %d letters, should be 0 or 1 letters",
-          id.length());
-    }
-    if (id.length() == 1) {
-      // TODO validate_letter(id[0]);
-      return true;  // Add rules for the identity
-    } else {
-      return false;  // Don't add rules for the identity
-    }
-  }
-
-  //////////////////////////////////////////////////////////////////////////
-  // KnuthBendix - main member functions - public
-  //////////////////////////////////////////////////////////////////////////
 
   //////////////////////////////////////////////////////////////////////////
   // KnuthBendixImpl - converting ints <-> string/char - private

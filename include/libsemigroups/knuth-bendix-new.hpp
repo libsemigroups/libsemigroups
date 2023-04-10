@@ -315,18 +315,16 @@ namespace libsemigroups {
       options::overlap _overlap_policy;
     } _settings;
 
-    // TODO(v3) make helper
-    ActionDigraph<size_t> _gilman_digraph;
     ////////////////////////////////////////////////////////////////////////
     // KnuthBendix - data - private
     ////////////////////////////////////////////////////////////////////////
 
+    ActionDigraph<size_t>            _gilman_digraph;
     std::list<Rule const*>           _active_rules;
     mutable std::atomic<bool>        _confluent;
     mutable std::atomic<bool>        _confluence_known;
     mutable std::list<Rule*>         _inactive_rules;
     bool                             _internal_is_same_as_external;
-    bool                             _contains_empty_string;
     size_t                           _min_length_lhs_rule;
     std::list<Rule const*>::iterator _next_rule_it1;
     std::list<Rule const*>::iterator _next_rule_it2;
@@ -339,22 +337,6 @@ namespace libsemigroups {
     mutable size_t                   _total_rules;
 
 #ifdef LIBSEMIGROUPS_VERBOSE
-    //////////////////////////////////////////////////////////////////////////
-    // ./configure --enable-verbose functions
-    //////////////////////////////////////////////////////////////////////////
-
-    size_t max_active_word_length() {
-      auto comp = [](Rule const* p, Rule const* q) -> bool {
-        return p->lhs()->size() < q->lhs()->size();
-      };
-      auto max = std::max_element(
-          _active_rules.cbegin(), _active_rules.cend(), comp);
-      if (max != _active_rules.cend()) {
-        _max_active_word_length
-            = std::max(_max_active_word_length, (*max)->lhs()->size());
-      }
-      return _max_active_word_length;
-    }
     size_t                                   _max_stack_depth;
     size_t                                   _max_word_length;
     size_t                                   _max_active_word_length;
@@ -381,27 +363,6 @@ namespace libsemigroups {
 
     // TODO init
 
-    //! Constructs from a FroidurePin instance.
-    //!
-    //! \param S the FroidurePin instance.
-    //!
-    //! \complexity
-    //! \f$O(|S||A|)\f$ where \f$A\f$ is the set of generators used to define
-    //! \p S.
-    // explicit KnuthBendix(FroidurePinBase& S) : KnuthBendix() {
-    //   init_from(S);
-    // }
-
-    //! Constructs from a shared pointer to a FroidurePin instance.
-    //!
-    //! \param S the FroidurePin instance.
-    //!
-    //! \complexity
-    //! \f$O(|S||A|)\f$ where \f$A\f$ is the set of generators used to define
-    //! \p S.
-    // explicit KnuthBendix(std::shared_ptr<FroidurePinBase> S)
-    //     : KnuthBendix(*S) {}
-
     //! Copy constructor.
     //!
     //! \param copy the KnuthBendix instance to copy.
@@ -423,7 +384,6 @@ namespace libsemigroups {
     ~KnuthBendix();
 
     // TODO init version
-    // TODO version for word_type
     KnuthBendix(Presentation<std::string> const& p) : KnuthBendix() {
       p.validate();
       _presentation    = p;
@@ -628,61 +588,10 @@ namespace libsemigroups {
       return w;
     }
 
-    void add_rule(std::string&& u, std::string&& v) {
-      if (started()) {
-        LIBSEMIGROUPS_EXCEPTION("cannot add further rules at this stage");
-        // Note that there is actually nothing that prevents us from adding
-        // rules to KnuthBendix (i.e. it is setup so that it can be run
-        // (partially or fully) and then more rules can be added and everything
-        // is valid. We add this restriction to simplify things in the first
-        // instance.
-      }
-      presentation().validate_word(u.cbegin(), u.cend());
-      presentation().validate_word(v.cbegin(), v.cend());
-      if (u == v) {
-        return;
-      }
-      add_rule_impl(u, v);
-      // TODO uncomment?  reset();
-    }
-
-   private:
-    void add_rule_impl(std::string const& p, std::string const& q);
-    void add_rule(Rule* rule);
-
-    void internal_rewrite(internal_string_type* u) const;
-
-    static size_t               internal_char_to_uint(internal_char_type c);
-    static internal_char_type   uint_to_internal_char(size_t a);
-    static internal_string_type uint_to_internal_string(size_t i);
-    static word_type internal_string_to_word(internal_string_type const& s);
-    static internal_string_type*
-    word_to_internal_string(word_type const& w, internal_string_type* ww);
-    static internal_string_type word_to_internal_string(word_type const& u);
-    internal_char_type external_to_internal_char(external_char_type c) const;
-    external_char_type internal_to_external_char(internal_char_type a) const;
-    void external_to_internal_string(external_string_type& w) const;
-    void internal_to_external_string(internal_string_type& w) const;
-
-    Rule* new_rule() const;
-    Rule* new_rule(internal_string_type* lhs, internal_string_type* rhs) const;
-    Rule* new_rule(Rule const* rule1) const;
-    Rule* new_rule(internal_string_type::const_iterator begin_lhs,
-                   internal_string_type::const_iterator end_lhs,
-                   internal_string_type::const_iterator begin_rhs,
-                   internal_string_type::const_iterator end_rhs) const;
-
-    void push_stack(Rule* rule);
-    void overlap(Rule const* u, Rule const* v);
-    void clear_stack();
-
-    std::list<Rule const*>::iterator
-    remove_rule(std::list<Rule const*>::iterator it);
-
-   public:
     //! This friend function allows a KnuthBendix object to be left shifted
     //! into a std::ostream, such as std::cout. The currently active rules
     //! of the system are represented in the output.
+    // TODO unfriend
     friend std::ostream& operator<<(std::ostream&, KnuthBendix const&);
 
     //////////////////////////////////////////////////////////////////////////
@@ -738,42 +647,8 @@ namespace libsemigroups {
     //! (None)
     ActionDigraph<size_t> const& gilman_digraph();
 
-    //! Returns whether or not the empty string belongs in the system.
-    //!
-    //! \returns
-    //! A value of type `bool`.
-    //!
-    //! \exceptions
-    //! \no_libsemigroups_except
-    //!
-    //! \complexity
-    //! \f$O(n)\f$ where \f$n\f$ is the number of rules.
-    //!
-    //! \parameters
-    //! (None)
-    bool contains_empty_string() const;
-
-    //! Returns the number of normal forms with length in a given range.
-    //!
-    //! \param min the minimum length of a normal form to count
-    //! \param max one larger than the maximum length of a normal form to
-    //! count.
-    //!
-    //! \returns
-    //! A value of type `uint64_t`.
-    //!
-    //! \exceptions
-    //! \no_libsemigroups_except
-    //!
-    //! \complexity
-    //! Assuming that \c this has been run until finished, the complexity of
-    //! this function is at worst \f$O(mn)\f$ where \f$m\f$ is the number of
-    //! letters in the alphabet, and \f$n\f$ is the number of nodes in the
-    //! \ref gilman_digraph.
-    uint64_t number_of_normal_forms(size_t min, size_t max);
-
     //////////////////////////////////////////////////////////////////////////
-    // FpSemigroupInterface - pure virtual member functions - public
+    // TODO - pure virtual member functions - public
     //////////////////////////////////////////////////////////////////////////
 
     //! \copydoc FpSemigroupInterface::size
@@ -790,47 +665,66 @@ namespace libsemigroups {
 
     std::string normal_form(std::string const& w);
 
-    //////////////////////////////////////////////////////////////////////////
-    // FpSemigroupInterface - non-pure virtual member functions - public
-    //////////////////////////////////////////////////////////////////////////
-
    private:
+    void add_rule_impl(std::string const& p, std::string const& q);
+    void add_rule(Rule* rule);
+
+    void internal_rewrite(internal_string_type* u) const;
+
+    static internal_string_type word_to_internal_string(word_type const& u);
+    static size_t               internal_char_to_uint(internal_char_type c);
+    static internal_char_type   uint_to_internal_char(size_t a);
+    static internal_string_type uint_to_internal_string(size_t i);
+    static word_type internal_string_to_word(internal_string_type const& s);
+
+    static internal_string_type*
+    word_to_internal_string(word_type const& w, internal_string_type* ww);
+
+    internal_char_type external_to_internal_char(external_char_type c) const;
+    external_char_type internal_to_external_char(internal_char_type a) const;
+    void external_to_internal_string(external_string_type& w) const;
+    void internal_to_external_string(internal_string_type& w) const;
+
+    Rule* new_rule() const;
+    Rule* new_rule(internal_string_type* lhs, internal_string_type* rhs) const;
+    Rule* new_rule(Rule const* rule1) const;
+    Rule* new_rule(internal_string_type::const_iterator begin_lhs,
+                   internal_string_type::const_iterator end_lhs,
+                   internal_string_type::const_iterator begin_rhs,
+                   internal_string_type::const_iterator end_rhs) const;
+
+    void push_stack(Rule* rule);
+    void overlap(Rule const* u, Rule const* v);
+    void clear_stack();
+
+    std::list<Rule const*>::iterator
+    remove_rule(std::list<Rule const*>::iterator it);
+
+#ifdef LIBSEMIGROUPS_VERBOSE
     //////////////////////////////////////////////////////////////////////////
-    // KnuthBendix - initialisers - private
+    // ./configure --enable-verbose functions
     //////////////////////////////////////////////////////////////////////////
 
-    // void init_from(KnuthBendix const&, bool = true);
-    // void init_from(FroidurePinBase&);
+    size_t max_active_word_length() {
+      auto comp = [](Rule const* p, Rule const* q) -> bool {
+        return p->lhs()->size() < q->lhs()->size();
+      };
+      auto max = std::max_element(
+          _active_rules.cbegin(), _active_rules.cend(), comp);
+      if (max != _active_rules.cend()) {
+        _max_active_word_length
+            = std::max(_max_active_word_length, (*max)->lhs()->size());
+      }
+      return _max_active_word_length;
+    }
+#endif
 
     //////////////////////////////////////////////////////////////////////////
-    // FpSemigroupInterface - pure virtual member functions - private
+    // Runner - pure virtual member functions - private
     //////////////////////////////////////////////////////////////////////////
-
-    std::shared_ptr<FroidurePinBase> froidure_pin_impl();
 
     void run_impl();
-
     bool finished_impl() const;
-
-    bool is_obviously_infinite_impl();
-    bool is_obviously_finite_impl();
-
-    //////////////////////////////////////////////////////////////////////////
-    // FpSemigroupInterface - non-pure virtual member functions - private
-    //////////////////////////////////////////////////////////////////////////
-
-    void set_alphabet_impl(std::string const&);
-    void set_alphabet_impl(size_t);
-
-    void validate_word_impl(std::string const&) const {
-      // do nothing, the empty string is allowed!
-    }
-
-    bool validate_identity_impl(std::string const&) const;
-
-    //////////////////////////////////////////////////////////////////////////
-    // KnuthBendix - data - private
-    //////////////////////////////////////////////////////////////////////////
   };
 
   namespace knuth_bendix {
