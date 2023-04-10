@@ -324,11 +324,13 @@ namespace libsemigroups {
         (nf.min(0).max(6) | to_strings(p.alphabet())
          | all_of([&kb](auto const& w) { return kb.normal_form(w) == w; })));
   }
+
   LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
                           "007",
                           "Example 5.4 in Sims",
                           "[quick][knuth-bendix]") {
-    auto                      rg = ReportGuard(REPORT);
+    auto rg = ReportGuard(false);
+
     Presentation<std::string> p;
     p.contains_empty_word(true);
     p.alphabet("Bab");
@@ -347,6 +349,7 @@ namespace libsemigroups {
 
     auto nf = knuth_bendix::normal_forms(kb).min(1).max(5)
               | to_strings(p.alphabet());
+    REQUIRE(nf.size_hint() == 11);
     REQUIRE((nf | to_vector())
             == std::vector<std::string>({"B",
                                          "a",

@@ -495,9 +495,10 @@ namespace libsemigroups {
     //! \warning
     //! No checks that the arguments describe words over the alphabet of the
     //! presentation are performed.
-    inline void add_rule(Presentation<std::string>& p,
-                         char const*                lhop,
-                         char const*                rhop) {
+    inline void add_rule(Presentation<std::string>& p,  // FIXME why is this
+                                                        // even required
+                         char const* lhop,
+                         char const* rhop) {
       add_rule(p, std::string(lhop), std::string(rhop));
     }
 
@@ -520,6 +521,30 @@ namespace libsemigroups {
                             char const*      lhop,
                             char const*      rhop) {
       add_rule_and_check(p, std::string(lhop), std::string(rhop));
+    }
+
+    inline void add_rule_and_check(Presentation<std::string>& p,
+                                   std::string const&         lhop,
+                                   char const*                rhop) {
+      add_rule_and_check(p, lhop, std::string(rhop));
+    }
+
+    inline void add_rule_and_check(Presentation<std::string>& p,
+                                   char const*                lhop,
+                                   std::string const&         rhop) {
+      add_rule_and_check(p, std::string(lhop), rhop);
+    }
+
+    inline void add_rule(Presentation<std::string>& p,
+                         std::string const&         lhop,
+                         char const*                rhop) {
+      add_rule(p, lhop, std::string(rhop));
+    }
+
+    inline void add_rule(Presentation<std::string>& p,
+                         char const*                lhop,
+                         std::string const&         rhop) {
+      add_rule(p, std::string(lhop), rhop);
     }
 
     //! Add a rule to the presentation by `initializer_list`.
@@ -1641,6 +1666,14 @@ namespace libsemigroups {
     word_type w;
     to_word(p, w, s);
     return w;
+  }
+
+  inline std::string to_string(Presentation<std::string> const& p,
+                               word_type const&                 w) {
+    std::string s(w.size(), 0);
+    std::transform(
+        w.cbegin(), w.cend(), s.begin(), [&p](auto i) { return p.letter(i); });
+    return s;
   }
 
   inline word_type operator+(word_type const& u, word_type const& w) {

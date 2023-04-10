@@ -807,8 +807,10 @@ namespace libsemigroups {
   }
 
   template <typename Node>
-  void Paths<Node>::set_iterator() const {
-    if (!_current_valid && _digraph->number_of_nodes() != 0) {
+  bool Paths<Node>::set_iterator() const {
+    size_t const N = _digraph->number_of_nodes();
+
+    if (!_current_valid && N != 0) {
       _current_valid = true;
       if (_order == order::shortlex && _source != UNDEFINED) {
         if (_target != UNDEFINED) {
@@ -827,7 +829,9 @@ namespace libsemigroups {
           _end     = cend_pilo(*_digraph);
         }
       }
+      return true;
     }
+    return N != 0;
   }
 
   template <typename Node>

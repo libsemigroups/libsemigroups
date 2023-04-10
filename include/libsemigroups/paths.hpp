@@ -916,7 +916,7 @@ namespace libsemigroups {
     mutable const_iterator          _end;
     mutable bool                    _current_valid;
 
-    void set_iterator() const;
+    bool set_iterator() const;
 
    public:
     output_type get() const {
@@ -926,12 +926,13 @@ namespace libsemigroups {
     }
 
     void next() {
-      set_iterator();
       std::visit([](auto& it) { ++it; }, _current);
     }
 
     bool at_end() const {
-      set_iterator();
+      if (!set_iterator()) {
+        return true;
+      }
       return _current == _end;
     }
 

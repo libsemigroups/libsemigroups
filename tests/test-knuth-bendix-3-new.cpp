@@ -676,10 +676,10 @@ namespace libsemigroups {
     REQUIRE(kb.gilman_digraph().number_of_nodes() == 0);
     auto nf = knuth_bendix::normal_forms(kb);
     REQUIRE((nf.min(0).max(4) | to_vector()).empty());
+    REQUIRE(nf.min(0).max(4).count() == 0);
   }
 
-  //
-  //     // Symmetric group S_4
+  // Symmetric group S_4
   LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
                           "068",
                           "(from kbmag/standalone/kb_data/s4)",

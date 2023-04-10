@@ -363,14 +363,6 @@ namespace libsemigroups {
 #endif
 
    public:
-    //! The type of the return value of froidure_pin().
-    //!
-    //! froidure_pin() returns a \shared_ptr to a FroidurePinBase,
-    //! which is really of type \ref froidure_pin_type.
-    // using froidure_pin_type
-    //     = FroidurePin<detail::KBE, FroidurePinTraits<detail::KBE,
-    //     KnuthBendix>>;
-
     //////////////////////////////////////////////////////////////////////////
     // KnuthBendix - constructors and destructor - public
     //////////////////////////////////////////////////////////////////////////
@@ -431,7 +423,6 @@ namespace libsemigroups {
     ~KnuthBendix();
 
     // TODO init version
-    // TODO rvalue ref version
     // TODO version for word_type
     KnuthBendix(Presentation<std::string> const& p) : KnuthBendix() {
       p.validate();
@@ -442,6 +433,21 @@ namespace libsemigroups {
         add_rule_impl(*it, *(it + 1));
       }
     }
+
+    KnuthBendix(Presentation<std::string>&& p) : KnuthBendix() {
+      p.validate();
+      _presentation = std::move(p);
+      // TODO remove code dupl
+      auto const first = _presentation.rules.cbegin();
+      auto const last  = _presentation.rules.cend();
+      for (auto it = first; it != last; it += 2) {
+        add_rule_impl(*it, *(it + 1));
+      }
+    }
+
+    template <typename Word>
+    KnuthBendix(Presentation<Word> const& p)
+        : KnuthBendix(make<Presentation<std::string>>(p)) {}
 
     [[nodiscard]] Presentation<std::string> const&
     presentation() const noexcept {
