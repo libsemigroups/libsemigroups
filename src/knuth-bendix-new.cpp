@@ -21,26 +21,15 @@
 #include <cstddef>  // for size_t
 #include <string>   // for string
 
-// #include "libsemigroups/cong-intf.hpp"          // for CongruenceInterface
-#include "libsemigroups/debug.hpp"      // for LIBSEMIGROUPS_ASSERT
-#include "libsemigroups/digraph.hpp"    // for ActionDigraph
-#include "libsemigroups/exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
-// #include "libsemigroups/fpsemi-intf.hpp"        // for FpSemigroupInterface
+#include "libsemigroups/debug.hpp"              // for LIBSEMIGROUPS_ASSERT
+#include "libsemigroups/digraph.hpp"            // for ActionDigraph
+#include "libsemigroups/exception.hpp"          // for LIBSEMIGROUPS_EXCEPTION
 #include "libsemigroups/froidure-pin-base.hpp"  // for FroidurePinBase
 #include "libsemigroups/froidure-pin.hpp"       // for FroidurePin
-// #include "libsemigroups/kbe.hpp"                // for detail::KBE
-#include "libsemigroups/obvinf.hpp"  // for IsObviouslyInfinitePairs
-#include "libsemigroups/types.hpp"   // for word_type
-
-// Include kbe-impl.hpp after knuth-bendix-impl.hpp since detail::KBE depends on
-// KnuthBendixImpl.
-// #include "kbe-impl.hpp"
+#include "libsemigroups/obvinf.hpp"             // for IsObviouslyInfinitePairs
+#include "libsemigroups/types.hpp"              // for word_type
 
 namespace libsemigroups {
-  // using froidure_pin_type
-  //     = FroidurePin<detail::KBE,
-  //                   FroidurePinTraits<detail::KBE,
-  //                   fpsemigroup::KnuthBendix>>;
 
   namespace {
     bool is_subword(std::string const& x, std::string const& y) {
