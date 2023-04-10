@@ -333,13 +333,12 @@ ad.add_edge(4, 5, 0);
   }
 
   LIBSEMIGROUPS_TEST_CASE("action_digraph_helper", "016", "make", "[quick]") {
-    auto ad = action_digraph_helper::make<uint8_t>(
-        5, {{0, 0}, {1, 1}, {2}, {3, 3}});
+    auto ad = to_action_digraph<uint8_t>(5, {{0, 0}, {1, 1}, {2}, {3, 3}});
     REQUIRE(detail::to_string(ad)
             == "{{0, 0}, {1, 1}, {2, -}, {3, 3}, {-, -}}");
-    REQUIRE_THROWS_AS(action_digraph_helper::make<uint8_t>(
-                          5, {{0, 0}, {1, 1, 1}, {2}, {3, 3}}),
-                      LibsemigroupsException);
+    REQUIRE_THROWS_AS(
+        to_action_digraph<uint8_t>(5, {{0, 0}, {1, 1, 1}, {2}, {3, 3}}),
+        LibsemigroupsException);
     ad = ActionDigraph<uint8_t>(5, 2);
     REQUIRE(detail::to_string(ad)
             == "{{-, -}, {-, -}, {-, -}, {-, -}, {-, -}}");
@@ -349,8 +348,7 @@ ad.add_edge(4, 5, 0);
                           "017",
                           "is_connected",
                           "[quick]") {
-    auto ad
-        = action_digraph_helper::make<size_t>(5, {{0, 0}, {1, 1}, {2}, {3, 3}});
+    auto ad = to_action_digraph<size_t>(5, {{0, 0}, {1, 1}, {2}, {3, 3}});
     REQUIRE(!action_digraph_helper::is_connected(ad));
     ad = path(1'000);
     REQUIRE(action_digraph_helper::is_connected(ad));
@@ -370,8 +368,7 @@ ad.add_edge(4, 5, 0);
                           "018",
                           "is_strictly_cyclic",
                           "[quick]") {
-    auto ad
-        = action_digraph_helper::make<size_t>(5, {{0, 0}, {1, 1}, {2}, {3, 3}});
+    auto ad = to_action_digraph<size_t>(5, {{0, 0}, {1, 1}, {2}, {3, 3}});
     REQUIRE(!action_digraph_helper::is_strictly_cyclic(ad));
     ad = path(1'000);
     REQUIRE(action_digraph_helper::is_strictly_cyclic(ad));

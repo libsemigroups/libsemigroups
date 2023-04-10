@@ -451,7 +451,7 @@ namespace libsemigroups {
 
       size_t n = 4;
       auto   s = partial_transformation_monoid(n, author::Sutov);
-      auto   p = make<Presentation<word_type>>(s);
+      auto   p = to_presentation<word_type>(s);
       p.alphabet(n + 2);
       presentation::replace_word(p, word_type({}), {n + 1});
       presentation::add_identity_rules(p, n + 1);
@@ -473,7 +473,7 @@ namespace libsemigroups {
 
       size_t n = 5;
       auto   s = partial_transformation_monoid(n, author::Sutov);
-      auto   p = make<Presentation<word_type>>(s);
+      auto   p = to_presentation<word_type>(s);
       p.alphabet(n + 2);
       presentation::replace_word(p, word_type({}), {n + 1});
       presentation::add_identity_rules(p, n + 1);
@@ -495,7 +495,7 @@ namespace libsemigroups {
 
       size_t n = 5;
       auto   s = full_transformation_monoid(n, author::Iwahori);
-      auto   p = make<Presentation<word_type>>(s);
+      auto   p = to_presentation<word_type>(s);
       p.alphabet(n + 1);
       presentation::replace_word(p, word_type({}), {n});
       presentation::add_identity_rules(p, n);

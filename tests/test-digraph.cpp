@@ -643,7 +643,7 @@ namespace libsemigroups {
 
     ad.restrict(2);
     REQUIRE(ad
-            == action_digraph_helper::make<size_t>(2, {{1, UNDEFINED}, {0}}));
+            == to_action_digraph<size_t>(2, {{1, UNDEFINED}, {0}}));
   }
 
   LIBSEMIGROUPS_TEST_CASE("ActionDigraph", "012", "remove_edge_nc", "[quick]") {
@@ -656,7 +656,7 @@ namespace libsemigroups {
 
     ad.remove_edge_nc(0, 0);  // remove edge from 0 labelled 0
     REQUIRE(ad
-            == action_digraph_helper::make<size_t>(
+            == to_action_digraph<size_t>(
                 3, {{UNDEFINED, UNDEFINED}, {0}, {0}}));
   }
 
@@ -672,7 +672,7 @@ namespace libsemigroups {
     ad.swap_edges_nc(0, 1, 0);
     REQUIRE(
         ad
-        == action_digraph_helper::make<size_t>(3, {{0, UNDEFINED}, {1}, {2}}));
+        == to_action_digraph<size_t>(3, {{0, UNDEFINED}, {1}, {2}}));
   }
 
   LIBSEMIGROUPS_TEST_CASE("ActionDigraph", "045", "operator<<", "[quick]") {

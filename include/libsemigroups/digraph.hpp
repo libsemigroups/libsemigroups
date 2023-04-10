@@ -1989,17 +1989,14 @@ namespace libsemigroups {
   //! \par Example
   //! \code
   //! // Construct an action digraph with 5 nodes and 10 edges (7 specified)
-  //! action_digraph_helper::make<uint8_t>(
+  //! to_action_digraph<uint8_t>(
   //!     5, {{0, 0}, {1, 1}, {2}, {3, 3}});
   //! \endcode
-  template <typename Digraph,
-            typename
-            = std::enable_if_t<std::is_base_of_v<ActionDigraphBase, Digraph>>>
-  Digraph
-  make(size_t num_nodes,
-       std::initializer_list<std::initializer_list<typename Digraph::node_type>>
-           il) {
-    Digraph result(num_nodes, il.begin()->size());
+  template <typename Node>
+  ActionDigraph<Node>
+  to_action_digraph(size_t num_nodes,
+                    std::initializer_list<std::initializer_list<Node>> il) {
+    ActionDigraph<Node> result(num_nodes, il.begin()->size());
     for (size_t i = 0; i < il.size(); ++i) {
       for (size_t j = 0; j < (il.begin() + i)->size(); ++j) {
         auto val = *((il.begin() + i)->begin() + j);

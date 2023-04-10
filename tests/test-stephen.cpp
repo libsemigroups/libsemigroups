@@ -55,7 +55,7 @@ namespace libsemigroups {
       s.set_word({0}).run();
       REQUIRE(s.word_graph().number_of_nodes() == 2);
       REQUIRE(s.word_graph()
-              == action_digraph_helper::make<size_t>(
+              == to_action_digraph<size_t>(
                   2, {{1, UNDEFINED}, {UNDEFINED, 1}}));
       REQUIRE(stephen::number_of_words_accepted(s) == POSITIVE_INFINITY);
       {
@@ -172,7 +172,7 @@ namespace libsemigroups {
     s.set_word({1, 1, 0, 1}).run();
     REQUIRE(s.word_graph().number_of_nodes() == 7);
     REQUIRE(s.word_graph()
-            == action_digraph_helper::make<size_t>(7,
+            == to_action_digraph<size_t>(7,
                                                    {{UNDEFINED, 1},
                                                     {UNDEFINED, 2},
                                                     {3, 1},
@@ -239,7 +239,7 @@ namespace libsemigroups {
     s.set_word({0, 0}).run();
     REQUIRE(s.word_graph().number_of_nodes() == 5);
     REQUIRE(s.word_graph()
-            == action_digraph_helper::make<size_t>(
+            == to_action_digraph<size_t>(
                 5, {{1, UNDEFINED}, {2, 3}, {1, 4}, {4, 1}, {3, 2}}));
 
     p.rules.clear();
@@ -248,7 +248,7 @@ namespace libsemigroups {
     s.init(p).set_word({0, 0}).run();
     REQUIRE(s.word_graph().number_of_nodes() == 3);
     REQUIRE(s.word_graph()
-            == action_digraph_helper::make<size_t>(
+            == to_action_digraph<size_t>(
                 3, {{1, UNDEFINED}, {2, UNDEFINED}, {1, UNDEFINED}}));
   }
 
@@ -269,7 +269,7 @@ namespace libsemigroups {
     s.init(std::move(p)).set_word({0, 1, 0, 1, 1, 1, 0, 2, 0, 1, 2, 0}).run();
     REQUIRE(s.word_graph().number_of_nodes() == 121);
     REQUIRE(s.word_graph()
-            == action_digraph_helper::make<size_t>(
+            == to_action_digraph<size_t>(
                 121, {{1, 2, 3, 4, UNDEFINED, 5},
                       {5, 6, 7, 8, UNDEFINED, 1},
                       {9, 5, 10, 11, UNDEFINED, 2},
@@ -438,7 +438,7 @@ namespace libsemigroups {
     S.set_word(string_to_word("abcef")).run();
     REQUIRE(string_to_word("abcef") == word_type({0, 1, 2, 4, 5}));
     REQUIRE(S.word_graph()
-            == action_digraph_helper::make<size_t>(
+            == to_action_digraph<size_t>(
                 11,
                 {{1,
                   UNDEFINED,

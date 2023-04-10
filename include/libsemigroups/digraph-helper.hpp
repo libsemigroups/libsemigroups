@@ -753,47 +753,6 @@ namespace libsemigroups {
       }
     }  // namespace detail
 
-    //! Constructs a digraph from number of nodes and an \c initializer_list.
-    //!
-    //! This function constructs an ActionDigraph from its arguments whose
-    //! out-degree is specified by the length of the first \c initializer_list
-    //! in the 2nd parameter.
-    //!
-    //! \tparam T the type of the nodes of the digraph
-    //!
-    //! \param num_nodes the number of nodes in the digraph.
-    //! \param il the out-neighbors of the digraph.
-    //!
-    //! \returns A value of type ActionDigraph.
-    //!
-    //! \throws LibsemigroupsException
-    //! if ActionDigraph<T>::add_edge throws when adding edges from \p il.
-    //!
-    //! \complexity
-    //! \f$O(mn)\f$ where \f$m\f$ is the length of \p il and \f$n\f$ is the
-    //! parameter \p num_nodes.
-    //!
-    //! \par Example
-    //! \code
-    //! // Construct an action digraph with 5 nodes and 10 edges (7 specified)
-    //! action_digraph_helper::make<uint8_t>(
-    //!     5, {{0, 0}, {1, 1}, {2}, {3, 3}});
-    //! \endcode
-    template <typename T>
-    ActionDigraph<T> make(size_t num_nodes,
-                          std::initializer_list<std::initializer_list<T>> il) {
-      ActionDigraph<T> result(num_nodes, il.begin()->size());
-      for (size_t i = 0; i < il.size(); ++i) {
-        for (size_t j = 0; j < (il.begin() + i)->size(); ++j) {
-          auto val = *((il.begin() + i)->begin() + j);
-          if (val != UNDEFINED) {
-            result.add_edge(i, *((il.begin() + i)->begin() + j), j);
-          }
-        }
-      }
-      return result;
-    }
-
     //! Check if a digraph is connected.
     //!
     //! \tparam T the type used as the template parameter for the
@@ -821,7 +780,7 @@ namespace libsemigroups {
     //!
     //! \par Example
     //! \code
-    //! auto ad = action_digraph_helper::make<uint8_t>(
+    //! auto ad = to_action_digraph<uint8_t>(
     //!     5, {{0, 0}, {1, 1}, {2}, {3, 3}});
     //! action_digraph_helper::is_connected(ad);  // returns false
     //! \endcode
@@ -872,7 +831,7 @@ namespace libsemigroups {
     //!
     //! \par Example
     //! \code
-    //! auto ad = action_digraph_helper::make<uint8_t>(
+    //! auto ad = to_action_digraph<uint8_t>(
     //!     5, {{0, 0}, {1, 1}, {2}, {3, 3}});
     //! action_digraph_helper::is_strictly_cyclic(ad);  // returns false
     //! \endcode
