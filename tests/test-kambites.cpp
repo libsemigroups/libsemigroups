@@ -2616,7 +2616,7 @@ namespace {
                                    LeastTransf<6>({1, 0, 2, 3, 4, 5}),
                                    LeastTransf<6>({0, 1, 2, 3, 4, 0})});
     REQUIRE(S.size() == 46'656);
-    auto     p = make<Presentation<word_type>>(S);
+    auto     p = to_presentation<word_type>(S);
     Kambites k(p);
     REQUIRE(k.small_overlap_class() == 1);
   }

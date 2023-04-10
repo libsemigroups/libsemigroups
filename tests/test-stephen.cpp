@@ -259,8 +259,7 @@ namespace libsemigroups {
     using namespace fpsemigroup;
     auto   rg = ReportGuard(true);
     size_t n  = 5;
-    auto   p  = make<Presentation<word_type>>(
-        full_transformation_monoid(n, author::Iwahori));
+    auto   p  = full_transformation_monoid(n, author::Iwahori);
     presentation::replace_word(p, {}, {n});
     p.alphabet(n + 1);
     presentation::add_identity_rules(p, n);

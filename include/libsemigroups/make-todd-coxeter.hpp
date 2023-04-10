@@ -26,7 +26,7 @@
 #include "digraph.hpp"            // for ActionDigraph
 #include "exception.hpp"          // for LIBSEMIGROUPS_EXCEPTION
 #include "froidure-pin-base.hpp"  // for FroidurePinBase
-#include "knuth-bendix.hpp"       // for KnuthBendix and make
+#include "knuth-bendix-new.hpp"   // for KnuthBendix
 #include "todd-coxeter-new.hpp"   // for ToddCoxeter
 
 namespace libsemigroups {
@@ -63,16 +63,13 @@ namespace libsemigroups {
 
   template <typename T,
             typename = std::enable_if_t<std::is_same_v<ToddCoxeter, T>>>
-  ToddCoxeter make(congruence_kind knd, fpsemigroup::KnuthBendix& kb) {
-    auto ps = make<Presentation<std::string>>(kb);
-    auto pw = make<Presentation<word_type>>(ps);
-
+  ToddCoxeter make(congruence_kind knd, KnuthBendix& kb) {
     // TODO uncomment
     // if (kb.finished() && kb.is_obviously_finite()) {
     //   froidure_pin_policy(options::froidure_pin::use_cayley_graph);
     // }
 
-    return ToddCoxeter(knd, std::move(pw));
+    return ToddCoxeter(knd, kb.presentation());
   }
 
 }  // namespace libsemigroups

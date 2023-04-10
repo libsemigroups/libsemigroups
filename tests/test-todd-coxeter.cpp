@@ -2432,7 +2432,7 @@ namespace libsemigroups {
         "[todd-coxeter][quick][no-valgrind][no-coverage]") {
       auto         rg = ReportGuard(REPORT);
       size_t const n  = 6;
-      auto p = make<Presentation<word_type>>(orientation_preserving_monoid(n));
+      auto p = to_presentation<word_type>(orientation_preserving_monoid(n));
       p.alphabet(3);
       presentation::replace_word(p, word_type({}), {2});
       presentation::add_identity_rules(p, 2);
@@ -2457,7 +2457,7 @@ namespace libsemigroups {
                             "[todd-coxeter][quick][no-valgrind][no-coverage]") {
       auto         rg = ReportGuard(REPORT);
       size_t const n  = 5;
-      auto p = make<Presentation<word_type>>(orientation_reversing_monoid(n));
+      auto p = to_presentation<word_type>(orientation_reversing_monoid(n));
       p.alphabet(4);
       presentation::replace_word(p, word_type({}), {3});
       presentation::add_identity_rules(p, 3);
@@ -2563,8 +2563,7 @@ namespace libsemigroups {
                             "[todd-coxeter][fail]") {
       auto rg = ReportGuard(false);
       for (size_t n = 3; n <= 9; ++n) {
-        auto p
-            = make<Presentation<word_type>>(orientation_preserving_monoid(n));
+        auto p = to_presentation<word_type>(orientation_preserving_monoid(n));
         p.alphabet(3);
         presentation::replace_word(p, word_type({}), {2});
         presentation::add_identity_rules(p, 2);
@@ -2584,7 +2583,7 @@ namespace libsemigroups {
                             "[todd-coxeter][fail]") {
       auto rg = ReportGuard(false);
       for (size_t n = 3; n <= 8; ++n) {
-        auto p = make<Presentation<word_type>>(orientation_reversing_monoid(n));
+        auto p = to_presentation<word_type>(orientation_reversing_monoid(n));
         p.alphabet(4);
         presentation::replace_word(p, word_type({}), {3});
         presentation::add_identity_rules(p, 3);
@@ -2671,7 +2670,7 @@ namespace libsemigroups {
       auto   rg = ReportGuard(REPORT);
       size_t n  = 5;
       auto   s  = symmetric_inverse_monoid(n, author::Sutov);
-      auto   p  = make<Presentation<word_type>>(s);
+      auto   p  = to_presentation<word_type>(s);
       p.alphabet(n + 1);
       presentation::replace_word(p, word_type({}), {n});
       presentation::add_identity_rules(p, n);
@@ -2691,7 +2690,7 @@ namespace libsemigroups {
       auto   rg = ReportGuard(REPORT);
       size_t n  = 5;
       auto   s  = partial_transformation_monoid(n, author::Sutov);
-      auto   p  = make<Presentation<word_type>>(s);
+      auto   p  = to_presentation<word_type>(s);
       p.alphabet(n + 2);
       presentation::replace_word(p, word_type({}), {n + 1});
       presentation::add_identity_rules(p, n + 1);
@@ -2711,7 +2710,7 @@ namespace libsemigroups {
       auto   rg = ReportGuard(REPORT);
       size_t n  = 7;
       auto   s  = full_transformation_monoid(n, author::Iwahori);
-      auto   p  = make<Presentation<word_type>>(s);
+      auto   p  = to_presentation<word_type>(s);
       p.alphabet(n + 1);
       presentation::replace_word(p, word_type({}), {n});
       presentation::add_identity_rules(p, n);

@@ -65,7 +65,7 @@ namespace libsemigroups {
     S.add_generator(PPerm<3>::make({1, 2}, {0, 2}, 3));
     REQUIRE(S.size() == 20);
 
-    auto p = make<Presentation<word_type>>(S);
+    auto p = to_presentation<word_type>(S);
 
     BENCHMARK("Right congruences") {
       Sims1_ C(congruence_kind::right, p);
@@ -91,7 +91,7 @@ namespace libsemigroups {
     S.add_generator(PPerm<4>::make({1, 2, 3}, {0, 2, 3}, 4));
     REQUIRE(S.size() == 70);
 
-    auto p = make<Presentation<word_type>>(S);
+    auto p = to_presentation<word_type>(S);
 
     BENCHMARK("Right congruences") {
       Sims1_ C(congruence_kind::right, p);
@@ -114,7 +114,7 @@ namespace libsemigroups {
     S.add_generator(FastestBMat<3>({{1, 0, 0}, {0, 1, 0}, {0, 1, 1}}));
     REQUIRE(S.size() == 64);
 
-    auto p = make<Presentation<word_type>>(S);
+    auto p = to_presentation<word_type>(S);
     BENCHMARK("Right congruences") {
       Sims1_ C(congruence_kind::right, p);
       REQUIRE(C.number_of_congruences(S.size()) == 7);
@@ -128,7 +128,7 @@ namespace libsemigroups {
   TEST_CASE("singular_brauer_monoid(3) (Maltcev-Mazorchuk)",
             "[talk][singular_brauer_monoid3]") {
     auto rg = ReportGuard(false);
-    auto p  = make<Presentation<word_type>>(singular_brauer_monoid(3));
+    auto p  = to_presentation<word_type>(singular_brauer_monoid(3));
     REQUIRE(p.rules.size() == 48);
 
     BENCHMARK("Right congruences") {
@@ -144,7 +144,7 @@ namespace libsemigroups {
   TEST_CASE("singular_brauer_monoid(4) (Maltcev-Mazorchuk)",
             "[talk][singular_brauer_monoid4]") {
     auto rg = ReportGuard(true);
-    auto p  = make<Presentation<word_type>>(singular_brauer_monoid(4));
+    auto p  = to_presentation<word_type>(singular_brauer_monoid(4));
     REQUIRE(presentation::length(p) == 660);
     presentation::remove_duplicate_rules(p);
     REQUIRE(presentation::length(p) == 600);
@@ -163,7 +163,7 @@ namespace libsemigroups {
   TEST_CASE("symmetric_inverse_monoid(2) (Hivert)",
             "[talk][symmetric_inverse_monoid2]") {
     auto rg = ReportGuard(true);
-    auto p  = make<Presentation<word_type>>(rook_monoid(2, 1));
+    auto p  = to_presentation<word_type>(rook_monoid(2, 1));
     presentation::remove_duplicate_rules(p);
     presentation::sort_each_rule(p);
     presentation::sort_rules(p);
@@ -177,7 +177,7 @@ namespace libsemigroups {
   TEST_CASE("symmetric_inverse_monoid(3) (Hivert)",
             "[talk][symmetric_inverse_monoid3]") {
     auto rg = ReportGuard(true);
-    auto p  = make<Presentation<word_type>>(rook_monoid(3, 1));
+    auto p  = to_presentation<word_type>(rook_monoid(3, 1));
     presentation::remove_duplicate_rules(p);
     presentation::sort_each_rule(p);
     presentation::sort_rules(p);
@@ -191,7 +191,7 @@ namespace libsemigroups {
   TEST_CASE("symmetric_inverse_monoid(4) (Hivert)",
             "[talk][symmetric_inverse_monoid4]") {
     auto rg = ReportGuard(false);
-    auto p  = make<Presentation<word_type>>(rook_monoid(4, 1));
+    auto p  = to_presentation<word_type>(rook_monoid(4, 1));
     presentation::remove_duplicate_rules(p);
     presentation::sort_each_rule(p);
     presentation::sort_rules(p);

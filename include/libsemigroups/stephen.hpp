@@ -29,10 +29,10 @@
 #include "constants.hpp"             // for PositiveInfinity
 #include "digraph-with-sources.hpp"  // for DigraphWithSources
 #include "digraph.hpp"               // for ActionDigraph, Act...
-#include "make-present.hpp"          // for make
 #include "paths.hpp"                 // for Paths
 #include "present.hpp"               // for Presentation
 #include "runner.hpp"                // for Runner
+#include "to-presentation.hpp"       // for make
 #include "todd-coxeter-digraph.hpp"  // for StephenDigraph
 #include "types.hpp"                 // for word_type
 
@@ -240,7 +240,7 @@ namespace libsemigroups {
     static_assert(std::is_base_of<PresentationBase, std::decay_t<P>>::value,
                   "the template parameter P must be derived from "
                   "PresentationBase");
-    init(std::move(make<Presentation<word_type>>(p)));
+    init(std::move(to_presentation<word_type>(p)));
   }
 
   template <typename P>

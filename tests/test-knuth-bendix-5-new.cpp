@@ -60,7 +60,7 @@ namespace libsemigroups {
     REQUIRE(S.size() == 4);
     REQUIRE(S.number_of_rules() == 4);
 
-    auto p = make<Presentation<word_type>>(S);
+    auto p = to_presentation<word_type>(S);
 
     KnuthBendix kb(p);
     REQUIRE(kb.confluent());
@@ -82,7 +82,7 @@ namespace libsemigroups {
     REQUIRE(S.degree() == 5);
     REQUIRE(S.number_of_rules() == 3);
 
-    auto        p = make<Presentation<word_type>>(S);
+    auto        p = to_presentation<word_type>(S);
     KnuthBendix kb(p);
     REQUIRE(kb.confluent());
     REQUIRE(kb.number_of_active_rules() == 3);
@@ -102,7 +102,7 @@ namespace libsemigroups {
     REQUIRE(S.degree() == 5);
     REQUIRE(S.number_of_rules() == 18);
 
-    auto        p = make<Presentation<word_type>>(S);
+    auto        p = to_presentation<word_type>(S);
     KnuthBendix kb(p);
     REQUIRE(kb.confluent());
     REQUIRE(kb.number_of_active_rules() == 18);
@@ -118,7 +118,7 @@ namespace libsemigroups {
     S.add_generator(Transf<>({1, 0}));
     S.add_generator(Transf<>({0, 0}));
 
-    auto p = make<Presentation<word_type>>(S);
+    auto p = to_presentation<word_type>(S);
 
     KnuthBendix kb(p);
     REQUIRE(kb.confluent());
@@ -137,7 +137,7 @@ namespace libsemigroups {
 
     REQUIRE(S.size() == 88);
 
-    auto p = make<Presentation<word_type>>(S);
+    auto p = to_presentation<word_type>(S);
 
     KnuthBendix kb(p);
     kb.run();

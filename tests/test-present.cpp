@@ -23,14 +23,14 @@
 #include "catch.hpp"      // for REQUIRE, REQUIRE_THROWS_AS, REQUI...
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
-#include "libsemigroups/bipart.hpp"        // for Bipartition
-#include "libsemigroups/containers.hpp"    // for StaticVector1
-#include "libsemigroups/froidure-pin.hpp"  // for FroidurePin
-#include "libsemigroups/int-range.hpp"     // for IntegralRange
-#include "libsemigroups/knuth-bendix.hpp"  // for redundant_rule
-#include "libsemigroups/make-present.hpp"  // for make
-#include "libsemigroups/present.hpp"       // for Presentation
-#include "libsemigroups/types.hpp"         // for word_type
+#include "libsemigroups/bipart.hpp"           // for Bipartition
+#include "libsemigroups/containers.hpp"       // for StaticVector1
+#include "libsemigroups/froidure-pin.hpp"     // for FroidurePin
+#include "libsemigroups/int-range.hpp"        // for IntegralRange
+#include "libsemigroups/knuth-bendix.hpp"     // for redundant_rule
+#include "libsemigroups/present.hpp"          // for Presentation
+#include "libsemigroups/to-presentation.hpp"  // for make
+#include "libsemigroups/types.hpp"            // for word_type
 #include "libsemigroups/words.hpp"
 
 namespace libsemigroups {
@@ -379,7 +379,7 @@ namespace libsemigroups {
       S.add_generator(Bipartition({{1, 2}, {3, -3}, {4, -4}, {-1, -2}}));
       REQUIRE(S.size() == 105);
 
-      auto p = make<Presentation<W>>(S);
+      auto p = to_presentation<W>(S);
       REQUIRE(presentation::length(p) == 359);
       presentation::remove_duplicate_rules(p);
       REQUIRE(presentation::length(p) == 359);

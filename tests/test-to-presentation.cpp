@@ -16,30 +16,31 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#define CATCH_CONFIG_ENABLE_PAIR_STRINGMAKER
+#include <algorithm>         // for fill,  max_element
+#include <cstdint>           // for uint8_t, uint16_t
+#include <initializer_list>  // for initializer_list
+#include <string>            // for basic_string, operator==
+#include <vector>            // for vector
 
-#include <cstddef>        // for size_t
-#include <stdexcept>      // for runtime_error
-#include <unordered_set>  // for unordered_set
-#include <vector>         // for vector
+#include "catch.hpp"      // for REQUIRE, REQUIRE_THROWS_AS, REQUI...
+#include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
-#include "catch.hpp"  // for REQUIRE, REQUIRE_THROWS_AS, REQUI...
-
-#include "libsemigroups/bipart.hpp"        // for Bipartition
-#include "libsemigroups/containers.hpp"    // for StaticVector1
-#include "libsemigroups/froidure-pin.hpp"  // for FroidurePin
-#include "libsemigroups/knuth-bendix.hpp"  // for redundant_rule
-#include "libsemigroups/make-present.hpp"  // for make
-#include "libsemigroups/present.hpp"       // for Presentation
-#include "libsemigroups/types.hpp"         // for word_type
-#include "test-main.hpp"                   // for LIBSEMIGROUPS_TEST_CASE
+#include "libsemigroups/bipart.hpp"           // for Bipartition
+#include "libsemigroups/constants.hpp"        // for operator!=, operator==
+#include "libsemigroups/containers.hpp"       // for StaticVector1, operat...
+#include "libsemigroups/exception.hpp"        // for LibsemigroupsException
+#include "libsemigroups/froidure-pin.hpp"     // for FroidurePin
+#include "libsemigroups/present.hpp"          // for Presentation, change_...
+#include "libsemigroups/report.hpp"           // for ReportGuard
+#include "libsemigroups/to-presentation.hpp"  // for to_presentation
+#include "libsemigroups/types.hpp"            // for word_type
 
 namespace libsemigroups {
 
   namespace {
 
     template <typename W>
-    void check_make_from_froidure_pin() {
+    void check_to_presentation_from_froidure_pin() {
       FroidurePin<Bipartition> S;
       S.add_generator(Bipartition({{1, -1}, {2, -2}, {3, -3}, {4, -4}}));
       S.add_generator(Bipartition({{1, -2}, {2, -3}, {3, -4}, {4, -1}}));
@@ -47,7 +48,7 @@ namespace libsemigroups {
       S.add_generator(Bipartition({{1, 2}, {3, -3}, {4, -4}, {-1, -2}}));
       REQUIRE(S.size() == 105);
 
-      auto p = make<Presentation<W>>(S);
+      auto p = to_presentation<W>(S);
       REQUIRE(p.alphabet().size() == 4);
       REQUIRE(p.rules.size() == 86);
       REQUIRE(presentation::length(p) == 359);
@@ -62,7 +63,7 @@ namespace libsemigroups {
     }
 
     template <typename W1, typename W2>
-    void check_make_from_presentation() {
+    void check_to_presentation_from_presentation() {
       Presentation<W1> p;
       p.alphabet(2);
       p.contains_empty_word(false);
@@ -70,70 +71,80 @@ namespace libsemigroups {
       presentation::add_rule(p, {0, 1, 2}, {});
       // intentionally bad
       REQUIRE_THROWS_AS(p.validate(), LibsemigroupsException);
-      REQUIRE_THROWS_AS(make<Presentation<std::string>>(p),
-                        LibsemigroupsException);
+      REQUIRE_THROWS_AS(to_presentation<W2>(p), LibsemigroupsException);
 
       p.alphabet_from_rules();
       REQUIRE(p.alphabet() == W1({0, 1, 2}));
       p.validate();
       REQUIRE(p.contains_empty_word());
-      auto q = make<Presentation<W2>>(p);
+      auto q = to_presentation<W2>(p);
 
       REQUIRE(q.contains_empty_word());
       q.validate();
     }
   }  // namespace
 
-  struct LibsemigroupsException;  // forward decl
   using detail::StaticVector1;
 
-  LIBSEMIGROUPS_TEST_CASE("make", "000", "from FroidurePin", "[quick][make]") {
+  LIBSEMIGROUPS_TEST_CASE("to_presentation",
+                          "000",
+                          "from FroidurePin",
+                          "[quick][to_presentation]") {
     auto rg = ReportGuard(false);
-    check_make_from_froidure_pin<word_type>();
-    check_make_from_froidure_pin<StaticVector1<uint16_t, 8>>();
-    check_make_from_froidure_pin<std::string>();
+    check_to_presentation_from_froidure_pin<word_type>();
+    check_to_presentation_from_froidure_pin<StaticVector1<uint16_t, 8>>();
+    check_to_presentation_from_froidure_pin<std::string>();
   }
 
-  LIBSEMIGROUPS_TEST_CASE("make",
+  LIBSEMIGROUPS_TEST_CASE("to_presentation",
                           "001",
                           "from FroidurePin and alphabet",
-                          "[quick][make]") {
+                          "[quick][to_presentation]") {
     FroidurePin<Bipartition> S;
     S.add_generator(Bipartition({{1, -1}, {2, -2}, {3, -3}, {4, -4}}));
     S.add_generator(Bipartition({{1, -2}, {2, -3}, {3, -4}, {4, -1}}));
     S.add_generator(Bipartition({{1, -2}, {2, -1}, {3, -3}, {4, -4}}));
     S.add_generator(Bipartition({{1, 2}, {3, -3}, {4, -4}, {-1, -2}}));
     REQUIRE(S.size() == 105);
-    // Alphabet too small
-    REQUIRE_THROWS_AS(make(S, "abc"), LibsemigroupsException);
-    // Alphabet contains repeats
-    REQUIRE_THROWS_AS(make(S, "abca"), LibsemigroupsException);
-    // Alphabet too long
-    REQUIRE_THROWS_AS(make(S, "abcde"), LibsemigroupsException);
 
-    auto p = make(S, "abcd");
+    auto p = to_presentation<std::string>(S);
+    // Alphabet too small
+    REQUIRE_THROWS_AS(presentation::change_alphabet(p, "abc"),
+                      LibsemigroupsException);
+    // Alphabet contains repeats
+    REQUIRE_THROWS_AS(presentation::change_alphabet(p, "abca"),
+                      LibsemigroupsException);
+    // Alphabet too long
+    REQUIRE_THROWS_AS(presentation::change_alphabet(p, "abcde"),
+                      LibsemigroupsException);
+    presentation::change_alphabet(p, "abcd");
+
     REQUIRE(p.alphabet().size() == 4);
     REQUIRE(p.rules[8] == "ba");
     REQUIRE(p.rules[9] == "b");
     REQUIRE(presentation::longest_common_subword(p) == "bcb");
   }
 
-  LIBSEMIGROUPS_TEST_CASE("make",
+  LIBSEMIGROUPS_TEST_CASE("to_presentation",
                           "002",
                           "presentation from presentation",
-                          "[quick][make]") {
-    check_make_from_presentation<std::string, word_type>();
-    check_make_from_presentation<std::string, StaticVector1<uint8_t, 3>>();
-    check_make_from_presentation<word_type, std::string>();
-    check_make_from_presentation<word_type, StaticVector1<uint8_t, 3>>();
-    check_make_from_presentation<StaticVector1<uint8_t, 3>, word_type>();
-    check_make_from_presentation<StaticVector1<uint8_t, 3>, std::string>();
+                          "[quick][to_presentation]") {
+    check_to_presentation_from_presentation<std::string, word_type>();
+    check_to_presentation_from_presentation<std::string,
+                                            StaticVector1<uint8_t, 3>>();
+    check_to_presentation_from_presentation<word_type, std::string>();
+    check_to_presentation_from_presentation<word_type,
+                                            StaticVector1<uint8_t, 3>>();
+    check_to_presentation_from_presentation<StaticVector1<uint8_t, 3>,
+                                            word_type>();
+    check_to_presentation_from_presentation<StaticVector1<uint8_t, 3>,
+                                            std::string>();
   }
 
-  LIBSEMIGROUPS_TEST_CASE("make",
+  LIBSEMIGROUPS_TEST_CASE("to_presentation",
                           "003",
                           "presentation from presentation and alphabet",
-                          "[quick][make]") {
+                          "[quick][to_presentation]") {
     Presentation<word_type> p;
     p.alphabet(2);
     p.contains_empty_word(false);
@@ -141,60 +152,34 @@ namespace libsemigroups {
     presentation::add_rule(p, {0, 1, 2}, {});
     // intentionally bad
     REQUIRE_THROWS_AS(p.validate(), LibsemigroupsException);
-    REQUIRE_THROWS_AS(make<Presentation<std::string>>(p),
-                      LibsemigroupsException);
+    REQUIRE_THROWS_AS(to_presentation<std::string>(p), LibsemigroupsException);
 
     p.alphabet_from_rules();
     REQUIRE(p.alphabet() == word_type({0, 1, 2}));
     p.validate();
     REQUIRE(p.contains_empty_word());
-    auto q = make<Presentation<std::string>>(p, "abc");
+    auto q = to_presentation<std::string>(p);
+    presentation::change_alphabet(q, "abc");
     REQUIRE(q.alphabet() == "abc");
     REQUIRE(q.contains_empty_word());
     REQUIRE(q.rules == std::vector<std::string>({"abc", "ab", "abc", ""}));
     q.validate();
   }
 
-  LIBSEMIGROUPS_TEST_CASE("make",
+  LIBSEMIGROUPS_TEST_CASE("to_presentation",
                           "004",
-                          "argument checks issue",
-                          "[quick][presentation]") {
-    Presentation<word_type> p;
-    p.contains_empty_word(true);
-    presentation::add_rule(p, {0, 0}, {1});
-    REQUIRE_THROWS_AS(make<Presentation<std::string>>(p, "a"),
-                      LibsemigroupsException);
-    REQUIRE_THROWS_AS(make<Presentation<std::string>>(p, "aa"),
-                      LibsemigroupsException);
-    REQUIRE_THROWS_AS(make<Presentation<std::string>>(p, "aaa"),
-                      LibsemigroupsException);
-    // Alphabet not set for p, so can't know if the 2nd arg has the correct
-    // size or not.
-    REQUIRE_THROWS_AS(make<Presentation<std::string>>(p, "ab"),
-                      LibsemigroupsException);
-    REQUIRE_THROWS_AS(make<Presentation<std::string>>(p, "abc"),
-                      LibsemigroupsException);
-    p.alphabet_from_rules();
-    REQUIRE_NOTHROW(make<Presentation<std::string>>(p, "ab"));
-    REQUIRE_THROWS_AS(make<Presentation<std::string>>(p, "a"),
-                      LibsemigroupsException);
-    REQUIRE_THROWS_AS(make<Presentation<std::string>>(p, "aa"),
-                      LibsemigroupsException);
-  }
-
-  LIBSEMIGROUPS_TEST_CASE("make",
-                          "005",
-                          "use human readable alphabet for make",
+                          "use human readable alphabet for to_presentation",
                           "[quick][presentation]") {
     Presentation<word_type> p;
     p.alphabet(2);
     p.contains_empty_word(true);
     presentation::add_rule_and_check(p, {0, 1}, {});
 
-    auto q = make<Presentation<std::string>>(p);
+    auto q = to_presentation<std::string>(p);
     REQUIRE(q.alphabet() == "ab");
     REQUIRE(q.rules == std::vector<std::string>({"ab", ""}));
-    q = make<Presentation<std::string>>(p, "xy");
+    q = to_presentation<std::string>(p);
+    presentation::change_alphabet(q, "xy");
     REQUIRE(q.alphabet() == "xy");
     REQUIRE(q.rules == std::vector<std::string>({"xy", ""}));
   }

@@ -66,11 +66,11 @@
 #include "felsch-digraph.hpp"     // for FelschDigraph
 #include "froidure-pin.hpp"       // for FroidurePin
 #include "make-froidure-pin.hpp"  // for make
-#include "make-present.hpp"       // for make
 #include "present.hpp"            // for Presentation, Presentati...
 #include "report.hpp"             // for REPORT_DEFAULT, Reporter
 #include "stl.hpp"                // for JoinThreads
 #include "timer.hpp"              // for Timer
+#include "to-presentation.hpp"    // for make
 #include "transf.hpp"             // for Transf
 #include "types.hpp"              // for word_type, congruence_kind
 
@@ -272,7 +272,7 @@ namespace libsemigroups {
     //! \returns A reference to \c this.
     //!
     //! \throws LibsemigroupsException
-    //! if `make<Presentation<word_type>>(p)` throws
+    //! if `to_presentation<word_type>(p)` throws
     //! \throws LibsemigroupsException if `p` is not valid
     //! \throws LibsemigroupsException
     //! if the alphabet of `p` is non-empty and not equal to that of
@@ -337,7 +337,7 @@ namespace libsemigroups {
     //!
     //! \returns A reference to \c this.
     //!
-    //! \throws LibsemigroupsException if `make<Presentation<word_type>>(p)`
+    //! \throws LibsemigroupsException if `to_presentation<word_type>(p)`
     //! throws
     //! \throws LibsemigroupsException if `p` is not valid
     //! \throws LibsemigroupsException
@@ -400,7 +400,7 @@ namespace libsemigroups {
     //!
     //! \returns A reference to \c this.
     //!
-    //! \throws LibsemigroupsException if `make<Presentation<word_type>>(p)`
+    //! \throws LibsemigroupsException if `to_presentation<word_type>(p)`
     //! throws
     //! \throws LibsemigroupsException if `p` is not valid
     //! \throws LibsemigroupsException

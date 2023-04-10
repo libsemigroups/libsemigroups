@@ -32,12 +32,12 @@
 #include "cong-intf.hpp"     // for CongruenceInterface
 #include "digraph.hpp"       // for ActionDigraph
 #include "froidure-pin.hpp"  // for FroidurePin
-#include "make-present.hpp"  // for Presentation
 #include "paths.hpp"         // for Paths
 #include "present.hpp"       // for Presentation
 #include "runner.hpp"
-#include "types.hpp"  // for word_type
-#include "words.hpp"  // for word_to_string
+#include "to-presentation.hpp"  // for Presentation
+#include "types.hpp"            // for word_type
+#include "words.hpp"            // for word_to_string
 
 namespace libsemigroups {
   // Forward declarations
@@ -447,7 +447,7 @@ namespace libsemigroups {
 
     template <typename Word>
     KnuthBendix(Presentation<Word> const& p)
-        : KnuthBendix(make<Presentation<std::string>>(p)) {}
+        : KnuthBendix(to_presentation<std::string>(p)) {}
 
     [[nodiscard]] Presentation<std::string> const&
     presentation() const noexcept {
@@ -952,7 +952,7 @@ namespace libsemigroups {
     //! with the same input.
     template <typename W, typename T>
     auto redundant_rule(Presentation<W> const& p, T t) {
-      auto pp = make<Presentation<std::string>>(p);
+      auto pp = to_presentation<std::string>(p);
       return p.rules.cbegin()
              + std::distance(pp.rules.cbegin(), redundant_rule(pp, t));
     }

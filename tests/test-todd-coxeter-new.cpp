@@ -25,12 +25,12 @@
 #include "libsemigroups/bmat8.hpp"
 #include "libsemigroups/fpsemi-examples.hpp"  // for dual_symmetric_...
 #include "libsemigroups/froidure-pin.hpp"
-#include "libsemigroups/make-present.hpp"       // for Presentation
 #include "libsemigroups/make-todd-coxeter.hpp"  // for ??
 #include "libsemigroups/obvinf.hpp"             // for is_obviously_infinite
 #include "libsemigroups/present.hpp"            // for Presentation
 #include "libsemigroups/ranges.hpp"             // for is_sorted
 #include "libsemigroups/report.hpp"             // for ReportGuard
+#include "libsemigroups/to-presentation.hpp"    // for Presentation
 #include "libsemigroups/todd-coxeter-new.hpp"   // for ToddCoxeter
 #include "libsemigroups/transf.hpp"             // for Transf
 #include "libsemigroups/words.hpp"              // for cbegin_wislo
@@ -58,9 +58,8 @@ namespace libsemigroups {
     }
   }  // namespace
 
-  using TCE         = v3::detail::TCE;
-  using KnuthBendix = fpsemigroup::KnuthBendix;
-  using options     = ToddCoxeter::options;
+  using TCE     = v3::detail::TCE;
+  using options = ToddCoxeter::options;
 
   using namespace literals;
 
@@ -492,7 +491,7 @@ namespace libsemigroups {
          BMat8({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 0}})});
 
     REQUIRE(S.size() == 63'904);
-    auto p = make<Presentation<word_type>>(S);
+    auto p = to_presentation<word_type>(S);
 
     ToddCoxeter tc(twosided, std::move(p));
     tc.add_pair(0_w, 1_w);
@@ -726,7 +725,7 @@ namespace libsemigroups {
     REQUIRE(S.size() == 88);
     REQUIRE(S.number_of_rules() == 18);
 
-    auto p = make<Presentation<word_type>>(S);
+    auto p = to_presentation<word_type>(S);
 
     ToddCoxeter tc(twosided, p);
     REQUIRE(S.factorisation(Transf<>({3, 4, 4, 4, 4})) == 010001100_w);
@@ -795,7 +794,7 @@ namespace libsemigroups {
     REQUIRE(S.size() == 88);
     REQUIRE(S.number_of_rules() == 18);
 
-    auto p = make<Presentation<word_type>>(S);
+    auto p = to_presentation<word_type>(S);
 
     ToddCoxeter tc(left, p);
     tc.add_pair(S.factorisation(Transf<>({3, 4, 4, 4, 4})),
@@ -842,7 +841,7 @@ namespace libsemigroups {
     REQUIRE(S.size() == 88);
     REQUIRE(S.number_of_rules() == 18);
 
-    ToddCoxeter tc(right, make<Presentation<word_type>>(S));
+    ToddCoxeter tc(right, to_presentation<word_type>(S));
     tc.add_pair(S.factorisation(Transf<>({3, 4, 4, 4, 4})),
                 S.factorisation(Transf<>({3, 1, 3, 3, 3})));
 
@@ -1364,12 +1363,14 @@ namespace libsemigroups {
                           "029",
                           "from KnuthBendix",
                           "[todd-coxeter][quick]") {
-    auto                     rg = ReportGuard(false);
-    fpsemigroup::KnuthBendix kb;
-    kb.set_alphabet("abB");
+    auto rg = ReportGuard(false);
 
-    kb.add_rule("bb", "B");
-    kb.add_rule("BaB", "aba");
+    Presentation<std::string> p;
+    p.alphabet("abB");
+    presentation::add_rule(p, "bb", "B");
+    presentation::add_rule(p, "BaB", "aba");
+
+    KnuthBendix kb(p);
     SECTION("not started. . .") {
       REQUIRE(!kb.confluent());
       REQUIRE(!kb.started());
@@ -1409,20 +1410,23 @@ namespace libsemigroups {
                           "031",
                           "KnuthBendix.finished()",
                           "[todd-coxeter][quick]") {
-    auto                     rg = ReportGuard(false);
-    fpsemigroup::KnuthBendix kb;
-    kb.set_alphabet("abB");
-    kb.add_rule("bb", "B");
-    kb.add_rule("BaB", "aba");
-    kb.add_rule("a", "b");
-    kb.add_rule("b", "B");
+    auto rg = ReportGuard(false);
+
+    Presentation<std::string> p;
+    p.alphabet("abB");
+    presentation::add_rule(p, "bb", "B");
+    presentation::add_rule(p, "BaB", "aba");
+    presentation::add_rule(p, "a", "b");
+    presentation::add_rule(p, "b", "B");
+
+    KnuthBendix kb(p);
 
     REQUIRE(kb.confluent());
     kb.run();
     REQUIRE(kb.confluent());
     REQUIRE(kb.number_of_active_rules() == 3);
     REQUIRE(kb.size() == 1);
-    REQUIRE(kb.is_obviously_finite());
+    // REQUIRE(kb.is_obviously_finite());
     REQUIRE(kb.finished());
 
     for (auto knd : {twosided, left, right}) {
@@ -1740,7 +1744,7 @@ namespace libsemigroups {
 
     auto rg = ReportGuard(true);
 
-    auto p = make<Presentation<word_type>>(symmetric_group(9, author::Moore));
+    auto p = to_presentation<word_type>(symmetric_group(9, author::Moore));
     presentation::reduce_complements(p);
     presentation::remove_duplicate_rules(p);
     presentation::sort_rules(p);
@@ -1774,7 +1778,7 @@ namespace libsemigroups {
     auto rg = ReportGuard(false);
 
     size_t n = 7;
-    auto   p = make<Presentation<word_type>>(
+    auto   p = to_presentation<word_type>(
         symmetric_group(n, author::Coxeter + author::Moser));
 
     ToddCoxeter tc(twosided, p);
@@ -1804,7 +1808,7 @@ namespace libsemigroups {
     auto rg = ReportGuard(false);
 
     size_t n = 7;
-    auto   p = make<Presentation<word_type>>(
+    auto   p = to_presentation<word_type>(
         symmetric_group(n, author::Burnside + author::Miller));
 
     ToddCoxeter tc(twosided, p);
@@ -2369,11 +2373,10 @@ namespace libsemigroups {
     section_Cr_style(tc);
 
     REQUIRE(tc.number_of_classes() == 24);
-    REQUIRE(
-        todd_coxeter::normal_form(tc, make<word_type>(p, "aaaaaaaaaaaaaaaaaaa"))
-        == make<word_type>(p, "a"));
+    REQUIRE(todd_coxeter::normal_form(tc, to_word(p, "aaaaaaaaaaaaaaaaaaa"))
+            == to_word(p, "a"));
     auto S = to_froidure_pin(tc);
-    REQUIRE(KnuthBendix(S).confluent());
+    REQUIRE(KnuthBendix(to_presentation<word_type>(S)).confluent());
   }
 
   // Second of BHN's series of increasingly complicated presentations
@@ -2435,7 +2438,7 @@ namespace libsemigroups {
     word_type w3 = S.factorisation(Transf({1, 3, 1, 3, 3}));
     word_type w4 = S.factorisation(Transf({4, 2, 4, 4, 2}));
 
-    auto p = make<Presentation<word_type>>(S);
+    auto p = to_presentation<word_type>(S);
     {
       ToddCoxeter tc1(twosided, p);
       tc1.add_pair(w1, w2);
@@ -3221,10 +3224,10 @@ namespace libsemigroups {
                                        000001_w,
                                        0000000_w}));
     REQUIRE(to_froidure_pin(tc).number_of_rules() == 6);
-    REQUIRE(todd_coxeter::normal_form(tc, make<word_type>(p, "aaaaaaab"))
-            == make<word_type>(p, "aab"));
-    REQUIRE(todd_coxeter::normal_form(tc, make<word_type>(p, "bab"))
-            == make<word_type>(p, "aaa"));
+    REQUIRE(todd_coxeter::normal_form(tc, to_word(p, "aaaaaaab"))
+            == to_word(p, "aab"));
+    REQUIRE(todd_coxeter::normal_form(tc, to_word(p, "bab"))
+            == to_word(p, "aaa"));
   }
 
   // TODO uncomment
@@ -3237,7 +3240,7 @@ namespace libsemigroups {
   //   using fpsemigroup::RennerTypeDMonoid;
 
   //   auto rg = ReportGuard(false);
-  //   auto p  = make<Presentation<word_type>>(RennerTypeDMonoid(4, 1));
+  //   auto p  = to_presentation<word_type>(RennerTypeDMonoid(4, 1));
 
   //   REQUIRE(p.rules.size() == 252);
   //   REQUIRE(p.alphabet().size() == 11);
@@ -3329,8 +3332,8 @@ namespace libsemigroups {
     presentation::add_rule_and_check(p, "accAABab", "");
 
     ToddCoxeter H(right, p);
-    H.add_pair(make<word_type>(p, "bc"), make<word_type>(p, ""));
-    H.add_pair(make<word_type>(p, "bc"), make<word_type>(p, "ABAAbcabC"));
+    H.add_pair(to_word(p, "bc"), to_word(p, ""));
+    H.add_pair(to_word(p, "bc"), to_word(p, "ABAAbcabC"));
 
     H.strategy(options::strategy::hlt)
         .lookahead_extent(options::lookahead_extent::partial);
@@ -3362,9 +3365,9 @@ namespace libsemigroups {
     presentation::add_rule_and_check(p, "accAABab", "");
 
     ToddCoxeter H(right, p);
-    H.add_pair(make<word_type>(p, "bc"), make<word_type>(p, ""));
-    H.add_pair(make<word_type>(p, "ABAAbcabC"), make<word_type>(p, ""));
-    H.add_pair(make<word_type>(p, "AcccacBcA"), make<word_type>(p, ""));
+    H.add_pair(to_word(p, "bc"), to_word(p, ""));
+    H.add_pair(to_word(p, "ABAAbcabC"), to_word(p, ""));
+    H.add_pair(to_word(p, "AcccacBcA"), to_word(p, ""));
     H.large_collapse(10'000)
         .strategy(options::strategy::hlt)
         .lookahead_extent(options::lookahead_extent::partial);
@@ -3443,7 +3446,7 @@ namespace libsemigroups {
     // section_Cr_style(H); // too slow
     // section_Rc_style(H); // about 1.7s
 
-    H.add_pair(make<word_type>(p, "b"), make<word_type>(p, ""));
+    H.add_pair(to_word(p, "b"), to_word(p, ""));
 
     REQUIRE(H.number_of_classes() == 180);
   }
@@ -3487,7 +3490,7 @@ namespace libsemigroups {
     presentation::add_rule_and_check(p, "DVdv", "");
 
     ToddCoxeter H(right, p);
-    H.add_pair(make<word_type>(p, "a"), make<word_type>(p, ""));
+    H.add_pair(to_word(p, "a"), to_word(p, ""));
 
     section_hlt(H);
     section_CR_style(H);
@@ -3574,7 +3577,7 @@ namespace libsemigroups {
 
     ToddCoxeter H(right, p);
 
-    H.add_pair(make<word_type>(p, "ab"), make<word_type>(p, ""));
+    H.add_pair(to_word(p, "ab"), to_word(p, ""));
 
     section_hlt(H);
     section_felsch(H);
@@ -3622,7 +3625,7 @@ namespace libsemigroups {
   //                         "[todd-coxeter][extreme]") {
   //   using fpsemigroup::RennerTypeDMonoid;
   //   auto rg = ReportGuard();
-  //   auto p  = make<Presentation<word_type>>(RennerTypeDMonoid(5, 1));
+  //   auto p  = to_presentation<word_type>(RennerTypeDMonoid(5, 1));
   //   REQUIRE(p.rules.size() == 358);
   //   // Sorting the rules makes this twice as slow...
   //   // presentation::sort_each_rule(p);
@@ -3965,7 +3968,7 @@ namespace libsemigroups {
 
     SECTION("custom HLT") {
       ToddCoxeter tc(right, p);
-      tc.add_pair(make<word_type>(p, "xy"), make<word_type>(p, ""));
+      tc.add_pair(to_word(p, "xy"), to_word(p, ""));
       tc.strategy(options::strategy::hlt)
           .lookahead_extent(options::lookahead_extent::partial)
           .lookahead_style(options::lookahead_style::hlt)
@@ -3980,7 +3983,7 @@ namespace libsemigroups {
       presentation::replace_subword(p, "axY");
       REQUIRE(presentation::length(p) == 140);
       ToddCoxeter tc(right, p);
-      tc.add_pair(make<word_type>(p, "xy"), make<word_type>(p, ""));
+      tc.add_pair(to_word(p, "xy"), to_word(p, ""));
       tc.strategy(options::strategy::felsch);
       REQUIRE(tc.number_of_classes() == 10'644'480);
     }
@@ -4025,7 +4028,7 @@ namespace libsemigroups {
     REQUIRE(presentation::length(p) == 367);
 
     ToddCoxeter tc(right, p);
-    tc.add_pair(make<word_type>(p, "xy"), make<word_type>(p, ""));
+    tc.add_pair(to_word(p, "xy"), to_word(p, ""));
     tc.lookahead_style(options::lookahead_style::felsch)
         .lookahead_extent(options::lookahead_extent::partial)
         .strategy(options::strategy::hlt)

@@ -33,8 +33,8 @@
 #include "libsemigroups/fpsemi-examples.hpp"
 #include "libsemigroups/froidure-pin.hpp"
 #include "libsemigroups/knuth-bendix.hpp"  // for redundant_rule
-#include "libsemigroups/make-present.hpp"
-#include "libsemigroups/sims1.hpp"  // for Sims1_
+#include "libsemigroups/sims1.hpp"         // for Sims1_
+#include "libsemigroups/to-presentation.hpp"
 #include "libsemigroups/transf.hpp"
 #include "libsemigroups/types.hpp"  // for word_type
 
@@ -373,7 +373,7 @@ namespace libsemigroups {
     REQUIRE(S.size() == 27);
     REQUIRE(S.number_of_generators() == 3);
     REQUIRE(S.number_of_rules() == 16);
-    auto p = make<Presentation<word_type>>(S);
+    auto p = to_presentation<word_type>(S);
     REQUIRE(static_cast<size_t>(std::distance(p.rules.cbegin(), p.rules.cend()))
             == 2 * S.number_of_rules());
     Sims1_ C(congruence_kind::right, p);
@@ -388,7 +388,7 @@ namespace libsemigroups {
     FroidurePin<Transf<3>> S(
         {Transf<3>({1, 2, 0}), Transf<3>({1, 0, 2}), Transf<3>({0, 1, 0})});
     REQUIRE(S.size() == 27);
-    auto   p = make<Presentation<word_type>>(S);
+    auto   p = to_presentation<word_type>(S);
     Sims1_ C(congruence_kind::left, p);
     REQUIRE(C.number_of_congruences(28) == 120);
   }
@@ -402,7 +402,7 @@ namespace libsemigroups {
                               Transf<4>({1, 0, 2, 3}),
                               Transf<4>({0, 1, 0, 3})});
     REQUIRE(S.size() == 256);
-    auto   p = make<Presentation<word_type>>(S);
+    auto   p = to_presentation<word_type>(S);
     Sims1_ C(congruence_kind::left, p);
     REQUIRE(C.number_of_congruences(256) == 120);
   }
@@ -433,7 +433,7 @@ namespace libsemigroups {
     auto                  rg = ReportGuard(false);
     FroidurePin<PPerm<2>> S({PPerm<2>({1, 0}), PPerm<2>({0}, {0}, 2)});
     REQUIRE(S.size() == 7);
-    auto   p = make<Presentation<word_type>>(S);
+    auto   p = to_presentation<word_type>(S);
     Sims1_ C(congruence_kind::left, p);
     REQUIRE(C.number_of_congruences(7) == 10);
   }
@@ -695,7 +695,7 @@ namespace libsemigroups {
                           "singular_brauer_monoid(4) (Maltcev-Mazorchuk)",
                           "[extreme][sims1]") {
     auto rg = ReportGuard(true);
-    auto p  = make<Presentation<word_type>>(singular_brauer_monoid(4));
+    auto p  = to_presentation<word_type>(singular_brauer_monoid(4));
     REQUIRE(presentation::length(p) == 660);
     presentation::remove_duplicate_rules(p);
     REQUIRE(presentation::length(p) == 600);
@@ -720,7 +720,7 @@ namespace libsemigroups {
     S.add_generator(Bipartition({{1, 2}, {3, -3}, {4, -4}, {-1, -2}}));
     REQUIRE(S.size() == 105);
 
-    auto p = make<Presentation<word_type>>(S);
+    auto p = to_presentation<word_type>(S);
     REQUIRE(presentation::length(p) == 359);
     presentation::remove_duplicate_rules(p);
     REQUIRE(presentation::length(p) == 359);
@@ -748,7 +748,7 @@ namespace libsemigroups {
                           "brauer_monoid(4) (Kudryavtseva-Mazorchuk)",
                           "[extreme][sims1]") {
     auto rg = ReportGuard(true);
-    auto p  = make<Presentation<word_type>>(brauer_monoid(4));
+    auto p  = to_presentation<word_type>(brauer_monoid(4));
     REQUIRE(presentation::length(p) == 182);
     presentation::remove_duplicate_rules(p);
     REQUIRE(presentation::length(p) == 162);
@@ -781,7 +781,7 @@ namespace libsemigroups {
                           "uniform_block_bijection_monoid(4) (Fitzgerald)",
                           "[extreme][sims1]") {
     auto rg = ReportGuard(true);
-    auto p  = make<Presentation<word_type>>(
+    auto p  = to_presentation<word_type>(
         uniform_block_bijection_monoid(4, author::FitzGerald));
     presentation::remove_duplicate_rules(p);
     presentation::reduce_complements(p);
@@ -828,7 +828,7 @@ namespace libsemigroups {
                           "fibonacci_semigroup(4, 6)",
                           "[standard][sims1][no-valgrind]") {
     auto rg = ReportGuard(false);
-    auto p  = make<Presentation<word_type>>(fibonacci_semigroup(4, 6));
+    auto p  = to_presentation<word_type>(fibonacci_semigroup(4, 6));
     presentation::remove_duplicate_rules(p);
     presentation::sort_each_rule(p);
     presentation::sort_rules(p);

@@ -77,7 +77,7 @@ namespace libsemigroups {
       LIBSEMIGROUPS_EXCEPTION(
           "the argument (Presentation) must not have 0 generators");
     }
-    auto normal_p = make<Presentation<word_type>>(p);
+    auto normal_p = to_presentation<word_type>(p);
     validate_presentation(normal_p, long_rules());
     validate_presentation(normal_p, extra());
     _shorts = normal_p;
@@ -93,7 +93,7 @@ namespace libsemigroups {
     // We call make in the next two lines to ensure that the generators of
     // the presentation are {0, ..., n - 1} where n is the size of the
     // alphabet.
-    auto normal_p = make<Presentation<word_type>>(p);
+    auto normal_p = to_presentation<word_type>(p);
     validate_presentation(normal_p, short_rules());
     validate_presentation(normal_p, extra());
     _longs = normal_p;
@@ -106,7 +106,7 @@ namespace libsemigroups {
     static_assert(std::is_base_of<PresentationBase, P>::value,
                   "the template parameter P must be derived from "
                   "PresentationBase");
-    auto normal_p = make<Presentation<word_type>>(p);
+    auto normal_p = to_presentation<word_type>(p);
     validate_presentation(normal_p, short_rules());
     validate_presentation(normal_p, long_rules());
     _extra = normal_p;

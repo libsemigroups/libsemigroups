@@ -30,11 +30,11 @@
 
 #include "cong-intf-new.hpp"
 #include "felsch-digraph.hpp"  // for FelschDigraph
-#include "make-present.hpp"    // for make
 #include "obvinf.hpp"          // for is_obviously_infinite
 #include "order.hpp"           // for order
 #include "paths.hpp"
 #include "present.hpp"               // for Presentation
+#include "to-presentation.hpp"       // for make
 #include "todd-coxeter-digraph.hpp"  // for Digraph
 #include "types.hpp"                 // for word_type
 
@@ -239,11 +239,11 @@ namespace libsemigroups {
     // inside.
     template <typename Word>
     ToddCoxeter(congruence_kind knd, Presentation<Word> const& p)
-        : ToddCoxeter(knd, make<Presentation<word_type>>(p)) {}
+        : ToddCoxeter(knd, to_presentation<word_type>(p)) {}
 
     template <typename Word>
     ToddCoxeter& init(congruence_kind knd, Presentation<Word> const& p) {
-      init(knd, make<Presentation<word_type>>(p));
+      init(knd, to_presentation<word_type>(p));
       return *this;
     }
 
