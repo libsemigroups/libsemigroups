@@ -20,8 +20,7 @@
 // CongruenceByPairs.
 
 // TODO(later):
-//   1. the type of the congruence defined by class CongruenceByPairs
-//   could be
+//   1. the type of the congruence defined by class CongruenceByPairs could be
 //      a template parameter
 
 #ifndef LIBSEMIGROUPS_CONG_PAIR_IMPL_HPP_
