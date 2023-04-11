@@ -218,36 +218,31 @@ namespace libsemigroups {
   // KnuthBendix - constructors and destructor - public
   //////////////////////////////////////////////////////////////////////////
 
-  KnuthBendix::KnuthBendix() {
+  KnuthBendix::KnuthBendix()
+      : Runner(),
+        _settings(),
+        _active_rules(),
+        _gilman_digraph(),
+        _inactive_rules(),
+        _presentation(),
+        _set_rules(),
+        _stack() {
     init();
   }
 
   KnuthBendix& KnuthBendix::init() {
+    deactivate_all_rules();
+
     Runner::init();
     _settings.init();
     _gilman_digraph.init(0, 0);
-    // Put all active rules and those rules in the stack into the
-    // inactive_rules list
-    for (Rule const* cptr : _active_rules) {
-      Rule* ptr = const_cast<Rule*>(cptr);
-      ptr->deactivate();
-      _inactive_rules.insert(_inactive_rules.end(), ptr);
-    }
-    _active_rules.clear();
-    while (!_stack.empty()) {
-      _inactive_rules.insert(_inactive_rules.end(), _stack.top());
-      _stack.pop();
-    }
-
     _confluent                    = false;
     _confluence_known             = false;
     _internal_is_same_as_external = false;
     _min_length_lhs_rule          = std::numeric_limits<size_t>::max();
     _overlap_measure              = nullptr;
     _presentation.clear();
-    _total_rules   = 0;
-    _next_rule_it1 = _active_rules.end();
-    _next_rule_it2 = _active_rules.end();
+    _total_rules = 0;
     overlap_policy(_settings._overlap_policy);
 #ifdef LIBSEMIGROUPS_VERBOSE
     _max_stack_depth        = 0;
@@ -258,29 +253,51 @@ namespace libsemigroups {
     return *this;
   }
 
-  KnuthBendix::KnuthBendix(KnuthBendix const& that)
-      : _settings(that._settings),
-        _active_rules(),
-        _confluent(),
-        _confluence_known(),
-        _gilman_digraph(that._gilman_digraph),
-        _inactive_rules(),
-        _internal_is_same_as_external(that._internal_is_same_as_external),
-        _min_length_lhs_rule(that._min_length_lhs_rule),
-        _next_rule_it1(),
-        _next_rule_it2(),
-        _overlap_measure(),
-        _presentation(that._presentation),
-        _set_rules(that._set_rules),
-        _stack(that._stack),
-        _total_rules(that._total_rules) {
-    _confluent        = that._confluent.load();
-    _confluence_known = that._confluence_known.load();
-    overlap_policy(_settings._overlap_policy);
+  KnuthBendix::KnuthBendix(KnuthBendix const& that) : KnuthBendix() {
+    *this = that;
+  }
+
+  KnuthBendix::KnuthBendix(KnuthBendix&& that)
+      : KnuthBendix(static_cast<KnuthBendix const&>(that)) {}
+
+  KnuthBendix& KnuthBendix::operator=(KnuthBendix&& that) {
+    *this = static_cast<KnuthBendix const&>(that);
+    return *this;
+  }
+
+  KnuthBendix& KnuthBendix::operator=(KnuthBendix const& that) {
+    Runner::operator=(that);
+    deactivate_all_rules();
+
     for (Rule const* rule : that._active_rules) {
-      _active_rules.push_back(new_rule(rule));
+      add_rule(new_rule(rule));
     }
+    _next_rule_it1 = _active_rules.begin();
+    std::advance(
+        _next_rule_it1,
+        std::distance(that._active_rules.begin(),
+                      static_cast<std::list<Rule const*>::const_iterator>(
+                          that._next_rule_it1)));
+    _next_rule_it2 = _active_rules.begin();
+    std::advance(
+        _next_rule_it2,
+        std::distance(that._active_rules.begin(),
+                      static_cast<std::list<Rule const*>::const_iterator>(
+                          that._next_rule_it2)));
     // Don't copy the inactive rules, because why bother
+
+    _settings                     = that._settings;
+    _confluent                    = that._confluent.load();
+    _confluence_known             = that._confluence_known.load();
+    _gilman_digraph               = that._gilman_digraph;
+    _internal_is_same_as_external = that._internal_is_same_as_external;
+    _min_length_lhs_rule          = that._min_length_lhs_rule;
+    _presentation                 = that._presentation;
+    _total_rules                  = that._total_rules;
+
+    overlap_policy(_settings._overlap_policy);
+
+    return *this;
   }
 
   KnuthBendix::~KnuthBendix() {
@@ -298,8 +315,38 @@ namespace libsemigroups {
     }
   }
 
+  KnuthBendix& KnuthBendix::init(Presentation<std::string> const& p) {
+    return private_init(p, true);
+  }
+
+  KnuthBendix& KnuthBendix::init(Presentation<std::string>&& p) {
+    return private_init(std::move(p), true);
+  }
+
+  KnuthBendix& KnuthBendix::private_init(Presentation<std::string> const& p,
+                                         bool call_init) {
+    p.validate();
+    if (call_init) {
+      init();
+    }
+    _presentation = p;
+    add_rules_from_presentation();
+    return *this;
+  }
+
+  KnuthBendix& KnuthBendix::private_init(Presentation<std::string>&& p,
+                                         bool call_init) {
+    p.validate();
+    if (call_init) {
+      init();
+    }
+    _presentation = std::move(p);
+    add_rules_from_presentation();
+    return *this;
+  }
+
   //////////////////////////////////////////////////////////////////////////
-  // TODO - non-pure virtual methods - public
+  // KnuthBendix - attributes - public
   //////////////////////////////////////////////////////////////////////////
 
   uint64_t KnuthBendix::size() {
@@ -580,10 +627,8 @@ namespace libsemigroups {
       LIBSEMIGROUPS_ASSERT(confluent());
       std::unordered_map<std::string, size_t> prefixes;
       prefixes.emplace("", 0);
-      // FIXME(later)
-      auto rules = active_rules();
-
-      size_t n = 1;
+      auto   rules = active_rules();
+      size_t n     = 1;
       for (auto const& rule : rules) {
         prefixes_string(prefixes, rule.first, n);
       }
@@ -701,26 +746,6 @@ namespace libsemigroups {
     return w;
   }
 
-  KnuthBendix::internal_string_type*
-  KnuthBendix::word_to_internal_string(word_type const&      w,
-                                       internal_string_type* ww) {
-    ww->clear();
-    for (size_t const& a : w) {
-      (*ww) += uint_to_internal_char(a);
-    }
-    return ww;
-  }
-
-  KnuthBendix::internal_string_type
-  KnuthBendix::word_to_internal_string(word_type const& u) {
-    internal_string_type v;
-    v.reserve(u.size());
-    for (size_t const& l : u) {
-      v += uint_to_internal_char(l);
-    }
-    return v;
-  }
-
   KnuthBendix::internal_char_type
   KnuthBendix::external_to_internal_char(external_char_type c) const {
     LIBSEMIGROUPS_ASSERT(!_internal_is_same_as_external);
@@ -754,6 +779,14 @@ namespace libsemigroups {
   //////////////////////////////////////////////////////////////////////////
   // KnuthBendixImpl - methods for rules - private
   //////////////////////////////////////////////////////////////////////////
+
+  void KnuthBendix::add_rules_from_presentation() {
+    auto const first = _presentation.rules.cbegin();
+    auto const last  = _presentation.rules.cend();
+    for (auto it = first; it != last; it += 2) {
+      add_rule_impl(*it, *(it + 1));
+    }
+  }
 
   KnuthBendix::Rule* KnuthBendix::new_rule() const {
     ++_total_rules;
@@ -936,6 +969,24 @@ namespace libsemigroups {
 #endif
     LIBSEMIGROUPS_ASSERT(_set_rules.size() == _active_rules.size());
     return it;
+  }
+
+  void KnuthBendix::deactivate_all_rules() {
+    // Put all active rules and those rules in the stack into the
+    // inactive_rules list
+    for (Rule const* cptr : _active_rules) {
+      Rule* ptr = const_cast<Rule*>(cptr);
+      ptr->deactivate();
+      _inactive_rules.insert(_inactive_rules.end(), ptr);
+    }
+    _active_rules.clear();
+    while (!_stack.empty()) {
+      _inactive_rules.insert(_inactive_rules.end(), _stack.top());
+      _stack.pop();
+    }
+    _next_rule_it1 = _active_rules.end();
+    _next_rule_it2 = _active_rules.end();
+    _set_rules.clear();
   }
 
 #ifdef LIBSEMIGROUPS_VERBOSE

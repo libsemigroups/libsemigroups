@@ -1,6 +1,6 @@
 //
 // libsemigroups - C++ library for semigroups and monoids
-// Copyright (C) 2019 James D. Mitchell
+// Copyright (C) 2019-2023 James D. Mitchell
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -277,54 +277,55 @@ namespace libsemigroups {
     //! \f$O(n)\f$ where \f$n\f$ is the sum of the lengths of the words in
     //! rules of \p copy.
     KnuthBendix(KnuthBendix const& copy);
-
-    // TODO impl
-    // KnuthBendix(KnuthBendix&&);
-    // KnuthBendix& operator=(KnuthBendix const&);
-    // KnuthBendix& operator=(KnuthBendix&&);
+    KnuthBendix(KnuthBendix&&);
+    KnuthBendix& operator=(KnuthBendix const&);
+    KnuthBendix& operator=(KnuthBendix&&);
 
     ~KnuthBendix();
 
-    // TODO init version + to cpp
     KnuthBendix(Presentation<std::string> const& p) : KnuthBendix() {
-      p.validate();
-      _presentation    = p;
-      auto const first = _presentation.rules.cbegin();
-      auto const last  = _presentation.rules.cend();
-      for (auto it = first; it != last; it += 2) {
-        add_rule_impl(*it, *(it + 1));
-      }
+      private_init(p, false);  // false means don't call init, since we just
+                               // called it from KnuthBendix()
     }
 
-    // TODO init version + to cpp
+    KnuthBendix& init(Presentation<std::string> const& p);
+
     KnuthBendix(Presentation<std::string>&& p) : KnuthBendix() {
-      p.validate();
-      _presentation = std::move(p);
-      // TODO remove code dupl
-      auto const first = _presentation.rules.cbegin();
-      auto const last  = _presentation.rules.cend();
-      for (auto it = first; it != last; it += 2) {
-        add_rule_impl(*it, *(it + 1));
-      }
+      private_init(std::move(p),
+                   false);  // false means don't call init, since we just
+                            // called it from KnuthBendix()
     }
 
-    // TODO init version
+    KnuthBendix& init(Presentation<std::string>&& p);
+
     template <typename Word>
     KnuthBendix(Presentation<Word> const& p)
         : KnuthBendix(to_presentation<std::string>(p)) {}
 
-    // TODO init version
     template <typename Word>
     KnuthBendix(Presentation<Word>&& p)
         : KnuthBendix(
             to_presentation<std::string>(std::forward<Presentation<Word>>(p))) {
     }
 
-    [[nodiscard]] Presentation<std::string> const&
-    presentation() const noexcept {
-      return _presentation;
+    template <typename Word>
+    KnuthBendix& init(Presentation<Word> const& p) {
+      init(to_presentation<std::string>(p));
+      return *this;
     }
 
+    template <typename Word>
+    KnuthBendix& init(Presentation<Word>&& p) {
+      init(to_presentation<std::string>(p));
+      return *this;
+    }
+
+   private:
+    KnuthBendix& private_init(Presentation<std::string> const& p,
+                              bool                             call_init);
+    KnuthBendix& private_init(Presentation<std::string>&& p, bool call_init);
+
+   public:
     //////////////////////////////////////////////////////////////////////////
     // KnuthBendix - setters for optional parameters - public
     //////////////////////////////////////////////////////////////////////////
@@ -351,10 +352,13 @@ namespace libsemigroups {
     //! Constant.
     //!
     //! \sa \ref run.
-    // TODO add getter
     KnuthBendix& check_confluence_interval(size_t val) {
       _settings._check_confluence_interval = val;
       return *this;
+    }
+
+    [[nodiscard]] size_t check_confluence_interval() const noexcept {
+      return _settings._check_confluence_interval;
     }
 
     //! Set the maximum length of overlaps to be considered.
@@ -376,10 +380,13 @@ namespace libsemigroups {
     //! Constant.
     //!
     //! \sa \ref run.
-    // TODO add getter
     KnuthBendix& max_overlap(size_t val) {
       _settings._max_overlap = val;
       return *this;
+    }
+
+    [[nodiscard]] size_t max_overlap() const noexcept {
+      return _settings._max_overlap;
     }
 
     //! Set the maximum number of rules.
@@ -401,10 +408,13 @@ namespace libsemigroups {
     //! Constant.
     //!
     //! \sa \ref run.
-    // TODO add getter
     KnuthBendix& max_rules(size_t val) {
       _settings._max_rules = val;
       return *this;
+    }
+
+    [[nodiscard]] size_t max_rules() const noexcept {
+      return _settings._max_rules;
     }
 
     //! Set the overlap policy.
@@ -421,12 +431,43 @@ namespace libsemigroups {
     //! Constant.
     //!
     //! \sa options::overlap.
-    // TODO add getter
     KnuthBendix& overlap_policy(options::overlap val);
+
+    [[nodiscard]] options::overlap overlap_policy() const noexcept {
+      return _settings._overlap_policy;
+    }
 
     //////////////////////////////////////////////////////////////////////////
     // KnuthBendix - member functions for rules and rewriting - public
     //////////////////////////////////////////////////////////////////////////
+
+    // TODO doc
+    [[nodiscard]] Presentation<std::string> const&
+    presentation() const noexcept {
+      return _presentation;
+    }
+
+    KnuthBendix& presentation(Presentation<std::string> const& p) {
+      throw_if_started();
+      return private_init(p, false);
+    }
+
+    KnuthBendix& presentation(Presentation<std::string>&& p) {
+      throw_if_started();
+      return private_init(std::move(p), false);
+    }
+
+    template <typename Word>
+    KnuthBendix& presentation(Presentation<Word> const& p) {
+      throw_if_started();
+      return private_init(to_presentation<std::string>(p), false);
+    }
+
+    template <typename Word>
+    KnuthBendix& presentation(Presentation<Word>&& p) {
+      throw_if_started();
+      return private_init(to_presentation<std::string>(p), false);
+    }
 
     //! Returns the current number of active rules in the KnuthBendix
     //! instance.
@@ -443,6 +484,9 @@ namespace libsemigroups {
     //! \parameters
     //! (None)
     [[nodiscard]] size_t number_of_active_rules() const noexcept;
+    [[nodiscard]] size_t number_of_inactive_rules() const noexcept {
+      return _inactive_rules.size();
+    }
 
     //! Returns a copy of the active rules.
     //!
@@ -463,7 +507,7 @@ namespace libsemigroups {
     //!
     //! \parameters
     //! (None)
-    // TODO(v3): update the doc, now returns a Range
+    // TODO update the doc, now returns a Range
     [[nodiscard]] auto active_rules() const {
       using namespace rx;
       return iterator_range(_active_rules.cbegin(), _active_rules.cend())
@@ -557,10 +601,10 @@ namespace libsemigroups {
     ActionDigraph<size_t> const& gilman_digraph();
 
     //////////////////////////////////////////////////////////////////////////
-    // TODO - pure virtual member functions - public
+    // KnuthBendix - attributes - public
     //////////////////////////////////////////////////////////////////////////
 
-    //! \copydoc FpSemigroupInterface::size
+    //! \copydoc FpSemigroupInterface::size TODO copy the doc
     //!
     //! \note If \c this has been run until finished, then this function can
     //! determine the size of the semigroup represented by \c this even if
@@ -576,24 +620,31 @@ namespace libsemigroups {
     [[nodiscard]] std::string normal_form(std::string const& w);
 
    private:
-    void add_rule_impl(std::string const& p, std::string const& q);
-    void add_rule(Rule* rule);
+    void throw_if_started() const {
+      if (started()) {
+        LIBSEMIGROUPS_EXCEPTION_V3("TODO");
+      }
+    }
 
     void internal_rewrite(internal_string_type* u) const;
 
-    static internal_string_type word_to_internal_string(word_type const& u);
-    static size_t               internal_char_to_uint(internal_char_type c);
-    static internal_char_type   uint_to_internal_char(size_t a);
-    static internal_string_type uint_to_internal_string(size_t i);
-    static word_type internal_string_to_word(internal_string_type const& s);
+    static internal_char_type uint_to_internal_char(size_t a);
+    static size_t             internal_char_to_uint(internal_char_type c);
 
-    static internal_string_type*
-    word_to_internal_string(word_type const& w, internal_string_type* ww);
+    static internal_string_type uint_to_internal_string(size_t i);
+
+    static word_type internal_string_to_word(internal_string_type const& s);
 
     internal_char_type external_to_internal_char(external_char_type c) const;
     external_char_type internal_to_external_char(internal_char_type a) const;
+
     void external_to_internal_string(external_string_type& w) const;
     void internal_to_external_string(internal_string_type& w) const;
+
+    void add_rule_impl(std::string const& p, std::string const& q);
+    void add_rule(Rule* rule);
+
+    void add_rules_from_presentation();
 
     Rule* new_rule() const;
     Rule* new_rule(internal_string_type* lhs, internal_string_type* rhs) const;
@@ -610,6 +661,8 @@ namespace libsemigroups {
     std::list<Rule const*>::iterator
     remove_rule(std::list<Rule const*>::iterator it);
 
+    void deactivate_all_rules();
+
 #ifdef LIBSEMIGROUPS_VERBOSE
     //////////////////////////////////////////////////////////////////////////
     // ./configure --enable-verbose functions
@@ -622,8 +675,8 @@ namespace libsemigroups {
     // Runner - pure virtual member functions - private
     //////////////////////////////////////////////////////////////////////////
 
-    void run_impl();
-    bool finished_impl() const;
+    void run_impl() override;
+    bool finished_impl() const override;
   };
 
   //! This friend function allows a KnuthBendix object to be left shifted
@@ -703,15 +756,16 @@ namespace libsemigroups {
     //! with the same input.
     template <typename T>
     auto redundant_rule(Presentation<std::string> const& p, T t) {
-      // TODO reuse the same KnuthBendix
       p.validate();
       Presentation<std::string> q;
       q.alphabet(p.alphabet());
+      KnuthBendix kb;
+
       for (auto omit = p.rules.crbegin(); omit != p.rules.crend(); omit += 2) {
         q.rules.clear();
         q.rules.insert(q.rules.end(), p.rules.crbegin(), omit);
         q.rules.insert(q.rules.end(), omit + 2, p.rules.crend());
-        KnuthBendix kb(q);
+        kb.init(q);
         kb.run_for(t);
         if (kb.rewrite(*omit) == kb.rewrite(*(omit + 1))) {
           return (omit + 1).base() - 1;

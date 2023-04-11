@@ -1,5 +1,5 @@
 // libsemigroups - C++ library for semigroups and monoids
-// Copyright (C) 2019 James D. Mitchell
+// Copyright (C) 2019-2023 James D. Mitchell
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -19,28 +19,23 @@
 // a mostly vain attempt to speed up compilation the tests are split across 6
 // files as follows:
 //
-// 1: contains quick tests for fpsemigroup::KnuthBendix created from rules and
-//    all commented out tests.
+// 1: contains quick tests for KnuthBendix created from rules and all commented
+//    out tests.
 //
-// 2: contains more quick tests for fpsemigroup::KnuthBendix created from rules
+// 2: contains more quick tests for KnuthBendix created from rules
 //
-// 3: contains yet more quick tests for fpsemigroup::KnuthBendix created from
-//    rules
+// 3: contains yet more quick tests for KnuthBendix created from rules
 //
-// 4: contains standard and extreme test for fpsemigroup::KnuthBendix created
-//    from rules
+// 4: contains standard and extreme test for KnuthBendix created from rules
 //
-// 5: contains tests for fpsemigroup::KnuthBendix created from FroidurePin
-//    instances
+// 5: contains tests for KnuthBendix created from FroidurePin instances
 //
-// 6: contains tests for congruence::KnuthBendix.
+// 6: contains tests for KnuthBendix using word_type presentations
 
 // TODO(later)
-// 1. The other examples from Sims' book (Chapters 5 and 6) which use
-//    reduction orderings different from shortlex
-// 2. Examples from MAF
-
-// #define CATCH_CONFIG_ENABLE_PAIR_STRINGMAKER
+// * The other examples from Sims' book (Chapters 5 and 6) which use
+//   reduction orderings different from shortlex
+// * Examples from MAF
 
 #include <string>  // for string
 #include <vector>  // for vector
@@ -48,28 +43,25 @@
 #include "catch.hpp"      // for REQUIRE, REQUIRE_NOTHROW, REQUIRE_THROWS_AS
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
-#include "libsemigroups/config.hpp"             // for LIBSEMIGROUPS_DEBUG
-#include "libsemigroups/constants.hpp"          // for POSITIVE_INFINITY
-#include "libsemigroups/knuth-bendix-new.hpp"   // for KnuthBendix, operator<<
-#include "libsemigroups/to-froidure-pin.hpp"  // for to_froidure_pin
-#include "libsemigroups/obvinf.hpp"             // for word_type
-#include "libsemigroups/ranges.hpp"             // for ReportGuard
-#include "libsemigroups/report.hpp"             // for ReportGuard
-#include "libsemigroups/types.hpp"              // for word_type
+#include "libsemigroups/config.hpp"            // for LIBSEMIGROUPS_DEBUG
+#include "libsemigroups/constants.hpp"         // for POSITIVE_INFINITY
+#include "libsemigroups/knuth-bendix-new.hpp"  // for KnuthBendix, operator<<
+#include "libsemigroups/obvinf.hpp"            // for word_type
+#include "libsemigroups/ranges.hpp"            // for TODO
+#include "libsemigroups/report.hpp"            // for ReportGuard
+#include "libsemigroups/to-froidure-pin.hpp"   // for to_froidure_pin
+#include "libsemigroups/types.hpp"             // for word_type
 
 #include <rx/ranges.hpp>
 
 namespace libsemigroups {
   using namespace rx;
 
-  struct LibsemigroupsException;
-  constexpr bool REPORT = false;
-
   LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
                           "000",
                           "confluent fp semigroup 1 (infinite)",
                           "[quick][knuth-bendix]") {
-    auto                      rg = ReportGuard(REPORT);
+    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("abc");
     presentation::add_rule(p, "ab", "ba");
@@ -95,17 +87,17 @@ namespace libsemigroups {
     REQUIRE(kb.size() == POSITIVE_INFINITY);
     REQUIRE(is_obviously_infinite(kb));
 
-    // TODO uncomment
-    // REQUIRE(std::vector<std::string>(kb.cbegin_normal_forms("abc", 0, 5),
-    //                                  kb.cend_normal_forms())
-    //         == std::vector<std::string>({"a", "c", "cc", "ccc", "cccc"}));
+    auto nf = knuth_bendix::normal_forms(kb).min(1).max(5);
+
+    REQUIRE((nf | to_strings("abc") | to_vector())
+            == std::vector<std::string>({"a", "c", "cc", "ccc", "cccc"}));
   }
 
   LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
                           "001",
                           "confluent fp semigroup 2 (infinite) ",
                           "[quick][knuth-bendix]") {
-    auto rg = ReportGuard(REPORT);
+    auto rg = ReportGuard(false);
 
     Presentation<std::string> p;
     p.alphabet("abc");
@@ -125,10 +117,10 @@ namespace libsemigroups {
     REQUIRE(kb.confluent());
     REQUIRE(kb.number_of_active_rules() == 4);
     REQUIRE(is_obviously_infinite(kb));
-    // TODO uncomment
-    // REQUIRE(std::vector<std::string>(kb.cbegin_normal_forms("abc", 0, 5),
-    //                                  kb.cend_normal_forms())
-    //         == std::vector<std::string>({"a", "c", "cc", "ccc", "cccc"}));
+    auto nf = knuth_bendix::normal_forms(kb).min(1).max(5);
+
+    REQUIRE((nf | to_strings("abc") | to_vector())
+            == std::vector<std::string>({"a", "c", "cc", "ccc", "cccc"}));
     REQUIRE(kb.size() == POSITIVE_INFINITY);
   }
 
@@ -136,7 +128,7 @@ namespace libsemigroups {
                           "002",
                           "confluent fp semigroup 3 (infinite) ",
                           "[quick][knuth-bendix]") {
-    auto rg = ReportGuard(REPORT);
+    auto rg = ReportGuard(false);
 
     Presentation<std::string> p;
     p.alphabet("012");
@@ -183,7 +175,7 @@ namespace libsemigroups {
                           "non-confluent fp semigroup from "
                           "wikipedia (infinite)",
                           "[quick][knuth-bendix]") {
-    auto rg = ReportGuard(REPORT);
+    auto rg = ReportGuard(false);
 
     Presentation<std::string> p;
     p.contains_empty_word(true);
@@ -216,7 +208,7 @@ namespace libsemigroups {
                           "004",
                           "Example 5.1 in Sims (infinite)",
                           "[quick][knuth-bendix]") {
-    auto rg = ReportGuard(REPORT);
+    auto rg = ReportGuard(false);
 
     Presentation<std::string> p;
     p.contains_empty_word(true);
@@ -253,7 +245,7 @@ namespace libsemigroups {
                           "005",
                           "Example 5.1 in Sims (infinite)",
                           "[quick][knuth-bendix]") {
-    auto rg = ReportGuard(REPORT);
+    auto rg = ReportGuard(false);
 
     Presentation<std::string> p;
     p.contains_empty_word(true);
@@ -287,7 +279,7 @@ namespace libsemigroups {
                           "006",
                           "Example 5.3 in Sims",
                           "[quick][knuth-bendix]") {
-    auto rg = ReportGuard(REPORT);
+    auto rg = ReportGuard(false);
 
     Presentation<std::string> p;
     p.contains_empty_word(true);
@@ -368,7 +360,7 @@ namespace libsemigroups {
                           "008",
                           "Example 6.4 in Sims (size 168)",
                           "[no-valgrind][quick][knuth-bendix]") {
-    auto rg = ReportGuard(REPORT);
+    auto rg = ReportGuard(false);
 
     Presentation<std::string> p;
     p.alphabet("abc");
@@ -408,7 +400,7 @@ namespace libsemigroups {
                           "009",
                           "random example",
                           "[quick][knuth-bendix][no-valgrind]") {
-    auto rg = ReportGuard(REPORT);
+    auto rg = ReportGuard(false);
 
     Presentation<std::string> p;
     p.alphabet("012");
@@ -455,7 +447,7 @@ namespace libsemigroups {
       "010",
       "SL(2, 7) from Chapter 3, Proposition 1.5 in NR (size 336)",
       "[no-valgrind][quick][knuth-bendix]") {
-    auto rg = ReportGuard(REPORT);
+    auto rg = ReportGuard(false);
 
     Presentation<std::string> p;
     p.alphabet("abAB");
@@ -498,7 +490,7 @@ namespace libsemigroups {
                           "011",
                           "F(2, 5) - Chapter 9, Section 1 in NR (size 11)",
                           "[knuth-bendix][quick]") {
-    auto                      rg = ReportGuard(REPORT);
+    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("abcde");
 
@@ -528,7 +520,7 @@ namespace libsemigroups {
                           "012",
                           "Reinis example 1",
                           "[quick][knuth-bendix]") {
-    auto                      rg = ReportGuard(REPORT);
+    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("abc");
 
@@ -553,7 +545,7 @@ namespace libsemigroups {
                           "013",
                           "redundant_rule (std::string)",
                           "[quick][knuth-bendix]") {
-    auto                      rg = ReportGuard(REPORT);
+    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("abc");
     presentation::add_rule_and_check(p, "a", "abb");
@@ -575,7 +567,7 @@ namespace libsemigroups {
                           "redundant_rule (word_type)",
                           "[quick][knuth-bendix]") {
     using literals::        operator""_w;
-    auto                    rg = ReportGuard(REPORT);
+    auto                    rg = ReportGuard(false);
     Presentation<word_type> p;
     p.alphabet(3);
     presentation::add_rule_and_check(p, 0_w, 011_w);
@@ -590,6 +582,123 @@ namespace libsemigroups {
     REQUIRE(it != p.rules.cend());
     REQUIRE(*it == 1_w);
     REQUIRE(*(it + 1) == 100_w);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
+                          "101",
+                          "constructors/init for finished",
+                          "[quick][knuth-bendix]") {
+    auto rg = ReportGuard(false);
+
+    Presentation<std::string> p1;
+    p1.contains_empty_word(true);
+    p1.alphabet("abcd");
+    presentation::add_rule(p1, "ab", "");
+    presentation::add_rule(p1, "ba", "");
+    presentation::add_rule(p1, "cd", "");
+    presentation::add_rule(p1, "dc", "");
+    presentation::add_rule(p1, "ca", "ac");
+
+    Presentation<std::string> p2;
+    p2.contains_empty_word(true);
+    p2.alphabet("01");
+    presentation::add_rule(p2, "000", "");
+    presentation::add_rule(p2, "111", "");
+    presentation::add_rule(p2, "010101", "");
+
+    KnuthBendix kb1(p1);
+    REQUIRE(!kb1.confluent());
+    REQUIRE(!kb1.finished());
+    kb1.run();
+    REQUIRE(kb1.confluent());
+    REQUIRE(kb1.normal_form("abababbdbcbdbabdbdb") == "bbbbbbddd");
+
+    kb1.init(p2);
+    REQUIRE(!kb1.confluent());
+    REQUIRE(!kb1.finished());
+    REQUIRE(kb1.presentation() == p2);
+    kb1.run();
+    REQUIRE(kb1.finished());
+    REQUIRE(kb1.confluent());
+    REQUIRE(kb1.confluent_known());
+
+    kb1.init(p1);
+    REQUIRE(!kb1.confluent());
+    REQUIRE(!kb1.finished());
+    REQUIRE(kb1.presentation() == p1);
+    kb1.run();
+    REQUIRE(kb1.finished());
+    REQUIRE(kb1.confluent());
+    REQUIRE(kb1.confluent_known());
+    REQUIRE(kb1.normal_form("abababbdbcbdbabdbdb") == "bbbbbbddd");
+
+    KnuthBendix kb2(std::move(kb1));
+    REQUIRE(kb2.confluent());
+    REQUIRE(kb2.confluent_known());
+    REQUIRE(kb2.finished());
+    REQUIRE(kb2.normal_form("abababbdbcbdbabdbdb") == "bbbbbbddd");
+
+    kb1 = std::move(kb2);
+    REQUIRE(kb1.confluent());
+    REQUIRE(kb1.confluent_known());
+    REQUIRE(kb1.finished());
+    REQUIRE(kb1.normal_form("abababbdbcbdbabdbdb") == "bbbbbbddd");
+
+    kb1.init(std::move(p1));
+    REQUIRE(!kb1.confluent());
+    REQUIRE(!kb1.finished());
+    kb1.run();
+    REQUIRE(kb1.finished());
+    REQUIRE(kb1.confluent());
+    REQUIRE(kb1.confluent_known());
+    REQUIRE(kb1.normal_form("abababbdbcbdbabdbdb") == "bbbbbbddd");
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
+                          "110",
+                          "constructors/init for partially run",
+                          "[quick][knuth-bendix]") {
+    using literals::operator""_w;
+    auto            rg = ReportGuard(false);
+
+    Presentation<std::string> p;
+    p.contains_empty_word(true);
+    p.alphabet("abc");
+
+    presentation::add_rule(p, "aa", "");
+    presentation::add_rule(p, "bc", "");
+    presentation::add_rule(p, "bbb", "");
+    presentation::add_rule(p, "ababababababab", "");
+    presentation::add_rule(p, "abacabacabacabacabacabacabacabac", "");
+
+    KnuthBendix kb1(p);
+    REQUIRE(!kb1.confluent());
+    REQUIRE(!kb1.finished());
+    kb1.run_for(std::chrono::milliseconds(10));
+    REQUIRE(!kb1.confluent());
+    REQUIRE(!kb1.finished());
+
+    kb1.init(p);
+    REQUIRE(!kb1.confluent());
+    REQUIRE(!kb1.finished());
+    REQUIRE(kb1.presentation() == p);
+    kb1.run_for(std::chrono::milliseconds(10));
+    REQUIRE(!kb1.confluent());
+    REQUIRE(!kb1.finished());
+
+    KnuthBendix kb2(kb1);
+    REQUIRE(!kb2.confluent());
+    REQUIRE(!kb2.finished());
+    REQUIRE(kb2.presentation() == p);
+    REQUIRE(kb1.number_of_active_rules() == kb2.number_of_active_rules());
+    kb2.run_for(std::chrono::milliseconds(10));
+    REQUIRE(!kb2.confluent());
+    REQUIRE(!kb2.finished());
+
+    size_t const M = kb2.number_of_active_rules();
+    kb1            = std::move(kb2);
+    REQUIRE(kb1.number_of_active_rules() == M);
+    REQUIRE(!kb1.finished());
   }
 
   ////////////////////////////////////////////////////////////////////////
@@ -618,7 +727,7 @@ namespace libsemigroups {
   //   presentation::add_rule(p, "GBgb", "h");
   //   presentation::add_rule(p, "cb", "bc");
   //   presentation::add_rule(p, "ya", "ay");
-  //   auto rg = ReportGuard(REPORT);
+  //   auto rg = ReportGuard(false);
   //
   //   REQUIRE(kb.confluent());
   //
@@ -647,7 +756,7 @@ namespace libsemigroups {
   //                         "(cong) finite transformation semigroup "
   //                         "congruence (21 classes)",
   //                         "[quick][congruence][knuth-bendix][cong]") {
-  //   auto rg      = ReportGuard(REPORT);
+  //   auto rg      = ReportGuard(false);
   //   using Transf = LeastTransf<5>;
   //   FroidurePin<Transf> S({Transf({1, 3, 4, 2, 3}), Transf({3, 2, 1, 3,
   //   3})});
@@ -715,7 +824,7 @@ namespace libsemigroups {
   //                         "[quick][knuth-bendix][kbmag][recursive]") {
   //   KnuthBendix kb(new RECURSIVE(), "aAbB");
   //   presentation::add_rule(p, "Baab", "aaa");
-  //   auto rg = ReportGuard(REPORT);
+  //   auto rg = ReportGuard(false);
 
   //   REQUIRE(kb.confluent());
 
@@ -740,7 +849,7 @@ namespace libsemigroups {
   //   presentation::add_rule(p, "ya", "ay");
   //   presentation::add_rule(p, "db", "bd");
   //   presentation::add_rule(p, "yb", "by");
-  //   auto rg = ReportGuard(REPORT);
+  //   auto rg = ReportGuard(false);
 
   //   REQUIRE(kb.confluent());
 
@@ -766,7 +875,7 @@ namespace libsemigroups {
   //                         "017",
   //                         "add_rule after knuth_bendix",
   //                         "[quick][knuth-bendix]") {
-  //   auto        rg = ReportGuard(REPORT);
+  //   auto        rg = ReportGuard(false);
   //   KnuthBendix kb;
   //   Presentation<std::string> p;
   // //p.alphabet("Bab");
@@ -820,7 +929,7 @@ namespace libsemigroups {
   //   presentation::add_rule(p, "ba", "abc");
   //   presentation::add_rule(p, "ca", "ac");
   //   presentation::add_rule(p, "cb", "bc");
-  //   auto rg = ReportGuard(REPORT);
+  //   auto rg = ReportGuard(false);
   //
   //   REQUIRE(kb.confluent());
   //
@@ -847,7 +956,7 @@ namespace libsemigroups {
   //   presentation::add_rule(p, "ef", "g");
   //   presentation::add_rule(p, "fg", "a");
   //   presentation::add_rule(p, "ga", "b");
-  //   auto rg = ReportGuard(REPORT);
+  //   auto rg = ReportGuard(false);
 
   //   REQUIRE(!kb.confluent());
 
@@ -877,7 +986,7 @@ namespace libsemigroups {
   //   presentation::add_rule(p, "babABaBA", "abABaBAb");
   //   presentation::add_rule(p, "cBACab", "abcBAC");
   //   presentation::add_rule(p, "BabABBAbab", "aabABBAb");
-  //   auto rg = ReportGuard(REPORT);
+  //   auto rg = ReportGuard(false);
 
   //   REQUIRE(!kb.confluent());
 

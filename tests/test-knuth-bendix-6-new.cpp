@@ -343,4 +343,84 @@ namespace libsemigroups {
     REQUIRE(!is_obviously_infinite(kb));
     REQUIRE(kb.size() == 3'125);
   }
+
+  LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
+                          "109",
+                          "constructors/init for finished",
+                          "[quick][knuth-bendix]") {
+    using literals::operator""_w;
+    auto            rg = ReportGuard(false);
+
+    Presentation<word_type> p1;
+    p1.contains_empty_word(true);
+    p1.alphabet(4);
+    presentation::add_rule(p1, 01_w, {});
+    presentation::add_rule(p1, 10_w, {});
+    presentation::add_rule(p1, 23_w, {});
+    presentation::add_rule(p1, 32_w, {});
+    presentation::add_rule(p1, 20_w, 02_w);
+
+    Presentation<word_type> p2;
+    p2.contains_empty_word(true);
+    p2.alphabet(2);
+    presentation::add_rule(p2, 000_w, {});
+    presentation::add_rule(p2, 111_w, {});
+    presentation::add_rule(p2, 010101_w, {});
+
+    KnuthBendix kb1(p1);
+    REQUIRE(!kb1.confluent());
+    REQUIRE(!kb1.finished());
+    kb1.run();
+    REQUIRE(kb1.confluent());
+    REQUIRE(kb1.number_of_active_rules() == 8);
+
+    kb1.init(p2);
+    REQUIRE(!kb1.confluent());
+    REQUIRE(!kb1.finished());
+    kb1.run();
+    REQUIRE(kb1.finished());
+    REQUIRE(kb1.confluent());
+    REQUIRE(kb1.confluent_known());
+    REQUIRE(kb1.number_of_active_rules() == 4);
+
+    kb1.init(p1);
+    REQUIRE(!kb1.confluent());
+    REQUIRE(!kb1.finished());
+    kb1.run();
+    REQUIRE(kb1.finished());
+    REQUIRE(kb1.confluent());
+    REQUIRE(kb1.confluent_known());
+    REQUIRE(kb1.number_of_active_rules() == 8);
+
+    KnuthBendix kb2(std::move(kb1));
+    REQUIRE(kb2.confluent());
+    REQUIRE(kb2.confluent_known());
+    REQUIRE(kb2.finished());
+    REQUIRE(kb2.number_of_active_rules() == 8);
+
+    kb1 = std::move(kb2);
+    REQUIRE(kb1.confluent());
+    REQUIRE(kb1.confluent_known());
+    REQUIRE(kb1.finished());
+    REQUIRE(kb1.number_of_active_rules() == 8);
+
+    kb1.init(std::move(p1));
+    REQUIRE(!kb1.confluent());
+    REQUIRE(!kb1.finished());
+    kb1.run();
+    REQUIRE(kb1.finished());
+    REQUIRE(kb1.confluent());
+    REQUIRE(kb1.confluent_known());
+    REQUIRE(kb1.number_of_active_rules() == 8);
+
+    KnuthBendix kb3(std::move(p2));
+    REQUIRE(!kb3.confluent());
+    REQUIRE(!kb3.finished());
+    kb3.run();
+    REQUIRE(kb3.finished());
+    REQUIRE(kb3.confluent());
+    REQUIRE(kb3.confluent_known());
+    REQUIRE(kb3.number_of_active_rules() == 4);
+  }
+
 }  // namespace libsemigroups
