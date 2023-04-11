@@ -176,11 +176,17 @@ namespace libsemigroups {
   // KnuthBendix::Settings - constructor - public
   //////////////////////////////////////////////////////////////////////////
 
-  KnuthBendix::Settings::Settings()
-      : _check_confluence_interval(4096),
-        _max_overlap(POSITIVE_INFINITY),
-        _max_rules(POSITIVE_INFINITY),
-        _overlap_policy(options::overlap::ABC) {}
+  KnuthBendix::Settings::Settings() noexcept {
+    init();
+  }
+
+  KnuthBendix::Settings& KnuthBendix::Settings::init() noexcept {
+    _check_confluence_interval = 4'096;
+    _max_overlap               = POSITIVE_INFINITY;
+    _max_rules                 = POSITIVE_INFINITY;
+    _overlap_policy            = options::overlap::ABC;
+    return *this;
+  }
 
   //////////////////////////////////////////////////////////////////////////
   // KnuthBendix - setters for Settings - public
@@ -212,39 +218,69 @@ namespace libsemigroups {
   // KnuthBendix - constructors and destructor - public
   //////////////////////////////////////////////////////////////////////////
 
-  KnuthBendix::KnuthBendix()
-      : Runner(),
-        _gilman_digraph(),
-        _active_rules(),
-        _confluent(false),
-        _confluence_known(false),
-        _inactive_rules(),
-        _internal_is_same_as_external(false),
-        _min_length_lhs_rule(std::numeric_limits<size_t>::max()),
-        _overlap_measure(nullptr),
-        _presentation(),
-        _stack(),
-        _total_rules(0) {
-    _next_rule_it1 = _active_rules.end();  // null
-    _next_rule_it2 = _active_rules.end();  // null
-    overlap_policy(options::overlap::ABC);
+  KnuthBendix::KnuthBendix() {
+    init();
+  }
+
+  KnuthBendix& KnuthBendix::init() {
+    Runner::init();
+    _settings.init();
+    _gilman_digraph.init(0, 0);
+    // Put all active rules and those rules in the stack into the
+    // inactive_rules list
+    for (Rule const* cptr : _active_rules) {
+      Rule* ptr = const_cast<Rule*>(cptr);
+      ptr->deactivate();
+      _inactive_rules.insert(_inactive_rules.end(), ptr);
+    }
+    _active_rules.clear();
+    while (!_stack.empty()) {
+      _inactive_rules.insert(_inactive_rules.end(), _stack.top());
+      _stack.pop();
+    }
+
+    _confluent                    = false;
+    _confluence_known             = false;
+    _internal_is_same_as_external = false;
+    _min_length_lhs_rule          = std::numeric_limits<size_t>::max();
+    _overlap_measure              = nullptr;
+    _presentation.clear();
+    _total_rules   = 0;
+    _next_rule_it1 = _active_rules.end();
+    _next_rule_it2 = _active_rules.end();
+    overlap_policy(_settings._overlap_policy);
 #ifdef LIBSEMIGROUPS_VERBOSE
     _max_stack_depth        = 0;
     _max_word_length        = 0;
     _max_active_word_length = 0;
     _max_active_rules       = 0;
 #endif
+    return *this;
   }
 
-  KnuthBendix::KnuthBendix(KnuthBendix const& that) : KnuthBendix() {
-    _presentation = that.presentation();
-    // throws if rules contain letters that are not in the alphabet.
-    _presentation.validate();
-    for (auto const& rule : that.active_rules()) {
-      add_rule_impl(rule.first, rule.second);
+  KnuthBendix::KnuthBendix(KnuthBendix const& that)
+      : _settings(that._settings),
+        _active_rules(),
+        _confluent(),
+        _confluence_known(),
+        _gilman_digraph(that._gilman_digraph),
+        _inactive_rules(),
+        _internal_is_same_as_external(that._internal_is_same_as_external),
+        _min_length_lhs_rule(that._min_length_lhs_rule),
+        _next_rule_it1(),
+        _next_rule_it2(),
+        _overlap_measure(),
+        _presentation(that._presentation),
+        _set_rules(that._set_rules),
+        _stack(that._stack),
+        _total_rules(that._total_rules) {
+    _confluent        = that._confluent.load();
+    _confluence_known = that._confluence_known.load();
+    overlap_policy(_settings._overlap_policy);
+    for (Rule const* rule : that._active_rules) {
+      _active_rules.push_back(new_rule(rule));
     }
-    // TODO(later) copy other settings
-    _settings._overlap_policy = that._settings._overlap_policy;
+    // Don't copy the inactive rules, because why bother
   }
 
   KnuthBendix::~KnuthBendix() {

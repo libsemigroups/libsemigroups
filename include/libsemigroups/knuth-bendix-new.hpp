@@ -19,6 +19,12 @@
 // This file contains a class KnuthBendix which implements the Knuth-Bendix
 // algorithm for finitely presented monoids.
 
+// TODO:
+// * noexcept
+// * nodiscard
+// * iwyu
+// * fix doc
+
 #ifndef LIBSEMIGROUPS_KNUTH_BENDIX_NEW_HPP_
 #define LIBSEMIGROUPS_KNUTH_BENDIX_NEW_HPP_
 
@@ -204,7 +210,14 @@ namespace libsemigroups {
 
    private:
     struct Settings {
-      Settings();
+      Settings() noexcept;
+      Settings& init() noexcept;
+
+      Settings(Settings const&) noexcept            = default;
+      Settings(Settings&&) noexcept                 = default;
+      Settings& operator=(Settings const&) noexcept = default;
+      Settings& operator=(Settings&&) noexcept      = default;
+
       size_t           _check_confluence_interval;
       size_t           _max_overlap;
       size_t           _max_rules;
@@ -215,10 +228,10 @@ namespace libsemigroups {
     // KnuthBendix - data - private
     ////////////////////////////////////////////////////////////////////////
 
-    ActionDigraph<size_t>            _gilman_digraph;
     std::list<Rule const*>           _active_rules;
     mutable std::atomic<bool>        _confluent;
     mutable std::atomic<bool>        _confluence_known;
+    ActionDigraph<size_t>            _gilman_digraph;
     mutable std::list<Rule*>         _inactive_rules;
     bool                             _internal_is_same_as_external;
     size_t                           _min_length_lhs_rule;
@@ -254,10 +267,7 @@ namespace libsemigroups {
     //! \complexity
     //! Constant.
     KnuthBendix();
-
-    // KnuthBendix& init();
-
-    // TODO init
+    KnuthBendix& init();
 
     //! Copy constructor.
     //!
@@ -268,18 +278,14 @@ namespace libsemigroups {
     //! rules of \p copy.
     KnuthBendix(KnuthBendix const& copy);
 
-    //! Deleted.
+    // TODO impl
     // KnuthBendix(KnuthBendix&&);
-
-    //! Deleted. TODO undelete
-    KnuthBendix& operator=(KnuthBendix const&) = delete;
-
-    //! Deleted. TODO undelete
-    // KnuthBendix& operator=(KnuthBendix&&) = delete;
+    // KnuthBendix& operator=(KnuthBendix const&);
+    // KnuthBendix& operator=(KnuthBendix&&);
 
     ~KnuthBendix();
 
-    // TODO init version
+    // TODO init version + to cpp
     KnuthBendix(Presentation<std::string> const& p) : KnuthBendix() {
       p.validate();
       _presentation    = p;
@@ -290,6 +296,7 @@ namespace libsemigroups {
       }
     }
 
+    // TODO init version + to cpp
     KnuthBendix(Presentation<std::string>&& p) : KnuthBendix() {
       p.validate();
       _presentation = std::move(p);
@@ -301,10 +308,12 @@ namespace libsemigroups {
       }
     }
 
+    // TODO init version
     template <typename Word>
     KnuthBendix(Presentation<Word> const& p)
         : KnuthBendix(to_presentation<std::string>(p)) {}
 
+    // TODO init version
     template <typename Word>
     KnuthBendix(Presentation<Word>&& p)
         : KnuthBendix(
@@ -342,6 +351,7 @@ namespace libsemigroups {
     //! Constant.
     //!
     //! \sa \ref run.
+    // TODO add getter
     KnuthBendix& check_confluence_interval(size_t val) {
       _settings._check_confluence_interval = val;
       return *this;
@@ -366,6 +376,7 @@ namespace libsemigroups {
     //! Constant.
     //!
     //! \sa \ref run.
+    // TODO add getter
     KnuthBendix& max_overlap(size_t val) {
       _settings._max_overlap = val;
       return *this;
@@ -390,6 +401,7 @@ namespace libsemigroups {
     //! Constant.
     //!
     //! \sa \ref run.
+    // TODO add getter
     KnuthBendix& max_rules(size_t val) {
       _settings._max_rules = val;
       return *this;
@@ -409,6 +421,7 @@ namespace libsemigroups {
     //! Constant.
     //!
     //! \sa options::overlap.
+    // TODO add getter
     KnuthBendix& overlap_policy(options::overlap val);
 
     //////////////////////////////////////////////////////////////////////////
@@ -429,7 +442,7 @@ namespace libsemigroups {
     //!
     //! \parameters
     //! (None)
-    size_t number_of_active_rules() const noexcept;
+    [[nodiscard]] size_t number_of_active_rules() const noexcept;
 
     //! Returns a copy of the active rules.
     //!
@@ -451,7 +464,7 @@ namespace libsemigroups {
     //! \parameters
     //! (None)
     // TODO(v3): update the doc, now returns a Range
-    auto active_rules() const {
+    [[nodiscard]] auto active_rules() const {
       using namespace rx;
       return iterator_range(_active_rules.cbegin(), _active_rules.cend())
              | transform([this](auto const& rule) {
@@ -485,7 +498,7 @@ namespace libsemigroups {
     //!
     //! \returns
     //! A copy of the argument \p w after it has been rewritten.
-    std::string rewrite(std::string w) const {
+    [[nodiscard]] std::string rewrite(std::string w) const {
       rewrite(&w);
       return w;
     }
@@ -501,8 +514,8 @@ namespace libsemigroups {
     //!
     //! \parameters
     //! (None)
-    bool confluent() const;
-    bool confluent_known() const noexcept;
+    [[nodiscard]] bool confluent() const;
+    [[nodiscard]] bool confluent_known() const noexcept;
 
     //! Run the Knuth-Bendix by considering all overlaps of a given length.
     //!
@@ -555,11 +568,12 @@ namespace libsemigroups {
     //! worst \f$O(mn)\f$ where \f$m\f$ is the number of letters in the
     //! alphabet, and \f$n\f$ is the number of nodes in the \ref
     //! gilman_digraph.
-    uint64_t size();
+    [[nodiscard]] uint64_t size();
 
-    bool equal_to(std::string const&, std::string const&);
+    [[nodiscard]] bool equal_to(std::string const&, std::string const&);
 
-    std::string normal_form(std::string const& w);
+    // TODO std::string by reference version that mods arg in place
+    [[nodiscard]] std::string normal_form(std::string const& w);
 
    private:
     void add_rule_impl(std::string const& p, std::string const& q);
