@@ -1,5 +1,5 @@
 // libsemigroups - C++ library for semigroups and monoids
-// Copyright (C) 2020 James D. Mitchell
+// Copyright (C) 2020-2023 James D. Mitchell
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -32,34 +32,37 @@
 //
 // 6: contains tests for KnuthBendix using word_type presentations
 
-// #define CATCH_CONFIG_ENABLE_PAIR_STRINGMAKER
+#include <cstddef>                             // for size_t
+#include <iosfwd>                              // for string
+#include <string>                              // for allocator, basic_string
+#include <utility>                             // for move
+#include <vector>                              // for vector, operator==
+                                               //
+#include "catch.hpp"                           // for operator""_catch_sr
+#include "test-main.hpp"                       // for LIBSEMIGROUPS_TEST_CASE
+                                               //
+#include "libsemigroups/constants.hpp"         // for operator==, PositiveIn...
+#include "libsemigroups/digraph.hpp"           // for ActionDigraph
+#include "libsemigroups/exception.hpp"         // for LibsemigroupsException
+#include "libsemigroups/iterator.hpp"          // for operator+
+#include "libsemigroups/knuth-bendix-new.hpp"  // for KnuthBendix, normal_forms
+#include "libsemigroups/obvinf.hpp"            // for is_obviously_infinite
+#include "libsemigroups/order.hpp"             // for shortlex_compare
+#include "libsemigroups/paths.hpp"             // for Paths
+#include "libsemigroups/present.hpp"           // for add_rule, Presentation
+#include "libsemigroups/ranges.hpp"            // for equal
+#include "libsemigroups/report.hpp"            // for ReportGuard
+#include "libsemigroups/words.hpp"             // for Inner, to_strings, Str...
 
-#include <string>  // for string
-#include <vector>  // for vector
-
-#include "catch.hpp"      // for REQUIRE, REQUIRE_NOTHROW, REQUIRE_THROWS_AS
-#include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
-
-#include "libsemigroups/constants.hpp"         // for POSITIVE_INFINITY
-#include "libsemigroups/knuth-bendix-new.hpp"  // for KnuthBendix, operator<<
-#include "libsemigroups/obvinf.hpp"
-#include "libsemigroups/ranges.hpp"  // for ???
-#include "libsemigroups/report.hpp"  // for ReportGuard
-#include "libsemigroups/types.hpp"   // for word_type
-
-#include <rx/ranges.hpp>
+#include "rx/ranges.hpp"  // for operator|, to_vector
 
 namespace libsemigroups {
 
   using namespace rx;
-
   using literals::operator""_w;
+  using rule_type = KnuthBendix::rule_type;
 
   struct LibsemigroupsException;
-
-  constexpr bool REPORT = false;
-
-  using rule_type = KnuthBendix::rule_type;
 
   namespace {
     struct weird_cmp {
@@ -76,7 +79,7 @@ namespace libsemigroups {
                           "Chapter 11, Lemma 1.8 (q = 6, r = 5) in NR "
                           "(infinite)",
                           "[knuth-bendix][quick]") {
-    auto                      rg = ReportGuard(REPORT);
+    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("ABCabc");
     p.contains_empty_word(true);
@@ -125,7 +128,7 @@ namespace libsemigroups {
       "051",
       "Chapter 11, Section 2 (q = 6, r = 2, alpha = abaabba) in NR (size 4)",
       "[knuth-bendix][quick]") {
-    auto                      rg = ReportGuard(REPORT);
+    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("ab");
 
@@ -150,7 +153,7 @@ namespace libsemigroups {
                           "052",
                           "Chapter 8, Theorem 4.2 in NR (infinite) ",
                           "[knuth-bendix][quick]") {
-    auto rg = ReportGuard(REPORT);
+    auto rg = ReportGuard(false);
 
     Presentation<std::string> p;
     p.alphabet("ab");
@@ -189,7 +192,7 @@ namespace libsemigroups {
                           "053",
                           "equal_to fp semigroup",
                           "[quick][knuth-bendix]") {
-    auto                      rg = ReportGuard(REPORT);
+    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("abc");
 
@@ -219,7 +222,7 @@ namespace libsemigroups {
                           "054",
                           "equal_to free semigroup",
                           "[quick][knuth-bendix]") {
-    auto                      rg = ReportGuard(REPORT);
+    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet(2);
 
@@ -243,7 +246,7 @@ namespace libsemigroups {
                           "055",
                           "from GAP smalloverlap gap/test.gi (infinite)",
                           "[quick][knuth-bendix][smalloverlap]") {
-    auto                      rg = ReportGuard(REPORT);
+    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("abcdefg");
 
@@ -276,7 +279,7 @@ namespace libsemigroups {
                           "056",
                           "from GAP smalloverlap gap/test.gi:49 (infinite)",
                           "[quick][knuth-bendix][smalloverlap]") {
-    auto                      rg = ReportGuard(REPORT);
+    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("abcdefgh");
 
@@ -307,7 +310,7 @@ namespace libsemigroups {
                           "057",
                           "from GAP smalloverlap gap/test.gi:63 (infinite)",
                           "[quick][knuth-bendix][smalloverlap]") {
-    auto                      rg = ReportGuard(REPORT);
+    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("abcdefgh");
 
@@ -336,7 +339,7 @@ namespace libsemigroups {
                           "058",
                           "from GAP smalloverlap gap/test.gi:70 (infinite)",
                           "[quick][knuth-bendix][smalloverlap]") {
-    auto rg = ReportGuard(REPORT);
+    auto rg = ReportGuard(false);
     // The following permits a more complex test of case (6), which also
     // involves using the case (2) code to change the prefix being
     //  looked for:
@@ -369,7 +372,7 @@ namespace libsemigroups {
                           "059",
                           "from GAP smalloverlap gap/test.gi:77 (infinite)",
                           "[quick][knuth-bendix][smalloverlap][no-valgrind]") {
-    auto                      rg = ReportGuard(REPORT);
+    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("abcdefghijkl");
 
@@ -402,7 +405,7 @@ namespace libsemigroups {
                           "060",
                           "from GAP smalloverlap gap/test.gi:85 (infinite)",
                           "[quick][knuth-bendix][smalloverlap]") {
-    auto rg = ReportGuard(REPORT);
+    auto rg = ReportGuard(false);
 
     Presentation<std::string> p;
     p.alphabet("cab");  // runs forever with a different order
@@ -427,7 +430,7 @@ namespace libsemigroups {
                           "061",
                           "Von Dyck (2,3,7) group (infinite)",
                           "[quick][knuth-bendix][kbmag]") {
-    auto rg = ReportGuard(REPORT);
+    auto rg = ReportGuard(false);
 
     Presentation<std::string> p;
     p.contains_empty_word(true);
@@ -461,7 +464,7 @@ namespace libsemigroups {
                           "Von Dyck (2,3,7) group - different "
                           "presentation (infinite)",
                           "[no-valgrind][quick][knuth-bendix][kbmag]") {
-    auto rg = ReportGuard(REPORT);
+    auto rg = ReportGuard(false);
 
     Presentation<std::string> p;
     p.alphabet("abcAB");
@@ -491,7 +494,7 @@ namespace libsemigroups {
       "063",
       "rewriting system from KnuthBendixCongruenceByPairs 08",
       "[quick][knuth-bendix][kbmag]") {
-    auto rg = ReportGuard(REPORT);
+    auto rg = ReportGuard(false);
 
     Presentation<std::string> p;
     p.alphabet("abc");
@@ -544,7 +547,7 @@ namespace libsemigroups {
                           "064",
                           "rewriting system from Congruence 20",
                           "[quick][knuth-bendix]") {
-    auto                      rg = ReportGuard(REPORT);
+    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("ab");
 
@@ -565,7 +568,7 @@ namespace libsemigroups {
                           "065",
                           "(from kbmag/standalone/kb_data/ab2)",
                           "[quick][knuth-bendix][kbmag][shortlex]") {
-    auto                      rg = ReportGuard(REPORT);
+    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("aAbB");
     p.contains_empty_word(true);
@@ -601,7 +604,7 @@ namespace libsemigroups {
                           "(from kbmag/standalone/kb_data/d22) (1 / 3)"
                           "(infinite)",
                           "[quick][knuth-bendix][kbmag][shortlex]") {
-    auto rg = ReportGuard(REPORT);
+    auto rg = ReportGuard(false);
 
     // Presentation<std::string> p;
     // p.alphabet("aAbBcCdDyYfF");
@@ -666,7 +669,7 @@ namespace libsemigroups {
                           "067",
                           "(from kbmag/standalone/kb_data/degen1)",
                           "[quick][knuth-bendix][kbmag][shortlex]") {
-    auto rg = ReportGuard(REPORT);
+    auto rg = ReportGuard(false);
 
     KnuthBendix kb;
 
@@ -684,7 +687,7 @@ namespace libsemigroups {
                           "068",
                           "(from kbmag/standalone/kb_data/s4)",
                           "[quick][knuth-bendix][kbmag][shortlex]") {
-    auto rg = ReportGuard(REPORT);
+    auto rg = ReportGuard(false);
 
     Presentation<std::string> p;
     p.alphabet("abB");
@@ -719,7 +722,7 @@ namespace libsemigroups {
                           "069",
                           "fp semigroup (infinite)",
                           "[quick][knuth-bendix]") {
-    auto                      rg = ReportGuard(REPORT);
+    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet(3);
     presentation::add_rule(p, {0, 1}, {1, 0});
@@ -750,7 +753,7 @@ namespace libsemigroups {
                           "070",
                           "Chapter 11, Section 1 (q = 4, r = 3) in NR(size 86)",
                           "[knuth-bendix][quick]") {
-    auto rg = ReportGuard(REPORT);
+    auto rg = ReportGuard(false);
 
     Presentation<std::string> p;
     p.alphabet("ab");
@@ -796,7 +799,7 @@ namespace libsemigroups {
       "071",
       "Chapter 11, Section 1 (q = 8, r = 5) in NR (size 746)",
       "[no-valgrind][knuth-bendix][quick]") {
-    auto                      rg = ReportGuard(REPORT);
+    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("ab");
 
@@ -837,7 +840,7 @@ namespace libsemigroups {
                           "072",
                           "Chapter 7, Theorem 3.9 in NR (size 240)",
                           "[no-valgrind][knuth-bendix][quick]") {
-    auto                      rg = ReportGuard(REPORT);
+    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("ab");
 
@@ -861,7 +864,7 @@ namespace libsemigroups {
                           "073",
                           "F(2, 5) - Chapter 9, Section 1 in NR (size 11)",
                           "[knuth-bendix][quick]") {
-    auto                      rg = ReportGuard(REPORT);
+    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("abcde");
 
@@ -889,7 +892,7 @@ namespace libsemigroups {
                           "074",
                           "F(2, 6) - Chapter 9, Section 1 in NR",
                           "[knuth-bendix][quick]") {
-    auto                      rg = ReportGuard(REPORT);
+    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("abcdef");
     p.contains_empty_word(true);
@@ -919,7 +922,7 @@ namespace libsemigroups {
                           "075",
                           "Chapter 10, Section 4 in NR (infinite)",
                           "[knuth-bendix][quick]") {
-    auto                      rg = ReportGuard(REPORT);
+    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("abc");
 
@@ -948,7 +951,7 @@ namespace libsemigroups {
       "076",
       "Sym(5) from Chapter 3, Proposition 1.1 in NR (size 120)",
       "[no-valgrind][knuth-bendix][quick]") {
-    auto rg = ReportGuard(REPORT);
+    auto rg = ReportGuard(false);
 
     Presentation<std::string> p;
     p.alphabet("ABab");
@@ -987,7 +990,7 @@ namespace libsemigroups {
       "077",
       "SL(2, 7) from Chapter 3, Proposition 1.5 in NR (size 336)",
       "[no-valgrind][quick][knuth-bendix]") {
-    auto rg = ReportGuard(REPORT);
+    auto rg = ReportGuard(false);
 
     Presentation<std::string> p;
     p.alphabet("abAB");
@@ -1024,7 +1027,7 @@ namespace libsemigroups {
                           "078",
                           "bicyclic monoid (infinite)",
                           "[knuth-bendix][quick]") {
-    auto                      rg = ReportGuard(REPORT);
+    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("ab");
     p.contains_empty_word(true);
@@ -1050,7 +1053,7 @@ namespace libsemigroups {
                           "079",
                           "plactic monoid of degree 2 (infinite)",
                           "[knuth-bendix][quick]") {
-    auto                      rg = ReportGuard(REPORT);
+    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("abc");
     p.contains_empty_word(true);
@@ -1081,7 +1084,7 @@ namespace libsemigroups {
       "080",
       "example before Chapter 7, Proposition 1.1 in NR (infinite)",
       "[knuth-bendix][quick]") {
-    auto                      rg = ReportGuard(REPORT);
+    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("ab");
 
@@ -1104,7 +1107,7 @@ namespace libsemigroups {
                           "081",
                           "Chapter 7, Theorem 3.6 in NR (size 243)",
                           "[knuth-bendix][quick]") {
-    auto                      rg = ReportGuard(REPORT);
+    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("ab");
 
@@ -1142,7 +1145,7 @@ namespace libsemigroups {
                           "082",
                           "finite semigroup (size 99)",
                           "[knuth-bendix][quick]") {
-    auto                      rg = ReportGuard(REPORT);
+    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("ab");
 

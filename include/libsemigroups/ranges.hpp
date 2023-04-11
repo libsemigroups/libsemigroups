@@ -19,6 +19,7 @@
 // This file contains TODO
 
 // TODO implement "cartesian" combinator for rx-ranges
+// TODO add typename = std::enable_if_t<rx::is_input_or_sink_v<T>>> everywhere
 
 #ifndef LIBSEMIGROUPS_RANGES_HPP_
 #define LIBSEMIGROUPS_RANGES_HPP_
@@ -26,8 +27,6 @@
 #include <algorithm>
 
 #include <rx/ranges.hpp>
-
-// TODO add typename = std::enable_if_t<rx::is_input_or_sink_v<T>>> everywhere
 
 namespace libsemigroups {
 
@@ -88,6 +87,20 @@ namespace libsemigroups {
       return true;
     }
     return lexicographical_compare(r1, r2);
+  }
+
+  // A << function for ranges
+  template <typename Range,
+            typename = std::enable_if_t<rx::is_input_or_sink_v<Range>>>
+  std::ostream& operator<<(std::ostream& os, Range r) {
+    os << "{{";  // {{ is an escaped single { for fmt
+    std::string sep = "";
+    for (auto const& item : r) {
+      os << sep << detail::to_string(item);
+      sep = ", ";
+    }
+    os << "}}";
+    return os;
   }
 
 }  // namespace libsemigroups

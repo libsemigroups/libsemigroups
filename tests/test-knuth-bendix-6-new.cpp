@@ -1,5 +1,5 @@
 // libsemigroups - C++ library for semigroups and monoids
-// Copyright (C) 2020 James D. Mitchell
+// Copyright (C) 2020-2023 James D. Mitchell
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -32,19 +32,29 @@
 //
 // 6: contains tests for KnuthBendix.
 
-#include "catch.hpp"      // for REQUIRE, REQUIRE_NOTHROW, REQUIRE_THROWS_AS
-#include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
-
-#include "libsemigroups/fpsemi-examples.hpp"   // for chinese_monoid
-#include "libsemigroups/knuth-bendix-new.hpp"  // for KnuthBendix, operator<<
+#include <cstddef>                             // for size_t
+#include <string>                              // for basic_string, char_traits
+#include <utility>                             // for move
+#include <vector>                              // for vector
+                                               //
+#include "catch.hpp"                           // for operator""_catch_sr
+#include "test-main.hpp"                       // for LIBSEMIGROUPS_TEST_CASE
+                                               //
+#include "libsemigroups/constants.hpp"         // for operator==, Max, POSIT...
+#include "libsemigroups/exception.hpp"         // for LibsemigroupsException
+#include "libsemigroups/fpsemi-examples.hpp"   // for partial_transformation...
+#include "libsemigroups/froidure-pin.hpp"      // for FroidurePin
+#include "libsemigroups/knuth-bendix-new.hpp"  // for KnuthBendix, normal_forms
+#include "libsemigroups/obvinf.hpp"            // for is_obviously_infinite
+#include "libsemigroups/paths.hpp"             // for Paths
+#include "libsemigroups/present.hpp"           // for to_string, add_rule
 #include "libsemigroups/report.hpp"            // for ReportGuard
-#include "libsemigroups/to-froidure-pin.hpp"
-#include "libsemigroups/types.hpp"  // for word_type
+#include "libsemigroups/to-froidure-pin.hpp"   // for to_froidure_pin
+#include "libsemigroups/types.hpp"             // for word_type
+#include "libsemigroups/words.hpp"             // for operator""_w
 
 namespace libsemigroups {
   using literals::operator""_w;
-
-  struct LibsemigroupsException;
 
   LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
                           "103",

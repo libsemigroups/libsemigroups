@@ -37,22 +37,35 @@
 //   reduction orderings different from shortlex
 // * Examples from MAF
 
-#include <string>  // for string
-#include <vector>  // for vector
+#include <algorithm>      // for fill
+#include <chrono>         // for milliseconds
+#include <cstddef>        // for size_t
+#include <iosfwd>         // for string
+#include <string>         // for basic_string, operator==
+#include <unordered_map>  // for operator==, operator!=
+#include <utility>        // for move
+#include <vector>         // for vector, operator==
 
-#include "catch.hpp"      // for REQUIRE, REQUIRE_NOTHROW, REQUIRE_THROWS_AS
+#include "catch.hpp"      // for AssertionHandler, ope...
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
-#include "libsemigroups/config.hpp"            // for LIBSEMIGROUPS_DEBUG
-#include "libsemigroups/constants.hpp"         // for POSITIVE_INFINITY
-#include "libsemigroups/knuth-bendix-new.hpp"  // for KnuthBendix, operator<<
-#include "libsemigroups/obvinf.hpp"            // for word_type
-#include "libsemigroups/ranges.hpp"            // for TODO
+#include "libsemigroups/constants.hpp"         // for operator==, operator!=
+#include "libsemigroups/digraph-helper.hpp"    // for is_acyclic
+#include "libsemigroups/digraph.hpp"           // for ActionDigraph
+#include "libsemigroups/exception.hpp"         // for LibsemigroupsException
+#include "libsemigroups/froidure-pin.hpp"      // for FroidurePin
+#include "libsemigroups/kbe-new.hpp"           // for KBE
+#include "libsemigroups/knuth-bendix-new.hpp"  // for KnuthBendix, normal_f...
+#include "libsemigroups/obvinf.hpp"            // for is_obviously_infinite
+#include "libsemigroups/paths.hpp"             // for Paths
+#include "libsemigroups/present.hpp"           // for add_rule, Presentation
+#include "libsemigroups/ranges.hpp"            // for equal
 #include "libsemigroups/report.hpp"            // for ReportGuard
 #include "libsemigroups/to-froidure-pin.hpp"   // for to_froidure_pin
 #include "libsemigroups/types.hpp"             // for word_type
+#include "libsemigroups/words.hpp"             // for Inner, to_strings
 
-#include <rx/ranges.hpp>
+#include "rx/ranges.hpp"  // for operator|, to_vector
 
 namespace libsemigroups {
   using namespace rx;

@@ -159,7 +159,7 @@ namespace libsemigroups {
 
     // To tpp TODO
     // TODO rval ref version
-    Kambites(Presentation<value_type> const& p) : Kambites() {
+    explicit Kambites(Presentation<value_type> const& p) : Kambites() {
       p.validate();
       _presentation = p;
       ukkonen::add_words_no_checks(_suffix_tree,

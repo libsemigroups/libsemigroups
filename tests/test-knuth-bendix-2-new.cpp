@@ -1,5 +1,5 @@
 // libsemigroups - C++ library for semigroups and monoids
-// Copyright (C) 2020 James D. Mitchell
+// Copyright (C) 2020-2023 James D. Mitchell
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -32,29 +32,35 @@
 //
 // 6: contains tests for KnuthBendix created from word_type presentations
 
-#define CATCH_CONFIG_ENABLE_PAIR_STRINGMAKER
+#include <cstddef>      // for size_t
+#include <cstdint>      // for uint64_t
+#include <iostream>     // for string, ostringstream
+#include <string>       // for allocator, basic_string
+#include <type_traits>  // for is_same_v
+#include <utility>      // for move
+#include <vector>       // for vector, operator==
 
-#include <iostream>  // for ostringstream
-#include <string>    // for string
-#include <vector>    // for vector
-
-#include "catch.hpp"      // for REQUIRE, REQUIRE_NOTHROW, REQUIRE_THROWS_AS
+#include "catch.hpp"      // for AssertionHandler, oper...
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
-#include "libsemigroups/constants.hpp"         // for POSITIVE_INFINITY
-#include "libsemigroups/knuth-bendix-new.hpp"  // for KnuthBendix, operator<<
-#include "libsemigroups/ranges.hpp"            // for shortlex_compare
+#include "libsemigroups/constants.hpp"         // for operator==, operator!=
+#include "libsemigroups/digraph.hpp"           // for ActionDigraph
+#include "libsemigroups/exception.hpp"         // for LibsemigroupsException
+#include "libsemigroups/knuth-bendix-new.hpp"  // for KnuthBendix, normal_forms
+#include "libsemigroups/order.hpp"             // for shortlex_compare
+#include "libsemigroups/paths.hpp"             // for Paths
+#include "libsemigroups/present.hpp"           // for add_rule, Presentation
 #include "libsemigroups/report.hpp"            // for ReportGuard
+#include "libsemigroups/words.hpp"             // for Inner, to_strings
 
-#include <rx/ranges.hpp>
+#include "rx/ranges.hpp"  // for operator|, Inner, to_v...
 
 namespace libsemigroups {
   using namespace rx;
 
   struct LibsemigroupsException;
 
-  constexpr bool REPORT = false;
-  using rule_type       = KnuthBendix::rule_type;
+  using rule_type = KnuthBendix::rule_type;
 
   namespace {
     struct weird_cmp {
@@ -72,7 +78,7 @@ namespace libsemigroups {
                           "021",
                           "(from kbmag/standalone/kb_data/f25monoid)",
                           "[quick][knuth-bendix][kbmag][shortlex]") {
-    auto rg = ReportGuard(REPORT);
+    auto rg = ReportGuard(false);
 
     Presentation<std::string> p;
     p.alphabet("abcde");
@@ -138,7 +144,7 @@ namespace libsemigroups {
                           "022",
                           "(from kbmag/standalone/kb_data/degen4a)",
                           "[quick][knuth-bendix][kbmag][shortlex]") {
-    auto rg = ReportGuard(REPORT);
+    auto rg = ReportGuard(false);
 
     Presentation<std::string> p;
     p.alphabet("aAbBcC");
@@ -177,7 +183,7 @@ namespace libsemigroups {
                           "023",
                           "(from kbmag/standalone/kb_data/torus)",
                           "[quick][knuth-bendix][kbmag][shortlex]") {
-    auto rg = ReportGuard(REPORT);
+    auto rg = ReportGuard(false);
 
     Presentation<std::string> p;
     p.alphabet("aAcCbBdD");
@@ -228,7 +234,7 @@ namespace libsemigroups {
                           "024",
                           "(from kbmag/standalone/kb_data/3a6)",
                           "[quick][knuth-bendix][kbmag][shortlex]") {
-    auto rg = ReportGuard(REPORT);
+    auto rg = ReportGuard(false);
 
     Presentation<std::string> p;
     p.contains_empty_word(true);
@@ -286,7 +292,7 @@ namespace libsemigroups {
                           "025",
                           "(from kbmag/standalone/kb_data/f2)",
                           "[quick][knuth-bendix][kbmag][shortlex]") {
-    auto rg = ReportGuard(REPORT);
+    auto rg = ReportGuard(false);
 
     Presentation<std::string> p;
     p.alphabet("aAbB");
@@ -329,7 +335,7 @@ namespace libsemigroups {
       "026",
       "(from kbmag/standalone/kb_data/s16)",
       "[quick][knuth-bendix][kbmag][shortlex][no-valgrind]") {
-    auto                      rg = ReportGuard(REPORT);
+    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("abcdefghijklmno");
     p.contains_empty_word(true);
@@ -467,7 +473,7 @@ namespace libsemigroups {
                           "027",
                           "(from kbmag/standalone/kb_data/a4monoid)",
                           "[quick][knuth-bendix][kbmag][shortlex]") {
-    auto rg = ReportGuard(REPORT);
+    auto rg = ReportGuard(false);
 
     Presentation<std::string> p;
     p.alphabet("abB");
@@ -503,7 +509,7 @@ namespace libsemigroups {
       "028",
       "(from kbmag/standalone/kb_data/degen3)",
       "[quick][knuth-bendix][kbmag][shortlex][no-valgrind]") {
-    auto rg = ReportGuard(REPORT);
+    auto rg = ReportGuard(false);
 
     Presentation<std::string> p;
     p.alphabet("aAbB");
@@ -532,7 +538,7 @@ namespace libsemigroups {
                           "029",
                           "(from kbmag/standalone/kb_data/ab1)",
                           "[quick][knuth-bendix][kbmag][shortlex]") {
-    auto                      rg = ReportGuard(REPORT);
+    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("aA");
     p.contains_empty_word(true);
@@ -552,7 +558,7 @@ namespace libsemigroups {
                           "030",
                           "(from kbmag/standalone/kb_data/degen2)",
                           "[quick][knuth-bendix][kbmag][shortlex]") {
-    auto rg = ReportGuard(REPORT);
+    auto rg = ReportGuard(false);
 
     Presentation<std::string> p;
     p.alphabet("aA");
@@ -576,7 +582,7 @@ namespace libsemigroups {
                           "031",
                           "(from kbmag/standalone/kb_data/f25)",
                           "[quick][knuth-bendix][kbmag][shortlex]") {
-    auto rg = ReportGuard(REPORT);
+    auto rg = ReportGuard(false);
 
     Presentation<std::string> p;
     p.alphabet("aAbBcCdDyY");
@@ -633,7 +639,7 @@ namespace libsemigroups {
                           "032",
                           "(from kbmag/standalone/kb_data/237)",
                           "[quick][knuth-bendix][kbmag][shortlex]") {
-    auto                      rg = ReportGuard(REPORT);
+    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("aAbBc");
     p.contains_empty_word(true);
@@ -691,7 +697,7 @@ namespace libsemigroups {
                           "033",
                           "(from kbmag/standalone/kb_data/c2)",
                           "[quick][knuth-bendix][kbmag][shortlex]") {
-    auto rg = ReportGuard(REPORT);
+    auto rg = ReportGuard(false);
 
     Presentation<std::string> p;
     p.alphabet("a");
@@ -716,7 +722,7 @@ namespace libsemigroups {
                           "034",
                           "(from kbmag/standalone/kb_data/cosets)",
                           "[quick][knuth-bendix][kbmag][shortlex]") {
-    auto                      rg = ReportGuard(REPORT);
+    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.contains_empty_word(true);
     p.alphabet("HaAbB");
@@ -771,7 +777,7 @@ namespace libsemigroups {
                           "035",
                           "Example 5.1 in Sims (KnuthBendix 09 again)",
                           "[quick][knuth-bendix]") {
-    auto rg = ReportGuard(REPORT);
+    auto rg = ReportGuard(false);
 
     Presentation<std::string> p;
     p.alphabet("aAbB");
@@ -795,7 +801,7 @@ namespace libsemigroups {
                           "036",
                           "(from kbmag/standalone/kb_data/nilp2)",
                           "[quick][knuth-bendix][kbmag][shortlex]") {
-    auto                      rg = ReportGuard(REPORT);
+    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("cCbBaA");
     p.contains_empty_word(true);
@@ -814,7 +820,7 @@ namespace libsemigroups {
                           "037",
                           "Example 6.4 in Sims",
                           "[quick][knuth-bendix][no-valgrind]") {
-    auto                      rg = ReportGuard(REPORT);
+    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.contains_empty_word(true);
     p.alphabet("abc");
@@ -854,7 +860,7 @@ namespace libsemigroups {
                           "KnuthBendix 071 again",
                           "[no-valgrind][quick][knuth-bendix]["
                           "shortlex]") {
-    auto                      rg = ReportGuard(REPORT);
+    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("aAbBc");
     p.contains_empty_word(true);
@@ -929,7 +935,7 @@ namespace libsemigroups {
                           "again) "
                           "(different overlap policy)",
                           "[quick][knuth-bendix]") {
-    auto                      rg = ReportGuard(REPORT);
+    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("Bab");
     p.contains_empty_word(true);
@@ -973,7 +979,7 @@ namespace libsemigroups {
                           "again) "
                           "(different overlap policy)",
                           "[quick][knuth-bendix]") {
-    auto rg = ReportGuard(REPORT);
+    auto rg = ReportGuard(false);
 
     Presentation<std::string> p;
     p.contains_empty_word(true);
@@ -1012,7 +1018,6 @@ namespace libsemigroups {
 
     KnuthBendix kb1(p);
     os << kb1;  // Does not do anything visible
-
     p.alphabet("cbaB");
     presentation::add_rule(p, "aa", "");
     presentation::add_rule(p, "bB", "");
@@ -1060,7 +1065,7 @@ namespace libsemigroups {
                           "(finite)",
                           "[quick][knuth-bendix]["
                           "fpsemi][kbmag][shortlex]") {
-    auto rg = ReportGuard(REPORT);
+    auto rg = ReportGuard(false);
 
     Presentation<std::string> p;
     p.alphabet("ABCDYFabcdyf");
@@ -1098,7 +1103,7 @@ namespace libsemigroups {
                           "(finite)",
                           "[quick][knuth-bendix]["
                           "fpsemi][kbmag][shortlex]") {
-    auto                      rg = ReportGuard(REPORT);
+    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("aAbBcCdDyYfF");
     p.contains_empty_word(true);
@@ -1124,7 +1129,7 @@ namespace libsemigroups {
                           "046",
                           "small example",
                           "[quick][knuth-bendix][shortlex]") {
-    auto                      rg = ReportGuard(REPORT);
+    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("ab");
     presentation::add_rule(p, "aaa", "a");
@@ -1153,7 +1158,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("KnuthBendix", "048", "small overlap 1", "[quick]") {
-    auto                      rg = ReportGuard(REPORT);
+    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("BCA");
     presentation::add_rule(p, "AABC", "ACBA");
@@ -1179,7 +1184,7 @@ namespace libsemigroups {
                           "049",
                           "(from kbmag/standalone/kb_data/s9)",
                           "[quick][knuth-bendix][kbmag][shortlex]") {
-    auto rg = ReportGuard(REPORT);
+    auto rg = ReportGuard(false);
 
     Presentation<std::string> p;
     p.alphabet("abcdefgh");

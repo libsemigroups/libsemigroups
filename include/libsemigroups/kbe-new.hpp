@@ -20,10 +20,8 @@
 // the element_type for a FroidurePin instance. This class just wraps a
 // reduced word of a KnuthBendix instance.
 
-// For technical reasons this is implemented in src/kbe-impl.hpp
-
-#ifndef LIBSEMIGROUPS_KBE_HPP_
-#define LIBSEMIGROUPS_KBE_HPP_
+#ifndef LIBSEMIGROUPS_KBE_NEW_HPP_
+#define LIBSEMIGROUPS_KBE_NEW_HPP_
 
 #include <cstddef>  // for size_t
 #include <string>   // for string
@@ -42,8 +40,8 @@ namespace libsemigroups {
       class KBE {
         using internal_string_type = std::string;
 
-        KBE(internal_string_type const&);
-        KBE(internal_string_type&&);
+        explicit KBE(internal_string_type const&);
+        explicit KBE(internal_string_type&&);
 
        public:
         KBE() = default;
@@ -173,4 +171,4 @@ namespace std {
     }
   };
 }  // namespace std
-#endif  // LIBSEMIGROUPS_KBE_HPP_
+#endif  // LIBSEMIGROUPS_KBE_NEW_HPP_

@@ -1,6 +1,6 @@
 //
 // libsemigroups - C++ library for semigroups and monoids
-// Copyright (C) 2019 James D. Mitchell
+// Copyright (C) 2019-2023 James D. Mitchell
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -18,16 +18,27 @@
 
 #include "libsemigroups/knuth-bendix-new.hpp"  // for KnuthBendix, KnuthBe...
 
-#include <cstddef>  // for size_t
-#include <string>   // for string
-
-#include "libsemigroups/debug.hpp"              // for LIBSEMIGROUPS_ASSERT
-#include "libsemigroups/digraph.hpp"            // for ActionDigraph
-#include "libsemigroups/exception.hpp"          // for LIBSEMIGROUPS_EXCEPTION
-#include "libsemigroups/froidure-pin-base.hpp"  // for FroidurePinBase
-#include "libsemigroups/froidure-pin.hpp"       // for FroidurePin
-#include "libsemigroups/obvinf.hpp"             // for IsObviouslyInfinitePairs
-#include "libsemigroups/types.hpp"              // for word_type
+#include <algorithm>                    // for max, min
+#include <cstddef>                      // for size_t
+#include <iterator>                     // for advance
+#include <limits>                       // for numeric_limits
+#include <string>                       // for allocator, basic_string, oper...
+#include <unordered_map>                // for unordered_map, operator!=
+#include <utility>                      // for swap
+                                        //
+#include "libsemigroups/constants.hpp"  // for Max, PositiveInfinity, operat...
+#include "libsemigroups/debug.hpp"      // for LIBSEMIGROUPS_ASSERT
+#include "libsemigroups/digraph.hpp"    // for ActionDigraph
+#include "libsemigroups/obvinf.hpp"     // for is_obviously_infinite
+#include "libsemigroups/order.hpp"      // for shortlex_compare
+#include "libsemigroups/paths.hpp"      // for Paths
+#include "libsemigroups/present.hpp"    // for Presentation
+#include "libsemigroups/ranges.hpp"     // for operator<<
+#include "libsemigroups/report.hpp"     // for Reporter, REPORT_DEFAULT, REP...
+#include "libsemigroups/runner.hpp"     // for Runner
+#include "libsemigroups/string.hpp"     // for is_prefix, maximum_common_prefix
+#include "libsemigroups/timer.hpp"      // for Timer
+#include "libsemigroups/types.hpp"      // for word_type
 
 namespace libsemigroups {
 
@@ -68,8 +79,8 @@ namespace libsemigroups {
 
   void KnuthBendix::Rule::rewrite() {
     LIBSEMIGROUPS_ASSERT(_id != 0);
-    _kbimpl->internal_rewrite(_lhs);
-    _kbimpl->internal_rewrite(_rhs);
+    _kbimpl->internal_rewrite(*_lhs);
+    _kbimpl->internal_rewrite(*_rhs);
     // reorder if necessary
     if (shortlex_compare(_lhs, _rhs)) {
       std::swap(_lhs, _rhs);
@@ -377,8 +388,8 @@ namespace libsemigroups {
     run();
     external_to_internal_string(uu);
     external_to_internal_string(vv);
-    internal_rewrite(&uu);
-    internal_rewrite(&vv);
+    internal_rewrite(uu);
+    internal_rewrite(vv);
     return uu == vv;
   }
 
@@ -392,12 +403,10 @@ namespace libsemigroups {
   // KnuthBendix public methods for rules and rewriting
   //////////////////////////////////////////////////////////////////////////
 
-  KnuthBendix::external_string_type*
-  KnuthBendix::rewrite(external_string_type* w) const {
-    external_to_internal_string(*w);
+  void KnuthBendix::rewrite_inplace(external_string_type& w) const {
+    external_to_internal_string(w);
     internal_rewrite(w);
-    internal_to_external_string(*w);
-    return w;
+    internal_to_external_string(w);
   }
   //////////////////////////////////////////////////////////////////////////
   // KnuthBendixImpl - other methods - private
@@ -406,15 +415,17 @@ namespace libsemigroups {
   // REWRITE_FROM_LEFT from Sims, p67
   // Caution: this uses the assumption that rules are length reducing, if it
   // is not, then u might not have sufficient space!
-  void KnuthBendix::internal_rewrite(internal_string_type* u) const {
-    if (u->size() < _min_length_lhs_rule) {
+  void KnuthBendix::internal_rewrite(internal_string_type& u) const {
+    using iterator = internal_string_type::iterator;
+
+    if (u.size() < _min_length_lhs_rule) {
       return;
     }
-    internal_string_type::iterator const& v_begin = u->begin();
-    internal_string_type::iterator        v_end
-        = u->begin() + _min_length_lhs_rule - 1;
-    internal_string_type::iterator        w_begin = v_end;
-    internal_string_type::iterator const& w_end   = u->end();
+
+    iterator v_begin = u.begin();
+    iterator v_end   = u.begin() + _min_length_lhs_rule - 1;
+    iterator w_begin = v_end;
+    iterator w_end   = u.end();
 
     RuleLookup lookup;
 
@@ -443,7 +454,7 @@ namespace libsemigroups {
         ++w_begin;
       }
     }
-    u->erase(v_end - u->cbegin());
+    u.erase(v_end - u.cbegin());
   }
 
   //////////////////////////////////////////////////////////////////////////
@@ -497,8 +508,8 @@ namespace libsemigroups {
               word2.append(prefix.second, rule2->lhs()->cend());  // E
 
               if (word1 != word2) {
-                internal_rewrite(&word1);
-                internal_rewrite(&word2);
+                internal_rewrite(word1);
+                internal_rewrite(word2);
                 if (word1 != word2) {
                   _confluent = false;
                   return _confluent;
@@ -910,7 +921,7 @@ namespace libsemigroups {
             _stack.emplace(rule2);
           } else {
             if (rule2->rhs()->find(*lhs) != external_string_type::npos) {
-              internal_rewrite(rule2->rhs());
+              internal_rewrite(*rule2->rhs());
             }
             ++it;
           }
@@ -1005,8 +1016,7 @@ namespace libsemigroups {
 #endif
 
   std::ostream& operator<<(std::ostream& os, KnuthBendix const& kb) {
-    // TODO remove to_vector
-    os << detail::to_string(kb.active_rules() | rx::to_vector()) << "\n";
+    os << kb.active_rules();
     return os;
   }
 }  // namespace libsemigroups

@@ -97,7 +97,8 @@ namespace libsemigroups {
   }
 
   namespace detail {
-    // TODO(later) preprocess the next 3 functions out if using clang or gcc > 5
+    // TODO(v3) delete these
+    // preprocess the next 3 functions out if using clang or gcc > 5
     // A << function for vectors - to keep gcc 5 happy
     template <typename T>
     std::ostream& operator<<(std::ostream& os, std::vector<T> const& vec) {

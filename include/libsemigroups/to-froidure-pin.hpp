@@ -16,8 +16,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#ifndef LIBSEMIGROUPS_MAKE_FROIDURE_PIN_HPP_
-#define LIBSEMIGROUPS_MAKE_FROIDURE_PIN_HPP_
+#ifndef LIBSEMIGROUPS_TO_FROIDURE_PIN_HPP_
+#define LIBSEMIGROUPS_TO_FROIDURE_PIN_HPP_
 
 #include <cstddef>      // for size_t
 #include <type_traits>  // for enable_if_t, is_base_of
@@ -141,4 +141,4 @@ namespace libsemigroups {
   }
 
 }  // namespace libsemigroups
-#endif  // LIBSEMIGROUPS_MAKE_FROIDURE_PIN_HPP_
+#endif  // LIBSEMIGROUPS_TO_FROIDURE_PIN_HPP_

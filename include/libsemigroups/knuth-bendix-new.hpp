@@ -22,28 +22,33 @@
 // TODO:
 // * noexcept
 // * nodiscard
-// * iwyu
 // * fix doc
 
 #ifndef LIBSEMIGROUPS_KNUTH_BENDIX_NEW_HPP_
 #define LIBSEMIGROUPS_KNUTH_BENDIX_NEW_HPP_
 
-#include <cstddef>  // for size_t
-#include <iosfwd>   // for string, ostream
-#include <memory>   // for unique_ptr
-#include <set>
-#include <stack>
-#include <vector>  // for vector
-
-#include "cong-intf.hpp"     // for CongruenceInterface
-#include "digraph.hpp"       // for ActionDigraph
-#include "froidure-pin.hpp"  // for FroidurePin
-#include "paths.hpp"         // for Paths
-#include "present.hpp"       // for Presentation
-#include "runner.hpp"
-#include "to-presentation.hpp"  // for Presentation
+#include <atomic>               // for atomic
+#include <cstddef>              // for size_t
+#include <cstdint>              // for int64_t, uint64_t
+#include <iosfwd>               // for ostream
+#include <iterator>             // for distance
+#include <list>                 // for list
+#include <set>                  // for set
+#include <stack>                // for stack
+#include <string>               // for basic_string, operator==
+#include <utility>              // for forward, move, pair
+#include <vector>               // for allocator, vector
+                                //
+#include "debug.hpp"            // for LIBSEMIGROUPS_ASSERT
+#include "digraph.hpp"          // for ActionDigraph
+#include "exception.hpp"        // for LIBSEMIGROUPS_EXCEPTION_V3
+#include "paths.hpp"            // for Paths
+#include "present.hpp"          // for Presentation
+#include "runner.hpp"           // for Runner
+#include "to-presentation.hpp"  // for to_presentation
 #include "types.hpp"            // for word_type
-#include "words.hpp"            // for word_to_string
+
+#include "rx/ranges.hpp"  // for iterator_range
 
 namespace libsemigroups {
   // Forward declarations
@@ -157,7 +162,6 @@ namespace libsemigroups {
         LIBSEMIGROUPS_ASSERT(_id != 0);
         return _id;
       }
-
     };  // struct Rule
 
     friend struct Rule;
@@ -283,14 +287,14 @@ namespace libsemigroups {
 
     ~KnuthBendix();
 
-    KnuthBendix(Presentation<std::string> const& p) : KnuthBendix() {
+    explicit KnuthBendix(Presentation<std::string> const& p) : KnuthBendix() {
       private_init(p, false);  // false means don't call init, since we just
                                // called it from KnuthBendix()
     }
 
     KnuthBendix& init(Presentation<std::string> const& p);
 
-    KnuthBendix(Presentation<std::string>&& p) : KnuthBendix() {
+    explicit KnuthBendix(Presentation<std::string>&& p) : KnuthBendix() {
       private_init(std::move(p),
                    false);  // false means don't call init, since we just
                             // called it from KnuthBendix()
@@ -299,11 +303,11 @@ namespace libsemigroups {
     KnuthBendix& init(Presentation<std::string>&& p);
 
     template <typename Word>
-    KnuthBendix(Presentation<Word> const& p)
+    explicit KnuthBendix(Presentation<Word> const& p)
         : KnuthBendix(to_presentation<std::string>(p)) {}
 
     template <typename Word>
-    KnuthBendix(Presentation<Word>&& p)
+    explicit KnuthBendix(Presentation<Word>&& p)
         : KnuthBendix(
             to_presentation<std::string>(std::forward<Presentation<Word>>(p))) {
     }
@@ -509,7 +513,8 @@ namespace libsemigroups {
     //! (None)
     // TODO update the doc, now returns a Range
     [[nodiscard]] auto active_rules() const {
-      using namespace rx;
+      using rx::iterator_range;
+      using rx::transform;
       return iterator_range(_active_rules.cbegin(), _active_rules.cend())
              | transform([this](auto const& rule) {
                  // TODO remove allocation
@@ -530,8 +535,7 @@ namespace libsemigroups {
     //!
     //! \returns
     //! The argument \p w after it has been rewritten.
-    // TODO(later) change to void rewrite(std::string&);
-    std::string* rewrite(std::string* w) const;
+    void rewrite_inplace(std::string& w) const;
 
     //! Rewrite a word.
     //!
@@ -543,7 +547,7 @@ namespace libsemigroups {
     //! \returns
     //! A copy of the argument \p w after it has been rewritten.
     [[nodiscard]] std::string rewrite(std::string w) const {
-      rewrite(&w);
+      rewrite_inplace(w);
       return w;
     }
 
@@ -616,17 +620,20 @@ namespace libsemigroups {
 
     [[nodiscard]] bool equal_to(std::string const&, std::string const&);
 
-    // TODO std::string by reference version that mods arg in place
+    // No in-place version just use rewrite instead, this only exists so that
+    // run is called.
     [[nodiscard]] std::string normal_form(std::string const& w);
 
    private:
     void throw_if_started() const {
       if (started()) {
-        LIBSEMIGROUPS_EXCEPTION_V3("TODO");
+        LIBSEMIGROUPS_EXCEPTION_V3(
+            "the presentation cannot be changed after Knuth-Bendix has "
+            "started, maybe try `init` instead");
       }
     }
 
-    void internal_rewrite(internal_string_type* u) const;
+    void internal_rewrite(internal_string_type& u) const;
 
     static internal_char_type uint_to_internal_char(size_t a);
     static size_t             internal_char_to_uint(internal_char_type c);
@@ -718,7 +725,6 @@ namespace libsemigroups {
     //! \ref cend_normal_forms.
     // TODO update doc
     inline auto normal_forms(KnuthBendix& kb) {
-      using namespace rx;
       Paths paths(kb.gilman_digraph());
       paths.from(0);
       return paths;

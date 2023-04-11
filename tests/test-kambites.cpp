@@ -134,79 +134,6 @@ namespace libsemigroups {
     }
   }  // namespace
 
-#ifdef false
-  // std::string swap_a_and_b(std::string const& w) {
-  //   std::string result;
-  //   for (auto l : w) {
-  //     if (l == 'a') {
-  //       result += "b";
-  //     } else if (l == '#') {
-  //       result += '#';
-  //     } else {
-  //       result += "a";
-  //     }
-  //   }
-  //   return result;
-  // }
-
-  std::array<std::string, 5> swap_a_b_c(std::string const& w) {
-    static std::array<std::string, 5> perms
-        = {"bac", "acb", "cba", "bca", "cab"};
-    std::array<std::string, 5> result;
-    size_t                     count = 0;
-    for (auto const& p : perms) {
-      std::string ww;
-      for (auto l : w) {
-        if (l == 'a') {
-          ww += p[0];
-        } else if (l == 'b') {
-          ww += p[1];
-        } else {
-          ww += p[2];
-        }
-      }
-      result[count] = ww;
-      count++;
-    }
-    return result;
-  }
-
-}  // namespace
-
-namespace {
-
-  Kambites<> random_example(std::string const& alphabet) {
-    static std::random_device       rd;
-    static std::mt19937             generator(rd());
-    std::uniform_int_distribution<> distribution(1, 25);
-
-    Kambites<> k;
-    k.set_alphabet(alphabet);
-
-    std::vector<std::string> pieces;
-    for (size_t i = 0; i < 13; ++i) {
-      pieces.push_back(random_string(alphabet, distribution(generator)));
-    }
-
-    k.add_rule(pieces[0] + pieces[1] + pieces[2] + pieces[3],
-               pieces[2] + pieces[0] + pieces[7] + pieces[4]);
-    k.add_rule(pieces[4] + pieces[0] + pieces[5], pieces[6]);
-    k.add_rule(pieces[7] + pieces[1] + pieces[8], pieces[9]);
-    k.add_rule(pieces[10] + pieces[3] + pieces[11], pieces[12]);
-
-    std::cout << "k.add_rule(\""
-              << pieces[0] + pieces[1] + pieces[2] + pieces[3] << "\", \""
-              << pieces[2] + pieces[0] + pieces[7] + pieces[4] << "\");\n";
-    std::cout << "k.add_rule(\"" << pieces[4] + pieces[0] + pieces[5]
-              << "\", \"" << pieces[6] << "\");\n";
-    std::cout << "k.add_rule(\"" << pieces[7] + pieces[1] + pieces[8]
-              << "\", \"" << pieces[9] << "\");\n";
-    std::cout << "k.add_rule(\"" << pieces[10] + pieces[3] + pieces[11]
-              << "\", \"" << pieces[12] << "\");\n";
-    return k;
-  }
-#endif
-
   ////////////////////////////////////////////////////////////////////////
 
   template <typename T>
@@ -1777,13 +1704,13 @@ namespace {
           " ",
           min,
           max + 1,
-          double(std::get<0>(x)) / sample_size);
+          static_cast<double>(std::get<0>(x)) / sample_size);
 
       fmt::print("Estimate of confluent / non-confluent (length "
                  "[{}, {:>2})) = {:.10f}\n",
                  min,
                  max + 1,
-                 double(std::get<1>(x)) / sample_size);
+                 static_cast<double>(std::get<1>(x)) / sample_size);
       std::cout << std::string(69, '-') << std::endl;
     }
   }

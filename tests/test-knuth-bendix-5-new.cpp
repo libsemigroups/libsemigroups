@@ -1,5 +1,5 @@
 // libsemigroups - C++ library for semigroups and monoids
-// Copyright (C) 2020 James D. Mitchell
+// Copyright (C) 2020-2023 James D. Mitchell
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -32,20 +32,26 @@
 //
 // 6: contains tests for congruence::KnuthBendix.
 
-// #define CATCH_CONFIG_ENABLE_PAIR_STRINGMAKER
-
-#include <vector>  // for vector
-
-#include "catch.hpp"      // for REQUIRE, REQUIRE_NOTHROW, REQUIRE_THROWS_AS
+#include <algorithm>      // for copy, fill
+#include <string>         // for basic_string
+#include <unordered_map>  // for operator!=, operator==
+#include <vector>         // for vector, operator==
+                          //
+#include "catch.hpp"      // for AssertionHandler, ope...
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
+#include "libsemigroups/constants.hpp"         // for operator!=, operator==
+#include "libsemigroups/exception.hpp"         // for LibsemigroupsException
 #include "libsemigroups/froidure-pin.hpp"      // for FroidurePin
-#include "libsemigroups/kbe-new.hpp"           // for detail::KBE
-#include "libsemigroups/knuth-bendix-new.hpp"  // for KnuthBendix, operator<<
+#include "libsemigroups/kbe-new.hpp"           // for KBE
+#include "libsemigroups/knuth-bendix-new.hpp"  // for KnuthBendix
+#include "libsemigroups/present.hpp"           // for Presentation
 #include "libsemigroups/report.hpp"            // for ReportGuard
-#include "libsemigroups/to-froidure-pin.hpp"
-#include "libsemigroups/transf.hpp"  // for Transf<>
-#include "libsemigroups/types.hpp"   // for word_type
+#include "libsemigroups/to-froidure-pin.hpp"   // for to_froidure_pin
+#include "libsemigroups/to-presentation.hpp"   // for to_presentation
+#include "libsemigroups/transf.hpp"            // for Transf
+#include "libsemigroups/types.hpp"             // for word_type, letter_type
+#include "libsemigroups/words.hpp"             // for operator""_w
 
 namespace libsemigroups {
 

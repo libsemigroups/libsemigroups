@@ -1,5 +1,5 @@
 // libsemigroups - C++ library for semigroups and monoids
-// Copyright (C) 2020 James D. Mitchell
+// Copyright (C) 2020-2023 James D. Mitchell
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -32,26 +32,39 @@
 //
 // 6: contains tests for congruence::KnuthBendix.
 
-#define CATCH_CONFIG_ENABLE_ALL_STRINGMAKERS
-
-#include <iostream>
-#include <string>  // for string
-#include <vector>  // for vector
-
-#include "catch.hpp"      // for REQUIRE, REQUIRE_NOTHROW, REQUIRE_THROWS_AS
-#include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
-
-#include "libsemigroups/constants.hpp"         // for POSITIVE_INFINITY
-#include "libsemigroups/knuth-bendix-new.hpp"  // for KnuthBendix, operator<<
+#include <algorithm>                           // for next_permutation
+#include <chrono>                              // for milliseconds, seconds
+#include <cmath>                               // for pow
+#include <cstddef>                             // for size_t
+#include <iostream>                            // for string, operator<<, endl
+#include <numeric>                             // for iota
+#include <string>                              // for basic_string, char_traits
+#include <unordered_map>                       // for operator==
+#include <unordered_set>                       // for unordered_set
+#include <utility>                             // for move, operator==, pair
+#include <vector>                              // for vector, operator==
+                                               //
+#include "catch.hpp"                           // for AssertionHandler, oper...
+#include "test-main.hpp"                       // for LIBSEMIGROUPS_TEST_CASE
+                                               //
+#include "libsemigroups/constants.hpp"         // for operator==, operator!=
+#include "libsemigroups/digraph-helper.hpp"    // for is_acyclic
+#include "libsemigroups/digraph.hpp"           // for ActionDigraph
+#include "libsemigroups/exception.hpp"         // for LibsemigroupsException
+#include "libsemigroups/iterator.hpp"          // for operator+
+#include "libsemigroups/knuth-bendix-new.hpp"  // for KnuthBendix, normal_forms
+#include "libsemigroups/order.hpp"             // for shortlex_compare
+#include "libsemigroups/paths.hpp"             // for Paths
+#include "libsemigroups/present.hpp"           // for add_rule, Presentation
 #include "libsemigroups/report.hpp"            // for ReportGuard
-#include "libsemigroups/stl.hpp"               // for XXX
-#include "libsemigroups/string.hpp"            // for random_string
-#include "libsemigroups/words.hpp"             // for Strings
+#include "libsemigroups/stl.hpp"               // for apply_permutation
+#include "libsemigroups/string.hpp"            // for random_string, operator<<
+#include "libsemigroups/words.hpp"             // for Inner, Strings, to_str...
+
+#include "rx/ranges.hpp"  // for operator|, to_vector
 
 namespace libsemigroups {
   using namespace rx;
-
-  constexpr bool REPORT = false;
 
   using rule_type = KnuthBendix::rule_type;
 
@@ -64,7 +77,7 @@ namespace libsemigroups {
                           "084",
                           "Example 6.6 in Sims (with limited overlap lengths)",
                           "[standard][knuth-bendix]") {
-    auto rg = ReportGuard(REPORT);
+    auto rg = ReportGuard(false);
 
     Presentation<std::string> p;
     p.contains_empty_word(true);
@@ -97,7 +110,7 @@ namespace libsemigroups {
                           "085",
                           "(from kbmag/standalone/kb_data/funny3)",
                           "[standard][knuth-bendix][kbmag][shortlex]") {
-    auto                      rg = ReportGuard(REPORT);
+    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.contains_empty_word(true);
     p.alphabet("aAbBcC");
@@ -419,8 +432,6 @@ namespace libsemigroups {
 
     do {
       detail::apply_permutation(lphbt, invrs, perm);
-      // std::cout << "Alphabet is " << lphbt << std::endl;
-      // std::cout << std::string(72, '#') << std::endl;
 
       Presentation<std::string> p;
       p.contains_empty_word(true);
@@ -456,7 +467,7 @@ namespace libsemigroups {
                           "Sorouhesh",
                           "[quick][knuth-bendix][kbmag][shortlex]") {
     using presentation::pow;
-    auto         rg = ReportGuard(REPORT);
+    auto         rg = ReportGuard(false);
     size_t const n  = 2;
     size_t const q  = 11;
 

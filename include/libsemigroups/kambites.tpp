@@ -606,6 +606,7 @@ namespace libsemigroups {
     init_XYZ_data(i);
     return _XYZ_data[i].XYZ;
   }
+
   namespace detail {
     // This class is used to wrap libsemigroups::Kambites::value_type into an
     // object that can be used as generators for a FroidurePin object.
@@ -617,8 +618,8 @@ namespace libsemigroups {
      private:
       value_type _value;
 
-      KE(value_type const& w) : _value(w) {}
-      KE(value_type&& w) : _value(std::move(w)) {}
+      explicit KE(value_type const& w) : _value(w) {}
+      explicit KE(value_type&& w) : _value(std::move(w)) {}
 
      public:
       KE()                     = default;
