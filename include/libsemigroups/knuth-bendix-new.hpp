@@ -90,25 +90,19 @@ namespace libsemigroups {
     // KnuthBendix - nested subclasses - private
     ////////////////////////////////////////////////////////////////////////
 
-    // Rule and RuleLookup classes
-    class Rule {
-     public:
+    struct Rule {
+      KnuthBendix const*    _kbimpl;
+      internal_string_type* _lhs;
+      internal_string_type* _rhs;
+      int64_t               _id;
+
       // Construct from KnuthBendix with new but empty internal_string_type's
-      explicit Rule(KnuthBendix const* kbimpl, int64_t id)
-          : _kbimpl(kbimpl),
-            _lhs(new internal_string_type()),
-            _rhs(new internal_string_type()),
-            _id(-1 * id) {
-        LIBSEMIGROUPS_ASSERT(_id < 0);
-      }
+      Rule(KnuthBendix const* kbimpl, int64_t id);
 
-      // The Rule class does not support an assignment constructor to avoid
-      // accidental copying.
       Rule& operator=(Rule const& copy) = delete;
-
-      // The Rule class does not support a copy constructor to avoid
-      // accidental copying.
-      Rule(Rule const& copy) = delete;
+      Rule(Rule const& copy)            = delete;
+      Rule(Rule&& copy)                 = delete;
+      Rule& operator=(Rule&& copy)      = delete;
 
       // Destructor, deletes pointers used to create the rule.
       ~Rule() {
@@ -119,26 +113,18 @@ namespace libsemigroups {
       // Returns the left hand side of the rule, which is guaranteed to be
       // greater than its right hand side according to the reduction ordering
       // of the KnuthBendix used to construct this.
-      internal_string_type* lhs() const {
+      internal_string_type* lhs() const noexcept {
         return _lhs;
       }
 
       // Returns the right hand side of the rule, which is guaranteed to be
       // less than its left hand side according to the reduction ordering of
       // the KnuthBendix used to construct this.
-      internal_string_type* rhs() const {
+      internal_string_type* rhs() const noexcept {
         return _rhs;
       }
 
-      void rewrite() {
-        LIBSEMIGROUPS_ASSERT(_id != 0);
-        _kbimpl->internal_rewrite(_lhs);
-        _kbimpl->internal_rewrite(_rhs);
-        // reorder if necessary
-        if (shortlex_compare(_lhs, _rhs)) {
-          std::swap(_lhs, _rhs);
-        }
-      }
+      void rewrite();
 
       void clear() {
         LIBSEMIGROUPS_ASSERT(_id != 0);
@@ -146,85 +132,31 @@ namespace libsemigroups {
         _rhs->clear();
       }
 
-      inline bool active() const {
+      inline bool active() const noexcept {
         LIBSEMIGROUPS_ASSERT(_id != 0);
         return (_id > 0);
       }
 
-      void deactivate() {
-        LIBSEMIGROUPS_ASSERT(_id != 0);
-        if (active()) {
-          _id *= -1;
-        }
-      }
+      void deactivate() noexcept;
 
-      void activate() {
-        LIBSEMIGROUPS_ASSERT(_id != 0);
-        if (!active()) {
-          _id *= -1;
-        }
-      }
+      void activate() noexcept;
 
-      void set_id(int64_t id) {
+      void set_id(int64_t id) noexcept {
         LIBSEMIGROUPS_ASSERT(id > 0);
         LIBSEMIGROUPS_ASSERT(!active());
         _id = -1 * id;
       }
 
-      int64_t id() const {
+      int64_t id() const noexcept {
         LIBSEMIGROUPS_ASSERT(_id != 0);
         return _id;
       }
 
-      KnuthBendix const*    _kbimpl;
-      internal_string_type* _lhs;
-      internal_string_type* _rhs;
-      int64_t               _id;
     };  // struct Rule
 
-    // Simple class wrapping a two iterators to an internal_string_type and a
-    // Rule const*
+    friend struct Rule;
 
-    class RuleLookup {
-     public:
-      RuleLookup() : _rule(nullptr) {}
-
-      explicit RuleLookup(Rule* rule)
-          : _first(rule->lhs()->cbegin()),
-            _last(rule->lhs()->cend()),
-            _rule(rule) {}
-
-      RuleLookup& operator()(internal_string_type::iterator const& first,
-                             internal_string_type::iterator const& last) {
-        _first = first;
-        _last  = last;
-        return *this;
-      }
-
-      Rule const* rule() const {
-        return _rule;
-      }
-
-      // This implements reverse lex comparison of this and that, which
-      // satisfies the requirement of std::set that equivalent items be
-      // incomparable, so, for example bcbc and abcbc are considered
-      // equivalent, but abcba and bcbc are not.
-      bool operator<(RuleLookup const& that) const {
-        auto it_this = _last - 1;
-        auto it_that = that._last - 1;
-        while (it_this > _first && it_that > that._first
-               && *it_this == *it_that) {
-          --it_that;
-          --it_this;
-        }
-        return *it_this < *it_that;
-      }
-
-     private:
-      internal_string_type::const_iterator _first;
-      internal_string_type::const_iterator _last;
-      Rule const*                          _rule;
-    };  // class RuleLookup
+    class RuleLookup;  // forward decl
 
     // Overlap measures
     struct OverlapMeasure {
@@ -235,49 +167,13 @@ namespace libsemigroups {
       virtual ~OverlapMeasure() {}
     };
 
-    struct ABC : OverlapMeasure {
-      size_t operator()(Rule const*                                 AB,
-                        Rule const*                                 BC,
-                        internal_string_type::const_iterator const& it) {
-        LIBSEMIGROUPS_ASSERT(AB->active() && BC->active());
-        LIBSEMIGROUPS_ASSERT(AB->lhs()->cbegin() <= it);
-        LIBSEMIGROUPS_ASSERT(it < AB->lhs()->cend());
-        // |A| + |BC|
-        return (it - AB->lhs()->cbegin()) + BC->lhs()->size();
-      }
-    };
-
-    struct AB_BC : OverlapMeasure {
-      size_t operator()(Rule const*                                 AB,
-                        Rule const*                                 BC,
-                        internal_string_type::const_iterator const& it) {
-        LIBSEMIGROUPS_ASSERT(AB->active() && BC->active());
-        LIBSEMIGROUPS_ASSERT(AB->lhs()->cbegin() <= it);
-        LIBSEMIGROUPS_ASSERT(it < AB->lhs()->cend());
-        (void) it;
-        // |AB| + |BC|
-        return AB->lhs()->size() + BC->lhs()->size();
-      }
-    };
-
-    struct MAX_AB_BC : OverlapMeasure {
-      size_t operator()(Rule const*                                 AB,
-                        Rule const*                                 BC,
-                        internal_string_type::const_iterator const& it) {
-        LIBSEMIGROUPS_ASSERT(AB->active() && BC->active());
-        LIBSEMIGROUPS_ASSERT(AB->lhs()->cbegin() <= it);
-        LIBSEMIGROUPS_ASSERT(it < AB->lhs()->cend());
-        (void) it;
-        // max(|AB|, |BC|)
-        return std::max(AB->lhs()->size(), BC->lhs()->size());
-      }
-    };
+    struct ABC;
+    struct AB_BC;
+    struct MAX_AB_BC;
 
     //////////////////////////////////////////////////////////////////////////
     // KnuthBendix - friend declarations - private
     //////////////////////////////////////////////////////////////////////////
-
-    friend class Rule;  // defined in this file
 
    public:
     using rule_type = std::pair<std::string, std::string>;
@@ -332,8 +228,6 @@ namespace libsemigroups {
     Presentation<std::string>        _presentation;
     std::set<RuleLookup>             _set_rules;
     std::stack<Rule*>                _stack;
-    internal_string_type*            _tmp_word1;
-    internal_string_type*            _tmp_word2;
     mutable size_t                   _total_rules;
 
 #ifdef LIBSEMIGROUPS_VERBOSE
@@ -360,6 +254,8 @@ namespace libsemigroups {
     //! \complexity
     //! Constant.
     KnuthBendix();
+
+    // KnuthBendix& init();
 
     // TODO init
 
@@ -408,6 +304,12 @@ namespace libsemigroups {
     template <typename Word>
     KnuthBendix(Presentation<Word> const& p)
         : KnuthBendix(to_presentation<std::string>(p)) {}
+
+    template <typename Word>
+    KnuthBendix(Presentation<Word>&& p)
+        : KnuthBendix(
+            to_presentation<std::string>(std::forward<Presentation<Word>>(p))) {
+    }
 
     [[nodiscard]] Presentation<std::string> const&
     presentation() const noexcept {
@@ -588,12 +490,6 @@ namespace libsemigroups {
       return w;
     }
 
-    //! This friend function allows a KnuthBendix object to be left shifted
-    //! into a std::ostream, such as std::cout. The currently active rules
-    //! of the system are represented in the output.
-    // TODO unfriend
-    friend std::ostream& operator<<(std::ostream&, KnuthBendix const&);
-
     //////////////////////////////////////////////////////////////////////////
     // KnuthBendix - main member functions - public
     //////////////////////////////////////////////////////////////////////////
@@ -705,18 +601,7 @@ namespace libsemigroups {
     // ./configure --enable-verbose functions
     //////////////////////////////////////////////////////////////////////////
 
-    size_t max_active_word_length() {
-      auto comp = [](Rule const* p, Rule const* q) -> bool {
-        return p->lhs()->size() < q->lhs()->size();
-      };
-      auto max = std::max_element(
-          _active_rules.cbegin(), _active_rules.cend(), comp);
-      if (max != _active_rules.cend()) {
-        _max_active_word_length
-            = std::max(_max_active_word_length, (*max)->lhs()->size());
-      }
-      return _max_active_word_length;
-    }
+    size_t max_active_word_length();
 #endif
 
     //////////////////////////////////////////////////////////////////////////
@@ -726,6 +611,11 @@ namespace libsemigroups {
     void run_impl();
     bool finished_impl() const;
   };
+
+  //! This friend function allows a KnuthBendix object to be left shifted
+  //! into a std::ostream, such as std::cout. The currently active rules
+  //! of the system are represented in the output.
+  std::ostream& operator<<(std::ostream&, KnuthBendix const&);
 
   namespace knuth_bendix {
 

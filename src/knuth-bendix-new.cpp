@@ -53,6 +53,125 @@ namespace libsemigroups {
 
   // KnuthBendix::KnuthBendix(KnuthBendix&&) = default;
 
+  ////////////////////////////////////////////////////////////////////////
+  // KnuthBendix - nested classes
+  ////////////////////////////////////////////////////////////////////////
+
+  // Construct from KnuthBendix with new but empty internal_string_type's
+  KnuthBendix::Rule::Rule(KnuthBendix const* kbimpl, int64_t id)
+      : _kbimpl(kbimpl),
+        _lhs(new internal_string_type()),
+        _rhs(new internal_string_type()),
+        _id(-1 * id) {
+    LIBSEMIGROUPS_ASSERT(_id < 0);
+  }
+
+  void KnuthBendix::Rule::rewrite() {
+    LIBSEMIGROUPS_ASSERT(_id != 0);
+    _kbimpl->internal_rewrite(_lhs);
+    _kbimpl->internal_rewrite(_rhs);
+    // reorder if necessary
+    if (shortlex_compare(_lhs, _rhs)) {
+      std::swap(_lhs, _rhs);
+    }
+  }
+
+  void KnuthBendix::Rule::deactivate() noexcept {
+    LIBSEMIGROUPS_ASSERT(_id != 0);
+    if (active()) {
+      _id *= -1;
+    }
+  }
+
+  void KnuthBendix::Rule::activate() noexcept {
+    LIBSEMIGROUPS_ASSERT(_id != 0);
+    if (!active()) {
+      _id *= -1;
+    }
+  }
+
+  // Simple class wrapping a two iterators to an internal_string_type and a
+  // Rule const*
+
+  class KnuthBendix::RuleLookup {
+   public:
+    RuleLookup() : _rule(nullptr) {}
+
+    explicit RuleLookup(Rule* rule)
+        : _first(rule->lhs()->cbegin()),
+          _last(rule->lhs()->cend()),
+          _rule(rule) {}
+
+    RuleLookup& operator()(internal_string_type::iterator const& first,
+                           internal_string_type::iterator const& last) {
+      _first = first;
+      _last  = last;
+      return *this;
+    }
+
+    Rule const* rule() const {
+      return _rule;
+    }
+
+    // This implements reverse lex comparison of this and that, which
+    // satisfies the requirement of std::set that equivalent items be
+    // incomparable, so, for example bcbc and abcbc are considered
+    // equivalent, but abcba and bcbc are not.
+    bool operator<(RuleLookup const& that) const {
+      auto it_this = _last - 1;
+      auto it_that = that._last - 1;
+      while (it_this > _first && it_that > that._first
+             && *it_this == *it_that) {
+        --it_that;
+        --it_this;
+      }
+      return *it_this < *it_that;
+    }
+
+   private:
+    internal_string_type::const_iterator _first;
+    internal_string_type::const_iterator _last;
+    Rule const*                          _rule;
+  };  // class RuleLookup
+
+  struct KnuthBendix::ABC : KnuthBendix::OverlapMeasure {
+    size_t operator()(Rule const*                                 AB,
+                      Rule const*                                 BC,
+                      internal_string_type::const_iterator const& it) {
+      LIBSEMIGROUPS_ASSERT(AB->active() && BC->active());
+      LIBSEMIGROUPS_ASSERT(AB->lhs()->cbegin() <= it);
+      LIBSEMIGROUPS_ASSERT(it < AB->lhs()->cend());
+      // |A| + |BC|
+      return (it - AB->lhs()->cbegin()) + BC->lhs()->size();
+    }
+  };
+
+  struct KnuthBendix::AB_BC : KnuthBendix::OverlapMeasure {
+    size_t operator()(Rule const*                                 AB,
+                      Rule const*                                 BC,
+                      internal_string_type::const_iterator const& it) {
+      LIBSEMIGROUPS_ASSERT(AB->active() && BC->active());
+      LIBSEMIGROUPS_ASSERT(AB->lhs()->cbegin() <= it);
+      LIBSEMIGROUPS_ASSERT(it < AB->lhs()->cend());
+      (void) it;
+      // |AB| + |BC|
+      return AB->lhs()->size() + BC->lhs()->size();
+    }
+  };
+
+  struct KnuthBendix::MAX_AB_BC : KnuthBendix::OverlapMeasure {
+    size_t operator()(Rule const*                                 AB,
+                      Rule const*                                 BC,
+                      internal_string_type::const_iterator const& it) {
+      LIBSEMIGROUPS_ASSERT(AB->active() && BC->active());
+      LIBSEMIGROUPS_ASSERT(AB->lhs()->cbegin() <= it);
+      LIBSEMIGROUPS_ASSERT(it < AB->lhs()->cend());
+      (void) it;
+      // max(|AB|, |BC|)
+      return std::max(AB->lhs()->size(), BC->lhs()->size());
+    }
+  };
+
   //////////////////////////////////////////////////////////////////////////
   // KnuthBendix::Settings - constructor - public
   //////////////////////////////////////////////////////////////////////////
@@ -105,8 +224,6 @@ namespace libsemigroups {
         _overlap_measure(nullptr),
         _presentation(),
         _stack(),
-        _tmp_word1(new internal_string_type()),
-        _tmp_word2(new internal_string_type()),
         _total_rules(0) {
     _next_rule_it1 = _active_rules.end();  // null
     _next_rule_it2 = _active_rules.end();  // null
@@ -132,8 +249,6 @@ namespace libsemigroups {
 
   KnuthBendix::~KnuthBendix() {
     delete _overlap_measure;
-    delete _tmp_word1;
-    delete _tmp_word2;
     for (Rule const* rule : _active_rules) {
       delete const_cast<Rule*>(rule);
     }
@@ -246,12 +361,6 @@ namespace libsemigroups {
       }
     }
     u->erase(v_end - u->cbegin());
-  }
-
-  std::ostream& operator<<(std::ostream& os, KnuthBendix const& kb) {
-    // TODO remove to_vector
-    os << detail::to_string(kb.active_rules() | rx::to_vector()) << "\n";
-    return os;
   }
 
   //////////////////////////////////////////////////////////////////////////
@@ -793,4 +902,24 @@ namespace libsemigroups {
     return it;
   }
 
+#ifdef LIBSEMIGROUPS_VERBOSE
+  size_t KnuthBendix::max_active_word_length() {
+    auto comp = [](Rule const* p, Rule const* q) -> bool {
+      return p->lhs()->size() < q->lhs()->size();
+    };
+    auto max
+        = std::max_element(_active_rules.cbegin(), _active_rules.cend(), comp);
+    if (max != _active_rules.cend()) {
+      _max_active_word_length
+          = std::max(_max_active_word_length, (*max)->lhs()->size());
+    }
+    return _max_active_word_length;
+  }
+#endif
+
+  std::ostream& operator<<(std::ostream& os, KnuthBendix const& kb) {
+    // TODO remove to_vector
+    os << detail::to_string(kb.active_rules() | rx::to_vector()) << "\n";
+    return os;
+  }
 }  // namespace libsemigroups
