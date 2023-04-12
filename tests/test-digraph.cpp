@@ -1908,7 +1908,7 @@ namespace libsemigroups {
     REQUIRE(ad.number_of_paths(0, 1, 0, 10, algorithm::matrix) == 5);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("ActionDigraph", "011", "restrict", "[quick]") {
+  LIBSEMIGROUPS_TEST_CASE("ActionDigraph", "043", "restrict", "[quick]") {
     ActionDigraph<size_t> ad;
     ad.add_nodes(3);
     ad.add_to_out_degree(2);
@@ -1921,7 +1921,7 @@ namespace libsemigroups {
             == action_digraph_helper::make<size_t>(2, {{1, UNDEFINED}, {0}}));
   }
 
-  LIBSEMIGROUPS_TEST_CASE("ActionDigraph", "012", "remove_edge_nc", "[quick]") {
+  LIBSEMIGROUPS_TEST_CASE("ActionDigraph", "044", "remove_edge_nc", "[quick]") {
     ActionDigraph<size_t> ad;
     ad.add_nodes(3);
     ad.add_to_out_degree(2);
@@ -1935,7 +1935,7 @@ namespace libsemigroups {
                 3, {{UNDEFINED, UNDEFINED}, {0}, {0}}));
   }
 
-  LIBSEMIGROUPS_TEST_CASE("ActionDigraph", "043", "swap_edge_nc", "[quick]") {
+  LIBSEMIGROUPS_TEST_CASE("ActionDigraph", "045", "swap_edge_nc", "[quick]") {
     ActionDigraph<size_t> ad;
     ad.add_nodes(3);
     ad.add_to_out_degree(2);
@@ -1952,7 +1952,7 @@ namespace libsemigroups {
 
 #ifdef LIBSEMIGROUPS_EIGEN_ENABLED
   LIBSEMIGROUPS_TEST_CASE("ActionDigraph",
-                          "044",
+                          "046",
                           "detail::pow for non-square Eigen matrix",
                           "[quick]") {
     Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> x;
@@ -1961,7 +1961,7 @@ namespace libsemigroups {
   }
 #endif
 
-  LIBSEMIGROUPS_TEST_CASE("ActionDigraph", "045", "operator<<", "[quick]") {
+  LIBSEMIGROUPS_TEST_CASE("ActionDigraph", "047", "operator<<", "[quick]") {
     ActionDigraph<size_t> ad;
     ad.add_nodes(3);
     ad.add_to_out_degree(2);
@@ -1974,7 +1974,7 @@ namespace libsemigroups {
     REQUIRE(oss.str() == "{{1, -}, {0, -}, {2, -}}");
   }
 
-  LIBSEMIGROUPS_TEST_CASE("ActionDigraph", "046", "HopcroftKarp", "[quick]") {
+  LIBSEMIGROUPS_TEST_CASE("ActionDigraph", "048", "HopcroftKarp", "[quick]") {
     ActionDigraph<size_t> d1;
     d1.add_nodes(3);
     d1.add_to_out_degree(3);
@@ -2012,7 +2012,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("ActionDigraph",
-                          "047",
+                          "049",
                           "HopcroftKarp",
                           "[standard]") {
     for (int i = 0; i != 1000; i++) {

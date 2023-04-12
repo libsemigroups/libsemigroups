@@ -421,7 +421,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("DigraphWithSources",
-                          "015",
+                          "014",
                           "reserve",
                           "[quick][digraph]") {
     DigraphWithSources<size_t> graph;
@@ -436,7 +436,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("DigraphWithSources",
-                          "016",
+                          "015",
                           "default constructors",
                           "[quick][digraph]") {
     auto g1 = DigraphWithSources<size_t>();
@@ -463,7 +463,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("DigraphWithSources",
-                          "017",
+                          "016",
                           "scc iterators",
                           "[quick][digraph]") {
     using node_type = decltype(clique(1))::node_type;
@@ -525,7 +525,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("DigraphWithSources",
-                          "018",
+                          "017",
                           "iterator to edges",
                           "[quick][digraph]") {
     for (size_t n = 10; n < 512; n *= 4) {
@@ -549,7 +549,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("DigraphWithSources",
-                          "019",
+                          "018",
                           "root of scc",
                           "[quick][digraph]") {
     auto g = clique(10);
@@ -571,7 +571,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("DigraphWithSources",
-                          "020",
+                          "019",
                           "cbegin/end_panislo - 100 node path",
                           "[quick]") {
     DigraphWithSources<size_t> ad;
@@ -596,7 +596,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("DigraphWithSources",
-                          "021",
+                          "020",
                           "cbegin/end_pislo",
                           "[quick]") {
     DigraphWithSources<size_t> ad;
@@ -648,7 +648,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("DigraphWithSources",
-                          "022",
+                          "021",
                           "cbegin/end_pani(s)lo - 100 node cycle",
                           "[quick]") {
     DigraphWithSources<size_t> ad;
@@ -662,7 +662,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("DigraphWithSources",
-                          "023",
+                          "022",
                           "cbegin/cend_pilo - tree 14 nodes",
                           "[quick]") {
     DigraphWithSources<size_t> ad;
@@ -779,7 +779,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("DigraphWithSources",
-                          "024",
+                          "023",
                           "cbegin/end_pstilo - Cayley digraph",
                           "[quick][no-valgrind]") {
     DigraphWithSources<size_t> ad;
@@ -851,7 +851,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("DigraphWithSources",
-                          "025",
+                          "024",
                           "cbegin_pstilo - Tsalakou",
                           "[quick]") {
     using action_digraph_helper::follow_path;
@@ -967,7 +967,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("DigraphWithSources",
-                          "026",
+                          "025",
                           "cbegin/end_pstislo - Cayley digraph",
                           "[quick]") {
     DigraphWithSources<size_t> ad;
@@ -1026,7 +1026,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("DigraphWithSources",
-                          "027",
+                          "026",
                           "cbegin/end_pstislo - Cayley digraph",
                           "[quick]") {
     DigraphWithSources<size_t> ad;
@@ -1137,7 +1137,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("DigraphWithSources",
-                          "028",
+                          "027",
                           "path iterators corner cases",
                           "[quick]") {
     DigraphWithSources<size_t> ad;
@@ -1183,7 +1183,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("DigraphWithSources",
-                          "029",
+                          "028",
                           "reverse node iterator",
                           "[quick]") {
     using node_type = DigraphWithSources<size_t>::node_type;
@@ -1206,7 +1206,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("DigraphWithSources",
-                          "030",
+                          "029",
                           "pstilo corner case",
                           "[quick]") {
     DigraphWithSources<size_t> ad;
@@ -1247,7 +1247,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("DigraphWithSources",
-                          "031",
+                          "030",
                           "number_of_paths corner cases",
                           "[quick]") {
     using algorithm = DigraphWithSources<size_t>::algorithm;
@@ -1268,7 +1268,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("DigraphWithSources",
-                          "032",
+                          "031",
                           "number_of_paths acyclic digraph",
                           "[quick]") {
     using node_type = DigraphWithSources<size_t>::node_type;
@@ -1393,7 +1393,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("DigraphWithSources",
-                          "033",
+                          "032",
                           "number_of_paths binary tree",
                           "[quick][no-valgrind]") {
     using algorithm               = DigraphWithSources<size_t>::algorithm;
@@ -1434,7 +1434,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("DigraphWithSources",
-                          "034",
+                          "033",
                           "number_of_paths large binary tree",
                           "[quick][no-valgrind]") {
     using algorithm               = DigraphWithSources<size_t>::algorithm;
@@ -1464,7 +1464,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("DigraphWithSources",
-                          "035",
+                          "034",
                           "number_of_paths 400 node random digraph",
                           "[quick]") {
     size_t const n = 400;
@@ -1478,7 +1478,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("DigraphWithSources",
-                          "036",
+                          "035",
                           "number_of_paths 10 node acyclic digraph",
                           "[quick]") {
     using algorithm = DigraphWithSources<size_t>::algorithm;
@@ -1510,7 +1510,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("DigraphWithSources",
-                          "037",
+                          "036",
                           "number_of_paths node digraph",
                           "[quick]") {
     using algorithm = DigraphWithSources<size_t>::algorithm;
@@ -1750,7 +1750,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("DigraphWithSources",
-                          "038",
+                          "037",
                           "random/random_acyclic exceptions",
                           "[quick]") {
     // Too few nodes
@@ -1778,7 +1778,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("DigraphWithSources",
-                          "039",
+                          "038",
                           "unsafe (next) neighbour",
                           "[quick]") {
     auto ad = binary_tree(10);
@@ -1787,7 +1787,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("DigraphWithSources",
-                          "040",
+                          "039",
                           "number_of_egdes incident to a node",
                           "[quick]") {
     auto ad = binary_tree(10);
@@ -1800,7 +1800,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("DigraphWithSources",
-                          "041",
+                          "040",
                           "number_of_paths (matrix)",
                           "[quick]") {
     using algorithm = DigraphWithSources<size_t>::algorithm;
@@ -1866,7 +1866,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("DigraphWithSources",
-                          "042",
+                          "041",
                           "number_of_paths (matrix)",
                           "[quick]") {
     using algorithm = DigraphWithSources<size_t>::algorithm;
@@ -1881,7 +1881,7 @@ namespace libsemigroups {
     REQUIRE(ad.number_of_paths(0, 1, 0, 10, algorithm::matrix) == 5);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("DigraphWithSources", "011", "restrict", "[quick]") {
+  LIBSEMIGROUPS_TEST_CASE("DigraphWithSources", "042", "restrict", "[quick]") {
     DigraphWithSources<size_t> ad;
     ad.add_nodes(3);
     ad.add_to_out_degree(2);
