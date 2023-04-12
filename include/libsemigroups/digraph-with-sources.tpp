@@ -19,8 +19,6 @@
 // This file contains a declaration of a class for performing the "low-index
 // congruence" algorithm for semigroups and monoid.
 
-// TODO add a validate helper function to ensure the sources are valid.
-
 namespace libsemigroups {
 
   // number of nodes, out-degree
@@ -281,7 +279,7 @@ namespace libsemigroups {
           y_nb_rep = uf.find(y_nb);
           ActionDigraph<T>::add_edge_nc(x, y_nb_rep, a);
           continue;
-        } else if (y_nb == UNDEFINED) {
+        } else {
           x_nb_rep = uf.find(x_nb);
           ActionDigraph<T>::add_edge_nc(y, x_nb_rep, a);
           continue;
@@ -359,7 +357,23 @@ namespace libsemigroups {
     return d2;
   }
 
-#ifdef LIBSEMIGROUPS_DEBUG
+  template <typename T>
+  bool DigraphWithSources<T>::is_valid() const {
+    using node_type  = typename DigraphWithSources<T>::node_type;
+    using label_type = typename DigraphWithSources<T>::label_type;
+    auto num_nodes   = this->number_of_nodes();
+    auto num_labels  = this->out_degree();
+    for (node_type v = 0; v < num_nodes; ++v) {
+      for (label_type a = 0; a < num_labels; ++a) {
+        node_type va = this->unsafe_neighbor(v, a);
+        if (va != UNDEFINED && not this->is_source(va, v, a)) {
+          return false;
+        }
+      }
+    }
+    return true;
+  }
+
   template <typename T>
   bool DigraphWithSources<T>::is_source(node_type   c,
                                         node_type   d,
@@ -370,7 +384,6 @@ namespace libsemigroups {
     }
     return c == d;
   }
-#endif
 
   template <typename T>
   void DigraphWithSources<T>::add_source(node_type   c,

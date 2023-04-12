@@ -141,10 +141,11 @@ namespace libsemigroups {
     // defined in uf
     inline DigraphWithSources<T> get_quotient(detail::Duf<> uf);
 
-#ifdef LIBSEMIGROUPS_DEBUG
+    // Check if current object is a valid digraph with sources
+    bool is_valid() const;
+
     // Is d a source of c under x?
     bool is_source(node_type c, node_type d, letter_type x) const;
-#endif
 
     void clear_sources_and_targets(node_type c);
     void clear_sources(node_type c);

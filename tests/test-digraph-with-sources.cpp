@@ -1983,7 +1983,9 @@ namespace libsemigroups {
     DigraphWithSources<size_t> dws1(0, 0);
     DigraphWithSources<size_t> dws1_q(0, 0);
     detail::Duf<>              uf1;
-    REQUIRE(dws1.get_quotient(uf1) == dws1_q);
+    dws1.get_quotient(uf1);
+    REQUIRE(dws1.is_valid());
+    REQUIRE(dws1 == dws1_q);
     uf1.resize(7);
     REQUIRE_THROWS_AS(dws1.get_quotient(uf1), LibsemigroupsException);
 
@@ -2002,6 +2004,7 @@ namespace libsemigroups {
     uf3.unite(0, 2);
 
     dws2.quotient_digraph(uf3);
+    REQUIRE(dws2.is_valid());
     REQUIRE(dws2 == action_digraph_helper::make<size_t>(1, {{0, 0}}));
   }
 
@@ -2063,15 +2066,20 @@ namespace libsemigroups {
     uf4.unite(0, 3);
     dws4.quotient_digraph(uf4);
 
+    REQUIRE(dws1.is_valid());
     REQUIRE(
         dws1
         == action_digraph_helper::make<size_t>(3, {{1, 0}, {2, 1}, {1, 2}}));
 
+    REQUIRE(dws2.is_valid());
     REQUIRE(dws2 == action_digraph_helper::make<size_t>(1, {{0, 0}}));
 
+    REQUIRE(dws3.is_valid());
     REQUIRE(dws3
             == action_digraph_helper::make<size_t>(
                 4, {{1, 0}, {2, 1}, {3, 2}, {2, 1}}));
+
+    REQUIRE(dws4.is_valid());
     REQUIRE(dws4 == action_digraph_helper::make<size_t>(1, {{0, 0}}));
   }
 
@@ -2093,6 +2101,7 @@ namespace libsemigroups {
     uf1.unite(1, 3);
     auto dws1 = dws.get_quotient(uf1);
 
+    REQUIRE(dws1.is_valid());
     REQUIRE(
         dws1
         == action_digraph_helper::make<size_t>(3, {{1, 0}, {2, 1}, {1, 2}}));
@@ -2101,11 +2110,13 @@ namespace libsemigroups {
     uf2.unite(0, 3);
     auto dws2 = dws.get_quotient(uf2);
 
+    REQUIRE(dws2.is_valid());
     REQUIRE(dws2 == action_digraph_helper::make<size_t>(1, {{0, 0}}));
 
     detail::Duf<> uf3(4);
     auto          dws3 = dws.get_quotient(uf3);
 
+    REQUIRE(dws3.is_valid());
     REQUIRE(dws3
             == action_digraph_helper::make<size_t>(
                 4, {{1, 0}, {2, 1}, {3, 2}, {2, 1}}));
@@ -2116,6 +2127,7 @@ namespace libsemigroups {
     uf4.unite(0, 3);
     auto dws4 = dws.get_quotient(uf4);
 
+    REQUIRE(dws4.is_valid());
     REQUIRE(dws4 == action_digraph_helper::make<size_t>(1, {{0, 0}}));
   }
 
@@ -2147,6 +2159,7 @@ namespace libsemigroups {
 
     d1.hopcroft_karp_quotient(d2, 0, 0);
 
+    REQUIRE(d1.is_valid());
     REQUIRE(d1
             == action_digraph_helper::make<size_t>(
                 3, {{0, 1, 2}, {0, 1, 2}, {0, 1, 2}}));
@@ -2166,6 +2179,7 @@ namespace libsemigroups {
     uf2.unite(2, 3);
     auto dws2 = dws.get_quotient(uf2);
 
+    REQUIRE(dws1.is_valid());
     REQUIRE(dws1
             == action_digraph_helper::make<size_t>(
                 4,
@@ -2173,6 +2187,8 @@ namespace libsemigroups {
                  {UNDEFINED, UNDEFINED, UNDEFINED, UNDEFINED},
                  {UNDEFINED, UNDEFINED, UNDEFINED, UNDEFINED},
                  {UNDEFINED, UNDEFINED, UNDEFINED, UNDEFINED}}));
+
+    REQUIRE(dws2.is_valid());
     REQUIRE(dws2
             == action_digraph_helper::make<size_t>(
                 2,
@@ -2199,6 +2215,7 @@ namespace libsemigroups {
 
     auto dws_q1 = dws.get_quotient(uf1);
 
+    REQUIRE(dws_q1.is_valid());
     REQUIRE(dws_q1
             == action_digraph_helper::make<size_t>(2, {{1}, {UNDEFINED}}));
 
@@ -2210,6 +2227,7 @@ namespace libsemigroups {
 
     auto dws_q2 = dws.get_quotient(uf2);
 
+    REQUIRE(dws_q2.is_valid());
     REQUIRE(dws_q2
             == action_digraph_helper::make<size_t>(
                 6, {{1}, {UNDEFINED}, {1}, {1}, {1}, {1}}));
@@ -2232,6 +2250,8 @@ namespace libsemigroups {
     }
 
     dws.quotient_digraph(uf);
+
+    REQUIRE(dws.is_valid());
     REQUIRE(dws.number_of_nodes() <= d.number_of_nodes());
   }
 }  // namespace libsemigroups
