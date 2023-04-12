@@ -36,9 +36,6 @@
 
 namespace libsemigroups {
   struct LibsemigroupsException;
-}  // namespace libsemigroups
-
-namespace libsemigroups {
   constexpr bool REPORT = false;
 
   congruence_kind const twosided = congruence_kind::twosided;

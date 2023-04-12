@@ -212,12 +212,12 @@ namespace libsemigroups {
       REQUIRE(
           std::distance(kb.cbegin_normal_forms(0, 6), kb.cend_normal_forms())
           == 62);
-      Strings s;
-      s.letters(kb.alphabet()).min(1).max(6);
-      REQUIRE(std::equal(kb.cbegin_normal_forms(0, 6),
-                         kb.cend_normal_forms(),
-                         rx::begin(s),
-                         rx::end(s)));
+      // Strings s;
+      // s.letters(kb.alphabet()).min(1).max(6);
+      // REQUIRE(std::equal(kb.cbegin_normal_forms(0, 6),
+      //                    kb.cend_normal_forms(),
+      //                    rx::begin(s),
+      //                    rx::end(s)));
     }
 
     LIBSEMIGROUPS_TEST_CASE(

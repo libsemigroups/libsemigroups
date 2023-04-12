@@ -44,6 +44,7 @@
 #include "libsemigroups/knuth-bendix.hpp"       // for KnuthBendix
 #include "libsemigroups/order.hpp"              // for LexicographicalCompare
 #include "libsemigroups/paths.hpp"              // for Paths, const_pstilo_i...
+#include "libsemigroups/ranges.hpp"             // for equal, is_sorted
 #include "libsemigroups/report.hpp"             // for ReportGuard
 #include "libsemigroups/stl.hpp"                // for hash
 #include "libsemigroups/types.hpp"              // for word_type, relation_type
@@ -54,7 +55,9 @@
 namespace libsemigroups {
 
   using namespace literals;
-  using KnuthBendix = fpsemigroup::KnuthBendix;
+  using namespace rx;
+
+  using KnuthBendix = fpsemigroup::KnuthBendix;  // TODO
 
   struct LibsemigroupsException;  // forward decl
 
@@ -104,35 +107,35 @@ namespace libsemigroups {
     Paths p(ad);
     p.order(order::lex).from(0);
 
-    REQUIRE((p | rx::count()) == 100);
+    REQUIRE((p | count()) == 100);
 
     p.from(50);
-    REQUIRE(std::distance(rx::begin(p), rx::end(p)) == 50);
+    REQUIRE((p | count()) == 50);
 
     p.from(0);
-    REQUIRE(rx::begin(p) != rx::end(p));
+    REQUIRE(begin(p) != end(p));
 
     p.order(order::shortlex);
-    REQUIRE((p | rx::count()) == 100);
-    REQUIRE((p | rx::skip_n(3)).get() == 010_w);
+    REQUIRE((p | count()) == 100);
+    REQUIRE((p | skip_n(3)).get() == 010_w);
 
     p.from(50);
-    REQUIRE(std::distance(rx::begin(p), rx::end(p)) == 50);
+    REQUIRE((p | count()) == 50);
   }
 
   LIBSEMIGROUPS_TEST_CASE("Paths", "001", "#1", "[quick]") {
     using namespace rx;
 
     auto ad = to_action_digraph<size_t>(9,
-                                                  {{1, 2, UNDEFINED},
-                                                   {},
-                                                   {3, 4, 6},
-                                                   {},
-                                                   {UNDEFINED, 5},
-                                                   {},
-                                                   {UNDEFINED, 7},
-                                                   {8},
-                                                   {}});
+                                        {{1, 2, UNDEFINED},
+                                         {},
+                                         {3, 4, 6},
+                                         {},
+                                         {UNDEFINED, 5},
+                                         {},
+                                         {UNDEFINED, 7},
+                                         {8},
+                                         {}});
 
     Paths p(ad);
     p.order(order::shortlex).from(2).min(3).max(4);
@@ -186,10 +189,10 @@ namespace libsemigroups {
     Paths p(ad);
 
     p.order(order::lex).from(0).max(200);
-    REQUIRE(std::distance(rx::begin(p), rx::end(p)) == 200);
+    REQUIRE((p | count()) == 200);
 
     p.order(order::shortlex);
-    REQUIRE(std::distance(rx::begin(p), rx::end(p)) == 200);
+    REQUIRE((p | count()) == 200);
   }
 
   LIBSEMIGROUPS_TEST_CASE("Paths", "003", "#2", "[quick]") {
@@ -345,15 +348,15 @@ namespace libsemigroups {
 
     Words w;
 
-    expected = (w.letters(2).min(0).max(N) | filter([&ad](auto const& w) {
-                  return action_digraph_helper::follow_path(ad, 0, w) == 4;
-                })
-                | to_vector());
-    REQUIRE(expected.size() == 131'062);
+    auto expected2
+        = (w.letters(2).min(0).max(N) | filter([&ad](auto const& w) {
+             return action_digraph_helper::follow_path(ad, 0, w) == 4;
+           }));
+    REQUIRE((expected2 | count()) == 131'062);
 
     p.order(order::shortlex).max(N);
     REQUIRE((p | count()) == 131'062);
-    REQUIRE(std::equal(begin(p), end(p), begin(expected), end(expected)));
+    REQUIRE(equal(p, expected2));
     p.to(UNDEFINED);
     REQUIRE((p | count()) == 262'143);
 
@@ -511,18 +514,18 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("Paths", "007", "#6", "[quick]") {
     using namespace rx;
     auto ad = to_action_digraph<size_t>(6,
-                                          {{1, 2, UNDEFINED},
-                                           {2, 0, 3},
-                                           {UNDEFINED, UNDEFINED, 3},
-                                           {4},
-                                           {UNDEFINED, 5},
-                                           {3}});
+                                        {{1, 2, UNDEFINED},
+                                         {2, 0, 3},
+                                         {UNDEFINED, UNDEFINED, 3},
+                                         {4},
+                                         {UNDEFINED, 5},
+                                         {3}});
 
     Paths p(ad);
     p.order(order::shortlex).from(0).min(0).max(10);
 
-    REQUIRE(std::is_sorted(begin(p), end(p), ShortLexCompare()));
-    REQUIRE(std::distance(begin(p), end(p)) == 75);
+    REQUIRE(is_sorted(p, ShortLexCompare()));
+    REQUIRE((p | count()) == 75);
     REQUIRE(p.count() == 75);
     p.max(POSITIVE_INFINITY);
     REQUIRE(p.count() == POSITIVE_INFINITY);
@@ -557,12 +560,12 @@ namespace libsemigroups {
                           "path iterators corner cases",
                           "[quick]") {
     auto ad = to_action_digraph<size_t>(6,
-                                          {{1, 2, UNDEFINED},
-                                           {2, 0, 3},
-                                           {UNDEFINED, UNDEFINED, 3},
-                                           {4},
-                                           {UNDEFINED, 5},
-                                           {3}});
+                                        {{1, 2, UNDEFINED},
+                                         {2, 0, 3},
+                                         {UNDEFINED, UNDEFINED, 3},
+                                         {4},
+                                         {UNDEFINED, 5},
+                                         {3}});
 
     REQUIRE_THROWS_AS(cbegin_pstilo(ad, 1, 6), LibsemigroupsException);
     REQUIRE_THROWS_AS(cbegin_pstilo(ad, 6, 1), LibsemigroupsException);
@@ -610,29 +613,29 @@ namespace libsemigroups {
     ad = chain(5);
 
     p.init(ad).order(order::lex).from(0).to(0).min(0).max(100);
-    REQUIRE(std::distance(begin(p), end(p)) == 1);
+    REQUIRE((p | count()) == 1);
 
     p.min(4);
-    REQUIRE(std::distance(begin(p), end(p)) == 0);
+    REQUIRE((p | count()) == 0);
 
     ad = ActionDigraph<size_t>();
     ad.add_to_out_degree(1);
     action_digraph_helper::add_cycle(ad, 5);
 
     p.init(ad).order(order::lex).from(0).to(0).min(0).max(6);
-    REQUIRE(std::distance(begin(p), end(p)) == 2);
+    REQUIRE((p | count()) == 2);
     REQUIRE(p.count() == 2);
 
     p.max(100);
-    REQUIRE(std::distance(begin(p), end(p)) == 20);
+    REQUIRE((p | count()) == 20);
 
     p.min(4);
-    REQUIRE(std::distance(begin(p), end(p)) == 19);
+    REQUIRE((p | count()) == 19);
 
     // There's 1 path from 0 to 0 of length in range [0, 1), the path of length
     // 0.
     p.min(0).max(2);
-    REQUIRE(std::distance(begin(p), end(p)) == 1);
+    REQUIRE((p | count()) == 1);
   }
 
   LIBSEMIGROUPS_TEST_CASE("Paths",
@@ -736,9 +739,7 @@ namespace libsemigroups {
         for (size_t max = 0; max < ad.number_of_nodes(); ++max) {
           p.from(*s).min(min).max(max);
           // the next line is the same as std::distance
-          REQUIRE((p | rx::count()) == expected[*s][min][max]);
-          REQUIRE(static_cast<size_t>(std::distance(rx::begin(p), rx::end(p)))
-                  == expected[*s][min][max]);
+          REQUIRE((p | count()) == expected[*s][min][max]);
         }
       }
     }
@@ -755,19 +756,17 @@ namespace libsemigroups {
 
     size_t const N = ad.number_of_nodes();
     p.from(0).to(3).min(0).max(2);
-    REQUIRE((p | rx::to_vector()) == std::vector<word_type>({{0}, {2}}));
+    REQUIRE((p | to_vector()) == std::vector<word_type>({{0}, {2}}));
 
     REQUIRE(number_of_paths(ad, 0, 3, 0, 2, paths::algorithm::acyclic)
-            == static_cast<size_t>(std::distance(rx::begin(p), rx::end(p))));
+            == (p | count()));
 
     for (auto s = ad.cbegin_nodes(); s != ad.cend_nodes(); ++s) {
       for (auto t = ad.cbegin_nodes(); t != ad.cend_nodes(); ++t) {
         for (size_t min = 0; min < N; ++min) {
           for (size_t max = min; max < N; ++max) {
             p.from(*s).to(*t).min(min).max(max);
-            REQUIRE(number_of_paths(ad, *s, *t, min, max)
-                    == static_cast<size_t>(
-                        std::distance(rx::begin(p), rx::end(p))));
+            REQUIRE(number_of_paths(ad, *s, *t, min, max) == (p | count()));
           }
         }
       }
@@ -796,9 +795,7 @@ namespace libsemigroups {
       for (node_type min = 0; min < n; ++min) {
         for (size_t max = min; max < n; ++max) {
           p.from(*s).min(min).max(max);
-          REQUIRE(
-              number_of_paths(ad, *s, min, max)
-              == static_cast<size_t>(std::distance(rx::begin(p), rx::end(p))));
+          REQUIRE(number_of_paths(ad, *s, min, max) == (p | count()));
         }
       }
     }
@@ -806,19 +803,15 @@ namespace libsemigroups {
             == paths::algorithm::acyclic);
 
     p.from(0).to(1).min(0).max(1);
-    REQUIRE(number_of_paths(ad, 0, 1, 0, 1)
-            == static_cast<size_t>(std::distance(rx::begin(p), rx::end(p))));
-    REQUIRE(p.count()
-            == static_cast<size_t>(std::distance(rx::begin(p), rx::end(p))));
+    REQUIRE(number_of_paths(ad, 0, 1, 0, 1) == (p | count()));
+    REQUIRE(p.count() == (p | count()));
 
     for (auto s = ad.cbegin_nodes(); s != ad.cend_nodes(); ++s) {
       for (auto t = ad.cbegin_nodes(); t != ad.cend_nodes(); ++t) {
         for (node_type min = 0; min < n; ++min) {
           for (size_t max = min; max < n; ++max) {
             p.from(*s).to(*t).min(min).max(max);
-            REQUIRE(number_of_paths(ad, *s, *t, min, max)
-                    == static_cast<size_t>(
-                        std::distance(rx::begin(p), rx::end(p))));
+            REQUIRE(number_of_paths(ad, *s, *t, min, max) == (p | count()));
           }
         }
       }
@@ -952,18 +945,18 @@ namespace libsemigroups {
     // auto ad = ActionDigraph<size_t>::random(6, 3, 15, std::mt19937());
     // std::cout << action_digraph_helper::detail::to_string(ad);
     auto ad = to_action_digraph<size_t>(6,
-                                          {{0, 3, 4},
-                                           {2, 1, 4},
-                                           {4, 3, 4},
-                                           {0, 1, UNDEFINED},
-                                           {UNDEFINED, 3, 3},
-                                           {4, UNDEFINED, 2}});
+                                        {{0, 3, 4},
+                                         {2, 1, 4},
+                                         {4, 3, 4},
+                                         {0, 1, UNDEFINED},
+                                         {UNDEFINED, 3, 3},
+                                         {4, UNDEFINED, 2}});
 
     REQUIRE(ad.number_of_edges() == 15);
 
     Paths p(ad);
     p.order(order::lex).from(0).min(0).max(10);
-    REQUIRE((p | rx::count()) == 6'858);
+    REQUIRE((p | count()) == 6'858);
     REQUIRE(number_of_paths_algorithm(ad, 0, 0, 10)
             == paths::algorithm::matrix);
     REQUIRE(number_of_paths(ad, 0, 0, 10) == 6'858);
@@ -979,30 +972,34 @@ namespace libsemigroups {
     };
 
     p.min(10).max(12);
-    REQUIRE(std::all_of(rx::begin(p), rx::end(p), checker1));
-    REQUIRE(std::unordered_set<word_type>(rx::begin(p), rx::end(p)).size()
-            == 35'300);
-    REQUIRE((p | rx::count()) == 35'300);
+    REQUIRE((p | all_of(std::move(checker1))));
+
+    std::unordered_set<word_type> distinct_words;
+    for (auto it = begin(p); it != end(p); ++it) {  // FIXME the range based for
+                                                    // here doesn't work
+      distinct_words.insert(*it);
+    }
+    REQUIRE(distinct_words.size() == 35'300);
+    REQUIRE((p | count()) == 35'300);
 
     REQUIRE(number_of_paths_algorithm(ad, 1, 5, 0, 10)
             == paths::algorithm::trivial);
     REQUIRE(number_of_paths(ad, 1, 5, 0, 10) == 0);
 
     p.from(1).to(5).min(0).max(10);
-    REQUIRE(0 == std::distance(rx::begin(p), rx::end(p)));
+    REQUIRE(0 == (p | count()));
     REQUIRE(number_of_paths(ad, 1, 1, 0, 10) == 1404);
     REQUIRE_THROWS_AS(
         number_of_paths(ad, 1, 1, 0, 10, paths::algorithm::trivial),
         LibsemigroupsException);
 
     p.from(1).to(1).min(0).max(10);
-    REQUIRE(number_of_paths(ad, 1, 1, 0, 10)
-            == uint64_t(std::distance(rx::begin(p), rx::end(p))));
+    REQUIRE(number_of_paths(ad, 1, 1, 0, 10) == uint64_t((p | count())));
 
     auto checker2 = [&ad](word_type const& w) {
       return w.size() < 10 && action_digraph_helper::follow_path(ad, 1, w) == 1;
     };
-    REQUIRE(std::all_of(rx::begin(p), rx::end(p), checker2));
+    REQUIRE((p | all_of(std::move(checker2))));
   }
 
   LIBSEMIGROUPS_TEST_CASE("Paths",

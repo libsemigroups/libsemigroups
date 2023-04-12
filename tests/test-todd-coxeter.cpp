@@ -47,7 +47,7 @@
 #include "libsemigroups/froidure-pin-base.hpp"  // for FroidurePinBase
 #include "libsemigroups/froidure-pin.hpp"  // for FroidurePin, FroidurePin<>...
 #include "libsemigroups/iterator.hpp"      // for ConstIteratorStateful, ope...
-#include "libsemigroups/knuth-bendix.hpp"  // for KnuthBendix
+#include "libsemigroups/knuth-bendix.hpp"  // for fpsemigroup::KnuthBendix
 #include "libsemigroups/order.hpp"         // for RecursivePathCompare, Lexi...
 #include "libsemigroups/report.hpp"        // for ReportGuard
 #include "libsemigroups/string.hpp"        // for operator<<, to_string
@@ -80,7 +80,6 @@ namespace libsemigroups {
   congruence_kind constexpr twosided = congruence_kind::twosided;
   congruence_kind constexpr left     = congruence_kind::left;
   congruence_kind constexpr right    = congruence_kind::right;
-  using KnuthBendix                  = fpsemigroup::KnuthBendix;
   using tc_order                     = congruence::ToddCoxeter::order;
   using options                      = congruence::ToddCoxeter::options;
 
@@ -521,10 +520,11 @@ namespace libsemigroups {
     }
 
     // Felsch is actually faster here!
-    LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
-                            "002",
-                            "Example 6.6 in Sims (see also KnuthBendix 013)",
-                            "[todd-coxeter][standard]") {
+    LIBSEMIGROUPS_TEST_CASE(
+        "ToddCoxeter",
+        "002",
+        "Example 6.6 in Sims (see also fpsemigroup::KnuthBendix 013)",
+        "[todd-coxeter][standard]") {
       using TCE = detail::TCE;
       using FroidurePinTCE
           = FroidurePin<TCE, FroidurePinTraits<TCE, TCE::Table>>;
@@ -1696,7 +1696,7 @@ namespace libsemigroups {
 
     LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                             "029",
-                            "!KnuthBendix.started()",
+                            "!fpsemigroup::KnuthBendix.started()",
                             "[todd-coxeter][quick]") {
       auto                     rg = ReportGuard(REPORT);
       fpsemigroup::KnuthBendix kb;
@@ -1749,7 +1749,7 @@ namespace libsemigroups {
 
     LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                             "030",
-                            "KnuthBendix.finished()",
+                            "fpsemigroup::KnuthBendix.finished()",
                             "[todd-coxeter][quick]") {
       auto                     rg = ReportGuard(REPORT);
       fpsemigroup::KnuthBendix kb;
@@ -1808,7 +1808,7 @@ namespace libsemigroups {
 
     LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                             "031",
-                            "KnuthBendix.finished()",
+                            "fpsemigroup::KnuthBendix.finished()",
                             "[todd-coxeter][quick]") {
       auto                     rg = ReportGuard(REPORT);
       fpsemigroup::KnuthBendix kb;
@@ -2841,11 +2841,11 @@ namespace libsemigroups {
       }
     }
 
-    // KnuthBendix methods fail for this one
+    // fpsemigroup::KnuthBendix methods fail for this one
     LIBSEMIGROUPS_TEST_CASE(
         "ToddCoxeter",
         "064",
-        "(from kbmag/standalone/kb_data/s4) (KnuthBendix 49)",
+        "(from kbmag/standalone/kb_data/s4) (fpsemigroup::KnuthBendix 49)",
         "[todd-coxeter][quick][kbmag]") {
       auto rg = ReportGuard(REPORT);
 
@@ -2873,7 +2873,7 @@ namespace libsemigroups {
       REQUIRE(tc.size() == 24);
       REQUIRE(tc.froidure_pin()->size() == 24);
       REQUIRE(tc.normal_form("aaaaaaaaaaaaaaaaaaa") == "a");
-      REQUIRE(KnuthBendix(tc.froidure_pin()).confluent());
+      REQUIRE(fpsemigroup::KnuthBendix(tc.froidure_pin()).confluent());
     }
 
     // Second of BHN's series of increasingly complicated presentations
@@ -2881,7 +2881,7 @@ namespace libsemigroups {
     LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                             "065",
                             "(from kbmag/standalone/kb_data/degen4b) "
-                            "(KnuthBendix 065)",
+                            "(fpsemigroup::KnuthBendix 065)",
                             "[fail][todd-coxeter][kbmag][shortlex]") {
       auto rg = ReportGuard();
 
@@ -3378,7 +3378,7 @@ namespace libsemigroups {
 
     LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                             "080",
-                            "KnuthBendix 098",
+                            "fpsemigroup::KnuthBendix 098",
                             "[todd-coxeter][quick][no-valgrind]") {
       auto        rg = ReportGuard(REPORT);
       ToddCoxeter tc;

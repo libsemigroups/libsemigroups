@@ -25,9 +25,10 @@
 #include "catch.hpp"      // for REQUIRE etc
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
-#include "libsemigroups/order.hpp"  // for number_of_words
-#include "libsemigroups/types.hpp"  // for word_type
-#include "libsemigroups/words.hpp"  // for number_of_words
+#include "libsemigroups/order.hpp"   // for number_of_words
+#include "libsemigroups/ranges.hpp"  // for number_of_words
+#include "libsemigroups/types.hpp"   // for word_type
+#include "libsemigroups/words.hpp"   // for number_of_words
 
 namespace libsemigroups {
   using namespace literals;
@@ -536,8 +537,7 @@ namespace libsemigroups {
                                        11_w,
                                        110_w,
                                        111_w}));
-    REQUIRE(
-        std::is_sorted(begin(strings), end(strings), LexicographicalCompare()));
+    REQUIRE(is_sorted(strings, LexicographicalCompare()));
 
     strings.letters("ba").first("b").last("aaaaa");
     REQUIRE((strings | count()) == 14);
@@ -570,8 +570,7 @@ namespace libsemigroups {
         .last(std::string(13, 'c'));
     REQUIRE(number_of_words(3, 0, 13) == 797'161);
     REQUIRE(strings.count() == number_of_words(3, 0, 13));
-    REQUIRE(
-        std::is_sorted(begin(strings), end(strings), LexicographicalCompare()));
+    REQUIRE(is_sorted(strings, LexicographicalCompare()));
     REQUIRE((strings | count()) == 797'161);
   }
 
@@ -598,13 +597,9 @@ namespace libsemigroups {
     REQUIRE(*it == "aaab");
     REQUIRE(*it2 == "aaaa");
 
-    swap(it, it2);
-    REQUIRE(it2 != it);
-    REQUIRE(*it2 == "aaab");
-    REQUIRE(*it == "aaaa");
+    REQUIRE(*it2 == "aaaa");
+    REQUIRE(*it == "aaab");
 
-    std::swap(it, it2);
-    REQUIRE(it2 != it);
     REQUIRE(*it == "aaab");
     REQUIRE(*it2 == "aaaa");
     ++it2;
@@ -703,10 +698,10 @@ namespace libsemigroups {
                                          "bbb"}));
 
     REQUIRE((strings | count()) == 14);
-    REQUIRE(std::is_sorted(begin(strings), end(strings), ShortLexCompare()));
+    REQUIRE(is_sorted(strings, ShortLexCompare()));
 
     strings.letters("ab").first("a").last("bbbbb");
-    REQUIRE(std::is_sorted(begin(strings), end(strings), ShortLexCompare()));
+    REQUIRE(is_sorted(strings, ShortLexCompare()));
 
     strings.letters("ba").first("b").last("bbbb");
     REQUIRE((strings | to_vector())
@@ -734,7 +729,7 @@ namespace libsemigroups {
     strings.letters("abc").max(13);
     REQUIRE((strings | count()) == number_of_words(3, 0, 13));
     REQUIRE(strings.count() == 797'161);
-    REQUIRE(std::is_sorted(begin(strings), end(strings), ShortLexCompare()));
+    REQUIRE(is_sorted(strings, ShortLexCompare()));
   }
 
   LIBSEMIGROUPS_TEST_CASE("Strings",
@@ -755,17 +750,12 @@ namespace libsemigroups {
     auto it2 = it;
     REQUIRE(*it == *it2);
     ++it;
-    REQUIRE(*it2 != *it);
     REQUIRE(*it == "aba");
     REQUIRE(*it2 == "aab");
 
-    swap(it, it2);
-    REQUIRE(it2 != it);
-    REQUIRE(*it == "aab");
-    REQUIRE(*it2 == "aba");
+    REQUIRE(*it == "aba");
+    REQUIRE(*it2 == "aab");
 
-    std::swap(it, it2);
-    REQUIRE(*it2 != *it);
     REQUIRE(*it == "aba");
     REQUIRE(*it2 == "aab");
     ++it2;

@@ -920,8 +920,8 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if `Ukkonen::validate_word(w)` throws for
     //! any `w` in `[first, last)`.
-    template <typename Iterator>
-    void add_words(Ukkonen& u, Iterator first, Iterator last) {
+    template <typename Iterator1, typename Iterator2>
+    void add_words(Ukkonen& u, Iterator1 first, Iterator2 last) {
       for (auto it = first; it != last; ++it) {
         u.add_word(*it);
       }
