@@ -2214,4 +2214,24 @@ namespace libsemigroups {
             == action_digraph_helper::make<size_t>(
                 6, {{1}, {UNDEFINED}, {1}, {1}, {1}, {1}}));
   }
+
+  LIBSEMIGROUPS_TEST_CASE("DigraphWithSources",
+                          "053",
+                          "quotient",
+                          "[extreme]") {
+    ActionDigraph<size_t>      d = ActionDigraph<size_t>::random(1000000, 6);
+    DigraphWithSources<size_t> dws(1000000, 6);
+    for (auto v = 0; v != 1000000; ++v) {
+      for (auto a = 0; a != 6; ++a) {
+        dws.add_edge_nc(v, d.unsafe_neighbor(v, a), a);
+      }
+    }
+    detail::Duf<> uf(1000000);
+    for (auto i = 2; i < 101; ++i) {
+      uf.unite(1, i);
+    }
+
+    dws.quotient_digraph(uf);
+    REQUIRE(dws.number_of_nodes() <= d.number_of_nodes() - 100);
+  }
 }  // namespace libsemigroups

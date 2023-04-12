@@ -2021,4 +2021,12 @@ namespace libsemigroups {
       check_HopcroftKarp_with_PSTILO_paths(d1, 9, d2, 14, 5);
     }
   }
+
+  LIBSEMIGROUPS_TEST_CASE("ActionDigraph", "050", "HopcroftKarp", "[extreme]") {
+    ActionDigraph<size_t> d1 = ActionDigraph<size_t>::random(10000000, 6);
+    ActionDigraph<size_t> d2 = ActionDigraph<size_t>::random(10000000, 6);
+    detail::Duf<>         uf = HopcroftKarp()(d1, 0, d2, 0);
+    REQUIRE(uf.number_of_blocks() <= 10000000);
+    REQUIRE(uf.size() == 20000000);
+  }
 }  // namespace libsemigroups
