@@ -714,6 +714,59 @@ namespace libsemigroups {
     REQUIRE(!kb1.finished());
   }
 
+  LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
+                          "112",
+                          "non-trivial classes",
+                          "[quick][knuth-bendix]") {
+    auto                      rg = ReportGuard(true);
+    Presentation<std::string> p;
+    p.alphabet("abc");
+    presentation::add_rule(p, "ab", "ba");
+    presentation::add_rule(p, "ac", "ca");
+    presentation::add_rule(p, "aa", "a");
+    presentation::add_rule(p, "ac", "a");
+    presentation::add_rule(p, "ca", "a");
+    presentation::add_rule(p, "bc", "cb");
+    presentation::add_rule(p, "bbb", "b");
+    presentation::add_rule(p, "bc", "b");
+    presentation::add_rule(p, "cb", "b");
+
+    KnuthBendix kb1(p);
+
+    presentation::add_rule(p, "a", "b");
+
+    KnuthBendix kb2(p);
+
+    REQUIRE(kb1.gilman_digraph()
+            == to_action_digraph<size_t>(5,
+                                         {{3, 1, 2},
+                                          {UNDEFINED, 4},
+                                          {UNDEFINED, UNDEFINED, 2},
+                                          {UNDEFINED, 1}}));
+
+    REQUIRE(kb2.gilman_digraph()
+            == to_action_digraph<size_t>(
+                3, {{2, UNDEFINED, 1}, {UNDEFINED, UNDEFINED, 1}}));
+
+    REQUIRE(
+        knuth_bendix::non_trivial_classes(kb1, kb2)
+        == to_action_digraph<size_t>(
+            5,
+            {{UNDEFINED, 1, UNDEFINED}, {UNDEFINED, 4}, {}, {UNDEFINED, 1}}));
+
+    REQUIRE(kb2.equal_to("a", "b"));
+    REQUIRE(kb2.equal_to("a", "ba"));
+    REQUIRE(kb2.equal_to("a", "bb"));
+    REQUIRE(kb2.equal_to("a", "bab"));
+
+    // REQUIRE(kbp.number_of_non_trivial_classes() == 1);
+    // REQUIRE(kbp.cbegin_ntc()->size() == 5);
+    // REQUIRE(std::vector<word_type>(kbp.cbegin_ntc()->cbegin(),
+    //                                kbp.cbegin_ntc()->cend())
+    //         == std::vector<word_type>({{0}, {1}, {0, 1}, {1, 1}, {0, 1,
+    //         1}}));
+  }
+
   ////////////////////////////////////////////////////////////////////////
   // Commented out test cases
   ////////////////////////////////////////////////////////////////////////

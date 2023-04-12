@@ -903,6 +903,16 @@ namespace libsemigroups {
       return IntegralRange<T>(0, number_of_nodes()).cbegin();
     }
 
+    // no except correct?
+    auto nodes() const noexcept {
+      return rx::seq() | rx::take(number_of_nodes());
+    }
+
+    // no except correct?
+    auto labels() const noexcept {
+      return rx::seq() | rx::take(out_degree());
+    }
+
     //! Returns a random access iterator pointing at the last node of the
     //! digraph.
     //!

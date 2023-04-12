@@ -887,6 +887,7 @@ namespace libsemigroups {
       return partition(tc, rx::iterator_range(first, last));
     }
 
+    // TODO(now): this should return a range object
     template <typename It>
     std::vector<std::vector<word_type>> non_trivial_classes(ToddCoxeter& tc,
                                                             It           first,

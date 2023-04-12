@@ -729,8 +729,13 @@ namespace libsemigroups {
       paths.from(0);
       return paths;
     }
+
+    ActionDigraph<size_t> non_trivial_classes(KnuthBendix& kb1,
+                                              KnuthBendix& kb2);
+
   }  // namespace knuth_bendix
 
+  // TODO move contents to knuth_bendix namespace
   namespace presentation {
 
     //! Return an iterator pointing at the left hand side of a redundant rule.

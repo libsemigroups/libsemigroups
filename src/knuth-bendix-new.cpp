@@ -1014,6 +1014,121 @@ namespace libsemigroups {
     return _max_active_word_length;
   }
 #endif
+  namespace knuth_bendix {
+
+    template <typename Range>
+    std::vector<std::vector<std::string>> partition(ToddCoxeter& tc, Range r) {
+      static_assert(std::is_same_v<std::decay_t<typename Range::output_type>,
+                                   std::string>);
+      using return_type = std::vector<std::vector<std::string>>;
+
+      return_type result(r.count(), std::vector<std::string>());
+
+      std::unordered_map<std::string, size_t> map;
+      size_t                                  index = 0;
+
+      while (!r.at_end()) {
+        auto next           = r.get();
+        auto [it, inserted] = map.emplace(next, index);
+        size_t val          = it->second;
+        if (inserted) {
+          index++;
+        }
+        result[val].push_back(next);
+        r.next();
+      }
+      return result;
+    }
+
+    ActionDigraph<size_t> non_trivial_classes(KnuthBendix& kb1,
+                                              KnuthBendix& kb2) {
+      // It is intended that kb2 is defined using the same presentation as kb1
+      // and some additional rules. The output might still be meaningful if
+      // this is not the case.
+      if (kb1.size() == POSITIVE_INFINITY && kb2.size() != POSITIVE_INFINITY) {
+        LIBSEMIGROUPS_EXCEPTION_V3("TODO");
+      } else if (kb1.size() != POSITIVE_INFINITY) {
+        // TODO loop over normal forms in kb1 and group them according to their
+        // normal_form in kb2
+        LIBSEMIGROUPS_EXCEPTION_V3("not yet impled");
+      }
+      // kb1 and kb2 are infinite
+      // We construct the ActionDigraph `ad` obtained by subtracting all of the
+      // edges from the Gilman graph of kb2 from the Gilman graph of kb1. The
+      // non-trivial classes are finite if and only if `ad` is acyclic. It
+      // would be possible to do this without actually constructing `ad` but
+      // constructing `ad` is simpler, and so we do that for now.
+
+      if (kb1.presentation().alphabet().size()
+          != kb2.presentation().alphabet().size()) {
+        // It might be possible to handle this case too, but doesn't seem worth
+        // it at present
+        LIBSEMIGROUPS_EXCEPTION_V3("TODO");
+      }
+
+      auto g1 = kb1.gilman_digraph();
+      auto g2 = kb2.gilman_digraph();
+
+      // We need to obtain a mappings from the nodes of g1 to g2 and vice
+      // versa.
+      // TODO exception/assert that if either g1 or g2 has no nodes
+      // TODO exception/assert that if either g2 has more nodes than g1
+
+      using node_type = decltype(g1)::node_type;
+
+      std::vector<node_type> to_g2(g1.number_of_nodes(),
+                                   static_cast<node_type>(UNDEFINED));
+      to_g2[0] = 0;
+      std::vector<node_type> to_g1(g2.number_of_nodes(),
+                                   static_cast<node_type>(UNDEFINED));
+      to_g1[0] = 0;
+      for (auto v : g1.nodes()) {
+        for (auto e : g1.labels()) {
+          auto ve1 = g1.unsafe_neighbor(v, e);
+          if (to_g2[v] != UNDEFINED && ve1 != UNDEFINED) {
+            auto ve2 = g2.unsafe_neighbor(to_g2[v], e);
+            if (ve2 != UNDEFINED && to_g2[ve1] == UNDEFINED) {
+              to_g2[ve1] = ve2;
+              to_g1[ve2] = ve1;
+            }
+          }
+        }
+      }
+
+      // We do a depth first search  simultaneously for cycles, and edges E
+      // in g2 not in g1. Pre order for cycle detection, post order for "can we
+      // reach a node incident to an edge in E" and "number of paths through a
+      // node is infinite"
+      size_t const      N = g2.number_of_nodes();
+      std::vector<bool> can_reach(N, false);
+      std::vector<bool> inf_paths(N, false);
+      std::vector<bool> seen(N, false);
+
+      std::stack<node_type> stck;
+      stck.push(0);
+      seen[0] = true;
+
+      while (!stck.empty()) {
+        auto v = stck.top();
+        stck.pop();
+        if (v >= N) {
+          // post order
+          v -= N;
+          for (auto e : g1.labels()) {
+            auto ve = g1.unsafe_neighbor(v, e);
+            can_reach[v] |= can_reach[ve];
+            inf_paths[v] |= inf_paths[ve];
+            if (can_reach[v] && inf_paths[v]) {
+              LIBSEMIGROUPS_EXCEPTION_V3("TODO");
+            }
+          }
+        } else {
+          for (auto e : g1.labels()) {
+          }
+        }
+      }
+    }
+  }  // namespace knuth_bendix
 
   std::ostream& operator<<(std::ostream& os, KnuthBendix const& kb) {
     os << kb.active_rules();
