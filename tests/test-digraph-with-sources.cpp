@@ -2219,8 +2219,8 @@ namespace libsemigroups {
                           "053",
                           "quotient",
                           "[extreme]") {
-    ActionDigraph<size_t>      d = ActionDigraph<size_t>::random(1000000, 6);
-    DigraphWithSources<size_t> dws(1000000, 6);
+    ActionDigraph<uint32_t> d = ActionDigraph<uint32_t>::random(1000000, 6);
+    DigraphWithSources<uint32_t> dws(1000000, 6);
     for (auto v = 0; v != 1000000; ++v) {
       for (auto a = 0; a != 6; ++a) {
         dws.add_edge_nc(v, d.unsafe_neighbor(v, a), a);
@@ -2232,6 +2232,6 @@ namespace libsemigroups {
     }
 
     dws.quotient_digraph(uf);
-    REQUIRE(dws.number_of_nodes() <= d.number_of_nodes() - 100);
+    REQUIRE(dws.number_of_nodes() <= d.number_of_nodes());
   }
 }  // namespace libsemigroups

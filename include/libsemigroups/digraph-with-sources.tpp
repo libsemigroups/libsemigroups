@@ -19,6 +19,8 @@
 // This file contains a declaration of a class for performing the "low-index
 // congruence" algorithm for semigroups and monoid.
 
+// TODO add a validate helper function to ensure the sources are valid.
+
 namespace libsemigroups {
 
   // number of nodes, out-degree
@@ -265,23 +267,24 @@ namespace libsemigroups {
         x_nb = this->unsafe_neighbor(x, a);
         y_nb = this->unsafe_neighbor(y, a);
 
+        if (x_nb != UNDEFINED && y_nb != UNDEFINED) {
+          x_nb_rep = uf.find(x_nb);
+          y_nb_rep = uf.find(y_nb);
+          if (x_nb_rep != y_nb_rep) {
+            coincidences.emplace(x_nb_rep, y_nb_rep);
+          }
+        }
         // Handle missing edges
-        if (x_nb == UNDEFINED && y_nb == UNDEFINED) {
+        else if (x_nb == UNDEFINED && y_nb == UNDEFINED) {
           continue;
         } else if (x_nb == UNDEFINED) {
           y_nb_rep = uf.find(y_nb);
-          this->add_edge_nc(x, y_nb_rep, a);
+          ActionDigraph<T>::add_edge_nc(x, y_nb_rep, a);
           continue;
         } else if (y_nb == UNDEFINED) {
           x_nb_rep = uf.find(x_nb);
-          this->add_edge_nc(y, x_nb_rep, a);
+          ActionDigraph<T>::add_edge_nc(y, x_nb_rep, a);
           continue;
-        }
-
-        x_nb_rep = uf.find(x_nb);
-        y_nb_rep = uf.find(y_nb);
-        if (x_nb_rep != y_nb_rep) {
-          coincidences.emplace(x_nb_rep, y_nb_rep);
         }
       }
       uf.unite(x, y);
@@ -297,24 +300,27 @@ namespace libsemigroups {
       }
     }
 
-    for (node_type v = 0; v != N; ++v) {
+    for (node_type v = 0; v != N;
+         ++v) {  // TODO replace with loop through uf reps
       node_type rep = uf.find(v);
-      if (v != rep) {
-        // Populate representative row with any missing values
-        for (label_type a = 0; a != n_out; ++a) {
-          node_type va = this->unsafe_neighbor(v, a);
-          if (this->unsafe_neighbor(rep, a) == UNDEFINED && va != UNDEFINED) {
-            this->add_edge_nc(rep, uf.find(va), a);
-          }
-        }
-      } else {
-        // Replace out-neighbours of representatives with their representative
+      // if (v != rep) {
+      //   // Populate representative row with any missing values
+      //   for (label_type a = 0; a != n_out; ++a) {
+      //     node_type va = this->unsafe_neighbor(v, a);
+      //     if (this->unsafe_neighbor(rep, a) == UNDEFINED && va != UNDEFINED)
+      //     {
+      //       this->add_edge_nc(rep, uf.find(va), a);
+      //     }
+      //   }
+      // } else {
+      // Replace out-neighbours of representatives with their representative
+      if (v == rep) {
         for (label_type a = 0; a != n_out; ++a) {
           node_type va = this->unsafe_neighbor(v, a);
           if (va != UNDEFINED) {
             node_type va_rep = uf.find(va);
             if (va != va_rep) {
-              this->remove_edge_nc(v, a);
+              // this->remove_edge_nc(v, a);
               this->add_edge_nc(v, va_rep, a);
             }
           }
