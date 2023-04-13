@@ -256,7 +256,7 @@ namespace libsemigroups {
     }
 
     // For each coincidence (x, y), unite each out neighbour of x with the
-    // corresponding out neighbour of y
+    // corresponding out neighbour of y, unless their are missing edges
     while (!coincidences.empty()) {
       node_type x, y, x_nb, y_nb, x_nb_rep, y_nb_rep;
       std::tie(x, y) = coincidences.top();
@@ -271,9 +271,7 @@ namespace libsemigroups {
           if (x_nb_rep != y_nb_rep) {
             coincidences.emplace(x_nb_rep, y_nb_rep);
           }
-        }
-        // Handle missing edges
-        else if (x_nb == UNDEFINED && y_nb == UNDEFINED) {
+        } else if (x_nb == UNDEFINED && y_nb == UNDEFINED) {
           continue;
         } else if (x_nb == UNDEFINED) {
           y_nb_rep = uf.find(y_nb);
@@ -349,7 +347,7 @@ namespace libsemigroups {
     for (node_type v = 0; v < num_nodes; ++v) {
       for (label_type a = 0; a < num_labels; ++a) {
         node_type va = this->unsafe_neighbor(v, a);
-        if (va != UNDEFINED && not this->is_source(va, v, a)) {
+        if (va != UNDEFINED && !this->is_source(va, v, a)) {
           return false;
         }
       }
