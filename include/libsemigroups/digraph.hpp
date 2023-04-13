@@ -3333,9 +3333,9 @@ namespace libsemigroups {
     // returned by the HopcroftKarp Algorithm.
     template <typename T>
     detail::Duf<> const& operator()(ActionDigraph<T> const&              d1,
-                                    typename ActionDigraph<T>::node_type p0,
+                                    typename ActionDigraph<T>::node_type p1,
                                     ActionDigraph<T> const&              d2,
-                                    typename ActionDigraph<T>::node_type q0) {
+                                    typename ActionDigraph<T>::node_type q1) {
       using node_type  = typename ActionDigraph<T>::node_type;
       using label_type = typename ActionDigraph<T>::label_type;
 
@@ -3344,21 +3344,30 @@ namespace libsemigroups {
 
       if (d1.out_degree() != d2.out_degree()) {
         LIBSEMIGROUPS_EXCEPTION(
-            "arguments d1 and d2 must have the same out degree");
+            "1st and 3rd argument must have the same out-degree, found "
+            "out-degrees of %llu and %llu",
+            uint64_t(d1.out_degree()),
+            uint64_t(d2.out_degree()));
       }
-      if (p0 < 0 || p0 >= N1) {
-        LIBSEMIGROUPS_EXCEPTION("argument p0 must be a node of d1");
+      if (p1 < 0 || p1 >= N1) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "2nd argument must be an integer in 0 ... %llu - 1, found %llu",
+            uint64_t(N1),
+            uint64_t(p1));
       }
-      if (q0 < 0 || q0 >= N2) {
-        LIBSEMIGROUPS_EXCEPTION("argument q0 must be a node of d2");
+      if (q1 < 0 || q1 >= N2) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "4th argument must be an integer in 0 ... %llu - 1, found %llu",
+            uint64_t(N2),
+            uint64_t(q1));
       }
 
       auto M = d1.out_degree();
       _uf.resize(N1 + N2);
-      _uf.unite(p0, q0 + N1);
+      _uf.unite(p1, q1 + N1);
       // 0 .. N1 - 1, N1  .. N1 + N2 -1
       std::stack<std::pair<node_type, node_type>> stck;
-      stck.emplace(p0, q0 + N1);
+      stck.emplace(p1, q1 + N1);
 
       // Traverse d1 and d2, uniting the output vertices at each stage
       while (!stck.empty()) {
