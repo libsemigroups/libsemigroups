@@ -3329,8 +3329,9 @@ namespace libsemigroups {
    public:
     HopcroftKarp() = default;
 
-    // Change d in-place to contain the quotient of d1 (or d2) by the partition
-    // returned by the HopcroftKarp Algorithm.
+    // Return the partition obtained by Hopcroft and Karp's Algorithm for
+    // checking if two finite state automata accept the same language, with
+    // given start vertices p1 and q1.
     template <typename T>
     detail::Duf<> const& operator()(ActionDigraph<T> const&              d1,
                                     typename ActionDigraph<T>::node_type p1,
