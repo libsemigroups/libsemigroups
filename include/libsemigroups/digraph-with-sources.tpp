@@ -288,54 +288,37 @@ namespace libsemigroups {
       uf.unite(x, y);
     }
 
-    // Identify the representative for each part in uf with a number in 0 ...
-    // number_of_blocks
-    std::unordered_map<node_type, node_type> map;
-    node_type                                index = 0;
-    for (node_type i = 0; i < uf.size(); ++i) {
-      if (map.emplace(uf.find(i), index).second) {
-        ++index;
-      }
-    }
+    uf.normalize();
 
-    for (node_type v = 0; v != N;
-         ++v) {  // TODO replace with loop through uf reps
-      node_type rep = uf.find(v);
-      // if (v != rep) {
-      //   // Populate representative row with any missing values
-      //   for (label_type a = 0; a != n_out; ++a) {
-      //     node_type va = this->unsafe_neighbor(v, a);
-      //     if (this->unsafe_neighbor(rep, a) == UNDEFINED && va != UNDEFINED)
-      //     {
-      //       this->add_edge_nc(rep, uf.find(va), a);
-      //     }
-      //   }
-      // } else {
-      // Replace out-neighbours of representatives with their representative
-      if (v == rep) {
-        for (label_type a = 0; a != n_out; ++a) {
-          node_type va = this->unsafe_neighbor(v, a);
-          if (va != UNDEFINED) {
-            node_type va_rep = uf.find(va);
-            if (va != va_rep) {
-              // this->remove_edge_nc(v, a);
-              this->add_edge_nc(v, va_rep, a);
-            }
+    // Populate representative row with representative out-neighbours
+    for (auto it = uf.cbegin(); it < uf.cend(); ++it) {
+      for (label_type a = 0; a != n_out; ++a) {
+        node_type va = this->unsafe_neighbor(*it, a);
+        if (va != UNDEFINED) {
+          node_type va_rep = uf.find(va);
+          if (va != va_rep) {
+            this->add_edge_nc(*it, va_rep, a);
           }
         }
       }
     }
 
-    // Rename representative rows to be 0 ... number_of_blocks
-    for (node_type v = 0; v != N; ++v) {
-      node_type rep   = uf.find(v);
-      auto      index = map.find(rep);
-      if (index != map.end() && rep != index->second) {
-        auto new_name = index->second;
-        this->rename_node(rep, new_name);
-        map.erase(index);
-      }
+    // Identify the representative for each part in uf with a number in 0 ...
+    // number_of_blocks
+    node_type index = 0;
+    for (auto it = uf.cbegin(); it < uf.cend(); ++it) {
+      this->rename_node(*it, index);
+      ++index;
     }
+
+    // Alternatively, don't normalise the uf and uncomment the below.
+    // for (node_type v = 0; v < N; ++v) {
+    //   node_type rep = uf.find(v);
+    //   if (v == rep) {
+    //     this->rename_node(rep, index);
+    //     ++index;
+    //   }
+    // }
 
     this->restrict(uf.number_of_blocks());
   }

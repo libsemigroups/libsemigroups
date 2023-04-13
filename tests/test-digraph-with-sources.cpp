@@ -2237,14 +2237,14 @@ namespace libsemigroups {
                           "053",
                           "quotient",
                           "[extreme]") {
-    ActionDigraph<uint32_t> d = ActionDigraph<uint32_t>::random(1000000, 6);
-    DigraphWithSources<uint32_t> dws(1000000, 6);
-    for (auto v = 0; v != 1000000; ++v) {
+    ActionDigraph<uint32_t> d = ActionDigraph<uint32_t>::random(1'000'000, 6);
+    DigraphWithSources<uint32_t> dws(1'000'000, 6);
+    for (auto v = 0; v != 1'000'000; ++v) {
       for (auto a = 0; a != 6; ++a) {
         dws.add_edge_nc(v, d.unsafe_neighbor(v, a), a);
       }
     }
-    detail::Duf<> uf(1000000);
+    detail::Duf<> uf(1'000'000);
     for (auto i = 2; i < 101; ++i) {
       uf.unite(1, i);
     }
