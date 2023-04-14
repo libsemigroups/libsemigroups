@@ -655,6 +655,37 @@ namespace libsemigroups {
 
     LIBSEMIGROUPS_TEST_CASE(
         "KnuthBendixCongruenceByPairs",
+        "996",
+        "non-trivial congruence on an infinite fp semigroup",
+        "[quick][kbp][cong-pair]") {
+      auto                     rg = ReportGuard(REPORT);
+      fpsemigroup::KnuthBendix kb;
+      kb.set_alphabet(3);
+      kb.add_rule({0, 1}, {1, 0});
+      kb.add_rule({0, 2}, {2, 0});
+      kb.add_rule({0, 0}, {0});
+      kb.add_rule({0, 2}, {0});
+      kb.add_rule({2, 0}, {0});
+      kb.add_rule({1, 2}, {2, 1});
+      kb.add_rule({1, 1, 1}, {1});
+      kb.add_rule({1, 2}, {1});
+      kb.add_rule({2, 1}, {1});
+
+      KnuthBendixCongruenceByPairs kbp(twosided, kb);
+      kbp.add_pair({1, 1}, {0});
+
+      REQUIRE(kbp.number_of_non_trivial_classes() == 2);
+
+      REQUIRE(std::vector<word_type>(kbp.cbegin_ntc()->cbegin(),
+                                     kbp.cbegin_ntc()->cend())
+              == std::vector<word_type>({{1, 1}, {0}, {0, 1, 1}}));
+      REQUIRE(std::vector<word_type>((kbp.cbegin_ntc() + 1)->cbegin(),
+                                     (kbp.cbegin_ntc() + 1)->cend())
+              == std::vector<word_type>({{1}, {0, 1}}));
+    }
+
+    LIBSEMIGROUPS_TEST_CASE(
+        "KnuthBendixCongruenceByPairs",
         "017",
         "non-trivial congruence on an infinite fp semigroup",
         "[quick][kbp][cong-pair]") {
@@ -1260,31 +1291,35 @@ namespace libsemigroups {
       REQUIRE(!S.finished());  // S is copied into p
     }
 
-    // This test is commented out because it does not and should not compile,
-    // the FpSemigroupByPairs class requires a base semigroup over which to
-    // compute, in the example below there is no such base semigroup.
-    //
-    // LIBSEMIGROUPS_TEST_CASE("FpSemigroupByPairs", "031",
-    //                         "infinite fp semigroup from GAP library ",
-    //                         "[quick][fpsemi][cong-pair]") {
-    //   auto rg = ReportGuard(REPORT);
-    //   FpSemigroupByPairs<decltype(S)::element_type> p;
-    //   p.set_alphabet(2);
-    //   p.add_rule(word_type({0, 0}), word_type({0, 0}));
-    //   p.add_rule(word_type({0, 1}), {1, 0});
-    //   p.add_rule(word_type({0, 2}), {2, 0});
-    //   p.add_rule(word_type({0, 0}), {0});
-    //   p.add_rule(word_type({0, 2}), {0});
-    //   p.add_rule(word_type({2, 0}), {0});
-    //   p.add_rule(word_type({1, 0}), {0, 1});
-    //   p.add_rule(word_type({1, 1}), {1, 1});
-    //   p.add_rule(word_type({1, 2}), {2, 1});
-    //   p.add_rule(word_type({1, 1, 1}), {1});
-    //   p.add_rule(word_type({1, 2}), word_type({1}));
-    //   p.add_rule(word_type({2, 1}), word_type({1}));
-    //   p.add_rule(word_type({0}), word_type({1}));
+    LIBSEMIGROUPS_TEST_CASE("KnuthBendixCongruenceByPairs",
+                            "031",
+                            "(from kbmag/standalone/kb_data/m11)",
+                            "[extreme][knuth-bendix][kbmag][shortlex]") {
+      auto rg = ReportGuard(true);
 
-    //   REQUIRE(!p.finished());
-    // }
+      fpsemigroup::KnuthBendix kb;
+      kb.set_alphabet(4);
+      kb.set_identity(3);
+      kb.add_rule({0, 0}, {3});
+      kb.add_rule({1, 2}, {3});
+      kb.add_rule({2, 1}, {3});
+      kb.add_rule({2, 2}, {1, 1});
+      kb.add_rule({2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2},
+                  {0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0});
+      kb.add_rule({1, 1, 0, 1, 1, 0, 1, 1, 0}, {0, 1, 1, 0, 1, 1, 0, 1, 1});
+      kb.add_rule({0, 2, 0, 2, 0, 1, 0, 1, 0, 2, 0, 1, 0, 2, 2, 0, 2, 0, 1},
+                  {3});
+      kb.knuth_bendix_by_overlap_length();
+      REQUIRE(kb.size() == 7'920);
+
+      KnuthBendixCongruenceByPairs kbp(twosided, kb);
+      kbp.add_pair({0}, {3});
+      kbp.add_pair({0}, {1});
+      kbp.add_pair({2}, {0});
+
+      REQUIRE(kbp.number_of_classes() == 1);
+      REQUIRE(kbp.cbegin_ntc()->size() == 7920);
+    }
+
   }  // namespace congruence
 }  // namespace libsemigroups

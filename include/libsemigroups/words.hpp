@@ -531,7 +531,7 @@ namespace libsemigroups {
 
   // The next class is a custom combinator for rx::ranges to convert the output
   // of a Words object into strings
-  template <typename = void>
+  template <typename = void>  // TODO why is typename = void here?
   struct to_strings {
     explicit to_strings(std::string const& lttrs) : _letters(lttrs) {}
     explicit to_strings(std::string&& lttrs) : _letters(std::move(lttrs)) {}

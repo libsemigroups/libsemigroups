@@ -200,6 +200,17 @@ namespace libsemigroups {
     REQUIRE(kb.confluent());
     REQUIRE(kb.number_of_active_rules() == 1'731);
     REQUIRE(kb.size() == 7'920);
+
+    presentation::add_rule(p, "a", "");
+    presentation::add_rule(p, "a", "b");
+    presentation::add_rule(p, "B", "a");
+
+    KnuthBendix kb2(p);
+    REQUIRE(kb2.size() == 1);
+    REQUIRE(knuth_bendix::non_trivial_classes(kb, kb2)
+            == std::vector<std::vector<std::string>>(
+                {knuth_bendix::normal_forms(kb) | to_strings(p.alphabet())
+                 | rx::to_vector()}));
   }
 
   // Weyl group E8 (all gens involutory).

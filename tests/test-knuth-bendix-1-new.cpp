@@ -69,6 +69,7 @@
 
 namespace libsemigroups {
   using namespace rx;
+  using literals::operator""_w;
 
   LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
                           "000",
@@ -715,10 +716,10 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
-                          "112",
+                          "999",
                           "non-trivial classes",
                           "[quick][knuth-bendix]") {
-    auto                      rg = ReportGuard(true);
+    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("abc");
     presentation::add_rule(p, "ab", "ba");
@@ -748,23 +749,405 @@ namespace libsemigroups {
             == to_action_digraph<size_t>(
                 3, {{2, UNDEFINED, 1}, {UNDEFINED, UNDEFINED, 1}}));
 
-    REQUIRE(
-        knuth_bendix::non_trivial_classes(kb1, kb2)
-        == to_action_digraph<size_t>(
-            5,
-            {{UNDEFINED, 1, UNDEFINED}, {UNDEFINED, 4}, {}, {UNDEFINED, 1}}));
-
     REQUIRE(kb2.equal_to("a", "b"));
     REQUIRE(kb2.equal_to("a", "ba"));
     REQUIRE(kb2.equal_to("a", "bb"));
     REQUIRE(kb2.equal_to("a", "bab"));
 
-    // REQUIRE(kbp.number_of_non_trivial_classes() == 1);
-    // REQUIRE(kbp.cbegin_ntc()->size() == 5);
-    // REQUIRE(std::vector<word_type>(kbp.cbegin_ntc()->cbegin(),
-    //                                kbp.cbegin_ntc()->cend())
-    //         == std::vector<word_type>({{0}, {1}, {0, 1}, {1, 1}, {0, 1,
-    //         1}}));
+    REQUIRE(knuth_bendix::non_trivial_classes(kb1, kb2)
+            == std::vector<std::vector<std::string>>(
+                {{"b", "ab", "bb", "abb", "a"}}));
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
+                          "997",
+                          "non-trivial classes",
+                          "[quick][knuth-bendix]") {
+    auto                      rg = ReportGuard(false);
+    Presentation<std::string> p;
+    p.alphabet("abc");
+    presentation::add_rule(p, "ab", "ba");
+    presentation::add_rule(p, "ac", "ca");
+    presentation::add_rule(p, "aa", "a");
+    presentation::add_rule(p, "ac", "a");
+    presentation::add_rule(p, "ca", "a");
+    presentation::add_rule(p, "bc", "cb");
+    presentation::add_rule(p, "bbb", "b");
+    presentation::add_rule(p, "bc", "b");
+    presentation::add_rule(p, "cb", "b");
+
+    KnuthBendix kb1(p);
+    REQUIRE(kb1.size() == POSITIVE_INFINITY);
+
+    presentation::add_rule(p, "b", "c");
+
+    KnuthBendix kb2(p);
+    REQUIRE(kb2.size() == 2);
+
+    REQUIRE_THROWS_AS(knuth_bendix::non_trivial_classes(kb1, kb2),
+                      LibsemigroupsException);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
+                          "996",
+                          "non-trivial classes",
+                          "[quick][knuth-bendix]") {
+    auto                      rg = ReportGuard(false);
+    Presentation<std::string> p;
+    p.alphabet("abc");
+    presentation::add_rule(p, "ab", "ba");
+    presentation::add_rule(p, "ac", "ca");
+    presentation::add_rule(p, "aa", "a");
+    presentation::add_rule(p, "ac", "a");
+    presentation::add_rule(p, "ca", "a");
+    presentation::add_rule(p, "bc", "cb");
+    presentation::add_rule(p, "bbb", "b");
+    presentation::add_rule(p, "bc", "b");
+    presentation::add_rule(p, "cb", "b");
+
+    KnuthBendix kb1(p);
+
+    presentation::add_rule(p, "bb", "a");
+
+    KnuthBendix kb2(p);
+
+    REQUIRE(knuth_bendix::non_trivial_classes(kb1, kb2)
+            == std::vector<std::vector<std::string>>(
+                {{"ab", "b"}, {"bb", "abb", "a"}}));
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
+                          "995",
+                          "non-trivial classes",
+                          "[quick][knuth-bendix]") {
+    auto                    rg = ReportGuard(false);
+    Presentation<word_type> p;
+    p.alphabet(4);
+    presentation::add_rule(p, {0, 1}, {1, 0});
+    presentation::add_rule(p, {0, 2}, {2, 0});
+    presentation::add_rule(p, {0, 0}, {0});
+    presentation::add_rule(p, {0, 2}, {0});
+    presentation::add_rule(p, {2, 0}, {0});
+    presentation::add_rule(p, {1, 2}, {2, 1});
+    presentation::add_rule(p, {1, 1, 1}, {1});
+    presentation::add_rule(p, {1, 2}, {1});
+    presentation::add_rule(p, {2, 1}, {1});
+    presentation::add_rule(p, {0, 3}, {0});
+    presentation::add_rule(p, {3, 0}, {0});
+    presentation::add_rule(p, {1, 3}, {1});
+    presentation::add_rule(p, {3, 1}, {1});
+    presentation::add_rule(p, {2, 3}, {2});
+    presentation::add_rule(p, {3, 2}, {2});
+
+    KnuthBendix kb1(p);
+
+    presentation::add_rule(p, {0}, {1});
+
+    KnuthBendix kb2(p);
+    REQUIRE(knuth_bendix::non_trivial_classes(kb1, kb2)
+            == std::vector<std::vector<std::string>>(
+                {{"b", "ab", "bb", "abb", "a"}}));
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
+                          "112",
+                          "non-trivial congruence on an infinite fp semigroup",
+                          "[quick][knuth-bendix]") {
+    auto                    rg = ReportGuard(false);
+    Presentation<word_type> p;
+    p.alphabet(5);
+    presentation::add_rule(p, 01_w, 0_w);
+    presentation::add_rule(p, 10_w, 0_w);
+    presentation::add_rule(p, 02_w, 0_w);
+    presentation::add_rule(p, 20_w, 0_w);
+    presentation::add_rule(p, 03_w, 0_w);
+    presentation::add_rule(p, 30_w, 0_w);
+    presentation::add_rule(p, 00_w, 0_w);
+    presentation::add_rule(p, 11_w, 0_w);
+    presentation::add_rule(p, 22_w, 0_w);
+    presentation::add_rule(p, 33_w, 0_w);
+    presentation::add_rule(p, 12_w, 0_w);
+    presentation::add_rule(p, 21_w, 0_w);
+    presentation::add_rule(p, 13_w, 0_w);
+    presentation::add_rule(p, 31_w, 0_w);
+    presentation::add_rule(p, 23_w, 0_w);
+    presentation::add_rule(p, 32_w, 0_w);
+    presentation::add_rule(p, 40_w, 0_w);
+    presentation::add_rule(p, 41_w, 1_w);
+    presentation::add_rule(p, 42_w, 2_w);
+    presentation::add_rule(p, 43_w, 3_w);
+    presentation::add_rule(p, 04_w, 0_w);
+    presentation::add_rule(p, 14_w, 1_w);
+    presentation::add_rule(p, 24_w, 2_w);
+    presentation::add_rule(p, 34_w, 3_w);
+
+    KnuthBendix kb1(p);
+
+    REQUIRE(kb1.gilman_digraph()
+            == to_action_digraph<size_t>(
+                6,
+                {{1, 2, 3, 4, 5},
+                 {},
+                 {},
+                 {},
+                 {},
+                 {UNDEFINED, UNDEFINED, UNDEFINED, UNDEFINED, 5}}));
+
+    presentation::add_rule(p, 1_w, 2_w);
+    KnuthBendix kb2(p);
+
+    REQUIRE(kb2.gilman_digraph()
+            == to_action_digraph<size_t>(
+                5,
+                {{1, 2, UNDEFINED, 3, 4},
+                 {},
+                 {},
+                 {},
+                 {UNDEFINED, UNDEFINED, UNDEFINED, UNDEFINED, 4}}));
+
+    REQUIRE(kb2.equal_to("b", "c"));
+
+    auto ntc = knuth_bendix::non_trivial_classes(kb1, kb2);
+    REQUIRE(ntc.size() == 1);
+    REQUIRE(ntc[0].size() == 2);
+    REQUIRE(ntc == decltype(ntc)({{"c", "b"}}));
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
+                          "113",
+                          "non-trivial congruence on an infinite fp semigroup",
+                          "[quick][kbp]") {
+    auto                    rg = ReportGuard(false);
+    Presentation<word_type> p;
+    p.alphabet(5);
+    presentation::add_rule(p, 01_w, 0_w);
+    presentation::add_rule(p, 10_w, 0_w);
+    presentation::add_rule(p, 02_w, 0_w);
+    presentation::add_rule(p, 20_w, 0_w);
+    presentation::add_rule(p, 03_w, 0_w);
+    presentation::add_rule(p, 30_w, 0_w);
+    presentation::add_rule(p, 00_w, 0_w);
+    presentation::add_rule(p, 11_w, 0_w);
+    presentation::add_rule(p, 22_w, 0_w);
+    presentation::add_rule(p, 33_w, 0_w);
+    presentation::add_rule(p, 12_w, 0_w);
+    presentation::add_rule(p, 21_w, 0_w);
+    presentation::add_rule(p, 13_w, 0_w);
+    presentation::add_rule(p, 31_w, 0_w);
+    presentation::add_rule(p, 23_w, 0_w);
+    presentation::add_rule(p, 32_w, 0_w);
+    presentation::add_rule(p, 40_w, 0_w);
+    presentation::add_rule(p, 41_w, 2_w);
+    presentation::add_rule(p, 42_w, 3_w);
+    presentation::add_rule(p, 43_w, 1_w);
+    presentation::add_rule(p, 04_w, 0_w);
+    presentation::add_rule(p, 14_w, 2_w);
+    presentation::add_rule(p, 24_w, 3_w);
+    presentation::add_rule(p, 34_w, 1_w);
+
+    KnuthBendix kb1(p);
+
+    presentation::add_rule(p, 2_w, 3_w);
+
+    KnuthBendix kb2(p);
+    auto        ntc = knuth_bendix::non_trivial_classes(kb1, kb2);
+    REQUIRE(ntc.size() == 1);
+    REQUIRE(ntc[0].size() == 3);
+    REQUIRE(ntc == decltype(ntc)({{"c", "d", "b"}}));
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
+                          "114",
+                          "trivial congruence on a finite fp semigroup",
+                          "[quick][kbp]") {
+    auto                    rg = ReportGuard(false);
+    Presentation<word_type> p;
+    p.alphabet(2);
+    presentation::add_rule(p, 001_w, 00_w);
+    presentation::add_rule(p, 0000_w, 00_w);
+    presentation::add_rule(p, 0110_w, 00_w);
+    presentation::add_rule(p, 0111_w, 000_w);
+    presentation::add_rule(p, 1110_w, 110_w);
+    presentation::add_rule(p, 1111_w, 111_w);
+    presentation::add_rule(p, 01000_w, 0101_w);
+    presentation::add_rule(p, 01010_w, 0100_w);
+    presentation::add_rule(p, 01011_w, 0101_w);
+
+    KnuthBendix kb1(p);
+    KnuthBendix kb2(p);
+
+    REQUIRE(kb1.size() == 27);
+    REQUIRE(kb2.size() == 27);
+    auto ntc = knuth_bendix::non_trivial_classes(kb1, kb2);
+    REQUIRE(ntc.empty());
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
+                          "116",
+                          "universal congruence on a finite fp semigroup",
+                          "[quick][kbp]") {
+    auto rg = ReportGuard(false);
+
+    Presentation<word_type> p;
+    p.alphabet(2);
+    presentation::add_rule(p, 001_w, 00_w);
+    presentation::add_rule(p, 0000_w, 00_w);
+    presentation::add_rule(p, 0110_w, 00_w);
+    presentation::add_rule(p, 0111_w, 000_w);
+    presentation::add_rule(p, 1110_w, 110_w);
+    presentation::add_rule(p, 1111_w, 111_w);
+    presentation::add_rule(p, 01000_w, 0101_w);
+    presentation::add_rule(p, 01010_w, 0100_w);
+    presentation::add_rule(p, 01011_w, 0101_w);
+
+    KnuthBendix kb1(p);
+
+    presentation::add_rule(p, 0_w, 1_w);
+    presentation::add_rule(p, 00_w, 0_w);
+
+    KnuthBendix kb2(p);
+
+    REQUIRE(kb2.size() == 1);
+
+    auto ntc = knuth_bendix::non_trivial_classes(kb1, kb2);
+
+    REQUIRE(ntc.size() == 1);
+    REQUIRE(ntc[0].size() == 27);
+    std::vector<std::string> expected
+        = {"a",     "b",     "aa",    "ab",    "ba",     "bb",    "aaa",
+           "baa",   "aba",   "bab",   "abb",   "bba",    "bbb",   "baaa",
+           "abaa",  "bbaa",  "baba",  "abab",  "bbab",   "babb",  "bbaaa",
+           "babaa", "bbaba", "babab", "bbabb", "bbabaa", "bbabab"};
+    std::sort(expected.begin(), expected.end());
+    std::sort(ntc[0].begin(), ntc[0].end());
+    REQUIRE(ntc[0] == expected);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
+                          "121",
+                          "finite fp semigroup, size 16",
+                          "[quick][kbp]") {
+    auto rg = ReportGuard(false);
+
+    Presentation<word_type> p;
+    p.alphabet(11);
+    presentation::add_rule(p, {2}, {1});
+    presentation::add_rule(p, {4}, {3});
+    presentation::add_rule(p, {5}, {0});
+    presentation::add_rule(p, {6}, {3});
+    presentation::add_rule(p, {7}, {1});
+    presentation::add_rule(p, {8}, {3});
+    presentation::add_rule(p, {9}, {3});
+    presentation::add_rule(p, {10}, {0});
+    presentation::add_rule(p, {0, 2}, {0, 1});
+    presentation::add_rule(p, {0, 4}, {0, 3});
+    presentation::add_rule(p, {0, 5}, {0, 0});
+    presentation::add_rule(p, {0, 6}, {0, 3});
+    presentation::add_rule(p, {0, 7}, {0, 1});
+    presentation::add_rule(p, {0, 8}, {0, 3});
+    presentation::add_rule(p, {0, 9}, {0, 3});
+    presentation::add_rule(p, {0, 10}, {0, 0});
+    presentation::add_rule(p, {1, 1}, {1});
+    presentation::add_rule(p, {1, 2}, {1});
+    presentation::add_rule(p, {1, 4}, {1, 3});
+    presentation::add_rule(p, {1, 5}, {1, 0});
+    presentation::add_rule(p, {1, 6}, {1, 3});
+    presentation::add_rule(p, {1, 7}, {1});
+    presentation::add_rule(p, {1, 8}, {1, 3});
+    presentation::add_rule(p, {1, 9}, {1, 3});
+    presentation::add_rule(p, {1, 10}, {1, 0});
+    presentation::add_rule(p, {3, 1}, {3});
+    presentation::add_rule(p, {3, 2}, {3});
+    presentation::add_rule(p, {3, 3}, {3});
+    presentation::add_rule(p, {3, 4}, {3});
+    presentation::add_rule(p, {3, 5}, {3, 0});
+    presentation::add_rule(p, {3, 6}, {3});
+    presentation::add_rule(p, {3, 7}, {3});
+    presentation::add_rule(p, {3, 8}, {3});
+    presentation::add_rule(p, {3, 9}, {3});
+    presentation::add_rule(p, {3, 10}, {3, 0});
+    presentation::add_rule(p, {0, 0, 0}, {0});
+    presentation::add_rule(p, {0, 0, 1}, {1});
+    presentation::add_rule(p, {0, 0, 3}, {3});
+    presentation::add_rule(p, {0, 1, 3}, {1, 3});
+    presentation::add_rule(p, {1, 0, 0}, {1});
+    presentation::add_rule(p, {1, 0, 3}, {0, 3});
+    presentation::add_rule(p, {3, 0, 0}, {3});
+    presentation::add_rule(p, {0, 1, 0, 1}, {1, 0, 1});
+    presentation::add_rule(p, {0, 3, 0, 3}, {3, 0, 3});
+    presentation::add_rule(p, {1, 0, 1, 0}, {1, 0, 1});
+    presentation::add_rule(p, {1, 3, 0, 1}, {1, 0, 1});
+    presentation::add_rule(p, {1, 3, 0, 3}, {3, 0, 3});
+    presentation::add_rule(p, {3, 0, 1, 0}, {3, 0, 1});
+    presentation::add_rule(p, {3, 0, 3, 0}, {3, 0, 3});
+
+    KnuthBendix kb1(p);
+    REQUIRE(kb1.gilman_digraph().number_of_nodes() == 16);
+    REQUIRE(kb1.gilman_digraph()
+            == to_action_digraph<size_t>(16,
+                                         {{3,
+                                           1,
+                                           UNDEFINED,
+                                           2,
+                                           UNDEFINED,
+                                           UNDEFINED,
+                                           UNDEFINED,
+                                           UNDEFINED,
+                                           UNDEFINED,
+                                           UNDEFINED,
+                                           UNDEFINED},
+                                          {6, UNDEFINED, UNDEFINED, 12},
+                                          {7, UNDEFINED},
+                                          {4, 5, UNDEFINED, 9},
+                                          {},
+                                          {8},
+                                          {UNDEFINED, 11},
+                                          {UNDEFINED, 14, UNDEFINED, 15},
+                                          {},
+                                          {10},
+                                          {UNDEFINED, 14},
+                                          {},
+                                          {13},
+                                          {UNDEFINED}}));
+
+    presentation::add_rule(p, {1}, {3});
+    KnuthBendix kb2(p);
+
+    REQUIRE(kb2.gilman_digraph()
+            == to_action_digraph<size_t>(4,
+                                         {{2,
+                                           1,
+                                           UNDEFINED,
+                                           UNDEFINED,
+                                           UNDEFINED,
+                                           UNDEFINED,
+                                           UNDEFINED,
+                                           UNDEFINED,
+                                           UNDEFINED,
+                                           UNDEFINED,
+                                           UNDEFINED},
+                                          {},
+                                          {3}}));
+
+    auto ntc = knuth_bendix::non_trivial_classes(kb1, kb2);
+
+    std::vector<std::string> expected = {"b",
+                                         "d",
+                                         "ab",
+                                         "ad",
+                                         "ba",
+                                         "da",
+                                         "bd",
+                                         "aba",
+                                         "ada",
+                                         "bab",
+                                         "dab",
+                                         "dad",
+                                         "bda",
+                                         "adab"};
+    std::sort(expected.begin(), expected.end());
+    std::sort(ntc[0].begin(), ntc[0].end());
+    REQUIRE(ntc[0] == expected);
   }
 
   ////////////////////////////////////////////////////////////////////////

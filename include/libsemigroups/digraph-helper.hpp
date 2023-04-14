@@ -206,8 +206,8 @@ namespace libsemigroups {
     template <typename T, typename S>
     std::pair<node_type<T>, S> last_node_on_path_nc(ActionDigraph<T> const& ad,
                                                     node_type<T> from,
-                                                    S const&     first,
-                                                    S const& last) noexcept {
+                                                    S            first,
+                                                    S last) noexcept {
       auto         it   = first;
       node_type<T> prev = from;
       node_type<T> to   = from;
@@ -244,14 +244,19 @@ namespace libsemigroups {
     template <typename T, typename S>
     std::pair<node_type<T>, S> last_node_on_path(ActionDigraph<T> const& ad,
                                                  node_type<T>            from,
-                                                 S const&                first,
-                                                 S const&                last) {
+                                                 S                       first,
+                                                 S                       last) {
       auto         it   = first;
       node_type<T> prev = from;
       node_type<T> to   = from;
+      size_t const n    = ad.out_degree();
       for (; it < last && to != UNDEFINED; ++it) {
         prev = to;
-        to   = ad.neighbor(to, *it);
+        if (*it >= n) {
+          to = UNDEFINED;
+        } else {
+          to = ad.unsafe_neighbor(to, *it);
+        }
       }
       if (it != last || to == UNDEFINED) {
         LIBSEMIGROUPS_ASSERT(prev != UNDEFINED);

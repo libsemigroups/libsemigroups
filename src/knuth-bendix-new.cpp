@@ -39,6 +39,9 @@
 #include "libsemigroups/string.hpp"     // for is_prefix, maximum_common_prefix
 #include "libsemigroups/timer.hpp"      // for Timer
 #include "libsemigroups/types.hpp"      // for word_type
+#include "libsemigroups/words.hpp"      // for to_strings
+
+#include "rx/ranges.hpp"
 
 namespace libsemigroups {
 
@@ -1016,63 +1019,51 @@ namespace libsemigroups {
 #endif
   namespace knuth_bendix {
 
-    template <typename Range>
-    std::vector<std::vector<std::string>> partition(ToddCoxeter& tc, Range r) {
-      static_assert(std::is_same_v<std::decay_t<typename Range::output_type>,
-                                   std::string>);
-      using return_type = std::vector<std::vector<std::string>>;
+    std::vector<std::vector<std::string>>
+    non_trivial_classes(KnuthBendix& kb1, KnuthBendix& kb2) {
+      using rx::operator|;
 
-      return_type result(r.count(), std::vector<std::string>());
-
-      std::unordered_map<std::string, size_t> map;
-      size_t                                  index = 0;
-
-      while (!r.at_end()) {
-        auto next           = r.get();
-        auto [it, inserted] = map.emplace(next, index);
-        size_t val          = it->second;
-        if (inserted) {
-          index++;
-        }
-        result[val].push_back(next);
-        r.next();
-      }
-      return result;
-    }
-
-    ActionDigraph<size_t> non_trivial_classes(KnuthBendix& kb1,
-                                              KnuthBendix& kb2) {
       // It is intended that kb2 is defined using the same presentation as kb1
       // and some additional rules. The output might still be meaningful if
       // this is not the case.
       if (kb1.size() == POSITIVE_INFINITY && kb2.size() != POSITIVE_INFINITY) {
-        LIBSEMIGROUPS_EXCEPTION_V3("TODO");
-      } else if (kb1.size() != POSITIVE_INFINITY) {
-        // TODO loop over normal forms in kb1 and group them according to their
-        // normal_form in kb2
-        LIBSEMIGROUPS_EXCEPTION_V3("not yet impled");
+        LIBSEMIGROUPS_EXCEPTION_V3(
+            "the 1st argument defines an infinite semigroup, and the 2nd "
+            "argument defines a finite semigroup, so there is at least one "
+            "infinite non-trivial class!");
+      } else if (kb1.presentation().alphabet()
+                 != kb2.presentation().alphabet()) {
+        // It might be possible to handle this case too, but doesn't seem worth
+        // it at present
+        LIBSEMIGROUPS_EXCEPTION_V3("the arguments must have presentations with "
+                                   "the same alphabets, found {} and {}",
+                                   kb1.presentation().alphabet(),
+                                   kb2.presentation().alphabet());
       }
-      // kb1 and kb2 are infinite
+
       // We construct the ActionDigraph `ad` obtained by subtracting all of the
       // edges from the Gilman graph of kb2 from the Gilman graph of kb1. The
       // non-trivial classes are finite if and only if `ad` is acyclic. It
       // would be possible to do this without actually constructing `ad` but
       // constructing `ad` is simpler, and so we do that for now.
 
-      if (kb1.presentation().alphabet().size()
-          != kb2.presentation().alphabet().size()) {
-        // It might be possible to handle this case too, but doesn't seem worth
-        // it at present
-        LIBSEMIGROUPS_EXCEPTION_V3("TODO");
-      }
-
       auto g1 = kb1.gilman_digraph();
       auto g2 = kb2.gilman_digraph();
 
+      LIBSEMIGROUPS_ASSERT(g1.number_of_nodes() > 0);
+      LIBSEMIGROUPS_ASSERT(g2.number_of_nodes() > 0);
+
+      if (g1.number_of_nodes() < g2.number_of_nodes()) {
+        LIBSEMIGROUPS_EXCEPTION_V3(
+            "the Gilman digraph of the 1st argument must have at least as many "
+            "nodes as the Gilman digraph of the 2nd argument, found {} nodes "
+            "and {} nodes",
+            g1.number_of_nodes(),
+            g2.number_of_nodes());
+      }
+
       // We need to obtain a mappings from the nodes of g1 to g2 and vice
       // versa.
-      // TODO exception/assert that if either g1 or g2 has no nodes
-      // TODO exception/assert that if either g2 has more nodes than g1
 
       using node_type = decltype(g1)::node_type;
 
@@ -1095,18 +1086,19 @@ namespace libsemigroups {
         }
       }
 
-      // We do a depth first search  simultaneously for cycles, and edges E
-      // in g2 not in g1. Pre order for cycle detection, post order for "can we
+      // We do a depth first search simultaneously for cycles, and edges E
+      // in g1 not in g2. Pre order forcycle detection, post order for "can we
       // reach a node incident to an edge in E" and "number of paths through a
       // node is infinite"
-      size_t const      N = g2.number_of_nodes();
+      size_t const N = g1.number_of_nodes();
+      // can_reach[v] == true if there is a path from v to a node incident to
+      // an edge in g1 that's not in g2.
       std::vector<bool> can_reach(N, false);
       std::vector<bool> inf_paths(N, false);
       std::vector<bool> seen(N, false);
 
       std::stack<node_type> stck;
       stck.push(0);
-      seen[0] = true;
 
       while (!stck.empty()) {
         auto v = stck.top();
@@ -1116,17 +1108,94 @@ namespace libsemigroups {
           v -= N;
           for (auto e : g1.labels()) {
             auto ve = g1.unsafe_neighbor(v, e);
-            can_reach[v] |= can_reach[ve];
-            inf_paths[v] |= inf_paths[ve];
-            if (can_reach[v] && inf_paths[v]) {
-              LIBSEMIGROUPS_EXCEPTION_V3("TODO");
+            // TODO clean up
+            if (ve != UNDEFINED) {
+              can_reach[v] = (can_reach[v] || can_reach[ve]);
+              if (can_reach[ve]) {
+                inf_paths[v] = inf_paths[ve];
+              }
+              if (can_reach[v] && inf_paths[v]) {
+                LIBSEMIGROUPS_EXCEPTION_V3(
+                    "there is an infinite non-trivial class!");
+              }
             }
           }
         } else {
+          seen[v] = true;
+          stck.push(v + N);  // so we can tell when all of the descendants of v
+                             // have been processed out of the stack
+          if (to_g2[v] == UNDEFINED) {
+            can_reach[v] = true;
+          }
           for (auto e : g1.labels()) {
+            auto ve1 = g1.unsafe_neighbor(v, e);
+            if (ve1 != UNDEFINED) {
+              // Check if (v, e, ve1) corresponds to an edge in g2
+              if (!can_reach[v]) {
+                auto ve2 = g2.unsafe_neighbor(to_g2[v], e);
+                if (ve2 != UNDEFINED) {
+                  // edges (v, e, ve1) and (to_g2[v], e, ve2) exist, so
+                  // there's an edge in g1 not in g2 if the targets of these
+                  // edges do not correspond to each other.
+                  can_reach[v] = (ve1 != to_g1[ve2]);
+                } else {
+                  // There's no edge labelled by e incident to the node
+                  // corresponding to v in g2, but there is such an edge in g1
+                  // and so (v, e, ve1) is in g1 but not g2.
+                  can_reach[v] = true;
+                }
+              }
+              if (seen[ve1]) {
+                // cycle detected
+                inf_paths[v] = true;
+              } else {
+                stck.push(ve1);
+              }
+            }
           }
         }
       }
+
+      // If we reach here, then the appropriate portion of g1 is acyclic, and
+      // so all we do is enumerate the paths in that graph
+
+      // Construct the "can_reach" subgraph of g1, could use a WordGraphView
+      // here instead (but these don't yet exist) TODO
+      ActionDigraph<size_t> ad(g1.number_of_nodes(), g1.out_degree());
+
+      for (auto v : ad.nodes()) {
+        if (can_reach[v]) {
+          for (auto e : ad.labels()) {
+            auto ve = g1.unsafe_neighbor(v, e);
+            if (ve != UNDEFINED && can_reach[ve]) {
+              ad.add_edge_nc(v, ve, e);
+            }
+          }
+        }
+      }
+
+      Paths paths(ad);
+      // We only want those paths that pass through at least one of the
+      // edges in g1 but not g2. Hence we require the `filter` in the next
+      // expression.
+      auto ntc
+          = partition(kb2,
+                      (paths.from(0) | rx::filter([&g2](word_type const& path) {
+                         return action_digraph_helper::last_node_on_path(
+                                    g2, 0, path.cbegin(), path.cend())
+                                    .second
+                                != path.cend();
+                       })
+                       | to_strings(kb1.presentation().alphabet())));
+      // The check in the next loop could be put into the lambda passed to
+      // filter above, but then we'd have to convert `path` to a string, and
+      // then discard the string, so better to do it here. Note that the
+      // normal forms in `kb2` never contain an edge in g1 \ g2 and so we must
+      // add in every normal form.
+      for (auto& klass : ntc) {
+        klass.push_back(kb2.normal_form(klass[0]));
+      }
+      return ntc;
     }
   }  // namespace knuth_bendix
 
