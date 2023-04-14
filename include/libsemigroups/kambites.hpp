@@ -25,7 +25,7 @@
 // for solving the word problem in small overlap monoids, and a novel algorithm
 // for computing normal forms in small overlap monoids, by Maria Tsalakou.
 
-// TODO(later)
+// TODO(now)
 // * check code coverage
 // * check iwyu
 // * check const
@@ -55,11 +55,12 @@
 #include "order.hpp"    // for lexicographical_compare
 #include "present.hpp"  // for Presentation
 #include "string-view.hpp"
-#include "string.hpp"   // for is_prefix
-#include "types.hpp"    // for word_type, tril, letter_type
-#include "uf.hpp"       // for Duf<>
-#include "ukkonen.hpp"  // for Ukkonen
-#include "words.hpp"    // for word_to_string
+#include "string.hpp"           // for is_prefix
+#include "to-presentation.hpp"  // for to_presentation
+#include "types.hpp"            // for word_type, tril, letter_type
+#include "uf.hpp"               // for Duf<>
+#include "ukkonen.hpp"          // for Ukkonen
+#include "words.hpp"            // for word_to_string
 
 namespace libsemigroups {
 
@@ -166,6 +167,12 @@ namespace libsemigroups {
                                    _presentation.rules.cbegin(),
                                    _presentation.rules.cend());
     }
+
+    // TODO rval ref version
+    // TODO init version
+    template <typename OtherWord>
+    Kambites(Presentation<OtherWord> const& p)
+        : Kambites(to_presentation<value_type>(p)) {}
 
     Kambites& init(Presentation<value_type> const& p) {
       p.validate();

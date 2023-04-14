@@ -50,7 +50,9 @@ namespace libsemigroups {
   //!
   //! \exceptions
   //! \no_libsemigroups_except
-  template <typename WordOutput>
+  template <typename WordOutput>  // TODO why not just to_presentation with no
+                                  // template WordOutput, always use word_type,
+                                  // and can be converted after if desirable
   Presentation<WordOutput> to_presentation(FroidurePinBase& fp) {
     Presentation<WordOutput> p;
     p.alphabet(fp.number_of_generators());

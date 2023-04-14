@@ -755,7 +755,7 @@ namespace libsemigroups {
       return _standardized;
     }
 
-    bool contains(word_type const& lhs, word_type const& rhs) override;
+    bool contains(word_type const& lhs, word_type const& rhs);
 
     bool is_standardized(order val) const;
     bool is_standardized() const;
@@ -768,6 +768,49 @@ namespace libsemigroups {
 
     // Returns true if anything changed
     bool standardize(order val);
+
+    class_index_type word_to_class_index(word_type const& w) {
+      validate_word(w);
+      return word_to_class_index_impl(w);
+    }
+
+    // TODO  remove since it falls right through
+    size_t number_of_classes() {
+      return number_of_classes_impl();
+    }
+
+    word_type class_index_to_word(class_index_type i) {
+      if (i >= number_of_classes()) {
+        LIBSEMIGROUPS_EXCEPTION_V3("invalid class index, expected a value in "
+                                   "the range [0, {}), found {}",
+                                   number_of_classes(),
+                                   i);
+      }
+      return class_index_to_word_impl(i);
+    }
+
+    tril const_contains(word_type const& u, word_type const& v) const {
+      if (u == v) {
+        return tril::TRUE;
+      }
+      class_index_type uu, vv;
+      try {
+        uu = const_word_to_class_index(u);
+        vv = const_word_to_class_index(v);
+      } catch (LibsemigroupsException const& e) {
+        REPORT_VERBOSE_DEFAULT("ignoring exception:\n%s", e.what());
+        return tril::unknown;
+      }
+      if (uu == UNDEFINED || vv == UNDEFINED) {
+        return tril::unknown;
+      } else if (uu == vv) {
+        return tril::TRUE;
+      } else if (finished()) {
+        return tril::FALSE;
+      } else {
+        return tril::unknown;
+      }
+    }
 
    private:
     ////////////////////////////////////////////////////////////////////////
@@ -784,14 +827,14 @@ namespace libsemigroups {
     // CongruenceInterface - pure virtual member functions - private
     ////////////////////////////////////////////////////////////////////////
 
-    word_type class_index_to_word_impl(class_index_type i) override;
+    // TODO all of these should be public and called _no_checks
+    word_type class_index_to_word_impl(class_index_type i);
 
-    size_t number_of_classes_impl() override;
+    size_t number_of_classes_impl();
 
-    class_index_type word_to_class_index_impl(word_type const& w) override;
+    class_index_type word_to_class_index_impl(word_type const& w);
 
-    class_index_type
-    const_word_to_class_index(word_type const& w) const override;
+    class_index_type const_word_to_class_index(word_type const& w) const;
 
     void validate_word(word_type const& w) const override;
 

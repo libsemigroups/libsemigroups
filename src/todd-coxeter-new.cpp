@@ -440,7 +440,7 @@ namespace libsemigroups {
         && word_graph().number_of_nodes_active() == 1) {
       return lhs == rhs;
     }
-    return v3::CongruenceInterface::contains(lhs, rhs);
+    return lhs == rhs || word_to_class_index(lhs) == word_to_class_index(rhs);
   }
 
   bool ToddCoxeter::is_standardized(order val) const {

@@ -105,16 +105,16 @@ namespace libsemigroups {
       //!
       //! \warning The problem of determining the return value of this function
       //! is undecidable in general, and this function may never terminate.
-      virtual bool contains(word_type const& u, word_type const& v) {
-        return u == v || word_to_class_index(u) == word_to_class_index(v);
-      }
+      // virtual bool contains(word_type const& u, word_type const& v) {
+      //   return u == v || word_to_class_index(u) == word_to_class_index(v);
+      // }
 
-      bool contains_with_arg_checks(word_type const& lhs,
-                                    word_type const& rhs) {
-        validate_word(lhs);
-        validate_word(rhs);
-        return contains(lhs, rhs);
-      }
+      // bool contains_with_arg_checks(word_type const& lhs,
+      //                               word_type const& rhs) {
+      //   validate_word(lhs);
+      //   validate_word(rhs);
+      //   return contains(lhs, rhs);
+      // }
 
       // Same as the above but only uses the so far computed information to
       // answer. In particular, does not call this->run().
@@ -139,7 +139,8 @@ namespace libsemigroups {
       //!
       //! \complexity
       //! Linear in `u.size() + v.size()`.
-      virtual tril const_contains(word_type const& u, word_type const& v) const;
+      // virtual tril const_contains(word_type const& u, word_type const& v)
+      // const;
 
       //! Compare the indices of the classes containing two words.
       //!
@@ -171,10 +172,9 @@ namespace libsemigroups {
       //!   return word_to_class_index(u) < word_to_class_index(v);
       //! }
       //! \endcode
-      virtual bool less(word_type const& u, word_type const& v) {
-        return word_to_class_index(u) < word_to_class_index(v);
-      }
-      // TODO(later) const_less
+      // virtual bool less(word_type const& u, word_type const& v) {
+      //   return word_to_class_index(u) < word_to_class_index(v);
+      // }
 
       /////////////////////////////////////////////////////////////////////////
       // CongruenceInterface - non-virtual functions - public
@@ -211,7 +211,7 @@ namespace libsemigroups {
       //! \note
       //! word_to_class_index() and class_index_to_word() are mutually inverse
       //! functions.
-      word_type class_index_to_word(class_index_type i);
+      // word_type class_index_to_word(class_index_type i);
 
       //! Convert a word into the index of the class containing it.
       //!
@@ -244,7 +244,7 @@ namespace libsemigroups {
       //! \note
       //! word_to_class_index() and class_index_to_word() are mutually inverse
       //! functions.
-      class_index_type word_to_class_index(word_type const& w);
+      // class_index_type word_to_class_index(word_type const& w);
 
       //! Returns a const iterator pointing to the first non-singleton class.
       //!
@@ -384,7 +384,7 @@ namespace libsemigroups {
       //! \par Parameters
       //! (None)
       // FIXME since this passes right through it shouldn't exist at all
-      size_t number_of_classes();
+      // size_t number_of_classes();
 
       // TODO add_pair with checks
       void add_pair(word_type const& u, word_type const& v);
@@ -419,6 +419,10 @@ namespace libsemigroups {
         return _generating_pairs.cend();
       }
 
+      auto const& generating_pairs() const noexcept {
+        return _generating_pairs;
+      }
+
       size_t number_of_generating_pairs() const noexcept {
         return _generating_pairs.size();
       }
@@ -429,11 +433,12 @@ namespace libsemigroups {
       /////////////////////////////////////////////////////////////////////////
 
       // TODO _impl -> no_checks and make them public
-      virtual word_type class_index_to_word_impl(class_index_type i) = 0;
+      // virtual word_type class_index_to_word_impl(class_index_type i) = 0;
       // TODO _impl -> nothing
-      virtual size_t number_of_classes_impl() = 0;
+      // virtual size_t number_of_classes_impl() = 0;
       // TODO _impl -> no_checks and make them public
-      virtual class_index_type word_to_class_index_impl(word_type const& w) = 0;
+      // virtual class_index_type word_to_class_index_impl(word_type const& w) =
+      // 0;
 
       virtual void validate_word(word_type const& w) const = 0;
 
@@ -444,8 +449,8 @@ namespace libsemigroups {
       // const_word_to_class_index is private, because the answer returned
       // depends on the state of the object, but word_to_class_index does not
       // (i.e the return value should not change).
-      virtual class_index_type
-      const_word_to_class_index(word_type const&) const;
+      // virtual class_index_type
+      // const_word_to_class_index(word_type const&) const;
     };
   }  // namespace v3
 }  // namespace libsemigroups
