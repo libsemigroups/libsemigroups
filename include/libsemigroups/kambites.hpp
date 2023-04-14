@@ -74,7 +74,7 @@ namespace libsemigroups {
   //! This page describes the implementation in the class
   //! Kambites.
   // TODO(later) example
-  template <typename Word>
+  template <typename Word = detail::MultiStringView>
   class Kambites : public Runner {
    public:
     ////////////////////////////////////////////////////////////////////////

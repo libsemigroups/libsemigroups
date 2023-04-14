@@ -619,6 +619,15 @@ namespace libsemigroups {
     [[nodiscard]] uint64_t size();
 
     [[nodiscard]] bool equal_to(std::string const&, std::string const&);
+    [[nodiscard]] bool contains(word_type const& u, word_type const& v) {
+      return equal_to(to_string(presentation(), u),
+                      to_string(presentation(), v));
+    }
+
+    [[nodiscard]] bool contains(std::initializer_list<letter_type> u,
+                                std::initializer_list<letter_type> v) {
+      return contains(word_type(u), word_type(v));
+    }
 
     // No in-place version just use rewrite instead, this only exists so that
     // run is called.

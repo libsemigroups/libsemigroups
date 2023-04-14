@@ -126,27 +126,30 @@ namespace libsemigroups {
     auto run_time = duration_cast<nanoseconds>(high_resolution_clock::now()
                                                - this->_stats.start_time);
 
-    report_default("{}: nodes {:>12} (active) | {:>12} (killed) | "
-                   "{:>12} (defined)\n",
-                   _prefix,
-                   group_digits(active),
-                   group_digits(killed),
-                   group_digits(defined));
-    report_default("{}: diff  {:>12} (active) | {:>12} (killed) | "
-                   "{:>12} (defined)\n",
-                   _prefix,
-                   signed_group_digits(active - _stats.prev_active_nodes),
-                   signed_group_digits(killed - _stats.prev_nodes_killed),
-                   signed_group_digits(defined - _stats.prev_nodes_defined));
-    report_default("{}: time  {:>12} (total)  | {:>10}/s (killed) | {:>10}/s "
-                   "(defined)\n",
-                   _prefix,
-                   string_time(run_time),
-                   group_digits(std::pow(10, 9) * static_cast<double>(killed)
-                                / run_time.count()),
-                   group_digits(std::pow(10, 9) * static_cast<double>(defined)
-                                / run_time.count()));
-    report_no_prefix("{:-<93}\n", "");
+    auto msg = fmt_default("{}: nodes {:>12} (active) | {:>12} (killed) | "
+                           "{:>12} (defined)\n",
+                           _prefix,
+                           group_digits(active),
+                           group_digits(killed),
+                           group_digits(defined));
+    msg += fmt_default(
+        "{}: diff  {:>12} (active) | {:>12} (killed) | "
+        "{:>12} (defined)\n",
+        _prefix,
+        signed_group_digits(active - _stats.prev_active_nodes),
+        signed_group_digits(killed - _stats.prev_nodes_killed),
+        signed_group_digits(defined - _stats.prev_nodes_defined));
+    msg += fmt_default(
+        "{}: time  {:>12} (total)  | {:>10}/s (killed) | {:>10}/s "
+        "(defined)\n",
+        _prefix,
+        string_time(run_time),
+        group_digits(std::pow(10, 9) * static_cast<double>(killed)
+                     / run_time.count()),
+        group_digits(std::pow(10, 9) * static_cast<double>(defined)
+                     / run_time.count()));
+    msg += fmt::format("{:-<93}\n", "");
+    report_no_prefix(msg);
     stats_check_point();
   }
 

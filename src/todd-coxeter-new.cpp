@@ -492,9 +492,10 @@ namespace libsemigroups {
           "there are infinitely many classes in the congruence and "
           "Todd-Coxeter will never terminate");
     }
-    report_no_prefix("{:-<93}\n", "");
-    report_default("ToddCoxeter: using {} strategy . . .\n", strategy());
-    report_no_prefix("{:-<93}\n", "");
+    auto msg = fmt::format("{:-<93}\n", "");
+    msg += fmt_default("ToddCoxeter: using {} strategy . . .\n", strategy());
+    msg += fmt::format("{:-<93}\n", "");
+    report_no_prefix(msg);
 
     init_run();
 

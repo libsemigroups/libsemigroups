@@ -34,6 +34,7 @@
 #include <type_traits>  // for invoke_result_t
 #include <vector>       // for vector
 
+#include "constants.hpp"  // for UNDEFINED
 #include "debug.hpp"      // for LIBSEMIGROUPS_ASSERT
 #include "exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
 #include "report.hpp"     // for REPORT_DEFAULT, REPORT_TIME
@@ -42,8 +43,11 @@
 #include "timer.hpp"      // for Timer
 
 namespace libsemigroups {
+  // TODO remove from detail namespace
+  // TODO doc
+  // TODO template the type of the Runners contained within
   namespace detail {
-    class Race final {
+    class Race {
      public:
       // Construct an empty Race object, with maximum number of threads set to
       // std::thread::hardware_concurrency.
@@ -76,11 +80,16 @@ namespace libsemigroups {
       // the one that finishes first. The losers are deleted.
       std::shared_ptr<Runner> winner() {
         run();
+        return _runners[_winner];
+      }
+
+      size_t winner_index() {
+        run();
         return _winner;
       }
 
       bool finished() const noexcept {
-        return _winner != nullptr;
+        return _winner != UNDEFINED;
       }
 
       // Adds a Runner to the race, throws if the race is already over.
@@ -115,7 +124,7 @@ namespace libsemigroups {
       }
 
       // std::vector::size is noexcept
-      size_t number_runners() const noexcept {
+      size_t number_of_runners() const noexcept {
         return _runners.size();
       }
 
@@ -143,11 +152,21 @@ namespace libsemigroups {
         if (empty()) {
           LIBSEMIGROUPS_EXCEPTION("no runners given, cannot run_until");
         }
-        while (!func() && _winner == nullptr) {
+        while (!func() && _winner == UNDEFINED) {
           // if _winner != nullptr, then the race is over.
           run_for(check_interval);
           check_interval *= 2;
         }
+      }
+
+      template <typename T>
+      bool has() const {
+        return find_runner<T>() != nullptr;
+      }
+
+      template <typename T>
+      bool winner_is() const {
+        return typeid(_winner) == typeid(T);
       }
 
       template <typename T>
@@ -188,20 +207,20 @@ namespace libsemigroups {
             "the result of calling the template parameter TCallable "
             "must be void");
         LIBSEMIGROUPS_ASSERT(!empty());
-        if (_winner == nullptr) {
+        if (_winner == UNDEFINED) {
           size_t nr_threads = std::min(_runners.size(), _max_threads);
           if (nr_threads == 1) {
             REPORT_DEFAULT("using 0 additional threads\n");
             detail::Timer tmr;
             func(_runners.at(0));
-            _winner = _runners.at(0);
+            _winner = 0;
             REPORT_TIME(tmr);
             return;
           }
           for (size_t i = 0; i < _runners.size(); ++i) {
             if (_runners[i]->finished()) {
               REPORT_DEFAULT("using 0 additional threads\n");
-              _winner = _runners[i];
+              _winner = i;
               REPORT_DEFAULT("#%d is already finished!\n", i);
               // delete the other runners?
               return;
@@ -252,25 +271,15 @@ namespace libsemigroups {
             t.at(i).join();
           }
           REPORT_TIME(tmr);
-          for (auto method = _runners.begin(); method < _runners.end();
-               ++method) {
-            if ((*method)->finished()) {
-              LIBSEMIGROUPS_ASSERT(_winner == nullptr);
-              _winner = *method;
-              size_t tid
-                  = THREAD_ID_MANAGER.tid(tids.at(method - _runners.begin()));
-              REPORT_DEFAULT("#%d is the winner!\n", tid);
+          size_t const n = _runners.size();
+          for (size_t r = 0; r < n; ++r) {
+            if (_runners[r]->finished()) {
+              LIBSEMIGROUPS_ASSERT(_winner == UNDEFINED);
+              _winner = r;
+              report_default("Thread {} is the winner!\n",
+                             THREAD_ID_MANAGER.tid(tids.at(r)));
               break;
             }
-          }
-          if (_winner != nullptr) {
-            for (auto rnnr : _runners) {
-              if (rnnr != _winner) {
-                rnnr.reset();
-              }
-            }
-            _runners.clear();
-            _runners.push_back(_winner);
           }
         }
       }
@@ -278,7 +287,7 @@ namespace libsemigroups {
       std::vector<std::shared_ptr<Runner>> _runners;
       size_t                               _max_threads;
       std::mutex                           _mtx;
-      std::shared_ptr<Runner>              _winner;
+      size_t                               _winner;
     };
   }  // namespace detail
 }  // namespace libsemigroups

@@ -363,6 +363,7 @@ namespace libsemigroups {
   // KnuthBendix - attributes - public
   //////////////////////////////////////////////////////////////////////////
 
+  // TODO rename number_of_classes
   uint64_t KnuthBendix::size() {
     if (is_obviously_infinite(*this)) {
       return POSITIVE_INFINITY;
@@ -647,6 +648,13 @@ namespace libsemigroups {
         prefixes_string(prefixes, rule.first, n);
       }
 
+      std::vector<std::string> tmp(prefixes.size(), "");
+      for (auto const& p : prefixes) {
+        tmp[p.second] = p.first;
+      }
+
+      fmt::print(detail::to_string(tmp));
+
       _gilman_digraph.add_nodes(prefixes.size());
       _gilman_digraph.add_to_out_degree(presentation().alphabet().size());
 
@@ -657,9 +665,8 @@ namespace libsemigroups {
           if (it != prefixes.end()) {
             _gilman_digraph.add_edge(p.second, it->second, i);
           } else {
-            if (!(rules | rx::any_of([&s](auto const& rule) {
-                    return is_subword(rule.first, s);
-                  }))) {
+            auto t = rewrite(s);
+            if (t == s) {
               while (!s.empty()) {
                 s  = std::string(s.begin() + 1, s.end());
                 it = prefixes.find(s);

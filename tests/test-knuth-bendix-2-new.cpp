@@ -1242,4 +1242,5 @@ namespace libsemigroups {
     kb.run();
     REQUIRE(kb.confluent());
   }
+
 }  // namespace libsemigroups

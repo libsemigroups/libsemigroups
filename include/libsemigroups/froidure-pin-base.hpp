@@ -1334,6 +1334,10 @@ namespace libsemigroups {
       return const_normal_form_iterator(this, current_size());
     }
 
+    auto normal_forms() const {
+      return rx::iterator_range(cbegin_normal_forms(), cend_normal_forms());
+    }
+
    private:
     ////////////////////////////////////////////////////////////////////////
     // FroidurePin - constructor helpers - private

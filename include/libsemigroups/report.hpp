@@ -543,6 +543,8 @@ namespace libsemigroups {
     report_no_prefix(s.c_str(), std::forward<Args>(args)...);
   }
 
+  // TODO use fmt_default
+  // TODO write a this_thread_id function
   template <typename... Args>
   void report_default(char const* s, Args&&... args) {
     if (report::should_report()) {
@@ -550,6 +552,16 @@ namespace libsemigroups {
       std::string prefix = fmt::format("#{}: ", tid);
       report_no_prefix(prefix + s, std::forward<Args>(args)...);
     }
+  }
+
+  template <typename... Args>
+  std::string fmt_default(char const* s, Args&&... args) {
+    if (report::should_report()) {
+      uint64_t tid = THREAD_ID_MANAGER.tid(std::this_thread::get_id());
+      return fmt::format(
+          std::string("#{}: ") + s, tid, std::forward<Args>(args)...);
+    }
+    return "";
   }
 
   namespace detail {

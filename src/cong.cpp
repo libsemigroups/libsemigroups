@@ -26,7 +26,6 @@
 #include "libsemigroups/cong-pair.hpp"  // for KnuthBendixCongruenceByPairs
 #include "libsemigroups/debug.hpp"      // for LIBSEMIGROUPS_ASSERT
 #include "libsemigroups/exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
-#include "libsemigroups/fpsemi.hpp"     // for FpSemigroup
 #include "libsemigroups/froidure-pin-base.hpp"  // for FroidurePinBase
 #include "libsemigroups/kambites.hpp"           // for Kambites
 #include "libsemigroups/knuth-bendix.hpp"       // for KnuthBendix_
@@ -51,6 +50,7 @@ namespace libsemigroups {
   Congruence::Congruence(congruence_kind                  type,
                          std::shared_ptr<FroidurePinBase> S)
       : Congruence(type) {
+    _race.max_threads(POSITIVE_INFINITY);
     auto tc1
         = std::make_shared<ToddCoxeter>(type, to_presentation<word_type>(*S));
     _race.add_runner(tc1);

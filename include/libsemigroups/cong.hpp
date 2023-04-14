@@ -352,6 +352,14 @@ namespace libsemigroups {
       return *this;
     }
 
+    void validate_word(word_type const&) const override {
+      // TODO impl, or remove from CongruenceInterface
+    }
+
+    size_t number_of_runners() const noexcept {
+      return _race.number_of_runners();
+    }
+
    private:
     //////////////////////////////////////////////////////////////////////////
     // CongruenceInterface - pure virtual member functions - private
@@ -375,6 +383,7 @@ namespace libsemigroups {
       return _race.finished();
     }
 
+    // TODO require init_todd_coxeter + init_knuth_bendix also
     void init_kambites() {
       auto k = kambites();
       LIBSEMIGROUPS_ASSERT(k != nullptr);
