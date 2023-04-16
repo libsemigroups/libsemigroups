@@ -256,7 +256,7 @@ namespace libsemigroups {
     }
 
     // For each coincidence (x, y), unite each out neighbour of x with the
-    // corresponding out neighbour of y, unless their are missing edges
+    // corresponding out neighbour of y, unless there are missing edges
     while (!coincidences.empty()) {
       node_type x, y, x_nb, y_nb, x_nb_rep, y_nb_rep;
       std::tie(x, y) = coincidences.top();
