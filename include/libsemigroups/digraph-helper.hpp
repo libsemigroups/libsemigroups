@@ -877,23 +877,21 @@ namespace libsemigroups {
 
     // TODO doc
     // TODO tests
-    template <typename T>
-    size_t number_of_nodes_reachable_from(
-        ActionDigraph<T> const&              ad,
-        typename ActionDigraph<T>::node_type source) {
-      using node_type = typename ActionDigraph<T>::node_type;
+    // TODO return a range here not an unordered_set
+    template <typename Node>
+    std::unordered_set<Node>
+    nodes_reachable_from(ActionDigraph<Node> const&              ad,
+                         typename ActionDigraph<Node>::node_type source) {
+      using node_type = typename ActionDigraph<Node>::node_type;
 
       std::unordered_set<node_type> seen;
       std::stack<node_type>         stack;
       stack.push(source);
 
-      size_t count = 0;
-
       while (!stack.empty()) {
         auto n = stack.top();
         stack.pop();
         if (seen.insert(n).second) {
-          ++count;
           for (auto it = ad.cbegin_edges(n); it != ad.cend_edges(n); ++it) {
             if (*it != UNDEFINED) {
               stack.push(*it);
@@ -901,8 +899,18 @@ namespace libsemigroups {
           }
         }
       }
-      return count;
+      return seen;
     }
+
+    // TODO doc
+    // TODO tests
+    template <typename T>
+    size_t number_of_nodes_reachable_from(
+        ActionDigraph<T> const&              ad,
+        typename ActionDigraph<T>::node_type source) {
+      return nodes_reachable_from(ad, source).size();
+    }
+
   }  // namespace action_digraph_helper
 }  // namespace libsemigroups
 #endif  // LIBSEMIGROUPS_DIGRAPH_HELPER_HPP_

@@ -232,6 +232,7 @@ namespace libsemigroups {
       : CongruenceInterface(knd),
         _settings(),  // TODO init all mems
         _active_rules(),
+        _gen_pairs_initted(),
         _gilman_digraph(),
         _inactive_rules(),
         _presentation(),
@@ -245,6 +246,7 @@ namespace libsemigroups {
 
     CongruenceInterface::init(knd);
     _settings.init();
+    _gen_pairs_initted = false;
     _gilman_digraph.init(0, 0);
     _confluent                    = false;
     _confluence_known             = false;
@@ -347,6 +349,7 @@ namespace libsemigroups {
     return *this;
   }
 
+  // TODO reduce code dupl with prev func
   KnuthBendix& KnuthBendix::private_init(congruence_kind             knd,
                                          Presentation<std::string>&& p,
                                          bool call_init) {
@@ -381,14 +384,29 @@ namespace libsemigroups {
   bool KnuthBendix::equal_to(std::string const& u, std::string const& v) {
     presentation().validate_word(u.cbegin(), u.cend());
     presentation().validate_word(v.cbegin(), v.cend());
+
     if (u == v) {
       return true;
     }
-    external_string_type uu = rewrite(u);
-    external_string_type vv = rewrite(v);
+
+    external_string_type uu = u;
+    external_string_type vv = v;
+
+    if (kind() == congruence_kind::left) {
+      std::reverse(uu.begin(), uu.end());
+      std::reverse(vv.begin(), vv.end());
+    }
+
+    add_octo(uu);
+    add_octo(vv);
+
+    rewrite_inplace(uu);
+    rewrite_inplace(vv);
+
     if (uu == vv) {
       return true;
     }
+
     run();
     external_to_internal_string(uu);
     external_to_internal_string(vv);
@@ -403,17 +421,22 @@ namespace libsemigroups {
     return rewrite(w);
   }
 
-  //////////////////////////////////////////////////////////////////////////
-  // KnuthBendix public methods for rules and rewriting
-  //////////////////////////////////////////////////////////////////////////
-
   void KnuthBendix::rewrite_inplace(external_string_type& w) const {
+    if (kind() == congruence_kind::left) {
+      std::reverse(w.begin(), w.end());
+    }
+    add_octo(w);
     external_to_internal_string(w);
     internal_rewrite(w);
     internal_to_external_string(w);
+    rm_octo(w);
+    if (kind() == congruence_kind::left) {
+      std::reverse(w.begin(), w.end());
+    }
   }
+
   //////////////////////////////////////////////////////////////////////////
-  // KnuthBendixImpl - other methods - private
+  // KnuthBendix - other methods - private
   //////////////////////////////////////////////////////////////////////////
 
   // REWRITE_FROM_LEFT from Sims, p67
@@ -540,8 +563,36 @@ namespace libsemigroups {
     return confluent_known() && confluent();
   }
 
+  void KnuthBendix::init_from_generating_pairs() {
+    if (_gen_pairs_initted) {
+      return;
+    }
+
+    _gen_pairs_initted = true;
+
+    auto& p     = _presentation;
+    auto  pairs = (generating_pairs() | rx::transform([&p](auto const& w) {
+                    return to_string(p, w);
+                  }))
+                 | rx::in_groups_of_exactly(2);
+
+    if (kind() != congruence_kind::twosided && (pairs | rx::count()) != 0) {
+      p.alphabet(p.alphabet() + presentation::first_unused_letter(p));
+    }
+    for (auto&& x : pairs) {
+      auto lhs = x.get();
+      add_octo(lhs);
+      x.next();
+      auto rhs = x.get();
+      add_octo(rhs);
+      add_rule_impl(lhs, rhs);
+      presentation::add_rule(p, lhs, rhs);
+    }
+  }
+
   void KnuthBendix::run_impl() {
     detail::Timer timer;
+    init_from_generating_pairs();
     if (_stack.empty() && confluent() && !stopped()) {
       // _stack can be non-empty if non-reduced rules were used to define
       // the KnuthBendix.  If _stack is non-empty, then it means that the
@@ -642,17 +693,17 @@ namespace libsemigroups {
       LIBSEMIGROUPS_ASSERT(confluent());
       std::unordered_map<std::string, size_t> prefixes;
       prefixes.emplace("", 0);
-      auto   rules = active_rules();
+      auto   rules = _active_rules;
       size_t n     = 1;
-      for (auto const& rule : rules) {
-        prefixes_string(prefixes, rule.first, n);
+      for (auto const* rule : rules) {
+        prefixes_string(prefixes, *rule->lhs(), n);
       }
 
+      // TODO implement these as gilman_digraph_node_labels or something
       // std::vector<std::string> tmp(prefixes.size(), "");
       // for (auto const& p : prefixes) {
       //   tmp[p.second] = p.first;
       // }
-
       // fmt::print(detail::to_string(tmp));
 
       _gilman_digraph.add_nodes(prefixes.size());
@@ -660,12 +711,13 @@ namespace libsemigroups {
 
       for (auto& p : prefixes) {
         for (size_t i = 0; i < presentation().alphabet().size(); ++i) {
-          auto s  = p.first + presentation().letter(i);
+          auto s  = p.first + uint_to_internal_string(i);
           auto it = prefixes.find(s);
           if (it != prefixes.end()) {
             _gilman_digraph.add_edge(p.second, it->second, i);
           } else {
-            auto t = rewrite(s);
+            auto t = s;
+            internal_rewrite(t);
             if (t == s) {
               while (!s.empty()) {
                 s  = std::string(s.begin() + 1, s.end());
@@ -679,9 +731,33 @@ namespace libsemigroups {
           }
         }
       }
+      if (kind() != congruence_kind::twosided
+          && (generating_pairs() | rx::count()) != 0) {
+        auto const& p    = presentation();
+        auto        octo = p.index(p.alphabet().back());
+        auto        src  = _gilman_digraph.unsafe_neighbor(0, octo);
+        LIBSEMIGROUPS_ASSERT(src != UNDEFINED);
+        _gilman_digraph.remove_label_no_checks(octo);
+        auto nodes
+            = action_digraph_helper::nodes_reachable_from(_gilman_digraph, src);
+        LIBSEMIGROUPS_ASSERT(std::find(nodes.cbegin(), nodes.cend(), src)
+                             != nodes.cend());
+        // TODO this is a bit awkward, it ensures that node 0 in the induced
+        // subdigraph is src.
+        std::vector<decltype(src)> sorted_nodes(nodes.cbegin(), nodes.cend());
+        if (sorted_nodes[0] != src) {
+          std::iter_swap(
+              sorted_nodes.begin(),
+              std::find(sorted_nodes.begin(), sorted_nodes.end(), src));
+        }
+
+        _gilman_digraph.induced_subdigraph(sorted_nodes.cbegin(),
+                                           sorted_nodes.cend());
+      }
     }
     return _gilman_digraph;
   }
+
   //////////////////////////////////////////////////////////////////////////
   // FpSemigroupInterface - pure virtual methods - private
   //////////////////////////////////////////////////////////////////////////
@@ -797,6 +873,21 @@ namespace libsemigroups {
     }
   }
 
+  void KnuthBendix::add_octo(external_string_type& w) const {
+    if (kind() != congruence_kind::twosided
+        && (generating_pairs() | rx::count()) != 0) {
+      w = presentation().alphabet().back() + w;
+    }
+  }
+
+  void KnuthBendix::rm_octo(external_string_type& w) const {
+    if (kind() != congruence_kind::twosided
+        && (generating_pairs() | rx::count()) != 0) {
+      LIBSEMIGROUPS_ASSERT(w.front() == presentation().alphabet().back());
+      w.erase(w.begin());
+    }
+  }
+
   //////////////////////////////////////////////////////////////////////////
   // KnuthBendixImpl - methods for rules - private
   //////////////////////////////////////////////////////////////////////////
@@ -805,7 +896,12 @@ namespace libsemigroups {
     auto const first = _presentation.rules.cbegin();
     auto const last  = _presentation.rules.cend();
     for (auto it = first; it != last; it += 2) {
-      add_rule_impl(*it, *(it + 1));
+      auto lhs = *it, rhs = *(it + 1);
+      if (kind() == congruence_kind::left) {
+        std::reverse(lhs.begin(), lhs.end());
+        std::reverse(rhs.begin(), rhs.end());
+      }
+      add_rule_impl(lhs, rhs);
     }
   }
 
@@ -1040,17 +1136,17 @@ namespace libsemigroups {
             "infinite non-trivial class!");
       } else if (kb1.presentation().alphabet()
                  != kb2.presentation().alphabet()) {
-        // It might be possible to handle this case too, but doesn't seem worth
-        // it at present
+        // It might be possible to handle this case too, but doesn't seem
+        // worth it at present
         LIBSEMIGROUPS_EXCEPTION_V3("the arguments must have presentations with "
                                    "the same alphabets, found {} and {}",
                                    kb1.presentation().alphabet(),
                                    kb2.presentation().alphabet());
       }
 
-      // We construct the ActionDigraph `ad` obtained by subtracting all of the
-      // edges from the Gilman graph of kb2 from the Gilman graph of kb1. The
-      // non-trivial classes are finite if and only if `ad` is acyclic. It
+      // We construct the ActionDigraph `ad` obtained by subtracting all of
+      // the edges from the Gilman graph of kb2 from the Gilman graph of kb1.
+      // The non-trivial classes are finite if and only if `ad` is acyclic. It
       // would be possible to do this without actually constructing `ad` but
       // constructing `ad` is simpler, and so we do that for now.
 
@@ -1062,7 +1158,8 @@ namespace libsemigroups {
 
       if (g1.number_of_nodes() < g2.number_of_nodes()) {
         LIBSEMIGROUPS_EXCEPTION_V3(
-            "the Gilman digraph of the 1st argument must have at least as many "
+            "the Gilman digraph of the 1st argument must have at least as "
+            "many "
             "nodes as the Gilman digraph of the 2nd argument, found {} nodes "
             "and {} nodes",
             g1.number_of_nodes(),
@@ -1129,8 +1226,8 @@ namespace libsemigroups {
           }
         } else {
           seen[v] = true;
-          stck.push(v + N);  // so we can tell when all of the descendants of v
-                             // have been processed out of the stack
+          stck.push(v + N);  // so we can tell when all of the descendants of
+                             // v have been processed out of the stack
           if (to_g2[v] == UNDEFINED) {
             can_reach[v] = true;
           }

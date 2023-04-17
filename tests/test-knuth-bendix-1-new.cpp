@@ -37,6 +37,8 @@
 //   reduction orderings different from shortlex
 // * Examples from MAF
 
+#define CATCH_CONFIG_ENABLE_ALL_STRINGMAKERS
+
 #include <algorithm>      // for fill
 #include <chrono>         // for milliseconds
 #include <cstddef>        // for size_t

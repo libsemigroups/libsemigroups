@@ -236,6 +236,7 @@ namespace libsemigroups {
     std::list<Rule const*>           _active_rules;
     mutable std::atomic<bool>        _confluent;
     mutable std::atomic<bool>        _confluence_known;
+    bool                             _gen_pairs_initted;
     ActionDigraph<size_t>            _gilman_digraph;
     mutable std::list<Rule*>         _inactive_rules;
     bool                             _internal_is_same_as_external;
@@ -336,6 +337,8 @@ namespace libsemigroups {
     KnuthBendix& private_init(congruence_kind             knd,
                               Presentation<std::string>&& p,
                               bool                        call_init);
+
+    void init_from_generating_pairs();
 
    public:
     //////////////////////////////////////////////////////////////////////////
@@ -535,6 +538,10 @@ namespace libsemigroups {
                  internal_string_type rhs = internal_string_type(*rule->rhs());
                  internal_to_external_string(lhs);
                  internal_to_external_string(rhs);
+                 if (this->kind() == congruence_kind::left) {
+                   std::reverse(lhs.begin(), lhs.end());
+                   std::reverse(rhs.begin(), rhs.end());
+                 }
                  return std::make_pair(lhs, rhs);
                });
     }
@@ -670,6 +677,9 @@ namespace libsemigroups {
     void external_to_internal_string(external_string_type& w) const;
     void internal_to_external_string(internal_string_type& w) const;
 
+    void add_octo(external_string_type& w) const;
+    void rm_octo(external_string_type& w) const;
+
     void add_rule_impl(std::string const& p, std::string const& q);
     void add_rule(Rule* rule);
 
@@ -746,6 +756,8 @@ namespace libsemigroups {
     //! \sa
     //! \ref cend_normal_forms.
     // TODO update doc
+    // TODO warning if kb represents a left congruence, then the normal forms
+    // are reversed
     inline auto normal_forms(KnuthBendix& kb) {
       Paths paths(kb.gilman_digraph());
       paths.from(0);
@@ -761,7 +773,8 @@ namespace libsemigroups {
 
       size_t const N = (r | rx::count());
       if (N == POSITIVE_INFINITY) {
-        LIBSEMIGROUPS_EXCEPTION_V3("TODO");
+        LIBSEMIGROUPS_EXCEPTION_V3("the 2nd argument (a range) must be finite, "
+                                   "found an infinite range");
       }
 
       return_type result;

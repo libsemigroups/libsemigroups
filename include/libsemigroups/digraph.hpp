@@ -452,6 +452,39 @@ namespace libsemigroups {
       }
     }
 
+    template <typename Iterator>
+    void induced_subdigraph(Iterator first, Iterator last) {
+      size_t const N = std::distance(first, last);
+      // if (*last == *first + N) {
+      //   induced_subdigraph(*first, *last);
+      //   return;
+      // }
+
+      // TODO do this without allocation
+      ActionDigraph<T>       copy(N, out_degree());
+      std::vector<node_type> old_to_new(number_of_nodes(),
+                                        static_cast<node_type>(UNDEFINED));
+      node_type              next = 0;
+
+      for (auto nit = first; nit != last; ++nit) {
+        if (old_to_new[*nit] == UNDEFINED) {
+          old_to_new[*nit] = next;
+          next++;
+        }
+        for (auto eit = cbegin_edges(*nit); eit != cend_edges(*nit); ++eit) {
+          if (*eit != UNDEFINED) {
+            if (old_to_new[*eit] == UNDEFINED) {
+              old_to_new[*eit] = next;
+              next++;
+            }
+            copy.add_edge_nc(
+                old_to_new[*nit], old_to_new[*eit], eit - cbegin_edges(*nit));
+          }
+        }
+      }
+      std::swap(*this, copy);
+    }
+
     //! Adds to the out-degree.
     //!
     //! \param nr the number of new out-edges for every node.

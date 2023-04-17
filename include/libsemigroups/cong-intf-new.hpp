@@ -31,6 +31,8 @@
 #include "runner.hpp"  // for Runner
 #include "types.hpp"   // for word_type, relation_type, letter_type, tril
 
+#include "rx/ranges.hpp"  // iterator_range
+
 namespace libsemigroups {
 
   namespace v3 {
@@ -419,12 +421,17 @@ namespace libsemigroups {
         return _generating_pairs.cend();
       }
 
-      auto const& generating_pairs() const noexcept {
-        return _generating_pairs;
-      }
+      // auto const& generating_pairs() const noexcept {
+      //   return _generating_pairs;
+      // }
 
       size_t number_of_generating_pairs() const noexcept {
         return _generating_pairs.size();
+      }
+
+      auto generating_pairs() const noexcept {
+        return rx::iterator_range(_generating_pairs.cbegin(),
+                                  _generating_pairs.cend());
       }
 
      private:

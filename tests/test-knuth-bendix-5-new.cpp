@@ -32,13 +32,16 @@
 //
 // 6: contains tests for congruence::KnuthBendix.
 
+#define CATCH_CONFIG_ENABLE_ALL_STRINGMAKERS
+#define CATCH_CONFIG_ENABLE_PAIR_STRINGMAKER
+
+#include "catch.hpp"      // for AssertionHandler, ope...
+#include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 #include <algorithm>      // for copy, fill
+#include <iostream>
 #include <string>         // for basic_string
 #include <unordered_map>  // for operator!=, operator==
 #include <vector>         // for vector, operator==
-                          //
-#include "catch.hpp"      // for AssertionHandler, ope...
-#include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
 #include "libsemigroups/constants.hpp"         // for operator!=, operator==
 #include "libsemigroups/exception.hpp"         // for LibsemigroupsException
@@ -55,6 +58,8 @@
 
 namespace libsemigroups {
   congruence_kind constexpr twosided = congruence_kind::twosided;
+  congruence_kind constexpr right    = congruence_kind::right;
+  congruence_kind constexpr left     = congruence_kind::left;
 
   using literals::operator""_w;
   using namespace rx;
@@ -155,7 +160,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
                           "122",
-                          "right congruence!!!",
+                          "manual right congruence",
                           "[quick][knuthbendix]") {
     using presentation::operator+;
 
@@ -241,13 +246,252 @@ namespace libsemigroups {
              {"abaaab", "baaabab", "aabaaabab"},
              {"baaaba", "abaaabb", "baaabba", "aabaaaba", "abaaabaa"},
              {"baaabaa", "abaaabba", "baaabbaa", "aabaaabaa", "abaaabaaa"}}));
-    // REQUIRE(sizes == std::vector<size_t>({3, 5, 5, 7}));
-    // word_type w3, w4, w5, w6;
-    // S.factorisation(w3, S.position(Transf<>({1, 3, 3, 3, 3})));
-    // S.factorisation(w4, S.position(Transf<>({4, 2, 4, 4, 2})));
-    // S.factorisation(w5, S.position(Transf<>({2, 4, 2, 2, 2})));
-    // S.factorisation(w6, S.position(Transf<>({2, 3, 3, 3, 3})));
-    // REQUIRE(tc.word_to_class_index(w3) != tc.word_to_class_index(w4));
-    // REQUIRE(tc.word_to_class_index(w5) == tc.word_to_class_index(w6));
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
+                          "123",
+                          "right congruence!!!",
+                          "[quick][knuthbendix]") {
+    using presentation::operator+;
+
+    auto rg = ReportGuard(false);
+    auto S  = FroidurePin<Transf<>>(
+        {Transf<>({1, 3, 4, 2, 3}), Transf<>({3, 2, 1, 3, 3})});
+
+    REQUIRE(S.size() == 88);
+    REQUIRE(S.number_of_rules() == 18);
+
+    auto p = to_presentation<word_type>(S);
+
+    KnuthBendix kb(right, p);
+    REQUIRE(kb.presentation().rules
+            == std::vector<std::string>(
+                {"bbb",      "b",       "bbab",     "bab",      "aaaaa",
+                 "aa",       "abaab",   "aaaab",    "baaaa",    "ba",
+                 "bbaab",    "baaab",   "aababa",   "aabb",     "aababb",
+                 "aaba",     "bababa",  "babb",     "bababb",   "baba",
+                 "bbaaab",   "baab",    "aabbaaa",  "aabb",     "babaaab",
+                 "aabaaab",  "babbaaa", "babb",     "aaabaaab", "aabaaab",
+                 "aabaaabb", "aabaaab", "baabaaab", "aabaaab",  "aabaaabaaa",
+                 "aabaaab"}));
+
+    kb.add_pair(S.factorisation(Transf<>({3, 4, 4, 4, 4})),
+                S.factorisation(Transf<>({3, 1, 3, 3, 3})));
+    REQUIRE(knuth_bendix::normal_forms(kb).min(1).count() == 72);
+
+    REQUIRE(kb.size() == 72);
+
+    REQUIRE(!kb.contains(S.factorisation(Transf<>({1, 3, 1, 3, 3})),
+                         S.factorisation(Transf<>({4, 2, 4, 4, 2}))));
+
+    REQUIRE(!kb.contains(S.factorisation(Transf<>({1, 3, 3, 3, 3})),
+                         S.factorisation(Transf<>({4, 2, 4, 4, 2}))));
+
+    REQUIRE(kb.contains(S.factorisation(Transf<>({2, 4, 2, 2, 2})),
+                        S.factorisation(Transf<>({2, 3, 3, 3, 3}))));
+
+    REQUIRE(!kb.contains(S.factorisation(Transf<>({1, 3, 3, 3, 3})),
+                         S.factorisation(Transf<>({2, 3, 3, 3, 3}))));
+
+    REQUIRE((knuth_bendix::normal_forms(kb).min(1) | count()) == 72);
+
+    REQUIRE(
+        (knuth_bendix::normal_forms(kb)
+         | to_strings(kb.presentation().alphabet()) | to_vector())
+        == std::vector<std::string>(
+            {"",        "a",       "b",       "aa",      "ab",      "ba",
+             "bb",      "aaa",     "aab",     "aba",     "abb",     "baa",
+             "bab",     "bba",     "aaaa",    "aaab",    "aaba",    "aabb",
+             "abaa",    "abab",    "abba",    "baaa",    "baab",    "baba",
+             "babb",    "bbaa",    "aaaab",   "aaaba",   "aaabb",   "aabaa",
+             "aabab",   "aabba",   "abaaa",   "ababa",   "ababb",   "abbaa",
+             "baaab",   "baaba",   "baabb",   "babaa",   "babab",   "babba",
+             "bbaaa",   "aaaaba",  "aaaabb",  "aaabaa",  "aaabab",  "aaabba",
+             "aabaaa",  "aabbaa",  "abaaab",  "ababaa",  "ababab",  "ababba",
+             "abbaaa",  "baaaba",  "baabaa",  "baabab",  "baabba",  "babaaa",
+             "babbaa",  "aaaabaa", "aaaabab", "aaaabba", "aaabaaa", "aaabbaa",
+             "ababaaa", "ababbaa", "baaabaa", "baabaaa", "baabbaa", "aaaabaaa",
+             "aaaabbaa"}));
+
+    REQUIRE(kb.rewrite("baaabb") == "baaab");
+
+    auto nf = (S.normal_forms() | to_strings(kb.presentation().alphabet()));
+    REQUIRE((nf | count()) == 88);
+    auto pp = knuth_bendix::partition(kb, nf);
+    REQUIRE(pp.size() == 72);
+
+    auto ntc = (iterator_range(pp.begin(), pp.end())
+                | filter([](auto const& val) { return val.size() > 1; }));
+
+    REQUIRE((ntc | count()) == 4);
+    REQUIRE(
+        (ntc | to_vector())
+        == std::vector<std::vector<std::string>>(
+            {{"baaab",
+              "baaabb",
+              "aabaaab",
+              "abaaaba",
+              "abaaabab",
+              "baaabaaa",
+              "abaaabbaa"},
+             {"abaaab", "baaabab", "aabaaabab"},
+             {"baaaba", "abaaabb", "baaabba", "aabaaaba", "abaaabaa"},
+             {"baaabaa", "abaaabba", "baaabbaa", "aabaaabaa", "abaaabaaa"}}));
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
+                          "124",
+                          "manual left congruence!!!",
+                          "[quick][knuthbendix]") {
+    using presentation::operator+;
+
+    auto rg = ReportGuard(false);
+    auto S  = FroidurePin<Transf<>>(
+        {Transf<>({1, 3, 4, 2, 3}), Transf<>({3, 2, 1, 3, 3})});
+
+    REQUIRE(S.size() == 88);
+    REQUIRE(S.number_of_rules() == 18);
+
+    auto p = to_presentation<word_type>(S);
+    REQUIRE(!p.contains_empty_word());
+
+    presentation::reverse(p);
+    REQUIRE(!p.contains_empty_word());
+    p.alphabet(3);
+    KnuthBendix kb(twosided, p);
+    REQUIRE(
+        to_string(kb.presentation(), S.factorisation(Transf<>({3, 4, 4, 4, 4})))
+        == "abaaabbaa");
+    REQUIRE(
+        to_string(kb.presentation(), S.factorisation(Transf<>({3, 1, 3, 3, 3})))
+        == "baaab");
+    // kb.add_pair(S.factorisation(Transf<>({3, 4, 4, 4, 4})),
+    //             S.factorisation(Transf<>({3, 1, 3, 3, 3})));
+
+    kb.add_pair(to_word(kb.presentation(), "caabbaaaba"),
+                to_word(kb.presentation(), "cbaaab"));
+
+    kb.run();
+    // std::cout << (kb.active_rules() | to_vector()) << std::endl;
+
+    auto copy   = kb.gilman_digraph();
+    auto source = copy.neighbor(0, 2);
+    copy.remove_label_no_checks(2);
+    REQUIRE(source == 34);
+    REQUIRE(copy.out_degree() == 2);
+    REQUIRE(copy.number_of_nodes() == 51);
+    REQUIRE(action_digraph_helper::is_acyclic(copy, source));
+
+    Paths paths1(copy);
+    REQUIRE(paths1.min(1).from(source).count() == 69);
+
+    auto nrset = action_digraph_helper::nodes_reachable_from(copy, source);
+    auto nrvec = std::vector<size_t>(nrset.begin(), nrset.end());
+    std::iter_swap(nrvec.begin(), (nrvec.end() - 1));
+    REQUIRE(nrvec[0] == 34);
+
+    copy.induced_subdigraph(nrvec.begin(), nrvec.end());
+    REQUIRE(copy.out_degree() == 2);
+    REQUIRE(copy.number_of_nodes() == 45);
+
+    Paths paths(copy);
+    REQUIRE(paths.min(1).from(0).count() == 69);
+
+    REQUIRE(kb.gilman_digraph().number_of_nodes() == 51);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
+                          "125",
+                          "automatic left congruence!!!",
+                          "[quick][knuthbendix]") {
+    using presentation::operator+;
+
+    auto rg = ReportGuard(false);
+    auto S  = FroidurePin<Transf<>>(
+        {Transf<>({1, 3, 4, 2, 3}), Transf<>({3, 2, 1, 3, 3})});
+
+    REQUIRE(S.size() == 88);
+    REQUIRE(S.number_of_rules() == 18);
+
+    auto p = to_presentation<word_type>(S);
+    REQUIRE(!p.contains_empty_word());
+
+    KnuthBendix kb(left, p);
+
+    kb.add_pair(S.factorisation(Transf<>({3, 4, 4, 4, 4})),
+                S.factorisation(Transf<>({3, 1, 3, 3, 3})));
+
+    kb.run();
+
+    auto copy = kb.gilman_digraph();
+    REQUIRE(copy.out_degree() == 2);
+    REQUIRE(copy.number_of_nodes() == 45);
+    REQUIRE(action_digraph_helper::is_acyclic(copy, 0));
+
+    Paths paths1(copy);
+    REQUIRE(paths1.min(1).from(0).count() == 69);
+    REQUIRE(knuth_bendix::normal_forms(kb).min(1).count() == 69);
+
+    REQUIRE(kb.size() == 69);
+
+    auto nf1 = (knuth_bendix::normal_forms(kb).min(1)
+                | to_strings(kb.presentation().alphabet()) | to_vector());
+
+    REQUIRE(nf1
+            == std::vector<std::string>(
+                {"a",        "b",        "aa",       "ab",       "ba",
+                 "bb",       "aaa",      "aab",      "aba",      "abb",
+                 "baa",      "bba",      "aaaa",     "aaab",     "aaba",
+                 "aabb",     "abaa",     "abab",     "abba",     "bbaa",
+                 "bbab",     "aaaba",    "aaabb",    "aabaa",    "aabab",
+                 "aabba",    "abaaa",    "abaab",    "ababa",    "abbaa",
+                 "abbab",    "bbaaa",    "bbaab",    "bbaba",    "aaabaa",
+                 "aaabab",   "aaabba",   "aabaaa",   "aabaab",   "aababa",
+                 "aabbaa",   "aabbab",   "abaaaa",   "abaaab",   "abbaaa",
+                 "abbaab",   "abbaba",   "bbaaaa",   "bbaaab",   "aaabaaa",
+                 "aaabaab",  "aaababa",  "aabaaaa",  "aabaaab",  "aabbaaa",
+                 "aabbaab",  "aabbaba",  "abaaaba",  "abbaaaa",  "abbaaab",
+                 "bbaaaba",  "aaabaaaa", "aaabaaab", "aabaaaba", "aabbaaaa",
+                 "aabbaaab", "abaaabaa", "abbaaaba", "aaabaaaba"}));
+    REQUIRE(std::all_of(nf1.begin(), nf1.end(), [&kb](auto& w) {
+      std::reverse(w.begin(), w.end());
+      return kb.normal_form(w) == w;
+    }));
+
+    auto nf = S.normal_forms() | to_strings(kb.presentation().alphabet())
+              | take(S.size());
+    REQUIRE(kb.gilman_digraph()
+            == to_action_digraph<size_t>(
+                45, {{1, 2},  {27, 35}, {36, 38}, {4},      {},       {6, 3},
+                     {},      {5, 8},   {},       {7, 10},  {33},     {},
+                     {11},    {9, 12},  {6, 13},  {},       {15},     {6, 16},
+                     {17, 8}, {18, 10}, {},       {6, 20},  {21, 8},  {22, 24},
+                     {43},    {23},     {19, 25}, {14, 26}, {},       {28},
+                     {29},    {6, 30},  {31, 8},  {},       {32, 10}, {34, 38},
+                     {37},    {},       {39},     {40, 24}, {41, 8},  {6, 44},
+                     {},      {},       {42}}));
+
+    REQUIRE(kb.normal_form("abaaaa") == "aba");
+
+    REQUIRE((nf | count()) == 88);
+    auto pp = knuth_bendix::partition(kb, nf);
+    REQUIRE(pp.size() == 69);
+
+    auto ntc = (iterator_range(pp.begin(), pp.end())
+                | filter([](auto const& val) { return val.size() > 1; })
+                | to_vector());
+
+    REQUIRE(ntc.size() == 1);
+    REQUIRE(
+        ntc
+        == std::vector<std::vector<std::string>>(
+            {{"aab",     "bab",      "aaab",      "abab",      "baab",
+              "aaaab",   "aabab",    "baaab",     "babab",     "aaabab",
+              "abaaab",  "ababab",   "baabab",    "aaaabab",   "aabaaab",
+              "baaabab", "abaaabab", "aabaaabaa", "aabaaabab", "abaaabbaa"}}));
+
+    REQUIRE(std::all_of(ntc[0].begin(), ntc[0].end(), [&kb, &ntc](auto& w) {
+      return kb.normal_form(w) == ntc[0][0];
+    }));
   }
 }  // namespace libsemigroups

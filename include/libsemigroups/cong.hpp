@@ -388,13 +388,14 @@ namespace libsemigroups {
       auto k = kambites();
       LIBSEMIGROUPS_ASSERT(k != nullptr);
       // Add pairs into kambites object
-      auto p     = k->presentation();
-      auto first = generating_pairs().cbegin();
-      auto last  = generating_pairs().cend();
-      for (auto it = first; it != last; ++it) {
-        p.rules.push_back(to_string(p, *it));
-      }
-      k->init(p);
+      auto p = k->presentation();
+      // TODO uncomment again
+      // auto first = generating_pairs().cbegin();
+      // auto last  = generating_pairs().cend();
+      // for (auto it = first; it != last; ++it) {
+      //   p.rules.push_back(to_string(p, *it));
+      // }
+      // k->init(p);
     }
 
     /////////////////////////////////////////////////////////////////////////
