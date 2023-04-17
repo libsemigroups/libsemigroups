@@ -39,6 +39,7 @@
 #include <utility>              // for forward, move, pair
 #include <vector>               // for allocator, vector
                                 //
+#include "cong-intf-new.hpp"    // for CongruenceInterface
 #include "debug.hpp"            // for LIBSEMIGROUPS_ASSERT
 #include "digraph.hpp"          // for ActionDigraph
 #include "exception.hpp"        // for LIBSEMIGROUPS_EXCEPTION_V3
@@ -85,7 +86,7 @@ namespace libsemigroups {
   //! kb.number_of_active_rules();  // 31
   //! kb.confluent();        // true
   //! \endcode
-  class KnuthBendix : public Runner {
+  class KnuthBendix : public v3::CongruenceInterface {
     friend class ::libsemigroups::v3::detail::KBE;  // defined in kbe.hpp
 
     ////////////////////////////////////////////////////////////////////////
@@ -270,8 +271,8 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Constant.
-    KnuthBendix();
-    KnuthBendix& init();
+    KnuthBendix(congruence_kind knd);
+    KnuthBendix& init(congruence_kind knd);
 
     //! Copy constructor.
     //!
@@ -287,47 +288,54 @@ namespace libsemigroups {
 
     ~KnuthBendix();
 
-    explicit KnuthBendix(Presentation<std::string> const& p) : KnuthBendix() {
-      private_init(p, false);  // false means don't call init, since we just
-                               // called it from KnuthBendix()
+    KnuthBendix(congruence_kind knd, Presentation<std::string> const& p)
+        : KnuthBendix(knd) {
+      private_init(knd, p, false);  // false means don't call init, since we
+                                    // just called it from KnuthBendix()
     }
 
-    KnuthBendix& init(Presentation<std::string> const& p);
+    KnuthBendix& init(congruence_kind knd, Presentation<std::string> const& p);
 
-    explicit KnuthBendix(Presentation<std::string>&& p) : KnuthBendix() {
-      private_init(std::move(p),
+    KnuthBendix(congruence_kind knd, Presentation<std::string>&& p)
+        : KnuthBendix(knd) {
+      private_init(knd,
+                   std::move(p),
                    false);  // false means don't call init, since we just
                             // called it from KnuthBendix()
     }
 
-    KnuthBendix& init(Presentation<std::string>&& p);
+    KnuthBendix& init(congruence_kind knd, Presentation<std::string>&& p);
 
     template <typename Word>
-    explicit KnuthBendix(Presentation<Word> const& p)
-        : KnuthBendix(to_presentation<std::string>(p)) {}
+    explicit KnuthBendix(congruence_kind knd, Presentation<Word> const& p)
+        : KnuthBendix(knd, to_presentation<std::string>(p)) {}
 
     template <typename Word>
-    explicit KnuthBendix(Presentation<Word>&& p)
+    explicit KnuthBendix(congruence_kind knd, Presentation<Word>&& p)
         : KnuthBendix(
+            knd,
             to_presentation<std::string>(std::forward<Presentation<Word>>(p))) {
     }
 
     template <typename Word>
-    KnuthBendix& init(Presentation<Word> const& p) {
-      init(to_presentation<std::string>(p));
+    KnuthBendix& init(congruence_kind knd, Presentation<Word> const& p) {
+      init(knd, to_presentation<std::string>(p));
       return *this;
     }
 
     template <typename Word>
-    KnuthBendix& init(Presentation<Word>&& p) {
-      init(to_presentation<std::string>(p));
+    KnuthBendix& init(congruence_kind knd, Presentation<Word>&& p) {
+      init(knd, to_presentation<std::string>(p));
       return *this;
     }
 
    private:
-    KnuthBendix& private_init(Presentation<std::string> const& p,
+    KnuthBendix& private_init(congruence_kind                  knd,
+                              Presentation<std::string> const& p,
                               bool                             call_init);
-    KnuthBendix& private_init(Presentation<std::string>&& p, bool call_init);
+    KnuthBendix& private_init(congruence_kind             knd,
+                              Presentation<std::string>&& p,
+                              bool                        call_init);
 
    public:
     //////////////////////////////////////////////////////////////////////////
@@ -445,6 +453,11 @@ namespace libsemigroups {
     // KnuthBendix - member functions for rules and rewriting - public
     //////////////////////////////////////////////////////////////////////////
 
+    void validate_word(word_type const& w) const override {
+      std::string s = to_string(presentation(), w);
+      return presentation().validate_word(s.cbegin(), s.cend());
+    }
+
     // TODO doc
     [[nodiscard]] Presentation<std::string> const&
     presentation() const noexcept {
@@ -453,12 +466,12 @@ namespace libsemigroups {
 
     KnuthBendix& presentation(Presentation<std::string> const& p) {
       throw_if_started();
-      return private_init(p, false);
+      return private_init(kind(), p, false);
     }
 
     KnuthBendix& presentation(Presentation<std::string>&& p) {
       throw_if_started();
-      return private_init(std::move(p), false);
+      return private_init(kind(), std::move(p), false);
     }
 
     template <typename Word>
@@ -810,16 +823,18 @@ namespace libsemigroups {
     //! with the same input.
     template <typename T>
     auto redundant_rule(Presentation<std::string> const& p, T t) {
+      constexpr static congruence_kind twosided = congruence_kind::twosided;
+
       p.validate();
       Presentation<std::string> q;
       q.alphabet(p.alphabet());
-      KnuthBendix kb;
+      KnuthBendix kb(twosided);  // TODO make default constructor
 
       for (auto omit = p.rules.crbegin(); omit != p.rules.crend(); omit += 2) {
         q.rules.clear();
         q.rules.insert(q.rules.end(), p.rules.crbegin(), omit);
         q.rules.insert(q.rules.end(), omit + 2, p.rules.crend());
-        kb.init(q);
+        kb.init(twosided, q);
         kb.run_for(t);
         if (kb.rewrite(*omit) == kb.rewrite(*(omit + 1))) {
           return (omit + 1).base() - 1;

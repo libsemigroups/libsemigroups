@@ -71,6 +71,10 @@ namespace libsemigroups {
   using namespace rx;
   using literals::operator""_w;
 
+  congruence_kind constexpr twosided = congruence_kind::twosided;
+  congruence_kind constexpr left     = congruence_kind::left;
+  congruence_kind constexpr right    = congruence_kind::right;
+
   LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
                           "000",
                           "confluent fp semigroup 1 (infinite)",
@@ -90,7 +94,7 @@ namespace libsemigroups {
     presentation::add_rule(p, "cb", "b");
     presentation::add_rule(p, "a", "b");
 
-    KnuthBendix kb(p);
+    KnuthBendix kb(twosided, p);
 
     REQUIRE(kb.number_of_active_rules() == 4);
     REQUIRE(kb.confluent());
@@ -126,7 +130,7 @@ namespace libsemigroups {
     presentation::add_rule(p, "cb", "b");
     presentation::add_rule(p, "a", "b");
 
-    KnuthBendix kb(p);
+    KnuthBendix kb(twosided, p);
 
     REQUIRE(kb.confluent());
     REQUIRE(kb.number_of_active_rules() == 4);
@@ -158,7 +162,7 @@ namespace libsemigroups {
     presentation::add_rule(p, "21", "1");
     presentation::add_rule(p, "0", "1");
 
-    KnuthBendix kb(p);
+    KnuthBendix kb(twosided, p);
 
     REQUIRE(kb.number_of_active_rules() == 4);
     REQUIRE(kb.confluent());
@@ -198,7 +202,7 @@ namespace libsemigroups {
     presentation::add_rule(p, "111", "");
     presentation::add_rule(p, "010101", "");
 
-    KnuthBendix kb(p);
+    KnuthBendix kb(twosided, p);
     REQUIRE(kb.presentation().alphabet() == "01");
     REQUIRE(!kb.confluent());
     kb.run();
@@ -233,7 +237,7 @@ namespace libsemigroups {
     presentation::add_rule(p, "dc", "");
     presentation::add_rule(p, "ca", "ac");
 
-    KnuthBendix kb(p);
+    KnuthBendix kb(twosided, p);
 
     REQUIRE(!kb.confluent());
     kb.run();
@@ -267,7 +271,7 @@ namespace libsemigroups {
     presentation::add_inverse_rules(p, "AaBb");
     presentation::add_rule(p, "ba", "ab");
 
-    KnuthBendix kb(p);
+    KnuthBendix kb(twosided, p);
 
     REQUIRE(!kb.confluent());
     kb.run();
@@ -302,7 +306,7 @@ namespace libsemigroups {
     presentation::add_rule(p, "bbb", "");
     presentation::add_rule(p, "ababab", "");
 
-    KnuthBendix kb(p);
+    KnuthBendix kb(twosided, p);
 
     REQUIRE(!kb.confluent());
     kb.run();
@@ -345,7 +349,7 @@ namespace libsemigroups {
     presentation::add_rule(p, "bbb", "");
     presentation::add_rule(p, "ababab", "");
 
-    KnuthBendix kb(p);
+    KnuthBendix kb(twosided, p);
 
     REQUIRE(!kb.confluent());
     kb.run();
@@ -386,7 +390,7 @@ namespace libsemigroups {
     presentation::add_rule(p, "ababababababab", "");
     presentation::add_rule(p, "abacabacabacabac", "");
 
-    KnuthBendix kb(p);
+    KnuthBendix kb(twosided, p);
 
     REQUIRE(!kb.confluent());
     REQUIRE(!is_obviously_infinite(kb));
@@ -424,7 +428,7 @@ namespace libsemigroups {
     presentation::add_rule(p, "010101", "2");
     presentation::add_identity_rules(p, '2');
 
-    KnuthBendix kb(p);
+    KnuthBendix kb(twosided, p);
 
     REQUIRE(!kb.confluent());
     kb.run();
@@ -475,7 +479,7 @@ namespace libsemigroups {
     presentation::add_rule(p, "bB", "");
     presentation::add_rule(p, "Bb", "");
 
-    KnuthBendix kb(p);
+    KnuthBendix kb(twosided, p);
 
     REQUIRE(!kb.confluent());
 
@@ -513,7 +517,7 @@ namespace libsemigroups {
     presentation::add_rule(p, "cd", "e");
     presentation::add_rule(p, "de", "a");
     presentation::add_rule(p, "ea", "b");
-    KnuthBendix kb(p);
+    KnuthBendix kb(twosided, p);
 
     REQUIRE(!kb.confluent());
     kb.run();
@@ -540,7 +544,7 @@ namespace libsemigroups {
 
     presentation::add_rule(p, "a", "abb");
     presentation::add_rule(p, "b", "baa");
-    KnuthBendix kb(p);
+    KnuthBendix kb(twosided, p);
 
     REQUIRE(!kb.confluent());
     kb.run();
@@ -620,14 +624,14 @@ namespace libsemigroups {
     presentation::add_rule(p2, "111", "");
     presentation::add_rule(p2, "010101", "");
 
-    KnuthBendix kb1(p1);
+    KnuthBendix kb1(twosided, p1);
     REQUIRE(!kb1.confluent());
     REQUIRE(!kb1.finished());
     kb1.run();
     REQUIRE(kb1.confluent());
     REQUIRE(kb1.normal_form("abababbdbcbdbabdbdb") == "bbbbbbddd");
 
-    kb1.init(p2);
+    kb1.init(twosided, p2);
     REQUIRE(!kb1.confluent());
     REQUIRE(!kb1.finished());
     REQUIRE(kb1.presentation() == p2);
@@ -636,7 +640,7 @@ namespace libsemigroups {
     REQUIRE(kb1.confluent());
     REQUIRE(kb1.confluent_known());
 
-    kb1.init(p1);
+    kb1.init(twosided, p1);
     REQUIRE(!kb1.confluent());
     REQUIRE(!kb1.finished());
     REQUIRE(kb1.presentation() == p1);
@@ -658,7 +662,7 @@ namespace libsemigroups {
     REQUIRE(kb1.finished());
     REQUIRE(kb1.normal_form("abababbdbcbdbabdbdb") == "bbbbbbddd");
 
-    kb1.init(std::move(p1));
+    kb1.init(twosided, std::move(p1));
     REQUIRE(!kb1.confluent());
     REQUIRE(!kb1.finished());
     kb1.run();
@@ -685,14 +689,14 @@ namespace libsemigroups {
     presentation::add_rule(p, "ababababababab", "");
     presentation::add_rule(p, "abacabacabacabacabacabacabacabac", "");
 
-    KnuthBendix kb1(p);
+    KnuthBendix kb1(twosided, p);
     REQUIRE(!kb1.confluent());
     REQUIRE(!kb1.finished());
     kb1.run_for(std::chrono::milliseconds(10));
     REQUIRE(!kb1.confluent());
     REQUIRE(!kb1.finished());
 
-    kb1.init(p);
+    kb1.init(twosided, p);
     REQUIRE(!kb1.confluent());
     REQUIRE(!kb1.finished());
     REQUIRE(kb1.presentation() == p);
@@ -732,11 +736,11 @@ namespace libsemigroups {
     presentation::add_rule(p, "bc", "b");
     presentation::add_rule(p, "cb", "b");
 
-    KnuthBendix kb1(p);
+    KnuthBendix kb1(twosided, p);
 
     presentation::add_rule(p, "a", "b");
 
-    KnuthBendix kb2(p);
+    KnuthBendix kb2(twosided, p);
 
     REQUIRE(kb1.gilman_digraph()
             == to_action_digraph<size_t>(5,
@@ -776,12 +780,12 @@ namespace libsemigroups {
     presentation::add_rule(p, "bc", "b");
     presentation::add_rule(p, "cb", "b");
 
-    KnuthBendix kb1(p);
+    KnuthBendix kb1(twosided, p);
     REQUIRE(kb1.size() == POSITIVE_INFINITY);
 
     presentation::add_rule(p, "b", "c");
 
-    KnuthBendix kb2(p);
+    KnuthBendix kb2(twosided, p);
     REQUIRE(kb2.size() == 2);
 
     REQUIRE_THROWS_AS(knuth_bendix::non_trivial_classes(kb1, kb2),
@@ -805,11 +809,11 @@ namespace libsemigroups {
     presentation::add_rule(p, "bc", "b");
     presentation::add_rule(p, "cb", "b");
 
-    KnuthBendix kb1(p);
+    KnuthBendix kb1(twosided, p);
 
     presentation::add_rule(p, "bb", "a");
 
-    KnuthBendix kb2(p);
+    KnuthBendix kb2(twosided, p);
 
     REQUIRE(knuth_bendix::non_trivial_classes(kb1, kb2)
             == std::vector<std::vector<std::string>>(
@@ -839,11 +843,11 @@ namespace libsemigroups {
     presentation::add_rule(p, {2, 3}, {2});
     presentation::add_rule(p, {3, 2}, {2});
 
-    KnuthBendix kb1(p);
+    KnuthBendix kb1(twosided, p);
 
     presentation::add_rule(p, {0}, {1});
 
-    KnuthBendix kb2(p);
+    KnuthBendix kb2(twosided, p);
     REQUIRE(knuth_bendix::non_trivial_classes(kb1, kb2)
             == std::vector<std::vector<std::string>>(
                 {{"b", "ab", "bb", "abb", "a"}}));
@@ -881,7 +885,7 @@ namespace libsemigroups {
     presentation::add_rule(p, 24_w, 2_w);
     presentation::add_rule(p, 34_w, 3_w);
 
-    KnuthBendix kb1(p);
+    KnuthBendix kb1(twosided, p);
 
     REQUIRE(kb1.gilman_digraph()
             == to_action_digraph<size_t>(
@@ -894,7 +898,7 @@ namespace libsemigroups {
                  {UNDEFINED, UNDEFINED, UNDEFINED, UNDEFINED, 5}}));
 
     presentation::add_rule(p, 1_w, 2_w);
-    KnuthBendix kb2(p);
+    KnuthBendix kb2(twosided, p);
 
     REQUIRE(kb2.gilman_digraph()
             == to_action_digraph<size_t>(
@@ -945,11 +949,11 @@ namespace libsemigroups {
     presentation::add_rule(p, 24_w, 3_w);
     presentation::add_rule(p, 34_w, 1_w);
 
-    KnuthBendix kb1(p);
+    KnuthBendix kb1(twosided, p);
 
     presentation::add_rule(p, 2_w, 3_w);
 
-    KnuthBendix kb2(p);
+    KnuthBendix kb2(twosided, p);
     auto        ntc = knuth_bendix::non_trivial_classes(kb1, kb2);
     REQUIRE(ntc.size() == 1);
     REQUIRE(ntc[0].size() == 3);
@@ -973,8 +977,8 @@ namespace libsemigroups {
     presentation::add_rule(p, 01010_w, 0100_w);
     presentation::add_rule(p, 01011_w, 0101_w);
 
-    KnuthBendix kb1(p);
-    KnuthBendix kb2(p);
+    KnuthBendix kb1(twosided, p);
+    KnuthBendix kb2(twosided, p);
 
     REQUIRE(kb1.size() == 27);
     REQUIRE(kb2.size() == 27);
@@ -1000,12 +1004,12 @@ namespace libsemigroups {
     presentation::add_rule(p, 01010_w, 0100_w);
     presentation::add_rule(p, 01011_w, 0101_w);
 
-    KnuthBendix kb1(p);
+    KnuthBendix kb1(twosided, p);
 
     presentation::add_rule(p, 0_w, 1_w);
     presentation::add_rule(p, 00_w, 0_w);
 
-    KnuthBendix kb2(p);
+    KnuthBendix kb2(twosided, p);
 
     REQUIRE(kb2.size() == 1);
 
@@ -1081,7 +1085,7 @@ namespace libsemigroups {
     presentation::add_rule(p, {3, 0, 1, 0}, {3, 0, 1});
     presentation::add_rule(p, {3, 0, 3, 0}, {3, 0, 3});
 
-    KnuthBendix kb1(p);
+    KnuthBendix kb1(twosided, p);
     REQUIRE(kb1.gilman_digraph().number_of_nodes() == 16);
     REQUIRE(kb1.gilman_digraph()
             == to_action_digraph<size_t>(16,
@@ -1111,7 +1115,7 @@ namespace libsemigroups {
                                           {UNDEFINED}}));
 
     presentation::add_rule(p, {1}, {3});
-    KnuthBendix kb2(p);
+    KnuthBendix kb2(twosided, p);
 
     REQUIRE(kb2.gilman_digraph()
             == to_action_digraph<size_t>(4,
@@ -1213,7 +1217,7 @@ namespace libsemigroups {
   //   REQUIRE(S.size() == 88);
   //   REQUIRE(S.number_of_rules() == 18);
 
-  //   KnuthBendix kb(S);
+  //   KnuthBendix kb(twosided, S);
   //   auto&       P = kb.quotient_froidure_pin();
   //   REQUIRE(P.size() == 88);
   //   kb.add_pair(S.factorisation(Transf({3, 4, 4, 4, 4})),

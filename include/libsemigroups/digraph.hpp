@@ -913,6 +913,14 @@ namespace libsemigroups {
       return rx::seq() | rx::take(out_degree());
     }
 
+    void remove_label_no_checks(label_type lbl) {
+      if (lbl == _degree - 1) {
+        _degree--;
+      } else {
+        _dynamic_array_2.erase_column(lbl);
+      }
+    }
+
     //! Returns a random access iterator pointing at the last node of the
     //! digraph.
     //!
@@ -1046,7 +1054,7 @@ namespace libsemigroups {
     //! \sa
     //! \ref cend_edges.
     const_iterator_edges cend_edges_nc(node_type i) const noexcept {
-      return _dynamic_array_2.cend_row(i);
+      return _dynamic_array_2.cbegin_row(i) + _degree;
     }
 
     ////////////////////////////////////////////////////////////////////////

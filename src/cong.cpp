@@ -67,7 +67,8 @@ namespace libsemigroups {
     _race.max_threads(POSITIVE_INFINITY);
     if (type == congruence_kind::twosided) {
       _race.add_runner(std::make_shared<Kambites<detail::MultiStringView>>(p));
-      _race.add_runner(std::make_shared<KnuthBendix>(p));
+      _race.add_runner(
+          std::make_shared<KnuthBendix>(congruence_kind::twosided, p));
     }
     _race.add_runner(std::make_shared<ToddCoxeter>(type, p));
     // TODO add a Runner that tries to create a ToddCoxeter using the Cayley

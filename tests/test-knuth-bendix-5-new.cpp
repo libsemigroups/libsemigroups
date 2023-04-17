@@ -54,8 +54,10 @@
 #include "libsemigroups/words.hpp"             // for operator""_w
 
 namespace libsemigroups {
+  congruence_kind constexpr twosided = congruence_kind::twosided;
 
   using literals::operator""_w;
+  using namespace rx;
 
   LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
                           "097",
@@ -68,7 +70,7 @@ namespace libsemigroups {
 
     auto p = to_presentation<word_type>(S);
 
-    KnuthBendix kb(p);
+    KnuthBendix kb(twosided, p);
     REQUIRE(kb.confluent());
     REQUIRE(kb.presentation().rules.size() / 2 == 4);
     REQUIRE(kb.number_of_active_rules() == 4);
@@ -89,7 +91,7 @@ namespace libsemigroups {
     REQUIRE(S.number_of_rules() == 3);
 
     auto        p = to_presentation<word_type>(S);
-    KnuthBendix kb(p);
+    KnuthBendix kb(twosided, p);
     REQUIRE(kb.confluent());
     REQUIRE(kb.number_of_active_rules() == 3);
     REQUIRE(kb.size() == 9);
@@ -109,7 +111,7 @@ namespace libsemigroups {
     REQUIRE(S.number_of_rules() == 18);
 
     auto        p = to_presentation<word_type>(S);
-    KnuthBendix kb(p);
+    KnuthBendix kb(twosided, p);
     REQUIRE(kb.confluent());
     REQUIRE(kb.number_of_active_rules() == 18);
     REQUIRE(kb.size() == 88);
@@ -126,7 +128,7 @@ namespace libsemigroups {
 
     auto p = to_presentation<word_type>(S);
 
-    KnuthBendix kb(p);
+    KnuthBendix kb(twosided, p);
     REQUIRE(kb.confluent());
 
     auto t = to_froidure_pin(kb);
@@ -145,7 +147,7 @@ namespace libsemigroups {
 
     auto p = to_presentation<word_type>(S);
 
-    KnuthBendix kb(p);
+    KnuthBendix kb(twosided, p);
     kb.run();
     REQUIRE(kb.confluent());
     REQUIRE(kb.size() == 88);
@@ -166,124 +168,79 @@ namespace libsemigroups {
 
     auto p = to_presentation<word_type>(S);
 
-    KnuthBendix kb1(p);
+    KnuthBendix kb1(twosided, p);
     REQUIRE(kb1.size() == 88);
 
     presentation::add_rule(p,
                            2_w + S.factorisation(Transf<>({3, 4, 4, 4, 4})),
                            2_w + S.factorisation(Transf<>({3, 1, 3, 3, 3})));
+
     p.alphabet(3);
 
-    KnuthBendix kb2(p);
+    KnuthBendix kb2(twosided, p);
+    auto const& q = kb2.presentation();
 
     auto words = (S.normal_forms()
                   | rx::transform([](auto const& w) { return 2_w + w; })
-                  | to_strings(kb2.presentation().alphabet()));
+                  | to_strings(q.alphabet()));
     REQUIRE((words | rx::count()) == 88);
     REQUIRE((words | rx::take(4) | rx::to_vector())
             == std::vector<std::string>({"ca", "cb", "caa", "cab"}));
 
     kb2.run();
-    auto pp = knuth_bendix::partition(
-        kb2,
-        (S.normal_forms() | rx::transform([](auto const& w) { return 2_w + w; })
-         | to_strings(kb2.presentation().alphabet())));
+    auto pp = knuth_bendix::partition(kb2, words);
 
     REQUIRE(pp.size() == 72);
 
     REQUIRE(kb2.gilman_digraph().number_of_nodes() == 62);
-    REQUIRE(kb2.gilman_digraph()
-            == to_action_digraph<size_t>(62,
-                                         {{4, 1, 43},
-                                          {11, 2, 43},
-                                          {3, UNDEFINED, 43},
-                                          {14, UNDEFINED, 43},
-                                          {5, 8, 43},
-                                          {6, 15, 43},
-                                          {7, 30, 43},
-                                          {UNDEFINED, 30, 43},
-                                          {9, 2, 43},
-                                          {10, 18, 43},
-                                          {13, UNDEFINED, 43},
-                                          {12, 18, 43},
-                                          {13, 37, 43},
-                                          {UNDEFINED, 30, 43},
-                                          {21, UNDEFINED, 43},
-                                          {16, 22, 43},
-                                          {34, 17, 43},
-                                          {UNDEFINED, UNDEFINED, 43},
-                                          {19, 27, 43},
-                                          {25, 20, 43},
-                                          {UNDEFINED, UNDEFINED, 43},
-                                          {UNDEFINED, UNDEFINED, 43},
-                                          {23, UNDEFINED, 43},
-                                          {24, UNDEFINED, 43},
-                                          {UNDEFINED, UNDEFINED, 43},
-                                          {26, UNDEFINED, 43},
-                                          {UNDEFINED, UNDEFINED, 43},
-                                          {28, UNDEFINED, 43},
-                                          {29, UNDEFINED, 43},
-                                          {UNDEFINED, UNDEFINED, 43},
-                                          {31, 22, 43},
-                                          {32, 17, 43},
-                                          {33, UNDEFINED, 43},
-                                          {UNDEFINED, UNDEFINED, 43},
-                                          {35, UNDEFINED, 43},
-                                          {UNDEFINED, 36, 43},
-                                          {41, UNDEFINED, 43},
-                                          {38, 22, 43},
-                                          {39, 17, 43},
-                                          {40, UNDEFINED, 43},
-                                          {UNDEFINED, UNDEFINED, 43},
-                                          {42, 17, 43},
-                                          {UNDEFINED, UNDEFINED, 43},
-                                          {51, 44, 43},
-                                          {45, 2, 43},
-                                          {46, 18, 43},
-                                          {47, 37, 43},
-                                          {UNDEFINED, 48, 43},
-                                          {49, UNDEFINED, 43},
-                                          {50, UNDEFINED, 43},
-                                          {UNDEFINED, UNDEFINED, 43},
-                                          {52, 57, 43},
-                                          {6, 53, 43},
-                                          {54, 22, 43},
-                                          {55, 17, 43},
-                                          {56, UNDEFINED, 43},
-                                          {UNDEFINED, UNDEFINED, 43},
-                                          {58, 2, 43},
-                                          {59, 18, 43},
-                                          {60, UNDEFINED, 43},
-                                          {UNDEFINED, 61, 43},
-                                          {UNDEFINED, UNDEFINED, 43}}));
 
-    // REQUIRE(
-    //     tc.word_to_class_index(S.factorisation(Transf<>({1, 3, 1, 3, 3})))
-    //     != tc.word_to_class_index(S.factorisation(Transf<>({4, 2, 4, 4,
-    //     2}))));
+    auto copy   = kb2.gilman_digraph();
+    auto source = copy.neighbor(0, 2);
+    copy.remove_label_no_checks(2);
+    REQUIRE(copy.out_degree() == 2);
+    REQUIRE(copy.number_of_nodes() == 62);
+    REQUIRE(action_digraph_helper::is_acyclic(copy, source));
 
-    // REQUIRE(
-    //     tc.word_to_class_index(S.factorisation(Transf<>({1, 3, 3, 3, 3})))
-    //     != tc.word_to_class_index(S.factorisation(Transf<>({4, 2, 4, 4,
-    //     2}))));
-    // REQUIRE(
-    //     tc.word_to_class_index(S.factorisation(Transf<>({2, 4, 2, 2, 2})))
-    //     == tc.word_to_class_index(S.factorisation(Transf<>({2, 3, 3, 3,
-    //     3}))));
-    // REQUIRE(
-    //     tc.word_to_class_index(S.factorisation(Transf<>({1, 3, 3, 3, 3})))
-    //     != tc.word_to_class_index(S.factorisation(Transf<>({2, 3, 3, 3,
-    //     3}))));
+    Paths paths(copy);
+    REQUIRE(paths.min(1).from(source).count() == 72);
 
-    // auto ntc = todd_coxeter::non_trivial_classes(
-    //     tc, S.cbegin_normal_forms(), S.cend_normal_forms());
-    // REQUIRE(ntc.size() == 4);
-    // std::vector<size_t> sizes(ntc.size(), 0);
-    // std::transform(ntc.cbegin(),
-    //                ntc.cend(),
-    //                sizes.begin(),
-    //                std::mem_fn(&std::vector<word_type>::size));
-    // std::sort(sizes.begin(), sizes.end());
+    REQUIRE(!kb2.contains(2_w + S.factorisation(Transf<>({1, 3, 1, 3, 3})),
+                          2_w + S.factorisation(Transf<>({4, 2, 4, 4, 2}))));
+
+    REQUIRE(!kb2.contains(2_w + S.factorisation(Transf<>({1, 3, 3, 3, 3})),
+                          2_w + S.factorisation(Transf<>({4, 2, 4, 4, 2}))));
+
+    REQUIRE(kb2.contains(2_w + S.factorisation(Transf<>({2, 4, 2, 2, 2})),
+                         2_w + S.factorisation(Transf<>({2, 3, 3, 3, 3}))));
+
+    REQUIRE(!kb2.contains(2_w + S.factorisation(Transf<>({1, 3, 3, 3, 3})),
+                          2_w + S.factorisation(Transf<>({2, 3, 3, 3, 3}))));
+
+    auto ntc = (iterator_range(pp.begin(), pp.end())
+                | filter([](auto const& val) { return val.size() > 1; })
+                | transform([](auto& val) {
+                    std::for_each(
+                        val.begin(), val.end(), [](auto& w) -> auto& {
+                          w.erase(w.begin());
+                          return w;
+                        });
+                    return val;
+                  }));
+
+    REQUIRE((ntc | count()) == 4);
+    REQUIRE(
+        (ntc | to_vector())
+        == std::vector<std::vector<std::string>>(
+            {{"baaab",
+              "baaabb",
+              "aabaaab",
+              "abaaaba",
+              "abaaabab",
+              "baaabaaa",
+              "abaaabbaa"},
+             {"abaaab", "baaabab", "aabaaabab"},
+             {"baaaba", "abaaabb", "baaabba", "aabaaaba", "abaaabaa"},
+             {"baaabaa", "abaaabba", "baaabbaa", "aabaaabaa", "abaaabaaa"}}));
     // REQUIRE(sizes == std::vector<size_t>({3, 5, 5, 7}));
     // word_type w3, w4, w5, w6;
     // S.factorisation(w3, S.position(Transf<>({1, 3, 3, 3, 3})));

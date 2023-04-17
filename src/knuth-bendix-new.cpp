@@ -46,10 +46,6 @@
 namespace libsemigroups {
 
   namespace {
-    bool is_subword(std::string const& x, std::string const& y) {
-      return y.find(x) != std::string::npos;
-    }
-
     void prefixes_string(std::unordered_map<std::string, size_t>& st,
                          std::string const&                       x,
                          size_t&                                  n) {
@@ -232,22 +228,22 @@ namespace libsemigroups {
   // KnuthBendix - constructors and destructor - public
   //////////////////////////////////////////////////////////////////////////
 
-  KnuthBendix::KnuthBendix()
-      : Runner(),
-        _settings(),
+  KnuthBendix::KnuthBendix(congruence_kind knd)
+      : CongruenceInterface(knd),
+        _settings(),  // TODO init all mems
         _active_rules(),
         _gilman_digraph(),
         _inactive_rules(),
         _presentation(),
         _set_rules(),
         _stack() {
-    init();
+    init(knd);
   }
 
-  KnuthBendix& KnuthBendix::init() {
+  KnuthBendix& KnuthBendix::init(congruence_kind knd) {
     deactivate_all_rules();
 
-    Runner::init();
+    CongruenceInterface::init(knd);
     _settings.init();
     _gilman_digraph.init(0, 0);
     _confluent                    = false;
@@ -267,7 +263,7 @@ namespace libsemigroups {
     return *this;
   }
 
-  KnuthBendix::KnuthBendix(KnuthBendix const& that) : KnuthBendix() {
+  KnuthBendix::KnuthBendix(KnuthBendix const& that) : KnuthBendix(that.kind()) {
     *this = that;
   }
 
@@ -329,30 +325,34 @@ namespace libsemigroups {
     }
   }
 
-  KnuthBendix& KnuthBendix::init(Presentation<std::string> const& p) {
-    return private_init(p, true);
+  KnuthBendix& KnuthBendix::init(congruence_kind                  knd,
+                                 Presentation<std::string> const& p) {
+    return private_init(knd, p, true);
   }
 
-  KnuthBendix& KnuthBendix::init(Presentation<std::string>&& p) {
-    return private_init(std::move(p), true);
+  KnuthBendix& KnuthBendix::init(congruence_kind             knd,
+                                 Presentation<std::string>&& p) {
+    return private_init(knd, std::move(p), true);
   }
 
-  KnuthBendix& KnuthBendix::private_init(Presentation<std::string> const& p,
+  KnuthBendix& KnuthBendix::private_init(congruence_kind                  knd,
+                                         Presentation<std::string> const& p,
                                          bool call_init) {
     p.validate();
     if (call_init) {
-      init();
+      init(knd);
     }
     _presentation = p;
     add_rules_from_presentation();
     return *this;
   }
 
-  KnuthBendix& KnuthBendix::private_init(Presentation<std::string>&& p,
+  KnuthBendix& KnuthBendix::private_init(congruence_kind             knd,
+                                         Presentation<std::string>&& p,
                                          bool call_init) {
     p.validate();
     if (call_init) {
-      init();
+      init(knd);
     }
     _presentation = std::move(p);
     add_rules_from_presentation();
@@ -648,12 +648,12 @@ namespace libsemigroups {
         prefixes_string(prefixes, rule.first, n);
       }
 
-      std::vector<std::string> tmp(prefixes.size(), "");
-      for (auto const& p : prefixes) {
-        tmp[p.second] = p.first;
-      }
+      // std::vector<std::string> tmp(prefixes.size(), "");
+      // for (auto const& p : prefixes) {
+      //   tmp[p.second] = p.first;
+      // }
 
-      fmt::print(detail::to_string(tmp));
+      // fmt::print(detail::to_string(tmp));
 
       _gilman_digraph.add_nodes(prefixes.size());
       _gilman_digraph.add_to_out_degree(presentation().alphabet().size());

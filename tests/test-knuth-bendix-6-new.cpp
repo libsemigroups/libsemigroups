@@ -54,6 +54,8 @@
 #include "libsemigroups/words.hpp"             // for operator""_w
 
 namespace libsemigroups {
+  congruence_kind constexpr twosided = congruence_kind::twosided;
+
   using literals::operator""_w;
 
   LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
@@ -67,7 +69,7 @@ namespace libsemigroups {
     presentation::add_rule(p, 000_w, 0_w);
     presentation::add_rule(p, 0_w, 11_w);
 
-    KnuthBendix kb(p);
+    KnuthBendix kb(twosided, p);
 
     REQUIRE(!kb.finished());
     REQUIRE(kb.size() == 5);
@@ -106,7 +108,7 @@ namespace libsemigroups {
     presentation::add_rule(p, 14233_w, 0_w);
     presentation::add_rule(p, 444_w, 0_w);
 
-    KnuthBendix kb(p);
+    KnuthBendix kb(twosided, p);
 
     REQUIRE(kb.size() == 6);
     REQUIRE(kb.equal_to(to_string(kb.presentation(), 1_w),
@@ -143,7 +145,7 @@ namespace libsemigroups {
     presentation::add_rule(p, {2, 0, 1, 0}, {2, 0, 1});
     presentation::add_rule(p, {2, 0, 2, 0}, {2, 0, 2});
 
-    KnuthBendix kb(p);
+    KnuthBendix kb(twosided, p);
     REQUIRE(kb.size() == 16);
     REQUIRE(kb.number_of_active_rules() == 18);
     REQUIRE(kb.equal_to(to_string(kb.presentation(), 2_w),
@@ -179,7 +181,7 @@ namespace libsemigroups {
            {1, 3, 0, 1}, {1, 0, 1},    {1, 3, 0, 3}, {3, 0, 3},    {3, 0, 1, 0},
            {3, 0, 1},    {3, 0, 3, 0}, {3, 0, 3}};
 
-    KnuthBendix kb(p);
+    KnuthBendix kb(twosided, p);
     REQUIRE(kb.size() == 16);
     REQUIRE(kb.equal_to(to_string(kb.presentation(), {0}),
                         to_string(kb.presentation(), {5})));
@@ -214,7 +216,7 @@ namespace libsemigroups {
     presentation::add_rule(p, 1001_w, 11_w);
     presentation::add_rule(p, 001010101010_w, 00_w);
 
-    KnuthBendix kb(p);
+    KnuthBendix kb(twosided, p);
     REQUIRE(kb.size() == 240);
   }
 
@@ -231,7 +233,7 @@ namespace libsemigroups {
     presentation::add_rule(p, 1001_w, 11_w);
     presentation::add_rule(p, 001010101010_w, 00_w);
 
-    KnuthBendix kb(p);
+    KnuthBendix kb(twosided, p);
     REQUIRE_NOTHROW(to_froidure_pin(kb));
   }
 
@@ -246,7 +248,7 @@ namespace libsemigroups {
     presentation::add_rule(p, 111111111_w, 1_w);
     presentation::add_rule(p, 011111011_w, 110_w);
 
-    KnuthBendix kb(p);
+    KnuthBendix kb(twosided, p);
     REQUIRE(kb.size() == 746);
 
     auto copy(kb);
@@ -268,7 +270,7 @@ namespace libsemigroups {
     presentation::add_rule(p, 1111_w, 1_w);
     presentation::add_rule(p, 011111011_w, 110_w);
 
-    KnuthBendix kb(p);
+    KnuthBendix kb(twosided, p);
     REQUIRE(to_froidure_pin(kb).size() == 12);
   }
 
@@ -291,7 +293,7 @@ namespace libsemigroups {
     presentation::add_rule(p, 21_w, 1_w);
     presentation::add_rule(p, 0_w, 1_w);
 
-    KnuthBendix kb(p);
+    KnuthBendix kb(twosided, p);
     REQUIRE(is_obviously_infinite(kb));
     REQUIRE(kb.size() == POSITIVE_INFINITY);
   }
@@ -303,7 +305,7 @@ namespace libsemigroups {
     auto                    rg = ReportGuard(false);
     Presentation<word_type> p  = fpsemigroup::chinese_monoid(3);
 
-    KnuthBendix kb(p);
+    KnuthBendix kb(twosided, p);
     REQUIRE(is_obviously_infinite(kb));
     REQUIRE(kb.size() == POSITIVE_INFINITY);
     REQUIRE(kb.presentation().rules.size() / 2 == 8);
@@ -320,7 +322,7 @@ namespace libsemigroups {
     size_t n = 4;
     auto   p = partial_transformation_monoid(n, fpsemigroup::author::Sutov);
 
-    KnuthBendix kb(p);
+    KnuthBendix kb(twosided, p);
     REQUIRE(!is_obviously_infinite(kb));
     REQUIRE(kb.size() == 625);
   }
@@ -335,7 +337,7 @@ namespace libsemigroups {
     size_t n = 5;
     auto   p = partial_transformation_monoid(n, fpsemigroup::author::Sutov);
 
-    KnuthBendix kb(p);
+    KnuthBendix kb(twosided, p);
     REQUIRE(!is_obviously_infinite(kb));
     REQUIRE(kb.size() == 7'776);
   }
@@ -349,7 +351,7 @@ namespace libsemigroups {
 
     size_t      n = 5;
     auto        p = full_transformation_monoid(n, fpsemigroup::author::Iwahori);
-    KnuthBendix kb(p);
+    KnuthBendix kb(twosided, p);
     REQUIRE(!is_obviously_infinite(kb));
     REQUIRE(kb.size() == 3'125);
   }
@@ -377,14 +379,14 @@ namespace libsemigroups {
     presentation::add_rule(p2, 111_w, {});
     presentation::add_rule(p2, 010101_w, {});
 
-    KnuthBendix kb1(p1);
+    KnuthBendix kb1(twosided, p1);
     REQUIRE(!kb1.confluent());
     REQUIRE(!kb1.finished());
     kb1.run();
     REQUIRE(kb1.confluent());
     REQUIRE(kb1.number_of_active_rules() == 8);
 
-    kb1.init(p2);
+    kb1.init(twosided, p2);
     REQUIRE(!kb1.confluent());
     REQUIRE(!kb1.finished());
     kb1.run();
@@ -393,7 +395,7 @@ namespace libsemigroups {
     REQUIRE(kb1.confluent_known());
     REQUIRE(kb1.number_of_active_rules() == 4);
 
-    kb1.init(p1);
+    kb1.init(twosided, p1);
     REQUIRE(!kb1.confluent());
     REQUIRE(!kb1.finished());
     kb1.run();
@@ -414,7 +416,7 @@ namespace libsemigroups {
     REQUIRE(kb1.finished());
     REQUIRE(kb1.number_of_active_rules() == 8);
 
-    kb1.init(std::move(p1));
+    kb1.init(twosided, std::move(p1));
     REQUIRE(!kb1.confluent());
     REQUIRE(!kb1.finished());
     kb1.run();
@@ -423,7 +425,7 @@ namespace libsemigroups {
     REQUIRE(kb1.confluent_known());
     REQUIRE(kb1.number_of_active_rules() == 8);
 
-    KnuthBendix kb3(std::move(p2));
+    KnuthBendix kb3(twosided, std::move(p2));
     REQUIRE(!kb3.confluent());
     REQUIRE(!kb3.finished());
     kb3.run();

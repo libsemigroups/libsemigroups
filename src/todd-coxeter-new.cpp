@@ -25,6 +25,11 @@
 #include "libsemigroups/report.hpp"
 
 namespace libsemigroups {
+  template <typename T>
+  class Congruence;
+
+  template <>
+  class Congruence<ToddCoxeter> : public ToddCoxeter {};
 
   using class_index_type = v3::CongruenceInterface::class_index_type;
 
