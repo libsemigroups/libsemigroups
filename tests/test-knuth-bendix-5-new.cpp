@@ -439,22 +439,21 @@ namespace libsemigroups {
 
     REQUIRE(nf1
             == std::vector<std::string>(
-                {"a",        "b",        "aa",       "ab",       "ba",
-                 "bb",       "aaa",      "aab",      "aba",      "abb",
-                 "baa",      "bba",      "aaaa",     "aaab",     "aaba",
-                 "aabb",     "abaa",     "abab",     "abba",     "bbaa",
-                 "bbab",     "aaaba",    "aaabb",    "aabaa",    "aabab",
-                 "aabba",    "abaaa",    "abaab",    "ababa",    "abbaa",
-                 "abbab",    "bbaaa",    "bbaab",    "bbaba",    "aaabaa",
-                 "aaabab",   "aaabba",   "aabaaa",   "aabaab",   "aababa",
-                 "aabbaa",   "aabbab",   "abaaaa",   "abaaab",   "abbaaa",
-                 "abbaab",   "abbaba",   "bbaaaa",   "bbaaab",   "aaabaaa",
-                 "aaabaab",  "aaababa",  "aabaaaa",  "aabaaab",  "aabbaaa",
-                 "aabbaab",  "aabbaba",  "abaaaba",  "abbaaaa",  "abbaaab",
-                 "bbaaaba",  "aaabaaaa", "aaabaaab", "aabaaaba", "aabbaaaa",
-                 "aabbaaab", "abaaabaa", "abbaaaba", "aaabaaaba"}));
+                {"a",        "b",        "aa",       "ba",       "ab",
+                 "bb",       "aaa",      "baa",      "aba",      "bba",
+                 "aab",      "abb",      "aaaa",     "baaa",     "abaa",
+                 "bbaa",     "aaba",     "baba",     "abba",     "aabb",
+                 "babb",     "abaaa",    "bbaaa",    "aabaa",    "babaa",
+                 "abbaa",    "aaaba",    "baaba",    "ababa",    "aabba",
+                 "babba",    "aaabb",    "baabb",    "ababb",    "aabaaa",
+                 "babaaa",   "abbaaa",   "aaabaa",   "baabaa",   "ababaa",
+                 "aabbaa",   "babbaa",   "aaaaba",   "baaaba",   "aaabba",
+                 "baabba",   "ababba",   "aaaabb",   "baaabb",   "aaabaaa",
+                 "baabaaa",  "ababaaa",  "aaaabaa",  "baaabaa",  "aaabbaa",
+                 "baabbaa",  "ababbaa",  "abaaaba",  "aaaabba",  "baaabba",
+                 "abaaabb",  "aaaabaaa", "baaabaaa", "abaaabaa", "aaaabbaa",
+                 "baaabbaa", "aabaaaba", "abaaabba", "abaaabaaa"}));
     REQUIRE(std::all_of(nf1.begin(), nf1.end(), [&kb](auto& w) {
-      std::reverse(w.begin(), w.end());
       return kb.normal_form(w) == w;
     }));
 

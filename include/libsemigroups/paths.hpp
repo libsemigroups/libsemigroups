@@ -967,9 +967,7 @@ namespace libsemigroups {
     }
 
     Paths& from(node_type src) {
-      _current_valid &= (src == _source);
-      _source = src;
-      return *this;
+      return from(this, src);
     }
 
     [[nodiscard]] node_type from() const noexcept {
@@ -977,38 +975,66 @@ namespace libsemigroups {
     }
 
     Paths& to(node_type trgt) noexcept {
-      _current_valid &= (trgt == _target);
-      _target = trgt;
-      return *this;
+      return to(this, trgt);
     }
 
     [[nodiscard]] node_type to() const;
 
-    Paths& min(size_type min) noexcept {
-      _current_valid &= (min == _min);
-      _min = min;
-      return *this;
+    Paths& min(size_type val) noexcept {
+      return min(this, val);
     }
 
     [[nodiscard]] size_type min() const noexcept {
       return _min;
     }
 
-    Paths& max(size_type max) noexcept {
-      _current_valid &= (max == _max);
-      _max = max;
-      return *this;
+    Paths& max(size_type val) noexcept {
+      return max(this, val);
     }
 
     [[nodiscard]] size_type max() const noexcept {
       return _max;
     }
 
-    Paths& order(order val);
+    Paths& order(enum order val) {
+      return order(this, val);
+    }
 
     [[nodiscard]] enum order order() const noexcept {
       return _order;
     }
+
+   protected:
+    template <typename Subclass>
+    Subclass& from(Subclass* obj, node_type src) {
+      _current_valid &= (src == _source);
+      _source = src;
+      return *obj;
+    }
+
+    template <typename Subclass>
+    Subclass& to(Subclass* obj, node_type trgt) noexcept {
+      _current_valid &= (trgt == _target);
+      _target = trgt;
+      return *obj;
+    }
+
+    template <typename Subclass>
+    Subclass& min(Subclass* obj, size_type min) noexcept {
+      _current_valid &= (min == _min);
+      _min = min;
+      return *obj;
+    }
+
+    template <typename Subclass>
+    Subclass& max(Subclass* obj, size_type max) noexcept {
+      _current_valid &= (max == _max);
+      _max = max;
+      return *obj;
+    }
+
+    template <typename Subclass>
+    Subclass& order(Subclass* obj, enum order val);
   };
 
   template <typename Node>
@@ -1016,6 +1042,83 @@ namespace libsemigroups {
 
   template <typename Node>
   Paths(ActionDigraph<Node>&&) -> Paths<Node>;
+
+  template <typename Node>
+  class ReversiblePaths : public Paths<Node> {
+   private:
+    bool _reverse;
+
+    using size_type = typename ActionDigraph<Node>::size_type;
+
+   public:
+    // this isn't always true!
+    static constexpr bool is_finite     = Paths<Node>::is_finite;
+    static constexpr bool is_idempotent = Paths<Node>::is_idempotent;
+
+    using output_type = word_type;
+
+    ReversiblePaths() {
+      init();
+    }
+
+    ReversiblePaths& init() {
+      Paths<Node>::init();
+      _reverse = false;
+    }
+
+    ReversiblePaths(ReversiblePaths const&)            = default;
+    ReversiblePaths(ReversiblePaths&&)                 = default;
+    ReversiblePaths& operator=(ReversiblePaths const&) = default;
+    ReversiblePaths& operator=(ReversiblePaths&&)      = default;
+
+    explicit ReversiblePaths(ActionDigraph<Node> const& digraph) {
+      init(digraph);
+    }
+
+    ReversiblePaths& init(ActionDigraph<Node> const& digraph) {
+      Paths<Node>::init(digraph);
+      return *this;
+    }
+
+    ReversiblePaths& from(size_type val) noexcept {
+      return Paths<Node>::from(this, val);
+    }
+
+    ReversiblePaths& to(size_type val) noexcept {
+      return Paths<Node>::to(this, val);
+    }
+
+    ReversiblePaths& min(size_type val) noexcept {
+      return Paths<Node>::min(this, val);
+    }
+
+    ReversiblePaths& max(size_type val) noexcept {
+      return Paths<Node>::max(this, val);
+    }
+
+    ReversiblePaths& order(enum order val) {
+      return Paths<Node>::order(this, val);
+    }
+
+    ReversiblePaths& reverse(bool val) {
+      _reverse = val;
+      return *this;
+    }
+
+    output_type get() const {
+      word_type result = Paths<Node>::get();
+      if (_reverse) {
+        std::reverse(result.begin(), result.end());
+      }
+      return result;
+    }
+  };
+
+  template <typename Node>
+  ReversiblePaths(ActionDigraph<Node> const&) -> ReversiblePaths<Node>;
+
+  template <typename Node>
+  ReversiblePaths(ActionDigraph<Node>&&) -> ReversiblePaths<Node>;
 
 }  // namespace libsemigroups
 

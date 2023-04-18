@@ -759,8 +759,9 @@ namespace libsemigroups {
     // TODO warning if kb represents a left congruence, then the normal forms
     // are reversed
     inline auto normal_forms(KnuthBendix& kb) {
-      Paths paths(kb.gilman_digraph());
-      paths.from(0);
+      using rx::      operator|;
+      ReversiblePaths paths(kb.gilman_digraph());
+      paths.from(0).reverse(kb.kind() == congruence_kind::left);
       return paths;
     }
 

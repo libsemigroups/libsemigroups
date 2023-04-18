@@ -870,14 +870,15 @@ namespace libsemigroups {
   }
 
   template <typename Node>
-  Paths<Node>& Paths<Node>::order(enum order val) {
+  template <typename Subclass>
+  Subclass& Paths<Node>::order(Subclass* obj, enum order val) {
     if (val != order::shortlex && val != order::lex) {
       LIBSEMIGROUPS_EXCEPTION(
           "the argument must be order::shortlex or order::lex, found {}", val);
     }
     _current_valid &= (val == _order);
     _order = val;
-    return *this;
+    return obj;
   }
 
 }  // namespace libsemigroups
