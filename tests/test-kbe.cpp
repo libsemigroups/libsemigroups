@@ -18,127 +18,139 @@
 
 #include <vector>  // for vector
 
-#include "catch.hpp"                       // for LIBSEMIGROUPS_TEST_CASE
-#include "libsemigroups/froidure-pin.hpp"  // for FroidurePin
-#include "libsemigroups/kbe.hpp"           // for KBE
-#include "libsemigroups/knuth-bendix.hpp"  // for KnuthBendix
-#include "libsemigroups/transf.hpp"        // for Transf<>
-#include "test-main.hpp"                   // for LIBSEMIGROUPS_TEST_CASE
+#include "catch.hpp"      // for LIBSEMIGROUPS_TEST_CASE
+#include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
+
+#include "libsemigroups/kbe-new.hpp"  // for KBE
+
+#include "libsemigroups/froidure-pin.hpp"      // for FroidurePin
+#include "libsemigroups/knuth-bendix-new.hpp"  // for KnuthBendix
+#include "libsemigroups/to-froidure-pin.hpp"   // for to_froidure_pin
+#include "libsemigroups/transf.hpp"            // for Transf<>
+#include "libsemigroups/words.hpp"             // for literals
 
 namespace libsemigroups {
-  namespace detail {
+  using literals::operator""_w;
 
-    using KnuthBendix = fpsemigroup::KnuthBendix;
-    using FroidurePinKBE
-        = FroidurePin<KBE, FroidurePinTraits<KBE, KnuthBendix>>;
-    constexpr bool REPORT = false;
+  namespace v3 {
+    namespace detail {
 
-    LIBSEMIGROUPS_TEST_CASE("KBE", "000", "constructors", "[quick]") {
-      auto                  rg = ReportGuard(REPORT);
-      FroidurePin<Transf<>> S;
-      S.add_generator(Transf<>({1, 0}));
-      S.add_generator(Transf<>({0, 0}));
+      constexpr bool REPORT = false;
 
-      KnuthBendix kb(S);
-      KBE         ab(kb, word_type({0, 1}));
-      KBE         b(ab);
-      REQUIRE(b == ab);
-      b = ab;
-      REQUIRE(b == ab);
-      KBE c(std::move(ab));
-      REQUIRE(c == b);
-      KBE d;
-      d = std::move(c);
-      REQUIRE(d == b);
-    }
+      LIBSEMIGROUPS_TEST_CASE("KBE", "000", "constructors", "[quick]") {
+        auto                  rg = ReportGuard(REPORT);
+        FroidurePin<Transf<>> S;
+        S.add_generator(Transf<>({1, 0}));
+        S.add_generator(Transf<>({0, 0}));
 
-    LIBSEMIGROUPS_TEST_CASE("KBE", "001", "test", "[quick]") {
-      auto                  rg = ReportGuard(REPORT);
-      FroidurePin<Transf<>> S({Transf<>({1, 0}), Transf<>({0, 0})});
+        KnuthBendix kb(congruence_kind::twosided,
+                       to_presentation<word_type>(S));
+        KBE         ab(kb, to_string(kb.presentation(), 01_w));
+        KBE         b(ab);
+        REQUIRE(b == ab);
+        b = ab;
+        REQUIRE(b == ab);
+        KBE c(std::move(ab));
+        REQUIRE(c == b);
+        KBE d;
+        d = std::move(c);
+        REQUIRE(d == b);
+      }
 
-      REQUIRE(S.size() == 4);
-      REQUIRE(S.degree() == 2);
-      REQUIRE(S.number_of_rules() == 4);
+      LIBSEMIGROUPS_TEST_CASE("KBE", "001", "test", "[quick]") {
+        auto                  rg = ReportGuard(REPORT);
+        FroidurePin<Transf<>> S({Transf<>({1, 0}), Transf<>({0, 0})});
 
-      KnuthBendix kb(S);
-      REQUIRE(kb.confluent());
+        REQUIRE(S.size() == 4);
+        REQUIRE(S.degree() == 2);
+        REQUIRE(S.number_of_rules() == 4);
 
-      FroidurePinKBE T(kb);
-      T.add_generator(KBE(kb, 0));
-      T.add_generator(KBE(kb, 1));
+        KnuthBendix kb(congruence_kind::twosided,
+                       to_presentation<word_type>(S));
+        REQUIRE(kb.confluent());
 
-      REQUIRE(T.size() == 4);
+        auto T = to_froidure_pin(kb);
+        T.add_generator(KBE(kb, 0));
+        T.add_generator(KBE(kb, 1));
 
-      KBE ab(kb, word_type({0, 1}));
-      KBE b(kb, 1);
-      REQUIRE(!(b < ab));
-      REQUIRE(b == ab);
-      REQUIRE(!(ab < b));
-      REQUIRE(!(ab < b));
+        REQUIRE(T.size() == 4);
 
-      KBE aba(kb, word_type({0, 1, 0}));
-      REQUIRE(b < aba);
-    }
+        KBE ab(kb, to_string(kb.presentation(), 01_w));
+        KBE b(kb, 1);
+        REQUIRE(!(b < ab));
+        REQUIRE(b == ab);
+        REQUIRE(!(ab < b));
+        REQUIRE(!(ab < b));
 
-    LIBSEMIGROUPS_TEST_CASE("KBE", "002", "factorisation", "[quick]") {
-      auto                  rg = ReportGuard(REPORT);
-      FroidurePin<Transf<>> S({Transf<>({1, 0}), Transf<>({0, 0})});
+        KBE aba(kb, to_string(kb.presentation(), 010_w));
+        REQUIRE(b < aba);
+      }
 
-      KnuthBendix kb(S);
-      REQUIRE(kb.confluent());
-      FroidurePinKBE T(kb);
-      T.add_generators({KBE(kb, 0), KBE(kb, 1)});
+      LIBSEMIGROUPS_TEST_CASE("KBE", "002", "factorisation", "[quick]") {
+        auto                  rg = ReportGuard(REPORT);
+        FroidurePin<Transf<>> S({Transf<>({1, 0}), Transf<>({0, 0})});
 
-      KBE ab(kb, word_type({0, 1}));
-      REQUIRE(T.factorisation(ab) == word_type({1}));
-      KBE aaa(kb, word_type({0, 0, 0}));
-      REQUIRE(T.factorisation(aaa) == word_type({0}));
-    }
+        KnuthBendix kb(congruence_kind::twosided,
+                       to_presentation<word_type>(S));
+        REQUIRE(kb.confluent());
 
-    LIBSEMIGROUPS_TEST_CASE("KBE", "003", "swap", "[quick]") {
-      auto                  rg = ReportGuard(REPORT);
-      FroidurePin<Transf<>> S({Transf<>({1, 0}), Transf<>({0, 0})});
+        auto T = to_froidure_pin(kb);
+        T.add_generators({KBE(kb, 0), KBE(kb, 1)});
 
-      KnuthBendix kb(S);
-      REQUIRE(kb.confluent());
+        KBE ab(kb, to_string(kb.presentation(), 1_w));
+        REQUIRE(T.factorisation(ab) == word_type({1}));
+        KBE aaa(kb, to_string(kb.presentation(), 000_w));
+        REQUIRE(T.factorisation(aaa) == word_type({0, 0, 0}));
+      }
 
-      auto x = KBE(kb, 0);
-      auto y = KBE(kb, 1);
+      LIBSEMIGROUPS_TEST_CASE("KBE", "003", "swap", "[quick]") {
+        auto                  rg = ReportGuard(REPORT);
+        FroidurePin<Transf<>> S({Transf<>({1, 0}), Transf<>({0, 0})});
 
-      REQUIRE(x == KBE(kb, 0));
-      REQUIRE(y == KBE(kb, 1));
+        KnuthBendix kb(congruence_kind::twosided,
+                       to_presentation<word_type>(S));
+        REQUIRE(kb.confluent());
 
-      x.swap(y);
-      REQUIRE(x == KBE(kb, 1));
-      REQUIRE(y == KBE(kb, 0));
-    }
+        auto x = KBE(kb, 0);
+        auto y = KBE(kb, 1);
 
-    LIBSEMIGROUPS_TEST_CASE("KBE", "004", "adapters", "[quick]") {
-      auto                  rg = ReportGuard(REPORT);
-      FroidurePin<Transf<>> S({Transf<>({1, 0}), Transf<>({0, 0})});
+        REQUIRE(x == KBE(kb, 0));
+        REQUIRE(y == KBE(kb, 1));
 
-      KnuthBendix kb(S);
-      REQUIRE(kb.confluent());
+        x.swap(y);
+        REQUIRE(x == KBE(kb, 1));
+        REQUIRE(y == KBE(kb, 0));
+      }
 
-      auto x = KBE(kb, 0);
-      REQUIRE(Complexity<KBE>()(x) == LIMIT_MAX);
-      REQUIRE(EqualTo<KBE>()(x, x));
-      REQUIRE(One<KBE>()(x) == KBE());
-      auto y(x);
-      IncreaseDegree<KBE>()(y, 10);
-      REQUIRE(x == y);
-    }
+      LIBSEMIGROUPS_TEST_CASE("KBE", "004", "adapters", "[quick]") {
+        auto                  rg = ReportGuard(REPORT);
+        FroidurePin<Transf<>> S({Transf<>({1, 0}), Transf<>({0, 0})});
 
-    LIBSEMIGROUPS_TEST_CASE("KBE", "005", "conversions", "[quick]") {
-      auto                  rg = ReportGuard(REPORT);
-      FroidurePin<Transf<>> S({Transf<>({1, 0}), Transf<>({0, 0})});
+        KnuthBendix kb(congruence_kind::twosided,
+                       to_presentation<word_type>(S));
+        REQUIRE(kb.confluent());
 
-      KnuthBendix kb(S);
-      REQUIRE(kb.confluent());
+        auto x = KBE(kb, 0);
+        REQUIRE(Complexity<KBE>()(x) == LIMIT_MAX);
+        REQUIRE(EqualTo<KBE>()(x, x));
+        REQUIRE(One<KBE>()(x) == KBE());
+        auto y(x);
+        IncreaseDegree<KBE>()(y, 10);
+        REQUIRE(x == y);
+      }
 
-      auto x = KBE(kb, 0);
-      REQUIRE(x.word(kb) == word_type({0}));
-      REQUIRE(x.string(kb) == std::string(1, kb.alphabet()[0]));
-    }
-  }  // namespace detail
+      LIBSEMIGROUPS_TEST_CASE("KBE", "005", "conversions", "[quick]") {
+        auto                  rg = ReportGuard(REPORT);
+        FroidurePin<Transf<>> S({Transf<>({1, 0}), Transf<>({0, 0})});
+
+        KnuthBendix kb(congruence_kind::twosided,
+                       to_presentation<word_type>(S));
+        REQUIRE(kb.confluent());
+
+        auto x = KBE(kb, 0);
+        REQUIRE(x.word(kb) == word_type({0}));
+        REQUIRE(x.string(kb) == std::string(1, kb.presentation().letter(0)));
+      }
+    }  // namespace detail
+  }    // namespace v3
 }  // namespace libsemigroups

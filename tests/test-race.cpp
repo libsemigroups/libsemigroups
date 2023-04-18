@@ -108,9 +108,9 @@ namespace libsemigroups {
       rc.max_threads(2);
       rc.add_runner(std::make_shared<TestRunner1>());
       rc.add_runner(std::make_shared<TestRunner1>());
-      REQUIRE(size_t(rc.end() - rc.begin()) == rc.number_runners());
-      REQUIRE(size_t(rc.cend() - rc.cbegin()) == rc.number_runners());
-      REQUIRE(2 == rc.number_runners());
+      REQUIRE(size_t(rc.end() - rc.begin()) == rc.number_of_runners());
+      REQUIRE(size_t(rc.cend() - rc.cbegin()) == rc.number_of_runners());
+      REQUIRE(2 == rc.number_of_runners());
     }
 
     LIBSEMIGROUPS_TEST_CASE("Race", "005", "find_runner", "[quick]") {

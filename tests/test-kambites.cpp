@@ -31,7 +31,7 @@
 #include "libsemigroups/froidure-pin-base.hpp"  // for FroidurePinBase
 #include "libsemigroups/iterator.hpp"           // for ConstIteratorStateful
 #include "libsemigroups/kambites.hpp"           // for Kambites
-#include "libsemigroups/knuth-bendix.hpp"       // for KnuthBendix
+#include "libsemigroups/knuth-bendix-new.hpp"   // for KnuthBendix
 #include "libsemigroups/report.hpp"             // for ReportGuard
 #include "libsemigroups/string.hpp"             // for random_string etc
 #include "libsemigroups/transf.hpp"             // for LeastTransf
@@ -79,6 +79,7 @@ namespace libsemigroups {
       }
       return result;
     }
+
     auto sample(std::string A,
                 size_t      R,
                 size_t      min,
@@ -99,14 +100,10 @@ namespace libsemigroups {
       p.alphabet(A);
 
       Kambites<std::string> k;
+      KnuthBendix           kb1(congruence_kind::twosided);
+      KnuthBendix           kb2(congruence_kind::twosided);
 
       for (size_t j = 0; j < sample_size; ++j) {
-        fpsemigroup::KnuthBendix kb1;
-        kb1.set_alphabet(A);
-        fpsemigroup::KnuthBendix kb2;
-        std::reverse(A.begin(), A.end());
-        kb2.set_alphabet(A);
-        std::reverse(A.begin(), A.end());
         for (size_t r = 0; r < R; ++r) {
           auto        lhs = random_string(A, min, max);
           std::string rhs;
@@ -117,17 +114,24 @@ namespace libsemigroups {
           }
 
           p.rules = {lhs, rhs};
+
           k.init(p);
-          kb1.add_rule(lhs, rhs);
-          kb2.add_rule(lhs, rhs);
-        }
-        kb1.run_for(std::chrono::milliseconds(1));
-        kb2.run_for(std::chrono::milliseconds(1));
-        if (k.small_overlap_class() >= 4) {
-          total_c4++;
-        }
-        if (kb1.confluent() || kb2.confluent()) {
-          total_confluent++;
+
+          kb1.init(congruence_kind::twosided, p);
+
+          std::string A = p.alphabet();
+          std::reverse(A.begin(), A.end());
+          p.alphabet(A);
+          kb2.init(congruence_kind::twosided, p);
+
+          kb1.run_for(std::chrono::milliseconds(1));
+          kb2.run_for(std::chrono::milliseconds(1));
+          if (k.small_overlap_class() >= 4) {
+            total_c4++;
+          }
+          if (kb1.confluent() || kb2.confluent()) {
+            total_confluent++;
+          }
         }
       }
       return std::make_tuple(total_c4, total_confluent);
@@ -1699,12 +1703,12 @@ namespace libsemigroups {
       size_t const min = 7;
       size_t const max = i + 1;
       auto         x   = sample("ab", 1, min, max, sample_size);
-      fmt::print(
-          "Estimate of C(4) / non-C(4) {:<9} (length [{}, {:>2})) = {:.10f}\n",
-          " ",
-          min,
-          max + 1,
-          static_cast<double>(std::get<0>(x)) / sample_size);
+      fmt::print("Estimate of C(4) / non-C(4) {:<9} (length [{}, {:>2})) = "
+                 "{:.10f}\n",
+                 " ",
+                 min,
+                 max + 1,
+                 static_cast<double>(std::get<0>(x)) / sample_size);
 
       fmt::print("Estimate of confluent / non-confluent (length "
                  "[{}, {:>2})) = {:.10f}\n",

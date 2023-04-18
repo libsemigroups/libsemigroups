@@ -65,7 +65,9 @@ namespace libsemigroups {
     if (kb.size() == POSITIVE_INFINITY) {
       LIBSEMIGROUPS_EXCEPTION_V3(
           "cannot construct a ToddCoxeter instance using the Cayley graph of "
-          "an infinite KnuthBendix object");
+          "an infinite KnuthBendix object, maybe try ToddCoxeter({}, "
+          "kb.presentation()) instead?",
+          kb.kind());
     }
     auto fp = to_froidure_pin(kb);
     return to_todd_coxeter(knd, fp);

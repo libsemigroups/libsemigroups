@@ -878,7 +878,7 @@ namespace libsemigroups {
     }
     _current_valid &= (val == _order);
     _order = val;
-    return obj;
+    return *obj;
   }
 
 }  // namespace libsemigroups

@@ -136,19 +136,17 @@ namespace libsemigroups {
   };
 
   template <>
-  word_type FroidurePin<v3::detail::KBE,
-                        FroidurePinTraits<v3::detail::KBE, KnuthBendix>>::
-      factorisation(v3::detail::KBE const& x);
-
-  template <>
-  tril FroidurePin<v3::detail::KBE,
-                   FroidurePinTraits<v3::detail::KBE, KnuthBendix>>::is_finite()
-      const;
-
-  template <>
   struct FroidurePinState<v3::detail::KBE> {
     using type = KnuthBendix;
   };
+
+  template <>
+  word_type
+  FroidurePin<v3::detail::KBE>::factorisation(v3::detail::KBE const& x);
+
+  template <>
+  tril FroidurePin<v3::detail::KBE>::is_finite() const;
+
 }  // namespace libsemigroups
 
 ////////////////////////////////////////////////////////////////////////

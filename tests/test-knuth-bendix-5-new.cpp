@@ -32,13 +32,9 @@
 //
 // 6: contains tests for congruence::KnuthBendix.
 
-#define CATCH_CONFIG_ENABLE_ALL_STRINGMAKERS
-#define CATCH_CONFIG_ENABLE_PAIR_STRINGMAKER
-
 #include "catch.hpp"      // for AssertionHandler, ope...
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 #include <algorithm>      // for copy, fill
-#include <iostream>
 #include <string>         // for basic_string
 #include <unordered_map>  // for operator!=, operator==
 #include <vector>         // for vector, operator==

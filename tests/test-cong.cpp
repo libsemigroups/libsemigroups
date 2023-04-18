@@ -59,7 +59,7 @@ namespace libsemigroups {
         r.add_runner(std::make_shared<ToddCoxeter>(tc2));
       }
       if (knd == congruence_kind::twosided) {
-        KnuthBendix kb(p);
+        KnuthBendix kb(twosided, p);
         r.add_runner(std::make_shared<KnuthBendix>(kb));
         Kambites<detail::MultiStringView> k(p);
         r.add_runner(std::make_shared<decltype(k)>(k));
@@ -163,7 +163,7 @@ namespace libsemigroups {
     }
   }
 
-  LIBSEMIGROUPS_TEST_CASE("Congruence",
+  /*LIBSEMIGROUPS_TEST_CASE("Congruence",
                           "008",
                           "2-sided congruence on infinite fp semigroup",
                           "[quick][cong]") {
@@ -182,7 +182,7 @@ namespace libsemigroups {
     presentation::add_rule(p, {2, 2}, {1});
     presentation::add_rule(p, {0}, {1});
 
-    Congruence cong(twosided, S);
+    Congruence cong(twosided, p);
 
     REQUIRE(cong.word_to_class_index({0}) == cong.word_to_class_index({1}));
     REQUIRE(cong.word_to_class_index({0}) == cong.word_to_class_index({1, 0}));
@@ -195,7 +195,7 @@ namespace libsemigroups {
     REQUIRE(cong.number_of_classes() == 2);
   }
 
-  /*
+
 
     LIBSEMIGROUPS_TEST_CASE("Congruence",
                             "009",

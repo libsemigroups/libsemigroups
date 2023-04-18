@@ -41,14 +41,15 @@
 #include "libsemigroups/froidure-pin-base.hpp"  // for FroidurePinBase
 #include "libsemigroups/iterator.hpp"           // for operator+
 #include "libsemigroups/kbe.hpp"                // for KBE
-#include "libsemigroups/knuth-bendix.hpp"       // for KnuthBendix
+#include "libsemigroups/knuth-bendix-new.hpp"   // for KnuthBendix
 #include "libsemigroups/order.hpp"              // for LexicographicalCompare
 #include "libsemigroups/paths.hpp"              // for Paths, const_pstilo_i...
 #include "libsemigroups/ranges.hpp"             // for equal, is_sorted
 #include "libsemigroups/report.hpp"             // for ReportGuard
 #include "libsemigroups/stl.hpp"                // for hash
-#include "libsemigroups/types.hpp"              // for word_type, relation_type
-#include "libsemigroups/words.hpp"              // for operator""_w, Words
+#include "libsemigroups/to-froidure-pin.hpp"
+#include "libsemigroups/types.hpp"  // for word_type, relation_type
+#include "libsemigroups/words.hpp"  // for operator""_w, Words
 
 #include "rx/ranges.hpp"  // for operator|, begin, end
 
@@ -56,8 +57,6 @@ namespace libsemigroups {
 
   using namespace literals;
   using namespace rx;
-
-  using KnuthBendix = fpsemigroup::KnuthBendix;  // TODO
 
   struct LibsemigroupsException;  // forward decl
 
@@ -371,15 +370,16 @@ namespace libsemigroups {
     using action_digraph_helper::follow_path;
     using namespace rx;
 
-    auto        rg = ReportGuard(false);
-    KnuthBendix kb;
-    kb.set_alphabet("ab");
-    kb.add_rule("aaaaa", "aa");
-    kb.add_rule("bb", "b");
-    kb.add_rule("ab", "b");
+    auto                      rg = ReportGuard(false);
+    Presentation<std::string> p;
+    p.alphabet("ab");
+    presentation::add_rule(p, "aaaaa", "aa");
+    presentation::add_rule(p, "bb", "b");
+    presentation::add_rule(p, "ab", "b");
 
+    KnuthBendix kb(congruence_kind::twosided, p);
     REQUIRE(kb.size() == 9);
-    auto S = static_cast<KnuthBendix::froidure_pin_type&>(*kb.froidure_pin());
+    auto S = to_froidure_pin(kb);
 
     ActionDigraph<size_t> ad(S.right_cayley_graph());
     ad.add_nodes(1);
@@ -393,13 +393,13 @@ namespace libsemigroups {
     REQUIRE(action_digraph_helper::number_of_nodes_reachable_from(ad, S.size())
             == 10);
 
-    Paths p(ad);
-    p.order(order::lex).from(S.size()).min(0).max(9);
-    REQUIRE(p.to(0).get() == 0_w);
+    Paths paths(ad);
+    paths.order(order::lex).from(S.size()).min(0).max(9);
+    REQUIRE(paths.to(0).get() == 0_w);
 
-    auto tprime
-        = (seq() | first_n(S.size())
-           | transform([&p](auto i) { return p.to(i).get(); }) | to_vector());
+    auto tprime = (seq() | first_n(S.size())
+                   | transform([&paths](auto i) { return paths.to(i).get(); })
+                   | to_vector());
 
     REQUIRE(tprime.size() == 9);
     REQUIRE(tprime
@@ -455,19 +455,18 @@ namespace libsemigroups {
                                        00000001_w,
                                        00000001_w}));
     for (size_t i = 0; i < lprime.size(); ++i) {
-      REQUIRE(kb.equal_to(lprime[i], rhs[i]));
+      REQUIRE(kb.contains(lprime[i], rhs[i]));
     }
 
-    KnuthBendix kb2;
-    kb2.set_alphabet(2);
+    KnuthBendix kb2(congruence_kind::twosided, p);
     for (size_t i = 0; i < lprime.size(); ++i) {
-      kb2.add_rule(lprime[i], rhs[i]);
+      kb2.add_pair(lprime[i], rhs[i]);
     }
-    kb2.add_rule(1_w, 00000001_w);
+    kb2.add_pair(1_w, 00000001_w);
     REQUIRE(kb2.size() == 9);
-    kb2.froidure_pin()->run();
-    REQUIRE(std::vector<relation_type>(kb2.froidure_pin()->cbegin_rules(),
-                                       kb2.froidure_pin()->cend_rules())
+    auto T = to_froidure_pin(kb2);
+    T.run();
+    REQUIRE(std::vector<relation_type>(T.cbegin_rules(), T.cend_rules())
             == std::vector<relation_type>(
                 {{01_w, 1_w}, {11_w, 1_w}, {00000_w, 00_w}}));
   }

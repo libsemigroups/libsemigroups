@@ -25,17 +25,17 @@
 #include "catch.hpp"      // for REQUIRE, REQUIRE_THROWS_AS, REQUI...
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
-#include "libsemigroups/bipart.hpp"           // for Bipartition
-#include "libsemigroups/config.hpp"           // for LIBSEMIGROUPS_ENABLE_STATS
-#include "libsemigroups/digraph-helper.hpp"   // for action_digraph_helper
-#include "libsemigroups/fpsemi-examples.hpp"  // for brauer_monoid etc
-#include "libsemigroups/froidure-pin.hpp"     // for FroidurePin
-#include "libsemigroups/knuth-bendix.hpp"     // for redundant_rule
-#include "libsemigroups/to-froidure-pin.hpp"  // for make
-#include "libsemigroups/sims1.hpp"              // for Sims1
-#include "libsemigroups/to-presentation.hpp"    // for make
-#include "libsemigroups/transf.hpp"             // for Transf
-#include "libsemigroups/types.hpp"              // for word_type
+#include "libsemigroups/bipart.hpp"            // for Bipartition
+#include "libsemigroups/config.hpp"            // for LIBSEMIGROUPS_ENABLE_STATS
+#include "libsemigroups/digraph-helper.hpp"    // for action_digraph_helper
+#include "libsemigroups/fpsemi-examples.hpp"   // for brauer_monoid etc
+#include "libsemigroups/froidure-pin.hpp"      // for FroidurePin
+#include "libsemigroups/knuth-bendix-new.hpp"  // for redundant_rule
+#include "libsemigroups/sims1.hpp"             // for Sims1
+#include "libsemigroups/to-froidure-pin.hpp"   // for make
+#include "libsemigroups/to-presentation.hpp"   // for make
+#include "libsemigroups/transf.hpp"            // for Transf
+#include "libsemigroups/types.hpp"             // for word_type
 
 namespace libsemigroups {
 
@@ -121,19 +121,15 @@ namespace libsemigroups {
 
       it = S.cbegin(5);
       REQUIRE(*(it++) == to_action_digraph<node_type>(5, {{0, 0}}));
+      REQUIRE(*(it++) == to_action_digraph<node_type>(5, {{1, 0}, {1, 1}}));
+      REQUIRE(*(it++) == to_action_digraph<node_type>(5, {{1, 1}, {1, 1}}));
       REQUIRE(*(it++)
-              == to_action_digraph<node_type>(5, {{1, 0}, {1, 1}}));
+              == to_action_digraph<node_type>(5, {{1, 2}, {1, 1}, {1, 2}}));
       REQUIRE(*(it++)
-              == to_action_digraph<node_type>(5, {{1, 1}, {1, 1}}));
-      REQUIRE(*(it++)
-              == to_action_digraph<node_type>(
-                  5, {{1, 2}, {1, 1}, {1, 2}}));
-      REQUIRE(*(it++)
-              == to_action_digraph<node_type>(
-                  5, {{1, 2}, {1, 1}, {2, 2}}));
-      REQUIRE(*(it++)
-              == to_action_digraph<node_type>(
-                  5, {{1, 2}, {1, 1}, {3, 2}, {3, 3}}));
+              == to_action_digraph<node_type>(5, {{1, 2}, {1, 1}, {2, 2}}));
+      REQUIRE(
+          *(it++)
+          == to_action_digraph<node_type>(5, {{1, 2}, {1, 1}, {3, 2}, {3, 3}}));
       REQUIRE(*(it++) == ActionDigraph<node_type>(0, 2));
       REQUIRE(*(it++) == ActionDigraph<node_type>(0, 2));
       REQUIRE(*(it++) == ActionDigraph<node_type>(0, 2));
@@ -189,14 +185,11 @@ namespace libsemigroups {
       REQUIRE(S.number_of_congruences(10) == 176);
 
       auto it = S.cbegin(2);
+      REQUIRE(*(it++) == to_action_digraph<node_type>(2, {{0, 0, 0}}));
       REQUIRE(*(it++)
-              == to_action_digraph<node_type>(2, {{0, 0, 0}}));
-      REQUIRE(
-          *(it++)
-          == to_action_digraph<node_type>(2, {{1, 0, 1}, {1, 1, 1}}));
-      REQUIRE(
-          *(it++)
-          == to_action_digraph<node_type>(2, {{1, 1, 1}, {1, 1, 1}}));
+              == to_action_digraph<node_type>(2, {{1, 0, 1}, {1, 1, 1}}));
+      REQUIRE(*(it++)
+              == to_action_digraph<node_type>(2, {{1, 1, 1}, {1, 1, 1}}));
       REQUIRE(*(it++) == ActionDigraph<node_type>(0, 3));
       REQUIRE(*(it++) == ActionDigraph<node_type>(0, 3));
     }
@@ -1366,25 +1359,22 @@ namespace libsemigroups {
             {{1, 2, 1, 3}, {1, 1, 1, 3}, {2, 2, 2, 2}, {1, 1, 1, 3}}));  // Good
     REQUIRE(*it++
             == to_action_digraph<node_type>(5,
-                                                      {{1, 2, 1, 3},
-                                                       {1, 1, 1, 3},
-                                                       {2, 2, 2, 4},
-                                                       {1, 1, 1, 3},
-                                                       {2, 2, 2, 4}}));  // Good
+                                            {{1, 2, 1, 3},
+                                             {1, 1, 1, 3},
+                                             {2, 2, 2, 4},
+                                             {1, 1, 1, 3},
+                                             {2, 2, 2, 4}}));  // Good
     REQUIRE(it->number_of_nodes() == 0);
 
     it = T.cbegin(5);
 
     REQUIRE(*it++ == to_action_digraph<node_type>(5, {{0, 0, 0, 0}}));
     REQUIRE(*it++
-            == to_action_digraph<node_type>(
-                5, {{0, 0, 0, 1}, {0, 0, 0, 1}}));
+            == to_action_digraph<node_type>(5, {{0, 0, 0, 1}, {0, 0, 0, 1}}));
     REQUIRE(*it++
-            == to_action_digraph<node_type>(
-                5, {{1, 1, 1, 0}, {1, 1, 1, 0}}));
+            == to_action_digraph<node_type>(5, {{1, 1, 1, 0}, {1, 1, 1, 0}}));
     REQUIRE(*it++
-            == to_action_digraph<node_type>(
-                5, {{1, 1, 1, 1}, {1, 1, 1, 1}}));
+            == to_action_digraph<node_type>(5, {{1, 1, 1, 1}, {1, 1, 1, 1}}));
     REQUIRE(*it++
             == to_action_digraph<node_type>(
                 5, {{1, 1, 1, 2}, {1, 1, 1, 2}, {1, 1, 1, 2}}));
@@ -1399,11 +1389,11 @@ namespace libsemigroups {
                 5, {{1, 2, 1, 3}, {1, 1, 1, 3}, {2, 2, 2, 2}, {1, 1, 1, 3}}));
     REQUIRE(*it++
             == to_action_digraph<node_type>(5,
-                                                      {{1, 2, 1, 3},
-                                                       {1, 1, 1, 3},
-                                                       {2, 2, 2, 4},
-                                                       {1, 1, 1, 3},
-                                                       {2, 2, 2, 4}}));
+                                            {{1, 2, 1, 3},
+                                             {1, 1, 1, 3},
+                                             {2, 2, 2, 4},
+                                             {1, 1, 1, 3},
+                                             {2, 2, 2, 4}}));
     REQUIRE(it->number_of_nodes() == 0);
   }
 
@@ -1472,11 +1462,11 @@ namespace libsemigroups {
     REQUIRE(T.size() == 5);
 
     auto dd = to_action_digraph<uint8_t>(5,
-                                                   {{0, 0, 0, 0, 0},
-                                                    {0, 0, 0, 0, 2},
-                                                    {2, 2, 2, 2, 2},
-                                                    {0, 1, 2, 3, 0},
-                                                    {4, 4, 4, 4, 4}});
+                                         {{0, 0, 0, 0, 0},
+                                          {0, 0, 0, 0, 2},
+                                          {2, 2, 2, 2, 2},
+                                          {0, 1, 2, 3, 0},
+                                          {4, 4, 4, 4, 4}});
 
     REQUIRE(!action_digraph_helper::is_strictly_cyclic(dd));
     REQUIRE(dd.number_of_nodes() == 5);

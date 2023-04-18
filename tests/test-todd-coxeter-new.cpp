@@ -25,15 +25,15 @@
 #include "libsemigroups/bmat8.hpp"
 #include "libsemigroups/fpsemi-examples.hpp"  // for dual_symmetric_...
 #include "libsemigroups/froidure-pin.hpp"
-#include "libsemigroups/to-todd-coxeter.hpp"  // for ??
-#include "libsemigroups/obvinf.hpp"             // for is_obviously_infinite
-#include "libsemigroups/present.hpp"            // for Presentation
-#include "libsemigroups/ranges.hpp"             // for is_sorted
-#include "libsemigroups/report.hpp"             // for ReportGuard
-#include "libsemigroups/to-presentation.hpp"    // for Presentation
-#include "libsemigroups/todd-coxeter-new.hpp"   // for ToddCoxeter
-#include "libsemigroups/transf.hpp"             // for Transf
-#include "libsemigroups/words.hpp"              // for cbegin_wislo
+#include "libsemigroups/obvinf.hpp"            // for is_obviously_infinite
+#include "libsemigroups/present.hpp"           // for Presentation
+#include "libsemigroups/ranges.hpp"            // for is_sorted
+#include "libsemigroups/report.hpp"            // for ReportGuard
+#include "libsemigroups/to-presentation.hpp"   // for Presentation
+#include "libsemigroups/to-todd-coxeter.hpp"   // for ??
+#include "libsemigroups/todd-coxeter-new.hpp"  // for ToddCoxeter
+#include "libsemigroups/transf.hpp"            // for Transf
+#include "libsemigroups/words.hpp"             // for cbegin_wislo
 
 #include "libsemigroups/tce.hpp"              // for TCE
 #include "libsemigroups/to-froidure-pin.hpp"  // for make
@@ -1370,7 +1370,7 @@ namespace libsemigroups {
     presentation::add_rule(p, "bb", "B");
     presentation::add_rule(p, "BaB", "aba");
 
-    KnuthBendix kb(p);
+    KnuthBendix kb(twosided, p);
     SECTION("not started. . .") {
       REQUIRE(!kb.confluent());
       REQUIRE(!kb.started());
@@ -1420,7 +1420,7 @@ namespace libsemigroups {
     presentation::add_rule(p, "a", "b");
     presentation::add_rule(p, "b", "B");
 
-    KnuthBendix kb(p);
+    KnuthBendix kb(twosided, p);
 
     REQUIRE(kb.confluent());
     kb.run();
@@ -2377,7 +2377,7 @@ namespace libsemigroups {
     REQUIRE(todd_coxeter::normal_form(tc, to_word(p, "aaaaaaaaaaaaaaaaaaa"))
             == to_word(p, "a"));
     auto S = to_froidure_pin(tc);
-    REQUIRE(KnuthBendix(to_presentation<word_type>(S)).confluent());
+    REQUIRE(KnuthBendix(twosided, to_presentation<word_type>(S)).confluent());
   }
 
   // Second of BHN's series of increasingly complicated presentations

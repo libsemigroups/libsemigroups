@@ -27,7 +27,8 @@ namespace libsemigroups {
 
     if (tc.kind() != congruence_kind::twosided) {
       LIBSEMIGROUPS_EXCEPTION_V3(
-          "the argument must be a two-sided congruence, found {}", tc.kind());
+          "the argument must be a two-sided congruence, found a {} congruence",
+          tc.kind());
     }
 
     tc.run();
@@ -61,6 +62,10 @@ namespace libsemigroups {
 
     if (n == 0) {
       LIBSEMIGROUPS_EXCEPTION_V3("TODO");
+    } else if (kb.kind() != congruence_kind::twosided) {
+      LIBSEMIGROUPS_EXCEPTION_V3(
+          "the argument must be a two-sided congruence, found a {} congruence",
+          kb.kind());
     }
     kb.run();
 
