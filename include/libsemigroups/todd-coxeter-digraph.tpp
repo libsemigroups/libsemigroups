@@ -119,35 +119,71 @@ namespace libsemigroups {
     using high_resolution_clock = std::chrono::high_resolution_clock;
     using nanoseconds           = std::chrono::nanoseconds;
 
+    auto run_time = duration_cast<nanoseconds>(high_resolution_clock::now()
+                                               - this->_stats.start_time);
+
     auto const active  = this->number_of_nodes_active();
     auto const killed  = this->number_of_nodes_killed();
     auto const defined = this->number_of_nodes_defined();
 
-    auto run_time = duration_cast<nanoseconds>(high_resolution_clock::now()
-                                               - this->_stats.start_time);
+    auto const active_diff
+        = signed_group_digits(active - _stats.prev_active_nodes);
+    auto const killed_diff
+        = signed_group_digits(killed - _stats.prev_nodes_killed);
+    auto const defined_diff
+        = signed_group_digits(defined - _stats.prev_nodes_defined);
 
-    auto msg = fmt_default("{}: nodes {:>12} (active) | {:>12} (killed) | "
-                           "{:>12} (defined)\n",
+    auto const mean_killed
+        = group_digits(std::pow(10, 9) * static_cast<double>(killed)
+                       / run_time.count())
+          + "/s";
+    auto const mean_defined
+        = group_digits(std::pow(10, 9) * static_cast<double>(defined)
+                       / run_time.count())
+          + "/s";
+
+    std::array<size_t, 3> col1_widths
+        = {12, group_digits(active).size(), active_diff.size()};
+    std::array<size_t, 4> col2_widths = {12,
+                                         group_digits(killed).size(),
+                                         killed_diff.size(),
+                                         mean_killed.size()};
+    std::array<size_t, 4> col3_widths = {12,
+                                         group_digits(defined).size(),
+                                         defined_diff.size(),
+                                         mean_defined.size()};
+    size_t c1 = *std::max_element(col1_widths.begin(), col1_widths.end());
+    size_t c2 = *std::max_element(col2_widths.begin(), col2_widths.end());
+    size_t c3 = *std::max_element(col3_widths.begin(), col3_widths.end());
+
+    auto msg = fmt_default("{}: nodes {:>{c1}} (active) | {:>{c2}} (killed) | "
+                           "{:>{c3}} (defined)\n",
                            _prefix,
                            group_digits(active),
                            group_digits(killed),
-                           group_digits(defined));
+                           group_digits(defined),
+                           fmt::arg("c1", c1),
+                           fmt::arg("c2", c2),
+                           fmt::arg("c3", c3));
+    msg += fmt_default("{}: diff  {:>{c1}} (active) | {:>{c2}} (killed) | "
+                       "{:>{c3}} (defined)\n",
+                       _prefix,
+                       active_diff,
+                       killed_diff,
+                       defined_diff,
+                       fmt::arg("c1", c1),
+                       fmt::arg("c2", c2),
+                       fmt::arg("c3", c3));
     msg += fmt_default(
-        "{}: diff  {:>12} (active) | {:>12} (killed) | "
-        "{:>12} (defined)\n",
-        _prefix,
-        signed_group_digits(active - _stats.prev_active_nodes),
-        signed_group_digits(killed - _stats.prev_nodes_killed),
-        signed_group_digits(defined - _stats.prev_nodes_defined));
-    msg += fmt_default(
-        "{}: time  {:>12} (total)  | {:>10}/s (killed) | {:>10}/s "
+        "{}: time  {:>{c1}} (total)  | {:>{c2}} (killed) | {:>{c3}} "
         "(defined)\n",
         _prefix,
         string_time(run_time),
-        group_digits(std::pow(10, 9) * static_cast<double>(killed)
-                     / run_time.count()),
-        group_digits(std::pow(10, 9) * static_cast<double>(defined)
-                     / run_time.count()));
+        mean_killed,
+        mean_defined,
+        fmt::arg("c1", c1),
+        fmt::arg("c2", c2),
+        fmt::arg("c3", c3));
     msg += fmt::format("{:-<93}\n", "");
     report_no_prefix(msg);
     stats_check_point();
@@ -196,7 +232,8 @@ namespace libsemigroups {
       // if (_coinc.size() > large_collapse()) {
       //   size_t num_nodes = this->number_of_nodes_active();
       //   size_t cost_pairwise
-      //       = 2 * out_degree() * out_degree() * (prev_num_nodes - num_nodes);
+      //       = 2 * out_degree() * out_degree() * (prev_num_nodes -
+      //       num_nodes);
       //   size_t cost_bigcrush = 2 * num_nodes * out_degree() + num_nodes;
       //   if (cost_bigcrush < cost_pairwise) {
       //     report_default("ToddCoxeter: large collapse {} -> {} nodes\n",

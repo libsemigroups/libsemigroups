@@ -550,7 +550,7 @@ namespace libsemigroups {
    private:
     virtual void run_impl()            = 0;
     virtual bool finished_impl() const = 0;
-    virtual void before_run() {}
+    virtual void before_run() {}  // TODO rm this
 
     void set_state(state stt) const {
       // We can set the state back to never_run if run_impl throws, and we are

@@ -201,10 +201,10 @@ namespace libsemigroups {
 
   bool is_obviously_infinite(ToddCoxeter const& tc);
   bool is_obviously_infinite(KnuthBendix& kb);
-  bool is_obviously_infinite(Congruence & kb);
+  bool is_obviously_infinite(Congruence& kb);
 
   template <typename Word>
-  bool is_obviously_infinite(Kambites<Word> const& k) {
+  bool is_obviously_infinite(Kambites<Word>& k) {
     if (k.finished() && k.small_overlap_class() >= 3) {
       return true;
     }

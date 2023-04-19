@@ -33,6 +33,24 @@
 
 namespace libsemigroups {
 
+  namespace {
+    auto sizes_ntc(std::vector<std::vector<word_type>> const& ntc) {
+      std::vector<size_t> sizes(ntc.size(), 0);
+      std::transform(ntc.cbegin(),
+                     ntc.cend(),
+                     sizes.begin(),
+                     std::mem_fn(&std::vector<word_type>::size));
+      std::sort(sizes.begin(), sizes.end());
+      return sizes;
+    }
+
+    auto unique_sizes_ntc(std::vector<std::vector<word_type>> const& ntc) {
+      auto sizes = sizes_ntc(ntc);
+      sizes.erase(std::unique(sizes.begin(), sizes.end()), sizes.end());
+      return sizes;
+    }
+  }  // namespace
+
   // Forward declarations
   struct LibsemigroupsException;
 
@@ -179,7 +197,12 @@ namespace libsemigroups {
     REQUIRE(cong.contains(1_w, 11_w));
     REQUIRE(cong.contains(101_w, 10_w));
 
-    // TODO add check for non_trivial_classes
+    REQUIRE(cong.has_knuth_bendix());
+
+    KnuthBendix kb(twosided, p);
+    REQUIRE(knuth_bendix::non_trivial_classes(kb, *cong.knuth_bendix())
+            == std::vector<std::vector<std::string>>(
+                {{"b", "ab", "bb", "abb", "a"}}));
   }
 
   LIBSEMIGROUPS_TEST_CASE("Congruence",
@@ -306,7 +329,6 @@ namespace libsemigroups {
 
     Presentation<word_type> p;
     p.contains_empty_word(true).alphabet(2);
-    // presentation::add_identity_rules(p, 0);
     presentation::add_rule(p, 01_w, {});
 
 #ifdef LIBSEMIGROUPS_EIGEN_ENABLED
@@ -318,6 +340,7 @@ namespace libsemigroups {
     Congruence cong(twosided, p);
     cong.add_pair(111_w, {});
     REQUIRE(cong.number_of_classes() == 3);
+
     if (cong.has_knuth_bendix()) {
       KnuthBendix kb(twosided, p);
       REQUIRE_THROWS_AS(
@@ -366,8 +389,7 @@ namespace libsemigroups {
     cong.add_pair(0_w, 1_w);
 
     REQUIRE(cong.number_of_classes() == 4);
-    // TODO
-    // REQUIRE(!to_froidure_pin(cong).is_monoid());
+    REQUIRE(!to_froidure_pin(cong)->is_monoid());
   }
 
   LIBSEMIGROUPS_TEST_CASE("Congruence",
@@ -776,15 +798,20 @@ namespace libsemigroups {
                           "029",
                           "left congruence on finite semigroup",
                           "[quick][cong]") {
-    auto                  rg = ReportGuard(true);
+    auto                  rg = ReportGuard(false);
     FroidurePin<Transf<>> S;
     S.add_generator(Transf<>({1, 3, 4, 2, 3}));
     S.add_generator(Transf<>({3, 2, 1, 3, 3}));
 
-    // REQUIRE(S.size() == 88);
-    // REQUIRE(S.degree() == 5);
+    REQUIRE(S.size() == 88);
+    REQUIRE(S.degree() == 5);
+
     Congruence cong(left, S);
-    cong.add_pair(010001100_w, 10001_w);
+
+    auto l = 010001100_w;
+    auto r = 10001_w;
+
+    cong.add_pair(l, r);
 
     REQUIRE(cong.number_of_classes() == 69);
     REQUIRE(cong.number_of_classes() == 69);
@@ -895,11 +922,11 @@ namespace libsemigroups {
       cong.add_pair(*it, *(it + 1));
     }
 
-    ToddCoxeter tc(twosided, p);
-    REQUIRE(tc.number_of_classes() == 7);
-
     REQUIRE(!is_obviously_infinite(cong));
     REQUIRE(cong.number_of_classes() == 5);
+
+    ToddCoxeter tc(twosided, p);
+    REQUIRE(tc.number_of_classes() == 7);
 
     auto ntc
         = congruence::non_trivial_classes(cong, todd_coxeter::normal_forms(tc));
@@ -978,12 +1005,8 @@ namespace libsemigroups {
     auto ntc
         = congruence::non_trivial_classes(cong, todd_coxeter::normal_forms(tc));
     REQUIRE(ntc.size() == 17);
-    std::vector<size_t> sizes(ntc.size(), 0);
-    std::transform(ntc.cbegin(),
-                   ntc.cend(),
-                   sizes.begin(),
-                   std::mem_fn(&std::vector<word_type>::size));
-    std::sort(sizes.begin(), sizes.end());
+
+    auto sizes = sizes_ntc(ntc);
     REQUIRE(sizes
             == std::vector<size_t>(
                 {3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 13, 13, 13, 13, 73}));
@@ -992,119 +1015,102 @@ namespace libsemigroups {
             == 209);
   }
 
-  // TODO uncomment
-  // LIBSEMIGROUPS_TEST_CASE("Congruence",
-  //                         "036",
-  //                         "stellar_monoid S5",
-  //                         "[quick][cong][no-valgrind]") {
-  //   auto        rg = ReportGuard(false);
-  //   Presentation<word_type> p;
-  //   p.alphabet(6);
-  //   for (relation_type const& rl : rook_monoid(5, 0)) {
-  //     presentation::add_rule(p, rl);
-  //   }
+  LIBSEMIGROUPS_TEST_CASE("Congruence",
+                          "036",
+                          "stellar_monoid S5",
+                          "[quick][cong][no-valgrind]") {
+    auto                    rg = ReportGuard(false);
+    Presentation<word_type> p  = rook_monoid(5, 0);
 
-  //   REQUIRE(S.number_of_rules() == 33);
-  //   //REQUIRE(!S.is_obviously_infinite());
-  //   REQUIRE(!S.knuth_bendix()->confluent());
-  //   REQUIRE(S.size() == 1546);
-  //   REQUIRE(S.froidure_pin()->size() == 1546);
+    Congruence cong(twosided, p);
+    auto       q = stellar_monoid(5);
+    for (auto it = q.rules.cbegin(); it != q.rules.cend(); it += 2) {
+      cong.add_pair(*it, *(it + 1));
+    }
 
-  //   Congruence cong(twosided, S);
-  //   for (relation_type const& rl : stellar_monoid(5)) {
-  //     cong.add_pair(rl.first, rl.second);
-  //   }
-  //   //REQUIRE(!is_obviously_infinite(cong));
-  //   REQUIRE(cong.number_of_classes() == 326);
-  //   REQUIRE(cong.number_of_non_trivial_classes() == 86);
+    REQUIRE(!is_obviously_infinite(cong));
+    REQUIRE(cong.number_of_classes() == 326);
 
-  //   std::vector<size_t> v(cong.number_of_non_trivial_classes(), 0);
-  //   std::transform(cong.cbegin_ntc(),
-  //                  cong.cend_ntc(),
-  //                  v.begin(),
-  //                  std::mem_fn(&std::vector<word_type>::size));
-  //   REQUIRE(std::count(v.cbegin(), v.cend(), 3) == 60);
-  //   REQUIRE(std::count(v.cbegin(), v.cend(), 13) == 20);
-  //   REQUIRE(std::count(v.cbegin(), v.cend(), 73) == 5);
-  //   REQUIRE(std::count(v.cbegin(), v.cend(), 501) == 1);
-  //   REQUIRE(
-  //       std::accumulate(v.cbegin(), v.cend(), 0)
-  //           + (cong.number_of_classes() -
-  //           cong.number_of_non_trivial_classes())
-  //       == S.size());
-  // }
+    ToddCoxeter tc(twosided, p);
+    REQUIRE(tc.number_of_classes() == 1'546);
 
-  // LIBSEMIGROUPS_TEST_CASE("Congruence",
-  //                         "037",
-  //                         "stellar_monoid S6",
-  //                         "[quick][cong][no-valgrind]") {
-  //   auto        rg = ReportGuard(false);
-  //   Presentation<word_type> p;
-  //   p.alphabet(7);
-  //   for (relation_type const& rl : rook_monoid(6, 0)) {
-  //     presentation::add_rule(p, rl);
-  //   }
+    auto ntc
+        = congruence::non_trivial_classes(cong, todd_coxeter::normal_forms(tc));
+    REQUIRE(ntc.size() == 86);
 
-  //   REQUIRE(S.number_of_rules() == 45);
-  //   //REQUIRE(!S.is_obviously_infinite());
-  //   REQUIRE(!S.knuth_bendix()->confluent());
-  //   REQUIRE(S.size() == 13327);
+    auto sizes = sizes_ntc(ntc);
+    // REQUIRE(cong.number_of_non_trivial_classes() == 86);
 
-  //   Congruence cong(twosided, S);
-  //   for (relation_type const& rl : stellar_monoid(6)) {
-  //     cong.add_pair(rl.first, rl.second);
-  //   }
-  //   //REQUIRE(!is_obviously_infinite(cong));
-  //   REQUIRE(cong.number_of_classes() == 1957);
-  //   REQUIRE(cong.number_of_non_trivial_classes() == 517);
+    REQUIRE(std::count(sizes.cbegin(), sizes.cend(), 3) == 60);
+    REQUIRE(std::count(sizes.cbegin(), sizes.cend(), 13) == 20);
+    REQUIRE(std::count(sizes.cbegin(), sizes.cend(), 73) == 5);
+    REQUIRE(std::count(sizes.cbegin(), sizes.cend(), 501) == 1);
+    REQUIRE(std::accumulate(sizes.cbegin(), sizes.cend(), 0)
+                + (cong.number_of_classes() - ntc.size())
+            == tc.number_of_classes());
+  }
 
-  //   std::vector<size_t> v(cong.number_of_non_trivial_classes(), 0);
-  //   std::transform(cong.cbegin_ntc(),
-  //                  cong.cend_ntc(),
-  //                  v.begin(),
-  //                  std::mem_fn(&std::vector<word_type>::size));
-  //   REQUIRE(
-  //       std::accumulate(v.cbegin(), v.cend(), 0)
-  //           + (cong.number_of_classes() -
-  //           cong.number_of_non_trivial_classes())
-  //       == S.size());
-  // }
+  LIBSEMIGROUPS_TEST_CASE("Congruence",
+                          "037",
+                          "stellar_monoid S6",
+                          "[quick][cong][no-valgrind]") {
+    auto                    rg = ReportGuard(false);
+    Presentation<word_type> p  = rook_monoid(6, 0);
 
-  // LIBSEMIGROUPS_TEST_CASE("Congruence",
-  //                         "038",
-  //                         "stellar_monoid S7",
-  //                         "[quick][cong][no-valgrind]") {
-  //   auto        rg = ReportGuard(false);
-  //   Presentation<word_type> p;
-  //   p.alphabet(8);
-  //   for (relation_type const& rl : rook_monoid(7, 0)) {
-  //     presentation::add_rule(p, rl);
-  //   }
+    Congruence cong(twosided, p);
+    auto       q = stellar_monoid(6);
+    for (auto it = q.rules.cbegin(); it != q.rules.cend(); it += 2) {
+      cong.add_pair(*it, *(it + 1));
+    }
 
-  //   REQUIRE(S.number_of_rules() == 59);
-  //   //REQUIRE(!S.is_obviously_infinite());
-  //   REQUIRE(!S.knuth_bendix()->confluent());
-  //   REQUIRE(S.size() == 130922);
+    REQUIRE(!is_obviously_infinite(cong));
+    REQUIRE(cong.number_of_classes() == 1'957);
 
-  //   Congruence cong(twosided, S);
-  //   for (relation_type const& rl : stellar_monoid(7)) {
-  //     cong.add_pair(rl.first, rl.second);
-  //   }
-  //   //REQUIRE(!is_obviously_infinite(cong));
-  //   REQUIRE(cong.number_of_classes() == 13700);
-  //   REQUIRE(cong.number_of_non_trivial_classes() == 3620);
+    ToddCoxeter tc(twosided, p);
+    REQUIRE(tc.number_of_classes() == 13'327);
 
-  //   std::vector<size_t> v(cong.number_of_non_trivial_classes(), 0);
-  //   std::transform(cong.cbegin_ntc(),
-  //                  cong.cend_ntc(),
-  //                  v.begin(),
-  //                  std::mem_fn(&std::vector<word_type>::size));
-  //   REQUIRE(
-  //       std::accumulate(v.cbegin(), v.cend(), 0)
-  //           + (cong.number_of_classes() -
-  //           cong.number_of_non_trivial_classes())
-  //       == S.size());
-  // }
+    auto ntc
+        = congruence::non_trivial_classes(cong, todd_coxeter::normal_forms(tc));
+    REQUIRE(ntc.size() == 517);
+
+    REQUIRE(unique_sizes_ntc(ntc)
+            == std::vector<size_t>({3, 13, 73, 501, 4051}));
+    auto sizes = sizes_ntc(ntc);
+    REQUIRE(std::accumulate(sizes.cbegin(), sizes.cend(), 0)
+                + (cong.number_of_classes() - ntc.size())
+            == tc.number_of_classes());
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Congruence",
+                          "038",
+                          "stellar_monoid S7",
+                          "[quick][cong][no-valgrind]") {
+    auto                    rg = ReportGuard(false);
+    Presentation<word_type> p  = rook_monoid(7, 0);
+
+    Congruence cong(twosided, p);
+    auto       q = stellar_monoid(7);
+    for (auto it = q.rules.cbegin(); it != q.rules.cend(); it += 2) {
+      cong.add_pair(*it, *(it + 1));
+    }
+
+    REQUIRE(!is_obviously_infinite(cong));
+    REQUIRE(cong.number_of_classes() == 13'700);
+
+    ToddCoxeter tc(twosided, p);
+    REQUIRE(tc.number_of_classes() == 130'922);
+
+    auto ntc
+        = congruence::non_trivial_classes(cong, todd_coxeter::normal_forms(tc));
+    REQUIRE(ntc.size() == 3'620);
+
+    REQUIRE(unique_sizes_ntc(ntc)
+            == std::vector<size_t>({3, 13, 73, 501, 4'051, 37'633}));
+    auto sizes = sizes_ntc(ntc);
+    REQUIRE(std::accumulate(sizes.cbegin(), sizes.cend(), 0)
+                + (cong.number_of_classes() - ntc.size())
+            == tc.number_of_classes());
+  }
 
   LIBSEMIGROUPS_TEST_CASE("Congruence",
                           "039",
@@ -1176,26 +1182,30 @@ namespace libsemigroups {
     }
   }
 
-  // TODO similar test for left/right
   LIBSEMIGROUPS_TEST_CASE("Congruence", "043", "no winner", "[quick][cong]") {
     auto                    rg = ReportGuard(false);
     Presentation<word_type> p;
     p.alphabet(2);
-    Congruence cong(twosided, p);
-    // Required in case of using a 1 core computer, otherwise the tests below
-    // fail.
-    REQUIRE(cong.contains(0000_w, 0000_w));
-    REQUIRE(!cong.contains(0000_w, 0001_w));
 
-    REQUIRE(!cong.has_knuth_bendix());
-    REQUIRE(cong.has_kambites());
-    REQUIRE_NOTHROW(to_froidure_pin(*cong.kambites()));
+    for (auto const& knd : {left, right, twosided}) {
+      Congruence cong(knd, p);
+      // Required in case of using a 1 core computer, otherwise the tests below
+      // fail.
+      REQUIRE(cong.contains(0000_w, 0000_w));
+      REQUIRE(!cong.contains(0000_w, 0001_w));
+      if (knd == twosided) {
+        REQUIRE_NOTHROW(to_froidure_pin(cong));
+      } else {
+        REQUIRE_THROWS_AS(to_froidure_pin(cong), LibsemigroupsException);
+      }
 
-    KnuthBendix kb(twosided, p);  // TODO just use Strings
-    // TODO there's not reason this should't succeed
-    REQUIRE_THROWS_AS(congruence::non_trivial_classes(
-                          cong, knuth_bendix::normal_forms(kb).min(0).max(10)),
-                      LibsemigroupsException);
+      Words w;
+      w.letters(2).min(0).max(5);
+
+      REQUIRE(w.count() == 31);
+
+      REQUIRE(congruence::non_trivial_classes(cong, w).empty());
+    }
   }
 
   LIBSEMIGROUPS_TEST_CASE("Congruence",

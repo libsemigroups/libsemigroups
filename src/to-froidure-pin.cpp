@@ -18,6 +18,8 @@
 
 #include "libsemigroups/to-froidure-pin.hpp"
 
+#include "libsemigroups/cong.hpp"
+
 namespace libsemigroups {
 
   using TCE = v3::detail::TCE;
@@ -74,6 +76,21 @@ namespace libsemigroups {
       result.add_generator(KBE(kb, i));
     }
     return result;
+  }
+
+  std::unique_ptr<FroidurePinBase> to_froidure_pin(Congruence& cong) {
+    cong.run();
+    if (cong.has_knuth_bendix()) {
+      auto fp = to_froidure_pin(*cong.knuth_bendix());
+      return std::make_unique<decltype(fp)>(std::move(fp));
+    } else if (cong.has_todd_coxeter()) {
+      auto fp = to_froidure_pin(*cong.todd_coxeter());
+      return std::make_unique<decltype(fp)>(std::move(fp));
+    } else if (cong.has_kambites()) {
+      auto fp = to_froidure_pin(*cong.kambites());
+      return std::make_unique<decltype(fp)>(std::move(fp));
+    }
+    LIBSEMIGROUPS_EXCEPTION_V3("TODO");
   }
 
 }  // namespace libsemigroups

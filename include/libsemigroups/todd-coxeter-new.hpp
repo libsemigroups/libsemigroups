@@ -252,6 +252,7 @@ namespace libsemigroups {
         : ToddCoxeter(knd) {
       _word_graph = ad;
       _word_graph.presentation().alphabet(ad.out_degree());
+      _word_graph.set_prefix("ToddCoxeter");
     }
 
     template <typename Node>
@@ -270,6 +271,7 @@ namespace libsemigroups {
         : ToddCoxeter(knd, p) {
       _word_graph = ad;
       _word_graph.presentation(p);
+      _word_graph.set_prefix("ToddCoxeter");
     }
 
     ToddCoxeter(congruence_kind knd, ToddCoxeter const& tc);

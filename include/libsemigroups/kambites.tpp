@@ -160,17 +160,8 @@ namespace libsemigroups {
   ////////////////////////////////////////////////////////////////////////
 
   template <typename Word>
-  size_t Kambites<Word>::small_overlap_class() const {
-    if (!_have_class) {
-      size_t result = POSITIVE_INFINITY;
-      for (auto const& w : _presentation.rules) {
-        result = std::min(result,
-                          ukkonen::number_of_pieces_no_checks(
-                              _suffix_tree, w.cbegin(), w.cend()));
-      }
-      _have_class = true;
-      _class      = result;
-    }
+  size_t Kambites<Word>::small_overlap_class() {
+    run();
     return _class;
   }
 
@@ -189,7 +180,7 @@ namespace libsemigroups {
   }
 
   template <typename Word>
-  void Kambites<Word>::validate_small_overlap_class() const {
+  void Kambites<Word>::validate_small_overlap_class() {
     if (small_overlap_class() < 4) {
       LIBSEMIGROUPS_EXCEPTION(
           "small overlap class must be at least 4, but found %llu",

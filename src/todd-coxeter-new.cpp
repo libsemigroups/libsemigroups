@@ -595,9 +595,10 @@ namespace libsemigroups {
 
     _word_graph.settings(*this);
     _word_graph.stats().start_time = std::chrono::high_resolution_clock::now();
-    auto       first               = generating_pairs().cbegin();
-    auto       last                = generating_pairs().cend();
-    auto const id                  = word_graph().initial_node();
+    _word_graph.stats_check_point();
+    auto       first = generating_pairs().cbegin();
+    auto       last  = generating_pairs().cend();
+    auto const id    = word_graph().initial_node();
     if (save() || strategy() == options::strategy::felsch) {
       for (auto it = first; it < last; it += 2) {
         _word_graph.push_definition_hlt<RegisterDefs>(id, *it, *(it + 1));

@@ -659,7 +659,7 @@ namespace libsemigroups {
       if (started()) {
         LIBSEMIGROUPS_EXCEPTION_V3(
             "the presentation cannot be changed after Knuth-Bendix has "
-            "started, maybe try `init` instead");
+            "started, maybe try `init` instead?");
       }
     }
 

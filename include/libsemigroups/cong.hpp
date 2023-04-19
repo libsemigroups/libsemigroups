@@ -235,7 +235,8 @@ namespace libsemigroups {
     //! Constant.
     //!
     //! \sa has_knuth_bendix().
-    std::shared_ptr<KnuthBendix> knuth_bendix() const {
+    std::shared_ptr<KnuthBendix> knuth_bendix() {
+      init();
       return _race.find_runner<KnuthBendix>();
     }
 
@@ -254,7 +255,7 @@ namespace libsemigroups {
     //! Constant.
     //!
     //! \sa knuth_bendix().
-    bool has_knuth_bendix() const {
+    bool has_knuth_bendix() {
       return knuth_bendix() != nullptr;
     }
 
@@ -273,7 +274,8 @@ namespace libsemigroups {
     //! Constant.
     //!
     //! \sa has_todd_coxeter().
-    std::shared_ptr<ToddCoxeter> todd_coxeter() const {
+    std::shared_ptr<ToddCoxeter> todd_coxeter() {
+      init();
       return _race.find_runner<ToddCoxeter>();
     }
 
@@ -291,7 +293,8 @@ namespace libsemigroups {
     //! Constant.
     //!
     //! \sa has_kambites().
-    std::shared_ptr<Kambites<word_type>> kambites() const {
+    std::shared_ptr<Kambites<word_type>> kambites() {
+      init();
       return _race.find_runner<Kambites<word_type>>();
     }
 
@@ -310,7 +313,7 @@ namespace libsemigroups {
     //! Constant.
     //!
     //! \sa todd_coxeter.
-    bool has_todd_coxeter() const {
+    bool has_todd_coxeter() {
       return todd_coxeter() != nullptr;
     }
 
@@ -329,7 +332,7 @@ namespace libsemigroups {
     //! Constant.
     //!
     //! \sa \ref kambites.
-    bool has_kambites() const {
+    bool has_kambites() {
       return kambites() != nullptr;
     }
 
@@ -435,8 +438,8 @@ namespace libsemigroups {
           auto first = generating_pairs().cbegin();
           auto last  = generating_pairs().cend();
           for (auto it = first; it != last; it += 2) {
-            std::static_pointer_cast<CongruenceInterface>(runner)->add_pair(
-                *it, *(it + 1));
+            std::static_pointer_cast<CongruenceInterface>(runner)
+                ->add_pair_no_checks_no_reverse(*it, *(it + 1));
           }
         }
       }

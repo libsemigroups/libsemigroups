@@ -113,6 +113,7 @@ namespace libsemigroups {
     // Kambites - data members - private
     ////////////////////////////////////////////////////////////////////////
 
+    // TODO adjust mutable?
     mutable size_t                     _class;
     mutable Complements                _complements;
     mutable bool                       _have_class;
@@ -281,7 +282,7 @@ namespace libsemigroups {
     //! \warning
     //! The member functions \ref equal_to and \ref normal_form only work if
     //! the return value of this function is at least \f$4\f$.
-    size_t small_overlap_class() const;
+    size_t small_overlap_class();
 
     //! Returns the Ukkonen suffix tree object used to compute pieces.
     //!
@@ -315,7 +316,7 @@ namespace libsemigroups {
     // Throws exception if the small_overlap_class is < 4.
     //
     // Not noexcept, throws
-    void validate_small_overlap_class() const;
+    void validate_small_overlap_class();
 
     // TODO really required?
     void validate_word(word_type const&) const override {}
@@ -466,8 +467,9 @@ namespace libsemigroups {
 
     template <typename Iterator>
     static void append(detail::MultiStringView& w,
-                       Iterator                 first,
-                       Iterator                 last) {
+
+                       Iterator first,
+                       Iterator last) {
       w.append(first, last);
     }
 
@@ -505,11 +507,28 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////
 
     void run_impl() override {
-      small_overlap_class();
+      if (!_have_class) {
+        _presentation.rules.insert(_presentation.rules.end(),
+                                   generating_pairs().cbegin(),
+                                   generating_pairs().cend());
+        // TODO check that strings or whatever are correctly converted here
+        ukkonen::add_words_no_checks(_suffix_tree,
+                                     generating_pairs().cbegin(),
+                                     generating_pairs().cend());
+
+        size_t result = POSITIVE_INFINITY;
+        for (auto const& w : _presentation.rules) {
+          result = std::min(result,
+                            ukkonen::number_of_pieces_no_checks(
+                                _suffix_tree, w.cbegin(), w.cend()));
+        }
+        _have_class = true;
+        _class      = result;
+      }
     }
 
     bool finished_impl() const override {
-      return _have_class && small_overlap_class() >= 4;
+      return _have_class && _class >= 4;
     }
   };
 

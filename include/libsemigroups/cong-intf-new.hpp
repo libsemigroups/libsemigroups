@@ -34,6 +34,7 @@
 #include "rx/ranges.hpp"  // iterator_range
 
 namespace libsemigroups {
+  class Congruence;  // forward decl
 
   namespace v3 {
 
@@ -116,6 +117,7 @@ namespace libsemigroups {
       // TODO add_pair_no_checks
       // TODO add_pair for strings
       void add_pair(word_type const& u, word_type const& v);
+
       void add_pair(word_type&& u, word_type&& v);
 
       //! Add a generating pair to the congruence.
@@ -140,7 +142,7 @@ namespace libsemigroups {
       //! (None)
 
       [[nodiscard]] size_t number_of_generating_pairs() const noexcept {
-        return _generating_pairs.size();
+        return _generating_pairs.size() / 2;
       }
 
       [[nodiscard]] auto generating_pairs_range() const noexcept {
@@ -154,6 +156,11 @@ namespace libsemigroups {
       }
 
      private:
+      void add_pair_no_checks_no_reverse(word_type const& u,
+                                         word_type const& v);
+
+      friend class ::libsemigroups::Congruence;
+
       /////////////////////////////////////////////////////////////////////////
       // CongruenceInterface - pure virtual functions - private
       /////////////////////////////////////////////////////////////////////////

@@ -63,20 +63,21 @@ namespace libsemigroups {
       LIBSEMIGROUPS_EXCEPTION(
           "cannot add further generating pairs at this stage");
     }
-    validate_word(u);
-    validate_word(v);
-    // Note that _gen_pairs might contain pairs of distinct words that
-    // represent the same element of the parent semigroup (if any).
+    for (auto const& w : {u, v}) {
+      validate_word(w);
+      _generating_pairs.push_back(w);
+      if (kind() == congruence_kind::left) {
+        std::reverse(_generating_pairs.back().begin(),
+                     _generating_pairs.back().end());
+      }
+    }
+  }
+
+  void
+  v3::CongruenceInterface::add_pair_no_checks_no_reverse(word_type const& u,
+                                                         word_type const& v) {
     _generating_pairs.push_back(u);
-    if (kind() == congruence_kind::left) {
-      std::reverse(_generating_pairs.back().begin(),
-                   _generating_pairs.back().end());
-    }
     _generating_pairs.push_back(v);
-    if (kind() == congruence_kind::left) {
-      std::reverse(_generating_pairs.back().begin(),
-                   _generating_pairs.back().end());
-    }
   }
 
   void v3::CongruenceInterface::add_pair(word_type&& u, word_type&& v) {

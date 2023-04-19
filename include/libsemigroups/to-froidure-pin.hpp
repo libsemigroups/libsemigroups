@@ -33,6 +33,7 @@ namespace libsemigroups {
   class FroidurePinBase;  // forward decl
   class ToddCoxeter;
   class KnuthBendix;
+  class Congruence;
 
   //! Make a FroidurePin object from an ActionDigraph.
   //!
@@ -139,6 +140,8 @@ namespace libsemigroups {
     }
     return result;
   }
+
+  std::unique_ptr<FroidurePinBase> to_froidure_pin(Congruence& cong);
 
 }  // namespace libsemigroups
 #endif  // LIBSEMIGROUPS_TO_FROIDURE_PIN_HPP_
