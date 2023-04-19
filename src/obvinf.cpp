@@ -28,6 +28,7 @@
 // for LIBSEMIGROUPS_EIGEN_ENABLED
 #include "libsemigroups/config.hpp"
 
+#include "libsemigroups/cong.hpp"       // for StringToWord
 #include "libsemigroups/constants.hpp"  // for UNDEFINED
 #include "libsemigroups/debug.hpp"      // for LIBSEMIGROUPS_ASSERT
 #include "libsemigroups/knuth-bendix-new.hpp"
@@ -208,15 +209,15 @@ namespace libsemigroups {
     auto const&                 p = tc.presentation();
     detail::IsObviouslyInfinite ioi(p.alphabet().size());
     ioi.add_rules(p.rules.cbegin(), p.rules.cend());
-    ioi.add_rules(tc.cbegin_generating_pairs(), tc.cend_generating_pairs());
+    ioi.add_rules(tc.generating_pairs().cbegin(), tc.generating_pairs().cend());
     return ioi.result();
   }
 
-  // TODO re-add const when gilman_digraph is helper
   bool is_obviously_infinite(KnuthBendix& kb) {
     if (kb.finished()) {
       return !action_digraph_helper::is_acyclic(kb.gilman_digraph());
     }
+    // TODO need to do the same as for ToddCoxeter
     return is_obviously_infinite(kb.presentation());
   }
 
@@ -228,6 +229,19 @@ namespace libsemigroups {
     detail::IsObviouslyInfinite ioi(p.alphabet().size());
     ioi.add_rules(p.alphabet(), p.rules.cbegin(), p.rules.cend());
     return ioi.result();
+  }
+
+  bool is_obviously_infinite(Congruence& cong) {
+    if (cong.has_todd_coxeter()
+        && is_obviously_infinite(*cong.todd_coxeter())) {
+      return true;
+    } else if (cong.has_knuth_bendix()
+               && is_obviously_infinite(*cong.knuth_bendix())) {
+      return true;
+    } else if (cong.has_kambites() && is_obviously_infinite(*cong.kambites())) {
+      return true;
+    }
+    return false;
   }
 
 }  // namespace libsemigroups

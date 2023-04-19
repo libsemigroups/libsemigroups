@@ -23,22 +23,20 @@
 #include "libsemigroups/fastest-bmat.hpp"     // for FastestBMat
 #include "libsemigroups/fpsemi-examples.hpp"  // for rook_monoid
 #include "libsemigroups/froidure-pin.hpp"     // for FroidurePin
+#include "libsemigroups/obvinf.hpp"           // for is_obviously_infinite
 #include "libsemigroups/pbr.hpp"              // for PBR
 #include "libsemigroups/report.hpp"           // for ReportGuard
-#include "libsemigroups/transf.hpp"           // for Transf<>
-#include "libsemigroups/types.hpp"            // for word_type
-#include "libsemigroups/words.hpp"            // for literals
+#include "libsemigroups/to-froidure-pin.hpp"
+#include "libsemigroups/transf.hpp"  // for Transf<>
+#include "libsemigroups/types.hpp"   // for word_type
+#include "libsemigroups/words.hpp"   // for literals
 
 namespace libsemigroups {
 
   // Forward declarations
   struct LibsemigroupsException;
 
-  using Race = detail::Race;
-
   using literals::operator""_w;
-
-  constexpr bool REPORT = false;
 
   constexpr congruence_kind twosided = congruence_kind::twosided;
   constexpr congruence_kind left     = congruence_kind::left;
@@ -47,91 +45,58 @@ namespace libsemigroups {
   using fpsemigroup::rook_monoid;
   using fpsemigroup::stellar_monoid;
 
-  namespace {
-    void init_cong_race(Race&                          r,
-                        congruence_kind                knd,
-                        Presentation<word_type> const& p) {
-      if (!is_obviously_infinite(p)) {
-        ToddCoxeter tc1(left, p);
-        tc1.strategy(ToddCoxeter::options::strategy::felsch);
-        r.add_runner(std::make_shared<ToddCoxeter>(tc1));
-        ToddCoxeter tc2(left, p);
-        r.add_runner(std::make_shared<ToddCoxeter>(tc2));
-      }
-      if (knd == congruence_kind::twosided) {
-        KnuthBendix kb(twosided, p);
-        r.add_runner(std::make_shared<KnuthBendix>(kb));
-        Kambites<detail::MultiStringView> k(p);
-        r.add_runner(std::make_shared<decltype(k)>(k));
-      }
-    }
-
-  }  // namespace
-
-  LIBSEMIGROUPS_TEST_CASE("Race",
+  LIBSEMIGROUPS_TEST_CASE("Congruence",
                           "000",
-                          "left congruence on fp semigroup",
+                          "left congruence from presentation",
                           "[quick][cong]") {
-    auto                    rg = ReportGuard(true);
+    auto                    rg = ReportGuard(false);
     Presentation<word_type> p;
     p.alphabet(2);
     presentation::add_rule(p, 000_w, 0_w);
     presentation::add_rule(p, 0_w, 11_w);
 
-    Race r;
-    init_cong_race(r, left, p);
+    Congruence cong(left, p);
 
-    REQUIRE(r.number_of_runners() == 2);
-    r.run();
+    REQUIRE(cong.number_of_classes() == 5);
+    REQUIRE(cong.contains(011001_w, 001_w));
 
-    auto tc = std::static_pointer_cast<ToddCoxeter>(r.winner());
-    REQUIRE(tc->number_of_classes() == 5);
-    REQUIRE(tc->word_to_class_index(011001_w)
-            == tc->word_to_class_index(001_w));
-    REQUIRE(tc->word_to_class_index(001_w) == tc->word_to_class_index(00001_w));
-    REQUIRE(tc->contains(011001_w, 001_w));
-    REQUIRE(tc->word_to_class_index(000_w) != tc->word_to_class_index(001_w));
-    REQUIRE(tc->word_to_class_index(1_w) != tc->word_to_class_index(0000_w));
-    REQUIRE(!tc->contains(0000_w, 001_w));
+    REQUIRE(cong.contains(001_w, 00001_w));
+    REQUIRE(cong.contains(011001_w, 001_w));
+    REQUIRE(!cong.contains(000_w, 001_w));
+    REQUIRE(!cong.contains(1_w, 0000_w));
+    REQUIRE(!cong.contains(0000_w, 001_w));
   }
 
-  LIBSEMIGROUPS_TEST_CASE("Race",
+  LIBSEMIGROUPS_TEST_CASE("Congruence",
                           "001",
-                          "2-sided congruence on fp semigroup",
+                          "2-sided congruence from presentation",
                           "[quick][cong]") {
-    auto rg = ReportGuard(true);
+    auto rg = ReportGuard(false);
 
     Presentation<word_type> p;
     p.alphabet(2);
     presentation::add_rule(p, 000_w, 0_w);
     presentation::add_rule(p, 0_w, 11_w);
-    REQUIRE(!is_obviously_infinite(p));
+    // REQUIRE(!is_obviously_infinite(p));
 
-    Race r;
-    init_cong_race(r, twosided, p);
+    Congruence cong(twosided, p);
 
-    REQUIRE(r.number_of_runners() == 4);
-    r.run();
-    auto w = r.winner_index();
-    if (w == 2) {
-      auto kb = std::static_pointer_cast<KnuthBendix>(r.winner());
-      REQUIRE(kb->size() == 5);
+    REQUIRE(cong.number_of_classes() == 5);
 
-      REQUIRE(kb->contains(001_w, 00001_w));
-      REQUIRE(kb->contains(001_w, 001_w));
-      REQUIRE(kb->contains(001_w, 00001_w));
-      REQUIRE(kb->contains(00001_w, 011001_w));
-      REQUIRE(!kb->contains(000_w, 001_w));
-      REQUIRE(!kb->contains(000_w, 1_w));
-      REQUIRE(!kb->contains(1_w, 000_w));
-    }
+    REQUIRE(cong.contains(001_w, 00001_w));
+    REQUIRE(cong.contains(001_w, 001_w));
+    REQUIRE(cong.contains(001_w, 00001_w));
+    REQUIRE(cong.contains(00001_w, 011001_w));
+    REQUIRE(!cong.contains(000_w, 001_w));
+    REQUIRE(!cong.contains(000_w, 1_w));
+    REQUIRE(!cong.contains(1_w, 000_w));
   }
 
-  LIBSEMIGROUPS_TEST_CASE("Race",
+  LIBSEMIGROUPS_TEST_CASE("Congruence",
                           "007",
-                          "2-sided congruence on fp semigroup",
+                          "2-sided congruence from presentation",
                           "[quick][cong]") {
-    auto                    rg = ReportGuard(REPORT);
+    auto                    rg = ReportGuard(false);
     Presentation<word_type> p;
     p.alphabet(3);
     presentation::add_rule(p, 01_w, 10_w);
@@ -147,1461 +112,1104 @@ namespace libsemigroups {
     presentation::add_rule(p, 0_w, 1_w);
     presentation::add_rule(p, 0_w, 1_w);
 
-    Race r;
-    init_cong_race(r, twosided, p);
-    r.run();
-
-    if (r.winner_is<KnuthBendix>()) {
-      auto w = std::static_pointer_cast<KnuthBendix>(r.winner());
-      REQUIRE(w->size() == 2);
-    } else if (r.winner_is<ToddCoxeter>()) {
-      auto w = std::static_pointer_cast<ToddCoxeter>(r.winner());
-      REQUIRE(w->number_of_classes() == 2);
-    } else if (r.winner_is<Kambites<>>()) {
-      auto w = std::static_pointer_cast<Kambites<>>(r.winner());
-      REQUIRE(w->size() == 2);
-    }
-  }
-
-  /*LIBSEMIGROUPS_TEST_CASE("Congruence",
-                          "008",
-                          "2-sided congruence on infinite fp semigroup",
-                          "[quick][cong]") {
-    auto                    rg = ReportGuard(REPORT);
-    Presentation<word_type> p;
-    p.alphabet(3);
-    presentation::add_rule(p, {0, 1}, {1, 0});
-    presentation::add_rule(p, {0, 2}, {2, 2});
-    presentation::add_rule(p, {0, 2}, {0});
-    presentation::add_rule(p, {0, 2}, {0});
-    presentation::add_rule(p, {2, 2}, {0});
-    presentation::add_rule(p, {1, 2}, {1, 2});
-    presentation::add_rule(p, {1, 2}, {2, 2});
-    presentation::add_rule(p, {1, 2, 2}, {1});
-    presentation::add_rule(p, {1, 2}, {1});
-    presentation::add_rule(p, {2, 2}, {1});
-    presentation::add_rule(p, {0}, {1});
-
     Congruence cong(twosided, p);
 
-    REQUIRE(cong.word_to_class_index({0}) == cong.word_to_class_index({1}));
-    REQUIRE(cong.word_to_class_index({0}) == cong.word_to_class_index({1, 0}));
-    REQUIRE(cong.word_to_class_index({0}) == cong.word_to_class_index({1, 1}));
-    REQUIRE(cong.word_to_class_index({0})
-            == cong.word_to_class_index({1, 0, 1}));
-
-    REQUIRE(cong.contains({1}, {1, 1}));
-    REQUIRE(cong.contains({1, 0, 1}, {1, 0}));
     REQUIRE(cong.number_of_classes() == 2);
   }
 
+  LIBSEMIGROUPS_TEST_CASE("Congruence",
+                          "008",
+                          "2-sided congruence from presentation",
+                          "[quick][cong]") {
+    auto                    rg = ReportGuard(false);
+    Presentation<word_type> p;
+    p.alphabet(3);
+    presentation::add_rule(p, 01_w, 10_w);
+    presentation::add_rule(p, 02_w, 22_w);
+    presentation::add_rule(p, 02_w, 0_w);
+    presentation::add_rule(p, 02_w, 0_w);
+    presentation::add_rule(p, 22_w, 0_w);
+    presentation::add_rule(p, 12_w, 12_w);
+    presentation::add_rule(p, 12_w, 22_w);
+    presentation::add_rule(p, 122_w, 1_w);
+    presentation::add_rule(p, 12_w, 1_w);
+    presentation::add_rule(p, 22_w, 1_w);
+    presentation::add_rule(p, 0_w, 1_w);
 
+    Congruence cong(twosided, p);
 
-    LIBSEMIGROUPS_TEST_CASE("Congruence",
-                            "009",
-                            "2-sided congruence on infinite fp semigroup",
-                            "[quick][cong]") {
-      auto        rg = ReportGuard(REPORT);
+    REQUIRE(cong.contains(0_w, 1_w));
+    REQUIRE(cong.contains(0_w, 10_w));
+    REQUIRE(cong.contains(0_w, 11_w));
+    REQUIRE(cong.contains(0_w, 101_w));
+
+    REQUIRE(cong.contains(1_w, 11_w));
+    REQUIRE(cong.contains(101_w, 10_w));
+    REQUIRE(cong.number_of_classes() == 2);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Congruence",
+                          "009",
+                          "infinite 2-sided congruence from presentation",
+                          "[quick][cong]") {
+    auto rg = ReportGuard(false);
+
+    Presentation<word_type> p;
+    p.alphabet(3);
+    presentation::add_rule(p, 01_w, 10_w);
+    presentation::add_rule(p, 02_w, 20_w);
+    presentation::add_rule(p, 00_w, 0_w);
+    presentation::add_rule(p, 02_w, 0_w);
+    presentation::add_rule(p, 20_w, 0_w);
+    presentation::add_rule(p, 12_w, 21_w);
+    presentation::add_rule(p, 111_w, 1_w);
+    presentation::add_rule(p, 12_w, 1_w);
+    presentation::add_rule(p, 21_w, 1_w);
+
+    Congruence cong(twosided, p);
+    cong.add_pair(0_w, 1_w);
+
+    REQUIRE(cong.number_of_classes() == POSITIVE_INFINITY);
+
+    // Used to require KnuthBendixCongruenceByPairs to work
+    REQUIRE(cong.contains(0_w, 1_w));
+    REQUIRE(cong.contains(0_w, 10_w));
+    REQUIRE(cong.contains(0_w, 11_w));
+    REQUIRE(cong.contains(0_w, 101_w));
+    REQUIRE(cong.contains(1_w, 11_w));
+    REQUIRE(cong.contains(101_w, 10_w));
+
+    // TODO add check for non_trivial_classes
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Congruence",
+                          "010",
+                          "2-sided congruence on finite semigroup",
+                          "[quick][cong][no-valgrind]") {
+    auto rg      = ReportGuard(false);
+    using Transf = LeastTransf<8>;
+    FroidurePin<Transf> S({Transf({7, 3, 5, 3, 4, 2, 7, 7}),
+                           Transf({1, 2, 4, 4, 7, 3, 0, 7}),
+                           Transf({0, 6, 4, 2, 2, 6, 6, 4}),
+                           Transf({3, 6, 3, 4, 0, 6, 0, 7})});
+
+    REQUIRE(S.size() == 11804);
+    REQUIRE(S.number_of_rules() == 2460);
+
+    Congruence cong(twosided, S);
+    cong.add_pair(0321322_w, 322133_w);
+
+    REQUIRE(cong.number_of_classes() == 525);
+
+    REQUIRE(cong.contains(0001_w, 00100_w));
+    REQUIRE(cong.contains(00101_w, 1101_w));
+    REQUIRE(!cong.contains(1100_w, 0001_w));
+    REQUIRE(!cong.contains(003_w, 0001_w));
+    REQUIRE(!cong.contains(1100_w, 003_w));
+    REQUIRE(cong.contains(12133212_w, 2133210_w));
+    REQUIRE(cong.contains(0311132210_w, 03221_w));
+    REQUIRE(!cong.contains(0321333_w, 003_w));
+    REQUIRE(!cong.contains(110_w, 1332210_w));
+
+    REQUIRE(cong.contains(12133212_w, 2133210_w));
+    REQUIRE(!cong.contains(110_w, 1332210_w));
+
+    REQUIRE(cong.number_of_classes() == 525);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Congruence",
+                          "011",
+                          "congruence on full PBR monoid on 2 points",
+                          "[extreme][cong]") {
+    auto             rg = ReportGuard(true);
+    FroidurePin<PBR> S({PBR({{2}, {3}, {0}, {1}}),
+                        PBR({{}, {2}, {1}, {0, 3}}),
+                        PBR({{0, 3}, {2}, {1}, {}}),
+                        PBR({{1, 2}, {3}, {0}, {1}}),
+                        PBR({{2}, {3}, {0}, {1, 3}}),
+                        PBR({{3}, {1}, {0}, {1}}),
+                        PBR({{3}, {2}, {0}, {0, 1}}),
+                        PBR({{3}, {2}, {0}, {1}}),
+                        PBR({{3}, {2}, {0}, {3}}),
+                        PBR({{3}, {2}, {1}, {0}}),
+                        PBR({{3}, {2, 3}, {0}, {1}})});
+
+    // REQUIRE(S.size() == 65536);
+    // REQUIRE(S.number_of_rules() == 45416);
+
+    Congruence cong(twosided, S);
+    cong.add_pair({7, 10, 9, 3, 6, 9, 4, 7, 9, 10}, {9, 3, 6, 6, 10, 9, 4, 7});
+    cong.add_pair({8, 7, 5, 8, 9, 8}, {6, 3, 8, 6, 1, 2, 4});
+
+    REQUIRE(cong.number_of_classes() == 19'009);
+    // REQUIRE(cong.number_of_non_trivial_classes() == 577);
+    // REQUIRE(cong.cend_ntc() - cong.cbegin_ntc() == 577);
+
+    // std::vector<size_t> v(577, 0);
+    // std::transform(cong.cbegin_ntc(),
+    //                cong.cend_ntc(),
+    //                v.begin(),
+    //                std::mem_fn(&std::vector<word_type>::size));
+    // REQUIRE(std::count(v.cbegin(), v.cend(), 4) == 384);
+    // REQUIRE(std::count(v.cbegin(), v.cend(), 16) == 176);
+    // REQUIRE(std::count(v.cbegin(), v.cend(), 96) == 16);
+    // REQUIRE(std::count(v.cbegin(), v.cend(), 41216) == 1);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Congruence",
+                          "012",
+                          "2-sided congruence on finite semigroup",
+                          "[quick][cong][no-valgrind]") {
+    auto rg = ReportGuard(false);
+
+    FroidurePin<LeastPPerm<6>> S(
+        {LeastPPerm<6>({0, 1, 2}, {4, 0, 1}, 6),
+         LeastPPerm<6>({0, 1, 2, 3, 5}, {2, 5, 3, 0, 4}, 6),
+         LeastPPerm<6>({0, 1, 2, 3}, {5, 0, 3, 1}, 6),
+         LeastPPerm<6>({0, 2, 5}, {3, 4, 1}, 6),
+         LeastPPerm<6>({0, 2, 5}, {0, 2, 5}, 6),
+         LeastPPerm<6>({0, 1, 4}, {1, 2, 0}, 6),
+         LeastPPerm<6>({0, 2, 3, 4, 5}, {3, 0, 2, 5, 1}, 6),
+         LeastPPerm<6>({0, 1, 3, 5}, {1, 3, 2, 0}, 6),
+         LeastPPerm<6>({1, 3, 4}, {5, 0, 2}, 6)});
+
+    // REQUIRE(S.size() == 712);
+    // REQUIRE(S.number_of_rules() == 1121);
+
+    Congruence cong(twosided, S);
+    cong.add_pair({2, 7}, {1, 6, 6, 1});
+    REQUIRE(cong.number_of_classes() == 32);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Congruence",
+                          "013",
+                          "trivial 2-sided congruence on bicyclic monoid",
+                          "[quick][cong][no-valgrind]") {
+    auto                    rg = ReportGuard(false);
+    Presentation<word_type> p;
+    p.contains_empty_word(true);
+    p.alphabet(2);
+    presentation::add_rule(p, 01_w, {});
+
+    Congruence cong(twosided, p);
+    REQUIRE(cong.contains({}, 010011_w));
+    REQUIRE(cong.contains({}, 0101_w));
+    REQUIRE(cong.contains(10_w, 011001_w));
+    REQUIRE(cong.contains(10_w, 011001_w));
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Congruence",
+                          "014",
+                          "non-trivial 2-sided congruence on bicyclic monoid",
+                          "[quick][cong]") {
+    auto rg = ReportGuard(false);
+
+    Presentation<word_type> p;
+    p.contains_empty_word(true).alphabet(2);
+    // presentation::add_identity_rules(p, 0);
+    presentation::add_rule(p, 01_w, {});
+
+#ifdef LIBSEMIGROUPS_EIGEN_ENABLED
+    REQUIRE(is_obviously_infinite(p));
+#else
+    REQUIRE(!is_obviously_infinite(p));
+#endif
+
+    Congruence cong(twosided, p);
+    cong.add_pair(111_w, {});
+    REQUIRE(cong.number_of_classes() == 3);
+    if (cong.has_knuth_bendix()) {
+      KnuthBendix kb(twosided, p);
+      REQUIRE_THROWS_AS(
+          // FIXME swap the args
+          knuth_bendix::non_trivial_classes(kb, *cong.knuth_bendix()),
+          LibsemigroupsException);
+    } else if (cong.has_todd_coxeter()) {
+      ToddCoxeter tc(twosided, p);
+      REQUIRE_THROWS_AS(
+          todd_coxeter::non_trivial_classes(*cong.todd_coxeter(), tc),
+          LibsemigroupsException);
+    }
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Congruence",
+                          "015",
+                          "2-sided congruence on free abelian monoid",
+                          "[quick][cong]") {
+    auto                    rg = ReportGuard(false);
+    Presentation<word_type> p;
+    p.alphabet(3);
+    presentation::add_rule(p, 12_w, 21_w);
+    presentation::add_identity_rules(p, 0);
+
+    Congruence cong(twosided, p);
+    cong.add_pair(11111_w, 1_w);
+    cong.add_pair(222_w, 2_w);
+
+    REQUIRE(cong.number_of_classes() == 15);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Congruence",
+                          "016",
+                          "example where TC works but KB doesn't",
+                          "[quick][cong]") {
+    auto                      rg = ReportGuard(false);
+    Presentation<std::string> p;
+    p.alphabet("abBe");
+    presentation::add_identity_rules(p, 'e');
+    presentation::add_rule(p, "aa", "e");
+    presentation::add_rule(p, "BB", "b");
+    presentation::add_rule(p, "BaBaBaB", "abababa");
+    presentation::add_rule(p, "aBabaBabaBabaBab", "BabaBabaBabaBaba");
+
+    Congruence cong(twosided, p);
+    cong.add_pair(0_w, 1_w);
+
+    REQUIRE(cong.number_of_classes() == 4);
+    // TODO
+    // REQUIRE(!to_froidure_pin(cong).is_monoid());
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Congruence",
+                          "017",
+                          "2-sided congruence on finite semigroup",
+                          "[quick][cong]") {
+    auto rg      = ReportGuard(false);
+    using Transf = LeastTransf<5>;
+    FroidurePin<Transf> S({Transf({1, 3, 4, 2, 3}), Transf({3, 2, 1, 3, 3})});
+
+    REQUIRE(S.size() == 88);
+    REQUIRE(S.number_of_rules() == 18);
+
+    word_type w1 = S.factorisation(Transf({3, 4, 4, 4, 4}));
+    word_type w2 = S.factorisation(Transf({3, 4, 4, 4, 4}));
+
+    Congruence cong(twosided, S);
+    cong.add_pair(S.factorisation(Transf({3, 4, 4, 4, 4})),
+                  S.factorisation(Transf({3, 1, 3, 3, 3})));
+    REQUIRE(cong.number_of_classes() == 21);
+
+    word_type u = S.factorisation(Transf({1, 3, 1, 3, 3}));
+    word_type v = S.factorisation(Transf({4, 2, 4, 4, 2}));
+    REQUIRE(cong.contains(u, v));
+    REQUIRE(cong.contains(u, v));
+  }
+
+  // The next test behaves as expected but runs forever, since the
+  // number_of_classes method requires to know the size of the semigroup S, and
+  // we cannot currently work that out.
+  LIBSEMIGROUPS_TEST_CASE("Congruence",
+                          "018",
+                          "infinite fp semigroup from GAP library",
+                          "[quick][cong]") {
+    auto                    rg = ReportGuard(false);
+    Presentation<word_type> p;
+    p.alphabet(3);
+    presentation::add_rule(p, 00_w, 00_w);
+    presentation::add_rule(p, 01_w, 10_w);
+    presentation::add_rule(p, 02_w, 20_w);
+    presentation::add_rule(p, 00_w, 0_w);
+    presentation::add_rule(p, 02_w, 0_w);
+    presentation::add_rule(p, 20_w, 0_w);
+    presentation::add_rule(p, 10_w, 01_w);
+    presentation::add_rule(p, 11_w, 11_w);
+    presentation::add_rule(p, 12_w, 21_w);
+    presentation::add_rule(p, 111_w, 1_w);
+    presentation::add_rule(p, 12_w, 1_w);
+    presentation::add_rule(p, 21_w, 1_w);
+
+    // REQUIRE(is_obviously_infinite(p));
+
+    Congruence cong(twosided, p);
+    cong.add_pair(0_w, 1_w);
+
+    REQUIRE(is_obviously_infinite(cong));
+    REQUIRE(cong.number_of_classes() == POSITIVE_INFINITY);
+
+    REQUIRE(cong.has_knuth_bendix());
+
+    KnuthBendix kb(twosided, p);
+    auto ntc = knuth_bendix::non_trivial_classes(kb, *cong.knuth_bendix());
+    REQUIRE(ntc.size() == 1);
+    REQUIRE(ntc[0].size() == 5);
+    REQUIRE(ntc[0] == std::vector<std::string>({"b", "ab", "bb", "abb", "a"}));
+  }
+
+  LIBSEMIGROUPS_TEST_CASE(
+      "Congruence",
+      "019",
+      "2-sided cong. from presentation with infinite classes ",
+      "[quick][cong]") {
+    using presentation::operator+;
+    using presentation::pow;
+
+    auto                    rg = ReportGuard(false);
+    Presentation<word_type> p;
+    p.alphabet(2);
+    presentation::add_rule(p, 01_w, 10_w);
+    presentation::add_rule(p, 000_w, 00_w);
+
+    Congruence cong(twosided, p);
+    cong.add_pair({0}, {1});
+
+    word_type x = "0"_w + pow(1_w, 20);
+    word_type y = "00"_w + pow(1_w, 20);
+
+    REQUIRE(cong.contains(x, y));
+    REQUIRE(cong.contains(y, x));
+    REQUIRE(cong.contains(x, x));
+    REQUIRE(cong.contains(y, y));
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Congruence",
+                          "020",
+                          "trivial cong. on an fp semigroup",
+                          "[quick][cong][no-valgrind]") {
+    auto                      rg = ReportGuard(false);
+    Presentation<std::string> p;
+    p.alphabet("ab");
+    presentation::add_rule(p, "ab", "ba");
+    presentation::add_rule(p, "a", "b");
+
+    Congruence cong(left, p);
+
+    // No generating pairs for the congruence (not the fp semigroup) means no
+    // non-trivial classes.
+    // REQUIRE(cong.number_of_non_trivial_classes() == 0);
+    REQUIRE(cong.number_of_classes() == POSITIVE_INFINITY);
+    REQUIRE(cong.has_knuth_bendix());
+    REQUIRE(knuth_bendix::non_trivial_classes(*cong.knuth_bendix(),
+                                              *cong.knuth_bendix())
+                .empty());
+    REQUIRE(cong.finished());
+    REQUIRE(cong.started());
+    REQUIRE_THROWS_AS(cong.add_pair(00_w, 0_w), LibsemigroupsException);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Congruence",
+                          "021",
+                          "duplicate generators",
+                          "[quick][cong]") {
+    auto rg      = ReportGuard(false);
+    using Transf = LeastTransf<8>;
+    FroidurePin<Transf> S({Transf({7, 3, 5, 3, 4, 2, 7, 7}),
+                           Transf({7, 3, 5, 3, 4, 2, 7, 7}),
+                           Transf({7, 3, 5, 3, 4, 2, 7, 7}),
+                           Transf({3, 6, 3, 4, 0, 6, 0, 7})});
+    Congruence          cong(twosided, S);
+    REQUIRE(cong.number_of_classes() == S.size());
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Congruence",
+                          "022",
+                          "non-trivial classes",
+                          "[quick][cong]") {
+    auto rg = ReportGuard(false);
+
+    Presentation<word_type> p;
+    p.alphabet(2);
+    presentation::add_rule(p, 000_w, 0_w);
+    presentation::add_rule(p, 100_w, 10_w);
+    presentation::add_rule(p, 10111_w, 10_w);
+    presentation::add_rule(p, 11111_w, 11_w);
+    presentation::add_rule(p, 110110_w, 101011_w);
+    presentation::add_rule(p, 0010110_w, 010110_w);
+    presentation::add_rule(p, 0011010_w, 011010_w);
+    presentation::add_rule(p, 0101010_w, 101010_w);
+    presentation::add_rule(p, 1010101_w, 101010_w);
+    presentation::add_rule(p, 1010110_w, 101011_w);
+    presentation::add_rule(p, 1011010_w, 101101_w);
+    presentation::add_rule(p, 1101010_w, 101010_w);
+    presentation::add_rule(p, 1111010_w, 1010_w);
+    presentation::add_rule(p, 00111010_w, 111010_w);
+
+    Congruence cong(twosided, p);
+    cong.add_pair(0_w, 1_w);
+    REQUIRE(cong.number_of_classes() == 1);
+    if (cong.has_todd_coxeter() && cong.todd_coxeter()->finished()) {
+      ToddCoxeter tc(twosided, p);
+      REQUIRE(tc.number_of_classes() == 78);
+      auto ntc = todd_coxeter::non_trivial_classes(*cong.todd_coxeter(), tc);
+      REQUIRE(ntc.size() == 1);
+      REQUIRE(ntc[0].size() == 78);
+    }
+    if (cong.has_knuth_bendix() && cong.knuth_bendix()->finished()) {
+      KnuthBendix kb(twosided, p);
+      REQUIRE(kb.number_of_classes() == 78);
+      auto ntc = knuth_bendix::non_trivial_classes(kb, *cong.knuth_bendix());
+      REQUIRE(ntc.size() == 1);
+      REQUIRE(ntc[0].size() == 78);
+    }
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Congruence",
+                          "023",
+                          "right congruence on finite semigroup",
+                          "[quick][cong][no-valgrind]") {
+    auto rg      = ReportGuard(false);
+    using Transf = LeastTransf<8>;
+    FroidurePin<Transf> S({Transf({0, 1, 2, 3, 4, 5, 6, 7}),
+                           Transf({1, 2, 3, 4, 5, 0, 6, 7}),
+                           Transf({1, 0, 2, 3, 4, 5, 6, 7}),
+                           Transf({0, 1, 2, 3, 4, 0, 6, 7}),
+                           Transf({0, 1, 2, 3, 4, 5, 7, 6})});
+
+    REQUIRE(S.size() == 93'312);
+    std::vector<Transf> elms = {Transf({0, 0, 0, 0, 0, 0, 7, 6}),
+                                Transf({0, 0, 0, 0, 0, 0, 6, 7}),
+                                Transf({0, 0, 0, 0, 0, 0, 6, 7}),
+                                Transf({1, 1, 1, 1, 1, 1, 6, 7}),
+                                Transf({0, 0, 0, 0, 0, 0, 6, 7}),
+                                Transf({2, 2, 2, 2, 2, 2, 6, 7}),
+                                Transf({0, 0, 0, 0, 0, 0, 6, 7}),
+                                Transf({3, 3, 3, 3, 3, 3, 6, 7}),
+                                Transf({0, 0, 0, 0, 0, 0, 6, 7}),
+                                Transf({4, 4, 4, 4, 4, 4, 6, 7}),
+                                Transf({0, 0, 0, 0, 0, 0, 6, 7}),
+                                Transf({5, 5, 5, 5, 5, 5, 6, 7}),
+                                Transf({0, 0, 0, 0, 0, 0, 7, 6}),
+                                Transf({0, 1, 2, 3, 4, 5, 7, 6})};
+    REQUIRE(
+        std::all_of(elms.cbegin(), elms.cend(), [&S](Transf const& x) -> bool {
+          return S.contains(x);
+        }));
+
+    Congruence cong(right, S);
+    word_type  w1, w2;
+    for (size_t i = 0; i < elms.size(); i += 2) {
+      S.factorisation(w1, S.position(elms[i]));
+      S.factorisation(w2, S.position(elms[i + 1]));
+      cong.add_pair(w1, w2);
+    }
+    REQUIRE(cong.number_of_classes() == 1);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Congruence",
+                          "024",
+                          "redundant generating pairs",
+                          "[quick][cong]") {
+    auto                    rg = ReportGuard(false);
+    Presentation<word_type> p;
+    p.alphabet(1);
+
+    Congruence cong(twosided, p);
+    cong.add_pair(00_w, 00_w);
+    REQUIRE(cong.contains(00_w, 00_w));
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Congruence",
+                          "025",
+                          "2-sided cong. on free semigroup",
+                          "[quick][cong]") {
+    auto                      rg = ReportGuard(false);
+    Presentation<std::string> p;
+    p.alphabet("a");
+    Congruence cong(twosided, p);
+    REQUIRE(cong.contains(00_w, 00_w));
+    REQUIRE(!cong.contains(00_w, 0_w));
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Congruence",
+                          "026",
+                          "is_obviously_(in)finite",
+                          "[quick][cong]") {
+    auto rg = ReportGuard(false);
+    {
       Presentation<word_type> p;
       p.alphabet(3);
-      presentation::add_rule(p, {0, 1}, {1, 0});
-      presentation::add_rule(p, {0, 2}, {2, 0});
-      presentation::add_rule(p, {0, 0}, {0});
-      presentation::add_rule(p, {0, 2}, {0});
-      presentation::add_rule(p, {2, 0}, {0});
-      presentation::add_rule(p, {1, 2}, {2, 1});
-      presentation::add_rule(p, {1, 1, 1}, {1});
-      presentation::add_rule(p, {1, 2}, {1});
-      presentation::add_rule(p, {2, 1}, {1});
-
-      Congruence cong(twosided, S);
-      cong.add_pair({0}, {1});
-
-      // Requires KnuthBendixCongruenceByPairs to work
-      REQUIRE(cong.word_to_class_index({0}) == cong.word_to_class_index({1}));
-      REQUIRE(cong.word_to_class_index({0}) == cong.word_to_class_index({1,
-  0})); REQUIRE(cong.word_to_class_index({0}) == cong.word_to_class_index({1,
-  1})); REQUIRE(cong.word_to_class_index({0})
-              == cong.word_to_class_index({1, 0, 1}));
-
-      REQUIRE(cong.contains({1}, {1, 1}));
-      REQUIRE(cong.contains({1, 0, 1}, {1, 0}));
-
-      REQUIRE(!cong.less({1, 0, 1}, {1, 0}));
-    }
-
-    LIBSEMIGROUPS_TEST_CASE("Congruence",
-                            "010",
-                            "2-sided congruence on finite semigroup",
-                            "[quick][cong][no-valgrind]") {
-      auto rg      = ReportGuard(REPORT);
-      using Transf = LeastTransf<8>;
-      FroidurePin<Transf> S({Transf({7, 3, 5, 3, 4, 2, 7, 7}),
-                             Transf({1, 2, 4, 4, 7, 3, 0, 7}),
-                             Transf({0, 6, 4, 2, 2, 6, 6, 4}),
-                             Transf({3, 6, 3, 4, 0, 6, 0, 7})});
-
-      // The following lines are intentionally commented out.
-      // REQUIRE(S.size() == 11804);
-      // REQUIRE(S.number_of_rules() == 2460);
-
-      Congruence cong(twosided, S);
-      cong.add_pair({0, 3, 2, 1, 3, 2, 2}, {3, 2, 2, 1, 3, 3});
-
-      REQUIRE(cong.word_to_class_index({0, 0, 0, 1})
-              == cong.word_to_class_index({0, 0, 1, 0, 0}));
-      REQUIRE(cong.word_to_class_index({0, 0, 1, 0, 1})
-              == cong.word_to_class_index({1, 1, 0, 1}));
-      REQUIRE(cong.word_to_class_index({1, 1, 0, 0})
-              != cong.word_to_class_index({0, 0, 0, 1}));
-      REQUIRE(cong.word_to_class_index({0, 0, 3})
-              != cong.word_to_class_index({0, 0, 0, 1}));
-      REQUIRE(cong.word_to_class_index({1, 1, 0, 0})
-              != cong.word_to_class_index({0, 0, 3}));
-      REQUIRE(cong.word_to_class_index({1, 2, 1, 3, 3, 2, 1, 2})
-              == cong.word_to_class_index({2, 1, 3, 3, 2, 1, 0}));
-      REQUIRE(cong.word_to_class_index({0, 3, 1, 1, 1, 3, 2, 2, 1, 0})
-              == cong.word_to_class_index({0, 3, 2, 2, 1}));
-      REQUIRE(cong.word_to_class_index({0, 3, 2, 1, 3, 3, 3})
-              != cong.word_to_class_index({0, 0, 3}));
-      REQUIRE(cong.word_to_class_index({1, 1, 0})
-              != cong.word_to_class_index({1, 3, 3, 2, 2, 1, 0}));
-
-      REQUIRE(cong.contains({1, 2, 1, 3, 3, 2, 1, 2}, {2, 1, 3, 3, 2, 1, 0}));
-      REQUIRE(!cong.contains({1, 1, 0}, {1, 3, 3, 2, 2, 1, 0}));
-
-      REQUIRE(cong.less({1, 3, 3, 2, 2, 1, 0}, {1, 1, 0}));
-      REQUIRE(!cong.less({1, 1, 0, 0}, {0, 0, 3}));
-
-      REQUIRE(cong.number_of_classes() == 525);
-      REQUIRE(cong.number_of_classes() == 525);
-    }
-
-    LIBSEMIGROUPS_TEST_CASE("Congruence",
-                            "011",
-                            "congruence on full PBR monoid on 2 points",
-                            "[extreme][cong]") {
-      auto             rg = ReportGuard(true);
-      FroidurePin<PBR> S({PBR({{2}, {3}, {0}, {1}}),
-                          PBR({{}, {2}, {1}, {0, 3}}),
-                          PBR({{0, 3}, {2}, {1}, {}}),
-                          PBR({{1, 2}, {3}, {0}, {1}}),
-                          PBR({{2}, {3}, {0}, {1, 3}}),
-                          PBR({{3}, {1}, {0}, {1}}),
-                          PBR({{3}, {2}, {0}, {0, 1}}),
-                          PBR({{3}, {2}, {0}, {1}}),
-                          PBR({{3}, {2}, {0}, {3}}),
-                          PBR({{3}, {2}, {1}, {0}}),
-                          PBR({{3}, {2, 3}, {0}, {1}})});
-
-      // REQUIRE(S.size() == 65536);
-      // REQUIRE(S.number_of_rules() == 45416);
-
-      Congruence cong(twosided, S);
-      cong.add_pair({7, 10, 9, 3, 6, 9, 4, 7, 9, 10}, {9, 3, 6, 6, 10, 9, 4,
-  7}); cong.add_pair({8, 7, 5, 8, 9, 8}, {6, 3, 8, 6, 1, 2, 4});
-
-      REQUIRE(cong.number_of_classes() == 19009);
-      REQUIRE(cong.number_of_non_trivial_classes() == 577);
-      REQUIRE(cong.cend_ntc() - cong.cbegin_ntc() == 577);
-
-      std::vector<size_t> v(577, 0);
-      std::transform(cong.cbegin_ntc(),
-                     cong.cend_ntc(),
-                     v.begin(),
-                     std::mem_fn(&std::vector<word_type>::size));
-      REQUIRE(std::count(v.cbegin(), v.cend(), 4) == 384);
-      REQUIRE(std::count(v.cbegin(), v.cend(), 16) == 176);
-      REQUIRE(std::count(v.cbegin(), v.cend(), 96) == 16);
-      REQUIRE(std::count(v.cbegin(), v.cend(), 41216) == 1);
-    }
-
-    LIBSEMIGROUPS_TEST_CASE("Congruence",
-                            "012",
-                            "2-sided congruence on finite semigroup",
-                            "[quick][cong][no-valgrind]") {
-      auto rg = ReportGuard(REPORT);
-
-      FroidurePin<LeastPPerm<6>> S(
-          {LeastPPerm<6>({0, 1, 2}, {4, 0, 1}, 6),
-           LeastPPerm<6>({0, 1, 2, 3, 5}, {2, 5, 3, 0, 4}, 6),
-           LeastPPerm<6>({0, 1, 2, 3}, {5, 0, 3, 1}, 6),
-           LeastPPerm<6>({0, 2, 5}, {3, 4, 1}, 6),
-           LeastPPerm<6>({0, 2, 5}, {0, 2, 5}, 6),
-           LeastPPerm<6>({0, 1, 4}, {1, 2, 0}, 6),
-           LeastPPerm<6>({0, 2, 3, 4, 5}, {3, 0, 2, 5, 1}, 6),
-           LeastPPerm<6>({0, 1, 3, 5}, {1, 3, 2, 0}, 6),
-           LeastPPerm<6>({1, 3, 4}, {5, 0, 2}, 6)});
-
-      // REQUIRE(S.size() == 712);
-      // REQUIRE(S.number_of_rules() == 1121);
-
-      Congruence cong(twosided, S);
-      cong.add_pair({2, 7}, {1, 6, 6, 1});
-      REQUIRE(cong.number_of_classes() == 32);
-    }
-
-    LIBSEMIGROUPS_TEST_CASE("Congruence",
-                            "013",
-                            "trivial 2-sided congruence on bicyclic monoid",
-                            "[quick][cong][no-valgrind]") {
-      auto        rg = ReportGuard(REPORT);
-      Presentation<word_type> p;
-      p.alphabet(3);
-      S.set_identity(0);
-      presentation::add_rule(p, {1, 2}, {0});
-      Congruence cong(twosided, S);
-      REQUIRE(cong.word_to_class_index({0})
-              == cong.word_to_class_index({1, 2, 1, 1, 2, 2}));
-      REQUIRE(cong.word_to_class_index({0})
-              == cong.word_to_class_index({1, 0, 2, 0, 1, 2}));
-      REQUIRE(cong.word_to_class_index({2, 1})
-              == cong.word_to_class_index({1, 2, 0, 2, 1, 1, 2}));
-      REQUIRE(cong.contains({2, 1}, {1, 2, 0, 2, 1, 1, 2}));
-    }
-
-    LIBSEMIGROUPS_TEST_CASE("Congruence",
-                            "014",
-                            "non-trivial 2-sided congruence on bicyclic
-  monoid",
-                            "[quick][cong]") {
-      auto        rg = ReportGuard(REPORT);
-      Presentation<word_type> p;
-      p.alphabet(3);
-      S.set_identity(0);
-      presentation::add_rule(p, {1, 2}, {0});
-
-  #ifdef LIBSEMIGROUPS_EIGEN_ENABLED
-      REQUIRE(S.is_obviously_infinite());
-  #else
-      REQUIRE(!S.is_obviously_infinite());
-  #endif
-
-      Congruence cong(twosided, S);
-      cong.add_pair({1, 1, 1}, {0});
-      REQUIRE(cong.number_of_classes() == 3);
-      // The next test currently runs forever because
-      // number_of_non_trivial_classes attempts to enumerate all elements in
-  the
-      // non_trivial_classes (and there are infinitely many).
-      // REQUIRE_THROWS_AS(cong.number_of_non_trivial_classes() == 3,
-      //                  LibsemigroupsException);
-    }
-
-    LIBSEMIGROUPS_TEST_CASE("Congruence",
-                            "015",
-                            "2-sided congruence on free abelian monoid",
-                            "[quick][cong]") {
-      auto        rg = ReportGuard(REPORT);
-      Presentation<word_type> p;
-      p.alphabet(3);
-      presentation::add_rule(p, {1, 2}, {2, 1});
-      S.set_identity(0);
-
-      Congruence cong(twosided, S);
-      cong.add_pair({1, 1, 1, 1, 1}, {1});
-      cong.add_pair({2, 2, 2}, {2});
-
-      REQUIRE(cong.number_of_classes() == 15);
-    }
-
-    // The previous Congruence 17 test was identical to Congruence 12
-
-    LIBSEMIGROUPS_TEST_CASE("Congruence",
-                            "016",
-                            "example where TC works but KB doesn't",
-                            "[quick][cong]") {
-      auto        rg = ReportGuard(REPORT);
-      Presentation<word_type> p;
-      p.alphabet("abBe");
-      REQUIRE_THROWS_AS(presentation::add_rule(p, "aa", ""),
-  LibsemigroupsException); S.set_identity("e"); presentation::add_rule(p,
-  "aa", "e"); presentation::add_rule(p, "BB", "b"); presentation::add_rule(p,
-  "BaBaBaB", "abababa"); presentation::add_rule(p, "aBabaBabaBabaBab",
-  "BabaBabaBabaBaba");
-
-      Congruence cong(twosided, S);
-      cong.add_pair({0}, {1});
-
-      REQUIRE(cong.number_of_classes() == 4);
-      REQUIRE(!cong.quotient_froidure_pin()->is_monoid());
-    }
-
-    LIBSEMIGROUPS_TEST_CASE("Congruence",
-                            "017",
-                            "2-sided congruence on finite semigroup",
-                            "[quick][cong]") {
-      auto rg      = ReportGuard(REPORT);
-      using Transf = LeastTransf<5>;
-      FroidurePin<Transf> S({Transf({1, 3, 4, 2, 3}), Transf({3, 2, 1, 3,
-  3})});
-
-      REQUIRE(S.size() == 88);
-      REQUIRE(S.number_of_rules() == 18);
-
-      word_type w1 = S.factorisation(Transf({3, 4, 4, 4, 4}));
-      word_type w2 = S.factorisation(Transf({3, 4, 4, 4, 4}));
-
-      Congruence cong(twosided, S);
-      cong.add_pair(S.factorisation(Transf({3, 4, 4, 4, 4})),
-                    S.factorisation(Transf({3, 1, 3, 3, 3})));
-      REQUIRE(cong.number_of_classes() == 21);
-
-      word_type u = S.factorisation(Transf({1, 3, 1, 3, 3}));
-      word_type v = S.factorisation(Transf({4, 2, 4, 4, 2}));
-      REQUIRE(cong.word_to_class_index(u) == cong.word_to_class_index(v));
-      REQUIRE(cong.contains(u, v));
-    }
-
-    // The next test behaves as expected but runs forever, since the
-    // number_of_classes method requires to know the size of the semigroup S,
-  and
-    // we cannot currently work that out.
-    LIBSEMIGROUPS_TEST_CASE("Congruence",
-                            "018",
-                            "infinite fp semigroup from GAP library ",
-                            "[quick][cong]") {
-      auto        rg = ReportGuard(REPORT);
-      Presentation<word_type> p;
-      p.alphabet(3);
-      presentation::add_rule(p, {0, 0}, {0, 0});
-      presentation::add_rule(p, {0, 1}, {1, 0});
-      presentation::add_rule(p, {0, 2}, {2, 0});
-      presentation::add_rule(p, {0, 0}, {0});
-      presentation::add_rule(p, {0, 2}, {0});
-      presentation::add_rule(p, {2, 0}, {0});
-      presentation::add_rule(p, {1, 0}, {0, 1});
-      presentation::add_rule(p, {1, 1}, {1, 1});
-      presentation::add_rule(p, {1, 2}, {2, 1});
-      presentation::add_rule(p, {1, 1, 1}, {1});
-      presentation::add_rule(p, {1, 2}, {1});
-      presentation::add_rule(p, {2, 1}, {1});
-
-      REQUIRE(S.is_obviously_infinite());
-
-      Congruence cong(twosided, S);
-      cong.add_pair({0}, {1});
-      REQUIRE(cong.is_quotient_obviously_infinite());
+      presentation::add_rule(p, {0, 1}, {0});
+      Congruence cong(twosided, p);
+      cong.add_pair({2, 2}, {2});
+      REQUIRE(is_obviously_infinite(cong));
       REQUIRE(cong.number_of_classes() == POSITIVE_INFINITY);
-      REQUIRE(!cong.finished());
-      REQUIRE(cong.number_of_non_trivial_classes() == 1);
-      REQUIRE(cong.cbegin_ntc()->size() == 5);
-      REQUIRE(std::vector<word_type>(cong.cbegin_ntc()->cbegin(),
-                                     cong.cbegin_ntc()->cend())
-              == std::vector<word_type>({{0}, {1}, {0, 1}, {1, 1}, {0, 1,
-  1}})); REQUIRE(cong.finished());
     }
-
-    LIBSEMIGROUPS_TEST_CASE("Congruence",
-                            "019",
-                            "2-sided cong. on fp semigroup with infinite
-  classes",
-                            "[quick][cong]") {
-      auto        rg = ReportGuard(REPORT);
+    {
       Presentation<word_type> p;
-      p.alphabet(2);
-      presentation::add_rule(p, {0, 1}, {1, 0});
-      presentation::add_rule(p, {0, 0, 0}, {0, 0});
-
-      Congruence cong(twosided, S);
-      cong.add_pair({0}, {1});
-
-      word_type x
-          = {0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
-      word_type y
-          = {0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-  1}; REQUIRE(std::count(x.cbegin(), x.cend(), 1) == 20);
-      REQUIRE(std::count(y.cbegin(), y.cend(), 1) == 20);
-      REQUIRE(cong.contains(x, y));
-      REQUIRE(!cong.less({0, 0, 0}, {1}));
-      REQUIRE(cong.less({1}, {0, 0, 0}));
-      REQUIRE(!cong.less(x, y));
-      REQUIRE(!cong.less(y, x));
-      REQUIRE(cong.contains(x, y));
+      p.alphabet(3);
+      presentation::add_rule(p, {0, 1}, {0});
+      presentation::add_rule(p, {0, 0}, {0});
+      Congruence cong(twosided, p);
+      cong.add_pair({1, 1}, {1});
+      REQUIRE(is_obviously_infinite(cong));
     }
-
-    LIBSEMIGROUPS_TEST_CASE("Congruence",
-                            "020",
-                            "trivial cong. on an fp semigroup",
-                            "[quick][cong][no-valgrind]") {
-      auto        rg = ReportGuard(REPORT);
+    {
       Presentation<word_type> p;
-      p.alphabet("ab");
-      presentation::add_rule(p, "ab", "ba");
-      presentation::add_rule(p, "a", "b");
-      SECTION("compute size") {
-        REQUIRE(S.size() == POSITIVE_INFINITY);
-      }
-      SECTION("don't compute size") {}
-
-      Congruence cong(left, S);
-
-      // No generating pairs for the congruence (not the fp semigroup) means
-  no
-      // non-trivial classes.
-      REQUIRE(cong.number_of_non_trivial_classes() == 0);
-      REQUIRE(cong.finished());
-      REQUIRE(cong.started());
-      REQUIRE_THROWS_AS(cong.add_pair({0, 0}, {0}), LibsemigroupsException);
+      p.alphabet(3);
+      presentation::add_rule(p, {0, 1}, {0});
+      presentation::add_rule(p, {0, 0}, {0});
+      Congruence cong(twosided, p);
+      cong.add_pair({1, 2}, {1});
+      REQUIRE(is_obviously_infinite(cong));
     }
-
-    LIBSEMIGROUPS_TEST_CASE("Congruence",
-                            "021",
-                            "duplicate generators",
-                            "[quick][cong]") {
-      auto rg      = ReportGuard(REPORT);
-      using Transf = LeastTransf<8>;
-      FroidurePin<Transf> S({Transf({7, 3, 5, 3, 4, 2, 7, 7}),
-                             Transf({7, 3, 5, 3, 4, 2, 7, 7}),
-                             Transf({7, 3, 5, 3, 4, 2, 7, 7}),
-                             Transf({3, 6, 3, 4, 0, 6, 0, 7})});
-      Congruence          cong(twosided, S);
-      REQUIRE(cong.number_of_classes() == S.size());
-    }
-
-    LIBSEMIGROUPS_TEST_CASE("Congruence",
-                            "022",
-                            "non-trivial classes",
-                            "[quick][cong]") {
-      auto rg = ReportGuard(REPORT);
-
+    {
       Presentation<word_type> p;
-      p.alphabet(2);
-      presentation::add_rule(p, {0, 0, 0}, {0});
-      presentation::add_rule(p, {1, 0, 0}, {1, 0});
-      presentation::add_rule(p, {1, 0, 1, 1, 1}, {1, 0});
-      presentation::add_rule(p, {1, 1, 1, 1, 1}, {1, 1});
-      presentation::add_rule(p, {1, 1, 0, 1, 1, 0}, {1, 0, 1, 0, 1, 1});
-      presentation::add_rule(p, {0, 0, 1, 0, 1, 1, 0}, {0, 1, 0, 1, 1, 0});
-      presentation::add_rule(p, {0, 0, 1, 1, 0, 1, 0}, {0, 1, 1, 0, 1, 0});
-      presentation::add_rule(p, {0, 1, 0, 1, 0, 1, 0}, {1, 0, 1, 0, 1, 0});
-      presentation::add_rule(p, {1, 0, 1, 0, 1, 0, 1}, {1, 0, 1, 0, 1, 0});
-      presentation::add_rule(p, {1, 0, 1, 0, 1, 1, 0}, {1, 0, 1, 0, 1, 1});
-      presentation::add_rule(p, {1, 0, 1, 1, 0, 1, 0}, {1, 0, 1, 1, 0, 1});
-      presentation::add_rule(p, {1, 1, 0, 1, 0, 1, 0}, {1, 0, 1, 0, 1, 0});
-      presentation::add_rule(p, {1, 1, 1, 1, 0, 1, 0}, {1, 0, 1, 0});
-      presentation::add_rule(p, {0, 0, 1, 1, 1, 0, 1, 0}, {1, 1, 1, 0, 1, 0});
-
-      // TODO(later) this test fails if we don't run the next line, since the
-      // congruence below has no parent
-      REQUIRE(S.froidure_pin()->size() == 78);
-
-      Congruence cong(twosided, S);
-      cong.add_pair({0}, {1});
-
-      REQUIRE(cong.number_of_non_trivial_classes() == 1);
-      REQUIRE(cong.cbegin_ntc()->size() == 78);
+      p.alphabet(3);
+      presentation::add_rule(p, {0, 1}, {0});
+      Congruence cong(right, p);
+      cong.add_pair({2, 2}, {2});
+      REQUIRE(is_obviously_infinite(cong));
+    }
+    {
+      Presentation<word_type> p;
+      p.alphabet(3);
+      presentation::add_rule(p, {0, 1}, {0});
+      presentation::add_rule(p, {0, 0}, {0});
+      Congruence cong(right, p);
+      cong.add_pair({1, 1}, {1});
+      REQUIRE(is_obviously_infinite(cong));
+    }
+    {
+      Presentation<word_type> p;
+      p.alphabet(3);
+      presentation::add_rule(p, {0, 1}, {0});
+      presentation::add_rule(p, {0, 0}, {0});
+      Congruence cong(right, p);
+      cong.add_pair({1, 2}, {1});
+      REQUIRE(is_obviously_infinite(cong));
+    }
+    {
+      Presentation<word_type> p;
+      p.alphabet(3);
+      presentation::add_rule(p, {0, 1}, {0});
+      Congruence cong(left, p);
+      cong.add_pair({2, 2}, {2});
+      REQUIRE(is_obviously_infinite(cong));
+    }
+    {
+      Presentation<word_type> p;
+      p.alphabet(3);
+      presentation::add_rule(p, {0, 1}, {0});
+      presentation::add_rule(p, {0, 0}, {0});
+      Congruence cong(left, p);
+      cong.add_pair({1, 1}, {1});
+      REQUIRE(is_obviously_infinite(cong));
+    }
+    {
+      Presentation<word_type> p;
+      p.alphabet(3);
+      presentation::add_rule(p, {0, 1}, {0});
+      presentation::add_rule(p, {0, 0}, {0});
+      Congruence cong(left, p);
+      cong.add_pair({1, 2}, {1});
+      REQUIRE(is_obviously_infinite(cong));
     }
 
-    LIBSEMIGROUPS_TEST_CASE("Congruence",
-                            "023",
-                            "right congruence on finite semigroup",
-                            "[quick][cong][no-valgrind]") {
-      auto rg      = ReportGuard(REPORT);
-      using Transf = LeastTransf<8>;
-      FroidurePin<Transf> S({Transf({0, 1, 2, 3, 4, 5, 6, 7}),
-                             Transf({1, 2, 3, 4, 5, 0, 6, 7}),
-                             Transf({1, 0, 2, 3, 4, 5, 6, 7}),
-                             Transf({0, 1, 2, 3, 4, 0, 6, 7}),
-                             Transf({0, 1, 2, 3, 4, 5, 7, 6})});
-      REQUIRE(S.size() == 93312);
-      std::vector<Transf> elms = {Transf({0, 0, 0, 0, 0, 0, 7, 6}),
-                                  Transf({0, 0, 0, 0, 0, 0, 6, 7}),
-                                  Transf({0, 0, 0, 0, 0, 0, 6, 7}),
-                                  Transf({1, 1, 1, 1, 1, 1, 6, 7}),
-                                  Transf({0, 0, 0, 0, 0, 0, 6, 7}),
-                                  Transf({2, 2, 2, 2, 2, 2, 6, 7}),
-                                  Transf({0, 0, 0, 0, 0, 0, 6, 7}),
-                                  Transf({3, 3, 3, 3, 3, 3, 6, 7}),
-                                  Transf({0, 0, 0, 0, 0, 0, 6, 7}),
-                                  Transf({4, 4, 4, 4, 4, 4, 6, 7}),
-                                  Transf({0, 0, 0, 0, 0, 0, 6, 7}),
-                                  Transf({5, 5, 5, 5, 5, 5, 6, 7}),
-                                  Transf({0, 0, 0, 0, 0, 0, 7, 6}),
-                                  Transf({0, 1, 2, 3, 4, 5, 7, 6})};
-      REQUIRE(
-          std::all_of(elms.cbegin(), elms.cend(), [&S](Transf const& x) ->
-  bool { return S.contains(x);
-          }));
+    using Transf = LeastTransf<3>;
+    FroidurePin<Transf> p({Transf({0, 1, 0}), Transf({0, 1, 2})});
+    REQUIRE(p.size() == 2);
+    {
+      Congruence cong(twosided, p);
+      cong.add_pair({1}, {0});
+      REQUIRE(!is_obviously_infinite(cong));
 
-      Congruence cong(right, S);
-      word_type  w1, w2;
-      for (size_t i = 0; i < elms.size(); i += 2) {
-        S.factorisation(w1, S.position(elms[i]));
-        S.factorisation(w2, S.position(elms[i + 1]));
-        cong.add_pair(w1, w2);
-      }
       REQUIRE(cong.number_of_classes() == 1);
     }
+  }
 
-    LIBSEMIGROUPS_TEST_CASE("Congruence",
-                            "024",
-                            "redundant generating pairs",
-                            "[quick][cong]") {
-      auto        rg = ReportGuard(REPORT);
-      Presentation<word_type> p;
-      p.alphabet(1);
-
-      Congruence cong(twosided, S);
-      cong.add_pair({0, 0}, {0, 0});
-      REQUIRE(cong.contains({0, 0}, {0, 0}));
-    }
-
-    LIBSEMIGROUPS_TEST_CASE("Congruence",
-                            "025",
-                            "2-sided cong. on free semigroup",
-                            "[quick][cong]") {
-      auto        rg = ReportGuard(REPORT);
-      Presentation<word_type> p;
-      p.alphabet("a");
-      Congruence cong(twosided, S);
-      REQUIRE(cong.contains({0, 0}, {0, 0}));
-      REQUIRE(!cong.contains({0, 0}, {0}));
-    }
-
-    LIBSEMIGROUPS_TEST_CASE("Congruence",
-                            "026",
-                            "is_quotient_obviously_(in)finite",
-                            "[quick][cong]") {
-      auto rg = ReportGuard(REPORT);
-      {
-        Presentation<word_type> p;
-        p.alphabet(3);
-        presentation::add_rule(p, {0, 1}, {0});
-        Congruence cong(twosided, S);
-        cong.add_pair({2, 2}, {2});
-        REQUIRE(cong.is_quotient_obviously_infinite());
-        REQUIRE(cong.number_of_classes() == POSITIVE_INFINITY);
-        // REQUIRE(cong.class_index_to_word(0) == word_type({}));
-        // TODO(later) the above doesn't currently work, but it should, and
-  there
-        // is no reason it can't
-        REQUIRE(!cong.is_quotient_obviously_finite());
-      }
-      {
-        Presentation<word_type> p;
-        p.alphabet(3);
-        presentation::add_rule(p, {0, 1}, {0});
-        presentation::add_rule(p, {0, 0}, {0});
-        Congruence cong(twosided, S);
-        cong.add_pair({1, 1}, {1});
-        REQUIRE(cong.is_quotient_obviously_infinite());
-        REQUIRE(!cong.is_quotient_obviously_finite());
-      }
-      {
-        Presentation<word_type> p;
-        p.alphabet(3);
-        presentation::add_rule(p, {0, 1}, {0});
-        presentation::add_rule(p, {0, 0}, {0});
-        Congruence cong(twosided, S);
-        cong.add_pair({1, 2}, {1});
-        REQUIRE(cong.is_quotient_obviously_infinite());
-        REQUIRE(!cong.is_quotient_obviously_finite());
-      }
-      {
-        Presentation<word_type> p;
-        p.alphabet(3);
-        presentation::add_rule(p, {0, 1}, {0});
-        Congruence cong(right, S);
-        cong.add_pair({2, 2}, {2});
-        REQUIRE(cong.is_quotient_obviously_infinite());
-        REQUIRE(!cong.is_quotient_obviously_finite());
-      }
-      {
-        Presentation<word_type> p;
-        p.alphabet(3);
-        presentation::add_rule(p, {0, 1}, {0});
-        presentation::add_rule(p, {0, 0}, {0});
-        Congruence cong(right, S);
-        cong.add_pair({1, 1}, {1});
-        REQUIRE(cong.is_quotient_obviously_infinite());
-        REQUIRE(!cong.is_quotient_obviously_finite());
-      }
-      {
-        Presentation<word_type> p;
-        p.alphabet(3);
-        presentation::add_rule(p, {0, 1}, {0});
-        presentation::add_rule(p, {0, 0}, {0});
-        Congruence cong(right, S);
-        cong.add_pair({1, 2}, {1});
-        REQUIRE(cong.is_quotient_obviously_infinite());
-        REQUIRE(!cong.is_quotient_obviously_finite());
-      }
-      {
-        Presentation<word_type> p;
-        p.alphabet(3);
-        presentation::add_rule(p, {0, 1}, {0});
-        Congruence cong(left, S);
-        cong.add_pair({2, 2}, {2});
-        REQUIRE(cong.is_quotient_obviously_infinite());
-        REQUIRE(!cong.is_quotient_obviously_finite());
-      }
-      {
-        Presentation<word_type> p;
-        p.alphabet(3);
-        presentation::add_rule(p, {0, 1}, {0});
-        presentation::add_rule(p, {0, 0}, {0});
-        Congruence cong(left, S);
-        cong.add_pair({1, 1}, {1});
-        REQUIRE(cong.is_quotient_obviously_infinite());
-        REQUIRE(!cong.is_quotient_obviously_finite());
-      }
-      {
-        Presentation<word_type> p;
-        p.alphabet(3);
-        presentation::add_rule(p, {0, 1}, {0});
-        presentation::add_rule(p, {0, 0}, {0});
-        Congruence cong(left, S);
-        cong.add_pair({1, 2}, {1});
-        REQUIRE(cong.is_quotient_obviously_infinite());
-        REQUIRE(!cong.is_quotient_obviously_finite());
-      }
-
-      using Transf = LeastTransf<3>;
-      FroidurePin<Transf> S({Transf({0, 1, 0}), Transf({0, 1, 2})});
-      REQUIRE(S.size() == 2);
-      {
-        Congruence cong(twosided, S);
-        cong.add_pair({1}, {0});
-        REQUIRE(!cong.is_quotient_obviously_infinite());
-        REQUIRE(cong.is_quotient_obviously_finite());
-        REQUIRE(cong.number_of_classes() == 1);
-      }
-    }
-
-    LIBSEMIGROUPS_TEST_CASE("Congruence", "027", "less", "[quick][cong]") {
-      Presentation<word_type> p;
-      p.alphabet(2);
-      presentation::add_rule(p, {0, 0}, {0});
+  LIBSEMIGROUPS_TEST_CASE("Congruence",
+                          "028",
+                          "2-sided congruences of BMat8 semigroup",
+                          "[quick][cong][no-valgrind]") {
+#ifdef LIBSEMIGROUPS_HPCOMBI_ENABLED
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wpedantic"
+#pragma GCC diagnostic ignored "-Winline"
+#endif
+    auto rg    = ReportGuard(false);
+    using BMat = FastestBMat<4>;
+    std::vector<BMat> gens
+        = {BMat({{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}),
+           BMat({{0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}, {1, 0, 0, 0}}),
+           BMat({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {1, 0, 0, 1}}),
+           BMat({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 0}})};
+    {
+      FroidurePin<BMat> S(gens);
 
       Congruence cong(twosided, S);
-      REQUIRE(!cong.less({0, 0}, {0}));
+      cong.add_pair({1}, {0});
+
+      REQUIRE(cong.number_of_classes() == 3);
+      REQUIRE(cong.contains({1}, {0}));
+
+      auto ntc = congruence::non_trivial_classes(cong, S.normal_forms());
+      REQUIRE(ntc.size() == 3);
+      REQUIRE(ntc[0].size() == 12);
+      REQUIRE(ntc[1].size() == 63'880);
+      REQUIRE(ntc[2].size() == 12);
+      REQUIRE(ntc[0]
+              == std::vector<word_type>({0_w,
+                                         1_w,
+                                         010_w,
+                                         011_w,
+                                         101_w,
+                                         110_w,
+                                         111_w,
+                                         01011_w,
+                                         01101_w,
+                                         10110_w,
+                                         10111_w,
+                                         11011_w}));
+    }
+    {
+      FroidurePin<BMat> S({gens[0], gens[2], gens[3]});
+      Congruence        cong(twosided, S);
+      cong.add_pair({1}, {0});
+
+      REQUIRE(cong.number_of_classes() == 2);
+      REQUIRE(cong.contains({1}, {0}));
+
+      auto ntc = congruence::non_trivial_classes(cong, S.normal_forms());
+      REQUIRE(ntc.size() == 2);
+      REQUIRE(ntc[0].size() == 8);
+      REQUIRE(ntc[1].size() == 8);
+
+      REQUIRE(ntc[0]
+              == std::vector<word_type>(
+                  {0_w, 1_w, 00_w, 01_w, 10_w, 010_w, 101_w, 0101_w}));
+    }
+#ifdef LIBSEMIGROUPS_HPCOMBI_ENABLED
+#pragma GCC diagnostic pop
+#endif
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Congruence",
+                          "029",
+                          "left congruence on finite semigroup",
+                          "[quick][cong]") {
+    auto                  rg = ReportGuard(true);
+    FroidurePin<Transf<>> S;
+    S.add_generator(Transf<>({1, 3, 4, 2, 3}));
+    S.add_generator(Transf<>({3, 2, 1, 3, 3}));
+
+    // REQUIRE(S.size() == 88);
+    // REQUIRE(S.degree() == 5);
+    Congruence cong(left, S);
+    cong.add_pair(010001100_w, 10001_w);
+
+    REQUIRE(cong.number_of_classes() == 69);
+    REQUIRE(cong.number_of_classes() == 69);
+
+    word_type w3 = S.factorisation(Transf<>({1, 3, 1, 3, 3}));
+    word_type w4 = S.factorisation(Transf<>({4, 2, 4, 4, 2}));
+    REQUIRE(!cong.contains(w3, w4));
+    REQUIRE(cong.contains(w3, 00101_w));
+    REQUIRE(cong.contains(100101_w, 0010001_w));
+    REQUIRE(!cong.contains(011000_w, 11_w));
+    REQUIRE(!cong.contains(10001000_w, 1001_w));
+
+    REQUIRE(cong.contains(100101_w, 0010001_w));
+    REQUIRE(!cong.contains(10001000_w, 1001_w));
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Congruence",
+                          "030",
+                          "right congruence on finite semigroup",
+                          "[quick][cong]") {
+    auto                  rg = ReportGuard(false);
+    FroidurePin<Transf<>> S;
+    S.add_generator(Transf<>({1, 3, 4, 2, 3}));
+    S.add_generator(Transf<>({3, 2, 1, 3, 3}));
+
+    // REQUIRE(S.size() == 88);
+    // REQUIRE(S.degree() == 5);
+    Congruence cong(right, S);
+    cong.add_pair(010001100_w, 10001_w);
+
+    REQUIRE(cong.number_of_classes() == 72);
+    REQUIRE(cong.number_of_classes() == 72);
+
+    word_type w3 = S.factorisation(Transf<>({1, 3, 1, 3, 3}));
+    word_type w4 = S.factorisation(Transf<>({4, 2, 4, 4, 2}));
+    REQUIRE(!cong.contains(w3, w4));
+    REQUIRE(!cong.contains(w3, 00101_w));
+    REQUIRE(!cong.contains(100101_w, 0010001_w));
+    REQUIRE(!cong.contains(011000_w, 11_w));
+    REQUIRE(!cong.contains(10001000_w, 1001_w));
+
+    REQUIRE(!cong.contains(100101_w, 0010001_w));
+    REQUIRE(!cong.contains(10001000_w, 1001_w));
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Congruence",
+                          "031",
+                          "right congruence on finite semigroup",
+                          "[quick][cong]") {
+    auto                  rg = ReportGuard(false);
+    FroidurePin<Transf<>> S;
+    S.add_generator(Transf<>({1, 3, 4, 2, 3}));
+    S.add_generator(Transf<>({3, 2, 1, 3, 3}));
+
+    REQUIRE(S.size() == 88);
+    REQUIRE(S.number_of_rules() == 18);
+    REQUIRE(S.degree() == 5);
+    word_type w1, w2;
+    S.factorisation(w1, S.position(Transf<>({3, 4, 4, 4, 4})));
+    S.factorisation(w2, S.position(Transf<>({3, 1, 3, 3, 3})));
+    Congruence cong(right, S);
+    cong.add_pair(w1, w2);
+
+    REQUIRE(cong.number_of_classes() == 72);
+    REQUIRE(cong.number_of_classes() == 72);
+    word_type w3, w4, w5, w6;
+    S.factorisation(w3, S.position(Transf<>({1, 3, 3, 3, 3})));
+    S.factorisation(w4, S.position(Transf<>({4, 2, 4, 4, 2})));
+    S.factorisation(w5, S.position(Transf<>({2, 3, 2, 2, 2})));
+    S.factorisation(w6, S.position(Transf<>({2, 3, 3, 3, 3})));
+    REQUIRE(!cong.contains(w3, w4));
+    REQUIRE(cong.contains(w5, w6));
+    REQUIRE(!cong.contains(w3, w6));
+
+    REQUIRE(cong.contains(w1, w2));
+    REQUIRE(cong.contains(w5, w6));
+    REQUIRE(!cong.contains(w3, w5));
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Congruence", "032", "contains", "[quick][cong]") {
+    auto                    rg = ReportGuard(false);
+    Presentation<word_type> p;
+    p.alphabet(2);
+    Congruence cong(twosided, p);
+    cong.add_pair(00_w, 0_w);
+    cong.add_pair(01_w, 0_w);
+    cong.add_pair(10_w, 0_w);
+    cong.run();
+    REQUIRE(cong.contains(00_w, 0_w));
+    REQUIRE(cong.contains(01_w, 0_w));
+    REQUIRE(cong.contains(10_w, 0_w));
+    REQUIRE(cong.contains(10_w, 0101_w));
+    REQUIRE(!cong.contains(11_w, 1_w));
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Congruence",
+                          "033",
+                          "stellar_monoid S2",
+                          "[quick][cong]") {
+    auto                    rg = ReportGuard(false);
+    Presentation<word_type> p  = rook_monoid(2, 0);
+
+    REQUIRE(!is_obviously_infinite(p));
+
+    Congruence cong(twosided, p);
+    auto       q = stellar_monoid(2);
+    for (auto it = q.rules.cbegin(); it != q.rules.cend(); it += 2) {
+      cong.add_pair(*it, *(it + 1));
     }
 
-    LIBSEMIGROUPS_TEST_CASE("Congruence",
-                            "028",
-                            "2-sided congruences of BMat8 semigroup",
-                            "[quick][cong][no-valgrind]") {
-  #ifdef LIBSEMIGROUPS_HPCOMBI_ENABLED
-  #pragma GCC diagnostic push
-  #pragma GCC diagnostic ignored "-Wpedantic"
-  #pragma GCC diagnostic ignored "-Winline"
-  #endif
-      auto rg    = ReportGuard(REPORT);
-      using BMat = FastestBMat<4>;
-      std::vector<BMat> gens
-          = {BMat({{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}),
-             BMat({{0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}, {1, 0, 0, 0}}),
-             BMat({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {1, 0, 0, 1}}),
-             BMat({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 0}})};
-      {
-        FroidurePin<BMat> S(gens);
+    ToddCoxeter tc(twosided, p);
+    REQUIRE(tc.number_of_classes() == 7);
 
-        Congruence cong(twosided, S);
-        cong.add_pair({1}, {0});
+    REQUIRE(!is_obviously_infinite(cong));
+    REQUIRE(cong.number_of_classes() == 5);
 
-        REQUIRE(cong.number_of_classes() == 3);
-        REQUIRE(cong.word_to_class_index({1}) == 0);
-        REQUIRE(cong.number_of_non_trivial_classes() == 3);
+    auto ntc
+        = congruence::non_trivial_classes(cong, todd_coxeter::normal_forms(tc));
+    REQUIRE(ntc.size() == 1);
+    std::sort(ntc[0].begin(), ntc[0].end());
+    REQUIRE(ntc[0] == std::vector<word_type>({010_w, 10_w, 101_w}));
+  }
 
-        std::vector<size_t> v(cong.number_of_non_trivial_classes(), 0);
-        std::transform(cong.cbegin_ntc(),
-                       cong.cend_ntc(),
-                       v.begin(),
-                       std::mem_fn(&std::vector<word_type>::size));
-        std::sort(v.begin(), v.end());
-        REQUIRE(v == std::vector<size_t>({12, 12, 63880}));
-        REQUIRE(cong.cbegin_ntc()->size() == 12);
-        REQUIRE(std::vector<word_type>(cong.cbegin_ntc()->cbegin(),
-                                       cong.cbegin_ntc()->cend())
-                == std::vector<word_type>({{0},
-                                           {1},
-                                           {0, 1, 0},
-                                           {0, 1, 1},
-                                           {1, 0, 1},
-                                           {1, 1, 0},
-                                           {1, 1, 1},
-                                           {0, 1, 0, 1, 1},
-                                           {0, 1, 1, 0, 1},
-                                           {1, 0, 1, 1, 0},
-                                           {1, 0, 1, 1, 1},
-                                           {1, 1, 0, 1, 1}}));
-      }
-      {
-        FroidurePin<BMat> S({gens[0], gens[2], gens[3]});
-        Congruence        cong(twosided, S);
-        cong.add_pair({1}, {0});
+  LIBSEMIGROUPS_TEST_CASE("Congruence",
+                          "034",
+                          "stellar_monoid S3",
+                          "[quick][cong]") {
+    auto                    rg = ReportGuard(false);
+    Presentation<word_type> p  = rook_monoid(3, 0);
 
-        REQUIRE(cong.number_of_classes() == 2);
-        REQUIRE(cong.word_to_class_index({1}) == 0);
-        REQUIRE(cong.number_of_non_trivial_classes() == 2);
+    REQUIRE(!is_obviously_infinite(p));
 
-        std::vector<size_t> v(cong.number_of_non_trivial_classes(), 0);
-        std::transform(cong.cbegin_ntc(),
-                       cong.cend_ntc(),
-                       v.begin(),
-                       std::mem_fn(&std::vector<word_type>::size));
-        std::sort(v.begin(), v.end());
-        REQUIRE(v == std::vector<size_t>({8, 8}));
-        REQUIRE(cong.cbegin_ntc()->size() == 8);
-        REQUIRE(std::vector<word_type>(cong.cbegin_ntc()->cbegin(),
-                                       cong.cbegin_ntc()->cend())
-                == std::vector<word_type>({{0},
-                                           {1},
-                                           {0, 0},
-                                           {0, 1},
-                                           {1, 0},
-                                           {0, 1, 0},
-                                           {1, 0, 1},
-                                           {0, 1, 0, 1}}));
-      }
-  #ifdef LIBSEMIGROUPS_HPCOMBI_ENABLED
-  #pragma GCC diagnostic pop
-  #endif
+    Congruence cong(twosided, p);
+    auto       q = stellar_monoid(3);
+    for (auto it = q.rules.cbegin(); it != q.rules.cend(); it += 2) {
+      cong.add_pair(*it, *(it + 1));
+    }
+    REQUIRE(!is_obviously_infinite(cong));
+    REQUIRE(cong.number_of_classes() == 16);
+
+    ToddCoxeter tc(twosided, p);
+    REQUIRE(tc.number_of_classes() == 34);
+
+    auto ntc
+        = congruence::non_trivial_classes(cong, todd_coxeter::normal_forms(tc));
+    REQUIRE(ntc.size() == 4);
+    std::for_each(ntc.begin(), ntc.end(), [](auto& val) {
+      std::sort(val.begin(), val.end());
+    });
+    std::sort(ntc.begin(), ntc.end());
+    REQUIRE(ntc
+            == decltype(ntc)({{010_w, 10_w, 101_w},
+                              {0102_w, 1012_w, 102_w},
+                              {01021_w, 10121_w, 1021_w},
+                              {010210_w,
+                               01210_w,
+                               012101_w,
+                               0210_w,
+                               101210_w,
+                               1012101_w,
+                               10210_w,
+                               1210_w,
+                               12101_w,
+                               121012_w,
+                               210_w,
+                               2101_w,
+                               21012_w}}));
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Congruence",
+                          "035",
+                          "stellar_monoid S4",
+                          "[quick][cong]") {
+    auto                    rg = ReportGuard(false);
+    Presentation<word_type> p  = rook_monoid(4, 0);
+
+    REQUIRE(!is_obviously_infinite(p));
+
+    Congruence cong(twosided, p);
+    auto       q = stellar_monoid(4);
+    for (auto it = q.rules.cbegin(); it != q.rules.cend(); it += 2) {
+      cong.add_pair(*it, *(it + 1));
     }
 
-    LIBSEMIGROUPS_TEST_CASE("Congruence",
-                            "029",
-                            "left congruence on finite semigroup",
-                            "[quick][cong]") {
-      auto                  rg = ReportGuard(REPORT);
-      FroidurePin<Transf<>> S;
-      S.add_generator(Transf<>({1, 3, 4, 2, 3}));
-      S.add_generator(Transf<>({3, 2, 1, 3, 3}));
+    REQUIRE(!is_obviously_infinite(cong));
+    REQUIRE(cong.number_of_classes() == 65);
 
-      // REQUIRE(S.size() == 88);
-      // REQUIRE(S.degree() == 5);
-      Congruence cong(left, S);
-      cong.add_pair({0, 1, 0, 0, 0, 1, 1, 0, 0}, {1, 0, 0, 0, 1});
+    ToddCoxeter tc(twosided, p);
+    REQUIRE(tc.number_of_classes() == 209);
 
-      REQUIRE(cong.number_of_classes() == 69);
-      REQUIRE(cong.number_of_classes() == 69);
+    auto ntc
+        = congruence::non_trivial_classes(cong, todd_coxeter::normal_forms(tc));
+    REQUIRE(ntc.size() == 17);
+    std::vector<size_t> sizes(ntc.size(), 0);
+    std::transform(ntc.cbegin(),
+                   ntc.cend(),
+                   sizes.begin(),
+                   std::mem_fn(&std::vector<word_type>::size));
+    std::sort(sizes.begin(), sizes.end());
+    REQUIRE(sizes
+            == std::vector<size_t>(
+                {3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 13, 13, 13, 13, 73}));
+    REQUIRE(std::accumulate(sizes.cbegin(), sizes.cend(), 0)
+                + (cong.number_of_classes() - ntc.size())
+            == 209);
+  }
 
-      word_type w3 = S.factorisation(Transf<>({1, 3, 1, 3, 3}));
-      word_type w4 = S.factorisation(Transf<>({4, 2, 4, 4, 2}));
-      REQUIRE(cong.word_to_class_index(w3) != cong.word_to_class_index(w4));
-      REQUIRE(cong.word_to_class_index(w3)
-              == cong.word_to_class_index({0, 0, 1, 0, 1}));
-      REQUIRE(cong.word_to_class_index({1, 0, 0, 1, 0, 1})
-              == cong.word_to_class_index({0, 0, 1, 0, 0, 0, 1}));
-      REQUIRE(cong.word_to_class_index({0, 1, 1, 0, 0, 0})
-              != cong.word_to_class_index({1, 1}));
-      REQUIRE(cong.word_to_class_index({1, 0, 0, 0, 1, 0, 0, 0})
-              != cong.word_to_class_index({1, 0, 0, 1}));
+  // TODO uncomment
+  // LIBSEMIGROUPS_TEST_CASE("Congruence",
+  //                         "036",
+  //                         "stellar_monoid S5",
+  //                         "[quick][cong][no-valgrind]") {
+  //   auto        rg = ReportGuard(false);
+  //   Presentation<word_type> p;
+  //   p.alphabet(6);
+  //   for (relation_type const& rl : rook_monoid(5, 0)) {
+  //     presentation::add_rule(p, rl);
+  //   }
 
-      REQUIRE(cong.contains({1, 0, 0, 1, 0, 1}, {0, 0, 1, 0, 0, 0, 1}));
-      REQUIRE(!cong.contains({1, 0, 0, 0, 1, 0, 0, 0}, {1, 0, 0, 1}));
+  //   REQUIRE(S.number_of_rules() == 33);
+  //   //REQUIRE(!S.is_obviously_infinite());
+  //   REQUIRE(!S.knuth_bendix()->confluent());
+  //   REQUIRE(S.size() == 1546);
+  //   REQUIRE(S.froidure_pin()->size() == 1546);
 
-      REQUIRE(!cong.less({1, 0, 0, 0, 1, 0, 0, 0}, {1, 0, 0, 1}));
-      REQUIRE(cong.less({1, 0, 0, 1}, {1, 0, 0, 0, 1, 0, 0, 0}));
+  //   Congruence cong(twosided, S);
+  //   for (relation_type const& rl : stellar_monoid(5)) {
+  //     cong.add_pair(rl.first, rl.second);
+  //   }
+  //   //REQUIRE(!is_obviously_infinite(cong));
+  //   REQUIRE(cong.number_of_classes() == 326);
+  //   REQUIRE(cong.number_of_non_trivial_classes() == 86);
+
+  //   std::vector<size_t> v(cong.number_of_non_trivial_classes(), 0);
+  //   std::transform(cong.cbegin_ntc(),
+  //                  cong.cend_ntc(),
+  //                  v.begin(),
+  //                  std::mem_fn(&std::vector<word_type>::size));
+  //   REQUIRE(std::count(v.cbegin(), v.cend(), 3) == 60);
+  //   REQUIRE(std::count(v.cbegin(), v.cend(), 13) == 20);
+  //   REQUIRE(std::count(v.cbegin(), v.cend(), 73) == 5);
+  //   REQUIRE(std::count(v.cbegin(), v.cend(), 501) == 1);
+  //   REQUIRE(
+  //       std::accumulate(v.cbegin(), v.cend(), 0)
+  //           + (cong.number_of_classes() -
+  //           cong.number_of_non_trivial_classes())
+  //       == S.size());
+  // }
+
+  // LIBSEMIGROUPS_TEST_CASE("Congruence",
+  //                         "037",
+  //                         "stellar_monoid S6",
+  //                         "[quick][cong][no-valgrind]") {
+  //   auto        rg = ReportGuard(false);
+  //   Presentation<word_type> p;
+  //   p.alphabet(7);
+  //   for (relation_type const& rl : rook_monoid(6, 0)) {
+  //     presentation::add_rule(p, rl);
+  //   }
+
+  //   REQUIRE(S.number_of_rules() == 45);
+  //   //REQUIRE(!S.is_obviously_infinite());
+  //   REQUIRE(!S.knuth_bendix()->confluent());
+  //   REQUIRE(S.size() == 13327);
+
+  //   Congruence cong(twosided, S);
+  //   for (relation_type const& rl : stellar_monoid(6)) {
+  //     cong.add_pair(rl.first, rl.second);
+  //   }
+  //   //REQUIRE(!is_obviously_infinite(cong));
+  //   REQUIRE(cong.number_of_classes() == 1957);
+  //   REQUIRE(cong.number_of_non_trivial_classes() == 517);
+
+  //   std::vector<size_t> v(cong.number_of_non_trivial_classes(), 0);
+  //   std::transform(cong.cbegin_ntc(),
+  //                  cong.cend_ntc(),
+  //                  v.begin(),
+  //                  std::mem_fn(&std::vector<word_type>::size));
+  //   REQUIRE(
+  //       std::accumulate(v.cbegin(), v.cend(), 0)
+  //           + (cong.number_of_classes() -
+  //           cong.number_of_non_trivial_classes())
+  //       == S.size());
+  // }
+
+  // LIBSEMIGROUPS_TEST_CASE("Congruence",
+  //                         "038",
+  //                         "stellar_monoid S7",
+  //                         "[quick][cong][no-valgrind]") {
+  //   auto        rg = ReportGuard(false);
+  //   Presentation<word_type> p;
+  //   p.alphabet(8);
+  //   for (relation_type const& rl : rook_monoid(7, 0)) {
+  //     presentation::add_rule(p, rl);
+  //   }
+
+  //   REQUIRE(S.number_of_rules() == 59);
+  //   //REQUIRE(!S.is_obviously_infinite());
+  //   REQUIRE(!S.knuth_bendix()->confluent());
+  //   REQUIRE(S.size() == 130922);
+
+  //   Congruence cong(twosided, S);
+  //   for (relation_type const& rl : stellar_monoid(7)) {
+  //     cong.add_pair(rl.first, rl.second);
+  //   }
+  //   //REQUIRE(!is_obviously_infinite(cong));
+  //   REQUIRE(cong.number_of_classes() == 13700);
+  //   REQUIRE(cong.number_of_non_trivial_classes() == 3620);
+
+  //   std::vector<size_t> v(cong.number_of_non_trivial_classes(), 0);
+  //   std::transform(cong.cbegin_ntc(),
+  //                  cong.cend_ntc(),
+  //                  v.begin(),
+  //                  std::mem_fn(&std::vector<word_type>::size));
+  //   REQUIRE(
+  //       std::accumulate(v.cbegin(), v.cend(), 0)
+  //           + (cong.number_of_classes() -
+  //           cong.number_of_non_trivial_classes())
+  //       == S.size());
+  // }
+
+  LIBSEMIGROUPS_TEST_CASE("Congruence",
+                          "039",
+                          "left cong. on an f.p. semigroup",
+                          "[quick][cong]") {
+    auto rg = ReportGuard(false);
+
+    Presentation<std::string> p;
+    p.alphabet("abe");
+    presentation::add_identity_rules(p, 'e');
+    presentation::add_rule(p, "abb", "bb");
+    presentation::add_rule(p, "bbb", "bb");
+    presentation::add_rule(p, "aaaa", "a");
+    presentation::add_rule(p, "baab", "bb");
+    presentation::add_rule(p, "baaab", "b");
+    presentation::add_rule(p, "babab", "b");
+    presentation::add_rule(p, "bbaaa", "bb");
+    presentation::add_rule(p, "bbaba", "bbaa");
+
+    Congruence cong1(left, p);
+    cong1.add_pair(0_w, 111_w);
+    REQUIRE(cong1.number_of_classes() == 11);
+
+    Congruence cong2(left, p);
+    cong2.add_pair(11_w, 0000000_w);
+    REQUIRE(cong1.number_of_classes() == cong2.number_of_classes());
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Congruence",
+                          "040",
+                          "2-sided cong. on infinite f.p. semigroup",
+                          "[quick][cong]") {
+    auto                    rg = ReportGuard(false);
+    Presentation<word_type> p;
+    p.alphabet(3);
+
+    Congruence cong(twosided, p);
+    cong.add_pair(1_w, 2_w);
+    cong.add_pair(00_w, 0_w);
+    cong.add_pair(01_w, 10_w);
+    cong.add_pair(01_w, 1_w);
+    cong.add_pair(02_w, 20_w);
+    cong.add_pair(02_w, 2_w);
+
+    REQUIRE(!cong.contains(1_w, 2222222222_w));
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Congruence",
+                          "042",
+                          "const_contains",
+                          "[quick][cong]") {
+    auto                    rg = ReportGuard(false);
+    Presentation<word_type> p;
+    p.alphabet(2);
+    Congruence cong(twosided, p);
+    cong.add_pair(000_w, 0_w);
+    cong.add_pair(1111_w, 1_w);
+    cong.add_pair(01110_w, 00_w);
+    cong.add_pair(1001_w, 11_w);
+    cong.add_pair(001010101010_w, 00_w);
+
+    REQUIRE(!cong.contains(1111_w, 11_w));
+    REQUIRE(cong.contains(1111_w, 1_w));
+    if (cong.has_todd_coxeter()) {
+      REQUIRE_NOTHROW(cong.todd_coxeter());
     }
-
-    LIBSEMIGROUPS_TEST_CASE("Congruence",
-                            "030",
-                            "right congruence on finite semigroup",
-                            "[quick][cong]") {
-      auto                  rg = ReportGuard(REPORT);
-      FroidurePin<Transf<>> S;
-      S.add_generator(Transf<>({1, 3, 4, 2, 3}));
-      S.add_generator(Transf<>({3, 2, 1, 3, 3}));
-
-      // REQUIRE(S.size() == 88);
-      // REQUIRE(S.degree() == 5);
-      Congruence cong(right, S);
-      cong.add_pair({0, 1, 0, 0, 0, 1, 1, 0, 0}, {1, 0, 0, 0, 1});
-
-      REQUIRE(cong.number_of_classes() == 72);
-      REQUIRE(cong.number_of_classes() == 72);
-
-      word_type w3 = S.factorisation(Transf<>({1, 3, 1, 3, 3}));
-      word_type w4 = S.factorisation(Transf<>({4, 2, 4, 4, 2}));
-      REQUIRE(cong.word_to_class_index(w3) != cong.word_to_class_index(w4));
-      REQUIRE(cong.word_to_class_index(w3)
-              != cong.word_to_class_index({0, 0, 1, 0, 1}));
-      REQUIRE(cong.word_to_class_index({1, 0, 0, 1, 0, 1})
-              != cong.word_to_class_index({0, 0, 1, 0, 0, 0, 1}));
-      REQUIRE(cong.word_to_class_index({0, 1, 1, 0, 0, 0})
-              != cong.word_to_class_index({1, 1}));
-      REQUIRE(cong.word_to_class_index({1, 0, 0, 0, 1, 0, 0, 0})
-              != cong.word_to_class_index({1, 0, 0, 1}));
-
-      REQUIRE(!cong.contains({1, 0, 0, 1, 0, 1}, {0, 0, 1, 0, 0, 0, 1}));
-      REQUIRE(!cong.contains({1, 0, 0, 0, 1, 0, 0, 0}, {1, 0, 0, 1}));
-
-      if (!cong.less({1, 0, 0, 0, 1, 0, 0, 0}, {1, 0, 0, 1})) {
-        // This depends on which method for cong wins!
-        REQUIRE(!cong.less({1, 0, 0, 0, 1, 0, 0, 0}, {1, 0, 0, 1}));
-        REQUIRE(cong.less({1, 0, 0, 1}, {1, 0, 0, 0, 1, 0, 0, 0}));
-      } else {
-        REQUIRE(cong.less({1, 0, 0, 0, 1, 0, 0, 0}, {1, 0, 0, 1}));
-        REQUIRE(!cong.less({1, 0, 0, 1}, {1, 0, 0, 0, 1, 0, 0, 0}));
-      }
+    if (cong.has_knuth_bendix()) {
+      REQUIRE_NOTHROW(cong.knuth_bendix());
     }
+  }
 
-    LIBSEMIGROUPS_TEST_CASE("Congruence",
-                            "031",
-                            "right congruence on finite semigroup",
-                            "[quick][cong]") {
-      auto                  rg = ReportGuard(REPORT);
-      FroidurePin<Transf<>> S;
-      S.add_generator(Transf<>({1, 3, 4, 2, 3}));
-      S.add_generator(Transf<>({3, 2, 1, 3, 3}));
+  // TODO similar test for left/right
+  LIBSEMIGROUPS_TEST_CASE("Congruence", "043", "no winner", "[quick][cong]") {
+    auto                    rg = ReportGuard(false);
+    Presentation<word_type> p;
+    p.alphabet(2);
+    Congruence cong(twosided, p);
+    // Required in case of using a 1 core computer, otherwise the tests below
+    // fail.
+    REQUIRE(cong.contains(0000_w, 0000_w));
+    REQUIRE(!cong.contains(0000_w, 0001_w));
 
-      REQUIRE(S.size() == 88);
-      REQUIRE(S.number_of_rules() == 18);
-      REQUIRE(S.degree() == 5);
-      word_type w1, w2;
-      S.factorisation(w1, S.position(Transf<>({3, 4, 4, 4, 4})));
-      S.factorisation(w2, S.position(Transf<>({3, 1, 3, 3, 3})));
-      Congruence cong(right, S);
-      cong.add_pair(w1, w2);
+    REQUIRE(!cong.has_knuth_bendix());
+    REQUIRE(cong.has_kambites());
+    REQUIRE_NOTHROW(to_froidure_pin(*cong.kambites()));
 
-      REQUIRE(cong.number_of_classes() == 72);
-      REQUIRE(cong.number_of_classes() == 72);
-      word_type w3, w4, w5, w6;
-      S.factorisation(w3, S.position(Transf<>({1, 3, 3, 3, 3})));
-      S.factorisation(w4, S.position(Transf<>({4, 2, 4, 4, 2})));
-      S.factorisation(w5, S.position(Transf<>({2, 3, 2, 2, 2})));
-      S.factorisation(w6, S.position(Transf<>({2, 3, 3, 3, 3})));
-      REQUIRE(cong.word_to_class_index(w3) != cong.word_to_class_index(w4));
-      REQUIRE(cong.word_to_class_index(w5) == cong.word_to_class_index(w6));
-      REQUIRE(cong.word_to_class_index(w3) != cong.word_to_class_index(w6));
+    KnuthBendix kb(twosided, p);  // TODO just use Strings
+    // TODO there's not reason this should't succeed
+    REQUIRE_THROWS_AS(congruence::non_trivial_classes(
+                          cong, knuth_bendix::normal_forms(kb).min(0).max(10)),
+                      LibsemigroupsException);
+  }
 
-      REQUIRE(cong.contains(w1, w2));
-      REQUIRE(cong.contains(w5, w6));
-      REQUIRE(!cong.contains(w3, w5));
-    }
-
-    LIBSEMIGROUPS_TEST_CASE("Congruence", "032", "contains", "[quick][cong]")
-  { auto        rg = ReportGuard(REPORT); Presentation<word_type> p;
-      p.alphabet(2);
-      Congruence cong(twosided, S);
-      cong.add_pair({0, 0}, {0});
-      cong.add_pair({0, 1}, {0});
-      cong.add_pair({1, 0}, {0});
-      REQUIRE(cong.contains({0, 0}, {0}));
-      REQUIRE(cong.contains({0, 1}, {0}));
-      REQUIRE(cong.contains({1, 0}, {0}));
-      REQUIRE(cong.contains({1, 0}, {0, 1, 0, 1}));
-      REQUIRE(!cong.contains({1, 1}, {1}));
-    }
-
-    // LIBSEMIGROUPS_TEST_CASE("Congruence",
-    //                         "033",
-    //                         "stellar_monoid S2",
-    //                         "[quick][cong]") {
-    //   auto        rg = ReportGuard(REPORT);
-    //   Presentation<word_type> p;
-    //   p.alphabet(3);
-    //   for (relation_type const& rl : rook_monoid(2, 0)) {
-    //     presentation::add_rule(p, rl);
-    //   }
-
-    //   REQUIRE(S.number_of_rules() == 9);
-    //   REQUIRE(!S.is_obviously_infinite());
-    //   REQUIRE(S.knuth_bendix()->confluent());
-    //   REQUIRE(S.size() == 7);
-    //   REQUIRE(S.froidure_pin()->size() == 7);
-
-    //   Congruence cong(twosided, S);
-    //   for (relation_type const& rl : stellar_monoid(2)) {
-    //     cong.add_pair(rl.first, rl.second);
-    //   }
-    //   REQUIRE(!cong.is_quotient_obviously_infinite());
-    //   REQUIRE(cong.number_of_classes() == 5);
-    //   REQUIRE(cong.number_of_non_trivial_classes() == 1);
-
-    //   std::vector<word_type> v(cong.cbegin_ntc()->cbegin(),
-    //                            cong.cbegin_ntc()->cend());
-    //   std::sort(v.begin(), v.end());
-    //   REQUIRE(v == std::vector<word_type>({{0, 1, 0}, {1, 0}, {1, 0, 1}}));
-    // }
-
-    // LIBSEMIGROUPS_TEST_CASE("Congruence",
-    //                         "034",
-    //                         "stellar_monoid S3",
-    //                         "[quick][cong]") {
-    //   auto        rg = ReportGuard(REPORT);
-    //   Presentation<word_type> p;
-    //   p.alphabet(4);
-    //   for (relation_type const& rl : rook_monoid(3, 0)) {
-    //     presentation::add_rule(p, rl);
-    //   }
-
-    //   REQUIRE(S.number_of_rules() == 15);
-    //   REQUIRE(!S.is_obviously_infinite());
-    //   REQUIRE(!S.knuth_bendix()->confluent());
-    //   REQUIRE(S.size() == 34);
-    //   REQUIRE(S.froidure_pin()->size() == 34);
-
-    //   Congruence cong(twosided, S);
-    //   for (relation_type const& rl : stellar_monoid(3)) {
-    //     cong.add_pair(rl.first, rl.second);
-    //   }
-    //   REQUIRE(!cong.is_quotient_obviously_infinite());
-    //   REQUIRE(cong.number_of_classes() == 16);
-    //   REQUIRE(cong.number_of_non_trivial_classes() == 4);
-
-    //   using non_trivial_classes_type =
-  Congruence::non_trivial_classes_type;
-
-    //   non_trivial_classes_type v;
-    //   v.reserve(cong.number_of_non_trivial_classes());
-    //   for (auto it = cong.cbegin_ntc(); it < cong.cend_ntc(); ++it) {
-    //     v.push_back(std::vector<word_type>(it->cbegin(), it->cend()));
-    //     std::sort(v.back().begin(), v.back().end());
-    //   }
-    //   std::sort(v.begin(), v.end());
-
-    //   REQUIRE(v
-    //           == non_trivial_classes_type(
-    //               {{{0, 1, 0}, {1, 0}, {1, 0, 1}},
-    //                {{0, 1, 0, 2}, {1, 0, 1, 2}, {1, 0, 2}},
-    //                {{0, 1, 0, 2, 1}, {1, 0, 1, 2, 1}, {1, 0, 2, 1}},
-    //                {{0, 1, 0, 2, 1, 0},
-    //                 {0, 1, 2, 1, 0},
-    //                 {0, 1, 2, 1, 0, 1},
-    //                 {0, 2, 1, 0},
-    //                 {1, 0, 1, 2, 1, 0},
-    //                 {1, 0, 1, 2, 1, 0, 1},
-    //                 {1, 0, 2, 1, 0},
-    //                 {1, 2, 1, 0},
-    //                 {1, 2, 1, 0, 1},
-    //                 {1, 2, 1, 0, 1, 2},
-    //                 {2, 1, 0},
-    //                 {2, 1, 0, 1},
-    //                 {2, 1, 0, 1, 2}}}));
-    // }
-
-    // LIBSEMIGROUPS_TEST_CASE("Congruence",
-    //                         "035",
-    //                         "stellar_monoid S4",
-    //                         "[quick][cong]") {
-    //   auto        rg = ReportGuard(REPORT);
-    //   Presentation<word_type> p;
-    //   p.alphabet(5);
-    //   for (relation_type const& rl : rook_monoid(4, 0)) {
-    //     presentation::add_rule(p, rl);
-    //   }
-
-    //   REQUIRE(S.number_of_rules() == 23);
-    //   REQUIRE(!S.is_obviously_infinite());
-    //   REQUIRE(!S.knuth_bendix()->confluent());
-    //   REQUIRE(S.size() == 209);
-    //   REQUIRE(S.froidure_pin()->size() == 209);
-
-    //   Congruence cong(twosided, S);
-    //   for (relation_type const& rl : stellar_monoid(4)) {
-    //     cong.add_pair(rl.first, rl.second);
-    //   }
-    //   REQUIRE(!cong.is_quotient_obviously_infinite());
-    //   REQUIRE(cong.number_of_classes() == 65);
-    //   REQUIRE(cong.number_of_non_trivial_classes() == 17);
-
-    //   std::vector<size_t> v(cong.number_of_non_trivial_classes(), 0);
-    //   std::transform(cong.cbegin_ntc(),
-    //                  cong.cend_ntc(),
-    //                  v.begin(),
-    //                  std::mem_fn(&std::vector<word_type>::size));
-    //   std::sort(v.begin(), v.end());
-    //   REQUIRE(v
-    //           == std::vector<size_t>(
-    //               {3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 13, 13, 13, 13,
-  73}));
-    //   REQUIRE(
-    //       std::accumulate(v.cbegin(), v.cend(), 0)
-    //           + (cong.number_of_classes() -
-    //           cong.number_of_non_trivial_classes())
-    //       == 209);
-    // }
-
-    // LIBSEMIGROUPS_TEST_CASE("Congruence",
-    //                         "036",
-    //                         "stellar_monoid S5",
-    //                         "[quick][cong][no-valgrind]") {
-    //   auto        rg = ReportGuard(REPORT);
-    //   Presentation<word_type> p;
-    //   p.alphabet(6);
-    //   for (relation_type const& rl : rook_monoid(5, 0)) {
-    //     presentation::add_rule(p, rl);
-    //   }
-
-    //   REQUIRE(S.number_of_rules() == 33);
-    //   REQUIRE(!S.is_obviously_infinite());
-    //   REQUIRE(!S.knuth_bendix()->confluent());
-    //   REQUIRE(S.size() == 1546);
-    //   REQUIRE(S.froidure_pin()->size() == 1546);
-
-    //   Congruence cong(twosided, S);
-    //   for (relation_type const& rl : stellar_monoid(5)) {
-    //     cong.add_pair(rl.first, rl.second);
-    //   }
-    //   REQUIRE(!cong.is_quotient_obviously_infinite());
-    //   REQUIRE(cong.number_of_classes() == 326);
-    //   REQUIRE(cong.number_of_non_trivial_classes() == 86);
-
-    //   std::vector<size_t> v(cong.number_of_non_trivial_classes(), 0);
-    //   std::transform(cong.cbegin_ntc(),
-    //                  cong.cend_ntc(),
-    //                  v.begin(),
-    //                  std::mem_fn(&std::vector<word_type>::size));
-    //   REQUIRE(std::count(v.cbegin(), v.cend(), 3) == 60);
-    //   REQUIRE(std::count(v.cbegin(), v.cend(), 13) == 20);
-    //   REQUIRE(std::count(v.cbegin(), v.cend(), 73) == 5);
-    //   REQUIRE(std::count(v.cbegin(), v.cend(), 501) == 1);
-    //   REQUIRE(
-    //       std::accumulate(v.cbegin(), v.cend(), 0)
-    //           + (cong.number_of_classes() -
-    //           cong.number_of_non_trivial_classes())
-    //       == S.size());
-    // }
-
-    // LIBSEMIGROUPS_TEST_CASE("Congruence",
-    //                         "037",
-    //                         "stellar_monoid S6",
-    //                         "[quick][cong][no-valgrind]") {
-    //   auto        rg = ReportGuard(REPORT);
-    //   Presentation<word_type> p;
-    //   p.alphabet(7);
-    //   for (relation_type const& rl : rook_monoid(6, 0)) {
-    //     presentation::add_rule(p, rl);
-    //   }
-
-    //   REQUIRE(S.number_of_rules() == 45);
-    //   REQUIRE(!S.is_obviously_infinite());
-    //   REQUIRE(!S.knuth_bendix()->confluent());
-    //   REQUIRE(S.size() == 13327);
-
-    //   Congruence cong(twosided, S);
-    //   for (relation_type const& rl : stellar_monoid(6)) {
-    //     cong.add_pair(rl.first, rl.second);
-    //   }
-    //   REQUIRE(!cong.is_quotient_obviously_infinite());
-    //   REQUIRE(cong.number_of_classes() == 1957);
-    //   REQUIRE(cong.number_of_non_trivial_classes() == 517);
-
-    //   std::vector<size_t> v(cong.number_of_non_trivial_classes(), 0);
-    //   std::transform(cong.cbegin_ntc(),
-    //                  cong.cend_ntc(),
-    //                  v.begin(),
-    //                  std::mem_fn(&std::vector<word_type>::size));
-    //   REQUIRE(
-    //       std::accumulate(v.cbegin(), v.cend(), 0)
-    //           + (cong.number_of_classes() -
-    //           cong.number_of_non_trivial_classes())
-    //       == S.size());
-    // }
-
-    // LIBSEMIGROUPS_TEST_CASE("Congruence",
-    //                         "038",
-    //                         "stellar_monoid S7",
-    //                         "[quick][cong][no-valgrind]") {
-    //   auto        rg = ReportGuard(REPORT);
-    //   Presentation<word_type> p;
-    //   p.alphabet(8);
-    //   for (relation_type const& rl : rook_monoid(7, 0)) {
-    //     presentation::add_rule(p, rl);
-    //   }
-
-    //   REQUIRE(S.number_of_rules() == 59);
-    //   REQUIRE(!S.is_obviously_infinite());
-    //   REQUIRE(!S.knuth_bendix()->confluent());
-    //   REQUIRE(S.size() == 130922);
-
-    //   Congruence cong(twosided, S);
-    //   for (relation_type const& rl : stellar_monoid(7)) {
-    //     cong.add_pair(rl.first, rl.second);
-    //   }
-    //   REQUIRE(!cong.is_quotient_obviously_infinite());
-    //   REQUIRE(cong.number_of_classes() == 13700);
-    //   REQUIRE(cong.number_of_non_trivial_classes() == 3620);
-
-    //   std::vector<size_t> v(cong.number_of_non_trivial_classes(), 0);
-    //   std::transform(cong.cbegin_ntc(),
-    //                  cong.cend_ntc(),
-    //                  v.begin(),
-    //                  std::mem_fn(&std::vector<word_type>::size));
-    //   REQUIRE(
-    //       std::accumulate(v.cbegin(), v.cend(), 0)
-    //           + (cong.number_of_classes() -
-    //           cong.number_of_non_trivial_classes())
-    //       == S.size());
-    // }
-
-    LIBSEMIGROUPS_TEST_CASE("Congruence",
-                            "039",
-                            "left cong. on an f.p. semigroup",
-                            "[quick][cong]") {
-      auto rg = ReportGuard(REPORT);
-
-      Presentation<word_type> p;
-      p.alphabet("abe");
-      S.set_identity("e");
-      presentation::add_rule(p, "abb", "bb");
-      presentation::add_rule(p, "bbb", "bb");
-      presentation::add_rule(p, "aaaa", "a");
-      presentation::add_rule(p, "baab", "bb");
-      presentation::add_rule(p, "baaab", "b");
-      presentation::add_rule(p, "babab", "b");
-      presentation::add_rule(p, "bbaaa", "bb");
-      presentation::add_rule(p, "bbaba", "bbaa");
-
-      REQUIRE(S.knuth_bendix()->confluent());
-      REQUIRE(S.knuth_bendix()->number_of_rules() == 13);
-
-      KnuthBendixCongruenceByPairs kbp(left, S.knuth_bendix());
-      // kbp.add_pair({0}, {1, 1, 1});
-      kbp.add_pair({1, 1}, {0, 0, 0, 0, 0, 0, 0});
-
-      REQUIRE(kbp.number_of_classes() == 11);
-
-      Congruence cong1(left, S);
-      cong1.add_pair({0}, {1, 1, 1});
-      REQUIRE(cong1.number_of_classes() == 11);
-
-      Congruence cong2(left, S);
-      cong2.add_pair({1, 1}, {0, 0, 0, 0, 0, 0, 0});
-      REQUIRE(cong1.number_of_classes() == cong2.number_of_classes());
-    }
-
-    LIBSEMIGROUPS_TEST_CASE("Congruence",
-                            "040",
-                            "2-sided cong. on infinite f.p. semigroup",
-                            "[quick][cong]") {
-      auto        rg = ReportGuard(REPORT);
-      Presentation<word_type> p;
-      p.alphabet(3);
-
-      Congruence cong(twosided, S);
-      cong.add_pair({1}, {2});
-      cong.add_pair({0, 0}, {0});
-      cong.add_pair({0, 1}, {1, 0});
-      cong.add_pair({0, 1}, {1});
-      cong.add_pair({0, 2}, {2, 0});
-      cong.add_pair({0, 2}, {2});
-
-      REQUIRE(!cong.contains({1}, {2, 2, 2, 2, 2, 2, 2, 2, 2, 2}));
-    }
-    LIBSEMIGROUPS_TEST_CASE("Congruence",
-                            "041",
-                            "2-sided congruence constructed from type only",
-                            "[quick][cong]") {
-      auto       rg = ReportGuard(REPORT);
-      Congruence cong(twosided);
-      REQUIRE(cong.number_of_generators() == UNDEFINED);
-      REQUIRE_THROWS_AS(cong.set_number_of_generators(0),
-  LibsemigroupsException); REQUIRE_THROWS_AS(cong.contains({1}, {2, 2, 2, 2,
-  2, 2, 2, 2, 2, 2}), LibsemigroupsException);
-      REQUIRE_THROWS_AS(cong.const_contains({1}, {2, 2, 2, 2, 2, 2, 2, 2, 2,
-  2}), LibsemigroupsException); REQUIRE(cong.number_of_classes() ==
-  UNDEFINED); REQUIRE_THROWS_AS(cong.word_to_class_index({2, 2, 2, 2}),
-                        LibsemigroupsException);
-      REQUIRE_THROWS_AS(cong.class_index_to_word(0), LibsemigroupsException);
-      REQUIRE_THROWS_AS(cong.class_index_to_word(1), LibsemigroupsException);
-      REQUIRE_THROWS_AS(cong.class_index_to_word(2), LibsemigroupsException);
-      REQUIRE_THROWS_AS(cong.run(), LibsemigroupsException);
-      REQUIRE(!cong.started());
-      REQUIRE(!cong.finished());
-
-      REQUIRE_NOTHROW(cong.set_number_of_generators(2));
-
-      REQUIRE_NOTHROW(cong.add_pair({0, 0, 0}, {0}));
-      REQUIRE_NOTHROW(cong.add_pair({0}, {1, 1}));
-      REQUIRE_THROWS_AS(!cong.contains({1}, {2, 2, 2, 2, 2, 2, 2, 2, 2, 2}),
-                        LibsemigroupsException);
-      REQUIRE_THROWS_AS(cong.const_contains({1}, {2, 2, 2, 2, 2, 2, 2, 2, 2,
-  2}), LibsemigroupsException); REQUIRE(cong.const_contains({0}, {1, 1}) ==
-  tril::TRUE); REQUIRE_NOTHROW(cong.run()); REQUIRE(!cong.contains({1}, {0}));
-      REQUIRE(cong.contains({0}, {1, 1}));
-      REQUIRE(cong.number_of_classes() == 5);
-      REQUIRE_THROWS_AS(cong.word_to_class_index({2, 2, 2, 2}),
-                        LibsemigroupsException);
-      REQUIRE(cong.word_to_class_index({1, 1, 1, 1}) == 2);
-      REQUIRE(cong.class_index_to_word(0) == word_type({0}));
-      REQUIRE(cong.class_index_to_word(1) == word_type({1}));
-      REQUIRE(cong.class_index_to_word(2) == word_type({0, 0}));
-      REQUIRE(cong.started());
-      REQUIRE(cong.finished());
-    }
-
-    LIBSEMIGROUPS_TEST_CASE("Congruence",
-                            "042",
-                            "const_contains",
-                            "[quick][cong]") {
-      auto       rg = ReportGuard(REPORT);
-      Congruence cong(twosided);
-      cong.set_number_of_generators(2);
-      cong.add_pair({0, 0, 0}, {0});
-      cong.add_pair({1, 1, 1, 1}, {1});
-      cong.add_pair({0, 1, 1, 1, 0}, {0, 0});
-      cong.add_pair({1, 0, 0, 1}, {1, 1});
-      cong.add_pair({0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0}, {0, 0});
-
-      REQUIRE(cong.const_contains({1, 1, 1, 1}, {1}) == tril::TRUE);
-      REQUIRE(cong.const_contains({1, 1, 1, 1}, {1, 1}) == tril::unknown);
-      REQUIRE(!cong.contains({1, 1, 1, 1}, {1, 1}));
-      if (cong.has_todd_coxeter()) {
-        REQUIRE_NOTHROW(cong.todd_coxeter());
-      }
-      if (cong.has_knuth_bendix()) {
-        REQUIRE_NOTHROW(cong.knuth_bendix());
-      }
-    }
-
-    LIBSEMIGROUPS_TEST_CASE("Congruence", "043", "no winner", "[quick][cong]")
-  { auto       rg = ReportGuard(REPORT); Congruence cong(twosided);
-      cong.set_number_of_generators(4);
-      cong.max_threads(2);
-      // Required in case of using a 1 core computer, otherwise the tests
-  below
-      // fail.
-      REQUIRE(cong.word_to_class_index({2, 2, 2, 2}) == 254);
-      REQUIRE(cong.class_index_to_word(2) == word_type({2}));
-      REQUIRE_NOTHROW(cong.quotient_froidure_pin());
-      REQUIRE_THROWS_AS(cong.cbegin_ntc(), LibsemigroupsException);
-    }
-
-    LIBSEMIGROUPS_TEST_CASE("Congruence",
-                            "044",
-                            "congruence over smalloverlap",
-                            "[quick][cong]") {
-      FpSemigroup k;
-      k.set_alphabet("abcdefg");
-      presentation::add_rule(p, "abcd", "aaaeaa");
-      Congruence cong(twosided, k);
-      cong.add_pair({4, 5}, {3, 6});
-      REQUIRE(cong.is_quotient_obviously_infinite());
-      REQUIRE(cong.number_of_generating_pairs() == 1);
-      REQUIRE(cong.number_of_classes() == POSITIVE_INFINITY);
-      REQUIRE(cong.class_index_to_word(100) == word_type({0, 6, 4}));
-    }
-
-    // The next 3 test cases are commented out because they test features we
-    // decided not to include in v1.0.0.
-
-    // LIBSEMIGROUPS_TEST_CASE("Congruence",
-    //                         "044",
-    //                         "Policy::none edge cases",
-    //                         "[quick][cong]") {
-    //   auto       rg = ReportGuard(REPORT);
-    //   std::unique_ptr<Congruence> cong;
-    //   SECTION("Congruence(congruence_kind)") {
-    //     cong = detail::make_unique<Congruence>(twosided);
-    //   }
-    //   SECTION("Congruence(congruence_kind, FpSemigroup const&)") {
-    //     Presentation<word_type> p;
-    //     p.alphabet(2);
-    //     cong = detail::make_unique<Congruence>(twosided, S);
-    //   }
-    //   REQUIRE(!cong->empty());
-    //   REQUIRE_THROWS_AS(cong->set_number_of_generators(0),
-    //   LibsemigroupsException); REQUIRE_THROWS_AS(!cong->contains({1}, {2,
-  2, 2,
-    //   2, 2, 2, 2, 2, 2, 2}),
-    //                     LibsemigroupsException);
-    //   REQUIRE(cong->const_contains({1}, {2, 2, 2, 2, 2, 2, 2, 2, 2, 2})
-    //           == tril::unknown);
-    //   REQUIRE_THROWS_AS(cong->number_of_classes(), LibsemigroupsException);
-    //   REQUIRE_THROWS_AS(cong->word_to_class_index({2, 2, 2, 2}),
-    //                     LibsemigroupsException);
-    //   REQUIRE_THROWS_AS(cong->class_index_to_word(0),
-  LibsemigroupsException);
-    //   REQUIRE_THROWS_AS(cong->class_index_to_word(1),
-  LibsemigroupsException);
-    //   REQUIRE_THROWS_AS(cong->class_index_to_word(2),
-  LibsemigroupsException);
-    //   REQUIRE_THROWS_AS(cong->run(), LibsemigroupsException);
-    // }
-
-    // LIBSEMIGROUPS_TEST_CASE("Congruence",
-    //                         "045",
-    //                         "Policy::none",
-    //                         "[quick][cong]") {
-    //   auto rg      = ReportGuard(REPORT);
-
-    //   using Transf = LeastTransf<5>;
-    //   FroidurePin<Transf> S({Transf({1, 3, 4, 2, 3}), Transf({3, 2, 1, 3,
-    //   3})}); REQUIRE(S.size() == 88);
-
-    //   Congruence cong(twosided, S, Congruence::Policy::none);
-    //   REQUIRE(!cong.is_quotient_obviously_infinite());
-
-    //   SECTION("ToddCoxeter") {
-    //     congruence::ToddCoxeter tc(twosided, S);
-    //     REQUIRE(tc.is_quotient_obviously_finite());
-    //     REQUIRE(!tc.is_quotient_obviously_infinite());
-
-    //     SECTION("add pair before copy") {
-    //       tc.add_pair({0}, {0, 0});
-    //       cong.add_runner(tc);
-    //       REQUIRE(cong.number_of_classes() == 6);
-    //     }
-    //     SECTION("add pair after copy") {
-    //       cong.add_runner(tc);
-    //       tc.add_pair({0}, {0, 0});
-    //       cong.add_pair({0}, {0, 0});
-    //       REQUIRE(cong.number_of_classes() == 6);
-    //     }
-    //     SECTION("no added pairs") {
-    //       cong.add_runner(tc);
-    //       tc.add_pair({0}, {0, 0});
-    //       REQUIRE(cong.number_of_classes() == 88);
-    //     }
-    //     REQUIRE(tc.number_of_classes() == 6);
-    //   }
-    //   SECTION("KnuthBendix") {
-    //     congruence::KnuthBendix kb(S);
-    //     REQUIRE(kb.is_quotient_obviously_finite());
-    //     REQUIRE(!kb.is_quotient_obviously_infinite());
-
-    //     SECTION("add pair before copy") {
-    //       kb.add_pair({0}, {0, 0});
-    //       cong.add_runner(kb);
-    //       REQUIRE(cong.number_of_classes() == 6);
-    //     }
-    //     SECTION("add pair after copy") {
-    //       cong.add_runner(kb);
-    //       kb.add_pair({0}, {0, 0});
-    //       cong.add_pair({0}, {0, 0});
-    //       REQUIRE(cong.number_of_classes() == 6);
-    //     }
-    //     SECTION("no added pairs") {
-    //       cong.add_runner(kb);
-    //       kb.add_pair({0}, {0, 0});
-    //       REQUIRE(cong.number_of_classes() == 88);
-    //     }
-    //     REQUIRE(kb.number_of_classes() == 6);
-    //   }
-    //   SECTION("ToddCoxeter + KnuthBendix") {
-    //     congruence::ToddCoxeter tc(twosided, S);
-    //     congruence::KnuthBendix kb(S);
-
-    //     SECTION("add pair before copy") {
-    //       tc.add_pair({0}, {0, 0});
-    //       kb.add_pair({0}, {0, 0});
-    //       cong.add_runner(tc);
-    //       cong.add_runner(kb);
-    //       REQUIRE(cong.number_of_runners() == 2);
-    //       REQUIRE(cong.number_of_classes() == 6);
-    //     }
-    //     SECTION("add pair after copy") {
-    //       cong.add_runner(tc);
-    //       cong.add_runner(kb);
-    //       REQUIRE(cong.number_of_runners() == 2);
-    //       tc.add_pair({0}, {0, 0});
-    //       kb.add_pair({0}, {0, 0});
-    //       cong.add_pair({0}, {0, 0});
-    //       REQUIRE(cong.number_of_classes() == 6);
-    //     }
-    //     SECTION("no added pairs") {
-    //       cong.add_runner(tc);
-    //       cong.add_runner(kb);
-    //       REQUIRE(cong.number_of_runners() == 2);
-    //       tc.add_pair({0}, {0, 0});
-    //       kb.add_pair({0}, {0, 0});
-    //       REQUIRE(cong.number_of_classes() == 88);
-    //     }
-    //     REQUIRE(tc.number_of_classes() == 6);
-    //     REQUIRE(kb.number_of_classes() == 6);
-    //   }
-    //   REQUIRE(!cong.is_quotient_obviously_infinite());
-    //   REQUIRE(cong.is_quotient_obviously_finite());
-    // }
-
-    // LIBSEMIGROUPS_TEST_CASE("Congruence",
-    //                         "046",
-    //                         "add_runner exceptions",
-    //                         "[quick][cong]") {
-    //   auto rg      = ReportGuard(REPORT);
-    //   using Transf = LeastTransf<5>;
-    //   FroidurePin<Transf> S({Transf({1, 3, 4, 2, 3}), Transf({3, 2, 1, 3,
-    //   3})}); REQUIRE(S.size() == 88);
-
-    //   SECTION("add runner after finished") {
-    //     Congruence cong(twosided, S);
-    //     REQUIRE(cong.number_of_classes() == 88);
-    //     congruence::ToddCoxeter tc(twosided, S);
-    //     REQUIRE_THROWS_AS(cong.add_runner(tc), LibsemigroupsException);
-    //   }
-    //   SECTION("add before number_of_generators is set") {
-    //     Congruence cong(twosided);
-    //     congruence::ToddCoxeter tc(twosided, S);
-    //     REQUIRE_THROWS_AS(cong.add_runner(tc), LibsemigroupsException);
-    //   }
-    //   SECTION("add_runner when initialized with generators") {
-    //     Congruence cong(twosided);
-    //     cong.set_number_of_generators(2);
-    //     REQUIRE(!cong.is_quotient_obviously_finite());
-    //     REQUIRE(cong.is_quotient_obviously_infinite());
-
-    //     congruence::ToddCoxeter tc(twosided, S);
-    //     REQUIRE_THROWS_AS(cong.add_runner(tc), LibsemigroupsException);
-    //     REQUIRE(tc.number_of_classes() == 88);
-    //     REQUIRE(cong.number_of_classes() == POSITIVE_INFINITY);
-    //   }
-    //   SECTION("add_runner when initialized with generators + pairs") {
-    //     Congruence cong(twosided);
-    //     cong.set_number_of_generators(2);
-    //     cong.add_pair({0, 0}, {0});
-    //     REQUIRE(!cong.is_quotient_obviously_finite());
-    //     REQUIRE(cong.is_quotient_obviously_infinite());
-
-    //     congruence::ToddCoxeter tc(twosided, S);
-    //     REQUIRE_THROWS_AS(cong.add_runner(tc), LibsemigroupsException);
-    //     REQUIRE(tc.number_of_classes() == 88);
-    //     REQUIRE(cong.number_of_classes() == POSITIVE_INFINITY);
-    //   }
-    //   SECTION("add_runner when not initialized + Policy::none") {
-    //     Congruence cong(twosided, Congruence::Policy::none);
-
-    //     size_t     old_nr_runners = cong.number_of_runners();
-    //     REQUIRE(cong.number_of_runners() == 0);
-    //     REQUIRE(!cong.is_quotient_obviously_finite());
-    //     REQUIRE(!cong.is_quotient_obviously_infinite());
-    //     REQUIRE(cong.number_of_generators() == UNDEFINED);
-    //     {
-    //       congruence::ToddCoxeter tc(twosided, S);
-    //       REQUIRE_THROWS_AS(cong.add_runner(tc), LibsemigroupsException);
-    //       REQUIRE(tc.number_of_classes() == 88);
-    //     }
-    //     {
-    //       congruence::ToddCoxeter tc(twosided);
-    //       REQUIRE_NOTHROW(cong.add_runner(tc));
-    //       REQUIRE(cong.number_of_runners() == old_nr_runners + 1);
-    //       congruence::KnuthBendix kb;
-    //       REQUIRE_NOTHROW(cong.add_runner(kb));
-    //       REQUIRE(cong.number_of_runners() == old_nr_runners + 2);
-    //     }
-    //     REQUIRE(!cong.is_quotient_obviously_finite());
-    //     REQUIRE(!cong.is_quotient_obviously_infinite());
-    //     REQUIRE(cong.number_of_generators() == S.number_of_generators());
-    //     cong.add_pair({0, 0}, {0});
-    //     REQUIRE(cong.number_of_classes() == 6);
-    //   }
-    //   SECTION("add_runner when not initialized + Policy::standard") {
-    //     Congruence cong(twosided, Congruence::Policy::standard);
-    //     size_t     old_nr_runners = cong.number_of_runners();
-    //     REQUIRE(cong.number_of_runners() > 0);
-    //     REQUIRE(!cong.is_quotient_obviously_finite());
-    //     REQUIRE(!cong.is_quotient_obviously_infinite());
-    //     REQUIRE(cong.number_of_generators() == UNDEFINED);
-    //     {
-    //       congruence::ToddCoxeter tc(twosided, S);
-    //       REQUIRE_THROWS_AS(cong.add_runner(tc), LibsemigroupsException);
-    //       REQUIRE(tc.number_of_classes() == 88);
-    //     }
-    //     {
-    //       congruence::ToddCoxeter tc(twosided);
-    //       REQUIRE_THROWS_AS(cong.add_runner(tc), LibsemigroupsException);
-    //       REQUIRE(cong.number_of_runners() == old_nr_runners);
-    //     }
-    //     REQUIRE(!cong.is_quotient_obviously_finite());
-    //     REQUIRE(!cong.is_quotient_obviously_infinite());
-    //     REQUIRE(cong.number_of_generators() == S.number_of_generators());
-    //     cong.add_pair({0, 0}, {0});
-    //     REQUIRE(cong.number_of_classes() == 6);
-    //   }
-    // }
-  */
+  LIBSEMIGROUPS_TEST_CASE("Congruence",
+                          "044",
+                          "congruence over smalloverlap",
+                          "[quick][cong]") {
+    Presentation<std::string> p;
+    p.alphabet("abcdefg");
+    presentation::add_rule(p, "abcd", "aaaeaa");
+    Congruence cong(twosided, p);
+    cong.add_pair(45_w, 36_w);
+    REQUIRE(is_obviously_infinite(cong));
+    REQUIRE(cong.number_of_generating_pairs() == 1);
+    REQUIRE(cong.number_of_classes() == POSITIVE_INFINITY);
+  }
 
 }  // namespace libsemigroups

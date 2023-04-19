@@ -75,7 +75,7 @@ namespace libsemigroups {
   //! Kambites.
   // TODO(later) example
   template <typename Word = detail::MultiStringView>
-  class Kambites : public Runner {
+  class Kambites : public v3::CongruenceInterface {
    public:
     ////////////////////////////////////////////////////////////////////////
     // Kambites - aliases - public
@@ -90,7 +90,6 @@ namespace libsemigroups {
 
    private:
     //! The template parameter \p Word.
-    // TODO private?
     using internal_type = Word;
 
     ////////////////////////////////////////////////////////////////////////
@@ -193,7 +192,7 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if the small overlap class is not at
     //! least \f$4\f$.
     // Not noexcept, throws
-    size_t size() {
+    [[nodiscard]] uint64_t number_of_classes() override {
       validate_small_overlap_class();
       return POSITIVE_INFINITY;
     }
@@ -203,13 +202,28 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if the small overlap class is not at
     //! least \f$4\f$.
     // Not noexcept, throws
-    bool equal_to(value_type const& u, value_type const& v) {
+    [[nodiscard]] bool contains(word_type const& u,
+                                word_type const& v) override {
       validate_small_overlap_class();
-      // Words aren'Word validated, the below returns false if they contain
+      // Words aren't validated, the below returns false if they contain
+      // letters not in the alphabet.
+      if constexpr (std::is_same_v<internal_type, word_type>) {
+        return wp_prefix(internal_type(u), internal_type(v), internal_type());
+      } else {
+        std::string uu = to_string(presentation(), u);
+        std::string vv = to_string(presentation(), v);
+        return wp_prefix(internal_type(uu), internal_type(vv), internal_type());
+      }
+    }
+
+    template <typename SFINAE = bool>
+    [[nodiscard]] auto contains(value_type const& u, value_type const& v)
+        -> std::enable_if_t<!std::is_same_v<value_type, word_type>, SFINAE> {
+      validate_small_overlap_class();
+      // Words aren't validated, the below returns false if they contain
       // letters not in the alphabet.
       return wp_prefix(internal_type(u), internal_type(v), internal_type());
     }
-
     // Not noexcept, equal_to above throws
     //! \copydoc FpSemigroupInterface::equal_to
     //!
@@ -302,6 +316,9 @@ namespace libsemigroups {
     //
     // Not noexcept, throws
     void validate_small_overlap_class() const;
+
+    // TODO really required?
+    void validate_word(word_type const&) const override {}
 
     ////////////////////////////////////////////////////////////////////////
     // Kambites - XYZ functions - private

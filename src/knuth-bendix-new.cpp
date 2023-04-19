@@ -366,8 +366,7 @@ namespace libsemigroups {
   // KnuthBendix - attributes - public
   //////////////////////////////////////////////////////////////////////////
 
-  // TODO rename number_of_classes
-  uint64_t KnuthBendix::size() {
+  uint64_t KnuthBendix::number_of_classes() {
     if (is_obviously_infinite(*this)) {
       return POSITIVE_INFINITY;
     }
@@ -1129,7 +1128,8 @@ namespace libsemigroups {
       // It is intended that kb2 is defined using the same presentation as kb1
       // and some additional rules. The output might still be meaningful if
       // this is not the case.
-      if (kb1.size() == POSITIVE_INFINITY && kb2.size() != POSITIVE_INFINITY) {
+      if (kb1.number_of_classes() == POSITIVE_INFINITY
+          && kb2.number_of_classes() != POSITIVE_INFINITY) {
         LIBSEMIGROUPS_EXCEPTION_V3(
             "the 1st argument defines an infinite semigroup, and the 2nd "
             "argument defines a finite semigroup, so there is at least one "

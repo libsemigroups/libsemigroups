@@ -69,7 +69,7 @@ namespace libsemigroups {
   ////////////////////////////////////////////////////////////////////////
   ///
   template <typename Word>
-  Kambites<Word>::Kambites() {
+  Kambites<Word>::Kambites() : CongruenceInterface(congruence_kind::twosided) {
     init();
   }
 

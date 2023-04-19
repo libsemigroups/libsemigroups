@@ -2551,4 +2551,5 @@ namespace libsemigroups {
     Kambites k(p);
     REQUIRE(k.small_overlap_class() == 1);
   }
+
 }  // namespace libsemigroups

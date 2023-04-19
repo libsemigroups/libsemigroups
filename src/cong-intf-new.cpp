@@ -57,7 +57,6 @@ namespace libsemigroups {
   // v3::CongruenceInterface - non-pure virtual methods - private
   /////////////////////////////////////////////////////////////////////////
 
-  // TODO not in the right place in this file
   void v3::CongruenceInterface::add_pair(word_type const& u,
                                          word_type const& v) {
     if (started()) {

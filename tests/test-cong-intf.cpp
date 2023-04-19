@@ -32,6 +32,7 @@
 namespace libsemigroups {
   struct LibsemigroupsException;  // Forward declaration
 
+  constexpr bool REPORT              = false;
   congruence_kind constexpr twosided = congruence_kind::twosided;
   congruence_kind constexpr left     = congruence_kind::left;
   congruence_kind constexpr right    = congruence_kind::right;

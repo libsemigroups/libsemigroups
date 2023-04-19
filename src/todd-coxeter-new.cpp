@@ -25,13 +25,7 @@
 #include "libsemigroups/report.hpp"
 
 namespace libsemigroups {
-  template <typename T>
-  class Congruence;
-
-  template <>
-  class Congruence<ToddCoxeter> : public ToddCoxeter {};
-
-  using class_index_type = v3::CongruenceInterface::class_index_type;
+  using node_type = typename ToddCoxeter::node_type;
 
   ////////////////////////////////////////////////////////////////////////
   // Digraph
@@ -308,8 +302,9 @@ namespace libsemigroups {
     }
     _word_graph.init(tc.presentation());
     auto& rules = _word_graph.presentation().rules;
-    rules.insert(
-        rules.end(), tc.cbegin_generating_pairs(), tc.cend_generating_pairs());
+    rules.insert(rules.end(),
+                 tc.generating_pairs().cbegin(),
+                 tc.generating_pairs().cend());
     if (kind() == congruence_kind::left && tc.kind() != congruence_kind::left) {
       presentation::reverse(_word_graph.presentation());
     }
@@ -440,8 +435,7 @@ namespace libsemigroups {
   bool ToddCoxeter::contains(word_type const& lhs, word_type const& rhs) {
     validate_word(lhs);
     validate_word(rhs);
-    if (presentation().rules.empty()
-        && cbegin_generating_pairs() == cend_generating_pairs()
+    if (presentation().rules.empty() && generating_pairs().empty()
         && word_graph().number_of_nodes_active() == 1) {
       return lhs == rhs;
     }
@@ -531,7 +525,7 @@ namespace libsemigroups {
   // CongruenceInterface - pure virtual member functions - private
   ////////////////////////////////////////////////////////////////////////
 
-  word_type ToddCoxeter::class_index_to_word_impl(class_index_type i) {
+  word_type ToddCoxeter::class_index_to_word_impl(node_type i) {
     run();
     LIBSEMIGROUPS_ASSERT(finished());
     if (!is_standardized()) {
@@ -557,7 +551,7 @@ namespace libsemigroups {
     return _word_graph.number_of_nodes_active() - offset;
   }
 
-  class_index_type ToddCoxeter::word_to_class_index_impl(word_type const& w) {
+  node_type ToddCoxeter::word_to_class_index_impl(word_type const& w) {
     run();
     LIBSEMIGROUPS_ASSERT(finished());
     if (!is_standardized()) {
@@ -569,8 +563,7 @@ namespace libsemigroups {
     // unless presentation().contains_empty_word()
   }
 
-  class_index_type
-  ToddCoxeter::const_word_to_class_index(word_type const& w) const {
+  node_type ToddCoxeter::const_word_to_class_index(word_type const& w) const {
     validate_word(w);
     node_type c = _word_graph.initial_node();
 
@@ -602,8 +595,8 @@ namespace libsemigroups {
 
     _word_graph.settings(*this);
     _word_graph.stats().start_time = std::chrono::high_resolution_clock::now();
-    auto       first               = cbegin_generating_pairs();
-    auto       last                = cend_generating_pairs();
+    auto       first               = generating_pairs().cbegin();
+    auto       last                = generating_pairs().cend();
     auto const id                  = word_graph().initial_node();
     if (save() || strategy() == options::strategy::felsch) {
       for (auto it = first; it < last; it += 2) {
@@ -626,8 +619,7 @@ namespace libsemigroups {
       }
     }
 
-    if (kind() == congruence_kind::twosided
-        && cbegin_generating_pairs() != cend_generating_pairs()) {
+    if (kind() == congruence_kind::twosided && !generating_pairs().empty()) {
       // TODO(later) avoid copy of presentation here, if possible
       Presentation<word_type> p = presentation();
       if (p.alphabet().size() != _word_graph.out_degree()) {
@@ -635,7 +627,7 @@ namespace libsemigroups {
         p.alphabet(_word_graph.out_degree());
       }
       presentation::add_rules(
-          p, cbegin_generating_pairs(), cend_generating_pairs());
+          p, generating_pairs().cbegin(), generating_pairs().cend());
       _word_graph.presentation(std::move(p));
     }
 
@@ -803,8 +795,6 @@ namespace libsemigroups {
   ////////////////////////////////////////////////////////////////////////
   // ToddCoxeter - reporting - private
   ////////////////////////////////////////////////////////////////////////
-
-  using class_index_type = v3::CongruenceInterface::class_index_type;
 
   void ToddCoxeter::report_next_lookahead(size_t old_value) const {
     static const std::string pad(8, ' ');

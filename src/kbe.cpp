@@ -86,7 +86,8 @@ namespace libsemigroups {
     // works. Probably the state of the FroidurePin and the underlying
     // KnuthBendix are not the same object, and one is being used when the
     // other one should be, or something.
-    if (state()->finished() && state()->size() != POSITIVE_INFINITY) {
+    if (state()->finished()
+        && state()->number_of_classes() != POSITIVE_INFINITY) {
       return tril::TRUE;
     }
     if (is_obviously_infinite(*state())) {

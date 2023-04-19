@@ -636,10 +636,11 @@ namespace libsemigroups {
     //! worst \f$O(mn)\f$ where \f$m\f$ is the number of letters in the
     //! alphabet, and \f$n\f$ is the number of nodes in the \ref
     //! gilman_digraph.
-    [[nodiscard]] uint64_t size();
+    [[nodiscard]] uint64_t number_of_classes() override;
 
     [[nodiscard]] bool equal_to(std::string const&, std::string const&);
-    [[nodiscard]] bool contains(word_type const& u, word_type const& v) {
+    [[nodiscard]] bool contains(word_type const& u,
+                                word_type const& v) override {
       return equal_to(to_string(presentation(), u),
                       to_string(presentation(), v));
     }
@@ -802,6 +803,21 @@ namespace libsemigroups {
 
     std::vector<std::vector<std::string>> non_trivial_classes(KnuthBendix& kb1,
                                                               KnuthBendix& kb2);
+
+    // TODO remove code dupl with same function in todd_coxeter namespace
+    template <typename Range,
+              typename = std::enable_if_t<rx::is_input_or_sink_v<Range>>>
+    std::vector<std::vector<std::string>> non_trivial_classes(KnuthBendix& kb,
+                                                              Range        r) {
+      auto result = partition(kb, r);
+
+      result.erase(
+          std::remove_if(result.begin(),
+                         result.end(),
+                         [](auto const& x) -> bool { return x.size() <= 1; }),
+          result.end());
+      return result;
+    }
 
   }  // namespace knuth_bendix
 

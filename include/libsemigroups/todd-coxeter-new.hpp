@@ -276,6 +276,18 @@ namespace libsemigroups {
     ToddCoxeter& init(congruence_kind knd, ToddCoxeter const& tc);
 
     ////////////////////////////////////////////////////////////////////////
+    // CongruenceInterface - pure virtual - public
+    ////////////////////////////////////////////////////////////////////////
+
+    [[nodiscard]] bool contains(word_type const& lhs,
+                                word_type const& rhs) override;
+
+    // TODO  remove since it falls right through
+    [[nodiscard]] uint64_t number_of_classes() override {
+      return number_of_classes_impl();
+    }
+
+    ////////////////////////////////////////////////////////////////////////
     // ToddCoxeter - settings - public
     ////////////////////////////////////////////////////////////////////////
 
@@ -755,8 +767,6 @@ namespace libsemigroups {
       return _standardized;
     }
 
-    bool contains(word_type const& lhs, word_type const& rhs);
-
     bool is_standardized(order val) const;
     bool is_standardized() const;
 
@@ -769,17 +779,12 @@ namespace libsemigroups {
     // Returns true if anything changed
     bool standardize(order val);
 
-    class_index_type word_to_class_index(word_type const& w) {
+    node_type word_to_class_index(word_type const& w) {
       validate_word(w);
       return word_to_class_index_impl(w);
     }
 
-    // TODO  remove since it falls right through
-    size_t number_of_classes() {
-      return number_of_classes_impl();
-    }
-
-    word_type class_index_to_word(class_index_type i) {
+    word_type class_index_to_word(node_type i) {
       if (i >= number_of_classes()) {
         LIBSEMIGROUPS_EXCEPTION_V3("invalid class index, expected a value in "
                                    "the range [0, {}), found {}",
@@ -793,7 +798,7 @@ namespace libsemigroups {
       if (u == v) {
         return tril::TRUE;
       }
-      class_index_type uu, vv;
+      node_type uu, vv;
       try {
         uu = const_word_to_class_index(u);
         vv = const_word_to_class_index(v);
@@ -828,13 +833,13 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////
 
     // TODO all of these should be public and called _no_checks
-    word_type class_index_to_word_impl(class_index_type i);
+    word_type class_index_to_word_impl(node_type i);
 
     size_t number_of_classes_impl();
 
-    class_index_type word_to_class_index_impl(word_type const& w);
+    node_type word_to_class_index_impl(word_type const& w);
 
-    class_index_type const_word_to_class_index(word_type const& w) const;
+    node_type const_word_to_class_index(word_type const& w) const;
 
     void validate_word(word_type const& w) const override;
 
@@ -906,36 +911,48 @@ namespace libsemigroups {
       return tc.class_index_to_word(tc.word_to_class_index(w));
     }
 
-    template <typename Range>
+    template <typename Range,
+              typename = std::enable_if_t<rx::is_input_or_sink_v<Range>>>
     std::vector<std::vector<word_type>> partition(ToddCoxeter& tc, Range r) {
       static_assert(
           std::is_same_v<std::decay_t<typename Range::output_type>, word_type>);
       using return_type = std::vector<std::vector<word_type>>;
 
-      return_type result(tc.number_of_classes(), std::vector<word_type>());
+      size_t const N = (r | rx::count());
+
+      if (tc.number_of_classes() == POSITIVE_INFINITY) {
+        LIBSEMIGROUPS_EXCEPTION_V3(
+            "the 1st argument defines a congruence with infinitely many "
+            "classes, the non-trivial classes cannot be determined!");
+      } else if (N == POSITIVE_INFINITY) {
+        LIBSEMIGROUPS_EXCEPTION_V3("the 2nd argument is an infinite range, the "
+                                   "non-trivial classes cannot be determined!");
+      }
+      return_type         result;
+      std::vector<size_t> lookup;
+      size_t              next_index = 0;
 
       while (!r.at_end()) {
-        auto next = r.get();
-        LIBSEMIGROUPS_ASSERT(tc.word_to_class_index(next) < result.size());
-        result[tc.word_to_class_index(next)].push_back(next);
+        auto       next  = r.get();
+        auto const index = tc.word_to_class_index(next);
+        if (index >= lookup.size()) {
+          lookup.resize(index + 1, UNDEFINED);
+        }
+        if (lookup[index] == UNDEFINED) {
+          lookup[index] = next_index++;
+          result.emplace_back();
+        }
+        result[lookup[index]].push_back(std::move(next));
         r.next();
       }
       return result;
     }
 
-    template <typename It>
-    std::vector<std::vector<word_type>> partition(ToddCoxeter& tc,
-                                                  It           first,
-                                                  It           last) {
-      return partition(tc, rx::iterator_range(first, last));
-    }
-
-    // TODO(now): this should return a range object
-    template <typename It>
+    template <typename Range,
+              typename = std::enable_if_t<rx::is_input_or_sink_v<Range>>>
     std::vector<std::vector<word_type>> non_trivial_classes(ToddCoxeter& tc,
-                                                            It           first,
-                                                            It           last) {
-      auto result = partition(tc, first, last);
+                                                            Range        r) {
+      auto result = partition(tc, r);
 
       result.erase(
           std::remove_if(result.begin(),
@@ -943,6 +960,25 @@ namespace libsemigroups {
                          [](auto const& x) -> bool { return x.size() <= 1; }),
           result.end());
       return result;
+    }
+
+    template <typename Iterator1, typename Iterator2>
+    std::vector<std::vector<word_type>> partition(ToddCoxeter& tc,
+                                                  Iterator1    first,
+                                                  Iterator2    last) {
+      return partition(tc, rx::iterator_range(first, last));
+    }
+
+    template <typename Iterator1, typename Iterator2>
+    std::vector<std::vector<word_type>> non_trivial_classes(ToddCoxeter& tc,
+                                                            Iterator1    first,
+                                                            Iterator2    last) {
+      return non_trivial_classes(tc, rx::iterator_range(first, last));
+    }
+
+    inline std::vector<std::vector<word_type>>
+    non_trivial_classes(ToddCoxeter& tc1, ToddCoxeter& tc2) {
+      return non_trivial_classes(tc1, normal_forms(tc2));
     }
 
     //! Check if the congruence has more than one class.

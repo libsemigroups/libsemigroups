@@ -36,10 +36,10 @@ namespace libsemigroups {
     Race::Race()
         : _max_threads(std::thread::hardware_concurrency()),
           _mtx(),
-          _winner(UNDEFINED) {}
+          _winner(nullptr) {}
 
     void Race::add_runner(std::shared_ptr<Runner> r) {
-      if (_winner != UNDEFINED) {
+      if (_winner != nullptr) {
         LIBSEMIGROUPS_EXCEPTION("the race is over, cannot add runners");
       }
       _runners.push_back(r);

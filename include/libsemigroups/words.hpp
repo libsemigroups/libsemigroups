@@ -550,6 +550,7 @@ namespace libsemigroups {
       to_strings _to_string;
 
       constexpr Range(InputRange input, to_strings t_strng) noexcept
+          // TODO move correct?
           : _input(std::move(input)), _to_string(std::move(t_strng)) {}
 
       [[nodiscard]] output_type get() const noexcept {
@@ -706,23 +707,32 @@ namespace libsemigroups {
   };
 
   // The next class is a custom combinator for rx::ranges to convert the output
-  // of a Words object into strings
+  // of a Strings object into words
   template <typename = void>
   struct to_words {
     to_words() = default;
 
+    explicit to_words(std::string const& lttrs) : _letters(lttrs) {}
+    explicit to_words(std::string&& lttrs) : _letters(std::move(lttrs)) {}
+    explicit to_words(char const* lttrs) : _letters(lttrs) {}
+
+    std::string _letters;
+
+    template <typename InputRange>
     struct Range {
       using output_type = word_type;
 
       static constexpr bool is_finite     = true;
       static constexpr bool is_idempotent = true;
 
-      Strings _input;
+      InputRange           _input;
+      detail::StringToWord _string_to_word;
 
-      explicit constexpr Range(Strings const& input) noexcept : _input(input) {}
+      explicit constexpr Range(InputRange&& input, to_words t_wrds) noexcept
+          : _input(std::move(input)), _string_to_word(t_wrds._letters) {}
 
       [[nodiscard]] output_type get() const noexcept {
-        return _input.to_word(_input.get());
+        return _string_to_word(_input.get());
       }
 
       constexpr void next() noexcept {
@@ -738,8 +748,10 @@ namespace libsemigroups {
       }
     };
 
-    [[nodiscard]] constexpr auto operator()(Strings const& input) const {
-      return Range(input);
+    template <typename InputRange>
+    [[nodiscard]] constexpr auto operator()(InputRange&& input) const {
+      using Inner = rx::get_range_type_t<InputRange>;
+      return Range<Inner>(std::forward<InputRange>(input), *this);
     }
   };
 
