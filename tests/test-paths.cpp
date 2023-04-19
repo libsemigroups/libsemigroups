@@ -378,7 +378,7 @@ namespace libsemigroups {
     presentation::add_rule(p, "ab", "b");
 
     KnuthBendix kb(congruence_kind::twosided, p);
-    REQUIRE(kb.size() == 9);
+    REQUIRE(kb.number_of_classes() == 9);
     auto S = to_froidure_pin(kb);
 
     ActionDigraph<size_t> ad(S.right_cayley_graph());
@@ -463,7 +463,7 @@ namespace libsemigroups {
       kb2.add_pair(lprime[i], rhs[i]);
     }
     kb2.add_pair(1_w, 00000001_w);
-    REQUIRE(kb2.size() == 9);
+    REQUIRE(kb2.number_of_classes() == 9);
     auto T = to_froidure_pin(kb2);
     T.run();
     REQUIRE(std::vector<relation_type>(T.cbegin_rules(), T.cend_rules())

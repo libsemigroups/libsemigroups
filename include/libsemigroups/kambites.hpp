@@ -508,13 +508,22 @@ namespace libsemigroups {
 
     void run_impl() override {
       if (!_have_class) {
-        _presentation.rules.insert(_presentation.rules.end(),
-                                   generating_pairs().cbegin(),
-                                   generating_pairs().cend());
-        // TODO check that strings or whatever are correctly converted here
-        ukkonen::add_words_no_checks(_suffix_tree,
-                                     generating_pairs().cbegin(),
-                                     generating_pairs().cend());
+        if constexpr (std::is_same_v<value_type, word_type>) {
+          auto const& pairs = generating_pairs();
+          _presentation.rules.insert(
+              _presentation.rules.end(), pairs.cbegin(), pairs.cend());
+          ukkonen::add_words_no_checks(
+              _suffix_tree, pairs.cbegin(), pairs.cend());
+        } else {
+          auto pairs
+              = (generating_pairs_range() | to_strings(_presentation.alphabet())
+                 | rx::to_vector());
+          ukkonen::add_words_no_checks(
+              _suffix_tree, pairs.cbegin(), pairs.cend());
+          _presentation.rules.insert(_presentation.rules.end(),
+                                     std::make_move_iterator(pairs.begin()),
+                                     std::make_move_iterator(pairs.end()));
+        }
 
         size_t result = POSITIVE_INFINITY;
         for (auto const& w : _presentation.rules) {

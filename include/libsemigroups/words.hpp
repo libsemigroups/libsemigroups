@@ -731,6 +731,9 @@ namespace libsemigroups {
       explicit constexpr Range(InputRange&& input, to_words t_wrds) noexcept
           : _input(std::move(input)), _string_to_word(t_wrds._letters) {}
 
+      explicit constexpr Range(Strings const& input)
+          : _input(input), _string_to_word(input.letters()) {}
+
       [[nodiscard]] output_type get() const noexcept {
         return _string_to_word(_input.get());
       }
@@ -748,7 +751,13 @@ namespace libsemigroups {
       }
     };
 
-    template <typename InputRange>
+    [[nodiscard]] constexpr auto operator()(Strings const& input) const {
+      return Range<Strings>(input);
+    }
+
+    template <typename InputRange,
+              typename = std::enable_if_t<
+                  !std::is_same_v<std::decay_t<InputRange>, Strings>>>
     [[nodiscard]] constexpr auto operator()(InputRange&& input) const {
       using Inner = rx::get_range_type_t<InputRange>;
       return Range<Inner>(std::forward<InputRange>(input), *this);

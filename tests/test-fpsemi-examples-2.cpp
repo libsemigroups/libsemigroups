@@ -37,8 +37,6 @@ namespace libsemigroups {
 
   struct LibsemigroupsException;
 
-  constexpr bool REPORT = false;
-
   using fpsemigroup::chinese_monoid;
   using fpsemigroup::plactic_monoid;
   using fpsemigroup::stylic_monoid;
@@ -48,12 +46,28 @@ namespace libsemigroups {
                             "067",
                             "chinese_monoid(3)",
                             "[fpsemi-examples][quick]") {
-      auto rg = ReportGuard(REPORT);
+      auto rg = ReportGuard(false);
 
       KnuthBendix kb(congruence_kind::twosided, chinese_monoid(3));
       REQUIRE(is_obviously_infinite(kb));
-      REQUIRE(kb.size() == POSITIVE_INFINITY);
-      REQUIRE(kb.presentation().rules == std::vector<std::string>());
+      REQUIRE(kb.number_of_classes() == POSITIVE_INFINITY);
+      REQUIRE(kb.presentation().rules
+              == std::vector<std::string>({"baa",
+                                           "aba",
+                                           "caa",
+                                           "aca",
+                                           "bba",
+                                           "bab",
+                                           "cba",
+                                           "cab",
+                                           "cba",
+                                           "bca",
+                                           "cca",
+                                           "cac",
+                                           "cbb",
+                                           "bcb",
+                                           "ccb",
+                                           "cbc"}));
       REQUIRE(knuth_bendix::normal_forms(kb).min(0).max(10).count() == 1'175);
     }
 
@@ -61,10 +75,28 @@ namespace libsemigroups {
                             "068",
                             "plactic_monoid(3)",
                             "[fpsemi-examples][quick]") {
-      auto        rg = ReportGuard(REPORT);
+      auto        rg = ReportGuard(true);
       KnuthBendix kb(congruence_kind::twosided, plactic_monoid(3));
+      REQUIRE(kb.presentation().rules
+              == std::vector<std::string>({"abc",
+                                           "acb",
+                                           "bca",
+                                           "cba",
+                                           "abb",
+                                           "bab",
+                                           "aab",
+                                           "aba",
+                                           "cbb",
+                                           "bcb",
+                                           "ccb",
+                                           "cbc",
+                                           "caa",
+                                           "aca",
+                                           "cca",
+                                           "cac"}));
+      REQUIRE(kb.presentation().alphabet() == "abc");
       REQUIRE(is_obviously_infinite(kb));
-      REQUIRE(kb.size() == POSITIVE_INFINITY);
+      REQUIRE(kb.number_of_classes() == POSITIVE_INFINITY);
       REQUIRE(knuth_bendix::normal_forms(kb).min(0).max(5).count() == 70);
     }
 
@@ -72,9 +104,9 @@ namespace libsemigroups {
                             "069",
                             "stylic_monoid(4)",
                             "[fpsemi-examples][quick]") {
-      auto        rg = ReportGuard(REPORT);
+      auto        rg = ReportGuard(false);
       KnuthBendix kb(congruence_kind::twosided, stylic_monoid(4));
-      REQUIRE(kb.size() == 51);
+      REQUIRE(kb.number_of_classes() == 51);
       REQUIRE(knuth_bendix::normal_forms(kb).min(0).max(6).count() == 49);
     }
   }  // namespace congruence

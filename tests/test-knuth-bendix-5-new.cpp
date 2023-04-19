@@ -75,7 +75,7 @@ namespace libsemigroups {
     REQUIRE(kb.confluent());
     REQUIRE(kb.presentation().rules.size() / 2 == 4);
     REQUIRE(kb.number_of_active_rules() == 4);
-    REQUIRE(kb.size() == 4);
+    REQUIRE(kb.number_of_classes() == 4);
   }
 
   LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
@@ -95,7 +95,7 @@ namespace libsemigroups {
     KnuthBendix kb(twosided, p);
     REQUIRE(kb.confluent());
     REQUIRE(kb.number_of_active_rules() == 3);
-    REQUIRE(kb.size() == 9);
+    REQUIRE(kb.number_of_classes() == 9);
   }
 
   LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
@@ -115,7 +115,7 @@ namespace libsemigroups {
     KnuthBendix kb(twosided, p);
     REQUIRE(kb.confluent());
     REQUIRE(kb.number_of_active_rules() == 18);
-    REQUIRE(kb.size() == 88);
+    REQUIRE(kb.number_of_classes() == 88);
   }
 
   LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
@@ -151,7 +151,7 @@ namespace libsemigroups {
     KnuthBendix kb(twosided, p);
     kb.run();
     REQUIRE(kb.confluent());
-    REQUIRE(kb.size() == 88);
+    REQUIRE(kb.number_of_classes() == 88);
   }
 
   LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
@@ -170,7 +170,7 @@ namespace libsemigroups {
     auto p = to_presentation<word_type>(S);
 
     KnuthBendix kb1(twosided, p);
-    REQUIRE(kb1.size() == 88);
+    REQUIRE(kb1.number_of_classes() == 88);
 
     presentation::add_rule(p,
                            2_w + S.factorisation(Transf<>({3, 4, 4, 4, 4})),
@@ -275,7 +275,7 @@ namespace libsemigroups {
                 S.factorisation(Transf<>({3, 1, 3, 3, 3})));
     REQUIRE(knuth_bendix::normal_forms(kb).min(1).count() == 72);
 
-    REQUIRE(kb.size() == 72);
+    REQUIRE(kb.number_of_classes() == 72);
 
     REQUIRE(!kb.contains(S.factorisation(Transf<>({1, 3, 1, 3, 3})),
                          S.factorisation(Transf<>({4, 2, 4, 4, 2}))));
@@ -428,7 +428,7 @@ namespace libsemigroups {
     REQUIRE(paths1.min(1).from(0).count() == 69);
     REQUIRE(knuth_bendix::normal_forms(kb).min(1).count() == 69);
 
-    REQUIRE(kb.size() == 69);
+    REQUIRE(kb.number_of_classes() == 69);
 
     auto nf1 = (knuth_bendix::normal_forms(kb).min(1)
                 | to_strings(kb.presentation().alphabet()) | to_vector());

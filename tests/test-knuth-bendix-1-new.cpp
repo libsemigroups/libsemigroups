@@ -104,7 +104,7 @@ namespace libsemigroups {
     REQUIRE(kb.normal_form("ac") == "a");
     REQUIRE(kb.equal_to("ca", "a"));
     REQUIRE(kb.equal_to("ac", "a"));
-    REQUIRE(kb.size() == POSITIVE_INFINITY);
+    REQUIRE(kb.number_of_classes() == POSITIVE_INFINITY);
     REQUIRE(is_obviously_infinite(kb));
 
     auto nf = knuth_bendix::normal_forms(kb).min(1).max(5);
@@ -141,7 +141,7 @@ namespace libsemigroups {
 
     REQUIRE((nf | to_strings("abc") | to_vector())
             == std::vector<std::string>({"a", "c", "cc", "ccc", "cccc"}));
-    REQUIRE(kb.size() == POSITIVE_INFINITY);
+    REQUIRE(kb.number_of_classes() == POSITIVE_INFINITY);
   }
 
   LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
@@ -169,7 +169,7 @@ namespace libsemigroups {
     REQUIRE(kb.number_of_active_rules() == 4);
     REQUIRE(kb.confluent());
     REQUIRE(kb.number_of_active_rules() == 4);
-    REQUIRE(kb.size() == POSITIVE_INFINITY);
+    REQUIRE(kb.number_of_classes() == POSITIVE_INFINITY);
 
     auto nf = knuth_bendix::normal_forms(kb);
     REQUIRE((nf.min(1).max(2) | to_strings(p.alphabet()) | to_vector())
@@ -210,7 +210,7 @@ namespace libsemigroups {
     kb.run();
     REQUIRE(kb.number_of_active_rules() == 4);
     REQUIRE(kb.confluent());
-    REQUIRE(kb.size() == POSITIVE_INFINITY);
+    REQUIRE(kb.number_of_classes() == POSITIVE_INFINITY);
 
     auto nf = knuth_bendix::normal_forms(kb);
 
@@ -245,7 +245,7 @@ namespace libsemigroups {
     kb.run();
     REQUIRE(kb.number_of_active_rules() == 8);
     REQUIRE(kb.confluent());
-    REQUIRE(kb.size() == POSITIVE_INFINITY);
+    REQUIRE(kb.number_of_classes() == POSITIVE_INFINITY);
 
     auto nf = knuth_bendix::normal_forms(kb);
     REQUIRE((nf.min(0).max(5) | to_strings(p.alphabet()) | to_vector())
@@ -279,7 +279,7 @@ namespace libsemigroups {
     kb.run();
     REQUIRE(kb.number_of_active_rules() == 8);
     REQUIRE(kb.confluent());
-    REQUIRE(kb.size() == POSITIVE_INFINITY);
+    REQUIRE(kb.number_of_classes() == POSITIVE_INFINITY);
 
     auto nf = knuth_bendix::normal_forms(kb);
     REQUIRE((nf.min(0).max(5) | to_strings("abcd") | to_vector())
@@ -314,7 +314,7 @@ namespace libsemigroups {
     kb.run();
     REQUIRE(kb.number_of_active_rules() == 6);
     REQUIRE(kb.confluent());
-    REQUIRE(kb.size() == 12);
+    REQUIRE(kb.number_of_classes() == 12);
 
     auto nf = knuth_bendix::normal_forms(kb);
     REQUIRE(nf.count() == 12);
@@ -357,7 +357,7 @@ namespace libsemigroups {
     kb.run();
     REQUIRE(kb.number_of_active_rules() == 11);
     REQUIRE(kb.confluent());
-    REQUIRE(kb.size() == 12);
+    REQUIRE(kb.number_of_classes() == 12);
 
     auto nf = knuth_bendix::normal_forms(kb).min(1).max(5)
               | to_strings(p.alphabet());
@@ -402,7 +402,7 @@ namespace libsemigroups {
     REQUIRE(kb.confluent());
     REQUIRE(kb.normal_form("cc") == "b");
     REQUIRE(kb.normal_form("ccc") == "");
-    REQUIRE(kb.size() == 168);
+    REQUIRE(kb.number_of_classes() == 168);
 
     auto nf = knuth_bendix::normal_forms(kb).min(1).max(5)
               | to_strings(p.alphabet());
@@ -488,7 +488,7 @@ namespace libsemigroups {
     kb.run();
     REQUIRE(kb.number_of_active_rules() == 152);
     REQUIRE(kb.confluent());
-    REQUIRE(kb.size() == 336);
+    REQUIRE(kb.number_of_classes() == 336);
 
     // Test copy constructor
     auto T = to_froidure_pin(kb);
@@ -525,7 +525,7 @@ namespace libsemigroups {
     kb.run();
     REQUIRE(kb.number_of_active_rules() == 24);
     REQUIRE(kb.confluent());
-    REQUIRE(kb.size() == 11);
+    REQUIRE(kb.number_of_classes() == 11);
 
     auto& ad = kb.gilman_digraph();
     REQUIRE(ad.number_of_nodes() == 8);
@@ -783,12 +783,12 @@ namespace libsemigroups {
     presentation::add_rule(p, "cb", "b");
 
     KnuthBendix kb1(twosided, p);
-    REQUIRE(kb1.size() == POSITIVE_INFINITY);
+    REQUIRE(kb1.number_of_classes() == POSITIVE_INFINITY);
 
     presentation::add_rule(p, "b", "c");
 
     KnuthBendix kb2(twosided, p);
-    REQUIRE(kb2.size() == 2);
+    REQUIRE(kb2.number_of_classes() == 2);
 
     REQUIRE_THROWS_AS(knuth_bendix::non_trivial_classes(kb1, kb2),
                       LibsemigroupsException);
@@ -982,8 +982,8 @@ namespace libsemigroups {
     KnuthBendix kb1(twosided, p);
     KnuthBendix kb2(twosided, p);
 
-    REQUIRE(kb1.size() == 27);
-    REQUIRE(kb2.size() == 27);
+    REQUIRE(kb1.number_of_classes() == 27);
+    REQUIRE(kb2.number_of_classes() == 27);
     auto ntc = knuth_bendix::non_trivial_classes(kb1, kb2);
     REQUIRE(ntc.empty());
   }
@@ -1013,7 +1013,7 @@ namespace libsemigroups {
 
     KnuthBendix kb2(twosided, p);
 
-    REQUIRE(kb2.size() == 1);
+    REQUIRE(kb2.number_of_classes() == 1);
 
     auto ntc = knuth_bendix::non_trivial_classes(kb1, kb2);
 

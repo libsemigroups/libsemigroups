@@ -743,13 +743,13 @@ namespace libsemigroups {
     check_complete_compatible(tc);
     check_standardize(tc);
 
-    REQUIRE(*tc.cbegin_generating_pairs() == 010001100_w);
+    REQUIRE(tc.generating_pairs()[0] == 010001100_w);
     auto const& d = tc.word_graph();
     action_digraph::is_compatible(d,
                                   d.cbegin_active_nodes(),
                                   d.cend_active_nodes(),
-                                  tc.cbegin_generating_pairs(),
-                                  tc.cend_generating_pairs());
+                                  tc.generating_pairs().cbegin(),
+                                  tc.generating_pairs().cend());
     REQUIRE(tc.number_of_classes() == 21);
     REQUIRE(tc.number_of_classes() == 21);
 
@@ -1396,8 +1396,8 @@ namespace libsemigroups {
     REQUIRE(tc.number_of_classes() == POSITIVE_INFINITY);
     REQUIRE(tc.presentation().rules
             == std::vector<word_type>({{1, 1}, {2}, {2, 0, 2}, {0, 1, 0}}));
-    REQUIRE(std::vector<word_type>(tc.cbegin_generating_pairs(),
-                                   tc.cend_generating_pairs())
+    REQUIRE(std::vector<word_type>(tc.generating_pairs().cbegin(),
+                                   tc.generating_pairs().cend())
             == std::vector<word_type>({{1}, {2}}));
     REQUIRE(!tc.finished());
     REQUIRE(!tc.started());
@@ -1426,7 +1426,7 @@ namespace libsemigroups {
     kb.run();
     REQUIRE(kb.confluent());
     REQUIRE(kb.number_of_active_rules() == 3);
-    REQUIRE(kb.size() == 1);
+    REQUIRE(kb.number_of_classes() == 1);
     // REQUIRE(kb.is_obviously_finite());
     REQUIRE(kb.finished());
 
@@ -1721,7 +1721,7 @@ namespace libsemigroups {
     tc2.add_pair(00_w, 0_w);
 
     // Uses CongruenceInterface's generating pairs
-    REQUIRE(tc2.number_of_generating_pairs() == 4);
+    REQUIRE(tc2.number_of_generating_pairs() == 2);
 
     p.clear();
     p.alphabet(1);

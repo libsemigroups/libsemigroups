@@ -104,7 +104,7 @@ namespace libsemigroups {
     kb.run();
     REQUIRE(kb.number_of_active_rules() == 1'026);
     // REQUIRE(kb.confluent());
-    // REQUIRE(kb.size() == 10752);
+    // REQUIRE(kb.number_of_classes() == 10752);
   }
 
   // Takes approx. 2s
@@ -136,7 +136,7 @@ namespace libsemigroups {
     // kb.run() // also works, but is slower
     REQUIRE(kb.confluent());
     REQUIRE(kb.number_of_active_rules() == 8);
-    REQUIRE(kb.size() == 3);
+    REQUIRE(kb.number_of_classes() == 3);
     auto nf = knuth_bendix::normal_forms(kb);
     REQUIRE((nf | to_strings(p.alphabet()) | to_vector())
             == std::vector<std::string>({"", "a", "A"}));
@@ -174,7 +174,7 @@ namespace libsemigroups {
     kb.knuth_bendix_by_overlap_length();
     REQUIRE(kb.confluent());
     REQUIRE(kb.number_of_active_rules() == 194);
-    REQUIRE(kb.size() == 29);
+    REQUIRE(kb.number_of_classes() == 29);
   }
 
   // Mathieu group M_11
@@ -201,14 +201,14 @@ namespace libsemigroups {
     kb.knuth_bendix_by_overlap_length();
     REQUIRE(kb.confluent());
     REQUIRE(kb.number_of_active_rules() == 1'731);
-    REQUIRE(kb.size() == 7'920);
+    REQUIRE(kb.number_of_classes() == 7'920);
 
     presentation::add_rule(p, "a", "");
     presentation::add_rule(p, "a", "b");
     presentation::add_rule(p, "B", "a");
 
     KnuthBendix kb2(twosided, p);
-    REQUIRE(kb2.size() == 1);
+    REQUIRE(kb2.number_of_classes() == 1);
     REQUIRE(knuth_bendix::non_trivial_classes(kb, kb2)
             == std::vector<std::vector<std::string>>(
                 {knuth_bendix::normal_forms(kb) | to_strings(p.alphabet())
@@ -264,7 +264,7 @@ namespace libsemigroups {
     REQUIRE(kb.number_of_active_rules() == 192);
     REQUIRE(kb.gilman_digraph().number_of_nodes() == 332);
     REQUIRE(kb.gilman_digraph().number_of_edges() == 533);
-    REQUIRE(kb.size() == 696'729'600);
+    REQUIRE(kb.number_of_classes() == 696'729'600);
   }
 
   // Second of BHN's series of increasingly complicated presentations of 1.
@@ -291,7 +291,7 @@ namespace libsemigroups {
     kb.knuth_bendix_by_overlap_length();
     REQUIRE(kb.confluent());
     REQUIRE(kb.number_of_active_rules() == 6);
-    REQUIRE(kb.size() == 1);
+    REQUIRE(kb.number_of_classes() == 1);
   }
 
   // Two generator presentation of Fibonacci group F(2,7) - order 29. Large
@@ -317,7 +317,7 @@ namespace libsemigroups {
     kb.knuth_bendix_by_overlap_length();
     REQUIRE(kb.confluent());
     REQUIRE(kb.number_of_active_rules() == 19);
-    REQUIRE(kb.size() == 29);
+    REQUIRE(kb.number_of_classes() == 29);
   }
 
   // Takes approx. 1m8s
@@ -341,7 +341,7 @@ namespace libsemigroups {
     kb.knuth_bendix_by_overlap_length();
     REQUIRE(kb.number_of_active_rules() == 1'026);
     REQUIRE(kb.confluent());
-    REQUIRE(kb.size() == 10'752);
+    REQUIRE(kb.number_of_classes() == 10'752);
   }
 
   // Fibonacci group F(2,7) - without inverses
@@ -371,7 +371,7 @@ namespace libsemigroups {
     // Fails to terminate, or is very slow, with knuth_bendix
     REQUIRE(kb.confluent());
     REQUIRE(kb.number_of_active_rules() == 47);
-    REQUIRE(kb.size() == POSITIVE_INFINITY);
+    REQUIRE(kb.number_of_classes() == POSITIVE_INFINITY);
   }
 
   // An extension of 2^6 be L32
@@ -398,7 +398,7 @@ namespace libsemigroups {
     kb.knuth_bendix_by_overlap_length();
     REQUIRE(kb.confluent());
     REQUIRE(kb.number_of_active_rules() == 1'026);
-    REQUIRE(kb.size() == 10'752);
+    REQUIRE(kb.number_of_classes() == 10'752);
 
     auto& ad = kb.gilman_digraph();
     REQUIRE(ad.number_of_nodes() == 6'021);
@@ -469,7 +469,7 @@ namespace libsemigroups {
       kb.knuth_bendix_by_overlap_length();
       if (kb.confluent()) {
         REQUIRE(kb.number_of_active_rules() == 0);
-        REQUIRE(kb.size() == 0);
+        REQUIRE(kb.number_of_classes() == 0);
         break;
       }
     } while (std::next_permutation(perm.begin(), perm.end()));
@@ -495,7 +495,7 @@ namespace libsemigroups {
 
     kb.run();
     REQUIRE(kb.number_of_active_rules() == 7);
-    REQUIRE(kb.size() == size_t(std::pow(5, n)) + 4 * q - 5);
+    REQUIRE(kb.number_of_classes() == size_t(std::pow(5, n)) + 4 * q - 5);
     REQUIRE(kb.normal_form("aabb") == "aabb");
     REQUIRE(kb.normal_form("aabbaabb") == "bbbb");
     REQUIRE(kb.normal_form("aabbaabbaabb") == "aabbbbbb");
@@ -683,7 +683,7 @@ namespace libsemigroups {
 
     KnuthBendix k(twosided, p);
     k.run();
-    REQUIRE(k.size() == POSITIVE_INFINITY);
+    REQUIRE(k.number_of_classes() == POSITIVE_INFINITY);
   }
 
   LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
@@ -719,9 +719,9 @@ namespace libsemigroups {
       KnuthBendix k(twosided, p);
       k.run_for(std::chrono::seconds(1));
       if (k.confluent()) {
-        size_t const N = k.size();
-        std::cout << "k.size() == " << N << std::endl;
-        if (k.size() == POSITIVE_INFINITY) {
+        size_t const N = k.number_of_classes();
+        std::cout << "k.number_of_classes() == " << N << std::endl;
+        if (k.number_of_classes() == POSITIVE_INFINITY) {
           break;
         }
       }
