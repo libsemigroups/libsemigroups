@@ -41,7 +41,7 @@
                                 //
 #include "cong-intf-new.hpp"    // for CongruenceInterface
 #include "debug.hpp"            // for LIBSEMIGROUPS_ASSERT
-#include "digraph.hpp"          // for ActionDigraph
+#include "word-graph.hpp"          // for WordGraph
 #include "exception.hpp"        // for LIBSEMIGROUPS_EXCEPTION_V3
 #include "paths.hpp"            // for Paths
 #include "present.hpp"          // for Presentation
@@ -237,7 +237,7 @@ namespace libsemigroups {
     mutable std::atomic<bool>        _confluent;
     mutable std::atomic<bool>        _confluence_known;
     bool                             _gen_pairs_initted;
-    ActionDigraph<size_t>            _gilman_digraph;
+    WordGraph<size_t>            _gilman_digraph;
     mutable std::list<Rule*>         _inactive_rules;
     bool                             _internal_is_same_as_external;
     size_t                           _min_length_lhs_rule;
@@ -606,7 +606,7 @@ namespace libsemigroups {
 
     //! Returns the Gilman digraph.
     //!
-    //! \returns A const reference to a \ref ActionDigraph.
+    //! \returns A const reference to a \ref WordGraph.
     //!
     //! \exceptions
     //! \no_libsemigroups_except
@@ -619,7 +619,7 @@ namespace libsemigroups {
     //!
     //! \parameters
     //! (None)
-    ActionDigraph<size_t> const& gilman_digraph();
+    WordGraph<size_t> const& gilman_digraph();
 
     //////////////////////////////////////////////////////////////////////////
     // KnuthBendix - attributes - public

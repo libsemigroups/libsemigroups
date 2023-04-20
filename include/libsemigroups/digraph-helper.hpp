@@ -36,24 +36,24 @@
 #include "uf.hpp"         // for Duf
 
 namespace libsemigroups {
-  struct ActionDigraphBase;  // forward decl
+  struct WordGraphBase;  // forward decl
 
   template <typename T>
-  class ActionDigraph;  // forward decl
+  class WordGraph;  // forward decl
 
   namespace action_digraph_helper {
     //! Undoc
     template <typename T>
-    using node_type = typename ActionDigraph<T>::node_type;
+    using node_type = typename WordGraph<T>::node_type;
 
     //! Undoc
     template <typename T>
-    using label_type = typename ActionDigraph<T>::label_type;
+    using label_type = typename WordGraph<T>::label_type;
 
     //! No doc
     // not noexcept because it throws an exception!
     template <typename T>
-    void validate_node(ActionDigraph<T> const& ad, node_type<T> v) {
+    void validate_node(WordGraph<T> const& ad, node_type<T> v) {
       if (v >= ad.number_of_nodes()) {
         LIBSEMIGROUPS_EXCEPTION("node value out of bounds, expected value in "
                                 "the range [0, %d), got %d",
@@ -65,7 +65,7 @@ namespace libsemigroups {
     //! No doc
     // not noexcept because it throws an exception!
     template <typename T>
-    void validate_label(ActionDigraph<T> const& ad, label_type<T> lbl) {
+    void validate_label(WordGraph<T> const& ad, label_type<T> lbl) {
       if (lbl >= ad.out_degree()) {
         LIBSEMIGROUPS_EXCEPTION("label value out of bounds, expected value in "
                                 "the range [0, %d), got %d",
@@ -76,14 +76,14 @@ namespace libsemigroups {
 
     //! Find the node that a path starting at a given node leads to.
     //!
-    //! \tparam T the type used as the template parameter for the ActionDigraph.
+    //! \tparam T the type used as the template parameter for the WordGraph.
     //!
-    //! \param ad the ActionDigraph object to check.
+    //! \param ad the WordGraph object to check.
     //! \param first the starting node.
     //! \param path the path to follow.
     //!
     //! \returns
-    //! A value of type ActionDigraph::node_type. If one or more edges in
+    //! A value of type WordGraph::node_type. If one or more edges in
     //! \p path are not defined, then \ref UNDEFINED is returned.
     //!
     //! \throw LibsemigroupsException if \p first is not a node in the digraph
@@ -92,9 +92,9 @@ namespace libsemigroups {
     //! \par Complexity
     //! Linear in the length of \p path.
     // TODO(later) example
-    // not noexcept because ActionDigraph::neighbor isn't
+    // not noexcept because WordGraph::neighbor isn't
     template <typename T>
-    node_type<T> follow_path(ActionDigraph<T> const& ad,
+    node_type<T> follow_path(WordGraph<T> const& ad,
                              node_type<T> const      first,
                              word_type const&        path) {
       // first is validated in neighbor
@@ -122,7 +122,7 @@ namespace libsemigroups {
     //! \exception
     //! \noexcept
     //!
-    //! \returns A value of type ActionDigraph::node_type.
+    //! \returns A value of type WordGraph::node_type.
     //!
     //! \complexity
     //! At worst the distance from \p first to \p last.
@@ -137,7 +137,7 @@ namespace libsemigroups {
     }  // namespace detail
 
     template <typename T, typename S>
-    node_type<T> follow_path_nc(ActionDigraph<T> const& ad,
+    node_type<T> follow_path_nc(WordGraph<T> const& ad,
                                 node_type<T>            from,
                                 S                       first,
                                 S                       last) noexcept {
@@ -168,7 +168,7 @@ namespace libsemigroups {
     //! \exception
     //! \noexcept
     //!
-    //! \returns A value of type ActionDigraph::node_type.
+    //! \returns A value of type WordGraph::node_type.
     //!
     //! \complexity
     //! At worst the length of \p path.
@@ -176,7 +176,7 @@ namespace libsemigroups {
     //! \warning
     //! No checks on the arguments of this function are performed.
     template <typename T>
-    node_type<T> follow_path_nc(ActionDigraph<T> const& ad,
+    node_type<T> follow_path_nc(WordGraph<T> const& ad,
                                 node_type<T> const      from,
                                 word_type const&        path) noexcept {
       return follow_path_nc(ad, from, path.cbegin(), path.cend());
@@ -196,7 +196,7 @@ namespace libsemigroups {
     //! \exception
     //! \noexcept
     //!
-    //! \returns A pair consisting of ActionDigraph::node_type and \p S.
+    //! \returns A pair consisting of WordGraph::node_type and \p S.
     //!
     //! \complexity
     //! At worst the distance from \p first to \p last.
@@ -204,7 +204,7 @@ namespace libsemigroups {
     //! \warning
     //! No checks on the arguments of this function are performed.
     template <typename T, typename S>
-    std::pair<node_type<T>, S> last_node_on_path_nc(ActionDigraph<T> const& ad,
+    std::pair<node_type<T>, S> last_node_on_path_nc(WordGraph<T> const& ad,
                                                     node_type<T> from,
                                                     S            first,
                                                     S last) noexcept {
@@ -237,12 +237,12 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if any of the letters in word `[first,
     //! last)` is out of bounds.
     //!
-    //! \returns A pair consisting of ActionDigraph::node_type and \p S.
+    //! \returns A pair consisting of WordGraph::node_type and \p S.
     //!
     //! \complexity
     //! At worst the distance from \p first to \p last.
     template <typename T, typename S>
-    std::pair<node_type<T>, S> last_node_on_path(ActionDigraph<T> const& ad,
+    std::pair<node_type<T>, S> last_node_on_path(WordGraph<T> const& ad,
                                                  node_type<T>            from,
                                                  S                       first,
                                                  S                       last) {
@@ -281,7 +281,7 @@ namespace libsemigroups {
       // it because it was already written and uses less space than
       // topological_sort.
       template <typename T>
-      bool is_acyclic(ActionDigraph<T> const& ad,
+      bool is_acyclic(WordGraph<T> const& ad,
                       std::stack<T>&          stck,
                       std::vector<T>&         preorder,
                       T&                      next_preorder_num,
@@ -319,7 +319,7 @@ namespace libsemigroups {
 
       // helper function for the two public methods below
       template <typename T>
-      bool topological_sort(ActionDigraph<T> const&   ad,
+      bool topological_sort(WordGraph<T> const&   ad,
                             stack_type<T>&            stck,
                             lookup_type&              seen,
                             topological_sort_type<T>& order) {
@@ -371,9 +371,9 @@ namespace libsemigroups {
     //! Check if a digraph is acyclic.
     //!
     //! \tparam T the type used as the template parameter for the
-    //! ActionDigraph.
+    //! WordGraph.
     //!
-    //! \param ad the ActionDigraph object to check.
+    //! \param ad the WordGraph object to check.
     //!
     //! \returns
     //! A value of type `bool`.
@@ -383,16 +383,16 @@ namespace libsemigroups {
     //!
     //! \par Complexity
     //! \f$O(m + n)\f$ where \f$m\f$ is the number of nodes in the
-    //! ActionDigraph \p ad and \f$n\f$ is the number of edges. Note that for
-    //! ActionDigraph objects the number of edges is always at most \f$mk\f$
-    //! where \f$k\f$ is the ActionDigraph::out_degree.
+    //! WordGraph \p ad and \f$n\f$ is the number of edges. Note that for
+    //! WordGraph objects the number of edges is always at most \f$mk\f$
+    //! where \f$k\f$ is the WordGraph::out_degree.
     //!
     //! A digraph is acyclic if every directed cycle on the digraph is
     //! trivial.
     //!
     //! \par Example
     //! \code
-    //! ActionDigraph<size_t> ad;
+    //! WordGraph<size_t> ad;
     //! ad.add_nodes(2);
     //! ad.add_to_out_degree(1);
     //! ad.add_edge(0, 1, 0);
@@ -401,7 +401,7 @@ namespace libsemigroups {
     //! \endcode
     // Not noexcept because detail::is_acyclic isn't
     template <typename T>
-    bool is_acyclic(ActionDigraph<T> const& ad) {
+    bool is_acyclic(WordGraph<T> const& ad) {
       if (ad.validate()) {
         return false;
       }
@@ -436,12 +436,12 @@ namespace libsemigroups {
     //! \c n in the vector.
     //!
     //! \tparam T the type used as the template parameter for the
-    //! ActionDigraph.
+    //! WordGraph.
     //!
-    //! \param ad the ActionDigraph object to check.
+    //! \param ad the WordGraph object to check.
     //!
     //! \returns
-    //! A std::vector<ActionDigraph<T>::node_type> that contains the nodes of
+    //! A std::vector<WordGraph<T>::node_type> that contains the nodes of
     //! \p ad in topological order (if possible) and is otherwise empty.
     //!
     //! \exceptions
@@ -449,13 +449,13 @@ namespace libsemigroups {
     //!
     //! \par Complexity
     //! \f$O(m + n)\f$ where \f$m\f$ is the number of nodes in the
-    //! ActionDigraph \p ad and \f$n\f$ is the number of edges. Note that for
-    //! ActionDigraph objects the number of edges is always at most \f$mk\f$
-    //! where \f$k\f$ is the ActionDigraph::out_degree.
+    //! WordGraph \p ad and \f$n\f$ is the number of edges. Note that for
+    //! WordGraph objects the number of edges is always at most \f$mk\f$
+    //! where \f$k\f$ is the WordGraph::out_degree.
     template <typename T>
     detail::topological_sort_type<T>
-    topological_sort(ActionDigraph<T> const& ad) {
-      using node_type = typename ActionDigraph<T>::node_type;
+    topological_sort(WordGraph<T> const& ad) {
+      using node_type = typename WordGraph<T>::node_type;
 
       detail::topological_sort_type<T> order;
       if (ad.validate()) {
@@ -490,13 +490,13 @@ namespace libsemigroups {
     //! source.
     //!
     //! \tparam T the type used as the template parameter for the
-    //! ActionDigraph.
+    //! WordGraph.
     //!
-    //! \param ad the ActionDigraph object to check.
+    //! \param ad the WordGraph object to check.
     //! \param source the source node.
     //!
     //! \returns
-    //! A std::vector<ActionDigraph<T>::node_type> that contains the nodes of
+    //! A std::vector<WordGraph<T>::node_type> that contains the nodes of
     //! \p ad in topological order (if possible) and is otherwise empty.
     //!
     //! \exceptions
@@ -508,7 +508,7 @@ namespace libsemigroups {
     //! and \f$n\f$ is the number of edges.
     template <typename T>
     detail::topological_sort_type<T>
-    topological_sort(ActionDigraph<T> const& ad, node_type<T> source) {
+    topological_sort(WordGraph<T> const& ad, node_type<T> source) {
       detail::topological_sort_type<T> order;
       if (ad.validate()) {
         return order;
@@ -526,9 +526,9 @@ namespace libsemigroups {
     //! node is acyclic.
     //!
     //! \tparam T the type used as the template parameter for the
-    //! ActionDigraph.
+    //! WordGraph.
     //!
-    //! \param ad the ActionDigraph object to check.
+    //! \param ad the WordGraph object to check.
     //! \param source the source node.
     //!
     //! \returns
@@ -539,16 +539,16 @@ namespace libsemigroups {
     //!
     //! \par Complexity
     //! \f$O(m + n)\f$ where \f$m\f$ is the number of nodes in the
-    //! ActionDigraph \p ad and \f$n\f$ is the number of edges. Note that for
-    //! ActionDigraph objects the number of edges is always at most \f$mk\f$
-    //! where \f$k\f$ is the ActionDigraph::out_degree.
+    //! WordGraph \p ad and \f$n\f$ is the number of edges. Note that for
+    //! WordGraph objects the number of edges is always at most \f$mk\f$
+    //! where \f$k\f$ is the WordGraph::out_degree.
     //!
     //! A digraph is acyclic if every directed cycle on the digraph is
     //! trivial.
     //!
     //! \par Example
     //! \code
-    //! ActionDigraph<size_t> ad;
+    //! WordGraph<size_t> ad;
     //! ad.add_nodes(4);
     //! ad.add_to_out_degree(1);
     //! ad.add_edge(0, 1, 0);
@@ -562,7 +562,7 @@ namespace libsemigroups {
     //! \endcode
     // Not noexcept because detail::is_acyclic isn't
     template <typename T>
-    bool is_acyclic(ActionDigraph<T> const& ad, node_type<T> source) {
+    bool is_acyclic(WordGraph<T> const& ad, node_type<T> source) {
       validate_node(ad, source);
       auto const    N = ad.number_of_nodes();
       std::stack<T> stck;
@@ -578,9 +578,9 @@ namespace libsemigroups {
     //! Check if there is a path from one node to another.
     //!
     //! \tparam T the type used as the template parameter for the
-    //! ActionDigraph.
+    //! WordGraph.
     //!
-    //! \param ad the ActionDigraph object to check.
+    //! \param ad the WordGraph object to check.
     //! \param source the source node.
     //! \param target the source node.
     //!
@@ -592,9 +592,9 @@ namespace libsemigroups {
     //!
     //! \par Complexity
     //! \f$O(m + n)\f$ where \f$m\f$ is the number of nodes in the
-    //! ActionDigraph \p ad and \f$n\f$ is the number of edges. Note that for
-    //! ActionDigraph objects the number of edges is always at most \f$mk\f$
-    //! where \f$k\f$ is the ActionDigraph::out_degree.
+    //! WordGraph \p ad and \f$n\f$ is the number of edges. Note that for
+    //! WordGraph objects the number of edges is always at most \f$mk\f$
+    //! where \f$k\f$ is the WordGraph::out_degree.
     //!
     //! \note
     //! If \p source and \p target are equal, then, by convention, we consider
@@ -602,7 +602,7 @@ namespace libsemigroups {
     //!
     //! \par Example
     //! \code
-    //! ActionDigraph<size_t> ad;
+    //! WordGraph<size_t> ad;
     //! ad.add_nodes(4);
     //! ad.add_to_out_degree(1);
     //! ad.add_edge(0, 1, 0);
@@ -615,7 +615,7 @@ namespace libsemigroups {
     //! action_digraph_helper::is_reachable(ad, 3, 2); // returns false
     //! \endcode
     template <typename T>
-    bool is_reachable(ActionDigraph<T> const& ad,
+    bool is_reachable(WordGraph<T> const& ad,
                       node_type<T> const      source,
                       node_type<T> const      target) {
       validate_node(ad, source);
@@ -658,7 +658,7 @@ namespace libsemigroups {
     }
 
     template <typename T>
-    bool is_acyclic(ActionDigraph<T> const& ad,
+    bool is_acyclic(WordGraph<T> const& ad,
                     node_type<T>            source,
                     node_type<T>            target) {
       validate_node(ad, source);
@@ -686,10 +686,10 @@ namespace libsemigroups {
     //! Adds a cycle involving the specified range of nodes.
     //!
     //! \tparam T the type used as the template parameter for the
-    //! ActionDigraph. \tparam U the type of an iterator pointing to nodes of
-    //! an ActionDigraph
+    //! WordGraph. \tparam U the type of an iterator pointing to nodes of
+    //! an WordGraph
     //!
-    //! \param ad the ActionDigraph object to add a cycle to.
+    //! \param ad the WordGraph object to add a cycle to.
     //! \param first a const iterator to nodes of \p ad
     //! \param last a const iterator to nodes of \p ad
     //!
@@ -705,7 +705,7 @@ namespace libsemigroups {
     //! \note
     //! The edges added by this function are all labelled \c 0.
     template <typename T, typename U>
-    void add_cycle(ActionDigraph<T>& ad, U first, U last) {
+    void add_cycle(WordGraph<T>& ad, U first, U last) {
       for (auto it = first; it < last - 1; ++it) {
         ad.add_edge(*it, *(it + 1), 0);
       }
@@ -715,9 +715,9 @@ namespace libsemigroups {
     //! Adds a cycle consisting of \p N new nodes.
     //!
     //! \tparam T the type used as the template parameter for the
-    //! ActionDigraph.
+    //! WordGraph.
     //!
-    //! \param ad the ActionDigraph object to add a cycle to.
+    //! \param ad the WordGraph object to add a cycle to.
     //! \param N the length of the cycle and number of new nodes to add.
     //!
     //! \returns
@@ -732,7 +732,7 @@ namespace libsemigroups {
     //! \note
     //! The edges added by this function are all labelled \c 0.
     template <typename T>
-    void add_cycle(ActionDigraph<T>& ad, size_t N) {
+    void add_cycle(WordGraph<T>& ad, size_t N) {
       size_t M = ad.number_of_nodes();
       ad.add_nodes(N);
       add_cycle(ad, ad.cbegin_nodes() + M, ad.cend_nodes());
@@ -740,8 +740,8 @@ namespace libsemigroups {
 
     namespace detail {
       template <typename T>
-      std::string to_string(ActionDigraph<T>& ad) {
-        std::string out = "ActionDigraph<size_t> ad;\n";
+      std::string to_string(WordGraph<T>& ad) {
+        std::string out = "WordGraph<size_t> ad;\n";
         out += "ad.add_nodes(" + std::to_string(ad.number_of_nodes()) + ");\n";
         out += "ad.add_to_out_degree(" + std::to_string(ad.out_degree())
                + ");\n";
@@ -761,9 +761,9 @@ namespace libsemigroups {
     //! Check if a digraph is connected.
     //!
     //! \tparam T the type used as the template parameter for the
-    //! ActionDigraph.
+    //! WordGraph.
     //!
-    //! \param ad the ActionDigraph object to check.
+    //! \param ad the WordGraph object to check.
     //!
     //! \returns
     //! A value of type `bool`.
@@ -773,9 +773,9 @@ namespace libsemigroups {
     //!
     //! \par Complexity
     //! \f$O(m + n)\f$ where \f$m\f$ is the number of nodes in the
-    //! ActionDigraph \p ad and \f$n\f$ is the number of edges. Note that for
-    //! ActionDigraph objects the number of edges is always at most \f$mk\f$
-    //! where \f$k\f$ is the ActionDigraph::out_degree.
+    //! WordGraph \p ad and \f$n\f$ is the number of edges. Note that for
+    //! WordGraph objects the number of edges is always at most \f$mk\f$
+    //! where \f$k\f$ is the WordGraph::out_degree.
     //!
     //! A digraph is *connected* if for every pair of nodes \f$u\f$ and
     //! \f$v\f$ there exists a sequence \f$u_0 := u, \ldots, u_{n - 1} := v\f$
@@ -790,8 +790,8 @@ namespace libsemigroups {
     //! action_digraph_helper::is_connected(ad);  // returns false
     //! \endcode
     template <typename T>
-    bool is_connected(ActionDigraph<T> const& ad) {
-      using node_type = typename ActionDigraph<T>::node_type;
+    bool is_connected(WordGraph<T> const& ad) {
+      using node_type = typename WordGraph<T>::node_type;
 
       auto const N = ad.number_of_nodes();
       if (N == 0) {
@@ -812,9 +812,9 @@ namespace libsemigroups {
     //! Check if a digraph is strictly cyclic.
     //!
     //! \tparam T the type used as the template parameter for the
-    //! ActionDigraph.
+    //! WordGraph.
     //!
-    //! \param ad the ActionDigraph object to check.
+    //! \param ad the WordGraph object to check.
     //!
     //! \returns
     //! A value of type `bool`.
@@ -824,9 +824,9 @@ namespace libsemigroups {
     //!
     //! \par Complexity
     //! \f$O(m + n)\f$ where \f$m\f$ is the number of nodes in the
-    //! ActionDigraph \p ad and \f$n\f$ is the number of edges. Note that for
-    //! ActionDigraph objects the number of edges is always at most \f$mk\f$
-    //! where \f$k\f$ is the ActionDigraph::out_degree.
+    //! WordGraph \p ad and \f$n\f$ is the number of edges. Note that for
+    //! WordGraph objects the number of edges is always at most \f$mk\f$
+    //! where \f$k\f$ is the WordGraph::out_degree.
     //!
     //! A digraph is *strictly cyclic* if there exists a node \f$v\f$ from
     //! which every node is reachable (including \f$v\f$). There must be a
@@ -841,8 +841,8 @@ namespace libsemigroups {
     //! action_digraph_helper::is_strictly_cyclic(ad);  // returns false
     //! \endcode
     template <typename T>
-    bool is_strictly_cyclic(ActionDigraph<T> const& ad) {
-      using node_type = typename ActionDigraph<T>::node_type;
+    bool is_strictly_cyclic(WordGraph<T> const& ad) {
+      using node_type = typename WordGraph<T>::node_type;
       auto const N    = ad.number_of_nodes();
 
       if (N == 0) {
@@ -880,9 +880,9 @@ namespace libsemigroups {
     // TODO return a range here not an unordered_set
     template <typename Node>
     std::unordered_set<Node>
-    nodes_reachable_from(ActionDigraph<Node> const&              ad,
-                         typename ActionDigraph<Node>::node_type source) {
-      using node_type = typename ActionDigraph<Node>::node_type;
+    nodes_reachable_from(WordGraph<Node> const&              ad,
+                         typename WordGraph<Node>::node_type source) {
+      using node_type = typename WordGraph<Node>::node_type;
 
       std::unordered_set<node_type> seen;
       std::stack<node_type>         stack;
@@ -906,8 +906,8 @@ namespace libsemigroups {
     // TODO tests
     template <typename T>
     size_t number_of_nodes_reachable_from(
-        ActionDigraph<T> const&              ad,
-        typename ActionDigraph<T>::node_type source) {
+        WordGraph<T> const&              ad,
+        typename WordGraph<T>::node_type source) {
       return nodes_reachable_from(ad, source).size();
     }
 

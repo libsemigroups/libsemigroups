@@ -23,7 +23,7 @@
 
 #include "libsemigroups/cong-intf.hpp"          // for CongruenceInterface
 #include "libsemigroups/debug.hpp"              // for LIBSEMIGROUPS_ASSERT
-#include "libsemigroups/digraph.hpp"            // for ActionDigraph
+#include "libsemigroups/word-graph.hpp"            // for WordGraph
 #include "libsemigroups/exception.hpp"          // for LIBSEMIGROUPS_EXCEPTION
 #include "libsemigroups/fpsemi-intf.hpp"        // for FpSemigroupInterface
 #include "libsemigroups/froidure-pin-base.hpp"  // for FroidurePinBase
@@ -511,7 +511,7 @@ namespace libsemigroups {
       return _active_rules.size();
     }
 
-    ActionDigraph<size_t> const& KnuthBendix::gilman_digraph() {
+    WordGraph<size_t> const& KnuthBendix::gilman_digraph() {
       if (_gilman_digraph.number_of_nodes() == 0 && !alphabet().empty()) {
         // reset the settings so that we really run!
         max_rules(POSITIVE_INFINITY);

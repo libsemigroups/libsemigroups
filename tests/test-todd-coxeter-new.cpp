@@ -1444,11 +1444,11 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
                           "032",
-                          "from ActionDigraph",
+                          "from WordGraph",
                           "[todd-coxeter][quick]") {
     auto rg = ReportGuard(false);
 
-    ActionDigraph<uint32_t> d(1, 2);
+    WordGraph<uint32_t> d(1, 2);
     REQUIRE(d.out_degree() == 2);
     REQUIRE(d.number_of_nodes() == 1);
     REQUIRE_NOTHROW(ToddCoxeter(twosided, d));

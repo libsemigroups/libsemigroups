@@ -38,7 +38,7 @@
 #include "coset.hpp"
 #include "debug.hpp"
 #include "digraph-helper.hpp"
-#include "digraph.hpp"
+#include "word-graph.hpp"
 #include "exception.hpp"
 #include "fastest-bmat.hpp"
 #include "forest.hpp"

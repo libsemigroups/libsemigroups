@@ -2053,7 +2053,7 @@ namespace libsemigroups {
             if (v != UNDEFINED) {
               coset_type const u = _word_graph.unsafe_neighbor(min, i);
               if (u == UNDEFINED) {
-                _word_graph.ActionDigraph<coset_type>::add_edge_nc(min, v, i);
+                _word_graph.WordGraph<coset_type>::add_edge_nc(min, v, i);
               } else if (u != v) {
                 // Add (u,v) to the stack of pairs to be identified
                 _coinc.emplace(u, v);
@@ -2092,7 +2092,7 @@ namespace libsemigroups {
                 auto d = find_coset(cx);
                 if (cx != d) {
                   new_edge_func(c, x);
-                  _word_graph.ActionDigraph<coset_type>::add_edge_nc(c, d, x);
+                  _word_graph.WordGraph<coset_type>::add_edge_nc(c, d, x);
                 }
                 // Must re-add the source, even if we don't need to reset
                 // the target or stack the deduction

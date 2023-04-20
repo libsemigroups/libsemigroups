@@ -23,21 +23,21 @@
 #include "bench-main.hpp"  // for CATCH_CONFIG_ENABLE_BENCHMARKING
 #include "catch.hpp"       // for BENCHMARK, REQUIRE, TEST_CASE
 
-#include "libsemigroups/digraph.hpp"  // for ActionDigraph
+#include "libsemigroups/word-graph.hpp"  // for WordGraph
 #include "libsemigroups/paths.hpp"    // for Paths etc
 #include "libsemigroups/types.hpp"    // for word_type
 
 namespace libsemigroups {
   // Old function for comparison with iterators
   template <typename T>
-  using node_type = typename ActionDigraph<T>::node_type;
+  using node_type = typename WordGraph<T>::node_type;
 
   template <typename T>
-  using label_type = typename ActionDigraph<T>::label_type;
+  using label_type = typename WordGraph<T>::label_type;
 
   template <typename T, typename S>
   std::pair<std::vector<word_type>, std::vector<node_type<T>>>
-  paths_in_lex_order(ActionDigraph<T> const& ad,
+  paths_in_lex_order(WordGraph<T> const& ad,
                      S const                 root,
                      size_t                  min = 0,
                      size_t max = libsemigroups::POSITIVE_INFINITY) {
@@ -82,7 +82,7 @@ namespace libsemigroups {
 
   template <typename T, typename S>
   std::vector<word_type>
-  paths_in_lex_order2(ActionDigraph<T> const& ad,
+  paths_in_lex_order2(WordGraph<T> const& ad,
                       S const                 first,
                       S const                 last,
                       size_t                  min = 0,
@@ -126,7 +126,7 @@ namespace libsemigroups {
 
   template <typename T, typename S>
   std::pair<std::vector<word_type>, std::vector<node_type<T>>>
-  paths_in_shortlex_order(ActionDigraph<T> const& ad,
+  paths_in_shortlex_order(WordGraph<T> const& ad,
                           S const                 root,
                           size_t                  min = 0,
                           size_t max = libsemigroups::POSITIVE_INFINITY) {
@@ -151,8 +151,8 @@ namespace libsemigroups {
     return out;
   }
 
-  ActionDigraph<size_t> test_digraph() {
-    ActionDigraph<size_t> ad;
+  WordGraph<size_t> test_digraph() {
+    WordGraph<size_t> ad;
     ad.add_nodes(6);
     ad.add_to_out_degree(2);
 
@@ -311,7 +311,7 @@ namespace libsemigroups {
       for (size_t N = 10; N < 20; N += 5) {
         for (size_t nr_edges = 0; nr_edges <= detail::magic_number(M) * M;
              nr_edges += 500) {
-          auto ad = ActionDigraph<size_t>::random(M, N, nr_edges);
+          auto ad = WordGraph<size_t>::random(M, N, nr_edges);
           action_digraph_helper::add_cycle(
               ad, ad.cbegin_nodes(), ad.cend_nodes());
           std::string m = std::to_string(ad.number_of_edges());

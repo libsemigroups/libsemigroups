@@ -30,7 +30,7 @@
 #include "adapters.hpp"          // for One
 #include "bruidhinn-traits.hpp"  // for detail::BruidhinnTraits
 #include "debug.hpp"             // for LIBSEMIGROUPS_ASSERT
-#include "digraph.hpp"           // for ActionDigraph
+#include "word-graph.hpp"           // for WordGraph
 #include "exception.hpp"         // for LIBSEMIGROUPS_EXCEPTION
 #include "gabow.hpp"             // for Gabow
 #include "report.hpp"            // for REPORT_DEFAULT
@@ -181,7 +181,7 @@ namespace libsemigroups {
 
     //! The type of the index of a strongly connected component.
     //!
-    //! \sa ActionDigraph::scc_index_type
+    //! \sa WordGraph::scc_index_type
 
     //! Type of the action of \ref element_type on \ref point_type.
     //!
@@ -719,7 +719,7 @@ namespace libsemigroups {
 
     //! Returns the digraph of the completely enumerated action.
     //!
-    //! \returns A const reference to an ActionDigraph<size_t>.
+    //! \returns A const reference to an WordGraph<size_t>.
     //!
     //! \complexity
     //! At most \f$O(mn)\f$ where \f$m\f$ is the complexity of multiplying
@@ -731,7 +731,7 @@ namespace libsemigroups {
     //!
     //! \par Parameters
     //! (None)
-    ActionDigraph<size_t> const& digraph() {
+    WordGraph<size_t> const& digraph() {
       run();
       return _graph;
     }
@@ -851,7 +851,7 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////
 
     std::vector<element_type> _gens;
-    ActionDigraph<size_t>     _graph;
+    WordGraph<size_t>     _graph;
     std::unordered_map<internal_const_point_type,
                        size_t,
                        InternalHash,

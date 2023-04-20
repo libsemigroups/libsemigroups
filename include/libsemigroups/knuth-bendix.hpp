@@ -30,7 +30,7 @@
 #include <vector>  // for vector
 
 #include "cong-intf.hpp"        // for CongruenceInterface
-#include "digraph.hpp"          // for ActionDigraph
+#include "word-graph.hpp"          // for WordGraph
 #include "fpsemi-intf.hpp"      // for FpSemigroupInterface
 #include "froidure-pin.hpp"     // for FroidurePin
 #include "paths.hpp"            // for const_pislo_iterator
@@ -323,7 +323,7 @@ namespace libsemigroups {
       } _settings;
 
       // TODO(v3) make helper
-      ActionDigraph<size_t> _gilman_digraph;
+      WordGraph<size_t> _gilman_digraph;
       ////////////////////////////////////////////////////////////////////////
       // KnuthBendix - data - private
       ////////////////////////////////////////////////////////////////////////
@@ -837,7 +837,7 @@ namespace libsemigroups {
 
       //! Returns the Gilman digraph.
       //!
-      //! \returns A const reference to a \ref ActionDigraph.
+      //! \returns A const reference to a \ref WordGraph.
       //!
       //! \exceptions
       //! \no_libsemigroups_except
@@ -850,7 +850,7 @@ namespace libsemigroups {
       //!
       //! \parameters
       //! (None)
-      ActionDigraph<size_t> const& gilman_digraph();
+      WordGraph<size_t> const& gilman_digraph();
 
       //! Returns whether or not the empty string belongs in the system.
       //!

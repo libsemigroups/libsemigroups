@@ -16,13 +16,13 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-// This file contains a declaration of a class for ActionDigraphs with
+// This file contains a declaration of a class for WordGraphs with
 // additional information about the edges leading into every node (not only
 // those leaving every node).
 //
 // In the comments in this file we refer to "valid nodes", this means nodes in
 // the graph where the values returned by first_source and next_source are
-// valid (i.e. correspond to edges in the underlying ActionDigraph that point
+// valid (i.e. correspond to edges in the underlying WordGraph that point
 // into the current node). Validity of nodes is not tracked by
 // DigraphWithSources, and it is the responsibility of the caller to ensure
 // that nodes are valid where required by the various member functions of
@@ -42,15 +42,15 @@
 #include "config.hpp"      // for LIBSEMIGROUPS_DEBUG
 #include "constants.hpp"   // for UNDEFINED
 #include "containers.hpp"  // for DynamicArray2
-#include "digraph.hpp"     // for ActionDigraph
+#include "word-graph.hpp"     // for WordGraph
 #include "types.hpp"       // for letter_type
 
 namespace libsemigroups {
   template <typename NodeType>
-  class DigraphWithSources : public ActionDigraph<NodeType> {
+  class DigraphWithSources : public WordGraph<NodeType> {
    public:
     using node_type  = NodeType;
-    using label_type = typename ActionDigraph<NodeType>::label_type;
+    using label_type = typename WordGraph<NodeType>::label_type;
     using size_type  = node_type;
 
    private:
@@ -59,15 +59,15 @@ namespace libsemigroups {
 
    public:
     explicit DigraphWithSources(size_type m = 0, size_type n = 0)
-        : ActionDigraph<node_type>(m, n),
+        : WordGraph<node_type>(m, n),
           _preim_init(n, m, UNDEFINED),
           _preim_next(n, m, UNDEFINED) {}
 
     template <typename ThatNodeType>
-    explicit DigraphWithSources(ActionDigraph<ThatNodeType> const& that);
+    explicit DigraphWithSources(WordGraph<ThatNodeType> const& that);
 
     template <typename ThatNodeType>
-    explicit DigraphWithSources(ActionDigraph<ThatNodeType>&& that);
+    explicit DigraphWithSources(WordGraph<ThatNodeType>&& that);
 
     DigraphWithSources(DigraphWithSources&&)                 = default;
     DigraphWithSources(DigraphWithSources const&)            = default;
@@ -77,25 +77,25 @@ namespace libsemigroups {
     void init(size_type m, size_type n);
 
     template <typename ThatNodeType>
-    void init(ActionDigraph<ThatNodeType> const& that);
+    void init(WordGraph<ThatNodeType> const& that);
 
     template <typename ThatNodeType>
-    void init(ActionDigraph<ThatNodeType>&& that);
+    void init(WordGraph<ThatNodeType>&& that);
 
     // the template is for uniformity of interface with FelschDigraph
     template <bool = true>
     void add_edge_nc(node_type c, node_type d, label_type x) noexcept {
-      ActionDigraph<node_type>::add_edge_nc(c, d, x);
+      WordGraph<node_type>::add_edge_nc(c, d, x);
       add_source(d, x, c);
     }
 
     void remove_edge_nc(node_type c, label_type x) noexcept {
       remove_source(this->unsafe_neighbor(c, x), x, c);
-      ActionDigraph<node_type>::remove_edge_nc(c, x);
+      WordGraph<node_type>::remove_edge_nc(c, x);
     }
 
     void add_nodes(size_type m) {
-      ActionDigraph<node_type>::add_nodes(m);
+      WordGraph<node_type>::add_nodes(m);
       _preim_init.add_rows(m);
       _preim_next.add_rows(m);
     }
@@ -103,7 +103,7 @@ namespace libsemigroups {
     void add_to_out_degree(size_type m) {
       _preim_init.add_cols(m);
       _preim_next.add_cols(m);
-      ActionDigraph<node_type>::add_to_out_degree(m);
+      WordGraph<node_type>::add_to_out_degree(m);
     }
 
     void shrink_to_fit(size_type m) {

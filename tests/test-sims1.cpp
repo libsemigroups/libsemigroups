@@ -130,9 +130,9 @@ namespace libsemigroups {
       REQUIRE(
           *(it++)
           == to_action_digraph<node_type>(5, {{1, 2}, {1, 1}, {3, 2}, {3, 3}}));
-      REQUIRE(*(it++) == ActionDigraph<node_type>(0, 2));
-      REQUIRE(*(it++) == ActionDigraph<node_type>(0, 2));
-      REQUIRE(*(it++) == ActionDigraph<node_type>(0, 2));
+      REQUIRE(*(it++) == WordGraph<node_type>(0, 2));
+      REQUIRE(*(it++) == WordGraph<node_type>(0, 2));
+      REQUIRE(*(it++) == WordGraph<node_type>(0, 2));
 
       it = S.cbegin(3);
       REQUIRE(*it == to_action_digraph<node_type>(3, {{0, 0}}));
@@ -190,8 +190,8 @@ namespace libsemigroups {
               == to_action_digraph<node_type>(2, {{1, 0, 1}, {1, 1, 1}}));
       REQUIRE(*(it++)
               == to_action_digraph<node_type>(2, {{1, 1, 1}, {1, 1, 1}}));
-      REQUIRE(*(it++) == ActionDigraph<node_type>(0, 3));
-      REQUIRE(*(it++) == ActionDigraph<node_type>(0, 3));
+      REQUIRE(*(it++) == WordGraph<node_type>(0, 3));
+      REQUIRE(*(it++) == WordGraph<node_type>(0, 3));
     }
     {
       Sims1_ S(congruence_kind::left);

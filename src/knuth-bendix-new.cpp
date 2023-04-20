@@ -28,7 +28,7 @@
                                         //
 #include "libsemigroups/constants.hpp"  // for Max, PositiveInfinity, operat...
 #include "libsemigroups/debug.hpp"      // for LIBSEMIGROUPS_ASSERT
-#include "libsemigroups/digraph.hpp"    // for ActionDigraph
+#include "libsemigroups/word-graph.hpp"    // for WordGraph
 #include "libsemigroups/obvinf.hpp"     // for is_obviously_infinite
 #include "libsemigroups/order.hpp"      // for shortlex_compare
 #include "libsemigroups/paths.hpp"      // for Paths
@@ -682,7 +682,7 @@ namespace libsemigroups {
     return _active_rules.size();
   }
 
-  ActionDigraph<size_t> const& KnuthBendix::gilman_digraph() {
+  WordGraph<size_t> const& KnuthBendix::gilman_digraph() {
     if (_gilman_digraph.number_of_nodes() == 0
         && !presentation().alphabet().empty()) {
       // reset the settings so that we really run!
@@ -1153,7 +1153,7 @@ namespace libsemigroups {
                                    kb2.presentation().alphabet());
       }
 
-      // We construct the ActionDigraph `ad` obtained by subtracting all of
+      // We construct the WordGraph `ad` obtained by subtracting all of
       // the edges from the Gilman graph of kb2 from the Gilman graph of kb1.
       // The non-trivial classes are finite if and only if `ad` is acyclic. It
       // would be possible to do this without actually constructing `ad` but
@@ -1274,7 +1274,7 @@ namespace libsemigroups {
 
       // Construct the "can_reach" subgraph of g1, could use a WordGraphView
       // here instead (but these don't yet exist) TODO
-      ActionDigraph<size_t> ad(g1.number_of_nodes(), g1.out_degree());
+      WordGraph<size_t> ad(g1.number_of_nodes(), g1.out_degree());
 
       for (auto v : ad.nodes()) {
         if (can_reach[v]) {

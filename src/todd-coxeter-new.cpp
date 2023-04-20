@@ -147,7 +147,7 @@ namespace libsemigroups {
 
     if (_tc == nullptr  // this can be the case if for example we're
                         // in the FelschDigraph constructor from
-                        // ActionDigraph, in that case we any want
+                        // WordGraph, in that case we any want
                         // all of the definitions
         || _tc->def_policy() == def_policy::unlimited
         || _definitions.size() < _tc->def_max()) {

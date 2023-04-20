@@ -17,7 +17,7 @@
 //
 
 // This file contains the implementations of the functionality declared in
-// paths.hpp for iterating through paths in an ActionDigraph.
+// paths.hpp for iterating through paths in an WordGraph.
 
 namespace libsemigroups {
   namespace detail {
@@ -51,7 +51,7 @@ namespace libsemigroups {
       = default;
 
   template <typename Node>
-  const_pilo_iterator<Node>::const_pilo_iterator(ActionDigraph<Node> const* ptr,
+  const_pilo_iterator<Node>::const_pilo_iterator(WordGraph<Node> const* ptr,
                                                  Node      source,
                                                  size_type min,
                                                  size_type max)
@@ -148,7 +148,7 @@ namespace libsemigroups {
 
   template <typename Node>
   const_pislo_iterator<Node>::const_pislo_iterator(
-      ActionDigraph<Node> const*                     ptr,
+      WordGraph<Node> const*                     ptr,
       Node                                           source,
       typename const_pislo_iterator<Node>::size_type min,
       typename const_pislo_iterator<Node>::size_type max)
@@ -225,7 +225,7 @@ namespace libsemigroups {
 
   template <typename Node>
   const_pstilo_iterator<Node>::const_pstilo_iterator(
-      ActionDigraph<Node> const* ptr,
+      WordGraph<Node> const* ptr,
       node_type                  source,
       node_type                  target,
       size_type                  min,
@@ -393,7 +393,7 @@ namespace libsemigroups {
 
   namespace detail {
     template <typename Node1, typename Node2>
-    uint64_t number_of_paths_trivial(ActionDigraph<Node1> const& d,
+    uint64_t number_of_paths_trivial(WordGraph<Node1> const& d,
                                      Node2                       source,
                                      size_t                      min,
                                      size_t                      max) {
@@ -420,7 +420,7 @@ namespace libsemigroups {
     }
 
     template <typename Node1, typename Node2>
-    uint64_t number_of_paths_trivial(ActionDigraph<Node1> const& d,
+    uint64_t number_of_paths_trivial(WordGraph<Node1> const& d,
                                      Node2                       source,
                                      Node2                       target,
                                      size_t                      min,
@@ -436,7 +436,7 @@ namespace libsemigroups {
     }
 
     template <typename Node1, typename Node2>
-    uint64_t number_of_paths_matrix(ActionDigraph<Node1> const& d,
+    uint64_t number_of_paths_matrix(WordGraph<Node1> const& d,
                                     Node2                       source,
                                     size_t                      min,
                                     size_t                      max) {
@@ -475,7 +475,7 @@ namespace libsemigroups {
     // Used by the matrix(source, target) and the dfs(source, target)
     // algorithms
     template <typename Node1, typename Node2>
-    bool number_of_paths_special(ActionDigraph<Node1> const& d,
+    bool number_of_paths_special(WordGraph<Node1> const& d,
                                  Node2                       source,
                                  Node2                       target,
                                  size_t,
@@ -500,7 +500,7 @@ namespace libsemigroups {
     }
 
     template <typename Node1, typename Node2>
-    uint64_t number_of_paths_matrix(ActionDigraph<Node1> const& d,
+    uint64_t number_of_paths_matrix(WordGraph<Node1> const& d,
                                     Node2                       source,
                                     Node2                       target,
                                     size_t                      min,
@@ -546,7 +546,7 @@ namespace libsemigroups {
     }
 
     template <typename Node1, typename Node2>
-    uint64_t number_of_paths_acyclic(ActionDigraph<Node1> const& d,
+    uint64_t number_of_paths_acyclic(WordGraph<Node1> const& d,
                                      Node2                       source,
                                      size_t                      min,
                                      size_t                      max) {
@@ -594,7 +594,7 @@ namespace libsemigroups {
     }
 
     template <typename Node1, typename Node2>
-    uint64_t number_of_paths_acyclic(ActionDigraph<Node1> const& d,
+    uint64_t number_of_paths_acyclic(WordGraph<Node1> const& d,
                                      Node2                       source,
                                      Node2                       target,
                                      size_t                      min,
@@ -663,7 +663,7 @@ namespace libsemigroups {
   }  // namespace detail
 
   template <typename Node1, typename Node2>
-  uint64_t number_of_paths(ActionDigraph<Node1> const& d, Node2 source) {
+  uint64_t number_of_paths(WordGraph<Node1> const& d, Node2 source) {
     // Don't allow selecting the algorithm because we check
     // acyclicity anyway.
     // TODO(later): could use algorithm::dfs in some cases.
@@ -696,7 +696,7 @@ namespace libsemigroups {
   }
 
   template <typename Node1, typename Node2>
-  paths::algorithm number_of_paths_algorithm(ActionDigraph<Node1> const& d,
+  paths::algorithm number_of_paths_algorithm(WordGraph<Node1> const& d,
                                              Node2                       source,
                                              size_t                      min,
                                              size_t                      max) {
@@ -723,7 +723,7 @@ namespace libsemigroups {
   }
 
   template <typename Node1, typename Node2>
-  uint64_t number_of_paths(ActionDigraph<Node1> const& d,
+  uint64_t number_of_paths(WordGraph<Node1> const& d,
                            Node2                       source,
                            size_t                      min,
                            size_t                      max,
@@ -751,7 +751,7 @@ namespace libsemigroups {
   }
 
   template <typename Node1, typename Node2>
-  paths::algorithm number_of_paths_algorithm(ActionDigraph<Node1> const& d,
+  paths::algorithm number_of_paths_algorithm(WordGraph<Node1> const& d,
                                              Node2                       source,
                                              Node2                       target,
                                              size_t                      min,
@@ -771,7 +771,7 @@ namespace libsemigroups {
   }
 
   template <typename Node1, typename Node2>
-  uint64_t number_of_paths(ActionDigraph<Node1> const& d,
+  uint64_t number_of_paths(WordGraph<Node1> const& d,
                            Node2                       source,
                            Node2                       target,
                            size_t                      min,

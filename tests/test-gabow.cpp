@@ -27,7 +27,7 @@
 
 #include "libsemigroups/constants.hpp"       // for UNDEFINED, Undefined, Max
 #include "libsemigroups/digraph-helper.hpp"  // for add_cycle
-#include "libsemigroups/digraph.hpp"         // for ActionDigraph, to_action...
+#include "libsemigroups/word-graph.hpp"         // for WordGraph, to_action...
 #include "libsemigroups/exception.hpp"       // for LibsemigroupsException
 #include "libsemigroups/forest.hpp"          // for to_forest, Forest, opera...
 #include "libsemigroups/gabow.hpp"           // for Gabow
@@ -40,7 +40,7 @@ namespace libsemigroups {
   using namespace rx;
 
   LIBSEMIGROUPS_TEST_CASE("Gabow", "000", "for a cycle", "[quick][gabow]") {
-    ActionDigraph<size_t> wg;
+    WordGraph<size_t> wg;
     wg.add_to_out_degree(1);
     action_digraph_helper::add_cycle(wg, 33);
     // REQUIRE(wg.scc_id(0) == 0);
@@ -58,7 +58,7 @@ namespace libsemigroups {
                           "001",
                           "no edges",
                           "[quick][gabow][no-valgrind]") {
-    ActionDigraph<size_t> wg = ActionDigraph<size_t>(0);
+    WordGraph<size_t> wg = WordGraph<size_t>(0);
     Gabow                 scc(wg);
     for (size_t j = 1; j < 100; ++j) {
       wg.add_nodes(j);
@@ -71,7 +71,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Gabow", "002", "disjoint cycles", "[quick][gabow]") {
-    ActionDigraph<size_t> wg;
+    WordGraph<size_t> wg;
     wg.add_to_out_degree(1);
     Gabow scc(wg);
     for (size_t j = 2; j < 50; ++j) {
@@ -99,7 +99,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Gabow", "004", "exceptions", "[quick][gabow]") {
-    ActionDigraph<size_t> wg(10, 5);
+    WordGraph<size_t> wg(10, 5);
     Gabow                 scc(wg);
     REQUIRE_THROWS_AS(scc.id(10), LibsemigroupsException);
   }
@@ -135,7 +135,7 @@ namespace libsemigroups {
                           "spanning forest - disjoint cycles",
                           "[quick][gabow]") {
     size_t                j = 33;
-    ActionDigraph<size_t> wg;
+    WordGraph<size_t> wg;
     wg.add_to_out_degree(1);
 
     for (size_t k = 0; k < 10; ++k) {
@@ -192,7 +192,7 @@ namespace libsemigroups {
   //                          "scc root paths - complete graphs",
   //                          "[quick][gabow]") {
   //    for (size_t k = 2; k < 50; ++k) {
-  //      ActionDigraph<size_t> graph(k);
+  //      WordGraph<size_t> graph(k);
   //
   //      for (size_t i = 0; i < k; ++i) {
   //        for (size_t j = 0; j < k; ++j) {
@@ -216,7 +216,7 @@ namespace libsemigroups {
   //                         "scc root paths - disjoint cycles",
   //                         "[quick][gabow]") {
   //   for (size_t j = 2; j < 35; ++j) {
-  //     ActionDigraph<size_t> graph;
+  //     WordGraph<size_t> graph;
 
   //     for (size_t k = 0; k < 6; ++k) {
   //       graph.add_nodes(j);
@@ -239,7 +239,7 @@ namespace libsemigroups {
   // }
 
   LIBSEMIGROUPS_TEST_CASE("Gabow", "009", "large cycle", "[quick][gabow]") {
-    ActionDigraph<size_t> wg;
+    WordGraph<size_t> wg;
     wg.add_to_out_degree(1);
     action_digraph_helper::add_cycle(wg, 100000);
     using node_type = decltype(wg)::node_type;

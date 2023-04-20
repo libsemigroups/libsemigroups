@@ -76,8 +76,7 @@
 
 namespace libsemigroups {
 
-  // TODO replace with IsWordGraph
-  struct ActionDigraphBase {};
+  struct WordGraphBase {};
 
   //! Defined in ``digraph.hpp``.
   //!
@@ -88,35 +87,35 @@ namespace libsemigroups {
   //! number \c m is referred to as the *out-degree* of the digraph, or any of
   //! its nodes.
   //!
-  //! \tparam T the type of the nodes in the digraph, must be an unsigned
+  //! \tparam Node the type of the nodes in the digraph, must be an unsigned
   //! integer type.
   //!
   //! \sa Action.
-  template <typename T>
-  class ActionDigraph : private ActionDigraphBase {
-    static_assert(std::is_integral<T>(),
-                  "the template parameter T must be an integral type!");
+  template <typename Node>
+  class WordGraph : private WordGraphBase {
+    static_assert(std::is_integral<Node>(),
+                  "the template parameter Node must be an integral type!");
     static_assert(
-        std::is_unsigned<T>(),
-        "the template parameter T must be an unsigned integral type!");
+        std::is_unsigned<Node>(),
+        "the template parameter Node must be an unsigned integral type!");
 
     template <typename N>
-    friend class ActionDigraph;
+    friend class WordGraph;
 
     ////////////////////////////////////////////////////////////////////////
-    // ActionDigraph - iterator - private
+    // WordGraph - iterator - private
     ////////////////////////////////////////////////////////////////////////
 
    public:
     ////////////////////////////////////////////////////////////////////////
-    // ActionDigraph - typedefs - public
+    // WordGraph - typedefs - public
     ////////////////////////////////////////////////////////////////////////
 
     //! The type of nodes in a digraph.
-    using node_type = T;
+    using node_type = Node;
 
     //! The type of edge labels in a digraph.
-    using label_type = T;
+    using label_type = Node;
 
     //! Unsigned integer type.
     using size_type = std::size_t;
@@ -131,19 +130,19 @@ namespace libsemigroups {
 #endif
 
     //! The type of an iterator pointing to the nodes of a digraph.
-    using const_iterator_nodes = typename IntegralRange<T>::const_iterator;
+    using const_iterator_nodes = typename IntegralRange<Node>::const_iterator;
 
     //! The type of a reverse iterator pointing to the nodes of a digraph.
     using const_reverse_iterator_nodes =
-        typename IntegralRange<T>::const_reverse_iterator;
+        typename IntegralRange<Node>::const_reverse_iterator;
 
     //! The type of an iterator pointing to the out-edges of a node in a
     //! digraph.
     using const_iterator_edges =
-        typename detail::DynamicArray2<T>::const_iterator;
+        typename detail::DynamicArray2<Node>::const_iterator;
 
     ////////////////////////////////////////////////////////////////////////
-    // ActionDigraph - constructors + destructor - public
+    // WordGraph - constructors + destructor - public
     ////////////////////////////////////////////////////////////////////////
 
     //! Construct from number of nodes and out degree.
@@ -158,7 +157,7 @@ namespace libsemigroups {
     //! \f$O(mn)\f$ where \p m is the number of nodes, and \p n is
     //! the out-degree of the digraph.
     // Not noexcept
-    explicit ActionDigraph(T m = 0, T n = 0);
+    explicit WordGraph(Node m = 0, Node n = 0);
 
     //! Re-initialize the digraph to have \p m nodes and out-degree \p n
     //!
@@ -175,24 +174,24 @@ namespace libsemigroups {
     //! \par Complexity
     //! \f$O(mn)\f$ where \p m is the number of nodes, and \p n is the
     //! out-degree of the digraph.
-    void init(T m, T n);
+    void init(Node m, Node n);
 
     //! Default copy constructor
-    ActionDigraph(ActionDigraph const&);
+    WordGraph(WordGraph const&);
 
     template <typename N>
-    ActionDigraph(ActionDigraph<N> const&);
+    WordGraph(WordGraph<N> const&);
 
     //! Default move constructor
-    ActionDigraph(ActionDigraph&&);
+    WordGraph(WordGraph&&);
 
     //! Default copy assignment constructor
-    ActionDigraph& operator=(ActionDigraph const&);
+    WordGraph& operator=(WordGraph const&);
 
     //! Default move assignment constructor
-    ActionDigraph& operator=(ActionDigraph&&);
+    WordGraph& operator=(WordGraph&&);
 
-    ~ActionDigraph();
+    ~WordGraph();
 
     //! Construct a random digraph from number of nodes and out-degree.
     //!
@@ -208,12 +207,12 @@ namespace libsemigroups {
     //! \par Complexity
     //! \f$O(mn)\f$ where \p m is the number of nodes, and \p n is
     //! the out-degree of the digraph.
-    static ActionDigraph random(T            number_of_nodes,
-                                T            out_degree,
-                                std::mt19937 mt
-                                = std::mt19937(std::random_device()())) {
-      std::uniform_int_distribution<T> dist(0, number_of_nodes - 1);
-      ActionDigraph<T>                 g(number_of_nodes, out_degree);
+    static WordGraph random(Node         number_of_nodes,
+                            Node         out_degree,
+                            std::mt19937 mt
+                            = std::mt19937(std::random_device()())) {
+      std::uniform_int_distribution<Node> dist(0, number_of_nodes - 1);
+      WordGraph<Node>                     g(number_of_nodes, out_degree);
       LIBSEMIGROUPS_ASSERT(g._dynamic_array_2.number_of_rows()
                            == number_of_nodes);
       LIBSEMIGROUPS_ASSERT(g._dynamic_array_2.number_of_cols() == out_degree);
@@ -240,11 +239,11 @@ namespace libsemigroups {
     //! \par Complexity
     //! At least \f$O(mn)\f$ where \p m is the number of nodes, and \p n is the
     //! out-degree of the digraph.
-    static ActionDigraph random(T            number_of_nodes,
-                                T            out_degree,
-                                T            number_of_edges,
-                                std::mt19937 mt
-                                = std::mt19937(std::random_device()())) {
+    static WordGraph random(Node         number_of_nodes,
+                            Node         out_degree,
+                            Node         number_of_edges,
+                            std::mt19937 mt
+                            = std::mt19937(std::random_device()())) {
       if (number_of_nodes < 2) {
         LIBSEMIGROUPS_EXCEPTION("the 1st parameter `number_of_nodes` must be "
                                 "at least 2, found %llu",
@@ -260,13 +259,13 @@ namespace libsemigroups {
             static_cast<uint64_t>(number_of_nodes * out_degree),
             static_cast<uint64_t>(number_of_edges));
       }
-      std::uniform_int_distribution<T> source(0, number_of_nodes - 1);
-      std::uniform_int_distribution<T> target(0, number_of_nodes - 1);
-      std::uniform_int_distribution<T> label(0, out_degree - 1);
+      std::uniform_int_distribution<Node> source(0, number_of_nodes - 1);
+      std::uniform_int_distribution<Node> target(0, number_of_nodes - 1);
+      std::uniform_int_distribution<Node> label(0, out_degree - 1);
 
-      ActionDigraph<T> g(number_of_nodes, out_degree);
-      size_t           edges_to_add = number_of_edges;
-      size_t           old_nr_edges = 0;
+      WordGraph<Node> g(number_of_nodes, out_degree);
+      size_t          edges_to_add = number_of_edges;
+      size_t          old_nr_edges = 0;
       do {
         for (size_t i = 0; i < edges_to_add; ++i) {
           g._dynamic_array_2.set(source(mt), label(mt), target(mt));
@@ -298,11 +297,11 @@ namespace libsemigroups {
     //! \par Complexity
     //! At least \f$O(mn)\f$ where \p m is the number of nodes, and \p n is the
     //! out-degree of the digraph.
-    static ActionDigraph
-    random_acyclic(T            number_of_nodes,
-                   T            out_degree,
-                   T            number_of_edges,
-                   std::mt19937 mt = std::mt19937(std::random_device()())) {
+    static WordGraph random_acyclic(Node         number_of_nodes,
+                                    Node         out_degree,
+                                    Node         number_of_edges,
+                                    std::mt19937 mt
+                                    = std::mt19937(std::random_device()())) {
       if (number_of_nodes < 2) {
         LIBSEMIGROUPS_EXCEPTION("the 1st parameter `number_of_nodes` must be "
                                 "at least 2, found %llu",
@@ -322,19 +321,19 @@ namespace libsemigroups {
             static_cast<uint64_t>(max_edges),
             static_cast<uint64_t>(number_of_edges));
       }
-      std::uniform_int_distribution<T> source(0, number_of_nodes - 1);
-      std::uniform_int_distribution<T> label(0, out_degree - 1);
+      std::uniform_int_distribution<Node> source(0, number_of_nodes - 1);
+      std::uniform_int_distribution<Node> label(0, out_degree - 1);
 
-      ActionDigraph<T> g(number_of_nodes, out_degree);
-      size_t           edges_to_add = number_of_edges;
-      size_t           old_nr_edges = 0;
+      WordGraph<Node> g(number_of_nodes, out_degree);
+      size_t          edges_to_add = number_of_edges;
+      size_t          old_nr_edges = 0;
       do {
         for (size_t i = 0; i < edges_to_add; ++i) {
           auto v = source(mt);
           if (v != number_of_nodes - 1) {
             g._dynamic_array_2.set(v,
                                    label(mt),
-                                   std::uniform_int_distribution<T>(
+                                   std::uniform_int_distribution<Node>(
                                        v + 1, number_of_nodes - 1)(mt));
           }
         }
@@ -346,7 +345,7 @@ namespace libsemigroups {
     }
 
     ////////////////////////////////////////////////////////////////////////
-    // ActionDigraph - modifiers - public
+    // WordGraph - modifiers - public
     ////////////////////////////////////////////////////////////////////////
 
     //! Adds a number of new nodes.
@@ -416,7 +415,7 @@ namespace libsemigroups {
       // }
 
       // TODO do this without allocation
-      ActionDigraph<T>       copy(N, out_degree());
+      WordGraph<Node>        copy(N, out_degree());
       std::vector<node_type> old_to_new(number_of_nodes(),
                                         static_cast<node_type>(UNDEFINED));
       node_type              next = 0;
@@ -591,7 +590,7 @@ namespace libsemigroups {
     //! \iterator_validity
     //! \iterator_invalid
     // Not noexcept because DynamicArray2::add_cols isn't.
-    void reserve(T m, T n) const {
+    void reserve(Node m, Node n) const {
       _dynamic_array_2.add_cols(n - _dynamic_array_2.number_of_cols());
       // What if add_cols throws, what guarantee can we offer then?
       _dynamic_array_2.add_rows(m - _dynamic_array_2.number_of_rows());
@@ -636,12 +635,12 @@ namespace libsemigroups {
     //! At worst \f$O(nm)\f$ where \f$n\f$ is the number of nodes and \f$m\f$
     //! is the out-degree of the digraph.
     // swap u - a - > u' and v - a -> v'
-    bool operator==(ActionDigraph const& that) const {
+    bool operator==(WordGraph const& that) const {
       return _dynamic_array_2 == that._dynamic_array_2;
     }
 
     ////////////////////////////////////////////////////////////////////////
-    // ActionDigraph - nodes, neighbors, etc - public
+    // WordGraph - nodes, neighbors, etc - public
     ////////////////////////////////////////////////////////////////////////
 
     //! Get the range of the edge with given source node and label.
@@ -768,7 +767,7 @@ namespace libsemigroups {
     //! Returns the number of nodes.
     //!
     //! \returns
-    //! The number of nodes, a value of type \c T.
+    //! The number of nodes, a value of type \c Node.
     //!
     //! \exceptions
     //! \noexcept
@@ -778,12 +777,12 @@ namespace libsemigroups {
     //!
     //! \par Parameters
     //! (None)
-    T inline number_of_nodes() const noexcept {
+    Node inline number_of_nodes() const noexcept {
       return _nr_nodes;
     }
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
-    ActionDigraph& number_of_active_nodes(size_type val) {
+    WordGraph& number_of_active_nodes(size_type val) {
       _num_active_nodes = val;
       return *this;
     }
@@ -836,7 +835,7 @@ namespace libsemigroups {
     //! Returns the out-degree.
     //!
     //! \returns
-    //! The number of out-edges of every node, a value of type \c T.
+    //! The number of out-edges of every node, a value of type \c Node.
     //!
     //! \exceptions
     //! \noexcept
@@ -846,7 +845,7 @@ namespace libsemigroups {
     //!
     //! \par Parameters
     //! (None)
-    T out_degree() const noexcept {
+    Node out_degree() const noexcept {
       return _degree;
     }
 
@@ -882,7 +881,7 @@ namespace libsemigroups {
     //! \par Parameters
     //! (None)
     const_iterator_nodes cbegin_nodes() const noexcept {
-      return IntegralRange<T>(0, number_of_nodes()).cbegin();
+      return IntegralRange<Node>(0, number_of_nodes()).cbegin();
     }
 
     // no except correct?
@@ -918,7 +917,7 @@ namespace libsemigroups {
     //! \par Parameters
     //! (None)
     const_reverse_iterator_nodes crbegin_nodes() const noexcept {
-      return IntegralRange<T>(0, number_of_nodes()).crbegin();
+      return IntegralRange<Node>(0, number_of_nodes()).crbegin();
     }
 
     //! Returns a random access iterator pointing one-past-the-first node of
@@ -936,7 +935,7 @@ namespace libsemigroups {
     //! \par Parameters
     //! (None)
     const_reverse_iterator_nodes crend_nodes() const noexcept {
-      return IntegralRange<T>(0, number_of_nodes()).crend();
+      return IntegralRange<Node>(0, number_of_nodes()).crend();
     }
 
     //! Returns a random access iterator pointing one-past-the-last node of the
@@ -954,7 +953,7 @@ namespace libsemigroups {
     //! \par Parameters
     //! (None)
     const_iterator_nodes cend_nodes() const noexcept {
-      return IntegralRange<T>(0, number_of_nodes()).cend();
+      return IntegralRange<Node>(0, number_of_nodes()).cend();
     }
 
     //! Returns a random access iterator pointing at the first neighbor of a
@@ -1040,7 +1039,7 @@ namespace libsemigroups {
     }
 
     ////////////////////////////////////////////////////////////////////////
-    // ActionDigraph - strongly connected components - public
+    // WordGraph - strongly connected components - public
     ////////////////////////////////////////////////////////////////////////
 
     //! Returns a const reference to the underlying array.
@@ -1060,8 +1059,8 @@ namespace libsemigroups {
     //! Constant.
     // TODO(v3) this either shouldn't exist it's used by ToddCoxeter when
     // creating the quotient FroidurePin, but we could just use the
-    // ActionDigraph itself.
-    detail::DynamicArray2<T> const& table() const noexcept {
+    // WordGraph itself.
+    detail::DynamicArray2<Node> const& table() const noexcept {
       return _dynamic_array_2;
     }
 
@@ -1074,31 +1073,42 @@ namespace libsemigroups {
 
    private:
     ////////////////////////////////////////////////////////////////////////
-    // ActionDigraph - data members - private
+    // WordGraph - data members - private
     ////////////////////////////////////////////////////////////////////////
 
-    T                                _degree;
-    T                                _nr_nodes;
-    T                                _num_active_nodes;
-    mutable detail::DynamicArray2<T> _dynamic_array_2;
+    Node                                _degree;
+    Node                                _nr_nodes;
+    Node                                _num_active_nodes;
+    mutable detail::DynamicArray2<Node> _dynamic_array_2;
   };
 
+  namespace detail {
+    template <typename Thing>
+    struct IsWordGraphHelper : std::false_type {};
+
+    template <typename Node>
+    struct IsWordGraphHelper<WordGraph<Node>> : std::true_type {};
+  }  // namespace detail
+
+  template <typename Thing>
+  static constexpr bool IsWordGraph = detail::IsWordGraphHelper<Thing>::value;
+
   //////////////////////////////////////////////////////////////////////////
-  // ActionDigraph - constructor/destructor implementations
+  // WordGraph - constructor/destructor implementations
   //////////////////////////////////////////////////////////////////////////
 
-  template <typename T>
-  ActionDigraph<T>::~ActionDigraph() = default;
+  template <typename Node>
+  WordGraph<Node>::~WordGraph() = default;
 
-  template <typename T>
-  ActionDigraph<T>::ActionDigraph(T m, T n)
+  template <typename Node>
+  WordGraph<Node>::WordGraph(Node m, Node n)
       : _degree(n),
         _nr_nodes(m),
         _num_active_nodes(),
         _dynamic_array_2(_degree, _nr_nodes, UNDEFINED) {}
 
-  template <typename T>
-  void ActionDigraph<T>::init(T m, T n) {
+  template <typename Node>
+  void WordGraph<Node>::init(Node m, Node n) {
     _degree           = n;
     _nr_nodes         = m;
     _num_active_nodes = 0;
@@ -1106,26 +1116,26 @@ namespace libsemigroups {
     remove_all_edges();
   }
 
-  template <typename T>
-  ActionDigraph<T>::ActionDigraph(ActionDigraph const&) = default;
+  template <typename Node>
+  WordGraph<Node>::WordGraph(WordGraph const&) = default;
 
-  template <typename T>
+  template <typename Node>
   template <typename N>
-  ActionDigraph<T>::ActionDigraph(ActionDigraph<N> const& ad)
-      : ActionDigraph(ad.number_of_nodes(), ad.out_degree()) {
+  WordGraph<Node>::WordGraph(WordGraph<N> const& ad)
+      : WordGraph(ad.number_of_nodes(), ad.out_degree()) {
     _dynamic_array_2 = ad._dynamic_array_2;
   }
 
-  template <typename T>
-  ActionDigraph<T>::ActionDigraph(ActionDigraph&&) = default;
+  template <typename Node>
+  WordGraph<Node>::WordGraph(WordGraph&&) = default;
 
-  template <typename T>
-  ActionDigraph<T>& ActionDigraph<T>::operator=(ActionDigraph const&) = default;
+  template <typename Node>
+  WordGraph<Node>& WordGraph<Node>::operator=(WordGraph const&) = default;
 
-  template <typename T>
-  ActionDigraph<T>& ActionDigraph<T>::operator=(ActionDigraph&&) = default;
+  template <typename Node>
+  WordGraph<Node>& WordGraph<Node>::operator=(WordGraph&&) = default;
 
-  //! Output the edges of an ActionDigraph to a stream.
+  //! Output the edges of an WordGraph to a stream.
   //!
   //! This function outputs the action digraph \p ad to the stream \p os. The
   //! digraph is represented by the out-neighbours of each node ordered
@@ -1141,8 +1151,8 @@ namespace libsemigroups {
   //!
   //! \exceptions
   //! \no_libsemigroups_except
-  template <typename T>
-  std::ostream& operator<<(std::ostream& os, ActionDigraph<T> const& ad) {
+  template <typename Node>
+  std::ostream& operator<<(std::ostream& os, WordGraph<Node> const& ad) {
     os << "{";
     std::string sep_n;
     for (auto n = ad.cbegin_nodes(); n != ad.cend_nodes(); ++n) {
@@ -1163,9 +1173,9 @@ namespace libsemigroups {
     namespace detail {
 
 #ifdef LIBSEMIGROUPS_EIGEN_ENABLED
-      template <typename T>
+      template <typename Node>
       void init_adjacency_matrix(
-          ActionDigraph<T> const&                                ad,
+          WordGraph<Node> const&                                 ad,
           Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>& mat) {
         size_t const N = ad.number_of_nodes();
         mat.resize(N, N);
@@ -1181,9 +1191,9 @@ namespace libsemigroups {
       }
 
 #else
-      template <typename T>
-      void init_adjacency_matrix(ActionDigraph<T> const& ad,
-                                 IntMat<0, 0, int64_t>&  mat) {
+      template <typename Node>
+      void init_adjacency_matrix(WordGraph<Node> const& ad,
+                                 IntMat<0, 0, int64_t>& mat) {
         size_t const N = ad.number_of_nodes();
         mat            = IntMat<0, 0, int64_t>(N, N);
         std::fill(mat.begin(), mat.end(), 0);
@@ -1200,9 +1210,9 @@ namespace libsemigroups {
     }
 #endif
 
-    template <typename T>
-    auto adjacency_matrix(ActionDigraph<T> const& ad) {
-      using Mat = typename ActionDigraph<T>::adjacency_matrix_type;
+    template <typename Node>
+    auto adjacency_matrix(WordGraph<Node> const& ad) {
+      using Mat = typename WordGraph<Node>::adjacency_matrix_type;
       Mat mat;
       detail::init_adjacency_matrix(ad, mat);
 
@@ -1218,12 +1228,12 @@ namespace libsemigroups {
 
     namespace detail {
       // TODO(now) to tpp file
-      template <typename T>
-      bool shortlex_standardize(T& d, Forest& f) {
+      template <typename Node>
+      bool shortlex_standardize(Node& d, Forest& f) {
         LIBSEMIGROUPS_ASSERT(d.number_of_nodes() != 0);
         LIBSEMIGROUPS_ASSERT(f.number_of_nodes() == 0);
 
-        using node_type = typename T::node_type;
+        using node_type = typename Node::node_type;
         f.add_nodes(1);
 
         node_type    t      = 0;
@@ -1257,13 +1267,13 @@ namespace libsemigroups {
         return result;
       }
 
-      template <typename T>
-      bool lex_standardize(T& d, Forest& f) {
+      template <typename Node>
+      bool lex_standardize(Node& d, Forest& f) {
         LIBSEMIGROUPS_ASSERT(d.number_of_nodes() != 0);
         LIBSEMIGROUPS_ASSERT(f.number_of_nodes() == 0);
 
-        using node_type  = typename T::node_type;
-        using label_type = typename T::label_type;
+        using node_type  = typename Node::node_type;
+        using label_type = typename Node::label_type;
 
         f.add_nodes(1);
 
@@ -1306,12 +1316,12 @@ namespace libsemigroups {
         return result;
       }
 
-      template <typename T>
-      bool recursive_standardize(T& d, Forest& f) {
+      template <typename Node>
+      bool recursive_standardize(Node& d, Forest& f) {
         LIBSEMIGROUPS_ASSERT(d.number_of_nodes() != 0);
         LIBSEMIGROUPS_ASSERT(f.number_of_nodes() == 0);
 
-        using node_type = typename T::node_type;
+        using node_type = typename Node::node_type;
 
         f.add_nodes(1);
 
@@ -1417,12 +1427,11 @@ namespace libsemigroups {
 
     // Return value indicates whether or not the graph was modified.
     // TODO(now) to tpp file
-    template <typename T>
-    bool standardize(T& d, Forest& f, order val) {
-      // TODO(later): should be DigraphWithSourcesBase
-      static_assert(
-          std::is_base_of<ActionDigraphBase, T>::value,
-          "the template parameter T must be derived from ActionDigraphBase");
+    template <typename Graph>
+    bool standardize(Graph& d, Forest& f, order val) {
+      static_assert(std::is_base_of_v<WordGraphBase, Graph>,
+                    "the template parameter Graph must be "
+                    "derived from WordGraphBase");
       if (!f.empty()) {
         f.clear();
       }
@@ -1444,20 +1453,20 @@ namespace libsemigroups {
       }
     }
 
-    template <typename T>
-    std::pair<bool, Forest> standardize(T& d, order val = order::shortlex) {
+    template <typename Graph>
+    std::pair<bool, Forest> standardize(Graph& d, order val = order::shortlex) {
       static_assert(
-          std::is_base_of<ActionDigraphBase, T>::value,
-          "the template parameter T must be derived from ActionDigraphBase");
+          std::is_base_of<WordGraphBase, Graph>::value,
+          "the template parameter Graph must be derived from WordGraphBase");
       Forest f;
       bool   result = standardize(d, f, val);
       return std::make_pair(result, f);
     }
 
     template <typename Node, typename Iterator1, typename Iterator2>
-    bool is_complete(ActionDigraph<Node> const& d,
-                     Iterator1                  first_node,
-                     Iterator2                  last_node) {
+    bool is_complete(WordGraph<Node> const& d,
+                     Iterator1              first_node,
+                     Iterator2              last_node) {
       size_t const n = d.out_degree();
       for (auto it = first_node; it != last_node; ++it) {
         for (size_t a = 0; a < n; ++a) {
@@ -1473,11 +1482,11 @@ namespace libsemigroups {
               typename Iterator1,
               typename Iterator2,
               typename Iterator3>
-    bool is_compatible(ActionDigraph<Node> const& d,
-                       Iterator1                  first_node,
-                       Iterator2                  last_node,
-                       Iterator3                  first_rule,
-                       Iterator3                  last_rule) {
+    bool is_compatible(WordGraph<Node> const& d,
+                       Iterator1              first_node,
+                       Iterator2              last_node,
+                       Iterator3              first_rule,
+                       Iterator3              last_rule) {
       for (auto nit = first_node; nit != last_node; ++nit) {
         for (auto rit = first_rule; rit != last_rule; ++rit) {
           auto l = action_digraph_helper::follow_path_nc(
@@ -1502,19 +1511,19 @@ namespace libsemigroups {
 
   //! Constructs a digraph from number of nodes and an \c initializer_list.
   //!
-  //! This function constructs an ActionDigraph from its arguments whose
+  //! This function constructs an WordGraph from its arguments whose
   //! out-degree is specified by the length of the first \c initializer_list
   //! in the 2nd parameter.
   //!
-  //! \tparam T the type of the nodes of the digraph
+  //! \tparam Node the type of the nodes of the digraph
   //!
   //! \param num_nodes the number of nodes in the digraph.
   //! \param il the out-neighbors of the digraph.
   //!
-  //! \returns A value of type ActionDigraph.
+  //! \returns A value of type WordGraph.
   //!
   //! \throws LibsemigroupsException
-  //! if ActionDigraph<T>::add_edge throws when adding edges from \p il.
+  //! if WordGraph<Node>::add_edge throws when adding edges from \p il.
   //!
   //! \complexity
   //! \f$O(mn)\f$ where \f$m\f$ is the length of \p il and \f$n\f$ is the
@@ -1527,10 +1536,10 @@ namespace libsemigroups {
   //!     5, {{0, 0}, {1, 1}, {2}, {3, 3}});
   //! \endcode
   template <typename Node>
-  ActionDigraph<Node>
+  WordGraph<Node>
   to_action_digraph(size_t num_nodes,
                     std::initializer_list<std::initializer_list<Node>> il) {
-    ActionDigraph<Node> result(num_nodes, il.begin()->size());
+    WordGraph<Node> result(num_nodes, il.begin()->size());
     for (size_t i = 0; i < il.size(); ++i) {
       for (size_t j = 0; j < (il.begin() + i)->size(); ++j) {
         auto val = *((il.begin() + i)->begin() + j);

@@ -20,7 +20,7 @@
 namespace libsemigroups {
 
   template <typename Node>
-  Gabow<Node>& Gabow<Node>::init(ActionDigraph<node_type> const& wg) {
+  Gabow<Node>& Gabow<Node>::init(WordGraph<node_type> const& wg) {
     _graph = &wg;
     _comps.clear();
     _id.clear();

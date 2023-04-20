@@ -28,14 +28,14 @@
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
 #include "libsemigroups/digraph-helper.hpp"  // for is_acyclic, topological_...
-#include "libsemigroups/digraph.hpp"         // for ActionDigraph, operator<<
+#include "libsemigroups/word-graph.hpp"         // for WordGraph, operator<<
 #include "libsemigroups/paths.hpp"           // for cbegin_pilo
 #include "libsemigroups/string.hpp"          // for to_string
 #include "libsemigroups/types.hpp"           // for word_type
 
 namespace libsemigroups {
   namespace {
-    void add_path(ActionDigraph<size_t>& digraph, size_t n) {
+    void add_path(WordGraph<size_t>& digraph, size_t n) {
       size_t old_nodes = digraph.number_of_nodes();
       digraph.add_nodes(n);
       for (size_t i = old_nodes; i < digraph.number_of_nodes() - 1; ++i) {
@@ -43,13 +43,13 @@ namespace libsemigroups {
       }
     }
 
-    ActionDigraph<size_t> path(size_t n) {
-      ActionDigraph<size_t> g(0, 1);
+    WordGraph<size_t> path(size_t n) {
+      WordGraph<size_t> g(0, 1);
       add_path(g, n);
       return g;
     }
 
-    void add_clique(ActionDigraph<size_t>& digraph, size_t n) {
+    void add_clique(WordGraph<size_t>& digraph, size_t n) {
       if (n != digraph.out_degree()) {
         throw std::runtime_error("can't do it!");
       }
@@ -63,15 +63,15 @@ namespace libsemigroups {
       }
     }
 
-    ActionDigraph<size_t> clique(size_t n) {
-      ActionDigraph<size_t> g(0, n);
+    WordGraph<size_t> clique(size_t n) {
+      WordGraph<size_t> g(0, n);
       add_clique(g, n);
       return g;
     }
   }  // namespace
 
   LIBSEMIGROUPS_TEST_CASE("is_acyclic", "000", "2-cycle", "[quick]") {
-    ActionDigraph<size_t> ad;
+    WordGraph<size_t> ad;
     ad.add_nodes(2);
     ad.add_to_out_degree(1);
     ad.add_edge(0, 1, 0);
@@ -81,7 +81,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("is_acyclic", "001", "1-cycle", "[quick]") {
-    ActionDigraph<size_t> ad;
+    WordGraph<size_t> ad;
     ad.add_nodes(1);
     ad.add_to_out_degree(1);
     ad.add_edge(0, 0, 0);
@@ -90,8 +90,8 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("is_acyclic", "002", "multi-digraph", "[quick]") {
-    using node_type = ActionDigraph<size_t>::node_type;
-    ActionDigraph<size_t> ad;
+    using node_type = WordGraph<size_t>::node_type;
+    WordGraph<size_t> ad;
     ad.add_nodes(2);
     ad.add_to_out_degree(2);
     ad.add_edge(0, 1, 0);
@@ -105,7 +105,7 @@ namespace libsemigroups {
                           "003",
                           "complete digraph 100",
                           "[quick]") {
-    ActionDigraph<size_t> ad;
+    WordGraph<size_t> ad;
     size_t const          n = 100;
     ad.add_nodes(n);
     ad.add_to_out_degree(n);
@@ -124,7 +124,7 @@ namespace libsemigroups {
                           "004",
                           "acyclic digraph with 20000 nodes",
                           "[quick]") {
-    ActionDigraph<size_t> ad;
+    WordGraph<size_t> ad;
     size_t const          n = 20000;
     ad.add_nodes(n);
     ad.add_to_out_degree(2);
@@ -146,7 +146,7 @@ namespace libsemigroups {
                           "005",
                           "acyclic digraph with 10 million nodes",
                           "[standard]") {
-    ActionDigraph<size_t> ad;
+    WordGraph<size_t> ad;
     size_t const          n = 10000000;
     ad.add_nodes(n);
     ad.add_to_out_degree(2);
@@ -164,8 +164,8 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("is_acyclic", "006", "for a node", "[quick]") {
-    using node_type = ActionDigraph<size_t>::node_type;
-    ActionDigraph<size_t> ad;
+    using node_type = WordGraph<size_t>::node_type;
+    WordGraph<size_t> ad;
     size_t const          n = 100;
     ad.add_nodes(n);
     ad.add_to_out_degree(2);
@@ -191,7 +191,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("is_acyclic", "007", "for a node", "[quick]") {
-    ActionDigraph<size_t> ad;
+    WordGraph<size_t> ad;
     using node_type = decltype(ad)::node_type;
     ad.add_nodes(4);
     ad.add_to_out_degree(1);
@@ -217,7 +217,7 @@ namespace libsemigroups {
                           "008",
                           "acyclic 20 node digraph",
                           "[quick]") {
-    ActionDigraph<size_t> ad;
+    WordGraph<size_t> ad;
     size_t const          n = 20;
     ad.add_nodes(n);
     ad.add_to_out_degree(2);
@@ -240,7 +240,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("is_reachable", "009", "100 node path", "[quick]") {
-    ActionDigraph<size_t> ad;
+    WordGraph<size_t> ad;
     size_t const          n = 100;
     ad.add_nodes(n);
     ad.add_to_out_degree(2);
@@ -256,7 +256,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("is_reachable", "010", "100 node cycle", "[quick]") {
-    ActionDigraph<size_t> ad;
+    WordGraph<size_t> ad;
     ad.add_to_out_degree(1);
     action_digraph_helper::add_cycle(ad, 100);
     for (auto it1 = ad.cbegin_nodes(); it1 < ad.cend_nodes(); ++it1) {
@@ -268,7 +268,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("is_reachable", "011", "20 node clique", "[quick]") {
-    ActionDigraph<size_t> ad = clique(20);
+    WordGraph<size_t> ad = clique(20);
     for (auto it1 = ad.cbegin_nodes(); it1 < ad.cend_nodes(); ++it1) {
       for (auto it2 = it1 + 1; it2 < ad.cend_nodes(); ++it2) {
         REQUIRE(action_digraph_helper::is_reachable(ad, *it1, *it2));
@@ -281,7 +281,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("follow_path", "012", "20 node path", "[quick]") {
-    ActionDigraph<size_t> ad = path(20);
+    WordGraph<size_t> ad = path(20);
     for (auto it = cbegin_pilo(ad, 0); it != cend_pilo(ad); ++it) {
       REQUIRE(action_digraph_helper::follow_path(ad, 0, *it) == it.target());
       REQUIRE(action_digraph_helper::follow_path_nc(ad, 0, *it) == it.target());
@@ -289,7 +289,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("validate_label", "013", "20 node path", "[quick]") {
-    ActionDigraph<size_t> ad = path(20);
+    WordGraph<size_t> ad = path(20);
     REQUIRE_THROWS_AS(action_digraph_helper::validate_label(ad, 10),
                       LibsemigroupsException);
   }
@@ -298,7 +298,7 @@ namespace libsemigroups {
                           "014",
                           "20 node path",
                           "[quick]") {
-    ActionDigraph<size_t> ad   = path(20);
+    WordGraph<size_t> ad   = path(20);
     word_type             path = {};
     for (size_t i = 0; i < 19; ++i) {
       path.push_back(0);
@@ -318,10 +318,10 @@ namespace libsemigroups {
                           "015",
                           "detail::to_string",
                           "[quick]") {
-    ActionDigraph<size_t> ad = path(6);
+    WordGraph<size_t> ad = path(6);
     REQUIRE(detail::to_string(ad) == "{{1}, {2}, {3}, {4}, {5}, {-}}");
     REQUIRE(action_digraph_helper::detail::to_string(ad)
-            == R"V0G0N(ActionDigraph<size_t> ad;
+            == R"V0G0N(WordGraph<size_t> ad;
 ad.add_nodes(6);
 ad.add_to_out_degree(1);
 ad.add_edge(0, 1, 0);
@@ -339,7 +339,7 @@ ad.add_edge(4, 5, 0);
     REQUIRE_THROWS_AS(
         to_action_digraph<uint8_t>(5, {{0, 0}, {1, 1, 1}, {2}, {3, 3}}),
         LibsemigroupsException);
-    ad = ActionDigraph<uint8_t>(5, 2);
+    ad = WordGraph<uint8_t>(5, 2);
     REQUIRE(detail::to_string(ad)
             == "{{-, -}, {-, -}, {-, -}, {-, -}, {-, -}}");
   }
@@ -360,7 +360,7 @@ ad.add_edge(4, 5, 0);
     ad.add_to_out_degree(1);
     ad.add_edge(0, 1'000, 1);
     REQUIRE(action_digraph_helper::is_connected(ad));
-    ad = ActionDigraph<size_t>();
+    ad = WordGraph<size_t>();
     REQUIRE(action_digraph_helper::is_connected(ad));
   }
 
@@ -380,7 +380,7 @@ ad.add_edge(4, 5, 0);
     ad.add_to_out_degree(1);
     ad.add_edge(0, 1'000, 1);
     REQUIRE(action_digraph_helper::is_strictly_cyclic(ad));
-    ad = ActionDigraph<size_t>();
+    ad = WordGraph<size_t>();
     REQUIRE(action_digraph_helper::is_strictly_cyclic(ad));
   }
 }  // namespace libsemigroups

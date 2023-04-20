@@ -44,8 +44,8 @@ namespace libsemigroups {
     using FelschDigraphSettings_ = FelschDigraphSettings<ToddCoxeter>;
 
    public:
-    using node_type  = typename ActionDigraph<uint32_t>::node_type;
-    using label_type = typename ActionDigraph<uint32_t>::label_type;
+    using node_type  = typename WordGraph<uint32_t>::node_type;
+    using label_type = typename WordGraph<uint32_t>::label_type;
 
     struct options : public FelschDigraphSettings_::options {
       enum class strategy {
@@ -248,7 +248,7 @@ namespace libsemigroups {
     }
 
     template <typename Node>
-    ToddCoxeter(congruence_kind knd, ActionDigraph<Node> const& ad)
+    ToddCoxeter(congruence_kind knd, WordGraph<Node> const& ad)
         : ToddCoxeter(knd) {
       _word_graph = ad;
       _word_graph.presentation().alphabet(ad.out_degree());
@@ -256,7 +256,7 @@ namespace libsemigroups {
     }
 
     template <typename Node>
-    ToddCoxeter& init(congruence_kind knd, ActionDigraph<Node> const& ad) {
+    ToddCoxeter& init(congruence_kind knd, WordGraph<Node> const& ad) {
       init(knd);
       _word_graph = ad;
       _word_graph.presentation().alphabet(ad.out_degree());
@@ -267,7 +267,7 @@ namespace libsemigroups {
     template <typename Node>
     ToddCoxeter(congruence_kind                knd,
                 Presentation<word_type> const& p,
-                ActionDigraph<Node> const&     ad)
+                WordGraph<Node> const&     ad)
         : ToddCoxeter(knd, p) {
       _word_graph = ad;
       _word_graph.presentation(p);

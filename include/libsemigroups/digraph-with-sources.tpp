@@ -16,7 +16,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-// This file contains an implementation of a class for ActionDigraphs that also
+// This file contains an implementation of a class for WordGraphs that also
 // keep track of the edges pointing into any node (not only those point out).
 
 namespace libsemigroups {
@@ -27,27 +27,27 @@ namespace libsemigroups {
   template <typename NodeType>
   template <typename ThatNodeType>
   DigraphWithSources<NodeType>::DigraphWithSources(
-      ActionDigraph<ThatNodeType> const& that)
-      : ActionDigraph<NodeType>(that),
+      WordGraph<ThatNodeType> const& that)
+      : WordGraph<NodeType>(that),
         _preim_init(that.out_degree(), that.number_of_nodes(), UNDEFINED),
         _preim_next(that.out_degree(), that.number_of_nodes(), UNDEFINED) {
-    rebuild_sources(ActionDigraph<NodeType>::cbegin_nodes(),
-                    ActionDigraph<NodeType>::cend_nodes());
+    rebuild_sources(WordGraph<NodeType>::cbegin_nodes(),
+                    WordGraph<NodeType>::cend_nodes());
   }
 
   template <typename NodeType>
   template <typename ThatNodeType>
   DigraphWithSources<NodeType>::DigraphWithSources(
-      ActionDigraph<ThatNodeType>&& that)
-      : ActionDigraph<NodeType>(std::move(that)),
-        _preim_init(ActionDigraph<NodeType>::out_degree(),
-                    ActionDigraph<NodeType>::number_of_nodes(),
+      WordGraph<ThatNodeType>&& that)
+      : WordGraph<NodeType>(std::move(that)),
+        _preim_init(WordGraph<NodeType>::out_degree(),
+                    WordGraph<NodeType>::number_of_nodes(),
                     UNDEFINED),
-        _preim_next(ActionDigraph<NodeType>::out_degree(),
-                    ActionDigraph<NodeType>::number_of_nodes(),
+        _preim_next(WordGraph<NodeType>::out_degree(),
+                    WordGraph<NodeType>::number_of_nodes(),
                     UNDEFINED) {
-    rebuild_sources(ActionDigraph<NodeType>::cbegin_nodes(),
-                    ActionDigraph<NodeType>::cend_nodes());
+    rebuild_sources(WordGraph<NodeType>::cbegin_nodes(),
+                    WordGraph<NodeType>::cend_nodes());
   }
 
   ////////////////////////////////////////////////////////////////////////////
@@ -57,7 +57,7 @@ namespace libsemigroups {
   // number of nodes, out-degree
   template <typename NodeType>
   void DigraphWithSources<NodeType>::init(size_type m, size_type n) {
-    ActionDigraph<node_type>::init(m, n);
+    WordGraph<node_type>::init(m, n);
     _preim_init.reshape(n, m);
     _preim_next.reshape(n, m);
   }
@@ -65,26 +65,26 @@ namespace libsemigroups {
   template <typename NodeType>
   template <typename ThatNodeType>
   void
-  DigraphWithSources<NodeType>::init(ActionDigraph<ThatNodeType> const& that) {
-    ActionDigraph<NodeType>::init(that);
+  DigraphWithSources<NodeType>::init(WordGraph<ThatNodeType> const& that) {
+    WordGraph<NodeType>::init(that);
     _preim_init.init(that.out_degree(), that.number_of_nodes(), UNDEFINED);
     _preim_next.init(that.out_degree(), that.number_of_nodes(), UNDEFINED);
-    rebuild_sources(ActionDigraph<NodeType>::cbegin_nodes(),
-                    ActionDigraph<NodeType>::cend_nodes());
+    rebuild_sources(WordGraph<NodeType>::cbegin_nodes(),
+                    WordGraph<NodeType>::cend_nodes());
   }
 
   template <typename NodeType>
   template <typename ThatNodeType>
-  void DigraphWithSources<NodeType>::init(ActionDigraph<ThatNodeType>&& that) {
-    ActionDigraph<NodeType>::init(std::move(that));
-    _preim_init.init(ActionDigraph<NodeType>::out_degree(),
-                     ActionDigraph<NodeType>::number_of_nodes(),
+  void DigraphWithSources<NodeType>::init(WordGraph<ThatNodeType>&& that) {
+    WordGraph<NodeType>::init(std::move(that));
+    _preim_init.init(WordGraph<NodeType>::out_degree(),
+                     WordGraph<NodeType>::number_of_nodes(),
                      UNDEFINED);
-    _preim_next.init(ActionDigraph<NodeType>::out_degree(),
-                     ActionDigraph<NodeType>::number_of_nodes(),
+    _preim_next.init(WordGraph<NodeType>::out_degree(),
+                     WordGraph<NodeType>::number_of_nodes(),
                      UNDEFINED);
-    rebuild_sources(ActionDigraph<NodeType>::cbegin_nodes(),
-                    ActionDigraph<NodeType>::cend_nodes());
+    rebuild_sources(WordGraph<NodeType>::cbegin_nodes(),
+                    WordGraph<NodeType>::cend_nodes());
   }
 
   ////////////////////////////////////////////////////////////////////////////
@@ -104,7 +104,7 @@ namespace libsemigroups {
     while (c < m) {
       for (label_type x = 0; x < n; ++x) {
         node_type i = this->unsafe_neighbor(p[c], x);
-        ActionDigraph<NodeType>::add_edge_nc(
+        WordGraph<NodeType>::add_edge_nc(
             p[c], (i == UNDEFINED ? i : q[i]), x);
         i = _preim_init.get(p[c], x);
         _preim_init.set(p[c], x, (i == UNDEFINED ? i : q[i]));
@@ -114,7 +114,7 @@ namespace libsemigroups {
       c++;
     }
     // Permute the rows themselves
-    ActionDigraph<NodeType>::apply_row_permutation(p);
+    WordGraph<NodeType>::apply_row_permutation(p);
     _preim_init.apply_row_permutation(p);
     _preim_next.apply_row_permutation(p);
   }
@@ -227,7 +227,7 @@ namespace libsemigroups {
   template <typename NodeType>
   void DigraphWithSources<NodeType>::clear_sources_and_targets(node_type c) {
     for (label_type i = 0; i < this->out_degree(); i++) {
-      ActionDigraph<NodeType>::add_edge_nc(c, UNDEFINED, i);
+      WordGraph<NodeType>::add_edge_nc(c, UNDEFINED, i);
       _preim_init.set(c, i, UNDEFINED);
     }
   }
@@ -264,8 +264,8 @@ namespace libsemigroups {
 
     for (auto it = first; it != last; ++it) {
       node_type c = *it;
-      for (label_type x = 0; x < ActionDigraph<NodeType>::out_degree(); ++x) {
-        auto cx = ActionDigraph<node_type>::unsafe_neighbor(c, x);
+      for (label_type x = 0; x < WordGraph<NodeType>::out_degree(); ++x) {
+        auto cx = WordGraph<node_type>::unsafe_neighbor(c, x);
         if (cx != UNDEFINED) {
           add_edge_nc(c, cx, x);
         }
@@ -301,7 +301,7 @@ namespace libsemigroups {
     node_type e = _preim_init.get(c, x);
     while (e != UNDEFINED) {
       LIBSEMIGROUPS_ASSERT(this->unsafe_neighbor(e, x) == c);
-      ActionDigraph<NodeType>::add_edge_nc(e, d, x);
+      WordGraph<NodeType>::add_edge_nc(e, d, x);
       e = _preim_next.get(e, x);
     }
   }

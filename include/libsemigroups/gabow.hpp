@@ -26,7 +26,7 @@
 #include <stack>    // for stack
 #include <vector>   // for vector
 
-#include "digraph.hpp"  // for ActionDigraph
+#include "word-graph.hpp"  // for WordGraph
 #include "forest.hpp"   // for Forest
 
 #include "rx/ranges.hpp"  // for iterator_range, transform
@@ -37,11 +37,11 @@ namespace libsemigroups {
   class Gabow {
    public:
     using node_type  = Node;
-    using label_type = typename ActionDigraph<node_type>::label_type;
+    using label_type = typename WordGraph<node_type>::label_type;
     using size_type  = size_t;
 
    private:
-    ActionDigraph<node_type> const*             _graph;
+    WordGraph<node_type> const*             _graph;
     mutable std::vector<std::vector<node_type>> _comps;
     mutable bool                                _finished;
     mutable std::vector<size_type>              _id;
@@ -58,11 +58,11 @@ namespace libsemigroups {
     Gabow& operator=(Gabow&&)      = default;
     ~Gabow()                       = default;
 
-    explicit Gabow(ActionDigraph<node_type> const& wg) : Gabow() {
+    explicit Gabow(WordGraph<node_type> const& wg) : Gabow() {
       init(wg);
     }
 
-    Gabow& init(ActionDigraph<node_type> const& wg);
+    Gabow& init(WordGraph<node_type> const& wg);
 
     [[nodiscard]] size_type id_no_checks(node_type v) const {
       run();
@@ -284,7 +284,7 @@ namespace libsemigroups {
   };
 
   template <typename Node>
-  Gabow(ActionDigraph<Node> const&) -> Gabow<Node>;
+  Gabow(WordGraph<Node> const&) -> Gabow<Node>;
 
 }  // namespace libsemigroups
 

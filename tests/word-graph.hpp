@@ -21,11 +21,14 @@
 #ifndef LIBSEMIGROUPS_TESTS_WORD_GRAPH_HPP_
 #define LIBSEMIGROUPS_TESTS_WORD_GRAPH_HPP_
 
-#include "libsemigroups/digraph.hpp"  // for ActionDigraph
+// TODO:
+// * iwyu
+
+#include "libsemigroups/word-graph.hpp"  // for WordGraph
 
 namespace libsemigroups {
 
-  void add_clique(ActionDigraph<size_t>& digraph, size_t n) {
+  void add_clique(WordGraph<size_t>& digraph, size_t n) {
     if (n != digraph.out_degree()) {
       throw std::runtime_error("can't do it!");
     }
@@ -39,14 +42,14 @@ namespace libsemigroups {
     }
   }
 
-  ActionDigraph<size_t> clique(size_t n) {
-    ActionDigraph<size_t> g(0, n);
+  WordGraph<size_t> clique(size_t n) {
+    WordGraph<size_t> g(0, n);
     add_clique(g, n);
     return g;
   }
 
-  ActionDigraph<size_t> binary_tree(size_t number_of_levels) {
-    ActionDigraph<size_t> ad;
+  WordGraph<size_t> binary_tree(size_t number_of_levels) {
+    WordGraph<size_t> ad;
     ad.add_nodes(std::pow(2, number_of_levels) - 1);
     ad.add_to_out_degree(2);
     ad.add_edge(0, 1, 0);

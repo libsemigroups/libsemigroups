@@ -162,7 +162,7 @@ namespace libsemigroups {
 
     // TODO rvalue reference version + init
     template <typename M>
-    FelschDigraph(ActionDigraph<M> const& ad);
+    FelschDigraph(WordGraph<M> const& ad);
 
     ////////////////////////////////////////////////////////////////////////
     // Settings
@@ -326,7 +326,7 @@ namespace libsemigroups {
   };
 
   namespace felsch_digraph {
-    // TODO compatible function for ActionDigraph
+    // TODO compatible function for WordGraph
 
     // Check that [first_node, last_node) is compatible with [first_rule,
     // last_rule) or if there are edges missing in paths labelled by rules,

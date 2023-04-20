@@ -25,7 +25,7 @@
 
 #include "constants.hpp"   // for UNDEFINED
 #include "containers.hpp"  // for DynamicArray2
-#include "digraph.hpp"     // for ActionDigraph
+#include "word-graph.hpp"     // for WordGraph
 #include "exception.hpp"   // for LIBSEMIGROUPS_EXCEPTION
 #include "runner.hpp"      // for Runner
 #include "types.hpp"       // for word_type, letter_type, tril
@@ -61,7 +61,7 @@ namespace libsemigroups {
     using element_index_type = size_type;
 
     //! Type for a left or right Cayley graph.
-    using cayley_graph_type = ActionDigraph<element_index_type>;
+    using cayley_graph_type = WordGraph<element_index_type>;
 
    private:
     // See comments in FroidurePin

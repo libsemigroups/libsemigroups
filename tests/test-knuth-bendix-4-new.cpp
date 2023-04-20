@@ -49,7 +49,7 @@
                                                //
 #include "libsemigroups/constants.hpp"         // for operator==, operator!=
 #include "libsemigroups/digraph-helper.hpp"    // for is_acyclic
-#include "libsemigroups/digraph.hpp"           // for ActionDigraph
+#include "libsemigroups/word-graph.hpp"           // for WordGraph
 #include "libsemigroups/exception.hpp"         // for LibsemigroupsException
 #include "libsemigroups/iterator.hpp"          // for operator+
 #include "libsemigroups/knuth-bendix-new.hpp"  // for KnuthBendix, normal_forms

@@ -28,7 +28,7 @@
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
 #include "libsemigroups/digraph-helper.hpp"  // for follow_path
-#include "libsemigroups/digraph.hpp"         // for ActionDigraph
+#include "libsemigroups/word-graph.hpp"         // for WordGraph
 #include "libsemigroups/forest.hpp"          // for Forest
 #include "libsemigroups/kbe.hpp"             // for KBE
 #include "libsemigroups/knuth-bendix.hpp"    // for KnuthBendix
@@ -42,7 +42,7 @@ namespace libsemigroups {
   struct LibsemigroupsException;  // forward decl
 
   namespace {
-    void add_clique(ActionDigraph<size_t>& digraph, size_t n) {
+    void add_clique(WordGraph<size_t>& digraph, size_t n) {
       if (n != digraph.out_degree()) {
         throw std::runtime_error("can't do it!");
       }
@@ -56,14 +56,14 @@ namespace libsemigroups {
       }
     }
 
-    ActionDigraph<size_t> clique(size_t n) {
-      ActionDigraph<size_t> g(0, n);
+    WordGraph<size_t> clique(size_t n) {
+      WordGraph<size_t> g(0, n);
       add_clique(g, n);
       return g;
     }
 
-    ActionDigraph<size_t> binary_tree(size_t number_of_levels) {
-      ActionDigraph<size_t> ad;
+    WordGraph<size_t> binary_tree(size_t number_of_levels) {
+      WordGraph<size_t> ad;
       ad.add_nodes(std::pow(2, number_of_levels) - 1);
       ad.add_to_out_degree(2);
       ad.add_edge(0, 1, 0);
@@ -81,31 +81,31 @@ namespace libsemigroups {
     }
   }  // namespace
 
-  LIBSEMIGROUPS_TEST_CASE("ActionDigraph",
+  LIBSEMIGROUPS_TEST_CASE("WordGraph",
                           "000",
                           "constructor with 1  default arg",
                           "[quick][digraph]") {
-    ActionDigraph<size_t> g;
+    WordGraph<size_t> g;
     REQUIRE(g.number_of_nodes() == 0);
     REQUIRE(g.number_of_edges() == 0);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("ActionDigraph",
+  LIBSEMIGROUPS_TEST_CASE("WordGraph",
                           "001",
                           "constructor with 0 default args",
                           "[quick][digraph]") {
     for (size_t j = 0; j < 100; ++j) {
-      ActionDigraph<size_t> g(j);
+      WordGraph<size_t> g(j);
       REQUIRE(g.number_of_nodes() == j);
       REQUIRE(g.number_of_edges() == 0);
     }
   }
 
-  LIBSEMIGROUPS_TEST_CASE("ActionDigraph",
+  LIBSEMIGROUPS_TEST_CASE("WordGraph",
                           "002",
                           "add nodes",
                           "[quick][digraph]") {
-    ActionDigraph<size_t> g(3);
+    WordGraph<size_t> g(3);
     REQUIRE(g.number_of_nodes() == 3);
     REQUIRE(g.number_of_edges() == 0);
 
@@ -115,11 +115,11 @@ namespace libsemigroups {
     }
   }
 
-  LIBSEMIGROUPS_TEST_CASE("ActionDigraph",
+  LIBSEMIGROUPS_TEST_CASE("WordGraph",
                           "003",
                           "add edges",
                           "[quick][digraph]") {
-    ActionDigraph<size_t> g(17, 31);
+    WordGraph<size_t> g(17, 31);
 
     for (size_t i = 0; i < 17; ++i) {
       for (size_t j = 0; j < 31; ++j) {
@@ -152,11 +152,11 @@ namespace libsemigroups {
     REQUIRE(g.number_of_nodes() == 17);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("ActionDigraph",
+  LIBSEMIGROUPS_TEST_CASE("WordGraph",
                           "008",
                           "exceptions",
                           "[quick][digraph]") {
-    ActionDigraph<size_t> graph(10, 5);
+    WordGraph<size_t> graph(10, 5);
     REQUIRE_THROWS_AS(graph.neighbor(10, 0), LibsemigroupsException);
     REQUIRE(graph.neighbor(0, 1) == UNDEFINED);
 
@@ -170,20 +170,20 @@ namespace libsemigroups {
     REQUIRE_NOTHROW(graph.add_edge(2, 2, 0));
   }
 
-  LIBSEMIGROUPS_TEST_CASE("ActionDigraph",
+  LIBSEMIGROUPS_TEST_CASE("WordGraph",
                           "014",
                           "random",
                           "[quick][digraph]") {
-    ActionDigraph<size_t> graph = ActionDigraph<size_t>::random(10, 10);
+    WordGraph<size_t> graph = WordGraph<size_t>::random(10, 10);
     REQUIRE(graph.number_of_nodes() == 10);
     REQUIRE(graph.number_of_edges() == 100);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("ActionDigraph",
+  LIBSEMIGROUPS_TEST_CASE("WordGraph",
                           "015",
                           "reserve",
                           "[quick][digraph]") {
-    ActionDigraph<size_t> graph;
+    WordGraph<size_t> graph;
     graph.reserve(10, 10);
     REQUIRE(graph.number_of_nodes() == 0);
     REQUIRE(graph.number_of_edges() == 0);
@@ -194,11 +194,11 @@ namespace libsemigroups {
     REQUIRE(graph.number_of_edges() == 0);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("ActionDigraph",
+  LIBSEMIGROUPS_TEST_CASE("WordGraph",
                           "016",
                           "default constructors",
                           "[quick][digraph]") {
-    auto g1 = ActionDigraph<size_t>();
+    auto g1 = WordGraph<size_t>();
     g1.add_to_out_degree(1);
     action_digraph_helper::add_cycle(g1, 10);
 
@@ -218,7 +218,7 @@ namespace libsemigroups {
     REQUIRE(g2.number_of_nodes() == 10);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("ActionDigraph",
+  LIBSEMIGROUPS_TEST_CASE("WordGraph",
                           "018",
                           "iterator to edges",
                           "[quick][digraph]") {
@@ -241,12 +241,12 @@ namespace libsemigroups {
     }
   }
 
-  LIBSEMIGROUPS_TEST_CASE("ActionDigraph",
+  LIBSEMIGROUPS_TEST_CASE("WordGraph",
                           "029",
                           "reverse node iterator",
                           "[quick]") {
-    using node_type = ActionDigraph<size_t>::node_type;
-    ActionDigraph<size_t> ad;
+    using node_type = WordGraph<size_t>::node_type;
+    WordGraph<size_t> ad;
     ad.add_nodes(10);
     REQUIRE(ad.number_of_nodes() == 10);
     REQUIRE(std::vector<node_type>(ad.cbegin_nodes(), ad.cend_nodes())
@@ -264,35 +264,35 @@ namespace libsemigroups {
             == std::vector<node_type>({9, 8, 7, 6, 5, 4, 3, 2, 1, 0}));
   }
 
-  LIBSEMIGROUPS_TEST_CASE("ActionDigraph",
+  LIBSEMIGROUPS_TEST_CASE("WordGraph",
                           "038",
                           "random/random_acyclic exceptions",
                           "[quick]") {
     // Too few nodes
-    REQUIRE_THROWS_AS(ActionDigraph<size_t>::random(0, 0, 0),
+    REQUIRE_THROWS_AS(WordGraph<size_t>::random(0, 0, 0),
                       LibsemigroupsException);
-    REQUIRE_THROWS_AS(ActionDigraph<size_t>::random_acyclic(0, 0, 0),
+    REQUIRE_THROWS_AS(WordGraph<size_t>::random_acyclic(0, 0, 0),
                       LibsemigroupsException);
     // Out degree too low
-    REQUIRE_THROWS_AS(ActionDigraph<size_t>::random(2, 0, 0),
+    REQUIRE_THROWS_AS(WordGraph<size_t>::random(2, 0, 0),
                       LibsemigroupsException);
-    REQUIRE_THROWS_AS(ActionDigraph<size_t>::random_acyclic(2, 0, 0),
+    REQUIRE_THROWS_AS(WordGraph<size_t>::random_acyclic(2, 0, 0),
                       LibsemigroupsException);
     // Number of edges too high
-    REQUIRE_THROWS_AS(ActionDigraph<size_t>::random(2, 2, 5),
+    REQUIRE_THROWS_AS(WordGraph<size_t>::random(2, 2, 5),
                       LibsemigroupsException);
-    REQUIRE_THROWS_AS(ActionDigraph<size_t>::random_acyclic(2, 2, 5),
+    REQUIRE_THROWS_AS(WordGraph<size_t>::random_acyclic(2, 2, 5),
                       LibsemigroupsException);
     // Number of edges = 0
-    auto ad = ActionDigraph<size_t>::random(2, 2, 0);
+    auto ad = WordGraph<size_t>::random(2, 2, 0);
     REQUIRE(ad.number_of_edges() == 0);
-    ad = ActionDigraph<size_t>::random_acyclic(2, 2, 0);
+    ad = WordGraph<size_t>::random_acyclic(2, 2, 0);
     REQUIRE(ad.number_of_edges() == 0);
-    ad = ActionDigraph<size_t>::random_acyclic(10, 10, 41);
+    ad = WordGraph<size_t>::random_acyclic(10, 10, 41);
     REQUIRE(ad.number_of_edges() == 41);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("ActionDigraph",
+  LIBSEMIGROUPS_TEST_CASE("WordGraph",
                           "039",
                           "unsafe (next) neighbour",
                           "[quick]") {
@@ -301,7 +301,7 @@ namespace libsemigroups {
     REQUIRE(ad.unsafe_next_neighbor(0, 1) == ad.next_neighbor(0, 1));
   }
 
-  LIBSEMIGROUPS_TEST_CASE("ActionDigraph",
+  LIBSEMIGROUPS_TEST_CASE("WordGraph",
                           "040",
                           "number_of_egdes incident to a node",
                           "[quick]") {
@@ -314,8 +314,8 @@ namespace libsemigroups {
         == 511);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("ActionDigraph", "011", "restrict", "[quick]") {
-    ActionDigraph<size_t> ad;
+  LIBSEMIGROUPS_TEST_CASE("WordGraph", "011", "restrict", "[quick]") {
+    WordGraph<size_t> ad;
     ad.add_nodes(3);
     ad.add_to_out_degree(2);
     ad.add_edge(0, 1, 0);
@@ -326,8 +326,8 @@ namespace libsemigroups {
     REQUIRE(ad == to_action_digraph<size_t>(2, {{1, UNDEFINED}, {0}}));
   }
 
-  LIBSEMIGROUPS_TEST_CASE("ActionDigraph", "012", "remove_edge_nc", "[quick]") {
-    ActionDigraph<size_t> ad;
+  LIBSEMIGROUPS_TEST_CASE("WordGraph", "012", "remove_edge_nc", "[quick]") {
+    WordGraph<size_t> ad;
     ad.add_nodes(3);
     ad.add_to_out_degree(2);
     ad.add_edge(0, 1, 0);
@@ -339,8 +339,8 @@ namespace libsemigroups {
         ad == to_action_digraph<size_t>(3, {{UNDEFINED, UNDEFINED}, {0}, {0}}));
   }
 
-  LIBSEMIGROUPS_TEST_CASE("ActionDigraph", "043", "swap_edge_nc", "[quick]") {
-    ActionDigraph<size_t> ad;
+  LIBSEMIGROUPS_TEST_CASE("WordGraph", "043", "swap_edge_nc", "[quick]") {
+    WordGraph<size_t> ad;
     ad.add_nodes(3);
     ad.add_to_out_degree(2);
     ad.add_edge(0, 1, 0);
@@ -352,8 +352,8 @@ namespace libsemigroups {
     REQUIRE(ad == to_action_digraph<size_t>(3, {{0, UNDEFINED}, {1}, {2}}));
   }
 
-  LIBSEMIGROUPS_TEST_CASE("ActionDigraph", "045", "operator<<", "[quick]") {
-    ActionDigraph<size_t> ad;
+  LIBSEMIGROUPS_TEST_CASE("WordGraph", "045", "operator<<", "[quick]") {
+    WordGraph<size_t> ad;
     ad.add_nodes(3);
     ad.add_to_out_degree(2);
     ad.add_edge(0, 1, 0);

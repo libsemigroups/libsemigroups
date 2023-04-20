@@ -36,7 +36,7 @@
 #include "libsemigroups/config.hpp"             // for LIBSEMIGROUPS_EIGEN_E...
 #include "libsemigroups/constants.hpp"          // for operator!=, operator==
 #include "libsemigroups/digraph-helper.hpp"     // for is_acyclic, node_type
-#include "libsemigroups/digraph.hpp"            // for ActionDigraph, make, pow
+#include "libsemigroups/word-graph.hpp"            // for WordGraph, make, pow
 #include "libsemigroups/exception.hpp"          // for LibsemigroupsException
 #include "libsemigroups/froidure-pin-base.hpp"  // for FroidurePinBase
 #include "libsemigroups/iterator.hpp"           // for operator+
@@ -61,7 +61,7 @@ namespace libsemigroups {
   struct LibsemigroupsException;  // forward decl
 
   namespace {
-    void add_chain(ActionDigraph<size_t>& digraph, size_t n) {
+    void add_chain(WordGraph<size_t>& digraph, size_t n) {
       size_t old_nodes = digraph.number_of_nodes();
       digraph.add_nodes(n);
       for (size_t i = old_nodes; i < digraph.number_of_nodes() - 1; ++i) {
@@ -69,14 +69,14 @@ namespace libsemigroups {
       }
     }
 
-    ActionDigraph<size_t> chain(size_t n) {
-      ActionDigraph<size_t> g(0, 1);
+    WordGraph<size_t> chain(size_t n) {
+      WordGraph<size_t> g(0, 1);
       add_chain(g, n);
       return g;
     }
 
-    ActionDigraph<size_t> binary_tree(size_t number_of_levels) {
-      ActionDigraph<size_t> ad;
+    WordGraph<size_t> binary_tree(size_t number_of_levels) {
+      WordGraph<size_t> ad;
       ad.add_nodes(std::pow(2, number_of_levels) - 1);
       ad.add_to_out_degree(2);
       ad.add_edge(0, 1, 0);
@@ -95,7 +95,7 @@ namespace libsemigroups {
   }  // namespace
 
   LIBSEMIGROUPS_TEST_CASE("Paths", "000", "100 node path", "[quick]") {
-    ActionDigraph<size_t> ad;
+    WordGraph<size_t> ad;
     size_t const          n = 100;
     ad.add_nodes(n);
     ad.add_to_out_degree(2);
@@ -181,7 +181,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Paths", "002", "100 node cycle", "[quick]") {
-    ActionDigraph<size_t> ad;
+    WordGraph<size_t> ad;
     ad.add_to_out_degree(1);
     action_digraph_helper::add_cycle(ad, 100);
 
@@ -197,7 +197,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("Paths", "003", "#2", "[quick]") {
     using namespace rx;
 
-    ActionDigraph<size_t> ad = to_action_digraph<size_t>(
+    WordGraph<size_t> ad = to_action_digraph<size_t>(
         15, {{1, 2}, {3, 4}, {5, 6}, {7, 8}, {9, 10}, {11, 12}, {13, 14}});
 
     Paths p(ad);
@@ -381,7 +381,7 @@ namespace libsemigroups {
     REQUIRE(kb.number_of_classes() == 9);
     auto S = to_froidure_pin(kb);
 
-    ActionDigraph<size_t> ad(S.right_cayley_graph());
+    WordGraph<size_t> ad(S.right_cayley_graph());
     ad.add_nodes(1);
 
     REQUIRE(ad.number_of_nodes() == 10);
@@ -617,7 +617,7 @@ namespace libsemigroups {
     p.min(4);
     REQUIRE((p | count()) == 0);
 
-    ad = ActionDigraph<size_t>();
+    ad = WordGraph<size_t>();
     ad.add_to_out_degree(1);
     action_digraph_helper::add_cycle(ad, 5);
 
@@ -641,7 +641,7 @@ namespace libsemigroups {
                           "010",
                           "number_of_paths corner cases",
                           "[quick]") {
-    ActionDigraph<size_t> ad;
+    WordGraph<size_t> ad;
     REQUIRE_THROWS_AS(number_of_paths(ad, 0, 0, POSITIVE_INFINITY),
                       LibsemigroupsException);
     size_t const n = 20;
@@ -779,9 +779,9 @@ namespace libsemigroups {
                           "012",
                           "number_of_paths binary tree",
                           "[quick][no-valgrind]") {
-    using node_type          = ActionDigraph<size_t>::node_type;
+    using node_type          = WordGraph<size_t>::node_type;
     size_t const          n  = 6;
-    ActionDigraph<size_t> ad = binary_tree(n);
+    WordGraph<size_t> ad = binary_tree(n);
     REQUIRE(ad.number_of_nodes() == std::pow(2, n) - 1);
     REQUIRE(ad.number_of_edges() == std::pow(2, n) - 2);
     REQUIRE(action_digraph_helper::is_acyclic(ad));
@@ -822,7 +822,7 @@ namespace libsemigroups {
                           "number_of_paths large binary tree",
                           "[quick][no-valgrind]") {
     size_t const          n  = 20;
-    ActionDigraph<size_t> ad = binary_tree(n);
+    WordGraph<size_t> ad = binary_tree(n);
     REQUIRE(ad.number_of_nodes() == std::pow(2, n) - 1);
     REQUIRE(ad.number_of_edges() == std::pow(2, n) - 2);
     REQUIRE(action_digraph_helper::is_acyclic(ad));
@@ -845,7 +845,7 @@ namespace libsemigroups {
                           "number_of_paths 400 node random digraph",
                           "[quick]") {
     size_t const n  = 400;
-    auto         ad = ActionDigraph<size_t>::random(n, 20, n, std::mt19937());
+    auto         ad = WordGraph<size_t>::random(n, 20, n, std::mt19937());
     action_digraph_helper::add_cycle(ad, ad.cbegin_nodes(), ad.cend_nodes());
     REQUIRE(!action_digraph_helper::is_acyclic(ad));
     REQUIRE(!ad.validate());
@@ -858,11 +858,11 @@ namespace libsemigroups {
                           "number_of_paths 10 node acyclic digraph",
                           "[quick]") {
     // size_t const n  = 10;
-    // auto ad = ActionDigraph<size_t>::random_acyclic(n, 20, n,
+    // auto ad = WordGraph<size_t>::random_acyclic(n, 20, n,
     // std::mt19937()); std::cout <<
     // action_digraph_helper::detail::to_string(ad);
 
-    ActionDigraph<size_t> ad;
+    WordGraph<size_t> ad;
     ad.add_nodes(10);
     ad.add_to_out_degree(20);
     ad.add_edge(0, 7, 5);
@@ -892,7 +892,7 @@ namespace libsemigroups {
                           "number_of_paths node digraph",
                           "[quick]") {
     size_t const n = 10;
-    // auto         ad = ActionDigraph<size_t>::random(n, 20, 200,
+    // auto         ad = WordGraph<size_t>::random(n, 20, 200,
     // std::mt19937());
     // std::cout << action_digraph_helper::detail::to_string(ad);
     auto ad = to_action_digraph<size_t>(
@@ -941,7 +941,7 @@ namespace libsemigroups {
                           "number_of_paths (matrix)",
                           "[quick]") {
     // REQUIRE(detail::magic_number(6) * 6 == 14.634);
-    // auto ad = ActionDigraph<size_t>::random(6, 3, 15, std::mt19937());
+    // auto ad = WordGraph<size_t>::random(6, 3, 15, std::mt19937());
     // std::cout << action_digraph_helper::detail::to_string(ad);
     auto ad = to_action_digraph<size_t>(6,
                                         {{0, 3, 4},
@@ -1005,7 +1005,7 @@ namespace libsemigroups {
                           "018",
                           "number_of_paths (matrix)",
                           "[quick]") {
-    ActionDigraph<size_t> ad;
+    WordGraph<size_t> ad;
     ad.add_nodes(2);
     ad.add_to_out_degree(2);
     ad.add_edge(0, 1, 0);

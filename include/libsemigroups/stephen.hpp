@@ -28,7 +28,7 @@
 
 #include "constants.hpp"             // for PositiveInfinity
 #include "digraph-with-sources.hpp"  // for DigraphWithSources
-#include "digraph.hpp"               // for ActionDigraph, Act...
+#include "word-graph.hpp"               // for WordGraph, Act...
 #include "paths.hpp"                 // for Paths
 #include "present.hpp"               // for Presentation
 #include "runner.hpp"                // for Runner
@@ -43,7 +43,7 @@ namespace libsemigroups {
   //! On this page we describe the functionality in ``libsemigroups`` relating
   //! to Stephen's procedure for finitely presented semigroups. This class
   //! implements Stephen's procedure for (possibly) constructing the word graph
-  //! (ActionDigraph) corresponding to the left factors of a word in a finitely
+  //! (WordGraph) corresponding to the left factors of a word in a finitely
   //! presented semigroup. The algorithm implemented in this class is closely
   //! related to the Todd-Coxeter algorithm  (as implemented in \ref
   //! congruence::ToddCoxeter) and originates in
@@ -54,7 +54,7 @@ namespace libsemigroups {
 
    public:
     //! The return type of the function \ref word_graph.
-    using digraph_type = ActionDigraph<size_t>;
+    using digraph_type = WordGraph<size_t>;
 
     //! The type of the nodes of a \ref digraph_type.
     using node_type = typename digraph_type::node_type;
@@ -255,11 +255,11 @@ namespace libsemigroups {
 
     //! The return type of \ref cbegin_words_accepted and \ref
     //! cend_words_accepted. This is the same as
-    //! \ref ActionDigraph::const_pstislo_iterator.
+    //! \ref WordGraph::const_pstislo_iterator.
     using const_iterator_words_accepted = const_pstislo_iterator<node_type>;
 
     //! The return type of \ref cbegin_left_factors and \ref cend_left_factors.
-    //! This is the same as \ref ActionDigraph::const_pislo_iterator.
+    //! This is the same as \ref WordGraph::const_pislo_iterator.
     using const_iterator_left_factors = const_pislo_iterator<node_type>;
 
     //! Check if a word is equivalent to Stephen::word.
@@ -325,7 +325,7 @@ namespace libsemigroups {
     //! a finitely presented semigroup is undecidable in general, and this
     //! function may never terminate.
     //!
-    //! \sa ActionDigraph::cbegin_pstislo for more information about the
+    //! \sa WordGraph::cbegin_pstislo for more information about the
     //! iterators returned by this function.
     const_iterator_words_accepted cbegin_words_accepted(Stephen& s,
                                                         size_t   min = 0,
@@ -369,7 +369,7 @@ namespace libsemigroups {
     //! another word in a finitely presented semigroup is undecidable in
     //! general, and this function may never terminate.
     //!
-    //! \sa ActionDigraph::cbegin_pislo for more information about the
+    //! \sa WordGraph::cbegin_pislo for more information about the
     //! iterators returned by this function.
     // Not noexcept because cbegin_pislo isn't
     const_iterator_left_factors cbegin_left_factors(Stephen& s,
@@ -411,7 +411,7 @@ namespace libsemigroups {
     //! the construction of \p s or with Stephen::init.
     //!
     //!
-    //! \sa ActionDigraph::number_of_paths.
+    //! \sa WordGraph::number_of_paths.
     // Not noexcept because number_of_paths isn't
     uint64_t number_of_words_accepted(Stephen& s,
                                       size_t   min = 0,
@@ -441,7 +441,7 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if no presentation was set at
     //! the construction of \p s or with Stephen::init.
     //!
-    //! \sa ActionDigraph::number_of_paths.
+    //! \sa WordGraph::number_of_paths.
     //!
     //! \throws LibsemigroupsException if no presentation was set at
     //! construction or with Stephen::init.

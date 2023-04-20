@@ -34,7 +34,7 @@
 #include <vector>       // for vector
 
 #include "digraph-with-sources.hpp"  // for DigraphWithSources
-#include "digraph.hpp"               // for ActionDigraph
+#include "word-graph.hpp"               // for WordGraph
 #include "felsch-digraph.hpp"
 #include "node-manager.hpp"  // for NodeManager
 #include "present.hpp"       // for Presentation, Presentation<>:...
@@ -94,15 +94,15 @@ namespace libsemigroups {
     // TODO corresponding init + rvalue ref version
     // TODO this should be marked explicit but then compilation fails
     template <typename N>
-    NodeManagedDigraph(ActionDigraph<N> const& ad)
+    NodeManagedDigraph(WordGraph<N> const& ad)
         : BaseDigraph(ad), NodeManager_() {
       // NodeManager always has one node active
-      NodeManager_::add_active_nodes(ActionDigraph<node_type>::number_of_nodes()
+      NodeManager_::add_active_nodes(WordGraph<node_type>::number_of_nodes()
                                      - 1);
     }
 
-    bool operator==(ActionDigraph<node_type> const& that) const {
-      return static_cast<ActionDigraph<node_type> const&>(*this) == that;
+    bool operator==(WordGraph<node_type> const& that) const {
+      return static_cast<WordGraph<node_type> const&>(*this) == that;
     }
 
     NodeManagedDigraph& set_prefix(std::string const& val) {
@@ -219,6 +219,13 @@ namespace libsemigroups {
       return *this;
     }
   };
+
+  namespace detail {
+    template <>
+    struct  IsWordGraphHelper<StephenDigraph> {
+
+    };
+  }
 
 }  // namespace libsemigroups
 #endif  // LIBSEMIGROUPS_TODD_COXETER_DIGRAPH_HPP_

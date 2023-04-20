@@ -265,7 +265,7 @@ namespace libsemigroups {
           if (v != UNDEFINED) {
             node_type const u = unsafe_neighbor(min, i);
             if (u == UNDEFINED) {
-              ActionDigraph<node_type>::add_edge_nc(min, v, i);
+              WordGraph<node_type>::add_edge_nc(min, v, i);
             } else if (u != v) {
               _coinc.emplace(u, v);
             }
@@ -301,7 +301,7 @@ namespace libsemigroups {
             if constexpr (RegisterDefs) {
               this->definitions().emplace_back(c, x);
             }
-            ActionDigraph<node_type>::add_edge_nc(c, d, x);
+            WordGraph<node_type>::add_edge_nc(c, d, x);
           }
           // Must re-add the source, even if we don't need to reset
           // the target or stack the deduction

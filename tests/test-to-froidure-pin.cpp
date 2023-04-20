@@ -26,7 +26,7 @@
 
 #include "libsemigroups/constants.hpp"          // for UNDEFINED
 #include "libsemigroups/digraph-helper.hpp"     // for make
-#include "libsemigroups/digraph.hpp"            // for ActionDigraph
+#include "libsemigroups/word-graph.hpp"            // for WordGraph
 #include "libsemigroups/froidure-pin.hpp"       // for FroidurePin, Froidure...
 #include "libsemigroups/to-froidure-pin.hpp"  // for make
 #include "libsemigroups/report.hpp"             // for ReportGuard
@@ -36,7 +36,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("to_froidure_pin<Transf>",
                           "000",
-                          "from ActionDigraph",
+                          "from WordGraph",
                           "[quick][make]") {
     auto rg = ReportGuard(false);
     auto ad = to_action_digraph<uint8_t>(
@@ -56,7 +56,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("to_froidure_pin<Transf>",
                           "001",
-                          "from ActionDigraph (exceptions)",
+                          "from WordGraph (exceptions)",
                           "[quick][make]") {
     auto rg = ReportGuard(false);
     auto ad = to_action_digraph<uint8_t>(

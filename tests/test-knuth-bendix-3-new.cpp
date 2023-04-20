@@ -42,7 +42,7 @@
 #include "test-main.hpp"                       // for LIBSEMIGROUPS_TEST_CASE
                                                //
 #include "libsemigroups/constants.hpp"         // for operator==, PositiveIn...
-#include "libsemigroups/digraph.hpp"           // for ActionDigraph
+#include "libsemigroups/word-graph.hpp"           // for WordGraph
 #include "libsemigroups/exception.hpp"         // for LibsemigroupsException
 #include "libsemigroups/iterator.hpp"          // for operator+
 #include "libsemigroups/knuth-bendix-new.hpp"  // for KnuthBendix, normal_forms

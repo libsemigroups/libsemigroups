@@ -61,7 +61,7 @@
 #include "constants.hpp"          // for UNDEFINED
 #include "debug.hpp"              // for LIBSEMIGROUPS_ASSERT
 #include "deprecated.hpp"         // for LIBSEMIGROUPS_DEPRECATED
-#include "digraph.hpp"            // for ActionDigraph
+#include "word-graph.hpp"            // for WordGraph
 #include "exception.hpp"          // for LIBSEMIGROUPS_EXCEPTION
 #include "felsch-digraph.hpp"     // for FelschDigraph
 #include "froidure-pin.hpp"       // for FroidurePin
@@ -89,7 +89,7 @@ namespace libsemigroups {
     //! The maximum number of pending definitions.
     //!
     //! A *pending definition* is just an edge that will be defined at some
-    //! point in the future in the ActionDigraph represented by a Sims1
+    //! point in the future in the WordGraph represented by a Sims1
     //! instance at any given moment.
     //!
     //! This member tracks the maximum number of such pending definitions that
@@ -99,7 +99,7 @@ namespace libsemigroups {
     //! The total number of pending definitions.
     //!
     //! A *pending definition* is just an edge that will be defined at some
-    //! point in the future in the ActionDigraph represented by a Sims1
+    //! point in the future in the WordGraph represented by a Sims1
     //! instance at any given moment.
     //!
     //! This member tracks the total number of pending definitions that
@@ -498,27 +498,27 @@ namespace libsemigroups {
   //! one-sided congruences of a semigroup or monoid defined by a presentation
   //! containing (a possibly empty) set of pairs and with at most a given
   //! number of classes. An iterator returned by \ref cbegin points at an
-  //! ActionDigraph instance containing the action of the semigroup or monoid
+  //! WordGraph instance containing the action of the semigroup or monoid
   //! on the classes of a congruence.
   // TODO(v3) remove the template T here
   template <typename T>
   class Sims1 : public Sims1Settings<Sims1<T>> {
    public:
-    //! Type for the nodes in the associated ActionDigraph objects.
+    //! Type for the nodes in the associated WordGraph objects.
     using node_type  = T;
-    using label_type = typename ActionDigraph<node_type>::label_type;
+    using label_type = typename WordGraph<node_type>::label_type;
 
     //! Type for letters in the underlying presentation.
     using letter_type = typename word_type::value_type;
 
-    //! The size_type of the associated ActionDigraph objects.
-    using size_type = typename ActionDigraph<node_type>::size_type;
+    //! The size_type of the associated WordGraph objects.
+    using size_type = typename WordGraph<node_type>::size_type;
 
-    // We use ActionDigraph, even though the iterators produced by this class
+    // We use WordGraph, even though the iterators produced by this class
     // hold FelschDigraph's, none of the features of FelschDigraph are useful
     // for the output, only for the implementation
-    //! The type of the associated ActionDigraph objects.
-    using digraph_type = ActionDigraph<node_type>;
+    //! The type of the associated WordGraph objects.
+    using digraph_type = WordGraph<node_type>;
 
    private:
     congruence_kind _kind;
@@ -818,7 +818,7 @@ namespace libsemigroups {
 
     //! Returns a forward iterator pointing at the first congruence.
     //!
-    //! Returns a forward iterator pointing to the ActionDigraph representing
+    //! Returns a forward iterator pointing to the WordGraph representing
     //! the first congruence described by Sims1 object with at most \p n
     //! classes.
     //!
@@ -826,30 +826,30 @@ namespace libsemigroups {
     //! The order which the congruences are returned in is implementation
     //! specific. Iterators of the type returned by this function are equal
     //! whenever they point to equal objects. The iterator is exhausted if and
-    //! only if it points to an ActionDigraph with zero nodes.
+    //! only if it points to an WordGraph with zero nodes.
     //!
-    //! The meaning of the ActionDigraph pointed at by Sims1 iterators depends
+    //! The meaning of the WordGraph pointed at by Sims1 iterators depends
     //! on whether the input is a monoid presentation (i.e.
     //! Presentation::contains_empty_word() returns \c true) or a semigroup
     //! presentation. If the input is a monoid presentation for a monoid
-    //! \f$M\f$, then the ActionDigraph pointed to by an iterator of this type
+    //! \f$M\f$, then the WordGraph pointed to by an iterator of this type
     //! has precisely \p n nodes, and the right action of \f$M\f$ on the nodes
     //! of the digraph is isomorphic to the action of \f$M\f$ on the classes
     //! of a right congruence.
     //!
     //! If the input is a semigroup presentation for a semigroup \f$S\f$, then
-    //! the ActionDigraph has \p n + 1 nodes, and the right action of \f$S\f$
-    //! on the nodes \f$\{1, \ldots, n\}\f$ of the ActionDigraph is isomorphic
+    //! the WordGraph has \p n + 1 nodes, and the right action of \f$S\f$
+    //! on the nodes \f$\{1, \ldots, n\}\f$ of the WordGraph is isomorphic
     //! to the action of \f$S\f$ on the classes of a right congruence. It'd
     //! probably be better in this case if node \f$0\f$ was not included in
-    //! the output ActionDigraph, but it is required in the implementation of
+    //! the output WordGraph, but it is required in the implementation of
     //! the low-index congruence algorithm, and to avoid unnecessary copies,
     //! we've left it in for the time being. \param n the maximum number of
     //! classes in a congruence.
     //!
     //! \returns
     //! An iterator \c it of type \c iterator pointing to an
-    //! ActionDigraph with at most \p n nodes.
+    //! WordGraph with at most \p n nodes.
     //!
     //! \throws LibsemigroupsException if \p n is \c 0.
     //! \throws LibsemigroupsException if `short_rules()` has 0-generators and
@@ -877,15 +877,15 @@ namespace libsemigroups {
 
     //! Returns a forward iterator pointing one beyond the last congruence.
     //!
-    //! Returns a forward iterator pointing to the empty ActionDigraph.
+    //! Returns a forward iterator pointing to the empty WordGraph.
     //! If incremented, the returned iterator remains valid and continues to
-    //! point at the empty ActionDigraph.
+    //! point at the empty WordGraph.
     //!
     //! \param n the maximum number of classes in a congruence.
     //!
     //! \returns
     //! An iterator \c it of type \c iterator pointing to an
-    //! ActionDigraph with at most \p 0 nodes.
+    //! WordGraph with at most \p 0 nodes.
     //!
     //! \throws LibsemigroupsException if \p n is \c 0.
     //! \throws LibsemigroupsException if `short_rules()` has 0-generators and
@@ -964,7 +964,7 @@ namespace libsemigroups {
     //! \param n the maximum number of congruence classes.
     //! \param pred the predicate applied to every congruence found.
     //!
-    //! \returns The first congruence whose ActionDigraph for which \p pred
+    //! \returns The first congruence whose WordGraph for which \p pred
     //! returns \c true.
     //!
     //! \throws LibsemigroupsException if \p n is \c 0.
@@ -1006,16 +1006,16 @@ namespace libsemigroups {
   //! Defined in ``sims1.hpp``.
   //!
   //! This class is a helper for `Sims1` calling the `digraph` member function
-  //! attempts to find a right congruence, represented as an ActionDigraph, of
+  //! attempts to find a right congruence, represented as an WordGraph, of
   //! the semigroup or monoid defined by the presentation consisting of its
   //! \ref short_rules and \ref long_rules with the following properties:
-  //! * the transformation semigroup defined by the ActionDigraph has size
+  //! * the transformation semigroup defined by the WordGraph has size
   //! \ref
   //!   target_size;
-  //! * the number of nodes in the ActionDigraph is at least \ref min_nodes
+  //! * the number of nodes in the WordGraph is at least \ref min_nodes
   //!   and at most \ref max_nodes.
   //!
-  //! If no such ActionDigraph can be found, then an empty ActionDigraph is
+  //! If no such WordGraph can be found, then an empty WordGraph is
   //! returned (with `0` nodes and `0` edges).
   class RepOrc : public Sims1Settings<RepOrc> {
    private:
@@ -1045,7 +1045,7 @@ namespace libsemigroups {
 
     //! Set the minimum number of nodes.
     //!
-    //! This function sets the minimal number of nodes in the ActionDigraph
+    //! This function sets the minimal number of nodes in the WordGraph
     //! that we are seeking.
     //!
     //! \param val the minimum number of nodes
@@ -1062,7 +1062,7 @@ namespace libsemigroups {
     //! The current minimum number of nodes.
     //!
     //! This function returns the current value for the minimum number of
-    //! nodes in the ActionDigraph that we are seeking.
+    //! nodes in the WordGraph that we are seeking.
     //!
     //! \param (None) this function has no parameters.
     //!
@@ -1076,7 +1076,7 @@ namespace libsemigroups {
 
     //! Set the maximum number of nodes.
     //!
-    //! This function sets the maximum number of nodes in the ActionDigraph
+    //! This function sets the maximum number of nodes in the WordGraph
     //! that we are seeking.
     //!
     //! \param val the maximum number of nodes
@@ -1093,7 +1093,7 @@ namespace libsemigroups {
     //! The current maximum number of nodes.
     //!
     //! This function returns the current value for the maximum number of
-    //! nodes in the ActionDigraph that we are seeking.
+    //! nodes in the WordGraph that we are seeking.
     //!
     //! \param (None) this function has no parameters.
     //!
@@ -1108,7 +1108,7 @@ namespace libsemigroups {
     //! Set the target size.
     //!
     //! This function sets the target size, i.e. the desired size of the
-    //! transformation semigroup corresponding to the ActionDigraph returned
+    //! transformation semigroup corresponding to the WordGraph returned
     //! by the function \ref digraph.
     //!
     //! \param val the target size.
@@ -1126,7 +1126,7 @@ namespace libsemigroups {
     //!
     //! This function returns the current value for the target size, i.e. the
     //! desired size of the transformation semigroup corresponding to the
-    //! ActionDigraph returned by the function \ref digraph.
+    //! WordGraph returned by the function \ref digraph.
     //!
     //! \param (None) this function has no parameters.
     //!
@@ -1141,15 +1141,15 @@ namespace libsemigroups {
     //! Get the digraph.
     //!
     //! This function attempts to find a right congruence, represented as an
-    //! ActionDigraph, of the semigroup or monoid defined by the presentation
+    //! WordGraph, of the semigroup or monoid defined by the presentation
     //! consisting of its \ref short_rules and \ref long_rules with the
     //! following properties:
-    //! * the transformation semigroup defined by the ActionDigraph has size
+    //! * the transformation semigroup defined by the WordGraph has size
     //! \ref target_size;
-    //! * the number of nodes in the ActionDigraph is at least \ref min_nodes
+    //! * the number of nodes in the WordGraph is at least \ref min_nodes
     //!   and at most \ref max_nodes.
     //!
-    //! If no such ActionDigraph can be found, then an empty ActionDigraph is
+    //! If no such WordGraph can be found, then an empty WordGraph is
     //! returned (with `0` nodes and `0` edges).
     //!
     //! \warning The return value of this function is recomputed every time it
@@ -1162,11 +1162,11 @@ namespace libsemigroups {
     //! \tparam T the type of the nodes in the returned digraph.
     //! \param (None) this function has no parameters.
     //!
-    //! \returns A value of type `ActionDigraph`.
+    //! \returns A value of type `WordGraph`.
     //!
     //! \exceptions \no_libsemigroups_except
     template <typename T = uint32_t>
-    ActionDigraph<T> digraph() const;
+    WordGraph<T> digraph() const;
 
     using Sims1Settings<RepOrc>::short_rules;
     using Sims1Settings<RepOrc>::long_rules;
@@ -1176,12 +1176,12 @@ namespace libsemigroups {
   //!
   //! This class is a helper for `Sims1`, calling the `digraph` member
   //! function attempts to find a right congruence, represented as an
-  //! ActionDigraph, with the minimum possible number of nodes such that the
+  //! WordGraph, with the minimum possible number of nodes such that the
   //! action of the semigroup or monoid defined by the presentation consisting
   //! of its \ref short_rules and \ref long_rules on the nodes of the
-  //! ActionDigraph corresponds to a semigroup of size \ref target_size.
+  //! WordGraph corresponds to a semigroup of size \ref target_size.
   //!
-  //! If no such ActionDigraph can be found, then an empty ActionDigraph is
+  //! If no such WordGraph can be found, then an empty WordGraph is
   //! returned (with `0` nodes and `0` edges).
   class MinimalRepOrc : public Sims1Settings<MinimalRepOrc> {
    private:
@@ -1198,7 +1198,7 @@ namespace libsemigroups {
     //! Set the target size.
     //!
     //! This function sets the target size, i.e. the desired size of the
-    //! transformation semigroup corresponding to the ActionDigraph returned
+    //! transformation semigroup corresponding to the WordGraph returned
     //! by the function \ref digraph.
     //!
     //! \param val the target size.
@@ -1216,7 +1216,7 @@ namespace libsemigroups {
     //!
     //! This function returns the current value for the target size, i.e. the
     //! desired size of the transformation semigroup corresponding to the
-    //! ActionDigraph returned by the function \ref digraph.
+    //! WordGraph returned by the function \ref digraph.
     //!
     //! \param (None) this function has no parameters.
     //!
@@ -1231,12 +1231,12 @@ namespace libsemigroups {
     //! Get the digraph.
     //!
     //! This function attempts to find a right congruence, represented as an
-    //! ActionDigraph, with the minimum possible number of nodes such that the
+    //! WordGraph, with the minimum possible number of nodes such that the
     //! action of the semigroup or monoid defined by the presentation
     //! consisting of its \ref short_rules and \ref long_rules on the nodes of
-    //! the ActionDigraph corresponds to a semigroup of size \ref target_size.
+    //! the WordGraph corresponds to a semigroup of size \ref target_size.
     //!
-    //! If no such ActionDigraph can be found, then an empty ActionDigraph is
+    //! If no such WordGraph can be found, then an empty WordGraph is
     //! returned (with `0` nodes and `0` edges).
     //!
     //! The algorithm implemented by this function repeatedly runs:
@@ -1248,7 +1248,7 @@ namespace libsemigroups {
     //!     .digraph();
     //! \endcode
     //! where `best` is initially \ref target_size, until the returned
-    //! ActionDigraph is empty, and then the penultimate ActionDigraph is
+    //! WordGraph is empty, and then the penultimate WordGraph is
     //! returned (if any).
     //!
     //! \warning The return value of this function is recomputed every time it
@@ -1261,11 +1261,11 @@ namespace libsemigroups {
     //! \tparam T the type of the nodes in the returned digraph.
     //! \param (None) this function has no parameters.
     //!
-    //! \returns A value of type `ActionDigraph`.
+    //! \returns A value of type `WordGraph`.
     //!
     //! \exceptions \no_libsemigroups_except
     template <typename T = uint32_t>
-    ActionDigraph<T> digraph() const;
+    WordGraph<T> digraph() const;
   };
 
 }  // namespace libsemigroups

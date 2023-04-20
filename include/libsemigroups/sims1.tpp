@@ -910,7 +910,7 @@ namespace libsemigroups {
   ////////////////////////////////////////////////////////////////////////
 
   template <typename T>
-  ActionDigraph<T> RepOrc::digraph() const {
+  WordGraph<T> RepOrc::digraph() const {
     using digraph_type = typename Sims1<T>::digraph_type;
     using node_type    = typename digraph_type::node_type;
     REPORT_DEFAULT(
@@ -922,7 +922,7 @@ namespace libsemigroups {
           "no faithful rep. o.r.c. exists in [%llu, %llu) = \u2205\n",
           _min,
           _max + 1);
-      return ActionDigraph<T>(0, 0);
+      return WordGraph<T>(0, 0);
     }
 
     report::suppress("FroidurePin");
@@ -990,7 +990,7 @@ namespace libsemigroups {
   // doesn't construct a FroidurePin object for these). So, it seems to be
   // best to just search through the digraphs with [1, 57) nodes once.
   template <typename T>
-  ActionDigraph<T> MinimalRepOrc::digraph() const {
+  WordGraph<T> MinimalRepOrc::digraph() const {
     auto cr = RepOrc(*this);
 
     size_t hi   = (short_rules().contains_empty_word() ? _size : _size + 1);
@@ -1004,7 +1004,7 @@ namespace libsemigroups {
     }
 
     hi                    = best.number_of_nodes();
-    ActionDigraph<T> next = cr.max_nodes(hi - 1).digraph();
+    WordGraph<T> next = cr.max_nodes(hi - 1).digraph();
     while (next.number_of_nodes() != 0) {
       hi   = next.number_of_nodes();
       best = std::move(next);

@@ -84,7 +84,7 @@ namespace libsemigroups {
   template <typename Word, typename Node, typename Definitions>
   template <typename M>
   FelschDigraph<Word, Node, Definitions>::FelschDigraph(
-      ActionDigraph<M> const& ad)
+      WordGraph<M> const& ad)
       : DigraphWithSources<node_type>(ad),
         FelschDigraphSettings<FelschDigraph<Word, Node, Definitions>>(),
         _felsch_tree(0),
@@ -109,7 +109,7 @@ namespace libsemigroups {
     size_type const m = this->number_of_active_nodes();
     size_type const n = that.number_of_active_nodes();
     return (m == 0 && n == 0)
-           || (m == n && this->ActionDigraph<node_type>::operator==(that));
+           || (m == n && this->WordGraph<node_type>::operator==(that));
   }
 
   ////////////////////////////////////////////////////////////////////////
@@ -138,10 +138,10 @@ namespace libsemigroups {
       node_type  c,
       label_type x,
       node_type  d) noexcept {
-    LIBSEMIGROUPS_ASSERT(c < ActionDigraph<Node>::number_of_nodes());
-    LIBSEMIGROUPS_ASSERT(x < ActionDigraph<Node>::out_degree());
-    LIBSEMIGROUPS_ASSERT(d < ActionDigraph<Node>::number_of_nodes());
-    node_type cx = ActionDigraph<Node>::unsafe_neighbor(c, x);
+    LIBSEMIGROUPS_ASSERT(c < WordGraph<Node>::number_of_nodes());
+    LIBSEMIGROUPS_ASSERT(x < WordGraph<Node>::out_degree());
+    LIBSEMIGROUPS_ASSERT(d < WordGraph<Node>::number_of_nodes());
+    node_type cx = WordGraph<Node>::unsafe_neighbor(c, x);
     if (cx == UNDEFINED) {
       def_edge_nc<RegDefs>(c, x, d);
       return true;
@@ -156,9 +156,9 @@ namespace libsemigroups {
   FelschDigraph<Word, Node, Definitions>::def_edge_nc(node_type  c,
                                                       label_type x,
                                                       node_type  d) noexcept {
-    LIBSEMIGROUPS_ASSERT(c < ActionDigraph<Node>::number_of_nodes());
-    LIBSEMIGROUPS_ASSERT(x < ActionDigraph<Node>::out_degree());
-    LIBSEMIGROUPS_ASSERT(d < ActionDigraph<Node>::number_of_nodes());
+    LIBSEMIGROUPS_ASSERT(c < WordGraph<Node>::number_of_nodes());
+    LIBSEMIGROUPS_ASSERT(x < WordGraph<Node>::out_degree());
+    LIBSEMIGROUPS_ASSERT(d < WordGraph<Node>::number_of_nodes());
     if constexpr (RegDefs) {
       _definitions.emplace_back(c, x);
     }
@@ -168,7 +168,7 @@ namespace libsemigroups {
   template <typename Word, typename Node, typename Definitions>
   void FelschDigraph<Word, Node, Definitions>::reduce_number_of_edges_to(
       size_type n) {
-    LIBSEMIGROUPS_ASSERT(ActionDigraph<Node>::number_of_edges()
+    LIBSEMIGROUPS_ASSERT(WordGraph<Node>::number_of_edges()
                          == _definitions.size());
 
     while (_definitions.size() > n) {
@@ -184,10 +184,10 @@ namespace libsemigroups {
       Presentation<Word> const& p) {
     _presentation = p;
     size_t c      = _presentation.alphabet().size();
-    if (c > ActionDigraph<Node>::out_degree()) {
+    if (c > WordGraph<Node>::out_degree()) {
       // Not sure this is required
-      ActionDigraph<Node>::add_to_out_degree(
-          c - ActionDigraph<Node>::out_degree());
+      WordGraph<Node>::add_to_out_degree(
+          c - WordGraph<Node>::out_degree());
     }
     _felsch_tree.init(c);
     _felsch_tree_initted = false;
@@ -200,9 +200,9 @@ namespace libsemigroups {
     // TODO avoid code dupl in constructors and init
     _presentation = std::move(p);
     size_t c      = _presentation.alphabet().size();
-    if (c > ActionDigraph<Node>::out_degree()) {
-      ActionDigraph<Node>::add_to_out_degree(
-          c - ActionDigraph<Node>::out_degree());
+    if (c > WordGraph<Node>::out_degree()) {
+      WordGraph<Node>::add_to_out_degree(
+          c - WordGraph<Node>::out_degree());
     }
     _felsch_tree.init(c);
     _felsch_tree_initted = false;
@@ -416,19 +416,19 @@ namespace libsemigroups {
       label_type     b,
       Incompatible&  incompat,
       PreferredDefs& pref_def) {
-    LIBSEMIGROUPS_ASSERT(x < ActionDigraph<Node>::number_of_nodes());
-    LIBSEMIGROUPS_ASSERT(y < ActionDigraph<Node>::number_of_nodes());
+    LIBSEMIGROUPS_ASSERT(x < WordGraph<Node>::number_of_nodes());
+    LIBSEMIGROUPS_ASSERT(y < WordGraph<Node>::number_of_nodes());
 
     node_type xa
-        = (a == UNDEFINED ? x : ActionDigraph<Node>::unsafe_neighbor(x, a));
+        = (a == UNDEFINED ? x : WordGraph<Node>::unsafe_neighbor(x, a));
     node_type yb
-        = (b == UNDEFINED ? y : ActionDigraph<Node>::unsafe_neighbor(y, b));
+        = (b == UNDEFINED ? y : WordGraph<Node>::unsafe_neighbor(y, b));
 
     if (xa == UNDEFINED && yb != UNDEFINED) {
-      LIBSEMIGROUPS_ASSERT(a < ActionDigraph<Node>::out_degree());
+      LIBSEMIGROUPS_ASSERT(a < WordGraph<Node>::out_degree());
       def_edge_nc<RegDefs>(x, a, yb);
     } else if (xa != UNDEFINED && yb == UNDEFINED) {
-      LIBSEMIGROUPS_ASSERT(b < ActionDigraph<Node>::out_degree());
+      LIBSEMIGROUPS_ASSERT(b < WordGraph<Node>::out_degree());
       def_edge_nc<RegDefs>(y, b, xa);
     } else if (xa != UNDEFINED && yb != UNDEFINED && xa != yb) {
       return incompat(xa, yb);

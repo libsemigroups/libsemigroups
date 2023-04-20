@@ -22,7 +22,7 @@
 #include <vector>   // for allocator, vector
 
 #include "libsemigroups/constants.hpp"          // for Max, operator==, POSI...
-#include "libsemigroups/digraph.hpp"            // for ActionDigraph
+#include "libsemigroups/word-graph.hpp"            // for WordGraph
 #include "libsemigroups/exception.hpp"          // for LIBSEMIGROUPS_EXCEPTI...
 #include "libsemigroups/froidure-pin-base.hpp"  // for FroidurePinBase
 #include "libsemigroups/froidure-pin.hpp"       // for FroidurePin
@@ -46,7 +46,7 @@ namespace libsemigroups {
       ad = &fp.right_cayley_graph();
     }
 
-    ActionDigraph<node_type> tc_arg(ad->number_of_nodes() + 1,
+    WordGraph<node_type> tc_arg(ad->number_of_nodes() + 1,
                                     ad->out_degree());
 
     for (label_type a = 0; a < tc_arg.out_degree(); ++a) {
