@@ -891,9 +891,18 @@ namespace libsemigroups {
   // KnuthBendixImpl - methods for rules - private
   //////////////////////////////////////////////////////////////////////////
 
+  // TODO rename init_from_presentation
   void KnuthBendix::add_rules_from_presentation() {
-    auto const first = _presentation.rules.cbegin();
-    auto const last  = _presentation.rules.cend();
+    auto const& p                 = _presentation;
+    _internal_is_same_as_external = true;
+    for (size_t i = 0; i < p.alphabet().size(); ++i) {
+      if (uint_to_internal_char(i) != p.letter(i)) {
+        _internal_is_same_as_external = false;
+        break;
+      }
+    }
+    auto const first = p.rules.cbegin();
+    auto const last  = p.rules.cend();
     for (auto it = first; it != last; it += 2) {
       auto lhs = *it, rhs = *(it + 1);
       if (kind() == congruence_kind::left) {

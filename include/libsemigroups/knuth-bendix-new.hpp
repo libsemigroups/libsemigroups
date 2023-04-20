@@ -313,10 +313,7 @@ namespace libsemigroups {
 
     template <typename Word>
     explicit KnuthBendix(congruence_kind knd, Presentation<Word>&& p)
-        : KnuthBendix(
-            knd,
-            to_presentation<std::string>(std::forward<Presentation<Word>>(p))) {
-    }
+        : KnuthBendix(knd, to_presentation<std::string>(p)) {}
 
     template <typename Word>
     KnuthBendix& init(congruence_kind knd, Presentation<Word> const& p) {
