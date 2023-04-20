@@ -1,7 +1,6 @@
-tmp/*
-*.bmp*
 !libsemigroups.pc.in
 *.bmp
+*.bmp*
 *.gcda
 *.gcno
 *.gz
@@ -38,6 +37,7 @@ benchmark/CMakeFiles
 benchmark/build
 benchmark/logs
 benchmark/src/build
+compile_commands.json
 config
 config.hpp
 config.log
@@ -79,3 +79,4 @@ m4/lt~obsolete.m4
 tags
 test_*
 tmp/
+tmp/*
