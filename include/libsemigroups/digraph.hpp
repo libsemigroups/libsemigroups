@@ -24,7 +24,6 @@
 // * iwyu
 // * More benchmarks
 // * split into tpp file
-// * split out GabowSCC and remove the attributes nonsense
 
 #ifndef LIBSEMIGROUPS_DIGRAPH_HPP_
 #define LIBSEMIGROUPS_DIGRAPH_HPP_
@@ -108,33 +107,6 @@ namespace libsemigroups {
     // ActionDigraph - iterator - private
     ////////////////////////////////////////////////////////////////////////
 
-    using internal_scc_iterator_type =
-        typename std::vector<std::vector<T>>::const_iterator;
-
-    struct Deref {
-      T const& operator()(internal_scc_iterator_type const& it) const noexcept {
-        return *(*it).cbegin();
-      };
-    };
-
-    struct AddressOf {
-      T const* operator()(internal_scc_iterator_type const& it) const noexcept {
-        return &(*(*it).cbegin());
-      }
-    };
-
-    struct IteratorTraits
-        : detail::ConstIteratorTraits<std::vector<std::vector<T>>> {
-      using value_type      = T;
-      using reference       = T&;
-      using const_reference = T const&;
-      using const_pointer   = T const*;
-      using pointer         = T*;
-
-      using Deref     = ActionDigraph::Deref;
-      using AddressOf = ActionDigraph::AddressOf;
-    };
-
    public:
     ////////////////////////////////////////////////////////////////////////
     // ActionDigraph - typedefs - public
@@ -158,9 +130,6 @@ namespace libsemigroups {
     using adjacency_matrix_type = IntMat<0, 0, int64_t>;
 #endif
 
-    //! The type of an index in a strongly connected component of a digraph.
-    using scc_index_type = T;
-
     //! The type of an iterator pointing to the nodes of a digraph.
     using const_iterator_nodes = typename IntegralRange<T>::const_iterator;
 
@@ -172,20 +141,6 @@ namespace libsemigroups {
     //! digraph.
     using const_iterator_edges =
         typename detail::DynamicArray2<T>::const_iterator;
-
-    //! The type of an iterator pointing to the nodes in a strongly connected
-    //! component of a digraph.
-    using const_iterator_scc = typename std::vector<T>::const_iterator;
-
-    //! The type of an iterator pointing to the strongly connected components
-    //! of a digraph.
-    using const_iterator_sccs =
-        typename std::vector<std::vector<T>>::const_iterator;
-
-    //! The type of an iterator pointing to the roots of a strongly connected
-    //! components of a digraph.
-    using const_iterator_scc_roots
-        = detail::ConstIteratorStateless<IteratorTraits>;
 
     ////////////////////////////////////////////////////////////////////////
     // ActionDigraph - constructors + destructor - public
@@ -417,7 +372,6 @@ namespace libsemigroups {
             nr - (_dynamic_array_2.number_of_rows() - _nr_nodes));
       }
       _nr_nodes += nr;
-      reset();
     }
 
     //! Restrict the digraph to its first \p n nodes.
@@ -510,7 +464,6 @@ namespace libsemigroups {
             nr - (_dynamic_array_2.number_of_cols() - _degree));
       }
       _degree += nr;
-      reset();
     }
 
     //! Add an edge from one node to another with a given label.
@@ -568,12 +521,10 @@ namespace libsemigroups {
     // TODO remove this in v3
     void inline add_edge_nc(node_type i, node_type j, label_type lbl) {
       _dynamic_array_2.set(i, lbl, j);
-      reset();
     }
 
     void inline def_edge_nc(node_type i, label_type lbl, node_type j) {
       _dynamic_array_2.set(i, lbl, j);
-      reset();
     }
 
     //! Remove an edge from a node with a given label.
@@ -594,7 +545,6 @@ namespace libsemigroups {
     //! No checks whatsoever on the validity of the arguments are performed.
     void inline remove_edge_nc(node_type i, label_type lbl) {
       _dynamic_array_2.set(i, lbl, UNDEFINED);
-      reset();
     }
 
     //! Remove all of the edges in the digraph.
@@ -613,7 +563,6 @@ namespace libsemigroups {
     //! (None)
     void inline remove_all_edges() {
       std::fill(_dynamic_array_2.begin(), _dynamic_array_2.end(), UNDEFINED);
-      reset();
     }
 
     void inline remove_label(label_type a) {
@@ -670,7 +619,6 @@ namespace libsemigroups {
     //! No checks whatsoever on the validity of the arguments are performed.
     // swap u - a - > u' and v - a -> v'
     void swap_edges_nc(node_type u, node_type v, label_type a) {
-      reset();
       _dynamic_array_2.swap(u, a, v, a);
     }
 
@@ -1095,345 +1043,6 @@ namespace libsemigroups {
     // ActionDigraph - strongly connected components - public
     ////////////////////////////////////////////////////////////////////////
 
-    //! Returns the id-number of the strongly connected component of a node.
-    //!
-    //! \param nd the node.
-    //!
-    //! \returns
-    //! The index of the node \p nd, a value of type scc_index_type.
-    //!
-    //! \throws LibsemigroupsException if \p nd is not valid.
-    //!
-    //! \complexity
-    //! At most \f$O(mn)\f$ where \c m is number_of_nodes() and \c n is
-    //! out_degree().
-    // Not noexcept because validate_node isn't
-    scc_index_type scc_id(node_type nd) const {
-      action_digraph_helper::validate_node(*this, nd);
-      gabow_scc();
-      LIBSEMIGROUPS_ASSERT(nd < _scc._id.size());
-      return _scc._id[nd];
-    }
-
-    //! Returns the number of strongly connected components.
-    //!
-    //! \returns
-    //! A `size_t`.
-    //!
-    //! \throws LibsemigroupsException if it is not the case that every node
-    //! has exactly out_degree() out-neighbors. In other words, if
-    //! neighbor() is libsemigroups::UNDEFINED for any node \c nd and
-    //! any label \c lbl.
-    //! \basic_guarantee
-    //!
-    //! \complexity
-    //! At most \f$O(mn)\f$ where \c m is number_of_nodes() and \c n is
-    //! out_degree().
-    //!
-    //! \par Parameters
-    //! (None)
-    // Not noexcept because gabow_scc isn't
-    size_t number_of_scc() const {
-      gabow_scc();
-      return _scc._comps.size();
-    }
-
-    //! Returns the root of a strongly connected components containing a given
-    //! node.
-    //!
-    //! \param nd a node.
-    //!
-    //! \returns
-    //! The root of the scc containing the node \p nd, a value of
-    //! \ref node_type.
-    //!
-    //! \throws LibsemigroupsException if it is not the case that every node
-    //! has exactly out_degree() out-neighbors. In other words, if
-    //! neighbor() is libsemigroups::UNDEFINED for any node \c nd and
-    //! any label \c lbl.
-    //! \basic_guarantee
-    //!
-    //! \complexity
-    //! At most \f$O(mn)\f$ where \c m is number_of_nodes() and \c n is
-    //! out_degree().
-    // Not noexcept because scc_id isn't
-    node_type root_of_scc(node_type nd) const {
-      // nd is validated in scc_id
-      return *cbegin_scc(scc_id(nd));
-    }
-
-    //! Returns an iterator pointing to the vector of nodes in the first scc.
-    //!
-    //! \returns
-    //! A \ref const_iterator_sccs.
-    //!
-    //! \throws LibsemigroupsException if it is not the case that every node
-    //! has exactly out_degree() out-neighbors. In other words, if
-    //! neighbor() is libsemigroups::UNDEFINED for any node \c nd and
-    //! any label \c lbl.
-    //! \basic_guarantee
-    //!
-    //! \complexity
-    //! At most \f$O(mn)\f$ where \c m is number_of_nodes() and \c n is
-    //! out_degree().
-    //!
-    //! \par Parameters
-    //! (None)
-    // Not noexcept because gabow_scc isn't
-    const_iterator_sccs cbegin_sccs() const {
-      gabow_scc();
-      return _scc._comps.cbegin();
-    }
-
-    //! Returns an iterator pointing one past the last vector of nodes in the
-    //! final scc.
-    //!
-    //! \returns
-    //! A \ref const_iterator_sccs.
-    //!
-    //! \throws LibsemigroupsException if it is not the case that every node
-    //! has exactly out_degree() out-neighbors. In other words, if
-    //! neighbor() is libsemigroups::UNDEFINED for any node \c nd and
-    //! any label \c lbl.
-    //! \basic_guarantee
-    //!
-    //! \complexity
-    //! At most \f$O(mn)\f$ where \c m is number_of_nodes() and \c n is
-    //! out_degree().
-    //!
-    //! \par Parameters
-    //! (None)
-    // Not noexcept because gabow_scc isn't
-    const_iterator_sccs cend_sccs() const {
-      gabow_scc();
-      return _scc._comps.cend();
-    }
-
-    //! Returns an iterator pointing to the first node in the scc with
-    //! the specified id-number.
-    //!
-    //! \param i the id-number of the scc.
-    //!
-    //! \returns
-    //! A \ref const_iterator_scc.
-    //!
-    //! \throws LibsemigroupsException if it is not the case that every node
-    //! has exactly out_degree() out-neighbors. In other words, if
-    //! neighbor() is libsemigroups::UNDEFINED for any node \c nd and
-    //! any label \c lbl.
-    //!
-    //! \throws LibsemigroupsException if \p i is not in the range \c 0 to \c
-    //! number_of_scc() - 1.
-    //!
-    //! \complexity
-    //! At most \f$O(mn)\f$ where \c m is number_of_nodes() and \c n is
-    //! out_degree().
-    //!
-    //! \note
-    //! \basic_guarantee
-    //!
-    // Not noexcept because gabow_scc isn't
-    const_iterator_scc cbegin_scc(scc_index_type i) const {
-      gabow_scc();
-      validate_scc_index(i);
-      return _scc._comps[i].cbegin();
-    }
-
-    //! Returns an iterator pointing one past the last node in the scc with
-    //! the specified id-number.
-    //!
-    //! \param i the id-number of the scc.
-    //!
-    //! \returns
-    //! A \ref const_iterator_scc.
-    //!
-    //! \throws LibsemigroupsException if it is not the case that every node
-    //! has exactly out_degree() out-neighbors. In other words, if
-    //! neighbor() is libsemigroups::UNDEFINED for any node \c nd and
-    //! any label \c lbl.
-    //!
-    //! \throws LibsemigroupsException if \p i is not in the range \c 0 to \c
-    //! number_of_scc() - 1.
-    //!
-    //! \complexity
-    //! At most \f$O(mn)\f$ where \c m is number_of_nodes() and \c n is
-    //! out_degree().
-    //!
-    //! \note
-    //! \basic_guarantee
-    // Not noexcept because gabow_scc isn't
-    const_iterator_scc cend_scc(scc_index_type i) const {
-      gabow_scc();
-      validate_scc_index(i);
-      return _scc._comps[i].cend();
-    }
-
-    //! Returns an iterator pointing to the root of the first scc.
-    //!
-    //! \returns
-    //! A \ref const_iterator_scc_roots.
-    //!
-    //! \throws LibsemigroupsException if it is not the case that every node
-    //! has exactly out_degree() out-neighbors. In other words, if
-    //! neighbor() is libsemigroups::UNDEFINED for any node \c nd and
-    //! any label \c lbl. \basic_guarantee
-    //!
-    //! \complexity
-    //! At most \f$O(mn)\f$ where \c m is number_of_nodes() and \c n is
-    //! out_degree().
-    //!
-    //! \par Parameters
-    //! (None)
-    // Not noexcept because cbegin_sccs isn't
-    const_iterator_scc_roots cbegin_scc_roots() const {
-      return const_iterator_scc_roots(cbegin_sccs());
-    }
-
-    //! Returns an iterator pointing one past the root of the last scc.
-    //!
-    //! \returns
-    //! A \ref const_iterator_scc_roots.
-    //!
-    //! \throws LibsemigroupsException if it is not the case that every node
-    //! has exactly out_degree() out-neighbors. In other words, if
-    //! neighbor() is libsemigroups::UNDEFINED for any node \c nd and
-    //! any label \c lbl. \basic_guarantee
-    //!
-    //! \complexity
-    //! At most \f$O(mn)\f$ where \c m is number_of_nodes() and \c n is
-    //! out_degree().
-    //!
-    //! \par Parameters
-    //! (None)
-    // Not noexcept because cend_sccs isn't
-    const_iterator_scc_roots cend_scc_roots() const {
-      return const_iterator_scc_roots(cend_sccs());
-    }
-
-    ////////////////////////////////////////////////////////////////////////
-    // ActionDigraph - spanning forests - public
-    ////////////////////////////////////////////////////////////////////////
-
-    //! Returns a spanning forest of the strongly connected components.
-    //!
-    //! Returns a Forest comprised of spanning trees for each
-    //! scc of \c this, rooted on the minimum node of that component, with
-    //! edges oriented away from the root.
-    //!
-    //! \returns
-    //! A const reference to a Forest.
-    //!
-    //! \throws LibsemigroupsException if it is not the case that every node
-    //! has exactly out_degree() out-neighbors. In other words, if
-    //! neighbor() is libsemigroups::UNDEFINED for any node \c nd and
-    //! any label \c lbl. \basic_guarantee
-    //!
-    //! \complexity
-    //! At most \f$O(mn)\f$ where \c m is number_of_nodes() and \c n is
-    //! out_degree().
-    //!
-    //! \par Parameters
-    //! (None)
-    Forest const& spanning_forest() const {
-      if (!_scc_forest._defined) {
-        // Validity checked in gabow_scc
-        gabow_scc();
-
-        std::vector<bool> seen(number_of_nodes(), false);
-        std::queue<T>     queue;
-
-        _scc_forest._forest.clear();
-        _scc_forest._forest.add_nodes(number_of_nodes());
-
-        for (size_t i = 0; i < number_of_scc(); ++i) {
-          queue.push(_scc._comps[i][0]);
-          seen[_scc._comps[i][0]] = true;
-          do {
-            size_t x = queue.front();
-            for (size_t j = 0; j < _degree; ++j) {
-              size_t y = _dynamic_array_2.get(x, j);
-              if (!seen[y] && _scc._id[y] == _scc._id[x]) {
-                _scc_forest._forest.set(y, x, j);
-                queue.push(y);
-                seen[y] = true;
-              }
-            }
-            queue.pop();
-          } while (!queue.empty());
-        }
-        _scc_forest._defined = true;
-      }
-      return _scc_forest._forest;
-    }
-
-    //! Returns a reverse spanning forest of the strongly connected components.
-    //!
-    //! Returns a Forest comprised of spanning trees for each
-    //! scc of \c this, rooted on the minimum node of that component, with
-    //! edges oriented towards the root.
-    //!
-    //! \returns
-    //! A const reference to a Forest.
-    //!
-    //! \throws LibsemigroupsException if it is not the case that every node
-    //! has exactly out_degree() out-neighbors. In other words, if
-    //! neighbor() is libsemigroups::UNDEFINED for any node \c nd and
-    //! any label \c lbl. \basic_guarantee
-    //!
-    //! \complexity
-    //! At most \f$O(mn)\f$ where \c m is number_of_nodes() and \c n is
-    //! out_degree().
-    //!
-    //! \par Parameters
-    //! (None)
-    Forest const& reverse_spanning_forest() const {
-      if (!_scc_back_forest._defined) {
-        // Validity checked in gabow_scc
-        gabow_scc();
-
-        _scc_back_forest._forest.clear();
-        _scc_back_forest._forest.add_nodes(number_of_nodes());
-
-        std::vector<std::vector<T>> reverse_edges(number_of_nodes(),
-                                                  std::vector<T>());
-        std::vector<std::vector<T>> reverse_labels(number_of_nodes(),
-                                                   std::vector<T>());
-
-        for (size_t i = 0; i < number_of_nodes(); ++i) {
-          size_t const scc_id_i = scc_id(i);
-          for (size_t j = 0; j < out_degree(); ++j) {
-            size_t const k = _dynamic_array_2.get(i, j);
-            if (scc_id(k) == scc_id_i) {
-              reverse_edges[k].push_back(i);
-              reverse_labels[k].push_back(j);
-            }
-          }
-        }
-        std::queue<size_t> queue;
-        std::vector<bool>  seen(number_of_nodes(), false);
-
-        for (size_t i = 0; i < number_of_scc(); ++i) {
-          LIBSEMIGROUPS_ASSERT(queue.empty());
-          queue.push(_scc._comps[i][0]);
-          seen[_scc._comps[i][0]] = true;
-          while (!queue.empty()) {
-            size_t x = queue.front();
-            for (size_t j = 0; j < reverse_edges[x].size(); ++j) {
-              size_t y = reverse_edges[x][j];
-              if (!seen[y]) {
-                queue.push(y);
-                seen[y] = true;
-                _scc_back_forest._forest.set(y, x, reverse_labels[x][j]);
-              }
-            }
-            queue.pop();
-          }
-        }
-        _scc_back_forest._defined = true;
-      }
-      return _scc_back_forest._forest;
-    }
-
     //! Returns a const reference to the underlying array.
     //!
     //! This function returns a const reference to the underlying container for
@@ -1460,112 +1069,10 @@ namespace libsemigroups {
     // TODO(v3) make this public, doc, and test it
     template <typename S>
     void apply_row_permutation(S const& p) {
-      reset();
       _dynamic_array_2.apply_row_permutation(p);
     }
 
    private:
-    ////////////////////////////////////////////////////////////////////////
-    // ActionDigraph - validation - private
-    ////////////////////////////////////////////////////////////////////////
-
-    void validate_scc_index(scc_index_type i) const {
-      if (i >= number_of_scc()) {
-        LIBSEMIGROUPS_EXCEPTION("strong component index out of bounds, "
-                                "expected value in the range [0, %d), got %d",
-                                number_of_scc(),
-                                i);
-      }
-    }
-
-    ////////////////////////////////////////////////////////////////////////
-    // ActionDigraph - reset (after calling a modifier) - private
-    ////////////////////////////////////////////////////////////////////////
-
-    void reset() noexcept {
-      _scc_back_forest._defined = false;
-      _scc._defined             = false;
-      _scc_forest._defined      = false;
-    }
-
-    ////////////////////////////////////////////////////////////////////////
-    // ActionDigraph - strongly connected components - private
-    ////////////////////////////////////////////////////////////////////////
-
-    void gabow_scc() const {
-      if (_scc._defined) {
-        return;
-      }
-
-      static std::stack<T>               stack1;
-      static std::stack<T>               stack2;
-      static std::stack<std::pair<T, T>> frame;
-      static std::vector<T>              preorder;
-      preorder.assign(number_of_nodes(), UNDEFINED);
-      LIBSEMIGROUPS_ASSERT(stack1.empty());
-      LIBSEMIGROUPS_ASSERT(stack2.empty());
-      LIBSEMIGROUPS_ASSERT(frame.empty());
-
-      _scc._comps.clear();
-      _scc._id.assign(number_of_nodes(), UNDEFINED);
-
-      T C     = 0;
-      T index = 0;
-
-      for (T w = 0; w < number_of_nodes(); ++w) {
-        if (_scc._id[w] == UNDEFINED) {
-          frame.emplace(w, 0);
-        dfs_start:
-          LIBSEMIGROUPS_ASSERT(!frame.empty());
-          T v = frame.top().first;
-          T i = frame.top().second;
-
-          preorder[v] = C++;
-          stack1.push(v);
-          stack2.push(v);
-          for (; i < _degree; ++i) {
-          dfs_end:
-            LIBSEMIGROUPS_ASSERT(v < number_of_nodes() && i < _degree);
-            T u = _dynamic_array_2.get(v, i);
-            if (u != UNDEFINED) {
-              if (preorder[u] == UNDEFINED) {
-                frame.top().second = i;
-                frame.emplace(u, 0);
-                goto dfs_start;
-              } else if (_scc._id[u] == UNDEFINED) {
-                LIBSEMIGROUPS_ASSERT(!stack2.empty());
-                while (preorder[stack2.top()] > preorder[u]) {
-                  stack2.pop();
-                }
-              }
-            }
-          }
-          if (v == stack2.top()) {
-            _scc._comps.emplace_back();
-            T x;
-            do {
-              LIBSEMIGROUPS_ASSERT(!stack1.empty());
-              x           = stack1.top();
-              _scc._id[x] = index;
-              _scc._comps[index].push_back(x);
-              stack1.pop();
-            } while (x != v);
-            ++index;
-            LIBSEMIGROUPS_ASSERT(!stack2.empty());
-            stack2.pop();
-          }
-          LIBSEMIGROUPS_ASSERT(!frame.empty());
-          frame.pop();
-          if (!frame.empty()) {
-            v = frame.top().first;
-            i = frame.top().second;
-            goto dfs_end;
-          }
-        }
-      }
-      _scc._defined = true;
-    }
-
     ////////////////////////////////////////////////////////////////////////
     // ActionDigraph - data members - private
     ////////////////////////////////////////////////////////////////////////
@@ -1574,27 +1081,6 @@ namespace libsemigroups {
     T                                _nr_nodes;
     T                                _num_active_nodes;
     mutable detail::DynamicArray2<T> _dynamic_array_2;
-
-    struct Attr {
-      Attr() : _defined(false) {}
-      bool _defined;
-    };
-
-    mutable struct SCCBackForest : public Attr {
-      SCCBackForest() : Attr(), _forest() {}
-      Forest _forest;
-    } _scc_back_forest;
-
-    mutable struct SCCForwardForest : public Attr {
-      SCCForwardForest() : Attr(), _forest() {}
-      Forest _forest;
-    } _scc_forest;
-
-    mutable struct SCC : public Attr {
-      SCC() : Attr(), _comps(), _id() {}
-      std::vector<std::vector<node_type>> _comps;
-      std::vector<scc_index_type>         _id;
-    } _scc;
   };
 
   //////////////////////////////////////////////////////////////////////////
@@ -1609,10 +1095,7 @@ namespace libsemigroups {
       : _degree(n),
         _nr_nodes(m),
         _num_active_nodes(),
-        _dynamic_array_2(_degree, _nr_nodes, UNDEFINED),
-        _scc_back_forest(),
-        _scc_forest(),
-        _scc() {}
+        _dynamic_array_2(_degree, _nr_nodes, UNDEFINED) {}
 
   template <typename T>
   void ActionDigraph<T>::init(T m, T n) {
@@ -1621,7 +1104,6 @@ namespace libsemigroups {
     _num_active_nodes = 0;
     _dynamic_array_2.reshape(n, m);
     remove_all_edges();
-    reset();
   }
 
   template <typename T>

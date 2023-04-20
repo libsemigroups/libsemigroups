@@ -64,12 +64,42 @@ namespace libsemigroups {
       return _id[v];
     }
 
+    //! Returns the id-number of the strongly connected component of a node.
+    //!
+    //! \param nd the node.
+    //!
+    //! \returns
+    //! The index of the node \p nd, a value of type scc_index_type.
+    //!
+    //! \throws LibsemigroupsException if \p nd is not valid.
+    //!
+    //! \complexity
+    //! At most \f$O(mn)\f$ where \c m is number_of_nodes() and \c n is
+    //! out_degree().
+    // Not noexcept because validate_node isn't
     [[nodiscard]] size_type id(node_type v) {
       run();
       validate_node(v);
       return _id[v];
     }
 
+    //! Returns an iterator pointing to the vector of nodes in the first scc.
+    //!
+    //! \returns
+    //! A \ref const_iterator_sccs.
+    //!
+    //! \throws LibsemigroupsException if it is not the case that every node
+    //! has exactly out_degree() out-neighbors. In other words, if
+    //! neighbor() is libsemigroups::UNDEFINED for any node \c nd and
+    //! any label \c lbl.
+    //! \basic_guarantee
+    //!
+    //! \complexity
+    //! At most \f$O(mn)\f$ where \c m is number_of_nodes() and \c n is
+    //! out_degree().
+    //!
+    //! \par Parameters
+    //! (None)
     [[nodiscard]] auto components() {
       run();
       return _comps;
@@ -89,16 +119,68 @@ namespace libsemigroups {
     }
 
     // TODO better name
+    //! Returns the number of strongly connected components.
+    //!
+    //! \returns
+    //! A `size_t`.
+    //!
+    //! \throws LibsemigroupsException if it is not the case that every node
+    //! has exactly out_degree() out-neighbors. In other words, if
+    //! neighbor() is libsemigroups::UNDEFINED for any node \c nd and
+    //! any label \c lbl.
+    //! \basic_guarantee
+    //!
+    //! \complexity
+    //! At most \f$O(mn)\f$ where \c m is number_of_nodes() and \c n is
+    //! out_degree().
+    //!
+    //! \par Parameters
+    //! (None)
     [[nodiscard]] auto number() {
       run();
       return _comps.size();
     }
 
+    //! Returns an iterator pointing to the root of the first scc.
+    //!
+    //! \returns
+    //! A \ref const_iterator_scc_roots.
+    //!
+    //! \throws LibsemigroupsException if it is not the case that every node
+    //! has exactly out_degree() out-neighbors. In other words, if
+    //! neighbor() is libsemigroups::UNDEFINED for any node \c nd and
+    //! any label \c lbl. \basic_guarantee
+    //!
+    //! \complexity
+    //! At most \f$O(mn)\f$ where \c m is number_of_nodes() and \c n is
+    //! out_degree().
+    //!
+    //! \par Parameters
+    //! (None)
     [[nodiscard]] auto roots() {
       return (rx::iterator_range(_comps.cbegin(), _comps.cend())
               | rx::transform([](auto const& comp) { return comp[0]; }));
     }
 
+    //! Returns the root of a strongly connected components containing a given
+    //! node.
+    //!
+    //! \param nd a node.
+    //!
+    //! \returns
+    //! The root of the scc containing the node \p nd, a value of
+    //! \ref node_type.
+    //!
+    //! \throws LibsemigroupsException if it is not the case that every node
+    //! has exactly out_degree() out-neighbors. In other words, if
+    //! neighbor() is libsemigroups::UNDEFINED for any node \c nd and
+    //! any label \c lbl.
+    //! \basic_guarantee
+    //!
+    //! \complexity
+    //! At most \f$O(mn)\f$ where \c m is number_of_nodes() and \c n is
+    //! out_degree().
+    // Not noexcept because scc_id isn't
     [[nodiscard]] node_type root_of(node_type n) {
       run();
       validate_node(n);
@@ -110,6 +192,29 @@ namespace libsemigroups {
       return component_of_no_checks(n)[0];
     }
 
+    //! Returns an iterator pointing to the first node in the scc with
+    //! the specified id-number.
+    //!
+    //! \param i the id-number of the scc.
+    //!
+    //! \returns
+    //! A \ref const_iterator_scc.
+    //!
+    //! \throws LibsemigroupsException if it is not the case that every node
+    //! has exactly out_degree() out-neighbors. In other words, if
+    //! neighbor() is libsemigroups::UNDEFINED for any node \c nd and
+    //! any label \c lbl.
+    //!
+    //! \throws LibsemigroupsException if \p i is not in the range \c 0 to \c
+    //! number_of_scc() - 1.
+    //!
+    //! \complexity
+    //! At most \f$O(mn)\f$ where \c m is number_of_nodes() and \c n is
+    //! out_degree().
+    //!
+    //! \note
+    //! \basic_guarantee
+    //!
     [[nodiscard]] auto component_of(node_type n) {
       run();
       validate_node(n);
@@ -128,6 +233,26 @@ namespace libsemigroups {
       return *this;
     }
 
+    //! Returns a spanning forest of the strongly connected components.
+    //!
+    //! Returns a Forest comprised of spanning trees for each
+    //! scc of \c this, rooted on the minimum node of that component, with
+    //! edges oriented away from the root.
+    //!
+    //! \returns
+    //! A const reference to a Forest.
+    //!
+    //! \throws LibsemigroupsException if it is not the case that every node
+    //! has exactly out_degree() out-neighbors. In other words, if
+    //! neighbor() is libsemigroups::UNDEFINED for any node \c nd and
+    //! any label \c lbl. \basic_guarantee
+    //!
+    //! \complexity
+    //! At most \f$O(mn)\f$ where \c m is number_of_nodes() and \c n is
+    //! out_degree().
+    //!
+    //! \par Parameters
+    //! (None)
     Forest const& spanning_forest() {
       if (_forwd_forest_defined) {
         return _forwd_forest;
@@ -161,6 +286,26 @@ namespace libsemigroups {
       return _forwd_forest;
     }
 
+    //! Returns a reverse spanning forest of the strongly connected components.
+    //!
+    //! Returns a Forest comprised of spanning trees for each
+    //! scc of \c this, rooted on the minimum node of that component, with
+    //! edges oriented towards the root.
+    //!
+    //! \returns
+    //! A const reference to a Forest.
+    //!
+    //! \throws LibsemigroupsException if it is not the case that every node
+    //! has exactly out_degree() out-neighbors. In other words, if
+    //! neighbor() is libsemigroups::UNDEFINED for any node \c nd and
+    //! any label \c lbl. \basic_guarantee
+    //!
+    //! \complexity
+    //! At most \f$O(mn)\f$ where \c m is number_of_nodes() and \c n is
+    //! out_degree().
+    //!
+    //! \par Parameters
+    //! (None)
     Forest const& reverse_spanning_forest() {
       if (_bckwd_forest_defined) {
         return _bckwd_forest;
@@ -291,9 +436,19 @@ namespace libsemigroups {
       _finished = true;
     }
 
-    void validate_node(node_type n) {
+    void validate_node(node_type n) const {
       if (n >= _id.size()) {
         LIBSEMIGROUPS_EXCEPTION_V3("TODO");
+      }
+    }
+
+    // TODO use this or delete it
+    void validate_scc_index(size_t i) const {
+      if (i >= number()) {
+        LIBSEMIGROUPS_EXCEPTION("strong component index out of bounds, "
+                                "expected value in the range [0, %d), got %d",
+                                number(),
+                                i);
       }
     }
   };
