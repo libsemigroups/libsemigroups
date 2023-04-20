@@ -70,39 +70,88 @@ namespace libsemigroups {
                                          "bcb",
                                          "ccb",
                                          "cbc"}));
-    REQUIRE(knuth_bendix::normal_forms(kb).min(0).max(10).count() == 1'175);
+    REQUIRE(knuth_bendix::normal_forms(kb).min(0).max(10).count() == 1'176);
   }
 
+  // Note that the alphabet order matters here, if the lhs of the first
+  // relation is abc instead of bac (or rather the alphabet is re-ordered so
+  // that the first rule is abc), then this runs forever.
   LIBSEMIGROUPS_TEST_CASE("fpsemi-examples",
                           "068",
                           "plactic_monoid(3)",
                           "[fpsemi-examples][quick]") {
     using rule_type = KnuthBendix::rule_type;
-    auto        rg  = ReportGuard(true);
-    auto        p   = to_presentation<std::string>(plactic_monoid(3));
-    KnuthBendix kb(congruence_kind::twosided, p);
-    REQUIRE(kb.presentation().rules
-            == std::vector<std::string>({"abc",
-                                         "acb",
+    auto rg         = ReportGuard(false);
+    REQUIRE(plactic_monoid(3).rules
+            == std::vector<word_type>({102_w,
+                                       120_w,
+                                       021_w,
+                                       201_w,
+                                       100_w,
+                                       010_w,
+                                       110_w,
+                                       101_w,
+                                       200_w,
+                                       020_w,
+                                       220_w,
+                                       202_w,
+                                       211_w,
+                                       121_w,
+                                       221_w,
+                                       212_w}));
+    auto p = to_presentation<std::string>(plactic_monoid(3));
+    REQUIRE(p.rules
+            == std::vector<std::string>({"bac",
                                          "bca",
-                                         "cba",
-                                         "abb",
-                                         "bab",
-                                         "aab",
+                                         "acb",
+                                         "cab",
+                                         "baa",
                                          "aba",
-                                         "cbb",
-                                         "bcb",
-                                         "ccb",
-                                         "cbc",
+                                         "bba",
+                                         "bab",
                                          "caa",
                                          "aca",
                                          "cca",
-                                         "cac"}));
+                                         "cac",
+                                         "cbb",
+                                         "bcb",
+                                         "ccb",
+                                         "cbc"}));
+    KnuthBendix kb(congruence_kind::twosided, p);
+    REQUIRE(kb.presentation().rules
+            == std::vector<std::string>({"bac",
+                                         "bca",
+                                         "acb",
+                                         "cab",
+                                         "baa",
+                                         "aba",
+                                         "bba",
+                                         "bab",
+                                         "caa",
+                                         "aca",
+                                         "cca",
+                                         "cac",
+                                         "cbb",
+                                         "bcb",
+                                         "ccb",
+                                         "cbc"}));
     REQUIRE(kb.presentation().alphabet() == "abc");
     REQUIRE(is_obviously_infinite(kb));
-    // REQUIRE((kb.active_rules() | to_vector()) == std::vector<rule_type>());
+    kb.run();
+    REQUIRE((kb.active_rules() | to_vector())
+            == std::vector<rule_type>({{"bca", "bac"},
+                                       {"cab", "acb"},
+                                       {"baa", "aba"},
+                                       {"bba", "bab"},
+                                       {"caa", "aca"},
+                                       {"cca", "cac"},
+                                       {"cbb", "bcb"},
+                                       {"ccb", "cbc"},
+                                       {"cbab", "bcba"},
+                                       {"cbcba", "cbacb"},
+                                       {"cbaca", "cacba"}}));
     REQUIRE(kb.number_of_classes() == POSITIVE_INFINITY);
-    REQUIRE(knuth_bendix::normal_forms(kb).min(0).max(5).count() == 70);
+    REQUIRE(knuth_bendix::normal_forms(kb).min(1).max(5).count() == 70);
   }
 
   LIBSEMIGROUPS_TEST_CASE("fpsemi-examples",
@@ -112,6 +161,6 @@ namespace libsemigroups {
     auto        rg = ReportGuard(false);
     KnuthBendix kb(congruence_kind::twosided, stylic_monoid(4));
     REQUIRE(kb.number_of_classes() == 51);
-    REQUIRE(knuth_bendix::normal_forms(kb).min(0).max(6).count() == 49);
+    REQUIRE(knuth_bendix::normal_forms(kb).min(0).max(6).count() == 50);
   }
 }  // namespace libsemigroups

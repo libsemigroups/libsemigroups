@@ -217,6 +217,7 @@ namespace libsemigroups {
             "expected argument to be at least 2, found {}", n);
       }
       Presentation<word_type> p;
+      p.alphabet(n);
       for (size_t c = 0; c < n; ++c) {
         for (size_t b = 0; b < c; ++b) {
           for (size_t a = 0; a < b; ++a) {
@@ -231,7 +232,6 @@ namespace libsemigroups {
           presentation::add_rule(p, {b, b, a}, {b, a, b});
         }
       }
-      p.alphabet_from_rules();
       return p;
     }
 

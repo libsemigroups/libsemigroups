@@ -74,8 +74,6 @@ namespace libsemigroups {
   using literals::operator""_w;
 
   congruence_kind constexpr twosided = congruence_kind::twosided;
-  congruence_kind constexpr left     = congruence_kind::left;
-  congruence_kind constexpr right    = congruence_kind::right;
 
   LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
                           "000",
@@ -84,17 +82,8 @@ namespace libsemigroups {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("abc");
-    presentation::add_rule(p, "ab", "ba");
-    presentation::add_rule(p, "ac", "ca");
-    presentation::add_rule(p, "aa", "a");
-    presentation::add_rule(p, "ac", "a");
-    presentation::add_rule(p, "ca", "a");
-    presentation::add_rule(p, "bb", "bb");
-    presentation::add_rule(p, "bc", "cb");
-    presentation::add_rule(p, "bbb", "b");
-    presentation::add_rule(p, "bc", "b");
-    presentation::add_rule(p, "cb", "b");
-    presentation::add_rule(p, "a", "b");
+    p.rules = {"ab", "ba", "ac", "ca",  "aa", "a",  "ac", "a",  "ca", "a", "bb",
+               "bb", "bc", "cb", "bbb", "b",  "bc", "b",  "cb", "b",  "a", "b"};
 
     KnuthBendix kb(twosided, p);
 
