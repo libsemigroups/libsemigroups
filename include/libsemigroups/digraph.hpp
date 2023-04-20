@@ -1,7 +1,7 @@
 //
 // libsemigroups - C++ library for semigroups and monoids
-// Copyright (C) 2019 Finn Smith
-// Copyright (C) 2019 James D. Mitchell
+// Copyright (C) 2019-2023 Finn Smith
+// Copyright (C) 2019-2023 James D. Mitchell
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -17,8 +17,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-// This file contains an implementation of out-regular digraph which represents
-// the action of a semigroup on a set.
+// This file contains an implementation of word graphs (which are basically
+// deterministic automata without initial or accept states).
 
 // TODO(later)
 // * iwyu
@@ -77,6 +77,7 @@
 
 namespace libsemigroups {
 
+  // TODO replace with IsWordGraph
   struct ActionDigraphBase {};
 
   //! Defined in ``digraph.hpp``.

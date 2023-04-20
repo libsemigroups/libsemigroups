@@ -20,4 +20,34 @@
 
 namespace libsemigroups {
   Forest::~Forest() = default;
-}
+
+  Forest to_forest(size_t                        num_nodes,
+                   std::initializer_list<size_t> parent,
+                   std::initializer_list<size_t> edge_label) {
+    if (num_nodes != parent.size()) {
+      LIBSEMIGROUPS_EXCEPTION_V3("TODO1");
+    } else if (num_nodes != edge_label.size()) {
+      LIBSEMIGROUPS_EXCEPTION_V3("TODO2");
+    }
+
+    Forest result(num_nodes);
+    for (size_t i = 0; i < num_nodes; ++i) {
+      auto p = *(parent.begin() + i);
+      auto l = *(edge_label.begin() + i);
+      if (p != UNDEFINED && l != UNDEFINED) {
+        result.set(i, p, l);
+      } else if (!(p == UNDEFINED && l == UNDEFINED)) {
+        LIBSEMIGROUPS_EXCEPTION_V3("TODO3");
+      }
+    }
+    return result;
+  }
+
+  // TODO to cpp file
+  std::ostream& operator<<(std::ostream& os, Forest const& f) {
+    os << "{" << f.number_of_nodes() << ", "
+       << std::vector<size_t>(f.cbegin_parent(), f.cend_parent()) << ", "
+       << std::vector<size_t>(f.cbegin_labels(), f.cend_labels()) << "}";
+    return os;
+  }
+}  // namespace libsemigroups

@@ -35,7 +35,7 @@ namespace libsemigroups {
   //! This class represents the collection of spanning trees of the strongly
   //! connected components of a digraph.
   // TODO(later): template
-  class Forest final {
+  class Forest {
    public:
     //! Alias for the type of nodes in a forest
     using node_type = size_t;
@@ -62,6 +62,14 @@ namespace libsemigroups {
       std::fill(std::begin(_parent),
                 std::end(_parent),
                 static_cast<size_t>(UNDEFINED));
+    }
+
+    bool operator==(Forest const& that) const {
+      return _parent == that._parent && _edge_label == that._edge_label;
+    }
+
+    bool operator!=(Forest const& that) const {
+      return !(*this == that);
     }
 
     //! Default copy constructor
@@ -261,6 +269,22 @@ namespace libsemigroups {
       return _parent.cend();
     }
 
+    auto const& parents() const noexcept {
+      return _parent;
+    }
+
+    auto const& labels() const noexcept {
+      return _edge_label;
+    }
+
+    std::vector<size_t>::const_iterator cbegin_labels() const noexcept {
+      return _edge_label.cbegin();
+    }
+
+    std::vector<size_t>::const_iterator cend_labels() const noexcept {
+      return _edge_label.cend();
+    }
+
    private:
     void validate_node(node_type v) const {
       if (v >= number_of_nodes()) {
@@ -274,6 +298,12 @@ namespace libsemigroups {
     std::vector<size_t> _edge_label;
     std::vector<size_t> _parent;
   };
+
+  Forest to_forest(size_t                        num_nodes,
+                   std::initializer_list<size_t> parent,
+                   std::initializer_list<size_t> edge_label);
+
+  std::ostream& operator<<(std::ostream& os, Forest const& f);
 
   namespace detail {
     // TODO use range instead
