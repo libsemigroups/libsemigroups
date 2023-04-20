@@ -75,14 +75,17 @@ namespace libsemigroups {
 
         REQUIRE(T.size() == 4);
 
-        KBE ab(kb, to_string(kb.presentation(), 01_w));
+        REQUIRE(to_string(kb.presentation(), 01_w) == "ab");
+
+        KBE ab(kb, 01_w);
         KBE b(kb, 1);
+
         REQUIRE(!(b < ab));
         REQUIRE(b == ab);
         REQUIRE(!(ab < b));
         REQUIRE(!(ab < b));
 
-        KBE aba(kb, to_string(kb.presentation(), 010_w));
+        KBE aba(kb, 010_w);
         REQUIRE(b < aba);
       }
 
@@ -97,10 +100,10 @@ namespace libsemigroups {
         auto T = to_froidure_pin(kb);
         T.add_generators({KBE(kb, 0), KBE(kb, 1)});
 
-        KBE ab(kb, to_string(kb.presentation(), 1_w));
-        REQUIRE(T.factorisation(ab) == word_type({1}));
-        KBE aaa(kb, to_string(kb.presentation(), 000_w));
-        REQUIRE(T.factorisation(aaa) == word_type({0, 0, 0}));
+        KBE ab(kb, 1_w);
+        REQUIRE(T.factorisation(ab) == 1_w);
+        KBE aaa(kb, 000_w);
+        REQUIRE(T.factorisation(aaa) == 000_w);
       }
 
       LIBSEMIGROUPS_TEST_CASE("KBE", "003", "swap", "[quick]") {
@@ -148,7 +151,7 @@ namespace libsemigroups {
         REQUIRE(kb.confluent());
 
         auto x = KBE(kb, 0);
-        REQUIRE(x.word(kb) == word_type({0}));
+        REQUIRE(x.word(kb) == 0_w);
         REQUIRE(x.string(kb) == std::string(1, kb.presentation().letter(0)));
       }
     }  // namespace detail

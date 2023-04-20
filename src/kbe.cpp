@@ -41,6 +41,17 @@ namespace libsemigroups {
         kb.internal_rewrite(_kb_word);
       }
 
+      KBE::KBE(KnuthBendix& kb, word_type const& w)
+          : KBE(kb,
+                std::accumulate(w.cbegin(),
+                                w.cend(),
+                                std::string(),
+                                [](std::string& acc, letter_type a) {
+                                  acc += KnuthBendix::uint_to_internal_string(
+                                      a);
+                                  return acc;
+                                })) {}
+
       KBE::KBE(KnuthBendix& kb, letter_type const& a)
           : KBE(kb, KnuthBendix::uint_to_internal_string(a)) {}
 
