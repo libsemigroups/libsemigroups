@@ -25,28 +25,27 @@
 
 #include "digraph.hpp"  // for ActionDigraph
 #include "forest.hpp"   // for Forest
-#include "runner.hpp"   // for Runner
 
 #include "rx/ranges.hpp"  // for transform
 
 namespace libsemigroups {
 
   template <typename Node>
-  class Gabow : public Runner {
+  class Gabow {
    public:
     using node_type  = Node;
     using label_type = typename ActionDigraph<node_type>::label_type;
     using size_type  = size_t;
 
    private:
-    ActionDigraph<node_type> const&     _graph;
-    std::vector<std::vector<node_type>> _comps;
-    bool                                _finished;
-    std::vector<size_type>              _id;
-    Forest                              _bckwd_forest;
-    bool                                _bckwd_forest_defined;
-    Forest                              _forwd_forest;
-    bool                                _forwd_forest_defined;
+    ActionDigraph<node_type> const&             _graph;
+    mutable std::vector<std::vector<node_type>> _comps;
+    mutable bool                                _finished;
+    mutable std::vector<size_type>              _id;
+    mutable Forest                              _bckwd_forest;
+    mutable bool                                _bckwd_forest_defined;
+    mutable Forest                              _forwd_forest;
+    mutable bool                                _forwd_forest_defined;
 
    public:
     Gabow(ActionDigraph<node_type> const& wg)
@@ -59,7 +58,9 @@ namespace libsemigroups {
           _forwd_forest(),
           _forwd_forest_defined(false) {}
 
-    [[nodiscard]] size_type id_no_checks(node_type v) {
+    // TODO init
+
+    [[nodiscard]] size_type id_no_checks(node_type v) const {
       run();
       return _id[v];
     }
@@ -77,7 +78,7 @@ namespace libsemigroups {
     //! At most \f$O(mn)\f$ where \c m is number_of_nodes() and \c n is
     //! out_degree().
     // Not noexcept because validate_node isn't
-    [[nodiscard]] size_type id(node_type v) {
+    [[nodiscard]] size_type id(node_type v) const {
       run();
       validate_node(v);
       return _id[v];
@@ -100,12 +101,12 @@ namespace libsemigroups {
     //!
     //! \par Parameters
     //! (None)
-    [[nodiscard]] auto components() {
+    [[nodiscard]] auto components() const {
       run();
       return _comps;
     }
 
-    [[nodiscard]] auto component(size_t i) {
+    [[nodiscard]] auto component(size_t i) const {
       run();
       if (i >= number()) {
         LIBSEMIGROUPS_EXCEPTION_V3("TODO");
@@ -113,7 +114,7 @@ namespace libsemigroups {
       return _comps[i];
     }
 
-    [[nodiscard]] auto component_no_checks(size_t i) {
+    [[nodiscard]] auto component_no_checks(size_t i) const {
       run();
       return _comps[i];
     }
@@ -136,7 +137,7 @@ namespace libsemigroups {
     //!
     //! \par Parameters
     //! (None)
-    [[nodiscard]] auto number() {
+    [[nodiscard]] size_t number() const {
       run();
       return _comps.size();
     }
@@ -157,7 +158,8 @@ namespace libsemigroups {
     //!
     //! \par Parameters
     //! (None)
-    [[nodiscard]] auto roots() {
+    [[nodiscard]] auto roots() const {
+      run();
       return (rx::iterator_range(_comps.cbegin(), _comps.cend())
               | rx::transform([](auto const& comp) { return comp[0]; }));
     }
@@ -181,13 +183,13 @@ namespace libsemigroups {
     //! At most \f$O(mn)\f$ where \c m is number_of_nodes() and \c n is
     //! out_degree().
     // Not noexcept because scc_id isn't
-    [[nodiscard]] node_type root_of(node_type n) {
+    [[nodiscard]] node_type root_of(node_type n) const {
       run();
       validate_node(n);
       return root_of_no_checks(n);
     }
 
-    [[nodiscard]] node_type root_of_no_checks(node_type n) {
+    [[nodiscard]] node_type root_of_no_checks(node_type n) const {
       run();
       return component_of_no_checks(n)[0];
     }
@@ -215,18 +217,18 @@ namespace libsemigroups {
     //! \note
     //! \basic_guarantee
     //!
-    [[nodiscard]] auto component_of(node_type n) {
+    [[nodiscard]] auto component_of(node_type n) const {
       run();
       validate_node(n);
       return _comps[_id[n]];
     }
 
-    [[nodiscard]] auto component_of_no_checks(node_type n) {
+    [[nodiscard]] auto component_of_no_checks(node_type n) const {
       run();
       return _comps[_id[n]];
     }
 
-    Gabow& reset() noexcept {
+    Gabow const& reset() const noexcept {
       _finished             = false;
       _bckwd_forest_defined = false;
       _forwd_forest_defined = false;
@@ -253,7 +255,7 @@ namespace libsemigroups {
     //!
     //! \par Parameters
     //! (None)
-    Forest const& spanning_forest() {
+    Forest const& spanning_forest() const {
       if (_forwd_forest_defined) {
         return _forwd_forest;
       }
@@ -306,7 +308,7 @@ namespace libsemigroups {
     //!
     //! \par Parameters
     //! (None)
-    Forest const& reverse_spanning_forest() {
+    Forest const& reverse_spanning_forest() const {
       if (_bckwd_forest_defined) {
         return _bckwd_forest;
       }
@@ -357,11 +359,11 @@ namespace libsemigroups {
     }
 
    private:
-    bool finished_impl() const override {
+    bool finished() const {
       return _finished;
     }
 
-    void run_impl() override {
+    void run() const {
       if (finished()) {
         return;
       }

@@ -34,6 +34,8 @@
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
 namespace libsemigroups {
+  using namespace rx;
+
   struct LibsemigroupsException;  // forward decl
   constexpr bool REPORT = false;
 
@@ -240,9 +242,8 @@ namespace libsemigroups {
     row_orb.cache_scc_multipliers(true);
 
     REQUIRE(row_orb.size() == 553);
-    REQUIRE(row_orb.digraph().number_of_scc() == 14);
-    REQUIRE(std::vector<size_t>(row_orb.digraph().cbegin_scc_roots(),
-                                row_orb.digraph().cend_scc_roots())
+    REQUIRE(row_orb.scc().number() == 14);
+    REQUIRE((row_orb.scc().roots() | to_vector())
             == std::vector<size_t>({277,
                                     317,
                                     160,
@@ -443,8 +444,8 @@ namespace libsemigroups {
                   {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15},
                   16));
     o.reserve(70000);
-    REQUIRE(o.size() == 65536);
-    REQUIRE(o.digraph().number_of_scc() == 17);
+    REQUIRE(o.size() == 65'536);
+    REQUIRE(o.scc().number() == 17);
   }
 
   LIBSEMIGROUPS_TEST_CASE("Action",
@@ -471,7 +472,7 @@ namespace libsemigroups {
                   {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15},
                   16));
     REQUIRE(o.size() == 65536);
-    REQUIRE(o.digraph().number_of_scc() == 17);
+    REQUIRE(o.scc().number() == 17);
   }
 
   LIBSEMIGROUPS_TEST_CASE("Action",
@@ -486,7 +487,7 @@ namespace libsemigroups {
     o.add_generator(Perm({1, 2, 3, 4, 5, 6, 7, 0}));
 
     REQUIRE(o.size() == 8);
-    REQUIRE(o.digraph().number_of_scc() == 1);
+    REQUIRE(o.scc().number() == 1);
   }
 
   LIBSEMIGROUPS_TEST_CASE("Action",
@@ -571,7 +572,7 @@ namespace libsemigroups {
 
     REQUIRE(o.current_size() == 1);
     REQUIRE(o.size() == 8);
-    REQUIRE(o.digraph().number_of_scc() == 1);
+    REQUIRE(o.scc().number() == 1);
     REQUIRE(o.position(10) == UNDEFINED);
     REQUIRE(o.current_size() == 8);
     REQUIRE_THROWS_AS(o.at(10), std::out_of_range);
@@ -608,7 +609,7 @@ namespace libsemigroups {
                                       PPerm<3>({2}, {2}, 3),
                                       PPerm<3>({1}, {1}, 3),
                                       PPerm<3>({}, {}, 3)}));
-    REQUIRE_THROWS_AS(o.digraph().cbegin_scc(10), LibsemigroupsException);
+    REQUIRE_THROWS_AS(o.scc().component(10), LibsemigroupsException);
     REQUIRE(o.root_of_scc(PPerm<3>({0, 2}, {0, 2}, 3))
             == PPerm<3>({0, 2}, {0, 2}, 3));
     REQUIRE(o.root_of_scc(PPerm<3>({0, 1}, {0, 1}, 3))

@@ -32,6 +32,7 @@
 #include "debug.hpp"             // for LIBSEMIGROUPS_ASSERT
 #include "digraph.hpp"           // for ActionDigraph
 #include "exception.hpp"         // for LIBSEMIGROUPS_EXCEPTION
+#include "gabow.hpp"             // for Gabow
 #include "report.hpp"            // for REPORT_DEFAULT
 #include "runner.hpp"            // for Runner
 
@@ -59,10 +60,10 @@ namespace libsemigroups {
   //! via the more convenient aliases \ref RightAction and
   //! \ref LeftAction.
   //!
-  //! The function \c run  finds points
-  //! that can be obtained by acting on the seeds of \c this by the generators
-  //! of \c this until no further points can be found, or \c stopped
-  //! returns \c true.  This is achieved by performing a breadth first search.
+  //! The function \c run  finds points that can be obtained by acting on the
+  //! seeds of \c this by the generators of \c this until no further points can
+  //! be found, or \c stopped returns \c true.  This is achieved by performing
+  //! a breadth first search.
   //!
   //! \tparam TElementType the type of the elements of the semigroup.
   //!
@@ -181,7 +182,6 @@ namespace libsemigroups {
     //! The type of the index of a strongly connected component.
     //!
     //! \sa ActionDigraph::scc_index_type
-    using scc_index_type = ActionDigraph<size_t>::scc_index_type;
 
     //! Type of the action of \ref element_type on \ref point_type.
     //!
@@ -194,16 +194,12 @@ namespace libsemigroups {
 
     //! The type of a const iterator pointing to a single strongly
     //! connected component (scc).
-    using const_iterator_scc = ActionDigraph<size_t>::const_iterator_scc;
 
     //! The type of a const iterator pointing to a strongly
     //! connected component (scc).
-    using const_iterator_sccs = ActionDigraph<size_t>::const_iterator_sccs;
 
     //! The type of a const iterator pointing to a representative of a
     //! strongly connected component (scc).
-    using const_iterator_scc_roots
-        = ActionDigraph<size_t>::const_iterator_scc_roots;
 
     //! The type of a const iterator pointing to a \ref point_type.
     using const_iterator
@@ -270,6 +266,7 @@ namespace libsemigroups {
           _options(),
           _orb(),
           _pos(0),
+          _scc(_graph),
           _tmp_point(),
           _tmp_point_init(false) {}
 
@@ -583,11 +580,11 @@ namespace libsemigroups {
         index_type             i = pos;
         std::stack<index_type> visited;
         while (!_multipliers_from_scc_root.defined(i)
-               && _graph.spanning_forest().parent(i) != UNDEFINED) {
+               && _scc.spanning_forest().parent(i) != UNDEFINED) {
           visited.push(i);
           _multipliers_from_scc_root[i]
-              = _gens[_graph.spanning_forest().label(i)];
-          i = _graph.spanning_forest().parent(i);
+              = _gens[_scc.spanning_forest().label(i)];
+          i = _scc.spanning_forest().parent(i);
         }
         if (visited.empty()) {
           // if pos is the scc root, then this can happen
@@ -607,13 +604,13 @@ namespace libsemigroups {
         }
         return _multipliers_from_scc_root[pos];
       } else {
-        element_type out = One()(_gens[0]);
-        element_type tmp = One()(_gens[0]);
-        while (_graph.spanning_forest().parent(pos) != UNDEFINED) {
+        element_type  out = One()(_gens[0]);
+        element_type  tmp = One()(_gens[0]);
+        Forest const& f   = _scc.spanning_forest();
+        while (f.parent(pos) != UNDEFINED) {
           Swap()(tmp, out);
-          internal_product(
-              out, _gens[_graph.spanning_forest().label(pos)], tmp);
-          pos = _graph.spanning_forest().parent(pos);
+          internal_product(out, _gens[f.label(pos)], tmp);
+          pos = f.parent(pos);
         }
         return out;
       }
@@ -637,6 +634,7 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if there are no generators yet added
     //! or the index \p pos is out of range.
+    // TODO reduce code dupl with multiplier_from_scc_root
     element_type multiplier_to_scc_root(index_type pos) {
       validate_gens();
       validate_index(pos);
@@ -648,11 +646,11 @@ namespace libsemigroups {
         index_type             i = pos;
         std::stack<index_type> visited;
         while (!_multipliers_to_scc_root.defined(i)
-               && _graph.reverse_spanning_forest().parent(i) != UNDEFINED) {
+               && _scc.reverse_spanning_forest().parent(i) != UNDEFINED) {
           visited.push(i);
           _multipliers_to_scc_root[i]
-              = _gens[_graph.reverse_spanning_forest().label(i)];
-          i = _graph.reverse_spanning_forest().parent(i);
+              = _gens[_scc.reverse_spanning_forest().label(i)];
+          i = _scc.reverse_spanning_forest().parent(i);
         }
         if (visited.empty()) {
           // if pos is the scc root, then this can happen
@@ -673,11 +671,11 @@ namespace libsemigroups {
       } else {
         element_type out = One()(_gens[0]);
         element_type tmp = One()(_gens[0]);
-        while (_graph.reverse_spanning_forest().parent(pos) != UNDEFINED) {
+        while (_scc.reverse_spanning_forest().parent(pos) != UNDEFINED) {
           Swap()(tmp, out);
           internal_product(
-              out, tmp, _gens[_graph.reverse_spanning_forest().label(pos)]);
-          pos = _graph.reverse_spanning_forest().parent(pos);
+              out, tmp, _gens[_scc.reverse_spanning_forest().label(pos)]);
+          pos = _scc.reverse_spanning_forest().parent(pos);
         }
         return out;
       }
@@ -698,7 +696,7 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if the point \p x does not belong to
     //! the action.
     const_reference_point_type root_of_scc(const_reference_point_type x) {
-      return this->to_external_const(_orb[_graph.root_of_scc(position(x))]);
+      return root_of_scc(position(x));
     }
 
     //! Returns a const reference to the root point of a strongly connected
@@ -716,7 +714,7 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if the index \p pos is out of range.
     const_reference_point_type root_of_scc(index_type pos) {
-      return this->to_external_const(_orb[_graph.root_of_scc(pos)]);
+      return this->to_external_const(_orb[_scc.root_of(pos)]);
     }
 
     //! Returns the digraph of the completely enumerated action.
@@ -738,6 +736,11 @@ namespace libsemigroups {
       return _graph;
     }
 
+    Gabow<size_t> const& scc() {
+      run();
+      return _scc;
+    }
+
    private:
     ////////////////////////////////////////////////////////////////////////
     // Runner - pure virtual member functions - private
@@ -752,6 +755,9 @@ namespace libsemigroups {
       _graph.add_to_out_degree(_gens.size() - _graph.out_degree());
       if (started() && old_nr_gens < _gens.size()) {
         // Generators were added after the last call to run
+        if (_pos > 0 && old_nr_gens < _gens.size()) {
+          _scc.reset();
+        }
         for (size_t i = 0; i < _pos; i++) {
           for (size_t j = old_nr_gens; j < _gens.size(); ++j) {
             ActionOp()(this->to_external(_tmp_point),
@@ -768,6 +774,9 @@ namespace libsemigroups {
             }
           }
         }
+      }
+      if (_pos < _orb.size() && !_gens.empty()) {
+        _scc.reset();
       }
 
       for (; _pos < _orb.size() && !stopped(); ++_pos) {
@@ -798,8 +807,8 @@ namespace libsemigroups {
 
     void validate_index(index_type i) const {
       if (i > _orb.size()) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "index out of range, expected value in [0, %d) but found %d",
+        LIBSEMIGROUPS_EXCEPTION_V3(
+            "index out of range, expected value in [0, {}) but found {}",
             current_size(),
             i);
       }
@@ -807,8 +816,8 @@ namespace libsemigroups {
 
     void validate_gens() const {
       if (_gens.empty()) {
-        LIBSEMIGROUPS_EXCEPTION("no generators defined, this methods cannot be "
-                                "used until at least one generator is added")
+        LIBSEMIGROUPS_EXCEPTION("no generators defined, this function cannot "
+                                "be used until at least one generator is added")
       }
     }
 
@@ -836,6 +845,7 @@ namespace libsemigroups {
      private:
       std::vector<std::pair<bool, element_type>> _multipliers;
     };
+
     ////////////////////////////////////////////////////////////////////////
     // Action - data members - private
     ////////////////////////////////////////////////////////////////////////
@@ -860,6 +870,7 @@ namespace libsemigroups {
     MultiplierCache                  _multipliers_from_scc_root;
     MultiplierCache                  _multipliers_to_scc_root;
     size_t                           _pos;
+    Gabow<size_t>                    _scc;
     internal_point_type              _tmp_point;
     bool                             _tmp_point_init;
   };

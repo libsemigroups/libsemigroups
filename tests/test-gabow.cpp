@@ -114,7 +114,7 @@ namespace libsemigroups {
 
       Forest const& f = scc.spanning_forest();
       REQUIRE(f.parent(k - 1) == UNDEFINED);
-      REQUIRE_NOTHROW(wg.reverse_spanning_forest());
+      REQUIRE_NOTHROW(scc.reverse_spanning_forest());
     }
     auto  wg = clique(3);
     Gabow scc(wg);
@@ -144,10 +144,12 @@ namespace libsemigroups {
       }
       wg.add_edge((k + 1) * j - 1, k * j, 0);
     }
+
+    Gabow scc(wg);
     for (size_t i = 0; i < 10 * j; ++i) {
-      REQUIRE(wg.scc_id(i) == i / j);
+      REQUIRE(scc.id(i) == i / j);
     }
-    Forest forest = wg.spanning_forest();
+    Forest const& forest = scc.spanning_forest();
 
     REQUIRE(forest.parents()
             == std::vector<size_t>(
