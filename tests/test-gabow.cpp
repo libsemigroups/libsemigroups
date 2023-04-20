@@ -16,23 +16,24 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include <cstddef>        // for size_t
-#include <stdexcept>      // for runtime_error
-#include <unordered_set>  // for unordered_set
-#include <vector>         // for vector
+#include <algorithm>  // for all_of
+#include <cstddef>    // for size_t
+#include <numeric>    // for iota
+#include <vector>     // for vector, operator==, allo...
 
-#include "catch.hpp"       // for REQUIRE, REQUIRE_THROWS_AS, REQUI...
+#include "catch.hpp"       // for operator""_catch_sr, Ass...
 #include "test-main.hpp"   // for LIBSEMIGROUPS_TEST_CASE
-#include "word-graph.hpp"  // for add_cycle
+#include "word-graph.hpp"  // for clique, add_clique
 
-#include "libsemigroups/digraph-helper.hpp"  // for follow_path
-#include "libsemigroups/digraph.hpp"         // for ActionDigraph
-#include "libsemigroups/forest.hpp"          // for Forest
+#include "libsemigroups/constants.hpp"       // for UNDEFINED, Undefined, Max
+#include "libsemigroups/digraph-helper.hpp"  // for add_cycle
+#include "libsemigroups/digraph.hpp"         // for ActionDigraph, to_action...
+#include "libsemigroups/exception.hpp"       // for LibsemigroupsException
+#include "libsemigroups/forest.hpp"          // for to_forest, Forest, opera...
 #include "libsemigroups/gabow.hpp"           // for Gabow
-#include "libsemigroups/kbe.hpp"             // for KBE
-#include "libsemigroups/knuth-bendix.hpp"    // for KnuthBendix
 #include "libsemigroups/ranges.hpp"          // for equal
-#include "libsemigroups/words.hpp"           // for literals, Words
+
+#include "rx/ranges.hpp"  // for Inner, operator|, remove...
 
 namespace libsemigroups {
 
@@ -110,7 +111,7 @@ namespace libsemigroups {
     for (size_t k = 2; k < 50; ++k) {
       auto  wg = clique(k);
       Gabow scc(wg);
-      REQUIRE(scc.number() == 1);
+      REQUIRE(scc.number_of_components() == 1);
 
       Forest const& f = scc.spanning_forest();
       REQUIRE(f.parent(k - 1) == UNDEFINED);
@@ -118,7 +119,7 @@ namespace libsemigroups {
     }
     auto  wg = clique(3);
     Gabow scc(wg);
-    REQUIRE(scc.number() == 1);
+    REQUIRE(scc.number_of_components() == 1);
     {
       auto const& f = scc.spanning_forest();
       REQUIRE(f == to_forest(3, {2, 2, UNDEFINED}, {0, 1, UNDEFINED}));
@@ -262,7 +263,7 @@ namespace libsemigroups {
       REQUIRE(wg.number_of_nodes() == n);
       REQUIRE(wg.number_of_edges() == n * n);
       Gabow scc(wg);
-      REQUIRE(scc.number() == 1);
+      REQUIRE(scc.number_of_components() == 1);
 
       add_clique(wg, n);
 
@@ -270,7 +271,7 @@ namespace libsemigroups {
       REQUIRE(wg.number_of_edges() == 2 * n * n);
 
       scc.reset();
-      REQUIRE(scc.number() == 2);
+      REQUIRE(scc.number_of_components() == 2);
 
       auto expected = std::vector<node_type>(n, 0);
       std::iota(expected.begin(), expected.end(), 0);
@@ -297,7 +298,7 @@ namespace libsemigroups {
       REQUIRE(wg.number_of_edges() == 10000);
 
       Gabow scc(wg);
-      REQUIRE(scc.number() == 100);
+      REQUIRE(scc.number_of_components() == 100);
 
       auto result
           = (scc.roots() | transform([&scc](auto v) { return scc.id(v); }));
@@ -316,7 +317,7 @@ namespace libsemigroups {
     REQUIRE(wg.number_of_edges() == 10000);
 
     Gabow scc(wg);
-    REQUIRE(scc.number() == 100);
+    REQUIRE(scc.number_of_components() == 100);
 
     using node_type = decltype(wg)::node_type;
 
@@ -327,5 +328,17 @@ namespace libsemigroups {
           }));
     }
     REQUIRE_THROWS_AS(scc.root_of(1000), LibsemigroupsException);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Gabow",
+                          "012",
+                          "reverse_spanning_forest",
+                          "[quick][gabow]") {
+    auto wg = to_action_digraph<size_t>(
+        5, {{0, 1, 4, 3}, {2}, {2, 0, 3, 3}, {4, 1}, {1, 0, 2}});
+    Gabow scc(wg);
+    REQUIRE(scc.number_of_components() == 1);
+    REQUIRE(scc.reverse_spanning_forest()
+            == to_forest(5, {4, 2, 0, 4, UNDEFINED}, {2, 0, 1, 0, UNDEFINED}));
   }
 }  // namespace libsemigroups

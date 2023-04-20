@@ -233,14 +233,13 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////
     // Konieczny - aliases - private
     ////////////////////////////////////////////////////////////////////////
-    using lambda_orb_index_type     = typename lambda_orb_type::index_type;
-    using lambda_orb_scc_index_type = typename lambda_orb_type::scc_index_type;
-    using rho_orb_index_type        = typename rho_orb_type::index_type;
-    using rho_orb_scc_index_type    = typename rho_orb_type::scc_index_type;
-    using rank_type                 = size_t;
-    using rank_state_type           = typename TTraits::rank_state_type;
-    using left_indices_index_type   = size_t;
-    using right_indices_index_type  = size_t;
+
+    using lambda_orb_index_type    = typename lambda_orb_type::index_type;
+    using rho_orb_index_type       = typename rho_orb_type::index_type;
+    using rank_type                = size_t;
+    using rank_state_type          = typename TTraits::rank_state_type;
+    using left_indices_index_type  = size_t;
+    using right_indices_index_type = size_t;
 
     ////////////////////////////////////////////////////////////////////////
     // Konieczny - internal structs - private
@@ -1259,10 +1258,9 @@ namespace libsemigroups {
       lambda_orb_index_type lpos = _lambda_orb.position(_tmp_lambda_value1);
       LIBSEMIGROUPS_ASSERT(lpos != UNDEFINED);
 
-      lambda_orb_scc_index_type lval_scc_id
-          = _lambda_orb.digraph().scc_id(lpos);
+      lambda_orb_index_type lval_scc_id = _lambda_orb.scc().id(lpos);
 
-      std::pair<rho_orb_index_type, lambda_orb_scc_index_type> key(
+      std::pair<rho_orb_index_type, lambda_orb_index_type> key(
           _rho_orb.position(_tmp_rho_value1), lval_scc_id);
 
       if (_group_indices.find(key) != _group_indices.end()) {
@@ -1276,15 +1274,13 @@ namespace libsemigroups {
         Product()(this->to_external(tmp1),
                   this->to_external_const(x),
                   _lambda_orb.multiplier_to_scc_root(lpos));
-        for (auto it = _lambda_orb.digraph().cbegin_scc(lval_scc_id);
-             it < _lambda_orb.digraph().cend_scc(lval_scc_id);
-             it++) {
+        for (auto const& val : _lambda_orb.scc().component(lval_scc_id)) {
           Product()(this->to_external(tmp2),
                     this->to_external(tmp1),
-                    _lambda_orb.multiplier_from_scc_root(*it));
+                    _lambda_orb.multiplier_from_scc_root(val));
           if (is_group_index(x, tmp2)) {
-            _group_indices.emplace(key, *it);
-            return *it;
+            _group_indices.emplace(key, val);
+            return val;
           }
         }
       }
@@ -1300,9 +1296,9 @@ namespace libsemigroups {
       Lambda()(_tmp_lambda_value1, this->to_external_const(x));
       rho_orb_index_type rpos = _rho_orb.position(_tmp_rho_value1);
       LIBSEMIGROUPS_ASSERT(rpos != UNDEFINED);
-      rho_orb_scc_index_type rval_scc_id = _rho_orb.digraph().scc_id(rpos);
+      rho_orb_index_type rval_scc_id = _rho_orb.scc().id(rpos);
 
-      std::pair<rho_orb_scc_index_type, lambda_orb_index_type> key(
+      std::pair<rho_orb_index_type, lambda_orb_index_type> key(
           rval_scc_id, _lambda_orb.position(_tmp_lambda_value1));
 
       if (_group_indices_rev.find(key) != _group_indices_rev.end()) {
@@ -1316,15 +1312,13 @@ namespace libsemigroups {
         Product()(this->to_external(tmp1),
                   _rho_orb.multiplier_to_scc_root(rpos),
                   this->to_external_const(x));
-        for (auto it = _rho_orb.digraph().cbegin_scc(rval_scc_id);
-             it < _rho_orb.digraph().cend_scc(rval_scc_id);
-             it++) {
+        for (auto const& val : _rho_orb.scc().component(rval_scc_id)) {
           Product()(this->to_external(tmp2),
-                    _rho_orb.multiplier_from_scc_root(*it),
+                    _rho_orb.multiplier_from_scc_root(val),
                     this->to_external(tmp1));
           if (is_group_index(tmp2, x)) {
-            _group_indices_rev.emplace(key, *it);
-            return *it;
+            _group_indices_rev.emplace(key, val);
+            return val;
           }
         }
       }
@@ -1648,11 +1642,11 @@ namespace libsemigroups {
     size_t                                       _degree;
     mutable detail::Pool<internal_element_type>  _element_pool;
     std::vector<internal_element_type>           _gens;
-    std::unordered_map<std::pair<rho_orb_index_type, lambda_orb_scc_index_type>,
+    std::unordered_map<std::pair<rho_orb_index_type, lambda_orb_index_type>,
                        lambda_orb_index_type,
                        PairHash>
         _group_indices;
-    std::unordered_map<std::pair<rho_orb_scc_index_type, lambda_orb_index_type>,
+    std::unordered_map<std::pair<rho_orb_index_type, lambda_orb_index_type>,
                        rho_orb_index_type,
                        PairHash>
                     _group_indices_rev;
@@ -2088,12 +2082,12 @@ namespace libsemigroups {
     // \c this, if it is not already known.
     virtual bool contains_NC(internal_const_reference x,
                              lambda_orb_index_type    lpos,
-                             rho_orb_scc_index_type   rpos)
+                             rho_orb_index_type       rpos)
         = 0;
 
-    virtual bool contains(const_reference        x,
-                          lambda_orb_index_type  lpos,
-                          rho_orb_scc_index_type rpos)
+    virtual bool contains(const_reference       x,
+                          lambda_orb_index_type lpos,
+                          rho_orb_index_type    rpos)
         = 0;
 
     ////////////////////////////////////////////////////////////////////////
@@ -2699,18 +2693,14 @@ namespace libsemigroups {
       if (_left_indices_computed) {
         return;
       }
-
+      auto& lorb = this->parent()->_lambda_orb;
       Lambda()(this->tmp_lambda_value(), this->rep());
-      lambda_orb_index_type lval_pos
-          = this->parent()->_lambda_orb.position(this->tmp_lambda_value());
-      lambda_orb_scc_index_type lval_scc_id
-          = this->parent()->_lambda_orb.digraph().scc_id(lval_pos);
-      for (auto it
-           = this->parent()->_lambda_orb.digraph().cbegin_scc(lval_scc_id);
-           it < this->parent()->_lambda_orb.digraph().cend_scc(lval_scc_id);
-           ++it) {
-        _lambda_index_positions.emplace(*it, this->left_indices().size());
-        this->left_indices().push_back(*it);
+
+      lambda_orb_index_type lval_pos = lorb.position(this->tmp_lambda_value());
+
+      for (auto val : lorb.scc().component_of(lval_pos)) {
+        _lambda_index_positions.emplace(val, this->left_indices().size());
+        this->left_indices().push_back(val);
         // TODO(later) prove this works
 #ifdef LIBSEMIGROUPS_DEBUG
         PoolGuard cg(this->parent()->element_pool());
@@ -2719,7 +2709,7 @@ namespace libsemigroups {
         auto      tmp2 = cg2.get();
         Product()(this->to_external(tmp),
                   this->parent()->_lambda_orb.multiplier_to_scc_root(lval_pos),
-                  this->parent()->_lambda_orb.multiplier_from_scc_root(*it));
+                  this->parent()->_lambda_orb.multiplier_from_scc_root(val));
 
         Product()(this->to_external(tmp2), this->rep(), this->to_external(tmp));
         LIBSEMIGROUPS_ASSERT(this->parent()->get_lambda_group_index(tmp2)
@@ -2738,24 +2728,21 @@ namespace libsemigroups {
       if (_right_indices_computed) {
         return;
       }
+      auto& rorb = this->parent()->_rho_orb;
 
       Rho()(this->tmp_rho_value(), this->rep());
-      rho_orb_index_type rval_pos
-          = this->parent()->_rho_orb.position(this->tmp_rho_value());
-      rho_orb_scc_index_type rval_scc_id
-          = this->parent()->_rho_orb.digraph().scc_id(rval_pos);
-      for (auto it = this->parent()->_rho_orb.digraph().cbegin_scc(rval_scc_id);
-           it < this->parent()->_rho_orb.digraph().cend_scc(rval_scc_id);
-           it++) {
-        _rho_index_positions.emplace(*it, this->right_indices().size());
-        this->right_indices().push_back(*it);
+      rho_orb_index_type rval_pos = rorb.position(this->tmp_rho_value());
+
+      for (auto val : rorb.scc().component_of(rval_pos)) {
+        _rho_index_positions.emplace(val, this->right_indices().size());
+        this->right_indices().push_back(val);
 #ifdef LIBSEMIGROUPS_DEBUG
         PoolGuard cg(this->parent()->element_pool());
         PoolGuard cg2(this->parent()->element_pool());
         auto      tmp  = cg.get();
         auto      tmp2 = cg2.get();
         Product()(this->to_external(tmp),
-                  this->parent()->_rho_orb.multiplier_from_scc_root(*it),
+                  this->parent()->_rho_orb.multiplier_from_scc_root(val),
                   this->parent()->_rho_orb.multiplier_to_scc_root(rval_pos));
 
         Product()(this->to_external(tmp2), this->to_external(tmp), this->rep());
@@ -2952,8 +2939,8 @@ namespace libsemigroups {
       auto      tmp2 = cg2.get();
       auto      tmp3 = cg3.get();
 
-      // TODO(later): use information from the looping through the left indices
-      // in the loop through the right indices
+      // TODO(later): use information from the looping through the left
+      // indices in the loop through the right indices
       for (auto lmult_it = this->cbegin_left_mults();
            lmult_it < this->cend_left_mults();
            ++lmult_it) {
@@ -3104,8 +3091,8 @@ namespace libsemigroups {
   template <typename TElementType, typename TTraits>
   class Konieczny<TElementType, TTraits>::NonRegularDClass final
       : public Konieczny<TElementType, TTraits>::DClass {
-    // Konieczny is only a friend of NonRegularDClass so it can call the private
-    // constructor
+    // Konieczny is only a friend of NonRegularDClass so it can call the
+    // private constructor
     friend class Konieczny<TElementType, TTraits>;
 
    private:
@@ -3824,8 +3811,8 @@ namespace libsemigroups {
     // compute orbits (can stop during these enumerations)
     compute_orbs();
     // we might have stopped; then we shouldn't attempt to anything else since
-    // the orbs may not have been fully enumerated and hence we cannot compute D
-    // classes
+    // the orbs may not have been fully enumerated and hence we cannot compute
+    // D classes
     if (stopped()) {
       return;
     }

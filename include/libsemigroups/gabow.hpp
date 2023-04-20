@@ -16,17 +16,20 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-// This file contains an implementation of Gabow's algorithm for WordGraphs.
+// This file contains the declaration of a class implementing Gabow's algorithm
+// for WordGraphs.
 
 #ifndef LIBSEMIGROUPS_GABOW_HPP_
 #define LIBSEMIGROUPS_GABOW_HPP_
 
-#include <stack>  // for stack
+#include <cstddef>  // for size_t
+#include <stack>    // for stack
+#include <vector>   // for vector
 
 #include "digraph.hpp"  // for ActionDigraph
 #include "forest.hpp"   // for Forest
 
-#include "rx/ranges.hpp"  // for transform
+#include "rx/ranges.hpp"  // for iterator_range, transform
 
 namespace libsemigroups {
 
@@ -38,7 +41,7 @@ namespace libsemigroups {
     using size_type  = size_t;
 
    private:
-    ActionDigraph<node_type> const&             _graph;
+    ActionDigraph<node_type> const*             _graph;
     mutable std::vector<std::vector<node_type>> _comps;
     mutable bool                                _finished;
     mutable std::vector<size_type>              _id;
@@ -48,17 +51,18 @@ namespace libsemigroups {
     mutable bool                                _forwd_forest_defined;
 
    public:
-    Gabow(ActionDigraph<node_type> const& wg)
-        : _graph(wg),
-          _comps(),
-          _finished(false),
-          _id(),
-          _bckwd_forest(),
-          _bckwd_forest_defined(false),
-          _forwd_forest(),
-          _forwd_forest_defined(false) {}
+    Gabow()                        = default;
+    Gabow(Gabow const&)            = default;
+    Gabow(Gabow&&)                 = default;
+    Gabow& operator=(Gabow const&) = default;
+    Gabow& operator=(Gabow&&)      = default;
+    ~Gabow()                       = default;
 
-    // TODO init
+    explicit Gabow(ActionDigraph<node_type> const& wg) : Gabow() {
+      init(wg);
+    }
+
+    Gabow& init(ActionDigraph<node_type> const& wg);
 
     [[nodiscard]] size_type id_no_checks(node_type v) const {
       run();
@@ -106,20 +110,18 @@ namespace libsemigroups {
       return _comps;
     }
 
-    [[nodiscard]] auto component(size_t i) const {
+    [[nodiscard]] std::vector<node_type> component(size_type i) const {
       run();
-      if (i >= number()) {
-        LIBSEMIGROUPS_EXCEPTION_V3("TODO");
-      }
+      validate_scc_index(i);
       return _comps[i];
     }
 
-    [[nodiscard]] auto component_no_checks(size_t i) const {
+    [[nodiscard]] std::vector<node_type>
+    component_no_checks(size_type i) const {
       run();
       return _comps[i];
     }
 
-    // TODO better name
     //! Returns the number of strongly connected components.
     //!
     //! \returns
@@ -137,7 +139,7 @@ namespace libsemigroups {
     //!
     //! \par Parameters
     //! (None)
-    [[nodiscard]] size_t number() const {
+    [[nodiscard]] size_t number_of_components() const {
       run();
       return _comps.size();
     }
@@ -184,13 +186,10 @@ namespace libsemigroups {
     //! out_degree().
     // Not noexcept because scc_id isn't
     [[nodiscard]] node_type root_of(node_type n) const {
-      run();
-      validate_node(n);
-      return root_of_no_checks(n);
+      return component_of(n)[0];
     }
 
     [[nodiscard]] node_type root_of_no_checks(node_type n) const {
-      run();
       return component_of_no_checks(n)[0];
     }
 
@@ -217,23 +216,19 @@ namespace libsemigroups {
     //! \note
     //! \basic_guarantee
     //!
-    [[nodiscard]] auto component_of(node_type n) const {
+    [[nodiscard]] std::vector<node_type> component_of(node_type n) const {
       run();
       validate_node(n);
       return _comps[_id[n]];
     }
 
-    [[nodiscard]] auto component_of_no_checks(node_type n) const {
+    [[nodiscard]] std::vector<node_type>
+    component_of_no_checks(node_type n) const {
       run();
       return _comps[_id[n]];
     }
 
-    Gabow const& reset() const noexcept {
-      _finished             = false;
-      _bckwd_forest_defined = false;
-      _forwd_forest_defined = false;
-      return *this;
-    }
+    Gabow const& reset() const noexcept;
 
     //! Returns a spanning forest of the strongly connected components.
     //!
@@ -255,38 +250,7 @@ namespace libsemigroups {
     //!
     //! \par Parameters
     //! (None)
-    Forest const& spanning_forest() const {
-      if (_forwd_forest_defined) {
-        return _forwd_forest;
-      }
-
-      run();
-
-      std::vector<bool>     seen(_graph.number_of_nodes(), false);
-      std::queue<node_type> queue;
-
-      _forwd_forest.clear();
-      _forwd_forest.add_nodes(_graph.number_of_nodes());
-
-      for (size_t i = 0; i < number(); ++i) {
-        queue.push(_comps[i][0]);
-        seen[_comps[i][0]] = true;
-        do {
-          size_t x = queue.front();
-          for (auto e : _graph.labels()) {
-            size_t y = _graph.unsafe_neighbor(x, e);
-            if (y != UNDEFINED && !seen[y] && _id[y] == _id[x]) {
-              _forwd_forest.set(y, x, e);
-              queue.push(y);
-              seen[y] = true;
-            }
-          }
-          queue.pop();
-        } while (!queue.empty());
-      }
-      _forwd_forest_defined = true;
-      return _forwd_forest;
-    }
+    Forest const& spanning_forest() const;
 
     //! Returns a reverse spanning forest of the strongly connected components.
     //!
@@ -308,155 +272,21 @@ namespace libsemigroups {
     //!
     //! \par Parameters
     //! (None)
-    Forest const& reverse_spanning_forest() const {
-      if (_bckwd_forest_defined) {
-        return _bckwd_forest;
-      }
-      run();
-
-      _bckwd_forest.clear();
-      _bckwd_forest.add_nodes(_graph.number_of_nodes());
-
-      // TODO remove this
-      std::vector<std::vector<node_type>> reverse_edges(
-          _graph.number_of_nodes(), std::vector<node_type>());
-      std::vector<std::vector<node_type>> reverse_labels(
-          _graph.number_of_nodes(), std::vector<node_type>());
-
-      for (auto n : _graph.nodes()) {
-        size_t const scc_id_n = id(n);
-        for (auto e : _graph.labels()) {
-          size_t const k = _graph.unsafe_neighbor(n, e);
-          if (id(k) == scc_id_n) {
-            reverse_edges[k].push_back(n);
-            reverse_labels[k].push_back(e);
-          }
-        }
-      }
-
-      std::queue<size_t> queue;
-      std::vector<bool>  seen(_graph.number_of_nodes(), false);
-
-      for (size_t i = 0; i < number(); ++i) {
-        LIBSEMIGROUPS_ASSERT(queue.empty());
-        queue.push(_comps[i][0]);
-        seen[_comps[i][0]] = true;
-        while (!queue.empty()) {
-          size_t x = queue.front();
-          for (size_t j = 0; j < reverse_edges[x].size(); ++j) {
-            size_t y = reverse_edges[x][j];
-            if (!seen[y]) {
-              queue.push(y);
-              seen[y] = true;
-              _bckwd_forest.set(y, x, reverse_labels[x][j]);
-            }
-          }
-          queue.pop();
-        }
-      }
-      _bckwd_forest_defined = true;
-      return _bckwd_forest;
-    }
+    Forest const& reverse_spanning_forest() const;
 
    private:
     bool finished() const {
       return _finished;
     }
-
-    void run() const {
-      if (finished()) {
-        return;
-      }
-
-      std::stack<node_type>                        stack1;
-      std::stack<node_type>                        stack2;
-      std::stack<std::pair<node_type, label_type>> frame;
-      std::vector<node_type>                       preorder;
-
-      preorder.assign(_graph.number_of_nodes(), UNDEFINED);
-      LIBSEMIGROUPS_ASSERT(stack1.empty());
-      LIBSEMIGROUPS_ASSERT(stack2.empty());
-      LIBSEMIGROUPS_ASSERT(frame.empty());
-
-      _comps.clear();
-      _id.assign(_graph.number_of_nodes(), UNDEFINED);
-
-      node_type C     = 0;
-      node_type index = 0;
-
-      for (auto w : _graph.nodes()) {
-        if (_id[w] == UNDEFINED) {
-          frame.emplace(w, 0);
-        dfs_start:
-          LIBSEMIGROUPS_ASSERT(!frame.empty());
-          node_type  v = frame.top().first;
-          label_type i = frame.top().second;
-
-          preorder[v] = C++;
-          stack1.push(v);
-          stack2.push(v);
-          for (; i < _graph.out_degree(); ++i) {
-          dfs_end:
-            LIBSEMIGROUPS_ASSERT(v < number_of_nodes() && i < _degree);
-            node_type u = _graph.unsafe_neighbor(v, i);
-            if (u != UNDEFINED) {
-              if (preorder[u] == UNDEFINED) {
-                frame.top().second = i;
-                frame.emplace(u, 0);
-                goto dfs_start;
-              } else if (_id[u] == UNDEFINED) {
-                LIBSEMIGROUPS_ASSERT(!stack2.empty());
-                while (preorder[stack2.top()] > preorder[u]) {
-                  stack2.pop();
-                }
-              }
-            }
-          }
-          if (v == stack2.top()) {
-            _comps.emplace_back();
-            node_type x;
-            do {
-              LIBSEMIGROUPS_ASSERT(!stack1.empty());
-              x      = stack1.top();
-              _id[x] = index;
-              _comps[index].push_back(x);
-              stack1.pop();
-            } while (x != v);
-            ++index;
-            LIBSEMIGROUPS_ASSERT(!stack2.empty());
-            stack2.pop();
-          }
-          LIBSEMIGROUPS_ASSERT(!frame.empty());
-          frame.pop();
-          if (!frame.empty()) {
-            v = frame.top().first;
-            i = frame.top().second;
-            goto dfs_end;
-          }
-        }
-      }
-      _finished = true;
-    }
-
-    void validate_node(node_type n) const {
-      if (n >= _id.size()) {
-        LIBSEMIGROUPS_EXCEPTION_V3("TODO");
-      }
-    }
-
-    // TODO use this or delete it
-    void validate_scc_index(size_t i) const {
-      if (i >= number()) {
-        LIBSEMIGROUPS_EXCEPTION("strong component index out of bounds, "
-                                "expected value in the range [0, %d), got %d",
-                                number(),
-                                i);
-      }
-    }
+    void run() const;
+    void validate_node(node_type n) const;
+    void validate_scc_index(size_t i) const;
   };
 
   template <typename Node>
   Gabow(ActionDigraph<Node> const&) -> Gabow<Node>;
 
 }  // namespace libsemigroups
+
+#include "src/gabow.tpp"
 #endif  // LIBSEMIGROUPS_GABOW_HPP_

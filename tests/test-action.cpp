@@ -242,7 +242,7 @@ namespace libsemigroups {
     row_orb.cache_scc_multipliers(true);
 
     REQUIRE(row_orb.size() == 553);
-    REQUIRE(row_orb.scc().number() == 14);
+    REQUIRE(row_orb.scc().number_of_components() == 14);
     REQUIRE((row_orb.scc().roots() | to_vector())
             == std::vector<size_t>({277,
                                     317,
@@ -445,7 +445,7 @@ namespace libsemigroups {
                   16));
     o.reserve(70000);
     REQUIRE(o.size() == 65'536);
-    REQUIRE(o.scc().number() == 17);
+    REQUIRE(o.scc().number_of_components() == 17);
   }
 
   LIBSEMIGROUPS_TEST_CASE("Action",
@@ -472,7 +472,7 @@ namespace libsemigroups {
                   {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15},
                   16));
     REQUIRE(o.size() == 65536);
-    REQUIRE(o.scc().number() == 17);
+    REQUIRE(o.scc().number_of_components() == 17);
   }
 
   LIBSEMIGROUPS_TEST_CASE("Action",
@@ -487,7 +487,7 @@ namespace libsemigroups {
     o.add_generator(Perm({1, 2, 3, 4, 5, 6, 7, 0}));
 
     REQUIRE(o.size() == 8);
-    REQUIRE(o.scc().number() == 1);
+    REQUIRE(o.scc().number_of_components() == 1);
   }
 
   LIBSEMIGROUPS_TEST_CASE("Action",
@@ -572,7 +572,7 @@ namespace libsemigroups {
 
     REQUIRE(o.current_size() == 1);
     REQUIRE(o.size() == 8);
-    REQUIRE(o.scc().number() == 1);
+    REQUIRE(o.scc().number_of_components() == 1);
     REQUIRE(o.position(10) == UNDEFINED);
     REQUIRE(o.current_size() == 8);
     REQUIRE_THROWS_AS(o.at(10), std::out_of_range);
