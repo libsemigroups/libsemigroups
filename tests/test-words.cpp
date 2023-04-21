@@ -428,7 +428,7 @@ namespace libsemigroups {
     size_t const n = 2;
 
     Words words;
-    words.order(order::lex).letters(n).upper_bound(m + 1).min(1).max(m + 1);
+    words.order(Order::lex).letters(n).upper_bound(m + 1).min(1).max(m + 1);
 
     REQUIRE(std::distance(
                 cbegin_wilo(n, m + 1, word_type({0}), word_type(m + 1, 0)),
@@ -447,7 +447,7 @@ namespace libsemigroups {
                           "[lex][quick]") {
     Strings strings;
 
-    strings.order(order::lex)
+    strings.order(Order::lex)
         .letters("a")
         .first("")
         .last("aaaaaaaaaa")
@@ -476,7 +476,7 @@ namespace libsemigroups {
                           "lex | corner cases",
                           "[lex][quick]") {
     Strings strings;
-    strings.order(order::lex)
+    strings.order(Order::lex)
         .letters("ab")
         .first("aaaaaaaaaa")
         .last("")
@@ -500,7 +500,7 @@ namespace libsemigroups {
                           "[lex][quick]") {
     Strings strings;
     strings.letters("ab")
-        .order(order::lex)
+        .order(Order::lex)
         .upper_bound(4)
         .first("a")
         .last("bbbbb");
@@ -563,7 +563,7 @@ namespace libsemigroups {
                           "lex | alphabet = abc | min = 0 | max = 13",
                           "[lex][quick][no-valgrind]") {
     Strings strings;
-    strings.order(order::lex)
+    strings.order(Order::lex)
         .letters("abc")
         .upper_bound(13)
         .first("")
@@ -583,7 +583,7 @@ namespace libsemigroups {
     Strings strings;
 
     strings.letters("ab").first(first).last(last).upper_bound(5).order(
-        order::lex);
+        Order::lex);
 
     auto it = begin(strings);
     REQUIRE(*it == "aaa");
@@ -741,7 +741,7 @@ namespace libsemigroups {
     Strings strings;
 
     strings.letters("ab").first(first).last(last).upper_bound(5).order(
-        order::shortlex);
+        Order::shortlex);
     auto it = begin(strings);
     REQUIRE(*it == "aaa");
     REQUIRE(it->size() == 3);

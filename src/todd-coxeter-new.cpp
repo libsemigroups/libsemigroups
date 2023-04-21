@@ -192,7 +192,7 @@ namespace libsemigroups {
       : v3::CongruenceInterface(),
         _finished(false),
         _forest(),
-        _standardized(order::none),
+        _standardized(Order::none),
         _word_graph() {
     // This is where we pass through from _settings to the
     // _word_graph.definitions
@@ -204,7 +204,7 @@ namespace libsemigroups {
     v3::CongruenceInterface::init();
     _finished = false;
     _forest.init();
-    _standardized = order::none;
+    _standardized = Order::none;
     _word_graph.definitions().init(this);
     _word_graph.set_prefix("ToddCoxeter");
     return *this;
@@ -219,7 +219,7 @@ namespace libsemigroups {
     _finished = false;
     _forest.init();
     _settings     = Settings();
-    _standardized = order::none;
+    _standardized = Order::none;
     _word_graph.definitions().init(this);
     _word_graph.set_prefix("ToddCoxeter");
     return *this;
@@ -230,7 +230,7 @@ namespace libsemigroups {
         _finished(false),
         _forest(),
         _settings(),
-        _standardized(order::none),
+        _standardized(Order::none),
         _word_graph() {
     if (knd == congruence_kind::left) {
       presentation::reverse(p);
@@ -258,7 +258,7 @@ namespace libsemigroups {
         _finished(false),
         _forest(),
         _settings(),
-        _standardized(order::none),
+        _standardized(Order::none),
         _word_graph() {
     p.validate();  // TODO this is probably missing all over the place here
     if (knd == congruence_kind::left) {
@@ -442,7 +442,7 @@ namespace libsemigroups {
     return lhs == rhs || word_to_class_index(lhs) == word_to_class_index(rhs);
   }
 
-  bool ToddCoxeter::is_standardized(order val) const {
+  bool ToddCoxeter::is_standardized(Order val) const {
     // TODO this is probably not always valid
     return val == _standardized
            && _forest.number_of_nodes()
@@ -453,7 +453,7 @@ namespace libsemigroups {
     // TODO this is probably not always valid, i.e. if we are standardized,
     // then grow, then collapse, but end up with the same number of nodes
     // again.
-    return _standardized != order::none
+    return _standardized != Order::none
            && _forest.number_of_nodes()
                   == word_graph().number_of_nodes_active();
   }
@@ -466,13 +466,13 @@ namespace libsemigroups {
     if (!finished()) {
       return;
     }
-    standardize(order::shortlex);
+    standardize(Order::shortlex);
     _word_graph.shrink_to_fit(_word_graph.number_of_nodes_active());
     _word_graph.erase_free_nodes();
     _word_graph.restrict(_word_graph.number_of_nodes_active());
   }
 
-  bool ToddCoxeter::standardize(order val) {
+  bool ToddCoxeter::standardize(Order val) {
     if (is_standardized(val)) {
       return false;
     }
@@ -529,7 +529,7 @@ namespace libsemigroups {
     run();
     LIBSEMIGROUPS_ASSERT(finished());
     if (!is_standardized()) {
-      standardize(order::shortlex);
+      standardize(Order::shortlex);
     }
     auto it = forest::cbegin_paths(_forest) + i;
     if (!presentation().contains_empty_word()) {
@@ -555,7 +555,7 @@ namespace libsemigroups {
     run();
     LIBSEMIGROUPS_ASSERT(finished());
     if (!is_standardized()) {
-      standardize(order::shortlex);
+      standardize(Order::shortlex);
     }
     return const_word_to_class_index(w);
     // c is in the range 1, ..., number_of_cosets_active() because 0

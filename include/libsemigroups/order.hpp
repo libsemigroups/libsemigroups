@@ -40,7 +40,7 @@ namespace libsemigroups {
   //! standardize(order) to specify which ordering should be used.  The
   //! normal forms for congruence classes are given with respect to one of
   //! the orders specified by the values in this enum.
-  enum class order : uint8_t {
+  enum class Order : uint8_t {
     //! No standardization has been done.
     none = 0,
     //! Normal forms are the short-lex least word belonging to a given
@@ -463,17 +463,18 @@ namespace libsemigroups {
     }
   };
 
-  template <order val>
-  struct Compare {};
+  // TODO delete?
+  // template <order val>
+  // struct Compare {};
 
-  template <>
-  struct Compare<order::shortlex> : ShortLexCompare {};
+  // template <>
+  // struct Compare<order::shortlex> : ShortLexCompare {};
 
-  template <>
-  struct Compare<order::lex> : LexicographicalCompare {};
+  // template <>
+  // struct Compare<order::lex> : LexicographicalCompare {};
 
-  template <>
-  struct Compare<order::recursive> : RecursivePathCompare {};
+  // template <>
+  // struct Compare<order::recursive> : RecursivePathCompare {};
 
 }  // namespace libsemigroups
 

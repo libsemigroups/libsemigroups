@@ -276,10 +276,10 @@ namespace libsemigroups {
   void Words::set_iterator() const {
     if (!_current_valid) {
       _current_valid = true;
-      if (_order == order::shortlex) {
+      if (_order == Order::shortlex) {
         _current = cbegin_wislo(_number_of_letters, _first, _last);
         _end     = cend_wislo(_number_of_letters, _first, _last);
-      } else if (_order == order::lex) {
+      } else if (_order == Order::lex) {
         _current = cbegin_wilo(_number_of_letters, _upper_bound, _first, _last);
         _end     = cend_wilo(_number_of_letters, _upper_bound, _first, _last);
       }
@@ -287,7 +287,7 @@ namespace libsemigroups {
   }
 
   size_t Words::count() const noexcept {
-    if (_order == order::shortlex) {
+    if (_order == Order::shortlex) {
       return size_hint();
     } else {
       return (*this | rx::count());
@@ -299,7 +299,7 @@ namespace libsemigroups {
     _current_valid     = false;
     _first             = {};
     _last              = {};
-    _order             = order::shortlex;
+    _order             = Order::shortlex;
     _upper_bound       = 0;  // does nothing if _order is shortlex
     return *this;
   }
@@ -310,10 +310,10 @@ namespace libsemigroups {
   Words& Words::operator=(Words&&)      = default;
   Words::~Words()                       = default;
 
-  Words& Words::order(enum order val) {
-    if (val != order::shortlex && val != order::lex) {
+  Words& Words::order(Order val) {
+    if (val != Order::shortlex && val != Order::lex) {
       LIBSEMIGROUPS_EXCEPTION(
-          "the argument must be order::shortlex or order::lex, found {}", val);
+          "the argument must be Order::shortlex or Order::lex, found {}", val);
     }
     _current_valid &= (val == _order);
     _order = val;

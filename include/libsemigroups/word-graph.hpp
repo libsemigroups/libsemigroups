@@ -54,7 +54,7 @@
 #include "int-range.hpp"       // for IntegralRange
 #include "iterator.hpp"        // for ConstIteratorStateless
 #include "matrix.hpp"          // for IntMat
-#include "order.hpp"           // for order
+#include "order.hpp"           // for Order
 #include "types.hpp"           // for word_type
 #include "words.hpp"           // for number_of_words
 
@@ -1428,7 +1428,7 @@ namespace libsemigroups {
     // Return value indicates whether or not the graph was modified.
     // TODO(now) to tpp file
     template <typename Graph>
-    bool standardize(Graph& d, Forest& f, order val) {
+    bool standardize(Graph& d, Forest& f, Order val) {
       static_assert(std::is_base_of_v<WordGraphBase, Graph>,
                     "the template parameter Graph must be "
                     "derived from WordGraphBase");
@@ -1440,13 +1440,13 @@ namespace libsemigroups {
       }
 
       switch (val) {
-        case order::none:
+        case Order::none:
           return false;
-        case order::shortlex:
+        case Order::shortlex:
           return detail::shortlex_standardize(d, f);
-        case order::lex:
+        case Order::lex:
           return detail::lex_standardize(d, f);
-        case order::recursive:
+        case Order::recursive:
           return detail::recursive_standardize(d, f);
         default:
           return false;
@@ -1454,7 +1454,7 @@ namespace libsemigroups {
     }
 
     template <typename Graph>
-    std::pair<bool, Forest> standardize(Graph& d, order val = order::shortlex) {
+    std::pair<bool, Forest> standardize(Graph& d, Order val = Order::shortlex) {
       static_assert(
           std::is_base_of<WordGraphBase, Graph>::value,
           "the template parameter Graph must be derived from WordGraphBase");

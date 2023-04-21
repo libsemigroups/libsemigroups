@@ -52,9 +52,9 @@ namespace libsemigroups {
 
   template <typename Node>
   const_pilo_iterator<Node>::const_pilo_iterator(WordGraph<Node> const* ptr,
-                                                 Node      source,
-                                                 size_type min,
-                                                 size_type max)
+                                                 Node                   source,
+                                                 size_type              min,
+                                                 size_type              max)
       : _edges(),
         _digraph(ptr),
         _edge(UNDEFINED),
@@ -148,7 +148,7 @@ namespace libsemigroups {
 
   template <typename Node>
   const_pislo_iterator<Node>::const_pislo_iterator(
-      WordGraph<Node> const*                     ptr,
+      WordGraph<Node> const*                         ptr,
       Node                                           source,
       typename const_pislo_iterator<Node>::size_type min,
       typename const_pislo_iterator<Node>::size_type max)
@@ -224,12 +224,11 @@ namespace libsemigroups {
   const_pstilo_iterator<Node>::~const_pstilo_iterator() = default;
 
   template <typename Node>
-  const_pstilo_iterator<Node>::const_pstilo_iterator(
-      WordGraph<Node> const* ptr,
-      node_type                  source,
-      node_type                  target,
-      size_type                  min,
-      size_type                  max)
+  const_pstilo_iterator<Node>::const_pstilo_iterator(WordGraph<Node> const* ptr,
+                                                     node_type source,
+                                                     node_type target,
+                                                     size_type min,
+                                                     size_type max)
       : _edges({}),
         _digraph(ptr),
         _edge(UNDEFINED),
@@ -394,9 +393,9 @@ namespace libsemigroups {
   namespace detail {
     template <typename Node1, typename Node2>
     uint64_t number_of_paths_trivial(WordGraph<Node1> const& d,
-                                     Node2                       source,
-                                     size_t                      min,
-                                     size_t                      max) {
+                                     Node2                   source,
+                                     size_t                  min,
+                                     size_t                  max) {
       if (min >= max) {
         return 0;
       } else if (d.validate()) {
@@ -421,10 +420,10 @@ namespace libsemigroups {
 
     template <typename Node1, typename Node2>
     uint64_t number_of_paths_trivial(WordGraph<Node1> const& d,
-                                     Node2                       source,
-                                     Node2                       target,
-                                     size_t                      min,
-                                     size_t                      max) {
+                                     Node2                   source,
+                                     Node2                   target,
+                                     size_t                  min,
+                                     size_t                  max) {
       if (min >= max
           || !action_digraph_helper::is_reachable(d, source, target)) {
         return 0;
@@ -437,9 +436,9 @@ namespace libsemigroups {
 
     template <typename Node1, typename Node2>
     uint64_t number_of_paths_matrix(WordGraph<Node1> const& d,
-                                    Node2                       source,
-                                    size_t                      min,
-                                    size_t                      max) {
+                                    Node2                   source,
+                                    size_t                  min,
+                                    size_t                  max) {
       auto am = action_digraph::adjacency_matrix(d);
 #ifdef LIBSEMIGROUPS_EIGEN_ENABLED
       auto     acc   = action_digraph::pow(am, min);
@@ -476,8 +475,8 @@ namespace libsemigroups {
     // algorithms
     template <typename Node1, typename Node2>
     bool number_of_paths_special(WordGraph<Node1> const& d,
-                                 Node2                       source,
-                                 Node2                       target,
+                                 Node2                   source,
+                                 Node2                   target,
                                  size_t,
                                  size_t max) {
       if (max == POSITIVE_INFINITY) {
@@ -501,10 +500,10 @@ namespace libsemigroups {
 
     template <typename Node1, typename Node2>
     uint64_t number_of_paths_matrix(WordGraph<Node1> const& d,
-                                    Node2                       source,
-                                    Node2                       target,
-                                    size_t                      min,
-                                    size_t                      max) {
+                                    Node2                   source,
+                                    Node2                   target,
+                                    size_t                  min,
+                                    size_t                  max) {
       if (!action_digraph_helper::is_reachable(d, source, target)) {
         // Complexity is O(number of nodes + number of edges).
         return 0;
@@ -547,9 +546,9 @@ namespace libsemigroups {
 
     template <typename Node1, typename Node2>
     uint64_t number_of_paths_acyclic(WordGraph<Node1> const& d,
-                                     Node2                       source,
-                                     size_t                      min,
-                                     size_t                      max) {
+                                     Node2                   source,
+                                     size_t                  min,
+                                     size_t                  max) {
       auto topo = action_digraph_helper::topological_sort(d, source);
       if (topo.empty()) {
         // Can't topologically sort, so the digraph contains cycles.
@@ -595,10 +594,10 @@ namespace libsemigroups {
 
     template <typename Node1, typename Node2>
     uint64_t number_of_paths_acyclic(WordGraph<Node1> const& d,
-                                     Node2                       source,
-                                     Node2                       target,
-                                     size_t                      min,
-                                     size_t                      max) {
+                                     Node2                   source,
+                                     Node2                   target,
+                                     size_t                  min,
+                                     size_t                  max) {
       auto topo = action_digraph_helper::topological_sort(d, source);
       if (topo.empty()) {
         // Can't topologically sort, so the digraph contains cycles.
@@ -697,9 +696,9 @@ namespace libsemigroups {
 
   template <typename Node1, typename Node2>
   paths::algorithm number_of_paths_algorithm(WordGraph<Node1> const& d,
-                                             Node2                       source,
-                                             size_t                      min,
-                                             size_t                      max) {
+                                             Node2                   source,
+                                             size_t                  min,
+                                             size_t                  max) {
     if (min >= max || d.validate()) {
       return paths::algorithm::trivial;
     }
@@ -724,10 +723,10 @@ namespace libsemigroups {
 
   template <typename Node1, typename Node2>
   uint64_t number_of_paths(WordGraph<Node1> const& d,
-                           Node2                       source,
-                           size_t                      min,
-                           size_t                      max,
-                           paths::algorithm            lgrthm) {
+                           Node2                   source,
+                           size_t                  min,
+                           size_t                  max,
+                           paths::algorithm        lgrthm) {
     action_digraph_helper::validate_node(d, source);
 
     switch (lgrthm) {
@@ -752,10 +751,10 @@ namespace libsemigroups {
 
   template <typename Node1, typename Node2>
   paths::algorithm number_of_paths_algorithm(WordGraph<Node1> const& d,
-                                             Node2                       source,
-                                             Node2                       target,
-                                             size_t                      min,
-                                             size_t                      max) {
+                                             Node2                   source,
+                                             Node2                   target,
+                                             size_t                  min,
+                                             size_t                  max) {
     bool acyclic = action_digraph_helper::is_acyclic(d, source, target);
     if (min >= max || !action_digraph_helper::is_reachable(d, source, target)
         || (!acyclic && max == POSITIVE_INFINITY)) {
@@ -772,11 +771,11 @@ namespace libsemigroups {
 
   template <typename Node1, typename Node2>
   uint64_t number_of_paths(WordGraph<Node1> const& d,
-                           Node2                       source,
-                           Node2                       target,
-                           size_t                      min,
-                           size_t                      max,
-                           paths::algorithm            lgrthm) {
+                           Node2                   source,
+                           Node2                   target,
+                           size_t                  min,
+                           size_t                  max,
+                           paths::algorithm        lgrthm) {
     action_digraph_helper::validate_node(d, source);
     action_digraph_helper::validate_node(d, target);
 
@@ -812,7 +811,7 @@ namespace libsemigroups {
 
     if (!_current_valid && N != 0) {
       _current_valid = true;
-      if (_order == order::shortlex && _source != UNDEFINED) {
+      if (_order == Order::shortlex && _source != UNDEFINED) {
         if (_target != UNDEFINED) {
           _current = cbegin_pstislo(*_digraph, _source, _target, _min, _max);
           _end     = cend_pstislo(*_digraph);
@@ -820,7 +819,7 @@ namespace libsemigroups {
           _current = cbegin_pislo(*_digraph, _source, _min, _max);
           _end     = cend_pislo(*_digraph);
         }
-      } else if (_order == order::lex && _source != UNDEFINED) {
+      } else if (_order == Order::lex && _source != UNDEFINED) {
         if (_target != UNDEFINED) {
           _current = cbegin_pstilo(*_digraph, _source, _target, _min, _max);
           _end     = cend_pstilo(*_digraph);
@@ -849,7 +848,7 @@ namespace libsemigroups {
   Paths<Node>& Paths<Node>::init() {
     _current_valid = false;
     _digraph       = nullptr;
-    _order         = order::shortlex;
+    _order         = Order::shortlex;
     _max           = POSITIVE_INFINITY;
     _min           = 0;
     _source        = UNDEFINED;
@@ -871,10 +870,10 @@ namespace libsemigroups {
 
   template <typename Node>
   template <typename Subclass>
-  Subclass& Paths<Node>::order(Subclass* obj, enum order val) {
-    if (val != order::shortlex && val != order::lex) {
+  Subclass& Paths<Node>::order(Subclass* obj, Order val) {
+    if (val != Order::shortlex && val != Order::lex) {
       LIBSEMIGROUPS_EXCEPTION(
-          "the argument must be order::shortlex or order::lex, found {}", val);
+          "the argument must be Order::shortlex or Order::lex, found {}", val);
     }
     _current_valid &= (val == _order);
     _order = val;

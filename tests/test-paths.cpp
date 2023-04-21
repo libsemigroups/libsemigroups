@@ -36,7 +36,6 @@
 #include "libsemigroups/config.hpp"             // for LIBSEMIGROUPS_EIGEN_E...
 #include "libsemigroups/constants.hpp"          // for operator!=, operator==
 #include "libsemigroups/digraph-helper.hpp"     // for is_acyclic, node_type
-#include "libsemigroups/word-graph.hpp"            // for WordGraph, make, pow
 #include "libsemigroups/exception.hpp"          // for LibsemigroupsException
 #include "libsemigroups/froidure-pin-base.hpp"  // for FroidurePinBase
 #include "libsemigroups/iterator.hpp"           // for operator+
@@ -48,8 +47,9 @@
 #include "libsemigroups/report.hpp"             // for ReportGuard
 #include "libsemigroups/stl.hpp"                // for hash
 #include "libsemigroups/to-froidure-pin.hpp"
-#include "libsemigroups/types.hpp"  // for word_type, relation_type
-#include "libsemigroups/words.hpp"  // for operator""_w, Words
+#include "libsemigroups/types.hpp"       // for word_type, relation_type
+#include "libsemigroups/word-graph.hpp"  // for WordGraph, make, pow
+#include "libsemigroups/words.hpp"       // for operator""_w, Words
 
 #include "rx/ranges.hpp"  // for operator|, begin, end
 
@@ -96,7 +96,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("Paths", "000", "100 node path", "[quick]") {
     WordGraph<size_t> ad;
-    size_t const          n = 100;
+    size_t const      n = 100;
     ad.add_nodes(n);
     ad.add_to_out_degree(2);
     for (size_t i = 0; i < n - 1; ++i) {
@@ -104,7 +104,7 @@ namespace libsemigroups {
     }
 
     Paths p(ad);
-    p.order(order::lex).from(0);
+    p.order(Order::lex).from(0);
 
     REQUIRE((p | count()) == 100);
 
@@ -114,7 +114,7 @@ namespace libsemigroups {
     p.from(0);
     REQUIRE(begin(p) != end(p));
 
-    p.order(order::shortlex);
+    p.order(Order::shortlex);
     REQUIRE((p | count()) == 100);
     REQUIRE((p | skip_n(3)).get() == 010_w);
 
@@ -137,7 +137,7 @@ namespace libsemigroups {
                                          {}});
 
     Paths p(ad);
-    p.order(order::shortlex).from(2).min(3).max(4);
+    p.order(Order::shortlex).from(2).min(3).max(4);
 
     std::vector<word_type> expected = {{2, 1, 0}};
     REQUIRE((p | count()) == 1);
@@ -149,7 +149,7 @@ namespace libsemigroups {
 
     REQUIRE(p.min() == 0);
     REQUIRE(p.max() == 0);
-    REQUIRE(p.order() == order::shortlex);
+    REQUIRE(p.order() == Order::shortlex);
     REQUIRE(p.at_end());
     REQUIRE(p.size_hint() == 0);
     REQUIRE((p | count()) == 0);
@@ -187,10 +187,10 @@ namespace libsemigroups {
 
     Paths p(ad);
 
-    p.order(order::lex).from(0).max(200);
+    p.order(Order::lex).from(0).max(200);
     REQUIRE((p | count()) == 200);
 
-    p.order(order::shortlex);
+    p.order(Order::shortlex);
     REQUIRE((p | count()) == 200);
   }
 
@@ -202,7 +202,7 @@ namespace libsemigroups {
 
     Paths p(ad);
 
-    p.order(order::lex).from(0).min(0).max(3);
+    p.order(Order::lex).from(0).min(0).max(3);
     REQUIRE((p | count()) == 7);
     REQUIRE((p | to_vector())
             == std::vector<word_type>({{}, 0_w, 00_w, 01_w, 1_w, 10_w, 11_w}));
@@ -210,18 +210,18 @@ namespace libsemigroups {
     REQUIRE((p | to_vector())
             == std::vector<word_type>({{}, 0_w, 00_w, 01_w, 1_w, 10_w, 11_w}));
 
-    p.order(order::shortlex).from(0).min(0).max(3);
+    p.order(Order::shortlex).from(0).min(0).max(3);
     REQUIRE((p | count()) == 7);
     REQUIRE((p | to_vector())
             == std::vector<word_type>({{}, 0_w, 1_w, 00_w, 01_w, 10_w, 11_w}));
     REQUIRE((p | count()) == 7);
 
-    p.order(order::shortlex);
+    p.order(Order::shortlex);
     REQUIRE((p | count()) == 7);
     REQUIRE((p | to_vector())
             == std::vector<word_type>({{}, 0_w, 1_w, 00_w, 01_w, 10_w, 11_w}));
 
-    p.init(ad).order(order::lex).from(0);
+    p.init(ad).order(Order::lex).from(0);
     REQUIRE((p | count()) == 15);
     REQUIRE((p | to_vector())
             == std::vector<word_type>({{},
@@ -240,7 +240,7 @@ namespace libsemigroups {
                                        110_w,
                                        111_w}));
 
-    p.order(order::shortlex);
+    p.order(Order::shortlex);
     REQUIRE((p | to_vector())
             == std::vector<word_type>({{},
                                        0_w,
@@ -258,7 +258,7 @@ namespace libsemigroups {
                                        110_w,
                                        111_w}));
 
-    p.order(order::lex).min(1);
+    p.order(Order::lex).min(1);
     REQUIRE((p | to_vector())
             == std::vector<word_type>({0_w,
                                        00_w,
@@ -275,7 +275,7 @@ namespace libsemigroups {
                                        110_w,
                                        111_w}));
 
-    p.order(order::shortlex);
+    p.order(Order::shortlex);
     REQUIRE((p | to_vector())
             == std::vector<word_type>({0_w,
                                        1_w,
@@ -291,19 +291,19 @@ namespace libsemigroups {
                                        101_w,
                                        110_w,
                                        111_w}));
-    p.order(order::lex).from(2).min(1);
+    p.order(Order::lex).from(2).min(1);
     REQUIRE((p | to_vector())
             == std::vector<word_type>({0_w, 00_w, 01_w, 1_w, 10_w, 11_w}));
 
-    p.order(order::shortlex);
+    p.order(Order::shortlex);
     REQUIRE((p | to_vector())
             == std::vector<word_type>({0_w, 1_w, 00_w, 01_w, 10_w, 11_w}));
 
-    p.order(order::lex).from(2).min(2).max(3);
+    p.order(Order::lex).from(2).min(2).max(3);
     REQUIRE((p | to_vector())
             == std::vector<word_type>({00_w, 01_w, 10_w, 11_w}));
 
-    p.order(order::shortlex);
+    p.order(Order::shortlex);
     REQUIRE((p | to_vector())
             == std::vector<word_type>({00_w, 01_w, 10_w, 11_w}));
   }
@@ -330,7 +330,7 @@ namespace libsemigroups {
     std::sort(expected.begin(), expected.end(), ShortLexCompare());
 
     Paths p(ad);
-    p.order(order::shortlex).from(0).to(4).min(0).max(5);
+    p.order(Order::shortlex).from(0).to(4).min(0).max(5);
 
     REQUIRE((p | count()) == 13);
     REQUIRE((p | count()) == 13);
@@ -338,7 +338,7 @@ namespace libsemigroups {
     REQUIRE((p | take(1)).get() == 01_w);
 
     std::sort(expected.begin(), expected.end(), LexicographicalCompare());
-    p.order(order::lex);
+    p.order(Order::lex);
 
     REQUIRE((p | to_vector()) == expected);
     REQUIRE((p | take(1)).get() == 0001_w);
@@ -353,7 +353,7 @@ namespace libsemigroups {
            }));
     REQUIRE((expected2 | count()) == 131'062);
 
-    p.order(order::shortlex).max(N);
+    p.order(Order::shortlex).max(N);
     REQUIRE((p | count()) == 131'062);
     REQUIRE(equal(p, expected2));
     p.to(UNDEFINED);
@@ -394,7 +394,7 @@ namespace libsemigroups {
             == 10);
 
     Paths paths(ad);
-    paths.order(order::lex).from(S.size()).min(0).max(9);
+    paths.order(Order::lex).from(S.size()).min(0).max(9);
     REQUIRE(paths.to(0).get() == 0_w);
 
     auto tprime = (seq() | first_n(S.size())
@@ -493,7 +493,7 @@ namespace libsemigroups {
     std::sort(expected.begin(), expected.end(), ShortLexCompare());
 
     Paths p(ad);
-    p.order(order::shortlex).from(0).to(4).min(0).max(5);
+    p.order(Order::shortlex).from(0).to(4).min(0).max(5);
     REQUIRE((p | to_vector()) == expected);
 
     size_t const N = 18;
@@ -505,7 +505,7 @@ namespace libsemigroups {
                 | to_vector());
     REQUIRE(expected.size() == 131'062);
 
-    p.order(order::shortlex).from(0).to(4).min(0).max(N);
+    p.order(Order::shortlex).from(0).to(4).min(0).max(N);
     REQUIRE((p | count()) == 131'062);
     REQUIRE((p | to_vector()) == expected);
   }
@@ -521,7 +521,7 @@ namespace libsemigroups {
                                          {3}});
 
     Paths p(ad);
-    p.order(order::shortlex).from(0).min(0).max(10);
+    p.order(Order::shortlex).from(0).min(0).max(10);
 
     REQUIRE(is_sorted(p, ShortLexCompare()));
     REQUIRE((p | count()) == 75);
@@ -551,7 +551,7 @@ namespace libsemigroups {
 
     auto expected = p | to_vector();
     std::sort(expected.begin(), expected.end(), LexicographicalCompare());
-    REQUIRE(expected == (p.order(order::lex) | to_vector()));
+    REQUIRE(expected == (p.order(Order::lex) | to_vector()));
   }
 
   LIBSEMIGROUPS_TEST_CASE("Paths",
@@ -603,7 +603,7 @@ namespace libsemigroups {
     // used pilo (i.e. not use the reachability check that is in pstilo),
     // then we'd enter an infinite loop.
     Paths p(ad);
-    p.order(order::lex).from(0).to(1);
+    p.order(Order::lex).from(0).to(1);
 
     REQUIRE(p.get() == 1_w);
     p.next();
@@ -611,7 +611,7 @@ namespace libsemigroups {
 
     ad = chain(5);
 
-    p.init(ad).order(order::lex).from(0).to(0).min(0).max(100);
+    p.init(ad).order(Order::lex).from(0).to(0).min(0).max(100);
     REQUIRE((p | count()) == 1);
 
     p.min(4);
@@ -621,7 +621,7 @@ namespace libsemigroups {
     ad.add_to_out_degree(1);
     action_digraph_helper::add_cycle(ad, 5);
 
-    p.init(ad).order(order::lex).from(0).to(0).min(0).max(6);
+    p.init(ad).order(Order::lex).from(0).to(0).min(0).max(6);
     REQUIRE((p | count()) == 2);
     REQUIRE(p.count() == 2);
 
@@ -732,7 +732,7 @@ namespace libsemigroups {
                                  {0, 0, 0, 0, 0, 0, 0, 0}}};
 
     Paths p(ad);
-    p.order(order::lex);
+    p.order(Order::lex);
     for (auto s = ad.cbegin_nodes(); s != ad.cend_nodes(); ++s) {
       for (size_t min = 0; min < ad.number_of_nodes(); ++min) {
         for (size_t max = 0; max < ad.number_of_nodes(); ++max) {
@@ -779,8 +779,8 @@ namespace libsemigroups {
                           "012",
                           "number_of_paths binary tree",
                           "[quick][no-valgrind]") {
-    using node_type          = WordGraph<size_t>::node_type;
-    size_t const          n  = 6;
+    using node_type      = WordGraph<size_t>::node_type;
+    size_t const      n  = 6;
     WordGraph<size_t> ad = binary_tree(n);
     REQUIRE(ad.number_of_nodes() == std::pow(2, n) - 1);
     REQUIRE(ad.number_of_edges() == std::pow(2, n) - 2);
@@ -788,7 +788,7 @@ namespace libsemigroups {
     REQUIRE(number_of_paths(ad, 0) == std::pow(2, n) - 1);
 
     Paths p(ad);
-    p.order(order::lex);
+    p.order(Order::lex);
 
     for (auto s = ad.cbegin_nodes(); s != ad.cend_nodes(); ++s) {
       for (node_type min = 0; min < n; ++min) {
@@ -821,7 +821,7 @@ namespace libsemigroups {
                           "013",
                           "number_of_paths large binary tree",
                           "[quick][no-valgrind]") {
-    size_t const          n  = 20;
+    size_t const      n  = 20;
     WordGraph<size_t> ad = binary_tree(n);
     REQUIRE(ad.number_of_nodes() == std::pow(2, n) - 1);
     REQUIRE(ad.number_of_edges() == std::pow(2, n) - 2);
@@ -954,7 +954,7 @@ namespace libsemigroups {
     REQUIRE(ad.number_of_edges() == 15);
 
     Paths p(ad);
-    p.order(order::lex).from(0).min(0).max(10);
+    p.order(Order::lex).from(0).min(0).max(10);
     REQUIRE((p | count()) == 6'858);
     REQUIRE(number_of_paths_algorithm(ad, 0, 0, 10)
             == paths::algorithm::matrix);

@@ -29,11 +29,13 @@
 #define LIBSEMIGROUPS_TODD_COXETER_NEW_HPP_
 
 #include "cong-intf-new.hpp"
+#include "exception.hpp"       // for LIBSEMIGROUPS_EXCEPTION
 #include "felsch-digraph.hpp"  // for FelschDigraph
 #include "obvinf.hpp"          // for is_obviously_infinite
 #include "order.hpp"           // for order
 #include "paths.hpp"
 #include "present.hpp"               // for Presentation
+#include "report.hpp"                // for LIBSEMIGROUPS_EXCEPTION
 #include "to-presentation.hpp"       // for make
 #include "todd-coxeter-digraph.hpp"  // for Digraph
 #include "types.hpp"                 // for word_type
@@ -205,7 +207,7 @@ namespace libsemigroups {
     bool     _finished;
     Forest   _forest;
     Settings _settings;
-    order    _standardized;
+    Order    _standardized;
     Digraph  _word_graph;
 
    public:
@@ -267,7 +269,7 @@ namespace libsemigroups {
     template <typename Node>
     ToddCoxeter(congruence_kind                knd,
                 Presentation<word_type> const& p,
-                WordGraph<Node> const&     ad)
+                WordGraph<Node> const&         ad)
         : ToddCoxeter(knd, p) {
       _word_graph = ad;
       _word_graph.presentation(p);
@@ -765,11 +767,11 @@ namespace libsemigroups {
       return _forest;
     }
 
-    inline order standardization_order() const noexcept {
+    inline Order standardization_order() const noexcept {
       return _standardized;
     }
 
-    bool is_standardized(order val) const;
+    bool is_standardized(Order val) const;
     bool is_standardized() const;
 
     ////////////////////////////////////////////////////////////////////////
@@ -779,7 +781,7 @@ namespace libsemigroups {
     void shrink_to_fit();
 
     // Returns true if anything changed
-    bool standardize(order val);
+    bool standardize(Order val);
 
     node_type word_to_class_index(word_type const& w) {
       validate_word(w);
@@ -893,7 +895,7 @@ namespace libsemigroups {
     //! Returns a const iterator pointing to the normal form of the first
     //! class of the congruence represented by an instance of ToddCoxeter.
     //! The order of the classes, and the normal form, that is returned are
-    //! controlled by standardize(order).
+    //! controlled by standardize(Order).
     //!
     //! \parameters
     //! (None)

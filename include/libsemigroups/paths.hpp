@@ -43,11 +43,11 @@
 #include "containers.hpp"      // for DynamicArray2
 #include "debug.hpp"           // for LIBSEMIGROUPS_ASSERT
 #include "digraph-helper.hpp"  // for is_reachable, validate_...
-#include "word-graph.hpp"         // for WordGraph
 #include "exception.hpp"       // for LIBSEMIGROUPS_EXCEPTION
 #include "iterator.hpp"        // for default_postfix_increment
 #include "order.hpp"           // for order
 #include "types.hpp"           // for word_type
+#include "word-graph.hpp"      // for WordGraph
 
 #include <rx/ranges.hpp>  // for is_input_range
 
@@ -91,12 +91,12 @@ namespace libsemigroups {
     using iterator_category = std::forward_iterator_tag;
 
    private:
-    value_type                 _edges;
+    value_type             _edges;
     WordGraph<Node> const* _digraph;
-    label_type                 _edge;
-    size_t                     _min;
-    size_t                     _max;
-    std::vector<node_type>     _nodes;
+    label_type             _edge;
+    size_t                 _min;
+    size_t                 _max;
+    std::vector<node_type> _nodes;
 
    public:
     // None of the constructors are noexcept because the corresponding
@@ -110,9 +110,9 @@ namespace libsemigroups {
     ~const_pilo_iterator();
 
     const_pilo_iterator(WordGraph<node_type> const* ptr,
-                        node_type                       source,
-                        size_type                       min,
-                        size_type                       max);
+                        node_type                   source,
+                        size_type                   min,
+                        size_type                   max);
 
     // noexcept because comparison of std::vector<node_type>'s is noexcept
     // because comparison of node_type's is noexcept
@@ -210,9 +210,9 @@ namespace libsemigroups {
   template <typename Node1, typename Node2>
   [[nodiscard]] const_pilo_iterator<Node1>
   cbegin_pilo(WordGraph<Node1> const& d,
-              Node2                       source,
-              size_t                      min = 0,
-              size_t                      max = POSITIVE_INFINITY) {
+              Node2                   source,
+              size_t                  min = 0,
+              size_t                  max = POSITIVE_INFINITY) {
     action_digraph_helper::validate_node(d, source);
     return const_pilo_iterator<Node1>(&d, source, min, max);
   }
@@ -228,8 +228,7 @@ namespace libsemigroups {
   //! \sa cbegin_pilo
   // not noexcept because constructors of const_pilo_iterator aren't
   template <typename Node>
-  [[nodiscard]] const_pilo_iterator<Node>
-  cend_pilo(WordGraph<Node> const& d) {
+  [[nodiscard]] const_pilo_iterator<Node> cend_pilo(WordGraph<Node> const& d) {
     return const_pilo_iterator<Node>(&d, 0, 0, 0);
   }
 
@@ -270,9 +269,9 @@ namespace libsemigroups {
     ~const_pislo_iterator();
 
     const_pislo_iterator(WordGraph<node_type> const* ptr,
-                         node_type                       source,
-                         size_type                       min,
-                         size_type                       max);
+                         node_type                   source,
+                         size_type                   min,
+                         size_type                   max);
 
     // noexcept because comparison of const_pilo_iterator is noexcept
     [[nodiscard]] bool
@@ -365,9 +364,9 @@ namespace libsemigroups {
   template <typename Node1, typename Node2>
   [[nodiscard]] const_pislo_iterator<Node1>
   cbegin_pislo(WordGraph<Node1> const& d,
-               Node2                       source,
-               size_t                      min = 0,
-               size_t                      max = POSITIVE_INFINITY) {
+               Node2                   source,
+               size_t                  min = 0,
+               size_t                  max = POSITIVE_INFINITY) {
     action_digraph_helper::validate_node(d, source);
     return const_pislo_iterator<Node1>(&d, source, min, max);
   }
@@ -404,14 +403,14 @@ namespace libsemigroups {
     using iterator_category = std::forward_iterator_tag;
 
    private:
-    std::vector<bool>          _can_reach_target;
-    value_type                 _edges;
+    std::vector<bool>      _can_reach_target;
+    value_type             _edges;
     WordGraph<Node> const* _digraph;
-    label_type                 _edge;
-    size_t                     _min;
-    size_t                     _max;
-    std::vector<node_type>     _nodes;
-    node_type                  _target;
+    label_type             _edge;
+    size_t                 _min;
+    size_t                 _max;
+    std::vector<node_type> _nodes;
+    node_type              _target;
 
    public:
     // None of the constructors are noexcept because the corresponding
@@ -425,10 +424,10 @@ namespace libsemigroups {
     ~const_pstilo_iterator();
 
     const_pstilo_iterator(WordGraph<Node> const* ptr,
-                          node_type                  source,
-                          node_type                  target,
-                          size_type                  min,
-                          size_type                  max);
+                          node_type              source,
+                          node_type              target,
+                          size_type              min,
+                          size_type              max);
 
     // noexcept because comparison of std::vector<node_type> is noexcept
     // because comparison of node_type's is noexcept
@@ -519,10 +518,10 @@ namespace libsemigroups {
   template <typename Node1, typename Node2>
   [[nodiscard]] const_pstilo_iterator<Node1>
   cbegin_pstilo(WordGraph<Node1> const& d,
-                Node2                       source,
-                Node2                       target,
-                size_t                      min = 0,
-                size_t                      max = POSITIVE_INFINITY) {
+                Node2                   source,
+                Node2                   target,
+                size_t                  min = 0,
+                size_t                  max = POSITIVE_INFINITY) {
     // source & target are validated in is_reachable.
     if (!action_digraph_helper::is_reachable(d, source, target)) {
       return cend_pstilo(d);
@@ -574,10 +573,10 @@ namespace libsemigroups {
     ~const_pstislo_iterator();
 
     const_pstislo_iterator(WordGraph<node_type> const* ptr,
-                           node_type                       source,
-                           node_type                       target,
-                           size_type                       min,
-                           size_type                       max)
+                           node_type                   source,
+                           node_type                   target,
+                           size_type                   min,
+                           size_type                   max)
         : _it(ptr, source, min, max), _target(target), _end(cend_pislo(*ptr)) {
       operator++();
     }
@@ -671,10 +670,10 @@ namespace libsemigroups {
   template <typename Node1, typename Node2>
   [[nodiscard]] const_pstislo_iterator<Node1>
   cbegin_pstislo(WordGraph<Node1> const& d,
-                 Node2                       source,
-                 Node2                       target,
-                 size_t                      min = 0,
-                 size_t                      max = POSITIVE_INFINITY) {
+                 Node2                   source,
+                 Node2                   target,
+                 size_t                  min = 0,
+                 size_t                  max = POSITIVE_INFINITY) {
     // source & target are validated in is_reachable.
     if (!action_digraph_helper::is_reachable(d, source, target)) {
       return cend_pstislo(d);
@@ -712,8 +711,7 @@ namespace libsemigroups {
   //! Constant
   template <typename Node1, typename Node2>
   [[nodiscard]] paths::algorithm
-  number_of_paths_algorithm(WordGraph<Node1> const& d,
-                            Node2                       source) noexcept {
+  number_of_paths_algorithm(WordGraph<Node1> const& d, Node2 source) noexcept {
     (void) d;
     (void) source;
     return paths::algorithm::acyclic;
@@ -736,7 +734,7 @@ namespace libsemigroups {
   //! this function will not be correct.
   template <typename Node1, typename Node2>
   [[nodiscard]] uint64_t number_of_paths(WordGraph<Node1> const& d,
-                                         Node2                       source);
+                                         Node2                   source);
 
   //! Returns the \ref algorithm used by number_of_paths().
   //!
@@ -760,9 +758,9 @@ namespace libsemigroups {
   template <typename Node1, typename Node2>
   [[nodiscard]] paths::algorithm
   number_of_paths_algorithm(WordGraph<Node1> const& d,
-                            Node2                       source,
-                            size_t                      min,
-                            size_t                      max);
+                            Node2                   source,
+                            size_t                  min,
+                            size_t                  max);
 
   //! Returns the number of paths starting at a given node with length in a
   //! given range.
@@ -808,10 +806,10 @@ namespace libsemigroups {
   // not noexcept for example detail::number_of_paths_trivial can throw
   template <typename Node1, typename Node2>
   [[nodiscard]] uint64_t number_of_paths(WordGraph<Node1> const& d,
-                                         Node2                       source,
-                                         size_t                      min,
-                                         size_t                      max,
-                                         paths::algorithm            lgrthm
+                                         Node2                   source,
+                                         size_t                  min,
+                                         size_t                  max,
+                                         paths::algorithm        lgrthm
                                          = paths::algorithm::automatic);
 
   //! Returns the \ref paths::algorithm used by number_of_paths().
@@ -837,10 +835,10 @@ namespace libsemigroups {
   template <typename Node1, typename Node2>
   [[nodiscard]] paths::algorithm
   number_of_paths_algorithm(WordGraph<Node1> const& d,
-                            Node2                       source,
-                            Node2                       target,
-                            size_t                      min,
-                            size_t                      max);
+                            Node2                   source,
+                            Node2                   target,
+                            size_t                  min,
+                            size_t                  max);
 
   //! Returns the number of paths between a pair of nodes with length in a
   //! given range.
@@ -885,11 +883,11 @@ namespace libsemigroups {
   // not noexcept because cbegin_pstilo isn't
   template <typename Node1, typename Node2>
   [[nodiscard]] uint64_t number_of_paths(WordGraph<Node1> const& d,
-                                         Node2                       source,
-                                         Node2                       target,
-                                         size_t                      min,
-                                         size_t                      max,
-                                         paths::algorithm            lgrthm
+                                         Node2                   source,
+                                         Node2                   target,
+                                         size_t                  min,
+                                         size_t                  max,
+                                         paths::algorithm        lgrthm
                                          = paths::algorithm::automatic);
 
   // Helper class
@@ -907,14 +905,14 @@ namespace libsemigroups {
                                         const_pilo_iterator<Node>>;
 
     WordGraph<node_type> const* _digraph;
-    order                           _order;
-    size_type                       _max;
-    size_type                       _min;
-    node_type                       _source;
-    node_type                       _target;
-    mutable const_iterator          _current;
-    mutable const_iterator          _end;
-    mutable bool                    _current_valid;
+    Order                       _order;
+    size_type                   _max;
+    size_type                   _min;
+    node_type                   _source;
+    node_type                   _target;
+    mutable const_iterator      _current;
+    mutable const_iterator      _end;
+    mutable bool                _current_valid;
 
     bool set_iterator() const;
 
@@ -996,11 +994,11 @@ namespace libsemigroups {
       return _max;
     }
 
-    Paths& order(enum order val) {
+    Paths& order(Order val) {
       return order(this, val);
     }
 
-    [[nodiscard]] enum order order() const noexcept {
+    [[nodiscard]] Order order() const noexcept {
       return _order;
     }
 
@@ -1034,7 +1032,7 @@ namespace libsemigroups {
     }
 
     template <typename Subclass>
-    Subclass& order(Subclass* obj, enum order val);
+    Subclass& order(Subclass* obj, Order val);
   };
 
   template <typename Node>
@@ -1096,7 +1094,7 @@ namespace libsemigroups {
       return Paths<Node>::max(this, val);
     }
 
-    ReversiblePaths& order(enum order val) {
+    ReversiblePaths& order(Order val) {
       return Paths<Node>::order(this, val);
     }
 

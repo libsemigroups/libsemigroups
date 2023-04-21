@@ -5,7 +5,7 @@
 AM_CXXFLAGS =  -I$(abs_top_srcdir)/include
 AM_CXXFLAGS += -I$(abs_top_srcdir)/extern  ## for HPCombi
 AM_CXXFLAGS += -I$(abs_top_srcdir)/extern/rx-ranges/include
-AM_CXXFLAGS += -std=gnu++17 -O3 -Wall -Wextra
+AM_CXXFLAGS += -std=gnu++17 -Wall -Wextra
 AM_CXXFLAGS += $(WARNING_CXXFLAGS)
 AM_CXXFLAGS += $(FMT_CFLAGS)
 AM_CXXFLAGS += $(EIGEN3_CFLAGS)
@@ -63,7 +63,6 @@ pkginclude_HEADERS += include/libsemigroups/deprecated.hpp
 pkginclude_HEADERS += include/libsemigroups/digraph-helper.hpp
 pkginclude_HEADERS += include/libsemigroups/digraph-with-sources.hpp
 pkginclude_HEADERS += include/libsemigroups/digraph-with-sources.tpp
-pkginclude_HEADERS += include/libsemigroups/digraph.hpp
 pkginclude_HEADERS += include/libsemigroups/exception.hpp
 pkginclude_HEADERS += include/libsemigroups/fastest-bmat.hpp
 pkginclude_HEADERS += include/libsemigroups/felsch-tree.hpp
@@ -120,6 +119,7 @@ pkginclude_HEADERS += include/libsemigroups/types.hpp
 pkginclude_HEADERS += include/libsemigroups/uf.hpp
 pkginclude_HEADERS += include/libsemigroups/ukkonen.hpp
 pkginclude_HEADERS += include/libsemigroups/ukkonen.tpp
+pkginclude_HEADERS += include/libsemigroups/word-graph.hpp
 pkginclude_HEADERS += include/libsemigroups/words.hpp
 
 textflowcppincludedir = $(includedir)/libsemigroups/textflowcpp
@@ -651,7 +651,6 @@ EXTRA_PROGRAMS += test_cong_intf
 EXTRA_PROGRAMS += test_constants
 EXTRA_PROGRAMS += test_containers
 EXTRA_PROGRAMS += test_digraph_helper
-EXTRA_PROGRAMS += test_digraph
 EXTRA_PROGRAMS += test_felsch_tree
 EXTRA_PROGRAMS += test_forest
 EXTRA_PROGRAMS += test_fpsemi_examples
@@ -701,14 +700,12 @@ EXTRA_PROGRAMS += test_transf
 EXTRA_PROGRAMS += test_types
 EXTRA_PROGRAMS += test_uf
 EXTRA_PROGRAMS += test_ukkonen
-EXTRA_PROGRAMS += test_wilo
-EXTRA_PROGRAMS += test_wislo
+EXTRA_PROGRAMS += test_word_graph
 EXTRA_PROGRAMS += test_words
 
 EXTRA_PROGRAMS += bench_all
 EXTRA_PROGRAMS += bench_action
 EXTRA_PROGRAMS += bench_bmat
-EXTRA_PROGRAMS += bench_digraph
 EXTRA_PROGRAMS += bench_freeband
 EXTRA_PROGRAMS += bench_froidure_pin
 EXTRA_PROGRAMS += bench_kambites
@@ -720,6 +717,7 @@ EXTRA_PROGRAMS += bench_todd_coxeter
 EXTRA_PROGRAMS += bench_uf
 EXTRA_PROGRAMS += bench_wilo
 EXTRA_PROGRAMS += bench_wislo
+EXTRA_PROGRAMS += bench_word_graph
 
 LDADD = libsemigroups.la
 
@@ -737,7 +735,6 @@ test_all_SOURCES += tests/test-cong.cpp
 test_all_SOURCES += tests/test-constants.cpp
 test_all_SOURCES += tests/test-containers.cpp
 test_all_SOURCES += tests/test-digraph-helper.cpp
-test_all_SOURCES += tests/test-digraph.cpp
 test_all_SOURCES += tests/test-felsch-tree.cpp
 test_all_SOURCES += tests/test-forest.cpp
 test_all_SOURCES += tests/test-fpsemi-examples-1.cpp
@@ -796,6 +793,7 @@ test_all_SOURCES += tests/test-todd-coxeter-new.cpp
 test_all_SOURCES += tests/test-types.cpp
 test_all_SOURCES += tests/test-uf.cpp
 test_all_SOURCES += tests/test-ukkonen.cpp
+test_all_SOURCES += tests/test-word-graph.cpp
 test_all_SOURCES += tests/test-words.cpp
 
 test_action_SOURCES =  tests/test-action.cpp
@@ -824,9 +822,6 @@ test_containers_SOURCES += tests/test-main.cpp
 
 test_digraph_helper_SOURCES  = tests/test-digraph-helper.cpp
 test_digraph_helper_SOURCES += tests/test-main.cpp
-
-test_digraph_SOURCES =  tests/test-digraph.cpp
-test_digraph_SOURCES += tests/test-main.cpp
 
 test_forest_SOURCES =  tests/test-forest.cpp
 test_forest_SOURCES += tests/test-main.cpp
@@ -995,11 +990,8 @@ test_uf_SOURCES += tests/test-main.cpp
 test_ukkonen_SOURCES =  tests/test-ukkonen.cpp
 test_ukkonen_SOURCES += tests/test-main.cpp
 
-test_wilo_SOURCES =  tests/test-wilo.cpp
-test_wilo_SOURCES += tests/test-main.cpp
-
-test_wislo_SOURCES =  tests/test-wislo.cpp
-test_wislo_SOURCES += tests/test-main.cpp
+test_word_graph_SOURCES =  tests/test-word-graph.cpp
+test_word_graph_SOURCES += tests/test-main.cpp
 
 test_words_SOURCES =  tests/test-words.cpp
 test_words_SOURCES += tests/test-main.cpp
@@ -1007,7 +999,7 @@ test_words_SOURCES += tests/test-main.cpp
 bench_all_SOURCES =  benchmarks/examples/cong-intf.cpp
 bench_all_SOURCES += benchmarks/examples/generators.cpp
 bench_all_SOURCES += benchmarks/bench-action.cpp
-bench_all_SOURCES += benchmarks/bench-digraph.cpp
+bench_all_SOURCES += benchmarks/bench-word-graph.cpp
 bench_all_SOURCES += benchmarks/bench-froidure-pin.cpp
 bench_all_SOURCES += benchmarks/bench-knuth-bendix.cpp
 bench_all_SOURCES += benchmarks/bench-konieczny.cpp
@@ -1027,9 +1019,6 @@ bench_action_SOURCES += benchmarks/bench-main.cpp
 bench_bmat_SOURCES =  benchmarks/bench-bmat.cpp
 bench_bmat_SOURCES += benchmarks/bench-main.cpp
 bench_bmat_SOURCES += tests/bmat-data.cpp
-
-bench_digraph_SOURCES =  benchmarks/bench-digraph.cpp
-bench_digraph_SOURCES += benchmarks/bench-main.cpp
 
 bench_freeband_SOURCES =  benchmarks/bench-freeband.cpp
 bench_freeband_SOURCES += benchmarks/bench-main.cpp
@@ -1068,6 +1057,9 @@ bench_wilo_SOURCES += benchmarks/bench-main.cpp
 
 bench_wislo_SOURCES =  benchmarks/bench-wislo.cpp
 bench_wislo_SOURCES += benchmarks/bench-main.cpp
+
+bench_word_graph_SOURCES =  benchmarks/bench-word-graph.cpp
+bench_word_graph_SOURCES += benchmarks/bench-main.cpp
 
 ## Make targets
 

@@ -1,6 +1,6 @@
 //
 // libsemigroups - C++ library for semigroups and monoids
-// Copyright (C) 2019 James D. Mitchell
+// Copyright (C) 2019-2023 James D. Mitchell
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -18,9 +18,14 @@
 
 #include "libsemigroups/report.hpp"
 
-#include <iostream>
+#include <ratio>          // for ratio, nano
+#include <unordered_map>  // for operator!=
 
-#include "libsemigroups/config.hpp"
+#include "fmt/format.h"  // for everything
+
+#include "libsemigroups/config.hpp"  // for LIBSEMIGROUPS_FMT_ENABLED
+#include "libsemigroups/debug.hpp"   // for LIBSEMIGROUPS_ASSERT
+#include "libsemigroups/string.hpp"  // for unicode_string_length, wrap
 
 namespace libsemigroups {
   detail::Reporter        REPORTER;

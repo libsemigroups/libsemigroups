@@ -31,6 +31,7 @@
 #include <cstdint>   // for uint64_t
 #include <iterator>  // for distance
 #include <string>    // for std::string
+#include <variant>   // for variant
 
 #include "iterator.hpp"  // for default_postfix_increment
 #include "types.hpp"     // for word_type
@@ -39,7 +40,7 @@
 
 namespace libsemigroups {
 
-  enum class order : uint8_t;  // forward decl
+  enum class Order : uint8_t;  // forward decl
 
   //! Returns the number of words over an alphabet with a given number of
   //! letters with length in a specified range.
@@ -420,7 +421,7 @@ namespace libsemigroups {
     mutable bool           _current_valid;
     word_type              _first;
     word_type              _last;
-    order                  _order;
+    Order                  _order;
     size_type              _upper_bound;
 
     void set_iterator() const;
@@ -494,9 +495,9 @@ namespace libsemigroups {
       return _last;
     }
 
-    Words& order(order val);
+    Words& order(Order val);
 
-    [[nodiscard]] enum order order() const noexcept {
+    [[nodiscard]] Order order() const noexcept {
       return _order;
     }
 
@@ -659,13 +660,13 @@ namespace libsemigroups {
       return detail::word_to_string(_letters, _words.last());
     }
 
-    Strings& order(order val) {
+    Strings& order(Order val) {
       _current_valid = false;
       _words.order(val);
       return *this;
     }
 
-    [[nodiscard]] enum order order() const noexcept {
+    [[nodiscard]] Order order() const noexcept {
       return _words.order();
     }
 

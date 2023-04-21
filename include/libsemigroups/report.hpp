@@ -23,6 +23,7 @@
 
 #include <cxxabi.h>  // for abi::
 
+#include <array>          // for array
 #include <atomic>         // for atomic
 #include <cstddef>        // for size_t
 #include <cstdint>        // for uint64_t
@@ -42,13 +43,11 @@
 #include "textflowcpp/TextFlow.hpp"
 #include <magic_enum/magic_enum.hpp>
 
-#ifdef LIBSEMIGROUPS_FMT_ENABLED
-#include <array>  // for array
 #include <fmt/chrono.h>
 #include <fmt/color.h>
 #include <fmt/compile.h>
+#include <fmt/format.h>
 #include <fmt/printf.h>
-#endif
 
 // To avoid computing the parameters __VA_ARGS__ when we aren't even
 // reporting, we check if we are reporting before calling REPORTER.
