@@ -429,7 +429,7 @@ namespace libsemigroups {
       auto& ad = kb.gilman_digraph();
       REQUIRE(ad.number_of_nodes() == 9);
       REQUIRE(ad.number_of_edges() == 13);
-      REQUIRE(!action_digraph_helper::is_acyclic(ad));
+      REQUIRE(!word_graph::is_acyclic(ad));
 
       auto&                  fp = *kb.froidure_pin();
       std::vector<word_type> expected;
@@ -489,7 +489,7 @@ namespace libsemigroups {
       auto& ad = kb.gilman_digraph();
       REQUIRE(ad.number_of_nodes() == 232);
       REQUIRE(ad.number_of_edges() == 265);
-      REQUIRE(action_digraph_helper::is_acyclic(ad));
+      REQUIRE(word_graph::is_acyclic(ad));
       REQUIRE(number_of_paths(ad, 0, 0, 13) == 336);
     }
 
@@ -517,7 +517,7 @@ namespace libsemigroups {
       auto& ad = kb.gilman_digraph();
       REQUIRE(ad.number_of_nodes() == 8);
       REQUIRE(ad.number_of_edges() == 11);
-      REQUIRE(action_digraph_helper::is_acyclic(ad));
+      REQUIRE(word_graph::is_acyclic(ad));
       REQUIRE(number_of_paths(ad, 0, 0, 5) == 12);
     }
 
@@ -539,7 +539,7 @@ namespace libsemigroups {
       auto& ad = kb.gilman_digraph();
       REQUIRE(ad.number_of_nodes() == 7);
       REQUIRE(ad.number_of_edges() == 17);
-      REQUIRE(!action_digraph_helper::is_acyclic(ad));
+      REQUIRE(!word_graph::is_acyclic(ad));
       REQUIRE(number_of_paths(ad, 0, 0, 10) == 13044);
     }
 

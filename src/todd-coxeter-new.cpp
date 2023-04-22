@@ -476,7 +476,7 @@ namespace libsemigroups {
     if (is_standardized(val)) {
       return false;
     }
-    bool result   = action_digraph::standardize(_word_graph, _forest, val);
+    bool result   = word_graph::standardize(_word_graph, _forest, val);
     _standardized = val;
     return result;
   }
@@ -568,11 +568,9 @@ namespace libsemigroups {
     node_type c = _word_graph.initial_node();
 
     if (kind() != congruence_kind::left) {
-      c = action_digraph_helper::follow_path_nc(
-          _word_graph, c, w.cbegin(), w.cend());
+      c = word_graph::follow_path_nc(_word_graph, c, w.cbegin(), w.cend());
     } else {
-      c = action_digraph_helper::follow_path_nc(
-          _word_graph, c, w.crbegin(), w.crend());
+      c = word_graph::follow_path_nc(_word_graph, c, w.crbegin(), w.crend());
     }
     size_t const offset = (presentation().contains_empty_word() ? 0 : 1);
     return (c == UNDEFINED ? UNDEFINED : static_cast<node_type>(c - offset));
@@ -642,7 +640,7 @@ namespace libsemigroups {
       if (_word_graph.definitions().any_skipped()) {
         auto const& d = word_graph();
         if (d.number_of_nodes_active() != lower_bound()
-            || !action_digraph::is_complete(
+            || !word_graph::is_complete(
                 d, d.cbegin_active_nodes(), d.cend_active_nodes())) {
           // TODO uncomment
           // push_settings();

@@ -312,7 +312,7 @@ namespace libsemigroups {
         for (size_t nr_edges = 0; nr_edges <= detail::magic_number(M) * M;
              nr_edges += 500) {
           auto ad = WordGraph<size_t>::random(M, N, nr_edges);
-          action_digraph_helper::add_cycle(
+          word_graph::add_cycle(
               ad, ad.cbegin_nodes(), ad.cend_nodes());
           std::string m = std::to_string(ad.number_of_edges());
           size_t      w = source(mt);

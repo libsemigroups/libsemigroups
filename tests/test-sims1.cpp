@@ -27,7 +27,6 @@
 
 #include "libsemigroups/bipart.hpp"            // for Bipartition
 #include "libsemigroups/config.hpp"            // for LIBSEMIGROUPS_ENABLE_STATS
-#include "libsemigroups/digraph-helper.hpp"    // for action_digraph_helper
 #include "libsemigroups/fpsemi-examples.hpp"   // for brauer_monoid etc
 #include "libsemigroups/froidure-pin.hpp"      // for FroidurePin
 #include "libsemigroups/knuth-bendix-new.hpp"  // for redundant_rule
@@ -67,7 +66,7 @@ namespace libsemigroups {
         presentation::reverse(f);
       }
       auto foo = [&f](auto const& ad) {
-        using action_digraph_helper::follow_path_nc;
+        using word_graph::follow_path_nc;
         for (auto it = f.rules.cbegin(); it != f.rules.cend(); it += 2) {
           if (follow_path_nc(ad, 0, *it) != follow_path_nc(ad, 0, *(it + 1))) {
             return false;
@@ -147,8 +146,8 @@ namespace libsemigroups {
       Sims1_ S(congruence_kind::left);
       REQUIRE(S.short_rules(p).number_of_congruences(5) == 9);
       for (auto it = S.cbegin(5); it != S.cend(5); ++it) {
-        REQUIRE(action_digraph_helper::follow_path_nc(*it, 0, {1, 0, 1, 0})
-                == action_digraph_helper::follow_path_nc(*it, 0, {0}));
+        REQUIRE(word_graph::follow_path_nc(*it, 0, {1, 0, 1, 0})
+                == word_graph::follow_path_nc(*it, 0, {0}));
       }
     }
   }
@@ -754,7 +753,7 @@ namespace libsemigroups {
 
     auto d = MinimalRepOrc().short_rules(p).target_size(105).digraph();
     REQUIRE(d.number_of_nodes() == 22);
-    REQUIRE(action_digraph_helper::is_strictly_cyclic(d));
+    REQUIRE(word_graph::is_strictly_cyclic(d));
     REQUIRE(
         d
         == to_action_digraph<uint32_t>(
@@ -1134,7 +1133,7 @@ namespace libsemigroups {
         std::thread::hardware_concurrency());
     auto d = mro.digraph();
     REQUIRE(d.number_of_nodes() == 11);
-    REQUIRE(action_digraph_helper::is_strictly_cyclic(d));
+    REQUIRE(word_graph::is_strictly_cyclic(d));
     auto S = to_froidure_pin<Transf<0, node_type>>(d);
     S.add_generator(S.generator(0).identity());
     REQUIRE(S.size() == 19);
@@ -1162,7 +1161,7 @@ namespace libsemigroups {
         = MinimalRepOrc().short_rules(p).target_size(203).number_of_threads(4);
     d = mro.digraph();
 
-    REQUIRE(action_digraph_helper::is_strictly_cyclic(d));
+    REQUIRE(word_graph::is_strictly_cyclic(d));
     auto S = to_froidure_pin<Transf<0, node_type>>(d);
     REQUIRE(S.size() == 203);
     // The actual digraph obtained is non-deterministic because we just take
@@ -1205,7 +1204,7 @@ namespace libsemigroups {
 
       auto d = orc.digraph();
       REQUIRE(orc.target_size() == sizes[n]);
-      REQUIRE(action_digraph_helper::is_strictly_cyclic(d));
+      REQUIRE(word_graph::is_strictly_cyclic(d));
       auto S = to_froidure_pin<Transf<0, node_type>>(d);
       S.add_generator(S.generator(0).identity());
       REQUIRE(S.size() == sizes[n]);
@@ -1254,7 +1253,7 @@ namespace libsemigroups {
 
     auto d = MinimalRepOrc().short_rules(p).target_size(720).digraph();
     REQUIRE(d.number_of_nodes() == 6);
-    REQUIRE(action_digraph_helper::is_strictly_cyclic(d));
+    REQUIRE(word_graph::is_strictly_cyclic(d));
   }
 
   LIBSEMIGROUPS_TEST_CASE("Sims1",
@@ -1269,7 +1268,7 @@ namespace libsemigroups {
                  .number_of_threads(2)
                  .target_size(17)
                  .digraph();
-    REQUIRE(action_digraph_helper::is_strictly_cyclic(d));
+    REQUIRE(word_graph::is_strictly_cyclic(d));
     auto S = to_froidure_pin<Transf<0, node_type>>(d);
     REQUIRE(S.size() == 16);
     REQUIRE(d.number_of_nodes() == 7);
@@ -1310,7 +1309,7 @@ namespace libsemigroups {
                      .target_size(m * n + 1)
                      .number_of_threads(6)
                      .digraph();
-        REQUIRE(action_digraph_helper::is_strictly_cyclic(d));
+        REQUIRE(word_graph::is_strictly_cyclic(d));
         auto S = to_froidure_pin<Transf<0, node_type>>(d);
         REQUIRE(S.size() == m * n);
         REQUIRE(d.number_of_nodes() == results[m][n]);
@@ -1415,7 +1414,7 @@ namespace libsemigroups {
     REQUIRE(S.number_of_congruences(10) == 1);
     auto d = MinimalRepOrc().short_rules(p).target_size(1).digraph();
     REQUIRE(d.number_of_nodes() == 1);
-    REQUIRE(action_digraph_helper::is_strictly_cyclic(d));
+    REQUIRE(word_graph::is_strictly_cyclic(d));
   }
 
   LIBSEMIGROUPS_TEST_CASE("Sims1",
@@ -1428,7 +1427,7 @@ namespace libsemigroups {
     size_t const n  = 5;
     auto         p  = rectangular_band(1, n);
     auto         d  = MinimalRepOrc().short_rules(p).target_size(n).digraph();
-    REQUIRE(action_digraph_helper::is_strictly_cyclic(d));
+    REQUIRE(word_graph::is_strictly_cyclic(d));
     auto S = to_froidure_pin<Transf<0, node_type>>(d);
     REQUIRE(S.size() == n);
     REQUIRE(d.number_of_nodes() == 5);
@@ -1450,7 +1449,7 @@ namespace libsemigroups {
     REQUIRE(S.size() == 5);
     auto p = to_presentation<word_type>(S);
     auto d = MinimalRepOrc().short_rules(p).target_size(5).digraph();
-    REQUIRE(action_digraph_helper::is_strictly_cyclic(d));
+    REQUIRE(word_graph::is_strictly_cyclic(d));
     REQUIRE(d.number_of_nodes() == 4);
     REQUIRE(d
             == to_action_digraph<uint32_t>(
@@ -1468,7 +1467,7 @@ namespace libsemigroups {
                                           {0, 1, 2, 3, 0},
                                           {4, 4, 4, 4, 4}});
 
-    REQUIRE(!action_digraph_helper::is_strictly_cyclic(dd));
+    REQUIRE(!word_graph::is_strictly_cyclic(dd));
     REQUIRE(dd.number_of_nodes() == 5);
     auto U = to_froidure_pin<Transf<5>>(dd);
     REQUIRE(U.size() == 5);
@@ -1492,7 +1491,7 @@ namespace libsemigroups {
         auto result = *it;
         result.induced_subdigraph(1, result.number_of_active_nodes());
         result.number_of_active_nodes(result.number_of_active_nodes() - 1);
-        if (action_digraph_helper::is_strictly_cyclic(result)) {
+        if (word_graph::is_strictly_cyclic(result)) {
           strictly_cyclic_count++;
         } else {
           REQUIRE(W.generator(0) == Transf<0, node_type>({3, 0, 2, 3, 4}));
@@ -2064,7 +2063,7 @@ namespace libsemigroups {
                    .number_of_threads(1)
                    .target_size(5)
                    .digraph();
-      REQUIRE(action_digraph_helper::is_strictly_cyclic(d));
+      REQUIRE(word_graph::is_strictly_cyclic(d));
       auto S = to_froidure_pin<Transf<0, node_type>>(d);
       S.add_generator(S.generator(0).identity());
       REQUIRE(S.size() == 5);

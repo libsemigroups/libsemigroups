@@ -410,8 +410,7 @@ namespace libsemigroups {
         }
       }
       // Some edges are not defined ...
-      if (!action_digraph_helper::is_acyclic(d, source)
-          && max == POSITIVE_INFINITY) {
+      if (!word_graph::is_acyclic(d, source) && max == POSITIVE_INFINITY) {
         // Not acyclic
         return POSITIVE_INFINITY;
       }
@@ -424,10 +423,9 @@ namespace libsemigroups {
                                      Node2                   target,
                                      size_t                  min,
                                      size_t                  max) {
-      if (min >= max
-          || !action_digraph_helper::is_reachable(d, source, target)) {
+      if (min >= max || !word_graph::is_reachable(d, source, target)) {
         return 0;
-      } else if (!action_digraph_helper::is_acyclic(d, source, target)
+      } else if (!word_graph::is_acyclic(d, source, target)
                  && max == POSITIVE_INFINITY) {
         return POSITIVE_INFINITY;
       }
@@ -439,9 +437,9 @@ namespace libsemigroups {
                                     Node2                   source,
                                     size_t                  min,
                                     size_t                  max) {
-      auto am = action_digraph::adjacency_matrix(d);
+      auto am = word_graph::adjacency_matrix(d);
 #ifdef LIBSEMIGROUPS_EIGEN_ENABLED
-      auto     acc   = action_digraph::pow(am, min);
+      auto     acc   = word_graph::pow(am, min);
       uint64_t total = 0;
       for (size_t i = min; i < max; ++i) {
         uint64_t add = acc.row(source).sum();
@@ -485,13 +483,12 @@ namespace libsemigroups {
                            d.cend_edges(source),
                            [&d, source](auto n) {
                              return n != UNDEFINED
-                                    && action_digraph_helper::is_reachable(
-                                        d, n, source);
+                                    && word_graph::is_reachable(d, n, source);
                            })) {
           return true;
         } else if (source != target
-                   && action_digraph_helper::is_reachable(d, source, target)
-                   && action_digraph_helper::is_reachable(d, target, source)) {
+                   && word_graph::is_reachable(d, source, target)
+                   && word_graph::is_reachable(d, target, source)) {
           return true;
         }
       }
@@ -504,15 +501,15 @@ namespace libsemigroups {
                                     Node2                   target,
                                     size_t                  min,
                                     size_t                  max) {
-      if (!action_digraph_helper::is_reachable(d, source, target)) {
+      if (!word_graph::is_reachable(d, source, target)) {
         // Complexity is O(number of nodes + number of edges).
         return 0;
       } else if (number_of_paths_special(d, source, target, min, max)) {
         return POSITIVE_INFINITY;
       }
-      auto am = action_digraph::adjacency_matrix(d);
+      auto am = word_graph::adjacency_matrix(d);
 #ifdef LIBSEMIGROUPS_EIGEN_ENABLED
-      auto     acc   = action_digraph::pow(am, min);
+      auto     acc   = word_graph::pow(am, min);
       uint64_t total = 0;
       for (size_t i = min; i < max; ++i) {
         uint64_t add = acc(source, target);
@@ -549,7 +546,7 @@ namespace libsemigroups {
                                      Node2                   source,
                                      size_t                  min,
                                      size_t                  max) {
-      auto topo = action_digraph_helper::topological_sort(d, source);
+      auto topo = word_graph::topological_sort(d, source);
       if (topo.empty()) {
         // Can't topologically sort, so the digraph contains cycles.
         LIBSEMIGROUPS_EXCEPTION("the subdigraph induced by the nodes reachable "
@@ -598,7 +595,7 @@ namespace libsemigroups {
                                      Node2                   target,
                                      size_t                  min,
                                      size_t                  max) {
-      auto topo = action_digraph_helper::topological_sort(d, source);
+      auto topo = word_graph::topological_sort(d, source);
       if (topo.empty()) {
         // Can't topologically sort, so the digraph contains cycles.
         LIBSEMIGROUPS_EXCEPTION("the subdigraph induced by the nodes reachable "
@@ -666,8 +663,8 @@ namespace libsemigroups {
     // Don't allow selecting the algorithm because we check
     // acyclicity anyway.
     // TODO(later): could use algorithm::dfs in some cases.
-    action_digraph_helper::validate_node(d, source);
-    auto topo = action_digraph_helper::topological_sort(d, source);
+    word_graph::validate_node(d, source);
+    auto topo = word_graph::topological_sort(d, source);
     if (topo.empty()) {
       // Can't topologically sort, so the subdigraph induced by the nodes
       // reachable from source, contains cycles, and so there are infinitely
@@ -703,7 +700,7 @@ namespace libsemigroups {
       return paths::algorithm::trivial;
     }
 
-    auto topo = action_digraph_helper::topological_sort(d, source);
+    auto topo = word_graph::topological_sort(d, source);
     if (topo.empty()) {
       // Can't topologically sort, so the digraph contains cycles, and so
       // there are infinitely many words labelling paths.
@@ -727,7 +724,7 @@ namespace libsemigroups {
                            size_t                  min,
                            size_t                  max,
                            paths::algorithm        lgrthm) {
-    action_digraph_helper::validate_node(d, source);
+    word_graph::validate_node(d, source);
 
     switch (lgrthm) {
       case paths::algorithm::dfs:
@@ -755,11 +752,11 @@ namespace libsemigroups {
                                              Node2                   target,
                                              size_t                  min,
                                              size_t                  max) {
-    bool acyclic = action_digraph_helper::is_acyclic(d, source, target);
-    if (min >= max || !action_digraph_helper::is_reachable(d, source, target)
+    bool acyclic = word_graph::is_acyclic(d, source, target);
+    if (min >= max || !word_graph::is_reachable(d, source, target)
         || (!acyclic && max == POSITIVE_INFINITY)) {
       return paths::algorithm::trivial;
-    } else if (acyclic && action_digraph_helper::is_acyclic(d, source)) {
+    } else if (acyclic && word_graph::is_acyclic(d, source)) {
       return paths::algorithm::acyclic;
     } else if (d.number_of_edges() < detail::magic_number(d.number_of_nodes())
                                          * d.number_of_nodes()) {
@@ -776,8 +773,8 @@ namespace libsemigroups {
                            size_t                  min,
                            size_t                  max,
                            paths::algorithm        lgrthm) {
-    action_digraph_helper::validate_node(d, source);
-    action_digraph_helper::validate_node(d, target);
+    word_graph::validate_node(d, source);
+    word_graph::validate_node(d, target);
 
     switch (lgrthm) {
       case paths::algorithm::dfs:

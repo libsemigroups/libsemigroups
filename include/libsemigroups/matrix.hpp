@@ -3106,6 +3106,7 @@ namespace libsemigroups {
       xy.product_inplace(x, y);
     }
   };
+
 }  // namespace libsemigroups
 
 namespace std {

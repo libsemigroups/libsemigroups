@@ -52,8 +52,6 @@
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
 #include "libsemigroups/constants.hpp"         // for operator==, operator!=
-#include "libsemigroups/digraph-helper.hpp"    // for is_acyclic
-#include "libsemigroups/word-graph.hpp"           // for WordGraph
 #include "libsemigroups/exception.hpp"         // for LibsemigroupsException
 #include "libsemigroups/froidure-pin.hpp"      // for FroidurePin
 #include "libsemigroups/kbe-new.hpp"           // for KBE
@@ -65,6 +63,7 @@
 #include "libsemigroups/report.hpp"            // for ReportGuard
 #include "libsemigroups/to-froidure-pin.hpp"   // for to_froidure_pin
 #include "libsemigroups/types.hpp"             // for word_type
+#include "libsemigroups/word-graph.hpp"        // for WordGraph
 #include "libsemigroups/words.hpp"             // for Inner, to_strings
 
 #include "rx/ranges.hpp"  // for operator|, to_vector
@@ -429,7 +428,7 @@ namespace libsemigroups {
     auto& ad = kb.gilman_digraph();
     REQUIRE(ad.number_of_nodes() == 9);
     REQUIRE(ad.number_of_edges() == 13);
-    REQUIRE(!action_digraph_helper::is_acyclic(ad));
+    REQUIRE(!word_graph::is_acyclic(ad));
 
     auto fp = to_froidure_pin(kb);
     fp.enumerate(100);
@@ -489,7 +488,7 @@ namespace libsemigroups {
     auto& ad = kb.gilman_digraph();
     REQUIRE(ad.number_of_nodes() == 232);
     REQUIRE(ad.number_of_edges() == 265);
-    REQUIRE(action_digraph_helper::is_acyclic(ad));
+    REQUIRE(word_graph::is_acyclic(ad));
     Paths paths(ad);
     paths.from(0).min(0).max(13);
     REQUIRE(paths.count() == 336);
@@ -519,7 +518,7 @@ namespace libsemigroups {
     auto& ad = kb.gilman_digraph();
     REQUIRE(ad.number_of_nodes() == 8);
     REQUIRE(ad.number_of_edges() == 11);
-    REQUIRE(action_digraph_helper::is_acyclic(ad));
+    REQUIRE(word_graph::is_acyclic(ad));
     Paths paths(ad);
     paths.from(0).min(0).max(5);
     REQUIRE(paths.count() == 12);
@@ -544,7 +543,7 @@ namespace libsemigroups {
     auto& ad = kb.gilman_digraph();
     REQUIRE(ad.number_of_nodes() == 7);
     REQUIRE(ad.number_of_edges() == 17);
-    REQUIRE(!action_digraph_helper::is_acyclic(ad));
+    REQUIRE(!word_graph::is_acyclic(ad));
     Paths paths(ad);
     paths.from(0).min(0).max(10);
     REQUIRE(paths.count() == 13'044);

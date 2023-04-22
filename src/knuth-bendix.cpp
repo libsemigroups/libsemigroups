@@ -617,7 +617,7 @@ namespace libsemigroups {
 
     bool KnuthBendix::is_obviously_infinite_impl() {
       if (finished()) {
-        return !action_digraph_helper::is_acyclic(gilman_digraph());
+        return !word_graph::is_acyclic(gilman_digraph());
       } else if (alphabet().size() > number_of_rules()) {
         return true;
       }
@@ -628,7 +628,7 @@ namespace libsemigroups {
 
     bool KnuthBendix::is_obviously_finite_impl() {
       if (finished()) {
-        return action_digraph_helper::is_acyclic(gilman_digraph());
+        return word_graph::is_acyclic(gilman_digraph());
       } else if (has_froidure_pin() && froidure_pin()->finished()) {
         return true;
       }

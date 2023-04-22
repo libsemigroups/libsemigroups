@@ -38,16 +38,15 @@
 #include <variant>      // for visit, variant
 #include <vector>       // for vector, allocator
 
-#include "config.hpp"          // for LIBSEMIGROUPS_EIGEN_ENA...
-#include "constants.hpp"       // for Max, UNDEFINED, Positiv...
-#include "containers.hpp"      // for DynamicArray2
-#include "debug.hpp"           // for LIBSEMIGROUPS_ASSERT
-#include "digraph-helper.hpp"  // for is_reachable, validate_...
-#include "exception.hpp"       // for LIBSEMIGROUPS_EXCEPTION
-#include "iterator.hpp"        // for default_postfix_increment
-#include "order.hpp"           // for order
-#include "types.hpp"           // for word_type
-#include "word-graph.hpp"      // for WordGraph
+#include "config.hpp"      // for LIBSEMIGROUPS_EIGEN_ENA...
+#include "constants.hpp"   // for Max, UNDEFINED, Positiv...
+#include "containers.hpp"  // for DynamicArray2
+#include "debug.hpp"       // for LIBSEMIGROUPS_ASSERT
+#include "exception.hpp"   // for LIBSEMIGROUPS_EXCEPTION
+#include "iterator.hpp"    // for default_postfix_increment
+#include "order.hpp"       // for order
+#include "types.hpp"       // for word_type
+#include "word-graph.hpp"  // for WordGraph
 
 #include <rx/ranges.hpp>  // for is_input_range
 
@@ -213,7 +212,7 @@ namespace libsemigroups {
               Node2                   source,
               size_t                  min = 0,
               size_t                  max = POSITIVE_INFINITY) {
-    action_digraph_helper::validate_node(d, source);
+    word_graph::validate_node(d, source);
     return const_pilo_iterator<Node1>(&d, source, min, max);
   }
 
@@ -367,7 +366,7 @@ namespace libsemigroups {
                Node2                   source,
                size_t                  min = 0,
                size_t                  max = POSITIVE_INFINITY) {
-    action_digraph_helper::validate_node(d, source);
+    word_graph::validate_node(d, source);
     return const_pislo_iterator<Node1>(&d, source, min, max);
   }
 
@@ -523,7 +522,7 @@ namespace libsemigroups {
                 size_t                  min = 0,
                 size_t                  max = POSITIVE_INFINITY) {
     // source & target are validated in is_reachable.
-    if (!action_digraph_helper::is_reachable(d, source, target)) {
+    if (!word_graph::is_reachable(d, source, target)) {
       return cend_pstilo(d);
     }
     return const_pstilo_iterator<Node1>(&d, source, target, min, max);
@@ -675,7 +674,7 @@ namespace libsemigroups {
                  size_t                  min = 0,
                  size_t                  max = POSITIVE_INFINITY) {
     // source & target are validated in is_reachable.
-    if (!action_digraph_helper::is_reachable(d, source, target)) {
+    if (!word_graph::is_reachable(d, source, target)) {
       return cend_pstislo(d);
     }
     return const_pstislo_iterator<Node1>(&d, source, target, min, max);
@@ -754,7 +753,7 @@ namespace libsemigroups {
   //! \complexity
   //! At worst \f$O(nm)\f$ where \f$n\f$ is the number of nodes and \f$m\f$
   //! is the out-degree of the digraph.
-  // Not noexcept because action_digraph_helper::topological_sort is not.
+  // Not noexcept because word_graph::topological_sort is not.
   template <typename Node1, typename Node2>
   [[nodiscard]] paths::algorithm
   number_of_paths_algorithm(WordGraph<Node1> const& d,
@@ -831,7 +830,7 @@ namespace libsemigroups {
   //! \complexity
   //! At worst \f$O(nm)\f$ where \f$n\f$ is the number of nodes and \f$m\f$
   //! is the out-degree of the digraph.
-  // Not noexcept because action_digraph_helper::topological_sort isn't
+  // Not noexcept because word_graph::topological_sort isn't
   template <typename Node1, typename Node2>
   [[nodiscard]] paths::algorithm
   number_of_paths_algorithm(WordGraph<Node1> const& d,

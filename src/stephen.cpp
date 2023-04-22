@@ -27,7 +27,6 @@
                                                    //
 #include "libsemigroups/constants.hpp"             // for operator==, Undefined
 #include "libsemigroups/debug.hpp"                 // for LIBSEMIGROUPS_ASSERT
-#include "libsemigroups/digraph-helper.hpp"        // for last_node_on_path_nc
 #include "libsemigroups/exception.hpp"             // for LibsemigroupsExcep...
 #include "libsemigroups/present.hpp"               // for Presentation<>::wo...
 #include "libsemigroups/report.hpp"                // for REPORT_DEFAULT_V3
@@ -60,7 +59,7 @@ namespace libsemigroups {
 
   Stephen::node_type Stephen::accept_state() {
     if (_accept_state == UNDEFINED) {
-      using action_digraph_helper::last_node_on_path_nc;
+      using word_graph::last_node_on_path_nc;
       run();
       _accept_state
           = last_node_on_path_nc(_word_graph, 0, _word.cbegin(), _word.cend())
@@ -151,7 +150,7 @@ namespace libsemigroups {
           node_type                 u_end;
           word_type::const_iterator rit;
           bool                      did_def = false;
-          std::tie(u_end, rit) = action_digraph_helper::last_node_on_path_nc(
+          std::tie(u_end, rit)              = word_graph::last_node_on_path_nc(
               _word_graph, current, it->cbegin(), it->cend());
           node_type c;
           if (rit == it->cend()) {
@@ -171,7 +170,7 @@ namespace libsemigroups {
           } else {
             ++it;
             node_type v_end;
-            std::tie(v_end, rit) = action_digraph_helper::last_node_on_path_nc(
+            std::tie(v_end, rit) = word_graph::last_node_on_path_nc(
                 _word_graph, current, it->cbegin(), it->cend());
             if (rit == it->cend()) {
               --it;
@@ -199,7 +198,7 @@ namespace libsemigroups {
   }
 
   void Stephen::standardize() {
-    action_digraph::standardize(_word_graph);
+    word_graph::standardize(_word_graph);
     _word_graph.shrink_to_fit(_word_graph.number_of_nodes_active());
   }
 
@@ -213,7 +212,7 @@ namespace libsemigroups {
   namespace stephen {
 
     bool accepts(Stephen& s, word_type const& w) {
-      using action_digraph_helper::last_node_on_path;
+      using word_graph::last_node_on_path;
       s.run();
       return s.accept_state()
              == last_node_on_path(s.word_graph(), 0, w.cbegin(), w.cend())
@@ -221,7 +220,7 @@ namespace libsemigroups {
     }
 
     bool is_left_factor(Stephen& s, word_type const& w) {
-      using action_digraph_helper::last_node_on_path;
+      using word_graph::last_node_on_path;
       s.run();
       return last_node_on_path(s.word_graph(), 0, w.cbegin(), w.cend()).second
              == w.cend();

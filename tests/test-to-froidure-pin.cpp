@@ -24,13 +24,12 @@
 #include "catch.hpp"      // for REQUIRE, REQUIRE_THROWS_AS, REQUI...
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
-#include "libsemigroups/constants.hpp"          // for UNDEFINED
-#include "libsemigroups/digraph-helper.hpp"     // for make
-#include "libsemigroups/word-graph.hpp"            // for WordGraph
-#include "libsemigroups/froidure-pin.hpp"       // for FroidurePin, Froidure...
+#include "libsemigroups/constants.hpp"        // for UNDEFINED
+#include "libsemigroups/froidure-pin.hpp"     // for FroidurePin, Froidure...
+#include "libsemigroups/report.hpp"           // for ReportGuard
 #include "libsemigroups/to-froidure-pin.hpp"  // for make
-#include "libsemigroups/report.hpp"             // for ReportGuard
-#include "libsemigroups/transf.hpp"             // for Transf
+#include "libsemigroups/transf.hpp"           // for Transf
+#include "libsemigroups/word-graph.hpp"       // for WordGraph
 
 namespace libsemigroups {
 

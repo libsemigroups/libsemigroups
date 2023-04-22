@@ -20,25 +20,22 @@
 #include "catch.hpp"      // for REQUIRE
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
-#include "libsemigroups/cong-intf.hpp"     // for CongruenceInterface
-#include "libsemigroups/cong-pair.hpp"     // for CongruenceByPairs
-#include "libsemigroups/cong.hpp"          // for Congruence
-#include "libsemigroups/fpsemi.hpp"        // for FpSemigroup
-#include "libsemigroups/knuth-bendix.hpp"  // for KnuthBendix
-#include "libsemigroups/tce.hpp"           // for TCE
-#include "libsemigroups/todd-coxeter.hpp"  // for ToddCoxeter
-#include "libsemigroups/transf.hpp"        // for Transf<>
+#include "libsemigroups/cong-intf.hpp"  // for CongruenceInterface
+#include "libsemigroups/cong.hpp"       // for Congruence
+#include "libsemigroups/tce.hpp"        // for TCE
+#include "libsemigroups/transf.hpp"     // for Transf<>
 
 namespace libsemigroups {
-  struct LibsemigroupsException;  // Forward declaration
+  // struct LibsemigroupsException;  // Forward declaration
 
-  constexpr bool REPORT              = false;
-  congruence_kind constexpr twosided = congruence_kind::twosided;
-  congruence_kind constexpr left     = congruence_kind::left;
-  congruence_kind constexpr right    = congruence_kind::right;
+  // constexpr bool REPORT              = false;
+  // congruence_kind constexpr twosided = congruence_kind::twosided;
+  // congruence_kind constexpr left     = congruence_kind::left;
+  // congruence_kind constexpr right    = congruence_kind::right;
 
-  using detail::TCE;
-  using FroidurePinTCE = FroidurePin<TCE, FroidurePinTraits<TCE, TCE::Table>>;
+  // using detail::TCE;
+  // using FroidurePinTCE = FroidurePin<TCE, FroidurePinTraits<TCE,
+  // TCE::Table>>;
 
   // TODO(v3) uncomment
   /*

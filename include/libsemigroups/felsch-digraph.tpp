@@ -305,7 +305,7 @@ namespace libsemigroups {
           auto        j = (i % 2 == 0 ? *it + 1 : *it - 1);
           auto const& u = _presentation.rules[i];
           auto const& v = _presentation.rules[j];
-          // LIBSEMIGROUPS_ASSERT(action_digraph_helper::follow_path_nc(
+          // LIBSEMIGROUPS_ASSERT(word_graph::follow_path_nc(
           //                         *this,
           //                         first_source(c, x),
           //                         u.cbegin(),
@@ -321,7 +321,7 @@ namespace libsemigroups {
           auto u_first = u.cbegin() + felsch_tree().length() - 1;
           auto u_last  = u.cend() - 1;
 
-          node_type y = action_digraph_helper::follow_path_nc(
+          node_type y = word_graph::follow_path_nc(
               *this, root, u_first, u_last);
           if (y == UNDEFINED) {
             continue;
@@ -377,7 +377,7 @@ namespace libsemigroups {
       x = u_node;
       a = UNDEFINED;
     } else {
-      x = action_digraph_helper::follow_path_nc(
+      x = word_graph::follow_path_nc(
           *this, u_node, u_first, u_last - 1);
       if (x == UNDEFINED) {
         return true;
@@ -393,7 +393,7 @@ namespace libsemigroups {
       y = v_node;
       b = UNDEFINED;
     } else {
-      y = action_digraph_helper::follow_path_nc(
+      y = word_graph::follow_path_nc(
           *this, v_node, v_first, v_last - 1);
       if (y == UNDEFINED) {
         return true;

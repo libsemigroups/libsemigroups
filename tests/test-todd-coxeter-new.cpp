@@ -130,26 +130,26 @@ namespace libsemigroups {
       auto const& p = tc.presentation();
       tc.run();
       auto const& d = tc.word_graph();
-      REQUIRE(action_digraph::is_complete(
+      REQUIRE(word_graph::is_complete(
           d, d.cbegin_active_nodes(), d.cend_active_nodes()));
-      REQUIRE(action_digraph::is_compatible(d,
-                                            d.cbegin_active_nodes(),
-                                            d.cend_active_nodes(),
-                                            p.rules.cbegin(),
-                                            p.rules.cend()));
+      REQUIRE(word_graph::is_compatible(d,
+                                        d.cbegin_active_nodes(),
+                                        d.cend_active_nodes(),
+                                        p.rules.cbegin(),
+                                        p.rules.cend()));
       tc.shrink_to_fit();
-      REQUIRE(action_digraph::is_complete(
+      REQUIRE(word_graph::is_complete(
           d, d.cbegin_active_nodes(), d.cend_active_nodes()));
-      REQUIRE(action_digraph::is_compatible(d,
-                                            d.cbegin_active_nodes(),
-                                            d.cend_active_nodes(),
-                                            p.rules.cbegin(),
-                                            p.rules.cend()));
+      REQUIRE(word_graph::is_compatible(d,
+                                        d.cbegin_active_nodes(),
+                                        d.cend_active_nodes(),
+                                        p.rules.cbegin(),
+                                        p.rules.cend()));
     }
 
     void check_standardize(ToddCoxeter& tc) {
       using namespace rx;
-      using action_digraph_helper::follow_path_nc;
+      using word_graph::follow_path_nc;
 
       using node_type = typename ToddCoxeter::node_type;
       Order old_val   = tc.standardization_order();
@@ -203,8 +203,7 @@ namespace libsemigroups {
         std::unordered_map<node_type, word_type> map;
 
         for (auto const& w : words) {
-          node_type n
-              = action_digraph_helper::follow_path_nc(tc.word_graph(), 0, w);
+          node_type n = word_graph::follow_path_nc(tc.word_graph(), 0, w);
           if (n != 0) {
             auto ww = w;
             if (tc.kind() == congruence_kind::left) {
@@ -745,11 +744,11 @@ namespace libsemigroups {
 
     REQUIRE(tc.generating_pairs()[0] == 010001100_w);
     auto const& d = tc.word_graph();
-    action_digraph::is_compatible(d,
-                                  d.cbegin_active_nodes(),
-                                  d.cend_active_nodes(),
-                                  tc.generating_pairs().cbegin(),
-                                  tc.generating_pairs().cend());
+    word_graph::is_compatible(d,
+                              d.cbegin_active_nodes(),
+                              d.cend_active_nodes(),
+                              tc.generating_pairs().cbegin(),
+                              tc.generating_pairs().cend());
     REQUIRE(tc.number_of_classes() == 21);
     REQUIRE(tc.number_of_classes() == 21);
 
@@ -1580,23 +1579,23 @@ namespace libsemigroups {
     tc.strategy(options::strategy::felsch);
     REQUIRE(tc.strategy() == options::strategy::felsch);
     auto const& d = tc.word_graph();
-    REQUIRE(!action_digraph::is_complete(
+    REQUIRE(!word_graph::is_complete(
         d, d.cbegin_active_nodes(), d.cend_active_nodes()));
-    REQUIRE(action_digraph::is_compatible(d,
-                                          d.cbegin_active_nodes(),
-                                          d.cend_active_nodes(),
-                                          p.rules.cbegin(),
-                                          p.rules.cend()));
+    REQUIRE(word_graph::is_compatible(d,
+                                      d.cbegin_active_nodes(),
+                                      d.cend_active_nodes(),
+                                      p.rules.cbegin(),
+                                      p.rules.cend()));
     REQUIRE(tc.number_of_classes() == 1);
     REQUIRE((todd_coxeter::normal_forms(tc) | rx::to_vector())
             == std::vector<word_type>({0_w}));
-    REQUIRE(action_digraph::is_complete(
+    REQUIRE(word_graph::is_complete(
         d, d.cbegin_active_nodes(), d.cend_active_nodes()));
-    REQUIRE(action_digraph::is_compatible(d,
-                                          d.cbegin_active_nodes(),
-                                          d.cend_active_nodes(),
-                                          p.rules.cbegin(),
-                                          p.rules.cend()));
+    REQUIRE(word_graph::is_compatible(d,
+                                      d.cbegin_active_nodes(),
+                                      d.cend_active_nodes(),
+                                      p.rules.cbegin(),
+                                      p.rules.cend()));
 
     ToddCoxeter copy(tc);
     REQUIRE(copy.presentation().rules == p.rules);
@@ -1605,13 +1604,13 @@ namespace libsemigroups {
     REQUIRE(copy.number_of_classes() == 1);
 
     auto const& dd = copy.word_graph();
-    REQUIRE(action_digraph::is_complete(
+    REQUIRE(word_graph::is_complete(
         dd, dd.cbegin_active_nodes(), dd.cend_active_nodes()));
-    REQUIRE(action_digraph::is_compatible(dd,
-                                          dd.cbegin_active_nodes(),
-                                          dd.cend_active_nodes(),
-                                          p.rules.cbegin(),
-                                          p.rules.cend()));
+    REQUIRE(word_graph::is_compatible(dd,
+                                      dd.cbegin_active_nodes(),
+                                      dd.cend_active_nodes(),
+                                      p.rules.cbegin(),
+                                      p.rules.cend()));
     REQUIRE(tc.word_graph() == copy.word_graph());
   }
 
@@ -1684,11 +1683,11 @@ namespace libsemigroups {
     tc.init(twosided, p);
 
     auto const& d = tc.word_graph();
-    REQUIRE(action_digraph::is_compatible(d,
-                                          d.cbegin_active_nodes(),
-                                          d.cend_active_nodes(),
-                                          p.rules.cbegin(),
-                                          p.rules.cend()));
+    REQUIRE(word_graph::is_compatible(d,
+                                      d.cbegin_active_nodes(),
+                                      d.cend_active_nodes(),
+                                      p.rules.cbegin(),
+                                      p.rules.cend()));
     tc.strategy(options::strategy::CR);
     size_t x = 0;
     REQUIRE_THROWS_AS(tc.run_until([&x] { return x > 4; }),

@@ -363,7 +363,7 @@ namespace libsemigroups {
       auto& ad = kb.gilman_digraph();
       REQUIRE(ad.number_of_nodes() == 6021);
       REQUIRE(ad.number_of_edges() == 7435);
-      REQUIRE(action_digraph_helper::is_acyclic(ad));
+      REQUIRE(word_graph::is_acyclic(ad));
       REQUIRE(number_of_paths(ad, 0, 0, 100) == 10752);
     }
 

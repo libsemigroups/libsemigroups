@@ -200,7 +200,7 @@ namespace libsemigroups {
     copy.remove_label_no_checks(2);
     REQUIRE(copy.out_degree() == 2);
     REQUIRE(copy.number_of_nodes() == 62);
-    REQUIRE(action_digraph_helper::is_acyclic(copy, source));
+    REQUIRE(word_graph::is_acyclic(copy, source));
 
     Paths paths(copy);
     REQUIRE(paths.min(1).from(source).count() == 72);
@@ -376,12 +376,12 @@ namespace libsemigroups {
     REQUIRE(source == 34);
     REQUIRE(copy.out_degree() == 2);
     REQUIRE(copy.number_of_nodes() == 51);
-    REQUIRE(action_digraph_helper::is_acyclic(copy, source));
+    REQUIRE(word_graph::is_acyclic(copy, source));
 
     Paths paths1(copy);
     REQUIRE(paths1.min(1).from(source).count() == 69);
 
-    auto nrset = action_digraph_helper::nodes_reachable_from(copy, source);
+    auto nrset = word_graph::nodes_reachable_from(copy, source);
     auto nrvec = std::vector<size_t>(nrset.begin(), nrset.end());
     std::iter_swap(nrvec.begin(), (nrvec.end() - 1));
     REQUIRE(nrvec[0] == 34);
@@ -422,7 +422,7 @@ namespace libsemigroups {
     auto copy = kb.gilman_digraph();
     REQUIRE(copy.out_degree() == 2);
     REQUIRE(copy.number_of_nodes() == 45);
-    REQUIRE(action_digraph_helper::is_acyclic(copy, 0));
+    REQUIRE(word_graph::is_acyclic(copy, 0));
 
     Paths paths1(copy);
     REQUIRE(paths1.min(1).from(0).count() == 69);

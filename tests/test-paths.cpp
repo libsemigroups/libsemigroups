@@ -35,7 +35,6 @@
                                                 //
 #include "libsemigroups/config.hpp"             // for LIBSEMIGROUPS_EIGEN_E...
 #include "libsemigroups/constants.hpp"          // for operator!=, operator==
-#include "libsemigroups/digraph-helper.hpp"     // for is_acyclic, node_type
 #include "libsemigroups/exception.hpp"          // for LibsemigroupsException
 #include "libsemigroups/froidure-pin-base.hpp"  // for FroidurePinBase
 #include "libsemigroups/iterator.hpp"           // for operator+
@@ -183,7 +182,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("Paths", "002", "100 node cycle", "[quick]") {
     WordGraph<size_t> ad;
     ad.add_to_out_degree(1);
-    action_digraph_helper::add_cycle(ad, 100);
+    word_graph::add_cycle(ad, 100);
 
     Paths p(ad);
 
@@ -347,10 +346,9 @@ namespace libsemigroups {
 
     Words w;
 
-    auto expected2
-        = (w.letters(2).min(0).max(N) | filter([&ad](auto const& w) {
-             return action_digraph_helper::follow_path(ad, 0, w) == 4;
-           }));
+    auto expected2 = (w.letters(2).min(0).max(N) | filter([&ad](auto const& w) {
+                        return word_graph::follow_path(ad, 0, w) == 4;
+                      }));
     REQUIRE((expected2 | count()) == 131'062);
 
     p.order(Order::shortlex).max(N);
@@ -367,7 +365,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Paths", "005", "#4", "[quick]") {
-    using action_digraph_helper::follow_path;
+    using word_graph::follow_path;
     using namespace rx;
 
     auto                      rg = ReportGuard(false);
@@ -390,8 +388,7 @@ namespace libsemigroups {
     ad.add_edge(S.size(), 1, 1);
 
     REQUIRE(ad.number_of_edges() == 20);
-    REQUIRE(action_digraph_helper::number_of_nodes_reachable_from(ad, S.size())
-            == 10);
+    REQUIRE(word_graph::number_of_nodes_reachable_from(ad, S.size()) == 10);
 
     Paths paths(ad);
     paths.order(Order::lex).from(S.size()).min(0).max(9);
@@ -500,7 +497,7 @@ namespace libsemigroups {
 
     Words w;
     expected = (w.letters(2).min(0).max(N) | filter([&ad](auto const& w) {
-                  return action_digraph_helper::follow_path(ad, 0, w) == 4;
+                  return word_graph::follow_path(ad, 0, w) == 4;
                 })
                 | to_vector());
     REQUIRE(expected.size() == 131'062);
@@ -619,7 +616,7 @@ namespace libsemigroups {
 
     ad = WordGraph<size_t>();
     ad.add_to_out_degree(1);
-    action_digraph_helper::add_cycle(ad, 5);
+    word_graph::add_cycle(ad, 5);
 
     p.init(ad).order(Order::lex).from(0).to(0).min(0).max(6);
     REQUIRE((p | count()) == 2);
@@ -646,7 +643,7 @@ namespace libsemigroups {
                       LibsemigroupsException);
     size_t const n = 20;
     ad.add_to_out_degree(1);
-    action_digraph_helper::add_cycle(ad, n);
+    word_graph::add_cycle(ad, n);
     REQUIRE(number_of_paths(ad, 10) == POSITIVE_INFINITY);
     REQUIRE(number_of_paths_algorithm(ad, 10, 10, 0, POSITIVE_INFINITY)
             == paths::algorithm::trivial);
@@ -664,7 +661,7 @@ namespace libsemigroups {
     auto ad = to_action_digraph<size_t>(
         8, {{3, 2, 3}, {7}, {1}, {1, 5}, {6}, {}, {3, 7}});
 
-    REQUIRE(action_digraph_helper::is_acyclic(ad));
+    REQUIRE(word_graph::is_acyclic(ad));
 
     size_t expected[8][8][8] = {{{0, 1, 4, 9, 12, 12, 12, 12},
                                  {0, 0, 3, 8, 11, 11, 11, 11},
@@ -784,7 +781,7 @@ namespace libsemigroups {
     WordGraph<size_t> ad = binary_tree(n);
     REQUIRE(ad.number_of_nodes() == std::pow(2, n) - 1);
     REQUIRE(ad.number_of_edges() == std::pow(2, n) - 2);
-    REQUIRE(action_digraph_helper::is_acyclic(ad));
+    REQUIRE(word_graph::is_acyclic(ad));
     REQUIRE(number_of_paths(ad, 0) == std::pow(2, n) - 1);
 
     Paths p(ad);
@@ -825,7 +822,7 @@ namespace libsemigroups {
     WordGraph<size_t> ad = binary_tree(n);
     REQUIRE(ad.number_of_nodes() == std::pow(2, n) - 1);
     REQUIRE(ad.number_of_edges() == std::pow(2, n) - 2);
-    REQUIRE(action_digraph_helper::is_acyclic(ad));
+    REQUIRE(word_graph::is_acyclic(ad));
     REQUIRE(number_of_paths_algorithm(ad, 0) == paths::algorithm::acyclic);
     REQUIRE(number_of_paths(ad, 0) == std::pow(2, n) - 1);
 
@@ -846,8 +843,8 @@ namespace libsemigroups {
                           "[quick]") {
     size_t const n  = 400;
     auto         ad = WordGraph<size_t>::random(n, 20, n, std::mt19937());
-    action_digraph_helper::add_cycle(ad, ad.cbegin_nodes(), ad.cend_nodes());
-    REQUIRE(!action_digraph_helper::is_acyclic(ad));
+    word_graph::add_cycle(ad, ad.cbegin_nodes(), ad.cend_nodes());
+    REQUIRE(!word_graph::is_acyclic(ad));
     REQUIRE(!ad.validate());
     REQUIRE(number_of_paths_algorithm(ad, 0, 0, 16) == paths::algorithm::dfs);
     REQUIRE(number_of_paths(ad, 0, 0, 16) != 0);
@@ -860,7 +857,7 @@ namespace libsemigroups {
     // size_t const n  = 10;
     // auto ad = WordGraph<size_t>::random_acyclic(n, 20, n,
     // std::mt19937()); std::cout <<
-    // action_digraph_helper::detail::to_string(ad);
+    // word_graph::detail::to_string(ad);
 
     WordGraph<size_t> ad;
     ad.add_nodes(10);
@@ -876,7 +873,7 @@ namespace libsemigroups {
     ad.add_edge(8, 9, 12);
     ad.add_edge(8, 9, 13);
 
-    REQUIRE(action_digraph_helper::is_acyclic(ad));
+    REQUIRE(word_graph::is_acyclic(ad));
     REQUIRE(!ad.validate());
 
     REQUIRE(number_of_paths_algorithm(ad, 0, 0, 16)
@@ -894,7 +891,7 @@ namespace libsemigroups {
     size_t const n = 10;
     // auto         ad = WordGraph<size_t>::random(n, 20, 200,
     // std::mt19937());
-    // std::cout << action_digraph_helper::detail::to_string(ad);
+    // std::cout << word_graph::detail::to_string(ad);
     auto ad = to_action_digraph<size_t>(
         10,
         {{9, 1, 6, 3, 7, 2, 2, 8, 1, 4, 3, 1, 7, 9, 4, 7, 8, 9, 6, 9},
@@ -907,7 +904,7 @@ namespace libsemigroups {
          {9, 4, 3, 8, 0, 5, 6, 8, 9, 1, 7, 0, 6, 2, 3, 8, 6, 3, 2, 7},
          {0, 6, 3, 5, 7, 9, 9, 8, 1, 5, 7, 9, 6, 0, 0, 3, 6, 0, 8, 9},
          {3, 7, 9, 1, 4, 9, 4, 0, 5, 8, 3, 2, 0, 2, 3, 4, 0, 5, 3, 5}});
-    REQUIRE(!action_digraph_helper::is_acyclic(ad));
+    REQUIRE(!word_graph::is_acyclic(ad));
     REQUIRE(ad.validate());
 
     REQUIRE(number_of_paths_algorithm(ad, 0) == paths::algorithm::acyclic);
@@ -922,17 +919,17 @@ namespace libsemigroups {
     REQUIRE(number_of_paths_algorithm(ad, 0) == paths::algorithm::acyclic);
     REQUIRE(number_of_paths(ad, 0) == 1023);
 
-    action_digraph_helper::add_cycle(ad, n);
+    word_graph::add_cycle(ad, n);
     ad.add_edge(0, n + 1, 0);
-    REQUIRE(!action_digraph_helper::is_acyclic(ad));
+    REQUIRE(!word_graph::is_acyclic(ad));
     REQUIRE(!ad.validate());
     REQUIRE(number_of_paths(ad, 1) == 511);
     REQUIRE(number_of_paths_algorithm(ad, 1, 0, POSITIVE_INFINITY)
             == paths::algorithm::acyclic);
     REQUIRE(number_of_paths(ad, 1, 0, POSITIVE_INFINITY) == 511);
-    REQUIRE(action_digraph_helper::topological_sort(ad).empty());
+    REQUIRE(word_graph::topological_sort(ad).empty());
     REQUIRE(*std::find_if(ad.cbegin_nodes(), ad.cend_nodes(), [&ad](size_t m) {
-      return action_digraph_helper::topological_sort(ad, m).empty();
+      return word_graph::topological_sort(ad, m).empty();
     }) == 1023);
   }
 
@@ -942,7 +939,7 @@ namespace libsemigroups {
                           "[quick]") {
     // REQUIRE(detail::magic_number(6) * 6 == 14.634);
     // auto ad = WordGraph<size_t>::random(6, 3, 15, std::mt19937());
-    // std::cout << action_digraph_helper::detail::to_string(ad);
+    // std::cout << word_graph::detail::to_string(ad);
     auto ad = to_action_digraph<size_t>(6,
                                         {{0, 3, 4},
                                          {2, 1, 4},
@@ -967,7 +964,7 @@ namespace libsemigroups {
 
     auto checker1 = [&ad](word_type const& w) {
       return 10 <= w.size() && w.size() < 12
-             && action_digraph_helper::follow_path(ad, 0, w) != UNDEFINED;
+             && word_graph::follow_path(ad, 0, w) != UNDEFINED;
     };
 
     p.min(10).max(12);
@@ -996,7 +993,7 @@ namespace libsemigroups {
     REQUIRE(number_of_paths(ad, 1, 1, 0, 10) == uint64_t((p | count())));
 
     auto checker2 = [&ad](word_type const& w) {
-      return w.size() < 10 && action_digraph_helper::follow_path(ad, 1, w) == 1;
+      return w.size() < 10 && word_graph::follow_path(ad, 1, w) == 1;
     };
     REQUIRE((p | all_of(std::move(checker2))));
   }

@@ -28,7 +28,6 @@
 #include "libsemigroups/fpsemi-examples.hpp"   // for the presentations
 #include "libsemigroups/report.hpp"            // for ReportGuard
 #include "libsemigroups/todd-coxeter-new.hpp"  // for ToddCoxeter
-#include "libsemigroups/todd-coxeter.hpp"      // for ToddCoxeter
 #include "libsemigroups/types.hpp"             // for word_type
 #include "libsemigroups/words.hpp"
 

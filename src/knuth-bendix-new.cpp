@@ -738,7 +738,7 @@ namespace libsemigroups {
         LIBSEMIGROUPS_ASSERT(src != UNDEFINED);
         _gilman_digraph.remove_label_no_checks(octo);
         auto nodes
-            = action_digraph_helper::nodes_reachable_from(_gilman_digraph, src);
+            = word_graph::nodes_reachable_from(_gilman_digraph, src);
         LIBSEMIGROUPS_ASSERT(std::find(nodes.cbegin(), nodes.cend(), src)
                              != nodes.cend());
         // TODO this is a bit awkward, it ensures that node 0 in the induced
@@ -1294,7 +1294,7 @@ namespace libsemigroups {
       auto ntc
           = partition(kb2,
                       (paths.from(0) | rx::filter([&g2](word_type const& path) {
-                         return action_digraph_helper::last_node_on_path(
+                         return word_graph::last_node_on_path(
                                     g2, 0, path.cbegin(), path.cend())
                                     .second
                                 != path.cend();

@@ -25,13 +25,12 @@
 #include "test-main.hpp"   // for LIBSEMIGROUPS_TEST_CASE
 #include "word-graph.hpp"  // for clique, add_clique
 
-#include "libsemigroups/constants.hpp"       // for UNDEFINED, Undefined, Max
-#include "libsemigroups/digraph-helper.hpp"  // for add_cycle
-#include "libsemigroups/word-graph.hpp"         // for WordGraph, to_action...
-#include "libsemigroups/exception.hpp"       // for LibsemigroupsException
-#include "libsemigroups/forest.hpp"          // for to_forest, Forest, opera...
-#include "libsemigroups/gabow.hpp"           // for Gabow
-#include "libsemigroups/ranges.hpp"          // for equal
+#include "libsemigroups/constants.hpp"   // for UNDEFINED, Undefined, Max
+#include "libsemigroups/exception.hpp"   // for LibsemigroupsException
+#include "libsemigroups/forest.hpp"      // for to_forest, Forest, opera...
+#include "libsemigroups/gabow.hpp"       // for Gabow
+#include "libsemigroups/ranges.hpp"      // for equal
+#include "libsemigroups/word-graph.hpp"  // for WordGraph, to_action...
 
 #include "rx/ranges.hpp"  // for Inner, operator|, remove...
 
@@ -42,7 +41,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("Gabow", "000", "for a cycle", "[quick][gabow]") {
     WordGraph<size_t> wg;
     wg.add_to_out_degree(1);
-    action_digraph_helper::add_cycle(wg, 33);
+    word_graph::add_cycle(wg, 33);
     // REQUIRE(wg.scc_id(0) == 0);
     Gabow scc(wg);
     REQUIRE(scc.id(0) == 0);
@@ -59,7 +58,7 @@ namespace libsemigroups {
                           "no edges",
                           "[quick][gabow][no-valgrind]") {
     WordGraph<size_t> wg = WordGraph<size_t>(0);
-    Gabow                 scc(wg);
+    Gabow             scc(wg);
     for (size_t j = 1; j < 100; ++j) {
       wg.add_nodes(j);
       scc.reset();
@@ -75,7 +74,7 @@ namespace libsemigroups {
     wg.add_to_out_degree(1);
     Gabow scc(wg);
     for (size_t j = 2; j < 50; ++j) {
-      action_digraph_helper::add_cycle(wg, j);
+      word_graph::add_cycle(wg, j);
       scc.reset();
       REQUIRE((wg.nodes()
                | filter([&scc, j](auto v) { return scc.id(v) == j - 2; })
@@ -100,7 +99,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("Gabow", "004", "exceptions", "[quick][gabow]") {
     WordGraph<size_t> wg(10, 5);
-    Gabow                 scc(wg);
+    Gabow             scc(wg);
     REQUIRE_THROWS_AS(scc.id(10), LibsemigroupsException);
   }
 
@@ -134,7 +133,7 @@ namespace libsemigroups {
                           "006",
                           "spanning forest - disjoint cycles",
                           "[quick][gabow]") {
-    size_t                j = 33;
+    size_t            j = 33;
     WordGraph<size_t> wg;
     wg.add_to_out_degree(1);
 
@@ -241,13 +240,13 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("Gabow", "009", "large cycle", "[quick][gabow]") {
     WordGraph<size_t> wg;
     wg.add_to_out_degree(1);
-    action_digraph_helper::add_cycle(wg, 100000);
+    word_graph::add_cycle(wg, 100000);
     using node_type = decltype(wg)::node_type;
     Gabow scc(wg);
     REQUIRE(
         (wg.nodes() | all_of([&scc](node_type i) { return scc.id(i) == 0; })));
 
-    action_digraph_helper::add_cycle(wg, 10101);
+    word_graph::add_cycle(wg, 10101);
     scc.reset();
     REQUIRE((wg.nodes() | take(100000)
              | all_of([&scc](node_type i) { return scc.id(i) == 0; })));

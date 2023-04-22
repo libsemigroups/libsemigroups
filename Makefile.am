@@ -60,7 +60,6 @@ pkginclude_HEADERS += include/libsemigroups/containers.hpp
 pkginclude_HEADERS += include/libsemigroups/coset.hpp
 pkginclude_HEADERS += include/libsemigroups/debug.hpp
 pkginclude_HEADERS += include/libsemigroups/deprecated.hpp
-pkginclude_HEADERS += include/libsemigroups/digraph-helper.hpp
 pkginclude_HEADERS += include/libsemigroups/digraph-with-sources.hpp
 pkginclude_HEADERS += include/libsemigroups/digraph-with-sources.tpp
 pkginclude_HEADERS += include/libsemigroups/exception.hpp
@@ -76,7 +75,7 @@ pkginclude_HEADERS += include/libsemigroups/froidure-pin-impl.hpp
 pkginclude_HEADERS += include/libsemigroups/froidure-pin.hpp
 pkginclude_HEADERS += include/libsemigroups/function-ref.hpp
 pkginclude_HEADERS += include/libsemigroups/gabow.hpp
-pkginclude_HEADERS += include/libsemigroups/src/gabow.tpp
+pkginclude_HEADERS += include/libsemigroups/gabow.tpp
 pkginclude_HEADERS += include/libsemigroups/hpcombi.hpp
 pkginclude_HEADERS += include/libsemigroups/int-range.hpp
 pkginclude_HEADERS += include/libsemigroups/iterator.hpp
@@ -734,7 +733,6 @@ test_all_SOURCES += tests/test-cong-intf.cpp
 test_all_SOURCES += tests/test-cong.cpp
 test_all_SOURCES += tests/test-constants.cpp
 test_all_SOURCES += tests/test-containers.cpp
-test_all_SOURCES += tests/test-digraph-helper.cpp
 test_all_SOURCES += tests/test-felsch-tree.cpp
 test_all_SOURCES += tests/test-forest.cpp
 test_all_SOURCES += tests/test-fpsemi-examples-1.cpp
@@ -819,9 +817,6 @@ test_constants_SOURCES += tests/test-main.cpp
 
 test_containers_SOURCES =  tests/test-containers.cpp
 test_containers_SOURCES += tests/test-main.cpp
-
-test_digraph_helper_SOURCES  = tests/test-digraph-helper.cpp
-test_digraph_helper_SOURCES += tests/test-main.cpp
 
 test_forest_SOURCES =  tests/test-forest.cpp
 test_forest_SOURCES += tests/test-main.cpp

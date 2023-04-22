@@ -202,7 +202,7 @@ namespace libsemigroups {
   bool is_obviously_infinite(ToddCoxeter const& tc) {
     auto const& d = tc.word_graph();
     if (tc.finished()
-        || action_digraph::is_complete(
+        || word_graph::is_complete(
             d, d.cbegin_active_nodes(), d.cend_active_nodes())) {
       return false;
     }
@@ -215,7 +215,7 @@ namespace libsemigroups {
 
   bool is_obviously_infinite(KnuthBendix& kb) {
     if (kb.finished()) {
-      return !action_digraph_helper::is_acyclic(kb.gilman_digraph());
+      return !word_graph::is_acyclic(kb.gilman_digraph());
     }
     // TODO need to do the same as for ToddCoxeter
     return is_obviously_infinite(kb.presentation());

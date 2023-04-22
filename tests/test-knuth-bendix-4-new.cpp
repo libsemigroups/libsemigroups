@@ -48,8 +48,6 @@
 #include "test-main.hpp"                       // for LIBSEMIGROUPS_TEST_CASE
                                                //
 #include "libsemigroups/constants.hpp"         // for operator==, operator!=
-#include "libsemigroups/digraph-helper.hpp"    // for is_acyclic
-#include "libsemigroups/word-graph.hpp"           // for WordGraph
 #include "libsemigroups/exception.hpp"         // for LibsemigroupsException
 #include "libsemigroups/iterator.hpp"          // for operator+
 #include "libsemigroups/knuth-bendix-new.hpp"  // for KnuthBendix, normal_forms
@@ -59,6 +57,7 @@
 #include "libsemigroups/report.hpp"            // for ReportGuard
 #include "libsemigroups/stl.hpp"               // for apply_permutation
 #include "libsemigroups/string.hpp"            // for random_string, operator<<
+#include "libsemigroups/word-graph.hpp"        // for WordGraph
 #include "libsemigroups/words.hpp"             // for Inner, Strings, to_str...
 
 #include "rx/ranges.hpp"  // for operator|, to_vector
@@ -403,7 +402,7 @@ namespace libsemigroups {
     auto& ad = kb.gilman_digraph();
     REQUIRE(ad.number_of_nodes() == 6'021);
     REQUIRE(ad.number_of_edges() == 7'435);
-    REQUIRE(action_digraph_helper::is_acyclic(ad));
+    REQUIRE(word_graph::is_acyclic(ad));
     REQUIRE(number_of_paths(ad, 0, 0, 100) == 10'752);
   }
 

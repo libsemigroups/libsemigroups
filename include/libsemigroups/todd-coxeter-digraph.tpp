@@ -58,7 +58,7 @@ namespace libsemigroups {
     word_type::const_iterator it;
 
     std::tie(c, it)
-        = action_digraph_helper::last_node_on_path_nc(*this, c, first, last);
+        = word_graph::last_node_on_path_nc(*this, c, first, last);
     bool result = false;
     for (; it < last; ++it) {
       LIBSEMIGROUPS_ASSERT(unsafe_neighbor(c, *it) == UNDEFINED);

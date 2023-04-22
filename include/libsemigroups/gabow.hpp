@@ -26,8 +26,8 @@
 #include <stack>    // for stack
 #include <vector>   // for vector
 
+#include "forest.hpp"      // for Forest
 #include "word-graph.hpp"  // for WordGraph
-#include "forest.hpp"   // for Forest
 
 #include "rx/ranges.hpp"  // for iterator_range, transform
 
@@ -41,7 +41,7 @@ namespace libsemigroups {
     using size_type  = size_t;
 
    private:
-    WordGraph<node_type> const*             _graph;
+    WordGraph<node_type> const*                 _graph;
     mutable std::vector<std::vector<node_type>> _comps;
     mutable bool                                _finished;
     mutable std::vector<size_type>              _id;
@@ -288,5 +288,5 @@ namespace libsemigroups {
 
 }  // namespace libsemigroups
 
-#include "src/gabow.tpp"
+#include "gabow.tpp"
 #endif  // LIBSEMIGROUPS_GABOW_HPP_

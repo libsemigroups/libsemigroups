@@ -36,8 +36,6 @@
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
 #include "libsemigroups/constants.hpp"             // for UNDEFINED
-#include "libsemigroups/digraph-helper.hpp"        // for make, last_node_on...
-#include "libsemigroups/word-graph.hpp"               // for WordGraph, ope...
 #include "libsemigroups/exception.hpp"             // for LibsemigroupsExcep...
 #include "libsemigroups/fpsemi-examples.hpp"       // for make, fibonacci_se...
 #include "libsemigroups/iterator.hpp"              // for ConstIteratorState...
@@ -47,6 +45,7 @@
 #include "libsemigroups/stephen.hpp"               // for Stephen, Stephen::...
 #include "libsemigroups/todd-coxeter-digraph.hpp"  // for StephenDigraph
 #include "libsemigroups/types.hpp"                 // for word_type
+#include "libsemigroups/word-graph.hpp"            // for WordGraph, ope...
 #include "libsemigroups/words.hpp"                 // for StringToWord, word...
 
 namespace libsemigroups {
@@ -54,9 +53,9 @@ namespace libsemigroups {
     void check_000(Stephen& s) {
       s.set_word({0}).run();
       REQUIRE(s.word_graph().number_of_nodes() == 2);
-      REQUIRE(s.word_graph()
-              == to_action_digraph<size_t>(
-                  2, {{1, UNDEFINED}, {UNDEFINED, 1}}));
+      REQUIRE(
+          s.word_graph()
+          == to_action_digraph<size_t>(2, {{1, UNDEFINED}, {UNDEFINED, 1}}));
       REQUIRE(stephen::number_of_words_accepted(s) == POSITIVE_INFINITY);
       {
         auto first = stephen::cbegin_words_accepted(s);
@@ -173,26 +172,26 @@ namespace libsemigroups {
     REQUIRE(s.word_graph().number_of_nodes() == 7);
     REQUIRE(s.word_graph()
             == to_action_digraph<size_t>(7,
-                                                   {{UNDEFINED, 1},
-                                                    {UNDEFINED, 2},
-                                                    {3, 1},
-                                                    {4, 5},
-                                                    {3, 6},
-                                                    {6, 3},
-                                                    {5, 4}}));
+                                         {{UNDEFINED, 1},
+                                          {UNDEFINED, 2},
+                                          {3, 1},
+                                          {4, 5},
+                                          {3, 6},
+                                          {6, 3},
+                                          {5, 4}}));
     REQUIRE(stephen::number_of_words_accepted(s) == POSITIVE_INFINITY);
 
     word_type w = {1, 1, 0, 1};
 
-    REQUIRE(action_digraph_helper::last_node_on_path_nc(
-                s.word_graph(), 0, w.begin(), w.end())
-                .first
-            == 5);
+    REQUIRE(
+        word_graph::last_node_on_path_nc(s.word_graph(), 0, w.begin(), w.end())
+            .first
+        == 5);
     w = {1, 1, 0, 0, 1, 0};
-    REQUIRE(action_digraph_helper::last_node_on_path_nc(
-                s.word_graph(), 0, w.begin(), w.end())
-                .first
-            == 5);
+    REQUIRE(
+        word_graph::last_node_on_path_nc(s.word_graph(), 0, w.begin(), w.end())
+            .first
+        == 5);
 
     REQUIRE(stephen::accepts(s, {1, 1, 0, 0, 1, 0}));
     REQUIRE(stephen::accepts(s, {1, 1, 0, 0, 1, 0}));
@@ -506,11 +505,11 @@ namespace libsemigroups {
                   UNDEFINED,
                   UNDEFINED}}));
     auto rule = string_to_word(p.rules[0]);
-    auto m    = action_digraph_helper::last_node_on_path(
+    auto m    = word_graph::last_node_on_path(
                  S.word_graph(), 0, rule.cbegin(), rule.cend())
                  .first;
     rule   = string_to_word(p.rules[1]);
-    auto n = action_digraph_helper::last_node_on_path(
+    auto n = word_graph::last_node_on_path(
                  S.word_graph(), 0, rule.cbegin(), rule.cend())
                  .first;
     REQUIRE(m != UNDEFINED);
