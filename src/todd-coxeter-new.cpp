@@ -664,7 +664,7 @@ namespace libsemigroups {
     size_t const n = _word_graph.out_degree();
     while (current != _word_graph.first_free_node() && !stopped()) {
       for (letter_type a = 0; a < n; ++a) {
-        if (_word_graph.unsafe_neighbor(current, a) == UNDEFINED) {
+        if (_word_graph.neighbor_no_checks(current, a) == UNDEFINED) {
           _word_graph.def_edge_nc<RegisterDefs>(
               current, a, _word_graph.new_node());
           _word_graph.process_definitions();

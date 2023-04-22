@@ -90,7 +90,7 @@ namespace libsemigroups {
     }
 
     void remove_edge_nc(node_type c, label_type x) noexcept {
-      remove_source(this->unsafe_neighbor(c, x), x, c);
+      remove_source(this->neighbor_no_checks(c, x), x, c);
       WordGraph<node_type>::remove_edge_nc(c, x);
     }
 

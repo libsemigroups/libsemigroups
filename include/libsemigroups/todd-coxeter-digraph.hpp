@@ -77,7 +77,7 @@ namespace libsemigroups {
    public:
     using BaseDigraph::BaseDigraph;
     using BaseDigraph::out_degree;
-    using BaseDigraph::unsafe_neighbor;
+    using BaseDigraph::neighbor_no_checks;
 
     NodeManagedDigraph()                                     = default;
     NodeManagedDigraph(NodeManagedDigraph const&)            = default;

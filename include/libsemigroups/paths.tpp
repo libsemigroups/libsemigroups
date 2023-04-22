@@ -81,7 +81,7 @@ namespace libsemigroups {
     do {
       node_type next;
       std::tie(next, _edge)
-          = _digraph->unsafe_next_neighbor(_nodes.back(), _edge);
+          = _digraph->next_neighbor_no_checks(_nodes.back(), _edge);
       if (next != UNDEFINED && _edges.size() < _max - 1) {
         _nodes.push_back(next);
         _edges.push_back(_edge);
@@ -260,7 +260,7 @@ namespace libsemigroups {
     do {
       node_type next;
       std::tie(next, _edge)
-          = _digraph->unsafe_next_neighbor(_nodes.back(), _edge);
+          = _digraph->next_neighbor_no_checks(_nodes.back(), _edge);
       if (next != UNDEFINED && _edges.size() < _max - 1) {
         // Avoid infinite loops when we can never reach _target
         if (_can_reach_target[next]) {

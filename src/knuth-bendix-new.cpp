@@ -734,7 +734,7 @@ namespace libsemigroups {
           && (generating_pairs() | rx::count()) != 0) {
         auto const& p    = presentation();
         auto        octo = p.index(p.alphabet().back());
-        auto        src  = _gilman_digraph.unsafe_neighbor(0, octo);
+        auto        src  = _gilman_digraph.neighbor_no_checks(0, octo);
         LIBSEMIGROUPS_ASSERT(src != UNDEFINED);
         _gilman_digraph.remove_label_no_checks(octo);
         auto nodes
@@ -1188,9 +1188,9 @@ namespace libsemigroups {
       to_g1[0] = 0;
       for (auto v : g1.nodes()) {
         for (auto e : g1.labels()) {
-          auto ve1 = g1.unsafe_neighbor(v, e);
+          auto ve1 = g1.neighbor_no_checks(v, e);
           if (to_g2[v] != UNDEFINED && ve1 != UNDEFINED) {
-            auto ve2 = g2.unsafe_neighbor(to_g2[v], e);
+            auto ve2 = g2.neighbor_no_checks(to_g2[v], e);
             if (ve2 != UNDEFINED && to_g2[ve1] == UNDEFINED) {
               to_g2[ve1] = ve2;
               to_g1[ve2] = ve1;
@@ -1220,7 +1220,7 @@ namespace libsemigroups {
           // post order
           v -= N;
           for (auto e : g1.labels()) {
-            auto ve = g1.unsafe_neighbor(v, e);
+            auto ve = g1.neighbor_no_checks(v, e);
             // TODO clean up
             if (ve != UNDEFINED) {
               can_reach[v] = (can_reach[v] || can_reach[ve]);
@@ -1241,11 +1241,11 @@ namespace libsemigroups {
             can_reach[v] = true;
           }
           for (auto e : g1.labels()) {
-            auto ve1 = g1.unsafe_neighbor(v, e);
+            auto ve1 = g1.neighbor_no_checks(v, e);
             if (ve1 != UNDEFINED) {
               // Check if (v, e, ve1) corresponds to an edge in g2
               if (!can_reach[v]) {
-                auto ve2 = g2.unsafe_neighbor(to_g2[v], e);
+                auto ve2 = g2.neighbor_no_checks(to_g2[v], e);
                 if (ve2 != UNDEFINED) {
                   // edges (v, e, ve1) and (to_g2[v], e, ve2) exist, so
                   // there's an edge in g1 not in g2 if the targets of these
@@ -1279,7 +1279,7 @@ namespace libsemigroups {
       for (auto v : ad.nodes()) {
         if (can_reach[v]) {
           for (auto e : ad.labels()) {
-            auto ve = g1.unsafe_neighbor(v, e);
+            auto ve = g1.neighbor_no_checks(v, e);
             if (ve != UNDEFINED && can_reach[ve]) {
               ad.add_edge_nc(v, ve, e);
             }

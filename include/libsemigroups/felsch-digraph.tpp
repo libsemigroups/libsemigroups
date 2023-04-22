@@ -92,7 +92,7 @@ namespace libsemigroups {
         _presentation() {
     for (node_type n = 0; n < ad.number_of_nodes(); ++n) {
       for (label_type a = 0; a != ad.out_degree(); ++a) {
-        if (ad.unsafe_neighbor(n, a) != UNDEFINED) {
+        if (ad.neighbor_no_checks(n, a) != UNDEFINED) {
           _definitions.emplace_back(n, a);
         }
       }
@@ -141,7 +141,7 @@ namespace libsemigroups {
     LIBSEMIGROUPS_ASSERT(c < WordGraph<Node>::number_of_nodes());
     LIBSEMIGROUPS_ASSERT(x < WordGraph<Node>::out_degree());
     LIBSEMIGROUPS_ASSERT(d < WordGraph<Node>::number_of_nodes());
-    node_type cx = WordGraph<Node>::unsafe_neighbor(c, x);
+    node_type cx = WordGraph<Node>::neighbor_no_checks(c, x);
     if (cx == UNDEFINED) {
       def_edge_nc<RegDefs>(c, x, d);
       return true;
@@ -420,9 +420,9 @@ namespace libsemigroups {
     LIBSEMIGROUPS_ASSERT(y < WordGraph<Node>::number_of_nodes());
 
     node_type xa
-        = (a == UNDEFINED ? x : WordGraph<Node>::unsafe_neighbor(x, a));
+        = (a == UNDEFINED ? x : WordGraph<Node>::neighbor_no_checks(x, a));
     node_type yb
-        = (b == UNDEFINED ? y : WordGraph<Node>::unsafe_neighbor(y, b));
+        = (b == UNDEFINED ? y : WordGraph<Node>::neighbor_no_checks(y, b));
 
     if (xa == UNDEFINED && yb != UNDEFINED) {
       LIBSEMIGROUPS_ASSERT(a < WordGraph<Node>::out_degree());

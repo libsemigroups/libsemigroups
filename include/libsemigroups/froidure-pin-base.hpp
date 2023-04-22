@@ -672,7 +672,7 @@ namespace libsemigroups {
       validate_letter_index(j);
       run();
       validate_element_index(i);
-      return _right.unsafe_neighbor(i, j);
+      return _right.neighbor_no_checks(i, j);
     }
 
     //! Returns a const reference to the right Cayley graph.
@@ -721,7 +721,7 @@ namespace libsemigroups {
       validate_letter_index(j);
       run();
       validate_element_index(i);
-      return _left.unsafe_neighbor(i, j);
+      return _left.neighbor_no_checks(i, j);
     }
 
     //! Returns a const reference to the left Cayley graph.
@@ -982,7 +982,7 @@ namespace libsemigroups {
                           ptr->_suffix[ptr->_enumerate_order[_pos]], _gen))) {
                 _current[0] = ptr->_enumerate_order[_pos];
                 _current[1] = _gen;
-                _current[2] = ptr->_right.unsafe_neighbor(
+                _current[2] = ptr->_right.neighbor_no_checks(
                     ptr->_enumerate_order[_pos], _gen);
                 if (_current[2] != UNDEFINED) {
                   _gen++;

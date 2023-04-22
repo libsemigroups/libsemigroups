@@ -61,7 +61,7 @@ namespace libsemigroups {
         = word_graph::last_node_on_path_nc(*this, c, first, last);
     bool result = false;
     for (; it < last; ++it) {
-      LIBSEMIGROUPS_ASSERT(unsafe_neighbor(c, *it) == UNDEFINED);
+      LIBSEMIGROUPS_ASSERT(neighbor_no_checks(c, *it) == UNDEFINED);
       node_type d = new_node();
       BaseDigraph::template add_edge_nc<RegisterDefs>(c, d, *it);
       result = true;
@@ -261,9 +261,9 @@ namespace libsemigroups {
         std::tie(min, max) = std::minmax({min, max});
         NodeManager_::union_nodes(min, max);
         for (letter_type i = 0; i < out_degree(); ++i) {
-          node_type const v = unsafe_neighbor(max, i);
+          node_type const v = neighbor_no_checks(max, i);
           if (v != UNDEFINED) {
-            node_type const u = unsafe_neighbor(min, i);
+            node_type const u = neighbor_no_checks(min, i);
             if (u == UNDEFINED) {
               WordGraph<node_type>::add_edge_nc(min, v, i);
             } else if (u != v) {
@@ -294,7 +294,7 @@ namespace libsemigroups {
     while (c != NodeManager_::first_free_node()) {
       m++;
       for (letter_type x = 0; x < out_degree(); ++x) {
-        auto cx = unsafe_neighbor(c, x);
+        auto cx = neighbor_no_checks(c, x);
         if (cx != UNDEFINED) {
           auto d = NodeManager_::find_node(cx);
           if (cx != d) {

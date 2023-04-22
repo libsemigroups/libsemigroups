@@ -40,7 +40,7 @@ namespace libsemigroups {
     size_t const n  = tc.word_graph().out_degree();
     size_t       m  = n;
     for (letter_type a = 0; a < m;) {
-      if (wg->unsafe_neighbor(0, a) != a + 1) {
+      if (wg->neighbor_no_checks(0, a) != a + 1) {
         wg->remove_label(a);
         m--;
       } else {
@@ -50,9 +50,9 @@ namespace libsemigroups {
 
     FroidurePin<TCE> result(wg);
     for (size_t i = 0; i < n; ++i) {
-      // We use _word_graph.unsafe_neighbor instead of just i, because there
+      // We use _word_graph.neighbor_no_checks instead of just i, because there
       // might be more generators than cosets.
-      result.add_generator(TCE(tc.word_graph().unsafe_neighbor(0, i)));
+      result.add_generator(TCE(tc.word_graph().neighbor_no_checks(0, i)));
     }
     return result;
   }

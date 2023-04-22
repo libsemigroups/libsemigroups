@@ -298,8 +298,8 @@ namespace libsemigroups {
                           "unsafe (next) neighbour",
                           "[quick]") {
     auto ad = binary_tree(10);
-    REQUIRE(ad.unsafe_neighbor(0, 1) == ad.neighbor(0, 1));
-    REQUIRE(ad.unsafe_next_neighbor(0, 1) == ad.next_neighbor(0, 1));
+    REQUIRE(ad.neighbor_no_checks(0, 1) == ad.neighbor(0, 1));
+    REQUIRE(ad.next_neighbor_no_checks(0, 1) == ad.next_neighbor(0, 1));
   }
 
   LIBSEMIGROUPS_TEST_CASE("WordGraph",

@@ -143,7 +143,7 @@ namespace libsemigroups {
                     v3::detail::TCE::digraph_type* t,
                     size_t = 0) const {
       // y- 1, x????
-      xy = v3::detail::TCE(t->unsafe_neighbor(x, y - 1));
+      xy = v3::detail::TCE(t->neighbor_no_checks(x, y - 1));
     }
   };
 
