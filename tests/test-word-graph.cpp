@@ -336,8 +336,7 @@ namespace libsemigroups {
     ad.add_edge(2, 0, 0);
 
     ad.remove_edge_no_checks(0, 0);  // remove edge from 0 labelled 0
-    REQUIRE(
-        ad == to_word_graph<size_t>(3, {{UNDEFINED, UNDEFINED}, {0}, {0}}));
+    REQUIRE(ad == to_word_graph<size_t>(3, {{UNDEFINED, UNDEFINED}, {0}, {0}}));
   }
 
   LIBSEMIGROUPS_TEST_CASE("WordGraph",

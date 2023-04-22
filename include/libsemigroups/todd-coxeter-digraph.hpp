@@ -34,14 +34,14 @@
 #include <vector>       // for vector
 
 #include "digraph-with-sources.hpp"  // for DigraphWithSources
-#include "word-graph.hpp"               // for WordGraph
 #include "felsch-digraph.hpp"
 #include "node-manager.hpp"  // for NodeManager
 #include "present.hpp"       // for Presentation, Presentation<>:...
 #include "report.hpp"        // for REPORT_DEFAULT
 #include "runner.hpp"
-#include "timer.hpp"  // for Timer
-#include "types.hpp"  // for word_type
+#include "timer.hpp"       // for Timer
+#include "types.hpp"       // for word_type
+#include "word-graph.hpp"  // for WordGraph
 
 namespace libsemigroups {
   // TODO merge this with NodeManager
@@ -76,8 +76,8 @@ namespace libsemigroups {
 
    public:
     using BaseDigraph::BaseDigraph;
-    using BaseDigraph::out_degree;
     using BaseDigraph::neighbor_no_checks;
+    using BaseDigraph::out_degree;
 
     NodeManagedDigraph()                                     = default;
     NodeManagedDigraph(NodeManagedDigraph const&)            = default;
@@ -160,8 +160,9 @@ namespace libsemigroups {
     node_type new_node();
 
     void permute_nodes_no_checks(std::vector<node_type> const& p,
-                          std::vector<node_type> const& q) {
-      BaseDigraph::permute_nodes_no_checks(p, q, this->number_of_nodes_active());
+                                 std::vector<node_type> const& q) {
+      BaseDigraph::permute_nodes_no_checks(
+          p, q, this->number_of_nodes_active());
       NodeManager_::apply_permutation(p);
     }
 
@@ -219,13 +220,6 @@ namespace libsemigroups {
       return *this;
     }
   };
-
-  namespace detail {
-    template <>
-    struct  IsWordGraphHelper<StephenDigraph> {
-
-    };
-  }
 
 }  // namespace libsemigroups
 #endif  // LIBSEMIGROUPS_TODD_COXETER_DIGRAPH_HPP_
