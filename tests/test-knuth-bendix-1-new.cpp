@@ -733,14 +733,14 @@ namespace libsemigroups {
     KnuthBendix kb2(twosided, p);
 
     REQUIRE(kb1.gilman_digraph()
-            == to_action_digraph<size_t>(5,
+            == to_word_graph<size_t>(5,
                                          {{3, 1, 2},
                                           {UNDEFINED, 4},
                                           {UNDEFINED, UNDEFINED, 2},
                                           {UNDEFINED, 1}}));
 
     REQUIRE(kb2.gilman_digraph()
-            == to_action_digraph<size_t>(
+            == to_word_graph<size_t>(
                 3, {{2, UNDEFINED, 1}, {UNDEFINED, UNDEFINED, 1}}));
 
     REQUIRE(kb2.equal_to("a", "b"));
@@ -878,7 +878,7 @@ namespace libsemigroups {
     KnuthBendix kb1(twosided, p);
 
     REQUIRE(kb1.gilman_digraph()
-            == to_action_digraph<size_t>(
+            == to_word_graph<size_t>(
                 6,
                 {{1, 2, 3, 4, 5},
                  {},
@@ -891,7 +891,7 @@ namespace libsemigroups {
     KnuthBendix kb2(twosided, p);
 
     REQUIRE(kb2.gilman_digraph()
-            == to_action_digraph<size_t>(
+            == to_word_graph<size_t>(
                 5,
                 {{1, 2, UNDEFINED, 3, 4},
                  {},
@@ -1078,7 +1078,7 @@ namespace libsemigroups {
     KnuthBendix kb1(twosided, p);
     REQUIRE(kb1.gilman_digraph().number_of_nodes() == 16);
     REQUIRE(kb1.gilman_digraph()
-            == to_action_digraph<size_t>(16,
+            == to_word_graph<size_t>(16,
                                          {{3,
                                            1,
                                            UNDEFINED,
@@ -1108,7 +1108,7 @@ namespace libsemigroups {
     KnuthBendix kb2(twosided, p);
 
     REQUIRE(kb2.gilman_digraph()
-            == to_action_digraph<size_t>(4,
+            == to_word_graph<size_t>(4,
                                          {{2,
                                            1,
                                            UNDEFINED,

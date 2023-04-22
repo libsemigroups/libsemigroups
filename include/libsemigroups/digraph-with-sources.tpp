@@ -92,7 +92,7 @@ namespace libsemigroups {
   ////////////////////////////////////////////////////////////////////////////
 
   template <typename NodeType>
-  void DigraphWithSources<NodeType>::permute_nodes_nc(
+  void DigraphWithSources<NodeType>::permute_nodes_no_checks(
       std::vector<node_type> const& p,
       std::vector<node_type> const& q,
       size_t                        m) {
@@ -104,7 +104,7 @@ namespace libsemigroups {
     while (c < m) {
       for (label_type x = 0; x < n; ++x) {
         node_type i = this->neighbor_no_checks(p[c], x);
-        WordGraph<NodeType>::add_edge_nc(
+        WordGraph<NodeType>::add_edge_no_checks(
             p[c], (i == UNDEFINED ? i : q[i]), x);
         i = _preim_init.get(p[c], x);
         _preim_init.set(p[c], x, (i == UNDEFINED ? i : q[i]));
@@ -154,7 +154,7 @@ namespace libsemigroups {
         replace_source(c, d, x, cx);
         replace_source(d, c, x, dx);
       }
-      this->swap_edges_nc(c, d, x);
+      this->swap_edges_no_checks(c, d, x);
       _preim_init.swap(c, x, d, x);
       _preim_next.swap(c, x, d, x);
     }
@@ -169,7 +169,7 @@ namespace libsemigroups {
       node_type cx = this->neighbor_no_checks(c, x);
       replace_target(c, d, x);
       replace_source(c, d, x, cx);
-      this->swap_edges_nc(c, d, x);
+      this->swap_edges_no_checks(c, d, x);
       _preim_init.swap(c, x, d, x);
       _preim_next.swap(c, x, d, x);
     }
@@ -188,7 +188,7 @@ namespace libsemigroups {
       while (v != UNDEFINED) {
         auto w = next_source(v, i);
         if (this->neighbor_no_checks(v, i) != min) {
-          add_edge_nc(v, min, i);
+          add_edge_no_checks(v, min, i);
           new_edge(v, i);
         }
         v = w;
@@ -202,7 +202,7 @@ namespace libsemigroups {
         node_type u = this->neighbor_no_checks(min, i);
         if (u == UNDEFINED) {
           if (this->neighbor_no_checks(min, i) != min) {
-            add_edge_nc(min, v, i);
+            add_edge_no_checks(min, v, i);
             new_edge(min, i);
           }
         } else if (u != v) {
@@ -227,7 +227,7 @@ namespace libsemigroups {
   template <typename NodeType>
   void DigraphWithSources<NodeType>::clear_sources_and_targets(node_type c) {
     for (label_type i = 0; i < this->out_degree(); i++) {
-      WordGraph<NodeType>::add_edge_nc(c, UNDEFINED, i);
+      WordGraph<NodeType>::add_edge_no_checks(c, UNDEFINED, i);
       _preim_init.set(c, i, UNDEFINED);
     }
   }
@@ -267,7 +267,7 @@ namespace libsemigroups {
       for (label_type x = 0; x < WordGraph<NodeType>::out_degree(); ++x) {
         auto cx = WordGraph<node_type>::neighbor_no_checks(c, x);
         if (cx != UNDEFINED) {
-          add_edge_nc(c, cx, x);
+          add_edge_no_checks(c, cx, x);
         }
       }
     }
@@ -301,7 +301,7 @@ namespace libsemigroups {
     node_type e = _preim_init.get(c, x);
     while (e != UNDEFINED) {
       LIBSEMIGROUPS_ASSERT(this->neighbor_no_checks(e, x) == c);
-      WordGraph<NodeType>::add_edge_nc(e, d, x);
+      WordGraph<NodeType>::add_edge_no_checks(e, d, x);
       e = _preim_next.get(e, x);
     }
   }

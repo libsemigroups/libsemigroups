@@ -134,7 +134,7 @@ namespace libsemigroups {
 
   template <typename Word, typename Node, typename Definitions>
   template <bool RegDefs>
-  bool FelschDigraph<Word, Node, Definitions>::try_def_edge_nc(
+  bool FelschDigraph<Word, Node, Definitions>::try_def_edge_no_checks(
       node_type  c,
       label_type x,
       node_type  d) noexcept {
@@ -143,7 +143,7 @@ namespace libsemigroups {
     LIBSEMIGROUPS_ASSERT(d < WordGraph<Node>::number_of_nodes());
     node_type cx = WordGraph<Node>::neighbor_no_checks(c, x);
     if (cx == UNDEFINED) {
-      def_edge_nc<RegDefs>(c, x, d);
+      def_edge_no_checks<RegDefs>(c, x, d);
       return true;
     } else {
       return cx == d;
@@ -153,7 +153,7 @@ namespace libsemigroups {
   template <typename Word, typename Node, typename Definitions>
   template <bool RegDefs>
   void
-  FelschDigraph<Word, Node, Definitions>::def_edge_nc(node_type  c,
+  FelschDigraph<Word, Node, Definitions>::def_edge_no_checks(node_type  c,
                                                       label_type x,
                                                       node_type  d) noexcept {
     LIBSEMIGROUPS_ASSERT(c < WordGraph<Node>::number_of_nodes());
@@ -162,7 +162,7 @@ namespace libsemigroups {
     if constexpr (RegDefs) {
       _definitions.emplace_back(c, x);
     }
-    DigraphWithSources<Node>::add_edge_nc(c, d, x);
+    DigraphWithSources<Node>::add_edge_no_checks(c, d, x);
   }
 
   template <typename Word, typename Node, typename Definitions>
@@ -173,7 +173,7 @@ namespace libsemigroups {
 
     while (_definitions.size() > n) {
       auto const& p = _definitions.back();
-      this->remove_edge_nc(p.first, p.second);
+      this->remove_edge_no_checks(p.first, p.second);
       _definitions.pop_back();
     }
   }
@@ -305,7 +305,7 @@ namespace libsemigroups {
           auto        j = (i % 2 == 0 ? *it + 1 : *it - 1);
           auto const& u = _presentation.rules[i];
           auto const& v = _presentation.rules[j];
-          // LIBSEMIGROUPS_ASSERT(word_graph::follow_path_nc(
+          // LIBSEMIGROUPS_ASSERT(word_graph::follow_path_no_checks(
           //                         *this,
           //                         first_source(c, x),
           //                         u.cbegin(),
@@ -321,7 +321,7 @@ namespace libsemigroups {
           auto u_first = u.cbegin() + felsch_tree().length() - 1;
           auto u_last  = u.cend() - 1;
 
-          node_type y = word_graph::follow_path_nc(
+          node_type y = word_graph::follow_path_no_checks(
               *this, root, u_first, u_last);
           if (y == UNDEFINED) {
             continue;
@@ -377,7 +377,7 @@ namespace libsemigroups {
       x = u_node;
       a = UNDEFINED;
     } else {
-      x = word_graph::follow_path_nc(
+      x = word_graph::follow_path_no_checks(
           *this, u_node, u_first, u_last - 1);
       if (x == UNDEFINED) {
         return true;
@@ -393,7 +393,7 @@ namespace libsemigroups {
       y = v_node;
       b = UNDEFINED;
     } else {
-      y = word_graph::follow_path_nc(
+      y = word_graph::follow_path_no_checks(
           *this, v_node, v_first, v_last - 1);
       if (y == UNDEFINED) {
         return true;
@@ -426,10 +426,10 @@ namespace libsemigroups {
 
     if (xa == UNDEFINED && yb != UNDEFINED) {
       LIBSEMIGROUPS_ASSERT(a < WordGraph<Node>::out_degree());
-      def_edge_nc<RegDefs>(x, a, yb);
+      def_edge_no_checks<RegDefs>(x, a, yb);
     } else if (xa != UNDEFINED && yb == UNDEFINED) {
       LIBSEMIGROUPS_ASSERT(b < WordGraph<Node>::out_degree());
-      def_edge_nc<RegDefs>(y, b, xa);
+      def_edge_no_checks<RegDefs>(y, b, xa);
     } else if (xa != UNDEFINED && yb != UNDEFINED && xa != yb) {
       return incompat(xa, yb);
     } else if (xa == UNDEFINED && yb == UNDEFINED) {

@@ -210,7 +210,7 @@ namespace libsemigroups {
       return _parent[i];
     }
 
-    node_type parent_nc(node_type i) const {
+    node_type parent_no_checks(node_type i) const {
       return _parent[i];
     }
 
@@ -231,7 +231,7 @@ namespace libsemigroups {
       return _edge_label[i];
     }
 
-    label_type label_nc(node_type i) const {
+    label_type label_no_checks(node_type i) const {
       return _edge_label[i];
     }
 
@@ -328,9 +328,9 @@ namespace libsemigroups {
           auto      f    = state.first;
           auto&     word = state.second;
           node_type i    = *it;
-          while (f->parent_nc(i) != UNDEFINED) {
-            word.push_back(f->label_nc(i));
-            i = f->parent_nc(i);
+          while (f->parent_no_checks(i) != UNDEFINED) {
+            word.push_back(f->label_no_checks(i));
+            i = f->parent_no_checks(i);
           }
           return word;
         }

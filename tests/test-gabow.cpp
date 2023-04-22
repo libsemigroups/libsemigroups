@@ -333,7 +333,7 @@ namespace libsemigroups {
                           "012",
                           "reverse_spanning_forest",
                           "[quick][gabow]") {
-    auto wg = to_action_digraph<size_t>(
+    auto wg = to_word_graph<size_t>(
         5, {{0, 1, 4, 3}, {2}, {2, 0, 3, 3}, {4, 1}, {1, 0, 2}});
     Gabow scc(wg);
     REQUIRE(scc.number_of_components() == 1);

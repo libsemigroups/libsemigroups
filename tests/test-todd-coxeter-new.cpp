@@ -149,7 +149,7 @@ namespace libsemigroups {
 
     void check_standardize(ToddCoxeter& tc) {
       using namespace rx;
-      using word_graph::follow_path_nc;
+      using word_graph::follow_path_no_checks;
 
       using node_type = typename ToddCoxeter::node_type;
       Order old_val   = tc.standardization_order();
@@ -171,7 +171,7 @@ namespace libsemigroups {
 
         std::unordered_map<node_type, word_type> map;
         for (auto const& w : words) {
-          node_type n = follow_path_nc(tc.word_graph(), 0, w);
+          node_type n = follow_path_no_checks(tc.word_graph(), 0, w);
           REQUIRE(n != UNDEFINED);
           if (n != 0) {
             auto ww = w;
@@ -203,7 +203,7 @@ namespace libsemigroups {
         std::unordered_map<node_type, word_type> map;
 
         for (auto const& w : words) {
-          node_type n = word_graph::follow_path_nc(tc.word_graph(), 0, w);
+          node_type n = word_graph::follow_path_no_checks(tc.word_graph(), 0, w);
           if (n != 0) {
             auto ww = w;
             if (tc.kind() == congruence_kind::left) {

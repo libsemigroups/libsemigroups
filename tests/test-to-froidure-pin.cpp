@@ -38,7 +38,7 @@ namespace libsemigroups {
                           "from WordGraph",
                           "[quick][make]") {
     auto rg = ReportGuard(false);
-    auto ad = to_action_digraph<uint8_t>(
+    auto ad = to_word_graph<uint8_t>(
         5,
         {{1, 3, 4, 1}, {0, 0, 1, 1}, {2, 1, 2, 2}, {3, 2, 3, 3}, {4, 4, 4, 4}});
     auto S = to_froidure_pin<Transf<5>>(ad);
@@ -58,7 +58,7 @@ namespace libsemigroups {
                           "from WordGraph (exceptions)",
                           "[quick][make]") {
     auto rg = ReportGuard(false);
-    auto ad = to_action_digraph<uint8_t>(
+    auto ad = to_word_graph<uint8_t>(
         5,
         {{1, 3, 4, 1}, {0, 0, 1, 1}, {2, 1, 2, 2}, {3, 2, 3, 3}, {4, 4, 4, 4}});
     // Couldn't use REQUIRE_THROWS_AS here for some reason

@@ -1281,7 +1281,7 @@ namespace libsemigroups {
           for (auto e : ad.labels()) {
             auto ve = g1.neighbor_no_checks(v, e);
             if (ve != UNDEFINED && can_reach[ve]) {
-              ad.add_edge_nc(v, ve, e);
+              ad.add_edge_no_checks(v, ve, e);
             }
           }
         }

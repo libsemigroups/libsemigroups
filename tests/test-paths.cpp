@@ -124,7 +124,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("Paths", "001", "#1", "[quick]") {
     using namespace rx;
 
-    auto ad = to_action_digraph<size_t>(9,
+    auto ad = to_word_graph<size_t>(9,
                                         {{1, 2, UNDEFINED},
                                          {},
                                          {3, 4, 6},
@@ -196,7 +196,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("Paths", "003", "#2", "[quick]") {
     using namespace rx;
 
-    WordGraph<size_t> ad = to_action_digraph<size_t>(
+    WordGraph<size_t> ad = to_word_graph<size_t>(
         15, {{1, 2}, {3, 4}, {5, 6}, {7, 8}, {9, 10}, {11, 12}, {13, 14}});
 
     Paths p(ad);
@@ -309,7 +309,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("Paths", "004", "#3", "[quick]") {
     using namespace rx;
-    auto ad = to_action_digraph<size_t>(
+    auto ad = to_word_graph<size_t>(
         6, {{1, 2}, {3, 4}, {4, 2}, {1, 5}, {5, 4}, {4, 5}});
 
     std::vector<word_type> expected = {01_w,
@@ -470,7 +470,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("Paths", "006", "#5", "[quick]") {
     using namespace rx;
-    auto ad = to_action_digraph<size_t>(
+    auto ad = to_word_graph<size_t>(
         6, {{1, 2}, {3, 4}, {4, 2}, {1, 5}, {5, 4}, {4, 5}});
 
     std::vector<word_type> expected = {01_w,
@@ -509,7 +509,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("Paths", "007", "#6", "[quick]") {
     using namespace rx;
-    auto ad = to_action_digraph<size_t>(6,
+    auto ad = to_word_graph<size_t>(6,
                                         {{1, 2, UNDEFINED},
                                          {2, 0, 3},
                                          {UNDEFINED, UNDEFINED, 3},
@@ -555,7 +555,7 @@ namespace libsemigroups {
                           "008",
                           "path iterators corner cases",
                           "[quick]") {
-    auto ad = to_action_digraph<size_t>(6,
+    auto ad = to_word_graph<size_t>(6,
                                         {{1, 2, UNDEFINED},
                                          {2, 0, 3},
                                          {UNDEFINED, UNDEFINED, 3},
@@ -594,7 +594,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("Paths", "009", "pstilo corner case", "[quick]") {
     using namespace rx;
-    auto ad = to_action_digraph<size_t>(5, {{2, 1}, {}, {3}, {4}, {2}});
+    auto ad = to_word_graph<size_t>(5, {{2, 1}, {}, {3}, {4}, {2}});
 
     // Tests the case then there is only a single path, but if we would have
     // used pilo (i.e. not use the reachability check that is in pstilo),
@@ -658,7 +658,7 @@ namespace libsemigroups {
                           "011",
                           "number_of_paths acyclic digraph",
                           "[quick]") {
-    auto ad = to_action_digraph<size_t>(
+    auto ad = to_word_graph<size_t>(
         8, {{3, 2, 3}, {7}, {1}, {1, 5}, {6}, {}, {3, 7}});
 
     REQUIRE(word_graph::is_acyclic(ad));
@@ -892,7 +892,7 @@ namespace libsemigroups {
     // auto         ad = WordGraph<size_t>::random(n, 20, 200,
     // std::mt19937());
     // std::cout << word_graph::detail::to_string(ad);
-    auto ad = to_action_digraph<size_t>(
+    auto ad = to_word_graph<size_t>(
         10,
         {{9, 1, 6, 3, 7, 2, 2, 8, 1, 4, 3, 1, 7, 9, 4, 7, 8, 9, 6, 9},
          {8, 2, 5, 7, 9, 0, 2, 4, 0, 3, 2, 7, 2, 7, 6, 6, 5, 4, 6, 3},
@@ -940,7 +940,7 @@ namespace libsemigroups {
     // REQUIRE(detail::magic_number(6) * 6 == 14.634);
     // auto ad = WordGraph<size_t>::random(6, 3, 15, std::mt19937());
     // std::cout << word_graph::detail::to_string(ad);
-    auto ad = to_action_digraph<size_t>(6,
+    auto ad = to_word_graph<size_t>(6,
                                         {{0, 3, 4},
                                          {2, 1, 4},
                                          {4, 3, 4},

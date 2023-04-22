@@ -1792,7 +1792,7 @@ namespace libsemigroups {
     //!
     //! \par Example
     //! \code
-    //! auto ad = to_action_digraph<uint8_t>(
+    //! auto ad = to_word_graph<uint8_t>(
     //!     5, {{0, 0}, {1, 1}, {2}, {3, 3}});
     //! word_graph::is_connected(ad);  // returns false
     //! \endcode
@@ -1843,7 +1843,7 @@ namespace libsemigroups {
     //!
     //! \par Example
     //! \code
-    //! auto ad = to_action_digraph<uint8_t>(
+    //! auto ad = to_word_graph<uint8_t>(
     //!     5, {{0, 0}, {1, 1}, {2}, {3, 3}});
     //! word_graph::is_strictly_cyclic(ad);  // returns false
     //! \endcode
@@ -2188,12 +2188,12 @@ namespace libsemigroups {
   //! \par Example
   //! \code
   //! // Construct an action digraph with 5 nodes and 10 edges (7 specified)
-  //! to_action_digraph<uint8_t>(
+  //! to_word_graph<uint8_t>(
   //!     5, {{0, 0}, {1, 1}, {2}, {3, 3}});
   //! \endcode
   template <typename Node>
   WordGraph<Node>
-  to_action_digraph(size_t num_nodes,
+  to_word_graph(size_t num_nodes,
                     std::initializer_list<std::initializer_list<Node>> il) {
     WordGraph<Node> result(num_nodes, il.begin()->size());
     for (size_t i = 0; i < il.size(); ++i) {

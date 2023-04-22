@@ -100,9 +100,9 @@ namespace libsemigroups {
     auto                pref_defs
         = [this](node_type x, letter_type a, node_type y, letter_type b) {
             node_type d = new_node();
-            def_edge_nc<RegDefs>(x, a, d);
+            def_edge_no_checks<RegDefs>(x, a, d);
             if (a != b || x != y) {
-              def_edge_nc<RegDefs>(y, b, d);
+              def_edge_no_checks<RegDefs>(y, b, d);
             }
           };
 
@@ -568,9 +568,9 @@ namespace libsemigroups {
     node_type c = _word_graph.initial_node();
 
     if (kind() != congruence_kind::left) {
-      c = word_graph::follow_path_nc(_word_graph, c, w.cbegin(), w.cend());
+      c = word_graph::follow_path_no_checks(_word_graph, c, w.cbegin(), w.cend());
     } else {
-      c = word_graph::follow_path_nc(_word_graph, c, w.crbegin(), w.crend());
+      c = word_graph::follow_path_no_checks(_word_graph, c, w.crbegin(), w.crend());
     }
     size_t const offset = (presentation().contains_empty_word() ? 0 : 1);
     return (c == UNDEFINED ? UNDEFINED : static_cast<node_type>(c - offset));
@@ -665,7 +665,7 @@ namespace libsemigroups {
     while (current != _word_graph.first_free_node() && !stopped()) {
       for (letter_type a = 0; a < n; ++a) {
         if (_word_graph.neighbor_no_checks(current, a) == UNDEFINED) {
-          _word_graph.def_edge_nc<RegisterDefs>(
+          _word_graph.def_edge_no_checks<RegisterDefs>(
               current, a, _word_graph.new_node());
           _word_graph.process_definitions();
         }

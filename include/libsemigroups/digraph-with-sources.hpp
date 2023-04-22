@@ -84,14 +84,14 @@ namespace libsemigroups {
 
     // the template is for uniformity of interface with FelschDigraph
     template <bool = true>
-    void add_edge_nc(node_type c, node_type d, label_type x) noexcept {
-      WordGraph<node_type>::add_edge_nc(c, d, x);
+    void add_edge_no_checks(node_type c, node_type d, label_type x) noexcept {
+      WordGraph<node_type>::add_edge_no_checks(c, d, x);
       add_source(d, x, c);
     }
 
-    void remove_edge_nc(node_type c, label_type x) noexcept {
+    void remove_edge_no_checks(node_type c, label_type x) noexcept {
       remove_source(this->neighbor_no_checks(c, x), x, c);
-      WordGraph<node_type>::remove_edge_nc(c, x);
+      WordGraph<node_type>::remove_edge_no_checks(c, x);
     }
 
     void add_nodes(size_type m) {
@@ -122,7 +122,7 @@ namespace libsemigroups {
 
     // The permutation q must map the valid nodes to the [0, .. , n), where
     // n is the number of valid nodes, and p = q ^ -1.
-    void permute_nodes_nc(std::vector<node_type> const& p,
+    void permute_nodes_no_checks(std::vector<node_type> const& p,
                           std::vector<node_type> const& q,
                           size_t                        n);
 

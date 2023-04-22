@@ -456,7 +456,7 @@ namespace libsemigroups {
     auto nf = S.normal_forms() | to_strings(kb.presentation().alphabet())
               | take(S.size());
     REQUIRE(kb.gilman_digraph()
-            == to_action_digraph<size_t>(
+            == to_word_graph<size_t>(
                 45, {{1, 2},  {27, 35}, {36, 38}, {4},      {},       {6, 3},
                      {},      {5, 8},   {},       {7, 10},  {33},     {},
                      {11},    {9, 12},  {6, 13},  {},       {15},     {6, 16},

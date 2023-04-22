@@ -179,7 +179,7 @@ namespace libsemigroups {
       using NodeManager_        = typename NodeManagedDigraph_::NodeManager_;
 
      public:
-      using FelschDigraph_::def_edge_nc;
+      using FelschDigraph_::def_edge_no_checks;
       using NodeManagedDigraph_::NodeManagedDigraph;
 
       Digraph& init(Presentation<word_type> const& p);
