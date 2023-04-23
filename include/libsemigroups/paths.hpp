@@ -212,7 +212,7 @@ namespace libsemigroups {
               Node2                   source,
               size_t                  min = 0,
               size_t                  max = POSITIVE_INFINITY) {
-    word_graph::validate_node(d, source);
+    word_graph::validate_node(d, static_cast<Node1>(source));
     return const_pilo_iterator<Node1>(&d, source, min, max);
   }
 
@@ -366,7 +366,7 @@ namespace libsemigroups {
                Node2                   source,
                size_t                  min = 0,
                size_t                  max = POSITIVE_INFINITY) {
-    word_graph::validate_node(d, source);
+    word_graph::validate_node(d, static_cast<Node1>(source));
     return const_pislo_iterator<Node1>(&d, source, min, max);
   }
 

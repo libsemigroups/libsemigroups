@@ -483,7 +483,8 @@ namespace libsemigroups {
                            d.cend_edges(source),
                            [&d, source](auto n) {
                              return n != UNDEFINED
-                                    && word_graph::is_reachable(d, n, source);
+                                    && word_graph::is_reachable(
+                                        d, n, static_cast<Node1>(source));
                            })) {
           return true;
         } else if (source != target
@@ -663,7 +664,7 @@ namespace libsemigroups {
     // Don't allow selecting the algorithm because we check
     // acyclicity anyway.
     // TODO(later): could use algorithm::dfs in some cases.
-    word_graph::validate_node(d, source);
+    word_graph::validate_node(d, static_cast<Node1>(source));
     auto topo = word_graph::topological_sort(d, source);
     if (topo.empty()) {
       // Can't topologically sort, so the subdigraph induced by the nodes
@@ -724,7 +725,7 @@ namespace libsemigroups {
                            size_t                  min,
                            size_t                  max,
                            paths::algorithm        lgrthm) {
-    word_graph::validate_node(d, source);
+    word_graph::validate_node(d, static_cast<Node1>(source));
 
     switch (lgrthm) {
       case paths::algorithm::dfs:
@@ -773,8 +774,8 @@ namespace libsemigroups {
                            size_t                  min,
                            size_t                  max,
                            paths::algorithm        lgrthm) {
-    word_graph::validate_node(d, source);
-    word_graph::validate_node(d, target);
+    word_graph::validate_node(d, static_cast<Node1>(source));
+    word_graph::validate_node(d, static_cast<Node1>(target));
 
     switch (lgrthm) {
       case paths::algorithm::dfs:

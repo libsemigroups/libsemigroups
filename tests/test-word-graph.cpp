@@ -638,18 +638,9 @@ namespace libsemigroups {
     REQUIRE(p.second == path.cend() - 1);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("WordGraph", "032", "detail::to_string", "[quick]") {
+  LIBSEMIGROUPS_TEST_CASE("WordGraph", "032", "to_string", "[quick]") {
     WordGraph<size_t> ad = path(6);
     REQUIRE(detail::to_string(ad) == "{{1}, {2}, {3}, {4}, {5}, {-}}");
-    REQUIRE(word_graph::detail::to_string(ad) == R"V0G0N(WordGraph<size_t> ad;
-ad.add_nodes(6);
-ad.add_to_out_degree(1);
-ad.add_edge(0, 1, 0);
-ad.add_edge(1, 2, 0);
-ad.add_edge(2, 3, 0);
-ad.add_edge(3, 4, 0);
-ad.add_edge(4, 5, 0);
-)V0G0N");
   }
 
   LIBSEMIGROUPS_TEST_CASE("WordGraph", "033", "to_word_graph", "[quick]") {

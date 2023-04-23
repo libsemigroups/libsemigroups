@@ -95,6 +95,11 @@ namespace libsemigroups {
       }
     };
 
+    template <typename A,
+              typename B,
+              typename = decltype(std::declval<A>() <= std::declval<B>())>
+    struct HasLessEqual : std::true_type {};
+
   }  // namespace detail
 }  // namespace libsemigroups
 
