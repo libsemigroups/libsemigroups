@@ -38,16 +38,16 @@ namespace libsemigroups {
   //!
   //! Specialisations of this struct should be stateless trivially default
   //! constructible with a call operator of signature `size_t
-  //! operator()(TElementType const& x) const` (possibly `noexcept`, `inline`
+  //! operator()(Element const& x) const` (possibly `noexcept`, `inline`
   //! and/or `constexpr` also).
   //!
   //! The return value of the call operator ought to indicate the approximate
-  //! complexity of multiplying two instances of `TElementType`, which may or
+  //! complexity of multiplying two instances of `Element`, which may or
   //! may not depend on the parameter \p x. This is used, for example, by
   //! FroidurePin in some member functions to determine whether it is better to
   //! multiply elements or to follow a path in the Cayley graph.
   //!
-  //! \tparam TElementType the type of the elements of a semigroup.
+  //! \tparam Element the type of the elements of a semigroup.
   //!
   //! The second template parameter exists for SFINAE.
   //!
@@ -63,7 +63,7 @@ namespace libsemigroups {
   //!   }
   //! };
   //! \endcode
-  template <typename TElementType, typename = void>
+  template <typename Element, typename = void>
   struct Complexity;
 
   //! Adapter for the degree of an element.
@@ -72,20 +72,20 @@ namespace libsemigroups {
   //!
   //! Specialisations of this struct should be stateless trivially default
   //! constructible with a call operator of signature `size_t
-  //! operator()(TElementType const& x) const` (possibly `noexcept`, `inline`
+  //! operator()(Element const& x) const` (possibly `noexcept`, `inline`
   //! and/or `constexpr` also).
   //!
   //! The return value of the call operator ought to indicate the degree of a
-  //! `TElementType` instance which may or may not depend on the parameter \p
+  //! `Element` instance which may or may not depend on the parameter \p
   //! x. The degree of a permutation, for instance, would be the the number of
   //! points it acts on, the degree of a matrix is its dimension, and so on.
   //! This is used, for example, by SchreierSimsTraits in some member functions
   //! to determine whether it is known *a priori* that a permutation does not
   //! belong to the object, because it acts on too many points.
   //!
-  //! \tparam TElementType the type of the elements of a semigroup.
+  //! \tparam Element the type of the elements of a semigroup.
   //!
-  //! \tparam TSfinae this template parameter can be used for SFINAE.
+  //! The second template parameter exists for SFINAE.
   //!
   //! \par Used by:
   //! * FroidurePinTraits
@@ -101,7 +101,7 @@ namespace libsemigroups {
   //!   }
   //! };
   //! \endcode
-  template <typename TElementType, typename TSfinae = void>
+  template <typename Element, typename = void>
   struct Degree;
 
   //! Adapter for increasing the degree of an element.
@@ -110,12 +110,12 @@ namespace libsemigroups {
   //!
   //! Specialisations of this struct should be stateless trivially default
   //! constructible with a call operator of signature `void
-  //! operator()(TElementType& x, size_t n) const` (possibly `noexcept`,
+  //! operator()(Element& x, size_t n) const` (possibly `noexcept`,
   //! `inline` and/or `constexpr` also).
   //!
   //! The call operator should change the first argument in-place so that if `m
-  //! = Degree<TElementType>()(x)`, then after the call to
-  //! `IncreaseDegree<TElementType>()(x, n)`, `Degree<TElementType>()(x)`
+  //! = Degree<Element>()(x)`, then after the call to
+  //! `IncreaseDegree<Element>()(x, n)`, `Degree<Element>()(x)`
   //! returns `m + n`. This only makes sense for certain types of elements,
   //! such as permutations, transformations, or matrices, and not for other
   //! types of object. In the latter case, the call operator should simply do
@@ -123,7 +123,7 @@ namespace libsemigroups {
   //! FroidurePin::closure, when one of the generators being added has degree
   //! larger than the existing generators.
   //!
-  //! \tparam TElementType the type of the elements of a semigroup.
+  //! \tparam Element the type of the elements of a semigroup.
   //!
   //! The second template parameter exists for SFINAE.
   //!
@@ -132,16 +132,16 @@ namespace libsemigroups {
   //!
   //! \par Example
   //! \code
-  //! template <typename TIntegralType>
+  //! template <typename Integral>
   //! struct IncreaseDegree<
-  //!     TIntegralType,
-  //!     typename std::enable_if<std::is_integral<TIntegralType>::value>::type>
+  //!     Integral,
+  //!     typename std::enable_if<std::is_integral<Integral>::value>::type>
   //!     {
-  //!   void operator()(TIntegralType&, size_t) const noexcept {
+  //!   void operator()(Integral&, size_t) const noexcept {
   //!   }
   //! };
   //! \endcode
-  template <typename TElementType, typename = void>
+  template <typename Element, typename = void>
   struct IncreaseDegree;
 
   //! Adapter for the identity element of the given type.
@@ -149,24 +149,24 @@ namespace libsemigroups {
   //! Specialisations of this struct should be stateless trivially default
   //! constructible with two call operator of signatures:
   //!
-  //! 1. `TElementType operator()(size_t n) const` (possibly `noexcept`,
+  //! 1. `Element operator()(size_t n) const` (possibly `noexcept`,
   //!    `inline` and/or `constexpr` also) returning a multiplicative identity
-  //!    element for the category `TElementType` and with
-  //!    `Degree<TElementType>()(x)` equal to the parameter \p n. For example,
-  //!    if `TElementType` is a type of n x n matrices, then this should return
+  //!    element for the category `Element` and with
+  //!    `Degree<Element>()(x)` equal to the parameter \p n. For example,
+  //!    if `Element` is a type of n x n matrices, then this should return
   //!    the n x n identity matrix.
   //!
-  //! 2. `TElementType operator()(T const&) const` (possibly `noexcept`,
+  //! 2. `Element operator()(T const&) const` (possibly `noexcept`,
   //!    `inline` and/or `constexpr` also). This could be implemented as:
   //!    \code
-  //!    TElementType operator()(TElementType const& x) const noexcept {
-  //!      return this->operator()(Degree<TElementType>()(x));
+  //!    Element operator()(Element const& x) const noexcept {
+  //!      return this->operator()(Degree<Element>()(x));
   //!    }
   //!    \endcode
   //!
-  //! \tparam TElementType the type of the elements of a semigroup.
+  //! \tparam Element the type of the elements of a semigroup.
   //!
-  //! \tparam TSfinae this template parameter can be used for SFINAE.
+  //! The second template parameter exists for SFINAE.
   //!
   //! \par Used by:
   //! * ActionTraits
@@ -188,7 +188,7 @@ namespace libsemigroups {
   //!   }
   //! };
   //! \endcode
-  template <typename TElementType, typename TSfinae = void>
+  template <typename Element, typename = void>
   struct One;
 
   //! Adapter for the product of two elements.
@@ -197,7 +197,7 @@ namespace libsemigroups {
   //!
   //! Specialisations of this struct should be stateless trivially default
   //! constructible with a call operator of signature
-  //! `void  operator()(TElementType& xy, TElementType const& x, TElementType
+  //! `void  operator()(Element& xy, Element const& x, Element
   //! const& y, size_t = 0)` (possibly `noexcept`, `inline` and/or `constexpr`
   //! also).
   //!
@@ -208,9 +208,9 @@ namespace libsemigroups {
   //! repeated allocations of memory to hold temporary products that are
   //! discarded soon after they are created.
   //!
-  //! \tparam TElementType the type of the elements of a semigroup.
+  //! \tparam Element the type of the elements of a semigroup.
   //!
-  //! \tparam TSfinae this template parameter can be used for SFINAE.
+  //! The second template parameter exists for SFINAE.
   //!
   //! \par Used by:
   //! * ActionTraits
@@ -228,7 +228,7 @@ namespace libsemigroups {
   //!   }
   //! };
   //! \endcode
-  template <typename TElementType, typename TSfinae = void>
+  template <typename Element, typename = void>
   struct Product;
 
   //! Adapter for the inverse of an element.
@@ -236,8 +236,8 @@ namespace libsemigroups {
   //! Defined in ``adapters.hpp``.
   //!
   //! Specialisations of this struct should be stateless trivially default
-  //! constructible with a call operator of signature `TPointType
-  //! operator()(TElementType const& x) const` (possibly
+  //! constructible with a call operator of signature `Point
+  //! operator()(Element const& x) const` (possibly
   //! `noexcept`, `inline` and/or `constexpr` also).
   //!
   //! The call operator should return the inverse of the element \p x under the
@@ -246,7 +246,7 @@ namespace libsemigroups {
   //! inverse. If \p x is a  permutation matrix of type BMat8, then this
   //! operator would return its transpose.
   //!
-  //! \tparam TElementType the type of the elements of a semigroup.
+  //! \tparam Element the type of the elements of a semigroup.
   //!
   //! The second template parameter exists for SFINAE.
   //!
@@ -263,7 +263,7 @@ namespace libsemigroups {
   //!   }
   //! };
   //! \endcode
-  template <typename TElementType, typename = void>
+  template <typename Element, typename = void>
   struct Inverse;
 
   //! Adapter for the value of a left action.
@@ -272,7 +272,7 @@ namespace libsemigroups {
   //!
   //! Specialisations of this struct should be stateless trivially default
   //! constructible with a call operator of signature `void
-  //! operator()(TPointType& res, TElementType const& x, TPointType const& pt)
+  //! operator()(Point& res, Element const& x, Point const& pt)
   //! const` (possibly `noexcept`, `inline` and/or `constexpr` also).
   //!
   //! The call operator should change \p res in-place to contain the image of
@@ -280,8 +280,8 @@ namespace libsemigroups {
   //! the 1st parameter is to avoid repeated allocations of memory to hold
   //! temporary points that are discarded soon after they are created.
   //!
-  //! \tparam TElementType the type of the elements of a semigroup.
-  //! \tparam TPointType the type of the points acted on.
+  //! \tparam Element the type of the elements of a semigroup.
+  //! \tparam Point the type of the points acted on.
   //!
   //! The third template parameter exists for SFINAE.
   //!
@@ -294,7 +294,7 @@ namespace libsemigroups {
   //!   }
   //! };
   //! \endcode
-  template <typename TElementType, typename TPointType, typename = void>
+  template <typename Element, typename Point, typename = void>
   struct ImageLeftAction;
 
   //! Adapter for the value of a right action.
@@ -303,10 +303,10 @@ namespace libsemigroups {
   //!
   //! Specialisations of this struct should be stateless trivially default
   //! constructible with a call operator of signature:
-  //! 1. `void operator()(TPointType& res, TElementType const& x, TPointType
+  //! 1. `void operator()(Point& res, Element const& x, Point
   //!    const& pt) const` (possibly `noexcept`, `inline` and/or `constexpr`
   //!    also); or
-  //! 2. `TPointType operator()(TElementType const& x, TPointType
+  //! 2. `Point operator()(Element const& x, Point
   //!    const& pt) const` (possibly `noexcept`, `inline` and/or `constexpr`
   //!    also).
   //!
@@ -319,8 +319,8 @@ namespace libsemigroups {
   //! In form (2): the call operator should return the image of the point \p pt
   //! under the right action of the element \p x.
   //!
-  //! \tparam TElementType the type of the elements of a semigroup.
-  //! \tparam TPointType the type of the points acted on.
+  //! \tparam Element the type of the elements of a semigroup.
+  //! \tparam Point the type of the points acted on.
   //!
   //! The third template parameter exists for SFINAE.
   //!
@@ -337,7 +337,7 @@ namespace libsemigroups {
   //!   }
   //! };
   //! \endcode
-  template <typename TElementType, typename TPointType, typename = void>
+  template <typename Element, typename Point, typename = void>
   struct ImageRightAction;
 
   // Adapters with default implementations
@@ -346,31 +346,31 @@ namespace libsemigroups {
   //! Defined in ``adapters.hpp``.
   //!
   //! This type should be a stateless trivially default constructible with a
-  //! call operator of signature `bool operator()(TValueType const&, TValueType
+  //! call operator of signature `bool operator()(Value const&, Value
   //! const&)` (possibly `noexcept`, `inline` and/or `constexpr` also) for use
   //! with, for example,
   //! [std::unordered_map](https://en.cppreference.com/w/cpp/container/unordered_map).
   //!
-  //! \tparam TValueType the type of objects to compare.
+  //! \tparam Value the type of objects to compare.
   //!
-  //! \tparam TSfinae this template parameter can be used for SFINAE.
+  //! The second template parameter exists for SFINAE.
   //!
   //! \par Used by:
   //! * ActionTraits
   //! * CongruenceByPairs
   //! * FroidurePinTraits
   //! * SchreierSimsTraits
-  template <typename TValueType, typename TSfinae = void>
+  template <typename Value, typename = void>
   struct EqualTo {
     //! This call operator compares \p x and \p y using \equal_to with template
-    //! parameter \c TValueType.
+    //! parameter \c Value.
     //!
-    //! \param x const reference to \c TValueType to compare with \p y.
-    //! \param y const reference to \c TValueType to compare with \p x.
+    //! \param x const reference to \c Value to compare with \p y.
+    //! \param y const reference to \c Value to compare with \p x.
     //!
     //! \returns A \c bool.
-    bool operator()(TValueType const& x, TValueType const& y) const {
-      return std::equal_to<TValueType>()(x, y);
+    bool operator()(Value const& x, Value const& y) const {
+      return std::equal_to<Value>()(x, y);
     }
   };
 
@@ -379,29 +379,29 @@ namespace libsemigroups {
   //! Defined in ``adapters.hpp``.
   //!
   //! This type should be a stateless trivially default constructible
-  //! with a call operator of signature `size_t operator()(TValueType
+  //! with a call operator of signature `size_t operator()(Value
   //! const&)` for use with, for example,
   //! [std::unordered_map](https://en.cppreference.com/w/cpp/container/unordered_map).
   //!
-  //! \tparam TValueType the type of objects to compare.
+  //! \tparam Value the type of objects to compare.
   //!
-  //! \tparam TSfinae this template parameter can be used for SFINAE.
+  //! The second template parameter exists for SFINAE.
   //!
   //! \par Used by:
   //! * ActionTraits
   //! * CongruenceByPairs
   //! * FroidurePinTraits
   //! * SchreierSimsTraits
-  template <typename TValueType, typename TSfinae = void>
+  template <typename Value, typename = void>
   struct Hash {
     //! This call operator hashes \p x using \hash with template parameter
-    //! \c TValueType.
+    //! \c Value.
     //!
     //! \param x the value to hash
     //!
     //! \returns A hash value for \p x, a value of type `size_t`.
-    size_t operator()(TValueType const& x) const {
-      return std::hash<TValueType>()(x);
+    size_t operator()(Value const& x) const {
+      return std::hash<Value>()(x);
     }
   };
 
@@ -512,22 +512,22 @@ namespace libsemigroups {
   //! Defined in ``adapters.hpp``.
   //!
   //! This type should be a stateless trivially default constructible with a
-  //! call operator of signature `bool operator()(TValueType const&, TValueType
+  //! call operator of signature `bool operator()(Value const&, Value
   //! const&)` (possibly `noexcept`, `inline` and/or `constexpr` also) which
-  //! defines a linear order on the objects of type TValueType
+  //! defines a linear order on the objects of type Value
   //!
-  //! \tparam TValueType the type of objects to compare.
+  //! \tparam Value the type of objects to compare.
   //!
-  //! \tparam TSfinae this template parameter can be used for SFINAE.
+  //! The second template parameter exists for SFINAE.
   //!
   //! \par Used by:
   //! * FroidurePinTraits
-  template <typename TValueType, typename TSfinae = void>
+  template <typename Value, typename = void>
   struct Less {
     //! This call operator compares \p x and \p y using \less with template
-    //! parameter \c TValueType.
-    bool operator()(TValueType const& x, TValueType const& y) const {
-      return std::less<TValueType>()(x, y);
+    //! parameter \c Value.
+    bool operator()(Value const& x, Value const& y) const {
+      return std::less<Value>()(x, y);
     }
   };
 
@@ -536,105 +536,104 @@ namespace libsemigroups {
   //! Defined in ``adapters.hpp``.
   //!
   //! This type should be a stateless trivially default constructible with a
-  //! call operator of signature `void operator()(TValueType const&, TValueType
+  //! call operator of signature `void operator()(Value const&, Value
   //! const&)` (possibly `noexcept`, `inline` and/or `constexpr` also) which
   //! swaps its arguments.
   //!
-  //! \tparam TValueType the type of objects to compare.
+  //! \tparam Value the type of objects to compare.
   //!
-  //! \tparam TSfinae this template parameter can be used for SFINAE.
+  //! The second template parameter exists for SFINAE.
   //!
   //! \par Used by:
   //! * ActionTraits
   //! * FroidurePinTraits
   //! * SchreierSimsTraits
-  template <typename TValueType, typename TSfinae = void>
+  template <typename Value, typename = void>
   struct Swap {
     //! This call operator swaps \p x and \p y using \swap.
-    void operator()(TValueType& x, TValueType& y) {
+    void operator()(Value& x, Value& y) {
       std::swap(x, y);
     }
   };
 
   //! Defined in ``adapters.hpp``.
   //!
-  //! This is struct applies `ImageRightAction<TElementType, TPointType>` to
-  //! every value in a container of type `TContainerType`.
+  //! This is struct applies `ImageRightAction<Element, Point>` to
+  //! every value in a container of type `Container`.
   //!
-  //! \tparam TElementType the type of the elements of the semigroup
-  //! \tparam TPointType the type of the points acted on
-  //! \tparam TContainerType a container of TPointType
-  template <typename TElementType,
-            typename TPointType,
-            typename TContainerType = std::vector<TPointType>>
+  //! \tparam Element the type of the elements of the semigroup
+  //! \tparam Point the type of the points acted on
+  //! \tparam Container a container of Point
+  template <typename Element,
+            typename Point,
+            typename Container = std::vector<Point>>
   struct OnTuples {
-    static_assert(
-        std::is_same<typename TContainerType::value_type, TPointType>::value,
-        "the 3rd template parameter is not a container of objects of "
-        "type the 2nd template parameter");
+    static_assert(std::is_same<typename Container::value_type, Point>::value,
+                  "the 3rd template parameter is not a container of objects of "
+                  "type the 2nd template parameter");
     //! This call operator changes \p res in-place to contain the image of
-    //! the container \p pt of points of type \c TPointType, under the induced
+    //! the container \p pt of points of type \c Point, under the induced
     //! (left or right) action of the element \p x. The purpose of the 1st
     //! parameter is to avoid repeated allocations of memory to hold temporary
     //! points that are discarded soon after they are created.
     //!
-    //! \param res a container of \c TPointType (such as \vector or \array)
+    //! \param res a container of \c Point (such as \vector or \array)
     //! to hold the result
-    //! \param pt  a container of \c TPointType
-    //! \param x   an element of type \c TElementType
+    //! \param pt  a container of \c Point
+    //! \param x   an element of type \c Element
     //!
     //! \returns (None)
     //!
     //! \complexity
-    //! `pt.size()` times the complexity of `ImageRightAction<TElementType,
-    //! TPointType>`.
+    //! `pt.size()` times the complexity of `ImageRightAction<Element,
+    //! Point>`.
     //!
     //! \sa OnSets and ImageRightAction.
-    void operator()(TContainerType&       res,
-                    TContainerType const& pt,
-                    TElementType const&   x) const {
+    void operator()(Container&       res,
+                    Container const& pt,
+                    Element const&   x) const {
       for (size_t i = 0; i < pt.size(); ++i) {
-        ImageRightAction<TElementType, TPointType>()(res[i], pt[i], x);
+        ImageRightAction<Element, Point>()(res[i], pt[i], x);
       }
     }
   };
 
   //! Defined in ``adapters.hpp``.
   //!
-  //! This is struct applies `OnTuples<TElementType, TPointType,
-  //! TContainerType>` to  a container of `TContainerType` and then sorts it.
+  //! This is struct applies `OnTuples<Element, Point,
+  //! Container>` to  a container of `Container` and then sorts it.
   //!
-  //! \tparam TElementType the type of elements
-  //! \tparam TPointType the type of the points acted on
-  //! \tparam TContainerType a container of \p TPointType (defaults to \vector
-  //! with template parameter \c TPointType).
+  //! \tparam Element the type of elements
+  //! \tparam Point the type of the points acted on
+  //! \tparam Container a container of \p Point (defaults to \vector
+  //! with template parameter \c Point).
   // TODO(later) add a template param for sorting
-  template <typename TElementType,
-            typename TPointType,
-            typename TContainerType = std::vector<TPointType>>
+  template <typename Element,
+            typename Point,
+            typename Container = std::vector<Point>>
   struct OnSets {
     //! This call operator changes \p res in-place to contain the image of
-    //! the container \p pt of points of type \c TPointType, under the induced
+    //! the container \p pt of points of type \c Point, under the induced
     //! (left or right) action of the element \p x. The purpose of the 1st
     //! parameter is to avoid repeated allocations of memory to hold temporary
     //! points that are discarded soon after they are created.
     //!
-    //! \param res a container of \c TPointType (such as \vector or
+    //! \param res a container of \c Point (such as \vector or
     //! \array) to hold the result
-    //! \param pt  a container of \c TPointType
-    //! \param p   an element of type \c TElementType
+    //! \param pt  a container of \c Point
+    //! \param p   an element of type \c Element
     //!
     //! \returns (None)
     //!
     //! \complexity
-    //! `pt.size()` times the complexity of `ImageRightAction<TElementType,
-    //! TPointType>` and the cost plus the complexity of sorting \p res.
+    //! `pt.size()` times the complexity of `ImageRightAction<Element,
+    //! Point>` and the cost plus the complexity of sorting \p res.
     //!
     //! \sa OnTuples and ImageRightAction.
-    void operator()(TContainerType&       res,
-                    TContainerType const& pt,
-                    TElementType const&   p) const {
-      OnTuples<TElementType, TPointType, TContainerType>()(res, pt, p);
+    void operator()(Container&       res,
+                    Container const& pt,
+                    Element const&   p) const {
+      OnTuples<Element, Point, Container>()(res, pt, p);
       std::sort(res.begin(), res.end());
     }
   };
@@ -649,7 +648,7 @@ namespace libsemigroups {
   //! representing the type that should be used or returned by a \c Lambda
   //! struct.
   //!
-  //! \tparam TElementType the type of elements.
+  //! \tparam Element the type of elements.
   //!
   //! The second template parameter exists for SFINAE.
   //!
@@ -657,7 +656,7 @@ namespace libsemigroups {
   //! * KoniecznyTraits.
   // Note: this has to exist in order to allow different lambda functions based
   // on type.
-  template <typename TElementType, typename = void>
+  template <typename Element, typename = void>
   struct LambdaValue;
 
   //! Defined in ``adapters.hpp``.
@@ -666,7 +665,7 @@ namespace libsemigroups {
   //! representing the type that should be used or returned by a \c Rho
   //! struct.
   //!
-  //! \tparam TElementType the type of elements.
+  //! \tparam Element the type of elements.
   //!
   //! The second template parameter exists for SFINAE.
   //!
@@ -674,7 +673,7 @@ namespace libsemigroups {
   //! * KoniecznyTraits.
   // Note: this has to exist in order to allow different rho functions based
   // on type.
-  template <typename TElementType, typename = void>
+  template <typename Element, typename = void>
   struct RhoValue;
 
   //! Adapter for the action on LambdaValue's.
@@ -683,17 +682,19 @@ namespace libsemigroups {
   //!
   //! This type should be a stateless trivially default constructible
   //! with an operator of signature `void
-  //! operator()(TPointType&, TElementType const&)`, which should modify the
+  //! operator()(Point&, Element const&)`, which should modify the
   //! first argument in-place to contain the lambda value of the second
   //! argument. The kernel of the lambda function should be Green's
   //! \f$\mathscr{L}\f$-relation on the semigroup in question.
   //!
-  //! \tparam TElementType the type of elements.
-  //! \tparam TPointType the type of the lambda points.
+  //! \tparam Element the type of elements.
+  //! \tparam Point the type of the lambda points.
+  //!
+  //! The third template parameter exists for SFINAE.
   //!
   //! \par Used by:
   //! * KoniecznyTraits.
-  template <typename TElementType, typename TPointType, typename = void>
+  template <typename Element, typename Point, typename = void>
   struct Lambda;
 
   //! Adapter for the action on RhoValue's.
@@ -702,17 +703,19 @@ namespace libsemigroups {
   //!
   //! This type should be a stateless trivially default constructible
   //! with an operator of signature `void
-  //! operator()(TPointType&, TElementType const&)`, which  should modify the
+  //! operator()(Point&, Element const&)`, which  should modify the
   //! first argument in-place to contain the rho value of the second argument.
   //! The kernel of the rho function should be Green's
   //! \f$\mathscr{R}\f$-relation on the semigroup in question.
   //!
-  //! \tparam TElementType the type of elements.
-  //! \tparam TPointType the type of the rho points.
+  //! \tparam Element the type of elements.
+  //! \tparam Point the type of the rho points.
+  //!
+  //! The third template parameter exists for SFINAE.
   //!
   //! \par Used by:
   //! * KoniecznyTraits.
-  template <typename TElementType, typename TPointType, typename = void>
+  template <typename Element, typename Point, typename = void>
   struct Rho;
 
   //! Defined in ``adapters.hpp``.
@@ -720,21 +723,23 @@ namespace libsemigroups {
   //! Specialisations of this class should have a typedef \c type representing
   //! the type of data stored in the class, a 0-parameter constructor, and a
   //! constructor of signature `template<typename T> RankState(T, T)` where \c T
-  //! is the type of a const iterator to a container of \c TElementType.
+  //! is the type of a const iterator to a container of \c Element.
   //!
   //! The default declaration provided here has `type = void` and indicates
   //! that no RankState object is required by Rank with template
-  //! parameter \c TElementType.
+  //! parameter \c Element.
   //!
-  //! \tparam TElementType the type of elements.
+  //! \tparam Element the type of elements.
+  //!
+  //! The second template parameter exists for SFINAE.
   //!
   //! \par Used by:
   //! * KoniecznyTraits.
-  template <typename TElementType, typename = void>
+  template <typename Element, typename = void>
   class RankState {
    public:
     //! By default no additional state is required to calculate
-    //! Rank<TElementType>; this is represented by \c type being \c void.
+    //! Rank<Element>; this is represented by \c type being \c void.
     using type = void;
 
     //! Default constructor; does nothing.
@@ -760,9 +765,9 @@ namespace libsemigroups {
   //! Defined in ``adapters.hpp``.
   //!
   //! This type should be default constructible and a call operator of signature
-  //! `size_t operator()(TElementType const&)` if no additional data is required
+  //! `size_t operator()(Element const&)` if no additional data is required
   //! to compute the rank, or a call operator of signature `size_t
-  //! operator()(TStateType<TElementType> const&, TElementType const&)` if
+  //! operator()(State<Element> const&, Element const&)` if
   //! additional data is required.
   //!
   //! The call operator should return the rank of the element given as
@@ -773,15 +778,17 @@ namespace libsemigroups {
   //! * if \f$D_x \leq D_y\f$ and \f$\operatorname{rank}(x) =
   //!   \operatorname{rank}(y)\f$, then \f$D_x = D_y\f$.
   //!
-  //! \tparam TElementType the type of elements.
-  //! \tparam TStateType the type of the data required to compute ranks of
-  //!         TElementTypes; defaults to \c RankState<TElementType>.
+  //! \tparam Element the type of elements.
+  //! \tparam State the type of the data required to compute ranks of
+  //!         Elements; defaults to \c RankState<Element>.
+  //!
+  //! The third template parameter exists for SFINAE.
   //!
   //! \par Used by:
   //! * KoniecznyTraits.
-  template <typename TElementType,
-            typename TStateType = RankState<TElementType>,
-            typename            = void>
+  template <typename Element,
+            typename State = RankState<Element>,
+            typename       = void>
   struct Rank;
 }  // namespace libsemigroups
 #endif  // LIBSEMIGROUPS_ADAPTERS_HPP_
