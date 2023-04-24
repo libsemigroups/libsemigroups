@@ -18,28 +18,28 @@
 
 #include "libsemigroups/knuth-bendix-new.hpp"  // for KnuthBendix, KnuthBe...
 
-#include <algorithm>                    // for max, min
-#include <cstddef>                      // for size_t
-#include <iterator>                     // for advance
-#include <limits>                       // for numeric_limits
-#include <string>                       // for allocator, basic_string, oper...
-#include <unordered_map>                // for unordered_map, operator!=
-#include <utility>                      // for swap
-                                        //
-#include "libsemigroups/constants.hpp"  // for Max, PositiveInfinity, operat...
-#include "libsemigroups/debug.hpp"      // for LIBSEMIGROUPS_ASSERT
-#include "libsemigroups/word-graph.hpp"    // for WordGraph
-#include "libsemigroups/obvinf.hpp"     // for is_obviously_infinite
-#include "libsemigroups/order.hpp"      // for shortlex_compare
-#include "libsemigroups/paths.hpp"      // for Paths
-#include "libsemigroups/present.hpp"    // for Presentation
-#include "libsemigroups/ranges.hpp"     // for operator<<
-#include "libsemigroups/report.hpp"     // for Reporter, REPORT_DEFAULT, REP...
-#include "libsemigroups/runner.hpp"     // for Runner
-#include "libsemigroups/string.hpp"     // for is_prefix, maximum_common_prefix
-#include "libsemigroups/timer.hpp"      // for Timer
-#include "libsemigroups/types.hpp"      // for word_type
-#include "libsemigroups/words.hpp"      // for to_strings
+#include <algorithm>                     // for max, min
+#include <cstddef>                       // for size_t
+#include <iterator>                      // for advance
+#include <limits>                        // for numeric_limits
+#include <string>                        // for allocator, basic_string, oper...
+#include <unordered_map>                 // for unordered_map, operator!=
+#include <utility>                       // for swap
+                                         //
+#include "libsemigroups/constants.hpp"   // for Max, PositiveInfinity, operat...
+#include "libsemigroups/debug.hpp"       // for LIBSEMIGROUPS_ASSERT
+#include "libsemigroups/obvinf.hpp"      // for is_obviously_infinite
+#include "libsemigroups/order.hpp"       // for shortlex_compare
+#include "libsemigroups/paths.hpp"       // for Paths
+#include "libsemigroups/present.hpp"     // for Presentation
+#include "libsemigroups/ranges.hpp"      // for operator<<
+#include "libsemigroups/report.hpp"      // for Reporter, REPORT_DEFAULT, REP...
+#include "libsemigroups/runner.hpp"      // for Runner
+#include "libsemigroups/string.hpp"      // for is_prefix, maximum_common_prefix
+#include "libsemigroups/timer.hpp"       // for Timer
+#include "libsemigroups/types.hpp"       // for word_type
+#include "libsemigroups/word-graph.hpp"  // for WordGraph
+#include "libsemigroups/words.hpp"       // for to_strings
 
 #include "rx/ranges.hpp"
 
@@ -737,8 +737,7 @@ namespace libsemigroups {
         auto        src  = _gilman_digraph.neighbor_no_checks(0, octo);
         LIBSEMIGROUPS_ASSERT(src != UNDEFINED);
         _gilman_digraph.remove_label_no_checks(octo);
-        auto nodes
-            = word_graph::nodes_reachable_from(_gilman_digraph, src);
+        auto nodes = word_graph::nodes_reachable_from(_gilman_digraph, src);
         LIBSEMIGROUPS_ASSERT(std::find(nodes.cbegin(), nodes.cend(), src)
                              != nodes.cend());
         // TODO this is a bit awkward, it ensures that node 0 in the induced
@@ -1281,7 +1280,7 @@ namespace libsemigroups {
           for (auto e : ad.labels()) {
             auto ve = g1.neighbor_no_checks(v, e);
             if (ve != UNDEFINED && can_reach[ve]) {
-              ad.add_edge_no_checks(v, ve, e);
+              ad.set_target_no_checks(v, e, ve);
             }
           }
         }

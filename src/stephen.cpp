@@ -61,9 +61,9 @@ namespace libsemigroups {
     if (_accept_state == UNDEFINED) {
       using word_graph::last_node_on_path_no_checks;
       run();
-      _accept_state
-          = last_node_on_path_no_checks(_word_graph, 0, _word.cbegin(), _word.cend())
-                .first;
+      _accept_state = last_node_on_path_no_checks(
+                          _word_graph, 0, _word.cbegin(), _word.cend())
+                          .first;
     }
     return _accept_state;
   }
@@ -150,7 +150,7 @@ namespace libsemigroups {
           node_type                 u_end;
           word_type::const_iterator rit;
           bool                      did_def = false;
-          std::tie(u_end, rit)              = word_graph::last_node_on_path_no_checks(
+          std::tie(u_end, rit) = word_graph::last_node_on_path_no_checks(
               _word_graph, current, it->cbegin(), it->cend());
           node_type c;
           if (rit == it->cend()) {
@@ -160,7 +160,7 @@ namespace libsemigroups {
             node_type v_end = _word_graph.neighbor_no_checks(c, it->back());
             if (v_end == UNDEFINED) {
               did_def = true;
-              _word_graph.add_edge_no_checks(c, u_end, it->back());
+              _word_graph.set_target_no_checks(c, it->back(), u_end);
             } else if (u_end != v_end) {
               did_def = true;
               _word_graph.coincide_nodes(u_end, v_end);
@@ -179,7 +179,7 @@ namespace libsemigroups {
                       .second;
               u_end = _word_graph.neighbor_no_checks(c, it->back());
               LIBSEMIGROUPS_ASSERT(u_end == UNDEFINED);
-              _word_graph.add_edge_no_checks(c, v_end, it->back());
+              _word_graph.set_target_no_checks(c, it->back(), v_end);
               did_def = true;
             } else {
               --it;

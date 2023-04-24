@@ -83,8 +83,7 @@ namespace libsemigroups {
 
   template <typename Word, typename Node, typename Definitions>
   template <typename M>
-  FelschDigraph<Word, Node, Definitions>::FelschDigraph(
-      WordGraph<M> const& ad)
+  FelschDigraph<Word, Node, Definitions>::FelschDigraph(WordGraph<M> const& ad)
       : DigraphWithSources<node_type>(ad),
         FelschDigraphSettings<FelschDigraph<Word, Node, Definitions>>(),
         _felsch_tree(0),
@@ -152,17 +151,17 @@ namespace libsemigroups {
 
   template <typename Word, typename Node, typename Definitions>
   template <bool RegDefs>
-  void
-  FelschDigraph<Word, Node, Definitions>::def_edge_no_checks(node_type  c,
-                                                      label_type x,
-                                                      node_type  d) noexcept {
+  void FelschDigraph<Word, Node, Definitions>::def_edge_no_checks(
+      node_type  c,
+      label_type x,
+      node_type  d) noexcept {
     LIBSEMIGROUPS_ASSERT(c < WordGraph<Node>::number_of_nodes());
     LIBSEMIGROUPS_ASSERT(x < WordGraph<Node>::out_degree());
     LIBSEMIGROUPS_ASSERT(d < WordGraph<Node>::number_of_nodes());
     if constexpr (RegDefs) {
       _definitions.emplace_back(c, x);
     }
-    DigraphWithSources<Node>::add_edge_no_checks(c, d, x);
+    DigraphWithSources<Node>::set_target_no_checks(c, x, d);
   }
 
   template <typename Word, typename Node, typename Definitions>
@@ -186,8 +185,7 @@ namespace libsemigroups {
     size_t c      = _presentation.alphabet().size();
     if (c > WordGraph<Node>::out_degree()) {
       // Not sure this is required
-      WordGraph<Node>::add_to_out_degree(
-          c - WordGraph<Node>::out_degree());
+      WordGraph<Node>::add_to_out_degree(c - WordGraph<Node>::out_degree());
     }
     _felsch_tree.init(c);
     _felsch_tree_initted = false;
@@ -201,8 +199,7 @@ namespace libsemigroups {
     _presentation = std::move(p);
     size_t c      = _presentation.alphabet().size();
     if (c > WordGraph<Node>::out_degree()) {
-      WordGraph<Node>::add_to_out_degree(
-          c - WordGraph<Node>::out_degree());
+      WordGraph<Node>::add_to_out_degree(c - WordGraph<Node>::out_degree());
     }
     _felsch_tree.init(c);
     _felsch_tree_initted = false;
@@ -321,8 +318,8 @@ namespace libsemigroups {
           auto u_first = u.cbegin() + felsch_tree().length() - 1;
           auto u_last  = u.cend() - 1;
 
-          node_type y = word_graph::follow_path_no_checks(
-              *this, root, u_first, u_last);
+          node_type y
+              = word_graph::follow_path_no_checks(*this, root, u_first, u_last);
           if (y == UNDEFINED) {
             continue;
           }
@@ -377,8 +374,7 @@ namespace libsemigroups {
       x = u_node;
       a = UNDEFINED;
     } else {
-      x = word_graph::follow_path_no_checks(
-          *this, u_node, u_first, u_last - 1);
+      x = word_graph::follow_path_no_checks(*this, u_node, u_first, u_last - 1);
       if (x == UNDEFINED) {
         return true;
       }
@@ -393,8 +389,7 @@ namespace libsemigroups {
       y = v_node;
       b = UNDEFINED;
     } else {
-      y = word_graph::follow_path_no_checks(
-          *this, v_node, v_first, v_last - 1);
+      y = word_graph::follow_path_no_checks(*this, v_node, v_first, v_last - 1);
       if (y == UNDEFINED) {
         return true;
       }

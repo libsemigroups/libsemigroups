@@ -42,8 +42,8 @@
 #include "config.hpp"      // for LIBSEMIGROUPS_DEBUG
 #include "constants.hpp"   // for UNDEFINED
 #include "containers.hpp"  // for DynamicArray2
-#include "word-graph.hpp"     // for WordGraph
 #include "types.hpp"       // for letter_type
+#include "word-graph.hpp"  // for WordGraph
 
 namespace libsemigroups {
   template <typename NodeType>
@@ -84,8 +84,8 @@ namespace libsemigroups {
 
     // the template is for uniformity of interface with FelschDigraph
     template <bool = true>
-    void add_edge_no_checks(node_type c, node_type d, label_type x) noexcept {
-      WordGraph<node_type>::add_edge_no_checks(c, d, x);
+    void set_target_no_checks(node_type c, label_type x, node_type d) noexcept {
+      WordGraph<node_type>::set_target_no_checks(c, x, d);
       add_source(d, x, c);
     }
 
@@ -123,8 +123,8 @@ namespace libsemigroups {
     // The permutation q must map the valid nodes to the [0, .. , n), where
     // n is the number of valid nodes, and p = q ^ -1.
     void permute_nodes_no_checks(std::vector<node_type> const& p,
-                          std::vector<node_type> const& q,
-                          size_t                        n);
+                                 std::vector<node_type> const& q,
+                                 size_t                        n);
 
     // Swaps valid nodes c and d, if c or d is not valid, then this will
     // fail spectacularly (no checks are performed)

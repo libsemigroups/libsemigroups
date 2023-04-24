@@ -383,7 +383,7 @@ namespace libsemigroups {
       word_graph::validate_node(*this, i);
       word_graph::validate_node(*this, j);
       word_graph::validate_label(*this, lbl);
-      add_edge_no_checks(i, j, lbl);
+      set_target_no_checks(i, lbl, j);
     }
 
     void inline def_edge(node_type i, label_type lbl, node_type j) {
@@ -411,9 +411,8 @@ namespace libsemigroups {
     //! \warning
     //! No checks whatsoever on the validity of the arguments are performed.
 
-    // TODO remove this in v3
-    void inline add_edge_no_checks(node_type i, node_type j, label_type lbl) {
-      _dynamic_array_2.set(i, lbl, j);
+    void inline set_target_no_checks(node_type m, label_type lbl, node_type n) {
+      _dynamic_array_2.set(m, lbl, n);
     }
 
     void inline def_edge_no_checks(node_type i, label_type lbl, node_type j) {

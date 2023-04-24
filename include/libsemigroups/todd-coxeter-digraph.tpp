@@ -63,7 +63,7 @@ namespace libsemigroups {
     for (; it < last; ++it) {
       LIBSEMIGROUPS_ASSERT(neighbor_no_checks(c, *it) == UNDEFINED);
       node_type d = new_node();
-      BaseDigraph::template add_edge_no_checks<RegisterDefs>(c, d, *it);
+      BaseDigraph::template set_target_no_checks<RegisterDefs>(c, *it, d);
       result = true;
       c      = d;
     }
@@ -265,7 +265,7 @@ namespace libsemigroups {
           if (v != UNDEFINED) {
             node_type const u = neighbor_no_checks(min, i);
             if (u == UNDEFINED) {
-              WordGraph<node_type>::add_edge_no_checks(min, v, i);
+              WordGraph<node_type>::set_target_no_checks(min, i, v);
             } else if (u != v) {
               _coinc.emplace(u, v);
             }
@@ -301,7 +301,7 @@ namespace libsemigroups {
             if constexpr (RegisterDefs) {
               this->definitions().emplace_back(c, x);
             }
-            WordGraph<node_type>::add_edge_no_checks(c, d, x);
+            WordGraph<node_type>::set_target_no_checks(c, x, d);
           }
           // Must re-add the source, even if we don't need to reset
           // the target or stack the deduction

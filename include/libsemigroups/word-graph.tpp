@@ -993,8 +993,8 @@ namespace libsemigroups {
             old_to_new[*eit] = next;
             next++;
           }
-          copy.add_edge_no_checks(
-              old_to_new[*nit], old_to_new[*eit], eit - cbegin_edges(*nit));
+          copy.set_target_no_checks(
+              old_to_new[*nit], eit - cbegin_edges(*nit), old_to_new[*eit]);
         }
       }
     }
