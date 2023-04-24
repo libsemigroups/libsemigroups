@@ -1,11 +1,12 @@
 PROJECT_NAME          = "libsemigroups"
 XML_OUTPUT            = build/xml
+HTML_OUTPUT           = build/html
 INPUT                 = ../include
 GENERATE_LATEX        = NO
 GENERATE_MAN          = NO
 GENERATE_RTF          = NO
 CASE_SENSE_NAMES      = NO
-GENERATE_HTML         = NO
+GENERATE_HTML         = YES
 GENERATE_XML          = YES
 RECURSIVE             = YES
 QUIET                 = YES
@@ -13,6 +14,7 @@ JAVADOC_AUTOBRIEF     = YES
 WARNINGS              = YES
 WARN_IF_UNDOCUMENTED  = YES
 WARN_IF_DOC_ERROR     = YES
+USE_MATHJAX           = YES
 # The next warning option leads to lots of false negatives, and so is disabled
 # for now.
 # WARN_NO_PARAMDOC      = YES

@@ -107,19 +107,17 @@ namespace libsemigroups {
   // TODO doc
   struct WordGraphBase {};
 
-  //! Defined in ``digraph.hpp``.
+  //! Defined in ``word-graph.hpp``.
   //!
-  //! This class represents the digraph of an action of a semigroup on a set.
-  //! If the digraph has \p n nodes, they are represented by the numbers
-  //! \f${0, ..., n - 1}\f$, and every node has the same number \c m of
-  //! out-edges (edges with source that node and range any other node). The
-  //! number \c m is referred to as the *out-degree* of the digraph, or any of
-  //! its nodes.
+  //! This class represents a word graph.
+  //! If the word graph has \c n nodes, they are represented by the numbers
+  //! \f$\{0, ..., n - 1\}\f$, and every node has the same number \c m of
+  //! out-edges (edges with source that node and target any other node). The
+  //! number \c m is referred to as the *out-degree* of the word graph, or any
+  //! of its nodes.
   //!
-  //! \tparam Node the type of the nodes in the digraph, must be an unsigned
+  //! \tparam Node the type of the nodes in the word graph, must be an unsigned
   //! integer type.
-  //!
-  //! \sa Action.
   template <typename Node>
   class WordGraph : private WordGraphBase {
     static_assert(std::is_integral<Node>(),
@@ -1486,8 +1484,7 @@ namespace libsemigroups {
   //! \par Example
   //! \code
   //! // Construct an action digraph with 5 nodes and 10 edges (7 specified)
-  //! to_word_graph<uint8_t>(
-  //!     5, {{0, 0}, {1, 1}, {2}, {3, 3}});
+  //! to_word_graph<uint8_t>(5, {{0, 0}, {1, 1}, {2}, {3, 3}});
   //! \endcode
   template <typename Node>
   WordGraph<Node>
