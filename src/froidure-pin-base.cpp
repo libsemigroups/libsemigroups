@@ -176,7 +176,7 @@ namespace libsemigroups {
     size_t const       n   = _right.number_of_nodes();
     auto               it  = w.cbegin() + 1;
     while (it < w.cend() && out < n) {
-      out = _right.neighbor_no_checks(out, *it++);
+      out = _right.target_no_checks(out, *it++);
     }
     if (out < n) {
       return out;
@@ -192,13 +192,13 @@ namespace libsemigroups {
 
     if (current_length(i) <= current_length(j)) {
       while (i != UNDEFINED) {
-        j = _left.neighbor_no_checks(j, _final[i]);
+        j = _left.target_no_checks(j, _final[i]);
         i = _prefix[i];
       }
       return j;
     } else {
       while (j != UNDEFINED) {
-        i = _right.neighbor_no_checks(i, _first[j]);
+        i = _right.target_no_checks(i, _first[j]);
         j = _suffix[j];
       }
       return i;

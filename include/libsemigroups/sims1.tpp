@@ -527,7 +527,7 @@ namespace libsemigroups {
       _felsch_graph.number_of_active_nodes(current.num_nodes);
 
       LIBSEMIGROUPS_ASSERT(
-          _felsch_graph.neighbor_no_checks(current.source, current.generator)
+          _felsch_graph.target_no_checks(current.source, current.generator)
           == UNDEFINED);
 
       size_type const start = _felsch_graph.number_of_edges();
@@ -553,7 +553,7 @@ namespace libsemigroups {
 
     for (node_type next = current.source; next < M; ++next) {
       for (; a < num_gens; ++a) {
-        if (_felsch_graph.neighbor_no_checks(next, a) == UNDEFINED) {
+        if (_felsch_graph.target_no_checks(next, a) == UNDEFINED) {
           std::lock_guard<std::mutex> lock(_mtx);
           if (M < _max_num_classes) {
 #ifdef LIBSEMIGROUPS_ENABLE_STATS

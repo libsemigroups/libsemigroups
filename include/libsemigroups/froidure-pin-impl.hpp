@@ -437,7 +437,7 @@ namespace libsemigroups {
         for (letter_type j = 0; j != number_of_generators(); ++j) {
           _left.set_target_no_checks(_enumerate_order[i],
                             j,
-                            _right.neighbor_no_checks(_letter_to_pos[j], b));
+                            _right.target_no_checks(_letter_to_pos[j], b));
         }
       }
       _wordlen++;
@@ -454,18 +454,18 @@ namespace libsemigroups {
         element_index_type s = _suffix[i];
         for (letter_type j = 0; j != number_of_generators(); ++j) {
           if (!_reduced.get(s, j)) {
-            element_index_type r = _right.neighbor_no_checks(s, j);
+            element_index_type r = _right.target_no_checks(s, j);
             if (_found_one && r == _pos_one) {
               _right.set_target_no_checks(i, j, _letter_to_pos[b]);
             } else if (_prefix[r] != UNDEFINED) {  // r is not a generator
               _right.set_target_no_checks(
                   i,
                   j,
-                  _right.neighbor_no_checks(_left.neighbor_no_checks(_prefix[r], b),
+                  _right.target_no_checks(_left.target_no_checks(_prefix[r], b),
                                          _final[r]));
             } else {
               _right.set_target_no_checks(
-                  i, j, _right.neighbor_no_checks(_letter_to_pos[b], _final[r]));
+                  i, j, _right.target_no_checks(_letter_to_pos[b], _final[r]));
             }
           } else {
             InternalProduct()(this->to_external(_tmp_product),
@@ -491,7 +491,7 @@ namespace libsemigroups {
               _prefix.push_back(i);
               _reduced.set(i, j, true);
               _right.set_target_no_checks(i, j, _nr);
-              _suffix.push_back(_right.neighbor_no_checks(s, j));
+              _suffix.push_back(_right.target_no_checks(s, j));
               _enumerate_order.push_back(_nr);
               _nr++;
             }
@@ -509,7 +509,7 @@ namespace libsemigroups {
             _left.set_target_no_checks(
                 _enumerate_order[i],
                 j,
-                _right.neighbor_no_checks(_left.neighbor_no_checks(p, j), b));
+                _right.target_no_checks(_left.target_no_checks(p, j), b));
           }
         }
         _wordlen++;
@@ -680,12 +680,12 @@ namespace libsemigroups {
         element_index_type i = _enumerate_order[_pos];  // position in _elements
         letter_type        b = _first[i];
         element_index_type s = _suffix[i];
-        if (_right.neighbor_no_checks(i, 0) != UNDEFINED) {
+        if (_right.target_no_checks(i, 0) != UNDEFINED) {
           number_of_old_left--;
           // _elements[i] is in old semigroup, and its descendants are
           // known
           for (letter_type j = 0; j < old_nrgens; j++) {
-            element_index_type k = _right.neighbor_no_checks(i, j);
+            element_index_type k = _right.target_no_checks(i, j);
             if (!old_new[k]) {  // it's new!
               is_one(_elements[k], k);
               _first[k]  = _first[i];
@@ -696,7 +696,7 @@ namespace libsemigroups {
               if (_wordlen == 0) {
                 _suffix[k] = _letter_to_pos[j];
               } else {
-                _suffix[k] = _right.neighbor_no_checks(s, j);
+                _suffix[k] = _right.target_no_checks(s, j);
               }
               _enumerate_order.push_back(k);
               old_new[k] = true;
@@ -727,7 +727,7 @@ namespace libsemigroups {
               // TODO(JDM) reuse old info here!
               _left.set_target_no_checks(_enumerate_order[i],
                                 j,
-                                _right.neighbor_no_checks(_letter_to_pos[j], b));
+                                _right.target_no_checks(_letter_to_pos[j], b));
             }
           }
         } else {
@@ -739,7 +739,7 @@ namespace libsemigroups {
               _left.set_target_no_checks(
                   _enumerate_order[i],
                   j,
-                  _right.neighbor_no_checks(_left.neighbor_no_checks(p, j), b));
+                  _right.target_no_checks(_left.target_no_checks(p, j), b));
             }
           }
         }
@@ -927,18 +927,18 @@ namespace libsemigroups {
                                     std::vector<bool>& old_new,
                                     state_type*        ptr) {
     if (_wordlen != 0 && !_reduced.get(s, j)) {
-      element_index_type r = _right.neighbor_no_checks(s, j);
+      element_index_type r = _right.target_no_checks(s, j);
       if (_found_one && r == _pos_one) {
         _right.set_target_no_checks(i, j, _letter_to_pos[b]);
       } else if (_prefix[r] != UNDEFINED) {
         _right.set_target_no_checks(
             i,
             j,
-            _right.neighbor_no_checks(_left.neighbor_no_checks(_prefix[r], b),
+            _right.target_no_checks(_left.target_no_checks(_prefix[r], b),
                                    _final[r]));
       } else {
         _right.set_target_no_checks(
-            i, j, _right.neighbor_no_checks(_letter_to_pos[b], _final[r]));
+            i, j, _right.target_no_checks(_letter_to_pos[b], _final[r]));
       }
     } else {
       InternalProduct()(this->to_external(_tmp_product),
@@ -960,7 +960,7 @@ namespace libsemigroups {
         if (_wordlen == 0) {
           _suffix.push_back(_letter_to_pos[j]);
         } else {
-          _suffix.push_back(_right.neighbor_no_checks(s, j));
+          _suffix.push_back(_right.target_no_checks(s, j));
         }
         _enumerate_order.push_back(_nr);
         _nr++;
@@ -976,7 +976,7 @@ namespace libsemigroups {
         if (_wordlen == 0) {
           _suffix[it->second] = _letter_to_pos[j];
         } else {
-          _suffix[it->second] = _right.neighbor_no_checks(s, j);
+          _suffix[it->second] = _right.target_no_checks(s, j);
         }
         _enumerate_order.push_back(it->second);
         old_new[it->second] = true;
@@ -1177,7 +1177,7 @@ namespace libsemigroups {
         // lengths because they are equal!!
         element_index_type i = k, j = k;
         while (j != UNDEFINED) {
-          i = _right.neighbor_no_checks(i, _first[j]);
+          i = _right.target_no_checks(i, _first[j]);
           // TODO(later) improve this if R/L-classes are known to stop
           // performing the product if we fall out of the R/L-class of the
           // initial element.

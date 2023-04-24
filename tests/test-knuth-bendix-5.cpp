@@ -196,7 +196,7 @@ namespace libsemigroups {
     REQUIRE(kb2.gilman_digraph().number_of_nodes() == 62);
 
     auto copy   = kb2.gilman_digraph();
-    auto source = copy.neighbor(0, 2);
+    auto source = copy.target(0, 2);
     copy.remove_label_no_checks(2);
     REQUIRE(copy.out_degree() == 2);
     REQUIRE(copy.number_of_nodes() == 62);
@@ -371,7 +371,7 @@ namespace libsemigroups {
     // std::cout << (kb.active_rules() | to_vector()) << std::endl;
 
     auto copy   = kb.gilman_digraph();
-    auto source = copy.neighbor(0, 2);
+    auto source = copy.target(0, 2);
     copy.remove_label_no_checks(2);
     REQUIRE(source == 34);
     REQUIRE(copy.out_degree() == 2);

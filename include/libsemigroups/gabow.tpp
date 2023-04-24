@@ -58,7 +58,7 @@ namespace libsemigroups {
       do {
         node_type x = queue.front();
         for (auto e : _graph->labels()) {
-          node_type y = _graph->neighbor_no_checks(x, e);
+          node_type y = _graph->target_no_checks(x, e);
           if (y != UNDEFINED && y != root && _id[y] == _id[x]
               && _forwd_forest.parent(y) == UNDEFINED) {
             _forwd_forest.set(y, x, e);
@@ -92,7 +92,7 @@ namespace libsemigroups {
     for (auto n : _graph->nodes()) {
       size_type const scc_id_n = id(n);
       for (auto e : _graph->labels()) {
-        size_type const k = _graph->neighbor_no_checks(n, e);
+        size_type const k = _graph->target_no_checks(n, e);
         if (k != UNDEFINED && _id[k] == scc_id_n) {
           reverse_edges[k].push_back(n);
           reverse_labels[k].push_back(e);
@@ -160,7 +160,7 @@ namespace libsemigroups {
         dfs_end:
           LIBSEMIGROUPS_ASSERT(v < _graph->number_of_nodes());
           LIBSEMIGROUPS_ASSERT(i < _graph->out_degree());
-          node_type u = _graph->neighbor_no_checks(v, i);
+          node_type u = _graph->target_no_checks(v, i);
           if (u != UNDEFINED) {
             if (preorder[u] == UNDEFINED) {
               frame.top().second = i;

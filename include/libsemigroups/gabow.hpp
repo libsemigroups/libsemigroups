@@ -23,6 +23,7 @@
 #define LIBSEMIGROUPS_GABOW_HPP_
 
 #include <cstddef>  // for size_t
+#include <queue>    // for queue
 #include <stack>    // for stack
 #include <vector>   // for vector
 
@@ -94,8 +95,8 @@ namespace libsemigroups {
     //! A \ref const_iterator_sccs.
     //!
     //! \throws LibsemigroupsException if it is not the case that every node
-    //! has exactly out_degree() out-neighbors. In other words, if
-    //! neighbor() is libsemigroups::UNDEFINED for any node \c nd and
+    //! has exactly out_degree() out-targets. In other words, if
+    //! target() is libsemigroups::UNDEFINED for any node \c nd and
     //! any label \c lbl.
     //! \basic_guarantee
     //!
@@ -128,8 +129,8 @@ namespace libsemigroups {
     //! A `size_t`.
     //!
     //! \throws LibsemigroupsException if it is not the case that every node
-    //! has exactly out_degree() out-neighbors. In other words, if
-    //! neighbor() is libsemigroups::UNDEFINED for any node \c nd and
+    //! has exactly out_degree() out-targets. In other words, if
+    //! target() is libsemigroups::UNDEFINED for any node \c nd and
     //! any label \c lbl.
     //! \basic_guarantee
     //!
@@ -150,8 +151,8 @@ namespace libsemigroups {
     //! A \ref const_iterator_scc_roots.
     //!
     //! \throws LibsemigroupsException if it is not the case that every node
-    //! has exactly out_degree() out-neighbors. In other words, if
-    //! neighbor() is libsemigroups::UNDEFINED for any node \c nd and
+    //! has exactly out_degree() out-targets. In other words, if
+    //! target() is libsemigroups::UNDEFINED for any node \c nd and
     //! any label \c lbl. \basic_guarantee
     //!
     //! \complexity
@@ -176,8 +177,8 @@ namespace libsemigroups {
     //! \ref node_type.
     //!
     //! \throws LibsemigroupsException if it is not the case that every node
-    //! has exactly out_degree() out-neighbors. In other words, if
-    //! neighbor() is libsemigroups::UNDEFINED for any node \c nd and
+    //! has exactly out_degree() out-targets. In other words, if
+    //! target() is libsemigroups::UNDEFINED for any node \c nd and
     //! any label \c lbl.
     //! \basic_guarantee
     //!
@@ -202,8 +203,8 @@ namespace libsemigroups {
     //! A \ref const_iterator_scc.
     //!
     //! \throws LibsemigroupsException if it is not the case that every node
-    //! has exactly out_degree() out-neighbors. In other words, if
-    //! neighbor() is libsemigroups::UNDEFINED for any node \c nd and
+    //! has exactly out_degree() out-targets. In other words, if
+    //! target() is libsemigroups::UNDEFINED for any node \c nd and
     //! any label \c lbl.
     //!
     //! \throws LibsemigroupsException if \p i is not in the range \c 0 to \c
@@ -240,8 +241,8 @@ namespace libsemigroups {
     //! A const reference to a Forest.
     //!
     //! \throws LibsemigroupsException if it is not the case that every node
-    //! has exactly out_degree() out-neighbors. In other words, if
-    //! neighbor() is libsemigroups::UNDEFINED for any node \c nd and
+    //! has exactly out_degree() out-targets. In other words, if
+    //! target() is libsemigroups::UNDEFINED for any node \c nd and
     //! any label \c lbl. \basic_guarantee
     //!
     //! \complexity
@@ -262,8 +263,8 @@ namespace libsemigroups {
     //! A const reference to a Forest.
     //!
     //! \throws LibsemigroupsException if it is not the case that every node
-    //! has exactly out_degree() out-neighbors. In other words, if
-    //! neighbor() is libsemigroups::UNDEFINED for any node \c nd and
+    //! has exactly out_degree() out-targets. In other words, if
+    //! target() is libsemigroups::UNDEFINED for any node \c nd and
     //! any label \c lbl. \basic_guarantee
     //!
     //! \complexity

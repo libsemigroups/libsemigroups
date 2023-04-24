@@ -98,7 +98,7 @@ namespace libsemigroups {
     // Each label corresponds to a generator of S
     for (node_type lbl = 0; lbl < ad.out_degree(); ++lbl) {
       for (size_t n = first; n < last; ++n) {
-        x[n - first] = ad.neighbor(n, lbl) - first;
+        x[n - first] = ad.target(n, lbl) - first;
       }
       // The next loop is required because if element_type is a fixed degree
       // type, such as Transf<5> for example, but first = last = 0, then the

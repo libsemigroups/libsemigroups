@@ -2400,7 +2400,7 @@ namespace libsemigroups {
                       this->to_external_const(*it));
             // TODO(later) this is fragile
             lambda_orb_index_type lpos
-                = _parent->_lambda_orb.digraph().neighbor(_left_indices[i], j);
+                = _parent->_lambda_orb.digraph().target(_left_indices[i], j);
             Rho()(_tmp_rho_value, this->to_external_const(tmp));
             rho_orb_index_type rpos
                 = _parent->_rho_orb.position(_tmp_rho_value);
@@ -2427,7 +2427,7 @@ namespace libsemigroups {
                       this->to_external_const(z));
             // TODO(later) this is fragile
             rho_orb_index_type rpos
-                = _parent->_rho_orb.digraph().neighbor(_right_indices[i], j);
+                = _parent->_rho_orb.digraph().target(_right_indices[i], j);
             Lambda()(_tmp_lambda_value, this->to_external_const(tmp));
             lambda_orb_index_type lpos
                 = _parent->_lambda_orb.position(_tmp_lambda_value);

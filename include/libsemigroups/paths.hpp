@@ -47,6 +47,7 @@
 #include "order.hpp"       // for order
 #include "types.hpp"       // for word_type
 #include "word-graph.hpp"  // for WordGraph
+#include "words.hpp"       // for number_of_words
 
 #include <rx/ranges.hpp>  // for is_input_range
 

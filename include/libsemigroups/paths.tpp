@@ -81,7 +81,7 @@ namespace libsemigroups {
     do {
       node_type next;
       std::tie(next, _edge)
-          = _digraph->next_neighbor_no_checks(_nodes.back(), _edge);
+          = _digraph->next_target_no_checks(_nodes.back(), _edge);
       if (next != UNDEFINED && _edges.size() < _max - 1) {
         _nodes.push_back(next);
         _edges.push_back(_edge);
@@ -260,7 +260,7 @@ namespace libsemigroups {
     do {
       node_type next;
       std::tie(next, _edge)
-          = _digraph->next_neighbor_no_checks(_nodes.back(), _edge);
+          = _digraph->next_target_no_checks(_nodes.back(), _edge);
       if (next != UNDEFINED && _edges.size() < _max - 1) {
         // Avoid infinite loops when we can never reach _target
         if (_can_reach_target[next]) {
@@ -302,7 +302,8 @@ namespace libsemigroups {
           _digraph->number_of_nodes(), std::vector<node_type>({}));
       for (auto n = _digraph->cbegin_nodes(); n != _digraph->cend_nodes();
            ++n) {
-        for (auto e = _digraph->cbegin_edges(*n); e != _digraph->cend_edges(*n);
+        for (auto e = _digraph->cbegin_targets(*n);
+             e != _digraph->cend_targets(*n);
              ++e) {
           if (*e != UNDEFINED) {
             in_neighbours[*e].push_back(*n);
@@ -398,7 +399,7 @@ namespace libsemigroups {
                                      size_t                  max) {
       if (min >= max) {
         return 0;
-      } else if (d.validate()) {
+      } else if (word_graph::is_complete(d)) {
         // every edge is defined, and so the graph is not acyclic, and so the
         // number of words labelling paths is just the number of words
         if (max == POSITIVE_INFINITY) {
@@ -479,8 +480,8 @@ namespace libsemigroups {
                                  size_t max) {
       if (max == POSITIVE_INFINITY) {
         if (source == target
-            && std::any_of(d.cbegin_edges(source),
-                           d.cend_edges(source),
+            && std::any_of(d.cbegin_targets(source),
+                           d.cend_targets(source),
                            [&d, source](auto n) {
                              return n != UNDEFINED
                                     && word_graph::is_reachable(
@@ -570,7 +571,7 @@ namespace libsemigroups {
       number_paths.set(topo[0], 0, 1);
       for (size_t m = 1; m < topo.size(); ++m) {
         number_paths.set(topo[m], 0, 1);
-        for (auto n = d.cbegin_edges(topo[m]); n != d.cend_edges(topo[m]);
+        for (auto n = d.cbegin_targets(topo[m]); n != d.cend_targets(topo[m]);
              ++n) {
           if (*n != UNDEFINED) {
             // there are no paths longer than m + 1 from the m-th entry in
@@ -634,7 +635,7 @@ namespace libsemigroups {
           0);
 
       for (size_t m = 1; m < topo.size(); ++m) {
-        for (auto n = d.cbegin_edges(topo[m]); n != d.cend_edges(topo[m]);
+        for (auto n = d.cbegin_targets(topo[m]); n != d.cend_targets(topo[m]);
              ++n) {
           if (*n == static_cast<Node1>(target)) {
             number_paths.set(topo[m], 1, number_paths.get(topo[m], 1) + 1);
@@ -681,7 +682,7 @@ namespace libsemigroups {
       } else {
         std::vector<uint64_t> number_paths(d.number_of_nodes(), 0);
         for (auto m = topo.cbegin() + 1; m < topo.cend(); ++m) {
-          for (auto n = d.cbegin_edges(*m); n != d.cend_edges(*m); ++n) {
+          for (auto n = d.cbegin_targets(*m); n != d.cend_targets(*m); ++n) {
             if (*n != UNDEFINED) {
               number_paths[*m] += (number_paths[*n] + 1);
             }
@@ -697,7 +698,7 @@ namespace libsemigroups {
                                              Node2                   source,
                                              size_t                  min,
                                              size_t                  max) {
-    if (min >= max || d.validate()) {
+    if (min >= max || word_graph::is_complete(d)) {
       return paths::algorithm::trivial;
     }
 

@@ -140,7 +140,7 @@ namespace libsemigroups {
                     detail::TCE::digraph_type* t,
                     size_t = 0) const {
       // y- 1, x????
-      xy = detail::TCE(t->neighbor_no_checks(x, y - 1));
+      xy = detail::TCE(t->target_no_checks(x, y - 1));
     }
   };
 

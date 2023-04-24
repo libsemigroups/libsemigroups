@@ -82,9 +82,9 @@ namespace libsemigroups {
               == j);
     }
 
-    REQUIRE(wg.number_of_nodes() == 1224);
-    REQUIRE(wg.number_of_edges() == 1224);
-    REQUIRE(wg.validate());
+    REQUIRE(wg.number_of_nodes() == 1'224);
+    REQUIRE(wg.number_of_edges() == 1'224);
+    REQUIRE(word_graph::is_complete(wg));
   }
 
   LIBSEMIGROUPS_TEST_CASE("Gabow", "003", "complete graphs", "[quick][gabow]") {
@@ -203,7 +203,7 @@ namespace libsemigroups {
   //        size_t pos = i;
   //        for (auto it = graph.cbegin_path_to_root(i); it <
   //        graph.cend_path_to_root(i); ++it) {
-  //          pos = graph.neighbor(pos, *it);
+  //          pos = graph.target(pos, *it);
   //        }
   //        REQUIRE(pos == graph.cbegin_sccs()[graph.scc_id(i)][0]);
   //      }
@@ -230,7 +230,7 @@ namespace libsemigroups {
   //       for (auto it = graph.cbegin_path_to_root(i);
   //            it < graph.cend_path_to_root(i);
   //            ++it) {
-  //         pos = graph.neighbor(pos, *it);
+  //         pos = graph.target(pos, *it);
   //       }
   //       REQUIRE(pos == graph.cbegin_sccs()[graph.scc_id(i)][0]);
   //     }

@@ -97,14 +97,14 @@ namespace libsemigroups {
 
     for (size_t i = 0; i < 17; ++i) {
       for (size_t j = 0; j < 31; ++j) {
-        REQUIRE(g.neighbor(i, j) == (7 * i + 23 * j) % 17);
+        REQUIRE(g.target(i, j) == (7 * i + 23 * j) % 17);
       }
     }
 
     g.add_to_out_degree(10);
     REQUIRE(g.out_degree() == 41);
     REQUIRE(g.number_of_nodes() == 17);
-    REQUIRE(!g.validate());
+    REQUIRE(!word_graph::is_complete(g));
 
     for (size_t i = 0; i < 17; ++i) {
       for (size_t j = 0; j < 10; ++j) {
@@ -121,8 +121,8 @@ namespace libsemigroups {
                           "exceptions",
                           "[quick][digraph]") {
     WordGraph<size_t> graph(10, 5);
-    REQUIRE_THROWS_AS(graph.neighbor(10, 0), LibsemigroupsException);
-    REQUIRE(graph.neighbor(0, 1) == UNDEFINED);
+    REQUIRE_THROWS_AS(graph.target(10, 0), LibsemigroupsException);
+    REQUIRE(graph.target(0, 1) == UNDEFINED);
 
     REQUIRE_THROWS_AS(graph.set_target(0, 10, 0), LibsemigroupsException);
     REQUIRE_THROWS_AS(graph.set_target(10, 0, 0), LibsemigroupsException);
@@ -191,11 +191,11 @@ namespace libsemigroups {
       std::iota(expected.begin(), expected.end(), 0);
 
       for (auto it = g.cbegin_nodes(); it < g.cend_nodes(); ++it) {
-        auto result
-            = std::vector<node_type>(g.cbegin_edges(*it), g.cend_edges(*it));
+        auto result = std::vector<node_type>(g.cbegin_targets(*it),
+                                             g.cend_targets(*it));
         REQUIRE(result == expected);
       }
-      REQUIRE_THROWS_AS(g.cbegin_edges(n), LibsemigroupsException);
+      REQUIRE_THROWS_AS(g.cbegin_targets(n), LibsemigroupsException);
     }
   }
 
@@ -255,8 +255,8 @@ namespace libsemigroups {
                           "unsafe (next) neighbour",
                           "[quick]") {
     auto ad = binary_tree(10);
-    REQUIRE(ad.neighbor_no_checks(0, 1) == ad.neighbor(0, 1));
-    REQUIRE(ad.next_neighbor_no_checks(0, 1) == ad.next_neighbor(0, 1));
+    REQUIRE(ad.target_no_checks(0, 1) == ad.target(0, 1));
+    REQUIRE(ad.next_target_no_checks(0, 1) == ad.next_target(0, 1));
   }
 
   LIBSEMIGROUPS_TEST_CASE("WordGraph",
@@ -556,7 +556,7 @@ namespace libsemigroups {
         REQUIRE(word_graph::is_reachable(ad, *it2, *it1));
       }
     }
-    REQUIRE(ad.validate());
+    REQUIRE(word_graph::is_complete(ad));
     REQUIRE(word_graph::topological_sort(ad).empty());
     REQUIRE(word_graph::topological_sort(ad, 0).empty());
   }

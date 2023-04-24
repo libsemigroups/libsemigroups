@@ -102,7 +102,7 @@ namespace libsemigroups {
     // to active cosets
     while (c < m) {
       for (label_type x = 0; x < n; ++x) {
-        node_type i = this->neighbor_no_checks(p[c], x);
+        node_type i = this->target_no_checks(p[c], x);
         WordGraph<NodeType>::set_target_no_checks(
             p[c], x, (i == UNDEFINED ? i : q[i]));
         i = _preim_init.get(p[c], x);
@@ -122,8 +122,8 @@ namespace libsemigroups {
   void DigraphWithSources<NodeType>::swap_nodes(node_type c, node_type d) {
     size_t const n = this->out_degree();
     for (label_type x = 0; x < n; ++x) {
-      node_type cx = this->neighbor_no_checks(c, x);
-      node_type dx = this->neighbor_no_checks(d, x);
+      node_type cx = this->target_no_checks(c, x);
+      node_type dx = this->target_no_checks(d, x);
       replace_target(c, d, x);
       replace_target(d, c, x);
 
@@ -165,7 +165,7 @@ namespace libsemigroups {
     size_t const n = this->out_degree();
 
     for (label_type x = 0; x < n; ++x) {
-      node_type cx = this->neighbor_no_checks(c, x);
+      node_type cx = this->target_no_checks(c, x);
       replace_target(c, d, x);
       replace_source(c, d, x, cx);
       this->swap_targets_no_checks(c, d, x);
@@ -186,7 +186,7 @@ namespace libsemigroups {
       node_type v = first_source(max, i);
       while (v != UNDEFINED) {
         auto w = next_source(v, i);
-        if (this->neighbor_no_checks(v, i) != min) {
+        if (this->target_no_checks(v, i) != min) {
           set_target_no_checks(v, i, min);
           new_edge(v, i);
         }
@@ -194,13 +194,13 @@ namespace libsemigroups {
       }
 
       // Now let <v> be the IMAGE of <max>
-      v = this->neighbor_no_checks(max, i);
+      v = this->target_no_checks(max, i);
       if (v != UNDEFINED) {
         remove_source(v, i, max);
         // Let <u> be the image of <min>, and ensure <u> = <v>
-        node_type u = this->neighbor_no_checks(min, i);
+        node_type u = this->target_no_checks(min, i);
         if (u == UNDEFINED) {
-          if (this->neighbor_no_checks(min, i) != min) {
+          if (this->target_no_checks(min, i) != min) {
             set_target_no_checks(min, i, v);
             new_edge(min, i);
           }
@@ -265,7 +265,7 @@ namespace libsemigroups {
     for (auto it = first; it != last; ++it) {
       node_type c = *it;
       for (label_type x = 0; x < WordGraph<NodeType>::out_degree(); ++x) {
-        auto cx = WordGraph<node_type>::neighbor_no_checks(c, x);
+        auto cx = WordGraph<node_type>::target_no_checks(c, x);
         if (cx != UNDEFINED) {
           set_target_no_checks(c, x, cx);
         }
@@ -300,7 +300,7 @@ namespace libsemigroups {
                                                     size_t    x) {
     node_type e = _preim_init.get(c, x);
     while (e != UNDEFINED) {
-      LIBSEMIGROUPS_ASSERT(this->neighbor_no_checks(e, x) == c);
+      LIBSEMIGROUPS_ASSERT(this->target_no_checks(e, x) == c);
       WordGraph<NodeType>::set_target_no_checks(e, x, d);
       e = _preim_next.get(e, x);
     }

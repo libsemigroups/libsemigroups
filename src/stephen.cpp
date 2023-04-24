@@ -157,7 +157,7 @@ namespace libsemigroups {
             ++it;
             std::tie(did_def, c) = _word_graph.complete_path(
                 current, it->cbegin(), it->cend() - 1);
-            node_type v_end = _word_graph.neighbor_no_checks(c, it->back());
+            node_type v_end = _word_graph.target_no_checks(c, it->back());
             if (v_end == UNDEFINED) {
               did_def = true;
               _word_graph.set_target_no_checks(c, it->back(), u_end);
@@ -177,7 +177,7 @@ namespace libsemigroups {
               c = _word_graph
                       .complete_path(current, it->cbegin(), it->cend() - 1)
                       .second;
-              u_end = _word_graph.neighbor_no_checks(c, it->back());
+              u_end = _word_graph.target_no_checks(c, it->back());
               LIBSEMIGROUPS_ASSERT(u_end == UNDEFINED);
               _word_graph.set_target_no_checks(c, it->back(), v_end);
               did_def = true;

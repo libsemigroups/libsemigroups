@@ -827,7 +827,7 @@ namespace libsemigroups {
     auto         ad = WordGraph<size_t>::random(n, 20, n, std::mt19937());
     word_graph::add_cycle(ad, ad.cbegin_nodes(), ad.cend_nodes());
     REQUIRE(!word_graph::is_acyclic(ad));
-    REQUIRE(!ad.validate());
+    REQUIRE(!word_graph::is_complete(ad));
     REQUIRE(number_of_paths_algorithm(ad, 0, 0, 16) == paths::algorithm::dfs);
     REQUIRE(number_of_paths(ad, 0, 0, 16) != 0);
   }
@@ -856,7 +856,7 @@ namespace libsemigroups {
     ad.set_target(8, 13, 9);
 
     REQUIRE(word_graph::is_acyclic(ad));
-    REQUIRE(!ad.validate());
+    REQUIRE(!word_graph::is_complete(ad));
 
     REQUIRE(number_of_paths_algorithm(ad, 0, 0, 16)
             == paths::algorithm::acyclic);
@@ -887,7 +887,7 @@ namespace libsemigroups {
          {0, 6, 3, 5, 7, 9, 9, 8, 1, 5, 7, 9, 6, 0, 0, 3, 6, 0, 8, 9},
          {3, 7, 9, 1, 4, 9, 4, 0, 5, 8, 3, 2, 0, 2, 3, 4, 0, 5, 3, 5}});
     REQUIRE(!word_graph::is_acyclic(ad));
-    REQUIRE(ad.validate());
+    REQUIRE(word_graph::is_complete(ad));
 
     REQUIRE(number_of_paths_algorithm(ad, 0) == paths::algorithm::acyclic);
     REQUIRE(number_of_paths(ad, 0) == POSITIVE_INFINITY);
@@ -904,7 +904,7 @@ namespace libsemigroups {
     word_graph::add_cycle(ad, n);
     ad.set_target(0, 0, n + 1);
     REQUIRE(!word_graph::is_acyclic(ad));
-    REQUIRE(!ad.validate());
+    REQUIRE(!word_graph::is_complete(ad));
     REQUIRE(number_of_paths(ad, 1) == 511);
     REQUIRE(number_of_paths_algorithm(ad, 1, 0, POSITIVE_INFINITY)
             == paths::algorithm::acyclic);

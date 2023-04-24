@@ -60,7 +60,7 @@ namespace libsemigroups {
     label_type edge = 0;
 
     while (!node.empty()) {
-      std::tie(next, edge) = ad.next_neighbor_no_checks(node.back(), edge);
+      std::tie(next, edge) = ad.next_target_no_checks(node.back(), edge);
       if (next != UNDEFINED && path.size() < max - 1) {
         node.push_back(next);
         path.push_back(edge);
@@ -105,7 +105,7 @@ namespace libsemigroups {
     label_type edge = 0;
 
     while (!node.empty()) {
-      std::tie(next, edge) = ad.next_neighbor_no_checks(node.back(), edge);
+      std::tie(next, edge) = ad.next_target_no_checks(node.back(), edge);
       if (next != UNDEFINED && path.size() < max - 1) {
         node.push_back(next);
         path.push_back(edge);
@@ -139,13 +139,13 @@ namespace libsemigroups {
          ++i) {
       node_type  n;
       label_type a   = 0;
-      std::tie(n, a) = ad.next_neighbor_no_checks(out.second[i], a);
+      std::tie(n, a) = ad.next_target_no_checks(out.second[i], a);
       while (n != UNDEFINED) {
         word_type next(out.first[i]);
         next.push_back(a);
         out.first.push_back(std::move(next));
         out.second.push_back(n);
-        std::tie(n, a) = ad.next_neighbor_no_checks(out.second[i], ++a);
+        std::tie(n, a) = ad.next_target_no_checks(out.second[i], ++a);
       }
     }
     return out;
