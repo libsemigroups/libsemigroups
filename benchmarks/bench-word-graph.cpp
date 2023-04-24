@@ -23,9 +23,9 @@
 #include "bench-main.hpp"  // for CATCH_CONFIG_ENABLE_BENCHMARKING
 #include "catch.hpp"       // for BENCHMARK, REQUIRE, TEST_CASE
 
+#include "libsemigroups/paths.hpp"       // for Paths etc
+#include "libsemigroups/types.hpp"       // for word_type
 #include "libsemigroups/word-graph.hpp"  // for WordGraph
-#include "libsemigroups/paths.hpp"    // for Paths etc
-#include "libsemigroups/types.hpp"    // for word_type
 
 namespace libsemigroups {
   // Old function for comparison with iterators
@@ -38,8 +38,8 @@ namespace libsemigroups {
   template <typename T, typename S>
   std::pair<std::vector<word_type>, std::vector<node_type<T>>>
   paths_in_lex_order(WordGraph<T> const& ad,
-                     S const                 root,
-                     size_t                  min = 0,
+                     S const             root,
+                     size_t              min = 0,
                      size_t max = libsemigroups::POSITIVE_INFINITY) {
     using node_type  = node_type<T>;
     using label_type = label_type<T>;
@@ -83,9 +83,9 @@ namespace libsemigroups {
   template <typename T, typename S>
   std::vector<word_type>
   paths_in_lex_order2(WordGraph<T> const& ad,
-                      S const                 first,
-                      S const                 last,
-                      size_t                  min = 0,
+                      S const             first,
+                      S const             last,
+                      size_t              min = 0,
                       size_t max = libsemigroups::POSITIVE_INFINITY) {
     using node_type  = node_type<T>;
     using label_type = label_type<T>;
@@ -127,8 +127,8 @@ namespace libsemigroups {
   template <typename T, typename S>
   std::pair<std::vector<word_type>, std::vector<node_type<T>>>
   paths_in_shortlex_order(WordGraph<T> const& ad,
-                          S const                 root,
-                          size_t                  min = 0,
+                          S const             root,
+                          size_t              min = 0,
                           size_t max = libsemigroups::POSITIVE_INFINITY) {
     using node_type  = node_type<T>;
     using label_type = label_type<T>;
@@ -156,18 +156,18 @@ namespace libsemigroups {
     ad.add_nodes(6);
     ad.add_to_out_degree(2);
 
-    ad.add_edge(0, 1, 0);
-    ad.add_edge(0, 2, 1);
-    ad.add_edge(1, 3, 0);
-    ad.add_edge(1, 4, 1);
-    ad.add_edge(2, 4, 0);
-    ad.add_edge(2, 2, 1);
-    ad.add_edge(3, 1, 0);
-    ad.add_edge(3, 5, 1);
-    ad.add_edge(4, 5, 0);
-    ad.add_edge(4, 4, 1);
-    ad.add_edge(5, 4, 0);
-    ad.add_edge(5, 5, 1);
+    ad.set_target(0, 0, 1);
+    ad.set_target(0, 1, 2);
+    ad.set_target(1, 0, 3);
+    ad.set_target(1, 1, 4);
+    ad.set_target(2, 0, 4);
+    ad.set_target(2, 1, 2);
+    ad.set_target(3, 0, 1);
+    ad.set_target(3, 1, 5);
+    ad.set_target(4, 0, 5);
+    ad.set_target(4, 1, 4);
+    ad.set_target(5, 0, 4);
+    ad.set_target(5, 1, 5);
     return ad;
   }
 
@@ -312,8 +312,7 @@ namespace libsemigroups {
         for (size_t nr_edges = 0; nr_edges <= detail::magic_number(M) * M;
              nr_edges += 500) {
           auto ad = WordGraph<size_t>::random(M, N, nr_edges);
-          word_graph::add_cycle(
-              ad, ad.cbegin_nodes(), ad.cend_nodes());
+          word_graph::add_cycle(ad, ad.cbegin_nodes(), ad.cend_nodes());
           std::string m = std::to_string(ad.number_of_edges());
           size_t      w = source(mt);
           uint64_t    expected

@@ -22,14 +22,14 @@
 #include <vector>   // for allocator, vector
 
 #include "libsemigroups/constants.hpp"          // for Max, operator==, POSI...
-#include "libsemigroups/word-graph.hpp"            // for WordGraph
 #include "libsemigroups/exception.hpp"          // for LIBSEMIGROUPS_EXCEPTI...
 #include "libsemigroups/froidure-pin-base.hpp"  // for FroidurePinBase
 #include "libsemigroups/froidure-pin.hpp"       // for FroidurePin
-#include "libsemigroups/knuth-bendix-new.hpp"   // for KnuthBendix
+#include "libsemigroups/knuth-bendix.hpp"       // for KnuthBendix
 #include "libsemigroups/to-froidure-pin.hpp"    // for to_froidure_pin
-#include "libsemigroups/todd-coxeter-new.hpp"   // for ToddCoxeter
+#include "libsemigroups/todd-coxeter.hpp"       // for ToddCoxeter
 #include "libsemigroups/types.hpp"              // for congruence_kind
+#include "libsemigroups/word-graph.hpp"         // for WordGraph
 
 namespace libsemigroups {
 
@@ -46,8 +46,7 @@ namespace libsemigroups {
       ad = &fp.right_cayley_graph();
     }
 
-    WordGraph<node_type> tc_arg(ad->number_of_nodes() + 1,
-                                    ad->out_degree());
+    WordGraph<node_type> tc_arg(ad->number_of_nodes() + 1, ad->out_degree());
 
     for (label_type a = 0; a < tc_arg.out_degree(); ++a) {
       tc_arg.set_target_no_checks(0, a, fp.current_position(a) + 1);

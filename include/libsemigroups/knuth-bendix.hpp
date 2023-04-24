@@ -1,6 +1,6 @@
 //
 // libsemigroups - C++ library for semigroups and monoids
-// Copyright (C) 2019 James D. Mitchell
+// Copyright (C) 2019-2023 James D. Mitchell
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -19,1107 +19,806 @@
 // This file contains a class KnuthBendix which implements the Knuth-Bendix
 // algorithm for finitely presented monoids.
 
-#ifndef LIBSEMIGROUPS_KNUTH_BENDIX_HPP_
-#define LIBSEMIGROUPS_KNUTH_BENDIX_HPP_
+// TODO:
+// * noexcept
+// * nodiscard
+// * fix doc
 
-#include <cstddef>  // for size_t
-#include <iosfwd>   // for string, ostream
-#include <memory>   // for unique_ptr
-#include <set>
-#include <stack>
-#include <vector>  // for vector
+#ifndef LIBSEMIGROUPS_KNUTH_BENDIX_NEW_HPP_
+#define LIBSEMIGROUPS_KNUTH_BENDIX_NEW_HPP_
 
+#include <atomic>               // for atomic
+#include <cstddef>              // for size_t
+#include <cstdint>              // for int64_t, uint64_t
+#include <iosfwd>               // for ostream
+#include <iterator>             // for distance
+#include <list>                 // for list
+#include <set>                  // for set
+#include <stack>                // for stack
+#include <string>               // for basic_string, operator==
+#include <utility>              // for forward, move, pair
+#include <vector>               // for allocator, vector
+                                //
 #include "cong-intf.hpp"        // for CongruenceInterface
-#include "word-graph.hpp"          // for WordGraph
-#include "fpsemi-intf.hpp"      // for FpSemigroupInterface
-#include "froidure-pin.hpp"     // for FroidurePin
-#include "paths.hpp"            // for const_pislo_iterator
+#include "debug.hpp"            // for LIBSEMIGROUPS_ASSERT
+#include "exception.hpp"        // for LIBSEMIGROUPS_EXCEPTION_V3
+#include "paths.hpp"            // for Paths
 #include "present.hpp"          // for Presentation
-#include "to-presentation.hpp"  // for Presentation
+#include "runner.hpp"           // for Runner
+#include "to-presentation.hpp"  // for to_presentation
 #include "types.hpp"            // for word_type
-#include "words.hpp"            // for word_to_string
+#include "word-graph.hpp"       // for WordGraph
+
+#include "rx/ranges.hpp"  // for iterator_range
 
 namespace libsemigroups {
   // Forward declarations
   namespace detail {
     class KBE;
-  }
-  namespace congruence {
-    class KnuthBendix;
-  }
+  }  // namespace detail
 
-  namespace fpsemigroup {
-    //! Defined in ``knuth-bendix.hpp``.
-    //!
-    //! On this page we describe the functionality relating to the Knuth-Bendix
-    //! algorithm for semigroups and monoids that is available in
-    //! ``libsemigroups``. This page contains a details of the member functions
-    //! of the class fpsemigroup::KnuthBendix.
-    //!
-    //! This class is used to represent a
-    //! [string rewriting system](https://w.wiki/9Re)
-    //! defining a finitely presented monoid or semigroup.
-    //!
-    //! \sa congruence::KnuthBendix.
-    //!
-    //! \par Example
-    //! \code
-    //! KnuthBendix kb;
-    //! kb.set_alphabet("abc");
-    //!
-    //! kb.add_rule("aaaa", "a");
-    //! kb.add_rule("bbbb", "b");
-    //! kb.add_rule("cccc", "c");
-    //! kb.add_rule("abab", "aaa");
-    //! kb.add_rule("bcbc", "bbb");
-    //!
-    //! !kb.confluent();       // true
-    //! kb.run();
-    //! kb.number_of_active_rules();  // 31
-    //! kb.confluent();        // true
-    //! \endcode
-    class KnuthBendix final : public FpSemigroupInterface {
-      friend class ::libsemigroups::congruence::KnuthBendix;
-      friend class ::libsemigroups::detail::KBE;  // defined in kbe.hpp
+  //! Defined in ``knuth-bendix.hpp``.
+  //!
+  //! On this page we describe the functionality relating to the Knuth-Bendix
+  //! algorithm for semigroups and monoids that is available in
+  //! ``libsemigroups``. This page contains a details of the member functions
+  //! of the class KnuthBendix.
+  //!
+  //! This class is used to represent a
+  //! [string rewriting system](https://w.wiki/9Re)
+  //! defining a finitely presented monoid or semigroup.
+  //!
+  //! \sa congruence::KnuthBendix.
+  //!
+  //! \par Example
+  //! \code
+  //! KnuthBendix kb;
+  //! kb.set_alphabet("abc");
+  //!
+  //! kb.add_rule("aaaa", "a");
+  //! kb.add_rule("bbbb", "b");
+  //! kb.add_rule("cccc", "c");
+  //! kb.add_rule("abab", "aaa");
+  //! kb.add_rule("bcbc", "bbb");
+  //!
+  //! !kb.confluent();       // true
+  //! kb.run();
+  //! kb.number_of_active_rules();  // 31
+  //! kb.confluent();        // true
+  //! \endcode
+  class KnuthBendix : public CongruenceInterface {
+    friend class ::libsemigroups::detail::KBE;  // defined in kbe.hpp
 
-      ////////////////////////////////////////////////////////////////////////
-      // KnuthBendix - typedefs/aliases - private
-      ////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////
+    // KnuthBendix - typedefs/aliases - private
+    ////////////////////////////////////////////////////////////////////////
 
-      using external_string_type = std::string;
-      using internal_string_type = std::string;
-      using external_char_type   = char;
-      using internal_char_type   = char;
+    using external_string_type = std::string;
+    using internal_string_type = std::string;
+    using external_char_type   = char;
+    using internal_char_type   = char;
 
-      ////////////////////////////////////////////////////////////////////////
-      // KnuthBendix - nested subclasses - private
-      ////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////
+    // KnuthBendix - nested subclasses - private
+    ////////////////////////////////////////////////////////////////////////
 
-      // Rule and RuleLookup classes
-      class Rule {
-       public:
-        // Construct from KnuthBendix with new but empty internal_string_type's
-        explicit Rule(KnuthBendix const* kbimpl, int64_t id)
-            : _kbimpl(kbimpl),
-              _lhs(new internal_string_type()),
-              _rhs(new internal_string_type()),
-              _id(-1 * id) {
-          LIBSEMIGROUPS_ASSERT(_id < 0);
-        }
+    struct Rule {
+      KnuthBendix const*    _kbimpl;
+      internal_string_type* _lhs;
+      internal_string_type* _rhs;
+      int64_t               _id;
 
-        // The Rule class does not support an assignment constructor to avoid
-        // accidental copying.
-        Rule& operator=(Rule const& copy) = delete;
+      // Construct from KnuthBendix with new but empty internal_string_type's
+      Rule(KnuthBendix const* kbimpl, int64_t id);
 
-        // The Rule class does not support a copy constructor to avoid
-        // accidental copying.
-        Rule(Rule const& copy) = delete;
+      Rule& operator=(Rule const& copy) = delete;
+      Rule(Rule const& copy)            = delete;
+      Rule(Rule&& copy)                 = delete;
+      Rule& operator=(Rule&& copy)      = delete;
 
-        // Destructor, deletes pointers used to create the rule.
-        ~Rule() {
-          delete _lhs;
-          delete _rhs;
-        }
+      // Destructor, deletes pointers used to create the rule.
+      ~Rule() {
+        delete _lhs;
+        delete _rhs;
+      }
 
-        // Returns the left hand side of the rule, which is guaranteed to be
-        // greater than its right hand side according to the reduction ordering
-        // of the KnuthBendix used to construct this.
-        internal_string_type* lhs() const {
-          return _lhs;
-        }
+      // Returns the left hand side of the rule, which is guaranteed to be
+      // greater than its right hand side according to the reduction ordering
+      // of the KnuthBendix used to construct this.
+      internal_string_type* lhs() const noexcept {
+        return _lhs;
+      }
 
-        // Returns the right hand side of the rule, which is guaranteed to be
-        // less than its left hand side according to the reduction ordering of
-        // the KnuthBendix used to construct this.
-        internal_string_type* rhs() const {
-          return _rhs;
-        }
+      // Returns the right hand side of the rule, which is guaranteed to be
+      // less than its left hand side according to the reduction ordering of
+      // the KnuthBendix used to construct this.
+      internal_string_type* rhs() const noexcept {
+        return _rhs;
+      }
 
-        void rewrite() {
-          LIBSEMIGROUPS_ASSERT(_id != 0);
-          _kbimpl->internal_rewrite(_lhs);
-          _kbimpl->internal_rewrite(_rhs);
-          // reorder if necessary
-          if (shortlex_compare(_lhs, _rhs)) {
-            std::swap(_lhs, _rhs);
-          }
-        }
+      void rewrite();
 
-        void clear() {
-          LIBSEMIGROUPS_ASSERT(_id != 0);
-          _lhs->clear();
-          _rhs->clear();
-        }
+      void clear() {
+        LIBSEMIGROUPS_ASSERT(_id != 0);
+        _lhs->clear();
+        _rhs->clear();
+      }
 
-        inline bool active() const {
-          LIBSEMIGROUPS_ASSERT(_id != 0);
-          return (_id > 0);
-        }
+      inline bool active() const noexcept {
+        LIBSEMIGROUPS_ASSERT(_id != 0);
+        return (_id > 0);
+      }
 
-        void deactivate() {
-          LIBSEMIGROUPS_ASSERT(_id != 0);
-          if (active()) {
-            _id *= -1;
-          }
-        }
+      void deactivate() noexcept;
 
-        void activate() {
-          LIBSEMIGROUPS_ASSERT(_id != 0);
-          if (!active()) {
-            _id *= -1;
-          }
-        }
+      void activate() noexcept;
 
-        void set_id(int64_t id) {
-          LIBSEMIGROUPS_ASSERT(id > 0);
-          LIBSEMIGROUPS_ASSERT(!active());
-          _id = -1 * id;
-        }
+      void set_id(int64_t id) noexcept {
+        LIBSEMIGROUPS_ASSERT(id > 0);
+        LIBSEMIGROUPS_ASSERT(!active());
+        _id = -1 * id;
+      }
 
-        int64_t id() const {
-          LIBSEMIGROUPS_ASSERT(_id != 0);
-          return _id;
-        }
+      int64_t id() const noexcept {
+        LIBSEMIGROUPS_ASSERT(_id != 0);
+        return _id;
+      }
+    };  // struct Rule
 
-        KnuthBendix const*    _kbimpl;
-        internal_string_type* _lhs;
-        internal_string_type* _rhs;
-        int64_t               _id;
-      };  // struct Rule
+    friend struct Rule;
 
-      // Simple class wrapping a two iterators to an internal_string_type and a
-      // Rule const*
+    class RuleLookup;  // forward decl
 
-      class RuleLookup {
-       public:
-        RuleLookup() : _rule(nullptr) {}
+    // Overlap measures
+    struct OverlapMeasure {
+      virtual size_t operator()(Rule const*,
+                                Rule const*,
+                                internal_string_type::const_iterator const&)
+          = 0;
+      virtual ~OverlapMeasure() {}
+    };
 
-        explicit RuleLookup(Rule* rule)
-            : _first(rule->lhs()->cbegin()),
-              _last(rule->lhs()->cend()),
-              _rule(rule) {}
+    struct ABC;
+    struct AB_BC;
+    struct MAX_AB_BC;
 
-        RuleLookup& operator()(internal_string_type::iterator const& first,
-                               internal_string_type::iterator const& last) {
-          _first = first;
-          _last  = last;
-          return *this;
-        }
+    //////////////////////////////////////////////////////////////////////////
+    // KnuthBendix - friend declarations - private
+    //////////////////////////////////////////////////////////////////////////
 
-        Rule const* rule() const {
-          return _rule;
-        }
+   public:
+    using rule_type = std::pair<std::string, std::string>;
 
-        // This implements reverse lex comparison of this and that, which
-        // satisfies the requirement of std::set that equivalent items be
-        // incomparable, so, for example bcbc and abcbc are considered
-        // equivalent, but abcba and bcbc are not.
-        bool operator<(RuleLookup const& that) const {
-          auto it_this = _last - 1;
-          auto it_that = that._last - 1;
-          while (it_this > _first && it_that > that._first
-                 && *it_this == *it_that) {
-            --it_that;
-            --it_this;
-          }
-          return *it_this < *it_that;
-        }
+    //////////////////////////////////////////////////////////////////////////
+    // KnuthBendix - types - public
+    //////////////////////////////////////////////////////////////////////////
 
-       private:
-        internal_string_type::const_iterator _first;
-        internal_string_type::const_iterator _last;
-        Rule const*                          _rule;
-      };  // class RuleLookup
-
-      // Overlap measures
-      struct OverlapMeasure {
-        virtual size_t operator()(Rule const*,
-                                  Rule const*,
-                                  internal_string_type::const_iterator const&)
-            = 0;
-        virtual ~OverlapMeasure() {}
+    //! This type contains various enums for specifying certain options to a
+    //! KnuthBendix instance.
+    struct options {
+      //! Values for specifying how to measure the length of an overlap.
+      //!
+      //! The values in this enum determine how a KnuthBendix instance
+      //! measures the length \f$d(AB, BC)\f$ of the overlap of two words
+      //! \f$AB\f$ and \f$BC\f$:
+      //!
+      //! \sa overlap_policy(options::overlap)
+      enum class overlap {
+        //! \f$d(AB, BC) = |A| + |B| + |C|\f$
+        ABC = 0,
+        //! \f$d(AB, BC) = |AB| + |BC|\f$
+        AB_BC = 1,
+        //! \f$d(AB, BC) = max(|AB|, |BC|)\f$
+        MAX_AB_BC = 2
       };
+    };
 
-      struct ABC : OverlapMeasure {
-        size_t
-        operator()(Rule const*                                 AB,
-                   Rule const*                                 BC,
-                   internal_string_type::const_iterator const& it) override {
-          LIBSEMIGROUPS_ASSERT(AB->active() && BC->active());
-          LIBSEMIGROUPS_ASSERT(AB->lhs()->cbegin() <= it);
-          LIBSEMIGROUPS_ASSERT(it < AB->lhs()->cend());
-          // |A| + |BC|
-          return (it - AB->lhs()->cbegin()) + BC->lhs()->size();
-        }
-      };
+   private:
+    struct Settings {
+      Settings() noexcept;
+      Settings& init() noexcept;
 
-      struct AB_BC : OverlapMeasure {
-        size_t
-        operator()(Rule const*                                 AB,
-                   Rule const*                                 BC,
-                   internal_string_type::const_iterator const& it) override {
-          LIBSEMIGROUPS_ASSERT(AB->active() && BC->active());
-          LIBSEMIGROUPS_ASSERT(AB->lhs()->cbegin() <= it);
-          LIBSEMIGROUPS_ASSERT(it < AB->lhs()->cend());
-          (void) it;
-          // |AB| + |BC|
-          return AB->lhs()->size() + BC->lhs()->size();
-        }
-      };
+      Settings(Settings const&) noexcept            = default;
+      Settings(Settings&&) noexcept                 = default;
+      Settings& operator=(Settings const&) noexcept = default;
+      Settings& operator=(Settings&&) noexcept      = default;
 
-      struct MAX_AB_BC : OverlapMeasure {
-        size_t
-        operator()(Rule const*                                 AB,
-                   Rule const*                                 BC,
-                   internal_string_type::const_iterator const& it) override {
-          LIBSEMIGROUPS_ASSERT(AB->active() && BC->active());
-          LIBSEMIGROUPS_ASSERT(AB->lhs()->cbegin() <= it);
-          LIBSEMIGROUPS_ASSERT(it < AB->lhs()->cend());
-          (void) it;
-          // max(|AB|, |BC|)
-          return std::max(AB->lhs()->size(), BC->lhs()->size());
-        }
-      };
+      size_t           _check_confluence_interval;
+      size_t           _max_overlap;
+      size_t           _max_rules;
+      options::overlap _overlap_policy;
+    } _settings;
 
-      //////////////////////////////////////////////////////////////////////////
-      // KnuthBendix - friend declarations - private
-      //////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////
+    // KnuthBendix - data - private
+    ////////////////////////////////////////////////////////////////////////
 
-      friend class Rule;                          // defined in this file
-      friend class ::libsemigroups::detail::KBE;  // defined in detail::kbe.hpp
-
-     public:
-      //////////////////////////////////////////////////////////////////////////
-      // KnuthBendix - types - public
-      //////////////////////////////////////////////////////////////////////////
-
-      //! This type contains various enums for specifying certain options to a
-      //! KnuthBendix instance.
-      struct options {
-        //! Values for specifying how to measure the length of an overlap.
-        //!
-        //! The values in this enum determine how a KnuthBendix instance
-        //! measures the length \f$d(AB, BC)\f$ of the overlap of two words
-        //! \f$AB\f$ and \f$BC\f$:
-        //!
-        //! \sa overlap_policy(options::overlap)
-        enum class overlap {
-          //! \f$d(AB, BC) = |A| + |B| + |C|\f$
-          ABC = 0,
-          //! \f$d(AB, BC) = |AB| + |BC|\f$
-          AB_BC = 1,
-          //! \f$d(AB, BC) = max(|AB|, |BC|)\f$
-          MAX_AB_BC = 2
-        };
-      };
-
-     private:
-      struct Settings {
-        Settings();
-        size_t           _check_confluence_interval;
-        size_t           _max_overlap;
-        size_t           _max_rules;
-        options::overlap _overlap_policy;
-      } _settings;
-
-      // TODO(v3) make helper
-      WordGraph<size_t> _gilman_digraph;
-      ////////////////////////////////////////////////////////////////////////
-      // KnuthBendix - data - private
-      ////////////////////////////////////////////////////////////////////////
-
-      std::list<Rule const*>           _active_rules;
-      mutable std::atomic<bool>        _confluent;
-      mutable std::atomic<bool>        _confluence_known;
-      mutable std::list<Rule*>         _inactive_rules;
-      bool                             _internal_is_same_as_external;
-      bool                             _contains_empty_string;
-      size_t                           _min_length_lhs_rule;
-      std::list<Rule const*>::iterator _next_rule_it1;
-      std::list<Rule const*>::iterator _next_rule_it2;
-      OverlapMeasure*                  _overlap_measure;
-      std::set<RuleLookup>             _set_rules;
-      std::stack<Rule*>                _stack;
-      internal_string_type*            _tmp_word1;
-      internal_string_type*            _tmp_word2;
-      mutable size_t                   _total_rules;
+    std::list<Rule const*>           _active_rules;
+    mutable std::atomic<bool>        _confluent;
+    mutable std::atomic<bool>        _confluence_known;
+    bool                             _gen_pairs_initted;
+    WordGraph<size_t>                _gilman_digraph;
+    mutable std::list<Rule*>         _inactive_rules;
+    bool                             _internal_is_same_as_external;
+    size_t                           _min_length_lhs_rule;
+    std::list<Rule const*>::iterator _next_rule_it1;
+    std::list<Rule const*>::iterator _next_rule_it2;
+    OverlapMeasure*                  _overlap_measure;
+    Presentation<std::string>        _presentation;
+    std::set<RuleLookup>             _set_rules;
+    std::stack<Rule*>                _stack;
+    mutable size_t                   _total_rules;
 
 #ifdef LIBSEMIGROUPS_VERBOSE
-      //////////////////////////////////////////////////////////////////////////
-      // ./configure --enable-verbose functions
-      //////////////////////////////////////////////////////////////////////////
+    size_t                                   _max_stack_depth;
+    size_t                                   _max_word_length;
+    size_t                                   _max_active_word_length;
+    size_t                                   _max_active_rules;
+    std::unordered_set<internal_string_type> _unique_lhs_rules;
+#endif
 
-      size_t max_active_word_length() {
-        auto comp = [](Rule const* p, Rule const* q) -> bool {
-          return p->lhs()->size() < q->lhs()->size();
-        };
-        auto max = std::max_element(
-            _active_rules.cbegin(), _active_rules.cend(), comp);
-        if (max != _active_rules.cend()) {
-          _max_active_word_length
-              = std::max(_max_active_word_length, (*max)->lhs()->size());
+   public:
+    //////////////////////////////////////////////////////////////////////////
+    // KnuthBendix - constructors and destructor - public
+    //////////////////////////////////////////////////////////////////////////
+
+    //! Default constructor.
+    //!
+    //! Constructs a KnuthBendix instance with no rules, and the short-lex
+    //! reduction ordering.
+    //!
+    //! \parameters
+    //! (None)
+    //!
+    //! \complexity
+    //! Constant.
+    KnuthBendix(congruence_kind knd);
+    KnuthBendix& init(congruence_kind knd);
+
+    //! Copy constructor.
+    //!
+    //! \param copy the KnuthBendix instance to copy.
+    //!
+    //! \complexity
+    //! \f$O(n)\f$ where \f$n\f$ is the sum of the lengths of the words in
+    //! rules of \p copy.
+    KnuthBendix(KnuthBendix const& copy);
+    KnuthBendix(KnuthBendix&&);
+    KnuthBendix& operator=(KnuthBendix const&);
+    KnuthBendix& operator=(KnuthBendix&&);
+
+    ~KnuthBendix();
+
+    KnuthBendix(congruence_kind knd, Presentation<std::string> const& p)
+        : KnuthBendix(knd) {
+      private_init(knd, p, false);  // false means don't call init, since we
+                                    // just called it from KnuthBendix()
+    }
+
+    KnuthBendix& init(congruence_kind knd, Presentation<std::string> const& p);
+
+    KnuthBendix(congruence_kind knd, Presentation<std::string>&& p)
+        : KnuthBendix(knd) {
+      private_init(knd,
+                   std::move(p),
+                   false);  // false means don't call init, since we just
+                            // called it from KnuthBendix()
+    }
+
+    KnuthBendix& init(congruence_kind knd, Presentation<std::string>&& p);
+
+    template <typename Word>
+    explicit KnuthBendix(congruence_kind knd, Presentation<Word> const& p)
+        : KnuthBendix(knd, to_presentation<std::string>(p)) {}
+
+    template <typename Word>
+    explicit KnuthBendix(congruence_kind knd, Presentation<Word>&& p)
+        : KnuthBendix(knd, to_presentation<std::string>(p)) {}
+
+    template <typename Word>
+    KnuthBendix& init(congruence_kind knd, Presentation<Word> const& p) {
+      init(knd, to_presentation<std::string>(p));
+      return *this;
+    }
+
+    template <typename Word>
+    KnuthBendix& init(congruence_kind knd, Presentation<Word>&& p) {
+      init(knd, to_presentation<std::string>(p));
+      return *this;
+    }
+
+   private:
+    KnuthBendix& private_init(congruence_kind                  knd,
+                              Presentation<std::string> const& p,
+                              bool                             call_init);
+    KnuthBendix& private_init(congruence_kind             knd,
+                              Presentation<std::string>&& p,
+                              bool                        call_init);
+
+    void init_from_generating_pairs();
+
+   public:
+    //////////////////////////////////////////////////////////////////////////
+    // KnuthBendix - setters for optional parameters - public
+    //////////////////////////////////////////////////////////////////////////
+
+    //! Set the interval at which confluence is checked.
+    //!
+    //! The function \ref run periodically checks if
+    //! the system is already confluent. This function can be used to
+    //! set how frequently this happens, it is the number of new overlaps
+    //! that should be considered before checking confluence. Setting this
+    //! value too low can adversely affect the performance of
+    //! \ref run.
+    //!
+    //! The default value is \c 4096, and should be set to
+    //! \ref LIMIT_MAX if \ref run should never
+    //! check if the system is already confluent.
+    //!
+    //! \param val the new value of the interval.
+    //!
+    //! \returns
+    //! A reference to \c *this.
+    //!
+    //! \complexity
+    //! Constant.
+    //!
+    //! \sa \ref run.
+    KnuthBendix& check_confluence_interval(size_t val) {
+      _settings._check_confluence_interval = val;
+      return *this;
+    }
+
+    [[nodiscard]] size_t check_confluence_interval() const noexcept {
+      return _settings._check_confluence_interval;
+    }
+
+    //! Set the maximum length of overlaps to be considered.
+    //!
+    //! This function can be used to specify the maximum length of the
+    //! overlap of two left hand sides of rules that should be considered in
+    //! \ref run.
+    //!
+    //! If this value is less than the longest left hand side of a rule, then
+    //! \ref run can terminate without the system being
+    //! confluent.
+    //!
+    //! \param val the new value of the maximum overlap length.
+    //!
+    //! \returns
+    //! A reference to \c *this.
+    //!
+    //! \complexity
+    //! Constant.
+    //!
+    //! \sa \ref run.
+    KnuthBendix& max_overlap(size_t val) {
+      _settings._max_overlap = val;
+      return *this;
+    }
+
+    [[nodiscard]] size_t max_overlap() const noexcept {
+      return _settings._max_overlap;
+    }
+
+    //! Set the maximum number of rules.
+    //!
+    //! This member function sets the (approximate) maximum number of rules
+    //! that the system should contain. If this is number is exceeded in
+    //! calls to \ref run or
+    //! knuth_bendix_by_overlap_length, then they
+    //! will terminate and the system may not be confluent.
+    //!
+    //! By default this value is \ref POSITIVE_INFINITY.
+    //!
+    //! \param val the maximum number of rules.
+    //!
+    //! \returns
+    //! A reference to \c *this.
+    //!
+    //! \complexity
+    //! Constant.
+    //!
+    //! \sa \ref run.
+    KnuthBendix& max_rules(size_t val) {
+      _settings._max_rules = val;
+      return *this;
+    }
+
+    [[nodiscard]] size_t max_rules() const noexcept {
+      return _settings._max_rules;
+    }
+
+    //! Set the overlap policy.
+    //!
+    //! This function can be used to determine the way that the length
+    //! of an overlap of two words in the system is measured.
+    //!
+    //! \param val the maximum number of rules.
+    //!
+    //! \returns
+    //! A reference to \c *this.
+    //!
+    //! \complexity
+    //! Constant.
+    //!
+    //! \sa options::overlap.
+    KnuthBendix& overlap_policy(options::overlap val);
+
+    [[nodiscard]] options::overlap overlap_policy() const noexcept {
+      return _settings._overlap_policy;
+    }
+
+    //////////////////////////////////////////////////////////////////////////
+    // KnuthBendix - member functions for rules and rewriting - public
+    //////////////////////////////////////////////////////////////////////////
+
+    void validate_word(word_type const& w) const override {
+      std::string s = to_string(presentation(), w);
+      return presentation().validate_word(s.cbegin(), s.cend());
+    }
+
+    // TODO doc
+    [[nodiscard]] Presentation<std::string> const&
+    presentation() const noexcept {
+      return _presentation;
+    }
+
+    KnuthBendix& presentation(Presentation<std::string> const& p) {
+      throw_if_started();
+      return private_init(kind(), p, false);
+    }
+
+    KnuthBendix& presentation(Presentation<std::string>&& p) {
+      throw_if_started();
+      return private_init(kind(), std::move(p), false);
+    }
+
+    template <typename Word>
+    KnuthBendix& presentation(Presentation<Word> const& p) {
+      throw_if_started();
+      return private_init(to_presentation<std::string>(p), false);
+    }
+
+    template <typename Word>
+    KnuthBendix& presentation(Presentation<Word>&& p) {
+      throw_if_started();
+      return private_init(to_presentation<std::string>(p), false);
+    }
+
+    //! Returns the current number of active rules in the KnuthBendix
+    //! instance.
+    //!
+    //! \returns
+    //! The current number of active rules, a value of type `size_t`.
+    //!
+    //! \exceptions
+    //! \noexcept
+    //!
+    //! \complexity
+    //! Constant.
+    //!
+    //! \parameters
+    //! (None)
+    [[nodiscard]] size_t number_of_active_rules() const noexcept;
+    [[nodiscard]] size_t number_of_inactive_rules() const noexcept {
+      return _inactive_rules.size();
+    }
+
+    //! Returns a copy of the active rules.
+    //!
+    //! This member function returns a vector consisting of the pairs of
+    //! strings which represent the rules of the KnuthBendix instance. The \c
+    //! first entry in every such pair is greater than the \c second according
+    //! to the reduction ordering of the KnuthBendix instance. The rules are
+    //! sorted according to the reduction ordering used by the rewriting
+    //! system, on the first entry.
+    //!
+    //! \returns
+    //! A copy of the currently active rules, a value of type
+    //! `std::vector<rule_type>`.
+    //!
+    //! \complexity
+    //! \f$O(n)\f$ where \f$n\f$ is the sum of the lengths of the words in
+    //! rules of \p copy.
+    //!
+    //! \parameters
+    //! (None)
+    // TODO update the doc, now returns a Range
+    [[nodiscard]] auto active_rules() const {
+      using rx::iterator_range;
+      using rx::transform;
+      return iterator_range(_active_rules.cbegin(), _active_rules.cend())
+             | transform([this](auto const& rule) {
+                 // TODO remove allocation
+                 internal_string_type lhs = internal_string_type(*rule->lhs());
+                 internal_string_type rhs = internal_string_type(*rule->rhs());
+                 internal_to_external_string(lhs);
+                 internal_to_external_string(rhs);
+                 if (this->kind() == congruence_kind::left) {
+                   std::reverse(lhs.begin(), lhs.end());
+                   std::reverse(rhs.begin(), rhs.end());
+                 }
+                 return std::make_pair(lhs, rhs);
+               });
+    }
+
+    //! Rewrite a word in-place.
+    //!
+    //! The word \p w is rewritten in-place according to the current active
+    //! rules in the KnuthBendix instance.
+    //!
+    //! \param w the word to rewrite.
+    //!
+    //! \returns
+    //! The argument \p w after it has been rewritten.
+    void rewrite_inplace(std::string& w) const;
+
+    //! Rewrite a word.
+    //!
+    //! Rewrites a copy of the word \p w rewritten according to the current
+    //! rules in the KnuthBendix instance.
+    //!
+    //! \param w the word to rewrite.
+    //!
+    //! \returns
+    //! A copy of the argument \p w after it has been rewritten.
+    [[nodiscard]] std::string rewrite(std::string w) const {
+      rewrite_inplace(w);
+      return w;
+    }
+
+    //////////////////////////////////////////////////////////////////////////
+    // KnuthBendix - main member functions - public
+    //////////////////////////////////////////////////////////////////////////
+
+    //! Check confluence of the current rules.
+    //!
+    //! \returns \c true if the KnuthBendix instance is
+    //! [confluent](https://w.wiki/9DA) and \c false if it is not.
+    //!
+    //! \parameters
+    //! (None)
+    [[nodiscard]] bool confluent() const;
+    [[nodiscard]] bool confluent_known() const noexcept;
+
+    //! Run the Knuth-Bendix by considering all overlaps of a given length.
+    //!
+    //! This function runs the Knuth-Bendix algorithm on the rewriting
+    //! system represented by a KnuthBendix instance by considering all
+    //! overlaps of a given length \f$n\f$ (according to the \ref
+    //! options::overlap) before those overlaps of length \f$n + 1\f$.
+    //!
+    //! \returns
+    //! (None)
+    //!
+    //! \complexity
+    //! See warning.
+    //!
+    //! \warning This will terminate when the KnuthBendix instance is
+    //! confluent, which might be never.
+    //!
+    //! \sa \ref run.
+    //!
+    //! \parameters
+    //! (None)
+    void knuth_bendix_by_overlap_length();
+
+    //! Returns the Gilman digraph.
+    //!
+    //! \returns A const reference to a \ref WordGraph.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \warning This will terminate when the KnuthBendix instance is
+    //! reduced and confluent, which might be never.
+    //!
+    //! \sa \ref number_of_normal_forms,
+    //! \ref cbegin_normal_forms, and \ref cend_normal_forms.
+    //!
+    //! \parameters
+    //! (None)
+    WordGraph<size_t> const& gilman_digraph();
+
+    //////////////////////////////////////////////////////////////////////////
+    // KnuthBendix - attributes - public
+    //////////////////////////////////////////////////////////////////////////
+
+    //! \copydoc FpSemigroupInterface::size TODO copy the doc
+    //!
+    //! \note If \c this has been run until finished, then this function can
+    //! determine the size of the semigroup represented by \c this even if
+    //! it is infinite. Moreover, the complexity of this function is at
+    //! worst \f$O(mn)\f$ where \f$m\f$ is the number of letters in the
+    //! alphabet, and \f$n\f$ is the number of nodes in the \ref
+    //! gilman_digraph.
+    [[nodiscard]] uint64_t number_of_classes() override;
+
+    [[nodiscard]] bool equal_to(std::string const&, std::string const&);
+    [[nodiscard]] bool contains(word_type const& u,
+                                word_type const& v) override {
+      return equal_to(to_string(presentation(), u),
+                      to_string(presentation(), v));
+    }
+
+    [[nodiscard]] bool contains(std::initializer_list<letter_type> u,
+                                std::initializer_list<letter_type> v) {
+      return contains(word_type(u), word_type(v));
+    }
+
+    // No in-place version just use rewrite instead, this only exists so that
+    // run is called.
+    [[nodiscard]] std::string normal_form(std::string const& w);
+
+   private:
+    void throw_if_started() const {
+      if (started()) {
+        LIBSEMIGROUPS_EXCEPTION_V3(
+            "the presentation cannot be changed after Knuth-Bendix has "
+            "started, maybe try `init` instead?");
+      }
+    }
+
+    void internal_rewrite(internal_string_type& u) const;
+
+    static internal_char_type uint_to_internal_char(size_t a);
+    static size_t             internal_char_to_uint(internal_char_type c);
+
+    static internal_string_type uint_to_internal_string(size_t i);
+
+    static word_type internal_string_to_word(internal_string_type const& s);
+
+    internal_char_type external_to_internal_char(external_char_type c) const;
+    external_char_type internal_to_external_char(internal_char_type a) const;
+
+    void external_to_internal_string(external_string_type& w) const;
+    void internal_to_external_string(internal_string_type& w) const;
+
+    void add_octo(external_string_type& w) const;
+    void rm_octo(external_string_type& w) const;
+
+    void add_rule_impl(std::string const& p, std::string const& q);
+    void add_rule(Rule* rule);
+
+    void add_rules_from_presentation();
+
+    Rule* new_rule() const;
+    Rule* new_rule(internal_string_type* lhs, internal_string_type* rhs) const;
+    Rule* new_rule(Rule const* rule1) const;
+    Rule* new_rule(internal_string_type::const_iterator begin_lhs,
+                   internal_string_type::const_iterator end_lhs,
+                   internal_string_type::const_iterator begin_rhs,
+                   internal_string_type::const_iterator end_rhs) const;
+
+    void push_stack(Rule* rule);
+    void overlap(Rule const* u, Rule const* v);
+    void clear_stack();
+
+    std::list<Rule const*>::iterator
+    remove_rule(std::list<Rule const*>::iterator it);
+
+    void deactivate_all_rules();
+
+#ifdef LIBSEMIGROUPS_VERBOSE
+    //////////////////////////////////////////////////////////////////////////
+    // ./configure --enable-verbose functions
+    //////////////////////////////////////////////////////////////////////////
+
+    size_t max_active_word_length();
+#endif
+
+    //////////////////////////////////////////////////////////////////////////
+    // Runner - pure virtual member functions - private
+    //////////////////////////////////////////////////////////////////////////
+
+    void run_impl() override;
+    bool finished_impl() const override;
+  };
+
+  //! This friend function allows a KnuthBendix object to be left shifted
+  //! into a std::ostream, such as std::cout. The currently active rules
+  //! of the system are represented in the output.
+  std::ostream& operator<<(std::ostream&, KnuthBendix const&);
+
+  namespace knuth_bendix {
+
+    //! Returns a forward iterator pointing at the first normal form with
+    //! length in a given range.
+    //!
+    //! If incremented, the iterator will point to the next least short-lex
+    //! normal form (if it's less than \p max in length).  Iterators of the
+    //! type returned by this function should only be compared with other
+    //! iterators created from the same KnuthBendix instance.
+    //!
+    //! \param lphbt the alphabet to use for the normal forms
+    //! \param min the minimum length of a normal form
+    //! \param max one larger than the maximum length of a normal form.
+    //!
+    //! \returns
+    //! A value of type \ref const_normal_form_iterator.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \warning
+    //! Copying iterators of this type is relatively expensive.  As a
+    //! consequence, prefix incrementing \c ++it the iterator \c it returned
+    //! by \c cbegin_normal_forms is significantly cheaper than postfix
+    //! incrementing \c it++.
+    //!
+    //! \warning
+    //! If the finitely presented semigroup represented by \c this is
+    //! infinite, then \p max should be chosen with some care.
+    //!
+    //! \sa
+    //! \ref cend_normal_forms.
+    // TODO update doc
+    // TODO warning if kb represents a left congruence, then the normal forms
+    // are reversed
+    inline auto normal_forms(KnuthBendix& kb) {
+      using rx::      operator|;
+      ReversiblePaths paths(kb.gilman_digraph());
+      paths.from(0).reverse(kb.kind() == congruence_kind::left);
+      return paths;
+    }
+
+    template <typename Range>
+    std::vector<std::vector<std::string>> partition(KnuthBendix& kb, Range r) {
+      static_assert(std::is_same_v<std::decay_t<typename Range::output_type>,
+                                   std::string>);
+      using return_type = std::vector<std::vector<std::string>>;
+      using rx::operator|;
+
+      size_t const N = (r | rx::count());
+      if (N == POSITIVE_INFINITY) {
+        LIBSEMIGROUPS_EXCEPTION_V3("the 2nd argument (a range) must be finite, "
+                                   "found an infinite range");
+      }
+
+      return_type result;
+
+      std::unordered_map<std::string, size_t> map;
+      size_t                                  index = 0;
+
+      while (!r.at_end()) {
+        auto next = r.get();
+        if (kb.presentation().contains_empty_word() || !next.empty()) {
+          auto next_nf        = kb.rewrite(next);
+          auto [it, inserted] = map.emplace(next_nf, index);
+          if (inserted) {
+            result.emplace_back();
+            index++;
+          }
+          size_t index_of_next_nf = it->second;
+          result[index_of_next_nf].push_back(next);
         }
-        return _max_active_word_length;
+        r.next();
       }
-      size_t                                   _max_stack_depth;
-      size_t                                   _max_word_length;
-      size_t                                   _max_active_word_length;
-      size_t                                   _max_active_rules;
-      std::unordered_set<internal_string_type> _unique_lhs_rules;
-#endif
-
-     public:
-      //! The type of the return value of froidure_pin().
-      //!
-      //! froidure_pin() returns a \shared_ptr to a FroidurePinBase,
-      //! which is really of type \ref froidure_pin_type.
-      using froidure_pin_type
-          = FroidurePin<detail::KBE,
-                        FroidurePinTraits<detail::KBE, KnuthBendix>>;
-
-      //////////////////////////////////////////////////////////////////////////
-      // KnuthBendix - constructors and destructor - public
-      //////////////////////////////////////////////////////////////////////////
-
-      //! Default constructor.
-      //!
-      //! Constructs a KnuthBendix instance with no rules, and the short-lex
-      //! reduction ordering.
-      //!
-      //! \parameters
-      //! (None)
-      //!
-      //! \complexity
-      //! Constant.
-      KnuthBendix();
-
-      //! Constructs from a FroidurePin instance.
-      //!
-      //! \param S the FroidurePin instance.
-      //!
-      //! \complexity
-      //! \f$O(|S||A|)\f$ where \f$A\f$ is the set of generators used to define
-      //! \p S.
-      explicit KnuthBendix(FroidurePinBase& S) : KnuthBendix() {
-        init_from(S);
-      }
-
-      //! Constructs from a shared pointer to a FroidurePin instance.
-      //!
-      //! \param S the FroidurePin instance.
-      //!
-      //! \complexity
-      //! \f$O(|S||A|)\f$ where \f$A\f$ is the set of generators used to define
-      //! \p S.
-      explicit KnuthBendix(std::shared_ptr<FroidurePinBase> S)
-          : KnuthBendix(*S) {}
-
-      //! Copy constructor.
-      //!
-      //! \param copy the KnuthBendix instance to copy.
-      //!
-      //! \complexity
-      //! \f$O(n)\f$ where \f$n\f$ is the sum of the lengths of the words in
-      //! rules of \p copy.
-      KnuthBendix(KnuthBendix const& copy);
-
-      //! Deleted.
-      // KnuthBendix(KnuthBendix&&);
-
-      //! Deleted.
-      KnuthBendix& operator=(KnuthBendix const&) = delete;
-
-      //! Deleted.
-      // KnuthBendix& operator=(KnuthBendix&&) = delete;
-
-      ~KnuthBendix();
-
-      //////////////////////////////////////////////////////////////////////////
-      // KnuthBendix - setters for optional parameters - public
-      //////////////////////////////////////////////////////////////////////////
-
-      //! Set the interval at which confluence is checked.
-      //!
-      //! The function \ref run periodically checks if
-      //! the system is already confluent. This function can be used to
-      //! set how frequently this happens, it is the number of new overlaps
-      //! that should be considered before checking confluence. Setting this
-      //! value too low can adversely affect the performance of
-      //! \ref run.
-      //!
-      //! The default value is \c 4096, and should be set to
-      //! \ref LIMIT_MAX if \ref run should never
-      //! check if the system is already confluent.
-      //!
-      //! \param val the new value of the interval.
-      //!
-      //! \returns
-      //! A reference to \c *this.
-      //!
-      //! \complexity
-      //! Constant.
-      //!
-      //! \sa \ref run.
-      KnuthBendix& check_confluence_interval(size_t val) {
-        _settings._check_confluence_interval = val;
-        return *this;
-      }
-
-      //! Set the maximum length of overlaps to be considered.
-      //!
-      //! This function can be used to specify the maximum length of the
-      //! overlap of two left hand sides of rules that should be considered in
-      //! \ref run.
-      //!
-      //! If this value is less than the longest left hand side of a rule, then
-      //! \ref run can terminate without the system being
-      //! confluent.
-      //!
-      //! \param val the new value of the maximum overlap length.
-      //!
-      //! \returns
-      //! A reference to \c *this.
-      //!
-      //! \complexity
-      //! Constant.
-      //!
-      //! \sa \ref run.
-      KnuthBendix& max_overlap(size_t val) {
-        _settings._max_overlap = val;
-        return *this;
-      }
-
-      //! Set the maximum number of rules.
-      //!
-      //! This member function sets the (approximate) maximum number of rules
-      //! that the system should contain. If this is number is exceeded in
-      //! calls to \ref run or
-      //! knuth_bendix_by_overlap_length, then they
-      //! will terminate and the system may not be confluent.
-      //!
-      //! By default this value is \ref POSITIVE_INFINITY.
-      //!
-      //! \param val the maximum number of rules.
-      //!
-      //! \returns
-      //! A reference to \c *this.
-      //!
-      //! \complexity
-      //! Constant.
-      //!
-      //! \sa \ref run.
-      KnuthBendix& max_rules(size_t val) {
-        _settings._max_rules = val;
-        return *this;
-      }
-
-      //! Set the overlap policy.
-      //!
-      //! This function can be used to determine the way that the length
-      //! of an overlap of two words in the system is measured.
-      //!
-      //! \param val the maximum number of rules.
-      //!
-      //! \returns
-      //! A reference to \c *this.
-      //!
-      //! \complexity
-      //! Constant.
-      //!
-      //! \sa options::overlap.
-      KnuthBendix& overlap_policy(options::overlap val);
-
-      //////////////////////////////////////////////////////////////////////////
-      // KnuthBendix - member functions for rules and rewriting - public
-      //////////////////////////////////////////////////////////////////////////
-
-      //! Returns the current number of active rules in the KnuthBendix
-      //! instance.
-      //!
-      //! \returns
-      //! The current number of active rules, a value of type `size_t`.
-      //!
-      //! \exceptions
-      //! \noexcept
-      //!
-      //! \complexity
-      //! Constant.
-      //!
-      //! \parameters
-      //! (None)
-      size_t number_of_active_rules() const noexcept;
-
-      //! Returns a copy of the active rules.
-      //!
-      //! This member function returns a vector consisting of the pairs of
-      //! strings which represent the rules of the KnuthBendix instance. The \c
-      //! first entry in every such pair is greater than the \c second according
-      //! to the reduction ordering of the KnuthBendix instance. The rules are
-      //! sorted according to the reduction ordering used by the rewriting
-      //! system, on the first entry.
-      //!
-      //! \returns
-      //! A copy of the currently active rules, a value of type
-      //! `std::vector<rule_type>`.
-      //!
-      //! \complexity
-      //! \f$O(n)\f$ where \f$n\f$ is the sum of the lengths of the words in
-      //! rules of \p copy.
-      //!
-      //! \parameters
-      //! (None)
-      // TODO(later) delete this
-      std::vector<rule_type> active_rules() const;
-
-      // TODO(later)
-      // using FpSemigroupInterface::const_iterator;
-      // const_iterator cbegin_active_rules() const;
-      // const_iterator cend_active_rules() const;
-
-      struct NormalFormsIteratorTraits {
-        // state_type::first = this, state_type::second = current value
-        using state_type             = std::pair<std::string, std::string>;
-        using internal_iterator_type = const_pislo_iterator<size_t>;
-        using value_type             = std::string;
-        using reference              = std::string&;
-        using const_reference        = std::string const&;
-        using difference_type        = std::ptrdiff_t;
-        using size_type              = std::size_t;
-        using const_pointer          = std::string const*;
-        using pointer                = std::string*;
-        using iterator_category      = std::forward_iterator_tag;
-
-        struct Deref {
-          const_reference
-          operator()(state_type&                   state,
-                     internal_iterator_type const& it) const noexcept {
-            if (state.second.empty()) {
-              detail::word_to_string(state.first, *it, state.second);
-            }
-            return state.second;
-          }
-        };
-
-        struct AddressOf {
-          const_pointer
-          operator()(state_type&                   state,
-                     internal_iterator_type const& it) const noexcept {
-            Deref()(state, it);  // to ensure that state.second is initialised
-            return &state.second;
-          }
-        };
-
-        struct PrefixIncrement {
-          void operator()(state_type&             state,
-                          internal_iterator_type& it) const noexcept {
-            ++it;
-            state.second.clear();
-          }
-        };
-
-        struct Swap {
-          void operator()(internal_iterator_type& it_this,
-                          internal_iterator_type& it_that,
-                          state_type&             state_this,
-                          state_type&             state_that) const noexcept {
-            swap(it_this, it_that);
-            swap(state_this, state_that);
-          }
-        };
-
-        using EqualTo          = void;
-        using NotEqualTo       = void;
-        using PostfixIncrement = void;
-      };
-
-      //! Type of an const iterator to a normal form.
-      using const_normal_form_iterator
-          = detail::ConstIteratorStateful<NormalFormsIteratorTraits>;
-
-      static_assert(
-          std::is_default_constructible<const_normal_form_iterator>::value,
-          "forward iterator requires default-constructible");
-      static_assert(
-          std::is_copy_constructible<const_normal_form_iterator>::value,
-          "forward iterator requires copy-constructible");
-      static_assert(std::is_copy_assignable<const_normal_form_iterator>::value,
-                    "forward iterator requires copy-assignable");
-      static_assert(std::is_destructible<const_normal_form_iterator>::value,
-                    "forward iterator requires destructible");
-
-      //! Returns a forward iterator pointing at the first normal form with
-      //! length in a given range.
-      //!
-      //! If incremented, the iterator will point to the next least short-lex
-      //! normal form (if it's less than \p max in length).  Iterators of the
-      //! type returned by this function should only be compared with other
-      //! iterators created from the same KnuthBendix instance.
-      //!
-      //! \param lphbt the alphabet to use for the normal forms
-      //! \param min the minimum length of a normal form
-      //! \param max one larger than the maximum length of a normal form.
-      //!
-      //! \returns
-      //! A value of type \ref const_normal_form_iterator.
-      //!
-      //! \exceptions
-      //! \no_libsemigroups_except
-      //!
-      //! \warning
-      //! Copying iterators of this type is relatively expensive.  As a
-      //! consequence, prefix incrementing \c ++it the iterator \c it returned
-      //! by \c cbegin_normal_forms is significantly cheaper than postfix
-      //! incrementing \c it++.
-      //!
-      //! \warning
-      //! If the finitely presented semigroup represented by \c this is
-      //! infinite, then \p max should be chosen with some care.
-      //!
-      //! \sa
-      //! \ref cend_normal_forms.
-      const_normal_form_iterator cbegin_normal_forms(std::string const& lphbt,
-                                                     size_t             min,
-                                                     size_t             max);
-
-      //! Returns a forward iterator pointing at the first normal form with
-      //! length in a given range.
-      //!
-      //! If incremented, the iterator will point to the next least short-lex
-      //! normal form (if it's less than \p max in length).  Iterators of the
-      //! type returned by this function should only be compared with other
-      //! iterators created from the same KnuthBendix instance.
-      //!
-      //! \param min the minimum length of a normal form
-      //! \param max one larger than the maximum length of a normal form.
-      //!
-      //! \returns
-      //! A value of type `const_normal_form_iterator`.
-      //!
-      //! \exceptions
-      //! \no_libsemigroups_except
-      //!
-      //! \warning
-      //! Copying iterators of this type is expensive.  As a consequence, prefix
-      //! incrementing \c ++it the iterator \c it returned by \c
-      //! cbegin_normal_forms is significantly cheaper than postfix
-      //! incrementing \c it++.
-      //!
-      //! \warning
-      //! If the finitely presented semigroup represented by \c this is infinite
-      //! then \p max should be chosen with some care.
-      //!
-      //! \sa
-      //! cend_normal_forms.
-      const_normal_form_iterator cbegin_normal_forms(size_t min, size_t max) {
-        return cbegin_normal_forms(alphabet(), min, max);
-      }
-
-      //! Returns a forward iterator pointing to one after the last normal form.
-      //!
-      //! The iterator returned by this function can be compared with the
-      //! return value of \ref cbegin_normal_forms with any parameters.
-      //!
-      //! \warning The iterator returned by this function may still
-      //! dereferenceable and incrementable, but will not point to a normal form
-      //! in the correct range.
-      //!
-      //! \sa
-      //! \ref cbegin_normal_forms.
-      const_normal_form_iterator cend_normal_forms() {
-        using state_type = NormalFormsIteratorTraits::state_type;
-        return const_normal_form_iterator(state_type("", ""),
-                                          cend_pislo(gilman_digraph()));
-      }
-
-      //! Rewrite a word in-place.
-      //!
-      //! The word \p w is rewritten in-place according to the current active
-      //! rules in the KnuthBendix instance.
-      //!
-      //! \param w the word to rewrite.
-      //!
-      //! \returns
-      //! The argument \p w after it has been rewritten.
-      // TODO(later) change to void rewrite(std::string&);
-      std::string* rewrite(std::string* w) const;
-
-      //! Rewrite a word.
-      //!
-      //! Rewrites a copy of the word \p w rewritten according to the current
-      //! rules in the KnuthBendix instance.
-      //!
-      //! \param w the word to rewrite.
-      //!
-      //! \returns
-      //! A copy of the argument \p w after it has been rewritten.
-      std::string rewrite(std::string w) const {
-        rewrite(&w);
-        return w;
-      }
-
-      using FpSemigroupInterface::add_rule;
-
-     private:
-      void add_rule_impl(std::string const& p, std::string const& q) override;
-      void add_rule(Rule* rule);
-
-      void internal_rewrite(internal_string_type* u) const;
-
-      static size_t               internal_char_to_uint(internal_char_type c);
-      static internal_char_type   uint_to_internal_char(size_t a);
-      static internal_string_type uint_to_internal_string(size_t i);
-      static word_type internal_string_to_word(internal_string_type const& s);
-      static internal_string_type*
-      word_to_internal_string(word_type const& w, internal_string_type* ww);
-      static internal_string_type word_to_internal_string(word_type const& u);
-      internal_char_type external_to_internal_char(external_char_type c) const;
-      external_char_type internal_to_external_char(internal_char_type a) const;
-      void external_to_internal_string(external_string_type& w) const;
-      void internal_to_external_string(internal_string_type& w) const;
-
-      Rule* new_rule() const;
-      Rule* new_rule(internal_string_type* lhs,
-                     internal_string_type* rhs) const;
-      Rule* new_rule(Rule const* rule1) const;
-      Rule* new_rule(internal_string_type::const_iterator begin_lhs,
-                     internal_string_type::const_iterator end_lhs,
-                     internal_string_type::const_iterator begin_rhs,
-                     internal_string_type::const_iterator end_rhs) const;
-
-      void push_stack(Rule* rule);
-      void overlap(Rule const* u, Rule const* v);
-      void clear_stack();
-
-      std::list<Rule const*>::iterator
-      remove_rule(std::list<Rule const*>::iterator it);
-
-     public:
-      //! This friend function allows a KnuthBendix object to be left shifted
-      //! into a std::ostream, such as std::cout. The currently active rules
-      //! of the system are represented in the output.
-      friend std::ostream& operator<<(std::ostream&, KnuthBendix const&);
-
-      //////////////////////////////////////////////////////////////////////////
-      // KnuthBendix - main member functions - public
-      //////////////////////////////////////////////////////////////////////////
-
-      //! Check confluence of the current rules.
-      //!
-      //! \returns \c true if the KnuthBendix instance is
-      //! [confluent](https://w.wiki/9DA) and \c false if it is not.
-      //!
-      //! \parameters
-      //! (None)
-      bool confluent() const;
-      bool confluent_known() const noexcept;
-
-      //! Run the Knuth-Bendix by considering all overlaps of a given length.
-      //!
-      //! This function runs the Knuth-Bendix algorithm on the rewriting
-      //! system represented by a KnuthBendix instance by considering all
-      //! overlaps of a given length \f$n\f$ (according to the \ref
-      //! options::overlap) before those overlaps of length \f$n + 1\f$.
-      //!
-      //! \returns
-      //! (None)
-      //!
-      //! \complexity
-      //! See warning.
-      //!
-      //! \warning This will terminate when the KnuthBendix instance is
-      //! confluent, which might be never.
-      //!
-      //! \sa \ref run.
-      //!
-      //! \parameters
-      //! (None)
-      void knuth_bendix_by_overlap_length();
-
-      //! Returns the Gilman digraph.
-      //!
-      //! \returns A const reference to a \ref WordGraph.
-      //!
-      //! \exceptions
-      //! \no_libsemigroups_except
-      //!
-      //! \warning This will terminate when the KnuthBendix instance is
-      //! reduced and confluent, which might be never.
-      //!
-      //! \sa \ref number_of_normal_forms,
-      //! \ref cbegin_normal_forms, and \ref cend_normal_forms.
-      //!
-      //! \parameters
-      //! (None)
-      WordGraph<size_t> const& gilman_digraph();
-
-      //! Returns whether or not the empty string belongs in the system.
-      //!
-      //! \returns
-      //! A value of type `bool`.
-      //!
-      //! \exceptions
-      //! \no_libsemigroups_except
-      //!
-      //! \complexity
-      //! \f$O(n)\f$ where \f$n\f$ is the number of rules.
-      //!
-      //! \parameters
-      //! (None)
-      bool contains_empty_string() const;
-
-      //! Returns the number of normal forms with length in a given range.
-      //!
-      //! \param min the minimum length of a normal form to count
-      //! \param max one larger than the maximum length of a normal form to
-      //! count.
-      //!
-      //! \returns
-      //! A value of type `uint64_t`.
-      //!
-      //! \exceptions
-      //! \no_libsemigroups_except
-      //!
-      //! \complexity
-      //! Assuming that \c this has been run until finished, the complexity of
-      //! this function is at worst \f$O(mn)\f$ where \f$m\f$ is the number of
-      //! letters in the alphabet, and \f$n\f$ is the number of nodes in the
-      //! \ref gilman_digraph.
-      uint64_t number_of_normal_forms(size_t min, size_t max);
-
-      //////////////////////////////////////////////////////////////////////////
-      // FpSemigroupInterface - pure virtual member functions - public
-      //////////////////////////////////////////////////////////////////////////
-
-      //! \copydoc FpSemigroupInterface::size
-      //!
-      //! \note If \c this has been run until finished, then this function can
-      //! determine the size of the semigroup represented by \c this even if
-      //! it is infinite. Moreover, the complexity of this function is at
-      //! worst \f$O(mn)\f$ where \f$m\f$ is the number of letters in the
-      //! alphabet, and \f$n\f$ is the number of nodes in the \ref
-      //! gilman_digraph.
-      uint64_t size() override;
-
-      bool equal_to(std::string const&, std::string const&) override;
-
-      std::string normal_form(std::string const& w) override;
-
-      //////////////////////////////////////////////////////////////////////////
-      // FpSemigroupInterface - non-pure virtual member functions - public
-      //////////////////////////////////////////////////////////////////////////
-
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
-      // The following are required for overload resolution.
-      // Documented in FpSemigroupInterface.
-      // Sphinx/doxygen get confused by this, so we don't allow Doxygen to
-      // parse these two declarations.
-      using FpSemigroupInterface::equal_to;
-      using FpSemigroupInterface::normal_form;
-#endif
-
-     private:
-      //////////////////////////////////////////////////////////////////////////
-      // KnuthBendix - initialisers - private
-      //////////////////////////////////////////////////////////////////////////
-
-      void init_from(KnuthBendix const&, bool = true);
-      void init_from(FroidurePinBase&);
-
-      //////////////////////////////////////////////////////////////////////////
-      // FpSemigroupInterface - pure virtual member functions - private
-      //////////////////////////////////////////////////////////////////////////
-
-      std::shared_ptr<FroidurePinBase> froidure_pin_impl() override;
-
-      void run_impl() override;
-
-      bool finished_impl() const override;
-
-      bool is_obviously_infinite_impl() override;
-      bool is_obviously_finite_impl() override;
-
-      //////////////////////////////////////////////////////////////////////////
-      // FpSemigroupInterface - non-pure virtual member functions - private
-      //////////////////////////////////////////////////////////////////////////
-
-      void set_alphabet_impl(std::string const&) override;
-      void set_alphabet_impl(size_t) override;
-
-      void validate_word_impl(std::string const&) const override {
-        // do nothing, the empty string is allowed!
-      }
-
-      bool validate_identity_impl(std::string const&) const override;
-
-      //////////////////////////////////////////////////////////////////////////
-      // KnuthBendix - data - private
-      //////////////////////////////////////////////////////////////////////////
-    };
-  }  // namespace fpsemigroup
-
-  namespace congruence {
-    //! Defined in ``knuth-bendix.hpp``.
-    //!
-    //! On this page we describe the functionality relating to the
-    //! Knuth-Bendix algorithm for computing congruences of semigroups and
-    //! monoids.
-    //!
-    //! This page contains details of the member functions of the class
-    //! congruence::KnuthBendix.
-    //!
-    //! \sa fpsemigroup::KnuthBendix.
-    //!
-    //! \note congruence::KnuthBendix can only be used to compute 2-sided
-    //! congruences.
-    //!
-    //! \par Example
-    //! \code
-    //! KnuthBendix kb;
-    //! kb.set_number_of_generators(2);
-    //! kb.add_pair({0, 0, 0}, {0});
-    //! kb.add_pair({0}, {1, 1});
-    //!
-    //! kb.number_of_classes();                            // 5
-    //! kb.word_to_class_index({0, 0, 1});          // 4
-    //! kb.word_to_class_index({0, 0, 0, 0, 1});    // 4
-    //! kb.word_to_class_index({0, 1, 1, 0, 0, 1}); // 4
-    //! kb.word_to_class_index({0, 0, 0});          // 0
-    //! kb.word_to_class_index({1});                // 1
-    //! kb.word_to_class_index({0, 0, 0, 0});       // 2
-    //! \endcode
-    class KnuthBendix : public CongruenceInterface {
-     public:
-      ////////////////////////////////////////////////////////////////////////////
-      // KnuthBendix - constructors - public
-      ////////////////////////////////////////////////////////////////////////////
-
-      //! Default constructor.
-      //!
-      //! \parameters
-      //! (None)
-      //!
-      //! \complexity
-      //! Constant.
-      KnuthBendix();
-
-      //! Constructs from FroidurePin instance.
-      //!
-      //! \param fp the FroidurePin instance.
-      //!
-      //! \complexity
-      //! \f$O(|S||A|)\f$ where \f$A\f$ is the set of generators used to
-      //! define \p S and \p S is the semigroup represented by the FroidurePin
-      //! instance \p fp.
-      //!
-      //! \warning
-      //! The FroidurePin instance used in construction is copied by this
-      //! constructor. Use KnuthBendix(std::shared_ptr<FroidurePinBase>) to
-      //! avoid making a copy.
-      template <typename T>
-      explicit KnuthBendix(T const& fp)
-          : KnuthBendix(static_cast<std::shared_ptr<FroidurePinBase>>(
-              std::make_shared<T>(fp))) {
-        static_assert(std::is_base_of<FroidurePinBase, T>::value,
-                      "the template parameter must be a derived class of "
-                      "FroidurePinBase");
-      }
-
-      //! Construct from fpsemigroup::KnuthBendix.
-      //!
-      //! A congruence::KnuthBendix instance simply wraps an
-      //! fpsemigroup::KnuthBendix, and provides an API compatible with the
-      //! other algorithms for congruences in libsemigroups.
-      //!
-      //! \param copy the fpsemigroup::KnuthBendix.
-      //!
-      //! \complexity
-      //! \f$O(n)\f$ where \f$n\f$ is the sum of the lengths of the words in
-      //! rules of \p copy.
-      explicit KnuthBendix(fpsemigroup::KnuthBendix const& copy);
-
-      //! Construct from \shared_ptr to FroidurePin instance.
-      //!
-      //! \param fpb the FroidurePin instance.
-      //!
-      //! \complexity
-      //! \f$O(|S||A|)\f$ where \f$A\f$ is the set of generators used to
-      //! define \p S.
-      //!
-      //! \note
-      //! The FroidurePin instance used in construction is not copied.
-      explicit KnuthBendix(std::shared_ptr<FroidurePinBase> fpb);
-
-      //! Copy constructor
-      //!
-      //! \param copy the congruence::KnuthBendix to be copied.
-      //!
-      //! \complexity
-      //! \f$O(n)\f$ where \f$n\f$ is the sum of the lengths of the words in
-      //! rules of \p copy.
-      KnuthBendix(KnuthBendix const& copy) : KnuthBendix(*copy._kb) {}
-
-      //! Deleted.
-      KnuthBendix(KnuthBendix&&) = delete;
-
-      //! Deleted.
-      KnuthBendix& operator=(KnuthBendix const&) = delete;
-
-      //! Deleted.
-      KnuthBendix& operator=(KnuthBendix&&) = delete;
-
-      ~KnuthBendix();
-
-      //! Returns the underlying fpsemigroup::KnuthBendix.
-      //!
-      //! \parameters
-      //! (None)
-      //!
-      //! \complexity
-      //! Constant.
-      fpsemigroup::KnuthBendix& knuth_bendix() const {
-        return *_kb;
-      }
-      ////////////////////////////////////////////////////////////////////////////
-      // CongruenceInterface - non-pure virtual member functions - public
-      ////////////////////////////////////////////////////////////////////////////
-
-      tril const_contains(word_type const&, word_type const&) const override;
-      bool contains(word_type const&, word_type const&) override;
-
-     private:
-      ////////////////////////////////////////////////////////////////////////////
-      // Runner - pure virtual member functions - protected
-      ////////////////////////////////////////////////////////////////////////////
-
-      bool finished_impl() const override;
-
-      ////////////////////////////////////////////////////////////////////////////
-      // CongruenceInterface - pure virtual methods - private
-      ////////////////////////////////////////////////////////////////////////////
-
-      word_type class_index_to_word_impl(class_index_type) override;
-      size_t    number_of_classes_impl() override;
-      std::shared_ptr<FroidurePinBase> quotient_impl() override;
-      class_index_type word_to_class_index_impl(word_type const&) override;
-      void             run_impl() override;
-
-      ////////////////////////////////////////////////////////////////////////////
-      // CongruenceInterface - non-pure virtual methods - private
-      ////////////////////////////////////////////////////////////////////////////
-
-      void add_pair_impl(word_type const&, word_type const&) override;
-      void set_number_of_generators_impl(size_t) override;
-      bool is_quotient_obviously_finite_impl() override;
-      bool is_quotient_obviously_infinite_impl() override;
-
-      ////////////////////////////////////////////////////////////////////////////
-      // KnuthBendix - data - private
-      ////////////////////////////////////////////////////////////////////////////
-
-      std::unique_ptr<fpsemigroup::KnuthBendix> _kb;
-    };
-  }  // namespace congruence
-
+      return result;
+    }
+
+    std::vector<std::vector<std::string>> non_trivial_classes(KnuthBendix& kb1,
+                                                              KnuthBendix& kb2);
+
+    // TODO remove code dupl with same function in todd_coxeter namespace
+    template <typename Range,
+              typename = std::enable_if_t<rx::is_input_or_sink_v<Range>>>
+    std::vector<std::vector<std::string>> non_trivial_classes(KnuthBendix& kb,
+                                                              Range        r) {
+      auto result = partition(kb, r);
+
+      result.erase(
+          std::remove_if(result.begin(),
+                         result.end(),
+                         [](auto const& x) -> bool { return x.size() <= 1; }),
+          result.end());
+      return result;
+    }
+
+  }  // namespace knuth_bendix
+
+  // TODO move contents to knuth_bendix namespace
   namespace presentation {
 
     //! Return an iterator pointing at the left hand side of a redundant rule.
@@ -1150,18 +849,19 @@ namespace libsemigroups {
     //! As such this is non-deterministic, and may produce different results
     //! with the same input.
     template <typename T>
-    auto redundant_rule(Presentation<std::string>& p, T t) {
-      p.validate();
-      for (auto omit = p.rules.crbegin(); omit != p.rules.crend(); omit += 2) {
-        fpsemigroup::KnuthBendix kb;
-        kb.set_alphabet(p.alphabet());
+    auto redundant_rule(Presentation<std::string> const& p, T t) {
+      constexpr static congruence_kind twosided = congruence_kind::twosided;
 
-        for (auto it = p.rules.crbegin(); it != omit; it += 2) {
-          kb.add_rule(*it, *(it + 1));
-        }
-        for (auto it = omit + 2; it < p.rules.crend(); it += 2) {
-          kb.add_rule(*it, *(it + 1));
-        }
+      p.validate();
+      Presentation<std::string> q;
+      q.alphabet(p.alphabet());
+      KnuthBendix kb(twosided);  // TODO make default constructor
+
+      for (auto omit = p.rules.crbegin(); omit != p.rules.crend(); omit += 2) {
+        q.rules.clear();
+        q.rules.insert(q.rules.end(), p.rules.crbegin(), omit);
+        q.rules.insert(q.rules.end(), omit + 2, p.rules.crend());
+        kb.init(twosided, q);
         kb.run_for(t);
         if (kb.rewrite(*omit) == kb.rewrite(*(omit + 1))) {
           return (omit + 1).base() - 1;
@@ -1199,25 +899,11 @@ namespace libsemigroups {
     //! As such this is non-deterministic, and may produce different results
     //! with the same input.
     template <typename W, typename T>
-    auto redundant_rule(Presentation<W>& p, T t) {
+    auto redundant_rule(Presentation<W> const& p, T t) {
       auto pp = to_presentation<std::string>(p);
       return p.rules.cbegin()
              + std::distance(pp.rules.cbegin(), redundant_rule(pp, t));
     }
   }  // namespace presentation
-
-  // TODO should be deleted
-  template <typename T,
-            typename = std::enable_if_t<
-                std::is_base_of<Presentation<std::string>, T>::value>>
-  Presentation<std::string> make(fpsemigroup::KnuthBendix const& kb) {
-    Presentation<std::string> p;
-    p.alphabet(kb.alphabet());
-    for (auto it = kb.cbegin_rules(); it != kb.cend_rules(); ++it) {
-      presentation::add_rule(p, it->first, it->second);
-    }
-    return p;
-  }
-
 }  // namespace libsemigroups
-#endif  // LIBSEMIGROUPS_KNUTH_BENDIX_HPP_
+#endif  // LIBSEMIGROUPS_KNUTH_BENDIX_NEW_HPP_

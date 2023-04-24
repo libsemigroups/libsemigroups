@@ -28,7 +28,7 @@
 #ifndef LIBSEMIGROUPS_TODD_COXETER_NEW_HPP_
 #define LIBSEMIGROUPS_TODD_COXETER_NEW_HPP_
 
-#include "cong-intf-new.hpp"
+#include "cong-intf.hpp"
 #include "exception.hpp"       // for LIBSEMIGROUPS_EXCEPTION
 #include "felsch-digraph.hpp"  // for FelschDigraph
 #include "obvinf.hpp"          // for is_obviously_infinite

@@ -23,64 +23,24 @@
 
 #include "catch.hpp"      // for REQUIRE, REQUIRE_THROWS_AS, REQUI...
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
+#include "word-graph-test-common.hpp"  // for add_clique etc
 
-#include "libsemigroups/forest.hpp"        // for Forest
-#include "libsemigroups/kbe.hpp"           // for KBE
-#include "libsemigroups/knuth-bendix.hpp"  // for KnuthBendix
-#include "libsemigroups/word-graph.hpp"    // for WordGraph
-#include "libsemigroups/words.hpp"         // for literals, Words
+#include "libsemigroups/forest.hpp"      // for Forest
+#include "libsemigroups/word-graph.hpp"  // for WordGraph
+#include "libsemigroups/words.hpp"       // for literals, Words
 
 namespace libsemigroups {
 
   using namespace literals;
-  using KnuthBendix = fpsemigroup::KnuthBendix;
 
   struct LibsemigroupsException;  // forward decl
 
   namespace {
-    void add_clique(WordGraph<size_t>& digraph, size_t n) {
-      if (n != digraph.out_degree()) {
-        throw std::runtime_error("can't do it!");
-      }
-      size_t old_nodes = digraph.number_of_nodes();
-      digraph.add_nodes(n);
-
-      for (size_t i = old_nodes; i < digraph.number_of_nodes(); ++i) {
-        for (size_t j = old_nodes; j < digraph.number_of_nodes(); ++j) {
-          digraph.add_edge(i, j, j - old_nodes);
-        }
-      }
-    }
-
-    WordGraph<size_t> clique(size_t n) {
-      WordGraph<size_t> g(0, n);
-      add_clique(g, n);
-      return g;
-    }
-
-    WordGraph<size_t> binary_tree(size_t number_of_levels) {
-      WordGraph<size_t> ad;
-      ad.add_nodes(std::pow(2, number_of_levels) - 1);
-      ad.add_to_out_degree(2);
-      ad.add_edge(0, 1, 0);
-      ad.add_edge(0, 2, 1);
-
-      for (size_t i = 2; i <= number_of_levels; ++i) {
-        size_t counter = std::pow(2, i - 1) - 1;
-        for (size_t j = std::pow(2, i - 2) - 1; j < std::pow(2, i - 1) - 1;
-             ++j) {
-          ad.add_edge(j, counter++, 0);
-          ad.add_edge(j, counter++, 1);
-        }
-      }
-      return ad;
-    }
-
     void add_path(WordGraph<size_t>& digraph, size_t n) {
       size_t old_nodes = digraph.number_of_nodes();
       digraph.add_nodes(n);
       for (size_t i = old_nodes; i < digraph.number_of_nodes() - 1; ++i) {
-        digraph.add_edge(i, i + 1, 0);
+        digraph.set_target(i, 0, i + 1);
       }
     }
 
@@ -127,13 +87,13 @@ namespace libsemigroups {
 
     for (size_t i = 0; i < 17; ++i) {
       for (size_t j = 0; j < 31; ++j) {
-        g.add_edge(i, (7 * i + 23 * j) % 17, j);
+        g.set_target(i, j, (7 * i + 23 * j) % 17);
       }
     }
 
     REQUIRE(g.number_of_edges() == 31 * 17);
     REQUIRE(g.number_of_nodes() == 17);
-    REQUIRE_THROWS_AS(g.add_edge(0, 0, 32), LibsemigroupsException);
+    REQUIRE_THROWS_AS(g.set_target(0, 0, 32), LibsemigroupsException);
 
     for (size_t i = 0; i < 17; ++i) {
       for (size_t j = 0; j < 31; ++j) {
@@ -148,7 +108,7 @@ namespace libsemigroups {
 
     for (size_t i = 0; i < 17; ++i) {
       for (size_t j = 0; j < 10; ++j) {
-        g.add_edge(i, (7 * i + 23 * j) % 17, 31 + j);
+        g.set_target(i, 31 + j, (7 * i + 23 * j) % 17);
       }
     }
 
@@ -164,14 +124,14 @@ namespace libsemigroups {
     REQUIRE_THROWS_AS(graph.neighbor(10, 0), LibsemigroupsException);
     REQUIRE(graph.neighbor(0, 1) == UNDEFINED);
 
-    REQUIRE_THROWS_AS(graph.add_edge(0, 10, 0), LibsemigroupsException);
-    REQUIRE_THROWS_AS(graph.add_edge(10, 0, 0), LibsemigroupsException);
+    REQUIRE_THROWS_AS(graph.set_target(0, 10, 0), LibsemigroupsException);
+    REQUIRE_THROWS_AS(graph.set_target(10, 0, 0), LibsemigroupsException);
     for (size_t i = 0; i < 5; ++i) {
-      graph.add_edge(0, 1, i);
-      graph.add_edge(2, 2, i);
+      graph.set_target(0, i, 1);
+      graph.set_target(2, i, 2);
     }
-    REQUIRE_NOTHROW(graph.add_edge(0, 1, 0));
-    REQUIRE_NOTHROW(graph.add_edge(2, 2, 0));
+    REQUIRE_NOTHROW(graph.set_target(0, 0, 1));
+    REQUIRE_NOTHROW(graph.set_target(2, 0, 2));
   }
 
   LIBSEMIGROUPS_TEST_CASE("WordGraph", "005", "random", "[quick][digraph]") {
@@ -316,9 +276,9 @@ namespace libsemigroups {
     WordGraph<size_t> ad;
     ad.add_nodes(3);
     ad.add_to_out_degree(2);
-    ad.add_edge(0, 1, 0);
-    ad.add_edge(1, 0, 0);
-    ad.add_edge(2, 0, 0);
+    ad.set_target(0, 0, 1);
+    ad.set_target(1, 0, 0);
+    ad.set_target(2, 0, 0);
 
     ad.restrict(2);
     REQUIRE(ad == to_word_graph<size_t>(2, {{1, UNDEFINED}, {0}}));
@@ -331,9 +291,9 @@ namespace libsemigroups {
     WordGraph<size_t> ad;
     ad.add_nodes(3);
     ad.add_to_out_degree(2);
-    ad.add_edge(0, 1, 0);
-    ad.add_edge(1, 0, 0);
-    ad.add_edge(2, 0, 0);
+    ad.set_target(0, 0, 1);
+    ad.set_target(1, 0, 0);
+    ad.set_target(2, 0, 0);
 
     ad.remove_edge_no_checks(0, 0);  // remove edge from 0 labelled 0
     REQUIRE(ad == to_word_graph<size_t>(3, {{UNDEFINED, UNDEFINED}, {0}, {0}}));
@@ -346,9 +306,9 @@ namespace libsemigroups {
     WordGraph<size_t> ad;
     ad.add_nodes(3);
     ad.add_to_out_degree(2);
-    ad.add_edge(0, 1, 0);
-    ad.add_edge(1, 0, 0);
-    ad.add_edge(2, 2, 0);
+    ad.set_target(0, 0, 1);
+    ad.set_target(1, 0, 0);
+    ad.set_target(2, 0, 2);
 
     // swap edge from 0 labelled 0 with edge from 1 labelled 0
     ad.swap_edges_no_checks(0, 1, 0);
@@ -359,9 +319,9 @@ namespace libsemigroups {
     WordGraph<size_t> ad;
     ad.add_nodes(3);
     ad.add_to_out_degree(2);
-    ad.add_edge(0, 1, 0);
-    ad.add_edge(1, 0, 0);
-    ad.add_edge(2, 2, 0);
+    ad.set_target(0, 0, 1);
+    ad.set_target(1, 0, 0);
+    ad.set_target(2, 0, 2);
 
     std::ostringstream oss;
     oss << ad;
@@ -375,8 +335,8 @@ namespace libsemigroups {
     WordGraph<size_t> ad;
     ad.add_nodes(2);
     ad.add_to_out_degree(1);
-    ad.add_edge(0, 1, 0);
-    ad.add_edge(1, 0, 0);
+    ad.set_target(0, 0, 1);
+    ad.set_target(1, 0, 0);
     REQUIRE(!word_graph::is_acyclic(ad));
     REQUIRE(word_graph::topological_sort(ad).empty());
   }
@@ -388,7 +348,7 @@ namespace libsemigroups {
     WordGraph<size_t> ad;
     ad.add_nodes(1);
     ad.add_to_out_degree(1);
-    ad.add_edge(0, 0, 0);
+    ad.set_target(0, 0, 0);
     REQUIRE(!word_graph::is_acyclic(ad));
     REQUIRE(word_graph::topological_sort(ad).empty());
   }
@@ -401,8 +361,8 @@ namespace libsemigroups {
     WordGraph<size_t> ad;
     ad.add_nodes(2);
     ad.add_to_out_degree(2);
-    ad.add_edge(0, 1, 0);
-    ad.add_edge(0, 1, 1);
+    ad.set_target(0, 0, 1);
+    ad.set_target(0, 1, 1);
     REQUIRE(word_graph::is_acyclic(ad));
     REQUIRE(word_graph::topological_sort(ad) == std::vector<node_type>({1, 0}));
   }
@@ -418,7 +378,7 @@ namespace libsemigroups {
     for (size_t i = 0; i < n; ++i) {
       for (size_t j = 0; j < n; ++j) {
         if (i != j) {
-          ad.add_edge(i, j, j);
+          ad.set_target(i, j, j);
         }
       }
     }
@@ -435,13 +395,13 @@ namespace libsemigroups {
     ad.add_nodes(n);
     ad.add_to_out_degree(2);
     for (size_t i = 0; i < (n / 2 - 1); ++i) {
-      ad.add_edge(i, i + 1, 0);
+      ad.set_target(i, 0, i + 1);
     }
-    ad.add_edge(n / 2 - 1, n - 1, 1);
-    ad.add_edge(n / 2 + 1, (3 * n) / 4 - 1, 1);
-    ad.add_edge(n / 2, 0, 1);
+    ad.set_target(n / 2 - 1, 1, n - 1);
+    ad.set_target(n / 2 + 1, 1, (3 * n) / 4 - 1);
+    ad.set_target(n / 2, 1, 0);
     for (size_t i = n / 2; i < n - 1; ++i) {
-      ad.add_edge(i, i + 1, 0);
+      ad.set_target(i, 0, i + 1);
     }
     REQUIRE(word_graph::is_acyclic(ad));
     REQUIRE(word_graph::topological_sort(ad).size() == ad.number_of_nodes());
@@ -456,13 +416,13 @@ namespace libsemigroups {
     ad.add_nodes(n);
     ad.add_to_out_degree(2);
     for (size_t i = 0; i < (n / 2 - 1); ++i) {
-      ad.add_edge(i, i + 1, 0);
+      ad.set_target(i, 0, i + 1);
     }
-    ad.add_edge(n / 2 - 1, n - 1, 1);
-    ad.add_edge(n / 2 + 1, (3 * n) / 4 - 1, 1);
-    ad.add_edge(n / 2, 0, 1);
+    ad.set_target(n / 2 - 1, 1, n - 1);
+    ad.set_target(n / 2 + 1, 1, (3 * n) / 4 - 1);
+    ad.set_target(n / 2, 1, 0);
     for (size_t i = n / 2; i < n - 1; ++i) {
-      ad.add_edge(i, i + 1, 0);
+      ad.set_target(i, 0, i + 1);
     }
     REQUIRE(word_graph::is_acyclic(ad));
     REQUIRE(word_graph::topological_sort(ad).size() == n);
@@ -478,7 +438,7 @@ namespace libsemigroups {
     ad.add_nodes(n);
     ad.add_to_out_degree(2);
     for (size_t i = 0; i < n - 1; ++i) {
-      ad.add_edge(i, i + 1, i % 2);
+      ad.set_target(i, i % 2, i + 1);
     }
     word_graph::add_cycle(ad, 100);
 
@@ -505,9 +465,9 @@ namespace libsemigroups {
     using node_type = decltype(ad)::node_type;
     ad.add_nodes(4);
     ad.add_to_out_degree(1);
-    ad.add_edge(0, 1, 0);
-    ad.add_edge(1, 0, 0);
-    ad.add_edge(2, 3, 0);
+    ad.set_target(0, 0, 1);
+    ad.set_target(1, 0, 0);
+    ad.set_target(2, 0, 3);
     REQUIRE(!word_graph::is_acyclic(ad));
     REQUIRE(word_graph::topological_sort(ad).empty());
     REQUIRE(!word_graph::is_acyclic(ad, 0));
@@ -531,13 +491,13 @@ namespace libsemigroups {
     ad.add_nodes(n);
     ad.add_to_out_degree(2);
     for (size_t i = 0; i < (n / 2 - 1); ++i) {
-      ad.add_edge(i, i + 1, 0);
+      ad.set_target(i, 0, i + 1);
     }
-    ad.add_edge(n / 2 - 1, n - 1, 1);
-    ad.add_edge(n / 2 + 1, (3 * n) / 4 - 1, 1);
-    ad.add_edge(n / 2, 0, 1);
+    ad.set_target(n / 2 - 1, 1, n - 1);
+    ad.set_target(n / 2 + 1, 1, (3 * n) / 4 - 1);
+    ad.set_target(n / 2, 1, 0);
     for (size_t i = n / 2; i < n - 1; ++i) {
-      ad.add_edge(i, i + 1, 0);
+      ad.set_target(i, 0, i + 1);
     }
     REQUIRE(!word_graph::is_reachable(ad, 1, 10));
     REQUIRE(word_graph::is_reachable(ad, 10, 1));
@@ -557,7 +517,7 @@ namespace libsemigroups {
     ad.add_nodes(n);
     ad.add_to_out_degree(2);
     for (size_t i = 0; i < n - 1; ++i) {
-      ad.add_edge(i, i + 1, i % 2);
+      ad.set_target(i, i % 2, i + 1);
     }
     for (auto it1 = ad.cbegin_nodes(); it1 < ad.cend_nodes(); ++it1) {
       for (auto it2 = it1 + 1; it2 < ad.cend_nodes(); ++it2) {
@@ -666,7 +626,7 @@ namespace libsemigroups {
 
     REQUIRE(!word_graph::is_connected(ad));
     ad.add_to_out_degree(1);
-    ad.add_edge(0, 1'000, 1);
+    ad.set_target(0, 1, 1'000);
     REQUIRE(word_graph::is_connected(ad));
     ad = WordGraph<size_t>();
     REQUIRE(word_graph::is_connected(ad));
@@ -683,7 +643,7 @@ namespace libsemigroups {
 
     REQUIRE(!word_graph::is_strictly_cyclic(ad));
     ad.add_to_out_degree(1);
-    ad.add_edge(0, 1'000, 1);
+    ad.set_target(0, 1, 1'000);
     REQUIRE(word_graph::is_strictly_cyclic(ad));
     ad = WordGraph<size_t>();
     REQUIRE(word_graph::is_strictly_cyclic(ad));

@@ -27,10 +27,10 @@
 #include "libsemigroups/exception.hpp"          // for LIBSEMIGROUPS_EXCEPTION
 #include "libsemigroups/froidure-pin-base.hpp"  // for FroidurePinBase
 #include "libsemigroups/kambites.hpp"           // for Kambites
-#include "libsemigroups/knuth-bendix-new.hpp"   // for KnuthBendix_
+#include "libsemigroups/knuth-bendix.hpp"       // for KnuthBendix_
 #include "libsemigroups/to-presentation.hpp"    // for to_presentation
 #include "libsemigroups/to-todd-coxeter.hpp"    // for to_todd_coxeter
-#include "libsemigroups/todd-coxeter-new.hpp"   // for ToddCoxeter
+#include "libsemigroups/todd-coxeter.hpp"       // for ToddCoxeter
 #include "libsemigroups/types.hpp"              // for word_type
 
 namespace libsemigroups {

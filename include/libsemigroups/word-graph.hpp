@@ -379,7 +379,8 @@ namespace libsemigroups {
     //! \complexity
     //! Constant.
     // Not noexcept because validate_node/label aren't
-    void inline add_edge(node_type i, node_type j, label_type lbl) {
+    // TODO i -> m, j -> n and to tpp
+    void inline set_target(node_type i, label_type lbl, node_type j) {
       word_graph::validate_node(*this, i);
       word_graph::validate_node(*this, j);
       word_graph::validate_label(*this, lbl);
@@ -1159,8 +1160,8 @@ namespace libsemigroups {
     //! WordGraph<size_t> wg;
     //! wg.add_nodes(2);
     //! wg.add_to_out_degree(1);
-    //! wg.add_edge(0, 1, 0);
-    //! wg.add_edge(1, 0, 0);
+    //! wg.set_target(0, 0, 1);
+    //! wg.set_target(1, 0, 0);
     //! word_graph::is_acyclic(wg); // returns false
     //! \endcode
     // Not noexcept because detail::is_acyclic isn't
@@ -1252,9 +1253,9 @@ namespace libsemigroups {
     //! WordGraph<size_t> wg;
     //! wg.add_nodes(4);
     //! wg.add_to_out_degree(1);
-    //! wg.add_edge(0, 1, 0);
-    //! wg.add_edge(1, 0, 0);
-    //! wg.add_edge(2, 3, 0);
+    //! wg.set_target(0, 0, 1);
+    //! wg.set_target(1, 0, 0);
+    //! wg.set_target(2, 0, 3);
     //! word_graph::is_acyclic(wg); // returns false
     //! word_graph::is_acyclic(wg, 0); // returns false
     //! word_graph::is_acyclic(wg, 1); // returns false
@@ -1298,9 +1299,9 @@ namespace libsemigroups {
     //! WordGraph<size_t> wg;
     //! wg.add_nodes(4);
     //! wg.add_to_out_degree(1);
-    //! wg.add_edge(0, 1, 0);
-    //! wg.add_edge(1, 0, 0);
-    //! wg.add_edge(2, 3, 0);
+    //! wg.set_target(0, 1, 0);
+    //! wg.set_target(1, 0, 0);
+    //! wg.set_target(2, 3, 0);
     //! word_graph::is_reachable(wg, 0, 1); // returns true
     //! word_graph::is_reachable(wg, 1, 0); // returns true
     //! word_graph::is_reachable(wg, 1, 2); // returns false
@@ -1470,7 +1471,7 @@ namespace libsemigroups {
   //! \returns A value of type WordGraph.
   //!
   //! \throws LibsemigroupsException
-  //! if WordGraph<Node>::add_edge throws when adding edges from \p il.
+  //! if WordGraph<Node>::set_target throws when adding edges from \p il.
   //!
   //! \complexity
   //! \f$O(mn)\f$ where \f$m\f$ is the length of \p il and \f$n\f$ is the

@@ -21,68 +21,64 @@
 // efficiency) it depends on some of the implementational details of the
 // KnuthBendix class.
 
-#include "libsemigroups/kbe-new.hpp"
-
+#include "libsemigroups/kbe.hpp"
 #include "libsemigroups/obvinf.hpp"
 #include "libsemigroups/types.hpp"
 
 namespace libsemigroups {
-  namespace v3 {
-    namespace detail {
+  namespace detail {
 
-      KBE::KBE(internal_string_type const& w) : _kb_word(w) {}
-      KBE::KBE(internal_string_type&& w) : _kb_word(std::move(w)) {}
+    KBE::KBE(internal_string_type const& w) : _kb_word(w) {}
+    KBE::KBE(internal_string_type&& w) : _kb_word(std::move(w)) {}
 
-      KBE::KBE(KnuthBendix& kb, internal_string_type const& w) : KBE(w) {
-        kb.internal_rewrite(_kb_word);
-      }
+    KBE::KBE(KnuthBendix& kb, internal_string_type const& w) : KBE(w) {
+      kb.internal_rewrite(_kb_word);
+    }
 
-      KBE::KBE(KnuthBendix& kb, internal_string_type&& w) : KBE(std::move(w)) {
-        kb.internal_rewrite(_kb_word);
-      }
+    KBE::KBE(KnuthBendix& kb, internal_string_type&& w) : KBE(std::move(w)) {
+      kb.internal_rewrite(_kb_word);
+    }
 
-      KBE::KBE(KnuthBendix& kb, word_type const& w)
-          : KBE(kb,
-                std::accumulate(w.cbegin(),
-                                w.cend(),
-                                std::string(),
-                                [](std::string& acc, letter_type a) {
-                                  acc += KnuthBendix::uint_to_internal_string(
-                                      a);
-                                  return acc;
-                                })) {}
+    KBE::KBE(KnuthBendix& kb, word_type const& w)
+        : KBE(kb,
+              std::accumulate(w.cbegin(),
+                              w.cend(),
+                              std::string(),
+                              [](std::string& acc, letter_type a) {
+                                acc += KnuthBendix::uint_to_internal_string(a);
+                                return acc;
+                              })) {}
 
-      KBE::KBE(KnuthBendix& kb, letter_type const& a)
-          : KBE(kb, KnuthBendix::uint_to_internal_string(a)) {}
+    KBE::KBE(KnuthBendix& kb, letter_type const& a)
+        : KBE(kb, KnuthBendix::uint_to_internal_string(a)) {}
 
-      bool KBE::operator==(KBE const& that) const {
-        return that._kb_word == this->_kb_word;
-      }
+    bool KBE::operator==(KBE const& that) const {
+      return that._kb_word == this->_kb_word;
+    }
 
-      bool KBE::operator<(KBE const& that) const {
-        return shortlex_compare(_kb_word, that._kb_word);
-      }
+    bool KBE::operator<(KBE const& that) const {
+      return shortlex_compare(_kb_word, that._kb_word);
+    }
 
-      void KBE::swap(KBE& x) {
-        std::swap(x._kb_word, _kb_word);
-      }
+    void KBE::swap(KBE& x) {
+      std::swap(x._kb_word, _kb_word);
+    }
 
-      KBE::internal_string_type const& KBE::string() const noexcept {
-        return _kb_word;
-      }
+    KBE::internal_string_type const& KBE::string() const noexcept {
+      return _kb_word;
+    }
 
-      word_type KBE::word(KnuthBendix const& kb) const {
-        return kb.internal_string_to_word(_kb_word);
-      }
+    word_type KBE::word(KnuthBendix const& kb) const {
+      return kb.internal_string_to_word(_kb_word);
+    }
 
-      std::string KBE::string(KnuthBendix const& kb) const {
-        std::string out(_kb_word);
-        kb.internal_to_external_string(out);  // changes out in-place
-        return out;
-      }
+    std::string KBE::string(KnuthBendix const& kb) const {
+      std::string out(_kb_word);
+      kb.internal_to_external_string(out);  // changes out in-place
+      return out;
+    }
 
-    }  // namespace detail
-  }    // namespace v3
+  }  // namespace detail
 
   template <>
   word_type

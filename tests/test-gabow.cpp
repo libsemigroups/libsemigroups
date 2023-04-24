@@ -21,9 +21,9 @@
 #include <numeric>    // for iota
 #include <vector>     // for vector, operator==, allo...
 
-#include "catch.hpp"       // for operator""_catch_sr, Ass...
-#include "test-main.hpp"   // for LIBSEMIGROUPS_TEST_CASE
-#include "word-graph.hpp"  // for clique, add_clique
+#include "catch.hpp"                   // for operator""_catch_sr, Ass...
+#include "test-main.hpp"               // for LIBSEMIGROUPS_TEST_CASE
+#include "word-graph-test-common.hpp"  // for clique, add_clique
 
 #include "libsemigroups/constants.hpp"   // for UNDEFINED, Undefined, Max
 #include "libsemigroups/exception.hpp"   // for LibsemigroupsException
@@ -140,9 +140,9 @@ namespace libsemigroups {
     for (size_t k = 0; k < 10; ++k) {
       wg.add_nodes(j);
       for (size_t i = k * j; i < (k + 1) * j - 1; ++i) {
-        wg.add_edge(i, i + 1, 0);
+        wg.set_target(i, 0, i + 1);
       }
-      wg.add_edge((k + 1) * j - 1, k * j, 0);
+      wg.set_target((k + 1) * j - 1, 0, k * j);
     }
 
     Gabow scc(wg);
@@ -195,7 +195,7 @@ namespace libsemigroups {
   //
   //      for (size_t i = 0; i < k; ++i) {
   //        for (size_t j = 0; j < k; ++j) {
-  //          graph.add_edge(i, j, j);
+  //          graph.set_target(i,  j,  j);
   //        }
   //      }
   //
@@ -220,9 +220,9 @@ namespace libsemigroups {
   //     for (size_t k = 0; k < 6; ++k) {
   //       graph.add_nodes(j);
   //       for (size_t i = k * j; i < (k + 1) * j - 1; ++i) {
-  //         graph.add_edge(i, i + 1, 0);
+  //         graph.set_target(i,  0,  i + 1);
   //       }
-  //       graph.add_edge((k + 1) * j - 1, k * j, 0);
+  //       graph.set_target((k + 1) * j - 1,  0,  k * j);
   //     }
 
   //     for (size_t i = 0; i < graph.number_of_nodes(); ++i) {

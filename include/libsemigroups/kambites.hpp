@@ -45,11 +45,11 @@
 #include <utility>      // for pair
 #include <vector>       // for vector
 
-#include "adapters.hpp"       // for One
-#include "cong-intf-new.hpp"  // for CongruenceInterface
-#include "constants.hpp"      // for UNDEFINED, POSITIVE_INFINITY
-#include "exception.hpp"      // for LIBSEMIGROUPS_EXCEPTION
-#include "froidure-pin.hpp"   // for FroidurePin, FroidurePinTraits
+#include "adapters.hpp"      // for One
+#include "cong-intf.hpp"     // for CongruenceInterface
+#include "constants.hpp"     // for UNDEFINED, POSITIVE_INFINITY
+#include "exception.hpp"     // for LIBSEMIGROUPS_EXCEPTION
+#include "froidure-pin.hpp"  // for FroidurePin, FroidurePinTraits
 #include "int-range.hpp"
 #include "obvinf.hpp"   // for is_obviously_infinite
 #include "order.hpp"    // for lexicographical_compare

@@ -22,12 +22,12 @@
 #include <cstddef>      // for size_t
 #include <type_traits>  // for enable_if_t, is_base_of
 
-#include "debug.hpp"      // for LIBSEMIGROUPS_ASSERT
-#include "word-graph.hpp"    // for WordGraph
-#include "exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
-#include "kambites.hpp"   // for KE
-#include "kbe-new.hpp"    // for KBE
-#include "tce.hpp"        // for TCE
+#include "debug.hpp"       // for LIBSEMIGROUPS_ASSERT
+#include "exception.hpp"   // for LIBSEMIGROUPS_EXCEPTION
+#include "kambites.hpp"    // for KE
+#include "kbe.hpp"         // for KBE
+#include "tce.hpp"         // for TCE
+#include "word-graph.hpp"  // for WordGraph
 
 namespace libsemigroups {
   class FroidurePinBase;  // forward decl
@@ -69,8 +69,8 @@ namespace libsemigroups {
   //! \not\subseteq \{a, \ldots, b - 1\}\f$ for the corresponding \f$f\f$.
   template <typename Element, typename Node>
   FroidurePin<Element> to_froidure_pin(WordGraph<Node> const& ad,
-                                       size_t                     first,
-                                       size_t                     last) {
+                                       size_t                 first,
+                                       size_t                 last) {
     using node_type = typename WordGraph<Node>::node_type;
 
     if (first > last) {

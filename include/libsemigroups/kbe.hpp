@@ -20,10 +20,8 @@
 // the element_type for a FroidurePin instance. This class just wraps a
 // reduced word of a KnuthBendix instance.
 
-// For technical reasons this is implemented in src/kbe-impl.hpp
-
-#ifndef LIBSEMIGROUPS_KBE_HPP_
-#define LIBSEMIGROUPS_KBE_HPP_
+#ifndef LIBSEMIGROUPS_KBE_NEW_HPP_
+#define LIBSEMIGROUPS_KBE_NEW_HPP_
 
 #include <cstddef>  // for size_t
 #include <string>   // for string
@@ -31,19 +29,18 @@
 
 #include "adapters.hpp"      // for One
 #include "froidure-pin.hpp"  // for FroidurePin
-#include "knuth-bendix.hpp"  // for fpsemigroup::KnuthBendix
+#include "knuth-bendix.hpp"  // for KnuthBendix
 #include "types.hpp"         // for word_type, letter_type
 
 namespace libsemigroups {
   namespace detail {
     // This class is used to wrap libsemigroups::internal_string_type into an
     // object that can be used as generators for a FroidurePin object.
-    class KBE final {
-      using KnuthBendix          = fpsemigroup::KnuthBendix;
+    class KBE {
       using internal_string_type = std::string;
 
-      KBE(internal_string_type const&);
-      KBE(internal_string_type&&);
+      explicit KBE(internal_string_type const&);
+      explicit KBE(internal_string_type&&);
 
      public:
       KBE() = default;
@@ -126,10 +123,10 @@ namespace libsemigroups {
 
   template <>
   struct Product<detail::KBE> {
-    void operator()(detail::KBE&              xy,
-                    detail::KBE const&        x,
-                    detail::KBE const&        y,
-                    fpsemigroup::KnuthBendix* kb,
+    void operator()(detail::KBE&       xy,
+                    detail::KBE const& x,
+                    detail::KBE const& y,
+                    KnuthBendix*       kb,
                     size_t) {
       std::string w(x.string());  // internal_string_type
       w += y.string();
@@ -138,15 +135,16 @@ namespace libsemigroups {
   };
 
   template <>
-  word_type
-  FroidurePin<detail::KBE,
-              FroidurePinTraits<detail::KBE, fpsemigroup::KnuthBendix>>::
-      factorisation(detail::KBE const& x);
+  struct FroidurePinState<detail::KBE> {
+    using type = KnuthBendix;
+  };
 
   template <>
-  tril FroidurePin<detail::KBE,
-                   FroidurePinTraits<detail::KBE, fpsemigroup::KnuthBendix>>::
-      is_finite() const;
+  word_type FroidurePin<detail::KBE>::factorisation(detail::KBE const& x);
+
+  template <>
+  tril FroidurePin<detail::KBE>::is_finite() const;
+
 }  // namespace libsemigroups
 
 ////////////////////////////////////////////////////////////////////////
@@ -169,4 +167,4 @@ namespace std {
     }
   };
 }  // namespace std
-#endif  // LIBSEMIGROUPS_KBE_HPP_
+#endif  // LIBSEMIGROUPS_KBE_NEW_HPP_

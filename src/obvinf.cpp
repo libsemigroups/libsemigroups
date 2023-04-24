@@ -31,9 +31,9 @@
 #include "libsemigroups/cong.hpp"       // for StringToWord
 #include "libsemigroups/constants.hpp"  // for UNDEFINED
 #include "libsemigroups/debug.hpp"      // for LIBSEMIGROUPS_ASSERT
-#include "libsemigroups/knuth-bendix-new.hpp"
+#include "libsemigroups/knuth-bendix.hpp"
 #include "libsemigroups/todd-coxeter-digraph.hpp"
-#include "libsemigroups/todd-coxeter-new.hpp"
+#include "libsemigroups/todd-coxeter.hpp"
 #include "libsemigroups/words.hpp"  // for StringToWord
 
 #ifdef LIBSEMIGROUPS_EIGEN_ENABLED

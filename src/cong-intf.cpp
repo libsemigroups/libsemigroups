@@ -23,423 +23,77 @@
 #include "libsemigroups/constants.hpp"          // for UNDEFINED
 #include "libsemigroups/debug.hpp"              // for LIBSEMIGROUPS_ASSERT
 #include "libsemigroups/exception.hpp"          // for LIBSEMIGROUPS_EXCEPTION
-#include "libsemigroups/fpsemi-intf.hpp"        // for FpSemigroupInterface
 #include "libsemigroups/froidure-pin-base.hpp"  // for FroidurePinBase
 #include "libsemigroups/report.hpp"             // for REPORT_VERBOSE_DEFAULT
 #include "libsemigroups/string.hpp"             // for detail::to_string
 
 namespace libsemigroups {
 
-  class CongruenceInterface::LazyFroidurePin {
-   public:
-    LazyFroidurePin() = default;
-
-    void set(std::shared_ptr<FroidurePinBase> ptr) {
-      LIBSEMIGROUPS_ASSERT(_froidure_pin == nullptr);
-      LIBSEMIGROUPS_ASSERT(_fp_semigroup == nullptr);
-      _froidure_pin = ptr;
-    }
-
-    void set(std::shared_ptr<FpSemigroupInterface> ptr) {
-      LIBSEMIGROUPS_ASSERT(_froidure_pin == nullptr);
-      LIBSEMIGROUPS_ASSERT(_fp_semigroup == nullptr);
-      _fp_semigroup = ptr;
-    }
-
-    bool has_froidure_pin() const noexcept {
-      return _froidure_pin != nullptr;
-    }
-
-    bool has_fpsemigroup() const noexcept {
-      return _fp_semigroup != nullptr;
-    }
-
-    bool can_compute_froidure_pin() const noexcept {
-      return _froidure_pin != nullptr || _fp_semigroup != nullptr;
-    }
-
-    std::shared_ptr<FroidurePinBase> froidure_pin() const {
-      if (!has_froidure_pin()) {
-        if (_fp_semigroup != nullptr
-            && !_fp_semigroup->is_obviously_infinite()) {
-          _froidure_pin = _fp_semigroup->froidure_pin();
-        } else {
-          // This can be the case if a CongruenceInterface is default
-          // constructed, i.e. constructed neither from a FroidurePinBase
-          // nor an FpSemigroupInterface, or the _fp_semigroup is obviously
-          // infinite
-          LIBSEMIGROUPS_EXCEPTION("no parent FroidurePin can be determined!");
-        }
-      }
-      return _froidure_pin;
-    }
-
-    std::shared_ptr<FpSemigroupInterface> fpsemigroup() const {
-      return _fp_semigroup;
-    }
-
-   private:
-    mutable std::shared_ptr<FroidurePinBase>      _froidure_pin;
-    mutable std::shared_ptr<FpSemigroupInterface> _fp_semigroup;
-  };
-
   ////////////////////////////////////////////////////////////////////////////
-  // CongruenceInterface - constructors + destructor - public
+  // v3::CongruenceInterface - constructors + destructor - public
   ////////////////////////////////////////////////////////////////////////////
 
-  CongruenceInterface::CongruenceInterface(congruence_kind type)
+  v3::CongruenceInterface::CongruenceInterface(congruence_kind type)
       : Runner(),
         // Non-mutable
-        _gen_pairs(),
-        _nr_gens(UNDEFINED),
-        _parent(std::make_shared<LazyFroidurePin>()),
-        _type(type),
-        // Mutable
-        _init_ntc_done(),
-        _is_obviously_finite(false),
-        _is_obviously_infinite(false),
-        _quotient(nullptr),
-        _non_trivial_classes() {
-    reset();
+        _type(type) {
+    // Mutable
+    // TODO reset();
   }
 
-  CongruenceInterface::~CongruenceInterface() = default;
-
-  ////////////////////////////////////////////////////////////////////////////
-  // Runner - non-pure virtual overridden function - public
-  ////////////////////////////////////////////////////////////////////////////
-
-  void CongruenceInterface::before_run() {
-    if (number_of_generators() == UNDEFINED) {
-      LIBSEMIGROUPS_EXCEPTION("no generators have been set!");
-    }
+  void v3::CongruenceInterface::init() {
+    Runner::init();
   }
 
-  ////////////////////////////////////////////////////////////////////////////
-  // CongruenceInterface - non-pure virtual methods - public
-  ////////////////////////////////////////////////////////////////////////////
-
-  tril CongruenceInterface::const_contains(word_type const& u,
-                                           word_type const& v) const {
-    validate_word(u);
-    validate_word(v);
-    if (u == v) {
-      return tril::TRUE;
-    }
-    class_index_type uu, vv;
-    try {
-      uu = const_word_to_class_index(u);
-      vv = const_word_to_class_index(v);
-    } catch (LibsemigroupsException const& e) {
-      REPORT_VERBOSE_DEFAULT("ignoring exception:\n%s", e.what());
-      return tril::unknown;
-    }
-    if (uu == UNDEFINED || vv == UNDEFINED) {
-      return tril::unknown;
-    } else if (uu == vv) {
-      return tril::TRUE;
-    } else if (finished()) {
-      return tril::FALSE;
-    } else {
-      return tril::unknown;
-    }
+  void v3::CongruenceInterface::init(congruence_kind type) {
+    Runner::init();
+    _type = type;
   }
 
-  void CongruenceInterface::set_number_of_generators(size_t n) {
-    if (number_of_generators() != UNDEFINED) {
-      if (number_of_generators() != n) {
-        LIBSEMIGROUPS_EXCEPTION("cannot change the number of generators");
-      } else {
-        return;  // do nothing
-      }
-    } else if (n == 0) {
-      LIBSEMIGROUPS_EXCEPTION("the number of generators must be non-zero!");
-    } else if (started()) {
+  v3::CongruenceInterface::~CongruenceInterface() = default;
+
+  /////////////////////////////////////////////////////////////////////////
+  // v3::CongruenceInterface - non-pure virtual methods - private
+  /////////////////////////////////////////////////////////////////////////
+
+  void v3::CongruenceInterface::add_pair(word_type const& u,
+                                         word_type const& v) {
+    if (started()) {
       LIBSEMIGROUPS_EXCEPTION(
-          "cannot set the number of generator at this stage");
+          "cannot add further generating pairs at this stage");
     }
-    _nr_gens = n;
-    set_number_of_generators_impl(n);
-    reset();
+    for (auto const& w : {u, v}) {
+      validate_word(w);
+      _generating_pairs.push_back(w);
+      if (kind() == congruence_kind::left) {
+        std::reverse(_generating_pairs.back().begin(),
+                     _generating_pairs.back().end());
+      }
+    }
   }
 
-  /////////////////////////////////////////////////////////////////////////
-  // CongruenceInterface - non-virtual methods - public
-  /////////////////////////////////////////////////////////////////////////
+  void
+  v3::CongruenceInterface::add_pair_no_checks_no_reverse(word_type const& u,
+                                                         word_type const& v) {
+    _generating_pairs.push_back(u);
+    _generating_pairs.push_back(v);
+  }
 
-  void CongruenceInterface::add_pair(word_type const& u, word_type const& v) {
+  void v3::CongruenceInterface::add_pair(word_type&& u, word_type&& v) {
     if (started()) {
       LIBSEMIGROUPS_EXCEPTION(
           "cannot add further generating pairs at this stage");
     }
     validate_word(u);
     validate_word(v);
-    if (u == v) {
-      return;
-    } else if (has_parent_froidure_pin()
-               && parent_froidure_pin()->equal_to(u, v)) {
-      return;
-    }
     // Note that _gen_pairs might contain pairs of distinct words that
     // represent the same element of the parent semigroup (if any).
-    _gen_pairs.emplace_back(u, v);
-    add_pair_impl(u, v);
-    reset();
-  }
-
-  word_type CongruenceInterface::class_index_to_word(class_index_type i) {
-    if (number_of_generators() == UNDEFINED) {
-      LIBSEMIGROUPS_EXCEPTION("no generators have been defined");
-    } else if (i >= number_of_classes()) {
-      LIBSEMIGROUPS_EXCEPTION("invalid class index, expected a value in the "
-                              "range [0, %d), found %d",
-                              number_of_classes(),
-                              i);
+    if (kind() == congruence_kind::left) {
+      std::reverse(u.begin(), u.end());
+      std::reverse(v.begin(), v.end());
     }
-    return class_index_to_word_impl(i);
+
+    _generating_pairs.push_back(std::move(u));
+    _generating_pairs.push_back(std::move(v));
   }
-
-  // Basic exception guarantee (since is_quotient_obviously_infinite() may
-  // change the object).
-  std::shared_ptr<FroidurePinBase>
-  CongruenceInterface::quotient_froidure_pin() {
-    if (_quotient != nullptr) {
-      LIBSEMIGROUPS_ASSERT(kind() == congruence_kind::twosided);
-      return _quotient;
-    } else if (kind() != congruence_kind::twosided) {
-      LIBSEMIGROUPS_EXCEPTION("the congruence must be two-sided");
-    }
-    _quotient = quotient_impl();
-    _quotient->immutable(true);
-    return _quotient;
-  }
-
-  bool CongruenceInterface::is_quotient_obviously_infinite() {
-    // If has_parent_froidure_pin(), then that is either finite (and so this
-    // is not obviously infinite), or infinite, which is undecidable in
-    // general, so we leave the answer to this question to
-    // is_quotient_obviously_infinite_impl in the derived class.
-    if (number_of_generators() == UNDEFINED) {
-      // If number_of_generators() is undefined, then there is no quotient yet,
-      // and so it is not obviously infinite, or anything!
-      REPORT_VERBOSE("not obviously infinite (no generators yet defined)");
-      return false;
-    } else if (has_quotient_froidure_pin()
-               && quotient_froidure_pin()->finished()) {
-      // If the quotient FroidurePin is fully enumerated, it must be
-      // finite, and hence this is not (obviously) infinite.
-      REPORT_VERBOSE("not obviously infinite (finite)");
-      return false;
-    } else if (has_parent_froidure_pin() && parent_froidure_pin()->finished()) {
-      REPORT_VERBOSE("not obviously infinite (parent finite)");
-      return false;
-    } else if (is_quotient_obviously_infinite_impl()) {
-      // The derived class of CongruenceInterface knows the quotient is
-      // infinite
-      return true;
-    }
-    REPORT_VERBOSE("the quotient is not obviously infinite . . .");
-    return false;
-  }
-
-  bool CongruenceInterface::is_quotient_obviously_finite() {
-    if ((has_quotient_froidure_pin() && quotient_froidure_pin()->finished())
-        || (has_parent_froidure_pin() && parent_froidure_pin()->finished())
-        || is_quotient_obviously_finite_impl()) {
-      return true;
-    }
-    return false;
-  }
-
-  size_t CongruenceInterface::number_of_classes() {
-    if (number_of_generators() == UNDEFINED) {
-      return UNDEFINED;
-    } else if (!finished() && is_quotient_obviously_infinite()) {
-      return POSITIVE_INFINITY;
-    }
-    return number_of_classes_impl();
-  }
-
-  CongruenceInterface::class_index_type
-  CongruenceInterface::word_to_class_index(word_type const& word) {
-    // validate_word throws if number_of_generators is undefined.
-    validate_word(word);
-    return word_to_class_index_impl(word);
-  }
-
-  /////////////////////////////////////////////////////////////////////////
-  // CongruenceInterface - non-virtual methods - protected
-  /////////////////////////////////////////////////////////////////////////
-
-  void CongruenceInterface::set_parent_froidure_pin(
-      std::shared_ptr<FroidurePinBase> prnt) {
-    LIBSEMIGROUPS_ASSERT(!_parent->has_froidure_pin());
-    LIBSEMIGROUPS_ASSERT(number_of_generators() == UNDEFINED
-                         || prnt->number_of_generators()
-                                == number_of_generators());
-    LIBSEMIGROUPS_ASSERT(!finished());
-    if (number_of_generators() == UNDEFINED) {
-      set_number_of_generators(prnt->number_of_generators());
-    }
-    _parent->set(prnt);
-    reset();
-  }
-
-  void CongruenceInterface::set_parent_froidure_pin(
-      std::shared_ptr<FpSemigroupInterface> prnt) {
-    LIBSEMIGROUPS_ASSERT(!_parent->has_froidure_pin());
-    LIBSEMIGROUPS_ASSERT(number_of_generators() == UNDEFINED
-                         || prnt->alphabet().size() == number_of_generators());
-    LIBSEMIGROUPS_ASSERT(!finished());
-    if (number_of_generators() == UNDEFINED && !prnt->alphabet().empty()) {
-      set_number_of_generators(prnt->alphabet().size());
-    }
-    _parent->set(prnt);
-    reset();
-  }
-
-  void CongruenceInterface::add_generators(size_t n) {
-    if (n == 0) {
-      return;
-    } else if (started()) {
-      LIBSEMIGROUPS_EXCEPTION("cannot add generators at this stage");
-    }
-    _nr_gens += n;
-    add_generators_impl(_nr_gens);
-    reset();
-  }
-
-  /////////////////////////////////////////////////////////////////////////
-  // CongruenceInterface - non-pure virtual methods - private
-  /////////////////////////////////////////////////////////////////////////
-
-  void CongruenceInterface::add_pair_impl(word_type const&, word_type const&) {}
-
-  CongruenceInterface::class_index_type
-  CongruenceInterface::const_word_to_class_index(word_type const&) const {
-    return UNDEFINED;
-  }
-
-  void CongruenceInterface::set_number_of_generators_impl(size_t) {
-    // do nothing
-  }
-
-  void CongruenceInterface::add_generators_impl(size_t) {
-    // do nothing
-  }
-
-  std::shared_ptr<CongruenceInterface::non_trivial_classes_type const>
-  CongruenceInterface::non_trivial_classes_impl() {
-    if (!_parent->can_compute_froidure_pin()) {
-      LIBSEMIGROUPS_EXCEPTION("Cannot determine the parent FroidurePin and so "
-                              "cannot compute non-trivial classes!");
-    }
-    // The next line may trigger an infinite computation
-    auto fp  = _parent->froidure_pin();
-    auto ntc = non_trivial_classes_type(number_of_classes(),
-                                        std::vector<word_type>());
-
-    word_type w;
-    for (size_t pos = 0; pos < fp->size(); ++pos) {
-      fp->factorisation(w, pos);
-      LIBSEMIGROUPS_ASSERT(word_to_class_index(w) < ntc.size());
-      ntc[word_to_class_index(w)].push_back(w);
-    }
-    ntc.erase(std::remove_if(ntc.begin(),
-                             ntc.end(),
-                             [](std::vector<word_type> const& klass) -> bool {
-                               return klass.size() <= 1;
-                             }),
-              ntc.end());
-    return std::make_shared<non_trivial_classes_type>(ntc);
-  }
-
-  /////////////////////////////////////////////////////////////////////////
-  // CongruenceInterface - non-virtual methods - private
-  /////////////////////////////////////////////////////////////////////////
-
-  void CongruenceInterface::init_non_trivial_classes() {
-    if (!_init_ntc_done) {
-      _non_trivial_classes = non_trivial_classes_impl();
-      _init_ntc_done       = true;
-    }
-  }
-
-  void CongruenceInterface::reset() noexcept {
-    // set_finished(false);
-    _non_trivial_classes.reset();
-    _init_ntc_done = false;
-    _quotient.reset();
-    _is_obviously_finite   = false;
-    _is_obviously_infinite = false;
-  }
-
-  std::shared_ptr<FroidurePinBase>
-  CongruenceInterface::parent_froidure_pin() const {
-    return _parent->froidure_pin();
-  }
-
-  bool CongruenceInterface::has_parent_froidure_pin() const noexcept {
-    return _parent->has_froidure_pin();
-  }
-
-  std::shared_ptr<FpSemigroupInterface>
-  CongruenceInterface::parent_fpsemigroup() const {
-    return _parent->fpsemigroup();
-  }
-
-  bool CongruenceInterface::has_parent_fpsemigroup() const noexcept {
-    return _parent->has_fpsemigroup();
-  }
-
-  /////////////////////////////////////////////////////////////////////////
-  // CongruenceInterface - non-virtual methods - protected
-  /////////////////////////////////////////////////////////////////////////
-
-  bool CongruenceInterface::validate_letter(letter_type c) const {
-    if (number_of_generators() == UNDEFINED) {
-      LIBSEMIGROUPS_EXCEPTION("no generators have been defined");
-    }
-    return c < _nr_gens;
-  }
-
-  void CongruenceInterface::validate_word(word_type const& w) const {
-    for (auto l : w) {
-      // validate_letter throws if no generators are defined
-      if (!validate_letter(l)) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "letter index out of bounds in word %s, expected "
-            "value in [0, %d), got %d",
-            detail::to_string(w).c_str(),
-            _nr_gens,
-            l);
-      }
-    }
-  }
-
-  /////////////////////////////////////////////////////////////////////////
-  // CongruenceInterface - non-virtual static methods - protected
-  /////////////////////////////////////////////////////////////////////////
-
-  std::string const&
-  CongruenceInterface::congruence_kind_to_string(congruence_kind typ) {
-    switch (typ) {
-      case congruence_kind::twosided:
-        return STRING_TWOSIDED;
-      case congruence_kind::left:
-        return STRING_LEFT;
-      case congruence_kind::right:
-        return STRING_RIGHT;
-      default:
-        LIBSEMIGROUPS_EXCEPTION("incorrect type");
-    }
-  }
-
-  /////////////////////////////////////////////////////////////////////////
-  // CongruenceInterface - static data members - private
-  /////////////////////////////////////////////////////////////////////////
-
-  const std::string CongruenceInterface::STRING_TWOSIDED = "two-sided";
-  const std::string CongruenceInterface::STRING_LEFT     = "left";
-  const std::string CongruenceInterface::STRING_RIGHT    = "right";
 }  // namespace libsemigroups

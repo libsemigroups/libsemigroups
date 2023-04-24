@@ -367,10 +367,11 @@ namespace libsemigroups {
     void validate_label(WordGraph<Node> const&               wg,
                         typename WordGraph<Node>::label_type lbl) {
       if (lbl >= wg.out_degree()) {
-        LIBSEMIGROUPS_EXCEPTION("label value out of bounds, expected value in "
-                                "the range [0, {}), got {}",
-                                wg.out_degree(),
-                                lbl);
+        LIBSEMIGROUPS_EXCEPTION_V3(
+            "label value out of bounds, expected value in "
+            "the range [0, {}), got {}",
+            wg.out_degree(),
+            lbl);
       }
     }
 
@@ -413,9 +414,9 @@ namespace libsemigroups {
     template <typename Node, typename Iterator>
     void add_cycle(WordGraph<Node>& wg, Iterator first, Iterator last) {
       for (auto it = first; it < last - 1; ++it) {
-        wg.add_edge(*it, *(it + 1), 0);
+        wg.set_target(*it, 0, *(it + 1));
       }
-      wg.add_edge(*(last - 1), *first, 0);
+      wg.set_target(*(last - 1), 0, *first);
     }
 
     template <typename Node,
@@ -1063,7 +1064,7 @@ namespace libsemigroups {
       for (size_t j = 0; j < (il.begin() + i)->size(); ++j) {
         auto val = *((il.begin() + i)->begin() + j);
         if (val != UNDEFINED) {
-          result.add_edge(i, *((il.begin() + i)->begin() + j), j);
+          result.set_target(i, j, *((il.begin() + i)->begin() + j));
         }
       }
     }

@@ -20,10 +20,9 @@
 #include "catch.hpp"      // for REQUIRE
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
-#include "libsemigroups/cong-intf.hpp"  // for CongruenceInterface
-#include "libsemigroups/cong.hpp"       // for Congruence
-#include "libsemigroups/tce.hpp"        // for TCE
-#include "libsemigroups/transf.hpp"     // for Transf<>
+#include "libsemigroups/cong.hpp"    // for Congruence
+#include "libsemigroups/tce.hpp"     // for TCE
+#include "libsemigroups/transf.hpp"  // for Transf<>
 
 namespace libsemigroups {
   // struct LibsemigroupsException;  // Forward declaration
@@ -37,7 +36,7 @@ namespace libsemigroups {
   // using FroidurePinTCE = FroidurePin<TCE, FroidurePinTraits<TCE,
   // TCE::Table>>;
 
-  // TODO(v3) uncomment
+  // TODO(v3) uncomment or delete
   /*
     namespace congruence {
       LIBSEMIGROUPS_TEST_CASE("CongruenceInterface",

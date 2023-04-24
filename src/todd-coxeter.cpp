@@ -19,7 +19,7 @@
 // This file contains an implementation of the Todd-Coxeter algorithm for
 // semigroups and monoids.
 
-#include "libsemigroups/todd-coxeter-new.hpp"
+#include "libsemigroups/todd-coxeter.hpp"
 
 #include "libsemigroups/obvinf.hpp"
 #include "libsemigroups/report.hpp"
@@ -568,9 +568,11 @@ namespace libsemigroups {
     node_type c = _word_graph.initial_node();
 
     if (kind() != congruence_kind::left) {
-      c = word_graph::follow_path_no_checks(_word_graph, c, w.cbegin(), w.cend());
+      c = word_graph::follow_path_no_checks(
+          _word_graph, c, w.cbegin(), w.cend());
     } else {
-      c = word_graph::follow_path_no_checks(_word_graph, c, w.crbegin(), w.crend());
+      c = word_graph::follow_path_no_checks(
+          _word_graph, c, w.crbegin(), w.crend());
     }
     size_t const offset = (presentation().contains_empty_word() ? 0 : 1);
     return (c == UNDEFINED ? UNDEFINED : static_cast<node_type>(c - offset));

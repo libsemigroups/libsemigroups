@@ -31,7 +31,7 @@
 #include "libsemigroups/froidure-pin-base.hpp"  // for FroidurePinBase
 #include "libsemigroups/iterator.hpp"           // for ConstIteratorStateful
 #include "libsemigroups/kambites.hpp"           // for Kambites
-#include "libsemigroups/knuth-bendix-new.hpp"   // for KnuthBendix
+#include "libsemigroups/knuth-bendix.hpp"       // for KnuthBendix
 #include "libsemigroups/report.hpp"             // for ReportGuard
 #include "libsemigroups/string.hpp"             // for random_string etc
 #include "libsemigroups/transf.hpp"             // for LeastTransf

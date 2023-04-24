@@ -30,11 +30,11 @@
 #include "adapters.hpp"          // for One
 #include "bruidhinn-traits.hpp"  // for detail::BruidhinnTraits
 #include "debug.hpp"             // for LIBSEMIGROUPS_ASSERT
-#include "word-graph.hpp"           // for WordGraph
 #include "exception.hpp"         // for LIBSEMIGROUPS_EXCEPTION
 #include "gabow.hpp"             // for Gabow
 #include "report.hpp"            // for REPORT_DEFAULT
 #include "runner.hpp"            // for Runner
+#include "word-graph.hpp"        // for WordGraph
 
 namespace libsemigroups {
   //! The values in this enum can be used as a template parameter for the Action
@@ -766,11 +766,11 @@ namespace libsemigroups {
             auto it = _map.find(_tmp_point);
             if (it == _map.end()) {
               _graph.add_nodes(1);
-              _graph.add_edge(i, _orb.size(), j);
+              _graph.set_target(i, j, _orb.size());
               _orb.push_back(this->internal_copy(_tmp_point));
               _map.emplace(_orb.back(), _orb.size() - 1);
             } else {
-              _graph.add_edge(i, (*it).second, j);
+              _graph.set_target(i, j, (*it).second);
             }
           }
         }
@@ -787,11 +787,11 @@ namespace libsemigroups {
           auto it = _map.find(_tmp_point);
           if (it == _map.end()) {
             _graph.add_nodes(1);
-            _graph.add_edge(_pos, _orb.size(), j);
+            _graph.set_target(_pos, j, _orb.size());
             _orb.push_back(this->internal_copy(_tmp_point));
             _map.emplace(_orb.back(), _orb.size() - 1);
           } else {
-            _graph.add_edge(_pos, (*it).second, j);
+            _graph.set_target(_pos, j, (*it).second);
           }
         }
         if (report()) {
@@ -851,7 +851,7 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////
 
     std::vector<element_type> _gens;
-    WordGraph<size_t>     _graph;
+    WordGraph<size_t>         _graph;
     std::unordered_map<internal_const_point_type,
                        size_t,
                        InternalHash,

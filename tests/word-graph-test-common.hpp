@@ -28,38 +28,41 @@
 
 namespace libsemigroups {
 
-  void add_clique(WordGraph<size_t>& digraph, size_t n) {
+  template <typename Node = size_t>
+  void add_clique(WordGraph<Node>& digraph, size_t n) {
     if (n != digraph.out_degree()) {
       throw std::runtime_error("can't do it!");
     }
     size_t old_nodes = digraph.number_of_nodes();
     digraph.add_nodes(n);
 
-    for (size_t i = old_nodes; i < digraph.number_of_nodes(); ++i) {
-      for (size_t j = old_nodes; j < digraph.number_of_nodes(); ++j) {
-        digraph.add_edge(i, j, j - old_nodes);
+    for (Node i = old_nodes; i < digraph.number_of_nodes(); ++i) {
+      for (Node j = old_nodes; j < digraph.number_of_nodes(); ++j) {
+        digraph.set_target(i, j - old_nodes, j);
       }
     }
   }
 
-  WordGraph<size_t> clique(size_t n) {
-    WordGraph<size_t> g(0, n);
+  template <typename Node = size_t>
+  WordGraph<Node> clique(size_t n) {
+    WordGraph<Node> g(0, n);
     add_clique(g, n);
     return g;
   }
 
-  WordGraph<size_t> binary_tree(size_t number_of_levels) {
-    WordGraph<size_t> ad;
+  template <typename Node = size_t>
+  WordGraph<Node> binary_tree(size_t number_of_levels) {
+    WordGraph<Node> ad;
     ad.add_nodes(std::pow(2, number_of_levels) - 1);
     ad.add_to_out_degree(2);
-    ad.add_edge(0, 1, 0);
-    ad.add_edge(0, 2, 1);
+    ad.set_target(0, 0, 1);
+    ad.set_target(0, 1, 2);
 
     for (size_t i = 2; i <= number_of_levels; ++i) {
-      size_t counter = std::pow(2, i - 1) - 1;
-      for (size_t j = std::pow(2, i - 2) - 1; j < std::pow(2, i - 1) - 1; ++j) {
-        ad.add_edge(j, counter++, 0);
-        ad.add_edge(j, counter++, 1);
+      Node counter = std::pow(2, i - 1) - 1;
+      for (Node j = std::pow(2, i - 2) - 1; j < std::pow(2, i - 1) - 1; ++j) {
+        ad.set_target(j, 0, counter++);
+        ad.set_target(j, 1, counter++);
       }
     }
     return ad;

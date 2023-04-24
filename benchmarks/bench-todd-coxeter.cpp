@@ -30,7 +30,6 @@
 #include "catch.hpp"       // for REQUIRE, REQUIRE_NOTHROW, REQUIRE_THROWS_AS
 
 #include "libsemigroups/cong-intf.hpp"  // for congruence_kind, congruenc...
-#include "libsemigroups/cong-wrap.hpp"  // for CongruenceWrapper
 #include "libsemigroups/constants.hpp"  // for PositiveInfinity, POSITIVE...
 #include "libsemigroups/fpsemi-examples.hpp"
 #include "libsemigroups/froidure-pin-base.hpp"  // for FroidurePinBase

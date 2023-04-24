@@ -17,29 +17,29 @@
 //
 //
 
-#include <algorithm>                            // for all_of
-#include <cmath>                                // for pow
-#include <cstddef>                              // for size_t
-#include <cstdint>                              // for uint64_t
-#include <iterator>                             // for begin, end
-#include <memory>                               // for shared_ptr
-#include <random>                               // for mt19937
-#include <stdexcept>                            // for runtime_error
-#include <type_traits>                          // for remove_extent_t
-#include <unordered_set>                        // for unordered_set
-#include <utility>                              // for swap
-#include <vector>                               // for vector, operator==
-                                                //
-#include "catch.hpp"                            // for operator""_catch_sr
-#include "test-main.hpp"                        // for LIBSEMIGROUPS_TEST_CASE
-                                                //
+#include <algorithm>      // for all_of
+#include <cmath>          // for pow
+#include <cstddef>        // for size_t
+#include <cstdint>        // for uint64_t
+#include <iterator>       // for begin, end
+#include <memory>         // for shared_ptr
+#include <random>         // for mt19937
+#include <stdexcept>      // for runtime_error
+#include <type_traits>    // for remove_extent_t
+#include <unordered_set>  // for unordered_set
+#include <utility>        // for swap
+#include <vector>         // for vector, operator==
+
+#include "catch.hpp"                   // for operator""_catch_sr
+#include "test-main.hpp"               // for LIBSEMIGROUPS_TEST_CASE
+#include "word-graph-test-common.hpp"  // for binary_tree
+
 #include "libsemigroups/config.hpp"             // for LIBSEMIGROUPS_EIGEN_E...
 #include "libsemigroups/constants.hpp"          // for operator!=, operator==
 #include "libsemigroups/exception.hpp"          // for LibsemigroupsException
 #include "libsemigroups/froidure-pin-base.hpp"  // for FroidurePinBase
 #include "libsemigroups/iterator.hpp"           // for operator+
-#include "libsemigroups/kbe.hpp"                // for KBE
-#include "libsemigroups/knuth-bendix-new.hpp"   // for KnuthBendix
+#include "libsemigroups/knuth-bendix.hpp"       // for KnuthBendix
 #include "libsemigroups/order.hpp"              // for LexicographicalCompare
 #include "libsemigroups/paths.hpp"              // for Paths, const_pstilo_i...
 #include "libsemigroups/ranges.hpp"             // for equal, is_sorted
@@ -64,7 +64,7 @@ namespace libsemigroups {
       size_t old_nodes = digraph.number_of_nodes();
       digraph.add_nodes(n);
       for (size_t i = old_nodes; i < digraph.number_of_nodes() - 1; ++i) {
-        digraph.add_edge(i, i + 1, 0);
+        digraph.set_target(i, 0, i + 1);
       }
     }
 
@@ -72,24 +72,6 @@ namespace libsemigroups {
       WordGraph<size_t> g(0, 1);
       add_chain(g, n);
       return g;
-    }
-
-    WordGraph<size_t> binary_tree(size_t number_of_levels) {
-      WordGraph<size_t> ad;
-      ad.add_nodes(std::pow(2, number_of_levels) - 1);
-      ad.add_to_out_degree(2);
-      ad.add_edge(0, 1, 0);
-      ad.add_edge(0, 2, 1);
-
-      for (size_t i = 2; i <= number_of_levels; ++i) {
-        size_t counter = std::pow(2, i - 1) - 1;
-        for (size_t j = std::pow(2, i - 2) - 1; j < std::pow(2, i - 1) - 1;
-             ++j) {
-          ad.add_edge(j, counter++, 0);
-          ad.add_edge(j, counter++, 1);
-        }
-      }
-      return ad;
     }
   }  // namespace
 
@@ -99,7 +81,7 @@ namespace libsemigroups {
     ad.add_nodes(n);
     ad.add_to_out_degree(2);
     for (size_t i = 0; i < n - 1; ++i) {
-      ad.add_edge(i, i + 1, i % 2);
+      ad.set_target(i, i % 2, i + 1);
     }
 
     Paths p(ad);
@@ -125,15 +107,15 @@ namespace libsemigroups {
     using namespace rx;
 
     auto ad = to_word_graph<size_t>(9,
-                                        {{1, 2, UNDEFINED},
-                                         {},
-                                         {3, 4, 6},
-                                         {},
-                                         {UNDEFINED, 5},
-                                         {},
-                                         {UNDEFINED, 7},
-                                         {8},
-                                         {}});
+                                    {{1, 2, UNDEFINED},
+                                     {},
+                                     {3, 4, 6},
+                                     {},
+                                     {UNDEFINED, 5},
+                                     {},
+                                     {UNDEFINED, 7},
+                                     {8},
+                                     {}});
 
     Paths p(ad);
     p.order(Order::shortlex).from(2).min(3).max(4);
@@ -384,8 +366,8 @@ namespace libsemigroups {
 
     REQUIRE(ad.number_of_nodes() == 10);
     REQUIRE(ad.number_of_edges() == 18);
-    ad.add_edge(S.size(), 0, 0);
-    ad.add_edge(S.size(), 1, 1);
+    ad.set_target(S.size(), 0, 0);
+    ad.set_target(S.size(), 1, 1);
 
     REQUIRE(ad.number_of_edges() == 20);
     REQUIRE(word_graph::number_of_nodes_reachable_from(ad, S.size()) == 10);
@@ -510,12 +492,12 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("Paths", "007", "#6", "[quick]") {
     using namespace rx;
     auto ad = to_word_graph<size_t>(6,
-                                        {{1, 2, UNDEFINED},
-                                         {2, 0, 3},
-                                         {UNDEFINED, UNDEFINED, 3},
-                                         {4},
-                                         {UNDEFINED, 5},
-                                         {3}});
+                                    {{1, 2, UNDEFINED},
+                                     {2, 0, 3},
+                                     {UNDEFINED, UNDEFINED, 3},
+                                     {4},
+                                     {UNDEFINED, 5},
+                                     {3}});
 
     Paths p(ad);
     p.order(Order::shortlex).from(0).min(0).max(10);
@@ -556,12 +538,12 @@ namespace libsemigroups {
                           "path iterators corner cases",
                           "[quick]") {
     auto ad = to_word_graph<size_t>(6,
-                                        {{1, 2, UNDEFINED},
-                                         {2, 0, 3},
-                                         {UNDEFINED, UNDEFINED, 3},
-                                         {4},
-                                         {UNDEFINED, 5},
-                                         {3}});
+                                    {{1, 2, UNDEFINED},
+                                     {2, 0, 3},
+                                     {UNDEFINED, UNDEFINED, 3},
+                                     {4},
+                                     {UNDEFINED, 5},
+                                     {3}});
 
     REQUIRE_THROWS_AS(cbegin_pstilo(ad, 1, 6), LibsemigroupsException);
     REQUIRE_THROWS_AS(cbegin_pstilo(ad, 6, 1), LibsemigroupsException);
@@ -827,7 +809,7 @@ namespace libsemigroups {
     REQUIRE(number_of_paths(ad, 0) == std::pow(2, n) - 1);
 
     // The following tests for code coverage
-    ad.add_edge(19, 0, 0);
+    ad.set_target(19, 0, 0);
     REQUIRE(
         number_of_paths(ad, 0, 0, 0, POSITIVE_INFINITY, paths::algorithm::dfs)
         == POSITIVE_INFINITY);
@@ -862,16 +844,16 @@ namespace libsemigroups {
     WordGraph<size_t> ad;
     ad.add_nodes(10);
     ad.add_to_out_degree(20);
-    ad.add_edge(0, 7, 5);
-    ad.add_edge(0, 5, 7);
-    ad.add_edge(1, 9, 14);
-    ad.add_edge(1, 5, 17);
-    ad.add_edge(3, 8, 5);
-    ad.add_edge(5, 8, 1);
-    ad.add_edge(6, 8, 14);
-    ad.add_edge(7, 8, 10);
-    ad.add_edge(8, 9, 12);
-    ad.add_edge(8, 9, 13);
+    ad.set_target(0, 5, 7);
+    ad.set_target(0, 7, 5);
+    ad.set_target(1, 14, 9);
+    ad.set_target(1, 17, 5);
+    ad.set_target(3, 5, 8);
+    ad.set_target(5, 1, 8);
+    ad.set_target(6, 14, 8);
+    ad.set_target(7, 10, 8);
+    ad.set_target(8, 12, 9);
+    ad.set_target(8, 13, 9);
 
     REQUIRE(word_graph::is_acyclic(ad));
     REQUIRE(!ad.validate());
@@ -920,7 +902,7 @@ namespace libsemigroups {
     REQUIRE(number_of_paths(ad, 0) == 1023);
 
     word_graph::add_cycle(ad, n);
-    ad.add_edge(0, n + 1, 0);
+    ad.set_target(0, 0, n + 1);
     REQUIRE(!word_graph::is_acyclic(ad));
     REQUIRE(!ad.validate());
     REQUIRE(number_of_paths(ad, 1) == 511);
@@ -941,12 +923,12 @@ namespace libsemigroups {
     // auto ad = WordGraph<size_t>::random(6, 3, 15, std::mt19937());
     // std::cout << word_graph::detail::to_string(ad);
     auto ad = to_word_graph<size_t>(6,
-                                        {{0, 3, 4},
-                                         {2, 1, 4},
-                                         {4, 3, 4},
-                                         {0, 1, UNDEFINED},
-                                         {UNDEFINED, 3, 3},
-                                         {4, UNDEFINED, 2}});
+                                    {{0, 3, 4},
+                                     {2, 1, 4},
+                                     {4, 3, 4},
+                                     {0, 1, UNDEFINED},
+                                     {UNDEFINED, 3, 3},
+                                     {4, UNDEFINED, 2}});
 
     REQUIRE(ad.number_of_edges() == 15);
 
@@ -1005,8 +987,8 @@ namespace libsemigroups {
     WordGraph<size_t> ad;
     ad.add_nodes(2);
     ad.add_to_out_degree(2);
-    ad.add_edge(0, 1, 0);
-    ad.add_edge(1, 0, 0);
+    ad.set_target(0, 0, 1);
+    ad.set_target(1, 0, 0);
 
     REQUIRE(number_of_paths(
                 ad, 0, 1, 0, POSITIVE_INFINITY, paths::algorithm::matrix)

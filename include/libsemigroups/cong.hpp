@@ -25,14 +25,14 @@
 #include <cstddef>  // for size_t
 #include <memory>   // for shared_ptr
 
-#include "cong-intf-new.hpp"
-#include "kambites.hpp"          // for Kambites
-#include "knuth-bendix-new.hpp"  // for KnuthBendix
-#include "race.hpp"              // for Race
-#include "runner.hpp"            // for Runner
+#include "cong-intf.hpp"
+#include "kambites.hpp"      // for Kambites
+#include "knuth-bendix.hpp"  // for KnuthBendix
+#include "race.hpp"          // for Race
+#include "runner.hpp"        // for Runner
 #include "to-todd-coxeter.hpp"
-#include "todd-coxeter-new.hpp"  // for ToddCoxeter
-#include "types.hpp"             // for word_type
+#include "todd-coxeter.hpp"  // for ToddCoxeter
+#include "types.hpp"         // for word_type
 
 namespace libsemigroups {
   class FroidurePinBase;  // Forward declaration, constructor parameters
