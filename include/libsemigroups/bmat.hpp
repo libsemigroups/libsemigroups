@@ -56,7 +56,7 @@ namespace libsemigroups {
         });
         res.push_back(std::move(cup));
       }
-      auto tmp = matrix_helpers::bitset_row_basis<Mat>(res);
+      auto tmp = matrix::bitset_row_basis<Mat>(res);
       std::swap(res, tmp);
     }
   };
@@ -130,7 +130,7 @@ namespace libsemigroups {
         }
         res.push_back(std::move(cup));
       }
-      auto tmp = matrix_helpers::bitset_row_basis<Mat>(res);
+      auto tmp = matrix::bitset_row_basis<Mat>(res);
       std::swap(res, tmp);
     }
   };

@@ -2644,7 +2644,7 @@ namespace libsemigroups {
     validate(m.underlying_matrix());
   }
 
-  namespace matrix_helpers {
+  namespace matrix {
 
     ////////////////////////////////////////////////////////////////////////
     // Matrix helpers - pow
@@ -3020,7 +3020,7 @@ namespace libsemigroups {
       return orb.size();
     }
 
-  }  // namespace matrix_helpers
+  }  // namespace matrix
 
   ////////////////////////////////////////////////////////////////////////
   // Printing etc...
@@ -3047,7 +3047,7 @@ namespace libsemigroups {
     if (x.number_of_rows() != 1) {
       os << "{";
     }
-    for (auto&& r : matrix_helpers::rows(x)) {
+    for (auto&& r : matrix::rows(x)) {
       os << r;
       if (n != x.number_of_rows() - 1) {
         os << ", ";

@@ -37,7 +37,7 @@
 
 namespace libsemigroups {
 
-  namespace schreier_sims_helper {
+  namespace schreier_sims {
 
     //! Find the intersection of two permutation groups.
     //!
@@ -178,7 +178,7 @@ namespace libsemigroups {
 
       T.run();
     }
-  }  // namespace schreier_sims_helper
+  }  // namespace schreier_sims
 }  // namespace libsemigroups
 
 #endif  // LIBSEMIGROUPS_SCHREIER_SIMS_HELPER_HPP_

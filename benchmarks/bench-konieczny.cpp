@@ -101,7 +101,7 @@ namespace libsemigroups {
   template <typename Mat>
   struct Rank<Mat, void> {
     size_t operator()(Mat const& x, size_t = 0) {
-      return matrix_helpers::row_space_size(x);
+      return matrix::row_space_size(x);
     }
   };
 

@@ -452,7 +452,7 @@ namespace libsemigroups {
 #else
       auto           tmp   = am;
       uint64_t const N     = number_of_nodes();
-      auto           acc   = matrix_helpers::pow(am, min);
+      auto           acc   = matrix::pow(am, min);
       uint64_t       total = 0;
       for (size_t i = min; i < max; ++i) {
         uint64_t add = std::accumulate(acc.cbegin() + source * N,
@@ -523,7 +523,7 @@ namespace libsemigroups {
 #else
       size_t const N     = number_of_nodes();
       auto         tmp   = am;
-      auto         acc   = matrix_helpers::pow(am, min);
+      auto         acc   = matrix::pow(am, min);
       size_t       total = 0;
       for (size_t i = min; i < max; ++i) {
         uint64_t add = acc(source, target);

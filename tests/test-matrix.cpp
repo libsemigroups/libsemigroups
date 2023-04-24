@@ -145,19 +145,19 @@ namespace libsemigroups {
         REQUIRE(m == Mat({{1, 0}, {1, 0}}));
         size_t const M = detail::BitSetCapacity<Mat>::value;
         detail::StaticVector1<BitSet<M>, M> result;
-        matrix_helpers::bitset_rows(m, result);
+        matrix::bitset_rows(m, result);
         REQUIRE(result.size() == 2);
-        REQUIRE(matrix_helpers::bitset_rows(m).size() == 2);
+        REQUIRE(matrix::bitset_rows(m).size() == 2);
         result.clear();
-        matrix_helpers::bitset_row_basis(m, result);
+        matrix::bitset_row_basis(m, result);
         REQUIRE(result.size() == 1);
-        REQUIRE(matrix_helpers::bitset_row_basis(m).size() == 1);
+        REQUIRE(matrix::bitset_row_basis(m).size() == 1);
       }
 
       {
         Mat m({{1, 1}, {0, 0}});
         using RowView = typename Mat::RowView;
-        auto r        = matrix_helpers::rows(m);
+        auto r        = matrix::rows(m);
         REQUIRE(std::vector<bool>(r[0].cbegin(), r[0].cend())
                 == std::vector<bool>({true, true}));
         REQUIRE(std::vector<bool>(r[1].cbegin(), r[1].cend())
@@ -209,7 +209,7 @@ namespace libsemigroups {
         REQUIRE(D.number_of_rows() == 1);
         REQUIRE(D.number_of_cols() == 2);
         REQUIRE(D != C);
-        auto views = matrix_helpers::rows(A);
+        auto views = matrix::rows(A);
         REQUIRE(B < A);
         B.swap(A);
         REQUIRE(A < B);
@@ -223,7 +223,7 @@ namespace libsemigroups {
         A *= false;
         REQUIRE(A == Mat({{false, false}, {false, false}}));
         auto r = Row({true, false});
-        views  = matrix_helpers::rows(B);
+        views  = matrix::rows(B);
         REQUIRE(views[0].size() == 2);
         r += views[0];
         REQUIRE(r.number_of_cols() == 2);
@@ -233,7 +233,7 @@ namespace libsemigroups {
         auto E = Mat::identity(2);
         REQUIRE(E.number_of_rows() == 2);
         REQUIRE(E.number_of_cols() == 2);
-        auto viewse = matrix_helpers::rows(E);
+        auto viewse = matrix::rows(E);
         REQUIRE(viewse.size() == 2);
 
         std::ostringstream oss;
@@ -280,22 +280,22 @@ namespace libsemigroups {
     void test_BMat002() {
       using RowView = typename Mat::RowView;
       auto x        = Mat::make({{1, 0, 0}, {1, 0, 0}, {1, 0, 0}});
-      REQUIRE(matrix_helpers::row_basis(x).size() == 1);
-      REQUIRE(matrix_helpers::row_space_size(x) == 1);
+      REQUIRE(matrix::row_basis(x).size() == 1);
+      REQUIRE(matrix::row_space_size(x) == 1);
       x = Mat::make({{1, 0, 0}, {1, 1, 0}, {1, 1, 1}});
-      REQUIRE(matrix_helpers::row_basis(x).size() == 3);
+      REQUIRE(matrix::row_basis(x).size() == 3);
       REQUIRE_THROWS_AS(x.row(3), LibsemigroupsException);
       std::vector<RowView> v = {x.row(0), x.row(2)};
-      REQUIRE(matrix_helpers::row_basis<Mat>(v).size() == 2);
-      REQUIRE(matrix_helpers::row_space_size(x) == 3);
+      REQUIRE(matrix::row_basis<Mat>(v).size() == 2);
+      REQUIRE(matrix::row_space_size(x) == 3);
       x = Mat::make({{1, 0, 0}, {0, 1, 1}, {1, 1, 1}});
-      REQUIRE(matrix_helpers::row_basis(x).size() == 2);
-      REQUIRE(matrix_helpers::row_space_size(x) == 3);
+      REQUIRE(matrix::row_basis(x).size() == 2);
+      REQUIRE(matrix::row_space_size(x) == 3);
       x = Mat::make({{1, 0, 0}, {0, 0, 1}, {0, 1, 0}});
-      REQUIRE(matrix_helpers::row_space_size(x) == 7);
+      REQUIRE(matrix::row_space_size(x) == 7);
       std::vector<typename Mat::RowView> views;
       std::vector<typename Mat::RowView> result;
-      matrix_helpers::row_basis<Mat, std::vector<typename Mat::RowView>&>(
+      matrix::row_basis<Mat, std::vector<typename Mat::RowView>&>(
           views, result);
     }
 
@@ -314,7 +314,7 @@ namespace libsemigroups {
       REQUIRE(m == Mat::make(sr, {{1, 0, 2}, {1, 1, 0}, {2, 1, 1}}));
       REQUIRE(m.row(0) == Row(sr, {1, 0, 2}));
       REQUIRE(m.row(0).size() == 3);
-      auto r = matrix_helpers::rows(m);
+      auto r = matrix::rows(m);
       REQUIRE(r[0] == Row(sr, {1, 0, 2}));
       REQUIRE(r[1] == Row(sr, {1, 1, 0}));
       REQUIRE(r[2] == Row(sr, {2, 1, 1}));
@@ -334,7 +334,7 @@ namespace libsemigroups {
           sr, {{1, 1, 0, 0}, {2, 0, 2, 0}, {1, 2, 3, 9}, {0, 0, 0, 7}});
       REQUIRE(m.number_of_cols() == 4);
       REQUIRE(m.number_of_rows() == 4);
-      auto r = matrix_helpers::rows(m);
+      auto r = matrix::rows(m);
       REQUIRE(r.size() == 4);
       REQUIRE(std::vector<scalar_type>(r[0].cbegin(), r[0].cend())
               == std::vector<scalar_type>({1, 1, 0, 0}));
@@ -396,7 +396,7 @@ namespace libsemigroups {
       Mat  m(sr, {{1, 1, 0, 0}, {2, 0, 2, 0}, {1, 2, 3, 9}, {0, 0, 0, 7}});
       REQUIRE(m.number_of_cols() == 4);
       REQUIRE(m.number_of_rows() == 4);
-      auto r = matrix_helpers::rows(m);
+      auto r = matrix::rows(m);
       REQUIRE(r.size() == 4);
       REQUIRE(r[0] == Row::make(sr, {{1, 1, 0, 0}}));
       REQUIRE(r[1] == Row::make(sr, {{2, 0, 2, 0}}));
@@ -474,7 +474,7 @@ namespace libsemigroups {
         REQUIRE(expected.at(0) == std::array<scalar_type, 2>({0, 0}));
 
         Mat  m(sr, {{1, 1}, {0, 0}});
-        auto r = matrix_helpers::row_basis(m);
+        auto r = matrix::row_basis(m);
         REQUIRE(r.size() == 1);
         REQUIRE(std::vector<scalar_type>(r[0].cbegin(), r[0].cend())
                 == std::vector<scalar_type>({0, 0}));
@@ -482,7 +482,7 @@ namespace libsemigroups {
       {
         Mat m(sr, {{1, 1}, {0, 0}});
         m      = m.identity();
-        auto r = matrix_helpers::row_basis(m);
+        auto r = matrix::row_basis(m);
         REQUIRE(r.size() == 2);
         REQUIRE(std::vector<scalar_type>(r[0].cbegin(), r[0].cend())
                 == std::vector<scalar_type>({NEGATIVE_INFINITY, 0}));
@@ -491,7 +491,7 @@ namespace libsemigroups {
       }
       std::vector<typename Mat::RowView> views;
       std::vector<typename Mat::RowView> result;
-      matrix_helpers::row_basis<Mat>(views, result);
+      matrix::row_basis<Mat>(views, result);
     }
 
     template <typename Mat>
@@ -506,7 +506,7 @@ namespace libsemigroups {
                            {1, NEGATIVE_INFINITY, 0, 0},
                            {0, 1, 0, 1}});
       auto rg = ReportGuard(REPORT);
-      auto r  = matrix_helpers::row_basis(m);
+      auto r  = matrix::row_basis(m);
       REQUIRE(r.size() == 4);
       REQUIRE(r[0] == Row::make(sr, {0, 0, 1, 3}));
       REQUIRE(r[1] == Row::make(sr, {0, 1, 0, 1}));
@@ -657,7 +657,7 @@ namespace libsemigroups {
         auto x        = Mat({{-2, 2, 0}, {-1, 0, 0}, {1, -3, 1}});
         auto expected = Mat({{-2, 2, 0}, {-1, 0, 0}, {1, -3, 1}});
         // Just testing the below doesn't compile
-        // matrix_helpers::row_basis(x);
+        // matrix::row_basis(x);
         REQUIRE(x == expected);
 
         auto y = Mat({{-100, 0, 0}, {0, 1, 0}, {1, -1, 0}});
@@ -816,12 +816,12 @@ namespace libsemigroups {
       REQUIRE(x == Mat({{-4, -3, -1}, {0, -2, -5}, {-2, -2, -1}}));
       x.swap(zz);
       REQUIRE(zz == Mat({{-4, -3, -1}, {0, -2, -5}, {-2, -2, -1}}));
-      REQUIRE(matrix_helpers::pow(x, 100)
+      REQUIRE(matrix::pow(x, 100)
               == Mat({{-1, 0, -1}, {-2, -1, -2}, {-1, 0, -1}}));
-      REQUIRE_THROWS_AS(matrix_helpers::pow(x, -100), LibsemigroupsException);
-      REQUIRE(matrix_helpers::pow(x, 1)
+      REQUIRE_THROWS_AS(matrix::pow(x, -100), LibsemigroupsException);
+      REQUIRE(matrix::pow(x, 1)
               == Mat({{-4, 0, -2}, {-3, -2, -2}, {-1, -5, -1}}));
-      REQUIRE(matrix_helpers::pow(x, 0) == Mat::identity(3));
+      REQUIRE(matrix::pow(x, 0) == Mat::identity(3));
     }
 
   }  // namespace
@@ -1178,13 +1178,13 @@ namespace libsemigroups {
       x.transpose();
       REQUIRE(x == x);
       BMat<> y(2, 1);
-      REQUIRE_THROWS_AS(matrix_helpers::pow(y, 2), LibsemigroupsException);
+      REQUIRE_THROWS_AS(matrix::pow(y, 2), LibsemigroupsException);
     }
     { REQUIRE_THROWS_AS(BMat<>::make({{0, 1}, {0}}), LibsemigroupsException); }
     {
       BMat<> y(2, 2);
       std::fill(y.begin(), y.end(), 0);
-      auto        r   = matrix_helpers::rows(y);
+      auto        r   = matrix::rows(y);
       auto const& val = r[0](0);
       REQUIRE(!val);
       REQUIRE(r[0] + r[1] == r[0]);
@@ -1198,7 +1198,7 @@ namespace libsemigroups {
       using Row = BMat<2>::Row;
       BMat<2> x;
       std::fill(x.begin(), x.end(), 1);
-      auto r = matrix_helpers::rows(x);
+      auto r = matrix::rows(x);
       Row  y(nullptr, r[0]);
       REQUIRE(y == Row({1, 1}));
     }

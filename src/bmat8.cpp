@@ -364,7 +364,7 @@ namespace libsemigroups {
   // BMat8 helpers
   ////////////////////////////////////////////////////////////////////////
 
-  namespace bmat8_helpers {
+  namespace bmat8 {
     size_t minimum_dim(BMat8 const& x) noexcept {
       size_t   i = 0;
       uint64_t c = x.to_int();
@@ -383,5 +383,5 @@ namespace libsemigroups {
 
       return 9 - i;
     }
-  }  // namespace bmat8_helpers
+  }  // namespace bmat8
 }  // namespace libsemigroups

@@ -16,10 +16,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-// This file contains the implementation of the KBE class in include/kbe.hpp
-// and is included directly in knuth-bendix.cpp, because (for reasons of
-// efficiency) it depends on some of the implementational details of the
-// KnuthBendix class.
+// This file contains the implementation of the KBE class.
 
 #include "libsemigroups/kbe.hpp"
 #include "libsemigroups/obvinf.hpp"
@@ -81,8 +78,7 @@ namespace libsemigroups {
   }  // namespace detail
 
   template <>
-  word_type
-  FroidurePin<detail::KBE>::factorisation(detail::KBE const& x) {
+  word_type FroidurePin<detail::KBE>::factorisation(detail::KBE const& x) {
     return x.word(*state());
   }
 

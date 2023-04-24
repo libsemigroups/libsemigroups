@@ -41,7 +41,7 @@ namespace libsemigroups {
     using Perm = decltype(S)::element_type;
     S.add_generator(Perm({0}));
     T.add_generator(Perm({0}));
-    schreier_sims_helper::intersection(U, S, T);
+    schreier_sims::intersection(U, S, T);
     REQUIRE(U.size() == 1);
     REQUIRE(U.contains(Perm({0})));
   }
@@ -55,7 +55,7 @@ namespace libsemigroups {
     using Perm = SchreierSims<2>::element_type;
     S.add_generator(Perm({0, 1}));
     T.add_generator(Perm({1, 0}));
-    schreier_sims_helper::intersection(U, S, T);
+    schreier_sims::intersection(U, S, T);
     REQUIRE(U.size() == 1);
     REQUIRE(U.sift(Perm({1, 0})) == Perm({1, 0}));
     REQUIRE(!U.contains(Perm({1, 0})));
@@ -75,7 +75,7 @@ namespace libsemigroups {
     S.add_generator(Perm({1, 2, 3, 4, 0, 9, 10, 11, 12, 5, 6, 7, 8}));
     // (1, 4)(2, 3)(5, 6, 7, 8, 9, 10, 11, 12)
     T.add_generator(Perm({0, 4, 3, 2, 1, 6, 7, 8, 9, 10, 11, 12, 5}));
-    schreier_sims_helper::intersection(U, S, T);
+    schreier_sims::intersection(U, S, T);
     REQUIRE(U.size() == 2);
     REQUIRE(!U.contains(Perm({1, 0, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12})));
     REQUIRE(U.contains(Perm({0, 1, 2, 3, 4, 9, 10, 11, 12, 5, 6, 7, 8})));
@@ -94,7 +94,7 @@ namespace libsemigroups {
     // (0, 1)(2, 9)(3, 8)(4, 7)(5, 6)
     T.add_generator(Perm({2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 10, 11}));
     T.add_generator(Perm({1, 0, 9, 8, 7, 6, 5, 4, 3, 2, 10, 11}));
-    schreier_sims_helper::intersection(U, S, T);
+    schreier_sims::intersection(U, S, T);
     REQUIRE(U.size() == 5);
     // (0, 6, 2, 8, 4)(1, 7, 3, 9, 5)
     REQUIRE(U.contains(Perm({6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 10, 11})));
@@ -113,7 +113,7 @@ namespace libsemigroups {
     T.add_generator(Perm({1, 0, 7, 5, 6, 3, 4, 2}));
     T.add_generator(Perm({2, 4, 3, 6, 5, 7, 0, 1}));
     T.add_generator(Perm({3, 5, 6, 0, 7, 1, 2, 4}));
-    schreier_sims_helper::intersection(U, S, T);
+    schreier_sims::intersection(U, S, T);
     REQUIRE(U.size() == 4);
     REQUIRE(U.contains(Perm({2, 4, 3, 6, 5, 7, 0, 1})));
   }
@@ -129,7 +129,7 @@ namespace libsemigroups {
     S.add_generator(Perm({1, 2, 4, 0, 3, 5, 6, 7}));
     T.add_generator(Perm({1, 2, 3, 4, 5, 6, 0, 7}));
     T.add_generator(Perm({0, 1, 2, 3, 4, 6, 7, 5}));
-    schreier_sims_helper::intersection(U, S, T);
+    schreier_sims::intersection(U, S, T);
     REQUIRE(U.size() == 10);
     REQUIRE(U.contains(Perm({0, 3, 4, 1, 2, 5, 6, 7})));
     REQUIRE(U.contains(Perm({1, 2, 4, 0, 3, 5, 6, 7})));
@@ -146,7 +146,7 @@ namespace libsemigroups {
     S.add_generator(Perm({1, 2, 4, 0, 3, 5, 6, 7}));
     T.add_generator(Perm({1, 2, 3, 4, 5, 6, 0, 7}));
     T.add_generator(Perm({0, 1, 2, 3, 4, 6, 7, 5}));
-    schreier_sims_helper::intersection(U, T, S);
+    schreier_sims::intersection(U, T, S);
     REQUIRE(U.size() == 10);
     REQUIRE(U.contains(Perm({0, 3, 4, 1, 2, 5, 6, 7})));
     REQUIRE(U.contains(Perm({1, 2, 4, 0, 3, 5, 6, 7})));
@@ -164,7 +164,7 @@ namespace libsemigroups {
     T.add_generator(Perm({1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 0, 11, 12}));
     T.add_generator(Perm({0, 2, 4, 6, 8, 10, 1, 3, 5, 7, 9, 11, 12}));
     T.add_generator(Perm({11, 10, 5, 7, 8, 2, 9, 3, 4, 6, 1, 0, 12}));
-    schreier_sims_helper::intersection(U, S, T);
+    schreier_sims::intersection(U, S, T);
     REQUIRE(U.size() == 660);
     REQUIRE(U.contains(Perm({1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 0, 11, 12})));
     REQUIRE(U.contains(Perm({0, 4, 8, 1, 5, 9, 2, 6, 10, 3, 7, 11, 12})));
@@ -183,7 +183,7 @@ namespace libsemigroups {
     T.add_generator(Perm({1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 0, 11, 12}));
     T.add_generator(Perm({0, 2, 4, 6, 8, 10, 1, 3, 5, 7, 9, 11, 12}));
     T.add_generator(Perm({11, 10, 5, 7, 8, 2, 9, 3, 4, 6, 1, 0, 12}));
-    schreier_sims_helper::intersection(U, T, S);
+    schreier_sims::intersection(U, T, S);
     REQUIRE(U.size() == 660);
     REQUIRE(U.contains(Perm({1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 0, 11, 12})));
     REQUIRE(U.contains(Perm({0, 4, 8, 1, 5, 9, 2, 6, 10, 3, 7, 11, 12})));
@@ -213,7 +213,7 @@ namespace libsemigroups {
                           13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
                           26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 37, 38, 36,
                           39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49}));
-    schreier_sims_helper::intersection(U, S, T);
+    schreier_sims::intersection(U, S, T);
     REQUIRE(U.size() == 177843714048000);
     REQUIRE(U.contains(Perm({1,  2,  3,  4,  5,  6,  7,  8,  9,  10, 11, 12, 13,
                              14, 15, 16, 0,  17, 18, 19, 20, 21, 22, 23, 24, 25,
@@ -256,7 +256,7 @@ namespace libsemigroups {
                           32, 28, 46, 19, 38, 39, 16, 45, 35, 9,  30, 43, 48,
                           33, 12, 14, 44, 23, 8,  13, 26, 47, 21, 11, 40, 17,
                           18, 37, 10, 42, 24, 29, 20, 15, 34, 25, 0}));
-    schreier_sims_helper::intersection(U, S, T);
+    schreier_sims::intersection(U, S, T);
     REQUIRE(U.size() == 58800);
     REQUIRE(U.contains(Perm({1,  2,  3,  4,  5,  6,  0,  8,  9,  10, 11, 12, 13,
                              7,  15, 16, 17, 18, 19, 20, 14, 22, 23, 24, 25, 26,
@@ -299,7 +299,7 @@ namespace libsemigroups {
     T.add_generator(
         Perm({1,  2,  0,  4,  5,  3,  7,  8,  6,  10, 11, 9,  13, 14,
               12, 16, 17, 15, 19, 20, 18, 22, 23, 21, 25, 26, 24}));
-    schreier_sims_helper::intersection(U, S, T);
+    schreier_sims::intersection(U, S, T);
     REQUIRE(U.size() == 27);
     REQUIRE(
         U.contains(Perm({1,  2,  0,  4,  5,  3,  7,  8,  6,  10, 11, 9,  13, 14,
@@ -355,7 +355,7 @@ namespace libsemigroups {
          72, 42, 62, 92, 2,  82, 32, 12, 52, 20, 70, 40, 60, 90, 0,  80, 30,
          10, 50, 27, 77, 47, 67, 97, 7,  87, 37, 17, 57, 26, 76, 46, 66, 96,
          6,  86, 36, 16, 56, 21, 71, 41, 61, 91, 1,  81, 31, 11, 51}));
-    schreier_sims_helper::intersection(U, S, T);
+    schreier_sims::intersection(U, S, T);
     REQUIRE(U.size() == 2);
     REQUIRE(U.contains(Perm(
         {11, 1,  91, 81, 71, 61, 51, 41, 31, 21, 10, 0,  90, 80, 70, 60, 50,
@@ -401,7 +401,7 @@ namespace libsemigroups {
          10, 70, 50, 40, 90, 0,  30, 60, 80, 26, 16, 76, 56, 46, 96, 6,  36,
          66, 86, 23, 13, 73, 53, 43, 93, 3,  33, 63, 83, 22, 12, 72, 52, 42,
          92, 2,  32, 62, 82, 29, 19, 79, 59, 49, 99, 9,  39, 69, 89}));
-    schreier_sims_helper::intersection(U, S, T);
+    schreier_sims::intersection(U, S, T);
     REQUIRE(U.size() == 4);
     REQUIRE(U.contains(Perm(
         {1,  11, 21, 31, 41, 51, 61, 71, 81, 91, 0,  10, 20, 30, 40, 50, 60,
@@ -435,7 +435,7 @@ namespace libsemigroups {
     T.add_generator(
         Perm({1,  2,  0,  4,  5,  3,  7,  8,  6,  10, 11, 9,  13, 14,
               12, 16, 17, 15, 19, 20, 18, 22, 23, 21, 25, 26, 24}));
-    schreier_sims_helper::intersection(U, S, T);
+    schreier_sims::intersection(U, S, T);
     REQUIRE(U.size() == 648);
     REQUIRE(
         U.contains(Perm({0,  9, 18, 6,  15, 24, 3,  12, 21, 1,  10, 19, 7, 16,
@@ -487,7 +487,7 @@ namespace libsemigroups {
                           11, 15, 17, 19, 16, 14, 20, 18, 22, 24, 26, 23, 21,
                           27, 25, 29, 31, 33, 30, 28, 34, 32, 36, 38, 40, 37,
                           35, 41, 39, 43, 45, 47, 44, 42, 48, 46}));
-    schreier_sims_helper::intersection(U, S, T);
+    schreier_sims::intersection(U, S, T);
     REQUIRE(U.size() == 98);
     REQUIRE(U.contains(Perm({0,  4,  5,  6,  1,  2,  3,  28, 32, 33, 34, 29, 30,
                              31, 35, 39, 40, 41, 36, 37, 38, 42, 46, 47, 48, 43,
@@ -526,7 +526,7 @@ namespace libsemigroups {
         {1,  2,  18, 48, 35, 11, 24, 20, 40, 30, 37, 36, 10, 5,  34, 4,  13, 47,
          3,  15, 25, 43, 29, 9,  12, 16, 52, 0,  27, 44, 41, 39, 8,  23, 6,  49,
          38, 31, 50, 42, 21, 45, 51, 26, 28, 22, 33, 14, 19, 7,  32, 46, 17}));
-    schreier_sims_helper::intersection(U, S, T);
+    schreier_sims::intersection(U, S, T);
     REQUIRE(U.size() == 53);
     REQUIRE(U.contains(Perm(
         {1,  2,  18, 48, 35, 11, 24, 20, 40, 30, 37, 36, 10, 5,  34, 4,  13, 47,
@@ -566,7 +566,7 @@ namespace libsemigroups {
               32, 16, 56, 48, 24, 8,  40, 0, 35, 19, 59, 51, 27, 11, 43, 3,
               33, 17, 57, 49, 25, 9,  41, 1, 34, 18, 58, 50, 26, 10, 42, 2,
               36, 20, 60, 52, 28, 12, 44, 4, 38, 22, 62, 54, 30, 14, 46, 6}));
-    schreier_sims_helper::intersection(U, S, T);
+    schreier_sims::intersection(U, S, T);
     REQUIRE(U.contains(Perm({3,  2,  1,  0,  7,  6,  5,  4,  11, 10, 9,  8,  15,
                              14, 13, 12, 19, 18, 17, 16, 23, 22, 21, 20, 27, 26,
                              25, 24, 31, 30, 29, 28, 35, 34, 33, 32, 39, 38, 37,
@@ -627,7 +627,7 @@ namespace libsemigroups {
               17, 16, 19, 18, 21, 20, 23, 22, 25, 24, 27, 26, 29, 28, 31, 30,
               33, 32, 35, 34, 37, 36, 39, 38, 41, 40, 43, 42, 45, 44, 47, 46,
               49, 48, 51, 50, 53, 52, 55, 54, 57, 56, 59, 58, 61, 60, 63, 62}));
-    schreier_sims_helper::intersection(U, S, T);
+    schreier_sims::intersection(U, S, T);
     REQUIRE(U.size() == 64);
     REQUIRE(U.contains(Perm({1,  0,  3,  2,  5,  4,  7,  6,  9,  8,  11, 10, 13,
                              12, 15, 14, 17, 16, 19, 18, 21, 20, 23, 22, 25, 24,
@@ -722,7 +722,7 @@ namespace libsemigroups {
          85,  106, 89,  66,  39,  53,  100, 67,  98, 86,  37,  127, 68, 122, 93,
          7,   81,  56,  42,  114, 32,  30,  111, 11, 54,  118, 117, 52, 9,   57,
          105, 62,  125, 124, 60,  103, 3,   84}));
-    schreier_sims_helper::intersection(U, S, T);
+    schreier_sims::intersection(U, S, T);
     REQUIRE(U.size() == 8);
     REQUIRE(U.contains(
         Perm({31,  30,  29,  28,  27,  26,  25,  24,  23,  22,  21,  20,  19,
@@ -806,7 +806,7 @@ namespace libsemigroups {
               90,  93,  92,  95,  94,  97,  96,  99,  98,  101, 100, 103, 102,
               105, 104, 107, 106, 109, 108, 111, 110, 113, 112, 115, 114, 117,
               116, 119, 118, 121, 120, 123, 122, 125, 124, 127, 126}));
-    schreier_sims_helper::intersection(U, S, T);
+    schreier_sims::intersection(U, S, T);
     REQUIRE(U.size() == 4);
     REQUIRE(U.contains(
         Perm({63,  62,  61,  60,  59,  58,  57,  56,  55,  54,  53,  52,  51,
@@ -880,7 +880,7 @@ namespace libsemigroups {
          30,  100, 42,  59,  29,  56,  15,  105, 89, 22,  95,  90, 62,  87,
          98,  27,  115, 64,  75,  54,  12,  102, 45, 110, 50,  47, 23,  18,
          118, 78,  85,  114, 70,  48,  11,  68}));
-    schreier_sims_helper::intersection(U, S, T);
+    schreier_sims::intersection(U, S, T);
     REQUIRE(U.size() == 20160);
     REQUIRE(U.contains(Perm(
         {0,   115, 24,  104, 82,  16, 88,  86,  106, 9,   39,  118, 40,  70,
@@ -973,7 +973,7 @@ namespace libsemigroups {
               77, 34, 20,  6,  35, 95, 103, 43, 81,  61, 78,  27, 92, 62, 2,
               70, 74, 15,  76, 1,  32, 23,  0,  104, 80, 102, 82, 52, 41, 57,
               55, 83, 10,  17, 26, 93, 39,  33, 4,   97, 67,  48, 96, 60, 94}));
-    schreier_sims_helper::intersection(U, S, T);
+    schreier_sims::intersection(U, S, T);
     REQUIRE(U.size() == 20160);
     REQUIRE(U.contains(Perm(
         {0,  1,   17, 47, 4,  5,  41, 21,  18,  9,   10, 51, 76, 38, 77,
@@ -1096,7 +1096,7 @@ namespace libsemigroups {
          35, 33, 37, 38, 36, 40, 41, 39, 43, 44, 42, 46, 47, 45, 49, 50, 48,
          52, 53, 51, 55, 56, 54, 58, 59, 57, 61, 62, 60, 64, 65, 63, 67, 68,
          66, 70, 71, 69, 73, 74, 72, 76, 77, 75, 79, 80, 78}));
-    schreier_sims_helper::intersection(U, S, T);
+    schreier_sims::intersection(U, S, T);
     REQUIRE(U.size() == 162);
     REQUIRE(U.contains(Perm(
         {0,  9,  18, 27, 36, 45, 54, 63, 72, 1,  10, 19, 28, 37, 46, 55, 64,

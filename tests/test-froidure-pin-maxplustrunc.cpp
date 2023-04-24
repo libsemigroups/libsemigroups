@@ -150,14 +150,14 @@ namespace libsemigroups {
     }
     {
       auto const& x  = S[4];
-      auto        rb = matrix_helpers::row_basis(x);
+      auto        rb = matrix::row_basis(x);
       REQUIRE(rb.size() == 1);
       REQUIRE(rb[0] == Row({3, 5}));
       REQUIRE(x.row(0) == Row({3, 5}));
       REQUIRE(x.row(1) == Row({5, 7}));
 
       std::vector<std::array<int64_t, 2>> expected;
-      for (auto& r : matrix_helpers::rows(x)) {
+      for (auto& r : matrix::rows(x)) {
         std::array<int64_t, 2> rr;
         std::copy(r.cbegin(), r.cend(), rr.begin());
         expected.push_back(rr);
@@ -169,9 +169,9 @@ namespace libsemigroups {
     }
 
     for (auto const& x : S) {
-      auto                                rb = matrix_helpers::row_basis(x);
+      auto                                rb = matrix::row_basis(x);
       std::vector<std::array<int64_t, 2>> expected;
-      for (auto& r : matrix_helpers::rows(x)) {
+      for (auto& r : matrix::rows(x)) {
         std::array<int64_t, 2> rr;
         std::copy(r.cbegin(), r.cend(), rr.begin());
         expected.push_back(rr);

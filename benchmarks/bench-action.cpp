@@ -110,7 +110,7 @@ namespace libsemigroups {
         res.push_back(std::move(cup));
       }
       std::vector<std::vector<bool>> tmp;
-      matrix_helpers::row_basis<Mat>(res, tmp);
+      matrix::row_basis<Mat>(res, tmp);
       std::swap(tmp, res);
     }
   };

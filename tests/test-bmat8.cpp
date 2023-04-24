@@ -417,15 +417,15 @@ namespace libsemigroups {
     BMat8 one   = BMat8::one();
 
     REQUIRE(one.number_of_rows() == 8);
-    REQUIRE(bmat8_helpers::number_of_cols(one) == 8);
+    REQUIRE(bmat8::number_of_cols(one) == 8);
     for (size_t i = 0; i < 7; ++i) {
       idem1.set(i, i, false);
       idem2.set(7 - i, 7 - i, false);
 
       REQUIRE(idem1.number_of_rows() == 7 - i);
-      REQUIRE(bmat8_helpers::number_of_cols(idem1) == 7 - i);
+      REQUIRE(bmat8::number_of_cols(idem1) == 7 - i);
       REQUIRE(idem2.number_of_rows() == 7 - i);
-      REQUIRE(bmat8_helpers::number_of_cols(idem2) == 7 - i);
+      REQUIRE(bmat8::number_of_cols(idem2) == 7 - i);
     }
 
     const std::vector<BMat8> gens
@@ -443,8 +443,8 @@ namespace libsemigroups {
 
       REQUIRE((*it).row_space_basis().number_of_rows()
               <= (*it).number_of_rows());
-      REQUIRE(bmat8_helpers::number_of_cols((*it).col_space_basis())
-              <= bmat8_helpers::number_of_cols(*it));
+      REQUIRE(bmat8::number_of_cols((*it).col_space_basis())
+              <= bmat8::number_of_cols(*it));
     }
   }
 
@@ -455,15 +455,15 @@ namespace libsemigroups {
     BMat8 one   = BMat8::one();
 
     REQUIRE(one.row_space_size() == 256);
-    REQUIRE(bmat8_helpers::col_space_size(one) == 256);
+    REQUIRE(bmat8::col_space_size(one) == 256);
     for (size_t i = 0; i < 8; ++i) {
       idem1.set(7 - i, 7 - i, false);
       idem2.set(i, i, false);
 
       REQUIRE(idem1.row_space_size() == pow(2, 7 - i));
-      REQUIRE(bmat8_helpers::col_space_size(idem1) == pow(2, 7 - i));
+      REQUIRE(bmat8::col_space_size(idem1) == pow(2, 7 - i));
       REQUIRE(idem2.row_space_size() == pow(2, 7 - i));
-      REQUIRE(bmat8_helpers::col_space_size(idem2) == pow(2, 7 - i));
+      REQUIRE(bmat8::col_space_size(idem2) == pow(2, 7 - i));
     }
 
     const std::vector<BMat8> gens
@@ -480,17 +480,17 @@ namespace libsemigroups {
       BMat8 rows = x.row_space_basis();
       BMat8 cols = x.col_space_basis();
       REQUIRE(x.row_space_size() <= 16);
-      REQUIRE(bmat8_helpers::col_space_size(x) <= 16);
+      REQUIRE(bmat8::col_space_size(x) <= 16);
 
       REQUIRE(rows.row_space_size() <= pow(2, rows.number_of_rows()));
-      REQUIRE(bmat8_helpers::col_space_size(cols)
-              <= pow(2, bmat8_helpers::number_of_cols(cols)));
+      REQUIRE(bmat8::col_space_size(cols)
+              <= pow(2, bmat8::number_of_cols(cols)));
 
       for (auto it2 = S.begin(); it2 < S.end(); it2++) {
         BMat8 y = *it2;
         REQUIRE((x * y).row_space_size() <= x.row_space_size());
-        REQUIRE(bmat8_helpers::col_space_size(x * y)
-                <= bmat8_helpers::col_space_size(x));
+        REQUIRE(bmat8::col_space_size(x * y)
+                <= bmat8::col_space_size(x));
       }
     }
 
@@ -582,9 +582,9 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("BMat8", "014", "one", "[quick]") {
     auto rg = ReportGuard(REPORT);
     for (size_t i = 1; i <= 8; ++i) {
-      BMat8 x = bmat8_helpers::one<BMat8>(i);
+      BMat8 x = bmat8::one<BMat8>(i);
       REQUIRE(x * x == x);
-      REQUIRE(bmat8_helpers::minimum_dim(x) == i);
+      REQUIRE(bmat8::minimum_dim(x) == i);
     }
   }
 
@@ -650,7 +650,7 @@ namespace libsemigroups {
     REQUIRE(Degree<BMat8>()(bm1) == 8);
     REQUIRE_NOTHROW(IncreaseDegree<BMat8>()(bm1, 0));
     REQUIRE(One<BMat8>()(bm1) == bm1.one());
-    REQUIRE(One<BMat8>()(4) == bmat8_helpers::one<BMat8>(4));
+    REQUIRE(One<BMat8>()(4) == bmat8::one<BMat8>(4));
 
     BMat8 bm2 = BMat8::random();
     BMat8 bm3, bm4;

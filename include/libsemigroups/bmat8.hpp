@@ -34,7 +34,7 @@
 #include "string.hpp"    // for detail::to_string
 
 namespace libsemigroups {
-  namespace bmat8_helpers {
+  namespace bmat8 {
     //! Returns the identity boolean matrix of a given dimension.
     //!
     //! \tparam T the type of the boolean matrix being constructed, should be
@@ -69,7 +69,7 @@ namespace libsemigroups {
                                                    0x8040201008040201};
       return T(ones[dim]);
     }
-  }  // namespace bmat8_helpers
+  }  // namespace bmat8
 
   //! Defined in ``bmat8.hpp``.
   //!
@@ -488,7 +488,7 @@ namespace libsemigroups {
     //! \par Parameters
     //! (None)
     //!
-    //! \sa bmat8_helpers::col_space_size.
+    //! \sa bmat8::col_space_size.
     size_t row_space_size() const;
 
     //! Returns the number of non-zero rows in \c this.
@@ -509,7 +509,7 @@ namespace libsemigroups {
     //! \par Parameters
     //! (None)
     //!
-    //! \sa bmat8_helpers::number_of_cols and bmat8_helpers::minimum_dim.
+    //! \sa bmat8::number_of_cols and bmat8::minimum_dim.
     size_t number_of_rows() const noexcept {
       size_t count = 0;
       for (size_t i = 0; i < 8; ++i) {
@@ -560,7 +560,7 @@ namespace libsemigroups {
     //! \complexity
     //! Constant.
     static BMat8 one(size_t dim = 8) noexcept {
-      return bmat8_helpers::one<BMat8>(dim);
+      return bmat8::one<BMat8>(dim);
     }
 
    private:
@@ -580,7 +580,7 @@ namespace libsemigroups {
   //! These functions could be member functions of BMat8 but they only use
   //! public member functions of BMat8, and so they are declared as free
   //! functions instead.
-  namespace bmat8_helpers {
+  namespace bmat8 {
     // TODO(later) these should be templated to allow using HPCombi::BMat8's
     // here too.
     //! Returns the number of non-zero columns in \p x.
@@ -600,7 +600,7 @@ namespace libsemigroups {
     //! \complexity
     //! Constant.
     //!
-    //! \sa BMat8::number_of_rows and bmat8_helpers::minimum_dim.
+    //! \sa BMat8::number_of_rows and bmat8::minimum_dim.
     // noexcept because transpose and number_of_rows are.
     static inline size_t number_of_cols(BMat8 const& x) noexcept {
       return x.transpose().number_of_rows();
@@ -639,7 +639,7 @@ namespace libsemigroups {
     //! Constant.
     size_t minimum_dim(BMat8 const& x) noexcept;
 
-  }  // namespace bmat8_helpers
+  }  // namespace bmat8
 }  // namespace libsemigroups
 
 namespace std {

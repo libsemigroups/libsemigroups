@@ -145,7 +145,7 @@ namespace libsemigroups {
   TEST_CASE("BMat4", "[quick][004]") {
     auto m = BMat<>::identity(16);
     BENCHMARK("rowspace size") {
-      REQUIRE(matrix_helpers::row_space_size(m) == 65535);
+      REQUIRE(matrix::row_space_size(m) == 65535);
     };
   }
 }  // namespace libsemigroups
