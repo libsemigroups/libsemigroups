@@ -16,8 +16,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-// This file contains stuff for creating congruence over FroidurePinBase objects
-// or over FpSemigroup objects.
+// This file contains stuff for creating congruence over FroidurePinBase
+// objects or over Presentation objects.
 
 #include "libsemigroups/cong.hpp"
 
@@ -39,27 +39,6 @@ namespace libsemigroups {
   // Congruence - constructors - public
   //////////////////////////////////////////////////////////////////////////
 
-  Congruence::Congruence(congruence_kind type)
-      : CongruenceInterface(type), _race(), _initted(false) {}
-
-  // TODO(v3) to_congruence
-  // Congruence::Congruence(congruence_kind                  type,
-  //                        std::shared_ptr<FroidurePinBase> S)
-  //     : Congruence(type) {
-  //   _race.max_threads(POSITIVE_INFINITY);
-  //   auto tc1
-  //       = std::make_shared<ToddCoxeter>(type,
-  //       to_presentation<word_type>(*S));
-  //   _race.add_runner(tc1);
-
-  //   // TODO if necessary make a runner that tries to S.run(), then get the
-  //   // Cayley graph and use that in the ToddCoxeter, at present that'll
-  //   happen
-  //   // here in the constructor
-  //   auto tc2 = std::make_shared<ToddCoxeter>(type, to_todd_coxeter(type,
-  //   *S)); _race.add_runner(tc2);
-  // }
-
   Congruence::Congruence(congruence_kind type, Presentation<word_type> const& p)
       : Congruence(type) {
     _race.max_threads(POSITIVE_INFINITY);
@@ -71,6 +50,65 @@ namespace libsemigroups {
     // TODO add a Runner that tries to create a ToddCoxeter using the Cayley
     // graph of some FroidurePin
     // TODO Felsch Todd-Coxeter
+  }
+
+  Congruence::Congruence(congruence_kind type, FroidurePinBase& S)
+      : Congruence(type) {
+    if (S.is_finite() != tril::FALSE) {
+      S.run();
+    } else {
+      LIBSEMIGROUPS_EXCEPTION_V3("TODO");
+    }
+    _race.max_threads(POSITIVE_INFINITY);
+
+    auto p  = to_presentation<word_type>(S);
+    auto tc = std::make_shared<ToddCoxeter>(type, p);
+    _race.add_runner(tc);
+    tc = std::make_shared<ToddCoxeter>(type, p);
+    tc->strategy(ToddCoxeter::options::strategy::felsch);
+    _race.add_runner(tc);
+
+    // TODO if necessary make a runner that tries to S.run(), then get the
+    // Cayley graph and use that in the ToddCoxeter, at present that'll happen
+    // here in the constructor
+    tc = std::make_shared<ToddCoxeter>(to_todd_coxeter(type, S));
+    _race.add_runner(tc);
+    tc = std::make_shared<ToddCoxeter>(type, p);
+    tc->strategy(ToddCoxeter::options::strategy::felsch);
+    _race.add_runner(tc);
+    if (p.rules.size() < 256) {
+      // TODO(later) at present if there are lots of rules it takes a long
+      // time to construct a KnuthBendix instance
+      // FIXME something goes wrong in Congruence 023, when KnuthBendix is
+      // used, it doesn't get killed
+      _race.add_runner(std::make_shared<KnuthBendix>(type, p));
+    }
+  }
+
+  void Congruence::init() {
+    if (!_initted) {
+      _initted = true;
+      for (auto& runner : _race) {
+        auto first = generating_pairs().cbegin();
+        auto last  = generating_pairs().cend();
+        for (auto it = first; it != last; it += 2) {
+          std::static_pointer_cast<CongruenceInterface>(runner)
+              ->add_pair_no_checks_no_reverse(*it, *(it + 1));
+        }
+      }
+    }
+  }
+
+  void Congruence::run_impl() {
+    init();
+    if (kambites() != nullptr) {
+      if (kambites()->small_overlap_class() >= 4) {
+        // Race always checks for finished in the other runners, and the
+        // kambites is finished and will be declared the winner.
+        return;
+      }
+    }
+    _race.run_until([this]() { return this->stopped(); });
   }
 
   namespace congruence {

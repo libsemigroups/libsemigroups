@@ -64,6 +64,12 @@ namespace libsemigroups {
   //! cong.number_of_classes(); // 3
   //! \endcode
   class Congruence : public CongruenceInterface {
+    /////////////////////////////////////////////////////////////////////////
+    // Congruence - data - private
+    /////////////////////////////////////////////////////////////////////////
+    detail::Race _race;
+    bool         _initted;
+
    public:
     //////////////////////////////////////////////////////////////////////////
     // Congruence - constructors - public
@@ -82,7 +88,9 @@ namespace libsemigroups {
     //! Constant.
     //!
     //! \sa set_number_of_generators and add_pair.
-    explicit Congruence(congruence_kind type);
+    explicit Congruence(congruence_kind type)
+        : CongruenceInterface(type), _race(), _initted(false) {}
+    // TODO init
 
     //! Construct from kind (left/right/2-sided) and FroidurePin.
     //!
@@ -104,65 +112,15 @@ namespace libsemigroups {
     //! \warning the parameter `T const& S` is copied, this might be expensive,
     //! use a std::shared_ptr to avoid the copy!
     // template <typename T>
-    // TODO to cpp file
-    Congruence(congruence_kind type, FroidurePinBase& S) : Congruence(type) {
-      if (S.is_finite() != tril::FALSE) {
-        S.run();
-      } else {
-        LIBSEMIGROUPS_EXCEPTION_V3("TODO");
-      }
-      _race.max_threads(POSITIVE_INFINITY);
+    Congruence(congruence_kind type, FroidurePinBase& S);
 
-      auto p  = to_presentation<word_type>(S);
-      auto tc = std::make_shared<ToddCoxeter>(type, p);
-      _race.add_runner(tc);
-      tc = std::make_shared<ToddCoxeter>(type, p);
-      tc->strategy(ToddCoxeter::options::strategy::felsch);
-      _race.add_runner(tc);
-
-      // TODO if necessary make a runner that tries to S.run(), then get the
-      // Cayley graph and use that in the ToddCoxeter, at present that'll happen
-      // here in the constructor
-      tc = std::make_shared<ToddCoxeter>(to_todd_coxeter(type, S));
-      _race.add_runner(tc);
-      tc = std::make_shared<ToddCoxeter>(type, p);
-      tc->strategy(ToddCoxeter::options::strategy::felsch);
-      _race.add_runner(tc);
-      if (p.rules.size() < 256) {
-        // TODO(later) at present if there are lots of rules it takes a long
-        // time to construct a KnuthBendix instance
-        // FIXME something goes wrong in Congruence 023, when KnuthBendix is
-        // used, it doesn't get killed
-        _race.add_runner(std::make_shared<KnuthBendix>(type, p));
-      }
-    }
-
-    //! Construct from kind (left/right/2-sided) and shared pointer to
-    //! FroidurePin.
+    //! Construct from kind (left/right/2-sided) and Presentation.
     //!
-    //! Constructs a Congruence over the FroidurePin instance \p S
+    //! Constructs a Congruence over the Presentation instance \p p
     //! representing a left/right/2-sided congruence according to \p type.
+    //!
     //! \param type whether the congruence is left, right, or 2-sided
-    //! \param S  a shared_ptr to the semigroup over which the congruence is
-    //! defined.
-    //!
-    //! \exceptions
-    //! \no_libsemigroups_except
-    //!
-    //! \complexity
-    //! Constant.
-    //!
-    //! \note
-    //! The FroidurePinBase pointed to by \p S is not copied.
-    // Congruence(congruence_kind type, std::shared_ptr<FroidurePinBase> S);
-
-    //! Construct from kind (left/right/2-sided) and FpSemigroup.
-    //!
-    //! Constructs a Congruence over the FpSemigroup instance \p S
-    //! representing a left/right/2-sided congruence according to \p type.
-    //! \param type whether the congruence is left, right, or 2-sided
-    //! \param S  a const reference to the finitely presented semigroup over
-    //! which the congruence is defined.
+    //! \param p  a const reference to the presentation.
     //!
     //! \exceptions
     //! \no_libsemigroups_except
@@ -216,9 +174,24 @@ namespace libsemigroups {
           ->contains(u, v);
     }
 
+    void validate_word(word_type const&) const override {
+      // Do nothing
+    }
+
     //////////////////////////////////////////////////////////////////////////
     // Congruence - member functions - public
     //////////////////////////////////////////////////////////////////////////
+
+    template <typename Thing>
+    std::shared_ptr<Thing> get() {
+      init();
+      return _race.find_runner<Thing>();
+    }
+
+    template <typename Thing>
+    [[nodiscard]] bool get() {
+      return get<Thing>() != nullptr;
+    }
 
     //! Returns the KnuthBendix instance used to compute the congruence (if
     //! any).
@@ -235,6 +208,7 @@ namespace libsemigroups {
     //! Constant.
     //!
     //! \sa has_knuth_bendix().
+    // TODO remove
     std::shared_ptr<KnuthBendix> knuth_bendix() {
       init();
       return _race.find_runner<KnuthBendix>();
@@ -255,6 +229,7 @@ namespace libsemigroups {
     //! Constant.
     //!
     //! \sa knuth_bendix().
+    // TODO remove
     bool has_knuth_bendix() {
       return knuth_bendix() != nullptr;
     }
@@ -274,6 +249,7 @@ namespace libsemigroups {
     //! Constant.
     //!
     //! \sa has_todd_coxeter().
+    // TODO remove
     std::shared_ptr<ToddCoxeter> todd_coxeter() {
       init();
       return _race.find_runner<ToddCoxeter>();
@@ -293,6 +269,7 @@ namespace libsemigroups {
     //! Constant.
     //!
     //! \sa has_kambites().
+    // TODO remove
     std::shared_ptr<Kambites<word_type>> kambites() {
       init();
       return _race.find_runner<Kambites<word_type>>();
@@ -313,6 +290,7 @@ namespace libsemigroups {
     //! Constant.
     //!
     //! \sa todd_coxeter.
+    // TODO remove
     bool has_todd_coxeter() {
       return todd_coxeter() != nullptr;
     }
@@ -332,40 +310,9 @@ namespace libsemigroups {
     //! Constant.
     //!
     //! \sa \ref kambites.
+    // TODO remove
     bool has_kambites() {
       return kambites() != nullptr;
-    }
-
-    // The next function is required by the GAP package Semigroups.
-    //! Adds a class derived from CongruenceInterface to the algorithms used to
-    //! compute the congruence.
-    //!
-    //! This function adds the algorithm represented by the parameter \p r to
-    //! the list of runners that are invoked when \ref run is called.
-    //!
-    //! \tparam T a type derived from CongruenceInterface.
-    //!
-    //! \param r a const reference to an instance of a type derived from
-    //! CongruenceInterface.
-    //!
-    //! \returns
-    //! (None)
-    //!
-    //! \throws
-    //! LibsemigroupsException if started() returns \c true.
-    //!
-    //! \warning
-    //! It's the responsibility of the caller to ensure that \p r is compatible
-    //! with any existing CongruenceInterface instances in \c this.
-    template <typename T>
-    void add_runner(T const& r) {
-      static_assert(std::is_base_of<Runner, T>::value,
-                    "the template parameter T must be a derived class of "
-                    "CongruenceInterface");
-      if (started()) {
-        LIBSEMIGROUPS_EXCEPTION("cannot add a runner at this stage");
-      }
-      _race.add_runner(std::make_shared<T>(r));
     }
 
     //! Get the current maximum number of threads.
@@ -381,7 +328,7 @@ namespace libsemigroups {
     //!
     //! \parameters
     //! (None)
-    size_t max_threads() const noexcept {
+    [[nodiscard]] size_t max_threads() const noexcept {
       return _race.max_threads();
     }
 
@@ -401,55 +348,25 @@ namespace libsemigroups {
       return *this;
     }
 
-    void validate_word(word_type const&) const override {
-      // TODO impl, or remove from CongruenceInterface
-    }
-
-    size_t number_of_runners() const noexcept {
+    [[nodiscard]] size_t number_of_runners() const noexcept {
       return _race.number_of_runners();
     }
 
    private:
     //////////////////////////////////////////////////////////////////////////
-    // CongruenceInterface - pure virtual member functions - private
+    // Congruence - member functions - private
     //////////////////////////////////////////////////////////////////////////
 
-    // TODO to cpp file
-    void run_impl() override {
-      init();
-      if (kambites() != nullptr) {
-        if (kambites()->small_overlap_class() >= 4) {
-          // Race always checks for finished in the other runners, and the
-          // kambites is finished and will be declared the winner.
-          return;
-        }
-      }
-      _race.run_until([this]() { return this->stopped(); });
-    }
+    void init();
 
+    //////////////////////////////////////////////////////////////////////////
+    // Runner - pure virtual member functions - private
+    //////////////////////////////////////////////////////////////////////////
+
+    void run_impl() override;
     bool finished_impl() const override {
       return _race.finished();
     }
-
-    void init() {
-      if (!_initted) {
-        _initted = true;
-        for (auto& runner : _race) {
-          auto first = generating_pairs().cbegin();
-          auto last  = generating_pairs().cend();
-          for (auto it = first; it != last; it += 2) {
-            std::static_pointer_cast<CongruenceInterface>(runner)
-                ->add_pair_no_checks_no_reverse(*it, *(it + 1));
-          }
-        }
-      }
-    }
-
-    /////////////////////////////////////////////////////////////////////////
-    // Congruence - data - private
-    /////////////////////////////////////////////////////////////////////////
-    detail::Race _race;
-    bool         _initted;
   };
 
   namespace congruence {
