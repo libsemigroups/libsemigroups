@@ -18,20 +18,16 @@
 
 // This file contains a base class for congruence-like classes.
 
-#ifndef LIBSEMIGROUPS_CONG_INTF_NEW_HPP_
-#define LIBSEMIGROUPS_CONG_INTF_NEW_HPP_
+#ifndef LIBSEMIGROUPS_CONG_INTF_HPP_
+#define LIBSEMIGROUPS_CONG_INTF_HPP_
 
 #include <cstddef>           // for size_t
+#include <cstdint>           // for uint64_t
 #include <initializer_list>  // for initializer_list
-#include <memory>            // for shared_ptr, operator!=, make_shared
-#include <string>            // for string
-#include <type_traits>       // for enable_if_t, is_base_of
 #include <vector>            // for vector, operator==, vector<>::const_iter...
 
 #include "runner.hpp"  // for Runner
 #include "types.hpp"   // for word_type, relation_type, letter_type, tril
-
-#include "rx/ranges.hpp"  // iterator_range
 
 namespace libsemigroups {
   class Congruence;  // forward decl
@@ -50,17 +46,29 @@ namespace libsemigroups {
     std::vector<word_type> _generating_pairs;
     congruence_kind        _type;
 
+    friend class ::libsemigroups::Congruence;
+
    public:
     ////////////////////////////////////////////////////////////////////////////
     // CongruenceInterface - constructors + destructor - public
     ////////////////////////////////////////////////////////////////////////////
 
-    //! Constructs a congruence of the specified type.
-    explicit CongruenceInterface(congruence_kind);
-    void init(congruence_kind);
-
     CongruenceInterface() = default;
-    void init();
+
+    CongruenceInterface& init() {
+      Runner::init();
+      return *this;
+    }
+
+    //! Constructs a congruence of the specified type.
+    explicit CongruenceInterface(congruence_kind type)
+        : Runner(), _type(type) {}
+
+    CongruenceInterface& init(congruence_kind type) {
+      Runner::init();
+      _type = type;
+      return *this;
+    }
 
     //! Default copy constructor.
     CongruenceInterface(CongruenceInterface const&)            = default;
@@ -68,7 +76,7 @@ namespace libsemigroups {
     CongruenceInterface& operator=(CongruenceInterface const&) = default;
     CongruenceInterface& operator=(CongruenceInterface&&)      = default;
 
-    virtual ~CongruenceInterface();
+    virtual ~CongruenceInterface() = default;
 
     ////////////////////////////////////////////////////////////////////////////
     // CongruenceInterface - pure virtual - public
@@ -92,8 +100,12 @@ namespace libsemigroups {
     //! \par Parameters
     //! (None)
     [[nodiscard]] virtual uint64_t number_of_classes() = 0;
+
+    // TODO(doc)
     [[nodiscard]] virtual bool contains(word_type const& u, word_type const& v)
         = 0;
+
+    virtual void validate_word(word_type const& w) const = 0;
 
     //! The handedness of the congruence (left, right, or 2-sided).
     //!
@@ -111,11 +123,24 @@ namespace libsemigroups {
       return _type;
     }
 
-    // TODO add_pair_no_checks
-    // TODO add_pair for strings
-    void add_pair(word_type const& u, word_type const& v);
+    // TODO(doc)
+    void add_pair_no_checks(word_type&& u, word_type&& v);
+    void add_pair_no_checks(word_type const& u, word_type const& v) {
+      add_pair_no_checks(word_type(u), word_type(v));
+    }
 
-    void add_pair(word_type&& u, word_type&& v);
+    // TODO(doc)
+    void add_pair(word_type const& u, word_type const& v) {
+      validate_word(u);
+      validate_word(v);
+      add_pair_no_checks(word_type(u), word_type(v));
+    }
+
+    void add_pair(word_type&& u, word_type&& v) {
+      validate_word(u);
+      validate_word(v);
+      add_pair_no_checks(std::move(u), std::move(v));
+    }
 
     //! Add a generating pair to the congruence.
     //! \sa add_pair(word_type const&, word_type const&)
@@ -137,14 +162,8 @@ namespace libsemigroups {
     //!
     //! \par Parameters
     //! (None)
-
     [[nodiscard]] size_t number_of_generating_pairs() const noexcept {
       return _generating_pairs.size() / 2;
-    }
-
-    [[nodiscard]] auto generating_pairs_range() const noexcept {
-      return rx::iterator_range(_generating_pairs.cbegin(),
-                                _generating_pairs.cend());
     }
 
     [[nodiscard]] std::vector<word_type> const&
@@ -153,18 +172,11 @@ namespace libsemigroups {
     }
 
    private:
+    void throw_if_started() const;
     void add_pair_no_checks_no_reverse(word_type const& u, word_type const& v);
-
-    friend class ::libsemigroups::Congruence;
-
-    /////////////////////////////////////////////////////////////////////////
-    // CongruenceInterface - pure virtual functions - private
-    /////////////////////////////////////////////////////////////////////////
-
-    virtual void validate_word(word_type const& w) const = 0;
   };
 }  // namespace libsemigroups
-#endif  // LIBSEMIGROUPS_CONG_INTF_NEW_HPP_
+#endif  // LIBSEMIGROUPS_CONG_INTF_HPP_
         // old doc follows TODO use it or lose it
 ////////////////////////////////////////////////////////////////////////////
 // CongruenceInterface - non-pure virtual functions - public

@@ -1,6 +1,6 @@
 //
 // libsemigroups - C++ library for semigroups and monoids
-// Copyright (C) 2019 James D. Mitchell
+// Copyright (C) 2019-2023 James D. Mitchell
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -18,46 +18,45 @@
 
 // This file contains the BruidhinnTraits class templates that defines the
 // types, and functions for translating between then, for use by the
-// FroidurePin, SchreierSims, CongruenceByPairs, and other classes.
+// FroidurePin, SchreierSims, Konieczny, and other classes.
 
 #ifndef LIBSEMIGROUPS_BRUIDHINN_TRAITS_HPP_
 #define LIBSEMIGROUPS_BRUIDHINN_TRAITS_HPP_
 
-#include <cstddef>  // for size_t
+#include <type_traits>  // for conditional_t etc
 
-#include "iterator.hpp"  // for ConstIteratorTraits
+#include "libsemigroups/iterator.hpp"  // for ConstIteratorTraits
 
 namespace libsemigroups {
   namespace detail {
     template <typename T>
-    struct IsSmall final : std::integral_constant<bool, (sizeof(T) <= 16)> {};
+    struct IsSmall : std::integral_constant<bool, (sizeof(T) <= 16)> {};
 
     template <typename T>
-    struct RemovePointerToConst final {
-      using type = typename std::remove_const<typename std::remove_pointer<
-          typename std::remove_const<T>::type>::type>::type;
+    struct RemovePointerToConst {
+      using type
+          = std::remove_const_t<std::remove_pointer_t<std::remove_const_t<T>>>;
     };
 
     // Bruidhinn is (apparently) the Scots gaelic word for "convey", the
     // following traits class is used to convey values from an external type to
     // an internal type, and/or vice versa.
 
-    template <typename TValueType, typename = void>
+    template <typename Value, typename = void>
     struct BruidhinnTraits {};
 
-    template <typename TValueType>
+    template <typename Value>
     struct BruidhinnTraits<
-        TValueType,
-        std::enable_if_t<(!std::is_trivial<TValueType>::value
-                          || !IsSmall<TValueType>::value)
-                         && !std::is_pointer<TValueType>::value>> {
-      using value_type       = TValueType;
-      using const_value_type = TValueType const;
-      using reference        = TValueType&;
-      using rvalue_reference = TValueType&&;
-      using const_reference  = TValueType const&;
-      using pointer          = TValueType*;
-      using const_pointer    = TValueType const*;
+        Value,
+        std::enable_if_t<(!std::is_trivial_v<Value> || !IsSmall<Value>::value)
+                         && !std::is_pointer_v<Value>>> {
+      using value_type       = Value;
+      using const_value_type = Value const;
+      using reference        = Value&;
+      using rvalue_reference = Value&&;
+      using const_reference  = Value const&;
+      using pointer          = Value*;
+      using const_pointer    = Value const*;
 
       using internal_value_type       = pointer;
       using internal_const_value_type = const_pointer;
@@ -109,19 +108,18 @@ namespace libsemigroups {
       inline void external_free(value_type) const {}
     };
 
-    template <typename TValueType>
+    template <typename Value>
     struct BruidhinnTraits<
-        TValueType,
-        std::enable_if_t<std::is_trivial<TValueType>::value
-                         && IsSmall<TValueType>::value
-                         && !std::is_pointer<TValueType>::value>> {
-      using value_type       = TValueType;
-      using const_value_type = TValueType const;
-      using reference        = TValueType&;
-      using rvalue_reference = TValueType&&;
-      using const_reference  = TValueType const&;
-      using pointer          = TValueType*;
-      using const_pointer    = TValueType const* const;
+        Value,
+        std::enable_if_t<std::is_trivial_v<Value> && IsSmall<Value>::value
+                         && !std::is_pointer_v<Value>>> {
+      using value_type       = Value;
+      using const_value_type = Value const;
+      using reference        = Value&;
+      using rvalue_reference = Value&&;
+      using const_reference  = Value const&;
+      using pointer          = Value*;
+      using const_pointer    = Value const* const;
 
       using internal_value_type       = value_type;
       using internal_const_value_type = const_value_type;
@@ -169,13 +167,11 @@ namespace libsemigroups {
       inline void external_free(value_type) const {}
     };
 
-    template <typename TValueType>
-    struct BruidhinnTraits<
-        TValueType,
-        std::enable_if_t<std::is_pointer<TValueType>::value>> {
-      using value_type = typename RemovePointerToConst<TValueType>::type*;
+    template <typename Value>
+    struct BruidhinnTraits<Value, std::enable_if_t<std::is_pointer_v<Value>>> {
+      using value_type = typename RemovePointerToConst<Value>::type*;
       using const_value_type =
-          typename RemovePointerToConst<TValueType>::type const*;
+          typename RemovePointerToConst<Value>::type const*;
       using reference       = value_type;
       using const_reference = const_value_type;
       using pointer         = value_type;
@@ -217,7 +213,7 @@ namespace libsemigroups {
       }
 
       inline value_type external_copy(const_reference x) const {
-        // TODO(later) figure out the right way to do this
+        // ODO(later) figure out the right way to do this
         return x->heap_copy();
       }
 
@@ -231,48 +227,46 @@ namespace libsemigroups {
     };
 
     namespace bruidhinn_traits {
-      template <typename TTraits, typename TContainer>
-      struct Deref final : private TTraits {
-        typename TTraits::const_reference
-        operator()(typename TContainer::const_iterator const& it) const {
+      template <typename Traits, typename Container>
+      struct Deref : private Traits {
+        typename Traits::const_reference
+        operator()(typename Container::const_iterator const& it) const {
           // TODO(later) noexcept?
           return this->to_external_const((*it));
         }
       };
 
-      template <typename TTraits, typename TContainer>
-      struct AddressOf final : private TTraits {
-        typename TTraits::const_pointer
-        operator()(typename TContainer::const_iterator const& it) const {
-          // TODO(later) noexcept?
+      template <typename Traits, typename Container>
+      struct AddressOf : private Traits {
+        typename Traits::const_pointer
+        operator()(typename Container::const_iterator const& it) const {
+          // ODO(later) noexcept?
           return &(this->to_external_const((*it)));
         }
       };
     }  // namespace bruidhinn_traits
 
-    template <typename TTraits, typename TContainer>
-    struct BruidhinnConstIteratorTraits final
-        : ConstIteratorTraits<TContainer> {
+    template <typename Traits, typename Container>
+    struct BruidhinnConstIteratorTraits : ConstIteratorTraits<Container> {
       static_assert(
-          std::is_same<typename TContainer::value_type,
-                       typename TTraits::internal_value_type>::value,
+          std::is_same_v<typename Container::value_type,
+                         typename Traits::internal_value_type>,
           "the 1st and 2nd template parameters must have the same value_type");
-      using value_type      = typename TTraits::value_type;
-      using const_reference = typename TTraits::const_reference;
-      using const_pointer   = typename TTraits::const_pointer;
+      using value_type      = typename Traits::value_type;
+      using const_reference = typename Traits::const_reference;
+      using const_pointer   = typename Traits::const_pointer;
 
-      using Deref     = bruidhinn_traits::Deref<TTraits, TContainer>;
-      using AddressOf = bruidhinn_traits::AddressOf<TTraits, TContainer>;
+      using Deref     = bruidhinn_traits::Deref<Traits, Container>;
+      using AddressOf = bruidhinn_traits::AddressOf<Traits, Container>;
     };
 
-    template <typename TValueType, typename TContainer>
+    template <typename Value, typename Container>
     using BruidhinnConstIterator = std::conditional_t<
-        std::is_same<typename BruidhinnTraits<TValueType>::internal_value_type,
-                     typename BruidhinnTraits<TValueType>::value_type>::value,
-        typename TContainer::const_iterator,
+        std::is_same_v<typename BruidhinnTraits<Value>::internal_value_type,
+                       typename BruidhinnTraits<Value>::value_type>,
+        typename Container::const_iterator,
         ConstIteratorStateless<
-            BruidhinnConstIteratorTraits<BruidhinnTraits<TValueType>,
-                                         TContainer>>>;
+            BruidhinnConstIteratorTraits<BruidhinnTraits<Value>, Container>>>;
   }  // namespace detail
 }  // namespace libsemigroups
 #endif  // LIBSEMIGROUPS_BRUIDHINN_TRAITS_HPP_

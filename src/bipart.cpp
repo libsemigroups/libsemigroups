@@ -23,10 +23,9 @@
 #include <limits>   // for numeric_limits
 #include <numeric>  // for iota
 #include <thread>   // for get_id
-#include <thread>   // for thread
 
 #include "libsemigroups/constants.hpp"  // for UNDEFINED, operator==, operator!=
-#include "libsemigroups/exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
+#include "libsemigroups/exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION_V3
 #include "libsemigroups/report.hpp"  // for THREAD_ID_MANAGER, ThreadIdManager
 
 namespace libsemigroups {
@@ -101,8 +100,12 @@ namespace libsemigroups {
     _lookup.resize(n, false);
   }
 
-  bool Blocks::operator==(Blocks const& that) const {
-    return _blocks == that._blocks && _lookup == that._lookup;
+  void Blocks::set_block(size_t i, uint32_t val) {
+    LIBSEMIGROUPS_ASSERT(i < _blocks.size());
+    _blocks[i] = val;
+    if (val >= _lookup.size()) {
+      _lookup.resize(val + 1);
+    }
   }
 
   bool Blocks::operator<(Blocks const& that) const {
@@ -141,8 +144,7 @@ namespace libsemigroups {
     size_t const m = std::distance(x.cbegin_lookup(), x.cend_lookup());
     if (n == 0) {
       if (m != 0) {
-        LIBSEMIGROUPS_EXCEPTION("expected lookup of size 0, found %llu",
-                                uint64_t(m));
+        LIBSEMIGROUPS_EXCEPTION_V3("expected lookup of size 0, found {}", m);
       }
     } else {
       size_t next = 0;
@@ -150,17 +152,15 @@ namespace libsemigroups {
         if (*it == next) {
           ++next;
         } else if (*it > next) {
-          LIBSEMIGROUPS_EXCEPTION(
-              "expected %llu but found %llu, in position %llu",
-              uint64_t(next),
-              uint64_t(*it),
-              uint64_t(it - x.cbegin()));
+          LIBSEMIGROUPS_EXCEPTION_V3("expected {} but found {}, in position {}",
+                                     next,
+                                     *it,
+                                     it - x.cbegin());
         }
       }
       if (next != m) {
-        LIBSEMIGROUPS_EXCEPTION("expected lookup of size %llu, found %llu",
-                                uint64_t(next),
-                                uint64_t(m));
+        LIBSEMIGROUPS_EXCEPTION_V3(
+            "expected lookup of size {}, found {}", next, m);
       }
     }
   }
@@ -173,19 +173,16 @@ namespace libsemigroups {
   void validate(Bipartition const& x) {
     size_t const n = static_cast<size_t>(std::distance(x.cbegin(), x.cend()));
     if (2 * x.degree() != n) {
-      LIBSEMIGROUPS_EXCEPTION(
-          "the degree of a bipartition must be even, found %llu", uint64_t(n));
+      LIBSEMIGROUPS_EXCEPTION_V3(
+          "the degree of a bipartition must be even, found {}", n);
     }
     size_t next = 0;
     for (size_t i = 0; i < n; ++i) {
       if (x[i] == next) {
         ++next;
       } else if (x[i] > next) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "expected %llu but found %llu, in position %llu",
-            uint64_t(next),
-            uint64_t(x[i]),
-            uint64_t(i));
+        LIBSEMIGROUPS_EXCEPTION_V3(
+            "expected {} but found {}, in position {}", next, x[i], i);
       }
     }
   }

@@ -30,7 +30,7 @@
 #include <vector>         // for vector
 
 #include "adapters.hpp"          // for One
-#include "bruidhinn-traits.hpp"  // for detail::BruidhinnTraits
+#include "detail/bruidhinn-traits.hpp"  // for detail::BruidhinnTraits
 #include "constants.hpp"         // for UNDEFINED
 #include "debug.hpp"             // for LIBSEMIGROUPS_ASSERT
 #include "exception.hpp"         // for LIBSEMIGROUPS_EXCEPTION

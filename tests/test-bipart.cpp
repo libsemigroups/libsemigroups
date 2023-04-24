@@ -240,8 +240,9 @@ namespace libsemigroups {
                           "hash",
                           "[quick][bipartition]") {
     Bipartition x({0, 1, 2, 1, 0, 2, 1, 0, 2, 2, 0, 0, 2, 0, 3, 4, 4, 1, 3, 0});
-    for (size_t i = 0; i < 1000000; i++) {
-      x.hash_value();
+    auto        expected = x.hash_value();
+    for (size_t i = 0; i < 1'000'000; i++) {
+      REQUIRE(x.hash_value() == expected);
     }
   }
 

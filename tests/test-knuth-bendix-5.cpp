@@ -30,7 +30,7 @@
 //
 // 5: contains tests for KnuthBendix created from FroidurePin instances
 //
-// 6: contains tests for congruence::KnuthBendix.
+// 6: contains tests for KnuthBendix.
 
 #include "catch.hpp"      // for AssertionHandler, ope...
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE

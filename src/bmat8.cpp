@@ -294,6 +294,24 @@ namespace libsemigroups {
     return row_space.size() + 1;
   }
 
+  size_t BMat8::number_of_rows() const noexcept {
+    size_t count = 0;
+    for (size_t i = 0; i < 8; ++i) {
+      if (_data << (8 * i) >> 56 > 0) {
+        count++;
+      }
+    }
+    return count;
+  }
+
+  bool BMat8::is_regular_element() const noexcept {
+    return *this
+               * BMat8(~(*this * BMat8(~_data).transpose() * (*this)).to_int())
+                     .transpose()
+               * (*this)
+           == *this;
+  }
+
   std::vector<uint8_t> BMat8::rows() const {
     std::vector<uint8_t> rows;
     for (size_t i = 0; i < 8; ++i) {

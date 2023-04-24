@@ -200,16 +200,6 @@ namespace libsemigroups {
     REQUIRE(v.size() == S.number_of_rules());
     REQUIRE(v.size() == 13716);
 
-    // The next works but is a bit slow
-    // congruence::ToddCoxeter tc(congruence_kind::twosided);
-    // tc.set_number_of_generators(S.number_of_generators());
-    // for (auto const& rel : v) {
-    //   tc.add_pair(rel.first, rel.second);
-    // }
-
-    // REQUIRE(tc.number_of_classes() == 63904);
-    // REQUIRE(tc.number_of_classes() == S.size());
-
     // Copy - after run
     FroidurePin<BMat8> T(S);
     REQUIRE(T.size() == 63904);

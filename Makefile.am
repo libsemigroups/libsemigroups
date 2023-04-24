@@ -50,7 +50,6 @@ pkginclude_HEADERS += include/libsemigroups/bipart.hpp
 pkginclude_HEADERS += include/libsemigroups/bitset.hpp
 pkginclude_HEADERS += include/libsemigroups/bmat.hpp
 pkginclude_HEADERS += include/libsemigroups/bmat8.hpp
-pkginclude_HEADERS += include/libsemigroups/bruidhinn-traits.hpp
 pkginclude_HEADERS += include/libsemigroups/config.hpp
 pkginclude_HEADERS += include/libsemigroups/cong-intf.hpp
 pkginclude_HEADERS += include/libsemigroups/cong.hpp
@@ -121,6 +120,8 @@ pkginclude_HEADERS += include/libsemigroups/ukkonen.tpp
 pkginclude_HEADERS += include/libsemigroups/word-graph.hpp
 pkginclude_HEADERS += include/libsemigroups/word-graph.tpp
 pkginclude_HEADERS += include/libsemigroups/words.hpp
+
+pkginclude_HEADERS += include/libsemigroups/detail/bruidhinn-traits.hpp
 
 textflowcppincludedir = $(includedir)/libsemigroups/textflowcpp
 textflowcppinclude_HEADERS=extern/textflowcpp/TextFlow.hpp

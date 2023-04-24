@@ -1,6 +1,6 @@
 //
 // libsemigroups - C++ library for semigroups and monoids
-// Copyright (C) 2021 James D. Mitchell
+// Copyright (C) 2021-2023 James D. Mitchell
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -22,9 +22,9 @@
 #define LIBSEMIGROUPS_BIPART_HPP_
 
 // TODO(later)
-// 1) benchmarks
-// 2) use Duf/Suf were possible (later?)
-// 3) Template like transformations/pperms etc (later?)
+// * benchmarks
+// * use Duf/Suf where possible (later?)
+// * Template like transformations/pperms etc (later?)
 
 #include <algorithm>         // for max
 #include <cstddef>           // for size_t
@@ -37,7 +37,7 @@
 
 #include "adapters.hpp"             // for Hash
 #include "constants.hpp"            // for UNDEFINED
-#include "exception.hpp"            // for LIBSEMIGROUPS_EXCEPTION
+#include "exception.hpp"            // for LIBSEMIGROUPS_EXCEPTION_V3
 #include "libsemigroups/debug.hpp"  // for LIBSEMIGROUPS_ASSERT
 
 namespace libsemigroups {
@@ -56,7 +56,11 @@ namespace libsemigroups {
   //! The Blocks class is not currently used widely in ``libsemigroups``
   //! but are used extensively in the GAP package
   //! [Semigroups package for GAP](https://semigroups.github.io/Semigroups/).
-  class Blocks final {
+  class Blocks {
+   private:
+    std::vector<uint32_t> _blocks;
+    std::vector<bool>     _lookup;
+
    public:
     //! Type for const iterators pointing to the transverse block lookup.
     using lookup_const_iterator = std::vector<bool>::const_iterator;
@@ -160,13 +164,7 @@ namespace libsemigroups {
     //!
     //! \warning
     //! No checks are made on the validity of the arguments to this function.
-    void set_block(size_t i, uint32_t val) {
-      LIBSEMIGROUPS_ASSERT(i < _blocks.size());
-      _blocks[i] = val;
-      if (val >= _lookup.size()) {
-        _lookup.resize(val + 1);
-      }
-    }
+    void set_block(size_t i, uint32_t val);
 
     //! Compare two blocks objects for equality.
     //!
@@ -183,7 +181,9 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! At worst linear in `degree()`.
-    bool operator==(Blocks const& that) const;
+    [[nodiscard]] bool operator==(Blocks const& that) const {
+      return _blocks == that._blocks && _lookup == that._lookup;
+    }
 
     //! Compare two blocks objects for inequality.
     //!
@@ -200,7 +200,7 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! At worst linear in `degree()`.
-    bool operator!=(Blocks const& that) const {
+    [[nodiscard]] bool operator!=(Blocks const& that) const {
       return !(*this == that);
     }
 
@@ -219,7 +219,7 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Linear in `degree()`.
-    bool operator<(Blocks const& that) const;
+    [[nodiscard]] bool operator<(Blocks const& that) const;
 
     //! Returns the degree of a blocks object.
     //!
@@ -234,7 +234,7 @@ namespace libsemigroups {
     //!
     //! \parameters
     //! (None)
-    uint32_t degree() const noexcept {
+    [[nodiscard]] uint32_t degree() const noexcept {
       return _blocks.size();
     }
 
@@ -254,7 +254,7 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Constant.
-    bool is_transverse_block(size_t index) const noexcept {
+    [[nodiscard]] bool is_transverse_block(size_t index) const {
       LIBSEMIGROUPS_ASSERT(index < _lookup.size());
       return _lookup[index];
     }
@@ -274,7 +274,7 @@ namespace libsemigroups {
     //!
     //! \parameters
     //! (None)
-    uint32_t number_of_blocks() const noexcept {
+    [[nodiscard]] uint32_t number_of_blocks() const noexcept {
       return _lookup.size();
     }
 
@@ -293,7 +293,7 @@ namespace libsemigroups {
     //!
     //! \parameters
     //! (None)
-    uint32_t rank() const;
+    [[nodiscard]] uint32_t rank() const;
 
     //! Returns a hash value for a Blocks instance.
     //!
@@ -309,7 +309,7 @@ namespace libsemigroups {
     //!
     //! \parameters
     //! (None)
-    size_t hash_value() const noexcept;
+    [[nodiscard]] size_t hash_value() const noexcept;
 
     //! Returns a const iterator pointing to the first transverse
     //! block lookup.
@@ -327,7 +327,7 @@ namespace libsemigroups {
     //!
     //! \parameters
     //! (None)
-    lookup_const_iterator cbegin_lookup() const noexcept {
+    [[nodiscard]] lookup_const_iterator cbegin_lookup() const noexcept {
       return _lookup.cbegin();
     }
 
@@ -335,7 +335,7 @@ namespace libsemigroups {
     //! block lookup.
     //!
     //! \sa cbegin_lookup.
-    lookup_const_iterator cend_lookup() const noexcept {
+    [[nodiscard]] lookup_const_iterator cend_lookup() const noexcept {
       return _lookup.cend();
     }
 
@@ -351,7 +351,7 @@ namespace libsemigroups {
     //!
     //! \parameters
     //! (None)
-    const_iterator cbegin() const noexcept {
+    [[nodiscard]] const_iterator cbegin() const noexcept {
       return _blocks.cbegin();
     }
 
@@ -367,7 +367,7 @@ namespace libsemigroups {
     //!
     //! \parameters
     //! (None)
-    const_iterator cend() const noexcept {
+    [[nodiscard]] const_iterator cend() const noexcept {
       return _blocks.cend();
     }
 
@@ -382,14 +382,10 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Constant.
-    uint32_t const& operator[](size_t i) const {
+    [[nodiscard]] uint32_t const& operator[](size_t i) const {
       LIBSEMIGROUPS_ASSERT(i < _blocks.size());
       return _blocks[i];
     }
-
-   private:
-    std::vector<uint32_t> _blocks;
-    std::vector<bool>     _lookup;
   };
 
   //! Validates a Blocks object.
@@ -427,7 +423,14 @@ namespace libsemigroups {
   //!
   //! \sa libsemigroups::validate(Bipartition const&).
   // TODO(later) add more explanation to the doc here
-  class Bipartition final {
+  class Bipartition {
+   private:
+    mutable size_t        _nr_blocks;
+    size_t                _nr_left_blocks;
+    std::vector<bool>     _trans_blocks_lookup;
+    size_t                _rank;
+    std::vector<uint32_t> _vector;
+
    public:
     //! Type for iterators pointing to the lookup for the blocks of a
     //! bipartition.
@@ -527,7 +530,7 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if the constructed bipartition is not
     //! valid.
     template <typename T>
-    static Bipartition make(T const& cont) {
+    [[nodiscard]] static Bipartition make(T const& cont) {
       validate_args(cont);
       Bipartition result(cont);
       validate(result);
@@ -537,14 +540,15 @@ namespace libsemigroups {
     //! Validates the arguments, constructs a bipartition and validates it.
     //!
     //! See make(T const&) for full details.
-    static Bipartition make(std::initializer_list<uint32_t> const& cont) {
+    [[nodiscard]] static Bipartition
+    make(std::initializer_list<uint32_t> const& cont) {
       return make<std::initializer_list<uint32_t>>(cont);
     }
 
     //! Validates the arguments, constructs a bipartition and validates it.
     //!
     //! See make(T const&) for full details.
-    static Bipartition
+    [[nodiscard]] static Bipartition
     make(std::initializer_list<std::vector<int32_t>> const& cont) {
       return make<std::initializer_list<std::vector<int32_t>>>(cont);
     }
@@ -560,7 +564,7 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! At worst linear in degree().
-    bool operator==(Bipartition const& that) const {
+    [[nodiscard]] bool operator==(Bipartition const& that) const {
       return _vector == that._vector;
     }
 
@@ -576,7 +580,7 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! At worst linear in degree().
-    bool operator<(Bipartition const& that) const {
+    [[nodiscard]] bool operator<(Bipartition const& that) const {
       return _vector < that._vector;
     }
 
@@ -594,7 +598,7 @@ namespace libsemigroups {
     //! \complexity
     //! Linear in degree().
     // not noexcept because Hash<T>::operator() isn't
-    size_t hash_value() const {
+    [[nodiscard]] size_t hash_value() const {
       return Hash<std::vector<uint32_t>>()(_vector);
     }
 
@@ -611,7 +615,7 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Constant.
-    uint32_t& operator[](size_t i) {
+    [[nodiscard]] uint32_t& operator[](size_t i) {
       return _vector[i];
     }
 
@@ -628,7 +632,7 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Constant.
-    uint32_t const& operator[](size_t i) const {
+    [[nodiscard]] uint32_t const& operator[](size_t i) const {
       return _vector[i];
     }
 
@@ -645,7 +649,7 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Constant.
-    uint32_t& at(size_t i) {
+    [[nodiscard]] uint32_t& at(size_t i) {
       return _vector.at(i);
     }
 
@@ -662,7 +666,7 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Constant.
-    uint32_t const& at(size_t i) const {
+    [[nodiscard]] uint32_t const& at(size_t i) const {
       return _vector.at(i);
     }
 
@@ -678,7 +682,7 @@ namespace libsemigroups {
     //!
     //! \parameters
     //! (None)
-    const_iterator cbegin() const noexcept {
+    [[nodiscard]] const_iterator cbegin() const noexcept {
       return _vector.cbegin();
     }
 
@@ -695,7 +699,7 @@ namespace libsemigroups {
     //!
     //! \parameters
     //! (None)
-    const_iterator cend() const noexcept {
+    [[nodiscard]] const_iterator cend() const noexcept {
       return _vector.cend();
     }
 
@@ -712,7 +716,7 @@ namespace libsemigroups {
     //!
     //! \parameters
     //! (None)
-    const_iterator cbegin_left_blocks() const noexcept {
+    [[nodiscard]] const_iterator cbegin_left_blocks() const noexcept {
       return cbegin();
     }
 
@@ -729,7 +733,7 @@ namespace libsemigroups {
     //!
     //! \parameters
     //! (None)
-    const_iterator cend_left_blocks() const noexcept {
+    [[nodiscard]] const_iterator cend_left_blocks() const noexcept {
       return cbegin() + degree();
     }
 
@@ -746,7 +750,7 @@ namespace libsemigroups {
     //!
     //! \parameters
     //! (None)
-    const_iterator cbegin_right_blocks() const noexcept {
+    [[nodiscard]] const_iterator cbegin_right_blocks() const noexcept {
       return cend_left_blocks();
     }
 
@@ -763,7 +767,7 @@ namespace libsemigroups {
     //!
     //! \parameters
     //! (None)
-    const_iterator cend_right_blocks() const noexcept {
+    [[nodiscard]] const_iterator cend_right_blocks() const noexcept {
       return cend();
     }
 
@@ -779,7 +783,7 @@ namespace libsemigroups {
     //!
     //! \parameters
     //! (None)
-    size_t degree() const noexcept;
+    [[nodiscard]] size_t degree() const noexcept;
 
     //! Returns an identity bipartition.
     //!
@@ -794,7 +798,7 @@ namespace libsemigroups {
     //!
     //! \parameters
     //! (None)
-    Bipartition identity() const;
+    [[nodiscard]] Bipartition identity() const;
 
     //! Returns an identity bipartition.
     //!
@@ -808,7 +812,7 @@ namespace libsemigroups {
     //!
     //! \exceptions
     //! \no_libsemigroups_except
-    static Bipartition identity(size_t n);
+    [[nodiscard]] static Bipartition identity(size_t n);
 
     //! Modify the current bipartition in-place to contain the product of two
     //! bipartitions.
@@ -845,7 +849,7 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! \f$O(2n)\f$ where \f$n\f$ is the degree().
-    size_t rank();
+    [[nodiscard]] size_t rank();
 
     //! Returns the number of blocks in a Bipartition.
     //!
@@ -862,7 +866,7 @@ namespace libsemigroups {
     //!
     //! \parameters
     //! (None)
-    uint32_t number_of_blocks() const;
+    [[nodiscard]] uint32_t number_of_blocks() const;
 
     //! Returns the number of blocks containing a positive integer.
     //!
@@ -881,7 +885,7 @@ namespace libsemigroups {
     //!
     //! \parameters
     //! (None)
-    uint32_t number_of_left_blocks();
+    [[nodiscard]] uint32_t number_of_left_blocks();
 
     //! Returns the number of blocks containing a negative integer.
     //!
@@ -900,7 +904,7 @@ namespace libsemigroups {
     //!
     //! \parameters
     //! (None)
-    uint32_t number_of_right_blocks();
+    [[nodiscard]] uint32_t number_of_right_blocks();
 
     //! Check if a block is a transverse block.
     //!
@@ -919,7 +923,7 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! At worst \f$O(n)\f$ where \f$n\f$ is the degree().
-    bool is_transverse_block(size_t index);
+    [[nodiscard]] bool is_transverse_block(size_t index);
 
     //! Return a pointer to the left blocks of a bipartition.
     //!
@@ -939,7 +943,7 @@ namespace libsemigroups {
     //! \parameters
     //! (None)
     // TODO(later) remove this
-    Blocks* left_blocks();
+    [[nodiscard]] Blocks* left_blocks();
 
     //! Return a pointer to the right blocks of a bipartition.
     //!
@@ -958,7 +962,7 @@ namespace libsemigroups {
     //! \parameters
     //! (None)
     // TODO(later) remove this
-    Blocks* right_blocks();
+    [[nodiscard]] Blocks* right_blocks();
 
     //! Set the number of blocks.
     //!
@@ -1027,7 +1031,7 @@ namespace libsemigroups {
     //!
     //! \parameters
     //! (None)
-    lookup_const_iterator cbegin_lookup() noexcept {
+    [[nodiscard]] lookup_const_iterator cbegin_lookup() noexcept {
       init_trans_blocks_lookup();
       return _trans_blocks_lookup.cbegin();
     }
@@ -1036,7 +1040,7 @@ namespace libsemigroups {
     //! block lookup.
     //!
     //! \sa cbegin_lookup.
-    lookup_const_iterator cend_lookup() noexcept {
+    [[nodiscard]] lookup_const_iterator cend_lookup() noexcept {
       init_trans_blocks_lookup();
       return _trans_blocks_lookup.cend();
     }
@@ -1054,12 +1058,12 @@ namespace libsemigroups {
       int32_t               m   = 0;
       int32_t               deg = 0;
       std::unordered_set<T> vals;
-      for (std::vector<T> const& block : blocks) {
-        for (T x : block) {
+      for (auto const& block : blocks) {
+        for (auto x : block) {
           vals.insert(x);
           x = std::abs(x);
           if (x == 0) {
-            LIBSEMIGROUPS_EXCEPTION(
+            LIBSEMIGROUPS_EXCEPTION_V3(
                 "value out of bounds, expected non-zero value found 0");
           }
           m = std::max(x, m);
@@ -1068,26 +1072,18 @@ namespace libsemigroups {
       }
 
       if (m >= static_cast<int32_t>(0x40000000)) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "too many points, expected at most %d, found %d",
-            int32_t(0x40000000),
-            int32_t(m));
+        LIBSEMIGROUPS_EXCEPTION_V3(
+            "too many points, expected at most {}, found {}", 0x40000000, m);
       } else if (deg != 2 * m || vals.size() != size_t(deg)) {
-        LIBSEMIGROUPS_EXCEPTION("the union of the given blocks is not "
-                                "[%d, -1] ∪ [1, %d], only %d values were given",
-                                -m,
-                                m,
-                                deg);
+        LIBSEMIGROUPS_EXCEPTION_V3("the union of the given blocks is not [{}, "
+                                   "-1] ∪ [1, {}], only {} values were given",
+                                   -m,
+                                   m,
+                                   deg);
       }
     }
 
     void init_trans_blocks_lookup();
-
-    mutable size_t        _nr_blocks;
-    size_t                _nr_left_blocks;
-    std::vector<bool>     _trans_blocks_lookup;
-    size_t                _rank;
-    std::vector<uint32_t> _vector;
   };
 
   namespace detail {
@@ -1120,7 +1116,8 @@ namespace libsemigroups {
   //!
   //! \complexity
   //! Quadratic in degree().
-  Bipartition operator*(Bipartition const& x, Bipartition const& y);
+  [[nodiscard]] Bipartition operator*(Bipartition const& x,
+                                      Bipartition const& y);
 
   //! Check bipartitions for inequality.
   //!
@@ -1135,22 +1132,26 @@ namespace libsemigroups {
   //!
   //! \complexity
   //! At worst linear in the degree of \p x and \p y.
-  inline bool operator!=(Bipartition const& x, Bipartition const& y) {
+  [[nodiscard]] inline bool operator!=(Bipartition const& x,
+                                       Bipartition const& y) {
     return !(x == y);
   }
 
   //! Convenience function that just calls ``operator<`` and ``operator==``.
-  inline bool operator<=(Bipartition const& x, Bipartition const& y) {
+  [[nodiscard]] inline bool operator<=(Bipartition const& x,
+                                       Bipartition const& y) {
     return x < y || x == y;
   }
 
   //! Convenience function that just calls ``operator<``.
-  inline bool operator>(Bipartition const& x, Bipartition const& y) {
+  [[nodiscard]] inline bool operator>(Bipartition const& x,
+                                      Bipartition const& y) {
     return y < x;
   }
 
   //! Convenience function that just calls ``operator<=``.
-  inline bool operator>=(Bipartition const& x, Bipartition const& y) {
+  [[nodiscard]] inline bool operator>=(Bipartition const& x,
+                                       Bipartition const& y) {
     return y <= x;
   }
 
@@ -1177,32 +1178,32 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Constant.
-    size_t operator()(Bipartition const& x) const noexcept {
+    [[nodiscard]] size_t operator()(Bipartition const& x) const noexcept {
       return x.degree() * x.degree();
     }
   };
 
   template <>
   struct Degree<Bipartition> {
-    size_t operator()(Bipartition const& x) const noexcept {
+    [[nodiscard]] size_t operator()(Bipartition const& x) const noexcept {
       return x.degree();
     }
   };
 
   template <>
   struct Hash<Bipartition> {
-    size_t operator()(Bipartition const& x) const {
+    [[nodiscard]] size_t operator()(Bipartition const& x) const {
       return x.hash_value();
     }
   };
 
   template <>
   struct One<Bipartition> {
-    Bipartition operator()(Bipartition const& x) const {
+    [[nodiscard]] Bipartition operator()(Bipartition const& x) const {
       return (*this)(x.degree());
     }
 
-    Bipartition operator()(size_t N = 0) const {
+    [[nodiscard]] Bipartition operator()(size_t N = 0) const {
       return Bipartition::identity(N);
     }
   };

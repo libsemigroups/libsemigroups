@@ -32,9 +32,9 @@
 #include <utility>        // for pair
 #include <vector>         // for vector
 
-#include "adapters.hpp"           // for Complexity, Degree, IncreaseDegree
-#include "bruidhinn-traits.hpp"   // for detail::BruidhinnTraits
-#include "containers.hpp"         // for DynamicArray2
+#include "adapters.hpp"    // for Complexity, Degree, IncreaseDegree
+#include "containers.hpp"  // for DynamicArray2
+#include "detail/bruidhinn-traits.hpp"  // for detail::BruidhinnTraits
 #include "froidure-pin-base.hpp"  // for FroidurePinBase, FroidurePinBase::s...
 #include "iterator.hpp"           // for ConstIteratorStateless
 #include "stl.hpp"                // for EqualTo, Hash
@@ -354,7 +354,7 @@ namespace libsemigroups {
     //! stated given by the parameter \p stt. This constructor only exists if
     //! \ref state_type is not \c void. This is used when the elements require
     //! some shared state to define their multiplication, such as, for example
-    //! an instance of fpsemigroup::KnuthBendix or congruence::ToddCoxeter.
+    //! an instance of KnuthBendix or ToddCoxeter.
     //!
     //! \param stt a \shared_ptr to a state object.
     //!
@@ -371,7 +371,7 @@ namespace libsemigroups {
     //! stated given by the parameter \p stt. This constructor only exists if
     //! \ref state_type is not \c void. This is used when the elements require
     //! some shared state to define their multiplication, such as, for example
-    //! an instance of fpsemigroup::KnuthBendix or congruence::ToddCoxeter.
+    //! an instance of KnuthBendix or ToddCoxeter.
     //!
     //! \param stt a const reference to a state object.
     //!

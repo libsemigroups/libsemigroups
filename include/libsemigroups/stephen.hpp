@@ -28,13 +28,13 @@
 
 #include "constants.hpp"             // for PositiveInfinity
 #include "digraph-with-sources.hpp"  // for DigraphWithSources
-#include "word-graph.hpp"               // for WordGraph, Act...
 #include "paths.hpp"                 // for Paths
 #include "present.hpp"               // for Presentation
 #include "runner.hpp"                // for Runner
 #include "to-presentation.hpp"       // for make
 #include "todd-coxeter-digraph.hpp"  // for StephenDigraph
 #include "types.hpp"                 // for word_type
+#include "word-graph.hpp"            // for WordGraph, Act...
 
 namespace libsemigroups {
 
@@ -46,7 +46,7 @@ namespace libsemigroups {
   //! (WordGraph) corresponding to the left factors of a word in a finitely
   //! presented semigroup. The algorithm implemented in this class is closely
   //! related to the Todd-Coxeter algorithm  (as implemented in \ref
-  //! congruence::ToddCoxeter) and originates in
+  //! ToddCoxeter) and originates in
   //! [Applications of automata theory to presentations of monoids and inverse
   //! monoids](https://rb.gy/brsuvc) by J. B. Stephen.
   class Stephen : public Runner {

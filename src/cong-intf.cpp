@@ -18,53 +18,21 @@
 
 #include "libsemigroups/cong-intf.hpp"
 
-#include <algorithm>  // for remove_if
+#include <algorithm>  // for reverse
 
-#include "libsemigroups/constants.hpp"          // for UNDEFINED
-#include "libsemigroups/debug.hpp"              // for LIBSEMIGROUPS_ASSERT
-#include "libsemigroups/exception.hpp"          // for LIBSEMIGROUPS_EXCEPTION
-#include "libsemigroups/froidure-pin-base.hpp"  // for FroidurePinBase
-#include "libsemigroups/report.hpp"             // for REPORT_VERBOSE_DEFAULT
-#include "libsemigroups/string.hpp"             // for detail::to_string
+#include "libsemigroups/exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
+#include "libsemigroups/string.hpp"     // for detail::to_string
 
 namespace libsemigroups {
-
-  ////////////////////////////////////////////////////////////////////////////
-  // CongruenceInterface - constructors + destructor - public
-  ////////////////////////////////////////////////////////////////////////////
-
-  CongruenceInterface::CongruenceInterface(congruence_kind type)
-      : Runner(),
-        // Non-mutable
-        _type(type) {
-    // Mutable
-    // TODO reset();
-  }
-
-  void CongruenceInterface::init() {
-    Runner::init();
-  }
-
-  void CongruenceInterface::init(congruence_kind type) {
-    Runner::init();
-    _type = type;
-  }
-
-  CongruenceInterface::~CongruenceInterface() = default;
 
   /////////////////////////////////////////////////////////////////////////
   // CongruenceInterface - non-pure virtual methods - private
   /////////////////////////////////////////////////////////////////////////
 
-  void CongruenceInterface::add_pair(word_type const& u,
-                                         word_type const& v) {
-    if (started()) {
-      LIBSEMIGROUPS_EXCEPTION(
-          "cannot add further generating pairs at this stage");
-    }
-    for (auto const& w : {u, v}) {
-      validate_word(w);
-      _generating_pairs.push_back(w);
+  void CongruenceInterface::add_pair_no_checks(word_type&& u, word_type&& v) {
+    throw_if_started();
+    for (auto&& w : {u, v}) {
+      _generating_pairs.push_back(std::move(w));
       if (kind() == congruence_kind::left) {
         std::reverse(_generating_pairs.back().begin(),
                      _generating_pairs.back().end());
@@ -72,28 +40,16 @@ namespace libsemigroups {
     }
   }
 
-  void
-  CongruenceInterface::add_pair_no_checks_no_reverse(word_type const& u,
-                                                         word_type const& v) {
-    _generating_pairs.push_back(u);
-    _generating_pairs.push_back(v);
-  }
-
-  void CongruenceInterface::add_pair(word_type&& u, word_type&& v) {
+  void CongruenceInterface::throw_if_started() const {
     if (started()) {
-      LIBSEMIGROUPS_EXCEPTION(
+      LIBSEMIGROUPS_EXCEPTION_V3(
           "cannot add further generating pairs at this stage");
     }
-    validate_word(u);
-    validate_word(v);
-    // Note that _gen_pairs might contain pairs of distinct words that
-    // represent the same element of the parent semigroup (if any).
-    if (kind() == congruence_kind::left) {
-      std::reverse(u.begin(), u.end());
-      std::reverse(v.begin(), v.end());
-    }
+  }
 
-    _generating_pairs.push_back(std::move(u));
-    _generating_pairs.push_back(std::move(v));
+  void CongruenceInterface::add_pair_no_checks_no_reverse(word_type const& u,
+                                                          word_type const& v) {
+    _generating_pairs.push_back(u);
+    _generating_pairs.push_back(v);
   }
 }  // namespace libsemigroups

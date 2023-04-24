@@ -68,8 +68,6 @@ namespace libsemigroups {
   //! [string rewriting system](https://w.wiki/9Re)
   //! defining a finitely presented monoid or semigroup.
   //!
-  //! \sa congruence::KnuthBendix.
-  //!
   //! \par Example
   //! \code
   //! KnuthBendix kb;

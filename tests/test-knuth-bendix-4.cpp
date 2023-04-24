@@ -30,7 +30,7 @@
 //
 // 5: contains tests for KnuthBendix created from FroidurePin instances
 //
-// 6: contains tests for congruence::KnuthBendix.
+// 6: contains tests for KnuthBendix.
 
 #include <algorithm>                       // for next_permutation
 #include <chrono>                          // for milliseconds, seconds

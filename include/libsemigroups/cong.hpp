@@ -1,6 +1,6 @@
 //
 // libsemigroups - C++ library for semigroups and monoids
-// Copyright (C) 2019 James D. Mitchell
+// Copyright (C) 2019-2023 James D. Mitchell
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -17,7 +17,7 @@
 //
 
 // This file contains stuff for creating congruence over FroidurePin objects or
-// over FpSemigroup objects.
+// over Presentation objects.
 
 #ifndef LIBSEMIGROUPS_CONG_HPP_
 #define LIBSEMIGROUPS_CONG_HPP_

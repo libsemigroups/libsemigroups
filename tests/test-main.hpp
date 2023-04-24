@@ -16,10 +16,10 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#define CATCH_CONFIG_ENABLE_ALL_STRINGMAKERS
 #ifndef LIBSEMIGROUPS_TESTS_TEST_MAIN_HPP_
 #define LIBSEMIGROUPS_TESTS_TEST_MAIN_HPP_
 
+#define CATCH_CONFIG_ENABLE_ALL_STRINGMAKERS
 #include "libsemigroups/paths.hpp"
 #include "libsemigroups/runner.hpp"
 #include "libsemigroups/types.hpp"

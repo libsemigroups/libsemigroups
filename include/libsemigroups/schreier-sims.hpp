@@ -58,7 +58,7 @@
 #include <unordered_set>  // for unordered_set
 
 #include "adapters.hpp"          // for action, degree, inverse
-#include "bruidhinn-traits.hpp"  // for detail::BruidhinnTraits
+#include "detail/bruidhinn-traits.hpp"  // for detail::BruidhinnTraits
 #include "config.hpp"            // for LIBSEMIGROUPS_HPCOMBI_ENABLED
 #include "containers.hpp"        // for Array2, StaticTriVector2
 #include "debug.hpp"             // for LIBSEMIGROUPS_ASSERT

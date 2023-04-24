@@ -36,7 +36,7 @@
 
 #include "action.hpp"            // for LeftAction, RightAction
 #include "adapters.hpp"          // for Lambda, etc
-#include "bruidhinn-traits.hpp"  // for BruidhinnTraits
+#include "detail/bruidhinn-traits.hpp"  // for BruidhinnTraits
 #include "constants.hpp"         // for UNDEFINED
 #include "debug.hpp"             // for LIBSEMIGROUPS_ASSERT
 #include "exception.hpp"         // for LIBSEMIGROUPS_EXCEPTION
