@@ -153,7 +153,7 @@ namespace libsemigroups {
         replace_source(c, d, x, cx);
         replace_source(d, c, x, dx);
       }
-      this->swap_edges_no_checks(c, d, x);
+      this->swap_targets_no_checks(c, d, x);
       _preim_init.swap(c, x, d, x);
       _preim_next.swap(c, x, d, x);
     }
@@ -168,7 +168,7 @@ namespace libsemigroups {
       node_type cx = this->neighbor_no_checks(c, x);
       replace_target(c, d, x);
       replace_source(c, d, x, cx);
-      this->swap_edges_no_checks(c, d, x);
+      this->swap_targets_no_checks(c, d, x);
       _preim_init.swap(c, x, d, x);
       _preim_next.swap(c, x, d, x);
     }

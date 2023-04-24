@@ -817,7 +817,7 @@ namespace libsemigroups {
     _nr_nodes         = m;
     _num_active_nodes = 0;
     _dynamic_array_2.reshape(n, m);
-    remove_all_edges();
+    remove_all_targets();
   }
 
   template <typename Node>

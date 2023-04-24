@@ -289,7 +289,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("WordGraph",
                           "014",
-                          "remove_edge_no_checks",
+                          "remove_target_no_checks",
                           "[quick]") {
     WordGraph<size_t> ad;
     ad.add_nodes(3);
@@ -298,7 +298,7 @@ namespace libsemigroups {
     ad.set_target(1, 0, 0);
     ad.set_target(2, 0, 0);
 
-    ad.remove_edge_no_checks(0, 0);  // remove edge from 0 labelled 0
+    ad.remove_target_no_checks(0, 0);  // remove edge from 0 labelled 0
     REQUIRE(ad == to_word_graph<size_t>(3, {{UNDEFINED, UNDEFINED}, {0}, {0}}));
   }
 
@@ -314,7 +314,7 @@ namespace libsemigroups {
     ad.set_target(2, 0, 2);
 
     // swap edge from 0 labelled 0 with edge from 1 labelled 0
-    ad.swap_edges_no_checks(0, 1, 0);
+    ad.swap_targets_no_checks(0, 1, 0);
     REQUIRE(ad == to_word_graph<size_t>(3, {{0, UNDEFINED}, {1}, {2}}));
   }
 

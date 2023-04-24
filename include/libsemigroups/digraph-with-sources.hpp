@@ -89,9 +89,9 @@ namespace libsemigroups {
       add_source(d, x, c);
     }
 
-    void remove_edge_no_checks(node_type c, label_type x) noexcept {
+    void remove_target_no_checks(node_type c, label_type x) noexcept {
       remove_source(this->neighbor_no_checks(c, x), x, c);
-      WordGraph<node_type>::remove_edge_no_checks(c, x);
+      WordGraph<node_type>::remove_target_no_checks(c, x);
     }
 
     void add_nodes(size_type m) {

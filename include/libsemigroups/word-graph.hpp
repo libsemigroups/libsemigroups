@@ -316,7 +316,6 @@ namespace libsemigroups {
     //! corrupted digraph if there are any edges from the nodes \f$0, \ldots, n
     //! - 1\f$ to nodes larger than \f$n - 1\f$.
     // TODO(later) non_no_checks version
-    // Means restrict the number of nodes to the first 0, ... ,n - 1.
 
     // Only valid if no edges incident to nodes in [first, last) point outside
     // [first, last)
@@ -387,7 +386,7 @@ namespace libsemigroups {
     //! \warning
     //! No checks whatsoever on the validity of the arguments are performed.
     // TODO(later) check version
-    void inline remove_edge_no_checks(node_type i, label_type lbl) {
+    void inline remove_target_no_checks(node_type i, label_type lbl) {
       _dynamic_array_2.set(i, lbl, UNDEFINED);
     }
 
@@ -405,7 +404,7 @@ namespace libsemigroups {
     //!
     //! \par Parameters
     //! (None)
-    void inline remove_all_edges() {
+    void inline remove_all_targets() {
       std::fill(_dynamic_array_2.begin(), _dynamic_array_2.end(), UNDEFINED);
     }
 
@@ -458,7 +457,7 @@ namespace libsemigroups {
     //! \warning
     //! No checks whatsoever on the validity of the arguments are performed.
     // swap u - a - > u' and v - a -> v'
-    void swap_edges_no_checks(node_type u, node_type v, label_type a) {
+    void swap_targets_no_checks(node_type u, node_type v, label_type a) {
       _dynamic_array_2.swap(u, a, v, a);
     }
 

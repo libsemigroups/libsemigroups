@@ -172,7 +172,7 @@ namespace libsemigroups {
 
     while (_definitions.size() > n) {
       auto const& p = _definitions.back();
-      this->remove_edge_no_checks(p.first, p.second);
+      this->remove_target_no_checks(p.first, p.second);
       _definitions.pop_back();
     }
   }
