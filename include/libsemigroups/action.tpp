@@ -161,117 +161,6 @@ namespace libsemigroups {
   }
 
   ////////////////////////////////////////////////////////////////////////
-  // Action - member functions: strongly connected components - public
-  ////////////////////////////////////////////////////////////////////////
-
-  template <typename Element,
-            typename Point,
-            typename Func,
-            typename Traits,
-            side LeftOrRight>
-  typename Action<Element, Point, Func, Traits, LeftOrRight>::element_type
-  Action<Element, Point, Func, Traits, LeftOrRight>::multiplier_from_scc_root(
-      index_type pos) {
-    validate_gens();
-    validate_index(pos);
-    if (cache_scc_multipliers()) {
-      if (_multipliers_from_scc_root.defined(pos)) {
-        return _multipliers_from_scc_root[pos];
-      }
-      _multipliers_from_scc_root.init(_graph.number_of_nodes(), _gens[0]);
-      index_type             i = pos;
-      std::stack<index_type> visited;
-      while (!_multipliers_from_scc_root.defined(i)
-             && _scc.spanning_forest().parent(i) != UNDEFINED) {
-        visited.push(i);
-        _multipliers_from_scc_root[i] = _gens[_scc.spanning_forest().label(i)];
-        i                             = _scc.spanning_forest().parent(i);
-      }
-      if (visited.empty()) {
-        // if pos is the scc root, then this can happen
-        _multipliers_from_scc_root.set_defined(pos);
-      } else {
-        element_type tmp = One()(_gens[0]);
-        while (i != pos) {
-          index_type j = visited.top();
-          visited.pop();
-          Swap()(tmp, _multipliers_from_scc_root[j]);
-          internal_product(_multipliers_from_scc_root[j],
-                           _multipliers_from_scc_root[i],
-                           tmp);
-          _multipliers_from_scc_root.set_defined(j);
-          i = j;
-        }
-      }
-      return _multipliers_from_scc_root[pos];
-    } else {
-      element_type  out = One()(_gens[0]);
-      element_type  tmp = One()(_gens[0]);
-      Forest const& f   = _scc.spanning_forest();
-      while (f.parent(pos) != UNDEFINED) {
-        Swap()(tmp, out);
-        internal_product(out, _gens[f.label(pos)], tmp);
-        pos = f.parent(pos);
-      }
-      return out;
-    }
-  }
-
-  // TODO reduce code dupl with multiplier_from_scc_root
-  template <typename Element,
-            typename Point,
-            typename Func,
-            typename Traits,
-            side LeftOrRight>
-  typename Action<Element, Point, Func, Traits, LeftOrRight>::element_type
-  Action<Element, Point, Func, Traits, LeftOrRight>::multiplier_to_scc_root(
-      index_type pos) {
-    validate_gens();
-    validate_index(pos);
-    if (cache_scc_multipliers()) {
-      if (_multipliers_to_scc_root.defined(pos)) {
-        return _multipliers_to_scc_root[pos];
-      }
-      _multipliers_to_scc_root.init(_graph.number_of_nodes(), _gens[0]);
-      index_type             i = pos;
-      std::stack<index_type> visited;
-      while (!_multipliers_to_scc_root.defined(i)
-             && _scc.reverse_spanning_forest().parent(i) != UNDEFINED) {
-        visited.push(i);
-        _multipliers_to_scc_root[i]
-            = _gens[_scc.reverse_spanning_forest().label(i)];
-        i = _scc.reverse_spanning_forest().parent(i);
-      }
-      if (visited.empty()) {
-        // if pos is the scc root, then this can happen
-        _multipliers_to_scc_root.set_defined(pos);
-      } else {
-        element_type tmp = One()(_gens[0]);
-        while (i != pos) {
-          index_type j = visited.top();
-          visited.pop();
-          Swap()(tmp, _multipliers_to_scc_root[j]);
-          internal_product(
-              _multipliers_to_scc_root[j], tmp, _multipliers_to_scc_root[i]);
-          _multipliers_to_scc_root.set_defined(j);
-          i = j;
-        }
-      }
-      return _multipliers_to_scc_root[pos];
-    } else {
-      element_type out = One()(_gens[0]);
-      element_type tmp = One()(_gens[0]);
-      while (_scc.reverse_spanning_forest().parent(pos) != UNDEFINED) {
-        Swap()(tmp, out);
-        internal_product(
-            out, tmp, _gens[_scc.reverse_spanning_forest().label(pos)]);
-        pos = _scc.reverse_spanning_forest().parent(pos);
-      }
-      return out;
-    }
-  }
-
-  ////////////////////////////////////////////////////////////////////////
   // Runner - pure virtual member functions - private
   ////////////////////////////////////////////////////////////////////////
 
@@ -334,6 +223,68 @@ namespace libsemigroups {
   ////////////////////////////////////////////////////////////////////////
   // Action - member functions - private
   ////////////////////////////////////////////////////////////////////////
+
+  template <typename Element,
+            typename Point,
+            typename Func,
+            typename Traits,
+            side LeftOrRight>
+  template <bool Forward>
+  typename Action<Element, Point, Func, Traits, LeftOrRight>::element_type
+  Action<Element, Point, Func, Traits, LeftOrRight>::multiplier_private(
+      MultiplierCache& mults,
+      Forest const&    f,
+      index_type       pos) {
+    validate_gens();
+    validate_index(pos);
+
+    if (cache_scc_multipliers()) {
+      if (mults.defined(pos)) {
+        return mults[pos];
+      }
+
+      mults.init(_graph.number_of_nodes(), _gens[0]);
+      index_type             i = pos;
+      std::stack<index_type> visited;
+      while (!mults.defined(i) && f.parent(i) != UNDEFINED) {
+        visited.push(i);
+        mults[i] = _gens[f.label(i)];
+        i        = f.parent(i);
+      }
+      if (visited.empty()) {
+        // if pos is the scc root, then this can happen
+        mults.set_defined(pos);
+      } else {
+        element_type tmp = One()(_gens[0]);
+        while (i != pos) {
+          index_type j = visited.top();
+          visited.pop();
+          Swap()(tmp, mults[j]);
+          if constexpr (Forward) {
+            internal_product(mults[j], mults[i], tmp);
+          } else {
+            internal_product(mults[j], tmp, mults[i]);
+          }
+          mults.set_defined(j);
+          i = j;
+        }
+      }
+      return mults[pos];
+    } else {
+      element_type out = One()(_gens[0]);
+      element_type tmp = One()(_gens[0]);
+      while (f.parent(pos) != UNDEFINED) {
+        Swap()(tmp, out);
+        if constexpr (Forward) {
+          internal_product(out, _gens[f.label(pos)], tmp);
+        } else {
+          internal_product(out, tmp, _gens[f.label(pos)]);
+        }
+        pos = f.parent(pos);
+      }
+      return out;
+    }
+  }
 
   template <typename Element,
             typename Point,

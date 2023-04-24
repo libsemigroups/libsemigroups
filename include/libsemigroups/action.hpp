@@ -548,7 +548,10 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if there are no generators yet added
     //! or the index \p pos is out of range.
-    [[nodiscard]] element_type multiplier_from_scc_root(index_type pos);
+    [[nodiscard]] element_type multiplier_from_scc_root(index_type pos) {
+      return multiplier_private<true>(
+          _multipliers_from_scc_root, _scc.spanning_forest(), pos);
+    }
 
     //! Returns a multiplier from a given index to a scc root.
     //!
@@ -568,7 +571,10 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if there are no generators yet added
     //! or the index \p pos is out of range.
-    [[nodiscard]] element_type multiplier_to_scc_root(index_type pos);
+    [[nodiscard]] element_type multiplier_to_scc_root(index_type pos) {
+      return multiplier_private<false>(
+          _multipliers_to_scc_root, _scc.reverse_spanning_forest(), pos);
+    }
 
     //! Returns a const reference to the root point of a strongly connected
     //! component.
@@ -645,6 +651,11 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////
     // Action - member functions - private
     ////////////////////////////////////////////////////////////////////////
+
+    template <bool Forward>
+    element_type multiplier_private(MultiplierCache& mults,
+                                    Forest const&    f,
+                                    index_type       pos);
 
     void validate_index(index_type i) const;
     void validate_gens() const;
