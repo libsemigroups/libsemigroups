@@ -243,7 +243,7 @@ namespace libsemigroups {
     //!
     //! \param number_of_nodes the number of nodes
     //! \param out_degree the out-degree of every node
-    //! \param number_of_edges the out-degree of every node
+    //! \param number_of_edges ??
     //! \param mt a std::mt19937 used as a random source (defaults to:
     //! std::mt19937(std::random_device()()))
     //!
@@ -267,7 +267,7 @@ namespace libsemigroups {
     //!
     //! \param number_of_nodes the number of nodes
     //! \param out_degree the out-degree of every node
-    //! \param number_of_edges the out-degree of every node
+    //! \param number_of_edges ??
     //! \param mt a std::mt19937 used as a random source (defaults to:
     //! std::mt19937(std::random_device()()))
     //!
@@ -390,7 +390,7 @@ namespace libsemigroups {
       word_graph::validate_node(*this, i);
       word_graph::validate_node(*this, j);
       word_graph::validate_label(*this, lbl);
-      def_edge_no_checks(i, lbl, j);
+      set_target_no_checks(i, lbl, j);
     }
 
     //! Add an edge from one node to another with a given label.
@@ -413,10 +413,6 @@ namespace libsemigroups {
 
     void inline set_target_no_checks(node_type m, label_type lbl, node_type n) {
       _dynamic_array_2.set(m, lbl, n);
-    }
-
-    void inline def_edge_no_checks(node_type i, label_type lbl, node_type j) {
-      _dynamic_array_2.set(i, lbl, j);
     }
 
     //! Remove an edge from a node with a given label.

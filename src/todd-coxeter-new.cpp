@@ -100,9 +100,9 @@ namespace libsemigroups {
     auto                pref_defs
         = [this](node_type x, letter_type a, node_type y, letter_type b) {
             node_type d = new_node();
-            def_edge_no_checks<RegDefs>(x, a, d);
+            set_target_no_checks<RegDefs>(x, a, d);
             if (a != b || x != y) {
-              def_edge_no_checks<RegDefs>(y, b, d);
+              set_target_no_checks<RegDefs>(y, b, d);
             }
           };
 
@@ -665,7 +665,7 @@ namespace libsemigroups {
     while (current != _word_graph.first_free_node() && !stopped()) {
       for (letter_type a = 0; a < n; ++a) {
         if (_word_graph.neighbor_no_checks(current, a) == UNDEFINED) {
-          _word_graph.def_edge_no_checks<RegisterDefs>(
+          _word_graph.set_target_no_checks<RegisterDefs>(
               current, a, _word_graph.new_node());
           _word_graph.process_definitions();
         }

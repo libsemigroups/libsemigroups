@@ -133,7 +133,7 @@ namespace libsemigroups {
 
   template <typename Word, typename Node, typename Definitions>
   template <bool RegDefs>
-  bool FelschDigraph<Word, Node, Definitions>::try_def_edge_no_checks(
+  bool FelschDigraph<Word, Node, Definitions>::try_set_target_no_checks(
       node_type  c,
       label_type x,
       node_type  d) noexcept {
@@ -142,7 +142,7 @@ namespace libsemigroups {
     LIBSEMIGROUPS_ASSERT(d < WordGraph<Node>::number_of_nodes());
     node_type cx = WordGraph<Node>::neighbor_no_checks(c, x);
     if (cx == UNDEFINED) {
-      def_edge_no_checks<RegDefs>(c, x, d);
+      set_target_no_checks<RegDefs>(c, x, d);
       return true;
     } else {
       return cx == d;
@@ -151,7 +151,7 @@ namespace libsemigroups {
 
   template <typename Word, typename Node, typename Definitions>
   template <bool RegDefs>
-  void FelschDigraph<Word, Node, Definitions>::def_edge_no_checks(
+  void FelschDigraph<Word, Node, Definitions>::set_target_no_checks(
       node_type  c,
       label_type x,
       node_type  d) noexcept {
@@ -421,10 +421,10 @@ namespace libsemigroups {
 
     if (xa == UNDEFINED && yb != UNDEFINED) {
       LIBSEMIGROUPS_ASSERT(a < WordGraph<Node>::out_degree());
-      def_edge_no_checks<RegDefs>(x, a, yb);
+      set_target_no_checks<RegDefs>(x, a, yb);
     } else if (xa != UNDEFINED && yb == UNDEFINED) {
       LIBSEMIGROUPS_ASSERT(b < WordGraph<Node>::out_degree());
-      def_edge_no_checks<RegDefs>(y, b, xa);
+      set_target_no_checks<RegDefs>(y, b, xa);
     } else if (xa != UNDEFINED && yb != UNDEFINED && xa != yb) {
       return incompat(xa, yb);
     } else if (xa == UNDEFINED && yb == UNDEFINED) {
