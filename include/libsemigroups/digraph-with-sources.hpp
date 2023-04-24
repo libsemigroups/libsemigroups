@@ -107,7 +107,7 @@ namespace libsemigroups {
     }
 
     void shrink_to_fit(size_type m) {
-      this->restrict(m);
+      this->induced_subgraph_no_checks(0, m);
       _preim_init.shrink_rows_to(m);
       _preim_next.shrink_rows_to(m);
     }

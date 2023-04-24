@@ -272,7 +272,10 @@ namespace libsemigroups {
         == 511);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("WordGraph", "013", "restrict", "[quick]") {
+  LIBSEMIGROUPS_TEST_CASE("WordGraph",
+                          "013",
+                          "induced_subgraph_no_checks",
+                          "[quick]") {
     WordGraph<size_t> ad;
     ad.add_nodes(3);
     ad.add_to_out_degree(2);
@@ -280,7 +283,7 @@ namespace libsemigroups {
     ad.set_target(1, 0, 0);
     ad.set_target(2, 0, 0);
 
-    ad.restrict(2);
+    ad.induced_subgraph_no_checks(0, 2);
     REQUIRE(ad == to_word_graph<size_t>(2, {{1, UNDEFINED}, {0}}));
   }
 

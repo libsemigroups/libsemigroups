@@ -670,7 +670,7 @@ namespace libsemigroups {
     }
     this->_felsch_graph.number_of_active_nodes(0);
     // indicates that the iterator is done
-    this->_felsch_graph.restrict(0);
+    this->_felsch_graph.induced_subgraph_no_checks(0, 0);
     return *this;
   }
 
@@ -956,14 +956,14 @@ namespace libsemigroups {
       REPORT_DEFAULT("no faithful rep. o.r.c. on [%llu, %llu) points found\n",
                      _min,
                      _max + 1);
-      result.restrict(0);
+      result.induced_subgraph_no_checks(0, 0);
     } else {
       REPORT_DEFAULT("found a faithful rep. o.r.c. on %llu points\n",
                      result.number_of_active_nodes());
       if (short_rules().contains_empty_word()) {
-        result.restrict(result.number_of_active_nodes());
+        result.induced_subgraph_no_checks(0, result.number_of_active_nodes());
       } else {
-        result.induced_subdigraph(1, result.number_of_active_nodes());
+        result.induced_subgraph_no_checks(1, result.number_of_active_nodes());
         result.number_of_active_nodes(result.number_of_active_nodes() - 1);
       }
     }
@@ -1003,7 +1003,7 @@ namespace libsemigroups {
       return best;
     }
 
-    hi                    = best.number_of_nodes();
+    hi                = best.number_of_nodes();
     WordGraph<T> next = cr.max_nodes(hi - 1).digraph();
     while (next.number_of_nodes() != 0) {
       hi   = next.number_of_nodes();

@@ -20,9 +20,8 @@
 // This file contains an implementation of word graphs (which are basically
 // deterministic automata without initial or accept states).
 
-// TODO(later)
+// TODO:
 // * iwyu
-// * More benchmarks
 
 #ifndef LIBSEMIGROUPS_WORD_GRAPH_HPP_
 #define LIBSEMIGROUPS_WORD_GRAPH_HPP_
@@ -75,34 +74,6 @@
 #endif
 
 namespace libsemigroups {
-
-  // TODO delete
-  template <typename Node>
-  class WordGraph;  // forward decl
-
-  // TODO move this to the end of the file
-  namespace word_graph {
-    //! Undoc
-    // TODO remove
-    template <typename Node>
-    using node_type = typename WordGraph<Node>::node_type;
-
-    //! Undoc
-    // TODO remove
-    template <typename Node>
-    using label_type = typename WordGraph<Node>::label_type;
-
-    //! No doc
-    // not noexcept because it throws an exception!
-    template <typename Node>
-    void validate_node(WordGraph<Node> const& wg, Node v);
-
-    //! No doc
-    // not noexcept because it throws an exception!
-    template <typename Node>
-    void validate_label(WordGraph<Node> const&               wg,
-                        typename WordGraph<Node>::label_type lbl);
-  }  // namespace word_graph
 
   // TODO doc
   struct WordGraphBase {};
@@ -344,20 +315,16 @@ namespace libsemigroups {
     //! This function performs no checks whatsoever and will result in a
     //! corrupted digraph if there are any edges from the nodes \f$0, \ldots, n
     //! - 1\f$ to nodes larger than \f$n - 1\f$.
-    // TODO(later) this is the nc version do a non-nc version also
+    // TODO(later) non_no_checks version
     // Means restrict the number of nodes to the first 0, ... ,n - 1.
-    // TODO(v3) rename to shrink_nodes_to
-    void inline restrict(size_t n) {
-      _nr_nodes = n;
-      _dynamic_array_2.shrink_rows_to(n);
-    }
 
     // Only valid if no edges incident to nodes in [first, last) point outside
     // [first, last)
-    void induced_subdigraph(node_type first, node_type last);
+    void induced_subgraph_no_checks(node_type first, node_type last);
 
-    template <typename Iterator>
-    void induced_subdigraph(Iterator first, Iterator last);
+    template <typename Iterator,
+              typename = std::enable_if_t<detail::IsIterator<Iterator>::value>>
+    void induced_subgraph_no_checks(Iterator first, Iterator last);
 
     //! Add an edge from one node to another with a given label.
     //!
@@ -379,20 +346,7 @@ namespace libsemigroups {
     //! \complexity
     //! Constant.
     // Not noexcept because validate_node/label aren't
-    // TODO i -> m, j -> n and to tpp
-    void inline set_target(node_type i, label_type lbl, node_type j) {
-      word_graph::validate_node(*this, i);
-      word_graph::validate_node(*this, j);
-      word_graph::validate_label(*this, lbl);
-      set_target_no_checks(i, lbl, j);
-    }
-
-    void inline def_edge(node_type i, label_type lbl, node_type j) {
-      word_graph::validate_node(*this, i);
-      word_graph::validate_node(*this, j);
-      word_graph::validate_label(*this, lbl);
-      set_target_no_checks(i, lbl, j);
-    }
+    void set_target(node_type m, label_type lbl, node_type n);
 
     //! Add an edge from one node to another with a given label.
     //!
@@ -432,7 +386,7 @@ namespace libsemigroups {
     //!
     //! \warning
     //! No checks whatsoever on the validity of the arguments are performed.
-    // TODO check version
+    // TODO(later) check version
     void inline remove_edge_no_checks(node_type i, label_type lbl) {
       _dynamic_array_2.set(i, lbl, UNDEFINED);
     }
@@ -455,10 +409,7 @@ namespace libsemigroups {
       std::fill(_dynamic_array_2.begin(), _dynamic_array_2.end(), UNDEFINED);
     }
 
-    void remove_label(label_type lbl) {
-      word_graph::validate_label(*this, lbl);
-      remove_label_no_checks(lbl);
-    }
+    void remove_label(label_type lbl);
 
     void remove_label_no_checks(label_type lbl);
 
@@ -484,12 +435,7 @@ namespace libsemigroups {
     //! \iterator_validity
     //! \iterator_invalid
     // Not noexcept because DynamicArray2::add_cols isn't.
-    void reserve(Node m, Node n) const {
-      // TODO What if n < _dynamic_array_2.number_of_cols()? Same for m
-      _dynamic_array_2.add_cols(n - _dynamic_array_2.number_of_cols());
-      // What if add_cols throws, what guarantee can we offer then?
-      _dynamic_array_2.add_rows(m - _dynamic_array_2.number_of_rows());
-    }
+    void reserve(size_type m, size_type n) const;
 
     //! Swaps the edge with specified label from one node with another.
     //!
@@ -553,11 +499,7 @@ namespace libsemigroups {
     //! \exception LibsemigroupsException if \p v or \p lbl is not
     //! valid.
     // Not noexcept because validate_node/label aren't
-    node_type inline neighbor(node_type v, label_type lbl) const {
-      word_graph::validate_node(*this, v);
-      word_graph::validate_label(*this, lbl);
-      return _dynamic_array_2.get(v, lbl);
-    }
+    node_type neighbor(node_type v, label_type lbl) const;
 
     //! Get the range of the edge with given source node and label.
     //!
@@ -643,11 +585,8 @@ namespace libsemigroups {
     //!
     //! \sa next_neighbor_no_checks.
     // Not noexcept because next_neighbor_no_checks is not
-    std::pair<node_type, label_type> inline next_neighbor(node_type  v,
-                                                          label_type i) const {
-      word_graph::validate_node(*this, v);
-      return next_neighbor_no_checks(v, i);
-    }
+    std::pair<node_type, label_type> next_neighbor(node_type  v,
+                                                   label_type i) const;
 
     //! Returns the number of nodes.
     //!
@@ -704,14 +643,8 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! \f$O(n)\f$ where \c n is out_degree().
-    // TODO no_checks version
-    size_t number_of_edges(node_type n) const {
-      word_graph::validate_node(*this, n);
-      return out_degree()
-             - std::count(_dynamic_array_2.cbegin_row(n),
-                          _dynamic_array_2.cend_row(n),
-                          UNDEFINED);
-    }
+    // TODO(later) no_checks version
+    size_t number_of_edges(node_type n) const;
 
     //! Returns the out-degree.
     //!
@@ -849,10 +782,7 @@ namespace libsemigroups {
     //! \complexity
     //! Constant.
     // Not noexcept because validate_node isn't
-    const_iterator_edges cbegin_edges(node_type i) const {
-      word_graph::validate_node(*this, i);
-      return cbegin_edges_no_checks(i);
-    }
+    const_iterator_edges cbegin_edges(node_type i) const;
 
     //! Returns a random access iterator pointing at the first neighbor of a
     //! node.
@@ -890,10 +820,7 @@ namespace libsemigroups {
     //! \complexity
     //! Constant.
     // Not noexcept because validate_node isn't
-    const_iterator_edges cend_edges(node_type i) const {
-      word_graph::validate_node(*this, i);
-      return cend_edges_no_checks(i);
-    }
+    const_iterator_edges cend_edges(node_type i) const;
 
     //! Returns a random access iterator pointing one-past-the-last neighbor of
     //! a node.
@@ -968,8 +895,29 @@ namespace libsemigroups {
 
   namespace word_graph {
 
+    //! Undoc
+    // TODO remove
+    template <typename Node>
+    using node_type = typename WordGraph<Node>::node_type;
+
+    //! Undoc
+    // TODO remove
+    template <typename Node>
+    using label_type = typename WordGraph<Node>::label_type;
+
+    //! No doc
+    // not noexcept because it throws an exception!
+    template <typename Node>
+    void validate_node(WordGraph<Node> const& wg, Node v);
+
+    //! No doc
+    // not noexcept because it throws an exception!
+    template <typename Node>
+    void validate_label(WordGraph<Node> const&               wg,
+                        typename WordGraph<Node>::label_type lbl);
+
 #ifdef LIBSEMIGROUPS_EIGEN_ENABLED
-    static inline Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>
+    static Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>
     pow(Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> const& x,
         size_t                                                       e);
 #endif

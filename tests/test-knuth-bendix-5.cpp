@@ -386,7 +386,7 @@ namespace libsemigroups {
     std::iter_swap(nrvec.begin(), (nrvec.end() - 1));
     REQUIRE(nrvec[0] == 34);
 
-    copy.induced_subdigraph(nrvec.begin(), nrvec.end());
+    copy.induced_subgraph_no_checks(nrvec.begin(), nrvec.end());
     REQUIRE(copy.out_degree() == 2);
     REQUIRE(copy.number_of_nodes() == 45);
 

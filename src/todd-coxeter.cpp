@@ -469,7 +469,8 @@ namespace libsemigroups {
     standardize(Order::shortlex);
     _word_graph.shrink_to_fit(_word_graph.number_of_nodes_active());
     _word_graph.erase_free_nodes();
-    _word_graph.restrict(_word_graph.number_of_nodes_active());
+    _word_graph.induced_subgraph_no_checks(
+        0, _word_graph.number_of_nodes_active());
   }
 
   bool ToddCoxeter::standardize(Order val) {

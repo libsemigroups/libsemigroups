@@ -1482,7 +1482,7 @@ namespace libsemigroups {
       }
       if (W.size() == 5) {
         auto result = *it;
-        result.induced_subdigraph(1, result.number_of_active_nodes());
+        result.induced_subgraph_no_checks(1, result.number_of_active_nodes());
         result.number_of_active_nodes(result.number_of_active_nodes() - 1);
         if (word_graph::is_strictly_cyclic(result)) {
           strictly_cyclic_count++;

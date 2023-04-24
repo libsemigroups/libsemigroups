@@ -749,7 +749,7 @@ namespace libsemigroups {
               std::find(sorted_nodes.begin(), sorted_nodes.end(), src));
         }
 
-        _gilman_digraph.induced_subdigraph(sorted_nodes.cbegin(),
+        _gilman_digraph.induced_subgraph_no_checks(sorted_nodes.cbegin(),
                                            sorted_nodes.cend());
       }
     }

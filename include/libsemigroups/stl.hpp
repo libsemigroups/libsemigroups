@@ -100,6 +100,15 @@ namespace libsemigroups {
               typename = decltype(std::declval<A>() <= std::declval<B>())>
     struct HasLessEqual : std::true_type {};
 
+    template <typename T, typename = void>
+    struct IsIterator : std::false_type {};
+
+    template <typename T>
+    struct IsIterator<
+        T,
+        std::void_t<typename std::iterator_traits<T>::iterator_category>>
+        : std::true_type {};
+
   }  // namespace detail
 }  // namespace libsemigroups
 

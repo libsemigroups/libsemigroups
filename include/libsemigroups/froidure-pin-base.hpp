@@ -25,10 +25,10 @@
 
 #include "constants.hpp"   // for UNDEFINED
 #include "containers.hpp"  // for DynamicArray2
-#include "word-graph.hpp"     // for WordGraph
 #include "exception.hpp"   // for LIBSEMIGROUPS_EXCEPTION
 #include "runner.hpp"      // for Runner
 #include "types.hpp"       // for word_type, letter_type, tril
+#include "word-graph.hpp"  // for WordGraph
 
 namespace libsemigroups {
 
@@ -691,7 +691,7 @@ namespace libsemigroups {
     //! None.
     cayley_graph_type const& right_cayley_graph() {
       run();
-      _right.restrict(size());
+      _right.induced_subgraph_no_checks(0, size());  // TODO Why's this necessary?
       return _right;
     }
 
@@ -740,7 +740,7 @@ namespace libsemigroups {
     //! None.
     cayley_graph_type const& left_cayley_graph() {
       run();
-      _left.restrict(size());
+      _left.induced_subgraph_no_checks(0, size());  // TODO Why's this necessary?
       return _left;
     }
 
