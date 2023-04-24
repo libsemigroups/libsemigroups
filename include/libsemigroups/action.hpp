@@ -1,6 +1,6 @@
 //
 // libsemigroups - C++ library for semigroups and monoids
-// Copyright (C) 2019 James D. Mitchell
+// Copyright (C) 2019-2023 James D. Mitchell
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -23,14 +23,18 @@
 #define LIBSEMIGROUPS_ACTION_HPP_
 
 #include <cstddef>        // for size_t
+#include <stack>          // for stack
 #include <type_traits>    // for is_trivially_default_construc...
 #include <unordered_map>  // for unordered_map
+#include <utility>        // for pair
 #include <vector>         // for vector
 
 #include "adapters.hpp"          // for One
 #include "bruidhinn-traits.hpp"  // for detail::BruidhinnTraits
+#include "constants.hpp"         // for UNDEFINED
 #include "debug.hpp"             // for LIBSEMIGROUPS_ASSERT
 #include "exception.hpp"         // for LIBSEMIGROUPS_EXCEPTION
+#include "forest.hpp"            // for Forest
 #include "gabow.hpp"             // for Gabow
 #include "report.hpp"            // for REPORT_DEFAULT
 #include "runner.hpp"            // for Runner
@@ -65,22 +69,22 @@ namespace libsemigroups {
   //! be found, or \c stopped returns \c true.  This is achieved by performing
   //! a breadth first search.
   //!
-  //! \tparam TElementType the type of the elements of the semigroup.
+  //! \tparam Element the type of the elements of the semigroup.
   //!
-  //! \tparam TPointType the type of the points acted on.
+  //! \tparam Point the type of the points acted on.
   //!
-  //! \tparam TActionType the type of the action of elements of type
-  //! `TElementType` on points of type `TPointType`. This type should be a
+  //! \tparam Func the type of the action of elements of type
+  //! `Element` on points of type `Point`. This type should be a
   //! stateless trivially default constructible class with a call operator of
-  //! signature `void(TPointType&, TPointType const&, TElementType const&)`
+  //! signature `void(Point&, Point const&, Element const&)`
   //! which computes the action of the 3rd argument on the 2nd argument, and
   //! stores it in the 1st argument. See, for example,
   //! ImageLeftAction and ImageRightAction.
   //!
-  //! \tparam TTraits the type of a traits class with the requirements of
+  //! \tparam Traits the type of a traits class with the requirements of
   //! \ref ActionTraits.
   //!
-  //! \tparam TLeftOrRight the libsemigroups::side of the action (i.e. if it is
+  //! \tparam LeftOrRight the libsemigroups::side of the action (i.e. if it is
   //! is a left or a right action).
   //!
   //! \sa libsemigroups::side, ActionTraits, LeftAction, and RightAction.
@@ -114,25 +118,25 @@ namespace libsemigroups {
   //! \complexity
   //! The time complexity is \f$O(mn)\f$ where \f$m\f$ is the total
   //! number of points in the orbit and \f$n\f$ is the number of generators.
-  template <typename TElementType,
-            typename TPointType,
-            typename TActionType,
-            typename TTraits,
-            side TLeftOrRight>
-  class Action : public Runner, private detail::BruidhinnTraits<TPointType> {
+  template <typename Element,
+            typename Point,
+            typename Func,
+            typename Traits,
+            side LeftOrRight>
+  class Action : public Runner, private detail::BruidhinnTraits<Point> {
     ////////////////////////////////////////////////////////////////////////
     // Action - typedefs - private
     ////////////////////////////////////////////////////////////////////////
 
     using internal_point_type =
-        typename detail::BruidhinnTraits<TPointType>::internal_value_type;
+        typename detail::BruidhinnTraits<Point>::internal_value_type;
     using internal_const_point_type =
-        typename detail::BruidhinnTraits<TPointType>::internal_const_value_type;
+        typename detail::BruidhinnTraits<Point>::internal_const_value_type;
     using internal_const_reference =
-        typename detail::BruidhinnTraits<TPointType>::internal_const_reference;
+        typename detail::BruidhinnTraits<Point>::internal_const_reference;
 
-    struct InternalEqualTo : private detail::BruidhinnTraits<TPointType> {
-      using EqualTo = typename TTraits::EqualTo;
+    struct InternalEqualTo : private detail::BruidhinnTraits<Point> {
+      using EqualTo = typename Traits::EqualTo;
       bool operator()(internal_const_point_type x,
                       internal_const_point_type y) const {
         return EqualTo()(this->to_external_const(x),
@@ -140,12 +144,16 @@ namespace libsemigroups {
       }
     };
 
-    struct InternalHash : private detail::BruidhinnTraits<TPointType> {
-      using Hash = typename TTraits::Hash;
+    struct InternalHash : private detail::BruidhinnTraits<Point> {
+      using Hash = typename Traits::Hash;
       size_t operator()(internal_const_point_type x) const {
         return Hash()(this->to_external_const(x));
       }
     };
+
+    // Forward decls
+    class MultiplierCache;
+    struct Options;
 
     static_assert(
         std::is_const<internal_const_point_type>::value
@@ -158,23 +166,23 @@ namespace libsemigroups {
     // Action - typedefs - public
     ////////////////////////////////////////////////////////////////////////
 
-    //! The template parameter \p TElementType.
+    //! The template parameter \p Element.
     //!
     //! Also the type of the elements of the semigroup.
-    using element_type = TElementType;
+    using element_type = Element;
 
-    //! The template parameter \p TPointType.
+    //! The template parameter \p Point.
     //!
     //! Also the type of the points acted on by this class.
-    using point_type = TPointType;
+    using point_type = Point;
 
     //! The type of a const reference to a \ref point_type.
     using const_reference_point_type =
-        typename detail::BruidhinnTraits<TPointType>::const_reference;
+        typename detail::BruidhinnTraits<Point>::const_reference;
 
     //! The type of a const pointer to a \ref point_type.
     using const_pointer_point_type =
-        typename detail::BruidhinnTraits<TPointType>::const_pointer;
+        typename detail::BruidhinnTraits<Point>::const_pointer;
 
     //! The type of the index of a point.
     using index_type = size_t;
@@ -186,20 +194,11 @@ namespace libsemigroups {
     //! Type of the action of \ref element_type on \ref point_type.
     //!
     //! \sa ImageRightAction, ImageLeftAction
-    using action_type = TActionType;
+    using action_type = Func;
 
     ////////////////////////////////////////////////////////////////////////
     // Action - iterators - public
     ////////////////////////////////////////////////////////////////////////
-
-    //! The type of a const iterator pointing to a single strongly
-    //! connected component (scc).
-
-    //! The type of a const iterator pointing to a strongly
-    //! connected component (scc).
-
-    //! The type of a const iterator pointing to a representative of a
-    //! strongly connected component (scc).
 
     //! The type of a const iterator pointing to a \ref point_type.
     using const_iterator
@@ -211,13 +210,13 @@ namespace libsemigroups {
     // Action - internal types with call operators - private
     ////////////////////////////////////////////////////////////////////////
 
-    using ActionOp = TActionType;
-    using One      = typename TTraits::One;
-    using Product  = typename TTraits::Product;
-    using Swap     = typename TTraits::Swap;
+    using ActionOp = Func;
+    using One      = typename Traits::One;
+    using Product  = typename Traits::Product;
+    using Swap     = typename Traits::Swap;
 
     static_assert(std::is_trivially_default_constructible<ActionOp>::value,
-                  "the third template parameter TActionType is not trivially "
+                  "the third template parameter Func is not trivially "
                   "default constructible");
     // TODO(later) more static assertions
 
@@ -225,21 +224,35 @@ namespace libsemigroups {
     // Action - product functions for left/right multiplication  - private
     ////////////////////////////////////////////////////////////////////////
 
-    template <typename TSfinae = void>
     auto internal_product(element_type&       xy,
                           element_type const& x,
-                          element_type const& y)
-        -> std::enable_if_t<side::right == TLeftOrRight, TSfinae> {
-      Product()(xy, x, y);
+                          element_type const& y) {
+      if constexpr (LeftOrRight == side::right) {
+        Product()(xy, x, y);
+      } else {
+        Product()(xy, y, x);
+      }
     }
 
-    template <typename TSfinae = void>
-    auto internal_product(element_type&       xy,
-                          element_type const& x,
-                          element_type const& y)
-        -> std::enable_if_t<side::left == TLeftOrRight, TSfinae> {
-      Product()(xy, y, x);
-    }
+    ////////////////////////////////////////////////////////////////////////
+    // Action - data members - private
+    ////////////////////////////////////////////////////////////////////////
+
+    std::vector<element_type> _gens;
+    WordGraph<size_t>         _graph;
+    std::unordered_map<internal_const_point_type,
+                       size_t,
+                       InternalHash,
+                       InternalEqualTo>
+                                     _map;
+    Options                          _options;
+    std::vector<internal_point_type> _orb;
+    MultiplierCache                  _multipliers_from_scc_root;
+    MultiplierCache                  _multipliers_to_scc_root;
+    size_t                           _pos;
+    Gabow<size_t>                    _scc;
+    internal_point_type              _tmp_point;
+    bool                             _tmp_point_init;
 
    public:
     ////////////////////////////////////////////////////////////////////////
@@ -259,16 +272,7 @@ namespace libsemigroups {
     //!
     //! \par Parameters
     //! (None)
-    Action()
-        : _gens(),
-          _graph(),
-          _map(),
-          _options(),
-          _orb(),
-          _pos(0),
-          _scc(_graph),
-          _tmp_point(),
-          _tmp_point_init(false) {}
+    Action();
 
     //! Default copy constructor.
     Action(Action const&) = default;
@@ -282,14 +286,7 @@ namespace libsemigroups {
     //! Default move assignment operator.
     Action& operator=(Action&&) = default;
 
-    ~Action() {
-      if (_tmp_point_init) {
-        this->internal_free(_tmp_point);
-      }
-      for (auto pt : _orb) {
-        this->internal_free(pt);
-      }
-    }
+    ~Action();
 
     ////////////////////////////////////////////////////////////////////////
     // Action - modifiers - public
@@ -308,11 +305,7 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! At most linear in the size() of the Action.
-    void reserve(size_t val) {
-      _graph.reserve(val, _gens.size());
-      _map.reserve(val);
-      _orb.reserve(val);
-    }
+    Action& reserve(size_t val);
 
     //! Add a seed to the action.
     //!
@@ -329,16 +322,7 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! At most linear in the size() of the action.
-    void add_seed(const_reference_point_type seed) {
-      auto internal_seed = this->internal_copy(this->to_internal_const(seed));
-      if (!_tmp_point_init) {
-        _tmp_point_init = true;
-        _tmp_point      = this->internal_copy(internal_seed);
-      }
-      _map.emplace(internal_seed, _orb.size());
-      _orb.push_back(internal_seed);
-      _graph.add_nodes(1);
-    }
+    Action& add_seed(const_reference_point_type seed);
 
     //! Add a generator to the action. An Action instance represents the
     //! action of the semigroup generated by the elements added via this
@@ -353,8 +337,9 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! At most linear in the size() of the action.
-    void add_generator(element_type gen) {
+    Action& add_generator(element_type gen) {
       _gens.push_back(gen);
+      return *this;
     }
 
     ////////////////////////////////////////////////////////////////////////
@@ -373,14 +358,7 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Constant.
-    index_type position(const_reference_point_type pt) const {
-      auto it = _map.find(this->to_internal_const(pt));
-      if (it != _map.end()) {
-        return (*it).second;
-      } else {
-        return UNDEFINED;
-      }
-    }
+    [[nodiscard]] index_type position(const_reference_point_type pt) const;
 
     //! Checks if the Action contains any points.
     //!
@@ -395,7 +373,7 @@ namespace libsemigroups {
     //!
     //! \par Parameters
     //! (None)
-    bool empty() const noexcept {
+    [[nodiscard]] bool empty() const noexcept {
       return _orb.empty();
     }
 
@@ -412,7 +390,8 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Constant.
-    inline const_reference_point_type operator[](size_t pos) const noexcept {
+    [[nodiscard]] inline const_reference_point_type
+    operator[](size_t pos) const noexcept {
       LIBSEMIGROUPS_ASSERT(pos < _orb.size());
       return this->to_external_const(_orb[pos]);
     }
@@ -430,7 +409,7 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Constant.
-    inline const_reference_point_type at(size_t pos) const {
+    [[nodiscard]] inline const_reference_point_type at(size_t pos) const {
       return this->to_external_const(_orb.at(pos));
     }
 
@@ -447,7 +426,7 @@ namespace libsemigroups {
     //!
     //! \par Parameters
     //! (None)
-    size_t size() {
+    [[nodiscard]] size_t size() {
       run();
       return _orb.size();
     }
@@ -465,7 +444,7 @@ namespace libsemigroups {
     //!
     //! \par Parameters
     //! (None)
-    size_t current_size() const noexcept {
+    [[nodiscard]] size_t current_size() const noexcept {
       return _orb.size();
     }
 
@@ -483,7 +462,7 @@ namespace libsemigroups {
     //!
     //! \par Parameters
     //! (None)
-    const_iterator cbegin() const noexcept {
+    [[nodiscard]] const_iterator cbegin() const noexcept {
       return const_iterator(_orb.cbegin());
     }
 
@@ -501,7 +480,7 @@ namespace libsemigroups {
     //!
     //! \par Parameters
     //! (None)
-    const_iterator cend() const noexcept {
+    [[nodiscard]] const_iterator cend() const noexcept {
       return const_iterator(_orb.cend());
     }
 
@@ -526,7 +505,7 @@ namespace libsemigroups {
     //!
     //! \par Parameters
     //! (None)
-    bool cache_scc_multipliers() const noexcept {
+    [[nodiscard]] bool cache_scc_multipliers() const noexcept {
       return _options._cache_scc_multipliers;
     }
 
@@ -555,7 +534,7 @@ namespace libsemigroups {
     //!
     //! Returns an element \c x of the semigroup generated by the generators
     //! in the action such that if \c r is the root of the strongly connected
-    //! component containing \c at(pos), then after `TActionType()(res, r,
+    //! component containing \c at(pos), then after `Func()(res, r,
     //! x)` the point \c res equals \c at(pos).
     //!
     //! \param pos a position in the action.
@@ -569,57 +548,12 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if there are no generators yet added
     //! or the index \p pos is out of range.
-    element_type multiplier_from_scc_root(index_type pos) {
-      validate_gens();
-      validate_index(pos);
-      if (cache_scc_multipliers()) {
-        if (_multipliers_from_scc_root.defined(pos)) {
-          return _multipliers_from_scc_root[pos];
-        }
-        _multipliers_from_scc_root.init(_graph.number_of_nodes(), _gens[0]);
-        index_type             i = pos;
-        std::stack<index_type> visited;
-        while (!_multipliers_from_scc_root.defined(i)
-               && _scc.spanning_forest().parent(i) != UNDEFINED) {
-          visited.push(i);
-          _multipliers_from_scc_root[i]
-              = _gens[_scc.spanning_forest().label(i)];
-          i = _scc.spanning_forest().parent(i);
-        }
-        if (visited.empty()) {
-          // if pos is the scc root, then this can happen
-          _multipliers_from_scc_root.set_defined(pos);
-        } else {
-          element_type tmp = One()(_gens[0]);
-          while (i != pos) {
-            index_type j = visited.top();
-            visited.pop();
-            Swap()(tmp, _multipliers_from_scc_root[j]);
-            internal_product(_multipliers_from_scc_root[j],
-                             _multipliers_from_scc_root[i],
-                             tmp);
-            _multipliers_from_scc_root.set_defined(j);
-            i = j;
-          }
-        }
-        return _multipliers_from_scc_root[pos];
-      } else {
-        element_type  out = One()(_gens[0]);
-        element_type  tmp = One()(_gens[0]);
-        Forest const& f   = _scc.spanning_forest();
-        while (f.parent(pos) != UNDEFINED) {
-          Swap()(tmp, out);
-          internal_product(out, _gens[f.label(pos)], tmp);
-          pos = f.parent(pos);
-        }
-        return out;
-      }
-    }
+    [[nodiscard]] element_type multiplier_from_scc_root(index_type pos);
 
     //! Returns a multiplier from a given index to a scc root.
     //!
     //! Returns an element \c x of the semigroup generated by the generators
-    //! in the action such that after `TActionType()(res, at(pos), x)`
+    //! in the action such that after `Func()(res, at(pos), x)`
     //! the point \c res is the root of the strongly connected component
     //! containing \c at(pos).
     //!
@@ -634,52 +568,7 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if there are no generators yet added
     //! or the index \p pos is out of range.
-    // TODO reduce code dupl with multiplier_from_scc_root
-    element_type multiplier_to_scc_root(index_type pos) {
-      validate_gens();
-      validate_index(pos);
-      if (cache_scc_multipliers()) {
-        if (_multipliers_to_scc_root.defined(pos)) {
-          return _multipliers_to_scc_root[pos];
-        }
-        _multipliers_to_scc_root.init(_graph.number_of_nodes(), _gens[0]);
-        index_type             i = pos;
-        std::stack<index_type> visited;
-        while (!_multipliers_to_scc_root.defined(i)
-               && _scc.reverse_spanning_forest().parent(i) != UNDEFINED) {
-          visited.push(i);
-          _multipliers_to_scc_root[i]
-              = _gens[_scc.reverse_spanning_forest().label(i)];
-          i = _scc.reverse_spanning_forest().parent(i);
-        }
-        if (visited.empty()) {
-          // if pos is the scc root, then this can happen
-          _multipliers_to_scc_root.set_defined(pos);
-        } else {
-          element_type tmp = One()(_gens[0]);
-          while (i != pos) {
-            index_type j = visited.top();
-            visited.pop();
-            Swap()(tmp, _multipliers_to_scc_root[j]);
-            internal_product(
-                _multipliers_to_scc_root[j], tmp, _multipliers_to_scc_root[i]);
-            _multipliers_to_scc_root.set_defined(j);
-            i = j;
-          }
-        }
-        return _multipliers_to_scc_root[pos];
-      } else {
-        element_type out = One()(_gens[0]);
-        element_type tmp = One()(_gens[0]);
-        while (_scc.reverse_spanning_forest().parent(pos) != UNDEFINED) {
-          Swap()(tmp, out);
-          internal_product(
-              out, tmp, _gens[_scc.reverse_spanning_forest().label(pos)]);
-          pos = _scc.reverse_spanning_forest().parent(pos);
-        }
-        return out;
-      }
-    }
+    [[nodiscard]] element_type multiplier_to_scc_root(index_type pos);
 
     //! Returns a const reference to the root point of a strongly connected
     //! component.
@@ -695,7 +584,8 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if the point \p x does not belong to
     //! the action.
-    const_reference_point_type root_of_scc(const_reference_point_type x) {
+    [[nodiscard]] const_reference_point_type
+    root_of_scc(const_reference_point_type x) {
       return root_of_scc(position(x));
     }
 
@@ -713,7 +603,7 @@ namespace libsemigroups {
     //! enumerated orbit.
     //!
     //! \throws LibsemigroupsException if the index \p pos is out of range.
-    const_reference_point_type root_of_scc(index_type pos) {
+    [[nodiscard]] const_reference_point_type root_of_scc(index_type pos) {
       return this->to_external_const(_orb[_scc.root_of(pos)]);
     }
 
@@ -731,12 +621,12 @@ namespace libsemigroups {
     //!
     //! \par Parameters
     //! (None)
-    WordGraph<size_t> const& digraph() {
+    [[nodiscard]] WordGraph<size_t> const& digraph() {
       run();
       return _graph;
     }
 
-    Gabow<size_t> const& scc() {
+    [[nodiscard]] Gabow<size_t> const& scc() {
       run();
       return _scc;
     }
@@ -746,175 +636,60 @@ namespace libsemigroups {
     // Runner - pure virtual member functions - private
     ////////////////////////////////////////////////////////////////////////
 
-    bool finished_impl() const override {
+    [[nodiscard]] bool finished_impl() const override {
       return (_pos == _orb.size()) && (_graph.out_degree() == _gens.size());
     }
 
-    void run_impl() override {
-      size_t old_nr_gens = _graph.out_degree();
-      _graph.add_to_out_degree(_gens.size() - _graph.out_degree());
-      if (started() && old_nr_gens < _gens.size()) {
-        // Generators were added after the last call to run
-        if (_pos > 0 && old_nr_gens < _gens.size()) {
-          _scc.reset();
-        }
-        for (size_t i = 0; i < _pos; i++) {
-          for (size_t j = old_nr_gens; j < _gens.size(); ++j) {
-            ActionOp()(this->to_external(_tmp_point),
-                       this->to_external_const(_orb[i]),
-                       _gens[j]);
-            auto it = _map.find(_tmp_point);
-            if (it == _map.end()) {
-              _graph.add_nodes(1);
-              _graph.set_target(i, j, _orb.size());
-              _orb.push_back(this->internal_copy(_tmp_point));
-              _map.emplace(_orb.back(), _orb.size() - 1);
-            } else {
-              _graph.set_target(i, j, (*it).second);
-            }
-          }
-        }
-      }
-      if (_pos < _orb.size() && !_gens.empty()) {
-        _scc.reset();
-      }
-
-      for (; _pos < _orb.size() && !stopped(); ++_pos) {
-        for (size_t j = 0; j < _gens.size(); ++j) {
-          ActionOp()(this->to_external(_tmp_point),
-                     this->to_external_const(_orb[_pos]),
-                     _gens[j]);
-          auto it = _map.find(_tmp_point);
-          if (it == _map.end()) {
-            _graph.add_nodes(1);
-            _graph.set_target(_pos, j, _orb.size());
-            _orb.push_back(this->internal_copy(_tmp_point));
-            _map.emplace(_orb.back(), _orb.size() - 1);
-          } else {
-            _graph.set_target(_pos, j, (*it).second);
-          }
-        }
-        if (report()) {
-          REPORT_DEFAULT("found %d points, so far\n", _orb.size());
-        }
-      }
-      report_why_we_stopped();
-    }
+    void run_impl() override;
 
     ////////////////////////////////////////////////////////////////////////
     // Action - member functions - private
     ////////////////////////////////////////////////////////////////////////
 
-    void validate_index(index_type i) const {
-      if (i > _orb.size()) {
-        LIBSEMIGROUPS_EXCEPTION_V3(
-            "index out of range, expected value in [0, {}) but found {}",
-            current_size(),
-            i);
-      }
-    }
-
-    void validate_gens() const {
-      if (_gens.empty()) {
-        LIBSEMIGROUPS_EXCEPTION("no generators defined, this function cannot "
-                                "be used until at least one generator is added")
-      }
-    }
-
-    class MultiplierCache {
-     public:
-      element_type& operator[](index_type i) {
-        return _multipliers[i].second;
-      }
-
-      bool defined(index_type i) const {
-        return (i < _multipliers.size() ? _multipliers[i].first : false);
-      }
-
-      bool set_defined(index_type i) {
-        LIBSEMIGROUPS_ASSERT(i < _multipliers.size());
-        return _multipliers[i].first = true;
-      }
-
-      void init(index_type N, element_type const& sample) {
-        if (N > _multipliers.size()) {
-          _multipliers.resize(N, {false, One()(sample)});
-        }
-      }
-
-     private:
-      std::vector<std::pair<bool, element_type>> _multipliers;
-    };
-
-    ////////////////////////////////////////////////////////////////////////
-    // Action - data members - private
-    ////////////////////////////////////////////////////////////////////////
-
-    std::vector<element_type> _gens;
-    WordGraph<size_t>         _graph;
-    std::unordered_map<internal_const_point_type,
-                       size_t,
-                       InternalHash,
-                       InternalEqualTo>
-        _map;
-    struct Options {
-      Options() : _cache_scc_multipliers(false) {}
-      Options(Options const&)            = default;
-      Options(Options&&)                 = default;
-      Options& operator=(Options const&) = default;
-      Options& operator=(Options&&)      = default;
-
-      bool _cache_scc_multipliers;
-    } _options;
-    std::vector<internal_point_type> _orb;
-    MultiplierCache                  _multipliers_from_scc_root;
-    MultiplierCache                  _multipliers_to_scc_root;
-    size_t                           _pos;
-    Gabow<size_t>                    _scc;
-    internal_point_type              _tmp_point;
-    bool                             _tmp_point_init;
+    void validate_index(index_type i) const;
+    void validate_gens() const;
   };
 
   //! This is a traits class for use with Action, \ref LeftAction,
   //! and \ref RightAction.
   //!
-  //! \tparam TElementType the type of the elements.
-  //! \tparam TPointType the type of the points acted on.
+  //! \tparam Element the type of the elements.
+  //! \tparam Point the type of the points acted on.
   //!
   //! \sa Action.
-  template <typename TElementType, typename TPointType>
+  template <typename Element, typename Point>
   struct ActionTraits {
     //! \copydoc libsemigroups::Hash
-    using Hash = ::libsemigroups::Hash<TPointType>;
+    using Hash = ::libsemigroups::Hash<Point>;
     //! \copydoc libsemigroups::EqualTo
-    using EqualTo = ::libsemigroups::EqualTo<TPointType>;
+    using EqualTo = ::libsemigroups::EqualTo<Point>;
     //! \copydoc libsemigroups::Swap
-    using Swap = ::libsemigroups::Swap<TElementType>;
+    using Swap = ::libsemigroups::Swap<Element>;
     //! \copydoc libsemigroups::One
-    using One = ::libsemigroups::One<TElementType>;
+    using One = ::libsemigroups::One<Element>;
     //! \copydoc libsemigroups::Product
-    using Product = ::libsemigroups::Product<TElementType>;
+    using Product = ::libsemigroups::Product<Element>;
   };
 
   //! This class represents the right action of a semigroup on a set.
   //!
   //! \sa Action for further details.
-  template <typename TElementType,
-            typename TPointType,
-            typename TActionType,
-            typename TTraits = ActionTraits<TElementType, TPointType>>
-  using RightAction
-      = Action<TElementType, TPointType, TActionType, TTraits, side::right>;
+  template <typename Element,
+            typename Point,
+            typename Func,
+            typename Traits = ActionTraits<Element, Point>>
+  using RightAction = Action<Element, Point, Func, Traits, side::right>;
 
   //! This class represents the left action of a semigroup on a set.
   //!
   //! \sa Action for further details.
-  template <typename TElementType,
-            typename TPointType,
-            typename TActionType,
-            typename TTraits = ActionTraits<TElementType, TPointType>>
-  using LeftAction
-      = Action<TElementType, TPointType, TActionType, TTraits, side::left>;
+  template <typename Element,
+            typename Point,
+            typename Func,
+            typename Traits = ActionTraits<Element, Point>>
+  using LeftAction = Action<Element, Point, Func, Traits, side::left>;
 
 }  // namespace libsemigroups
+
+#include "action.tpp"
 #endif  // LIBSEMIGROUPS_ACTION_HPP_
