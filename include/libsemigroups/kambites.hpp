@@ -75,7 +75,7 @@ namespace libsemigroups {
   //! Kambites.
   // TODO(later) example
   template <typename Word = detail::MultiStringView>
-  class Kambites : public v3::CongruenceInterface {
+  class Kambites : public CongruenceInterface {
    public:
     ////////////////////////////////////////////////////////////////////////
     // Kambites - aliases - public

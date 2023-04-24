@@ -82,12 +82,12 @@ namespace libsemigroups {
 
   template <>
   word_type
-  FroidurePin<v3::detail::KBE>::factorisation(v3::detail::KBE const& x) {
+  FroidurePin<detail::KBE>::factorisation(detail::KBE const& x) {
     return x.word(*state());
   }
 
   template <>
-  tril FroidurePin<v3::detail::KBE>::is_finite() const {
+  tril FroidurePin<detail::KBE>::is_finite() const {
     // Turns out that the FroidurePin can be finished without the state
     // being finished, this sounds like a bug, I'm not 100% sure how that
     // works. Probably the state of the FroidurePin and the underlying

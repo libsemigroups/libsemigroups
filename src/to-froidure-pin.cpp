@@ -22,7 +22,7 @@
 
 namespace libsemigroups {
 
-  using TCE = v3::detail::TCE;
+  using TCE = detail::TCE;
 
   FroidurePin<TCE> to_froidure_pin(ToddCoxeter& tc) {
     using digraph_type = typename ToddCoxeter::digraph_type;
@@ -57,7 +57,7 @@ namespace libsemigroups {
     return result;
   }
 
-  using KBE = v3::detail::KBE;
+  using KBE = detail::KBE;
 
   FroidurePin<KBE> to_froidure_pin(KnuthBendix& kb) {
     size_t const n = kb.presentation().alphabet().size();

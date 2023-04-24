@@ -57,7 +57,7 @@ namespace libsemigroups {
     }
   }  // namespace
 
-  using TCE     = v3::detail::TCE;
+  using TCE     = detail::TCE;
   using options = ToddCoxeter::options;
 
   using namespace literals;
@@ -257,7 +257,7 @@ namespace libsemigroups {
     }
   }  // namespace
 
-  LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
+  LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "000",
                           "small 2-sided congruence",
                           "[todd-coxeter][quick]") {
@@ -304,7 +304,7 @@ namespace libsemigroups {
     check_normal_forms(tc, tc.number_of_classes());
   }
 
-  LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
+  LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "001",
                           "small 2-sided congruence",
                           "[no-valgrind][todd-coxeter][quick]") {
@@ -404,7 +404,7 @@ namespace libsemigroups {
   }
 
   // Felsch is actually faster here!
-  LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
+  LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "002",
                           "Example 6.6 in Sims (see also KnuthBendix 013)",
                           "[todd-coxeter][standard]") {
@@ -477,7 +477,7 @@ namespace libsemigroups {
                 {0_w, 1_w, 2_w, 3_w, 12_w, 13_w, 21_w, 31_w, 121_w, 131_w}));
   }
 
-  LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
+  LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "003",
                           "constructed from FroidurePin",
                           "[no-valgrind][todd-coxeter][quick][no-coverage]") {
@@ -540,7 +540,7 @@ namespace libsemigroups {
     check_normal_forms(tc, tc.number_of_classes());
   }
 
-  LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
+  LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "004",
                           "2-sided congruence from FroidurePin",
                           "[todd-coxeter][quick]") {
@@ -589,7 +589,7 @@ namespace libsemigroups {
     check_normal_forms(tc, tc.number_of_classes());
   }
 
-  LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
+  LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "005",
                           "non-trivial two-sided from relations",
                           "[todd-coxeter][quick]") {
@@ -622,7 +622,7 @@ namespace libsemigroups {
     check_normal_forms(tc, tc.number_of_classes());
   }
 
-  LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
+  LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "006",
                           "small right cong. on free semigroup",
                           "[todd-coxeter][quick]") {
@@ -647,7 +647,7 @@ namespace libsemigroups {
     check_normal_forms(tc, tc.number_of_classes());
   }
 
-  LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
+  LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "007",
                           "left cong. on free semigroup",
                           "[todd-coxeter][quick]") {
@@ -684,7 +684,7 @@ namespace libsemigroups {
     }
   }
 
-  LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
+  LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "008",
                           "for small fp semigroup",
                           "[todd-coxeter][quick]") {
@@ -713,7 +713,7 @@ namespace libsemigroups {
   }
 
   // TODO move to test-to-todd-coxeter
-  LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
+  LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "009",
                           "2-sided cong. trans. semigroup",
                           "[todd-coxeter][quick]") {
@@ -782,7 +782,7 @@ namespace libsemigroups {
   }
 
   // TODO move to test-to-todd-coxeter.cpp
-  LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
+  LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "010",
                           "left congruence on transformation semigroup",
                           "[todd-coxeter][quick]") {
@@ -829,7 +829,7 @@ namespace libsemigroups {
         }));
   }
 
-  LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
+  LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "011",
                           "right cong. trans. semigroup",
                           "[todd-coxeter][quick]") {
@@ -887,7 +887,7 @@ namespace libsemigroups {
     REQUIRE(tc.word_to_class_index(w5) == tc.word_to_class_index(w6));
   }
 
-  LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
+  LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "012",
                           "trans. semigroup (size 88)",
                           "[todd-coxeter][quick]") {
@@ -921,7 +921,7 @@ namespace libsemigroups {
     REQUIRE(tc.word_to_class_index(w3) == tc.word_to_class_index(w4));
   }
 
-  LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
+  LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "015",
                           "finite fp-semigroup, dihedral group of order 6 ",
                           "[todd-coxeter][quick]") {
@@ -949,7 +949,7 @@ namespace libsemigroups {
     REQUIRE(tc.word_to_class_index({1}) == tc.word_to_class_index({2}));
   }
 
-  LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
+  LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "016",
                           "finite fp-semigroup, size 16",
                           "[todd-coxeter][quick]") {
@@ -991,7 +991,7 @@ namespace libsemigroups {
     REQUIRE(tc.word_to_class_index({2}) == tc.word_to_class_index({3}));
   }
 
-  LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
+  LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "017",
                           "finite fp-semigroup, size 16",
                           "[todd-coxeter][quick]") {
@@ -1068,7 +1068,7 @@ namespace libsemigroups {
     REQUIRE(tc.word_to_class_index({3}) == tc.word_to_class_index({9}));
   }
 
-  LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
+  LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "018",
                           "test lookahead",
                           "[todd-coxeter][quick]") {
@@ -1099,7 +1099,7 @@ namespace libsemigroups {
     }
   }
 
-  LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
+  LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "020",
                           "2-sided cong. on free semigroup",
                           "[todd-coxeter][quick]") {
@@ -1119,7 +1119,7 @@ namespace libsemigroups {
     REQUIRE(!tc.contains(00_w, 0_w));
   }
 
-  LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
+  LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "021",
                           "calling run when obviously infinite",
                           "[todd-coxeter][quick]") {
@@ -1137,7 +1137,7 @@ namespace libsemigroups {
     REQUIRE_THROWS_AS(tc.run(), LibsemigroupsException);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
+  LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "022",
                           "stellar_monoid S3",
                           "[todd-coxeter][quick][hivert]") {
@@ -1174,7 +1174,7 @@ namespace libsemigroups {
 
     auto S = to_froidure_pin(tc);  // Make a FroidurePin object from tc
     REQUIRE(S.size() == 34);
-    using v3::detail::TCE;
+    using detail::TCE;
 
     std::vector<TCE> v(S.cbegin(), S.cend());
     std::sort(v.begin(), v.end());
@@ -1203,7 +1203,7 @@ namespace libsemigroups {
     os << TCE(32);  // Does not do anything visible
   }
 
-  LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
+  LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "023",
                           "finite semigroup (size 5)",
                           "[todd-coxeter][quick]") {
@@ -1225,7 +1225,7 @@ namespace libsemigroups {
     REQUIRE(tc.number_of_classes() == 5);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
+  LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "024",
                           "exceptions",
                           "[todd-coxeter][quick]") {
@@ -1265,7 +1265,7 @@ namespace libsemigroups {
     }
   }
 
-  LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
+  LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "025",
                           "obviously infinite",
                           "[todd-coxeter][quick]") {
@@ -1288,7 +1288,7 @@ namespace libsemigroups {
     }
   }
 
-  LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
+  LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "026",
                           "exceptions",
                           "[todd-coxeter][quick]") {
@@ -1332,7 +1332,7 @@ namespace libsemigroups {
     }
   }
 
-  LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
+  LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "028",
                           "quotient ToddCoxeter",
                           "[todd-coxeter][quick]") {
@@ -1358,7 +1358,7 @@ namespace libsemigroups {
   }
 
   // TODO move to to-todd-coxeter.hpp
-  LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
+  LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "029",
                           "from KnuthBendix",
                           "[todd-coxeter][quick]") {
@@ -1406,7 +1406,7 @@ namespace libsemigroups {
     REQUIRE(tc.number_of_classes() == 1);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
+  LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "031",
                           "KnuthBendix.finished()",
                           "[todd-coxeter][quick]") {
@@ -1441,7 +1441,7 @@ namespace libsemigroups {
     }
   }
 
-  LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
+  LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "032",
                           "from WordGraph",
                           "[todd-coxeter][quick]") {
@@ -1453,7 +1453,7 @@ namespace libsemigroups {
     REQUIRE_NOTHROW(ToddCoxeter(twosided, d));
   }
 
-  LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
+  LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "033",
                           "congruence of ToddCoxeter",
                           "[todd-coxeter][quick]") {
@@ -1480,7 +1480,7 @@ namespace libsemigroups {
     REQUIRE(tc2.number_of_classes() == 3);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
+  LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "034",
                           "congruence of ToddCoxeter",
                           "[todd-coxeter][quick]") {
@@ -1502,7 +1502,7 @@ namespace libsemigroups {
     REQUIRE(tc.number_of_classes() == 1);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
+  LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "035",
                           "congruence on FpSemigroup",
                           "[todd-coxeter][quick]") {
@@ -1565,7 +1565,7 @@ namespace libsemigroups {
                  {000101_w}}));
   }
 
-  LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
+  LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "037",
                           "copy constructor",
                           "[todd-coxeter][quick]") {
@@ -1615,7 +1615,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE(
-      "v3::ToddCoxeter",
+      "ToddCoxeter",
       "039",
       "stylic_monoid",
       "[todd-coxeter][standard][no-coverage][no-valgrind]") {
@@ -1651,7 +1651,7 @@ namespace libsemigroups {
     REQUIRE(tc.number_of_classes() == 115'974);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
+  LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "040",
                           "fibonacci_semigroup(4, 6)",
                           "[todd-coxeter][fail]") {
@@ -1663,7 +1663,7 @@ namespace libsemigroups {
     REQUIRE(tc.number_of_classes() == 0);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
+  LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "041",
                           "some finite classes",
                           "[todd-coxeter][quick]") {
@@ -1735,7 +1735,7 @@ namespace libsemigroups {
   }
 
   // Takes about 1.8s
-  LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
+  LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "042",
                           "symmetric_group(9, Moore)",
                           "[todd-coxeter][extreme]") {
@@ -1768,7 +1768,7 @@ namespace libsemigroups {
     REQUIRE(tc.number_of_classes() == 362'880);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
+  LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "043",
                           "symmetric_group(7, Coxeter + Moser)",
                           "[todd-coxeter][quick][no-valgrind]") {
@@ -1799,7 +1799,7 @@ namespace libsemigroups {
     REQUIRE(tc.number_of_classes() == 5'040);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
+  LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "116",
                           "symmetric_group(7, Burnside + Miller)",
                           "[todd-coxeter][quick][no-valgrind]") {
@@ -1822,7 +1822,7 @@ namespace libsemigroups {
     REQUIRE(tc.number_of_classes() == 5'040);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
+  LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "046",
                           "Easdown-East-FitzGerald DualSymInv(5)",
                           "[todd-coxeter][quick][no-valgrind][no-coverage]") {
@@ -1842,7 +1842,7 @@ namespace libsemigroups {
     check_complete_compatible(tc);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
+  LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "047",
                           "uniform_block_bijection_monoid(3) (FitzGerald) ",
                           "[todd-coxeter][quick]") {
@@ -1866,7 +1866,7 @@ namespace libsemigroups {
     REQUIRE(tc.number_of_classes() == 1496);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
+  LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "048",
                           "stellar_monoid(7) (Gay-Hivert)",
                           "[todd-coxeter][quick][no-valgrind][no-coverage]") {
@@ -1889,7 +1889,7 @@ namespace libsemigroups {
     REQUIRE(tc.number_of_classes() == 13'700);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
+  LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "049",
                           "partition_monoid(4) (East)",
                           "[todd-coxeter][quick][no-valgrind][no-coverage]") {
@@ -1912,7 +1912,7 @@ namespace libsemigroups {
     REQUIRE(tc.number_of_classes() == 4'140);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
+  LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "050",
                           "singular_brauer_monoid(6) (Maltcev + Mazorchuk)",
                           "[todd-coxeter][quick][no-valgrind][no-coverage]") {
@@ -1930,7 +1930,7 @@ namespace libsemigroups {
     REQUIRE(tc.number_of_classes() == 9'675);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
+  LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "051",
                           "orientation_preserving_monoid(6) (Ruskuc + Arthur)",
                           "[todd-coxeter][quick][no-valgrind][no-coverage]") {
@@ -1952,7 +1952,7 @@ namespace libsemigroups {
     REQUIRE(tc.number_of_classes() == 128);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
+  LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "052",
                           "orientation_reversing_monoid(5) (Ruskuc + Arthur)",
                           "[todd-coxeter][quick][no-valgrind][no-coverage]") {
@@ -1972,7 +1972,7 @@ namespace libsemigroups {
     REQUIRE(tc.number_of_classes() == 1'015);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
+  LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "053",
                           "temperley_lieb_monoid(10) (East)",
                           "[todd-coxeter][quick][no-valgrind][no-coverage]") {
@@ -2000,7 +2000,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE(
-      "v3::ToddCoxeter",
+      "ToddCoxeter",
       "054",
       "Generate GAP benchmarks for stellar_monoid(n) (Gay-Hivert)",
       "[todd-coxeter][fail]") {
@@ -2015,7 +2015,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE(
-      "v3::ToddCoxeter",
+      "ToddCoxeter",
       "055",
       "Generate GAP benchmarks for partition_monoid(n) (East)",
       "[todd-coxeter][fail]") {
@@ -2031,7 +2031,7 @@ namespace libsemigroups {
     }
   }
 
-  LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
+  LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "056",
                           "Generate GAP benchmarks for dual symmetric inverse "
                           "monoid (Easdown + East + FitzGerald)",
@@ -2048,7 +2048,7 @@ namespace libsemigroups {
     }
   }
 
-  LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
+  LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "057",
                           "Generate GAP benchmarks for "
                           "uniform_block_bijection_monoid (FitzGerald)",
@@ -2066,7 +2066,7 @@ namespace libsemigroups {
     }
   }
 
-  LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
+  LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "058",
                           "Generate GAP benchmarks for stylic monoids",
                           "[todd-coxeter][fail]") {
@@ -2080,7 +2080,7 @@ namespace libsemigroups {
     }
   }
 
-  LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
+  LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "059",
                           "Generate GAP benchmarks for OP_n",
                           "[todd-coxeter][fail]") {
@@ -2094,7 +2094,7 @@ namespace libsemigroups {
     }
   }
 
-  LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
+  LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "060",
                           "Generate GAP benchmarks for OR_n",
                           "[todd-coxeter][fail]") {
@@ -2110,7 +2110,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE(
-      "v3::ToddCoxeter",
+      "ToddCoxeter",
       "061",
       "Generate GAP benchmarks for temperley_lieb_monoid(n)",
       "[todd-coxeter][fail]") {
@@ -2126,7 +2126,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE(
-      "v3::ToddCoxeter",
+      "ToddCoxeter",
       "062",
       "Generate GAP benchmarks for singular_brauer_monoid(n)",
       "[todd-coxeter][fail]") {
@@ -2141,7 +2141,7 @@ namespace libsemigroups {
     }
   }
 
-  LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
+  LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "111",
                           "partition_monoid(2)",
                           "[todd-coxeter][quick]") {
@@ -2161,7 +2161,7 @@ namespace libsemigroups {
     REQUIRE(tc.number_of_classes() == 15);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
+  LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "112",
                           "brauer_monoid(4) (Kudryavtseva + Mazorchuk)",
                           "[todd-coxeter][quick][no-valgrind][no-coverage]") {
@@ -2182,7 +2182,7 @@ namespace libsemigroups {
     REQUIRE(tc.number_of_classes() == 105);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
+  LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "113",
                           "symmetric_inverse_monoid(5, Sutov)",
                           "[todd-coxeter][quick]") {
@@ -2202,7 +2202,7 @@ namespace libsemigroups {
     REQUIRE(tc.number_of_classes() == 1'546);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
+  LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "114",
                           "partial_transformation_monoid(5, Sutov)",
                           "[todd-coxeter][standard]") {
@@ -2223,7 +2223,7 @@ namespace libsemigroups {
     REQUIRE(tc.number_of_classes() == 7'776);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
+  LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "115",
                           "full_transformation_monoid(7, Iwahori)",
                           "[todd-coxeter][extreme]") {
@@ -2246,7 +2246,7 @@ namespace libsemigroups {
     REQUIRE(tc.number_of_classes() == 823'543);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
+  LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "063",
                           "add_rule",
                           "[todd-coxeter][quick]") {
@@ -2344,7 +2344,7 @@ namespace libsemigroups {
   }
 
   // KnuthBendix methods fail for this one
-  LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
+  LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "064",
                           "from kbmag/standalone/kb_data/s4",
                           "[todd-coxeter][quick][kbmag]") {
@@ -2381,7 +2381,7 @@ namespace libsemigroups {
 
   // Second of BHN's series of increasingly complicated presentations
   // of 1. Doesn't terminate
-  LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
+  LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "065",
                           "(from kbmag/standalone/kb_data/degen4b) "
                           "(KnuthBendix 065)",
@@ -2421,7 +2421,7 @@ namespace libsemigroups {
     REQUIRE(tc.number_of_classes() == 1);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
+  LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "067",
                           "Repeated construction from same FroidurePin",
                           "[todd-coxeter][quick]") {
@@ -2475,7 +2475,7 @@ namespace libsemigroups {
     }
   }
 
-  LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
+  LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "068",
                           "Sym(5) from Chapter 3, Proposition 1.1 in NR",
                           "[todd-coxeter][quick]") {
@@ -2524,7 +2524,7 @@ namespace libsemigroups {
     REQUIRE(tc.number_of_classes() == 120);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
+  LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "069",
                           "Chapter 7, Theorem 3.6 in NR (size 243)",
                           "[no-valgrind][todd-coxeter][quick]") {
@@ -2547,7 +2547,7 @@ namespace libsemigroups {
     REQUIRE(tc.number_of_classes() == 243);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
+  LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "070",
                           "finite semigroup (size 99)",
                           "[todd-coxeter][quick]") {
@@ -2576,7 +2576,7 @@ namespace libsemigroups {
 
   // The following 8 examples are from Trevor Walker's Thesis: Semigroup
   // enumeration - computer implementation and applications, p41.
-  LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
+  LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "071",
                           "Walker 1",
                           "[todd-coxeter][quick]") {
@@ -2672,7 +2672,7 @@ namespace libsemigroups {
 
   // The following example is a good one for using the lookahead.
   // This is no longer extreme with the preprocessing
-  LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
+  LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "072",
                           "Walker 2",
                           "[todd-coxeter][quick][no-coverage]") {
@@ -2729,7 +2729,7 @@ namespace libsemigroups {
     REQUIRE(tc.number_of_classes() == 14'911);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
+  LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "073",
                           "Walker 3",
                           "[todd-coxeter][standard]") {
@@ -2758,7 +2758,7 @@ namespace libsemigroups {
     REQUIRE(tc.number_of_classes() == 20'490);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
+  LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "074",
                           "Walker 4",
                           "[todd-coxeter][extreme]") {
@@ -2808,7 +2808,7 @@ namespace libsemigroups {
     REQUIRE(tc.number_of_classes() == 36'412);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
+  LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "075",
                           "Walker 5",
                           "[todd-coxeter][extreme]") {
@@ -2855,7 +2855,7 @@ namespace libsemigroups {
     check_complete_compatible(tc);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
+  LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "076",
                           "not Walker 6",
                           "[todd-coxeter][extreme]") {
@@ -2904,7 +2904,7 @@ namespace libsemigroups {
     REQUIRE(tc.number_of_classes() == 8);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
+  LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "077",
                           "Walker 6",
                           "[todd-coxeter][standard]") {
@@ -2956,7 +2956,7 @@ namespace libsemigroups {
   }
 
   // Felsch is faster here too!
-  LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
+  LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "078",
                           "Walker 7",
                           "[todd-coxeter][standard]") {
@@ -2999,7 +2999,7 @@ namespace libsemigroups {
     REQUIRE(tc.number_of_classes() == 153'500);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
+  LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "079",
                           "Walker 8",
                           "[todd-coxeter][standard]") {
@@ -3041,7 +3041,7 @@ namespace libsemigroups {
   }
 
   // This is a good example of why large collapse is required
-  LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
+  LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "080",
                           "KnuthBendix 098",
                           "[todd-coxeter][quick][no-valgrind][no-coverage]") {
@@ -3071,7 +3071,7 @@ namespace libsemigroups {
   }
 
   // TODO add to fpsemi-examples
-  LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
+  LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "081",
                           "Holt 2 - SL(2, p)",
                           "[todd-coxeter][extreme]") {
@@ -3131,7 +3131,7 @@ namespace libsemigroups {
     }
   }
 
-  LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
+  LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "082",
                           "Holt 3",
                           "[todd-coxeter][standard]") {
@@ -3160,7 +3160,7 @@ namespace libsemigroups {
   }
 
   // FIXME this printing is messed up here
-  LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
+  LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "083",
                           "Holt 3",
                           "[todd-coxeter][fail]") {
@@ -3188,7 +3188,7 @@ namespace libsemigroups {
     REQUIRE(tc.number_of_classes() == 6'561);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
+  LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "084",
                           "Campbell-Reza 1",
                           "[todd-coxeter][quick]") {
@@ -3232,7 +3232,7 @@ namespace libsemigroups {
 
   // TODO uncomment
   // The next example demonstrates why we require deferred standardization
-  // LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
+  // LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
   //                         "085",
   //                         "Renner monoid type D4 (Gay-Hivert), q = 1",
   //                         "[no-valgrind][quick][todd-coxeter][no-coverage]")
@@ -3267,7 +3267,7 @@ namespace libsemigroups {
   // }
 
   // Felsch very slow here
-  LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
+  LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "086",
                           "trivial semigroup",
                           "[no-valgrind][todd-coxeter][quick][no-coverage]") {
@@ -3298,7 +3298,7 @@ namespace libsemigroups {
     }
   }
 
-  LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
+  LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "087",
                           "ACE --- 2p17-2p14 - HLT",
                           "[todd-coxeter][standard][ace]") {
@@ -3318,7 +3318,7 @@ namespace libsemigroups {
     REQUIRE(H.number_of_classes() == 16'384);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
+  LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "088",
                           "ACE --- 2p17-2p3 - HLT",
                           "[todd-coxeter][standard][ace]") {
@@ -3349,7 +3349,7 @@ namespace libsemigroups {
 
   // In this example large_collapse makes a huge difference to the run time,
   // 73ms versus 1173ms for the save case.
-  LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
+  LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "089",
                           "ACE --- 2p17-1a - HLT",
                           "[todd-coxeter][standard][ace]") {
@@ -3380,7 +3380,7 @@ namespace libsemigroups {
     REQUIRE(H.number_of_classes() == 1);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
+  LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "090",
                           "ACE --- F27",
                           "[todd-coxeter][standard][ace]") {
@@ -3409,7 +3409,7 @@ namespace libsemigroups {
     REQUIRE(H.number_of_classes() == 29);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
+  LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "091",
                           "ACE --- SL219 - HLT",
                           "[todd-coxeter][standard][ace]") {
@@ -3451,7 +3451,7 @@ namespace libsemigroups {
     REQUIRE(H.number_of_classes() == 180);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
+  LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "092",
                           "ACE --- perf602p5",
                           "[no-valgrind][todd-coxeter][quick][ace]") {
@@ -3502,7 +3502,7 @@ namespace libsemigroups {
     REQUIRE(H.number_of_classes() == 480);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
+  LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "093",
                           "ACE --- M12",
                           "[todd-coxeter][standard][ace]") {
@@ -3536,7 +3536,7 @@ namespace libsemigroups {
     REQUIRE(H.number_of_classes() == 95'040);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
+  LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "094",
                           "ACE --- C5",
                           "[todd-coxeter][quick][ace]") {
@@ -3561,7 +3561,7 @@ namespace libsemigroups {
     REQUIRE(H.number_of_classes() == 5);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
+  LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "095",
                           "ACE --- A5-C5",
                           "[todd-coxeter][quick][ace]") {
@@ -3589,7 +3589,7 @@ namespace libsemigroups {
     REQUIRE(H.number_of_classes() == 12);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
+  LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "096",
                           "ACE --- A5",
                           "[todd-coxeter][quick][ace]") {
@@ -3619,7 +3619,7 @@ namespace libsemigroups {
   // stands out as being the cause of this, in v2 this takes about 1.4s in v3
   // 1.5s or so.
   // TODO uncomment
-  // LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
+  // LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
   //                         "097",
   //                         "relation ordering",
   //                         "[todd-coxeter][extreme]") {
@@ -3640,7 +3640,7 @@ namespace libsemigroups {
   //   REQUIRE(tc.number_of_classes() == 258'661);
   // }
 
-  LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
+  LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "098",
                           "relation ordering",
                           "[todd-coxeter][quick]") {
@@ -3750,7 +3750,7 @@ namespace libsemigroups {
     REQUIRE(tc.number_of_classes() == 10);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("v3::ToddCoxeter",
+  LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "099",
                           "short circuit size in obviously infinite",
                           "[todd-coxeter][quick]") {
@@ -3763,7 +3763,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE(
-      "v3::ToddCoxeter",
+      "ToddCoxeter",
       "100",
       "http://brauer.maths.qmul.ac.uk/Atlas/misc/24A8/mag/24A8G1-P1.M",
       "[todd-coxeter][standard]") {
@@ -3796,7 +3796,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE(
-      "v3::ToddCoxeter",
+      "ToddCoxeter",
       "101",
       "http://brauer.maths.qmul.ac.uk/Atlas/spor/M11/mag/M11G1-P1.M",
       "[todd-coxeter][quick][no-coverage][no-valgrind]") {
@@ -3840,7 +3840,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE(
-      "v3::ToddCoxeter",
+      "ToddCoxeter",
       "102",
       "http://brauer.maths.qmul.ac.uk/Atlas/spor/M12/mag/M12G1-P1.M",
       "[todd-coxeter][standard]") {
@@ -3870,7 +3870,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE(
-      "v3::ToddCoxeter",
+      "ToddCoxeter",
       "103",
       "http://brauer.maths.qmul.ac.uk/Atlas/spor/M22/mag/M22G1-P1.M",
       "[todd-coxeter][extreme]") {
@@ -3897,7 +3897,7 @@ namespace libsemigroups {
   // Takes about 4 minutes (2021 - MacBook Air M1 - 8GB RAM)
   // with Felsch (3.5mins or 2.5mins with lowerbound) or HLT (4.5mins)
   LIBSEMIGROUPS_TEST_CASE(
-      "v3::ToddCoxeter",
+      "ToddCoxeter",
       "104",
       "http://brauer.maths.qmul.ac.uk/Atlas/spor/M23/mag/M23G1-P1.M",
       "[todd-coxeter][extreme]") {
@@ -3943,7 +3943,7 @@ namespace libsemigroups {
 
   // Takes about 3 minutes (with HLT)
   LIBSEMIGROUPS_TEST_CASE(
-      "v3::ToddCoxeter",
+      "ToddCoxeter",
       "105",
       "http://brauer.maths.qmul.ac.uk/Atlas/clas/S62/mag/S62G1-P1.M",
       "[todd-coxeter][extreme]") {
@@ -3991,7 +3991,7 @@ namespace libsemigroups {
 
   // Approx. 32 minutes (2021 - MacBook Air M1 - 8GB RAM)
   LIBSEMIGROUPS_TEST_CASE(
-      "v3::ToddCoxeter",
+      "ToddCoxeter",
       "106",
       "http://brauer.maths.qmul.ac.uk/Atlas/spor/HS/mag/HSG1-P1.M",
       "[todd-coxeter][extreme]") {
@@ -4037,7 +4037,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE(
-      "v3::ToddCoxeter",
+      "ToddCoxeter",
       "107",
       "http://brauer.maths.qmul.ac.uk/Atlas/spor/J1/mag/J1G1-P1.M",
       "[todd-coxeter][standard]") {
@@ -4068,7 +4068,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE(
-      "v3::ToddCoxeter",
+      "ToddCoxeter",
       "108",
       "http://brauer.maths.qmul.ac.uk/Atlas/lin/L34/mag/L34G1-P1.M",
       "[todd-coxeter][quick][no-coverage][no-valgrind]") {
@@ -4100,7 +4100,7 @@ namespace libsemigroups {
 
   // Takes about 10 seconds (2021 - MacBook Air M1 - 8GB RAM)
   LIBSEMIGROUPS_TEST_CASE(
-      "v3::ToddCoxeter",
+      "ToddCoxeter",
       "109",
       "http://brauer.maths.qmul.ac.uk/Atlas/clas/S62/mag/S62G1-P1.M",
       "[todd-coxeter][extreme]") {

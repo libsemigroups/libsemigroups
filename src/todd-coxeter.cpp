@@ -189,7 +189,7 @@ namespace libsemigroups {
   // TODO remove overlap between these, and ensure that thye really work
 
   ToddCoxeter::ToddCoxeter()
-      : v3::CongruenceInterface(),
+      : CongruenceInterface(),
         _finished(false),
         _forest(),
         _standardized(Order::none),
@@ -201,7 +201,7 @@ namespace libsemigroups {
   }
 
   ToddCoxeter& ToddCoxeter::init() {
-    v3::CongruenceInterface::init();
+    CongruenceInterface::init();
     _finished = false;
     _forest.init();
     _standardized = Order::none;
@@ -215,7 +215,7 @@ namespace libsemigroups {
   }
 
   ToddCoxeter& ToddCoxeter::init(congruence_kind knd) {
-    v3::CongruenceInterface::init(knd);
+    CongruenceInterface::init(knd);
     _finished = false;
     _forest.init();
     _settings     = Settings();
@@ -226,7 +226,7 @@ namespace libsemigroups {
   }
 
   ToddCoxeter::ToddCoxeter(congruence_kind knd, Presentation<word_type>&& p)
-      : v3::CongruenceInterface(knd),
+      : CongruenceInterface(knd),
         _finished(false),
         _forest(),
         _settings(),
@@ -254,7 +254,7 @@ namespace libsemigroups {
 
   ToddCoxeter::ToddCoxeter(congruence_kind                knd,
                            Presentation<word_type> const& p)
-      : v3::CongruenceInterface(knd),
+      : CongruenceInterface(knd),
         _finished(false),
         _forest(),
         _settings(),

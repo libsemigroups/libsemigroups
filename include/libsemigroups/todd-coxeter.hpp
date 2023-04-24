@@ -41,7 +41,7 @@
 #include "types.hpp"                 // for word_type
 
 namespace libsemigroups {
-  class ToddCoxeter : public v3::CongruenceInterface,
+  class ToddCoxeter : public CongruenceInterface,
                       public FelschDigraphSettings<ToddCoxeter> {
     using FelschDigraphSettings_ = FelschDigraphSettings<ToddCoxeter>;
 

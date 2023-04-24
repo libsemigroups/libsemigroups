@@ -30,10 +30,10 @@
 namespace libsemigroups {
 
   ////////////////////////////////////////////////////////////////////////////
-  // v3::CongruenceInterface - constructors + destructor - public
+  // CongruenceInterface - constructors + destructor - public
   ////////////////////////////////////////////////////////////////////////////
 
-  v3::CongruenceInterface::CongruenceInterface(congruence_kind type)
+  CongruenceInterface::CongruenceInterface(congruence_kind type)
       : Runner(),
         // Non-mutable
         _type(type) {
@@ -41,22 +41,22 @@ namespace libsemigroups {
     // TODO reset();
   }
 
-  void v3::CongruenceInterface::init() {
+  void CongruenceInterface::init() {
     Runner::init();
   }
 
-  void v3::CongruenceInterface::init(congruence_kind type) {
+  void CongruenceInterface::init(congruence_kind type) {
     Runner::init();
     _type = type;
   }
 
-  v3::CongruenceInterface::~CongruenceInterface() = default;
+  CongruenceInterface::~CongruenceInterface() = default;
 
   /////////////////////////////////////////////////////////////////////////
-  // v3::CongruenceInterface - non-pure virtual methods - private
+  // CongruenceInterface - non-pure virtual methods - private
   /////////////////////////////////////////////////////////////////////////
 
-  void v3::CongruenceInterface::add_pair(word_type const& u,
+  void CongruenceInterface::add_pair(word_type const& u,
                                          word_type const& v) {
     if (started()) {
       LIBSEMIGROUPS_EXCEPTION(
@@ -73,13 +73,13 @@ namespace libsemigroups {
   }
 
   void
-  v3::CongruenceInterface::add_pair_no_checks_no_reverse(word_type const& u,
+  CongruenceInterface::add_pair_no_checks_no_reverse(word_type const& u,
                                                          word_type const& v) {
     _generating_pairs.push_back(u);
     _generating_pairs.push_back(v);
   }
 
-  void v3::CongruenceInterface::add_pair(word_type&& u, word_type&& v) {
+  void CongruenceInterface::add_pair(word_type&& u, word_type&& v) {
     if (started()) {
       LIBSEMIGROUPS_EXCEPTION(
           "cannot add further generating pairs at this stage");

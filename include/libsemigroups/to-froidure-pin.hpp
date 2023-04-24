@@ -121,8 +121,8 @@ namespace libsemigroups {
     return to_froidure_pin<Element>(ad, 0, ad.number_of_nodes());
   }
 
-  FroidurePin<v3::detail::TCE> to_froidure_pin(ToddCoxeter& tc);
-  FroidurePin<v3::detail::KBE> to_froidure_pin(KnuthBendix& tc);
+  FroidurePin<detail::TCE> to_froidure_pin(ToddCoxeter& tc);
+  FroidurePin<detail::KBE> to_froidure_pin(KnuthBendix& tc);
 
   template <typename String>
   auto to_froidure_pin(Kambites<String>& k) {

@@ -72,7 +72,7 @@ namespace libsemigroups {
                           "002",
                           "from Todd-Coxeter",
                           "[quick][make]") {
-    using TCE            = v3::detail::TCE;
+    using TCE            = detail::TCE;
     using FroidurePinTCE = FroidurePin<TCE>;
 
     auto rg = ReportGuard(false);

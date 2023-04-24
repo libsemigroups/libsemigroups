@@ -63,7 +63,7 @@ namespace libsemigroups {
   //! cong.add_pair({1, 1, 1}, {0});
   //! cong.number_of_classes(); // 3
   //! \endcode
-  class Congruence : public v3::CongruenceInterface {
+  class Congruence : public CongruenceInterface {
    public:
     //////////////////////////////////////////////////////////////////////////
     // Congruence - constructors - public
