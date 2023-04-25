@@ -59,16 +59,16 @@ namespace libsemigroups {
     REQUIRE(!S.is_obviously_finite());
     REQUIRE(!S.started());
     REQUIRE(!S.finished());
-    REQUIRE(S.has_knuth_bendix());
-    REQUIRE(S.has_todd_coxeter());
+    REQUIRE(S.has<KnuthBendix>);
+    REQUIRE(S.has<ToddCoxeter>);
     REQUIRE(S.size() == 57);
     REQUIRE(S.started());
     REQUIRE(S.finished());
     REQUIRE(S.is_obviously_finite());
-    if (!S.has_knuth_bendix()) {
-      REQUIRE(S.has_todd_coxeter());
+    if (!S.has<KnuthBendix>) {
+      REQUIRE(S.has<ToddCoxeter>);
     } else {
-      REQUIRE(S.has_knuth_bendix());
+      REQUIRE(S.has<KnuthBendix>);
     }
   }
 
@@ -204,8 +204,8 @@ namespace libsemigroups {
     }
     REQUIRE(S.number_of_rules() == 110);
     REQUIRE(!S.is_obviously_infinite());
-    REQUIRE(!S.knuth_bendix()->confluent());
-    // S.knuth_bendix()->run(); // Works too but is slower :)
+    REQUIRE(!S.get<KnuthBendix>->confluent());
+    // S.get<KnuthBendix>->run(); // Works too but is slower :)
     REQUIRE(S.size() == 13889);
     REQUIRE(S.froidure_pin()->number_of_rules() == 356);
   }
@@ -223,8 +223,8 @@ namespace libsemigroups {
     }
     REQUIRE(S.number_of_rules() == 110);
     REQUIRE(!S.is_obviously_infinite());
-    REQUIRE(!S.knuth_bendix()->confluent());
-    // S.knuth_bendix()->run(); // Works too :)
+    REQUIRE(!S.get<KnuthBendix>->confluent());
+    // S.get<KnuthBendix>->run(); // Works too :)
     REQUIRE(S.size() == 13889);
     REQUIRE(S.froidure_pin()->number_of_rules() == 356);
   }
@@ -243,8 +243,8 @@ namespace libsemigroups {
     }
     REQUIRE(S.number_of_rules() == 159);
     REQUIRE(!S.is_obviously_infinite());
-    REQUIRE(!S.knuth_bendix()->confluent());
-    // S.todd_coxeter()->run(); // Takes 2m30s or so to run
+    REQUIRE(!S.get<KnuthBendix>->confluent());
+    // S.get<ToddCoxeter>->run(); // Takes 2m30s or so to run
     REQUIRE(S.size() == 322021);
     REQUIRE(S.froidure_pin()->number_of_rules() == 1453);
     {
@@ -274,9 +274,9 @@ namespace libsemigroups {
     }
     REQUIRE(S.number_of_rules() == 159);
     REQUIRE(!S.is_obviously_infinite());
-    REQUIRE(!S.knuth_bendix()->confluent());
+    REQUIRE(!S.get<KnuthBendix>->confluent());
     // Doesn't terminate, or show signs that it will, in 5 minutes or so
-    // S.todd_coxeter()->run();
+    // S.get<ToddCoxeter>->run();
     REQUIRE(S.size() == 322021);
     REQUIRE(S.froidure_pin()->number_of_rules() == 1453);
 
@@ -300,8 +300,8 @@ namespace libsemigroups {
     }
     REQUIRE(S.number_of_rules() == 44);
     REQUIRE(!S.is_obviously_infinite());
-    REQUIRE(!S.knuth_bendix()->confluent());
-    // S.knuth_bendix()->run(); // Works too :)
+    REQUIRE(!S.get<KnuthBendix>->confluent());
+    // S.get<KnuthBendix>->run(); // Works too :)
     REQUIRE(S.size() == 37);
     REQUIRE(S.froidure_pin()->number_of_rules() == 54);
   }
@@ -319,8 +319,8 @@ namespace libsemigroups {
     }
     REQUIRE(S.number_of_rules() == 44);
     REQUIRE(!S.is_obviously_infinite());
-    REQUIRE(!S.knuth_bendix()->confluent());
-    // S.knuth_bendix()->run(); // Works too :)
+    REQUIRE(!S.get<KnuthBendix>->confluent());
+    // S.get<KnuthBendix>->run(); // Works too :)
     REQUIRE(S.size() == 37);
     REQUIRE(S.froidure_pin()->number_of_rules() == 54);
   }
@@ -338,8 +338,8 @@ namespace libsemigroups {
     }
     REQUIRE(S.number_of_rules() == 78);
     REQUIRE(!S.is_obviously_infinite());
-    REQUIRE(!S.knuth_bendix()->confluent());
-    // S.knuth_bendix()->run(); // Works too but is a bit slower :)
+    REQUIRE(!S.get<KnuthBendix>->confluent());
+    // S.get<KnuthBendix>->run(); // Works too but is a bit slower :)
     REQUIRE(S.size() == 541);
     REQUIRE(S.froidure_pin()->number_of_rules() == 148);
   }
@@ -357,8 +357,8 @@ namespace libsemigroups {
     }
     REQUIRE(S.number_of_rules() == 78);
     REQUIRE(!S.is_obviously_infinite());
-    REQUIRE(!S.knuth_bendix()->confluent());
-    // S.knuth_bendix()->run(); // Works too but is a bit slower :)
+    REQUIRE(!S.get<KnuthBendix>->confluent());
+    // S.get<KnuthBendix>->run(); // Works too but is a bit slower :)
     REQUIRE(S.size() == 541);
     REQUIRE(S.froidure_pin()->number_of_rules() == 148);
   }
@@ -377,7 +377,7 @@ namespace libsemigroups {
     }
     REQUIRE(S.number_of_rules() == 119);
     REQUIRE(!S.is_obviously_infinite());
-    REQUIRE(!S.knuth_bendix()->confluent());
+    REQUIRE(!S.get<KnuthBendix>->confluent());
 
     REQUIRE(S.size() == POSITIVE_INFINITY);
 
@@ -401,7 +401,7 @@ namespace libsemigroups {
     }
     REQUIRE(S.number_of_rules() == 119);
     REQUIRE(!S.is_obviously_infinite());
-    REQUIRE(!S.knuth_bendix()->confluent());
+    REQUIRE(!S.get<KnuthBendix>->confluent());
 
     S.froidure_pin()->enumerate(10626);
     REQUIRE(S.froidure_pin()->current_number_of_rules() == 417);
@@ -422,8 +422,8 @@ namespace libsemigroups {
     }
     REQUIRE(S.number_of_rules() == 44);
     REQUIRE(!S.is_obviously_infinite());
-    REQUIRE(!S.knuth_bendix()->confluent());
-    // S.knuth_bendix()->run(); // Works too :)
+    REQUIRE(!S.get<KnuthBendix>->confluent());
+    // S.get<KnuthBendix>->run(); // Works too :)
     REQUIRE(S.size() == 37);
     REQUIRE(S.froidure_pin()->number_of_rules() == 54);
   }
@@ -441,8 +441,8 @@ namespace libsemigroups {
     }
     REQUIRE(S.number_of_rules() == 44);
     REQUIRE(!S.is_obviously_infinite());
-    REQUIRE(!S.knuth_bendix()->confluent());
-    // S.knuth_bendix()->run(); // Works too :)
+    REQUIRE(!S.get<KnuthBendix>->confluent());
+    // S.get<KnuthBendix>->run(); // Works too :)
     REQUIRE(S.size() == 37);
     REQUIRE(S.froidure_pin()->number_of_rules() == 54);
   }
@@ -460,8 +460,8 @@ namespace libsemigroups {
     }
     REQUIRE(S.number_of_rules() == 78);
     REQUIRE(!S.is_obviously_infinite());
-    REQUIRE(!S.knuth_bendix()->confluent());
-    // S.knuth_bendix()->run(); // Works too but is a bit slower :)
+    REQUIRE(!S.get<KnuthBendix>->confluent());
+    // S.get<KnuthBendix>->run(); // Works too but is a bit slower :)
     REQUIRE(S.size() == 541);
     REQUIRE(S.froidure_pin()->number_of_rules() == 148);
   }
@@ -479,8 +479,8 @@ namespace libsemigroups {
     }
     REQUIRE(S.number_of_rules() == 78);
     REQUIRE(!S.is_obviously_infinite());
-    REQUIRE(!S.knuth_bendix()->confluent());
-    // S.knuth_bendix()->run(); // Works too but is a bit slower :)
+    REQUIRE(!S.get<KnuthBendix>->confluent());
+    // S.get<KnuthBendix>->run(); // Works too but is a bit slower :)
     REQUIRE(S.size() == 541);
     REQUIRE(S.froidure_pin()->number_of_rules() == 148);
   }
@@ -498,7 +498,7 @@ namespace libsemigroups {
     }
     REQUIRE(S.number_of_rules() == 121);
     REQUIRE(!S.is_obviously_infinite());
-    REQUIRE(!S.knuth_bendix()->confluent());
+    REQUIRE(!S.get<KnuthBendix>->confluent());
 
     REQUIRE(S.size() == 10625);
     REQUIRE(S.froidure_pin()->number_of_rules() == 419);
@@ -517,7 +517,7 @@ namespace libsemigroups {
     }
     REQUIRE(S.number_of_rules() == 121);
     REQUIRE(!S.is_obviously_infinite());
-    REQUIRE(!S.knuth_bendix()->confluent());
+    REQUIRE(!S.get<KnuthBendix>->confluent());
     REQUIRE(S.size() == 10625);
     REQUIRE(S.froidure_pin()->number_of_rules() == 419);
   }
@@ -535,7 +535,7 @@ namespace libsemigroups {
     }
     REQUIRE(S.number_of_rules() == 173);
     REQUIRE(!S.is_obviously_infinite());
-    REQUIRE(!S.knuth_bendix()->confluent());
+    REQUIRE(!S.get<KnuthBendix>->confluent());
 
     REQUIRE(S.size() == 258661);
     REQUIRE(S.froidure_pin()->number_of_rules() == 1279);
@@ -554,7 +554,7 @@ namespace libsemigroups {
     }
     REQUIRE(S.number_of_rules() == 173);
     REQUIRE(!S.is_obviously_infinite());
-    REQUIRE(!S.knuth_bendix()->confluent());
+    REQUIRE(!S.get<KnuthBendix>->confluent());
     REQUIRE(S.size() == 258661);
     REQUIRE(S.froidure_pin()->number_of_rules() == 1279);
   }
@@ -573,7 +573,7 @@ namespace libsemigroups {
     }
     REQUIRE(S.number_of_rules() == 234);
     REQUIRE(!S.is_obviously_infinite());
-    REQUIRE(!S.knuth_bendix()->confluent());
+    REQUIRE(!S.get<KnuthBendix>->confluent());
 
     REQUIRE(S.size() == 7464625);
     REQUIRE(S.froidure_pin()->number_of_rules() == 4570);
@@ -593,8 +593,8 @@ namespace libsemigroups {
     }
     REQUIRE(S.number_of_rules() == 234);
     REQUIRE(!S.is_obviously_infinite());
-    REQUIRE(!S.knuth_bendix()->confluent());
-    S.knuth_bendix()->knuth_bendix_by_overlap_length();
+    REQUIRE(!S.get<KnuthBendix>->confluent());
+    S.get<KnuthBendix>->knuth_bendix_by_overlap_length();
     REQUIRE(S.size() == 7464625);
     REQUIRE(S.froidure_pin()->number_of_rules() == 4570);
   }
@@ -611,7 +611,7 @@ namespace libsemigroups {
   //   }
   //   REQUIRE(S.number_of_rules() == 33);
   //   REQUIRE(!S.is_obviously_infinite());
-  //   REQUIRE(!S.knuth_bendix()->confluent());
+  //   REQUIRE(!S.get<KnuthBendix>->confluent());
   //   REQUIRE(S.size() == 1546);
   //   REQUIRE(S.froidure_pin()->number_of_rules() == 71);
   // }
@@ -628,7 +628,7 @@ namespace libsemigroups {
   //   }
   //   REQUIRE(S.number_of_rules() == 33);
   //   REQUIRE(!S.is_obviously_infinite());
-  //   REQUIRE(!S.knuth_bendix()->confluent());
+  //   REQUIRE(!S.get<KnuthBendix>->confluent());
   //   REQUIRE(S.size() == 1546);
   //   REQUIRE(S.froidure_pin()->number_of_rules() == 71);
   // }
@@ -645,7 +645,7 @@ namespace libsemigroups {
   //   }
   //   REQUIRE(S.number_of_rules() == 45);
   //   REQUIRE(!S.is_obviously_infinite());
-  //   REQUIRE(!S.knuth_bendix()->confluent());
+  //   REQUIRE(!S.get<KnuthBendix>->confluent());
   //   REQUIRE(S.size() == 13327);
   //   REQUIRE(S.froidure_pin()->number_of_rules() == 207);
   // }
@@ -662,7 +662,7 @@ namespace libsemigroups {
   //   }
   //   REQUIRE(S.number_of_rules() == 45);
   //   REQUIRE(!S.is_obviously_infinite());
-  //   REQUIRE(!S.knuth_bendix()->confluent());
+  //   REQUIRE(!S.get<KnuthBendix>->confluent());
   //   REQUIRE(S.size() == 13327);
   //   REQUIRE(S.froidure_pin()->number_of_rules() == 207);
   // }
@@ -885,7 +885,7 @@ namespace libsemigroups {
     S.add_rule("aaa", "a");
     S.add_rule("a", "bb");
     REQUIRE(!S.is_obviously_infinite());
-    REQUIRE(S.knuth_bendix()->froidure_pin()->size() == 5);
+    REQUIRE(S.get<KnuthBendix>->froidure_pin()->size() == 5);
     REQUIRE(S.size() == 5);
 
     auto T = S.froidure_pin();

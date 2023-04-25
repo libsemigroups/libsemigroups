@@ -29,16 +29,17 @@
 #include <utility>        // for pair
 #include <vector>         // for vector
 
-#include "adapters.hpp"          // for One
+#include "adapters.hpp"    // for One
+#include "constants.hpp"   // for UNDEFINED
+#include "debug.hpp"       // for LIBSEMIGROUPS_ASSERT
+#include "exception.hpp"   // for LIBSEMIGROUPS_EXCEPTION
+#include "forest.hpp"      // for Forest
+#include "gabow.hpp"       // for Gabow
+#include "report.hpp"      // for REPORT_DEFAULT
+#include "runner.hpp"      // for Runner
+#include "word-graph.hpp"  // for WordGraph
+
 #include "detail/bruidhinn-traits.hpp"  // for detail::BruidhinnTraits
-#include "constants.hpp"         // for UNDEFINED
-#include "debug.hpp"             // for LIBSEMIGROUPS_ASSERT
-#include "exception.hpp"         // for LIBSEMIGROUPS_EXCEPTION
-#include "forest.hpp"            // for Forest
-#include "gabow.hpp"             // for Gabow
-#include "report.hpp"            // for REPORT_DEFAULT
-#include "runner.hpp"            // for Runner
-#include "word-graph.hpp"        // for WordGraph
 
 namespace libsemigroups {
   //! The values in this enum can be used as a template parameter for the Action

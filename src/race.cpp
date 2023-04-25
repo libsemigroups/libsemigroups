@@ -32,31 +32,34 @@
 namespace libsemigroups {
   namespace detail {
 
-    Race::~Race() = default;
     Race::Race()
         : _max_threads(std::thread::hardware_concurrency()),
           _mtx(),
+          _runners(),
           _winner(nullptr) {}
+
+    Race::~Race() = default;
 
     void Race::add_runner(std::shared_ptr<Runner> r) {
       if (_winner != nullptr) {
-        LIBSEMIGROUPS_EXCEPTION("the race is over, cannot add runners");
+        LIBSEMIGROUPS_EXCEPTION_V3("the race is over, cannot add runners");
       }
       _runners.push_back(r);
     }
 
     void Race::run() {
       if (empty()) {
-        LIBSEMIGROUPS_EXCEPTION("no runners given, cannot run");
+        LIBSEMIGROUPS_EXCEPTION_V3("no runners given, cannot run");
       }
       run_func(std::mem_fn(&Runner::run));
     }
 
     void Race::run_for(std::chrono::nanoseconds x) {
       if (empty()) {
-        LIBSEMIGROUPS_EXCEPTION("no runners given, cannot run_for");
+        LIBSEMIGROUPS_EXCEPTION_V3("no runners given, cannot run_for");
       }
       run_func([&x](std::shared_ptr<Runner> r) -> void { r->run_for(x); });
     }
+
   }  // namespace detail
 }  // namespace libsemigroups

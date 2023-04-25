@@ -39,26 +39,38 @@ namespace libsemigroups {
   // Congruence - constructors - public
   //////////////////////////////////////////////////////////////////////////
 
-  Congruence::Congruence(congruence_kind type, Presentation<word_type> const& p)
-      : Congruence(type) {
+  Congruence& Congruence::init() {
+    CongruenceInterface::init();
+    _race.init();
+    _runners_initted = false;
+    return *this;
+  }
+
+  Congruence& Congruence::init(congruence_kind                type,
+                               Presentation<word_type> const& p) {
+    init(type);
     _race.max_threads(POSITIVE_INFINITY);
     if (type == congruence_kind::twosided) {
       _race.add_runner(std::make_shared<Kambites<word_type>>(p));
     }
     _race.add_runner(std::make_shared<KnuthBendix>(type, p));
     _race.add_runner(std::make_shared<ToddCoxeter>(type, p));
+    auto tc = std::make_shared<ToddCoxeter>(type, p);
+    tc->strategy(ToddCoxeter::options::strategy::felsch);
+    _race.add_runner(tc);
     // TODO add a Runner that tries to create a ToddCoxeter using the Cayley
     // graph of some FroidurePin
-    // TODO Felsch Todd-Coxeter
+    return *this;
   }
 
-  Congruence::Congruence(congruence_kind type, FroidurePinBase& S)
-      : Congruence(type) {
+  Congruence& Congruence::init(congruence_kind type, FroidurePinBase& S) {
     if (S.is_finite() != tril::FALSE) {
       S.run();
     } else {
-      LIBSEMIGROUPS_EXCEPTION_V3("TODO");
+      LIBSEMIGROUPS_EXCEPTION_V3(
+          "the 2nd argument does not represent a finite semigroup!");
     }
+    init(type);
     _race.max_threads(POSITIVE_INFINITY);
 
     auto p  = to_presentation<word_type>(S);
@@ -83,11 +95,12 @@ namespace libsemigroups {
       // used, it doesn't get killed
       _race.add_runner(std::make_shared<KnuthBendix>(type, p));
     }
+    return *this;
   }
 
-  void Congruence::init() {
-    if (!_initted) {
-      _initted = true;
+  void Congruence::init_runners() {
+    if (!_runners_initted) {
+      _runners_initted = true;
       for (auto& runner : _race) {
         auto first = generating_pairs().cbegin();
         auto last  = generating_pairs().cend();
@@ -100,9 +113,9 @@ namespace libsemigroups {
   }
 
   void Congruence::run_impl() {
-    init();
-    if (kambites() != nullptr) {
-      if (kambites()->small_overlap_class() >= 4) {
+    init_runners();
+    if (has<Kambites<word_type>>()) {
+      if (get<Kambites<word_type>>()->small_overlap_class() >= 4) {
         // Race always checks for finished in the other runners, and the
         // kambites is finished and will be declared the winner.
         return;
@@ -119,14 +132,15 @@ namespace libsemigroups {
     non_trivial_classes(Congruence& cong, Presentation<word_type> const& p) {
       using rx::operator|;
       cong.run();
-      if (cong.has_todd_coxeter() && cong.todd_coxeter()->finished()) {
+      if (cong.has<ToddCoxeter>() && cong.get<ToddCoxeter>()->finished()) {
         ToddCoxeter tc(cong.kind(), p);
         return ::libsemigroups::todd_coxeter::non_trivial_classes(
-            *cong.todd_coxeter(), tc);
-      } else if (cong.has_knuth_bendix() && cong.knuth_bendix()->finished()) {
+            *cong.get<ToddCoxeter>(), tc);
+      } else if (cong.has<KnuthBendix>()
+                 && cong.get<KnuthBendix>()->finished()) {
         KnuthBendix kb(cong.kind(), p);
         auto strings = ::libsemigroups::knuth_bendix::non_trivial_classes(
-            kb, *cong.knuth_bendix());
+            kb, *cong.get<KnuthBendix>());
         std::vector<std::vector<word_type>> result;
         for (auto const& klass : strings) {
           result.push_back(rx::iterator_range(klass.begin(), klass.end())

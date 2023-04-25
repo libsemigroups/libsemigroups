@@ -490,11 +490,10 @@ namespace libsemigroups {
     // kb.run();
   }
 
-  LIBSEMIGROUPS_TEST_CASE(
-      "KnuthBendix",
-      "063",
-      "rewriting system from KnuthBendixCongruenceByPairs 08",
-      "[quick][knuth-bendix][kbmag]") {
+  LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
+                          "063",
+                          "rewriting system from another test",
+                          "[quick][knuth-bendix][kbmag]") {
     auto rg = ReportGuard(false);
 
     Presentation<std::string> p;

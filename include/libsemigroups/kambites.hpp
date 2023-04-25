@@ -506,6 +506,7 @@ namespace libsemigroups {
     // Runner - pure virtual member functions - private
     ////////////////////////////////////////////////////////////////////////
 
+    // TODO to tpp
     void run_impl() override {
       if (!_have_class) {
         if constexpr (std::is_same_v<value_type, word_type>) {
@@ -544,6 +545,63 @@ namespace libsemigroups {
 
   template <typename Word>
   Kambites(Presentation<Word> const&) -> Kambites<Word>;
+
+  namespace kambites {
+
+    template <typename Range,
+              typename Word1,
+              typename Word2 = typename Kambites<Word1>::value_type>
+    std::vector<std::vector<Word2>> partition(Kambites<Word1>& k, Range r) {
+      static_assert(
+          std::is_same_v<std::decay_t<typename Range::output_type>, Word2>);
+      using return_type = std::vector<std::vector<Word2>>;
+
+      if (!r.is_finite) {
+        LIBSEMIGROUPS_EXCEPTION_V3("the 2nd argument (a range) must be finite, "
+                                   "found an infinite range");
+      }
+
+      return_type result;
+
+      std::unordered_map<Word2, size_t> map;
+      size_t                            index = 0;
+
+      while (!r.at_end()) {
+        auto next = r.get();
+        if (k.presentation().contains_empty_word() || !next.empty()) {
+          auto next_nf        = k.normal_form(next);
+          auto [it, inserted] = map.emplace(next_nf, index);
+          if (inserted) {
+            result.emplace_back();
+            index++;
+          }
+          size_t index_of_next_nf = it->second;
+          result[index_of_next_nf].push_back(next);
+        }
+        r.next();
+      }
+      return result;
+    }
+
+    // TODO remove code dupl with same function in todd_coxeter + knuth_bendix
+    // namespace
+    template <typename Range,
+              typename Word1,
+              typename Word2 = typename Kambites<Word1>::value_type,
+              typename       = std::enable_if_t<rx::is_input_or_sink_v<Range>>>
+    std::vector<std::vector<Word2>> non_trivial_classes(Kambites<Word1>& k,
+                                                        Range            r) {
+      auto result = partition(k, r);
+
+      result.erase(
+          std::remove_if(result.begin(),
+                         result.end(),
+                         [](auto const& x) -> bool { return x.size() <= 1; }),
+          result.end());
+      return result;
+    }
+  }  // namespace kambites
+
 }  // namespace libsemigroups
 
 #include "kambites.tpp"

@@ -215,7 +215,6 @@ namespace libsemigroups {
   //! \par Used by:
   //! * ActionTraits
   //! * FroidurePinTraits
-  //! * CongruenceByPairs
   //! * SchreierSimsTraits
   //!
   //! \par Example
@@ -357,7 +356,6 @@ namespace libsemigroups {
   //!
   //! \par Used by:
   //! * ActionTraits
-  //! * CongruenceByPairs
   //! * FroidurePinTraits
   //! * SchreierSimsTraits
   template <typename Value, typename = void>
@@ -389,7 +387,6 @@ namespace libsemigroups {
   //!
   //! \par Used by:
   //! * ActionTraits
-  //! * CongruenceByPairs
   //! * FroidurePinTraits
   //! * SchreierSimsTraits
   template <typename Value, typename = void>

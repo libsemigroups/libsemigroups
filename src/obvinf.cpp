@@ -232,13 +232,14 @@ namespace libsemigroups {
   }
 
   bool is_obviously_infinite(Congruence& cong) {
-    if (cong.has_todd_coxeter()
-        && is_obviously_infinite(*cong.todd_coxeter())) {
+    if (cong.has<ToddCoxeter>()
+        && is_obviously_infinite(*cong.get<ToddCoxeter>())) {
       return true;
-    } else if (cong.has_knuth_bendix()
-               && is_obviously_infinite(*cong.knuth_bendix())) {
+    } else if (cong.has<KnuthBendix>()
+               && is_obviously_infinite(*cong.get<KnuthBendix>())) {
       return true;
-    } else if (cong.has_kambites() && is_obviously_infinite(*cong.kambites())) {
+    } else if (cong.has<Kambites<word_type>>()
+               && is_obviously_infinite(*cong.get<Kambites<word_type>>())) {
       return true;
     }
     return false;

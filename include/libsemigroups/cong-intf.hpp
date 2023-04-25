@@ -123,7 +123,13 @@ namespace libsemigroups {
       return _type;
     }
 
+    CongruenceInterface& kind(congruence_kind knd) {
+      _type = knd;
+      return *this;
+    }
+
     // TODO(doc)
+    // TODO could return CongruenceInterface&
     void add_pair_no_checks(word_type&& u, word_type&& v);
     void add_pair_no_checks(word_type const& u, word_type const& v) {
       add_pair_no_checks(word_type(u), word_type(v));

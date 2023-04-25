@@ -197,10 +197,10 @@ namespace libsemigroups {
     REQUIRE(cong.contains(1_w, 11_w));
     REQUIRE(cong.contains(101_w, 10_w));
 
-    REQUIRE(cong.has_knuth_bendix());
+    REQUIRE(cong.has<KnuthBendix>());
 
     KnuthBendix kb(twosided, p);
-    REQUIRE(knuth_bendix::non_trivial_classes(kb, *cong.knuth_bendix())
+    REQUIRE(knuth_bendix::non_trivial_classes(kb, *cong.get<KnuthBendix>())
             == std::vector<std::vector<std::string>>(
                 {{"b", "ab", "bb", "abb", "a"}}));
   }
@@ -341,16 +341,16 @@ namespace libsemigroups {
     cong.add_pair(111_w, {});
     REQUIRE(cong.number_of_classes() == 3);
 
-    if (cong.has_knuth_bendix()) {
+    if (cong.has<KnuthBendix>()) {
       KnuthBendix kb(twosided, p);
       REQUIRE_THROWS_AS(
           // FIXME swap the args
-          knuth_bendix::non_trivial_classes(kb, *cong.knuth_bendix()),
+          knuth_bendix::non_trivial_classes(kb, *cong.get<KnuthBendix>()),
           LibsemigroupsException);
-    } else if (cong.has_todd_coxeter()) {
+    } else if (cong.has<ToddCoxeter>()) {
       ToddCoxeter tc(twosided, p);
       REQUIRE_THROWS_AS(
-          todd_coxeter::non_trivial_classes(*cong.todd_coxeter(), tc),
+          todd_coxeter::non_trivial_classes(*cong.get<ToddCoxeter>(), tc),
           LibsemigroupsException);
     }
   }
@@ -448,10 +448,10 @@ namespace libsemigroups {
     REQUIRE(is_obviously_infinite(cong));
     REQUIRE(cong.number_of_classes() == POSITIVE_INFINITY);
 
-    REQUIRE(cong.has_knuth_bendix());
+    REQUIRE(cong.has<KnuthBendix>());
 
     KnuthBendix kb(twosided, p);
-    auto ntc = knuth_bendix::non_trivial_classes(kb, *cong.knuth_bendix());
+    auto ntc = knuth_bendix::non_trivial_classes(kb, *cong.get<KnuthBendix>());
     REQUIRE(ntc.size() == 1);
     REQUIRE(ntc[0].size() == 5);
     REQUIRE(ntc[0] == std::vector<std::string>({"b", "ab", "bb", "abb", "a"}));
@@ -499,9 +499,9 @@ namespace libsemigroups {
     // non-trivial classes.
     // REQUIRE(cong.number_of_non_trivial_classes() == 0);
     REQUIRE(cong.number_of_classes() == POSITIVE_INFINITY);
-    REQUIRE(cong.has_knuth_bendix());
-    REQUIRE(knuth_bendix::non_trivial_classes(*cong.knuth_bendix(),
-                                              *cong.knuth_bendix())
+    REQUIRE(cong.has<KnuthBendix>());
+    REQUIRE(knuth_bendix::non_trivial_classes(*cong.get<KnuthBendix>(),
+                                              *cong.get<KnuthBendix>())
                 .empty());
     REQUIRE(cong.finished());
     REQUIRE(cong.started());
@@ -548,17 +548,19 @@ namespace libsemigroups {
     Congruence cong(twosided, p);
     cong.add_pair(0_w, 1_w);
     REQUIRE(cong.number_of_classes() == 1);
-    if (cong.has_todd_coxeter() && cong.todd_coxeter()->finished()) {
+    if (cong.has<ToddCoxeter>() && cong.get<ToddCoxeter>()->finished()) {
       ToddCoxeter tc(twosided, p);
       REQUIRE(tc.number_of_classes() == 78);
-      auto ntc = todd_coxeter::non_trivial_classes(*cong.todd_coxeter(), tc);
+      auto ntc
+          = todd_coxeter::non_trivial_classes(*cong.get<ToddCoxeter>(), tc);
       REQUIRE(ntc.size() == 1);
       REQUIRE(ntc[0].size() == 78);
     }
-    if (cong.has_knuth_bendix() && cong.knuth_bendix()->finished()) {
+    if (cong.has<KnuthBendix>() && cong.get<KnuthBendix>()->finished()) {
       KnuthBendix kb(twosided, p);
       REQUIRE(kb.number_of_classes() == 78);
-      auto ntc = knuth_bendix::non_trivial_classes(kb, *cong.knuth_bendix());
+      auto ntc
+          = knuth_bendix::non_trivial_classes(kb, *cong.get<KnuthBendix>());
       REQUIRE(ntc.size() == 1);
       REQUIRE(ntc[0].size() == 78);
     }
@@ -1174,11 +1176,11 @@ namespace libsemigroups {
 
     REQUIRE(!cong.contains(1111_w, 11_w));
     REQUIRE(cong.contains(1111_w, 1_w));
-    if (cong.has_todd_coxeter()) {
-      REQUIRE_NOTHROW(cong.todd_coxeter());
+    if (cong.has<ToddCoxeter>()) {
+      REQUIRE_NOTHROW(cong.get<ToddCoxeter>());
     }
-    if (cong.has_knuth_bendix()) {
-      REQUIRE_NOTHROW(cong.knuth_bendix());
+    if (cong.has<KnuthBendix>()) {
+      REQUIRE_NOTHROW(cong.get<KnuthBendix>());
     }
   }
 
@@ -1212,6 +1214,7 @@ namespace libsemigroups {
                           "044",
                           "congruence over smalloverlap",
                           "[quick][cong]") {
+    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("abcdefg");
     presentation::add_rule(p, "abcd", "aaaeaa");
@@ -1219,7 +1222,34 @@ namespace libsemigroups {
     cong.add_pair(45_w, 36_w);
     REQUIRE(is_obviously_infinite(cong));
     REQUIRE(cong.number_of_generating_pairs() == 1);
+    cong.run();
     REQUIRE(cong.number_of_classes() == POSITIVE_INFINITY);
+    REQUIRE(cong.has<ToddCoxeter>());
+    REQUIRE(cong.has<Kambites<word_type>>());
+    REQUIRE(cong.get<Kambites<word_type>>()->finished());
+    REQUIRE(!cong.get<ToddCoxeter>()->finished());
+
+    Words w;
+    w.letters(p.alphabet().size()).min(1).max(4);
+    REQUIRE(w.count() == 399);
+    REQUIRE(cong.get<Kambites<word_type>>()->presentation().alphabet()
+            == word_type({0, 1, 2, 3, 4, 5, 6}));
+    REQUIRE(congruence::non_trivial_classes(cong, w)
+            == std::vector<std::vector<word_type>>({{36_w, 45_w},
+                                                    {036_w, 045_w},
+                                                    {136_w, 145_w},
+                                                    {236_w, 245_w},
+                                                    {336_w, 345_w},
+                                                    {360_w, 450_w},
+                                                    {361_w, 451_w},
+                                                    {362_w, 452_w},
+                                                    {363_w, 453_w},
+                                                    {364_w, 454_w},
+                                                    {365_w, 455_w},
+                                                    {366_w, 456_w},
+                                                    {436_w, 445_w},
+                                                    {536_w, 545_w},
+                                                    {636_w, 645_w}}));
   }
 
 }  // namespace libsemigroups

@@ -80,14 +80,14 @@ namespace libsemigroups {
 
   std::unique_ptr<FroidurePinBase> to_froidure_pin(Congruence& cong) {
     cong.run();
-    if (cong.has_knuth_bendix()) {
-      auto fp = to_froidure_pin(*cong.knuth_bendix());
+    if (cong.has<KnuthBendix>()) {
+      auto fp = to_froidure_pin(*cong.get<KnuthBendix>());
       return std::make_unique<decltype(fp)>(std::move(fp));
-    } else if (cong.has_todd_coxeter()) {
-      auto fp = to_froidure_pin(*cong.todd_coxeter());
+    } else if (cong.has<ToddCoxeter>()) {
+      auto fp = to_froidure_pin(*cong.get<ToddCoxeter>());
       return std::make_unique<decltype(fp)>(std::move(fp));
-    } else if (cong.has_kambites()) {
-      auto fp = to_froidure_pin(*cong.kambites());
+    } else if (cong.has<Kambites<word_type>>()) {
+      auto fp = to_froidure_pin(*cong.get<Kambites<word_type>>());
       return std::make_unique<decltype(fp)>(std::move(fp));
     }
     LIBSEMIGROUPS_EXCEPTION_V3("TODO");

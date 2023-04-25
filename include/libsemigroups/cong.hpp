@@ -26,6 +26,7 @@
 #include <memory>   // for shared_ptr
 
 #include "cong-intf.hpp"
+#include "exception.hpp"     // for LIBSEMIGROUPS_EXCEPTION_V3
 #include "kambites.hpp"      // for Kambites
 #include "knuth-bendix.hpp"  // for KnuthBendix
 #include "race.hpp"          // for Race
@@ -68,12 +69,20 @@ namespace libsemigroups {
     // Congruence - data - private
     /////////////////////////////////////////////////////////////////////////
     detail::Race _race;
-    bool         _initted;
+    bool         _runners_initted;
 
    public:
     //////////////////////////////////////////////////////////////////////////
     // Congruence - constructors - public
     //////////////////////////////////////////////////////////////////////////
+
+    // TODO doc
+    Congruence() : CongruenceInterface(), _race(), _runners_initted() {
+      init();
+    }
+
+    // TODO doc
+    Congruence& init();
 
     //! Construct from kind (left/right/2-sided) and options.
     //!
@@ -88,9 +97,15 @@ namespace libsemigroups {
     //! Constant.
     //!
     //! \sa set_number_of_generators and add_pair.
-    explicit Congruence(congruence_kind type)
-        : CongruenceInterface(type), _race(), _initted(false) {}
-    // TODO init
+    explicit Congruence(congruence_kind type) : CongruenceInterface() {
+      init(type);
+    }
+
+    // TODO doc
+    Congruence& init(congruence_kind type) {
+      CongruenceInterface::init(type);
+      return init();
+    }
 
     //! Construct from kind (left/right/2-sided) and FroidurePin.
     //!
@@ -112,7 +127,12 @@ namespace libsemigroups {
     //! \warning the parameter `T const& S` is copied, this might be expensive,
     //! use a std::shared_ptr to avoid the copy!
     // template <typename T>
-    Congruence(congruence_kind type, FroidurePinBase& S);
+    Congruence(congruence_kind type, FroidurePinBase& S) : Congruence() {
+      init(type, S);
+    }
+
+    // TODO doc
+    Congruence& init(congruence_kind type, FroidurePinBase& S);
 
     //! Construct from kind (left/right/2-sided) and Presentation.
     //!
@@ -127,35 +147,40 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Constant.
-    // TODO constructor for rval ref, and init versions
-    Congruence(congruence_kind type, Presentation<word_type> const& p);
+    // No rvalue ref version because we anyway must copy p multiple times
+    Congruence(congruence_kind type, Presentation<word_type> const& p)
+        : Congruence() {
+      init(type, p);
+    }
 
-    // TODO constructor for rval ref, and init versions
+    // TODO doc
+    // No rvalue ref version because we anyway must copy p multiple times
+    Congruence& init(congruence_kind type, Presentation<word_type> const& p);
+
+    // TODO doc
+    // No rvalue ref version because we are not able to use p directly anyway
     template <typename Word>
     Congruence(congruence_kind type, Presentation<Word> const& p)
         : Congruence(type, to_presentation<word_type>(p)) {}
 
+    template <typename Word>
+    Congruence& init(congruence_kind type, Presentation<Word> const& p) {
+      init(type, to_presentation<word_type>(p));
+    }
+
+    //! TODO(doc)
+    Congruence(Congruence const&) = default;
+
+    //! TODO(doc)
+    Congruence& operator=(Congruence const&) = default;
+
+    //! TODO(doc)
+    Congruence(Congruence&&) = default;
+
+    //! TODO(doc)
+    Congruence& operator=(Congruence&&) = default;
+
     ~Congruence() = default;
-
-    //! Deleted.
-    // TODO undelete
-    Congruence() = delete;
-
-    //! Deleted.
-    // TODO undelete
-    Congruence(Congruence const&) = delete;
-
-    //! Deleted.
-    // TODO undelete
-    Congruence& operator=(Congruence const&) = delete;
-
-    //! Deleted.
-    // TODO undelete
-    Congruence(Congruence&&) = delete;
-
-    //! Deleted.
-    // TODO undelete
-    Congruence& operator=(Congruence&&) = delete;
 
     //////////////////////////////////////////////////////////////////////////
     // CongruenceInterface - pure virtual - public
@@ -174,23 +199,34 @@ namespace libsemigroups {
           ->contains(u, v);
     }
 
-    void validate_word(word_type const&) const override {
-      // Do nothing
+    void validate_word(word_type const& w) const override {
+      if (!_race.empty()) {
+        std::static_pointer_cast<CongruenceInterface>(*_race.begin())
+            ->validate_word(w);
+        return;
+      }
+      LIBSEMIGROUPS_EXCEPTION_V3(
+          "No presentation has been set, so cannot validate the word!");
     }
 
     //////////////////////////////////////////////////////////////////////////
     // Congruence - member functions - public
     //////////////////////////////////////////////////////////////////////////
 
+    // TODO to tpp
     template <typename Thing>
     std::shared_ptr<Thing> get() {
-      init();
-      return _race.find_runner<Thing>();
+      init_runners();
+      auto result = _race.find_runner<Thing>();
+      if (result == nullptr) {
+        LIBSEMIGROUPS_EXCEPTION_V3("There's no Thing to get!");
+      }
+      return result;
     }
 
     template <typename Thing>
-    [[nodiscard]] bool get() {
-      return get<Thing>() != nullptr;
+    [[nodiscard]] bool has() {
+      return _race.find_runner<Thing>() != nullptr;
     }
 
     //! Returns the KnuthBendix instance used to compute the congruence (if
@@ -207,12 +243,7 @@ namespace libsemigroups {
     //! \complexity
     //! Constant.
     //!
-    //! \sa has_knuth_bendix().
-    // TODO remove
-    std::shared_ptr<KnuthBendix> knuth_bendix() {
-      init();
-      return _race.find_runner<KnuthBendix>();
-    }
+    //! \sa has<KnuthBendix>.
 
     //! Checks if a KnuthBendix instance is being used to compute
     //! the congruence.
@@ -228,92 +259,7 @@ namespace libsemigroups {
     //! \complexity
     //! Constant.
     //!
-    //! \sa knuth_bendix().
-    // TODO remove
-    bool has_knuth_bendix() {
-      return knuth_bendix() != nullptr;
-    }
-
-    //! Returns the ToddCoxeter instance used to compute the
-    //! congruence (if any).
-    //!
-    //! \parameters
-    //! (None)
-    //!
-    //! \returns A shared_ptr to a ToddCoxeter or \c nullptr.
-    //!
-    //! \exceptions
-    //! \no_libsemigroups_except
-    //!
-    //! \complexity
-    //! Constant.
-    //!
-    //! \sa has_todd_coxeter().
-    // TODO remove
-    std::shared_ptr<ToddCoxeter> todd_coxeter() {
-      init();
-      return _race.find_runner<ToddCoxeter>();
-    }
-
-    //! Returns the Kambites instance used to compute the congruence (if any).
-    //!
-    //! \parameters
-    //! (None)
-    //!
-    //! \returns A shared_ptr to a Kambites or \c nullptr.
-    //!
-    //! \exceptions
-    //! \no_libsemigroups_except
-    //!
-    //! \complexity
-    //! Constant.
-    //!
-    //! \sa has_kambites().
-    // TODO remove
-    std::shared_ptr<Kambites<word_type>> kambites() {
-      init();
-      return _race.find_runner<Kambites<word_type>>();
-    }
-
-    //! Checks if a ToddCoxeter instance is being used to compute
-    //! the congruence.
-    //!
-    //! \parameters
-    //! (None)
-    //!
-    //! \returns A value to type `bool`.
-    //!
-    //! \exceptions
-    //! \no_libsemigroups_except
-    //!
-    //! \complexity
-    //! Constant.
-    //!
-    //! \sa todd_coxeter.
-    // TODO remove
-    bool has_todd_coxeter() {
-      return todd_coxeter() != nullptr;
-    }
-
-    //! Checks if a Kambites instance is being used to compute
-    //! the congruence.
-    //!
-    //! \parameters
-    //! (None)
-    //!
-    //! \returns A value to type `bool`.
-    //!
-    //! \exceptions
-    //! \no_libsemigroups_except
-    //!
-    //! \complexity
-    //! Constant.
-    //!
-    //! \sa \ref kambites.
-    // TODO remove
-    bool has_kambites() {
-      return kambites() != nullptr;
-    }
+    //! \sa get<KnuthBendix>.
 
     //! Get the current maximum number of threads.
     //!
@@ -357,7 +303,7 @@ namespace libsemigroups {
     // Congruence - member functions - private
     //////////////////////////////////////////////////////////////////////////
 
-    void init();
+    void init_runners();
 
     //////////////////////////////////////////////////////////////////////////
     // Runner - pure virtual member functions - private
@@ -370,29 +316,32 @@ namespace libsemigroups {
   };
 
   namespace congruence {
-    // TODO should be word_type/string agnostic
+    // TODO to tpp file
     template <typename Range>
     std::vector<std::vector<word_type>> non_trivial_classes(Congruence& cong,
                                                             Range       r) {
+      // TODO static assert output of r is words
       using rx::operator|;
       cong.run();
-      if (cong.has_todd_coxeter() && cong.todd_coxeter()->finished()) {
+      if (cong.has<ToddCoxeter>() && cong.get<ToddCoxeter>()->finished()) {
         return ::libsemigroups::todd_coxeter::non_trivial_classes(
-            *cong.todd_coxeter(), r);  // TODO add to_words here
-      } else if (cong.has_knuth_bendix() && cong.knuth_bendix()->finished()) {
-        auto const& p = cong.knuth_bendix()->presentation();
+            *cong.get<ToddCoxeter>(), r);
+      } else if (cong.has<KnuthBendix>()
+                 && cong.get<KnuthBendix>()->finished()) {
+        auto const& p = cong.get<KnuthBendix>()->presentation();
         auto strings  = ::libsemigroups::knuth_bendix::non_trivial_classes(
-            *cong.knuth_bendix(), r | to_strings(p.alphabet()));
+            *cong.get<KnuthBendix>(), r | to_strings(p.alphabet()));
         std::vector<std::vector<word_type>> result;
         for (auto const& klass : strings) {
           result.push_back(rx::iterator_range(klass.begin(), klass.end())
                            | to_words(p.alphabet()) | rx::to_vector());
         }
         return result;
+      } else if (cong.has<Kambites<word_type>>()) {
+        return ::libsemigroups::kambites::non_trivial_classes(
+            *cong.get<Kambites<word_type>>(), r);
       }
-      // TODO the case when cong.has_kambites()
       LIBSEMIGROUPS_EXCEPTION_V3("Cannot compute the non-trivial classes!");
-      return std::vector<std::vector<word_type>>();
     }
   }  // namespace congruence
 }  // namespace libsemigroups

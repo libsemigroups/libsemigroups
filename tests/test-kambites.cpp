@@ -158,7 +158,27 @@ namespace libsemigroups {
 
     auto s = to_froidure_pin(k);
     s.enumerate(100);
-    REQUIRE(s.current_size() == 8205);
+    REQUIRE(s.current_size() == 8'205);
+
+    Strings strings;
+    strings.letters(p.alphabet()).min(1).max(4);
+    REQUIRE(strings.count() == 399);
+    REQUIRE(kambites::non_trivial_classes(k, strings)
+            == std::vector<std::vector<std::string>>({{"dg", "ef"},
+                                                      {"adg", "aef"},
+                                                      {"bdg", "bef"},
+                                                      {"cdg", "cef"},
+                                                      {"ddg", "def"},
+                                                      {"dga", "efa"},
+                                                      {"dgb", "efb"},
+                                                      {"dgc", "efc"},
+                                                      {"dgd", "efd"},
+                                                      {"dge", "efe"},
+                                                      {"dgf", "eff"},
+                                                      {"dgg", "efg"},
+                                                      {"edg", "eef"},
+                                                      {"fdg", "fef"},
+                                                      {"gdg", "gef"}}));
   }
 
   LIBSEMIGROUPS_TEST_CASE("Kambites",

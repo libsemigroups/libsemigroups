@@ -23,6 +23,7 @@
 // TODO(later):
 // 1. consider if keeping killed off methods has any uses
 // 2. update run_until to be similar to Runner::run_until
+// 3. add tpp file
 
 #ifndef LIBSEMIGROUPS_RACE_HPP_
 #define LIBSEMIGROUPS_RACE_HPP_
@@ -43,25 +44,57 @@
 #include "timer.hpp"      // for Timer
 
 namespace libsemigroups {
-  // TODO remove from detail namespace
-  // TODO doc
-  // TODO template the type of the Runners contained within
   namespace detail {
     class Race {
+      size_t                               _max_threads;
+      std::mutex                           _mtx;
+      std::vector<std::shared_ptr<Runner>> _runners;
+      std::shared_ptr<Runner>              _winner;
+
      public:
       // Construct an empty Race object, with maximum number of threads set to
       // std::thread::hardware_concurrency.
       Race();
-      Race(Race const& other) : Race() {
-        // Can't use = default because std::mutex is non-copyable.
-        _runners     = other._runners;
-        _max_threads = other._max_threads;
-        _winner      = other._winner;
+
+      Race& init() {
+        _max_threads = std::thread::hardware_concurrency();
+        // do nothing to the _mtx
+        _runners.clear();
+        _winner = nullptr;
+        return *this;
       }
 
-      Race(Race&&)                 = delete;
-      Race& operator=(Race const&) = delete;
-      Race& operator=(Race&&)      = delete;
+      Race(Race const& other) : Race() {
+        // Can't use = default because std::mutex is non-copyable.
+        _max_threads = other._max_threads;
+        // do nothing to the _mtx
+        _runners = other._runners;
+        _winner  = other._winner;
+      }
+
+      Race(Race&& other)
+          : _max_threads(std::move(other._max_threads)),
+            _mtx(),
+            _runners(std::move(other._runners)),
+            _winner(std::move(other._winner)) {}
+
+      Race& operator=(Race const& other) {
+        // Can't use = default because std::mutex is non-copyable.
+        _max_threads = other._max_threads;
+        // do nothing to the _mtx
+        _runners = other._runners;
+        _winner  = other._winner;
+        return *this;
+      }
+
+      Race& operator=(Race&& other) {
+        // Can't use = default because std::mutex is non-copyable.
+        _max_threads = std::move(other._max_threads);
+        // do nothing to the _mtx
+        _runners = std::move(other._runners);
+        _winner  = std::move(other._winner);
+        return *this;
+      }
 
       ~Race();
 
@@ -72,18 +105,18 @@ namespace libsemigroups {
         return *this;
       }
 
-      size_t max_threads() const noexcept {
+      [[nodiscard]] size_t max_threads() const noexcept {
         return _max_threads;
       }
 
       // Runs the method Runner::run on every Runner in the Race, and returns
       // the one that finishes first. The losers are deleted.
-      std::shared_ptr<Runner> winner() {
+      [[nodiscard]] std::shared_ptr<Runner> winner() {
         run();
         return _winner;
       }
 
-      bool finished() const noexcept {
+      [[nodiscard]] bool finished() const noexcept {
         return _winner != nullptr;
       }
 
@@ -93,33 +126,33 @@ namespace libsemigroups {
       using const_iterator =
           typename std::vector<std::shared_ptr<Runner>>::const_iterator;
 
-      const_iterator begin() const noexcept {
+      [[nodiscard]] const_iterator begin() const noexcept {
         return _runners.cbegin();
       }
 
-      const_iterator end() const noexcept {
+      [[nodiscard]] const_iterator end() const noexcept {
         return _runners.cend();
       }
 
       // Returns an iterator pointing to the first Runner in the Race.
-      const_iterator cbegin() const noexcept {
+      [[nodiscard]] const_iterator cbegin() const noexcept {
         return _runners.cbegin();
       }
 
       // Returns an iterator pointing to one past the last Runner in the Race.
-      const_iterator cend() const noexcept {
+      [[nodiscard]] const_iterator cend() const noexcept {
         return _runners.cend();
       }
 
       // Returns \c true if there are no Runners in the race, and \c false
       // otherwise.
       // std::vector::empty is noexcept
-      bool empty() const noexcept {
+      [[nodiscard]] bool empty() const noexcept {
         return _runners.empty();
       }
 
       // std::vector::size is noexcept
-      size_t number_of_runners() const noexcept {
+      [[nodiscard]] size_t number_of_runners() const noexcept {
         return _runners.size();
       }
 
@@ -160,12 +193,7 @@ namespace libsemigroups {
       }
 
       template <typename T>
-      bool winner_is() const {
-        return typeid(_winner) == typeid(T);
-      }
-
-      template <typename T>
-      std::shared_ptr<T> find_runner() const {
+      [[nodiscard]] std::shared_ptr<T> find_runner() const {
         static_assert(std::is_base_of<Runner, T>::value,
                       "the template parameter must be derived from Runner");
         // We use find_if so that this works even if we haven't computed
@@ -288,11 +316,6 @@ namespace libsemigroups {
           }
         }
       }
-
-      std::vector<std::shared_ptr<Runner>> _runners;
-      size_t                               _max_threads;
-      std::mutex                           _mtx;
-      std::shared_ptr<Runner>              _winner;
     };
   }  // namespace detail
 }  // namespace libsemigroups

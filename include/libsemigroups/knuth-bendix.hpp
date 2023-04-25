@@ -769,7 +769,8 @@ namespace libsemigroups {
       using rx::operator|;
 
       size_t const N = (r | rx::count());
-      if (N == POSITIVE_INFINITY) {
+      if (N == POSITIVE_INFINITY) {  // TODO ensure this is the same in all
+                                     // versions of partition
         LIBSEMIGROUPS_EXCEPTION_V3("the 2nd argument (a range) must be finite, "
                                    "found an infinite range");
       }
