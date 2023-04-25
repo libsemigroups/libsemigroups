@@ -28,7 +28,7 @@
 #include <vector>   // for vector
 
 #include "debug.hpp"                 // for LIBSEMIGROUPS_ASSERT
-#include "digraph-with-sources.hpp"  // for DigraphWithSources
+#include "word-graph-with-sources.hpp"  // for WordGraphWithSources
 #include "felsch-tree.hpp"           // for FelschTree
 #include "present.hpp"               // for Presentation
 
@@ -112,20 +112,20 @@ namespace libsemigroups {
 
   template <typename Word, typename Node, typename Definitions>
   class FelschDigraph
-      : public DigraphWithSources<Node>,
+      : public WordGraphWithSources<Node>,
         public FelschDigraphSettings<FelschDigraph<Word, Node, Definitions>> {
    private:
     using FelschDigraph_         = FelschDigraph<Word, Node, Definitions>;
     using FelschDigraphSettings_ = FelschDigraphSettings<FelschDigraph_>;
-    using DigraphWithSources_    = DigraphWithSources<Node>;
+    using WordGraphWithSources_    = WordGraphWithSources<Node>;
 
    public:
     using options = typename FelschDigraphSettings_::options;
 
     using node_type  = Node;
     using word_type  = Word;
-    using label_type = typename DigraphWithSources_::label_type;
-    using size_type  = typename DigraphWithSources_::size_type;
+    using label_type = typename WordGraphWithSources_::label_type;
+    using size_type  = typename WordGraphWithSources_::size_type;
 
     using NoPreferredDefs    = Noop;
     using StopIfIncompatible = ReturnFalse;

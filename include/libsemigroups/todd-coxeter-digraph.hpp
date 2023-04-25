@@ -33,7 +33,7 @@
 #include <utility>      // for pair
 #include <vector>       // for vector
 
-#include "digraph-with-sources.hpp"  // for DigraphWithSources
+#include "word-graph-with-sources.hpp"  // for WordGraphWithSources
 #include "felsch-digraph.hpp"
 #include "node-manager.hpp"  // for NodeManager
 #include "present.hpp"       // for Presentation, Presentation<>:...
@@ -55,9 +55,9 @@ namespace libsemigroups {
     using base_digraph_type = BaseDigraph;
 
     static_assert(
-        std::is_base_of<DigraphWithSources<node_type>, BaseDigraph>::value,
+        std::is_base_of<WordGraphWithSources<node_type>, BaseDigraph>::value,
         "the template parameter BaseDigraph must be derived from "
-        "DigraphWithSources<node_type>");
+        "WordGraphWithSources<node_type>");
 
    protected:
     using NodeManager_ = detail::NodeManager<node_type>;
@@ -202,8 +202,8 @@ namespace libsemigroups {
 
 namespace libsemigroups {
   // TODO move to stephen or its own file.
-  class StephenDigraph : public NodeManagedDigraph<DigraphWithSources<size_t>> {
-    using BaseDigraph         = DigraphWithSources<size_t>;
+  class StephenDigraph : public NodeManagedDigraph<WordGraphWithSources<size_t>> {
+    using BaseDigraph         = WordGraphWithSources<size_t>;
     using NodeManagedDigraph_ = NodeManagedDigraph<BaseDigraph>;
     using NodeManager_        = typename NodeManagedDigraph_::NodeManager_;
 

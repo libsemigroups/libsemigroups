@@ -846,7 +846,7 @@ namespace libsemigroups {
    protected:
     // TODO(v3) make this public, doc, and test it
     // TODO rename permute_nodes_no_checks, move part of the definition here
-    // from DigraphWithSources
+    // from WordGraphWithSources
     template <typename S>
     void apply_row_permutation(S const& p) {
       _dynamic_array_2.apply_row_permutation(p);

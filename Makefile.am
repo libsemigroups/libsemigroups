@@ -54,11 +54,8 @@ pkginclude_HEADERS += include/libsemigroups/config.hpp
 pkginclude_HEADERS += include/libsemigroups/cong-intf.hpp
 pkginclude_HEADERS += include/libsemigroups/cong.hpp
 pkginclude_HEADERS += include/libsemigroups/constants.hpp
-pkginclude_HEADERS += include/libsemigroups/containers.hpp
 pkginclude_HEADERS += include/libsemigroups/debug.hpp
 pkginclude_HEADERS += include/libsemigroups/deprecated.hpp
-pkginclude_HEADERS += include/libsemigroups/digraph-with-sources.hpp
-pkginclude_HEADERS += include/libsemigroups/digraph-with-sources.tpp
 pkginclude_HEADERS += include/libsemigroups/exception.hpp
 pkginclude_HEADERS += include/libsemigroups/fastest-bmat.hpp
 pkginclude_HEADERS += include/libsemigroups/felsch-digraph.hpp
@@ -119,9 +116,12 @@ pkginclude_HEADERS += include/libsemigroups/ukkonen.hpp
 pkginclude_HEADERS += include/libsemigroups/ukkonen.tpp
 pkginclude_HEADERS += include/libsemigroups/word-graph.hpp
 pkginclude_HEADERS += include/libsemigroups/word-graph.tpp
+pkginclude_HEADERS += include/libsemigroups/word-graph-with-sources.hpp
+pkginclude_HEADERS += include/libsemigroups/word-graph-with-sources.tpp
 pkginclude_HEADERS += include/libsemigroups/words.hpp
 
 pkginclude_HEADERS += include/libsemigroups/detail/bruidhinn-traits.hpp
+pkginclude_HEADERS += include/libsemigroups/detail/containers.hpp
 
 textflowcppincludedir = $(includedir)/libsemigroups/textflowcpp
 textflowcppinclude_HEADERS=extern/textflowcpp/TextFlow.hpp

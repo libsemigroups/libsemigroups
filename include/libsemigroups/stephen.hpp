@@ -27,7 +27,7 @@
 #include <vector>       // for vector
 
 #include "constants.hpp"             // for PositiveInfinity
-#include "digraph-with-sources.hpp"  // for DigraphWithSources
+#include "word-graph-with-sources.hpp"  // for WordGraphWithSources
 #include "paths.hpp"                 // for Paths
 #include "present.hpp"               // for Presentation
 #include "runner.hpp"                // for Runner

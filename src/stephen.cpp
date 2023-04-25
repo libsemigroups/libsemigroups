@@ -199,7 +199,8 @@ namespace libsemigroups {
 
   void Stephen::standardize() {
     word_graph::standardize(_word_graph);
-    _word_graph.shrink_to_fit(_word_graph.number_of_nodes_active());
+    _word_graph.induced_subgraph_no_checks(
+        0, _word_graph.number_of_nodes_active());
   }
 
   void Stephen::validate() const {

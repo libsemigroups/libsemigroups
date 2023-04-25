@@ -38,7 +38,7 @@ namespace libsemigroups {
     size_t r = (_presentation.contains_empty_word() ? 0 : 1);
     size_t c = _presentation.alphabet().size();
 
-    DigraphWithSources<Node>::init(r, c);
+    WordGraphWithSources<Node>::init(r, c);
     FelschDigraphSettings_::init();
     _felsch_tree.init(c);
     _felsch_tree_initted = false;
@@ -48,7 +48,7 @@ namespace libsemigroups {
   template <typename Word, typename Node, typename Definitions>
   FelschDigraph<Word, Node, Definitions>::FelschDigraph(
       Presentation<Word> const& p)
-      : DigraphWithSources<node_type>(p.contains_empty_word() ? 0 : 1,
+      : WordGraphWithSources<node_type>(p.contains_empty_word() ? 0 : 1,
                                       p.alphabet().size()),
         FelschDigraphSettings<FelschDigraph<Word, Node, Definitions>>(),
         _felsch_tree(p.alphabet().size()),
@@ -66,7 +66,7 @@ namespace libsemigroups {
 
   template <typename Word, typename Node, typename Definitions>
   FelschDigraph<Word, Node, Definitions>::FelschDigraph(Presentation<Word>&& p)
-      : DigraphWithSources<node_type>(p.contains_empty_word() ? 0 : 1,
+      : WordGraphWithSources<node_type>(p.contains_empty_word() ? 0 : 1,
                                       p.alphabet().size()),
         FelschDigraphSettings<FelschDigraph<Word, Node, Definitions>>(),
         _felsch_tree(p.alphabet().size()),
@@ -84,7 +84,7 @@ namespace libsemigroups {
   template <typename Word, typename Node, typename Definitions>
   template <typename M>
   FelschDigraph<Word, Node, Definitions>::FelschDigraph(WordGraph<M> const& ad)
-      : DigraphWithSources<node_type>(ad),
+      : WordGraphWithSources<node_type>(ad),
         FelschDigraphSettings<FelschDigraph<Word, Node, Definitions>>(),
         _felsch_tree(0),
         _felsch_tree_initted(false),
@@ -161,7 +161,7 @@ namespace libsemigroups {
     if constexpr (RegDefs) {
       _definitions.emplace_back(c, x);
     }
-    DigraphWithSources<Node>::set_target_no_checks(c, x, d);
+    WordGraphWithSources<Node>::set_target_no_checks(c, x, d);
   }
 
   template <typename Word, typename Node, typename Definitions>
@@ -248,12 +248,12 @@ namespace libsemigroups {
     size_t const n = _presentation.alphabet().size();
     for (size_t x = 0; x < n; ++x) {
       if (felsch_tree().push_front(x)) {
-        node_type e = this->first_source(c, x);
+        node_type e = this->first_source_no_checks(c, x);
         while (e != UNDEFINED) {
           if (!process_definitions_dfs_v1(e, incompat, pref_defs)) {
             return false;
           }
-          e = this->next_source(e, x);
+          e = this->next_source_no_checks(e, x);
         }
         felsch_tree().pop_front();
       }
@@ -284,7 +284,7 @@ namespace libsemigroups {
       PreferredDefs& pref_defs) {
     size_t const n = this->out_degree();
     for (size_t x = 0; x < n; ++x) {
-      node_type e = DigraphWithSources_::first_source(c, x);
+      node_type e = WordGraphWithSources_::first_source_no_checks(c, x);
       if (e != UNDEFINED && felsch_tree().push_front(x)) {
         // We only need to push the side (the good side) of the relation
         // that corresponds to the prefix in the tree through one preimage,
@@ -304,7 +304,7 @@ namespace libsemigroups {
           auto const& v = _presentation.rules[j];
           // LIBSEMIGROUPS_ASSERT(word_graph::follow_path_no_checks(
           //                         *this,
-          //                         first_source(c, x),
+          //                         first_source_no_checks(c, x),
           //                         u.cbegin(),
           //                         u.cbegin() + _felsch_tree.length() - 1)
           //                     == root);
@@ -325,7 +325,7 @@ namespace libsemigroups {
           }
           u_first = u.cend() - 1;
           u_last  = u.cend();
-          e       = DigraphWithSources_::first_source(c, x);
+          e       = WordGraphWithSources_::first_source_no_checks(c, x);
           while (e != UNDEFINED) {
             if (!merge_targets_of_paths_if_possible<RegisterDefs>(y,
                                                                   u_first,
@@ -337,15 +337,15 @@ namespace libsemigroups {
                                                                   pref_defs)) {
               return false;
             }
-            e = DigraphWithSources_::next_source(e, x);
+            e = WordGraphWithSources_::next_source_no_checks(e, x);
           }
         }
-        e = DigraphWithSources_::first_source(c, x);
+        e = WordGraphWithSources_::first_source_no_checks(c, x);
         while (e != UNDEFINED) {
           if (!process_definitions_dfs_v2(root, e, incompat, pref_defs)) {
             return false;
           }
-          e = DigraphWithSources_::next_source(e, x);
+          e = WordGraphWithSources_::next_source_no_checks(e, x);
         }
         felsch_tree().pop_front();
       }

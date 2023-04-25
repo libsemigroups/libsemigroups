@@ -80,12 +80,12 @@ namespace libsemigroups {
     LIBSEMIGROUPS_ASSERT(NodeManager_::is_valid_node(d));
 
     if (NodeManager_::is_active_node(c) && NodeManager_::is_active_node(d)) {
-      BaseDigraph::swap_nodes(c, d);
+      BaseDigraph::swap_nodes_no_checks(c, d);
     } else if (NodeManager_::is_active_node(c)) {
-      BaseDigraph::rename_node(c, d);
+      BaseDigraph::rename_node_no_checks(c, d);
     } else {
       LIBSEMIGROUPS_ASSERT(NodeManager_::is_active_node(d));
-      BaseDigraph::rename_node(d, c);
+      BaseDigraph::rename_node_no_checks(d, c);
     }
     NodeManager_::switch_nodes(c, d);
   }
@@ -103,7 +103,7 @@ namespace libsemigroups {
     if (NodeManager_::has_free_nodes()) {
       node_type const c = NodeManager_::new_active_node();
       // Clear the new node's row in each table
-      BaseDigraph::clear_sources_and_targets(c);
+      BaseDigraph::remove_all_sources_and_targets_no_checks(c);
       return c;
     } else {
       reserve(2 * NodeManager_::node_capacity());
@@ -213,7 +213,7 @@ namespace libsemigroups {
         std::tie(min, max) = std::minmax({min, max});
         NodeManager_::union_nodes(min, max);
         if constexpr (RegisterDefs) {
-          BaseDigraph::merge_nodes(
+          BaseDigraph::merge_nodes_no_checks(
               min,
               max,
               [this](node_type n, letter_type x) {
@@ -221,7 +221,7 @@ namespace libsemigroups {
               },
               incompat_func);
         } else {
-          BaseDigraph::merge_nodes(min, max, Noop(), incompat_func);
+          BaseDigraph::merge_nodes_no_checks(min, max, Noop(), incompat_func);
         }
         // TODO checking report here can be rather time consuming
         if (should_report && report_tick > 10'000 && report()) {
@@ -282,7 +282,7 @@ namespace libsemigroups {
     // Remove all sources of all remaining active cosets
     auto c = NodeManager_::_id_node;
     while (c != NodeManager_::first_free_node()) {
-      BaseDigraph::clear_sources(c);
+      BaseDigraph::remove_all_sources_no_checks(c);
       c = NodeManager_::next_active_node(c);
     }
 
@@ -305,7 +305,7 @@ namespace libsemigroups {
           }
           // Must re-add the source, even if we don't need to reset
           // the target or stack the deduction
-          BaseDigraph::add_source(d, x, c);
+          BaseDigraph::add_source_no_checks(d, x, c);
           LIBSEMIGROUPS_ASSERT(NodeManager_::is_active_node(d));
         }
       }

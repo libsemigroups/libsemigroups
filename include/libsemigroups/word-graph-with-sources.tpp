@@ -24,30 +24,25 @@ namespace libsemigroups {
   // Constructors
   ////////////////////////////////////////////////////////////////////////////
 
-  template <typename NodeType>
-  template <typename ThatNodeType>
-  DigraphWithSources<NodeType>::DigraphWithSources(
-      WordGraph<ThatNodeType> const& that)
-      : WordGraph<NodeType>(that),
+  template <typename Node>
+  template <typename ThatNode>
+  WordGraphWithSources<Node>::WordGraphWithSources(
+      WordGraph<ThatNode> const& that)
+      : WordGraph<Node>(that),
         _preim_init(that.out_degree(), that.number_of_nodes(), UNDEFINED),
         _preim_next(that.out_degree(), that.number_of_nodes(), UNDEFINED) {
-    rebuild_sources(WordGraph<NodeType>::cbegin_nodes(),
-                    WordGraph<NodeType>::cend_nodes());
+    rebuild_sources_no_checks(WordGraph<Node>::cbegin_nodes(),
+                              WordGraph<Node>::cend_nodes());
   }
 
-  template <typename NodeType>
-  template <typename ThatNodeType>
-  DigraphWithSources<NodeType>::DigraphWithSources(
-      WordGraph<ThatNodeType>&& that)
-      : WordGraph<NodeType>(std::move(that)),
-        _preim_init(WordGraph<NodeType>::out_degree(),
-                    WordGraph<NodeType>::number_of_nodes(),
-                    UNDEFINED),
-        _preim_next(WordGraph<NodeType>::out_degree(),
-                    WordGraph<NodeType>::number_of_nodes(),
-                    UNDEFINED) {
-    rebuild_sources(WordGraph<NodeType>::cbegin_nodes(),
-                    WordGraph<NodeType>::cend_nodes());
+  template <typename Node>
+  template <typename ThatNode>
+  WordGraphWithSources<Node>::WordGraphWithSources(WordGraph<ThatNode>&& that)
+      : WordGraph<Node>(std::move(that)),
+        _preim_init(out_degree(), number_of_nodes(), UNDEFINED),
+        _preim_next(out_degree(), number_of_nodes(), UNDEFINED) {
+    rebuild_sources_no_checks(WordGraph<Node>::cbegin_nodes(),
+                              WordGraph<Node>::cend_nodes());
   }
 
   ////////////////////////////////////////////////////////////////////////////
@@ -55,55 +50,68 @@ namespace libsemigroups {
   ////////////////////////////////////////////////////////////////////////////
 
   // number of nodes, out-degree
-  template <typename NodeType>
-  void DigraphWithSources<NodeType>::init(size_type m, size_type n) {
+  template <typename Node>
+  void WordGraphWithSources<Node>::init(size_type m, size_type n) {
     WordGraph<node_type>::init(m, n);
     _preim_init.reshape(n, m);
     _preim_next.reshape(n, m);
   }
 
-  template <typename NodeType>
-  template <typename ThatNodeType>
-  void DigraphWithSources<NodeType>::init(WordGraph<ThatNodeType> const& that) {
-    WordGraph<NodeType>::init(that);
+  template <typename Node>
+  template <typename ThatNode>
+  void WordGraphWithSources<Node>::init(WordGraph<ThatNode> const& that) {
+    WordGraph<Node>::init(that);
     _preim_init.init(that.out_degree(), that.number_of_nodes(), UNDEFINED);
     _preim_next.init(that.out_degree(), that.number_of_nodes(), UNDEFINED);
-    rebuild_sources(WordGraph<NodeType>::cbegin_nodes(),
-                    WordGraph<NodeType>::cend_nodes());
+    rebuild_sources(WordGraph<Node>::cbegin_nodes(),
+                    WordGraph<Node>::cend_nodes());
   }
 
-  template <typename NodeType>
-  template <typename ThatNodeType>
-  void DigraphWithSources<NodeType>::init(WordGraph<ThatNodeType>&& that) {
-    WordGraph<NodeType>::init(std::move(that));
-    _preim_init.init(WordGraph<NodeType>::out_degree(),
-                     WordGraph<NodeType>::number_of_nodes(),
-                     UNDEFINED);
-    _preim_next.init(WordGraph<NodeType>::out_degree(),
-                     WordGraph<NodeType>::number_of_nodes(),
-                     UNDEFINED);
-    rebuild_sources(WordGraph<NodeType>::cbegin_nodes(),
-                    WordGraph<NodeType>::cend_nodes());
+  template <typename Node>
+  template <typename ThatNode>
+  void WordGraphWithSources<Node>::init(WordGraph<ThatNode>&& that) {
+    WordGraph<Node>::init(std::move(that));
+    _preim_init.init(out_degree(), number_of_nodes(), UNDEFINED);
+    _preim_next.init(out_degree(), number_of_nodes(), UNDEFINED);
+    rebuild_sources(WordGraph<Node>::cbegin_nodes(),
+                    WordGraph<Node>::cend_nodes());
   }
 
   ////////////////////////////////////////////////////////////////////////////
   // Public member functions
   ////////////////////////////////////////////////////////////////////////////
 
-  template <typename NodeType>
-  void DigraphWithSources<NodeType>::permute_nodes_no_checks(
+  template <typename Node>
+  void WordGraphWithSources<Node>::induced_subgraph_no_checks(node_type first,
+                                                              node_type last) {
+    LIBSEMIGROUPS_ASSERT(first < number_of_nodes());
+    LIBSEMIGROUPS_ASSERT(last <= number_of_nodes());
+    WordGraph<Node>::induced_subgraph_no_checks(first, last);
+    _preim_init.shrink_rows_to(first, last);
+    _preim_next.shrink_rows_to(first, last);
+    if (first != 0) {
+      std::for_each(_preim_init.begin(),
+                    _preim_init.end(),
+                    [&first](node_type& x) { x -= first; });
+      std::for_each(_preim_next.begin(),
+                    _preim_next.end(),
+                    [&first](node_type& x) { x -= first; });
+    }
+  }
+
+  template <typename Node>
+  void WordGraphWithSources<Node>::permute_nodes_no_checks(
       std::vector<node_type> const& p,
       std::vector<node_type> const& q,
       size_t                        m) {
     // p : new -> old, q = p ^ -1
-    node_type    c = 0;
-    size_t const n = WordGraph<NodeType>::out_degree();
+    node_type c = 0;
     // Permute all the values in the _table, and pre-images, that relate
     // to active cosets
     while (c < m) {
-      for (label_type x = 0; x < n; ++x) {
-        node_type i = WordGraph<NodeType>::target_no_checks(p[c], x);
-        WordGraph<NodeType>::set_target_no_checks(
+      for (auto x : WordGraph<Node>::labels()) {
+        node_type i = WordGraph<Node>::target_no_checks(p[c], x);
+        WordGraph<Node>::set_target_no_checks(
             p[c], x, (i == UNDEFINED ? i : q[i]));
         i = _preim_init.get(p[c], x);
         _preim_init.set(p[c], x, (i == UNDEFINED ? i : q[i]));
@@ -113,19 +121,21 @@ namespace libsemigroups {
       c++;
     }
     // Permute the rows themselves
-    WordGraph<NodeType>::apply_row_permutation(p);
+    WordGraph<Node>::apply_row_permutation(p);
     _preim_init.apply_row_permutation(p);
     _preim_next.apply_row_permutation(p);
   }
 
-  template <typename NodeType>
-  void DigraphWithSources<NodeType>::swap_nodes(node_type c, node_type d) {
-    size_t const n = WordGraph<NodeType>::out_degree();
-    for (label_type x = 0; x < n; ++x) {
-      node_type cx = WordGraph<NodeType>::target_no_checks(c, x);
-      node_type dx = WordGraph<NodeType>::target_no_checks(d, x);
-      replace_target(c, d, x);
-      replace_target(d, c, x);
+  template <typename Node>
+  void WordGraphWithSources<Node>::swap_nodes_no_checks(node_type c,
+                                                        node_type d) {
+    LIBSEMIGROUPS_ASSERT(c < number_of_nodes());
+    LIBSEMIGROUPS_ASSERT(d < number_of_nodes());
+    for (auto x : WordGraph<Node>::labels()) {
+      node_type cx = WordGraph<Node>::target_no_checks(c, x);
+      node_type dx = WordGraph<Node>::target_no_checks(d, x);
+      replace_target_no_checks(c, x, d);
+      replace_target_no_checks(d, x, c);
 
       if (cx == dx && cx != UNDEFINED) {
         // Swap c <--> d in preimages of cx = dx
@@ -150,43 +160,47 @@ namespace libsemigroups {
           e = f;
         }
       } else {
-        replace_source(c, d, x, cx);
-        replace_source(d, c, x, dx);
+        replace_source_no_checks(c, d, x, cx);
+        replace_source_no_checks(d, c, x, dx);
       }
-      WordGraph<NodeType>::swap_targets_no_checks(c, d, x);
+      WordGraph<Node>::swap_targets_no_checks(c, d, x);
       _preim_init.swap(c, x, d, x);
       _preim_next.swap(c, x, d, x);
     }
   }
 
   // c must be valid, d may not be
-  template <typename NodeType>
-  void DigraphWithSources<NodeType>::rename_node(node_type c, node_type d) {
-    size_t const n = WordGraph<NodeType>::out_degree();
-
-    for (label_type x = 0; x < n; ++x) {
-      node_type cx = WordGraph<NodeType>::target_no_checks(c, x);
-      replace_target(c, d, x);
-      replace_source(c, d, x, cx);
-      WordGraph<NodeType>::swap_targets_no_checks(c, d, x);
+  template <typename Node>
+  void WordGraphWithSources<Node>::rename_node_no_checks(node_type c,
+                                                         node_type d) {
+    LIBSEMIGROUPS_ASSERT(c < number_of_nodes());
+    LIBSEMIGROUPS_ASSERT(d < number_of_nodes());
+    for (auto x : WordGraph<Node>::labels()) {
+      node_type cx = WordGraph<Node>::target_no_checks(c, x);
+      replace_target_no_checks(c, x, d);
+      replace_source_no_checks(c, d, x, cx);
+      WordGraph<Node>::swap_targets_no_checks(c, d, x);
       _preim_init.swap(c, x, d, x);
       _preim_next.swap(c, x, d, x);
     }
   }
 
-  template <typename NodeType>
+  template <typename Node>
   template <typename NewEdgeFunc, typename IncompatibleFunc>
-  void DigraphWithSources<NodeType>::merge_nodes(node_type          min,
-                                                 node_type          max,
-                                                 NewEdgeFunc&&      new_edge,
-                                                 IncompatibleFunc&& incompat) {
+  void WordGraphWithSources<Node>::merge_nodes_no_checks(
+      node_type          min,
+      node_type          max,
+      NewEdgeFunc&&      new_edge,
+      IncompatibleFunc&& incompat) {
     LIBSEMIGROUPS_ASSERT(min < max);
-    for (label_type i = 0; i < WordGraph<NodeType>::out_degree(); ++i) {
+    LIBSEMIGROUPS_ASSERT(min < number_of_nodes());
+    LIBSEMIGROUPS_ASSERT(max < number_of_nodes());
+    for (auto i : WordGraph<Node>::labels()) {
       // v -> max is an edge
-      node_type v = first_source(max, i);
+      node_type v = first_source_no_checks(max, i);
       while (v != UNDEFINED) {
-        auto w = next_source(v, i);
-        if (WordGraph<NodeType>::target_no_checks(v, i) != min) {
+        auto w = next_source_no_checks(v, i);
+        if (WordGraph<Node>::target_no_checks(v, i) != min) {
           set_target_no_checks(v, i, min);
           new_edge(v, i);
         }
@@ -194,13 +208,13 @@ namespace libsemigroups {
       }
 
       // Now let <v> be the IMAGE of <max>
-      v = WordGraph<NodeType>::target_no_checks(max, i);
+      v = WordGraph<Node>::target_no_checks(max, i);
       if (v != UNDEFINED) {
-        remove_source(v, i, max);
+        remove_source_no_checks(v, i, max);
         // Let <u> be the image of <min>, and ensure <u> = <v>
-        node_type u = WordGraph<NodeType>::target_no_checks(min, i);
+        node_type u = WordGraph<Node>::target_no_checks(min, i);
         if (u == UNDEFINED) {
-          if (WordGraph<NodeType>::target_no_checks(min, i) != min) {
+          if (WordGraph<Node>::target_no_checks(min, i) != min) {
             set_target_no_checks(min, i, v);
             new_edge(min, i);
           }
@@ -212,40 +226,47 @@ namespace libsemigroups {
   }
 
   // Is d a source of c under x?
-  template <typename NodeType>
-  bool DigraphWithSources<NodeType>::is_source(node_type  c,
-                                               node_type  d,
-                                               label_type x) const {
-    c = first_source(c, x);
+  template <typename Node>
+  bool WordGraphWithSources<Node>::is_source_no_checks(node_type  c,
+                                                       label_type x,
+                                                       node_type  d) const {
+    LIBSEMIGROUPS_ASSERT(c < number_of_nodes());
+    LIBSEMIGROUPS_ASSERT(x < out_degree());
+    LIBSEMIGROUPS_ASSERT(d < number_of_nodes());
+    c = first_source_no_checks(c, x);
     while (c != d && c != UNDEFINED) {
-      c = next_source(c, x);
+      c = next_source_no_checks(c, x);
     }
     return c == d;
   }
 
-  template <typename NodeType>
-  void DigraphWithSources<NodeType>::clear_sources_and_targets(node_type c) {
-    for (label_type i = 0; i < WordGraph<NodeType>::out_degree(); i++) {
-      // TODO replace with remove_edge
-      WordGraph<NodeType>::set_target_no_checks(c, i, UNDEFINED);
-      _preim_init.set(c, i, UNDEFINED);
+  template <typename Node>
+  void WordGraphWithSources<Node>::remove_all_sources_and_targets_no_checks(
+      node_type c) {
+    LIBSEMIGROUPS_ASSERT(c < number_of_nodes());
+    for (auto e : WordGraph<Node>::labels()) {
+      WordGraph<Node>::remove_target_no_checks(c, e);
+      _preim_init.set(c, e, UNDEFINED);
     }
   }
 
-  template <typename NodeType>
-  void DigraphWithSources<NodeType>::clear_sources(node_type c) {
-    for (label_type x = 0; x < WordGraph<NodeType>::out_degree(); x++) {
-      _preim_init.set(c, x, UNDEFINED);
+  template <typename Node>
+  void WordGraphWithSources<Node>::remove_all_sources_no_checks(node_type c) {
+    LIBSEMIGROUPS_ASSERT(c < number_of_nodes());
+    for (auto e : WordGraph<Node>::labels()) {
+      _preim_init.set(c, e, UNDEFINED);
     }
   }
 
   // Add d to the list of preimages of c under x, i.e.
   // _word_graph.target(d, x) = c
-  template <typename NodeType>
-  void DigraphWithSources<NodeType>::add_source(node_type  c,
-                                                label_type x,
-                                                node_type  d) noexcept {
-    LIBSEMIGROUPS_ASSERT(x < WordGraph<NodeType>::out_degree());
+  template <typename Node>
+  void WordGraphWithSources<Node>::add_source_no_checks(node_type  c,
+                                                        label_type x,
+                                                        node_type  d) noexcept {
+    LIBSEMIGROUPS_ASSERT(c < number_of_nodes());
+    LIBSEMIGROUPS_ASSERT(x < WordGraph<Node>::out_degree());
+    LIBSEMIGROUPS_ASSERT(d < number_of_nodes());
     // If d = _preim_init(c, x), then preim_next(d, x) = d, which means that
     // if we try to loop over preimages we'll enter an infinite loop.
     if (d != _preim_init.get(c, x)) {
@@ -255,16 +276,19 @@ namespace libsemigroups {
     }
   }
 
-  template <typename NodeType>
+  template <typename Node>
   template <typename It>
-  void DigraphWithSources<NodeType>::rebuild_sources(It first, It last) {
+  void WordGraphWithSources<Node>::rebuild_sources_no_checks(It first,
+                                                             It last) {
     for (auto it = first; it != last; ++it) {
-      clear_sources(*it);
+      LIBSEMIGROUPS_ASSERT(*it < number_of_nodes());
+      remove_all_sources_no_checks(*it);
     }
 
     for (auto it = first; it != last; ++it) {
       node_type c = *it;
-      for (label_type x = 0; x < WordGraph<NodeType>::out_degree(); ++x) {
+      LIBSEMIGROUPS_ASSERT(c < number_of_nodes());
+      for (auto x : WordGraph<Node>::labels()) {
         auto cx = WordGraph<node_type>::target_no_checks(c, x);
         if (cx != UNDEFINED) {
           set_target_no_checks(c, x, cx);
@@ -277,10 +301,14 @@ namespace libsemigroups {
   // Private member functions
   ////////////////////////////////////////////////////////////////////////////
 
-  template <typename NodeType>
-  void DigraphWithSources<NodeType>::remove_source(node_type  cx,
-                                                   label_type x,
-                                                   node_type  d) {
+  template <typename Node>
+  void WordGraphWithSources<Node>::remove_source_no_checks(node_type  cx,
+                                                           label_type x,
+                                                           node_type  d) {
+    LIBSEMIGROUPS_ASSERT(cx < number_of_nodes());
+    LIBSEMIGROUPS_ASSERT(x < WordGraph<Node>::out_degree());
+    LIBSEMIGROUPS_ASSERT(d < number_of_nodes());
+
     node_type e = _preim_init.get(cx, x);
     if (e == d) {
       _preim_init.set(cx, x, _preim_next.get(d, x));
@@ -294,23 +322,30 @@ namespace libsemigroups {
   }
 
   // All edges of the form e - x -> c are replaced with e - x -> d,
-  template <typename NodeType>
-  void DigraphWithSources<NodeType>::replace_target(node_type c,
-                                                    node_type d,
-                                                    size_t    x) {
+  template <typename Node>
+  void WordGraphWithSources<Node>::replace_target_no_checks(node_type  c,
+                                                            label_type x,
+                                                            node_type  d) {
+    LIBSEMIGROUPS_ASSERT(c < number_of_nodes());
+    LIBSEMIGROUPS_ASSERT(x < out_degree());
+    LIBSEMIGROUPS_ASSERT(d < number_of_nodes());
     node_type e = _preim_init.get(c, x);
     while (e != UNDEFINED) {
-      LIBSEMIGROUPS_ASSERT(WordGraph<NodeType>::target_no_checks(e, x) == c);
-      WordGraph<NodeType>::set_target_no_checks(e, x, d);
+      LIBSEMIGROUPS_ASSERT(WordGraph<Node>::target_no_checks(e, x) == c);
+      WordGraph<Node>::set_target_no_checks(e, x, d);
       e = _preim_next.get(e, x);
     }
   }
 
-  template <typename NodeType>
-  void DigraphWithSources<NodeType>::replace_source(node_type c,
-                                                    node_type d,
-                                                    size_t    x,
-                                                    node_type cx) {
+  template <typename Node>
+  void WordGraphWithSources<Node>::replace_source_no_checks(node_type  c,
+                                                            node_type  d,
+                                                            label_type x,
+                                                            node_type  cx) {
+    LIBSEMIGROUPS_ASSERT(c < number_of_nodes());
+    LIBSEMIGROUPS_ASSERT(x < out_degree());
+    LIBSEMIGROUPS_ASSERT(d < number_of_nodes());
+    LIBSEMIGROUPS_ASSERT(cx < number_of_nodes());
     if (cx != UNDEFINED) {
       // Replace c <-- d in preimages of cx, and d is not a preimage of cx
       // under x
