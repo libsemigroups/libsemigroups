@@ -33,7 +33,7 @@
 #include <vector>         // for vector
 
 #include "adapters.hpp"    // for Complexity, Degree, IncreaseDegree
-#include "containers.hpp"  // for DynamicArray2
+#include "detail/containers.hpp"  // for DynamicArray2
 #include "detail/bruidhinn-traits.hpp"  // for detail::BruidhinnTraits
 #include "froidure-pin-base.hpp"  // for FroidurePinBase, FroidurePinBase::s...
 #include "iterator.hpp"           // for ConstIteratorStateless

@@ -23,7 +23,7 @@
 #include <vector>   // for vector
 
 #include "constants.hpp"   // for UNDEFINED
-#include "containers.hpp"  // for DynamicArray2
+#include "detail/containers.hpp"  // for DynamicArray2
 #include "debug.hpp"       // for LIBSEMIGROUPS_ASSERT
 #include "types.hpp"       // for word_type
 

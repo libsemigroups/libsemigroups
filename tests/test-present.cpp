@@ -24,7 +24,6 @@
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
 #include "libsemigroups/bipart.hpp"           // for Bipartition
-#include "libsemigroups/containers.hpp"       // for StaticVector1
 #include "libsemigroups/froidure-pin.hpp"     // for FroidurePin
 #include "libsemigroups/int-range.hpp"        // for IntegralRange
 #include "libsemigroups/knuth-bendix.hpp"     // for redundant_rule
@@ -32,6 +31,8 @@
 #include "libsemigroups/to-presentation.hpp"  // for make
 #include "libsemigroups/types.hpp"            // for word_type
 #include "libsemigroups/words.hpp"
+
+#include "libsemigroups/detail/containers.hpp"  // for StaticVector1
 
 namespace libsemigroups {
 

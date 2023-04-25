@@ -28,7 +28,7 @@
 #include "catch.hpp"      // for REQUIRE
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
-#include "libsemigroups/containers.hpp"  // for DynamicArray2, DynamicArray...
+#include "libsemigroups/detail/containers.hpp"  // for DynamicArray2, DynamicArray...
 
 namespace libsemigroups {
   namespace detail {

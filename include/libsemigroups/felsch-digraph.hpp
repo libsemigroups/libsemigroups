@@ -27,9 +27,9 @@
 #include <utility>  // for pair
 #include <vector>   // for vector
 
+#include "debug.hpp"                 // for LIBSEMIGROUPS_ASSERT
 #include "digraph-with-sources.hpp"  // for DigraphWithSources
 #include "felsch-tree.hpp"           // for FelschTree
-#include "libsemigroups/debug.hpp"   // for LIBSEMIGROUPS_ASSERT
 #include "present.hpp"               // for Presentation
 
 namespace libsemigroups {
@@ -190,7 +190,6 @@ namespace libsemigroups {
     }
 
     void init_felsch_tree() const {
-      // FIXME this change and those in this PR broke Sims1 completely
       if (!_felsch_tree_initted) {
         _felsch_tree_initted = true;
         _felsch_tree.add_relations(_presentation.rules.cbegin(),
@@ -219,7 +218,9 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////
 
     template <bool RegDefs = true>
-    bool try_set_target_no_checks(node_type c, label_type x, node_type d) noexcept;
+    bool try_set_target_no_checks(node_type  c,
+                                  label_type x,
+                                  node_type  d) noexcept;
 
     template <bool RegDefs = true>
     void set_target_no_checks(node_type c, label_type x, node_type d) noexcept;

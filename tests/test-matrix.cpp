@@ -30,12 +30,13 @@
 #include "libsemigroups/adapters.hpp"      // for Complexity, Degree
 #include "libsemigroups/bmat8.hpp"         // for BMat8
 #include "libsemigroups/constants.hpp"     // for NEGATIVE_INFINITY
-#include "libsemigroups/containers.hpp"    // for StaticVector1
 #include "libsemigroups/debug.hpp"         // for LIBSEMIGROUPS_A...
 #include "libsemigroups/exception.hpp"     // for LibsemigroupsEx...
 #include "libsemigroups/fastest-bmat.hpp"  // for FastestBMat
 #include "libsemigroups/matrix.hpp"        // for BMat, NTPMat
 #include "libsemigroups/report.hpp"        // for ReportGuard
+
+#include "libsemigroups/detail/containers.hpp"  // for StaticVector1
 
 namespace libsemigroups {
   template <size_t N>
@@ -295,8 +296,8 @@ namespace libsemigroups {
       REQUIRE(matrix::row_space_size(x) == 7);
       std::vector<typename Mat::RowView> views;
       std::vector<typename Mat::RowView> result;
-      matrix::row_basis<Mat, std::vector<typename Mat::RowView>&>(
-          views, result);
+      matrix::row_basis<Mat, std::vector<typename Mat::RowView>&>(views,
+                                                                  result);
     }
 
     ////////////////////////////////////////////////////////////////////////

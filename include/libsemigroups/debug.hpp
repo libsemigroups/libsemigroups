@@ -21,11 +21,10 @@
 #ifndef LIBSEMIGROUPS_DEBUG_HPP_
 #define LIBSEMIGROUPS_DEBUG_HPP_
 
-#include <assert.h>
-
 #include "config.hpp"
 
 #ifdef LIBSEMIGROUPS_DEBUG
+#include <cassert>
 #define LIBSEMIGROUPS_ASSERT(x) assert(x)
 #else
 #define LIBSEMIGROUPS_ASSERT(x)

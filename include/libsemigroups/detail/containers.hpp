@@ -16,6 +16,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
+// TODO add tpp file
+
 #ifndef LIBSEMIGROUPS_CONTAINERS_HPP_
 #define LIBSEMIGROUPS_CONTAINERS_HPP_
 
@@ -31,8 +33,8 @@
 #include <utility>           // for forward
 #include <vector>            // for vector, allocator
 
-#include "debug.hpp"     // for LIBSEMIGROUPS_ASSERT
-#include "iterator.hpp"  // for ConstIteratorStateful, ConstItera...
+#include "libsemigroups/debug.hpp"     // for LIBSEMIGROUPS_ASSERT
+#include "libsemigroups/iterator.hpp"  // for ConstIteratorStateful, ConstItera...
 
 namespace libsemigroups {
   namespace detail {
@@ -119,7 +121,7 @@ namespace libsemigroups {
 
     // Template class for 2-dimensional dynamic arrays.
     template <typename T, typename A = std::allocator<T>>
-    class DynamicArray2 final {
+    class DynamicArray2 {
       // So that DynamicArray2<T> can access private data members of
       // DynamicArray2<S> and vice versa.
       template <typename S, typename B>
@@ -736,7 +738,7 @@ namespace libsemigroups {
     // std::vector.
     // TODO(later) add tests specifically targeting this class
     template <typename T, size_t N>
-    class StaticVector1 final {
+    class StaticVector1 {
       static_assert(std::is_default_constructible<T>::value,
                     "StaticVector1<T> requires T to be default-constructible");
 
@@ -946,7 +948,7 @@ namespace libsemigroups {
 
     // Currently only supports N x N 2-dimensional static vectors
     template <typename T, size_t N>
-    class StaticVector2 final {
+    class StaticVector2 {
       // So that StaticVector2<T, N> can access private data members of
       // StaticVector2<S, M> and vice versa.
       template <typename S, size_t M>
@@ -1028,7 +1030,7 @@ namespace libsemigroups {
 
     // Currently only supports N x N 2-dimensional arrays
     template <typename T, size_t N>
-    class Array2 final {
+    class Array2 {
       // So that Array2<T, N> can access private data members of
       // Array2<S, M> and vice versa.
       template <typename S, size_t M>

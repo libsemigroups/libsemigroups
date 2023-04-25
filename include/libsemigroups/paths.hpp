@@ -40,7 +40,7 @@
 
 #include "config.hpp"      // for LIBSEMIGROUPS_EIGEN_ENA...
 #include "constants.hpp"   // for Max, UNDEFINED, Positiv...
-#include "containers.hpp"  // for DynamicArray2
+#include "detail/containers.hpp"  // for DynamicArray2
 #include "debug.hpp"       // for LIBSEMIGROUPS_ASSERT
 #include "exception.hpp"   // for LIBSEMIGROUPS_EXCEPTION
 #include "iterator.hpp"    // for default_postfix_increment

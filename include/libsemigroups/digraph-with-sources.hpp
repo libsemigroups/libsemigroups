@@ -32,20 +32,22 @@
 #define LIBSEMIGROUPS_DIGRAPH_WITH_SOURCES_HPP_
 
 // TODO:
-// 3) test file
+// * test file
+// * doc
 
 #include <cstddef>  // for size_t
 #include <stack>    // for stack
 #include <utility>  // for pair
 #include <vector>   // for vector
 
-#include "config.hpp"      // for LIBSEMIGROUPS_DEBUG
-#include "constants.hpp"   // for UNDEFINED
-#include "containers.hpp"  // for DynamicArray2
-#include "types.hpp"       // for letter_type
-#include "word-graph.hpp"  // for WordGraph
+#include "config.hpp"             // for LIBSEMIGROUPS_DEBUG
+#include "constants.hpp"          // for UNDEFINED
+#include "detail/containers.hpp"  // for DynamicArray2
+#include "types.hpp"              // for letter_type
+#include "word-graph.hpp"         // for WordGraph
 
 namespace libsemigroups {
+  // TODO rename WordGraphWithSources
   template <typename NodeType>
   class DigraphWithSources : public WordGraph<NodeType> {
    public:
@@ -62,25 +64,24 @@ namespace libsemigroups {
         : WordGraph<node_type>(m, n),
           _preim_init(n, m, UNDEFINED),
           _preim_next(n, m, UNDEFINED) {}
+    void init(size_type m, size_type n);
 
     template <typename ThatNodeType>
     explicit DigraphWithSources(WordGraph<ThatNodeType> const& that);
 
     template <typename ThatNodeType>
+    void init(WordGraph<ThatNodeType> const& that);
+
+    template <typename ThatNodeType>
     explicit DigraphWithSources(WordGraph<ThatNodeType>&& that);
+
+    template <typename ThatNodeType>
+    void init(WordGraph<ThatNodeType>&& that);
 
     DigraphWithSources(DigraphWithSources&&)                 = default;
     DigraphWithSources(DigraphWithSources const&)            = default;
     DigraphWithSources& operator=(DigraphWithSources const&) = default;
     DigraphWithSources& operator=(DigraphWithSources&&)      = default;
-
-    void init(size_type m, size_type n);
-
-    template <typename ThatNodeType>
-    void init(WordGraph<ThatNodeType> const& that);
-
-    template <typename ThatNodeType>
-    void init(WordGraph<ThatNodeType>&& that);
 
     // the template is for uniformity of interface with FelschDigraph
     template <bool = true>
@@ -90,7 +91,7 @@ namespace libsemigroups {
     }
 
     void remove_target_no_checks(node_type c, label_type x) noexcept {
-      remove_source(this->target_no_checks(c, x), x, c);
+      remove_source(WordGraph<NodeType>::target_no_checks(c, x), x, c);
       WordGraph<node_type>::remove_target_no_checks(c, x);
     }
 
@@ -106,8 +107,9 @@ namespace libsemigroups {
       WordGraph<node_type>::add_to_out_degree(m);
     }
 
+    // TODO rename induced_subgraph_no_checks
     void shrink_to_fit(size_type m) {
-      this->induced_subgraph_no_checks(0, m);
+      WordGraph<NodeType>::induced_subgraph_no_checks(0, m);
       _preim_init.shrink_rows_to(m);
       _preim_next.shrink_rows_to(m);
     }

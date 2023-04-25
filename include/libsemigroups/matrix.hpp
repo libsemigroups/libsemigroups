@@ -33,7 +33,7 @@
 #include "adapters.hpp"    // for Degree
 #include "bitset.hpp"      // for BitSet
 #include "constants.hpp"   // for POSITIVE_INFINITY
-#include "containers.hpp"  // for StaticVector1
+#include "detail/containers.hpp"  // for StaticVector1
 #include "debug.hpp"       // for LIBSEMIGROUPS_ASSERT
 #include "exception.hpp"   // for LIBSEMIGROUPS_EXCEPTION
 #include "string.hpp"      // for detail::to_string
