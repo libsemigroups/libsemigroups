@@ -797,6 +797,7 @@ namespace libsemigroups {
       return result;
     }
 
+    // Compute non-trivial classes in kb1!
     std::vector<std::vector<std::string>> non_trivial_classes(KnuthBendix& kb1,
                                                               KnuthBendix& kb2);
 

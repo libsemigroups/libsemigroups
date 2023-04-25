@@ -495,7 +495,7 @@ namespace libsemigroups {
     if (!_stack.empty()) {
       return false;
     }
-    if (!_confluence_known && (!running() || !stopped())) {
+    if (!_confluence_known && (!running() || !stopped()) && !dead()) {
       LIBSEMIGROUPS_ASSERT(_stack.empty());
       _confluent        = true;
       _confluence_known = true;
@@ -504,17 +504,19 @@ namespace libsemigroups {
       size_t               seen = 0;
 
       for (auto it1 = _active_rules.cbegin();
-           it1 != _active_rules.cend() && (!running() || !stopped());
+           it1 != _active_rules.cend() && (!running() || !stopped()) && !dead();
            ++it1) {
         Rule const* rule1 = *it1;
         // Seems to be much faster to do this in reverse.
         for (auto it2 = _active_rules.crbegin();
-             it2 != _active_rules.crend() && (!running() || !stopped());
+             it2 != _active_rules.crend() && (!running() || !stopped())
+             && !dead();
              ++it2) {
           seen++;
           Rule const* rule2 = *it2;
           for (auto it = rule1->lhs()->cend() - 1;
-               it >= rule1->lhs()->cbegin() && (!running() || !stopped());
+               it >= rule1->lhs()->cbegin() && (!running() || !stopped())
+               && !dead();
                --it) {
             // Find longest common prefix of suffix B of rule1.lhs() defined
             // by it and R = rule2.lhs()
@@ -750,7 +752,7 @@ namespace libsemigroups {
         }
 
         _gilman_digraph.induced_subgraph_no_checks(sorted_nodes.cbegin(),
-                                           sorted_nodes.cend());
+                                                   sorted_nodes.cend());
       }
     }
     return _gilman_digraph;
@@ -1129,82 +1131,84 @@ namespace libsemigroups {
 #endif
   namespace knuth_bendix {
 
+    // We are computing non_trivial_classes with respect to kb2 (the greater
+    // congruence, with fewer classes)
     std::vector<std::vector<std::string>>
     non_trivial_classes(KnuthBendix& kb1, KnuthBendix& kb2) {
       using rx::operator|;
 
-      // It is intended that kb2 is defined using the same presentation as kb1
+      // It is intended that kb1 is defined using the same presentation as kb2
       // and some additional rules. The output might still be meaningful if
       // this is not the case.
-      if (kb1.number_of_classes() == POSITIVE_INFINITY
-          && kb2.number_of_classes() != POSITIVE_INFINITY) {
+      if (kb2.number_of_classes() == POSITIVE_INFINITY
+          && kb1.number_of_classes() != POSITIVE_INFINITY) {
         LIBSEMIGROUPS_EXCEPTION_V3(
             "the 1st argument defines an infinite semigroup, and the 2nd "
             "argument defines a finite semigroup, so there is at least one "
             "infinite non-trivial class!");
-      } else if (kb1.presentation().alphabet()
-                 != kb2.presentation().alphabet()) {
+      } else if (kb2.presentation().alphabet()
+                 != kb1.presentation().alphabet()) {
         // It might be possible to handle this case too, but doesn't seem
         // worth it at present
         LIBSEMIGROUPS_EXCEPTION_V3("the arguments must have presentations with "
                                    "the same alphabets, found {} and {}",
-                                   kb1.presentation().alphabet(),
-                                   kb2.presentation().alphabet());
+                                   kb2.presentation().alphabet(),
+                                   kb1.presentation().alphabet());
       }
 
       // We construct the WordGraph `ad` obtained by subtracting all of
-      // the edges from the Gilman graph of kb2 from the Gilman graph of kb1.
+      // the edges from the Gilman graph of kb1 from the Gilman graph of kb2.
       // The non-trivial classes are finite if and only if `ad` is acyclic. It
       // would be possible to do this without actually constructing `ad` but
       // constructing `ad` is simpler, and so we do that for now.
 
-      auto g1 = kb1.gilman_digraph();
       auto g2 = kb2.gilman_digraph();
+      auto g1 = kb1.gilman_digraph();
 
-      LIBSEMIGROUPS_ASSERT(g1.number_of_nodes() > 0);
       LIBSEMIGROUPS_ASSERT(g2.number_of_nodes() > 0);
+      LIBSEMIGROUPS_ASSERT(g1.number_of_nodes() > 0);
 
-      if (g1.number_of_nodes() < g2.number_of_nodes()) {
+      if (g2.number_of_nodes() < g1.number_of_nodes()) {
         LIBSEMIGROUPS_EXCEPTION_V3(
             "the Gilman digraph of the 1st argument must have at least as "
             "many "
             "nodes as the Gilman digraph of the 2nd argument, found {} nodes "
             "and {} nodes",
-            g1.number_of_nodes(),
-            g2.number_of_nodes());
+            g2.number_of_nodes(),
+            g1.number_of_nodes());
       }
 
-      // We need to obtain a mappings from the nodes of g1 to g2 and vice
+      // We need to obtain a mappings from the nodes of g2 to g1 and vice
       // versa.
 
-      using node_type = decltype(g1)::node_type;
+      using node_type = decltype(g2)::node_type;
 
-      std::vector<node_type> to_g2(g1.number_of_nodes(),
-                                   static_cast<node_type>(UNDEFINED));
-      to_g2[0] = 0;
       std::vector<node_type> to_g1(g2.number_of_nodes(),
                                    static_cast<node_type>(UNDEFINED));
       to_g1[0] = 0;
-      for (auto v : g1.nodes()) {
-        for (auto e : g1.labels()) {
-          auto ve1 = g1.target_no_checks(v, e);
-          if (to_g2[v] != UNDEFINED && ve1 != UNDEFINED) {
-            auto ve2 = g2.target_no_checks(to_g2[v], e);
-            if (ve2 != UNDEFINED && to_g2[ve1] == UNDEFINED) {
-              to_g2[ve1] = ve2;
+      std::vector<node_type> to_g2(g1.number_of_nodes(),
+                                   static_cast<node_type>(UNDEFINED));
+      to_g2[0] = 0;
+      for (auto v : g2.nodes()) {
+        for (auto e : g2.labels()) {
+          auto ve2 = g2.target_no_checks(v, e);
+          if (to_g1[v] != UNDEFINED && ve2 != UNDEFINED) {
+            auto ve1 = g1.target_no_checks(to_g1[v], e);
+            if (ve1 != UNDEFINED && to_g1[ve2] == UNDEFINED) {
               to_g1[ve2] = ve1;
+              to_g2[ve1] = ve2;
             }
           }
         }
       }
 
       // We do a depth first search simultaneously for cycles, and edges E
-      // in g1 not in g2. Pre order forcycle detection, post order for "can we
+      // in g2 not in g1. Pre order forcycle detection, post order for "can we
       // reach a node incident to an edge in E" and "number of paths through a
       // node is infinite"
-      size_t const N = g1.number_of_nodes();
+      size_t const N = g2.number_of_nodes();
       // can_reach[v] == true if there is a path from v to a node incident to
-      // an edge in g1 that's not in g2.
+      // an edge in g2 that's not in g1.
       std::vector<bool> can_reach(N, false);
       std::vector<bool> inf_paths(N, false);
       std::vector<bool> seen(N, false);
@@ -1218,8 +1222,8 @@ namespace libsemigroups {
         if (v >= N) {
           // post order
           v -= N;
-          for (auto e : g1.labels()) {
-            auto ve = g1.target_no_checks(v, e);
+          for (auto e : g2.labels()) {
+            auto ve = g2.target_no_checks(v, e);
             // TODO clean up
             if (ve != UNDEFINED) {
               can_reach[v] = (can_reach[v] || can_reach[ve]);
@@ -1236,49 +1240,49 @@ namespace libsemigroups {
           seen[v] = true;
           stck.push(v + N);  // so we can tell when all of the descendants of
                              // v have been processed out of the stack
-          if (to_g2[v] == UNDEFINED) {
+          if (to_g1[v] == UNDEFINED) {
             can_reach[v] = true;
           }
-          for (auto e : g1.labels()) {
-            auto ve1 = g1.target_no_checks(v, e);
-            if (ve1 != UNDEFINED) {
-              // Check if (v, e, ve1) corresponds to an edge in g2
+          for (auto e : g2.labels()) {
+            auto ve2 = g2.target_no_checks(v, e);
+            if (ve2 != UNDEFINED) {
+              // Check if (v, e, ve2) corresponds to an edge in g1
               if (!can_reach[v]) {
-                auto ve2 = g2.target_no_checks(to_g2[v], e);
-                if (ve2 != UNDEFINED) {
-                  // edges (v, e, ve1) and (to_g2[v], e, ve2) exist, so
-                  // there's an edge in g1 not in g2 if the targets of these
+                auto ve1 = g1.target_no_checks(to_g1[v], e);
+                if (ve1 != UNDEFINED) {
+                  // edges (v, e, ve2) and (to_g1[v], e, ve1) exist, so
+                  // there's an edge in g2 not in g1 if the targets of these
                   // edges do not correspond to each other.
-                  can_reach[v] = (ve1 != to_g1[ve2]);
+                  can_reach[v] = (ve2 != to_g2[ve1]);
                 } else {
                   // There's no edge labelled by e incident to the node
-                  // corresponding to v in g2, but there is such an edge in g1
-                  // and so (v, e, ve1) is in g1 but not g2.
+                  // corresponding to v in g1, but there is such an edge in g2
+                  // and so (v, e, ve2) is in g2 but not g1.
                   can_reach[v] = true;
                 }
               }
-              if (seen[ve1]) {
+              if (seen[ve2]) {
                 // cycle detected
                 inf_paths[v] = true;
               } else {
-                stck.push(ve1);
+                stck.push(ve2);
               }
             }
           }
         }
       }
 
-      // If we reach here, then the appropriate portion of g1 is acyclic, and
+      // If we reach here, then the appropriate portion of g2 is acyclic, and
       // so all we do is enumerate the paths in that graph
 
-      // Construct the "can_reach" subgraph of g1, could use a WordGraphView
+      // Construct the "can_reach" subgraph of g2, could use a WordGraphView
       // here instead (but these don't yet exist) TODO
-      WordGraph<size_t> ad(g1.number_of_nodes(), g1.out_degree());
+      WordGraph<size_t> ad(g2.number_of_nodes(), g2.out_degree());
 
       for (auto v : ad.nodes()) {
         if (can_reach[v]) {
           for (auto e : ad.labels()) {
-            auto ve = g1.target_no_checks(v, e);
+            auto ve = g2.target_no_checks(v, e);
             if (ve != UNDEFINED && can_reach[ve]) {
               ad.set_target_no_checks(v, e, ve);
             }
@@ -1288,24 +1292,24 @@ namespace libsemigroups {
 
       Paths paths(ad);
       // We only want those paths that pass through at least one of the
-      // edges in g1 but not g2. Hence we require the `filter` in the next
+      // edges in g2 but not g1. Hence we require the `filter` in the next
       // expression.
       auto ntc
-          = partition(kb2,
-                      (paths.from(0) | rx::filter([&g2](word_type const& path) {
+          = partition(kb1,
+                      (paths.from(0) | rx::filter([&g1](word_type const& path) {
                          return word_graph::last_node_on_path(
-                                    g2, 0, path.cbegin(), path.cend())
+                                    g1, 0, path.cbegin(), path.cend())
                                     .second
                                 != path.cend();
                        })
-                       | to_strings(kb1.presentation().alphabet())));
+                       | to_strings(kb2.presentation().alphabet())));
       // The check in the next loop could be put into the lambda passed to
       // filter above, but then we'd have to convert `path` to a string, and
       // then discard the string, so better to do it here. Note that the
-      // normal forms in `kb2` never contain an edge in g1 \ g2 and so we must
+      // normal forms in `kb1` never contain an edge in g2 \ g1 and so we must
       // add in every normal form.
       for (auto& klass : ntc) {
-        klass.push_back(kb2.normal_form(klass[0]));
+        klass.push_back(kb1.normal_form(klass[0]));
       }
       return ntc;
     }

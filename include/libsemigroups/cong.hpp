@@ -163,6 +163,7 @@ namespace libsemigroups {
     Congruence(congruence_kind type, Presentation<Word> const& p)
         : Congruence(type, to_presentation<word_type>(p)) {}
 
+    //! TODO(doc)
     template <typename Word>
     Congruence& init(congruence_kind type, Presentation<Word> const& p) {
       init(type, to_presentation<word_type>(p));
@@ -213,7 +214,6 @@ namespace libsemigroups {
     // Congruence - member functions - public
     //////////////////////////////////////////////////////////////////////////
 
-    // TODO to tpp
     template <typename Thing>
     std::shared_ptr<Thing> get() {
       init_runners();
@@ -316,11 +316,15 @@ namespace libsemigroups {
   };
 
   namespace congruence {
-    // TODO to tpp file
+    // It would be possible to use typename Range::output_type instead of
+    // word_type to make this agnostic to whether we're using strings or
+    // word_type, but then it's not very clear what letters we should use for
+    // the alphabet when ToddCoxeter or Kambites<word_type> is used.
     template <typename Range>
     std::vector<std::vector<word_type>> non_trivial_classes(Congruence& cong,
                                                             Range       r) {
-      // TODO static assert output of r is words
+      static_assert(
+          std::is_same_v<std::decay_t<typename Range::output_type>, word_type>);
       using rx::operator|;
       cong.run();
       if (cong.has<ToddCoxeter>() && cong.get<ToddCoxeter>()->finished()) {
@@ -343,6 +347,15 @@ namespace libsemigroups {
       }
       LIBSEMIGROUPS_EXCEPTION_V3("Cannot compute the non-trivial classes!");
     }
+
+    // We have to pass the presentation here, because o/w we have no way of
+    // knowing over what we should compute the non-trivial classes (i.e. we
+    // cannot always recover p from cong).
+    std::vector<std::vector<word_type>>
+    non_trivial_classes(Congruence& cong, Presentation<word_type> const& p);
+
+    std::vector<std::vector<std::string>>
+    non_trivial_classes(Congruence& cong, Presentation<std::string> const& p);
   }  // namespace congruence
 }  // namespace libsemigroups
 

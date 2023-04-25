@@ -200,9 +200,18 @@ namespace libsemigroups {
     REQUIRE(cong.has<KnuthBendix>());
 
     KnuthBendix kb(twosided, p);
-    REQUIRE(knuth_bendix::non_trivial_classes(kb, *cong.get<KnuthBendix>())
+    REQUIRE(knuth_bendix::non_trivial_classes(*cong.get<KnuthBendix>(), kb)
             == std::vector<std::vector<std::string>>(
                 {{"b", "ab", "bb", "abb", "a"}}));
+
+    REQUIRE(congruence::non_trivial_classes(cong, p)
+            == std::vector<std::vector<word_type>>(
+                {{1_w, 01_w, 11_w, 011_w, 0_w}}));
+
+    REQUIRE(
+        congruence::non_trivial_classes(cong, to_presentation<std::string>(p))
+        == std::vector<std::vector<std::string>>(
+            {{"b", "ab", "bb", "abb", "a"}}));
   }
 
   LIBSEMIGROUPS_TEST_CASE("Congruence",
@@ -344,8 +353,7 @@ namespace libsemigroups {
     if (cong.has<KnuthBendix>()) {
       KnuthBendix kb(twosided, p);
       REQUIRE_THROWS_AS(
-          // FIXME swap the args
-          knuth_bendix::non_trivial_classes(kb, *cong.get<KnuthBendix>()),
+          knuth_bendix::non_trivial_classes(*cong.get<KnuthBendix>(), kb),
           LibsemigroupsException);
     } else if (cong.has<ToddCoxeter>()) {
       ToddCoxeter tc(twosided, p);
@@ -451,7 +459,7 @@ namespace libsemigroups {
     REQUIRE(cong.has<KnuthBendix>());
 
     KnuthBendix kb(twosided, p);
-    auto ntc = knuth_bendix::non_trivial_classes(kb, *cong.get<KnuthBendix>());
+    auto ntc = knuth_bendix::non_trivial_classes(*cong.get<KnuthBendix>(), kb);
     REQUIRE(ntc.size() == 1);
     REQUIRE(ntc[0].size() == 5);
     REQUIRE(ntc[0] == std::vector<std::string>({"b", "ab", "bb", "abb", "a"}));
@@ -560,7 +568,7 @@ namespace libsemigroups {
       KnuthBendix kb(twosided, p);
       REQUIRE(kb.number_of_classes() == 78);
       auto ntc
-          = knuth_bendix::non_trivial_classes(kb, *cong.get<KnuthBendix>());
+          = knuth_bendix::non_trivial_classes(*cong.get<KnuthBendix>(), kb);
       REQUIRE(ntc.size() == 1);
       REQUIRE(ntc[0].size() == 78);
     }

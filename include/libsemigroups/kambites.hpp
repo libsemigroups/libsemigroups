@@ -600,6 +600,11 @@ namespace libsemigroups {
           result.end());
       return result;
     }
+    // There's no non_trivial_classes(Kambites k1, Kambites k2) because it's
+    // unclear how this could be computed (because they always define infinite
+    // semigroups/monoids), so we can't just do non_trivial_classes(k1,
+    // kambites::normal_forms(k2)) (as in ToddCoxeter) because there are
+    // infinitely many normal_forms.
   }  // namespace kambites
 
 }  // namespace libsemigroups

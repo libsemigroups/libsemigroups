@@ -58,8 +58,8 @@ namespace libsemigroups {
     auto tc = std::make_shared<ToddCoxeter>(type, p);
     tc->strategy(ToddCoxeter::options::strategy::felsch);
     _race.add_runner(tc);
-    // TODO add a Runner that tries to create a ToddCoxeter using the Cayley
-    // graph of some FroidurePin
+    // TODO(later) add a Runner that tries to create a ToddCoxeter using the
+    // Cayley graph of some FroidurePin
     return *this;
   }
 
@@ -80,9 +80,9 @@ namespace libsemigroups {
     tc->strategy(ToddCoxeter::options::strategy::felsch);
     _race.add_runner(tc);
 
-    // TODO if necessary make a runner that tries to S.run(), then get the
-    // Cayley graph and use that in the ToddCoxeter, at present that'll happen
-    // here in the constructor
+    // TODO(later) if necessary make a runner that tries to S.run(), then get
+    // the Cayley graph and use that in the ToddCoxeter, at present that'll
+    // happen here in the constructor
     tc = std::make_shared<ToddCoxeter>(to_todd_coxeter(type, S));
     _race.add_runner(tc);
     tc = std::make_shared<ToddCoxeter>(type, p);
@@ -90,9 +90,8 @@ namespace libsemigroups {
     _race.add_runner(tc);
     if (p.rules.size() < 256) {
       // TODO(later) at present if there are lots of rules it takes a long
-      // time to construct a KnuthBendix instance
-      // FIXME something goes wrong in Congruence 023, when KnuthBendix is
-      // used, it doesn't get killed
+      // time to construct a KnuthBendix instance since it reduces the rules as
+      // they are added maybe better to defer this until running
       _race.add_runner(std::make_shared<KnuthBendix>(type, p));
     }
     return *this;
@@ -140,7 +139,7 @@ namespace libsemigroups {
                  && cong.get<KnuthBendix>()->finished()) {
         KnuthBendix kb(cong.kind(), p);
         auto strings = ::libsemigroups::knuth_bendix::non_trivial_classes(
-            kb, *cong.get<KnuthBendix>());
+            *cong.get<KnuthBendix>(), kb);
         std::vector<std::vector<word_type>> result;
         for (auto const& klass : strings) {
           result.push_back(rx::iterator_range(klass.begin(), klass.end())
@@ -149,8 +148,39 @@ namespace libsemigroups {
         }
         return result;
       }
+      // If a Kambites object wins the race in Congruence, then we cannot
+      // really compute anything here unless the semigroup defined by p is
+      // finite, but that'd be better handled explicitly in any code calling
+      // this.
       LIBSEMIGROUPS_EXCEPTION_V3("Cannot compute the non-trivial classes!");
-      return std::vector<std::vector<word_type>>();
+    }
+
+    std::vector<std::vector<std::string>>
+    non_trivial_classes(Congruence& cong, Presentation<std::string> const& p) {
+      using rx::operator|;
+      cong.run();
+      if (cong.has<KnuthBendix>() && cong.get<KnuthBendix>()->finished()) {
+        KnuthBendix kb(cong.kind(), p);
+        return ::libsemigroups::knuth_bendix::non_trivial_classes(
+            *cong.get<KnuthBendix>(), kb);
+      }
+      if (cong.has<ToddCoxeter>() && cong.get<ToddCoxeter>()->finished()) {
+        ToddCoxeter tc(cong.kind(), p);
+        auto        words = ::libsemigroups::todd_coxeter::non_trivial_classes(
+            *cong.get<ToddCoxeter>(), tc);
+        std::vector<std::vector<std::string>> result;
+        for (auto const& klass : words) {
+          result.push_back(rx::iterator_range(klass.begin(), klass.end())
+                           | to_strings(p.alphabet()) | rx::to_vector());
+        }
+        return result;
+      }
+
+      // If a Kambites object wins the race in Congruence, then we cannot
+      // really compute anything here unless the semigroup defined by p is
+      // finite, but that'd be better handled explicitly in any code calling
+      // this.
+      LIBSEMIGROUPS_EXCEPTION_V3("Cannot compute the non-trivial classes!");
     }
   }  // namespace congruence
 }  // namespace libsemigroups

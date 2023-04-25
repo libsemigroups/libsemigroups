@@ -208,7 +208,7 @@ namespace libsemigroups {
 
     KnuthBendix kb2(twosided, p);
     REQUIRE(kb2.number_of_classes() == 1);
-    REQUIRE(knuth_bendix::non_trivial_classes(kb, kb2)
+    REQUIRE(knuth_bendix::non_trivial_classes(kb2, kb)
             == std::vector<std::vector<std::string>>(
                 {knuth_bendix::normal_forms(kb) | to_strings(p.alphabet())
                  | rx::to_vector()}));

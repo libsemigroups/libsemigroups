@@ -748,7 +748,7 @@ namespace libsemigroups {
     REQUIRE(kb2.equal_to("a", "bb"));
     REQUIRE(kb2.equal_to("a", "bab"));
 
-    REQUIRE(knuth_bendix::non_trivial_classes(kb1, kb2)
+    REQUIRE(knuth_bendix::non_trivial_classes(kb2, kb1)
             == std::vector<std::vector<std::string>>(
                 {{"b", "ab", "bb", "abb", "a"}}));
   }
@@ -778,7 +778,7 @@ namespace libsemigroups {
     KnuthBendix kb2(twosided, p);
     REQUIRE(kb2.number_of_classes() == 2);
 
-    REQUIRE_THROWS_AS(knuth_bendix::non_trivial_classes(kb1, kb2),
+    REQUIRE_THROWS_AS(knuth_bendix::non_trivial_classes(kb2, kb1),
                       LibsemigroupsException);
   }
 
@@ -805,7 +805,7 @@ namespace libsemigroups {
 
     KnuthBendix kb2(twosided, p);
 
-    REQUIRE(knuth_bendix::non_trivial_classes(kb1, kb2)
+    REQUIRE(knuth_bendix::non_trivial_classes(kb2, kb1)
             == std::vector<std::vector<std::string>>(
                 {{"ab", "b"}, {"bb", "abb", "a"}}));
   }
@@ -838,7 +838,7 @@ namespace libsemigroups {
     presentation::add_rule(p, {0}, {1});
 
     KnuthBendix kb2(twosided, p);
-    REQUIRE(knuth_bendix::non_trivial_classes(kb1, kb2)
+    REQUIRE(knuth_bendix::non_trivial_classes(kb2, kb1)
             == std::vector<std::vector<std::string>>(
                 {{"b", "ab", "bb", "abb", "a"}}));
   }
@@ -901,7 +901,7 @@ namespace libsemigroups {
 
     REQUIRE(kb2.equal_to("b", "c"));
 
-    auto ntc = knuth_bendix::non_trivial_classes(kb1, kb2);
+    auto ntc = knuth_bendix::non_trivial_classes(kb2, kb1);
     REQUIRE(ntc.size() == 1);
     REQUIRE(ntc[0].size() == 2);
     REQUIRE(ntc == decltype(ntc)({{"c", "b"}}));
@@ -944,7 +944,7 @@ namespace libsemigroups {
     presentation::add_rule(p, 2_w, 3_w);
 
     KnuthBendix kb2(twosided, p);
-    auto        ntc = knuth_bendix::non_trivial_classes(kb1, kb2);
+    auto        ntc = knuth_bendix::non_trivial_classes(kb2, kb1);
     REQUIRE(ntc.size() == 1);
     REQUIRE(ntc[0].size() == 3);
     REQUIRE(ntc == decltype(ntc)({{"c", "d", "b"}}));
@@ -972,7 +972,7 @@ namespace libsemigroups {
 
     REQUIRE(kb1.number_of_classes() == 27);
     REQUIRE(kb2.number_of_classes() == 27);
-    auto ntc = knuth_bendix::non_trivial_classes(kb1, kb2);
+    auto ntc = knuth_bendix::non_trivial_classes(kb2, kb1);
     REQUIRE(ntc.empty());
   }
 
@@ -1003,7 +1003,7 @@ namespace libsemigroups {
 
     REQUIRE(kb2.number_of_classes() == 1);
 
-    auto ntc = knuth_bendix::non_trivial_classes(kb1, kb2);
+    auto ntc = knuth_bendix::non_trivial_classes(kb2, kb1);
 
     REQUIRE(ntc.size() == 1);
     REQUIRE(ntc[0].size() == 27);
@@ -1123,7 +1123,7 @@ namespace libsemigroups {
                                       {},
                                       {3}}));
 
-    auto ntc = knuth_bendix::non_trivial_classes(kb1, kb2);
+    auto ntc = knuth_bendix::non_trivial_classes(kb2, kb1);
 
     std::vector<std::string> expected = {"b",
                                          "d",
