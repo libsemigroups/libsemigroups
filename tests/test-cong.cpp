@@ -19,6 +19,7 @@
 #include "catch.hpp"      // for TEST_CASE
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
+#include "libsemigroups/bmat8.hpp"            // for BMat8
 #include "libsemigroups/cong.hpp"             // for Congruence
 #include "libsemigroups/fastest-bmat.hpp"     // for FastestBMat
 #include "libsemigroups/fpsemi-examples.hpp"  // for rook_monoid

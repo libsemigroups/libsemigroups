@@ -22,14 +22,15 @@
 #ifndef LIBSEMIGROUPS_FASTEST_BMAT_HPP_
 #define LIBSEMIGROUPS_FASTEST_BMAT_HPP_
 
-#include <cstddef>  // for size_t
+#include <cstddef>      // for size_t
+#include <type_traits>  // for conditional_t
 
-#include "bmat8.hpp"    // for BMat8
 #include "config.hpp"   // for LIBSEMIGROUPS_HPCOMBI_ENABLED
 #include "hpcombi.hpp"  // for HPCombi::BMat8
 #include "matrix.hpp"   // for BMat
 
 namespace libsemigroups {
+  class BMat8;  // forward decl
 
   namespace detail {
     template <size_t N>
