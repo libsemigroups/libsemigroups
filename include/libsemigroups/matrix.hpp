@@ -30,13 +30,14 @@
 #include <unordered_set>  // for unordered_set
 #include <vector>         // for vector
 
-#include "adapters.hpp"    // for Degree
-#include "bitset.hpp"      // for BitSet
-#include "constants.hpp"   // for POSITIVE_INFINITY
+#include "adapters.hpp"   // for Degree
+#include "bitset.hpp"     // for BitSet
+#include "constants.hpp"  // for POSITIVE_INFINITY
+#include "debug.hpp"      // for LIBSEMIGROUPS_ASSERT
+#include "exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
+#include "string.hpp"     // for detail::to_string
+
 #include "detail/containers.hpp"  // for StaticVector1
-#include "debug.hpp"       // for LIBSEMIGROUPS_ASSERT
-#include "exception.hpp"   // for LIBSEMIGROUPS_EXCEPTION
-#include "string.hpp"      // for detail::to_string
 
 namespace libsemigroups {
 
@@ -470,10 +471,10 @@ namespace libsemigroups {
       RowView row(size_t i) const {
         if (i >= number_of_rows()) {
           LIBSEMIGROUPS_EXCEPTION(
-              "index out of range, expected value in [%llu, %llu), found %llu",
-              static_cast<uint64_t>(0),
-              static_cast<uint64_t>(number_of_rows()),
-              static_cast<uint64_t>(i));
+              "index out of range, expected value in [{}, {}), found {}",
+              0,
+              number_of_rows(),
+              i);
         }
         auto& container = const_cast<Container&>(_container);
         return RowView(static_cast<Subclass const*>(this),
@@ -514,12 +515,11 @@ namespace libsemigroups {
               return r.size() == C;
             });
         if (it != m.end()) {
-          LIBSEMIGROUPS_EXCEPTION(
-              "invalid argument, expected every item to "
-              "have length %llu, found %llu in entry %llu",
-              C,
-              static_cast<uint64_t>(it->size()),
-              static_cast<uint64_t>(std::distance(m.begin(), it)));
+          LIBSEMIGROUPS_EXCEPTION("invalid argument, expected every item to "
+                                  "have length {}, found {} in entry {}",
+                                  C,
+                                  it->size(),
+                                  std::distance(m.begin(), it));
         }
       }
 
@@ -1538,11 +1538,11 @@ namespace libsemigroups {
     if (it != m.cend()) {
       size_t r, c;
       std::tie(r, c) = m.coords(it);
-      LIBSEMIGROUPS_EXCEPTION("invalid entry, expected 0 or 1 "
-                              "but found %lld in entry (%llu, %llu)",
-                              static_cast<int64_t>(*it),
-                              static_cast<uint64_t>(r),
-                              static_cast<uint64_t>(c));
+      LIBSEMIGROUPS_EXCEPTION(
+          "invalid entry, expected 0 or 1 but found {} in entry ({}, {})",
+          *it,
+          r,
+          c);
     }
   }
 
@@ -1810,8 +1810,8 @@ namespace libsemigroups {
 
     explicit MaxPlusTruncSemiring(Scalar threshold) : _threshold(threshold) {
       if (threshold < 0) {
-        LIBSEMIGROUPS_EXCEPTION("expected non-negative value, found %lld",
-                                static_cast<int64_t>(threshold));
+        LIBSEMIGROUPS_EXCEPTION("expected non-negative value, found {}",
+                                threshold);
       }
     }
 
@@ -1930,14 +1930,13 @@ namespace libsemigroups {
       return x == NEGATIVE_INFINITY || (0 <= x && x <= t);
     });
     if (it != m.cend()) {
-      uint64_t r, c;
-      std::tie(r, c) = m.coords(it);
-      LIBSEMIGROUPS_EXCEPTION("invalid entry, expected values in [0, %llu] "
-                              "%s {-%s} but found %lld in entry (%llu, %llu)",
-                              static_cast<uint64_t>(t),
+      auto [r, c] = m.coords(it);
+      LIBSEMIGROUPS_EXCEPTION("invalid entry, expected values in [0, {}] "
+                              "{} {{-{}}} but found {} in entry ({}, {})",
+                              t,
                               u8"\u222A",
                               u8"\u221E",
-                              static_cast<int64_t>(*it),
+                              *it,
                               r,
                               c);
     }
@@ -1977,8 +1976,8 @@ namespace libsemigroups {
 
     explicit MinPlusTruncSemiring(Scalar threshold) : _threshold(threshold) {
       if (std::is_signed<Scalar>::value && threshold < 0) {
-        LIBSEMIGROUPS_EXCEPTION("expected non-negative value, found %lld",
-                                static_cast<int64_t>(threshold));
+        LIBSEMIGROUPS_EXCEPTION("expected non-negative value, found {}",
+                                threshold);
       }
     }
 
@@ -2100,12 +2099,12 @@ namespace libsemigroups {
     if (it != m.cend()) {
       uint64_t r, c;
       std::tie(r, c) = m.coords(it);
-      LIBSEMIGROUPS_EXCEPTION("invalid entry, expected values in [0, %llu] "
-                              "%s {%s} but found %llu in entry (%llu, %llu)",
-                              static_cast<uint64_t>(t),
+      LIBSEMIGROUPS_EXCEPTION("invalid entry, expected values in [0, {}] "
+                              "{} {{{}}} but found {} in entry ({}, {})",
+                              t,
                               u8"\u222A",
                               u8"\u221E",
-                              static_cast<uint64_t>(*it),
+                              *it,
                               r,
                               c);
     }
@@ -2168,12 +2167,10 @@ namespace libsemigroups {
       if (std::is_signed<Scalar>::value) {
         if (t < 0) {
           LIBSEMIGROUPS_EXCEPTION(
-              "expected non-negative value for 1st argument, found %lld",
-              static_cast<int64_t>(t));
+              "expected non-negative value for 1st argument, found {}", t);
         } else if (p <= 0) {
           LIBSEMIGROUPS_EXCEPTION(
-              "expected non-negative value for 2nd argument, found %lld",
-              static_cast<int64_t>(p));
+              "expected non-negative value for 2nd argument, found {}", p);
         }
       }
     }
@@ -2314,10 +2311,10 @@ namespace libsemigroups {
     if (it != m.cend()) {
       uint64_t r, c;
       std::tie(r, c) = m.coords(it);
-      LIBSEMIGROUPS_EXCEPTION("invalid entry, expected values in [0, %llu) "
-                              "but found %llu in entry (%llu, %llu)",
-                              static_cast<uint64_t>(p + t),
-                              static_cast<uint64_t>(*it),
+      LIBSEMIGROUPS_EXCEPTION("invalid entry, expected values in [0, {}) but "
+                              "found {} in entry ({}, {})",
+                              p + t,
+                              *it,
                               r,
                               c);
     }
@@ -2657,12 +2654,11 @@ namespace libsemigroups {
 
       if (std::is_signed<scalar_type>::value && e < 0) {
         LIBSEMIGROUPS_EXCEPTION(
-            "negative exponent, expected value >= 0, found %lld",
-            static_cast<int64_t>(e));
+            "negative exponent, expected value >= 0, found {}", e);
       } else if (x.number_of_cols() != x.number_of_rows()) {
-        LIBSEMIGROUPS_EXCEPTION("expected a square matrix, found %llux%llu",
-                                static_cast<uint64_t>(x.number_of_rows()),
-                                static_cast<uint64_t>(x.number_of_cols()));
+        LIBSEMIGROUPS_EXCEPTION("expected a square matrix, found {}x{}",
+                                x.number_of_rows(),
+                                x.number_of_cols());
       }
 
       if (e == 0) {
