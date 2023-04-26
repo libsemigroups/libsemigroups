@@ -16,7 +16,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-// TODO add tpp file
+// TODO(later) add tpp file
+// TODO(now) use nodiscard
 
 #ifndef LIBSEMIGROUPS_CONTAINERS_HPP_
 #define LIBSEMIGROUPS_CONTAINERS_HPP_
@@ -156,6 +157,14 @@ namespace libsemigroups {
         this->add_rows(number_of_rows);
       }
 
+      DynamicArray2& init(size_type  number_of_cols,
+                          size_type  number_of_rows,
+                          value_type default_val) {
+        _default_val = default_val;
+        reshape(number_of_cols, number_of_rows);
+        return *this;
+      }
+
       // Not noexcept because DynamicArray2::DynamicArray2(size_type, size_type)
       // can throw.
       explicit DynamicArray2(std::initializer_list<std::initializer_list<T>> il)
@@ -284,6 +293,8 @@ namespace libsemigroups {
         _vec.clear();  // noexcept
       }
 
+      // This could be better, i.e. if nr_cols * nr_rows = currently available
+      // space
       void reshape(size_t nr_cols, size_t nr_rows) {
         clear();
         add_cols(nr_cols);

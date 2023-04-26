@@ -358,9 +358,9 @@ namespace libsemigroups {
     void validate_node(WordGraph<Node> const& wg, Node v) {
       if (v >= wg.number_of_nodes()) {
         LIBSEMIGROUPS_EXCEPTION("node value out of bounds, expected value "
-                                   "in the range [0, {}), got {}",
-                                   wg.number_of_nodes(),
-                                   v);
+                                "in the range [0, {}), got {}",
+                                wg.number_of_nodes(),
+                                v);
       }
     }
 
@@ -370,11 +370,10 @@ namespace libsemigroups {
     void validate_label(WordGraph<Node> const&               wg,
                         typename WordGraph<Node>::label_type lbl) {
       if (lbl >= wg.out_degree()) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "label value out of bounds, expected value in "
-            "the range [0, {}), got {}",
-            wg.out_degree(),
-            lbl);
+        LIBSEMIGROUPS_EXCEPTION("label value out of bounds, expected value in "
+                                "the range [0, {}), got {}",
+                                wg.out_degree(),
+                                lbl);
       }
     }
 
@@ -827,10 +826,18 @@ namespace libsemigroups {
   WordGraph<Node>::WordGraph(WordGraph const&) = default;
 
   template <typename Node>
-  template <typename N>
-  WordGraph<Node>::WordGraph(WordGraph<N> const& wg)
+  template <typename OtherNode>
+  WordGraph<Node>::WordGraph(WordGraph<OtherNode> const& wg)
       : WordGraph(wg.number_of_nodes(), wg.out_degree()) {
     _dynamic_array_2 = wg._dynamic_array_2;
+  }
+
+  template <typename Node>
+  template <typename OtherNode>
+  WordGraph<Node>& WordGraph<Node>::init(WordGraph<OtherNode> const& wg) {
+    init(wg.number_of_nodes(), wg.out_degree());
+    _dynamic_array_2 = wg._dynamic_array_2;
+    return *this;
   }
 
   template <typename Node>
@@ -864,12 +871,12 @@ namespace libsemigroups {
                                           std::mt19937 mt) {
     if (number_of_nodes < 2) {
       LIBSEMIGROUPS_EXCEPTION("the 1st parameter `number_of_nodes` must be "
-                                 "at least 2, found {}",
-                                 number_of_nodes);
+                              "at least 2, found {}",
+                              number_of_nodes);
     } else if (out_degree < 2) {
       LIBSEMIGROUPS_EXCEPTION("the 2nd parameter `number_of_edges` must be "
-                                 "at least 2, found {}",
-                                 out_degree);
+                              "at least 2, found {}",
+                              out_degree);
     } else if (number_of_edges > number_of_nodes * out_degree) {
       LIBSEMIGROUPS_EXCEPTION("the 3rd parameter `number_of_edges` must be at "
                               "most {}, but found {}",
@@ -901,12 +908,12 @@ namespace libsemigroups {
                                                   std::mt19937 mt) {
     if (number_of_nodes < 2) {
       LIBSEMIGROUPS_EXCEPTION("the 1st parameter `number_of_nodes` must be "
-                                 "at least 2, found {}",
-                                 number_of_nodes);
+                              "at least 2, found {}",
+                              number_of_nodes);
     } else if (out_degree < 2) {
       LIBSEMIGROUPS_EXCEPTION("the 2nd parameter `number_of_edges` must be "
-                                 "at least 2, found {}",
-                                 out_degree);
+                              "at least 2, found {}",
+                              out_degree);
     }
     size_t max_edges = std::min(number_of_nodes * out_degree,
                                 number_of_nodes * (number_of_nodes - 1) / 2);

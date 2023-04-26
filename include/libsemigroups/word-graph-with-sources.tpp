@@ -63,8 +63,8 @@ namespace libsemigroups {
     WordGraph<Node>::init(that);
     _preim_init.init(that.out_degree(), that.number_of_nodes(), UNDEFINED);
     _preim_next.init(that.out_degree(), that.number_of_nodes(), UNDEFINED);
-    rebuild_sources(WordGraph<Node>::cbegin_nodes(),
-                    WordGraph<Node>::cend_nodes());
+    rebuild_sources_no_checks(WordGraph<Node>::cbegin_nodes(),
+                              WordGraph<Node>::cend_nodes());
   }
 
   template <typename Node>
@@ -73,8 +73,8 @@ namespace libsemigroups {
     WordGraph<Node>::init(std::move(that));
     _preim_init.init(out_degree(), number_of_nodes(), UNDEFINED);
     _preim_next.init(out_degree(), number_of_nodes(), UNDEFINED);
-    rebuild_sources(WordGraph<Node>::cbegin_nodes(),
-                    WordGraph<Node>::cend_nodes());
+    rebuild_sources_no_checks(WordGraph<Node>::cbegin_nodes(),
+                              WordGraph<Node>::cend_nodes());
   }
 
   ////////////////////////////////////////////////////////////////////////////
@@ -265,7 +265,7 @@ namespace libsemigroups {
                                                         label_type x,
                                                         node_type  d) noexcept {
     LIBSEMIGROUPS_ASSERT(c < number_of_nodes());
-    LIBSEMIGROUPS_ASSERT(x < WordGraph<Node>::out_degree());
+    LIBSEMIGROUPS_ASSERT(x < out_degree());
     LIBSEMIGROUPS_ASSERT(d < number_of_nodes());
     // If d = _preim_init(c, x), then preim_next(d, x) = d, which means that
     // if we try to loop over preimages we'll enter an infinite loop.
@@ -306,7 +306,7 @@ namespace libsemigroups {
                                                            label_type x,
                                                            node_type  d) {
     LIBSEMIGROUPS_ASSERT(cx < number_of_nodes());
-    LIBSEMIGROUPS_ASSERT(x < WordGraph<Node>::out_degree());
+    LIBSEMIGROUPS_ASSERT(x < out_degree());
     LIBSEMIGROUPS_ASSERT(d < number_of_nodes());
 
     node_type e = _preim_init.get(cx, x);

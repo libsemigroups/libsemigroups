@@ -34,37 +34,37 @@ namespace libsemigroups {
   ToddCoxeter::Digraph&
   ToddCoxeter::Digraph::init(Presentation<word_type> const& p) {
     NodeManager_::clear();
-    FelschDigraph_::init(p);
+    FelschGraph_::init(p);
     // FIXME shouldn't add nodes here because then there'll be more than
-    // there should be (i.e. NodeManager and FelschDigraph_ will have
+    // there should be (i.e. NodeManager and FelschGraph_ will have
     // different numbers of nodes
-    FelschDigraph_::add_nodes(NodeManager_::node_capacity());
+    FelschGraph_::add_nodes(NodeManager_::node_capacity());
     return *this;
   }
 
   ToddCoxeter::Digraph&
   ToddCoxeter::Digraph::init(Presentation<word_type>&& p) {
     NodeManager_::clear();
-    FelschDigraph_::init(std::move(p));
+    FelschGraph_::init(std::move(p));
     // FIXME shouldn't add nodes here because then there'll be more than
-    // there should be (i.e. NodeManager and FelschDigraph_ will have
+    // there should be (i.e. NodeManager and FelschGraph_ will have
     // different numbers of nodes
-    FelschDigraph_::add_nodes(NodeManager_::node_capacity());
+    FelschGraph_::add_nodes(NodeManager_::node_capacity());
     return *this;
   }
 
   void ToddCoxeter::Digraph::process_definitions() {
     CollectCoincidences incompat(_coinc);
-    using NoPreferredDefs = typename FelschDigraph_::NoPreferredDefs;
+    using NoPreferredDefs = typename FelschGraph_::NoPreferredDefs;
     NoPreferredDefs pref_defs;
 
-    auto&      defs = FelschDigraph_::definitions();
+    auto&      defs = FelschGraph_::definitions();
     Definition d;
     while (!defs.empty()) {
       while (!defs.empty()) {
         defs.pop(d);
         if (NodeManager_::is_active_node(d.first)) {
-          FelschDigraph_::process_definition(d, incompat, pref_defs);
+          FelschGraph_::process_definition(d, incompat, pref_defs);
         }
       }
       process_coincidences<RegisterDefs>();
@@ -106,7 +106,7 @@ namespace libsemigroups {
             }
           };
 
-    FelschDigraph_::merge_targets_of_nodes_if_possible<RegDefs>(
+    FelschGraph_::merge_targets_of_nodes_if_possible<RegDefs>(
         x, a, y, b, incompat, pref_defs);
   }
 
@@ -116,15 +116,15 @@ namespace libsemigroups {
                                                RuleIterator last) {
     size_t const old_number_of_killed = NodeManager_::number_of_nodes_killed();
     CollectCoincidences                      incompat(_coinc);
-    typename FelschDigraph_::NoPreferredDefs prefdefs;
+    typename FelschGraph_::NoPreferredDefs prefdefs;
     while (current != NodeManager_::first_free_node()) {
       // TODO(later) when we have an RuleIterator into the active nodes, we
       // should remove the while loop, and use that in make_compatible
       // instead. At present there is a cbegin/cend_active_nodes in
       // NodeManager but the RuleIterators returned by them are invalidated by
       // any changes to the graph, such as those made by
-      // felsch_digraph::make_compatible.
-      felsch_digraph::make_compatible<DoNotRegisterDefs>(
+      // felsch_graph::make_compatible.
+      felsch_graph::make_compatible<DoNotRegisterDefs>(
           *this, current, current + 1, first, last, incompat, prefdefs);
       // Using NoPreferredDefs is just a (more or less) arbitrary
       // choice, could allow the other choices here too (which works,
@@ -146,7 +146,7 @@ namespace libsemigroups {
     using def_policy = typename options::def_policy;
 
     if (_tc == nullptr  // this can be the case if for example we're
-                        // in the FelschDigraph constructor from
+                        // in the FelschGraph constructor from
                         // WordGraph, in that case we any want
                         // all of the definitions
         || _tc->def_policy() == def_policy::unlimited

@@ -98,6 +98,11 @@ namespace libsemigroups {
     //! Constructs an empty presentation with no rules and no alphabet.
     Presentation();
 
+    Presentation& init() {
+      clear();
+      return *this;
+    }
+
     //! Default copy constructor.
     Presentation(Presentation const&) = default;
 

@@ -30,6 +30,13 @@
 #include "config.hpp"  // for LIBSEMIGROUPS_SIZEOF_VOID_P
 
 namespace libsemigroups {
+
+  // This is not technically an adapter but put here for lack of a better place
+  struct Noop {
+    template <typename... Args>
+    constexpr void operator()(Args...) const noexcept {}
+  };
+
   // Adapters with no default implementation
 
   //! Adapter for the complexity of multiplication.

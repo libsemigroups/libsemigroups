@@ -34,7 +34,7 @@
 #include <vector>       // for vector
 
 #include "word-graph-with-sources.hpp"  // for WordGraphWithSources
-#include "felsch-digraph.hpp"
+#include "felsch-graph.hpp"
 #include "node-manager.hpp"  // for NodeManager
 #include "present.hpp"       // for Presentation, Presentation<>:...
 #include "report.hpp"        // for REPORT_DEFAULT

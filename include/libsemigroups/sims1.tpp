@@ -532,12 +532,12 @@ namespace libsemigroups {
 
       size_type const start = _felsch_graph.number_of_edges();
 
-      _felsch_graph.try_set_target_no_checks(
+      _felsch_graph.set_target_no_checks(
           current.source, current.generator, current.target);
 
       auto first = _extra.rules.cbegin();
       auto last  = _extra.rules.cend();
-      if (!felsch_digraph::make_compatible<RegisterDefs>(
+      if (!felsch_graph::make_compatible<RegisterDefs>(
               _felsch_graph, 0, 1, first, last)
           || !_felsch_graph.process_definitions(start)) {
         // Seems to be important to check _extra first then
@@ -579,7 +579,7 @@ namespace libsemigroups {
 
     auto first = _longs.rules.cbegin();
     auto last  = _longs.rules.cend();
-    return felsch_digraph::make_compatible<RegisterDefs>(
+    return felsch_graph::make_compatible<RegisterDefs>(
         _felsch_graph, 0, M, first, last);
   }
 
@@ -727,7 +727,7 @@ namespace libsemigroups {
       if (n == 1) {
         return;
       }
-      // Copy the FelschDigraph from that into *this
+      // Copy the FelschGraph from that into *this
       copy_felsch_graph(that);
 
       // Unzip that._pending into _pending and that._pending, this seems to
@@ -752,7 +752,7 @@ namespace libsemigroups {
       if (this->_pending.empty()) {
         return false;
       }
-      // Copy the FelschDigraph and half pending from *this into q
+      // Copy the FelschGraph and half pending from *this into q
       q.steal_from(*this);  // Must call steal_from on q, so that q is locked
       return true;
     }

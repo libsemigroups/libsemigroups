@@ -89,7 +89,7 @@ namespace libsemigroups {
     WordGraphWithSources& operator=(WordGraphWithSources const&) = default;
     WordGraphWithSources& operator=(WordGraphWithSources&&)      = default;
 
-    // the template is for uniformity of interface with FelschDigraph
+    // the template is for uniformity of interface with FelschGraph
     template <bool = true>
     void set_target_no_checks(node_type c, label_type x, node_type d) noexcept {
       LIBSEMIGROUPS_ASSERT(c < number_of_nodes());
@@ -122,6 +122,8 @@ namespace libsemigroups {
                                             letter_type x) const noexcept {
       LIBSEMIGROUPS_ASSERT(c < number_of_nodes());
       LIBSEMIGROUPS_ASSERT(x < out_degree());
+      LIBSEMIGROUPS_ASSERT(c < _preim_init.number_of_rows());
+      LIBSEMIGROUPS_ASSERT(x < _preim_init.number_of_cols());
       return _preim_init.get(c, x);
     }
 
@@ -129,6 +131,8 @@ namespace libsemigroups {
                                            letter_type x) const noexcept {
       LIBSEMIGROUPS_ASSERT(c < number_of_nodes());
       LIBSEMIGROUPS_ASSERT(x < out_degree());
+      LIBSEMIGROUPS_ASSERT(c < _preim_next.number_of_rows());
+      LIBSEMIGROUPS_ASSERT(x < _preim_next.number_of_cols());
       return _preim_next.get(c, x);
     }
 

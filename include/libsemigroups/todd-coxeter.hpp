@@ -22,7 +22,7 @@
 // TODO:
 // * re-implement SettingsGuard (push_settings and pop_settings)
 // * re-implement reserve
-// * remove preferred_defs from FelschDigraph etc (except where they are really
+// * remove preferred_defs from FelschGraph etc (except where they are really
 // needed)
 
 #ifndef LIBSEMIGROUPS_TODD_COXETER_NEW_HPP_
@@ -30,7 +30,7 @@
 
 #include "cong-intf.hpp"
 #include "exception.hpp"       // for LIBSEMIGROUPS_EXCEPTION
-#include "felsch-digraph.hpp"  // for FelschDigraph
+#include "felsch-graph.hpp"  // for FelschGraph
 #include "obvinf.hpp"          // for is_obviously_infinite
 #include "order.hpp"           // for order
 #include "paths.hpp"
@@ -42,14 +42,14 @@
 
 namespace libsemigroups {
   class ToddCoxeter : public CongruenceInterface,
-                      public FelschDigraphSettings<ToddCoxeter> {
-    using FelschDigraphSettings_ = FelschDigraphSettings<ToddCoxeter>;
+                      public FelschGraphSettings<ToddCoxeter> {
+    using FelschGraphSettings_ = FelschGraphSettings<ToddCoxeter>;
 
    public:
     using node_type  = typename WordGraph<uint32_t>::node_type;
     using label_type = typename WordGraph<uint32_t>::label_type;
 
-    struct options : public FelschDigraphSettings_::options {
+    struct options : public FelschGraphSettings_::options {
       enum class strategy {
         hlt,
         felsch,
@@ -173,13 +173,13 @@ namespace libsemigroups {
     };  // Definitions
 
     class Digraph : public NodeManagedDigraph<
-                        FelschDigraph<word_type, uint32_t, Definitions>> {
-      using FelschDigraph_ = FelschDigraph<word_type, uint32_t, Definitions>;
-      using NodeManagedDigraph_ = NodeManagedDigraph<FelschDigraph_>;
+                        FelschGraph<word_type, uint32_t, Definitions>> {
+      using FelschGraph_ = FelschGraph<word_type, uint32_t, Definitions>;
+      using NodeManagedDigraph_ = NodeManagedDigraph<FelschGraph_>;
       using NodeManager_        = typename NodeManagedDigraph_::NodeManager_;
 
      public:
-      using FelschDigraph_::set_target_no_checks;
+      using FelschGraph_::set_target_no_checks;
       using NodeManagedDigraph_::NodeManagedDigraph;
 
       Digraph& init(Presentation<word_type> const& p);
@@ -365,8 +365,8 @@ namespace libsemigroups {
       return _settings.def_max;
     }
 
-    using FelschDigraphSettings_::def_version;
-    using FelschDigraphSettings_::settings;
+    using FelschGraphSettings_::def_version;
+    using FelschGraphSettings_::settings;
 
     //! Specify the strategy.
     //!

@@ -63,7 +63,7 @@
 #include "deprecated.hpp"         // for LIBSEMIGROUPS_DEPRECATED
 #include "word-graph.hpp"            // for WordGraph
 #include "exception.hpp"          // for LIBSEMIGROUPS_EXCEPTION
-#include "felsch-digraph.hpp"     // for FelschDigraph
+#include "felsch-graph.hpp"     // for FelschGraph
 #include "froidure-pin.hpp"       // for FroidurePin
 #include "to-froidure-pin.hpp"  // for make
 #include "present.hpp"            // for Presentation, Presentati...
@@ -515,7 +515,7 @@ namespace libsemigroups {
     using size_type = typename WordGraph<node_type>::size_type;
 
     // We use WordGraph, even though the iterators produced by this class
-    // hold FelschDigraph's, none of the features of FelschDigraph are useful
+    // hold FelschGraph's, none of the features of FelschGraph are useful
     // for the output, only for the implementation
     //! The type of the associated WordGraph objects.
     using digraph_type = WordGraph<node_type>;
@@ -655,7 +655,7 @@ namespace libsemigroups {
       // short_rules is stored in _felsch_graph
       // TODO ensure that _felsch_graph's settings are properly initialised
       using Definition = std::pair<node_type, label_type>;
-      FelschDigraph<word_type, node_type, std::vector<Definition>>
+      FelschGraph<word_type, node_type, std::vector<Definition>>
           _felsch_graph;
       // This mutex does nothing for iterator, only does something for
       // thread_iterator
@@ -671,7 +671,7 @@ namespace libsemigroups {
       void init(size_type n);
 
       // We could use the copy constructor, but there's no point in copying
-      // anything except the FelschDigraph and so we only copy that.
+      // anything except the FelschGraph and so we only copy that.
       void copy_felsch_graph(iterator_base const& that) {
         _felsch_graph = that._felsch_graph;
       }

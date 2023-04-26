@@ -39,17 +39,17 @@
 #include <utility>        // for pair
 #include <vector>         // for vector
 
-#include "config.hpp"      // for LIBSEMIGROUPS_EIGEN_EN...
-#include "constants.hpp"   // for UNDEFINED
+#include "config.hpp"             // for LIBSEMIGROUPS_EIGEN_EN...
+#include "constants.hpp"          // for UNDEFINED
+#include "debug.hpp"              // for LIBSEMIGROUPS_ASSERT
 #include "detail/containers.hpp"  // for DynamicArray2
-#include "debug.hpp"       // for LIBSEMIGROUPS_ASSERT
-#include "exception.hpp"   // for LIBSEMIGROUPS_EXCEPTION
-#include "forest.hpp"      // for Forest
-#include "int-range.hpp"   // for IntegralRange
-#include "order.hpp"       // for Order
-#include "stl.hpp"         // for IsIterator
-#include "types.hpp"       // for word_type
-#include "uf.hpp"          // for Duf
+#include "exception.hpp"          // for LIBSEMIGROUPS_EXCEPTION
+#include "forest.hpp"             // for Forest
+#include "int-range.hpp"          // for IntegralRange
+#include "order.hpp"              // for Order
+#include "stl.hpp"                // for IsIterator
+#include "types.hpp"              // for word_type
+#include "uf.hpp"                 // for Duf
 
 #include <rx/ranges.hpp>
 
@@ -173,8 +173,12 @@ namespace libsemigroups {
     //! Default copy constructor
     WordGraph(WordGraph const&);
 
-    template <typename N>
-    WordGraph(WordGraph<N> const&);
+    // TODO other versions from OtherNode
+    template <typename OtherNode>
+    WordGraph(WordGraph<OtherNode> const&);
+
+    template <typename OtherNode>
+    WordGraph& init(WordGraph<OtherNode> const&);
 
     //! Default move constructor
     WordGraph(WordGraph&&);
