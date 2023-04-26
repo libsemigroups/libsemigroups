@@ -18,26 +18,35 @@
 
 #include "libsemigroups/felsch-tree.hpp"
 
-#include <algorithm>                    // for binary_search, max
-#include <cstddef>                      // for size_t
-#include <iterator>                     // for distance
-#include <vector>                       // for vector
-                                        //
+#include <algorithm>  // for binary_search, max
+#include <cstddef>    // for size_t
+#include <vector>     // for vector
+
+#ifdef LIBSEMIGROUPS_DEBUG
+#include <iterator>  // for distance
+#endif
+
 #include "libsemigroups/constants.hpp"  // for Undefined, UNDEFINED
 #include "libsemigroups/debug.hpp"      // for LIBSEMIGROUPS_ASSERT
-#include "libsemigroups/types.hpp"      // for letter_type
+
+#include "libsemigroups/detail/containers.hpp"
 
 namespace libsemigroups {
 
   namespace detail {
-    void FelschTree::init(size_t n) {
-      _automata.reshape(n, 1);
-      _automata.fill(0);
-      _index  = {std::vector<index_type>({})};
-      _parent = {state_type(UNDEFINED)};
-      _length = 0;
+    FelschTree::FelschTree(size_t n) : FelschTree() {
+      init(n);
     }
 
+    void FelschTree::init(size_t n) {
+      _automata.init(n, 1, initial_state);
+      _current_state = initial_state;
+      _index         = {std::vector<index_type>({})};
+      _parent        = {state_type(UNDEFINED)};
+      _length        = 0;
+    }
+
+    // TODO (later) the complexity of this could be better
     void FelschTree::add_relations(word_iterator first, word_iterator last) {
       size_t number_of_words = 0;
       LIBSEMIGROUPS_ASSERT(std::distance(first, last) % 2 == 0);

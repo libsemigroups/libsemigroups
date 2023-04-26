@@ -22,10 +22,10 @@
 #include <cstddef>  // for size_t
 #include <vector>   // for vector
 
-#include "constants.hpp"   // for UNDEFINED
+#include "debug.hpp"  // for LIBSEMIGROUPS_ASSERT
+#include "types.hpp"  // for word_type
+
 #include "detail/containers.hpp"  // for DynamicArray2
-#include "debug.hpp"       // for LIBSEMIGROUPS_ASSERT
-#include "types.hpp"       // for word_type
 
 namespace libsemigroups {
 
@@ -35,23 +35,26 @@ namespace libsemigroups {
       using index_type     = size_t;
       using state_type     = size_t;
       using const_iterator = std::vector<index_type>::const_iterator;
+      using word_iterator  = typename std::vector<word_type>::const_iterator;
+
       static constexpr state_type initial_state = 0;
 
-      explicit FelschTree(size_t n)
-          : _automata(n, 1, initial_state),
-            _index(1, std::vector<index_type>({})),
-            _parent(1, state_type(UNDEFINED)),
-            _length(0) {}
+     private:
+      DynamicArray2<state_type>            _automata;
+      state_type                           _current_state;
+      std::vector<std::vector<index_type>> _index;
+      std::vector<state_type>              _parent;
+      size_t                               _length;
+
+     public:
+      explicit FelschTree(size_t n);
+      void init(size_t n);
 
       FelschTree()                             = default;
       FelschTree(FelschTree const&)            = default;
       FelschTree(FelschTree&&)                 = default;
       FelschTree& operator=(FelschTree const&) = default;
       FelschTree& operator=(FelschTree&&)      = default;
-
-      using word_iterator = typename std::vector<word_type>::const_iterator;
-
-      void init(size_t n);
 
       void add_relations(word_iterator first, word_iterator last);
 
@@ -99,14 +102,6 @@ namespace libsemigroups {
       }
 
       size_t height() const noexcept;
-
-     private:
-      using StateTable = detail::DynamicArray2<state_type>;
-      StateTable                           _automata;
-      state_type                           _current_state;
-      std::vector<std::vector<index_type>> _index;
-      std::vector<state_type>              _parent;
-      size_t                               _length;
     };
   }  // namespace detail
 }  // namespace libsemigroups

@@ -112,6 +112,7 @@ namespace libsemigroups {
     }
   };
 
+  // TODO move to detail namespace? If it's not user facing anywhere then yes.
   template <typename Word, typename Node, typename Definitions>
   class FelschGraph
       : public WordGraphWithSources<Node>,
@@ -150,9 +151,8 @@ namespace libsemigroups {
     static constexpr bool RegisterDefs      = true;
     static constexpr bool DoNotRegisterDefs = false;
 
-    // TODO using Wordgraph<node>::out_degree + number_of_nodes as in
-    // WordGraphWithSources, and remove WordGraph<Node>:: prefixes in
-    // assertions
+    using WordGraph<Node>::out_degree;
+    using WordGraph<Node>::number_of_nodes;
 
    private:
     ////////////////////////////////////////////////////////////////////////
@@ -182,35 +182,31 @@ namespace libsemigroups {
     FelschGraph(Presentation<Word>&& p);
     FelschGraph& init(Presentation<Word>&& p);
 
+    // TODO remove and replace with an init(Presentation, WordGraph)
     template <typename M>
     FelschGraph(WordGraph<M> const& ad);
 
+    // TODO remove and replace with an init(Presentation, WordGraph)
     template <typename M>
     FelschGraph& init(WordGraph<M> const& ad);
 
     // No point in having a general rvalue ref version since we can't actually
     // use a word graph containing another type of node to initialise this.
+    // TODO remove and replace with an init(Presentation, WordGraph)
     FelschGraph(WordGraph<Node>&& ad);
-    FelschGraph& init(WordGraph<Node>&& ad);
 
-    // TODO make more sense to construct using thing's _definitions?
-    template <typename T>
-    void init_definitions(T const& thing) {
-      // For example this calls ToddCoxeter::init(Definitions&) so that
-      // the settings in the _definitions object is set to be the same as that
-      // of the ToddCoxeter instance.
-      thing.init_definitions(_definitions);
-    }
+    // TODO remove and replace with an init(Presentation, WordGraph)
+    FelschGraph& init(WordGraph<Node>&& ad);
 
     // This is *not* the same as init(p) since we only replace the presentation
     // but otherwise do not modify the graph, whereas init(p) returns this to
     // the same state as FelschGraph(p). This is required say after calling
     // init(WordGraph) so that the presentation is defined.
-    // TODO investigate if these are genuinely required.
     // Seems safer that if these are only used after construction/init from a
     // word graph that these be one of the parameters of the constructor/init
     // function so that they are coupled and it's not possible to get into a
     // bad undefined position.
+    // TODO remove and replace with an init(Presentation, WordGraph)
     FelschGraph& presentation(Presentation<Word> const& p);
     FelschGraph& presentation(Presentation<Word>&& p);
 
@@ -239,13 +235,11 @@ namespace libsemigroups {
       return _felsch_tree;
     }
 
-    // TODO remove auto
-    [[nodiscard]] auto& definitions() noexcept {
+    [[nodiscard]] Definitions& definitions() noexcept {
       return _definitions;
     }
 
-    // TODO remove auto
-    [[nodiscard]] auto const& definitions() const noexcept {
+    [[nodiscard]] Definitions const& definitions() const noexcept {
       return _definitions;
     }
 
@@ -407,7 +401,6 @@ namespace libsemigroups {
         PrefDefs&& pref_defs) noexcept;
 
     // Not nodiscard because we don't care about the return value in ToddCoxeter
-    // TODO to tpp file
     template <bool RegDefs, typename Word, typename Node, typename Definitions>
     bool make_compatible(
         FelschGraph<Word, Node, Definitions>&                    fd,

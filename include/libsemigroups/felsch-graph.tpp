@@ -97,29 +97,31 @@ namespace libsemigroups {
     return private_init_from_word_graph();
   }
 
+  // TODO this should be removed
   template <typename Word, typename Node, typename Definitions>
   FelschGraph<Word, Node, Definitions>&
   FelschGraph<Word, Node, Definitions>::presentation(
       Presentation<Word> const& p) {
     _presentation = p;
     size_t c      = _presentation.alphabet().size();
-    if (c > WordGraph<Node>::out_degree()) {
+    if (c > out_degree()) {
       // Not sure this is required
-      WordGraph<Node>::add_to_out_degree(c - WordGraph<Node>::out_degree());
+      WordGraph<Node>::add_to_out_degree(c - out_degree());
     }
     _felsch_tree.init(c);
     _felsch_tree_initted = false;
     return *this;
   }
 
+  // TODO this should be removed
   template <typename Word, typename Node, typename Definitions>
   FelschGraph<Word, Node, Definitions>&
   FelschGraph<Word, Node, Definitions>::presentation(Presentation<Word>&& p) {
     // TODO avoid code dupl in constructors and init
     _presentation = std::move(p);
     size_t c      = _presentation.alphabet().size();
-    if (c > WordGraph<Node>::out_degree()) {
-      WordGraph<Node>::add_to_out_degree(c - WordGraph<Node>::out_degree());
+    if (c > out_degree()) {
+      WordGraph<Node>::add_to_out_degree(c - out_degree());
     }
     _felsch_tree.init(c);
     _felsch_tree_initted = false;
@@ -133,10 +135,10 @@ namespace libsemigroups {
   template <typename Word, typename Node, typename Definitions>
   bool FelschGraph<Word, Node, Definitions>::operator==(
       FelschGraph const& that) const {
-    size_type const m = this->number_of_active_nodes();
+    size_type const m = WordGraph<Node>::number_of_active_nodes();
     size_type const n = that.number_of_active_nodes();
     return (m == 0 && n == 0)
-           || (m == n && this->WordGraph<node_type>::operator==(that));
+           || (m == n && WordGraphWithSources<node_type>::operator==(that));
   }
 
   ////////////////////////////////////////////////////////////////////////
@@ -167,9 +169,9 @@ namespace libsemigroups {
       node_type  c,
       label_type x,
       node_type  d) noexcept {
-    LIBSEMIGROUPS_ASSERT(c < WordGraph<Node>::number_of_nodes());
-    LIBSEMIGROUPS_ASSERT(x < WordGraph<Node>::out_degree());
-    LIBSEMIGROUPS_ASSERT(d < WordGraph<Node>::number_of_nodes());
+    LIBSEMIGROUPS_ASSERT(c < number_of_nodes());
+    LIBSEMIGROUPS_ASSERT(x < out_degree());
+    LIBSEMIGROUPS_ASSERT(d < number_of_nodes());
     if constexpr (RegDefs) {
       _definitions.emplace_back(c, x);
     }
@@ -184,7 +186,7 @@ namespace libsemigroups {
 
     while (_definitions.size() > n) {
       auto const& p = _definitions.back();
-      this->remove_target_no_checks(p.first, p.second);
+      WordGraphWithSources<Node>::remove_target_no_checks(p.first, p.second);
       _definitions.pop_back();
     }
   }
@@ -198,8 +200,8 @@ namespace libsemigroups {
       label_type     b,
       Incompatible&  incompat,
       PreferredDefs& pref_def) {
-    LIBSEMIGROUPS_ASSERT(x < WordGraph<Node>::number_of_nodes());
-    LIBSEMIGROUPS_ASSERT(y < WordGraph<Node>::number_of_nodes());
+    LIBSEMIGROUPS_ASSERT(x < number_of_nodes());
+    LIBSEMIGROUPS_ASSERT(y < number_of_nodes());
 
     node_type xa
         = (a == UNDEFINED ? x : WordGraph<Node>::target_no_checks(x, a));
@@ -207,10 +209,10 @@ namespace libsemigroups {
         = (b == UNDEFINED ? y : WordGraph<Node>::target_no_checks(y, b));
 
     if (xa == UNDEFINED && yb != UNDEFINED) {
-      LIBSEMIGROUPS_ASSERT(a < WordGraph<Node>::out_degree());
+      LIBSEMIGROUPS_ASSERT(a < out_degree());
       set_target_no_checks<RegDefs>(x, a, yb);
     } else if (xa != UNDEFINED && yb == UNDEFINED) {
-      LIBSEMIGROUPS_ASSERT(b < WordGraph<Node>::out_degree());
+      LIBSEMIGROUPS_ASSERT(b < out_degree());
       set_target_no_checks<RegDefs>(y, b, xa);
     } else if (xa != UNDEFINED && yb != UNDEFINED && xa != yb) {
       return incompat(xa, yb);
@@ -238,8 +240,8 @@ namespace libsemigroups {
       typename word_type::const_iterator v_last,
       Incompatible&                      incompat,
       PreferredDefs&                     pref_defs) noexcept {
-    LIBSEMIGROUPS_ASSERT(u_node < this->number_of_nodes());
-    LIBSEMIGROUPS_ASSERT(v_node < this->number_of_nodes());
+    LIBSEMIGROUPS_ASSERT(u_node < number_of_nodes());
+    LIBSEMIGROUPS_ASSERT(v_node < number_of_nodes());
 
     node_type  x;
     label_type a;
@@ -252,7 +254,7 @@ namespace libsemigroups {
         return true;
       }
       a = *(u_last - 1);
-      LIBSEMIGROUPS_ASSERT(x < this->number_of_nodes());
+      LIBSEMIGROUPS_ASSERT(x < number_of_nodes());
       LIBSEMIGROUPS_ASSERT(a < _presentation.alphabet().size());
     }
     // TODO reduce code dupl
@@ -267,7 +269,7 @@ namespace libsemigroups {
         return true;
       }
       b = *(v_last - 1);
-      LIBSEMIGROUPS_ASSERT(y < this->number_of_nodes());
+      LIBSEMIGROUPS_ASSERT(y < number_of_nodes());
       LIBSEMIGROUPS_ASSERT(b < _presentation.alphabet().size());
     }
     return merge_targets_of_nodes_if_possible<RegDefs>(
@@ -453,7 +455,7 @@ namespace libsemigroups {
       node_type      c,
       Incompatible&  incompat,
       PreferredDefs& pref_defs) {
-    size_t const n = this->out_degree();
+    size_t const n = out_degree();
     for (size_t x = 0; x < n; ++x) {
       node_type e = WordGraphWithSources_::first_source_no_checks(c, x);
       if (e != UNDEFINED && felsch_tree().push_front(x)) {
@@ -540,12 +542,12 @@ namespace libsemigroups {
     size_t const n = _presentation.alphabet().size();
     for (size_t x = 0; x < n; ++x) {
       if (felsch_tree().push_front(x)) {
-        node_type e = this->first_source_no_checks(c, x);
+        node_type e = WordGraphWithSources<Node>::first_source_no_checks(c, x);
         while (e != UNDEFINED) {
           if (!process_definitions_dfs_v1(e, incompat, pref_defs)) {
             return false;
           }
-          e = this->next_source_no_checks(e, x);
+          e = WordGraphWithSources<Node>::next_source_no_checks(e, x);
         }
         felsch_tree().pop_front();
       }
