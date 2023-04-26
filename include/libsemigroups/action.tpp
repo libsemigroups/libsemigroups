@@ -294,7 +294,7 @@ namespace libsemigroups {
   void Action<Element, Point, Func, Traits, LeftOrRight>::validate_index(
       index_type i) const {
     if (i > _orb.size()) {
-      LIBSEMIGROUPS_EXCEPTION_V3(
+      LIBSEMIGROUPS_EXCEPTION(
           "index out of range, expected value in [0, {}) but found {}",
           current_size(),
           i);

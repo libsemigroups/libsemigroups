@@ -18,6 +18,12 @@
 
 #include "libsemigroups/forest.hpp"
 
+#include <ostream>  // for char_traits, operator<<, ostream
+
+#include "libsemigroups/constants.hpp"  // for Max, operator!=, operator==
+#include "libsemigroups/exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
+#include "libsemigroups/string.hpp"     // for operator<<
+
 namespace libsemigroups {
   Forest::~Forest() = default;
 
@@ -25,9 +31,9 @@ namespace libsemigroups {
                    std::initializer_list<size_t> parent,
                    std::initializer_list<size_t> edge_label) {
     if (num_nodes != parent.size()) {
-      LIBSEMIGROUPS_EXCEPTION_V3("TODO1");
+      LIBSEMIGROUPS_EXCEPTION("TODO1");
     } else if (num_nodes != edge_label.size()) {
-      LIBSEMIGROUPS_EXCEPTION_V3("TODO2");
+      LIBSEMIGROUPS_EXCEPTION("TODO2");
     }
 
     Forest result(num_nodes);
@@ -37,7 +43,7 @@ namespace libsemigroups {
       if (p != UNDEFINED && l != UNDEFINED) {
         result.set(i, p, l);
       } else if (!(p == UNDEFINED && l == UNDEFINED)) {
-        LIBSEMIGROUPS_EXCEPTION_V3("TODO3");
+        LIBSEMIGROUPS_EXCEPTION("TODO3");
       }
     }
     return result;

@@ -42,7 +42,7 @@ namespace libsemigroups {
 
   void CongruenceInterface::throw_if_started() const {
     if (started()) {
-      LIBSEMIGROUPS_EXCEPTION_V3(
+      LIBSEMIGROUPS_EXCEPTION(
           "cannot add further generating pairs at this stage");
     }
   }

@@ -203,7 +203,7 @@ namespace libsemigroups {
   template <typename Node>
   void Gabow<Node>::validate_node(node_type n) const {
     if (n >= _id.size()) {
-      LIBSEMIGROUPS_EXCEPTION_V3(
+      LIBSEMIGROUPS_EXCEPTION(
           "node out of bounds, expected value in the range [0, {}), got {}",
           _id.size(),
           n);
@@ -213,7 +213,7 @@ namespace libsemigroups {
   template <typename Node>
   void Gabow<Node>::validate_scc_index(size_type i) const {
     if (i >= number_of_components()) {
-      LIBSEMIGROUPS_EXCEPTION_V3(
+      LIBSEMIGROUPS_EXCEPTION(
           "strongly connected component index out of bounds, "
           "expected value in the range [0, {}), got {}",
           number_of_components(),

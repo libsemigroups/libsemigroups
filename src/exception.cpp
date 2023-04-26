@@ -20,13 +20,13 @@
 
 #include "libsemigroups/exception.hpp"
 
-#include <cstddef>    // for size_t
 #include <stdexcept>  // for std::runtime_error
 #include <string>     // for char_traits, allocator, operator+
 
 #include "libsemigroups/config.hpp"  // for LIBSEMIGROUPS_BACKWARD_ENABLED
                                      //
 #ifdef LIBSEMIGROUPS_BACKWARD_ENABLED
+#include <cstddef>  // for size_t
 #if defined(__CYGWIN__) || defined(__CYGWIN32__)
 #undef LIBSEMIGROUPS_BACKWARD_ENABLED
 #else

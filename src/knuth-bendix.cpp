@@ -1142,7 +1142,7 @@ namespace libsemigroups {
       // this is not the case.
       if (kb2.number_of_classes() == POSITIVE_INFINITY
           && kb1.number_of_classes() != POSITIVE_INFINITY) {
-        LIBSEMIGROUPS_EXCEPTION_V3(
+        LIBSEMIGROUPS_EXCEPTION(
             "the 1st argument defines an infinite semigroup, and the 2nd "
             "argument defines a finite semigroup, so there is at least one "
             "infinite non-trivial class!");
@@ -1150,7 +1150,7 @@ namespace libsemigroups {
                  != kb1.presentation().alphabet()) {
         // It might be possible to handle this case too, but doesn't seem
         // worth it at present
-        LIBSEMIGROUPS_EXCEPTION_V3("the arguments must have presentations with "
+        LIBSEMIGROUPS_EXCEPTION("the arguments must have presentations with "
                                    "the same alphabets, found {} and {}",
                                    kb2.presentation().alphabet(),
                                    kb1.presentation().alphabet());
@@ -1169,7 +1169,7 @@ namespace libsemigroups {
       LIBSEMIGROUPS_ASSERT(g1.number_of_nodes() > 0);
 
       if (g2.number_of_nodes() < g1.number_of_nodes()) {
-        LIBSEMIGROUPS_EXCEPTION_V3(
+        LIBSEMIGROUPS_EXCEPTION(
             "the Gilman digraph of the 1st argument must have at least as "
             "many "
             "nodes as the Gilman digraph of the 2nd argument, found {} nodes "
@@ -1231,7 +1231,7 @@ namespace libsemigroups {
                 inf_paths[v] = inf_paths[ve];
               }
               if (can_reach[v] && inf_paths[v]) {
-                LIBSEMIGROUPS_EXCEPTION_V3(
+                LIBSEMIGROUPS_EXCEPTION(
                     "there is an infinite non-trivial class!");
               }
             }

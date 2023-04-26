@@ -790,7 +790,7 @@ namespace libsemigroups {
 
     word_type class_index_to_word(node_type i) {
       if (i >= number_of_classes()) {
-        LIBSEMIGROUPS_EXCEPTION_V3("invalid class index, expected a value in "
+        LIBSEMIGROUPS_EXCEPTION("invalid class index, expected a value in "
                                    "the range [0, {}), found {}",
                                    number_of_classes(),
                                    i);
@@ -925,11 +925,11 @@ namespace libsemigroups {
       size_t const N = (r | rx::count());
 
       if (tc.number_of_classes() == POSITIVE_INFINITY) {
-        LIBSEMIGROUPS_EXCEPTION_V3(
+        LIBSEMIGROUPS_EXCEPTION(
             "the 1st argument defines a congruence with infinitely many "
             "classes, the non-trivial classes cannot be determined!");
       } else if (N == POSITIVE_INFINITY) {
-        LIBSEMIGROUPS_EXCEPTION_V3("the 2nd argument is an infinite range, the "
+        LIBSEMIGROUPS_EXCEPTION("the 2nd argument is an infinite range, the "
                                    "non-trivial classes cannot be determined!");
       }
       return_type         result;

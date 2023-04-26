@@ -37,7 +37,7 @@
 
 #include "adapters.hpp"             // for Hash
 #include "constants.hpp"            // for UNDEFINED
-#include "exception.hpp"            // for LIBSEMIGROUPS_EXCEPTION_V3
+#include "exception.hpp"            // for LIBSEMIGROUPS_EXCEPTION
 #include "libsemigroups/debug.hpp"  // for LIBSEMIGROUPS_ASSERT
 
 namespace libsemigroups {
@@ -1063,7 +1063,7 @@ namespace libsemigroups {
           vals.insert(x);
           x = std::abs(x);
           if (x == 0) {
-            LIBSEMIGROUPS_EXCEPTION_V3(
+            LIBSEMIGROUPS_EXCEPTION(
                 "value out of bounds, expected non-zero value found 0");
           }
           m = std::max(x, m);
@@ -1072,10 +1072,10 @@ namespace libsemigroups {
       }
 
       if (m >= static_cast<int32_t>(0x40000000)) {
-        LIBSEMIGROUPS_EXCEPTION_V3(
+        LIBSEMIGROUPS_EXCEPTION(
             "too many points, expected at most {}, found {}", 0x40000000, m);
       } else if (deg != 2 * m || vals.size() != size_t(deg)) {
-        LIBSEMIGROUPS_EXCEPTION_V3("the union of the given blocks is not [{}, "
+        LIBSEMIGROUPS_EXCEPTION("the union of the given blocks is not [{}, "
                                    "-1] ∪ [1, {}], only {} values were given",
                                    -m,
                                    m,

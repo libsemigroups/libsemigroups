@@ -557,7 +557,7 @@ namespace libsemigroups {
       using return_type = std::vector<std::vector<Word2>>;
 
       if (!r.is_finite) {
-        LIBSEMIGROUPS_EXCEPTION_V3("the 2nd argument (a range) must be finite, "
+        LIBSEMIGROUPS_EXCEPTION("the 2nd argument (a range) must be finite, "
                                    "found an infinite range");
       }
 

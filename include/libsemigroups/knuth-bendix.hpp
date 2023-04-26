@@ -41,7 +41,7 @@
                                 //
 #include "cong-intf.hpp"        // for CongruenceInterface
 #include "debug.hpp"            // for LIBSEMIGROUPS_ASSERT
-#include "exception.hpp"        // for LIBSEMIGROUPS_EXCEPTION_V3
+#include "exception.hpp"        // for LIBSEMIGROUPS_EXCEPTION
 #include "paths.hpp"            // for Paths
 #include "present.hpp"          // for Presentation
 #include "runner.hpp"           // for Runner
@@ -652,7 +652,7 @@ namespace libsemigroups {
    private:
     void throw_if_started() const {
       if (started()) {
-        LIBSEMIGROUPS_EXCEPTION_V3(
+        LIBSEMIGROUPS_EXCEPTION(
             "the presentation cannot be changed after Knuth-Bendix has "
             "started, maybe try `init` instead?");
       }
@@ -771,7 +771,7 @@ namespace libsemigroups {
       size_t const N = (r | rx::count());
       if (N == POSITIVE_INFINITY) {  // TODO ensure this is the same in all
                                      // versions of partition
-        LIBSEMIGROUPS_EXCEPTION_V3("the 2nd argument (a range) must be finite, "
+        LIBSEMIGROUPS_EXCEPTION("the 2nd argument (a range) must be finite, "
                                    "found an infinite range");
       }
 

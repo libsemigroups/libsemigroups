@@ -26,7 +26,7 @@
 #include <memory>   // for shared_ptr
 
 #include "cong-intf.hpp"
-#include "exception.hpp"     // for LIBSEMIGROUPS_EXCEPTION_V3
+#include "exception.hpp"     // for LIBSEMIGROUPS_EXCEPTION
 #include "kambites.hpp"      // for Kambites
 #include "knuth-bendix.hpp"  // for KnuthBendix
 #include "race.hpp"          // for Race
@@ -206,7 +206,7 @@ namespace libsemigroups {
             ->validate_word(w);
         return;
       }
-      LIBSEMIGROUPS_EXCEPTION_V3(
+      LIBSEMIGROUPS_EXCEPTION(
           "No presentation has been set, so cannot validate the word!");
     }
 
@@ -219,7 +219,7 @@ namespace libsemigroups {
       init_runners();
       auto result = _race.find_runner<Thing>();
       if (result == nullptr) {
-        LIBSEMIGROUPS_EXCEPTION_V3("There's no Thing to get!");
+        LIBSEMIGROUPS_EXCEPTION("There's no Thing to get!");
       }
       return result;
     }
@@ -345,7 +345,7 @@ namespace libsemigroups {
         return ::libsemigroups::kambites::non_trivial_classes(
             *cong.get<Kambites<word_type>>(), r);
       }
-      LIBSEMIGROUPS_EXCEPTION_V3("Cannot compute the non-trivial classes!");
+      LIBSEMIGROUPS_EXCEPTION("Cannot compute the non-trivial classes!");
     }
 
     // We have to pass the presentation here, because o/w we have no way of

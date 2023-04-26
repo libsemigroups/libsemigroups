@@ -23,9 +23,7 @@
 #include <stdexcept>  // for std::runtime_error
 #include <string>     // for std::string
 
-#include "string.hpp"  // for string_format
-
-#include "fmt/format.h"
+#include <fmt/format.h>
 
 namespace libsemigroups {
   //! Exception class deriving from std::runtime_error.
@@ -64,16 +62,7 @@ namespace libsemigroups {
   };
 }  // namespace libsemigroups
 
-#define LIBSEMIGROUPS_EXCEPTION(...)                          \
-  {                                                           \
-    throw LibsemigroupsException(                             \
-        __FILE__,                                             \
-        __LINE__,                                             \
-        __func__,                                             \
-        ::libsemigroups::detail::string_format(__VA_ARGS__)); \
-  }
-
-#define LIBSEMIGROUPS_EXCEPTION_V3(...)                          \
+#define LIBSEMIGROUPS_EXCEPTION(...)                             \
   {                                                              \
     throw LibsemigroupsException(                                \
         __FILE__, __LINE__, __func__, fmt::format(__VA_ARGS__)); \

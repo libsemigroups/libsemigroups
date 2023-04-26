@@ -26,6 +26,8 @@
 
 #include <algorithm>
 
+#include "string.hpp"  // for detail::to_string
+
 #include <rx/ranges.hpp>
 
 namespace libsemigroups {

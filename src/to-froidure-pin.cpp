@@ -28,7 +28,7 @@ namespace libsemigroups {
     using digraph_type = typename ToddCoxeter::digraph_type;
 
     if (tc.kind() != congruence_kind::twosided) {
-      LIBSEMIGROUPS_EXCEPTION_V3(
+      LIBSEMIGROUPS_EXCEPTION(
           "the argument must be a two-sided congruence, found a {} congruence",
           tc.kind());
     }
@@ -63,9 +63,9 @@ namespace libsemigroups {
     size_t const n = kb.presentation().alphabet().size();
 
     if (n == 0) {
-      LIBSEMIGROUPS_EXCEPTION_V3("TODO");
+      LIBSEMIGROUPS_EXCEPTION("TODO");
     } else if (kb.kind() != congruence_kind::twosided) {
-      LIBSEMIGROUPS_EXCEPTION_V3(
+      LIBSEMIGROUPS_EXCEPTION(
           "the argument must be a two-sided congruence, found a {} congruence",
           kb.kind());
     }
@@ -90,7 +90,7 @@ namespace libsemigroups {
       auto fp = to_froidure_pin(*cong.get<Kambites<word_type>>());
       return std::make_unique<decltype(fp)>(std::move(fp));
     }
-    LIBSEMIGROUPS_EXCEPTION_V3("TODO");
+    LIBSEMIGROUPS_EXCEPTION("TODO");
   }
 
 }  // namespace libsemigroups

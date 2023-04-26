@@ -294,7 +294,7 @@ namespace libsemigroups {
   ToddCoxeter& ToddCoxeter::init(congruence_kind knd, ToddCoxeter const& tc) {
     init(knd);
     if (tc.kind() != congruence_kind::twosided && knd != tc.kind()) {
-      LIBSEMIGROUPS_EXCEPTION_V3(
+      LIBSEMIGROUPS_EXCEPTION(
           "incompatible types of congruence, found ({} / {}) but only (left "
           "/ left), (right / right), (two-sided / *) are valid",
           tc.kind(),
@@ -346,7 +346,7 @@ namespace libsemigroups {
 
   ToddCoxeter& ToddCoxeter::lookahead_growth_factor(float val) {
     if (val < 1.0) {
-      LIBSEMIGROUPS_EXCEPTION_V3("Expected a value >= 1.0, found {}", val);
+      LIBSEMIGROUPS_EXCEPTION("Expected a value >= 1.0, found {}", val);
     }
     _settings.lookahead_growth_factor = val;
     return *this;

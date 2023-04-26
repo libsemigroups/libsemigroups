@@ -127,7 +127,7 @@ namespace libsemigroups {
   template <typename String>
   auto to_froidure_pin(Kambites<String>& k) {
     if (k.small_overlap_class() < 4) {
-      LIBSEMIGROUPS_EXCEPTION_V3(
+      LIBSEMIGROUPS_EXCEPTION(
           "the small overlap class of the argument must be >= 4, found {}",
           k.small_overlap_class());
     }

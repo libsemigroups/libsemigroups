@@ -102,7 +102,7 @@ namespace libsemigroups {
     void remove_target_no_checks(node_type c, label_type x) noexcept {
       LIBSEMIGROUPS_ASSERT(c < number_of_nodes());
       LIBSEMIGROUPS_ASSERT(x < out_degree());
-      remove_source(WordGraph<Node>::target_no_checks(c, x), x, c);
+      remove_source_no_checks(WordGraph<Node>::target_no_checks(c, x), x, c);
       WordGraph<node_type>::remove_target_no_checks(c, x);
     }
 

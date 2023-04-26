@@ -67,7 +67,7 @@ namespace libsemigroups {
     if (S.is_finite() != tril::FALSE) {
       S.run();
     } else {
-      LIBSEMIGROUPS_EXCEPTION_V3(
+      LIBSEMIGROUPS_EXCEPTION(
           "the 2nd argument does not represent a finite semigroup!");
     }
     init(type);
@@ -152,7 +152,7 @@ namespace libsemigroups {
       // really compute anything here unless the semigroup defined by p is
       // finite, but that'd be better handled explicitly in any code calling
       // this.
-      LIBSEMIGROUPS_EXCEPTION_V3("Cannot compute the non-trivial classes!");
+      LIBSEMIGROUPS_EXCEPTION("Cannot compute the non-trivial classes!");
     }
 
     std::vector<std::vector<std::string>>
@@ -180,7 +180,7 @@ namespace libsemigroups {
       // really compute anything here unless the semigroup defined by p is
       // finite, but that'd be better handled explicitly in any code calling
       // this.
-      LIBSEMIGROUPS_EXCEPTION_V3("Cannot compute the non-trivial classes!");
+      LIBSEMIGROUPS_EXCEPTION("Cannot compute the non-trivial classes!");
     }
   }  // namespace congruence
 }  // namespace libsemigroups

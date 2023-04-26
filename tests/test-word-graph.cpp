@@ -26,6 +26,7 @@
 #include "word-graph-test-common.hpp"  // for add_clique etc
 
 #include "libsemigroups/forest.hpp"      // for Forest
+#include "libsemigroups/string.hpp"      // for detail::to_string
 #include "libsemigroups/word-graph.hpp"  // for WordGraph
 #include "libsemigroups/words.hpp"       // for literals, Words
 
