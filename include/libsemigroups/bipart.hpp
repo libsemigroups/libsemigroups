@@ -111,7 +111,7 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Linear in \p degree.
-    Blocks(size_t degree) : _blocks(degree), _lookup() {}
+    explicit Blocks(size_t degree) : _blocks(degree), _lookup() {}
 
     //! Default copy assignment operator.
     Blocks& operator=(Blocks const&) = default;
@@ -1076,10 +1076,10 @@ namespace libsemigroups {
             "too many points, expected at most {}, found {}", 0x40000000, m);
       } else if (deg != 2 * m || vals.size() != size_t(deg)) {
         LIBSEMIGROUPS_EXCEPTION("the union of the given blocks is not [{}, "
-                                   "-1] ∪ [1, {}], only {} values were given",
-                                   -m,
-                                   m,
-                                   deg);
+                                "-1] ∪ [1, {}], only {} values were given",
+                                -m,
+                                m,
+                                deg);
       }
     }
 

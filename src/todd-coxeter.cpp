@@ -115,7 +115,7 @@ namespace libsemigroups {
                                                RuleIterator first,
                                                RuleIterator last) {
     size_t const old_number_of_killed = NodeManager_::number_of_nodes_killed();
-    CollectCoincidences                      incompat(_coinc);
+    CollectCoincidences                    incompat(_coinc);
     typename FelschGraph_::NoPreferredDefs prefdefs;
     while (current != NodeManager_::first_free_node()) {
       // TODO(later) when we have an RuleIterator into the active nodes, we
@@ -531,11 +531,11 @@ namespace libsemigroups {
     if (!is_standardized()) {
       standardize(Order::shortlex);
     }
-    auto it = forest::cbegin_paths(_forest) + i;
     if (!presentation().contains_empty_word()) {
-      ++it;
+      ++i;
     }
-    word_type w = *it;
+
+    word_type w = _forest.path_to_root(i);
     if (kind() != congruence_kind::left) {
       std::reverse(w.begin(), w.end());
     }

@@ -21,11 +21,9 @@
 #ifndef LIBSEMIGROUPS_FPSEMI_EXAMPLES_HPP_
 #define LIBSEMIGROUPS_FPSEMI_EXAMPLES_HPP_
 
-#include <cctype>         // for toupper
-#include <cstddef>        // for size_t
-#include <string>         // for basic_string, operator+
-#include <unordered_set>  // for unordered_set
-#include <vector>         // for vector
+#include <cstddef>  // for size_t
+#include <cstdint>  // for uint64_t
+#include <vector>   // for vector
 
 #include "libsemigroups/present.hpp"  // for Presentation
 #include "libsemigroups/types.hpp"    // for relation_type

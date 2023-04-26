@@ -16,7 +16,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "libsemigroups/felsch-tree.hpp"
+#include "libsemigroups/detail/felsch-tree.hpp"
 
 #include <algorithm>  // for binary_search, max
 #include <cstddef>    // for size_t

@@ -19,7 +19,7 @@
 #include "catch.hpp"      // for REQUIRE, REQUIRE_THROWS_AS, REQUI...
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
-#include "libsemigroups/felsch-tree.hpp"  // for FelschTree
+#include "libsemigroups/detail/felsch-tree.hpp"  // for FelschTree
 #include "libsemigroups/present.hpp"      // for Presentation
 #include "libsemigroups/report.hpp"       // for ReportGuard
 #include "libsemigroups/types.hpp"        // for word_type

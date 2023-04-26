@@ -121,11 +121,11 @@ namespace libsemigroups {
     REQUIRE(scc.number_of_components() == 1);
     {
       auto const& f = scc.spanning_forest();
-      REQUIRE(f == to_forest(3, {2, 2, UNDEFINED}, {0, 1, UNDEFINED}));
+      REQUIRE(f == to_forest({2, 2, UNDEFINED}, {0, 1, UNDEFINED}));
     }
     {
       auto const& f = scc.reverse_spanning_forest();
-      REQUIRE(f == to_forest(3, {2, 2, UNDEFINED}, {2, 2, UNDEFINED}));
+      REQUIRE(f == to_forest({2, 2, UNDEFINED}, {2, 2, UNDEFINED}));
     }
   }
 
@@ -338,6 +338,6 @@ namespace libsemigroups {
     Gabow scc(wg);
     REQUIRE(scc.number_of_components() == 1);
     REQUIRE(scc.reverse_spanning_forest()
-            == to_forest(5, {4, 2, 0, 4, UNDEFINED}, {2, 0, 1, 0, UNDEFINED}));
+            == to_forest({4, 2, 0, 4, UNDEFINED}, {2, 0, 1, 0, UNDEFINED}));
   }
 }  // namespace libsemigroups

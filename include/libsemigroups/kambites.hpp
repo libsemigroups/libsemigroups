@@ -171,7 +171,7 @@ namespace libsemigroups {
     // TODO rval ref version
     // TODO init version
     template <typename OtherWord>
-    Kambites(Presentation<OtherWord> const& p)
+    explicit Kambites(Presentation<OtherWord> const& p)
         : Kambites(to_presentation<value_type>(p)) {}
 
     Kambites& init(Presentation<value_type> const& p) {
@@ -558,7 +558,7 @@ namespace libsemigroups {
 
       if (!r.is_finite) {
         LIBSEMIGROUPS_EXCEPTION("the 2nd argument (a range) must be finite, "
-                                   "found an infinite range");
+                                "found an infinite range");
       }
 
       return_type result;

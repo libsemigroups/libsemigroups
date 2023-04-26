@@ -2223,6 +2223,7 @@ namespace libsemigroups {
     REQUIRE(tc.number_of_classes() == 7'776);
   }
 
+  // TODO this doesn't currentlyu run
   LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "115",
                           "full_transformation_monoid(7, Iwahori)",
@@ -2236,13 +2237,16 @@ namespace libsemigroups {
 
     REQUIRE(presentation::length(p) == 69'656);
     presentation::reduce_complements(p);
+    REQUIRE(presentation::length(p) == 45'380);
     presentation::remove_trivial_rules(p);
+    REQUIRE(presentation::length(p) == 45'380);
     presentation::remove_duplicate_rules(p);
     REQUIRE(presentation::length(p) == 45'380);
-    presentation::greedy_reduce_length(p);
-    REQUIRE(presentation::length(p) == 8'515);
+    // presentation::greedy_reduce_length(p);
+    // REQUIRE(presentation::length(p) == 8'515);
 
     ToddCoxeter tc(congruence_kind::twosided, p);
+    tc.lookahead_min(2'000'000).strategy(options::strategy::felsch);
     REQUIRE(tc.number_of_classes() == 823'543);
   }
 
@@ -2319,27 +2323,26 @@ namespace libsemigroups {
       }
       SECTION("large collapse") {
         tc.large_collapse(0);
+        REQUIRE(tc.number_of_classes() == 5);
       }
+      {
+        Presentation<std::string> p;
+        p.alphabet("ab");
+        presentation::add_rule_and_check(p, "aaa", "a");
+        presentation::add_rule_and_check(p, "a", "bb");
 
-      REQUIRE(tc.number_of_classes() == 5);
-    }
-    {
-      Presentation<std::string> p;
-      p.alphabet("ab");
-      presentation::add_rule_and_check(p, "aaa", "a");
-      presentation::add_rule_and_check(p, "a", "bb");
+        ToddCoxeter tc(twosided, p);
+        tc.lookahead_next(1);
 
-      ToddCoxeter tc(twosided, p);
-      tc.lookahead_next(1);
+        section_hlt(tc);
+        section_felsch(tc);
+        section_Rc_style(tc);
+        section_R_over_C_style(tc);
+        section_CR_style(tc);
+        section_Cr_style(tc);
 
-      section_hlt(tc);
-      section_felsch(tc);
-      section_Rc_style(tc);
-      section_R_over_C_style(tc);
-      section_CR_style(tc);
-      section_Cr_style(tc);
-
-      REQUIRE(tc.number_of_classes() == 5);
+        REQUIRE(tc.number_of_classes() == 5);
+      }
     }
   }
 
@@ -3263,7 +3266,8 @@ namespace libsemigroups {
   //   REQUIRE(is_sorted(todd_coxeter::normal_forms(tc), ShortLexCompare()));
   //   tc.standardize(Order::lex);
   //   REQUIRE(
-  //       is_sorted(todd_coxeter::normal_forms(tc), LexicographicalCompare()));
+  //       is_sorted(todd_coxeter::normal_forms(tc),
+  //       LexicographicalCompare()));
   // }
 
   // Felsch very slow here

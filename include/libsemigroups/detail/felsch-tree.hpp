@@ -22,10 +22,10 @@
 #include <cstddef>  // for size_t
 #include <vector>   // for vector
 
-#include "debug.hpp"  // for LIBSEMIGROUPS_ASSERT
-#include "types.hpp"  // for word_type
+#include "libsemigroups/debug.hpp"  // for LIBSEMIGROUPS_ASSERT
+#include "libsemigroups/types.hpp"  // for word_type
 
-#include "detail/containers.hpp"  // for DynamicArray2
+#include "libsemigroups/detail/containers.hpp"  // for DynamicArray2
 
 namespace libsemigroups {
 

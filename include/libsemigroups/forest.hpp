@@ -20,13 +20,15 @@
 #ifndef LIBSEMIGROUPS_FOREST_HPP_
 #define LIBSEMIGROUPS_FOREST_HPP_
 
-#include <cstddef>  // for size_t
-#include <vector>   // for vector
+#include <algorithm>         // for fill
+#include <cstddef>           // for size_t
+#include <initializer_list>  // for initializer_list
+#include <iosfwd>            // for ostream
+#include <iterator>          // for begin, end
+#include <vector>            // for vector, allocator, operator==
 
-#include "constants.hpp"  // for UNDEFINED
+#include "constants.hpp"  // for Undefined, Max, UNDEFINED, operator!=
 #include "exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
-#include "int-range.hpp"  // for IntegralRange
-#include "iterator.hpp"   // for ConstIteratorTraits
 #include "types.hpp"      // for word_type
 
 namespace libsemigroups {
@@ -34,7 +36,6 @@ namespace libsemigroups {
   //!
   //! This class represents the collection of spanning trees of the strongly
   //! connected components of a digraph.
-  // TODO(later): template
   class Forest {
    public:
     //! Alias for the type of nodes in a forest
@@ -248,9 +249,6 @@ namespace libsemigroups {
     //!
     //! \par Parameters
     //! (None)
-    std::vector<size_t>::const_iterator cbegin_parent() const noexcept {
-      return _parent.cbegin();
-    }
 
     //! Returns an iterator pointing one-past the parent of the last node.
     //!
@@ -265,9 +263,6 @@ namespace libsemigroups {
     //!
     //! \par Parameters
     //! (None)
-    std::vector<size_t>::const_iterator cend_parent() const noexcept {
-      return _parent.cend();
-    }
 
     auto const& parents() const noexcept {
       return _parent;
@@ -277,19 +272,35 @@ namespace libsemigroups {
       return _edge_label;
     }
 
-    std::vector<size_t>::const_iterator cbegin_labels() const noexcept {
-      return _edge_label.cbegin();
+    void path_to_root_no_checks(word_type& w, node_type i) const {
+      while (parent_no_checks(i) != UNDEFINED) {
+        w.push_back(label_no_checks(i));
+        i = parent_no_checks(i);
+      }
     }
 
-    std::vector<size_t>::const_iterator cend_labels() const noexcept {
-      return _edge_label.cend();
+    word_type path_to_root_no_checks(node_type i) const {
+      word_type w;
+      path_to_root_no_checks(w, i);
+      return w;
+    }
+
+    void path_to_root(word_type& w, node_type i) const {
+      validate_node(i);
+      path_to_root_no_checks(w, i);
+    }
+
+    word_type path_to_root(node_type i) const {
+      word_type w;
+      path_to_root(w, i);
+      return w;
     }
 
    private:
     void validate_node(node_type v) const {
       if (v >= number_of_nodes()) {
         LIBSEMIGROUPS_EXCEPTION("node value out of bounds, expected value in "
-                                "the range [0, %d), got %d",
+                                "the range [0, {}), got {}",
                                 number_of_nodes(),
                                 v);
       }
@@ -299,106 +310,46 @@ namespace libsemigroups {
     std::vector<size_t> _parent;
   };
 
-  Forest to_forest(size_t                        num_nodes,
-                   std::initializer_list<size_t> parent,
+  Forest to_forest(std::initializer_list<size_t> parent,
                    std::initializer_list<size_t> edge_label);
 
   std::ostream& operator<<(std::ostream& os, Forest const& f);
 
-  namespace detail {
-    // TODO use range instead
-    struct PathIteratorTraits
-        : ConstIteratorTraits<IntegralRange<typename Forest::node_type>> {
-      using value_type      = word_type;
-      using const_reference = value_type const&;
-      using reference       = value_type&;
-      using const_pointer   = value_type const*;
-      using pointer         = value_type*;
+  // namespace forest {
 
-      // TODO store a word_type here too
-      using state_type = std::pair<Forest const*, word_type>;
-      using node_type  = typename Forest::node_type;
-
-      struct Deref {
-        // TODO to cpp
-        // Not noexcept because it allocates
-        const_reference
-        operator()(state_type&                              state,
-                   IntegralRange<node_type>::const_iterator it) const {
-          auto      f    = state.first;
-          auto&     word = state.second;
-          node_type i    = *it;
-          while (f->parent_no_checks(i) != UNDEFINED) {
-            word.push_back(f->label_no_checks(i));
-            i = f->parent_no_checks(i);
-          }
-          return word;
-        }
-      };
-
-      // TODO to cpp
-      struct AddressOf {
-        const_pointer operator()(state_type& state,
-                                 IntegralRange<node_type>::const_iterator) {
-          return &state.second;
-        }
-      };
-    };
-  }  // namespace detail
-
-  namespace forest {
-
-    //! The type of a const iterator pointing to a normal form.
-    //!
-    //! Iterators of this type point to a \ref word_type.
-    //!
-    //! \sa cbegin_normal_forms, cend_normal_forms.
-    // TODO(refactor): goes to same place as standardize
-    using path_iterator
-        = detail::ConstIteratorStateful<detail::PathIteratorTraits>;
-
-    //! Returns a \ref normal_form_iterator pointing at the first normal
-    //! form.
-    //!
-    //! Returns a const iterator pointing to the normal form of the first
-    //! class of the congruence represented by an instance of ToddCoxeter.
-    //! The order of the classes, and the normal form, that is returned are
-    //! controlled by standardize(order).
-    //!
-    //! \parameters
-    //! (None)
-    //!
-    //! \returns A value of type \ref normal_form_iterator.
-    //!
-    //! \exceptions
-    //! \no_libsemigroups_except
-    // TODO(refactor): update the doc
-    inline path_iterator cbegin_paths(Forest const& f) {
-      IntegralRange<typename Forest::node_type> range(0, f.number_of_nodes());
-      return path_iterator(std::make_pair(&f, word_type()), range.cbegin());
-    }
-
-    //! Returns a \ref normal_form_iterator pointing one past the last normal
-    //! form.
-    //!
-    //! Returns a const iterator one past the normal form of the last class
-    //! of the congruence represented by an instance of ToddCoxeter. The
-    //! order of the classes, and the normal form, that is returned are
-    //! controlled by standardize(order).
-    //!
-    //! \parameters
-    //! (None)
-    //!
-    //! \returns A value of type \ref normal_form_iterator.
-    //!
-    //! \exceptions
-    //! \no_libsemigroups_except
-    // TODO(refactor): update the doc
-    inline path_iterator cend_paths(Forest const& f) {
-      IntegralRange<typename Forest::node_type> range(0, f.number_of_nodes());
-      return path_iterator(std::make_pair(&f, word_type()), range.cend());
-    }
-  }  // namespace forest
+  //! Returns a \ref normal_form_iterator pointing at the first normal
+  //! form.
+  //!
+  //! Returns a const iterator pointing to the normal form of the first
+  //! class of the congruence represented by an instance of ToddCoxeter.
+  //! The order of the classes, and the normal form, that is returned are
+  //! controlled by standardize(order).
+  //!
+  //! \parameters
+  //! (None)
+  //!
+  //! \returns A value of type \ref normal_form_iterator.
+  //!
+  //! \exceptions
+  //! \no_libsemigroups_except
+  //!
+  // TODO(refactor): update the doc
+  // TODO This is probably not very efficient, better to have a custom range
+  // where the word_type is cached, and next just deletes the end of the word
+  // and adds whatever's appropriate, rather than retracing the entire path
+  // every time
+  //
+  // inline auto paths(Forest const& f) {
+  //   rx::seq<Forest::node_type>() | rx::transform([&f](auto i) {
+  //     word_type w;
+  //     while (f.parent_no_checks(i) != UNDEFINED) {
+  //       w.push_back(f.label_no_checks(i));
+  //       i = f.parent_no_checks(i);
+  //     }
+  //     return w;
+  //   });
+  // }
+  //}  // namespace forest
 
 }  // namespace libsemigroups
 

@@ -22,11 +22,12 @@
 // TODO:
 // * iwyu
 // * noexcept
+
 // * test file
 // * doc
 
-#ifndef LIBSEMIGROUPS_FELSCH_DIGRAPH_HPP_
-#define LIBSEMIGROUPS_FELSCH_DIGRAPH_HPP_
+#ifndef LIBSEMIGROUPS_FELSCH_GRAPH_HPP_
+#define LIBSEMIGROUPS_FELSCH_GRAPH_HPP_
 
 #include <cstddef>  // for size_t
 #include <cstdint>  // for uint8_t
@@ -35,7 +36,7 @@
 
 #include "adapters.hpp"                 // for Noop
 #include "debug.hpp"                    // for LIBSEMIGROUPS_ASSERT
-#include "felsch-tree.hpp"              // for FelschTree
+#include "detail/felsch-tree.hpp"       // for FelschTree
 #include "present.hpp"                  // for Presentation
 #include "word-graph-with-sources.hpp"  // for WordGraphWithSources
 
@@ -176,15 +177,15 @@ namespace libsemigroups {
     FelschGraph& operator=(FelschGraph const&) = default;
     FelschGraph& operator=(FelschGraph&&)      = default;
 
-    FelschGraph(Presentation<Word> const& p);
+    explicit FelschGraph(Presentation<Word> const& p);
     FelschGraph& init(Presentation<Word> const& p);
 
-    FelschGraph(Presentation<Word>&& p);
+    explicit FelschGraph(Presentation<Word>&& p);
     FelschGraph& init(Presentation<Word>&& p);
 
     // TODO remove and replace with an init(Presentation, WordGraph)
     template <typename M>
-    FelschGraph(WordGraph<M> const& ad);
+    explicit FelschGraph(WordGraph<M> const& ad);
 
     // TODO remove and replace with an init(Presentation, WordGraph)
     template <typename M>
@@ -193,7 +194,7 @@ namespace libsemigroups {
     // No point in having a general rvalue ref version since we can't actually
     // use a word graph containing another type of node to initialise this.
     // TODO remove and replace with an init(Presentation, WordGraph)
-    FelschGraph(WordGraph<Node>&& ad);
+    explicit FelschGraph(WordGraph<Node>&& ad);
 
     // TODO remove and replace with an init(Presentation, WordGraph)
     FelschGraph& init(WordGraph<Node>&& ad);
@@ -423,4 +424,4 @@ namespace libsemigroups {
 
 #include "felsch-graph.tpp"
 
-#endif  // LIBSEMIGROUPS_FELSCH_DIGRAPH_HPP_
+#endif  // LIBSEMIGROUPS_FELSCH_GRAPH_HPP_

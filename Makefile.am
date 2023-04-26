@@ -60,7 +60,6 @@ pkginclude_HEADERS += include/libsemigroups/exception.hpp
 pkginclude_HEADERS += include/libsemigroups/fastest-bmat.hpp
 pkginclude_HEADERS += include/libsemigroups/felsch-graph.hpp
 pkginclude_HEADERS += include/libsemigroups/felsch-graph.tpp
-pkginclude_HEADERS += include/libsemigroups/felsch-tree.hpp
 pkginclude_HEADERS += include/libsemigroups/forest.hpp
 pkginclude_HEADERS += include/libsemigroups/fpsemi-examples.hpp
 pkginclude_HEADERS += include/libsemigroups/freeband.hpp
@@ -122,6 +121,7 @@ pkginclude_HEADERS += include/libsemigroups/words.hpp
 
 pkginclude_HEADERS += include/libsemigroups/detail/bruidhinn-traits.hpp
 pkginclude_HEADERS += include/libsemigroups/detail/containers.hpp
+pkginclude_HEADERS += include/libsemigroups/detail/felsch-tree.hpp
 
 textflowcppincludedir = $(includedir)/libsemigroups/textflowcpp
 textflowcppinclude_HEADERS=extern/textflowcpp/TextFlow.hpp
@@ -571,7 +571,6 @@ libsemigroups_la_SOURCES += src/cong-intf.cpp
 libsemigroups_la_SOURCES += src/cong.cpp
 libsemigroups_la_SOURCES += src/constants.cpp
 libsemigroups_la_SOURCES += src/exception.cpp
-libsemigroups_la_SOURCES += src/felsch-tree.cpp
 libsemigroups_la_SOURCES += src/forest.cpp
 libsemigroups_la_SOURCES += src/fpsemi-examples.cpp
 libsemigroups_la_SOURCES += src/freeband.cpp
@@ -593,6 +592,8 @@ libsemigroups_la_SOURCES += src/to-todd-coxeter.cpp
 libsemigroups_la_SOURCES += src/todd-coxeter.cpp
 libsemigroups_la_SOURCES += src/ukkonen.cpp
 libsemigroups_la_SOURCES += src/words.cpp
+
+libsemigroups_la_SOURCES += src/detail/felsch-tree.cpp
 
 libsemigroups_la_CPPFLAGS = $(AM_CPPFLAGS)
 libsemigroups_la_CXXFLAGS = $(AM_CXXFLAGS)
