@@ -16,6 +16,14 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
+// TODO
+// * remove iterators and use ranges instead
+// * the todos in the file
+// * reduce api  (i.e. move things to helper namespace)
+// * no_checks versions of mem + helper fns
+// * remove as many virtual functions as possible (seems like several of them
+// are unused)
+
 #ifndef LIBSEMIGROUPS_FROIDURE_PIN_BASE_HPP_
 #define LIBSEMIGROUPS_FROIDURE_PIN_BASE_HPP_
 
@@ -23,12 +31,22 @@
 #include <iterator>  // for forward_iterator_tag
 #include <thread>    // for thread::hardware_concurrency
 
-#include "constants.hpp"          // for UNDEFINED
+#include <array>             // for array
+#include <cstddef>           // for size_t
+#include <initializer_list>  // for initializer_list
+#include <iterator>          // for forward_iterator...
+#include <thread>            // for thread
+#include <type_traits>       // for is_copy_assignable
+#include <utility>           // for swap
+#include <vector>            // for vector, allocator
+
+#include "constants.hpp"   // for UNDEFINED
+#include "exception.hpp"   // for LIBSEMIGROUPS_EXCEPTION
+#include "runner.hpp"      // for Runner
+#include "types.hpp"       // for word_type, generator_index_type, tril
+#include "word-graph.hpp"  // for WordGraph
+
 #include "detail/containers.hpp"  // for DynamicArray2
-#include "exception.hpp"          // for LIBSEMIGROUPS_EXCEPTION
-#include "runner.hpp"             // for Runner
-#include "types.hpp"              // for word_type, letter_type, tril
-#include "word-graph.hpp"         // for WordGraph
 
 namespace libsemigroups {
 
@@ -39,12 +57,12 @@ namespace libsemigroups {
   //!
   //! FroidurePinBase allows a polymorphic interface to instances of
   //! FroidurePin and its member functions reflect those member functions of
-  //! FroidurePin that do not depend on the template parameter ``TElementType``
+  //! FroidurePin that do not depend on the template parameter ``Element``
   //! (the type of the elements of the semigroup represented).
   //!
   //! \sa FroidurePin and FroidurePinTraits.
   class FroidurePinBase : public Runner {
-    template <typename TElementType, typename TTraits>
+    template <typename Element, typename Traits>
     friend class FroidurePin;
 
    public:
@@ -52,7 +70,9 @@ namespace libsemigroups {
     // It should be possible to change this type and everything will just work,
     // provided the size of the semigroup is less than the maximum value of
     // this type of integer.
-    using size_type = size_t;  // TODO(v3) -> uint32_t
+    using size_type = uint32_t;
+
+    using generator_index_type = size_type;
 
     //! Type for the index of an element.
     //!
@@ -266,24 +286,10 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
-    virtual bool equal_to(word_type const&, word_type const&) const = 0;
 
     virtual size_t number_of_generators() const = 0;
+    virtual tril   is_finite() const            = 0;
 
-    virtual element_index_type fast_product(element_index_type,
-                                            element_index_type) const
-        = 0;
-
-    virtual size_t number_of_idempotents() = 0;
-
-    virtual bool is_idempotent(element_index_type) = 0;
-
-    virtual tril is_finite() const = 0;
-
-    virtual void reserve(size_t) = 0;
-
-    virtual element_index_type position_to_sorted_position(element_index_type)
-        = 0;
 #endif
 
     ////////////////////////////////////////////////////////////////////////
@@ -317,9 +323,11 @@ namespace libsemigroups {
     //! \f$O(n)\f$ where \f$n\f$ is the length of the word \p w.
     //!
     //! \sa FroidurePin::word_to_element.
+    // TODO -> helper
     element_index_type current_position(word_type const& w) const;
 
     //! \copydoc current_position(word_type const&) const
+    // TODO -> helper
     element_index_type
     current_position(std::initializer_list<size_t> const& w) const {
       word_type ww = w;
@@ -345,7 +353,7 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Constant.
-    element_index_type current_position(letter_type i) const {
+    element_index_type current_position(generator_index_type i) const {
       validate_letter_index(i);
       return _letter_to_pos[i];
     }
@@ -483,14 +491,14 @@ namespace libsemigroups {
     //!
     //! \param pos the position
     //!
-    //! \returns A value of type \c letter_type.
+    //! \returns A value of type \c generator_index_type.
     //!
     //! \throws LibsemigroupsException if \p pos is greater than or equal to
     //! \ref current_size.
     //!
     //! \complexity
     //! Constant.
-    letter_type first_letter(element_index_type pos) const {
+    generator_index_type first_letter(element_index_type pos) const {
       validate_element_index(pos);
       return _first[pos];
     }
@@ -508,14 +516,14 @@ namespace libsemigroups {
     //!
     //! \param pos the position
     //!
-    //! \returns A value of type \c letter_type.
+    //! \returns A value of type \c generator_index_type.
     //!
     //! \throws LibsemigroupsException if \p pos is greater than or equal to
     //! \ref current_size.
     //!
     //! \complexity
     //! Constant.
-    letter_type final_letter(element_index_type pos) const {
+    generator_index_type final_letter(element_index_type pos) const {
       validate_element_index(pos);
       return _final[pos];
     }
@@ -524,7 +532,7 @@ namespace libsemigroups {
     //!
     //! \param pos the position
     //!
-    //! \returns A value of type \c letter_type.
+    //! \returns A value of type \c generator_index_type.
     //!
     //! \throws LibsemigroupsException if \p pos is greater than or equal to
     //! \ref current_size.
@@ -543,7 +551,7 @@ namespace libsemigroups {
     //!
     //! \param pos the position
     //!
-    //! \returns A value of type \c letter_type.
+    //! \returns A value of type \c generator_index_type.
     //!
     //! \throws LibsemigroupsException if \p pos is greater than or equal to
     //! \ref size.
@@ -553,6 +561,7 @@ namespace libsemigroups {
     //!
     //! \sa
     //! \ref current_length.
+    // TODO helper
     size_t length(element_index_type pos) {
       if (pos >= _nr) {
         run();
@@ -580,6 +589,7 @@ namespace libsemigroups {
     //! \complexity
     //! \f$O(n)\f$ where \f$n\f$ is the minimum of the lengths of
     //! `minimal_factorisation(i)` and `minimal_factorisation(j)`.
+    // TODO helper
     element_index_type product_by_reduction(element_index_type i,
                                             element_index_type j) const;
 
@@ -668,7 +678,8 @@ namespace libsemigroups {
     //!
     //! \sa
     //! \ref left.
-    element_index_type right(element_index_type i, letter_type j) {
+    // TODO delete
+    element_index_type right(element_index_type i, generator_index_type j) {
       validate_letter_index(j);
       run();
       validate_element_index(i);
@@ -718,7 +729,8 @@ namespace libsemigroups {
     //!
     //! \sa
     //! \ref right.
-    element_index_type left(element_index_type i, letter_type j) {
+    // TODO delete
+    element_index_type left(element_index_type i, generator_index_type j) {
       validate_letter_index(j);
       run();
       validate_element_index(i);
@@ -771,6 +783,7 @@ namespace libsemigroups {
     //! \complexity
     //! At worst \f$O(mn)\f$ where \f$m\f$ equals \p pos and \f$n\f$ is the
     //! return value of FroidurePin::number_of_generators.
+    // TODO helper
     void minimal_factorisation(word_type& word, element_index_type pos) {
       if (pos >= _nr && !finished()) {
         enumerate(pos + 1);
@@ -797,6 +810,7 @@ namespace libsemigroups {
     //! \complexity
     //! At worst \f$O(mn)\f$ where \f$m\f$ equals \p pos and \f$n\f$ is the
     //! return value of FroidurePin::number_of_generators.
+    // TODO helper
     word_type minimal_factorisation(element_index_type pos) {
       word_type word;
       minimal_factorisation(word, pos);
@@ -820,6 +834,7 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Constant.
+    // TODO helper
     void minimal_factorisation(word_type& word, element_index_type pos) const {
       validate_element_index(pos);
       private_minimal_factorisation(word, pos);
@@ -853,6 +868,7 @@ namespace libsemigroups {
     //! \complexity
     //! At worst \f$O(mn)\f$ where \f$m\f$ equals \p pos and \f$n\f$ is the
     //! return value of FroidurePin::number_of_generators.
+    // TODO helper
     void factorisation(word_type& word, element_index_type pos) {
       minimal_factorisation(word, pos);
     }
@@ -878,6 +894,7 @@ namespace libsemigroups {
     //! \complexity
     //! At worst \f$O(mn)\f$ where \f$m\f$ equals \p pos and \f$n\f$ is the
     //! return value of FroidurePin::number_of_generators.
+    // TODO helper
     word_type factorisation(element_index_type pos) {
       return minimal_factorisation(pos);
     }
@@ -910,6 +927,7 @@ namespace libsemigroups {
     size_t number_of_elements_of_length(size_t len) const;
 
     //! Return type of \ref cbegin_rules and \ref cend_rules.
+    // TODO delete
     class const_rule_iterator {
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 
@@ -935,7 +953,7 @@ namespace libsemigroups {
 
       const_rule_iterator(FroidurePinBase const* ptr,
                           enumerate_index_type   pos,
-                          letter_type            gen)
+                          generator_index_type   gen)
           : _current(),
             _froidure_pin(ptr),
             _gen(gen),
@@ -954,12 +972,12 @@ namespace libsemigroups {
         return !(this->operator==(that));
       }
 
-      const_reference operator*() const noexcept {
+      const_reference operator*() const {
         populate_relation();
         return _relation;
       }
 
-      const_pointer operator->() const noexcept {
+      const_pointer operator->() const {
         populate_relation();
         return &_relation;
       }
@@ -1041,11 +1059,11 @@ namespace libsemigroups {
         }
       }
 
-      std::array<letter_type, 3> _current;
-      FroidurePinBase const*     _froidure_pin;
-      letter_type                _gen;
-      enumerate_index_type       _pos;
-      mutable relation_type      _relation;
+      std::array<generator_index_type, 3> _current;
+      FroidurePinBase const*              _froidure_pin;
+      generator_index_type                _gen;
+      enumerate_index_type                _pos;
+      mutable relation_type               _relation;
     };  // const_rule_iterator
 
     // Assert that the forward iterator requirements are met
@@ -1126,6 +1144,7 @@ namespace libsemigroups {
     //! //  {{3, 3}, {3}}}
     //! \endcode
     // clang-format on
+    // TODO delete
     const_rule_iterator cbegin_rules() const {
       return const_rule_iterator(this, UNDEFINED, 0);
     }
@@ -1198,10 +1217,12 @@ namespace libsemigroups {
     //! //  {{3, 3}, {3}}}
     //! \endcode
     // clang-format on
+    // TODO delete
     const_rule_iterator cend_rules() const {
       return const_rule_iterator(this, current_size(), 0);
     }
 
+    // TODO delete
     class const_normal_form_iterator {
       // Private data
       mutable FroidurePinBase const* _froidure_pin;
@@ -1350,6 +1371,7 @@ namespace libsemigroups {
     // FroidurePin - ? - private
     ////////////////////////////////////////////////////////////////////////
 
+    // TODO delete
     void private_minimal_factorisation(word_type&         word,
                                        element_index_type pos) const {
       word.clear();
@@ -1363,19 +1385,21 @@ namespace libsemigroups {
     // FroidurePin - validation member functions - private
     ////////////////////////////////////////////////////////////////////////
 
+    // TODO to cpp file
     void validate_element_index(element_index_type i) const {
       if (i >= _nr) {
         LIBSEMIGROUPS_EXCEPTION(
-            "element index out of bounds, expected value in [0, %d), got %d",
+            "element index out of bounds, expected value in [0, {}), got {}",
             _nr,
             i);
       }
     }
 
-    void validate_letter_index(letter_type i) const {
+    // TODO to cpp file
+    void validate_letter_index(generator_index_type i) const {
       if (i >= number_of_generators()) {
         LIBSEMIGROUPS_EXCEPTION(
-            "generator index out of bounds, expected value in [0, %d), got %d",
+            "generator index out of bounds, expected value in [0, {}), got {}",
             number_of_generators(),
             i);
       }
@@ -1386,8 +1410,8 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////
     struct Settings {
       Settings() noexcept
-          : _batch_size(8192),
-            _concurrency_threshold(823543),
+          : _batch_size(8'192),
+            _concurrency_threshold(823'543),
             _max_threads(std::thread::hardware_concurrency()),
             _immutable(false) {}
       Settings(Settings const&) noexcept = default;
@@ -1399,19 +1423,20 @@ namespace libsemigroups {
       bool   _immutable;
     } _settings;
 
-    size_t                                           _degree;
-    std::vector<std::pair<letter_type, letter_type>> _duplicate_gens;
-    std::vector<element_index_type>                  _enumerate_order;
-    std::vector<letter_type>                         _final;
-    std::vector<letter_type>                         _first;
-    bool                                             _found_one;
-    bool                                             _idempotents_found;
-    std::vector<int>                                 _is_idempotent;
-    cayley_graph_type                                _left;
-    std::vector<size_type>                           _length;
-    std::vector<enumerate_index_type>                _lenindex;
-    std::vector<element_index_type>                  _letter_to_pos;
-    size_type                                        _nr;
+    size_t _degree;
+    std::vector<std::pair<generator_index_type, generator_index_type>>
+                                      _duplicate_gens;
+    std::vector<element_index_type>   _enumerate_order;
+    std::vector<generator_index_type> _final;
+    std::vector<generator_index_type> _first;
+    bool                              _found_one;
+    bool                              _idempotents_found;
+    std::vector<int>                  _is_idempotent;
+    cayley_graph_type                 _left;
+    std::vector<size_type>            _length;
+    std::vector<enumerate_index_type> _lenindex;
+    std::vector<element_index_type>   _letter_to_pos;
+    size_type                         _nr;
 #ifdef LIBSEMIGROUPS_VERBOSE
     size_t _nr_products;
 #endif

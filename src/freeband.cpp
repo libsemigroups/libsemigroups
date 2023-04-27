@@ -29,6 +29,7 @@
 
 #include "libsemigroups/constants.hpp"  // for UNDEFINED
 #include "libsemigroups/debug.hpp"      // for LIBSEMIGROUPS_ASSERT
+#include "libsemigroups/types.hpp"      // for word_type, letter_type
 
 namespace libsemigroups {
 
@@ -36,6 +37,7 @@ namespace libsemigroups {
     using level_edges_type = std::vector<std::vector<size_t>>;
     using left_type        = std::vector<size_t>;
     using right_type       = std::vector<size_t>;
+
     template <typename T>
     bool is_standardized(T first, T last) {
       size_t m = 0;

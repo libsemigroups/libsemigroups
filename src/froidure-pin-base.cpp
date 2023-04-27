@@ -18,10 +18,17 @@
 
 #include "libsemigroups/froidure-pin-base.hpp"
 
-#include <vector>
+#include <algorithm>  // for min, max
+#include <cstdint>    // for uint64_t
+#include <vector>     // for vector
 
-#include "libsemigroups/exception.hpp"
-#include "libsemigroups/report.hpp"
+#include "libsemigroups/constants.hpp"          // for Undefined, Max, UNDEF...
+#include "libsemigroups/debug.hpp"              // for LIBSEMIGROUPS_ASSERT
+#include "libsemigroups/detail/containers.hpp"  // for DynamicArray2
+#include "libsemigroups/exception.hpp"          // for LIBSEMIGROUPS_EXCEPTION
+#include "libsemigroups/report.hpp"             // for REPORT_DEFAULT, Reporter
+#include "libsemigroups/runner.hpp"             // for Runner
+#include "libsemigroups/types.hpp"              // for letter_type, word_type
 
 namespace libsemigroups {
   using element_index_type = FroidurePinBase::element_index_type;
@@ -172,6 +179,7 @@ namespace libsemigroups {
     for (auto x : w) {
       validate_letter_index(x);
     }
+    // TODO use word_graph::follow_path instead
     element_index_type out = _letter_to_pos[w[0]];
     size_t const       n   = _right.number_of_nodes();
     auto               it  = w.cbegin() + 1;

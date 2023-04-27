@@ -17,7 +17,7 @@
 //
 
 // TODO(later)
-// 1. Use the new document template for all methods.
+// 1. Use the new document template for all mem functions
 // 2. noexcept
 
 #ifndef LIBSEMIGROUPS_FROIDURE_PIN_HPP_
@@ -32,13 +32,14 @@
 #include <utility>        // for pair
 #include <vector>         // for vector
 
-#include "adapters.hpp"    // for Complexity, Degree, IncreaseDegree
-#include "detail/containers.hpp"  // for DynamicArray2
-#include "detail/bruidhinn-traits.hpp"  // for detail::BruidhinnTraits
+#include "adapters.hpp"           // for Complexity, Degree, IncreaseDegree
 #include "froidure-pin-base.hpp"  // for FroidurePinBase, FroidurePinBase::s...
 #include "iterator.hpp"           // for ConstIteratorStateless
 #include "stl.hpp"                // for EqualTo, Hash
 #include "types.hpp"              // for letter_type, word_type
+
+#include "detail/bruidhinn-traits.hpp"  // for detail::BruidhinnTraits
+#include "detail/containers.hpp"        // for DynamicArray2
 
 //! Namespace for everything in the libsemigroups library.
 namespace libsemigroups {
@@ -180,8 +181,8 @@ namespace libsemigroups {
   //! \endcode
   template <typename TElementType,
             typename TTraits = FroidurePinTraits<TElementType>>
-  class FroidurePin final : private detail::BruidhinnTraits<TElementType>,
-                            public FroidurePinBase {
+  class FroidurePin : private detail::BruidhinnTraits<TElementType>,
+                      public FroidurePinBase {
    private:
     ////////////////////////////////////////////////////////////////////////
     // FroidurePin - typedefs - private
@@ -284,7 +285,7 @@ namespace libsemigroups {
 
    private:
     template <typename T>
-    struct IsState final
+    struct IsState
         : std::integral_constant<bool,
                                  !std::is_void<T>::value
                                      && std::is_same<state_type, T>::value> {};
@@ -469,7 +470,7 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if \p w contains an value exceeding
     //! \ref number_of_generators.
-    bool equal_to(word_type const& x, word_type const& y) const override;
+    bool equal_to(word_type const& x, word_type const& y) const;
 
     //! Returns the number of generators.
     //!
@@ -550,7 +551,7 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if the values \p i and \p j are greater
     //! than or equal to \ref current_size.
     element_index_type fast_product(element_index_type i,
-                                    element_index_type j) const override;
+                                    element_index_type j) const;
 
     //! Returns the number of idempotents.
     //!
@@ -565,7 +566,7 @@ namespace libsemigroups {
     //!
     //! \note
     //! This function triggers a full enumeration.
-    size_t number_of_idempotents() override;
+    size_t number_of_idempotents();
 
     //! Check if an element is an idempotent via its index.
     //!
@@ -582,7 +583,7 @@ namespace libsemigroups {
     //!
     //! \note
     //! This function triggers a full enumeration.
-    bool is_idempotent(element_index_type i) override;
+    bool is_idempotent(element_index_type i);
 
     //! Requests the given capacity for elements.
     //!
@@ -599,7 +600,7 @@ namespace libsemigroups {
     //!
     //! \exceptions
     //! \no_libsemigroups_except
-    void reserve(size_t val) override;
+    void reserve(size_t val);
 
     //! Test membership of an element.
     //!
@@ -660,8 +661,7 @@ namespace libsemigroups {
     //! \exceptions
     //! \no_libsemigroups_except
     // TODO(3.0) rename to sorted_position
-    element_index_type
-    position_to_sorted_position(element_index_type i) override;
+    element_index_type position_to_sorted_position(element_index_type i);
 
     //! Access element specified by index with bound checks.
     //!
