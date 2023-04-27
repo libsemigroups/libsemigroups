@@ -1061,17 +1061,19 @@ namespace libsemigroups {
     S.add_generator(Transf<>({5, 1, 2, 3, 4, 5}));
     S.add_generator(Transf<>({1, 1, 2, 3, 4, 5}));
 
-    REQUIRE(S.right(0, 0) == 0);
-    REQUIRE(S.left(0, 0) == 0);
+    REQUIRE(S.right_cayley_graph().target(0, 0) == 0);
+    REQUIRE(S.left_cayley_graph().target(0, 0) == 0);
 
     S.add_generator(Transf<>({0, 1, 2, 3, 4, 5}));
     Transf<> tmp(6);
     for (auto it = S.cbegin(); it < S.cend(); ++it) {
       for (size_t i = 0; i < 5; ++i) {
         tmp.product_inplace(*it, S.generator(i));
-        REQUIRE(S.position(tmp) == S.right(S.position(*it), i));
+        REQUIRE(S.position(tmp)
+                == S.right_cayley_graph().target(S.position(*it), i));
         tmp.product_inplace(S.generator(i), *it);
-        REQUIRE(S.position(tmp) == S.left(S.position(*it), i));
+        REQUIRE(S.position(tmp)
+                == S.left_cayley_graph().target(S.position(*it), i));
       }
     }
   }

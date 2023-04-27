@@ -144,11 +144,11 @@ namespace libsemigroups {
     REQUIRE(S.sorted_at(33066) == S.at(3));
     REQUIRE(S.sorted_at(18184) == S.generator(0) * S.generator(3));
 
-    REQUIRE(S.right(0, 3) == 7);
-    REQUIRE(S.right(0, 3) == 7);
+    REQUIRE(S.right_cayley_graph().target(0, 3) == 7);
+    REQUIRE(S.right_cayley_graph().target(0, 3) == 7);
 
-    REQUIRE(S.left(0, 3) == 7);
-    REQUIRE(S.left(0, 3) == 7);
+    REQUIRE(S.left_cayley_graph().target(0, 3) == 7);
+    REQUIRE(S.left_cayley_graph().target(0, 3) == 7);
 
     word_type w;
     S.minimal_factorisation(w, 378);

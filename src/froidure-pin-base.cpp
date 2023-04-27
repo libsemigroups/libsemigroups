@@ -22,13 +22,15 @@
 #include <cstdint>    // for uint64_t
 #include <vector>     // for vector
 
-#include "libsemigroups/constants.hpp"          // for Undefined, Max, UNDEF...
-#include "libsemigroups/debug.hpp"              // for LIBSEMIGROUPS_ASSERT
+#include "libsemigroups/constants.hpp"  // for Undefined, Max, UNDEF...
+#include "libsemigroups/debug.hpp"      // for LIBSEMIGROUPS_ASSERT
+#include "libsemigroups/exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
+#include "libsemigroups/report.hpp"     // for REPORT_DEFAULT, Reporter
+#include "libsemigroups/runner.hpp"     // for Runner
+#include "libsemigroups/string.hpp"     // for group_digits
+#include "libsemigroups/types.hpp"      // for letter_type, word_type
+
 #include "libsemigroups/detail/containers.hpp"  // for DynamicArray2
-#include "libsemigroups/exception.hpp"          // for LIBSEMIGROUPS_EXCEPTION
-#include "libsemigroups/report.hpp"             // for REPORT_DEFAULT, Reporter
-#include "libsemigroups/runner.hpp"             // for Runner
-#include "libsemigroups/types.hpp"              // for letter_type, word_type
 
 namespace libsemigroups {
   using element_index_type = FroidurePinBase::element_index_type;
@@ -174,12 +176,12 @@ namespace libsemigroups {
   FroidurePinBase::current_position(word_type const& w) const {
     // w is a word in the generators (i.e. a vector of letter_type's)
     if (w.size() == 0) {
-      LIBSEMIGROUPS_EXCEPTION("the given word has length 0");
+      LIBSEMIGROUPS_EXCEPTION("expected a non-empty word, found empty word");
     }
     for (auto x : w) {
       validate_letter_index(x);
     }
-    // TODO use word_graph::follow_path instead
+    // TODO(now) use word_graph::follow_path instead
     element_index_type out = _letter_to_pos[w[0]];
     size_t const       n   = _right.number_of_nodes();
     auto               it  = w.cbegin() + 1;
@@ -221,8 +223,7 @@ namespace libsemigroups {
     } else {  // batch_size() is very big for some reason
       limit = batch_size();
     }
-    REPORT_DEFAULT(
-        "limit = %llu (%s)\n", static_cast<uint64_t>(limit), __func__);
+    report_default("FroidurePin: limit = {}\n", detail::group_digits(limit));
     run_until([this, &limit]() -> bool { return current_size() >= limit; });
   }
 
@@ -255,15 +256,18 @@ namespace libsemigroups {
   // FroidurePinBase - settings - public
   ////////////////////////////////////////////////////////////////////////
 
+  // TODO(now) to hpp
   FroidurePinBase& FroidurePinBase::batch_size(size_t batch_size) noexcept {
     _settings._batch_size = batch_size;
     return *this;
   }
 
+  // TODO(now) to hpp
   size_t FroidurePinBase::batch_size() const noexcept {
     return _settings._batch_size;
   }
 
+  // TODO(now) to hpp
   FroidurePinBase&
   FroidurePinBase::max_threads(size_t number_of_threads) noexcept {
     unsigned int n = static_cast<unsigned int>(
@@ -272,26 +276,123 @@ namespace libsemigroups {
     return *this;
   }
 
+  // TODO(now) to hpp
   size_t FroidurePinBase::max_threads() const noexcept {
     return _settings._max_threads;
   }
 
+  // TODO(now) to hpp
   FroidurePinBase&
   FroidurePinBase::concurrency_threshold(size_t thrshld) noexcept {
     _settings._concurrency_threshold = thrshld;
     return *this;
   }
 
+  // TODO(now) to hpp
   size_t FroidurePinBase::concurrency_threshold() const noexcept {
     return _settings._concurrency_threshold;
   }
 
+  // TODO(now) to hpp
   FroidurePinBase& FroidurePinBase::immutable(bool val) noexcept {
     _settings._immutable = val;
     return *this;
   }
 
+  // TODO(now) to hpp
   bool FroidurePinBase::immutable() const noexcept {
     return _settings._immutable;
+  }
+
+  void FroidurePinBase::validate_element_index(element_index_type i) const {
+    if (i >= _nr) {
+      LIBSEMIGROUPS_EXCEPTION(
+          "element index out of bounds, expected value in [0, {}), got {}",
+          _nr,
+          i);
+    }
+  }
+
+  void FroidurePinBase::validate_letter_index(generator_index_type i) const {
+    if (i >= number_of_generators()) {
+      LIBSEMIGROUPS_EXCEPTION(
+          "generator index out of bounds, expected value in [0, {}), got {}",
+          number_of_generators(),
+          i);
+    }
+  }
+
+  FroidurePinBase::const_rule_iterator::const_rule_iterator(
+      FroidurePinBase const* ptr,
+      enumerate_index_type   pos,
+      generator_index_type   gen)
+      : _current(),
+        _froidure_pin(ptr),
+        _gen(gen),
+        _pos(pos),
+        _relation({}, {}) {
+    ++(*this);
+  }
+
+  FroidurePinBase::const_rule_iterator const&
+  FroidurePinBase::const_rule_iterator::operator++() noexcept {
+    auto const* ptr = _froidure_pin;
+
+    if (_pos == ptr->current_size()) {  // no more relations
+      return *this;
+    }
+
+    _relation.first.clear();
+    _relation.second.clear();
+
+    if (_pos != UNDEFINED) {
+      while (_pos < ptr->current_size()) {
+        while (_gen < ptr->number_of_generators()) {
+          if (!ptr->_reduced.get(ptr->_enumerate_order[_pos], _gen)
+              && (_pos < ptr->_lenindex[1]
+                  || ptr->_reduced.get(
+                      ptr->_suffix[ptr->_enumerate_order[_pos]], _gen))) {
+            _current[0] = ptr->_enumerate_order[_pos];
+            _current[1] = _gen;
+            _current[2] = ptr->_right.target_no_checks(
+                ptr->_enumerate_order[_pos], _gen);
+            if (_current[2] != UNDEFINED) {
+              _gen++;
+              return *this;
+            }
+          }
+          _gen++;
+        }
+        _gen = 0;
+        _pos++;
+      }
+      return *this;
+    } else {
+      // duplicate generators
+      if (_gen < ptr->_duplicate_gens.size()) {
+        _current[0] = ptr->_duplicate_gens[_gen].first;
+        _current[1] = ptr->_duplicate_gens[_gen].second;
+        _current[2] = UNDEFINED;
+        _gen++;
+        return *this;
+      }
+      _gen = 0;
+      _pos = 0;
+      return operator++();
+    }
+  }
+
+  void FroidurePinBase::const_rule_iterator::populate_relation() const {
+    // TODO(now) to cpp
+    if (_relation.first.empty()) {
+      if (_current[2] == UNDEFINED) {
+        _relation.first  = word_type({_current[0]});
+        _relation.second = word_type({_current[1]});
+      } else {
+        _froidure_pin->minimal_factorisation(_relation.first, _current[0]);
+        _relation.first.push_back(_current[1]);
+        _froidure_pin->minimal_factorisation(_relation.second, _current[2]);
+      }
+    }
   }
 }  // namespace libsemigroups
