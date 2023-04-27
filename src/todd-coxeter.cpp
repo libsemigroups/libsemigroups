@@ -132,6 +132,17 @@ namespace libsemigroups {
       process_coincidences<DoNotRegisterDefs>();
       current = NodeManager_::next_active_node(current);
       if (report()) {
+        // TODO setting for this
+        size_t killed_last_second
+            = number_of_nodes_killed() - stats().prev_nodes_killed;
+        if (killed_last_second < number_of_nodes_active() / 100) {
+          report_default("ToddCoxeter: too few nodes killed, expected >= "
+                         "{}, found {}, aborting lookahead . . .\n",
+                         number_of_nodes_active() / 100,
+                         killed_last_second);
+          report_no_prefix("{:-<93}\n", "");
+          break;
+        }
         report_active_nodes();
       }
     }
@@ -704,6 +715,8 @@ namespace libsemigroups {
         // already run process_definitions, and so there's no point in doing a
         // lookahead.
         perform_lookahead();
+      } else if (report()) {
+        word_graph().report_active_nodes();
       }
       current = _word_graph.next_active_node(current);
     }
@@ -848,12 +861,17 @@ namespace libsemigroups {
 
     size_t const old_lookahead_next = lookahead_next();
 
-    if (num_nodes < (lookahead_next() / lookahead_growth_factor())
-        && lookahead_next() > lookahead_min()) {
+    if (num_nodes < (lookahead_next() / lookahead_growth_factor())) {
       // If the lookahead_next is much bigger than the current number of
       // nodes, then reduce the next lookahead.
-
-      lookahead_next(lookahead_growth_factor() * num_nodes);
+      if (lookahead_growth_factor() * num_nodes > lookahead_min()) {
+        lookahead_next(lookahead_growth_factor() * num_nodes);
+      } else if (lookahead_next() / lookahead_growth_factor()
+                 > lookahead_min()) {
+        lookahead_next(lookahead_next() / lookahead_growth_factor());
+      } else {
+        lookahead_next(lookahead_min());
+      }
     } else if (num_nodes > lookahead_next()
                || num_killed_by_me
                       < (num_nodes / lookahead_growth_threshold())) {

@@ -2223,7 +2223,6 @@ namespace libsemigroups {
     REQUIRE(tc.number_of_classes() == 7'776);
   }
 
-  // TODO this doesn't currentlyu run
   LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "115",
                           "full_transformation_monoid(7, Iwahori)",
@@ -2236,6 +2235,8 @@ namespace libsemigroups {
     auto   p  = full_transformation_monoid(n, author::Iwahori);
 
     REQUIRE(presentation::length(p) == 69'656);
+    presentation::remove_redundant_generators(p);
+    REQUIRE(presentation::length(p) == 69'020);
     presentation::reduce_complements(p);
     REQUIRE(presentation::length(p) == 45'380);
     presentation::remove_trivial_rules(p);
@@ -2246,7 +2247,10 @@ namespace libsemigroups {
     // REQUIRE(presentation::length(p) == 8'515);
 
     ToddCoxeter tc(congruence_kind::twosided, p);
-    tc.lookahead_min(2'000'000).strategy(options::strategy::felsch);
+    // TODO should be some interplay between lookahead_min and lookahead_next,
+    // i.e.  lookahead_min shouldn't be allowed to be greater than
+    // lookahead_next, maybe?
+    tc.lookahead_min(2'500'000).lookahead_growth_factor(1.2);
     REQUIRE(tc.number_of_classes() == 823'543);
   }
 
