@@ -1,6 +1,6 @@
 //
 // libsemigroups - C++ library for semigroups and monoids
-// Copyright (C) 2019 James D. Mitchell
+// Copyright (C) 2019-2023 James D. Mitchell
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -19,39 +19,15 @@
 // This file contains implementations of the member functions for the
 // FroidurePin class.
 
-#include "debug.hpp"      // for LIBSEMIGROUPS_ASSERT
-#include "exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
-#include "report.hpp"     // for REPORT
-#include "timer.hpp"      // for detail::Timer
-
-#ifndef LIBSEMIGROUPS_FROIDURE_PIN_IMPL_HPP_
-#define LIBSEMIGROUPS_FROIDURE_PIN_IMPL_HPP_
-
-#define TEMPLATE template <typename TElementType, typename TTraits>
-#define FROIDURE_PIN FroidurePin<TElementType, TTraits>
-
-#define VOID TEMPLATE void
-#define SIZE_T TEMPLATE size_t
-#define BOOL TEMPLATE bool
-#define TRIL TEMPLATE tril
-#define ELEMENT_INDEX_TYPE TEMPLATE element_index_type
-#define LETTER_TYPE TEMPLATE letter_type
-#define CONST_REFERENCE TEMPLATE typename FROIDURE_PIN::const_reference
-#define ELEMENT_TYPE TEMPLATE typename FROIDURE_PIN::element_type
-#define CAYLEY_GRAPH_TYPE TEMPLATE typename FROIDURE_PIN::cayley_graph_type
-#define WORD_TYPE TEMPLATE word_type
-
 namespace libsemigroups {
-  // using enumerate_index_type = FroidurePinBase::size_type;
-  using element_index_type = FroidurePinBase::element_index_type;
 
   ////////////////////////////////////////////////////////////////////////
   // FroidurePin - constructors + destructor - public
   ////////////////////////////////////////////////////////////////////////
 
-  TEMPLATE
-  FROIDURE_PIN::FroidurePin()
-      : detail::BruidhinnTraits<TElementType>(),
+  template <typename Element, typename Traits>
+  FroidurePin<Element, Traits>::FroidurePin()
+      : detail::BruidhinnTraits<Element>(),
         FroidurePinBase(),
         _elements(),
         _gens(),
@@ -61,28 +37,26 @@ namespace libsemigroups {
         _sorted(),
         _state(nullptr),
         _tmp_product() {  // (length of the current word) - 1
-#ifdef LIBSEMIGROUPS_VERBOSE
     _nr_products = 0;
-#endif
   }
 
-  TEMPLATE
-  FROIDURE_PIN::FroidurePin(std::vector<element_type> const& gens)
+  template <typename Element, typename Traits>
+  FroidurePin<Element, Traits>::FroidurePin(
+      std::vector<element_type> const& gens)
       : FroidurePin() {
-#ifdef LIBSEMIGROUPS_VERBOSE
     _nr_products = 0;
-#endif
     validate_element_collection(gens.cbegin(), gens.cend());
     add_generators_before_start(gens.cbegin(), gens.cend());
   }
 
-  TEMPLATE
-  FROIDURE_PIN::FroidurePin(std::initializer_list<element_type> gens)
+  template <typename Element, typename Traits>
+  FroidurePin<Element, Traits>::FroidurePin(
+      std::initializer_list<element_type> gens)
       : FroidurePin(std::vector<element_type>(gens)) {}
 
-  TEMPLATE
-  FROIDURE_PIN::FroidurePin(FroidurePin const& S)
-      : detail::BruidhinnTraits<TElementType>(),
+  template <typename Element, typename Traits>
+  FroidurePin<Element, Traits>::FroidurePin(FroidurePin const& S)
+      : detail::BruidhinnTraits<Element>(),
         FroidurePinBase(S),
         _elements(),
         _gens(),
@@ -104,8 +78,8 @@ namespace libsemigroups {
     }
   }
 
-  TEMPLATE
-  FROIDURE_PIN::~FroidurePin() {
+  template <typename Element, typename Traits>
+  FroidurePin<Element, Traits>::~FroidurePin() {
     if (number_of_generators() > 0) {
       this->internal_free(_tmp_product);
       this->internal_free(_id);
@@ -143,9 +117,10 @@ namespace libsemigroups {
   // equivalent.
   //
   // <add_generators> or <closure> should usually be called after this.
-  TEMPLATE
-  FROIDURE_PIN::FroidurePin(FroidurePin const&               S,
-                            std::vector<element_type> const* coll)
+  template <typename Element, typename Traits>
+  FroidurePin<Element, Traits>::FroidurePin(
+      FroidurePin const&               S,
+      std::vector<element_type> const* coll)
       : FroidurePin() {
     _idempotents = S._idempotents;
     _state       = S._state;
@@ -194,7 +169,9 @@ namespace libsemigroups {
   // FroidurePin - member functions - public
   ////////////////////////////////////////////////////////////////////////
 
-  ELEMENT_TYPE FROIDURE_PIN::word_to_element(word_type const& w) const {
+  template <typename Element, typename Traits>
+  typename FroidurePin<Element, Traits>::element_type
+  FroidurePin<Element, Traits>::word_to_element(word_type const& w) const {
     element_index_type pos = current_position(w);
     if (pos != UNDEFINED) {
       // Return a copy
@@ -209,22 +186,24 @@ namespace libsemigroups {
         = this->external_copy(this->to_external_const(_tmp_product));
 
     auto* state_ptr = _state.get();
-    InternalProduct()(prod,
-                      this->to_external_const(_gens[w[0]]),
-                      this->to_external_const(_gens[w[1]]),
-                      state_ptr);
+    internal_product(prod,
+                     this->to_external_const(_gens[w[0]]),
+                     this->to_external_const(_gens[w[1]]),
+                     state_ptr);
     for (auto it = w.begin() + 2; it < w.end(); ++it) {
       LIBSEMIGROUPS_ASSERT(*it < number_of_generators());
       Swap()(this->to_external(_tmp_product), prod);
-      InternalProduct()(prod,
-                        this->to_external_const(_tmp_product),
-                        this->to_external_const(_gens[*it]),
-                        state_ptr);
+      internal_product(prod,
+                       this->to_external_const(_tmp_product),
+                       this->to_external_const(_gens[*it]),
+                       state_ptr);
     }
     return prod;
   }
 
-  BOOL FROIDURE_PIN::equal_to(word_type const& u, word_type const& v) const {
+  template <typename Element, typename Traits>
+  bool FroidurePin<Element, Traits>::equal_to(word_type const& u,
+                                              word_type const& v) const {
     element_index_type u_pos = current_position(u);  // validates u
     element_index_type v_pos = current_position(v);  // validates v
     if (finished() || (u_pos != UNDEFINED && v_pos != UNDEFINED)) {
@@ -241,16 +220,21 @@ namespace libsemigroups {
     }
   }
 
-  SIZE_T FROIDURE_PIN::number_of_generators() const noexcept {
+  template <typename Element, typename Traits>
+  size_t FroidurePin<Element, Traits>::number_of_generators() const noexcept {
     return _gens.size();
   }
 
-  CONST_REFERENCE FROIDURE_PIN::generator(letter_type pos) const {
+  template <typename Element, typename Traits>
+  typename FroidurePin<Element, Traits>::const_reference
+  FroidurePin<Element, Traits>::generator(generator_index_type pos) const {
     validate_letter_index(pos);
     return this->to_external_const(_gens[pos]);
   }
 
-  ELEMENT_INDEX_TYPE FROIDURE_PIN::current_position(const_reference x) const {
+  template <typename Element, typename Traits>
+  FroidurePinBase::element_index_type
+  FroidurePin<Element, Traits>::current_position(const_reference x) const {
     if (Degree()(x) != _degree) {
       return UNDEFINED;
     }
@@ -259,30 +243,32 @@ namespace libsemigroups {
     return (it == _map.end() ? UNDEFINED : it->second);
   }
 
-  ELEMENT_INDEX_TYPE
-  FROIDURE_PIN::fast_product(element_index_type i, element_index_type j) const {
+  template <typename Element, typename Traits>
+  FroidurePinBase::element_index_type
+  FroidurePin<Element, Traits>::fast_product(element_index_type i,
+                                             element_index_type j) const {
     validate_element_index(i);
     validate_element_index(j);
     auto const n = 2 * Complexity()(this->to_external_const(_tmp_product));
     if (current_length(i) < n || current_length(j) < n) {
       return product_by_reduction(i, j);
     } else {
-      InternalProduct()(this->to_external(_tmp_product),
-                        this->to_external_const(_elements[i]),
-                        this->to_external_const(_elements[j]),
-                        _state.get());
+      internal_product(this->to_external(_tmp_product),
+                       this->to_external_const(_elements[i]),
+                       this->to_external_const(_elements[j]),
+                       _state.get());
       return _map.find(_tmp_product)->second;
     }
   }
 
-  // TODO(later) put this in FroidurePinBase??
-  SIZE_T FROIDURE_PIN::number_of_idempotents() {
+  template <typename Element, typename Traits>
+  size_t FroidurePin<Element, Traits>::number_of_idempotents() {
     init_idempotents();
     return _idempotents.size();
   }
 
-  // TODO(later) put this in FroidurePinBase??
-  BOOL FROIDURE_PIN::is_idempotent(element_index_type pos) {
+  template <typename Element, typename Traits>
+  bool FroidurePin<Element, Traits>::is_idempotent(element_index_type pos) {
     init_idempotents();
     // only validate pos after init_idempotents, because we don't know if it's
     // valid until then
@@ -290,7 +276,8 @@ namespace libsemigroups {
     return _is_idempotent[pos];
   }
 
-  VOID FROIDURE_PIN::reserve(size_t n) {
+  template <typename Element, typename Traits>
+  void FroidurePin<Element, Traits>::reserve(size_t n) {
     // Since the FroidurePin we are enumerating is bounded in size by the
     // maximum value of an element_index_t, we cast the argument here to this
     // integer type.
@@ -308,11 +295,14 @@ namespace libsemigroups {
     _suffix.reserve(nn);
   }
 
-  BOOL FROIDURE_PIN::contains(const_reference x) {
+  template <typename Element, typename Traits>
+  bool FroidurePin<Element, Traits>::contains(const_reference x) {
     return (position(x) != UNDEFINED);
   }
 
-  ELEMENT_INDEX_TYPE FROIDURE_PIN::position(const_reference x) {
+  template <typename Element, typename Traits>
+  FroidurePinBase::element_index_type
+  FroidurePin<Element, Traits>::position(const_reference x) {
     if (Degree()(x) != _degree) {
       return UNDEFINED;
     }
@@ -330,12 +320,16 @@ namespace libsemigroups {
     }
   }
 
-  ELEMENT_INDEX_TYPE FROIDURE_PIN::sorted_position(const_reference x) {
+  template <typename Element, typename Traits>
+  FroidurePinBase::element_index_type
+  FroidurePin<Element, Traits>::sorted_position(const_reference x) {
     return position_to_sorted_position(position(x));
   }
 
-  ELEMENT_INDEX_TYPE
-  FROIDURE_PIN::position_to_sorted_position(element_index_type pos) {
+  template <typename Element, typename Traits>
+  FroidurePinBase::element_index_type
+  FroidurePin<Element, Traits>::position_to_sorted_position(
+      element_index_type pos) {
     run();
     if (pos >= _nr) {
       return UNDEFINED;
@@ -344,32 +338,42 @@ namespace libsemigroups {
     return _sorted[pos].second;
   }
 
-  CONST_REFERENCE FROIDURE_PIN::at(element_index_type pos) {
+  template <typename Element, typename Traits>
+  typename FroidurePin<Element, Traits>::const_reference
+  FroidurePin<Element, Traits>::at(element_index_type pos) {
     enumerate(pos + 1);
     if (pos >= current_size()) {
-      LIBSEMIGROUPS_EXCEPTION("expected value in range [0, %llu), got %llu",
-                              uint64_t(current_size()),
-                              uint64_t(pos));
+      LIBSEMIGROUPS_EXCEPTION(
+          "element index out of range, expected value in range [0, {}), got {}",
+          current_size(),
+          pos);
     }
     return this->to_external_const(_elements.at(pos));
   }
 
-  CONST_REFERENCE FROIDURE_PIN::operator[](element_index_type pos) const {
+  template <typename Element, typename Traits>
+  typename FroidurePin<Element, Traits>::const_reference
+  FroidurePin<Element, Traits>::operator[](element_index_type pos) const {
     LIBSEMIGROUPS_ASSERT(pos < _elements.size());
     return this->to_external_const(_elements[pos]);
   }
 
-  CONST_REFERENCE FROIDURE_PIN::sorted_at(element_index_type pos) {
+  template <typename Element, typename Traits>
+  typename FroidurePin<Element, Traits>::const_reference
+  FroidurePin<Element, Traits>::sorted_at(element_index_type pos) {
     init_sorted();
     if (pos >= size()) {
-      LIBSEMIGROUPS_EXCEPTION("expected value in range [0, %llu), got %llu",
-                              uint64_t(size()),
-                              uint64_t(pos));
+      LIBSEMIGROUPS_EXCEPTION(
+          "element index out of range, expected value in range [0, {}), got {}",
+          size(),
+          pos);
     }
     return this->to_external_const(_sorted.at(pos).first);
   }
 
-  WORD_TYPE FROIDURE_PIN::minimal_factorisation(const_reference x) {
+  template <typename Element, typename Traits>
+  word_type
+  FroidurePin<Element, Traits>::minimal_factorisation(const_reference x) {
     element_index_type pos = this->position(x);
     if (pos == UNDEFINED) {
       LIBSEMIGROUPS_EXCEPTION(
@@ -378,18 +382,42 @@ namespace libsemigroups {
     return minimal_factorisation(pos);
   }
 
-  WORD_TYPE FROIDURE_PIN::factorisation(const_reference x) {
+  template <typename Element, typename Traits>
+  word_type FroidurePin<Element, Traits>::factorisation(const_reference x) {
     return minimal_factorisation(x);
   }
 
-  VOID FROIDURE_PIN::run_impl() {
+  template <typename Element, typename Traits>
+  void FroidurePin<Element, Traits>::report_progress(
+      std::chrono::high_resolution_clock::time_point start_time) {
+    using std::chrono::duration_cast;
+    using high_resolution_clock = std::chrono::high_resolution_clock;
+    using nanoseconds           = std::chrono::nanoseconds;
+
+    auto run_time
+        = duration_cast<nanoseconds>(high_resolution_clock::now() - start_time);
+    report_default("FroidurePin: {} (Cayley graph) | {} (elements) | "
+                   "{} (rules) | {} (total) \n",
+                   "\u2300 " + italic("{:<4}", current_max_word_length()),
+                   italic("{:<11}", detail::group_digits(_nr)),
+                   italic("{:<9}", detail::group_digits(_nr_rules)),
+                   italic("{:<7}", string_time(run_time)));
+  }
+
+  template <typename Element, typename Traits>
+  void FroidurePin<Element, Traits>::run_impl() {
     std::lock_guard<std::mutex> lg(_mtx);
     if (_pos >= _nr) {
       return;
     }
 
-    detail::Timer timer;
-    size_t        tid = THREAD_ID_MANAGER.tid(std::this_thread::get_id());
+    if (!running_until() && !running_for()) {
+      report_default(
+          "FroidurePin: enumerating until all elements are found . . .\n");
+    }
+    auto start_time = std::chrono::high_resolution_clock::now();
+
+    size_t tid = THREAD_ID_MANAGER.tid(std::this_thread::get_id());
 
     LIBSEMIGROUPS_ASSERT(_lenindex.size() > 1);
 
@@ -397,19 +425,18 @@ namespace libsemigroups {
 
     // product the generators by every generator
     if (_pos < _lenindex[1]) {
+      report_progress(start_time);
       size_type number_of_shorter_elements = _nr;
       while (_pos < _lenindex[1]) {
         element_index_type i = _enumerate_order[_pos];
-        for (letter_type j = 0; j != number_of_generators(); ++j) {
-          InternalProduct()(this->to_external(_tmp_product),
-                            this->to_external_const(_elements[i]),
-                            this->to_external_const(_gens[j]),
-                            ptr,
-                            tid);
+        for (generator_index_type j = 0; j != number_of_generators(); ++j) {
+          internal_product(this->to_external(_tmp_product),
+                           this->to_external_const(_elements[i]),
+                           this->to_external_const(_gens[j]),
+                           ptr,
+                           tid);
 
-#ifdef LIBSEMIGROUPS_VERBOSE
           _nr_products++;
-#endif
           auto it = _map.find(_tmp_product);
 
           if (it != _map.end()) {
@@ -433,26 +460,28 @@ namespace libsemigroups {
         _pos++;
       }
       for (enumerate_index_type i = 0; i != _pos; ++i) {
-        letter_type b = _final[_enumerate_order[i]];
-        for (letter_type j = 0; j != number_of_generators(); ++j) {
-          _left.set_target_no_checks(_enumerate_order[i],
-                            j,
-                            _right.target_no_checks(_letter_to_pos[j], b));
+        generator_index_type b = _final[_enumerate_order[i]];
+        for (generator_index_type j = 0; j != number_of_generators(); ++j) {
+          _left.set_target_no_checks(
+              _enumerate_order[i],
+              j,
+              _right.target_no_checks(_letter_to_pos[j], b));
         }
       }
       _wordlen++;
       expand(_nr - number_of_shorter_elements);
       _lenindex.push_back(_enumerate_order.size());
+      report_progress(start_time);
     }
 
     // Multiply the words of length > 1 by every generator
-    while (_pos != _nr && !stopped()) {
+    while (_pos < _nr && !stopped()) {
       size_type number_of_shorter_elements = _nr;
       while (_pos != _lenindex[_wordlen + 1] && !stopped()) {
-        element_index_type i = _enumerate_order[_pos];
-        letter_type        b = _first[i];
-        element_index_type s = _suffix[i];
-        for (letter_type j = 0; j != number_of_generators(); ++j) {
+        element_index_type   i = _enumerate_order[_pos];
+        generator_index_type b = _first[i];
+        element_index_type   s = _suffix[i];
+        for (generator_index_type j = 0; j != number_of_generators(); ++j) {
           if (!_reduced.get(s, j)) {
             element_index_type r = _right.target_no_checks(s, j);
             if (_found_one && r == _pos_one) {
@@ -462,20 +491,18 @@ namespace libsemigroups {
                   i,
                   j,
                   _right.target_no_checks(_left.target_no_checks(_prefix[r], b),
-                                         _final[r]));
+                                          _final[r]));
             } else {
               _right.set_target_no_checks(
                   i, j, _right.target_no_checks(_letter_to_pos[b], _final[r]));
             }
           } else {
-            InternalProduct()(this->to_external(_tmp_product),
-                              this->to_external_const(_elements[i]),
-                              this->to_external_const(_gens[j]),
-                              ptr,
-                              tid);
-#ifdef LIBSEMIGROUPS_VERBOSE
+            internal_product(this->to_external(_tmp_product),
+                             this->to_external_const(_elements[i]),
+                             this->to_external_const(_gens[j]),
+                             ptr,
+                             tid);
             _nr_products++;
-#endif
             auto it = _map.find(_tmp_product);
 
             if (it != _map.end()) {
@@ -503,9 +530,9 @@ namespace libsemigroups {
 
       if (_pos > _nr || _pos == _lenindex[_wordlen + 1]) {
         for (enumerate_index_type i = _lenindex[_wordlen]; i != _pos; ++i) {
-          element_index_type p = _prefix[_enumerate_order[i]];
-          letter_type        b = _final[_enumerate_order[i]];
-          for (letter_type j = 0; j != number_of_generators(); ++j) {
+          element_index_type   p = _prefix[_enumerate_order[i]];
+          generator_index_type b = _final[_enumerate_order[i]];
+          for (generator_index_type j = 0; j != number_of_generators(); ++j) {
             _left.set_target_no_checks(
                 _enumerate_order[i],
                 j,
@@ -515,42 +542,46 @@ namespace libsemigroups {
         _wordlen++;
         _lenindex.push_back(_enumerate_order.size());
       }
-      REPORT_DEFAULT("found %d elements, %d rules, %d max word length\n",
-                     _nr,
-                     _nr_rules,
-                     current_max_word_length());
+      if (_pos < _nr) {
+        report_progress(start_time);
+      }
     }
-    REPORT_TIME(timer);
     report_why_we_stopped();
-#ifdef LIBSEMIGROUPS_VERBOSE
-    REPORT_DEFAULT("number of products = %llu\n",
-                   static_cast<uint64_t>(_nr_products));
-#endif
+    report_default(
+        "FroidurePin: number of products was  {} of {} ({}%)\n",
+        italic(detail::group_digits(_nr_products)),
+        italic(detail::group_digits(current_size() * number_of_generators())),
+        italic("{:.3f}",
+               static_cast<double>(100 * _nr_products)
+                   / (current_size() * number_of_generators())));
   }
 
-  BOOL FROIDURE_PIN::finished_impl() const {
+  template <typename Element, typename Traits>
+  bool FroidurePin<Element, Traits>::finished_impl() const {
     return !running() && _pos >= _nr;
   }
 
-  VOID FROIDURE_PIN::validate_element(const_reference x) const {
+  template <typename Element, typename Traits>
+  void FroidurePin<Element, Traits>::validate_element(const_reference x) const {
     size_t const n = Degree()(x);
     if (degree() != UNDEFINED && n != degree()) {
       LIBSEMIGROUPS_EXCEPTION(
-          "element has degree %d but should have degree %d", n, degree());
+          "invalid element degree, expected {}, but found {}", degree(), n);
     }
   }
 
-  TEMPLATE
+  template <typename Element, typename Traits>
   template <typename T>
-  void FROIDURE_PIN::validate_element_collection(T const& first,
-                                                 T const& last) const {
+  void FroidurePin<Element, Traits>::validate_element_collection(
+      T const& first,
+      T const& last) const {
     if (degree() == UNDEFINED && std::distance(first, last) != 0) {
       auto const n = Degree()(*first);
       for (auto it = first + 1; it < last; ++it) {
         auto const m = Degree()(*it);
         if (m != n) {
           LIBSEMIGROUPS_EXCEPTION(
-              "element has degree %d but should have degree %d", n, m);
+              "invalid element degree, expected {}, but found {}", m, n);
         }
       }
     } else {
@@ -560,7 +591,8 @@ namespace libsemigroups {
     }
   }
 
-  VOID FROIDURE_PIN::init_degree(const_reference x) {
+  template <typename Element, typename Traits>
+  void FroidurePin<Element, Traits>::init_degree(const_reference x) {
     if (_degree == UNDEFINED) {
       _degree      = Degree()(x);
       _id          = this->to_internal(One()(x));
@@ -568,10 +600,11 @@ namespace libsemigroups {
     }
   }
 
-  TEMPLATE
+  template <typename Element, typename Traits>
   template <typename T>
-  void FROIDURE_PIN::add_generators_before_start(T const& first,
-                                                 T const& last) {
+  void
+  FroidurePin<Element, Traits>::add_generators_before_start(T const& first,
+                                                            T const& last) {
     size_t const m = std::distance(first, last);
     if (m != 0) {
       init_degree(*first);
@@ -585,7 +618,7 @@ namespace libsemigroups {
         // new generator
         number_of_new_elements++;
         _gens.push_back(this->internal_copy(this->to_internal_const(*it_coll)));
-        letter_type const n = _gens.size() - 1;
+        generator_index_type const n = _gens.size() - 1;
 
         is_one(_gens.back(), _nr);
         _elements.push_back(_gens.back());
@@ -606,7 +639,7 @@ namespace libsemigroups {
                  || _letter_to_pos[_first[it->second]] == it->second) {
         // duplicate generator
         // i.e. _gens[i] = _gens[_first[it->second]]
-        // _first maps from element_index_type -> letter_type :)
+        // _first maps from element_index_type -> generator_index_type :)
         _letter_to_pos.push_back(it->second);
         _nr_rules++;
         _duplicate_gens.emplace_back(_gens.size(), _first[it->second]);
@@ -632,16 +665,17 @@ namespace libsemigroups {
     _right.add_to_out_degree(m);
   }
 
-  TEMPLATE
+  template <typename Element, typename Traits>
   template <typename T>
-  void FROIDURE_PIN::add_generators_after_start(T const& first, T const& last) {
-    detail::Timer timer;
-    size_t const  tid = THREAD_ID_MANAGER.tid(std::this_thread::get_id());
+  void FroidurePin<Element, Traits>::add_generators_after_start(T const& first,
+                                                                T const& last) {
+    auto         start_time = std::chrono::high_resolution_clock::now();
+    size_t const tid        = THREAD_ID_MANAGER.tid(std::this_thread::get_id());
 
     // get some parameters from the old semigroup
-    letter_type const old_nrgens         = number_of_generators();
-    size_type const   old_nr             = _nr;
-    size_type         number_of_old_left = _pos;
+    generator_index_type const old_nrgens         = number_of_generators();
+    size_type const            old_nr             = _nr;
+    size_type                  number_of_old_left = _pos;
 
     // erase the old index
     _enumerate_order.erase(_enumerate_order.begin() + _lenindex[1],
@@ -652,7 +686,7 @@ namespace libsemigroups {
     // old_new[i] indicates if we have seen _elements.at(i) yet in new.
     std::vector<bool> old_new(old_nr, false);
 
-    for (letter_type i = 0; i < _letter_to_pos.size(); i++) {
+    for (generator_index_type i = 0; i < _letter_to_pos.size(); i++) {
       if (_letter_to_pos[i] < old_nr) {
         old_new[_letter_to_pos[i]] = true;
       } else {
@@ -678,13 +712,13 @@ namespace libsemigroups {
       number_of_shorter_elements = _nr;
       while (_pos < _lenindex[_wordlen + 1] && number_of_old_left > 0) {
         element_index_type i = _enumerate_order[_pos];  // position in _elements
-        letter_type        b = _first[i];
-        element_index_type s = _suffix[i];
+        generator_index_type b = _first[i];
+        element_index_type   s = _suffix[i];
         if (_right.target_no_checks(i, 0) != UNDEFINED) {
           number_of_old_left--;
           // _elements[i] is in old semigroup, and its descendants are
           // known
-          for (letter_type j = 0; j < old_nrgens; j++) {
+          for (generator_index_type j = 0; j < old_nrgens; j++) {
             element_index_type k = _right.target_no_checks(i, j);
             if (!old_new[k]) {  // it's new!
               is_one(_elements[k], k);
@@ -705,13 +739,14 @@ namespace libsemigroups {
               _nr_rules++;
             }
           }
-          for (letter_type j = old_nrgens; j < number_of_generators(); j++) {
+          for (generator_index_type j = old_nrgens; j < number_of_generators();
+               j++) {
             closure_update(i, j, b, s, old_nr, tid, old_new, ptr);
           }
         } else {
           // _elements[i] is either not in old, or it is in old but its
           // descendants are not known
-          for (letter_type j = 0; j < number_of_generators(); j++) {
+          for (generator_index_type j = 0; j < number_of_generators(); j++) {
             closure_update(i, j, b, s, old_nr, tid, old_new, ptr);
           }
         }
@@ -723,18 +758,19 @@ namespace libsemigroups {
         if (_wordlen == 0) {
           for (enumerate_index_type i = 0; i < _pos; i++) {
             size_t b = _final[_enumerate_order[i]];
-            for (letter_type j = 0; j < number_of_generators(); j++) {
+            for (generator_index_type j = 0; j < number_of_generators(); j++) {
               // TODO(JDM) reuse old info here!
-              _left.set_target_no_checks(_enumerate_order[i],
-                                j,
-                                _right.target_no_checks(_letter_to_pos[j], b));
+              _left.set_target_no_checks(
+                  _enumerate_order[i],
+                  j,
+                  _right.target_no_checks(_letter_to_pos[j], b));
             }
           }
         } else {
           for (enumerate_index_type i = _lenindex[_wordlen]; i < _pos; i++) {
-            element_index_type p = _prefix[_enumerate_order[i]];
-            letter_type        b = _final[_enumerate_order[i]];
-            for (letter_type j = 0; j < number_of_generators(); j++) {
+            element_index_type   p = _prefix[_enumerate_order[i]];
+            generator_index_type b = _final[_enumerate_order[i]];
+            for (generator_index_type j = 0; j < number_of_generators(); j++) {
               // TODO(JDM) reuse old info here!
               _left.set_target_no_checks(
                   _enumerate_order[i],
@@ -746,18 +782,13 @@ namespace libsemigroups {
         _lenindex.push_back(_enumerate_order.size());
         _wordlen++;
       }
-      REPORT_DEFAULT("found %d elements, %d rules, %d max word length\n",
-                     _nr,
-                     _nr_rules,
-                     current_max_word_length());
-    }
-    if (started()) {
-      REPORT_TIME(timer);
+      report_progress(start_time);
     }
     report_why_we_stopped();
   }
 
-  VOID FROIDURE_PIN::add_generator(const_reference x) {
+  template <typename Element, typename Traits>
+  void FroidurePin<Element, Traits>::add_generator(const_reference x) {
     if (immutable()) {
       LIBSEMIGROUPS_EXCEPTION("cannot add generators, the FroidurePin instance "
                               "has been set to immutable");
@@ -770,9 +801,10 @@ namespace libsemigroups {
     }
   }
 
-  TEMPLATE
+  template <typename Element, typename Traits>
   template <typename T>
-  void FROIDURE_PIN::add_generators(T const& first, T const& last) {
+  void FroidurePin<Element, Traits>::add_generators(T const& first,
+                                                    T const& last) {
     if (immutable()) {
       LIBSEMIGROUPS_EXCEPTION("cannot add generators, the FroidurePin instance "
                               "has been set to immutable");
@@ -785,25 +817,27 @@ namespace libsemigroups {
     }
   }
 
-  TEMPLATE
+  template <typename Element, typename Traits>
   template <typename T>
-  void FROIDURE_PIN::add_generators(T const& coll) {
-    static_assert(!std::is_pointer<T>::value,
+  void FroidurePin<Element, Traits>::add_generators(T const& coll) {
+    static_assert(!std::is_pointer_v<T>,
                   "the template parameter T must not be a pointer");
     add_generators(coll.begin(), coll.end());
   }
 
-  VOID
-  FROIDURE_PIN::add_generators(std::initializer_list<const_element_type> coll) {
+  template <typename Element, typename Traits>
+  void FroidurePin<Element, Traits>::add_generators(
+      std::initializer_list<const_element_type> coll) {
     add_generators<std::initializer_list<const_element_type>>(coll);
   }
 
-  TEMPLATE
-  template <typename TCollection>
-  FROIDURE_PIN
-  FROIDURE_PIN::copy_add_generators(TCollection const& coll) const {
-    static_assert(!std::is_pointer<TCollection>::value,
-                  "TCollection should not be a pointer");
+  template <typename Element, typename Traits>
+  template <typename Collection>
+  FroidurePin<Element, Traits>
+  FroidurePin<Element, Traits>::copy_add_generators(
+      Collection const& coll) const {
+    static_assert(!std::is_pointer_v<Collection>,
+                  "Collection should not be a pointer");
     if (coll.size() == 0) {
       return FroidurePin(*this);
     } else {
@@ -815,17 +849,18 @@ namespace libsemigroups {
   }
 
   // TODO(later) shouldn't element_type -> const_element_type??
-  TEMPLATE
-  FROIDURE_PIN
-  FROIDURE_PIN::copy_add_generators(std::initializer_list<element_type> coll) {
+  template <typename Element, typename Traits>
+  FroidurePin<Element, Traits>
+  FroidurePin<Element, Traits>::copy_add_generators(
+      std::initializer_list<element_type> coll) {
     return copy_add_generators(std::vector<element_type>(coll));
   }
 
-  TEMPLATE
-  template <typename TCollection>
-  void FROIDURE_PIN::closure(TCollection const& coll) {
-    static_assert(!std::is_pointer<TCollection>::value,
-                  "TCollection should not be a pointer");
+  template <typename Element, typename Traits>
+  template <typename Collection>
+  void FroidurePin<Element, Traits>::closure(Collection const& coll) {
+    static_assert(!std::is_pointer_v<Collection>,
+                  "Collection should not be a pointer");
     if (coll.size() == 0) {
       return;
     } else {
@@ -837,15 +872,18 @@ namespace libsemigroups {
     }
   }
 
-  VOID FROIDURE_PIN::closure(std::initializer_list<const_element_type> coll) {
+  template <typename Element, typename Traits>
+  void FroidurePin<Element, Traits>::closure(
+      std::initializer_list<const_element_type> coll) {
     closure<std::initializer_list<const_element_type>>(coll);
   }
 
-  TEMPLATE
-  template <typename TCollection>
-  FROIDURE_PIN FROIDURE_PIN::copy_closure(TCollection const& coll) {
-    static_assert(!std::is_pointer<TCollection>::value,
-                  "TCollection should not be a pointer");
+  template <typename Element, typename Traits>
+  template <typename Collection>
+  FroidurePin<Element, Traits>
+  FroidurePin<Element, Traits>::copy_closure(Collection const& coll) {
+    static_assert(!std::is_pointer_v<Collection>,
+                  "the template parameter Collection should not be a pointer");
     if (coll.size() == 0) {
       return FroidurePin(*this);
     } else {
@@ -862,9 +900,9 @@ namespace libsemigroups {
   }
 
   // TODO(later) shouldn't element_type -> const_element_type??
-  TEMPLATE
-  FROIDURE_PIN
-  FROIDURE_PIN::copy_closure(std::initializer_list<element_type> coll) {
+  template <typename Element, typename Traits>
+  FroidurePin<Element, Traits> FroidurePin<Element, Traits>::copy_closure(
+      std::initializer_list<element_type> coll) {
     return copy_closure(std::vector<element_type>(coll));
   }
 
@@ -873,7 +911,8 @@ namespace libsemigroups {
   ////////////////////////////////////////////////////////////////////////
 
   // Expand the data structures in the semigroup with space for nr elements
-  VOID FROIDURE_PIN::expand(size_type nr) {
+  template <typename Element, typename Traits>
+  void FroidurePin<Element, Traits>::expand(size_type nr) {
     _left.add_nodes(nr);
     _right.add_nodes(nr);
     _reduced.add_rows(nr);
@@ -881,12 +920,11 @@ namespace libsemigroups {
 
   // Check if an element is the identity, x should be in the position pos
   // of _elements.
-  VOID FROIDURE_PIN::is_one(
-      internal_const_element_type x,
-      element_index_type
-          pos) noexcept(std::is_nothrow_default_constructible<InternalEqualTo>::
-                            value&& noexcept(
-                                std::declval<InternalEqualTo>()(x, x))) {
+  template <typename Element, typename Traits>
+  void FroidurePin<Element, Traits>::
+      is_one(internal_const_element_type x, element_index_type pos) noexcept(
+          std::is_nothrow_default_constructible_v<InternalEqualTo>&& noexcept(
+              std::declval<InternalEqualTo>()(x, x))) {
     if (!_found_one && InternalEqualTo()(x, _id)) {
       _pos_one   = pos;
       _found_one = true;
@@ -895,7 +933,8 @@ namespace libsemigroups {
 
   // _duplicates_gens, _letter_to_pos, and _elements must all be
   // initialised for this to work, and _gens must be an empty vector.
-  VOID FROIDURE_PIN::copy_generators_from_elements(size_t N) {
+  template <typename Element, typename Traits>
+  void FroidurePin<Element, Traits>::copy_generators_from_elements(size_t N) {
     LIBSEMIGROUPS_ASSERT(_gens.empty());
     if (N == 0) {
       return;
@@ -903,7 +942,8 @@ namespace libsemigroups {
     _gens.resize(N);
     std::vector<bool> seen(N, false);
     // really copy duplicate gens from _elements
-    for (std::pair<letter_type, letter_type> const& x : _duplicate_gens) {
+    for (std::pair<generator_index_type, generator_index_type> const& x :
+         _duplicate_gens) {
       // The degree of everything in _elements has already been increased (if
       // it needs to be at all), and so we do not need to increase the degree
       // in the copy below.
@@ -911,21 +951,22 @@ namespace libsemigroups {
       seen[x.first]  = true;
     }
     // the non-duplicate gens are already in _elements, so don't really copy
-    for (letter_type i = 0; i < N; i++) {
+    for (generator_index_type i = 0; i < N; i++) {
       if (!seen[i]) {
         _gens[i] = _elements[_letter_to_pos[i]];
       }
     }
   }
 
-  VOID FROIDURE_PIN::closure_update(element_index_type i,
-                                    letter_type        j,
-                                    letter_type        b,
-                                    element_index_type s,
-                                    size_type          old_nr,
-                                    size_t const&      tid,
-                                    std::vector<bool>& old_new,
-                                    state_type*        ptr) {
+  template <typename Element, typename Traits>
+  void FroidurePin<Element, Traits>::closure_update(element_index_type   i,
+                                                    generator_index_type j,
+                                                    generator_index_type b,
+                                                    element_index_type   s,
+                                                    size_type            old_nr,
+                                                    size_t const&        tid,
+                                                    std::vector<bool>& old_new,
+                                                    state_type*        ptr) {
     if (_wordlen != 0 && !_reduced.get(s, j)) {
       element_index_type r = _right.target_no_checks(s, j);
       if (_found_one && r == _pos_one) {
@@ -935,17 +976,17 @@ namespace libsemigroups {
             i,
             j,
             _right.target_no_checks(_left.target_no_checks(_prefix[r], b),
-                                   _final[r]));
+                                    _final[r]));
       } else {
         _right.set_target_no_checks(
             i, j, _right.target_no_checks(_letter_to_pos[b], _final[r]));
       }
     } else {
-      InternalProduct()(this->to_external(_tmp_product),
-                        this->to_external_const(_elements[i]),
-                        this->to_external_const(_gens[j]),
-                        ptr,
-                        tid);
+      internal_product(this->to_external(_tmp_product),
+                       this->to_external_const(_elements[i]),
+                       this->to_external_const(_gens[j]),
+                       ptr,
+                       tid);
       auto it = _map.find(_tmp_product);
       if (it == _map.end()) {  // it's new!
         is_one(_tmp_product, _nr);
@@ -997,7 +1038,8 @@ namespace libsemigroups {
   // first entry using the operator< of the Element class. The second
   // component is then inverted (as a permutation) so that we can then find
   // the position of an element in the sorted list of elements.
-  VOID FROIDURE_PIN::init_sorted() {
+  template <typename Element, typename Traits>
+  void FroidurePin<Element, Traits>::init_sorted() {
     if (_sorted.size() == size()) {
       return;
     }
@@ -1029,15 +1071,16 @@ namespace libsemigroups {
 
   // Find the idempotents and store their pointers and positions in a
   // std::pair of type internal_idempotent_pair.
-  VOID FROIDURE_PIN::init_idempotents() {
+  template <typename Element, typename Traits>
+  void FroidurePin<Element, Traits>::init_idempotents() {
     if (_idempotents_found) {
       return;
     }
+    report_default("FroidurePin: finding idempotents . . .\n");
+    auto start_time    = std::chrono::high_resolution_clock::now();
     _idempotents_found = true;
     run();
     _is_idempotent.resize(_nr, 0);
-
-    detail::Timer timer;
 
     // Find the threshold beyond which it is quicker to simply product
     // elements rather than follow a path in the Cayley graph. This is the
@@ -1062,28 +1105,23 @@ namespace libsemigroups {
       total_load += i * (_lenindex[i] - _lenindex[i - 1]);
     }
 
-    REPORT_VERBOSE_DEFAULT("When finding the number of idempotents . . .");
-    REPORT_VERBOSE_DEFAULT("complexity of multiplication %*s = %llu\n",
-                           11,
-                           " ",
-                           static_cast<uint64_t>(cmplxty));
-    REPORT_VERBOSE_DEFAULT("multiple words longer than %*s = %llu\n",
-                           13,
-                           " ",
-                           static_cast<uint64_t>(threshold_length));
-    REPORT_VERBOSE_DEFAULT(
-        "number of paths traced in Cayley graph %*s = %llu\n",
-        0,
-        " ",
-        static_cast<uint64_t>(threshold_index));
-    REPORT_VERBOSE_DEFAULT("mean path length %*s = %llu\n",
-                           23,
-                           " ",
-                           static_cast<uint64_t>(total_load / threshold_index));
-    REPORT_VERBOSE_DEFAULT("number of products %*s = %llu\n",
-                           21,
-                           " ",
-                           static_cast<uint64_t>(_nr - threshold_index));
+    report_default("FroidurePin: complexity of multiplication {:>11} | {}\n",
+                   "",
+                   italic("{:>11}", cmplxty));
+    report_default("FroidurePin: multiple words longer than {:>13} | {}\n",
+                   "",
+                   italic("{:>11}", threshold_length));
+    report_default(
+        "FroidurePin: number of paths followed in Cayley graph | {}\n",
+        italic("{:>11}", detail::group_digits(threshold_index)));
+    report_default(
+        "FroidurePin: mean path length {:<23} | {}\n",
+        "",
+        italic("{:>11.3f}", static_cast<double>(total_load) / threshold_index));
+    report_default(
+        "FroidurePin: number of products {:21} | {}\n",
+        "",
+        italic("{:>11}", detail::group_digits(_nr - threshold_index)));
 
     // _lenindex.at(threshold_length) is the element_index_type where words of
     // length (threshold_length + 1) begin
@@ -1121,7 +1159,6 @@ namespace libsemigroups {
           ++last[i];
         }
         total_load -= thread_load;
-        REPORT_DEFAULT("thread %d has load %d\n", i + 1, thread_load);
         first[i + 1] = last[i];
 
         threads.emplace_back(&FroidurePin::idempotents,
@@ -1132,7 +1169,6 @@ namespace libsemigroups {
                              std::ref(tmp[i]));
       }
 
-      REPORT_DEFAULT("thread %d has load %d\n", N, total_load);
       threads.emplace_back(&FroidurePin::idempotents,
                            this,
                            first[N - 1],
@@ -1151,23 +1187,24 @@ namespace libsemigroups {
             tmp[i].begin(), tmp[i].end(), std::back_inserter(_idempotents));
       }
     }
-    REPORT_TIME(timer);
+    auto run_time = std::chrono::duration_cast<std::chrono::nanoseconds>(
+        std::chrono::high_resolution_clock::now() - start_time);
+    report_default("FroidurePin: found {} idempotents in {}\n",
+                   italic(detail::group_digits(_idempotents.size())),
+                   italic(string_time(run_time)));
   }
 
   // Find the idempotents in the range [first, last) and store
   // the corresponding std::pair of type internal_idempotent_pair in the 4th
   // parameter. The parameter threshold is the point, calculated in
-  // init_idempotents, at which it is better to simply product elements
+  // init_idempotents, at which it is better to simply multiply elements
   // rather than trace in the left/right Cayley graph.
-  VOID FROIDURE_PIN::idempotents(
-      enumerate_index_type const             first,
-      enumerate_index_type const             last,
-      enumerate_index_type const             threshold,
+  template <typename Element, typename Traits>
+  void FroidurePin<Element, Traits>::idempotents(
+      enumerate_index_type                   first,
+      enumerate_index_type                   last,
+      enumerate_index_type                   threshold,
       std::vector<internal_idempotent_pair>& idempotents) {
-    REPORT_DEFAULT(
-        "first = %d, last = %d, diff = %d\n", first, last, last - first);
-    detail::Timer timer;
-
     enumerate_index_type pos = first;
 
     for (; pos < std::min(threshold, last); pos++) {
@@ -1191,7 +1228,6 @@ namespace libsemigroups {
     }
 
     if (pos >= last) {
-      REPORT_TIME(timer);
       return;
     }
 
@@ -1203,11 +1239,11 @@ namespace libsemigroups {
     for (; pos < last; pos++) {
       element_index_type k = _enumerate_order[pos];
       if (_is_idempotent[k] == 0) {
-        InternalProduct()(this->to_external(tmp_product),
-                          this->to_external(_elements[k]),
-                          this->to_external(_elements[k]),
-                          ptr,
-                          tid);
+        internal_product(this->to_external(tmp_product),
+                         this->to_external(_elements[k]),
+                         this->to_external(_elements[k]),
+                         ptr,
+                         tid);
         if (InternalEqualTo()(tmp_product, _elements[k])) {
           idempotents.emplace_back(_elements[k], k);
           _is_idempotent[k] = 1;
@@ -1215,79 +1251,86 @@ namespace libsemigroups {
       }
     }
     this->internal_free(tmp_product);
-    REPORT_TIME(timer);
   }
 
   ////////////////////////////////////////////////////////////////////////
   // FroidurePin - iterators - public
   ////////////////////////////////////////////////////////////////////////
 
-  TEMPLATE
-  typename FROIDURE_PIN::const_iterator FROIDURE_PIN::cbegin() const {
+  template <typename Element, typename Traits>
+  typename FroidurePin<Element, Traits>::const_iterator
+  FroidurePin<Element, Traits>::cbegin() const {
     return const_iterator(_elements.cbegin());
   }
 
-  TEMPLATE
-  typename FROIDURE_PIN::const_iterator FROIDURE_PIN::begin() const {
+  template <typename Element, typename Traits>
+  typename FroidurePin<Element, Traits>::const_iterator
+  FroidurePin<Element, Traits>::begin() const {
     return cbegin();
   }
 
-  TEMPLATE
-  typename FROIDURE_PIN::const_iterator FROIDURE_PIN::cend() const {
+  template <typename Element, typename Traits>
+  typename FroidurePin<Element, Traits>::const_iterator
+  FroidurePin<Element, Traits>::cend() const {
     return const_iterator(_elements.cend());
   }
 
-  TEMPLATE
-  typename FROIDURE_PIN::const_iterator FROIDURE_PIN::end() const {
+  template <typename Element, typename Traits>
+  typename FroidurePin<Element, Traits>::const_iterator
+  FroidurePin<Element, Traits>::end() const {
     return cend();
   }
 
-  TEMPLATE
-  typename FROIDURE_PIN::const_reverse_iterator FROIDURE_PIN::crbegin() const {
+  template <typename Element, typename Traits>
+  typename FroidurePin<Element, Traits>::const_reverse_iterator
+  FroidurePin<Element, Traits>::crbegin() const {
     return const_reverse_iterator(cend());
   }
 
-  TEMPLATE
-  typename FROIDURE_PIN::const_reverse_iterator FROIDURE_PIN::crend() const {
+  template <typename Element, typename Traits>
+  typename FroidurePin<Element, Traits>::const_reverse_iterator
+  FroidurePin<Element, Traits>::crend() const {
     return const_reverse_iterator(cbegin());
   }
 
-  TEMPLATE
-  typename FROIDURE_PIN::const_iterator_sorted FROIDURE_PIN::cbegin_sorted() {
+  template <typename Element, typename Traits>
+  typename FroidurePin<Element, Traits>::const_iterator_sorted
+  FroidurePin<Element, Traits>::cbegin_sorted() {
     init_sorted();
     return const_iterator_pair_first(_sorted.cbegin());
   }
 
-  TEMPLATE
-  typename FROIDURE_PIN::const_iterator_sorted FROIDURE_PIN::cend_sorted() {
+  template <typename Element, typename Traits>
+  typename FroidurePin<Element, Traits>::const_iterator_sorted
+  FroidurePin<Element, Traits>::cend_sorted() {
     init_sorted();
     return const_iterator_pair_first(_sorted.cend());
   }
 
-  TEMPLATE
-  typename FROIDURE_PIN::const_reverse_iterator_sorted
-  FROIDURE_PIN::crbegin_sorted() {
+  template <typename Element, typename Traits>
+  typename FroidurePin<Element, Traits>::const_reverse_iterator_sorted
+  FroidurePin<Element, Traits>::crbegin_sorted() {
     init_sorted();
     return const_reverse_iterator_pair_first(cend_sorted());
   }
 
-  TEMPLATE
-  typename FROIDURE_PIN::const_reverse_iterator_sorted
-  FROIDURE_PIN::crend_sorted() {
+  template <typename Element, typename Traits>
+  typename FroidurePin<Element, Traits>::const_reverse_iterator_sorted
+  FroidurePin<Element, Traits>::crend_sorted() {
     init_sorted();
     return const_reverse_iterator_pair_first(cbegin_sorted());
   }
 
-  TEMPLATE
-  typename FROIDURE_PIN::const_iterator_idempotents
-  FROIDURE_PIN::cbegin_idempotents() {
+  template <typename Element, typename Traits>
+  typename FroidurePin<Element, Traits>::const_iterator_idempotents
+  FroidurePin<Element, Traits>::cbegin_idempotents() {
     init_idempotents();
     return const_iterator_pair_first(_idempotents.cbegin());
   }
 
-  TEMPLATE
-  typename FROIDURE_PIN::const_iterator_idempotents
-  FROIDURE_PIN::cend_idempotents() {
+  template <typename Element, typename Traits>
+  typename FroidurePin<Element, Traits>::const_iterator_idempotents
+  FroidurePin<Element, Traits>::cend_idempotents() {
     init_idempotents();
     return const_iterator_pair_first(_idempotents.cend());
   }
@@ -1296,8 +1339,9 @@ namespace libsemigroups {
   // FroidurePin - iterators - private
   ////////////////////////////////////////////////////////////////////////
 
-  TEMPLATE
-  struct FROIDURE_PIN::DerefPairFirst : detail::BruidhinnTraits<TElementType> {
+  template <typename Element, typename Traits>
+  struct FroidurePin<Element, Traits>::DerefPairFirst
+      : detail::BruidhinnTraits<Element> {
     const_reference
     operator()(typename std::vector<
                std::pair<internal_element_type,
@@ -1306,9 +1350,9 @@ namespace libsemigroups {
     }
   };
 
-  TEMPLATE
-  struct FROIDURE_PIN::AddressOfPairFirst
-      : detail::BruidhinnTraits<TElementType> {
+  template <typename Element, typename Traits>
+  struct FroidurePin<Element, Traits>::AddressOfPairFirst
+      : detail::BruidhinnTraits<Element> {
     const_pointer
     operator()(typename std::vector<
                std::pair<internal_element_type,
@@ -1317,20 +1361,17 @@ namespace libsemigroups {
     }
   };
 
-  TEMPLATE
-  struct FROIDURE_PIN::IteratorPairFirstTraits
+  template <typename Element, typename Traits>
+  struct FroidurePin<Element, Traits>::IteratorPairFirstTraits
       : detail::ConstIteratorTraits<
             std::vector<std::pair<internal_element_type, element_index_type>>> {
-    using value_type =
-        typename FroidurePin<TElementType, TTraits>::element_type;
+    using value_type = typename FroidurePin<Element, Traits>::element_type;
     using const_reference =
-        typename FroidurePin<TElementType, TTraits>::const_reference;
-    using const_pointer =
-        typename FroidurePin<TElementType, TTraits>::const_pointer;
+        typename FroidurePin<Element, Traits>::const_reference;
+    using const_pointer = typename FroidurePin<Element, Traits>::const_pointer;
 
     using Deref     = DerefPairFirst;
     using AddressOf = AddressOfPairFirst;
   };
 
 }  // namespace libsemigroups
-#endif  // LIBSEMIGROUPS_FROIDURE_PIN_IMPL_HPP_

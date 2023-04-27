@@ -119,17 +119,15 @@ namespace libsemigroups {
     std::vector<enumerate_index_type> _lenindex;
     std::vector<element_index_type>   _letter_to_pos;
     size_type                         _nr;
-#ifdef LIBSEMIGROUPS_VERBOSE
-    size_t _nr_products;
-#endif
-    size_t                          _nr_rules;
-    enumerate_index_type            _pos;
-    element_index_type              _pos_one;
-    std::vector<element_index_type> _prefix;
-    detail::DynamicArray2<bool>     _reduced;
-    cayley_graph_type               _right;
-    std::vector<element_index_type> _suffix;
-    size_t                          _wordlen;
+    size_t                            _nr_products;
+    size_t                            _nr_rules;
+    enumerate_index_type              _pos;
+    element_index_type                _pos_one;
+    std::vector<element_index_type>   _prefix;
+    detail::DynamicArray2<bool>       _reduced;
+    cayley_graph_type                 _right;
+    std::vector<element_index_type>   _suffix;
+    size_t                            _wordlen;
 
    public:
     ////////////////////////////////////////////////////////////////////////

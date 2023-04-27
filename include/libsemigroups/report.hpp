@@ -603,6 +603,22 @@ namespace libsemigroups {
     return out;
   }
 
+  template <typename Arg>
+  std::string italic(Arg&& arg) {
+    if (report::should_report()) {
+      return fmt::format(fmt::emphasis::italic, "{}", std::forward<Arg>(arg));
+    }
+    return "";
+  }
+
+  template <typename Arg>
+  std::string italic(char const* s, Arg&& arg) {
+    if (report::should_report()) {
+      return fmt::format(fmt::emphasis::italic, s, std::forward<Arg>(arg));
+    }
+    return "";
+  }
+
 }  // namespace libsemigroups
 
 template <typename T, typename Char>

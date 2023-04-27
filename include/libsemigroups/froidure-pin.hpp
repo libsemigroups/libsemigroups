@@ -1,6 +1,6 @@
 //
 // libsemigroups - C++ library for semigroups and monoids
-// Copyright (C) 2019 James D. Mitchell
+// Copyright (C) 2019-2023 James D. Mitchell
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -17,25 +17,35 @@
 //
 
 // TODO(later)
-// 1. Use the new document template for all mem functions
-// 2. noexcept
+// * Use the new document template for all mem functions
+// * noexcept
+// * remove iterators and use ranges instead
+// * the todos in the file
+// * reduce api  (i.e. move things to helper namespace)
+// * no_checks versions of mem + helper fns
 
 #ifndef LIBSEMIGROUPS_FROIDURE_PIN_HPP_
 #define LIBSEMIGROUPS_FROIDURE_PIN_HPP_
 
-#include <cstddef>        // for size_t
-#include <iterator>       // for reverse_iterator
-#include <memory>         // for shared_ptr, make_shared
-#include <mutex>          // for mutex
-#include <type_traits>    // for is_const, remove_pointer
-#include <unordered_map>  // for unordered_map
-#include <utility>        // for pair
-#include <vector>         // for vector
+#include <chrono>            // for high_resolution_clock
+#include <cstddef>           // for size_t
+#include <initializer_list>  // for initializer_list
+#include <iterator>          // for reverse_iterator
+#include <memory>            // for shared_ptr, make_shared
+#include <mutex>             // for mutex
+#include <type_traits>       // for is_const, remove_pointer
+#include <unordered_map>     // for unordered_map
+#include <utility>           // for pair
+#include <vector>            // for vector
 
 #include "adapters.hpp"           // for Complexity, Degree, IncreaseDegree
+#include "debug.hpp"              // for LIBSEMIGROUPS_ASSERT
+#include "exception.hpp"          // for LIBSEMIGROUPS_EXCEPTION
 #include "froidure-pin-base.hpp"  // for FroidurePinBase, FroidurePinBase::s...
 #include "iterator.hpp"           // for ConstIteratorStateless
+#include "report.hpp"             // for REPORT
 #include "stl.hpp"                // for EqualTo, Hash
+#include "timer.hpp"              // for detail::Timer
 #include "types.hpp"              // for letter_type, word_type
 
 #include "detail/bruidhinn-traits.hpp"  // for detail::BruidhinnTraits
@@ -53,28 +63,27 @@ namespace libsemigroups {
   //!
   //! This is a traits class for use with FroidurePin.
   //!
-  //! \tparam TElementType the type of the elements.
-  //! \tparam TStateType the type of the state (if any, defaults to \c void,
+  //! \tparam Element the type of the elements.
+  //! \tparam State the type of the state (if any, defaults to \c void,
   //! meaning none).
   //!
   //! \sa FroidurePinBase and FroidurePin.
-  template <typename TElementType,
-            typename TStateType = typename FroidurePinState<TElementType>::type>
+  template <typename Element,
+            typename State = typename FroidurePinState<Element>::type>
   struct FroidurePinTraits {
     // Require to get the value_type from detail::BruidhinnTraits to remove
     // pointer to const.
     //! The type of the elements of a FroidurePin instance.
     //!
-    //! This type has const removed, and if \c TElementType is a pointer to
+    //! This type has const removed, and if \c Element is a pointer to
     //! const, then the second const is also removed.
-    using element_type =
-        typename detail::BruidhinnTraits<TElementType>::value_type;
+    using element_type = typename detail::BruidhinnTraits<Element>::value_type;
 
     //! The type of the state (if any).
     //!
     //! This type can be used to store some state that might be required in an
     //! FroidurePin instance.
-    using state_type = TStateType;
+    using state_type = State;
 
     //! \copydoc libsemigroups::Complexity
     using Complexity = ::libsemigroups::Complexity<element_type>;
@@ -117,10 +126,10 @@ namespace libsemigroups {
   //! Cayley graphs are determined, and a confluent terminating presentation
   //! for the semigroup is known.
   //!
-  //! \tparam TElementType the type of the elements in the represented
+  //! \tparam Element the type of the elements in the represented
   //! semigroup
   //!
-  //! \tparam TTraits a traits class holding various adapters used by the
+  //! \tparam Traits a traits class holding various adapters used by the
   //! implementation (defaults to FroidurePinTraits).
   //!
   //! \sa FroidurePinTraits and FroidurePinBase.
@@ -179,9 +188,8 @@ namespace libsemigroups {
   //! *T.cbegin_idempotents();      // 0
   //! *T.cbegin_idempotents() + 1;  // 1
   //! \endcode
-  template <typename TElementType,
-            typename TTraits = FroidurePinTraits<TElementType>>
-  class FroidurePin : private detail::BruidhinnTraits<TElementType>,
+  template <typename Element, typename Traits = FroidurePinTraits<Element>>
+  class FroidurePin : private detail::BruidhinnTraits<Element>,
                       public FroidurePinBase {
    private:
     ////////////////////////////////////////////////////////////////////////
@@ -189,16 +197,16 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////
 
     using internal_element_type =
-        typename detail::BruidhinnTraits<TElementType>::internal_value_type;
-    using internal_const_element_type = typename detail::BruidhinnTraits<
-        TElementType>::internal_const_value_type;
-    using internal_const_reference = typename detail::BruidhinnTraits<
-        TElementType>::internal_const_reference;
+        typename detail::BruidhinnTraits<Element>::internal_value_type;
+    using internal_const_element_type =
+        typename detail::BruidhinnTraits<Element>::internal_const_value_type;
+    using internal_const_reference =
+        typename detail::BruidhinnTraits<Element>::internal_const_reference;
 
     static_assert(
-        std::is_const<internal_const_element_type>::value
-            || std::is_const<typename std::remove_pointer<
-                internal_const_element_type>::type>::value,
+        std::is_const_v<internal_const_element_type>
+            || std::is_const_v<
+                std::remove_pointer_t<internal_const_element_type>>,
         "internal_const_element_type must be const or pointer to const");
 
     // The elements of a semigroup are stored in _elements, but because of the
@@ -221,8 +229,7 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////
 
     //! Type of the elements.
-    using element_type =
-        typename detail::BruidhinnTraits<TElementType>::value_type;
+    using element_type = typename detail::BruidhinnTraits<Element>::value_type;
 
     //! Alias for element_type.
     // This only really exists to allow the python bindings to compile with
@@ -231,18 +238,18 @@ namespace libsemigroups {
 
     //! Type of const elements.
     using const_element_type =
-        typename detail::BruidhinnTraits<TElementType>::const_value_type;
+        typename detail::BruidhinnTraits<Element>::const_value_type;
 
     //! Type of element const references.
     using const_reference =
-        typename detail::BruidhinnTraits<TElementType>::const_reference;
+        typename detail::BruidhinnTraits<Element>::const_reference;
 
     //! Type of element references.
-    using reference = typename detail::BruidhinnTraits<TElementType>::reference;
+    using reference = typename detail::BruidhinnTraits<Element>::reference;
 
     //! Type of element const pointers.
     using const_pointer =
-        typename detail::BruidhinnTraits<TElementType>::const_pointer;
+        typename detail::BruidhinnTraits<Element>::const_pointer;
 
     //! \copydoc FroidurePinBase::size_type
     using size_type = FroidurePinBase::size_type;
@@ -254,43 +261,41 @@ namespace libsemigroups {
     using cayley_graph_type = FroidurePinBase::cayley_graph_type;
 
     //! Type of the state used for multiplication (if any).
-    using state_type = typename TTraits::state_type;
+    using state_type = typename Traits::state_type;
 
     //! \copydoc libsemigroups::Complexity
-    using Complexity = typename TTraits::Complexity;
+    using Complexity = typename Traits::Complexity;
 
     //! \copydoc libsemigroups::Degree
-    using Degree = typename TTraits::Degree;
+    using Degree = typename Traits::Degree;
 
     //! \copydoc libsemigroups::EqualTo
-    using EqualTo = typename TTraits::EqualTo;
+    using EqualTo = typename Traits::EqualTo;
 
     //! \copydoc libsemigroups::Hash
-    using Hash = typename TTraits::Hash;
+    using Hash = typename Traits::Hash;
 
     //! \copydoc libsemigroups::IncreaseDegree
-    using IncreaseDegree = typename TTraits::IncreaseDegree;
+    using IncreaseDegree = typename Traits::IncreaseDegree;
 
     //! \copydoc libsemigroups::Less
-    using Less = typename TTraits::Less;
+    using Less = typename Traits::Less;
 
     //! \copydoc libsemigroups::One
-    using One = typename TTraits::One;
+    using One = typename Traits::One;
 
     //! \copydoc libsemigroups::Product
-    using Product = typename TTraits::Product;
+    using Product = typename Traits::Product;
 
     //! \copydoc libsemigroups::Swap
-    using Swap = typename TTraits::Swap;
+    using Swap = typename Traits::Swap;
 
    private:
     template <typename T>
-    struct IsState
-        : std::integral_constant<bool,
-                                 !std::is_void<T>::value
-                                     && std::is_same<state_type, T>::value> {};
+    static constexpr bool IsState
+        = ((!std::is_void_v<T>) &&std::is_same_v<state_type, T>);
 
-    struct InternalEqualTo : private detail::BruidhinnTraits<TElementType> {
+    struct InternalEqualTo : private detail::BruidhinnTraits<Element> {
       bool operator()(internal_const_reference x,
                       internal_const_reference y) const {
         return EqualTo()(this->to_external_const(x),
@@ -298,7 +303,7 @@ namespace libsemigroups {
       }
     };
 
-    struct InternalHash : private detail::BruidhinnTraits<TElementType> {
+    struct InternalHash : private detail::BruidhinnTraits<Element> {
       size_t operator()(internal_const_reference x) const {
         return Hash()(this->to_external_const(x));
       }
@@ -309,30 +314,17 @@ namespace libsemigroups {
                                         InternalHash,
                                         InternalEqualTo>;
 
-    struct InternalProduct {
-      template <typename SFINAE = void>
-      auto operator()(reference       xy,
-                      const_reference x,
-                      const_reference y,
-                      void*,
-                      size_t tid = 0)
-          -> std::enable_if_t<std::is_void<state_type>::value, SFINAE> {
+    void internal_product(reference       xy,
+                          const_reference x,
+                          const_reference y,
+                          state_type*     stt,
+                          size_t          tid = 0) const {
+      if constexpr (std::is_void_v<state_type>) {
         Product()(xy, x, y, tid);
-      }
-
-      template <typename SFINAE = void>
-      auto operator()(reference       xy,
-                      const_reference x,
-                      const_reference y,
-                      state_type*     stt,
-                      size_t          tid = 0)
-          -> std::enable_if_t<!std::is_void<state_type>::value, SFINAE> {
+      } else {
         Product()(xy, x, y, stt, tid);
       }
-    };
-
-    template <typename T>
-    using EnableIfIsState = std::enable_if_t<IsState<T>::value>;
+    }
 
    public:
     ////////////////////////////////////////////////////////////////////////
@@ -361,7 +353,7 @@ namespace libsemigroups {
     //!
     //! \exceptions
     //! \no_libsemigroups_except
-    template <typename T, typename = EnableIfIsState<T>>
+    template <typename T, typename = std::enable_if_t<IsState<T>>>
     explicit FroidurePin(std::shared_ptr<T> stt) : FroidurePin() {
       _state = stt;
     }
@@ -382,7 +374,7 @@ namespace libsemigroups {
     //! \warning
     //! The parameter \p stt is copied, which might be expensive, use
     //! a \shared_ptr to avoid the copy.
-    template <typename T, typename = EnableIfIsState<T>>
+    template <typename T, typename = std::enable_if_t<IsState<T>>>
     explicit FroidurePin(T const& stt)
         : FroidurePin(std::make_shared<state_type>(stt)) {}
 
@@ -495,7 +487,7 @@ namespace libsemigroups {
     //!
     //! \note
     //! Note that `generator(i)` is in general not in position \p i.
-    const_reference generator(letter_type i) const;
+    const_reference generator(generator_index_type i) const;
 
     //! Find the position of an element with no enumeration.
     //!
@@ -660,7 +652,6 @@ namespace libsemigroups {
     //!
     //! \exceptions
     //! \no_libsemigroups_except
-    // TODO(3.0) rename to sorted_position
     element_index_type position_to_sorted_position(element_index_type i);
 
     //! Access element specified by index with bound checks.
@@ -953,13 +944,13 @@ namespace libsemigroups {
 
     void expand(size_type);
     void is_one(internal_const_element_type x, element_index_type) noexcept(
-        std::is_nothrow_default_constructible<InternalEqualTo>::
-            value&& noexcept(std::declval<InternalEqualTo>()(x, x)));
+        std::is_nothrow_default_constructible_v<InternalEqualTo>&& noexcept(
+            std::declval<InternalEqualTo>()(x, x)));
 
     void copy_generators_from_elements(size_t);
     void closure_update(element_index_type,
-                        letter_type,
-                        letter_type,
+                        generator_index_type,
+                        generator_index_type,
                         element_index_type,
                         size_type,
                         size_t const&,
@@ -983,13 +974,13 @@ namespace libsemigroups {
 
     void init_sorted();
     void init_idempotents();
-    void idempotents(enumerate_index_type const,
-                     enumerate_index_type const,
-                     enumerate_index_type const,
+    void idempotents(enumerate_index_type,
+                     enumerate_index_type,
+                     enumerate_index_type,
                      std::vector<internal_idempotent_pair>&);
 
    public:
-    // Forward declarations - implemented in froidure-pin-impl.hpp
+    // Forward declarations - implemented in froidure-pin.tpp
     //! No doc
     struct DerefPairFirst;
 
@@ -1280,6 +1271,8 @@ namespace libsemigroups {
 
    private:
     void run_impl() override;
+    void report_progress(std::chrono::high_resolution_clock::time_point);
+
     bool finished_impl() const override;
 
     ////////////////////////////////////////////////////////////////////////
@@ -1298,6 +1291,6 @@ namespace libsemigroups {
   };
 }  // namespace libsemigroups
 
-// Include the implementation of the member functions for FroidurePin
-#include "froidure-pin-impl.hpp"
+#include "froidure-pin.tpp"
+
 #endif  // LIBSEMIGROUPS_FROIDURE_PIN_HPP_

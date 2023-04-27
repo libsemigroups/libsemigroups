@@ -223,7 +223,8 @@ namespace libsemigroups {
     } else {  // batch_size() is very big for some reason
       limit = batch_size();
     }
-    report_default("FroidurePin: limit = {}\n", detail::group_digits(limit));
+    report_default("FroidurePin: enumerating until ~{} elements are found\n",
+                   detail::group_digits(limit));
     run_until([this, &limit]() -> bool { return current_size() >= limit; });
   }
 
@@ -262,12 +263,12 @@ namespace libsemigroups {
     return *this;
   }
 
-  // TODO(now) to hpp
+  // TODO to hpp
   size_t FroidurePinBase::batch_size() const noexcept {
     return _settings._batch_size;
   }
 
-  // TODO(now) to hpp
+  // TODO to hpp
   FroidurePinBase&
   FroidurePinBase::max_threads(size_t number_of_threads) noexcept {
     unsigned int n = static_cast<unsigned int>(
@@ -276,30 +277,30 @@ namespace libsemigroups {
     return *this;
   }
 
-  // TODO(now) to hpp
+  // TODO to hpp
   size_t FroidurePinBase::max_threads() const noexcept {
     return _settings._max_threads;
   }
 
-  // TODO(now) to hpp
+  // TODO to hpp
   FroidurePinBase&
   FroidurePinBase::concurrency_threshold(size_t thrshld) noexcept {
     _settings._concurrency_threshold = thrshld;
     return *this;
   }
 
-  // TODO(now) to hpp
+  // TODO to hpp
   size_t FroidurePinBase::concurrency_threshold() const noexcept {
     return _settings._concurrency_threshold;
   }
 
-  // TODO(now) to hpp
+  // TODO to hpp
   FroidurePinBase& FroidurePinBase::immutable(bool val) noexcept {
     _settings._immutable = val;
     return *this;
   }
 
-  // TODO(now) to hpp
+  // TODO to hpp
   bool FroidurePinBase::immutable() const noexcept {
     return _settings._immutable;
   }
