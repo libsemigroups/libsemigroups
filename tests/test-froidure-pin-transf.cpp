@@ -35,7 +35,7 @@ namespace libsemigroups {
   namespace {
     template <typename T>
     void test000() {
-      auto rg = ReportGuard(true);
+      auto rg = ReportGuard(REPORT);
 
       FroidurePin<T> S;
       S.add_generator(T({1, 7, 2, 6, 0, 4, 1, 5}));
