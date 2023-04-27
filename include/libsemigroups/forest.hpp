@@ -151,7 +151,7 @@ namespace libsemigroups {
     //!
     //! \par Parameters
     //! (None)
-    bool empty() const noexcept {
+    [[nodiscard]] bool empty() const noexcept {
       return _parent.empty();
     }
 
@@ -190,7 +190,7 @@ namespace libsemigroups {
     //!
     //! \par Parameters
     //! (None)
-    size_t number_of_nodes() const noexcept {
+    [[nodiscard]] size_t number_of_nodes() const noexcept {
       return _parent.size();
     }
 
@@ -206,12 +206,12 @@ namespace libsemigroups {
     //! \complexity
     //! Constant
     // not noexcept because std::vector::operator[] isn't.
-    node_type parent(node_type i) const {
+    [[nodiscard]] node_type parent(node_type i) const {
       validate_node(i);
       return _parent[i];
     }
 
-    node_type parent_no_checks(node_type i) const {
+    [[nodiscard]] node_type parent_no_checks(node_type i) const {
       return _parent[i];
     }
 
@@ -227,12 +227,12 @@ namespace libsemigroups {
     //! \complexity
     //! Constant
     // not noexcept because std::vector::operator[] isn't.
-    label_type label(node_type i) const {
+    [[nodiscard]] label_type label(node_type i) const {
       validate_node(i);
       return _edge_label[i];
     }
 
-    label_type label_no_checks(node_type i) const {
+    [[nodiscard]] label_type label_no_checks(node_type i) const {
       return _edge_label[i];
     }
 
@@ -264,11 +264,11 @@ namespace libsemigroups {
     //! \par Parameters
     //! (None)
 
-    auto const& parents() const noexcept {
+    [[nodiscard]] auto const& parents() const noexcept {
       return _parent;
     }
 
-    auto const& labels() const noexcept {
+    [[nodiscard]] auto const& labels() const noexcept {
       return _edge_label;
     }
 
@@ -279,7 +279,7 @@ namespace libsemigroups {
       }
     }
 
-    word_type path_to_root_no_checks(node_type i) const {
+    [[nodiscard]] word_type path_to_root_no_checks(node_type i) const {
       word_type w;
       path_to_root_no_checks(w, i);
       return w;
@@ -290,7 +290,7 @@ namespace libsemigroups {
       path_to_root_no_checks(w, i);
     }
 
-    word_type path_to_root(node_type i) const {
+    [[nodiscard]] word_type path_to_root(node_type i) const {
       word_type w;
       path_to_root(w, i);
       return w;
@@ -310,8 +310,8 @@ namespace libsemigroups {
     std::vector<size_t> _parent;
   };
 
-  Forest to_forest(std::initializer_list<size_t> parent,
-                   std::initializer_list<size_t> edge_label);
+  [[nodiscard]] Forest to_forest(std::initializer_list<size_t> parent,
+                                 std::initializer_list<size_t> edge_label);
 
   std::ostream& operator<<(std::ostream& os, Forest const& f);
 

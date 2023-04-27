@@ -195,7 +195,7 @@ namespace libsemigroups {
     //!
     //! \parameters
     //! None.
-    size_t batch_size() const noexcept;
+    [[nodiscard]] size_t batch_size() const noexcept;
 
     //! Set the maximum number of threads.
     //!
@@ -236,7 +236,7 @@ namespace libsemigroups {
     //!
     //! \parameters
     //! None.
-    size_t max_threads() const noexcept;
+    [[nodiscard]] size_t max_threads() const noexcept;
 
     //! Set the threshold for concurrency to be used by member functions.
     //!
@@ -278,7 +278,7 @@ namespace libsemigroups {
     //!
     //! \parameters
     //! None.
-    size_t concurrency_threshold() const noexcept;
+    [[nodiscard]] size_t concurrency_threshold() const noexcept;
 
     //! Set immutability.
     //!
@@ -321,7 +321,7 @@ namespace libsemigroups {
     //!
     //! \parameters
     //! None.
-    bool immutable() const noexcept;
+    [[nodiscard]] bool immutable() const noexcept;
 
     ////////////////////////////////////////////////////////////////////////
     // FroidurePinBase - pure virtual member functions - public
@@ -329,8 +329,8 @@ namespace libsemigroups {
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 
-    virtual size_t number_of_generators() const = 0;
-    virtual tril   is_finite() const            = 0;
+    [[nodiscard]] virtual size_t number_of_generators() const = 0;
+    [[nodiscard]] virtual tril   is_finite() const            = 0;
 
 #endif
 
@@ -366,11 +366,11 @@ namespace libsemigroups {
     //!
     //! \sa FroidurePin::word_to_element.
     // TODO(later) -> helper
-    element_index_type current_position(word_type const& w) const;
+    [[nodiscard]] element_index_type current_position(word_type const& w) const;
 
     //! \copydoc current_position(word_type const&) const
     // TODO(later) -> helper
-    element_index_type
+    [[nodiscard]] element_index_type
     current_position(std::initializer_list<size_t> const& w) const {
       word_type ww = w;
       return current_position(ww);
@@ -395,7 +395,8 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Constant.
-    element_index_type current_position(generator_index_type i) const {
+    [[nodiscard]] element_index_type
+    current_position(generator_index_type i) const {
       validate_letter_index(i);
       return _letter_to_pos[i];
     }
@@ -420,7 +421,7 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Constant.
-    size_t current_max_word_length() const noexcept {
+    [[nodiscard]] size_t current_max_word_length() const noexcept {
       return _length[_enumerate_order.back()];
     }
 
@@ -437,7 +438,7 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Constant.
-    size_t degree() const noexcept {
+    [[nodiscard]] size_t degree() const noexcept {
       return _degree;
     }
 
@@ -457,7 +458,7 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Constant.
-    size_t current_size() const noexcept {
+    [[nodiscard]] size_t current_size() const noexcept {
       return _nr;
     }
 
@@ -478,7 +479,7 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Constant.
-    size_t current_number_of_rules() const noexcept {
+    [[nodiscard]] size_t current_number_of_rules() const noexcept {
       return _nr_rules;
     }
 
@@ -515,7 +516,7 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Constant.
-    element_index_type suffix(element_index_type pos) const {
+    [[nodiscard]] element_index_type suffix(element_index_type pos) const {
       validate_element_index(pos);
       return _suffix[pos];
     }
@@ -540,7 +541,8 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Constant.
-    generator_index_type first_letter(element_index_type pos) const {
+    [[nodiscard]] generator_index_type
+    first_letter(element_index_type pos) const {
       validate_element_index(pos);
       return _first[pos];
     }
@@ -565,7 +567,8 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Constant.
-    generator_index_type final_letter(element_index_type pos) const {
+    [[nodiscard]] generator_index_type
+    final_letter(element_index_type pos) const {
       validate_element_index(pos);
       return _final[pos];
     }
@@ -584,7 +587,7 @@ namespace libsemigroups {
     //!
     //! \sa
     //! \ref length.
-    size_t current_length(element_index_type pos) const {
+    [[nodiscard]] size_t current_length(element_index_type pos) const {
       validate_element_index(pos);
       return _length[pos];
     }
@@ -604,7 +607,7 @@ namespace libsemigroups {
     //! \sa
     //! \ref current_length.
     // TODO(later) helper
-    size_t length(element_index_type pos) {
+    [[nodiscard]] size_t length(element_index_type pos) {
       if (pos >= _nr) {
         run();
       }
@@ -632,8 +635,8 @@ namespace libsemigroups {
     //! \f$O(n)\f$ where \f$n\f$ is the minimum of the lengths of
     //! `minimal_factorisation(i)` and `minimal_factorisation(j)`.
     // TODO(later) helper
-    element_index_type product_by_reduction(element_index_type i,
-                                            element_index_type j) const;
+    [[nodiscard]] element_index_type
+    product_by_reduction(element_index_type i, element_index_type j) const;
 
     //! Returns the size.
     //!
@@ -650,7 +653,7 @@ namespace libsemigroups {
     //! At worst \f$O(|S|n)\f$ where \f$S\f$ is the semigroup represented by \c
     //! this, and \f$n\f$ is the return value of
     //! FroidurePin::number_of_generators.
-    size_t size() {
+    [[nodiscard]] size_t size() {
       run();
       return _nr;
     }
@@ -671,7 +674,7 @@ namespace libsemigroups {
     //!
     //! \parameters
     //! (None).
-    bool is_monoid() {
+    [[nodiscard]] bool is_monoid() {
       run();
       return _found_one;
     }
@@ -693,7 +696,7 @@ namespace libsemigroups {
     //!
     //! \parameters
     //! (None)
-    size_t number_of_rules() {
+    [[nodiscard]] size_t number_of_rules() {
       run();
       return _nr_rules;
     }
@@ -712,7 +715,7 @@ namespace libsemigroups {
     //!
     //! \parameters
     //! None.
-    cayley_graph_type const& right_cayley_graph() {
+    [[nodiscard]] cayley_graph_type const& right_cayley_graph() {
       run();
       _right.induced_subgraph_no_checks(0, size());  // TODO(now) Why's this
                                                      // necessary?
@@ -733,7 +736,7 @@ namespace libsemigroups {
     //!
     //! \parameters
     //! None.
-    cayley_graph_type const& left_cayley_graph() {
+    [[nodiscard]] cayley_graph_type const& left_cayley_graph() {
       run();
       _left.induced_subgraph_no_checks(
           0,
@@ -794,7 +797,7 @@ namespace libsemigroups {
     //! At worst \f$O(mn)\f$ where \f$m\f$ equals \p pos and \f$n\f$ is the
     //! return value of FroidurePin::number_of_generators.
     // TODO(later) helper
-    word_type minimal_factorisation(element_index_type pos) {
+    [[nodiscard]] word_type minimal_factorisation(element_index_type pos) {
       word_type word;
       minimal_factorisation(word, pos);
       return word;
@@ -878,7 +881,7 @@ namespace libsemigroups {
     //! At worst \f$O(mn)\f$ where \f$m\f$ equals \p pos and \f$n\f$ is the
     //! return value of FroidurePin::number_of_generators.
     // TODO(later) helper
-    word_type factorisation(element_index_type pos) {
+    [[nodiscard]] word_type factorisation(element_index_type pos) {
       return minimal_factorisation(pos);
     }
 
@@ -904,10 +907,11 @@ namespace libsemigroups {
     void enumerate(size_t limit);
 
     // TODO(now) doc
-    size_t number_of_elements_of_length(size_t min, size_t max) const;
+    [[nodiscard]] size_t number_of_elements_of_length(size_t min,
+                                                      size_t max) const;
 
     // TODO(now) doc
-    size_t number_of_elements_of_length(size_t len) const;
+    [[nodiscard]] size_t number_of_elements_of_length(size_t len) const;
 
     //! Return type of \ref cbegin_rules and \ref cend_rules.
     // TODO(later) delete
@@ -941,30 +945,31 @@ namespace libsemigroups {
 
       ~const_rule_iterator() = default;
 
-      bool operator==(const_rule_iterator const& that) const noexcept {
+      [[nodiscard]] bool
+      operator==(const_rule_iterator const& that) const noexcept {
         return _gen == that._gen && _pos == that._pos;
       }
 
-      bool operator!=(const_rule_iterator const& that) const noexcept {
+      [[nodiscard]] bool
+      operator!=(const_rule_iterator const& that) const noexcept {
         return !(this->operator==(that));
       }
 
-      const_reference operator*() const {
+      [[nodiscard]] const_reference operator*() const {
         populate_relation();
         return _relation;
       }
 
-      const_pointer operator->() const {
+      [[nodiscard]] const_pointer operator->() const {
         populate_relation();
         return &_relation;
       }
 
       // prefix
-      // TODO(now) to cpp
       const_rule_iterator const& operator++() noexcept;
 
       // postfix
-      const_rule_iterator operator++(int) noexcept {
+      [[nodiscard]] const_rule_iterator operator++(int) noexcept {
         const_rule_iterator copy(*this);
         ++(*this);
         return copy;
@@ -1067,7 +1072,7 @@ namespace libsemigroups {
     //! \endcode
     // clang-format on
     // TODO(later) delete
-    const_rule_iterator cbegin_rules() const {
+    [[nodiscard]] const_rule_iterator cbegin_rules() const {
       return const_rule_iterator(this, UNDEFINED, 0);
     }
 
@@ -1140,7 +1145,7 @@ namespace libsemigroups {
     //! \endcode
     // clang-format on
     // TODO(later) delete
-    const_rule_iterator cend_rules() const {
+    [[nodiscard]] const_rule_iterator cend_rules() const {
       return const_rule_iterator(this, current_size(), 0);
     }
 
@@ -1176,41 +1181,47 @@ namespace libsemigroups {
                                  enumerate_index_type   pos)
           : _froidure_pin(ptr), _pos(pos), _word() {}
 
-      bool operator==(const_normal_form_iterator const& that) const noexcept {
+      [[nodiscard]] bool
+      operator==(const_normal_form_iterator const& that) const noexcept {
         return _pos == that._pos;
       }
 
-      bool operator!=(const_normal_form_iterator const& that) const noexcept {
+      [[nodiscard]] bool
+      operator!=(const_normal_form_iterator const& that) const noexcept {
         return !(*this == that);
       }
 
-      bool operator<(const_normal_form_iterator const& that) const noexcept {
+      [[nodiscard]] bool
+      operator<(const_normal_form_iterator const& that) const noexcept {
         return _pos < that._pos;
       }
 
-      bool operator>(const_normal_form_iterator const& that) const noexcept {
+      [[nodiscard]] bool
+      operator>(const_normal_form_iterator const& that) const noexcept {
         return _pos > that._pos;
       }
 
-      bool operator<=(const_normal_form_iterator const& that) const noexcept {
+      [[nodiscard]] bool
+      operator<=(const_normal_form_iterator const& that) const noexcept {
         return _pos < that._pos;
       }
 
-      bool operator>=(const_normal_form_iterator const& that) const noexcept {
+      [[nodiscard]] bool
+      operator>=(const_normal_form_iterator const& that) const noexcept {
         return _pos > that._pos;
       }
 
-      const_reference operator*() const noexcept {
+      [[nodiscard]] const_reference operator*() const noexcept {
         populate_word();
         return _word;
       }
 
-      const_pointer operator->() const noexcept {
+      [[nodiscard]] const_pointer operator->() const noexcept {
         populate_word();
         return &_word;
       }
 
-      const_reference operator[](size_type index) const {
+      [[nodiscard]] const_reference operator[](size_type index) const {
         const_cast<const_normal_form_iterator*>(this)->_pos += index;
         populate_word();
         const_cast<const_normal_form_iterator*>(this)->_pos -= index;
@@ -1223,7 +1234,7 @@ namespace libsemigroups {
         return *this;
       }
 
-      const_normal_form_iterator operator++(int) noexcept {
+      [[nodiscard]] const_normal_form_iterator operator++(int) noexcept {
         const_normal_form_iterator copy(*this);
         ++(*this);
         return copy;
@@ -1234,7 +1245,7 @@ namespace libsemigroups {
         return *this;
       }
 
-      const_normal_form_iterator operator--(int) noexcept {
+      [[nodiscard]] const_normal_form_iterator operator--(int) noexcept {
         const_normal_form_iterator copy(*this);
         --(*this);
         return copy;
@@ -1248,13 +1259,15 @@ namespace libsemigroups {
         _pos -= val;
       }
 
-      const_normal_form_iterator operator+(size_type val) const noexcept {
+      [[nodiscard]] const_normal_form_iterator
+      operator+(size_type val) const noexcept {
         const_normal_form_iterator copy(*this);
         copy += val;
         return copy;
       }
 
-      const_normal_form_iterator operator-(size_type val) const noexcept {
+      [[nodiscard]] const_normal_form_iterator
+      operator-(size_type val) const noexcept {
         const_normal_form_iterator copy(*this);
         copy -= val;
         return copy;
@@ -1272,15 +1285,15 @@ namespace libsemigroups {
       }
     };
 
-    const_normal_form_iterator cbegin_normal_forms() const {
+    [[nodiscard]] const_normal_form_iterator cbegin_normal_forms() const {
       return const_normal_form_iterator(this, 0);
     }
 
-    const_normal_form_iterator cend_normal_forms() const {
+    [[nodiscard]] const_normal_form_iterator cend_normal_forms() const {
       return const_normal_form_iterator(this, current_size());
     }
 
-    auto normal_forms() const {
+    [[nodiscard]] auto normal_forms() const {
       return rx::iterator_range(cbegin_normal_forms(), cend_normal_forms());
     }
 
