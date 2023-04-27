@@ -35,8 +35,9 @@
 #ifndef LIBSEMIGROUPS_FUNCTION_REF_HPP_
 #define LIBSEMIGROUPS_FUNCTION_REF_HPP_
 
-#include "debug.hpp"  // for LIBSEMIGROUPS_ASSERT
-#include "stl.hpp"    // for IsCallable
+#include <type_traits>  // for is_invocable_v
+
+#include "libsemigroups/debug.hpp"  // for LIBSEMIGROUPS_ASSERT
 
 namespace libsemigroups {
   namespace detail {
@@ -44,7 +45,7 @@ namespace libsemigroups {
     class FunctionRef;
 
     template <typename TReturn, typename... TArgs>
-    class FunctionRef<TReturn(TArgs...)> final {
+    class FunctionRef<TReturn(TArgs...)> {
      private:
       void* _ptr;
       TReturn (*_erased_fn)(void*, TArgs...);
@@ -52,15 +53,14 @@ namespace libsemigroups {
      public:
       FunctionRef() noexcept : _ptr(nullptr) {}
 
-      template <
-          typename T,
-          typename = std::enable_if_t<
-              IsCallable<T&(TArgs...)>{}
-              && !std::is_same<typename std::decay<T>::type, FunctionRef>{}>>
+      template <typename T,
+                typename = std::enable_if_t<
+                    std::is_invocable_v<T(TArgs...)>
+                    && !std::is_same_v<std::decay_t<T>, FunctionRef>>>
       FunctionRef(T&& x) noexcept
           : _ptr{reinterpret_cast<void*>(std::addressof(x))} {
         _erased_fn = [](void* ptr, TArgs... xs) -> TReturn {
-          return (*reinterpret_cast<typename std::add_pointer<T>::type>(ptr))(
+          return (*reinterpret_cast<std::add_pointer_t<T>>(ptr))(
               std::forward<TArgs>(xs)...);
         };
       }

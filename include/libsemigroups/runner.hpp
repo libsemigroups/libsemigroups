@@ -29,7 +29,7 @@
 
 #include "debug.hpp"         // for LIBSEMIGROUPS_ASSERT
 #include "exception.hpp"     // for LibsemigroupsException
-#include "function-ref.hpp"  // for FunctionRef
+#include "detail/function-ref.hpp"  // for FunctionRef
 
 namespace libsemigroups {
   //! A pseudonym for std::chrono::nanoseconds::max().
