@@ -23,13 +23,13 @@
 #include "catch.hpp"      // for REQUIRE, REQUIRE_THROWS_AS, REQUI...
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
-#include "libsemigroups/bipart.hpp"           // for Bipartition
-#include "libsemigroups/froidure-pin.hpp"     // for FroidurePin
-#include "libsemigroups/int-range.hpp"        // for IntegralRange
-#include "libsemigroups/knuth-bendix.hpp"     // for redundant_rule
-#include "libsemigroups/present.hpp"          // for Presentation
-#include "libsemigroups/to-presentation.hpp"  // for make
-#include "libsemigroups/types.hpp"            // for word_type
+#include "libsemigroups/bipart.hpp"            // for Bipartition
+#include "libsemigroups/detail/int-range.hpp"  // for detail::IntRange
+#include "libsemigroups/froidure-pin.hpp"      // for FroidurePin
+#include "libsemigroups/knuth-bendix.hpp"      // for redundant_rule
+#include "libsemigroups/present.hpp"           // for Presentation
+#include "libsemigroups/to-presentation.hpp"   // for make
+#include "libsemigroups/types.hpp"             // for word_type
 #include "libsemigroups/words.hpp"
 
 #include "libsemigroups/detail/containers.hpp"  // for StaticVector1
@@ -1250,7 +1250,7 @@ namespace libsemigroups {
     REQUIRE(presentation::character(0) == 'a');
     REQUIRE(presentation::character(10) == 'k');
 
-    IntegralRange<size_t>     ir(0, 255);
+    detail::IntRange          ir(0, 255);
     Presentation<std::string> q;
 
     REQUIRE(std::all_of(ir.cbegin(), ir.cend(), [&q](size_t i) {

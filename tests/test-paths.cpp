@@ -38,7 +38,7 @@
 #include "libsemigroups/constants.hpp"          // for operator!=, operator==
 #include "libsemigroups/exception.hpp"          // for LibsemigroupsException
 #include "libsemigroups/froidure-pin-base.hpp"  // for FroidurePinBase
-#include "libsemigroups/iterator.hpp"           // for operator+
+#include "libsemigroups/detail/iterator.hpp"           // for operator+
 #include "libsemigroups/knuth-bendix.hpp"       // for KnuthBendix
 #include "libsemigroups/order.hpp"              // for LexicographicalCompare
 #include "libsemigroups/paths.hpp"              // for Paths, const_pstilo_i...
@@ -366,6 +366,7 @@ namespace libsemigroups {
 
     REQUIRE(ad.number_of_nodes() == 10);
     REQUIRE(ad.number_of_edges() == 18);
+    // FIXME Probably an uint32_t(UNDEFINED) versus size_t(UNDEFINED) issue
     ad.set_target(S.size(), 0, 0);
     ad.set_target(S.size(), 1, 1);
 

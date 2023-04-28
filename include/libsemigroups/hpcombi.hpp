@@ -46,10 +46,9 @@ namespace libsemigroups {
   //!
   //! \sa Complexity.
   template <typename TPTransf16Subclass>
-  struct Complexity<
-      TPTransf16Subclass,
-      std::enable_if_t<
-          std::is_base_of<HPCombi::PTransf16, TPTransf16Subclass>::value>> {
+  struct Complexity<TPTransf16Subclass,
+                    std::enable_if_t<std::is_base_of_v<HPCombi::PTransf16,
+                                                       TPTransf16Subclass>>> {
     //! Returns 0.
     //! \exceptions
     //! \noexcept
@@ -66,8 +65,8 @@ namespace libsemigroups {
   //! \sa Degree.
   template <typename TPTransf16Subclass>
   struct Degree<TPTransf16Subclass,
-                std::enable_if_t<std::is_base_of<HPCombi::PTransf16,
-                                                 TPTransf16Subclass>::value>> {
+                std::enable_if_t<std::is_base_of_v<HPCombi::PTransf16,
+                                                   TPTransf16Subclass>>> {
     //! Returns 16.
     //! \exceptions
     //! \noexcept
@@ -84,8 +83,8 @@ namespace libsemigroups {
   //! \sa One.
   template <typename TPTransf16Subclass>
   struct One<TPTransf16Subclass,
-             std::enable_if_t<std::is_base_of<HPCombi::PTransf16,
-                                              TPTransf16Subclass>::value>> {
+             std::enable_if_t<
+                 std::is_base_of_v<HPCombi::PTransf16, TPTransf16Subclass>>> {
     //! Returns the identity ``HPCombi::PTransf16``.
     //! \exceptions
     //! \noexcept
@@ -112,8 +111,8 @@ namespace libsemigroups {
   //! whereas ``libsemigroups`` assumes composition is right to left.
   template <typename TPTransf16Subclass>
   struct Product<TPTransf16Subclass,
-                 std::enable_if_t<std::is_base_of<HPCombi::PTransf16,
-                                                  TPTransf16Subclass>::value>> {
+                 std::enable_if_t<std::is_base_of_v<HPCombi::PTransf16,
+                                                    TPTransf16Subclass>>> {
     //! Returns modifies \p xy in-place to be the product of \p x and \p y.
     //!
     //! \exceptions
@@ -134,8 +133,8 @@ namespace libsemigroups {
   //! \sa Swap.
   template <typename TPTransf16Subclass>
   struct Swap<TPTransf16Subclass,
-              std::enable_if_t<std::is_base_of<HPCombi::PTransf16,
-                                               TPTransf16Subclass>::value>> {
+              std::enable_if_t<
+                  std::is_base_of_v<HPCombi::PTransf16, TPTransf16Subclass>>> {
     //! Swap \p x and \p y.
     //!
     //! \exceptions
@@ -170,7 +169,7 @@ namespace libsemigroups {
   template <typename TIntType>
   struct ImageRightAction<HPCombi::Perm16,
                           TIntType,
-                          std::enable_if_t<std::is_integral<TIntType>::value>> {
+                          std::enable_if_t<std::is_integral_v<TIntType>>> {
     //! Stores the image of \p pt under \p p in \p res.
     //! \exceptions
     //! \noexcept
@@ -604,7 +603,7 @@ namespace libsemigroups {
   //! Specialization of the adapter Rank for `HPCombi` types.
   template <typename T>
   struct Rank<T,
-              std::enable_if_t<std::is_base_of<HPCombi::PTransf16, T>::value,
+              std::enable_if_t<std::is_base_of_v<HPCombi::PTransf16, T>,
                                RankState<T>>> {
     //! Returns the rank of \p x as used in the Konieczny algorithm; for
     //! HPCombi::Transf16 and HPCombi::PPerm16 this is the size of the image

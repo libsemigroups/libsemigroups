@@ -26,7 +26,7 @@
 
 #include "libsemigroups/constants.hpp"  // for operator==, POSITIVE_INFINITY
 #include "libsemigroups/exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
-#include "libsemigroups/int-range.hpp"  // for IntegralRange
+#include "libsemigroups/detail/int-range.hpp"  // for detail::IntRange
 #include "libsemigroups/types.hpp"      // for word_type
 #include "libsemigroups/ukkonen.hpp"    // for Ukkonen, Ukkonen::State
 #include "libsemigroups/words.hpp"      // for literals
@@ -789,7 +789,7 @@ namespace libsemigroups {
                  5,  10, 4,  9,  3,  8, 2,  7, 6,  5, 4,  3,  2,  1}));
 
     distances.resize(u.number_of_distinct_words(), 0);
-    auto range = IntegralRange<size_t>(0, u.number_of_distinct_words());
+    auto range = detail::IntRange<size_t>(0, u.number_of_distinct_words());
     std::transform(range.cbegin(),
                    range.cend(),
                    distances.begin(),

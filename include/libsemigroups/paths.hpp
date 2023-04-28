@@ -43,7 +43,7 @@
 #include "detail/containers.hpp"  // for DynamicArray2
 #include "debug.hpp"       // for LIBSEMIGROUPS_ASSERT
 #include "exception.hpp"   // for LIBSEMIGROUPS_EXCEPTION
-#include "iterator.hpp"    // for default_postfix_increment
+#include "detail/iterator.hpp"    // for default_postfix_increment
 #include "order.hpp"       // for order
 #include "types.hpp"       // for word_type
 #include "word-graph.hpp"  // for WordGraph

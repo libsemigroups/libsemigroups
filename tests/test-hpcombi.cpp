@@ -24,13 +24,13 @@
 
 #include <cstddef>  // for size_t
 
-#include "catch.hpp"                       // for REQUIRE
-#include "libsemigroups/froidure-pin.hpp"  // for FroidurePin
-#include "libsemigroups/hpcombi.hpp"       // for PTransf16, ...
-#include "libsemigroups/int-range.hpp"     // for IntegralRange
-#include "libsemigroups/report.hpp"        // for ReportGuard
-#include "libsemigroups/transf.hpp"        // for Transf<>
-#include "test-main.hpp"                   // for LIBSEMIGROUPS_TEST_CASE
+#include "catch.hpp"                           // for REQUIRE
+#include "libsemigroups/detail/int-range.hpp"  // for detail::IntRange
+#include "libsemigroups/froidure-pin.hpp"      // for FroidurePin
+#include "libsemigroups/hpcombi.hpp"           // for PTransf16, ...
+#include "libsemigroups/report.hpp"            // for ReportGuard
+#include "libsemigroups/transf.hpp"            // for Transf<>
+#include "test-main.hpp"                       // for LIBSEMIGROUPS_TEST_CASE
 
 using namespace HPCombi;
 
@@ -177,7 +177,7 @@ namespace libsemigroups {
     REQUIRE(pt == 3);
 
     auto id = One<Perm16>()(10);
-    auto r  = IntegralRange<int, 0, 10>();
+    auto r  = detail::IntRange<int>(0, 10);
     REQUIRE(std::all_of(r.cbegin(), r.cend(), [&id](int y) {
       return ImageRightAction<Perm16, int>()(y, id) == y;
     }));

@@ -57,16 +57,16 @@
 #include <string>         // for operator+, basic_string
 #include <unordered_set>  // for unordered_set
 
-#include "adapters.hpp"          // for action, degree, inverse
+#include "adapters.hpp"                 // for action, degree, inverse
+#include "config.hpp"                   // for LIBSEMIGROUPS_HPCOMBI_ENABLED
+#include "debug.hpp"                    // for LIBSEMIGROUPS_ASSERT
 #include "detail/bruidhinn-traits.hpp"  // for detail::BruidhinnTraits
-#include "config.hpp"            // for LIBSEMIGROUPS_HPCOMBI_ENABLED
 #include "detail/containers.hpp"        // for Array2, StaticTriVector2
-#include "debug.hpp"             // for LIBSEMIGROUPS_ASSERT
-#include "exception.hpp"         // for LIBSEMIGROUPS_EXCEPTION
-#include "int-range.hpp"         // for IntegralRange
-#include "stl.hpp"               // for EqualTo
-#include "transf.hpp"            // for Perm
-#include "types.hpp"             // for SmallestInteger
+#include "detail/int-range.hpp"         // for detail::IntRange
+#include "exception.hpp"                // for LIBSEMIGROUPS_EXCEPTION
+#include "stl.hpp"                      // for EqualTo
+#include "transf.hpp"                   // for Perm
+#include "types.hpp"                    // for SmallestInteger
 
 namespace libsemigroups {
 
@@ -89,7 +89,7 @@ namespace libsemigroups {
     using index_type = size_t;
 
     //! Type of the object containing all points acted on.
-    using domain_type = IntegralRange<TPointType, 0, N>;
+    using domain_type = detail::IntRange<TPointType>;
 
     //! Type of the points acted on.
     //!
@@ -231,7 +231,7 @@ namespace libsemigroups {
     SchreierSims()
         : _base(),
           _base_size(0),
-          _domain(),
+          _domain(0, N),
           _finished(false),
           _one(this->to_internal(One()(N))),
           _orbits(),

@@ -29,7 +29,7 @@
 
 #include "libsemigroups/constants.hpp"          // for UNDEFINED
 #include "libsemigroups/froidure-pin-base.hpp"  // for FroidurePinBase
-#include "libsemigroups/iterator.hpp"           // for ConstIteratorStateful
+#include "libsemigroups/detail/iterator.hpp"           // for ConstIteratorStateful
 #include "libsemigroups/kambites.hpp"           // for Kambites
 #include "libsemigroups/knuth-bendix.hpp"       // for KnuthBendix
 #include "libsemigroups/report.hpp"             // for ReportGuard

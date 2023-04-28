@@ -1082,7 +1082,7 @@ namespace libsemigroups {
       return const_iterator(_gens.cend() - 1);
     }
 
-    // This is a traits class for ConstIteratorStateless in iterator.hpp
+    // This is a traits class for ConstIteratorStateless in detail/iterator.hpp
     template <typename T>
     struct DClassIteratorTraits : detail::ConstIteratorTraits<std::vector<T*>> {
       using base_traits_type = detail::ConstIteratorTraits<std::vector<T*>>;

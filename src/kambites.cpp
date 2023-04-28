@@ -31,7 +31,7 @@
 #include "libsemigroups/exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
 #include "libsemigroups/froidure-pin-base.hpp"  // for FroidurePinBase
 #include "libsemigroups/froidure-pin.hpp"       // for FroidurePin
-#include "libsemigroups/int-range.hpp"          // for IntegralRange
+#include "libsemigroups/detail/int-range.hpp"          // for detail::IntRange
 #include "libsemigroups/order.hpp"              // for lexicographical_compare
 #include "libsemigroups/string.hpp"  // for is_prefix, maximum_common_suffix
 #include "libsemigroups/types.hpp"   // for word_type, tril

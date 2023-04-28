@@ -43,7 +43,7 @@
                                            //
 #include "libsemigroups/constants.hpp"     // for operator==, PositiveIn...
 #include "libsemigroups/exception.hpp"     // for LibsemigroupsException
-#include "libsemigroups/iterator.hpp"      // for operator+
+#include "libsemigroups/detail/iterator.hpp"      // for operator+
 #include "libsemigroups/knuth-bendix.hpp"  // for KnuthBendix, normal_forms
 #include "libsemigroups/obvinf.hpp"        // for is_obviously_infinite
 #include "libsemigroups/order.hpp"         // for shortlex_compare

@@ -43,9 +43,9 @@
 #include "constants.hpp"          // for UNDEFINED
 #include "debug.hpp"              // for LIBSEMIGROUPS_ASSERT
 #include "detail/containers.hpp"  // for DynamicArray2
+#include "detail/int-range.hpp"   // for detail::IntRange
 #include "exception.hpp"          // for LIBSEMIGROUPS_EXCEPTION
 #include "forest.hpp"             // for Forest
-#include "int-range.hpp"          // for IntegralRange
 #include "order.hpp"              // for Order
 #include "stl.hpp"                // for IsIterator
 #include "types.hpp"              // for word_type
@@ -124,11 +124,12 @@ namespace libsemigroups {
 #endif
 
     //! The type of an iterator pointing to the nodes of a digraph.
-    using const_iterator_nodes = typename IntegralRange<Node>::const_iterator;
+    using const_iterator_nodes =
+        typename detail::IntRange<Node>::const_iterator;
 
     //! The type of a reverse iterator pointing to the nodes of a digraph.
     using const_reverse_iterator_nodes =
-        typename IntegralRange<Node>::const_reverse_iterator;
+        typename detail::IntRange<Node>::const_reverse_iterator;
 
     //! The type of an iterator pointing to the out-edges of a node in a
     //! digraph.
@@ -677,10 +678,8 @@ namespace libsemigroups {
     //!
     //! \par Parameters
     //! (None)
-    // TODO remove this
     const_iterator_nodes cbegin_nodes() const noexcept {
-      // TODO remove IntegralRange
-      return IntegralRange<Node>(0, number_of_nodes()).cbegin();
+      return detail::IntRange<node_type>(0, number_of_nodes()).cbegin();
     }
 
     // no except correct?
@@ -707,10 +706,8 @@ namespace libsemigroups {
     //!
     //! \par Parameters
     //! (None)
-    // TODO remove (can just use node() | reverse())
     const_reverse_iterator_nodes crbegin_nodes() const noexcept {
-      // TODO remove IntegralRange
-      return IntegralRange<Node>(0, number_of_nodes()).crbegin();
+      return detail::IntRange<node_type>(0, number_of_nodes()).crbegin();
     }
 
     //! Returns a random access iterator pointing one-past-the-first node of
@@ -727,10 +724,8 @@ namespace libsemigroups {
     //!
     //! \par Parameters
     //! (None)
-    // TODO remove (can just use node() | reverse())
     const_reverse_iterator_nodes crend_nodes() const noexcept {
-      // TODO remove IntegralRange
-      return IntegralRange<Node>(0, number_of_nodes()).crend();
+      return detail::IntRange<node_type>(0, number_of_nodes()).crend();
     }
 
     //! Returns a random access iterator pointing one-past-the-last node of the
@@ -747,10 +742,8 @@ namespace libsemigroups {
     //!
     //! \par Parameters
     //! (None)
-    // TODO remove this
     const_iterator_nodes cend_nodes() const noexcept {
-      // TODO remove IntegralRange
-      return IntegralRange<Node>(0, number_of_nodes()).cend();
+      return detail::IntRange<node_type>(0, number_of_nodes()).cend();
     }
 
     //! Returns a random access iterator pointing at the first target of a

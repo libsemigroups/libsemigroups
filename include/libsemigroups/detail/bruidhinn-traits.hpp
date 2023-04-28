@@ -25,7 +25,7 @@
 
 #include <type_traits>  // for conditional_t etc
 
-#include "libsemigroups/iterator.hpp"  // for ConstIteratorTraits
+#include "iterator.hpp"  // for ConstIteratorTraits
 
 namespace libsemigroups {
   namespace detail {

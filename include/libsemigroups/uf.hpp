@@ -39,7 +39,7 @@
 #include "adapters.hpp"  // for Hash
 #include "config.hpp"    // for LIBSEMIGROUPS_SIZEOF_VOID_P
 #include "debug.hpp"     // for LIBSEMIGROUPS_ASSERT
-#include "iterator.hpp"  // for ConstIteratorStateless
+#include "detail/iterator.hpp"  // for ConstIteratorStateless
 #include "types.hpp"     // for SmallestInteger
 
 namespace libsemigroups {

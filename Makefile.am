@@ -69,7 +69,6 @@ pkginclude_HEADERS += include/libsemigroups/froidure-pin.tpp
 pkginclude_HEADERS += include/libsemigroups/gabow.hpp
 pkginclude_HEADERS += include/libsemigroups/gabow.tpp
 pkginclude_HEADERS += include/libsemigroups/hpcombi.hpp
-pkginclude_HEADERS += include/libsemigroups/int-range.hpp
 pkginclude_HEADERS += include/libsemigroups/iterator.hpp
 pkginclude_HEADERS += include/libsemigroups/kambites.hpp
 pkginclude_HEADERS += include/libsemigroups/kambites.tpp
@@ -122,6 +121,7 @@ pkginclude_HEADERS += include/libsemigroups/detail/bruidhinn-traits.hpp
 pkginclude_HEADERS += include/libsemigroups/detail/containers.hpp
 pkginclude_HEADERS += include/libsemigroups/detail/felsch-tree.hpp
 pkginclude_HEADERS += include/libsemigroups/detail/function-ref.hpp
+pkginclude_HEADERS += include/libsemigroups/detail/int-range.hpp
 
 textflowcppincludedir = $(includedir)/libsemigroups/textflowcpp
 textflowcppinclude_HEADERS=extern/textflowcpp/TextFlow.hpp

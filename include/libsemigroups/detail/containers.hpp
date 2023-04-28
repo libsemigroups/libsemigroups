@@ -34,8 +34,9 @@
 #include <utility>           // for forward
 #include <vector>            // for vector, allocator
 
-#include "libsemigroups/debug.hpp"     // for LIBSEMIGROUPS_ASSERT
-#include "libsemigroups/iterator.hpp"  // for ConstIteratorStateful, ConstItera...
+#include "libsemigroups/debug.hpp"  // for LIBSEMIGROUPS_ASSERT
+
+#include "iterator.hpp"  // for ConstIteratorStateful, ConstItera...
 
 namespace libsemigroups {
   namespace detail {

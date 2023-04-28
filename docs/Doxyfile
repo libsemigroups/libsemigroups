@@ -21,18 +21,15 @@ USE_MATHJAX           = YES
 INLINE_INHERITED_MEMB = YES
 INHERIT_DOCS          = YES
 EXCLUDE_SYMBOLS       = std::hash \
-                        libsemigroups::IntegralRange* \
                         *KBE* \
                         *TCE* \
                         Internal* \
                         THREAD_ID_MANAGER \
                         REPORTER \
-                        libsemigroups::congruence::ToddCoxeter::NormalFormIteratorTraits \
                         libsemigroups::detail::IteratorTraitsBase \
                         libsemigroups::ukkonen::detail*
-EXCLUDE               = iterator.hpp \
-                        string.hpp
-EXCLUDE_PATTERNS      = *-impl.hpp *KBE* string.hpp
+EXCLUDE               = string.hpp
+EXCLUDE_PATTERNS      = *.tpp string.hpp
 HIDE_UNDOC_CLASSES    = YES
 EXTRACT_LOCAL_CLASSES = NO
 EXTRACT_PRIVATE       = NO

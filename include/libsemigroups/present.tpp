@@ -470,7 +470,7 @@ namespace libsemigroups {
     template <typename W>
     bool are_rules_sorted(Presentation<W> const& p) {
       detail::validate_rules_length(p);
-      IntegralRange<size_t> perm(0, p.rules.size() / 2);
+      detail::IntRange<size_t> perm(0, p.rules.size() / 2);
       return std::is_sorted(
           perm.cbegin(), perm.cend(), [&p](auto x, auto y) -> bool {
             return detail::shortlex_compare_concat(p.rules[2 * x],

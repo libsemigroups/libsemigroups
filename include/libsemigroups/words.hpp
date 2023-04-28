@@ -33,7 +33,7 @@
 #include <string>    // for std::string
 #include <variant>   // for variant
 
-#include "iterator.hpp"  // for default_postfix_increment
+#include "detail/iterator.hpp"  // for default_postfix_increment
 #include "types.hpp"     // for word_type
 
 #include <rx/ranges.hpp>  // for begin, end
