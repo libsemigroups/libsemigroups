@@ -489,8 +489,7 @@ namespace libsemigroups {
       for (auto it2 = S.begin(); it2 < S.end(); it2++) {
         BMat8 y = *it2;
         REQUIRE((x * y).row_space_size() <= x.row_space_size());
-        REQUIRE(bmat8::col_space_size(x * y)
-                <= bmat8::col_space_size(x));
+        REQUIRE(bmat8::col_space_size(x * y) <= bmat8::col_space_size(x));
       }
     }
 

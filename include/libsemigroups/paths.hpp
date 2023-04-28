@@ -40,14 +40,15 @@
 
 #include "config.hpp"      // for LIBSEMIGROUPS_EIGEN_ENA...
 #include "constants.hpp"   // for Max, UNDEFINED, Positiv...
-#include "detail/containers.hpp"  // for DynamicArray2
 #include "debug.hpp"       // for LIBSEMIGROUPS_ASSERT
 #include "exception.hpp"   // for LIBSEMIGROUPS_EXCEPTION
-#include "detail/iterator.hpp"    // for default_postfix_increment
 #include "order.hpp"       // for order
 #include "types.hpp"       // for word_type
 #include "word-graph.hpp"  // for WordGraph
 #include "words.hpp"       // for number_of_words
+
+#include "detail/containers.hpp"  // for DynamicArray2
+#include "detail/iterator.hpp"    // for default_postfix_increment
 
 #include <rx/ranges.hpp>  // for is_input_range
 

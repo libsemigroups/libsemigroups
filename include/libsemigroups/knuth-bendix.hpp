@@ -772,7 +772,7 @@ namespace libsemigroups {
       if (N == POSITIVE_INFINITY) {  // TODO ensure this is the same in all
                                      // versions of partition
         LIBSEMIGROUPS_EXCEPTION("the 2nd argument (a range) must be finite, "
-                                   "found an infinite range");
+                                "found an infinite range");
       }
 
       return_type result;

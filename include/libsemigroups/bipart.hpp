@@ -35,10 +35,10 @@
 #include <unordered_set>     // for unordered_set
 #include <vector>            // for vector
 
-#include "adapters.hpp"             // for Hash
-#include "constants.hpp"            // for UNDEFINED
-#include "exception.hpp"            // for LIBSEMIGROUPS_EXCEPTION
-#include "libsemigroups/debug.hpp"  // for LIBSEMIGROUPS_ASSERT
+#include "adapters.hpp"   // for Hash
+#include "constants.hpp"  // for UNDEFINED
+#include "debug.hpp"      // for LIBSEMIGROUPS_ASSERT
+#include "exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
 
 namespace libsemigroups {
 

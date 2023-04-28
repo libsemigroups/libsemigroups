@@ -26,15 +26,15 @@
 #include <utility>      // for forward
 #include <vector>       // for vector
 
-#include "constants.hpp"             // for PositiveInfinity
+#include "constants.hpp"                // for PositiveInfinity
+#include "paths.hpp"                    // for Paths
+#include "present.hpp"                  // for Presentation
+#include "runner.hpp"                   // for Runner
+#include "to-presentation.hpp"          // for make
+#include "todd-coxeter-digraph.hpp"     // for StephenDigraph
+#include "types.hpp"                    // for word_type
 #include "word-graph-with-sources.hpp"  // for WordGraphWithSources
-#include "paths.hpp"                 // for Paths
-#include "present.hpp"               // for Presentation
-#include "runner.hpp"                // for Runner
-#include "to-presentation.hpp"       // for make
-#include "todd-coxeter-digraph.hpp"  // for StephenDigraph
-#include "types.hpp"                 // for word_type
-#include "word-graph.hpp"            // for WordGraph, Act...
+#include "word-graph.hpp"               // for WordGraph, Act...
 
 namespace libsemigroups {
 

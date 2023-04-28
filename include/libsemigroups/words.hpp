@@ -34,7 +34,7 @@
 #include <variant>   // for variant
 
 #include "detail/iterator.hpp"  // for default_postfix_increment
-#include "types.hpp"     // for word_type
+#include "types.hpp"            // for word_type
 
 #include <rx/ranges.hpp>  // for begin, end
 

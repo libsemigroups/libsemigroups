@@ -49,7 +49,6 @@
                                            //
 #include "libsemigroups/constants.hpp"     // for operator==, operator!=
 #include "libsemigroups/exception.hpp"     // for LibsemigroupsException
-#include "libsemigroups/detail/iterator.hpp"      // for operator+
 #include "libsemigroups/knuth-bendix.hpp"  // for KnuthBendix, normal_forms
 #include "libsemigroups/order.hpp"         // for shortlex_compare
 #include "libsemigroups/paths.hpp"         // for Paths

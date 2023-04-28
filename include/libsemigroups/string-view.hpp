@@ -34,8 +34,9 @@
 
 #include "debug.hpp"      // for LIBSEMIGROUPS_ASSERT
 #include "exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
-#include "detail/iterator.hpp"   // for ConstIteratorStateful, ConstIteratorTraits
 #include "string.hpp"     // for is_prefix
+
+#include "detail/iterator.hpp"  // for ConstIteratorStateful, ConstIteratorTraits
 
 namespace libsemigroups {
   namespace detail {

@@ -38,7 +38,6 @@
 #include "libsemigroups/constants.hpp"          // for operator!=, operator==
 #include "libsemigroups/exception.hpp"          // for LibsemigroupsException
 #include "libsemigroups/froidure-pin-base.hpp"  // for FroidurePinBase
-#include "libsemigroups/detail/iterator.hpp"           // for operator+
 #include "libsemigroups/knuth-bendix.hpp"       // for KnuthBendix
 #include "libsemigroups/order.hpp"              // for LexicographicalCompare
 #include "libsemigroups/paths.hpp"              // for Paths, const_pstilo_i...

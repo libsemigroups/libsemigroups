@@ -25,8 +25,8 @@
 #include <cstdint>  // for uint64_t
 #include <vector>   // for vector
 
-#include "libsemigroups/present.hpp"  // for Presentation
-#include "libsemigroups/types.hpp"    // for relation_type
+#include "present.hpp"  // for Presentation
+#include "types.hpp"    // for relation_type
 
 namespace libsemigroups {
   namespace fpsemigroup {

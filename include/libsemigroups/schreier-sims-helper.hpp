@@ -30,10 +30,11 @@
 #include <cstddef>  // for size_t
 #include <memory>   // for make_unique
 
-#include "detail/containers.hpp"     // for Array2
 #include "schreier-sims.hpp"  // for SchreierSims, SchreierSims<>::ele...
 #include "transf.hpp"         // for LeastPerm
 #include "types.hpp"          // for SmallestInteger
+
+#include "detail/containers.hpp"  // for Array2
 
 namespace libsemigroups {
 

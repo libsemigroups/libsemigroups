@@ -33,15 +33,15 @@
 #include <utility>      // for pair
 #include <vector>       // for vector
 
-#include "word-graph-with-sources.hpp"  // for WordGraphWithSources
 #include "felsch-graph.hpp"
 #include "node-manager.hpp"  // for NodeManager
 #include "present.hpp"       // for Presentation, Presentation<>:...
 #include "report.hpp"        // for REPORT_DEFAULT
 #include "runner.hpp"
-#include "timer.hpp"       // for Timer
-#include "types.hpp"       // for word_type
-#include "word-graph.hpp"  // for WordGraph
+#include "timer.hpp"                    // for Timer
+#include "types.hpp"                    // for word_type
+#include "word-graph-with-sources.hpp"  // for WordGraphWithSources
+#include "word-graph.hpp"               // for WordGraph
 
 namespace libsemigroups {
   // TODO merge this with NodeManager
@@ -76,8 +76,8 @@ namespace libsemigroups {
 
    public:
     using BaseDigraph::BaseDigraph;
-    using BaseDigraph::target_no_checks;
     using BaseDigraph::out_degree;
+    using BaseDigraph::target_no_checks;
 
     NodeManagedDigraph()                                     = default;
     NodeManagedDigraph(NodeManagedDigraph const&)            = default;
@@ -202,7 +202,8 @@ namespace libsemigroups {
 
 namespace libsemigroups {
   // TODO move to stephen or its own file.
-  class StephenDigraph : public NodeManagedDigraph<WordGraphWithSources<size_t>> {
+  class StephenDigraph
+      : public NodeManagedDigraph<WordGraphWithSources<size_t>> {
     using BaseDigraph         = WordGraphWithSources<size_t>;
     using NodeManagedDigraph_ = NodeManagedDigraph<BaseDigraph>;
     using NodeManager_        = typename NodeManagedDigraph_::NodeManager_;

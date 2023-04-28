@@ -26,7 +26,6 @@
 
 #include "libsemigroups/constants.hpp"  // for operator==, POSITIVE_INFINITY
 #include "libsemigroups/exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
-#include "libsemigroups/detail/int-range.hpp"  // for detail::IntRange
 #include "libsemigroups/types.hpp"      // for word_type
 #include "libsemigroups/ukkonen.hpp"    // for Ukkonen, Ukkonen::State
 #include "libsemigroups/words.hpp"      // for literals

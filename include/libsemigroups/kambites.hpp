@@ -50,10 +50,9 @@
 #include "constants.hpp"     // for UNDEFINED, POSITIVE_INFINITY
 #include "exception.hpp"     // for LIBSEMIGROUPS_EXCEPTION
 #include "froidure-pin.hpp"  // for FroidurePin, FroidurePinTraits
-#include "detail/int-range.hpp"
-#include "obvinf.hpp"   // for is_obviously_infinite
-#include "order.hpp"    // for lexicographical_compare
-#include "present.hpp"  // for Presentation
+#include "obvinf.hpp"        // for is_obviously_infinite
+#include "order.hpp"         // for lexicographical_compare
+#include "present.hpp"       // for Presentation
 #include "string-view.hpp"
 #include "string.hpp"           // for is_prefix
 #include "to-presentation.hpp"  // for to_presentation
@@ -61,6 +60,8 @@
 #include "uf.hpp"               // for Duf<>
 #include "ukkonen.hpp"          // for Ukkonen
 #include "words.hpp"            // for word_to_string
+
+#include "detail/int-range.hpp"
 
 namespace libsemigroups {
 

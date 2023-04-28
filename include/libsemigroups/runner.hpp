@@ -27,8 +27,9 @@
 #include <chrono>       // for nanoseconds, high_resolution_clock
 #include <type_traits>  // for forward
 
-#include "debug.hpp"         // for LIBSEMIGROUPS_ASSERT
-#include "exception.hpp"     // for LibsemigroupsException
+#include "debug.hpp"      // for LIBSEMIGROUPS_ASSERT
+#include "exception.hpp"  // for LibsemigroupsException
+
 #include "detail/function-ref.hpp"  // for FunctionRef
 
 namespace libsemigroups {

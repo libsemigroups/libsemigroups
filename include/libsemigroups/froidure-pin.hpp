@@ -42,7 +42,6 @@
 #include "debug.hpp"              // for LIBSEMIGROUPS_ASSERT
 #include "exception.hpp"          // for LIBSEMIGROUPS_EXCEPTION
 #include "froidure-pin-base.hpp"  // for FroidurePinBase, FroidurePinBase::s...
-#include "detail/iterator.hpp"           // for ConstIteratorStateless
 #include "report.hpp"             // for REPORT
 #include "stl.hpp"                // for EqualTo, Hash
 #include "timer.hpp"              // for detail::Timer
@@ -50,6 +49,7 @@
 
 #include "detail/bruidhinn-traits.hpp"  // for detail::BruidhinnTraits
 #include "detail/containers.hpp"        // for DynamicArray2
+#include "detail/iterator.hpp"          // for ConstIteratorStateless
 
 //! Namespace for everything in the libsemigroups library.
 namespace libsemigroups {

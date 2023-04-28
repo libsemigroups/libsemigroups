@@ -32,7 +32,7 @@
 #include "libsemigroups/string.hpp"  // for to_string of rule_type for debugging
 #include "libsemigroups/todd-coxeter.hpp"  // for fpsemigroup::ToddCoxeter
 #include "libsemigroups/transf.hpp"        // for fpsemigroup::ToddCoxeter
-#include "libsemigroups/words.hpp"          // for number_of_words
+#include "libsemigroups/words.hpp"         // for number_of_words
 
 namespace libsemigroups {
   struct LibsemigroupsException;  // Forward declaration

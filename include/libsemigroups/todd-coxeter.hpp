@@ -29,10 +29,10 @@
 #define LIBSEMIGROUPS_TODD_COXETER_NEW_HPP_
 
 #include "cong-intf.hpp"
-#include "exception.hpp"       // for LIBSEMIGROUPS_EXCEPTION
+#include "exception.hpp"     // for LIBSEMIGROUPS_EXCEPTION
 #include "felsch-graph.hpp"  // for FelschGraph
-#include "obvinf.hpp"          // for is_obviously_infinite
-#include "order.hpp"           // for order
+#include "obvinf.hpp"        // for is_obviously_infinite
+#include "order.hpp"         // for order
 #include "paths.hpp"
 #include "present.hpp"               // for Presentation
 #include "report.hpp"                // for LIBSEMIGROUPS_EXCEPTION
@@ -174,7 +174,7 @@ namespace libsemigroups {
 
     class Digraph : public NodeManagedDigraph<
                         FelschGraph<word_type, uint32_t, Definitions>> {
-      using FelschGraph_ = FelschGraph<word_type, uint32_t, Definitions>;
+      using FelschGraph_        = FelschGraph<word_type, uint32_t, Definitions>;
       using NodeManagedDigraph_ = NodeManagedDigraph<FelschGraph_>;
       using NodeManager_        = typename NodeManagedDigraph_::NodeManager_;
 
@@ -791,9 +791,9 @@ namespace libsemigroups {
     word_type class_index_to_word(node_type i) {
       if (i >= number_of_classes()) {
         LIBSEMIGROUPS_EXCEPTION("invalid class index, expected a value in "
-                                   "the range [0, {}), found {}",
-                                   number_of_classes(),
-                                   i);
+                                "the range [0, {}), found {}",
+                                number_of_classes(),
+                                i);
       }
       return class_index_to_word_impl(i);
     }
@@ -930,7 +930,7 @@ namespace libsemigroups {
             "classes, the non-trivial classes cannot be determined!");
       } else if (N == POSITIVE_INFINITY) {
         LIBSEMIGROUPS_EXCEPTION("the 2nd argument is an infinite range, the "
-                                   "non-trivial classes cannot be determined!");
+                                "non-trivial classes cannot be determined!");
       }
       return_type         result;
       std::vector<size_t> lookup;

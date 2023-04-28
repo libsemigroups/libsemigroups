@@ -53,7 +53,7 @@ namespace libsemigroups {
     // one of these two. It's your responsibility to ensure that the
     // non-pointer type is actually small and easy to copy.
     template <typename T>
-    class Pool<T, is_non_pointer_t<T>> final {
+    class Pool<T, is_non_pointer_t<T>> {
       static_assert(std::is_default_constructible<T>::value,
                     "Pool<T> requires T to be default-constructible");
 
@@ -77,7 +77,7 @@ namespace libsemigroups {
     };
 
     template <typename T>
-    class Pool<T, is_pointer_t<T>> final {
+    class Pool<T, is_pointer_t<T>> {
      public:
       // Not noexcept because default constructors of, say, std::list isn't
       Pool() = default;
@@ -179,7 +179,7 @@ namespace libsemigroups {
     // A pool guard acquires an element from the pool on construction and
     // releases it on destruction.
     template <typename T>
-    class PoolGuard<T, is_pointer_t<T>> final {
+    class PoolGuard<T, is_pointer_t<T>> {
      public:
       explicit PoolGuard(Pool<T>& pool) : _pool(pool), _tmp(pool.acquire()) {}
 

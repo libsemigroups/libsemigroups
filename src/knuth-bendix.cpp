@@ -1151,9 +1151,9 @@ namespace libsemigroups {
         // It might be possible to handle this case too, but doesn't seem
         // worth it at present
         LIBSEMIGROUPS_EXCEPTION("the arguments must have presentations with "
-                                   "the same alphabets, found {} and {}",
-                                   kb2.presentation().alphabet(),
-                                   kb1.presentation().alphabet());
+                                "the same alphabets, found {} and {}",
+                                kb2.presentation().alphabet(),
+                                kb1.presentation().alphabet());
       }
 
       // We construct the WordGraph `ad` obtained by subtracting all of

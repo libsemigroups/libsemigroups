@@ -57,22 +57,22 @@
 #include <algorithm>  // for max
 #endif
 
-#include "config.hpp"             // for LIBSEMIGROUPS_ENABLE_STATS
-#include "constants.hpp"          // for UNDEFINED
-#include "debug.hpp"              // for LIBSEMIGROUPS_ASSERT
-#include "deprecated.hpp"         // for LIBSEMIGROUPS_DEPRECATED
-#include "word-graph.hpp"            // for WordGraph
-#include "exception.hpp"          // for LIBSEMIGROUPS_EXCEPTION
+#include "config.hpp"           // for LIBSEMIGROUPS_ENABLE_STATS
+#include "constants.hpp"        // for UNDEFINED
+#include "debug.hpp"            // for LIBSEMIGROUPS_ASSERT
+#include "deprecated.hpp"       // for LIBSEMIGROUPS_DEPRECATED
+#include "exception.hpp"        // for LIBSEMIGROUPS_EXCEPTION
 #include "felsch-graph.hpp"     // for FelschGraph
-#include "froidure-pin.hpp"       // for FroidurePin
+#include "froidure-pin.hpp"     // for FroidurePin
+#include "present.hpp"          // for Presentation, Presentati...
+#include "report.hpp"           // for REPORT_DEFAULT, Reporter
+#include "stl.hpp"              // for JoinThreads
+#include "timer.hpp"            // for Timer
 #include "to-froidure-pin.hpp"  // for make
-#include "present.hpp"            // for Presentation, Presentati...
-#include "report.hpp"             // for REPORT_DEFAULT, Reporter
-#include "stl.hpp"                // for JoinThreads
-#include "timer.hpp"              // for Timer
-#include "to-presentation.hpp"    // for make
-#include "transf.hpp"             // for Transf
-#include "types.hpp"              // for word_type, congruence_kind
+#include "to-presentation.hpp"  // for make
+#include "transf.hpp"           // for Transf
+#include "types.hpp"            // for word_type, congruence_kind
+#include "word-graph.hpp"       // for WordGraph
 
 namespace libsemigroups {
 
@@ -655,8 +655,7 @@ namespace libsemigroups {
       // short_rules is stored in _felsch_graph
       // TODO ensure that _felsch_graph's settings are properly initialised
       using Definition = std::pair<node_type, label_type>;
-      FelschGraph<word_type, node_type, std::vector<Definition>>
-          _felsch_graph;
+      FelschGraph<word_type, node_type, std::vector<Definition>> _felsch_graph;
       // This mutex does nothing for iterator, only does something for
       // thread_iterator
       std::mutex              _mtx;

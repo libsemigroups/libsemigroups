@@ -153,9 +153,9 @@ namespace libsemigroups {
           ++next;
         } else if (*it > next) {
           LIBSEMIGROUPS_EXCEPTION("expected {} but found {}, in position {}",
-                                     next,
-                                     *it,
-                                     it - x.cbegin());
+                                  next,
+                                  *it,
+                                  it - x.cbegin());
         }
       }
       if (next != m) {
