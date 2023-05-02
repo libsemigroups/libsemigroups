@@ -85,7 +85,7 @@ namespace libsemigroups {
   //! kb.confluent();        // true
   //! \endcode
   class KnuthBendix : public CongruenceInterface {
-    friend class ::libsemigroups::detail::KBE;  // defined in kbe.hpp
+    friend class ::libsemigroups::detail::KBE;  // defined in detail/kbe.hpp
 
     ////////////////////////////////////////////////////////////////////////
     // KnuthBendix - typedefs/aliases - private

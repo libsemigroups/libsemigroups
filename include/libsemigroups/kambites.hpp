@@ -27,7 +27,6 @@
 
 // TODO(now)
 // * check code coverage
-// * check iwyu
 // * check const
 // * check noexcept
 // * C(3)?
@@ -35,33 +34,31 @@
 #ifndef LIBSEMIGROUPS_KAMBITES_HPP_
 #define LIBSEMIGROUPS_KAMBITES_HPP_
 
-#include <algorithm>    // for min
-#include <cstddef>      // for size_t
-#include <cstdint>      // for uint64_t
-#include <functional>   // for equal_to
-#include <memory>       // for shared_ptr, unique_ptr, make_shared
-#include <string>       // for string
-#include <type_traits>  // for is_base_of, is_trivial
-#include <utility>      // for pair
-#include <vector>       // for vector
+#include <algorithm>      // for min
+#include <cstddef>        // for size_t
+#include <cstdint>        // for uint64_t
+#include <functional>     // for equal_to
+#include <string>         // for string
+#include <tuple>          // for tuple
+#include <type_traits>    // for is_base_of, is_trivial
+#include <unordered_map>  // for unordered_map
+#include <utility>        // for pair
+#include <vector>         // for vector
 
-#include "adapters.hpp"      // for One
-#include "cong-intf.hpp"     // for CongruenceInterface
-#include "constants.hpp"     // for UNDEFINED, POSITIVE_INFINITY
-#include "exception.hpp"     // for LIBSEMIGROUPS_EXCEPTION
-#include "froidure-pin.hpp"  // for FroidurePin, FroidurePinTraits
-#include "obvinf.hpp"        // for is_obviously_infinite
-#include "order.hpp"         // for lexicographical_compare
-#include "present.hpp"       // for Presentation
-#include "string-view.hpp"
+#include "adapters.hpp"         // for One
+#include "cong-intf.hpp"        // for CongruenceInterface
+#include "constants.hpp"        // for UNDEFINED, POSITIVE_INFINITY
+#include "debug.hpp"            // for LIBSEMIGROUPS_DEBUG
+#include "exception.hpp"        // for LIBSEMIGROUPS_EXCEPTION
+#include "froidure-pin.hpp"     // for FroidurePin, FroidurePinTraits
+#include "order.hpp"            // for lexicographical_compare
+#include "present.hpp"          // for Presentation
+#include "string-view.hpp"      // for MultiStringView
 #include "string.hpp"           // for is_prefix
 #include "to-presentation.hpp"  // for to_presentation
 #include "types.hpp"            // for word_type, tril, letter_type
 #include "uf.hpp"               // for Duf<>
 #include "ukkonen.hpp"          // for Ukkonen
-#include "words.hpp"            // for word_to_string
-
-#include "detail/int-range.hpp"
 
 namespace libsemigroups {
 
@@ -72,8 +69,7 @@ namespace libsemigroups {
   //! [Kambites](https://doi.org/10.1016/j.jalgebra.2008.09.038) and the
   //! authors of ``libsemigroups``.
   //!
-  //! This page describes the implementation in the class
-  //! Kambites.
+  //! This page describes the implementation in the class template Kambites.
   // TODO(later) example
   template <typename Word = detail::MultiStringView>
   class Kambites : public CongruenceInterface {
@@ -114,7 +110,6 @@ namespace libsemigroups {
     // Kambites - data members - private
     ////////////////////////////////////////////////////////////////////////
 
-    // TODO adjust mutable?
     mutable size_t                     _class;
     mutable Complements                _complements;
     mutable bool                       _have_class;
@@ -128,7 +123,7 @@ namespace libsemigroups {
 
    public:
     ////////////////////////////////////////////////////////////////////////
-    // Kambites - Constructors and destructor - public
+    // Kambites - Constructors, destructor, initialisation - public
     ////////////////////////////////////////////////////////////////////////
 
     //! Default constructor.
@@ -159,30 +154,38 @@ namespace libsemigroups {
 
     ~Kambites();
 
-    // To tpp TODO
-    // TODO rval ref version
     explicit Kambites(Presentation<value_type> const& p) : Kambites() {
-      p.validate();
+      // TODO no exception safety here
       _presentation = p;
-      ukkonen::add_words_no_checks(_suffix_tree,
-                                   _presentation.rules.cbegin(),
-                                   _presentation.rules.cend());
+      private_init_from_presentation(false);
     }
 
-    // TODO rval ref version
-    // TODO init version
+    Kambites& init(Presentation<value_type> const& p) {
+      // TODO no exception safety here
+      _presentation = p;
+      return private_init_from_presentation(true);
+    }
+
+    explicit Kambites(Presentation<value_type>&& p) : Kambites() {
+      // TODO no exception safety here
+      _presentation = std::move(p);
+      private_init_from_presentation(false);
+    }
+
+    Kambites& init(Presentation<value_type>&& p) {
+      // TODO no exception safety here
+      _presentation = std::move(p);
+      return private_init_from_presentation(true);
+    }
+
+    // No rvalue ref version of this because we can't use the presentation.
     template <typename OtherWord>
     explicit Kambites(Presentation<OtherWord> const& p)
         : Kambites(to_presentation<value_type>(p)) {}
 
-    Kambites& init(Presentation<value_type> const& p) {
-      p.validate();
-      init();
-      _presentation = p;
-      ukkonen::add_words_no_checks(_suffix_tree,
-                                   _presentation.rules.cbegin(),
-                                   _presentation.rules.cend());
-      return *this;
+    template <typename OtherWord>
+    Kambites& init(Presentation<OtherWord> const& p) {
+      init(to_presentation<value_type>(p));
     }
 
     Presentation<value_type> const& presentation() const noexcept {
@@ -199,50 +202,31 @@ namespace libsemigroups {
       return POSITIVE_INFINITY;
     }
 
-    //! \copydoc FpSemigroupInterface::equal_to
     //!
     //! \throws LibsemigroupsException if the small overlap class is not at
     //! least \f$4\f$.
     // Not noexcept, throws
     [[nodiscard]] bool contains(word_type const& u,
-                                word_type const& v) override {
-      validate_small_overlap_class();
-      // Words aren't validated, the below returns false if they contain
-      // letters not in the alphabet.
-      if constexpr (std::is_same_v<internal_type, word_type>) {
-        return wp_prefix(internal_type(u), internal_type(v), internal_type());
-      } else {
-        std::string uu = to_string(presentation(), u);
-        std::string vv = to_string(presentation(), v);
-        return wp_prefix(internal_type(uu), internal_type(vv), internal_type());
-      }
-    }
+                                word_type const& v) override;
 
+    // Note that the asymmetry between how contains and normal_form are
+    // implemented is because contains is a pure virtual function. Without this
+    // restriction contains could be more simply implemented as normal_form is.
     template <typename SFINAE = bool>
     [[nodiscard]] auto contains(value_type const& u, value_type const& v)
-        -> std::enable_if_t<!std::is_same_v<value_type, word_type>, SFINAE> {
-      validate_small_overlap_class();
-      // Words aren't validated, the below returns false if they contain
-      // letters not in the alphabet.
-      return wp_prefix(internal_type(u), internal_type(v), internal_type());
-    }
-    // Not noexcept, equal_to above throws
-    //! \copydoc FpSemigroupInterface::equal_to
-    //!
-    //! \throws LibsemigroupsException if the small overlap class is not at
-    //! least \f$4\f$.
-    // bool equal_to(value_type&& u, value_type&& v) {
-    //   value_type uu = u;
-    //   value_type vv = v;
-    //   return equal_to(uu, vv);
-    // }
+        -> std::enable_if_t<!std::is_same_v<value_type, word_type>, SFINAE>;
 
     //! \copydoc FpSemigroupInterface::normal_form
     //!
     //! \throws LibsemigroupsException if the small overlap class is not at
     //! least \f$4\f$.
     // Not noexcept, lots of allocations
-    value_type normal_form(value_type const& w);
+    [[nodiscard]] value_type normal_form(value_type const& w);
+    // TODO(later) reference in-place version?
+
+    template <typename SFINAE = word_type>
+    [[nodiscard]] auto normal_form(word_type const& w)
+        -> std::enable_if_t<!std::is_same_v<value_type, word_type>, SFINAE>;
 
     ////////////////////////////////////////////////////////////////////////
     // Kambites - member functions - public
@@ -283,7 +267,7 @@ namespace libsemigroups {
     //! \warning
     //! The member functions \ref equal_to and \ref normal_form only work if
     //! the return value of this function is at least \f$4\f$.
-    size_t small_overlap_class();
+    [[nodiscard]] size_t small_overlap_class();
 
     //! Returns the Ukkonen suffix tree object used to compute pieces.
     //!
@@ -298,29 +282,30 @@ namespace libsemigroups {
     //!
     //! \exceptions
     //! \noexcept
-    auto const& ukkonen() noexcept {
+    [[nodiscard]] auto const& ukkonen() noexcept {
       run();
       return _suffix_tree;
     }
 
    private:
     ////////////////////////////////////////////////////////////////////////
-    // Kambites - validation functions - private
+    // Kambites - init functions - private
     ////////////////////////////////////////////////////////////////////////
 
-    // Throws exception if the index i is not in the range [0,
-    // _relation_words.size())
-    //
-    // Not noexcept, throws
-    void validate_relation_word_index(size_t i) const;
+    Kambites& private_init_from_presentation(bool call_init);
+
+    ////////////////////////////////////////////////////////////////////////
+    // Kambites - validation functions - private
+    ////////////////////////////////////////////////////////////////////////
 
     // Throws exception if the small_overlap_class is < 4.
     //
     // Not noexcept, throws
     void validate_small_overlap_class();
 
-    // TODO really required?
-    void validate_word(word_type const&) const override {}
+    void validate_word(word_type const& w) const override {
+      _presentation.validate_word(w.cbegin(), w.cend());
+    }
 
     ////////////////////////////////////////////////////////////////////////
     // Kambites - XYZ functions - private
@@ -356,15 +341,17 @@ namespace libsemigroups {
     // last) = X_iY_iw for some w. If no such exists, then UNDEFINED is
     // returned.
     // Not noexcept because is_prefix isn'Word
-    size_t relation_prefix(internal_type_iterator const& first,
-                           internal_type_iterator const& last) const;
+    [[nodiscard]] size_t
+    relation_prefix(internal_type_iterator const& first,
+                    internal_type_iterator const& last) const;
 
     // Returns the index of the relation word r_i = X_iY_iZ_i such that
     // X_iY_i is a clean overlap prefix of <s>, i.e. <s> = X_iY_iw for some
     // w, and there's no factor of <s> of the form X_jY_j starting before the
     // beginning of Y_i. If no such exists, UNDEFINED is returned.
     // Not noexcept because relation_prefix isn'Word
-    inline size_t clean_overlap_prefix(internal_type const& s) const {
+    [[nodiscard]] inline size_t
+    clean_overlap_prefix(internal_type const& s) const {
       return clean_overlap_prefix(s.cbegin(), s.cend());
     }
 
@@ -379,8 +366,8 @@ namespace libsemigroups {
     //
     // * <p.second> is the index of the relation word that's a clear overlap
     //   prefix of a suffix of <s>
-    std::pair<size_t, size_t> clean_overlap_prefix_mod(internal_type const& s,
-                                                       size_t n) const;
+    [[nodiscard]] std::pair<size_t, size_t>
+    clean_overlap_prefix_mod(internal_type const& s, size_t n) const;
 
     // If x + [first, last) = aX_sY_sw words a, w and for some index s, where
     // X_s = X_s'X_s'', x = aX_s', and [first, last) = X_s''Y_sw, then this
@@ -401,10 +388,11 @@ namespace libsemigroups {
     // is returned.
     //
     // Not noexcept because relation_prefix isn'Word
-    std::tuple<size_t, internal_type_iterator, internal_type_iterator>
-    p_active(internal_type const&          x,
-             internal_type_iterator const& first,
-             internal_type_iterator const& last) const;
+    [[nodiscard]] std::
+        tuple<size_t, internal_type_iterator, internal_type_iterator>
+        p_active(internal_type const&          x,
+                 internal_type_iterator const& first,
+                 internal_type_iterator const& last) const;
 
     // Returns a word equal to w in this, starting with the piece p, no checks
     // are performed. Used in the normal_form function.
@@ -417,38 +405,44 @@ namespace libsemigroups {
 
     // Returns j among the complements of i such that [first,
     // last) is a prefix of X_jY_jZ_j, and UNDEFINED otherwise.
-    size_t prefix_of_complement(size_t                        i,
-                                internal_type_iterator const& first,
-                                internal_type_iterator const& last) const;
+    [[nodiscard]] size_t
+    prefix_of_complement(size_t                        i,
+                         internal_type_iterator const& first,
+                         internal_type_iterator const& last) const;
 
     // Helper for the above
-    size_t prefix_of_complement(size_t i, internal_type const& w) const {
+    [[nodiscard]] size_t prefix_of_complement(size_t               i,
+                                              internal_type const& w) const {
       return prefix_of_complement(i, w.cbegin(), w.cend());
     }
 
     // Returns the index j of a complement of X_iY_iZ_i such that X_jY_j is a
     // prefix of w. Otherwise, UNDEFINED is returned.
-    size_t complementary_XY_prefix(size_t i, internal_type const& w) const;
+    [[nodiscard]] size_t complementary_XY_prefix(size_t               i,
+                                                 internal_type const& w) const;
 
     // Returns j such that w is Z_j-active for some Z_j in the
     // complements of Z_i.  Otherwise it returns UNDEFINED.
     //
     // See also: p_active.
-    size_t Z_active_complement(size_t i, internal_type const& w) const;
+    [[nodiscard]] size_t Z_active_complement(size_t               i,
+                                             internal_type const& w) const;
 
     // Returns j such that w is Z_j-active for some Z_j in the
     // proper (j != i) complements of Z_i.  Otherwise it returns UNDEFINED.
-    size_t Z_active_proper_complement(size_t i, internal_type const& w) const;
+    [[nodiscard]] size_t
+    Z_active_proper_complement(size_t i, internal_type const& w) const;
 
-    size_t Z_active_proper_complement(size_t                        i,
-                                      internal_type_iterator const& first,
-                                      internal_type_iterator const& last) const;
+    [[nodiscard]] size_t
+    Z_active_proper_complement(size_t                        i,
+                               internal_type_iterator const& first,
+                               internal_type_iterator const& last) const;
 
     ////////////////////////////////////////////////////////////////////////
     // Kambites - static functions - private
     ////////////////////////////////////////////////////////////////////////
 
-    static size_t complementary_relation_word(size_t i) {
+    [[nodiscard]] static size_t complementary_relation_word(size_t i) {
       return (i % 2 == 0 ? i + 1 : i - 1);
     }
 
@@ -468,9 +462,8 @@ namespace libsemigroups {
 
     template <typename Iterator>
     static void append(detail::MultiStringView& w,
-
-                       Iterator first,
-                       Iterator last) {
+                       Iterator                 first,
+                       Iterator                 last) {
       w.append(first, last);
     }
 
@@ -497,7 +490,9 @@ namespace libsemigroups {
     // are equal, not equal, references, rvalue references etc). It's
     // possible that it could be modified to only copy when necessary, but
     // this doesn'Word seem worth it at present.
-    bool wp_prefix(internal_type u, internal_type v, internal_type p) const;
+    [[nodiscard]] bool wp_prefix(internal_type u,
+                                 internal_type v,
+                                 internal_type p) const;
 
     // Implementational detail
     // Not noexcept because nothing else is and lots allocations
@@ -507,37 +502,7 @@ namespace libsemigroups {
     // Runner - pure virtual member functions - private
     ////////////////////////////////////////////////////////////////////////
 
-    // TODO to tpp
-    void run_impl() override {
-      if (!_have_class) {
-        if constexpr (std::is_same_v<value_type, word_type>) {
-          auto const& pairs = generating_pairs();
-          _presentation.rules.insert(
-              _presentation.rules.end(), pairs.cbegin(), pairs.cend());
-          ukkonen::add_words_no_checks(
-              _suffix_tree, pairs.cbegin(), pairs.cend());
-        } else {
-          auto pairs
-              = (rx::iterator_range(generating_pairs().cbegin(),
-                                    generating_pairs().cend())
-                 | to_strings(_presentation.alphabet()) | rx::to_vector());
-          ukkonen::add_words_no_checks(
-              _suffix_tree, pairs.cbegin(), pairs.cend());
-          _presentation.rules.insert(_presentation.rules.end(),
-                                     std::make_move_iterator(pairs.begin()),
-                                     std::make_move_iterator(pairs.end()));
-        }
-
-        size_t result = POSITIVE_INFINITY;
-        for (auto const& w : _presentation.rules) {
-          result = std::min(result,
-                            ukkonen::number_of_pieces_no_checks(
-                                _suffix_tree, w.cbegin(), w.cend()));
-        }
-        _have_class = true;
-        _class      = result;
-      }
-    }
+    void run_impl() override;
 
     bool finished_impl() const override {
       return _have_class && _class >= 4;

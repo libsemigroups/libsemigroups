@@ -92,8 +92,32 @@ namespace libsemigroups {
   Kambites<Word>::~Kambites() = default;
 
   ////////////////////////////////////////////////////////////////////////
-  // FpSemigroupInterface - pure virtual functions impl - public
+  // CongruenceInterface - pure virtual functions impl - public
   ////////////////////////////////////////////////////////////////////////
+
+  template <typename Word>
+  bool Kambites<Word>::contains(word_type const& u, word_type const& v) {
+    validate_small_overlap_class();
+    // Words aren't validated, the below returns false if they contain
+    // letters not in the alphabet.
+    if constexpr (std::is_same_v<internal_type, word_type>) {
+      return wp_prefix(internal_type(u), internal_type(v), internal_type());
+    } else {
+      std::string uu = to_string(presentation(), u);
+      std::string vv = to_string(presentation(), v);
+      return wp_prefix(internal_type(uu), internal_type(vv), internal_type());
+    }
+  }
+
+  template <typename Word>
+  template <typename SFINAE>
+  auto Kambites<Word>::contains(value_type const& u, value_type const& v)
+      -> std::enable_if_t<!std::is_same_v<value_type, word_type>, SFINAE> {
+    validate_small_overlap_class();
+    // Words aren't validated, the below returns false if they contain
+    // letters not in the alphabet.
+    return wp_prefix(internal_type(u), internal_type(v), internal_type());
+  }
 
   template <typename Word>
   typename Kambites<Word>::value_type
@@ -155,6 +179,16 @@ namespace libsemigroups {
     return v;
   }
 
+  template <typename Word>
+  template <typename SFINAE>
+  auto Kambites<Word>::normal_form(word_type const& w)
+      -> std::enable_if_t<!std::is_same_v<value_type, word_type>, SFINAE> {
+    // Words aren't validated, the below returns false if they contain
+    // letters not in the alphabet.
+    std::string uu = to_string(presentation(), w);
+    return to_word(presentation(), normal_form(uu));
+  }
+
   ////////////////////////////////////////////////////////////////////////
   // Kambites - member functions impl - public
   ////////////////////////////////////////////////////////////////////////
@@ -166,18 +200,24 @@ namespace libsemigroups {
   }
 
   ////////////////////////////////////////////////////////////////////////
-  // Kambites - validation functions impl - private
+  // Kambites - init functions - private
   ////////////////////////////////////////////////////////////////////////
 
   template <typename Word>
-  void Kambites<Word>::validate_relation_word_index(size_t i) const {
-    if (i >= _presentation.rules.size()) {
-      LIBSEMIGROUPS_EXCEPTION(
-          "expected a value in the range [0, %llu), found %llu",
-          uint64_t(_presentation.rules.size()),
-          uint64_t(i));
+  Kambites<Word>&
+  Kambites<Word>::private_init_from_presentation(bool call_init) {
+    _presentation.validate();
+    if (call_init) {
+      init();
     }
+    ukkonen::add_words_no_checks(
+        _suffix_tree, _presentation.rules.cbegin(), _presentation.rules.cend());
+    return *this;
   }
+
+  ////////////////////////////////////////////////////////////////////////
+  // Kambites - validation functions impl - private
+  ////////////////////////////////////////////////////////////////////////
 
   template <typename Word>
   void Kambites<Word>::validate_small_overlap_class() {
@@ -499,6 +539,36 @@ namespace libsemigroups {
       append(w, wp.cbegin() + Z(j).size(), wp.cend());
     }
   }
+  template <typename Word>
+  void Kambites<Word>::run_impl() {
+    if (!_have_class) {
+      if constexpr (std::is_same_v<value_type, word_type>) {
+        auto const& pairs = generating_pairs();
+        _presentation.rules.insert(
+            _presentation.rules.end(), pairs.cbegin(), pairs.cend());
+        ukkonen::add_words_no_checks(
+            _suffix_tree, pairs.cbegin(), pairs.cend());
+      } else {
+        auto pairs = (rx::iterator_range(generating_pairs().cbegin(),
+                                         generating_pairs().cend())
+                      | to_strings(_presentation.alphabet()) | rx::to_vector());
+        ukkonen::add_words_no_checks(
+            _suffix_tree, pairs.cbegin(), pairs.cend());
+        _presentation.rules.insert(_presentation.rules.end(),
+                                   std::make_move_iterator(pairs.begin()),
+                                   std::make_move_iterator(pairs.end()));
+      }
+
+      size_t result = POSITIVE_INFINITY;
+      for (auto const& w : _presentation.rules) {
+        result = std::min(result,
+                          ukkonen::number_of_pieces_no_checks(
+                              _suffix_tree, w.cbegin(), w.cend()));
+      }
+      _have_class = true;
+      _class      = result;
+    }
+  }
 
   ////////////////////////////////////////////////////////////////////////
   // Kambites - inner classes - private
@@ -644,13 +714,12 @@ namespace libsemigroups {
         return _value;
       }
 
-      // TODO rename to_word + make helper
+      // TODO rename to_word
       word_type word(Kambites<Word> const& k) const {
         return to_word(k.presentation(), _value);
       }
 
       // TODO rename to_string
-      // TODO rename to_word + make helper
       std::string string(Kambites<Word> const& k) const noexcept {
         return to_string(k.presentation(), _value);
       }
@@ -750,6 +819,7 @@ namespace libsemigroups {
               FroidurePinTraits<detail::KE<detail::MultiStringView>,
                                 Kambites<detail::MultiStringView>>>::is_finite()
       const;
+  // TODO impl for word_type too
 #endif
 
 }  // namespace libsemigroups

@@ -86,7 +86,7 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if `p.alphabet().size()` is `0`.
     template <typename P,
               typename = std::enable_if_t<
-                  std::is_base_of<PresentationBase, std::decay_t<P>>::value>>
+                  std::is_base_of_v<PresentationBase, std::decay_t<P>>>>
     explicit Stephen(P&& p);
 
     //! Default copy constructor

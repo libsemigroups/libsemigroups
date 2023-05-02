@@ -42,7 +42,7 @@
 #include "libsemigroups/constants.hpp"        // for operator!=, operator==
 #include "libsemigroups/exception.hpp"        // for LibsemigroupsException
 #include "libsemigroups/froidure-pin.hpp"     // for FroidurePin
-#include "libsemigroups/kbe.hpp"              // for KBE
+#include "libsemigroups/detail/kbe.hpp"              // for KBE
 #include "libsemigroups/knuth-bendix.hpp"     // for KnuthBendix
 #include "libsemigroups/present.hpp"          // for Presentation
 #include "libsemigroups/report.hpp"           // for ReportGuard

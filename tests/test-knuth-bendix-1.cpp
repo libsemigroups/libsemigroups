@@ -54,7 +54,7 @@
 #include "libsemigroups/constants.hpp"        // for operator==, operator!=
 #include "libsemigroups/exception.hpp"        // for LibsemigroupsException
 #include "libsemigroups/froidure-pin.hpp"     // for FroidurePin
-#include "libsemigroups/kbe.hpp"              // for KBE
+#include "libsemigroups/detail/kbe.hpp"              // for KBE
 #include "libsemigroups/knuth-bendix.hpp"     // for KnuthBendix, normal_f...
 #include "libsemigroups/obvinf.hpp"           // for is_obviously_infinite
 #include "libsemigroups/paths.hpp"            // for Paths

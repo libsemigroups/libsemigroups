@@ -72,7 +72,6 @@ pkginclude_HEADERS += include/libsemigroups/hpcombi.hpp
 pkginclude_HEADERS += include/libsemigroups/iterator.hpp
 pkginclude_HEADERS += include/libsemigroups/kambites.hpp
 pkginclude_HEADERS += include/libsemigroups/kambites.tpp
-pkginclude_HEADERS += include/libsemigroups/kbe.hpp
 pkginclude_HEADERS += include/libsemigroups/knuth-bendix.hpp
 pkginclude_HEADERS += include/libsemigroups/konieczny.hpp
 pkginclude_HEADERS += include/libsemigroups/libsemigroups.hpp
@@ -122,6 +121,7 @@ pkginclude_HEADERS += include/libsemigroups/detail/containers.hpp
 pkginclude_HEADERS += include/libsemigroups/detail/felsch-tree.hpp
 pkginclude_HEADERS += include/libsemigroups/detail/function-ref.hpp
 pkginclude_HEADERS += include/libsemigroups/detail/int-range.hpp
+pkginclude_HEADERS += include/libsemigroups/detail/kbe.hpp
 
 textflowcppincludedir = $(includedir)/libsemigroups/textflowcpp
 textflowcppinclude_HEADERS=extern/textflowcpp/TextFlow.hpp
@@ -576,7 +576,6 @@ libsemigroups_la_SOURCES += src/fpsemi-examples.cpp
 libsemigroups_la_SOURCES += src/freeband.cpp
 libsemigroups_la_SOURCES += src/froidure-pin-base.cpp
 libsemigroups_la_SOURCES += src/kambites.cpp
-libsemigroups_la_SOURCES += src/kbe.cpp
 libsemigroups_la_SOURCES += src/knuth-bendix.cpp
 libsemigroups_la_SOURCES += src/obvinf.cpp
 libsemigroups_la_SOURCES += src/pbr.cpp
@@ -594,6 +593,7 @@ libsemigroups_la_SOURCES += src/ukkonen.cpp
 libsemigroups_la_SOURCES += src/words.cpp
 
 libsemigroups_la_SOURCES += src/detail/felsch-tree.cpp
+libsemigroups_la_SOURCES += src/detail/kbe.cpp
 
 libsemigroups_la_CPPFLAGS = $(AM_CPPFLAGS)
 libsemigroups_la_CXXFLAGS = $(AM_CXXFLAGS)

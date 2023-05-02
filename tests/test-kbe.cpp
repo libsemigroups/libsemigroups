@@ -21,7 +21,7 @@
 #include "catch.hpp"      // for LIBSEMIGROUPS_TEST_CASE
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
-#include "libsemigroups/kbe.hpp"  // for KBE
+#include "libsemigroups/detail/kbe.hpp"  // for KBE
 
 #include "libsemigroups/froidure-pin.hpp"     // for FroidurePin
 #include "libsemigroups/knuth-bendix.hpp"     // for KnuthBendix

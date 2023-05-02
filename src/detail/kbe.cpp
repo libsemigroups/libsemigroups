@@ -18,7 +18,7 @@
 
 // This file contains the implementation of the KBE class.
 
-#include "libsemigroups/kbe.hpp"
+#include "libsemigroups/detail/kbe.hpp"
 #include "libsemigroups/obvinf.hpp"
 #include "libsemigroups/types.hpp"
 
