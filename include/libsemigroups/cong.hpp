@@ -167,6 +167,7 @@ namespace libsemigroups {
     template <typename Word>
     Congruence& init(congruence_kind type, Presentation<Word> const& p) {
       init(type, to_presentation<word_type>(p));
+      return *this;
     }
 
     //! TODO(doc)
