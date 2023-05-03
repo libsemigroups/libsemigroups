@@ -34,7 +34,7 @@ namespace libsemigroups {
   word_type random_word(size_t length, size_t nr_letters) {
     static std::random_device               rd;
     static std::mt19937                     gen(rd());
-    std::uniform_int_distribution<uint64_t> dist(0, nr_letters);
+    std::uniform_int_distribution<uint64_t> dist(0, nr_letters - 1);
     word_type                               out;
     for (size_t i = 0; i < length; ++i) {
       out.push_back(dist(gen));

@@ -59,6 +59,7 @@
 #include "types.hpp"            // for word_type, tril, letter_type
 #include "uf.hpp"               // for Duf<>
 #include "ukkonen.hpp"          // for Ukkonen
+#include "words.hpp"            // for to_strings
 
 namespace libsemigroups {
 

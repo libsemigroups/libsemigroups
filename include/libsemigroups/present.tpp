@@ -195,13 +195,15 @@ namespace libsemigroups {
       LIBSEMIGROUPS_EXCEPTION("no alphabet has been defined");
     } else if (_alphabet_map.find(c) == _alphabet_map.cend()) {
       if (std::is_same<letter_type, char>::value) {
-        LIBSEMIGROUPS_EXCEPTION("invalid letter %c, valid letters are %s",
+        LIBSEMIGROUPS_EXCEPTION("invalid letter {}, valid letters are {}",
                                 c,
-                                detail::to_string(_alphabet).c_str());
+                                detail::to_string(_alphabet));
       } else {
-        LIBSEMIGROUPS_EXCEPTION("invalid letter %llu, valid letters are %s",
-                                uint64_t(c),
-                                detail::to_string(_alphabet).c_str());
+        LIBSEMIGROUPS_EXCEPTION("invalid letter {}, valid letters are {}",
+                                c,
+                                detail::to_string(_alphabet));
+        // TODO define a formatter for vectors to make the "to_string" in the
+        // previous line redundant
       }
     }
   }

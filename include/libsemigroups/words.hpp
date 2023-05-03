@@ -30,6 +30,7 @@
 #include <cstddef>   // for size_t
 #include <cstdint>   // for uint64_t
 #include <iterator>  // for distance
+#include <random>    // for mt19937
 #include <string>    // for std::string
 #include <variant>   // for variant
 
@@ -764,6 +765,18 @@ namespace libsemigroups {
       return Range<Inner>(std::forward<InputRange>(input), *this);
     }
   };
+
+  // TODO to cpp
+  static inline word_type random_word(size_t length, size_t nr_letters) {
+    static std::random_device               rd;
+    static std::mt19937                     gen(rd());
+    std::uniform_int_distribution<uint64_t> dist(0, nr_letters - 1);
+    word_type                               out;
+    for (size_t i = 0; i < length; ++i) {
+      out.push_back(dist(gen));
+    }
+    return out;
+  }
 
 }  // namespace libsemigroups
 
