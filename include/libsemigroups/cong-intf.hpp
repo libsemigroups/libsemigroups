@@ -199,6 +199,28 @@ namespace libsemigroups {
     return result;
   }
 
+  template <typename Thing,
+            typename Iterator1,
+            typename Iterator2,
+            typename Word
+            = typename rx::iterator_range<Iterator1, Iterator2>::output_type>
+  std::vector<std::vector<word_type>> partition(Thing&    ci,
+                                                Iterator1 first,
+                                                Iterator2 last) {
+    return partition(ci, rx::iterator_range(first, last));
+  }
+
+  template <typename Thing,
+            typename Iterator1,
+            typename Iterator2,
+            typename Word
+            = typename rx::iterator_range<Iterator1, Iterator2>::output_type>
+  std::vector<std::vector<word_type>> non_trivial_classes(Thing&    tc,
+                                                          Iterator1 first,
+                                                          Iterator2 last) {
+    return non_trivial_classes(tc, rx::iterator_range(first, last));
+  }
+
 }  // namespace libsemigroups
 #endif  // LIBSEMIGROUPS_CONG_INTF_HPP_
         // old doc follows TODO use it or lose it

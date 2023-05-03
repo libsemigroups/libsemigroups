@@ -752,8 +752,6 @@ namespace libsemigroups {
     //! \sa
     //! \ref cend_normal_forms.
     // TODO update doc
-    // TODO warning if kb represents a left congruence, then the normal forms
-    // are reversed
     inline auto normal_forms(KnuthBendix& kb) {
       using rx::      operator|;
       ReversiblePaths paths(kb.gilman_digraph());
@@ -761,62 +759,45 @@ namespace libsemigroups {
       return paths;
     }
 
-    template <typename Range>
-    std::vector<std::vector<std::string>> partition(KnuthBendix& kb, Range r) {
-      static_assert(std::is_same_v<std::decay_t<typename Range::output_type>,
-                                   std::string>);
-      using return_type = std::vector<std::vector<std::string>>;
-      using rx::operator|;
-
-      size_t const N = (r | rx::count());
-      if (N == POSITIVE_INFINITY) {  // TODO ensure this is the same in all
-                                     // versions of partition
-        LIBSEMIGROUPS_EXCEPTION("the 2nd argument (a range) must be finite, "
-                                "found an infinite range");
-      }
-
-      return_type result;
-
-      std::unordered_map<std::string, size_t> map;
-      size_t                                  index = 0;
-
-      while (!r.at_end()) {
-        auto next = r.get();
-        if (kb.presentation().contains_empty_word() || !next.empty()) {
-          auto next_nf        = kb.rewrite(next);
-          auto [it, inserted] = map.emplace(next_nf, index);
-          if (inserted) {
-            result.emplace_back();
-            index++;
-          }
-          size_t index_of_next_nf = it->second;
-          result[index_of_next_nf].push_back(next);
-        }
-        r.next();
-      }
-      return result;
-    }
-
     // Compute non-trivial classes in kb1!
     std::vector<std::vector<std::string>> non_trivial_classes(KnuthBendix& kb1,
                                                               KnuthBendix& kb2);
 
-    // TODO remove code dupl with same function in todd_coxeter namespace
-    template <typename Range,
-              typename = std::enable_if_t<rx::is_input_or_sink_v<Range>>>
-    std::vector<std::vector<std::string>> non_trivial_classes(KnuthBendix& kb,
-                                                              Range        r) {
-      auto result = partition(kb, r);
+  }  // namespace knuth_bendix
 
-      result.erase(
-          std::remove_if(result.begin(),
-                         result.end(),
-                         [](auto const& x) -> bool { return x.size() <= 1; }),
-          result.end());
-      return result;
+  template <typename Range>
+  std::vector<std::vector<std::string>> partition(KnuthBendix& kb, Range r) {
+    static_assert(
+        std::is_same_v<std::decay_t<typename Range::output_type>, std::string>);
+    using return_type = std::vector<std::vector<std::string>>;
+    using rx::operator|;
+
+    if (!r.is_finite) {
+      LIBSEMIGROUPS_EXCEPTION("the 2nd argument (a range) must be finite, "
+                              "found an infinite range");
     }
 
-  }  // namespace knuth_bendix
+    return_type result;
+
+    std::unordered_map<std::string, size_t> map;
+    size_t                                  index = 0;
+
+    while (!r.at_end()) {
+      auto next = r.get();
+      if (kb.presentation().contains_empty_word() || !next.empty()) {
+        auto next_nf        = kb.rewrite(next);
+        auto [it, inserted] = map.emplace(next_nf, index);
+        if (inserted) {
+          result.emplace_back();
+          index++;
+        }
+        size_t index_of_next_nf = it->second;
+        result[index_of_next_nf].push_back(next);
+      }
+      r.next();
+    }
+    return result;
+  }
 
   // TODO move contents to knuth_bendix namespace
   namespace presentation {

@@ -329,13 +329,12 @@ namespace libsemigroups {
       using rx::operator|;
       cong.run();
       if (cong.has<ToddCoxeter>() && cong.get<ToddCoxeter>()->finished()) {
-        return ::libsemigroups::todd_coxeter::non_trivial_classes(
-            *cong.get<ToddCoxeter>(), r);
+        return non_trivial_classes(*cong.get<ToddCoxeter>(), r);
       } else if (cong.has<KnuthBendix>()
                  && cong.get<KnuthBendix>()->finished()) {
-        auto const& p = cong.get<KnuthBendix>()->presentation();
-        auto strings  = ::libsemigroups::knuth_bendix::non_trivial_classes(
-            *cong.get<KnuthBendix>(), r | to_strings(p.alphabet()));
+        auto const& p       = cong.get<KnuthBendix>()->presentation();
+        auto        strings = non_trivial_classes(*cong.get<KnuthBendix>(),
+                                           r | to_strings(p.alphabet()));
         std::vector<std::vector<word_type>> result;
         for (auto const& klass : strings) {
           result.push_back(rx::iterator_range(klass.begin(), klass.end())

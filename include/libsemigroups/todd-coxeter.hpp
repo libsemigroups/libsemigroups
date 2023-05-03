@@ -915,71 +915,6 @@ namespace libsemigroups {
       return tc.class_index_to_word(tc.word_to_class_index(w));
     }
 
-    template <typename Range,
-              typename = std::enable_if_t<rx::is_input_or_sink_v<Range>>>
-    std::vector<std::vector<word_type>> partition(ToddCoxeter& tc, Range r) {
-      static_assert(
-          std::is_same_v<std::decay_t<typename Range::output_type>, word_type>);
-      using return_type = std::vector<std::vector<word_type>>;
-
-      size_t const N = (r | rx::count());
-
-      if (tc.number_of_classes() == POSITIVE_INFINITY) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "the 1st argument defines a congruence with infinitely many "
-            "classes, the non-trivial classes cannot be determined!");
-      } else if (N == POSITIVE_INFINITY) {
-        LIBSEMIGROUPS_EXCEPTION("the 2nd argument is an infinite range, the "
-                                "non-trivial classes cannot be determined!");
-      }
-      return_type         result;
-      std::vector<size_t> lookup;
-      size_t              next_index = 0;
-
-      while (!r.at_end()) {
-        auto       next  = r.get();
-        auto const index = tc.word_to_class_index(next);
-        if (index >= lookup.size()) {
-          lookup.resize(index + 1, UNDEFINED);
-        }
-        if (lookup[index] == UNDEFINED) {
-          lookup[index] = next_index++;
-          result.emplace_back();
-        }
-        result[lookup[index]].push_back(std::move(next));
-        r.next();
-      }
-      return result;
-    }
-
-    template <typename Range,
-              typename = std::enable_if_t<rx::is_input_or_sink_v<Range>>>
-    std::vector<std::vector<word_type>> non_trivial_classes(ToddCoxeter& tc,
-                                                            Range        r) {
-      auto result = partition(tc, r);
-
-      result.erase(
-          std::remove_if(result.begin(),
-                         result.end(),
-                         [](auto const& x) -> bool { return x.size() <= 1; }),
-          result.end());
-      return result;
-    }
-
-    template <typename Iterator1, typename Iterator2>
-    std::vector<std::vector<word_type>> partition(ToddCoxeter& tc,
-                                                  Iterator1    first,
-                                                  Iterator2    last) {
-      return partition(tc, rx::iterator_range(first, last));
-    }
-
-    template <typename Iterator1, typename Iterator2>
-    std::vector<std::vector<word_type>> non_trivial_classes(ToddCoxeter& tc,
-                                                            Iterator1    first,
-                                                            Iterator2    last) {
-      return non_trivial_classes(tc, rx::iterator_range(first, last));
-    }
-
     inline std::vector<std::vector<word_type>>
     non_trivial_classes(ToddCoxeter& tc1, ToddCoxeter& tc2) {
       return non_trivial_classes(tc1, normal_forms(tc2));
@@ -1020,5 +955,41 @@ namespace libsemigroups {
                         float threshold = 0.99);
   }  // namespace todd_coxeter
 
+  template <typename Range,
+            typename = std::enable_if_t<rx::is_input_or_sink_v<Range>>>
+  std::vector<std::vector<word_type>> partition(ToddCoxeter& tc, Range r) {
+    static_assert(
+        std::is_same_v<std::decay_t<typename Range::output_type>, word_type>);
+    using return_type = std::vector<std::vector<word_type>>;
+
+    if (tc.number_of_classes() == POSITIVE_INFINITY) {
+      LIBSEMIGROUPS_EXCEPTION(
+          "the 1st argument defines a congruence with infinitely many "
+          "classes, the non-trivial classes cannot be determined!");
+      // They really can't be determined because we cannot run ToddCoxeter at
+      // all
+    } else if (!r.is_finite) {
+      LIBSEMIGROUPS_EXCEPTION("the 2nd argument (a range) must be finite, "
+                              "found an infinite range");
+    }
+    return_type         result;
+    std::vector<size_t> lookup;
+    size_t              next_index = 0;
+
+    while (!r.at_end()) {
+      auto       next  = r.get();
+      auto const index = tc.word_to_class_index(next);
+      if (index >= lookup.size()) {
+        lookup.resize(index + 1, UNDEFINED);
+      }
+      if (lookup[index] == UNDEFINED) {
+        lookup[index] = next_index++;
+        result.emplace_back();
+      }
+      result[lookup[index]].push_back(std::move(next));
+      r.next();
+    }
+    return result;
+  }
 }  // namespace libsemigroups
 #endif  // LIBSEMIGROUPS_TODD_COXETER_NEW_HPP_

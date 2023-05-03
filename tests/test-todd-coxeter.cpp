@@ -758,7 +758,7 @@ namespace libsemigroups {
 
     tc.standardize(Order::shortlex);
 
-    auto ntc = todd_coxeter::non_trivial_classes(
+    auto ntc = non_trivial_classes(
         tc, S.cbegin_normal_forms(), S.cend_normal_forms());
 
     REQUIRE(ntc.size() == 1);
@@ -812,7 +812,7 @@ namespace libsemigroups {
 
     REQUIRE(tc.number_of_classes() == 69);
     REQUIRE(tc.number_of_classes() == 69);
-    auto ntc = todd_coxeter::non_trivial_classes(
+    auto ntc = non_trivial_classes(
         tc, S.cbegin_normal_forms(), S.cend_normal_forms());
     REQUIRE(ntc.size() == 1);
     REQUIRE(ntc[0].size() == 20);
@@ -868,7 +868,7 @@ namespace libsemigroups {
         tc.word_to_class_index(S.factorisation(Transf<>({1, 3, 3, 3, 3})))
         != tc.word_to_class_index(S.factorisation(Transf<>({2, 3, 3, 3, 3}))));
 
-    auto ntc = todd_coxeter::non_trivial_classes(
+    auto ntc = non_trivial_classes(
         tc, S.cbegin_normal_forms(), S.cend_normal_forms());
     REQUIRE(ntc.size() == 4);
     std::vector<size_t> sizes(ntc.size(), 0);
@@ -1544,7 +1544,7 @@ namespace libsemigroups {
 
     ToddCoxeter tc2(twosided, p);
     REQUIRE(tc2.number_of_classes() == 40);
-    auto part = todd_coxeter::partition(tc1, todd_coxeter::normal_forms(tc2));
+    auto part = partition(tc1, todd_coxeter::normal_forms(tc2));
     REQUIRE(part
             == decltype(part)(
                 {{0_w,       00_w,      10_w,       11_w,       000_w,

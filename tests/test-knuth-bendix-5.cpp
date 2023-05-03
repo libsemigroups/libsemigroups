@@ -40,9 +40,9 @@
 #include <vector>         // for vector, operator==
 
 #include "libsemigroups/constants.hpp"        // for operator!=, operator==
+#include "libsemigroups/detail/kbe.hpp"       // for KBE
 #include "libsemigroups/exception.hpp"        // for LibsemigroupsException
 #include "libsemigroups/froidure-pin.hpp"     // for FroidurePin
-#include "libsemigroups/detail/kbe.hpp"              // for KBE
 #include "libsemigroups/knuth-bendix.hpp"     // for KnuthBendix
 #include "libsemigroups/present.hpp"          // for Presentation
 #include "libsemigroups/report.hpp"           // for ReportGuard
@@ -189,7 +189,7 @@ namespace libsemigroups {
             == std::vector<std::string>({"ca", "cb", "caa", "cab"}));
 
     kb2.run();
-    auto pp = knuth_bendix::partition(kb2, words);
+    auto pp = partition(kb2, words);
 
     REQUIRE(pp.size() == 72);
 
@@ -313,7 +313,7 @@ namespace libsemigroups {
 
     auto nf = (S.normal_forms() | to_strings(kb.presentation().alphabet()));
     REQUIRE((nf | count()) == 88);
-    auto pp = knuth_bendix::partition(kb, nf);
+    auto pp = partition(kb, nf);
     REQUIRE(pp.size() == 72);
 
     auto ntc = (iterator_range(pp.begin(), pp.end())
@@ -469,7 +469,7 @@ namespace libsemigroups {
     REQUIRE(kb.normal_form("abaaaa") == "aba");
 
     REQUIRE((nf | count()) == 88);
-    auto pp = knuth_bendix::partition(kb, nf);
+    auto pp = partition(kb, nf);
     REQUIRE(pp.size() == 69);
 
     auto ntc = (iterator_range(pp.begin(), pp.end())
