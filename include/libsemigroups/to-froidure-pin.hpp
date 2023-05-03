@@ -24,10 +24,11 @@
 
 #include "debug.hpp"       // for LIBSEMIGROUPS_ASSERT
 #include "exception.hpp"   // for LIBSEMIGROUPS_EXCEPTION
-#include "kambites.hpp"    // for KE
-#include "detail/kbe.hpp"         // for KBE
 #include "tce.hpp"         // for TCE
 #include "word-graph.hpp"  // for WordGraph
+
+#include "detail/kbe.hpp"  // for KBE
+#include "detail/ke.hpp"   // for KE
 
 namespace libsemigroups {
   class FroidurePinBase;  // forward decl

@@ -33,11 +33,10 @@
 #include "libsemigroups/knuth-bendix.hpp"       // for KnuthBendix
 #include "libsemigroups/report.hpp"             // for ReportGuard
 #include "libsemigroups/string.hpp"             // for random_string etc
-#include "libsemigroups/transf.hpp"             // for LeastTransf
-#include "libsemigroups/types.hpp"              // for tril etc
-#include "libsemigroups/words.hpp"              // for number_of_words
-
 #include "libsemigroups/to-froidure-pin.hpp"
+#include "libsemigroups/transf.hpp"  // for LeastTransf
+#include "libsemigroups/types.hpp"   // for tril etc
+#include "libsemigroups/words.hpp"   // for number_of_words
 
 namespace libsemigroups {
   using namespace rx;
@@ -154,6 +153,10 @@ namespace libsemigroups {
     REQUIRE(k.contains("ef", "dg"));
     REQUIRE(k.contains("aaaaaef", "aaaaadg"));
     REQUIRE(k.contains("efababa", "dgababa"));
+    REQUIRE(k.contains(to_word(p, "abcd"), to_word(p, "aaaeaa")));
+    REQUIRE(k.contains(to_word(p, "ef"), to_word(p, "dg")));
+    REQUIRE(k.contains(to_word(p, "aaaaaef"), to_word(p, "aaaaadg")));
+    REQUIRE(k.contains(to_word(p, "efababa"), to_word(p, "dgababa")));
 
     auto s = to_froidure_pin(k);
     s.enumerate(100);
@@ -162,7 +165,7 @@ namespace libsemigroups {
     Strings strings;
     strings.letters(p.alphabet()).min(1).max(4);
     REQUIRE(strings.count() == 399);
-    REQUIRE(kambites::non_trivial_classes(k, strings)
+    REQUIRE(non_trivial_classes(k, strings)
             == std::vector<std::vector<std::string>>({{"dg", "ef"},
                                                       {"adg", "aef"},
                                                       {"bdg", "bef"},
@@ -2547,7 +2550,7 @@ namespace libsemigroups {
     REQUIRE(k.contains(01110_w, 01110_w));
     REQUIRE(k.contains(01110233333233333323333333233333333_w,
                        0111023233233323333_w));
-    // REQUIRE(k.finished()); // TODO fixme
+    REQUIRE(k.finished());
     REQUIRE(is_obviously_infinite(k));
     REQUIRE(k.number_of_classes() == POSITIVE_INFINITY);
 
@@ -2569,6 +2572,72 @@ namespace libsemigroups {
     auto     p = to_presentation<word_type>(S);
     Kambites k(p);
     REQUIRE(k.small_overlap_class() == 1);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Kambites",
+                          "074",
+                          "code coverage for constructors/init",
+                          "[quick][kambites]") {
+    Kambites k;
+
+    REQUIRE(k.small_overlap_class() == POSITIVE_INFINITY);
+
+    Kambites l = std::move(k);
+    REQUIRE(l.small_overlap_class() == POSITIVE_INFINITY);
+
+    k = l;
+    REQUIRE(k.small_overlap_class() == POSITIVE_INFINITY);
+    REQUIRE(l.small_overlap_class() == POSITIVE_INFINITY);
+
+    k = std::move(l);
+    REQUIRE(k.small_overlap_class() == POSITIVE_INFINITY);
+
+    l.init();
+    REQUIRE(l.small_overlap_class() == POSITIVE_INFINITY);
+
+    Presentation<std::string> p;
+    p.alphabet("abcdefg");
+    presentation::add_rule_and_check(p, "abcd", "aaaeaa");
+    presentation::add_rule_and_check(p, "ef", "dg");
+
+    Kambites kk(std::move(p));
+    REQUIRE(kk.presentation().alphabet() == "abcdefg");
+    REQUIRE(kk.presentation().rules
+            == std::vector<std::string>({"abcd", "aaaeaa", "ef", "dg"}));
+    REQUIRE(kk.small_overlap_class() == 4);
+
+    p.alphabet("abcdefg");
+    presentation::add_rule_and_check(p, "abcd", "aaaeaa");
+    presentation::add_rule_and_check(p, "ef", "dg");
+
+    REQUIRE_THROWS_AS(kk.add_pair(to_word(p, "abababab"), to_word(p, "aba")),
+                      LibsemigroupsException);
+
+    kk.init(std::move(p));
+    REQUIRE(!kk.started());
+    REQUIRE(kk.presentation().alphabet() == "abcdefg");
+
+    p.alphabet("abcdefg");
+    kk.add_pair(to_word(p, "abababab"), to_word(p, "aba"));
+    REQUIRE(kk.small_overlap_class() == 1);
+
+    Presentation<word_type> pp;
+    pp.alphabet(7);
+    presentation::add_rule_and_check(
+        pp, to_word(p, "abcd"), to_word(p, "aaaeaa"));
+    presentation::add_rule_and_check(pp, to_word(p, "ef"), to_word(p, "dg"));
+
+    kk.init(pp);
+    REQUIRE(kk.generating_pairs().empty());
+    REQUIRE(kk.small_overlap_class() == 4);
+
+    Kambites<std::string> kkk(pp);
+    REQUIRE(kkk.generating_pairs().empty());
+    REQUIRE(kkk.small_overlap_class() == 4);
+
+    Kambites<word_type> k2;
+    REQUIRE_THROWS_AS(k2.add_pair(01011011101111_w, 0123_w),
+                      LibsemigroupsException);
   }
 
 }  // namespace libsemigroups

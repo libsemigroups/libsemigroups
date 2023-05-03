@@ -575,7 +575,6 @@ libsemigroups_la_SOURCES += src/forest.cpp
 libsemigroups_la_SOURCES += src/fpsemi-examples.cpp
 libsemigroups_la_SOURCES += src/freeband.cpp
 libsemigroups_la_SOURCES += src/froidure-pin-base.cpp
-libsemigroups_la_SOURCES += src/kambites.cpp
 libsemigroups_la_SOURCES += src/knuth-bendix.cpp
 libsemigroups_la_SOURCES += src/obvinf.cpp
 libsemigroups_la_SOURCES += src/pbr.cpp
@@ -594,6 +593,7 @@ libsemigroups_la_SOURCES += src/words.cpp
 
 libsemigroups_la_SOURCES += src/detail/felsch-tree.cpp
 libsemigroups_la_SOURCES += src/detail/kbe.cpp
+libsemigroups_la_SOURCES += src/detail/ke.cpp
 
 libsemigroups_la_CPPFLAGS = $(AM_CPPFLAGS)
 libsemigroups_la_CXXFLAGS = $(AM_CXXFLAGS)

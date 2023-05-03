@@ -190,14 +190,17 @@ namespace libsemigroups {
   }
 
   template <typename W>
-  void Presentation<W>::validate_letter(letter_type c) const {
+  void Presentation<W>::validate_letter(
+      typename Presentation<W>::letter_type c) const {
     if (_alphabet.empty()) {
       LIBSEMIGROUPS_EXCEPTION("no alphabet has been defined");
     } else if (_alphabet_map.find(c) == _alphabet_map.cend()) {
-      if (std::is_same<letter_type, char>::value) {
-        LIBSEMIGROUPS_EXCEPTION("invalid letter {}, valid letters are {}",
-                                c,
-                                detail::to_string(_alphabet));
+      if constexpr (std::is_same_v<typename Presentation<W>::letter_type,
+                                   char>) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "invalid letter \"{}\", valid letters are \"{}\"",
+            (std::isprint(c) ? c : static_cast<size_t>(c)),
+            _alphabet);
       } else {
         LIBSEMIGROUPS_EXCEPTION("invalid letter {}, valid letters are {}",
                                 c,

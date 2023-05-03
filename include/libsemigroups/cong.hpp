@@ -343,8 +343,7 @@ namespace libsemigroups {
         }
         return result;
       } else if (cong.has<Kambites<word_type>>()) {
-        return ::libsemigroups::kambites::non_trivial_classes(
-            *cong.get<Kambites<word_type>>(), r);
+        return non_trivial_classes(*cong.get<Kambites<word_type>>(), r);
       }
       LIBSEMIGROUPS_EXCEPTION("Cannot compute the non-trivial classes!");
     }

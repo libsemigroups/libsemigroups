@@ -75,6 +75,7 @@ namespace libsemigroups {
 
   template <typename Word>
   Kambites<Word>& Kambites<Word>::init() {
+    CongruenceInterface::init();
     // Mutable
     _class = UNDEFINED;
     _complements.init();
@@ -206,7 +207,6 @@ namespace libsemigroups {
   template <typename Word>
   Kambites<Word>&
   Kambites<Word>::private_init_from_presentation(bool call_init) {
-    _presentation.validate();
     if (call_init) {
       init();
     }
@@ -667,181 +667,4 @@ namespace libsemigroups {
     init_XYZ_data(i);
     return _XYZ_data[i].XYZ;
   }
-
-  namespace detail {
-    // This class is used to wrap libsemigroups::Kambites::value_type into an
-    // object that can be used as generators for a FroidurePin object.
-    template <typename Word>
-    class KE {
-     public:
-      using value_type = typename Kambites<Word>::value_type;
-
-     private:
-      value_type _value;
-
-      explicit KE(value_type const& w) : _value(w) {}
-      explicit KE(value_type&& w) : _value(std::move(w)) {}
-
-     public:
-      KE()                     = default;
-      KE(KE const&)            = default;
-      KE(KE&&)                 = default;
-      KE& operator=(KE const&) = default;
-      KE& operator=(KE&&)      = default;
-      ~KE()                    = default;
-
-      KE(Kambites<Word>& k, value_type const& w) : _value(k.normal_form(w)) {}
-
-      KE(Kambites<Word>& k, value_type&& w)
-          : _value(k.normal_form(std::move(w))) {}
-
-      KE(Kambites<Word>& k, letter_type a)
-          : KE(k, value_type({k.presentation().letter(a)})) {}
-
-      bool operator==(KE const& that) const {
-        return that._value == this->_value;
-      }
-
-      bool operator<(KE const& that) const {
-        return shortlex_compare(_value, that._value);
-      }
-
-      void swap(KE& x) {
-        std::swap(x._value, _value);
-      }
-
-      value_type const& value() const noexcept {
-        return _value;
-      }
-
-      // TODO rename to_word
-      word_type word(Kambites<Word> const& k) const {
-        return to_word(k.presentation(), _value);
-      }
-
-      // TODO rename to_string
-      std::string string(Kambites<Word> const& k) const noexcept {
-        return to_string(k.presentation(), _value);
-      }
-
-      friend std::ostringstream& operator<<(std::ostringstream& os,
-                                            KE const&           KE) {
-        os << KE.string();
-        return os;
-      }
-    };
-
-    // The following are not really required but are here as a reminder that
-    // KE are used in BruidhinnTraits which depends on the values in the
-    // static_asserts below.
-    static_assert(!std::is_trivial<KE<std::string>>::value,
-                  "KE is not trivial!!!");
-    static_assert(
-        std::integral_constant<bool, (sizeof(KE<std::string>) <= 32)>::value,
-        "KE's sizeof exceeds 32!!");
-
-  }  // namespace detail
-
-  template <typename Word>
-  struct FroidurePinState<detail::KE<Word>> {
-    using type = Kambites<Word>;
-  };
-
-  ////////////////////////////////////////////////////////////////////////
-  // Adapters for KE class
-  ////////////////////////////////////////////////////////////////////////
-
-  template <typename Word>
-  struct Complexity<detail::KE<Word>> {
-    constexpr size_t operator()(detail::KE<Word> const&) const noexcept {
-      return LIMIT_MAX;
-    }
-  };
-
-  template <typename Word>
-  struct Degree<detail::KE<Word>> {
-    constexpr size_t operator()(detail::KE<Word> const&) const noexcept {
-      return 0;
-    }
-  };
-
-  template <typename Word>
-  struct IncreaseDegree<detail::KE<Word>> {
-    void operator()(detail::KE<Word> const&) const noexcept {}
-  };
-
-  template <typename Word>
-  struct One<detail::KE<Word>> {
-    detail::KE<Word> operator()(detail::KE<Word> const&) {
-      return detail::KE<Word>();
-    }
-
-    detail::KE<Word> operator()(size_t = 0) const {
-      return detail::KE<Word>();
-    }
-  };
-
-  template <typename Word>
-  struct Product<detail::KE<Word>> {
-    void operator()(detail::KE<Word>&       xy,
-                    detail::KE<Word> const& x,
-                    detail::KE<Word> const& y,
-                    Kambites<Word>*         k,
-                    size_t) {
-      using value_type = typename detail::KE<Word>::value_type;
-      value_type w(x.value());  // string_type
-      w += y.value();
-      xy = detail::KE<Word>(*k, w);
-    }
-  };
-
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
-  template <>
-  word_type FroidurePin<
-      detail::KE<std::string>,
-      FroidurePinTraits<detail::KE<std::string>, Kambites<std::string>>>::
-      factorisation(detail::KE<std::string> const& x);
-
-  template <>
-  word_type FroidurePin<detail::KE<detail::MultiStringView>,
-                        FroidurePinTraits<detail::KE<detail::MultiStringView>,
-                                          Kambites<detail::MultiStringView>>>::
-      factorisation(detail::KE<detail::MultiStringView> const& x);
-
-  template <>
-  tril FroidurePin<detail::KE<std::string>,
-                   FroidurePinTraits<detail::KE<std::string>,
-                                     Kambites<std::string>>>::is_finite() const;
-
-  template <>
-  tril
-  FroidurePin<detail::KE<detail::MultiStringView>,
-              FroidurePinTraits<detail::KE<detail::MultiStringView>,
-                                Kambites<detail::MultiStringView>>>::is_finite()
-      const;
-  // TODO impl for word_type too
-#endif
-
 }  // namespace libsemigroups
-
-////////////////////////////////////////////////////////////////////////
-// Specializations of std::hash and std::equal_to
-////////////////////////////////////////////////////////////////////////
-
-namespace std {
-  template <typename Word>
-  struct hash<libsemigroups::detail::KE<Word>> {
-    size_t operator()(libsemigroups::detail::KE<Word> const& x) const {
-      using value_type = typename libsemigroups::detail::KE<Word>::value_type;
-      return hash<value_type>()(x.value());
-    }
-  };
-
-  template <typename Word>
-  struct equal_to<libsemigroups::detail::KE<Word>> {
-    bool operator()(libsemigroups::detail::KE<Word> const& x,
-                    libsemigroups::detail::KE<Word> const& y) const {
-      return x == y;
-    }
-  };
-}  // namespace std

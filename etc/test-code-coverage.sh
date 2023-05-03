@@ -58,18 +58,18 @@ fi
 if [[ ! -f config.log ]]; then
   bold "No config.log file found, running $CONFIGURE. . ."
   printf "\033[2m";
-  ./configure CXX="$MYCXX" CXXFLAGS="$MYCXXFLAGS" --enable-code-coverage --enable-fmt --with-external-fmt
+  ./configure CXX="$MYCXX" CXXFLAGS="$MYCXXFLAGS" --enable-code-coverage --with-external-fmt --disable-backward
   printf "\033[0m"
 elif [[ ! -f Makefile ]]; then
   bold "No Makefile found, running $CONFIGURE. . ."
   printf "\033[2m"
-  ./configure CXX="$MYCXX" CXXFLAGS="$MYCXXFLAGS" --enable-code-coverage --enable-fmt --with-external-fmt
+  ./configure CXX="$MYCXX" CXXFLAGS="$MYCXXFLAGS" --enable-code-coverage --with-external-fmt --disable-backward
   printf "\033[0m"
 elif ! grep -q "\.\/configure.*\-\-enable-code\-coverage" config.log; then
   bold "Didn't find --enable-code-coverage flag in config.log, running make clean && ./configure --enable-code-coverage. . ."
   printf "\033[2m"
   make clean
-  ./configure CXX="$MYCXX" CXXFLAGS="$MYCXXFLAGS" --enable-code-coverage --enable-fmt --with-external-fmt
+  ./configure CXX="$MYCXX" CXXFLAGS="$MYCXXFLAGS" --enable-code-coverage --with-external-fmt --disable-backward
   printf "\033[0m"
 fi
 

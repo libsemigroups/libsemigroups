@@ -1,6 +1,6 @@
 //
 // libsemigroups - C++ library for semigroups and monoids
-// Copyright (C) 2021 James D. Mitchell + Maria Tsalakou
+// Copyright (C) 2021-2023 James D. Mitchell + Maria Tsalakou
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -24,12 +24,6 @@
 //
 // for solving the word problem in small overlap monoids, and a novel algorithm
 // for computing normal forms in small overlap monoids, by Maria Tsalakou.
-
-// TODO(now)
-// * check code coverage
-// * check const
-// * check noexcept
-// * C(3)?
 
 #ifndef LIBSEMIGROUPS_KAMBITES_HPP_
 #define LIBSEMIGROUPS_KAMBITES_HPP_
@@ -156,25 +150,25 @@ namespace libsemigroups {
     ~Kambites();
 
     explicit Kambites(Presentation<value_type> const& p) : Kambites() {
-      // TODO no exception safety here
+      p.validate();
       _presentation = p;
       private_init_from_presentation(false);
     }
 
     Kambites& init(Presentation<value_type> const& p) {
-      // TODO no exception safety here
+      p.validate();
       _presentation = p;
       return private_init_from_presentation(true);
     }
 
     explicit Kambites(Presentation<value_type>&& p) : Kambites() {
-      // TODO no exception safety here
+      p.validate();
       _presentation = std::move(p);
       private_init_from_presentation(false);
     }
 
     Kambites& init(Presentation<value_type>&& p) {
-      // TODO no exception safety here
+      p.validate();
       _presentation = std::move(p);
       return private_init_from_presentation(true);
     }
@@ -187,6 +181,7 @@ namespace libsemigroups {
     template <typename OtherWord>
     Kambites& init(Presentation<OtherWord> const& p) {
       init(to_presentation<value_type>(p));
+      return *this;
     }
 
     Presentation<value_type> const& presentation() const noexcept {
@@ -223,7 +218,6 @@ namespace libsemigroups {
     //! least \f$4\f$.
     // Not noexcept, lots of allocations
     [[nodiscard]] value_type normal_form(value_type const& w);
-    // TODO(later) reference in-place version?
 
     template <typename SFINAE = word_type>
     [[nodiscard]] auto normal_form(word_type const& w)
@@ -305,7 +299,14 @@ namespace libsemigroups {
     void validate_small_overlap_class();
 
     void validate_word(word_type const& w) const override {
-      _presentation.validate_word(w.cbegin(), w.cend());
+      if constexpr (std::is_same_v<
+                        typename decltype(_presentation)::letter_type,
+                        letter_type>) {
+        _presentation.validate_word(w.cbegin(), w.cend());
+      } else {
+        value_type ww = to_string(presentation(), w);
+        _presentation.validate_word(ww.cbegin(), ww.cend());
+      }
     }
 
     ////////////////////////////////////////////////////////////////////////
@@ -513,66 +514,46 @@ namespace libsemigroups {
   template <typename Word>
   Kambites(Presentation<Word> const&) -> Kambites<Word>;
 
-  namespace kambites {
+  template <typename Range,
+            typename Word1,
+            typename Word2 = typename Kambites<Word1>::value_type>
+  std::vector<std::vector<Word2>> partition(Kambites<Word1>& k, Range r) {
+    static_assert(
+        std::is_same_v<std::decay_t<typename Range::output_type>, Word2>);
+    using return_type = std::vector<std::vector<Word2>>;
 
-    template <typename Range,
-              typename Word1,
-              typename Word2 = typename Kambites<Word1>::value_type>
-    std::vector<std::vector<Word2>> partition(Kambites<Word1>& k, Range r) {
-      static_assert(
-          std::is_same_v<std::decay_t<typename Range::output_type>, Word2>);
-      using return_type = std::vector<std::vector<Word2>>;
+    if (!r.is_finite) {
+      LIBSEMIGROUPS_EXCEPTION("the 2nd argument (a range) must be finite, "
+                              "found an infinite range");
+    }
 
-      if (!r.is_finite) {
-        LIBSEMIGROUPS_EXCEPTION("the 2nd argument (a range) must be finite, "
-                                "found an infinite range");
-      }
+    return_type result;
 
-      return_type result;
+    std::unordered_map<Word2, size_t> map;
+    size_t                            index = 0;
 
-      std::unordered_map<Word2, size_t> map;
-      size_t                            index = 0;
-
-      while (!r.at_end()) {
-        auto next = r.get();
-        if (k.presentation().contains_empty_word() || !next.empty()) {
-          auto next_nf        = k.normal_form(next);
-          auto [it, inserted] = map.emplace(next_nf, index);
-          if (inserted) {
-            result.emplace_back();
-            index++;
-          }
-          size_t index_of_next_nf = it->second;
-          result[index_of_next_nf].push_back(next);
+    while (!r.at_end()) {
+      auto next = r.get();
+      if (k.presentation().contains_empty_word() || !next.empty()) {
+        auto next_nf        = k.normal_form(next);
+        auto [it, inserted] = map.emplace(next_nf, index);
+        if (inserted) {
+          result.emplace_back();
+          index++;
         }
-        r.next();
+        size_t index_of_next_nf = it->second;
+        result[index_of_next_nf].push_back(next);
       }
-      return result;
+      r.next();
     }
+    return result;
+  }
 
-    // TODO remove code dupl with same function in todd_coxeter + knuth_bendix
-    // namespace
-    template <typename Range,
-              typename Word1,
-              typename Word2 = typename Kambites<Word1>::value_type,
-              typename       = std::enable_if_t<rx::is_input_or_sink_v<Range>>>
-    std::vector<std::vector<Word2>> non_trivial_classes(Kambites<Word1>& k,
-                                                        Range            r) {
-      auto result = partition(k, r);
-
-      result.erase(
-          std::remove_if(result.begin(),
-                         result.end(),
-                         [](auto const& x) -> bool { return x.size() <= 1; }),
-          result.end());
-      return result;
-    }
-    // There's no non_trivial_classes(Kambites k1, Kambites k2) because it's
-    // unclear how this could be computed (because they always define infinite
-    // semigroups/monoids), so we can't just do non_trivial_classes(k1,
-    // kambites::normal_forms(k2)) (as in ToddCoxeter) because there are
-    // infinitely many normal_forms.
-  }  // namespace kambites
+  // There's no non_trivial_classes(Kambites k1, Kambites k2) because it's
+  // unclear how this could be computed (because they always define infinite
+  // semigroups/monoids), so we can't just do non_trivial_classes(k1,
+  // kambites::normal_forms(k2)) (as in ToddCoxeter) because there are
+  // infinitely many normal_forms.
 
 }  // namespace libsemigroups
 

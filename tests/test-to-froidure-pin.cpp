@@ -25,6 +25,7 @@
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
 #include "libsemigroups/constants.hpp"        // for UNDEFINED
+#include "libsemigroups/exception.hpp"        // for LIBSEMIGROUPS_EXCEPTION
 #include "libsemigroups/froidure-pin.hpp"     // for FroidurePin, Froidure...
 #include "libsemigroups/report.hpp"           // for ReportGuard
 #include "libsemigroups/to-froidure-pin.hpp"  // for make
@@ -61,10 +62,102 @@ namespace libsemigroups {
     auto ad = to_word_graph<uint8_t>(
         5,
         {{1, 3, 4, 1}, {0, 0, 1, 1}, {2, 1, 2, 2}, {3, 2, 3, 3}, {4, 4, 4, 4}});
-    // Couldn't use REQUIRE_THROWS_AS here for some reason
-    REQUIRE_THROWS(to_froidure_pin<Transf<0, uint8_t>>(ad, 10, 0));
-    REQUIRE_THROWS(to_froidure_pin<Transf<0, uint8_t>>(ad, 10, 11));
-    REQUIRE_THROWS(to_froidure_pin<Transf<0, uint8_t>>(ad, 0, 11));
+    REQUIRE_THROWS_AS((to_froidure_pin<Transf<0, uint8_t>>(ad, 10, 0)),
+                      LibsemigroupsException);
+    REQUIRE_THROWS_AS((to_froidure_pin<Transf<0, uint8_t>>(ad, 10, 11)),
+                      LibsemigroupsException);
+    REQUIRE_THROWS_AS((to_froidure_pin<Transf<0, uint8_t>>(ad, 0, 11)),
+                      LibsemigroupsException);
+  }
+
+  namespace {
+    template <typename Word, typename OtherWord = Word>
+    void check_from_ke(Presentation<Word> const& p) {
+      using literals::    operator""_w;
+      Kambites<OtherWord> k(p);
+      auto                s = to_froidure_pin(k);
+      REQUIRE(s.is_finite() == tril::FALSE);
+      s.enumerate(100);
+      REQUIRE(s.current_size() == 8'205);
+      REQUIRE(s[0].to_word(k) == 0_w);
+      REQUIRE(s[1].to_word(k) == 1_w);
+      REQUIRE(s[2].to_word(k) == 2_w);
+      REQUIRE(s[4].to_word(k) == 4_w);
+      REQUIRE(s[8].to_word(k) == 01_w);
+      REQUIRE(s[16].to_word(k) == 12_w);
+      REQUIRE(s[32].to_word(k) == 34_w);
+      REQUIRE(s[64].to_word(k) == 012_w);
+
+      REQUIRE(s.factorisation(s[0]) == 0_w);
+      REQUIRE(s.factorisation(s[1]) == 1_w);
+      REQUIRE(s.factorisation(s[2]) == 2_w);
+      REQUIRE(s.factorisation(s[4]) == 4_w);
+      REQUIRE(s.factorisation(s[8]) == 01_w);
+      REQUIRE(s.factorisation(s[16]) == 12_w);
+      REQUIRE(s.factorisation(s[32]) == 34_w);
+      REQUIRE(s.factorisation(s[64]) == 012_w);
+
+      REQUIRE(s[0] < s[1]);
+
+      auto t = s[128];
+      t      = s[64];
+      REQUIRE(s.factorisation(t) == 012_w);
+      auto u = s[128];
+      u.swap(t);
+      REQUIRE(s.factorisation(t) == 134_w);
+      REQUIRE(s.factorisation(u) == 012_w);
+      t = std::move(u);
+      REQUIRE(s.factorisation(t) == 012_w);
+
+      auto v(std::move(t));
+      REQUIRE(s.factorisation(v) == 012_w);
+
+      if constexpr (!std::is_same_v<Word, word_type>) {
+        REQUIRE(s[0].to_string() == "a");
+        REQUIRE(s[1].to_string() == "b");
+        REQUIRE(s[2].to_string() == "c");
+        REQUIRE(s[4].to_string() == "e");
+        REQUIRE(s[8].to_string() == "ab");
+        REQUIRE(s[16].to_string() == "bc");
+        REQUIRE(s[32].to_string() == "de");
+        REQUIRE(s[64].to_string() == "abc");
+      }
+
+      REQUIRE(Complexity<decltype(v)>()(v) == LIMIT_MAX);
+      IncreaseDegree<decltype(v)>()(v);
+      REQUIRE(Degree<decltype(v)>()(v) == 0);
+      v = One<decltype(v)>()();
+      REQUIRE(v.to_word(k) == ""_w);
+    }
+  }  // namespace
+
+  LIBSEMIGROUPS_TEST_CASE("to_froidure_pin<KE>",
+                          "002",
+                          "from Kambites (code cov)",
+                          "[quick][make]") {
+    auto                      rg = ReportGuard(false);
+    Presentation<std::string> p;
+    p.alphabet("abcdefg");
+    presentation::add_rule_and_check(p, "abcd", "aaaeaa");
+    presentation::add_rule_and_check(p, "ef", "dg");
+    check_from_ke(p);
+    check_from_ke<std::string, detail::MultiStringView>(p);
+    check_from_ke<word_type>(to_presentation<word_type>(p));
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("to_froidure_pin<KE>",
+                          "003",
+                          "from Kambites (exceptions)",
+                          "[quick][make]") {
+    auto                      rg = ReportGuard(false);
+    Presentation<std::string> p;
+    p.alphabet("ab");
+    presentation::add_rule_and_check(p, "bababa", "aba");
+    REQUIRE_THROWS_AS(check_from_ke(p), LibsemigroupsException);
+    REQUIRE_THROWS_AS((check_from_ke<std::string, detail::MultiStringView>(p)),
+                      LibsemigroupsException);
+    REQUIRE_THROWS_AS((check_from_ke<word_type>(to_presentation<word_type>(p))),
+                      LibsemigroupsException);
   }
 
   /*

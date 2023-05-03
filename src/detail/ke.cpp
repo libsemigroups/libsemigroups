@@ -18,35 +18,24 @@
 
 // This file contains the implementation of the KambitesImpl class.
 
-#include "libsemigroups/kambites.hpp"
+#include "libsemigroups/detail/ke.hpp"
 
-#include <algorithm>  // for max, find_if, equal, copy, min
-#include <string>     // for string
-#include <tuple>      // for tie, tuple
+#include <string>  // for string
 
-#include <iostream>
-
-#include "libsemigroups/constants.hpp"  // for UNDEFINED, POSITIVE_INFINITY
-#include "libsemigroups/debug.hpp"      // for LIBSEMIGROUPS_ASSERT
-#include "libsemigroups/exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
-#include "libsemigroups/froidure-pin-base.hpp"  // for FroidurePinBase
-#include "libsemigroups/froidure-pin.hpp"       // for FroidurePin
-#include "libsemigroups/order.hpp"              // for lexicographical_compare
-#include "libsemigroups/string.hpp"  // for is_prefix, maximum_common_suffix
-#include "libsemigroups/types.hpp"   // for word_type, tril
-#include "libsemigroups/uf.hpp"      // for Duf<>
-#include "libsemigroups/words.hpp"   // for word_to_string
-
-#include "libsemigroups/detail/int-range.hpp"  // for detail::IntRange
+#include "libsemigroups/froidure-pin.hpp"  // for FroidurePin
+#include "libsemigroups/types.hpp"         // for word_type, tril
 
 namespace libsemigroups {
+  namespace detail {
+    class MultiStringView;  // forward decl
+  }
 
   template <>
   word_type FroidurePin<
       detail::KE<std::string>,
       FroidurePinTraits<detail::KE<std::string>, Kambites<std::string>>>::
       factorisation(detail::KE<std::string> const& x) {
-    return x.word(*state());
+    return x.to_word(*state());
   }
 
   template <>
@@ -54,7 +43,15 @@ namespace libsemigroups {
                         FroidurePinTraits<detail::KE<detail::MultiStringView>,
                                           Kambites<detail::MultiStringView>>>::
       factorisation(detail::KE<detail::MultiStringView> const& x) {
-    return x.word(*state());
+    return x.to_word(*state());
+  }
+
+  template <>
+  word_type
+  FroidurePin<detail::KE<word_type>,
+              FroidurePinTraits<detail::KE<word_type>, Kambites<word_type>>>::
+      factorisation(detail::KE<word_type> const& x) {
+    return x.to_word(*state());
   }
 
   template <>
@@ -73,4 +70,18 @@ namespace libsemigroups {
       const {
     return tril::FALSE;
   }
+
+  template <>
+  tril FroidurePin<detail::KE<word_type>,
+                   FroidurePinTraits<detail::KE<word_type>,
+                                     Kambites<word_type>>>::is_finite() const {
+    return tril::FALSE;
+  }
+
+  namespace detail {
+    template <>
+    word_type KE<word_type>::to_word(Kambites<word_type> const&) const {
+      return _value;
+    }
+  }  // namespace detail
 }  // namespace libsemigroups

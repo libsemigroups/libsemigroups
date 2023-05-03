@@ -20,8 +20,8 @@
 // the element_type for a FroidurePin instance. This class just wraps a
 // reduced word of a KnuthBendix instance.
 
-#ifndef LIBSEMIGROUPS_KBE_NEW_HPP_
-#define LIBSEMIGROUPS_KBE_NEW_HPP_
+#ifndef LIBSEMIGROUPS_DETAIL_KBE_HPP_
+#define LIBSEMIGROUPS_DETAIL_KBE_HPP_
 
 #include <cstddef>  // for size_t
 #include <string>   // for string
@@ -167,4 +167,4 @@ namespace std {
     }
   };
 }  // namespace std
-#endif  // LIBSEMIGROUPS_KBE_NEW_HPP_
+#endif  // LIBSEMIGROUPS_DETAIL_KBE_HPP_

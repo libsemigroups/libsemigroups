@@ -35,6 +35,9 @@
 #include "todd-coxeter.hpp"  // for ToddCoxeter
 
 namespace libsemigroups {
+  template <typename T>
+  struct FroidurePinState;
+
   namespace detail {
 
     class TCE {

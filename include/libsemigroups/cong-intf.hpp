@@ -29,6 +29,8 @@
 #include "runner.hpp"  // for Runner
 #include "types.hpp"   // for word_type, relation_type, letter_type, tril
 
+#include <rx/ranges.hpp>  // for is_input_or_sink_v
+
 namespace libsemigroups {
   class Congruence;  // forward decl
 
@@ -56,6 +58,7 @@ namespace libsemigroups {
     CongruenceInterface() = default;
 
     CongruenceInterface& init() {
+      _generating_pairs.clear();
       Runner::init();
       return *this;
     }
@@ -65,7 +68,7 @@ namespace libsemigroups {
         : Runner(), _type(type) {}
 
     CongruenceInterface& init(congruence_kind type) {
-      Runner::init();
+      init();
       _type = type;
       return *this;
     }
@@ -181,6 +184,21 @@ namespace libsemigroups {
     void throw_if_started() const;
     void add_pair_no_checks_no_reverse(word_type const& u, word_type const& v);
   };
+
+  template <typename Thing,
+            typename Range,
+            typename Word = std::decay_t<typename Range::output_type>,
+            typename      = std::enable_if_t<rx::is_input_or_sink_v<Range>>>
+  std::vector<std::vector<Word>> non_trivial_classes(Thing& ci, Range r) {
+    auto result = partition(ci, r);
+    result.erase(
+        std::remove_if(result.begin(),
+                       result.end(),
+                       [](auto const& x) -> bool { return x.size() <= 1; }),
+        result.end());
+    return result;
+  }
+
 }  // namespace libsemigroups
 #endif  // LIBSEMIGROUPS_CONG_INTF_HPP_
         // old doc follows TODO use it or lose it
