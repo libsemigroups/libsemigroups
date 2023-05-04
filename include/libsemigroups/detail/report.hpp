@@ -18,8 +18,8 @@
 
 // This file contains a class for reporting things during a computation.
 
-#ifndef LIBSEMIGROUPS_REPORT_HPP_
-#define LIBSEMIGROUPS_REPORT_HPP_
+#ifndef LIBSEMIGROUPS_DETAIL_REPORT_HPP_
+#define LIBSEMIGROUPS_DETAIL_REPORT_HPP_
 
 #include <cxxabi.h>  // for abi::
 
@@ -37,7 +37,8 @@
 #include <utility>        // for pair
 #include <vector>         // for vector
 
-#include "config.hpp"  // for LIBSEMIGROUPS_FMT_ENABLED
+#include "libsemigroups/config.hpp"  // for LIBSEMIGROUPS_FMT_ENABLED
+
 #include "string.hpp"  // for string_format, to_string
 
 #include "textflowcpp/TextFlow.hpp"
@@ -632,4 +633,4 @@ struct fmt::formatter<T, Char, std::enable_if_t<std::is_enum_v<T>>>
   }
 };
 
-#endif  // LIBSEMIGROUPS_REPORT_HPP_
+#endif  // LIBSEMIGROUPS_DETAIL_REPORT_HPP_

@@ -48,7 +48,7 @@
 #include "libsemigroups/obvinf.hpp"           // for is_obviously_infinite
 #include "libsemigroups/paths.hpp"            // for Paths
 #include "libsemigroups/present.hpp"          // for to_string, add_rule
-#include "libsemigroups/report.hpp"           // for ReportGuard
+#include "libsemigroups/detail/report.hpp"           // for ReportGuard
 #include "libsemigroups/to-froidure-pin.hpp"  // for to_froidure_pin
 #include "libsemigroups/types.hpp"            // for word_type
 #include "libsemigroups/words.hpp"            // for operator""_w

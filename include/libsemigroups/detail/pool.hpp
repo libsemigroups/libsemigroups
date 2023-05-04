@@ -19,8 +19,8 @@
 // way to manage temporary elements while avoiding unnecessary memory
 // allocation.
 
-#ifndef LIBSEMIGROUPS_POOL_HPP_
-#define LIBSEMIGROUPS_POOL_HPP_
+#ifndef LIBSEMIGROUPS_DETAIL_POOL_HPP_
+#define LIBSEMIGROUPS_DETAIL_POOL_HPP_
 
 #include <list>           // for list
 #include <stack>          // for stack
@@ -211,4 +211,4 @@ namespace libsemigroups {
   }  // namespace detail
 }  // namespace libsemigroups
 
-#endif  // LIBSEMIGROUPS_POOL_HPP_
+#endif  // LIBSEMIGROUPS_DETAIL_POOL_HPP_

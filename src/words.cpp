@@ -33,7 +33,7 @@
 #include "libsemigroups/debug.hpp"      // for LIBSEMIGROUPS_ASSERT
 #include "libsemigroups/exception.hpp"  // for word_type
 #include "libsemigroups/order.hpp"      // for order
-#include "libsemigroups/report.hpp"     // for magic_enum formatting
+#include "libsemigroups/detail/report.hpp"     // for magic_enum formatting
 #include "libsemigroups/types.hpp"      // for word_type
 
 #include "rx/ranges.hpp"  // for count, operator|

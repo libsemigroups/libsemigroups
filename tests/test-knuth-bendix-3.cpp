@@ -49,7 +49,7 @@
 #include "libsemigroups/paths.hpp"         // for Paths
 #include "libsemigroups/present.hpp"       // for add_rule, Presentation
 #include "libsemigroups/ranges.hpp"        // for equal
-#include "libsemigroups/report.hpp"        // for ReportGuard
+#include "libsemigroups/detail/report.hpp"        // for ReportGuard
 #include "libsemigroups/word-graph.hpp"    // for WordGraph
 #include "libsemigroups/words.hpp"         // for Inner, to_strings, Str...
 

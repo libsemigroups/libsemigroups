@@ -21,7 +21,7 @@
 // obtaining the winner.
 //
 
-#include "libsemigroups/race.hpp"
+#include "libsemigroups/detail/race.hpp"
 
 #include <functional>  // for mem_fn
 #include <thread>

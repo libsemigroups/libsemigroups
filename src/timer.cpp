@@ -16,13 +16,13 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "libsemigroups/timer.hpp"
+#include "libsemigroups/detail/timer.hpp"
 
 #include <chrono>   // for nanoseconds, duration_cast, minutes, operator>
 #include <cstddef>  // for size_t
 #include <string>   // for string
 
-#include "libsemigroups/string.hpp"  // for to_string
+#include "libsemigroups/detail/string.hpp"  // for to_string
 
 namespace libsemigroups {
   namespace detail {

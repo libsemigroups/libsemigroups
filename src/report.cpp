@@ -16,7 +16,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "libsemigroups/report.hpp"
+#include "libsemigroups/detail/report.hpp"
 
 #include <ratio>          // for ratio, nano
 #include <unordered_map>  // for operator!=
@@ -25,7 +25,7 @@
 
 #include "libsemigroups/config.hpp"  // for LIBSEMIGROUPS_FMT_ENABLED
 #include "libsemigroups/debug.hpp"   // for LIBSEMIGROUPS_ASSERT
-#include "libsemigroups/string.hpp"  // for unicode_string_length, wrap
+#include "libsemigroups/detail/string.hpp"  // for unicode_string_length, wrap
 
 namespace libsemigroups {
   detail::Reporter        REPORTER;

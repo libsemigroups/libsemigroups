@@ -39,10 +39,10 @@
 #include "constants.hpp"  // for UNDEFINED
 #include "debug.hpp"      // for LIBSEMIGROUPS_ASSERT
 #include "exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
-#include "pool.hpp"       // for detail::Pool
-#include "report.hpp"     // for REPORT_DEFAULT
+#include "detail/pool.hpp"       // for detail::Pool
+#include "detail/report.hpp"     // for REPORT_DEFAULT
 #include "runner.hpp"     // for Runner
-#include "timer.hpp"      // for Timer
+#include "detail/timer.hpp"      // for Timer
 
 #include "detail/bruidhinn-traits.hpp"  // for BruidhinnTraits
 

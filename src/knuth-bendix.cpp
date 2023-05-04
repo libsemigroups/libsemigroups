@@ -33,10 +33,10 @@
 #include "libsemigroups/paths.hpp"       // for Paths
 #include "libsemigroups/present.hpp"     // for Presentation
 #include "libsemigroups/ranges.hpp"      // for operator<<
-#include "libsemigroups/report.hpp"      // for Reporter, REPORT_DEFAULT, REP...
+#include "libsemigroups/detail/report.hpp"      // for Reporter, REPORT_DEFAULT, REP...
 #include "libsemigroups/runner.hpp"      // for Runner
-#include "libsemigroups/string.hpp"      // for is_prefix, maximum_common_prefix
-#include "libsemigroups/timer.hpp"       // for Timer
+#include "libsemigroups/detail/string.hpp"      // for is_prefix, maximum_common_prefix
+#include "libsemigroups/detail/timer.hpp"       // for Timer
 #include "libsemigroups/types.hpp"       // for word_type
 #include "libsemigroups/word-graph.hpp"  // for WordGraph
 #include "libsemigroups/words.hpp"       // for to_strings

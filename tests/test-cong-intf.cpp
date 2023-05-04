@@ -21,7 +21,7 @@
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
 #include "libsemigroups/cong.hpp"    // for Congruence
-#include "libsemigroups/tce.hpp"     // for TCE
+#include "libsemigroups/detail/tce.hpp"     // for TCE
 #include "libsemigroups/transf.hpp"  // for Transf<>
 
 namespace libsemigroups {

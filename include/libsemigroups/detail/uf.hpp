@@ -26,8 +26,8 @@
 
 // An earlier version of the UF class was written by M. Young.
 
-#ifndef LIBSEMIGROUPS_UF_HPP_
-#define LIBSEMIGROUPS_UF_HPP_
+#ifndef LIBSEMIGROUPS_DETAIL_UF_HPP_
+#define LIBSEMIGROUPS_DETAIL_UF_HPP_
 
 #include <algorithm>      // for for_each
 #include <array>          // for array
@@ -36,12 +36,12 @@
 #include <unordered_map>  // for unordered_map
 #include <vector>         // for vector
 
-#include "adapters.hpp"  // for Hash
-#include "config.hpp"    // for LIBSEMIGROUPS_SIZEOF_VOID_P
-#include "debug.hpp"     // for LIBSEMIGROUPS_ASSERT
-#include "types.hpp"     // for SmallestInteger
+#include "libsemigroups/adapters.hpp"  // for Hash
+#include "libsemigroups/config.hpp"    // for LIBSEMIGROUPS_SIZEOF_VOID_P
+#include "libsemigroups/debug.hpp"     // for LIBSEMIGROUPS_ASSERT
+#include "libsemigroups/types.hpp"     // for SmallestInteger
 
-#include "detail/iterator.hpp"  // for ConstIteratorStateless
+#include "iterator.hpp"  // for ConstIteratorStateless
 
 namespace libsemigroups {
   namespace detail {
@@ -474,4 +474,4 @@ namespace libsemigroups {
     }
   };
 }  // namespace libsemigroups
-#endif  // LIBSEMIGROUPS_UF_HPP_
+#endif  // LIBSEMIGROUPS_DETAIL_UF_HPP_

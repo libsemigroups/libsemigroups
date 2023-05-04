@@ -49,7 +49,7 @@
 #include "libsemigroups/order.hpp"         // for shortlex_compare
 #include "libsemigroups/paths.hpp"         // for Paths
 #include "libsemigroups/present.hpp"       // for add_rule, Presentation
-#include "libsemigroups/report.hpp"        // for ReportGuard
+#include "libsemigroups/detail/report.hpp"        // for ReportGuard
 #include "libsemigroups/word-graph.hpp"    // for WordGraph
 #include "libsemigroups/words.hpp"         // for Inner, to_strings
 

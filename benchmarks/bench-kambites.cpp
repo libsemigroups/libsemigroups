@@ -543,11 +543,11 @@ namespace libsemigroups {
               for (auto wit = words.cbegin(); wit < words.cend() - 1;
                    wit += 2) {
                 result &= k.contains(*wit, *(wit + 1));
-              };
+              }
               return result;
             });
           }
-        };
+        };  // NOLINT(readability/braces)
       }
 
       // xml_tag("Title",
@@ -711,7 +711,7 @@ namespace libsemigroups {
             meter.measure([&]() {
               for (auto wit = words.cbegin(); wit < words.cend(); ++wit) {
                 result &= k.contains(k.normal_form(*wit), *wit);
-              };
+              }
             });
             if (!result) {
               std::cout << "lhs = " << relations[i] << std::endl;
@@ -720,7 +720,7 @@ namespace libsemigroups {
             }
             REQUIRE(result);
           }
-        };
+        };  // NOLINT(readability/braces)
       }
 
       // xml_tag("Title",

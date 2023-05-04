@@ -33,7 +33,7 @@
 #include "libsemigroups/constants.hpp"  // for PositiveInfinity, POSITIVE...
 #include "libsemigroups/fpsemi-examples.hpp"
 #include "libsemigroups/froidure-pin-base.hpp"  // for FroidurePinBase
-#include "libsemigroups/report.hpp"             // for ReportGuard
+#include "libsemigroups/detail/report.hpp"             // for ReportGuard
 #include "libsemigroups/todd-coxeter.hpp"  // for ToddCoxeter, ToddCoxeter::...
 #include "libsemigroups/types.hpp"         // for word_type, letter_type
 

@@ -25,8 +25,8 @@
 // 2. update run_until to be similar to Runner::run_until
 // 3. add tpp file
 
-#ifndef LIBSEMIGROUPS_RACE_HPP_
-#define LIBSEMIGROUPS_RACE_HPP_
+#ifndef LIBSEMIGROUPS_DETAIL_RACE_HPP_
+#define LIBSEMIGROUPS_DETAIL_RACE_HPP_
 
 #include <chrono>       // for nanoseconds
 #include <cstddef>      // for size_t
@@ -35,13 +35,14 @@
 #include <type_traits>  // for invoke_result_t
 #include <vector>       // for vector
 
-#include "constants.hpp"  // for UNDEFINED
-#include "debug.hpp"      // for LIBSEMIGROUPS_ASSERT
-#include "exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
-#include "report.hpp"     // for REPORT_DEFAULT, REPORT_TIME
-#include "runner.hpp"     // for Runner
-#include "stl.hpp"        // for IsCallable
-#include "timer.hpp"      // for Timer
+#include "libsemigroups/constants.hpp"  // for UNDEFINED
+#include "libsemigroups/debug.hpp"      // for LIBSEMIGROUPS_ASSERT
+#include "libsemigroups/exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
+#include "libsemigroups/runner.hpp"     // for Runner
+
+#include "report.hpp"  // for REPORT_DEFAULT, REPORT_TIME
+#include "stl.hpp"     // for IsCallable
+#include "timer.hpp"   // for Timer
 
 namespace libsemigroups {
   namespace detail {
@@ -320,4 +321,4 @@ namespace libsemigroups {
   }  // namespace detail
 }  // namespace libsemigroups
 
-#endif  // LIBSEMIGROUPS_RACE_HPP_
+#endif  // LIBSEMIGROUPS_DETAIL_RACE_HPP_

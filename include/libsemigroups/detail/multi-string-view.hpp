@@ -20,8 +20,8 @@
 // - more benchmarks
 // - make a cpp file
 
-#ifndef LIBSEMIGROUPS_STRING_VIEW_HPP_
-#define LIBSEMIGROUPS_STRING_VIEW_HPP_
+#ifndef LIBSEMIGROUPS_DETAIL_MULTI_STRING_VIEW_HPP_
+#define LIBSEMIGROUPS_DETAIL_MULTI_STRING_VIEW_HPP_
 
 #include <algorithm>  // for equal, lexicographical_compare
 #include <cstddef>    // for size_t, etc
@@ -32,11 +32,11 @@
 #include <utility>    // for make_pair
 #include <vector>     // for vector
 
-#include "debug.hpp"      // for LIBSEMIGROUPS_ASSERT
-#include "exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
-#include "string.hpp"     // for is_prefix
+#include "libsemigroups/debug.hpp"      // for LIBSEMIGROUPS_ASSERT
+#include "libsemigroups/exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
 
-#include "detail/iterator.hpp"  // for ConstIteratorStateful, ConstIteratorTraits
+#include "iterator.hpp"  // for ConstIteratorStateful, ConstIteratorTraits
+#include "string.hpp"    // for is_prefix
 
 namespace libsemigroups {
   namespace detail {
@@ -1071,4 +1071,4 @@ namespace std {
     return y == x;
   }
 }  // namespace std
-#endif  // LIBSEMIGROUPS_STRING_VIEW_HPP_
+#endif  // LIBSEMIGROUPS_DETAIL_MULTI_STRING_VIEW_HPP_

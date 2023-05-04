@@ -27,7 +27,7 @@
 
 #include "libsemigroups/debug.hpp"      // for LIBSEMIGROUPS_A...
 #include "libsemigroups/exception.hpp"  // for LIBSEMIGROUPS_E...
-#include "libsemigroups/string.hpp"     // for to_string
+#include "libsemigroups/detail/string.hpp"     // for to_string
 
 #include "libsemigroups/detail/containers.hpp"  // for DynamicArray2
 

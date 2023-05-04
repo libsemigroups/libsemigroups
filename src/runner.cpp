@@ -21,8 +21,8 @@
 
 #include "libsemigroups/runner.hpp"
 
-#include "libsemigroups/report.hpp"  // for REPORT_DEFAULT
-#include "libsemigroups/timer.hpp"   // for Timer::string
+#include "libsemigroups/detail/report.hpp"  // for REPORT_DEFAULT
+#include "libsemigroups/detail/timer.hpp"   // for Timer::string
 
 namespace libsemigroups {
   Runner::Runner()

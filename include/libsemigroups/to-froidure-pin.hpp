@@ -24,7 +24,7 @@
 
 #include "debug.hpp"       // for LIBSEMIGROUPS_ASSERT
 #include "exception.hpp"   // for LIBSEMIGROUPS_EXCEPTION
-#include "tce.hpp"         // for TCE
+#include "detail/tce.hpp"         // for TCE
 #include "word-graph.hpp"  // for WordGraph
 
 #include "detail/kbe.hpp"  // for KBE

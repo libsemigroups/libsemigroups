@@ -60,7 +60,7 @@
 #include "libsemigroups/paths.hpp"            // for Paths
 #include "libsemigroups/present.hpp"          // for add_rule, Presentation
 #include "libsemigroups/ranges.hpp"           // for equal
-#include "libsemigroups/report.hpp"           // for ReportGuard
+#include "libsemigroups/detail/report.hpp"           // for ReportGuard
 #include "libsemigroups/to-froidure-pin.hpp"  // for to_froidure_pin
 #include "libsemigroups/types.hpp"            // for word_type
 #include "libsemigroups/word-graph.hpp"       // for WordGraph

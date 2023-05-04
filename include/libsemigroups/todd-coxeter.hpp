@@ -25,8 +25,8 @@
 // * remove preferred_defs from FelschGraph etc (except where they are really
 // needed)
 
-#ifndef LIBSEMIGROUPS_TODD_COXETER_NEW_HPP_
-#define LIBSEMIGROUPS_TODD_COXETER_NEW_HPP_
+#ifndef LIBSEMIGROUPS_TODD_COXETER_HPP_
+#define LIBSEMIGROUPS_TODD_COXETER_HPP_
 
 #include "cong-intf.hpp"
 #include "exception.hpp"     // for LIBSEMIGROUPS_EXCEPTION
@@ -35,10 +35,11 @@
 #include "order.hpp"         // for order
 #include "paths.hpp"
 #include "present.hpp"               // for Presentation
-#include "report.hpp"                // for LIBSEMIGROUPS_EXCEPTION
 #include "to-presentation.hpp"       // for make
 #include "todd-coxeter-digraph.hpp"  // for Digraph
 #include "types.hpp"                 // for word_type
+
+#include "detail/report.hpp"  // for LIBSEMIGROUPS_EXCEPTION
 
 namespace libsemigroups {
   class ToddCoxeter : public CongruenceInterface,
@@ -906,9 +907,9 @@ namespace libsemigroups {
     //! \no_libsemigroups_except
     // TODO(refactor): redo the doc
     inline auto normal_forms(ToddCoxeter& tc) {
-      using namespace rx;
-      return (seq() | take(tc.number_of_classes())
-              | transform([&tc](auto i) { return tc.class_index_to_word(i); }));
+      return rx::seq() | rx::take(tc.number_of_classes())
+             | rx::transform(
+                 [&tc](auto i) { return tc.class_index_to_word(i); });
     }
 
     inline word_type normal_form(ToddCoxeter& tc, word_type const& w) {
@@ -992,4 +993,4 @@ namespace libsemigroups {
     return result;
   }
 }  // namespace libsemigroups
-#endif  // LIBSEMIGROUPS_TODD_COXETER_NEW_HPP_
+#endif  // LIBSEMIGROUPS_TODD_COXETER_HPP_

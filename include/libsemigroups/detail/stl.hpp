@@ -19,8 +19,8 @@
 // This file contains some functionality missing in some implementations of the
 // stl, or to augment the stl implementations.
 
-#ifndef LIBSEMIGROUPS_STL_HPP_
-#define LIBSEMIGROUPS_STL_HPP_
+#ifndef LIBSEMIGROUPS_DETAIL_STL_HPP_
+#define LIBSEMIGROUPS_DETAIL_STL_HPP_
 
 #include <cstddef>      // for size_t
 #include <memory>       // for unique_ptr
@@ -137,4 +137,4 @@ namespace std {
     }
   };
 }  // namespace std
-#endif  // LIBSEMIGROUPS_STL_HPP_
+#endif  // LIBSEMIGROUPS_DETAIL_STL_HPP_

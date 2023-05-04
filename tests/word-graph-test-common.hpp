@@ -18,8 +18,8 @@
 
 // This file contains an implementation of Gabow's algorithm for WordGraphs.
 
-#ifndef LIBSEMIGROUPS_TESTS_WORD_GRAPH_HPP_
-#define LIBSEMIGROUPS_TESTS_WORD_GRAPH_HPP_
+#ifndef LIBSEMIGROUPS_TESTS_WORD_GRAPH_TEST_COMMON_HPP_
+#define LIBSEMIGROUPS_TESTS_WORD_GRAPH_TEST_COMMON_HPP_
 
 // TODO:
 // * iwyu
@@ -69,4 +69,4 @@ namespace libsemigroups {
   }
 
 }  // namespace libsemigroups
-#endif  // LIBSEMIGROUPS_TESTS_WORD_GRAPH_HPP_
+#endif  // LIBSEMIGROUPS_TESTS_WORD_GRAPH_TEST_COMMON_HPP_

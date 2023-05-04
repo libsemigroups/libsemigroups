@@ -27,7 +27,7 @@
 #include "libsemigroups/bmat.hpp"    // for BMat adapters
 #include "libsemigroups/bmat8.hpp"   // for BMat8 etc
 #include "libsemigroups/matrix.hpp"  // for BMat
-#include "libsemigroups/report.hpp"  // for ReportGuard
+#include "libsemigroups/detail/report.hpp"  // for ReportGuard
 #include "libsemigroups/transf.hpp"  // for PPerm<>
 
 #include "catch.hpp"      // for REQUIRE, REQUIRE_THROWS_AS, REQUI...

@@ -26,7 +26,7 @@
 
 #include <algorithm>
 
-#include "string.hpp"  // for detail::to_string
+#include "detail/string.hpp"  // for detail::to_string
 
 #include <rx/ranges.hpp>
 

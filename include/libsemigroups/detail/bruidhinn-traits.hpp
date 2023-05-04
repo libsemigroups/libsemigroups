@@ -20,8 +20,8 @@
 // types, and functions for translating between then, for use by the
 // FroidurePin, SchreierSims, Konieczny, and other classes.
 
-#ifndef LIBSEMIGROUPS_BRUIDHINN_TRAITS_HPP_
-#define LIBSEMIGROUPS_BRUIDHINN_TRAITS_HPP_
+#ifndef LIBSEMIGROUPS_DETAIL_BRUIDHINN_TRAITS_HPP_
+#define LIBSEMIGROUPS_DETAIL_BRUIDHINN_TRAITS_HPP_
 
 #include <type_traits>  // for conditional_t etc
 
@@ -269,4 +269,4 @@ namespace libsemigroups {
             BruidhinnConstIteratorTraits<BruidhinnTraits<Value>, Container>>>;
   }  // namespace detail
 }  // namespace libsemigroups
-#endif  // LIBSEMIGROUPS_BRUIDHINN_TRAITS_HPP_
+#endif  // LIBSEMIGROUPS_DETAIL_BRUIDHINN_TRAITS_HPP_

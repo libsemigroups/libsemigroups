@@ -31,7 +31,7 @@
 #include "libsemigroups/debug.hpp"      // for LIBSEMIGROUPS_ASSERT
 #include "libsemigroups/exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION, Libs...
 #include "libsemigroups/present.hpp"    // for operator+, add_rule, operator+=
-#include "libsemigroups/report.hpp"     // for magic_enum formatting
+#include "libsemigroups/detail/report.hpp"     // for magic_enum formatting
 #include "libsemigroups/types.hpp"      // for word_type, relation_type, let...
 #include "libsemigroups/words.hpp"      // for operator""_w
 

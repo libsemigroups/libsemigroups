@@ -35,7 +35,7 @@
 #include "exception.hpp"   // for LIBSEMIGROUPS_EXCEPTION
 #include "forest.hpp"      // for Forest
 #include "gabow.hpp"       // for Gabow
-#include "report.hpp"      // for REPORT_DEFAULT
+#include "detail/report.hpp"      // for REPORT_DEFAULT
 #include "runner.hpp"      // for Runner
 #include "word-graph.hpp"  // for WordGraph
 

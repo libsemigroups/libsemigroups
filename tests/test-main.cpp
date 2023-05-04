@@ -35,8 +35,8 @@
 #include "catch.hpp"  // for Colour, Colour::Code::BrightRed, CATCH_REGISTER...
 
 #include "libsemigroups/config.hpp"  // for LIBSEMIGROUPS_BACKWARD_ENABLED
-#include "libsemigroups/string.hpp"  // for to_string, unicode_string_length
-#include "libsemigroups/timer.hpp"   // for Timer
+#include "libsemigroups/detail/string.hpp"  // for to_string, unicode_string_length
+#include "libsemigroups/detail/timer.hpp"   // for Timer
 
 struct LibsemigroupsLineInfo {
   explicit LibsemigroupsLineInfo(Catch::TestCaseInfo const& testInfo)

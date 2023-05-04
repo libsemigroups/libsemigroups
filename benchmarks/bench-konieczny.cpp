@@ -25,7 +25,7 @@
 #include "libsemigroups/bmat.hpp"          // for BMat adapters
 #include "libsemigroups/froidure-pin.hpp"  // for FroidurePin
 #include "libsemigroups/matrix.hpp"        // for BMat
-#include "libsemigroups/report.hpp"        // for ReportGuard
+#include "libsemigroups/detail/report.hpp"        // for ReportGuard
 #include "libsemigroups/transf.hpp"        // for Transformation
 
 namespace libsemigroups {

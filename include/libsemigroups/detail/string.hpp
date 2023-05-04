@@ -18,8 +18,8 @@
 
 // This file contains some string related functionality.
 
-#ifndef LIBSEMIGROUPS_STRING_HPP_
-#define LIBSEMIGROUPS_STRING_HPP_
+#ifndef LIBSEMIGROUPS_DETAIL_STRING_HPP_
+#define LIBSEMIGROUPS_DETAIL_STRING_HPP_
 
 #include <algorithm>  // for equal
 #include <array>      // for array
@@ -35,15 +35,17 @@
 #include <utility>    // for make_pair, pair
 #include <vector>     // for vector
 
-#include "debug.hpp"  // for LIBSEMIGROUPS_ASSERT
+#include "libsemigroups/debug.hpp"  // for LIBSEMIGROUPS_ASSERT
 
 namespace libsemigroups {
 
   namespace detail {
+    // TODO rm
     static inline std::string const& string_format(std::string const& format) {
       return format;
     }
 
+    // TODO rm
     template <typename... Args>
     std::string string_format(std::string const& format, Args... args) {
       size_t size = snprintf(nullptr, 0, format.c_str(), args...)
@@ -276,4 +278,4 @@ namespace libsemigroups {
 
   }  // namespace detail
 }  // namespace libsemigroups
-#endif  // LIBSEMIGROUPS_STRING_HPP_
+#endif  // LIBSEMIGROUPS_DETAIL_STRING_HPP_

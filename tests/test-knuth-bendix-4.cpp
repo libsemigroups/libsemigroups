@@ -53,9 +53,9 @@
 #include "libsemigroups/order.hpp"         // for shortlex_compare
 #include "libsemigroups/paths.hpp"         // for Paths
 #include "libsemigroups/present.hpp"       // for add_rule, Presentation
-#include "libsemigroups/report.hpp"        // for ReportGuard
-#include "libsemigroups/stl.hpp"           // for apply_permutation
-#include "libsemigroups/string.hpp"        // for random_string, operator<<
+#include "libsemigroups/detail/report.hpp"        // for ReportGuard
+#include "libsemigroups/detail/stl.hpp"           // for apply_permutation
+#include "libsemigroups/detail/string.hpp"        // for random_string, operator<<
 #include "libsemigroups/word-graph.hpp"    // for WordGraph
 #include "libsemigroups/words.hpp"         // for Inner, Strings, to_str...
 

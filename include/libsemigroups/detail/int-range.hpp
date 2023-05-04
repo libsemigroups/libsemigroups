@@ -23,8 +23,8 @@
 // 1. doc
 // 2. tests
 
-#ifndef LIBSEMIGROUPS_INT_RANGE_HPP_
-#define LIBSEMIGROUPS_INT_RANGE_HPP_
+#ifndef LIBSEMIGROUPS_DETAIL_INT_RANGE_HPP_
+#define LIBSEMIGROUPS_DETAIL_INT_RANGE_HPP_
 
 #include <cstddef>      // for size_t
 #include <iterator>     // for random_access_iterator_tag
@@ -233,4 +233,4 @@ namespace libsemigroups {
 
   }  // namespace detail
 }  // namespace libsemigroups
-#endif  // LIBSEMIGROUPS_INT_RANGE_HPP_
+#endif  // LIBSEMIGROUPS_DETAIL_INT_RANGE_HPP_

@@ -34,7 +34,7 @@
 #include "libsemigroups/exception.hpp"     // for LibsemigroupsEx...
 #include "libsemigroups/fastest-bmat.hpp"  // for FastestBMat
 #include "libsemigroups/matrix.hpp"        // for BMat, NTPMat
-#include "libsemigroups/report.hpp"        // for ReportGuard
+#include "libsemigroups/detail/report.hpp"        // for ReportGuard
 
 #include "libsemigroups/detail/containers.hpp"  // for StaticVector1
 

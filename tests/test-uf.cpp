@@ -24,7 +24,7 @@
 #include <vector>   // vector
 
 #include "catch.hpp"             // for REQUIRE
-#include "libsemigroups/uf.hpp"  // Duf + Suf
+#include "libsemigroups/detail/uf.hpp"  // Duf + Suf
 #include "test-main.hpp"         // for LIBSEMIGROUPS_TEST_CASE
 
 namespace libsemigroups {

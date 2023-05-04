@@ -458,7 +458,7 @@ namespace libsemigroups {
                                                p.rules[2 * y],
                                                p.rules[2 * y + 1]);
       });
-      // Apply the permutation (adapted from stl.hpp:apply_permutation)
+      // Apply the permutation (adapted from detail/stl.hpp:apply_permutation)
       for (size_t i = 0; i < n; ++i) {
         size_t current = i;
         while (i != perm[current]) {

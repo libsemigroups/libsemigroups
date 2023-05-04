@@ -32,8 +32,8 @@
 // temporary, and so the FunctionRef is not valid after the line where it is
 // created.
 
-#ifndef LIBSEMIGROUPS_FUNCTION_REF_HPP_
-#define LIBSEMIGROUPS_FUNCTION_REF_HPP_
+#ifndef LIBSEMIGROUPS_DETAIL_FUNCTION_REF_HPP_
+#define LIBSEMIGROUPS_DETAIL_FUNCTION_REF_HPP_
 
 #include <type_traits>  // for is_invocable_v
 
@@ -82,4 +82,4 @@ namespace libsemigroups {
   }  // namespace detail
 }  // namespace libsemigroups
 
-#endif  // LIBSEMIGROUPS_FUNCTION_REF_HPP_
+#endif  // LIBSEMIGROUPS_DETAIL_FUNCTION_REF_HPP_

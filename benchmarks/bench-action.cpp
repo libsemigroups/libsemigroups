@@ -26,7 +26,7 @@
 #include "libsemigroups/bmat.hpp"    // for Lambda
 #include "libsemigroups/bmat8.hpp"   // for BMat8
 #include "libsemigroups/matrix.hpp"  // for BMat<>
-#include "libsemigroups/report.hpp"  // for ReportGuard
+#include "libsemigroups/detail/report.hpp"  // for ReportGuard
 #include "libsemigroups/transf.hpp"  // for Transf, PPerm
 
 #define FOR_SET_BITS(__bit_int, __nr_bits, __variable) \

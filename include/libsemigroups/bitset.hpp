@@ -34,7 +34,7 @@
 #include "config.hpp"     // for LIBSEMIGROUPS_SIZEOF_VOID_P
 #include "debug.hpp"      // for LIBSEMIGROUPS_ASSERT
 #include "exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
-#include "string.hpp"     // for detail::to_string
+#include "detail/string.hpp"     // for detail::to_string
 
 namespace libsemigroups {
 

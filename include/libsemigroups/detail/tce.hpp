@@ -21,18 +21,19 @@
 // the FroidurePin class template. This file also contains specializations of
 // the adapters complexity, degree, less, one, product, and std::hash for TCE.
 
-#ifndef LIBSEMIGROUPS_TCE_HPP_
-#define LIBSEMIGROUPS_TCE_HPP_
+#ifndef LIBSEMIGROUPS_DETAIL_TCE_HPP_
+#define LIBSEMIGROUPS_DETAIL_TCE_HPP_
 
 #include <cstddef>      // for size_t
 #include <sstream>      // for ostream, ostringstream
 #include <type_traits>  // for integral_constant
 #include <utility>      // for hash
 
-#include "adapters.hpp"      // for Complexity, Degree, Less, One, Product, ...
-#include "constants.hpp"     // for LIMIT_MAX
-#include "string.hpp"        // for to_string
-#include "todd-coxeter.hpp"  // for ToddCoxeter
+#include "libsemigroups/adapters.hpp"  // for Complexity, Degree, Less, One, Product, ...
+#include "libsemigroups/constants.hpp"     // for LIMIT_MAX
+#include "libsemigroups/todd-coxeter.hpp"  // for ToddCoxeter
+
+#include "string.hpp"  // for to_string
 
 namespace libsemigroups {
   template <typename T>
@@ -163,4 +164,4 @@ namespace std {
   };
 }  // namespace std
 
-#endif  // LIBSEMIGROUPS_TCE_HPP_
+#endif  // LIBSEMIGROUPS_DETAIL_TCE_HPP_

@@ -24,7 +24,7 @@
 #include "catch.hpp"  // for REQUIRE, REQUIRE_THROWS_AS, REQUIRE_NOTHROW
 #include "libsemigroups/bmat8.hpp"         // for BMat8, operator<<
 #include "libsemigroups/froidure-pin.hpp"  // for FroidurePin
-#include "libsemigroups/timer.hpp"         // for Timer
+#include "libsemigroups/detail/timer.hpp"         // for Timer
 #include "test-main.hpp"                   // for LIBSEMIGROUPS_TEST_CASE
 
 namespace libsemigroups {

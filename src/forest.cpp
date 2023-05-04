@@ -26,7 +26,7 @@
 
 #include "libsemigroups/constants.hpp"  // for Max, operator!=, operator==
 #include "libsemigroups/exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
-#include "libsemigroups/string.hpp"     // for operator<<
+#include "libsemigroups/detail/string.hpp"     // for operator<<
 #include "libsemigroups/types.hpp"      // for word_type
 
 namespace libsemigroups {

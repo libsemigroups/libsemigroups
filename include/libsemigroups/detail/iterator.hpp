@@ -18,8 +18,8 @@
 
 // This file contains some functionality for wrapping iterators.
 
-#ifndef LIBSEMIGROUPS_ITERATOR_HPP_
-#define LIBSEMIGROUPS_ITERATOR_HPP_
+#ifndef LIBSEMIGROUPS_DETAIL_ITERATOR_HPP_
+#define LIBSEMIGROUPS_DETAIL_ITERATOR_HPP_
 
 // TODO(later)
 // 1. Remove duplicate code, make sure that all member functions are
@@ -1009,4 +1009,4 @@ namespace std {
     x.swap(y);
   }
 }  // namespace std
-#endif  // LIBSEMIGROUPS_ITERATOR_HPP_
+#endif  // LIBSEMIGROUPS_DETAIL_ITERATOR_HPP_

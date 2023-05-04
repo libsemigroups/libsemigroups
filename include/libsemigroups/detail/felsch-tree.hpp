@@ -16,8 +16,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#ifndef LIBSEMIGROUPS_FELSCH_TREE_HPP_
-#define LIBSEMIGROUPS_FELSCH_TREE_HPP_
+#ifndef LIBSEMIGROUPS_DETAIL_FELSCH_TREE_HPP_
+#define LIBSEMIGROUPS_DETAIL_FELSCH_TREE_HPP_
 
 #include <cstddef>  // for size_t
 #include <vector>   // for vector
@@ -105,4 +105,4 @@ namespace libsemigroups {
     };
   }  // namespace detail
 }  // namespace libsemigroups
-#endif  // LIBSEMIGROUPS_FELSCH_TREE_HPP_
+#endif  // LIBSEMIGROUPS_DETAIL_FELSCH_TREE_HPP_

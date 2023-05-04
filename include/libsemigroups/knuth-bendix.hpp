@@ -24,8 +24,8 @@
 // * nodiscard
 // * fix doc
 
-#ifndef LIBSEMIGROUPS_KNUTH_BENDIX_NEW_HPP_
-#define LIBSEMIGROUPS_KNUTH_BENDIX_NEW_HPP_
+#ifndef LIBSEMIGROUPS_KNUTH_BENDIX_HPP_
+#define LIBSEMIGROUPS_KNUTH_BENDIX_HPP_
 
 #include <atomic>               // for atomic
 #include <cstddef>              // for size_t
@@ -270,7 +270,7 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Constant.
-    KnuthBendix(congruence_kind knd);
+    explicit KnuthBendix(congruence_kind knd);
     KnuthBendix& init(congruence_kind knd);
 
     //! Copy constructor.
@@ -887,4 +887,4 @@ namespace libsemigroups {
     }
   }  // namespace presentation
 }  // namespace libsemigroups
-#endif  // LIBSEMIGROUPS_KNUTH_BENDIX_NEW_HPP_
+#endif  // LIBSEMIGROUPS_KNUTH_BENDIX_HPP_

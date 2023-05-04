@@ -30,7 +30,7 @@
 #include "libsemigroups/constants.hpp"  // for UNDEFINED
 #include "libsemigroups/debug.hpp"      // for LIBSEMIGROUPS_ASSERT
 #include "libsemigroups/exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
-#include "libsemigroups/string.hpp"     // for to_string
+#include "libsemigroups/detail/string.hpp"     // for to_string
 #include "libsemigroups/types.hpp"      // for word_type
 
 namespace libsemigroups {

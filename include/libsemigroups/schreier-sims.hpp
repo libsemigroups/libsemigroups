@@ -64,7 +64,7 @@
 #include "detail/containers.hpp"        // for Array2, StaticTriVector2
 #include "detail/int-range.hpp"         // for detail::IntRange
 #include "exception.hpp"                // for LIBSEMIGROUPS_EXCEPTION
-#include "stl.hpp"                      // for EqualTo
+#include "detail/stl.hpp"                      // for EqualTo
 #include "transf.hpp"                   // for Perm
 #include "types.hpp"                    // for SmallestInteger
 

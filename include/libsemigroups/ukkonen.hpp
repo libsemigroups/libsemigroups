@@ -44,7 +44,7 @@
 #include "constants.hpp"  // for Undefined, UNDE...
 #include "debug.hpp"      // for LIBSEMIGROUPS_ASSERT
 #include "exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
-#include "string.hpp"     // for maximum_common_prefix
+#include "detail/string.hpp"     // for maximum_common_prefix
 #include "types.hpp"      // for word_type, lett..
 
 namespace libsemigroups {

@@ -20,7 +20,7 @@
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
 #include "libsemigroups/matrix.hpp"  // for BMat<>
-#include "libsemigroups/pool.hpp"    // for Pool
+#include "libsemigroups/detail/pool.hpp"    // for Pool
 #include "libsemigroups/transf.hpp"  // for Transf<>
 
 namespace libsemigroups {

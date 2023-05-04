@@ -47,11 +47,11 @@
 #include "froidure-pin.hpp"     // for FroidurePin, FroidurePinTraits
 #include "order.hpp"            // for lexicographical_compare
 #include "present.hpp"          // for Presentation
-#include "string-view.hpp"      // for MultiStringView
-#include "string.hpp"           // for is_prefix
+#include "detail/multi-string-view.hpp"      // for MultiStringView
+#include "detail/string.hpp"           // for is_prefix
 #include "to-presentation.hpp"  // for to_presentation
 #include "types.hpp"            // for word_type, tril, letter_type
-#include "uf.hpp"               // for Duf<>
+#include "detail/uf.hpp"               // for Duf<>
 #include "ukkonen.hpp"          // for Ukkonen
 #include "words.hpp"            // for to_strings
 

@@ -31,7 +31,7 @@
 
 #include "adapters.hpp"  // for Complexity, Degree, etc . . .
 #include "debug.hpp"     // for LIBSEMIGROUPS_ASSERT
-#include "string.hpp"    // for detail::to_string
+#include "detail/string.hpp"    // for detail::to_string
 
 namespace libsemigroups {
   namespace bmat8 {

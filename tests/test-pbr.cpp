@@ -23,7 +23,7 @@
 
 #include "libsemigroups/exception.hpp"  // for LibsemigroupsException
 #include "libsemigroups/pbr.hpp"        // for PBR
-#include "libsemigroups/string.hpp"     // for to_string
+#include "libsemigroups/detail/string.hpp"     // for to_string
 
 namespace libsemigroups {
   // Forward decl

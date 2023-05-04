@@ -26,7 +26,7 @@
 
 #include "libsemigroups/constants.hpp"  // for UNDEFINED, operator==, operator!=
 #include "libsemigroups/exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
-#include "libsemigroups/report.hpp"  // for THREAD_ID_MANAGER, ThreadIdManager
+#include "libsemigroups/detail/report.hpp"  // for THREAD_ID_MANAGER, ThreadIdManager
 
 namespace libsemigroups {
 

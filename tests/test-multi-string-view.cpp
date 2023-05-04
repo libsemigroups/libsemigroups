@@ -28,7 +28,7 @@
 #include <string>       // for basic_string, operator==
 #include <type_traits>  // for move
 
-#include "libsemigroups/string-view.hpp"  // for MultiStringView, StringView...
+#include "libsemigroups/detail/multi-string-view.hpp"  // for MultiStringView, StringView...
 
 namespace libsemigroups {
   using detail::MultiStringView;

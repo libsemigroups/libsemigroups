@@ -65,9 +65,9 @@
 #include "felsch-graph.hpp"     // for FelschGraph
 #include "froidure-pin.hpp"     // for FroidurePin
 #include "present.hpp"          // for Presentation, Presentati...
-#include "report.hpp"           // for REPORT_DEFAULT, Reporter
-#include "stl.hpp"              // for JoinThreads
-#include "timer.hpp"            // for Timer
+#include "detail/report.hpp"           // for REPORT_DEFAULT, Reporter
+#include "detail/stl.hpp"              // for JoinThreads
+#include "detail/timer.hpp"            // for Timer
 #include "to-froidure-pin.hpp"  // for make
 #include "to-presentation.hpp"  // for make
 #include "transf.hpp"           // for Transf

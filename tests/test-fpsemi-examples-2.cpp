@@ -27,7 +27,7 @@
 #include "libsemigroups/fpsemi-examples.hpp"  // for the presentations
 #include "libsemigroups/knuth-bendix.hpp"     // for KnuthBendix
 #include "libsemigroups/obvinf.hpp"           // for is_obviously_infinite
-#include "libsemigroups/report.hpp"           // for ReportGuard
+#include "libsemigroups/detail/report.hpp"           // for ReportGuard
 #include "libsemigroups/types.hpp"            // for word_type
 #include "libsemigroups/words.hpp"            // for literals
 

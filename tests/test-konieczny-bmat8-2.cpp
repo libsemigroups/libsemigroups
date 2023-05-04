@@ -26,7 +26,7 @@
 #include "libsemigroups/bmat8.hpp"         // for BMat8
 #include "libsemigroups/fastest-bmat.hpp"  // for FastestBMat
 #include "libsemigroups/konieczny.hpp"     // for Konieczny, Koniecz...
-#include "libsemigroups/report.hpp"        // for ReportGuard
+#include "libsemigroups/detail/report.hpp"        // for ReportGuard
 
 namespace libsemigroups {
 

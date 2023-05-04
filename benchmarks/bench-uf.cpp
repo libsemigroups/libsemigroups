@@ -21,8 +21,8 @@
 
 #include "uf-old.hpp"  // for UFOld
 
-#include "libsemigroups/string.hpp"  // for to_string
-#include "libsemigroups/uf.hpp"      // for Duf and Suf
+#include "libsemigroups/detail/string.hpp"  // for to_string
+#include "libsemigroups/detail/uf.hpp"      // for Duf and Suf
 
 namespace libsemigroups {
   namespace detail {

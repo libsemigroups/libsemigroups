@@ -66,7 +66,7 @@
 
 #include "config.hpp"  // for LIBSEMIGROUPS_EIGEN_ENABLED
 #include "types.hpp"   // for word_type etc
-#include "uf.hpp"      // for Duf
+#include "detail/uf.hpp"      // for Duf
 
 #ifdef LIBSEMIGROUPS_EIGEN_ENABLED
 #if defined(__clang__)
@@ -93,7 +93,7 @@ namespace libsemigroups {
   class Presentation;  // forward decl
 
   namespace detail {
-    class IsObviouslyInfinite final {
+    class IsObviouslyInfinite {
       using const_iterator_word_type =
           typename std::vector<word_type>::const_iterator;
       using const_iterator_pair_string = typename std::vector<

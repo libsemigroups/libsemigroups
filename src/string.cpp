@@ -15,7 +15,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "libsemigroups/string.hpp"
+#include "libsemigroups/detail/string.hpp"
 
 #include <random>  // for mt19937
 

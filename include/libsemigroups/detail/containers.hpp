@@ -19,8 +19,8 @@
 // TODO(later) add tpp file
 // TODO(now) use nodiscard
 
-#ifndef LIBSEMIGROUPS_CONTAINERS_HPP_
-#define LIBSEMIGROUPS_CONTAINERS_HPP_
+#ifndef LIBSEMIGROUPS_DETAIL_CONTAINERS_HPP_
+#define LIBSEMIGROUPS_DETAIL_CONTAINERS_HPP_
 
 #include <algorithm>         // for max
 #include <array>             // for array
@@ -1132,4 +1132,4 @@ namespace std {
     }
   };
 }  // namespace std
-#endif  // LIBSEMIGROUPS_CONTAINERS_HPP_
+#endif  // LIBSEMIGROUPS_DETAIL_CONTAINERS_HPP_

@@ -35,7 +35,7 @@
 #include "libsemigroups/fastest-bmat.hpp"
 #include "libsemigroups/fpsemi-examples.hpp"  // for singular_brauer_monoid, ...
 #include "libsemigroups/froidure-pin.hpp"     // for FroidurePinBase
-#include "libsemigroups/report.hpp"           // for ReportGuard
+#include "libsemigroups/detail/report.hpp"           // for ReportGuard
 #include "libsemigroups/sims1.hpp"            // for ReportGuard
 #include "libsemigroups/to-presentation.hpp"  // for to_presentation
 #include "libsemigroups/transf.hpp"           // for ReportGuard

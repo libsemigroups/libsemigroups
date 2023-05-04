@@ -47,9 +47,9 @@
 #include "exception.hpp"          // for LIBSEMIGROUPS_EXCEPTION
 #include "forest.hpp"             // for Forest
 #include "order.hpp"              // for Order
-#include "stl.hpp"                // for IsIterator
+#include "detail/stl.hpp"                // for IsIterator
 #include "types.hpp"              // for word_type
-#include "uf.hpp"                 // for Duf
+#include "detail/uf.hpp"                 // for Duf
 
 #include <rx/ranges.hpp>
 

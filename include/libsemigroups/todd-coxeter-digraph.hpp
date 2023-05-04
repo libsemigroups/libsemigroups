@@ -36,9 +36,9 @@
 #include "felsch-graph.hpp"
 #include "node-manager.hpp"  // for NodeManager
 #include "present.hpp"       // for Presentation, Presentation<>:...
-#include "report.hpp"        // for REPORT_DEFAULT
+#include "detail/report.hpp"        // for REPORT_DEFAULT
 #include "runner.hpp"
-#include "timer.hpp"                    // for Timer
+#include "detail/timer.hpp"                    // for Timer
 #include "types.hpp"                    // for word_type
 #include "word-graph-with-sources.hpp"  // for WordGraphWithSources
 #include "word-graph.hpp"               // for WordGraph

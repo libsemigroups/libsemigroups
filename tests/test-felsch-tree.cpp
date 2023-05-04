@@ -21,7 +21,7 @@
 
 #include "libsemigroups/detail/felsch-tree.hpp"  // for FelschTree
 #include "libsemigroups/present.hpp"             // for Presentation
-#include "libsemigroups/report.hpp"              // for ReportGuard
+#include "libsemigroups/detail/report.hpp"              // for ReportGuard
 #include "libsemigroups/types.hpp"               // for word_type
 
 namespace libsemigroups {
