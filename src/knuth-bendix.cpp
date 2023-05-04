@@ -230,14 +230,22 @@ namespace libsemigroups {
 
   KnuthBendix::KnuthBendix(congruence_kind knd)
       : CongruenceInterface(knd),
-        _settings(),  // TODO init all mems
+        _settings(),
         _active_rules(),
+        _confluent(),
+        _confluence_known(),
         _gen_pairs_initted(),
-        _gilman_digraph(),
+        _gilman_graph(),
         _inactive_rules(),
+        _internal_is_same_as_external(),
+        _min_length_lhs_rule(),
+        _next_rule_it1(),
+        _next_rule_it2(),
+        _overlap_measure(),
         _presentation(),
         _set_rules(),
-        _stack() {
+        _stack(),
+        _total_rules() {
     init(knd);
   }
 
@@ -247,7 +255,7 @@ namespace libsemigroups {
     CongruenceInterface::init(knd);
     _settings.init();
     _gen_pairs_initted = false;
-    _gilman_digraph.init(0, 0);
+    _gilman_graph.init(0, 0);
     _confluent                    = false;
     _confluence_known             = false;
     _internal_is_same_as_external = false;
@@ -301,7 +309,7 @@ namespace libsemigroups {
     _settings                     = that._settings;
     _confluent                    = that._confluent.load();
     _confluence_known             = that._confluence_known.load();
-    _gilman_digraph               = that._gilman_digraph;
+    _gilman_graph                 = that._gilman_graph;
     _internal_is_same_as_external = that._internal_is_same_as_external;
     _min_length_lhs_rule          = that._min_length_lhs_rule;
     _presentation                 = that._presentation;
@@ -345,11 +353,10 @@ namespace libsemigroups {
       init(knd);
     }
     _presentation = p;
-    add_rules_from_presentation();
+    init_from_presentation();
     return *this;
   }
 
-  // TODO reduce code dupl with prev func
   KnuthBendix& KnuthBendix::private_init(congruence_kind             knd,
                                          Presentation<std::string>&& p,
                                          bool call_init) {
@@ -358,7 +365,7 @@ namespace libsemigroups {
       init(knd);
     }
     _presentation = std::move(p);
-    add_rules_from_presentation();
+    init_from_presentation();
     return *this;
   }
 
@@ -684,8 +691,8 @@ namespace libsemigroups {
     return _active_rules.size();
   }
 
-  WordGraph<size_t> const& KnuthBendix::gilman_digraph() {
-    if (_gilman_digraph.number_of_nodes() == 0
+  WordGraph<size_t> const& KnuthBendix::gilman_graph() {
+    if (_gilman_graph.number_of_nodes() == 0
         && !presentation().alphabet().empty()) {
       // reset the settings so that we really run!
       max_rules(POSITIVE_INFINITY);
@@ -700,22 +707,21 @@ namespace libsemigroups {
         prefixes_string(prefixes, *rule->lhs(), n);
       }
 
-      // TODO implement these as gilman_digraph_node_labels or something
-      // std::vector<std::string> tmp(prefixes.size(), "");
-      // for (auto const& p : prefixes) {
-      //   tmp[p.second] = p.first;
-      // }
-      // fmt::print(detail::to_string(tmp));
+      _gilman_graph_node_labels.resize(prefixes.size(), "");
+      for (auto const& p : prefixes) {
+        _gilman_graph_node_labels[p.second] = p.first;
+        internal_to_external_string(_gilman_graph_node_labels[p.second]);
+      }
 
-      _gilman_digraph.add_nodes(prefixes.size());
-      _gilman_digraph.add_to_out_degree(presentation().alphabet().size());
+      _gilman_graph.add_nodes(prefixes.size());
+      _gilman_graph.add_to_out_degree(presentation().alphabet().size());
 
       for (auto& p : prefixes) {
         for (size_t i = 0; i < presentation().alphabet().size(); ++i) {
           auto s  = p.first + uint_to_internal_string(i);
           auto it = prefixes.find(s);
           if (it != prefixes.end()) {
-            _gilman_digraph.set_target(p.second, i, it->second);
+            _gilman_graph.set_target(p.second, i, it->second);
           } else {
             auto t = s;
             internal_rewrite(t);
@@ -724,7 +730,7 @@ namespace libsemigroups {
                 s  = std::string(s.begin() + 1, s.end());
                 it = prefixes.find(s);
                 if (it != prefixes.end()) {
-                  _gilman_digraph.set_target(p.second, i, it->second);
+                  _gilman_graph.set_target(p.second, i, it->second);
                   break;
                 }
               }
@@ -736,14 +742,14 @@ namespace libsemigroups {
           && (generating_pairs() | rx::count()) != 0) {
         auto const& p    = presentation();
         auto        octo = p.index(p.alphabet().back());
-        auto        src  = _gilman_digraph.target_no_checks(0, octo);
+        auto        src  = _gilman_graph.target_no_checks(0, octo);
         LIBSEMIGROUPS_ASSERT(src != UNDEFINED);
-        _gilman_digraph.remove_label_no_checks(octo);
-        auto nodes = word_graph::nodes_reachable_from(_gilman_digraph, src);
+        _gilman_graph.remove_label_no_checks(octo);
+        auto nodes = word_graph::nodes_reachable_from(_gilman_graph, src);
         LIBSEMIGROUPS_ASSERT(std::find(nodes.cbegin(), nodes.cend(), src)
                              != nodes.cend());
-        // TODO this is a bit awkward, it ensures that node 0 in the induced
-        // subdigraph is src.
+        // This is a bit awkward, it exists to ensure that node 0 in the
+        // induced subdigraph is src.
         std::vector<decltype(src)> sorted_nodes(nodes.cbegin(), nodes.cend());
         if (sorted_nodes[0] != src) {
           std::iter_swap(
@@ -751,11 +757,11 @@ namespace libsemigroups {
               std::find(sorted_nodes.begin(), sorted_nodes.end(), src));
         }
 
-        _gilman_digraph.induced_subgraph_no_checks(sorted_nodes.cbegin(),
-                                                   sorted_nodes.cend());
+        _gilman_graph.induced_subgraph_no_checks(sorted_nodes.cbegin(),
+                                                 sorted_nodes.cend());
       }
     }
-    return _gilman_digraph;
+    return _gilman_graph;
   }
 
   //////////////////////////////////////////////////////////////////////////
@@ -892,8 +898,7 @@ namespace libsemigroups {
   // KnuthBendixImpl - methods for rules - private
   //////////////////////////////////////////////////////////////////////////
 
-  // TODO rename init_from_presentation
-  void KnuthBendix::add_rules_from_presentation() {
+  void KnuthBendix::init_from_presentation() {
     auto const& p                 = _presentation;
     _internal_is_same_as_external = true;
     for (size_t i = 0; i < p.alphabet().size(); ++i) {
@@ -1130,6 +1135,8 @@ namespace libsemigroups {
   }
 #endif
   namespace knuth_bendix {
+    // TODO check that this works for left/right congruences
+    // TODO add a check that the congruences are of the same kind?
 
     // We are computing non_trivial_classes with respect to kb2 (the greater
     // congruence, with fewer classes)
@@ -1162,16 +1169,15 @@ namespace libsemigroups {
       // would be possible to do this without actually constructing `ad` but
       // constructing `ad` is simpler, and so we do that for now.
 
-      auto g2 = kb2.gilman_digraph();
-      auto g1 = kb1.gilman_digraph();
+      auto g2 = kb2.gilman_graph();
+      auto g1 = kb1.gilman_graph();
 
       LIBSEMIGROUPS_ASSERT(g2.number_of_nodes() > 0);
       LIBSEMIGROUPS_ASSERT(g1.number_of_nodes() > 0);
 
       if (g2.number_of_nodes() < g1.number_of_nodes()) {
         LIBSEMIGROUPS_EXCEPTION(
-            "the Gilman digraph of the 1st argument must have at least as "
-            "many "
+            "the Gilman digraph of the 1st argument must have at least as many "
             "nodes as the Gilman digraph of the 2nd argument, found {} nodes "
             "and {} nodes",
             g2.number_of_nodes(),
@@ -1224,7 +1230,6 @@ namespace libsemigroups {
           v -= N;
           for (auto e : g2.labels()) {
             auto ve = g2.target_no_checks(v, e);
-            // TODO clean up
             if (ve != UNDEFINED) {
               can_reach[v] = (can_reach[v] || can_reach[ve]);
               if (can_reach[ve]) {
@@ -1276,7 +1281,7 @@ namespace libsemigroups {
       // so all we do is enumerate the paths in that graph
 
       // Construct the "can_reach" subgraph of g2, could use a WordGraphView
-      // here instead (but these don't yet exist) TODO
+      // here instead (but these don't yet exist) TODO(later)
       WordGraph<size_t> ad(g2.number_of_nodes(), g2.out_degree());
 
       for (auto v : ad.nodes()) {

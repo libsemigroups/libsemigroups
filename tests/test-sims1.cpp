@@ -349,7 +349,7 @@ namespace libsemigroups {
     presentation::remove_trivial_rules(p);
 
     do {
-      auto it = presentation::redundant_rule(p, std::chrono::milliseconds(100));
+      auto it = knuth_bendix::redundant_rule(p, std::chrono::milliseconds(100));
       p.rules.erase(it, it + 2);
     } while (presentation::length(p) > 700);
 
@@ -719,7 +719,7 @@ namespace libsemigroups {
     presentation::sort_rules(p);
     REQUIRE(p.rules.size() == 86);
     do {
-      auto it = presentation::redundant_rule(p, std::chrono::milliseconds(100));
+      auto it = knuth_bendix::redundant_rule(p, std::chrono::milliseconds(100));
       p.rules.erase(it, it + 2);
     } while (presentation::length(p) > 300);
     presentation::replace_subword(p, presentation::longest_common_subword(p));
@@ -2157,7 +2157,7 @@ namespace libsemigroups {
     presentation::remove_trivial_rules(p);
 
     do {
-      auto it = presentation::redundant_rule(p, std::chrono::milliseconds(100));
+      auto it = knuth_bendix::redundant_rule(p, std::chrono::milliseconds(100));
       p.rules.erase(it, it + 2);
     } while (presentation::length(p) > 800);
     Sims1_ C(congruence_kind::left);

@@ -21,8 +21,10 @@
 
 // TODO:
 // * noexcept
-// * nodiscard
 // * fix doc
+// * remove VERBOSE
+// * rewrite exceptions etc
+// * redo reporting
 
 #ifndef LIBSEMIGROUPS_KNUTH_BENDIX_HPP_
 #define LIBSEMIGROUPS_KNUTH_BENDIX_HPP_
@@ -123,14 +125,14 @@ namespace libsemigroups {
       // Returns the left hand side of the rule, which is guaranteed to be
       // greater than its right hand side according to the reduction ordering
       // of the KnuthBendix used to construct this.
-      internal_string_type* lhs() const noexcept {
+      [[nodiscard]] internal_string_type* lhs() const noexcept {
         return _lhs;
       }
 
       // Returns the right hand side of the rule, which is guaranteed to be
       // less than its left hand side according to the reduction ordering of
       // the KnuthBendix used to construct this.
-      internal_string_type* rhs() const noexcept {
+      [[nodiscard]] internal_string_type* rhs() const noexcept {
         return _rhs;
       }
 
@@ -142,7 +144,7 @@ namespace libsemigroups {
         _rhs->clear();
       }
 
-      inline bool active() const noexcept {
+      [[nodiscard]] inline bool active() const noexcept {
         LIBSEMIGROUPS_ASSERT(_id != 0);
         return (_id > 0);
       }
@@ -157,7 +159,7 @@ namespace libsemigroups {
         _id = -1 * id;
       }
 
-      int64_t id() const noexcept {
+      [[nodiscard]] int64_t id() const noexcept {
         LIBSEMIGROUPS_ASSERT(_id != 0);
         return _id;
       }
@@ -235,7 +237,8 @@ namespace libsemigroups {
     mutable std::atomic<bool>        _confluent;
     mutable std::atomic<bool>        _confluence_known;
     bool                             _gen_pairs_initted;
-    WordGraph<size_t>                _gilman_digraph;
+    WordGraph<size_t>                _gilman_graph;
+    std::vector<std::string>         _gilman_graph_node_labels;
     mutable std::list<Rule*>         _inactive_rules;
     bool                             _internal_is_same_as_external;
     size_t                           _min_length_lhs_rule;
@@ -271,6 +274,7 @@ namespace libsemigroups {
     //! \complexity
     //! Constant.
     explicit KnuthBendix(congruence_kind knd);
+    // TODO doc
     KnuthBendix& init(congruence_kind knd);
 
     //! Copy constructor.
@@ -281,20 +285,26 @@ namespace libsemigroups {
     //! \f$O(n)\f$ where \f$n\f$ is the sum of the lengths of the words in
     //! rules of \p copy.
     KnuthBendix(KnuthBendix const& copy);
+    // TODO doc
     KnuthBendix(KnuthBendix&&);
+    // TODO doc
     KnuthBendix& operator=(KnuthBendix const&);
+    // TODO doc
     KnuthBendix& operator=(KnuthBendix&&);
 
     ~KnuthBendix();
 
+    // TODO doc
     KnuthBendix(congruence_kind knd, Presentation<std::string> const& p)
         : KnuthBendix(knd) {
       private_init(knd, p, false);  // false means don't call init, since we
                                     // just called it from KnuthBendix()
     }
 
+    // TODO doc
     KnuthBendix& init(congruence_kind knd, Presentation<std::string> const& p);
 
+    // TODO doc
     KnuthBendix(congruence_kind knd, Presentation<std::string>&& p)
         : KnuthBendix(knd) {
       private_init(knd,
@@ -303,22 +313,27 @@ namespace libsemigroups {
                             // called it from KnuthBendix()
     }
 
+    // TODO doc
     KnuthBendix& init(congruence_kind knd, Presentation<std::string>&& p);
 
+    // TODO doc
     template <typename Word>
     explicit KnuthBendix(congruence_kind knd, Presentation<Word> const& p)
         : KnuthBendix(knd, to_presentation<std::string>(p)) {}
 
+    // TODO doc
     template <typename Word>
     explicit KnuthBendix(congruence_kind knd, Presentation<Word>&& p)
         : KnuthBendix(knd, to_presentation<std::string>(p)) {}
 
+    // TODO doc
     template <typename Word>
     KnuthBendix& init(congruence_kind knd, Presentation<Word> const& p) {
       init(knd, to_presentation<std::string>(p));
       return *this;
     }
 
+    // TODO doc
     template <typename Word>
     KnuthBendix& init(congruence_kind knd, Presentation<Word>&& p) {
       init(knd, to_presentation<std::string>(p));
@@ -334,6 +349,7 @@ namespace libsemigroups {
                               bool                        call_init);
 
     void init_from_generating_pairs();
+    void init_from_presentation();
 
    public:
     //////////////////////////////////////////////////////////////////////////
@@ -367,6 +383,7 @@ namespace libsemigroups {
       return *this;
     }
 
+    // TODO doc
     [[nodiscard]] size_t check_confluence_interval() const noexcept {
       return _settings._check_confluence_interval;
     }
@@ -395,6 +412,7 @@ namespace libsemigroups {
       return *this;
     }
 
+    // TODO doc
     [[nodiscard]] size_t max_overlap() const noexcept {
       return _settings._max_overlap;
     }
@@ -423,6 +441,7 @@ namespace libsemigroups {
       return *this;
     }
 
+    // TODO doc
     [[nodiscard]] size_t max_rules() const noexcept {
       return _settings._max_rules;
     }
@@ -443,6 +462,7 @@ namespace libsemigroups {
     //! \sa options::overlap.
     KnuthBendix& overlap_policy(options::overlap val);
 
+    // TODO doc
     [[nodiscard]] options::overlap overlap_policy() const noexcept {
       return _settings._overlap_policy;
     }
@@ -451,6 +471,7 @@ namespace libsemigroups {
     // KnuthBendix - member functions for rules and rewriting - public
     //////////////////////////////////////////////////////////////////////////
 
+    // TODO doc
     void validate_word(word_type const& w) const override {
       std::string s = to_string(presentation(), w);
       return presentation().validate_word(s.cbegin(), s.cend());
@@ -462,26 +483,30 @@ namespace libsemigroups {
       return _presentation;
     }
 
+    // TODO doc
     KnuthBendix& presentation(Presentation<std::string> const& p) {
       throw_if_started();
       return private_init(kind(), p, false);
     }
 
+    // TODO doc
     KnuthBendix& presentation(Presentation<std::string>&& p) {
       throw_if_started();
       return private_init(kind(), std::move(p), false);
     }
 
+    // TODO doc
     template <typename Word>
     KnuthBendix& presentation(Presentation<Word> const& p) {
       throw_if_started();
-      return private_init(to_presentation<std::string>(p), false);
+      return private_init(kind(), to_presentation<std::string>(p), false);
     }
 
+    // TODO doc
     template <typename Word>
     KnuthBendix& presentation(Presentation<Word>&& p) {
       throw_if_started();
-      return private_init(to_presentation<std::string>(p), false);
+      return private_init(kind(), to_presentation<std::string>(p), false);
     }
 
     //! Returns the current number of active rules in the KnuthBendix
@@ -499,6 +524,7 @@ namespace libsemigroups {
     //! \parameters
     //! (None)
     [[nodiscard]] size_t number_of_active_rules() const noexcept;
+    // TODO doc
     [[nodiscard]] size_t number_of_inactive_rules() const noexcept {
       return _inactive_rules.size();
     }
@@ -550,6 +576,7 @@ namespace libsemigroups {
     //!
     //! \returns
     //! The argument \p w after it has been rewritten.
+    // TODO update doc
     void rewrite_inplace(std::string& w) const;
 
     //! Rewrite a word.
@@ -578,6 +605,8 @@ namespace libsemigroups {
     //! \parameters
     //! (None)
     [[nodiscard]] bool confluent() const;
+
+    // TODO doc
     [[nodiscard]] bool confluent_known() const noexcept;
 
     //! Run the Knuth-Bendix by considering all overlaps of a given length.
@@ -600,6 +629,7 @@ namespace libsemigroups {
     //!
     //! \parameters
     //! (None)
+    // TODO make helper
     void knuth_bendix_by_overlap_length();
 
     //! Returns the Gilman digraph.
@@ -617,7 +647,12 @@ namespace libsemigroups {
     //!
     //! \parameters
     //! (None)
-    WordGraph<size_t> const& gilman_digraph();
+    WordGraph<size_t> const& gilman_graph();
+
+    [[nodiscard]] std::vector<std::string> const& gilman_graph_node_labels() {
+      gilman_graph();  // to ensure that gilman_graph is initialised
+      return _gilman_graph_node_labels;
+    }
 
     //////////////////////////////////////////////////////////////////////////
     // KnuthBendix - attributes - public
@@ -630,16 +665,19 @@ namespace libsemigroups {
     //! it is infinite. Moreover, the complexity of this function is at
     //! worst \f$O(mn)\f$ where \f$m\f$ is the number of letters in the
     //! alphabet, and \f$n\f$ is the number of nodes in the \ref
-    //! gilman_digraph.
+    //! gilman_graph.
     [[nodiscard]] uint64_t number_of_classes() override;
 
+    // TODO doc
     [[nodiscard]] bool equal_to(std::string const&, std::string const&);
+    // TODO doc
     [[nodiscard]] bool contains(word_type const& u,
                                 word_type const& v) override {
       return equal_to(to_string(presentation(), u),
                       to_string(presentation(), v));
     }
 
+    // TODO doc
     [[nodiscard]] bool contains(std::initializer_list<letter_type> u,
                                 std::initializer_list<letter_type> v) {
       return contains(word_type(u), word_type(v));
@@ -650,6 +688,7 @@ namespace libsemigroups {
     [[nodiscard]] std::string normal_form(std::string const& w);
 
    private:
+    // TODO to cpp file
     void throw_if_started() const {
       if (started()) {
         LIBSEMIGROUPS_EXCEPTION(
@@ -660,15 +699,18 @@ namespace libsemigroups {
 
     void internal_rewrite(internal_string_type& u) const;
 
-    static internal_char_type uint_to_internal_char(size_t a);
-    static size_t             internal_char_to_uint(internal_char_type c);
+    [[nodiscard]] static internal_char_type uint_to_internal_char(size_t a);
+    [[nodiscard]] static size_t internal_char_to_uint(internal_char_type c);
 
-    static internal_string_type uint_to_internal_string(size_t i);
+    [[nodiscard]] static internal_string_type uint_to_internal_string(size_t i);
 
-    static word_type internal_string_to_word(internal_string_type const& s);
+    [[nodiscard]] static word_type
+    internal_string_to_word(internal_string_type const& s);
 
-    internal_char_type external_to_internal_char(external_char_type c) const;
-    external_char_type internal_to_external_char(internal_char_type a) const;
+    [[nodiscard]] internal_char_type
+    external_to_internal_char(external_char_type c) const;
+    [[nodiscard]] external_char_type
+    internal_to_external_char(internal_char_type a) const;
 
     void external_to_internal_string(external_string_type& w) const;
     void internal_to_external_string(internal_string_type& w) const;
@@ -679,15 +721,15 @@ namespace libsemigroups {
     void add_rule_impl(std::string const& p, std::string const& q);
     void add_rule(Rule* rule);
 
-    void add_rules_from_presentation();
-
-    Rule* new_rule() const;
-    Rule* new_rule(internal_string_type* lhs, internal_string_type* rhs) const;
-    Rule* new_rule(Rule const* rule1) const;
-    Rule* new_rule(internal_string_type::const_iterator begin_lhs,
-                   internal_string_type::const_iterator end_lhs,
-                   internal_string_type::const_iterator begin_rhs,
-                   internal_string_type::const_iterator end_rhs) const;
+    [[nodiscard]] Rule* new_rule() const;
+    [[nodiscard]] Rule* new_rule(internal_string_type* lhs,
+                                 internal_string_type* rhs) const;
+    [[nodiscard]] Rule* new_rule(Rule const* rule1) const;
+    [[nodiscard]] Rule*
+    new_rule(internal_string_type::const_iterator begin_lhs,
+             internal_string_type::const_iterator end_lhs,
+             internal_string_type::const_iterator begin_rhs,
+             internal_string_type::const_iterator end_rhs) const;
 
     void push_stack(Rule* rule);
     void overlap(Rule const* u, Rule const* v);
@@ -703,7 +745,7 @@ namespace libsemigroups {
     // ./configure --enable-verbose functions
     //////////////////////////////////////////////////////////////////////////
 
-    size_t max_active_word_length();
+    [[nodiscard]] size_t max_active_word_length();
 #endif
 
     //////////////////////////////////////////////////////////////////////////
@@ -752,55 +794,16 @@ namespace libsemigroups {
     //! \sa
     //! \ref cend_normal_forms.
     // TODO update doc
-    inline auto normal_forms(KnuthBendix& kb) {
+    [[nodiscard]] inline auto normal_forms(KnuthBendix& kb) {
       using rx::      operator|;
-      ReversiblePaths paths(kb.gilman_digraph());
+      ReversiblePaths paths(kb.gilman_graph());
       paths.from(0).reverse(kb.kind() == congruence_kind::left);
       return paths;
     }
 
     // Compute non-trivial classes in kb1!
-    std::vector<std::vector<std::string>> non_trivial_classes(KnuthBendix& kb1,
-                                                              KnuthBendix& kb2);
-
-  }  // namespace knuth_bendix
-
-  template <typename Range>
-  std::vector<std::vector<std::string>> partition(KnuthBendix& kb, Range r) {
-    static_assert(
-        std::is_same_v<std::decay_t<typename Range::output_type>, std::string>);
-    using return_type = std::vector<std::vector<std::string>>;
-    using rx::operator|;
-
-    if (!r.is_finite) {
-      LIBSEMIGROUPS_EXCEPTION("the 2nd argument (a range) must be finite, "
-                              "found an infinite range");
-    }
-
-    return_type result;
-
-    std::unordered_map<std::string, size_t> map;
-    size_t                                  index = 0;
-
-    while (!r.at_end()) {
-      auto next = r.get();
-      if (kb.presentation().contains_empty_word() || !next.empty()) {
-        auto next_nf        = kb.rewrite(next);
-        auto [it, inserted] = map.emplace(next_nf, index);
-        if (inserted) {
-          result.emplace_back();
-          index++;
-        }
-        size_t index_of_next_nf = it->second;
-        result[index_of_next_nf].push_back(next);
-      }
-      r.next();
-    }
-    return result;
-  }
-
-  // TODO move contents to knuth_bendix namespace
-  namespace presentation {
+    [[nodiscard]] std::vector<std::vector<std::string>>
+    non_trivial_classes(KnuthBendix& kb1, KnuthBendix& kb2);
 
     //! Return an iterator pointing at the left hand side of a redundant rule.
     //!
@@ -830,13 +833,13 @@ namespace libsemigroups {
     //! As such this is non-deterministic, and may produce different results
     //! with the same input.
     template <typename T>
-    auto redundant_rule(Presentation<std::string> const& p, T t) {
+    [[nodiscard]] auto redundant_rule(Presentation<std::string> const& p, T t) {
       constexpr static congruence_kind twosided = congruence_kind::twosided;
 
       p.validate();
       Presentation<std::string> q;
       q.alphabet(p.alphabet());
-      KnuthBendix kb(twosided);  // TODO make default constructor
+      KnuthBendix kb(twosided);
 
       for (auto omit = p.rules.crbegin(); omit != p.rules.crend(); omit += 2) {
         q.rules.clear();
@@ -880,11 +883,47 @@ namespace libsemigroups {
     //! As such this is non-deterministic, and may produce different results
     //! with the same input.
     template <typename W, typename T>
-    auto redundant_rule(Presentation<W> const& p, T t) {
+    [[nodiscard]] auto redundant_rule(Presentation<W> const& p, T t) {
       auto pp = to_presentation<std::string>(p);
       return p.rules.cbegin()
              + std::distance(pp.rules.cbegin(), redundant_rule(pp, t));
     }
-  }  // namespace presentation
+  }  // namespace knuth_bendix
+
+  template <typename Range>
+  [[nodiscard]] std::vector<std::vector<std::string>> partition(KnuthBendix& kb,
+                                                                Range r) {
+    static_assert(
+        std::is_same_v<std::decay_t<typename Range::output_type>, std::string>);
+    using return_type = std::vector<std::vector<std::string>>;
+    using rx::operator|;
+
+    if (!r.is_finite) {
+      LIBSEMIGROUPS_EXCEPTION("the 2nd argument (a range) must be finite, "
+                              "found an infinite range");
+    }
+
+    return_type result;
+
+    std::unordered_map<std::string, size_t> map;
+    size_t                                  index = 0;
+
+    while (!r.at_end()) {
+      auto next = r.get();
+      if (kb.presentation().contains_empty_word() || !next.empty()) {
+        auto next_nf        = kb.rewrite(next);
+        auto [it, inserted] = map.emplace(next_nf, index);
+        if (inserted) {
+          result.emplace_back();
+          index++;
+        }
+        size_t index_of_next_nf = it->second;
+        result[index_of_next_nf].push_back(next);
+      }
+      r.next();
+    }
+    return result;
+  }
+
 }  // namespace libsemigroups
 #endif  // LIBSEMIGROUPS_KNUTH_BENDIX_HPP_

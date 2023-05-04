@@ -675,7 +675,7 @@ namespace libsemigroups {
     REQUIRE(kb.confluent());
     REQUIRE(kb.number_of_active_rules() == 0);
     REQUIRE(kb.number_of_classes() == 0);
-    REQUIRE(kb.gilman_digraph().number_of_nodes() == 0);
+    REQUIRE(kb.gilman_graph().number_of_nodes() == 0);
     auto nf = knuth_bendix::normal_forms(kb);
     REQUIRE((nf.min(0).max(4) | to_vector()).empty());
     REQUIRE(nf.min(0).max(4).count() == 0);

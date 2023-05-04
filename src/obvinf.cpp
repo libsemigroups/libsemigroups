@@ -215,7 +215,7 @@ namespace libsemigroups {
 
   bool is_obviously_infinite(KnuthBendix& kb) {
     if (kb.finished()) {
-      return !word_graph::is_acyclic(kb.gilman_digraph());
+      return !word_graph::is_acyclic(kb.gilman_graph());
     }
     // TODO need to do the same as for ToddCoxeter
     return is_obviously_infinite(kb.presentation());

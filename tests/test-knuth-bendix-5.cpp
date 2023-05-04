@@ -32,16 +32,19 @@
 //
 // 6: contains tests for KnuthBendix.
 
-#include "catch.hpp"      // for AssertionHandler, ope...
-#include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
+#define CATCH_CONFIG_ENABLE_ALL_STRINGMAKERS
+
+#include <iostream>
+
 #include <algorithm>      // for copy, fill
 #include <string>         // for basic_string
 #include <unordered_map>  // for operator!=, operator==
 #include <vector>         // for vector, operator==
 
+#include "catch.hpp"      // for AssertionHandler, ope...
+#include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
+
 #include "libsemigroups/constants.hpp"        // for operator!=, operator==
-#include "libsemigroups/detail/kbe.hpp"       // for KBE
-#include "libsemigroups/detail/report.hpp"    // for ReportGuard
 #include "libsemigroups/exception.hpp"        // for LibsemigroupsException
 #include "libsemigroups/froidure-pin.hpp"     // for FroidurePin
 #include "libsemigroups/knuth-bendix.hpp"     // for KnuthBendix
@@ -51,6 +54,10 @@
 #include "libsemigroups/transf.hpp"           // for Transf
 #include "libsemigroups/types.hpp"            // for word_type, letter_type
 #include "libsemigroups/words.hpp"            // for operator""_w
+
+#include "libsemigroups/detail/kbe.hpp"     // for KBE
+#include "libsemigroups/detail/report.hpp"  // for ReportGuard
+#include "libsemigroups/detail/string.hpp"  // for operator""_w
 
 namespace libsemigroups {
   congruence_kind constexpr twosided = congruence_kind::twosided;
@@ -193,9 +200,9 @@ namespace libsemigroups {
 
     REQUIRE(pp.size() == 72);
 
-    REQUIRE(kb2.gilman_digraph().number_of_nodes() == 62);
+    REQUIRE(kb2.gilman_graph().number_of_nodes() == 62);
 
-    auto copy   = kb2.gilman_digraph();
+    auto copy   = kb2.gilman_graph();
     auto source = copy.target(0, 2);
     copy.remove_label_no_checks(2);
     REQUIRE(copy.out_degree() == 2);
@@ -370,7 +377,7 @@ namespace libsemigroups {
     kb.run();
     // std::cout << (kb.active_rules() | to_vector()) << std::endl;
 
-    auto copy   = kb.gilman_digraph();
+    auto copy   = kb.gilman_graph();
     auto source = copy.target(0, 2);
     copy.remove_label_no_checks(2);
     REQUIRE(source == 34);
@@ -393,7 +400,7 @@ namespace libsemigroups {
     Paths paths(copy);
     REQUIRE(paths.min(1).from(0).count() == 69);
 
-    REQUIRE(kb.gilman_digraph().number_of_nodes() == 51);
+    REQUIRE(kb.gilman_graph().number_of_nodes() == 51);
   }
 
   LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
@@ -419,7 +426,7 @@ namespace libsemigroups {
 
     kb.run();
 
-    auto copy = kb.gilman_digraph();
+    auto copy = kb.gilman_graph();
     REQUIRE(copy.out_degree() == 2);
     REQUIRE(copy.number_of_nodes() == 45);
     REQUIRE(word_graph::is_acyclic(copy, 0));
@@ -427,6 +434,7 @@ namespace libsemigroups {
     Paths paths1(copy);
     REQUIRE(paths1.min(1).from(0).count() == 69);
     REQUIRE(knuth_bendix::normal_forms(kb).min(1).count() == 69);
+    REQUIRE(!kb.equal_to("aaaabb", "abaaabaa"));
 
     REQUIRE(kb.number_of_classes() == 69);
 
@@ -455,7 +463,7 @@ namespace libsemigroups {
 
     auto nf = S.normal_forms() | to_strings(kb.presentation().alphabet())
               | take(S.size());
-    REQUIRE(kb.gilman_digraph()
+    REQUIRE(kb.gilman_graph()
             == to_word_graph<size_t>(
                 45, {{1, 2},  {27, 35}, {36, 38}, {4},      {},       {6, 3},
                      {},      {5, 8},   {},       {7, 10},  {33},     {},
@@ -488,5 +496,40 @@ namespace libsemigroups {
     REQUIRE(std::all_of(ntc[0].begin(), ntc[0].end(), [&kb, &ntc](auto& w) {
       return kb.normal_form(w) == ntc[0][0];
     }));
+
+    REQUIRE((kb.active_rules() | count()) == 23);
+
+    REQUIRE((kb.active_rules() | to_vector())
+            == std::vector<std::pair<std::string, std::string>>(
+                {{"bbb", "b"},
+                 {"bbab", "bab"},
+                 {"aaaaa", "aa"},
+                 {"abaab", "aaaab"},
+                 {"baaaa", "ba"},
+                 {"bbaab", "baaab"},
+                 {"aababa", "aabb"},
+                 {"aababb", "aaba"},
+                 {"bababa", "babb"},
+                 {"bababb", "baba"},
+                 {"bbaaab", "baab"},
+                 {"aabbaaa", "aabb"},
+                 {"babaaab", "aabaaab"},
+                 {"babbaaa", "babb"},
+                 {"aaabaaab", "aabaaab"},
+                 {"aabaaabb", "aabaaab"},
+                 {"baabaaab", "aabaaab"},
+                 {"aabaaabaaa", "aabaaab"},
+                 {"abaaabbaac", "babc"},
+                 {"aabaaabaac", "baabc"},
+                 {"baabc", "babc"},
+                 {"aaabc", "babc"},
+                 {"babc", "aabc"}}));
+
+    kb.init(right, p);
+    kb.add_pair(S.factorisation(Transf<>({3, 4, 4, 4, 4})),
+                S.factorisation(Transf<>({3, 1, 3, 3, 3})));
+    REQUIRE(kb.number_of_classes() == 72);
+    REQUIRE(kb.contains({1, 1, 1}, {1}));
+    REQUIRE_THROWS_AS(kb.presentation(p), LibsemigroupsException);
   }
 }  // namespace libsemigroups

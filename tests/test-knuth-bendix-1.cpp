@@ -425,7 +425,7 @@ namespace libsemigroups {
     REQUIRE(kb.number_of_active_rules() == 9);
     REQUIRE(kb.confluent());
 
-    auto& ad = kb.gilman_digraph();
+    auto& ad = kb.gilman_graph();
     REQUIRE(ad.number_of_nodes() == 9);
     REQUIRE(ad.number_of_edges() == 13);
     REQUIRE(!word_graph::is_acyclic(ad));
@@ -485,7 +485,7 @@ namespace libsemigroups {
     REQUIRE(S.size() == 336);
     REQUIRE(S.number_of_generators() == 4);
 
-    auto& ad = kb.gilman_digraph();
+    auto& ad = kb.gilman_graph();
     REQUIRE(ad.number_of_nodes() == 232);
     REQUIRE(ad.number_of_edges() == 265);
     REQUIRE(word_graph::is_acyclic(ad));
@@ -515,7 +515,7 @@ namespace libsemigroups {
     REQUIRE(kb.confluent());
     REQUIRE(kb.number_of_classes() == 11);
 
-    auto& ad = kb.gilman_digraph();
+    auto& ad = kb.gilman_graph();
     REQUIRE(ad.number_of_nodes() == 8);
     REQUIRE(ad.number_of_edges() == 11);
     REQUIRE(word_graph::is_acyclic(ad));
@@ -540,7 +540,7 @@ namespace libsemigroups {
     kb.run();
     REQUIRE(kb.number_of_active_rules() == 4);
 
-    auto& ad = kb.gilman_digraph();
+    auto& ad = kb.gilman_graph();
     REQUIRE(ad.number_of_nodes() == 7);
     REQUIRE(ad.number_of_edges() == 17);
     REQUIRE(!word_graph::is_acyclic(ad));
@@ -560,11 +560,11 @@ namespace libsemigroups {
     presentation::add_rule_and_check(p, "b", "baa");
     presentation::add_rule_and_check(p, "c", "abbabababaaababababab");
 
-    auto it = presentation::redundant_rule(p, std::chrono::milliseconds(100));
+    auto it = knuth_bendix::redundant_rule(p, std::chrono::milliseconds(100));
     REQUIRE(it == p.rules.cend());
 
     presentation::add_rule_and_check(p, "b", "baa");
-    it = presentation::redundant_rule(p, std::chrono::milliseconds(100));
+    it = knuth_bendix::redundant_rule(p, std::chrono::milliseconds(100));
     REQUIRE(it != p.rules.cend());
     REQUIRE(*it == "b");
     REQUIRE(*(it + 1) == "baa");
@@ -582,11 +582,11 @@ namespace libsemigroups {
     presentation::add_rule_and_check(p, 1_w, 100_w);
     presentation::add_rule_and_check(p, 2_w, 011010101000101010101_w);
 
-    auto it = presentation::redundant_rule(p, std::chrono::milliseconds(10));
+    auto it = knuth_bendix::redundant_rule(p, std::chrono::milliseconds(10));
     REQUIRE(it == p.rules.cend());
 
     presentation::add_rule_and_check(p, 1_w, 100_w);
-    it = presentation::redundant_rule(p, std::chrono::milliseconds(10));
+    it = knuth_bendix::redundant_rule(p, std::chrono::milliseconds(10));
     REQUIRE(it != p.rules.cend());
     REQUIRE(*it == 1_w);
     REQUIRE(*(it + 1) == 100_w);
@@ -732,14 +732,14 @@ namespace libsemigroups {
 
     KnuthBendix kb2(twosided, p);
 
-    REQUIRE(kb1.gilman_digraph()
+    REQUIRE(kb1.gilman_graph()
             == to_word_graph<size_t>(5,
                                      {{3, 1, 2},
                                       {UNDEFINED, 4},
                                       {UNDEFINED, UNDEFINED, 2},
                                       {UNDEFINED, 1}}));
 
-    REQUIRE(kb2.gilman_digraph()
+    REQUIRE(kb2.gilman_graph()
             == to_word_graph<size_t>(
                 3, {{2, UNDEFINED, 1}, {UNDEFINED, UNDEFINED, 1}}));
 
@@ -877,7 +877,7 @@ namespace libsemigroups {
 
     KnuthBendix kb1(twosided, p);
 
-    REQUIRE(kb1.gilman_digraph()
+    REQUIRE(kb1.gilman_graph()
             == to_word_graph<size_t>(
                 6,
                 {{1, 2, 3, 4, 5},
@@ -890,7 +890,7 @@ namespace libsemigroups {
     presentation::add_rule(p, 1_w, 2_w);
     KnuthBendix kb2(twosided, p);
 
-    REQUIRE(kb2.gilman_digraph()
+    REQUIRE(kb2.gilman_graph()
             == to_word_graph<size_t>(
                 5,
                 {{1, 2, UNDEFINED, 3, 4},
@@ -1076,8 +1076,8 @@ namespace libsemigroups {
     presentation::add_rule(p, {3, 0, 3, 0}, {3, 0, 3});
 
     KnuthBendix kb1(twosided, p);
-    REQUIRE(kb1.gilman_digraph().number_of_nodes() == 16);
-    REQUIRE(kb1.gilman_digraph()
+    REQUIRE(kb1.gilman_graph().number_of_nodes() == 16);
+    REQUIRE(kb1.gilman_graph()
             == to_word_graph<size_t>(16,
                                      {{3,
                                        1,
@@ -1107,7 +1107,7 @@ namespace libsemigroups {
     presentation::add_rule(p, {1}, {3});
     KnuthBendix kb2(twosided, p);
 
-    REQUIRE(kb2.gilman_digraph()
+    REQUIRE(kb2.gilman_graph()
             == to_word_graph<size_t>(4,
                                      {{2,
                                        1,
@@ -1142,6 +1142,36 @@ namespace libsemigroups {
     std::sort(expected.begin(), expected.end());
     std::sort(ntc[0].begin(), ntc[0].end());
     REQUIRE(ntc[0] == expected);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
+                          "126",
+                          "non_trivial_classes exceptions",
+                          "[quick][kbp]") {
+    Presentation<word_type> p;
+    p.alphabet(1);
+    KnuthBendix kbp(twosided, p);
+
+    {
+      Presentation<word_type> q;
+      q.alphabet(2);
+      KnuthBendix kbq(twosided, q);
+      REQUIRE_THROWS_AS(knuth_bendix::non_trivial_classes(kbq, kbp),
+                        LibsemigroupsException);
+      REQUIRE(kbq.number_of_inactive_rules() == 0);
+    }
+    {
+      presentation::add_rule(p, 0000_w, 00_w);
+      kbp.init(twosided, p);
+
+      Presentation<word_type> q;
+      q.alphabet(1);
+      presentation::add_rule(q, 00_w, 0_w);
+
+      KnuthBendix kbq(twosided, q);
+      REQUIRE_THROWS_AS(knuth_bendix::non_trivial_classes(kbp, kbq),
+                        LibsemigroupsException);
+    }
   }
 
   ////////////////////////////////////////////////////////////////////////

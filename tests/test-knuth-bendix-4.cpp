@@ -260,8 +260,8 @@ namespace libsemigroups {
     kb.knuth_bendix_by_overlap_length();
     REQUIRE(kb.confluent());
     REQUIRE(kb.number_of_active_rules() == 192);
-    REQUIRE(kb.gilman_digraph().number_of_nodes() == 332);
-    REQUIRE(kb.gilman_digraph().number_of_edges() == 533);
+    REQUIRE(kb.gilman_graph().number_of_nodes() == 332);
+    REQUIRE(kb.gilman_graph().number_of_edges() == 533);
     REQUIRE(kb.number_of_classes() == 696'729'600);
   }
 
@@ -398,7 +398,7 @@ namespace libsemigroups {
     REQUIRE(kb.number_of_active_rules() == 1'026);
     REQUIRE(kb.number_of_classes() == 10'752);
 
-    auto& ad = kb.gilman_digraph();
+    auto& ad = kb.gilman_graph();
     REQUIRE(ad.number_of_nodes() == 6'021);
     REQUIRE(ad.number_of_edges() == 7'435);
     REQUIRE(word_graph::is_acyclic(ad));
