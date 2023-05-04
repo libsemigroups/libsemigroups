@@ -1,6 +1,6 @@
 //
 // libsemigroups - C++ library for semigroups and monoids
-// Copyright (C) 2019-20 James D. Mitchell
+// Copyright (C) 2019-2023 James D. Mitchell
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -21,4 +21,64 @@
 #ifndef LIBSEMIGROUPS_LIBSEMIGROUPS_HPP_
 #define LIBSEMIGROUPS_LIBSEMIGROUPS_HPP_
 
-#endif  // LIBSEMIGROUPS_LIBSEMIGROUPS_HPP_
+#include "action.hpp"
+#include "adapters.hpp"
+#include "bipart.hpp"
+#include "bitset.hpp"
+#include "bmat.hpp"
+#include "bmat8.hpp"
+#include "config.hpp"
+#include "cong-intf.hpp"
+#include "cong.hpp"
+#include "constants.hpp"
+#include "debug.hpp"
+#include "deprecated.hpp"
+#include "exception.hpp"
+#include "fastest-bmat.hpp"
+#include "felsch-graph.hpp"
+#include "forest.hpp"
+#include "fpsemi-examples.hpp"
+#include "freeband.hpp"
+#include "froidure-pin-base.hpp"
+#include "froidure-pin.hpp"
+#include "gabow.hpp"
+#include "hpcombi.hpp"
+#include "kambites.hpp"
+#include "knuth-bendix.hpp"
+#include "konieczny.hpp"
+#include "libsemigroups.hpp"
+#include "matrix.hpp"
+#include "node-manager.hpp"
+#include "obvinf.hpp"
+#include "order.hpp"
+#include "paths.hpp"
+#include "pbr.hpp"
+#include "pool.hpp"
+#include "present.hpp"
+#include "race.hpp"
+#include "ranges.hpp"
+#include "report.hpp"
+#include "runner.hpp"
+#include "schreier-sims-helper.hpp"
+#include "schreier-sims.hpp"
+#include "sims1.hpp"
+#include "stephen.hpp"
+#include "stl.hpp"
+#include "string-view.hpp"
+#include "string.hpp"
+#include "tce.hpp"
+#include "timer.hpp"
+#include "to-froidure-pin.hpp"
+#include "to-presentation.hpp"
+#include "to-todd-coxeter.hpp"
+#include "todd-coxeter-digraph.hpp"
+#include "todd-coxeter.hpp"
+#include "transf.hpp"
+#include "types.hpp"
+#include "uf.hpp"
+#include "ukkonen.hpp"
+#include "word-graph-with-sources.hpp"
+#include "word-graph.hpp"
+#include "words.hpp"
+
+# endif  // LIBSEMIGROUPS_LIBSEMIGROUPS_HPP_
