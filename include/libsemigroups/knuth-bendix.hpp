@@ -223,11 +223,35 @@ namespace libsemigroups {
       Settings& operator=(Settings const&) noexcept = default;
       Settings& operator=(Settings&&) noexcept      = default;
 
+      // TODO remove _
       size_t           _check_confluence_interval;
       size_t           _max_overlap;
       size_t           _max_rules;
       options::overlap _overlap_policy;
     } _settings;
+
+    mutable struct Stats {
+      using time_point = std::chrono::high_resolution_clock::time_point;
+      Stats() noexcept;
+      Stats& init() noexcept;
+
+      Stats(Stats const&) noexcept            = default;
+      Stats(Stats&&) noexcept                 = default;
+      Stats& operator=(Stats const&) noexcept = default;
+      Stats& operator=(Stats&&) noexcept      = default;
+
+      size_t                                   max_stack_depth;
+      size_t                                   max_word_length;
+      size_t                                   max_active_word_length;
+      size_t                                   max_active_rules;
+      size_t                                   min_length_lhs_rule;
+      size_t                                   prev_active_rules;
+      size_t                                   prev_inactive_rules;
+      size_t                                   prev_total_rules;
+      time_point                               start_time;
+      size_t                                   total_rules;
+      std::unordered_set<internal_string_type> unique_lhs_rules;
+    } _stats;
 
     ////////////////////////////////////////////////////////////////////////
     // KnuthBendix - data - private
@@ -241,22 +265,12 @@ namespace libsemigroups {
     std::vector<std::string>         _gilman_graph_node_labels;
     mutable std::list<Rule*>         _inactive_rules;
     bool                             _internal_is_same_as_external;
-    size_t                           _min_length_lhs_rule;
     std::list<Rule const*>::iterator _next_rule_it1;
     std::list<Rule const*>::iterator _next_rule_it2;
     OverlapMeasure*                  _overlap_measure;
     Presentation<std::string>        _presentation;
     std::set<RuleLookup>             _set_rules;
     std::stack<Rule*>                _stack;
-    mutable size_t                   _total_rules;
-
-#ifdef LIBSEMIGROUPS_VERBOSE
-    size_t                                   _max_stack_depth;
-    size_t                                   _max_word_length;
-    size_t                                   _max_active_word_length;
-    size_t                                   _max_active_rules;
-    std::unordered_set<internal_string_type> _unique_lhs_rules;
-#endif
 
    public:
     //////////////////////////////////////////////////////////////////////////
@@ -697,6 +711,9 @@ namespace libsemigroups {
       }
     }
 
+    void report_rules() const;
+    void stats_check_point() const;
+
     void internal_rewrite(internal_string_type& u) const;
 
     [[nodiscard]] static internal_char_type uint_to_internal_char(size_t a);
@@ -740,13 +757,7 @@ namespace libsemigroups {
 
     void deactivate_all_rules();
 
-#ifdef LIBSEMIGROUPS_VERBOSE
-    //////////////////////////////////////////////////////////////////////////
-    // ./configure --enable-verbose functions
-    //////////////////////////////////////////////////////////////////////////
-
     [[nodiscard]] size_t max_active_word_length();
-#endif
 
     //////////////////////////////////////////////////////////////////////////
     // Runner - pure virtual member functions - private

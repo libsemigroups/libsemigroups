@@ -309,7 +309,7 @@ namespace libsemigroups {
     //! \complexity
     //! See shortlex_compare(T const, T const, S const, S const).
     template <typename T>
-    bool operator()(T const& x, T const& y) {
+    bool operator()(T const& x, T const& y) const {
       return shortlex_compare(x.cbegin(), x.cend(), y.cbegin(), y.cend());
     }
   };

@@ -30,20 +30,20 @@
 #include "libsemigroups/debug.hpp"      // for LIBSEMIGROUPS_ASSERT
 #include "libsemigroups/detail/report.hpp"  // for Reporter, REPORT_DEFAULT, REP...
 #include "libsemigroups/detail/string.hpp"  // for is_prefix, maximum_common_prefix
-#include "libsemigroups/detail/timer.hpp"  // for Timer
-#include "libsemigroups/obvinf.hpp"        // for is_obviously_infinite
-#include "libsemigroups/order.hpp"         // for shortlex_compare
-#include "libsemigroups/paths.hpp"         // for Paths
-#include "libsemigroups/present.hpp"       // for Presentation
-#include "libsemigroups/ranges.hpp"        // for operator<<
-#include "libsemigroups/runner.hpp"        // for Runner
-#include "libsemigroups/types.hpp"         // for word_type
-#include "libsemigroups/word-graph.hpp"    // for WordGraph
-#include "libsemigroups/words.hpp"         // for to_strings
+#include "libsemigroups/obvinf.hpp"         // for is_obviously_infinite
+#include "libsemigroups/order.hpp"          // for shortlex_compare
+#include "libsemigroups/paths.hpp"          // for Paths
+#include "libsemigroups/present.hpp"        // for Presentation
+#include "libsemigroups/ranges.hpp"         // for operator<<
+#include "libsemigroups/runner.hpp"         // for Runner
+#include "libsemigroups/types.hpp"          // for word_type
+#include "libsemigroups/word-graph.hpp"     // for WordGraph
+#include "libsemigroups/words.hpp"          // for to_strings
 
 #include "rx/ranges.hpp"
 
 namespace libsemigroups {
+  using time_point = std::chrono::high_resolution_clock::time_point;
 
   namespace {
     void prefixes_string(std::unordered_map<std::string, size_t>& st,
@@ -198,6 +198,26 @@ namespace libsemigroups {
     return *this;
   }
 
+  KnuthBendix::Stats::Stats() noexcept {
+    init();
+  }
+
+  KnuthBendix::Stats& KnuthBendix::Stats::init() noexcept {
+    max_stack_depth        = 0;
+    max_word_length        = 0;
+    max_active_word_length = 0;
+    max_active_rules       = 0;
+
+    min_length_lhs_rule = std::numeric_limits<size_t>::max();
+
+    prev_active_rules   = 0;
+    prev_inactive_rules = 0;
+    prev_total_rules    = 0;
+    total_rules         = 0;
+    unique_lhs_rules.clear();
+    return *this;
+  }
+
   //////////////////////////////////////////////////////////////////////////
   // KnuthBendix - setters for Settings - public
   //////////////////////////////////////////////////////////////////////////
@@ -231,6 +251,7 @@ namespace libsemigroups {
   KnuthBendix::KnuthBendix(congruence_kind knd)
       : CongruenceInterface(knd),
         _settings(),
+        _stats(),
         _active_rules(),
         _confluent(),
         _confluence_known(),
@@ -238,14 +259,12 @@ namespace libsemigroups {
         _gilman_graph(),
         _inactive_rules(),
         _internal_is_same_as_external(),
-        _min_length_lhs_rule(),
         _next_rule_it1(),
         _next_rule_it2(),
         _overlap_measure(),
         _presentation(),
         _set_rules(),
-        _stack(),
-        _total_rules() {
+        _stack() {
     init(knd);
   }
 
@@ -254,22 +273,16 @@ namespace libsemigroups {
 
     CongruenceInterface::init(knd);
     _settings.init();
+    _stats.init();
+
     _gen_pairs_initted = false;
     _gilman_graph.init(0, 0);
     _confluent                    = false;
     _confluence_known             = false;
     _internal_is_same_as_external = false;
-    _min_length_lhs_rule          = std::numeric_limits<size_t>::max();
     _overlap_measure              = nullptr;
     _presentation.clear();
-    _total_rules = 0;
     overlap_policy(_settings._overlap_policy);
-#ifdef LIBSEMIGROUPS_VERBOSE
-    _max_stack_depth        = 0;
-    _max_word_length        = 0;
-    _max_active_word_length = 0;
-    _max_active_rules       = 0;
-#endif
     return *this;
   }
 
@@ -311,9 +324,9 @@ namespace libsemigroups {
     _confluence_known             = that._confluence_known.load();
     _gilman_graph                 = that._gilman_graph;
     _internal_is_same_as_external = that._internal_is_same_as_external;
-    _min_length_lhs_rule          = that._min_length_lhs_rule;
+    _stats.min_length_lhs_rule    = that._stats.min_length_lhs_rule;
     _presentation                 = that._presentation;
-    _total_rules                  = that._total_rules;
+    _stats.total_rules            = that._stats.total_rules;
 
     overlap_policy(_settings._overlap_policy);
 
@@ -445,18 +458,80 @@ namespace libsemigroups {
   // KnuthBendix - other methods - private
   //////////////////////////////////////////////////////////////////////////
 
+  void KnuthBendix::report_rules() const {
+    using detail::group_digits;
+    using detail::signed_group_digits;
+    using std::chrono::duration_cast;
+    using high_resolution_clock = std::chrono::high_resolution_clock;
+    using nanoseconds           = std::chrono::nanoseconds;
+
+    if (!report()) {
+      return;
+    }
+    auto run_time = duration_cast<nanoseconds>(high_resolution_clock::now()
+                                               - this->_stats.start_time);
+
+    auto active   = number_of_active_rules();
+    auto inactive = number_of_inactive_rules();
+    auto defined  = _stats.total_rules;
+
+    int64_t const active_diff   = active - _stats.prev_active_rules;
+    int64_t const inactive_diff = inactive - _stats.prev_inactive_rules;
+    int64_t const defined_diff  = defined - _stats.prev_total_rules;
+
+    auto const mean_defined
+        = group_digits(std::pow(10, 9) * static_cast<double>(defined)
+                       / run_time.count())
+          + "/s";
+    auto const mean_killed
+        = group_digits(std::pow(10, 9) * static_cast<double>(inactive)
+                       / run_time.count())
+          + "/s";
+
+    auto msg = fmt::format("{:-<95}\n", "");
+    msg += fmt_default(
+        "KnuthBendix: rules {:>12} (active) | {:>12} (inactive) | {:>12} "
+        "(defined)\n",
+        detail::group_digits(active),
+        detail::group_digits(inactive),
+        detail::group_digits(defined));
+
+    msg += fmt_default(
+        "KnuthBendix: diff  {:>12} (active) | {:>12} (inactive) | "
+        "{:>12} (defined)\n",
+        detail::signed_group_digits(active_diff),
+        detail::signed_group_digits(inactive_diff),
+        detail::signed_group_digits(defined_diff));
+    msg += fmt_default(
+        "KnuthBendix: time  {:>12} (total)  | {:>12} (killed)   | {:>12} "
+        "(defined)\n",
+        string_time(run_time),
+        mean_killed,
+        mean_defined);
+    msg += fmt::format("{:-<95}\n", "");
+
+    report_no_prefix(msg);
+    stats_check_point();
+  }
+
+  void KnuthBendix::stats_check_point() const {
+    _stats.prev_active_rules   = _active_rules.size();
+    _stats.prev_inactive_rules = _inactive_rules.size();
+    _stats.prev_total_rules    = _stats.total_rules;
+  }
+
   // REWRITE_FROM_LEFT from Sims, p67
-  // Caution: this uses the assumption that rules are length reducing, if it
-  // is not, then u might not have sufficient space!
+  // Caution: this uses the assumption that rules are length reducing, if they
+  // are not, then u might not have sufficient space!
   void KnuthBendix::internal_rewrite(internal_string_type& u) const {
     using iterator = internal_string_type::iterator;
 
-    if (u.size() < _min_length_lhs_rule) {
+    if (u.size() < _stats.min_length_lhs_rule) {
       return;
     }
 
     iterator v_begin = u.begin();
-    iterator v_end   = u.begin() + _min_length_lhs_rule - 1;
+    iterator v_end   = u.begin() + _stats.min_length_lhs_rule - 1;
     iterator w_begin = v_end;
     iterator w_end   = u.end();
 
@@ -480,7 +555,7 @@ namespace libsemigroups {
         }
       }
       while (w_begin != w_end
-             && _min_length_lhs_rule - 1
+             && _stats.min_length_lhs_rule - 1
                     > static_cast<size_t>((v_end - v_begin))) {
         *v_end = *w_begin;
         ++v_end;
@@ -502,6 +577,7 @@ namespace libsemigroups {
     if (!_stack.empty()) {
       return false;
     }
+    bool reported = false;
     if (!_confluence_known && (!running() || !stopped()) && !dead()) {
       LIBSEMIGROUPS_ASSERT(_stack.empty());
       _confluent        = true;
@@ -554,15 +630,24 @@ namespace libsemigroups {
           }
         }
         if (report()) {
-          REPORT_DEFAULT("checked %llu pairs of overlaps out of %llu\n",
-                         uint64_t(seen),
-                         uint64_t(_active_rules.size())
-                             * uint64_t(_active_rules.size()));
+          reported           = true;
+          auto total_pairs   = _active_rules.size() * _active_rules.size();
+          auto total_pairs_s = detail::group_digits(total_pairs);
+
+          report_default("KnuthBendix: locally confluent for {:>{width}} / "
+                         "{:>{width}} ({:.1f}%)\n",
+                         detail::group_digits(seen),
+                         total_pairs_s,
+                         100 * static_cast<double>(seen) / total_pairs,
+                         fmt::arg("width", total_pairs_s.size()));
         }
       }
       if (running() && stopped()) {
         _confluence_known = false;
       }
+    }
+    if (reported) {
+      report_default("KnuthBendix:{} confluent!\n", (_confluent ? "" : " not"));
     }
     return _confluent;
   }
@@ -599,16 +684,21 @@ namespace libsemigroups {
   }
 
   void KnuthBendix::run_impl() {
-    detail::Timer timer;
+    stats_check_point();
+    _stats.start_time = std::chrono::high_resolution_clock::now();
+
     init_from_generating_pairs();
     if (_stack.empty() && confluent() && !stopped()) {
       // _stack can be non-empty if non-reduced rules were used to define
       // the KnuthBendix.  If _stack is non-empty, then it means that the
       // rules in _active_rules might not define the system.
-      REPORT_DEFAULT("the system is confluent already\n");
+      report_default("KnuthBendix: the system is confluent already!\n");
       return;
-    } else if (_active_rules.size() >= _settings._max_rules) {
-      REPORT_DEFAULT("too many rules\n");
+    } else if (_active_rules.size() >= max_rules()) {
+      report_default(
+          "KnuthBendix: too many rules, found {}, max_rules() is {}\n",
+          _active_rules.size(),
+          max_rules());
       return;
     }
     // Reduce the rules
@@ -661,19 +751,13 @@ namespace libsemigroups {
       }
       _inactive_rules.clear();
     }
-
-    REPORT_DEFAULT("stopping with active rules = %d, inactive rules = %d, "
-                   "rules defined = %d\n",
-                   _active_rules.size(),
-                   _inactive_rules.size(),
-                   _total_rules);
-    REPORT_VERBOSE_DEFAULT("max stack depth = %d", _max_stack_depth);
-    REPORT_TIME(timer);
+    report_why_we_stopped();
+    REPORT_VERBOSE_DEFAULT("max stack depth = %d", _stats.max_stack_depth);
   }
 
+  // TODO -> helper
   void KnuthBendix::knuth_bendix_by_overlap_length() {
-    detail::Timer timer;
-    size_t        max_overlap            = _settings._max_overlap;
+    size_t max_overlap                   = _settings._max_overlap;
     size_t check_confluence_interval     = _settings._check_confluence_interval;
     _settings._max_overlap               = 1;
     _settings._check_confluence_interval = POSITIVE_INFINITY;
@@ -683,7 +767,6 @@ namespace libsemigroups {
     }
     _settings._max_overlap               = max_overlap;
     _settings._check_confluence_interval = check_confluence_interval;
-    REPORT_TIME(timer);
     report_why_we_stopped();
   }
 
@@ -781,11 +864,11 @@ namespace libsemigroups {
 
   void KnuthBendix::add_rule(Rule* rule) {
     LIBSEMIGROUPS_ASSERT(*rule->lhs() != *rule->rhs());
-#ifdef LIBSEMIGROUPS_VERBOSE
-    _max_word_length  = std::max(_max_word_length, rule->lhs()->size());
-    _max_active_rules = std::max(_max_active_rules, _active_rules.size());
-    _unique_lhs_rules.insert(*rule->lhs());
-#endif
+    _stats.max_word_length
+        = std::max(_stats.max_word_length, rule->lhs()->size());
+    _stats.max_active_rules
+        = std::max(_stats.max_active_rules, _active_rules.size());
+    _stats.unique_lhs_rules.insert(*rule->lhs());
     LIBSEMIGROUPS_ASSERT(_set_rules.emplace(RuleLookup(rule)).second);
 #ifndef LIBSEMIGROUPS_DEBUG
     _set_rules.emplace(RuleLookup(rule));
@@ -799,10 +882,10 @@ namespace libsemigroups {
       --_next_rule_it2;
     }
     _confluence_known = false;
-    if (rule->lhs()->size() < _min_length_lhs_rule) {
+    if (rule->lhs()->size() < _stats.min_length_lhs_rule) {
       // TODO(later) this is not valid when using non-length reducing
       // orderings (such as RECURSIVE)
-      _min_length_lhs_rule = rule->lhs()->size();
+      _stats.min_length_lhs_rule = rule->lhs()->size();
     }
     LIBSEMIGROUPS_ASSERT(_set_rules.size() == _active_rules.size());
   }
@@ -920,15 +1003,15 @@ namespace libsemigroups {
   }
 
   KnuthBendix::Rule* KnuthBendix::new_rule() const {
-    ++_total_rules;
+    ++_stats.total_rules;
     Rule* rule;
     if (!_inactive_rules.empty()) {
       rule = _inactive_rules.front();
       rule->clear();
-      rule->set_id(_total_rules);
+      rule->set_id(_stats.total_rules);
       _inactive_rules.erase(_inactive_rules.begin());
     } else {
-      rule = new Rule(this, _total_rules);
+      rule = new Rule(this, _stats.total_rules);
     }
     LIBSEMIGROUPS_ASSERT(!rule->active());
     return rule;
@@ -1019,9 +1102,7 @@ namespace libsemigroups {
   // TEST_2 from Sims, p76
   void KnuthBendix::clear_stack() {
     while (!_stack.empty() && !stopped()) {
-#ifdef LIBSEMIGROUPS_VERBOSE
-      _max_stack_depth = std::max(_max_stack_depth, _stack.size());
-#endif
+      _stats.max_stack_depth = std::max(_stats.max_stack_depth, _stack.size());
 
       Rule* rule1 = _stack.top();
       _stack.pop();
@@ -1052,32 +1133,23 @@ namespace libsemigroups {
       } else {
         _inactive_rules.push_back(rule1);
       }
-      if (report()) {
-        REPORT_DEFAULT(
-            "active rules = %d, inactive rules = %d, rules defined = "
-            "%d\n",
-            _active_rules.size(),
-            _inactive_rules.size(),
-            _total_rules);
-        REPORT_VERBOSE_DEFAULT("max stack depth        = %d\n"
-                               "max word length        = %d\n"
-                               "max active word length = %d\n"
-                               "max active rules       = %d\n"
-                               "number of unique lhs   = %d\n",
-                               _max_stack_depth,
-                               _max_word_length,
-                               max_active_word_length(),
-                               _max_active_rules,
-                               _unique_lhs_rules.size());
-      }
+      report_rules();
+      REPORT_VERBOSE_DEFAULT("max stack depth        = %d\n"
+                             "max word length        = %d\n"
+                             "max active word length = %d\n"
+                             "max active rules       = %d\n"
+                             "number of unique lhs   = %d\n",
+                             _stats.max_stack_depth,
+                             _stats.max_word_length,
+                             max_active_word_length(),
+                             _stats.max_active_rules,
+                             _stats.unique_lhs_rules.size());
     }
   }
 
   std::list<KnuthBendix::Rule const*>::iterator
   KnuthBendix::remove_rule(std::list<Rule const*>::iterator it) {
-#ifdef LIBSEMIGROUPS_VERBOSE
-    _unique_lhs_rules.erase(*((*it)->lhs()));
-#endif
+    _stats.unique_lhs_rules.erase(*((*it)->lhs()));
     Rule* rule = const_cast<Rule*>(*it);
     rule->deactivate();
     if (it != _next_rule_it1 && it != _next_rule_it2) {
@@ -1120,7 +1192,6 @@ namespace libsemigroups {
     _set_rules.clear();
   }
 
-#ifdef LIBSEMIGROUPS_VERBOSE
   size_t KnuthBendix::max_active_word_length() {
     auto comp = [](Rule const* p, Rule const* q) -> bool {
       return p->lhs()->size() < q->lhs()->size();
@@ -1128,12 +1199,12 @@ namespace libsemigroups {
     auto max
         = std::max_element(_active_rules.cbegin(), _active_rules.cend(), comp);
     if (max != _active_rules.cend()) {
-      _max_active_word_length
-          = std::max(_max_active_word_length, (*max)->lhs()->size());
+      _stats.max_active_word_length
+          = std::max(_stats.max_active_word_length, (*max)->lhs()->size());
     }
-    return _max_active_word_length;
+    return _stats.max_active_word_length;
   }
-#endif
+
   namespace knuth_bendix {
     // TODO check that this works for left/right congruences
     // TODO add a check that the congruences are of the same kind?
@@ -1144,9 +1215,9 @@ namespace libsemigroups {
     non_trivial_classes(KnuthBendix& kb1, KnuthBendix& kb2) {
       using rx::operator|;
 
-      // It is intended that kb1 is defined using the same presentation as kb2
-      // and some additional rules. The output might still be meaningful if
-      // this is not the case.
+      // It is intended that kb1 is defined using the same presentation as
+      // kb2 and some additional rules. The output might still be meaningful
+      // if this is not the case.
       if (kb2.number_of_classes() == POSITIVE_INFINITY
           && kb1.number_of_classes() != POSITIVE_INFINITY) {
         LIBSEMIGROUPS_EXCEPTION(
@@ -1164,10 +1235,11 @@ namespace libsemigroups {
       }
 
       // We construct the WordGraph `ad` obtained by subtracting all of
-      // the edges from the Gilman graph of kb1 from the Gilman graph of kb2.
-      // The non-trivial classes are finite if and only if `ad` is acyclic. It
-      // would be possible to do this without actually constructing `ad` but
-      // constructing `ad` is simpler, and so we do that for now.
+      // the edges from the Gilman graph of kb1 from the Gilman graph of
+      // kb2. The non-trivial classes are finite if and only if `ad` is
+      // acyclic. It would be possible to do this without actually
+      // constructing `ad` but constructing `ad` is simpler, and so we do
+      // that for now.
 
       auto g2 = kb2.gilman_graph();
       auto g1 = kb1.gilman_graph();
@@ -1176,12 +1248,13 @@ namespace libsemigroups {
       LIBSEMIGROUPS_ASSERT(g1.number_of_nodes() > 0);
 
       if (g2.number_of_nodes() < g1.number_of_nodes()) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "the Gilman digraph of the 1st argument must have at least as many "
-            "nodes as the Gilman digraph of the 2nd argument, found {} nodes "
-            "and {} nodes",
-            g2.number_of_nodes(),
-            g1.number_of_nodes());
+        LIBSEMIGROUPS_EXCEPTION("the Gilman digraph of the 1st argument "
+                                "must have at least as many "
+                                "nodes as the Gilman digraph of the 2nd "
+                                "argument, found {} nodes "
+                                "and {} nodes",
+                                g2.number_of_nodes(),
+                                g1.number_of_nodes());
       }
 
       // We need to obtain a mappings from the nodes of g2 to g1 and vice
@@ -1209,12 +1282,12 @@ namespace libsemigroups {
       }
 
       // We do a depth first search simultaneously for cycles, and edges E
-      // in g2 not in g1. Pre order forcycle detection, post order for "can we
-      // reach a node incident to an edge in E" and "number of paths through a
-      // node is infinite"
+      // in g2 not in g1. Pre order forcycle detection, post order for "can
+      // we reach a node incident to an edge in E" and "number of paths
+      // through a node is infinite"
       size_t const N = g2.number_of_nodes();
-      // can_reach[v] == true if there is a path from v to a node incident to
-      // an edge in g2 that's not in g1.
+      // can_reach[v] == true if there is a path from v to a node incident
+      // to an edge in g2 that's not in g1.
       std::vector<bool> can_reach(N, false);
       std::vector<bool> inf_paths(N, false);
       std::vector<bool> seen(N, false);
@@ -1243,8 +1316,8 @@ namespace libsemigroups {
           }
         } else {
           seen[v] = true;
-          stck.push(v + N);  // so we can tell when all of the descendants of
-                             // v have been processed out of the stack
+          stck.push(v + N);  // so we can tell when all of the descendants
+                             // of v have been processed out of the stack
           if (to_g1[v] == UNDEFINED) {
             can_reach[v] = true;
           }
@@ -1261,8 +1334,8 @@ namespace libsemigroups {
                   can_reach[v] = (ve2 != to_g2[ve1]);
                 } else {
                   // There's no edge labelled by e incident to the node
-                  // corresponding to v in g1, but there is such an edge in g2
-                  // and so (v, e, ve2) is in g2 but not g1.
+                  // corresponding to v in g1, but there is such an edge in
+                  // g2 and so (v, e, ve2) is in g2 but not g1.
                   can_reach[v] = true;
                 }
               }
@@ -1277,8 +1350,8 @@ namespace libsemigroups {
         }
       }
 
-      // If we reach here, then the appropriate portion of g2 is acyclic, and
-      // so all we do is enumerate the paths in that graph
+      // If we reach here, then the appropriate portion of g2 is acyclic,
+      // and so all we do is enumerate the paths in that graph
 
       // Construct the "can_reach" subgraph of g2, could use a WordGraphView
       // here instead (but these don't yet exist) TODO(later)
@@ -1311,8 +1384,8 @@ namespace libsemigroups {
       // The check in the next loop could be put into the lambda passed to
       // filter above, but then we'd have to convert `path` to a string, and
       // then discard the string, so better to do it here. Note that the
-      // normal forms in `kb1` never contain an edge in g2 \ g1 and so we must
-      // add in every normal form.
+      // normal forms in `kb1` never contain an edge in g2 \ g1 and so we
+      // must add in every normal form.
       for (auto& klass : ntc) {
         klass.push_back(kb1.normal_form(klass[0]));
       }
