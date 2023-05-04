@@ -131,7 +131,7 @@ namespace libsemigroups {
     KnuthBendix kb(twosided, p);
     REQUIRE(!kb.confluent());
 
-    kb.knuth_bendix_by_overlap_length();
+    knuth_bendix::by_overlap_length(kb);
     // kb.run() // also works, but is slower
     REQUIRE(kb.confluent());
     REQUIRE(kb.number_of_active_rules() == 8);
@@ -170,7 +170,7 @@ namespace libsemigroups {
     KnuthBendix kb(twosided, p);
     REQUIRE(!kb.confluent());
 
-    kb.knuth_bendix_by_overlap_length();
+    knuth_bendix::by_overlap_length(kb);
     REQUIRE(kb.finished());
     REQUIRE(kb.confluent());
     REQUIRE(kb.number_of_active_rules() == 194);
@@ -198,7 +198,7 @@ namespace libsemigroups {
     KnuthBendix kb(twosided, p);
     REQUIRE(!kb.confluent());
 
-    kb.knuth_bendix_by_overlap_length();
+    knuth_bendix::by_overlap_length(kb);
     REQUIRE(kb.confluent());
     REQUIRE(kb.number_of_active_rules() == 1'731);
     REQUIRE(kb.number_of_classes() == 7'920);
@@ -266,7 +266,7 @@ namespace libsemigroups {
 
     KnuthBendix kb(twosided, p);
     REQUIRE(!kb.confluent());
-    kb.knuth_bendix_by_overlap_length();
+    knuth_bendix::by_overlap_length(kb);
     REQUIRE(kb.confluent());
     REQUIRE(kb.number_of_active_rules() == 192);
     REQUIRE(kb.gilman_graph().number_of_nodes() == 332);
@@ -295,7 +295,7 @@ namespace libsemigroups {
     KnuthBendix kb(twosided, p);
     REQUIRE(!kb.confluent());
     // kb.run();
-    kb.knuth_bendix_by_overlap_length();
+    knuth_bendix::by_overlap_length(kb);
     REQUIRE(kb.confluent());
     REQUIRE(kb.number_of_active_rules() == 6);
     REQUIRE(kb.number_of_classes() == 1);
@@ -321,7 +321,7 @@ namespace libsemigroups {
     KnuthBendix kb(twosided, p);
     REQUIRE(!kb.confluent());
 
-    kb.knuth_bendix_by_overlap_length();
+    knuth_bendix::by_overlap_length(kb);
     REQUIRE(kb.confluent());
     REQUIRE(kb.number_of_active_rules() == 19);
     REQUIRE(kb.number_of_classes() == 29);
@@ -345,7 +345,7 @@ namespace libsemigroups {
 
     KnuthBendix kb(twosided, p);
     REQUIRE(!kb.confluent());
-    kb.knuth_bendix_by_overlap_length();
+    knuth_bendix::by_overlap_length(kb);
     REQUIRE(kb.number_of_active_rules() == 1'026);
     REQUIRE(kb.confluent());
     REQUIRE(kb.number_of_classes() == 10'752);
@@ -374,7 +374,7 @@ namespace libsemigroups {
 
     REQUIRE(!kb.confluent());
 
-    kb.knuth_bendix_by_overlap_length();
+    knuth_bendix::by_overlap_length(kb);
     // Fails to terminate, or is very slow, with knuth_bendix
     REQUIRE(kb.confluent());
     REQUIRE(kb.number_of_active_rules() == 47);
@@ -402,7 +402,7 @@ namespace libsemigroups {
     KnuthBendix kb(twosided, p);
     REQUIRE(!kb.confluent());
 
-    kb.knuth_bendix_by_overlap_length();
+    knuth_bendix::by_overlap_length(kb);
     REQUIRE(kb.confluent());
     REQUIRE(kb.number_of_active_rules() == 1'026);
     REQUIRE(kb.number_of_classes() == 10'752);
@@ -473,7 +473,7 @@ namespace libsemigroups {
 
       REQUIRE(!kb.confluent());
 
-      kb.knuth_bendix_by_overlap_length();
+      knuth_bendix::by_overlap_length(kb);
       if (kb.confluent()) {
         REQUIRE(kb.number_of_active_rules() == 0);
         REQUIRE(kb.number_of_classes() == 0);
@@ -673,8 +673,7 @@ namespace libsemigroups {
     presentation::add_rule(p, "c", "bab");
 
     KnuthBendix k(twosided, p);
-    k.knuth_bendix_by_overlap_length();
-    std::cout << (k.active_rules() | to_vector()) << std::endl;
+    knuth_bendix::by_overlap_length(k);
     REQUIRE(k.active_rules().get() == rule_type({"", ""}));
   }
 

@@ -441,32 +441,6 @@ namespace libsemigroups {
     return rewrite(w);
   }
 
-  void KnuthBendix::rewrite_inplace(external_string_type& w) const {
-    if (kind() == congruence_kind::left) {
-      std::reverse(w.begin(), w.end());
-    }
-    add_octo(w);
-    external_to_internal_string(w);
-    internal_rewrite(w);
-    internal_to_external_string(w);
-    rm_octo(w);
-    if (kind() == congruence_kind::left) {
-      std::reverse(w.begin(), w.end());
-    }
-  }
-
-  //////////////////////////////////////////////////////////////////////////
-  // KnuthBendix - other methods - private
-  //////////////////////////////////////////////////////////////////////////
-
-  void KnuthBendix::throw_if_started() const {
-    if (started()) {
-      LIBSEMIGROUPS_EXCEPTION(
-          "the presentation cannot be changed after Knuth-Bendix has "
-          "started, maybe try `init` instead?");
-    }
-  }
-
   void KnuthBendix::report_rules() const {
     using detail::group_digits;
     using detail::signed_group_digits;
@@ -538,6 +512,32 @@ namespace libsemigroups {
 
     report_no_prefix(msg);
     stats_check_point();
+  }
+
+  void KnuthBendix::rewrite_inplace(external_string_type& w) const {
+    if (kind() == congruence_kind::left) {
+      std::reverse(w.begin(), w.end());
+    }
+    add_octo(w);
+    external_to_internal_string(w);
+    internal_rewrite(w);
+    internal_to_external_string(w);
+    rm_octo(w);
+    if (kind() == congruence_kind::left) {
+      std::reverse(w.begin(), w.end());
+    }
+  }
+
+  //////////////////////////////////////////////////////////////////////////
+  // KnuthBendix - other methods - private
+  //////////////////////////////////////////////////////////////////////////
+
+  void KnuthBendix::throw_if_started() const {
+    if (started()) {
+      LIBSEMIGROUPS_EXCEPTION(
+          "the presentation cannot be changed after Knuth-Bendix has "
+          "started, maybe try `init` instead?");
+    }
   }
 
   void KnuthBendix::stats_check_point() const {
@@ -788,27 +788,6 @@ namespace libsemigroups {
     report_rules();
     if (finished()) {
       report_default("KnuthBendix: finished!");
-    } else {
-      report_why_we_stopped();
-    }
-  }
-
-  // TODO -> helper
-  void KnuthBendix::knuth_bendix_by_overlap_length() {
-    size_t prev_max_overlap               = max_overlap();
-    size_t prev_check_confluence_interval = check_confluence_interval();
-    max_overlap(1);
-    check_confluence_interval(POSITIVE_INFINITY);
-
-    while (!confluent()) {
-      run();
-      _settings.max_overlap++;
-    }
-    _settings.max_overlap               = prev_max_overlap;
-    _settings.check_confluence_interval = prev_check_confluence_interval;
-    report_rules();
-    if (finished()) {
-      report_default("KnuthBendix: finished!\n");
     } else {
       report_why_we_stopped();
     }
@@ -1135,15 +1114,12 @@ namespace libsemigroups {
         // rule is reordered during rewriting in
         // clear_stack
         push_stack(rule);
-        // It can be that the iterator `it` is
-        // invalidated by the call to push_stack (i.e. if
-        // `u` is deactivated, then rewritten, actually
-        // changed, and reactivated) and that is the
-        // reason for the checks in the for-loop above.
-        // If this is the case, then we should stop
-        // considering the overlaps of u and v here, and
-        // note that they will be considered later,
-        // because when the rule `u` is reactivated it is
+        // It can be that the iterator `it` is invalidated by the call to
+        // push_stack (i.e. if `u` is deactivated, then rewritten, actually
+        // changed, and reactivated) and that is the reason for the checks in
+        // the for-loop above. If this is the case, then we should stop
+        // considering the overlaps of u and v here, and note that they will be
+        // considered later, because when the rule `u` is reactivated it is
         // added to the end of the active rules list.
       }
     }
@@ -1249,18 +1225,17 @@ namespace libsemigroups {
   }
 
   namespace knuth_bendix {
-    // TODO check that this works for left/right congruences
-    // TODO add a check that the congruences are of the same kind?
-
     // We are computing non_trivial_classes with respect to kb2 (the greater
     // congruence, with fewer classes)
+    //
+    // This should work ok if kb1 and kb2 represent different kinds of
+    // congruence.
     std::vector<std::vector<std::string>>
     non_trivial_classes(KnuthBendix& kb1, KnuthBendix& kb2) {
       using rx::operator|;
 
-      // It is intended that kb1 is defined using the
-      // same presentation as kb2 and some additional
-      // rules. The output might still be meaningful if
+      // It is intended that kb1 is defined using the same presentation as kb2
+      // and some additional rules. The output might still be meaningful if
       // this is not the case.
       if (kb2.number_of_classes() == POSITIVE_INFINITY
           && kb1.number_of_classes() != POSITIVE_INFINITY) {
@@ -1278,14 +1253,11 @@ namespace libsemigroups {
                                 kb1.presentation().alphabet());
       }
 
-      // We construct the WordGraph `ad` obtained by
-      // subtracting all of the edges from the Gilman
-      // graph of kb1 from the Gilman graph of kb2. The
-      // non-trivial classes are finite if and only if
-      // `ad` is acyclic. It would be possible to do this
-      // without actually constructing `ad` but
-      // constructing `ad` is simpler, and so we do that
-      // for now.
+      // We construct the WordGraph `ad` obtained by subtracting all of the
+      // edges from the Gilman graph of kb1 from the Gilman graph of kb2. The
+      // non-trivial classes are finite if and only if `ad` is acyclic. It
+      // would be possible to do this without actually constructing `ad` but
+      // constructing `ad` is simpler, and so we do that for now.
 
       auto g2 = kb2.gilman_graph();
       auto g1 = kb1.gilman_graph();
@@ -1326,15 +1298,13 @@ namespace libsemigroups {
         }
       }
 
-      // We do a depth first search simultaneously for
-      // cycles, and edges E in g2 not in g1. Pre order
-      // forcycle detection, post order for "can we reach
-      // a node incident to an edge in E" and "number of
-      // paths through a node is infinite"
+      // We do a depth first search simultaneously for cycles, and edges E in
+      // g2 not in g1. Pre order forcycle detection, post order for "can we
+      // reach a node incident to an edge in E" and "number of paths through a
+      // node is infinite"
       size_t const N = g2.number_of_nodes();
-      // can_reach[v] == true if there is a path from v
-      // to a node incident to an edge in g2 that's not
-      // in g1.
+      // can_reach[v] == true if there is a path from v to a node incident to an
+      // edge in g2 that's not in g1.
       std::vector<bool> can_reach(N, false);
       std::vector<bool> inf_paths(N, false);
       std::vector<bool> seen(N, false);
@@ -1363,32 +1333,27 @@ namespace libsemigroups {
           }
         } else {
           seen[v] = true;
-          stck.push(v + N);  // so we can tell when all of the
-                             // descendants of v have been
-                             // processed out of the stack
+          // so we can tell when all of the descendants of v have been
+          // processed out of the stack
+          stck.push(v + N);
           if (to_g1[v] == UNDEFINED) {
             can_reach[v] = true;
           }
           for (auto e : g2.labels()) {
             auto ve2 = g2.target_no_checks(v, e);
             if (ve2 != UNDEFINED) {
-              // Check if (v, e, ve2) corresponds to an
-              // edge in g1
+              // Check if (v, e, ve2) corresponds to an edge in g1
               if (!can_reach[v]) {
                 auto ve1 = g1.target_no_checks(to_g1[v], e);
                 if (ve1 != UNDEFINED) {
-                  // edges (v, e, ve2) and (to_g1[v], e,
-                  // ve1) exist, so there's an edge in g2
-                  // not in g1 if the targets of these
-                  // edges do not correspond to each
-                  // other.
+                  // edges (v, e, ve2) and (to_g1[v], e, ve1) exist, so there's
+                  // an edge in g2 not in g1 if the targets of these edges do
+                  // not correspond to each other.
                   can_reach[v] = (ve2 != to_g2[ve1]);
                 } else {
-                  // There's no edge labelled by e
-                  // incident to the node corresponding
-                  // to v in g1, but there is such an
-                  // edge in g2 and so (v, e, ve2) is in
-                  // g2 but not g1.
+                  // There's no edge labelled by e incident to the node
+                  // corresponding to v in g1, but there is such an edge in g2
+                  // and so (v, e, ve2) is in g2 but not g1.
                   can_reach[v] = true;
                 }
               }
@@ -1403,13 +1368,11 @@ namespace libsemigroups {
         }
       }
 
-      // If we reach here, then the appropriate portion
-      // of g2 is acyclic, and so all we do is enumerate
-      // the paths in that graph
+      // If we reach here, then the appropriate portion of g2 is acyclic, and
+      // so all we do is enumerate the paths in that graph
 
-      // Construct the "can_reach" subgraph of g2, could
-      // use a WordGraphView here instead (but these
-      // don't yet exist) TODO(later)
+      // Construct the "can_reach" subgraph of g2, could use a WordGraphView
+      // here instead (but these don't yet exist) TODO(later)
       WordGraph<size_t> ad(g2.number_of_nodes(), g2.out_degree());
 
       for (auto v : ad.nodes()) {
@@ -1424,9 +1387,9 @@ namespace libsemigroups {
       }
 
       Paths paths(ad);
-      // We only want those paths that pass through at
-      // least one of the edges in g2 but not g1. Hence
-      // we require the `filter` in the next expression.
+      // We only want those paths that pass through at least one of the edges
+      // in g2 but not g1. Hence we require the `filter` in the next
+      // expression.
       auto ntc
           = partition(kb1,
                       (paths.from(0) | rx::filter([&g1](word_type const& path) {
@@ -1436,18 +1399,32 @@ namespace libsemigroups {
                                 != path.cend();
                        })
                        | to_strings(kb2.presentation().alphabet())));
-      // The check in the next loop could be put into the
-      // lambda passed to filter above, but then we'd
-      // have to convert `path` to a string, and then
-      // discard the string, so better to do it here.
-      // Note that the normal forms in `kb1` never
-      // contain an edge in g2 \ g1 and so we must add in
+      // The check in the next loop could be put into the lambda passed to
+      // filter above, but then we'd have to convert `path` to a string, and
+      // then discard the string, so better to do it here. Note that the normal
+      // forms in `kb1` never contain an edge in g2 \ g1 and so we must add in
       // every normal form.
       for (auto& klass : ntc) {
         klass.push_back(kb1.normal_form(klass[0]));
       }
       return ntc;
     }
+
+    void by_overlap_length(KnuthBendix& kb) {
+      size_t prev_max_overlap               = kb.max_overlap();
+      size_t prev_check_confluence_interval = kb.check_confluence_interval();
+      kb.max_overlap(1);
+      kb.check_confluence_interval(POSITIVE_INFINITY);
+
+      while (!kb.confluent()) {
+        kb.run();
+        kb.max_overlap(kb.max_overlap() + 1);
+      }
+      kb.max_overlap(prev_max_overlap);
+      kb.check_confluence_interval(prev_check_confluence_interval);
+      kb.report_rules();
+    }
+
   }  // namespace knuth_bendix
 
   std::ostream& operator<<(std::ostream& os, KnuthBendix const& kb) {

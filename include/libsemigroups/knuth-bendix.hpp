@@ -220,7 +220,6 @@ namespace libsemigroups {
       Settings& operator=(Settings const&) noexcept = default;
       Settings& operator=(Settings&&) noexcept      = default;
 
-      // TODO remove _
       size_t           check_confluence_interval;
       size_t           max_overlap;
       size_t           max_rules;
@@ -620,29 +619,6 @@ namespace libsemigroups {
     // TODO doc
     [[nodiscard]] bool confluent_known() const noexcept;
 
-    //! Run the Knuth-Bendix by considering all overlaps of a given length.
-    //!
-    //! This function runs the Knuth-Bendix algorithm on the rewriting
-    //! system represented by a KnuthBendix instance by considering all
-    //! overlaps of a given length \f$n\f$ (according to the \ref
-    //! options::overlap) before those overlaps of length \f$n + 1\f$.
-    //!
-    //! \returns
-    //! (None)
-    //!
-    //! \complexity
-    //! See warning.
-    //!
-    //! \warning This will terminate when the KnuthBendix instance is
-    //! confluent, which might be never.
-    //!
-    //! \sa \ref run.
-    //!
-    //! \parameters
-    //! (None)
-    // TODO make helper
-    void knuth_bendix_by_overlap_length();
-
     //! Returns the Gilman digraph.
     //!
     //! \returns A const reference to a \ref WordGraph.
@@ -698,9 +674,10 @@ namespace libsemigroups {
     // run is called.
     [[nodiscard]] std::string normal_form(std::string const& w);
 
+    void report_rules() const;
+
    private:
     void throw_if_started() const;
-    void report_rules() const;
     void stats_check_point() const;
 
     void internal_rewrite(internal_string_type& u) const;
@@ -762,6 +739,28 @@ namespace libsemigroups {
   std::ostream& operator<<(std::ostream&, KnuthBendix const&);
 
   namespace knuth_bendix {
+
+    //! Run the Knuth-Bendix by considering all overlaps of a given length.
+    //!
+    //! This function runs the Knuth-Bendix algorithm on the rewriting
+    //! system represented by a KnuthBendix instance by considering all
+    //! overlaps of a given length \f$n\f$ (according to the \ref
+    //! options::overlap) before those overlaps of length \f$n + 1\f$.
+    //!
+    //! \returns
+    //! (None)
+    //!
+    //! \complexity
+    //! See warning.
+    //!
+    //! \warning This will terminate when the KnuthBendix instance is
+    //! confluent, which might be never.
+    //!
+    //! \sa \ref run.
+    //!
+    //! \parameters
+    //! (None)
+    void by_overlap_length(KnuthBendix&);
 
     //! Returns a forward iterator pointing at the first normal form with
     //! length in a given range.

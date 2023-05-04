@@ -625,7 +625,7 @@ namespace libsemigroups {
     KnuthBendix kb(twosided, p);
     REQUIRE(!kb.confluent());
 
-    kb.knuth_bendix_by_overlap_length();
+    knuth_bendix::by_overlap_length(kb);
     REQUIRE(kb.confluent());
     REQUIRE(kb.number_of_active_rules() == 41);
 
@@ -701,7 +701,7 @@ namespace libsemigroups {
     KnuthBendix kb(twosided, p);
     REQUIRE(!kb.confluent());
 
-    kb.knuth_bendix_by_overlap_length();
+    knuth_bendix::by_overlap_length(kb);
     REQUIRE(kb.confluent());
     REQUIRE(kb.number_of_active_rules() == 11);
     REQUIRE(kb.number_of_classes() == 24);
@@ -764,7 +764,7 @@ namespace libsemigroups {
 
     KnuthBendix kb(twosided, p);
     REQUIRE(!kb.confluent());
-    kb.knuth_bendix_by_overlap_length();
+    knuth_bendix::by_overlap_length(kb);
     REQUIRE(kb.number_of_active_rules() == 20);
     REQUIRE(kb.confluent());
 
@@ -811,7 +811,7 @@ namespace libsemigroups {
     // kb.clear_stack_interval(0);
 
     REQUIRE(!kb.confluent());
-    kb.knuth_bendix_by_overlap_length();
+    knuth_bendix::by_overlap_length(kb);
     REQUIRE(kb.number_of_active_rules() == 105);
     REQUIRE(kb.confluent());
     REQUIRE(kb.number_of_classes() == 746);
@@ -1192,7 +1192,7 @@ namespace libsemigroups {
     presentation::add_rule(p, "Baab", "AA");
 
     KnuthBendix kb(twosided, p);
-    kb.knuth_bendix_by_overlap_length();
+    knuth_bendix::by_overlap_length(kb);
 
     REQUIRE(kb.number_of_classes() == POSITIVE_INFINITY);
   }
