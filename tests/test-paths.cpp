@@ -36,14 +36,14 @@
 
 #include "libsemigroups/config.hpp"             // for LIBSEMIGROUPS_EIGEN_E...
 #include "libsemigroups/constants.hpp"          // for operator!=, operator==
+#include "libsemigroups/detail/report.hpp"      // for ReportGuard
+#include "libsemigroups/detail/stl.hpp"         // for hash
 #include "libsemigroups/exception.hpp"          // for LibsemigroupsException
 #include "libsemigroups/froidure-pin-base.hpp"  // for FroidurePinBase
 #include "libsemigroups/knuth-bendix.hpp"       // for KnuthBendix
 #include "libsemigroups/order.hpp"              // for LexicographicalCompare
 #include "libsemigroups/paths.hpp"              // for Paths, const_pstilo_i...
 #include "libsemigroups/ranges.hpp"             // for equal, is_sorted
-#include "libsemigroups/detail/report.hpp"             // for ReportGuard
-#include "libsemigroups/detail/stl.hpp"                // for hash
 #include "libsemigroups/to-froidure-pin.hpp"
 #include "libsemigroups/types.hpp"       // for word_type, relation_type
 #include "libsemigroups/word-graph.hpp"  // for WordGraph, make, pow

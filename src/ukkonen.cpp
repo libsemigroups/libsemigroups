@@ -27,11 +27,11 @@
 #include <numeric>    // for accumulate
 #include <string>     // for operator+, char_traits, to_st...
 
-#include "libsemigroups/constants.hpp"  // for UNDEFINED
-#include "libsemigroups/debug.hpp"      // for LIBSEMIGROUPS_ASSERT
-#include "libsemigroups/exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
-#include "libsemigroups/detail/string.hpp"     // for to_string
-#include "libsemigroups/types.hpp"      // for word_type
+#include "libsemigroups/constants.hpp"      // for UNDEFINED
+#include "libsemigroups/debug.hpp"          // for LIBSEMIGROUPS_ASSERT
+#include "libsemigroups/detail/string.hpp"  // for to_string
+#include "libsemigroups/exception.hpp"      // for LIBSEMIGROUPS_EXCEPTION
+#include "libsemigroups/types.hpp"          // for word_type
 
 namespace libsemigroups {
 

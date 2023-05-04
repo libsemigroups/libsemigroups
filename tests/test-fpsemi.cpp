@@ -21,12 +21,12 @@
 #include "catch.hpp"      // for REQUIRE
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
+#include "libsemigroups/detail/report.hpp"      // for ReportGuard
 #include "libsemigroups/fpsemi-examples.hpp"    // for RennerTypeDMonoid
 #include "libsemigroups/fpsemi.hpp"             // for FpSemigroup
 #include "libsemigroups/froidure-pin-base.hpp"  // for FroidurePinBase
 #include "libsemigroups/froidure-pin.hpp"  // for FroidurePin<>::element_index_type
 #include "libsemigroups/knuth-bendix.hpp"  // for KnuthBendix
-#include "libsemigroups/detail/report.hpp"        // for ReportGuard
 #include "libsemigroups/todd-coxeter.hpp"  // for ToddCoxeter
 #include "libsemigroups/transf.hpp"        // for Transf<>
 #include "libsemigroups/types.hpp"         // for relation_type

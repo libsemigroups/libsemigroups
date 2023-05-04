@@ -23,13 +23,13 @@
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
 #include "libsemigroups/bmat8.hpp"
+#include "libsemigroups/detail/report.hpp"    // for ReportGuard
+#include "libsemigroups/detail/tce.hpp"       // for TCE
 #include "libsemigroups/fpsemi-examples.hpp"  // for dual_symmetric_...
 #include "libsemigroups/froidure-pin.hpp"
 #include "libsemigroups/obvinf.hpp"           // for is_obviously_infinite
 #include "libsemigroups/present.hpp"          // for Presentation
 #include "libsemigroups/ranges.hpp"           // for is_sorted
-#include "libsemigroups/detail/report.hpp"           // for ReportGuard
-#include "libsemigroups/detail/tce.hpp"              // for TCE
 #include "libsemigroups/to-froidure-pin.hpp"  // for make
 #include "libsemigroups/to-presentation.hpp"  // for Presentation
 #include "libsemigroups/to-todd-coxeter.hpp"  // for ??

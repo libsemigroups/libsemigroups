@@ -27,14 +27,14 @@
 #include "catch.hpp"      // for REQUIRE, REQUIRE_THROWS_AS, REQUIRE_NOTHROW
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
-#include "libsemigroups/adapters.hpp"      // for Complexity, Degree
-#include "libsemigroups/bmat8.hpp"         // for BMat8
-#include "libsemigroups/constants.hpp"     // for NEGATIVE_INFINITY
-#include "libsemigroups/debug.hpp"         // for LIBSEMIGROUPS_A...
-#include "libsemigroups/exception.hpp"     // for LibsemigroupsEx...
-#include "libsemigroups/fastest-bmat.hpp"  // for FastestBMat
-#include "libsemigroups/matrix.hpp"        // for BMat, NTPMat
-#include "libsemigroups/detail/report.hpp"        // for ReportGuard
+#include "libsemigroups/adapters.hpp"       // for Complexity, Degree
+#include "libsemigroups/bmat8.hpp"          // for BMat8
+#include "libsemigroups/constants.hpp"      // for NEGATIVE_INFINITY
+#include "libsemigroups/debug.hpp"          // for LIBSEMIGROUPS_A...
+#include "libsemigroups/detail/report.hpp"  // for ReportGuard
+#include "libsemigroups/exception.hpp"      // for LibsemigroupsEx...
+#include "libsemigroups/fastest-bmat.hpp"   // for FastestBMat
+#include "libsemigroups/matrix.hpp"         // for BMat, NTPMat
 
 #include "libsemigroups/detail/containers.hpp"  // for StaticVector1
 

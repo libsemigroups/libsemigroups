@@ -23,10 +23,10 @@
 #include "catch.hpp"      // for REQUIRE
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST...
 
-#include "libsemigroups/bmat8.hpp"         // for BMat8
-#include "libsemigroups/fastest-bmat.hpp"  // for FastestBMat
-#include "libsemigroups/konieczny.hpp"     // for Konieczny, Koniecz...
-#include "libsemigroups/detail/report.hpp"        // for ReportGuard
+#include "libsemigroups/bmat8.hpp"          // for BMat8
+#include "libsemigroups/detail/report.hpp"  // for ReportGuard
+#include "libsemigroups/fastest-bmat.hpp"   // for FastestBMat
+#include "libsemigroups/konieczny.hpp"      // for Konieczny, Koniecz...
 
 namespace libsemigroups {
 

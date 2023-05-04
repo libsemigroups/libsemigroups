@@ -21,12 +21,12 @@
 
 #include "libsemigroups/bmat8.hpp"            // for BMat8
 #include "libsemigroups/cong.hpp"             // for Congruence
+#include "libsemigroups/detail/report.hpp"    // for ReportGuard
 #include "libsemigroups/fastest-bmat.hpp"     // for FastestBMat
 #include "libsemigroups/fpsemi-examples.hpp"  // for rook_monoid
 #include "libsemigroups/froidure-pin.hpp"     // for FroidurePin
 #include "libsemigroups/obvinf.hpp"           // for is_obviously_infinite
 #include "libsemigroups/pbr.hpp"              // for PBR
-#include "libsemigroups/detail/report.hpp"           // for ReportGuard
 #include "libsemigroups/to-froidure-pin.hpp"
 #include "libsemigroups/transf.hpp"  // for Transf<>
 #include "libsemigroups/types.hpp"   // for word_type

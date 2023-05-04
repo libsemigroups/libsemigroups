@@ -21,20 +21,20 @@
 
 #include "libsemigroups/words.hpp"
 
-#include <algorithm>                    // for lexicographical_...
-#include <cmath>                        // for pow
-#include <cstring>                      // for strlen
-#include <string>                       // for allocator
-#include <type_traits>                  // for is_destructible
-#include <utility>                      // for move
-                                        //
-#include "libsemigroups/config.hpp"     // for LIBSEMIGROUPS_DEBUG
-#include "libsemigroups/constants.hpp"  // for UNDEFINED
-#include "libsemigroups/debug.hpp"      // for LIBSEMIGROUPS_ASSERT
-#include "libsemigroups/exception.hpp"  // for word_type
-#include "libsemigroups/order.hpp"      // for order
-#include "libsemigroups/detail/report.hpp"     // for magic_enum formatting
-#include "libsemigroups/types.hpp"      // for word_type
+#include <algorithm>                        // for lexicographical_...
+#include <cmath>                            // for pow
+#include <cstring>                          // for strlen
+#include <string>                           // for allocator
+#include <type_traits>                      // for is_destructible
+#include <utility>                          // for move
+                                            //
+#include "libsemigroups/config.hpp"         // for LIBSEMIGROUPS_DEBUG
+#include "libsemigroups/constants.hpp"      // for UNDEFINED
+#include "libsemigroups/debug.hpp"          // for LIBSEMIGROUPS_ASSERT
+#include "libsemigroups/detail/report.hpp"  // for magic_enum formatting
+#include "libsemigroups/exception.hpp"      // for word_type
+#include "libsemigroups/order.hpp"          // for order
+#include "libsemigroups/types.hpp"          // for word_type
 
 #include "rx/ranges.hpp"  // for count, operator|
 

@@ -40,11 +40,11 @@
 
 #include "adapters.hpp"           // for Complexity, Degree, IncreaseDegree
 #include "debug.hpp"              // for LIBSEMIGROUPS_ASSERT
+#include "detail/report.hpp"      // for REPORT
+#include "detail/stl.hpp"         // for EqualTo, Hash
+#include "detail/timer.hpp"       // for detail::Timer
 #include "exception.hpp"          // for LIBSEMIGROUPS_EXCEPTION
 #include "froidure-pin-base.hpp"  // for FroidurePinBase, FroidurePinBase::s...
-#include "detail/report.hpp"             // for REPORT
-#include "detail/stl.hpp"                // for EqualTo, Hash
-#include "detail/timer.hpp"              // for detail::Timer
 #include "types.hpp"              // for letter_type, word_type
 
 #include "detail/bruidhinn-traits.hpp"  // for detail::BruidhinnTraits

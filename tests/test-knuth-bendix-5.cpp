@@ -41,11 +41,11 @@
 
 #include "libsemigroups/constants.hpp"        // for operator!=, operator==
 #include "libsemigroups/detail/kbe.hpp"       // for KBE
+#include "libsemigroups/detail/report.hpp"    // for ReportGuard
 #include "libsemigroups/exception.hpp"        // for LibsemigroupsException
 #include "libsemigroups/froidure-pin.hpp"     // for FroidurePin
 #include "libsemigroups/knuth-bendix.hpp"     // for KnuthBendix
 #include "libsemigroups/present.hpp"          // for Presentation
-#include "libsemigroups/detail/report.hpp"           // for ReportGuard
 #include "libsemigroups/to-froidure-pin.hpp"  // for to_froidure_pin
 #include "libsemigroups/to-presentation.hpp"  // for to_presentation
 #include "libsemigroups/transf.hpp"           // for Transf

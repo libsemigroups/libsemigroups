@@ -19,10 +19,10 @@
 #include "catch.hpp"      // REQUIRE
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
-#include "libsemigroups/constants.hpp"     // for UNDEFINED
-#include "libsemigroups/froidure-pin.hpp"  // for FroidurePin
-#include "libsemigroups/matrix.hpp"        // for NTPSemiring, MaxPlusTruncS...
-#include "libsemigroups/detail/report.hpp"        // for ReportGuard
+#include "libsemigroups/constants.hpp"      // for UNDEFINED
+#include "libsemigroups/detail/report.hpp"  // for ReportGuard
+#include "libsemigroups/froidure-pin.hpp"   // for FroidurePin
+#include "libsemigroups/matrix.hpp"         // for NTPSemiring, MaxPlusTruncS...
 
 namespace libsemigroups {
   struct LibsemigroupsException;

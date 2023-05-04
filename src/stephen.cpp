@@ -27,10 +27,10 @@
                                                    //
 #include "libsemigroups/constants.hpp"             // for operator==, Undefined
 #include "libsemigroups/debug.hpp"                 // for LIBSEMIGROUPS_ASSERT
+#include "libsemigroups/detail/report.hpp"         // for REPORT_DEFAULT_V3
+#include "libsemigroups/detail/string.hpp"         // for group_digits
 #include "libsemigroups/exception.hpp"             // for LibsemigroupsExcep...
 #include "libsemigroups/present.hpp"               // for Presentation<>::wo...
-#include "libsemigroups/detail/report.hpp"                // for REPORT_DEFAULT_V3
-#include "libsemigroups/detail/string.hpp"                // for group_digits
 #include "libsemigroups/todd-coxeter-digraph.hpp"  // for StephenDigraph...
 #include "libsemigroups/types.hpp"                 // for word_type
 

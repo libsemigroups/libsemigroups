@@ -26,10 +26,10 @@
 #include <memory>   // for shared_ptr
 
 #include "cong-intf.hpp"
+#include "detail/race.hpp"   // for Race
 #include "exception.hpp"     // for LIBSEMIGROUPS_EXCEPTION
 #include "kambites.hpp"      // for Kambites
 #include "knuth-bendix.hpp"  // for KnuthBendix
-#include "detail/race.hpp"          // for Race
 #include "runner.hpp"        // for Runner
 #include "to-todd-coxeter.hpp"
 #include "todd-coxeter.hpp"  // for ToddCoxeter

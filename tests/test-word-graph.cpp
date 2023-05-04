@@ -25,10 +25,10 @@
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 #include "word-graph-test-common.hpp"  // for add_clique etc
 
-#include "libsemigroups/forest.hpp"      // for Forest
-#include "libsemigroups/detail/string.hpp"      // for detail::to_string
-#include "libsemigroups/word-graph.hpp"  // for WordGraph
-#include "libsemigroups/words.hpp"       // for literals, Words
+#include "libsemigroups/detail/string.hpp"  // for detail::to_string
+#include "libsemigroups/forest.hpp"         // for Forest
+#include "libsemigroups/word-graph.hpp"     // for WordGraph
+#include "libsemigroups/words.hpp"          // for literals, Words
 
 namespace libsemigroups {
 

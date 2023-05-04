@@ -52,15 +52,15 @@
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
 #include "libsemigroups/constants.hpp"        // for operator==, operator!=
+#include "libsemigroups/detail/kbe.hpp"       // for KBE
+#include "libsemigroups/detail/report.hpp"    // for ReportGuard
 #include "libsemigroups/exception.hpp"        // for LibsemigroupsException
 #include "libsemigroups/froidure-pin.hpp"     // for FroidurePin
-#include "libsemigroups/detail/kbe.hpp"              // for KBE
 #include "libsemigroups/knuth-bendix.hpp"     // for KnuthBendix, normal_f...
 #include "libsemigroups/obvinf.hpp"           // for is_obviously_infinite
 #include "libsemigroups/paths.hpp"            // for Paths
 #include "libsemigroups/present.hpp"          // for add_rule, Presentation
 #include "libsemigroups/ranges.hpp"           // for equal
-#include "libsemigroups/detail/report.hpp"           // for ReportGuard
 #include "libsemigroups/to-froidure-pin.hpp"  // for to_froidure_pin
 #include "libsemigroups/types.hpp"            // for word_type
 #include "libsemigroups/word-graph.hpp"       // for WordGraph

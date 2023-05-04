@@ -34,15 +34,15 @@
 #include <utility>        // for pair, make_pair
 #include <vector>         // for vector
 
-#include "action.hpp"     // for LeftAction, RightAction
-#include "adapters.hpp"   // for Lambda, etc
-#include "constants.hpp"  // for UNDEFINED
-#include "debug.hpp"      // for LIBSEMIGROUPS_ASSERT
-#include "exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
-#include "detail/pool.hpp"       // for detail::Pool
-#include "detail/report.hpp"     // for REPORT_DEFAULT
-#include "runner.hpp"     // for Runner
-#include "detail/timer.hpp"      // for Timer
+#include "action.hpp"         // for LeftAction, RightAction
+#include "adapters.hpp"       // for Lambda, etc
+#include "constants.hpp"      // for UNDEFINED
+#include "debug.hpp"          // for LIBSEMIGROUPS_ASSERT
+#include "detail/pool.hpp"    // for detail::Pool
+#include "detail/report.hpp"  // for REPORT_DEFAULT
+#include "detail/timer.hpp"   // for Timer
+#include "exception.hpp"      // for LIBSEMIGROUPS_EXCEPTION
+#include "runner.hpp"         // for Runner
 
 #include "detail/bruidhinn-traits.hpp"  // for BruidhinnTraits
 

@@ -23,9 +23,9 @@
 #include <numeric>  // for iota
 #include <vector>   // vector
 
-#include "catch.hpp"             // for REQUIRE
+#include "catch.hpp"                    // for REQUIRE
 #include "libsemigroups/detail/uf.hpp"  // Duf + Suf
-#include "test-main.hpp"         // for LIBSEMIGROUPS_TEST_CASE
+#include "test-main.hpp"                // for LIBSEMIGROUPS_TEST_CASE
 
 namespace libsemigroups {
   namespace detail {

@@ -21,7 +21,7 @@
 #include <string>    // for operator==
 #include <thread>    // for sleep_for
 
-#include "catch.hpp"                // for LIBSEMIGROUPS_TEST_CASE
+#include "catch.hpp"                       // for LIBSEMIGROUPS_TEST_CASE
 #include "libsemigroups/detail/timer.hpp"  // for detail::Timer, operator<<
 #include "test-main.hpp"
 

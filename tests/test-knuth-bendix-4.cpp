@@ -32,32 +32,32 @@
 //
 // 6: contains tests for KnuthBendix.
 
-#include <algorithm>                       // for next_permutation
-#include <chrono>                          // for milliseconds, seconds
-#include <cmath>                           // for pow
-#include <cstddef>                         // for size_t
-#include <iostream>                        // for string, operator<<, endl
-#include <numeric>                         // for iota
-#include <string>                          // for basic_string, char_traits
-#include <unordered_map>                   // for operator==
-#include <unordered_set>                   // for unordered_set
-#include <utility>                         // for move, operator==, pair
-#include <vector>                          // for vector, operator==
-                                           //
-#include "catch.hpp"                       // for AssertionHandler, oper...
-#include "test-main.hpp"                   // for LIBSEMIGROUPS_TEST_CASE
-                                           //
-#include "libsemigroups/constants.hpp"     // for operator==, operator!=
-#include "libsemigroups/exception.hpp"     // for LibsemigroupsException
-#include "libsemigroups/knuth-bendix.hpp"  // for KnuthBendix, normal_forms
-#include "libsemigroups/order.hpp"         // for shortlex_compare
-#include "libsemigroups/paths.hpp"         // for Paths
-#include "libsemigroups/present.hpp"       // for add_rule, Presentation
-#include "libsemigroups/detail/report.hpp"        // for ReportGuard
-#include "libsemigroups/detail/stl.hpp"           // for apply_permutation
-#include "libsemigroups/detail/string.hpp"        // for random_string, operator<<
-#include "libsemigroups/word-graph.hpp"    // for WordGraph
-#include "libsemigroups/words.hpp"         // for Inner, Strings, to_str...
+#include <algorithm>                        // for next_permutation
+#include <chrono>                           // for milliseconds, seconds
+#include <cmath>                            // for pow
+#include <cstddef>                          // for size_t
+#include <iostream>                         // for string, operator<<, endl
+#include <numeric>                          // for iota
+#include <string>                           // for basic_string, char_traits
+#include <unordered_map>                    // for operator==
+#include <unordered_set>                    // for unordered_set
+#include <utility>                          // for move, operator==, pair
+#include <vector>                           // for vector, operator==
+                                            //
+#include "catch.hpp"                        // for AssertionHandler, oper...
+#include "test-main.hpp"                    // for LIBSEMIGROUPS_TEST_CASE
+                                            //
+#include "libsemigroups/constants.hpp"      // for operator==, operator!=
+#include "libsemigroups/detail/report.hpp"  // for ReportGuard
+#include "libsemigroups/detail/stl.hpp"     // for apply_permutation
+#include "libsemigroups/detail/string.hpp"  // for random_string, operator<<
+#include "libsemigroups/exception.hpp"      // for LibsemigroupsException
+#include "libsemigroups/knuth-bendix.hpp"   // for KnuthBendix, normal_forms
+#include "libsemigroups/order.hpp"          // for shortlex_compare
+#include "libsemigroups/paths.hpp"          // for Paths
+#include "libsemigroups/present.hpp"        // for add_rule, Presentation
+#include "libsemigroups/word-graph.hpp"     // for WordGraph
+#include "libsemigroups/words.hpp"          // for Inner, Strings, to_str...
 
 #include "rx/ranges.hpp"  // for operator|, to_vector
 

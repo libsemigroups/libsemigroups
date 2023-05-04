@@ -29,15 +29,15 @@
 #include <utility>        // for pair
 #include <vector>         // for vector
 
-#include "adapters.hpp"    // for One
-#include "constants.hpp"   // for UNDEFINED
-#include "debug.hpp"       // for LIBSEMIGROUPS_ASSERT
-#include "exception.hpp"   // for LIBSEMIGROUPS_EXCEPTION
-#include "forest.hpp"      // for Forest
-#include "gabow.hpp"       // for Gabow
-#include "detail/report.hpp"      // for REPORT_DEFAULT
-#include "runner.hpp"      // for Runner
-#include "word-graph.hpp"  // for WordGraph
+#include "adapters.hpp"       // for One
+#include "constants.hpp"      // for UNDEFINED
+#include "debug.hpp"          // for LIBSEMIGROUPS_ASSERT
+#include "detail/report.hpp"  // for REPORT_DEFAULT
+#include "exception.hpp"      // for LIBSEMIGROUPS_EXCEPTION
+#include "forest.hpp"         // for Forest
+#include "gabow.hpp"          // for Gabow
+#include "runner.hpp"         // for Runner
+#include "word-graph.hpp"     // for WordGraph
 
 #include "detail/bruidhinn-traits.hpp"  // for detail::BruidhinnTraits
 

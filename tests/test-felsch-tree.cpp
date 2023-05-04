@@ -20,8 +20,8 @@
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
 #include "libsemigroups/detail/felsch-tree.hpp"  // for FelschTree
+#include "libsemigroups/detail/report.hpp"       // for ReportGuard
 #include "libsemigroups/present.hpp"             // for Presentation
-#include "libsemigroups/detail/report.hpp"              // for ReportGuard
 #include "libsemigroups/types.hpp"               // for word_type
 
 namespace libsemigroups {

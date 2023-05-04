@@ -63,8 +63,8 @@
 #include "detail/bruidhinn-traits.hpp"  // for detail::BruidhinnTraits
 #include "detail/containers.hpp"        // for Array2, StaticTriVector2
 #include "detail/int-range.hpp"         // for detail::IntRange
+#include "detail/stl.hpp"               // for EqualTo
 #include "exception.hpp"                // for LIBSEMIGROUPS_EXCEPTION
-#include "detail/stl.hpp"                      // for EqualTo
 #include "transf.hpp"                   // for Perm
 #include "types.hpp"                    // for SmallestInteger
 

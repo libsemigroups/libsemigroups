@@ -20,7 +20,7 @@
 #include <cstddef>  // for size_t
 #include <cstdint>  // for uint64_t
 
-#include "catch.hpp"                 // for LIBSEMIGROUPS_TEST_CASE
+#include "catch.hpp"                        // for LIBSEMIGROUPS_TEST_CASE
 #include "libsemigroups/detail/report.hpp"  // for ReportGuard
 #include "libsemigroups/schreier-sims-helper.hpp"  // For schreier_sim_helper::intersection
 #include "libsemigroups/schreier-sims.hpp"  // for SchreierSims, SchreierSims<>::ele...

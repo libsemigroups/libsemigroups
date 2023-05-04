@@ -41,6 +41,7 @@
 #include "test-main.hpp"                      // for LIBSEMIGROUPS_TEST_CASE
                                               //
 #include "libsemigroups/constants.hpp"        // for operator==, Max, POSIT...
+#include "libsemigroups/detail/report.hpp"    // for ReportGuard
 #include "libsemigroups/exception.hpp"        // for LibsemigroupsException
 #include "libsemigroups/fpsemi-examples.hpp"  // for partial_transformation...
 #include "libsemigroups/froidure-pin.hpp"     // for FroidurePin
@@ -48,7 +49,6 @@
 #include "libsemigroups/obvinf.hpp"           // for is_obviously_infinite
 #include "libsemigroups/paths.hpp"            // for Paths
 #include "libsemigroups/present.hpp"          // for to_string, add_rule
-#include "libsemigroups/detail/report.hpp"           // for ReportGuard
 #include "libsemigroups/to-froidure-pin.hpp"  // for to_froidure_pin
 #include "libsemigroups/types.hpp"            // for word_type
 #include "libsemigroups/words.hpp"            // for operator""_w

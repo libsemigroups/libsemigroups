@@ -61,13 +61,13 @@
 #include "constants.hpp"        // for UNDEFINED
 #include "debug.hpp"            // for LIBSEMIGROUPS_ASSERT
 #include "deprecated.hpp"       // for LIBSEMIGROUPS_DEPRECATED
+#include "detail/report.hpp"    // for REPORT_DEFAULT, Reporter
+#include "detail/stl.hpp"       // for JoinThreads
+#include "detail/timer.hpp"     // for Timer
 #include "exception.hpp"        // for LIBSEMIGROUPS_EXCEPTION
 #include "felsch-graph.hpp"     // for FelschGraph
 #include "froidure-pin.hpp"     // for FroidurePin
 #include "present.hpp"          // for Presentation, Presentati...
-#include "detail/report.hpp"           // for REPORT_DEFAULT, Reporter
-#include "detail/stl.hpp"              // for JoinThreads
-#include "detail/timer.hpp"            // for Timer
 #include "to-froidure-pin.hpp"  // for make
 #include "to-presentation.hpp"  // for make
 #include "transf.hpp"           // for Transf

@@ -21,13 +21,13 @@
 #include "bench-main.hpp"  // for CATCH_CONFIG_ENABLE_BENCHMARKING
 #include "catch.hpp"       // for REQUIRE, REQUIRE_NOTHROW, REQUIRE_THROWS_AS
 
-#include "libsemigroups/action.hpp"  // for LeftAction
-#include "libsemigroups/bitset.hpp"  // for BitSet
-#include "libsemigroups/bmat.hpp"    // for Lambda
-#include "libsemigroups/bmat8.hpp"   // for BMat8
-#include "libsemigroups/matrix.hpp"  // for BMat<>
+#include "libsemigroups/action.hpp"         // for LeftAction
+#include "libsemigroups/bitset.hpp"         // for BitSet
+#include "libsemigroups/bmat.hpp"           // for Lambda
+#include "libsemigroups/bmat8.hpp"          // for BMat8
 #include "libsemigroups/detail/report.hpp"  // for ReportGuard
-#include "libsemigroups/transf.hpp"  // for Transf, PPerm
+#include "libsemigroups/matrix.hpp"         // for BMat<>
+#include "libsemigroups/transf.hpp"         // for Transf, PPerm
 
 #define FOR_SET_BITS(__bit_int, __nr_bits, __variable) \
   uint_fast32_t block = __bit_int;                     \

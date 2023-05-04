@@ -29,9 +29,9 @@
 #include <utility>    // for hash
 #include <vector>     // for vector
 
-#include "adapters.hpp"  // for Complexity, Degree, etc . . .
-#include "debug.hpp"     // for LIBSEMIGROUPS_ASSERT
-#include "detail/string.hpp"    // for detail::to_string
+#include "adapters.hpp"       // for Complexity, Degree, etc . . .
+#include "debug.hpp"          // for LIBSEMIGROUPS_ASSERT
+#include "detail/string.hpp"  // for detail::to_string
 
 namespace libsemigroups {
   namespace bmat8 {

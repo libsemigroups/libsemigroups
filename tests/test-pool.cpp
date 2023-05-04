@@ -19,9 +19,9 @@
 #include "catch.hpp"      // for REQUIRE
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
-#include "libsemigroups/matrix.hpp"  // for BMat<>
-#include "libsemigroups/detail/pool.hpp"    // for Pool
-#include "libsemigroups/transf.hpp"  // for Transf<>
+#include "libsemigroups/detail/pool.hpp"  // for Pool
+#include "libsemigroups/matrix.hpp"       // for BMat<>
+#include "libsemigroups/transf.hpp"       // for Transf<>
 
 namespace libsemigroups {
   namespace detail {

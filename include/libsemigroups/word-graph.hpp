@@ -44,12 +44,12 @@
 #include "debug.hpp"              // for LIBSEMIGROUPS_ASSERT
 #include "detail/containers.hpp"  // for DynamicArray2
 #include "detail/int-range.hpp"   // for detail::IntRange
+#include "detail/stl.hpp"         // for IsIterator
+#include "detail/uf.hpp"          // for Duf
 #include "exception.hpp"          // for LIBSEMIGROUPS_EXCEPTION
 #include "forest.hpp"             // for Forest
 #include "order.hpp"              // for Order
-#include "detail/stl.hpp"                // for IsIterator
 #include "types.hpp"              // for word_type
-#include "detail/uf.hpp"                 // for Duf
 
 #include <rx/ranges.hpp>
 

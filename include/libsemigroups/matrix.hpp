@@ -30,12 +30,12 @@
 #include <unordered_set>  // for unordered_set
 #include <vector>         // for vector
 
-#include "adapters.hpp"   // for Degree
-#include "bitset.hpp"     // for BitSet
-#include "constants.hpp"  // for POSITIVE_INFINITY
-#include "debug.hpp"      // for LIBSEMIGROUPS_ASSERT
-#include "exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
-#include "detail/string.hpp"     // for detail::to_string
+#include "adapters.hpp"       // for Degree
+#include "bitset.hpp"         // for BitSet
+#include "constants.hpp"      // for POSITIVE_INFINITY
+#include "debug.hpp"          // for LIBSEMIGROUPS_ASSERT
+#include "detail/string.hpp"  // for detail::to_string
+#include "exception.hpp"      // for LIBSEMIGROUPS_EXCEPTION
 
 #include "detail/containers.hpp"  // for StaticVector1
 
