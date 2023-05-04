@@ -40,11 +40,11 @@
 
 #include "constants.hpp"  // for UNDEFINED
 #include "debug.hpp"      // for LIBSEMIGROUPS_ASSERT
-#include "detail/uf.hpp"  // for Duf
 #include "order.hpp"      // for shortlex_compare
 #include "ukkonen.hpp"    // for SuffixTree
 
 #include "detail/int-range.hpp"  // for detail::IntRange
+#include "detail/uf.hpp"         // for Duf
 
 namespace libsemigroups {
 

@@ -23,10 +23,11 @@
 #include "catch.hpp"      // for REQUIRE, REQUIRE_NOTHROW, REQUIRE_THROWS_AS
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
-#include "libsemigroups/detail/report.hpp"    // for ReportGuard
 #include "libsemigroups/fpsemi-examples.hpp"  // for the presentations
 #include "libsemigroups/sims1.hpp"            // for Sims1
 #include "libsemigroups/types.hpp"            // for word_type
+
+#include "libsemigroups/detail/report.hpp"  // for ReportGuard
 
 namespace libsemigroups {
 

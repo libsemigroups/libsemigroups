@@ -19,12 +19,14 @@
 #include <cstddef>  // for size_t
 #include <vector>   // for vector
 
-#include "bmat-data.hpp"                    // for clark_gens
-#include "catch.hpp"                        // for REQUIRE
-#include "libsemigroups/detail/report.hpp"  // for ReportGuard
+#include "bmat-data.hpp"  // for clark_gens
+#include "catch.hpp"      // for REQUIRE
+#include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
+
 #include "libsemigroups/froidure-pin.hpp"  // for FroidurePin<>::element_index_type
 #include "libsemigroups/matrix.hpp"        // for BMat
-#include "test-main.hpp"                   // for LIBSEMIGROUPS_TEST_CASE
+
+#include "libsemigroups/detail/report.hpp"  // for ReportGuard
 
 namespace libsemigroups {
   // Forward declaration

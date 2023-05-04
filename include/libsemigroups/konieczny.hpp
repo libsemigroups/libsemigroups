@@ -19,8 +19,9 @@
 // originally for computing subsemigroups of the boolean matrix monoid.
 
 // TODO(later):
-// 1) exception safety!
-// 3) expose iterators to relevant things in D-classes, in particular elements
+// * exception safety!
+// * expose iterators to relevant things in D-classes, in particular elements
+// * tpp file
 
 #ifndef LIBSEMIGROUPS_KONIECZNY_HPP_
 #define LIBSEMIGROUPS_KONIECZNY_HPP_
@@ -34,15 +35,16 @@
 #include <utility>        // for pair, make_pair
 #include <vector>         // for vector
 
-#include "action.hpp"         // for LeftAction, RightAction
-#include "adapters.hpp"       // for Lambda, etc
-#include "constants.hpp"      // for UNDEFINED
-#include "debug.hpp"          // for LIBSEMIGROUPS_ASSERT
+#include "action.hpp"     // for LeftAction, RightAction
+#include "adapters.hpp"   // for Lambda, etc
+#include "constants.hpp"  // for UNDEFINED
+#include "debug.hpp"      // for LIBSEMIGROUPS_ASSERT
+#include "exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
+#include "runner.hpp"     // for Runner
+
 #include "detail/pool.hpp"    // for detail::Pool
 #include "detail/report.hpp"  // for REPORT_DEFAULT
 #include "detail/timer.hpp"   // for Timer
-#include "exception.hpp"      // for LIBSEMIGROUPS_EXCEPTION
-#include "runner.hpp"         // for Runner
 
 #include "detail/bruidhinn-traits.hpp"  // for BruidhinnTraits
 

@@ -786,6 +786,7 @@ test_all_SOURCES += tests/test-schreier-sims-helper.cpp
 test_all_SOURCES += tests/test-sims1.cpp
 test_all_SOURCES += tests/test-stephen.cpp
 test_all_SOURCES += tests/test-string.cpp
+test_all_SOURCES += tests/test-transf.cpp
 test_all_SOURCES += tests/test-timer.cpp
 test_all_SOURCES += tests/test-to-froidure-pin.cpp
 test_all_SOURCES += tests/test-to-presentation.cpp

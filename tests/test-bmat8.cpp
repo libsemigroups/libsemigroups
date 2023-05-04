@@ -21,11 +21,13 @@
 #include <unordered_set>  // for unordered_set
 #include <vector>         // for vector
 
-#include "catch.hpp"  // for REQUIRE, REQUIRE_THROWS_AS, REQUIRE_NOTHROW
+#include "catch.hpp"      // for REQUIRE, REQUIRE_THROWS_AS, REQUIRE_NOTHROW
+#include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
+
 #include "libsemigroups/bmat8.hpp"         // for BMat8, operator<<
-#include "libsemigroups/detail/timer.hpp"  // for Timer
 #include "libsemigroups/froidure-pin.hpp"  // for FroidurePin
-#include "test-main.hpp"                   // for LIBSEMIGROUPS_TEST_CASE
+
+#include "libsemigroups/detail/timer.hpp"  // for Timer
 
 namespace libsemigroups {
   constexpr bool REPORT = false;

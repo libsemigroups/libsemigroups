@@ -61,9 +61,6 @@
 #include "constants.hpp"        // for UNDEFINED
 #include "debug.hpp"            // for LIBSEMIGROUPS_ASSERT
 #include "deprecated.hpp"       // for LIBSEMIGROUPS_DEPRECATED
-#include "detail/report.hpp"    // for REPORT_DEFAULT, Reporter
-#include "detail/stl.hpp"       // for JoinThreads
-#include "detail/timer.hpp"     // for Timer
 #include "exception.hpp"        // for LIBSEMIGROUPS_EXCEPTION
 #include "felsch-graph.hpp"     // for FelschGraph
 #include "froidure-pin.hpp"     // for FroidurePin
@@ -73,6 +70,10 @@
 #include "transf.hpp"           // for Transf
 #include "types.hpp"            // for word_type, congruence_kind
 #include "word-graph.hpp"       // for WordGraph
+
+#include "detail/report.hpp"  // for REPORT_DEFAULT, Reporter
+#include "detail/stl.hpp"     // for JoinThreads
+#include "detail/timer.hpp"   // for Timer
 
 namespace libsemigroups {
 

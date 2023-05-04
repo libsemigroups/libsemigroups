@@ -24,8 +24,7 @@
 #include "catch.hpp"      // for REQUIRE, SECTION, ...
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
-#include "libsemigroups/cong-pair.hpp"  // for FpSemigroupByPairs
-#include "libsemigroups/detail/string.hpp"  // for to_string of rule_type for debugging
+#include "libsemigroups/cong-pair.hpp"     // for FpSemigroupByPairs
 #include "libsemigroups/fpsemi-intf.hpp"   // for FpSemigroupInterface
 #include "libsemigroups/fpsemi.hpp"        // for FpSemigroup
 #include "libsemigroups/knuth-bendix.hpp"  // for fpsemigroup::KnuthBendix
@@ -33,6 +32,8 @@
 #include "libsemigroups/todd-coxeter.hpp"  // for fpsemigroup::ToddCoxeter
 #include "libsemigroups/transf.hpp"        // for fpsemigroup::ToddCoxeter
 #include "libsemigroups/words.hpp"         // for number_of_words
+
+#include "libsemigroups/detail/string.hpp"  // for to_string of rule_type for debugging
 
 namespace libsemigroups {
   struct LibsemigroupsException;  // Forward declaration

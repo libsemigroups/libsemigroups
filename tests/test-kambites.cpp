@@ -28,8 +28,6 @@
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
 #include "libsemigroups/constants.hpp"          // for UNDEFINED
-#include "libsemigroups/detail/report.hpp"      // for ReportGuard
-#include "libsemigroups/detail/string.hpp"      // for random_string etc
 #include "libsemigroups/froidure-pin-base.hpp"  // for FroidurePinBase
 #include "libsemigroups/kambites.hpp"           // for Kambites
 #include "libsemigroups/knuth-bendix.hpp"       // for KnuthBendix
@@ -37,6 +35,9 @@
 #include "libsemigroups/transf.hpp"  // for LeastTransf
 #include "libsemigroups/types.hpp"   // for tril etc
 #include "libsemigroups/words.hpp"   // for number_of_words
+
+#include "libsemigroups/detail/report.hpp"  // for ReportGuard
+#include "libsemigroups/detail/string.hpp"  // for random_string etc
 
 namespace libsemigroups {
   using namespace rx;

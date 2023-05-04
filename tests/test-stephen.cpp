@@ -36,7 +36,6 @@
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
 #include "libsemigroups/constants.hpp"             // for UNDEFINED
-#include "libsemigroups/detail/report.hpp"         // for ReportGuard
 #include "libsemigroups/exception.hpp"             // for LibsemigroupsExcep...
 #include "libsemigroups/fpsemi-examples.hpp"       // for make, fibonacci_se...
 #include "libsemigroups/order.hpp"                 // for LexicographicalCom...
@@ -46,6 +45,8 @@
 #include "libsemigroups/types.hpp"                 // for word_type
 #include "libsemigroups/word-graph.hpp"            // for WordGraph, ope...
 #include "libsemigroups/words.hpp"                 // for StringToWord, word...
+
+#include "libsemigroups/detail/report.hpp"  // for ReportGuard
 
 namespace libsemigroups {
   namespace {

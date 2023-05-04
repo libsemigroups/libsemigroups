@@ -25,12 +25,13 @@
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
 #include "libsemigroups/constants.hpp"        // for UNDEFINED
-#include "libsemigroups/detail/report.hpp"    // for ReportGuard
 #include "libsemigroups/exception.hpp"        // for LIBSEMIGROUPS_EXCEPTION
 #include "libsemigroups/froidure-pin.hpp"     // for FroidurePin, Froidure...
 #include "libsemigroups/to-froidure-pin.hpp"  // for make
 #include "libsemigroups/transf.hpp"           // for Transf
 #include "libsemigroups/word-graph.hpp"       // for WordGraph
+
+#include "libsemigroups/detail/report.hpp"  // for ReportGuard
 
 namespace libsemigroups {
 

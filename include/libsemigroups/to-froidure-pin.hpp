@@ -23,12 +23,12 @@
 #include <type_traits>  // for enable_if_t, is_base_of
 
 #include "debug.hpp"       // for LIBSEMIGROUPS_ASSERT
-#include "detail/tce.hpp"  // for TCE
 #include "exception.hpp"   // for LIBSEMIGROUPS_EXCEPTION
 #include "word-graph.hpp"  // for WordGraph
 
 #include "detail/kbe.hpp"  // for KBE
 #include "detail/ke.hpp"   // for KE
+#include "detail/tce.hpp"  // for TCE
 
 namespace libsemigroups {
   class FroidurePinBase;  // forward decl

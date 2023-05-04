@@ -43,15 +43,16 @@
 #include "catch.hpp"      // for AssertionHandler, oper...
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
-#include "libsemigroups/constants.hpp"      // for operator==, operator!=
+#include "libsemigroups/constants.hpp"     // for operator==, operator!=
+#include "libsemigroups/exception.hpp"     // for LibsemigroupsException
+#include "libsemigroups/knuth-bendix.hpp"  // for KnuthBendix, normal_forms
+#include "libsemigroups/order.hpp"         // for shortlex_compare
+#include "libsemigroups/paths.hpp"         // for Paths
+#include "libsemigroups/present.hpp"       // for add_rule, Presentation
+#include "libsemigroups/word-graph.hpp"    // for WordGraph
+#include "libsemigroups/words.hpp"         // for Inner, to_strings
+
 #include "libsemigroups/detail/report.hpp"  // for ReportGuard
-#include "libsemigroups/exception.hpp"      // for LibsemigroupsException
-#include "libsemigroups/knuth-bendix.hpp"   // for KnuthBendix, normal_forms
-#include "libsemigroups/order.hpp"          // for shortlex_compare
-#include "libsemigroups/paths.hpp"          // for Paths
-#include "libsemigroups/present.hpp"        // for add_rule, Presentation
-#include "libsemigroups/word-graph.hpp"     // for WordGraph
-#include "libsemigroups/words.hpp"          // for Inner, to_strings
 
 #include "rx/ranges.hpp"  // for operator|, Inner, to_v...
 

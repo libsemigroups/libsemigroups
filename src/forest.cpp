@@ -24,10 +24,11 @@
 #include <iosfwd>            // for ostream
 #include <vector>            // for vector, allocator, operator==
 
-#include "libsemigroups/constants.hpp"      // for Max, operator!=, operator==
+#include "libsemigroups/constants.hpp"  // for Max, operator!=, operator==
+#include "libsemigroups/exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
+#include "libsemigroups/types.hpp"      // for word_type
+
 #include "libsemigroups/detail/string.hpp"  // for operator<<
-#include "libsemigroups/exception.hpp"      // for LIBSEMIGROUPS_EXCEPTION
-#include "libsemigroups/types.hpp"          // for word_type
 
 namespace libsemigroups {
   Forest::~Forest() = default;

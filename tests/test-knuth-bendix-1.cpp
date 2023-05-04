@@ -52,8 +52,6 @@
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
 #include "libsemigroups/constants.hpp"        // for operator==, operator!=
-#include "libsemigroups/detail/kbe.hpp"       // for KBE
-#include "libsemigroups/detail/report.hpp"    // for ReportGuard
 #include "libsemigroups/exception.hpp"        // for LibsemigroupsException
 #include "libsemigroups/froidure-pin.hpp"     // for FroidurePin
 #include "libsemigroups/knuth-bendix.hpp"     // for KnuthBendix, normal_f...
@@ -65,6 +63,9 @@
 #include "libsemigroups/types.hpp"            // for word_type
 #include "libsemigroups/word-graph.hpp"       // for WordGraph
 #include "libsemigroups/words.hpp"            // for Inner, to_strings
+
+#include "libsemigroups/detail/kbe.hpp"     // for KBE
+#include "libsemigroups/detail/report.hpp"  // for ReportGuard
 
 #include "rx/ranges.hpp"  // for operator|, to_vector
 

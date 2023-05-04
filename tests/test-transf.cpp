@@ -20,11 +20,12 @@
 #include <cstdint>  // for uint32_t, int32_t, int64_t
 #include <vector>   // for vector
 
-#include "catch.hpp"                 // for TEST_CASE
+#include "catch.hpp"      // for TEST_CASE
+#include "test-main.hpp"  // LIBSEMIGROUPS_TEST_CASE
+
 #include "libsemigroups/config.hpp"  // for LIBSEMIGROUPS_SIZEOF_VO...
 #include "libsemigroups/transf.hpp"  // for Transf<>
 #include "libsemigroups/types.hpp"   // for SmallestInteger, Smalle...
-#include "test-main.hpp"             // LIBSEMIGROUPS_TEST_CASE
 
 namespace libsemigroups {
   struct LibsemigroupsException;

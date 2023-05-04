@@ -31,10 +31,11 @@
 #include <type_traits>  // for false_type
 #include <utility>      // for hash
 
-#include "config.hpp"         // for LIBSEMIGROUPS_SIZEOF_VOID_P
-#include "debug.hpp"          // for LIBSEMIGROUPS_ASSERT
+#include "config.hpp"     // for LIBSEMIGROUPS_SIZEOF_VOID_P
+#include "debug.hpp"      // for LIBSEMIGROUPS_ASSERT
+#include "exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
+
 #include "detail/string.hpp"  // for detail::to_string
-#include "exception.hpp"      // for LIBSEMIGROUPS_EXCEPTION
 
 namespace libsemigroups {
 

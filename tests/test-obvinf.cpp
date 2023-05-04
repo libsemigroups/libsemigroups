@@ -20,10 +20,10 @@
 
 #include <iostream>
 
-#include "libsemigroups/obvinf.hpp"
-
 #include "catch.hpp"  // for REQUIRE, REQUIRE_THROWS_AS, REQUI...
 #include "test-main.hpp"
+
+#include "libsemigroups/obvinf.hpp"
 
 namespace libsemigroups {
   // TODO(v2): uncomment these tests or remove them

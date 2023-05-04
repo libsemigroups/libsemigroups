@@ -27,7 +27,6 @@
 
 #include "libsemigroups/bipart.hpp"           // for Bipartition
 #include "libsemigroups/constants.hpp"        // for operator!=, operator==
-#include "libsemigroups/detail/report.hpp"    // for ReportGuard
 #include "libsemigroups/exception.hpp"        // for LibsemigroupsException
 #include "libsemigroups/froidure-pin.hpp"     // for FroidurePin
 #include "libsemigroups/present.hpp"          // for Presentation, change_...
@@ -35,6 +34,7 @@
 #include "libsemigroups/types.hpp"            // for word_type
 
 #include "libsemigroups/detail/containers.hpp"  // for StaticVector1, operat...
+#include "libsemigroups/detail/report.hpp"      // for ReportGuard
 
 namespace libsemigroups {
 

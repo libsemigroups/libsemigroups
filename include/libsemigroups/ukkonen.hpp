@@ -41,13 +41,15 @@
 #include <utility>    // for pair, make_pair
 #include <vector>     // for vector
 
-#include "constants.hpp"      // for Undefined, UNDE...
-#include "debug.hpp"          // for LIBSEMIGROUPS_ASSERT
+#include "constants.hpp"  // for Undefined, UNDE...
+#include "debug.hpp"      // for LIBSEMIGROUPS_ASSERT
+#include "exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
+#include "types.hpp"      // for word_type, lett..
+
 #include "detail/string.hpp"  // for maximum_common_prefix
-#include "exception.hpp"      // for LIBSEMIGROUPS_EXCEPTION
-#include "types.hpp"          // for word_type, lett..
 
 namespace libsemigroups {
+
   //! Defined in ``ukkonen.hpp``.
   //!
   //! This class implements Ukkonen's algorithm for constructing a generalised

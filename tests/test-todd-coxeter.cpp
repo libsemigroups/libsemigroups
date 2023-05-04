@@ -23,8 +23,6 @@
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
 #include "libsemigroups/bmat8.hpp"
-#include "libsemigroups/detail/report.hpp"    // for ReportGuard
-#include "libsemigroups/detail/tce.hpp"       // for TCE
 #include "libsemigroups/fpsemi-examples.hpp"  // for dual_symmetric_...
 #include "libsemigroups/froidure-pin.hpp"
 #include "libsemigroups/obvinf.hpp"           // for is_obviously_infinite
@@ -37,6 +35,9 @@
 #include "libsemigroups/transf.hpp"           // for Transf
 #include "libsemigroups/words.hpp"            // for cbegin_wislo
 #include "libsemigroups/words.hpp"            // for operator"" _w
+
+#include "libsemigroups/detail/report.hpp"  // for ReportGuard
+#include "libsemigroups/detail/tce.hpp"     // for TCE
 
 namespace libsemigroups {
 

@@ -26,12 +26,14 @@
 #include <cstddef>  // for size_t
 #include <cstdint>  // for uint64_t
 
-#include "catch.hpp"                        // for LIBSEMIGROUPS_TEST_CASE
+#include "catch.hpp"      // for LIBSEMIGROUPS_TEST_CASE
+#include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
+
 #include "libsemigroups/config.hpp"         // for LIBSEMIGROUPS_HPCOMBI_ENABLED
-#include "libsemigroups/detail/report.hpp"  // for ReportGuard
 #include "libsemigroups/schreier-sims.hpp"  // for SchreierSims, SchreierSims<>::ele...
 #include "libsemigroups/transf.hpp"         // for Perm
-#include "test-main.hpp"                    // for LIBSEMIGROUPS_TEST_CASE
+
+#include "libsemigroups/detail/report.hpp"  // for ReportGuard
 
 namespace libsemigroups {
   struct LibsemigroupsException;

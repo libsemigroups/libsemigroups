@@ -22,15 +22,15 @@
 #include <cstdint>    // for uint64_t
 #include <vector>     // for vector
 
-#include "libsemigroups/constants.hpp"      // for Undefined, Max, UNDEF...
-#include "libsemigroups/debug.hpp"          // for LIBSEMIGROUPS_ASSERT
-#include "libsemigroups/detail/report.hpp"  // for REPORT_DEFAULT, Reporter
-#include "libsemigroups/detail/string.hpp"  // for group_digits
-#include "libsemigroups/exception.hpp"      // for LIBSEMIGROUPS_EXCEPTION
-#include "libsemigroups/runner.hpp"         // for Runner
-#include "libsemigroups/types.hpp"          // for letter_type, word_type
+#include "libsemigroups/constants.hpp"  // for Undefined, Max, UNDEF...
+#include "libsemigroups/debug.hpp"      // for LIBSEMIGROUPS_ASSERT
+#include "libsemigroups/exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
+#include "libsemigroups/runner.hpp"     // for Runner
+#include "libsemigroups/types.hpp"      // for letter_type, word_type
 
 #include "libsemigroups/detail/containers.hpp"  // for DynamicArray2
+#include "libsemigroups/detail/report.hpp"      // for REPORT_DEFAULT, Reporter
+#include "libsemigroups/detail/string.hpp"      // for group_digits
 
 namespace libsemigroups {
   using element_index_type = FroidurePinBase::element_index_type;

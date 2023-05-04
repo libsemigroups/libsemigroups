@@ -64,9 +64,10 @@
 #include <utility>  // for pair
 #include <vector>   // for vector
 
-#include "config.hpp"     // for LIBSEMIGROUPS_EIGEN_ENABLED
+#include "config.hpp"  // for LIBSEMIGROUPS_EIGEN_ENABLED
+#include "types.hpp"   // for word_type etc
+
 #include "detail/uf.hpp"  // for Duf
-#include "types.hpp"      // for word_type etc
 
 #ifdef LIBSEMIGROUPS_EIGEN_ENABLED
 #if defined(__clang__)

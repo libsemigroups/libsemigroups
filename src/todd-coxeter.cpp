@@ -21,8 +21,9 @@
 
 #include "libsemigroups/todd-coxeter.hpp"
 
-#include "libsemigroups/detail/report.hpp"
 #include "libsemigroups/obvinf.hpp"
+
+#include "libsemigroups/detail/report.hpp"
 
 namespace libsemigroups {
   using node_type = typename ToddCoxeter::node_type;

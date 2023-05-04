@@ -23,8 +23,9 @@
 
 #include "fmt/format.h"  // for everything
 
-#include "libsemigroups/config.hpp"         // for LIBSEMIGROUPS_FMT_ENABLED
-#include "libsemigroups/debug.hpp"          // for LIBSEMIGROUPS_ASSERT
+#include "libsemigroups/config.hpp"  // for LIBSEMIGROUPS_FMT_ENABLED
+#include "libsemigroups/debug.hpp"   // for LIBSEMIGROUPS_ASSERT
+
 #include "libsemigroups/detail/string.hpp"  // for unicode_string_length, wrap
 
 namespace libsemigroups {

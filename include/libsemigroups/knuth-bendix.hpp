@@ -22,9 +22,6 @@
 // TODO:
 // * noexcept
 // * fix doc
-// * remove VERBOSE
-// * rewrite exceptions etc
-// * redo reporting
 
 #ifndef LIBSEMIGROUPS_KNUTH_BENDIX_HPP_
 #define LIBSEMIGROUPS_KNUTH_BENDIX_HPP_
@@ -224,10 +221,10 @@ namespace libsemigroups {
       Settings& operator=(Settings&&) noexcept      = default;
 
       // TODO remove _
-      size_t           _check_confluence_interval;
-      size_t           _max_overlap;
-      size_t           _max_rules;
-      options::overlap _overlap_policy;
+      size_t           check_confluence_interval;
+      size_t           max_overlap;
+      size_t           max_rules;
+      options::overlap overlap_policy;
     } _settings;
 
     mutable struct Stats {
@@ -393,13 +390,13 @@ namespace libsemigroups {
     //!
     //! \sa \ref run.
     KnuthBendix& check_confluence_interval(size_t val) {
-      _settings._check_confluence_interval = val;
+      _settings.check_confluence_interval = val;
       return *this;
     }
 
     // TODO doc
     [[nodiscard]] size_t check_confluence_interval() const noexcept {
-      return _settings._check_confluence_interval;
+      return _settings.check_confluence_interval;
     }
 
     //! Set the maximum length of overlaps to be considered.
@@ -422,13 +419,13 @@ namespace libsemigroups {
     //!
     //! \sa \ref run.
     KnuthBendix& max_overlap(size_t val) {
-      _settings._max_overlap = val;
+      _settings.max_overlap = val;
       return *this;
     }
 
     // TODO doc
     [[nodiscard]] size_t max_overlap() const noexcept {
-      return _settings._max_overlap;
+      return _settings.max_overlap;
     }
 
     //! Set the maximum number of rules.
@@ -451,13 +448,13 @@ namespace libsemigroups {
     //!
     //! \sa \ref run.
     KnuthBendix& max_rules(size_t val) {
-      _settings._max_rules = val;
+      _settings.max_rules = val;
       return *this;
     }
 
     // TODO doc
     [[nodiscard]] size_t max_rules() const noexcept {
-      return _settings._max_rules;
+      return _settings.max_rules;
     }
 
     //! Set the overlap policy.
@@ -478,7 +475,7 @@ namespace libsemigroups {
 
     // TODO doc
     [[nodiscard]] options::overlap overlap_policy() const noexcept {
-      return _settings._overlap_policy;
+      return _settings.overlap_policy;
     }
 
     //////////////////////////////////////////////////////////////////////////
@@ -702,15 +699,7 @@ namespace libsemigroups {
     [[nodiscard]] std::string normal_form(std::string const& w);
 
    private:
-    // TODO to cpp file
-    void throw_if_started() const {
-      if (started()) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "the presentation cannot be changed after Knuth-Bendix has "
-            "started, maybe try `init` instead?");
-      }
-    }
-
+    void throw_if_started() const;
     void report_rules() const;
     void stats_check_point() const;
 
@@ -757,7 +746,7 @@ namespace libsemigroups {
 
     void deactivate_all_rules();
 
-    [[nodiscard]] size_t max_active_word_length();
+    [[nodiscard]] size_t max_active_word_length() const;
 
     //////////////////////////////////////////////////////////////////////////
     // Runner - pure virtual member functions - private

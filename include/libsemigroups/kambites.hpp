@@ -39,21 +39,22 @@
 #include <utility>        // for pair
 #include <vector>         // for vector
 
-#include "adapters.hpp"                  // for One
-#include "cong-intf.hpp"                 // for CongruenceInterface
-#include "constants.hpp"                 // for UNDEFINED, POSITIVE_INFINITY
-#include "debug.hpp"                     // for LIBSEMIGROUPS_DEBUG
+#include "adapters.hpp"         // for One
+#include "cong-intf.hpp"        // for CongruenceInterface
+#include "constants.hpp"        // for UNDEFINED, POSITIVE_INFINITY
+#include "debug.hpp"            // for LIBSEMIGROUPS_DEBUG
+#include "exception.hpp"        // for LIBSEMIGROUPS_EXCEPTION
+#include "froidure-pin.hpp"     // for FroidurePin, FroidurePinTraits
+#include "order.hpp"            // for lexicographical_compare
+#include "present.hpp"          // for Presentation
+#include "to-presentation.hpp"  // for to_presentation
+#include "types.hpp"            // for word_type, tril, letter_type
+#include "ukkonen.hpp"          // for Ukkonen
+#include "words.hpp"            // for to_strings
+
 #include "detail/multi-string-view.hpp"  // for MultiStringView
 #include "detail/string.hpp"             // for is_prefix
 #include "detail/uf.hpp"                 // for Duf<>
-#include "exception.hpp"                 // for LIBSEMIGROUPS_EXCEPTION
-#include "froidure-pin.hpp"              // for FroidurePin, FroidurePinTraits
-#include "order.hpp"                     // for lexicographical_compare
-#include "present.hpp"                   // for Presentation
-#include "to-presentation.hpp"           // for to_presentation
-#include "types.hpp"                     // for word_type, tril, letter_type
-#include "ukkonen.hpp"                   // for Ukkonen
-#include "words.hpp"                     // for to_strings
 
 namespace libsemigroups {
 

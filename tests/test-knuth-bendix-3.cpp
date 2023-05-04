@@ -32,26 +32,27 @@
 //
 // 6: contains tests for KnuthBendix using word_type presentations
 
-#include <cstddef>                          // for size_t
-#include <iosfwd>                           // for string
-#include <string>                           // for allocator, basic_string
-#include <utility>                          // for move
-#include <vector>                           // for vector, operator==
-                                            //
-#include "catch.hpp"                        // for operator""_catch_sr
-#include "test-main.hpp"                    // for LIBSEMIGROUPS_TEST_CASE
-                                            //
-#include "libsemigroups/constants.hpp"      // for operator==, PositiveIn...
+#include <cstddef>  // for size_t
+#include <iosfwd>   // for string
+#include <string>   // for allocator, basic_string
+#include <utility>  // for move
+#include <vector>   // for vector, operator==
+
+#include "catch.hpp"      // for operator""_catch_sr
+#include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
+
+#include "libsemigroups/constants.hpp"     // for operator==, PositiveIn...
+#include "libsemigroups/exception.hpp"     // for LibsemigroupsException
+#include "libsemigroups/knuth-bendix.hpp"  // for KnuthBendix, normal_forms
+#include "libsemigroups/obvinf.hpp"        // for is_obviously_infinite
+#include "libsemigroups/order.hpp"         // for shortlex_compare
+#include "libsemigroups/paths.hpp"         // for Paths
+#include "libsemigroups/present.hpp"       // for add_rule, Presentation
+#include "libsemigroups/ranges.hpp"        // for equal
+#include "libsemigroups/word-graph.hpp"    // for WordGraph
+#include "libsemigroups/words.hpp"         // for Inner, to_strings, Str...
+
 #include "libsemigroups/detail/report.hpp"  // for ReportGuard
-#include "libsemigroups/exception.hpp"      // for LibsemigroupsException
-#include "libsemigroups/knuth-bendix.hpp"   // for KnuthBendix, normal_forms
-#include "libsemigroups/obvinf.hpp"         // for is_obviously_infinite
-#include "libsemigroups/order.hpp"          // for shortlex_compare
-#include "libsemigroups/paths.hpp"          // for Paths
-#include "libsemigroups/present.hpp"        // for add_rule, Presentation
-#include "libsemigroups/ranges.hpp"         // for equal
-#include "libsemigroups/word-graph.hpp"     // for WordGraph
-#include "libsemigroups/words.hpp"          // for Inner, to_strings, Str...
 
 #include "rx/ranges.hpp"  // for operator|, to_vector
 

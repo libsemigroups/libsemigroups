@@ -20,8 +20,9 @@
 
 #include <algorithm>  // for reverse
 
+#include "libsemigroups/exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
+
 #include "libsemigroups/detail/string.hpp"  // for detail::to_string
-#include "libsemigroups/exception.hpp"      // for LIBSEMIGROUPS_EXCEPTION
 
 namespace libsemigroups {
 

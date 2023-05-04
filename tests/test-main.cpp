@@ -35,6 +35,7 @@
 #include "catch.hpp"  // for Colour, Colour::Code::BrightRed, CATCH_REGISTER...
 
 #include "libsemigroups/config.hpp"  // for LIBSEMIGROUPS_BACKWARD_ENABLED
+
 #include "libsemigroups/detail/string.hpp"  // for to_string, unicode_string_length
 #include "libsemigroups/detail/timer.hpp"  // for Timer
 

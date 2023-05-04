@@ -24,13 +24,14 @@
 
 #include <cstddef>  // for size_t
 
-#include "catch.hpp"                           // for REQUIRE
+#include "catch.hpp"                       // for REQUIRE
+#include "libsemigroups/froidure-pin.hpp"  // for FroidurePin
+#include "libsemigroups/hpcombi.hpp"       // for PTransf16, ...
+#include "libsemigroups/transf.hpp"        // for Transf<>
+#include "test-main.hpp"                   // for LIBSEMIGROUPS_TEST_CASE
+
 #include "libsemigroups/detail/int-range.hpp"  // for detail::IntRange
 #include "libsemigroups/detail/report.hpp"     // for ReportGuard
-#include "libsemigroups/froidure-pin.hpp"      // for FroidurePin
-#include "libsemigroups/hpcombi.hpp"           // for PTransf16, ...
-#include "libsemigroups/transf.hpp"            // for Transf<>
-#include "test-main.hpp"                       // for LIBSEMIGROUPS_TEST_CASE
 
 using namespace HPCombi;
 

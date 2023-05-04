@@ -39,17 +39,18 @@
 #include <utility>        // for pair
 #include <vector>         // for vector
 
-#include "config.hpp"             // for LIBSEMIGROUPS_EIGEN_EN...
-#include "constants.hpp"          // for UNDEFINED
-#include "debug.hpp"              // for LIBSEMIGROUPS_ASSERT
+#include "config.hpp"     // for LIBSEMIGROUPS_EIGEN_EN...
+#include "constants.hpp"  // for UNDEFINED
+#include "debug.hpp"      // for LIBSEMIGROUPS_ASSERT
+#include "exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
+#include "forest.hpp"     // for Forest
+#include "order.hpp"      // for Order
+#include "types.hpp"      // for word_type
+
 #include "detail/containers.hpp"  // for DynamicArray2
-#include "detail/int-range.hpp"   // for detail::IntRange
+#include "detail/int-range.hpp"   // for IntRange
 #include "detail/stl.hpp"         // for IsIterator
 #include "detail/uf.hpp"          // for Duf
-#include "exception.hpp"          // for LIBSEMIGROUPS_EXCEPTION
-#include "forest.hpp"             // for Forest
-#include "order.hpp"              // for Order
-#include "types.hpp"              // for word_type
 
 #include <rx/ranges.hpp>
 

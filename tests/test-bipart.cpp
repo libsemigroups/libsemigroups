@@ -26,6 +26,7 @@
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
 #include "libsemigroups/bipart.hpp"  // for Bipartition
+
 namespace libsemigroups {
   struct LibsemigroupsException;
   namespace {

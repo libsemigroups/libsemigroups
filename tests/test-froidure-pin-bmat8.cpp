@@ -21,12 +21,13 @@
 #include <cstddef>  // for size_t
 #include <vector>   // for vector
 
-#include "catch.hpp"                       // for LIBSEMIGROUPS_TEST_CASE
+#include "catch.hpp"  // for LIBSEMIGROUPS_TEST_CASE
+#include "test-main.hpp"
+
 #include "libsemigroups/bmat8.hpp"         // for BMat8
 #include "libsemigroups/config.hpp"        // for LIBSEMIGROUPS_SIZEOF_VO...
 #include "libsemigroups/froidure-pin.hpp"  // for FroidurePin, FroidurePi...
 #include "libsemigroups/types.hpp"         // for word_type
-#include "test-main.hpp"
 
 namespace libsemigroups {
   struct LibsemigroupsException;

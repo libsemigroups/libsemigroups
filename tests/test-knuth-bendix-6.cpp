@@ -32,16 +32,15 @@
 //
 // 6: contains tests for KnuthBendix.
 
-#include <cstddef>                            // for size_t
-#include <string>                             // for basic_string, char_traits
-#include <utility>                            // for move
-#include <vector>                             // for vector
-                                              //
-#include "catch.hpp"                          // for operator""_catch_sr
-#include "test-main.hpp"                      // for LIBSEMIGROUPS_TEST_CASE
-                                              //
+#include <cstddef>  // for size_t
+#include <string>   // for basic_string, char_traits
+#include <utility>  // for move
+#include <vector>   // for vector
+
+#include "catch.hpp"      // for operator""_catch_sr
+#include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
+
 #include "libsemigroups/constants.hpp"        // for operator==, Max, POSIT...
-#include "libsemigroups/detail/report.hpp"    // for ReportGuard
 #include "libsemigroups/exception.hpp"        // for LibsemigroupsException
 #include "libsemigroups/fpsemi-examples.hpp"  // for partial_transformation...
 #include "libsemigroups/froidure-pin.hpp"     // for FroidurePin
@@ -52,6 +51,8 @@
 #include "libsemigroups/to-froidure-pin.hpp"  // for to_froidure_pin
 #include "libsemigroups/types.hpp"            // for word_type
 #include "libsemigroups/words.hpp"            // for operator""_w
+
+#include "libsemigroups/detail/report.hpp"  // for ReportGuard
 
 namespace libsemigroups {
   congruence_kind constexpr twosided = congruence_kind::twosided;
