@@ -72,6 +72,7 @@ def add_plot(xml_fnam):
         p = plt.plot(X, Y, "x", label=label)
         plt.plot(X, [y / 2 for y in Y], "-", color=p[0].get_color())
 
+    plt.yscale("log")
     plt.xticks(range(0, n + 8, 8))
     # times in nanoseconds
     t = "milliseconds"

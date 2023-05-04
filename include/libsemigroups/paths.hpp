@@ -22,7 +22,6 @@
 
 // TODO:
 // * doc
-// * move adjacency matrix stuff in here or into action_digraph namespace
 // * check code coverage
 
 #ifndef LIBSEMIGROUPS_PATHS_HPP_

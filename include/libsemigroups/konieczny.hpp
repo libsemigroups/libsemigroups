@@ -151,8 +151,8 @@ namespace libsemigroups {
   //! https://www.sciencedirect.com/science/article/pii/S0747717108800570
   template <typename TElementType,
             typename TTraits = KoniecznyTraits<TElementType>>
-  class Konieczny final : public Runner,
-                          private detail::BruidhinnTraits<TElementType> {
+  class Konieczny : public Runner,
+                    private detail::BruidhinnTraits<TElementType> {
     // pointers are not currently supported
     static_assert(!std::is_pointer<TElementType>::value,
                   "Pointer types are not currently supported by Konieczny");
