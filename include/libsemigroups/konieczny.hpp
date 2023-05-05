@@ -22,6 +22,8 @@
 // * exception safety!
 // * expose iterators to relevant things in D-classes, in particular elements
 // * tpp file
+// TODO(now);
+// * rename _NC mem fns
 
 #ifndef LIBSEMIGROUPS_KONIECZNY_HPP_
 #define LIBSEMIGROUPS_KONIECZNY_HPP_
@@ -43,7 +45,7 @@
 #include "runner.hpp"     // for Runner
 
 #include "detail/pool.hpp"    // for detail::Pool
-#include "detail/report.hpp"  // for REPORT_DEFAULT
+#include "detail/report.hpp"  // for report_default
 #include "detail/timer.hpp"   // for Timer
 
 #include "detail/bruidhinn-traits.hpp"  // for BruidhinnTraits
@@ -53,18 +55,17 @@ namespace libsemigroups {
   //!
   //! This is a traits class for use with Konieczny.
   //!
-  //! \tparam TElementType the type of the elements.
+  //! \tparam Element the type of the elements.
   //!
   //! \sa Konieczny
-  template <typename TElementType>
+  template <typename Element>
   struct KoniecznyTraits {
     //! The type of the elements of a Konieczny instance with const removed.
-    using element_type =
-        typename detail::BruidhinnTraits<TElementType>::value_type;
+    using element_type = typename detail::BruidhinnTraits<Element>::value_type;
 
     //! The type of const elements of a Konieczny instance.
     using const_element_type =
-        typename detail::BruidhinnTraits<TElementType>::const_value_type;
+        typename detail::BruidhinnTraits<Element>::const_value_type;
 
     //! Alias for \ref LambdaValue with template parameter \ref
     //! element_type.
@@ -140,10 +141,10 @@ namespace libsemigroups {
   //! \f$\mathscr{D}\f$-classes, and frames for each
   //! \f$\mathscr{D}\f$-class are known.
   //!
-  //! \tparam TElementType the type of the elements of the semigroup (must not
+  //! \tparam Element the type of the elements of the semigroup (must not
   //! be a pointer).
   //!
-  //! \tparam TTraits the type of a traits class with the requirements of
+  //! \tparam Traits the type of a traits class with the requirements of
   //! KoniecznyTraits.
   //!
   //! \sa KoniecznyTraits and DClass
@@ -151,25 +152,24 @@ namespace libsemigroups {
   //! [here]: https://link.springer.com/article/10.1007/BF02573672
   //! [this]:
   //! https://www.sciencedirect.com/science/article/pii/S0747717108800570
-  template <typename TElementType,
-            typename TTraits = KoniecznyTraits<TElementType>>
-  class Konieczny : public Runner,
-                    private detail::BruidhinnTraits<TElementType> {
+  template <typename Element, typename Traits = KoniecznyTraits<Element>>
+  class Konieczny : public Runner, private detail::BruidhinnTraits<Element> {
     // pointers are not currently supported
-    static_assert(!std::is_pointer<TElementType>::value,
+    static_assert(!std::is_pointer_v<Element>,
                   "Pointer types are not currently supported by Konieczny");
+
     ////////////////////////////////////////////////////////////////////////
     // Konieczny - aliases - private
     ////////////////////////////////////////////////////////////////////////
 
     using internal_element_type =
-        typename detail::BruidhinnTraits<TElementType>::internal_value_type;
-    using internal_const_element_type = typename detail::BruidhinnTraits<
-        TElementType>::internal_const_value_type;
-    using internal_const_reference = typename detail::BruidhinnTraits<
-        TElementType>::internal_const_reference;
+        typename detail::BruidhinnTraits<Element>::internal_value_type;
+    using internal_const_element_type =
+        typename detail::BruidhinnTraits<Element>::internal_const_value_type;
+    using internal_const_reference =
+        typename detail::BruidhinnTraits<Element>::internal_const_reference;
     using internal_reference =
-        typename detail::BruidhinnTraits<TElementType>::internal_reference;
+        typename detail::BruidhinnTraits<Element>::internal_reference;
 
     using PairHash = Hash<std::pair<size_t, size_t>>;
 
@@ -179,14 +179,14 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////
 
     //! The type of elements.
-    using element_type = typename TTraits::element_type;
+    using element_type = typename Traits::element_type;
 
     //! The type of const elements.
-    using const_element_type = typename TTraits::const_element_type;
+    using const_element_type = typename Traits::const_element_type;
 
     //! Type of element const references.
     using const_reference =
-        typename detail::BruidhinnTraits<TElementType>::const_reference;
+        typename detail::BruidhinnTraits<Element>::const_reference;
 
     //! Type of indices of \f$\mathscr{D}\f$-classes.
     //!
@@ -194,43 +194,43 @@ namespace libsemigroups {
     using D_class_index_type = size_t;
 
     //! The type of lambda values.
-    using lambda_value_type = typename TTraits::lambda_value_type;
+    using lambda_value_type = typename Traits::lambda_value_type;
 
     //! The type of the orbit of the lambda values.
-    using lambda_orb_type = typename TTraits::lambda_orb_type;
+    using lambda_orb_type = typename Traits::lambda_orb_type;
 
     //! The type of rho values.
-    using rho_value_type = typename TTraits::rho_value_type;
+    using rho_value_type = typename Traits::rho_value_type;
 
     //! The type of the orbit of the rho values.
-    using rho_orb_type = typename TTraits::rho_orb_type;
+    using rho_orb_type = typename Traits::rho_orb_type;
 
     //! \copydoc libsemigroups::Degree
-    using Degree = typename TTraits::Degree;
+    using Degree = typename Traits::Degree;
 
     //! \copydoc libsemigroups::EqualTo
-    using EqualTo = typename TTraits::EqualTo;
+    using EqualTo = typename Traits::EqualTo;
 
     //! \copydoc libsemigroups::Lambda
-    using Lambda = typename TTraits::Lambda;
+    using Lambda = typename Traits::Lambda;
 
     //! \copydoc libsemigroups::Less
-    using Less = typename TTraits::Less;
+    using Less = typename Traits::Less;
 
     //! \copydoc libsemigroups::One
-    using One = typename TTraits::One;
+    using One = typename Traits::One;
 
     //! \copydoc libsemigroups::Product
-    using Product = typename TTraits::Product;
+    using Product = typename Traits::Product;
 
     //! \copydoc libsemigroups::Rank
-    using Rank = typename TTraits::Rank;
+    using Rank = typename Traits::Rank;
 
     //! \copydoc libsemigroups::Rho
-    using Rho = typename TTraits::Rho;
+    using Rho = typename Traits::Rho;
 
     //! \copydoc libsemigroups::Swap
-    using Swap = typename TTraits::Swap;
+    using Swap = typename Traits::Swap;
 
    private:
     ////////////////////////////////////////////////////////////////////////
@@ -240,7 +240,7 @@ namespace libsemigroups {
     using lambda_orb_index_type    = typename lambda_orb_type::index_type;
     using rho_orb_index_type       = typename rho_orb_type::index_type;
     using rank_type                = size_t;
-    using rank_state_type          = typename TTraits::rank_state_type;
+    using rank_state_type          = typename Traits::rank_state_type;
     using left_indices_index_type  = size_t;
     using right_indices_index_type = size_t;
 
@@ -248,13 +248,13 @@ namespace libsemigroups {
     // Konieczny - internal structs - private
     ////////////////////////////////////////////////////////////////////////
 
-    struct InternalHash : private detail::BruidhinnTraits<TElementType> {
+    struct InternalHash : private detail::BruidhinnTraits<Element> {
       size_t operator()(internal_const_element_type x) const {
-        return Hash<TElementType>()(this->to_external_const(x));
+        return Hash<Element>()(this->to_external_const(x));
       }
     };
 
-    struct InternalEqualTo : private detail::BruidhinnTraits<TElementType> {
+    struct InternalEqualTo : private detail::BruidhinnTraits<Element> {
       bool operator()(internal_const_reference x,
                       internal_const_reference y) const {
         return EqualTo()(this->to_external_const(x),
@@ -262,14 +262,14 @@ namespace libsemigroups {
       }
     };
 
-    struct InternalLess : private detail::BruidhinnTraits<TElementType> {
+    struct InternalLess : private detail::BruidhinnTraits<Element> {
       bool operator()(internal_const_reference x,
                       internal_const_reference y) const {
         return Less()(this->to_external_const(x), this->to_external_const(y));
       }
     };
 
-    struct InternalVecEqualTo : private detail::BruidhinnTraits<TElementType> {
+    struct InternalVecEqualTo : private detail::BruidhinnTraits<Element> {
       size_t operator()(std::vector<internal_element_type> const& x,
                         std::vector<internal_element_type> const& y) const {
         LIBSEMIGROUPS_ASSERT(x.size() == y.size());
@@ -277,7 +277,7 @@ namespace libsemigroups {
       }
     };
 
-    struct InternalVecFree : private detail::BruidhinnTraits<TElementType> {
+    struct InternalVecFree : private detail::BruidhinnTraits<Element> {
       void operator()(std::vector<internal_element_type> const& x) {
         for (auto it = x.cbegin(); it != x.cend(); ++it) {
           this->internal_free(*it);
@@ -303,17 +303,16 @@ namespace libsemigroups {
 
     struct InternalRank {
       template <typename SFINAE = size_t>
-      auto operator()(void*, const_reference x) -> std::enable_if_t<
-          std::is_void<typename rank_state_type::type>::value,
-          SFINAE> {
+      auto operator()(void*, const_reference x)
+          -> std::enable_if_t<std::is_void_v<typename rank_state_type::type>,
+                              SFINAE> {
         return Rank()(x);
       }
 
       template <typename SFINAE = size_t>
       auto operator()(rank_state_type* state, const_reference x)
-          -> std::enable_if_t<
-              !std::is_void<typename rank_state_type::type>::value,
-              SFINAE> {
+          -> std::enable_if_t<!std::is_void_v<typename rank_state_type::type>,
+                              SFINAE> {
         return Rank()(*state, x);
       }
     };
@@ -383,15 +382,19 @@ namespace libsemigroups {
     }
 
     //! Deleted.
+    // TODO undelete
     Konieczny(Konieczny const&) = delete;
 
     //! Deleted.
+    // TODO undelete
     Konieczny(Konieczny&&) = delete;
 
     //! Deleted.
+    // TODO undelete
     Konieczny& operator=(Konieczny const&) = delete;
 
     //! Deleted.
+    // TODO undelete
     Konieczny& operator=(Konieczny&&) = delete;
 
     //! Construct from generators.
@@ -449,6 +452,7 @@ namespace libsemigroups {
     //!
     //! \sa add_generator and add_generators
     size_t number_of_generators() const noexcept {
+      LIBSEMIGROUPS_ASSERT(!_gens.empty());
       return _gens.size() - 1;
     }
 
@@ -475,10 +479,10 @@ namespace libsemigroups {
     const_reference generator(size_t pos) const {
       if (pos >= number_of_generators()) {
         LIBSEMIGROUPS_EXCEPTION(
-            "index out of bounds, expected value in [%llu, %llu) found %llu",
-            static_cast<uint64_t>(0),
-            static_cast<uint64_t>(number_of_generators()),
-            static_cast<uint64_t>(pos));
+            "index out of bounds, expected value in [{}, {}) found {}",
+            0,
+            number_of_generators(),
+            pos);
       }
       return this->to_external_const(_gens[pos]);
     }
@@ -974,7 +978,7 @@ namespace libsemigroups {
     //! * \ref started returns \c true
     template <typename T>
     void add_generators(T const& coll) {
-      static_assert(!std::is_pointer<T>::value,
+      static_assert(!std::is_pointer_v<T>,
                     "the template parameter T must not be a pointer");
       add_generators(coll.begin(), coll.end());
     }
@@ -1250,41 +1254,51 @@ namespace libsemigroups {
       return get_lambda_group_index(x) != UNDEFINED;
     }
 
+    // TODO use this func
+    lambda_orb_index_type get_lpos(internal_const_reference x) const {
+      Lambda()(_tmp_lambda_value1, this->to_external_const(x));
+      return _lambda_orb.position(_tmp_lambda_value1);
+    }
+
+    // TODO use this func
+    rho_orb_index_type get_rpos(internal_const_reference x) const {
+      Rho()(_tmp_rho_value1, this->to_external_const(x));
+      return _rho_orb.position(_tmp_rho_value1);
+    }
+
     // Returns a lambda orb index corresponding to a group H-class in the R-
     // class of \p x.
     // asserts its argument has lambda/rho values in the orbits.
     // modifies _tmp_lambda_value1
     // modifies _tmp_rho_value1
     lambda_orb_index_type get_lambda_group_index(internal_const_reference x) {
-      Rho()(_tmp_rho_value1, this->to_external_const(x));
-      Lambda()(_tmp_lambda_value1, this->to_external_const(x));
-      lambda_orb_index_type lpos = _lambda_orb.position(_tmp_lambda_value1);
+      auto lpos = get_lpos(x);
       LIBSEMIGROUPS_ASSERT(lpos != UNDEFINED);
 
-      lambda_orb_index_type lval_scc_id = _lambda_orb.scc().id(lpos);
+      auto lval_scc_id = _lambda_orb.scc().id(lpos);
 
-      std::pair<rho_orb_index_type, lambda_orb_index_type> key(
-          _rho_orb.position(_tmp_rho_value1), lval_scc_id);
+      std::pair key(get_rpos(x), lval_scc_id);
 
       if (_group_indices.find(key) != _group_indices.end()) {
         return _group_indices.at(key);
-      } else {
-        PoolGuard             cg1(_element_pool);
-        PoolGuard             cg2(_element_pool);
-        internal_element_type tmp1 = cg1.get();
-        internal_element_type tmp2 = cg2.get();
+      }
 
-        Product()(this->to_external(tmp1),
-                  this->to_external_const(x),
-                  _lambda_orb.multiplier_to_scc_root(lpos));
-        for (auto const& val : _lambda_orb.scc().component(lval_scc_id)) {
-          Product()(this->to_external(tmp2),
-                    this->to_external(tmp1),
-                    _lambda_orb.multiplier_from_scc_root(val));
-          if (is_group_index(x, tmp2)) {
-            _group_indices.emplace(key, val);
-            return val;
-          }
+      PoolGuard             cg1(_element_pool);
+      PoolGuard             cg2(_element_pool);
+      internal_element_type tmp1 = cg1.get();
+      internal_element_type tmp2 = cg2.get();
+
+      Product()(this->to_external(tmp1),
+                this->to_external_const(x),
+                _lambda_orb.multiplier_to_scc_root(lpos));
+
+      for (auto const& val : _lambda_orb.scc().component(lval_scc_id)) {
+        Product()(this->to_external(tmp2),
+                  this->to_external(tmp1),
+                  _lambda_orb.multiplier_from_scc_root(val));
+        if (is_group_index(x, tmp2)) {
+          _group_indices.emplace(key, val);
+          return val;
         }
       }
       _group_indices.emplace(key, UNDEFINED);
@@ -1297,32 +1311,35 @@ namespace libsemigroups {
     rho_orb_index_type get_rho_group_index(internal_const_reference x) {
       Rho()(_tmp_rho_value1, this->to_external_const(x));
       Lambda()(_tmp_lambda_value1, this->to_external_const(x));
-      rho_orb_index_type rpos = _rho_orb.position(_tmp_rho_value1);
-      LIBSEMIGROUPS_ASSERT(rpos != UNDEFINED);
-      rho_orb_index_type rval_scc_id = _rho_orb.scc().id(rpos);
 
-      std::pair<rho_orb_index_type, lambda_orb_index_type> key(
-          rval_scc_id, _lambda_orb.position(_tmp_lambda_value1));
+      auto rpos = _rho_orb.position(_tmp_rho_value1);
+      LIBSEMIGROUPS_ASSERT(rpos != UNDEFINED);
+
+      auto rval_scc_id = _rho_orb.scc().id(rpos);
+
+      std::pair key(rval_scc_id, _lambda_orb.position(_tmp_lambda_value1));
 
       if (_group_indices_rev.find(key) != _group_indices_rev.end()) {
         return _group_indices_rev.at(key);
-      } else {
-        PoolGuard             cg1(_element_pool);
-        internal_element_type tmp1 = cg1.get();
-        PoolGuard             cg2(_element_pool);
-        internal_element_type tmp2 = cg2.get();
+      }
 
-        Product()(this->to_external(tmp1),
-                  _rho_orb.multiplier_to_scc_root(rpos),
-                  this->to_external_const(x));
-        for (auto const& val : _rho_orb.scc().component(rval_scc_id)) {
-          Product()(this->to_external(tmp2),
-                    _rho_orb.multiplier_from_scc_root(val),
-                    this->to_external(tmp1));
-          if (is_group_index(tmp2, x)) {
-            _group_indices_rev.emplace(key, val);
-            return val;
-          }
+      PoolGuard cg1(_element_pool);
+      PoolGuard cg2(_element_pool);
+
+      internal_element_type tmp1 = cg1.get();
+      internal_element_type tmp2 = cg2.get();
+
+      Product()(this->to_external(tmp1),
+                _rho_orb.multiplier_to_scc_root(rpos),
+                this->to_external_const(x));
+
+      for (auto const& val : _rho_orb.scc().component(rval_scc_id)) {
+        Product()(this->to_external(tmp2),
+                  _rho_orb.multiplier_from_scc_root(val),
+                  this->to_external(tmp1));
+        if (is_group_index(tmp2, x)) {
+          _group_indices_rev.emplace(key, val);
+          return val;
         }
       }
       _group_indices_rev.emplace(key, UNDEFINED);
@@ -1363,15 +1380,17 @@ namespace libsemigroups {
         return;
       }
 
-      lambda_orb_index_type i = get_lambda_group_index(x);
       Lambda()(_tmp_lambda_value1, this->to_external_const(x));
-      lambda_orb_index_type pos = _lambda_orb.position(_tmp_lambda_value1);
+      auto pos = _lambda_orb.position(_tmp_lambda_value1);
 
       PoolGuard             cg2(_element_pool);
       internal_element_type tmp2 = cg2.get();
+
       Product()(this->to_external(tmp1),
                 this->to_external_const(x),
                 _lambda_orb.multiplier_to_scc_root(pos));
+
+      auto i = get_lambda_group_index(x);
       Product()(this->to_external(tmp2),
                 this->to_external(tmp1),
                 _lambda_orb.multiplier_from_scc_root(i));
@@ -1428,8 +1447,9 @@ namespace libsemigroups {
 
       Lambda()(_tmp_lambda_value1, this->to_external_const(x));
       Rho()(_tmp_rho_value1, this->to_external_const(x));
-      lambda_orb_index_type lpos = _lambda_orb.position(_tmp_lambda_value1);
-      lambda_orb_index_type rpos = _rho_orb.position(_tmp_rho_value1);
+
+      auto lpos = _lambda_orb.position(_tmp_lambda_value1);
+      auto rpos = _rho_orb.position(_tmp_rho_value1);
       if (lpos == UNDEFINED || rpos == UNDEFINED) {
         // this should only be possible if this function was called from a
         // public function, and hence full_check is true.
@@ -1472,29 +1492,36 @@ namespace libsemigroups {
     void add_to_D_maps(D_class_index_type d) {
       LIBSEMIGROUPS_ASSERT(d < _D_classes.size());
       DClass* D = _D_classes[d];
-      for (auto it = D->cbegin_left_indices(); it < D->cend_left_indices();
-           ++it) {
-        _lambda_to_D_map[*it].push_back(d);
+
+      {
+        auto first = D->cbegin_left_indices();
+        auto last  = D->cend_left_indices();
+
+        for (auto it = first; it < last; ++it) {
+          _lambda_to_D_map[*it].push_back(d);
+        }
       }
-      for (auto it = D->cbegin_right_indices(); it < D->cend_right_indices();
-           ++it) {
-        _rho_to_D_map[*it].push_back(d);
+      {
+        auto first = D->cbegin_right_indices();
+        auto last  = D->cend_right_indices();
+        for (auto it = first; it < last; ++it) {
+          _rho_to_D_map[*it].push_back(d);
+        }
       }
     }
 
     ////////////////////////////////////////////////////////////////////////
     // Konieczny - accessor member functions - private
     ////////////////////////////////////////////////////////////////////////
+
     void add_D_class(RegularDClass* D);
     void add_D_class(NonRegularDClass* D);
 
-    typename std::vector<internal_element_type>::const_iterator
-    cbegin_internal_generators() const noexcept {
+    auto cbegin_internal_generators() const noexcept {
       return _gens.cbegin();
     }
 
-    typename std::vector<internal_element_type>::const_iterator
-    cend_internal_generators() const noexcept {
+    auto cend_internal_generators() const noexcept {
       return _gens.cend();
     }
 
@@ -1559,14 +1586,17 @@ namespace libsemigroups {
 
       _rank_state = new rank_state_type(cbegin_generators(), cend_generators());
       LIBSEMIGROUPS_ASSERT((_rank_state == nullptr)
-                           == (std::is_same<void, rank_state_type>::value));
+                           == (std::is_void_v<rank_state_type>) );
 
-      // We can safely just replace the vectors without deleting their contents,
-      // since we know that the run has not been initialised and they are empty.
+      // We can safely just replace the vectors without deleting their
+      // contents, since we know that the run has not been initialised and
+      // they are empty.
+      LIBSEMIGROUPS_ASSERT(_nonregular_reps.empty());
       _nonregular_reps = std::vector<std::vector<RepInfo>>(
           InternalRank()(_rank_state, this->to_external_const(_one)) + 1,
           std::vector<RepInfo>());
 
+      LIBSEMIGROUPS_ASSERT(_reg_reps.empty());
       _reg_reps = std::vector<std::vector<RepInfo>>(
           InternalRank()(_rank_state, this->to_external_const(_one)) + 1,
           std::vector<RepInfo>());
@@ -1576,26 +1606,26 @@ namespace libsemigroups {
       if (_lambda_orb.finished() && _rho_orb.finished()) {
         return;
       }
-      REPORT_DEFAULT("Computing orbits...\n");
+      report_default("Computing orbits...\n");
       detail::Timer t;
       if (!_lambda_orb.started()) {
         _lambda_orb.add_seed(OneParamLambda()(this->to_external_const(_one)));
-        for (internal_const_element_type g : _gens) {
+        for (auto const& g : _gens) {
           _lambda_orb.add_generator(this->to_external_const(g));
         }
       }
       if (!_rho_orb.started()) {
         _rho_orb.add_seed(OneParamRho()(this->to_external_const(_one)));
-        for (internal_const_element_type g : _gens) {
+        for (auto const& g : _gens) {
           _rho_orb.add_generator(this->to_external_const(g));
         }
       }
-      _lambda_orb.run_until([this]() -> bool { return this->stopped(); });
-      _rho_orb.run_until([this]() -> bool { return this->stopped(); });
-      REPORT_DEFAULT("found %llu lambda-values and %llu rho-values in %s\n",
-                     static_cast<uint64_t>(_lambda_orb.current_size()),
-                     static_cast<uint64_t>(_rho_orb.current_size()),
-                     t.string().c_str());
+      _lambda_orb.run_until([this]() { return stopped(); });
+      _rho_orb.run_until([this]() { return stopped(); });
+      report_default("found {} lambda-values and {} rho-values in {}\n",
+                     _lambda_orb.current_size(),
+                     _rho_orb.current_size(),
+                     t.string());
     }
 
     ////////////////////////////////////////////////////////////////////////
@@ -1606,19 +1636,19 @@ namespace libsemigroups {
       size_t const n = Degree()(x);
       if (degree() != UNDEFINED && n != degree()) {
         LIBSEMIGROUPS_EXCEPTION(
-            "element has degree %d but should have degree %d", n, degree());
+            "element has degree {} but should have degree {}", n, degree());
       }
     }
 
-    template <typename T>
-    void validate_element_collection(T const& first, T const& last) const {
+    template <typename Iterator>
+    void validate_element_collection(Iterator first, Iterator last) const {
       if (degree() == UNDEFINED && std::distance(first, last) != 0) {
         auto const n = Degree()(*first);
         for (auto it = first + 1; it < last; ++it) {
           auto const m = Degree()(*it);
           if (m != n) {
             LIBSEMIGROUPS_EXCEPTION(
-                "element has degree %d but should have degree %d", n, m);
+                "element has degree {} but should have degree {}", n, m);
           }
         }
       } else {
@@ -1690,19 +1720,19 @@ namespace libsemigroups {
   //! \sa Konieczny.
   //!
   //! [here]:  https://link.springer.com/article/10.1007/BF02573672
-  template <typename TElementType, typename TTraits>
-  class Konieczny<TElementType, TTraits>::DClass
-      : protected detail::BruidhinnTraits<TElementType> {
+  template <typename Element, typename Traits>
+  class Konieczny<Element, Traits>::DClass
+      : protected detail::BruidhinnTraits<Element> {
     // This friend is only here so that the virtual contains(x, lpos, rpos)
     // method and the cbegin_left_indices etc. methods can be private.
-    friend class Konieczny<TElementType, TTraits>;
+    friend class Konieczny<Element, Traits>;
 
    protected:
     ////////////////////////////////////////////////////////////////////////
     // DClass - aliases - protected
     ////////////////////////////////////////////////////////////////////////
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
-    using konieczny_type    = Konieczny<TElementType, TTraits>;
+    using konieczny_type    = Konieczny<Element, Traits>;
     using internal_set_type = std::
         unordered_set<internal_element_type, InternalHash, InternalEqualTo>;
 
@@ -1786,9 +1816,9 @@ namespace libsemigroups {
     //! Returns a representative of the \f$\mathscr{D}\f$-class.
     //!
     //! The frame used to represent \f$\mathscr{D}\f$-classes depends on the
-    //! choice of representative. This function returns the representative used
-    //! by a DClass instance. This may not be the same representative as used to
-    //! construct the instance, but is guaranteed to not change.
+    //! choice of representative. This function returns the representative
+    //! used by a DClass instance. This may not be the same representative as
+    //! used to construct the instance, but is guaranteed to not change.
     //!
     //! \parameters
     //! (None)
@@ -1911,10 +1941,8 @@ namespace libsemigroups {
     bool contains(const_reference x) {
       Lambda()(_tmp_lambda_value, x);
       Rho()(_tmp_rho_value, x);
-      lambda_orb_index_type lpos
-          = this->parent()->_lambda_orb.position(_tmp_lambda_value);
-      rho_orb_index_type rpos
-          = this->parent()->_rho_orb.position(_tmp_rho_value);
+      auto lpos = this->parent()->_lambda_orb.position(_tmp_lambda_value);
+      auto rpos = this->parent()->_rho_orb.position(_tmp_rho_value);
       return contains(x, lpos, rpos);
     }
 
@@ -2016,7 +2044,8 @@ namespace libsemigroups {
     // DClass - containment - protected
     ////////////////////////////////////////////////////////////////////////
 
-    // Returns whether the element \p x belongs to this \f$\mathscr{D}\f$-class.
+    // Returns whether the element \p x belongs to this
+    // \f$\mathscr{D}\f$-class.
     //
     // Given an element \p x of the semigroup represented by \c parent, this
     // function returns whether \p x is an element of the
@@ -2024,11 +2053,13 @@ namespace libsemigroups {
     // element of the semigroup, then the behaviour is undefined.
     // This member function involved computing most of the frame for
     // \c this, if it is not already known.
+    // TODO rename
     bool contains_NC(internal_const_reference x) {
       Lambda()(_tmp_lambda_value, this->to_external_const(x));
-      Rho()(_tmp_rho_value, this->to_external_const(x));
       LIBSEMIGROUPS_ASSERT(
           this->parent()->_lambda_orb.position(_tmp_lambda_value) != UNDEFINED);
+
+      Rho()(_tmp_rho_value, this->to_external_const(x));
       LIBSEMIGROUPS_ASSERT(this->parent()->_rho_orb.position(_tmp_rho_value)
                            != UNDEFINED);
       return contains_NC(
@@ -2037,16 +2068,19 @@ namespace libsemigroups {
           this->parent()->_rho_orb.position(_tmp_rho_value));
     }
 
-    // Returns whether the element \p x belongs to this \f$\mathscr{D}\f$-class.
+    // Returns whether the element \p x belongs to this
+    // \f$\mathscr{D}\f$-class.
     //
     // Given an element \p x of the semigroup represented by \c parent, this
     // function returns whether \p x is an element of the
     // \f$\mathscr{D}\f$-class represented by \c this. If \p x is not an
-    // element of the semigroup, then the behaviour is undefined. This overload
-    // of DClass::contains_NC is provided in order to avoid recalculating the
-    // rank of \p x when it is already known.
-    // This member function involves computing most of the frame for
-    // \c this, if it is not already known.
+    // element of the semigroup, then the behaviour is undefined. This
+    // overload of DClass::contains_NC is provided in order to avoid
+    // recalculating the rank of \p x when it is already known. This member
+    // function involves computing most of the frame for \c this, if it is not
+    // already known.
+    //
+    // TODO rename
     bool contains_NC(internal_const_reference x, size_t rank) {
       LIBSEMIGROUPS_ASSERT(this->parent()->InternalRank()(_rank_state, x)
                            == rank);
@@ -2059,11 +2093,12 @@ namespace libsemigroups {
     // Given an element \p x of the semigroup represented by \c parent, this
     // function returns whether \p x is an element of the
     // \f$\mathscr{D}\f$-class represented by \c this. If \p x is not an
-    // element of the semigroup, then the behaviour is undefined. This overload
-    // of DClass::contains_NC is provided in order to avoid recalculating the
-    // rank, lambda value, and rho value of \p x when they are already known.
-    // This member function involves computing most of the frame for
-    // \c this, if it is not already known.
+    // element of the semigroup, then the behaviour is undefined. This
+    // overload of DClass::contains_NC is provided in order to avoid
+    // recalculating the rank, lambda value, and rho value of \p x when they
+    // are already known. This member function involves computing most of the
+    // frame for \c this, if it is not already known.
+    // TODO rename
     bool contains_NC(internal_const_reference x,
                      size_t                   rank,
                      lambda_orb_index_type    lpos,
@@ -2073,16 +2108,18 @@ namespace libsemigroups {
       return (rank == _rank && contains_NC(x, lpos, rpos));
     }
 
-    // Returns whether the element \p x belongs to this \f$\mathscr{D}\f$-class.
+    // Returns whether the element \p x belongs to this
+    // \f$\mathscr{D}\f$-class.
     //
     // Given an element \p x of the semigroup represented by \c parent, this
     // function returns whether \p x is an element of the
     // \f$\mathscr{D}\f$-class represented by \c this. If \p x is not an
-    // element of the semigroup, then the behaviour is undefined. This overload
-    // of DClass::contains_NC is provided in order to avoid recalculating the
-    // lambda value and rho value of \p x  when they are already known.
-    // This member function involves computing most of the frame for
-    // \c this, if it is not already known.
+    // element of the semigroup, then the behaviour is undefined. This
+    // overload of DClass::contains_NC is provided in order to avoid
+    // recalculating the lambda value and rho value of \p x  when they are
+    // already known. This member function involves computing most of the
+    // frame for \c this, if it is not already known.
+    // TODO rename
     virtual bool contains_NC(internal_const_reference x,
                              lambda_orb_index_type    lpos,
                              rho_orb_index_type       rpos)
@@ -2378,9 +2415,10 @@ namespace libsemigroups {
     // Returns a set of representatives of L- or R-classes covered by \c this.
     //
     // The \f$\mathscr{D}\f$-classes of the parent semigroup are enumerated
-    // either by finding representatives of all L-classes or all R-classes. This
-    // member function returns the representatives obtainable by multipliying
-    // the representatives  by generators on either the left or right.
+    // either by finding representatives of all L-classes or all R-classes.
+    // This member function returns the representatives obtainable by
+    // multipliying the representatives  by generators on either the left or
+    // right.
     std::vector<RepInfo>& covering_reps() {
       init();
       _tmp_rep_info_vec.clear();
@@ -2490,16 +2528,16 @@ namespace libsemigroups {
   // \sa Konieczny, DClass, and NonRegularDClass
   //
   // [here]:  https://link.springer.com/article/10.1007/BF02573672
-  template <typename TElementType, typename TTraits>
-  class Konieczny<TElementType, TTraits>::RegularDClass final
-      : public Konieczny<TElementType, TTraits>::DClass {
+  template <typename Element, typename Traits>
+  class Konieczny<Element, Traits>::RegularDClass
+      : public Konieczny<Element, Traits>::DClass {
     // Konieczny is only a friend of RegularDClass so it can call the private
     // constructor
-    friend class Konieczny<TElementType, TTraits>;
+    friend class Konieczny<Element, Traits>;
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
     // NonRegularDClass is a friend of RegularDClass so it can access private
     // iterators
-    friend class Konieczny<TElementType, TTraits>::NonRegularDClass;
+    friend class Konieczny<Element, Traits>::NonRegularDClass;
 #endif
 
    private:
@@ -2627,11 +2665,15 @@ namespace libsemigroups {
 
     size_t number_of_idempotents() const override {
       size_t count = 0;
-      for (auto it = cbegin_left_idem_reps(); it < cend_left_idem_reps();
-           ++it) {
-        for (auto it2 = cbegin_right_idem_reps(); it2 < cend_right_idem_reps();
-             ++it2) {
-          if (this->parent()->is_group_index(*it2, *it)) {
+
+      auto const lfirst = cbegin_left_idem_reps();
+      auto const llast  = cend_left_idem_reps();
+      auto const rfirst = cbegin_right_idem_reps();
+      auto const rlast  = cend_right_idem_reps();
+
+      for (auto lit = lfirst; lit < llast; ++lit) {
+        for (auto rit = rfirst; rit < rlast; ++rit) {
+          if (this->parent()->is_group_index(*rit, *lit)) {
             count++;
           }
         }
@@ -3091,12 +3133,12 @@ namespace libsemigroups {
   // \sa Konieczny, DClass, and RegularDClass
   //
   // [here]:  https://link.springer.com/article/10.1007/BF02573672
-  template <typename TElementType, typename TTraits>
-  class Konieczny<TElementType, TTraits>::NonRegularDClass final
-      : public Konieczny<TElementType, TTraits>::DClass {
+  template <typename Element, typename Traits>
+  class Konieczny<Element, Traits>::NonRegularDClass
+      : public Konieczny<Element, Traits>::DClass {
     // Konieczny is only a friend of NonRegularDClass so it can call the
     // private constructor
-    friend class Konieczny<TElementType, TTraits>;
+    friend class Konieczny<Element, Traits>;
 
    private:
     ////////////////////////////////////////////////////////////////////////
@@ -3761,8 +3803,8 @@ namespace libsemigroups {
     bool                               _right_indices_computed;
   };
 
-  template <typename TElementType, typename TTraits>
-  Konieczny<TElementType, TTraits>::~Konieczny() {
+  template <typename Element, typename Traits>
+  Konieczny<Element, Traits>::~Konieczny() {
     for (DClass* D : _D_classes) {
       delete D;
     }
@@ -3780,9 +3822,8 @@ namespace libsemigroups {
     delete _rank_state;
   }
 
-  template <typename TElementType, typename TTraits>
-  void
-  Konieczny<TElementType, TTraits>::add_D_class(Konieczny::RegularDClass* D) {
+  template <typename Element, typename Traits>
+  void Konieczny<Element, Traits>::add_D_class(Konieczny::RegularDClass* D) {
     _regular_D_classes.push_back(D);
     _D_classes.push_back(D);
     add_to_D_maps(_D_classes.size() - 1);
@@ -3790,22 +3831,22 @@ namespace libsemigroups {
   }
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
-  template <typename TElementType, typename TTraits>
-  void Konieczny<TElementType, TTraits>::add_D_class(
-      Konieczny<TElementType, TTraits>::NonRegularDClass* D) {
+  template <typename Element, typename Traits>
+  void Konieczny<Element, Traits>::add_D_class(
+      Konieczny<Element, Traits>::NonRegularDClass* D) {
     _D_classes.push_back(D);
     add_to_D_maps(_D_classes.size() - 1);
     _D_rels.push_back(std::vector<D_class_index_type>());
   }
 #endif
 
-  template <typename TElementType, typename TTraits>
-  bool Konieczny<TElementType, TTraits>::finished_impl() const {
+  template <typename Element, typename Traits>
+  bool Konieczny<Element, Traits>::finished_impl() const {
     return _ranks.empty() && _run_initialised;
   }
 
-  template <typename TElementType, typename TTraits>
-  void Konieczny<TElementType, TTraits>::init_run() {
+  template <typename Element, typename Traits>
+  void Konieczny<Element, Traits>::init_run() {
     if (_run_initialised) {
       return;
     }
@@ -3852,8 +3893,8 @@ namespace libsemigroups {
     _run_initialised = true;
   }
 
-  template <typename TElementType, typename TTraits>
-  void Konieczny<TElementType, TTraits>::run_report() {
+  template <typename Element, typename Traits>
+  void Konieczny<Element, Traits>::run_report() {
     if (!report()) {
       return;
     }
@@ -3865,9 +3906,9 @@ namespace libsemigroups {
                         += _reg_reps[x].size() + _nonregular_reps[x].size();
                   });
     // TODO(later) add layers to report
-    REPORT_DEFAULT(
-        "found %d elements in %d D-classes (%d regular), %d R-classes (%d "
-        "regular), %d L-classes (%d regular)\n",
+    report_default(
+        "found {} elements in {} D-classes ({} regular), {} R-classes ({} "
+        "regular), {} L-classes ({} regular)\n",
         current_size(),
         current_number_of_D_classes(),
         current_number_of_regular_D_classes(),
@@ -3875,14 +3916,14 @@ namespace libsemigroups {
         current_number_of_regular_R_classes(),
         current_number_of_L_classes(),
         current_number_of_regular_L_classes());
-    REPORT_DEFAULT("there are %d unprocessed reps with ranks in [%d, %d]\n",
+    report_default("there are {} unprocessed reps with ranks in [{}, {}]\n",
                    number_of_reps_remaining,
                    *_ranks.cbegin(),
                    max_rank());
   }
 
-  template <typename TElementType, typename TTraits>
-  void Konieczny<TElementType, TTraits>::run_impl() {
+  template <typename Element, typename Traits>
+  void Konieczny<Element, Traits>::run_impl() {
     detail::Timer t;
     // initialise the required data
     init_run();
