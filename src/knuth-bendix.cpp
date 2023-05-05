@@ -44,7 +44,6 @@
 #include "rx/ranges.hpp"
 
 namespace libsemigroups {
-  using time_point = std::chrono::high_resolution_clock::time_point;
 
   namespace {
     void prefixes_string(std::unordered_map<std::string, size_t>& st,

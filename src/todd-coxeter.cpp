@@ -114,8 +114,10 @@ namespace libsemigroups {
   template <typename RuleIterator>
   size_t ToddCoxeter::Digraph::make_compatible(node_type&   current,
                                                RuleIterator first,
-                                               RuleIterator last) {
-    size_t const old_number_of_killed = NodeManager_::number_of_nodes_killed();
+                                               RuleIterator last,
+                                               bool         stop_early) {
+    detail::Timer t;
+    size_t const  old_number_of_killed = NodeManager_::number_of_nodes_killed();
     CollectCoincidences                    incompat(_coinc);
     typename FelschGraph_::NoPreferredDefs prefdefs;
     while (current != NodeManager_::first_free_node()) {
@@ -132,7 +134,7 @@ namespace libsemigroups {
       // but didn't seem to be very useful).
       process_coincidences<DoNotRegisterDefs>();
       current = NodeManager_::next_active_node(current);
-      if (report()) {
+      if (stop_early && t > std::chrono::seconds(1)) {
         // TODO setting for this
         size_t killed_last_second
             = number_of_nodes_killed() - stats().prev_nodes_killed;
@@ -660,7 +662,7 @@ namespace libsemigroups {
           // push_settings();
           lookahead_extent(options::lookahead_extent::full);
           lookahead_style(options::lookahead_style::hlt);
-          perform_lookahead();
+          perform_lookahead(DoNotStopEarly);
           // pop_settings();
           // }
         }
@@ -715,7 +717,7 @@ namespace libsemigroups {
         // If save() == true and no deductions were skipped, then we have
         // already run process_definitions, and so there's no point in doing a
         // lookahead.
-        perform_lookahead();
+        perform_lookahead(StopEarly);
       } else if (report()) {
         word_graph().report_active_nodes();
       }
@@ -745,7 +747,7 @@ namespace libsemigroups {
     }
     lookahead_extent(options::lookahead_extent::full);
     lookahead_style(options::lookahead_style::hlt);
-    perform_lookahead();
+    perform_lookahead(DoNotStopEarly);
     // pop_settings();
   }
 
@@ -756,7 +758,7 @@ namespace libsemigroups {
       return word_graph().number_of_nodes_active() >= lookahead_next();
     });
     lookahead_extent(options::lookahead_extent::full);
-    perform_lookahead();
+    perform_lookahead(StopEarly);
     CR_style();
     // pop_settings();
   }
@@ -780,7 +782,7 @@ namespace libsemigroups {
     run();
     lookahead_extent(options::lookahead_extent::full);
     lookahead_style(options::lookahead_style::hlt);
-    perform_lookahead();
+    perform_lookahead(DoNotStopEarly);
     // pop_settings();
   }
 
@@ -803,7 +805,7 @@ namespace libsemigroups {
     run();
     lookahead_extent(options::lookahead_extent::full);
     lookahead_style(options::lookahead_style::hlt);
-    perform_lookahead();
+    perform_lookahead(DoNotStopEarly);
     // pop_settings();
   }
 
@@ -832,7 +834,7 @@ namespace libsemigroups {
   // ToddCoxeter - lookahead - private
   ////////////////////////////////////////////////////////////////////////
 
-  void ToddCoxeter::perform_lookahead() {
+  void ToddCoxeter::perform_lookahead(bool stop_early) {
     report_default("ToddCoxeter: performing {} {} lookahead . . .\n",
                    lookahead_extent(),
                    lookahead_style());
@@ -849,7 +851,7 @@ namespace libsemigroups {
     }
     size_t num_killed_by_me = 0;
     if (lookahead_style() == options::lookahead_style::hlt) {
-      num_killed_by_me = hlt_lookahead();
+      num_killed_by_me = hlt_lookahead(stop_early);
     } else {
       LIBSEMIGROUPS_ASSERT(lookahead_style()
                            == options::lookahead_style::felsch);
@@ -883,13 +885,14 @@ namespace libsemigroups {
     report_next_lookahead(old_lookahead_next);
   }
 
-  size_t ToddCoxeter::hlt_lookahead() {
+  size_t ToddCoxeter::hlt_lookahead(bool stop_early) {
     _word_graph.report_active_nodes();
 
     size_t const old_number_of_killed = _word_graph.number_of_nodes_killed();
     _word_graph.make_compatible(_word_graph.lookahead_cursor(),
                                 presentation().rules.cbegin(),
-                                presentation().rules.cend());
+                                presentation().rules.cend(),
+                                stop_early);
     return _word_graph.number_of_nodes_killed() - old_number_of_killed;
   }
 

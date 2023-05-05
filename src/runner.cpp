@@ -25,24 +25,24 @@
 #include "libsemigroups/detail/timer.hpp"   // for Timer::string
 
 namespace libsemigroups {
+  void ReporterV3::report_every(std::chrono::nanoseconds val) {
+    _last_report          = std::chrono::high_resolution_clock::now();
+    _report_time_interval = val;
+  }
+
   Runner::Runner()
-      : _last_report(std::chrono::high_resolution_clock::now()),
-        _report_time_interval(),
+      : ReporterV3(),
         _run_for(FOREVER),
         _start_time(),
         _state(state::never_run),
-        _stopper() {
-    report_every(std::chrono::seconds(1));
-  }
+        _stopper() {}
 
   void Runner::init() {
-    _last_report          = std::chrono::high_resolution_clock::now();
-    _report_time_interval = decltype(_report_time_interval)();
-    _run_for              = FOREVER;
-    _start_time           = decltype(_start_time)();
-    _state                = state::never_run;
-    _stopper              = decltype(_stopper)();
-    report_every(std::chrono::seconds(1));
+    ReporterV3::init();
+    _run_for    = FOREVER;
+    _start_time = decltype(_start_time)();
+    _state      = state::never_run;
+    _stopper    = decltype(_stopper)();
   }
 
   void Runner::run_for(std::chrono::nanoseconds val) {
@@ -55,7 +55,6 @@ namespace libsemigroups {
         run();
         return;
       }
-      before_run();
       auto previous_state = get_state();
       set_state(state::running_for);
       _start_time = std::chrono::high_resolution_clock::now();
@@ -78,11 +77,6 @@ namespace libsemigroups {
     } else {
       REPORT_DEFAULT("already finished, not running\n");
     }
-  }
-
-  void Runner::report_every(std::chrono::nanoseconds val) {
-    _last_report          = std::chrono::high_resolution_clock::now();
-    _report_time_interval = val;
   }
 
   void Runner::report_why_we_stopped() const {

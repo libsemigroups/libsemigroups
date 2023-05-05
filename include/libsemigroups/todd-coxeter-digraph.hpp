@@ -50,7 +50,7 @@ namespace libsemigroups {
   class NodeManagedDigraph
       : public BaseDigraph,
         public detail::NodeManager<typename BaseDigraph::node_type>,
-        public Runner {
+        public ReporterV3 {
    public:
     using node_type         = typename BaseDigraph::node_type;
     using base_digraph_type = BaseDigraph;
@@ -168,6 +168,7 @@ namespace libsemigroups {
     }
 
     // TODO to t/cpp file
+    // TODO to helper
     node_type random_active_node() const {
       static std::random_device rd;
       static std::mt19937       g(rd());
@@ -190,12 +191,6 @@ namespace libsemigroups {
 
       Coincidences& _coinc;
     };
-
-   private:
-    void run_impl() {}
-    bool finished_impl() const {
-      return false;
-    }
   };
 }  // namespace libsemigroups
 

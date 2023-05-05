@@ -29,7 +29,7 @@ namespace libsemigroups {
 
     // This is a simple class which can be used to send timing information in a
     // somewhat human readable format to the standard output.
-    class Timer final {
+    class Timer {
      public:
       // Default constructor, timer starts when object is created
       Timer() : _start(std::chrono::high_resolution_clock::now()) {}
@@ -67,6 +67,11 @@ namespace libsemigroups {
                                       detail::Timer const& t) {
         os << t.string();
         return os;
+      }
+
+      template <typename T>
+      bool operator>(T val) {
+        return elapsed() > std::chrono::nanoseconds(val);
       }
 
      private:

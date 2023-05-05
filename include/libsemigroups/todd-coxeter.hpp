@@ -50,6 +50,12 @@ namespace libsemigroups {
     using node_type  = typename WordGraph<uint32_t>::node_type;
     using label_type = typename WordGraph<uint32_t>::label_type;
 
+    template <typename T>
+    void report_every(T val) {
+      CongruenceInterface::report_every(val);
+      _word_graph.report_every(val);
+    }
+
     struct options : public FelschGraphSettings_::options {
       enum class strategy {
         hlt,
@@ -197,7 +203,10 @@ namespace libsemigroups {
       // TODO don't think this needs to be a member function at all so, we can
       // move the declaration in to the cpp file
       template <typename Iterator>
-      size_t make_compatible(node_type& current, Iterator first, Iterator last);
+      size_t make_compatible(node_type& current,
+                             Iterator   first,
+                             Iterator   last,
+                             bool       stop_early);
     };
 
     ////////////////////////////////////////////////////////////////////////
@@ -873,8 +882,14 @@ namespace libsemigroups {
     // ToddCoxeter - lookahead - private
     ////////////////////////////////////////////////////////////////////////
 
-    void   perform_lookahead();
-    size_t hlt_lookahead();
+    static constexpr bool StopEarly      = true;
+    static constexpr bool DoNotStopEarly = false;
+
+    // stop_early indicates that if too few nodes are killed in 1 second, then
+    // the lookahead aborts, this should not happen if we are doing a final
+    // lookahead because we skipped some deductions
+    void   perform_lookahead(bool stop_early);
+    size_t hlt_lookahead(bool stop_early);
     size_t felsch_lookahead();
   };
 

@@ -36,6 +36,103 @@ namespace libsemigroups {
   //! A pseudonym for std::chrono::nanoseconds::max().
   constexpr std::chrono::nanoseconds FOREVER = std::chrono::nanoseconds::max();
 
+  class ReporterV3 {
+    using time_point  = std::chrono::high_resolution_clock::time_point;
+    using nanoseconds = std::chrono::nanoseconds;
+
+    mutable time_point _last_report;
+    nanoseconds        _report_time_interval;
+
+   public:
+    // TODO noexcept?
+    ReporterV3()
+        : _last_report(std::chrono::high_resolution_clock::now()),
+          _report_time_interval(std::chrono::seconds(1)) {}
+
+    ReporterV3& init() {
+      _last_report = std::chrono::high_resolution_clock::now();
+      _report_time_interval
+          = decltype(_report_time_interval)(std::chrono::seconds(1));
+      return *this;
+    }
+
+    ReporterV3(ReporterV3 const&)            = default;
+    ReporterV3(ReporterV3&&)                 = default;
+    ReporterV3& operator=(ReporterV3 const&) = default;
+    ReporterV3& operator=(ReporterV3&&)      = default;
+    ~ReporterV3()                            = default;
+
+    //! Check if it is time to report.
+    //!
+    //! This function can be used in an implementation of run() (in a
+    //! derived class of Runner) to check if enough time has
+    //! passed that we should report again.
+    //!
+    //! \returns
+    //! A \c bool.
+    //!
+    //! \par Parameters
+    //! (None)
+    //!
+    //! \sa report_every(std::chrono::nanoseconds) and report_every(TIntType).
+    inline bool report() const {
+      auto t       = std::chrono::high_resolution_clock::now();
+      auto elapsed = std::chrono::duration_cast<nanoseconds>(t - _last_report);
+
+      if (elapsed > _report_time_interval) {
+        _last_report = t;
+        return true;
+      } else {
+        return false;
+      }
+    }
+
+    //! Set the minimum elapsed time between reports.
+    //!
+    //! This function can be used to specify at run time the minimum elapsed
+    //! time between two calls to report() that return \c true. If
+    //! report() returns \c true at time \c s, then report() will
+    //! only return \c true again after time \c s + \c t has elapsed.
+    //!
+    //! \param t the amount of time (in nanoseconds) between reports.
+    //!
+    //! \returns
+    //! (None)
+    //!
+    //! \sa
+    //! report_every(TIntType)
+    void report_every(nanoseconds t);
+
+    //! Set the minimum elapsed time between reports.
+    //!
+    //! This function can be used to specify at run time the minimum elapsed
+    //! time between two calls to report() that return \c true. If
+    //! report() returns \c true at time \c s, then report() will
+    //! only return \c true again after time \c s + \c t has elapsed.
+    //!
+    //! \param t the amount of time (in \c TIntType) between reports.
+    //!
+    //! \returns
+    //! (None)
+    //!
+    //! \sa report_every(std::chrono::nanoseconds)
+    template <typename TIntType>
+    void report_every(TIntType t) {
+      report_every(nanoseconds(t));
+    }
+
+    //! Get the minimum elapsed time between reports.
+    //!
+    //! \par Parameters
+    //! (None)
+    //!
+    //! \returns
+    //! The number of nanoseconds between reports.
+    nanoseconds report_every() const noexcept {
+      return _report_time_interval;
+    }
+  };
+
   //! Many of the classes in ``libsemigroups`` implementing the algorithms,
   //! that are the reason for the existence of this library, are derived from
   //! Runner.  The Runner class exists to collect various common tasks required
@@ -52,7 +149,7 @@ namespace libsemigroups {
   //! \ref stopped for any reason?
   //! * permit the function \ref run to be killed from another thread
   //! (\ref kill).
-  class Runner {
+  class Runner : public ReporterV3 {
    public:
     // Enum class for the state of the Runner.
     enum class state {
@@ -65,6 +162,7 @@ namespace libsemigroups {
       not_running          = 7,
       dead                 = 8
     };
+
     ////////////////////////////////////////////////////////////////////////
     // Runner - constructors + destructor - public
     ////////////////////////////////////////////////////////////////////////
@@ -89,8 +187,7 @@ namespace libsemigroups {
     //!
     //! \param other the Runner to copy.
     Runner(Runner const& other)
-        : _last_report(other._last_report),
-          _report_time_interval(other._report_time_interval),
+        : ReporterV3(other),
           _run_for(other._run_for),
           _start_time(other._start_time),
           _state(),
@@ -106,8 +203,7 @@ namespace libsemigroups {
     //!
     //! \param other the Runner to move from.
     Runner(Runner&& other)
-        : _last_report(std::move(other._last_report)),
-          _report_time_interval(std::move(other._report_time_interval)),
+        : ReporterV3(std::move(other)),
           _run_for(std::move(other._run_for)),
           _start_time(std::move(other._start_time)),
           _state(),
@@ -123,11 +219,10 @@ namespace libsemigroups {
     //!
     //! \param other the Runner to move from.
     Runner& operator=(Runner const& other) {
-      _last_report          = other._last_report;
-      _report_time_interval = other._report_time_interval;
-      _run_for              = other._run_for;
-      _start_time           = other._start_time;
-      _state                = other._state.load();
+      ReporterV3::operator=(other);
+      _run_for    = other._run_for;
+      _start_time = other._start_time;
+      _state      = other._state.load();
       return *this;
     }
 
@@ -139,11 +234,10 @@ namespace libsemigroups {
     //!
     //! \param other the Runner to move from.
     Runner& operator=(Runner&& other) {
-      _last_report          = std::move(other._last_report);
-      _report_time_interval = std::move(other._report_time_interval);
-      _run_for              = std::move(other._run_for);
-      _start_time           = std::move(other._start_time);
-      _state                = other._state.load();
+      ReporterV3::operator=(std::move(other));
+      _run_for    = std::move(other._run_for);
+      _start_time = std::move(other._start_time);
+      _state      = other._state.load();
       return *this;
     }
 
@@ -166,7 +260,6 @@ namespace libsemigroups {
     // At the end of this either finished, or dead.
     void run() {
       if (!finished() && !dead()) {
-        before_run();
         set_state(state::running_to_finish);
         try {
           run_impl();
@@ -248,7 +341,6 @@ namespace libsemigroups {
     template <typename T>
     void run_until(T&& func) {
       if (!finished() && !dead()) {
-        before_run();
         _stopper = std::forward<T>(func);
         if (!_stopper()) {
           set_state(state::running_until);
@@ -273,76 +365,6 @@ namespace libsemigroups {
     //! (None)
     void run_until(bool (*func)()) {
       run_until(detail::FunctionRef<bool(void)>(func));
-    }
-
-    //! Check if it is time to report.
-    //!
-    //! This function can be used in an implementation of run() (in a
-    //! derived class of Runner) to check if enough time has
-    //! passed that we should report again.
-    //!
-    //! \returns
-    //! A \c bool.
-    //!
-    //! \par Parameters
-    //! (None)
-    //!
-    //! \sa report_every(std::chrono::nanoseconds) and report_every(TIntType).
-    inline bool report() const {
-      auto t       = std::chrono::high_resolution_clock::now();
-      auto elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(
-          t - _last_report);
-      if (elapsed > _report_time_interval) {
-        _last_report = t;
-        return true;
-      } else {
-        return false;
-      }
-    }
-
-    //! Set the minimum elapsed time between reports.
-    //!
-    //! This function can be used to specify at run time the minimum elapsed
-    //! time between two calls to report() that return \c true. If
-    //! report() returns \c true at time \c s, then report() will
-    //! only return \c true again after time \c s + \c t has elapsed.
-    //!
-    //! \param t the amount of time (in nanoseconds) between reports.
-    //!
-    //! \returns
-    //! (None)
-    //!
-    //! \sa
-    //! report_every(TIntType)
-    void report_every(std::chrono::nanoseconds t);
-
-    //! Set the minimum elapsed time between reports.
-    //!
-    //! This function can be used to specify at run time the minimum elapsed
-    //! time between two calls to report() that return \c true. If
-    //! report() returns \c true at time \c s, then report() will
-    //! only return \c true again after time \c s + \c t has elapsed.
-    //!
-    //! \param t the amount of time (in \c TIntType) between reports.
-    //!
-    //! \returns
-    //! (None)
-    //!
-    //! \sa report_every(std::chrono::nanoseconds)
-    template <typename TIntType>
-    void report_every(TIntType t) {
-      report_every(std::chrono::nanoseconds(t));
-    }
-
-    //! Get the minimum elapsed time between reports.
-    //!
-    //! \par Parameters
-    //! (None)
-    //!
-    //! \returns
-    //! The number of nanoseconds between reports.
-    std::chrono::nanoseconds report_every() const noexcept {
-      return _report_time_interval;
     }
 
     //! Report why \ref run stopped.
@@ -551,7 +573,6 @@ namespace libsemigroups {
    private:
     virtual void run_impl()            = 0;
     virtual bool finished_impl() const = 0;
-    virtual void before_run() {}  // TODO rm this
 
     void set_state(state stt) const {
       // We can set the state back to never_run if run_impl throws, and we are
@@ -567,8 +588,6 @@ namespace libsemigroups {
     // Runner - data - private
     ////////////////////////////////////////////////////////////////////////
 
-    mutable std::chrono::high_resolution_clock::time_point _last_report;
-    std::chrono::nanoseconds                       _report_time_interval;
     std::chrono::nanoseconds                       _run_for;
     std::chrono::high_resolution_clock::time_point _start_time;
     mutable std::atomic<state>                     _state;
