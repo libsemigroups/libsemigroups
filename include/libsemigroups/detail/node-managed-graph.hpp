@@ -114,20 +114,28 @@ namespace libsemigroups {
         _coinc    = decltype(_coinc)();
         _settings = Settings();
         _stats    = Stats();
+        return *this;
       }
 
       // TODO corresponding init + rvalue ref version
-      // TODO this should be marked explicit but then compilation fails
-      template <typename N>
-      NodeManagedGraph(WordGraph<N> const& ad)
+      template <typename OtherNode>
+      explicit NodeManagedGraph(WordGraph<OtherNode> const& ad)
           : BaseGraph(ad), NodeManager<node_type>() {
         // NodeManager always has one node active
         NodeManager<node_type>::add_active_nodes(
             WordGraph<node_type>::number_of_nodes() - 1);
       }
 
-      // TODO NodeManagedGraph&
-      void reserve(size_t n);
+      template <typename OtherNode>
+      NodeManagedGraph& operator=(WordGraph<OtherNode> const& wg) {
+        init();
+        BaseGraph::init(wg);
+        NodeManager<node_type>::add_active_nodes(
+            WordGraph<node_type>::number_of_nodes() - 1);
+        return *this;
+      }
+
+      NodeManagedGraph& reserve(size_t n);
 
       ////////////////////////////////////////////////////////////////////////
       // Operators

@@ -22,7 +22,7 @@
 // * exception safety!
 // * expose iterators to relevant things in D-classes, in particular elements
 // * tpp file
-// TODO(now);
+// TODO(now):
 // * rename _NC mem fns
 
 #ifndef LIBSEMIGROUPS_KONIECZNY_HPP_

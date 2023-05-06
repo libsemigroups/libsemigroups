@@ -37,13 +37,15 @@ namespace libsemigroups {
     };
 
     template <typename BaseGraph>
-    void NodeManagedGraph<BaseGraph>::reserve(size_t n) {
+    NodeManagedGraph<BaseGraph>&
+    NodeManagedGraph<BaseGraph>::reserve(size_t n) {
       size_t m = NodeManager<node_type>::node_capacity();
       if (n > m) {
         m = n - m;
         BaseGraph::add_nodes(m);
         NodeManager<node_type>::add_free_nodes(m);
       }
+      return *this;
     }
 
     template <typename BaseGraph>

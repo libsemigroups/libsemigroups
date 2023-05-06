@@ -181,10 +181,23 @@ namespace libsemigroups {
 
     class Digraph : public detail::NodeManagedGraph<
                         FelschGraph<word_type, uint32_t, Definitions>> {
-      using FelschGraph_        = FelschGraph<word_type, uint32_t, Definitions>;
+      using FelschGraph_      = FelschGraph<word_type, uint32_t, Definitions>;
       using NodeManagedGraph_ = NodeManagedGraph<FelschGraph_>;
 
      public:
+      using node_type = typename NodeManagedGraph_::node_type;
+
+      Digraph()                          = default;
+      Digraph(Digraph const&)            = default;
+      Digraph(Digraph&&)                 = default;
+      Digraph& operator=(Digraph const&) = default;
+      Digraph& operator=(Digraph&&)      = default;
+
+      Digraph& operator=(WordGraph<node_type> const& wg) {
+        NodeManagedGraph_::operator=(wg);
+        return *this;
+      }
+
       using FelschGraph_::set_target_no_checks;
       using NodeManagedGraph_::NodeManagedGraph;
 
