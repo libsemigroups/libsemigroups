@@ -41,6 +41,7 @@ namespace libsemigroups {
     using nanoseconds = std::chrono::nanoseconds;
 
     mutable time_point _last_report;
+    std::string        _prefix;
     nanoseconds        _report_time_interval;
 
    public:
@@ -130,6 +131,15 @@ namespace libsemigroups {
     //! The number of nanoseconds between reports.
     nanoseconds report_every() const noexcept {
       return _report_time_interval;
+    }
+
+    ReporterV3& set_prefix(std::string const& val) {
+      _prefix = val;
+      return *this;
+    }
+
+    std::string const& prefix() const noexcept {
+      return _prefix;
     }
   };
 

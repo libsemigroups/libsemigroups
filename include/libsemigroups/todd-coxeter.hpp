@@ -29,15 +29,15 @@
 #define LIBSEMIGROUPS_TODD_COXETER_HPP_
 
 #include "cong-intf.hpp"
-#include "exception.hpp"     // for LIBSEMIGROUPS_EXCEPTION
-#include "felsch-graph.hpp"  // for FelschGraph
-#include "obvinf.hpp"        // for is_obviously_infinite
-#include "order.hpp"         // for order
+#include "detail/node-managed-graph.hpp"  // for Digraph
+#include "exception.hpp"                  // for LIBSEMIGROUPS_EXCEPTION
+#include "felsch-graph.hpp"               // for FelschGraph
+#include "obvinf.hpp"                     // for is_obviously_infinite
+#include "order.hpp"                      // for order
 #include "paths.hpp"
-#include "present.hpp"               // for Presentation
-#include "to-presentation.hpp"       // for make
-#include "todd-coxeter-digraph.hpp"  // for Digraph
-#include "types.hpp"                 // for word_type
+#include "present.hpp"          // for Presentation
+#include "to-presentation.hpp"  // for make
+#include "types.hpp"            // for word_type
 
 #include "detail/report.hpp"  // for LIBSEMIGROUPS_EXCEPTION
 
@@ -179,15 +179,14 @@ namespace libsemigroups {
       }
     };  // Definitions
 
-    class Digraph : public NodeManagedDigraph<
+    class Digraph : public detail::NodeManagedGraph<
                         FelschGraph<word_type, uint32_t, Definitions>> {
       using FelschGraph_        = FelschGraph<word_type, uint32_t, Definitions>;
-      using NodeManagedDigraph_ = NodeManagedDigraph<FelschGraph_>;
-      using NodeManager_        = typename NodeManagedDigraph_::NodeManager_;
+      using NodeManagedGraph_ = NodeManagedGraph<FelschGraph_>;
 
      public:
       using FelschGraph_::set_target_no_checks;
-      using NodeManagedDigraph_::NodeManagedDigraph;
+      using NodeManagedGraph_::NodeManagedGraph;
 
       Digraph& init(Presentation<word_type> const& p);
       Digraph& init(Presentation<word_type>&& p);

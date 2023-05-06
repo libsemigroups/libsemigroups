@@ -31,12 +31,36 @@
 #include "present.hpp"                  // for Presentation
 #include "runner.hpp"                   // for Runner
 #include "to-presentation.hpp"          // for make
-#include "todd-coxeter-digraph.hpp"     // for StephenDigraph
 #include "types.hpp"                    // for word_type
 #include "word-graph-with-sources.hpp"  // for WordGraphWithSources
 #include "word-graph.hpp"               // for WordGraph, Act...
 
+#include "detail/node-managed-graph.hpp"  // for NodeManagedGraph
+
 namespace libsemigroups {
+
+  class StephenDigraph
+      : public detail::NodeManagedGraph<WordGraphWithSources<size_t>> {
+    using BaseDigraph         = WordGraphWithSources<size_t>;
+    using NodeManagedGraph_ = NodeManagedGraph<BaseDigraph>;
+
+   public:
+    using node_type = typename BaseDigraph::node_type;
+
+    StephenDigraph& init(Presentation<word_type> const& p) {
+      NodeManager<node_type>::clear();
+      BaseDigraph::init(NodeManager<node_type>::node_capacity(),
+                        p.alphabet().size());
+      return *this;
+    }
+
+    StephenDigraph& init(Presentation<word_type>&& p) {
+      NodeManager<node_type>::clear();
+      BaseDigraph::init(NodeManager<node_type>::node_capacity(),
+                        p.alphabet().size());
+      return *this;
+    }
+  };
 
   //! Defined in ``stephen.hpp``.
   //!

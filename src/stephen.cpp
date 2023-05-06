@@ -21,19 +21,19 @@
 
 #include "libsemigroups/stephen.hpp"
 
-#include <chrono>                                  // for duration, duration...
-#include <tuple>                                   // for tie, tuple
-#include <utility>                                 // for move, pair
-                                                   //
-#include "libsemigroups/constants.hpp"             // for operator==, Undefined
-#include "libsemigroups/debug.hpp"                 // for LIBSEMIGROUPS_ASSERT
-#include "libsemigroups/exception.hpp"             // for LibsemigroupsExcep...
-#include "libsemigroups/present.hpp"               // for Presentation<>::wo...
-#include "libsemigroups/todd-coxeter-digraph.hpp"  // for StephenDigraph...
-#include "libsemigroups/types.hpp"                 // for word_type
+#include <chrono>                       // for duration, duration...
+#include <tuple>                        // for tie, tuple
+#include <utility>                      // for move, pair
+                                        //
+#include "libsemigroups/constants.hpp"  // for operator==, Undefined
+#include "libsemigroups/debug.hpp"      // for LIBSEMIGROUPS_ASSERT
+#include "libsemigroups/exception.hpp"  // for LibsemigroupsExcep...
+#include "libsemigroups/present.hpp"    // for Presentation<>::wo...
+#include "libsemigroups/types.hpp"      // for word_type
 
-#include "libsemigroups/detail/report.hpp"  // for REPORT_DEFAULT_V3
-#include "libsemigroups/detail/string.hpp"  // for group_digits
+#include "libsemigroups/detail/node-managed-graph.hpp"  // for StephenDigraph...
+#include "libsemigroups/detail/report.hpp"              // for REPORT_DEFAULT_V3
+#include "libsemigroups/detail/string.hpp"              // for group_digits
 
 namespace libsemigroups {
 
@@ -137,7 +137,7 @@ namespace libsemigroups {
     auto start_time = std::chrono::high_resolution_clock::now();
     validate();  // throws if no presentation is defined
     _word_graph.init(presentation());
-    _word_graph.complete_path(0, _word.cbegin(), _word.cend());
+    std::ignore = _word_graph.complete_path(0, _word.cbegin(), _word.cend());
     node_type& current     = _word_graph.cursor();
     auto const rules_begin = presentation().rules.cbegin();
     auto const rules_end   = presentation().rules.cend();

@@ -19,8 +19,8 @@
 // This file contains the declaration for a class to manage nodes for
 // ToddCoxeterDigraph instances.
 
-#ifndef LIBSEMIGROUPS_NODE_MANAGER_HPP_
-#define LIBSEMIGROUPS_NODE_MANAGER_HPP_
+#ifndef LIBSEMIGROUPS_DETAIL_NODE_MANAGER_HPP_
+#define LIBSEMIGROUPS_DETAIL_NODE_MANAGER_HPP_
 
 #include <cstddef>  // for size_t
 #include <cstdint>  // for uint32_t
@@ -28,8 +28,8 @@
 
 #include <rx/ranges.hpp>
 
-#include "constants.hpp"  // for UNDEFINED
-#include "debug.hpp"      // for LIBSEMIGROUPS_ASSERT/DEBUG
+#include "libsemigroups/constants.hpp"  // for UNDEFINED
+#include "libsemigroups/debug.hpp"      // for LIBSEMIGROUPS_ASSERT/DEBUG
 
 namespace libsemigroups {
   namespace detail {
@@ -61,6 +61,14 @@ namespace libsemigroups {
       ////////////////////////////////////////////////////////////////////////
       // NodeManager - member functions - public
       ////////////////////////////////////////////////////////////////////////
+
+      node_type& cursor() {
+        return _current;
+      }
+
+      node_type& lookahead_cursor() {
+        return _current_la;
+      }
 
       //! Returns the current node capacity of the graph.
       //!
@@ -294,32 +302,15 @@ namespace libsemigroups {
       void      add_free_nodes(size_t);
       void      erase_free_nodes();
       node_type new_active_node();
-      void      switch_nodes(node_type const, node_type const);
-      void      apply_permutation(Perm p);
+      // TODO rename -> swap_nodes_no_checks
+      void switch_nodes(node_type const, node_type const);
+      // TODO rename -> permute_nodes_no_checks
+      void apply_permutation(Perm p);
 
       // not noexcept since std::vector::operator[] isn't.
       void free_node(node_type const);
 
       void clear();
-
-      // TODO this doesn't currently seem to work
-      // void compact() {
-      //   std::iota(_forwd.begin(), _forwd.end() - 1, 1);
-      //   _forwd.back() = UNDEFINED;
-      //   std::iota(_bckwd.begin() + 1, _bckwd.end(), 0);
-      //   std::iota(_ident.begin(), _ident.begin() + number_of_nodes_active(),
-      //   0); std::fill(
-      //       _ident.begin() + number_of_nodes_active(), _ident.end(),
-      //       _id_node);
-      //   _current    = _id_node;
-      //   _current_la = _id_node;
-      //   if (number_of_nodes_active() == node_capacity()) {
-      //     _first_free_node = UNDEFINED;
-      //   } else {
-      //     _first_free_node = number_of_nodes_active();
-      //   }
-      //   _last_active_node = number_of_nodes_active() - 1;
-      // }
 
       ////////////////////////////////////////////////////////////////////////
       // NodeManager - data - protected
@@ -342,7 +333,7 @@ namespace libsemigroups {
 
         ActiveNodesRange() : _node_manager(nullptr), _current(UNDEFINED) {}
 
-        ActiveNodesRange(NodeManager const* nm)
+        explicit ActiveNodesRange(NodeManager const* nm)
             : _node_manager(nm), _current(nm->initial_node()) {}
 
         output_type get() const noexcept {
@@ -416,4 +407,4 @@ struct rx::is_input_range<
 
 #include "node-manager.tpp"
 
-#endif  // LIBSEMIGROUPS_NODE_MANAGER_HPP_
+#endif  // LIBSEMIGROUPS_DETAIL_NODE_MANAGER_HPP_

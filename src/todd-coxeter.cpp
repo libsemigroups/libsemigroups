@@ -34,23 +34,23 @@ namespace libsemigroups {
 
   ToddCoxeter::Digraph&
   ToddCoxeter::Digraph::init(Presentation<word_type> const& p) {
-    NodeManager_::clear();
+    NodeManager<node_type>::clear();
     FelschGraph_::init(p);
     // FIXME shouldn't add nodes here because then there'll be more than
     // there should be (i.e. NodeManager and FelschGraph_ will have
     // different numbers of nodes
-    FelschGraph_::add_nodes(NodeManager_::node_capacity());
+    FelschGraph_::add_nodes(NodeManager<node_type>::node_capacity());
     return *this;
   }
 
   ToddCoxeter::Digraph&
   ToddCoxeter::Digraph::init(Presentation<word_type>&& p) {
-    NodeManager_::clear();
+    NodeManager<node_type>::clear();
     FelschGraph_::init(std::move(p));
     // FIXME shouldn't add nodes here because then there'll be more than
     // there should be (i.e. NodeManager and FelschGraph_ will have
     // different numbers of nodes
-    FelschGraph_::add_nodes(NodeManager_::node_capacity());
+    FelschGraph_::add_nodes(NodeManager<node_type>::node_capacity());
     return *this;
   }
 
@@ -64,7 +64,7 @@ namespace libsemigroups {
     while (!defs.empty()) {
       while (!defs.empty()) {
         defs.pop(d);
-        if (NodeManager_::is_active_node(d.first)) {
+        if (NodeManager<node_type>::is_active_node(d.first)) {
           FelschGraph_::process_definition(d, incompat, pref_defs);
         }
       }
@@ -76,7 +76,7 @@ namespace libsemigroups {
   void ToddCoxeter::Digraph::push_definition_hlt(node_type const& c,
                                                  word_type const& u,
                                                  word_type const& v) noexcept {
-    LIBSEMIGROUPS_ASSERT(NodeManager_::is_active_node(c));
+    LIBSEMIGROUPS_ASSERT(NodeManager<node_type>::is_active_node(c));
 
     node_type   x, y;
     letter_type a, b;
@@ -117,10 +117,11 @@ namespace libsemigroups {
                                                RuleIterator last,
                                                bool         stop_early) {
     detail::Timer t;
-    size_t const  old_number_of_killed = NodeManager_::number_of_nodes_killed();
+    size_t const  old_number_of_killed
+        = NodeManager<node_type>::number_of_nodes_killed();
     CollectCoincidences                    incompat(_coinc);
     typename FelschGraph_::NoPreferredDefs prefdefs;
-    while (current != NodeManager_::first_free_node()) {
+    while (current != NodeManager<node_type>::first_free_node()) {
       // TODO(later) when we have an RuleIterator into the active nodes, we
       // should remove the while loop, and use that in make_compatible
       // instead. At present there is a cbegin/cend_active_nodes in
@@ -133,7 +134,7 @@ namespace libsemigroups {
       // choice, could allow the other choices here too (which works,
       // but didn't seem to be very useful).
       process_coincidences<DoNotRegisterDefs>();
-      current = NodeManager_::next_active_node(current);
+      current = NodeManager<node_type>::next_active_node(current);
       if (stop_early && t > std::chrono::seconds(1)) {
         // TODO setting for this
         size_t killed_last_second
@@ -149,7 +150,8 @@ namespace libsemigroups {
         report_active_nodes();
       }
     }
-    return NodeManager_::number_of_nodes_killed() - old_number_of_killed;
+    return NodeManager<node_type>::number_of_nodes_killed()
+           - old_number_of_killed;
   }
 
   ////////////////////////////////////////////////////////////////////////
@@ -921,6 +923,8 @@ namespace libsemigroups {
                         size_t                    tries,
                         std::chrono::milliseconds try_for,
                         float                     threshold) {
+      using detail::node_managed_graph::random_active_node;
+
       if (is_obviously_infinite(tc)) {
         return tril::TRUE;
       } else if (tc.finished()) {
@@ -937,8 +941,8 @@ namespace libsemigroups {
           size_t limit = copy.word_graph().number_of_nodes_active();
           while (copy.word_graph().number_of_nodes_active() >= threshold * limit
                  && !copy.finished()) {
-            node_type c1 = copy.word_graph().random_active_node();
-            node_type c2 = copy.word_graph().random_active_node();
+            node_type c1 = random_active_node(copy.word_graph());
+            node_type c2 = random_active_node(copy.word_graph());
             auto&     wg
                 = const_cast<ToddCoxeter::digraph_type&>(copy.word_graph());
             wg.coincide_nodes(c1, c2);
