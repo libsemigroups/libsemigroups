@@ -1,6 +1,6 @@
 //
 // libsemigroups - C++ library for semigroups and monoids
-// Copyright (C) 2022 James D. Mitchell
+// Copyright (C) 2022-2023 James D. Mitchell
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -22,6 +22,22 @@
 namespace libsemigroups {
 
   namespace detail {
+    ////////////////////////////////////////////////////////////////////////
+    // Nested classes
+    ////////////////////////////////////////////////////////////////////////
+
+    template <typename BaseGraph>
+    struct NodeManagedGraph<BaseGraph>::CollectCoincidences {
+      explicit CollectCoincidences(Coincidences& c) : _coinc(c) {}
+
+      bool operator()(node_type x, node_type y) {
+        _coinc.emplace(x, y);
+        return true;
+      }
+
+      Coincidences& _coinc;
+    };
+
     template <typename BaseGraph>
     struct NodeManagedGraph<BaseGraph>::Settings {
       uint64_t large_collapse = 100'000;
@@ -36,6 +52,18 @@ namespace libsemigroups {
       time_point start_time = std::chrono::high_resolution_clock::now();
     };
 
+    ////////////////////////////////////////////////////////////////////////
+    // Constructors + initializers
+    ////////////////////////////////////////////////////////////////////////
+
+    template <typename BaseGraph>
+    NodeManagedGraph<BaseGraph>& NodeManagedGraph<BaseGraph>::init() {
+      _coinc    = decltype(_coinc)();
+      _settings = Settings();
+      _stats    = Stats();
+      return *this;
+    }
+
     template <typename BaseGraph>
     NodeManagedGraph<BaseGraph>&
     NodeManagedGraph<BaseGraph>::reserve(size_t n) {
@@ -48,52 +76,9 @@ namespace libsemigroups {
       return *this;
     }
 
-    template <typename BaseGraph>
-    template <bool RegisterDefs>
-    std::pair<bool, typename NodeManagedGraph<BaseGraph>::node_type>
-    NodeManagedGraph<BaseGraph>::complete_path(
-        node_type                 c,
-        word_type::const_iterator first,
-        word_type::const_iterator last) noexcept {
-      LIBSEMIGROUPS_ASSERT(NodeManager<node_type>::is_active_node(c));
-      LIBSEMIGROUPS_ASSERT(first <= last);
-
-      word_type::const_iterator it;
-
-      std::tie(c, it)
-          = word_graph::last_node_on_path_no_checks(*this, c, first, last);
-      bool result = false;
-      for (; it < last; ++it) {
-        LIBSEMIGROUPS_ASSERT(target_no_checks(c, *it) == UNDEFINED);
-        node_type d = new_node();
-        BaseGraph::template set_target_no_checks<RegisterDefs>(c, *it, d);
-        result = true;
-        c      = d;
-      }
-      return std::make_pair(result, c);
-    }
-
-    template <typename BaseGraph>
-    void NodeManagedGraph<BaseGraph>::swap_nodes_no_checks(node_type c,
-                                                           node_type d) {
-      LIBSEMIGROUPS_ASSERT(_coinc.empty());
-      LIBSEMIGROUPS_ASSERT(c != NodeManager<node_type>::_id_node);
-      LIBSEMIGROUPS_ASSERT(d != NodeManager<node_type>::_id_node);
-      LIBSEMIGROUPS_ASSERT(c != d);
-      LIBSEMIGROUPS_ASSERT(NodeManager<node_type>::is_valid_node(c));
-      LIBSEMIGROUPS_ASSERT(NodeManager<node_type>::is_valid_node(d));
-
-      if (NodeManager<node_type>::is_active_node(c)
-          && NodeManager<node_type>::is_active_node(d)) {
-        BaseGraph::swap_nodes_no_checks(c, d);
-      } else if (NodeManager<node_type>::is_active_node(c)) {
-        BaseGraph::rename_node_no_checks(c, d);
-      } else {
-        LIBSEMIGROUPS_ASSERT(NodeManager<node_type>::is_active_node(d));
-        BaseGraph::rename_node_no_checks(d, c);
-      }
-      NodeManager<node_type>::switch_nodes(c, d);
-    }
+    ////////////////////////////////////////////////////////////////////////
+    // Stats
+    ////////////////////////////////////////////////////////////////////////
 
     template <typename BaseGraph>
     void NodeManagedGraph<BaseGraph>::stats_check_point() const {
@@ -104,6 +89,10 @@ namespace libsemigroups {
       _stats.prev_nodes_defined
           = NodeManager<node_type>::number_of_nodes_defined();
     }
+
+    ////////////////////////////////////////////////////////////////////////
+    // Modifiers
+    ////////////////////////////////////////////////////////////////////////
 
     template <typename BaseGraph>
     typename NodeManagedGraph<BaseGraph>::node_type
@@ -120,82 +109,29 @@ namespace libsemigroups {
     }
 
     template <typename BaseGraph>
-    void NodeManagedGraph<BaseGraph>::report_active_nodes() const {
-      using detail::group_digits;
-      using detail::signed_group_digits;
-      using std::chrono::duration_cast;
-      using high_resolution_clock = std::chrono::high_resolution_clock;
-      using nanoseconds           = std::chrono::nanoseconds;
+    template <bool RegisterDefs>
+    std::pair<bool, typename NodeManagedGraph<BaseGraph>::node_type>
+    NodeManagedGraph<BaseGraph>::complete_path(
+        node_type                 c,
+        word_type::const_iterator first,
+        word_type::const_iterator last) noexcept {
+      LIBSEMIGROUPS_ASSERT(NodeManager<node_type>::is_active_node(c));
+      LIBSEMIGROUPS_ASSERT(first <= last);
 
-      auto run_time = duration_cast<nanoseconds>(high_resolution_clock::now()
-                                                 - this->_stats.start_time);
+      word_type::const_iterator it;
 
-      auto const active  = this->number_of_nodes_active();
-      auto const killed  = this->number_of_nodes_killed();
-      auto const defined = this->number_of_nodes_defined();
+      std::tie(c, it)
+          = word_graph::last_node_on_path_no_checks(*this, c, first, last);
 
-      auto const active_diff
-          = signed_group_digits(active - _stats.prev_active_nodes);
-      auto const killed_diff
-          = signed_group_digits(killed - _stats.prev_nodes_killed);
-      auto const defined_diff
-          = signed_group_digits(defined - _stats.prev_nodes_defined);
-
-      auto const mean_killed
-          = group_digits(std::pow(10, 9) * static_cast<double>(killed)
-                         / run_time.count())
-            + "/s";
-      auto const mean_defined
-          = group_digits(std::pow(10, 9) * static_cast<double>(defined)
-                         / run_time.count())
-            + "/s";
-
-      std::array<size_t, 3> col1_widths
-          = {12, group_digits(active).size(), active_diff.size()};
-      std::array<size_t, 4> col2_widths = {12,
-                                           group_digits(killed).size(),
-                                           killed_diff.size(),
-                                           mean_killed.size()};
-      std::array<size_t, 4> col3_widths = {12,
-                                           group_digits(defined).size(),
-                                           defined_diff.size(),
-                                           mean_defined.size()};
-      size_t c1 = *std::max_element(col1_widths.begin(), col1_widths.end());
-      size_t c2 = *std::max_element(col2_widths.begin(), col2_widths.end());
-      size_t c3 = *std::max_element(col3_widths.begin(), col3_widths.end());
-
-      auto msg
-          = fmt_default("{}: nodes {:>{c1}} (active) | {:>{c2}} (killed) | "
-                        "{:>{c3}} (defined)\n",
-                        prefix(),
-                        group_digits(active),
-                        group_digits(killed),
-                        group_digits(defined),
-                        fmt::arg("c1", c1),
-                        fmt::arg("c2", c2),
-                        fmt::arg("c3", c3));
-      msg += fmt_default("{}: diff  {:>{c1}} (active) | {:>{c2}} (killed) | "
-                         "{:>{c3}} (defined)\n",
-                         prefix(),
-                         active_diff,
-                         killed_diff,
-                         defined_diff,
-                         fmt::arg("c1", c1),
-                         fmt::arg("c2", c2),
-                         fmt::arg("c3", c3));
-      msg += fmt_default(
-          "{}: time  {:>{c1}} (total)  | {:>{c2}} (killed) | {:>{c3}} "
-          "(defined)\n",
-          prefix(),
-          string_time(run_time),
-          mean_killed,
-          mean_defined,
-          fmt::arg("c1", c1),
-          fmt::arg("c2", c2),
-          fmt::arg("c3", c3));
-      msg += fmt::format("{:-<93}\n", "");
-      report_no_prefix(msg);
-      stats_check_point();
+      bool result = false;
+      for (; it < last; ++it) {
+        LIBSEMIGROUPS_ASSERT(target_no_checks(c, *it) == UNDEFINED);
+        node_type d = new_node();
+        BaseGraph::template set_target_no_checks<RegisterDefs>(c, *it, d);
+        result = true;
+        c      = d;
+      }
+      return std::make_pair(result, c);
     }
 
     template <typename BaseGraph>
@@ -288,16 +224,14 @@ namespace libsemigroups {
         }
       }
 
-      // Remove all sources of all remaining active cosets
-      auto c = NodeManager<node_type>::_id_node;
+      // TODO(later) use rebuild_sources
+      auto c = NodeManager<node_type>::initial_node();
       while (c != NodeManager<node_type>::first_free_node()) {
         BaseGraph::remove_all_sources_no_checks(c);
         c = NodeManager<node_type>::next_active_node(c);
       }
 
-      // TODO use rebuild_sources, when I've implemented
-      // NodeManager<node_type>::cbegin(), NodeManager<node_type>::cend()
-      c        = NodeManager<node_type>::_id_node;
+      c        = NodeManager<node_type>::initial_node();
       size_t m = 0;
 
       while (c != NodeManager<node_type>::first_free_node()) {
@@ -322,5 +256,128 @@ namespace libsemigroups {
       }
       // fmt::print("Position 2, total coincidences is {}\n", total_coinc);
     }
-  }  // namespace detail
+
+    template <typename BaseGraph>
+    void NodeManagedGraph<BaseGraph>::swap_nodes_no_checks(node_type c,
+                                                           node_type d) {
+      LIBSEMIGROUPS_ASSERT(_coinc.empty());
+      LIBSEMIGROUPS_ASSERT(c != NodeManager<node_type>::initial_node());
+      LIBSEMIGROUPS_ASSERT(d != NodeManager<node_type>::initial_node());
+      LIBSEMIGROUPS_ASSERT(c != d);
+      LIBSEMIGROUPS_ASSERT(NodeManager<node_type>::is_valid_node(c));
+      LIBSEMIGROUPS_ASSERT(NodeManager<node_type>::is_valid_node(d));
+
+      if (NodeManager<node_type>::is_active_node(c)
+          && NodeManager<node_type>::is_active_node(d)) {
+        BaseGraph::swap_nodes_no_checks(c, d);
+      } else if (NodeManager<node_type>::is_active_node(c)) {
+        BaseGraph::rename_node_no_checks(c, d);
+      } else {
+        LIBSEMIGROUPS_ASSERT(NodeManager<node_type>::is_active_node(d));
+        BaseGraph::rename_node_no_checks(d, c);
+      }
+      NodeManager<node_type>::switch_nodes(c, d);
+    }
+
+    ////////////////////////////////////////////////////////////////////////
+    // Reporting - public
+    ////////////////////////////////////////////////////////////////////////
+
+    template <typename BaseGraph>
+    void NodeManagedGraph<BaseGraph>::report_active_nodes() const {
+      using detail::group_digits;
+      using detail::signed_group_digits;
+      using std::chrono::duration_cast;
+      using high_resolution_clock = std::chrono::high_resolution_clock;
+      using nanoseconds           = std::chrono::nanoseconds;
+
+      auto run_time = duration_cast<nanoseconds>(high_resolution_clock::now()
+                                                 - this->_stats.start_time);
+
+      auto const active  = this->number_of_nodes_active();
+      auto const killed  = this->number_of_nodes_killed();
+      auto const defined = this->number_of_nodes_defined();
+
+      auto const active_diff
+          = signed_group_digits(active - _stats.prev_active_nodes);
+      auto const killed_diff
+          = signed_group_digits(killed - _stats.prev_nodes_killed);
+      auto const defined_diff
+          = signed_group_digits(defined - _stats.prev_nodes_defined);
+
+      auto const mean_killed
+          = group_digits(std::pow(10, 9) * static_cast<double>(killed)
+                         / run_time.count())
+            + "/s";
+      auto const mean_defined
+          = group_digits(std::pow(10, 9) * static_cast<double>(defined)
+                         / run_time.count())
+            + "/s";
+
+      std::array<size_t, 3> col1_widths
+          = {12, group_digits(active).size(), active_diff.size()};
+      std::array<size_t, 4> col2_widths = {12,
+                                           group_digits(killed).size(),
+                                           killed_diff.size(),
+                                           mean_killed.size()};
+      std::array<size_t, 4> col3_widths = {12,
+                                           group_digits(defined).size(),
+                                           defined_diff.size(),
+                                           mean_defined.size()};
+      size_t c1 = *std::max_element(col1_widths.begin(), col1_widths.end());
+      size_t c2 = *std::max_element(col2_widths.begin(), col2_widths.end());
+      size_t c3 = *std::max_element(col3_widths.begin(), col3_widths.end());
+
+      auto msg
+          = fmt_default("{}: nodes {:>{c1}} (active) | {:>{c2}} (killed) | "
+                        "{:>{c3}} (defined)\n",
+                        prefix(),
+                        group_digits(active),
+                        group_digits(killed),
+                        group_digits(defined),
+                        fmt::arg("c1", c1),
+                        fmt::arg("c2", c2),
+                        fmt::arg("c3", c3));
+      msg += fmt_default("{}: diff  {:>{c1}} (active) | {:>{c2}} (killed) | "
+                         "{:>{c3}} (defined)\n",
+                         prefix(),
+                         active_diff,
+                         killed_diff,
+                         defined_diff,
+                         fmt::arg("c1", c1),
+                         fmt::arg("c2", c2),
+                         fmt::arg("c3", c3));
+      msg += fmt_default(
+          "{}: time  {:>{c1}} (total)  | {:>{c2}} (killed) | {:>{c3}} "
+          "(defined)\n",
+          prefix(),
+          string_time(run_time),
+          mean_killed,
+          mean_defined,
+          fmt::arg("c1", c1),
+          fmt::arg("c2", c2),
+          fmt::arg("c3", c3));
+      msg += fmt::format("{:-<93}\n", "");
+      report_no_prefix(msg);
+      stats_check_point();
+    }
+
+    ////////////////////////////////////////////////////////////////////////
+    // Helpers
+    ////////////////////////////////////////////////////////////////////////
+
+    namespace node_managed_graph {
+      template <typename BaseGraph>
+      typename BaseGraph::node_type
+      random_active_node(NodeManagedGraph<BaseGraph> const& nmg) {
+        static std::random_device rd;
+        static std::mt19937       g(rd());
+
+        std::uniform_int_distribution<> d(0, nmg.number_of_nodes_active() - 1);
+        auto                            r = nmg.active_nodes();
+        rx::advance_by(r, d(g));
+        return r.get();
+      }
+    }  // namespace node_managed_graph
+  }    // namespace detail
 }  // namespace libsemigroups

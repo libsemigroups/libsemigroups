@@ -20,7 +20,6 @@
 // by Stephen and by ToddCoxeter.
 
 // TODO:
-// * cleanup
 // * iwyu
 // * code coverage
 
@@ -76,6 +75,7 @@ namespace libsemigroups {
 
       using Coincidence  = std::pair<node_type, node_type>;
       using Coincidences = std::stack<Coincidence>;
+      struct CollectCoincidences;  // forward decl
 
       Coincidences _coinc;
 
@@ -104,20 +104,15 @@ namespace libsemigroups {
       // Constructors + initializers
       ////////////////////////////////////////////////////////////////////////
 
-      NodeManagedGraph()                                   = default;
+      NodeManagedGraph() = default;
+      NodeManagedGraph& init();
+
       NodeManagedGraph(NodeManagedGraph const&)            = default;
       NodeManagedGraph(NodeManagedGraph&&)                 = default;
       NodeManagedGraph& operator=(NodeManagedGraph const&) = default;
       NodeManagedGraph& operator=(NodeManagedGraph&&)      = default;
 
-      NodeManagedGraph& init() {
-        _coinc    = decltype(_coinc)();
-        _settings = Settings();
-        _stats    = Stats();
-        return *this;
-      }
-
-      // TODO corresponding init + rvalue ref version
+      // TODO corresponding init
       template <typename OtherNode>
       explicit NodeManagedGraph(WordGraph<OtherNode> const& ad)
           : BaseGraph(ad), NodeManager<node_type>() {
@@ -126,6 +121,8 @@ namespace libsemigroups {
             WordGraph<node_type>::number_of_nodes() - 1);
       }
 
+      // TODO corresponding init
+      // to tpp
       template <typename OtherNode>
       NodeManagedGraph& operator=(WordGraph<OtherNode> const& wg) {
         init();
@@ -180,8 +177,7 @@ namespace libsemigroups {
                     word_type::const_iterator first,
                     word_type::const_iterator last) noexcept;
 
-      // TODO rename merge_nodes_no_checks
-      void coincide_nodes(node_type x, node_type y) {
+      void merge_nodes_no_checks(node_type x, node_type y) {
         _coinc.emplace(x, y);
       }
 
@@ -204,34 +200,13 @@ namespace libsemigroups {
       ////////////////////////////////////////////////////////////////////////
 
       void report_active_nodes() const;
-
-     protected:
-      // TODO to tpp
-      struct CollectCoincidences {
-        explicit CollectCoincidences(Coincidences& c) : _coinc(c) {}
-
-        bool operator()(node_type x, node_type y) {
-          _coinc.emplace(x, y);
-          return true;
-        }
-
-        Coincidences& _coinc;
-      };
     };
 
     namespace node_managed_graph {
       template <typename BaseGraph>
-      // TODO to t/cpp file
       typename BaseGraph::node_type
-      random_active_node(NodeManagedGraph<BaseGraph> const& nmg) {
-        static std::random_device rd;
-        static std::mt19937       g(rd());
+      random_active_node(NodeManagedGraph<BaseGraph> const& nmg);
 
-        std::uniform_int_distribution<> d(0, nmg.number_of_nodes_active() - 1);
-        auto                            r = nmg.active_nodes();
-        rx::advance_by(r, d(g));
-        return r.get();
-      }
     }  // namespace node_managed_graph
 
   }  // namespace detail

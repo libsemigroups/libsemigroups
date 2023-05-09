@@ -319,4 +319,19 @@ namespace libsemigroups {
     }
   }
 
+  TEST_CASE("Presentation length", "[parallel]") {
+    auto rg = ReportGuard(false);
+
+    size_t const sample_size = 128;
+    size_t const num_letters = 2;
+    size_t const word_len    = 10;
+    size_t const num_classes = 5;
+
+    auto sample = generate_random_sample(sample_size, num_letters, word_len);
+
+    for (size_t i = 1; i <= std::thread::hardware_concurrency(); i *= 2) {
+      bench_parallel(sample, i, num_classes);
+    }
+  }
+
 }  // namespace libsemigroups

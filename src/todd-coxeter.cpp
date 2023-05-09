@@ -945,7 +945,7 @@ namespace libsemigroups {
             node_type c2 = random_active_node(copy.word_graph());
             auto&     wg
                 = const_cast<ToddCoxeter::digraph_type&>(copy.word_graph());
-            wg.coincide_nodes(c1, c2);
+            wg.merge_nodes_no_checks(c1, c2);
             wg.process_coincidences<RegisterDefs>();
             wg.process_definitions();
             copy.run_for(try_for);

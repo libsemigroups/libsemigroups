@@ -164,7 +164,7 @@ namespace libsemigroups {
               _word_graph.set_target_no_checks(c, it->back(), u_end);
             } else if (u_end != v_end) {
               did_def = true;
-              _word_graph.coincide_nodes(u_end, v_end);
+              _word_graph.merge_nodes_no_checks(u_end, v_end);
               _word_graph.process_coincidences<false>();
             }
             --it;
