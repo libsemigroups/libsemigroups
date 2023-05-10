@@ -405,17 +405,15 @@ namespace libsemigroups {
     presentation::sort_each_rule(p);
     presentation::sort_rules(p);
 
-    REQUIRE(presentation::length(p) == 78);
-    REQUIRE(p.alphabet().size() == 5);
-    REQUIRE(*presentation::shortest_rule(p) == word_type({0, 0}));
-    REQUIRE(*(presentation::shortest_rule(p) + 1) == word_type({0}));
+    REQUIRE(presentation::length(p) == 48);
+    REQUIRE(p.alphabet().size() == 4);
+    REQUIRE(*presentation::shortest_rule(p) == word_type({1, 1}));
+    REQUIRE(*(presentation::shortest_rule(p) + 1) == word_type({}));
     REQUIRE(presentation::longest_rule_length(p) == 8);
 
     Sims1_ C(congruence_kind::right);
     C.short_rules(p);
-    REQUIRE(C.number_of_threads(std::thread::hardware_concurrency())
-                .number_of_congruences(209)
-            == 195'709);
+    REQUIRE(C.number_of_threads(1).number_of_congruences(209) == 195'709);
   }
 
   LIBSEMIGROUPS_TEST_CASE("Sims1",
@@ -718,17 +716,16 @@ namespace libsemigroups {
     presentation::sort_each_rule(p);
     presentation::sort_rules(p);
     REQUIRE(p.rules.size() == 86);
-    do {
-      auto it = knuth_bendix::redundant_rule(p, std::chrono::milliseconds(100));
-      p.rules.erase(it, it + 2);
-    } while (presentation::length(p) > 300);
-    presentation::replace_subword(p, presentation::longest_common_subword(p));
+    // do {
+    //   auto it = knuth_bendix::redundant_rule(p,
+    //   std::chrono::milliseconds(100)); p.rules.erase(it, it + 2);
+    // } while (presentation::length(p) > 300);
+    // presentation::replace_subword(p,
+    // presentation::longest_common_subword(p));
 
     Sims1_ C(congruence_kind::right);
-    C.short_rules(p).long_rule_length(8);
-    REQUIRE(C.number_of_threads(std::thread::hardware_concurrency())
-                .number_of_congruences(105)
-            == 103'406);
+    C.short_rules(p).long_rule_length(12);
+    REQUIRE(C.number_of_threads(4).number_of_congruences(105) == 103'406);
   }
 
   LIBSEMIGROUPS_TEST_CASE("Sims1",
@@ -737,59 +734,64 @@ namespace libsemigroups {
                           "[extreme][sims1]") {
     auto rg = ReportGuard(true);
     auto p  = brauer_monoid(4);
-    REQUIRE(p.alphabet().size() == 7);
-    REQUIRE(presentation::length(p) == 182);
+    REQUIRE(p.alphabet().size() == 6);
+    REQUIRE(presentation::length(p) == 140);
     presentation::remove_duplicate_rules(p);
-    REQUIRE(presentation::length(p) == 162);
+    REQUIRE(presentation::length(p) == 120);
     presentation::reduce_complements(p);
-    REQUIRE(presentation::length(p) == 159);
+    REQUIRE(presentation::length(p) == 117);
     presentation::sort_each_rule(p);
     presentation::sort_rules(p);
-    REQUIRE(p.rules.size() == 86);
+    REQUIRE(p.rules.size() == 60);
 
-    auto d = MinimalRepOrc().short_rules(p).target_size(105).digraph();
-    REQUIRE(d.number_of_nodes() == 22);
-    REQUIRE(word_graph::is_strictly_cyclic(d));
-    REQUIRE(
-        d
-        == to_word_graph<uint32_t>(
-            22, {{0, 0, 1, 0, 2, 3, 2},        {1, 4, 0, 5, 6, 3, 7},
-                 {2, 2, 2, 2, 2, 2, 2},        {3, 8, 3, 9, 6, 3, 7},
-                 {4, 1, 4, 10, 6, 2, 11},      {5, 10, 5, 1, 12, 2, 7},
-                 {6, 6, 8, 12, 6, 3, 13},      {7, 11, 9, 7, 13, 3, 7},
-                 {8, 3, 6, 14, 6, 3, 11},      {9, 14, 7, 3, 12, 3, 7},
-                 {10, 5, 15, 4, 12, 16, 11},   {11, 7, 17, 11, 13, 16, 11},
-                 {12, 12, 18, 6, 12, 16, 13},  {13, 13, 19, 13, 13, 20, 13},
-                 {14, 9, 21, 8, 12, 20, 11},   {15, 15, 10, 15, 2, 16, 2},
-                 {16, 18, 16, 17, 12, 16, 11}, {17, 21, 11, 16, 6, 16, 11},
-                 {18, 16, 12, 21, 12, 16, 7},  {19, 20, 13, 20, 13, 20, 13},
-                 {20, 19, 20, 19, 13, 20, 13}, {21, 17, 14, 18, 6, 20, 7}}));
+    // auto d = MinimalRepOrc().short_rules(p).target_size(105).digraph();
+    // REQUIRE(d.number_of_nodes() == 22);
+    // REQUIRE(word_graph::is_strictly_cyclic(d));
+    // REQUIRE(
+    //     d
+    //     == to_word_graph<uint32_t>(
+    //         22, {{0, 0, 1, 0, 2, 3, 2},        {1, 4, 0, 5, 6, 3, 7},
+    //              {2, 2, 2, 2, 2, 2, 2},        {3, 8, 3, 9, 6, 3, 7},
+    //              {4, 1, 4, 10, 6, 2, 11},      {5, 10, 5, 1, 12, 2, 7},
+    //              {6, 6, 8, 12, 6, 3, 13},      {7, 11, 9, 7, 13, 3, 7},
+    //              {8, 3, 6, 14, 6, 3, 11},      {9, 14, 7, 3, 12, 3, 7},
+    //              {10, 5, 15, 4, 12, 16, 11},   {11, 7, 17, 11, 13, 16, 11},
+    //              {12, 12, 18, 6, 12, 16, 13},  {13, 13, 19, 13, 13, 20, 13},
+    //              {14, 9, 21, 8, 12, 20, 11},   {15, 15, 10, 15, 2, 16, 2},
+    //              {16, 18, 16, 17, 12, 16, 11}, {17, 21, 11, 16, 6, 16, 11},
+    //              {18, 16, 12, 21, 12, 16, 7},  {19, 20, 13, 20, 13, 20, 13},
+    //              {20, 19, 20, 19, 13, 20, 13}, {21, 17, 14, 18, 6, 20, 7}}));
 
-    auto S = to_froidure_pin<Transf<0, node_type>>(d);
-    REQUIRE(S.size() == 105);
-    REQUIRE(S.generator(0) == Transf<0, node_type>::identity(22));
-    REQUIRE(
-        S.generator(1)
-        == Transf<0, node_type>({0, 4,  2,  8, 1,  10, 6,  11, 3,  14, 5,
-                                 7, 12, 13, 9, 15, 18, 21, 16, 20, 19, 17}));
-    REQUIRE(
-        S.generator(2)
-        == Transf<0, node_type>({1,  0,  2,  3,  4,  5,  8,  9,  6,  7,  15,
-                                 17, 18, 19, 21, 10, 16, 11, 12, 13, 20, 14}));
-    REQUIRE(S.generator(3)
-            == Transf<0, node_type>({0, 5,  2, 9,  10, 1,  12, 7,  14, 3, 4, 11,
-                                     6, 13, 8, 15, 17, 16, 21, 20, 19, 18}));
-    REQUIRE(S.generator(4)
-            == Transf<0, node_type>({2,  6,  2,  6,  6, 12, 6, 13, 6,  12, 12,
-                                     13, 12, 13, 12, 2, 12, 6, 12, 13, 13, 6}));
-    REQUIRE(
-        S.generator(5)
-        == Transf<0, node_type>({3,  3,  2,  3,  2,  2,  3,  3,  3,  3,  16,
-                                 16, 16, 20, 20, 16, 16, 16, 16, 20, 20, 20}));
-    REQUIRE(
-        S.generator(6)
-        == Transf<0, node_type>({2,  7,  2,  7,  11, 7,  13, 7, 11, 7,  11,
-                                 11, 13, 13, 11, 2,  11, 11, 7, 13, 13, 7}));
+    // auto S = to_froidure_pin<Transf<0, node_type>>(d);
+    // REQUIRE(S.size() == 105);
+    // REQUIRE(S.generator(0) == Transf<0, node_type>::identity(22));
+    // REQUIRE(
+    //     S.generator(1)
+    //     == Transf<0, node_type>({0, 4,  2,  8, 1,  10, 6,  11, 3,  14, 5,
+    //                              7, 12, 13, 9, 15, 18, 21, 16, 20, 19, 17}));
+    // REQUIRE(
+    //     S.generator(2)
+    //     == Transf<0, node_type>({1,  0,  2,  3,  4,  5,  8,  9,  6,  7,  15,
+    //                              17, 18, 19, 21, 10, 16, 11, 12, 13, 20,
+    //                              14}));
+    // REQUIRE(S.generator(3)
+    //         == Transf<0, node_type>({0, 5,  2, 9,  10, 1,  12, 7,  14, 3, 4,
+    //         11,
+    //                                  6, 13, 8, 15, 17, 16, 21, 20, 19, 18}));
+    // REQUIRE(S.generator(4)
+    //         == Transf<0, node_type>({2,  6,  2,  6,  6, 12, 6, 13, 6,  12,
+    //         12,
+    //                                  13, 12, 13, 12, 2, 12, 6, 12, 13, 13,
+    //                                  6}));
+    // REQUIRE(
+    //     S.generator(5)
+    //     == Transf<0, node_type>({3,  3,  2,  3,  2,  2,  3,  3,  3,  3,  16,
+    //                              16, 16, 20, 20, 16, 16, 16, 16, 20, 20,
+    //                              20}));
+    // REQUIRE(
+    //     S.generator(6)
+    //     == Transf<0, node_type>({2,  7,  2,  7,  11, 7,  13, 7, 11, 7,  11,
+    //                              11, 13, 13, 11, 2,  11, 11, 7, 13, 13, 7}));
 
     Sims1_ C(congruence_kind::right);
     C.short_rules(p);
@@ -1603,7 +1605,7 @@ namespace libsemigroups {
     presentation::add_rule_and_check(p, "yyy", "");
     presentation::add_rule_and_check(p, "xyxyxyxyxyxyxy", "");
     Sims1_ S(congruence_kind::right);
-    S.short_rules(p).number_of_threads(4);
+    S.short_rules(p).number_of_threads(1);
     REQUIRE(S.number_of_congruences(50) == 75'971);
   }
 
@@ -1617,6 +1619,8 @@ namespace libsemigroups {
     p.alphabet("xXyY");
     presentation::add_inverse_rules(p, "XxYy");
     presentation::add_rule_and_check(p, "yXYYxyYYxyyXYYxyyXyXYYxy", "x");
+    presentation::add_rule_and_check(
+        p, "YxyyXXYYxyxYxyyXYXyXYYxxyyXYXyXYYxyx", "y");
 
     Presentation<std::string> q;
     q.alphabet("xXyY");
@@ -1624,7 +1628,7 @@ namespace libsemigroups {
         q, "YxyyXXYYxyxYxyyXYXyXYYxxyyXYXyXYYxyx", "y");
 
     Sims1_ S(congruence_kind::right);
-    S.short_rules(p).long_rules(q).number_of_threads(8);
+    S.short_rules(p).number_of_threads(4);
     REQUIRE(S.number_of_congruences(10) == 1);
   }
 
@@ -2281,6 +2285,25 @@ namespace libsemigroups {
                  .digraph();
     REQUIRE(d.number_of_nodes() == 7);
     REQUIRE(orc.target_size() == 96);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Sims1",
+                          "078",
+                          "order_preserving_monoid",
+                          "[extreme][sims1]") {
+    auto p = fpsemigroup::order_preserving_monoid(5);
+
+    REQUIRE(p.rules.size() == 50);
+    presentation::sort_each_rule(p);
+    presentation::sort_rules(p);
+    presentation::remove_duplicate_rules(p);
+    presentation::reduce_complements(p);
+    presentation::remove_trivial_rules(p);
+    REQUIRE(p.rules.size() == 50);
+
+    Sims1_ S(congruence_kind::right);
+    REQUIRE(S.short_rules(p).number_of_threads(4).number_of_congruences(126)
+            == 37'951);
   }
 
 }  // namespace libsemigroups

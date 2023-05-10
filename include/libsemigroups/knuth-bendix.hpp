@@ -838,6 +838,7 @@ namespace libsemigroups {
       p.validate();
       Presentation<std::string> q;
       q.alphabet(p.alphabet());
+      q.contains_empty_word(p.contains_empty_word());
       KnuthBendix kb(twosided);
 
       for (auto omit = p.rules.crbegin(); omit != p.rules.crend(); omit += 2) {

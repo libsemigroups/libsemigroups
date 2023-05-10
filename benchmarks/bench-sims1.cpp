@@ -319,19 +319,167 @@ namespace libsemigroups {
     }
   }
 
-  TEST_CASE("Presentation length", "[parallel]") {
-    auto rg = ReportGuard(false);
+  namespace {
+    void bench_length(Presentation<word_type>& p,
+                      size_t                   max_classes = 16,
+                      size_t                   expected    = 134) {
+      xml_tag("XLabel", "Length");
 
-    size_t const sample_size = 128;
-    size_t const num_letters = 2;
-    size_t const word_len    = 10;
-    size_t const num_classes = 5;
+      std::vector<std::pair<Presentation<word_type>, size_t>> ps;
+      ps.emplace_back(p, presentation::length(p));
 
-    auto sample = generate_random_sample(sample_size, num_letters, word_len);
+      auto it  = knuth_bendix::redundant_rule(p, std::chrono::milliseconds(10));
+      size_t i = 0;
 
-    for (size_t i = 1; i <= std::thread::hardware_concurrency(); i *= 2) {
-      bench_parallel(sample, i, num_classes);
+      while (it != p.rules.cend()) {
+        i++;
+        p.rules.erase(it, it + 2);
+        it = knuth_bendix::redundant_rule(p, std::chrono::milliseconds(10));
+        if (i % 5 == 0) {
+          ps.emplace_back(p, presentation::length(p));
+        }
+      }
+
+      for (auto& q : ps) {
+        // FIXME something bad goes wrong here if long_rule_length is called
+        // repeatedly, same for short_rules.
+        Sims1_ C(congruence_kind::left);
+        C.short_rules(q.first).number_of_threads(1);
+        BENCHMARK(fmt::format("{}", q.second)) {
+          REQUIRE(C.number_of_congruences(max_classes) == expected);
+        };
+      }
     }
+
+  }  // namespace
+
+  TEST_CASE("Presentation length Iwahori T_n",
+            "[full_transf_monoid][length][000]") {
+    auto p = full_transformation_monoid(4, fpsemigroup::author::Iwahori);
+    bench_length(p);
+  }
+
+  // Doesn't run, or is so slow that it's useless
+  TEST_CASE("Presentation length Aizenstat",
+            "[full_transf_monoid][length][001]") {
+    auto   p = full_transformation_monoid(4, fpsemigroup::author::Aizenstat);
+    Sims1_ C(congruence_kind::left);
+    C.short_rules(p).number_of_threads(1);
+    BENCHMARK(fmt::format("{}", presentation::length(p))) {
+      REQUIRE(C.number_of_congruences(16) == 134);
+    };
+  }
+
+  TEST_CASE("Presentation length machine",
+            "[full_transf_monoid][length][002]") {
+    auto                   rg = ReportGuard(false);
+    FroidurePin<Transf<4>> S;
+    S.add_generator(Transf<4>::make({1, 2, 3, 0}));
+    S.add_generator(Transf<4>::make({1, 0, 2, 3}));
+    S.add_generator(Transf<4>::make({0, 1, 2, 0}));
+    REQUIRE(S.size() == 256);
+    auto p = to_presentation<word_type>(S);
+    bench_length(p);
+  }
+
+  TEST_CASE("Presentation length Burnside+Miller S_n",
+            "[symmetric_group][length][003]") {
+    auto p = symmetric_group(
+        5, fpsemigroup::author::Burnside + fpsemigroup::author::Miller);
+    bench_length(p, 120, 156);
+  }
+
+  // TEST_CASE("Presentation length S_5 (GAP presentation)",
+  //           "[symmetric_group][length][004]") {
+  //   using presentation::pow;
+  //   Presentation<std::string> p;
+  //   p.alphabet("abcd");
+  //   p.contains_empty_word(true);
+  //   presentation::add_rule(p, "aa", "");
+  //   presentation::add_rule(p, "bb", "");
+  //   presentation::add_rule(p, "cc", "");
+  //   presentation::add_rule(p, "dd", "");
+  //   presentation::add_rule(p, pow("ab", 3), "");
+  //   presentation::add_rule(p, pow("ac", 2), "");
+  //   presentation::add_rule(p, pow("ad", 2), "");
+  //   presentation::add_rule(p, pow("bc", 3), "");
+  //   presentation::add_rule(p, pow("bd", 2), "");
+  //   presentation::add_rule(p, pow("cd", 3), "");
+  //   auto pp = to_presentation<word_type>(p);
+  //   bench_length(pp, 120, 156);
+  // }
+
+  // // Too slow
+  // TEST_CASE("Presentation length S_6 (GAP presentation)",
+  //           "[symmetric_group][length][005]") {
+  //   auto rg = ReportGuard(true);
+
+  //   using presentation::pow;
+  //   Presentation<std::string> p;
+  //   p.alphabet("abcde");
+  //   p.contains_empty_word(true);
+  //   presentation::add_rule(p, "aa", "");
+  //   presentation::add_rule(p, "bb", "");
+  //   presentation::add_rule(p, "cc", "");
+  //   presentation::add_rule(p, "dd", "");
+  //   presentation::add_rule(p, "ee", "");
+  //   presentation::add_rule(p, pow("ab", 3), "");
+  //   presentation::add_rule(p, pow("ac", 2), "");
+  //   presentation::add_rule(p, pow("ad", 2), "");
+  //   presentation::add_rule(p, pow("ae", 2), "");
+  //   presentation::add_rule(p, pow("bc", 3), "");
+  //   presentation::add_rule(p, pow("bd", 2), "");
+  //   presentation::add_rule(p, pow("be", 2), "");
+  //   presentation::add_rule(p, pow("cd", 3), "");
+  //   presentation::add_rule(p, pow("ce", 2), "");
+  //   presentation::add_rule(p, pow("de", 3), "");
+  //   auto pp = to_presentation<word_type>(p);
+  //   bench_length(pp, 720, 1'455);
+  // }
+
+  TEST_CASE("(2, 3, 7)-triangle group - index 50", "[triangle]") {
+    auto                      rg = ReportGuard(false);
+    Presentation<std::string> p;
+    p.contains_empty_word(true);
+    p.alphabet("xy");
+    presentation::add_rule_and_check(p, "xx", "");
+    presentation::add_rule_and_check(p, "yyy", "");
+    presentation::add_rule_and_check(p, "xyxyxyxyxyxyxy", "");
+    Sims1_ S(congruence_kind::right);
+    S.short_rules(p);
+    BENCHMARK("1 thread") {
+      REQUIRE(S.number_of_threads(1).number_of_congruences(50) == 75'971);
+    };
+    BENCHMARK("2 threads") {
+      REQUIRE(S.number_of_threads(2).number_of_congruences(50) == 75'971);
+    };
+    BENCHMARK("4 threads") {
+      REQUIRE(S.number_of_threads(4).number_of_congruences(50) == 75'971);
+    };
+  }
+
+  TEST_CASE("Heineken group - index 10", "[heineken]") {
+    auto                      rg = ReportGuard(false);
+    Presentation<std::string> p;
+    p.contains_empty_word(true);
+    p.alphabet("xXyY");
+    presentation::add_inverse_rules(p, "XxYy");
+    presentation::add_rule_and_check(p, "yXYYxyYYxyyXYYxyyXyXYYxy", "x");
+    presentation::add_rule_and_check(
+        p, "YxyyXXYYxyxYxyyXYXyXYYxxyyXYXyXYYxyx", "y");
+
+    Sims1_ S(congruence_kind::right);
+    S.short_rules(p);
+    BENCHMARK("1 thread") {
+      REQUIRE(S.number_of_threads(1).number_of_congruences(10) == 1);
+    };
+    BENCHMARK("2 threads") {
+      REQUIRE(S.number_of_threads(2).number_of_congruences(10) == 1);
+    };
+    BENCHMARK("4 threads") {
+      REQUIRE(S.number_of_threads(4).number_of_congruences(10) == 1);
+    };
+    REQUIRE(S.number_of_congruences(10) == 1);
   }
 
 }  // namespace libsemigroups

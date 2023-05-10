@@ -52,7 +52,9 @@ def add_plot(xml_fnam):
 
     # Benchmark labels must be the value that is the x-axis
 
-    title = "\n".join(wrap(xml_stdout_get(xml, "Title")))
+    title = xml_stdout_get(xml, "Title")
+    if title is not None:
+        title = "\n".join(wrap(xml_stdout_get(xml, "Title")))
     xlabel = xml_stdout_get(xml, "XLabel")
     ylabel = xml_stdout_get(xml, "YLabel")
 
