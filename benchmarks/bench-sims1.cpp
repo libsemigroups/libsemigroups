@@ -323,6 +323,7 @@ namespace libsemigroups {
     void bench_length(Presentation<word_type>& p,
                       size_t                   max_classes = 16,
                       size_t                   expected    = 134) {
+      auto rg = ReportGuard(false);
       xml_tag("XLabel", "Length");
 
       std::vector<std::pair<Presentation<word_type>, size_t>> ps;
@@ -365,6 +366,7 @@ namespace libsemigroups {
     auto   p = full_transformation_monoid(4, fpsemigroup::author::Aizenstat);
     Sims1_ C(congruence_kind::left);
     C.short_rules(p).number_of_threads(1);
+    REQUIRE(presentation::length(p) == 0);
     BENCHMARK(fmt::format("{}", presentation::length(p))) {
       REQUIRE(C.number_of_congruences(16) == 134);
     };
@@ -387,6 +389,68 @@ namespace libsemigroups {
     auto p = symmetric_group(
         5, fpsemigroup::author::Burnside + fpsemigroup::author::Miller);
     bench_length(p, 120, 156);
+  }
+
+  TEST_CASE("Presentation length Fernandes cyclic inverse monoid 1st",
+            "[cyclic_inverse][length][000]") {
+    size_t n = 10;
+    auto   p = cyclic_inverse_monoid(n, fpsemigroup::author::Fernandes, 0);
+    bench_length(p, 4, 6);
+  }
+
+  TEST_CASE("Presentation length Fernandes cyclic inverse monoid 2nd",
+            "[cyclic_inverse][length][001]") {
+    size_t n = 10;
+    auto   p = cyclic_inverse_monoid(n, fpsemigroup::author::Fernandes, 1);
+    bench_length(p, 4, 6);
+  }
+
+  TEST_CASE("Presentation length machine cyclic inverse monoid 1st",
+            "[cyclic_inverse][length][002]") {
+    auto rg = ReportGuard(false);
+
+    FroidurePin<PPerm<10>> S;
+    S.add_generator(PPerm<10>::make({1, 2, 3, 4, 5, 6, 7, 8, 9, 0}));
+    S.add_generator(PPerm<10>::make(
+        {1, 2, 3, 4, 5, 6, 7, 8, 9}, {1, 2, 3, 4, 5, 6, 7, 8, 9}, 10));
+    S.add_generator(PPerm<10>::make(
+        {0, 2, 3, 4, 5, 6, 7, 8, 9}, {0, 2, 3, 4, 5, 6, 7, 8, 9}, 10));
+    S.add_generator(PPerm<10>::make(
+        {0, 1, 3, 4, 5, 6, 7, 8, 9}, {0, 1, 3, 4, 5, 6, 7, 8, 9}, 10));
+    S.add_generator(PPerm<10>::make(
+        {0, 1, 2, 4, 5, 6, 7, 8, 9}, {0, 1, 2, 4, 5, 6, 7, 8, 9}, 10));
+    S.add_generator(PPerm<10>::make(
+        {0, 1, 2, 3, 5, 6, 7, 8, 9}, {0, 1, 2, 3, 5, 6, 7, 8, 9}, 10));
+    S.add_generator(PPerm<10>::make(
+        {0, 1, 2, 3, 4, 6, 7, 8, 9}, {0, 1, 2, 3, 4, 6, 7, 8, 9}, 10));
+    S.add_generator(PPerm<10>::make(
+        {0, 1, 2, 3, 4, 5, 7, 8, 9}, {0, 1, 2, 3, 4, 5, 7, 8, 9}, 10));
+    S.add_generator(PPerm<10>::make(
+        {0, 1, 2, 3, 4, 5, 6, 8, 9}, {0, 1, 2, 3, 4, 5, 6, 8, 9}, 10));
+    S.add_generator(PPerm<10>::make(
+        {0, 1, 2, 3, 4, 5, 6, 7, 9}, {0, 1, 2, 3, 4, 5, 6, 7, 9}, 10));
+    S.add_generator(PPerm<10>::make(
+        {0, 1, 2, 3, 4, 5, 6, 7, 8}, {0, 1, 2, 3, 4, 5, 6, 7, 8}, 10));
+
+    size_t n = 10;
+    REQUIRE(S.size() == n * std::pow(2, n) - n + 1);
+    auto p = to_presentation<word_type>(S);
+    bench_length(p, 4, 6);
+  }
+
+  TEST_CASE("Presentation length machine cyclic inverse monoid 2nd",
+            "[cyclic_inverse][length][003]") {
+    auto rg = ReportGuard(false);
+
+    FroidurePin<PPerm<10>> S;
+    S.add_generator(PPerm<10>::make({1, 2, 3, 4, 5, 6, 7, 8, 9, 0}));
+    S.add_generator(PPerm<10>::make(
+        {1, 2, 3, 4, 5, 6, 7, 8, 9}, {1, 2, 3, 4, 5, 6, 7, 8, 9}, 10));
+
+    size_t n = 10;
+    REQUIRE(S.size() == n * std::pow(2, n) - n + 1);
+    auto p = to_presentation<word_type>(S);
+    bench_length(p, 4, 6);
   }
 
   // TEST_CASE("Presentation length S_5 (GAP presentation)",

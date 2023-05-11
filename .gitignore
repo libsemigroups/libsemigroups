@@ -11,12 +11,14 @@
 *.log
 *.o
 *.o.*
+*.png
 *.pyc
 *.status
 *.summary
 *.swo
 *.swp
 *.tmp
+*.xml
 *~
 .!*
 .DS_Store
