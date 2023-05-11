@@ -626,4 +626,28 @@ namespace libsemigroups {
               == 5'295'135);
     };
   }
+
+  TEST_CASE("Heineken monoid", "[heineken][001]") {
+    Presentation<std::string> p;
+    p.contains_empty_word(true);
+    p.alphabet("xyXY");
+    presentation::add_rule_and_check(p, "yXYYxyYYxyyXYYxyyXyXYYxyX", "");
+    presentation::add_rule_and_check(
+        p, "YxyyXXYYxyxYxyyXYXyXYYxxyyXYXyXYYxyxY", "");
+    Sims1_ S(congruence_kind::right);
+    S.short_rules(p);
+    REQUIRE(S.number_of_threads(4).number_of_congruences(2) == 4);
+  }
+
+  TEST_CASE("Order endomorphisms n = 1 - all", "[order_endos][n=1]") {
+    auto rg = ReportGuard(false);
+    auto p  = order_preserving_monoid(1);
+
+    Sims1_ C(congruence_kind::right);
+    C.short_rules(p);
+    BENCHMARK("1 thread") {
+      REQUIRE(C.number_of_threads(1).number_of_congruences(1) == 1);
+    };
+  }
+
 }  // namespace libsemigroups
