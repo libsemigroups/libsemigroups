@@ -546,4 +546,84 @@ namespace libsemigroups {
     REQUIRE(S.number_of_congruences(10) == 1);
   }
 
+  TEST_CASE("Catalan monoid n = 1 - all", "[catalan][n=1]") {
+    auto                   rg = ReportGuard(false);
+    FroidurePin<Transf<1>> S;
+    S.add_generator(Transf<1>::make({0}));
+    REQUIRE(S.size() == 1);
+    auto p = to_presentation<word_type>(S);
+
+    Sims1_ C(congruence_kind::right);
+    C.short_rules(p);
+    BENCHMARK("1 thread") {
+      REQUIRE(C.number_of_threads(1).number_of_congruences(1) == 1);
+    };
+  }
+
+  TEST_CASE("Catalan monoid n = 2 - all", "[catalan][n=2]") {
+    auto                   rg = ReportGuard(false);
+    FroidurePin<Transf<2>> S;
+    S.add_generator(Transf<2>::make({0, 1}));
+    S.add_generator(Transf<2>::make({0, 0}));
+    REQUIRE(S.size() == 2);
+    auto p = to_presentation<word_type>(S);
+
+    Sims1_ C(congruence_kind::right);
+    C.short_rules(p);
+    BENCHMARK("1 thread") {
+      REQUIRE(C.number_of_threads(1).number_of_congruences(S.size()) == 2);
+    };
+  }
+
+  TEST_CASE("Catalan monoid n = 3 - all", "[catalan][n=3]") {
+    auto                   rg = ReportGuard(false);
+    FroidurePin<Transf<3>> S;
+    S.add_generator(Transf<3>::make({0, 1, 2}));
+    S.add_generator(Transf<3>::make({0, 0, 2}));
+    S.add_generator(Transf<3>::make({0, 1, 1}));
+    REQUIRE(S.size() == 5);
+    auto p = to_presentation<word_type>(S);
+
+    Sims1_ C(congruence_kind::right);
+    C.short_rules(p);
+    BENCHMARK("1 thread") {
+      REQUIRE(C.number_of_threads(1).number_of_congruences(S.size()) == 11);
+    };
+  }
+
+  TEST_CASE("Catalan monoid n = 4 - all", "[catalan][n=4]") {
+    auto                   rg = ReportGuard(false);
+    FroidurePin<Transf<4>> S;
+    S.add_generator(Transf<4>::make({0, 1, 2, 3}));
+    S.add_generator(Transf<4>::make({0, 0, 2, 3}));
+    S.add_generator(Transf<4>::make({0, 1, 1, 3}));
+    S.add_generator(Transf<4>::make({0, 1, 2, 2}));
+    REQUIRE(S.size() == 14);
+    auto p = to_presentation<word_type>(S);
+
+    Sims1_ C(congruence_kind::right);
+    C.short_rules(p);
+    BENCHMARK("1 thread") {
+      REQUIRE(C.number_of_threads(1).number_of_congruences(S.size()) == 575);
+    };
+  }
+
+  TEST_CASE("Catalan monoid n = 5 - all", "[catalan][n=5]") {
+    auto                   rg = ReportGuard(false);
+    FroidurePin<Transf<5>> S;
+    S.add_generator(Transf<5>::make({0, 1, 2, 3, 4}));
+    S.add_generator(Transf<5>::make({0, 0, 2, 3, 4}));
+    S.add_generator(Transf<5>::make({0, 1, 1, 3, 4}));
+    S.add_generator(Transf<5>::make({0, 1, 2, 2, 4}));
+    S.add_generator(Transf<5>::make({0, 1, 2, 3, 3}));
+    REQUIRE(S.size() == 42);
+    auto p = to_presentation<word_type>(S);
+
+    Sims1_ C(congruence_kind::right);
+    C.short_rules(p);
+    BENCHMARK("1 thread") {
+      REQUIRE(C.number_of_threads(1).number_of_congruences(S.size())
+              == 5'295'135);
+    };
+  }
 }  // namespace libsemigroups
