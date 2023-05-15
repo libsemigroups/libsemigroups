@@ -1,6 +1,6 @@
 //
 // libsemigroups - C++ library for semigroups and monoids
-// Copyright (C) 2022 James D. Mitchell
+// Copyright (C) 2022-2023 James D. Mitchell
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -44,6 +44,7 @@
 #include "ranges.hpp"     // for chain + shortlex_compare
 #include "ukkonen.hpp"    // for SuffixTree
 
+#include "detail/function-ref.hpp"
 #include "detail/int-range.hpp"  // for detail::IntRange
 #include "detail/uf.hpp"         // for Duf
 
@@ -213,14 +214,8 @@ namespace libsemigroups {
       return _alphabet[i];
     }
 
-    // TODO to tpp
-    [[nodiscard]] letter_type letter(size_type i) const {
-      if (i >= _alphabet.size()) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "expected a value in [0, {}), found {}", _alphabet.size(), i);
-      }
-      return letter_no_checks(i);
-    }
+    // TODO(doc)
+    [[nodiscard]] letter_type letter(size_type i) const;
 
     //! Get the index of a letter in the alphabet
     //!
@@ -242,17 +237,9 @@ namespace libsemigroups {
       return _alphabet_map.find(val)->second;
     }
 
-    // TODO to tpp
-    [[nodiscard]] size_type index(letter_type val) const {
-      auto it = _alphabet_map.find(val);
-      if (it == _alphabet_map.cend()) {
-        LIBSEMIGROUPS_EXCEPTION("letter does not belong to alphabet, expected "
-                                "value in {}, found {}",
-                                _alphabet,
-                                val);
-      }
-      return it->second;
-    }
+    // TODO(doc)
+    [[nodiscard]] size_type index(letter_type val) const;
+
     //! Check if a letter belongs to the alphabet or not.
     //!
     //! \no_libsemigroups_except
@@ -828,6 +815,8 @@ namespace libsemigroups {
     template <typename Word, typename Compare>
     bool sort_each_rule(Presentation<Word>& p, Compare cmp);
 
+    // TODO(later) is_each_rule_sorted?
+
     //! Sort the rules \f$u_1 = v_1, \ldots, u_n = v_n\f$ so that
     //! \f$u_1v_1 < \cdots < u_nv_n\f$ where \f$<\f$ is the shortlex order.
     //!
@@ -837,8 +826,13 @@ namespace libsemigroups {
     //! \returns (None)
     //!
     //! \throws LibsemigroupsException if `p.rules.size()` is odd.
+    template <typename Word, typename Compare>
+    void sort_rules(Presentation<Word>& p, Compare cmp);
+
     template <typename Word>
-    void sort_rules(Presentation<Word>& p);
+    void sort_rules(Presentation<Word>& p) {
+      sort_rules(p, ShortLexCompare());
+    }
 
     //! Check if the rules \f$u_1 = v_1, \ldots, u_n = v_n\f$ satisfy
     //! \f$u_1v_1 < \cdots < u_nv_n\f$ where \f$<\f$ is the shortlex order.
@@ -849,10 +843,13 @@ namespace libsemigroups {
     //! \returns A value of type `bool`.
     //!
     //! \throws LibsemigroupsException if `p.rules.size()` is odd.
-    template <typename Word>
-    bool are_rules_sorted(Presentation<Word> const& p);
+    template <typename Word, typename Compare>
+    bool are_rules_sorted(Presentation<Word> const& p, Compare cmp);
 
-    // TODO is_each_rule_sorted?
+    template <typename Word>
+    bool are_rules_sorted(Presentation<Word> const& p) {
+      return are_rules_sorted(p, ShortLexCompare());
+    }
 
     //! Returns the longest common subword of the rules.
     //!
@@ -1434,18 +1431,6 @@ namespace libsemigroups {
     std::string to_gap_string(Presentation<word_type> const& p,
                               std::string const&             var_name);
 
-    // TODO remove
-    inline word_type range(size_t first, size_t last, size_t step = 1) {
-      return rx::seq<letter_type>(first, step) | rx::take(last - first / step)
-             | rx::to_vector();
-    }
-
-    // TODO remove
-    // TODO doc
-    inline word_type range(size_t last) {
-      return range(0, last);
-    }
-
     //! \anchor operator_plus
     //! Concatenate two words or strings.
     //!
@@ -1639,7 +1624,7 @@ namespace libsemigroups {
     return !(lhop == rhop);
   }
 
-  // TODO could do a no_check version
+  // TODO(later) could do a no_check version
   inline void to_word(Presentation<std::string> const& p,
                       word_type&                       w,
                       std::string const&               s) {
@@ -1648,7 +1633,7 @@ namespace libsemigroups {
         s.cbegin(), s.cend(), w.begin(), [&p](auto i) { return p.index(i); });
   }
 
-  // TODO could do a no_check version
+  // TODO(later) could do a no_check version
   inline word_type to_word(Presentation<std::string> const& p,
                            std::string const&               s) {
     word_type w;

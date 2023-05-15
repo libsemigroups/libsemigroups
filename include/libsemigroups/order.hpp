@@ -30,6 +30,8 @@
 #include <cstddef>  // for size_t
 #include <vector>   // for vector
 
+#include "ranges.hpp"  // for shortlex_compare
+
 #include <rx/ranges.hpp>
 
 namespace libsemigroups {
@@ -55,75 +57,6 @@ namespace libsemigroups {
     //! congruence class.
     recursive
     // wreath TODO(later)
-  };
-
-  //! Defined in ``order.hpp``.
-  //!
-  //! A stateless struct with binary call operator using
-  //! [std::lexicographical_compare].
-  //!
-  //! This only exists to be used as a template parameter, and has no
-  //! advantages over using [std::lexicographical_compare] otherwise.
-  //!
-  //! \tparam T the type of the objects to be compared.
-  //!
-  //! \sa
-  //! [std::lexicographical_compare].
-  //!
-  //! [std::lexicographical_compare]:
-  //! https://en.cppreference.com/w/cpp/algorithm/lexicographical_compare
-  struct LexicographicalCompare {
-    //! Call operator that compares \p x and \p y using
-    //! [std::lexicographical_compare].
-    //!
-    //! \param x const reference to the first object for comparison
-    //! \param y const reference to the second object for comparison
-    //!
-    //! \returns A `bool`.
-    //!
-    //! \exceptions
-    //! See [std::lexicographical_compare].
-    //!
-    //! \complexity
-    //! See [std::lexicographical_compare].
-    //!
-    //! [std::lexicographical_compare]:
-    //! https://en.cppreference.com/w/cpp/algorithm/lexicographical_compare
-    template <typename T>
-    bool operator()(T const& x, T const& y) const {
-      return std::lexicographical_compare(
-          x.cbegin(), x.cend(), y.cbegin(), y.cend());
-    }
-
-    template <typename T>
-    bool operator()(std::initializer_list<T> x,
-                    std::initializer_list<T> y) const {
-      return std::lexicographical_compare(
-          x.begin(), x.end(), y.begin(), y.end());
-    }
-
-    //! Call operator that compares iterators using
-    //! [std::lexicographical_compare].
-    //!
-    //! \param first1 the start of the first object to compare
-    //! \param last1 one beyond the end of the first object to compare
-    //! \param first2 the start of the second object to compare
-    //! \param last2 one beyond the end of the second object to compare
-    //!
-    //! \returns A `bool`.
-    //!
-    //! \exceptions
-    //! See [std::lexicographical_compare].
-    //!
-    //! \complexity
-    //! See [std::lexicographical_compare].
-    //!
-    //! [std::lexicographical_compare]:
-    //! https://en.cppreference.com/w/cpp/algorithm/lexicographical_compare
-    template <typename S>
-    bool operator()(S first1, S last1, S first2, S last2) const {
-      return std::lexicographical_compare(first1, last1, first2, last2);
-    }
   };
 
   //! Compare two objects of the same type using
@@ -185,6 +118,75 @@ namespace libsemigroups {
     return std::lexicographical_compare(
         x->cbegin(), x->cend(), y->cbegin(), y->cend());
   }
+
+  //! Defined in ``order.hpp``.
+  //!
+  //! A stateless struct with binary call operator using
+  //! [std::lexicographical_compare].
+  //!
+  //! This only exists to be used as a template parameter, and has no
+  //! advantages over using [std::lexicographical_compare] otherwise.
+  //!
+  //! \tparam T the type of the objects to be compared.
+  //!
+  //! \sa
+  //! [std::lexicographical_compare].
+  //!
+  //! [std::lexicographical_compare]:
+  //! https://en.cppreference.com/w/cpp/algorithm/lexicographical_compare
+  struct LexicographicalCompare {
+    //! Call operator that compares \p x and \p y using
+    //! [std::lexicographical_compare].
+    //!
+    //! \param x const reference to the first object for comparison
+    //! \param y const reference to the second object for comparison
+    //!
+    //! \returns A `bool`.
+    //!
+    //! \exceptions
+    //! See [std::lexicographical_compare].
+    //!
+    //! \complexity
+    //! See [std::lexicographical_compare].
+    //!
+    //! [std::lexicographical_compare]:
+    //! https://en.cppreference.com/w/cpp/algorithm/lexicographical_compare
+    template <typename T>
+    bool operator()(T const& x, T const& y) const {
+      return lexicographical_compare(x, y);
+    }
+
+    template <typename T>
+    bool operator()(std::initializer_list<T> x,
+                    std::initializer_list<T> y) const {
+      return std::lexicographical_compare(
+          x.begin(), x.end(), y.begin(), y.end());
+    }
+
+    //! Call operator that compares iterators using
+    //! [std::lexicographical_compare].
+    //!
+    //! \param first1 the start of the first object to compare
+    //! \param last1 one beyond the end of the first object to compare
+    //! \param first2 the start of the second object to compare
+    //! \param last2 one beyond the end of the second object to compare
+    //!
+    //! \returns A `bool`.
+    //!
+    //! \exceptions
+    //! See [std::lexicographical_compare].
+    //!
+    //! \complexity
+    //! See [std::lexicographical_compare].
+    //!
+    //! [std::lexicographical_compare]:
+    //! https://en.cppreference.com/w/cpp/algorithm/lexicographical_compare
+    // TODO(v3) remove this?
+    template <typename S>
+    bool operator()(S first1, S last1, S first2, S last2) const {
+      return std::lexicographical_compare(first1, last1, first2, last2);
+    }
+  };
 
   //! Compare two objects of the same type using the short-lex reduction
   //! ordering.
@@ -310,7 +312,7 @@ namespace libsemigroups {
     //! See shortlex_compare(T const, T const, S const, S const).
     template <typename T>
     bool operator()(T const& x, T const& y) const {
-      return shortlex_compare(x.cbegin(), x.cend(), y.cbegin(), y.cend());
+      return shortlex_compare(x, y);
     }
   };
 
@@ -462,19 +464,6 @@ namespace libsemigroups {
       return recursive_path_compare(x.cbegin(), x.cend(), y.cbegin(), y.cend());
     }
   };
-
-  // TODO delete?
-  // template <order val>
-  // struct Compare {};
-
-  // template <>
-  // struct Compare<order::shortlex> : ShortLexCompare {};
-
-  // template <>
-  // struct Compare<order::lex> : LexicographicalCompare {};
-
-  // template <>
-  // struct Compare<order::recursive> : RecursivePathCompare {};
 
 }  // namespace libsemigroups
 

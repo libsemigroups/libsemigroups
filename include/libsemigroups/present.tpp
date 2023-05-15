@@ -1,6 +1,6 @@
 //
 // libsemigroups - C++ library for semigroups and monoids
-// Copyright (C) 2022 James D. Mitchell
+// Copyright (C) 2022-2023 James D. Mitchell
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -101,6 +101,29 @@ namespace libsemigroups {
       }
     }
     return *this;
+  }
+
+  template <typename Word>
+  typename Presentation<Word>::letter_type
+  Presentation<Word>::letter(size_type i) const {
+    if (i >= _alphabet.size()) {
+      LIBSEMIGROUPS_EXCEPTION(
+          "expected a value in [0, {}), found {}", _alphabet.size(), i);
+    }
+    return letter_no_checks(i);
+  }
+
+  template <typename Word>
+  typename Presentation<Word>::size_type
+  Presentation<Word>::index(letter_type val) const {
+    auto it = _alphabet_map.find(val);
+    if (it == _alphabet_map.cend()) {
+      LIBSEMIGROUPS_EXCEPTION("letter does not belong to alphabet, expected "
+                              "value in {}, found {}",
+                              _alphabet,
+                              val);
+    }
+    return it->second;
   }
 
   template <typename Word>
@@ -360,9 +383,8 @@ namespace libsemigroups {
       return sort_each_rule(p, ShortLexCompare());
     }
 
-    // TODO add cmp function here
-    template <typename Word>
-    void sort_rules(Presentation<Word>& p) {
+    template <typename Word, typename Compare>
+    void sort_rules(Presentation<Word>& p, Compare cmp) {
       using namespace rx;
       detail::validate_rules_length(p);
 
@@ -370,10 +392,12 @@ namespace libsemigroups {
       size_t const n     = rules.size() / 2;
 
       // Create a permutation of the even indexed entries in vec
+      // TODO be nice to not have to create perm here but I couldn't quite
+      // figure out how to remove it.
       auto perm
-          = (seq<size_t>() | take(n) | sort([&rules](auto i, auto j) {
-               return shortlex_compare(chain(rules[2 * i], rules[2 * i + 1]),
-                                       chain(rules[2 * j], rules[2 * j + 1]));
+          = (seq<size_t>() | take(n) | sort([&rules, &cmp](auto i, auto j) {
+               return cmp(chain(rules[2 * i], rules[2 * i + 1]),
+                          chain(rules[2 * j], rules[2 * j + 1]));
              })
              | to_vector());
       // Apply the permutation (adapted from detail/stl.hpp:apply_permutation)
@@ -390,17 +414,17 @@ namespace libsemigroups {
       }
     }
 
-    // TODO add cmp function here
-    template <typename Word>
-    bool are_rules_sorted(Presentation<Word> const& p) {
+    template <typename Word, typename Compare>
+    bool are_rules_sorted(Presentation<Word> const& p, Compare cmp) {
       using namespace rx;
       detail::validate_rules_length(p);
       auto const&  rules = p.rules;
       size_t const n     = rules.size() / 2;
-      return is_sorted((seq<size_t>() | take(n)), [&rules](auto i, auto j) {
-        return shortlex_compare(chain(rules[2 * i], rules[2 * i + 1]),
-                                chain(rules[2 * j], rules[2 * j + 1]));
-      });
+      return is_sorted((seq<size_t>() | take(n)),
+                       [&rules, &cmp](auto i, auto j) {
+                         return cmp(chain(rules[2 * i], rules[2 * i + 1]),
+                                    chain(rules[2 * j], rules[2 * j + 1]));
+                       });
     }
 
     template <typename Word>
@@ -443,7 +467,6 @@ namespace libsemigroups {
                       replacement.cend());
     }
 
-    // TODO rename _no_checks
     template <typename Word, typename Iterator1, typename Iterator2>
     void replace_subword(Presentation<Word>& p,
                          Iterator1           first_existing,

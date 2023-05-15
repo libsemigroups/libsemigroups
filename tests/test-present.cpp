@@ -992,6 +992,7 @@ namespace libsemigroups {
     presentation::add_rule(p, "aaCac", "e");
     presentation::add_rule(p, "acbbACb", "e");
     presentation::add_rule(p, "ABabccc", "e");
+
     REQUIRE(
         p.rules
         == std::vector<std::string>(
@@ -1001,6 +1002,17 @@ namespace libsemigroups {
              "e",  "Aa", "e",     "bB", "e",       "Bb", "e",       "cC", "e",
              "Cc", "e",  "aaCac", "e",  "acbbACb", "e",  "ABabccc", "e"}));
     REQUIRE(!presentation::are_rules_sorted(p));
+    REQUIRE(!presentation::are_rules_sorted(p, LexicographicalCompare()));
+    presentation::sort_each_rule(p, LexicographicalCompare());
+    presentation::sort_rules(p, LexicographicalCompare());
+    REQUIRE(presentation::are_rules_sorted(p, LexicographicalCompare()));
+    REQUIRE(p.rules
+            == std::vector<std::string>(
+                {"Ae", "A",  "Be", "B",  "Ce",    "C", "ae",      "a",  "be",
+                 "b",  "ce", "c",  "eA", "A",     "e", "ABabccc", "e",  "Aa",
+                 "eB", "B",  "e",  "Bb", "eC",    "C", "e",       "Cc", "e",
+                 "aA", "ea", "a",  "e",  "aaCac", "e", "acbbACb", "e",  "bB",
+                 "eb", "b",  "e",  "cC", "ec",    "c", "ee",      "e"}));
   }
 
   LIBSEMIGROUPS_TEST_CASE("Presentation",

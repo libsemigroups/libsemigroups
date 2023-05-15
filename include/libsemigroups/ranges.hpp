@@ -66,7 +66,11 @@ namespace libsemigroups {
     return true;
   }
 
-  template <typename Range1, typename Range2>
+  template <
+      typename Range1,
+      typename Range2,
+      typename = std::enable_if_t<
+          rx::is_input_or_sink_v<Range1> && rx::is_input_or_sink_v<Range2>>>
   bool lexicographical_compare(Range1 r1, Range2 r2) {
     while (!r1.at_end() && !r2.at_end()) {
       auto next1 = r1.get();
@@ -83,7 +87,11 @@ namespace libsemigroups {
     return r1.at_end() && !r2.at_end();
   }
 
-  template <typename Range1, typename Range2>
+  template <
+      typename Range1,
+      typename Range2,
+      typename = std::enable_if_t<
+          rx::is_input_or_sink_v<Range1> && rx::is_input_or_sink_v<Range2>>>
   bool shortlex_compare(Range1 r1, Range2 r2) {
     size_t n1 = rx::count()(r1);
     size_t n2 = rx::count()(r2);
