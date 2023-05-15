@@ -67,8 +67,7 @@ namespace libsemigroups {
 
   namespace {
     struct weird_cmp {
-      constexpr bool operator()(rule_type const& x,
-                                rule_type const& y) const noexcept {
+      bool operator()(rule_type const& x, rule_type const& y) const noexcept {
         return shortlex_compare(x.first, y.first)
                || (x.first == y.first && shortlex_compare(x.second, y.second));
       }
