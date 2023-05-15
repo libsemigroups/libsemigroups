@@ -68,8 +68,8 @@ namespace libsemigroups {
       Presentation<W1> p;
       p.alphabet(2);
       p.contains_empty_word(false);
-      presentation::add_rule(p, {0, 1, 2}, {0, 1});
-      presentation::add_rule(p, {0, 1, 2}, {});
+      presentation::add_rule_no_checks(p, {0, 1, 2}, {0, 1});
+      presentation::add_rule_no_checks(p, {0, 1, 2}, {});
       // intentionally bad
       REQUIRE_THROWS_AS(p.validate(), LibsemigroupsException);
       REQUIRE_THROWS_AS(to_presentation<W2>(p), LibsemigroupsException);
@@ -149,8 +149,8 @@ namespace libsemigroups {
     Presentation<word_type> p;
     p.alphabet(2);
     p.contains_empty_word(false);
-    presentation::add_rule(p, {0, 1, 2}, {0, 1});
-    presentation::add_rule(p, {0, 1, 2}, {});
+    presentation::add_rule_no_checks(p, {0, 1, 2}, {0, 1});
+    presentation::add_rule_no_checks(p, {0, 1, 2}, {});
     // intentionally bad
     REQUIRE_THROWS_AS(p.validate(), LibsemigroupsException);
     REQUIRE_THROWS_AS(to_presentation<std::string>(p), LibsemigroupsException);
@@ -174,7 +174,7 @@ namespace libsemigroups {
     Presentation<word_type> p;
     p.alphabet(2);
     p.contains_empty_word(true);
-    presentation::add_rule_and_check(p, {0, 1}, {});
+    presentation::add_rule(p, {0, 1}, {});
 
     auto q = to_presentation<std::string>(p);
     REQUIRE(q.alphabet() == "ab");

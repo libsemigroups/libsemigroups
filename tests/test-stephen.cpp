@@ -39,7 +39,7 @@
 #include "libsemigroups/exception.hpp"        // for LibsemigroupsExcep...
 #include "libsemigroups/fpsemi-examples.hpp"  // for make, fibonacci_se...
 #include "libsemigroups/order.hpp"            // for LexicographicalCom...
-#include "libsemigroups/present.hpp"          // for add_rule_and_check
+#include "libsemigroups/present.hpp"          // for add_rule
 #include "libsemigroups/stephen.hpp"          // for Stephen, Stephen::...
 #include "libsemigroups/types.hpp"            // for word_type
 #include "libsemigroups/word-graph.hpp"       // for WordGraph, ope...
@@ -147,7 +147,7 @@ namespace libsemigroups {
     auto                    rg = ReportGuard(true);
     Presentation<word_type> p;
     p.alphabet(2);
-    presentation::add_rule_and_check(p, {0}, {0, 1});
+    presentation::add_rule(p, {0}, {0, 1});
     Stephen s;
     s.init(p);
     check_000(s);
@@ -162,9 +162,9 @@ namespace libsemigroups {
     auto                    rg = ReportGuard(true);
     Presentation<word_type> p;
     p.alphabet(2);
-    presentation::add_rule_and_check(p, {0, 0, 0}, {0});
-    presentation::add_rule_and_check(p, {1, 1, 1}, {1});
-    presentation::add_rule_and_check(p, {0, 1, 0, 1}, {0, 0});
+    presentation::add_rule(p, {0, 0, 0}, {0});
+    presentation::add_rule(p, {1, 1, 1}, {1});
+    presentation::add_rule(p, {0, 1, 0, 1}, {0, 0});
     Stephen s(p);
     s.set_word({1, 1, 0, 1}).run();
     REQUIRE(s.word_graph().number_of_nodes() == 7);
@@ -240,8 +240,8 @@ namespace libsemigroups {
                 5, {{1, UNDEFINED}, {2, 3}, {1, 4}, {4, 1}, {3, 2}}));
 
     p.rules.clear();
-    presentation::add_rule_and_check(p, {0, 0, 0}, {0});
-    presentation::add_rule_and_check(p, {1, 1, 1}, {1});
+    presentation::add_rule(p, {0, 0, 0}, {0});
+    presentation::add_rule(p, {1, 1, 1}, {1});
     s.init(p).set_word({0, 0}).run();
     REQUIRE(s.word_graph().number_of_nodes() == 3);
     REQUIRE(s.word_graph()
@@ -396,9 +396,9 @@ namespace libsemigroups {
                           "[quick][stephen]") {
     Presentation<std::string> p;
     p.alphabet("ab");
-    presentation::add_rule_and_check(p, "aaa", "a");
-    presentation::add_rule_and_check(p, "bbb", "b");
-    presentation::add_rule_and_check(p, "abab", "aa");
+    presentation::add_rule(p, "aaa", "a");
+    presentation::add_rule(p, "bbb", "b");
+    presentation::add_rule(p, "abab", "aa");
 
     Stephen              S(p);
     detail::StringToWord string_to_word("ab");
@@ -426,8 +426,8 @@ namespace libsemigroups {
                           "[quick][stephen]") {
     Presentation<std::string> p;
     p.alphabet("abcdefg");
-    presentation::add_rule_and_check(p, "aaaeaa", "abcd");
-    presentation::add_rule_and_check(p, "ef", "dg");
+    presentation::add_rule(p, "aaaeaa", "abcd");
+    presentation::add_rule(p, "ef", "dg");
 
     Stephen              S(p);
     detail::StringToWord string_to_word("abcdefg");
@@ -547,15 +547,15 @@ namespace libsemigroups {
                           "[quick][stephen]") {
     Presentation<std::string> p;
     p.alphabet("abc");
-    presentation::add_rule_and_check(p, "ab", "ba");
-    presentation::add_rule_and_check(p, "ac", "cc");
-    presentation::add_rule_and_check(p, "ac", "a");
-    presentation::add_rule_and_check(p, "cc", "a");
-    presentation::add_rule_and_check(p, "bc", "cc");
-    presentation::add_rule_and_check(p, "bcc", "b");
-    presentation::add_rule_and_check(p, "bc", "b");
-    presentation::add_rule_and_check(p, "cc", "b");
-    presentation::add_rule_and_check(p, "a", "b");
+    presentation::add_rule(p, "ab", "ba");
+    presentation::add_rule(p, "ac", "cc");
+    presentation::add_rule(p, "ac", "a");
+    presentation::add_rule(p, "cc", "a");
+    presentation::add_rule(p, "bc", "cc");
+    presentation::add_rule(p, "bcc", "b");
+    presentation::add_rule(p, "bc", "b");
+    presentation::add_rule(p, "cc", "b");
+    presentation::add_rule(p, "a", "b");
 
     Stephen              S(p);
     detail::StringToWord string_to_word("abc");
@@ -571,17 +571,17 @@ namespace libsemigroups {
                           "[quick][stephen]") {
     Presentation<std::string> p;
     p.alphabet("abcd");
-    presentation::add_rule_and_check(p, "bb", "c");
-    presentation::add_rule_and_check(p, "caca", "abab");
-    presentation::add_rule_and_check(p, "bc", "d");
-    presentation::add_rule_and_check(p, "cb", "d");
-    presentation::add_rule_and_check(p, "aa", "d");
-    presentation::add_rule_and_check(p, "ad", "a");
-    presentation::add_rule_and_check(p, "da", "a");
-    presentation::add_rule_and_check(p, "bd", "b");
-    presentation::add_rule_and_check(p, "db", "b");
-    presentation::add_rule_and_check(p, "cd", "c");
-    presentation::add_rule_and_check(p, "dc", "c");
+    presentation::add_rule(p, "bb", "c");
+    presentation::add_rule(p, "caca", "abab");
+    presentation::add_rule(p, "bc", "d");
+    presentation::add_rule(p, "cb", "d");
+    presentation::add_rule(p, "aa", "d");
+    presentation::add_rule(p, "ad", "a");
+    presentation::add_rule(p, "da", "a");
+    presentation::add_rule(p, "bd", "b");
+    presentation::add_rule(p, "db", "b");
+    presentation::add_rule(p, "cd", "c");
+    presentation::add_rule(p, "dc", "c");
 
     Stephen              S(p);
     detail::StringToWord string_to_word("abcd");
@@ -610,8 +610,8 @@ namespace libsemigroups {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("abcdefg");
-    presentation::add_rule_and_check(p, "abcd", "ce");
-    presentation::add_rule_and_check(p, "df", "dg");
+    presentation::add_rule(p, "abcd", "ce");
+    presentation::add_rule(p, "df", "dg");
 
     detail::StringToWord string_to_word("abcdefg");
     Stephen              S(p);
@@ -689,7 +689,7 @@ namespace libsemigroups {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("cab");
-    presentation::add_rule_and_check(p, "aabc", "acba");
+    presentation::add_rule(p, "aabc", "acba");
 
     detail::StringToWord string_to_word("cab");
     Stephen              S(p);
@@ -781,8 +781,8 @@ namespace libsemigroups {
     Presentation<std::string> p;
     p.alphabet("abcdefgh");
 
-    presentation::add_rule_and_check(p, "abcd", "ce");
-    presentation::add_rule_and_check(p, "df", "hd");
+    presentation::add_rule(p, "abcd", "ce");
+    presentation::add_rule(p, "df", "hd");
     verify_c4_equal_to(p, "abchd", "abcdf");
     verify_c4_equal_to(p, "abchd", "abchd");
     verify_c4_equal_to(p, "abchdf", "abchhd");
@@ -803,8 +803,8 @@ namespace libsemigroups {
     Presentation<std::string> p;
     p.alphabet("abcdefgh");
 
-    presentation::add_rule_and_check(p, "afh", "bgh");
-    presentation::add_rule_and_check(p, "hc", "d");
+    presentation::add_rule(p, "afh", "bgh");
+    presentation::add_rule(p, "hc", "d");
     verify_c4_equal_to(p, "afd", "bgd");
     verify_c4_equal_to(p, "bghcafhbgd", "afdafhafd");
     verify_c4_normal_form(p, "bghcafhbgd", "afdafhafd");
@@ -818,9 +818,9 @@ namespace libsemigroups {
     Presentation<std::string> p;
     p.alphabet("abcdefghij");
 
-    presentation::add_rule_and_check(p, "afh", "bgh");
-    presentation::add_rule_and_check(p, "hc", "de");
-    presentation::add_rule_and_check(p, "ei", "j");
+    presentation::add_rule(p, "afh", "bgh");
+    presentation::add_rule(p, "hc", "de");
+    presentation::add_rule(p, "ei", "j");
 
     verify_c4_equal_to(p, "afdj", "bgdj");
     verify_c4_not_equal_to(p, "xxxxxxxxxxxxxxxxxxxxxxx", "b");
@@ -832,7 +832,7 @@ namespace libsemigroups {
                           "[stephen][quick]") {
     Presentation<std::string> p;
     p.alphabet("abcd");
-    presentation::add_rule_and_check(p, "abbba", "cdc");
+    presentation::add_rule(p, "abbba", "cdc");
     verify_c4_normal_form(p, "cdcdcabbbabbbabbcd", "abbbadcabbbabbbabbcd");
     verify_c4_equal_to(p, "cdcdcabbbabbbabbcd", "abbbadcabbbabbbabbcd");
 
@@ -847,7 +847,7 @@ namespace libsemigroups {
                           "[stephen][quick]") {
     Presentation<std::string> p;
     p.alphabet("abcd");
-    presentation::add_rule_and_check(p, "aabc", "acba");
+    presentation::add_rule(p, "aabc", "acba");
     std::string original = "cbacbaabcaabcacbacba";
     std::string expected = "cbaabcabcaabcaabcabc";
 
@@ -868,7 +868,7 @@ namespace libsemigroups {
                           "[stephen][quick]") {
     Presentation<std::string> p;
     p.alphabet("abcd");
-    presentation::add_rule_and_check(p, "abcd", "acca");
+    presentation::add_rule(p, "abcd", "acca");
     std::string original = "bbcabcdaccaccabcddd";
     std::string expected = "bbcabcdabcdbcdbcddd";
 
@@ -885,7 +885,7 @@ namespace libsemigroups {
                           "[stephen][quick]") {
     Presentation<std::string> p;
     p.alphabet("abcd");
-    presentation::add_rule_and_check(p, "abcd", "accca");
+    presentation::add_rule(p, "abcd", "accca");
 
     verify_c4_normal_form(p, "bbcabcdaccaccabcddd", "bbcabcdaccaccabcddd");
     verify_c4_equal_to(p, "bbcabcdaccaccabcddd", "bbcabcdaccaccabcddd");
@@ -897,7 +897,7 @@ namespace libsemigroups {
                           "[stephen][quick]") {
     Presentation<std::string> p;
     p.alphabet("abc");
-    presentation::add_rule_and_check(p, "ac", "cbbbbc");
+    presentation::add_rule(p, "ac", "cbbbbc");
 
     verify_c4_normal_form(p, "acbbbbc", "aac");
     verify_c4_equal_to(p, "acbbbbc", "aac");
@@ -909,7 +909,7 @@ namespace libsemigroups {
                           "[stephen][quick]") {
     Presentation<std::string> p;
     p.alphabet("abc");
-    presentation::add_rule_and_check(p, "ccab", "cbac");
+    presentation::add_rule(p, "ccab", "cbac");
 
     verify_c4_normal_form(p, "bacbaccabccabcbacbac", "bacbacbaccbaccbacbac");
     verify_c4_equal_to(p, "bacbaccabccabcbacbac", "bacbacbaccbaccbacbac");
@@ -923,9 +923,9 @@ namespace libsemigroups {
                           "[stephen][quick]") {
     Presentation<std::string> p;
     p.alphabet("abcdefghij");
-    presentation::add_rule_and_check(p, "afh", "bgh");
-    presentation::add_rule_and_check(p, "hc", "de");
-    presentation::add_rule_and_check(p, "ei", "j");
+    presentation::add_rule(p, "afh", "bgh");
+    presentation::add_rule(p, "hc", "de");
+    presentation::add_rule(p, "ei", "j");
 
     verify_c4_normal_form(p, "bgdj", "afdei");
     verify_c4_equal_to(p, "bgdj", "afdei");
@@ -937,7 +937,7 @@ namespace libsemigroups {
                           "[stephen][quick]") {
     Presentation<std::string> p;
     p.alphabet("abcd");
-    presentation::add_rule_and_check(p, "abcd", "dcba");
+    presentation::add_rule(p, "abcd", "dcba");
 
     verify_c4_normal_form(p, "dcbdcba", "abcdbcd");
     verify_c4_equal_to(p, "dcbdcba", "abcdbcd");
@@ -949,7 +949,7 @@ namespace libsemigroups {
                           "[stephen][quick]") {
     Presentation<std::string> p;
     p.alphabet("abcd");
-    presentation::add_rule_and_check(p, "abca", "dcbd");
+    presentation::add_rule(p, "abca", "dcbd");
 
     verify_c4_normal_form(p, "dcbabca", "abcacbd");
     verify_c4_equal_to(p, "dcbabca", "abcacbd");
@@ -961,8 +961,8 @@ namespace libsemigroups {
                           "[stephen][quick]") {
     Presentation<std::string> p;
     p.alphabet("abcd");
-    presentation::add_rule_and_check(p, "abcd", "dcba");
-    presentation::add_rule_and_check(p, "adda", "dbbd");
+    presentation::add_rule(p, "abcd", "dcba");
+    presentation::add_rule(p, "adda", "dbbd");
 
     verify_c4_normal_form(p, "dbbabcd", "addacba");
     verify_c4_equal_to(p, "dbbabcd", "addacba");
@@ -974,8 +974,8 @@ namespace libsemigroups {
                           "[stephen][quick]") {
     Presentation<std::string> p;
     p.alphabet("abcdefg");
-    presentation::add_rule_and_check(p, "abcd", "acca");
-    presentation::add_rule_and_check(p, "gf", "ge");
+    presentation::add_rule(p, "abcd", "acca");
+    presentation::add_rule(p, "gf", "ge");
 
     verify_c4_normal_form(p, "accabcdgf", "abcdbcdge");
     verify_c4_equal_to(p, "accabcdgf", "abcdbcdge");
@@ -987,9 +987,9 @@ namespace libsemigroups {
                           "[stephen][quick]") {
     Presentation<std::string> p;
     p.alphabet("abcd");
-    presentation::add_rule_and_check(
+    presentation::add_rule(
         p, "ababbabbbabbbb", "abbbbbabbbbbbabbbbbbbabbbbbbbb");
-    presentation::add_rule_and_check(
+    presentation::add_rule(
         p, "cdcddcdddcdddd", "cdddddcddddddcdddddddcdddddddd");
 
     verify_c4_normal_form(
@@ -1004,8 +1004,8 @@ namespace libsemigroups {
                           "[stephen][quick]") {
     Presentation<std::string> p;
     p.alphabet("abcd");
-    presentation::add_rule_and_check(p, "acba", "aabc");
-    presentation::add_rule_and_check(p, "acba", "dbbbd");
+    presentation::add_rule(p, "acba", "aabc");
+    presentation::add_rule(p, "acba", "dbbbd");
 
     verify_c4_equal_to(p, "aaabc", "adbbbd");
     verify_c4_equal_to(p, "adbbbd", "aaabc");
@@ -1023,8 +1023,8 @@ namespace libsemigroups {
                           "[stephen][quick]") {
     Presentation<std::string> p;
     p.alphabet("abcd");
-    presentation::add_rule_and_check(p, "acba", "aabc");
-    presentation::add_rule_and_check(p, "acba", "adbd");
+    presentation::add_rule(p, "acba", "aabc");
+    presentation::add_rule(p, "acba", "adbd");
     verify_c4_equal_to(p, "acbacba", "aabcabc");
     verify_c4_normal_form(p, "acbacba", "aabcabc");
     verify_c4_equal_to(p, "aabcabc", "acbacba");
@@ -1037,8 +1037,8 @@ namespace libsemigroups {
                           "[stephen][quick]") {
     Presentation<std::string> p;
     p.alphabet("abcde");
-    presentation::add_rule_and_check(p, "bceac", "aeebbc");
-    presentation::add_rule_and_check(p, "aeebbc", "dabcd");
+    presentation::add_rule(p, "bceac", "aeebbc");
+    presentation::add_rule(p, "aeebbc", "dabcd");
     verify_c4_normal_form(p, "bceacdabcd", "aeebbcaeebbc");
     verify_c4_normal_form(p, "aeebbcaeebbc", "aeebbcaeebbc");
   }
@@ -1049,8 +1049,8 @@ namespace libsemigroups {
                           "[stephen][quick]") {
     Presentation<std::string> p;
     p.alphabet("abcd");
-    presentation::add_rule_and_check(p, "acba", "aabc");
-    presentation::add_rule_and_check(p, "acba", "dbbd");
+    presentation::add_rule(p, "acba", "aabc");
+    presentation::add_rule(p, "acba", "dbbd");
     verify_c4_normal_form(p, "bbacbcaaabcbbd", "bbacbcaaabcbbd");
     verify_c4_normal_form(p, "acbacba", "aabcabc");
     verify_c4_normal_form(p, "aabcabc", "aabcabc");
@@ -1062,8 +1062,8 @@ namespace libsemigroups {
                           "[stephen][quick]") {
     Presentation<std::string> p;
     p.alphabet("abcd");
-    presentation::add_rule_and_check(p, "acba", "aabc");
-    presentation::add_rule_and_check(p, "acba", "adbd");
+    presentation::add_rule(p, "acba", "aabc");
+    presentation::add_rule(p, "acba", "adbd");
     verify_c4_normal_form(p, "acbacba", "aabcabc");
     verify_c4_normal_form(p, "aabcabc", "aabcabc");
   }

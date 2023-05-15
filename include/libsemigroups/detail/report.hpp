@@ -39,7 +39,8 @@
 
 #include "libsemigroups/config.hpp"  // for LIBSEMIGROUPS_FMT_ENABLED
 
-#include "string.hpp"  // for string_format, to_string
+#include "containers.hpp"  // for StaticVector1
+#include "string.hpp"      // for string_format, to_string
 
 #include "textflowcpp/TextFlow.hpp"
 #include <magic_enum/magic_enum.hpp>
@@ -630,6 +631,28 @@ struct fmt::formatter<T, Char, std::enable_if_t<std::is_enum_v<T>>>
   auto format(T knd, FormatContext& ctx) const {
     auto name = magic_enum::enum_name(knd);
     return formatter<string_view>::format(name, ctx);
+  }
+};
+
+template <typename T, typename Char>
+struct fmt::formatter<std::vector<T>, Char> : fmt::formatter<std::string> {
+  // parse is inherited from formatter<string_view>.
+  template <typename FormatContext>
+  auto format(std::vector<T> const& v, FormatContext& ctx) const {
+    return formatter<string_view>::format(libsemigroups::detail::to_string(v),
+                                          ctx);
+  }
+};
+
+template <typename T, size_t N, typename Char>
+struct fmt::formatter<libsemigroups::detail::StaticVector1<T, N>, Char>
+    : fmt::formatter<std::string> {
+  // parse is inherited from formatter<string_view>.
+  template <typename FormatContext>
+  auto format(libsemigroups::detail::StaticVector1<T, N> const& v,
+              FormatContext&                                    ctx) const {
+    return formatter<string_view>::format(libsemigroups::detail::to_string(v),
+                                          ctx);
   }
 };
 

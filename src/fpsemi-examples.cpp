@@ -126,43 +126,45 @@ namespace libsemigroups {
             continue;
           }
           // Relations (k)
-          presentation::add_rule(p, transp(i, j) + eps(i, j), eps(i, j));
+          presentation::add_rule_no_checks(
+              p, transp(i, j) + eps(i, j), eps(i, j));
           // Relations (j)
-          presentation::add_rule(p, eps(j, i) + eps(i, j), eps(i, j));
+          presentation::add_rule_no_checks(p, eps(j, i) + eps(i, j), eps(i, j));
           // Relations (i)
-          presentation::add_rule(p, eps(i, j) + eps(i, j), eps(i, j));
+          presentation::add_rule_no_checks(p, eps(i, j) + eps(i, j), eps(i, j));
           // Relations (d)
-          presentation::add_rule(
+          presentation::add_rule_no_checks(
               p, transp(i, j) + eps(i, j) + transp(i, j), eps(j, i));
           for (size_t k = 1; k <= n; ++k) {
             if (k == i || k == j) {
               continue;
             }
             // Relations (h)
-            presentation::add_rule(p, eps(k, j) + eps(i, j), eps(k, j));
+            presentation::add_rule_no_checks(
+                p, eps(k, j) + eps(i, j), eps(k, j));
             // Relations (g)
-            presentation::add_rule(
+            presentation::add_rule_no_checks(
                 p, eps(k, i) + eps(i, j), transp(i, j) + eps(k, j));
             // Relations (f)
-            presentation::add_rule(
+            presentation::add_rule_no_checks(
                 p, eps(j, k) + eps(i, j), eps(i, j) + eps(i, k));
-            presentation::add_rule(
+            presentation::add_rule_no_checks(
                 p, eps(j, k) + eps(i, j), eps(i, k) + eps(i, j));
             // Relations (c)
-            presentation::add_rule(
+            presentation::add_rule_no_checks(
                 p, transp(k, i) + eps(i, j) + transp(k, i), eps(k, j));
             // Relations (b)
-            presentation::add_rule(
+            presentation::add_rule_no_checks(
                 p, transp(j, k) + eps(i, j) + transp(j, k), eps(i, k));
             for (size_t l = 1; l <= n; ++l) {
               if (l == i || l == j || l == k) {
                 continue;
               }
               // Relations (e)
-              presentation::add_rule(
+              presentation::add_rule_no_checks(
                   p, eps(l, k) + eps(i, j), eps(i, j) + eps(l, k));
               // Relations (a)
-              presentation::add_rule(
+              presentation::add_rule_no_checks(
                   p, transp(k, l) + eps(i, j) + transp(k, l), eps(i, j));
             }
           }
@@ -190,7 +192,7 @@ namespace libsemigroups {
       word_type t = {0};
       for (size_t i = 1; i < l; ++i) {
         t.insert(t.begin(), i);
-        presentation::add_rule(p, t + word_type({i}), t);
+        presentation::add_rule_no_checks(p, t + word_type({i}), t);
       }
       return p;
     }
@@ -209,7 +211,7 @@ namespace libsemigroups {
         word_type lhs(r, 0);
         std::iota(lhs.begin(), lhs.end(), i);
         std::for_each(lhs.begin(), lhs.end(), [&n](size_t& x) { x %= n; });
-        presentation::add_rule(p, lhs, word_type({(i + r) % n}));
+        presentation::add_rule_no_checks(p, lhs, word_type({(i + r) % n}));
       }
       p.alphabet_from_rules();
       return p;
@@ -225,15 +227,15 @@ namespace libsemigroups {
       for (size_t c = 0; c < n; ++c) {
         for (size_t b = 0; b < c; ++b) {
           for (size_t a = 0; a < b; ++a) {
-            presentation::add_rule(p, {b, a, c}, {b, c, a});
-            presentation::add_rule(p, {a, c, b}, {c, a, b});
+            presentation::add_rule_no_checks(p, {b, a, c}, {b, c, a});
+            presentation::add_rule_no_checks(p, {a, c, b}, {c, a, b});
           }
         }
       }
       for (size_t b = 0; b < n; ++b) {
         for (size_t a = 0; a < b; ++a) {
-          presentation::add_rule(p, {b, a, a}, {a, b, a});
-          presentation::add_rule(p, {b, b, a}, {b, a, b});
+          presentation::add_rule_no_checks(p, {b, a, a}, {a, b, a});
+          presentation::add_rule_no_checks(p, {b, b, a}, {b, a, b});
         }
       }
       return p;
@@ -245,7 +247,7 @@ namespace libsemigroups {
                                 n);
       }
       auto p = plactic_monoid(n);
-      presentation::add_idempotent_rules(p, range(n));
+      presentation::add_idempotent_rules_no_checks(p, range(n));
       return p;
     }
 
@@ -284,65 +286,67 @@ namespace libsemigroups {
         // https://link.springer.com/book/10.1007/978-1-84800-281-4
 
         for (size_t i = 0; i <= n - 2; ++i) {
-          presentation::add_rule(p, {i, i}, {});
+          presentation::add_rule_no_checks(p, {i, i}, {});
         }
         for (size_t i = 0; i < n - 2; ++i) {
-          presentation::add_rule(p, pow({i, i + 1}, 3), {});
+          presentation::add_rule_no_checks(p, pow({i, i + 1}, 3), {});
         }
-        presentation::add_rule(p, pow({n - 2, 0}, 3), {});
+        presentation::add_rule_no_checks(p, pow({n - 2, 0}, 3), {});
         for (size_t i = 0; i < n - 2; ++i) {
           for (size_t j = 0; j < i; ++j) {
-            presentation::add_rule(p, pow({i, i + 1, i, j}, 2), {});
+            presentation::add_rule_no_checks(p, pow({i, i + 1, i, j}, 2), {});
           }
           for (size_t j = i + 2; j <= n - 2; ++j) {
-            presentation::add_rule(p, pow({i, i + 1, i, j}, 2), {});
+            presentation::add_rule_no_checks(p, pow({i, i + 1, i, j}, 2), {});
           }
         }
         for (size_t i = 1; i < n - 2; ++i) {
-          presentation::add_rule(p, pow({n - 2, 0, n - 2, i}, 2), {});
+          presentation::add_rule_no_checks(p, pow({n - 2, 0, n - 2, i}, 2), {});
         }
       } else if (val == author::Coxeter + author::Moser) {
         // From Chapter 3, Proposition 1.2 in https://bit.ly/3R5ZpKW (Ruskuc
         // thesis)
 
         for (size_t i = 0; i < n - 1; i++) {
-          presentation::add_rule(p, {i, i}, {});
+          presentation::add_rule_no_checks(p, {i, i}, {});
         }
 
         for (size_t i = 0; i < n - 2; ++i) {
-          presentation::add_rule(p, pow({i, i + 1}, 3), {});
+          presentation::add_rule_no_checks(p, pow({i, i + 1}, 3), {});
         }
         for (size_t i = 2; i < n - 1; ++i) {
           for (size_t j = 0; j <= i - 2; ++j) {
-            presentation::add_rule(p, {j, i, j, i}, {});
+            presentation::add_rule_no_checks(p, {j, i, j, i}, {});
           }
         }
       } else if (val == author::Moore) {
         if (index == 0) {
           // From Chapter 3, Proposition 1.1 in https://bit.ly/3R5ZpKW (Ruskuc
           // thesis)
-          presentation::add_rule(p, pow(0_w, 2), {});
-          presentation::add_rule(p, pow(1_w, n), {});
-          presentation::add_rule(p, pow(01_w, n - 1), {});
-          presentation::add_rule(p, pow(0_w + pow(1_w, n - 1) + 01_w, 3), {});
+          presentation::add_rule_no_checks(p, pow(0_w, 2), {});
+          presentation::add_rule_no_checks(p, pow(1_w, n), {});
+          presentation::add_rule_no_checks(p, pow(01_w, n - 1), {});
+          presentation::add_rule_no_checks(
+              p, pow(0_w + pow(1_w, n - 1) + 01_w, 3), {});
           for (size_t j = 2; j <= n - 2; ++j) {
-            presentation::add_rule(
+            presentation::add_rule_no_checks(
                 p,
                 pow(0_w + pow(pow(1_w, n - 1), j) + 0_w + pow(1_w, j), 2),
                 {});
           }
         } else if (index == 1) {
           for (size_t i = 0; i <= n - 2; ++i) {
-            presentation::add_rule(p, {i, i}, {});
+            presentation::add_rule_no_checks(p, {i, i}, {});
           }
           for (size_t i = 0; i <= n - 4; ++i) {
             for (size_t j = i + 2; j <= n - 2; ++j) {
-              presentation::add_rule(p, {i, j}, {j, i});
+              presentation::add_rule_no_checks(p, {i, j}, {j, i});
             }
           }
 
           for (size_t i = 1; i <= n - 2; ++i) {
-            presentation::add_rule(p, {i, i - 1, i}, {i - 1, i, i - 1});
+            presentation::add_rule_no_checks(
+                p, {i, i - 1, i}, {i - 1, i, i - 1});
           }
         }
       } else if (val == author::Burnside + author::Miller) {
@@ -350,13 +354,13 @@ namespace libsemigroups {
         // quantitative approach' J. Amer. Math. Soc. 21 (2008), 711-774
 
         for (size_t i = 0; i <= n - 2; ++i) {
-          presentation::add_rule(p, {i, i}, {});
+          presentation::add_rule_no_checks(p, {i, i}, {});
         }
 
         for (size_t i = 0; i <= n - 2; ++i) {
           for (size_t j = 0; j <= n - 2; ++j) {
             if (i != j) {
-              presentation::add_rule(p, pow({i, j}, 3), {});
+              presentation::add_rule_no_checks(p, pow({i, j}, 3), {});
             }
           }
         }
@@ -366,7 +370,7 @@ namespace libsemigroups {
             if (i != j) {
               for (size_t k = 0; k <= n - 2; ++k) {
                 if (k != i && k != j) {
-                  presentation::add_rule(p, pow({i, j, i, k}, 2), {});
+                  presentation::add_rule_no_checks(p, pow({i, j, i, k}, 2), {});
                 }
               }
             }
@@ -379,13 +383,13 @@ namespace libsemigroups {
         // See Section 2.2 of 'Presentations of finite simple groups: A
         // quantitative approach' J. Amer. Math. Soc. 21 (2008), 711-774
         for (size_t i = 0; i <= n - 2; ++i) {
-          presentation::add_rule(p, {i, i}, {});
+          presentation::add_rule_no_checks(p, {i, i}, {});
         }
 
         for (size_t i = 0; i <= n - 2; ++i) {
           for (size_t j = 0; j <= n - 2; ++j) {
             if (i != j) {
-              presentation::add_rule(p, pow({i, j}, 3), {});
+              presentation::add_rule_no_checks(p, pow({i, j}, 3), {});
             }
           }
         }
@@ -395,7 +399,7 @@ namespace libsemigroups {
             if (i != j) {
               for (size_t k = 0; k <= n - 2; ++k) {
                 if (k != i && k != j) {
-                  presentation::add_rule(p, pow({i, j, k}, 4), {});
+                  presentation::add_rule_no_checks(p, pow({i, j, k}, 4), {});
                 }
               }
             }
@@ -416,19 +420,19 @@ namespace libsemigroups {
       }
       Presentation<word_type> p;
 
-      presentation::add_rule(p, 000_w, {});
+      presentation::add_rule_no_checks(p, 000_w, {});
 
       for (size_t j = 1; j <= n - 3; ++j) {
-        presentation::add_rule(p, {j, j}, {});
+        presentation::add_rule_no_checks(p, {j, j}, {});
       }
 
       for (size_t i = 1; i <= n - 3; ++i) {
-        presentation::add_rule(p, pow({i - 1, i}, 3), {});
+        presentation::add_rule_no_checks(p, pow({i - 1, i}, 3), {});
       }
 
       for (size_t k = 2; k <= n - 3; ++k) {
         for (size_t j = 0; j <= k - 2; ++j) {
-          presentation::add_rule(p, {j, k, j, k}, {});
+          presentation::add_rule_no_checks(p, {j, k, j, k}, {});
         }
       }
       p.alphabet_from_rules();
@@ -455,48 +459,50 @@ namespace libsemigroups {
 
       // R1
       for (size_t i = 0; i <= n - 2; ++i) {
-        presentation::add_rule(p, {i, i}, e);
+        presentation::add_rule_no_checks(p, {i, i}, e);
         if (i != n - 2) {
-          presentation::add_rule(p, pow({i, i + 1}, 3), e);
+          presentation::add_rule_no_checks(p, pow({i, i + 1}, 3), e);
         }
         if (i != 0) {
-          presentation::add_rule(p, pow({i - 1, i}, 3), e);
+          presentation::add_rule_no_checks(p, pow({i - 1, i}, 3), e);
           for (size_t j = 0; j < i - 1; ++j) {
-            presentation::add_rule(p, pow({i, j}, 2), e);
+            presentation::add_rule_no_checks(p, pow({i, j}, 2), e);
           }
         }
         for (size_t j = i + 2; j < n - 1; ++j) {
-          presentation::add_rule(p, pow({i, j}, 2), e);
+          presentation::add_rule_no_checks(p, pow({i, j}, 2), e);
         }
       }
 
       // R2
-      presentation::add_rule(p, pow(x, 3), x);
+      presentation::add_rule_no_checks(p, pow(x, 3), x);
 
       // R3
-      presentation::add_rule(p, x + 0_w, x);
-      presentation::add_rule(p, 0_w + x, x);
+      presentation::add_rule_no_checks(p, x + 0_w, x);
+      presentation::add_rule_no_checks(p, 0_w + x, x);
 
       // R4
-      presentation::add_rule(p, x + 1_w + x, pow(x + 1_w, 2));
-      presentation::add_rule(p, pow(x + 1_w, 2), pow(1_w + x, 2));
-      presentation::add_rule(p, pow(1_w + x, 2), x + 1_w + pow(x, 2));
-      presentation::add_rule(p, x + 1_w + pow(x, 2), pow(x, 2) + 1_w + x);
+      presentation::add_rule_no_checks(p, x + 1_w + x, pow(x + 1_w, 2));
+      presentation::add_rule_no_checks(p, pow(x + 1_w, 2), pow(1_w + x, 2));
+      presentation::add_rule_no_checks(p, pow(1_w + x, 2), x + 1_w + pow(x, 2));
+      presentation::add_rule_no_checks(
+          p, x + 1_w + pow(x, 2), pow(x, 2) + 1_w + x);
 
       if (n == 3) {
         return p;
       }
 
       // R5
-      presentation::add_rule(
+      presentation::add_rule_no_checks(
           p, pow(pow(x, 2) + 1201_w, 2), pow(1201_w + pow(x, 2), 2));
-      presentation::add_rule(p, pow(1201_w + pow(x, 2), 2), x + 121_w + x);
+      presentation::add_rule_no_checks(
+          p, pow(1201_w + pow(x, 2), 2), x + 121_w + x);
 
       // R6
       auto l = 2_w + x + 1021_w, y = x;
       for (size_t i = 2; i <= n - 2; ++i) {
         word_type z = {i};
-        presentation::add_rule(p, y + z + y, z + y + z);
+        presentation::add_rule_no_checks(p, y + z + y, z + y + z);
         y = l + y + z;
         l = z + l + word_type({i, i - 1});
       }
@@ -506,7 +512,7 @@ namespace libsemigroups {
       }
 
       // R7
-      presentation::add_commutes_rules(p, range(3, n - 1), x);
+      presentation::add_commutes_rules_no_checks(p, range(3, n - 1), x);
       return p;
     }
 
@@ -528,36 +534,36 @@ namespace libsemigroups {
 
       // S in Theorem 3 (same as dual_symmetric_inverse_monoid)
       for (size_t i = 0; i <= n - 2; ++i) {
-        presentation::add_rule(p, {i, i}, {});
+        presentation::add_rule_no_checks(p, {i, i}, {});
         if (i != n - 2) {
-          presentation::add_rule(p, pow({i, i + 1}, 3), {});
+          presentation::add_rule_no_checks(p, pow({i, i + 1}, 3), {});
         }
         if (i != 0) {
-          presentation::add_rule(p, pow({i - 1, i}, 3), {});
+          presentation::add_rule_no_checks(p, pow({i - 1, i}, 3), {});
           for (size_t j = 0; j < i - 1; ++j) {
-            presentation::add_rule(p, pow({i, j}, 2), {});
+            presentation::add_rule_no_checks(p, pow({i, j}, 2), {});
           }
         }
         for (size_t j = i + 2; j < n - 1; ++j) {
-          presentation::add_rule(p, pow({i, j}, 2), {});
+          presentation::add_rule_no_checks(p, pow({i, j}, 2), {});
         }
       }
 
       // F2
-      presentation::add_rule(p, pow(t, 2), t);
+      presentation::add_rule_no_checks(p, pow(t, 2), t);
 
       // F3
-      presentation::add_rule(p, t + 0_w, t);
-      presentation::add_rule(p, 0_w + t, t);
+      presentation::add_rule_no_checks(p, t + 0_w, t);
+      presentation::add_rule_no_checks(p, 0_w + t, t);
 
       // F4
-      presentation::add_commutes_rules(p, range(2, n - 1), t);
+      presentation::add_commutes_rules_no_checks(p, range(2, n - 1), t);
 
       // F5
-      presentation::add_rule(p, 1_w + t + 1_w + t, t + 1_w + t + 1_w);
+      presentation::add_rule_no_checks(p, 1_w + t + 1_w + t, t + 1_w + t + 1_w);
 
       // F6
-      presentation::add_rule(
+      presentation::add_rule_no_checks(
           p, 1021_w + t + 1201_w + t, t + 1021_w + t + 1201_w);
 
       return p;
@@ -639,46 +645,46 @@ namespace libsemigroups {
       p.contains_empty_word(true);
 
       // V1
-      presentation::add_rule(p, pow(1_w, n), {});
-      presentation::add_rule(p, pow(01_w, n - 1), {});
-      presentation::add_rule(p, 00_w, {});
+      presentation::add_rule_no_checks(p, pow(1_w, n), {});
+      presentation::add_rule_no_checks(p, pow(01_w, n - 1), {});
+      presentation::add_rule_no_checks(p, 00_w, {});
       for (size_t i = 2; i <= n / 2; ++i) {
-        presentation::add_rule(
+        presentation::add_rule_no_checks(
             p, pow(pow(1_w, i) + 0_w + pow(1_w, n - i) + 0_w, 2), {});
       }
 
       // V2
-      presentation::add_rule(p, 22_w, 2_w);
-      presentation::add_rule(p, 232_w, 2_w);
-      presentation::add_rule(p, 012_w + pow(1_w, n - 1) + 0_w, 2_w);
-      presentation::add_rule(
+      presentation::add_rule_no_checks(p, 22_w, 2_w);
+      presentation::add_rule_no_checks(p, 232_w, 2_w);
+      presentation::add_rule_no_checks(p, 012_w + pow(1_w, n - 1) + 0_w, 2_w);
+      presentation::add_rule_no_checks(
           p, 10_w + pow(1_w, n - 1) + 210_w + pow(1_w, n - 1), 2_w);
 
       // V3
-      presentation::add_rule(p, 33_w, 3_w);
-      presentation::add_rule(p, 323_w, 3_w);
-      presentation::add_rule(p, 30_w, 3_w);
-      presentation::add_rule(p, 03_w, 3_w);
-      presentation::add_rule(
+      presentation::add_rule_no_checks(p, 33_w, 3_w);
+      presentation::add_rule_no_checks(p, 323_w, 3_w);
+      presentation::add_rule_no_checks(p, 30_w, 3_w);
+      presentation::add_rule_no_checks(p, 03_w, 3_w);
+      presentation::add_rule_no_checks(
           p, 110_w + pow(1_w, n - 2) + 3110_w + pow(1_w, n - 2), 3_w);
-      presentation::add_rule(p,
-                             pow(1_w, n - 1) + 010_w + pow(1_w, n - 1) + 310_w
-                                 + pow(1_w, n - 1) + 01_w,
-                             3_w);
+      presentation::add_rule_no_checks(p,
+                                       pow(1_w, n - 1) + 010_w + pow(1_w, n - 1)
+                                           + 310_w + pow(1_w, n - 1) + 01_w,
+                                       3_w);
 
       // V4
-      presentation::add_rule(p, 0202_w, 202_w);
-      presentation::add_rule(p, 2020_w, 202_w);
+      presentation::add_rule_no_checks(p, 0202_w, 202_w);
+      presentation::add_rule_no_checks(p, 2020_w, 202_w);
 
       // V5
-      presentation::add_rule(
+      presentation::add_rule_no_checks(
           p, 313_w + pow(1_w, n - 1), 13_w + pow(1_w, n - 1) + 3_w);
 
       // V6
-      presentation::add_rule(
+      presentation::add_rule_no_checks(
           p, 3113_w + pow(1_w, n - 2), 113_w + pow(1_w, n - 2) + 3_w);
       // V7
-      presentation::add_rule(
+      presentation::add_rule_no_checks(
           p, 3112_w + pow(1_w, n - 2), 112_w + pow(1_w, n - 2) + 3_w);
       return p;
     }
@@ -709,8 +715,8 @@ namespace libsemigroups {
       for (size_t i = 0; i < n; ++i) {
         for (size_t j = 0; j < n; ++j) {
           if (i != j) {
-            presentation::add_rule(p, t[i][j], t[j][i]);
-            presentation::add_rule(p, pow(t[i][j], 2), t[i][j]);
+            presentation::add_rule_no_checks(p, t[i][j], t[j][i]);
+            presentation::add_rule_no_checks(p, pow(t[i][j], 2), t[i][j]);
           }
         }
       }
@@ -720,9 +726,10 @@ namespace libsemigroups {
         for (size_t j = 0; j < n; ++j) {
           for (size_t k = 0; k < n; ++k) {
             if (i != j && j != k && i != k) {
-              presentation::add_rule(
+              presentation::add_rule_no_checks(
                   p, t[i][j] + t[i][k] + t[j][k], t[i][j] + t[j][k]);
-              presentation::add_rule(p, t[i][j] + t[j][k] + t[i][j], t[i][j]);
+              presentation::add_rule_no_checks(
+                  p, t[i][j] + t[j][k] + t[i][j], t[i][j]);
             }
           }
         }
@@ -734,13 +741,14 @@ namespace libsemigroups {
           for (size_t k = 0; k < n; ++k) {
             for (size_t l = 0; l < n; ++l) {
               if (i != j && j != k && i != k && i != l && j != l && k != l) {
-                presentation::add_rule(p,
-                                       t[i][j] + t[j][k] + t[k][l],
-                                       t[i][j] + t[i][l] + t[k][l]);
-                presentation::add_rule(p,
-                                       t[i][j] + t[k][l] + t[i][k],
-                                       t[i][j] + t[j][l] + t[i][k]);
-                presentation::add_rule(p, t[i][j] + t[k][l], t[k][l] + t[i][j]);
+                presentation::add_rule_no_checks(p,
+                                                 t[i][j] + t[j][k] + t[k][l],
+                                                 t[i][j] + t[i][l] + t[k][l]);
+                presentation::add_rule_no_checks(p,
+                                                 t[i][j] + t[k][l] + t[i][k],
+                                                 t[i][j] + t[j][l] + t[i][k]);
+                presentation::add_rule_no_checks(
+                    p, t[i][j] + t[k][l], t[k][l] + t[i][j]);
               }
             }
           }
@@ -760,14 +768,14 @@ namespace libsemigroups {
       p.alphabet(2);
       p.contains_empty_word(true);
 
-      presentation::add_rule(p, pow(0_w, n), {});
-      presentation::add_rule(p, 11_w, 1_w);
-      presentation::add_rule(p, pow(10_w, n), 10_w);
-      presentation::add_rule(p,
-                             0_w + pow(1_w + pow(0_w, n - 1), n - 1),
-                             pow(1_w + pow(0_w, n - 1), n - 1));
+      presentation::add_rule_no_checks(p, pow(0_w, n), {});
+      presentation::add_rule_no_checks(p, 11_w, 1_w);
+      presentation::add_rule_no_checks(p, pow(10_w, n), 10_w);
+      presentation::add_rule_no_checks(p,
+                                       0_w + pow(1_w + pow(0_w, n - 1), n - 1),
+                                       pow(1_w + pow(0_w, n - 1), n - 1));
       for (size_t i = 2; i <= n - 1; ++i) {
-        presentation::add_rule(
+        presentation::add_rule_no_checks(
             p,
             1_w + pow(0_w, i) + pow(10_w, n - 1) + pow(0_w, n - i),
             pow(0_w, i) + pow(10_w, n - 1) + pow(0_w, n - i) + 1_w);
@@ -785,27 +793,27 @@ namespace libsemigroups {
       p.alphabet(3);
       p.contains_empty_word(true);
 
-      presentation::add_rule(p, pow(0_w, n), {});
-      presentation::add_rule(p, 11_w, 1_w);
-      presentation::add_rule(p, pow(10_w, n), 10_w);
-      presentation::add_rule(p,
-                             0_w + pow(1_w + pow(0_w, n - 1), n - 1),
-                             pow(1_w + pow(0_w, n - 1), n - 1));
+      presentation::add_rule_no_checks(p, pow(0_w, n), {});
+      presentation::add_rule_no_checks(p, 11_w, 1_w);
+      presentation::add_rule_no_checks(p, pow(10_w, n), 10_w);
+      presentation::add_rule_no_checks(p,
+                                       0_w + pow(1_w + pow(0_w, n - 1), n - 1),
+                                       pow(1_w + pow(0_w, n - 1), n - 1));
 
       for (size_t i = 2; i <= n - 1; ++i) {
-        presentation::add_rule(
+        presentation::add_rule_no_checks(
             p,
             1_w + pow(0_w, i) + pow(10_w, n - 1) + pow(0_w, n - i),
             pow(0_w, i) + pow(10_w, n - 1) + pow(0_w, n - i) + 1_w);
       }
-      presentation::add_rule(p, 22_w, {});
-      presentation::add_rule(p, 02_w, 2_w + pow(0_w, n - 1));
-      presentation::add_rule(p, 12_w, 2_w + pow(01_w, n - 1));
+      presentation::add_rule_no_checks(p, 22_w, {});
+      presentation::add_rule_no_checks(p, 02_w, 2_w + pow(0_w, n - 1));
+      presentation::add_rule_no_checks(p, 12_w, 2_w + pow(01_w, n - 1));
 
-      presentation::add_rule(p,
-                             2_w + pow(1_w + pow(0_w, n - 1), n - 2),
-                             pow(0_w, n - 2)
-                                 + pow(1_w + pow(0_w, n - 1), n - 2));
+      presentation::add_rule_no_checks(p,
+                                       2_w + pow(1_w + pow(0_w, n - 1), n - 2),
+                                       pow(0_w, n - 2)
+                                           + pow(1_w + pow(0_w, n - 1), n - 2));
 
       return p;
     }
@@ -822,7 +830,7 @@ namespace libsemigroups {
       p.contains_empty_word(true);
 
       // E1
-      presentation::add_idempotent_rules(p, range(0, n - 1));
+      presentation::add_idempotent_rules_no_checks(p, range(0, n - 1));
 
       int64_t m = n;
       // E2 + E3
@@ -830,9 +838,9 @@ namespace libsemigroups {
         for (int64_t j = 0; j < m - 1; ++j) {
           auto d = std::abs(i - j);
           if (d > 1) {
-            presentation::add_rule(p, {i, j}, {j, i});
+            presentation::add_rule_no_checks(p, {i, j}, {j, i});
           } else if (d == 1) {
-            presentation::add_rule(p, {i, j, i}, {i});
+            presentation::add_rule_no_checks(p, {i, j, i}, {i});
           }
         }
       }
@@ -854,10 +862,10 @@ namespace libsemigroups {
 
       // E1
       for (size_t i = 0; i < n - 1; ++i) {
-        presentation::add_rule(p, pow(s[i], 2), {});
-        presentation::add_rule(p, pow(t[i], 2), t[i]);
-        presentation::add_rule(p, t[i] + s[i], s[i] + t[i]);
-        presentation::add_rule(p, s[i] + t[i], t[i]);
+        presentation::add_rule_no_checks(p, pow(s[i], 2), {});
+        presentation::add_rule_no_checks(p, pow(t[i], 2), t[i]);
+        presentation::add_rule_no_checks(p, t[i] + s[i], s[i] + t[i]);
+        presentation::add_rule_no_checks(p, s[i] + t[i], t[i]);
       }
 
       // E2 + E3
@@ -866,14 +874,17 @@ namespace libsemigroups {
         for (int64_t j = 0; j < m - 1; ++j) {
           auto d = std::abs(i - j);
           if (d > 1) {
-            presentation::add_rule(p, s[i] + s[j], s[j] + s[i]);
-            presentation::add_rule(p, t[i] + t[j], t[j] + t[i]);
-            presentation::add_rule(p, t[i] + s[j], s[j] + t[i]);
+            presentation::add_rule_no_checks(p, s[i] + s[j], s[j] + s[i]);
+            presentation::add_rule_no_checks(p, t[i] + t[j], t[j] + t[i]);
+            presentation::add_rule_no_checks(p, t[i] + s[j], s[j] + t[i]);
           } else if (d == 1) {
-            presentation::add_rule(p, s[i] + s[j] + s[i], s[j] + s[i] + s[j]);
-            presentation::add_rule(p, t[i] + t[j] + t[i], t[i]);
-            presentation::add_rule(p, s[i] + t[j] + t[i], s[j] + t[i]);
-            presentation::add_rule(p, t[i] + t[j] + s[i], t[i] + s[j]);
+            presentation::add_rule_no_checks(
+                p, s[i] + s[j] + s[i], s[j] + s[i] + s[j]);
+            presentation::add_rule_no_checks(p, t[i] + t[j] + t[i], t[i]);
+            presentation::add_rule_no_checks(
+                p, s[i] + t[j] + t[i], s[j] + t[i]);
+            presentation::add_rule_no_checks(
+                p, t[i] + t[j] + s[i], t[i] + s[j]);
           }
         }
       }
@@ -903,26 +914,26 @@ namespace libsemigroups {
       }
 
       Presentation<word_type> p;
-      presentation::add_rule(p, a[0], b[0]);
+      presentation::add_rule_no_checks(p, a[0], b[0]);
       p.alphabet(m + n);
 
       // (7)
       for (size_t i = 1; i < m; ++i) {
-        presentation::add_rule(p, a[i - 1] + a[i], a[i - 1]);
+        presentation::add_rule_no_checks(p, a[i - 1] + a[i], a[i - 1]);
       }
 
-      presentation::add_rule(p, a[m - 1] + a[0], a[m - 1]);
+      presentation::add_rule_no_checks(p, a[m - 1] + a[0], a[m - 1]);
 
       // (8)
       for (size_t i = 1; i < n; ++i) {
-        presentation::add_rule(p, b[i - 1] + b[i], b[i]);
+        presentation::add_rule_no_checks(p, b[i - 1] + b[i], b[i]);
       }
 
-      presentation::add_rule(p, b[n - 1] + b[0], b[0]);
+      presentation::add_rule_no_checks(p, b[n - 1] + b[0], b[0]);
 
       for (size_t i = 1; i < m; ++i) {
         for (size_t j = 1; j < n; ++j) {
-          presentation::add_rule(p, b[j] + a[i], a[0]);
+          presentation::add_rule_no_checks(p, b[j] + a[i], a[0]);
         }
       }
       return p;
@@ -944,22 +955,25 @@ namespace libsemigroups {
         // From Proposition 1.7 in https://bit.ly/3R5ZpKW
         p = symmetric_group(n, author::Moore);
 
-        presentation::add_rule(p, 02_w, 2_w);
-        presentation::add_rule(
+        presentation::add_rule_no_checks(p, 02_w, 2_w);
+        presentation::add_rule_no_checks(
             p, pow(1_w, n - 2) + 0112_w + pow(1_w, n - 2) + 011_w, 2_w);
-        presentation::add_rule(p,
-                               10_w + pow(1_w, n - 1) + 012_w + pow(1_w, n - 1)
-                                   + 010_w + pow(1_w, n - 1),
-                               2_w);
-        presentation::add_rule(p, pow(210_w + pow(1_w, n - 1), 2), 2_w);
-        presentation::add_rule(
+        presentation::add_rule_no_checks(p,
+                                         10_w + pow(1_w, n - 1) + 012_w
+                                             + pow(1_w, n - 1) + 010_w
+                                             + pow(1_w, n - 1),
+                                         2_w);
+        presentation::add_rule_no_checks(
+            p, pow(210_w + pow(1_w, n - 1), 2), 2_w);
+        presentation::add_rule_no_checks(
             p, pow(pow(1_w, n - 1) + 012_w, 2), 2_w + pow(1_w, n - 1) + 012_w);
-        presentation::add_rule(p,
-                               pow(2_w + pow(1_w, n - 1) + 01_w, 2),
-                               2_w + pow(1_w, n - 1) + 012_w);
-        presentation::add_rule(p,
-                               pow(210_w + pow(1_w, n - 2) + 01_w, 2),
-                               pow(10_w + (pow(1_w, n - 2)) + 012_w, 2));
+        presentation::add_rule_no_checks(p,
+                                         pow(2_w + pow(1_w, n - 1) + 01_w, 2),
+                                         2_w + pow(1_w, n - 1) + 012_w);
+        presentation::add_rule_no_checks(
+            p,
+            pow(210_w + pow(1_w, n - 2) + 01_w, 2),
+            pow(10_w + (pow(1_w, n - 2)) + 012_w, 2));
       } else {
         // From Theorem 9.3.1, p161-162, (Ganyushkin + Mazorchuk)
         // using Theorem 9.1.4 to express presentation in terms
@@ -1018,10 +1032,11 @@ namespace libsemigroups {
         p = symmetric_inverse_monoid(n, author::Sutov);
         p.alphabet(n + 1);
         add_full_transformation_monoid_relations(p, n, 0, n);
-        presentation::add_rule(p, {n, 0, n - 1, 0}, {n});
-        presentation::add_rule(p, {0, n - 1, 0, n}, {0, n - 1, 0});
-        presentation::add_rule(p, {n, n - 1}, {0, n - 1, 0, n - 1, n});
-        presentation::add_rule(p, {n, 1, n - 1, 1}, {1, n - 1, 1, n});
+        presentation::add_rule_no_checks(p, {n, 0, n - 1, 0}, {n});
+        presentation::add_rule_no_checks(p, {0, n - 1, 0, n}, {0, n - 1, 0});
+        presentation::add_rule_no_checks(
+            p, {n, n - 1}, {0, n - 1, 0, n - 1, n});
+        presentation::add_rule_no_checks(p, {n, 1, n - 1, 1}, {1, n - 1, 1, n});
       }
       return p;
     }
@@ -1046,16 +1061,18 @@ namespace libsemigroups {
         epsilon.push_back(pi[i] + epsilon[0] + pi[i]);
       }
 
-      presentation::add_rule(p, pow(epsilon[0], 2), word_type(epsilon[0]));
-      presentation::add_rule(
+      presentation::add_rule_no_checks(
+          p, pow(epsilon[0], 2), word_type(epsilon[0]));
+      presentation::add_rule_no_checks(
           p, epsilon[0] + epsilon[1], epsilon[1] + epsilon[0]);
 
       for (size_t k = 1; k <= n - 2; ++k) {
-        presentation::add_rule(p, epsilon[1] + pi[k], pi[k] + epsilon[1]);
-        presentation::add_rule(
+        presentation::add_rule_no_checks(
+            p, epsilon[1] + pi[k], pi[k] + epsilon[1]);
+        presentation::add_rule_no_checks(
             p, epsilon[k + 1] + pi[0], pi[0] + epsilon[k + 1]);
       }
-      presentation::add_rule(
+      presentation::add_rule_no_checks(
           p, epsilon[1] + epsilon[0] + pi[0], epsilon[1] + epsilon[0]);
       p.alphabet_from_rules();
       return p;
@@ -1076,11 +1093,11 @@ namespace libsemigroups {
         for (size_t b = a; b < n; b++) {
           for (size_t c = b; c < n; c++) {
             if (a != b) {
-              presentation::add_rule(
+              presentation::add_rule_no_checks(
                   p, word_type({c, b, a}), word_type({c, a, b}));
             }
             if (b != c) {
-              presentation::add_rule(
+              presentation::add_rule_no_checks(
                   p, word_type({c, b, a}), word_type({b, c, a}));
             }
           }
@@ -1095,7 +1112,7 @@ namespace libsemigroups {
             "expected 2nd argument to be strictly positive, found {}", r);
       }
       Presentation<word_type> p;
-      presentation::add_rule(p, pow(0_w, m + r), pow(0_w, m));
+      presentation::add_rule_no_checks(p, pow(0_w, m + r), pow(0_w, m));
       p.alphabet_from_rules();
       return p;
     }
@@ -1118,32 +1135,34 @@ namespace libsemigroups {
       // relations 1
       for (size_t i = 1; i <= n - 2; ++i) {
         // relations 1
-        presentation::add_rule(p, v[n - 2 - i] + u[i], u[i] + v[n - 1 - i]);
+        presentation::add_rule_no_checks(
+            p, v[n - 2 - i] + u[i], u[i] + v[n - 1 - i]);
         // relations 2
-        presentation::add_rule(p, u[n - 2 - i] + v[i], v[i] + u[n - 1 - i]);
+        presentation::add_rule_no_checks(
+            p, u[n - 2 - i] + v[i], v[i] + u[n - 1 - i]);
       }
 
       for (size_t i = 0; i <= n - 2; ++i) {
         // relations 3
-        presentation::add_rule(p, v[n - 2 - i] + u[i], u[i]);
+        presentation::add_rule_no_checks(p, v[n - 2 - i] + u[i], u[i]);
         // relations 4
-        presentation::add_rule(p, u[n - 2 - i] + v[i], v[i]);
+        presentation::add_rule_no_checks(p, u[n - 2 - i] + v[i], v[i]);
       }
 
       // relations 5
       for (size_t i = 0; i <= n - 2; ++i) {
         for (size_t j = 0; j <= n - 2; ++j) {
           if (j != (n - 2) - i && j != n - i - 1) {
-            presentation::add_rule(p, u[i] + v[j], v[j] + u[i]);
+            presentation::add_rule_no_checks(p, u[i] + v[j], v[j] + u[i]);
           }
         }
       }
 
       // relation 6
-      presentation::add_rule(p, u[0] + u[1] + u[0], u[0] + u[1]);
+      presentation::add_rule_no_checks(p, u[0] + u[1] + u[0], u[0] + u[1]);
 
       // relation 7
-      presentation::add_rule(p, v[0] + v[1] + v[0], v[0] + v[1]);
+      presentation::add_rule_no_checks(p, v[0] + v[1] + v[0], v[0] + v[1]);
 
       p.alphabet_from_rules();
 
@@ -1175,43 +1194,44 @@ namespace libsemigroups {
         p.alphabet(n + 1);
 
         // R1
-        presentation::add_rule(p, pow(0_w, n), {});
+        presentation::add_rule_no_checks(p, pow(0_w, n), {});
 
         // R2
-        presentation::add_idempotent_rules(p, range(1, n + 1));
+        presentation::add_idempotent_rules_no_checks(p, range(1, n + 1));
 
         // R3
-        presentation::add_commutes_rules(p, range(1, n + 1));
+        presentation::add_commutes_rules_no_checks(p, range(1, n + 1));
 
         // R4
-        presentation::add_rule(p, 01_w, word_type({n}) + 0_w);
+        presentation::add_rule_no_checks(p, 01_w, word_type({n}) + 0_w);
         for (size_t i = 0; i < n - 1; ++i) {
-          presentation::add_rule(
+          presentation::add_rule_no_checks(
               p, 0_w + word_type({i + 2}), word_type({i + 1}) + 0_w);
         }
 
         // R5
-        presentation::add_rule(p, range(0, n + 1), range(1, n + 1));
+        presentation::add_rule_no_checks(p, range(0, n + 1), range(1, n + 1));
 
       } else if (index == 1) {
         // See Theorem 2.7 of https://arxiv.org/pdf/2211.02155.pdf
         p.alphabet(2);
 
-        presentation::add_rule(p, pow(0_w, n), ""_w);  // relation Q1
-        presentation::add_rule(p, 11_w, 1_w);          // relation Q2
+        presentation::add_rule_no_checks(p, pow(0_w, n), ""_w);  // relation Q1
+        presentation::add_rule_no_checks(p, 11_w, 1_w);          // relation Q2
 
         // relations Q3
         for (size_t j = 2; j <= n; ++j) {
           for (size_t i = 1; i < j; ++i) {
-            presentation::add_rule(
+            presentation::add_rule_no_checks(
                 p,
                 1_w + pow(0_w, n - j + i) + 1_w + pow(0_w, n - i + j),
                 pow(0_w, n - j + i) + 1_w + pow(0_w, n - i + j) + 1_w);
           }
         }
-        presentation::add_rule(p,
-                               0_w + pow(1_w + pow(0_w, n - 1), n),
-                               pow(1_w + pow(0_w, n - 1), n));  // relation Q4
+        presentation::add_rule_no_checks(
+            p,
+            0_w + pow(1_w + pow(0_w, n - 1), n),
+            pow(1_w + pow(0_w, n - 1), n));  // relation Q4
       }
       return p;
     }
@@ -1229,34 +1249,34 @@ namespace libsemigroups {
       word_type e = range(2, n);
 
       // relations V1
-      presentation::add_idempotent_rules(p, e);
+      presentation::add_idempotent_rules_no_checks(p, e);
 
       // relations V2
-      presentation::add_rule(p, 010_w, 0_w);
-      presentation::add_rule(p, 101_w, 1_w);
+      presentation::add_rule_no_checks(p, 010_w, 0_w);
+      presentation::add_rule_no_checks(p, 101_w, 1_w);
 
       // relations V3
-      presentation::add_rule(
+      presentation::add_rule_no_checks(
           p, 1_w + pow(0_w, 2) + 1_w, 0_w + pow(1_w, 2) + 0_w);
 
       // relations V4
-      presentation::add_commutes_rules(p, e);
-      presentation::add_commutes_rules(p, e, {01_w});
-      presentation::add_commutes_rules(p, e, {10_w});
+      presentation::add_commutes_rules_no_checks(p, e);
+      presentation::add_commutes_rules_no_checks(p, e, {01_w});
+      presentation::add_commutes_rules_no_checks(p, e, {10_w});
 
       // relations V6
       for (size_t i = 0; i <= n - 4; ++i) {
-        presentation::add_rule(p, 0_w + e[i + 1], e[i] + 0_w);
+        presentation::add_rule_no_checks(p, 0_w + e[i + 1], e[i] + 0_w);
       }
 
       // relations V7
-      presentation::add_rule(p, pow(0_w, 2) + 1_w, e[n - 3] + 0_w);
-      presentation::add_rule(p, 1_w + pow(0_w, 2), 02_w);
+      presentation::add_rule_no_checks(p, pow(0_w, 2) + 1_w, e[n - 3] + 0_w);
+      presentation::add_rule_no_checks(p, 1_w + pow(0_w, 2), 02_w);
 
       // relations V8
-      presentation::add_rule(p,
-                             10_w + prod(e, 0, n - 2, 1) + 01_w,
-                             0_w + prod(e, 0, n - 2, 1) + 01_w);
+      presentation::add_rule_no_checks(p,
+                                       10_w + prod(e, 0, n - 2, 1) + 01_w,
+                                       0_w + prod(e, 0, n - 2, 1) + 01_w);
 
       return p;
     }
@@ -1273,19 +1293,19 @@ namespace libsemigroups {
       p.alphabet(3);
 
       // Q1
-      presentation::add_rule(p, pow(0_w, n), {});
-      presentation::add_rule(p, pow(1_w, 2), {});
-      presentation::add_rule(p, 10_w, pow(0_w, n - 1) + 1_w);
+      presentation::add_rule_no_checks(p, pow(0_w, n), {});
+      presentation::add_rule_no_checks(p, pow(1_w, 2), {});
+      presentation::add_rule_no_checks(p, 10_w, pow(0_w, n - 1) + 1_w);
 
       // Q2
-      presentation::add_rule(p, pow(2_w, 2), 2_w);
-      presentation::add_rule(p, 01201_w, 2_w);
+      presentation::add_rule_no_checks(p, pow(2_w, 2), 2_w);
+      presentation::add_rule_no_checks(p, 01201_w, 2_w);
 
       // Q3
 
       for (size_t j = 2; j <= n; ++j) {
         for (size_t i = 1; i < j; ++i) {
-          presentation::add_rule(
+          presentation::add_rule_no_checks(
               p,
               2_w + pow(0_w, j - i) + 2_w + pow(0_w, n - j + i),
               pow(0_w, j - i) + 2_w + pow(0_w, n - j + i) + 2_w);
@@ -1294,15 +1314,15 @@ namespace libsemigroups {
 
       if (n % 2 == 1) {
         // Q4
-        presentation::add_rule(
+        presentation::add_rule_no_checks(
             p, 10_w + pow(20_w, n - 2) + 2_w, pow(20_w, n - 2) + 2_w);
       } else {
         // Q5
-        presentation::add_rule(
+        presentation::add_rule_no_checks(
             p,
             10_w + pow(20_w, n / 2 - 1) + 0_w + pow(20_w, n / 2 - 2) + 2_w,
             pow(20_w, n / 2 - 1) + 0_w + pow(20_w, n / 2 - 2) + 2_w);
-        presentation::add_rule(
+        presentation::add_rule_no_checks(
             p, 1_w + pow(20_w, n - 1) + 2_w, pow(20_w, n - 1) + 2_w);
       }
 
@@ -1328,13 +1348,13 @@ namespace libsemigroups {
       p.alphabet(n - 1).contains_empty_word(true);
 
       for (size_t i = 0; i <= n - 2; ++i) {
-        presentation::add_rule(p, pow({i}, 2), {});
+        presentation::add_rule_no_checks(p, pow({i}, 2), {});
       }
 
       for (size_t i = 0; i <= n - 2; ++i) {
         for (size_t j = 0; j <= n - 2; ++j) {
           if (i != j) {
-            presentation::add_rule(p, pow({i, j}, 3), {});
+            presentation::add_rule_no_checks(p, pow({i, j}, 3), {});
           }
         }
       }
@@ -1344,7 +1364,7 @@ namespace libsemigroups {
           if (i != j) {
             for (size_t k = 0; k <= n - 2; ++k) {
               if (k != i && k != j) {
-                presentation::add_rule(p, pow({i, j, k}, 4), {});
+                presentation::add_rule_no_checks(p, pow({i, j, k}, 4), {});
               }
             }
           }
@@ -1396,12 +1416,12 @@ namespace libsemigroups {
 
       if (q == 0) {
         for (size_t i = 0; i < l; ++i) {
-          presentation::add_rule(p, {i, i}, {i});
+          presentation::add_rule_no_checks(p, {i, i}, {i});
         }
       } else {
-        presentation::add_rule(p, 00_w, 0_w);
+        presentation::add_rule_no_checks(p, 00_w, 0_w);
         for (size_t i = 1; i < l; ++i) {
-          presentation::add_rule(p, {i, i}, {});
+          presentation::add_rule_no_checks(p, {i, i}, {});
         }
       }
 
@@ -1409,17 +1429,17 @@ namespace libsemigroups {
       for (int i = 0; i < k; ++i) {
         for (int j = 0; j < k; ++j) {
           if (std::abs(i - j) >= 2) {
-            presentation::add_rule(p, {i, j}, {j, i});
+            presentation::add_rule_no_checks(p, {i, j}, {j, i});
           }
         }
       }
 
       for (size_t i = 1; i < l - 1; ++i) {
-        presentation::add_rule(p, {i, i + 1, i}, {i + 1, i, i + 1});
+        presentation::add_rule_no_checks(p, {i, i + 1, i}, {i + 1, i, i + 1});
       }
 
-      presentation::add_rule(p, 1010_w, 0101_w);
-      presentation::add_rule(p, 1010_w, 010_w);
+      presentation::add_rule_no_checks(p, 1010_w, 0101_w);
+      presentation::add_rule_no_checks(p, 1010_w, 010_w);
 
       return p;
     }

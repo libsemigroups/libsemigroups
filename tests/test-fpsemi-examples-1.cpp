@@ -720,11 +720,14 @@ namespace libsemigroups {
       auto p = fpsemigroup::cyclic_inverse_monoid(n, author::Fernandes, 0);
       REQUIRE(p.rules.size() == (n * n + 3 * n + 4));
       if (n == 3) {
+        presentation::sort_each_rule(p);
+        presentation::sort_rules(p);
+
         REQUIRE(p.rules
                 == std::vector<word_type>(
                     {000_w, {},   11_w, 1_w,  22_w,   2_w,  33_w, 3_w,
-                     12_w,  21_w, 13_w, 31_w, 23_w,   32_w, 01_w, 30_w,
-                     02_w,  10_w, 03_w, 20_w, 0123_w, 123_w}));
+                     10_w,  02_w, 20_w, 03_w, 21_w,   12_w, 30_w, 01_w,
+                     31_w,  13_w, 32_w, 23_w, 0123_w, 123_w}));
       }
 
       ToddCoxeter tc(congruence_kind::twosided, p);

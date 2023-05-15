@@ -34,13 +34,13 @@ namespace libsemigroups {
                             "[quick][low-index]") {
       auto                    rg = ReportGuard(false);
       Presentation<word_type> p;
-      presentation::add_rule(p, {1, 2, 1}, {1, 1});
-      presentation::add_rule(p, {3, 3}, {1, 1});
-      presentation::add_rule(p, {1, 1, 1}, {1, 1});
-      presentation::add_rule(p, {3, 2}, {2, 3});
-      presentation::add_rule(p, {3, 1}, {1, 1});
-      presentation::add_rule(p, {2, 2}, {2});
-      presentation::add_rule(p, {1, 3}, {1, 1});
+      presentation::add_rule_no_checks(p, {1, 2, 1}, {1, 1});
+      presentation::add_rule_no_checks(p, {3, 3}, {1, 1});
+      presentation::add_rule_no_checks(p, {1, 1, 1}, {1, 1});
+      presentation::add_rule_no_checks(p, {3, 2}, {2, 3});
+      presentation::add_rule_no_checks(p, {3, 1}, {1, 1});
+      presentation::add_rule_no_checks(p, {2, 2}, {2});
+      presentation::add_rule_no_checks(p, {1, 3}, {1, 1});
       p.alphabet_from_rules();
       p.validate();
 

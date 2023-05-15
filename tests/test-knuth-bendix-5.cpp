@@ -179,9 +179,10 @@ namespace libsemigroups {
     KnuthBendix kb1(twosided, p);
     REQUIRE(kb1.number_of_classes() == 88);
 
-    presentation::add_rule(p,
-                           2_w + S.factorisation(Transf<>({3, 4, 4, 4, 4})),
-                           2_w + S.factorisation(Transf<>({3, 1, 3, 3, 3})));
+    presentation::add_rule_no_checks(
+        p,
+        2_w + S.factorisation(Transf<>({3, 4, 4, 4, 4})),
+        2_w + S.factorisation(Transf<>({3, 1, 3, 3, 3})));
 
     p.alphabet(3);
 

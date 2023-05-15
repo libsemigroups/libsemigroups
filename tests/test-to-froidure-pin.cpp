@@ -139,8 +139,8 @@ namespace libsemigroups {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("abcdefg");
-    presentation::add_rule_and_check(p, "abcd", "aaaeaa");
-    presentation::add_rule_and_check(p, "ef", "dg");
+    presentation::add_rule(p, "abcd", "aaaeaa");
+    presentation::add_rule(p, "ef", "dg");
     check_from_ke(p);
     check_from_ke<std::string, detail::MultiStringView>(p);
     check_from_ke<word_type>(to_presentation<word_type>(p));
@@ -153,7 +153,7 @@ namespace libsemigroups {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("ab");
-    presentation::add_rule_and_check(p, "bababa", "aba");
+    presentation::add_rule(p, "bababa", "aba");
     REQUIRE_THROWS_AS(check_from_ke(p), LibsemigroupsException);
     REQUIRE_THROWS_AS((check_from_ke<std::string, detail::MultiStringView>(p)),
                       LibsemigroupsException);
@@ -173,19 +173,19 @@ namespace libsemigroups {
 
     Presentation<word_type> p;
     p.alphabet(4);
-    presentation::add_rule_and_check(p, {0, 0}, {0});
-    presentation::add_rule_and_check(p, {1, 0}, {1});
-    presentation::add_rule_and_check(p, {0, 1}, {1});
-    presentation::add_rule_and_check(p, {2, 0}, {2});
-    presentation::add_rule_and_check(p, {0, 2}, {2});
-    presentation::add_rule_and_check(p, {3, 0}, {3});
-    presentation::add_rule_and_check(p, {0, 3}, {3});
-    presentation::add_rule_and_check(p, {1, 1}, {0});
-    presentation::add_rule_and_check(p, {2, 3}, {0});
-    presentation::add_rule_and_check(p, {2, 2, 2}, {0});
-    presentation::add_rule_and_check(
+    presentation::add_rule(p, {0, 0}, {0});
+    presentation::add_rule(p, {1, 0}, {1});
+    presentation::add_rule(p, {0, 1}, {1});
+    presentation::add_rule(p, {2, 0}, {2});
+    presentation::add_rule(p, {0, 2}, {2});
+    presentation::add_rule(p, {3, 0}, {3});
+    presentation::add_rule(p, {0, 3}, {3});
+    presentation::add_rule(p, {1, 1}, {0});
+    presentation::add_rule(p, {2, 3}, {0});
+    presentation::add_rule(p, {2, 2, 2}, {0});
+    presentation::add_rule(
         p, {1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2}, {0});
-    presentation::add_rule_and_check(p,
+    presentation::add_rule(p,
                                      {1, 2, 1, 3, 1, 2, 1, 3, 1, 2, 1,
                                       3, 1, 2, 1, 3, 1, 2, 1, 3, 1, 2,
                                       1, 3, 1, 2, 1, 3, 1, 2, 1, 3},

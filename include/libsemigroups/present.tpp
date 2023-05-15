@@ -24,17 +24,16 @@ namespace libsemigroups {
     template <typename W>
     void validate_rules_length(Presentation<W> const& p) {
       if ((p.rules.size() % 2) == 1) {
-        LIBSEMIGROUPS_EXCEPTION("expected even length, found %llu",
-                                uint64_t(p.rules.size()));
+        LIBSEMIGROUPS_EXCEPTION("expected even length, found {}",
+                                p.rules.size());
       }
     }
 
     template <typename T>
     void validate_iterator_distance(T first, T last) {
       if ((std::distance(first, last) % 2) == 1) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "expected iterators at even distance, found %llu",
-            uint64_t(std::distance(first, last)));
+        LIBSEMIGROUPS_EXCEPTION("expected iterators at even distance, found {}",
+                                std::distance(first, last));
       }
     }
 
@@ -139,11 +138,10 @@ namespace libsemigroups {
   Presentation<W>& Presentation<W>::alphabet(size_type n) {
     if (n > std::numeric_limits<letter_type>::max()
                 - std::numeric_limits<letter_type>::min()) {
-      LIBSEMIGROUPS_EXCEPTION(
-          "expected a value in the range [0, %llu) found %llu",
-          uint64_t(std::numeric_limits<letter_type>::max()
-                   - std::numeric_limits<letter_type>::min()),
-          uint64_t(n));
+      LIBSEMIGROUPS_EXCEPTION("expected a value in the range [0, {}) found {}",
+                              std::numeric_limits<letter_type>::max()
+                                  - std::numeric_limits<letter_type>::min(),
+                              n);
     }
     word_type lphbt(n, 0);
     std::iota(lphbt.begin(), lphbt.end(), 0);
@@ -202,11 +200,8 @@ namespace libsemigroups {
             (std::isprint(c) ? c : static_cast<size_t>(c)),
             _alphabet);
       } else {
-        LIBSEMIGROUPS_EXCEPTION("invalid letter {}, valid letters are {}",
-                                c,
-                                detail::to_string(_alphabet));
-        // TODO define a formatter for vectors to make the "to_string" in the
-        // previous line redundant
+        LIBSEMIGROUPS_EXCEPTION(
+            "invalid letter {}, valid letters are {}", c, _alphabet);
       }
     }
   }
@@ -215,7 +210,8 @@ namespace libsemigroups {
   template <typename T>
   void Presentation<W>::validate_word(T first, T last) const {
     if (!_contains_empty_word && std::distance(first, last) == 0) {
-      LIBSEMIGROUPS_EXCEPTION("words in rules cannot be empty");
+      LIBSEMIGROUPS_EXCEPTION("words in rules cannot be empty, did you mean to "
+                              "call contains_empty_word(true) first?");
     }
     for (auto it = first; it != last; ++it) {
       validate_letter(*it);
@@ -237,8 +233,8 @@ namespace libsemigroups {
     for (auto const& letter : _alphabet) {
       auto it = alphabet_map.emplace(letter, index++);
       if (!it.second) {
-        LIBSEMIGROUPS_EXCEPTION("invalid alphabet, duplicate letter %s!",
-                                detail::to_string(letter).c_str());
+        LIBSEMIGROUPS_EXCEPTION("invalid alphabet, duplicate letter {}!",
+                                letter);
       }
     }
   }
@@ -293,9 +289,9 @@ namespace libsemigroups {
       p.validate_word(vals.begin(), vals.end());
 
       if (vals.size() != p.alphabet().size()) {
-        LIBSEMIGROUPS_EXCEPTION("invalid inverses, expected %s but found %s",
-                                detail::to_string(p.alphabet().size()).c_str(),
-                                detail::to_string(vals.size()).c_str());
+        LIBSEMIGROUPS_EXCEPTION("invalid inverses, expected {} but found {}",
+                                p.alphabet().size(),
+                                vals.size());
       }
 
       W cpy = vals;
@@ -303,26 +299,25 @@ namespace libsemigroups {
       for (auto it = cpy.cbegin(); it < cpy.cend() - 1; ++it) {
         if (*it == *(it + 1)) {
           LIBSEMIGROUPS_EXCEPTION(
-              "invalid inverses, they contain the duplicate letter "
-              + detail::to_string(*it));
+              "invalid inverses, they contain the duplicate letter ", *it);
         }
       }
 
       // Check that (x ^ - 1) ^ -1 = x
       for (size_t i = 0; i < p.alphabet().size(); ++i) {
-        if (p.letter(i) == id && vals[i] != id) {
+        if (p.letter_no_checks(i) == id && vals[i] != id) {
           LIBSEMIGROUPS_EXCEPTION(
-              "invalid inverses, the identity is %c, but %c ^ -1 != %c",
-              p.letter(i),
-              p.letter(i),
+              "invalid inverses, the identity is {}, but {} ^ -1 != {}",
+              p.letter_no_checks(i),
+              p.letter_no_checks(i),
               vals[i]);
         }
         for (size_t j = 0; j < p.alphabet().size(); ++j) {
-          if (p.letter(j) == vals[i]) {
-            if (vals[j] != p.letter(i)) {
+          if (p.letter_no_checks(j) == vals[i]) {
+            if (vals[j] != p.letter_no_checks(i)) {
               LIBSEMIGROUPS_EXCEPTION(
-                  "invalid inverses, %c ^ -1 = %c but %c ^ -1 = %c",
-                  p.letter(i),
+                  "invalid inverses, {} ^ -1 = {} but {} ^ -1 = {}",
+                  p.letter_no_checks(i),
                   vals[i],
                   vals[i],
                   vals[j]);
@@ -332,16 +327,12 @@ namespace libsemigroups {
         }
       }
 
-      W rhs;
-      if (id == UNDEFINED) {
-        rhs = {};
-      } else {
-        rhs = {id};
-      }
+      W rhs = (id == UNDEFINED ? W({}) : W({id}));
+
       for (size_t i = 0; i < p.alphabet().size(); ++i) {
-        W lhs = {p.letter(i), vals[i]};
-        if (p.letter(i) != id) {
-          add_rule(p, lhs, rhs);
+        W lhs = {p.letter_no_checks(i), vals[i]};
+        if (p.letter_no_checks(i) != id) {
+          add_rule_no_checks(p, lhs, rhs);
         }
       }
     }
@@ -508,7 +499,7 @@ namespace libsemigroups {
     void replace_subword(Presentation<W>& p, T first, T last) {
       auto x = first_unused_letter(p);
       replace_subword(p, first, last, &x, &x + 1);
-      p.add_rule(&x, &x + 1, first, last);
+      p.add_rule_no_checks(&x, &x + 1, first, last);
       auto new_alphabet = p.alphabet();
       new_alphabet.push_back(x);
       p.alphabet(new_alphabet);
@@ -525,6 +516,7 @@ namespace libsemigroups {
                       replacement.cend());
     }
 
+    // TODO rename _no_checks
     template <typename W, typename S, typename T>
     void replace_subword(Presentation<W>& p,
                          S                first_existing,
@@ -599,16 +591,16 @@ namespace libsemigroups {
       p.validate();
 
       if (new_alphabet.size() != p.alphabet().size()) {
-        LIBSEMIGROUPS_EXCEPTION("expected an alphabet of size %llu, found %llu",
-                                uint64_t(p.alphabet().size()),
-                                uint64_t(new_alphabet.size()));
+        LIBSEMIGROUPS_EXCEPTION("expected an alphabet of size {}, found {}",
+                                p.alphabet().size(),
+                                new_alphabet.size());
       } else if (p.alphabet() == new_alphabet) {
         return;
       }
 
       std::map<letter_type, letter_type> old_to_new;
       for (size_t i = 0; i < p.alphabet().size(); ++i) {
-        old_to_new.emplace(p.letter(i), new_alphabet[i]);
+        old_to_new.emplace(p.letter_no_checks(i), new_alphabet[i]);
       }
       // Do this first so that it throws if new_alphabet contains repeats
       p.alphabet(new_alphabet);
@@ -702,9 +694,9 @@ namespace libsemigroups {
       using letter_type = typename Presentation<W>::letter_type;
       if (i >= std::numeric_limits<letter_type>::max()) {
         LIBSEMIGROUPS_EXCEPTION(
-            "expected a value in the range [0, %llu) found %llu",
-            uint64_t(std::numeric_limits<letter_type>::max()),
-            uint64_t(i));
+            "expected a value in the range [0, {}) found {}",
+            std::numeric_limits<letter_type>::max(),
+            i);
       }
       return static_cast<typename Presentation<W>::letter_type>(i);
     }
@@ -724,10 +716,10 @@ namespace libsemigroups {
       if (i >= std::numeric_limits<letter_type>::max()
                    - std::numeric_limits<letter_type>::min()) {
         LIBSEMIGROUPS_EXCEPTION(
-            "expected a value in the range [0, %llu) found %llu",
-            uint64_t(std::numeric_limits<letter_type>::max()
-                     - std::numeric_limits<letter_type>::min()),
-            uint64_t(i));
+            "expected a value in the range [0, {}) found {}",
+            std::numeric_limits<letter_type>::max()
+                - std::numeric_limits<letter_type>::min(),
+            i);
       }
       static std::string letters
           = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
@@ -769,9 +761,9 @@ namespace libsemigroups {
       if (p.alphabet().size() == max_letter) {
         LIBSEMIGROUPS_EXCEPTION(
             "the alphabet of the 1st argument already has the maximum size of "
-            "%llu, there are no unused generators",
-            uint64_t(std::numeric_limits<letter_type>::max()
-                     - std::numeric_limits<letter_type>::min()));
+            "{}, there are no unused generators",
+            std::numeric_limits<letter_type>::max()
+                - std::numeric_limits<letter_type>::min());
       }
 
       letter_type x;
@@ -832,7 +824,7 @@ namespace libsemigroups {
                               detail::maximum_common_prefix(u, v).first
                               - u.cbegin()),
                           detail::maximum_common_suffix(u, v).size())
-                 // TODO(later): ensure maximum_common_prefix/suffix have
+                 // TODO(v3): ensure maximum_common_prefix/suffix have
                  // same return type
                  + 1;
 
@@ -867,8 +859,8 @@ namespace libsemigroups {
     template <typename W>
     bool reduce_to_2_generators(Presentation<W>& p, size_t index) {
       if (index > 1) {
-        LIBSEMIGROUPS_EXCEPTION("the 2nd argument must be 0 or 1, found %llu",
-                                uint64_t(index));
+        LIBSEMIGROUPS_EXCEPTION("the 2nd argument must be 0 or 1, found {}",
+                                index);
       } else if (p.rules.size() != 2) {
         return false;
       }
@@ -960,6 +952,49 @@ namespace libsemigroups {
         }
       }
       return result;
+    }
+
+    template <typename Word>
+    void add_commutes_rules_no_checks(Presentation<Word>& p,
+                                      Word const&         letters1,
+                                      Word const&         letters2) {
+      size_t const       m = letters1.size();
+      size_t const       n = letters2.size();
+      Presentation<Word> q;
+      for (size_t i = 0; i < m; ++i) {
+        word_type u = {letters1[i]};
+        for (size_t j = 0; j < n; ++j) {
+          word_type v = {letters2[j]};
+          if (u != v) {
+            presentation::add_rule_no_checks(q, u + v, v + u);
+          }
+        }
+      }
+      q.alphabet_from_rules();
+      presentation::remove_duplicate_rules(q);
+      presentation::add_rules_no_checks(p, q);
+    }
+
+    template <typename Word>
+    void add_commutes_rules_no_checks(Presentation<Word>&         p,
+                                      Word const&                 letters,
+                                      std::initializer_list<Word> words) {
+      size_t const       m = letters.size();
+      size_t const       n = words.size();
+      Presentation<Word> q;
+
+      for (size_t i = 0; i < m; ++i) {
+        Word u = {letters[i]};
+        for (size_t j = 0; j < n; ++j) {
+          Word const& v = *(words.begin() + j);
+          if (u != v) {
+            presentation::add_rule_no_checks(q, u + v, v + u);
+          }
+        }
+      }
+      q.alphabet_from_rules();
+      presentation::remove_duplicate_rules(q);
+      presentation::add_rules_no_checks(p, q);
     }
 
   }  // namespace presentation

@@ -64,7 +64,7 @@ namespace libsemigroups {
           : _value(k.normal_form(std::move(w))) {}
 
       KE(Kambites<Word>& k, letter_type a)
-          : KE(k, value_type({k.presentation().letter(a)})) {}
+          : KE(k, value_type({k.presentation().letter_no_checks(a)})) {}
 
       bool operator==(KE const& that) const {
         return that._value == this->_value;

@@ -110,16 +110,16 @@ namespace libsemigroups {
 
     Presentation<std::string> p;
     p.alphabet("abc");
-    presentation::add_rule(p, "ac", "ca");
-    presentation::add_rule(p, "aa", "a");
-    presentation::add_rule(p, "ac", "a");
-    presentation::add_rule(p, "ca", "a");
-    presentation::add_rule(p, "bb", "bb");
-    presentation::add_rule(p, "bc", "cb");
-    presentation::add_rule(p, "bbb", "b");
-    presentation::add_rule(p, "bc", "b");
-    presentation::add_rule(p, "cb", "b");
-    presentation::add_rule(p, "a", "b");
+    presentation::add_rule_no_checks(p, "ac", "ca");
+    presentation::add_rule_no_checks(p, "aa", "a");
+    presentation::add_rule_no_checks(p, "ac", "a");
+    presentation::add_rule_no_checks(p, "ca", "a");
+    presentation::add_rule_no_checks(p, "bb", "bb");
+    presentation::add_rule_no_checks(p, "bc", "cb");
+    presentation::add_rule_no_checks(p, "bbb", "b");
+    presentation::add_rule_no_checks(p, "bc", "b");
+    presentation::add_rule_no_checks(p, "cb", "b");
+    presentation::add_rule_no_checks(p, "a", "b");
 
     KnuthBendix kb(twosided, p);
 
@@ -141,17 +141,17 @@ namespace libsemigroups {
 
     Presentation<std::string> p;
     p.alphabet("012");
-    presentation::add_rule(p, "01", "10");
-    presentation::add_rule(p, "02", "20");
-    presentation::add_rule(p, "00", "0");
-    presentation::add_rule(p, "02", "0");
-    presentation::add_rule(p, "20", "0");
-    presentation::add_rule(p, "11", "11");
-    presentation::add_rule(p, "12", "21");
-    presentation::add_rule(p, "111", "1");
-    presentation::add_rule(p, "12", "1");
-    presentation::add_rule(p, "21", "1");
-    presentation::add_rule(p, "0", "1");
+    presentation::add_rule_no_checks(p, "01", "10");
+    presentation::add_rule_no_checks(p, "02", "20");
+    presentation::add_rule_no_checks(p, "00", "0");
+    presentation::add_rule_no_checks(p, "02", "0");
+    presentation::add_rule_no_checks(p, "20", "0");
+    presentation::add_rule_no_checks(p, "11", "11");
+    presentation::add_rule_no_checks(p, "12", "21");
+    presentation::add_rule_no_checks(p, "111", "1");
+    presentation::add_rule_no_checks(p, "12", "1");
+    presentation::add_rule_no_checks(p, "21", "1");
+    presentation::add_rule_no_checks(p, "0", "1");
 
     KnuthBendix kb(twosided, p);
 
@@ -189,9 +189,9 @@ namespace libsemigroups {
     Presentation<std::string> p;
     p.contains_empty_word(true);
     p.alphabet("01");
-    presentation::add_rule(p, "000", "");
-    presentation::add_rule(p, "111", "");
-    presentation::add_rule(p, "010101", "");
+    presentation::add_rule_no_checks(p, "000", "");
+    presentation::add_rule_no_checks(p, "111", "");
+    presentation::add_rule_no_checks(p, "010101", "");
 
     KnuthBendix kb(twosided, p);
     REQUIRE(kb.presentation().alphabet() == "01");
@@ -222,11 +222,11 @@ namespace libsemigroups {
     Presentation<std::string> p;
     p.contains_empty_word(true);
     p.alphabet("abcd");
-    presentation::add_rule(p, "ab", "");
-    presentation::add_rule(p, "ba", "");
-    presentation::add_rule(p, "cd", "");
-    presentation::add_rule(p, "dc", "");
-    presentation::add_rule(p, "ca", "ac");
+    presentation::add_rule_no_checks(p, "ab", "");
+    presentation::add_rule_no_checks(p, "ba", "");
+    presentation::add_rule_no_checks(p, "cd", "");
+    presentation::add_rule_no_checks(p, "dc", "");
+    presentation::add_rule_no_checks(p, "ca", "ac");
 
     KnuthBendix kb(twosided, p);
 
@@ -260,7 +260,7 @@ namespace libsemigroups {
     p.contains_empty_word(true);
     p.alphabet("aAbB");
     presentation::add_inverse_rules(p, "AaBb");
-    presentation::add_rule(p, "ba", "ab");
+    presentation::add_rule_no_checks(p, "ba", "ab");
 
     KnuthBendix kb(twosided, p);
 
@@ -293,9 +293,9 @@ namespace libsemigroups {
     Presentation<std::string> p;
     p.contains_empty_word(true);
     p.alphabet("ab");
-    presentation::add_rule(p, "aa", "");
-    presentation::add_rule(p, "bbb", "");
-    presentation::add_rule(p, "ababab", "");
+    presentation::add_rule_no_checks(p, "aa", "");
+    presentation::add_rule_no_checks(p, "bbb", "");
+    presentation::add_rule_no_checks(p, "ababab", "");
 
     KnuthBendix kb(twosided, p);
 
@@ -335,10 +335,10 @@ namespace libsemigroups {
     Presentation<std::string> p;
     p.contains_empty_word(true);
     p.alphabet("Bab");
-    presentation::add_rule(p, "aa", "");
-    presentation::add_rule(p, "bB", "");
-    presentation::add_rule(p, "bbb", "");
-    presentation::add_rule(p, "ababab", "");
+    presentation::add_rule_no_checks(p, "aa", "");
+    presentation::add_rule_no_checks(p, "bB", "");
+    presentation::add_rule_no_checks(p, "bbb", "");
+    presentation::add_rule_no_checks(p, "ababab", "");
 
     KnuthBendix kb(twosided, p);
 
@@ -375,11 +375,11 @@ namespace libsemigroups {
     p.alphabet("abc");
     p.contains_empty_word(true);
 
-    presentation::add_rule(p, "aa", "");
-    presentation::add_rule(p, "bc", "");
-    presentation::add_rule(p, "bbb", "");
-    presentation::add_rule(p, "ababababababab", "");
-    presentation::add_rule(p, "abacabacabacabac", "");
+    presentation::add_rule_no_checks(p, "aa", "");
+    presentation::add_rule_no_checks(p, "bc", "");
+    presentation::add_rule_no_checks(p, "bbb", "");
+    presentation::add_rule_no_checks(p, "ababababababab", "");
+    presentation::add_rule_no_checks(p, "abacabacabacabac", "");
 
     KnuthBendix kb(twosided, p);
 
@@ -414,9 +414,9 @@ namespace libsemigroups {
     Presentation<std::string> p;
     p.alphabet("012");
 
-    presentation::add_rule(p, "000", "2");
-    presentation::add_rule(p, "111", "2");
-    presentation::add_rule(p, "010101", "2");
+    presentation::add_rule_no_checks(p, "000", "2");
+    presentation::add_rule_no_checks(p, "111", "2");
+    presentation::add_rule_no_checks(p, "010101", "2");
     presentation::add_identity_rules(p, '2');
 
     KnuthBendix kb(twosided, p);
@@ -462,13 +462,13 @@ namespace libsemigroups {
     p.alphabet("abAB");
     p.contains_empty_word(true);
 
-    presentation::add_rule(p, "aaaaaaa", "");
-    presentation::add_rule(p, "bb", "ababab");
-    presentation::add_rule(p, "bb", "aaaabaaaabaaaabaaaab");
-    presentation::add_rule(p, "aA", "");
-    presentation::add_rule(p, "Aa", "");
-    presentation::add_rule(p, "bB", "");
-    presentation::add_rule(p, "Bb", "");
+    presentation::add_rule_no_checks(p, "aaaaaaa", "");
+    presentation::add_rule_no_checks(p, "bb", "ababab");
+    presentation::add_rule_no_checks(p, "bb", "aaaabaaaabaaaabaaaab");
+    presentation::add_rule_no_checks(p, "aA", "");
+    presentation::add_rule_no_checks(p, "Aa", "");
+    presentation::add_rule_no_checks(p, "bB", "");
+    presentation::add_rule_no_checks(p, "Bb", "");
 
     KnuthBendix kb(twosided, p);
 
@@ -503,11 +503,11 @@ namespace libsemigroups {
     Presentation<std::string> p;
     p.alphabet("abcde");
 
-    presentation::add_rule(p, "ab", "c");
-    presentation::add_rule(p, "bc", "d");
-    presentation::add_rule(p, "cd", "e");
-    presentation::add_rule(p, "de", "a");
-    presentation::add_rule(p, "ea", "b");
+    presentation::add_rule_no_checks(p, "ab", "c");
+    presentation::add_rule_no_checks(p, "bc", "d");
+    presentation::add_rule_no_checks(p, "cd", "e");
+    presentation::add_rule_no_checks(p, "de", "a");
+    presentation::add_rule_no_checks(p, "ea", "b");
     KnuthBendix kb(twosided, p);
 
     REQUIRE(!kb.confluent());
@@ -533,8 +533,8 @@ namespace libsemigroups {
     Presentation<std::string> p;
     p.alphabet("abc");
 
-    presentation::add_rule(p, "a", "abb");
-    presentation::add_rule(p, "b", "baa");
+    presentation::add_rule_no_checks(p, "a", "abb");
+    presentation::add_rule_no_checks(p, "b", "baa");
     KnuthBendix kb(twosided, p);
 
     REQUIRE(!kb.confluent());
@@ -557,14 +557,14 @@ namespace libsemigroups {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("abc");
-    presentation::add_rule_and_check(p, "a", "abb");
-    presentation::add_rule_and_check(p, "b", "baa");
-    presentation::add_rule_and_check(p, "c", "abbabababaaababababab");
+    presentation::add_rule(p, "a", "abb");
+    presentation::add_rule(p, "b", "baa");
+    presentation::add_rule(p, "c", "abbabababaaababababab");
 
     auto it = knuth_bendix::redundant_rule(p, std::chrono::milliseconds(100));
     REQUIRE(it == p.rules.cend());
 
-    presentation::add_rule_and_check(p, "b", "baa");
+    presentation::add_rule(p, "b", "baa");
     it = knuth_bendix::redundant_rule(p, std::chrono::milliseconds(100));
     REQUIRE(it != p.rules.cend());
     REQUIRE(*it == "b");
@@ -579,14 +579,14 @@ namespace libsemigroups {
     auto                    rg = ReportGuard(false);
     Presentation<word_type> p;
     p.alphabet(3);
-    presentation::add_rule_and_check(p, 0_w, 011_w);
-    presentation::add_rule_and_check(p, 1_w, 100_w);
-    presentation::add_rule_and_check(p, 2_w, 011010101000101010101_w);
+    presentation::add_rule(p, 0_w, 011_w);
+    presentation::add_rule(p, 1_w, 100_w);
+    presentation::add_rule(p, 2_w, 011010101000101010101_w);
 
     auto it = knuth_bendix::redundant_rule(p, std::chrono::milliseconds(10));
     REQUIRE(it == p.rules.cend());
 
-    presentation::add_rule_and_check(p, 1_w, 100_w);
+    presentation::add_rule(p, 1_w, 100_w);
     it = knuth_bendix::redundant_rule(p, std::chrono::milliseconds(10));
     REQUIRE(it != p.rules.cend());
     REQUIRE(*it == 1_w);
@@ -602,18 +602,18 @@ namespace libsemigroups {
     Presentation<std::string> p1;
     p1.contains_empty_word(true);
     p1.alphabet("abcd");
-    presentation::add_rule(p1, "ab", "");
-    presentation::add_rule(p1, "ba", "");
-    presentation::add_rule(p1, "cd", "");
-    presentation::add_rule(p1, "dc", "");
-    presentation::add_rule(p1, "ca", "ac");
+    presentation::add_rule_no_checks(p1, "ab", "");
+    presentation::add_rule_no_checks(p1, "ba", "");
+    presentation::add_rule_no_checks(p1, "cd", "");
+    presentation::add_rule_no_checks(p1, "dc", "");
+    presentation::add_rule_no_checks(p1, "ca", "ac");
 
     Presentation<std::string> p2;
     p2.contains_empty_word(true);
     p2.alphabet("01");
-    presentation::add_rule(p2, "000", "");
-    presentation::add_rule(p2, "111", "");
-    presentation::add_rule(p2, "010101", "");
+    presentation::add_rule_no_checks(p2, "000", "");
+    presentation::add_rule_no_checks(p2, "111", "");
+    presentation::add_rule_no_checks(p2, "010101", "");
 
     KnuthBendix kb1(twosided, p1);
     REQUIRE(!kb1.confluent());
@@ -674,11 +674,11 @@ namespace libsemigroups {
     p.contains_empty_word(true);
     p.alphabet("abc");
 
-    presentation::add_rule(p, "aa", "");
-    presentation::add_rule(p, "bc", "");
-    presentation::add_rule(p, "bbb", "");
-    presentation::add_rule(p, "ababababababab", "");
-    presentation::add_rule(p, "abacabacabacabacabacabacabacabac", "");
+    presentation::add_rule_no_checks(p, "aa", "");
+    presentation::add_rule_no_checks(p, "bc", "");
+    presentation::add_rule_no_checks(p, "bbb", "");
+    presentation::add_rule_no_checks(p, "ababababababab", "");
+    presentation::add_rule_no_checks(p, "abacabacabacabacabacabacabacabac", "");
 
     KnuthBendix kb1(twosided, p);
     REQUIRE(!kb1.confluent());
@@ -717,19 +717,19 @@ namespace libsemigroups {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("abc");
-    presentation::add_rule(p, "ab", "ba");
-    presentation::add_rule(p, "ac", "ca");
-    presentation::add_rule(p, "aa", "a");
-    presentation::add_rule(p, "ac", "a");
-    presentation::add_rule(p, "ca", "a");
-    presentation::add_rule(p, "bc", "cb");
-    presentation::add_rule(p, "bbb", "b");
-    presentation::add_rule(p, "bc", "b");
-    presentation::add_rule(p, "cb", "b");
+    presentation::add_rule_no_checks(p, "ab", "ba");
+    presentation::add_rule_no_checks(p, "ac", "ca");
+    presentation::add_rule_no_checks(p, "aa", "a");
+    presentation::add_rule_no_checks(p, "ac", "a");
+    presentation::add_rule_no_checks(p, "ca", "a");
+    presentation::add_rule_no_checks(p, "bc", "cb");
+    presentation::add_rule_no_checks(p, "bbb", "b");
+    presentation::add_rule_no_checks(p, "bc", "b");
+    presentation::add_rule_no_checks(p, "cb", "b");
 
     KnuthBendix kb1(twosided, p);
 
-    presentation::add_rule(p, "a", "b");
+    presentation::add_rule_no_checks(p, "a", "b");
 
     KnuthBendix kb2(twosided, p);
 
@@ -761,20 +761,20 @@ namespace libsemigroups {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("abc");
-    presentation::add_rule(p, "ab", "ba");
-    presentation::add_rule(p, "ac", "ca");
-    presentation::add_rule(p, "aa", "a");
-    presentation::add_rule(p, "ac", "a");
-    presentation::add_rule(p, "ca", "a");
-    presentation::add_rule(p, "bc", "cb");
-    presentation::add_rule(p, "bbb", "b");
-    presentation::add_rule(p, "bc", "b");
-    presentation::add_rule(p, "cb", "b");
+    presentation::add_rule_no_checks(p, "ab", "ba");
+    presentation::add_rule_no_checks(p, "ac", "ca");
+    presentation::add_rule_no_checks(p, "aa", "a");
+    presentation::add_rule_no_checks(p, "ac", "a");
+    presentation::add_rule_no_checks(p, "ca", "a");
+    presentation::add_rule_no_checks(p, "bc", "cb");
+    presentation::add_rule_no_checks(p, "bbb", "b");
+    presentation::add_rule_no_checks(p, "bc", "b");
+    presentation::add_rule_no_checks(p, "cb", "b");
 
     KnuthBendix kb1(twosided, p);
     REQUIRE(kb1.number_of_classes() == POSITIVE_INFINITY);
 
-    presentation::add_rule(p, "b", "c");
+    presentation::add_rule_no_checks(p, "b", "c");
 
     KnuthBendix kb2(twosided, p);
     REQUIRE(kb2.number_of_classes() == 2);
@@ -790,19 +790,19 @@ namespace libsemigroups {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("abc");
-    presentation::add_rule(p, "ab", "ba");
-    presentation::add_rule(p, "ac", "ca");
-    presentation::add_rule(p, "aa", "a");
-    presentation::add_rule(p, "ac", "a");
-    presentation::add_rule(p, "ca", "a");
-    presentation::add_rule(p, "bc", "cb");
-    presentation::add_rule(p, "bbb", "b");
-    presentation::add_rule(p, "bc", "b");
-    presentation::add_rule(p, "cb", "b");
+    presentation::add_rule_no_checks(p, "ab", "ba");
+    presentation::add_rule_no_checks(p, "ac", "ca");
+    presentation::add_rule_no_checks(p, "aa", "a");
+    presentation::add_rule_no_checks(p, "ac", "a");
+    presentation::add_rule_no_checks(p, "ca", "a");
+    presentation::add_rule_no_checks(p, "bc", "cb");
+    presentation::add_rule_no_checks(p, "bbb", "b");
+    presentation::add_rule_no_checks(p, "bc", "b");
+    presentation::add_rule_no_checks(p, "cb", "b");
 
     KnuthBendix kb1(twosided, p);
 
-    presentation::add_rule(p, "bb", "a");
+    presentation::add_rule_no_checks(p, "bb", "a");
 
     KnuthBendix kb2(twosided, p);
 
@@ -818,25 +818,25 @@ namespace libsemigroups {
     auto                    rg = ReportGuard(false);
     Presentation<word_type> p;
     p.alphabet(4);
-    presentation::add_rule(p, {0, 1}, {1, 0});
-    presentation::add_rule(p, {0, 2}, {2, 0});
-    presentation::add_rule(p, {0, 0}, {0});
-    presentation::add_rule(p, {0, 2}, {0});
-    presentation::add_rule(p, {2, 0}, {0});
-    presentation::add_rule(p, {1, 2}, {2, 1});
-    presentation::add_rule(p, {1, 1, 1}, {1});
-    presentation::add_rule(p, {1, 2}, {1});
-    presentation::add_rule(p, {2, 1}, {1});
-    presentation::add_rule(p, {0, 3}, {0});
-    presentation::add_rule(p, {3, 0}, {0});
-    presentation::add_rule(p, {1, 3}, {1});
-    presentation::add_rule(p, {3, 1}, {1});
-    presentation::add_rule(p, {2, 3}, {2});
-    presentation::add_rule(p, {3, 2}, {2});
+    presentation::add_rule_no_checks(p, {0, 1}, {1, 0});
+    presentation::add_rule_no_checks(p, {0, 2}, {2, 0});
+    presentation::add_rule_no_checks(p, {0, 0}, {0});
+    presentation::add_rule_no_checks(p, {0, 2}, {0});
+    presentation::add_rule_no_checks(p, {2, 0}, {0});
+    presentation::add_rule_no_checks(p, {1, 2}, {2, 1});
+    presentation::add_rule_no_checks(p, {1, 1, 1}, {1});
+    presentation::add_rule_no_checks(p, {1, 2}, {1});
+    presentation::add_rule_no_checks(p, {2, 1}, {1});
+    presentation::add_rule_no_checks(p, {0, 3}, {0});
+    presentation::add_rule_no_checks(p, {3, 0}, {0});
+    presentation::add_rule_no_checks(p, {1, 3}, {1});
+    presentation::add_rule_no_checks(p, {3, 1}, {1});
+    presentation::add_rule_no_checks(p, {2, 3}, {2});
+    presentation::add_rule_no_checks(p, {3, 2}, {2});
 
     KnuthBendix kb1(twosided, p);
 
-    presentation::add_rule(p, {0}, {1});
+    presentation::add_rule_no_checks(p, {0}, {1});
 
     KnuthBendix kb2(twosided, p);
     REQUIRE(knuth_bendix::non_trivial_classes(kb2, kb1)
@@ -851,30 +851,30 @@ namespace libsemigroups {
     auto                    rg = ReportGuard(false);
     Presentation<word_type> p;
     p.alphabet(5);
-    presentation::add_rule(p, 01_w, 0_w);
-    presentation::add_rule(p, 10_w, 0_w);
-    presentation::add_rule(p, 02_w, 0_w);
-    presentation::add_rule(p, 20_w, 0_w);
-    presentation::add_rule(p, 03_w, 0_w);
-    presentation::add_rule(p, 30_w, 0_w);
-    presentation::add_rule(p, 00_w, 0_w);
-    presentation::add_rule(p, 11_w, 0_w);
-    presentation::add_rule(p, 22_w, 0_w);
-    presentation::add_rule(p, 33_w, 0_w);
-    presentation::add_rule(p, 12_w, 0_w);
-    presentation::add_rule(p, 21_w, 0_w);
-    presentation::add_rule(p, 13_w, 0_w);
-    presentation::add_rule(p, 31_w, 0_w);
-    presentation::add_rule(p, 23_w, 0_w);
-    presentation::add_rule(p, 32_w, 0_w);
-    presentation::add_rule(p, 40_w, 0_w);
-    presentation::add_rule(p, 41_w, 1_w);
-    presentation::add_rule(p, 42_w, 2_w);
-    presentation::add_rule(p, 43_w, 3_w);
-    presentation::add_rule(p, 04_w, 0_w);
-    presentation::add_rule(p, 14_w, 1_w);
-    presentation::add_rule(p, 24_w, 2_w);
-    presentation::add_rule(p, 34_w, 3_w);
+    presentation::add_rule_no_checks(p, 01_w, 0_w);
+    presentation::add_rule_no_checks(p, 10_w, 0_w);
+    presentation::add_rule_no_checks(p, 02_w, 0_w);
+    presentation::add_rule_no_checks(p, 20_w, 0_w);
+    presentation::add_rule_no_checks(p, 03_w, 0_w);
+    presentation::add_rule_no_checks(p, 30_w, 0_w);
+    presentation::add_rule_no_checks(p, 00_w, 0_w);
+    presentation::add_rule_no_checks(p, 11_w, 0_w);
+    presentation::add_rule_no_checks(p, 22_w, 0_w);
+    presentation::add_rule_no_checks(p, 33_w, 0_w);
+    presentation::add_rule_no_checks(p, 12_w, 0_w);
+    presentation::add_rule_no_checks(p, 21_w, 0_w);
+    presentation::add_rule_no_checks(p, 13_w, 0_w);
+    presentation::add_rule_no_checks(p, 31_w, 0_w);
+    presentation::add_rule_no_checks(p, 23_w, 0_w);
+    presentation::add_rule_no_checks(p, 32_w, 0_w);
+    presentation::add_rule_no_checks(p, 40_w, 0_w);
+    presentation::add_rule_no_checks(p, 41_w, 1_w);
+    presentation::add_rule_no_checks(p, 42_w, 2_w);
+    presentation::add_rule_no_checks(p, 43_w, 3_w);
+    presentation::add_rule_no_checks(p, 04_w, 0_w);
+    presentation::add_rule_no_checks(p, 14_w, 1_w);
+    presentation::add_rule_no_checks(p, 24_w, 2_w);
+    presentation::add_rule_no_checks(p, 34_w, 3_w);
 
     KnuthBendix kb1(twosided, p);
 
@@ -888,7 +888,7 @@ namespace libsemigroups {
                  {},
                  {UNDEFINED, UNDEFINED, UNDEFINED, UNDEFINED, 5}}));
 
-    presentation::add_rule(p, 1_w, 2_w);
+    presentation::add_rule_no_checks(p, 1_w, 2_w);
     KnuthBendix kb2(twosided, p);
 
     REQUIRE(kb2.gilman_graph()
@@ -915,34 +915,34 @@ namespace libsemigroups {
     auto                    rg = ReportGuard(false);
     Presentation<word_type> p;
     p.alphabet(5);
-    presentation::add_rule(p, 01_w, 0_w);
-    presentation::add_rule(p, 10_w, 0_w);
-    presentation::add_rule(p, 02_w, 0_w);
-    presentation::add_rule(p, 20_w, 0_w);
-    presentation::add_rule(p, 03_w, 0_w);
-    presentation::add_rule(p, 30_w, 0_w);
-    presentation::add_rule(p, 00_w, 0_w);
-    presentation::add_rule(p, 11_w, 0_w);
-    presentation::add_rule(p, 22_w, 0_w);
-    presentation::add_rule(p, 33_w, 0_w);
-    presentation::add_rule(p, 12_w, 0_w);
-    presentation::add_rule(p, 21_w, 0_w);
-    presentation::add_rule(p, 13_w, 0_w);
-    presentation::add_rule(p, 31_w, 0_w);
-    presentation::add_rule(p, 23_w, 0_w);
-    presentation::add_rule(p, 32_w, 0_w);
-    presentation::add_rule(p, 40_w, 0_w);
-    presentation::add_rule(p, 41_w, 2_w);
-    presentation::add_rule(p, 42_w, 3_w);
-    presentation::add_rule(p, 43_w, 1_w);
-    presentation::add_rule(p, 04_w, 0_w);
-    presentation::add_rule(p, 14_w, 2_w);
-    presentation::add_rule(p, 24_w, 3_w);
-    presentation::add_rule(p, 34_w, 1_w);
+    presentation::add_rule_no_checks(p, 01_w, 0_w);
+    presentation::add_rule_no_checks(p, 10_w, 0_w);
+    presentation::add_rule_no_checks(p, 02_w, 0_w);
+    presentation::add_rule_no_checks(p, 20_w, 0_w);
+    presentation::add_rule_no_checks(p, 03_w, 0_w);
+    presentation::add_rule_no_checks(p, 30_w, 0_w);
+    presentation::add_rule_no_checks(p, 00_w, 0_w);
+    presentation::add_rule_no_checks(p, 11_w, 0_w);
+    presentation::add_rule_no_checks(p, 22_w, 0_w);
+    presentation::add_rule_no_checks(p, 33_w, 0_w);
+    presentation::add_rule_no_checks(p, 12_w, 0_w);
+    presentation::add_rule_no_checks(p, 21_w, 0_w);
+    presentation::add_rule_no_checks(p, 13_w, 0_w);
+    presentation::add_rule_no_checks(p, 31_w, 0_w);
+    presentation::add_rule_no_checks(p, 23_w, 0_w);
+    presentation::add_rule_no_checks(p, 32_w, 0_w);
+    presentation::add_rule_no_checks(p, 40_w, 0_w);
+    presentation::add_rule_no_checks(p, 41_w, 2_w);
+    presentation::add_rule_no_checks(p, 42_w, 3_w);
+    presentation::add_rule_no_checks(p, 43_w, 1_w);
+    presentation::add_rule_no_checks(p, 04_w, 0_w);
+    presentation::add_rule_no_checks(p, 14_w, 2_w);
+    presentation::add_rule_no_checks(p, 24_w, 3_w);
+    presentation::add_rule_no_checks(p, 34_w, 1_w);
 
     KnuthBendix kb1(twosided, p);
 
-    presentation::add_rule(p, 2_w, 3_w);
+    presentation::add_rule_no_checks(p, 2_w, 3_w);
 
     KnuthBendix kb2(twosided, p);
     auto        ntc = knuth_bendix::non_trivial_classes(kb2, kb1);
@@ -958,15 +958,15 @@ namespace libsemigroups {
     auto                    rg = ReportGuard(false);
     Presentation<word_type> p;
     p.alphabet(2);
-    presentation::add_rule(p, 001_w, 00_w);
-    presentation::add_rule(p, 0000_w, 00_w);
-    presentation::add_rule(p, 0110_w, 00_w);
-    presentation::add_rule(p, 0111_w, 000_w);
-    presentation::add_rule(p, 1110_w, 110_w);
-    presentation::add_rule(p, 1111_w, 111_w);
-    presentation::add_rule(p, 01000_w, 0101_w);
-    presentation::add_rule(p, 01010_w, 0100_w);
-    presentation::add_rule(p, 01011_w, 0101_w);
+    presentation::add_rule_no_checks(p, 001_w, 00_w);
+    presentation::add_rule_no_checks(p, 0000_w, 00_w);
+    presentation::add_rule_no_checks(p, 0110_w, 00_w);
+    presentation::add_rule_no_checks(p, 0111_w, 000_w);
+    presentation::add_rule_no_checks(p, 1110_w, 110_w);
+    presentation::add_rule_no_checks(p, 1111_w, 111_w);
+    presentation::add_rule_no_checks(p, 01000_w, 0101_w);
+    presentation::add_rule_no_checks(p, 01010_w, 0100_w);
+    presentation::add_rule_no_checks(p, 01011_w, 0101_w);
 
     KnuthBendix kb1(twosided, p);
     KnuthBendix kb2(twosided, p);
@@ -985,20 +985,20 @@ namespace libsemigroups {
 
     Presentation<word_type> p;
     p.alphabet(2);
-    presentation::add_rule(p, 001_w, 00_w);
-    presentation::add_rule(p, 0000_w, 00_w);
-    presentation::add_rule(p, 0110_w, 00_w);
-    presentation::add_rule(p, 0111_w, 000_w);
-    presentation::add_rule(p, 1110_w, 110_w);
-    presentation::add_rule(p, 1111_w, 111_w);
-    presentation::add_rule(p, 01000_w, 0101_w);
-    presentation::add_rule(p, 01010_w, 0100_w);
-    presentation::add_rule(p, 01011_w, 0101_w);
+    presentation::add_rule_no_checks(p, 001_w, 00_w);
+    presentation::add_rule_no_checks(p, 0000_w, 00_w);
+    presentation::add_rule_no_checks(p, 0110_w, 00_w);
+    presentation::add_rule_no_checks(p, 0111_w, 000_w);
+    presentation::add_rule_no_checks(p, 1110_w, 110_w);
+    presentation::add_rule_no_checks(p, 1111_w, 111_w);
+    presentation::add_rule_no_checks(p, 01000_w, 0101_w);
+    presentation::add_rule_no_checks(p, 01010_w, 0100_w);
+    presentation::add_rule_no_checks(p, 01011_w, 0101_w);
 
     KnuthBendix kb1(twosided, p);
 
-    presentation::add_rule(p, 0_w, 1_w);
-    presentation::add_rule(p, 00_w, 0_w);
+    presentation::add_rule_no_checks(p, 0_w, 1_w);
+    presentation::add_rule_no_checks(p, 00_w, 0_w);
 
     KnuthBendix kb2(twosided, p);
 
@@ -1026,55 +1026,55 @@ namespace libsemigroups {
 
     Presentation<word_type> p;
     p.alphabet(11);
-    presentation::add_rule(p, {2}, {1});
-    presentation::add_rule(p, {4}, {3});
-    presentation::add_rule(p, {5}, {0});
-    presentation::add_rule(p, {6}, {3});
-    presentation::add_rule(p, {7}, {1});
-    presentation::add_rule(p, {8}, {3});
-    presentation::add_rule(p, {9}, {3});
-    presentation::add_rule(p, {10}, {0});
-    presentation::add_rule(p, {0, 2}, {0, 1});
-    presentation::add_rule(p, {0, 4}, {0, 3});
-    presentation::add_rule(p, {0, 5}, {0, 0});
-    presentation::add_rule(p, {0, 6}, {0, 3});
-    presentation::add_rule(p, {0, 7}, {0, 1});
-    presentation::add_rule(p, {0, 8}, {0, 3});
-    presentation::add_rule(p, {0, 9}, {0, 3});
-    presentation::add_rule(p, {0, 10}, {0, 0});
-    presentation::add_rule(p, {1, 1}, {1});
-    presentation::add_rule(p, {1, 2}, {1});
-    presentation::add_rule(p, {1, 4}, {1, 3});
-    presentation::add_rule(p, {1, 5}, {1, 0});
-    presentation::add_rule(p, {1, 6}, {1, 3});
-    presentation::add_rule(p, {1, 7}, {1});
-    presentation::add_rule(p, {1, 8}, {1, 3});
-    presentation::add_rule(p, {1, 9}, {1, 3});
-    presentation::add_rule(p, {1, 10}, {1, 0});
-    presentation::add_rule(p, {3, 1}, {3});
-    presentation::add_rule(p, {3, 2}, {3});
-    presentation::add_rule(p, {3, 3}, {3});
-    presentation::add_rule(p, {3, 4}, {3});
-    presentation::add_rule(p, {3, 5}, {3, 0});
-    presentation::add_rule(p, {3, 6}, {3});
-    presentation::add_rule(p, {3, 7}, {3});
-    presentation::add_rule(p, {3, 8}, {3});
-    presentation::add_rule(p, {3, 9}, {3});
-    presentation::add_rule(p, {3, 10}, {3, 0});
-    presentation::add_rule(p, {0, 0, 0}, {0});
-    presentation::add_rule(p, {0, 0, 1}, {1});
-    presentation::add_rule(p, {0, 0, 3}, {3});
-    presentation::add_rule(p, {0, 1, 3}, {1, 3});
-    presentation::add_rule(p, {1, 0, 0}, {1});
-    presentation::add_rule(p, {1, 0, 3}, {0, 3});
-    presentation::add_rule(p, {3, 0, 0}, {3});
-    presentation::add_rule(p, {0, 1, 0, 1}, {1, 0, 1});
-    presentation::add_rule(p, {0, 3, 0, 3}, {3, 0, 3});
-    presentation::add_rule(p, {1, 0, 1, 0}, {1, 0, 1});
-    presentation::add_rule(p, {1, 3, 0, 1}, {1, 0, 1});
-    presentation::add_rule(p, {1, 3, 0, 3}, {3, 0, 3});
-    presentation::add_rule(p, {3, 0, 1, 0}, {3, 0, 1});
-    presentation::add_rule(p, {3, 0, 3, 0}, {3, 0, 3});
+    presentation::add_rule_no_checks(p, {2}, {1});
+    presentation::add_rule_no_checks(p, {4}, {3});
+    presentation::add_rule_no_checks(p, {5}, {0});
+    presentation::add_rule_no_checks(p, {6}, {3});
+    presentation::add_rule_no_checks(p, {7}, {1});
+    presentation::add_rule_no_checks(p, {8}, {3});
+    presentation::add_rule_no_checks(p, {9}, {3});
+    presentation::add_rule_no_checks(p, {10}, {0});
+    presentation::add_rule_no_checks(p, {0, 2}, {0, 1});
+    presentation::add_rule_no_checks(p, {0, 4}, {0, 3});
+    presentation::add_rule_no_checks(p, {0, 5}, {0, 0});
+    presentation::add_rule_no_checks(p, {0, 6}, {0, 3});
+    presentation::add_rule_no_checks(p, {0, 7}, {0, 1});
+    presentation::add_rule_no_checks(p, {0, 8}, {0, 3});
+    presentation::add_rule_no_checks(p, {0, 9}, {0, 3});
+    presentation::add_rule_no_checks(p, {0, 10}, {0, 0});
+    presentation::add_rule_no_checks(p, {1, 1}, {1});
+    presentation::add_rule_no_checks(p, {1, 2}, {1});
+    presentation::add_rule_no_checks(p, {1, 4}, {1, 3});
+    presentation::add_rule_no_checks(p, {1, 5}, {1, 0});
+    presentation::add_rule_no_checks(p, {1, 6}, {1, 3});
+    presentation::add_rule_no_checks(p, {1, 7}, {1});
+    presentation::add_rule_no_checks(p, {1, 8}, {1, 3});
+    presentation::add_rule_no_checks(p, {1, 9}, {1, 3});
+    presentation::add_rule_no_checks(p, {1, 10}, {1, 0});
+    presentation::add_rule_no_checks(p, {3, 1}, {3});
+    presentation::add_rule_no_checks(p, {3, 2}, {3});
+    presentation::add_rule_no_checks(p, {3, 3}, {3});
+    presentation::add_rule_no_checks(p, {3, 4}, {3});
+    presentation::add_rule_no_checks(p, {3, 5}, {3, 0});
+    presentation::add_rule_no_checks(p, {3, 6}, {3});
+    presentation::add_rule_no_checks(p, {3, 7}, {3});
+    presentation::add_rule_no_checks(p, {3, 8}, {3});
+    presentation::add_rule_no_checks(p, {3, 9}, {3});
+    presentation::add_rule_no_checks(p, {3, 10}, {3, 0});
+    presentation::add_rule_no_checks(p, {0, 0, 0}, {0});
+    presentation::add_rule_no_checks(p, {0, 0, 1}, {1});
+    presentation::add_rule_no_checks(p, {0, 0, 3}, {3});
+    presentation::add_rule_no_checks(p, {0, 1, 3}, {1, 3});
+    presentation::add_rule_no_checks(p, {1, 0, 0}, {1});
+    presentation::add_rule_no_checks(p, {1, 0, 3}, {0, 3});
+    presentation::add_rule_no_checks(p, {3, 0, 0}, {3});
+    presentation::add_rule_no_checks(p, {0, 1, 0, 1}, {1, 0, 1});
+    presentation::add_rule_no_checks(p, {0, 3, 0, 3}, {3, 0, 3});
+    presentation::add_rule_no_checks(p, {1, 0, 1, 0}, {1, 0, 1});
+    presentation::add_rule_no_checks(p, {1, 3, 0, 1}, {1, 0, 1});
+    presentation::add_rule_no_checks(p, {1, 3, 0, 3}, {3, 0, 3});
+    presentation::add_rule_no_checks(p, {3, 0, 1, 0}, {3, 0, 1});
+    presentation::add_rule_no_checks(p, {3, 0, 3, 0}, {3, 0, 3});
 
     KnuthBendix kb1(twosided, p);
     REQUIRE(kb1.gilman_graph().number_of_nodes() == 16);
@@ -1105,7 +1105,7 @@ namespace libsemigroups {
                                       {13},
                                       {UNDEFINED}}));
 
-    presentation::add_rule(p, {1}, {3});
+    presentation::add_rule_no_checks(p, {1}, {3});
     KnuthBendix kb2(twosided, p);
 
     REQUIRE(kb2.gilman_graph()
@@ -1162,12 +1162,12 @@ namespace libsemigroups {
       REQUIRE(kbq.number_of_inactive_rules() == 0);
     }
     {
-      presentation::add_rule(p, 0000_w, 00_w);
+      presentation::add_rule_no_checks(p, 0000_w, 00_w);
       kbp.init(twosided, p);
 
       Presentation<word_type> q;
       q.alphabet(1);
-      presentation::add_rule(q, 00_w, 0_w);
+      presentation::add_rule_no_checks(q, 00_w, 0_w);
 
       KnuthBendix kbq(twosided, q);
       REQUIRE_THROWS_AS(knuth_bendix::non_trivial_classes(kbp, kbq),
@@ -1192,15 +1192,15 @@ namespace libsemigroups {
   //     "(from kbmag/standalone/kb_data/verifynilp)",
   //     "[quick][knuth-bendix][kbmag][recursive]") {}
   //   KnuthBendix kb(new RECURSIVE(), "hHgGfFyYdDcCbBaA");
-  //   presentation::add_rule(p, "BAba", "c");
-  //   presentation::add_rule(p, "CAca", "d");
-  //   presentation::add_rule(p, "DAda", "y");
-  //   presentation::add_rule(p, "YByb", "f");
-  //   presentation::add_rule(p, "FAfa", "g");
-  //   presentation::add_rule(p, "ga", "ag");
-  //   presentation::add_rule(p, "GBgb", "h");
-  //   presentation::add_rule(p, "cb", "bc");
-  //   presentation::add_rule(p, "ya", "ay");
+  //   presentation::add_rule_no_checks(p, "BAba", "c");
+  //   presentation::add_rule_no_checks(p, "CAca", "d");
+  //   presentation::add_rule_no_checks(p, "DAda", "y");
+  //   presentation::add_rule_no_checks(p, "YByb", "f");
+  //   presentation::add_rule_no_checks(p, "FAfa", "g");
+  //   presentation::add_rule_no_checks(p, "ga", "ag");
+  //   presentation::add_rule_no_checks(p, "GBgb", "h");
+  //   presentation::add_rule_no_checks(p, "cb", "bc");
+  //   presentation::add_rule_no_checks(p, "ya", "ay");
   //   auto rg = ReportGuard(false);
   //
   //   REQUIRE(kb.confluent());
@@ -1297,7 +1297,7 @@ namespace libsemigroups {
   //                         "(from kbmag/standalone/kb_data/nonhopf)",
   //                         "[quick][knuth-bendix][kbmag][recursive]") {
   //   KnuthBendix kb(new RECURSIVE(), "aAbB");
-  //   presentation::add_rule(p, "Baab", "aaa");
+  //   presentation::add_rule_no_checks(p, "Baab", "aaa");
   //   auto rg = ReportGuard(false);
 
   //   REQUIRE(kb.confluent());
@@ -1316,13 +1316,13 @@ namespace libsemigroups {
   //                         "(from kbmag/standalone/kb_data/freenilpc3)",
   //                         "[quick][knuth-bendix][kbmag][recursive]") {
   //   KnuthBendix kb(new RECURSIVE(), "yYdDcCbBaA");
-  //   presentation::add_rule(p, "BAba", "c");
-  //   presentation::add_rule(p, "CAca", "d");
-  //   presentation::add_rule(p, "CBcb", "y");
-  //   presentation::add_rule(p, "da", "ad");
-  //   presentation::add_rule(p, "ya", "ay");
-  //   presentation::add_rule(p, "db", "bd");
-  //   presentation::add_rule(p, "yb", "by");
+  //   presentation::add_rule_no_checks(p, "BAba", "c");
+  //   presentation::add_rule_no_checks(p, "CAca", "d");
+  //   presentation::add_rule_no_checks(p, "CBcb", "y");
+  //   presentation::add_rule_no_checks(p, "da", "ad");
+  //   presentation::add_rule_no_checks(p, "ya", "ay");
+  //   presentation::add_rule_no_checks(p, "db", "bd");
+  //   presentation::add_rule_no_checks(p, "yb", "by");
   //   auto rg = ReportGuard(false);
 
   //   REQUIRE(kb.confluent());
@@ -1353,10 +1353,10 @@ namespace libsemigroups {
   //   KnuthBendix kb;
   //   Presentation<std::string> p;
   // //p.alphabet("Bab");
-  //   presentation::add_rule(p, "aa", "");
-  //   presentation::add_rule(p, "bB", "");
-  //   presentation::add_rule(p, "bbb", "");
-  //   presentation::add_rule(p, "ababab", "");
+  //   presentation::add_rule_no_checks(p, "aa", "");
+  //   presentation::add_rule_no_checks(p, "bB", "");
+  //   presentation::add_rule_no_checks(p, "bbb", "");
+  //   presentation::add_rule_no_checks(p, "ababab", "");
 
   //   REQUIRE(!kb.confluent());
   //   kb.run_for(FOREVER);
@@ -1400,9 +1400,9 @@ namespace libsemigroups {
   //                         "(from kbmag/standalone/kb_data/nilp2)",
   //                         "[quick][knuth-bendix][kbmag][recursive]") {
   //   KnuthBendix kb(new RECURSIVE(), "cCbBaA");
-  //   presentation::add_rule(p, "ba", "abc");
-  //   presentation::add_rule(p, "ca", "ac");
-  //   presentation::add_rule(p, "cb", "bc");
+  //   presentation::add_rule_no_checks(p, "ba", "abc");
+  //   presentation::add_rule_no_checks(p, "ca", "ac");
+  //   presentation::add_rule_no_checks(p, "cb", "bc");
   //   auto rg = ReportGuard(false);
   //
   //   REQUIRE(kb.confluent());
@@ -1423,13 +1423,13 @@ namespace libsemigroups {
   //                         "(from kbmag/standalone/kb_data/f27monoid)",
   //                         "[fail][knuth-bendix][kbmag][recursive]") {
   //   KnuthBendix kb(new RECURSIVE(), "abcdefg");
-  //   presentation::add_rule(p, "ab", "c");
-  //   presentation::add_rule(p, "bc", "d");
-  //   presentation::add_rule(p, "cd", "e");
-  //   presentation::add_rule(p, "de", "f");
-  //   presentation::add_rule(p, "ef", "g");
-  //   presentation::add_rule(p, "fg", "a");
-  //   presentation::add_rule(p, "ga", "b");
+  //   presentation::add_rule_no_checks(p, "ab", "c");
+  //   presentation::add_rule_no_checks(p, "bc", "d");
+  //   presentation::add_rule_no_checks(p, "cd", "e");
+  //   presentation::add_rule_no_checks(p, "de", "f");
+  //   presentation::add_rule_no_checks(p, "ef", "g");
+  //   presentation::add_rule_no_checks(p, "fg", "a");
+  //   presentation::add_rule_no_checks(p, "ga", "b");
   //   auto rg = ReportGuard(false);
 
   //   REQUIRE(!kb.confluent());
@@ -1452,14 +1452,14 @@ namespace libsemigroups {
   //     "[fail][knuth-bendix][kbmag][recursive]") {
   //   // TODO(later) fails because internal_rewrite expect rules to be
   //   length reducing KnuthBendix kb(new RECURSIVE(), "fFyYdDcCbBaA");
-  //   presentation::add_rule(p, "BAba", "c");
-  //   presentation::add_rule(p, "CAca", "d");
-  //   presentation::add_rule(p, "CBcb", "y");
-  //   presentation::add_rule(p, "DBdb", "f");
-  //   presentation::add_rule(p, "cBCb", "bcBC");
-  //   presentation::add_rule(p, "babABaBA", "abABaBAb");
-  //   presentation::add_rule(p, "cBACab", "abcBAC");
-  //   presentation::add_rule(p, "BabABBAbab", "aabABBAb");
+  //   presentation::add_rule_no_checks(p, "BAba", "c");
+  //   presentation::add_rule_no_checks(p, "CAca", "d");
+  //   presentation::add_rule_no_checks(p, "CBcb", "y");
+  //   presentation::add_rule_no_checks(p, "DBdb", "f");
+  //   presentation::add_rule_no_checks(p, "cBCb", "bcBC");
+  //   presentation::add_rule_no_checks(p, "babABaBA", "abABaBAb");
+  //   presentation::add_rule_no_checks(p, "cBACab", "abcBAC");
+  //   presentation::add_rule_no_checks(p, "BabABBAbab", "aabABBAb");
   //   auto rg = ReportGuard(false);
 
   //   REQUIRE(!kb.confluent());

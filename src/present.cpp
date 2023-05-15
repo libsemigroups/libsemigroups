@@ -57,5 +57,49 @@ namespace libsemigroups {
     prod(std::initializer_list<size_t> ilist, int first, int last, int step) {
       return prod(word_type(ilist), first, last, step);
     }
+
+    std::string to_gap_string(Presentation<word_type> const& p,
+                              std::string const&             var_name) {
+      if (p.alphabet().size() > 49) {
+        LIBSEMIGROUPS_EXCEPTION("expected at most 49 generators, found {}!",
+                                p.alphabet().size());
+      }
+
+      auto to_gap_word = [](word_type const& w) -> std::string {
+        std::string out;
+        std::string sep = "";
+        for (auto it = w.cbegin(); it < w.cend(); ++it) {
+          out += sep + character(*it);
+          sep = " * ";
+        }
+        return out;
+      };
+
+      std::string out = "free := FreeSemigroup(";
+      std::string sep = "";
+      for (auto it = p.alphabet().cbegin(); it != p.alphabet().cend(); ++it) {
+        out += fmt::format("{}\"{}\"", sep, character(*it));
+        sep = ", ";
+      }
+      out += ");\n";
+
+      for (size_t i = 0; i != p.alphabet().size(); ++i) {
+        out += fmt::format("{} := free.{};\n", character(i), i + 1);
+      }
+      out += "\n";
+
+      out += "rules := [";
+      sep = "";
+      for (auto it = p.rules.cbegin(); it < p.rules.cend(); it += 2) {
+        out += fmt::format("{}\n          [{}, {}]",
+                           sep,
+                           to_gap_word(*it),
+                           to_gap_word(*(it + 1)));
+        sep = ", ";
+      }
+      out += "\n         ];\n";
+      out += var_name + " := free / rules;\n";
+      return out;
+    }
   }  // namespace presentation
 }  // namespace libsemigroups

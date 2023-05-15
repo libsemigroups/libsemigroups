@@ -962,7 +962,7 @@ namespace libsemigroups {
   KnuthBendix::external_char_type
   KnuthBendix::internal_to_external_char(internal_char_type a) const {
     LIBSEMIGROUPS_ASSERT(!_internal_is_same_as_external);
-    return presentation().letter(internal_char_to_uint(a));
+    return presentation().letter_no_checks(internal_char_to_uint(a));
   }
 
   void KnuthBendix::external_to_internal_string(external_string_type& w) const {
@@ -1006,7 +1006,7 @@ namespace libsemigroups {
     auto const& p                 = _presentation;
     _internal_is_same_as_external = true;
     for (size_t i = 0; i < p.alphabet().size(); ++i) {
-      if (uint_to_internal_char(i) != p.letter(i)) {
+      if (uint_to_internal_char(i) != p.letter_no_checks(i)) {
         _internal_is_same_as_external = false;
         break;
       }

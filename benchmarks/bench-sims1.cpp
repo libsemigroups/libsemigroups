@@ -459,16 +459,16 @@ namespace libsemigroups {
   //   Presentation<std::string> p;
   //   p.alphabet("abcd");
   //   p.contains_empty_word(true);
-  //   presentation::add_rule(p, "aa", "");
-  //   presentation::add_rule(p, "bb", "");
-  //   presentation::add_rule(p, "cc", "");
-  //   presentation::add_rule(p, "dd", "");
-  //   presentation::add_rule(p, pow("ab", 3), "");
-  //   presentation::add_rule(p, pow("ac", 2), "");
-  //   presentation::add_rule(p, pow("ad", 2), "");
-  //   presentation::add_rule(p, pow("bc", 3), "");
-  //   presentation::add_rule(p, pow("bd", 2), "");
-  //   presentation::add_rule(p, pow("cd", 3), "");
+  //   presentation::add_rule_no_checks(p, "aa", "");
+  //   presentation::add_rule_no_checks(p, "bb", "");
+  //   presentation::add_rule_no_checks(p, "cc", "");
+  //   presentation::add_rule_no_checks(p, "dd", "");
+  //   presentation::add_rule_no_checks(p, pow("ab", 3), "");
+  //   presentation::add_rule_no_checks(p, pow("ac", 2), "");
+  //   presentation::add_rule_no_checks(p, pow("ad", 2), "");
+  //   presentation::add_rule_no_checks(p, pow("bc", 3), "");
+  //   presentation::add_rule_no_checks(p, pow("bd", 2), "");
+  //   presentation::add_rule_no_checks(p, pow("cd", 3), "");
   //   auto pp = to_presentation<word_type>(p);
   //   bench_length(pp, 120, 156);
   // }
@@ -482,21 +482,21 @@ namespace libsemigroups {
   //   Presentation<std::string> p;
   //   p.alphabet("abcde");
   //   p.contains_empty_word(true);
-  //   presentation::add_rule(p, "aa", "");
-  //   presentation::add_rule(p, "bb", "");
-  //   presentation::add_rule(p, "cc", "");
-  //   presentation::add_rule(p, "dd", "");
-  //   presentation::add_rule(p, "ee", "");
-  //   presentation::add_rule(p, pow("ab", 3), "");
-  //   presentation::add_rule(p, pow("ac", 2), "");
-  //   presentation::add_rule(p, pow("ad", 2), "");
-  //   presentation::add_rule(p, pow("ae", 2), "");
-  //   presentation::add_rule(p, pow("bc", 3), "");
-  //   presentation::add_rule(p, pow("bd", 2), "");
-  //   presentation::add_rule(p, pow("be", 2), "");
-  //   presentation::add_rule(p, pow("cd", 3), "");
-  //   presentation::add_rule(p, pow("ce", 2), "");
-  //   presentation::add_rule(p, pow("de", 3), "");
+  //   presentation::add_rule_no_checks(p, "aa", "");
+  //   presentation::add_rule_no_checks(p, "bb", "");
+  //   presentation::add_rule_no_checks(p, "cc", "");
+  //   presentation::add_rule_no_checks(p, "dd", "");
+  //   presentation::add_rule_no_checks(p, "ee", "");
+  //   presentation::add_rule_no_checks(p, pow("ab", 3), "");
+  //   presentation::add_rule_no_checks(p, pow("ac", 2), "");
+  //   presentation::add_rule_no_checks(p, pow("ad", 2), "");
+  //   presentation::add_rule_no_checks(p, pow("ae", 2), "");
+  //   presentation::add_rule_no_checks(p, pow("bc", 3), "");
+  //   presentation::add_rule_no_checks(p, pow("bd", 2), "");
+  //   presentation::add_rule_no_checks(p, pow("be", 2), "");
+  //   presentation::add_rule_no_checks(p, pow("cd", 3), "");
+  //   presentation::add_rule_no_checks(p, pow("ce", 2), "");
+  //   presentation::add_rule_no_checks(p, pow("de", 3), "");
   //   auto pp = to_presentation<word_type>(p);
   //   bench_length(pp, 720, 1'455);
   // }
@@ -506,9 +506,9 @@ namespace libsemigroups {
     Presentation<std::string> p;
     p.contains_empty_word(true);
     p.alphabet("xy");
-    presentation::add_rule_and_check(p, "xx", "");
-    presentation::add_rule_and_check(p, "yyy", "");
-    presentation::add_rule_and_check(p, "xyxyxyxyxyxyxy", "");
+    presentation::add_rule(p, "xx", "");
+    presentation::add_rule(p, "yyy", "");
+    presentation::add_rule(p, "xyxyxyxyxyxyxy", "");
     Sims1_ S(congruence_kind::right);
     S.short_rules(p);
     BENCHMARK("1 thread") {
@@ -528,9 +528,8 @@ namespace libsemigroups {
     p.contains_empty_word(true);
     p.alphabet("xXyY");
     presentation::add_inverse_rules(p, "XxYy");
-    presentation::add_rule_and_check(p, "yXYYxyYYxyyXYYxyyXyXYYxy", "x");
-    presentation::add_rule_and_check(
-        p, "YxyyXXYYxyxYxyyXYXyXYYxxyyXYXyXYYxyx", "y");
+    presentation::add_rule(p, "yXYYxyYYxyyXYYxyyXyXYYxy", "x");
+    presentation::add_rule(p, "YxyyXXYYxyxYxyyXYXyXYYxxyyXYXyXYYxyx", "y");
 
     Sims1_ S(congruence_kind::right);
     S.short_rules(p);
@@ -631,9 +630,8 @@ namespace libsemigroups {
     Presentation<std::string> p;
     p.contains_empty_word(true);
     p.alphabet("xyXY");
-    presentation::add_rule_and_check(p, "yXYYxyYYxyyXYYxyyXyXYYxyX", "");
-    presentation::add_rule_and_check(
-        p, "YxyyXXYYxyxYxyyXYXyXYYxxyyXYXyXYYxyxY", "");
+    presentation::add_rule(p, "yXYYxyYYxyyXYYxyyXyXYYxyX", "");
+    presentation::add_rule(p, "YxyyXXYYxyxYxyyXYXyXYYxxyyXYXyXYYxyxY", "");
     Sims1_ S(congruence_kind::right);
     S.short_rules(p);
     REQUIRE(S.number_of_threads(4).number_of_congruences(2) == 4);
