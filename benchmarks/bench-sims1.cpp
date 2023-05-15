@@ -639,14 +639,56 @@ namespace libsemigroups {
     REQUIRE(S.number_of_threads(4).number_of_congruences(2) == 4);
   }
 
-  TEST_CASE("Order endomorphisms n = 1 - all", "[order_endos][n=1]") {
+  TEST_CASE("Order endomorphisms n = 2 - all", "[order_endos][n=2]") {
+    auto                   rg = ReportGuard(false);
+    FroidurePin<Transf<2>> S;
+    S.add_generator(Transf<2>::make({0, 1}));
+    S.add_generator(Transf<2>::make({0, 0}));
+    S.add_generator(Transf<2>::make({1, 1}));
+    REQUIRE(S.size() == 3);
+
+    Sims1_ C(congruence_kind::right);
+    C.short_rules(to_presentation<word_type>(S));
+    BENCHMARK("1 thread") {
+      REQUIRE(C.number_of_threads(1).number_of_congruences(3) == 5);
+    };
+  }
+
+  TEST_CASE("Order endomorphisms n = 3 - all", "[order_endos][n=3]") {
     auto rg = ReportGuard(false);
-    auto p  = order_preserving_monoid(1);
+    auto p  = fpsemigroup::order_preserving_monoid(3);
 
     Sims1_ C(congruence_kind::right);
     C.short_rules(p);
     BENCHMARK("1 thread") {
-      REQUIRE(C.number_of_threads(1).number_of_congruences(1) == 1);
+      REQUIRE(C.number_of_threads(1).number_of_congruences(10) == 25);
+    };
+  }
+
+  TEST_CASE("Order endomorphisms n = 4 - all", "[order_endos][n=4]") {
+    auto rg = ReportGuard(false);
+    auto p  = fpsemigroup::order_preserving_monoid(4);
+
+    Sims1_ C(congruence_kind::right);
+    C.short_rules(p);
+    BENCHMARK("1 thread") {
+      REQUIRE(C.number_of_threads(1).number_of_congruences(35) == 385);
+    };
+  }
+
+  TEST_CASE("Order endomorphisms n = 5 - all", "[order_endos][n=5]") {
+    auto rg = ReportGuard(false);
+    auto p  = fpsemigroup::order_preserving_monoid(5);
+    presentation::sort_each_rule(p);
+    presentation::sort_rules(p);
+    presentation::remove_duplicate_rules(p);
+    presentation::reduce_complements(p);
+    presentation::remove_trivial_rules(p);
+
+    Sims1_ C(congruence_kind::right);
+    C.short_rules(p);
+    BENCHMARK("1 thread") {
+      REQUIRE(C.number_of_threads(1).number_of_congruences(126) == 37'951);
     };
   }
 
