@@ -270,7 +270,8 @@ namespace libsemigroups {
     //! right hand side `[rhs_begin, rhs_end)` to the rules.
     //!
     //! \tparam S the type of the first two parameters (iterators, or
-    //! pointers) \tparam T the type of the second two parameters (iterators,
+    //! pointers)
+    //! \tparam T the type of the second two parameters (iterators,
     //! or pointers)
     //!
     //! \param lhs_begin an iterator pointing to the first letter of the left
@@ -292,9 +293,11 @@ namespace libsemigroups {
     //!
     //! \sa
     //! add_rule
-    template <typename S, typename T>
-    Presentation&
-    add_rule_no_checks(S lhs_begin, S lhs_end, T rhs_begin, T rhs_end) {
+    template <typename Iterator1, typename Iterator2>
+    Presentation& add_rule_no_checks(Iterator1 lhs_begin,
+                                     Iterator1 lhs_end,
+                                     Iterator2 rhs_begin,
+                                     Iterator2 rhs_end) {
       rules.emplace_back(lhs_begin, lhs_end);
       rules.emplace_back(rhs_begin, rhs_end);
       return *this;
@@ -330,8 +333,11 @@ namespace libsemigroups {
     //!
     //! \sa
     //! add_rule_no_checks
-    template <typename S, typename T>
-    Presentation& add_rule(S lhs_begin, S lhs_end, T rhs_begin, T rhs_end) {
+    template <typename Iterator1, typename Iterator2>
+    Presentation& add_rule(Iterator1 lhs_begin,
+                           Iterator1 lhs_end,
+                           Iterator2 rhs_begin,
+                           Iterator2 rhs_end) {
       validate_word(lhs_begin, lhs_end);
       validate_word(rhs_begin, rhs_end);
       return add_rule_no_checks(lhs_begin, lhs_end, rhs_begin, rhs_end);
@@ -397,8 +403,8 @@ namespace libsemigroups {
     //!
     //! \returns
     //! (None)
-    template <typename T>
-    void validate_word(T first, T last) const;
+    template <typename Iterator>
+    void validate_word(Iterator first, Iterator last) const;
 
     //! Check if every rule consists of letters belonging to the alphabet.
     //!
@@ -592,10 +598,10 @@ namespace libsemigroups {
     //! \warning
     //! No checks that the arguments describe words over the alphabet of the
     //! presentation are performed.
-    template <typename Word, typename T>
-    void add_rule_no_checks(Presentation<Word>&      p,
-                            std::initializer_list<T> lhop,
-                            std::initializer_list<T> rhop) {
+    template <typename Word, typename Letter>
+    void add_rule_no_checks(Presentation<Word>&           p,
+                            std::initializer_list<Letter> lhop,
+                            std::initializer_list<Letter> rhop) {
       p.add_rule_no_checks(lhop.begin(), lhop.end(), rhop.begin(), rhop.end());
     }
 
@@ -616,10 +622,10 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if \p lhop or \p rhop contains any
     //! letters not belonging to `p.alphabet()`.
-    template <typename Word, typename T>
-    void add_rule(Presentation<Word>&      p,
-                  std::initializer_list<T> lhop,
-                  std::initializer_list<T> rhop) {
+    template <typename Word, typename Letter>
+    void add_rule(Presentation<Word>&           p,
+                  std::initializer_list<Letter> lhop,
+                  std::initializer_list<Letter> rhop) {
       p.add_rule(lhop.begin(), lhop.end(), rhop.begin(), rhop.end());
     }
 
@@ -883,9 +889,9 @@ namespace libsemigroups {
     // TODO(later) complexity
     // TODO rename add_generator_from_subword
     template <typename Word,
-              typename T,
-              typename = std::enable_if_t<!std::is_same<T, Word>::value>>
-    void replace_subword(Presentation<Word>& p, T first, T last);
+              typename Iterator,
+              typename = std::enable_if_t<!std::is_same<Iterator, Word>::value>>
+    void replace_subword(Presentation<Word>& p, Iterator first, Iterator last);
 
     //! Replace non-overlapping instances of a subword via const reference.
     //!
@@ -971,12 +977,12 @@ namespace libsemigroups {
     //! \returns (None)
     //!
     //! \throws LibsemigroupsException if `first_existing == last_existing`.
-    template <typename Word, typename S, typename T>
+    template <typename Word, typename Iterator1, typename Iterator2>
     void replace_subword(Presentation<Word>& p,
-                         S                   first_existing,
-                         S                   last_existing,
-                         T                   first_replacement,
-                         T                   last_replacement);
+                         Iterator1           first_existing,
+                         Iterator1           last_existing,
+                         Iterator2           first_replacement,
+                         Iterator2           last_replacement);
 
     //! Replace instances of a word on either side of a rule by another word.
     //!
@@ -1096,8 +1102,8 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if the distance between \p first and \p
     //! last is odd.
-    template <typename T>
-    T longest_rule(T first, T last);
+    template <typename Iterator>
+    Iterator longest_rule(Iterator first, Iterator last);
 
     //! Returns an iterator pointing at the left hand side of the first
     //! rule in the presentation with maximal length.
@@ -1130,8 +1136,8 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if the distance between \p first and \p
     //! last is odd.
-    template <typename T>
-    T shortest_rule(T first, T last);
+    template <typename Iterator>
+    Iterator shortest_rule(Iterator first, Iterator last);
 
     //! Returns an iterator pointing at the left hand side of the first
     //! rule in the presentation with minimal length.
@@ -1162,8 +1168,8 @@ namespace libsemigroups {
     //! \returns A value of type `decltype(first)::value_type::size_type`.
     //!
     //! \throws LibsemigroupsException if the length of \p p.rules is odd.
-    template <typename T>
-    auto longest_rule_length(T first, T last);
+    template <typename Iterator>
+    auto longest_rule_length(Iterator first, Iterator last);
 
     //! Returns the maximum length of a rule in the presentation.
     //!
@@ -1193,8 +1199,8 @@ namespace libsemigroups {
     //! \returns A value of type `decltype(first)::value_type::size_type`.
     //!
     //! \throws LibsemigroupsException if the length of \p p.rules is odd.
-    template <typename T>
-    auto shortest_rule_length(T first, T last);
+    template <typename Iterator>
+    auto shortest_rule_length(Iterator first, Iterator last);
 
     //! Returns the minimum length of a rule in the presentation.
     //!
@@ -1490,8 +1496,9 @@ namespace libsemigroups {
     //!
     //! \exceptions
     //! \noexcept
-    template <typename T, typename = std::enable_if_t<detail::IsWord<T>::value>>
-    T pow(T const& w, size_t n);
+    template <typename Word,
+              typename = std::enable_if_t<detail::IsWord<Word>::value>>
+    Word pow(Word const& w, size_t n);
 
     //! Take a power of a word.
     //!
@@ -1505,8 +1512,9 @@ namespace libsemigroups {
     //!
     //! \exceptions
     //! \noexcept
-    template <typename T, typename = std::enable_if_t<detail::IsWord<T>::value>>
-    void pow_inplace(T& w, size_t n);
+    template <typename Word,
+              typename = std::enable_if_t<detail::IsWord<Word>::value>>
+    void pow_inplace(Word& w, size_t n);
 
     //! Take a power of a word.
     //!
@@ -1522,7 +1530,7 @@ namespace libsemigroups {
     //! \noexcept
     word_type pow(std::initializer_list<size_t> ilist, size_t n);
 
-    //! See \ref pow(T const&, size_t)
+    //! See \ref pow(Word const&, size_t)
     std::string pow(char const* w, size_t n);
 
     //! \anchor prod
@@ -1558,21 +1566,24 @@ namespace libsemigroups {
     //! prod(w, 1, 9, 2)  // Gives the word {1, 3, 5, 1}
     //! prod(std::string("abcde", 4, 1, -1)  // Gives the string "edc")
     //! \endcode
-    template <typename T,
-              typename S = T,
-              typename   = std::enable_if_t<detail::IsWord<T>::value>>
-    S prod(T const& elts, int first, int last, int step = 1);
+    template <typename Container,
+              typename Word = Container,
+              typename      = std::enable_if_t<detail::IsWord<Word>::value>>
+    Word prod(Container const& elts, int first, int last, int step = 1);
 
     //! Returns the output of `prod` where \p elts is treated as a `word_type`
     //! instead of a vector. See \ref prod "prod".
-    template <typename T, typename = std::enable_if_t<detail::IsWord<T>::value>>
-    T prod(std::vector<T> const& elts, int first, int last, int step = 1) {
-      return prod<std::vector<T>, T, void>(elts, first, last, step);
+    template <typename Word,
+              typename = std::enable_if_t<detail::IsWord<Word>::value>>
+    Word
+    prod(std::vector<Word> const& elts, int first, int last, int step = 1) {
+      return prod<std::vector<Word>, Word, void>(elts, first, last, step);
     }
 
     //! Returns `prod(elts, 0, last, 1)` -- see \ref prod "prod".
-    template <typename T, typename = std::enable_if_t<detail::IsWord<T>::value>>
-    T prod(T const& elts, size_t last) {
+    template <typename Word,
+              typename = std::enable_if_t<detail::IsWord<Word>::value>>
+    Word prod(Word const& elts, size_t last) {
       return prod(elts, 0, static_cast<int>(last), 1);
     }
 
