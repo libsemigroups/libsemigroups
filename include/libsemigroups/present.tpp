@@ -36,90 +36,6 @@ namespace libsemigroups {
                                 std::distance(first, last));
       }
     }
-
-    template <typename Iterator>
-    int lex_compare(Iterator first1,
-                    Iterator last1,
-                    Iterator first2,
-                    Iterator last2) {
-      for (; (first1 != last1) && (first2 != last2);
-           ++first1, (void) ++first2) {
-        if (*first1 < *first2) {
-          return -1;
-        }
-        if (*first2 < *first1) {
-          return 1;
-        }
-      }
-      return 0;
-    }
-
-    // Lex compare of
-    // [first11, last11) + [first12, last12)
-    // and
-    // [first21, last21) + [first22, last22)
-    template <typename Word>
-    bool shortlex_compare_concat(Word const& prefix1,
-                                 Word const& suffix1,
-                                 Word const& prefix2,
-                                 Word const& suffix2) {
-      if (prefix1.size() + suffix1.size() < prefix2.size() + suffix2.size()) {
-        return true;
-      } else if (prefix1.size() + suffix1.size()
-                 > prefix2.size() + suffix2.size()) {
-        return false;
-      }
-
-      if (prefix1.size() < prefix2.size()) {
-        size_t const k = prefix2.size() - prefix1.size();
-
-        int cmp = lex_compare(prefix1.cbegin(),
-                              prefix1.cend(),
-                              prefix2.cbegin(),
-                              prefix2.cbegin() + prefix1.size());
-        if (cmp != 0) {
-          return cmp == -1;
-        }
-
-        cmp = lex_compare(suffix1.cbegin(),
-                          suffix1.cbegin() + k,
-                          prefix2.cbegin() + prefix1.size(),
-                          prefix2.cend());
-        if (cmp != 0) {
-          return cmp == -1;
-        }
-
-        cmp = lex_compare(suffix1.cbegin() + k,
-                          suffix1.cend(),
-                          suffix2.cbegin(),
-                          suffix2.cend());
-        return cmp == -1;
-      } else {
-        size_t const k   = prefix1.size() - prefix2.size();
-        int          cmp = lex_compare(prefix1.cbegin(),
-                              prefix1.cbegin() + prefix2.size(),
-                              prefix2.cbegin(),
-                              prefix2.cend());
-        if (cmp != 0) {
-          return cmp == -1;
-        }
-
-        cmp = lex_compare(prefix1.cbegin() + prefix2.size(),
-                          prefix1.cend(),
-                          suffix2.cbegin(),
-                          suffix2.cbegin() + k);
-
-        if (cmp != 0) {
-          return cmp == -1;
-        }
-
-        cmp = lex_compare(suffix1.cbegin(),
-                          suffix1.cend(),
-                          suffix2.cbegin() + k,
-                          suffix2.cend());
-        return cmp == -1;
-      }
-    }
   }  // namespace detail
 
   template <typename Word>
@@ -424,33 +340,42 @@ namespace libsemigroups {
       }
     }
 
-    template <typename Word>
-    void sort_each_rule(Presentation<Word>& p) {
+    template <typename Word, typename Compare>
+    bool sort_each_rule(Presentation<Word>& p, Compare cmp) {
+      bool result = false;
       detail::validate_rules_length(p);
       // Sort each relation so that the lhs is greater than the rhs according
       // to func.
       for (auto it = p.rules.begin(); it < p.rules.end(); it += 2) {
-        if (shortlex_compare(*it, *(it + 1))) {
+        if (cmp(*it, *(it + 1))) {
           std::swap(*it, *(it + 1));
+          result = true;
         }
       }
+      return result;
     }
 
     template <typename Word>
-    void sort_rules(Presentation<Word>& p) {
-      detail::validate_rules_length(p);
-      // Create a permutation of the even indexed entries in vec
+    bool sort_each_rule(Presentation<Word>& p) {
+      return sort_each_rule(p, ShortLexCompare());
+    }
 
-      std::vector<size_t> perm;
-      size_t const        n = p.rules.size() / 2;
-      perm.resize(n);
-      std::iota(perm.begin(), perm.end(), 0);
-      std::sort(perm.begin(), perm.end(), [&p](auto x, auto y) -> bool {
-        return detail::shortlex_compare_concat(p.rules[2 * x],
-                                               p.rules[2 * x + 1],
-                                               p.rules[2 * y],
-                                               p.rules[2 * y + 1]);
-      });
+    // TODO add cmp function here
+    template <typename Word>
+    void sort_rules(Presentation<Word>& p) {
+      using namespace rx;
+      detail::validate_rules_length(p);
+
+      auto&        rules = p.rules;
+      size_t const n     = rules.size() / 2;
+
+      // Create a permutation of the even indexed entries in vec
+      auto perm
+          = (seq<size_t>() | take(n) | sort([&rules](auto i, auto j) {
+               return shortlex_compare(chain(rules[2 * i], rules[2 * i + 1]),
+                                       chain(rules[2 * j], rules[2 * j + 1]));
+             })
+             | to_vector());
       // Apply the permutation (adapted from detail/stl.hpp:apply_permutation)
       for (size_t i = 0; i < n; ++i) {
         size_t current = i;
@@ -465,17 +390,17 @@ namespace libsemigroups {
       }
     }
 
+    // TODO add cmp function here
     template <typename Word>
     bool are_rules_sorted(Presentation<Word> const& p) {
+      using namespace rx;
       detail::validate_rules_length(p);
-      detail::IntRange<size_t> perm(0, p.rules.size() / 2);
-      return std::is_sorted(
-          perm.cbegin(), perm.cend(), [&p](auto x, auto y) -> bool {
-            return detail::shortlex_compare_concat(p.rules[2 * x],
-                                                   p.rules[2 * x + 1],
-                                                   p.rules[2 * y],
-                                                   p.rules[2 * y + 1]);
-          });
+      auto const&  rules = p.rules;
+      size_t const n     = rules.size() / 2;
+      return is_sorted((seq<size_t>() | take(n)), [&rules](auto i, auto j) {
+        return shortlex_compare(chain(rules[2 * i], rules[2 * i + 1]),
+                                chain(rules[2 * j], rules[2 * j + 1]));
+      });
     }
 
     template <typename Word>

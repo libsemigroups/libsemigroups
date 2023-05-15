@@ -85,8 +85,10 @@ namespace libsemigroups {
 
   template <typename Range1, typename Range2>
   bool shortlex_compare(Range1 r1, Range2 r2) {
-    if (rx::count()(r1) < rx::count()(r2)) {
-      return true;
+    size_t n1 = rx::count()(r1);
+    size_t n2 = rx::count()(r2);
+    if (n1 != n2) {
+      return n1 < n2;
     }
     return lexicographical_compare(r1, r2);
   }
@@ -103,6 +105,12 @@ namespace libsemigroups {
     }
     os << "}}";
     return os;
+  }
+
+  template <typename T, typename = std::enable_if_t<!rx::is_input_or_sink_v<T>>>
+  auto chain(T const& x, T const& y) {
+    return rx::chain(rx::iterator_range(x.cbegin(), x.cend()),
+                     rx::iterator_range(y.cbegin(), y.cend()));
   }
 
 }  // namespace libsemigroups

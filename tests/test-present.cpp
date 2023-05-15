@@ -411,11 +411,11 @@ namespace libsemigroups {
       REQUIRE(p.rules.size() == 84);
     }
 
-    template <typename W>
-    void check_shortlex_compare_concat() {
-      REQUIRE(detail::shortlex_compare_concat(
-          W({0, 1, 2, 1}), W({0}), W({1, 1, 2, 1}), W({0})));
-    }
+    // template <typename W>
+    // void check_shortlex_compare_concat() {
+    //   REQUIRE(detail::shortlex_compare_concat(
+    //       W({0, 1, 2, 1}), W({0}), W({1, 1, 2, 1}), W({0})));
+    // }
 
     template <typename W>
     void check_remove_trivial_rules() {
@@ -1091,15 +1091,15 @@ namespace libsemigroups {
     check_redundant_rule<std::string>();
   }
 
-  LIBSEMIGROUPS_TEST_CASE("Presentation",
-                          "021",
-                          "helpers shortlex_compare_concat",
-                          "[quick][presentation]") {
-    auto rg = ReportGuard(false);
-    check_shortlex_compare_concat<word_type>();
-    check_shortlex_compare_concat<StaticVector1<uint16_t, 10>>();
-    check_shortlex_compare_concat<std::string>();
-  }
+  // LIBSEMIGROUPS_TEST_CASE("Presentation",
+  //                         "021",
+  //                         "helpers shortlex_compare_concat",
+  //                         "[quick][presentation]") {
+  //   auto rg = ReportGuard(false);
+  //   check_shortlex_compare_concat<word_type>();
+  //   check_shortlex_compare_concat<StaticVector1<uint16_t, 10>>();
+  //   check_shortlex_compare_concat<std::string>();
+  // }
 
   LIBSEMIGROUPS_TEST_CASE("Presentation",
                           "022",
@@ -1504,7 +1504,7 @@ namespace libsemigroups {
                 suffix2 = "c";
 
     REQUIRE(
-        !detail::shortlex_compare_concat(prefix1, suffix1, prefix2, suffix2));
+        !shortlex_compare(chain(prefix1, suffix1), chain(prefix2, suffix2)));
 
     Presentation<std::string> p;
     p.alphabet("bacd");

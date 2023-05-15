@@ -41,6 +41,7 @@
 #include "constants.hpp"  // for UNDEFINED
 #include "debug.hpp"      // for LIBSEMIGROUPS_ASSERT
 #include "order.hpp"      // for shortlex_compare
+#include "ranges.hpp"     // for chain + shortlex_compare
 #include "ukkonen.hpp"    // for SuffixTree
 
 #include "detail/int-range.hpp"  // for detail::IntRange
@@ -822,7 +823,10 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if `p.rules.size()` is odd.
     template <typename Word>
-    void sort_each_rule(Presentation<Word>& p);
+    bool sort_each_rule(Presentation<Word>& p);
+
+    template <typename Word, typename Compare>
+    bool sort_each_rule(Presentation<Word>& p, Compare cmp);
 
     //! Sort the rules \f$u_1 = v_1, \ldots, u_n = v_n\f$ so that
     //! \f$u_1v_1 < \cdots < u_nv_n\f$ where \f$<\f$ is the shortlex order.
