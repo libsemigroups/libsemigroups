@@ -1641,7 +1641,7 @@ namespace libsemigroups {
     return w;
   }
 
-  // TODO could do a no_check version
+  // TODO(later) could do a no_check version
   inline std::string to_string(Presentation<std::string> const& p,
                                word_type const&                 w) {
     std::string s(w.size(), 0);
