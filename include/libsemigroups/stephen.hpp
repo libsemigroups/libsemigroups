@@ -41,7 +41,7 @@ namespace libsemigroups {
 
   class StephenDigraph
       : public detail::NodeManagedGraph<WordGraphWithSources<size_t>> {
-    using BaseDigraph         = WordGraphWithSources<size_t>;
+    using BaseDigraph       = WordGraphWithSources<size_t>;
     using NodeManagedGraph_ = NodeManagedGraph<BaseDigraph>;
 
    public:

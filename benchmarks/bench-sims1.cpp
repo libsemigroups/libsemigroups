@@ -690,4 +690,41 @@ namespace libsemigroups {
     };
   }
 
+  TEST_CASE("Fibonacci(2, 9) - index 12", "[fibonacci]") {
+    auto                      rg = ReportGuard(false);
+    Presentation<std::string> p;
+    p.alphabet("abAB");
+    p.contains_empty_word(true);
+    presentation::add_inverse_rules(p, "ABab");
+    presentation::add_rule(p, "Abababbab", "aBaaBaB");
+    presentation::add_rule(p, "babbabbAb", "ABaaBaa");
+    presentation::add_rule(p, "abbabbAbA", "BABaaBa");
+    presentation::add_rule(p, "bbabbAbAA", "ABABaaB");
+    presentation::add_rule(p, "babbAbAAb", "BABABaa");
+    presentation::add_rule(p, "abbAbAAbA", "BBABABa");
+    presentation::add_rule(p, "bbAbAAbAA", "ABBABAB");
+    presentation::add_rule(p, "bAbAAbAAb", "BABBABA");
+    presentation::add_rule(p, "AbAAbAAba", "BBABBAB");
+    presentation::add_rule(p, "bAAbAAbab", "aBBABBA");
+    presentation::add_rule(p, "AAbAAbaba", "BaBBABB");
+
+    presentation::add_rule(p, "AAbababb", "BaaBaBBA");
+    presentation::add_rule(p, "Abababba", "aBaaBaBB");
+    presentation::add_rule(p, "abbabaaBaaB", "bAbAAbA");
+    presentation::add_rule(p, "babaaBaaBaB", "BAbAbAA");
+
+    Sims1_ S(congruence_kind::left);
+    S.short_rules(p);
+
+    BENCHMARK("1 thread") {
+      REQUIRE(S.number_of_threads(1).number_of_congruences(12) == 6);
+    };
+    BENCHMARK("2 threads") {
+      REQUIRE(S.number_of_threads(2).number_of_congruences(12) == 6);
+    };
+    BENCHMARK("4 threads") {
+      REQUIRE(S.number_of_threads(4).number_of_congruences(12) == 6);
+    };
+  }
+
 }  // namespace libsemigroups

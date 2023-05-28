@@ -37,6 +37,36 @@
 #include "libsemigroups/types.hpp"            // for word_type
 
 namespace libsemigroups {
+  namespace {
+    void add_cyclic_conjugates(Presentation<std::string>& p,
+                               char const*                l,
+                               char const*                r) {
+      std::string lhs(l);
+      std::string rhs(r);
+      for (size_t i = 0; i < lhs.size(); ++i) {
+        std::string lcopy(rhs.crbegin(), rhs.crbegin() + i);
+        lcopy.insert(lcopy.end(), lhs.cbegin() + i, lhs.cend());
+        for (auto it = lcopy.begin(); it < lcopy.begin() + i; ++it) {
+          if (std::isupper(*it)) {
+            std::tolower(*it);
+          } else {
+            std::toupper(*it);
+          }
+        }
+
+        std::string rcopy(rhs.cbegin(), rhs.cend() - i + 1);
+        rcopy.insert(rcopy.end(), lhs.crbegin(), lhs.crend() + i);
+        for (auto it = rcopy.end() - i; it < rcopy.end(); ++it) {
+          if (std::isupper(*it)) {
+            std::tolower(*it);
+          } else {
+            std::toupper(*it);
+          }
+        }
+        presentation::add_rule(p, lcopy, rcopy);
+      }
+    }
+  }  // namespace
 
   using Sims1_       = Sims1<uint32_t>;
   using digraph_type = typename Sims1_::digraph_type;
@@ -2321,6 +2351,131 @@ namespace libsemigroups {
     Sims1_ S(congruence_kind::right);
     REQUIRE(S.short_rules(p).number_of_threads(4).number_of_congruences(462)
             == 37'951);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Sims1",
+                          "080",
+                          "fibonacci_group(2, 9) x 1",
+                          "[fail][sims1]") {
+    auto                      rg = ReportGuard(true);
+    Presentation<std::string> p;
+    p.alphabet("abcdefghiABCDEFGHI");
+    p.contains_empty_word(true);
+    presentation::add_inverse_rules(p, "ABCDEFGHIabcdefghi");
+    REQUIRE(p.rules.size() == 36);
+    presentation::add_rule(p, "ab", "c");
+    presentation::add_rule(p, "bc", "d");
+    presentation::add_rule(p, "cd", "e");
+    presentation::add_rule(p, "de", "f");
+    presentation::add_rule(p, "ef", "g");
+    presentation::add_rule(p, "fg", "h");
+    presentation::add_rule(p, "gh", "i");
+    presentation::add_rule(p, "hi", "a");
+    presentation::add_rule(p, "ia", "b");
+    Sims1_ S(congruence_kind::right);
+    S.short_rules(p);
+    REQUIRE(S.number_of_threads(4).number_of_congruences(12) == 37'951);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Sims1",
+                          "081",
+                          "fibonacci_group(2, 9) x 2",
+                          "[extreme][sims1]") {
+    using presentation::pow;
+    auto                      rg = ReportGuard(true);
+    Presentation<std::string> p;
+    p.alphabet("abAB");
+    p.contains_empty_word(true);
+    presentation::add_inverse_rules(p, "ABab");
+    presentation::add_rule(p, "Abababbab", "aBaaBaB");
+    presentation::add_rule(p, "babbabbAb", "ABaaBaa");
+    presentation::add_rule(p, "abbabbAbA", "BABaaBa");
+    presentation::add_rule(p, "bbabbAbAA", "ABABaaB");
+    presentation::add_rule(p, "babbAbAAb", "BABABaa");
+    presentation::add_rule(p, "abbAbAAbA", "BBABABa");
+    presentation::add_rule(p, "bbAbAAbAA", "ABBABAB");
+    presentation::add_rule(p, "bAbAAbAAb", "BABBABA");
+    presentation::add_rule(p, "AbAAbAAba", "BBABBAB");
+    presentation::add_rule(p, "bAAbAAbab", "aBBABBA");
+    presentation::add_rule(p, "AAbAAbaba", "BaBBABB");
+
+    presentation::add_rule(p, "AAbababb", "BaaBaBBA");
+    presentation::add_rule(p, "Abababba", "aBaaBaBB");
+    presentation::add_rule(p, "abbabaaBaaB", "bAbAAbA");
+    presentation::add_rule(p, "babaaBaaBaB", "BAbAbAA");
+
+    Sims1_ S(congruence_kind::right);
+    S.short_rules(p);
+    REQUIRE(S.number_of_threads(6).number_of_congruences(12) == 6);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Sims1", "082", "trivial group", "[extreme][sims1]") {
+    Presentation<std::string> p;
+    p.alphabet("rstRST");
+    p.contains_empty_word(true);
+    presentation::add_inverse_rules(p, "RSTrst");
+    presentation::add_rule(p, "rt", "trr");
+    presentation::add_rule(p, "sr", "rss");
+    presentation::add_rule(p, "ts", "stt");
+
+    ToddCoxeter tc(congruence_kind::twosided, p);
+    REQUIRE(tc.number_of_classes() == 1);
+
+    Sims1_ S(congruence_kind::right);
+    S.short_rules(p);
+    REQUIRE(S.number_of_threads(4).number_of_congruences(20) == 1);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Sims1", "083", "M11 x 1", "[extreme][sims1]") {
+    using presentation::pow;
+    Presentation<std::string> p;
+    p.alphabet("abcABC");
+    p.contains_empty_word(true);
+    presentation::add_inverse_rules(p, "ABCabc");
+    presentation::add_rule(p, pow("a", 6), pow("A", 5));
+    presentation::add_rule(p, pow("b", 5), "");
+    presentation::add_rule(p, pow("c", 4), "");
+    presentation::add_rule(p, "aca", "CAC");
+    presentation::add_rule(p, "bc", "cbb");
+    presentation::add_rule(p, "Aba", "aab");
+    presentation::sort_each_rule(p);
+    presentation::sort_rules(p);
+
+    REQUIRE(presentation::longest_common_subword(p) == "aa");
+    presentation::replace_subword(p, "aa");
+
+    ToddCoxeter tc(congruence_kind::twosided, p);
+    REQUIRE(tc.number_of_classes() == 7'920);
+
+    Sims1_ S(congruence_kind::right);
+    S.short_rules(p);
+    REQUIRE(S.number_of_threads(4).number_of_congruences(12) == 24);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Sims1", "084", "M11 x 2", "[extreme][sims1]") {
+    using presentation::pow;
+    Presentation<std::string> p;
+    p.alphabet("abcABC");
+    p.contains_empty_word(true);
+    presentation::add_inverse_rules(p, "ABCabc");
+    presentation::add_rule(p, pow("b", 5), "");
+    presentation::add_rule(p, pow("c", 4), "");
+    presentation::add_rule(p, "acacac", "");
+    presentation::add_rule(p, "bc", "cbb");
+    presentation::add_rule(p, "ba", "aaab");
+    presentation::add_rule(p, "aabba", "bb");
+    presentation::sort_each_rule(p);
+    presentation::sort_rules(p);
+
+    REQUIRE(presentation::longest_common_subword(p) == "bb");
+    presentation::replace_subword(p, "bb");
+
+    ToddCoxeter tc(congruence_kind::twosided, p);
+    REQUIRE(tc.number_of_classes() == 7'920);
+
+    Sims1_ S(congruence_kind::right);
+    S.short_rules(p);
+    REQUIRE(S.number_of_threads(4).number_of_congruences(16) == 24);
   }
 
 }  // namespace libsemigroups
