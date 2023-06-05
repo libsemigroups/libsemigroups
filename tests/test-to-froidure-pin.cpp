@@ -74,7 +74,7 @@ namespace libsemigroups {
   namespace {
     template <typename Word, typename OtherWord = Word>
     void check_from_ke(Presentation<Word> const& p) {
-      using literals::    operator""_w;
+      using literals::operator""_w;
       Kambites<OtherWord> k(p);
       auto                s = to_froidure_pin(k);
       REQUIRE(s.is_finite() == tril::FALSE);

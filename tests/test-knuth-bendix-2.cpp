@@ -1371,4 +1371,21 @@ namespace libsemigroups {
     REQUIRE(kb.confluent());
   }
 
+  LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
+                          "127",
+                          "1-relation hard case",
+                          "[quick][knuthbendix]") {
+    auto                      rg = ReportGuard(true);
+    Presentation<std::string> p;
+    p.alphabet("ab");
+    p.contains_empty_word(true);
+    presentation::add_rule(p, "baaababaaa", "aaba");
+
+    KnuthBendix kb(twosided, p);
+    // knuth_bendix::by_overlap_length(kb);
+    REQUIRE(!kb.confluent());
+    kb.run();
+    REQUIRE(kb.confluent());
+  }
+
 }  // namespace libsemigroups

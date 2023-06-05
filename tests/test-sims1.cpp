@@ -2478,6 +2478,28 @@ namespace libsemigroups {
     REQUIRE(S.number_of_threads(4).number_of_congruences(16) == 24);
   }
 
+  LIBSEMIGROUPS_TEST_CASE("Sims1",
+                          "085",
+                          "JonesMonoid(4)",
+                          "[extreme][sims1]") {
+    using presentation::pow;
+    Presentation<std::string> p
+        = to_presentation<std::string>(temperley_lieb_monoid(4));
+    REQUIRE(p.contains_empty_word());
+    presentation::sort_each_rule(p);
+    presentation::sort_rules(p);
+
+    Sims1_ S(congruence_kind::right);
+    S.short_rules(p);
+    REQUIRE(S.number_of_threads(4).number_of_congruences(10) == 69);
+    REQUIRE(S.number_of_threads(4).number_of_congruences(11) == 74);
+
+    for (auto it = S.cbegin(11); it != S.cend(11); ++it) {
+      if (it->number_of_active_nodes() == 11) {
+        std::cout << *it << std::endl;
+      }
+    }
+  }
 }  // namespace libsemigroups
 
 // [[[0, 0, 0]],            #1#

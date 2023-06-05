@@ -575,7 +575,7 @@ namespace libsemigroups {
                           "014",
                           "redundant_rule (word_type)",
                           "[quick][knuth-bendix]") {
-    using literals::        operator""_w;
+    using literals::operator""_w;
     auto                    rg = ReportGuard(false);
     Presentation<word_type> p;
     p.alphabet(3);
@@ -668,7 +668,7 @@ namespace libsemigroups {
                           "constructors/init for partially run",
                           "[quick][knuth-bendix]") {
     using literals::operator""_w;
-    auto            rg = ReportGuard(false);
+    auto rg = ReportGuard(false);
 
     Presentation<std::string> p;
     p.contains_empty_word(true);

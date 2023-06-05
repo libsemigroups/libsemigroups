@@ -2062,8 +2062,8 @@ namespace libsemigroups {
                           "[quick][word_functions]") {
     using namespace literals;
     using presentation::operator+;
-    word_type           w = {0, 1};
-    word_type           v = {2};
+    word_type w = {0, 1};
+    word_type v = {2};
     REQUIRE((w + v) == word_type({0, 1, 2}));
     REQUIRE((w + v + w) == word_type({0, 1, 2, 0, 1}));
 
@@ -2078,8 +2078,8 @@ namespace libsemigroups {
                           "[quick][word_functions]") {
     using namespace literals;
     using presentation::operator+=;
-    word_type           w = 123_w;
-    word_type           v = 345_w;
+    word_type w = 123_w;
+    word_type v = 345_w;
     w += v;
     REQUIRE(w == 123345_w);
     word_type t = word_type({});

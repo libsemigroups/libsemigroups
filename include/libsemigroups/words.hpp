@@ -431,8 +431,7 @@ namespace libsemigroups {
    public:
     output_type get() const noexcept {
       set_iterator();
-      return std::visit(
-          [](auto& it) -> auto const& { return *it; }, _current);
+      return std::visit([](auto& it) -> auto const& { return *it; }, _current);
     }
 
     void next() noexcept {
