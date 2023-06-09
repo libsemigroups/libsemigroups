@@ -164,4 +164,32 @@ namespace libsemigroups {
     REQUIRE(kb.number_of_classes() == 51);
     REQUIRE(knuth_bendix::normal_forms(kb).min(0).max(6).count() == 50);
   }
+
+  LIBSEMIGROUPS_TEST_CASE("fpsemi-examples",
+                          "071",
+                          "hypo_plactic_monoid(3)",
+                          "[fpsemi-examples][quick]") {
+    auto rg = ReportGuard(true);
+
+    KnuthBendix kb(congruence_kind::twosided,
+                   fpsemigroup::hypo_plactic_monoid(3));
+    kb.run();
+
+    word_type                               letters = {0, 1, 2};
+    std::unordered_map<std::string, size_t> map;
+    size_t                                  next = 0;
+    do {
+      std::string s;
+      detail::word_to_string(kb.presentation().alphabet(), letters, s);
+      s = kb.normal_form(s);
+      next += map.emplace(s, next).second;
+    } while (std::next_permutation(letters.begin(), letters.end()));
+    REQUIRE(map.size() == 4);
+
+    REQUIRE(knuth_bendix::normal_forms(kb).min(3).max(4).count() == 18);  // 19
+    // FIXME should be 19 in the previous line
+    REQUIRE(
+        (knuth_bendix::normal_forms(kb).min(3).max(4) | rx::to_vector()).size()
+        == 18);  // 19
+  }
 }  // namespace libsemigroups

@@ -16,8 +16,9 @@
 
 // The purpose of this file is to test the ToddCoxeter class.
 
-#include <cstdlib>  // for what?
-#include <fstream>  // for ofstream
+#include <cstdlib>   // for what?
+#include <fstream>   // for ofstream
+#include <iostream>  // for cout
 
 #include "catch.hpp"      // for TEST_CASE
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
@@ -4119,6 +4120,34 @@ namespace libsemigroups {
     section_hlt(tc);
 
     REQUIRE(tc.number_of_classes() == 1'451'520);
+  }
+  LIBSEMIGROUPS_TEST_CASE("ToddCoxeter", "013", "", "[todd-coxeter][extreme]") {
+    Presentation<std::string> p;
+    p.contains_empty_word(true);
+    p.alphabet("abcd");
+    presentation::add_rule(p, "aa", "a");
+    presentation::add_rule(p, "ad", "d");
+    presentation::add_rule(p, "bb", "b");
+    presentation::add_rule(p, "ca", "ac");
+    presentation::add_rule(p, "cc", "c");
+    presentation::add_rule(p, "da", "d");
+    presentation::add_rule(p, "dc", "cd");
+    presentation::add_rule(p, "dd", "d");
+    presentation::add_rule(p, "aba", "a");
+    presentation::add_rule(p, "bab", "b");
+    presentation::add_rule(p, "bcb", "b");
+    presentation::add_rule(p, "bcd", "cd");
+    presentation::add_rule(p, "cbc", "c");
+    presentation::add_rule(p, "cdb", "cd");
+    ToddCoxeter tc(twosided, p);
+    REQUIRE(tc.number_of_classes() == 24);
+    auto it = todd_coxeter::redundant_rule(p, std::chrono::milliseconds(10));
+    while (it != p.rules.end()) {
+      std::cout << std::endl
+                << "REMOVING " << *it << " = " << *(it + 1) << std::endl;
+      p.rules.erase(it, it + 2);
+      it = todd_coxeter::redundant_rule(p, std::chrono::milliseconds(100));
+    }
   }
 
 }  // namespace libsemigroups

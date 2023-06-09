@@ -29,6 +29,7 @@
 #include "libsemigroups/config.hpp"           // for LIBSEMIGROUPS_ENABLE_STATS
 #include "libsemigroups/fpsemi-examples.hpp"  // for brauer_monoid etc
 #include "libsemigroups/froidure-pin.hpp"     // for FroidurePin
+#include "libsemigroups/gabow.hpp"            // for Gabo
 #include "libsemigroups/knuth-bendix.hpp"     // for redundant_rule
 #include "libsemigroups/sims1.hpp"            // for Sims1
 #include "libsemigroups/to-froidure-pin.hpp"  // for make
@@ -2500,6 +2501,108 @@ namespace libsemigroups {
       }
     }
   }
+
+  WordGraph<uint32_t> find_quotient(Presentation<std::string> const& p,
+                                    size_t                           skip) {
+    using digraph_type = WordGraph<uint32_t>;
+
+    report::suppress("FroidurePin");
+
+    auto   T = Sims1<uint32_t>(congruence_kind::right).short_rules(p);
+    size_t skipped_so_far = 0;
+
+    auto hook = [&](digraph_type const& x) {
+      auto first = (T.short_rules().contains_empty_word() ? 0 : 1);
+      auto S     = to_froidure_pin<Transf<0, node_type>>(
+          x, first, x.number_of_active_nodes());
+      if (T.short_rules().contains_empty_word()) {
+        auto one = S.generator(0).identity();
+        if (!S.contains(one)) {
+          S.add_generator(one);
+        }
+      }
+      if (S.size() == 120) {
+        auto scc = Gabow(S.right_cayley_graph());
+        if (scc.number_of_components() != 26) {
+          return false;
+        }
+        scc.init(S.left_cayley_graph());
+        if (skipped_so_far == skip && scc.number_of_components() == 26) {
+          skipped_so_far++;
+          return true;
+        }
+      }
+      return false;
+    };
+
+    auto result = T.find_if(120, hook);
+    report::clear_suppressions();
+    return result;
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Sims1",
+                          "086",
+                          "search for possibly non-existent monoid",
+                          "[extreme][sims1]") {
+    Presentation<std::string> p;
+    p.contains_empty_word(true);
+    p.alphabet("abcde");
+    presentation::add_rule(p, "aa", "a");
+    presentation::add_rule(p, "ad", "d");
+    presentation::add_rule(p, "bb", "b");
+    presentation::add_rule(p, "ca", "ac");
+    presentation::add_rule(p, "cc", "c");
+    presentation::add_rule(p, "da", "d");
+    presentation::add_rule(p, "dc", "cd");
+    presentation::add_rule(p, "dd", "d");
+    presentation::add_rule(p, "aba", "a");
+    presentation::add_rule(p, "bab", "b");
+    presentation::add_rule(p, "bcb", "b");
+    presentation::add_rule(p, "bcd", "cd");
+    presentation::add_rule(p, "cbc", "c");
+    presentation::add_rule(p, "cdb", "cd");
+    presentation::change_alphabet(p, "cbade");
+
+    presentation::add_rule(p, "ea", "ae");
+    presentation::add_rule(p, "be", "eb");
+    presentation::add_rule(p, "ee", "e");
+    presentation::add_rule(p, "cec", "c");
+    presentation::add_rule(p, "ece", "e");
+
+    presentation::add_rule(p, "ead", "ad");
+    presentation::add_rule(p, "ade", "ad");
+    // presentation::add_rule(p, "de", "ed");
+    auto d = find_quotient(p, 0);
+    REQUIRE(d.number_of_nodes() == 120);
+    auto S = to_froidure_pin<Transf<0, node_type>>(
+        d, 0, d.number_of_active_nodes());
+    REQUIRE(d == to_word_graph<uint32_t>(1, {{}}));
+    auto one = S.generator(0).identity();
+    S.add_generator(one);
+    REQUIRE(S.size() == 120);
+    REQUIRE(S.number_of_generators() == 6);  // number 6 is the identity
+    REQUIRE(S.generator(0)
+            == Transf<0, node_type>({0,  0,  2,  3,  0,  2,  10, 3,  3,  14,
+                                     10, 11, 2,  18, 14, 11, 11, 23, 18, 19,
+                                     14, 2,  22, 23, 19, 19, 23, 2}));
+    REQUIRE(S.generator(1)
+            == Transf<0, node_type>({1,  1,  2,  7,  6,  1,  6,  7,  13, 6,
+                                     6,  15, 7,  13, 20, 15, 22, 13, 13, 24,
+                                     20, 15, 22, 26, 24, 2,  26, 24}));
+    REQUIRE(S.generator(2)
+            == Transf<0, node_type>({2,  5,  2,  2,  2,  5,  9,  12, 2,  9,
+                                     14, 2,  12, 17, 14, 21, 2,  17, 23, 2,
+                                     14, 21, 22, 23, 27, 2,  23, 27}));
+    REQUIRE(S.generator(3)
+            == Transf<0, node_type>({3,  3,  2, 3,  3,  2,  11, 3, 3,  2,
+                                     11, 11, 2, 19, 2,  11, 11, 2, 19, 19,
+                                     2,  2,  2, 2,  19, 19, 2,  2}));
+    REQUIRE(S.generator(4)
+            == Transf<0, node_type>({4, 6,  2,  8,  4, 9,  6,  13, 8,  9,
+                                     6, 16, 17, 13, 9, 22, 16, 17, 13, 25,
+                                     6, 22, 22, 17, 2, 25, 13, 2}));
+  }
+
 }  // namespace libsemigroups
 
 // [[[0, 0, 0]],            #1#

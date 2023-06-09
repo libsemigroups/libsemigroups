@@ -57,6 +57,7 @@
 #include "rx/ranges.hpp"  // for operator|, Inner, to_v...
 
 namespace libsemigroups {
+
   congruence_kind constexpr twosided = congruence_kind::twosided;
 
   using namespace rx;
@@ -1386,6 +1387,97 @@ namespace libsemigroups {
     REQUIRE(!kb.confluent());
     kb.run();
     REQUIRE(kb.confluent());
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
+                          "128",
+                          "1-relation hard case",
+                          "[quick][knuthbendix]") {
+    Presentation<std::string> p;
+    p.contains_empty_word(true);
+    p.alphabet("abcd");
+    presentation::add_rule(p, "aa", "a");
+    presentation::add_rule(p, "ad", "d");
+    presentation::add_rule(p, "bb", "b");
+    presentation::add_rule(p, "ca", "ac");
+    presentation::add_rule(p, "cc", "c");
+    presentation::add_rule(p, "da", "d");
+    presentation::add_rule(p, "dc", "cd");
+    presentation::add_rule(p, "dd", "d");
+    presentation::add_rule(p, "aba", "a");
+    presentation::add_rule(p, "abd", "d");
+    presentation::add_rule(p, "acd", "cd");
+    presentation::add_rule(p, "bab", "b");
+    presentation::add_rule(p, "bcb", "b");
+    presentation::add_rule(p, "bcd", "cd");
+    presentation::add_rule(p, "cbc", "c");
+    presentation::add_rule(p, "cdb", "cd");
+    presentation::add_rule(p, "dba", "d");
+    presentation::add_rule(p, "dbd", "d");
+    presentation::add_rule(p, "acba", "ac");
+    presentation::add_rule(p, "acbd", "cd");
+    presentation::add_rule(p, "cbac", "ac");
+    auto it = knuth_bendix::redundant_rule(p, std::chrono::milliseconds(100));
+    while (it != p.rules.end()) {
+      std::cout << std::endl
+                << "REMOVING " << *it << " = " << *(it + 1) << std::endl;
+      p.rules.erase(it, it + 2);
+      it = knuth_bendix::redundant_rule(p, std::chrono::milliseconds(100));
+    }
+    REQUIRE(p.rules == std::vector<std::string>());
+    KnuthBendix kb(congruence_kind::twosided, p);
+    REQUIRE(kb.number_of_classes() == 24);
+    REQUIRE(kb.normal_form("dcb") == "cd");
+    REQUIRE(kb.normal_form("dca") == "cd");
+    REQUIRE(kb.normal_form("da") == "d");
+    REQUIRE(kb.normal_form("cda") == "cd");
+    REQUIRE(kb.normal_form("cdb") == "cd");
+    REQUIRE(kb.normal_form("cdc") == "cd");
+    REQUIRE(kb.normal_form("cdd") == "cd");
+    REQUIRE(kb.normal_form("dad") == "d");
+    REQUIRE(!kb.equal_to("bd", "db"));
+    REQUIRE(kb.normal_form("bd") == "bd");
+    REQUIRE(kb.normal_form("db") == "db");
+    REQUIRE(kb.normal_form("cbdcbd") == "cd");
+    REQUIRE(
+        (knuth_bendix::normal_forms(kb) | to_strings("abcd") | rx::to_vector())
+        == std::vector<std::string>());
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
+                          "129",
+                          "search for a monoid that might not exist",
+                          "[quick][knuthbendix]") {
+    Presentation<std::string> p;
+    p.contains_empty_word(true);
+    p.alphabet("abcde");
+    presentation::add_rule(p, "aa", "a");
+    presentation::add_rule(p, "ad", "d");
+    presentation::add_rule(p, "bb", "b");
+    presentation::add_rule(p, "ca", "ac");
+    presentation::add_rule(p, "cc", "c");
+    presentation::add_rule(p, "da", "d");
+    presentation::add_rule(p, "dc", "cd");
+    presentation::add_rule(p, "dd", "d");
+    presentation::add_rule(p, "aba", "a");
+    presentation::add_rule(p, "bab", "b");
+    presentation::add_rule(p, "bcb", "b");
+    presentation::add_rule(p, "bcd", "cd");
+    presentation::add_rule(p, "cbc", "c");
+    presentation::add_rule(p, "cdb", "cd");
+    presentation::change_alphabet(p, "cbade");
+
+    presentation::add_rule(p, "ea", "ae");
+    presentation::add_rule(p, "be", "eb");
+    presentation::add_rule(p, "ee", "e");
+    presentation::add_rule(p, "cec", "c");
+    presentation::add_rule(p, "ece", "e");
+
+    presentation::add_rule(p, "ead", "ad");
+    presentation::add_rule(p, "ade", "ad");
+    // presentation::add_rule(p, "de", "ed");
+    KnuthBendix kb(congruence_kind::twosided, p);
+    REQUIRE(kb.number_of_classes() == 42);
   }
 
 }  // namespace libsemigroups

@@ -981,6 +981,30 @@ namespace libsemigroups {
                         std::chrono::milliseconds try_for
                         = std::chrono::milliseconds(100),
                         float threshold = 0.99);
+
+    template <typename Word, typename Time>
+    [[nodiscard]] auto redundant_rule(Presentation<Word> const& p, Time t) {
+      constexpr static congruence_kind twosided = congruence_kind::twosided;
+
+      p.validate();
+      Presentation<Word> q;
+      q.alphabet(p.alphabet());
+      q.contains_empty_word(p.contains_empty_word());
+      ToddCoxeter tc(twosided);
+
+      for (auto omit = p.rules.crbegin(); omit != p.rules.crend(); omit += 2) {
+        q.rules.clear();
+        q.rules.insert(q.rules.end(), p.rules.crbegin(), omit);
+        q.rules.insert(q.rules.end(), omit + 2, p.rules.crend());
+        tc.init(twosided, q);
+        tc.run_for(t);
+        if (tc.word_to_class_index(to_word(p, *omit))
+            == tc.word_to_class_index(to_word(p, *(omit + 1)))) {
+          return (omit + 1).base() - 1;
+        }
+      }
+      return p.rules.cend();
+    }
   }  // namespace todd_coxeter
 
   template <typename Range,
@@ -1019,5 +1043,6 @@ namespace libsemigroups {
     }
     return result;
   }
+
 }  // namespace libsemigroups
 #endif  // LIBSEMIGROUPS_TODD_COXETER_HPP_
