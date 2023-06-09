@@ -784,7 +784,7 @@ namespace libsemigroups {
     }
     report_rules();
     if (finished()) {
-      report_default("KnuthBendix: finished!");
+      report_default("KnuthBendix: finished!\n");
     } else {
       report_why_we_stopped();
     }
