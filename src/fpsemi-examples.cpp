@@ -1374,6 +1374,32 @@ namespace libsemigroups {
       return p;
     }
 
+    Presentation<word_type> hypo_plactic_monoid(size_t n) {
+      auto result = plactic_monoid(n);
+
+      for (letter_type a = 0; a < n; ++a) {
+        for (letter_type b = a; b < n; ++b) {
+          for (letter_type c = b + 1; c < n; ++c) {
+            for (letter_type d = c; d < n; ++d) {
+              result.rules.push_back({c, a, d, b});
+              result.rules.push_back({a, c, b, d});
+            }
+          }
+        }
+      }
+      for (letter_type a = 0; a < n; ++a) {
+        for (letter_type b = a + 1; b < n; ++b) {
+          for (letter_type c = b; c < n; ++c) {
+            for (letter_type d = c + 1; d < n; ++d) {
+              result.rules.push_back({b, d, a, c});
+              result.rules.push_back({d, b, c, a});
+            }
+          }
+        }
+      }
+      return result;
+    }
+
     // The remaining presentation functions are currently undocumented, as we
     // are not completely sure what they are.
 

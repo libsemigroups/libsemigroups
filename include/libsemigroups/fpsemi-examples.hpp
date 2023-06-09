@@ -564,6 +564,9 @@ namespace libsemigroups {
                         author val = author::Guralnick + author::Kantor
                                      + author::Kassabov + author::Lubotzky);
 
+    // TODO (doc)
+    Presentation<word_type> hypo_plactic_monoid(size_t n);
+
     // The following block of 7 functions remains undocumented, as we are not
     // entirely sure what they are.
     Presentation<word_type>    rook_monoid(size_t l, int q);
