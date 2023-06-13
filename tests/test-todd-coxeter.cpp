@@ -26,6 +26,7 @@
 #include "libsemigroups/bmat8.hpp"
 #include "libsemigroups/fpsemi-examples.hpp"  // for dual_symmetric_...
 #include "libsemigroups/froidure-pin.hpp"
+#include "libsemigroups/gabow.hpp"
 #include "libsemigroups/obvinf.hpp"           // for is_obviously_infinite
 #include "libsemigroups/present.hpp"          // for Presentation
 #include "libsemigroups/ranges.hpp"           // for is_sorted
@@ -34,7 +35,6 @@
 #include "libsemigroups/to-todd-coxeter.hpp"  // for ??
 #include "libsemigroups/todd-coxeter.hpp"     // for ToddCoxeter
 #include "libsemigroups/transf.hpp"           // for Transf
-#include "libsemigroups/words.hpp"            // for cbegin_wislo
 #include "libsemigroups/words.hpp"            // for operator"" _w
 
 #include "libsemigroups/detail/report.hpp"  // for ReportGuard
@@ -4121,6 +4121,7 @@ namespace libsemigroups {
 
     REQUIRE(tc.number_of_classes() == 1'451'520);
   }
+
   LIBSEMIGROUPS_TEST_CASE("ToddCoxeter", "013", "", "[todd-coxeter][extreme]") {
     Presentation<std::string> p;
     p.contains_empty_word(true);
@@ -4150,4 +4151,160 @@ namespace libsemigroups {
     }
   }
 
+  LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
+                          "014",
+                          "hypo plactic id monoid",
+                          "[todd-coxeter][extreme]") {
+    std::array<uint64_t, 11> const num
+        = {0, 0, 4, 13, 40, 121, 364, 1'093, 3'280, 9'841, 29'524};
+    // A003462
+    auto rg = ReportGuard(true);
+    for (size_t n = 2; n < 11; ++n) {
+      auto p = fpsemigroup::hypo_plactic_monoid(n);
+      p.contains_empty_word(true);
+      presentation::add_idempotent_rules_no_checks(
+          p, (rx::seq<size_t>() | rx::take(n) | rx::to_vector()));
+      // REQUIRE(p.rules == std::vector<word_type>());
+      ToddCoxeter tc(twosided, p);
+      REQUIRE(tc.number_of_classes() == num[n] + 1);
+      auto  fp = to_froidure_pin(tc);
+      Gabow scc(fp.right_cayley_graph());
+      REQUIRE(scc.number_of_components() == num[n]);
+      REQUIRE(fp.number_of_idempotents() == std::pow(2, n) - 1);
+      if (n < 3)
+        continue;
+      presentation::sort_each_rule(p);
+      presentation::sort_rules(p);
+      auto q = to_presentation<std::string>(p);
+      presentation::change_alphabet(q, "abc");
+      REQUIRE(q.rules == std::vector<std::string>());
+      // REQUIRE((todd_coxeter::normal_forms(tc) | rx::to_vector())
+      //
+      //         == std::vector<word_type>({{}, {0}, {1}, {0, 1}, {1, 0}}));
+    }
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
+                          "019",
+                          "Chinese id monoid",
+                          "[todd-coxeter][extreme]") {
+    std::array<uint64_t, 11> const num = {
+        0, 0, 4, 14, 50, 187, 730, 2'949, 12'234, 51'821, 223'190};  // A007317
+    std::vector<std::vector<uint64_t>> tri
+        = {{1},
+           {1, 1},
+           {1, 2, 2},
+           {1, 3, 6, 4, 1},
+           {1, 4, 12, 16, 13, 4, 1},
+           {1, 5, 20, 40, 55, 41, 20, 5, 1},
+           {1, 6, 30, 80, 155, 186, 156, 80, 30, 6, 1}};
+    auto rg = ReportGuard(true);
+    for (size_t n = 2; n < 11; ++n) {
+      auto p = fpsemigroup::chinese_monoid(n);
+      p.contains_empty_word(true);
+      presentation::add_idempotent_rules_no_checks(
+          p, (rx::seq<size_t>() | rx::take(n) | rx::to_vector()));
+      // REQUIRE(p.rules == std::vector<word_type>());
+      ToddCoxeter tc(twosided, p);
+      REQUIRE(tc.number_of_classes() == num[n] + 1);
+      auto  fp = to_froidure_pin(tc);
+      Gabow scc(fp.right_cayley_graph());
+      REQUIRE(scc.number_of_components() == num[n]);
+      REQUIRE(fp.number_of_idempotents() == std::pow(2, n) - 1);
+
+      std::vector<uint64_t> length = {};
+      for (auto&& nf : todd_coxeter::normal_forms(tc)) {
+        while (nf.size() >= length.size()) {
+          length.push_back(0);
+        }
+        length[nf.size()]++;
+      }
+      REQUIRE(length == tri[n]);
+
+      if (n < 3)
+        continue;
+
+      REQUIRE(
+          (todd_coxeter::normal_forms(tc) | to_strings("abc") | rx::to_vector())
+          == std::vector<std::string>());
+    }
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
+                          "030",
+                          "Chinese id monoid",
+                          "[todd-coxeter][extreme]") {
+    auto n = 5;
+    auto p = fpsemigroup::chinese_monoid(n);
+    p.contains_empty_word(true);
+    presentation::add_idempotent_rules_no_checks(
+        p, (rx::seq<size_t>() | rx::take(n) | rx::to_vector()));
+    // REQUIRE(p.rules == std::vector<word_type>());
+    ToddCoxeter tc(twosided, p);
+    tc.run();
+
+    // std::vector<word_type> ws = {1230_w, 2031_w, 10231_w, 12032_w, 102132_w};
+    // std::vector<word_type> ws = {012_w, 021_w, 102_w, 120_w, 1021_w};
+    // std::vector<word_type> ws = {1203_w, 0123_w, 0213_w, 1023_w, 10213_w};
+    std::vector<word_type> ws
+        = {123043_w, 1203243_w, 203143_w, 1023143_w, 10213243_w};
+
+    auto involution = [&tc](word_type& w) {
+      std::reverse(w.begin(), w.end());
+      for (auto& a : w) {
+        a = 4 - a;
+      }
+      w = todd_coxeter::normal_form(tc, w);
+    };
+
+    std::for_each(ws.begin(), ws.end(), involution);
+    REQUIRE((rx::iterator_range(ws.begin(), ws.end()) | to_strings("abcde")
+             | rx::to_vector())
+            == std::vector<std::string>());
+
+    REQUIRE(todd_coxeter::normal_form(tc, 0123012_w) == 1230_w);
+    REQUIRE(todd_coxeter::normal_form(tc, 3021_w) == ""_w);
+    // REQUIRE(todd_coxeter::normal_form(tc, 01_w) == ""_w);
+    // std::vector<std::string> word =  //{"bcda",
+    //                                 // "bdac",
+    //                                 // "cadb",
+    //                                 // "cdab",
+    //                                 // "bacdb",
+    //                                 // "badbc",
+    //                                 // "bcadc",
+    //                                 // "bcdad",
+    //                                 // "cadbc",
+    //                                 // "cadbd",
+    //                                 // "bacbdc",
+    //                                 // "bacdbd",
+    //                                 // "bcadcd",
+    //                                 // "bacbdcd"};
+    //    {"abcd",
+    //     "abdc",
+    //     "acbd",
+    //     "acdb",
+    //     "bacd",
+    //     "badc",
+    //     "bcad",
+    //     "bcda",
+    //     "cadb",
+    //     "acbdc",
+    //     "bacbd",
+    //     "bacdb",
+    //     "bcadc",
+    //     "bacbdc"};
+    // auto q       = to_presentation<std::string>(p);
+    // auto convert = [&](auto const& w) {
+    //   return to_string(q, todd_coxeter::normal_form(tc, to_word(q, w)));
+    // };
+
+    // REQUIRE((rx::iterator_range(word.begin(), word.end())
+    //          | rx::transform([](auto const& w) { return "d" + w; })
+    //          | rx::transform(convert) | rx::to_vector())
+    //         == std::vector<std::string>());
+
+    REQUIRE((todd_coxeter::normal_forms(tc) | to_strings("abcdef")
+             | rx::to_vector())
+            == std::vector<std::string>());
+  }
 }  // namespace libsemigroups

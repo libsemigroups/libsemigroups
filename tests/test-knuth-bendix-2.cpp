@@ -40,17 +40,21 @@
 #include <utility>      // for move
 #include <vector>       // for vector, operator==
 
+#define CATCH_CONFIG_ENABLE_ALL_STRINGMAKERS
+#define CATCH_CONFIG_ENABLE_PAIR_STRINGMAKER
+
 #include "catch.hpp"      // for AssertionHandler, oper...
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
-#include "libsemigroups/constants.hpp"     // for operator==, operator!=
-#include "libsemigroups/exception.hpp"     // for LibsemigroupsException
-#include "libsemigroups/knuth-bendix.hpp"  // for KnuthBendix, normal_forms
-#include "libsemigroups/order.hpp"         // for shortlex_compare
-#include "libsemigroups/paths.hpp"         // for Paths
-#include "libsemigroups/present.hpp"       // for add_rule, Presentation
-#include "libsemigroups/word-graph.hpp"    // for WordGraph
-#include "libsemigroups/words.hpp"         // for Inner, to_strings
+#include "libsemigroups/constants.hpp"        // for operator==, operator!=
+#include "libsemigroups/exception.hpp"        // for LibsemigroupsException
+#include "libsemigroups/fpsemi-examples.hpp"  // for chinese
+#include "libsemigroups/knuth-bendix.hpp"     // for KnuthBendix, normal_forms
+#include "libsemigroups/order.hpp"            // for shortlex_compare
+#include "libsemigroups/paths.hpp"            // for Paths
+#include "libsemigroups/present.hpp"          // for add_rule, Presentation
+#include "libsemigroups/word-graph.hpp"       // for WordGraph
+#include "libsemigroups/words.hpp"            // for Inner, to_strings
 
 #include "libsemigroups/detail/report.hpp"  // for ReportGuard
 
@@ -1478,6 +1482,59 @@ namespace libsemigroups {
     // presentation::add_rule(p, "de", "ed");
     KnuthBendix kb(congruence_kind::twosided, p);
     REQUIRE(kb.number_of_classes() == 42);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
+                          "130",
+                          "Chinese monoid",
+                          "[todd-coxeter][extreme]") {
+    std::array<uint64_t, 11> const num = {
+        0, 0, 4, 14, 50, 187, 730, 2'949, 12'234, 51'821, 223'190};  // A007317
+    auto rg = ReportGuard(true);
+    for (size_t n = 2; n < 11; ++n) {
+      auto p = fpsemigroup::chinese_monoid(n);
+      p.contains_empty_word(true);
+      KnuthBendix kb(twosided, p);
+      kb.run();
+      REQUIRE((knuth_bendix::normal_forms(kb).min(0).max(5) | to_strings("ab")
+               | rx::to_vector())
+              == std::vector<std::string>());
+    }
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
+                          "131",
+                          "hypostylic",
+                          "[todd-coxeter][extreme]") {
+    size_t n = 8;
+    auto   p = fpsemigroup::hypo_plactic_monoid(n);
+    p.contains_empty_word(true);
+    presentation::add_idempotent_rules_no_checks(
+        p, (rx::seq<size_t>() | rx::take(n) | rx::to_vector()));
+    KnuthBendix kb(congruence_kind::twosided, p);
+    kb.run();
+    REQUIRE((knuth_bendix::normal_forms(kb) | to_strings("abcdefgh")
+             | rx::to_vector())
+            == std::vector<std::string>());
+    REQUIRE((kb.active_rules() | rx::to_vector())
+            == std::vector<std::pair<std::string, std::string>>());
+    REQUIRE(kb.gilman_graph() == to_word_graph<size_t>(1, {{}}));
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
+                          "132",
+                          "Chinese id monoid",
+                          "[todd-coxeter][extreme]") {
+    auto n = 4;
+    auto p = fpsemigroup::chinese_monoid(n);
+    p.contains_empty_word(true);
+    presentation::add_idempotent_rules_no_checks(
+        p, (rx::seq<size_t>() | rx::take(n) | rx::to_vector()));
+    KnuthBendix kb(twosided, to_presentation<std::string>(p));
+    kb.run();
+    REQUIRE(kb.normal_form("cbda") == "bcda");
+    REQUIRE(kb.normal_form("badc") == "cbda");
+    REQUIRE(kb.normal_form("cadb") == "cbda");
   }
 
 }  // namespace libsemigroups
