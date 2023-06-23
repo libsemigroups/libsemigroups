@@ -948,6 +948,29 @@ namespace libsemigroups {
       return non_trivial_classes(tc1, normal_forms(tc2));
     }
 
+    uint64_t number_of_idempotents(ToddCoxeter& tc);
+
+    // TODO range version
+    template <typename Iterator>
+    std::pair<Iterator, Iterator> first_equivalent_pair(ToddCoxeter& tc,
+                                                        Iterator     first,
+                                                        Iterator     last) {
+      std::unordered_map<ToddCoxeter::node_type, Iterator> map;
+      size_t                                               index = 0;
+      for (auto it = first; it != last; ++it, ++index) {
+        auto [map_it, inserted] = map.emplace(tc.word_to_class_index(*it), it);
+        if (!inserted) {
+          return std::pair(map_it->second, it);
+        }
+      }
+      return std::pair(last, last);
+    }
+
+    template <typename Iterator>
+    bool is_traversal(ToddCoxeter& tc, Iterator first, Iterator last) {
+      return first_equivalent_pair(tc, first, last) == std::pair(last, last);
+    }
+
     //! Check if the congruence has more than one class.
     //!
     //! Returns tril::TRUE if it is possible to show that the congruence is
@@ -982,6 +1005,7 @@ namespace libsemigroups {
                         = std::chrono::milliseconds(100),
                         float threshold = 0.99);
 
+    // FIXME run_for seems to not function properly here.
     template <typename Word, typename Time>
     [[nodiscard]] auto redundant_rule(Presentation<Word> const& p, Time t) {
       constexpr static congruence_kind twosided = congruence_kind::twosided;
@@ -1005,6 +1029,7 @@ namespace libsemigroups {
       }
       return p.rules.cend();
     }
+
   }  // namespace todd_coxeter
 
   template <typename Range,

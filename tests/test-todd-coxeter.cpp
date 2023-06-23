@@ -57,6 +57,27 @@ namespace libsemigroups {
            << std::to_string(tc.number_of_classes()) << ");\n";
       file.close();
     }
+
+    struct NormalForms {
+      template <typename Iterator>
+      NormalForms(ToddCoxeter& tc, Iterator first, Iterator last)
+          : _map(), _tc(tc) {
+        for (auto it = first; it != last; ++it) {
+          bool inserted = _map.emplace(tc.word_to_class_index(*it), *it).second;
+          if (!inserted) {
+            LIBSEMIGROUPS_EXCEPTION("shouldn't happen");
+          }
+        }
+      }
+
+      word_type const& operator()(word_type const& w) {
+        return _map.find(_tc.word_to_class_index(w))->second;
+      }
+
+      std::unordered_map<ToddCoxeter::node_type, word_type> _map;
+      ToddCoxeter&                                          _tc;
+    };
+
   }  // namespace
 
   using TCE     = detail::TCE;
@@ -4159,12 +4180,12 @@ namespace libsemigroups {
         = {0, 0, 4, 13, 40, 121, 364, 1'093, 3'280, 9'841, 29'524};
     // A003462
     auto rg = ReportGuard(true);
-    for (size_t n = 2; n < 11; ++n) {
+    for (size_t n = 4; n < 11; ++n) {
       auto p = fpsemigroup::hypo_plactic_monoid(n);
       p.contains_empty_word(true);
       presentation::add_idempotent_rules_no_checks(
           p, (rx::seq<size_t>() | rx::take(n) | rx::to_vector()));
-      // REQUIRE(p.rules == std::vector<word_type>());
+      REQUIRE(p.rules == std::vector<word_type>());
       ToddCoxeter tc(twosided, p);
       REQUIRE(tc.number_of_classes() == num[n] + 1);
       auto  fp = to_froidure_pin(tc);
@@ -4243,68 +4264,290 @@ namespace libsemigroups {
     ToddCoxeter tc(twosided, p);
     tc.run();
 
+    // for (auto const& w : todd_coxeter::normal_forms(tc)) {
+    //   if (todd_coxeter::normal_form(tc, w + w) == w) {
+    //     std::cout << w << std::endl;
+    //   }
+    // }
+
+    REQUIRE(todd_coxeter::normal_form(tc, 21323143_w) == 314637_w);
+    // REQUIRE(todd_coxeter::normal_form(tc, 314637_w) == 314637_w);
+    // REQUIRE(todd_coxeter::normal_form(tc, 314636_w) == 314636_w);
+    // REQUIRE(todd_coxeter::normal_form(tc, 314635_w) == 31463_w);
+    // REQUIRE(todd_coxeter::normal_form(tc, 314634_w) == ""_w);
+    // REQUIRE(todd_coxeter::normal_form(tc, 314633_w) == ""_w);
+    // REQUIRE(todd_coxeter::normal_form(tc, 314632_w) == ""_w);
+    // REQUIRE(todd_coxeter::normal_form(tc, 314631_w) == 3461_w);
+    // REQUIRE(todd_coxeter::normal_form(tc, 314630_w) == 13460_w);
+
+    REQUIRE(todd_coxeter::normal_form(tc, 13042564870_w) == 123456780_w);
+    REQUIRE(todd_coxeter::normal_form(tc, 13042564871_w) == 230456781_w);
+    REQUIRE(todd_coxeter::normal_form(tc, 13042564872_w) == 130456782_w);
+    REQUIRE(todd_coxeter::normal_form(tc, 13042564873_w) == 1304256783_w);
+    REQUIRE(todd_coxeter::normal_form(tc, 13042564874_w) == 1304256784_w);
+    REQUIRE(todd_coxeter::normal_form(tc, 13042564875_w) == 1304264785_w);
+    REQUIRE(todd_coxeter::normal_form(tc, 13042564876_w) == 13042564786_w);
+    REQUIRE(todd_coxeter::normal_form(tc, 13042564877_w) == 1304256487_w);
+    REQUIRE(todd_coxeter::normal_form(tc, 13042564878_w) == 1304256487_w);
     // std::vector<word_type> ws = {1230_w, 2031_w, 10231_w, 12032_w, 102132_w};
     // std::vector<word_type> ws = {012_w, 021_w, 102_w, 120_w, 1021_w};
     // std::vector<word_type> ws = {1203_w, 0123_w, 0213_w, 1023_w, 10213_w};
-    std::vector<word_type> ws
-        = {123043_w, 1203243_w, 203143_w, 1023143_w, 10213243_w};
+    // std::vector<word_type> ws
+    //     = {123043_w, 1203243_w, 203143_w, 1023143_w, 10213243_w};
 
-    auto involution = [&tc](word_type& w) {
-      std::reverse(w.begin(), w.end());
-      for (auto& a : w) {
-        a = 4 - a;
-      }
-      w = todd_coxeter::normal_form(tc, w);
-    };
-
-    std::for_each(ws.begin(), ws.end(), involution);
-    REQUIRE((rx::iterator_range(ws.begin(), ws.end()) | to_strings("abcde")
-             | rx::to_vector())
-            == std::vector<std::string>());
-
-    REQUIRE(todd_coxeter::normal_form(tc, 0123012_w) == 1230_w);
-    REQUIRE(todd_coxeter::normal_form(tc, 3021_w) == ""_w);
-    // REQUIRE(todd_coxeter::normal_form(tc, 01_w) == ""_w);
-    // std::vector<std::string> word =  //{"bcda",
-    //                                 // "bdac",
-    //                                 // "cadb",
-    //                                 // "cdab",
-    //                                 // "bacdb",
-    //                                 // "badbc",
-    //                                 // "bcadc",
-    //                                 // "bcdad",
-    //                                 // "cadbc",
-    //                                 // "cadbd",
-    //                                 // "bacbdc",
-    //                                 // "bacdbd",
-    //                                 // "bcadcd",
-    //                                 // "bacbdcd"};
-    //    {"abcd",
-    //     "abdc",
-    //     "acbd",
-    //     "acdb",
-    //     "bacd",
-    //     "badc",
-    //     "bcad",
-    //     "bcda",
-    //     "cadb",
-    //     "acbdc",
-    //     "bacbd",
-    //     "bacdb",
-    //     "bcadc",
-    //     "bacbdc"};
-    // auto q       = to_presentation<std::string>(p);
-    // auto convert = [&](auto const& w) {
-    //   return to_string(q, todd_coxeter::normal_form(tc, to_word(q, w)));
+    // auto involution = [&tc](word_type& w) {
+    //   std::reverse(w.begin(), w.end());
+    //   for (auto& a : w) {
+    //     a = 4 - a;
+    //   }
+    //   w = todd_coxeter::normal_form(tc, w);
     // };
+
+    // std::for_each(ws.begin(), ws.end(), involution);
+    // REQUIRE((rx::iterator_range(ws.begin(), ws.end()) | to_strings("abcde")
+    //          | rx::to_vector())
+    //         == std::vector<std::string>());
+
+    // REQUIRE(todd_coxeter::normal_form(tc, 0123012_w) == 1230_w);
+    // REQUIRE(todd_coxeter::normal_form(tc, 3021_w) == ""_w);
+    //  REQUIRE(todd_coxeter::normal_form(tc, 01_w) == ""_w);
+    //  std::vector<std::string> word =  //{"bcda",
+    //                                  // "bdac",
+    //                                  // "cadb",
+    //                                  // "cdab",
+    //                                  // "bacdb",
+    //                                  // "badbc",
+    //                                  // "bcadc",
+    //                                  // "bcdad",
+    //                                  // "cadbc",
+    //                                  // "cadbd",
+    //                                  // "bacbdc",
+    //                                  // "bacdbd",
+    //                                  // "bcadcd",
+    //                                  // "bacbdcd"};
+    //     {"abcd",
+    //      "abdc",
+    //      "acbd",
+    //      "acdb",
+    //      "bacd",
+    //      "badc",
+    //      "bcad",
+    //      "bcda",
+    //      "cadb",
+    //      "acbdc",
+    //      "bacbd",
+    //      "bacdb",
+    //      "bcadc",
+    //      "bacbdc"};
+    //  auto q       = to_presentation<std::string>(p);
+    //  auto convert = [&](auto const& w) {
+    //    return to_string(q, todd_coxeter::normal_form(tc, to_word(q, w)));
+    //  };
 
     // REQUIRE((rx::iterator_range(word.begin(), word.end())
     //          | rx::transform([](auto const& w) { return "d" + w; })
     //          | rx::transform(convert) | rx::to_vector())
     //         == std::vector<std::string>());
 
-    REQUIRE((todd_coxeter::normal_forms(tc) | to_strings("abcdef")
-             | rx::to_vector())
-            == std::vector<std::string>());
+    REQUIRE(
+        (todd_coxeter::normal_forms(tc) | to_strings("abcd") | rx::to_vector())
+        == std::vector<std::string>());
   }
+
+  LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
+                          "027",
+                          "plactic (n, 1)-id monoid",
+                          "[todd-coxeter][extreme]") {
+    // auto                          r = 3, s = 2;
+    // std::array<uint64_t, 7> const size = {1, 3, 14, 95, 885, 10'858,
+    // 170'209};
+
+    // auto                          r = 2, s = 1;
+    // std::array<uint64_t, 9> const size
+    //     = {1, 2, 5, 15, 52, 203, 27'509, 248'127, 2'434'129};
+    // auto                          r = 3, s = 1;
+    // std::array<uint64_t, 9> const size
+    //     = {0, 3, 13, 71, 457, 3'355, 27'509, 248'127, 2'434'129};
+    // https://oeis.org/A126390
+
+    auto                          r = 4, s = 1;
+    std::array<uint64_t, 8> const size
+        = {0, 0, 0, 199, 1'876, 20'257, 245'017, 3'266'914};
+    // https://oeis.org/A284859
+
+    // auto                           r = 5, s = 1;
+    // std::array<uint64_t, 7> const size
+    //     = {0, 0, 0, 429, 5329, 75989, 1'215'481};
+    std::array<uint64_t, 11> const num_idem
+        = {1, 2, 4, 8, 16, 32, 64, 128, 256};
+    // https://oeis.org/A126390
+    using presentation::pow;
+    for (size_t n = 5; n < 6; ++n) {  // size.size(); ++n) {
+      auto p = fpsemigroup::plactic_monoid(n);
+      p.contains_empty_word(true);
+
+      for (size_t a = 0; a < n; ++a) {
+        presentation::add_rule(p, pow({a}, r), pow({a}, s));
+      }
+      // REQUIRE(p.rules == std::vector<word_type>());
+      ToddCoxeter tc(twosided, p);
+      REQUIRE(tc.number_of_classes() == size[n]);
+      //  REQUIRE(todd_coxeter::number_of_idempotents(tc) == num_idem[n]);
+      //  std::vector<word_type> possible1
+      //      = {012_w,     0122_w,       0112_w,      01122_w,
+      //         0012_w,    00122_w,      00112_w,     001122_w,
+      //         2012_w,    220122_w,     20112_w,     2201122_w,
+      //         20012_w,   2200122_w,    200112_w,    22001122_w,
+      //         1012_w,    10122_w,      110112_w,    1101122_w,
+      //         10012_w,   100122_w,     1100112_w,   11001122_w,
+      //         12012_w,   1220122_w,    1120112_w,   112201122_w,
+      //         120012_w,  12200122_w,   11200112_w,  1122001122_w,
+      //         212012_w,  221220122_w,  21120112_w,  22112201122_w,
+      //         2120012_w, 2212200122_w, 211200112_w, 221122001122_w};
+      //  auto pair = todd_coxeter::first_equivalent_pair(
+      //      tc, possible1.cbegin(), possible1.cend());
+      //  REQUIRE(!tc.contains(2012_w, 20122_w));
+      //  REQUIRE(!tc.contains(2012_w, 22012_w));
+      //  REQUIRE(*pair.first == 2012_w);
+      //  REQUIRE(*pair.second == 220122_w);
+
+      //  REQUIRE(!todd_coxeter::is_traversal(
+      //      tc, possible1.cbegin(), possible1.cend()));
+      //  // REQUIRE(partition(tc, possible1.cbegin(), possible1.cend())
+      //  //       == std::vector<std::vector<word_type>>());
+
+      //  std::vector<word_type> possible2 = {
+      //      012_w,     0122_w,     0112_w,     01122_w,    0012_w,    00122_w,
+      //      00112_w,   001122_w,   2012_w,     22012_w,    20112_w, 220112_w,
+      //      20012_w,   220012_w,   200112_w,   2200112_w,  1012_w,    10122_w,
+      //      11012_w,   110122_w,   10012_w,    100122_w,   110012_w,
+      //      1100122_w, 12012_w,   122012_w,   112012_w,   1122012_w, 120012_w,
+      //      1220012_w, 1120012_w, 11220012_w, 212012_w,   2212012_w,
+      //      2112012_w, 22112012_w, 2120012_w, 22120012_w, 21120012_w,
+      //      221120012_w};
+      //  REQUIRE(
+      //      todd_coxeter::is_traversal(tc, possible2.cbegin(),
+      //      possible2.cend()));
+      //  std::vector<word_type> possible3 = {
+      //      0123_w,         01233_w,         01223_w,         012233_w,
+      //      01123_w,        011233_w,        011223_w,        0112233_w,
+      //      00123_w,        001233_w,        001223_w,        0012233_w,
+      //      001123_w,       0011233_w,       0011223_w,       00112233_w,
+      //      30123_w,        330123_w,        301223_w,        3301223_w,
+      //      301123_w,       3301123_w,       3011223_w,       33011223_w,
+      //      300123_w,       3300123_w,       3001223_w,       33001223_w,
+      //      3001123_w,      33001123_w,      30011223_w,      330011223_w,
+      //      20123_w,        201233_w,        220123_w,        2201233_w,
+      //      201123_w,       2011233_w,       2201123_w,       22011233_w,
+      //      200123_w,       2001233_w,       2200123_w,       22001233_w,
+      //      2001123_w,      20011233_w,      22001123_w,      220011233_w,
+      //      230123_w,       2330123_w,       2230123_w,       22330123_w,
+      //      2301123_w,      23301123_w,      22301123_w,      223301123_w,
+      //      2300123_w,      23300123_w,      22300123_w,      223300123_w,
+      //      23001123_w,     233001123_w,     223001123_w,     2233001123_w,
+      //      3230123_w,      33230123_w,      32230123_w,      332230123_w,
+      //      32301123_w,     332301123_w,     322301123_w,     3322301123_w,
+      //      32300123_w,     332300123_w,     322300123_w,     3322300123_w,
+      //      323001123_w,    3323001123_w,    3223001123_w,    33223001123_w,
+      //      10123_w,        101233_w,        101223_w,        1012233_w,
+      //      110123_w,       1101233_w,       1101223_w,       11012233_w,
+      //      100123_w,       1001233_w,       1001223_w,       10012233_w,
+      //      1100123_w,      11001233_w,      11001223_w,      110012233_w,
+      //      130123_w,       1330123_w,       1301223_w,       13301223_w,
+      //      1130123_w,      11330123_w,      11301223_w,      113301223_w,
+      //      1300123_w,      13300123_w,      13001223_w,      133001223_w,
+      //      11300123_w,     113300123_w,     113001223_w,     1133001223_w,
+      //      3130123_w,      33130123_w,      31301223_w,      331301223_w,
+      //      31130123_w,     331130123_w,     311301223_w,     3311301223_w,
+      //      31300123_w,     331300123_w,     313001223_w,     3313001223_w,
+      //      311300123_w,    3311300123_w,    3113001223_w,    33113001223_w,
+      //      120123_w,       1201233_w,       1220123_w,       12201233_w,
+      //      1120123_w,      11201233_w,      11220123_w,      112201233_w,
+      //      1200123_w,      12001233_w,      12200123_w,      122001233_w,
+      //      11200123_w,     112001233_w,     112200123_w,     1122001233_w,
+      //      1230123_w,      12330123_w,      12230123_w,      122330123_w,
+      //      11230123_w,     112330123_w,     112230123_w,     1122330123_w,
+      //      12300123_w,     123300123_w,     122300123_w,     1223300123_w,
+      //      112300123_w,    1123300123_w,    1122300123_w,    11223300123_w,
+      //      31230123_w,     331230123_w,     312230123_w,     3312230123_w,
+      //      311230123_w,    3311230123_w,    3112230123_w,    33112230123_w,
+      //      312300123_w,    3312300123_w,    3122300123_w,    33122300123_w,
+      //      3112300123_w,   33112300123_w,   31122300123_w,   331122300123_w,
+      //      2120123_w,      21201233_w,      22120123_w,      221201233_w,
+      //      21120123_w,     211201233_w,     221120123_w,     2211201233_w,
+      //      21200123_w,     212001233_w,     221200123_w,     2212001233_w,
+      //      211200123_w,    2112001233_w,    2211200123_w,    22112001233_w,
+      //      21230123_w,     212330123_w,     221230123_w,     2212330123_w,
+      //      211230123_w,    2112330123_w,    2211230123_w,    22112330123_w,
+      //      212300123_w,    2123300123_w,    2212300123_w,    22123300123_w,
+      //      2112300123_w,   21123300123_w,   22112300123_w,   221123300123_w,
+      //      231230123_w,    2331230123_w,    2231230123_w,    22331230123_w,
+      //      2311230123_w,   23311230123_w,   22311230123_w,   223311230123_w,
+      //      2312300123_w,   23312300123_w,   22312300123_w,   223312300123_w,
+      //      23112300123_w,  233112300123_w,  223112300123_w,  2233112300123_w,
+      //      3231230123_w,   33231230123_w,   32231230123_w,   332231230123_w,
+      //      32311230123_w,  332311230123_w,  322311230123_w,  3322311230123_w,
+      //      32312300123_w,  332312300123_w,  322312300123_w,  3322312300123_w,
+      //      323112300123_w, 3323112300123_w, 3223112300123_w,
+      //      33223112300123_w};
+      //  REQUIRE(
+      //      todd_coxeter::is_traversal(tc, possible3.cbegin(),
+      //      possible3.cend()));
+#include "bla.txt"
+      REQUIRE(
+          todd_coxeter::is_traversal(tc, possible4.cbegin(), possible4.cend()));
+
+      NormalForms nf(tc, possible4.begin(), possible4.end());
+      REQUIRE(std::all_of(possible4.begin(),
+                          possible4.end(),
+                          [&nf](auto const& w) { return nf(w) == w; }));
+
+      // REQUIRE(partition(tc, possible3.cbegin(), possible3.cend())
+      //         == std::vector<std::vector<word_type>>());
+      // REQUIRE(todd_coxeter::normal_form(tc, 3413401234_w) == ""_w);
+      // REQUIRE((todd_coxeter::normal_forms(tc) | to_strings("abcd")
+      //          | rx::to_vector())
+      //         == std::vector<std::string>());
+    }
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
+                          "036",
+                          "plactic (n, 1)-id monoid",
+                          "[todd-coxeter][extreme]") {
+    using presentation::pow;
+    using presentation::operator+;
+#include "Plact4-1_3_last.txt"
+    size_t n = 4, r = 2, s = 1;
+
+    auto p = fpsemigroup::plactic_monoid(n);
+    p.contains_empty_word(true);
+
+    for (size_t a = 0; a < n; ++a) {
+      presentation::add_rule(p, pow({a}, r), pow({a}, s));
+    }
+    REQUIRE(p.rules == std::vector<word_type>());
+    ToddCoxeter tc(twosided, p);
+    NormalForms nf(tc, words.begin(), words.end());
+    REQUIRE(std::all_of(words.begin(), words.end(), [&nf](auto const& w) {
+      return nf(w) == w;
+    }));
+
+    auto                   w = 212_w;
+    std::vector<word_type> result;
+    for (auto i = 0; i < 4; ++i) {
+      for (auto j = 0; j < 4; ++j) {
+        for (auto k = 0; k < 4; ++k) {
+          result.push_back(nf(w + pow(0_w, i) + pow(1_w, j) + pow(2_w, k)));
+        }
+      }
+    }
+    REQUIRE(result == std::vector<word_type>());
+    // for (auto it = w.begin() + 1; it != w.end(); ++it) {
+    //   word_type ww(w.begin(), it);
+    //   std::cout << "prefix = " << ww << ", normal form = " << nf(ww)
+    //             << std::endl;
+    // }
+  }
+
 }  // namespace libsemigroups

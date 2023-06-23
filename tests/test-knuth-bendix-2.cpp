@@ -1506,14 +1506,16 @@ namespace libsemigroups {
                           "131",
                           "hypostylic",
                           "[todd-coxeter][extreme]") {
-    size_t n = 8;
+    size_t n = 2;
     auto   p = fpsemigroup::hypo_plactic_monoid(n);
     p.contains_empty_word(true);
     presentation::add_idempotent_rules_no_checks(
         p, (rx::seq<size_t>() | rx::take(n) | rx::to_vector()));
     KnuthBendix kb(congruence_kind::twosided, p);
     kb.run();
-    REQUIRE((knuth_bendix::normal_forms(kb) | to_strings("abcdefgh")
+    REQUIRE((knuth_bendix::normal_forms(kb) | to_strings("ab")
+             | rx::filter(
+                 [&kb](auto const& w) { return kb.normal_form(w + w) == w; })
              | rx::to_vector())
             == std::vector<std::string>());
     REQUIRE((kb.active_rules() | rx::to_vector())

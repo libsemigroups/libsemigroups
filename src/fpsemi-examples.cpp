@@ -218,12 +218,15 @@ namespace libsemigroups {
     }
 
     Presentation<word_type> plactic_monoid(size_t n) {
-      if (n < 2) {
-        LIBSEMIGROUPS_EXCEPTION("expected argument to be at least 2, found {}",
+      if (n < 1) {
+        LIBSEMIGROUPS_EXCEPTION("expected argument to be at least 1, found {}",
                                 n);
       }
       Presentation<word_type> p;
       p.alphabet(n);
+      if (n == 1) {
+        return p;
+      }
       for (size_t c = 0; c < n; ++c) {
         for (size_t b = 0; b < c; ++b) {
           for (size_t a = 0; a < b; ++a) {
@@ -810,10 +813,10 @@ namespace libsemigroups {
       presentation::add_rule_no_checks(p, 02_w, 2_w + pow(0_w, n - 1));
       presentation::add_rule_no_checks(p, 12_w, 2_w + pow(01_w, n - 1));
 
-      presentation::add_rule_no_checks(p,
-                                       2_w + pow(1_w + pow(0_w, n - 1), n - 2),
-                                       pow(0_w, n - 2)
-                                           + pow(1_w + pow(0_w, n - 1), n - 2));
+      presentation::add_rule_no_checks(
+          p,
+          2_w + pow(1_w + pow(0_w, n - 1), n - 2),
+          pow(0_w, n - 2) + pow(1_w + pow(0_w, n - 1), n - 2));
 
       return p;
     }

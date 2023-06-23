@@ -48,6 +48,7 @@
 #include "libsemigroups/detail/report.hpp"  // for ReportGuard
 
 namespace libsemigroups {
+  using namespace literals;
   namespace {
     void check_000(Stephen& s) {
       s.set_word({0}).run();
@@ -1089,5 +1090,16 @@ namespace libsemigroups {
     REQUIRE_THROWS_AS(stephen::number_of_words_accepted(S),
                       LibsemigroupsException);
     REQUIRE_THROWS_AS(S.run(), LibsemigroupsException);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Stephen",
+                          "032",
+                          "Plactic monoid",
+                          "[stephen][quick]") {
+    auto p = fpsemigroup::plactic_monoid(4);
+    p.contains_empty_word(true);
+    Stephen s(p);
+    s.set_word(0013122_w).run();
+    REQUIRE(!stephen::accepts(s, 0013212_w));
   }
 }  // namespace libsemigroups

@@ -959,5 +959,17 @@ namespace libsemigroups {
       report_default("failed to show non-triviality!\n");
       return tril::unknown;
     }
+
+    uint64_t number_of_idempotents(ToddCoxeter& tc) {
+      word_type tmp;
+      size_t    i = 0;
+      return normal_forms(tc) | rx::filter([&](auto const& w) {
+               tmp.clear();
+               tmp.insert(tmp.end(), w.cbegin(), w.cend());
+               tmp.insert(tmp.end(), w.cbegin(), w.cend());
+               return tc.word_to_class_index(tmp) == i++;
+             })
+             | rx::count();
+    }
   }  // namespace todd_coxeter
 }  // namespace libsemigroups
