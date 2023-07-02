@@ -843,6 +843,11 @@ namespace libsemigroups {
       }
     }
 
+    // stop_early indicates that if too few nodes are killed in 1 second, then
+    // the lookahead aborts, this should not happen if we are doing a final
+    // lookahead because we skipped some deductions
+    void perform_lookahead(bool stop_early);
+
    private:
     ////////////////////////////////////////////////////////////////////////
     // Runner - pure virtual member functions - private
@@ -897,10 +902,6 @@ namespace libsemigroups {
     static constexpr bool StopEarly      = true;
     static constexpr bool DoNotStopEarly = false;
 
-    // stop_early indicates that if too few nodes are killed in 1 second, then
-    // the lookahead aborts, this should not happen if we are doing a final
-    // lookahead because we skipped some deductions
-    void   perform_lookahead(bool stop_early);
     size_t hlt_lookahead(bool stop_early);
     size_t felsch_lookahead();
   };

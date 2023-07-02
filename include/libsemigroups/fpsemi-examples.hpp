@@ -566,6 +566,8 @@ namespace libsemigroups {
 
     // TODO (doc)
     Presentation<word_type> hypo_plactic_monoid(size_t n);
+    Presentation<word_type>
+    sigma_stylic_monoid(std::vector<size_t> const& sigma);
 
     // The following block of 7 functions remains undocumented, as we are not
     // entirely sure what they are.

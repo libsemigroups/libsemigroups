@@ -584,6 +584,7 @@ libsemigroups_la_SOURCES += src/present.cpp
 libsemigroups_la_SOURCES += src/runner.cpp
 libsemigroups_la_SOURCES += src/stephen.cpp
 libsemigroups_la_SOURCES += src/to-froidure-pin.cpp
+libsemigroups_la_SOURCES += src/to-presentation.cpp
 libsemigroups_la_SOURCES += src/to-todd-coxeter.cpp
 libsemigroups_la_SOURCES += src/todd-coxeter.cpp
 libsemigroups_la_SOURCES += src/ukkonen.cpp

@@ -1539,4 +1539,293 @@ namespace libsemigroups {
     REQUIRE(kb.normal_form("cadb") == "cbda");
   }
 
+  LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
+                          "134",
+                          "sigma stylic monoid",
+                          "[todd-coxeter][extreme]") {
+    {
+      auto        p = fpsemigroup::sigma_stylic_monoid({2, 2, 2});
+      KnuthBendix kb(twosided, to_presentation<std::string>(p));
+      kb.run();
+      KnuthBendix kb2(twosided, to_presentation<std::string>(p));
+      auto        plax = kb2.active_rules() | rx::to_vector();
+      REQUIRE((kb.active_rules() | rx::filter([&plax](auto const& r) {
+                 return std::find(plax.begin(), plax.end(), r) == plax.end();
+               })
+               | rx::to_vector())
+              == std::vector<rule_type>({{"acba", "cba"}, {"cbac", "cba"}}));
+    }
+    {
+      auto        p = fpsemigroup::sigma_stylic_monoid({2, 2, 2, 2});
+      KnuthBendix kb(twosided, to_presentation<std::string>(p));
+      kb.run();
+      KnuthBendix kb2(twosided, to_presentation<std::string>(p));
+      auto        plax = kb2.active_rules() | rx::to_vector();
+      REQUIRE((kb.active_rules() | rx::filter([&plax](auto const& r) {
+                 return !(r.first.size() == 4 && r.second.size() == 3)
+                        && std::find(plax.begin(), plax.end(), r) == plax.end();
+               })
+               | rx::to_vector())
+              == std::vector<rule_type>({{"cbdca", "cbadc"},
+                                         {"dbac", "bdca"},
+                                         {"cadb", "acbd"},
+                                         {"cbadb", "cbad"},
+                                         {"cadcb", "adcb"},
+                                         {"abdca", "bdca"},
+                                         {"adcba", "dcba"},
+                                         {"dcbad", "dcba"}}));
+    }
+
+    {
+      auto        p = fpsemigroup::sigma_stylic_monoid({2, 2, 2, 2, 2});
+      KnuthBendix kb(twosided, to_presentation<std::string>(p));
+      kb.run();
+      KnuthBendix kb2(twosided, to_presentation<std::string>(p));
+      auto        plax = kb2.active_rules() | rx::to_vector();
+      REQUIRE((kb.active_rules() | rx::filter([&plax](auto const& r) {
+                 return !(r.first.size() == 4 && r.second.size() == 3)
+                        && std::find(plax.begin(), plax.end(), r) == plax.end();
+               })
+               | rx::to_vector())
+              == std::vector<rule_type>({{"bca", "bac"},
+                                         {"cab", "acb"},
+                                         {"aa", "a"},
+                                         {"aca", "ca"},
+                                         {"aba", "ba"},
+                                         {"bb", "b"},
+                                         {"bcb", "cb"},
+                                         {"bab", "ba"},
+                                         {"cc", "c"},
+                                         {"cbc", "cb"},
+                                         {"cac", "ca"},
+                                         {"acba", "cba"},
+                                         {"cbac", "cba"}}));
+    }
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
+                          "133",
+                          "sigma sylvester monoid",
+                          "[todd-coxeter][extreme]") {
+    using namespace literals;
+    Presentation<word_type> p;
+    p.alphabet(4);
+    p.contains_empty_word(true);
+    presentation::add_rule(p, 00_w, 0_w);
+    presentation::add_rule(p, 11_w, 1_w);
+    presentation::add_rule(p, 22_w, 2_w);
+    presentation::add_rule(p, 33_w, 3_w);
+    presentation::add_rule(p, 010_w, 01_w);
+    presentation::add_rule(p, 020_w, 02_w);
+    presentation::add_rule(p, 030_w, 03_w);
+    presentation::add_rule(p, 121_w, 12_w);
+    presentation::add_rule(p, 131_w, 13_w);
+    presentation::add_rule(p, 232_w, 23_w);
+    presentation::add_rule(p, 0120_w, 012_w);
+    presentation::add_rule(p, 0130_w, 013_w);
+    presentation::add_rule(p, 0210_w, 021_w);
+    presentation::add_rule(p, 0230_w, 023_w);
+    presentation::add_rule(p, 0310_w, 031_w);
+    presentation::add_rule(p, 0320_w, 032_w);
+    presentation::add_rule(p, 1202_w, 120_w);
+    presentation::add_rule(p, 1231_w, 123_w);
+    presentation::add_rule(p, 1303_w, 130_w);
+    presentation::add_rule(p, 1321_w, 132_w);
+    presentation::add_rule(p, 2303_w, 230_w);
+    presentation::add_rule(p, 2313_w, 231_w);
+    presentation::add_rule(p, 01230_w, 0123_w);
+    presentation::add_rule(p, 01320_w, 0132_w);
+    presentation::add_rule(p, 02120_w, 0212_w);
+    presentation::add_rule(p, 02130_w, 0213_w);
+    presentation::add_rule(p, 02310_w, 0231_w);
+    presentation::add_rule(p, 03120_w, 0312_w);
+    presentation::add_rule(p, 03130_w, 0313_w);
+    presentation::add_rule(p, 03210_w, 0321_w);
+    presentation::add_rule(p, 03230_w, 0323_w);
+    presentation::add_rule(p, 10212_w, 1021_w);
+    presentation::add_rule(p, 10313_w, 1031_w);
+    presentation::add_rule(p, 12012_w, 1201_w);
+    presentation::add_rule(p, 12032_w, 1203_w);
+    presentation::add_rule(p, 12302_w, 1230_w);
+    presentation::add_rule(p, 13013_w, 1301_w);
+    presentation::add_rule(p, 13202_w, 1320_w);
+    presentation::add_rule(p, 13231_w, 1323_w);
+    presentation::add_rule(p, 20313_w, 2031_w);
+    presentation::add_rule(p, 20323_w, 2032_w);
+    presentation::add_rule(p, 21323_w, 2132_w);
+    presentation::add_rule(p, 23013_w, 2301_w);
+    presentation::add_rule(p, 23023_w, 2302_w);
+    presentation::add_rule(p, 23103_w, 2310_w);
+    presentation::add_rule(p, 23123_w, 2312_w);
+    presentation::add_rule(p, 013230_w, 01323_w);
+    presentation::add_rule(p, 021230_w, 02123_w);
+    presentation::add_rule(p, 021320_w, 02132_w);
+    presentation::add_rule(p, 023120_w, 02312_w);
+    presentation::add_rule(p, 031230_w, 03123_w);
+    presentation::add_rule(p, 031320_w, 03132_w);
+    presentation::add_rule(p, 032120_w, 03212_w);
+    presentation::add_rule(p, 032130_w, 03213_w);
+    presentation::add_rule(p, 032310_w, 03231_w);
+    presentation::add_rule(p, 102132_w, 10213_w);
+    presentation::add_rule(p, 102312_w, 10231_w);
+    presentation::add_rule(p, 103212_w, 10321_w);
+    presentation::add_rule(p, 120132_w, 12013_w);
+    presentation::add_rule(p, 120312_w, 12031_w);
+    presentation::add_rule(p, 123012_w, 12301_w);
+    presentation::add_rule(p, 130212_w, 13021_w);
+    presentation::add_rule(p, 132012_w, 13201_w);
+    presentation::add_rule(p, 132032_w, 13203_w);
+    presentation::add_rule(p, 132302_w, 13230_w);
+    presentation::add_rule(p, 201323_w, 20132_w);
+    presentation::add_rule(p, 203123_w, 20312_w);
+    presentation::add_rule(p, 203213_w, 20321_w);
+    presentation::add_rule(p, 210323_w, 21032_w);
+    presentation::add_rule(p, 213023_w, 21302_w);
+    presentation::add_rule(p, 213203_w, 21320_w);
+    presentation::add_rule(p, 230123_w, 23012_w);
+    presentation::add_rule(p, 230213_w, 23021_w);
+    presentation::add_rule(p, 231013_w, 23101_w);
+    presentation::add_rule(p, 231023_w, 23102_w);
+    presentation::add_rule(p, 231203_w, 23120_w);
+    presentation::add_rule(p, 0313230_w, 031323_w);
+    presentation::add_rule(p, 0321230_w, 032123_w);
+    presentation::add_rule(p, 0321320_w, 032132_w);
+    presentation::add_rule(p, 0323120_w, 032312_w);
+    presentation::add_rule(p, 1032132_w, 103213_w);
+    presentation::add_rule(p, 1032312_w, 103231_w);
+    presentation::add_rule(p, 1302132_w, 130213_w);
+    presentation::add_rule(p, 1302312_w, 130231_w);
+    presentation::add_rule(p, 1320132_w, 132013_w);
+    presentation::add_rule(p, 1320312_w, 132031_w);
+    presentation::add_rule(p, 1323012_w, 132301_w);
+    presentation::add_rule(p, 2032123_w, 203212_w);
+    presentation::add_rule(p, 2101323_w, 210132_w);
+    presentation::add_rule(p, 2103123_w, 210312_w);
+    presentation::add_rule(p, 2103213_w, 210321_w);
+    presentation::add_rule(p, 2130123_w, 213012_w);
+    presentation::add_rule(p, 2130213_w, 213021_w);
+    presentation::add_rule(p, 2132013_w, 213201_w);
+    presentation::add_rule(p, 2302123_w, 230212_w);
+    presentation::add_rule(p, 2310123_w, 231012_w);
+    presentation::add_rule(p, 2310213_w, 231021_w);
+    presentation::add_rule(p, 2312013_w, 231201_w);
+    REQUIRE(p.rules.size() == 196);
+    auto it = knuth_bendix::redundant_rule(p, std::chrono::milliseconds(100));
+    while (it != p.rules.cend()) {
+      p.rules.erase(it, it + 2);
+      it = knuth_bendix::redundant_rule(p, std::chrono::milliseconds(100));
+    }
+
+    REQUIRE(p.rules.size() == 58);
+    REQUIRE(p.rules
+            == std::vector<word_type>(
+                {00_w,      0_w,      11_w,      1_w,      22_w,      2_w,
+                 33_w,      3_w,      010_w,     01_w,     020_w,     02_w,
+                 030_w,     03_w,     121_w,     12_w,     131_w,     13_w,
+                 232_w,     23_w,     1202_w,    120_w,    1303_w,    130_w,
+                 2303_w,    230_w,    2313_w,    231_w,    10212_w,   1021_w,
+                 10313_w,   1031_w,   20313_w,   2031_w,   20323_w,   2032_w,
+                 21323_w,   2132_w,   102312_w,  10231_w,  103212_w,  10321_w,
+                 201323_w,  20132_w,  203123_w,  20312_w,  210323_w,  21032_w,
+                 213023_w,  21302_w,  1032312_w, 103231_w, 2101323_w, 210132_w,
+                 2103123_w, 210312_w, 2130123_w, 213012_w}));
+    KnuthBendix kb(twosided, p);
+    kb.run();
+    REQUIRE(kb.number_of_classes() == 312);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
+                          "135",
+                          "sigma sylvester monoid",
+                          "[todd-coxeter][extreme]") {
+    using namespace literals;
+    Presentation<word_type> p;
+    p.alphabet(3);
+    p.contains_empty_word(true);
+    presentation::add_rule(p, 00_w, 0_w);
+    presentation::add_rule(p, 11_w, 1_w);
+    presentation::add_rule(p, 22_w, 2_w);
+    presentation::add_rule(p, 010_w, 01_w);
+    presentation::add_rule(p, 0120_w, 012_w);
+    presentation::add_rule(p, 020_w, 02_w);
+    presentation::add_rule(p, 0210_w, 021_w);
+    presentation::add_rule(p, 02120_w, 0212_w);
+    presentation::add_rule(p, 10212_w, 1021_w);
+    presentation::add_rule(p, 121_w, 12_w);
+    presentation::add_rule(p, 12012_w, 1201_w);
+    presentation::add_rule(p, 1202_w, 120_w);
+    // auto it = knuth_bendix::redundant_rule(p,
+    // std::chrono::milliseconds(100)); while (it != p.rules.cend()) {
+    //   p.rules.erase(it, it + 2);
+    //   it = knuth_bendix::redundant_rule(p, std::chrono::milliseconds(100));
+    // }
+    // REQUIRE(p.rules
+    //         == std::vector<word_type>({00_w,
+    //                                    0_w,
+    //                                    11_w,
+    //                                    1_w,
+    //                                    22_w,
+    //                                    2_w,
+    //                                    010_w,
+    //                                    01_w,
+    //                                    020_w,
+    //                                    02_w,
+    //                                    121_w,
+    //                                    12_w,
+    //                                    1202_w,
+    //                                    120_w,
+    //                                    10212_w,
+    //                                    1021_w}));
+    p.rules.clear();
+    p.alphabet(4);
+    presentation::add_idempotent_rules_no_checks(p, 0123_w);
+    using presentation::operator+;
+    Words words;
+    words.letters(4).min(0).max(4);
+    size_t n = 3;
+    for (size_t a = 0; a < n - 1; ++a) {
+      for (size_t b = a; b < n - 1; ++b) {
+        for (size_t c = b + 1; c < n; ++c) {
+          for (auto& u : words) {
+            for (auto& v : words) {
+              for (auto& w : words) {
+                presentation::add_rule(
+                    p, u + a + c + v + b + w, u + c + a + v + b + w);
+              }
+            }
+          }
+        }
+      }
+    }
+    presentation::sort_each_rule(p);
+    presentation::sort_rules(p);
+    presentation::remove_trivial_rules(p);
+
+    KnuthBendix kb(twosided, p);
+    // REQUIRE(p.rules == std::vector<word_type>());
+    // p = to_presentation<word_type>(to_presentation(kb));
+    // REQUIRE(p.rules == std::vector<word_type>());
+    REQUIRE(kb.number_of_classes() == 26);
+    // REQUIRE((kb.active_rules() | rx::to_vector())
+    //         == std::vector<rule_type>({{"aa", "a"},
+    //                                    {"bb", "b"},
+    //                                    {"cc", "c"},
+    //                                    {"acab", "acb"},
+    //                                    {"acbab", "abcab"},
+    //                                    {"abcb", "acb"},
+    //                                    {"baba", "ba"},
+    //                                    {"babca", "baca"},
+    //                                    {"baca", "bca"},
+    //                                    {"bcab", "bacb"},
+    //                                    {"bacba", "bcba"},
+    //                                    {"bcbab", "bacb"},
+    //                                    {"caba", "cba"},
+    //                                    {"cabca", "cbca"},
+    //                                    {"caca", "ca"},
+    //                                    {"cacb", "cab"},
+    //                                    {"cbacb", "cbab"},
+    //                                    {"cbcb", "cb"},
+    //                                    {"bacbca", "bcbca"}}));
+  }
+
 }  // namespace libsemigroups

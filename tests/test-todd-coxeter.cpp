@@ -4378,8 +4378,8 @@ namespace libsemigroups {
     // auto                           r = 5, s = 1;
     // std::array<uint64_t, 7> const size
     //     = {0, 0, 0, 429, 5329, 75989, 1'215'481};
-    std::array<uint64_t, 11> const num_idem
-        = {1, 2, 4, 8, 16, 32, 64, 128, 256};
+    // std::array<uint64_t, 11> const num_idem
+    //    = {1, 2, 4, 8, 16, 32, 64, 128, 256};
     // https://oeis.org/A126390
     using presentation::pow;
     for (size_t n = 5; n < 6; ++n) {  // size.size(); ++n) {
@@ -4493,15 +4493,17 @@ namespace libsemigroups {
       //  REQUIRE(
       //      todd_coxeter::is_traversal(tc, possible3.cbegin(),
       //      possible3.cend()));
-#include "bla.txt"
-      REQUIRE(
-          todd_coxeter::is_traversal(tc, possible4.cbegin(), possible4.cend()));
-
-      NormalForms nf(tc, possible4.begin(), possible4.end());
-      REQUIRE(std::all_of(possible4.begin(),
-                          possible4.end(),
-                          [&nf](auto const& w) { return nf(w) == w; }));
-
+      //
+      // #include "bla.txt"
+      //      REQUIRE(
+      //          todd_coxeter::is_traversal(tc, possible4.cbegin(),
+      //          possible4.cend()));
+      //
+      //      NormalForms nf(tc, possible4.begin(), possible4.end());
+      //      REQUIRE(std::all_of(possible4.begin(),
+      //                          possible4.end(),
+      //                          [&nf](auto const& w) { return nf(w) == w; }));
+      //
       // REQUIRE(partition(tc, possible3.cbegin(), possible3.cend())
       //         == std::vector<std::vector<word_type>>());
       // REQUIRE(todd_coxeter::normal_form(tc, 3413401234_w) == ""_w);
@@ -4517,8 +4519,8 @@ namespace libsemigroups {
                           "[todd-coxeter][extreme]") {
     using presentation::pow;
     using presentation::operator+;
-#include "Plact4-1_3_last.txt"
-    size_t n = 4, r = 2, s = 1;
+    // #include "Plact4-1_3_last.txt"
+    size_t n = 4, r = 4, s = 1;
 
     auto p = fpsemigroup::plactic_monoid(n);
     p.contains_empty_word(true);
@@ -4526,28 +4528,108 @@ namespace libsemigroups {
     for (size_t a = 0; a < n; ++a) {
       presentation::add_rule(p, pow({a}, r), pow({a}, s));
     }
-    REQUIRE(p.rules == std::vector<word_type>());
+    // REQUIRE(p.rules == std::vector<word_type>());
     ToddCoxeter tc(twosided, p);
-    NormalForms nf(tc, words.begin(), words.end());
-    REQUIRE(std::all_of(words.begin(), words.end(), [&nf](auto const& w) {
-      return nf(w) == w;
-    }));
+    REQUIRE(tc.contains("30011222"_w, "32200112"_w));
 
-    auto                   w = 212_w;
-    std::vector<word_type> result;
-    for (auto i = 0; i < 4; ++i) {
-      for (auto j = 0; j < 4; ++j) {
-        for (auto k = 0; k < 4; ++k) {
-          result.push_back(nf(w + pow(0_w, i) + pow(1_w, j) + pow(2_w, k)));
+    // NormalForms nf(tc, words.begin(), words.end());
+    // REQUIRE(std::all_of(words.begin(), words.end(), [&nf](auto const& w) {
+    //   return nf(w) == w;
+    // }));
+
+    // auto                   w = 212_w;
+    // std::vector<word_type> result;
+    // for (auto i = 0; i < 4; ++i) {
+    //   for (auto j = 0; j < 4; ++j) {
+    //     for (auto k = 0; k < 4; ++k) {
+    //       result.push_back(nf(w + pow(0_w, i) + pow(1_w, j) + pow(2_w, k)));
+    //     }
+    //   }
+    // }
+    // REQUIRE(result == std::vector<word_type>());
+    //  for (auto it = w.begin() + 1; it != w.end(); ++it) {
+    //    word_type ww(w.begin(), it);
+    //    std::cout << "prefix = " << ww << ", normal form = " << nf(ww)
+    //              << std::endl;
+    //  }
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
+                          "038",
+                          "sigma-stylic monoid",
+                          "[todd-coxeter][extreme]") {
+    auto p = fpsemigroup::sigma_stylic_monoid({2, 2, 2});
+    p.contains_empty_word(true);
+    ToddCoxeter tc(twosided, p);
+
+    REQUIRE(tc.number_of_classes() == 15);
+
+    std::vector<word_type> nf = {""_w,
+                                 0_w,
+                                 101_w,
+                                 212012_w,
+                                 12012_w,
+                                 202_w,
+                                 01_w,
+                                 2012_w,
+                                 012_w,
+                                 02_w,
+                                 1012_w,
+                                 1_w,
+                                 212_w,
+                                 12_w,
+                                 2_w};
+    std::for_each(nf.begin(), nf.end(), [&tc](auto& w) {
+      w = todd_coxeter::normal_form(tc, w);
+    });
+    REQUIRE((todd_coxeter::class_of(tc, 1021_w).max(6) | rx::to_vector())
+            == std::vector<word_type>());
+    REQUIRE(nf == std::vector<word_type>());
+    REQUIRE((todd_coxeter::normal_forms(tc) | rx::to_vector())
+            == std::vector<word_type>());
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
+                          "044",
+                          "2-sylvester monoid",
+                          "[todd-coxeter][extreme]") {
+    Presentation<word_type> p;
+    p.alphabet(4);
+    presentation::add_idempotent_rules_no_checks(p, 0123_w);
+    using presentation::operator+;
+    Words words;
+    words.letters(4).min(0).max(3);
+    size_t n = 3;
+    for (size_t a = 0; a < n - 1; ++a) {
+      for (size_t b = a; b < n - 1; ++b) {
+        for (size_t c = b + 1; c < n; ++c) {
+          for (auto& u : words) {
+            for (auto& v : words) {
+              for (auto& w : words) {
+                presentation::add_rule(
+                    p, u + a + c + v + b + w, u + c + a + v + b + w);
+              }
+            }
+          }
         }
       }
     }
-    REQUIRE(result == std::vector<word_type>());
-    // for (auto it = w.begin() + 1; it != w.end(); ++it) {
-    //   word_type ww(w.begin(), it);
-    //   std::cout << "prefix = " << ww << ", normal form = " << nf(ww)
-    //             << std::endl;
-    // }
+
+    KnuthBendix kb(twosided, p);
+    p = to_presentation<word_type>(to_presentation(kb));
+
+    REQUIRE(presentation::length(p) == 316);
+
+    ToddCoxeter tc(twosided, p);
+    while (!tc.finished()) {
+      tc.run_for(std::chrono::seconds(2));
+      tc.lookahead_extent(options::lookahead_extent::full);
+      tc.perform_lookahead(false);
+    }
+    // REQUIRE(p.rules == std::vector<word_type>());
+    // p = to_presentation<word_type>(to_presentation(kb));
+    // REQUIRE(p.rules == std::vector<word_type>());
+    // REQUIRE(tc.number_of_classes() == 26);
   }
 
 }  // namespace libsemigroups

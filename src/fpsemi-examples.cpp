@@ -813,10 +813,10 @@ namespace libsemigroups {
       presentation::add_rule_no_checks(p, 02_w, 2_w + pow(0_w, n - 1));
       presentation::add_rule_no_checks(p, 12_w, 2_w + pow(01_w, n - 1));
 
-      presentation::add_rule_no_checks(
-          p,
-          2_w + pow(1_w + pow(0_w, n - 1), n - 2),
-          pow(0_w, n - 2) + pow(1_w + pow(0_w, n - 1), n - 2));
+      presentation::add_rule_no_checks(p,
+                                       2_w + pow(1_w + pow(0_w, n - 1), n - 2),
+                                       pow(0_w, n - 2)
+                                           + pow(1_w + pow(0_w, n - 1), n - 2));
 
       return p;
     }
@@ -1401,6 +1401,16 @@ namespace libsemigroups {
         }
       }
       return result;
+    }
+
+    Presentation<word_type>
+    sigma_stylic_monoid(std::vector<size_t> const& sigma) {
+      auto p = plactic_monoid(sigma.size());
+      p.contains_empty_word(true);
+      for (auto [a, e] : rx::enumerate(sigma)) {
+        presentation::add_rule(p, pow({a}, e), {a});
+      }
+      return p;
     }
 
     // The remaining presentation functions are currently undocumented, as we

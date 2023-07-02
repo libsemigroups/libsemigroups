@@ -28,6 +28,7 @@
 #include "present.hpp"            // for Presentation
 
 namespace libsemigroups {
+  class KnuthBendix;
 
   //! Make presentation from a FroidurePin object.
   //!
@@ -65,6 +66,8 @@ namespace libsemigroups {
 
     return p;
   }
+
+  Presentation<std::string> to_presentation(KnuthBendix const& kb);
 
   //! Make a presentation from a different type of presentation.
   //!
@@ -112,10 +115,10 @@ namespace libsemigroups {
   }
 
   //! No doc
-  // Really the doc is in docs/source/api/present-helper.rst since JDM couldn't
-  // figure out how to use doxygenfunction in this case (since there are
-  // multiple function templates with the same arguments, just different type
-  // constraints).
+  // Really the doc is in docs/source/api/present-helper.rst since JDM
+  // couldn't figure out how to use doxygenfunction in this case (since there
+  // are multiple function templates with the same arguments, just different
+  // type constraints).
   template <typename WordOutput, typename WordInput>
   auto to_presentation(Presentation<WordInput> const& p)
       -> std::enable_if_t<!std::is_same_v<WordOutput, std::string>,
