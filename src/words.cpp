@@ -21,13 +21,13 @@
 
 #include "libsemigroups/words.hpp"
 
-#include <algorithm>                    // for lexicographical_...
-#include <cmath>                        // for pow
-#include <cstring>                      // for strlen
-#include <string>                       // for allocator
-#include <type_traits>                  // for is_destructible
-#include <utility>                      // for move
-                                        //
+#include <algorithm>    // for lexicographical_...
+#include <cmath>        // for pow
+#include <cstring>      // for strlen
+#include <string>       // for allocator
+#include <type_traits>  // for is_destructible
+#include <utility>      // for move
+
 #include "libsemigroups/config.hpp"     // for LIBSEMIGROUPS_DEBUG
 #include "libsemigroups/constants.hpp"  // for UNDEFINED
 #include "libsemigroups/debug.hpp"      // for LIBSEMIGROUPS_ASSERT

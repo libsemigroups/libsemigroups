@@ -20,17 +20,63 @@
 
 // TODO implement "cartesian" combinator for rx-ranges
 // TODO add typename = std::enable_if_t<rx::is_input_or_sink_v<T>>> everywhere
+// TODO add random() combinator
 
 #ifndef LIBSEMIGROUPS_RANGES_HPP_
 #define LIBSEMIGROUPS_RANGES_HPP_
 
 #include <algorithm>
+#include <random>
 
+#include "debug.hpp"          // for LIBSEMIGROUPS_ASSERT
 #include "detail/string.hpp"  // for detail::to_string
 
 #include <rx/ranges.hpp>
 
 namespace libsemigroups {
+
+  struct random {
+    template <typename InputRange>
+    struct Range {
+      using output_type = typename InputRange::output_type;
+
+      static constexpr bool is_finite     = true;
+      static constexpr bool is_idempotent = false;
+
+      bool       _at_end;
+      InputRange _input;
+
+      constexpr Range(InputRange&& input) noexcept
+          : _at_end(false), _input(std::move(input)) {}
+
+      [[nodiscard]] output_type get() const noexcept {
+        LIBSEMIGROUPS_ASSERT(!_input.at_end() && !_at_end);
+
+        static std::random_device             rd;
+        static std::mt19937                   gen(rd());
+        std::uniform_int_distribution<size_t> dist(0, _input | rx::count());
+        return (_input | rx::skip_n(dist(gen)) | rx::take(1)).get();
+      }
+
+      constexpr void next() noexcept {
+        _at_end = true;
+      }
+
+      [[nodiscard]] constexpr bool at_end() const noexcept {
+        return _at_end;
+      }
+
+      [[nodiscard]] constexpr size_t size_hint() const noexcept {
+        return 1;
+      }
+    };
+
+    template <typename InputRange>
+    [[nodiscard]] constexpr auto operator()(InputRange&& input) const {
+      using Inner = rx::get_range_type_t<InputRange>;
+      return Range<Inner>(std::forward<InputRange>(input));
+    }
+  };
 
   template <typename Range, typename Compare>
   constexpr bool is_sorted(Range r, Compare comp) {

@@ -4593,43 +4593,44 @@ namespace libsemigroups {
                           "044",
                           "2-sylvester monoid",
                           "[todd-coxeter][extreme]") {
+    using presentation::pow;
+    size_t                  n = 4;
     Presentation<word_type> p;
-    p.alphabet(4);
-    presentation::add_idempotent_rules_no_checks(p, 0123_w);
+    p.alphabet(n);
+    p.contains_empty_word(true);
+    for (size_t a = 0; a < n; ++a) {
+      presentation::add_rule(p, pow({a}, 3), {a});
+    }
     using presentation::operator+;
     Words words;
-    words.letters(4).min(0).max(3);
-    size_t n = 3;
+    words.letters(n).min(0).max(8);
+
     for (size_t a = 0; a < n - 1; ++a) {
       for (size_t b = a; b < n - 1; ++b) {
         for (size_t c = b + 1; c < n; ++c) {
-          for (auto& u : words) {
-            for (auto& v : words) {
-              for (auto& w : words) {
-                presentation::add_rule(
-                    p, u + a + c + v + b + w, u + c + a + v + b + w);
-              }
-            }
+          for (auto& v : words) {
+            presentation::add_rule(p, a + (c + v) + b, c + (a + v) + b);
           }
         }
       }
     }
 
-    KnuthBendix kb(twosided, p);
-    p = to_presentation<word_type>(to_presentation(kb));
+    // KnuthBendix kb(twosided, p);
+    // p = to_presentation<word_type>(to_presentation(kb));
+    // p.contains_empty_word(true);
 
-    REQUIRE(presentation::length(p) == 316);
+    // REQUIRE(presentation::length(p) == 475);
 
     ToddCoxeter tc(twosided, p);
-    while (!tc.finished()) {
-      tc.run_for(std::chrono::seconds(2));
-      tc.lookahead_extent(options::lookahead_extent::full);
-      tc.perform_lookahead(false);
-    }
+    // while (!tc.finished()) {
+    //   tc.run_for(std::chrono::seconds(2));
+    //   tc.perform_lookahead(false);
+    // }
     // REQUIRE(p.rules == std::vector<word_type>());
     // p = to_presentation<word_type>(to_presentation(kb));
     // REQUIRE(p.rules == std::vector<word_type>());
-    // REQUIRE(tc.number_of_classes() == 26);
+    REQUIRE(tc.number_of_classes() == 3945);
+    REQUIRE((todd_coxeter::normal_forms(tc) | random()).get() == word_type());
   }
 
 }  // namespace libsemigroups

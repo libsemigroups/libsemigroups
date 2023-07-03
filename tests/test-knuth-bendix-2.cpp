@@ -1777,11 +1777,11 @@ namespace libsemigroups {
     //                                    10212_w,
     //                                    1021_w}));
     p.rules.clear();
-    p.alphabet(4);
-    presentation::add_idempotent_rules_no_checks(p, 0123_w);
+    p.alphabet(3);
+    presentation::add_idempotent_rules_no_checks(p, 012_w);
     using presentation::operator+;
     Words words;
-    words.letters(4).min(0).max(4);
+    words.letters(3).min(0).max(3);
     size_t n = 3;
     for (size_t a = 0; a < n - 1; ++a) {
       for (size_t b = a; b < n - 1; ++b) {
@@ -1806,6 +1806,18 @@ namespace libsemigroups {
     // p = to_presentation<word_type>(to_presentation(kb));
     // REQUIRE(p.rules == std::vector<word_type>());
     REQUIRE(kb.number_of_classes() == 26);
+    std::vector<word_type> reduce_binary_tree_words
+        = {{},     0_w,    1_w,    2_w,    10_w,    20_w,    01_w,    21_w,
+           02_w,   12_w,   210_w,  120_w,  101_w,   201_w,   201_w,   102_w,
+           202_w,  012_w,  212_w,  2120_w, 2101_w,  2101_w,  2101_w,  2102_w,
+           1202_w, 1012_w, 2012_w, 2012_w, 21202_w, 21012_w, 21012_w, 21012_w};
+    auto range = rx::iterator_range(reduce_binary_tree_words.begin(),
+                                    reduce_binary_tree_words.end());
+
+    REQUIRE(first_equivalent_pair(
+                kb, range | to_strings(kb.presentation().alphabet()))
+            == std::vector<std::vector<std::string>>());
+
     // REQUIRE((kb.active_rules() | rx::to_vector())
     //         == std::vector<rule_type>({{"aa", "a"},
     //                                    {"bb", "b"},
