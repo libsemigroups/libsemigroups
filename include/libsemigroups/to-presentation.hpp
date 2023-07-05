@@ -16,6 +16,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
+// TODO tpp file
+
 #ifndef LIBSEMIGROUPS_TO_PRESENTATION_HPP_
 #define LIBSEMIGROUPS_TO_PRESENTATION_HPP_
 
@@ -28,7 +30,6 @@
 #include "present.hpp"            // for Presentation
 
 namespace libsemigroups {
-  class KnuthBendix;
 
   //! Make presentation from a FroidurePin object.
   //!
@@ -66,8 +67,6 @@ namespace libsemigroups {
 
     return p;
   }
-
-  Presentation<std::string> to_presentation(KnuthBendix const& kb);
 
   //! Make a presentation from a different type of presentation.
   //!

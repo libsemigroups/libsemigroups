@@ -31,6 +31,7 @@
 #include "libsemigroups/present.hpp"          // for Presentation
 #include "libsemigroups/ranges.hpp"           // for is_sorted
 #include "libsemigroups/to-froidure-pin.hpp"  // for make
+#include "libsemigroups/to-knuth-bendix.hpp"  // for to_knuth_bendix
 #include "libsemigroups/to-presentation.hpp"  // for Presentation
 #include "libsemigroups/to-todd-coxeter.hpp"  // for ??
 #include "libsemigroups/todd-coxeter.hpp"     // for ToddCoxeter
@@ -512,9 +513,11 @@ namespace libsemigroups {
          BMat8({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 0}})});
 
     REQUIRE(S.size() == 63'904);
-    auto p = to_presentation<word_type>(S);
 
-    ToddCoxeter tc(twosided, std::move(p));
+    // FIXME returns wrong answers (off by 1)  if we don't convert S ->
+    // Presentation first
+    ToddCoxeter tc(twosided, to_presentation<word_type>(S));
+
     tc.add_pair(0_w, 1_w);
 
     section_felsch(tc);
@@ -746,9 +749,7 @@ namespace libsemigroups {
     REQUIRE(S.size() == 88);
     REQUIRE(S.number_of_rules() == 18);
 
-    auto p = to_presentation<word_type>(S);
-
-    ToddCoxeter tc(twosided, p);
+    auto tc = to_todd_coxeter(twosided, S);
     REQUIRE(S.factorisation(Transf<>({3, 4, 4, 4, 4})) == 010001100_w);
     REQUIRE(S.factorisation(Transf<>({3, 1, 3, 3, 3})) == 10001_w);
     tc.add_pair(S.factorisation(Transf<>({3, 4, 4, 4, 4})),
@@ -815,9 +816,8 @@ namespace libsemigroups {
     REQUIRE(S.size() == 88);
     REQUIRE(S.number_of_rules() == 18);
 
-    auto p = to_presentation<word_type>(S);
-
-    ToddCoxeter tc(left, p);
+    // FIXME seg faults if we don't convert S -> Presentation first
+    ToddCoxeter tc(left, to_presentation<word_type>(S));
     tc.add_pair(S.factorisation(Transf<>({3, 4, 4, 4, 4})),
                 S.factorisation(Transf<>({3, 1, 3, 3, 3})));
 
@@ -862,6 +862,7 @@ namespace libsemigroups {
     REQUIRE(S.size() == 88);
     REQUIRE(S.number_of_rules() == 18);
 
+    // FIXME seg faults if we don't convert S -> Presentation first
     ToddCoxeter tc(right, to_presentation<word_type>(S));
     tc.add_pair(S.factorisation(Transf<>({3, 4, 4, 4, 4})),
                 S.factorisation(Transf<>({3, 1, 3, 3, 3})));
@@ -1452,7 +1453,7 @@ namespace libsemigroups {
     REQUIRE(kb.finished());
 
     for (auto knd : {twosided, left, right}) {
-      ToddCoxeter tc(to_todd_coxeter(knd, kb));
+      auto tc = to_todd_coxeter(knd, kb);
       tc.add_pair({1}, {2});
       REQUIRE(tc.number_of_classes() == 1);
       if (tc.kind() == twosided) {
@@ -1511,7 +1512,7 @@ namespace libsemigroups {
     FroidurePin<Transf> S({Transf({1, 3, 4, 2, 3}), Transf({3, 2, 1, 3, 3})});
     REQUIRE(S.size() == 88);
     REQUIRE(S.number_of_rules() == 18);
-    ToddCoxeter tc = to_todd_coxeter(twosided, S);  // use Cayley graph
+    auto tc = to_todd_coxeter(twosided, S);  // use Cayley graph
     tc.add_pair({0}, {1, 1});
 
     section_felsch(tc);
@@ -1766,7 +1767,7 @@ namespace libsemigroups {
 
     auto rg = ReportGuard(true);
 
-    auto p = to_presentation<word_type>(symmetric_group(9, author::Moore));
+    auto p = symmetric_group(9, author::Moore);
     presentation::reduce_complements(p);
     presentation::remove_duplicate_rules(p);
     presentation::sort_rules(p);
@@ -1800,8 +1801,7 @@ namespace libsemigroups {
     auto rg = ReportGuard(false);
 
     size_t n = 7;
-    auto   p = to_presentation<word_type>(
-        symmetric_group(n, author::Coxeter + author::Moser));
+    auto   p = symmetric_group(n, author::Coxeter + author::Moser);
 
     ToddCoxeter tc(twosided, p);
 
@@ -1830,8 +1830,7 @@ namespace libsemigroups {
     auto rg = ReportGuard(false);
 
     size_t n = 7;
-    auto   p = to_presentation<word_type>(
-        symmetric_group(n, author::Burnside + author::Miller));
+    auto   p = symmetric_group(n, author::Burnside + author::Miller);
 
     ToddCoxeter tc(twosided, p);
     section_hlt(tc);
@@ -2402,10 +2401,11 @@ namespace libsemigroups {
     section_Cr_style(tc);
 
     REQUIRE(tc.number_of_classes() == 24);
+    REQUIRE(presentation::character(0) == 'a');
     REQUIRE(todd_coxeter::normal_form(tc, to_word(p, "aaaaaaaaaaaaaaaaaaa"))
             == to_word(p, "a"));
     auto S = to_froidure_pin(tc);
-    REQUIRE(KnuthBendix(twosided, to_presentation<word_type>(S)).confluent());
+    REQUIRE(to_knuth_bendix(twosided, S).confluent());
   }
 
   // Second of BHN's series of increasingly complicated presentations

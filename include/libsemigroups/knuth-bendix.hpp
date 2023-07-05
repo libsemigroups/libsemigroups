@@ -925,5 +925,19 @@ namespace libsemigroups {
     return result;
   }
 
+  template <typename Word>
+  Presentation<Word> to_presentation(KnuthBendix const& kb) {
+    if constexpr (std::is_same_v<Word, std::string>) {
+      Presentation<std::string> p;
+      p.alphabet(kb.presentation().alphabet());
+      for (auto const& rule : kb.active_rules()) {
+        presentation::add_rule(p, rule.first, rule.second);
+      }
+      return p;
+    } else {
+      return to_presentation<Word>(to_presentation<std::string>(kb));
+    }
+  }
+
 }  // namespace libsemigroups
 #endif  // LIBSEMIGROUPS_KNUTH_BENDIX_HPP_
