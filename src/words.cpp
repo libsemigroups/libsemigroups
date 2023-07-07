@@ -45,6 +45,89 @@ namespace libsemigroups {
     uint64_t geometric_progression(size_t n, size_t a, size_t r) {
       return a * ((1 - std::pow(r, n)) / (1 - static_cast<float>(r)));
     }
+
+    std::vector<std::string> shunting_yard(char const* input, size_t len) {
+      std::vector<std::string> output;
+      std::stack<char>         ops;
+      bool                     in_word = false;
+      for (size_t i = 0; i < len; ++i) {
+        if (std::isalpha(input[i])) {
+          if (!in_word) {
+            in_word = true;
+            output.emplace_back("");
+          }
+          output.back() += input[i];
+        } else if (std::isdigit(input[i])) {
+          if (!in_word) {
+            in_word = true;
+            output.emplace_back("");
+          }
+          output.back() += input[i];
+          if (i == len - 1 || !std::isdigit(input[i + 1])) {
+            if (ops.empty() || ops.top() != '^') {
+              LIBSEMIGROUPS_EXCEPTION("TODO5");
+            }
+            output.emplace_back(&ops.top(), 1);
+            in_word = false;
+            ops.pop();
+          }
+        } else if (input[i] == '(' || input[i] == '^') {
+          in_word = false;
+          ops.push(input[i]);
+        } else if (input[i] == ')') {
+          in_word = false;
+          if (ops.empty()) {
+            LIBSEMIGROUPS_EXCEPTION("TODO1");
+          }
+          while (!ops.empty() && ops.top() != '(') {
+            output.emplace_back(&ops.top(), 1);
+            ops.pop();
+          }
+          if (ops.empty()) {
+            LIBSEMIGROUPS_EXCEPTION("TODO2");
+          }
+          ops.pop();  // pop the '(' from the stack and discard
+          if (!ops.empty() && ops.top() == '^') {
+            output.emplace_back(&ops.top(), 1);
+            ops.pop();
+          }
+        } else {
+          LIBSEMIGROUPS_EXCEPTION("TODO3");
+        }
+      }
+      while (!ops.empty()) {
+        if (ops.top() == '(' || ops.top() == ')') {
+          LIBSEMIGROUPS_EXCEPTION("TODO4");
+        }
+        output.emplace_back(&ops.top(), 1);
+        ops.pop();
+      }
+      return output;
+    }
+
+    std::string inline evaluate_rpn(std::vector<std::string> const& rpn) {
+      using namespace presentation;
+      std::stack<std::string> stck;
+      for (auto const& term : rpn) {
+        if (term == "^") {
+          auto rop = stck.top();
+          stck.pop();
+          auto lop = stck.top();
+          stck.pop();
+          auto res = pow(lop, std::stol(rop));
+          stck.push(res);
+        } else {
+          stck.push(term);
+        }
+      }
+      std::string result("");
+      while (!stck.empty()) {
+        result = stck.top() + result;
+        stck.pop();
+      }
+      return result;
+    }
+
   }  // namespace
 
   uint64_t number_of_words(size_t n, size_t min, size_t max) {
@@ -80,16 +163,32 @@ namespace libsemigroups {
   }
 
   namespace literals {
-    word_type operator"" _w(const char* w, size_t n) {
+    word_type operator"" _w(char const* w, size_t n) {
       word_type result;
 #if LIBSEMIGROUPS_DEBUG
       static const std::string valid_chars = "0123456789";
 #endif
+      // 0 is unset, 1 is reading integers, 2 is parsing a string
+      int mode = 0;
       for (size_t i = 0; i < n; ++i) {
-        LIBSEMIGROUPS_ASSERT(valid_chars.find(w[i]) != std::string::npos);
         if (48 <= w[i] && w[i] < 58) {
+          if (mode == 0) {
+            mode = 1;
+          } else if (mode == 2) {
+            LIBSEMIGROUPS_EXCEPTION("cannot mix numbers and letters, expected "
+                                    "digits in 0123456789, found {}",
+                                    w[i]);
+          }
+          LIBSEMIGROUPS_ASSERT(valid_chars.find(w[i]) != std::string::npos);
           result.push_back(static_cast<letter_type>(w[i] - 48));
         } else {
+          if (mode == 0) {
+            mode = 2;
+          } else if (mode == 1) {
+            LIBSEMIGROUPS_EXCEPTION("cannot mix numbers and letters, expected "
+                                    "digits in 0123456789, found {}",
+                                    w[i]);
+          }
           result.push_back(presentation::index(w[i]));
         }
       }
@@ -357,4 +456,9 @@ namespace libsemigroups {
     std::swap(_string_to_word, that._string_to_word);
     std::swap(_words, that._words);
   }
+
+  std::string parse_word(char const* w, size_t n) {
+    return evaluate_rpn(shunting_yard(w, n));
+  }
+
 }  // namespace libsemigroups

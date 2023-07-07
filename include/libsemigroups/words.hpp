@@ -34,9 +34,13 @@
 #include <string>    // for std::string
 #include <variant>   // for variant
 
+#include <stack>  // TODO remove
+
 #include "types.hpp"  // for word_type
 
 #include "detail/iterator.hpp"  // for default_postfix_increment
+
+#include "present.hpp"  // TODO remove
 
 #include <rx/ranges.hpp>  // for begin, end
 
@@ -776,6 +780,12 @@ namespace libsemigroups {
       out.push_back(dist(gen));
     }
     return out;
+  }
+
+  std::string parse_word(char const* w, size_t n);
+
+  inline std::string parse_word(char const* w) {
+    return parse_word(w, std::strlen(w));
   }
 
 }  // namespace libsemigroups

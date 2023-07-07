@@ -670,21 +670,19 @@ namespace libsemigroups {
           letters.resize(255);
           std::iota(letters.begin() + 62,
                     letters.begin() + 110,
-                    static_cast<letter_type>(0));
+                    static_cast<char>(0));
           std::iota(letters.begin() + 110,
                     letters.begin() + 117,
-                    static_cast<letter_type>(58));
+                    static_cast<char>(58));
           std::iota(letters.begin() + 117,
                     letters.begin() + 123,
-                    static_cast<letter_type>(91));
-          std::iota(letters.begin() + 123,
-                    letters.end(),
-                    static_cast<letter_type>(123));
+                    static_cast<char>(91));
+          std::iota(
+              letters.begin() + 123, letters.end(), static_cast<char>(123));
           first_call = false;
-          LIBSEMIGROUPS_ASSERT(
-              letters.size()
-              == std::numeric_limits<letter_type>::max()
-                     - std::numeric_limits<letter_type>::min());
+          LIBSEMIGROUPS_ASSERT(letters.size()
+                               == std::numeric_limits<char>::max()
+                                      - std::numeric_limits<char>::min());
           LIBSEMIGROUPS_ASSERT(letters.end() == letters.begin() + 255);
         }
         return letters;

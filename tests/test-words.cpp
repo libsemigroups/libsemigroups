@@ -765,4 +765,17 @@ namespace libsemigroups {
     REQUIRE(*(++it) == *(++it2));
   }
 
+  LIBSEMIGROUPS_TEST_CASE("Words", "030", "parsing", "[shortlex][quick]") {
+    // REQUIRE(evaluate_rpn({"ab", "2", "^"}) == 0101_w);
+    // REQUIRE(evaluate_rpn({"cd", "ab", "2", "^", "ef"}) == 23010145_w);
+    REQUIRE(parse_word("cd(ab)^2ef") == "cdababef");
+    REQUIRE(parse_word("cd((ab)^2)^4ef") == "cdababababababababef");
+    REQUIRE(parse_word("cd((ab)^2)^4(ef)^2") == "cdababababababababefef");
+    REQUIRE(parse_word("a^16") == "aaaaaaaaaaaaaaaa");
+    REQUIRE(parse_word("a^16cd^10((ab)^2)^4(ef)^2")
+            == "aaaaaaaaaaaaaaaacddddddddddababababababababefef");
+  }
+
 }  // namespace libsemigroups
+
+// namespace libsemigroups
