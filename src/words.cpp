@@ -33,6 +33,7 @@
 #include "libsemigroups/debug.hpp"      // for LIBSEMIGROUPS_ASSERT
 #include "libsemigroups/exception.hpp"  // for word_type
 #include "libsemigroups/order.hpp"      // for order
+#include "libsemigroups/present.hpp"    // for index
 #include "libsemigroups/types.hpp"      // for word_type
 
 #include "libsemigroups/detail/report.hpp"  // for magic_enum formatting
@@ -86,7 +87,11 @@ namespace libsemigroups {
 #endif
       for (size_t i = 0; i < n; ++i) {
         LIBSEMIGROUPS_ASSERT(valid_chars.find(w[i]) != std::string::npos);
-        result.push_back(static_cast<letter_type>(w[i] - 48));
+        if (48 <= w[i] && w[i] < 58) {
+          result.push_back(static_cast<letter_type>(w[i] - 48));
+        } else {
+          result.push_back(presentation::index(w[i]));
+        }
       }
       return result;
     }

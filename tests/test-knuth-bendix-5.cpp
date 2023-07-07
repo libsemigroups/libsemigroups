@@ -323,7 +323,7 @@ namespace libsemigroups {
     auto pp = partition(kb, nf);
     REQUIRE(pp.size() == 72);
 
-    auto ntc = (iterator_range(pp.begin(), pp.end())
+    auto ntc = (iterator_range(pp)
                 | filter([](auto const& val) { return val.size() > 1; }));
 
     REQUIRE((ntc | count()) == 4);
@@ -480,7 +480,7 @@ namespace libsemigroups {
     auto pp = partition(kb, nf);
     REQUIRE(pp.size() == 69);
 
-    auto ntc = (iterator_range(pp.begin(), pp.end())
+    auto ntc = (iterator_range(pp)
                 | filter([](auto const& val) { return val.size() > 1; })
                 | to_vector());
 

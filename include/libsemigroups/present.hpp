@@ -1275,6 +1275,7 @@ namespace libsemigroups {
     //!
     //! \sa `character(size_t)`
     template <>
+    // TODO remove inline
     inline typename Presentation<std::string>::letter_type
     letter(Presentation<std::string> const& p, size_t i);
 
@@ -1295,7 +1296,11 @@ namespace libsemigroups {
     //! in supported by `letter_type`.
     //!
     //! \sa `letter(Presentation<std::string> const&, size_t)`
+    // TODO remove inline
     inline typename Presentation<std::string>::letter_type character(size_t i);
+
+    inline typename Presentation<word_type>::letter_type
+    index(typename Presentation<std::string>::letter_type c);
 
     //! Returns the first letter **not** in the alphabet of a presentation.
     //!
@@ -1625,6 +1630,7 @@ namespace libsemigroups {
   }
 
   // TODO(later) could do a no_check version
+  // TODO remove inline
   inline void to_word(Presentation<std::string> const& p,
                       word_type&                       w,
                       std::string const&               s) {
@@ -1634,14 +1640,32 @@ namespace libsemigroups {
   }
 
   // TODO(later) could do a no_check version
+  // TODO remove inline
+  inline void to_word(word_type& w, std::string const& s) {
+    w.resize(s.size(), 0);
+    std::transform(s.cbegin(), s.cend(), w.begin(), [](char c) {
+      return presentation::index(c);
+    });
+  }
+
+  // TODO(later) could do a no_check version
+  // TODO remove inline
   inline word_type to_word(Presentation<std::string> const& p,
                            std::string const&               s) {
     word_type w;
     to_word(p, w, s);
     return w;
   }
+  // TODO(later) could do a no_check version
+  // TODO remove inline
+  inline word_type to_word(std::string const& s) {
+    word_type w;
+    to_word(w, s);
+    return w;
+  }
 
   // TODO(later) could do a no_check version
+  // TODO remove inline
   inline std::string to_string(Presentation<std::string> const& p,
                                word_type const&                 w) {
     std::string s(w.size(), 0);

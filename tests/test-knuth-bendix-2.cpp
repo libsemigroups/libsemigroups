@@ -1443,9 +1443,8 @@ namespace libsemigroups {
     REQUIRE(kb.normal_form("bd") == "bd");
     REQUIRE(kb.normal_form("db") == "db");
     REQUIRE(kb.normal_form("cbdcbd") == "cd");
-    REQUIRE(
-        (knuth_bendix::normal_forms(kb) | to_strings("abcd") | rx::to_vector())
-        == std::vector<std::string>());
+    REQUIRE((knuth_bendix::normal_forms(kb) | to_strings("abcd") | to_vector())
+            == std::vector<std::string>());
   }
 
   LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
@@ -1498,7 +1497,7 @@ namespace libsemigroups {
       KnuthBendix kb(twosided, p);
       kb.run();
       REQUIRE((knuth_bendix::normal_forms(kb).min(0).max(5) | to_strings("ab")
-               | rx::to_vector())
+               | to_vector())
               == std::vector<std::string>());
     }
   }
@@ -1511,15 +1510,15 @@ namespace libsemigroups {
     auto   p = fpsemigroup::hypo_plactic_monoid(n);
     p.contains_empty_word(true);
     presentation::add_idempotent_rules_no_checks(
-        p, (rx::seq<size_t>() | rx::take(n) | rx::to_vector()));
+        p, (seq<size_t>() | take(n) | to_vector()));
     KnuthBendix kb(congruence_kind::twosided, p);
     kb.run();
-    REQUIRE((knuth_bendix::normal_forms(kb) | to_strings("ab")
-             | rx::filter(
-                 [&kb](auto const& w) { return kb.normal_form(w + w) == w; })
-             | rx::to_vector())
-            == std::vector<std::string>());
-    REQUIRE((kb.active_rules() | rx::to_vector())
+    REQUIRE(
+        (knuth_bendix::normal_forms(kb) | to_strings("ab")
+         | filter([&kb](auto const& w) { return kb.normal_form(w + w) == w; })
+         | to_vector())
+        == std::vector<std::string>());
+    REQUIRE((kb.active_rules() | to_vector())
             == std::vector<std::pair<std::string, std::string>>());
     REQUIRE(kb.gilman_graph() == to_word_graph<size_t>(1, {{}}));
   }
@@ -1532,7 +1531,7 @@ namespace libsemigroups {
     auto p = fpsemigroup::chinese_monoid(n);
     p.contains_empty_word(true);
     presentation::add_idempotent_rules_no_checks(
-        p, (rx::seq<size_t>() | rx::take(n) | rx::to_vector()));
+        p, (seq<size_t>() | take(n) | to_vector()));
     KnuthBendix kb(twosided, p);
     kb.run();
     REQUIRE(kb.normal_form("cbda") == "bcda");
@@ -1549,11 +1548,11 @@ namespace libsemigroups {
       KnuthBendix kb(twosided, p);
       kb.run();
       KnuthBendix kb2(twosided, p);
-      auto        plax = kb2.active_rules() | rx::to_vector();
-      REQUIRE((kb.active_rules() | rx::filter([&plax](auto const& r) {
+      auto        plax = kb2.active_rules() | to_vector();
+      REQUIRE((kb.active_rules() | filter([&plax](auto const& r) {
                  return std::find(plax.begin(), plax.end(), r) == plax.end();
                })
-               | rx::to_vector())
+               | to_vector())
               == std::vector<rule_type>({{"acba", "cba"}, {"cbac", "cba"}}));
     }
     {
@@ -1561,12 +1560,12 @@ namespace libsemigroups {
       KnuthBendix kb(twosided, p);
       kb.run();
       KnuthBendix kb2(twosided, p);
-      auto        plax = kb2.active_rules() | rx::to_vector();
-      REQUIRE((kb.active_rules() | rx::filter([&plax](auto const& r) {
+      auto        plax = kb2.active_rules() | to_vector();
+      REQUIRE((kb.active_rules() | filter([&plax](auto const& r) {
                  return !(r.first.size() == 4 && r.second.size() == 3)
                         && std::find(plax.begin(), plax.end(), r) == plax.end();
                })
-               | rx::to_vector())
+               | to_vector())
               == std::vector<rule_type>({{"cbdca", "cbadc"},
                                          {"dbac", "bdca"},
                                          {"cadb", "acbd"},
@@ -1582,12 +1581,12 @@ namespace libsemigroups {
       KnuthBendix kb(twosided, p);
       kb.run();
       KnuthBendix kb2(twosided, p);
-      auto        plax = kb2.active_rules() | rx::to_vector();
-      REQUIRE((kb.active_rules() | rx::filter([&plax](auto const& r) {
+      auto        plax = kb2.active_rules() | to_vector();
+      REQUIRE((kb.active_rules() | filter([&plax](auto const& r) {
                  return !(r.first.size() == 4 && r.second.size() == 3)
                         && std::find(plax.begin(), plax.end(), r) == plax.end();
                })
-               | rx::to_vector())
+               | to_vector())
               == std::vector<rule_type>({{"bca", "bac"},
                                          {"cab", "acb"},
                                          {"aa", "a"},
@@ -1803,23 +1802,20 @@ namespace libsemigroups {
     presentation::remove_trivial_rules(p);
 
     KnuthBendix kb(twosided, p);
-    // REQUIRE(p.rules == std::vector<word_type>());
     p = to_presentation<word_type>(kb);
-    // REQUIRE(p.rules == std::vector<word_type>());
     REQUIRE(kb.number_of_classes() == 26);
     std::vector<word_type> reduce_binary_tree_words
         = {{},     0_w,    1_w,    2_w,    10_w,    20_w,    01_w,    21_w,
            02_w,   12_w,   210_w,  120_w,  101_w,   201_w,   201_w,   102_w,
            202_w,  012_w,  212_w,  2120_w, 2101_w,  2101_w,  2101_w,  2102_w,
            1202_w, 1012_w, 2012_w, 2012_w, 21202_w, 21012_w, 21012_w, 21012_w};
-    auto range = rx::iterator_range(reduce_binary_tree_words.begin(),
-                                    reduce_binary_tree_words.end());
+    auto range = iterator_range(reduce_binary_tree_words);
 
     // REQUIRE(first_equivalent_pair(
     //             kb, range | to_strings(kb.presentation().alphabet()))
     //         ==);
 
-    // REQUIRE((kb.active_rules() | rx::to_vector())
+    // REQUIRE((kb.active_rules() | to_vector())
     //         == std::vector<rule_type>({{"aa", "a"},
     //                                    {"bb", "b"},
     //                                    {"cc", "c"},
