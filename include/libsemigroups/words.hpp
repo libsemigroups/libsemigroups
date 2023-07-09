@@ -782,10 +782,18 @@ namespace libsemigroups {
     return out;
   }
 
-  std::string parse_word(char const* w, size_t n);
+  std::string parse(char const* w, size_t n);
 
-  inline std::string parse_word(char const* w) {
-    return parse_word(w, std::strlen(w));
+  inline std::string parse(char const* w) {
+    return parse(w, std::strlen(w));
+  }
+
+  inline std::string operator"" _p(const char* w, size_t n) {
+    return parse(w, n);
+  }
+
+  inline std::string operator"" _p(const char* w) {
+    return parse(w);
   }
 
 }  // namespace libsemigroups

@@ -165,6 +165,11 @@ namespace libsemigroups {
                      rx::iterator_range(y.cbegin(), y.cend()));
   }
 
+  template <typename T>
+  auto enumerate(T const& thing) {
+    return rx::enumerate(rx::iterator_range(thing));
+  }
+
 }  // namespace libsemigroups
 
 #endif  // LIBSEMIGROUPS_RANGES_HPP_

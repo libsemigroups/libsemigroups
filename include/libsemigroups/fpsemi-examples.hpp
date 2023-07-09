@@ -564,6 +564,8 @@ namespace libsemigroups {
                         author val = author::Guralnick + author::Kantor
                                      + author::Kassabov + author::Lubotzky);
 
+    Presentation<word_type> special_linear_group_2(size_t n);
+
     // TODO (doc)
     Presentation<word_type> hypo_plactic_monoid(size_t n);
     Presentation<word_type>

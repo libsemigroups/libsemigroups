@@ -766,14 +766,31 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Words", "030", "parsing", "[shortlex][quick]") {
-    // REQUIRE(evaluate_rpn({"ab", "2", "^"}) == 0101_w);
-    // REQUIRE(evaluate_rpn({"cd", "ab", "2", "^", "ef"}) == 23010145_w);
-    REQUIRE(parse_word("cd(ab)^2ef") == "cdababef");
-    REQUIRE(parse_word("cd((ab)^2)^4ef") == "cdababababababababef");
-    REQUIRE(parse_word("cd((ab)^2)^4(ef)^2") == "cdababababababababefef");
-    REQUIRE(parse_word("a^16") == "aaaaaaaaaaaaaaaa");
-    REQUIRE(parse_word("a^16cd^10((ab)^2)^4(ef)^2")
+    REQUIRE(parse("cd(ab)^2ef") == "cdababef");
+    REQUIRE(parse("cd((ab)^2)^4ef") == "cdababababababababef");
+    REQUIRE(parse("cd((ab)^2)^4(ef)^2") == "cdababababababababefef");
+    REQUIRE(parse("a^16") == "aaaaaaaaaaaaaaaa");
+    REQUIRE(parse("a^16cd^10((ab)^2)^4(ef)^2")
             == "aaaaaaaaaaaaaaaacddddddddddababababababababefef");
+    REQUIRE(parse("X^3(yx^2)") == "XXXyxx");
+    REQUIRE(parse("b(aX)^3x") == "baXaXaXx");
+    REQUIRE(parse("((a)b^2y)^10")
+            == "abbyabbyabbyabbyabbyabbyabbyabbyabbyabby");
+
+    REQUIRE(parse("()") == "");
+    REQUIRE(parse("y^0") == "");
+    REQUIRE(parse("") == "");
+    REQUIRE(parse("a") == "a");
+
+    REQUIRE_THROWS_AS(parse("(()()()((((())()())"), LibsemigroupsException);
+    REQUIRE_THROWS_AS(parse("("), LibsemigroupsException);
+    REQUIRE_THROWS_AS(parse("(^2)"), LibsemigroupsException);
+    REQUIRE_THROWS_AS(parse("a^"), LibsemigroupsException);
+    REQUIRE_THROWS_AS(parse("^y"), LibsemigroupsException);
+    REQUIRE_THROWS_AS(parse("1^1"), LibsemigroupsException);
+    REQUIRE_THROWS_AS(parse("&^1"), LibsemigroupsException);
+    REQUIRE_THROWS_AS(parse("a^16cd^10((ab)^2)^4(!f)^2"),
+                      LibsemigroupsException);
   }
 
 }  // namespace libsemigroups

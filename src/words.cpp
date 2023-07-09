@@ -21,6 +21,8 @@
 
 #include "libsemigroups/words.hpp"
 
+#include <iostream>
+
 #include <algorithm>    // for lexicographical_...
 #include <cmath>        // for pow
 #include <cstring>      // for strlen
@@ -46,52 +48,58 @@ namespace libsemigroups {
       return a * ((1 - std::pow(r, n)) / (1 - static_cast<float>(r)));
     }
 
-    std::vector<std::string> shunting_yard(char const* input, size_t len) {
-      std::vector<std::string> output;
-      std::stack<char>         ops;
-      bool                     in_word = false;
-      for (size_t i = 0; i < len; ++i) {
-        if (std::isalpha(input[i])) {
-          if (!in_word) {
-            in_word = true;
-            output.emplace_back("");
-          }
-          output.back() += input[i];
-        } else if (std::isdigit(input[i])) {
-          if (!in_word) {
-            in_word = true;
-            output.emplace_back("");
-          }
-          output.back() += input[i];
-          if (i == len - 1 || !std::isdigit(input[i + 1])) {
-            if (ops.empty() || ops.top() != '^') {
-              LIBSEMIGROUPS_EXCEPTION("TODO5");
-            }
-            output.emplace_back(&ops.top(), 1);
-            in_word = false;
+    // The next function implements the Shunting Yard Algorithm to convert the
+    // expression in input to reverse Polish notation, as described here:
+    // https://en.wikipedia.org/wiki/Shunting_yard_algorithm
+    std::string shunting_yard(char const* input, size_t len) {
+      std::string input_copy;
+      if (len == 0) {
+        return input_copy;
+      }
+
+      for (size_t i = 0; i < len - 1; ++i) {
+        input_copy += input[i];
+        if ((std::isalpha(input[i])
+             && (std::isalpha(input[i + 1]) || input[i + 1] == '('))
+            || (std::isdigit(input[i]) && !std::isdigit(input[i + 1])
+                && input[i + 1] != ')')
+            || (input[i] == ')' && std::isalpha(input[i + 1]))) {
+          input_copy += "*";
+        }
+      }
+      input_copy += input[len - 1];
+      // std::cout << input_copy << std::endl;
+
+      std::string      output;
+      std::stack<char> ops;
+
+      for (size_t i = 0; i < input_copy.size(); ++i) {
+        if (std::isalpha(input_copy[i])) {
+          output += input_copy[i];
+        } else if (std::isdigit(input_copy[i])) {
+          output += input_copy[i];
+        } else if (input_copy[i] == '(' || input_copy[i] == '^') {
+          ops.push(input_copy[i]);
+        } else if (input_copy[i] == '*') {
+          while (!ops.empty() && ops.top() != '(') {
+            output += ops.top();
             ops.pop();
           }
-        } else if (input[i] == '(' || input[i] == '^') {
-          in_word = false;
-          ops.push(input[i]);
-        } else if (input[i] == ')') {
-          in_word = false;
+          ops.push(input_copy[i]);
+        } else if (input_copy[i] == ')') {
           if (ops.empty()) {
             LIBSEMIGROUPS_EXCEPTION("TODO1");
           }
           while (!ops.empty() && ops.top() != '(') {
-            output.emplace_back(&ops.top(), 1);
+            output += ops.top();
             ops.pop();
           }
           if (ops.empty()) {
             LIBSEMIGROUPS_EXCEPTION("TODO2");
           }
           ops.pop();  // pop the '(' from the stack and discard
-          if (!ops.empty() && ops.top() == '^') {
-            output.emplace_back(&ops.top(), 1);
-            ops.pop();
-          }
-        } else {
+        } else if (input_copy[i] != ' ') {
+          // ignore spaces
           LIBSEMIGROUPS_EXCEPTION("TODO3");
         }
       }
@@ -99,25 +107,57 @@ namespace libsemigroups {
         if (ops.top() == '(' || ops.top() == ')') {
           LIBSEMIGROUPS_EXCEPTION("TODO4");
         }
-        output.emplace_back(&ops.top(), 1);
+        output += ops.top();
         ops.pop();
       }
+      // std::cout << output << std::endl;
       return output;
     }
 
-    std::string inline evaluate_rpn(std::vector<std::string> const& rpn) {
+    bool try_pop_two(std::stack<std::string>&             stck,
+                     std::pair<std::string, std::string>& pr) {
+      if (stck.size() < 2) {
+        return false;
+      }
+      pr.first = std::move(stck.top());
+      stck.pop();
+      pr.second = std::move(stck.top());
+      stck.pop();
+      return true;
+    }
+
+    std::string inline evaluate_rpn(std::string const& rpn) {
       using namespace presentation;
-      std::stack<std::string> stck;
+      std::stack<std::string>             stck;
+      bool                                in_digits = false;
+      std::pair<std::string, std::string> pr;
+
       for (auto const& term : rpn) {
-        if (term == "^") {
-          auto rop = stck.top();
-          stck.pop();
-          auto lop = stck.top();
-          stck.pop();
-          auto res = pow(lop, std::stol(rop));
-          stck.push(res);
+        if (term == '^') {
+          in_digits = false;
+          if (try_pop_two(stck, pr)) {
+            stck.push(pow(pr.second, std::stol(pr.first)));
+          } else {
+            LIBSEMIGROUPS_EXCEPTION("TODO6");
+          }
+        } else if (term == '*') {
+          in_digits = false;
+          if (try_pop_two(stck, pr)) {
+            stck.push(pr.second + pr.first);
+          } else {
+            LIBSEMIGROUPS_EXCEPTION("TODO7");
+          }
+        } else if (std::isdigit(term)) {
+          if (in_digits) {
+            LIBSEMIGROUPS_ASSERT(!stck.empty());
+            stck.top() += term;
+          } else {
+            in_digits = true;
+            stck.emplace(&term, 1);
+          }
         } else {
-          stck.push(term);
+          in_digits = false;
+          stck.emplace(&term, 1);
         }
       }
       std::string result("");
@@ -457,7 +497,7 @@ namespace libsemigroups {
     std::swap(_words, that._words);
   }
 
-  std::string parse_word(char const* w, size_t n) {
+  std::string parse(char const* w, size_t n) {
     return evaluate_rpn(shunting_yard(w, n));
   }
 

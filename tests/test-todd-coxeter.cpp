@@ -2561,9 +2561,9 @@ namespace libsemigroups {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("ab");
-    presentation::add_rule(p, "aaa", "a");
-    presentation::add_rule(p, "bbbb", "b");
-    presentation::add_rule(p, "ababababab", "aa");
+    presentation::add_rule(p, "a^3"_p, "a");
+    presentation::add_rule(p, "b^4"_p, "b");
+    presentation::add_rule(p, "(ab)^5"_p, "aa");
 
     ToddCoxeter tc(twosided, p);
 
@@ -2585,8 +2585,8 @@ namespace libsemigroups {
     Presentation<std::string> p;
     p.alphabet("ab");
     presentation::add_rule(p, "aaa", "a");
-    presentation::add_rule(p, "bbbb", "b");
-    presentation::add_rule(p, "abababab", "aa");
+    presentation::add_rule(p, "b^4"_p, "b");
+    presentation::add_rule(p, "(ab)^4"_p, "aa");
 
     ToddCoxeter tc(twosided, p);
     REQUIRE(!is_obviously_infinite(tc));
@@ -2613,15 +2613,15 @@ namespace libsemigroups {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("abcABCDEFGHIXYZ");
-    presentation::add_rule(p, "A", "aaaaaaaaaaaaaa");
-    presentation::add_rule(p, "B", "bbbbbbbbbbbbbb");
-    presentation::add_rule(p, "C", "cccccccccccccc");
-    presentation::add_rule(p, "D", "aaaaba");
-    presentation::add_rule(p, "E", "bbbbab");
-    presentation::add_rule(p, "F", "aaaaca");
-    presentation::add_rule(p, "G", "ccccac");
-    presentation::add_rule(p, "H", "bbbbcb");
-    presentation::add_rule(p, "I", "ccccbc");
+    presentation::add_rule(p, "A", parse("a^14"));
+    presentation::add_rule(p, "B", parse("b^14"));
+    presentation::add_rule(p, "C", parse("c^14"));
+    presentation::add_rule(p, "D", parse("a^4ba"));
+    presentation::add_rule(p, "E", parse("b^4ab"));
+    presentation::add_rule(p, "F", parse("a^4ca"));
+    presentation::add_rule(p, "G", parse("c^4ac"));
+    presentation::add_rule(p, "H", parse("b^4cb"));
+    presentation::add_rule(p, "I", parse("c^4bc"));
     presentation::add_rule(p, "X", "aaa");
     presentation::add_rule(p, "Y", "bbb");
     presentation::add_rule(p, "Z", "ccc");
@@ -2650,24 +2650,24 @@ namespace libsemigroups {
     presentation::sort_each_rule(p);
     presentation::sort_rules(p);
     REQUIRE(p.rules
-            == std::vector<std::string>({"aaaaba",
-                                         "bbb",
-                                         "bbbbab",
-                                         "aaa",
-                                         "bbbbcb",
-                                         "ccc",
-                                         "ccccac",
-                                         "aaa",
-                                         "bbbbcb",
-                                         "aaaaca",
-                                         "ccccbc",
-                                         "aaaaba",
-                                         "aaaaaaaaaaaaaa",
-                                         "a",
-                                         "bbbbbbbbbbbbbb",
-                                         "b",
-                                         "cccccccccccccc",
-                                         "c"}));
+            == std::vector<std::string>({parse("a^4ba"),
+                                         parse("b^3"),
+                                         parse("b^4ab"),
+                                         parse("a^3"),
+                                         parse("b^4cb"),
+                                         parse("c^3"),
+                                         parse("c^4ac"),
+                                         parse("a^3"),
+                                         parse("b^4cb"),
+                                         parse("a^4ca"),
+                                         parse("c^4bc"),
+                                         parse("a^4ba"),
+                                         parse("a^14"),
+                                         parse("a"),
+                                         parse("b^14"),
+                                         parse("b"),
+                                         parse("c^14"),
+                                         parse("c")}));
 
     ToddCoxeter tc(twosided, p);
     tc.run_until([&tc]() -> bool {
@@ -2709,11 +2709,10 @@ namespace libsemigroups {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("ab");
-    presentation::add_rule(p, "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "a");
+    presentation::add_rule(p, "a^32"_p, "a");
     presentation::add_rule(p, "bbb", "b");
     presentation::add_rule(p, "ababa", "b");
-    presentation::add_rule(
-        p, "aaaaaaaaaaaaaaaabaaaabaaaaaaaaaaaaaaaabaaaa", "b");
+    presentation::add_rule(p, "a^16ba^4ba^16ba^4"_p, "b");
 
     REQUIRE(presentation::length(p) == 87);
     presentation::greedy_reduce_length(p);
@@ -2766,8 +2765,8 @@ namespace libsemigroups {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("ab");
-    presentation::add_rule(p, "aaaaaaaaaaaaaaaa", "a");
-    presentation::add_rule(p, "bbbbbbbbbbbbbbbb", "b");
+    presentation::add_rule(p, "a^16"_p, "a");
+    presentation::add_rule(p, "b^16"_p, "b");
     presentation::add_rule(p, "abb", "baa");
 
     ToddCoxeter tc(twosided, p);
@@ -2796,9 +2795,8 @@ namespace libsemigroups {
     Presentation<std::string> p;
     p.alphabet("ab");
     presentation::add_rule(p, "aaa", "a");
-    presentation::add_rule(p, "bbbbbb", "b");
-    presentation::add_rule(
-        p, "ababbbbababbbbababbbbababbbbababbbbababbbbababbbbabba", "bb");
+    presentation::add_rule(p, "b^6"_p, "b");
+    presentation::add_rule(p, "((ab)^2b^3)^7ab^2a"_p, "bb");
 
     REQUIRE(presentation::length(p) == 66);
 
@@ -2846,11 +2844,8 @@ namespace libsemigroups {
     Presentation<std::string> p;
     p.alphabet("ab");
     presentation::add_rule(p, "aaa", "a");
-    presentation::add_rule(p, "bbbbbb", "b");
-    presentation::add_rule(
-        p,
-        "ababbbbababbbbababbbbababbbbababbbbababbbbababbbbabbabbbbbaa",
-        "bb");
+    presentation::add_rule(p, "b^6"_p, "b");
+    presentation::add_rule(p, "((ab)^2b^3)^7(ab^2)^2b^3a^2"_p, "bb");
     REQUIRE(presentation::length(p) == 73);
     presentation::greedy_reduce_length(p);
     REQUIRE(presentation::length(p) == 34);
@@ -2860,7 +2855,7 @@ namespace libsemigroups {
                                          "a",
                                          "ddd",
                                          "b",
-                                         "abcccccccbaddbaa",
+                                         "abc^7bad^2ba^2"_p,
                                          "d",
                                          "c",
                                          "addab",
@@ -2893,11 +2888,8 @@ namespace libsemigroups {
     Presentation<std::string> p;
     p.alphabet("ab");
     presentation::add_rule(p, "aaa", "a");
-    presentation::add_rule(p, "bbbbbbbbb", "b");
-    presentation::add_rule(
-        p,
-        "ababbbbababbbbababbbbababbbbababbbbababbbbababbbbabbabbbbbbbb",
-        "bb");
+    presentation::add_rule(p, "b^9"_p, "b");
+    presentation::add_rule(p, "((ab)^2b^3)^7(ab^2)^2b^6"_p, "bb");
     REQUIRE(presentation::length(p) == 77);
 
     ToddCoxeter tc(twosided, p);
@@ -2942,11 +2934,8 @@ namespace libsemigroups {
     Presentation<std::string> p;
     p.alphabet("ab");
     presentation::add_rule(p, "aaa", "a");
-    presentation::add_rule(p, "bbbbbbbbb", "b");
-    std::string lng("ababbbbbbb");
-    lng += lng;
-    lng += "abbabbbbbbbb";
-    presentation::add_rule(p, lng, std::string("bb"));
+    presentation::add_rule(p, "b^9"_p, "b");
+    presentation::add_rule(p, "((a*b)^2*b^6)^2*(a*b^2)^2*b^6"_p, "bb");
 
     REQUIRE(presentation::length(p) == 48);
     presentation::greedy_reduce_length(p);
@@ -3100,64 +3089,23 @@ namespace libsemigroups {
     REQUIRE(tc.number_of_classes() == 29);
   }
 
-  // TODO add to fpsemi-examples
   LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "081",
                           "Holt 2 - SL(2, p)",
                           "[todd-coxeter][extreme]") {
-    auto rg = ReportGuard();
+    auto                        rg     = ReportGuard();
+    std::array<size_t, 4> const sizes  = {24, 120, 336, 1'320};
+    std::array<size_t, 4> const primes = {3, 5, 7, 11};
 
-    Presentation<std::string> p;
-    p.alphabet("xXyY");
-    p.contains_empty_word(true);
-    presentation::add_inverse_rules(p, "XxYy");
-    presentation::add_rule(p, "xxYXYXYX", "");
+    for (auto [i, p] : enumerate(primes)) {
+      SECTION("p = " + std::to_string(p)) {
+        ToddCoxeter tc(twosided, fpsemigroup::special_linear_group_2(p));
 
-    auto second = [](size_t p) -> std::string {
-      std::string s = "xyyyyx";
-      s += std::string((p + 1) / 2, 'y');
-      s += s;
-      s += std::string(p, 'y');
-      s += std::string(2 * (p / 3), 'x');
-      return s;
-    };
+        section_hlt(tc);
+        section_felsch(tc);
 
-    std::string id = "";
-    REQUIRE(second(3) == "xyyyyxyyxyyyyxyyyyyxx");
-    SECTION("p = 3") {
-      presentation::add_rule(p, second(3), id);
-      ToddCoxeter tc(twosided, p);
-
-      section_hlt(tc);
-      section_felsch(tc);
-
-      REQUIRE(tc.number_of_classes() == 24);
-    }
-    SECTION("p = 5") {
-      presentation::add_rule(p, second(5), id);
-
-      ToddCoxeter tc(twosided, p);
-      section_hlt(tc);
-      section_felsch(tc);
-
-      REQUIRE(tc.number_of_classes() == 120);
-    }
-    SECTION("p = 7") {
-      presentation::add_rule(p, second(7), id);
-
-      ToddCoxeter tc(twosided, p);
-      section_hlt(tc);
-      section_felsch(tc);
-
-      REQUIRE(tc.number_of_classes() == 336);
-    }
-    SECTION("p = 11") {
-      presentation::add_rule(p, second(11), id);
-
-      ToddCoxeter tc(twosided, p);
-      section_hlt(tc);
-
-      REQUIRE(tc.number_of_classes() == 1'320);
+        REQUIRE(tc.number_of_classes() == sizes[i]);
+      }
     }
   }
 
@@ -3189,7 +3137,6 @@ namespace libsemigroups {
     check_normal_forms(tc, 0);
   }
 
-  // FIXME this printing is messed up here
   LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "083",
                           "Holt 3",

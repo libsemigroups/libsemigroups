@@ -1377,6 +1377,22 @@ namespace libsemigroups {
       return p;
     }
 
+    // n should be prime for this presentation to actually defined the claimed
+    // group.
+    Presentation<word_type> special_linear_group_2(size_t n) {
+      Presentation<word_type> p;
+      p.alphabet(4);
+      p.contains_empty_word(true);
+      presentation::add_inverse_rules(p, 1032_w);
+      presentation::add_rule(p, 00_w + pow(31_w, 3), {});
+      presentation::add_rule(
+          p,
+          pow(0_w + pow(2_w, 4) + 0_w + pow(2_w, (n + 1) / 2), 2) + pow(2_w, n)
+              + pow(0_w, 2 * (n / 3)),
+          {});
+      return p;
+    }
+
     Presentation<word_type> hypo_plactic_monoid(size_t n) {
       auto result = plactic_monoid(n);
 
