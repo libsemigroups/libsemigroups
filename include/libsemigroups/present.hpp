@@ -429,6 +429,7 @@ namespace libsemigroups {
     //!
     //! \returns
     //! (None)
+    // TODO(now) remove, use init() instead
     void clear();
 
    private:
@@ -855,10 +856,10 @@ namespace libsemigroups {
     //!
     //! If it is possible to find a subword \f$w\f$ of the rules \f$u_1 = v_1,
     //! \ldots, u_n = v_n\f$ such that the introduction of a new generator
-    //! \f$z\f$ and the relation \f$z = w\f$ reduces the
-    //! `presentation::length` of the presentation, then this function returns
-    //! the word \f$w\f$. If no such word can be found, then a word of length
-    //! \f$0\f$ is returned.
+    //! \f$z\f$ and the relation \f$z = w\f$ reduces the `presentation::length`
+    //! of the presentation, then this function returns the longest such word
+    //! \f$w\f$. If no such word can be found, then a word of length \f$0\f$ is
+    //! returned.
     //!
     //! \tparam Word the type of the words in the presentation
     //! \param p the presentation
@@ -869,7 +870,7 @@ namespace libsemigroups {
     //! \no_libsemigroups_except
     // TODO(later) complexity
     template <typename Word>
-    Word longest_common_subword(Presentation<Word>& p);
+    Word longest_subword_reducing_length(Presentation<Word>& p);
 
     //! Replace non-overlapping instances of a subword via iterators.
     //!
@@ -1253,6 +1254,7 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if `i` exceeds the number of letters in
     //! supported by `letter_type`.
     template <typename Word>
+    // TODO no checks?
     typename Presentation<Word>::letter_type letter(Presentation<Word> const&,
                                                     size_t i);
 
@@ -1276,6 +1278,7 @@ namespace libsemigroups {
     //! \sa `character(size_t)`
     template <>
     // TODO remove inline
+    // TODO no checks?
     inline typename Presentation<std::string>::letter_type
     letter(Presentation<std::string> const& p, size_t i);
 
@@ -1297,8 +1300,11 @@ namespace libsemigroups {
     //!
     //! \sa `letter(Presentation<std::string> const&, size_t)`
     // TODO remove inline
+    // TODO no checks?
     inline typename Presentation<std::string>::letter_type character(size_t i);
 
+    // TODO remove inline
+    // TODO no checks?
     inline typename Presentation<word_type>::letter_type
     index(typename Presentation<std::string>::letter_type c);
 
@@ -1341,12 +1347,12 @@ namespace libsemigroups {
     make_semigroup(Presentation<Word>& p);
 
     //! Greedily reduce the length of the presentation using
-    //! `longest_common_subword`.
+    //! `longest_subword_reducing_length`.
     //!
-    //! This function repeatedly calls `longest_common_subword` and
+    //! This function repeatedly calls `longest_subword_reducing_length` and
     //! `replace_subword` to introduce a new generator and reduce the length
-    //! of the presentation \p p until `longest_common_subword` returns the
-    //! empty word.
+    //! of the presentation \p p until `longest_subword_reducing_length` returns
+    //! the empty word.
     //!
     //! \tparam Word the type of the words in the presentation
     //!
@@ -1354,7 +1360,7 @@ namespace libsemigroups {
     //!
     //! \returns (None)
     //!
-    //! \throws LibsemigroupsException if `longest_common_subword` or
+    //! \throws LibsemigroupsException if `longest_subword_reducing_length` or
     //!  `replace_word` does.
     template <typename Word>
     void greedy_reduce_length(Presentation<Word>& p);

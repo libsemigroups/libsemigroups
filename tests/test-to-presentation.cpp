@@ -123,7 +123,7 @@ namespace libsemigroups {
     REQUIRE(p.alphabet().size() == 4);
     REQUIRE(p.rules[8] == "ba");
     REQUIRE(p.rules[9] == "b");
-    REQUIRE(presentation::longest_common_subword(p) == "bcb");
+    REQUIRE(presentation::longest_subword_reducing_length(p) == "bcb");
   }
 
   LIBSEMIGROUPS_TEST_CASE("to_presentation",

@@ -317,19 +317,19 @@ namespace libsemigroups {
     }
 
     template <typename W>
-    void check_longest_common_subword() {
+    void check_longest_subword_reducing_length() {
       {
         // Normalized alphabet
         Presentation<W> p;
         p.rules.push_back(W({0, 1, 2, 1}));
-        REQUIRE_NOTHROW(presentation::longest_common_subword(p));
+        REQUIRE_NOTHROW(presentation::longest_subword_reducing_length(p));
         p.rules.push_back(W({1, 2, 1}));
         presentation::add_rule_no_checks(p, {1, 2, 1}, {1, 1, 2, 1});
         presentation::add_rule_no_checks(p, {1, 1, 2, 1}, {1, 1});
         presentation::add_rule_no_checks(p, {1, 1}, {1, 2, 1});
         presentation::add_rule_no_checks(p, {1, 2, 1}, {0});
         p.alphabet_from_rules();
-        REQUIRE(presentation::longest_common_subword(p) == W({1, 2, 1}));
+        REQUIRE(presentation::longest_subword_reducing_length(p) == W({1, 2, 1}));
         presentation::replace_subword(p, W({1, 2, 1}), W({3}));
         presentation::add_rule_no_checks(p, {3}, {1, 2, 1});
         REQUIRE(p.rules
@@ -355,7 +355,7 @@ namespace libsemigroups {
         presentation::add_rule_no_checks(p, {2, 2}, {2, 4, 2});
         presentation::add_rule_no_checks(p, {2, 4, 2}, {1});
         p.alphabet_from_rules();
-        REQUIRE(presentation::longest_common_subword(p) == W({2, 4, 2}));
+        REQUIRE(presentation::longest_subword_reducing_length(p) == W({2, 4, 2}));
         presentation::replace_subword(p, W({2, 4, 2}), W({0}));
         presentation::add_rule_no_checks(p, W({0}), W({2, 4, 2}));
         REQUIRE(p.rules
@@ -1085,12 +1085,12 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("Presentation",
                           "019",
-                          "helpers longest_common_subword/replace_subword",
+                          "helpers longest_subword_reducing_length/replace_subword",
                           "[quick][presentation]") {
     auto rg = ReportGuard(false);
-    check_longest_common_subword<word_type>();
-    check_longest_common_subword<StaticVector1<uint16_t, 10>>();
-    check_longest_common_subword<std::string>();
+    check_longest_subword_reducing_length<word_type>();
+    check_longest_subword_reducing_length<StaticVector1<uint16_t, 10>>();
+    check_longest_subword_reducing_length<std::string>();
   }
 
   LIBSEMIGROUPS_TEST_CASE("Presentation",
@@ -1325,14 +1325,14 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("Presentation",
                           "034",
-                          "longest_common_subword issue",
+                          "longest_subword_reducing_length issue",
                           "[quick][presentation]") {
     Presentation<std::string> p;
     p.alphabet("a");
     presentation::add_rule(p, "aaaaaaaaaaaaaaaaaaa", "a");
-    REQUIRE(presentation::longest_common_subword(p) == "aaaaaa");
+    REQUIRE(presentation::longest_subword_reducing_length(p) == "aaaaaa");
     presentation::replace_subword(p, "aaaaaa");
-    REQUIRE(presentation::longest_common_subword(p) == "");
+    REQUIRE(presentation::longest_subword_reducing_length(p) == "");
     REQUIRE(p.rules == std::vector<std::string>({"bbba", "a", "b", "aaaaaa"}));
     REQUIRE(presentation::length(p) == 12);
     p.rules = std::vector<std::string>({"bba", "a", "b", "aaaaaaaa"});
@@ -1340,7 +1340,7 @@ namespace libsemigroups {
 
     p.alphabet("ab");
     presentation::add_rule(p, "baaaaaaaaaaaaaaaaaaa", "a");
-    REQUIRE(presentation::longest_common_subword(p) == "aaaaaa");
+    REQUIRE(presentation::longest_subword_reducing_length(p) == "aaaaaa");
 
     p.alphabet("ab");
     p.rules.clear();
@@ -1348,7 +1348,7 @@ namespace libsemigroups {
     presentation::add_rule(p, "bbbbbbbbbbbbbbbb", "b");
     presentation::add_rule(p, "abb", "baa");
     REQUIRE(presentation::length(p) == 40);
-    auto w = presentation::longest_common_subword(p);
+    auto w = presentation::longest_subword_reducing_length(p);
     REQUIRE(w == "bbbb");
     presentation::replace_subword(p, w);
     REQUIRE(presentation::length(p) == 33);
@@ -1356,7 +1356,7 @@ namespace libsemigroups {
         p.rules
         == std::vector<std::string>(
             {"aaaaaaaaaaaaaaaa", "a", "cccc", "b", "abb", "baa", "c", "bbbb"}));
-    w = presentation::longest_common_subword(p);
+    w = presentation::longest_subword_reducing_length(p);
     REQUIRE(w == "aaaa");
     presentation::replace_subword(p, w);
     REQUIRE(presentation::length(p) == 26);
@@ -1371,7 +1371,7 @@ namespace libsemigroups {
                                          "bbbb",
                                          "d",
                                          "aaaa"}));
-    w = presentation::longest_common_subword(p);
+    w = presentation::longest_subword_reducing_length(p);
     REQUIRE(w == "");
   }
 
@@ -1408,7 +1408,7 @@ namespace libsemigroups {
                                          "bbbb",
                                          "d",
                                          "aaaa"}));
-    REQUIRE(presentation::longest_common_subword(p) == "");
+    REQUIRE(presentation::longest_subword_reducing_length(p) == "");
   }
 
   LIBSEMIGROUPS_TEST_CASE("Presentation",

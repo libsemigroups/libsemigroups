@@ -367,10 +367,10 @@ namespace libsemigroups {
 
     REQUIRE(p.alphabet().size() == 4);
 
-    auto w = presentation::longest_common_subword(p);
+    auto w = presentation::longest_subword_reducing_length(p);
     while (!w.empty()) {
       presentation::replace_subword(p, w);
-      w = presentation::longest_common_subword(p);
+      w = presentation::longest_subword_reducing_length(p);
     }
 
     presentation::sort_each_rule(p);
@@ -752,7 +752,7 @@ namespace libsemigroups {
     //   std::chrono::milliseconds(100)); p.rules.erase(it, it + 2);
     // } while (presentation::length(p) > 300);
     // presentation::replace_subword(p,
-    // presentation::longest_common_subword(p));
+    // presentation::longest_subword_reducing_length(p));
 
     Sims1_ C(congruence_kind::right);
     C.short_rules(p).long_rule_length(12);
@@ -860,7 +860,7 @@ namespace libsemigroups {
     REQUIRE(*presentation::longest_rule(p) == word_type({1, 1, 1, 1}));
     REQUIRE(*(presentation::longest_rule(p) + 1) == word_type({1, 1}));
 
-    REQUIRE(presentation::longest_common_subword(p) == word_type({1, 1}));
+    REQUIRE(presentation::longest_subword_reducing_length(p) == word_type({1, 1}));
     p.alphabet(9);
     presentation::replace_subword(p, {1, 1}, {0});
     REQUIRE(presentation::length(p) == 246);
@@ -1719,10 +1719,10 @@ namespace libsemigroups {
     presentation::sort_each_rule(p);
     presentation::sort_rules(p);
 
-    word_type w = presentation::longest_common_subword(p);
+    word_type w = presentation::longest_subword_reducing_length(p);
     while (!w.empty()) {
       presentation::replace_subword(p, w);
-      w = presentation::longest_common_subword(p);
+      w = presentation::longest_subword_reducing_length(p);
     }
 
     REQUIRE(presentation::length(p) == 1414);
@@ -2177,10 +2177,10 @@ namespace libsemigroups {
                           "[fail][low-index]") {
     auto rg = ReportGuard(true);
     auto p  = partial_transformation_monoid(4, author::Sutov);
-    auto w  = presentation::longest_common_subword(p);
+    auto w  = presentation::longest_subword_reducing_length(p);
     while (!w.empty()) {
-      presentation::replace_subword(p, presentation::longest_common_subword(p));
-      w = presentation::longest_common_subword(p);
+      presentation::replace_subword(p, presentation::longest_subword_reducing_length(p));
+      w = presentation::longest_subword_reducing_length(p);
     }
 
     presentation::sort_each_rule(p);
@@ -2442,7 +2442,7 @@ namespace libsemigroups {
     presentation::sort_each_rule(p);
     presentation::sort_rules(p);
 
-    REQUIRE(presentation::longest_common_subword(p) == "aa");
+    REQUIRE(presentation::longest_subword_reducing_length(p) == "aa");
     presentation::replace_subword(p, "aa");
 
     ToddCoxeter tc(congruence_kind::twosided, p);
@@ -2468,7 +2468,7 @@ namespace libsemigroups {
     presentation::sort_each_rule(p);
     presentation::sort_rules(p);
 
-    REQUIRE(presentation::longest_common_subword(p) == "bb");
+    REQUIRE(presentation::longest_subword_reducing_length(p) == "bb");
     presentation::replace_subword(p, "bb");
 
     ToddCoxeter tc(congruence_kind::twosided, p);

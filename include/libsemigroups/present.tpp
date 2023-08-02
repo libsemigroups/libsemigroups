@@ -428,7 +428,7 @@ namespace libsemigroups {
     }
 
     template <typename Word>
-    Word longest_common_subword(Presentation<Word>& p) {
+    Word longest_subword_reducing_length(Presentation<Word>& p) {
       Ukkonen u;
       ukkonen::add_words(u, p.rules.cbegin(), p.rules.cend());
       ukkonen::detail::GreedyReduceHelper helper(u);
@@ -776,10 +776,10 @@ namespace libsemigroups {
 
     template <typename Word>
     void greedy_reduce_length(Presentation<Word>& p) {
-      auto w = longest_common_subword(p);
+      auto w = longest_subword_reducing_length(p);
       while (!w.empty()) {
         replace_subword(p, w);
-        w = longest_common_subword(p);
+        w = longest_subword_reducing_length(p);
       }
     }
 
