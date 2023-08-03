@@ -801,6 +801,12 @@ namespace libsemigroups {
   // TODO doc
   size_t human_readable_index(char c);
 
+  // TODO(later) could do a no_check version
+  void to_word(word_type& w, std::string const& s);
+
+  // TODO(later) could do a no_check version
+  word_type to_word(std::string const& s);
+
   namespace words {
 
     // TODO remove IsWord

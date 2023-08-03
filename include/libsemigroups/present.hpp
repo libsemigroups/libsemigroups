@@ -1492,25 +1492,6 @@ namespace libsemigroups {
   // TODO modify by reference
   std::string to_string(Presentation<std::string> const& p, word_type const& w);
 
-  // TODO(later) could do a no_check version
-  // TODO remove inline
-  // TODO move to words.*pp
-  inline void to_word(word_type& w, std::string const& s) {
-    w.resize(s.size(), 0);
-    std::transform(s.cbegin(), s.cend(), w.begin(), [](char c) {
-      return human_readable_index(c);
-    });
-  }
-
-  // TODO(later) could do a no_check version
-  // TODO remove inline
-  // TODO move to words.*pp
-  inline word_type to_word(std::string const& s) {
-    word_type w;
-    to_word(w, s);
-    return w;
-  }
-
 }  // namespace libsemigroups
 
 #include "present.tpp"

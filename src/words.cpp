@@ -570,6 +570,19 @@ namespace libsemigroups {
     return it->second;
   }
 
+  void to_word(word_type& w, std::string const& s) {
+    w.resize(s.size(), 0);
+    std::transform(s.cbegin(), s.cend(), w.begin(), [](char c) {
+      return human_readable_index(c);
+    });
+  }
+
+  word_type to_word(std::string const& s) {
+    word_type w;
+    to_word(w, s);
+    return w;
+  }
+
   // The following functions belong to the words namespace so as to only have
   // them apply when explicitly wanted.
   namespace words {
