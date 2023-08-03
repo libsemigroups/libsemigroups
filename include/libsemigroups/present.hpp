@@ -26,28 +26,36 @@
 #define LIBSEMIGROUPS_PRESENT_HPP_
 
 #include <algorithm>         // for reverse, sort
-#include <cstddef>           // for size_t
-#include <cstring>           // for strlen
+#include <cstring>           // for size_t, strlen
 #include <initializer_list>  // for initializer_list
 #include <iterator>          // for distance
+#include <limits>            // for numeric_limits
+#include <map>               // for map
 #include <numeric>           // for accumulate
-#include <string>            // for string
-#include <type_traits>       // for enable_if_t, is_same
-#include <unordered_map>     // for unordered_map
+#include <string>            // for basic_string, operator==
+#include <tuple>             // for tie, tuple
+#include <type_traits>       // for enable_if_t
+#include <unordered_map>     // for operator==, operator!=
 #include <unordered_set>     // for unordered_set
-#include <utility>           // for move
-#include <vector>            // for vector
+#include <utility>           // for move, pair
+#include <vector>            // for vector, operator!=
 
-#include "constants.hpp"  // for UNDEFINED
+#include "fmt/core.h"  // for format
+
+#include "rx/ranges.hpp"  // for seq, operator|, rx, take
+
+#include "adapters.hpp"   // for Hash, EqualTo
+#include "constants.hpp"  // for Max, UNDEFINED, operator==
 #include "debug.hpp"      // for LIBSEMIGROUPS_ASSERT
-#include "order.hpp"      // for shortlex_compare
-#include "ranges.hpp"     // for chain + shortlex_compare
-#include "ukkonen.hpp"    // for SuffixTree
+#include "exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
+#include "order.hpp"      // for ShortLexCompare
+#include "ranges.hpp"     // for chain, is_sorted
+#include "types.hpp"      // for word_type
+#include "ukkonen.hpp"    // for GreedyReduceHelper, Ukkonen
 #include "words.hpp"      // for operator+
 
-#include "detail/function-ref.hpp"
-#include "detail/int-range.hpp"  // for detail::IntRange
-#include "detail/uf.hpp"         // for Duf
+#include "detail/string.hpp"  // for maximum_common_prefix
+#include "detail/uf.hpp"      // for Duf
 
 namespace libsemigroups {
 

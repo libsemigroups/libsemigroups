@@ -19,10 +19,18 @@
 // This file contains implementations of the functions declared in
 // presentation.hpp
 
-#include <cstddef>  // for size_t
+#include <algorithm>      // for transform
+#include <cstddef>        // for size_t
+#include <string>         // for basic_string, operator+
+#include <unordered_map>  // for operator==
+#include <vector>         // for vector
 
-#include "libsemigroups/present.hpp"
-#include "libsemigroups/words.hpp"
+#include "fmt/core.h"  // for format
+
+#include "libsemigroups/exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
+#include "libsemigroups/present.hpp"    // for Presentation, to_string, to_word
+#include "libsemigroups/types.hpp"      // for word_type
+#include "libsemigroups/words.hpp"      // for human_readable_char
 
 namespace libsemigroups {
   namespace presentation {
