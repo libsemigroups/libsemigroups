@@ -21,86 +21,14 @@
 #include <cstddef>  // for size_t
 
 #include "libsemigroups/present.hpp"
+#include "libsemigroups/words.hpp"
 
 namespace libsemigroups {
   namespace presentation {
-    namespace {
-      std::string const& chars_in_human_readable_order() {
-        // Choose visible characters a-zA-Z0-9 first before anything else
-        // The ascii ranges for these characters are: [97, 123), [65, 91),
-        // [48, 58) so the remaining range of chars that are appended to the end
-        // after these chars are [0,48), [58, 65), [91, 97), [123, 255)
-        static std::string letters
-            = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-        static bool first_call = true;
-        if (first_call) {
-          letters.resize(255);
-          std::iota(letters.begin() + 62,
-                    letters.begin() + 110,
-                    static_cast<char>(0));
-          std::iota(letters.begin() + 110,
-                    letters.begin() + 117,
-                    static_cast<char>(58));
-          std::iota(letters.begin() + 117,
-                    letters.begin() + 123,
-                    static_cast<char>(91));
-          std::iota(
-              letters.begin() + 123, letters.end(), static_cast<char>(123));
-          first_call = false;
-          LIBSEMIGROUPS_ASSERT(letters.size()
-                               == std::numeric_limits<char>::max()
-                                      - std::numeric_limits<char>::min());
-          LIBSEMIGROUPS_ASSERT(letters.end() == letters.begin() + 255);
-        }
-        return letters;
-      }
-
-    }  // namespace
 
     typename Presentation<std::string>::letter_type
     human_readable_letter(Presentation<std::string> const&, size_t i) {
       return human_readable_letter(i);
-    }
-
-    typename Presentation<std::string>::letter_type
-    human_readable_letter(size_t i) {
-      using letter_type = typename Presentation<std::string>::letter_type;
-      // Choose visible characters a-zA-Z0-9 first before anything else
-      // The ascii ranges for these characters are: [97, 123), [65, 91),
-      // [48, 58) so the remaining range of chars that are appended to the end
-      // after these chars are [0,48), [58, 65), [91, 97), [123, 255)
-      if (i >= std::numeric_limits<letter_type>::max()
-                   - std::numeric_limits<letter_type>::min()) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "expected a value in the range [0, {}) found {}",
-            std::numeric_limits<letter_type>::max()
-                - std::numeric_limits<letter_type>::min(),
-            i);
-      }
-      return chars_in_human_readable_order()[i];
-    }
-
-    typename Presentation<word_type>::letter_type
-    human_readable_index(typename Presentation<std::string>::letter_type c) {
-      static bool first_call = true;
-      static std::unordered_map<Presentation<std::string>::letter_type,
-                                Presentation<word_type>::letter_type>
-          map;
-      if (first_call) {
-        first_call        = false;
-        auto const& chars = chars_in_human_readable_order();
-        for (letter_type i = 0; i < chars.size(); ++i) {
-          map.emplace(chars[i], i);
-        }
-      }
-
-      auto it = map.find(c);
-      if (it == map.cend()) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "unexpected character, cannot convert \'{}\' to a letter", c);
-      }
-
-      return it->second;
     }
 
     std::string to_gap_string(Presentation<word_type> const& p,
