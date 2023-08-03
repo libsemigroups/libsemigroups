@@ -38,7 +38,7 @@
 #include <vector>       // for vector
 
 #include "libsemigroups/felsch-graph.hpp"
-#include "libsemigroups/present.hpp"  // for Presentation, Presentation<>:...
+#include "libsemigroups/presentation.hpp"  // for Presentation, Presentation<>:...
 #include "libsemigroups/runner.hpp"
 #include "libsemigroups/types.hpp"                    // for word_type
 #include "libsemigroups/word-graph-with-sources.hpp"  // for WordGraphWithSources

@@ -35,7 +35,7 @@
 #include "libsemigroups/debug.hpp"      // for LIBSEMIGROUPS_ASSERT
 #include "libsemigroups/exception.hpp"  // for word_type
 #include "libsemigroups/order.hpp"      // for order
-#include "libsemigroups/present.hpp"    // for index
+#include "libsemigroups/presentation.hpp"    // for index
 #include "libsemigroups/types.hpp"      // for word_type
 
 #include "libsemigroups/detail/report.hpp"  // for magic_enum formatting

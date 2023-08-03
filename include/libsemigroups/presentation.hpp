@@ -22,8 +22,8 @@
 // presentation, (i.e. it's consistent with its alphabet etc), and some related
 // functionality.
 
-#ifndef LIBSEMIGROUPS_PRESENT_HPP_
-#define LIBSEMIGROUPS_PRESENT_HPP_
+#ifndef LIBSEMIGROUPS_PRESENTATION_HPP_
+#define LIBSEMIGROUPS_PRESENTATION_HPP_
 
 #include <algorithm>         // for reverse, sort
 #include <cstring>           // for size_t, strlen
@@ -62,7 +62,7 @@ namespace libsemigroups {
   //! No doc
   struct PresentationBase {};
 
-  //! Defined in ``present.hpp``.
+  //! Defined in ``presentation.hpp``.
   //!
   //! This class template can be used to construction presentations for
   //! semigroups or monoids and is intended to be used as the input to other
@@ -1507,6 +1507,6 @@ namespace libsemigroups {
 
 }  // namespace libsemigroups
 
-#include "present.tpp"
+#include "presentation.tpp"
 
-#endif  // LIBSEMIGROUPS_PRESENT_HPP_
+#endif  // LIBSEMIGROUPS_PRESENTATION_HPP_

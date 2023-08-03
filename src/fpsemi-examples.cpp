@@ -30,7 +30,7 @@
 
 #include "libsemigroups/debug.hpp"      // for LIBSEMIGROUPS_ASSERT
 #include "libsemigroups/exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION, Libs...
-#include "libsemigroups/present.hpp"    // for operator+, add_rule, operator+=
+#include "libsemigroups/presentation.hpp"    // for operator+, add_rule, operator+=
 #include "libsemigroups/types.hpp"      // for word_type, relation_type, let...
 #include "libsemigroups/words.hpp"      // for operator""_w
 

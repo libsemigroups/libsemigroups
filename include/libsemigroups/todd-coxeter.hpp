@@ -35,7 +35,7 @@
 #include "obvinf.hpp"                     // for is_obviously_infinite
 #include "order.hpp"                      // for order
 #include "paths.hpp"
-#include "present.hpp"          // for Presentation
+#include "presentation.hpp"          // for Presentation
 #include "to-presentation.hpp"  // for make
 #include "types.hpp"            // for word_type
 

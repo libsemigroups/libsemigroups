@@ -64,7 +64,7 @@
 #include "exception.hpp"        // for LIBSEMIGROUPS_EXCEPTION
 #include "felsch-graph.hpp"     // for FelschGraph
 #include "froidure-pin.hpp"     // for FroidurePin
-#include "present.hpp"          // for Presentation, Presentati...
+#include "presentation.hpp"          // for Presentation, Presentati...
 #include "to-froidure-pin.hpp"  // for make
 #include "to-presentation.hpp"  // for make
 #include "transf.hpp"           // for Transf

@@ -46,7 +46,7 @@
 #include "exception.hpp"        // for LIBSEMIGROUPS_EXCEPTION
 #include "froidure-pin.hpp"     // for FroidurePin, FroidurePinTraits
 #include "order.hpp"            // for lexicographical_compare
-#include "present.hpp"          // for Presentation
+#include "presentation.hpp"          // for Presentation
 #include "to-presentation.hpp"  // for to_presentation
 #include "types.hpp"            // for word_type, tril, letter_type
 #include "ukkonen.hpp"          // for Ukkonen

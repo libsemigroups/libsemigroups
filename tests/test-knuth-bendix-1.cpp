@@ -57,7 +57,7 @@
 #include "libsemigroups/knuth-bendix.hpp"     // for KnuthBendix, normal_f...
 #include "libsemigroups/obvinf.hpp"           // for is_obviously_infinite
 #include "libsemigroups/paths.hpp"            // for Paths
-#include "libsemigroups/present.hpp"          // for add_rule, Presentation
+#include "libsemigroups/presentation.hpp"          // for add_rule, Presentation
 #include "libsemigroups/ranges.hpp"           // for equal
 #include "libsemigroups/to-froidure-pin.hpp"  // for to_froidure_pin
 #include "libsemigroups/types.hpp"            // for word_type

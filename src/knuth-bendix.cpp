@@ -31,7 +31,7 @@
 #include "libsemigroups/obvinf.hpp"      // for is_obviously_infinite
 #include "libsemigroups/order.hpp"       // for shortlex_compare
 #include "libsemigroups/paths.hpp"       // for Paths
-#include "libsemigroups/present.hpp"     // for Presentation
+#include "libsemigroups/presentation.hpp"     // for Presentation
 #include "libsemigroups/ranges.hpp"      // for operator<<
 #include "libsemigroups/runner.hpp"      // for Runner
 #include "libsemigroups/types.hpp"       // for word_type
