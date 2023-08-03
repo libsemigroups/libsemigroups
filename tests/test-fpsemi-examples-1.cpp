@@ -281,7 +281,8 @@ namespace libsemigroups {
                           "[fpsemi-examples][quick]") {
     auto rg = ReportGuard(REPORT);
     REQUIRE_THROWS_AS(plactic_monoid(0), LibsemigroupsException);
-    REQUIRE_THROWS_AS(plactic_monoid(1), LibsemigroupsException);
+    REQUIRE_NOTHROW(plactic_monoid(1));
+    REQUIRE_NOTHROW(plactic_monoid(2));
   }
 
   LIBSEMIGROUPS_TEST_CASE("fpsemi-examples",

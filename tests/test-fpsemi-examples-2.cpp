@@ -169,7 +169,7 @@ namespace libsemigroups {
                           "071",
                           "hypo_plactic_monoid(3)",
                           "[fpsemi-examples][quick]") {
-    auto rg = ReportGuard(true);
+    auto rg = ReportGuard(false);
 
     KnuthBendix kb(congruence_kind::twosided,
                    fpsemigroup::hypo_plactic_monoid(3));
@@ -186,10 +186,9 @@ namespace libsemigroups {
     } while (std::next_permutation(letters.begin(), letters.end()));
     REQUIRE(map.size() == 4);
 
-    REQUIRE(knuth_bendix::normal_forms(kb).min(3).max(4).count() == 18);  // 19
-    // FIXME should be 19 in the previous line
+    REQUIRE(knuth_bendix::normal_forms(kb).min(3).max(4).count() == 19);  // 19
     REQUIRE(
         (knuth_bendix::normal_forms(kb).min(3).max(4) | rx::to_vector()).size()
-        == 18);  // 19
+        == 19);
   }
 }  // namespace libsemigroups

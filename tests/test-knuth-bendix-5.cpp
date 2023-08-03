@@ -165,7 +165,7 @@ namespace libsemigroups {
                           "122",
                           "manual right congruence",
                           "[quick][knuthbendix]") {
-    using presentation::operator+;
+    using words::operator+;
 
     auto rg = ReportGuard(false);
     auto S  = FroidurePin<Transf<>>(
@@ -255,7 +255,7 @@ namespace libsemigroups {
                           "123",
                           "right congruence!!!",
                           "[quick][knuthbendix]") {
-    using presentation::operator+;
+    using words::operator+;
 
     auto rg = ReportGuard(false);
     auto S  = FroidurePin<Transf<>>(
@@ -346,7 +346,7 @@ namespace libsemigroups {
                           "124",
                           "manual left congruence!!!",
                           "[quick][knuthbendix]") {
-    using presentation::operator+;
+    using words::operator+;
 
     auto rg = ReportGuard(false);
     auto S  = FroidurePin<Transf<>>(
@@ -407,7 +407,7 @@ namespace libsemigroups {
                           "125",
                           "automatic left congruence!!!",
                           "[quick][knuthbendix]") {
-    using presentation::operator+;
+    using words::operator+;
 
     auto rg = ReportGuard(false);
     auto S  = FroidurePin<Transf<>>(

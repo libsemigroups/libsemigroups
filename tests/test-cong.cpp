@@ -472,8 +472,8 @@ namespace libsemigroups {
       "019",
       "2-sided cong. from presentation with infinite classes ",
       "[quick][cong]") {
-    using presentation::operator+;
-    using presentation::pow;
+    using words::operator+;
+    using words::pow;
 
     auto                    rg = ReportGuard(false);
     Presentation<word_type> p;

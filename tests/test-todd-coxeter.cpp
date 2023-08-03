@@ -1746,7 +1746,7 @@ namespace libsemigroups {
     // Uses CongruenceInterface's generating pairs
     REQUIRE(tc2.number_of_generating_pairs() == 2);
 
-    p.clear();
+    p.init();
     p.alphabet(1);
 
     ToddCoxeter tc3(twosided, p);
@@ -2402,8 +2402,8 @@ namespace libsemigroups {
     section_Cr_style(tc);
 
     REQUIRE(tc.number_of_classes() == 24);
-    REQUIRE(presentation::character(0) == 'a');
-    REQUIRE(presentation::index('a') == 0);
+    REQUIRE(human_readable_char(0) == 'a');
+    REQUIRE(human_readable_index('a') == 0);
     REQUIRE(todd_coxeter::normal_form(tc, "aaaaaaaaaaaaaaaaaaa"_w) == "a"_w);
     auto S = to_froidure_pin(tc);
     REQUIRE(to_knuth_bendix(twosided, S).confluent());
@@ -2861,7 +2861,7 @@ namespace libsemigroups {
                                          "addab",
                                          "d",
                                          "bb"}));
-    presentation::replace_subword(p, "ccc");
+    presentation::replace_word_with_new_generator(p, "ccc");
     REQUIRE(presentation::length(p) == 34);
 
     ToddCoxeter tc(twosided, p);
@@ -2914,7 +2914,7 @@ namespace libsemigroups {
                                            "adab",
                                            "d",
                                            "bbbb"}));
-      presentation::replace_subword(p, "ccc");
+      presentation::replace_word_with_new_generator(p, "ccc");
       REQUIRE(presentation::length(p) == 33);
       tc.init(twosided, p);
     }
@@ -2955,7 +2955,7 @@ namespace libsemigroups {
                                          "e",
                                          "baca"}));
 
-    presentation::replace_subword(p, "bbb");
+    presentation::replace_word_with_new_generator(p, "bbb");
     REQUIRE(presentation::length(p) == 32);
 
     ToddCoxeter tc(twosided, p);
@@ -3546,7 +3546,7 @@ namespace libsemigroups {
     presentation::add_inverse_rules(p, "ABab");
     presentation::add_rule(p, "aa", "");
     presentation::add_rule(p, "bbb", "");
-    presentation::add_rule(p, "(ab)^5", "");
+    presentation::add_rule(p, "(ab)^5"_p, "");
 
     ToddCoxeter H(right, p);
 
@@ -3891,7 +3891,7 @@ namespace libsemigroups {
     presentation::sort_each_rule(p);
     presentation::sort_rules(p);
     REQUIRE(presentation::longest_subword_reducing_length(p) == "xy");
-    presentation::replace_subword(p, "xy");
+    presentation::replace_word_with_new_generator(p, "xy");
 
     ToddCoxeter tc(twosided, p);
 
@@ -3940,9 +3940,9 @@ namespace libsemigroups {
 
     SECTION("preprocess + Felsch") {
       REQUIRE(presentation::longest_subword_reducing_length(p) == "xy");
-      presentation::replace_subword(p, "xy");
+      presentation::replace_word_with_new_generator(p, "xy");
       REQUIRE(presentation::longest_subword_reducing_length(p) == "axY");
-      presentation::replace_subword(p, "axY");
+      presentation::replace_word_with_new_generator(p, "axY");
       REQUIRE(presentation::length(p) == 140);
       ToddCoxeter tc(right, p);
       tc.add_pair(to_word(p, "xy"), ""_w);
@@ -4307,7 +4307,7 @@ namespace libsemigroups {
     // std::array<uint64_t, 11> const num_idem
     //    = {1, 2, 4, 8, 16, 32, 64, 128, 256};
     // https://oeis.org/A126390
-    using presentation::pow;
+    using words::pow;
     for (size_t n = 5; n < 6; ++n) {  // size.size(); ++n) {
       auto p = fpsemigroup::plactic_monoid(n);
       p.contains_empty_word(true);
@@ -4443,8 +4443,8 @@ namespace libsemigroups {
                           "036",
                           "plactic (n, 1)-id monoid",
                           "[todd-coxeter][extreme]") {
-    using presentation::pow;
-    using presentation::operator+;
+    using words::pow;
+    using words::operator+;
     // #include "Plact4-1_3_last.txt"
     size_t n = 4, r = 4, s = 1;
 
@@ -4519,7 +4519,7 @@ namespace libsemigroups {
                           "044",
                           "2-sylvester monoid",
                           "[todd-coxeter][extreme]") {
-    using presentation::pow;
+    using words::pow;
     size_t                  n = 4;
     Presentation<word_type> p;
     p.alphabet(n);
@@ -4527,7 +4527,7 @@ namespace libsemigroups {
     for (size_t a = 0; a < n; ++a) {
       presentation::add_rule(p, pow({a}, 3), {a});
     }
-    using presentation::operator+;
+    using words::operator+;
     Words words;
     words.letters(n).min(0).max(8);
 

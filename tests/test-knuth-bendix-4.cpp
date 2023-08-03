@@ -486,7 +486,7 @@ namespace libsemigroups {
                           "096",
                           "Sorouhesh",
                           "[quick][knuth-bendix][kbmag][shortlex]") {
-    using presentation::pow;
+    using words::pow;
     auto         rg = ReportGuard(false);
     size_t const n  = 2;
     size_t const q  = 11;

@@ -1469,24 +1469,24 @@ namespace libsemigroups {
                                       std::initializer_list<Word> words);
 
     // TODO(doc)
-    // TODO(later) also we could do a more sophisticated version of this
-    template <typename Word>
-    bool operator==(Presentation<Word> const& lhop,
-                    Presentation<Word> const& rhop) {
-      return lhop.alphabet() == rhop.alphabet() && lhop.rules == rhop.rules;
-    }
-
-    template <typename Word>
-    bool operator!=(Presentation<Word> const& lhop,
-                    Presentation<Word> const& rhop) {
-      return !(lhop == rhop);
-    }
-
-    // TODO(doc)
     std::string to_gap_string(Presentation<word_type> const& p,
                               std::string const&             var_name);
 
   }  // namespace presentation
+
+  // TODO(doc)
+  // TODO(later) also we could do a more sophisticated version of this
+  template <typename Word>
+  bool operator==(Presentation<Word> const& lhop,
+                  Presentation<Word> const& rhop) {
+    return lhop.alphabet() == rhop.alphabet() && lhop.rules == rhop.rules;
+  }
+
+  template <typename Word>
+  bool operator!=(Presentation<Word> const& lhop,
+                  Presentation<Word> const& rhop) {
+    return !(lhop == rhop);
+  }
 
   // TODO(later) could do a no_check version
   void to_word(Presentation<std::string> const& p,

@@ -1779,7 +1779,7 @@ namespace libsemigroups {
     p.rules.clear();
     p.alphabet(3);
     presentation::add_idempotent_rules_no_checks(p, 012_w);
-    using presentation::operator+;
+    using words::operator+;
     Words words;
     words.letters(3).min(0).max(3);
     size_t n = 3;

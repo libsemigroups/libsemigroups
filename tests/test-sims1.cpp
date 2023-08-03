@@ -369,7 +369,7 @@ namespace libsemigroups {
 
     auto w = presentation::longest_subword_reducing_length(p);
     while (!w.empty()) {
-      presentation::replace_subword(p, w);
+      presentation::replace_word_with_new_generator(p, w);
       w = presentation::longest_subword_reducing_length(p);
     }
 
@@ -747,12 +747,6 @@ namespace libsemigroups {
     presentation::sort_each_rule(p);
     presentation::sort_rules(p);
     REQUIRE(p.rules.size() == 86);
-    // do {
-    //   auto it = knuth_bendix::redundant_rule(p,
-    //   std::chrono::milliseconds(100)); p.rules.erase(it, it + 2);
-    // } while (presentation::length(p) > 300);
-    // presentation::replace_subword(p,
-    // presentation::longest_subword_reducing_length(p));
 
     Sims1_ C(congruence_kind::right);
     C.short_rules(p).long_rule_length(12);
@@ -860,7 +854,8 @@ namespace libsemigroups {
     REQUIRE(*presentation::longest_rule(p) == word_type({1, 1, 1, 1}));
     REQUIRE(*(presentation::longest_rule(p) + 1) == word_type({1, 1}));
 
-    REQUIRE(presentation::longest_subword_reducing_length(p) == word_type({1, 1}));
+    REQUIRE(presentation::longest_subword_reducing_length(p)
+            == word_type({1, 1}));
     p.alphabet(9);
     presentation::replace_subword(p, {1, 1}, {0});
     REQUIRE(presentation::length(p) == 246);
@@ -1721,7 +1716,7 @@ namespace libsemigroups {
 
     word_type w = presentation::longest_subword_reducing_length(p);
     while (!w.empty()) {
-      presentation::replace_subword(p, w);
+      presentation::replace_word_with_new_generator(p, w);
       w = presentation::longest_subword_reducing_length(p);
     }
 
@@ -2179,7 +2174,8 @@ namespace libsemigroups {
     auto p  = partial_transformation_monoid(4, author::Sutov);
     auto w  = presentation::longest_subword_reducing_length(p);
     while (!w.empty()) {
-      presentation::replace_subword(p, presentation::longest_subword_reducing_length(p));
+      presentation::replace_word_with_new_generator(
+          p, presentation::longest_subword_reducing_length(p));
       w = presentation::longest_subword_reducing_length(p);
     }
 
@@ -2382,7 +2378,7 @@ namespace libsemigroups {
                           "081",
                           "fibonacci_group(2, 9) x 2",
                           "[extreme][sims1]") {
-    using presentation::pow;
+    using words::pow;
     auto                      rg = ReportGuard(true);
     Presentation<std::string> p;
     p.alphabet("abAB");
@@ -2428,7 +2424,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Sims1", "083", "M11 x 1", "[extreme][sims1]") {
-    using presentation::pow;
+    using words::pow;
     Presentation<std::string> p;
     p.alphabet("abcABC");
     p.contains_empty_word(true);
@@ -2443,7 +2439,7 @@ namespace libsemigroups {
     presentation::sort_rules(p);
 
     REQUIRE(presentation::longest_subword_reducing_length(p) == "aa");
-    presentation::replace_subword(p, "aa");
+    presentation::replace_word_with_new_generator(p, "aa");
 
     ToddCoxeter tc(congruence_kind::twosided, p);
     REQUIRE(tc.number_of_classes() == 7'920);
@@ -2454,7 +2450,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Sims1", "084", "M11 x 2", "[extreme][sims1]") {
-    using presentation::pow;
+    using words::pow;
     Presentation<std::string> p;
     p.alphabet("abcABC");
     p.contains_empty_word(true);
@@ -2469,7 +2465,7 @@ namespace libsemigroups {
     presentation::sort_rules(p);
 
     REQUIRE(presentation::longest_subword_reducing_length(p) == "bb");
-    presentation::replace_subword(p, "bb");
+    presentation::replace_word_with_new_generator(p, "bb");
 
     ToddCoxeter tc(congruence_kind::twosided, p);
     REQUIRE(tc.number_of_classes() == 7'920);
@@ -2483,7 +2479,7 @@ namespace libsemigroups {
                           "085",
                           "JonesMonoid(4)",
                           "[extreme][sims1]") {
-    using presentation::pow;
+    using words::pow;
     Presentation<std::string> p
         = to_presentation<std::string>(temperley_lieb_monoid(4));
     REQUIRE(p.contains_empty_word());
