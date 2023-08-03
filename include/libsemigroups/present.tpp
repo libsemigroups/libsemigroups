@@ -43,11 +43,12 @@ namespace libsemigroups {
       : _alphabet(), _alphabet_map(), _contains_empty_word(false), rules() {}
 
   template <typename Word>
-  void Presentation<Word>::clear() {
+  Presentation<Word>& Presentation<Word>::init() {
     _alphabet.clear();
     _alphabet_map.clear();
     _contains_empty_word = false;
     rules.clear();
+    return *this;
   }
 
   template <typename Word>
@@ -447,10 +448,33 @@ namespace libsemigroups {
     template <typename Word>
     typename Presentation<Word>::letter_type
     add_generator(Presentation<Word>& p) {
+      auto result = first_unused_letter(p);
+      add_generator_no_checks(p, result);
+      return result;
+    }
+
+    template <typename Word>
+    void add_generator_no_checks(Presentation<Word>&                      p,
+                                 typename Presentation<Word>::letter_type x) {
       auto new_alphabet = p.alphabet();
-      new_alphabet.push_back(first_unused_letter(p));
+      new_alphabet.push_back(x);
       p.alphabet(new_alphabet);
-      return p.alphabet().back();
+    }
+
+    template <typename Word>
+    void add_generator(Presentation<Word>&                      p,
+                       typename Presentation<Word>::letter_type x) {
+      try {
+        p.index(x);  // throws if x belongs to p.alphabet()
+      } catch (LibsemigroupsException const& e) {
+        add_generator_no_checks(p, x);
+        return;
+      }
+      LIBSEMIGROUPS_EXCEPTION(
+          "the 2nd argument \"{}\" already belongs to the alphabet \"{}\", "
+          "expected an unused letter",
+          (std::isprint(x) ? x : static_cast<size_t>(x)),
+          p.alphabet());
     }
 
     template <typename Word, typename Iterator, typename>

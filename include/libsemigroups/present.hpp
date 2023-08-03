@@ -102,10 +102,17 @@ namespace libsemigroups {
     //! Constructs an empty presentation with no rules and no alphabet.
     Presentation();
 
-    Presentation& init() {
-      clear();
-      return *this;
-    }
+    //! Remove the alphabet and all rules.
+    //!
+    //! This function clears the alphabet and all rules from the presentation,
+    //! putting it back into the state it would be in if it was newly
+    //! constructed.
+    //!
+    //! \param (None)
+    //!
+    //! \returns
+    //! A reference to `this`.
+    Presentation& init();
 
     //! Default copy constructor.
     Presentation(Presentation const&) = default;
@@ -419,19 +426,6 @@ namespace libsemigroups {
       validate_alphabet();
       validate_rules();
     }
-
-    //! Remove the alphabet and all rules.
-    //!
-    //! This function clears the alphabet and all rules from the presentation,
-    //! putting it back into the state it would be in if it was newly
-    //! constructed.
-    //!
-    //! \param (None)
-    //!
-    //! \returns
-    //! (None)
-    // TODO(now) remove, use init() instead
-    void clear();
 
    private:
     void try_set_alphabet(decltype(_alphabet_map)& alphabet_map,
@@ -878,7 +872,14 @@ namespace libsemigroups {
     typename Presentation<Word>::letter_type
     add_generator(Presentation<Word>& p);
 
-    // TODO add_generator_no_checks, add_generator with letter argument
+    // TODO(doc)
+    template <typename Word>
+    void add_generator_no_checks(Presentation<Word>&                      p,
+                                 typename Presentation<Word>::letter_type x);
+    // TODO(doc)
+    template <typename Word>
+    void add_generator(Presentation<Word>&                      p,
+                       typename Presentation<Word>::letter_type x);
 
     //! Replace non-overlapping instances of a subword via iterators.
     //!

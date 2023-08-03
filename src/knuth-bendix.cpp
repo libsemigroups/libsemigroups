@@ -279,7 +279,7 @@ namespace libsemigroups {
     _confluence_known             = false;
     _internal_is_same_as_external = false;
     _overlap_measure              = nullptr;
-    _presentation.clear();
+    _presentation.init();
     overlap_policy(_settings.overlap_policy);
     return *this;
   }
