@@ -944,10 +944,9 @@ namespace libsemigroups {
     //! \returns The new generator added.
     //!
     //! \throws LibsemigroupsException if \p w is empty.
-    typename Presentation<std::string>::
-        letter_type inline replace_word_with_new_generator(
-            Presentation<std::string>& p,
-            char const*                w) {
+    inline typename Presentation<std::string>::letter_type
+    replace_word_with_new_generator(Presentation<std::string>& p,
+                                    char const*                w) {
       return replace_word_with_new_generator(p, w, w + std::strlen(w));
     }
 
@@ -1279,19 +1278,18 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if `i` exceeds the number of letters in
     //! supported by `letter_type`.
-    // TODO rename to all_letters? human_readable_letter? or something better?
     template <typename Word>
-    typename Presentation<Word>::letter_type letter(Presentation<Word> const&,
-                                                    size_t i);
+    typename Presentation<Word>::letter_type
+    human_readable_letter(Presentation<Word> const&, size_t i);
 
     //! Return a possible letter by index.
     //!
     //! This function returns the \f$i\f$-th letter in the alphabet consisting
-    //! of all possible letters of type
-    //! Presentation<std::string>::letter_type. This function exists so that
-    //! visible ASCII characters occur before invisible ones, so that when
-    //! manipulating presentations over `std::string`s the human readable
-    //! characters are used before non-readable ones.
+    //! of all possible letters of type Presentation<std::string>::letter_type.
+    //! This function exists so that visible ASCII characters occur before
+    //! invisible ones, so that when manipulating presentations over
+    //! `std::string`s the human readable characters are used before
+    //! non-readable ones.
     //!
     //! \param p a presentation (unused)
     //! \param i the index
@@ -1300,40 +1298,18 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if \p i exceeds the number of letters
     //! in supported by `letter_type`.
-    //!
-    //! \sa `character(size_t)`
-    template <>
-    // TODO remove inline
-    // TODO no checks?
-    inline typename Presentation<std::string>::letter_type
-    letter(Presentation<std::string> const& p, size_t i);
+    typename Presentation<std::string>::letter_type
+    human_readable_letter(Presentation<std::string> const& p, size_t i);
 
-    //! Return a possible character by index.
-    //!
-    //! This function returns the \f$i\f$-th letter in the alphabet consisting
-    //! of all possible letters of type
-    //! Presentation<std::string>::letter_type. This function exists so that
-    //! visible ASCII characters occur before invisible ones, so that when
-    //! manipulating presentations over `std::string`s the human readable
-    //! characters are used before non-readable ones.
-    //!
-    //! \param i the index
-    //!
-    //! \returns A `letter_type`.
-    //!
-    //! \throws LibsemigroupsException if \p i exceeds the number of letters
-    //! in supported by `letter_type`.
-    //!
-    //! \sa `letter(Presentation<std::string> const&, size_t)`
-    // TODO remove inline
-    // TODO no checks?
-    inline typename Presentation<std::string>::letter_type character(size_t i);
+    // TODO doc
+    // TODO move to words.hpp
+    typename Presentation<std::string>::letter_type
+    human_readable_letter(size_t i);
 
-    // TODO remove inline
-    // TODO no checks?
-    // TODO use a different name
-    inline typename Presentation<word_type>::letter_type
-    index(typename Presentation<std::string>::letter_type c);
+    // TODO doc
+    // TODO move to words.*pp
+    size_t
+    human_readable_index(typename Presentation<std::string>::letter_type c);
 
     //! Returns the first letter **not** in the alphabet of a presentation.
     //!
@@ -1526,10 +1502,11 @@ namespace libsemigroups {
 
   // TODO(later) could do a no_check version
   // TODO remove inline
+  // TODO move to words.*pp
   inline void to_word(word_type& w, std::string const& s) {
     w.resize(s.size(), 0);
     std::transform(s.cbegin(), s.cend(), w.begin(), [](char c) {
-      return presentation::index(c);
+      return presentation::human_readable_index(c);
     });
   }
 
@@ -1543,13 +1520,14 @@ namespace libsemigroups {
   }
   // TODO(later) could do a no_check version
   // TODO remove inline
+  // TODO move to words.*pp
   inline word_type to_word(std::string const& s) {
     word_type w;
     to_word(w, s);
     return w;
   }
 
-  // TODO(later) could do a no_check version
+  // TODO(later) could do a check version
   // TODO remove inline
   inline std::string to_string(Presentation<std::string> const& p,
                                word_type const&                 w) {

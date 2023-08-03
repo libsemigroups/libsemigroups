@@ -552,13 +552,13 @@ namespace libsemigroups {
 
       for (auto& rule : p.rules) {
         std::for_each(rule.begin(), rule.end(), [&p](letter_type& x) {
-          x = letter(p, p.index(x));
+          x = human_readable_letter(p, p.index(x));
         });
       }
       Word A(p.alphabet().size(), 0);
 
       for (size_t i = 0; i < p.alphabet().size(); ++i) {
-        A[i] = letter(p, i);
+        A[i] = human_readable_letter(p, i);
       }
       p.alphabet(std::move(A));
 #ifdef LIBSEMIGROUPS_DEBUG
@@ -671,96 +671,17 @@ namespace libsemigroups {
     }
 
     template <typename Word>
-    typename Presentation<Word>::letter_type letter(Presentation<Word> const&,
-                                                    size_t i) {
+    typename Presentation<Word>::letter_type
+    human_readable_letter(Presentation<Word> const&, size_t i) {
       using letter_type = typename Presentation<Word>::letter_type;
+      // TODO throw if there is not human_readable_letter with index i?
       if (i >= std::numeric_limits<letter_type>::max()) {
-        LIBSEMIGROUPS_EXCEPTION("expected the 2nd argument to in "
+        LIBSEMIGROUPS_EXCEPTION("expected the 2nd argument to be in "
                                 "the range [0, {}), found {}",
                                 std::numeric_limits<letter_type>::max(),
                                 i);
       }
       return static_cast<typename Presentation<Word>::letter_type>(i);
-    }
-
-    template <>
-    typename Presentation<std::string>::letter_type
-    letter(Presentation<std::string> const&, size_t i) {
-      return character(i);
-    }
-
-    namespace {
-      std::string const& chars_in_human_readable_order() {
-        // Choose visible characters a-zA-Z0-9 first before anything else
-        // The ascii ranges for these characters are: [97, 123), [65, 91),
-        // [48, 58) so the remaining range of chars that are appended to the end
-        // after these chars are [0,48), [58, 65), [91, 97), [123, 255)
-        static std::string letters
-            = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-        static bool first_call = true;
-        if (first_call) {
-          letters.resize(255);
-          std::iota(letters.begin() + 62,
-                    letters.begin() + 110,
-                    static_cast<char>(0));
-          std::iota(letters.begin() + 110,
-                    letters.begin() + 117,
-                    static_cast<char>(58));
-          std::iota(letters.begin() + 117,
-                    letters.begin() + 123,
-                    static_cast<char>(91));
-          std::iota(
-              letters.begin() + 123, letters.end(), static_cast<char>(123));
-          first_call = false;
-          LIBSEMIGROUPS_ASSERT(letters.size()
-                               == std::numeric_limits<char>::max()
-                                      - std::numeric_limits<char>::min());
-          LIBSEMIGROUPS_ASSERT(letters.end() == letters.begin() + 255);
-        }
-        return letters;
-      }
-
-    }  // namespace
-
-    // TODO merge into letter above
-    typename Presentation<std::string>::letter_type character(size_t i) {
-      using letter_type = typename Presentation<std::string>::letter_type;
-      // Choose visible characters a-zA-Z0-9 first before anything else
-      // The ascii ranges for these characters are: [97, 123), [65, 91),
-      // [48, 58) so the remaining range of chars that are appended to the end
-      // after these chars are [0,48), [58, 65), [91, 97), [123, 255)
-      if (i >= std::numeric_limits<letter_type>::max()
-                   - std::numeric_limits<letter_type>::min()) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "expected a value in the range [0, {}) found {}",
-            std::numeric_limits<letter_type>::max()
-                - std::numeric_limits<letter_type>::min(),
-            i);
-      }
-      return chars_in_human_readable_order()[i];
-    }
-
-    inline typename Presentation<word_type>::letter_type
-    index(typename Presentation<std::string>::letter_type c) {
-      static bool first_call = true;
-      static std::unordered_map<Presentation<std::string>::letter_type,
-                                Presentation<word_type>::letter_type>
-          map;
-      if (first_call) {
-        first_call        = false;
-        auto const& chars = chars_in_human_readable_order();
-        for (letter_type i = 0; i < chars.size(); ++i) {
-          map.emplace(chars[i], i);
-        }
-      }
-
-      auto it = map.find(c);
-      if (it == map.cend()) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "unexpected character, cannot convert \'{}\' to a letter", c);
-      }
-
-      return it->second;
     }
 
     template <typename Word>
@@ -783,7 +704,7 @@ namespace libsemigroups {
 
       letter_type x;
       for (size_type i = 0; i < max_letter; ++i) {
-        x = letter(p, i);
+        x = human_readable_letter(p, i);
         if (!p.in_alphabet(x)) {
           break;
         }
@@ -893,7 +814,8 @@ namespace libsemigroups {
 
       for (auto const& x : p.alphabet()) {
         if (x != other) {
-          replace_subword(p, {x}, {letter(p, non_trivial_scc[index])});
+          replace_subword(
+              p, {x}, {human_readable_letter(p, non_trivial_scc[index])});
         }
       }
       p.alphabet_from_rules();

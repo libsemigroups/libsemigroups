@@ -229,7 +229,7 @@ namespace libsemigroups {
                                     "digits in 0123456789, found {}",
                                     w[i]);
           }
-          result.push_back(presentation::index(w[i]));
+          result.push_back(presentation::human_readable_index(w[i]));
         }
       }
       return result;
