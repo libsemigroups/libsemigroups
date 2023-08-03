@@ -689,6 +689,7 @@ EXTRA_PROGRAMS += test_pbr
 EXTRA_PROGRAMS += test_pool
 EXTRA_PROGRAMS += test_presentation
 EXTRA_PROGRAMS += test_race
+EXTRA_PROGRAMS += test_ranges
 EXTRA_PROGRAMS += test_runner
 EXTRA_PROGRAMS += test_schreier_sims
 EXTRA_PROGRAMS += test_sims1
@@ -782,6 +783,7 @@ test_all_SOURCES += tests/test-pbr.cpp
 test_all_SOURCES += tests/test-pool.cpp
 test_all_SOURCES += tests/test-presentation.cpp
 test_all_SOURCES += tests/test-race.cpp
+test_all_SOURCES += tests/test-ranges.cpp
 test_all_SOURCES += tests/test-runner.cpp
 test_all_SOURCES += tests/test-schreier-sims.cpp
 test_all_SOURCES += tests/test-schreier-sims-helper.cpp
@@ -947,6 +949,9 @@ test_presentation_SOURCES += tests/test-main.cpp
 
 test_race_SOURCES =  tests/test-race.cpp
 test_race_SOURCES += tests/test-main.cpp
+
+test_ranges_SOURCES =  tests/test-ranges.cpp
+test_ranges_SOURCES += tests/test-main.cpp
 
 test_runner_SOURCES =  tests/test-runner.cpp
 test_runner_SOURCES += tests/test-main.cpp

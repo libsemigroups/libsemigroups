@@ -452,7 +452,7 @@ namespace libsemigroups {
       }
 #else
       auto           tmp   = am;
-      uint64_t const N     = number_of_nodes();
+      uint64_t const N     = d.number_of_nodes();
       auto           acc   = matrix::pow(am, min);
       uint64_t       total = 0;
       for (size_t i = min; i < max; ++i) {
@@ -522,7 +522,7 @@ namespace libsemigroups {
         acc *= am;
       }
 #else
-      size_t const N     = number_of_nodes();
+      size_t const N     = d.number_of_nodes();
       auto         tmp   = am;
       auto         acc   = matrix::pow(am, min);
       size_t       total = 0;

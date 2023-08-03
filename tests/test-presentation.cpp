@@ -44,7 +44,7 @@
 #include "libsemigroups/froidure-pin.hpp"     // for FroidurePin
 #include "libsemigroups/knuth-bendix.hpp"     // for redundant_rule
 #include "libsemigroups/order.hpp"            // for ShortLexCompare, shor...
-#include "libsemigroups/presentation.hpp"          // for Presentation, human_r...
+#include "libsemigroups/presentation.hpp"     // for Presentation, human_r...
 #include "libsemigroups/ranges.hpp"           // for chain, shortlex_compare
 #include "libsemigroups/to-presentation.hpp"  // for to_presentation
 #include "libsemigroups/types.hpp"            // for word_type, letter_type
@@ -2117,7 +2117,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("Presentation",
                           "049",
                           "pow",
-                          "[quick][word_functions]") {
+                          "[quick][word_functions][no-coverage][no-valgrind]") {
     using namespace literals;
     using words::pow;
     word_type w = 01_w;
@@ -2137,7 +2137,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("Presentation",
                           "046",
                           "pow_inplace",
-                          "[quick][word_functions]") {
+                          "[quick][word_functions][no-coverage][no-valgrind]") {
     using namespace literals;
     using words::pow_inplace;
     word_type w = 01_w;
