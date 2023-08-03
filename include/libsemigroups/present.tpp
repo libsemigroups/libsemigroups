@@ -386,7 +386,11 @@ namespace libsemigroups {
 
     template <typename Word, typename Compare>
     void sort_rules(Presentation<Word>& p, Compare cmp) {
-      using namespace rx;
+      using rx::chain;
+      using rx::seq;
+      using rx::sort;
+      using rx::take;
+      using rx::to_vector;
       detail::validate_rules_length(p);
 
       auto&        rules = p.rules;

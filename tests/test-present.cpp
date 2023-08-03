@@ -18,21 +18,42 @@
 
 #define CATCH_CONFIG_ENABLE_PAIR_STRINGMAKER
 
-#include <cstddef>  // for size_t
+#include <algorithm>      // for all_of, equal, fill, sort
+#include <chrono>         // for milliseconds
+#include <cstddef>        // for size_t
+#include <iterator>       // for distance
+#include <math.h>         // for pow
+#include <stdint.h>       // for uint16_t
+#include <string>         // for basic_string, operator==
+#include <unordered_map>  // for operator==, operator!=
+#include <unordered_set>  // for unordered_set
+#include <utility>        // for move, make_pair, swap
+#include <vector>         // for vector, operator==, swap
 
-#include "catch.hpp"      // for REQUIRE, REQUIRE_THROWS_AS, REQUI...
+#include "catch.hpp"      // for operator""_catch_sr
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
+#include "fmt/core.h"    // for format, print
+#include "fmt/format.h"  // for buffer::append
+
+#include "rx/ranges.hpp"  // for ChainRange, get_range...
+
 #include "libsemigroups/bipart.hpp"           // for Bipartition
+#include "libsemigroups/constants.hpp"        // for operator==, operator!=
+#include "libsemigroups/exception.hpp"        // for LibsemigroupsException
 #include "libsemigroups/froidure-pin.hpp"     // for FroidurePin
 #include "libsemigroups/knuth-bendix.hpp"     // for redundant_rule
-#include "libsemigroups/present.hpp"          // for Presentation
-#include "libsemigroups/to-presentation.hpp"  // for make
-#include "libsemigroups/types.hpp"            // for word_type
-#include "libsemigroups/words.hpp"            // for operator +
+#include "libsemigroups/order.hpp"            // for ShortLexCompare, shor...
+#include "libsemigroups/present.hpp"          // for Presentation, human_r...
+#include "libsemigroups/ranges.hpp"           // for chain, shortlex_compare
+#include "libsemigroups/to-presentation.hpp"  // for to_presentation
+#include "libsemigroups/types.hpp"            // for word_type, letter_type
+#include "libsemigroups/words.hpp"            // for operator+=, operator""_w
 
-#include "libsemigroups/detail/containers.hpp"  // for StaticVector1
-#include "libsemigroups/detail/int-range.hpp"   // for detail::IntRange
+#include "libsemigroups/detail/containers.hpp"  // for StaticVector1, operat...
+#include "libsemigroups/detail/int-range.hpp"   // for IntRange
+#include "libsemigroups/detail/report.hpp"      // for ReportGuard
+#include "libsemigroups/detail/string.hpp"      // for operator<<
 
 namespace libsemigroups {
 
