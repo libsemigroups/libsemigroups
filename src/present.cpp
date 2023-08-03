@@ -77,25 +77,33 @@ namespace libsemigroups {
   }  // namespace presentation
 
   void to_word(Presentation<std::string> const& p,
-               word_type&                       w,
-               std::string const&               s) {
-    w.resize(s.size(), 0);
-    std::transform(
-        s.cbegin(), s.cend(), w.begin(), [&p](auto i) { return p.index(i); });
+               std::string const&               input,
+               word_type&                       output) {
+    output.resize(input.size(), 0);
+    std::transform(input.cbegin(), input.cend(), output.begin(), [&p](auto i) {
+      return p.index(i);
+    });
   }
 
   word_type to_word(Presentation<std::string> const& p, std::string const& s) {
     word_type w;
-    to_word(p, w, s);
+    to_word(p, s, w);
     return w;
+  }
+
+  void to_string(Presentation<std::string> const& p,
+                 word_type const&                 input,
+                 std::string&                     output) {
+    output.resize(input.size(), 0);
+    std::transform(input.cbegin(), input.cend(), output.begin(), [&p](auto i) {
+      return p.letter(i);
+    });
   }
 
   std::string to_string(Presentation<std::string> const& p,
                         word_type const&                 w) {
-    std::string s(w.size(), 0);
-    std::transform(w.cbegin(), w.cend(), s.begin(), [&p](auto i) {
-      return p.letter_no_checks(i);
-    });
+    std::string s;
+    to_string(p, w, s);
     return s;
   }
 }  // namespace libsemigroups

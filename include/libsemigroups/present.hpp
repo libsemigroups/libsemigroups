@@ -1481,15 +1481,22 @@ namespace libsemigroups {
   }  // namespace presentation
 
   // TODO(later) could do a no_check version
+  // TODO swap 2nd + 3rd args
   void to_word(Presentation<std::string> const& p,
-               word_type&                       w,
-               std::string const&               s);
+               std::string const&               input,
+               word_type&                       output);
 
   // TODO(later) could do a no_check version
-  word_type to_word(Presentation<std::string> const& p, std::string const& s);
+  word_type to_word(Presentation<std::string> const& p,
+                    std::string const&               input);
 
-  // TODO(later) could do a check version
-  // TODO modify by reference
+  // TODO(later) could do a no_check version
+  // TODO swap 2nd + 3rd args
+  void to_string(Presentation<std::string> const& p,
+                 word_type const&                 input,
+                 std::string&                     output);
+
+  // TODO(later) could do a no check version
   std::string to_string(Presentation<std::string> const& p, word_type const& w);
 
 }  // namespace libsemigroups
