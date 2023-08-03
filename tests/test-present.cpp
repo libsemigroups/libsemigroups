@@ -1265,16 +1265,15 @@ namespace libsemigroups {
     REQUIRE_THROWS_AS(presentation::human_readable_letter(p, 65536),
                       LibsemigroupsException);
     REQUIRE(presentation::human_readable_letter(p, 10) == 10);
-    REQUIRE_THROWS_AS(presentation::human_readable_letter(65536),
-                      LibsemigroupsException);
-    REQUIRE(presentation::human_readable_letter(0) == 'a');
-    REQUIRE(presentation::human_readable_letter(10) == 'k');
+    REQUIRE_THROWS_AS(human_readable_char(65536), LibsemigroupsException);
+    REQUIRE(human_readable_char(0) == 'a');
+    REQUIRE(human_readable_char(10) == 'k');
 
     detail::IntRange          ir(0, 255);
     Presentation<std::string> q;
 
     REQUIRE(std::all_of(ir.cbegin(), ir.cend(), [&q](size_t i) {
-      return presentation::human_readable_letter(i)
+      return human_readable_char(i)
              == presentation::human_readable_letter(q, i);
     }));
   }

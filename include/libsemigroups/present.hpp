@@ -1301,16 +1301,6 @@ namespace libsemigroups {
     typename Presentation<std::string>::letter_type
     human_readable_letter(Presentation<std::string> const& p, size_t i);
 
-    // TODO doc
-    // TODO move to words.hpp
-    typename Presentation<std::string>::letter_type
-    human_readable_letter(size_t i);
-
-    // TODO doc
-    // TODO move to words.*pp
-    size_t
-    human_readable_index(typename Presentation<std::string>::letter_type c);
-
     //! Returns the first letter **not** in the alphabet of a presentation.
     //!
     //! This function returns `letter(p, i)` when `i` is the least possible
@@ -1491,14 +1481,16 @@ namespace libsemigroups {
   }  // namespace presentation
 
   // TODO(later) could do a no_check version
-  // TODO remove inline
-  inline void to_word(Presentation<std::string> const& p,
-                      word_type&                       w,
-                      std::string const&               s) {
-    w.resize(s.size(), 0);
-    std::transform(
-        s.cbegin(), s.cend(), w.begin(), [&p](auto i) { return p.index(i); });
-  }
+  void to_word(Presentation<std::string> const& p,
+               word_type&                       w,
+               std::string const&               s);
+
+  // TODO(later) could do a no_check version
+  word_type to_word(Presentation<std::string> const& p, std::string const& s);
+
+  // TODO(later) could do a check version
+  // TODO modify by reference
+  std::string to_string(Presentation<std::string> const& p, word_type const& w);
 
   // TODO(later) could do a no_check version
   // TODO remove inline
@@ -1506,18 +1498,10 @@ namespace libsemigroups {
   inline void to_word(word_type& w, std::string const& s) {
     w.resize(s.size(), 0);
     std::transform(s.cbegin(), s.cend(), w.begin(), [](char c) {
-      return presentation::human_readable_index(c);
+      return human_readable_index(c);
     });
   }
 
-  // TODO(later) could do a no_check version
-  // TODO remove inline
-  inline word_type to_word(Presentation<std::string> const& p,
-                           std::string const&               s) {
-    word_type w;
-    to_word(p, w, s);
-    return w;
-  }
   // TODO(later) could do a no_check version
   // TODO remove inline
   // TODO move to words.*pp
@@ -1525,17 +1509,6 @@ namespace libsemigroups {
     word_type w;
     to_word(w, s);
     return w;
-  }
-
-  // TODO(later) could do a check version
-  // TODO remove inline
-  inline std::string to_string(Presentation<std::string> const& p,
-                               word_type const&                 w) {
-    std::string s(w.size(), 0);
-    std::transform(w.cbegin(), w.cend(), s.begin(), [&p](auto i) {
-      return p.letter_no_checks(i);
-    });
-    return s;
   }
 
 }  // namespace libsemigroups

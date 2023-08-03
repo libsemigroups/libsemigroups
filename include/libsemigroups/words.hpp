@@ -795,6 +795,12 @@ namespace libsemigroups {
     return parse(w);
   }
 
+  // TODO doc
+  char human_readable_char(size_t i);
+
+  // TODO doc
+  size_t human_readable_index(char c);
+
   namespace words {
 
     // TODO remove IsWord
@@ -963,12 +969,6 @@ namespace libsemigroups {
     //! See \ref prod "prod".
     word_type
     prod(std::initializer_list<size_t> ilist, int first, int last, int step);
-
-    // TODO doc
-    char human_readable_letter(size_t i);
-
-    // TODO doc
-    size_t human_readable_index(char c);
 
   }  // namespace words
 }  // namespace libsemigroups

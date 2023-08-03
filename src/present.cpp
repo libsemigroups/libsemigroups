@@ -28,7 +28,7 @@ namespace libsemigroups {
 
     typename Presentation<std::string>::letter_type
     human_readable_letter(Presentation<std::string> const&, size_t i) {
-      return human_readable_letter(i);
+      return human_readable_char(i);
     }
 
     std::string to_gap_string(Presentation<word_type> const& p,
@@ -42,7 +42,7 @@ namespace libsemigroups {
         std::string out;
         std::string sep = "";
         for (auto it = w.cbegin(); it < w.cend(); ++it) {
-          out += sep + human_readable_letter(*it);
+          out += sep + human_readable_char(*it);
           sep = " * ";
         }
         return out;
@@ -51,13 +51,13 @@ namespace libsemigroups {
       std::string out = "free := FreeSemigroup(";
       std::string sep = "";
       for (auto it = p.alphabet().cbegin(); it != p.alphabet().cend(); ++it) {
-        out += fmt::format("{}\"{}\"", sep, human_readable_letter(*it));
+        out += fmt::format("{}\"{}\"", sep, human_readable_char(*it));
         sep = ", ";
       }
       out += ");\n";
 
       for (size_t i = 0; i != p.alphabet().size(); ++i) {
-        out += fmt::format("{} := free.{};\n", human_readable_letter(i), i + 1);
+        out += fmt::format("{} := free.{};\n", human_readable_char(i), i + 1);
       }
       out += "\n";
 
@@ -75,4 +75,27 @@ namespace libsemigroups {
       return out;
     }
   }  // namespace presentation
+
+  void to_word(Presentation<std::string> const& p,
+               word_type&                       w,
+               std::string const&               s) {
+    w.resize(s.size(), 0);
+    std::transform(
+        s.cbegin(), s.cend(), w.begin(), [&p](auto i) { return p.index(i); });
+  }
+
+  word_type to_word(Presentation<std::string> const& p, std::string const& s) {
+    word_type w;
+    to_word(p, w, s);
+    return w;
+  }
+
+  std::string to_string(Presentation<std::string> const& p,
+                        word_type const&                 w) {
+    std::string s(w.size(), 0);
+    std::transform(w.cbegin(), w.cend(), s.begin(), [&p](auto i) {
+      return p.letter_no_checks(i);
+    });
+    return s;
+  }
 }  // namespace libsemigroups

@@ -131,9 +131,8 @@ namespace libsemigroups {
   auto to_presentation(Presentation<WordInput> const& p)
       -> std::enable_if_t<std::is_same_v<WordOutput, std::string>,
                           Presentation<WordOutput>> {
-    return to_presentation<WordOutput>(p, [&p](auto val) {
-      return presentation::human_readable_letter(p.index(val));
-    });
+    return to_presentation<WordOutput>(
+        p, [&p](auto val) { return human_readable_char(p.index(val)); });
   }
 }  // namespace libsemigroups
 #endif  // LIBSEMIGROUPS_TO_PRESENTATION_HPP_

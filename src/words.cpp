@@ -229,7 +229,7 @@ namespace libsemigroups {
                                     "digits in 0123456789, found {}",
                                     w[i]);
           }
-          result.push_back(presentation::human_readable_index(w[i]));
+          result.push_back(human_readable_index(w[i]));
         }
       }
       return result;
@@ -532,8 +532,7 @@ namespace libsemigroups {
 
   }  // namespace
 
-  typename Presentation<std::string>::letter_type
-  human_readable_letter(size_t i) {
+  char human_readable_char(size_t i) {
     using letter_type = typename Presentation<std::string>::letter_type;
     // Choose visible characters a-zA-Z0-9 first before anything else
     // The ascii ranges for these characters are: [97, 123), [65, 91),
@@ -547,6 +546,28 @@ namespace libsemigroups {
                               i);
     }
     return chars_in_human_readable_order()[i];
+  }
+
+  size_t human_readable_index(char c) {
+    static bool first_call = true;
+    static std::unordered_map<Presentation<std::string>::letter_type,
+                              Presentation<word_type>::letter_type>
+        map;
+    if (first_call) {
+      first_call        = false;
+      auto const& chars = chars_in_human_readable_order();
+      for (letter_type i = 0; i < chars.size(); ++i) {
+        map.emplace(chars[i], i);
+      }
+    }
+
+    auto it = map.find(c);
+    if (it == map.cend()) {
+      LIBSEMIGROUPS_EXCEPTION(
+          "unexpected character, cannot convert \'{}\' to a letter", c);
+    }
+
+    return it->second;
   }
 
   // The following functions belong to the words namespace so as to only have
