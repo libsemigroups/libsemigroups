@@ -124,6 +124,8 @@ namespace libsemigroups {
   typename Kambites<Word>::value_type
   Kambites<Word>::normal_form(value_type const& w0) {
     validate_small_overlap_class();
+    using words::operator+;
+    using words::operator+=;
     size_t        r = UNDEFINED;
     internal_type v, w(w0);
     while (!w.empty()) {
@@ -344,6 +346,7 @@ namespace libsemigroups {
   void Kambites<Word>::replace_prefix(internal_type&       w,
                                       internal_type const& p) const {
     LIBSEMIGROUPS_ASSERT(wp_prefix(w, w, p));
+    using words::operator+=;
     if (detail::is_prefix(w, p)) {
       return;
     }
@@ -432,6 +435,7 @@ namespace libsemigroups {
                                  internal_type v,
                                  internal_type p) const {
     using detail::is_prefix;
+    using words::operator+;
 
     _complements.init(_presentation.rules);
 
@@ -513,6 +517,7 @@ namespace libsemigroups {
   void Kambites<Word>::normal_form_inner(size_t&        r,
                                          internal_type& v,
                                          internal_type& w) const {
+    using words::operator+=;
     size_t i, j;
     std::tie(i, j) = clean_overlap_prefix_mod(w, w.size());
     if (j == UNDEFINED) {

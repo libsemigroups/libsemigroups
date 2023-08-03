@@ -43,6 +43,7 @@
 #include "order.hpp"      // for shortlex_compare
 #include "ranges.hpp"     // for chain + shortlex_compare
 #include "ukkonen.hpp"    // for SuffixTree
+#include "words.hpp"      // for operator+
 
 #include "detail/function-ref.hpp"
 #include "detail/int-range.hpp"  // for detail::IntRange
@@ -872,6 +873,13 @@ namespace libsemigroups {
     template <typename Word>
     Word longest_subword_reducing_length(Presentation<Word>& p);
 
+    // TODO(doc)
+    template <typename Word>
+    typename Presentation<Word>::letter_type
+    add_generator(Presentation<Word>& p);
+
+    // TODO add_generator_no_checks, add_generator with letter argument
+
     //! Replace non-overlapping instances of a subword via iterators.
     //!
     //! If \f$w=\f$`[first, last)` is a word, then this function replaces
@@ -889,13 +897,16 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if `first == last`.
     // TODO(later) complexity
-    // TODO rename add_generator_from_subword
     template <typename Word,
               typename Iterator,
               typename = std::enable_if_t<!std::is_same<Iterator, Word>::value>>
-    void replace_subword(Presentation<Word>& p, Iterator first, Iterator last);
+    typename Presentation<Word>::letter_type
+    replace_word_with_new_generator(Presentation<Word>& p,
+                                    Iterator            first,
+                                    Iterator            last);
 
-    //! Replace non-overlapping instances of a subword via const reference.
+    //! Replace non-overlapping instances of a word with a new generator via
+    //! const reference.
     //!
     //! If \f$w=\f$`[first, last)` is a word, then this function replaces
     //! every non-overlapping instance (from left to right) of \f$w\f$ in
@@ -908,14 +919,14 @@ namespace libsemigroups {
     //! \param p the presentation
     //! \param w the subword to replace
     //!
-    //! \returns (None)
+    //! \returns The new generator added.
     //!
     //! \throws LibsemigroupsException if \p w is empty.
     // TODO(later) complexity
-    // TODO rename add_generator_from_subword
     template <typename Word>
-    void replace_subword(Presentation<Word>& p, Word const& w) {
-      replace_subword(p, w.cbegin(), w.cend());
+    typename Presentation<Word>::letter_type
+    replace_word_with_new_generator(Presentation<Word>& p, Word const& w) {
+      return replace_word_with_new_generator(p, w.cbegin(), w.cend());
     }
 
     //! Replace non-overlapping instances of a subword via `char const*`.
@@ -929,12 +940,14 @@ namespace libsemigroups {
     //! \param p the presentation
     //! \param w the subword to replace
     //!
-    //! \returns (None)
+    //! \returns The new generator added.
     //!
     //! \throws LibsemigroupsException if \p w is empty.
-    // TODO rename add_generator_from_subword
-    inline void replace_subword(Presentation<std::string>& p, char const* w) {
-      replace_subword(p, w, w + std::strlen(w));
+    typename Presentation<std::string>::
+        letter_type inline replace_word_with_new_generator(
+            Presentation<std::string>& p,
+            char const*                w) {
+      return replace_word_with_new_generator(p, w, w + std::strlen(w));
     }
 
     //! Replace non-overlapping instances of a subword by another word.
@@ -985,6 +998,16 @@ namespace libsemigroups {
                          Iterator1           last_existing,
                          Iterator2           first_replacement,
                          Iterator2           last_replacement);
+
+    inline void replace_subword(Presentation<std::string>& p,
+                                char const*                existing,
+                                char const*                replacement) {
+      replace_subword(p,
+                      existing,
+                      existing + std::strlen(existing),
+                      replacement,
+                      replacement + std::strlen(replacement));
+    }
 
     //! Replace instances of a word on either side of a rule by another word.
     //!
@@ -1249,12 +1272,14 @@ namespace libsemigroups {
     //!
     //! \tparam Word the type of the words in the presentation
     //!
+    //! TODO(doc) args
+    //!
     //! \returns A `letter_type`.
     //!
     //! \throws LibsemigroupsException if `i` exceeds the number of letters in
     //! supported by `letter_type`.
+    // TODO rename to all_letters? human_readable_letter? or something better?
     template <typename Word>
-    // TODO no checks?
     typename Presentation<Word>::letter_type letter(Presentation<Word> const&,
                                                     size_t i);
 
@@ -1305,6 +1330,7 @@ namespace libsemigroups {
 
     // TODO remove inline
     // TODO no checks?
+    // TODO use a different name
     inline typename Presentation<word_type>::letter_type
     index(typename Presentation<std::string>::letter_type c);
 
@@ -1439,162 +1465,10 @@ namespace libsemigroups {
     bool reduce_to_2_generators(Presentation<Word>& p, size_t index = 0);
 
     // TODO doc
-    std::string to_gap_string(Presentation<word_type> const& p,
-                              std::string const&             var_name);
-
-    //! \anchor operator_plus
-    //! Concatenate two words or strings.
-    //!
-    //! Returns the concatenation of `u` and `w`.
-    //!
-    //! \param u a word or string
-    //! \param w a word or string
-    //!
-    //! \returns A word_type or string
-    //!
-    //! \exceptions
-    //! \noexcept
-    word_type operator+(word_type const& u, word_type const& w);
-
-    //! See \ref operator_plus "operator+".
-    word_type operator+(word_type const& u, letter_type w);
-
-    //! See \ref operator_plus "operator+".
-    word_type operator+(letter_type w, word_type const& u);
-
-    //! Concatenate a word/string with another word/string in-place.
-    //!
-    //! Changes `u` to `u + w` in-place. See \ref operator_plus "operator+".
-    //!
-    //! \param u a word or string
-    //! \param w a word or string
-    //!
-    //! \exceptions
-    //! \noexcept
-    //!
-    //! \sa \ref operator_plus "operator+"
-    void operator+=(word_type& u, word_type const& w);
-
-    // TODO doc
-    inline void operator+=(word_type& u, letter_type a) {
-      u.push_back(a);
-    }
-
-    // TODO doc
-    inline void operator+=(letter_type a, word_type& u) {
-      u.insert(u.begin(), a);
-    }
-
-    //! Take a power of a word or string.
-    //!
-    //! Returns the `n`th power of the word/string given by `w` .
-    //!
-    //! \param w a word
-    //! \param n the power
-    //!
-    //! \returns A word_type
-    //!
-    //! \exceptions
-    //! \noexcept
-    template <typename Word,
-              typename = std::enable_if_t<detail::IsWord<Word>::value>>
-    Word pow(Word const& w, size_t n);
-
-    //! Take a power of a word.
-    //!
-    //! Change the word/string `w` to its `n`th power, in-place.
-    //!
-    //! \param w the word
-    //! \param n the power
-    //!
-    //! \returns
-    //! (None)
-    //!
-    //! \exceptions
-    //! \noexcept
-    template <typename Word,
-              typename = std::enable_if_t<detail::IsWord<Word>::value>>
-    void pow_inplace(Word& w, size_t n);
-
-    //! Take a power of a word.
-    //!
-    //! Returns the `n`th power of the word corresponding to the initializer
-    //! list `ilist`.
-    //!
-    //! \param ilist the initializer list
-    //! \param n the power
-    //!
-    //! \returns A word_type or std::string
-    //!
-    //! \exceptions
-    //! \noexcept
-    word_type pow(std::initializer_list<size_t> ilist, size_t n);
-
-    //! See \ref pow(Word const&, size_t)
-    std::string pow(char const* w, size_t n);
-
-    //! \anchor prod
-    //! Take a product from a collection of letters.
-    //!
-    //! Let \p elts correspond to the ordered set \f$a_0, a_1, \ldots, a_{n -
-    //! 1}\f$, \p first to \f$f\f$, \p last to \f$l\f$, and \p step to
-    //! \f$s\f$. If \f$f \leq l\f$, let \f$k\f$ be the greatest positive
-    //! integer such that \f$f + ks < l\f$. Then the function `prod` returns
-    //! the word corresponding to \f$a_f a_{f + s} a_{f + 2s} \cdots a_{f +
-    //! ks}\f$. All subscripts are taken modulo \f$n\f$.
-    //!
-    //! If there is no such \f$k\f$ (i.e. \f$s < 0\f$, or \f$f = l\f$), then
-    //! the empty word is returned. Where \f$f > l\f$, the function works
-    //! analogously, where \f$k\f$ is the greatest positive integer such that
-    //! \f$f + k s > l\f$.
-    //!
-    //! \param elts the ordered set
-    //! \param first the first index
-    //! \param last the last index
-    //! \param step the step
-    //!
-    //! \return A word_type or std::string
-    //!
-    //! \throws LibsemigroupsException if `step = 0`
-    //! \throws LibsemigroupsException if \p elts is empty, but the specified
-    //! range is not
-    //!
-    //! \par Examples
-    //! \code
-    //! word_type w = 012345_w
-    //! prod(w, 0, 5, 2)  // Gives the word {0, 2, 4}
-    //! prod(w, 1, 9, 2)  // Gives the word {1, 3, 5, 1}
-    //! prod(std::string("abcde", 4, 1, -1)  // Gives the string "edc")
-    //! \endcode
-    template <typename Container,
-              typename Word = Container,
-              typename      = std::enable_if_t<detail::IsWord<Word>::value>>
-    Word prod(Container const& elts, int first, int last, int step = 1);
-
-    //! Returns the output of `prod` where \p elts is treated as a `word_type`
-    //! instead of a vector. See \ref prod "prod".
-    template <typename Word,
-              typename = std::enable_if_t<detail::IsWord<Word>::value>>
-    Word
-    prod(std::vector<Word> const& elts, int first, int last, int step = 1) {
-      return prod<std::vector<Word>, Word, void>(elts, first, last, step);
-    }
-
-    //! Returns `prod(elts, 0, last, 1)` -- see \ref prod "prod".
-    template <typename Word,
-              typename = std::enable_if_t<detail::IsWord<Word>::value>>
-    Word prod(Word const& elts, size_t last) {
-      return prod(elts, 0, static_cast<int>(last), 1);
-    }
-
-    //! See \ref prod "prod".
-    word_type
-    prod(std::initializer_list<size_t> ilist, int first, int last, int step);
-
-    // TODO doc
     template <typename Word>
     void add_idempotent_rules_no_checks(Presentation<Word>& p,
                                         word_type const&    letters) {
+      using words::operator+;
       for (auto x : letters) {
         add_rule_no_checks(p, word_type({x}) + word_type({x}), word_type({x}));
       }
@@ -1619,21 +1493,25 @@ namespace libsemigroups {
                                       Word const&                 letters,
                                       std::initializer_list<Word> words);
 
+    // TODO doc,
+    // TODO(later) also we could do a more sophisticated version of this
+    template <typename Word>
+    bool operator==(Presentation<Word> const& lhop,
+                    Presentation<Word> const& rhop) {
+      return lhop.alphabet() == rhop.alphabet() && lhop.rules == rhop.rules;
+    }
+
+    template <typename Word>
+    bool operator!=(Presentation<Word> const& lhop,
+                    Presentation<Word> const& rhop) {
+      return !(lhop == rhop);
+    }
+
+    // TODO doc
+    std::string to_gap_string(Presentation<word_type> const& p,
+                              std::string const&             var_name);
+
   }  // namespace presentation
-
-  // TODO doc,
-  // TODO(later) also we could do a more sophisticated version of this
-  template <typename Word>
-  bool operator==(Presentation<Word> const& lhop,
-                  Presentation<Word> const& rhop) {
-    return lhop.alphabet() == rhop.alphabet() && lhop.rules == rhop.rules;
-  }
-
-  template <typename Word>
-  bool operator!=(Presentation<Word> const& lhop,
-                  Presentation<Word> const& rhop) {
-    return !(lhop == rhop);
-  }
 
   // TODO(later) could do a no_check version
   // TODO remove inline
@@ -1679,16 +1557,6 @@ namespace libsemigroups {
       return p.letter_no_checks(i);
     });
     return s;
-  }
-
-  inline word_type operator+(word_type const& u, word_type const& w) {
-    word_type result(u);
-    result.insert(result.end(), w.cbegin(), w.cend());
-    return result;
-  }
-
-  inline void operator+=(word_type& u, word_type const& v) {
-    u.insert(u.end(), v.cbegin(), v.cend());
   }
 
 }  // namespace libsemigroups

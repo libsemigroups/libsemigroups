@@ -154,6 +154,7 @@ namespace libsemigroups {
                     Kambites<Word>*         k,
                     size_t) {
       using value_type = typename detail::KE<Word>::value_type;
+      using words::operator+=;
       value_type w(x.value());  // string_type
       w += y.value();
       xy = detail::KE<Word>(*k, w);

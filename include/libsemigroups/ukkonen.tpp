@@ -86,12 +86,12 @@ namespace libsemigroups {
 
     if (it != last) {
       LIBSEMIGROUPS_EXCEPTION("illegal letter in word, expected value not "
-                              "in the range (%llu, %llu) found %llu in "
-                              "position %llu",
-                              uint64_t(_next_unique_letter),
-                              uint64_t(-1),
-                              uint64_t(*it),
-                              uint64_t(it - first));
+                              "in the range ({}, {}) found {} in "
+                              "position {}",
+                              _next_unique_letter,
+                              -1,
+                              *it,
+                              it - first);
     }
   }
 

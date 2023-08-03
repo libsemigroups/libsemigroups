@@ -29,7 +29,7 @@
 #include "libsemigroups/present.hpp"          // for Presentation
 #include "libsemigroups/to-presentation.hpp"  // for make
 #include "libsemigroups/types.hpp"            // for word_type
-#include "libsemigroups/words.hpp"
+#include "libsemigroups/words.hpp"            // for operator +
 
 #include "libsemigroups/detail/containers.hpp"  // for StaticVector1
 #include "libsemigroups/detail/int-range.hpp"   // for detail::IntRange
@@ -329,7 +329,8 @@ namespace libsemigroups {
         presentation::add_rule_no_checks(p, {1, 1}, {1, 2, 1});
         presentation::add_rule_no_checks(p, {1, 2, 1}, {0});
         p.alphabet_from_rules();
-        REQUIRE(presentation::longest_subword_reducing_length(p) == W({1, 2, 1}));
+        REQUIRE(presentation::longest_subword_reducing_length(p)
+                == W({1, 2, 1}));
         presentation::replace_subword(p, W({1, 2, 1}), W({3}));
         presentation::add_rule_no_checks(p, {3}, {1, 2, 1});
         REQUIRE(p.rules
@@ -355,7 +356,8 @@ namespace libsemigroups {
         presentation::add_rule_no_checks(p, {2, 2}, {2, 4, 2});
         presentation::add_rule_no_checks(p, {2, 4, 2}, {1});
         p.alphabet_from_rules();
-        REQUIRE(presentation::longest_subword_reducing_length(p) == W({2, 4, 2}));
+        REQUIRE(presentation::longest_subword_reducing_length(p)
+                == W({2, 4, 2}));
         presentation::replace_subword(p, W({2, 4, 2}), W({0}));
         presentation::add_rule_no_checks(p, W({0}), W({2, 4, 2}));
         REQUIRE(p.rules
@@ -1083,10 +1085,11 @@ namespace libsemigroups {
     check_sort_rules<std::string>();
   }
 
-  LIBSEMIGROUPS_TEST_CASE("Presentation",
-                          "019",
-                          "helpers longest_subword_reducing_length/replace_subword",
-                          "[quick][presentation]") {
+  LIBSEMIGROUPS_TEST_CASE(
+      "Presentation",
+      "019",
+      "helpers longest_subword_reducing_length/replace_subword",
+      "[quick][presentation]") {
     auto rg = ReportGuard(false);
     check_longest_subword_reducing_length<word_type>();
     check_longest_subword_reducing_length<StaticVector1<uint16_t, 10>>();
@@ -1217,7 +1220,7 @@ namespace libsemigroups {
     p.contains_empty_word(true);
     presentation::add_rule_no_checks(p, {0, 0, 0}, {});
     p.validate();
-    p.clear();
+    p.init();
     REQUIRE(p.alphabet().empty());
     REQUIRE(p.rules.empty());
   }
@@ -1229,7 +1232,7 @@ namespace libsemigroups {
     Presentation<std::string> p;
     p.alphabet("ab");
     presentation::add_rule(p, "ba", "abaaabaa");
-    presentation::replace_subword(p, "ba");
+    presentation::replace_word_with_new_generator(p, "ba");
     presentation::change_alphabet(p, "abc");
     REQUIRE(p.rules == std::vector<std::string>({"c", "acaaca", "c", "ba"}));
     REQUIRE(p.alphabet() == "abc");
@@ -1331,7 +1334,7 @@ namespace libsemigroups {
     p.alphabet("a");
     presentation::add_rule(p, "aaaaaaaaaaaaaaaaaaa", "a");
     REQUIRE(presentation::longest_subword_reducing_length(p) == "aaaaaa");
-    presentation::replace_subword(p, "aaaaaa");
+    presentation::replace_word_with_new_generator(p, "aaaaaa");
     REQUIRE(presentation::longest_subword_reducing_length(p) == "");
     REQUIRE(p.rules == std::vector<std::string>({"bbba", "a", "b", "aaaaaa"}));
     REQUIRE(presentation::length(p) == 12);
@@ -1350,7 +1353,7 @@ namespace libsemigroups {
     REQUIRE(presentation::length(p) == 40);
     auto w = presentation::longest_subword_reducing_length(p);
     REQUIRE(w == "bbbb");
-    presentation::replace_subword(p, w);
+    presentation::replace_word_with_new_generator(p, w);
     REQUIRE(presentation::length(p) == 33);
     REQUIRE(
         p.rules
@@ -1358,7 +1361,7 @@ namespace libsemigroups {
             {"aaaaaaaaaaaaaaaa", "a", "cccc", "b", "abb", "baa", "c", "bbbb"}));
     w = presentation::longest_subword_reducing_length(p);
     REQUIRE(w == "aaaa");
-    presentation::replace_subword(p, w);
+    presentation::replace_word_with_new_generator(p, w);
     REQUIRE(presentation::length(p) == 26);
     REQUIRE(p.rules
             == std::vector<std::string>({"dddd",
@@ -2061,7 +2064,7 @@ namespace libsemigroups {
                           "operator+",
                           "[quick][word_functions]") {
     using namespace literals;
-    using presentation::operator+;
+    using words::operator+;
     word_type w = {0, 1};
     word_type v = {2};
     REQUIRE((w + v) == word_type({0, 1, 2}));
@@ -2077,7 +2080,7 @@ namespace libsemigroups {
                           "operator+=",
                           "[quick][word_functions]") {
     using namespace literals;
-    using presentation::operator+=;
+    using words::operator+=;
     word_type w = 123_w;
     word_type v = 345_w;
     w += v;
@@ -2092,7 +2095,7 @@ namespace libsemigroups {
                           "pow",
                           "[quick][word_functions]") {
     using namespace literals;
-    using presentation::pow;
+    using words::pow;
     word_type w = 01_w;
     REQUIRE(pow(w, 0) == word_type({}));
     REQUIRE(pow(w, 1) == w);
@@ -2112,7 +2115,7 @@ namespace libsemigroups {
                           "pow_inplace",
                           "[quick][word_functions]") {
     using namespace literals;
-    using presentation::pow_inplace;
+    using words::pow_inplace;
     word_type w = 01_w;
     pow_inplace(w, 0);
     REQUIRE(w == word_type({}));
@@ -2145,7 +2148,7 @@ namespace libsemigroups {
                           "prod",
                           "[quick][word_functions]") {
     using namespace literals;
-    using presentation::prod;
+    using words::prod;
     word_type eps = 012345_w;
     REQUIRE(prod(eps, 1, 6, 2) == 135_w);
     REQUIRE(prod(eps, 0, 6, 1) == eps);

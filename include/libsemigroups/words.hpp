@@ -36,11 +36,10 @@
 
 #include <stack>  // TODO remove
 
-#include "types.hpp"  // for word_type
+#include "exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
+#include "types.hpp"      // for word_type
 
 #include "detail/iterator.hpp"  // for default_postfix_increment
-
-#include "present.hpp"  // TODO remove
 
 #include <rx/ranges.hpp>  // for begin, end
 
@@ -796,6 +795,178 @@ namespace libsemigroups {
     return parse(w);
   }
 
+  namespace words {
+
+    // TODO remove IsWord
+    namespace detail {
+      template <typename T>
+      struct IsWord {
+        static constexpr bool value = false;
+      };
+
+      template <>
+      struct IsWord<word_type> {
+        static constexpr bool value = true;
+      };
+
+      template <>
+      struct IsWord<std::string> {
+        static constexpr bool value = true;
+      };
+    }  // namespace detail
+
+    //! \anchor operator_plus
+    //! Concatenate two words or strings.
+    //!
+    //! Returns the concatenation of `u` and `w`.
+    //!
+    //! \param u a word or string
+    //! \param w a word or string
+    //!
+    //! \returns A word_type or string
+    //!
+    //! \exceptions
+    //! \noexcept
+    word_type operator+(word_type const& u, word_type const& w);
+
+    //! See \ref operator_plus "operator+".
+    word_type operator+(word_type const& u, letter_type w);
+
+    //! See \ref operator_plus "operator+".
+    word_type operator+(letter_type w, word_type const& u);
+
+    //! Concatenate a word/string with another word/string in-place.
+    //!
+    //! Changes `u` to `u + w` in-place. See \ref operator_plus "operator+".
+    //!
+    //! \param u a word or string
+    //! \param w a word or string
+    //!
+    //! \exceptions
+    //! \noexcept
+    //!
+    //! \sa \ref operator_plus "operator+"
+    void operator+=(word_type& u, word_type const& w);
+
+    // TODO doc
+    inline void operator+=(word_type& u, letter_type a) {
+      u.push_back(a);
+    }
+
+    // TODO doc
+    inline void operator+=(letter_type a, word_type& u) {
+      u.insert(u.begin(), a);
+    }
+
+    //! Take a power of a word or string.
+    //!
+    //! Returns the `n`th power of the word/string given by `w` .
+    //!
+    //! \param w a word
+    //! \param n the power
+    //!
+    //! \returns A word_type
+    //!
+    //! \exceptions
+    //! \noexcept
+    template <typename Word,
+              typename = std::enable_if_t<detail::IsWord<Word>::value>>
+    Word pow(Word const& w, size_t n);
+
+    //! Take a power of a word.
+    //!
+    //! Change the word/string `w` to its `n`th power, in-place.
+    //!
+    //! \param w the word
+    //! \param n the power
+    //!
+    //! \returns
+    //! (None)
+    //!
+    //! \exceptions
+    //! \noexcept
+    template <typename Word,
+              typename = std::enable_if_t<detail::IsWord<Word>::value>>
+    void pow_inplace(Word& w, size_t n);
+
+    //! Take a power of a word.
+    //!
+    //! Returns the `n`th power of the word corresponding to the initializer
+    //! list `ilist`.
+    //!
+    //! \param ilist the initializer list
+    //! \param n the power
+    //!
+    //! \returns A word_type or std::string
+    //!
+    //! \exceptions
+    //! \noexcept
+    word_type pow(std::initializer_list<size_t> ilist, size_t n);
+
+    //! See \ref pow(Word const&, size_t)
+    std::string pow(char const* w, size_t n);
+
+    //! \anchor prod
+    //! Take a product from a collection of letters.
+    //!
+    //! Let \p elts correspond to the ordered set \f$a_0, a_1, \ldots, a_{n -
+    //! 1}\f$, \p first to \f$f\f$, \p last to \f$l\f$, and \p step to
+    //! \f$s\f$. If \f$f \leq l\f$, let \f$k\f$ be the greatest positive
+    //! integer such that \f$f + ks < l\f$. Then the function `prod` returns
+    //! the word corresponding to \f$a_f a_{f + s} a_{f + 2s} \cdots a_{f +
+    //! ks}\f$. All subscripts are taken modulo \f$n\f$.
+    //!
+    //! If there is no such \f$k\f$ (i.e. \f$s < 0\f$, or \f$f = l\f$), then
+    //! the empty word is returned. Where \f$f > l\f$, the function works
+    //! analogously, where \f$k\f$ is the greatest positive integer such that
+    //! \f$f + k s > l\f$.
+    //!
+    //! \param elts the ordered set
+    //! \param first the first index
+    //! \param last the last index
+    //! \param step the step
+    //!
+    //! \return A word_type or std::string
+    //!
+    //! \throws LibsemigroupsException if `step = 0`
+    //! \throws LibsemigroupsException if \p elts is empty, but the specified
+    //! range is not
+    //!
+    //! \par Examples
+    //! \code
+    //! word_type w = 012345_w
+    //! prod(w, 0, 5, 2)  // Gives the word {0, 2, 4}
+    //! prod(w, 1, 9, 2)  // Gives the word {1, 3, 5, 1}
+    //! prod(std::string("abcde", 4, 1, -1)  // Gives the string "edc")
+    //! \endcode
+    template <typename Container,
+              typename Word = Container,
+              typename      = std::enable_if_t<detail::IsWord<Word>::value>>
+    Word prod(Container const& elts, int first, int last, int step = 1);
+
+    //! Returns the output of `prod` where \p elts is treated as a `word_type`
+    //! instead of a vector. See \ref prod "prod".
+    template <typename Word,
+              typename = std::enable_if_t<detail::IsWord<Word>::value>>
+    Word
+    prod(std::vector<Word> const& elts, int first, int last, int step = 1) {
+      return prod<std::vector<Word>, Word, void>(elts, first, last, step);
+    }
+
+    //! Returns `prod(elts, 0, last, 1)` -- see \ref prod "prod".
+    template <typename Word,
+              typename = std::enable_if_t<detail::IsWord<Word>::value>>
+    Word prod(Word const& elts, size_t last) {
+      return prod(elts, 0, static_cast<int>(last), 1);
+    }
+
+    //! See \ref prod "prod".
+    word_type
+    prod(std::initializer_list<size_t> ilist, int first, int last, int step);
+
+  }  // namespace words
 }  // namespace libsemigroups
+
+#include "words.tpp"
 
 #endif  // LIBSEMIGROUPS_WORDS_HPP_

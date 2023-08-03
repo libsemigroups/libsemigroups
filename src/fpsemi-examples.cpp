@@ -40,6 +40,8 @@
 
 namespace libsemigroups {
   using literals::operator""_w;
+  using words::operator+;
+
   namespace {
 
     word_type range(size_t first, size_t last, size_t step = 1) {
@@ -177,10 +179,10 @@ namespace libsemigroups {
   namespace fpsemigroup {
 
     using literals::operator""_w;
-    using presentation::pow;
-    using presentation::prod;
-    using presentation::operator+;
-    using presentation::operator+=;
+    using words::pow;
+    using words::prod;
+    using words::operator+;
+    using words::operator+=;
 
     Presentation<word_type> stellar_monoid(size_t l) {
       if (l < 2) {

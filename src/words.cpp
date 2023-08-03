@@ -127,7 +127,7 @@ namespace libsemigroups {
     }
 
     std::string inline evaluate_rpn(std::string const& rpn) {
-      using namespace presentation;
+      using namespace words;
       std::stack<std::string>             stck;
       bool                                in_digits = false;
       std::pair<std::string, std::string> pr;
@@ -500,5 +500,38 @@ namespace libsemigroups {
   std::string parse(char const* w, size_t n) {
     return evaluate_rpn(shunting_yard(w, n));
   }
+  namespace words {
+    word_type operator+(word_type const& u, word_type const& w) {
+      word_type result(u);
+      result.insert(result.end(), w.cbegin(), w.cend());
+      return result;
+    }
 
+    word_type operator+(word_type const& u, size_t w) {
+      word_type result(u);
+      result.push_back(w);
+      return result;
+    }
+
+    word_type operator+(size_t w, word_type const& u) {
+      return word_type({w}) + u;
+    }
+
+    void operator+=(word_type& u, word_type const& v) {
+      u.insert(u.end(), v.cbegin(), v.cend());
+    }
+
+    std::string pow(char const* w, size_t n) {
+      return pow(std::string(w), n);
+    }
+
+    word_type pow(std::initializer_list<size_t> ilist, size_t n) {
+      return pow(word_type(ilist), n);
+    }
+
+    word_type
+    prod(std::initializer_list<size_t> ilist, int first, int last, int step) {
+      return prod(word_type(ilist), first, last, step);
+    }
+  }  // namespace words
 }  // namespace libsemigroups

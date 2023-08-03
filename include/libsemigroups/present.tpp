@@ -444,16 +444,24 @@ namespace libsemigroups {
       return Word(first, last);
     }
 
-    // TODO(v3) this should replace a subword with another subword, and not do
-    // what it currently does
+    template <typename Word>
+    typename Presentation<Word>::letter_type
+    add_generator(Presentation<Word>& p) {
+      auto new_alphabet = p.alphabet();
+      new_alphabet.push_back(first_unused_letter(p));
+      p.alphabet(new_alphabet);
+      return p.alphabet().back();
+    }
+
     template <typename Word, typename Iterator, typename>
-    void replace_subword(Presentation<Word>& p, Iterator first, Iterator last) {
-      auto x = first_unused_letter(p);
+    typename Presentation<Word>::letter_type
+    replace_word_with_new_generator(Presentation<Word>& p,
+                                    Iterator            first,
+                                    Iterator            last) {
+      auto x = add_generator(p);
       replace_subword(p, first, last, &x, &x + 1);
       p.add_rule_no_checks(&x, &x + 1, first, last);
-      auto new_alphabet = p.alphabet();
-      new_alphabet.push_back(x);
-      p.alphabet(new_alphabet);
+      return x;
     }
 
     template <typename Word>
@@ -643,10 +651,10 @@ namespace libsemigroups {
                                                     size_t i) {
       using letter_type = typename Presentation<Word>::letter_type;
       if (i >= std::numeric_limits<letter_type>::max()) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "expected a value in the range [0, {}) found {}",
-            std::numeric_limits<letter_type>::max(),
-            i);
+        LIBSEMIGROUPS_EXCEPTION("expected the 2nd argument to in "
+                                "the range [0, {}), found {}",
+                                std::numeric_limits<letter_type>::max(),
+                                i);
       }
       return static_cast<typename Presentation<Word>::letter_type>(i);
     }
@@ -690,6 +698,7 @@ namespace libsemigroups {
 
     }  // namespace
 
+    // TODO merge into letter above
     typename Presentation<std::string>::letter_type character(size_t i) {
       using letter_type = typename Presentation<std::string>::letter_type;
       // Choose visible characters a-zA-Z0-9 first before anything else
@@ -778,7 +787,7 @@ namespace libsemigroups {
     void greedy_reduce_length(Presentation<Word>& p) {
       auto w = longest_subword_reducing_length(p);
       while (!w.empty()) {
-        replace_subword(p, w);
+        replace_word_with_new_generator(p, w);
         w = longest_subword_reducing_length(p);
       }
     }
@@ -868,79 +877,11 @@ namespace libsemigroups {
       return true;
     }
 
-    template <typename Word, typename>
-    Word pow(Word const& x, size_t n) {
-      Word y(x);
-      pow_inplace(y, n);
-      return y;
-    }
-
-    template <typename Word, typename>
-    void pow_inplace(Word& x, size_t n) {
-      Word y(x);
-      x.reserve(x.size() * n);
-      if (n % 2 == 0) {
-        x = Word({});
-      }
-
-      while (n > 1) {
-        y += y;
-        n /= 2;
-        if (n % 2 == 1) {
-          x += y;
-        }
-      }
-    }
-
-    // Note: we could do a version of the below using insert on words, where
-    // the step is +/- 1.
-    template <typename Container, typename Word, typename>
-    Word prod(Container const& elts, int first, int last, int step) {
-      if (step == 0) {
-        LIBSEMIGROUPS_EXCEPTION("the 4th argument must not be 0");
-      } else if (((first < last && step > 0) || (first > last && step < 0))
-                 && elts.size() == 0) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "1st argument must be empty if the given range is not empty");
-      }
-      Word result;
-
-      if (first < last) {
-        if (step < 0) {
-          return result;
-        }
-        result.reserve((last - first) / step);
-
-        int i = first;
-        for (; i < last && i < 0; i += step) {
-          size_t a = ((-i / elts.size()) + 1) * elts.size() + i;
-          result += elts[a];
-        }
-        for (; i < last; i += step) {
-          result += elts[i % elts.size()];
-        }
-      } else {
-        if (step > 0) {
-          return result;
-        }
-        size_t steppos = static_cast<size_t>(-step);
-        result.reserve((first - last) / steppos);
-        int i = first;
-        for (; i > last && i >= 0; i += step) {
-          result += elts[i % elts.size()];
-        }
-        for (; i > last; i += step) {
-          size_t a = ((-i / elts.size()) + 1) * elts.size() + i;
-          result += elts[a];
-        }
-      }
-      return result;
-    }
-
     template <typename Word>
     void add_commutes_rules_no_checks(Presentation<Word>& p,
                                       Word const&         letters1,
                                       Word const&         letters2) {
+      using words::operator+;
       size_t const       m = letters1.size();
       size_t const       n = letters2.size();
       Presentation<Word> q;
@@ -962,6 +903,8 @@ namespace libsemigroups {
     void add_commutes_rules_no_checks(Presentation<Word>&         p,
                                       Word const&                 letters,
                                       std::initializer_list<Word> words) {
+      using words::operator+;
+
       size_t const       m = letters.size();
       size_t const       n = words.size();
       Presentation<Word> q;

@@ -25,39 +25,6 @@
 namespace libsemigroups {
   namespace presentation {
 
-    word_type operator+(word_type const& u, word_type const& w) {
-      word_type result(u);
-      result.insert(result.end(), w.cbegin(), w.cend());
-      return result;
-    }
-
-    word_type operator+(word_type const& u, size_t w) {
-      word_type result(u);
-      result.push_back(w);
-      return result;
-    }
-
-    word_type operator+(size_t w, word_type const& u) {
-      return word_type({w}) + u;
-    }
-
-    void operator+=(word_type& u, word_type const& v) {
-      u.insert(u.end(), v.cbegin(), v.cend());
-    }
-
-    std::string pow(char const* w, size_t n) {
-      return pow(std::string(w), n);
-    }
-
-    word_type pow(std::initializer_list<size_t> ilist, size_t n) {
-      return pow(word_type(ilist), n);
-    }
-
-    word_type
-    prod(std::initializer_list<size_t> ilist, int first, int last, int step) {
-      return prod(word_type(ilist), first, last, step);
-    }
-
     std::string to_gap_string(Presentation<word_type> const& p,
                               std::string const&             var_name) {
       if (p.alphabet().size() > 49) {
