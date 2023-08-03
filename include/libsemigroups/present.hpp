@@ -1431,7 +1431,7 @@ namespace libsemigroups {
     template <typename Word>
     bool reduce_to_2_generators(Presentation<Word>& p, size_t index = 0);
 
-    // TODO doc
+    // TODO(doc)
     template <typename Word>
     void add_idempotent_rules_no_checks(Presentation<Word>& p,
                                         word_type const&    letters) {
@@ -1441,26 +1441,26 @@ namespace libsemigroups {
       }
     }
 
-    // TODO doc
+    // TODO(doc)
     template <typename Word>
     void add_commutes_rules_no_checks(Presentation<Word>& p,
                                       Word const&         letters1,
                                       Word const&         letters2);
 
-    // TODO doc
+    // TODO(doc)
     template <typename Word>
     void add_commutes_rules_no_checks(Presentation<Word>& p,
                                       Word const&         letters) {
       add_commutes_rules_no_checks(p, letters, letters);
     }
 
-    // TODO doc
+    // TODO(doc)
     template <typename Word>
     void add_commutes_rules_no_checks(Presentation<Word>&         p,
                                       Word const&                 letters,
                                       std::initializer_list<Word> words);
 
-    // TODO doc,
+    // TODO(doc)
     // TODO(later) also we could do a more sophisticated version of this
     template <typename Word>
     bool operator==(Presentation<Word> const& lhop,
@@ -1474,14 +1474,13 @@ namespace libsemigroups {
       return !(lhop == rhop);
     }
 
-    // TODO doc
+    // TODO(doc)
     std::string to_gap_string(Presentation<word_type> const& p,
                               std::string const&             var_name);
 
   }  // namespace presentation
 
   // TODO(later) could do a no_check version
-  // TODO swap 2nd + 3rd args
   void to_word(Presentation<std::string> const& p,
                std::string const&               input,
                word_type&                       output);
@@ -1491,7 +1490,6 @@ namespace libsemigroups {
                     std::string const&               input);
 
   // TODO(later) could do a no_check version
-  // TODO swap 2nd + 3rd args
   void to_string(Presentation<std::string> const& p,
                  word_type const&                 input,
                  std::string&                     output);

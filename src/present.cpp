@@ -16,7 +16,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-// This file contains
+// This file contains implementations of the functions declared in
+// presentation.hpp
 
 #include <cstddef>  // for size_t
 

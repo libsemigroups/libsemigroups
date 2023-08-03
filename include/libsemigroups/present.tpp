@@ -674,7 +674,6 @@ namespace libsemigroups {
     typename Presentation<Word>::letter_type
     human_readable_letter(Presentation<Word> const&, size_t i) {
       using letter_type = typename Presentation<Word>::letter_type;
-      // TODO throw if there is not human_readable_letter with index i?
       if (i >= std::numeric_limits<letter_type>::max()) {
         LIBSEMIGROUPS_EXCEPTION("expected the 2nd argument to be in "
                                 "the range [0, {}), found {}",
