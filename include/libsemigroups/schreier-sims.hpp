@@ -1,6 +1,6 @@
 //
 // libsemigroups - C++ library for semigroups and monoids
-// Copyright (C) 2019 James D. Mitchell
+// Copyright (C) 2019-2023 James D. Mitchell
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-// This file contains an implementation of the Schreier-Sims algorithm, as
+// This file contains a declaration of the Schreier-Sims algorithm, as
 // described in Section 4.4.2 of:
 //
 // D. Holt (with B. Eick and E. O'Brien), Handbook of computational group
@@ -28,6 +28,10 @@
 // https://github.com/digraphs/Digraphs/blob/master/src/schreier-sims.c
 //
 // by Wilf A. Wilson.
+//
+// It also contains the declaration of a backtrack search for computing
+// the intersection of two permutations given by Schreier-Sims algorithm by
+// Reinis Cirpons.
 
 // TODO(later)
 //
@@ -45,16 +49,22 @@
 // 3. change base
 // 4. random version
 // 5. try it with Digraphs
-// 6. only member functions that cause mathematical changes should be non-const
 
-// THIS FILE CAN BE USED AS HEADER ONLY
+// TODO:
+// * move to tpp
+// * noexcept
+// * code coverage (can't do it on MacBook Pro at present)
 
 #ifndef LIBSEMIGROUPS_SCHREIER_SIMS_HPP_
 #define LIBSEMIGROUPS_SCHREIER_SIMS_HPP_
 
 #include <array>          // for array
 #include <cstddef>        // for size_t
+#include <cstdint>        // for uint64_t
+#include <iterator>       // for distance
+#include <memory>         // for make_unique
 #include <string>         // for operator+, basic_string
+#include <type_traits>    // for is_same
 #include <unordered_set>  // for unordered_set
 
 #include "adapters.hpp"   // for action, degree, inverse
@@ -64,10 +74,9 @@
 #include "transf.hpp"     // for Perm
 #include "types.hpp"      // for SmallestInteger
 
-#include "detail/bruidhinn-traits.hpp"  // for detail::BruidhinnTraits
+#include "detail/bruidhinn-traits.hpp"  // for BruidhinnTraits
 #include "detail/containers.hpp"        // for Array2, StaticTriVector2
-#include "detail/int-range.hpp"         // for detail::IntRange
-#include "detail/stl.hpp"               // for EqualTo
+#include "detail/int-range.hpp"         // for IntRange
 
 namespace libsemigroups {
 
@@ -81,28 +90,28 @@ namespace libsemigroups {
   //!
   //! \tparam N the largest point not fixed by the permutations in the
   //! permutation group to be represented by a SchreierSims instance.
-  //! \tparam TPointType the type of the points acted on.
-  //! \tparam TElementType the type of the group elements acting on
-  //! \c TPointType.
-  template <size_t N, typename TPointType, typename TElementType>
+  //! \tparam Point the type of the points acted on.
+  //! \tparam Element the type of the group elements acting on
+  //! \c Point.
+  template <size_t N, typename Point, typename Element>
   struct SchreierSimsTraits {
     //! The type of indices to be used by a SchreierSims instance.
     using index_type = size_t;
 
     //! Type of the object containing all points acted on.
-    using domain_type = detail::IntRange<TPointType>;
+    using domain_type = detail::IntRange<Point>;
 
     //! Type of the points acted on.
     //!
     //! The type of the points acted on by the group represented by \c this,
-    //! which is the same as the template parameter \c TPointType.
-    using point_type = TPointType;
+    //! which is the same as the template parameter \c Point.
+    using point_type = Point;
 
     //! Type of the elements.
-    using element_type = TElementType;
+    using element_type = Element;
 
     //! \copydoc libsemigroups::ImageRightAction
-    using Action = ::libsemigroups::ImageRightAction<TElementType, TPointType>;
+    using Action = ::libsemigroups::ImageRightAction<element_type, Point>;
 
     //! \copydoc libsemigroups::Degree
     using Degree = ::libsemigroups::Degree<element_type>;
@@ -130,13 +139,13 @@ namespace libsemigroups {
   //!
   //! \tparam N the largest point not fixed by the permutations in the
   //! permutation group to be represented by this.
-  //! \tparam TPointType the type of the points acted on (default:
+  //! \tparam Point the type of the points acted on (default:
   //! the member \c type of SmallestInteger with template parameter \p N).
-  //! \tparam TElementType the type of the group elements acting on
-  //! \c TPointType (default: the member \c type of \ref LeastPerm with template
+  //! \tparam Element the type of the group elements acting on
+  //! \c Point (default: the member \c type of \ref LeastPerm with template
   //! parameter \p N).
-  //! \tparam TTraits the type of traits object (default: SchreierSimsTraits
-  //! with template parameters \c N, \c TPointType, and \c TElementType).
+  //! \tparam Traits the type of traits object (default: SchreierSimsTraits
+  //! with template parameters \c N, \c Point, and \c Element).
   //!
   //! \sa SchreierSimsTraits.
   //!
@@ -149,72 +158,81 @@ namespace libsemigroups {
   //!  S.size(); // 120
   //!  \endcode
   template <size_t N,
-            typename TPointType   = typename SmallestInteger<N>::type,
-            typename TElementType = LeastPerm<N>,
-            typename TTraits = SchreierSimsTraits<N, TPointType, TElementType>>
-  class SchreierSims final : private detail::BruidhinnTraits<TElementType> {
+            typename Point   = typename SmallestInteger<N>::type,
+            typename Element = LeastPerm<N>,
+            typename Traits  = SchreierSimsTraits<N, Point, Element>>
+  class SchreierSims : private detail::BruidhinnTraits<Element> {
+    static_assert(std::is_same<Point, typename Traits::point_type>::value,
+                  "incompatible point types, Traits::point_type and Point "
+                  "must be the same");
     static_assert(
-        std::is_same<TPointType, typename TTraits::point_type>::value,
-        "incompatible point types, TTraits::point_type and TPointType "
-        "must be the same");
-    static_assert(
-        std::is_same<TElementType, typename TTraits::element_type>::value,
-        "incompatible element types, TTraits::element_type and TElementType "
+        std::is_same<Element, typename Traits::element_type>::value,
+        "incompatible element types, Traits::element_type and Element "
         "must be the same");
 
-    using const_element_reference =
-        typename detail::BruidhinnTraits<TElementType>::const_reference;
     using internal_element_type =
-        typename detail::BruidhinnTraits<TElementType>::internal_value_type;
-    using internal_const_element_type = typename detail::BruidhinnTraits<
-        TElementType>::internal_const_value_type;
+        typename detail::BruidhinnTraits<Element>::internal_value_type;
+    using internal_const_element_type =
+        typename detail::BruidhinnTraits<Element>::internal_const_value_type;
 
    public:
     //! Type of the elements.
     //!
     //! The type of the elements of a SchreierSims instance with const removed,
-    //! and if \c TElementType is a pointer to const, then the second const is
+    //! and if \c Element is a pointer to const, then the second const is
     //! also removed.
-    using element_type =
-        typename detail::BruidhinnTraits<TElementType>::value_type;
+    using element_type = typename detail::BruidhinnTraits<Element>::value_type;
+
+    // TODO doc
+    using const_element_reference =
+        typename detail::BruidhinnTraits<Element>::const_reference;
+
+    // TODO doc
+    using element_reference =
+        typename detail::BruidhinnTraits<Element>::reference;
 
     //! Type of the points acted on.
     //!
-    //! Also the template parameter \p TPointType.
-    using point_type = TPointType;
+    //! Also the template parameter \p Point.
+    using point_type = Point;
 
     //! Type of the object containing all points acted on.
-    using domain_type = typename TTraits::domain_type;
+    using domain_type = typename Traits::domain_type;
 
     //! Type of indices.
-    using index_type = typename TTraits::index_type;
+    using index_type = typename Traits::index_type;
 
-    //! Alias for \p TTraits::Action.
+    //! Alias for \p Traits::Action.
     //!
     //! See Action for further details.
-    using Action = typename TTraits::Action;
-
+    using Action = typename Traits::Action;
     //! \copydoc libsemigroups::Degree
-    using Degree = typename TTraits::Degree;
+    using Degree = typename Traits::Degree;
     //! \copydoc libsemigroups::EqualTo
-    using EqualTo = typename TTraits::EqualTo;
+    using EqualTo = typename Traits::EqualTo;
     //! \copydoc libsemigroups::Inverse
-    using Inverse = typename TTraits::Inverse;
+    using Inverse = typename Traits::Inverse;
     //! \copydoc libsemigroups::One
-    using One = typename TTraits::One;
+    using One = typename Traits::One;
     //! \copydoc libsemigroups::Product
-    using Product = typename TTraits::Product;
+    using Product = typename Traits::Product;
     //! \copydoc libsemigroups::Swap
-    using Swap = typename TTraits::Swap;
+    using Swap = typename Traits::Swap;
 
    private:
-    struct InternalEqualTo : private detail::BruidhinnTraits<TElementType> {
-      bool operator()(internal_const_element_type x,
-                      internal_const_element_type y) const {
-        return EqualTo()(this->to_external_const(x),
-                         this->to_external_const(y));
-      }
-    };
+    // TODO replace Array2 by TriArray2 everywhere below
+    std::array<point_type, N>                          _base;
+    index_type                                         _base_size;
+    domain_type                                        _domain;
+    bool                                               _finished;
+    internal_element_type                              _one;
+    detail::StaticTriVector2<point_type, N>            _orbits;
+    detail::Array2<bool, N>                            _orbits_lookup;
+    detail::StaticTriVector2<internal_element_type, N> _strong_gens;
+    mutable internal_element_type                      _tmp_element1;
+    mutable internal_element_type                      _tmp_element2;
+    detail::Array2<internal_element_type, N>           _transversal;
+    detail::Array2<internal_element_type, N>           _inversal;
 
    public:
     //! Default constructor.
@@ -229,6 +247,7 @@ namespace libsemigroups {
     //!
     //! \exceptions
     //! \no_libsemigroups_except
+    // TODO to tpp
     SchreierSims()
         : _base(),
           _base_size(0),
@@ -243,342 +262,6 @@ namespace libsemigroups {
           _transversal(),
           _inversal() {
       init();
-    }
-
-    ~SchreierSims() {
-      clear();
-      this->internal_free(_one);
-      this->internal_free(_tmp_element1);
-      this->internal_free(_tmp_element2);
-    }
-
-    //! Default move constructor.
-    SchreierSims(SchreierSims&&) = default;
-
-    //! Deleted.
-    SchreierSims(SchreierSims const&) = delete;
-
-    //! Deleted.
-    SchreierSims& operator=(SchreierSims const&) = delete;
-
-    //! Deleted.
-    SchreierSims& operator=(SchreierSims&&) = delete;
-
-    //! Add a generator.
-    //!
-    //! \param x a const reference to the generator to add.
-    //!
-    //! \returns
-    //! (None)
-    //!
-    //! \throws LibsemigroupsException if the degree of \p x is not equal to
-    //! the first template parameter \c N.
-    //!
-    //! \complexity
-    //! Constant
-    void add_generator(const_element_reference x) {
-      if (!has_valid_degree(x)) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "generator degree incorrect, expected %llu, got %llu",
-            uint64_t(N),
-            uint64_t(Degree()(x)));
-      } else if (!contains(x)) {
-        _finished = false;
-        _strong_gens.push_back(0, this->internal_copy(_tmp_element2));
-      }
-    }
-
-    //! Get a generator.
-    //!
-    //! \param index the index of the generator we want.
-    //!
-    //! \returns
-    //! A const reference to the generator of \c this with index \p index.
-    //!
-    //! \throws LibsemigroupsException if the \p index is out of bounds.
-    //!
-    //! \complexity
-    //! Constant.
-    const_element_reference generator(index_type index) const {
-      return strong_generator(0, index);
-    }
-
-    //! The number of generators.
-    //!
-    //! \returns
-    //! The number of generators, a value of \c size_t.
-    //!
-    //! \exceptions
-    //! \noexcept
-    //!
-    //! \complexity
-    //! Constant.
-    //!
-    //! \parameters
-    //! (None)
-    size_t number_of_generators() const noexcept {
-      return number_of_strong_generators(0);
-    }
-
-    //! The number of strong generators at a given depth.
-    //!
-    //! \param depth the depth.
-    //!
-    //! \returns
-    //! The number of strong generators, a value of \c size_t, at depth \p
-    //! depth of the stabiliser chain.
-    //!
-    //! \throws LibsemigroupsException if the \p depth is out of bounds.
-    //!
-    //! \complexity
-    //! Constant.
-    //!
-    //! \parameters
-    //! (None)
-    size_t number_of_strong_generators(index_type depth) const {
-      if (_base_size == 0) {
-        return 0;
-      } else if (depth >= _base_size) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "depth out of bounds, expected value in range [0, %llu), got %llu",
-            uint64_t(_base_size),
-            uint64_t(depth));
-      }
-      return _strong_gens.size(depth);
-    }
-
-    //! Get a strong generator.
-    //!
-    //! \param depth the depth.
-    //! \param index the index of the generator we want.
-    //!
-    //! \returns
-    //! A const reference to the strong generator of \c this at depth \p depth
-    //! and with index \p index.
-    //!
-    //! \throws LibsemigroupsException if the \p depth is out of bounds.
-    //! \throws LibsemigroupsException if the \p index is out of bounds.
-    //!
-    //! \complexity
-    //! Constant.
-    const_element_reference strong_generator(index_type depth,
-                                             index_type index) const {
-      if (depth >= _base_size) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "depth out of bounds, expected value in range [0, %llu), got %llu",
-            uint64_t(_base_size),
-            uint64_t(depth));
-      }
-      if (index >= _strong_gens.size(depth)) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "index out of bounds, expected value in range (0, %llu], got %llu",
-            uint64_t(_strong_gens.size(depth)),
-            uint64_t(index));
-      }
-      return this->to_external_const(_strong_gens.at(depth, index));
-    }
-
-    //! Get a transversal element.
-    //!
-    //! \param depth the depth.
-    //! \param pt the image of the base point under the traversal.
-    //!
-    //! \returns
-    //! A const reference to the transversal element of \c this at depth
-    //! \p depth moving the corresponding basepoint to the point \p pt.
-    //!
-    //! \throws LibsemigroupsException if the \p depth is out of bounds.
-    //! \throws LibsemigroupsException if \p pt is not in the orbit of the
-    //! basepoint.
-    //!
-    //! \complexity
-    //! Constant.
-    const_element_reference transversal_element(index_type depth,
-                                                point_type pt) {
-      if (depth >= _base_size) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "depth out of bounds, expected value in range [0, %llu), got %llu",
-            uint64_t(_base_size),
-            uint64_t(depth));
-      }
-      if (pt >= N) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "pt out of bounds, expected value in range [0, %llu), got %llu",
-            uint64_t(N),
-            uint64_t(pt));
-      }
-      if (!_orbits_lookup[depth][pt]) {
-        LIBSEMIGROUPS_EXCEPTION("no element maps %llu to %llu at depth %llu",
-                                uint64_t(_base[depth]),
-                                uint64_t(pt),
-                                uint64_t(depth));
-      }
-      return this->to_external_const(_transversal[depth][pt]);
-    }
-
-    //! Get an inversal element.
-    //!
-    //! \param depth the depth.
-    //! \param pt the point to map to the base point under the inversal.
-    //!
-    //! \returns
-    //! A const reference to the insversal element of \c this at depth
-    //! \p depth moving the corresponding point \p pt to the basepoint.
-    //!
-    //! \throws LibsemigroupsException if the \p depth is out of bounds.
-    //! \throws LibsemigroupsException if \p pt is not in the orbit of the
-    //! basepoint.
-    //!
-    //! \complexity
-    //! Constant.
-    const_element_reference inversal_element(index_type depth, point_type pt) {
-      if (depth >= _base_size) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "depth out of bounds, expected value in range [0, %llu), got %llu",
-            uint64_t(_base_size),
-            uint64_t(depth));
-      }
-      if (pt >= N) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "pt out of bounds, expected value in range [0, %llu), got %llu",
-            uint64_t(N),
-            uint64_t(pt));
-      }
-      if (!_orbits_lookup[depth][pt]) {
-        LIBSEMIGROUPS_EXCEPTION("no element maps %llu to %llu at depth %llu",
-                                uint64_t(_base[depth]),
-                                uint64_t(pt),
-                                uint64_t(depth));
-      }
-      return this->to_external_const(_inversal[depth][pt]);
-    }
-
-    //! Check if a point is in the orbit of a basepoint.
-    //!
-    //! \param depth the depth.
-    //! \param pt the point.
-    //!
-    //! \returns
-    //! A boolean indicating if the point \p pt is in the orbit of the
-    //! basepoint of \c this at depth \p depth.
-    //!
-    //! \throws LibsemigroupsException if the \p depth is out of bounds or if
-    //! \p pt is out of bounds.
-    //!
-    //! \complexity
-    //! Constant.
-    bool orbits_lookup(index_type depth, point_type pt) {
-      if (depth >= _base_size) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "depth out of bounds, expected value in range [0, %llu), got %llu",
-            uint64_t(_base_size),
-            uint64_t(depth));
-      }
-      if (pt >= N) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "pt out of bounds, expected value in range [0, %llu), got %llu",
-            uint64_t(N),
-            uint64_t(pt));
-      }
-      return _orbits_lookup[depth][pt];
-    }
-
-    //! Check if any generators have been added so far.
-    //!
-    //! \returns \c true if `number_of_generators() == 0` and \c false
-    //! otherwise.
-    //!
-    //! \parameters
-    //! (None)
-    //!
-    //! \complexity
-    //! Constant.
-    //!
-    //! \exceptions
-    //! \no_libsemigroups_except
-    // Not noexcept because StaticTriVector2::size isn't
-    bool empty() {
-      return _strong_gens.size(0) == 0;
-    }
-
-    //! Returns the size of the group represented by this.
-    //!
-    //! \returns the size, a value of \c uint64_t.
-    //!
-    //! \parameters
-    //! (None)
-    //!
-    //! \exceptions
-    //! \no_libsemigroups_except
-    uint64_t size() {
-      if (empty()) {
-        return 1;
-      }
-      run();
-      uint64_t out = 1;
-      for (index_type i = 0; i < _base_size; i++) {
-        out *= _orbits.size(i);
-      }
-      return out;
-    }
-
-    //! Sift an element through the stabiliser chain.
-    //!
-    //! \param x a const reference to a group element.
-    //!
-    //! \returns A value of type \ref element_type.
-    //!
-    //! \throws LibsemigroupsException if the degree of \p x is not equal to
-    //! the first template parameter \c N.
-    element_type sift(const_element_reference x) {
-      if (!has_valid_degree(x)) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "element degree incorrect, expected %llu, got %llu",
-            uint64_t(N),
-            uint64_t(Degree()(x)));
-      }
-      element_type cpy = this->external_copy(x);
-      Swap()(cpy, this->to_external(_tmp_element2));
-      internal_sift();  // changes _tmp_element2 in place
-      Swap()(cpy, this->to_external(_tmp_element2));
-      return cpy;
-    }
-
-    //! Test membership of an element.
-    //!
-    //! \param x a const reference to the possible element.
-    //!
-    //! \returns A \c bool.
-    //!
-    //! \exceptions
-    //! \no_libsemigroups_except
-    //!
-    //! \note
-    //! Returns \c false if the degree of \p x is not equal to the first
-    //! template parameter \c N.
-    bool contains(const_element_reference x) {
-      if (!has_valid_degree(x)) {
-        return false;
-      }
-      run();
-      element_type cpy = this->external_copy(x);
-      Swap()(cpy, this->to_external(_tmp_element2));
-      this->external_free(cpy);
-      internal_sift();  // changes _tmp_element2 in place
-      return InternalEqualTo()(_tmp_element2, _one);
-    }
-
-    //! Returns a const reference to the identity.
-    //!
-    //! \returns A \c bool.
-    //!
-    //! \parameters
-    //! (None)
-    //!
-    //! \exceptions
-    //! \no_libsemigroups_except
-    const_element_reference identity() const {
-      return this->to_external_const(_one);
     }
 
     //! Reset to the trivial group.
@@ -597,27 +280,401 @@ namespace libsemigroups {
     //!
     //! \exceptions
     //! \no_libsemigroups_except
-    void clear() {
-      for (size_t depth = 0; depth < N; ++depth) {
-        for (size_t index = 0; index < N; ++index) {
-          if (_orbits_lookup[depth][index]) {
-            this->internal_free(_transversal[depth][index]);
-            this->internal_free(_inversal[depth][index]);
-          }
-        }
-      }
-      std::unordered_set<internal_element_type> deleted;
-      for (size_t depth = 0; depth < N; ++depth) {
-        for (size_t index = 0; index < _strong_gens.size(depth); ++index) {
-          if (deleted.find(_strong_gens.at(depth, index)) == deleted.end()) {
-            this->internal_free(_strong_gens.at(depth, index));
-            deleted.insert(_strong_gens.at(depth, index));
-          }
-        }
-      }
+    SchreierSims& init() {
+      clear();
+      _base_size = 0;
+      _finished  = false;
+      _orbits_lookup.fill(false);
+      return *this;
+    }
+
+    // TODO to tpp
+    ~SchreierSims() {
+      clear();
+      this->internal_free(_one);
+      this->internal_free(_tmp_element1);
+      this->internal_free(_tmp_element2);
+    }
+
+    //! Default move constructor.
+    SchreierSims(SchreierSims&&) = default;
+
+    // TODO doc
+    // TODO to tpp
+    // TODO this requires more tests
+    SchreierSims(SchreierSims const& that)
+        : _base(that._base),
+          _base_size(that._base_size),
+          _domain(that._domain),
+          _finished(that._finished),
+          _one(this->internal_copy(that._one)),
+          _orbits(that._orbits),
+          _orbits_lookup(that._orbits_lookup),
+          _strong_gens(),
+          _tmp_element1(this->internal_copy(_one)),
+          _tmp_element2(this->internal_copy(_one)),
+          _transversal(),
+          _inversal() {
+      init(that);
+    }
+
+    // TODO doc
+    // TODO to tpp
+    // TODO this requires more tests
+    SchreierSims& operator=(SchreierSims const& that) {
+      _base          = that._base;
+      _base_size     = that._base_size;
+      _domain        = that._domain;
+      _finished      = that._finished;
+      _one           = this->internal_copy(that._one);
+      _orbits        = that._orbits;
+      _orbits_lookup = that._orbits_lookup;
+      _tmp_element1  = this->internal_copy(_one);
+      _tmp_element2  = this->internal_copy(_one);
+
       _strong_gens.clear();
-      _orbits.clear();
-      init();
+      _transversal.clear();
+      _inversal.clear();
+
+      init(that);
+
+      return *this;
+    }
+
+    // TODO doc
+    SchreierSims& operator=(SchreierSims&&) = default;
+
+    //! Add a generator.
+    //!
+    //! This functions adds the argument \p x as a new generator if and only if
+    //! \p x is not already an element of the group represented by the
+    //! Schreier-Sims object.
+    //!
+    //! \param x a const reference to the generator to add.
+    //!
+    //! \returns
+    //! \c true if \p x is added as a generator and \c false if it is not.
+    //!
+    //! \throws LibsemigroupsException if the degree of \p x is not equal to
+    //! the first template parameter \c N.
+    //!
+    //! \complexity
+    //! Constant
+    // TODO to tpp
+    bool add_generator(const_element_reference x) {
+      throw_if_bad_degree(x);
+      if (contains(x)) {
+        return false;
+      }
+      _finished = false;
+      // FIXME push_back x not _tmp_element2!!
+      _strong_gens.push_back(0, this->internal_copy(_tmp_element2));
+      return true;
+    }
+
+    //! Get a generator.
+    //!
+    //! \param index the index of the generator we want.
+    //!
+    //! \returns
+    //! A const reference to the generator of \c this with index \p index.
+    //!
+    //! \throws LibsemigroupsException if the \p index is out of bounds.
+    //!
+    //! \complexity
+    //! Constant.
+    [[nodiscard]] const_element_reference generator(index_type index) const {
+      return strong_generator(0, index);
+    }
+
+    // TODO(doc)
+    [[nodiscard]] const_element_reference
+    generator_no_checks(index_type index) const noexcept {
+      return strong_generator_no_checks(0, index);
+    }
+
+    //! The number of generators.
+    //!
+    //! \returns
+    //! The number of generators, a value of \c size_t.
+    //!
+    //! \exceptions
+    //! \noexcept
+    //!
+    //! \complexity
+    //! Constant.
+    //!
+    //! \parameters
+    //! (None)
+    [[nodiscard]] size_t number_of_generators() const noexcept {
+      if (_base_size == 0) {
+        return 0;
+      }
+      LIBSEMIGROUPS_ASSERT(!_strong_gens.empty());
+      return number_of_strong_generators_no_checks(0);
+    }
+
+    //! The number of strong generators at a given depth.
+    //!
+    //! \param depth the depth.
+    //!
+    //! \returns
+    //! The number of strong generators, a value of \c size_t, at depth \p
+    //! depth of the stabiliser chain.
+    //!
+    //! \throws LibsemigroupsException if the \p depth is out of bounds.
+    //!
+    //! \complexity
+    //! Constant.
+    //!
+    //! \parameters
+    //! (None)
+    [[nodiscard]] size_t number_of_strong_generators(index_type depth) const {
+      throw_if_bad_depth(depth);
+      return number_of_strong_generators_no_checks(depth);
+    }
+
+    // TODO doc
+    [[nodiscard]] size_t
+    number_of_strong_generators_no_checks(index_type depth) const noexcept {
+      return _strong_gens.size(depth);
+    }
+
+    //! Get a strong generator.
+    //!
+    //! \param depth the depth.
+    //! \param index the index of the generator we want.
+    //!
+    //! \returns
+    //! A const reference to the strong generator of \c this at depth \p depth
+    //! and with index \p index.
+    //!
+    //! \throws LibsemigroupsException if the \p depth is out of bounds.
+    //! \throws LibsemigroupsException if the \p index is out of bounds.
+    //!
+    //! \complexity
+    //! Constant.
+    [[nodiscard]] const_element_reference
+    strong_generator(index_type depth, index_type index) const {
+      throw_if_bad_depth(depth);
+      if (index >= _strong_gens.size(depth)) {
+        LIBSEMIGROUPS_EXCEPTION("the 2nd argument is out of bounds, expected "
+                                "value in range (0, {}], got {}",
+                                _strong_gens.size(depth),
+                                index);
+      }
+      return strong_generator_no_checks(depth, index);
+    }
+
+    // TODO(doc)
+    [[nodiscard]] const_element_reference
+    strong_generator_no_checks(index_type depth,
+                               index_type index) const noexcept {
+      return this->to_external_const(_strong_gens.at(depth, index));
+    }
+
+    // TODO(doc)
+    [[nodiscard]] const_element_reference
+    transversal_element_no_checks(index_type depth,
+                                  point_type pt) const noexcept {
+      return this->to_external_const(_transversal[depth][pt]);
+    }
+
+    //! Get a transversal element.
+    //!
+    //! \param depth the depth.
+    //! \param pt the image of the base point under the traversal.
+    //!
+    //! \returns
+    //! A const reference to the transversal element of \c this at depth
+    //! \p depth moving the corresponding basepoint to the point \p pt.
+    //!
+    //! \throws LibsemigroupsException if the \p depth is out of bounds.
+    //! \throws LibsemigroupsException if \p pt is not in the orbit of the
+    //! basepoint.
+    //!
+    //! \complexity
+    //! Constant.
+    [[nodiscard]] const_element_reference
+    transversal_element(index_type depth, point_type pt) const {
+      throw_if_bad_depth(depth);
+      throw_if_point_gt_degree(pt);
+      throw_if_point_not_in_orbit(depth, pt);
+      return transversal_element_no_checks(depth, pt);
+    }
+
+    // TODO(doc)
+    [[nodiscard]] const_element_reference
+    inversal_element_no_checks(index_type depth, point_type pt) const noexcept {
+      return this->to_external_const(_inversal[depth][pt]);
+    }
+
+    //! Get an inverse of a transversal element.
+    //!
+    //! \param depth the depth.
+    //! \param pt the point to map to the base point under the
+    //! inverse_transversal_element.
+    //!
+    //! \returns
+    //! A const reference to the inverse_transversal_element element of \c this
+    //! at depth \p depth moving the corresponding point \p pt to the basepoint.
+    //!
+    //! \throws LibsemigroupsException if the \p depth is out of bounds.
+    //! \throws LibsemigroupsException if \p pt is not in the orbit of the
+    //! basepoint.
+    //!
+    //! \complexity
+    //! Constant.
+    // TODO to tpp
+    [[nodiscard]] const_element_reference
+    inverse_transversal_element(index_type depth, point_type pt) const {
+      throw_if_bad_depth(depth);
+      throw_if_point_gt_degree(pt);
+      throw_if_point_not_in_orbit(depth, pt);
+      return inversal_element_no_checks(depth, pt);
+    }
+
+    [[nodiscard]] bool orbit_lookup_no_checks(index_type depth,
+                                              point_type pt) const noexcept {
+      return _orbits_lookup[depth][pt];
+    }
+
+    //! Check if a point is in the orbit of a basepoint.
+    //!
+    //! \param depth the depth.
+    //! \param pt the point.
+    //!
+    //! \returns
+    //! A boolean indicating if the point \p pt is in the orbit of the
+    //! basepoint of \c this at depth \p depth.
+    //!
+    //! \throws LibsemigroupsException if the \p depth is out of bounds or if
+    //! \p pt is out of bounds.
+    //!
+    //! \complexity
+    //! Constant.
+    // TODO to tpp
+    [[nodiscard]] bool orbit_lookup(index_type depth, point_type pt) const {
+      throw_if_bad_depth(depth);
+      throw_if_point_gt_degree(pt);
+      return orbit_lookup_no_checks(depth, pt);
+    }
+
+    //! Check if any generators have been added so far.
+    //!
+    //! \returns \c true if `number_of_generators() == 0` and \c false
+    //! otherwise.
+    //!
+    //! \parameters
+    //! (None)
+    //!
+    //! \complexity
+    //! Constant.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    // Not noexcept because StaticTriVector2::size isn't
+    [[nodiscard]] bool empty() const {
+      return _strong_gens.size(0) == 0;
+    }
+
+    //! Returns the size of the group represented by this.
+    //!
+    //! \returns the size, a value of \c uint64_t.
+    //!
+    //! \parameters
+    //! (None)
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    [[nodiscard]] uint64_t size() {
+      // TODO(later) check if product overflows?
+      if (empty()) {
+        return 1;
+      }
+      run();
+      uint64_t out = 1;
+      for (index_type i = 0; i < _base_size; i++) {
+        out *= _orbits.size(i);
+      }
+      return out;
+    }
+
+    // TODO noexcept?
+    // TODO doc
+    // TODO tests
+    void sift_inplace_no_checks(element_reference x) const {
+      // changes x in place, and uses _tmp_element1
+      internal_sift(this->to_internal(x));
+    }
+
+    // TODO doc
+    // TODO tests
+    void sift_inplace(element_reference x) const {
+      throw_if_bad_degree(x);
+      sift_inplace_no_checks(x);
+    }
+
+    // TODO noexcept?
+    const_element_reference sift_no_checks(const_element_reference x) const {
+      this->to_external(_tmp_element2) = x;
+      // changes x in place, and uses _tmp_element1
+      internal_sift(_tmp_element2);
+      return this->to_external_const(_tmp_element2);
+    }
+
+    //! Sift an element through the stabiliser chain.
+    //!
+    //! \param x a const reference to a group element.
+    //!
+    //! \returns A value of type \ref element_type.
+    //!
+    //! \throws LibsemigroupsException if the degree of \p x is not equal to
+    //! the first template parameter \c N.
+    // TODO return const_reference, or take reference as arg to sift into
+    [[nodiscard]] const_element_reference
+    sift(const_element_reference x) const {
+      throw_if_bad_degree(x);
+      return sift_no_checks(x);
+    }
+
+    //! Test membership of an element.
+    //!
+    //! \param x a const reference to the possible element.
+    //!
+    //! \returns A \c bool.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \note
+    //! Returns \c false if the degree of \p x is not equal to the first
+    //! template parameter \c N.
+    // TODO refactor to avoid swapping weirdness
+    // TODO const_contains helper or mem fn that doesn't call run()
+    [[nodiscard]] bool contains(const_element_reference x) {
+      if (!is_valid_degree(Degree()(x))) {
+        return false;
+      }
+      run();
+      element_type cpy = this->external_copy(x);
+      Swap()(cpy, this->to_external(_tmp_element2));
+      this->external_free(cpy);
+      internal_sift(_tmp_element2);  // changes _tmp_element2 in place
+      return internal_equal_to(_tmp_element2, _one);
+    }
+
+    //! Returns a const reference to the identity.
+    //!
+    //! \returns A \c bool.
+    //!
+    //! \parameters
+    //! (None)
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    [[nodiscard]] const_element_reference identity() const {
+      return this->to_external_const(_one);
     }
 
     //! Check if the stabiliser chain is fully enumerated.
@@ -634,7 +691,8 @@ namespace libsemigroups {
     //!
     //! \exceptions
     //! \no_libsemigroups_except
-    bool finished() const {
+    // TODO noexcept
+    [[nodiscard]] bool finished() const {
       return _finished;
     }
 
@@ -652,23 +710,26 @@ namespace libsemigroups {
     //! \complexity
     //! Linear in the current number of base points.
     void add_base_point(point_type pt) {
-      if (pt >= N) {
+      throw_if_point_gt_degree(pt);
+      if (finished()) {
         LIBSEMIGROUPS_EXCEPTION(
-            "base point out of range, expected value in [0, %llu), got %llu",
-            uint64_t(N),
-            uint64_t(pt));
-      } else if (finished()) {
-        LIBSEMIGROUPS_EXCEPTION("cannot add further base points");
-      } else {
-        for (size_t i = 0; i < _base_size; ++i) {
-          if (_base[i] == pt) {
-            LIBSEMIGROUPS_EXCEPTION(
-                "duplicate base point, %llu is already a base point",
-                uint64_t(pt));
-          }
-        }
+            "the Schreier-Sims algorithm has been run to completion already, "
+            "cannot add further base points");
       }
+      size_t m = std::distance(_base.cbegin(),
+                               std::find(_base.cbegin(), _base.cend(), pt));
+      if (m < _base_size) {
+        LIBSEMIGROUPS_EXCEPTION("the argument {} (a point) equals item {} in "
+                                "the existing base, cannot add it again",
+                                pt,
+                                m);
+      }
+      // TODO rename add_base_point_no_checks
       internal_add_base_point(pt);
+    }
+
+    [[nodiscard]] point_type base_no_checks(index_type index) const noexcept {
+      return _base[index];
     }
 
     //! Get a base point.
@@ -681,14 +742,9 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Constant.
-    point_type base(index_type index) const {
-      if (index >= _base_size) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "index out of bounds, expected value in range (0, %llu], got %llu",
-            uint64_t(_base_size),
-            uint64_t(index));
-      }
-      return _base[index];
+    [[nodiscard]] point_type base(index_type index) const {
+      throw_if_bad_depth(index);
+      return base_no_checks(index);
     }
 
     //! Get the size of the current base.
@@ -704,7 +760,7 @@ namespace libsemigroups {
     //!
     //! \parameters
     //! (None)
-    size_t base_size() const noexcept {
+    [[nodiscard]] size_t base_size() const noexcept {
       return _base_size;
     }
 
@@ -771,7 +827,7 @@ namespace libsemigroups {
             LIBSEMIGROUPS_ASSERT(
                 delta
                 == Action()(_base[i], this->to_external_const(_tmp_element1)));
-            if (!InternalEqualTo()(_tmp_element1, _transversal[i][delta])) {
+            if (!internal_equal_to(_tmp_element1, _transversal[i][delta])) {
               Product()(this->to_external(_tmp_element2),
                         this->to_external_const(_tmp_element1),
                         this->to_external_const(_inversal[i][delta]));
@@ -780,11 +836,11 @@ namespace libsemigroups {
                   == Action()(_base[i],
                               this->to_external_const(_tmp_element2)));
               // internal_sift changes _tmp_element2 in-place
-              index_type depth     = internal_sift();
+              index_type depth     = internal_sift(_tmp_element2);
               bool       propagate = false;
               if (depth < _base_size) {
                 propagate = true;
-              } else if (!InternalEqualTo()(_tmp_element2, _one)) {
+              } else if (!internal_equal_to(_tmp_element2, _one)) {
                 propagate = true;
                 internal_add_base_point(*first_non_fixed_point(_tmp_element2));
               }
@@ -809,18 +865,122 @@ namespace libsemigroups {
     }
 
    private:
-    void init() {
-      _base_size = 0;
-      _finished  = false;
-      _orbits_lookup.fill(false);
-    }
+    ////////////////////////////////////////////////////////////////////////
+    // SchreierSims - validation - private
+    ////////////////////////////////////////////////////////////////////////
 
-    bool has_valid_degree(const_element_reference x) const {
+    bool is_valid_degree(point_type x) const {
       return
 #ifdef LIBSEMIGROUPS_HPCOMBI_ENABLED
           std::is_same<HPCombi::Perm16, element_type>::value ||
 #endif
-          Degree()(x) == N;
+          x == N;
+    }
+
+    void throw_if_bad_degree(const_element_reference x,
+                             std::string const&      arg_pos = "1st") const {
+      auto M = Degree()(x);
+      if (!is_valid_degree(M)) {
+        LIBSEMIGROUPS_EXCEPTION("the degree of the {} argument (an element) is "
+                                "incorrect, expected {} got {}",
+                                arg_pos,
+                                N,
+                                M);
+      }
+    }
+
+    void throw_if_bad_depth(size_t             depth,
+                            std::string const& arg_pos = "1st") const {
+      if (depth >= _base_size) {
+        LIBSEMIGROUPS_EXCEPTION("the {} argument (depth) is out of bounds, "
+                                "expected a value in range [0, {}) got {}",
+                                arg_pos,
+                                _base_size,
+                                depth);
+      }
+    }
+
+    void throw_if_point_gt_degree(point_type         pt,
+                                  std::string const& arg_pos = "1st") const {
+      if (pt >= N) {
+        LIBSEMIGROUPS_EXCEPTION("the {} argument (a point) is out of bounds, "
+                                "expected a value in range [0, {}) got {}",
+                                arg_pos,
+                                N,
+                                pt);
+      }
+    }
+
+    void throw_if_point_not_in_orbit(index_type         depth,
+                                     point_type         pt,
+                                     std::string const& depth_arg_pos = "1st",
+                                     std::string const& pt_arg_pos
+                                     = "2nd") const {
+      LIBSEMIGROUPS_ASSERT(depth < N);
+      LIBSEMIGROUPS_ASSERT(pt < N);
+      if (!_orbits_lookup[depth][pt]) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "the {} argument {} (a point) does not belong "
+            "to the orbit specified by the {} argument {} (depth)",
+            pt_arg_pos,
+            pt,
+            depth_arg_pos,
+            depth);
+      }
+    }
+
+    ////////////////////////////////////////////////////////////////////////
+    // SchreierSims - member functions - private
+    ////////////////////////////////////////////////////////////////////////
+
+    bool internal_equal_to(internal_const_element_type x,
+                           internal_const_element_type y) const {
+      return EqualTo()(this->to_external_const(x), this->to_external_const(y));
+    }
+
+    // Used by copy constructor and assignment operator.
+    void init(SchreierSims const& that) {
+      for (size_t depth = 0; depth < N; ++depth) {
+        for (size_t index = 0; index < N; ++index) {
+          if (that._orbits_lookup[depth][index]) {
+            _transversal[depth][index]
+                = this->internal_copy(that._transversal[depth][index]);
+            _inversal[depth][index]
+                = this->internal_copy(that._inversal[depth][index]);
+          }
+        }
+      }
+      for (size_t depth = 0; depth < N; ++depth) {
+        for (size_t index = 0; index < that._strong_gens.size(depth); ++index) {
+          _strong_gens.push_back(
+              depth, this->internal_copy(that._strong_gens.at(depth, index)));
+        }
+      }
+    }
+
+    // TODO(later): this could be better, especially when use in init() above,
+    // we could recycle the memory allocated, instead of freeing everything as
+    // below.
+    void clear() {
+      for (size_t depth = 0; depth < N; ++depth) {
+        for (size_t index = 0; index < N; ++index) {
+          if (_orbits_lookup[depth][index]) {
+            this->internal_free(_transversal[depth][index]);
+            this->internal_free(_inversal[depth][index]);
+          }
+        }
+      }
+      std::unordered_set<internal_element_type> deleted;
+      for (size_t depth = 0; depth < N; ++depth) {
+        for (size_t index = 0; index < _strong_gens.size(depth); ++index) {
+          if (deleted.find(_strong_gens.at(depth, index)) == deleted.end()) {
+            this->internal_free(_strong_gens.at(depth, index));
+            deleted.insert(_strong_gens.at(depth, index));
+          }
+        }
+      }
+      _strong_gens.clear();
+      _orbits.clear();
     }
 
     void internal_add_base_point(point_type pt) {
@@ -872,18 +1032,17 @@ namespace libsemigroups {
 
     // Changes _tmp_element2 in-place, and returns the depth reached in the
     // sifting.
-    index_type internal_sift() {
+    index_type internal_sift(internal_element_type x) const {
+      LIBSEMIGROUPS_ASSERT(&x != &_tmp_element1);
       for (index_type depth = 0; depth < _base_size; ++depth) {
-        point_type beta
-            = Action()(_base[depth], this->to_external_const(_tmp_element2));
+        point_type beta = Action()(_base[depth], this->to_external_const(x));
         if (!_orbits_lookup[depth][beta]) {
           return depth;
         }
         Product()(this->to_external(_tmp_element1),
-                  this->to_external_const(_tmp_element2),
+                  this->to_external_const(x),
                   this->to_external_const(_inversal[depth][beta]));
-        Swap()(this->to_external(_tmp_element2),
-               this->to_external(_tmp_element1));
+        Swap()(this->to_external(x), this->to_external(_tmp_element1));
       }
       return _base_size;
     }
@@ -896,25 +1055,168 @@ namespace libsemigroups {
         }
       }
       // It is currently not possible to add the identity as a generator since
-      // add_generator checks containment and every group contains its identity
-      // element.
+      // add_generator checks containment and every group contains its
+      // identity element.
       LIBSEMIGROUPS_ASSERT(false);
       return _domain.cend();
     }
-
-    std::array<point_type, N>                          _base;
-    index_type                                         _base_size;
-    domain_type                                        _domain;
-    bool                                               _finished;
-    internal_element_type                              _one;
-    detail::StaticTriVector2<point_type, N>            _orbits;
-    detail::Array2<bool, N>                            _orbits_lookup;
-    detail::StaticTriVector2<internal_element_type, N> _strong_gens;
-    internal_element_type                              _tmp_element1;
-    internal_element_type                              _tmp_element2;
-    detail::Array2<internal_element_type, N>           _transversal;
-    detail::Array2<internal_element_type, N>           _inversal;
   };
+
+  namespace schreier_sims {
+
+    //! Find the intersection of two permutation groups.
+    //!
+    //! Modifies the first parameter \p T to be the Schreier-Sims object
+    //! corresponding to the intersection of \p S1 and \p S2.
+    //!
+    //! \tparam N the largest point not fixed by the permutations in the
+    //! permutation groups.
+    //!
+    //! \param T an empty Schreier-Sims object that will hold the result.
+    //! \param S1 the first semigroup of the intersection.
+    //! \param S2 the second group of the intersection.
+    //!
+    //! \throws LibsemigroupsException if \p T is not empty.
+    //!
+    // TODO(later) example
+
+    // TODO (from RC):
+    // 1. Implement orbit refinement heuristic for intersection.
+    // 2. Make the Screier-Sims object during runtime, since we compute the
+    //    stabilizers of the intersection already.
+    // 3. Refactor for more generality (i.e. so the template parameters N don't
+    //    all have to be the same
+    //
+    // TODO (from JDM):
+    // * use the no_checks mem fns of SchreierSims now that they exist
+
+    template <size_t N>
+    void intersection(SchreierSims<N>& T,
+                      SchreierSims<N>& S1,
+                      SchreierSims<N>& S2) {
+      // This might not be correct for general traits, i.e. only works for
+      // permutations for now.
+      using point_type   = typename SchreierSims<N>::point_type;
+      using element_type = typename SchreierSims<N>::element_type;
+      using One          = typename SchreierSims<N>::One;
+      using Product      = typename SchreierSims<N>::Product;
+
+      if (!T.empty()) {
+        LIBSEMIGROUPS_EXCEPTION("the parameter T must be empty");
+      }
+
+      S1.run();
+      S2.run();
+      if (S2.base_size() < S1.base_size()) {
+        intersection(T, S2, S1);
+        return;
+      }
+
+      // If N <= 1 then both S1, S2 are trivial.
+      if (N <= 1) {
+        T.run();
+        return;
+      }
+
+      // Note that if N-1 points are fixed then the N-th point is also fixed.
+      // So if base contains all N points, then we lose nothing by discarding
+      // the last point in the base.
+      size_t base_size = S1.base_size();
+      if (base_size == N) {
+        base_size = N - 1;
+      }
+
+      auto S2B = std::make_unique<SchreierSims<N>>();
+      for (size_t depth = 0; depth < base_size; ++depth) {
+        S2B->add_base_point(S1.base(depth));
+      }
+      for (size_t i = 0; i < S2.number_of_generators(); ++i) {
+        S2B->add_generator(S2.generator(i));
+      }
+      S2B->run();
+#ifdef LIBSEMIGROUPS_DEBUG
+      for (size_t depth = 0; depth < base_size; ++depth) {
+        LIBSEMIGROUPS_ASSERT(S1.base(depth) == S2B->base(depth));
+      }
+#endif
+      // Only need to consider points reachable by both groups.
+      // Note that as we traverse the tree these points change!
+      // In general, if we are at a node corresponding to elements g and h
+      // in the tree and orbits O and P respectively, then the only points we
+      // need to consider are O^g intersect P^h.
+      // This is not currently implemented! We just use all of the points
+      // in the orbits of S1. Implementing it probably requires refactoring
+      // the code.
+      detail::StaticTriVector2<point_type, N> refined_orbit;
+      for (size_t depth = 0; depth < base_size; ++depth) {
+        // First point is always base point to make algorithm simpler
+        LIBSEMIGROUPS_ASSERT(S1.base(depth) == S2B->base(depth));
+        refined_orbit.push_back(depth, S1.base(depth));
+        for (point_type pt = 0; pt < N; ++pt) {
+          if ((pt != S1.base(depth)) && S1.orbit_lookup(depth, pt)) {
+            refined_orbit.push_back(depth, pt);
+          }
+        }
+      }
+
+      // Initially assume that we have traversed the tree to the leaf
+      // corresponding to the base and identity element.
+      // stab_depth tracks the largest stabiliser we have found thus far.
+      size_t                      stab_depth = base_size;
+      size_t                      depth      = 0;
+      std::array<size_t, N>       state_index;
+      std::array<element_type, N> state_elem;
+      state_index.fill(0);
+      state_elem.fill(One()(N));
+
+      while (stab_depth > 0) {
+        for (; depth < base_size; ++depth) {
+          // This is a safe memory access as base_size <= N-1, so depth < N-1
+          // during the loop and so depth + 1 <= N-1
+          LIBSEMIGROUPS_ASSERT(depth + 1 < N);
+          Product()(state_elem[depth + 1],
+                    S1.transversal_element(
+                        depth, refined_orbit.at(depth, state_index[depth])),
+                    state_elem[depth]);
+        }
+        if (S2B->contains(state_elem[depth])) {
+          LIBSEMIGROUPS_ASSERT(S1.contains(state_elem[depth]));
+          LIBSEMIGROUPS_ASSERT(S2.contains(state_elem[depth]));
+          T.add_generator(state_elem[depth]);
+          // As soon as we find one, the rest are in a coset of stabiliser, so
+          // dont need to look at any more nodes.
+          depth = stab_depth;
+        }
+        // If previous if statement passes then depth = stab_depth > 0 by the
+        // while loop invariant. If not, then depth = base_size > 0 due to the
+        // for loop before the if statement.
+        LIBSEMIGROUPS_ASSERT(depth != 0);
+        depth--;
+
+        // Find largest depth that has an unvisited node and increment its
+        // index. Adjust stabilizer depth as depths are exhausted.
+        for (;; --depth) {
+          LIBSEMIGROUPS_ASSERT(depth < base_size);
+          state_index[depth]++;
+          if (state_index[depth] < refined_orbit.size(depth)) {
+            break;
+          }
+          if (depth < stab_depth) {
+            stab_depth = depth;
+          }
+          state_index[depth] = 0;
+          state_elem[depth]  = One()(N);
+          if (depth == 0) {
+            break;
+          }
+        }
+      }
+
+      T.run();
+    }
+  }  // namespace schreier_sims
 }  // namespace libsemigroups
+
+#include "schreier-sims.tpp"
 
 #endif  // LIBSEMIGROUPS_SCHREIER_SIMS_HPP_

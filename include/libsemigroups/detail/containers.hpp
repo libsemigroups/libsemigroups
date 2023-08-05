@@ -1069,6 +1069,11 @@ namespace libsemigroups {
         return _arrays[depth];
       }
 
+      inline std::array<T, N> const& operator[](size_t depth) const {
+        LIBSEMIGROUPS_ASSERT(depth < N);
+        return _arrays[depth];
+      }
+
       // Not noexcept because std::array::at can throw
       inline T const& at(size_t depth, size_t index) const {
         return _arrays.at(depth).at(index);

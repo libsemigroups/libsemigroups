@@ -827,7 +827,7 @@ namespace libsemigroups {
             typename OneOp,
             size_t C,
             typename Scalar>
-  class StaticRowView final
+  class StaticRowView
       : public detail::RowViewCommon<
             StaticMatrix<PlusOp, ProdOp, ZeroOp, OneOp, 1, C, Scalar>,
             StaticRowView<PlusOp, ProdOp, ZeroOp, OneOp, C, Scalar>>,
@@ -878,7 +878,7 @@ namespace libsemigroups {
             typename ZeroOp,
             typename OneOp,
             typename Scalar>
-  class DynamicRowView<PlusOp, ProdOp, ZeroOp, OneOp, Scalar> final
+  class DynamicRowView<PlusOp, ProdOp, ZeroOp, OneOp, Scalar>
       : public detail::RowViewCommon<
             DynamicMatrix<PlusOp, ProdOp, ZeroOp, OneOp, Scalar>,
             DynamicRowView<PlusOp, ProdOp, ZeroOp, OneOp, Scalar>>,
@@ -918,7 +918,7 @@ namespace libsemigroups {
   ////////////////////////////////////////////////////////////////////////
 
   template <typename Semiring, typename Scalar>
-  class DynamicRowView<Semiring, Scalar> final
+  class DynamicRowView<Semiring, Scalar>
       : public detail::RowViewCommon<DynamicMatrix<Semiring, Scalar>,
                                      DynamicRowView<Semiring, Scalar>> {
    private:
@@ -972,7 +972,7 @@ namespace libsemigroups {
             size_t R,
             size_t C,
             typename Scalar>
-  class StaticMatrix final
+  class StaticMatrix
       : public detail::
             MatrixStaticArithmetic<PlusOp, ProdOp, ZeroOp, OneOp, Scalar>,
         public detail::MatrixCommon<
@@ -1144,7 +1144,7 @@ namespace libsemigroups {
             typename ZeroOp,
             typename OneOp,
             typename Scalar>
-  class DynamicMatrix<PlusOp, ProdOp, ZeroOp, OneOp, Scalar> final
+  class DynamicMatrix<PlusOp, ProdOp, ZeroOp, OneOp, Scalar>
       : public detail::MatrixDynamicDim<Scalar>,
         public detail::MatrixCommon<
             std::vector<Scalar>,
@@ -1256,7 +1256,7 @@ namespace libsemigroups {
   ////////////////////////////////////////////////////////////////////////
 
   template <typename Semiring, typename Scalar>
-  class DynamicMatrix<Semiring, Scalar> final
+  class DynamicMatrix<Semiring, Scalar>
       : public detail::MatrixDynamicDim<Scalar>,
         public detail::MatrixCommon<std::vector<Scalar>,
                                     DynamicMatrix<Semiring, Scalar>,
@@ -1798,7 +1798,7 @@ namespace libsemigroups {
   };
 
   template <typename Scalar = int>
-  class MaxPlusTruncSemiring final {
+  class MaxPlusTruncSemiring {
     static_assert(std::is_signed<Scalar>::value,
                   "MaxPlus requires a signed integer type as parameter!");
 
@@ -1964,7 +1964,7 @@ namespace libsemigroups {
   };
 
   template <typename Scalar = int>
-  class MinPlusTruncSemiring final {
+  class MinPlusTruncSemiring {
     static_assert(std::is_integral<Scalar>::value,
                   "MinPlus requires an integral type as parameter!");
 
@@ -2154,7 +2154,7 @@ namespace libsemigroups {
 
   // Dynamic arithmetic
   template <typename Scalar = size_t>
-  class NTPSemiring final {
+  class NTPSemiring {
    public:
     // Deleted to avoid uninitialised values of period and threshold.
     NTPSemiring()                   = delete;
@@ -2329,7 +2329,7 @@ namespace libsemigroups {
 
   namespace detail {
     template <typename T>
-    class ProjMaxPlusMat final : MatrixPolymorphicBase {
+    class ProjMaxPlusMat : MatrixPolymorphicBase {
      public:
       using scalar_type            = typename T::scalar_type;
       using scalar_reference       = typename T::scalar_reference;
