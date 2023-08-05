@@ -21,15 +21,15 @@
 
 #include "libsemigroups/stephen.hpp"
 
-#include <chrono>                       // for duration, duration...
-#include <tuple>                        // for tie, tuple
-#include <utility>                      // for move, pair
-                                        //
-#include "libsemigroups/constants.hpp"  // for operator==, Undefined
-#include "libsemigroups/debug.hpp"      // for LIBSEMIGROUPS_ASSERT
-#include "libsemigroups/exception.hpp"  // for LibsemigroupsExcep...
-#include "libsemigroups/presentation.hpp"    // for Presentation<>::wo...
-#include "libsemigroups/types.hpp"      // for word_type
+#include <chrono>                          // for duration, duration...
+#include <tuple>                           // for tie, tuple
+#include <utility>                         // for move, pair
+                                           //
+#include "libsemigroups/constants.hpp"     // for operator==, Undefined
+#include "libsemigroups/debug.hpp"         // for LIBSEMIGROUPS_ASSERT
+#include "libsemigroups/exception.hpp"     // for LibsemigroupsExcep...
+#include "libsemigroups/presentation.hpp"  // for Presentation<>::wo...
+#include "libsemigroups/types.hpp"         // for word_type
 
 #include "libsemigroups/detail/node-managed-graph.hpp"  // for StephenDigraph...
 #include "libsemigroups/detail/report.hpp"              // for REPORT_DEFAULT_V3

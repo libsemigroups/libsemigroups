@@ -1,6 +1,6 @@
 //
 // libsemigroups - C++ library for semigroups and monoids
-// Copyright (C) 2019 James D. Mitchell
+// Copyright (C) 2019-2023 James D. Mitchell
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -36,6 +36,12 @@ namespace libsemigroups {
   //! A pseudonym for std::chrono::nanoseconds::max().
   constexpr std::chrono::nanoseconds FOREVER = std::chrono::nanoseconds::max();
 
+  // TODO:
+  // * rename to Reporter (when the v2 one is removed)
+  // * use this anywhere?
+  // This class exists so that the "reporting" functionality can be used
+  // independently from the "runner" functionality, for example in
+  // NodeManagedDigraph.
   class ReporterV3 {
     using time_point  = std::chrono::high_resolution_clock::time_point;
     using nanoseconds = std::chrono::nanoseconds;
@@ -45,23 +51,19 @@ namespace libsemigroups {
     nanoseconds        _report_time_interval;
 
    public:
-    // TODO noexcept?
-    ReporterV3()
-        : _last_report(std::chrono::high_resolution_clock::now()),
-          _report_time_interval(std::chrono::seconds(1)) {}
-
-    ReporterV3& init() {
-      _last_report = std::chrono::high_resolution_clock::now();
-      _report_time_interval
-          = decltype(_report_time_interval)(std::chrono::seconds(1));
-      return *this;
+    // not noexcept because std::string constructor isn't
+    ReporterV3() : _last_report(), _prefix(), _report_time_interval() {
+      init();
     }
+
+    ReporterV3& init();
 
     ReporterV3(ReporterV3 const&)            = default;
     ReporterV3(ReporterV3&&)                 = default;
     ReporterV3& operator=(ReporterV3 const&) = default;
     ReporterV3& operator=(ReporterV3&&)      = default;
-    ~ReporterV3()                            = default;
+
+    ~ReporterV3() = default;
 
     //! Check if it is time to report.
     //!
@@ -76,9 +78,10 @@ namespace libsemigroups {
     //! (None)
     //!
     //! \sa report_every(std::chrono::nanoseconds) and report_every(TIntType).
-    inline bool report() const {
+    // not noexcept because operator- for time_points can throw.
+    [[nodiscard]] inline bool report() const {
       auto t       = std::chrono::high_resolution_clock::now();
-      auto elapsed = std::chrono::duration_cast<nanoseconds>(t - _last_report);
+      auto elapsed = t - _last_report;
 
       if (elapsed > _report_time_interval) {
         _last_report = t;
@@ -95,14 +98,18 @@ namespace libsemigroups {
     //! report() returns \c true at time \c s, then report() will
     //! only return \c true again after time \c s + \c t has elapsed.
     //!
-    //! \param t the amount of time (in nanoseconds) between reports.
+    //! \param val the amount of time (in nanoseconds) between reports.
     //!
     //! \returns
-    //! (None)
+    //! A reference to this.
     //!
     //! \sa
     //! report_every(TIntType)
-    void report_every(nanoseconds t);
+    ReporterV3& report_every(nanoseconds val) noexcept {
+      _last_report          = std::chrono::high_resolution_clock::now();
+      _report_time_interval = val;
+      return *this;
+    }
 
     //! Set the minimum elapsed time between reports.
     //!
@@ -118,8 +125,8 @@ namespace libsemigroups {
     //!
     //! \sa report_every(std::chrono::nanoseconds)
     template <typename TIntType>
-    void report_every(TIntType t) {
-      report_every(nanoseconds(t));
+    ReporterV3& report_every(TIntType t) noexcept {
+      return report_every(nanoseconds(t));
     }
 
     //! Get the minimum elapsed time between reports.
@@ -129,16 +136,17 @@ namespace libsemigroups {
     //!
     //! \returns
     //! The number of nanoseconds between reports.
-    nanoseconds report_every() const noexcept {
+    [[nodiscard]] nanoseconds report_every() const noexcept {
       return _report_time_interval;
     }
 
-    ReporterV3& set_prefix(std::string const& val) {
+    // Not noexcept because std::string::operator= isn't
+    ReporterV3& report_prefix(std::string const& val) {
       _prefix = val;
       return *this;
     }
 
-    std::string const& prefix() const noexcept {
+    [[nodiscard]] std::string const& report_prefix() const noexcept {
       return _prefix;
     }
   };
@@ -173,6 +181,17 @@ namespace libsemigroups {
       dead                 = 8
     };
 
+   private:
+    ////////////////////////////////////////////////////////////////////////
+    // Runner - data - private
+    ////////////////////////////////////////////////////////////////////////
+
+    std::chrono::nanoseconds                       _run_for;
+    std::chrono::high_resolution_clock::time_point _start_time;
+    mutable std::atomic<state>                     _state;
+    detail::FunctionRef<bool(void)>                _stopper;
+
+   public:
     ////////////////////////////////////////////////////////////////////////
     // Runner - constructors + destructor - public
     ////////////////////////////////////////////////////////////////////////
@@ -186,8 +205,11 @@ namespace libsemigroups {
     //!
     //! \par Parameters
     //! (None)
+    // not noexcept because ReporterV3() isn't
     Runner();
-    void init();  // TODO the other inits
+
+    // TODO doc
+    Runner& init();
 
     //! Copy constructor.
     //!
@@ -196,14 +218,7 @@ namespace libsemigroups {
     //! to \ref run_until (if any) is not copied.
     //!
     //! \param other the Runner to copy.
-    Runner(Runner const& other)
-        : ReporterV3(other),
-          _run_for(other._run_for),
-          _start_time(other._start_time),
-          _state(),
-          _stopper() {
-      _state = other._state.load();
-    }
+    Runner(Runner const& other);
 
     //! Move constructor
     //!
@@ -212,14 +227,7 @@ namespace libsemigroups {
     //! an argument to \ref run_until (if any) is not copied.
     //!
     //! \param other the Runner to move from.
-    Runner(Runner&& other)
-        : ReporterV3(std::move(other)),
-          _run_for(std::move(other._run_for)),
-          _start_time(std::move(other._start_time)),
-          _state(),
-          _stopper() {
-      _state = other._state.load();
-    }
+    Runner(Runner&& other);
 
     //! Copy assignment operator.
     //!
@@ -228,13 +236,7 @@ namespace libsemigroups {
     //! an argument to \ref run_until (if any) is not copied.
     //!
     //! \param other the Runner to move from.
-    Runner& operator=(Runner const& other) {
-      ReporterV3::operator=(other);
-      _run_for    = other._run_for;
-      _start_time = other._start_time;
-      _state      = other._state.load();
-      return *this;
-    }
+    Runner& operator=(Runner const& other);
 
     //! Move assignment operator.
     //!
@@ -243,18 +245,12 @@ namespace libsemigroups {
     //! an argument to \ref run_until (if any) is not copied.
     //!
     //! \param other the Runner to move from.
-    Runner& operator=(Runner&& other) {
-      ReporterV3::operator=(std::move(other));
-      _run_for    = std::move(other._run_for);
-      _start_time = std::move(other._start_time);
-      _state      = other._state.load();
-      return *this;
-    }
+    Runner& operator=(Runner&& other);
 
     virtual ~Runner() = default;
 
     ////////////////////////////////////////////////////////////////////////
-    // Runner - pure virtual member functions - public
+    // Runner - non-virtual member functions - public
     ////////////////////////////////////////////////////////////////////////
 
     //! Run until \ref finished.
@@ -268,26 +264,7 @@ namespace libsemigroups {
     //! \par Parameters
     //! (None)
     // At the end of this either finished, or dead.
-    void run() {
-      if (!finished() && !dead()) {
-        set_state(state::running_to_finish);
-        try {
-          run_impl();
-        } catch (LibsemigroupsException const& e) {
-          if (!dead()) {
-            set_state(state::not_running);
-          }
-          throw;
-        }
-        if (!dead()) {
-          set_state(state::not_running);
-        }
-      }
-    }
-
-    ////////////////////////////////////////////////////////////////////////
-    // Runner - non-virtual member functions - public
-    ////////////////////////////////////////////////////////////////////////
+    void run();
 
     //! Run for a specified amount of time.
     //!
@@ -332,12 +309,12 @@ namespace libsemigroups {
     //!
     //! \sa run_for(std::chrono::nanoseconds) and
     //! run_for(TIntType).
-    bool timed_out() const {
+    // not noexcept because operator-(time_point, time_point) isn't
+    [[nodiscard]] inline bool timed_out() const {
       return (running_for()
-                  ? std::chrono::duration_cast<std::chrono::nanoseconds>(
-                        std::chrono::high_resolution_clock::now() - _start_time)
+                  ? std::chrono::high_resolution_clock::now() - _start_time
                         >= _run_for
-                  : get_state() == state::timed_out);
+                  : current_state() == state::timed_out);
     }
 
     //! Run until a nullary predicate returns \p true or \ref finished.
@@ -349,23 +326,7 @@ namespace libsemigroups {
     //! (None)
     // At the end of this either finished, dead, or stopped_by_predicate.
     template <typename T>
-    void run_until(T&& func) {
-      if (!finished() && !dead()) {
-        _stopper = std::forward<T>(func);
-        if (!_stopper()) {
-          set_state(state::running_until);
-          run_impl();
-          if (!finished()) {
-            if (!dead()) {
-              set_state(state::stopped_by_predicate);
-            }
-          } else {
-            set_state(state::not_running);
-          }
-        }
-        _stopper.invalidate();
-      }
-    }
+    void run_until(T&& func);
 
     //! Run until a nullary predicate returns \p true or \ref finished.
     //!
@@ -387,6 +348,7 @@ namespace libsemigroups {
     //!
     //! \returns
     //! (None)
+    // not noexcept because it calls timed_out which is not noexcept
     void report_why_we_stopped() const;
 
     //! Check if \ref run has been run to completion or not.
@@ -403,7 +365,8 @@ namespace libsemigroups {
     //! A \c bool.
     //!
     //! \sa started()
-    bool finished() const {
+    // Not noexcept because finished_impl isn't
+    [[nodiscard]] inline bool finished() const {
       if (started() && !dead() && finished_impl()) {
         _state = state::not_running;
         return true;
@@ -426,8 +389,8 @@ namespace libsemigroups {
     //! A \c bool.
     //!
     //! \sa finished()
-    bool started() const {
-      return get_state() != state::never_run;
+    [[nodiscard]] bool started() const noexcept {
+      return current_state() != state::never_run;
     }
 
     //! Check if currently running.
@@ -442,10 +405,10 @@ namespace libsemigroups {
     //! A \c bool.
     //!
     //! \sa finished()
-    bool running() const noexcept {
-      return get_state() == state::running_to_finish
-             || get_state() == state::running_for
-             || get_state() == state::running_until;
+    [[nodiscard]] bool running() const noexcept {
+      return current_state() == state::running_to_finish
+             || current_state() == state::running_for
+             || current_state() == state::running_until;
     }
 
     //! Stop \ref run from running (thread-safe).
@@ -483,8 +446,8 @@ namespace libsemigroups {
     //! \noexcept
     //!
     //! \sa kill()
-    bool dead() const noexcept {
-      return get_state() == state::dead;
+    [[nodiscard]] bool dead() const noexcept {
+      return current_state() == state::dead;
     }
 
     //! Check if the runner is stopped.
@@ -498,9 +461,10 @@ namespace libsemigroups {
     //!
     //! \par Parameters
     //! (None)
-    bool stopped() const {
+    // not noexcept because timed_out isn't
+    [[nodiscard]] bool stopped() const {
       return (running() ? (timed_out() || stopped_by_predicate())
-                        : get_state() > state::running_until);
+                        : current_state() > state::running_until);
     }
 
     //! Check if the runner was, or should, stop because of
@@ -523,12 +487,12 @@ namespace libsemigroups {
     //! \par Parameters
     //! (None)
     // noexcept should depend on whether _stopper can throw or not
-    bool stopped_by_predicate() const {
+    [[nodiscard]] inline bool stopped_by_predicate() const {
       if (running_until()) {
         LIBSEMIGROUPS_ASSERT(_stopper.valid());
         return _stopper();
       } else {
-        return get_state() == state::stopped_by_predicate;
+        return current_state() == state::stopped_by_predicate;
       }
     }
 
@@ -550,7 +514,7 @@ namespace libsemigroups {
     //!
     //! \par Parameters
     //! (None)
-    bool running_for() const noexcept {
+    [[nodiscard]] bool running_for() const noexcept {
       return _state == state::running_for;
     }
 
@@ -572,19 +536,20 @@ namespace libsemigroups {
     //!
     //! \par Parameters
     //! (None)
-    bool running_until() const noexcept {
+    [[nodiscard]] bool running_until() const noexcept {
       return _state == state::running_until;
     }
 
-    state get_state() const noexcept {
+    // TODO doc
+    [[nodiscard]] state current_state() const noexcept {
       return _state;
     }
 
    private:
-    virtual void run_impl()            = 0;
-    virtual bool finished_impl() const = 0;
+    virtual void               run_impl()            = 0;
+    [[nodiscard]] virtual bool finished_impl() const = 0;
 
-    void set_state(state stt) const {
+    void set_state(state stt) const noexcept {
       // We can set the state back to never_run if run_impl throws, and we are
       // restoring the old state.
       if (!dead()) {
@@ -593,15 +558,25 @@ namespace libsemigroups {
         _state = stt;
       }
     }
-
-    ////////////////////////////////////////////////////////////////////////
-    // Runner - data - private
-    ////////////////////////////////////////////////////////////////////////
-
-    std::chrono::nanoseconds                       _run_for;
-    std::chrono::high_resolution_clock::time_point _start_time;
-    mutable std::atomic<state>                     _state;
-    detail::FunctionRef<bool(void)>                _stopper;
   };
+
+  template <typename T>
+  void Runner::run_until(T&& func) {
+    if (!finished() && !dead()) {
+      _stopper = std::forward<T>(func);
+      if (!_stopper()) {
+        set_state(state::running_until);
+        run_impl();
+        if (!finished()) {
+          if (!dead()) {
+            set_state(state::stopped_by_predicate);
+          }
+        } else {
+          set_state(state::not_running);
+        }
+      }
+      _stopper.invalidate();
+    }
+  }
 }  // namespace libsemigroups
 #endif  // LIBSEMIGROUPS_RUNNER_HPP_

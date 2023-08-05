@@ -213,7 +213,7 @@ namespace libsemigroups {
     // This is where we pass through from _settings to the
     // _word_graph.definitions
     _word_graph.definitions().init(this);
-    _word_graph.set_prefix("ToddCoxeter");
+    _word_graph.report_prefix("ToddCoxeter");
   }
 
   ToddCoxeter& ToddCoxeter::init() {
@@ -222,7 +222,7 @@ namespace libsemigroups {
     _forest.init();
     _standardized = Order::none;
     _word_graph.definitions().init(this);
-    _word_graph.set_prefix("ToddCoxeter");
+    _word_graph.report_prefix("ToddCoxeter");
     return *this;
   }
 
@@ -237,7 +237,7 @@ namespace libsemigroups {
     _settings     = Settings();
     _standardized = Order::none;
     _word_graph.definitions().init(this);
-    _word_graph.set_prefix("ToddCoxeter");
+    _word_graph.report_prefix("ToddCoxeter");
     return *this;
   }
 
@@ -253,7 +253,7 @@ namespace libsemigroups {
     }
     _word_graph.init(std::move(p));
     _word_graph.definitions().init(this);
-    _word_graph.set_prefix("ToddCoxeter");
+    _word_graph.report_prefix("ToddCoxeter");
   }
 
   ToddCoxeter& ToddCoxeter::init(congruence_kind           knd,
@@ -264,7 +264,7 @@ namespace libsemigroups {
     }
     _word_graph.init(std::move(p));
     _word_graph.definitions().init(this);
-    _word_graph.set_prefix("ToddCoxeter");
+    _word_graph.report_prefix("ToddCoxeter");
     return *this;
   }
 
@@ -285,7 +285,7 @@ namespace libsemigroups {
       _word_graph.init(p);
     }
     _word_graph.definitions().init(this);
-    _word_graph.set_prefix("ToddCoxeter");
+    _word_graph.report_prefix("ToddCoxeter");
   }
 
   ToddCoxeter& ToddCoxeter::init(congruence_kind                knd,
@@ -299,7 +299,7 @@ namespace libsemigroups {
       _word_graph.init(p);
     }
     _word_graph.definitions().init(this);
-    _word_graph.set_prefix("ToddCoxeter");
+    _word_graph.report_prefix("ToddCoxeter");
     return *this;
   }
 
@@ -325,7 +325,7 @@ namespace libsemigroups {
       presentation::reverse(_word_graph.presentation());
     }
     _word_graph.definitions().init(this);
-    _word_graph.set_prefix("ToddCoxeter");
+    _word_graph.report_prefix("ToddCoxeter");
     return *this;
   }
 

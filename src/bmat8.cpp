@@ -245,7 +245,7 @@ namespace libsemigroups {
   void BMat8::set(size_t i, size_t j, bool val) {
     if (7 < i || 7 < j) {
       LIBSEMIGROUPS_EXCEPTION(
-          "the arguments should each be at most 7, got %d as the %s argument",
+          "the arguments should each be at most 7, got {} as the {} argument",
           (7 < i) ? i : j,
           (7 < i) ? "first" : "second");
     }

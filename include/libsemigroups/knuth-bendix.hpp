@@ -42,7 +42,7 @@
 #include "debug.hpp"            // for LIBSEMIGROUPS_ASSERT
 #include "exception.hpp"        // for LIBSEMIGROUPS_EXCEPTION
 #include "paths.hpp"            // for Paths
-#include "presentation.hpp"          // for Presentation
+#include "presentation.hpp"     // for Presentation
 #include "runner.hpp"           // for Runner
 #include "to-presentation.hpp"  // for to_presentation
 #include "types.hpp"            // for word_type

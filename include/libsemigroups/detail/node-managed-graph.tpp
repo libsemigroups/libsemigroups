@@ -331,7 +331,7 @@ namespace libsemigroups {
       auto msg
           = fmt_default("{}: nodes {:>{c1}} (active) | {:>{c2}} (killed) | "
                         "{:>{c3}} (defined)\n",
-                        prefix(),
+                        report_prefix(),
                         group_digits(active),
                         group_digits(killed),
                         group_digits(defined),
@@ -340,7 +340,7 @@ namespace libsemigroups {
                         fmt::arg("c3", c3));
       msg += fmt_default("{}: diff  {:>{c1}} (active) | {:>{c2}} (killed) | "
                          "{:>{c3}} (defined)\n",
-                         prefix(),
+                         report_prefix(),
                          active_diff,
                          killed_diff,
                          defined_diff,
@@ -350,7 +350,7 @@ namespace libsemigroups {
       msg += fmt_default(
           "{}: time  {:>{c1}} (total)  | {:>{c2}} (killed) | {:>{c3}} "
           "(defined)\n",
-          prefix(),
+          report_prefix(),
           string_time(run_time),
           mean_killed,
           mean_defined,

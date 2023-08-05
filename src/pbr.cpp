@@ -182,9 +182,8 @@ namespace libsemigroups {
     }
     for (size_t u = 0; u < n; ++u) {
       if (!std::is_sorted(x._vector.at(u).cbegin(), x._vector.at(u).cend())) {
-        LIBSEMIGROUPS_EXCEPTION("the adjacencies of vertex ",
-                                detail::to_string(u).c_str(),
-                                " are unsorted");
+        LIBSEMIGROUPS_EXCEPTION("the adjacencies of vertex {} are unsorted",
+                                detail::to_string(u));
       }
     }
   }

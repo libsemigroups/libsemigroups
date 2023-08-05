@@ -35,7 +35,7 @@
 #include "obvinf.hpp"                     // for is_obviously_infinite
 #include "order.hpp"                      // for order
 #include "paths.hpp"
-#include "presentation.hpp"          // for Presentation
+#include "presentation.hpp"     // for Presentation
 #include "to-presentation.hpp"  // for make
 #include "types.hpp"            // for word_type
 
@@ -276,7 +276,7 @@ namespace libsemigroups {
         : ToddCoxeter(knd) {
       _word_graph = ad;
       _word_graph.presentation().alphabet(ad.out_degree());
-      _word_graph.set_prefix("ToddCoxeter");
+      _word_graph.report_prefix("ToddCoxeter");
     }
 
     template <typename Node>
@@ -295,7 +295,7 @@ namespace libsemigroups {
         : ToddCoxeter(knd, p) {
       _word_graph = ad;
       _word_graph.presentation(p);
-      _word_graph.set_prefix("ToddCoxeter");
+      _word_graph.report_prefix("ToddCoxeter");
     }
 
     ToddCoxeter(congruence_kind knd, ToddCoxeter const& tc);
