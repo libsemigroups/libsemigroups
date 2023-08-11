@@ -172,14 +172,32 @@ namespace libsemigroups {
   }  // namespace detail
 
   namespace report {
+    namespace {
+      std::unordered_set<std::string_view>& suppressions() {
+        static std::unordered_set<std::string_view> _suppressions;
+        return _suppressions;
+      }
+    }  // namespace
+
     bool should_report() noexcept {
       return REPORTER.report();
     }
 
-    void suppress(std::string const& class_name) {
-      REPORTER.suppress(class_name);
+    bool suppress(std::string_view const& prefix) {
+      // TODO throw exception if prefix is empty
+      return suppressions().insert(prefix).second;
     }
 
+    bool stop_suppressing(std::string_view const& prefix) {
+      // TODO throw exception if prefix is empty
+      return suppressions().erase(prefix);
+    }
+
+    bool is_suppressed(std::string_view const& prefix) {
+      return suppressions().find(prefix) != suppressions().cend();
+    }
+
+    // TODO delete
     void clear_suppressions() {
       REPORTER.clear_suppressions();
     }

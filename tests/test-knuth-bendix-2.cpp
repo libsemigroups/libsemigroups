@@ -52,7 +52,7 @@
 #include "libsemigroups/knuth-bendix.hpp"     // for KnuthBendix, normal_forms
 #include "libsemigroups/order.hpp"            // for shortlex_compare
 #include "libsemigroups/paths.hpp"            // for Paths
-#include "libsemigroups/presentation.hpp"          // for add_rule, Presentation
+#include "libsemigroups/presentation.hpp"     // for add_rule, Presentation
 #include "libsemigroups/word-graph.hpp"       // for WordGraph
 #include "libsemigroups/words.hpp"            // for Inner, to_strings
 

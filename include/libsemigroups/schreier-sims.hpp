@@ -631,11 +631,22 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if the degree of \p x is not equal to
     //! the first template parameter \c N.
-    // TODO return const_reference, or take reference as arg to sift into
     [[nodiscard]] const_element_reference
     sift(const_element_reference x) const {
       throw_if_bad_degree(x);
       return sift_no_checks(x);
+    }
+
+    // TODO doc
+    // At present I think this will always return false if finished()
+    // isn't true, because we either run to the end or haven't done anything at
+    // all
+    [[nodiscard]] bool const_contains(const_element_reference x) const {
+      if (!is_valid_degree(Degree()(x))) {
+        return false;
+      }
+      auto const& y = sift_no_checks(x);
+      return internal_equal_to(this->to_internal_const(y), _one);
     }
 
     //! Test membership of an element.
@@ -650,18 +661,13 @@ namespace libsemigroups {
     //! \note
     //! Returns \c false if the degree of \p x is not equal to the first
     //! template parameter \c N.
-    // TODO refactor to avoid swapping weirdness
-    // TODO const_contains helper or mem fn that doesn't call run()
     [[nodiscard]] bool contains(const_element_reference x) {
-      if (!is_valid_degree(Degree()(x))) {
+      if (is_valid_degree(Degree()(x))) {
+        run();
+        return const_contains(x);
+      } else {
         return false;
       }
-      run();
-      element_type cpy = this->external_copy(x);
-      Swap()(cpy, this->to_external(_tmp_element2));
-      this->external_free(cpy);
-      internal_sift(_tmp_element2);  // changes _tmp_element2 in place
-      return internal_equal_to(_tmp_element2, _one);
     }
 
     //! Returns a const reference to the identity.
@@ -673,6 +679,7 @@ namespace libsemigroups {
     //!
     //! \exceptions
     //! \no_libsemigroups_except
+    // TODO noexcept?
     [[nodiscard]] const_element_reference identity() const {
       return this->to_external_const(_one);
     }
@@ -1048,7 +1055,9 @@ namespace libsemigroups {
     }
 
     typename domain_type::const_iterator
-    first_non_fixed_point(internal_const_element_type x) {
+    first_non_fixed_point(internal_const_element_type x) const {
+      return std::find_if(_domain.cbegin(), _domain.cend(),
+
       for (auto it = _domain.cbegin(); it < _domain.cend(); ++it) {
         if (*it != Action()(*it, this->to_external_const(x))) {
           return it;

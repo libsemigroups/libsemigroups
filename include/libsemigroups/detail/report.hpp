@@ -508,7 +508,9 @@ namespace libsemigroups {
 
   namespace report {
     bool should_report() noexcept;
-    void suppress(std::string const&);
+    bool suppress(std::string_view const&);
+    bool is_suppressed(std::string_view const&);
+    bool stop_suppressing(std::string_view const&);
     void clear_suppressions();
   }  // namespace report
 
@@ -549,10 +551,16 @@ namespace libsemigroups {
   template <typename... Args>
   void report_default(char const* s, Args&&... args) {
     if (report::should_report()) {
-      uint64_t    tid    = THREAD_ID_MANAGER.tid(std::this_thread::get_id());
-      std::string prefix = fmt::format("#{}: ", tid);
-      report_no_prefix(prefix + s, std::forward<Args>(args)...);
+      std::string_view sv(s);
+      sv.remove_suffix(sv.size() - sv.find(":"));
+      if (report::is_suppressed(sv)) {
+        return;
+      }
     }
+
+    uint64_t    tid    = THREAD_ID_MANAGER.tid(std::this_thread::get_id());
+    std::string prefix = fmt::format("#{}: ", tid);
+    report_no_prefix(prefix + s, std::forward<Args>(args)...);
   }
 
   template <typename... Args>
@@ -564,6 +572,19 @@ namespace libsemigroups {
     }
     return "";
   }
+
+  class SuppressReportFor {
+    std::string_view _name;
+
+   public:
+    SuppressReportFor(std::string_view const& name) : _name(name) {
+      report::suppress(_name);
+    }
+
+    ~SuppressReportFor() {
+      report::stop_suppressing(_name);
+    }
+  };
 
   namespace detail {
     template <typename T>

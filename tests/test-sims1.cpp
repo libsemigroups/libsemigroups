@@ -307,6 +307,15 @@ namespace libsemigroups {
     REQUIRE(S.number_of_congruences(15) == 105);
     REQUIRE(S.number_of_congruences(16) == 105);
     REQUIRE(S.number_of_congruences(17) == 105);
+
+    MinimalRepOrc orc;
+    auto          d = orc.short_rules(p)
+                 .target_size(15)
+                 .number_of_threads(std::thread::hardware_concurrency())
+                 .report_interval(1'999)
+                 .digraph();
+
+    REQUIRE(d.number_of_nodes() == 7);
   }
 
   LIBSEMIGROUPS_TEST_CASE("Sims1",
@@ -1189,7 +1198,7 @@ namespace libsemigroups {
     auto S = to_froidure_pin<Transf<0, node_type>>(d);
     REQUIRE(S.size() == 203);
     // The actual digraph obtained is non-deterministic because we just take
-    // whichever one is found first.
+    // whichever one is found first, in multiple threads
     // REQUIRE(
     //     d
     //     == to_word_graph<node_type>(
@@ -1203,6 +1212,26 @@ namespace libsemigroups {
     //          17, 15, 17}, {18, 14, 16, 12, 5},  {19, 20, 20, 19, 21}, {20,
     //          17, 19, 15, 21}, {21, 21, 21, 19, 21}}));
     REQUIRE(d.number_of_nodes() == 22);
+
+    std::vector<WordGraph<uint32_t>> all;
+
+    auto hook = [&](WordGraph<uint32_t> const& x) {
+      auto first = 1;
+      auto S     = to_froidure_pin<Transf<0, node_type>>(
+          x, first, x.number_of_active_nodes());
+      SuppressReportFor supp("FroidurePin");
+
+      if (S.size() == 203) {
+        return all.push_back(x);
+      }
+    };
+
+    auto SS = Sims1<uint32_t>(congruence_kind::right)
+                  .short_rules(p)
+                  .report_interval(10);
+
+    SS.for_each(22, hook);
+    REQUIRE(all.size() == 24);
   }
 
   LIBSEMIGROUPS_TEST_CASE("Sims1",

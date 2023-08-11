@@ -544,6 +544,8 @@ namespace libsemigroups {
         // process_definitions
         return false;
       }
+      // TODO add checking that some pairs of words are not in the congruence
+      // also
     }
 
     letter_type     a        = current.generator + 1;
@@ -925,7 +927,7 @@ namespace libsemigroups {
       return WordGraph<T>(0, 0);
     }
 
-    report::suppress("FroidurePin");
+    SuppressReportFor suppressor("FroidurePin");
 
     std::atomic_uint64_t count(0);
 
@@ -958,6 +960,7 @@ namespace libsemigroups {
                      _max + 1);
       result.induced_subgraph_no_checks(0, 0);
     } else {
+      // FIXME this seems to report the wrong number of points in i.e. [038]
       REPORT_DEFAULT("found a faithful rep. o.r.c. on %llu points\n",
                      result.number_of_active_nodes());
       if (short_rules().contains_empty_word()) {
