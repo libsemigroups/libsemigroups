@@ -116,6 +116,10 @@ namespace libsemigroups {
         return _data.begin() + depth * (2 * N - depth + 1) / 2 + _sizes[depth];
       }
 
+      inline size_t max_size(size_t depth) const noexcept {
+        return N - depth;
+      }
+
      private:
       std::array<T, N*(N + 1) / 2> _data;
       std::array<size_t, N>        _sizes;
