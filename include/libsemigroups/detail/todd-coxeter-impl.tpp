@@ -1,4 +1,3 @@
-
 //
 // libsemigroups - C++ library for semigroups and monoids
 // Copyright (C) 2019-2025 James D. Mitchell
@@ -191,6 +190,10 @@ namespace libsemigroups {
       if (!is_standardized()) {
         // TODO(1) this is a bit fishy
         const_cast<ToddCoxeterImpl*>(this)->standardize(Order::shortlex);
+      }
+      auto index = current_index_of_no_checks(first, last);
+      if (index == UNDEFINED) {
+        return std::copy(first, last, d_first);
       }
       return current_word_of_no_checks(d_first,
                                        current_index_of_no_checks(first, last));
