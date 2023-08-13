@@ -86,13 +86,10 @@ namespace libsemigroups {
         // TODO(1) bit fishy here too
         const_cast<ToddCoxeterImpl*>(this)->standardize(Order::shortlex);
       }
-      if (!internal_presentation().contains_empty_word()) {
-        ++i;
-      }
+      size_t const offset
+          = (internal_presentation().contains_empty_word() ? 0 : 1);
 
-      word_type result;  // TODO(1) avoid alloc here
-      _forest.path_to_root_no_checks(std::back_inserter(result), i);
-      return std::copy(result.crbegin(), result.crend(), d_first);
+      return _forest.path_from_root_no_checks(d_first, i + offset);
     }
 
     template <typename OutputIterator>
@@ -110,8 +107,8 @@ namespace libsemigroups {
         const_cast<ToddCoxeterImpl*>(this)->standardize(Order::shortlex);
       }
       if (i >= _word_graph.number_of_nodes_active() - offset) {
-        // Maybe we shouldn't standardize but should just check if corresponds
-        // to an active node
+        // We must standardize before doing this so that the index even makes
+        // sense.
         LIBSEMIGROUPS_EXCEPTION("invalid class index, expected a value in "
                                 "the range [0, {}), found {}",
                                 _word_graph.number_of_nodes_active() - offset,
@@ -191,12 +188,31 @@ namespace libsemigroups {
         // TODO(1) this is a bit fishy
         const_cast<ToddCoxeterImpl*>(this)->standardize(Order::shortlex);
       }
-      auto index = current_index_of_no_checks(first, last);
-      if (index == UNDEFINED) {
-        return std::copy(first, last, d_first);
+      node_type const s = current_word_graph().initial_node();
+      if (finished()) {  // TODO(1) can we do anything if complete()?
+        return current_word_of_no_checks(
+            d_first, current_index_of_no_checks(first, last));
       }
-      return current_word_of_no_checks(d_first,
-                                       current_index_of_no_checks(first, last));
+
+      word_type u(first, last);
+      auto      v_begin = u.begin();
+
+      while (v_begin != u.end()) {
+        auto [t, old_end] = word_graph::last_node_on_path_no_checks(
+            current_word_graph(), s, v_begin, u.end());
+
+        if (!std::equal(std::reverse_iterator(old_end),
+                        std::reverse_iterator(v_begin),
+                        _forest.cbegin_path_to_root_no_checks(t),
+                        _forest.cend_path_to_root_no_checks(t))) {
+          auto new_end = _forest.path_from_root_no_checks(v_begin, t);
+          u.erase(new_end, old_end);
+          v_begin = u.begin();
+        } else {
+          v_begin++;
+        }
+      }
+      return std::copy(u.begin(), u.end(), d_first);
     }
   }  // namespace detail
 }  // namespace libsemigroups
