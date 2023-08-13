@@ -70,7 +70,7 @@
 // 10. ToddCoxeterImpl - modifiers - public
 // 11. ToddCoxeterImpl - word -> index
 // 12. ToddCoxeterImpl - index -> word
-// 13. Runner      - pure virtual member functions - private
+// 13. Runner          - pure virtual member functions - private
 // 14. ToddCoxeterImpl - member functions - private
 ////////////////////////////////////////////////////////////////////////
 

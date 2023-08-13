@@ -20,14 +20,14 @@
 #include <fstream>   // for ofstream
 #include <iostream>  // for cout
 
-#include "Catch2-3.8.0/catch_amalgamated.hpp"  // for TEST_CASE
-#include "libsemigroups/constants.hpp"
-#include "libsemigroups/word-graph.hpp"
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
-#include "libsemigroups/bmat8.hpp"
-#include "libsemigroups/froidure-pin.hpp"
-#include "libsemigroups/gabow.hpp"
+#include "Catch2-3.8.0/catch_amalgamated.hpp"  // for TEST_CASE
+
+#include "libsemigroups/bmat8.hpp"                  // for BMat8
+#include "libsemigroups/constants.hpp"              // for UNDEFINED
+#include "libsemigroups/froidure-pin.hpp"           // for FroidurePin
+#include "libsemigroups/gabow.hpp"                  // for Gabow
 #include "libsemigroups/obvinf.hpp"                 // for is_obviously_infinite
 #include "libsemigroups/presentation-examples.hpp"  // for dual_symmetric_...
 #include "libsemigroups/presentation.hpp"           // for Presentation
@@ -38,6 +38,7 @@
 #include "libsemigroups/to-todd-coxeter.hpp"        // for ??
 #include "libsemigroups/todd-coxeter.hpp"           // for ToddCoxeter
 #include "libsemigroups/transf.hpp"                 // for Transf
+#include "libsemigroups/word-graph.hpp"             // for WordGraph
 #include "libsemigroups/word-range.hpp"             // for operator"" _w
 
 #include "libsemigroups/detail/report.hpp"  // for ReportGuard
@@ -2335,7 +2336,7 @@ namespace libsemigroups {
                           "059",
                           "(from kbmag/standalone/kb_data/degen4b) "
                           "(KnuthBendix 065)",
-                          "[fail][todd-coxeter][kbmag][shortlex]") {
+                          "[extreme][todd-coxeter][kbmag][shortlex]") {
     auto rg = ReportGuard(true);
 
     Presentation<std::string> p;
@@ -2350,6 +2351,7 @@ namespace libsemigroups {
     presentation::greedy_reduce_length(p);
     REQUIRE(presentation::length(p) == 63);
     REQUIRE(p.alphabet() == "abcdefghijkl");
+    // REQUIRE(random_string(p.alphabet(), 20, 30) == "");
 
     presentation::remove_trivial_rules(p);
     presentation::remove_duplicate_rules(p);
@@ -2368,7 +2370,12 @@ namespace libsemigroups {
         .lookahead_style(options::lookahead_style::felsch);
 
     REQUIRE(!is_obviously_infinite(tc));
-    REQUIRE(tc.number_of_classes() == 1);
+    tc.run_for(std::chrono::seconds(2));
+    tc.perform_lookahead(true);
+
+    auto w = "afheliaaaaaadffibkgbfhhhhhhldblkdadadadadad";
+    REQUIRE(todd_coxeter::reduce_no_run(tc, w) == "afhelaffibbfhh");
+    // REQUIRE(tc.number_of_classes() == 1);
   }
 
   LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
@@ -3336,12 +3343,11 @@ namespace libsemigroups {
       presentation::greedy_reduce_length(p);
       REQUIRE(p.alphabet() == "abABcde");
       REQUIRE(presentation::length(p) == 49);
-      REQUIRE(H.internal_presentation().alphabet() == word_type({0, 1, 2, 3}));
+      REQUIRE(H.internal_presentation().alphabet() == 0123_w);
       REQUIRE(H.presentation().alphabet() == "abAB");
 
       H.init(onesided, p);
-      REQUIRE(H.internal_presentation().alphabet()
-              == word_type({0, 1, 2, 3, 4, 5, 6}));
+      REQUIRE(H.internal_presentation().alphabet() == 0123456_w);
       REQUIRE(H.presentation().alphabet() == "abABcde");
       H.strategy(options::strategy::hlt)
           .lookahead_extent(options::lookahead_extent::partial)
@@ -3352,7 +3358,7 @@ namespace libsemigroups {
       H.strategy(options::strategy::hlt)
           .lookahead_extent(options::lookahead_extent::partial)
           .save(false);
-      REQUIRE(H.internal_presentation().alphabet() == word_type({0, 1, 2, 3}));
+      REQUIRE(H.internal_presentation().alphabet() == 0123_w);
       REQUIRE(H.presentation().alphabet() == "abAB");
     }
     // section_CR_style(H); // too slow
@@ -3841,7 +3847,28 @@ namespace libsemigroups {
     // TODO(1) uncomment
     //     .reserve(50'000'000);
 
+    tc.run_for(std::chrono::seconds(30));
+
+    std::vector<std::string> words
+        = {"xxyyyYYayyaaaYxYaaXxxaaayXYyYXxXyXXyyyYYxxyyyYYayyaaaYxYaaXxxaaayXY"
+           "yYXxXyXXyyyYYxxyyyYYayyaaaYxYaaXxxaaayXYyYXxXyXXyyyYYxxyyyYYayyaaaY"
+           "xYaaXxxaaayXYyYXxXyXXyyyYxxyyyYYayyaaaYxYaaXxxaaayXYyYXxXyXXyyyYxxy"
+           "yyYYayyaaaYxYaaXxxaaayXYyYXxXyXXyyyYxxyyyYYayyaaaYxYaaXxxaaayXYyYXx"
+           "XyXXyyyYxxyyyYYayyaaaYxYaaXxxaaayXYyYXxXyXXyyyYxxyyyYYayyaaaYxYaaXx"
+           "xaaayXYyYXxXyXXyyyYYYYYYY",
+           "YXxxXaxaYyYXxxYYyYYYxaYaXaayaXaXxxyaXYaY",
+           "aYXYaXXxxxyXyyyXXaXYyyYaXaYxxyaayXyYXyaa",
+           "YyYXYxaaaYaYaYyxxaYaxxyyYaxyXyxxxXxXaaay",
+           "YxxxXYXXyayyYYaayYXYXaXXXXYxyYXXXXXXXYyY"};
+    std::vector<std::string> expected(words);
+    std::for_each(expected.begin(), expected.end(), [&](std::string& word) {
+      word = todd_coxeter::reduce_no_run(tc, word);
+    });
+
     REQUIRE(tc.number_of_classes() == 10'200'960);
+    for (size_t i = 0; i != expected.size(); ++i) {
+      REQUIRE(todd_coxeter::contains(tc, words[i], expected[i]));
+    }
   }
 
   // This test seems to segfault, including on debug mode, and it causes JDE's
@@ -4853,6 +4880,7 @@ namespace libsemigroups {
                           "120",
                           "check full enum not triggered",
                           "[todd-coxeter][standard]") {
+    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("abcd");
     presentation::add_rule(p, "aa", "a");
@@ -4869,7 +4897,7 @@ namespace libsemigroups {
     presentation::add_rule(p, "bcbdbcbdbcbdbcbdbcbdbcbdbcbdbcbd", "a");
 
     ToddCoxeter tc(congruence_kind::twosided, p);
-    tc.run_for(std::chrono::milliseconds(100));
+    tc.run_for(std::chrono::milliseconds(1));
     REQUIRE(!tc.finished());
     tc.standardize(Order::shortlex);
     // Have to standardize or otherwise what we are about to do below
@@ -4891,6 +4919,75 @@ namespace libsemigroups {
                 tc, todd_coxeter::current_word_of(tc, n - 1))
             == n - 1);
     REQUIRE(!tc.finished());
+
+    std::vector<std::string> words
+        = {"bcddbdadbdaccacababddddbbbbbbcbacdadccadbcddbdadbdaccacababddddbbbb"
+           "bbcbacdadccadbdaacbacddcbcbbcccdbaccacbbdaccbbbabaaabbdaacbacddcbcb"
+           "bcccdbaccacbbdaccbbbabaaabbdaacbacddcbcbbcccdbaccacbbdaccbbbabaaabb"
+           "daacbacddcbcbbcccdbaccacbbdaccbbbabaaabbdaacbacddcbcbbcccdbaccacbbd"
+           "accbbbabaaabbdaacbacddcbcbbcccdbaccacbbdaccbbbabaaabbdaacbacddcbcbb"
+           "cccdbaccacbbdaccbbbabaaabdaacbacddcbcbbcccdbaccacbbdaccbbbabaaabdaa"
+           "cbacddcbcbbcccdbaccacbbdaccbbbabaaabdaacbacddcbcbbcccdbaccacbbdaccb"
+           "bbabaaabdaacbacddcbcbbcccdbaccacbbdaccbbbabaaabdaacbacddcbcbbcccdba"
+           "ccacbbdaccbbbabaaabbbbbb",
+           "bdaacbacddcbcbbcccdbaccacbbdaccbbbabaaab",
+           "aadccbaadccccaaacdcccabccdccdadddcabdbdb",
+           "bacddcbadabaddaddbacbadacacacbbaabbbdbbb",
+           "cdabbabdbabbbbbcabadadddadcbdbbbcdacbcaa",
+           "acabccdadadddcdcbbdbbbabdbadccadddabdcab",
+           "bccddaccbabdbcabcabadcdbbadcabdddcccdada",
+           "bdaabccbccdbcaadabbbbbabababddcbbdcddcad",
+           "cbbcbcbcabadabcadcdcdccbbdbcbdaadcbbccab",
+           "dcdbdcbcadaaaccaddcdcccbccdcbcddaccaabdc",
+           "acdbaadcaddcbdbbacccbaacdcbdcccabdcaddcb",
+           "acaadacdcdabaccaaabbcbbbcccdaababdacdcba",
+           "acabaacdcbdbbbbbbdacabbdadbdcccabcdcbddc",
+           "ddbcacdbbaaacabdacbccccacabdaabddddadabc",
+           "acccadabaacbcdaaabccddcddccdadadacbabdac",
+           "acdbcddbdbcbacccadabbbbdabbbbbdbabdbbabb",
+           "baaadddabcbcdccdaccacbaddaaacccddcabacbd",
+           "abcbababdcadbabbdddcbcdcddddcbbbbdcdadbc",
+           "aadddcddbaadaadaadaaaabbddbbbccbbdcdcaca",
+           "cdcbadadbbcdaaccbcaaabaddbcdbccbaacbbaca",
+           "acaacbadadcbabaccbbadcddaacabbadcbadbadd",
+           "babbccbdacacacdbaacbddcacbcbccccdbddbcbc",
+           "bccacbabcdbaaacadcdcdcdccbbdaccdaaadcccd",
+           "bccdbacacbdccbccddacbcbdbddbaccadcdcdacd",
+           "abdacacbaddaababbdbbbbdabddcdbdbcdbabbaa",
+           "bcddbacddccbccadbcbbcbcabddcbbdacabaabaa",
+           "bcdabdaabddcaaaaaabacddcdbaaabaaddacdabd",
+           "adbcbbcdadddccccddddccbdccabccadacdcccca",
+           "ccbaadcdabcdabdddbccaddbbaabdbbaadadcdbb",
+           "adcaddbacaaddaddaaadadbcbcaccaacdbbdaccd",
+           "bdbdababadcbbdddccadbccbcdcbdabbdabbdaba",
+           "bcbdbacbcbcaddaadbddaaaddbddcddcabbadddc",
+           "dcacadabacaaabacdccdbdcddcaacdaaaababbdc",
+           "cbcaccdcdddaadbbdcacdccbddcaadcdddadcabd",
+           "babbadacbdbbadbcbdcdbbdbcdabcadccddabddd",
+           "aaabcacdbdcabdaddccadcabddbddbddbbcbddbb",
+           "abcbbabdbababadacbcbdbdbacacdcbcabbcbabb",
+           "abaadcdaccdcdcbbdcadacaaacbacadcccaabcbc",
+           "ccdcadbaccdaccbabcdccdabcbbabccabababddb",
+           "bccaccacdcdacacdadccbaacdddccbdcdbcdadbc"};
+
+    std::vector<std::string> expected(words);
+    std::for_each(expected.begin(), expected.end(), [&](std::string& word) {
+      word = todd_coxeter::reduce_no_run(tc, word);
+    });
+
+    for (size_t i = 0; i != expected.size(); ++i) {
+      REQUIRE(todd_coxeter::reduce_no_run(tc, expected[i]) == expected[i]);
+      REQUIRE(
+          std::make_pair(todd_coxeter::reduce_no_run(tc, words[i]), words[i])
+          == std::make_pair(expected[i], words[i]));
+      REQUIRE(todd_coxeter::currently_contains(tc, words[i], expected[i])
+              == tril::TRUE);
+    }
+    REQUIRE(tc.number_of_classes() == 10'752);
+    for (size_t i = 0; i != expected.size(); ++i) {
+      REQUIRE(todd_coxeter::reduce_no_run(tc, words[i])
+              == todd_coxeter::reduce_no_run(tc, expected[i]));
+    }
   }
 
   LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
