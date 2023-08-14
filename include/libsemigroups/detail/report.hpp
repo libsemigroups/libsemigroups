@@ -552,9 +552,12 @@ namespace libsemigroups {
   void report_default(char const* s, Args&&... args) {
     if (report::should_report()) {
       std::string_view sv(s);
-      sv.remove_suffix(sv.size() - sv.find(":"));
-      if (report::is_suppressed(sv)) {
-        return;
+      auto             pos = sv.find(":");
+      if (pos != std::string::npos) {
+        sv.remove_suffix(sv.size() - sv.find(":"));
+        if (report::is_suppressed(sv)) {
+          return;
+        }
       }
     }
 

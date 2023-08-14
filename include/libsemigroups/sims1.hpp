@@ -64,7 +64,7 @@
 #include "exception.hpp"        // for LIBSEMIGROUPS_EXCEPTION
 #include "felsch-graph.hpp"     // for FelschGraph
 #include "froidure-pin.hpp"     // for FroidurePin
-#include "presentation.hpp"          // for Presentation, Presentati...
+#include "presentation.hpp"     // for Presentation, Presentati...
 #include "to-froidure-pin.hpp"  // for make
 #include "to-presentation.hpp"  // for make
 #include "transf.hpp"           // for Transf
@@ -416,7 +416,7 @@ namespace libsemigroups {
     //! The value returned by this function is a `Sims1Stats` object which
     //! contains some statistics related to the current `Sims1` instance and
     //! any part of the depth first search already conducted. If reporting is
-    //! disabled, then no statistics are collected. FIXME
+    //! disabled, then no statistics are collected. IXME
     //!
     //! \param (None) this function has no parameters.
     //!
@@ -475,9 +475,7 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if \p val is out of bounds, i.e. if it
     //! exceeds `(short_rules().rules.size() + long_rules().rules.size()) / 2`.
-    // TODO(v3) this should return T& for compatibility with the other mem
-    // functions
-    void split_at(size_t val);
+    Sims1Settings& split_at(size_t val);
 
    protected:
     void validate_presentation(Presentation<word_type> const& arg,

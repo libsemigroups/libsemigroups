@@ -162,12 +162,12 @@ namespace libsemigroups {
   }
 
   template <typename T>
-  void Sims1Settings<T>::split_at(size_t val) {
+  Sims1Settings<T>& Sims1Settings<T>::split_at(size_t val) {
     if (val > _shorts.rules.size() / 2 + _longs.rules.size() / 2) {
-      LIBSEMIGROUPS_EXCEPTION(
-          "expected a value in the range [0, %llu), found %llu",
-          uint64_t(_shorts.rules.size() / 2 + _longs.rules.size() / 2),
-          uint64_t(val));
+      LIBSEMIGROUPS_EXCEPTION("expected a value in the range [0, {}), found {}",
+                              _shorts.rules.size() / 2
+                                  + _longs.rules.size() / 2,
+                              val);
     }
 
     val *= 2;
@@ -183,6 +183,7 @@ namespace libsemigroups {
                            _longs.rules.begin() + val);
       _longs.rules.erase(_longs.rules.begin(), _longs.rules.begin() + val);
     }
+    return *this;
   }
 
   template <typename T>
@@ -193,9 +194,9 @@ namespace libsemigroups {
         && arg.alphabet() != existing.alphabet()) {
       LIBSEMIGROUPS_EXCEPTION(
           "the argument (a presentation) is not defined over "
-          "the correct alphabet, expected alphabet %s got %s",
-          detail::to_string(existing.alphabet()).c_str(),
-          detail::to_string(arg.alphabet()).c_str());
+          "the correct alphabet, expected alphabet {} got {}",
+          existing.alphabet(),
+          arg.alphabet());
     }
     arg.validate();
   }
@@ -366,19 +367,18 @@ namespace libsemigroups {
                                  size_t                         num_classes,
                                  size_t                         num_threads) {
     if (num_threads == 1) {
-      REPORT_DEFAULT_V3("Sims1: using 0 additional threads\n");
+      report_default("Sims1: using 0 additional threads\n");
     } else {
-      REPORT_DEFAULT_V3("Sims1: using %d / %d additional threads\n",
-                        num_threads,
-                        std::thread::hardware_concurrency());
+      report_default("Sims1: using {} / {} additional threads\n",
+                     num_threads,
+                     std::thread::hardware_concurrency());
     }
-    REPORT_DEFAULT_V3("Sims1: finding congruences with at most %llu classes\n",
-                      uint64_t(num_classes));
-    REPORT_DEFAULT_V3(
-        "Sims1: using %llu generators, and %llu short relations u = v"
-        " with:\n",
-        shorts.alphabet().size(),
-        shorts.rules.size() / 2);
+    report_default("Sims1: finding congruences with at most {} classes\n",
+                   uint64_t(num_classes));
+    report_default("Sims1: using {} generators, and {} short relations u = v"
+                   " with:\n",
+                   shorts.alphabet().size(),
+                   shorts.rules.size() / 2);
     uint64_t shortest_short, longest_short;
     if (shorts.rules.empty()) {
       shortest_short = 0;
@@ -387,16 +387,16 @@ namespace libsemigroups {
       shortest_short = presentation::shortest_rule_length(shorts);
       longest_short  = presentation::longest_rule_length(shorts);
     }
-    REPORT_DEFAULT_V3(
-        "Sims1: |u| + |v| \u2208 [%llu, %llu] and \u2211(|u| + |v|) = %llu\n",
+    report_default(
+        "Sims1: |u| + |v| \u2208 [{}, {}] and \u2211(|u| + |v|) = {}\n",
         shortest_short,
         longest_short,
         presentation::length(shorts));
     if (!longs.rules.empty()) {
-      REPORT_DEFAULT_V3("Sims1: %llu long relations u = v with:\n",
-                        longs.rules.size() / 2);
-      REPORT_DEFAULT_V3(
-          "Sims1: |u| + |v| \u2208 [%llu, %llu] and \u2211(|u| + |v|) = %llu\n",
+      report_default("Sims1: {} long relations u = v with:\n",
+                     longs.rules.size() / 2);
+      report_default(
+          "Sims1: |u| + |v| \u2208 [{}, {}] and \u2211(|u| + |v|) = {}\n",
           presentation::shortest_rule_length(longs),
           presentation::longest_rule_length(longs),
           presentation::length(longs));
@@ -420,8 +420,8 @@ namespace libsemigroups {
       if (now - last_report > std::chrono::seconds(1)) {
         auto total_time = duration_cast<seconds>(now - start_time);
         auto diff_time  = duration_cast<seconds>(now - last_report);
-        REPORT_DEFAULT_V3(
-            "Sims1: found %s congruences in %llus (%s/s)!\n",
+        report_default(
+            "Sims1: found {} congruences in {} ({}/s)!\n",
             detail::group_digits(count_now).c_str(),
             total_time.count(),
             detail::group_digits((count_now - last_count) / diff_time.count())
@@ -441,24 +441,23 @@ namespace libsemigroups {
     auto elapsed = duration_cast<nanoseconds>(
         std::chrono::high_resolution_clock::now() - start_time);
     if (count != 0) {
-      REPORT_DEFAULT_V3(
-          "Sims1: found %s congruences in %s (%s per congruence)!\n",
-          detail::group_digits(count).c_str(),
-          detail::Timer::string(elapsed).c_str(),
-          detail::Timer::string(elapsed / count).c_str());
+      report_default("Sims1: found {} congruences in {} ({} per congruence)!\n",
+                     detail::group_digits(count).c_str(),
+                     detail::Timer::string(elapsed).c_str(),
+                     detail::Timer::string(elapsed / count).c_str());
     } else {
-      REPORT_DEFAULT_V3("Sims1: found %s congruences in %s!\n",
-                        detail::group_digits(count).c_str(),
-                        detail::Timer::string(elapsed).c_str());
+      report_default("Sims1: found {} congruences in {}!\n",
+                     detail::group_digits(count).c_str(),
+                     detail::Timer::string(elapsed).c_str());
     }
   }
 
 #ifdef LIBSEMIGROUPS_ENABLE_STATS
   template <typename T>
   void Sims1<T>::report_stats() const {
-    REPORT_DEFAULT("total number of nodes in search tree was %s\n",
+    report_default("total number of nodes in search tree was {}\n",
                    detail::group_digits(stats().total_pending).c_str());
-    REPORT_DEFAULT("max. number of pending definitions was %s\n",
+    report_default("max. number of pending definitions was {}\n",
                    detail::group_digits(stats().max_pending).c_str());
   }
 #endif
@@ -805,8 +804,8 @@ namespace libsemigroups {
         // maybe this is a desirable.
       }
 #ifdef LIBSEMIGROUPS_VERBOSE
-      REPORT_DEFAULT(
-          "this thread created %s nodes\n",
+      report_default(
+          "this thread created {} nodes\n",
           detail::group_digits(_theives[my_index]->stats().total_pending)
               .c_str());
 #endif
@@ -915,15 +914,13 @@ namespace libsemigroups {
   WordGraph<T> RepOrc::digraph() const {
     using digraph_type = typename Sims1<T>::digraph_type;
     using node_type    = typename digraph_type::node_type;
-    REPORT_DEFAULT(
-        "searching for a faithful rep. o.r.c. on [%llu, %llu) points\n",
-        _min,
-        _max + 1);
+    report_default("searching for a faithful rep. o.r.c. on [{}, {}) points\n",
+                   _min,
+                   _max + 1);
     if (_min > _max || _max == 0) {
-      REPORT_DEFAULT(
-          "no faithful rep. o.r.c. exists in [%llu, %llu) = \u2205\n",
-          _min,
-          _max + 1);
+      report_default("no faithful rep. o.r.c. exists in [{}, {}) = \u2205\n",
+                     _min,
+                     _max + 1);
       return WordGraph<T>(0, 0);
     }
 
@@ -955,13 +952,12 @@ namespace libsemigroups {
         = Sims1<T>(congruence_kind::right).settings(*this).find_if(_max, hook);
 
     if (result.number_of_active_nodes() == 0) {
-      REPORT_DEFAULT("no faithful rep. o.r.c. on [%llu, %llu) points found\n",
-                     _min,
-                     _max + 1);
+      report_default(
+          "no faithful rep. o.r.c. on [{}, {}) points found\n", _min, _max + 1);
       result.induced_subgraph_no_checks(0, 0);
     } else {
       // FIXME this seems to report the wrong number of points in i.e. [038]
-      REPORT_DEFAULT("found a faithful rep. o.r.c. on %llu points\n",
+      report_default("found a faithful rep. o.r.c. on {} points\n",
                      result.number_of_active_nodes());
       if (short_rules().contains_empty_word()) {
         result.induced_subgraph_no_checks(0, result.number_of_active_nodes());

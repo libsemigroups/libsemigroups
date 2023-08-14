@@ -2658,6 +2658,16 @@ namespace libsemigroups {
     REQUIRE(S.number_of_congruences(31) == 0);
   }
 
+  LIBSEMIGROUPS_TEST_CASE("Sims1", "088", "Brauer monoid", "[extreme][sims1]") {
+    MinimalRepOrc orc;
+    auto          d = orc.short_rules(brauer_monoid(5))
+                 .target_size(945)
+                 .number_of_threads(4)
+                 .report_interval(19)
+                 .digraph();
+
+    REQUIRE(d.number_of_nodes() == 3);
+  }
 }  // namespace libsemigroups
 
 // [[[0, 0, 0]],            #1#
