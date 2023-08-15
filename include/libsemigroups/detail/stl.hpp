@@ -27,9 +27,8 @@
 #include <thread>       // for std::thread
 #include <type_traits>  // for enable_if, forward, hash, is_function, is_same
 #include <vector>       // for vector
-
+                        //
 namespace libsemigroups {
-
   namespace detail {
     // Pass parameter p by value because this function modifies p.
     template <typename TContainer, typename TPerm>
@@ -93,6 +92,21 @@ namespace libsemigroups {
           }
         }
       }
+    };
+
+    // TODO ref
+    class ThreadGuard {
+      std::thread& _thread;
+
+     public:
+      explicit ThreadGuard(std::thread& thread) : _thread(thread) {}
+      ~ThreadGuard() {
+        if (_thread.joinable()) {
+          _thread.join();
+        }
+      }
+      ThreadGuard(ThreadGuard const&)            = delete;
+      ThreadGuard& operator=(ThreadGuard const&) = delete;
     };
 
     template <typename A,

@@ -25,12 +25,15 @@
 
 #include <atomic>       // for atomic
 #include <chrono>       // for nanoseconds, high_resolution_clock
+#include <thread>       // for ??
 #include <type_traits>  // for forward
 
 #include "debug.hpp"      // for LIBSEMIGROUPS_ASSERT
 #include "exception.hpp"  // for LibsemigroupsException
 
 #include "detail/function-ref.hpp"  // for FunctionRef
+#include "detail/report.hpp"        // for LibsemigroupsException
+#include "detail/stl.hpp"           // for LibsemigroupsException
 
 namespace libsemigroups {
   //! A pseudonym for std::chrono::nanoseconds::max().
@@ -41,7 +44,7 @@ namespace libsemigroups {
   // * use this anywhere?
   // This class exists so that the "reporting" functionality can be used
   // independently from the "runner" functionality, for example in
-  // NodeManagedDigraph.
+  // NodeManagedDigraph, Sims1, and so on
   class ReporterV3 {
     using time_point  = std::chrono::high_resolution_clock::time_point;
     using nanoseconds = std::chrono::nanoseconds;
@@ -49,10 +52,15 @@ namespace libsemigroups {
     mutable time_point _last_report;
     std::string        _prefix;
     nanoseconds        _report_time_interval;
+    mutable bool       _stop_reporting;  // TODO atomic
 
    public:
     // not noexcept because std::string constructor isn't
-    ReporterV3() : _last_report(), _prefix(), _report_time_interval() {
+    ReporterV3()
+        : _last_report(),
+          _prefix(),
+          _report_time_interval(),
+          _stop_reporting(true) {
       init();
     }
 
@@ -64,6 +72,27 @@ namespace libsemigroups {
     ReporterV3& operator=(ReporterV3&&)      = default;
 
     ~ReporterV3() = default;
+
+    virtual void report_progress_from_thread() const {}
+
+    // TODO check if reporting is enable before calling this function
+    std::thread launch_report_thread() const {
+      _stop_reporting  = false;
+      auto thread_func = [this]() {
+        while (!_stop_reporting) {
+          std::this_thread::sleep_for(std::chrono::seconds(1));  // TODO use
+                                                                 // report
+                                                                 // interval
+          report_progress_from_thread();
+        }
+      };
+      return std::thread(thread_func);
+    }
+
+    ReporterV3 const& stop_report_thread() const {
+      _stop_reporting = true;
+      return *this;
+    }
 
     //! Check if it is time to report.
     //!
@@ -150,6 +179,24 @@ namespace libsemigroups {
       return _prefix;
     }
   };
+
+  namespace detail {
+    class ReportThreadGuard : public ThreadGuard {
+      ReporterV3 const& _reporter;
+
+     public:
+      explicit ReportThreadGuard(ReporterV3 const& reporter,
+                                 std::thread&      thread)
+          : ThreadGuard(thread), _reporter(reporter) {}
+
+      ~ReportThreadGuard() {
+        _reporter.stop_report_thread();
+      }
+
+      ReportThreadGuard(ReportThreadGuard const&)            = delete;
+      ReportThreadGuard& operator=(ReportThreadGuard const&) = delete;
+    };
+  }  // namespace detail
 
   //! Many of the classes in ``libsemigroups`` implementing the algorithms,
   //! that are the reason for the existence of this library, are derived from

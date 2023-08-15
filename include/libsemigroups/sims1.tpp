@@ -20,7 +20,7 @@
 // congruence" algorithm for semigroups and monoid.
 
 namespace libsemigroups {
-#ifdef LIBSEMIGROUPS_ENABLE_STATS
+  // TODO use report_default
   std::ostream& operator<<(std::ostream& os, Sims1Stats const& stats) {
     os << "#0: Sims1: total number of nodes in search tree was "
        << detail::group_digits(stats.total_pending) << std::endl;
@@ -28,7 +28,6 @@ namespace libsemigroups {
        << detail::group_digits(stats.max_pending) << std::endl;
     return os;
   }
-#endif
 
   ////////////////////////////////////////////////////////////////////////
   // Sims1Settings
@@ -40,12 +39,8 @@ namespace libsemigroups {
         _longs(),
         _num_threads(),
         _report_interval(),
-        _shorts()
-#ifdef LIBSEMIGROUPS_ENABLE_STATS
-        ,
-        _stats()
-#endif
-  {
+        _shorts(),
+        _stats() {
     number_of_threads(1);
     report_interval(999);
   }
@@ -57,13 +52,8 @@ namespace libsemigroups {
         _longs(that.long_rules()),
         _num_threads(that.number_of_threads()),
         _report_interval(that.report_interval()),
-        _shorts(that.short_rules())
-#ifdef LIBSEMIGROUPS_ENABLE_STATS
-        ,
-        _stats(that.stats())
-#endif
-  {
-  }
+        _shorts(that.short_rules()),
+        _stats(that.stats()) {}
 
   template <typename T>
   template <typename P>
@@ -265,12 +255,10 @@ namespace libsemigroups {
           pred(*it);
         }
         final_report_number_of_congruences(start_time, count);
-#ifdef LIBSEMIGROUPS_ENABLE_STATS
         // Copy the iterator stats into this so that we can retrieve it
         // after den is destroyed.
         stats(it.stats());
         report_stats();
-#endif
       }
     } else {
       thread_runner den(short_rules(),
@@ -284,12 +272,10 @@ namespace libsemigroups {
         return false;
       };
       den.run(pred_wrapper);
-#ifdef LIBSEMIGROUPS_ENABLE_STATS
       // Copy the thread_runner stats into this so that we can retrieve it
       // after den is destroyed.
       stats(den.stats());
       report_stats();
-#endif
     }
   }
 
@@ -310,37 +296,26 @@ namespace libsemigroups {
       if (!report::should_report()) {
         return *std::find_if(cbegin(n), cend(n), pred);
       } else {
-        auto       start_time  = std::chrono::high_resolution_clock::now();
-        auto       last_report = start_time;
-        uint64_t   last_count  = 0;
-        uint64_t   count       = 0;
-        std::mutex mtx;  // does nothing
+        stats().zero();
         auto       it   = cbegin(n);
         auto const last = cend(n);
 
+        std::thread               report_thread = launch_report_thread();
+        detail::ReportThreadGuard tg(*this, report_thread);
+
         for (; it != last; ++it) {
           if (pred(*it)) {
-            final_report_number_of_congruences(start_time, ++count);
-#ifdef LIBSEMIGROUPS_ENABLE_STATS
+            // final_report_number_of_congruences(start_time, ++count);
             stats(it.stats());
             report_stats();
-#endif
             return *it;
           }
-          report_number_of_congruences(report_interval(),
-                                       start_time,
-                                       last_report,
-                                       last_count,
-                                       ++count,
-                                       mtx);
         }
-        final_report_number_of_congruences(start_time, ++count);
-#ifdef LIBSEMIGROUPS_ENABLE_STATS
+        // final_report_number_of_congruences(start_time, ++count);
         // Copy the iterator stats into this so that we can retrieve it
         // after it is destroyed.
         stats(it.stats());
         report_stats();
-#endif
         return *last;  // the empty digraph
       }
     } else {
@@ -351,12 +326,10 @@ namespace libsemigroups {
                         number_of_threads(),
                         report_interval());
       den.run(pred);
-#ifdef LIBSEMIGROUPS_ENABLE_STATS
       // Copy the thread_runner stats into this so that we can retrieve it
       // after den is destroyed.
       stats(den.stats());
       report_stats();
-#endif
       return den.digraph();
     }
   }
@@ -433,6 +406,25 @@ namespace libsemigroups {
   }
 
   template <typename T>
+  void Sims1<T>::report_progress_from_thread() const {
+    using std::chrono::duration_cast;
+    using std::chrono::seconds;
+
+    auto& s          = stats();
+    auto  now        = std::chrono::high_resolution_clock::now();
+    auto  total_time = now - s.start_time;
+    auto  diff_time  = duration_cast<seconds>(now - s.last_report);
+
+    report_default(
+        "Sims1: found {} congruences in {} ({}/s)!\n",
+        detail::group_digits(s.count_now),
+        string_time(total_time),
+        detail::group_digits((s.count_now - s.count_last) / diff_time.count()));
+    std::swap(now, s.last_report);
+    s.count_last = s.count_now;
+  }
+
+  template <typename T>
   void Sims1<T>::final_report_number_of_congruences(time_point& start_time,
                                                     uint64_t    count) {
     using std::chrono::duration_cast;
@@ -442,25 +434,23 @@ namespace libsemigroups {
         std::chrono::high_resolution_clock::now() - start_time);
     if (count != 0) {
       report_default("Sims1: found {} congruences in {} ({} per congruence)!\n",
-                     detail::group_digits(count).c_str(),
-                     detail::Timer::string(elapsed).c_str(),
-                     detail::Timer::string(elapsed / count).c_str());
+                     detail::group_digits(count),
+                     detail::Timer::string(elapsed),
+                     detail::Timer::string(elapsed / count));
     } else {
       report_default("Sims1: found {} congruences in {}!\n",
-                     detail::group_digits(count).c_str(),
-                     detail::Timer::string(elapsed).c_str());
+                     detail::group_digits(count),
+                     detail::Timer::string(elapsed));
     }
   }
 
-#ifdef LIBSEMIGROUPS_ENABLE_STATS
   template <typename T>
   void Sims1<T>::report_stats() const {
     report_default("total number of nodes in search tree was {}\n",
-                   detail::group_digits(stats().total_pending).c_str());
+                   detail::group_digits(stats().total_pending));
     report_default("max. number of pending definitions was {}\n",
-                   detail::group_digits(stats().max_pending).c_str());
+                   detail::group_digits(stats().max_pending));
   }
-#endif
 
   ///////////////////////////////////////////////////////////////////////////////
   // iterator_base nested class
@@ -557,19 +547,15 @@ namespace libsemigroups {
         if (_felsch_graph.target_no_checks(next, a) == UNDEFINED) {
           std::lock_guard<std::mutex> lock(_mtx);
           if (M < _max_num_classes) {
-#ifdef LIBSEMIGROUPS_ENABLE_STATS
             ++_stats.total_pending;
-#endif
             _pending.emplace_back(next, a, M, N, M + 1);
           }
           for (node_type b = M; b-- > _min_target_node;) {
             _pending.emplace_back(next, a, b, N, M);
           }
-#ifdef LIBSEMIGROUPS_ENABLE_STATS
           _stats.total_pending += M - _min_target_node;
           _stats.max_pending = std::max(static_cast<uint64_t>(_pending.size()),
                                         _stats.max_pending);
-#endif
           return false;
         }
       }
@@ -711,9 +697,7 @@ namespace libsemigroups {
     //! No doc
     ~thread_iterator() = default;
 
-#ifdef LIBSEMIGROUPS_ENABLE_STATS
     using iterator_base::stats;
-#endif
 
    public:
     void push(PendingDef pd) {
@@ -773,9 +757,7 @@ namespace libsemigroups {
     size_type                                     _num_threads;
     uint64_t                                      _report_interval;
     digraph_type                                  _result;
-#ifdef LIBSEMIGROUPS_ENABLE_STATS
-    Sims1Stats _stats;
-#endif
+    Sims1Stats                                    _stats;
 
     void worker_thread(unsigned                                 my_index,
                        std::function<bool(digraph_type const&)> hook) {
@@ -806,13 +788,10 @@ namespace libsemigroups {
 #ifdef LIBSEMIGROUPS_VERBOSE
       report_default(
           "this thread created {} nodes\n",
-          detail::group_digits(_theives[my_index]->stats().total_pending)
-              .c_str());
+          detail::group_digits(_theives[my_index]->stats().total_pending));
 #endif
-#ifdef LIBSEMIGROUPS_ENABLE_STATS
       std::lock_guard<std::mutex> lock(_mtx);
       _stats += _theives[my_index]->stats();
-#endif
     }
 
     bool pop_from_local_queue(PendingDef& pd, unsigned my_index) {
@@ -845,11 +824,8 @@ namespace libsemigroups {
           _mtx(),
           _num_threads(num_threads),
           _report_interval(report_interval),
-          _result()
-#ifdef LIBSEMIGROUPS_ENABLE_STATS
-          ,
+          _result(),
           _stats()
-#endif
 
     {
       for (size_t i = 0; i < _num_threads; ++i) {
@@ -899,11 +875,9 @@ namespace libsemigroups {
       final_report_number_of_congruences(start_time, count);
     }
 
-#ifdef LIBSEMIGROUPS_ENABLE_STATS
-    Sims1Stats const& stats() {
+    Sims1Stats& stats() {
       return _stats;
     }
-#endif
   };
 
   ////////////////////////////////////////////////////////////////////////
@@ -996,9 +970,7 @@ namespace libsemigroups {
     auto   best = cr.min_nodes(1).max_nodes(hi).target_size(_size).digraph();
 
     if (best.number_of_nodes() < 1) {
-#ifdef LIBSEMIGROUPS_ENABLE_STATS
       stats(cr.stats());
-#endif
       return best;
     }
 
@@ -1009,9 +981,7 @@ namespace libsemigroups {
       best = std::move(next);
       next = std::move(cr.max_nodes(hi - 1).digraph());
     }
-#ifdef LIBSEMIGROUPS_ENABLE_STATS
     stats(cr.stats());
-#endif
     return best;
   }
 

@@ -84,8 +84,9 @@ namespace libsemigroups {
   template <typename Node>
   void WordGraphWithSources<Node>::induced_subgraph_no_checks(node_type first,
                                                               node_type last) {
-    LIBSEMIGROUPS_ASSERT(first < number_of_nodes());
+    LIBSEMIGROUPS_ASSERT(first <= number_of_nodes());
     LIBSEMIGROUPS_ASSERT(last <= number_of_nodes());
+    LIBSEMIGROUPS_ASSERT(first <= last);
     WordGraph<Node>::induced_subgraph_no_checks(first, last);
     _preim_init.shrink_rows_to(first, last);
     _preim_next.shrink_rows_to(first, last);
