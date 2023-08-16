@@ -57,14 +57,13 @@ namespace libsemigroups {
   // iterator_base nested class
   ///////////////////////////////////////////////////////////////////////////////
 
-  Sims1::iterator_base::iterator_base(Sims1 const&                   s,
-                                      Presentation<word_type> const& p,
-                                      size_type                      n)
+  Sims1::iterator_base::iterator_base(Sims1 const& s,
+                                      size_type    n)
       :  // private
-        _max_num_classes(p.contains_empty_word() ? n : n + 1),
-        _min_target_node(p.contains_empty_word() ? 0 : 1),
+        _max_num_classes(s.short_rules().contains_empty_word() ? n : n + 1),
+        _min_target_node(s.short_rules().contains_empty_word() ? 0 : 1),
         // protected
-        _felsch_graph(p),
+        _felsch_graph(s.short_rules()),
         _mtx(),
         _pending(),
         _sims1(&s) {
@@ -239,10 +238,7 @@ namespace libsemigroups {
   // iterator nested class
   ///////////////////////////////////////////////////////////////////////////////
 
-  Sims1::iterator::iterator(Sims1 const&                   s,
-                            Presentation<word_type> const& p,
-                            size_type                      n)
-      : iterator_base(s, p, n) {
+  Sims1::iterator::iterator(Sims1 const& s, size_type n) : iterator_base(s, n) {
     if (this->_felsch_graph.number_of_active_nodes() == 0) {
       return;
     }
@@ -280,10 +276,7 @@ namespace libsemigroups {
 
    public:
     //! No doc
-    thread_iterator(Sims1 const&                   s,
-                    Presentation<word_type> const& p,
-                    size_type                      n)
-        : iterator_base(s, p, n) {}
+    thread_iterator(Sims1 const& s, size_type n) : iterator_base(s, n) {}
 
     // None of the constructors are noexcept because the corresponding
     // constructors for std::vector aren't (until C++17).
@@ -415,11 +408,10 @@ namespace libsemigroups {
     }
 
    public:
-    thread_runner(Sims1 const&                   s,
-                  Presentation<word_type> const& p,
-                  size_type                      n,
-                  size_type                      num_threads,
-                  uint64_t                       report_interval)
+    thread_runner(Sims1 const& s,
+                  size_type    n,
+                  size_type    num_threads,
+                  uint64_t     report_interval)
         : _done(false),
           _theives(),
           _threads(),
@@ -431,7 +423,7 @@ namespace libsemigroups {
 
     {
       for (size_t i = 0; i < _num_threads; ++i) {
-        _theives.push_back(std::make_unique<thread_iterator>(s, p, n));
+        _theives.push_back(std::make_unique<thread_iterator>(s, n));
       }
       _theives.front()->init(n);
     }
@@ -549,9 +541,8 @@ namespace libsemigroups {
         report_stats();
       }
     } else {
-      thread_runner den(
-          *this, short_rules(), n, number_of_threads(), report_interval());
-      auto pred_wrapper = [&pred](digraph_type const& ad) {
+      thread_runner den(*this, n, number_of_threads(), report_interval());
+      auto          pred_wrapper = [&pred](digraph_type const& ad) {
         pred(ad);
         return false;
       };
@@ -602,8 +593,7 @@ namespace libsemigroups {
         return *last;  // the empty digraph
       }
     } else {
-      thread_runner den(
-          *this, short_rules(), n, number_of_threads(), report_interval());
+      thread_runner den(*this, n, number_of_threads(), report_interval());
       den.run(pred);
       // Copy the thread_runner stats into this so that we can retrieve it
       // after den is destroyed.
@@ -621,7 +611,7 @@ namespace libsemigroups {
       LIBSEMIGROUPS_EXCEPTION("the short_rules() must be defined before "
                               "calling this function");
     }
-    return iterator(*this, short_rules(), n);
+    return iterator(*this, n);
   }
 
   //! Returns a forward iterator pointing one beyond the
@@ -660,7 +650,7 @@ namespace libsemigroups {
       LIBSEMIGROUPS_EXCEPTION("the short_rules() must be defined before "
                               "calling this function");
     }
-    return iterator(*this, short_rules(), 0);
+    return iterator(*this, 0);
   }
 
   void Sims1::report_at_start(Presentation<word_type> const& shorts,

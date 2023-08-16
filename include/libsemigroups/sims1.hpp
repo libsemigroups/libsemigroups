@@ -832,9 +832,7 @@ namespace libsemigroups {
 
      public:
       //! No doc
-      iterator_base(Sims1 const&                   s,
-                    Presentation<word_type> const& p,
-                    size_type                      n);
+      iterator_base(Sims1 const& s, size_type n);
 
       // None of the constructors are noexcept because the
       // corresponding constructors for Presentation aren't
@@ -935,7 +933,7 @@ namespace libsemigroups {
 
      private:
       // Only want Sims1 to be able to use this constructor.
-      iterator(Sims1 const& s, Presentation<word_type> const& p, size_type n);
+      iterator(Sims1 const& s, size_type n);
 
       // So that we can use the constructor above.
       friend iterator Sims1::cbegin(Sims1::size_type) const;
