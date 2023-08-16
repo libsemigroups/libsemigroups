@@ -832,7 +832,7 @@ namespace libsemigroups {
 
      public:
       //! No doc
-      iterator_base(Sims1 const& s, size_type n);
+      iterator_base(Sims1 const* s, size_type n);
 
       // None of the constructors are noexcept because the
       // corresponding constructors for Presentation aren't
