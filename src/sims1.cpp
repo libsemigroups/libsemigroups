@@ -67,11 +67,12 @@ namespace libsemigroups {
 
    public:
     //! No doc
-    thread_iterator(Presentation<word_type> const& p,
+    thread_iterator(Sims1 const&                   s,
+                    Presentation<word_type> const& p,
                     Presentation<word_type> const& e,
                     Presentation<word_type> const& f,
                     size_type                      n)
-        : iterator_base(p, e, f, n) {}
+        : iterator_base(s, p, e, f, n) {}
 
     // None of the constructors are noexcept because the corresponding
     // constructors for std::vector aren't (until C++17).
@@ -203,7 +204,8 @@ namespace libsemigroups {
     }
 
    public:
-    thread_runner(Presentation<word_type> const& p,
+    thread_runner(Sims1 const&                   s,
+                  Presentation<word_type> const& p,
                   Presentation<word_type> const& e,
                   Presentation<word_type> const& f,
                   size_type                      n,
@@ -220,7 +222,7 @@ namespace libsemigroups {
 
     {
       for (size_t i = 0; i < _num_threads; ++i) {
-        _theives.push_back(std::make_unique<thread_iterator>(p, e, f, n));
+        _theives.push_back(std::make_unique<thread_iterator>(s, p, e, f, n));
       }
       _theives.front()->init(n);
     }
@@ -340,7 +342,8 @@ namespace libsemigroups {
         report_stats();
       }
     } else {
-      thread_runner den(short_rules(),
+      thread_runner den(*this,
+                        short_rules(),
                         extra(),
                         long_rules(),
                         n,
@@ -397,7 +400,8 @@ namespace libsemigroups {
         return *last;  // the empty digraph
       }
     } else {
-      thread_runner den(short_rules(),
+      thread_runner den(*this,
+                        short_rules(),
                         extra(),
                         long_rules(),
                         n,
@@ -420,7 +424,7 @@ namespace libsemigroups {
       LIBSEMIGROUPS_EXCEPTION("the short_rules() must be defined before "
                               "calling this function");
     }
-    return iterator(short_rules(), extra(), long_rules(), n);
+    return iterator(*this, short_rules(), extra(), long_rules(), n);
   }
 
   //! Returns a forward iterator pointing one beyond the
@@ -459,7 +463,7 @@ namespace libsemigroups {
       LIBSEMIGROUPS_EXCEPTION("the short_rules() must be defined before "
                               "calling this function");
     }
-    return iterator(short_rules(), extra(), long_rules(), 0);
+    return iterator(*this, short_rules(), extra(), long_rules(), 0);
   }
 
   void Sims1::report_at_start(Presentation<word_type> const& shorts,
@@ -580,25 +584,99 @@ namespace libsemigroups {
   // iterator_base nested class
   ///////////////////////////////////////////////////////////////////////////////
 
-  Sims1::iterator_base::iterator_base(Presentation<word_type> const& p,
+  Sims1::iterator_base::iterator_base(Sims1 const&                   s,
+                                      Presentation<word_type> const& p,
                                       Presentation<word_type> const& extra,
                                       Presentation<word_type> const& final_,
                                       size_type                      n)
       :  // private
-        _extra(extra),
+        _include(extra),
         _longs(final_),
         _max_num_classes(p.contains_empty_word() ? n : n + 1),
         _min_target_node(p.contains_empty_word() ? 0 : 1),
         // protected
         _felsch_graph(p),
         _mtx(),
-        _pending() {
+        _pending(),
+        _stats(&s.stats()) {
     // n == 0 only when the iterator is cend
     _felsch_graph.number_of_active_nodes(n == 0 ? 0 : 1);
     // = 0 indicates iterator is done
     _felsch_graph.add_nodes(n);
   }
 
+  Sims1::iterator_base::iterator_base(Sims1::iterator_base const& that)
+      :  // private
+        _include(that._include),
+        _longs(that._longs),
+        _max_num_classes(that._max_num_classes),
+        _min_target_node(that._min_target_node),
+        // protected
+        _felsch_graph(that._felsch_graph),
+        _mtx(),
+        _pending(that._pending),
+        _stats(that._stats) {}
+
+  // Intentionally don't copy the mutex, it doesn't compile, wouldn't make
+  // sense if the mutex was used here.
+
+  Sims1::iterator_base::iterator_base(Sims1::iterator_base&& that)
+      :  // private
+        _include(std::move(that._include)),
+        _longs(std::move(that._longs)),
+        _max_num_classes(std::move(that._max_num_classes)),
+        _min_target_node(std::move(that._min_target_node)),
+        // protected
+        _felsch_graph(std::move(that._felsch_graph)),
+        _mtx(),
+        _pending(std::move(that._pending)),
+        _stats(that._stats) {}
+
+  // Intentionally don't copy the mutex, it doesn't compile, wouldn't make
+  // sense if the mutex was used here.
+
+  typename Sims1::iterator_base&
+  Sims1::iterator_base::operator=(Sims1::iterator_base const& that) {
+    // private
+    _include         = that._include;
+    _longs           = that._longs;
+    _max_num_classes = that._max_num_classes;
+    _min_target_node = that._min_target_node;
+    // protected
+    _felsch_graph = that._felsch_graph;
+    // keep our own _mtx
+    _pending = that._pending;
+    _stats   = that._stats;
+    return *this;
+  }
+
+  // Intentionally don't copy the mutex, it doesn't compile, wouldn't make
+  // sense if the mutex was used here.
+
+  typename Sims1::iterator_base&
+  Sims1::iterator_base::operator=(Sims1::iterator_base&& that) {
+    // private
+    _include         = std::move(that._include);
+    _longs           = std::move(that._longs);
+    _max_num_classes = std::move(that._max_num_classes);
+    _min_target_node = std::move(that._min_target_node);
+
+    // protected
+    _felsch_graph = std::move(that._felsch_graph);
+    _pending      = std::move(that._pending);
+    // keep our own _mtx
+    _stats = that._stats;
+    return *this;
+  }
+
+  void Sims1::iterator_base::swap(Sims1::iterator_base& that) noexcept {
+    // TODO everything swapped?
+    std::swap(_include, that._include);
+    std::swap(_felsch_graph, that._felsch_graph);
+    std::swap(_max_num_classes, that._max_num_classes);
+    std::swap(_min_target_node, that._min_target_node);
+    std::swap(_pending, that._pending);
+  }
   // The following function is separated from the constructor so that it isn't
   // called in the constructor of every thread_iterator
 
@@ -645,12 +723,12 @@ namespace libsemigroups {
       _felsch_graph.set_target_no_checks(
           current.source, current.generator, current.target);
 
-      auto first = _extra.rules.cbegin();
-      auto last  = _extra.rules.cend();
+      auto first = _include.rules.cbegin();
+      auto last  = _include.rules.cend();
       if (!felsch_graph::make_compatible<RegisterDefs>(
               _felsch_graph, 0, 1, first, last)
           || !_felsch_graph.process_definitions(start)) {
-        // Seems to be important to check _extra first then
+        // Seems to be important to check _include first then
         // process_definitions
         return false;
       }
@@ -668,15 +746,15 @@ namespace libsemigroups {
         if (_felsch_graph.target_no_checks(next, a) == UNDEFINED) {
           std::lock_guard<std::mutex> lock(_mtx);
           if (M < _max_num_classes) {
-            ++_stats.total_pending;
+            ++_stats->total_pending;
             _pending.emplace_back(next, a, M, N, M + 1);
           }
           for (node_type b = M; b-- > _min_target_node;) {
             _pending.emplace_back(next, a, b, N, M);
           }
-          _stats.total_pending += M - _min_target_node;
-          _stats.max_pending = std::max(static_cast<uint64_t>(_pending.size()),
-                                        _stats.max_pending);
+          _stats->total_pending += M - _min_target_node;
+          _stats->max_pending = std::max(static_cast<uint64_t>(_pending.size()),
+                                         _stats->max_pending);
           return false;
         }
       }
@@ -691,70 +769,16 @@ namespace libsemigroups {
         _felsch_graph, 0, M, first, last);
   }
 
-  Sims1::iterator_base::iterator_base(Sims1::iterator_base const& that)
-      : _extra(that._extra),
-        _longs(that._longs),
-        _max_num_classes(that._max_num_classes),
-        _min_target_node(that._min_target_node),
-        _felsch_graph(that._felsch_graph),
-        _pending(that._pending) {}
-
-  // Intentionally don't copy the mutex, it doesn't compile, wouldn't make
-  // sense if the mutex was used here.
-
-  Sims1::iterator_base::iterator_base(Sims1::iterator_base&& that)
-      : _extra(std::move(that._extra)),
-        _longs(std::move(that._longs)),
-        _max_num_classes(std::move(that._max_num_classes)),
-        _min_target_node(std::move(that._min_target_node)),
-        _felsch_graph(std::move(that._felsch_graph)),
-        _pending(std::move(that._pending)) {}
-
-  // Intentionally don't copy the mutex, it doesn't compile, wouldn't make
-  // sense if the mutex was used here.
-
-  typename Sims1::iterator_base&
-  Sims1::iterator_base::operator=(Sims1::iterator_base const& that) {
-    _extra           = that._extra;
-    _longs           = that._longs;
-    _max_num_classes = that._max_num_classes;
-    _min_target_node = that._min_target_node;
-    _felsch_graph    = that._felsch_graph;
-    _pending         = that._pending;
-    return *this;
-  }
-
-  // Intentionally don't copy the mutex, it doesn't compile, wouldn't make
-  // sense if the mutex was used here.
-
-  typename Sims1::iterator_base&
-  Sims1::iterator_base::operator=(Sims1::iterator_base&& that) {
-    _extra           = std::move(that._extra);
-    _longs           = std::move(that._longs);
-    _max_num_classes = std::move(that._max_num_classes);
-    _min_target_node = std::move(that._min_target_node);
-    _felsch_graph    = std::move(that._felsch_graph);
-    _pending         = std::move(that._pending);
-    return *this;
-  }
-
-  void Sims1::iterator_base::swap(Sims1::iterator_base& that) noexcept {
-    std::swap(_extra, that._extra);
-    std::swap(_felsch_graph, that._felsch_graph);
-    std::swap(_max_num_classes, that._max_num_classes);
-    std::swap(_min_target_node, that._min_target_node);
-    std::swap(_pending, that._pending);
-  }
-
   ///////////////////////////////////////////////////////////////////////////////
   // iterator nested class
   ///////////////////////////////////////////////////////////////////////////////
 
-  Sims1::iterator::iterator(Presentation<word_type> const& p,
+  Sims1::iterator::iterator(Sims1 const&                   s,
+                            Presentation<word_type> const& p,
                             Presentation<word_type> const& e,
                             Presentation<word_type> const& f,
                             size_type                      n)
-      : iterator_base(p, e, f, n) {
+      : iterator_base(s, p, e, f, n) {
     if (this->_felsch_graph.number_of_active_nodes() == 0) {
       return;
     }

@@ -452,7 +452,7 @@ namespace libsemigroups {
 
     Sims1 C(congruence_kind::right);
     C.short_rules(p);
-    REQUIRE(C.number_of_threads(1).number_of_congruences(209) == 195'709);
+    REQUIRE(C.number_of_threads(2).number_of_congruences(209) == 195'709);
   }
 
   LIBSEMIGROUPS_TEST_CASE("Sims1",

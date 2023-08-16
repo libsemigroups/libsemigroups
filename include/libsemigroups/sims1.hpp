@@ -73,8 +73,6 @@
 
 namespace libsemigroups {
 
-  // This isn't inside Sims1 because it doesn't depend on the template args at
-  // all.
   //! Defined in ``sims1.hpp``.
   //!
   //! On this page we describe the `Sims1Stats` struct. The purpose of this
@@ -118,11 +116,10 @@ namespace libsemigroups {
 
     //! Combine two Sims1Stats objects
     //!
-    //! This function changes this Sims1Stats in-place so
-    //! that \ref max_pending is the maximum of
-    //! `this->max_pending` and `that.max_pending`; and
-    //! \ref total_pending is the sum of
-    //! `this->total_pending` and `that.total_pending`.
+    //! This function changes this Sims1Stats in-place so that \ref max_pending
+    //! is the maximum of `this->max_pending` and `that.max_pending`; and \ref
+    //! total_pending is the sum of `this->total_pending` and
+    //! `that.total_pending`.
     Sims1Stats& operator+=(Sims1Stats const& that) {
       count_last += that.count_last;
       count_now += that.count_now;
@@ -147,9 +144,8 @@ namespace libsemigroups {
   class Sims1Settings {
    private:
     // TODO add _exclude
-    // TODO rename _include and make it just a vector of
-    // word_type
-    Presentation<word_type> _extra;
+    // TODO make it just a vector of word_type
+    Presentation<word_type> _include;
     // TODO change to iterator into _shorts, and rename
     // shorts to presentation
     Presentation<word_type> _longs;
@@ -170,9 +166,8 @@ namespace libsemigroups {
 
     //! Returns the settings object of *this.
     //!
-    //! The settings object contains all the settings that
-    //! are common to `Sims1`, `RepOrc`, and
-    //! `MinimalRepOrc`, which are currently:
+    //! The settings object contains all the settings that are common to
+    //! `Sims1`, `RepOrc`, and `MinimalRepOrc`, which are currently:
     //! * \ref short_rules
     //! * \ref long_rules
     //! * \ref report_interval
@@ -189,26 +184,23 @@ namespace libsemigroups {
     //!
     //! \exceptions
     //! \noexcept
-    // So that we can access the settings from the derived
-    // class T.
+    // So that we can access the settings from the derived class T.
     Sims1Settings const& settings() const noexcept {
       return *this;
     }
 
     //! Copy the settings from \p that into `this`.
     //!
-    //! The settings object contains all the settings that
-    //! are common to `Sims1`, `RepOrc`, and
-    //! `MinimalRepOrc`, which are currently:
+    //! The settings object contains all the settings that are common to
+    //! `Sims1`, `RepOrc`, and `MinimalRepOrc`, which are currently:
     //! * \ref short_rules
     //! * \ref long_rules
     //! * \ref report_interval
     //! * \ref number_of_threads
     //! * \ref extra
     //!
-    //! The return value of this function can be used to
-    //! initialise another `Sims1`, `RepOrc`, or
-    //! `MinimalRepOrc` with these settings.
+    //! The return value of this function can be used to initialise another
+    //! `Sims1`, `RepOrc`, or `MinimalRepOrc` with these settings.
     //!
     //! \param that the object to copy the settings from.
     //!
@@ -291,35 +283,29 @@ namespace libsemigroups {
 
     //! Set the short rules.
     //!
-    //! These are the rules used at every node in the depth
-    //! first search conducted by `Sims1`.
+    //! These are the rules used at every node in the depth first search
+    //! conducted by `Sims1`.
     //!
-    //! If the template parameter \p P is not
-    //! `Presentation<word_type>`, then the parameter \p p
-    //! is first converted to a value of type
-    //! `Presentation<word_type>` and it is this converted
-    //! value that is used.
+    //! If the template parameter \p P is not `Presentation<word_type>`, then
+    //! the parameter \p p is first converted to a value of type
+    //! `Presentation<word_type>` and it is this converted value that is used.
     //!
-    //! \tparam P A specific value of the class template
-    //! `Presentation`, must be derived from
-    //! `PresentationBase`. \param p the presentation.
+    //! \tparam P A specific value of the class template `Presentation`, must
+    //! be derived from `PresentationBase`. \param p the presentation.
     //!
     //! \returns A reference to \c this.
     //!
-    //! \throws LibsemigroupsException
-    //! if `to_presentation<word_type>(p)` throws
+    //! \throws LibsemigroupsException if `to_presentation<word_type>(p)`
+    //! throws
     //! \throws LibsemigroupsException if `p` is not valid
-    //! \throws LibsemigroupsException
-    //! if the alphabet of `p` is non-empty and not equal
-    //! to that of \ref long_rules or \ref extra. \throws
-    //! LibsemigroupsException if `p` has 0-generators and
-    //! 0-relations.
+    //! \throws LibsemigroupsException if the alphabet of `p` is non-empty and
+    //! not equal to that of \ref long_rules or \ref extra. \throws
+    //! LibsemigroupsException if `p` has 0-generators and 0-relations.
     template <typename P>
     Subclass& short_rules(P const& p);
 
     //! \anchor short_rules
-    //! Returns a const reference to the current short
-    //! rules.
+    //! Returns a const reference to the current short rules.
     //!
     //! This function returns the defining presentation of
     //! a `Sims1` instance. The congruences computed by
@@ -403,18 +389,14 @@ namespace libsemigroups {
     }
 
     //! \anchor extra
-    //! Returns a const reference to the additional
-    //! defining pairs.
+    //! Returns a const reference to the additional defining pairs.
     //!
-    //! The congruences computed by a Sims1 instance always
-    //! contain the relations of this presentation. In
-    //! other words, the congruences computed by this
-    //! instance are only taken among those that contains
-    //! the pairs of elements of the underlying semigroup
-    //! (defined by the presentation returned by \ref
-    //! short_rules and \ref long_rules) represented by the
-    //! relations of the presentation returned by
-    //! `extra()`.
+    //! The congruences computed by a Sims1 instance always contain the
+    //! relations of this presentation. In other words, the congruences
+    //! computed by this instance are only taken among those that contains the
+    //! pairs of elements of the underlying semigroup (defined by the
+    //! presentation returned by \ref short_rules and \ref long_rules)
+    //! represented by the relations of the presentation returned by `extra()`.
     //!
     //! \param (None) this function has no parameters.
     //!
@@ -424,39 +406,34 @@ namespace libsemigroups {
     //! \exceptions
     //! \noexcept
     Presentation<word_type> const& extra() const noexcept {
-      return _extra;
+      return _include;
     }
 
     //! Set the extra rules.
     //!
-    //! The congruences computed by a `Sims1` instance
-    //! always contain the relations of this presentation.
-    //! In other words, the congruences computed by this
-    //! instance are only taken among those that contains
-    //! the pairs of elements of the underlying semigroup
-    //! (defined by the presentation returned by \ref
-    //! short_rules and \ref long_rules) represented by the
-    //! relations of the presentation returned by
-    //! `extra()`.
+    //! The congruences computed by a `Sims1` instance always contain the
+    //! relations of this presentation. In other words, the congruences
+    //! computed by this instance are only taken among those that contains the
+    //! pairs of elements of the underlying semigroup (defined by the
+    //! presentation returned by \ref short_rules and \ref long_rules)
+    //! represented by the relations of the presentation returned by `extra()`.
     //!
-    //! If the template parameter \p P is not
-    //! `Presentation<word_type>`, then the parameter \p p
-    //! is first converted to a value of type
-    //! `Presentation<word_type>` and it is this converted
-    //! value that is used.
+    //! If the template parameter \p P is not `Presentation<word_type>`, then
+    //! the parameter \p p is first converted to a value of type
+    //! `Presentation<word_type>` and it is this converted value that is used.
     //!
-    //! \tparam P A specific value of the class template
-    //! `Presentation`, must be derived from
-    //! `PresentationBase`. \param p the presentation.
+    //! \tparam P A specific value of the class template `Presentation`, must
+    //! be derived from `PresentationBase`.
+    //!
+    //! \param p the presentation.
     //!
     //! \returns A reference to \c this.
     //!
-    //! \throws LibsemigroupsException if
-    //! `to_presentation<word_type>(p)` throws \throws
-    //! LibsemigroupsException if `p` is not valid \throws
-    //! LibsemigroupsException if the alphabet of `p` is
-    //! non-empty and not equal to that of \ref short_rules
-    //! or \ref long_rules.
+    //! \throws LibsemigroupsException if `to_presentation<word_type>(p)`
+    //! throws
+    //! \throws LibsemigroupsException if `p` is not valid \throws
+    //! LibsemigroupsException if the alphabet of `p` is non-empty and not
+    //! equal to that of \ref short_rules or \ref long_rules.
     template <typename P>
     Subclass& extra(P const& p);
 
@@ -489,20 +466,16 @@ namespace libsemigroups {
     //! \anchor long_rule_length
     //! Define the long rule length.
     //!
-    //! This function modifies \ref short_rules and \ref
-    //! long_rules so that \ref short_rules only contains
-    //! those rules whose length (sum of the lengths of the
-    //! two sides of the rules) is less than \p val (if
-    //! any) and \ref long_rules only contains those rules
-    //! of length at least \p val (if any). The rules
-    //! contained in the union of \ref short_rules and \ref
-    //! long_rules is invariant under this function, but
-    //! the distribution of the rules between \ref
-    //! short_rules and \ref long_rules is not.
+    //! This function modifies \ref short_rules and \ref long_rules so that
+    //! \ref short_rules only contains those rules whose length (sum of the
+    //! lengths of the two sides of the rules) is less than \p val (if any) and
+    //! \ref long_rules only contains those rules of length at least \p val (if
+    //! any). The rules contained in the union of \ref short_rules and \ref
+    //! long_rules is invariant under this function, but the distribution of
+    //! the rules between \ref short_rules and \ref long_rules is not.
     //!
-    //! The relative orders of the rules within \ref
-    //! short_rules and \ref long_rules may not be
-    //! preserved.
+    //! The relative orders of the rules within \ref short_rules and \ref
+    //! long_rules may not be preserved.
     //!
     //! \param val the value of the long rule length.
     //!
@@ -517,13 +490,11 @@ namespace libsemigroups {
     //! Split the rules in \ref short_rules and \ref
     //! long_rules.
     //!
-    //! This function splits the relations in \ref
-    //! short_rules and \ref long_rules so that \ref
-    //! short_rules contains the first `2 * val` rules and
-    //! \ref long_rules contains any remaining rules.
+    //! This function splits the relations in \ref short_rules and \ref
+    //! long_rules so that \ref short_rules contains the first `2 * val` rules
+    //! and \ref long_rules contains any remaining rules.
     //!
-    //! The order of the relations is the same as the
-    //! current order.
+    //! The order of the relations is the same as the current order.
     //!
     //! \param val the relation to split at.
     //!
@@ -571,10 +542,9 @@ namespace libsemigroups {
     //! The size_type of the associated WordGraph objects.
     using size_type = typename WordGraph<node_type>::size_type;
 
-    // We use WordGraph, even though the iterators produced
-    // by this class hold FelschGraph's, none of the
-    // features of FelschGraph are useful for the output,
-    // only for the implementation
+    // We use WordGraph, even though the iterators produced by this class hold
+    // FelschGraph's, none of the features of FelschGraph are useful for the
+    // output, only for the implementation
     //! The type of the associated WordGraph objects.
     using digraph_type = WordGraph<node_type>;
 
@@ -592,8 +562,7 @@ namespace libsemigroups {
 
     //! Construct from \ref congruence_kind.
     //!
-    //! \param ck the handedness of the congruences (left
-    //! or right)
+    //! \param ck the handedness of the congruences (left or right)
     //!
     //! \throws LibsemigroupsException if \p ck is \ref
     //! congruence_kind::twosided
@@ -658,8 +627,6 @@ namespace libsemigroups {
     using Sims1Settings<Sims1>::long_rules;
     using Sims1Settings<Sims1>::extra;
     using Sims1Settings<Sims1>::number_of_threads;
-    using Sims1Settings<Sims1>::report_interval;
-    using Sims1Settings<Sims1>::stats;
 
     class iterator;  // forward decl
 
@@ -713,31 +680,27 @@ namespace libsemigroups {
     // complicated however, and so isn't done at present.
     iterator cbegin(size_type n) const;
 
-    //! Returns a forward iterator pointing one beyond the
-    //! last congruence.
+    //! Returns a forward iterator pointing one beyond the last congruence.
     //!
-    //! Returns a forward iterator pointing to the empty
-    //! WordGraph. If incremented, the returned iterator
-    //! remains valid and continues to point at the empty
-    //! WordGraph.
+    //! Returns a forward iterator pointing to the empty WordGraph. If
+    //! incremented, the returned iterator remains valid and continues to point
+    //! at the empty WordGraph.
     //!
     //! \param n the maximum number of classes in a
     //! congruence.
     //!
     //! \returns
-    //! An iterator \c it of type \c iterator pointing to
-    //! an WordGraph with at most \p 0 nodes.
+    //! An iterator \c it of type \c iterator pointing to an WordGraph with at
+    //! most \p 0 nodes.
     //!
     //! \throws LibsemigroupsException if \p n is \c 0.
-    //! \throws LibsemigroupsException if `short_rules()`
-    //! has 0-generators and 0-relations (i.e. it has not
-    //! been initialised).
+    //! \throws LibsemigroupsException if `short_rules()` has 0-generators and
+    //! 0-relations (i.e. it has not been initialised).
     //!
     //! \warning
-    //! Copying iterators of this type is expensive.  As a
-    //! consequence, prefix incrementing \c ++it the
-    //! returned  iterator \c it significantly cheaper than
-    //! postfix incrementing \c it++.
+    //! Copying iterators of this type is expensive.  As a consequence, prefix
+    //! incrementing \c ++it the returned  iterator \c it significantly cheaper
+    //! than postfix incrementing \c it++.
     //!
     //! \sa
     //! \ref cbegin
@@ -829,7 +792,9 @@ namespace libsemigroups {
       using const_pointer = typename std::vector<digraph_type>::const_pointer;
 
      private:
-      Presentation<word_type> _extra;
+      // TODO replace with reference to Sims1
+      Presentation<word_type> _include;
+      // TODO replace with reference to Sims1
       Presentation<word_type> _longs;
       size_type               _max_num_classes;
       size_type               _min_target_node;
@@ -839,12 +804,14 @@ namespace libsemigroups {
       // TODO ensure that _felsch_graph's settings are
       // properly initialised
       using Definition = std::pair<node_type, label_type>;
+
       FelschGraph<word_type, node_type, std::vector<Definition>> _felsch_graph;
+
       // This mutex does nothing for iterator, only does
       // something for thread_iterator
       std::mutex              _mtx;
       std::vector<PendingDef> _pending;
-      mutable Sims1Stats      _stats;
+      Sims1Stats*             _stats;
 
       // Push initial PendingDef's into _pending, see tpp
       // file for explanation.
@@ -870,7 +837,8 @@ namespace libsemigroups {
 
      public:
       //! No doc
-      iterator_base(Presentation<word_type> const& p,
+      iterator_base(Sims1 const&                   s,
+                    Presentation<word_type> const& p,
                     Presentation<word_type> const& e,
                     Presentation<word_type> const& f,
                     size_type                      n);
@@ -934,7 +902,7 @@ namespace libsemigroups {
 
       //! No doc
       Sims1Stats& stats() noexcept {
-        return _stats;
+        return *_stats;
       }
     };  // class iterator_base
 
@@ -973,9 +941,9 @@ namespace libsemigroups {
       using iterator_base::iterator_base;
 
      private:
-      // Only want Sims1 to be able to use this
-      // constructor.
-      iterator(Presentation<word_type> const& p,
+      // Only want Sims1 to be able to use this constructor.
+      iterator(Sims1 const&                   s,
+               Presentation<word_type> const& p,
                Presentation<word_type> const& e,
                Presentation<word_type> const& f,
                size_type                      n);

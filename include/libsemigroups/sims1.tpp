@@ -27,7 +27,7 @@ namespace libsemigroups {
 
   template <typename T>
   Sims1Settings<T>::Sims1Settings()
-      : _extra(),
+      : _include(),
         _longs(),
         _num_threads(),
         _report_interval(),
@@ -40,7 +40,7 @@ namespace libsemigroups {
   template <typename T>
   template <typename S>
   Sims1Settings<T>::Sims1Settings(Sims1Settings<S> const& that)
-      : _extra(that.extra()),
+      : _include(that.extra()),
         _longs(that.long_rules()),
         _num_threads(that.number_of_threads()),
         _report_interval(that.report_interval()),
@@ -91,7 +91,7 @@ namespace libsemigroups {
     auto normal_p = to_presentation<word_type>(p);
     validate_presentation(normal_p, short_rules());
     validate_presentation(normal_p, long_rules());
-    _extra = normal_p;
+    _include = normal_p;
     return static_cast<T&>(*this);
   }
 
