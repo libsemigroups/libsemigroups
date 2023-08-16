@@ -792,10 +792,8 @@ namespace libsemigroups {
       using const_pointer = typename std::vector<digraph_type>::const_pointer;
 
      private:
-      // TODO replace with reference to Sims1
-      Presentation<word_type> _longs;
-      size_type               _max_num_classes;
-      size_type               _min_target_node;
+      size_type _max_num_classes;
+      size_type _min_target_node;
 
      protected:
       // short_rules is stored in _felsch_graph
@@ -838,7 +836,6 @@ namespace libsemigroups {
       //! No doc
       iterator_base(Sims1 const&                   s,
                     Presentation<word_type> const& p,
-                    Presentation<word_type> const& f,
                     size_type                      n);
 
       // None of the constructors are noexcept because the
@@ -940,10 +937,7 @@ namespace libsemigroups {
 
      private:
       // Only want Sims1 to be able to use this constructor.
-      iterator(Sims1 const&                   s,
-               Presentation<word_type> const& p,
-               Presentation<word_type> const& f,
-               size_type                      n);
+      iterator(Sims1 const& s, Presentation<word_type> const& p, size_type n);
 
       // So that we can use the constructor above.
       friend iterator Sims1::cbegin(Sims1::size_type) const;
