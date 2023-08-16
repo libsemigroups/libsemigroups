@@ -27,10 +27,10 @@
 
 #include "fmt/core.h"  // for format
 
-#include "libsemigroups/exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
-#include "libsemigroups/presentation.hpp"    // for Presentation, to_string, to_word
-#include "libsemigroups/types.hpp"      // for word_type
-#include "libsemigroups/words.hpp"      // for human_readable_char
+#include "libsemigroups/exception.hpp"     // for LIBSEMIGROUPS_EXCEPTION
+#include "libsemigroups/presentation.hpp"  // for Presentation, to_string, to_word
+#include "libsemigroups/types.hpp"         // for word_type
+#include "libsemigroups/words.hpp"         // for human_readable_char
 
 namespace libsemigroups {
   namespace presentation {

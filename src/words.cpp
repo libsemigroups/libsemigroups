@@ -30,13 +30,13 @@
 #include <type_traits>  // for is_destructible
 #include <utility>      // for move
 
-#include "libsemigroups/config.hpp"     // for LIBSEMIGROUPS_DEBUG
-#include "libsemigroups/constants.hpp"  // for UNDEFINED
-#include "libsemigroups/debug.hpp"      // for LIBSEMIGROUPS_ASSERT
-#include "libsemigroups/exception.hpp"  // for word_type
-#include "libsemigroups/order.hpp"      // for order
-#include "libsemigroups/presentation.hpp"    // for index
-#include "libsemigroups/types.hpp"      // for word_type
+#include "libsemigroups/config.hpp"        // for LIBSEMIGROUPS_DEBUG
+#include "libsemigroups/constants.hpp"     // for UNDEFINED
+#include "libsemigroups/debug.hpp"         // for LIBSEMIGROUPS_ASSERT
+#include "libsemigroups/exception.hpp"     // for word_type
+#include "libsemigroups/order.hpp"         // for order
+#include "libsemigroups/presentation.hpp"  // for index
+#include "libsemigroups/types.hpp"         // for word_type
 
 #include "libsemigroups/detail/report.hpp"  // for magic_enum formatting
 

@@ -18,25 +18,25 @@
 
 #include "libsemigroups/knuth-bendix.hpp"  // for KnuthBendix, KnuthBe...
 
-#include <algorithm>                     // for max, min
-#include <cstddef>                       // for size_t
-#include <iterator>                      // for advance
-#include <limits>                        // for numeric_limits
-#include <string>                        // for allocator, basic_string, oper...
-#include <unordered_map>                 // for unordered_map, operator!=
-#include <utility>                       // for swap
-                                         //
-#include "libsemigroups/constants.hpp"   // for Max, PositiveInfinity, operat...
-#include "libsemigroups/debug.hpp"       // for LIBSEMIGROUPS_ASSERT
-#include "libsemigroups/obvinf.hpp"      // for is_obviously_infinite
-#include "libsemigroups/order.hpp"       // for shortlex_compare
-#include "libsemigroups/paths.hpp"       // for Paths
-#include "libsemigroups/presentation.hpp"     // for Presentation
-#include "libsemigroups/ranges.hpp"      // for operator<<
-#include "libsemigroups/runner.hpp"      // for Runner
-#include "libsemigroups/types.hpp"       // for word_type
-#include "libsemigroups/word-graph.hpp"  // for WordGraph
-#include "libsemigroups/words.hpp"       // for to_strings
+#include <algorithm>                    // for max, min
+#include <cstddef>                      // for size_t
+#include <iterator>                     // for advance
+#include <limits>                       // for numeric_limits
+#include <string>                       // for allocator, basic_string, oper...
+#include <unordered_map>                // for unordered_map, operator!=
+#include <utility>                      // for swap
+                                        //
+#include "libsemigroups/constants.hpp"  // for Max, PositiveInfinity, operat...
+#include "libsemigroups/debug.hpp"      // for LIBSEMIGROUPS_ASSERT
+#include "libsemigroups/obvinf.hpp"     // for is_obviously_infinite
+#include "libsemigroups/order.hpp"      // for shortlex_compare
+#include "libsemigroups/paths.hpp"      // for Paths
+#include "libsemigroups/presentation.hpp"  // for Presentation
+#include "libsemigroups/ranges.hpp"        // for operator<<
+#include "libsemigroups/runner.hpp"        // for Runner
+#include "libsemigroups/types.hpp"         // for word_type
+#include "libsemigroups/word-graph.hpp"    // for WordGraph
+#include "libsemigroups/words.hpp"         // for to_strings
 
 #include "libsemigroups/detail/report.hpp"  // for Reporter, REPORT_DEFAULT, REP...
 #include "libsemigroups/detail/string.hpp"  // for is_prefix, maximum_common_prefix

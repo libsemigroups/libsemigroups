@@ -28,7 +28,7 @@
 #include "libsemigroups/froidure-pin.hpp"
 #include "libsemigroups/gabow.hpp"
 #include "libsemigroups/obvinf.hpp"           // for is_obviously_infinite
-#include "libsemigroups/presentation.hpp"          // for Presentation
+#include "libsemigroups/presentation.hpp"     // for Presentation
 #include "libsemigroups/ranges.hpp"           // for is_sorted
 #include "libsemigroups/to-froidure-pin.hpp"  // for make
 #include "libsemigroups/to-knuth-bendix.hpp"  // for to_knuth_bendix

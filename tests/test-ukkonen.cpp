@@ -35,7 +35,8 @@ namespace libsemigroups {
   using literals::operator""_w;
 
   namespace {
-    // TODO Should really be just a use of presentation::longest_subword_reducing_length
+    // TODO Should really be just a use of
+    // presentation::longest_subword_reducing_length
     auto best_subword(Ukkonen& u) {
       ukkonen::detail::GreedyReduceHelper helper(u);
       return ukkonen::dfs(u, helper);

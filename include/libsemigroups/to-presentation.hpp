@@ -27,7 +27,7 @@
 #include <vector>       // for vector
 
 #include "froidure-pin-base.hpp"  // for FroidurePinBase::const_rule_i...
-#include "presentation.hpp"            // for Presentation
+#include "presentation.hpp"       // for Presentation
 
 namespace libsemigroups {
 

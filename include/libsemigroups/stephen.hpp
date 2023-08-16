@@ -28,7 +28,7 @@
 
 #include "constants.hpp"                // for PositiveInfinity
 #include "paths.hpp"                    // for Paths
-#include "presentation.hpp"                  // for Presentation
+#include "presentation.hpp"             // for Presentation
 #include "runner.hpp"                   // for Runner
 #include "to-presentation.hpp"          // for make
 #include "types.hpp"                    // for word_type

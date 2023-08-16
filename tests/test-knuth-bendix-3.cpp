@@ -48,7 +48,7 @@
 #include "libsemigroups/obvinf.hpp"           // for is_obviously_infinite
 #include "libsemigroups/order.hpp"            // for shortlex_compare
 #include "libsemigroups/paths.hpp"            // for Paths
-#include "libsemigroups/presentation.hpp"          // for add_rule, Presentation
+#include "libsemigroups/presentation.hpp"     // for add_rule, Presentation
 #include "libsemigroups/ranges.hpp"           // for equal
 #include "libsemigroups/word-graph.hpp"       // for WordGraph
 #include "libsemigroups/words.hpp"            // for Inner, to_strings, Str...

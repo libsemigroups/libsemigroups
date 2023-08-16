@@ -26,7 +26,7 @@
 #include <vector>   // for vector
 
 #include "presentation.hpp"  // for Presentation
-#include "types.hpp"    // for relation_type
+#include "types.hpp"         // for relation_type
 
 namespace libsemigroups {
   namespace fpsemigroup {

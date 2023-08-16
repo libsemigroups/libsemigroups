@@ -35,7 +35,7 @@
 #include "libsemigroups/froidure-pin.hpp"  // for FroidurePin, FroidurePi...
 #include "libsemigroups/kambites.hpp"      // for Kambites
 #include "libsemigroups/order.hpp"         // for shortlex_compare
-#include "libsemigroups/presentation.hpp"       // for to_word
+#include "libsemigroups/presentation.hpp"  // for to_word
 #include "libsemigroups/types.hpp"         // for word_type, tril
 
 namespace libsemigroups {

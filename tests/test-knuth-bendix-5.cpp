@@ -48,7 +48,7 @@
 #include "libsemigroups/exception.hpp"        // for LibsemigroupsException
 #include "libsemigroups/froidure-pin.hpp"     // for FroidurePin
 #include "libsemigroups/knuth-bendix.hpp"     // for KnuthBendix
-#include "libsemigroups/presentation.hpp"          // for Presentation
+#include "libsemigroups/presentation.hpp"     // for Presentation
 #include "libsemigroups/to-froidure-pin.hpp"  // for to_froidure_pin
 #include "libsemigroups/to-presentation.hpp"  // for to_presentation
 #include "libsemigroups/transf.hpp"           // for Transf

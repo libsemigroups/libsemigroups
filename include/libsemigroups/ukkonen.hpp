@@ -1770,7 +1770,8 @@ namespace libsemigroups {
     auto dfs(Ukkonen const& u, T& helper);
 
     namespace detail {
-      // TODO when the old ToddCoxeter is removed move this into presentation.hpp
+      // TODO when the old ToddCoxeter is removed move this into
+      // presentation.hpp
       class GreedyReduceHelper {
        private:
         size_t              _best;
