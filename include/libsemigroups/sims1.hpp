@@ -405,7 +405,7 @@ namespace libsemigroups {
     //!
     //! \exceptions
     //! \noexcept
-    Presentation<word_type> const& extra() const noexcept {
+    Presentation<word_type> const& include() const noexcept {
       return _include;
     }
 
@@ -793,8 +793,6 @@ namespace libsemigroups {
 
      private:
       // TODO replace with reference to Sims1
-      Presentation<word_type> _include;
-      // TODO replace with reference to Sims1
       Presentation<word_type> _longs;
       size_type               _max_num_classes;
       size_type               _min_target_node;
@@ -811,7 +809,8 @@ namespace libsemigroups {
       // something for thread_iterator
       std::mutex              _mtx;
       std::vector<PendingDef> _pending;
-      Sims1Stats*             _stats;
+      Sims1Stats*             _stats;  // TODO remove
+      Sims1 const*            _sims1;
 
       // Push initial PendingDef's into _pending, see tpp
       // file for explanation.
@@ -839,7 +838,6 @@ namespace libsemigroups {
       //! No doc
       iterator_base(Sims1 const&                   s,
                     Presentation<word_type> const& p,
-                    Presentation<word_type> const& e,
                     Presentation<word_type> const& f,
                     size_type                      n);
 
@@ -944,7 +942,6 @@ namespace libsemigroups {
       // Only want Sims1 to be able to use this constructor.
       iterator(Sims1 const&                   s,
                Presentation<word_type> const& p,
-               Presentation<word_type> const& e,
                Presentation<word_type> const& f,
                size_type                      n);
 

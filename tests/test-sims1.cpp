@@ -90,7 +90,7 @@ namespace libsemigroups {
 
   namespace {
     template <typename P>
-    void check_extra(congruence_kind ck, P const& p, P const& e, size_t n) {
+    void check_include(congruence_kind ck, P const& p, P const& e, size_t n) {
       P f = e;
       if (ck == congruence_kind::left) {
         presentation::reverse(f);
@@ -532,8 +532,8 @@ namespace libsemigroups {
     Sims1 S(congruence_kind::right);
     S.short_rules(p).extra(e);
     REQUIRE(S.number_of_congruences(5) == 2);
-    check_extra(congruence_kind::right, p, e, 5);
-    check_extra(congruence_kind::left, p, e, 5);
+    check_include(congruence_kind::right, p, e, 5);
+    check_include(congruence_kind::left, p, e, 5);
   }
 
   LIBSEMIGROUPS_TEST_CASE("Sims1",
@@ -557,8 +557,8 @@ namespace libsemigroups {
     Sims1 T(congruence_kind::right);
     T.short_rules(p).extra(e);
     REQUIRE(T.number_of_congruences(5) == 2);
-    check_extra(congruence_kind::right, p, e, 5);
-    check_extra(congruence_kind::left, p, e, 5);
+    check_include(congruence_kind::right, p, e, 5);
+    check_include(congruence_kind::left, p, e, 5);
   }
 
   LIBSEMIGROUPS_TEST_CASE("Sims1",
@@ -589,8 +589,8 @@ namespace libsemigroups {
       T.short_rules(p).extra(e);
       REQUIRE(T.number_of_congruences(5) == 9);  // Verified with GAP
     }
-    check_extra(congruence_kind::right, p, e, 5);
-    check_extra(congruence_kind::left, p, e, 5);
+    check_include(congruence_kind::right, p, e, 5);
+    check_include(congruence_kind::left, p, e, 5);
   }
 
   LIBSEMIGROUPS_TEST_CASE("Sims1",
@@ -618,8 +618,8 @@ namespace libsemigroups {
     S.short_rules(p).extra(e);
     REQUIRE(S.number_of_congruences(3) == 2);
 
-    check_extra(congruence_kind::right, S.short_rules(), S.extra(), 3);
-    check_extra(congruence_kind::left, S.short_rules(), S.extra(), 3);
+    check_include(congruence_kind::right, S.short_rules(), S.include(), 3);
+    check_include(congruence_kind::left, S.short_rules(), S.include(), 3);
   }
 
   LIBSEMIGROUPS_TEST_CASE("Sims1",
@@ -642,8 +642,8 @@ namespace libsemigroups {
     Presentation<word_type> e;
     e.alphabet(p.alphabet());
     presentation::add_rule(e, {1}, {0, 0});
-    check_extra(congruence_kind::right, p, e, 11);
-    check_extra(congruence_kind::left, p, e, 11);
+    check_include(congruence_kind::right, p, e, 11);
+    check_include(congruence_kind::left, p, e, 11);
   }
 
   LIBSEMIGROUPS_TEST_CASE("Sims1", "021", "exceptions", "[quick][low-index]") {

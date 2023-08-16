@@ -69,10 +69,9 @@ namespace libsemigroups {
     //! No doc
     thread_iterator(Sims1 const&                   s,
                     Presentation<word_type> const& p,
-                    Presentation<word_type> const& e,
                     Presentation<word_type> const& f,
                     size_type                      n)
-        : iterator_base(s, p, e, f, n) {}
+        : iterator_base(s, p, f, n) {}
 
     // None of the constructors are noexcept because the corresponding
     // constructors for std::vector aren't (until C++17).
@@ -206,7 +205,6 @@ namespace libsemigroups {
    public:
     thread_runner(Sims1 const&                   s,
                   Presentation<word_type> const& p,
-                  Presentation<word_type> const& e,
                   Presentation<word_type> const& f,
                   size_type                      n,
                   size_type                      num_threads,
@@ -222,7 +220,7 @@ namespace libsemigroups {
 
     {
       for (size_t i = 0; i < _num_threads; ++i) {
-        _theives.push_back(std::make_unique<thread_iterator>(s, p, e, f, n));
+        _theives.push_back(std::make_unique<thread_iterator>(s, p, f, n));
       }
       _theives.front()->init(n);
     }
@@ -344,7 +342,6 @@ namespace libsemigroups {
     } else {
       thread_runner den(*this,
                         short_rules(),
-                        extra(),
                         long_rules(),
                         n,
                         number_of_threads(),
@@ -402,7 +399,6 @@ namespace libsemigroups {
     } else {
       thread_runner den(*this,
                         short_rules(),
-                        extra(),
                         long_rules(),
                         n,
                         number_of_threads(),
@@ -424,7 +420,7 @@ namespace libsemigroups {
       LIBSEMIGROUPS_EXCEPTION("the short_rules() must be defined before "
                               "calling this function");
     }
-    return iterator(*this, short_rules(), extra(), long_rules(), n);
+    return iterator(*this, short_rules(), long_rules(), n);
   }
 
   //! Returns a forward iterator pointing one beyond the
@@ -463,7 +459,7 @@ namespace libsemigroups {
       LIBSEMIGROUPS_EXCEPTION("the short_rules() must be defined before "
                               "calling this function");
     }
-    return iterator(*this, short_rules(), extra(), long_rules(), 0);
+    return iterator(*this, short_rules(), long_rules(), 0);
   }
 
   void Sims1::report_at_start(Presentation<word_type> const& shorts,
@@ -586,11 +582,9 @@ namespace libsemigroups {
 
   Sims1::iterator_base::iterator_base(Sims1 const&                   s,
                                       Presentation<word_type> const& p,
-                                      Presentation<word_type> const& extra,
                                       Presentation<word_type> const& final_,
                                       size_type                      n)
       :  // private
-        _include(extra),
         _longs(final_),
         _max_num_classes(p.contains_empty_word() ? n : n + 1),
         _min_target_node(p.contains_empty_word() ? 0 : 1),
@@ -598,7 +592,8 @@ namespace libsemigroups {
         _felsch_graph(p),
         _mtx(),
         _pending(),
-        _stats(&s.stats()) {
+        _stats(&s.stats()),
+        _sims1(&s) {
     // n == 0 only when the iterator is cend
     _felsch_graph.number_of_active_nodes(n == 0 ? 0 : 1);
     // = 0 indicates iterator is done
@@ -607,7 +602,6 @@ namespace libsemigroups {
 
   Sims1::iterator_base::iterator_base(Sims1::iterator_base const& that)
       :  // private
-        _include(that._include),
         _longs(that._longs),
         _max_num_classes(that._max_num_classes),
         _min_target_node(that._min_target_node),
@@ -615,14 +609,14 @@ namespace libsemigroups {
         _felsch_graph(that._felsch_graph),
         _mtx(),
         _pending(that._pending),
-        _stats(that._stats) {}
+        _stats(that._stats),
+        _sims1(that._sims1) {}
 
   // Intentionally don't copy the mutex, it doesn't compile, wouldn't make
   // sense if the mutex was used here.
 
   Sims1::iterator_base::iterator_base(Sims1::iterator_base&& that)
       :  // private
-        _include(std::move(that._include)),
         _longs(std::move(that._longs)),
         _max_num_classes(std::move(that._max_num_classes)),
         _min_target_node(std::move(that._min_target_node)),
@@ -630,7 +624,8 @@ namespace libsemigroups {
         _felsch_graph(std::move(that._felsch_graph)),
         _mtx(),
         _pending(std::move(that._pending)),
-        _stats(that._stats) {}
+        _stats(that._stats),
+        _sims1(that._sims1) {}
 
   // Intentionally don't copy the mutex, it doesn't compile, wouldn't make
   // sense if the mutex was used here.
@@ -638,7 +633,6 @@ namespace libsemigroups {
   typename Sims1::iterator_base&
   Sims1::iterator_base::operator=(Sims1::iterator_base const& that) {
     // private
-    _include         = that._include;
     _longs           = that._longs;
     _max_num_classes = that._max_num_classes;
     _min_target_node = that._min_target_node;
@@ -647,6 +641,7 @@ namespace libsemigroups {
     // keep our own _mtx
     _pending = that._pending;
     _stats   = that._stats;
+    _sims1   = that._sims1;
     return *this;
   }
 
@@ -656,7 +651,6 @@ namespace libsemigroups {
   typename Sims1::iterator_base&
   Sims1::iterator_base::operator=(Sims1::iterator_base&& that) {
     // private
-    _include         = std::move(that._include);
     _longs           = std::move(that._longs);
     _max_num_classes = std::move(that._max_num_classes);
     _min_target_node = std::move(that._min_target_node);
@@ -666,17 +660,22 @@ namespace libsemigroups {
     _pending      = std::move(that._pending);
     // keep our own _mtx
     _stats = that._stats;
+    _sims1 = that._sims1;
     return *this;
   }
 
   void Sims1::iterator_base::swap(Sims1::iterator_base& that) noexcept {
-    // TODO everything swapped?
-    std::swap(_include, that._include);
-    std::swap(_felsch_graph, that._felsch_graph);
+    // private
+    std::swap(_longs, that._longs);
     std::swap(_max_num_classes, that._max_num_classes);
     std::swap(_min_target_node, that._min_target_node);
+    // protected
+    std::swap(_felsch_graph, that._felsch_graph);
     std::swap(_pending, that._pending);
+    std::swap(_stats, that._stats);
+    std::swap(_sims1, that._sims1);
   }
+
   // The following function is separated from the constructor so that it isn't
   // called in the constructor of every thread_iterator
 
@@ -723,12 +722,12 @@ namespace libsemigroups {
       _felsch_graph.set_target_no_checks(
           current.source, current.generator, current.target);
 
-      auto first = _include.rules.cbegin();
-      auto last  = _include.rules.cend();
+      auto first = _sims1->include().rules.cbegin();
+      auto last  = _sims1->include().rules.cend();
       if (!felsch_graph::make_compatible<RegisterDefs>(
               _felsch_graph, 0, 1, first, last)
           || !_felsch_graph.process_definitions(start)) {
-        // Seems to be important to check _include first then
+        // Seems to be important to check include() first then
         // process_definitions
         return false;
       }
@@ -775,10 +774,9 @@ namespace libsemigroups {
 
   Sims1::iterator::iterator(Sims1 const&                   s,
                             Presentation<word_type> const& p,
-                            Presentation<word_type> const& e,
                             Presentation<word_type> const& f,
                             size_type                      n)
-      : iterator_base(s, p, e, f, n) {
+      : iterator_base(s, p, f, n) {
     if (this->_felsch_graph.number_of_active_nodes() == 0) {
       return;
     }
