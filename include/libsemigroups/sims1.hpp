@@ -82,21 +82,10 @@ namespace libsemigroups {
   //!
   //! \sa \ref Sims1
   struct Sims1Stats {
-    // TODO put data first etc
-    using time_point = std::chrono::high_resolution_clock::time_point;
-
-    Sims1Stats()
-        : max_pending(),
-          total_pending(),
-          start_time(),
-          last_report(),
-          count_last(),
-          count_now() {
-      zero();
-    }
-    Sims1Stats(Sims1Stats const& that)            = default;
-    Sims1Stats& operator=(Sims1Stats const& that) = default;
-
+    // TODO doc
+    uint64_t count_last;  // TODO atomic
+    // TODO doc
+    uint64_t count_now;  // TODO atomic
     //! The maximum number of pending definitions.
     //!
     //! A *pending definition* is just an edge that will be defined at some
@@ -105,7 +94,7 @@ namespace libsemigroups {
     //!
     //! This member tracks the maximum number of such pending definitions that
     //! occur during the running of the algorithms in Sims1.
-    uint64_t max_pending = 0;
+    uint64_t max_pending = 0;  // TODO atomic
 
     //! The total number of pending definitions.
     //!
@@ -117,12 +106,15 @@ namespace libsemigroups {
     //! occur during the running of the algorithms in Sims1. This is the same
     //! as the number of nodes in the search tree encounter during the running
     //! of Sims1.
-    uint64_t total_pending = 0;
+    uint64_t total_pending = 0;  // TODO atomic
 
-    time_point start_time;   // TODO move to ReporterV3
-    time_point last_report;  // TODO move to ReporterV3
-    uint64_t   count_last;
-    uint64_t   count_now;
+    Sims1Stats() : count_last(), count_now(), max_pending(), total_pending() {
+      zero_stats();
+    }
+
+    Sims1Stats(Sims1Stats const& that)            = default;
+    Sims1Stats& operator=(Sims1Stats const& that) = default;
+    // TODO the move constructors
 
     //! Combine two Sims1Stats objects
     //!
@@ -132,15 +124,16 @@ namespace libsemigroups {
     //! \ref total_pending is the sum of
     //! `this->total_pending` and `that.total_pending`.
     Sims1Stats& operator+=(Sims1Stats const& that) {
+      count_last += that.count_last;
+      count_now += that.count_now;
       max_pending = std::max(max_pending, that.max_pending);
       total_pending += that.total_pending;
       return *this;
     }
 
-    Sims1Stats& zero() {
+    Sims1Stats& zero_stats() {
       max_pending   = 0;
       total_pending = 0;
-      start_time    = std::chrono::high_resolution_clock::now();
       count_last    = 0;
       count_now     = 0;
       return *this;
@@ -150,7 +143,7 @@ namespace libsemigroups {
   //! No doc
   // This class allows us to use the same interface for settings for Sims1,
   // RepOrc, and MinimalRepOrc without duplicating the code.
-  template <typename T>
+  template <typename Subclass>
   class Sims1Settings {
    private:
     // TODO add _exclude
@@ -221,9 +214,9 @@ namespace libsemigroups {
     //!
     //! \exceptions
     //! \no_libsemigroups_except
-    T& settings(Sims1Settings const& that) {
+    Subclass& settings(Sims1Settings const& that) {
       *this = that;
-      return static_cast<T&>(*this);
+      return static_cast<Subclass&>(*this);
     }
 
     //! \anchor number_of_threads
@@ -245,7 +238,7 @@ namespace libsemigroups {
     //! `std::thread::hardware_concurrency()`, then this is
     //! likely to have a negative impact on the performance
     //! of the algorithms implemented by `Sims1`.
-    T& number_of_threads(size_t val);
+    Subclass& number_of_threads(size_t val);
 
     //! Returns the current number of threads.
     //!
@@ -274,9 +267,10 @@ namespace libsemigroups {
     //!
     //! \exceptions
     //! \noexcept
-    T& report_interval(size_t val) noexcept {
+    // TODO Remove
+    Subclass& report_interval(size_t val) noexcept {
       _report_interval = val;
-      return static_cast<T&>(*this);
+      return static_cast<Subclass&>(*this);
     }
 
     //! Returns the current report interval.
@@ -288,6 +282,7 @@ namespace libsemigroups {
     //!
     //! \exceptions
     //! \noexcept
+    // TODO remove
     size_t report_interval() const noexcept {
       return _report_interval;
     }
@@ -318,7 +313,7 @@ namespace libsemigroups {
     //! LibsemigroupsException if `p` has 0-generators and
     //! 0-relations.
     template <typename P>
-    T& short_rules(P const& p);
+    Subclass& short_rules(P const& p);
 
     //! \anchor short_rules
     //! Returns a const reference to the current short
@@ -389,7 +384,7 @@ namespace libsemigroups {
     //! non-empty and not equal to that of \ref short_rules
     //! or \ref extra.
     template <typename P>
-    T& long_rules(P const& p);
+    Subclass& long_rules(P const& p);
 
     //! \anchor long_rules
     //! Returns the current long rules.
@@ -461,7 +456,7 @@ namespace libsemigroups {
     //! non-empty and not equal to that of \ref short_rules
     //! or \ref long_rules.
     template <typename P>
-    T& extra(P const& p);
+    Subclass& extra(P const& p);
 
     //! Returns a const reference to the current stats
     //! object.
@@ -485,9 +480,9 @@ namespace libsemigroups {
     }
 
    protected:
-    T const& stats(Sims1Stats const& stts) const {
+    Subclass const& stats(Sims1Stats const& stts) const {
       _stats = std::move(stts);
-      return static_cast<T const&>(*this);
+      return static_cast<Subclass const&>(*this);
     }
 
    public:
@@ -516,7 +511,7 @@ namespace libsemigroups {
     //!
     //! \exceptions
     //! \no_libsemigroups_except
-    T& long_rule_length(size_t val);
+    Subclass& long_rule_length(size_t val);
 
     //! \anchor split_at
     //! Split the rules in \ref short_rules and \ref

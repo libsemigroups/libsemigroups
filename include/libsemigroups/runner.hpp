@@ -49,17 +49,21 @@ namespace libsemigroups {
     using time_point  = std::chrono::high_resolution_clock::time_point;
     using nanoseconds = std::chrono::nanoseconds;
 
+    std::string _prefix;
+    nanoseconds _report_time_interval;
+
     mutable time_point _last_report;
-    std::string        _prefix;
-    nanoseconds        _report_time_interval;
+    mutable time_point _start_time;
     mutable bool       _stop_reporting;  // TODO atomic
 
    public:
     // not noexcept because std::string constructor isn't
     ReporterV3()
-        : _last_report(),
-          _prefix(),
+        : _prefix(),
           _report_time_interval(),
+          // mutable
+          _last_report(),  // TODO required?
+          _start_time(),
           _stop_reporting(true) {
       init();
     }
@@ -75,14 +79,14 @@ namespace libsemigroups {
 
     virtual void report_progress_from_thread() const {}
 
-    // TODO check if reporting is enable before calling this function
+    // It's necessary to check if reporting is enable before calling this
+    // function
     std::thread launch_report_thread() const {
       _stop_reporting  = false;
+      _start_time      = std::chrono::high_resolution_clock::now();
       auto thread_func = [this]() {
         while (!_stop_reporting) {
-          std::this_thread::sleep_for(std::chrono::seconds(1));  // TODO use
-                                                                 // report
-                                                                 // interval
+          std::this_thread::sleep_for(report_every());
           report_progress_from_thread();
         }
       };
@@ -108,6 +112,7 @@ namespace libsemigroups {
     //!
     //! \sa report_every(std::chrono::nanoseconds) and report_every(TIntType).
     // not noexcept because operator- for time_points can throw.
+    // TODO remove?
     [[nodiscard]] inline bool report() const {
       auto t       = std::chrono::high_resolution_clock::now();
       auto elapsed = t - _last_report;
@@ -167,6 +172,20 @@ namespace libsemigroups {
     //! The number of nanoseconds between reports.
     [[nodiscard]] nanoseconds report_every() const noexcept {
       return _report_time_interval;
+    }
+
+    [[nodiscard]] time_point start_time() const noexcept {
+      return _start_time;
+    }
+
+    [[nodiscard]] time_point last_report() const noexcept {
+      return _last_report;
+    }
+
+    // TODO noexcept
+    ReporterV3 const& last_report(time_point val) const {
+      _last_report = val;
+      return *this;
     }
 
     // Not noexcept because std::string::operator= isn't
@@ -234,9 +253,11 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////
 
     std::chrono::nanoseconds                       _run_for;
-    std::chrono::high_resolution_clock::time_point _start_time;
-    mutable std::atomic<state>                     _state;
-    detail::FunctionRef<bool(void)>                _stopper;
+    std::chrono::high_resolution_clock::time_point _start_time;  // TODO remove
+                                                                 // (it's in
+                                                                 // ReporterV3
+    mutable std::atomic<state>      _state;
+    detail::FunctionRef<bool(void)> _stopper;
 
    public:
     ////////////////////////////////////////////////////////////////////////

@@ -296,12 +296,12 @@ namespace libsemigroups {
       if (!report::should_report()) {
         return *std::find_if(cbegin(n), cend(n), pred);
       } else {
-        stats().zero();
-        auto       it   = cbegin(n);
-        auto const last = cend(n);
-
+        stats().zero_stats();
         std::thread               report_thread = launch_report_thread();
         detail::ReportThreadGuard tg(*this, report_thread);
+
+        auto       it   = cbegin(n);
+        auto const last = cend(n);
 
         for (; it != last; ++it) {
           if (pred(*it)) {
@@ -410,17 +410,18 @@ namespace libsemigroups {
     using std::chrono::duration_cast;
     using std::chrono::seconds;
 
-    auto& s          = stats();
-    auto  now        = std::chrono::high_resolution_clock::now();
-    auto  total_time = now - s.start_time;
-    auto  diff_time  = duration_cast<seconds>(now - s.last_report);
+    auto now        = std::chrono::high_resolution_clock::now();
+    auto total_time = now - start_time();
+    auto diff_time  = duration_cast<seconds>(now - last_report());
+
+    auto& s = stats();
 
     report_default(
         "Sims1: found {} congruences in {} ({}/s)!\n",
         detail::group_digits(s.count_now),
         string_time(total_time),
         detail::group_digits((s.count_now - s.count_last) / diff_time.count()));
-    std::swap(now, s.last_report);
+    last_report(now);
     s.count_last = s.count_now;
   }
 
