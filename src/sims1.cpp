@@ -67,7 +67,6 @@ namespace libsemigroups {
         _felsch_graph(p),
         _mtx(),
         _pending(),
-        _stats(&s.stats()),
         _sims1(&s) {
     // n == 0 only when the iterator is cend
     _felsch_graph.number_of_active_nodes(n == 0 ? 0 : 1);
@@ -83,7 +82,6 @@ namespace libsemigroups {
         _felsch_graph(that._felsch_graph),
         _mtx(),
         _pending(that._pending),
-        _stats(that._stats),
         _sims1(that._sims1) {}
 
   // Intentionally don't copy the mutex, it doesn't compile, wouldn't make
@@ -97,7 +95,6 @@ namespace libsemigroups {
         _felsch_graph(std::move(that._felsch_graph)),
         _mtx(),
         _pending(std::move(that._pending)),
-        _stats(that._stats),
         _sims1(that._sims1) {}
 
   // Intentionally don't copy the mutex, it doesn't compile, wouldn't make
@@ -112,7 +109,6 @@ namespace libsemigroups {
     _felsch_graph = that._felsch_graph;
     // keep our own _mtx
     _pending = that._pending;
-    _stats   = that._stats;
     _sims1   = that._sims1;
     return *this;
   }
@@ -130,7 +126,6 @@ namespace libsemigroups {
     _felsch_graph = std::move(that._felsch_graph);
     _pending      = std::move(that._pending);
     // keep our own _mtx
-    _stats = that._stats;
     _sims1 = that._sims1;
     return *this;
   }
@@ -142,7 +137,6 @@ namespace libsemigroups {
     // protected
     std::swap(_felsch_graph, that._felsch_graph);
     std::swap(_pending, that._pending);
-    std::swap(_stats, that._stats);
     std::swap(_sims1, that._sims1);
   }
 
@@ -211,21 +205,22 @@ namespace libsemigroups {
     size_type const M        = _felsch_graph.number_of_active_nodes();
     size_type const N        = _felsch_graph.number_of_edges();
     size_type const num_gens = _felsch_graph.out_degree();
+    auto&           stats    = _sims1->stats();
 
     for (node_type next = current.source; next < M; ++next) {
       for (; a < num_gens; ++a) {
         if (_felsch_graph.target_no_checks(next, a) == UNDEFINED) {
           std::lock_guard<std::mutex> lock(_mtx);
           if (M < _max_num_classes) {
-            ++_stats->total_pending;
+            stats.total_pending++;
             _pending.emplace_back(next, a, M, N, M + 1);
           }
           for (node_type b = M; b-- > _min_target_node;) {
             _pending.emplace_back(next, a, b, N, M);
           }
-          _stats->total_pending += M - _min_target_node;
-          _stats->max_pending = std::max(static_cast<uint64_t>(_pending.size()),
-                                         _stats->max_pending);
+          stats.total_pending += M - _min_target_node;
+          stats.max_pending = std::max(static_cast<uint64_t>(_pending.size()),
+                                       stats.max_pending);
           return false;
         }
       }
@@ -365,7 +360,7 @@ namespace libsemigroups {
     size_type                                     _num_threads;
     uint64_t                                      _report_interval;
     digraph_type                                  _result;
-    Sims1Stats                                    _stats;
+    Sims1Stats                                    _stats;  // TODO remove
 
     void worker_thread(unsigned                                 my_index,
                        std::function<bool(digraph_type const&)> hook) {

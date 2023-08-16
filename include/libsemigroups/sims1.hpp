@@ -796,7 +796,6 @@ namespace libsemigroups {
       size_type _min_target_node;
 
      protected:
-      // short_rules is stored in _felsch_graph
       // TODO ensure that _felsch_graph's settings are
       // properly initialised
       using Definition = std::pair<node_type, label_type>;
@@ -807,7 +806,6 @@ namespace libsemigroups {
       // something for thread_iterator
       std::mutex              _mtx;
       std::vector<PendingDef> _pending;
-      Sims1Stats*             _stats;  // TODO remove
       Sims1 const*            _sims1;
 
       // Push initial PendingDef's into _pending, see tpp
@@ -897,7 +895,7 @@ namespace libsemigroups {
 
       //! No doc
       Sims1Stats& stats() noexcept {
-        return *_stats;
+        return _sims1->stats();
       }
     };  // class iterator_base
 
