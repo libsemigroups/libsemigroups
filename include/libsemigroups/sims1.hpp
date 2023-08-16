@@ -661,29 +661,164 @@ namespace libsemigroups {
     using Sims1Settings<Sims1>::report_interval;
     using Sims1Settings<Sims1>::stats;
 
+    class iterator;  // forward decl
+
+    //! Returns a forward iterator pointing at the first congruence.
+    //!
+    //! Returns a forward iterator pointing to the WordGraph representing the
+    //! first congruence described by Sims1 object with at most \p n classes.
+    //!
+    //! If incremented, the iterator will point to the next such congruence.
+    //! The order which the congruences are returned in is implementation
+    //! specific. Iterators of the type returned by this function are equal
+    //! whenever they point to equal objects. The iterator is exhausted if and
+    //! only if it points to an WordGraph with zero nodes.
+    //!
+    //! The meaning of the WordGraph pointed at by Sims1 iterators depends on
+    //! whether the input is a monoid presentation (i.e.
+    //! Presentation::contains_empty_word() returns \c true) or a semigroup
+    //! presentation. If the input is a monoid presentation for a monoid
+    //! \f$M\f$, then the WordGraph pointed to by an iterator of this type has
+    //! precisely \p n nodes, and the right action of \f$M\f$ on the nodes of
+    //! the digraph is isomorphic to the action of \f$M\f$ on the classes of a
+    //! right congruence.
+    //!
+    //! If the input is a semigroup presentation for a semigroup \f$S\f$, then
+    //! the WordGraph has \p n + 1 nodes, and the right action of \f$S\f$ on
+    //! the nodes \f$\{1, \ldots, n\}\f$ of the WordGraph is isomorphic to the
+    //! action of \f$S\f$ on the classes of a right congruence. It'd probably
+    //! be better in this case if node \f$0\f$ was not included in the output
+    //! WordGraph, but it is required in the implementation of the low-index
+    //! congruence algorithm, and to avoid unnecessary copies, we've left it in
+    //! for the time being. \param n the maximum number of classes in a
+    //! congruence.
+    //!
+    //! \returns
+    //! An iterator \c it of type \c iterator pointing to an WordGraph with at
+    //! most \p n nodes.
+    //!
+    //! \throws LibsemigroupsException if \p n is \c 0.
+    //! \throws LibsemigroupsException if `short_rules()`
+    //! has 0-generators and 0-relations (i.e. it has not
+    //! been initialised).
+    //!
+    //! \warning
+    //! Copying iterators of this type is expensive.  As a consequence, prefix
+    //! incrementing \c ++it the returned  iterator \c it significantly cheaper
+    //! than postfix incrementing \c it++.
+    //!
+    //! \sa
+    //! \ref cend
+    // TODO(Sims1) it'd be good to remove node 0 to avoid confusion. This seems
+    // complicated however, and so isn't done at present.
+    iterator cbegin(size_type n) const;
+
+    //! Returns a forward iterator pointing one beyond the
+    //! last congruence.
+    //!
+    //! Returns a forward iterator pointing to the empty
+    //! WordGraph. If incremented, the returned iterator
+    //! remains valid and continues to point at the empty
+    //! WordGraph.
+    //!
+    //! \param n the maximum number of classes in a
+    //! congruence.
+    //!
+    //! \returns
+    //! An iterator \c it of type \c iterator pointing to
+    //! an WordGraph with at most \p 0 nodes.
+    //!
+    //! \throws LibsemigroupsException if \p n is \c 0.
+    //! \throws LibsemigroupsException if `short_rules()`
+    //! has 0-generators and 0-relations (i.e. it has not
+    //! been initialised).
+    //!
+    //! \warning
+    //! Copying iterators of this type is expensive.  As a
+    //! consequence, prefix incrementing \c ++it the
+    //! returned  iterator \c it significantly cheaper than
+    //! postfix incrementing \c it++.
+    //!
+    //! \sa
+    //! \ref cbegin
+    iterator cend(size_type n) const;
+
+    //! Returns the number of one-sided congruences with up to a given number
+    //! of classes.
+    //!
+    //! This function is similar to `std::distance(begin(n), end(n))` and
+    //! exists to:
+    //! * provide some feedback on the progress of the computation if it runs
+    //!   for more than 1 second.
+    //! * allow for the computation of `std::distance(begin(n), end(n))` to be
+    //!   performed using \ref number_of_threads in parallel.
+    //!
+    //! \param n the maximum number of congruence classes.
+    //!
+    //! \returns A value of type \c uint64_t.
+    //!
+    //! \throws LibsemigroupsException if \p n is \c 0.
+    //! \throws LibsemigroupsException if `short_rules()` has 0-generators and
+    //! 0-relations (i.e. it has not been initialised).
+    uint64_t number_of_congruences(size_type n) const;
+
+    //! Apply the function \p pred to every one-sided
+    //! congruence with at most \p n classes
+    //!
+    //! This function is similar to
+    //! `std::for_each(begin(n), end(n), pred)` and exists
+    //! to:
+    //! * provide some feedback on the progress of the
+    //! computation if it runs for more than 1 second.
+    //! * allow for the computation of
+    //! `std::for_each(begin(n), end(n), pred)` to be
+    //! performed using \ref number_of_threads in parallel.
+    //!
+    //! \param n the maximum number of congruence classes.
+    //! \param pred the predicate applied to every
+    //! congruence found.
+    //!
+    //! \returns (None)
+    //!
+    //! \throws LibsemigroupsException if \p n is \c 0.
+    //! \throws LibsemigroupsException if `short_rules()`
+    //! has 0-generators and 0-relations (i.e. it has not
+    //! been initialised).
+    void for_each(size_type                                n,
+                  std::function<void(digraph_type const&)> pred) const;
+
+    //! Apply the function \p pred to every one-sided
+    //! congruence with at most \p n classes, until it
+    //! returns \c true.
+    //!
+    //! This function is similar to `std::find_if(begin(n),
+    //! end(n), pred)` and exists to:
+    //! * provide some feedback on the progress of the
+    //! computation if it runs for more than 1 second.
+    //! * allow for the computation of
+    //! `std::find_if(begin(n), end(n), pred)` to be
+    //! performed using \ref number_of_threads in parallel.
+    //!
+    //! \param n the maximum number of congruence classes.
+    //! \param pred the predicate applied to every
+    //! congruence found.
+    //!
+    //! \returns The first congruence whose WordGraph for
+    //! which \p pred returns \c true.
+    //!
+    //! \throws LibsemigroupsException if \p n is \c 0.
+    //! \throws LibsemigroupsException if `short_rules()`
+    //! has 0-generators and 0-relations (i.e. it has not
+    //! been initialised).
+    digraph_type find_if(size_type                                n,
+                         std::function<bool(digraph_type const&)> pred) const;
+
    private:
-    struct PendingDef {
-      PendingDef() = default;
-
-      PendingDef(node_type   s,
-                 letter_type g,
-                 node_type   t,
-                 size_type   e,
-                 size_type   n) noexcept
-          : source(s), generator(g), target(t), num_edges(e), num_nodes(n) {}
-      node_type   source;
-      letter_type generator;
-      node_type   target;
-      size_type   num_edges;  // Number of edges in the graph when
-                              // *this was added to the stack
-      size_type num_nodes;    // Number of nodes in the graph
-                              // after the definition is made
-    };
-
     // This class collects some common aspects of the iterator and
     // thread_iterator nested classes. The mutex does nothing for <iterator>
     // and is an actual std::mutex for <thread_iterator>.
-    // TODO move to cpp file
+    struct PendingDef;
+
     class iterator_base {
      public:
       //! No doc
@@ -772,7 +907,7 @@ namespace libsemigroups {
       iterator_base& operator=(iterator_base&& that);
 
       //! No doc
-      virtual ~iterator_base() = default;
+      ~iterator_base();
 
       //! No doc
       bool operator==(iterator_base const& that) const noexcept {
@@ -804,95 +939,11 @@ namespace libsemigroups {
     };
 
    public:
-    class iterator;  // forward decl
-
-    //! Returns a forward iterator pointing at the first congruence.
-    //!
-    //! Returns a forward iterator pointing to the WordGraph representing the
-    //! first congruence described by Sims1 object with at most \p n classes.
-    //!
-    //! If incremented, the iterator will point to the next such congruence.
-    //! The order which the congruences are returned in is implementation
-    //! specific. Iterators of the type returned by this function are equal
-    //! whenever they point to equal objects. The iterator is exhausted if and
-    //! only if it points to an WordGraph with zero nodes.
-    //!
-    //! The meaning of the WordGraph pointed at by Sims1 iterators depends on
-    //! whether the input is a monoid presentation (i.e.
-    //! Presentation::contains_empty_word() returns \c true) or a semigroup
-    //! presentation. If the input is a monoid presentation for a monoid
-    //! \f$M\f$, then the WordGraph pointed to by an iterator of this type has
-    //! precisely \p n nodes, and the right action of \f$M\f$ on the nodes of
-    //! the digraph is isomorphic to the action of \f$M\f$ on the classes of a
-    //! right congruence.
-    //!
-    //! If the input is a semigroup presentation for a semigroup \f$S\f$, then
-    //! the WordGraph has \p n + 1 nodes, and the right action of \f$S\f$ on
-    //! the nodes \f$\{1, \ldots, n\}\f$ of the WordGraph is isomorphic to the
-    //! action of \f$S\f$ on the classes of a right congruence. It'd probably
-    //! be better in this case if node \f$0\f$ was not included in the output
-    //! WordGraph, but it is required in the implementation of the low-index
-    //! congruence algorithm, and to avoid unnecessary copies, we've left it in
-    //! for the time being. \param n the maximum number of classes in a
-    //! congruence.
-    //!
-    //! \returns
-    //! An iterator \c it of type \c iterator pointing to an WordGraph with at
-    //! most \p n nodes.
-    //!
-    //! \throws LibsemigroupsException if \p n is \c 0.
-    //! \throws LibsemigroupsException if `short_rules()`
-    //! has 0-generators and 0-relations (i.e. it has not
-    //! been initialised).
-    //!
-    //! \warning
-    //! Copying iterators of this type is expensive.  As a consequence, prefix
-    //! incrementing \c ++it the returned  iterator \c it significantly cheaper
-    //! than postfix incrementing \c it++.
-    //!
-    //! \sa
-    //! \ref cend
-    // TODO(Sims1) it'd be good to remove node 0 to avoid confusion. This seems
-    // complicated however, and so isn't done at present.
-    iterator cbegin(size_type n) const;
-
-    //! Returns a forward iterator pointing one beyond the
-    //! last congruence.
-    //!
-    //! Returns a forward iterator pointing to the empty
-    //! WordGraph. If incremented, the returned iterator
-    //! remains valid and continues to point at the empty
-    //! WordGraph.
-    //!
-    //! \param n the maximum number of classes in a
-    //! congruence.
-    //!
-    //! \returns
-    //! An iterator \c it of type \c iterator pointing to
-    //! an WordGraph with at most \p 0 nodes.
-    //!
-    //! \throws LibsemigroupsException if \p n is \c 0.
-    //! \throws LibsemigroupsException if `short_rules()`
-    //! has 0-generators and 0-relations (i.e. it has not
-    //! been initialised).
-    //!
-    //! \warning
-    //! Copying iterators of this type is expensive.  As a
-    //! consequence, prefix incrementing \c ++it the
-    //! returned  iterator \c it significantly cheaper than
-    //! postfix incrementing \c it++.
-    //!
-    //! \sa
-    //! \ref cbegin
-    iterator cend(size_type n) const;
-
-   public:
     //! The return type of \ref cbegin and \ref cend.
     //!
     //! This is a forward iterator values of this type are
     //! expensive to copy due to their internal state, and
     //! prefix increment should be preferred to postfix.
-    // TODO Move to cpp?
     class iterator : public iterator_base {
       using iterator_base::init;
       using iterator_base::try_define;
@@ -952,76 +1003,6 @@ namespace libsemigroups {
       using iterator_base::swap;
     };  // class iterator
 
-    //! Returns the number of one-sided congruences with up to a given number
-    //! of classes.
-    //!
-    //! This function is similar to `std::distance(begin(n), end(n))` and
-    //! exists to:
-    //! * provide some feedback on the progress of the computation if it runs
-    //!   for more than 1 second.
-    //! * allow for the computation of `std::distance(begin(n), end(n))` to be
-    //!   performed using \ref number_of_threads in parallel.
-    //!
-    //! \param n the maximum number of congruence classes.
-    //!
-    //! \returns A value of type \c uint64_t.
-    //!
-    //! \throws LibsemigroupsException if \p n is \c 0.
-    //! \throws LibsemigroupsException if `short_rules()` has 0-generators and
-    //! 0-relations (i.e. it has not been initialised).
-    uint64_t number_of_congruences(size_type n) const;
-
-    //! Apply the function \p pred to every one-sided
-    //! congruence with at most \p n classes
-    //!
-    //! This function is similar to
-    //! `std::for_each(begin(n), end(n), pred)` and exists
-    //! to:
-    //! * provide some feedback on the progress of the
-    //! computation if it runs for more than 1 second.
-    //! * allow for the computation of
-    //! `std::for_each(begin(n), end(n), pred)` to be
-    //! performed using \ref number_of_threads in parallel.
-    //!
-    //! \param n the maximum number of congruence classes.
-    //! \param pred the predicate applied to every
-    //! congruence found.
-    //!
-    //! \returns (None)
-    //!
-    //! \throws LibsemigroupsException if \p n is \c 0.
-    //! \throws LibsemigroupsException if `short_rules()`
-    //! has 0-generators and 0-relations (i.e. it has not
-    //! been initialised).
-    void for_each(size_type                                n,
-                  std::function<void(digraph_type const&)> pred) const;
-
-    //! Apply the function \p pred to every one-sided
-    //! congruence with at most \p n classes, until it
-    //! returns \c true.
-    //!
-    //! This function is similar to `std::find_if(begin(n),
-    //! end(n), pred)` and exists to:
-    //! * provide some feedback on the progress of the
-    //! computation if it runs for more than 1 second.
-    //! * allow for the computation of
-    //! `std::find_if(begin(n), end(n), pred)` to be
-    //! performed using \ref number_of_threads in parallel.
-    //!
-    //! \param n the maximum number of congruence classes.
-    //! \param pred the predicate applied to every
-    //! congruence found.
-    //!
-    //! \returns The first congruence whose WordGraph for
-    //! which \p pred returns \c true.
-    //!
-    //! \throws LibsemigroupsException if \p n is \c 0.
-    //! \throws LibsemigroupsException if `short_rules()`
-    //! has 0-generators and 0-relations (i.e. it has not
-    //! been initialised).
-    digraph_type find_if(size_type                                n,
-                         std::function<bool(digraph_type const&)> pred) const;
-
    private:
     using time_point = std::chrono::high_resolution_clock::time_point;
 
@@ -1045,6 +1026,7 @@ namespace libsemigroups {
     static void final_report_number_of_congruences(time_point& start_time,
                                                    uint64_t    count);
 
+    // Nested classes
     class thread_iterator;
     class thread_runner;
   };

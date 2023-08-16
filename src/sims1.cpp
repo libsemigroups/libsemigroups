@@ -31,6 +31,28 @@ namespace libsemigroups {
     return os;
   }
 
+  ////////////////////////////////////////////////////////////////////////
+  // PendingDef
+  ////////////////////////////////////////////////////////////////////////
+
+  struct Sims1::PendingDef {
+    PendingDef() = default;
+
+    PendingDef(node_type   s,
+               letter_type g,
+               node_type   t,
+               size_type   e,
+               size_type   n) noexcept
+        : source(s), generator(g), target(t), num_edges(e), num_nodes(n) {}
+    node_type   source;
+    letter_type generator;
+    node_type   target;
+    size_type   num_edges;  // Number of edges in the graph when
+                            // *this was added to the stack
+    size_type num_nodes;    // Number of nodes in the graph
+                            // after the definition is made
+  };
+
   ///////////////////////////////////////////////////////////////////////////////
   // thread_iterator
   ///////////////////////////////////////////////////////////////////////////////
@@ -248,6 +270,8 @@ namespace libsemigroups {
       return _stats;
     }
   };
+
+  Sims1::iterator_base::~iterator_base() = default;
 
   ////////////////////////////////////////////////////////////////////////
   // Sims1
