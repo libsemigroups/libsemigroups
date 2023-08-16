@@ -582,6 +582,7 @@ libsemigroups_la_SOURCES += src/obvinf.cpp
 libsemigroups_la_SOURCES += src/pbr.cpp
 libsemigroups_la_SOURCES += src/presentation.cpp
 libsemigroups_la_SOURCES += src/runner.cpp
+libsemigroups_la_SOURCES += src/sims1.cpp
 libsemigroups_la_SOURCES += src/stephen.cpp
 libsemigroups_la_SOURCES += src/to-froidure-pin.cpp
 libsemigroups_la_SOURCES += src/to-knuth-bendix.cpp

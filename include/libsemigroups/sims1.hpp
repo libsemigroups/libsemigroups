@@ -536,6 +536,7 @@ namespace libsemigroups {
     Sims1Settings& split_at(size_t val);
 
    protected:
+    // TODO remove
     void validate_presentation(Presentation<word_type> const& arg,
                                Presentation<word_type> const& existing);
   };
@@ -557,13 +558,11 @@ namespace libsemigroups {
   //! number of classes. An iterator returned by \ref cbegin points at an
   //! WordGraph instance containing the action of the semigroup or monoid
   //! on the classes of a congruence.
-  // TODO(v3) remove the template T here
-  template <typename T>
-  class Sims1 : public Sims1Settings<Sims1<T>>, public ReporterV3 {
+  class Sims1 : public Sims1Settings<Sims1>, public ReporterV3 {
    public:
     //! Type for the nodes in the associated WordGraph
     //! objects.
-    using node_type  = T;
+    using node_type  = uint32_t;
     using label_type = typename WordGraph<node_type>::label_type;
 
     //! Type for letters in the underlying presentation.
@@ -681,10 +680,10 @@ namespace libsemigroups {
                               // after the definition is made
     };
 
-    // This class collects some common aspects of the
-    // iterator and thread_iterator nested classes. The
-    // Mutex does nothing for <iterator> and is an actual
-    // std::mutex for <thread_iterator>.
+    // This class collects some common aspects of the iterator and
+    // thread_iterator nested classes. The mutex does nothing for <iterator>
+    // and is an actual std::mutex for <thread_iterator>.
+    // TODO move to cpp file
     class iterator_base {
      public:
       //! No doc
@@ -805,11 +804,95 @@ namespace libsemigroups {
     };
 
    public:
+    class iterator;  // forward decl
+
+    //! Returns a forward iterator pointing at the first congruence.
+    //!
+    //! Returns a forward iterator pointing to the WordGraph representing the
+    //! first congruence described by Sims1 object with at most \p n classes.
+    //!
+    //! If incremented, the iterator will point to the next such congruence.
+    //! The order which the congruences are returned in is implementation
+    //! specific. Iterators of the type returned by this function are equal
+    //! whenever they point to equal objects. The iterator is exhausted if and
+    //! only if it points to an WordGraph with zero nodes.
+    //!
+    //! The meaning of the WordGraph pointed at by Sims1 iterators depends on
+    //! whether the input is a monoid presentation (i.e.
+    //! Presentation::contains_empty_word() returns \c true) or a semigroup
+    //! presentation. If the input is a monoid presentation for a monoid
+    //! \f$M\f$, then the WordGraph pointed to by an iterator of this type has
+    //! precisely \p n nodes, and the right action of \f$M\f$ on the nodes of
+    //! the digraph is isomorphic to the action of \f$M\f$ on the classes of a
+    //! right congruence.
+    //!
+    //! If the input is a semigroup presentation for a semigroup \f$S\f$, then
+    //! the WordGraph has \p n + 1 nodes, and the right action of \f$S\f$ on
+    //! the nodes \f$\{1, \ldots, n\}\f$ of the WordGraph is isomorphic to the
+    //! action of \f$S\f$ on the classes of a right congruence. It'd probably
+    //! be better in this case if node \f$0\f$ was not included in the output
+    //! WordGraph, but it is required in the implementation of the low-index
+    //! congruence algorithm, and to avoid unnecessary copies, we've left it in
+    //! for the time being. \param n the maximum number of classes in a
+    //! congruence.
+    //!
+    //! \returns
+    //! An iterator \c it of type \c iterator pointing to an WordGraph with at
+    //! most \p n nodes.
+    //!
+    //! \throws LibsemigroupsException if \p n is \c 0.
+    //! \throws LibsemigroupsException if `short_rules()`
+    //! has 0-generators and 0-relations (i.e. it has not
+    //! been initialised).
+    //!
+    //! \warning
+    //! Copying iterators of this type is expensive.  As a consequence, prefix
+    //! incrementing \c ++it the returned  iterator \c it significantly cheaper
+    //! than postfix incrementing \c it++.
+    //!
+    //! \sa
+    //! \ref cend
+    // TODO(Sims1) it'd be good to remove node 0 to avoid confusion. This seems
+    // complicated however, and so isn't done at present.
+    iterator cbegin(size_type n) const;
+
+    //! Returns a forward iterator pointing one beyond the
+    //! last congruence.
+    //!
+    //! Returns a forward iterator pointing to the empty
+    //! WordGraph. If incremented, the returned iterator
+    //! remains valid and continues to point at the empty
+    //! WordGraph.
+    //!
+    //! \param n the maximum number of classes in a
+    //! congruence.
+    //!
+    //! \returns
+    //! An iterator \c it of type \c iterator pointing to
+    //! an WordGraph with at most \p 0 nodes.
+    //!
+    //! \throws LibsemigroupsException if \p n is \c 0.
+    //! \throws LibsemigroupsException if `short_rules()`
+    //! has 0-generators and 0-relations (i.e. it has not
+    //! been initialised).
+    //!
+    //! \warning
+    //! Copying iterators of this type is expensive.  As a
+    //! consequence, prefix incrementing \c ++it the
+    //! returned  iterator \c it significantly cheaper than
+    //! postfix incrementing \c it++.
+    //!
+    //! \sa
+    //! \ref cbegin
+    iterator cend(size_type n) const;
+
+   public:
     //! The return type of \ref cbegin and \ref cend.
     //!
     //! This is a forward iterator values of this type are
     //! expensive to copy due to their internal state, and
     //! prefix increment should be preferred to postfix.
+    // TODO Move to cpp?
     class iterator : public iterator_base {
       using iterator_base::init;
       using iterator_base::try_define;
@@ -869,138 +952,23 @@ namespace libsemigroups {
       using iterator_base::swap;
     };  // class iterator
 
-    //! Returns a forward iterator pointing at the first
-    //! congruence.
+    //! Returns the number of one-sided congruences with up to a given number
+    //! of classes.
     //!
-    //! Returns a forward iterator pointing to the
-    //! WordGraph representing the first congruence
-    //! described by Sims1 object with at most \p n
-    //! classes.
-    //!
-    //! If incremented, the iterator will point to the next
-    //! such congruence. The order which the congruences
-    //! are returned in is implementation specific.
-    //! Iterators of the type returned by this function are
-    //! equal whenever they point to equal objects. The
-    //! iterator is exhausted if and only if it points to
-    //! an WordGraph with zero nodes.
-    //!
-    //! The meaning of the WordGraph pointed at by Sims1
-    //! iterators depends on whether the input is a monoid
-    //! presentation (i.e.
-    //! Presentation::contains_empty_word() returns \c
-    //! true) or a semigroup presentation. If the input is
-    //! a monoid presentation for a monoid \f$M\f$, then
-    //! the WordGraph pointed to by an iterator of this
-    //! type has precisely \p n nodes, and the right action
-    //! of \f$M\f$ on the nodes of the digraph is
-    //! isomorphic to the action of \f$M\f$ on the classes
-    //! of a right congruence.
-    //!
-    //! If the input is a semigroup presentation for a
-    //! semigroup \f$S\f$, then the WordGraph has \p n + 1
-    //! nodes, and the right action of \f$S\f$ on the nodes
-    //! \f$\{1, \ldots, n\}\f$ of the WordGraph is
-    //! isomorphic to the action of \f$S\f$ on the classes
-    //! of a right congruence. It'd probably be better in
-    //! this case if node \f$0\f$ was not included in the
-    //! output WordGraph, but it is required in the
-    //! implementation of the low-index congruence
-    //! algorithm, and to avoid unnecessary copies, we've
-    //! left it in for the time being. \param n the maximum
-    //! number of classes in a congruence.
-    //!
-    //! \returns
-    //! An iterator \c it of type \c iterator pointing to
-    //! an WordGraph with at most \p n nodes.
-    //!
-    //! \throws LibsemigroupsException if \p n is \c 0.
-    //! \throws LibsemigroupsException if `short_rules()`
-    //! has 0-generators and 0-relations (i.e. it has not
-    //! been initialised).
-    //!
-    //! \warning
-    //! Copying iterators of this type is expensive.  As a
-    //! consequence, prefix incrementing \c ++it the
-    //! returned  iterator \c it significantly cheaper than
-    //! postfix incrementing \c it++.
-    //!
-    //! \sa
-    //! \ref cend
-    // TODO(Sims1) it'd be good to remove node 0 to avoid
-    // confusion. This seems complicated however, and so
-    // isn't done at present.
-    iterator cbegin(size_type n) const {
-      if (n == 0) {
-        LIBSEMIGROUPS_EXCEPTION("the argument (size_type) must be non-zero");
-      } else if (short_rules().rules.empty()
-                 && short_rules().alphabet().empty()) {
-        LIBSEMIGROUPS_EXCEPTION("the short_rules() must be defined before "
-                                "calling this function");
-      }
-      return iterator(short_rules(), extra(), long_rules(), n);
-    }
-
-    //! Returns a forward iterator pointing one beyond the
-    //! last congruence.
-    //!
-    //! Returns a forward iterator pointing to the empty
-    //! WordGraph. If incremented, the returned iterator
-    //! remains valid and continues to point at the empty
-    //! WordGraph.
-    //!
-    //! \param n the maximum number of classes in a
-    //! congruence.
-    //!
-    //! \returns
-    //! An iterator \c it of type \c iterator pointing to
-    //! an WordGraph with at most \p 0 nodes.
-    //!
-    //! \throws LibsemigroupsException if \p n is \c 0.
-    //! \throws LibsemigroupsException if `short_rules()`
-    //! has 0-generators and 0-relations (i.e. it has not
-    //! been initialised).
-    //!
-    //! \warning
-    //! Copying iterators of this type is expensive.  As a
-    //! consequence, prefix incrementing \c ++it the
-    //! returned  iterator \c it significantly cheaper than
-    //! postfix incrementing \c it++.
-    //!
-    //! \sa
-    //! \ref cbegin
-    iterator cend(size_type n) const {
-      if (n == 0) {
-        LIBSEMIGROUPS_EXCEPTION("the argument (size_type) must be non-zero");
-      } else if (short_rules().rules.empty()
-                 && short_rules().alphabet().empty()) {
-        LIBSEMIGROUPS_EXCEPTION("the short_rules() must be defined before "
-                                "calling this function");
-      }
-      return iterator(short_rules(), extra(), long_rules(), 0);
-    }
-
-    //! Returns the number of one-sided congruences with up
-    //! to a given number of classes.
-    //!
-    //! This function is similar to
-    //! `std::distance(begin(n), end(n))` and exists to:
-    //! * provide some feedback on the progress of the
-    //! computation if it runs for more than 1 second.
-    //! * allow for the computation of
-    //! `std::distance(begin(n), end(n))` to be performed
-    //! using \ref number_of_threads in parallel.
+    //! This function is similar to `std::distance(begin(n), end(n))` and
+    //! exists to:
+    //! * provide some feedback on the progress of the computation if it runs
+    //!   for more than 1 second.
+    //! * allow for the computation of `std::distance(begin(n), end(n))` to be
+    //!   performed using \ref number_of_threads in parallel.
     //!
     //! \param n the maximum number of congruence classes.
     //!
     //! \returns A value of type \c uint64_t.
     //!
     //! \throws LibsemigroupsException if \p n is \c 0.
-    //! \throws LibsemigroupsException if `short_rules()`
-    //! has 0-generators and 0-relations (i.e. it has not
-    //! been initialised).
-    // TODO(v3): this should be in the sims1 helper
-    // namespace
+    //! \throws LibsemigroupsException if `short_rules()` has 0-generators and
+    //! 0-relations (i.e. it has not been initialised).
     uint64_t number_of_congruences(size_type n) const;
 
     //! Apply the function \p pred to every one-sided
@@ -1025,8 +993,6 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if `short_rules()`
     //! has 0-generators and 0-relations (i.e. it has not
     //! been initialised).
-    // TODO(v3): this should be in the sims1 helper
-    // namespace
     void for_each(size_type                                n,
                   std::function<void(digraph_type const&)> pred) const;
 
@@ -1053,8 +1019,6 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if `short_rules()`
     //! has 0-generators and 0-relations (i.e. it has not
     //! been initialised).
-    // TODO(v3): this should be in the sims1 helper
-    // namespace
     digraph_type find_if(size_type                                n,
                          std::function<bool(digraph_type const&)> pred) const;
 
@@ -1085,7 +1049,7 @@ namespace libsemigroups {
     class thread_runner;
   };
 
-  inline std::ostream& operator<<(std::ostream& os, Sims1Stats const& stats);
+  std::ostream& operator<<(std::ostream& os, Sims1Stats const& stats);
 
   //! Defined in ``sims1.hpp``.
   //!
@@ -1261,8 +1225,7 @@ namespace libsemigroups {
     //! \returns A value of type `WordGraph`.
     //!
     //! \exceptions \no_libsemigroups_except
-    template <typename T = uint32_t>
-    WordGraph<T> digraph() const;
+    Sims1::digraph_type digraph() const;
 
     using Sims1Settings<RepOrc>::short_rules;
     using Sims1Settings<RepOrc>::long_rules;
@@ -1326,48 +1289,40 @@ namespace libsemigroups {
 
     //! Get the digraph.
     //!
-    //! This function attempts to find a right congruence,
-    //! represented as an WordGraph, with the minimum
-    //! possible number of nodes such that the action of
-    //! the semigroup or monoid defined by the presentation
-    //! consisting of its \ref short_rules and \ref
-    //! long_rules on the nodes of the WordGraph
-    //! corresponds to a semigroup of size \ref
-    //! target_size.
+    //! This function attempts to find a right congruence, represented as an
+    //! WordGraph, with the minimum possible number of nodes such that the
+    //! action of the semigroup or monoid defined by the presentation
+    //! consisting of its \ref short_rules and \ref long_rules on the nodes of
+    //! the WordGraph corresponds to a semigroup of size \ref target_size.
     //!
-    //! If no such WordGraph can be found, then an empty
-    //! WordGraph is returned (with `0` nodes and `0`
-    //! edges).
+    //! If no such WordGraph can be found, then an empty WordGraph is returned
+    //! (with `0` nodes and `0` edges).
     //!
-    //! The algorithm implemented by this function
-    //! repeatedly runs: \code RepOrc(*this)
+    //! The algorithm implemented by this function repeatedly runs:
+    //! \code RepOrc(*this)
     //!     .min_nodes(1)
     //!     .max_nodes(best)
     //!     .target_size(target_size())
     //!     .digraph();
     //! \endcode
-    //! where `best` is initially \ref target_size, until
-    //! the returned WordGraph is empty, and then the
-    //! penultimate WordGraph is returned (if any).
+    //! where `best` is initially \ref target_size, until the returned
+    //! WordGraph is empty, and then the penultimate WordGraph is returned (if
+    //! any).
     //!
-    //! \warning The return value of this function is
-    //! recomputed every time it is called.
+    //! \warning The return value of this function is recomputed every time it
+    //! is called.
     //!
-    //! \warning If the return value of \ref
-    //! number_of_threads is greater than \c 1, then the
-    //! value returned by this function is
-    //! non-deterministic, and may vary even for the same
-    //! parameters.
+    //! \warning If the return value of \ref number_of_threads is greater than
+    //! \c 1, then the value returned by this function is non-deterministic,
+    //! and may vary even for the same parameters.
     //!
-    //! \tparam T the type of the nodes in the returned
-    //! digraph. \param (None) this function has no
-    //! parameters.
+    //! \tparam T the type of the nodes in the returned digraph. \param (None)
+    //! this function has no parameters.
     //!
     //! \returns A value of type `WordGraph`.
     //!
     //! \exceptions \no_libsemigroups_except
-    template <typename T = uint32_t>
-    WordGraph<T> digraph() const;
+    Sims1::digraph_type digraph() const;
   };
 
 }  // namespace libsemigroups
