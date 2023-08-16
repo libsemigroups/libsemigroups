@@ -156,7 +156,9 @@ namespace libsemigroups {
     size_t                  _num_threads;
     size_t                  _report_interval;
     Presentation<word_type> _shorts;
-    mutable Sims1Stats      _stats;
+    // TODO remove this from here put it into RepOrc and MinimalRepOrc, since I
+    // think it's unused in Sims1 itself?
+    mutable Sims1Stats _stats;
 
    public:
     //! No doc
@@ -461,12 +463,10 @@ namespace libsemigroups {
     //! Returns a const reference to the current stats
     //! object.
     //!
-    //! The value returned by this function is a
-    //! `Sims1Stats` object which contains some statistics
-    //! related to the current `Sims1` instance and any
-    //! part of the depth first search already conducted.
-    //! If reporting is disabled, then no statistics are
-    //! collected. IXME
+    //! The value returned by this function is a `Sims1Stats` object which
+    //! contains some statistics related to the current `Sims1` instance and
+    //! any part of the depth first search already conducted. If reporting is
+    //! disabled, then no statistics are collected. FIXME
     //!
     //! \param (None) this function has no parameters.
     //!
@@ -936,14 +936,14 @@ namespace libsemigroups {
       Sims1Stats& stats() noexcept {
         return _stats;
       }
-    };
+    };  // class iterator_base
 
    public:
     //! The return type of \ref cbegin and \ref cend.
     //!
-    //! This is a forward iterator values of this type are
-    //! expensive to copy due to their internal state, and
-    //! prefix increment should be preferred to postfix.
+    //! This is a forward iterator values of this type are expensive to copy
+    //! due to their internal state, and prefix increment should be preferred
+    //! to postfix.
     class iterator : public iterator_base {
       using iterator_base::init;
       using iterator_base::try_define;
@@ -1040,8 +1040,7 @@ namespace libsemigroups {
   //! the semigroup or monoid defined by the presentation consisting of its
   //! \ref short_rules and \ref long_rules with the following properties:
   //! * the transformation semigroup defined by the WordGraph has size
-  //! \ref
-  //!   target_size;
+  //!   \ref target_size;
   //! * the number of nodes in the WordGraph is at least \ref min_nodes
   //!   and at most \ref max_nodes.
   //!
