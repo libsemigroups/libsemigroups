@@ -196,8 +196,21 @@ namespace libsemigroups {
         // process_definitions
         return false;
       }
-      // TODO add checking that some pairs of words are not in the congruence
-      // also
+
+      first          = _sims1->exclude().cbegin();
+      last           = _sims1->exclude().cend();
+      node_type root = 0;
+
+      for (auto it = first; it != last; it += 2) {
+        auto l = word_graph::follow_path_no_checks(_felsch_graph, root, *it);
+        if (l != UNDEFINED) {
+          auto r = word_graph::follow_path_no_checks(
+              _felsch_graph, root, *(it + 1));
+          if (l == r) {
+            return false;
+          }
+        }
+      }
     }
 
     letter_type     a        = current.generator + 1;

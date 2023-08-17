@@ -139,9 +139,7 @@ namespace libsemigroups {
     size_t                  _num_threads;
     size_t                  _report_interval;
     Presentation<word_type> _shorts;
-    // TODO remove this from here put it into RepOrc and MinimalRepOrc, since I
-    // think it's unused in Sims1 itself?
-    mutable Sims1Stats _stats;
+    mutable Sims1Stats      _stats;
 
    public:
     //! No doc
@@ -418,14 +416,44 @@ namespace libsemigroups {
     template <typename P>
     Subclass& include(P const& p);
 
+    Subclass& clear_include() {
+      _include.init();
+      return static_cast<Subclass&>(*this);
+    }
+
+    // TODO to tpp
     template <typename Iterator>
     Subclass& exclude(Iterator first, Iterator last) {
-      // TODO validate first to last
+      if (std::distance(first, last) % 2 != 0) {
+        LIBSEMIGROUPS_EXCEPTION("TODO");
+      }
+      std::for_each(first, last, std::mem_fn(presentation().validate_word));
       _exclude.assign(first, last);
+      return static_cast<Subclass&>(*this);
+    }
+
+    template <typename Container>
+    Subclass& exclude(Container const& c) {
+      _exclude.assign(std::begin(c), std::end(c));
+      return static_cast<Subclass&>(*this);
+    }
+
+    // TODO include analogue
+    Subclass& exclude(word_type const& lhs, word_type const& rhs) {
+      presentation().validate_word(lhs.cbegin(), lhs.cend());
+      presentation().validate_word(rhs.cbegin(), rhs.cend());
+      _exclude.push_back(lhs);
+      _exclude.push_back(rhs);
+      return static_cast<Subclass&>(*this);
     }
 
     std::vector<word_type> const& exclude() const noexcept {
       return _exclude;
+    }
+
+    Subclass& clear_exclude() {
+      _exclude.clear();
+      return static_cast<Subclass&>(*this);
     }
 
     //! Returns a const reference to the current stats

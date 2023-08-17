@@ -438,6 +438,7 @@ namespace libsemigroups {
                           "012",
                           "symmetric_inverse_monoid(4)",
                           "[extreme][low-index]") {
+    using namespace literals;
     auto rg = ReportGuard(true);
     auto p  = rook_monoid(4, 1);
     presentation::remove_duplicate_rules(p);
@@ -451,7 +452,9 @@ namespace libsemigroups {
     REQUIRE(presentation::longest_rule_length(p) == 8);
 
     Sims1 C(congruence_kind::right);
-    C.short_rules(p);
+    C.short_rules(p).exclude(""_w, 11_w);
+    REQUIRE(C.number_of_threads(2).number_of_congruences(209) == 0);
+    C.clear_exclude();
     REQUIRE(C.number_of_threads(2).number_of_congruences(209) == 195'709);
   }
 
@@ -534,6 +537,10 @@ namespace libsemigroups {
     REQUIRE(S.number_of_congruences(5) == 2);
     check_include(congruence_kind::right, p, e, 5);
     check_include(congruence_kind::left, p, e, 5);
+    S.exclude(e.rules).clear_include();
+    REQUIRE(S.number_of_congruences(5) == 4);
+    S.clear_exclude();
+    REQUIRE(S.number_of_congruences(5) == 6);
   }
 
   LIBSEMIGROUPS_TEST_CASE("Sims1",
@@ -1141,7 +1148,7 @@ namespace libsemigroups {
     }
   }
 
-  // Takes about 30s
+  // Takes about 4s
   LIBSEMIGROUPS_TEST_CASE("Sims1",
                           "037",
                           "rectangular_band(9, 2)",
@@ -2022,7 +2029,7 @@ namespace libsemigroups {
 
     auto p = temperley_lieb_monoid(9);
     // There are no relations containing the empty word so we just manually
-    // add it.
+    // add it. FIXME there should be!
     p.contains_empty_word(true);
     RepOrc orc;
     // Check bad input
@@ -2047,6 +2054,7 @@ namespace libsemigroups {
     REQUIRE(orc.target_size() == 4'862);
     REQUIRE(orc.short_rules().rules.size() == 128);
     REQUIRE(orc.long_rules().rules.size() == 0);
+    REQUIRE(d.number_of_nodes() == 91);
   }
 
   LIBSEMIGROUPS_TEST_CASE("Sims1",
@@ -2651,10 +2659,19 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Sims1", "088", "Brauer monoid", "[extreme][sims1]") {
+    using namespace literals;
+    auto p = brauer_monoid(5);
+    REQUIRE(p.alphabet() == 012_w);
     MinimalRepOrc orc;
     auto          d = orc.short_rules(brauer_monoid(5))
                  .target_size(945)
                  .number_of_threads(1)
+                 // The following are pairs of words in the GAP BrauerMonoid
+                 // that generate the minimal 2-sided congruences of
+                 // BrauerMonoid(5), the generating sets are not the same
+                 // though and so this doesn't work.
+                 // .exclude(201002_w, 00201002_w)
+                 // .exclude(00102002_w, 001020020_w)
                  .digraph();
 
     REQUIRE(d.number_of_nodes() == 3);
