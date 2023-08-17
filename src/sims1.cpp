@@ -187,8 +187,8 @@ namespace libsemigroups {
       _felsch_graph.set_target_no_checks(
           current.source, current.generator, current.target);
 
-      auto first = _sims1->include().rules.cbegin();
-      auto last  = _sims1->include().rules.cend();
+      auto first = _sims1->include().cbegin();
+      auto last  = _sims1->include().cend();
       if (!felsch_graph::make_compatible<RegisterDefs>(
               _felsch_graph, 0, 1, first, last)
           || !_felsch_graph.process_definitions(start)) {

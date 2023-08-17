@@ -65,7 +65,7 @@ namespace libsemigroups {
     }
     auto normal_p = to_presentation<word_type>(p);
     validate_presentation(normal_p, long_rules());
-    validate_presentation(normal_p, include());
+    // TODO validate against include and exclude
     _shorts = normal_p;
     return static_cast<T&>(*this);
   }
@@ -81,23 +81,23 @@ namespace libsemigroups {
     // alphabet.
     auto normal_p = to_presentation<word_type>(p);
     validate_presentation(normal_p, short_rules());
-    validate_presentation(normal_p, include());
+    // TODO validate against include and exclude
     _longs = normal_p;
     return static_cast<T&>(*this);
   }
 
-  template <typename T>
-  template <typename P>
-  T& Sims1Settings<T>::include(P const& p) {
-    static_assert(std::is_base_of<PresentationBase, P>::value,
-                  "the template parameter P must be derived from "
-                  "PresentationBase");
-    auto normal_p = to_presentation<word_type>(p);
-    validate_presentation(normal_p, short_rules());
-    validate_presentation(normal_p, long_rules());
-    _include = normal_p;
-    return static_cast<T&>(*this);
-  }
+  // template <typename T>
+  // template <typename P>
+  // T& Sims1Settings<T>::include(P const& p) {
+  //   static_assert(std::is_base_of<PresentationBase, P>::value,
+  //                 "the template parameter P must be derived from "
+  //                 "PresentationBase");
+  //   auto normal_p = to_presentation<word_type>(p);
+  //   validate_presentation(normal_p, short_rules());
+  //   validate_presentation(normal_p, long_rules());
+  //   _include = normal_p;
+  //   return static_cast<T&>(*this);
+  // }
 
   template <typename T>
   T& Sims1Settings<T>::number_of_threads(size_t val) {

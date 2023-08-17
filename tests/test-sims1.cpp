@@ -90,14 +90,19 @@ namespace libsemigroups {
 
   namespace {
     template <typename P>
-    void check_include(congruence_kind ck, P const& p, P const& e, size_t n) {
-      P f = e;
+    void check_include(congruence_kind               ck,
+                       P const&                      p,
+                       std::vector<word_type> const& e,
+                       size_t                        n) {
+      auto f = e;
       if (ck == congruence_kind::left) {
-        presentation::reverse(f);
+        std::for_each(f.begin(), f.end(), [](word_type& w) {
+          std::reverse(w.begin(), w.end());
+        });
       }
       auto foo = [&f](auto const& ad) {
         using word_graph::follow_path_no_checks;
-        for (auto it = f.rules.cbegin(); it != f.rules.cend(); it += 2) {
+        for (auto it = f.cbegin(); it != f.cend(); it += 2) {
           if (follow_path_no_checks(ad, 0, *it)
               != follow_path_no_checks(ad, 0, *(it + 1))) {
             return false;
@@ -518,26 +523,25 @@ namespace libsemigroups {
                           "016",
                           "fp semigroup containing given pairs #1",
                           "[quick][low-index]") {
+    using namespace literals;
     auto rg = ReportGuard(false);
 
     Presentation<word_type> p;
     p.contains_empty_word(true);
 
     p.alphabet({0, 1});
-    presentation::add_rule(p, {0, 0, 0}, {0});
-    presentation::add_rule(p, {1, 1}, {1});
-    presentation::add_rule(p, {0, 1, 0, 1}, {0});
-    Presentation<word_type> e;
-    e.contains_empty_word(true);
+    presentation::add_rule(p, 000_w, 0_w);
+    presentation::add_rule(p, 11_w, 1_w);
+    presentation::add_rule(p, 0101_w, 0_w);
 
-    e.alphabet({0, 1});
-    presentation::add_rule(e, {0}, {1});
+    std::vector<word_type> e = {0_w, 1_w};
+
     Sims1 S(congruence_kind::right);
     S.short_rules(p).include(e);
     REQUIRE(S.number_of_congruences(5) == 2);
     check_include(congruence_kind::right, p, e, 5);
     check_include(congruence_kind::left, p, e, 5);
-    S.exclude(e.rules).clear_include();
+    S.exclude(e).clear_include();
     REQUIRE(S.number_of_congruences(5) == 4);
     S.clear_exclude();
     REQUIRE(S.number_of_congruences(5) == 6);
@@ -547,57 +551,57 @@ namespace libsemigroups {
                           "017",
                           "fp semigroup containing given pairs #2",
                           "[quick][low-index]") {
+    using namespace literals;
     auto rg = ReportGuard(false);
 
     Presentation<word_type> p;
     p.contains_empty_word(true);
 
     p.alphabet({0, 1});
-    presentation::add_rule(p, {0, 0, 0}, {0});
-    presentation::add_rule(p, {1, 1}, {1});
-    presentation::add_rule(p, {0, 1, 0, 1}, {0});
-    Presentation<word_type> e;
-    e.contains_empty_word(true);
-
-    e.alphabet({0, 1});
-    presentation::add_rule(e, {0, 1}, {1});
-    Sims1 T(congruence_kind::right);
-    T.short_rules(p).include(e);
-    REQUIRE(T.number_of_congruences(5) == 2);
-    check_include(congruence_kind::right, p, e, 5);
-    check_include(congruence_kind::left, p, e, 5);
+    presentation::add_rule(p, 000_w, 0_w);
+    presentation::add_rule(p, 11_w, 1_w);
+    presentation::add_rule(p, 0101_w, 0_w);
+    {
+      Sims1 T(congruence_kind::right);
+      T.short_rules(p).include(01_w, 1_w);
+      REQUIRE(T.number_of_congruences(5) == 2);
+      check_include(congruence_kind::right, p, T.include(), 5);
+    }
+    {
+      Sims1 T(congruence_kind::left);
+      T.short_rules(p).include(01_w, 1_w);
+      REQUIRE(T.number_of_congruences(5) == 2);
+      check_include(congruence_kind::left, p, T.include(), 5);
+    }
   }
 
   LIBSEMIGROUPS_TEST_CASE("Sims1",
                           "018",
                           "fp semigroup containing given pairs #3",
                           "[quick][low-index]") {
+    using namespace literals;
     auto rg = ReportGuard(false);
 
     Presentation<word_type> p;
     p.contains_empty_word(true);
-
     p.alphabet({0, 1});
-    presentation::add_rule(p, {0, 0, 0}, {0});
-    presentation::add_rule(p, {1, 1}, {1});
-    presentation::add_rule(p, {0, 1, 0, 1}, {0});
-    Presentation<word_type> e;
-    e.contains_empty_word(true);
+    presentation::add_rule(p, 000_w, 0_w);
+    presentation::add_rule(p, 11_w, 1_w);
+    presentation::add_rule(p, 0101_w, 0_w);
 
-    e.alphabet({0, 1});
-    presentation::add_rule(e, {0, 1, 0, 1}, {0});
     {
       Sims1 T(congruence_kind::right);
-      T.short_rules(p).include(e);
+      T.short_rules(p).include(0101_w, 0_w);
       REQUIRE(T.number_of_congruences(5) == 6);
     }
     {
       Sims1 T(congruence_kind::left);
-      T.short_rules(p).include(e);
+      T.short_rules(p).include(0101_w, 0_w);
+      REQUIRE(T.include() == std::vector<word_type>({1010_w, 0_w}));
       REQUIRE(T.number_of_congruences(5) == 9);  // Verified with GAP
     }
-    check_include(congruence_kind::right, p, e, 5);
-    check_include(congruence_kind::left, p, e, 5);
+    check_include(congruence_kind::right, p, {0101_w, 0_w}, 5);
+    check_include(congruence_kind::left, p, {0101_w, 0_w}, 5);
   }
 
   LIBSEMIGROUPS_TEST_CASE("Sims1",
@@ -616,13 +620,9 @@ namespace libsemigroups {
     presentation::add_rule(p, "acbbACb", "e");
     presentation::add_rule(p, "ABabccc", "e");
 
-    Presentation<std::string> e;
-    e.alphabet(p.alphabet());
-    presentation::add_rule(p, "a", "A");
-    presentation::add_rule(p, "a", "b");
-
     Sims1 S(congruence_kind::right);
-    S.short_rules(p).include(e);
+    S.short_rules(p).include(to_word(p, "a"), to_word(p, "A"));
+    S.short_rules(p).include(to_word(p, "a"), to_word(p, "b"));
     REQUIRE(S.number_of_congruences(3) == 2);
 
     check_include(congruence_kind::right, S.short_rules(), S.include(), 3);
@@ -633,22 +633,21 @@ namespace libsemigroups {
                           "020",
                           "fp example 2",
                           "[quick][low-index]") {
+    using namespace literals;
     auto                    rg = ReportGuard(false);
     Presentation<word_type> p;
     p.contains_empty_word(true);
 
     p.alphabet({0, 1, 2});
-    presentation::add_rule(p, {0, 1, 0}, {0, 0});
-    presentation::add_rule(p, {2, 2}, {0, 0});
-    presentation::add_rule(p, {0, 0, 0}, {0, 0});
-    presentation::add_rule(p, {2, 1}, {1, 2});
-    presentation::add_rule(p, {2, 0}, {0, 0});
-    presentation::add_rule(p, {1, 1}, {1});
-    presentation::add_rule(p, {0, 2}, {0, 0});
+    presentation::add_rule(p, 010_w, 00_w);
+    presentation::add_rule(p, 22_w, 00_w);
+    presentation::add_rule(p, 000_w, 00_w);
+    presentation::add_rule(p, 21_w, 12_w);
+    presentation::add_rule(p, 20_w, 00_w);
+    presentation::add_rule(p, 11_w, 1_w);
+    presentation::add_rule(p, 02_w, 00_w);
 
-    Presentation<word_type> e;
-    e.alphabet(p.alphabet());
-    presentation::add_rule(e, {1}, {0, 0});
+    std::vector<word_type> e = {1_w, 00_w};
     check_include(congruence_kind::right, p, e, 11);
     check_include(congruence_kind::left, p, e, 11);
   }
@@ -660,21 +659,22 @@ namespace libsemigroups {
 
     Presentation<word_type> e;
     e.alphabet({0, 1});
-    REQUIRE_THROWS_AS(Sims1(congruence_kind::right).short_rules(p).include(e),
-                      LibsemigroupsException);
+    // REQUIRE_THROWS_AS(Sims1(congruence_kind::right).short_rules(p).include(e),
+    //                  LibsemigroupsException);
     REQUIRE_THROWS_AS(
         Sims1(congruence_kind::right).short_rules(p).long_rules(e),
         LibsemigroupsException);
     REQUIRE_THROWS_AS(
         Sims1(congruence_kind::right).long_rules(p).short_rules(e),
         LibsemigroupsException);
-    REQUIRE_THROWS_AS(Sims1(congruence_kind::right).long_rules(p).include(e),
-                      LibsemigroupsException);
-    REQUIRE_THROWS_AS(Sims1(congruence_kind::right).include(p).short_rules(e),
-                      LibsemigroupsException);
-    REQUIRE_THROWS_AS(Sims1(congruence_kind::right).include(p).long_rules(e),
-                      LibsemigroupsException);
-    REQUIRE_NOTHROW(Sims1(congruence_kind::right).include(p).include(e));
+    // REQUIRE_THROWS_AS(Sims1(congruence_kind::right).long_rules(p).include(e),
+    //                  LibsemigroupsException);
+
+    // REQUIRE_THROWS_AS(Sims1(congruence_kind::right).include(p).short_rules(e),
+    //                   LibsemigroupsException);
+    // REQUIRE_THROWS_AS(Sims1(congruence_kind::right).include(p).long_rules(e),
+    //                  LibsemigroupsException);
+    // REQUIRE_NOTHROW(Sims1(congruence_kind::right).include(p).include(e));
     REQUIRE_NOTHROW(
         Sims1(congruence_kind::right).short_rules(p).short_rules(e));
     REQUIRE_NOTHROW(Sims1(congruence_kind::right).long_rules(p).long_rules(e));
@@ -795,11 +795,12 @@ namespace libsemigroups {
     //              {6, 6, 8, 12, 6, 3, 13},      {7, 11, 9, 7, 13, 3, 7},
     //              {8, 3, 6, 14, 6, 3, 11},      {9, 14, 7, 3, 12, 3, 7},
     //              {10, 5, 15, 4, 12, 16, 11},   {11, 7, 17, 11, 13, 16, 11},
-    //              {12, 12, 18, 6, 12, 16, 13},  {13, 13, 19, 13, 13, 20, 13},
-    //              {14, 9, 21, 8, 12, 20, 11},   {15, 15, 10, 15, 2, 16, 2},
-    //              {16, 18, 16, 17, 12, 16, 11}, {17, 21, 11, 16, 6, 16, 11},
-    //              {18, 16, 12, 21, 12, 16, 7},  {19, 20, 13, 20, 13, 20, 13},
-    //              {20, 19, 20, 19, 13, 20, 13}, {21, 17, 14, 18, 6, 20, 7}}));
+    //              {12, 12, 18, 6, 12, 16, 13},  {13, 13, 19, 13, 13, 20,
+    //              13}, {14, 9, 21, 8, 12, 20, 11},   {15, 15, 10, 15, 2, 16,
+    //              2}, {16, 18, 16, 17, 12, 16, 11}, {17, 21, 11, 16, 6, 16,
+    //              11}, {18, 16, 12, 21, 12, 16, 7},  {19, 20, 13, 20, 13,
+    //              20, 13}, {20, 19, 20, 19, 13, 20, 13}, {21, 17, 14, 18, 6,
+    //              20, 7}}));
 
     // auto S = to_froidure_pin<Transf<0, node_type>>(d);
     // REQUIRE(S.size() == 105);
@@ -807,16 +808,18 @@ namespace libsemigroups {
     // REQUIRE(
     //     S.generator(1)
     //     == Transf<0, node_type>({0, 4,  2,  8, 1,  10, 6,  11, 3,  14, 5,
-    //                              7, 12, 13, 9, 15, 18, 21, 16, 20, 19, 17}));
+    //                              7, 12, 13, 9, 15, 18, 21, 16, 20, 19,
+    //                              17}));
     // REQUIRE(
     //     S.generator(2)
-    //     == Transf<0, node_type>({1,  0,  2,  3,  4,  5,  8,  9,  6,  7,  15,
+    //     == Transf<0, node_type>({1,  0,  2,  3,  4,  5,  8,  9,  6,  7, 15,
     //                              17, 18, 19, 21, 10, 16, 11, 12, 13, 20,
     //                              14}));
     // REQUIRE(S.generator(3)
-    //         == Transf<0, node_type>({0, 5,  2, 9,  10, 1,  12, 7,  14, 3, 4,
-    //         11,
-    //                                  6, 13, 8, 15, 17, 16, 21, 20, 19, 18}));
+    //         == Transf<0, node_type>({0, 5,  2, 9,  10, 1,  12, 7,  14, 3,
+    //         4, 11,
+    //                                  6, 13, 8, 15, 17, 16, 21, 20, 19,
+    //                                  18}));
     // REQUIRE(S.generator(4)
     //         == Transf<0, node_type>({2,  6,  2,  6,  6, 12, 6, 13, 6,  12,
     //         12,
@@ -824,13 +827,14 @@ namespace libsemigroups {
     //                                  6}));
     // REQUIRE(
     //     S.generator(5)
-    //     == Transf<0, node_type>({3,  3,  2,  3,  2,  2,  3,  3,  3,  3,  16,
+    //     == Transf<0, node_type>({3,  3,  2,  3,  2,  2,  3,  3,  3,  3, 16,
     //                              16, 16, 20, 20, 16, 16, 16, 16, 20, 20,
     //                              20}));
     // REQUIRE(
     //     S.generator(6)
     //     == Transf<0, node_type>({2,  7,  2,  7,  11, 7,  13, 7, 11, 7,  11,
-    //                              11, 13, 13, 11, 2,  11, 11, 7, 13, 13, 7}));
+    //                              11, 13, 13, 11, 2,  11, 11, 7, 13, 13,
+    //                              7}));
 
     Sims1 C(congruence_kind::right);
     C.short_rules(p);
@@ -843,6 +847,7 @@ namespace libsemigroups {
                           "025",
                           "brauer_monoid(5) (Kudryavtseva-Mazorchuk)",
                           "[extreme][sims1]") {
+    using namespace literals;
     auto rg = ReportGuard(true);
     auto p  = brauer_monoid(5);
 
@@ -874,15 +879,9 @@ namespace libsemigroups {
     presentation::replace_subword(p, {1, 1}, {0});
     REQUIRE(presentation::length(p) == 246);
 
-    // This is just very long running (without e!) and I haven't managed to run
-    // it to completion.
-    Presentation<word_type> e;
-    e.alphabet(9);
-    presentation::add_rule(e, {0}, {1});
-
     auto d = MinimalRepOrc()
                  .short_rules(p)
-                 .include(e)
+                 .include(0_w, 1_w)
                  .target_size(945)
                  .number_of_threads(8)
                  .report_interval(100)
@@ -1032,6 +1031,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Sims1", "033", "constructors", "[quick][sims1]") {
+    using namespace literals;
     auto                    rg = ReportGuard(false);
     Presentation<word_type> p;
     p.contains_empty_word(true);
@@ -1059,11 +1059,9 @@ namespace libsemigroups {
     S = std::move(U);
     REQUIRE(S.number_of_congruences(3) == 14);
 
-    Presentation<word_type> e;
-    e.alphabet({0, 1, 2, 5});
-
     Sims1 C(congruence_kind::right);
-    REQUIRE_THROWS_AS(C.short_rules(p).include(e), LibsemigroupsException);
+    REQUIRE_THROWS_AS(C.short_rules(p).include(0127_w, 0_w),
+                      LibsemigroupsException);
   }
 
   LIBSEMIGROUPS_TEST_CASE("Sims1", "034", "split_at", "[quick][sims1]") {
@@ -1486,12 +1484,13 @@ namespace libsemigroups {
     REQUIRE(d.number_of_nodes() == 5);
   }
 
-  LIBSEMIGROUPS_TEST_CASE(
-      "Sims1",
-      "046",
-      "semigroup with faithful non-strictly cyclic action of right congruence",
-      "[quick][sims1]") {
-    // Found with Smallsemi, this example is minimal wrt size of the semigroup.
+  LIBSEMIGROUPS_TEST_CASE("Sims1",
+                          "046",
+                          "semigroup with faithful non-strictly cyclic "
+                          "action of right congruence",
+                          "[quick][sims1]") {
+    // Found with Smallsemi, this example is minimal wrt size of the
+    // semigroup.
 
     auto rg = ReportGuard(false);
 
@@ -2010,18 +2009,19 @@ namespace libsemigroups {
     }
 
     // For n >= 1, a(n) is the number of deterministic, completely-defined,
-    // initially-connected finite automata with n inputs and 3 unlabeled states.
-    // A020522 counts similar automata with n inputs and 2 unlabeled states.
+    // initially-connected finite automata with n inputs and 3 unlabeled
+    // states. A020522 counts similar automata with n inputs and 2 unlabeled
+    // states.
 
     // According to a comment by Nelma Moreira in A006689 and A006690, the
     // number of such automata with N inputs and M unlabeled states is Sum
-    // (Product_{i=1..M-1} i^(f_i - f_{i-1} - 1)) * M^(M*N - f_{M-1} - 1), where
-    // the sum is taken over integers f_1, ..., f_{M-1} satisfying 0 <= f_1 < N
-    // and f_{i-1} < f_{i} < i*N for i = 2..M-1. (See Theorem 8 in Almeida,
-    // Moreira, and Reis (2007). The value of f_0 is not relevant.) For this
-    // sequence we have M = 3 unlabeled states, for A020522 we have M = 2
-    // unlabeled states, for A006689 we have N = 2 inputs, and for A006690 we
-    // have N = 3 inputs.
+    // (Product_{i=1..M-1} i^(f_i - f_{i-1} - 1)) * M^(M*N - f_{M-1} - 1),
+    // where the sum is taken over integers f_1, ..., f_{M-1} satisfying 0 <=
+    // f_1 < N and f_{i-1} < f_{i} < i*N for i = 2..M-1. (See Theorem 8 in
+    // Almeida, Moreira, and Reis (2007). The value of f_0 is not relevant.)
+    // For this sequence we have M = 3 unlabeled states, for A020522 we have M
+    // = 2 unlabeled states, for A006689 we have N = 2 inputs, and for A006690
+    // we have N = 3 inputs.
   }
 
   LIBSEMIGROUPS_TEST_CASE("Sims1", "068", "RepOrc", "[quick][low-index]") {
@@ -2290,10 +2290,9 @@ namespace libsemigroups {
     // presentation::add_rule(p, "aaabaab", "baaba");
     // Minimum rep. o.r.c. 8
 
-    // S := ReesMatrixSemigroup(SymmetricGroup(4), [[(1, 2, 3), ()], [(), ()]]);
-    // presentation::add_rule(p, "cc", "c");
-    // presentation::add_rule(p, "abb", "a");
-    // presentation::add_rule(p, "bba", "a");
+    // S := ReesMatrixSemigroup(SymmetricGroup(4), [[(1, 2, 3), ()], [(),
+    // ()]]); presentation::add_rule(p, "cc", "c"); presentation::add_rule(p,
+    // "abb", "a"); presentation::add_rule(p, "bba", "a");
     // presentation::add_rule(p, "bbb", "b");
     // presentation::add_rule(p, "bcb", "aca");
     // presentation::add_rule(p, "aaaa", "bb");
