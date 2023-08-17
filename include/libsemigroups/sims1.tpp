@@ -25,9 +25,12 @@ namespace libsemigroups {
   // Sims1Settings
   ////////////////////////////////////////////////////////////////////////
 
+  // TODO replace T -> Subclass
+
   template <typename T>
   Sims1Settings<T>::Sims1Settings()
-      : _include(),
+      : _exclude(),
+        _include(),
         _longs(),
         _num_threads(),
         _report_interval(),
@@ -40,7 +43,8 @@ namespace libsemigroups {
   template <typename T>
   template <typename S>
   Sims1Settings<T>::Sims1Settings(Sims1Settings<S> const& that)
-      : _include(that.include()),
+      : _exclude(that.exclude()),
+        _include(that.include()),
         _longs(that.long_rules()),
         _num_threads(that.number_of_threads()),
         _report_interval(that.report_interval()),
@@ -84,7 +88,7 @@ namespace libsemigroups {
 
   template <typename T>
   template <typename P>
-  T& Sims1Settings<T>::extra(P const& p) {
+  T& Sims1Settings<T>::include(P const& p) {
     static_assert(std::is_base_of<PresentationBase, P>::value,
                   "the template parameter P must be derived from "
                   "PresentationBase");

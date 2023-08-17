@@ -353,7 +353,6 @@ namespace libsemigroups {
     size_type                                     _num_threads;
     uint64_t                                      _report_interval;
     digraph_type                                  _result;
-    Sims1Stats                                    _stats;  // TODO remove
 
     void worker_thread(unsigned                                 my_index,
                        std::function<bool(digraph_type const&)> hook) {
@@ -381,13 +380,6 @@ namespace libsemigroups {
         // threads shutting down earlier than desirable. On the other hand,
         // maybe this is a desirable.
       }
-#ifdef LIBSEMIGROUPS_VERBOSE
-      report_default(
-          "this thread created {} nodes\n",
-          detail::group_digits(_theives[my_index]->stats().total_pending));
-#endif
-      std::lock_guard<std::mutex> lock(_mtx);
-      _stats += _theives[my_index]->stats();
     }
 
     bool pop_from_local_queue(PendingDef& pd, unsigned my_index) {
@@ -418,10 +410,7 @@ namespace libsemigroups {
           _mtx(),
           _num_threads(num_threads),
           _report_interval(report_interval),
-          _result(),
-          _stats()
-
-    {
+          _result() {
       for (size_t i = 0; i < _num_threads; ++i) {
         _theives.push_back(std::make_unique<thread_iterator>(s, n));
       }
@@ -469,10 +458,7 @@ namespace libsemigroups {
       final_report_number_of_congruences(start_time, count);
     }
 
-    Sims1Stats& stats() {
-      return _stats;
-    }
-  };
+  };  // class thread_runner
 
   ////////////////////////////////////////////////////////////////////////
   // Sims1
@@ -535,9 +521,6 @@ namespace libsemigroups {
           pred(*it);
         }
         final_report_number_of_congruences(start_time, count);
-        // Copy the iterator stats into this so that we can retrieve it
-        // after den is destroyed.
-        stats(it.stats());
         report_stats();
       }
     } else {
@@ -547,9 +530,6 @@ namespace libsemigroups {
         return false;
       };
       den.run(pred_wrapper);
-      // Copy the thread_runner stats into this so that we can retrieve it
-      // after den is destroyed.
-      stats(den.stats());
       report_stats();
     }
   }
@@ -580,15 +560,11 @@ namespace libsemigroups {
         for (; it != last; ++it) {
           if (pred(*it)) {
             // final_report_number_of_congruences(start_time, ++count);
-            stats(it.stats());
             report_stats();
             return *it;
           }
         }
         // final_report_number_of_congruences(start_time, ++count);
-        // Copy the iterator stats into this so that we can retrieve it
-        // after it is destroyed.
-        stats(it.stats());
         report_stats();
         return *last;  // the empty digraph
       }
@@ -597,7 +573,7 @@ namespace libsemigroups {
       den.run(pred);
       // Copy the thread_runner stats into this so that we can retrieve it
       // after den is destroyed.
-      stats(den.stats());
+      // stats(den.stats());
       report_stats();
       return den.digraph();
     }

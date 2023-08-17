@@ -29,7 +29,6 @@
 // * be useful to have output when no congruences are found too (i.e. in
 //   Heineken group example). Can't really think of a nice way of doing this at
 //   present in 2022.
-// * the stats() object returned by Sims1 seems to not be populated
 //
 // Notes:
 // 1. In 2022, when first writing this file, JDM tried templating the word_type
@@ -79,11 +78,12 @@ namespace libsemigroups {
   //! class is to collect some statistics related to `Sims1` class template.
   //!
   //! \sa \ref Sims1
+  // TODO make a nested class of Sims1?
   struct Sims1Stats {
     // TODO doc
-    uint64_t count_last;  // TODO atomic
+    uint64_t count_last;
     // TODO doc
-    uint64_t count_now;  // TODO atomic
+    uint64_t count_now;
     //! The maximum number of pending definitions.
     //!
     //! A *pending definition* is just an edge that will be defined at some
@@ -92,7 +92,7 @@ namespace libsemigroups {
     //!
     //! This member tracks the maximum number of such pending definitions that
     //! occur during the running of the algorithms in Sims1.
-    uint64_t max_pending = 0;  // TODO atomic
+    uint64_t max_pending;
 
     //! The total number of pending definitions.
     //!
@@ -104,29 +104,16 @@ namespace libsemigroups {
     //! occur during the running of the algorithms in Sims1. This is the same
     //! as the number of nodes in the search tree encounter during the running
     //! of Sims1.
-    uint64_t total_pending = 0;  // TODO atomic
+    uint64_t total_pending;
 
     Sims1Stats() : count_last(), count_now(), max_pending(), total_pending() {
       zero_stats();
     }
 
-    Sims1Stats(Sims1Stats const& that)            = default;
-    Sims1Stats& operator=(Sims1Stats const& that) = default;
-    // TODO the move constructors
-
-    //! Combine two Sims1Stats objects
-    //!
-    //! This function changes this Sims1Stats in-place so that \ref max_pending
-    //! is the maximum of `this->max_pending` and `that.max_pending`; and \ref
-    //! total_pending is the sum of `this->total_pending` and
-    //! `that.total_pending`.
-    Sims1Stats& operator+=(Sims1Stats const& that) {
-      count_last += that.count_last;
-      count_now += that.count_now;
-      max_pending = std::max(max_pending, that.max_pending);
-      total_pending += that.total_pending;
-      return *this;
-    }
+    Sims1Stats(Sims1Stats const&)            = default;
+    Sims1Stats& operator=(Sims1Stats const&) = default;
+    Sims1Stats(Sims1Stats&&)                 = default;
+    Sims1Stats& operator=(Sims1Stats&&)      = default;
 
     Sims1Stats& zero_stats() {
       max_pending   = 0;
@@ -143,7 +130,7 @@ namespace libsemigroups {
   template <typename Subclass>
   class Sims1Settings {
    private:
-    // TODO add _exclude
+    std::vector<word_type> _exclude;
     // TODO make it just a vector of word_type
     Presentation<word_type> _include;
     // TODO change to iterator into _shorts, and rename
@@ -346,31 +333,25 @@ namespace libsemigroups {
 
     //! Set the long rules.
     //!
-    //! These are the rules used after a complete
-    //! deterministic word graph compatible with \ref
-    //! short_rules has been found by `Sims1`. If such a
-    //! word graph is compatible with the long rules
-    //! specified by this function, then this word graph is
-    //! accepted, and if not it is not accepted.
+    //! These are the rules used after a complete deterministic word graph
+    //! compatible with \ref short_rules has been found by `Sims1`. If such a
+    //! word graph is compatible with the long rules specified by this
+    //! function, then this word graph is accepted, and if not it is not
+    //! accepted.
     //!
-    //! If the template parameter \p P is not
-    //! `Presentation<word_type>`, then the parameter \p p
-    //! is first converted to a value of type
-    //! `Presentation<word_type>` and it is this converted
-    //! value that is used.
+    //! If the template parameter \p P is not `Presentation<word_type>`, then
+    //! the parameter \p p is first converted to a value of type
+    //! `Presentation<word_type>` and it is this converted value that is used.
     //!
-    //! \tparam P A specific value of the class template
-    //! `Presentation`, must be derived from
-    //! `PresentationBase`. \param p the presentation.
+    //! \tparam P A specific value of the class template `Presentation`, must
+    //! be derived from `PresentationBase`. \param p the presentation.
     //!
     //! \returns A reference to \c this.
     //!
-    //! \throws LibsemigroupsException if
-    //! `to_presentation<word_type>(p)` throws \throws
-    //! LibsemigroupsException if `p` is not valid \throws
-    //! LibsemigroupsException if the alphabet of `p` is
-    //! non-empty and not equal to that of \ref short_rules
-    //! or \ref extra.
+    //! \throws LibsemigroupsException if `to_presentation<word_type>(p)`
+    //! throws \throws LibsemigroupsException if `p` is not valid \throws
+    //! LibsemigroupsException if the alphabet of `p` is non-empty and not
+    //! equal to that of \ref short_rules or \ref extra.
     template <typename P>
     Subclass& long_rules(P const& p);
 
@@ -435,7 +416,17 @@ namespace libsemigroups {
     //! LibsemigroupsException if the alphabet of `p` is non-empty and not
     //! equal to that of \ref short_rules or \ref long_rules.
     template <typename P>
-    Subclass& extra(P const& p);
+    Subclass& include(P const& p);
+
+    template <typename Iterator>
+    Subclass& exclude(Iterator first, Iterator last) {
+      // TODO validate first to last
+      _exclude.assign(first, last);
+    }
+
+    std::vector<word_type> const& exclude() const noexcept {
+      return _exclude;
+    }
 
     //! Returns a const reference to the current stats
     //! object.
@@ -457,6 +448,7 @@ namespace libsemigroups {
     }
 
    protected:
+    // TDOO required?
     Subclass const& stats(Sims1Stats const& stts) const {
       _stats = std::move(stts);
       return static_cast<Subclass const&>(*this);
@@ -612,20 +604,20 @@ namespace libsemigroups {
     }
 
     template <typename P>
-    Sims1& extra(P const& p) {
+    Sims1& include(P const& p) {
       if (_kind == congruence_kind::left) {
         P q(p);
         presentation::reverse(q);
-        return Sims1Settings<Sims1>::extra(q);
+        return Sims1Settings<Sims1>::include(q);
       } else {
-        return Sims1Settings<Sims1>::extra(p);
+        return Sims1Settings<Sims1>::include(p);
       }
     }
 #endif
 
     using Sims1Settings<Sims1>::short_rules;
     using Sims1Settings<Sims1>::long_rules;
-    using Sims1Settings<Sims1>::extra;
+    using Sims1Settings<Sims1>::include;
     using Sims1Settings<Sims1>::number_of_threads;
 
     class iterator;  // forward decl

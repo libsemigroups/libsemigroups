@@ -109,7 +109,7 @@ namespace libsemigroups {
       S.short_rules(p);
 
       Sims1 T(ck);
-      T.short_rules(p).extra(e);
+      T.short_rules(p).include(e);
 
       REQUIRE(static_cast<uint64_t>(std::count_if(S.cbegin(n), S.cend(n), foo))
               == T.number_of_congruences(n));
@@ -530,7 +530,7 @@ namespace libsemigroups {
     e.alphabet({0, 1});
     presentation::add_rule(e, {0}, {1});
     Sims1 S(congruence_kind::right);
-    S.short_rules(p).extra(e);
+    S.short_rules(p).include(e);
     REQUIRE(S.number_of_congruences(5) == 2);
     check_include(congruence_kind::right, p, e, 5);
     check_include(congruence_kind::left, p, e, 5);
@@ -555,7 +555,7 @@ namespace libsemigroups {
     e.alphabet({0, 1});
     presentation::add_rule(e, {0, 1}, {1});
     Sims1 T(congruence_kind::right);
-    T.short_rules(p).extra(e);
+    T.short_rules(p).include(e);
     REQUIRE(T.number_of_congruences(5) == 2);
     check_include(congruence_kind::right, p, e, 5);
     check_include(congruence_kind::left, p, e, 5);
@@ -581,12 +581,12 @@ namespace libsemigroups {
     presentation::add_rule(e, {0, 1, 0, 1}, {0});
     {
       Sims1 T(congruence_kind::right);
-      T.short_rules(p).extra(e);
+      T.short_rules(p).include(e);
       REQUIRE(T.number_of_congruences(5) == 6);
     }
     {
       Sims1 T(congruence_kind::left);
-      T.short_rules(p).extra(e);
+      T.short_rules(p).include(e);
       REQUIRE(T.number_of_congruences(5) == 9);  // Verified with GAP
     }
     check_include(congruence_kind::right, p, e, 5);
@@ -615,7 +615,7 @@ namespace libsemigroups {
     presentation::add_rule(p, "a", "b");
 
     Sims1 S(congruence_kind::right);
-    S.short_rules(p).extra(e);
+    S.short_rules(p).include(e);
     REQUIRE(S.number_of_congruences(3) == 2);
 
     check_include(congruence_kind::right, S.short_rules(), S.include(), 3);
@@ -653,7 +653,7 @@ namespace libsemigroups {
 
     Presentation<word_type> e;
     e.alphabet({0, 1});
-    REQUIRE_THROWS_AS(Sims1(congruence_kind::right).short_rules(p).extra(e),
+    REQUIRE_THROWS_AS(Sims1(congruence_kind::right).short_rules(p).include(e),
                       LibsemigroupsException);
     REQUIRE_THROWS_AS(
         Sims1(congruence_kind::right).short_rules(p).long_rules(e),
@@ -661,13 +661,13 @@ namespace libsemigroups {
     REQUIRE_THROWS_AS(
         Sims1(congruence_kind::right).long_rules(p).short_rules(e),
         LibsemigroupsException);
-    REQUIRE_THROWS_AS(Sims1(congruence_kind::right).long_rules(p).extra(e),
+    REQUIRE_THROWS_AS(Sims1(congruence_kind::right).long_rules(p).include(e),
                       LibsemigroupsException);
-    REQUIRE_THROWS_AS(Sims1(congruence_kind::right).extra(p).short_rules(e),
+    REQUIRE_THROWS_AS(Sims1(congruence_kind::right).include(p).short_rules(e),
                       LibsemigroupsException);
-    REQUIRE_THROWS_AS(Sims1(congruence_kind::right).extra(p).long_rules(e),
+    REQUIRE_THROWS_AS(Sims1(congruence_kind::right).include(p).long_rules(e),
                       LibsemigroupsException);
-    REQUIRE_NOTHROW(Sims1(congruence_kind::right).extra(p).extra(e));
+    REQUIRE_NOTHROW(Sims1(congruence_kind::right).include(p).include(e));
     REQUIRE_NOTHROW(
         Sims1(congruence_kind::right).short_rules(p).short_rules(e));
     REQUIRE_NOTHROW(Sims1(congruence_kind::right).long_rules(p).long_rules(e));
@@ -875,7 +875,7 @@ namespace libsemigroups {
 
     auto d = MinimalRepOrc()
                  .short_rules(p)
-                 .extra(e)
+                 .include(e)
                  .target_size(945)
                  .number_of_threads(8)
                  .report_interval(100)
@@ -1056,7 +1056,7 @@ namespace libsemigroups {
     e.alphabet({0, 1, 2, 5});
 
     Sims1 C(congruence_kind::right);
-    REQUIRE_THROWS_AS(C.short_rules(p).extra(e), LibsemigroupsException);
+    REQUIRE_THROWS_AS(C.short_rules(p).include(e), LibsemigroupsException);
   }
 
   LIBSEMIGROUPS_TEST_CASE("Sims1", "034", "split_at", "[quick][sims1]") {
@@ -1671,10 +1671,6 @@ namespace libsemigroups {
     presentation::add_inverse_rules(p, "XxYy");
     presentation::add_rule(p, "yXYYxyYYxyyXYYxyyXyXYYxy", "x");
     presentation::add_rule(p, "YxyyXXYYxyxYxyyXYXyXYYxxyyXYXyXYYxyx", "y");
-
-    Presentation<std::string> q;
-    q.alphabet("xXyY");
-    presentation::add_rule(q, "YxyyXXYYxyxYxyyXYXyXYYxxyyXYXyXYYxyx", "y");
 
     Sims1 S(congruence_kind::right);
     S.short_rules(p).number_of_threads(4);
