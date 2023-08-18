@@ -78,7 +78,7 @@ namespace libsemigroups {
   //! class is to collect some statistics related to `Sims1` class template.
   //!
   //! \sa \ref Sims1
-  // TODO make a nested class of Sims1?
+  // TODO make a nested class of Sims1Settings?
   struct Sims1Stats {
     // TODO doc
     uint64_t count_last;
@@ -130,12 +130,13 @@ namespace libsemigroups {
   template <typename Subclass>
   class Sims1Settings {
    protected:
+    // These are protected so that Sims1 can reverse them if necessary for
+    // left congruences.
     std::vector<word_type> _exclude;
     std::vector<word_type> _include;
-    // TODO change to iterator into _shorts, and rename
-    // shorts to presentation
+    // TODO change to iterator into _presentation
     Presentation<word_type> _longs;
-    Presentation<word_type> _shorts;
+    Presentation<word_type> _presentation;
 
    private:
     size_t             _num_threads;
@@ -154,7 +155,7 @@ namespace libsemigroups {
     //!
     //! The settings object contains all the settings that are common to
     //! `Sims1`, `RepOrc`, and `MinimalRepOrc`, which are currently:
-    //! * \ref short_rules
+    //! * \ref presentation
     //! * \ref long_rules
     //! * \ref report_interval
     //! * \ref number_of_threads
@@ -179,7 +180,7 @@ namespace libsemigroups {
     //!
     //! The settings object contains all the settings that are common to
     //! `Sims1`, `RepOrc`, and `MinimalRepOrc`, which are currently:
-    //! * \ref short_rules
+    //! * \ref presentation
     //! * \ref long_rules
     //! * \ref report_interval
     //! * \ref number_of_threads
@@ -288,9 +289,9 @@ namespace libsemigroups {
     //! not equal to that of \ref long_rules or \ref extra. \throws
     //! LibsemigroupsException if `p` has 0-generators and 0-relations.
     template <typename P>
-    Subclass& short_rules(P const& p);
+    Subclass& presentation(P const& p);
 
-    //! \anchor short_rules
+    //! \anchor presentation
     //! Returns a const reference to the current short rules.
     //!
     //! This function returns the defining presentation of
@@ -320,20 +321,17 @@ namespace libsemigroups {
     //! \warning
     //! If \ref split_at or \ref long_rule_length have been
     //! called, then some of the defining relations may
-    //! have been moved from \ref short_rules to \ref
+    //! have been moved from \ref presentation to \ref
     //! long_rules.
-    Presentation<word_type> const& short_rules() const noexcept {
-      return _shorts;
-    }
 
     Presentation<word_type> const& presentation() const noexcept {
-      return short_rules();
+      return _presentation;
     }
 
     //! Set the long rules.
     //!
     //! These are the rules used after a complete deterministic word graph
-    //! compatible with \ref short_rules has been found by `Sims1`. If such a
+    //! compatible with \ref presentation has been found by `Sims1`. If such a
     //! word graph is compatible with the long rules specified by this
     //! function, then this word graph is accepted, and if not it is not
     //! accepted.
@@ -350,7 +348,7 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if `to_presentation<word_type>(p)`
     //! throws \throws LibsemigroupsException if `p` is not valid \throws
     //! LibsemigroupsException if the alphabet of `p` is non-empty and not
-    //! equal to that of \ref short_rules or \ref extra.
+    //! equal to that of \ref presentation or \ref extra.
     template <typename P>
     Subclass& long_rules(P const& p);
 
@@ -375,7 +373,7 @@ namespace libsemigroups {
     //! relations of this presentation. In other words, the congruences
     //! computed by this instance are only taken among those that contains the
     //! pairs of elements of the underlying semigroup (defined by the
-    //! presentation returned by \ref short_rules and \ref long_rules)
+    //! presentation returned by \ref presentation and \ref long_rules)
     //! represented by the relations of the presentation returned by `extra()`.
     //!
     //! \param (None) this function has no parameters.
@@ -395,7 +393,7 @@ namespace libsemigroups {
     //! relations of this presentation. In other words, the congruences
     //! computed by this instance are only taken among those that contains the
     //! pairs of elements of the underlying semigroup (defined by the
-    //! presentation returned by \ref short_rules and \ref long_rules)
+    //! presentation returned by \ref presentation and \ref long_rules)
     //! represented by the relations of the presentation returned by `extra()`.
     //!
     //! If the template parameter \p P is not `Presentation<word_type>`, then
@@ -413,7 +411,7 @@ namespace libsemigroups {
     //! throws
     //! \throws LibsemigroupsException if `p` is not valid \throws
     //! LibsemigroupsException if the alphabet of `p` is non-empty and not
-    //! equal to that of \ref short_rules or \ref long_rules.
+    //! equal to that of \ref presentation or \ref long_rules.
     // template <typename P>
     // Subclass& include(P const& p);
     // TODO to tpp
@@ -436,6 +434,8 @@ namespace libsemigroups {
       include(std::begin(c), std::end(c));
       return static_cast<Subclass&>(*this);
     }
+    // TODO ranges version of include/exclude?
+
     // TODO to tpp
     Subclass& include(word_type const& lhs, word_type const& rhs) {
       presentation().validate_word(lhs.cbegin(), lhs.cend());
@@ -525,15 +525,15 @@ namespace libsemigroups {
     //! \anchor long_rule_length
     //! Define the long rule length.
     //!
-    //! This function modifies \ref short_rules and \ref long_rules so that
-    //! \ref short_rules only contains those rules whose length (sum of the
+    //! This function modifies \ref presentation and \ref long_rules so that
+    //! \ref presentation only contains those rules whose length (sum of the
     //! lengths of the two sides of the rules) is less than \p val (if any) and
     //! \ref long_rules only contains those rules of length at least \p val (if
-    //! any). The rules contained in the union of \ref short_rules and \ref
+    //! any). The rules contained in the union of \ref presentation and \ref
     //! long_rules is invariant under this function, but the distribution of
-    //! the rules between \ref short_rules and \ref long_rules is not.
+    //! the rules between \ref presentation and \ref long_rules is not.
     //!
-    //! The relative orders of the rules within \ref short_rules and \ref
+    //! The relative orders of the rules within \ref presentation and \ref
     //! long_rules may not be preserved.
     //!
     //! \param val the value of the long rule length.
@@ -546,11 +546,11 @@ namespace libsemigroups {
     Subclass& long_rule_length(size_t val);
 
     //! \anchor split_at
-    //! Split the rules in \ref short_rules and \ref
+    //! Split the rules in \ref presentation and \ref
     //! long_rules.
     //!
-    //! This function splits the relations in \ref short_rules and \ref
-    //! long_rules so that \ref short_rules contains the first `2 * val` rules
+    //! This function splits the relations in \ref presentation and \ref
+    //! long_rules so that \ref presentation contains the first `2 * val` rules
     //! and \ref long_rules contains any remaining rules.
     //!
     //! The order of the relations is the same as the current order.
@@ -561,7 +561,7 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if \p val is out of
     //! bounds, i.e. if it exceeds
-    //! `(short_rules().rules.size() +
+    //! `(presentation().rules.size() +
     //! long_rules().rules.size()) / 2`.
     Sims1Settings& split_at(size_t val);
 
@@ -605,7 +605,7 @@ namespace libsemigroups {
     // hold FelschGraph's, none of the features of FelschGraph are useful
     // for the output, only for the implementation
     //! The type of the associated WordGraph objects.
-    using digraph_type = WordGraph<node_type>;
+    using word_graph_type = WordGraph<node_type>;
 
    private:
     congruence_kind _kind;
@@ -616,7 +616,7 @@ namespace libsemigroups {
     // TODO remove? check if same as other classes
     template <typename W>
     Sims1(congruence_kind ck, Presentation<W> p) : Sims1(ck) {
-      short_rules(p);
+      presentation(p);
     }
 
     //! Construct from \ref congruence_kind.
@@ -649,15 +649,13 @@ namespace libsemigroups {
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
     template <typename P>
-    Sims1& short_rules(P const& p) {
+    Sims1& presentation(P const& p) {
+      auto& result = Sims1Settings<Sims1>::presentation(p);
+
       if (_kind == congruence_kind::left) {
-        // TODO avoid double copy of p
-        P q(p);
-        presentation::reverse(q);
-        return Sims1Settings<Sims1>::short_rules(q);
-      } else {
-        return Sims1Settings<Sims1>::short_rules(p);
+        presentation::reverse(_presentation);
       }
+      return result;
     }
 
     template <typename P>
@@ -700,7 +698,7 @@ namespace libsemigroups {
     }
 #endif
 
-    using Sims1Settings<Sims1>::short_rules;
+    using Sims1Settings<Sims1>::presentation;
     using Sims1Settings<Sims1>::long_rules;
     using Sims1Settings<Sims1>::number_of_threads;
 
@@ -742,7 +740,7 @@ namespace libsemigroups {
     //! at most \p n nodes.
     //!
     //! \throws LibsemigroupsException if \p n is \c 0.
-    //! \throws LibsemigroupsException if `short_rules()`
+    //! \throws LibsemigroupsException if `presentation()`
     //! has 0-generators and 0-relations (i.e. it has not
     //! been initialised).
     //!
@@ -771,7 +769,7 @@ namespace libsemigroups {
     //! at most \p 0 nodes.
     //!
     //! \throws LibsemigroupsException if \p n is \c 0.
-    //! \throws LibsemigroupsException if `short_rules()` has 0-generators
+    //! \throws LibsemigroupsException if `presentation()` has 0-generators
     //! and 0-relations (i.e. it has not been initialised).
     //!
     //! \warning
@@ -800,7 +798,7 @@ namespace libsemigroups {
     //! \returns A value of type \c uint64_t.
     //!
     //! \throws LibsemigroupsException if \p n is \c 0.
-    //! \throws LibsemigroupsException if `short_rules()` has 0-generators
+    //! \throws LibsemigroupsException if `presentation()` has 0-generators
     //! and 0-relations (i.e. it has not been initialised).
     uint64_t number_of_congruences(size_type n) const;
 
@@ -823,11 +821,11 @@ namespace libsemigroups {
     //! \returns (None)
     //!
     //! \throws LibsemigroupsException if \p n is \c 0.
-    //! \throws LibsemigroupsException if `short_rules()`
+    //! \throws LibsemigroupsException if `presentation()`
     //! has 0-generators and 0-relations (i.e. it has not
     //! been initialised).
-    void for_each(size_type                                n,
-                  std::function<void(digraph_type const&)> pred) const;
+    void for_each(size_type                                   n,
+                  std::function<void(word_graph_type const&)> pred) const;
 
     //! Apply the function \p pred to every one-sided
     //! congruence with at most \p n classes, until it
@@ -849,11 +847,12 @@ namespace libsemigroups {
     //! which \p pred returns \c true.
     //!
     //! \throws LibsemigroupsException if \p n is \c 0.
-    //! \throws LibsemigroupsException if `short_rules()`
+    //! \throws LibsemigroupsException if `presentation()`
     //! has 0-generators and 0-relations (i.e. it has not
     //! been initialised).
-    digraph_type find_if(size_type                                n,
-                         std::function<bool(digraph_type const&)> pred) const;
+    word_graph_type
+    find_if(size_type                                   n,
+            std::function<bool(word_graph_type const&)> pred) const;
 
    private:
     // This class collects some common aspects of the iterator and
@@ -865,10 +864,11 @@ namespace libsemigroups {
      public:
       //! No doc
       using const_reference =
-          typename std::vector<digraph_type>::const_reference;
+          typename std::vector<word_graph_type>::const_reference;
 
       //! No doc
-      using const_pointer = typename std::vector<digraph_type>::const_pointer;
+      using const_pointer =
+          typename std::vector<word_graph_type>::const_pointer;
 
      private:
       size_type _max_num_classes;
@@ -994,16 +994,16 @@ namespace libsemigroups {
       using const_reference = typename iterator_base::const_reference;
 
       //! No doc
-      using size_type = typename std::vector<digraph_type>::size_type;
+      using size_type = typename std::vector<word_graph_type>::size_type;
       //! No doc
       using difference_type =
-          typename std::vector<digraph_type>::difference_type;
+          typename std::vector<word_graph_type>::difference_type;
       //! No doc
-      using pointer = typename std::vector<digraph_type>::pointer;
+      using pointer = typename std::vector<word_graph_type>::pointer;
       //! No doc
-      using reference = typename std::vector<digraph_type>::reference;
+      using reference = typename std::vector<word_graph_type>::reference;
       //! No doc
-      using value_type = digraph_type;
+      using value_type = word_graph_type;
       //! No doc
       using iterator_category = std::forward_iterator_tag;
 
@@ -1072,7 +1072,7 @@ namespace libsemigroups {
   //! This class is a helper for `Sims1` calling the `digraph` member function
   //! attempts to find a right congruence, represented as an WordGraph, of
   //! the semigroup or monoid defined by the presentation consisting of its
-  //! \ref short_rules and \ref long_rules with the following properties:
+  //! \ref presentation and \ref long_rules with the following properties:
   //! * the transformation semigroup defined by the WordGraph has size
   //!   \ref target_size;
   //! * the number of nodes in the WordGraph is at least \ref min_nodes
@@ -1212,7 +1212,7 @@ namespace libsemigroups {
     //! This function attempts to find a right congruence,
     //! represented as an WordGraph, of the semigroup or
     //! monoid defined by the presentation consisting of
-    //! its \ref short_rules and \ref long_rules with the
+    //! its \ref presentation and \ref long_rules with the
     //! following properties:
     //! * the transformation semigroup defined by the
     //! WordGraph has size \ref target_size;
@@ -1240,9 +1240,9 @@ namespace libsemigroups {
     //! \returns A value of type `WordGraph`.
     //!
     //! \exceptions \no_libsemigroups_except
-    Sims1::digraph_type digraph() const;
+    Sims1::word_graph_type word_graph() const;
 
-    using Sims1Settings<RepOrc>::short_rules;
+    using Sims1Settings<RepOrc>::presentation;
     using Sims1Settings<RepOrc>::long_rules;
   };
 
@@ -1252,7 +1252,7 @@ namespace libsemigroups {
   //! function attempts to find a right congruence, represented as an
   //! WordGraph, with the minimum possible number of nodes such that the
   //! action of the semigroup or monoid defined by the presentation consisting
-  //! of its \ref short_rules and \ref long_rules on the nodes of the
+  //! of its \ref presentation and \ref long_rules on the nodes of the
   //! WordGraph corresponds to a semigroup of size \ref target_size.
   //!
   //! If no such WordGraph can be found, then an empty WordGraph is
@@ -1307,7 +1307,7 @@ namespace libsemigroups {
     //! This function attempts to find a right congruence, represented as an
     //! WordGraph, with the minimum possible number of nodes such that the
     //! action of the semigroup or monoid defined by the presentation
-    //! consisting of its \ref short_rules and \ref long_rules on the nodes
+    //! consisting of its \ref presentation and \ref long_rules on the nodes
     //! of the WordGraph corresponds to a semigroup of size \ref
     //! target_size.
     //!
@@ -1319,7 +1319,7 @@ namespace libsemigroups {
     //!     .min_nodes(1)
     //!     .max_nodes(best)
     //!     .target_size(target_size())
-    //!     .digraph();
+    //!     .word_graph();
     //! \endcode
     //! where `best` is initially \ref target_size, until the returned
     //! WordGraph is empty, and then the penultimate WordGraph is returned
@@ -1338,7 +1338,7 @@ namespace libsemigroups {
     //! \returns A value of type `WordGraph`.
     //!
     //! \exceptions \no_libsemigroups_except
-    Sims1::digraph_type digraph() const;
+    Sims1::word_graph_type word_graph() const;
   };
 
 }  // namespace libsemigroups

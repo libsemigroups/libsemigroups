@@ -34,7 +34,7 @@ namespace libsemigroups {
         _longs(),
         _num_threads(),
         _report_interval(),
-        _shorts(),
+        _presentation(),
         _stats() {
     number_of_threads(1);
     report_interval(999);
@@ -48,12 +48,12 @@ namespace libsemigroups {
         _longs(that.long_rules()),
         _num_threads(that.number_of_threads()),
         _report_interval(that.report_interval()),
-        _shorts(that.short_rules()),
+        _presentation(that.presentation()),
         _stats(that.stats()) {}
 
   template <typename T>
   template <typename P>
-  T& Sims1Settings<T>::short_rules(P const& p) {
+  T& Sims1Settings<T>::presentation(P const& p) {
     static_assert(std::is_base_of<PresentationBase, P>::value,
                   "the template parameter P must be derived from "
                   "PresentationBase");
@@ -66,7 +66,7 @@ namespace libsemigroups {
     auto normal_p = to_presentation<word_type>(p);
     validate_presentation(normal_p, long_rules());
     // TODO validate against include and exclude
-    _shorts = normal_p;
+    _presentation = normal_p;
     return static_cast<T&>(*this);
   }
 
@@ -80,24 +80,11 @@ namespace libsemigroups {
     // the presentation are {0, ..., n - 1} where n is the size of the
     // alphabet.
     auto normal_p = to_presentation<word_type>(p);
-    validate_presentation(normal_p, short_rules());
+    validate_presentation(normal_p, presentation());
     // TODO validate against include and exclude
     _longs = normal_p;
     return static_cast<T&>(*this);
   }
-
-  // template <typename T>
-  // template <typename P>
-  // T& Sims1Settings<T>::include(P const& p) {
-  //   static_assert(std::is_base_of<PresentationBase, P>::value,
-  //                 "the template parameter P must be derived from "
-  //                 "PresentationBase");
-  //   auto normal_p = to_presentation<word_type>(p);
-  //   validate_presentation(normal_p, short_rules());
-  //   validate_presentation(normal_p, long_rules());
-  //   _include = normal_p;
-  //   return static_cast<T&>(*this);
-  // }
 
   template <typename T>
   T& Sims1Settings<T>::number_of_threads(size_t val) {
@@ -131,42 +118,45 @@ namespace libsemigroups {
     };
 
     // points at the lhs of the first rule of length at least val
-    auto its = partition(_shorts.rules.begin(), _shorts.rules.end());
+    auto its
+        = partition(_presentation.rules.begin(), _presentation.rules.end());
     _longs.rules.insert(_longs.rules.end(),
                         std::make_move_iterator(its),
-                        std::make_move_iterator(_shorts.rules.end()));
-    auto lastl = _longs.rules.end() - std::distance(its, _shorts.rules.end());
-    _shorts.rules.erase(its, _shorts.rules.end());
+                        std::make_move_iterator(_presentation.rules.end()));
+    auto lastl
+        = _longs.rules.end() - std::distance(its, _presentation.rules.end());
+    _presentation.rules.erase(its, _presentation.rules.end());
 
     // points at the lhs of the first rule of length at least val
     auto itl = partition(_longs.rules.begin(), lastl);
-    _shorts.rules.insert(_shorts.rules.end(),
-                         std::make_move_iterator(_longs.rules.begin()),
-                         std::make_move_iterator(itl));
+    _presentation.rules.insert(_presentation.rules.end(),
+                               std::make_move_iterator(_longs.rules.begin()),
+                               std::make_move_iterator(itl));
     _longs.rules.erase(_longs.rules.begin(), itl);
     return static_cast<T&>(*this);
   }
 
   template <typename T>
   Sims1Settings<T>& Sims1Settings<T>::split_at(size_t val) {
-    if (val > _shorts.rules.size() / 2 + _longs.rules.size() / 2) {
+    if (val > _presentation.rules.size() / 2 + _longs.rules.size() / 2) {
       LIBSEMIGROUPS_EXCEPTION("expected a value in the range [0, {}), found {}",
-                              _shorts.rules.size() / 2
+                              _presentation.rules.size() / 2
                                   + _longs.rules.size() / 2,
                               val);
     }
 
     val *= 2;
-    if (val < _shorts.rules.size()) {
+    if (val < _presentation.rules.size()) {
       _longs.rules.insert(_longs.rules.begin(),
-                          _shorts.rules.begin() + val,
-                          _shorts.rules.end());
-      _shorts.rules.erase(_shorts.rules.begin() + val, _shorts.rules.end());
+                          _presentation.rules.begin() + val,
+                          _presentation.rules.end());
+      _presentation.rules.erase(_presentation.rules.begin() + val,
+                                _presentation.rules.end());
     } else {
-      val -= _shorts.rules.size();
-      _shorts.rules.insert(_shorts.rules.end(),
-                           _longs.rules.begin(),
-                           _longs.rules.begin() + val);
+      val -= _presentation.rules.size();
+      _presentation.rules.insert(_presentation.rules.end(),
+                                 _longs.rules.begin(),
+                                 _longs.rules.begin() + val);
       _longs.rules.erase(_longs.rules.begin(), _longs.rules.begin() + val);
     }
     return *this;

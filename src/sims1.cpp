@@ -60,10 +60,10 @@ namespace libsemigroups {
   Sims1::iterator_base::iterator_base(Sims1 const* s,
                                       size_type    n)
       :  // private
-        _max_num_classes(s->short_rules().contains_empty_word() ? n : n + 1),
-        _min_target_node(s->short_rules().contains_empty_word() ? 0 : 1),
+        _max_num_classes(s->presentation().contains_empty_word() ? n : n + 1),
+        _min_target_node(s->presentation().contains_empty_word() ? 0 : 1),
         // protected
-        _felsch_graph(s->short_rules()),
+        _felsch_graph(s->presentation()),
         _mtx(),
         _pending(),
         _sims1(s) {
@@ -365,10 +365,10 @@ namespace libsemigroups {
     std::mutex                                    _mtx;
     size_type                                     _num_threads;
     uint64_t                                      _report_interval;
-    digraph_type                                  _result;
+    word_graph_type                               _result;
 
-    void worker_thread(unsigned                                 my_index,
-                       std::function<bool(digraph_type const&)> hook) {
+    void worker_thread(unsigned                                    my_index,
+                       std::function<bool(word_graph_type const&)> hook) {
       PendingDef pd;
       for (auto i = 0; i < 16; ++i) {
         while ((pop_from_local_queue(pd, my_index)
@@ -432,11 +432,11 @@ namespace libsemigroups {
 
     ~thread_runner() = default;
 
-    digraph_type const& digraph() const {
+    word_graph_type const& word_graph() const {
       return _result;
     }
 
-    void run(std::function<bool(digraph_type const&)> hook) {
+    void run(std::function<bool(word_graph_type const&)> hook) {
       detail::Timer t;
       auto          start_time  = std::chrono::high_resolution_clock::now();
       auto          last_report = start_time;
@@ -445,7 +445,7 @@ namespace libsemigroups {
 
       auto actual_hook = hook;
       if (report::should_report()) {
-        actual_hook = [&](digraph_type const& ad) {
+        actual_hook = [&](word_graph_type const& ad) {
           if (hook(ad)) {
             return true;
           }
@@ -491,11 +491,11 @@ namespace libsemigroups {
   uint64_t Sims1::number_of_congruences(size_type n) const {
     if (number_of_threads() == 1) {
       uint64_t result = 0;
-      for_each(n, [&result](digraph_type const&) { ++result; });
+      for_each(n, [&result](word_graph_type const&) { ++result; });
       return result;
     } else {
       std::atomic_int64_t result(0);
-      for_each(n, [&result](digraph_type const&) { ++result; });
+      for_each(n, [&result](word_graph_type const&) { ++result; });
       return result;
     }
   }
@@ -503,17 +503,17 @@ namespace libsemigroups {
   // Apply the function pred to every one-sided congruence with at
   // most n classes
 
-  void Sims1::for_each(size_type                                n,
-                       std::function<void(digraph_type const&)> pred) const {
+  void Sims1::for_each(size_type                                   n,
+                       std::function<void(word_graph_type const&)> pred) const {
     if (n == 0) {
       LIBSEMIGROUPS_EXCEPTION(
           "expected the 1st argument (size_type) to be non-zero");
-    } else if (short_rules().rules.empty()
-               && short_rules().alphabet().empty()) {
+    } else if (presentation().rules.empty()
+               && presentation().alphabet().empty()) {
       LIBSEMIGROUPS_EXCEPTION(
-          "the short_rules() must be defined before calling this function");
+          "the presentation() must be defined before calling this function");
     }
-    report_at_start(short_rules(), long_rules(), n, number_of_threads());
+    report_at_start(presentation(), long_rules(), n, number_of_threads());
     if (number_of_threads() == 1) {
       if (!report::should_report()) {
         // No stats in this case
@@ -540,7 +540,7 @@ namespace libsemigroups {
       }
     } else {
       thread_runner den(this, n, number_of_threads(), report_interval());
-      auto          pred_wrapper = [&pred](digraph_type const& ad) {
+      auto          pred_wrapper = [&pred](word_graph_type const& ad) {
         pred(ad);
         return false;
       };
@@ -549,18 +549,18 @@ namespace libsemigroups {
     }
   }
 
-  typename Sims1::digraph_type
-  Sims1::find_if(size_type                                n,
-                 std::function<bool(digraph_type const&)> pred) const {
+  typename Sims1::word_graph_type
+  Sims1::find_if(size_type                                   n,
+                 std::function<bool(word_graph_type const&)> pred) const {
     if (n == 0) {
       LIBSEMIGROUPS_EXCEPTION(
           "expected the 1st argument (size_type) to be non-zero");
-    } else if (short_rules().rules.empty()
-               && short_rules().alphabet().empty()) {
+    } else if (presentation().rules.empty()
+               && presentation().alphabet().empty()) {
       LIBSEMIGROUPS_EXCEPTION(
-          "the short_rules() must be defined before calling this function");
+          "the presentation() must be defined before calling this function");
     }
-    report_at_start(short_rules(), long_rules(), n, number_of_threads());
+    report_at_start(presentation(), long_rules(), n, number_of_threads());
     if (number_of_threads() == 1) {
       if (!report::should_report()) {
         return *std::find_if(cbegin(n), cend(n), pred);
@@ -590,16 +590,16 @@ namespace libsemigroups {
       // after den is destroyed.
       // stats(den.stats());
       report_stats();
-      return den.digraph();
+      return den.word_graph();
     }
   }
 
   Sims1::iterator Sims1::cbegin(size_type n) const {
     if (n == 0) {
       LIBSEMIGROUPS_EXCEPTION("the argument (size_type) must be non-zero");
-    } else if (short_rules().rules.empty()
-               && short_rules().alphabet().empty()) {
-      LIBSEMIGROUPS_EXCEPTION("the short_rules() must be defined before "
+    } else if (presentation().rules.empty()
+               && presentation().alphabet().empty()) {
+      LIBSEMIGROUPS_EXCEPTION("the presentation() must be defined before "
                               "calling this function");
     }
     return iterator(this, n);
@@ -621,7 +621,7 @@ namespace libsemigroups {
   //! an WordGraph with at most \p 0 nodes.
   //!
   //! \throws LibsemigroupsException if \p n is \c 0.
-  //! \throws LibsemigroupsException if `short_rules()`
+  //! \throws LibsemigroupsException if `presentation()`
   //! has 0-generators and 0-relations (i.e. it has not
   //! been initialised).
   //!
@@ -636,9 +636,9 @@ namespace libsemigroups {
   Sims1::iterator Sims1::cend(size_type n) const {
     if (n == 0) {
       LIBSEMIGROUPS_EXCEPTION("the argument (size_type) must be non-zero");
-    } else if (short_rules().rules.empty()
-               && short_rules().alphabet().empty()) {
-      LIBSEMIGROUPS_EXCEPTION("the short_rules() must be defined before "
+    } else if (presentation().rules.empty()
+               && presentation().alphabet().empty()) {
+      LIBSEMIGROUPS_EXCEPTION("the presentation() must be defined before "
                               "calling this function");
     }
     return iterator(this, 0);
@@ -762,9 +762,9 @@ namespace libsemigroups {
   // RepOrc helper class
   ////////////////////////////////////////////////////////////////////////
 
-  Sims1::digraph_type RepOrc::digraph() const {
-    using digraph_type = typename Sims1::digraph_type;
-    using node_type    = typename digraph_type::node_type;
+  Sims1::word_graph_type RepOrc::word_graph() const {
+    using word_graph_type = typename Sims1::word_graph_type;
+    using node_type       = typename word_graph_type::node_type;
     report_default("searching for a faithful rep. o.r.c. on [{}, {}) points\n",
                    _min,
                    _max + 1);
@@ -772,21 +772,21 @@ namespace libsemigroups {
       report_default("no faithful rep. o.r.c. exists in [{}, {}) = \u2205\n",
                      _min,
                      _max + 1);
-      return digraph_type(0, 0);
+      return word_graph_type(0, 0);
     }
 
     SuppressReportFor suppressor("FroidurePin");
 
     std::atomic_uint64_t count(0);
 
-    auto hook = [&](digraph_type const& x) {
+    auto hook = [&](word_graph_type const& x) {
       ++count;
       if (x.number_of_active_nodes() >= _min) {
-        auto first = (short_rules().contains_empty_word() ? 0 : 1);
+        auto first = (presentation().contains_empty_word() ? 0 : 1);
         auto S     = to_froidure_pin<Transf<0, node_type>>(
             x, first, x.number_of_active_nodes());
         // TODO reuse S here, using init + whatever else.
-        if (short_rules().contains_empty_word()) {
+        if (presentation().contains_empty_word()) {
           auto one = S.generator(0).identity();
           if (!S.contains(one)) {
             S.add_generator(one);
@@ -811,7 +811,7 @@ namespace libsemigroups {
       // FIXME this seems to report the wrong number of points in i.e. [038]
       report_default("found a faithful rep. o.r.c. on {} points\n",
                      result.number_of_active_nodes());
-      if (short_rules().contains_empty_word()) {
+      if (presentation().contains_empty_word()) {
         result.induced_subgraph_no_checks(0, result.number_of_active_nodes());
       } else {
         result.induced_subgraph_no_checks(1, result.number_of_active_nodes());
@@ -843,12 +843,14 @@ namespace libsemigroups {
   // TODO perhaps find minimal 2-sided congruences first (or try to) and then
   // run MinimalRepOrc for right congruences excluding all the generating pairs
   // from the minimal 2-sided congruences. Also with this approach FroidurePin
-  // wouldn't be required in RepOrc.
-  Sims1::digraph_type MinimalRepOrc::digraph() const {
+  // wouldn't be required in RepOrc. This might not work, given that the
+  // minimal rc might contain some pairs from minimal 2-sided congs, just not
+  // all of them.
+  Sims1::word_graph_type MinimalRepOrc::word_graph() const {
     auto cr = RepOrc(*this);
 
-    size_t hi   = (short_rules().contains_empty_word() ? _size : _size + 1);
-    auto   best = cr.min_nodes(1).max_nodes(hi).target_size(_size).digraph();
+    size_t hi   = (presentation().contains_empty_word() ? _size : _size + 1);
+    auto   best = cr.min_nodes(1).max_nodes(hi).target_size(_size).word_graph();
 
     if (best.number_of_nodes() < 1) {
       stats(cr.stats());
@@ -856,11 +858,11 @@ namespace libsemigroups {
     }
 
     hi        = best.number_of_nodes();
-    auto next = cr.max_nodes(hi - 1).digraph();
+    auto next = cr.max_nodes(hi - 1).word_graph();
     while (next.number_of_nodes() != 0) {
       hi   = next.number_of_nodes();
       best = std::move(next);
-      next = cr.max_nodes(hi - 1).digraph();
+      next = cr.max_nodes(hi - 1).word_graph();
     }
     stats(cr.stats());
     return best;
