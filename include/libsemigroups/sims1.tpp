@@ -29,26 +29,27 @@ namespace libsemigroups {
 
   template <typename T>
   Sims1Settings<T>::Sims1Settings()
-      : _exclude(),
+      :  // protected
+        _exclude(),
         _include(),
         _longs(),
-        _num_threads(),
-        _report_interval(),
         _presentation(),
+        // private
+        _num_threads(),
         _stats() {
     number_of_threads(1);
-    report_interval(999);
   }
 
   template <typename T>
   template <typename S>
   Sims1Settings<T>::Sims1Settings(Sims1Settings<S> const& that)
-      : _exclude(that.exclude()),
+      :  // protected
+        _exclude(that.exclude()),
         _include(that.include()),
         _longs(that.long_rules()),
-        _num_threads(that.number_of_threads()),
-        _report_interval(that.report_interval()),
         _presentation(that.presentation()),
+        // private
+        _num_threads(that.number_of_threads()),
         _stats(that.stats()) {}
 
   template <typename T>

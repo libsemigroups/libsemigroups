@@ -370,13 +370,13 @@ namespace libsemigroups {
     std::vector<std::thread>                      _threads;
     std::mutex                                    _mtx;
     size_type                                     _num_threads;
-    uint64_t                                      _report_interval;
     word_graph_type                               _result;
+    Sims1 const*                                  _sims1;
 
     void worker_thread(unsigned                                    my_index,
                        std::function<bool(word_graph_type const&)> hook) {
       PendingDef pd;
-      for (auto i = 0; i < 16; ++i) {
+      for (auto i = 0; i < 16; ++i) {  // TODO setting for this
         while ((pop_from_local_queue(pd, my_index)
                 || pop_from_other_thread_queue(pd, my_index))
                && !_done) {
@@ -419,17 +419,14 @@ namespace libsemigroups {
     }
 
    public:
-    thread_runner(Sims1 const* s,
-                  size_type    n,
-                  size_type    num_threads,
-                  uint64_t     report_interval)
+    thread_runner(Sims1 const* s, size_type n, size_type num_threads)
         : _done(false),
           _theives(),
           _threads(),
           _mtx(),
           _num_threads(num_threads),
-          _report_interval(report_interval),
-          _result() {
+          _result(),
+          _sims1(s) {
       for (size_t i = 0; i < _num_threads; ++i) {
         _theives.push_back(std::make_unique<thread_iterator>(s, n));
       }
@@ -442,37 +439,26 @@ namespace libsemigroups {
       return _result;
     }
 
-    void run(std::function<bool(word_graph_type const&)> hook) {
-      detail::Timer t;
-      auto          start_time  = std::chrono::high_resolution_clock::now();
-      auto          last_report = start_time;
-      std::atomic_uint64_t last_count(0);
-      std::atomic_uint64_t count(0);
-
-      auto actual_hook = hook;
-      if (report::should_report()) {
-        actual_hook = [&](word_graph_type const& ad) {
-          if (hook(ad)) {
-            return true;
-          }
-          report_number_of_congruences(_report_interval,
-                                       start_time,
-                                       last_report,
-                                       last_count,
-                                       ++count,
-                                       _mtx);
-          return false;
-        };
-      }
+    void really_run(std::function<bool(word_graph_type const&)> hook) {
       try {
         detail::JoinThreads joiner(_threads);
         for (size_t i = 0; i < _num_threads; ++i) {
           _threads.push_back(std::thread(
-              &thread_runner::worker_thread, this, i, std::ref(actual_hook)));
+              &thread_runner::worker_thread, this, i, std::ref(hook)));
         }
       } catch (...) {
         _done = true;
         throw;
+      }
+    }
+
+    void run(std::function<bool(word_graph_type const&)> hook) {
+      if (report::should_report()) {
+        auto                      t = _sims1->launch_report_thread();
+        detail::ReportThreadGuard tg(*_sims1, t);
+        really_run(hook);
+      } else {
+        really_run(hook);
       }
     }
 
@@ -524,27 +510,19 @@ namespace libsemigroups {
         // No stats in this case
         std::for_each(cbegin(n), cend(n), pred);
       } else {
-        auto       start_time  = std::chrono::high_resolution_clock::now();
-        auto       last_report = start_time;
-        uint64_t   last_count  = 0;
-        uint64_t   count       = 0;
-        std::mutex mtx;  // does nothing
-        auto       it   = cbegin(n);
-        auto const last = cend(n);
+        stats().zero_stats();
+        auto                      t = launch_report_thread();
+        detail::ReportThreadGuard tg(*this, t);
+        auto                      it   = cbegin(n);
+        auto const                last = cend(n);
         for (; it != last; ++it) {
-          report_number_of_congruences(report_interval(),
-                                       start_time,
-                                       last_report,
-                                       last_count,
-                                       ++count,
-                                       mtx);
           pred(*it);
         }
         report_final();
         report_stats();
       }
     } else {
-      thread_runner den(this, n, number_of_threads(), report_interval());
+      thread_runner den(this, n, number_of_threads());
       auto          pred_wrapper = [&pred](word_graph_type const& ad) {
         pred(ad);
         return false;
@@ -590,7 +568,7 @@ namespace libsemigroups {
         return *last;  // the empty digraph
       }
     } else {
-      thread_runner den(this, n, number_of_threads(), report_interval());
+      thread_runner den(this, n, number_of_threads());
       den.run(pred);
       // Copy the thread_runner stats into this so that we can retrieve it
       // after den is destroyed.
@@ -657,34 +635,6 @@ namespace libsemigroups {
           presentation::shortest_rule_length(long_rules()),
           presentation::longest_rule_length(long_rules()),
           presentation::length(long_rules()));
-    }
-  }
-
-  template <typename S>
-  void Sims1::report_number_of_congruences(uint64_t    report_interval,
-                                           time_point& start_time,
-                                           time_point& last_report,
-                                           S&          last_count,
-                                           uint64_t    count_now,
-                                           std::mutex& mtx) {
-    using std::chrono::duration_cast;
-    using std::chrono::seconds;
-
-    std::lock_guard<std::mutex> lock(mtx);
-    if (count_now - last_count > report_interval) {
-      auto now = std::chrono::high_resolution_clock::now();
-      if (now - last_report > std::chrono::seconds(1)) {
-        auto total_time = duration_cast<seconds>(now - start_time);
-        auto diff_time  = duration_cast<seconds>(now - last_report);
-        report_default(
-            "Sims1: found {} congruences in {}s ({}/s)!\n",
-            detail::group_digits(count_now).c_str(),
-            total_time.count(),
-            detail::group_digits((count_now - last_count) / diff_time.count())
-                .c_str());
-        std::swap(now, last_report);
-        last_count = count_now;
-      }
     }
   }
 

@@ -135,12 +135,11 @@ namespace libsemigroups {
     std::vector<word_type> _exclude;
     std::vector<word_type> _include;
     // TODO change to iterator into _presentation
-    Presentation<word_type> _longs;
+    Presentation<word_type> _longs;  // TODO this won't need to be protected
     Presentation<word_type> _presentation;
 
    private:
     size_t             _num_threads;
-    size_t             _report_interval;
     mutable Sims1Stats _stats;
 
    public:
@@ -157,7 +156,6 @@ namespace libsemigroups {
     //! `Sims1`, `RepOrc`, and `MinimalRepOrc`, which are currently:
     //! * \ref presentation
     //! * \ref long_rules
-    //! * \ref report_interval
     //! * \ref number_of_threads
     //! * \ref extra
     //!
@@ -182,7 +180,6 @@ namespace libsemigroups {
     //! `Sims1`, `RepOrc`, and `MinimalRepOrc`, which are currently:
     //! * \ref presentation
     //! * \ref long_rules
-    //! * \ref report_interval
     //! * \ref number_of_threads
     //! * \ref extra
     //!
@@ -232,40 +229,6 @@ namespace libsemigroups {
     //! \noexcept
     size_t number_of_threads() const noexcept {
       return _num_threads;
-    }
-
-    //! \anchor report_interval
-    //! Set the report interval.
-    //!
-    //! Only report after \p val new congruences have been
-    //! found.
-    //!
-    //! The default value is `1999`.
-    //!
-    //! \param val the new value for the report interval.
-    //!
-    //! \returns A reference to \c this.
-    //!
-    //! \exceptions
-    //! \noexcept
-    // TODO Remove
-    Subclass& report_interval(size_t val) noexcept {
-      _report_interval = val;
-      return static_cast<Subclass&>(*this);
-    }
-
-    //! Returns the current report interval.
-    //!
-    //! \param (None) this function has no parameters.
-    //!
-    //! \returns
-    //! A `size_t`.
-    //!
-    //! \exceptions
-    //! \noexcept
-    // TODO remove
-    size_t report_interval() const noexcept {
-      return _report_interval;
     }
 
     //! Set the short rules.
@@ -1044,16 +1007,7 @@ namespace libsemigroups {
 
     // TODO remove
     void report_stats() const;
-    // TODO remove
-    using time_point = std::chrono::high_resolution_clock::time_point;
-    // TODO remove
-    template <typename S>
-    static void report_number_of_congruences(uint64_t    report_interval,
-                                             time_point& start_time,
-                                             time_point& last_report,
-                                             S&          last_count,
-                                             uint64_t    count_now,
-                                             std::mutex& mtx);
+
     // Nested classes
     class thread_iterator;
     class thread_runner;

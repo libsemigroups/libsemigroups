@@ -316,7 +316,6 @@ namespace libsemigroups {
     auto          d = orc.presentation(p)
                  .target_size(15)
                  .number_of_threads(std::thread::hardware_concurrency())
-                 .report_interval(1'999)
                  .word_graph();
 
     REQUIRE(d.number_of_nodes() == 7);
@@ -444,8 +443,7 @@ namespace libsemigroups {
                           "symmetric_inverse_monoid(4)",
                           "[extreme][low-index]") {
     using namespace literals;
-    auto rg = ReportGuard(true);
-    auto p  = rook_monoid(4, 1);
+    auto p = rook_monoid(4, 1);
     presentation::remove_duplicate_rules(p);
     presentation::sort_each_rule(p);
     presentation::sort_rules(p);
@@ -460,6 +458,8 @@ namespace libsemigroups {
     C.presentation(p).exclude(""_w, 11_w);
     REQUIRE(C.number_of_threads(2).number_of_congruences(209) == 0);
     C.clear_exclude();
+
+    auto rg = ReportGuard(true);
     REQUIRE(C.number_of_threads(2).number_of_congruences(209) == 195'709);
   }
 
@@ -724,7 +724,6 @@ namespace libsemigroups {
     auto          d = orc.presentation(p)
                  .target_size(82)
                  .number_of_threads(std::thread::hardware_concurrency())
-                 .report_interval(1'999)
                  .word_graph();
     REQUIRE(d.number_of_nodes() == 18);
     REQUIRE(orc.target_size() == 82);
@@ -884,7 +883,6 @@ namespace libsemigroups {
                  .include(0_w, 1_w)
                  .target_size(945)
                  .number_of_threads(8)
-                 .report_interval(100)
                  .word_graph();
     // WARNING: the number below is not necessarily the minimal degree of an
     // action on right congruences, only the minimal degree of an action on
@@ -959,7 +957,7 @@ namespace libsemigroups {
     REQUIRE(p.rules[0].size() + p.rules[1].size() == 5);
 
     Sims1 C(congruence_kind::right);
-    C.presentation(p).report_interval(1);
+    C.presentation(p);
     REQUIRE(C.number_of_congruences(3) == 5);
 
     C.number_of_threads(2);
@@ -1230,7 +1228,7 @@ namespace libsemigroups {
       }
     };
 
-    auto SS = Sims1(congruence_kind::right).presentation(p).report_interval(10);
+    auto SS = Sims1(congruence_kind::right).presentation(p);
 
     SS.for_each(22, hook);
     REQUIRE(all.size() == 24);
@@ -1751,8 +1749,7 @@ namespace libsemigroups {
     REQUIRE(presentation::length(p) == 1414);
     REQUIRE(presentation::longest_rule_length(p) == 6);
 
-    C.presentation(p).long_rule_length(6).number_of_threads(8).report_interval(
-        100);
+    C.presentation(p).long_rule_length(6).number_of_threads(8);
     REQUIRE(C.number_of_congruences(625) == 10);
   }
 
@@ -2220,7 +2217,7 @@ namespace libsemigroups {
       p.rules.erase(it, it + 2);
     } while (presentation::length(p) > 800);
     Sims1 C(congruence_kind::left);
-    C.presentation(p).number_of_threads(4).report_interval(10);
+    C.presentation(p).number_of_threads(4);
     REQUIRE(C.number_of_congruences(624) == 0);
   }
 
