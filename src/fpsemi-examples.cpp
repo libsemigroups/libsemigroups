@@ -897,6 +897,68 @@ namespace libsemigroups {
       return p;
     }
 
+    Presentation<word_type> partial_brauer_monoid(size_t n) {
+      if (n == 0) {
+        LIBSEMIGROUPS_EXCEPTION("TODO");
+      }
+
+      std::vector<word_type> s(n), t(n), v(n);
+
+      for (size_t i = 0; i < n - 1; ++i) {
+        s[i] = {i};
+        t[i] = {i + n - 1};
+        v[i] = {i + 2 * n - 2};
+      }
+      v[n - 1] = {3 * n - 3};
+
+      Presentation<word_type> p = brauer_monoid(n);
+      p.alphabet(3 * n - 2);
+
+      // 15 from p14
+      for (size_t i = 0; i < n; ++i) {
+        presentation::add_rule_no_checks(p, v[i] + v[i], v[i]);
+        for (size_t j = 0; j < n; ++j) {
+          if (j != i) {
+            presentation::add_rule_no_checks(p, v[i] + v[j], v[j] + v[i]);
+          }
+        }
+      }
+
+      // 16 from p14
+      for (size_t i = 0; i < n - 1; ++i) {
+        presentation::add_rule_no_checks(p, s[i] + v[i], v[i + 1] + s[i]);
+      }
+
+      for (size_t i = 0; i < n - 1; ++i) {
+        for (size_t j = 0; j < n; ++j) {
+          if (j != i && j != i + 1) {
+            presentation::add_rule_no_checks(p, s[i] + v[j], v[j] + s[i]);
+            // 17 on p15
+            presentation::add_rule_no_checks(p, t[i] + v[j], v[j] + t[i]);
+          }
+        }
+      }
+
+      // 16 on p14
+      for (size_t i = 0; i < n - 1; ++i) {
+        presentation::add_rule_no_checks(
+            p, v[i] + s[i] + v[i], v[i] + v[i + 1]);
+      }
+
+      for (size_t i = 0; i < n - 1; ++i) {
+        // 18
+        presentation::add_rule_no_checks(p, t[i] + v[i], t[i] + v[i + 1]);
+        // 18
+        presentation::add_rule_no_checks(p, v[i] + t[i], v[i + 1] + t[i]);
+        // 19
+        presentation::add_rule_no_checks(p, t[i] + v[i] + t[i], t[i]);
+        // 19
+        presentation::add_rule_no_checks(
+            p, v[i] + t[i] + v[i], v[i] + v[i + 1]);
+      }
+      return p;
+    }
+
     // From Proposition 4.2 in
     // https://link.springer.com/content/pdf/10.1007/s002339910016.pdf
     Presentation<word_type> rectangular_band(size_t m, size_t n) {

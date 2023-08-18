@@ -484,7 +484,9 @@ namespace libsemigroups {
     }
   }
 
-  Sims1::~Sims1() = default;
+  Sims1::~Sims1() {
+    stop_report_thread();
+  }
 
   uint64_t Sims1::number_of_congruences(size_type n) const {
     if (number_of_threads() == 1) {
@@ -564,8 +566,8 @@ namespace libsemigroups {
         return *std::find_if(cbegin(n), cend(n), pred);
       } else {
         stats().zero_stats();
-        std::thread               report_thread = launch_report_thread();
-        detail::ReportThreadGuard tg(*this, report_thread);
+        launch_report_thread();
+        detail::ReportThreadGuard tg(*this);
 
         auto       it   = cbegin(n);
         auto const last = cend(n);

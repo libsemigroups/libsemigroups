@@ -813,4 +813,18 @@ namespace libsemigroups {
     ToddCoxeter tc(congruence_kind::twosided, not_symmetric_group(n));
     REQUIRE(tc.number_of_classes() == 72);
   }
+
+  LIBSEMIGROUPS_TEST_CASE("fpsemi-examples",
+                          "072",
+                          "partial_brauer_monoid(4)",
+                          "[fpsemi-examples][quick]") {
+    auto   rg = ReportGuard(REPORT);
+    size_t n  = 4;
+
+    ToddCoxeter tc(congruence_kind::twosided,
+                   fpsemigroup::partial_brauer_monoid(n));
+    REQUIRE(tc.number_of_classes() == 764);
+    REQUIRE_THROWS_AS(fpsemigroup::partial_brauer_monoid(0),
+                      LibsemigroupsException);
+  }
 }  // namespace libsemigroups

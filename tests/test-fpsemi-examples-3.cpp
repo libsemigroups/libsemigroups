@@ -31,8 +31,6 @@
 
 namespace libsemigroups {
 
-  using Sims1_ = Sims1<uint32_t>;
-
   using fpsemigroup::author;
   using fpsemigroup::not_symmetric_group;
   using fpsemigroup::symmetric_group;
@@ -45,10 +43,10 @@ namespace libsemigroups {
     auto   rg = ReportGuard(false);
     size_t n  = 5;
 
-    Sims1_ C(congruence_kind::right);
+    Sims1 C(congruence_kind::right);
     C.short_rules(not_symmetric_group(n));
 
-    Sims1_ D(congruence_kind::right);
+    Sims1 D(congruence_kind::right);
     D.short_rules(symmetric_group(n, author::Carmichael));
 
     REQUIRE(C.number_of_congruences(3) == 41);

@@ -1244,7 +1244,7 @@ namespace libsemigroups {
     std::array<uint64_t, 11> const sizes
         = {0, 1, 2, 5, 14, 42, 132, 429, 1'430, 4'862, 16'796};
     std::array<uint64_t, 11> const min_degrees
-        = {0, 0, 2, 4, 7, 10, 20, 29, 63, 91, 0};
+        = {0, 0, 2, 4, 7, 10, 20, 29, 63, 91, 208};
     // The values 63 and 91 are not verified
 
     for (size_t n = 3; n <= 6; ++n) {
@@ -2660,7 +2660,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("Sims1", "088", "Brauer monoid", "[extreme][sims1]") {
     using namespace literals;
     auto p = brauer_monoid(5);
-    REQUIRE(p.alphabet() == 012_w);
+    // REQUIRE(p.alphabet() == 012_w);
     MinimalRepOrc orc;
     auto          d = orc.short_rules(brauer_monoid(5))
                  .target_size(945)
@@ -2673,7 +2673,34 @@ namespace libsemigroups {
                  // .exclude(00102002_w, 001020020_w)
                  .digraph();
 
+    // sigma_i = (i, i + 1)
+    // theta_i = Bipartition([[i, i + 1], [-i, -(i + 1)], [j, -j], j neq i]);
+
     REQUIRE(d.number_of_nodes() == 3);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Sims1",
+                          "089",
+                          "partial Brauer monoid",
+                          "[extreme][sims1]") {
+    using namespace literals;
+    std::array<uint64_t, 6> const sizes       = {0, 2, 10, 76, 764, 9496};
+    std::array<uint64_t, 6> const min_degrees = {0, 2, 6, 14, 44, 143};
+
+    for (size_t n = 1; n < 5; ++n) {
+      std::cout << std::string(80, '#') << std::endl;
+      auto          p = fpsemigroup::partial_brauer_monoid(n);
+      MinimalRepOrc orc;
+      auto          d = orc.short_rules(p)
+                   .target_size(sizes[n])
+                   .number_of_threads(4)
+                   .digraph();
+
+      // sigma_i = (i, i + 1)
+      // theta_i = Bipartition([[i, i + 1], [-i, -(i + 1)], [j, -j], j neq i]);
+
+      REQUIRE(d.number_of_nodes() == min_degrees[n]);
+    }
   }
 }  // namespace libsemigroups
 

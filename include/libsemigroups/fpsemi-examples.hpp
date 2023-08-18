@@ -223,8 +223,11 @@ namespace libsemigroups {
     //!
     //! \noexcept
     //!
-    //! [10.2478/s11533-006-0017-6]: https://doi.org/10.2478/s11533-006-0017-6
+    //! [10.2478/s11533-006-0017-6]:
+    //! https://doi.org/10.2478/s11533-006-0017-6
     Presentation<word_type> brauer_monoid(size_t n);
+
+    Presentation<word_type> partial_brauer_monoid(size_t n);
 
     //! A presentation for a Fibonacci semigroup.
     //!
