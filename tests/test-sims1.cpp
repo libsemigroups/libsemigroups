@@ -29,7 +29,7 @@
 #include "libsemigroups/config.hpp"           // for LIBSEMIGROUPS_ENABLE_STATS
 #include "libsemigroups/fpsemi-examples.hpp"  // for brauer_monoid etc
 #include "libsemigroups/froidure-pin.hpp"     // for FroidurePin
-#include "libsemigroups/gabow.hpp"            // for Gabo
+#include "libsemigroups/gabow.hpp"            // for Gabow
 #include "libsemigroups/knuth-bendix.hpp"     // for redundant_rule
 #include "libsemigroups/sims1.hpp"            // for Sims1
 #include "libsemigroups/to-froidure-pin.hpp"  // for make

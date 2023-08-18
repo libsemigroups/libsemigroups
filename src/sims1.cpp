@@ -241,10 +241,16 @@ namespace libsemigroups {
     // No undefined edges, word graph is complete
     LIBSEMIGROUPS_ASSERT(N == M * num_gens);
 
-    auto first = _sims1->long_rules().rules.cbegin();
-    auto last  = _sims1->long_rules().rules.cend();
-    return felsch_graph::make_compatible<RegisterDefs>(
+    auto first  = _sims1->long_rules().rules.cbegin();
+    auto last   = _sims1->long_rules().rules.cend();
+    bool result = felsch_graph::make_compatible<RegisterDefs>(
         _felsch_graph, 0, M, first, last);
+    if (result) {
+      std::lock_guard<std::mutex> lock(_mtx);
+      // TODO maybe better to use atomic
+      ++stats.count_now;
+    }
+    return result;
   }
 
   ///////////////////////////////////////////////////////////////////////////////
@@ -468,7 +474,6 @@ namespace libsemigroups {
         _done = true;
         throw;
       }
-      final_report_number_of_congruences(start_time, count);
     }
 
   };  // class thread_runner
@@ -535,7 +540,7 @@ namespace libsemigroups {
                                        mtx);
           pred(*it);
         }
-        final_report_number_of_congruences(start_time, count);
+        report_final();
         report_stats();
       }
     } else {
@@ -545,6 +550,7 @@ namespace libsemigroups {
         return false;
       };
       den.run(pred_wrapper);
+      report_final();
       report_stats();
     }
   }
@@ -574,12 +580,12 @@ namespace libsemigroups {
 
         for (; it != last; ++it) {
           if (pred(*it)) {
-            // final_report_number_of_congruences(start_time, ++count);
+            report_final();
             report_stats();
             return *it;
           }
         }
-        // final_report_number_of_congruences(start_time, ++count);
+        report_final();
         report_stats();
         return *last;  // the empty digraph
       }
@@ -605,34 +611,6 @@ namespace libsemigroups {
     return iterator(this, n);
   }
 
-  //! Returns a forward iterator pointing one beyond the
-  //! last congruence.
-  //!
-  //! Returns a forward iterator pointing to the empty
-  //! WordGraph. If incremented, the returned iterator
-  //! remains valid and continues to point at the empty
-  //! WordGraph.
-  //!
-  //! \param n the maximum number of classes in a
-  //! congruence.
-  //!
-  //! \returns
-  //! An iterator \c it of type \c iterator pointing to
-  //! an WordGraph with at most \p 0 nodes.
-  //!
-  //! \throws LibsemigroupsException if \p n is \c 0.
-  //! \throws LibsemigroupsException if `presentation()`
-  //! has 0-generators and 0-relations (i.e. it has not
-  //! been initialised).
-  //!
-  //! \warning
-  //! Copying iterators of this type is expensive.  As a
-  //! consequence, prefix incrementing \c ++it the
-  //! returned  iterator \c it significantly cheaper than
-  //! postfix incrementing \c it++.
-  //!
-  //! \sa
-  //! \ref cbegin
   Sims1::iterator Sims1::cend(size_type n) const {
     if (n == 0) {
       LIBSEMIGROUPS_EXCEPTION("the argument (size_type) must be non-zero");
@@ -699,7 +677,7 @@ namespace libsemigroups {
         auto total_time = duration_cast<seconds>(now - start_time);
         auto diff_time  = duration_cast<seconds>(now - last_report);
         report_default(
-            "Sims1: found {} congruences in {} ({}/s)!\n",
+            "Sims1: found {} congruences in {}s ({}/s)!\n",
             detail::group_digits(count_now).c_str(),
             total_time.count(),
             detail::group_digits((count_now - last_count) / diff_time.count())
@@ -729,13 +707,13 @@ namespace libsemigroups {
     s.count_last = s.count_now;
   }
 
-  void Sims1::final_report_number_of_congruences(time_point& start_time,
-                                                 uint64_t    count) {
+  void Sims1::report_final() const {
     using std::chrono::duration_cast;
     using std::chrono::nanoseconds;
 
     auto elapsed = duration_cast<nanoseconds>(
-        std::chrono::high_resolution_clock::now() - start_time);
+        std::chrono::high_resolution_clock::now() - start_time());
+    auto count = stats().count_now;
     if (count != 0) {
       report_default("Sims1: found {} congruences in {} ({} per congruence)!\n",
                      detail::group_digits(count),
@@ -749,9 +727,9 @@ namespace libsemigroups {
   }
 
   void Sims1::report_stats() const {
-    report_default("total number of nodes in search tree was {}\n",
+    report_default("Sims1: total number of nodes in search tree was {}\n",
                    detail::group_digits(stats().total_pending));
-    report_default("max. number of pending definitions was {}\n",
+    report_default("Sims1: max. number of pending definitions was {}\n",
                    detail::group_digits(stats().max_pending));
   }
 

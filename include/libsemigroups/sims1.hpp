@@ -1038,10 +1038,15 @@ namespace libsemigroups {
     };  // class iterator
 
    private:
-    using time_point = std::chrono::high_resolution_clock::time_point;
-
+    void report_progress_from_thread() const override;
     void report_at_start(size_t num_classes) const;
+    void report_final() const;
 
+    // TODO remove
+    void report_stats() const;
+    // TODO remove
+    using time_point = std::chrono::high_resolution_clock::time_point;
+    // TODO remove
     template <typename S>
     static void report_number_of_congruences(uint64_t    report_interval,
                                              time_point& start_time,
@@ -1049,14 +1054,6 @@ namespace libsemigroups {
                                              S&          last_count,
                                              uint64_t    count_now,
                                              std::mutex& mtx);
-
-    void report_progress_from_thread() const override;
-
-    void report_stats() const;
-
-    static void final_report_number_of_congruences(time_point& start_time,
-                                                   uint64_t    count);
-
     // Nested classes
     class thread_iterator;
     class thread_runner;
