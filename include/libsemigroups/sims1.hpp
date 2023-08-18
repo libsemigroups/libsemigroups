@@ -1040,10 +1040,7 @@ namespace libsemigroups {
    private:
     using time_point = std::chrono::high_resolution_clock::time_point;
 
-    static void report_at_start(Presentation<word_type> const& shorts,
-                                Presentation<word_type> const& longs,
-                                size_t                         num_classes,
-                                size_t                         num_threads);
+    void report_at_start(size_t num_classes) const;
 
     template <typename S>
     static void report_number_of_congruences(uint64_t    report_interval,

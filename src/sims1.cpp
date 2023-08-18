@@ -513,7 +513,7 @@ namespace libsemigroups {
       LIBSEMIGROUPS_EXCEPTION(
           "the presentation() must be defined before calling this function");
     }
-    report_at_start(presentation(), long_rules(), n, number_of_threads());
+    report_at_start(n);
     if (number_of_threads() == 1) {
       if (!report::should_report()) {
         // No stats in this case
@@ -560,7 +560,7 @@ namespace libsemigroups {
       LIBSEMIGROUPS_EXCEPTION(
           "the presentation() must be defined before calling this function");
     }
-    report_at_start(presentation(), long_rules(), n, number_of_threads());
+    report_at_start(n);
     if (number_of_threads() == 1) {
       if (!report::should_report()) {
         return *std::find_if(cbegin(n), cend(n), pred);
@@ -644,44 +644,41 @@ namespace libsemigroups {
     return iterator(this, 0);
   }
 
-  void Sims1::report_at_start(Presentation<word_type> const& shorts,
-                              Presentation<word_type> const& longs,
-                              size_t                         num_classes,
-                              size_t                         num_threads) {
-    if (num_threads == 1) {
-      report_default("Sims1: using 0 additional threads\n");
-    } else {
-      report_default("Sims1: using {} / {} additional threads\n",
-                     num_threads,
-                     std::thread::hardware_concurrency());
+  void Sims1::report_at_start(size_t num_classes) const {
+    std::string num_threads = "0";
+    if (number_of_threads() != 1) {
+      num_threads = fmt::format(
+          "{} / {}", number_of_threads(), std::thread::hardware_concurrency());
     }
-    report_default("Sims1: finding congruences with at most {} classes\n",
-                   uint64_t(num_classes));
-    report_default("Sims1: using {} generators, and {} short relations u = v"
+    report_default("Sims1: Using {} additional threads\n", num_threads);
+    report_default(
+        "Sims1: Trying to find congruences with at most {} classes\n",
+        num_classes);
+    report_default("Sims1: Using {} generators, and {} short relations u = v"
                    " with:\n",
-                   shorts.alphabet().size(),
-                   shorts.rules.size() / 2);
+                   presentation().alphabet().size(),
+                   presentation().rules.size() / 2);
     uint64_t shortest_short, longest_short;
-    if (shorts.rules.empty()) {
+    if (presentation().rules.empty()) {
       shortest_short = 0;
       longest_short  = 0;
     } else {
-      shortest_short = presentation::shortest_rule_length(shorts);
-      longest_short  = presentation::longest_rule_length(shorts);
+      shortest_short = presentation::shortest_rule_length(presentation());
+      longest_short  = presentation::longest_rule_length(presentation());
     }
     report_default(
         "Sims1: |u| + |v| \u2208 [{}, {}] and \u2211(|u| + |v|) = {}\n",
         shortest_short,
         longest_short,
-        presentation::length(shorts));
-    if (!longs.rules.empty()) {
+        presentation::length(presentation()));
+    if (!long_rules().rules.empty()) {
       report_default("Sims1: {} long relations u = v with:\n",
-                     longs.rules.size() / 2);
+                     long_rules().rules.size() / 2);
       report_default(
           "Sims1: |u| + |v| \u2208 [{}, {}] and \u2211(|u| + |v|) = {}\n",
-          presentation::shortest_rule_length(longs),
-          presentation::longest_rule_length(longs),
-          presentation::length(longs));
+          presentation::shortest_rule_length(long_rules()),
+          presentation::longest_rule_length(long_rules()),
+          presentation::length(long_rules()));
     }
   }
 
@@ -841,11 +838,11 @@ namespace libsemigroups {
   // doesn't construct a FroidurePin object for these). So, it seems to be
   // best to just search through the digraphs with [1, 57) nodes once.
   // TODO perhaps find minimal 2-sided congruences first (or try to) and then
-  // run MinimalRepOrc for right congruences excluding all the generating pairs
-  // from the minimal 2-sided congruences. Also with this approach FroidurePin
-  // wouldn't be required in RepOrc. This might not work, given that the
-  // minimal rc might contain some pairs from minimal 2-sided congs, just not
-  // all of them.
+  // run MinimalRepOrc for right congruences excluding all the generating
+  // pairs from the minimal 2-sided congruences. Also with this approach
+  // FroidurePin wouldn't be required in RepOrc. This might not work, given
+  // that the minimal rc might contain some pairs from minimal 2-sided congs,
+  // just not all of them.
   Sims1::word_graph_type MinimalRepOrc::word_graph() const {
     auto cr = RepOrc(*this);
 
