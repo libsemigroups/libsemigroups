@@ -54,8 +54,9 @@ namespace libsemigroups {
 
     mutable time_point _last_report;
     mutable time_point _start_time;
-    mutable bool       _stop_reporting;   // TODO atomic?
-    mutable bool       _thread_launched;  // TODO atomic?
+    mutable bool       _stop_reporting;
+    // TODO atomic so that we can read in thread_func and write elsewhere
+    // safely
 
    public:
     // not noexcept because std::string constructor isn't
@@ -65,7 +66,8 @@ namespace libsemigroups {
           // mutable
           _last_report(),  // TODO required?
           _start_time(),
-          _stop_reporting(true) {
+          _stop_reporting() {
+      // All values set in init
       init();
     }
 
@@ -82,31 +84,25 @@ namespace libsemigroups {
 
     // It's necessary to check if reporting is enable before calling this
     // function
-    void launch_report_thread() const {
-      // TODO this function isn't thread safe
-      if (_thread_launched) {
-        return;
-      }
+    // TODO improve this so there's less waiting in the case _stop_reporting is
+    // set to true (not sure how to do that)
+    std::thread launch_report_thread() const {
       _stop_reporting  = false;
       _start_time      = std::chrono::high_resolution_clock::now();
       auto thread_func = [this]() {
+        std::this_thread::sleep_for(report_every());
         while (!_stop_reporting) {
           report_progress_from_thread();
           std::this_thread::sleep_for(report_every());
           // If _stop_reporting is changed when we are sleeping, then this
-          // thread won't terminate until this thread wakes up, hence we detach
-          // below because if we join the thread, then every computation
-          // calling this function will take at least report_every()=1s!
+          // thread won't terminate until it wakes up, hence when we join the
+          // thread, every computation calling this function will take a
+          // minimum of report_every()=1s to run, which is not great. We can't
+          // detach the thread below because then *this can be deleted while
+          // this thread is asleep meaning that _stop_reporting is lost.
         }
-        _thread_launched = false;  // FIXME this and...
       };
-      std::this_thread::sleep_for(report_every());
-      if (!_stop_reporting) {
-        // Avoid spawning threads for short running things
-        _thread_launched = true;  // FIXME this can happen at the same time
-        auto t           = std::thread(thread_func);
-        t.detach();
-      }
+      return std::thread(thread_func);
     }
 
     ReporterV3 const& stop_report_thread() const {
@@ -216,12 +212,13 @@ namespace libsemigroups {
   };
 
   namespace detail {
-    class ReportThreadGuard {
+    class ReportThreadGuard : public ThreadGuard {
       ReporterV3 const& _reporter;
 
      public:
-      explicit ReportThreadGuard(ReporterV3 const& reporter)
-          : _reporter(reporter) {}
+      explicit ReportThreadGuard(ReporterV3 const& reporter,
+                                 std::thread&      thread)
+          : ThreadGuard(thread), _reporter(reporter) {}
 
       ~ReportThreadGuard() {
         _reporter.stop_report_thread();

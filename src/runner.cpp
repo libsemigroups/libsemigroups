@@ -31,9 +31,11 @@ namespace libsemigroups {
   ////////////////////////////////////////////////////////////////////////
 
   ReporterV3& ReporterV3::init() {
-    _last_report          = std::chrono::high_resolution_clock::now();
     _prefix               = "";
     _report_time_interval = nanoseconds(std::chrono::seconds(1));
+    _last_report          = std::chrono::high_resolution_clock::now();
+    _start_time           = _last_report;
+    _stop_reporting       = true;
     return *this;
   }
 

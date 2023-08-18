@@ -566,8 +566,8 @@ namespace libsemigroups {
         return *std::find_if(cbegin(n), cend(n), pred);
       } else {
         stats().zero_stats();
-        launch_report_thread();
-        detail::ReportThreadGuard tg(*this);
+        auto                      t = launch_report_thread();
+        detail::ReportThreadGuard tg(*this, t);
 
         auto       it   = cbegin(n);
         auto const last = cend(n);
