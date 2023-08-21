@@ -507,6 +507,7 @@ namespace libsemigroups {
           "there are infinitely many classes in the congruence and "
           "Todd-Coxeter will never terminate");
     }
+    // TODO if should_report
     auto msg = fmt::format("{:-<93}\n", "");
     msg += fmt_default("ToddCoxeter: using {} strategy . . .\n", strategy());
     msg += fmt::format("{:-<93}\n", "");

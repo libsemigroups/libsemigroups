@@ -619,7 +619,11 @@ namespace libsemigroups {
     template <typename Iterator>
     auto longest_rule_length(Iterator first, Iterator last) {
       auto it = longest_rule(first, last);
-      return it->size() + (it + 1)->size();
+      if (it != last) {
+        return it->size() + (it + 1)->size();
+      } else {
+        return decltype(it->size())(0);  // TODO remove this!
+      }
     }
 
     template <typename Iterator>
@@ -641,7 +645,11 @@ namespace libsemigroups {
     template <typename Iterator>
     auto shortest_rule_length(Iterator first, Iterator last) {
       auto it = shortest_rule(first, last);
-      return it->size() + (it + 1)->size();
+      if (it != last) {
+        return it->size() + (it + 1)->size();
+      } else {
+        return decltype(it->size())(0);  // TODO remove this!
+      }
     }
 
     template <typename Word>

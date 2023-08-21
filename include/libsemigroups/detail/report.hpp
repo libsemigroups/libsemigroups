@@ -559,11 +559,16 @@ namespace libsemigroups {
           return;
         }
       }
-    }
 
-    uint64_t    tid    = THREAD_ID_MANAGER.tid(std::this_thread::get_id());
-    std::string prefix = fmt::format("#{}: ", tid);
-    report_no_prefix(prefix + s, std::forward<Args>(args)...);
+      uint64_t    tid    = THREAD_ID_MANAGER.tid(std::this_thread::get_id());
+      std::string prefix = fmt::format("#{}: ", tid);
+      report_no_prefix(prefix + s, std::forward<Args>(args)...);
+    }
+  }
+
+  template <typename... Args>
+  void report_default(std::string const& s, Args&&... args) {
+    report_default(s.c_str(), std::forward<Args>(args)...);
   }
 
   template <typename... Args>
@@ -608,17 +613,20 @@ namespace libsemigroups {
   }  // namespace detail
 
   template <typename Time>
-  std::string string_time(Time elapsed) {
+  std::string string_time(Time elapsed_arg) {
     using detail::string_time_incremental;
 
     std::string out;
+
+    std::chrono::nanoseconds elapsed = elapsed_arg;
+
     // TODO add day, months etc
     if (string_time_incremental<std::chrono::hours>(out, elapsed)) {
       string_time_incremental<std::chrono::minutes>(out, elapsed);
       string_time_incremental(out, elapsed, false);
     } else if (string_time_incremental<std::chrono::minutes>(out, elapsed)) {
       string_time_incremental(out, elapsed, false);
-    } else if (string_time_incremental(out, elapsed, true)) {
+    } else if (string_time_incremental<std::chrono::seconds>(out, elapsed)) {
     } else if (string_time_incremental<std::chrono::milliseconds>(out,
                                                                   elapsed)) {
     } else if (string_time_incremental<std::chrono::microseconds>(out,

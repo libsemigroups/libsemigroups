@@ -24,10 +24,10 @@
 namespace libsemigroups {
   // TODO use report_default
   std::ostream& operator<<(std::ostream& os, Sims1Stats const& stats) {
-    os << "#0: Sims1: total number of nodes in search tree was "
-       << detail::group_digits(stats.total_pending) << std::endl;
-    os << "#0: Sims1: max. number of pending definitions was "
-       << detail::group_digits(stats.max_pending) << std::endl;
+    // os << "#0: Sims1: total number of nodes in search tree was "
+    //    << detail::group_digits(stats.total_pending) << std::endl;
+    // os << "#0: Sims1: max. number of pending definitions was "
+    //    << detail::group_digits(stats.max_pending) << std::endl;
     return os;
   }
 
@@ -224,13 +224,13 @@ namespace libsemigroups {
         if (_felsch_graph.target_no_checks(next, a) == UNDEFINED) {
           std::lock_guard<std::mutex> lock(_mtx);
           if (M < _max_num_classes) {
-            stats.total_pending++;
+            stats.total_pending_now++;
             _pending.emplace_back(next, a, M, N, M + 1);
           }
           for (node_type b = M; b-- > _min_target_node;) {
             _pending.emplace_back(next, a, b, N, M);
           }
-          stats.total_pending += M - _min_target_node;
+          stats.total_pending_now += M - _min_target_node;
           stats.max_pending = std::max(static_cast<uint64_t>(_pending.size()),
                                        stats.max_pending);
           return false;
@@ -519,7 +519,6 @@ namespace libsemigroups {
           pred(*it);
         }
         report_final();
-        report_stats();
       }
     } else {
       thread_runner den(this, n, number_of_threads());
@@ -529,7 +528,6 @@ namespace libsemigroups {
       };
       den.run(pred_wrapper);
       report_final();
-      report_stats();
     }
   }
 
@@ -559,12 +557,10 @@ namespace libsemigroups {
         for (; it != last; ++it) {
           if (pred(*it)) {
             report_final();
-            report_stats();
             return *it;
           }
         }
         report_final();
-        report_stats();
         return *last;  // the empty digraph
       }
     } else {
@@ -573,7 +569,6 @@ namespace libsemigroups {
       // Copy the thread_runner stats into this so that we can retrieve it
       // after den is destroyed.
       // stats(den.stats());
-      report_stats();
       return den.word_graph();
     }
   }
@@ -606,81 +601,89 @@ namespace libsemigroups {
       num_threads = fmt::format(
           "{} / {}", number_of_threads(), std::thread::hardware_concurrency());
     }
-    report_default("Sims1: Using {} additional threads\n", num_threads);
-    report_default(
-        "Sims1: Trying to find congruences with at most {} classes\n",
-        num_classes);
-    report_default("Sims1: Using {} generators, and {} short relations u = v"
-                   " with:\n",
+    auto shortest_short = presentation::shortest_rule_length(presentation());
+    auto longest_short  = presentation::longest_rule_length(presentation());
+
+    std::string pairs;
+    if (!include().empty() && !exclude().empty()) {
+      pairs = fmt::format(", including {} + excluding {} pairs",
+                          include().size() / 2,
+                          exclude().size() / 2);
+    } else if (!include().empty()) {
+      pairs = fmt::format(", including {} pairs", include().size() / 2);
+    } else if (!exclude().empty()) {
+      pairs = fmt::format(", excluding {} pairs", exclude().size() / 2);
+    }
+
+    report_no_prefix("{:+<93}\n", "");
+    report_default("Sims1: STARTING with {} additional threads . . . \n",
+                   num_threads);
+    report_no_prefix("{:+<93}\n", "");
+    report_default("Sims1: \u2264 {} classes{} for \u27E8A|R\u27E9 with:\n",
+                   num_classes,
+                   pairs);
+    report_default("Sims1: |A| = {}, |R| = {}, "
+                   "|u| + |v| \u2208 [{}, {}], \u2211(|u| + |v|) = {}\n",
                    presentation().alphabet().size(),
-                   presentation().rules.size() / 2);
-    uint64_t shortest_short, longest_short;
-    if (presentation().rules.empty()) {
-      shortest_short = 0;
-      longest_short  = 0;
-    } else {
-      shortest_short = presentation::shortest_rule_length(presentation());
-      longest_short  = presentation::longest_rule_length(presentation());
-    }
-    report_default(
-        "Sims1: |u| + |v| \u2208 [{}, {}] and \u2211(|u| + |v|) = {}\n",
-        shortest_short,
-        longest_short,
-        presentation::length(presentation()));
-    if (!long_rules().rules.empty()) {
-      report_default("Sims1: {} long relations u = v with:\n",
-                     long_rules().rules.size() / 2);
-      report_default(
-          "Sims1: |u| + |v| \u2208 [{}, {}] and \u2211(|u| + |v|) = {}\n",
-          presentation::shortest_rule_length(long_rules()),
-          presentation::longest_rule_length(long_rules()),
-          presentation::length(long_rules()));
-    }
+                   presentation().rules.size() / 2,
+                   shortest_short,
+                   longest_short,
+                   presentation::length(presentation()));
+
+    // TODO short + long rules
+    // if (!long_rules().rules.empty()) {
+    //   report_default("Sims1: {} long relations u = v with:\n",
+    //                  long_rules().rules.size() / 2);
+    //   report_default(
+    //       "Sims1: |u| + |v| \u2208 [{}, {}] and \u2211(|u| + |v|) = {}\n",
+    //       presentation::shortest_rule_length(long_rules()),
+    //       presentation::longest_rule_length(long_rules()),
+    //       presentation::length(long_rules()));
+    // }
   }
 
   void Sims1::report_progress_from_thread() const {
+    using detail::group_digits;
+    using detail::signed_group_digits;
     using std::chrono::duration_cast;
+    using std::chrono::nanoseconds;
     using std::chrono::seconds;
 
-    auto now        = std::chrono::high_resolution_clock::now();
-    auto total_time = now - start_time();
-    auto diff_time  = duration_cast<seconds>(now - last_report());
+    // ReporterV3
+    auto now           = std::chrono::high_resolution_clock::now();
+    auto time_total_ns = duration_cast<nanoseconds>(now - start_time());
+    auto time_total_s  = duration_cast<seconds>(time_total_ns);
+    auto time_diff     = duration_cast<nanoseconds>(now - last_report());
 
-    auto& s = stats();
+    // Stats
+    auto count_diff = stats().count_now - stats().count_last;
+    auto total_pending_diff
+        = stats().total_pending_now - stats().total_pending_last;
 
-    report_default(
-        "Sims1: found {} congruences in {} ({}/s)!\n",
-        detail::group_digits(s.count_now),
-        string_time(total_time),
-        detail::group_digits((s.count_now - s.count_last) / diff_time.count()));
+    detail::ReportCell<3> rc;
+    rc.min_width(11);
+    rc("Sims1: congs  {} (total) | {} (diff)   | {} (/s)\n",
+       group_digits(stats().count_now),
+       signed_group_digits(count_diff),
+       group_digits(stats().count_now / time_total_s.count()));
+    rc("Sims1: search {} (nodes) | {} (diff)   | {} (/s)\n",
+       group_digits(stats().total_pending_now),
+       signed_group_digits(total_pending_diff),
+       group_digits(stats().total_pending_now / time_total_s.count()));
+    rc("Sims1: time   {} (total) | {} (/cong.) | {} (/cong. last 1s)\n",
+       string_time(time_total_ns),
+       string_time(time_total_ns / stats().count_now),
+       count_diff == 0 ? "x" : string_time(time_diff / count_diff));
+
     last_report(now);
-    s.count_last = s.count_now;
+    stats().stats_check_point();
   }
 
   void Sims1::report_final() const {
-    using std::chrono::duration_cast;
-    using std::chrono::nanoseconds;
-
-    auto elapsed = duration_cast<nanoseconds>(
-        std::chrono::high_resolution_clock::now() - start_time());
-    auto count = stats().count_now;
-    if (count != 0) {
-      report_default("Sims1: found {} congruences in {} ({} per congruence)!\n",
-                     detail::group_digits(count),
-                     detail::Timer::string(elapsed),
-                     detail::Timer::string(elapsed / count));
-    } else {
-      report_default("Sims1: found {} congruences in {}!\n",
-                     detail::group_digits(count),
-                     detail::Timer::string(elapsed));
-    }
-  }
-
-  void Sims1::report_stats() const {
-    report_default("Sims1: total number of nodes in search tree was {}\n",
-                   detail::group_digits(stats().total_pending));
-    report_default("Sims1: max. number of pending definitions was {}\n",
-                   detail::group_digits(stats().max_pending));
+    report_progress_from_thread();
+    report_no_prefix("{:+<93}\n", "");
+    report_default("Sims1: FINISHED!\n");
+    report_no_prefix("{:+<93}\n", "");
   }
 
   ////////////////////////////////////////////////////////////////////////

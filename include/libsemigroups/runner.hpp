@@ -35,6 +35,8 @@
 #include "detail/report.hpp"        // for LibsemigroupsException
 #include "detail/stl.hpp"           // for LibsemigroupsException
 
+#include "rx/ranges.hpp"
+
 namespace libsemigroups {
   //! A pseudonym for std::chrono::nanoseconds::max().
   constexpr std::chrono::nanoseconds FOREVER = std::chrono::nanoseconds::max();
@@ -227,12 +229,67 @@ namespace libsemigroups {
       ReportThreadGuard(ReportThreadGuard const&)            = delete;
       ReportThreadGuard& operator=(ReportThreadGuard const&) = delete;
     };
+
+    template <size_t C>
+    class ReportCell {
+     private:
+      using Row = std::array<std::string, C + 1>;
+
+      std::array<size_t, C + 1> _col_widths;
+      std::string               _divider;
+      std::vector<Row>          _rows;
+
+     public:
+      ReportCell() : _col_widths(), _divider("{:-<93}\n"), _rows() {
+        _col_widths.fill(0);
+      }
+
+      ~ReportCell() {
+        emit();
+      }
+
+      ReportCell& min_width(size_t val) {
+        _col_widths.fill(val);
+        return *this;
+      }
+
+      ReportCell& divider(char val) {
+        _divider = val;
+      }
+
+      template <typename... Args>
+      void operator()(char const* arg, Args&&... args) {
+        // TODO static_assert that sizeof(args) == C
+        _rows.push_back(Row({std::string(arg), std::forward<Args>(args)...}));
+        for (size_t i = 0; i < _rows.back().size(); ++i) {
+          _col_widths[i] = std::max(_col_widths[i], _rows.back()[i].size());
+        }
+      }
+
+     private:
+      void emit() {
+        auto fmt = [](auto&&... args) {
+          report_default(std::forward<decltype(args)>(args)...);
+        };
+        report_no_prefix(_divider, "");
+        for (size_t i = 0; i < _rows.size(); ++i) {
+          for (size_t j = 1; j < C + 1; ++j) {
+            _rows[i][j]
+                = std::string(
+                      _col_widths[j] - unicode_string_length(_rows[i][j]), ' ')
+                  + _rows[i][j];
+          }
+          std::apply(fmt, _rows[i]);
+        }
+      }
+    };
+
   }  // namespace detail
 
   //! Many of the classes in ``libsemigroups`` implementing the algorithms,
   //! that are the reason for the existence of this library, are derived from
-  //! Runner.  The Runner class exists to collect various common tasks required
-  //! by such a derived class with a possibly long running \ref run.
+  //! Runner.  The Runner class exists to collect various common tasks
+  //! required by such a derived class with a possibly long running \ref run.
   //! These common tasks include:
   //! * running for a given amount of time (\ref run_for)
   //! * running until a nullary predicate is true (\ref run_until)
@@ -278,8 +335,8 @@ namespace libsemigroups {
 
     //! Default constructor.
     //!
-    //! Returns a runner that is not started, not finished, not dead, not timed
-    //! out, will run \ref FOREVER if not instructed otherwise,  that
+    //! Returns a runner that is not started, not finished, not dead, not
+    //! timed out, will run \ref FOREVER if not instructed otherwise,  that
     //! last reported at the time of construction, and that will report every
     //! std::chrono::seconds(1) if reporting is enabled.
     //!
@@ -293,9 +350,9 @@ namespace libsemigroups {
 
     //! Copy constructor.
     //!
-    //! Returns a runner that is a copy of \p other. The state of the new runner
-    //! is the same as \p other, except that the function passed as an argument
-    //! to \ref run_until (if any) is not copied.
+    //! Returns a runner that is a copy of \p other. The state of the new
+    //! runner is the same as \p other, except that the function passed as an
+    //! argument to \ref run_until (if any) is not copied.
     //!
     //! \param other the Runner to copy.
     Runner(Runner const& other);

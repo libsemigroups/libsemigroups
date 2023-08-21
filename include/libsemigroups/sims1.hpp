@@ -84,6 +84,8 @@ namespace libsemigroups {
     uint64_t count_last;
     // TODO doc
     uint64_t count_now;
+    // TODO atomic so as to avoid races between
+    // report_progress_from_thread and the threads modifying count_last
     //! The maximum number of pending definitions.
     //!
     //! A *pending definition* is just an edge that will be defined at some
@@ -104,9 +106,15 @@ namespace libsemigroups {
     //! occur during the running of the algorithms in Sims1. This is the same
     //! as the number of nodes in the search tree encounter during the running
     //! of Sims1.
-    uint64_t total_pending;
+    uint64_t total_pending_last;
+    uint64_t total_pending_now;
 
-    Sims1Stats() : count_last(), count_now(), max_pending(), total_pending() {
+    Sims1Stats()
+        : count_last(),
+          count_now(),
+          max_pending(),
+          total_pending_last(),
+          total_pending_now() {
       zero_stats();
     }
 
@@ -116,10 +124,17 @@ namespace libsemigroups {
     Sims1Stats& operator=(Sims1Stats&&)      = default;
 
     Sims1Stats& zero_stats() {
-      max_pending   = 0;
-      total_pending = 0;
-      count_last    = 0;
-      count_now     = 0;
+      count_last         = 0;
+      count_now          = 0;
+      max_pending        = 0;
+      total_pending_last = 0;
+      total_pending_now  = 0;
+      return *this;
+    }
+
+    Sims1Stats& stats_check_point() {
+      count_last         = count_now;
+      total_pending_last = total_pending_now;
       return *this;
     }
   };
@@ -590,9 +605,11 @@ namespace libsemigroups {
     //! congruence_kind::twosided
     //!
     //! \sa \ref cbegin and \ref cend.
+    // TODO remove
     explicit Sims1(congruence_kind ck);
 
     //! Default constructor - deleted!
+    // undelete
     Sims1() = delete;
 
     //! Default copy constructor.
@@ -664,6 +681,11 @@ namespace libsemigroups {
     using Sims1Settings<Sims1>::presentation;
     using Sims1Settings<Sims1>::long_rules;
     using Sims1Settings<Sims1>::number_of_threads;
+
+    [[nodiscard]] congruence_kind kind() const noexcept {
+      return _kind;
+    }
+    // TODO kind setter
 
     class iterator;  // forward decl
 
@@ -1004,9 +1026,6 @@ namespace libsemigroups {
     void report_progress_from_thread() const override;
     void report_at_start(size_t num_classes) const;
     void report_final() const;
-
-    // TODO remove
-    void report_stats() const;
 
     // Nested classes
     class thread_iterator;

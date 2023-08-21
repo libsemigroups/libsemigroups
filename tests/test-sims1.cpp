@@ -850,33 +850,31 @@ namespace libsemigroups {
     auto rg = ReportGuard(true);
     auto p  = brauer_monoid(5);
 
-    REQUIRE(presentation::length(p) == 295);
+    REQUIRE(presentation::length(p) == 240);
 
     presentation::remove_duplicate_rules(p);
     presentation::reduce_complements(p);
     presentation::sort_each_rule(p);
     presentation::sort_rules(p);
-    REQUIRE(presentation::length(p) == 249);
+    REQUIRE(presentation::length(p) == 194);
 
-    REQUIRE(presentation::shortest_rule_length(p) == 3);
-    REQUIRE(*presentation::shortest_rule(p) == word_type({0, 0}));
-    REQUIRE(*(presentation::shortest_rule(p) + 1) == word_type({0}));
+    REQUIRE(presentation::shortest_rule_length(p) == 2);
+    REQUIRE(*presentation::shortest_rule(p) == 00_w);
+    REQUIRE(*(presentation::shortest_rule(p) + 1) == ""_w);
 
-    REQUIRE(p.alphabet().size() == 9);
+    REQUIRE(p.alphabet().size() == 8);
 
     presentation::remove_redundant_generators(p);
-    REQUIRE(p.alphabet() == word_type({1, 2, 3, 4, 5, 6, 7, 8}));
+    REQUIRE(p.alphabet() == 01234567_w);
     REQUIRE(p.alphabet().size() == 8);
-    REQUIRE(presentation::length(p) == 268);
+    REQUIRE(presentation::length(p) == 194);
 
-    REQUIRE(*presentation::longest_rule(p) == word_type({1, 1, 1, 1}));
-    REQUIRE(*(presentation::longest_rule(p) + 1) == word_type({1, 1}));
+    REQUIRE(*presentation::longest_rule(p) == 101_w);
+    REQUIRE(*(presentation::longest_rule(p) + 1) == 010_w);
 
-    REQUIRE(presentation::longest_subword_reducing_length(p)
-            == word_type({1, 1}));
-    p.alphabet(9);
-    presentation::replace_subword(p, {1, 1}, {0});
-    REQUIRE(presentation::length(p) == 246);
+    REQUIRE(presentation::longest_subword_reducing_length(p) == 76_w);
+    presentation::replace_word_with_new_generator(p, 76_w);
+    REQUIRE(presentation::length(p) == 193);
 
     auto d = MinimalRepOrc()
                  .presentation(p)
@@ -887,7 +885,7 @@ namespace libsemigroups {
     // WARNING: the number below is not necessarily the minimal degree of an
     // action on right congruences, only the minimal degree of an action on
     // right congruences containing the pair {0}, {1}.
-    REQUIRE(d.number_of_nodes() == 46);
+    REQUIRE(d.number_of_nodes() == 51);
     auto S = to_froidure_pin<Transf<0, node_type>>(d);
     REQUIRE(S.size() == 945);
   }
@@ -1678,7 +1676,7 @@ namespace libsemigroups {
     presentation::add_rule(p, "YxyyXXYYxyxYxyyXYXyXYYxxyyXYXyXYYxyx", "y");
 
     Sims1 S(congruence_kind::right);
-    S.presentation(p).number_of_threads(4);
+    S.presentation(p).number_of_threads(4).long_rule_length(37);
     REQUIRE(S.number_of_congruences(10) == 1);
   }
 
