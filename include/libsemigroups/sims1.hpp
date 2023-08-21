@@ -149,9 +149,9 @@ namespace libsemigroups {
     // left congruences.
     std::vector<word_type> _exclude;
     std::vector<word_type> _include;
-    // TODO change to iterator into _presentation
-    Presentation<word_type> _longs;  // TODO this won't need to be protected
-    Presentation<word_type> _presentation;
+    // TODO this won't need to be protected
+    std::vector<word_type>::const_iterator _longs_begin;
+    Presentation<word_type>                _presentation;
 
    private:
     size_t             _num_threads;
@@ -340,8 +340,8 @@ namespace libsemigroups {
     //!
     //! \exceptions
     //! \noexcept
-    Presentation<word_type> const& long_rules() const noexcept {
-      return _longs;
+    auto cbegin_long_rules() const noexcept {
+      return _longs_begin;
     }
 
     //! \anchor extra
@@ -638,14 +638,14 @@ namespace libsemigroups {
       return result;
     }
 
-    template <typename P>
-    Sims1& long_rules(P const& p) {
-      Sims1Settings<Sims1>::long_rules(p);
-      if (_kind == congruence_kind::left) {
-        presentation::reverse(_longs);
-      }
-      return *this;
-    }
+    // template <typename P>
+    // Sims1& long_rules(P const& p) {
+    //   Sims1Settings<Sims1>::long_rules(p);
+    //   if (_kind == congruence_kind::left) {
+    //     presentation::reverse(_longs);
+    //   }
+    //   return *this;
+    // }
 
     // Must accept at least one argument so that we're not calling the 0-arg
     // include() which is const!
