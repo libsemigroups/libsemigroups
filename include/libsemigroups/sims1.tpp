@@ -98,8 +98,7 @@ namespace libsemigroups {
     } else if (std::distance(it, rules.cend()) % 2 != 0) {
       LIBSEMIGROUPS_EXCEPTION(
           "expected an iterator pointing at the left hand side of a rule "
-          "(an "
-          "even distance from the end of the rules), found distance {}",
+          "(an even distance from the end of the rules), found distance {}",
           std::distance(it, rules.cend()));
     }
     _longs_begin = it;

@@ -1080,21 +1080,28 @@ namespace libsemigroups {
     Sims1 S(congruence_kind::right);
     S.presentation(p);
 
-    REQUIRE_THROWS_AS(S.cbegin_long_rules(10), LibsemigroupsException);
+    REQUIRE_THROWS_AS(S.cbegin_long_rules(p.rules.size() + 1),
+                      LibsemigroupsException);
+    REQUIRE_THROWS_AS(S.cbegin_long_rules(9), LibsemigroupsException);
     S.cbegin_long_rules(0);
 
-    REQUIRE(S.presentation().rules.empty());
+    REQUIRE(!S.presentation().rules.empty());
 
-    for (size_t i = 0; i <= p.rules.size() / 2; ++i) {
-      S.cbegin_long_rules(i);
-      REQUIRE(S.presentation().rules.size() == 2 * i);
+    auto const& rules = S.presentation().rules;
+
+    for (size_t i = 0; i <= rules.size() / 2; ++i) {
+      S.cbegin_long_rules(2 * i);
+      REQUIRE(static_cast<size_t>(
+                  std::distance(rules.cbegin(), S.cbegin_long_rules()))
+              == 2 * i);
     }
     REQUIRE(S.presentation().rules.size() == p.rules.size());
     for (size_t i = p.rules.size() / 2; i > 0; --i) {
-      S.cbegin_long_rules(i);
-      REQUIRE(S.presentation().rules.size() == 2 * i);
+      S.cbegin_long_rules(2 * i);
+      REQUIRE(static_cast<size_t>(
+                  std::distance(rules.cbegin(), S.cbegin_long_rules()))
+              == 2 * i);
     }
-    S.cbegin_long_rules(7);
     REQUIRE(S.number_of_congruences(3) == 14);
   }
 
@@ -2080,10 +2087,10 @@ namespace libsemigroups {
                 .number_of_congruences(5)
             == 6);
     S.long_rule_length(5);
-    REQUIRE(S.number_of_long_rules() == 2);
+    REQUIRE(S.number_of_long_rules() == 1);
     REQUIRE(S.presentation().rules.size() == 6);
     S.long_rule_length(4);
-    REQUIRE(S.number_of_long_rules() == 4);
+    REQUIRE(S.number_of_long_rules() == 2);
     REQUIRE(S.presentation().rules.size() == 6);
 
     S = Sims1(congruence_kind::left);
