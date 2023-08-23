@@ -43,18 +43,30 @@ namespace libsemigroups {
 
   template <typename T>
   template <typename S>
-  Sims1Settings<T>::Sims1Settings(Sims1Settings<S> const& that)
-      :  // protected
-        _exclude(that.exclude()),
-        _include(that.include()),
-        _longs_begin(),
-        _presentation(that.presentation()),
-        // private
-        _num_threads(that.number_of_threads()),
-        _stats(that.stats()) {
+  Sims1Settings<T>::Sims1Settings(Sims1Settings<S> const& that) {
+    init(that);
+  }
+
+  template <typename T>
+  Sims1Settings<T>::Sims1Settings(Sims1Settings<T> const& that) {
+    init(that);
+  }
+
+  template <typename T>
+  template <typename S>
+  Sims1Settings<T>& Sims1Settings<T>::init(Sims1Settings<S> const& that) {
+    // protected
+    _exclude      = that.exclude();
+    _include      = that.include();
+    _presentation = that.presentation();
+
     _longs_begin = _presentation.rules.cbegin()
                    + std::distance(that.presentation().rules.cbegin(),
                                    that.cbegin_long_rules());
+    // private
+    _num_threads = that.number_of_threads();
+    _stats       = that.stats();
+    return *this;
   }
 
   template <typename T>
@@ -85,7 +97,8 @@ namespace libsemigroups {
           "expected an iterator pointing into presentation().rules()");
     } else if (std::distance(it, rules.cend()) % 2 != 0) {
       LIBSEMIGROUPS_EXCEPTION(
-          "expected an iterator pointing at the left hand side of a rule (an "
+          "expected an iterator pointing at the left hand side of a rule "
+          "(an "
           "even distance from the end of the rules), found distance {}",
           std::distance(it, rules.cend()));
     }

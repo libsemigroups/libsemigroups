@@ -391,6 +391,7 @@ namespace libsemigroups {
     auto nrset = word_graph::nodes_reachable_from(copy, source);
     auto nrvec = std::vector<size_t>(nrset.begin(), nrset.end());
     std::iter_swap(nrvec.begin(), (nrvec.end() - 1));
+    // FIXME this is broken on RC's computer, returns 36
     REQUIRE(nrvec[0] == 34);
 
     copy.induced_subgraph_no_checks(nrvec.begin(), nrvec.end());

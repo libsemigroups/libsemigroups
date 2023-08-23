@@ -157,13 +157,24 @@ namespace libsemigroups {
     size_t             _num_threads;
     mutable Sims1Stats _stats;
 
+    template <typename S>
+    Sims1Settings& init(Sims1Settings<S> const& that);
+
    public:
     //! No doc
     Sims1Settings();
+    // TODO init()
 
     //! No doc
     template <typename S>
     Sims1Settings(Sims1Settings<S> const& that);
+
+    Sims1Settings(Sims1Settings const& that);
+
+    Sims1Settings& operator=(Sims1Settings const& that) {
+      init(that);
+      return *this;
+    }
 
     //! Returns the settings object of *this.
     //!
@@ -346,6 +357,8 @@ namespace libsemigroups {
     //! \noexcept
     // TODO explicit return type
     auto cbegin_long_rules() const noexcept {
+      LIBSEMIGROUPS_ASSERT(_presentation.rules.cbegin() <= _longs_begin);
+      LIBSEMIGROUPS_ASSERT(_longs_begin <= _presentation.rules.cend());
       return _longs_begin;
     }
 
@@ -618,7 +631,8 @@ namespace libsemigroups {
     // TODO init()
 
     //! Default copy constructor.
-    Sims1(Sims1 const&) = default;
+    Sims1(Sims1 const& other)
+        : Sims1Settings<Sims1>(other), _kind(other._kind) {}
 
     //! Default move constructor.
     Sims1(Sims1&&) = default;
