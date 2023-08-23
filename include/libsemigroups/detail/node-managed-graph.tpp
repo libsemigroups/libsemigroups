@@ -144,17 +144,14 @@ namespace libsemigroups {
 
       // TODO re-enable
       // size_t        prev_num_nodes = this->number_of_nodes_active();
-      static size_t total_coinc   = 0;
-      bool const    should_report = report::should_report();
-      size_t        report_tick   = 0;
+      // static size_t total_coinc   = 0;
       while (!_coinc.empty() && _coinc.size() < large_collapse()) {
-        total_coinc++;
+        // total_coinc++;
         Coincidence c = _coinc.top();
         _coinc.pop();
         node_type min = NodeManager<node_type>::find_node(c.first);
         node_type max = NodeManager<node_type>::find_node(c.second);
         if (min != max) {
-          report_tick++;
           std::tie(min, max) = std::minmax({min, max});
           NodeManager<node_type>::union_nodes(min, max);
           if constexpr (RegisterDefs) {
@@ -167,11 +164,6 @@ namespace libsemigroups {
                 incompat_func);
           } else {
             BaseGraph::merge_nodes_no_checks(min, max, Noop(), incompat_func);
-          }
-          // TODO checking report here can be rather time consuming
-          if (should_report && report_tick > 10'000 && report()) {
-            report_tick = 0;
-            report_active_nodes();
           }
         }
         // if (_coinc.size() > large_collapse()) {
@@ -202,7 +194,6 @@ namespace libsemigroups {
         node_type min = NodeManager<node_type>::find_node(c.first);
         node_type max = NodeManager<node_type>::find_node(c.second);
         if (min != max) {
-          report_tick++;
           std::tie(min, max) = std::minmax({min, max});
           NodeManager<node_type>::union_nodes(min, max);
           for (letter_type i = 0; i < out_degree(); ++i) {
@@ -216,11 +207,6 @@ namespace libsemigroups {
               }
             }
           }
-          // TODO checking report here can be rather time consuming
-          if (should_report && report_tick > 10'000 && report()) {
-            report_tick = 0;
-            report_active_nodes();
-          }
         }
       }
 
@@ -231,11 +217,11 @@ namespace libsemigroups {
         c = NodeManager<node_type>::next_active_node(c);
       }
 
-      c        = NodeManager<node_type>::initial_node();
-      size_t m = 0;
+      c = NodeManager<node_type>::initial_node();
+      // size_t m = 0;
 
       while (c != NodeManager<node_type>::first_free_node()) {
-        m++;
+        // m++;
         for (letter_type x = 0; x < out_degree(); ++x) {
           auto cx = target_no_checks(c, x);
           if (cx != UNDEFINED) {
@@ -284,7 +270,7 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////
 
     template <typename BaseGraph>
-    void NodeManagedGraph<BaseGraph>::report_active_nodes() const {
+    void NodeManagedGraph<BaseGraph>::report_progress_from_thread() const {
       using detail::group_digits;
       using detail::signed_group_digits;
       using std::chrono::duration_cast;
@@ -314,51 +300,23 @@ namespace libsemigroups {
                          / run_time.count())
             + "/s";
 
-      std::array<size_t, 3> col1_widths
-          = {12, group_digits(active).size(), active_diff.size()};
-      std::array<size_t, 4> col2_widths = {12,
-                                           group_digits(killed).size(),
-                                           killed_diff.size(),
-                                           mean_killed.size()};
-      std::array<size_t, 4> col3_widths = {12,
-                                           group_digits(defined).size(),
-                                           defined_diff.size(),
-                                           mean_defined.size()};
-      size_t c1 = *std::max_element(col1_widths.begin(), col1_widths.end());
-      size_t c2 = *std::max_element(col2_widths.begin(), col2_widths.end());
-      size_t c3 = *std::max_element(col3_widths.begin(), col3_widths.end());
+      detail::ReportCell<4> rc;
 
-      auto msg
-          = fmt_default("{}: nodes {:>{c1}} (active) | {:>{c2}} (killed) | "
-                        "{:>{c3}} (defined)\n",
-                        report_prefix(),
-                        group_digits(active),
-                        group_digits(killed),
-                        group_digits(defined),
-                        fmt::arg("c1", c1),
-                        fmt::arg("c2", c2),
-                        fmt::arg("c3", c3));
-      msg += fmt_default("{}: diff  {:>{c1}} (active) | {:>{c2}} (killed) | "
-                         "{:>{c3}} (defined)\n",
-                         report_prefix(),
-                         active_diff,
-                         killed_diff,
-                         defined_diff,
-                         fmt::arg("c1", c1),
-                         fmt::arg("c2", c2),
-                         fmt::arg("c3", c3));
-      msg += fmt_default(
-          "{}: time  {:>{c1}} (total)  | {:>{c2}} (killed) | {:>{c3}} "
-          "(defined)\n",
-          report_prefix(),
-          string_time(run_time),
-          mean_killed,
-          mean_defined,
-          fmt::arg("c1", c1),
-          fmt::arg("c2", c2),
-          fmt::arg("c3", c3));
-      msg += fmt::format("{:-<93}\n", "");
-      report_no_prefix(msg);
+      rc("{}: nodes {} (active) | {} (killed) | {} (defined)\n",
+         report_prefix(),
+         group_digits(active),
+         group_digits(killed),
+         group_digits(defined));
+      rc("{}: diff  {} (active) | {} (killed) | {} (defined)\n",
+         report_prefix(),
+         active_diff,
+         killed_diff,
+         defined_diff);
+      rc("{}: time  {} (total)  | {} (killed) | {} (defined)\n",
+         report_prefix(),
+         string_time(run_time),
+         mean_killed,
+         mean_defined);
       stats_check_point();
     }
 

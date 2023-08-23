@@ -32,11 +32,12 @@ namespace libsemigroups {
       :  // protected
         _exclude(),
         _include(),
-        _longs(),
+        _longs_begin(),
         _presentation(),
         // private
         _num_threads(),
         _stats() {
+    _longs_begin = _presentation.rules.cend();
     number_of_threads(1);
   }
 
@@ -46,11 +47,15 @@ namespace libsemigroups {
       :  // protected
         _exclude(that.exclude()),
         _include(that.include()),
-        _longs(that.long_rules()),
+        _longs_begin(),
         _presentation(that.presentation()),
         // private
         _num_threads(that.number_of_threads()),
-        _stats(that.stats()) {}
+        _stats(that.stats()) {
+    _longs_begin = _presentation.rules.cbegin()
+                   + std::distance(that.presentation().rules.cbegin(),
+                                   that.cbegin_long_rules());
+  }
 
   template <typename T>
   template <typename P>
@@ -65,26 +70,32 @@ namespace libsemigroups {
           "the argument (Presentation) must not have 0 generators");
     }
     auto normal_p = to_presentation<word_type>(p);
-    validate_presentation(normal_p, long_rules());
     // TODO validate against include and exclude
     _presentation = normal_p;
+    _longs_begin  = _presentation.rules.cend();
     return static_cast<T&>(*this);
   }
 
   template <typename T>
-  template <typename P>
-  T& Sims1Settings<T>::long_rules(P const& p) {
-    static_assert(std::is_base_of<PresentationBase, P>::value,
-                  "the template parameter P must be derived from "
-                  "PresentationBase");
-    // We call make in the next two lines to ensure that the generators of
-    // the presentation are {0, ..., n - 1} where n is the size of the
-    // alphabet.
-    auto normal_p = to_presentation<word_type>(p);
-    validate_presentation(normal_p, presentation());
-    // TODO validate against include and exclude
-    _longs = normal_p;
+  T& Sims1Settings<T>::cbegin_long_rules(
+      std::vector<word_type>::const_iterator it) {
+    auto const& rules = presentation().rules;
+    if (!(rules.cbegin() <= it && it <= rules.cend())) {
+      LIBSEMIGROUPS_EXCEPTION(
+          "expected an iterator pointing into presentation().rules()");
+    } else if (std::distance(it, rules.cend()) % 2 != 0) {
+      LIBSEMIGROUPS_EXCEPTION(
+          "expected an iterator pointing at the left hand side of a rule (an "
+          "even distance from the end of the rules), found distance {}",
+          std::distance(it, rules.cend()));
+    }
+    _longs_begin = it;
     return static_cast<T&>(*this);
+  }
+
+  template <typename T>
+  T& Sims1Settings<T>::cbegin_long_rules(size_t pos) {
+    return cbegin_long_rules(presentation().rules.cbegin() + pos);
   }
 
   template <typename T>
@@ -98,69 +109,18 @@ namespace libsemigroups {
 
   template <typename T>
   T& Sims1Settings<T>::long_rule_length(size_t val) {
-    auto partition = [&val](auto first, auto last) {
-      for (; first != last; first += 2) {
-        if (first->size() + (first + 1)->size() >= val) {
-          break;
-        }
-      }
-      if (first == last) {
-        return first;
-      }
+    presentation::sort_rules(_presentation);
+    auto& rules = _presentation.rules;
+    auto  it    = rules.cbegin();
 
-      for (auto lhs = first + 2; lhs < last; lhs += 2) {
-        auto rhs = lhs + 1;
-        if (lhs->size() + rhs->size() < val) {
-          std::iter_swap(lhs, first++);
-          std::iter_swap(rhs, first++);
-        }
+    for (; it < rules.cend(); it += 2) {
+      if (it->size() + (it + 1)->size() >= val) {
+        break;
       }
-      return first;
-    };
+    }
 
-    // points at the lhs of the first rule of length at least val
-    auto its
-        = partition(_presentation.rules.begin(), _presentation.rules.end());
-    _longs.rules.insert(_longs.rules.end(),
-                        std::make_move_iterator(its),
-                        std::make_move_iterator(_presentation.rules.end()));
-    auto lastl
-        = _longs.rules.end() - std::distance(its, _presentation.rules.end());
-    _presentation.rules.erase(its, _presentation.rules.end());
-
-    // points at the lhs of the first rule of length at least val
-    auto itl = partition(_longs.rules.begin(), lastl);
-    _presentation.rules.insert(_presentation.rules.end(),
-                               std::make_move_iterator(_longs.rules.begin()),
-                               std::make_move_iterator(itl));
-    _longs.rules.erase(_longs.rules.begin(), itl);
+    _longs_begin = it;
     return static_cast<T&>(*this);
-  }
-
-  template <typename T>
-  Sims1Settings<T>& Sims1Settings<T>::split_at(size_t val) {
-    if (val > _presentation.rules.size() / 2 + _longs.rules.size() / 2) {
-      LIBSEMIGROUPS_EXCEPTION("expected a value in the range [0, {}), found {}",
-                              _presentation.rules.size() / 2
-                                  + _longs.rules.size() / 2,
-                              val);
-    }
-
-    val *= 2;
-    if (val < _presentation.rules.size()) {
-      _longs.rules.insert(_longs.rules.begin(),
-                          _presentation.rules.begin() + val,
-                          _presentation.rules.end());
-      _presentation.rules.erase(_presentation.rules.begin() + val,
-                                _presentation.rules.end());
-    } else {
-      val -= _presentation.rules.size();
-      _presentation.rules.insert(_presentation.rules.end(),
-                                 _longs.rules.begin(),
-                                 _longs.rules.begin() + val);
-      _longs.rules.erase(_longs.rules.begin(), _longs.rules.begin() + val);
-    }
-    return *this;
   }
 
   template <typename T>

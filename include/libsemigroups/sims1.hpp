@@ -327,8 +327,12 @@ namespace libsemigroups {
     //! throws \throws LibsemigroupsException if `p` is not valid \throws
     //! LibsemigroupsException if the alphabet of `p` is non-empty and not
     //! equal to that of \ref presentation or \ref extra.
-    template <typename P>
-    Subclass& long_rules(P const& p);
+    Subclass& cbegin_long_rules(std::vector<word_type>::const_iterator p);
+    Subclass& cbegin_long_rules(size_t pos);
+
+    size_t number_of_long_rules() const noexcept {
+      return std::distance(_longs_begin, _presentation.rules.cend()) / 2;
+    }
 
     //! \anchor long_rules
     //! Returns the current long rules.
@@ -340,6 +344,7 @@ namespace libsemigroups {
     //!
     //! \exceptions
     //! \noexcept
+    // TODO explicit return type
     auto cbegin_long_rules() const noexcept {
       return _longs_begin;
     }
@@ -541,8 +546,7 @@ namespace libsemigroups {
     //! bounds, i.e. if it exceeds
     //! `(presentation().rules.size() +
     //! long_rules().rules.size()) / 2`.
-    Sims1Settings& split_at(size_t val);
-
+    // TODO reuse the doc for cbegin_long_rules
    protected:
     // TODO remove
     void validate_presentation(Presentation<word_type> const& arg,
@@ -611,6 +615,7 @@ namespace libsemigroups {
     //! Default constructor - deleted!
     // undelete
     Sims1() = delete;
+    // TODO init()
 
     //! Default copy constructor.
     Sims1(Sims1 const&) = default;
@@ -679,7 +684,7 @@ namespace libsemigroups {
 #endif
 
     using Sims1Settings<Sims1>::presentation;
-    using Sims1Settings<Sims1>::long_rules;
+    using Sims1Settings<Sims1>::cbegin_long_rules;
     using Sims1Settings<Sims1>::number_of_threads;
 
     [[nodiscard]] congruence_kind kind() const noexcept {
@@ -1210,7 +1215,7 @@ namespace libsemigroups {
     Sims1::word_graph_type word_graph() const;
 
     using Sims1Settings<RepOrc>::presentation;
-    using Sims1Settings<RepOrc>::long_rules;
+    using Sims1Settings<RepOrc>::cbegin_long_rules;
   };
 
   //! Defined in ``sims1.hpp``.

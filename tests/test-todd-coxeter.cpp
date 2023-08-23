@@ -4559,4 +4559,46 @@ namespace libsemigroups {
     REQUIRE((todd_coxeter::normal_forms(tc) | random()).get() == word_type());
   }
 
+  LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
+                          "045",
+                          "Whyte's 4-relation full transf monoid 8",
+                          "[todd-coxeter][extreme]") {
+    auto                    rg = ReportGuard(true);
+    Presentation<word_type> p;
+    p.rules = {00_w,       {},         11_w,         {},           22_w,
+               {},         33_w,       {},           44_w,         {},
+               55_w,       {},         66_w,         {},           010101_w,
+               {},         121212_w,   {},           232323_w,     {},
+               343434_w,   {},         454545_w,     {},           565656_w,
+               {},         606060_w,   {},           01020102_w,   {},
+               01030103_w, {},         01040104_w,   {},           01050105_w,
+               {},         01060106_w, {},           12101210_w,   {},
+               12131213_w, {},         12141214_w,   {},           12151215_w,
+               {},         12161216_w, {},           23202320_w,   {},
+               23212321_w, {},         23242324_w,   {},           23252325_w,
+               {},         23262326_w, {},           34303430_w,   {},
+               34313431_w, {},         34323432_w,   {},           34353435_w,
+               {},         34363436_w, {},           45404540_w,   {},
+               45414541_w, {},         45424542_w,   {},           45434543_w,
+               {},         45464546_w, {},           56505650_w,   {},
+               56515651_w, {},         56525652_w,   {},           56535653_w,
+               {},         56545654_w, {},           60616061_w,   {},
+               60626062_w, {},         60636063_w,   {},           60646064_w,
+               {},         60656065_w, {},           071654321_w,  16543217_w,
+               217121_w,   17171_w,    0102720107_w, 7010270102_w, 107017_w,
+               70107010_w};
+    p.alphabet_from_rules();
+    // REQUIRE(presentation::length(p) == 398);
+    // REQUIRE(presentation::longest_subword_reducing_length(p) == 010_w);
+    // presentation::replace_word_with_new_generator(p, 010_w);
+    // REQUIRE(presentation::length(p) == 368);
+    // presentation::replace_word_with_new_generator(p, 010_w);
+
+    ToddCoxeter tc(twosided, p);
+    tc.strategy(options::strategy::felsch)
+        .lookahead_extent(options::lookahead_extent::full)
+        .lookahead_growth_factor(1.1)
+        .lookahead_next(16'000'000);
+    REQUIRE(tc.number_of_classes() == 0);
+  }
 }  // namespace libsemigroups

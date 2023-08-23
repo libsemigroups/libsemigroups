@@ -63,10 +63,15 @@ namespace libsemigroups {
         _max_num_classes(s->presentation().contains_empty_word() ? n : n + 1),
         _min_target_node(s->presentation().contains_empty_word() ? 0 : 1),
         // protected
-        _felsch_graph(s->presentation()),
+        _felsch_graph(),
         _mtx(),
         _pending(),
         _sims1(s) {
+    Presentation<word_type> p = s->presentation();
+    size_t                  m = std::distance(s->presentation().rules.cbegin(),
+                             s->cbegin_long_rules());
+    p.rules.erase(p.rules.begin() + m, p.rules.end());
+    _felsch_graph.init(std::move(p));
     // n == 0 only when the iterator is cend
     _felsch_graph.number_of_active_nodes(n == 0 ? 0 : 1);
     // = 0 indicates iterator is done
@@ -241,8 +246,8 @@ namespace libsemigroups {
     // No undefined edges, word graph is complete
     LIBSEMIGROUPS_ASSERT(N == M * num_gens);
 
-    auto first  = _sims1->long_rules().rules.cbegin();
-    auto last   = _sims1->long_rules().rules.cend();
+    auto first  = _sims1->cbegin_long_rules();
+    auto last   = _sims1->presentation().rules.cend();
     bool result = felsch_graph::make_compatible<RegisterDefs>(
         _felsch_graph, 0, M, first, last);
     if (result) {

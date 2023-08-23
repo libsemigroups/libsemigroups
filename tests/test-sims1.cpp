@@ -277,21 +277,22 @@ namespace libsemigroups {
                           "004",
                           "partition_monoid(2) right",
                           "[quick][low-index]") {
+    using namespace literals;
     auto                    rg = ReportGuard(false);
     Presentation<word_type> p;
     p.contains_empty_word(false);
 
-    p.alphabet({0, 1, 2, 3});
+    p.alphabet(0123_w);
     presentation::add_identity_rules(p, 0);
-    presentation::add_rule(p, {1, 1}, {0});
-    presentation::add_rule(p, {1, 3}, {3});
-    presentation::add_rule(p, {2, 2}, {2});
-    presentation::add_rule(p, {3, 1}, {3});
-    presentation::add_rule(p, {3, 3}, {3});
-    presentation::add_rule(p, {2, 3, 2}, {2});
-    presentation::add_rule(p, {3, 2, 3}, {3});
-    presentation::add_rule(p, {1, 2, 1, 2}, {2, 1, 2});
-    presentation::add_rule(p, {2, 1, 2, 1}, {2, 1, 2});
+    presentation::add_rule(p, 11_w, 0_w);
+    presentation::add_rule(p, 13_w, 3_w);
+    presentation::add_rule(p, 22_w, 2_w);
+    presentation::add_rule(p, 31_w, 3_w);
+    presentation::add_rule(p, 33_w, 3_w);
+    presentation::add_rule(p, 232_w, 2_w);
+    presentation::add_rule(p, 323_w, 3_w);
+    presentation::add_rule(p, 1212_w, 212_w);
+    presentation::add_rule(p, 2121_w, 212_w);
 
     Sims1 S(congruence_kind::right);
     S.presentation(p);
@@ -661,12 +662,12 @@ namespace libsemigroups {
     e.alphabet({0, 1});
     // REQUIRE_THROWS_AS(Sims1(congruence_kind::right).presentation(p).include(e),
     //                  LibsemigroupsException);
-    REQUIRE_THROWS_AS(
-        Sims1(congruence_kind::right).presentation(p).long_rules(e),
-        LibsemigroupsException);
-    REQUIRE_THROWS_AS(
-        Sims1(congruence_kind::right).long_rules(p).presentation(e),
-        LibsemigroupsException);
+    // REQUIRE_THROWS_AS(
+    //     Sims1(congruence_kind::right).presentation(p).long_rules(e),
+    //     LibsemigroupsException);
+    // REQUIRE_THROWS_AS(
+    //     Sims1(congruence_kind::right).long_rules(p).presentation(e),
+    //     LibsemigroupsException);
     // REQUIRE_THROWS_AS(Sims1(congruence_kind::right).long_rules(p).include(e),
     //                  LibsemigroupsException);
 
@@ -677,7 +678,7 @@ namespace libsemigroups {
     // REQUIRE_NOTHROW(Sims1(congruence_kind::right).include(p).include(e));
     REQUIRE_NOTHROW(
         Sims1(congruence_kind::right).presentation(p).presentation(e));
-    REQUIRE_NOTHROW(Sims1(congruence_kind::right).long_rules(p).long_rules(e));
+    // REQUIRE_NOTHROW(Sims1(congruence_kind::right).long_rules(p).long_rules(e));
     REQUIRE_THROWS_AS(Sims1(congruence_kind::twosided), LibsemigroupsException);
     Sims1 S(congruence_kind::right);
     REQUIRE_THROWS_AS(S.number_of_threads(0), LibsemigroupsException);
@@ -1032,12 +1033,12 @@ namespace libsemigroups {
     Presentation<word_type> p;
     p.contains_empty_word(true);
 
-    //          a  A  b  B  c  C
-    p.alphabet({0, 1, 2, 3, 4, 5});
-    presentation::add_inverse_rules(p, {1, 0, 3, 2, 5, 4});
-    presentation::add_rule(p, {0, 0, 5, 0, 4}, {});
-    presentation::add_rule(p, {0, 4, 2, 2, 1, 5, 2}, {});
-    presentation::add_rule(p, {1, 3, 0, 2, 4, 4, 4}, {});
+    //         aAbBcC
+    p.alphabet(012345_w);
+    presentation::add_inverse_rules(p, 103254_w);
+    presentation::add_rule(p, 00504_w, {});
+    presentation::add_rule(p, 0422152_w, {});
+    presentation::add_rule(p, 1302444_w, {});
     Sims1 S(congruence_kind::right);
     S.presentation(p);
 
@@ -1060,35 +1061,40 @@ namespace libsemigroups {
                       LibsemigroupsException);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("Sims1", "034", "split_at", "[quick][sims1]") {
+  LIBSEMIGROUPS_TEST_CASE("Sims1",
+                          "034",
+                          "cbegin_long_rules",
+                          "[quick][sims1]") {
+    using namespace literals;
+
     auto                    rg = ReportGuard(false);
     Presentation<word_type> p;
     p.contains_empty_word(true);
 
-    //          a  A  b  B  c  C
-    p.alphabet({0, 1, 2, 3, 4, 5});
-    presentation::add_inverse_rules(p, {1, 0, 3, 2, 5, 4});
-    presentation::add_rule(p, {0, 0, 5, 0, 4}, {});
-    presentation::add_rule(p, {0, 4, 2, 2, 1, 5, 2}, {});
-    presentation::add_rule(p, {1, 3, 0, 2, 4, 4, 4}, {});
+    //         aAbBcC
+    p.alphabet(012345_w);
+    presentation::add_inverse_rules(p, 103254_w);
+    presentation::add_rule(p, 00504_w, {});
+    presentation::add_rule(p, 0422152_w, {});
+    presentation::add_rule(p, 1302444_w, {});
     Sims1 S(congruence_kind::right);
     S.presentation(p);
 
-    REQUIRE_THROWS_AS(S.split_at(10), LibsemigroupsException);
-    S.split_at(0);
+    REQUIRE_THROWS_AS(S.cbegin_long_rules(10), LibsemigroupsException);
+    S.cbegin_long_rules(0);
 
     REQUIRE(S.presentation().rules.empty());
 
     for (size_t i = 0; i <= p.rules.size() / 2; ++i) {
-      S.split_at(i);
+      S.cbegin_long_rules(i);
       REQUIRE(S.presentation().rules.size() == 2 * i);
     }
     REQUIRE(S.presentation().rules.size() == p.rules.size());
     for (size_t i = p.rules.size() / 2; i > 0; --i) {
-      S.split_at(i);
+      S.cbegin_long_rules(i);
       REQUIRE(S.presentation().rules.size() == 2 * i);
     }
-    S.split_at(7);
+    S.cbegin_long_rules(7);
     REQUIRE(S.number_of_congruences(3) == 14);
   }
 
@@ -2049,7 +2055,7 @@ namespace libsemigroups {
     REQUIRE(orc.max_nodes() == 100);
     REQUIRE(orc.target_size() == 4'862);
     REQUIRE(orc.presentation().rules.size() == 128);
-    REQUIRE(orc.long_rules().rules.size() == 0);
+    REQUIRE(orc.number_of_long_rules() == 0);
     REQUIRE(d.number_of_nodes() == 91);
   }
 
@@ -2057,36 +2063,32 @@ namespace libsemigroups {
                           "069",
                           "fp example 1",
                           "[quick][low-index]") {
+    using namespace literals;
     auto rg = ReportGuard(false);
 
     Presentation<word_type> p;
     p.contains_empty_word(true);
-    p.alphabet({0, 1});
-    presentation::add_rule(p, {0, 0, 0}, {0});
-    presentation::add_rule(p, {1, 1}, {1});
-
-    Presentation<word_type> q;
-    q.contains_empty_word(true);
-    q.alphabet({0, 1});
-
-    presentation::add_rule(q, {0, 1, 0, 1}, {0});
+    p.alphabet(01_w);
+    presentation::add_rule(p, 000_w, 0_w);
+    presentation::add_rule(p, 11_w, 1_w);
+    presentation::add_rule(p, 0101_w, 0_w);
 
     Sims1 S(congruence_kind::right);
     REQUIRE(S.presentation(p)
-                .long_rules(q)
+                .cbegin_long_rules(4)
                 .number_of_threads(1)
                 .number_of_congruences(5)
             == 6);
     S.long_rule_length(5);
-    REQUIRE(S.long_rules().rules.size() == 2);
-    REQUIRE(S.presentation().rules.size() == 4);
+    REQUIRE(S.number_of_long_rules() == 2);
+    REQUIRE(S.presentation().rules.size() == 6);
     S.long_rule_length(4);
-    REQUIRE(S.long_rules().rules.size() == 4);
-    REQUIRE(S.presentation().rules.size() == 2);
+    REQUIRE(S.number_of_long_rules() == 4);
+    REQUIRE(S.presentation().rules.size() == 6);
 
     S = Sims1(congruence_kind::left);
     REQUIRE(S.presentation(p)
-                .long_rules(q)
+                .cbegin_long_rules(4)
                 .number_of_threads(1)
                 .number_of_congruences(5)
             == 9);
