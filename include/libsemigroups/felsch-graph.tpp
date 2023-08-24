@@ -249,6 +249,7 @@ namespace libsemigroups {
       x = u_node;
       a = UNDEFINED;
     } else {
+      LIBSEMIGROUPS_ASSERT(u_first < u_last);
       x = word_graph::follow_path_no_checks(*this, u_node, u_first, u_last - 1);
       if (x == UNDEFINED) {
         return true;
@@ -264,6 +265,7 @@ namespace libsemigroups {
       y = v_node;
       b = UNDEFINED;
     } else {
+      LIBSEMIGROUPS_ASSERT(v_first < v_last);
       y = word_graph::follow_path_no_checks(*this, v_node, v_first, v_last - 1);
       if (y == UNDEFINED) {
         return true;
@@ -308,6 +310,9 @@ namespace libsemigroups {
   template <typename Word, typename Node, typename Definitions>
   FelschGraph<Word, Node, Definitions>&
   FelschGraph<Word, Node, Definitions>::private_init_from_presentation() {
+#ifdef LIBSEMIGROUPS_DEBUG
+    _presentation.validate();
+#endif
     size_t r = (_presentation.contains_empty_word() ? 0 : 1);
     size_t c = _presentation.alphabet().size();
 
@@ -491,8 +496,18 @@ namespace libsemigroups {
           auto u_first = u.cbegin() + felsch_tree().length() - 1;
           auto u_last  = u.cend() - 1;
 
+          if (u_first > u_last) {
+            // TODO this shouldn't really be necessary, i.e. I don't think we
+            // should ever reach here if this is implemented correctly,
+            // this is reached in i.e. Sims1 test case 034.
+            // In more words, if felsch_tree().length() (maybe - 1) is longer
+            // than u, then we shouldn't be here at all
+            continue;
+          }
+
           node_type y
               = word_graph::follow_path_no_checks(*this, root, u_first, u_last);
+          LIBSEMIGROUPS_ASSERT(u_first <= u_last || y == root);
           if (y == UNDEFINED) {
             continue;
           }

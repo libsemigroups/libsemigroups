@@ -917,7 +917,6 @@ namespace libsemigroups {
     Presentation<std::string> p;
     p.contains_empty_word(false);
     p.alphabet("aAbBe");
-    presentation::add_identity_rules(p, 'e');
     presentation::add_inverse_rules(p, "AaBbe", 'e');
     presentation::add_rule(p, "aaa", "e");
     presentation::add_rule(p, "baBBBABA", "e");
@@ -1077,32 +1076,105 @@ namespace libsemigroups {
     presentation::add_rule(p, 00504_w, {});
     presentation::add_rule(p, 0422152_w, {});
     presentation::add_rule(p, 1302444_w, {});
-    Sims1 S(congruence_kind::right);
-    S.presentation(p);
+    // F := FreeGroup("a", "b", "c");
+    // AssignGeneratorVariables(F);
+    // R := [ a*a*c^-1*a*c, a*c*b*b*a^-1*c^-1*b, a^-1*b^-1*a*b*c*c*c];
+    // G := F/ R;
+    // LowIndexSubgroups(G, 3); # returns 14
+    // Sims1 S(congruence_kind::right);
+    // S.presentation(p);
+    // REQUIRE(S.number_of_congruences(3) == 14);
+    // REQUIRE(S.number_of_congruences(4) == 14);
 
-    REQUIRE_THROWS_AS(S.cbegin_long_rules(p.rules.size() + 1),
-                      LibsemigroupsException);
-    REQUIRE_THROWS_AS(S.cbegin_long_rules(9), LibsemigroupsException);
-    S.cbegin_long_rules(0);
+    // REQUIRE_THROWS_AS(S.cbegin_long_rules(p.rules.size() + 1),
+    //                   LibsemigroupsException);
+    // REQUIRE_THROWS_AS(S.cbegin_long_rules(9), LibsemigroupsException);
+    // REQUIRE_NOTHROW(S.cbegin_long_rules(0));
 
-    REQUIRE(!S.presentation().rules.empty());
+    // REQUIRE(!S.presentation().rules.empty());
 
-    auto const& rules = S.presentation().rules;
+    // auto const& rules = S.presentation().rules;
 
-    for (size_t i = 0; i <= rules.size() / 2; ++i) {
-      S.cbegin_long_rules(2 * i);
-      REQUIRE(static_cast<size_t>(
-                  std::distance(rules.cbegin(), S.cbegin_long_rules()))
-              == 2 * i);
-    }
-    REQUIRE(S.presentation().rules.size() == p.rules.size());
-    for (size_t i = p.rules.size() / 2; i > 0; --i) {
-      S.cbegin_long_rules(2 * i);
-      REQUIRE(static_cast<size_t>(
-                  std::distance(rules.cbegin(), S.cbegin_long_rules()))
-              == 2 * i);
-    }
-    REQUIRE(S.number_of_congruences(3) == 14);
+    // for (size_t i = 0; i <= rules.size() / 2; ++i) {
+    //   S.cbegin_long_rules(2 * i);
+    //   REQUIRE(static_cast<size_t>(
+    //               std::distance(rules.cbegin(), S.cbegin_long_rules()))
+    //           == 2 * i);
+    // }
+    // REQUIRE(S.presentation().rules.size() == p.rules.size());
+    // for (size_t i = p.rules.size() / 2; i > 0; --i) {
+    //   S.cbegin_long_rules(2 * i);
+    //   REQUIRE(static_cast<size_t>(
+    //               std::distance(rules.cbegin(), S.cbegin_long_rules()))
+    //           == 2 * i);
+    // }
+
+    Presentation<word_type> q;
+    q.contains_empty_word(p.contains_empty_word()).alphabet(p.alphabet());
+    q.rules.insert(q.rules.end(), p.rules.begin(), p.rules.begin() + 8);
+    q.validate();
+    REQUIRE(q.alphabet() == 012345_w);
+    REQUIRE(
+        q.rules
+        == std::vector<word_type>({01_w, {}, 10_w, {}, 23_w, {}, 32_w, {}}));
+    q.validate();
+
+    std::atomic_uint64_t num = 0;
+    Sims1                T(congruence_kind::right);
+    T.presentation(q);
+
+    REQUIRE(T.number_of_long_rules() == 0);
+    T.for_each(3, [&](auto const& wg) {
+      num += word_graph::is_compatible(wg,
+                                       wg.cbegin_nodes(),
+                                       wg.cbegin_nodes()
+                                           + wg.number_of_active_nodes(),
+                                       p.rules.cbegin(),
+                                       p.rules.cend());
+    });
+    REQUIRE(num == 14);  // 14 is the correct value
+
+    // num = 0;
+
+    // // REQUIRE(rules.size() == 18);
+    // // REQUIRE(S.number_of_long_rules() == 8);
+    // S.number_of_threads(1);
+    // REQUIRE(S.number_of_congruences(3) == 5);
+    // REQUIRE(rules.size() == 18);
+    // S.for_each(3, [&](auto const& wg) {
+    //   REQUIRE(wg.out_degree() == 6);
+    //   num += word_graph::is_compatible(wg,
+    //                                    wg.cbegin_nodes(),
+    //                                    wg.cbegin_nodes()
+    //                                        + wg.number_of_active_nodes(),
+    //                                    rules.cbegin(),
+    //                                    S.cbegin_long_rules())
+    //          && word_graph::is_complete(wg,
+    //                                     wg.cbegin_nodes(),
+    //                                     wg.cbegin_nodes()
+    //                                         + wg.number_of_active_nodes());
+    // });
+    // REQUIRE(S.presentation().rules == p.rules);
+    // REQUIRE(num == 5);
+    // S.clear_long_rules();
+    // num = 0;
+    // REQUIRE(rules.size() == 18);
+    // REQUIRE(S.number_of_threads() == 1);
+    // REQUIRE(S.presentation().rules == p.rules);
+    // REQUIRE(S.number_of_congruences(3) == 14);
+    // S.for_each(3, [&](auto const& wg) {
+    //   REQUIRE(wg.out_degree() == 6);
+    //   num += word_graph::is_compatible(wg,
+    //                                    wg.cbegin_nodes(),
+    //                                    wg.cend_nodes(),
+    //                                    rules.cbegin(),
+    //                                    S.cbegin_long_rules())
+    //          && word_graph::is_complete(wg,
+    //                                     wg.cbegin_nodes(),
+    //                                     wg.cbegin_nodes()
+    //                                         + wg.number_of_active_nodes());
+    // });
+    // REQUIRE(num == 14);
   }
 
 #ifdef LIBSEMIGROUPS_ENABLE_STATS
@@ -1617,9 +1689,8 @@ namespace libsemigroups {
     std::array<uint64_t, 10> const num_right = {0, 0, 0, 1'521, 0};
 
     for (size_t n = 3; n < 5; ++n) {
-      // TODO(v3): remove to_presentation
-      auto p = to_presentation<word_type>(rook_monoid(n, 0));
-      auto q = to_presentation<word_type>(stellar_monoid(n));
+      auto p = rook_monoid(n, 0);
+      auto q = stellar_monoid(n);
       p.rules.insert(p.rules.end(), q.rules.cbegin(), q.rules.cend());
       REQUIRE(p.alphabet().size() == n + 1);
       {

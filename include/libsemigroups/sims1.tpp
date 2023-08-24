@@ -32,9 +32,9 @@ namespace libsemigroups {
       :  // protected
         _exclude(),
         _include(),
-        _longs_begin(),
         _presentation(),
         // private
+        _longs_begin(),
         _num_threads(),
         _stats() {
     _longs_begin = _presentation.rules.cend();

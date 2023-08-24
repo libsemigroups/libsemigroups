@@ -246,10 +246,14 @@ namespace libsemigroups {
     // No undefined edges, word graph is complete
     LIBSEMIGROUPS_ASSERT(N == M * num_gens);
 
-    auto first  = _sims1->cbegin_long_rules();
-    auto last   = _sims1->presentation().rules.cend();
-    bool result = felsch_graph::make_compatible<RegisterDefs>(
-        _felsch_graph, 0, M, first, last);
+    auto first = _sims1->cbegin_long_rules();
+    auto last  = _sims1->presentation().rules.cend();
+
+    bool result = word_graph::is_compatible(_felsch_graph,
+                                            _felsch_graph.cbegin_nodes(),
+                                            _felsch_graph.cbegin_nodes() + M,
+                                            first,
+                                            last);
     if (result) {
       std::lock_guard<std::mutex> lock(_mtx);
       // TODO maybe better to use atomic
@@ -506,8 +510,8 @@ namespace libsemigroups {
           "expected the 1st argument (size_type) to be non-zero");
     } else if (presentation().rules.empty()
                && presentation().alphabet().empty()) {
-      LIBSEMIGROUPS_EXCEPTION(
-          "the presentation() must be defined before calling this function");
+      LIBSEMIGROUPS_EXCEPTION("the presentation() must be defined before "
+                              "calling this function");
     }
     report_at_start(n);
     if (number_of_threads() == 1) {
@@ -544,8 +548,8 @@ namespace libsemigroups {
           "expected the 1st argument (size_type) to be non-zero");
     } else if (presentation().rules.empty()
                && presentation().alphabet().empty()) {
-      LIBSEMIGROUPS_EXCEPTION(
-          "the presentation() must be defined before calling this function");
+      LIBSEMIGROUPS_EXCEPTION("the presentation() must be defined before "
+                              "calling this function");
     }
     report_at_start(n);
     if (number_of_threads() == 1) {

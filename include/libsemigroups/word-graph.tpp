@@ -434,14 +434,14 @@ namespace libsemigroups {
         for (auto rit = first_rule; rit != last_rule; ++rit) {
           auto l = word_graph::follow_path_no_checks(
               wg, *nit, rit->cbegin(), rit->cend());
-          if (l == UNDEFINED) {
-            return true;
-          }
           ++rit;
+          if (l == UNDEFINED) {
+            continue;
+          }
           auto r = word_graph::follow_path_no_checks(
               wg, *nit, rit->cbegin(), rit->cend());
           if (r == UNDEFINED) {
-            return true;
+            continue;
           }
           if (l != r) {
             return false;

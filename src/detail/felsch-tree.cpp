@@ -81,8 +81,7 @@ namespace libsemigroups {
               }
             }
           }
-          // Find the state corresponding to the prefix [wit->cbegin(),
-          // suffix)
+          // Find the state corresponding to the prefix [wit->cbegin(), suffix)
           auto       it = suffix - 1;
           state_type s  = initial_state;
           while (it >= wit->cbegin()) {

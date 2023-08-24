@@ -147,15 +147,14 @@ namespace libsemigroups {
    protected:
     // These are protected so that Sims1 can reverse them if necessary for
     // left congruences.
-    std::vector<word_type> _exclude;
-    std::vector<word_type> _include;
-    // TODO this won't need to be protected
-    std::vector<word_type>::const_iterator _longs_begin;
-    Presentation<word_type>                _presentation;
+    std::vector<word_type>  _exclude;
+    std::vector<word_type>  _include;
+    Presentation<word_type> _presentation;
 
    private:
-    size_t             _num_threads;
-    mutable Sims1Stats _stats;
+    std::vector<word_type>::const_iterator _longs_begin;
+    size_t                                 _num_threads;
+    mutable Sims1Stats                     _stats;
 
     template <typename S>
     Sims1Settings& init(Sims1Settings<S> const& that);
@@ -340,6 +339,10 @@ namespace libsemigroups {
     //! equal to that of \ref presentation or \ref extra.
     Subclass& cbegin_long_rules(std::vector<word_type>::const_iterator p);
     Subclass& cbegin_long_rules(size_t pos);
+
+    Subclass& clear_long_rules() {
+      return cbegin_long_rules(_presentation.rules.cend());
+    }
 
     size_t number_of_long_rules() const noexcept {
       return std::distance(_longs_begin, _presentation.rules.cend()) / 2;
@@ -656,15 +659,6 @@ namespace libsemigroups {
       }
       return result;
     }
-
-    // template <typename P>
-    // Sims1& long_rules(P const& p) {
-    //   Sims1Settings<Sims1>::long_rules(p);
-    //   if (_kind == congruence_kind::left) {
-    //     presentation::reverse(_longs);
-    //   }
-    //   return *this;
-    // }
 
     // Must accept at least one argument so that we're not calling the 0-arg
     // include() which is const!
