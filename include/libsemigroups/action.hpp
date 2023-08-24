@@ -86,7 +86,7 @@ namespace libsemigroups {
   //! \ref ActionTraits.
   //!
   //! \tparam LeftOrRight the libsemigroups::side of the action (i.e. if it is
-  //! is a left or a right action).
+  //! a left or a right action).
   //!
   //! \sa libsemigroups::side, ActionTraits, LeftAction, and RightAction.
   //!
@@ -116,7 +116,7 @@ namespace libsemigroups {
   //! o.digraph().number_of_scc(); // 17
   //! \endcode
   //!
-  //! \complexity
+  //! \par Complexity
   //! The time complexity is \f$O(mn)\f$ where \f$m\f$ is the total
   //! number of points in the orbit and \f$n\f$ is the number of generators.
   template <typename Element,
@@ -188,11 +188,7 @@ namespace libsemigroups {
     //! The type of the index of a point.
     using index_type = size_t;
 
-    //! The type of the index of a strongly connected component.
-    //!
-    //! \sa WordGraph::scc_index_type
-
-    //! Type of the action of \ref element_type on \ref point_type.
+    //! Type of the action of \ref element_type on  \ref point_type.
     //!
     //! \sa ImageRightAction, ImageLeftAction
     using action_type = Func;

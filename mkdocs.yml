@@ -1,0 +1,58 @@
+site_name: "libsemigroups"
+
+extra_css:
+  - custom.css
+
+theme:
+  name: readthedocs #material
+
+plugins:
+  - search
+  - bibtex:
+      bib_file: "docs/libsemigroups.bib"
+  - mkdoxy:
+      projects:
+        libsemigroups:
+          src-dirs: "include/libsemigroups"
+          full-doc: True
+          template-dir: docs/templates
+          doxy-cfg: # standard doxygen configuration (key: value)
+            FILE_PATTERNS: "*.hpp"
+            RECURSIVE: True
+            USE_MATHJAX: True
+            INLINE_INHERITED_MEMB: False
+            INHERIT_DOCS: True
+            EXCLUDE_SYMBOLS: "fmt::* *~*"
+            EXCLUDE_PATTERNS: "*.tpp"
+            HIDE_UNDOC_CLASSES: True
+            HIDE_UNDOC_MEMBERS: True
+            EXTRACT_PRIVATE: False
+            ENABLE_PREPROCESSING: True
+            JAVADOC_AUTOBRIEF: True
+            PREDEFINED: "DOXYGEN_SHOULD_SKIP_THIS LIBSEMIGROUPS_PARSED_BY_DOXYGEN"
+            SHOW_NAMESPACES: False
+markdown_extensions:
+  - footnotes
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+      use_pygments: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences
+watch:
+  - "include/libsemigroups/"
+nav:
+  - INSTALLATION AND CHANGELOG:
+    - 'Installation': 'install.md'
+    - 'Changelog - version 3': 'changelog-v3.md'
+    - 'Changelog - version 2': 'changelog-v2.md'
+    - 'Changelog - version 1': 'changelog-v1.md'
+  - API REFERENCE:
+    - 'Actions': 'action.md'
+  - BIBLIOGRAPHY:
+    - 'Bibliography': 'z-biblio.md'
+  - FURTHER INFO:
+    - 'Semigroupe': 'semigroupe.md'
+    - 'Authors': 'authors.md'
