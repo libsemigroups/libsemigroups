@@ -917,6 +917,7 @@ namespace libsemigroups {
     Presentation<std::string> p;
     p.contains_empty_word(false);
     p.alphabet("aAbBe");
+    presentation::add_identity_rules(p, 'e');
     presentation::add_inverse_rules(p, "AaBbe", 'e');
     presentation::add_rule(p, "aaa", "e");
     presentation::add_rule(p, "baBBBABA", "e");
