@@ -21,7 +21,10 @@
 
 #include "libsemigroups/sims1.hpp"
 
+#include "libsemigroups/detail/function-ref.hpp"
+
 namespace libsemigroups {
+
   // TODO use report_default
   std::ostream& operator<<(std::ostream& os, Sims1Stats const& stats) {
     // os << "#0: Sims1: total number of nodes in search tree was "
@@ -463,8 +466,8 @@ namespace libsemigroups {
 
     void run(std::function<bool(word_graph_type const&)> hook) {
       if (report::should_report()) {
-        auto                      t = _sims1->launch_report_thread();
-        detail::ReportThreadGuard tg(*_sims1, t);
+        // TODO zero _sims1 stats?
+        detail::Ticker t([this]() { _sims1->report_progress_from_thread(); });
         really_run(hook);
       } else {
         really_run(hook);
@@ -484,9 +487,7 @@ namespace libsemigroups {
     }
   }
 
-  Sims1::~Sims1() {
-    stop_report_thread();
-  }
+  Sims1::~Sims1() = default;
 
   uint64_t Sims1::number_of_congruences(size_type n) const {
     if (number_of_threads() == 1) {
@@ -516,14 +517,13 @@ namespace libsemigroups {
     report_at_start(n);
     if (number_of_threads() == 1) {
       if (!report::should_report()) {
-        // No stats in this case
+        // Don't care about stats in this case
         std::for_each(cbegin(n), cend(n), pred);
       } else {
         stats().zero_stats();
-        auto                      t = launch_report_thread();
-        detail::ReportThreadGuard tg(*this, t);
-        auto                      it   = cbegin(n);
-        auto const                last = cend(n);
+        detail::Ticker t([this]() { report_progress_from_thread(); });
+        auto           it   = cbegin(n);
+        auto const     last = cend(n);
         for (; it != last; ++it) {
           pred(*it);
         }
@@ -557,8 +557,7 @@ namespace libsemigroups {
         return *std::find_if(cbegin(n), cend(n), pred);
       } else {
         stats().zero_stats();
-        auto                      t = launch_report_thread();
-        detail::ReportThreadGuard tg(*this, t);
+        detail::Ticker t([this]() { report_progress_from_thread(); });
 
         auto       it   = cbegin(n);
         auto const last = cend(n);

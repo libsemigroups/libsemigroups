@@ -2168,7 +2168,7 @@ namespace libsemigroups {
     S = Sims1(congruence_kind::left);
     REQUIRE(S.presentation(p)
                 .cbegin_long_rules(4)
-                .number_of_threads(1)
+                .number_of_threads(2)
                 .number_of_congruences(5)
             == 9);
   }
@@ -2208,7 +2208,7 @@ namespace libsemigroups {
     p.alphabet(2);
     Sims1 S(congruence_kind::right);
     S.presentation(p);
-    REQUIRE(S.number_of_congruences(4) == 5'477);
+    REQUIRE(S.number_of_threads(2).number_of_congruences(4) == 5'477);
   }
 
   LIBSEMIGROUPS_TEST_CASE("Sims1",

@@ -83,8 +83,8 @@ namespace libsemigroups {
     // TODO doc
     uint64_t count_last;
     // TODO doc
-    uint64_t count_now;
     // TODO atomic so as to avoid races between
+    uint64_t count_now;
     // report_progress_from_thread and the threads modifying count_last
     //! The maximum number of pending definitions.
     //!
@@ -1036,7 +1036,7 @@ namespace libsemigroups {
     };  // class iterator
 
    private:
-    void report_progress_from_thread() const override;
+    void report_progress_from_thread() const;
     void report_at_start(size_t num_classes) const;
     void report_final() const;
 

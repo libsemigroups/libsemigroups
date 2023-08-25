@@ -82,36 +82,6 @@ namespace libsemigroups {
 
     ~ReporterV3() = default;
 
-    virtual void report_progress_from_thread() const {}
-
-    // It's necessary to check if reporting is enable before calling this
-    // function
-    // TODO improve this so there's less waiting in the case _stop_reporting is
-    // set to true (not sure how to do that)
-    std::thread launch_report_thread() const {
-      _stop_reporting  = false;
-      _start_time      = std::chrono::high_resolution_clock::now();
-      auto thread_func = [this]() {
-        std::this_thread::sleep_for(report_every());
-        while (!_stop_reporting) {
-          report_progress_from_thread();
-          std::this_thread::sleep_for(report_every());
-          // If _stop_reporting is changed when we are sleeping, then this
-          // thread won't terminate until it wakes up, hence when we join the
-          // thread, every computation calling this function will take a
-          // minimum of report_every()=1s to run, which is not great. We can't
-          // detach the thread below because then *this can be deleted while
-          // this thread is asleep meaning that _stop_reporting is lost.
-        }
-      };
-      return std::thread(thread_func);
-    }
-
-    ReporterV3 const& stop_report_thread() const {
-      _stop_reporting = true;
-      return *this;
-    }
-
     //! Check if it is time to report.
     //!
     //! This function can be used in an implementation of run() (in a
@@ -214,20 +184,76 @@ namespace libsemigroups {
   };
 
   namespace detail {
-    class ReportThreadGuard : public ThreadGuard {
-      ReporterV3 const& _reporter;
+    // This class provides a thread-safe means of calling a function every
+    // second in a detached thread. The purpose of this class is so that the
+    // TickerImpl, which contains the data required by the function to be
+    // called, inside the Ticker, can outlive the Ticker, the TickerImpl is
+    // deleted by the function called in the thread.
+    class Ticker {
+      class TickerImpl {
+        detail::FunctionRef<void(void)> _func;
+        bool                            _stop;
+        std::mutex                      _mtx;
+
+       public:
+        template <typename Func>
+        TickerImpl(Func&& func)
+            : _func(std::forward<Func>(func)), _stop(false) {
+          // _start_time      = std::chrono::high_resolution_clock::now();
+          auto thread_func = [this](TickerImpl* dtg) {
+            std::unique_ptr<TickerImpl> ptr;
+            ptr.reset(dtg);
+            std::this_thread::sleep_for(std::chrono::seconds(1));
+            while (true) {
+              {
+                std::lock_guard<std::mutex> lck(_mtx);
+                // This stops _func() from being called, when the object it
+                // relates to is destroyed, two scenarios arise:
+                // 1. the Ticker goes out of scope, the mutex is locked, then
+                //    _stop is set to false, Ticker is destroyed, maybe the
+                //    object where Ticker is created is also destroyed (the
+                //    object containing _func and/or its related data), then we
+                //    acquire the mutex here, and _stop is false, so we don't
+                //    call _func (which is actually destroyed).
+                // 2. we acquire the lock on the mutex here first, and then
+                //    Ticker goes out of scope, the destructor of Ticker is
+                //    then blocked (and so too is the possible destruction of
+                //    the object containing the data for _func) until we've
+                //    finished calling _func again.
+                if (!_stop) {
+                  _func();
+                } else {
+                  break;
+                }
+              }
+              std::this_thread::sleep_for(std::chrono::seconds(1));
+            }
+          };
+          auto t = std::thread(thread_func, this);
+          t.detach();
+        }
+
+        void stop() {
+          _stop = true;
+        }
+
+        std::mutex& mtx() noexcept {
+          return _mtx;
+        }
+      };
+
+      TickerImpl* _detached_thread;
 
      public:
-      explicit ReportThreadGuard(ReporterV3 const& reporter,
-                                 std::thread&      thread)
-          : ThreadGuard(thread), _reporter(reporter) {}
+      template <typename Func>
+      Ticker(Func&& func)
+          : _detached_thread(new TickerImpl(std::forward<Func>(func))) {}
 
-      ~ReportThreadGuard() {
-        _reporter.stop_report_thread();
+      ~Ticker() {
+        // See above for an explanation of why we lock the mtx here.
+        std::lock_guard<std::mutex> lck(_detached_thread->mtx());
+        _detached_thread->stop();
       }
-
-      ReportThreadGuard(ReportThreadGuard const&)            = delete;
-      ReportThreadGuard& operator=(ReportThreadGuard const&) = delete;
     };
 
     template <size_t C>

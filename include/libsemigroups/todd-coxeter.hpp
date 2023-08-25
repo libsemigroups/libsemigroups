@@ -56,6 +56,8 @@ namespace libsemigroups {
       _word_graph.report_every(val);
     }
 
+    using ReporterV3::report_every;
+
     struct options : public FelschGraphSettings_::options {
       enum class strategy {
         hlt,
@@ -852,6 +854,8 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////
     // Runner - pure virtual member functions - private
     ////////////////////////////////////////////////////////////////////////
+
+    void really_run_impl();
 
     void run_impl() override;
 

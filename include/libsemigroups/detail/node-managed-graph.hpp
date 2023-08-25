@@ -199,7 +199,7 @@ namespace libsemigroups {
       // Reporting - public
       ////////////////////////////////////////////////////////////////////////
 
-      void report_progress_from_thread() const override;
+      void report_progress_from_thread() const;
     };
 
     namespace node_managed_graph {

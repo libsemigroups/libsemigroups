@@ -501,40 +501,50 @@ namespace libsemigroups {
   // Runner - pure virtual member functions - private
   ////////////////////////////////////////////////////////////////////////
 
+  void ToddCoxeter::really_run_impl() {
+    if (strategy() == options::strategy::felsch) {
+      felsch();
+    } else if (strategy() == options::strategy::hlt) {
+      hlt();
+    } else if (strategy() == options::strategy::CR) {
+      CR_style();
+    } else if (strategy() == options::strategy::R_over_C) {
+      R_over_C_style();
+    } else if (strategy() == options::strategy::Cr) {
+      Cr_style();
+    } else if (strategy() == options::strategy::Rc) {
+      Rc_style();
+    }
+  }
+
   void ToddCoxeter::run_impl() {
     if (is_obviously_infinite(*this)) {
       LIBSEMIGROUPS_EXCEPTION(
           "there are infinitely many classes in the congruence and "
           "Todd-Coxeter will never terminate");
+    } else if (strategy() != options::strategy::felsch
+               && strategy() != options::strategy::hlt && running_until()) {
+      LIBSEMIGROUPS_EXCEPTION("the strategy {} cannot be used with run_until!",
+                              strategy());
     }
-    // TODO if should_report
-    auto msg = fmt::format("{:+<93}\n", "");
-    msg += fmt_default("ToddCoxeter: Using {} strategy . . .\n", strategy());
-    msg += fmt::format("{:+<93}\n", "");
-    report_no_prefix(msg);
 
     init_run();
 
-    if (strategy() == options::strategy::felsch) {
-      felsch();
-    } else if (strategy() == options::strategy::hlt) {
-      hlt();
-    } else {
-      if (running_until()) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "the strategy {} cannot be used with run_until!", strategy());
-      }
+    if (report::should_report()
+        && (!running_for()
+            || report_every() >= std::chrono::nanoseconds(1'500'000'000))) {
+      // TODO report_strategy
+      auto msg = fmt::format("{:+<93}\n", "");
+      msg += fmt_default("ToddCoxeter: Using {} strategy . . .\n", strategy());
+      msg += fmt::format("{:+<93}\n", "");
+      report_no_prefix(msg);
 
-      if (strategy() == options::strategy::CR) {
-        CR_style();
-      } else if (strategy() == options::strategy::R_over_C) {
-        R_over_C_style();
-      } else if (strategy() == options::strategy::Cr) {
-        Cr_style();
-      } else if (strategy() == options::strategy::Rc) {
-        Rc_style();
-      }
+      detail::Ticker t([this]() { _word_graph.report_progress_from_thread(); });
+      really_run_impl();
+    } else {
+      really_run_impl();
     }
+
     finalise_run();
   }
 
@@ -676,9 +686,6 @@ namespace libsemigroups {
   }
 
   void ToddCoxeter::felsch() {
-    auto                      t = _word_graph.launch_report_thread();
-    detail::ReportThreadGuard tg(_word_graph, t);
-
     _word_graph.process_definitions();
 
     auto& current  = _word_graph.cursor();
@@ -700,9 +707,6 @@ namespace libsemigroups {
   }
 
   void ToddCoxeter::hlt() {
-    auto                      t = _word_graph.launch_report_thread();
-    detail::ReportThreadGuard tg(_word_graph, t);
-
     auto& current    = _word_graph.cursor();
     current          = _word_graph.initial_node();
     auto const first = presentation().rules.cbegin();
