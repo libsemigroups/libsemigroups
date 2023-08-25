@@ -38,6 +38,7 @@
 #include "libsemigroups/types.hpp"            // for word_type
 
 namespace libsemigroups {
+
   namespace {
     [[maybe_unused]] void add_cyclic_conjugates(Presentation<std::string>& p,
                                                 char const*                l,
@@ -73,7 +74,6 @@ namespace libsemigroups {
   using node_type       = typename word_graph_type::node_type;
 
   using fpsemigroup::author;
-
   using fpsemigroup::brauer_monoid;
   using fpsemigroup::chinese_monoid;
   using fpsemigroup::fibonacci_semigroup;
@@ -87,6 +87,8 @@ namespace libsemigroups {
   using fpsemigroup::stellar_monoid;
   using fpsemigroup::stylic_monoid;
   using fpsemigroup::temperley_lieb_monoid;
+
+  using namespace literals;
 
   namespace {
     template <typename P>
@@ -277,7 +279,6 @@ namespace libsemigroups {
                           "004",
                           "partition_monoid(2) right",
                           "[quick][low-index]") {
-    using namespace literals;
     auto                    rg = ReportGuard(false);
     Presentation<word_type> p;
     p.contains_empty_word(false);
@@ -443,7 +444,6 @@ namespace libsemigroups {
                           "012",
                           "symmetric_inverse_monoid(4)",
                           "[extreme][low-index]") {
-    using namespace literals;
     auto p = rook_monoid(4, 1);
     presentation::remove_duplicate_rules(p);
     presentation::sort_each_rule(p);
@@ -524,7 +524,6 @@ namespace libsemigroups {
                           "016",
                           "fp semigroup containing given pairs #1",
                           "[quick][low-index]") {
-    using namespace literals;
     auto rg = ReportGuard(false);
 
     Presentation<word_type> p;
@@ -552,7 +551,6 @@ namespace libsemigroups {
                           "017",
                           "fp semigroup containing given pairs #2",
                           "[quick][low-index]") {
-    using namespace literals;
     auto rg = ReportGuard(false);
 
     Presentation<word_type> p;
@@ -580,7 +578,6 @@ namespace libsemigroups {
                           "018",
                           "fp semigroup containing given pairs #3",
                           "[quick][low-index]") {
-    using namespace literals;
     auto rg = ReportGuard(false);
 
     Presentation<word_type> p;
@@ -634,7 +631,6 @@ namespace libsemigroups {
                           "020",
                           "fp example 2",
                           "[quick][low-index]") {
-    using namespace literals;
     auto                    rg = ReportGuard(false);
     Presentation<word_type> p;
     p.contains_empty_word(true);
@@ -847,7 +843,6 @@ namespace libsemigroups {
                           "025",
                           "brauer_monoid(5) (Kudryavtseva-Mazorchuk)",
                           "[extreme][sims1]") {
-    using namespace literals;
     auto rg = ReportGuard(true);
     auto p  = brauer_monoid(5);
 
@@ -1028,7 +1023,6 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Sims1", "033", "constructors", "[quick][sims1]") {
-    using namespace literals;
     auto                    rg = ReportGuard(false);
     Presentation<word_type> p;
     p.contains_empty_word(true);
@@ -1065,8 +1059,6 @@ namespace libsemigroups {
                           "034",
                           "cbegin_long_rules",
                           "[quick][sims1]") {
-    using namespace literals;
-
     auto                    rg = ReportGuard(false);
     Presentation<word_type> p;
     p.contains_empty_word(true);
@@ -2142,7 +2134,6 @@ namespace libsemigroups {
                           "069",
                           "fp example 1",
                           "[quick][low-index]") {
-    using namespace literals;
     auto rg = ReportGuard(false);
 
     Presentation<word_type> p;
@@ -2238,6 +2229,18 @@ namespace libsemigroups {
     REQUIRE_THROWS_AS(S.find_if(2, [](auto) { return true; }),
                       LibsemigroupsException);
     REQUIRE_THROWS_AS(S.for_each(2, [](auto) {}), LibsemigroupsException);
+    REQUIRE_THROWS_AS(S.include(01_w, 10_w), LibsemigroupsException);
+    REQUIRE_THROWS_AS(S.exclude(01_w, 10_w), LibsemigroupsException);
+
+    p.alphabet(2);
+    S.presentation(p);
+    REQUIRE_THROWS_AS(S.exclude(01_w, 102_w), LibsemigroupsException);
+
+    p.alphabet(3);
+    S.presentation(p);
+    S.exclude(01_w, 102_w);
+    p.alphabet(2);
+    REQUIRE_THROWS_AS(S.presentation(p), LibsemigroupsException);
   }
 
   LIBSEMIGROUPS_TEST_CASE("Sims1",
@@ -2708,7 +2711,6 @@ namespace libsemigroups {
                           "087",
                           "2-sylvester monoid",
                           "[extreme][sims1]") {
-    using namespace literals;
     Presentation<word_type> p;
     p.alphabet(3);
     p.rules = {100_w,       010_w,       200_w,       020_w,       201_w,
@@ -2735,7 +2737,6 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Sims1", "088", "Brauer monoid", "[extreme][sims1]") {
-    using namespace literals;
     auto p = brauer_monoid(5);
     // REQUIRE(p.alphabet() == 012_w);
     MinimalRepOrc orc;
@@ -2760,7 +2761,6 @@ namespace libsemigroups {
                           "089",
                           "partial Brauer monoid",
                           "[extreme][sims1]") {
-    using namespace literals;
     std::array<uint64_t, 6> const sizes       = {0, 2, 10, 76, 764, 9496};
     std::array<uint64_t, 6> const min_degrees = {0, 2, 6, 14, 44, 143};
 

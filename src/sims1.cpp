@@ -112,6 +112,8 @@ namespace libsemigroups {
     _felsch_graph.add_nodes(n);
   }
 
+  // Intentionally don't copy the mutex, it doesn't compile, wouldn't make
+  // sense if the mutex was used here.
   Sims1::iterator_base::iterator_base(Sims1::iterator_base const& that)
       :  // private
         _max_num_classes(that._max_num_classes),
@@ -512,14 +514,17 @@ namespace libsemigroups {
   // Sims1
   ////////////////////////////////////////////////////////////////////////
 
-  Sims1::Sims1(congruence_kind ck) : Sims1Settings<Sims1>(), _kind(ck) {
+  Sims1& Sims1::kind(congruence_kind ck) {
     if (ck == congruence_kind::twosided) {
-      LIBSEMIGROUPS_EXCEPTION(
-          "expected congruence_kind::right or congruence_kind::left");
+      LIBSEMIGROUPS_EXCEPTION("expected congruence_kind::right or "
+                              "congruence_kind::left, found {}",
+                              ck);
     }
+    // TODO shouldn't we reverse include, exclude, and presentation if _kind !=
+    // ck?
+    _kind = ck;
+    return *this;
   }
-
-  Sims1::~Sims1() = default;
 
   uint64_t Sims1::number_of_congruences(size_type n) const {
     if (number_of_threads() == 1) {
@@ -535,7 +540,6 @@ namespace libsemigroups {
 
   // Apply the function pred to every one-sided congruence with at
   // most n classes
-
   void Sims1::for_each(size_type                                   n,
                        std::function<void(word_graph_type const&)> pred) const {
     if (n == 0) {
@@ -729,6 +733,13 @@ namespace libsemigroups {
   ////////////////////////////////////////////////////////////////////////
   // RepOrc helper class
   ////////////////////////////////////////////////////////////////////////
+
+  RepOrc& RepOrc::init() {
+    _min  = 0;
+    _max  = 0;
+    _size = 0;
+    return *this;
+  }
 
   Sims1::word_graph_type RepOrc::word_graph() const {
     using word_graph_type = typename Sims1::word_graph_type;

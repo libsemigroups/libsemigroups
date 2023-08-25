@@ -460,6 +460,15 @@ namespace libsemigroups {
 
   namespace presentation {
 
+    template <typename Word, typename Iterator>
+    void validate_rules(Presentation<Word> const& p,
+                        Iterator                  first,
+                        Iterator                  last) {
+      for (auto it = first; it != last; ++it) {
+        p.validate_word(it->cbegin(), it->cend());
+      }
+    }
+
     //! Add a rule to the presentation by reference.
     //!
     //! Adds the rule with left hand side `lhop` and right hand side `rhop`

@@ -44,7 +44,7 @@ namespace libsemigroups {
     _include.clear();
     _presentation.init();
     _longs_begin = _presentation.rules.cend();
-    _num_threads(1);
+    _num_threads = 1;
     return static_cast<Subclass&>(*this);
   }
 
@@ -72,17 +72,28 @@ namespace libsemigroups {
   Sims1Settings<Subclass>::presentation(PresentationOfSomeKind const& p) {
     static_assert(
         std::is_base_of<PresentationBase, PresentationOfSomeKind>::value,
-        "the template parameter P must be derived from "
+        "the template parameter PresentationOfSomeKind must be derived from "
         "PresentationBase");
-    // This normalises the rules in the case they are of the right type but
-    // not normalised
     if (p.alphabet().empty()) {
       LIBSEMIGROUPS_EXCEPTION(
-          "the argument (Presentation) must not have 0 generators");
+          "the argument (a presentation) must not have 0 generators");
     }
-    auto normal_p = to_presentation<word_type>(p);
-    // TODO validate against include and exclude
-    _presentation = normal_p;
+    // This normalises the rules in the case they are of the right type but
+    // not normalised
+    auto p_copy = to_presentation<word_type>(p);
+    p_copy.validate();
+    try {
+      presentation::validate_rules(
+          p_copy, include().cbegin(), include().cend());
+      presentation::validate_rules(
+          p_copy, exclude().cbegin(), exclude().cend());
+    } catch (LibsemigroupsException const& e) {
+      LIBSEMIGROUPS_EXCEPTION(
+          "the argument (a presentation) is not compatible with include() and "
+          "exclude(), the following exception was thrown:\n{}",
+          e.what());
+    }
+    _presentation = std::move(p_copy);
     _longs_begin  = _presentation.rules.cend();
     return static_cast<Subclass&>(*this);
   }
@@ -183,20 +194,5 @@ namespace libsemigroups {
     _exclude.push_back(lhs);
     _exclude.push_back(rhs);
     return static_cast<Subclass&>(*this);
-  }
-
-  template <typename Subclass>
-  void Sims1Settings<Subclass>::validate_presentation(
-      Presentation<word_type> const& arg,
-      Presentation<word_type> const& existing) {
-    if (!arg.alphabet().empty() && !existing.alphabet().empty()
-        && arg.alphabet() != existing.alphabet()) {
-      LIBSEMIGROUPS_EXCEPTION(
-          "the argument (a presentation) is not defined over "
-          "the correct alphabet, expected alphabet {} got {}",
-          existing.alphabet(),
-          arg.alphabet());
-    }
-    arg.validate();
   }
 }  // namespace libsemigroups

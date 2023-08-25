@@ -161,9 +161,7 @@ namespace libsemigroups {
   template <typename Word>
   void Presentation<Word>::validate_rules() const {
     detail::validate_rules_length(*this);
-    for (auto const& rel : rules) {
-      validate_word(rel.cbegin(), rel.cend());
-    }
+    presentation::validate_rules(*this, rules.cbegin(), rules.cend());
   }
 
   template <typename Word>
