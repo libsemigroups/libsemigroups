@@ -21,9 +21,40 @@
 
 #include "libsemigroups/sims1.hpp"
 
-#include "libsemigroups/detail/function-ref.hpp"
+// TODO iwyu
 
 namespace libsemigroups {
+
+  ////////////////////////////////////////////////////////////////////////
+  // Sims1Stats
+  ////////////////////////////////////////////////////////////////////////
+
+  Sims1Stats::Sims1Stats()
+      : count_last(),
+        count_now(),
+        max_pending(),
+        total_pending_last(),
+        total_pending_now() {
+    stats_zero();
+  }
+
+  Sims1Stats& Sims1Stats::stats_zero() {
+    count_last         = 0;
+    count_now          = 0;
+    max_pending        = 0;
+    total_pending_last = 0;
+    total_pending_now  = 0;
+    return *this;
+  }
+
+  Sims1Stats& Sims1Stats::init_from(Sims1Stats const& that) {
+    count_last         = that.count_last;
+    count_now          = that.count_now.load();
+    max_pending        = that.max_pending;
+    total_pending_last = that.total_pending_last;
+    total_pending_now  = that.total_pending_now.load();
+    return *this;
+  }
 
   // TODO use report_default
   std::ostream& operator<<(std::ostream& os, Sims1Stats const& stats) {
@@ -521,7 +552,7 @@ namespace libsemigroups {
         // Don't care about stats in this case
         std::for_each(cbegin(n), cend(n), pred);
       } else {
-        stats().zero_stats();
+        stats().stats_zero();
         detail::Ticker t([this]() { report_progress_from_thread(); });
         auto           it   = cbegin(n);
         auto const     last = cend(n);
@@ -557,7 +588,7 @@ namespace libsemigroups {
       if (!report::should_report()) {
         return *std::find_if(cbegin(n), cend(n), pred);
       } else {
-        stats().zero_stats();
+        stats().stats_zero();
         detail::Ticker t([this]() { report_progress_from_thread(); });
 
         auto       it   = cbegin(n);
@@ -737,8 +768,9 @@ namespace libsemigroups {
       return false;
     };
 
-    auto result
-        = Sims1(congruence_kind::right).settings(*this).find_if(_max, hook);
+    auto result = Sims1(congruence_kind::right)
+                      .settings_copy_from(*this)
+                      .find_if(_max, hook);
 
     if (result.number_of_active_nodes() == 0) {
       report_default(
@@ -790,7 +822,7 @@ namespace libsemigroups {
     auto   best = cr.min_nodes(1).max_nodes(hi).target_size(_size).word_graph();
 
     if (best.number_of_nodes() < 1) {
-      stats(cr.stats());
+      stats_copy_from(cr.stats());
       return best;
     }
 
@@ -801,7 +833,7 @@ namespace libsemigroups {
       best = std::move(next);
       next = cr.max_nodes(hi - 1).word_graph();
     }
-    stats(cr.stats());
+    stats_copy_from(cr.stats());
     return best;
   }
 

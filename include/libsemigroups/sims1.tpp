@@ -25,36 +25,33 @@ namespace libsemigroups {
   // Sims1Settings
   ////////////////////////////////////////////////////////////////////////
 
-  // TODO replace T -> Subclass
-
-  template <typename T>
-  Sims1Settings<T>::Sims1Settings()
+  template <typename Subclass>
+  Sims1Settings<Subclass>::Sims1Settings()
       :  // protected
         _exclude(),
         _include(),
         _presentation(),
         // private
         _longs_begin(),
-        _num_threads(),
+        _num_threads(1),
         _stats() {
     _longs_begin = _presentation.rules.cend();
-    number_of_threads(1);
   }
 
-  template <typename T>
-  template <typename S>
-  Sims1Settings<T>::Sims1Settings(Sims1Settings<S> const& that) {
-    init(that);
+  template <typename Subclass>
+  Subclass& Sims1Settings<Subclass>::init() {
+    _exclude.clear();
+    _include.clear();
+    _presentation.init();
+    _longs_begin = _presentation.rules.cend();
+    _num_threads(1);
+    return static_cast<Subclass&>(*this);
   }
 
-  template <typename T>
-  Sims1Settings<T>::Sims1Settings(Sims1Settings<T> const& that) {
-    init(that);
-  }
-
-  template <typename T>
-  template <typename S>
-  Sims1Settings<T>& Sims1Settings<T>::init(Sims1Settings<S> const& that) {
+  template <typename Subclass>
+  template <typename OtherSubclass>
+  Sims1Settings<Subclass>&
+  Sims1Settings<Subclass>::init_from(Sims1Settings<OtherSubclass> const& that) {
     // protected
     _exclude      = that.exclude();
     _include      = that.include();
@@ -69,12 +66,14 @@ namespace libsemigroups {
     return *this;
   }
 
-  template <typename T>
-  template <typename P>
-  T& Sims1Settings<T>::presentation(P const& p) {
-    static_assert(std::is_base_of<PresentationBase, P>::value,
-                  "the template parameter P must be derived from "
-                  "PresentationBase");
+  template <typename Subclass>
+  template <typename PresentationOfSomeKind>
+  Subclass&
+  Sims1Settings<Subclass>::presentation(PresentationOfSomeKind const& p) {
+    static_assert(
+        std::is_base_of<PresentationBase, PresentationOfSomeKind>::value,
+        "the template parameter P must be derived from "
+        "PresentationBase");
     // This normalises the rules in the case they are of the right type but
     // not normalised
     if (p.alphabet().empty()) {
@@ -85,11 +84,11 @@ namespace libsemigroups {
     // TODO validate against include and exclude
     _presentation = normal_p;
     _longs_begin  = _presentation.rules.cend();
-    return static_cast<T&>(*this);
+    return static_cast<Subclass&>(*this);
   }
 
-  template <typename T>
-  T& Sims1Settings<T>::cbegin_long_rules(
+  template <typename Subclass>
+  Subclass& Sims1Settings<Subclass>::cbegin_long_rules(
       std::vector<word_type>::const_iterator it) {
     auto const& rules = presentation().rules;
     if (!(rules.cbegin() <= it && it <= rules.cend())) {
@@ -102,25 +101,26 @@ namespace libsemigroups {
           std::distance(it, rules.cend()));
     }
     _longs_begin = it;
-    return static_cast<T&>(*this);
+    return static_cast<Subclass&>(*this);
   }
 
-  template <typename T>
-  T& Sims1Settings<T>::cbegin_long_rules(size_t pos) {
+  template <typename Subclass>
+  Subclass& Sims1Settings<Subclass>::cbegin_long_rules(size_t pos) {
     return cbegin_long_rules(presentation().rules.cbegin() + pos);
   }
 
-  template <typename T>
-  T& Sims1Settings<T>::number_of_threads(size_t val) {
+  template <typename Subclass>
+  Subclass& Sims1Settings<Subclass>::number_of_threads(size_t val) {
     if (val == 0) {
-      LIBSEMIGROUPS_EXCEPTION("the argument (size_t) must be non-zero");
+      LIBSEMIGROUPS_EXCEPTION(
+          "the argument (number of threads) must be non-zero");
     }
     _num_threads = val;
-    return static_cast<T&>(*this);
+    return static_cast<Subclass&>(*this);
   }
 
-  template <typename T>
-  T& Sims1Settings<T>::long_rule_length(size_t val) {
+  template <typename Subclass>
+  Subclass& Sims1Settings<Subclass>::long_rule_length(size_t val) {
     presentation::sort_rules(_presentation);
     auto& rules = _presentation.rules;
     auto  it    = rules.cbegin();
@@ -132,11 +132,61 @@ namespace libsemigroups {
     }
 
     _longs_begin = it;
-    return static_cast<T&>(*this);
+    return static_cast<Subclass&>(*this);
   }
 
-  template <typename T>
-  void Sims1Settings<T>::validate_presentation(
+  template <typename Subclass>
+  template <typename Iterator>
+  Subclass& Sims1Settings<Subclass>::include(Iterator first, Iterator last) {
+    if (std::distance(first, last) % 2 != 0) {
+      LIBSEMIGROUPS_EXCEPTION("expected the distance between the 1st and 2nd "
+                              "arguments to be even, found {}",
+                              std::distance(first, last));
+    }
+    for (auto it = first; it != last; ++it) {
+      presentation().validate_word(it->cbegin(), it->cend());
+    }
+    _include.assign(first, last);
+    return static_cast<Subclass&>(*this);
+  }
+
+  template <typename Subclass>
+  Subclass& Sims1Settings<Subclass>::include(word_type const& lhs,
+                                             word_type const& rhs) {
+    presentation().validate_word(lhs.cbegin(), lhs.cend());
+    presentation().validate_word(rhs.cbegin(), rhs.cend());
+    _include.push_back(lhs);
+    _include.push_back(rhs);
+    return static_cast<Subclass&>(*this);
+  }
+
+  template <typename Subclass>
+  template <typename Iterator>
+  Subclass& Sims1Settings<Subclass>::exclude(Iterator first, Iterator last) {
+    if (std::distance(first, last) % 2 != 0) {
+      LIBSEMIGROUPS_EXCEPTION("expected the distance between the 1st and 2nd "
+                              "arguments to be even, found {}",
+                              std::distance(first, last));
+    }
+    for (auto it = first; it != last; ++it) {
+      presentation().validate_word(it->cbegin(), it->cend());
+    }
+    _exclude.assign(first, last);
+    return static_cast<Subclass&>(*this);
+  }
+
+  template <typename Subclass>
+  Subclass& Sims1Settings<Subclass>::exclude(word_type const& lhs,
+                                             word_type const& rhs) {
+    presentation().validate_word(lhs.cbegin(), lhs.cend());
+    presentation().validate_word(rhs.cbegin(), rhs.cend());
+    _exclude.push_back(lhs);
+    _exclude.push_back(rhs);
+    return static_cast<Subclass&>(*this);
+  }
+
+  template <typename Subclass>
+  void Sims1Settings<Subclass>::validate_presentation(
       Presentation<word_type> const& arg,
       Presentation<word_type> const& existing) {
     if (!arg.alphabet().empty() && !existing.alphabet().empty()

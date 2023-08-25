@@ -114,14 +114,7 @@ namespace libsemigroups {
     // threads modifying total_pending_now
     std::atomic_uint64_t total_pending_now;
 
-    Sims1Stats()
-        : count_last(),
-          count_now(),
-          max_pending(),
-          total_pending_last(),
-          total_pending_now() {
-      zero_stats();
-    }
+    Sims1Stats();
 
     Sims1Stats(Sims1Stats const& that) : Sims1Stats() {
       init_from(that);
@@ -139,16 +132,7 @@ namespace libsemigroups {
       return init_from(that);
     }
 
-    // TODO rename stats_zero()
-    // TODO to cpp
-    Sims1Stats& zero_stats() {
-      count_last         = 0;
-      count_now          = 0;
-      max_pending        = 0;
-      total_pending_last = 0;
-      total_pending_now  = 0;
-      return *this;
-    }
+    Sims1Stats& stats_zero();
 
     Sims1Stats& stats_check_point() {
       count_last         = count_now;
@@ -157,15 +141,7 @@ namespace libsemigroups {
     }
 
    private:
-    // TODO to cpp
-    Sims1Stats& init_from(Sims1Stats const& that) {
-      count_last         = that.count_last;
-      count_now          = that.count_now.load();
-      max_pending        = that.max_pending;
-      total_pending_last = that.total_pending_last;
-      total_pending_now  = that.total_pending_now.load();
-      return *this;
-    }
+    Sims1Stats& init_from(Sims1Stats const& that);
   };
 
   //! No doc
@@ -185,23 +161,30 @@ namespace libsemigroups {
     size_t                                 _num_threads;
     mutable Sims1Stats                     _stats;
 
-    template <typename S>
-    Sims1Settings& init(Sims1Settings<S> const& that);
-
    public:
-    //! No doc
+    // TODO doc
     Sims1Settings();
-    // TODO init()
 
-    //! No doc
-    template <typename S>
-    Sims1Settings(Sims1Settings<S> const& that);
+    // TODO doc
+    // TODO tests
+    Subclass& init();
 
-    Sims1Settings(Sims1Settings const& that);
+    // Copy constructor is explicitly required, the constructor template is not
+    // a substitute. If no copy constructor is implemented, then _longs_begin
+    // is not properly initialised, and leads to badness.
+    Sims1Settings(Sims1Settings const& that) {
+      init_from(that);
+    }
 
     Sims1Settings& operator=(Sims1Settings const& that) {
-      init(that);
+      init_from(that);
       return *this;
+    }
+
+    //! Construct from Sims1Settings with different subclass.
+    template <typename OtherSubclass>
+    Sims1Settings(Sims1Settings<OtherSubclass> const& that) {
+      init_from(that);
     }
 
     //! Returns the settings object of *this.
@@ -246,7 +229,7 @@ namespace libsemigroups {
     //!
     //! \exceptions
     //! \no_libsemigroups_except
-    Subclass& settings(Sims1Settings const& that) {
+    Subclass& settings_copy_from(Sims1Settings const& that) {
       *this = that;
       return static_cast<Subclass&>(*this);
     }
@@ -305,8 +288,8 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if the alphabet of `p` is non-empty and
     //! not equal to that of \ref long_rules or \ref extra. \throws
     //! LibsemigroupsException if `p` has 0-generators and 0-relations.
-    template <typename P>
-    Subclass& presentation(P const& p);
+    template <typename PresentationOfSomeKind>
+    Subclass& presentation(PresentationOfSomeKind const& p);
 
     //! \anchor presentation
     //! Returns a const reference to the current short rules.
@@ -340,7 +323,6 @@ namespace libsemigroups {
     //! called, then some of the defining relations may
     //! have been moved from \ref presentation to \ref
     //! long_rules.
-
     Presentation<word_type> const& presentation() const noexcept {
       return _presentation;
     }
@@ -387,8 +369,7 @@ namespace libsemigroups {
     //!
     //! \exceptions
     //! \noexcept
-    // TODO explicit return type
-    auto cbegin_long_rules() const noexcept {
+    std::vector<word_type>::const_iterator cbegin_long_rules() const noexcept {
       LIBSEMIGROUPS_ASSERT(_presentation.rules.cbegin() <= _longs_begin);
       LIBSEMIGROUPS_ASSERT(_longs_begin <= _presentation.rules.cend());
       return _longs_begin;
@@ -442,36 +423,14 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if `p` is not valid \throws
     //! LibsemigroupsException if the alphabet of `p` is non-empty and not
     //! equal to that of \ref presentation or \ref long_rules.
-    // template <typename P>
-    // Subclass& include(P const& p);
-    // TODO to tpp
     template <typename Iterator>
-    Subclass& include(Iterator first, Iterator last) {
-      if (std::distance(first, last) % 2 != 0) {
-        LIBSEMIGROUPS_EXCEPTION("expected the distance between the 1st and 2nd "
-                                "arguments to be even, found {}",
-                                std::distance(first, last));
-      }
-      for (auto it = first; it != last; ++it) {
-        presentation().validate_word(it->cbegin(), it->cend());
-      }
-      _include.assign(first, last);
-      return static_cast<Subclass&>(*this);
-    }
+    Subclass& include(Iterator first, Iterator last);
+
+    Subclass& include(word_type const& lhs, word_type const& rhs);
 
     template <typename Container>
     Subclass& include(Container const& c) {
       include(std::begin(c), std::end(c));
-      return static_cast<Subclass&>(*this);
-    }
-    // TODO ranges version of include/exclude?
-
-    // TODO to tpp
-    Subclass& include(word_type const& lhs, word_type const& rhs) {
-      presentation().validate_word(lhs.cbegin(), lhs.cend());
-      presentation().validate_word(rhs.cbegin(), rhs.cend());
-      _include.push_back(lhs);
-      _include.push_back(rhs);
       return static_cast<Subclass&>(*this);
     }
 
@@ -480,20 +439,8 @@ namespace libsemigroups {
       return static_cast<Subclass&>(*this);
     }
 
-    // TODO to tpp
     template <typename Iterator>
-    Subclass& exclude(Iterator first, Iterator last) {
-      if (std::distance(first, last) % 2 != 0) {
-        LIBSEMIGROUPS_EXCEPTION("expected the distance between the 1st and 2nd "
-                                "arguments to be even, found {}",
-                                std::distance(first, last));
-      }
-      for (auto it = first; it != last; ++it) {
-        presentation().validate_word(it->cbegin(), it->cend());
-      }
-      _exclude.assign(first, last);
-      return static_cast<Subclass&>(*this);
-    }
+    Subclass& exclude(Iterator first, Iterator last);
 
     template <typename Container>
     Subclass& exclude(Container const& c) {
@@ -501,14 +448,7 @@ namespace libsemigroups {
       return static_cast<Subclass&>(*this);
     }
 
-    // TODO to tpp
-    Subclass& exclude(word_type const& lhs, word_type const& rhs) {
-      presentation().validate_word(lhs.cbegin(), lhs.cend());
-      presentation().validate_word(rhs.cbegin(), rhs.cend());
-      _exclude.push_back(lhs);
-      _exclude.push_back(rhs);
-      return static_cast<Subclass&>(*this);
-    }
+    Subclass& exclude(word_type const& lhs, word_type const& rhs);
 
     std::vector<word_type> const& exclude() const noexcept {
       return _exclude;
@@ -518,6 +458,8 @@ namespace libsemigroups {
       _exclude.clear();
       return static_cast<Subclass&>(*this);
     }
+
+    // TODO ranges version of include/exclude?
 
     //! Returns a const reference to the current stats
     //! object.
@@ -538,20 +480,6 @@ namespace libsemigroups {
       return _stats;
     }
 
-   protected:
-    // TDOO required?
-    Subclass const& stats(Sims1Stats const& stts) const {
-      _stats = std::move(stts);
-      return static_cast<Subclass const&>(*this);
-    }
-
-    void reverse(std::vector<word_type>& vec) {
-      std::for_each(vec.begin(), vec.end(), [](word_type& w) {
-        std::reverse(w.begin(), w.end());
-      });
-    }
-
-   public:
     //! \anchor long_rule_length
     //! Define the long rule length.
     //!
@@ -596,10 +524,28 @@ namespace libsemigroups {
     //! long_rules().rules.size()) / 2`.
     // TODO reuse the doc for cbegin_long_rules
    protected:
+    // TODO required?
+    Subclass const& stats_copy_from(Sims1Stats const& stts) const {
+      _stats = std::move(stts);
+      return static_cast<Subclass const&>(*this);
+    }
+
+    void reverse(std::vector<word_type>& vec) {
+      std::for_each(vec.begin(), vec.end(), [](word_type& w) {
+        std::reverse(w.begin(), w.end());
+      });
+    }
+
     // TODO remove
     void validate_presentation(Presentation<word_type> const& arg,
                                Presentation<word_type> const& existing);
+
+   private:
+    template <typename OtherSubclass>
+    Sims1Settings& init_from(Sims1Settings<OtherSubclass> const& that);
   };
+
+  // HERE
 
   //! Defined in ``sims1.hpp``.
   //!
