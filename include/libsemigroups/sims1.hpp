@@ -25,10 +25,6 @@
 // * is 2-sided congruence method. One approach would be to compute the kernel
 //   of the associated homomorphism, which is the largest 2-sided congruence
 //   contained in the right congruence. Not sure if this is a good approach.
-// * generally fix reporting
-// * be useful to have output when no congruences are found too (i.e. in
-//   Heineken group example). Can't really think of a nice way of doing this at
-//   present in 2022.
 //
 // Notes:
 // 1. In 2022, when first writing this file, JDM tried templating the word_type
@@ -74,18 +70,20 @@ namespace libsemigroups {
 
   //! Defined in ``sims1.hpp``.
   //!
-  //! On this page we describe the `Sims1Stats` struct. The purpose of this
+  //! On this page we describe the `Sims1Stats` class. The purpose of this
   //! class is to collect some statistics related to `Sims1` class template.
   //!
   //! \sa \ref Sims1
-  // TODO make a nested class of Sims1Settings?
-  struct Sims1Stats {
+  class Sims1Stats {
+   public:
     // TODO doc
+    // Not atomic because this is only accessed by report_progress_from_thread
     uint64_t count_last;
     // TODO doc
-    // TODO atomic so as to avoid races between
-    uint64_t count_now;
-    // report_progress_from_thread and the threads modifying count_last
+    // Atomic so as to avoid races between report_progress_from_thread and the
+    // threads modifying count_last
+    std::atomic_uint64_t count_now;
+
     //! The maximum number of pending definitions.
     //!
     //! A *pending definition* is just an edge that will be defined at some
@@ -94,6 +92,8 @@ namespace libsemigroups {
     //!
     //! This member tracks the maximum number of such pending definitions that
     //! occur during the running of the algorithms in Sims1.
+    // Not atomic because this is not accessed by report_progress_from_thread,
+    // and access is protected by a mutex in the actual algorithm.
     uint64_t max_pending;
 
     //! The total number of pending definitions.
@@ -106,8 +106,13 @@ namespace libsemigroups {
     //! occur during the running of the algorithms in Sims1. This is the same
     //! as the number of nodes in the search tree encounter during the running
     //! of Sims1.
+    // Not atomic because this is only accessed by report_progress_from_thread
     uint64_t total_pending_last;
-    uint64_t total_pending_now;
+
+    // TODO doc
+    // Atomic so as to avoid races between report_progress_from_thread and the
+    // threads modifying total_pending_now
+    std::atomic_uint64_t total_pending_now;
 
     Sims1Stats()
         : count_last(),
@@ -118,11 +123,24 @@ namespace libsemigroups {
       zero_stats();
     }
 
-    Sims1Stats(Sims1Stats const&)            = default;
-    Sims1Stats& operator=(Sims1Stats const&) = default;
-    Sims1Stats(Sims1Stats&&)                 = default;
-    Sims1Stats& operator=(Sims1Stats&&)      = default;
+    Sims1Stats(Sims1Stats const& that) : Sims1Stats() {
+      init_from(that);
+    }
 
+    Sims1Stats& operator=(Sims1Stats const& that) {
+      return init_from(that);
+    }
+
+    Sims1Stats(Sims1Stats&& that) : Sims1Stats() {
+      init_from(that);
+    }
+
+    Sims1Stats& operator=(Sims1Stats&& that) {
+      return init_from(that);
+    }
+
+    // TODO rename stats_zero()
+    // TODO to cpp
     Sims1Stats& zero_stats() {
       count_last         = 0;
       count_now          = 0;
@@ -135,6 +153,17 @@ namespace libsemigroups {
     Sims1Stats& stats_check_point() {
       count_last         = count_now;
       total_pending_last = total_pending_now;
+      return *this;
+    }
+
+   private:
+    // TODO to cpp
+    Sims1Stats& init_from(Sims1Stats const& that) {
+      count_last         = that.count_last;
+      count_now          = that.count_now.load();
+      max_pending        = that.max_pending;
+      total_pending_last = that.total_pending_last;
+      total_pending_now  = that.total_pending_now.load();
       return *this;
     }
   };
@@ -373,7 +402,8 @@ namespace libsemigroups {
     //! computed by this instance are only taken among those that contains the
     //! pairs of elements of the underlying semigroup (defined by the
     //! presentation returned by \ref presentation and \ref long_rules)
-    //! represented by the relations of the presentation returned by `extra()`.
+    //! represented by the relations of the presentation returned by
+    //! `extra()`.
     //!
     //! \param (None) this function has no parameters.
     //!
@@ -393,7 +423,8 @@ namespace libsemigroups {
     //! computed by this instance are only taken among those that contains the
     //! pairs of elements of the underlying semigroup (defined by the
     //! presentation returned by \ref presentation and \ref long_rules)
-    //! represented by the relations of the presentation returned by `extra()`.
+    //! represented by the relations of the presentation returned by
+    //! `extra()`.
     //!
     //! If the template parameter \p P is not `Presentation<word_type>`, then
     //! the parameter \p p is first converted to a value of type
@@ -526,11 +557,12 @@ namespace libsemigroups {
     //!
     //! This function modifies \ref presentation and \ref long_rules so that
     //! \ref presentation only contains those rules whose length (sum of the
-    //! lengths of the two sides of the rules) is less than \p val (if any) and
-    //! \ref long_rules only contains those rules of length at least \p val (if
-    //! any). The rules contained in the union of \ref presentation and \ref
-    //! long_rules is invariant under this function, but the distribution of
-    //! the rules between \ref presentation and \ref long_rules is not.
+    //! lengths of the two sides of the rules) is less than \p val (if any)
+    //! and \ref long_rules only contains those rules of length at least \p
+    //! val (if any). The rules contained in the union of \ref presentation
+    //! and \ref long_rules is invariant under this function, but the
+    //! distribution of the rules between \ref presentation and \ref
+    //! long_rules is not.
     //!
     //! The relative orders of the rules within \ref presentation and \ref
     //! long_rules may not be preserved.
@@ -549,8 +581,8 @@ namespace libsemigroups {
     //! long_rules.
     //!
     //! This function splits the relations in \ref presentation and \ref
-    //! long_rules so that \ref presentation contains the first `2 * val` rules
-    //! and \ref long_rules contains any remaining rules.
+    //! long_rules so that \ref presentation contains the first `2 * val`
+    //! rules and \ref long_rules contains any remaining rules.
     //!
     //! The order of the relations is the same as the current order.
     //!

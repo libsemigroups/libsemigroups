@@ -230,15 +230,17 @@ namespace libsemigroups {
     for (node_type next = current.source; next < M; ++next) {
       for (; a < num_gens; ++a) {
         if (_felsch_graph.target_no_checks(next, a) == UNDEFINED) {
-          std::lock_guard<std::mutex> lock(_mtx);
-          if (M < _max_num_classes) {
-            stats.total_pending_now++;
-            _pending.emplace_back(next, a, M, N, M + 1);
+          {
+            std::lock_guard<std::mutex> lock(_mtx);
+            if (M < _max_num_classes) {
+              _pending.emplace_back(next, a, M, N, M + 1);
+            }
+            for (node_type b = M; b-- > _min_target_node;) {
+              _pending.emplace_back(next, a, b, N, M);
+            }
           }
-          for (node_type b = M; b-- > _min_target_node;) {
-            _pending.emplace_back(next, a, b, N, M);
-          }
-          stats.total_pending_now += M - _min_target_node;
+          stats.total_pending_now
+              += M - _min_target_node + (M < _max_num_classes);
           stats.max_pending = std::max(static_cast<uint64_t>(_pending.size()),
                                        stats.max_pending);
           return false;
@@ -258,8 +260,7 @@ namespace libsemigroups {
                                             first,
                                             last);
     if (result) {
-      std::lock_guard<std::mutex> lock(_mtx);
-      // TODO maybe better to use atomic
+      // stats.count_now is atomic so this is ok
       ++stats.count_now;
     }
     return result;
@@ -680,7 +681,7 @@ namespace libsemigroups {
        group_digits(stats().total_pending_now / time_total_s.count()));
     rc("Sims1: time   {} (total) | {} (/cong.) | {} (/cong. last 1s)\n",
        string_time(time_total_ns),
-       string_time(time_total_ns / stats().count_now),
+       string_time(time_total_ns / stats().count_now.load()),
        count_diff == 0 ? "x" : string_time(time_diff / count_diff));
 
     last_report(now);
