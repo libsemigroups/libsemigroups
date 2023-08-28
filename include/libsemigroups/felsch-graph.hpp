@@ -166,6 +166,11 @@ namespace libsemigroups {
     Presentation<word_type>    _presentation;
 
    public:
+    // TODO move to correct place
+    size_t number_of_edges() const noexcept {
+      return _definitions.size();
+    }
+
     ////////////////////////////////////////////////////////////////////////
     // FelschGraph - constructors + initializers - public
     ////////////////////////////////////////////////////////////////////////

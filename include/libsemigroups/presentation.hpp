@@ -1048,6 +1048,13 @@ namespace libsemigroups {
                       Word const&         existing,
                       Word const&         replacement);
 
+    // TODO to tpp
+    template <typename Iterator>
+    size_t length(Iterator first, Iterator last) {
+      auto op = [](size_t val, auto const& x) { return val + x.size(); };
+      return std::accumulate(first, last, size_t(0), op);
+    }
+
     //! Return the sum of the lengths of the rules.
     //!
     //! \tparam Word the type of the words in the presentation
@@ -1059,8 +1066,7 @@ namespace libsemigroups {
     //! \no_libsemigroups_except
     template <typename Word>
     size_t length(Presentation<Word> const& p) {
-      auto op = [](size_t val, Word const& x) { return val + x.size(); };
-      return std::accumulate(p.rules.cbegin(), p.rules.cend(), size_t(0), op);
+      return length(p.rules.cbegin(), p.rules.cend());
     }
 
     //! Reverse every rule.

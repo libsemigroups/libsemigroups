@@ -241,6 +241,8 @@ namespace libsemigroups {
           _felsch_graph.target_no_checks(current.source, current.generator)
           == UNDEFINED);
 
+      // TODO this appears to call the wrong number_of_edges (i.e. the one from
+      // WordGraph, which is bad!
       size_type const start = _felsch_graph.number_of_edges();
 
       _felsch_graph.set_target_no_checks(
@@ -519,7 +521,7 @@ namespace libsemigroups {
 
     void run(std::function<bool(word_graph_type const&)> hook) {
       if (report::should_report()) {
-        // TODO zero _sims1 stats?
+        // zero _sims1 stats?
         detail::Ticker t([this]() { _sims1->report_progress_from_thread(); });
         really_run(hook);
       } else {
@@ -538,10 +540,12 @@ namespace libsemigroups {
       LIBSEMIGROUPS_EXCEPTION("expected congruence_kind::right or "
                               "congruence_kind::left, found {}",
                               ck);
+    } else if (ck != kind()) {
+      presentation::reverse(_presentation);
+      reverse(_include);
+      reverse(_exclude);
+      _kind = ck;
     }
-    // TODO shouldn't we reverse include, exclude, and presentation if _kind !=
-    // ck?
-    _kind = ck;
     return *this;
   }
 
@@ -693,16 +697,19 @@ namespace libsemigroups {
                    longest_short,
                    presentation::length(presentation()));
 
-    // TODO short + long rules
-    // if (!long_rules().rules.empty()) {
-    //   report_default("Sims1: {} long relations u = v with:\n",
-    //                  long_rules().rules.size() / 2);
-    //   report_default(
-    //       "Sims1: |u| + |v| \u2208 [{}, {}] and \u2211(|u| + |v|) = {}\n",
-    //       presentation::shortest_rule_length(long_rules()),
-    //       presentation::longest_rule_length(long_rules()),
-    //       presentation::length(long_rules()));
+    // if (cbegin_long_rules() != presentation().rules.cend()) {
+    //   auto const first = cbegin_long_rules(),
+    //              last  = presentation().rules.cend();
+
+    //   report_default("Sims1: {} \"long\" relations with: ",
+    //                  std::distance(first, last) / 2);
+    //   report_no_prefix("|u| + |v| \u2208 [{}, {}] and \u2211(|u| + |v|) =
+    //   {}\n",
+    //                    presentation::shortest_rule_length(first, last),
+    //                    presentation::longest_rule_length(first, last),
+    //                    presentation::length(first, last));
     // }
+    // TODO short rules
   }
 
   void Sims1::report_progress_from_thread() const {
@@ -784,7 +791,8 @@ namespace libsemigroups {
         auto first = (presentation().contains_empty_word() ? 0 : 1);
         auto S     = to_froidure_pin<Transf<0, node_type>>(
             x, first, x.number_of_active_nodes());
-        // TODO reuse S here, using init + whatever else.
+        // It'd be nice to reuse S here, but this is tricky because hook maybe
+        // called in multiple threads, and so we can't easily do this.
         if (presentation().contains_empty_word()) {
           auto one = S.generator(0).identity();
           if (!S.contains(one)) {
@@ -841,12 +849,12 @@ namespace libsemigroups {
   // doesn't construct a FroidurePin object for these). So, it seems to be
   // best to just search through the digraphs with [1, 57) nodes once.
   //
-  // TODO(later) perhaps find minimal 2-sided congruences first (or try to) and
-  // then run MinimalRepOrc for right congruences excluding all the generating
-  // pairs from the minimal 2-sided congruences. Also with this approach
-  // FroidurePin wouldn't be required in RepOrc. This might not work, given
-  // that the minimal rc might contain some pairs from minimal 2-sided congs,
-  // just not all of them.
+  // TODO(later) perhaps find minimal 2-sided congruences first (or try to)
+  // and then run MinimalRepOrc for right congruences excluding all the
+  // generating pairs from the minimal 2-sided congruences. Also with this
+  // approach FroidurePin wouldn't be required in RepOrc. This might not work,
+  // given that the minimal rc might contain some pairs from minimal 2-sided
+  // congs, just not all of them.
   Sims1::word_graph_type MinimalRepOrc::word_graph() const {
     auto cr = RepOrc(*this);
 
