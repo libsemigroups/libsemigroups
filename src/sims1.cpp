@@ -594,8 +594,14 @@ namespace libsemigroups {
         pred(ad);
         return false;
       };
-      den.run(pred_wrapper);
-      report_final();
+      if (!report::should_report()) {
+        den.run(pred_wrapper);
+      } else {
+        stats().stats_zero();
+        detail::Ticker t([this]() { report_progress_from_thread(); });
+        den.run(pred_wrapper);
+        report_final();
+      }
     }
   }
 
@@ -632,11 +638,16 @@ namespace libsemigroups {
       }
     } else {
       thread_runner den(this, n, number_of_threads());
-      den.run(pred);
-      // Copy the thread_runner stats into this so that we can retrieve it
-      // after den is destroyed.
-      // stats(den.stats());
-      return den.word_graph();
+      if (!report::should_report()) {
+        den.run(pred);
+        return den.word_graph();
+      } else {
+        stats().stats_zero();
+        detail::Ticker t([this]() { report_progress_from_thread(); });
+        den.run(pred);
+        report_final();
+        return den.word_graph();
+      }
     }
   }
 
@@ -780,13 +791,18 @@ namespace libsemigroups {
   Sims1::word_graph_type RepOrc::word_graph() const {
     using word_graph_type = typename Sims1::word_graph_type;
     using node_type       = typename word_graph_type::node_type;
-    report_default("searching for a faithful rep. o.r.c. on [{}, {}) points\n",
-                   _min,
-                   _max + 1);
+
+    report_no_prefix("{:+<80}\n", "");
+    report_default(
+        "RepOrc: Searching for a faithful rep. o.r.c. on [{}, {}) points\n",
+        _min,
+        _max + 1);
     if (_min > _max || _max == 0) {
-      report_default("no faithful rep. o.r.c. exists in [{}, {}) = \u2205\n",
-                     _min,
-                     _max + 1);
+      report_no_prefix("{:+<80}\n", "");
+      report_default(
+          "RepOrc: No faithful rep. o.r.c. exists in [{}, {}) = \u2205\n",
+          _min,
+          _max + 1);
       return word_graph_type(0, 0);
     }
 
@@ -822,12 +838,15 @@ namespace libsemigroups {
 
     if (result.number_of_active_nodes() == 0) {
       report_default(
-          "no faithful rep. o.r.c. on [{}, {}) points found\n", _min, _max + 1);
+          "RepOrc: No faithful rep. o.r.c. on [{}, {}) points found\n",
+          _min,
+          _max + 1);
       result.induced_subgraph_no_checks(0, 0);
     } else {
-      // FIXME this seems to report the wrong number of points in i.e. [038]
-      report_default("found a faithful rep. o.r.c. on {} points\n",
-                     result.number_of_active_nodes());
+      report_default("RepOrc: Found a faithful rep. o.r.c. on {} points\n",
+                     presentation().contains_empty_word()
+                         ? result.number_of_active_nodes()
+                         : result.number_of_active_nodes() - 1);
       if (presentation().contains_empty_word()) {
         result.induced_subgraph_no_checks(0, result.number_of_active_nodes());
       } else {
