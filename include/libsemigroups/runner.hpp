@@ -275,12 +275,21 @@ namespace libsemigroups {
       }
 
       ReportCell& min_width(size_t val) {
+        // TODO check that sum of col widths doesn't exceed 93
         _col_widths.fill(val);
         return *this;
       }
 
-      ReportCell& divider(char val) {
+      ReportCell& min_width(size_t col, size_t val) {
+        // TODO check that sum of col widths doesn't exceed 93
+        // TODO check that col is in bounds
+        _col_widths[col + 1] = val;
+        return *this;
+      }
+
+      ReportCell& divider(std::string_view val) {
         _divider = val;
+        return *this;
       }
 
       template <typename... Args>

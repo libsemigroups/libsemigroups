@@ -682,10 +682,10 @@ namespace libsemigroups {
       pairs = fmt::format(", excluding {} pairs", exclude().size() / 2);
     }
 
-    report_no_prefix("{:+<93}\n", "");
+    report_no_prefix("{:+<80}\n", "");
     report_default("Sims1: STARTING with {} additional threads . . . \n",
                    num_threads);
-    report_no_prefix("{:+<93}\n", "");
+    report_no_prefix("{:+<80}\n", "");
     report_default("Sims1: \u2264 {} classes{} for \u27E8A|R\u27E9 with:\n",
                    num_classes,
                    pairs);
@@ -735,21 +735,25 @@ namespace libsemigroups {
     auto total_pending_diff
         = stats().total_pending_now - stats().total_pending_last;
 
-    detail::ReportCell<3> rc;
-    rc.min_width(11);
-    // TODO transpose this cell
-    rc("Sims1: congs  {} (total) | {} (diff)   | {} (/s)\n",
+    detail::ReportCell<2> rc;
+    rc.min_width(0, 7).min_width(1, 11).divider("{:-<80}\n");
+    rc("Sims1: total        {} (cong.)   | {} (node)\n",
        group_digits(stats().count_now),
+       group_digits(stats().total_pending_now));
+    rc("Sims1: diff         {} (cong.)   | {} (node)\n",
        signed_group_digits(count_diff),
-       group_digits(stats().count_now / time_total_s.count()));
-    rc("Sims1: search {} (nodes) | {} (diff)   | {} (/s)\n",
-       group_digits(stats().total_pending_now),
-       signed_group_digits(total_pending_diff),
+       signed_group_digits(total_pending_diff));
+    rc("Sims1: mean         {} (cong./s) | {} (node/s)\n",
+       group_digits(stats().count_now / time_total_s.count()),
        group_digits(stats().total_pending_now / time_total_s.count()));
-    rc("Sims1: time   {} (total) | {} (/cong.) | {} (/cong. last 1s)\n",
-       string_time(time_total_ns),
+    rc("Sims1: time last s. {} (/cong.)  | {} (/node)\n",
+       count_diff == 0 ? "x" : string_time(time_diff / count_diff),
+       total_pending_diff == 0 ? "x"
+                               : string_time(time_diff / total_pending_diff));
+    rc("Sims1: mean time    {} (/cong.)  | {} (/node)\n",
        string_time(time_total_ns / stats().count_now.load()),
-       count_diff == 0 ? "x" : string_time(time_diff / count_diff));
+       string_time(time_total_ns / stats().total_pending_now.load()));
+    rc("Sims1: time         {} (total)   |\n", string_time(time_total_ns));
 
     last_report(now);
     stats().stats_check_point();
@@ -757,9 +761,9 @@ namespace libsemigroups {
 
   void Sims1::report_final() const {
     report_progress_from_thread();
-    report_no_prefix("{:+<93}\n", "");
+    report_no_prefix("{:+<80}\n", "");
     report_default("Sims1: FINISHED!\n");
-    report_no_prefix("{:+<93}\n", "");
+    report_no_prefix("{:+<80}\n", "");
   }
 
   ////////////////////////////////////////////////////////////////////////
@@ -796,8 +800,8 @@ namespace libsemigroups {
         auto first = (presentation().contains_empty_word() ? 0 : 1);
         auto S     = to_froidure_pin<Transf<0, node_type>>(
             x, first, x.number_of_active_nodes());
-        // It'd be nice to reuse S here, but this is tricky because hook maybe
-        // called in multiple threads, and so we can't easily do this.
+        // It'd be nice to reuse S here, but this is tricky because hook
+        // maybe called in multiple threads, and so we can't easily do this.
         if (presentation().contains_empty_word()) {
           auto one = S.generator(0).identity();
           if (!S.contains(one)) {
