@@ -241,9 +241,9 @@ namespace libsemigroups {
           _felsch_graph.target_no_checks(current.source, current.generator)
           == UNDEFINED);
 
-      // TODO this appears to call the wrong number_of_edges (i.e. the one from
-      // WordGraph, which is bad!
-      size_type const start = _felsch_graph.number_of_edges();
+      // Don't call number_of_edges because this calls the function in
+      // WordGraph
+      size_type const start = _felsch_graph.definitions().size();
 
       _felsch_graph.set_target_no_checks(
           current.source, current.generator, current.target);
@@ -697,19 +697,24 @@ namespace libsemigroups {
                    longest_short,
                    presentation::length(presentation()));
 
-    // if (cbegin_long_rules() != presentation().rules.cend()) {
-    //   auto const first = cbegin_long_rules(),
-    //              last  = presentation().rules.cend();
+    if (cbegin_long_rules() != presentation().rules.cend()) {
+      auto first = presentation().rules.cbegin(), last = cbegin_long_rules();
 
-    //   report_default("Sims1: {} \"long\" relations with: ",
-    //                  std::distance(first, last) / 2);
-    //   report_no_prefix("|u| + |v| \u2208 [{}, {}] and \u2211(|u| + |v|) =
-    //   {}\n",
-    //                    presentation::shortest_rule_length(first, last),
-    //                    presentation::longest_rule_length(first, last),
-    //                    presentation::length(first, last));
-    // }
-    // TODO short rules
+      report_default("Sims1: {} \"short\" relations with: ",
+                     std::distance(first, last) / 2);
+      report_no_prefix("|u| + |v| \u2208 [{}, {}] and \u2211(|u| + |v|) = {}\n",
+                       presentation::shortest_rule_length(first, last),
+                       presentation::longest_rule_length(first, last),
+                       presentation::length(first, last));
+
+      first = cbegin_long_rules(), last = presentation().rules.cend();
+      report_default("Sims1: {} \"long\" relations with: ",
+                     std::distance(first, last) / 2);
+      report_no_prefix("|u| + |v| \u2208 [{}, {}] and \u2211(|u| + |v|) = {}\n",
+                       presentation::shortest_rule_length(first, last),
+                       presentation::longest_rule_length(first, last),
+                       presentation::length(first, last));
+    }
   }
 
   void Sims1::report_progress_from_thread() const {
