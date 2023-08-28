@@ -191,9 +191,9 @@ namespace libsemigroups {
     // deleted by the function called in the thread.
     class Ticker {
       class TickerImpl {
-        detail::FunctionRef<void(void)> _func;
-        bool                            _stop;
-        std::mutex                      _mtx;
+        std::function<void(void)> _func;
+        bool                      _stop;
+        std::mutex                _mtx;
 
        public:
         template <typename Func>
