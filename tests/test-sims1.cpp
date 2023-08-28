@@ -1,6 +1,6 @@
 //
 // libsemigroups - C++ library for semigroups and monoids
-// Copyright (C) 2022 James D. Mitchell
+// Copyright (C) 2022-23 James D. Mitchell
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -40,6 +40,7 @@
 namespace libsemigroups {
 
   namespace {
+    // TODO do a proper version of this
     [[maybe_unused]] void add_cyclic_conjugates(Presentation<std::string>& p,
                                                 char const*                l,
                                                 char const*                r) {
@@ -91,6 +92,7 @@ namespace libsemigroups {
   using namespace literals;
 
   namespace {
+    // TODO check_exclude
     template <typename P>
     void check_include(congruence_kind               ck,
                        P const&                      p,
@@ -1170,7 +1172,6 @@ namespace libsemigroups {
     // REQUIRE(num == 14);
   }
 
-#ifdef LIBSEMIGROUPS_ENABLE_STATS
   LIBSEMIGROUPS_TEST_CASE("Sims1", "035", "stats", "[quick][sims1]") {
     auto                    rg = ReportGuard(false);
     Presentation<word_type> p;
@@ -1187,11 +1188,11 @@ namespace libsemigroups {
 
     std::stringbuf buff;
     std::ostream   os(&buff);
-    S.number_of_congruences(2);
-    // REQUIRE(S.stats().max_pending != 0);
-    os << S.cbegin(3).stats();  // Also does not do anything visible
+    static_cast<void>(S.number_of_congruences(2));
+    REQUIRE(S.stats().max_pending != 0);
+    // Withdrawn in v3
+    // os << S.cbegin(3).stats();  // Also does not do anything visible
   }
-#endif
 
   LIBSEMIGROUPS_TEST_CASE("Sims1",
                           "036",

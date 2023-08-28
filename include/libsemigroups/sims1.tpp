@@ -1,6 +1,6 @@
 //
 // libsemigroups - C++ library for semigroups and monoids
-// Copyright (C) 2022 James D. Mitchell
+// Copyright (C) 2022-2023 James D. Mitchell
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -16,8 +16,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-// This file contains a declaration of a class for performing the "low-index
-// congruence" algorithm for semigroups and monoid.
+// This file contains the implementation of the Sims1Settings class template.
 
 namespace libsemigroups {
 
@@ -32,6 +31,7 @@ namespace libsemigroups {
         _include(),
         _presentation(),
         // private
+        _idle_thread_restarts(64),
         _longs_begin(),
         _num_threads(1),
         _stats() {
@@ -43,24 +43,26 @@ namespace libsemigroups {
     _exclude.clear();
     _include.clear();
     _presentation.init();
-    _longs_begin = _presentation.rules.cend();
-    _num_threads = 1;
+    _idle_thread_restarts = 64;
+    _longs_begin          = _presentation.rules.cend();
+    _num_threads          = 1;
     return static_cast<Subclass&>(*this);
   }
 
   template <typename Subclass>
   template <typename OtherSubclass>
   Sims1Settings<Subclass>&
-  Sims1Settings<Subclass>::init_from(Sims1Settings<OtherSubclass> const& that) {
+  Sims1Settings<Subclass>::init(Sims1Settings<OtherSubclass> const& that) {
     // protected
     _exclude      = that.exclude();
     _include      = that.include();
     _presentation = that.presentation();
 
-    _longs_begin = _presentation.rules.cbegin()
+    // private
+    _idle_thread_restarts = that.idle_thread_restarts();
+    _longs_begin          = _presentation.rules.cbegin()
                    + std::distance(that.presentation().rules.cbegin(),
                                    that.cbegin_long_rules());
-    // private
     _num_threads = that.number_of_threads();
     _stats       = that.stats();
     return *this;
@@ -151,7 +153,7 @@ namespace libsemigroups {
   Subclass& Sims1Settings<Subclass>::include(Iterator first, Iterator last) {
     if (std::distance(first, last) % 2 != 0) {
       LIBSEMIGROUPS_EXCEPTION("expected the distance between the 1st and 2nd "
-                              "arguments to be even, found {}",
+                              "arguments (iterators) to be even, found {}",
                               std::distance(first, last));
     }
     for (auto it = first; it != last; ++it) {
@@ -176,7 +178,7 @@ namespace libsemigroups {
   Subclass& Sims1Settings<Subclass>::exclude(Iterator first, Iterator last) {
     if (std::distance(first, last) % 2 != 0) {
       LIBSEMIGROUPS_EXCEPTION("expected the distance between the 1st and 2nd "
-                              "arguments to be even, found {}",
+                              "arguments (iterators) to be even, found {}",
                               std::distance(first, last));
     }
     for (auto it = first; it != last; ++it) {

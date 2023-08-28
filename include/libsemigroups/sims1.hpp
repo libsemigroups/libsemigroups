@@ -50,7 +50,6 @@
 #include <utility>     // for move
 #include <vector>      // for vector
 
-#include "config.hpp"           // for LIBSEMIGROUPS_ENABLE_STATS
 #include "constants.hpp"        // for UNDEFINED
 #include "debug.hpp"            // for LIBSEMIGROUPS_ASSERT
 #include "exception.hpp"        // for LIBSEMIGROUPS_EXCEPTION
@@ -158,6 +157,7 @@ namespace libsemigroups {
     Presentation<word_type> _presentation;
 
    private:
+    size_t                                 _idle_thread_restarts;
     std::vector<word_type>::const_iterator _longs_begin;
     size_t                                 _num_threads;
     mutable Sims1Stats                     _stats;
@@ -174,24 +174,22 @@ namespace libsemigroups {
     // a substitute. If no copy constructor is implemented, then _longs_begin
     // is not properly initialised, and leads to badness.
     Sims1Settings(Sims1Settings const& that) {
-      init_from(that);
+      init(that);
     }
 
     Sims1Settings& operator=(Sims1Settings const& that) {
-      init_from(that);
+      init(that);
       return *this;
     }
 
     //! Construct from Sims1Settings with different subclass.
     template <typename OtherSubclass>
     Sims1Settings(Sims1Settings<OtherSubclass> const& that) {
-      init_from(that);
+      init(that);
     }
 
     template <typename OtherSubclass>
-    Subclass& init(Sims1Settings<OtherSubclass> const& that) {
-      init_from(that);
-    }
+    Sims1Settings& init(Sims1Settings<OtherSubclass> const& that);
 
     //! Returns the settings object of *this.
     //!
@@ -520,6 +518,20 @@ namespace libsemigroups {
     //! \exceptions
     //! \no_libsemigroups_except
     Subclass& long_rule_length(size_t val);
+
+    // TODO to tpp
+    Subclass& idle_thread_restarts(size_t val) {
+      if (val == 0) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "the argument (idle thread restarts) must be non-zero");
+      }
+      _idle_thread_restarts = val;
+      return static_cast<Subclass&>(*this);
+    }
+
+    [[nodiscard]] size_t idle_thread_restarts() const noexcept {
+      return _idle_thread_restarts;
+    }
 
    protected:
     Subclass const& stats_copy_from(Sims1Stats const& stts) const {
@@ -1004,8 +1016,6 @@ namespace libsemigroups {
     class thread_runner;
   };
 
-  std::ostream& operator<<(std::ostream& os, Sims1Stats const& stats);
-
   //! Defined in ``sims1.hpp``.
   //!
   //! This class is a helper for `Sims1` calling the `word_graph` member
@@ -1219,6 +1229,7 @@ namespace libsemigroups {
 
     MinimalRepOrc& init() {
       _size = 0;
+      return *this;
     }
 
     //! Set the target size.

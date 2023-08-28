@@ -21,7 +21,34 @@
 
 #include "libsemigroups/sims1.hpp"
 
-// TODO iwyu
+#include <algorithm>      // for max, find_if, fill
+#include <chrono>         // for duration, durat...
+#include <functional>     // for ref
+#include <memory>         // for unique_ptr, mak...
+#include <ratio>          // for ratio
+#include <string>         // for string
+#include <string>         // for operator+, basi...
+#include <thread>         // for thread, yield
+#include <unordered_map>  // for operator!=, ope...
+#include <utility>        // for swap
+
+#include "libsemigroups/constants.hpp"     // for operator!=, ope...
+#include "libsemigroups/debug.hpp"         // for LIBSEMIGROUPS_A...
+#include "libsemigroups/exception.hpp"     // for LIBSEMIGROUPS_E...
+#include "libsemigroups/felsch-graph.hpp"  // for FelschGraph
+#include "libsemigroups/froidure-pin.hpp"  // for FroidurePin
+#include "libsemigroups/presentation.hpp"  // for Presentation
+#include "libsemigroups/sims1.hpp"
+#include "libsemigroups/to-froidure-pin.hpp"  // for to_froidure_pin
+#include "libsemigroups/transf.hpp"           // for Transf, validate
+#include "libsemigroups/types.hpp"            // for congruence_kind
+#include "libsemigroups/word-graph.hpp"       // for follow_path_no_...
+
+#include "libsemigroups/detail/report.hpp"  // for report_default
+#include "libsemigroups/detail/stl.hpp"     // for JoinThreads
+#include "libsemigroups/detail/string.hpp"  // for group_digits
+
+#include "fmt/format.h"  // for buffer::append
 
 namespace libsemigroups {
 
@@ -54,15 +81,6 @@ namespace libsemigroups {
     total_pending_last = that.total_pending_last;
     total_pending_now  = that.total_pending_now.load();
     return *this;
-  }
-
-  // TODO use report_default
-  std::ostream& operator<<(std::ostream& os, Sims1Stats const& stats) {
-    // os << "#0: Sims1: total number of nodes in search tree was "
-    //    << detail::group_digits(stats.total_pending) << std::endl;
-    // os << "#0: Sims1: max. number of pending definitions was "
-    //    << detail::group_digits(stats.max_pending) << std::endl;
-    return os;
   }
 
   ////////////////////////////////////////////////////////////////////////
@@ -422,7 +440,8 @@ namespace libsemigroups {
     void worker_thread(unsigned                                    my_index,
                        std::function<bool(word_graph_type const&)> hook) {
       PendingDef pd;
-      for (auto i = 0; i < 16; ++i) {  // TODO setting for this
+      auto const restarts = _sims1->idle_thread_restarts();
+      for (size_t i = 0; i < restarts; ++i) {
         while ((pop_from_local_queue(pd, my_index)
                 || pop_from_other_thread_queue(pd, my_index))
                && !_done) {
@@ -706,6 +725,7 @@ namespace libsemigroups {
 
     detail::ReportCell<3> rc;
     rc.min_width(11);
+    // TODO transpose this cell
     rc("Sims1: congs  {} (total) | {} (diff)   | {} (/s)\n",
        group_digits(stats().count_now),
        signed_group_digits(count_diff),
@@ -820,8 +840,9 @@ namespace libsemigroups {
   // actually iterates through all the digraphs with [1, 57 / 2) again (just
   // doesn't construct a FroidurePin object for these). So, it seems to be
   // best to just search through the digraphs with [1, 57) nodes once.
-  // TODO perhaps find minimal 2-sided congruences first (or try to) and then
-  // run MinimalRepOrc for right congruences excluding all the generating
+  //
+  // TODO(later) perhaps find minimal 2-sided congruences first (or try to) and
+  // then run MinimalRepOrc for right congruences excluding all the generating
   // pairs from the minimal 2-sided congruences. Also with this approach
   // FroidurePin wouldn't be required in RepOrc. This might not work, given
   // that the minimal rc might contain some pairs from minimal 2-sided congs,

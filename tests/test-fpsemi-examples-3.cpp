@@ -44,10 +44,10 @@ namespace libsemigroups {
     size_t n  = 5;
 
     Sims1 C(congruence_kind::right);
-    C.short_rules(not_symmetric_group(n));
+    C.presentation(not_symmetric_group(n));
 
     Sims1 D(congruence_kind::right);
-    D.short_rules(symmetric_group(n, author::Carmichael));
+    D.presentation(symmetric_group(n, author::Carmichael));
 
     REQUIRE(C.number_of_congruences(3) == 41);
     REQUIRE(D.number_of_congruences(3) == 2);

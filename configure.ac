@@ -90,19 +90,6 @@ AS_IF([test "x$enable_compile_warnings" != "xno"],
        -Wold-style-cast])
    AC_SUBST([WARNING_CXXFLAGS])])
 
-# Dis/enable stats mode
-AC_ARG_ENABLE([stats],
-    [AS_HELP_STRING([--disable-stats], [disable stats])],
-    [],
-    [enable_stats=yes]
-  )
-AC_MSG_CHECKING([whether to enable stats mode])
-AC_MSG_RESULT([$enable_stats])
-
-AS_IF([test "x$enable_stats" == "xyes"], [
-  AC_DEFINE([ENABLE_STATS], [1], [define if building with stats mode])
-])
-
 # Check if backward-cpp should be enabled
 AC_ARG_ENABLE([backward],
     [AS_HELP_STRING([--disable-backward], [disable backward])],

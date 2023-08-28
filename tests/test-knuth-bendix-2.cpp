@@ -1809,7 +1809,7 @@ namespace libsemigroups {
            02_w,   12_w,   210_w,  120_w,  101_w,   201_w,   201_w,   102_w,
            202_w,  012_w,  212_w,  2120_w, 2101_w,  2101_w,  2101_w,  2102_w,
            1202_w, 1012_w, 2012_w, 2012_w, 21202_w, 21012_w, 21012_w, 21012_w};
-    auto range = iterator_range(reduce_binary_tree_words);
+    // auto range = iterator_range(reduce_binary_tree_words);
 
     // REQUIRE(first_equivalent_pair(
     //             kb, range | to_strings(kb.presentation().alphabet()))

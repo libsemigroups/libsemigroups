@@ -383,7 +383,7 @@ namespace libsemigroups {
            BMat8({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {1, 0, 0, 1}}),
            BMat8({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 0}})};
 
-    int lg = 0;
+    // int lg = 0;
     using std::unordered_set;
     unordered_set<BMat8> res;
     res.insert(BMat8::one().row_space_basis());
