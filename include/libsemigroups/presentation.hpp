@@ -469,6 +469,11 @@ namespace libsemigroups {
       }
     }
 
+    // TODO(now) doc
+    template <typename Word>
+    void validate_semigroup_inverses(Presentation<Word> const& p,
+                                     Word const&               vals);
+
     //! Add a rule to the presentation by reference.
     //!
     //! Adds the rule with left hand side `lhop` and right hand side `rhop`
@@ -1488,6 +1493,49 @@ namespace libsemigroups {
                               std::string const&             var_name);
 
   }  // namespace presentation
+
+  template <typename Word>
+  class InversePresentation : public Presentation<Word> {
+   public:
+    using word_type      = typename Presentation<Word>::word_type;
+    using letter_type    = typename Presentation<Word>::letter_type;
+    using const_iterator = typename Presentation<Word>::const_iterator;
+    using iterator       = typename Presentation<Word>::iterator;
+    using size_type      = typename Presentation<Word>::size_type;
+
+   private:
+    word_type _inverses;
+
+   public:
+    using Presentation<Word>::Presentation;
+
+    // TODO validate that checks that inverses are set
+    // TODO to tpp
+    InversePresentation& inverses(word_type const& w) {
+      // TODO maybe don't validate here but only in the validate function to be
+      // written.
+      // Set the alphabet to include the inverses
+      _inverses = w;
+      return *this;
+    }
+
+    word_type const& inverses() const noexcept {
+      return _inverses;
+    }
+
+    // TODO to tpp
+    letter_type inverse(letter_type x) const {
+      if (_inverses.empty()) {
+        LIBSEMIGROUPS_EXCEPTION("no inverses have been defined")
+      }
+      return _inverses[this->index(x)];
+    }
+
+    void validate() const {
+      Presentation<Word>::validate();
+      presentation::validate_semigroup_inverses(*this, inverses());
+    }
+  };
 
   // TODO(doc)
   // TODO(later) also we could do a more sophisticated version of this

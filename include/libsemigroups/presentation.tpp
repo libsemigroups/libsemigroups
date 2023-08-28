@@ -191,6 +191,46 @@ namespace libsemigroups {
   }
 
   namespace presentation {
+
+    template <typename Word>
+    void validate_semigroup_inverses(Presentation<Word> const& p,
+                                     Word const&               vals) {
+      p.validate_word(vals.begin(), vals.end());
+
+      if (vals.size() != p.alphabet().size()) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "invalid number of inverses, expected {} but found {}",
+            p.alphabet().size(),
+            vals.size());
+      }
+
+      Word cpy = vals;
+      std::sort(cpy.begin(), cpy.end());
+      for (auto it = cpy.cbegin(); it < cpy.cend() - 1; ++it) {
+        if (*it == *(it + 1)) {
+          LIBSEMIGROUPS_EXCEPTION(
+              "invalid inverses, they contain the duplicate letter {}", *it);
+        }
+      }
+
+      // Check that (x ^ - 1) ^ -1 = x
+      for (size_t i = 0; i < p.alphabet().size(); ++i) {
+        for (size_t j = 0; j < p.alphabet().size(); ++j) {
+          if (p.letter_no_checks(j) == vals[i]) {
+            if (vals[j] != p.letter_no_checks(i)) {
+              LIBSEMIGROUPS_EXCEPTION(
+                  "invalid inverses, {} ^ -1 = {} but {} ^ -1 = {}",
+                  p.letter_no_checks(i),
+                  vals[i],
+                  vals[i],
+                  vals[j]);
+            }
+            break;
+          }
+        }
+      }
+    }
+
     template <typename Word>
     void add_identity_rules(Presentation<Word>&                      p,
                             typename Presentation<Word>::letter_type id) {
@@ -225,24 +265,7 @@ namespace libsemigroups {
     void add_inverse_rules(Presentation<Word>&                      p,
                            Word const&                              vals,
                            typename Presentation<Word>::letter_type id) {
-      p.validate_word(vals.begin(), vals.end());
-
-      if (vals.size() != p.alphabet().size()) {
-        LIBSEMIGROUPS_EXCEPTION("invalid inverses, expected {} but found {}",
-                                p.alphabet().size(),
-                                vals.size());
-      }
-
-      Word cpy = vals;
-      std::sort(cpy.begin(), cpy.end());
-      for (auto it = cpy.cbegin(); it < cpy.cend() - 1; ++it) {
-        if (*it == *(it + 1)) {
-          LIBSEMIGROUPS_EXCEPTION(
-              "invalid inverses, they contain the duplicate letter {}", *it);
-        }
-      }
-
-      // Check that (x ^ - 1) ^ -1 = x
+      validate_semigroup_inverses(p, vals);
       for (size_t i = 0; i < p.alphabet().size(); ++i) {
         if (p.letter_no_checks(i) == id && vals[i] != id) {
           LIBSEMIGROUPS_EXCEPTION(
@@ -251,21 +274,7 @@ namespace libsemigroups {
               p.letter_no_checks(i),
               vals[i]);
         }
-        for (size_t j = 0; j < p.alphabet().size(); ++j) {
-          if (p.letter_no_checks(j) == vals[i]) {
-            if (vals[j] != p.letter_no_checks(i)) {
-              LIBSEMIGROUPS_EXCEPTION(
-                  "invalid inverses, {} ^ -1 = {} but {} ^ -1 = {}",
-                  p.letter_no_checks(i),
-                  vals[i],
-                  vals[i],
-                  vals[j]);
-            }
-            break;
-          }
-        }
       }
-
       Word rhs = (id == UNDEFINED ? Word({}) : Word({id}));
 
       for (size_t i = 0; i < p.alphabet().size(); ++i) {
@@ -441,8 +450,8 @@ namespace libsemigroups {
       // the length of the presentation as much as possible.
       word_type::const_iterator first, last;
       std::tie(first, last) = ukkonen::dfs(u, helper);
-      // It'd be more pleasing to return first and last here, but they point at
-      // the word contained in the Ukkonen u, which is destroyed after we
+      // It'd be more pleasing to return first and last here, but they point
+      // at the word contained in the Ukkonen u, which is destroyed after we
       // exit this function.
       return Word(first, last);
     }
@@ -705,7 +714,8 @@ namespace libsemigroups {
 
       if (p.alphabet().size() == max_letter) {
         LIBSEMIGROUPS_EXCEPTION(
-            "the alphabet of the 1st argument already has the maximum size of "
+            "the alphabet of the 1st argument already has the maximum size "
+            "of "
             "{}, there are no unused generators",
             std::numeric_limits<letter_type>::max()
                 - std::numeric_limits<letter_type>::min());
