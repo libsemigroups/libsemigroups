@@ -54,6 +54,7 @@ pkginclude_HEADERS += include/libsemigroups/config.hpp
 pkginclude_HEADERS += include/libsemigroups/cong-intf.hpp
 pkginclude_HEADERS += include/libsemigroups/cong.hpp
 pkginclude_HEADERS += include/libsemigroups/constants.hpp
+pkginclude_HEADERS += include/libsemigroups/cutting.hpp
 pkginclude_HEADERS += include/libsemigroups/debug.hpp
 pkginclude_HEADERS += include/libsemigroups/deprecated.hpp
 pkginclude_HEADERS += include/libsemigroups/exception.hpp
@@ -573,6 +574,7 @@ libsemigroups_la_SOURCES += src/cong-intf.cpp
 libsemigroups_la_SOURCES += src/cong.cpp
 libsemigroups_la_SOURCES += src/constants.cpp
 libsemigroups_la_SOURCES += src/exception.cpp
+libsemigroups_la_SOURCES += src/cutting.cpp
 libsemigroups_la_SOURCES += src/forest.cpp
 libsemigroups_la_SOURCES += src/fpsemi-examples.cpp
 libsemigroups_la_SOURCES += src/freeband.cpp
@@ -654,6 +656,7 @@ EXTRA_PROGRAMS += test_cong
 EXTRA_PROGRAMS += test_cong_intf
 EXTRA_PROGRAMS += test_constants
 EXTRA_PROGRAMS += test_containers
+EXTRA_PROGRAMS += test_cutting
 EXTRA_PROGRAMS += test_digraph_helper
 EXTRA_PROGRAMS += test_felsch_tree
 EXTRA_PROGRAMS += test_forest
@@ -737,6 +740,7 @@ test_all_SOURCES += tests/test-cong-intf.cpp
 test_all_SOURCES += tests/test-cong.cpp
 test_all_SOURCES += tests/test-constants.cpp
 test_all_SOURCES += tests/test-containers.cpp
+test_all_SOURCES += tests/test-cutting.cpp
 test_all_SOURCES += tests/test-felsch-tree.cpp
 test_all_SOURCES += tests/test-forest.cpp
 test_all_SOURCES += tests/test-fpsemi-examples-1.cpp
@@ -823,16 +827,31 @@ test_constants_SOURCES += tests/test-main.cpp
 test_containers_SOURCES =  tests/test-containers.cpp
 test_containers_SOURCES += tests/test-main.cpp
 
+test_cutting_SOURCES =  tests/test-cutting.cpp
+test_cutting_SOURCES += tests/test-main.cpp
+
+test_digraph_helper_SOURCES  = tests/test-digraph-helper.cpp
+test_digraph_helper_SOURCES += tests/test-main.cpp
+
+test_digraph_SOURCES =  tests/test-digraph.cpp
+test_digraph_SOURCES += tests/test-main.cpp
+
 test_forest_SOURCES =  tests/test-forest.cpp
 test_forest_SOURCES += tests/test-main.cpp
 
 test_felsch_tree_SOURCES =  tests/test-felsch-tree.cpp
 test_felsch_tree_SOURCES += tests/test-main.cpp
 
+test_fpsemi_SOURCES =  tests/test-fpsemi.cpp
+test_fpsemi_SOURCES += tests/test-main.cpp
+
 test_fpsemi_examples_SOURCES =  tests/test-fpsemi-examples-1.cpp
 test_fpsemi_examples_SOURCES += tests/test-fpsemi-examples-2.cpp
 test_fpsemi_examples_SOURCES += tests/test-fpsemi-examples-3.cpp
 test_fpsemi_examples_SOURCES += tests/test-main.cpp
+
+test_fpsemi_intf_SOURCES =  tests/test-fpsemi-intf.cpp
+test_fpsemi_intf_SOURCES += tests/test-main.cpp
 
 test_freeband_SOURCES =  tests/test-freeband.cpp
 test_freeband_SOURCES += tests/test-main.cpp
@@ -874,24 +893,6 @@ test_froidure_pin_transf_SOURCES += tests/test-main.cpp
 test_froidure_pin_maxplustrunc_SOURCES =  tests/test-froidure-pin-maxplustrunc.cpp
 test_froidure_pin_maxplustrunc_SOURCES += tests/test-main.cpp
 
-test_froidure_pin_SOURCES =  tests/test-main.cpp
-test_froidure_pin_SOURCES += tests/test-froidure-pin-bipart.cpp
-test_froidure_pin_SOURCES += tests/test-froidure-pin-bmat8.cpp
-test_froidure_pin_SOURCES += tests/test-froidure-pin-bmat.cpp
-test_froidure_pin_SOURCES += tests/bmat-data.cpp
-test_froidure_pin_SOURCES += tests/test-froidure-pin-integers.cpp
-test_froidure_pin_SOURCES += tests/test-froidure-pin-intmat.cpp
-test_froidure_pin_SOURCES += tests/test-froidure-pin-intpairs.cpp
-test_froidure_pin_SOURCES += tests/test-froidure-pin-matrix.cpp
-test_froidure_pin_SOURCES += tests/test-froidure-pin-pbr.cpp
-test_froidure_pin_SOURCES += tests/test-froidure-pin-pperm.cpp
-test_froidure_pin_SOURCES += tests/test-froidure-pin-projmaxplus.cpp
-test_froidure_pin_SOURCES += tests/test-froidure-pin-transf.cpp
-test_froidure_pin_SOURCES += tests/test-froidure-pin-maxplustrunc.cpp
-
-test_gabow_SOURCES =  tests/test-gabow.cpp
-test_gabow_SOURCES += tests/test-main.cpp
-
 test_hpcombi_SOURCES =  tests/test-hpcombi.cpp
 test_hpcombi_SOURCES += tests/test-main.cpp
 
@@ -921,11 +922,14 @@ test_konieczny_SOURCES += tests/test-konieczny-pperm.cpp
 test_konieczny_SOURCES += tests/bmat-data.cpp
 test_konieczny_SOURCES += tests/test-main.cpp
 
+test_make_froidure_pin_SOURCES =  tests/test-make-froidure-pin.cpp
+test_make_froidure_pin_SOURCES += tests/test-main.cpp
+
+test_make_present_SOURCES =  tests/test-make-present.cpp
+test_make_present_SOURCES += tests/test-main.cpp
+
 test_matrix_SOURCES =  tests/test-matrix.cpp
 test_matrix_SOURCES += tests/test-main.cpp
-
-test_multi_string_view_SOURCES =  tests/test-multi-string-view.cpp
-test_multi_string_view_SOURCES += tests/test-main.cpp
 
 test_obvinf_SOURCES =  tests/test-obvinf.cpp
 test_obvinf_SOURCES += tests/test-main.cpp
@@ -933,23 +937,17 @@ test_obvinf_SOURCES += tests/test-main.cpp
 test_order_SOURCES =  tests/test-order.cpp
 test_order_SOURCES += tests/test-main.cpp
 
-test_paths_SOURCES =  tests/test-paths.cpp
-test_paths_SOURCES += tests/test-main.cpp
-
 test_pbr_SOURCES =  tests/test-pbr.cpp
 test_pbr_SOURCES += tests/test-main.cpp
 
 test_pool_SOURCES =  tests/test-pool.cpp
 test_pool_SOURCES += tests/test-main.cpp
 
-test_presentation_SOURCES =  tests/test-presentation.cpp
-test_presentation_SOURCES += tests/test-main.cpp
+test_present_SOURCES =  tests/test-present.cpp
+test_present_SOURCES += tests/test-main.cpp
 
 test_race_SOURCES =  tests/test-race.cpp
 test_race_SOURCES += tests/test-main.cpp
-
-test_ranges_SOURCES =  tests/test-ranges.cpp
-test_ranges_SOURCES += tests/test-main.cpp
 
 test_runner_SOURCES =  tests/test-runner.cpp
 test_runner_SOURCES += tests/test-main.cpp
@@ -957,8 +955,14 @@ test_runner_SOURCES += tests/test-main.cpp
 test_schreier_sims_SOURCES =  tests/test-schreier-sims.cpp
 test_schreier_sims_SOURCES += tests/test-main.cpp
 
+test_schreier_sims_helper_SOURCES =  tests/test-schreier-sims-helper.cpp
+test_schreier_sims_helper_SOURCES += tests/test-main.cpp
+
 test_sims1_SOURCES =  tests/test-sims1.cpp
 test_sims1_SOURCES += tests/test-main.cpp
+
+test_siso_SOURCES =  tests/test-siso.cpp
+test_siso_SOURCES += tests/test-main.cpp
 
 test_stephen_SOURCES =  tests/test-stephen.cpp
 test_stephen_SOURCES += tests/test-main.cpp
@@ -966,14 +970,14 @@ test_stephen_SOURCES += tests/test-main.cpp
 test_string_SOURCES =  tests/test-string.cpp
 test_string_SOURCES += tests/test-main.cpp
 
+test_string_view_SOURCES =  tests/test-string-view.cpp
+test_string_view_SOURCES += tests/test-main.cpp
+
+test_suffix_tree_SOURCES =  tests/test-suffix-tree.cpp
+test_suffix_tree_SOURCES += tests/test-main.cpp
+
 test_timer_SOURCES =  tests/test-timer.cpp
 test_timer_SOURCES += tests/test-main.cpp
-
-test_to_froidure_pin_SOURCES =  tests/test-to-froidure-pin.cpp
-test_to_froidure_pin_SOURCES += tests/test-main.cpp
-
-test_to_presentation_SOURCES =  tests/test-to-presentation.cpp
-test_to_presentation_SOURCES += tests/test-main.cpp
 
 test_todd_coxeter_SOURCES =  tests/test-todd-coxeter.cpp
 test_todd_coxeter_SOURCES += tests/test-main.cpp
@@ -987,25 +991,27 @@ test_types_SOURCES += tests/test-main.cpp
 test_uf_SOURCES =  tests/test-uf.cpp
 test_uf_SOURCES += tests/test-main.cpp
 
-test_ukkonen_SOURCES =  tests/test-ukkonen.cpp
-test_ukkonen_SOURCES += tests/test-main.cpp
+test_wilo_SOURCES =  tests/test-wilo.cpp
+test_wilo_SOURCES += tests/test-main.cpp
 
-test_word_graph_SOURCES =  tests/test-word-graph.cpp
-test_word_graph_SOURCES += tests/test-main.cpp
+test_wislo_SOURCES =  tests/test-wislo.cpp
+test_wislo_SOURCES += tests/test-main.cpp
 
-test_words_SOURCES =  tests/test-words.cpp
-test_words_SOURCES += tests/test-main.cpp
+test_word_SOURCES =  tests/test-word.cpp
+test_word_SOURCES += tests/test-main.cpp
 
 bench_all_SOURCES =  benchmarks/examples/cong-intf.cpp
+bench_all_SOURCES += benchmarks/examples/fpsemi-intf.cpp
 bench_all_SOURCES += benchmarks/examples/generators.cpp
 bench_all_SOURCES += benchmarks/bench-action.cpp
-bench_all_SOURCES += benchmarks/bench-word-graph.cpp
+bench_all_SOURCES += benchmarks/bench-digraph.cpp
 bench_all_SOURCES += benchmarks/bench-froidure-pin.cpp
 bench_all_SOURCES += benchmarks/bench-knuth-bendix.cpp
 bench_all_SOURCES += benchmarks/bench-konieczny.cpp
 bench_all_SOURCES += benchmarks/bench-main.cpp
-bench_all_SOURCES += benchmarks/bench-multi-string-view.cpp
+bench_all_SOURCES += benchmarks/bench-string-view.cpp
 bench_all_SOURCES += benchmarks/bench-sims1.cpp
+bench_all_SOURCES += benchmarks/bench-siso.cpp
 bench_all_SOURCES += benchmarks/bench-todd-coxeter.cpp
 bench_all_SOURCES += benchmarks/bench-uf.cpp
 bench_all_SOURCES += benchmarks/bench-wilo.cpp
@@ -1019,6 +1025,9 @@ bench_action_SOURCES += benchmarks/bench-main.cpp
 bench_bmat_SOURCES =  benchmarks/bench-bmat.cpp
 bench_bmat_SOURCES += benchmarks/bench-main.cpp
 bench_bmat_SOURCES += tests/bmat-data.cpp
+
+bench_digraph_SOURCES =  benchmarks/bench-digraph.cpp
+bench_digraph_SOURCES += benchmarks/bench-main.cpp
 
 bench_freeband_SOURCES =  benchmarks/bench-freeband.cpp
 bench_freeband_SOURCES += benchmarks/bench-main.cpp
@@ -1040,8 +1049,11 @@ bench_konieczny_SOURCES += benchmarks/bench-main.cpp
 bench_sims1_SOURCES =  benchmarks/bench-sims1.cpp
 bench_sims1_SOURCES += benchmarks/bench-main.cpp
 
-bench_multi_string_view_SOURCES =  benchmarks/bench-multi-string-view.cpp
-bench_multi_string_view_SOURCES += benchmarks/bench-main.cpp
+bench_siso_SOURCES =  benchmarks/bench-siso.cpp
+bench_siso_SOURCES += benchmarks/bench-main.cpp
+
+bench_string_view_SOURCES =  benchmarks/bench-string-view.cpp
+bench_string_view_SOURCES += benchmarks/bench-main.cpp
 
 bench_todd_coxeter_SOURCES =  benchmarks/bench-todd-coxeter.cpp
 bench_todd_coxeter_SOURCES += benchmarks/examples/fpsemi-intf.cpp
@@ -1057,9 +1069,6 @@ bench_wilo_SOURCES += benchmarks/bench-main.cpp
 
 bench_wislo_SOURCES =  benchmarks/bench-wislo.cpp
 bench_wislo_SOURCES += benchmarks/bench-main.cpp
-
-bench_word_graph_SOURCES =  benchmarks/bench-word-graph.cpp
-bench_word_graph_SOURCES += benchmarks/bench-main.cpp
 
 ## Make targets
 
@@ -1099,7 +1108,6 @@ uninstall-hook:
 	if test -d $(includedir)/libsemigroups/HPCombi; then rm -rf $(includedir)/libsemigroups/HPCombi; fi
 	if test -d ${fmtincludedir}; then rm -rf ${fmtincludedir}; fi
 	if test -d ${textflowcppincludedir}; then rm -rf ${textflowcppincludedir}; fi
-	if test -d ${backwardcppincludedir}; then rm -rf ${backwardcppincludedir}; fi
 	if test -d ${includedir}/libsemigroups; then rmdir ${includedir}/libsemigroups; fi
 .PHONY: uninstall-hook
 
