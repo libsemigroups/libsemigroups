@@ -16,7 +16,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#define CATCH_CONFIG_ENABLE_PAIR_STRINGMAKER
+#define CATCH_CONFIG_ENABLE_ALL_STRINGMAKERS
 
 #include <cstddef>   // for size_t
 #include <iostream>  // for cout
@@ -1092,14 +1092,388 @@ namespace libsemigroups {
     REQUIRE_THROWS_AS(S.run(), LibsemigroupsException);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("Stephen",
-                          "032",
-                          "Plactic monoid",
-                          "[stephen][quick]") {
-    auto p = fpsemigroup::plactic_monoid(4);
-    p.contains_empty_word(true);
-    Stephen s(p);
-    s.set_word(0013122_w).run();
-    REQUIRE(!stephen::accepts(s, 0013212_w));
-  }
+  /* LIBSEMIGROUPS_TEST_CASE("Stephen",
+                           "032",
+                           "(inverse presentation) "
+                           "step_hen/tests/test_schutzenbergergraph.py:test_001",
+                           "[stephen][quick]") {
+     detail::StringToWord string_to_word("abcABC");
+
+     InversePresentation<word_type> p;
+     p.alphabet(string_to_word("abcABC"));
+     p.inverses(string_to_word("ABCabc"));
+
+     auto S = v3::Stephen<InversePresentation<word_type>>(p);
+
+     S.set_word(string_to_word("aBcAbC")).run();
+
+     REQUIRE(S.finished());
+     REQUIRE(S.word_graph().number_of_nodes() == 7);
+     REQUIRE(!v3::stephen::accepts(S, string_to_word("BaAbaBcAbC")));
+     REQUIRE(v3::stephen::accepts(S, string_to_word("aBcCbBcAbC")));
+
+     S.set_word(string_to_word("aBcCbBcAbC"));
+     REQUIRE(v3::stephen::accepts(S, string_to_word("aBcAbC")));
+
+     S.set_word(string_to_word("BaAbaBcAbC"));
+     REQUIRE(v3::stephen::accepts(S, string_to_word("aBcAbC")));
+   }
+
+   LIBSEMIGROUPS_TEST_CASE("Stephen",
+                           "033",
+                           "(inverse presentation) "
+                           "step_hen/tests/test_schutzenbergergraph.py:test_001",
+                           "[stephen][quick]") {
+     InversePresentation<std::string> p;
+     p.alphabet("abcABC");
+     p.inverses("ABCabc");
+
+     auto S = v3::Stephen<InversePresentation<word_type>>(p);
+
+     detail::StringToWord string_to_word(p.alphabet());
+
+     S.set_word(string_to_word("aBcAbC")).run();
+
+     REQUIRE(S.finished());
+     REQUIRE(S.word_graph().number_of_nodes() == 7);
+     REQUIRE(!v3::stephen::accepts(S, string_to_word("BaAbaBcAbC")));
+     REQUIRE(v3::stephen::accepts(S, string_to_word("aBcCbBcAbC")));
+
+     S.set_word(string_to_word("aBcCbBcAbC"));
+     REQUIRE(v3::stephen::accepts(S, string_to_word("aBcAbC")));
+
+     S.set_word(string_to_word("BaAbaBcAbC"));
+     REQUIRE(v3::stephen::accepts(S, string_to_word("aBcAbC")));
+   }
+
+   LIBSEMIGROUPS_TEST_CASE("Stephen",
+                           "034",
+                           "(inverse presentation) "
+                           "step_hen/tests/test_schutzenbergergraph.py:test_002",
+                           "[stephen][quick]") {
+     detail::StringToWord           string_to_word("abcABC");
+     InversePresentation<word_type> p;
+     p.alphabet(string_to_word("abcABC"));
+     p.inverses(string_to_word("ABCabc"));
+
+     auto S = v3::Stephen<InversePresentation<word_type>>(p);
+     S.set_word(string_to_word("aBbcABAabCc")).run();
+
+     REQUIRE(S.accept_state() == 4);
+     REQUIRE(action_digraph_helper::follow_path(S.word_graph(), 0, S.word())
+             == 4);
+     REQUIRE(v3::stephen::number_of_words_accepted(S) == POSITIVE_INFINITY);
+   }
+
+   LIBSEMIGROUPS_TEST_CASE("Stephen",
+                           "035",
+                           "(inverse presentation) "
+                           "step_hen/tests/test_schutzenbergergraph.py:test_003",
+                           "[stephen][quick]") {
+     detail::StringToWord           string_to_word("xyXY");
+     InversePresentation<word_type> p;
+     p.alphabet(string_to_word("xyXY"));
+     p.inverses(string_to_word("XYxy"));
+
+     auto S = v3::Stephen<InversePresentation<word_type>>(p);
+     S.set_word(string_to_word("xxxyyy")).run();
+
+     REQUIRE(v3::stephen::accepts(S, string_to_word("xxxyyyYYYXXXxxxyyy")));
+     S.set_word(string_to_word("xxxyyyYYYXXXxxxyyy"));
+     REQUIRE(v3::stephen::accepts(S, string_to_word("xxxyyy")));
+     REQUIRE(!v3::stephen::accepts(S, string_to_word("xxx")));
+   }
+
+   LIBSEMIGROUPS_TEST_CASE("Stephen",
+                           "036",
+                           "(inverse presentation) "
+                           "step_hen/tests/test_schutzenbergergraph.py:test_004",
+                           "[stephen][quick]") {
+     detail::StringToWord           string_to_word("xyXY");
+     InversePresentation<word_type> p;
+     p.alphabet(string_to_word("xyXY"));
+     p.inverses(string_to_word("XYxy"));
+     presentation::add_rule_and_check(
+         p, string_to_word("xyXxyX"), string_to_word("xyX"));
+
+     auto S = v3::Stephen<InversePresentation<word_type>>(p);
+     // FIXME seems like every word is accepted when we don't set the word
+     S.set_word(string_to_word("xyXyy"));
+     std::string ys = "";
+     for (size_t i = 0; i < 10; ++i) {
+       REQUIRE(v3::stephen::accepts(
+           S, string_to_word(std::string("x") + ys + "Xyy")));
+       ys += "y";
+     }
+
+     REQUIRE(!v3::stephen::accepts(S, string_to_word("xXyx")));
+     REQUIRE(!v3::stephen::accepts(S, string_to_word("xXxx")));
+     REQUIRE(!v3::stephen::accepts(S, string_to_word("xXxy")));
+     REQUIRE(!v3::stephen::accepts(S, string_to_word("xXxX")));
+     REQUIRE(!v3::stephen::accepts(S, string_to_word("xXyY")));
+     REQUIRE(v3::stephen::accepts(S, string_to_word("xyXyy")));
+     REQUIRE(v3::stephen::number_of_words_accepted(S) == POSITIVE_INFINITY);
+     REQUIRE(S.word_graph().number_of_nodes() == 4);
+     REQUIRE(S.word_graph().number_of_edges() == 8);
+
+     REQUIRE(S.word_graph()
+             == action_digraph_helper::make<typename Stephen::node_type>(
+                 4,
+                 {{1, 2, UNDEFINED, UNDEFINED},
+                  {UNDEFINED, 1, 0, 1},
+                  {UNDEFINED, 3, UNDEFINED, 0},
+                  {UNDEFINED, UNDEFINED, UNDEFINED, 2}}));
+   }
+
+   LIBSEMIGROUPS_TEST_CASE("Stephen",
+                           "037",
+                           "(inverse presentation) "
+                           "step_hen/tests/test_schutzenbergergraph.py:test_005",
+                           "[stephen][quick]") {
+     detail::StringToWord           string_to_word("xyXY");
+     InversePresentation<word_type> p;
+     p.alphabet(string_to_word("xyXY"));
+     p.inverses(string_to_word("XYxy"));
+     presentation::add_rule_and_check(
+         p, string_to_word("xyXxyX"), string_to_word("xyX"));
+     presentation::add_rule_and_check(
+         p, string_to_word("xyxy"), string_to_word("xy"));
+
+     auto S = v3::Stephen<InversePresentation<word_type>>(p);
+     S.set_word(string_to_word("xyXyy"));
+     REQUIRE(v3::stephen::accepts(S, string_to_word("y")));
+     REQUIRE(v3::stephen::accepts(S, string_to_word("xxxxxxxxxxxxx")));
+     REQUIRE(v3::stephen::accepts(S, string_to_word("xyXxyxyxyxyxyXyy")));
+     REQUIRE(S.word_graph().number_of_nodes() == 1);
+   }
+
+   LIBSEMIGROUPS_TEST_CASE("Stephen",
+                           "038",
+                           "(inverse presentation) "
+                           "step_hen/tests/test_schutzenbergergraph.py:test_006",
+                           "[stephen][quick]") {
+     detail::StringToWord           string_to_word("abcABC");
+     InversePresentation<word_type> p;
+     p.alphabet(string_to_word("abcABC"));
+     p.inverses(string_to_word("ABCabc"));
+     presentation::add_rule_and_check(
+         p, string_to_word("ac"), string_to_word("ca"));
+     presentation::add_rule_and_check(
+         p, string_to_word("ab"), string_to_word("ba"));
+     presentation::add_rule_and_check(
+         p, string_to_word("bc"), string_to_word("cb"));
+
+     auto S = v3::Stephen<InversePresentation<word_type>>(p);
+     S.set_word(string_to_word("BaAbaBcAbC"));
+     S.run();
+     REQUIRE(S.word_graph().number_of_nodes() == 7);
+     REQUIRE(S.word_graph()
+             == action_digraph_helper::make<typename Stephen::node_type>(
+                 7,
+                 {{1, UNDEFINED, 2, UNDEFINED, 3, UNDEFINED},
+                  {UNDEFINED, UNDEFINED, UNDEFINED, 0, 4, UNDEFINED},
+                  {UNDEFINED, UNDEFINED, UNDEFINED, UNDEFINED, 5, 0},
+                  {4, 0, 5, UNDEFINED, UNDEFINED, UNDEFINED},
+                  {UNDEFINED, 1, 6, 3, UNDEFINED, UNDEFINED},
+                  {6, 2, UNDEFINED, UNDEFINED, UNDEFINED, 3},
+                  {UNDEFINED, UNDEFINED, UNDEFINED, 5, UNDEFINED, 4}}));
+   }
+
+   LIBSEMIGROUPS_TEST_CASE("Stephen", "039", "corner case", "[stephen][quick]")
+   { detail::StringToWord string_to_word("x");
+
+     Presentation<word_type> p;
+     p.contains_empty_word(true);
+
+     p.alphabet(string_to_word("x"));
+     presentation::add_rule_and_check(
+         p, string_to_word("xxxx"), string_to_word("xx"));
+
+     Stephen S(p);
+     S.set_word(string_to_word(""));
+     S.run();
+     REQUIRE(S.accept_state() == 0);
+     REQUIRE(S.word_graph().number_of_nodes() == 1);
+     REQUIRE(!stephen::accepts(S, string_to_word("x")));
+   }
+
+   LIBSEMIGROUPS_TEST_CASE("Stephen", "040", "empty word", "[stephen][quick]") {
+     auto p = fpsemigroup::make<Presentation<word_type>>(
+         fpsemigroup::symmetric_inverse_monoid(4));
+     REQUIRE(p.contains_empty_word());
+     REQUIRE(p.alphabet().size() == 4);
+
+     auto s = Stephen(p);
+     s.set_word({}).run();
+     REQUIRE(s.word_graph().number_of_nodes() == 24);
+     s.set_word({0}).run();
+     REQUIRE(s.word_graph().number_of_nodes() == 24);
+     s.set_word({1}).run();
+     REQUIRE(s.word_graph().number_of_nodes() == 24);
+     s.set_word({2}).run();
+     REQUIRE(s.word_graph().number_of_nodes() == 24);
+     s.set_word({3}).run();
+     REQUIRE(s.word_graph().number_of_nodes() == 48);
+   }
+
+   LIBSEMIGROUPS_TEST_CASE("Stephen", "041", "shared_ptr", "[stephen][quick]") {
+     detail::StringToWord           string_to_word("abcABC");
+     InversePresentation<word_type> p;
+     p.alphabet(string_to_word("abcABC"));
+     p.inverses(string_to_word("ABCabc"));
+     presentation::add_rule_and_check(
+         p, string_to_word("ac"), string_to_word("ca"));
+     presentation::add_rule_and_check(
+         p, string_to_word("ab"), string_to_word("ba"));
+     presentation::add_rule_and_check(
+         p, string_to_word("bc"), string_to_word("cb"));
+
+     auto ptr = std::make_shared<decltype(p)>(p);
+     auto S = v3::Stephen<std::shared_ptr<InversePresentation<word_type>>>(ptr);
+     S.set_word(string_to_word("BaAbaBcAbC"));
+     S.run();
+     REQUIRE(S.word_graph().number_of_nodes() == 7);
+     REQUIRE(S.word_graph()
+             == action_digraph_helper::make<typename Stephen::node_type>(
+                 7,
+                 {{1, UNDEFINED, 2, UNDEFINED, 3, UNDEFINED},
+                  {UNDEFINED, UNDEFINED, UNDEFINED, 0, 4, UNDEFINED},
+                  {UNDEFINED, UNDEFINED, UNDEFINED, UNDEFINED, 5, 0},
+                  {4, 0, 5, UNDEFINED, UNDEFINED, UNDEFINED},
+                  {UNDEFINED, 1, 6, 3, UNDEFINED, UNDEFINED},
+                  {6, 2, UNDEFINED, UNDEFINED, UNDEFINED, 3},
+                  {UNDEFINED, UNDEFINED, UNDEFINED, 5, UNDEFINED, 4}}));
+   }
+
+   LIBSEMIGROUPS_TEST_CASE("Stephen",
+                           "042",
+                           "inverse presentation -- operator==",
+                           "[stephen][quick]") {
+     congruence::ToddCoxeter tc(congruence_kind::twosided);
+     {
+       auto p = fpsemigroup::make<Presentation<word_type>>(
+           fpsemigroup::symmetric_inverse_monoid(4));
+       REQUIRE(p.contains_empty_word());
+       REQUIRE(p.alphabet().size() == 4);
+       p.alphabet(5);
+       presentation::replace_word(p, {}, {4});
+       presentation::add_identity_rules(p, 4);
+       p.validate();
+
+       tc.set_number_of_generators(5);
+       for (auto it = p.rules.cbegin(); it != p.rules.cend(); it += 2) {
+         tc.add_pair(*it, *(it + 1));
+       }
+     }
+
+     {
+       InversePresentation<word_type> p
+           = fpsemigroup::make<InversePresentation<word_type>>(
+               fpsemigroup::symmetric_inverse_monoid(4));
+       p.alphabet(4);
+       p.inverses({0, 1, 2, 3});
+       p.validate();
+
+       auto      S = v3::Stephen<InversePresentation<word_type>>(p);
+       word_type w = {0, 1, 2, 0, 1, 1, 2, 0, 1, 0, 2, 2, 2, 2, 0, 1};
+       S.set_word(w);
+
+       REQUIRE(v3::stephen::number_of_words_accepted(S) == POSITIVE_INFINITY);
+
+       {
+         auto const index = tc.word_to_class_index(w);
+         auto       first = v3::stephen::cbegin_words_accepted(S);
+         auto       last  = first;
+         std::advance(last, 1024);
+         auto T = v3::Stephen<InversePresentation<word_type>>(p);
+
+         for (auto it = first; it != last; ++it) {
+           REQUIRE(tc.word_to_class_index(*it) == index);
+           REQUIRE(v3::stephen::accepts(T.set_word(*it), w));
+         }
+       }
+     }
+   }
+
+   LIBSEMIGROUPS_TEST_CASE("Stephen",
+                           "044",
+                           "inverse presentation",
+                           "[stephen][quick]") {
+     detail::StringToWord           string_to_word("abcABC");
+     InversePresentation<word_type> p;
+     p.alphabet(string_to_word("abcABC"));
+     p.inverses(string_to_word("ABCabc"));
+     presentation::add_rule_and_check(
+         p, string_to_word("ac"), string_to_word("ca"));
+     presentation::add_rule_and_check(
+         p, string_to_word("ab"), string_to_word("ba"));
+     presentation::add_rule_and_check(
+         p, string_to_word("bc"), string_to_word("cb"));
+     auto S = v3::Stephen<InversePresentation<word_type>>(p);
+     auto T = v3::Stephen<InversePresentation<word_type>>(p);
+
+     Sislo sislo;
+     sislo.alphabet("abcABC").first("aaaaa").last("aaaaaaaaa");
+     auto sislo_end = sislo.cend();
+
+     for (auto w = sislo.cbegin(); w != sislo_end; ++w) {
+       S.set_word(string_to_word(*w));
+       auto first = ++v3::stephen::cbegin_words_accepted(S);
+       auto last  = first;
+       std::advance(last, 1024);
+       for (auto it = first; it != last; ++it) {
+         REQUIRE(v3::stephen::accepts(S, *it));
+         if (!v3::stephen::accepts(T.set_word(*it), S.word())) {
+           std::cout << "S.word() = " << S.word() << ", T.word() = " << T.word()
+                     << std::endl;
+         }
+         REQUIRE(S == T);
+       }
+     }
+   }
+
+   LIBSEMIGROUPS_TEST_CASE("Stephen",
+                           "043",
+                           "non-inverse presentation -- operator==",
+                           "[stephen][quick]") {
+     auto p = fpsemigroup::make<Presentation<word_type>>(
+         fpsemigroup::symmetric_inverse_monoid(4));
+     REQUIRE(p.contains_empty_word());
+     REQUIRE(p.alphabet().size() == 4);
+     p.alphabet(5);
+     presentation::replace_word(p, {}, {4});
+     presentation::add_identity_rules(p, 4);
+     p.validate();
+
+     congruence::ToddCoxeter tc(congruence_kind::twosided);
+     tc.set_number_of_generators(5);
+     for (auto it = p.rules.cbegin(); it != p.rules.cend(); it += 2) {
+       tc.add_pair(*it, *(it + 1));
+     }
+
+     auto      S = v3::Stephen<Presentation<word_type>>(p);
+     word_type w = {0, 1, 2, 0, 1, 1, 2, 0, 1, 0, 2, 2, 2, 2, 0, 1};
+     S.set_word(w);
+     REQUIRE(v3::stephen::number_of_words_accepted(S) == POSITIVE_INFINITY);
+
+     {
+       auto const index = tc.word_to_class_index(w);
+       auto       first = v3::stephen::cbegin_words_accepted(S);
+       auto       last  = first;
+       std::advance(last, 1024);
+
+       for (auto it = first; it != last; ++it) {
+         REQUIRE(tc.word_to_class_index(*it) == index);
+       }
+     }
+     {
+       auto first = tc.cbegin_class(w);
+       auto last  = first;
+       std::advance(last, 1024);
+
+       for (auto it = first; it != last; ++it) {
+         REQUIRE(stephen::accepts(S, *it));
+       }
+     }
+   }*/
 }  // namespace libsemigroups

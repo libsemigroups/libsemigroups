@@ -21,7 +21,7 @@
 
 #include <chrono>       // for high_resolution_clock
 #include <cstddef>      // for size_t
-#include <cstdint>      // for size_t
+#include <cstdint>      // for ?
 #include <type_traits>  // for decay_t, is_base_of
 #include <utility>      // for forward
 #include <vector>       // for vector
@@ -70,9 +70,9 @@ namespace libsemigroups {
   //! (WordGraph) corresponding to the left factors of a word in a finitely
   //! presented semigroup. The algorithm implemented in this class is closely
   //! related to the Todd-Coxeter algorithm  (as implemented in \ref
-  //! ToddCoxeter) and originates in
-  //! [Applications of automata theory to presentations of monoids and inverse
-  //! monoids](https://rb.gy/brsuvc) by J. B. Stephen.
+  //! ToddCoxeter) and originates in [Applications of automata theory to
+  //! presentations of monoids and inverse monoids](https://rb.gy/brsuvc) by J.
+  //! B. Stephen.
   class Stephen : public Runner {
     using internal_digraph_type = StephenDigraph;
 
