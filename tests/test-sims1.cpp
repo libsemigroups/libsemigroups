@@ -39,37 +39,7 @@
 
 namespace libsemigroups {
 
-  namespace {
-    // TODO do a proper version of this
-    [[maybe_unused]] void add_cyclic_conjugates(Presentation<std::string>& p,
-                                                char const*                l,
-                                                char const*                r) {
-      std::string lhs(l);
-      std::string rhs(r);
-      for (size_t i = 0; i < lhs.size(); ++i) {
-        std::string lcopy(rhs.crbegin(), rhs.crbegin() + i);
-        lcopy.insert(lcopy.end(), lhs.cbegin() + i, lhs.cend());
-        for (auto it = lcopy.begin(); it < lcopy.begin() + i; ++it) {
-          if (std::isupper(*it)) {
-            std::tolower(*it);
-          } else {
-            std::toupper(*it);
-          }
-        }
-
-        std::string rcopy(rhs.cbegin(), rhs.cend() - i + 1);
-        rcopy.insert(rcopy.end(), lhs.crbegin(), lhs.crend() + i);
-        for (auto it = rcopy.end() - i; it < rcopy.end(); ++it) {
-          if (std::isupper(*it)) {
-            std::tolower(*it);
-          } else {
-            std::toupper(*it);
-          }
-        }
-        presentation::add_rule(p, lcopy, rcopy);
-      }
-    }
-  }  // namespace
+  namespace {}  // namespace
 
   using word_graph_type = typename Sims1::word_graph_type;
   using node_type       = typename word_graph_type::node_type;
@@ -1735,7 +1705,7 @@ namespace libsemigroups {
     p.alphabet("xy");
     presentation::add_rule(p, "xx", "");
     presentation::add_rule(p, "yyy", "");
-    presentation::add_rule(p, "xyxyxyxyxyxyxy", "");
+    presentation::add_rule(p, "xyxyxyxy", "yyxyyxyyx");
     Sims1 S(congruence_kind::right);
     S.presentation(p).number_of_threads(1);
     REQUIRE(S.number_of_congruences(50) == 75'971);
@@ -1752,6 +1722,21 @@ namespace libsemigroups {
     presentation::add_inverse_rules(p, "XxYy");
     presentation::add_rule(p, "yXYYxyYYxyyXYYxyyXyXYYxy", "x");
     presentation::add_rule(p, "YxyyXXYYxyxYxyyXYXyXYYxxyyXYXyXYYxyx", "y");
+    presentation::balance(p, p.alphabet(), std::string("XxYy"));
+
+    REQUIRE(p.rules
+            == std::vector<std::string>({"xX",
+                                         "",
+                                         "Xx",
+                                         "",
+                                         "yY",
+                                         "",
+                                         "Yy",
+                                         "",
+                                         "yXYYxyYYxyyXY",
+                                         "xYXyyxYxYYXy",
+                                         "YxyyXXYYxyxYxyyXYXy",
+                                         "yXYXyyxYxyxYYXXyyx"}));
 
     Sims1 S(congruence_kind::right);
     S.presentation(p).number_of_threads(4).long_rule_length(37);
@@ -2546,6 +2531,7 @@ namespace libsemigroups {
     presentation::add_rule(p, "Aba", "aab");
     presentation::sort_each_rule(p);
     presentation::sort_rules(p);
+    presentation::balance(p, "abcABC", "ABCabc");
 
     REQUIRE(presentation::longest_subword_reducing_length(p) == "aa");
     presentation::replace_word_with_new_generator(p, "aa");
@@ -2780,6 +2766,44 @@ namespace libsemigroups {
       REQUIRE(d.number_of_nodes() == min_degrees[n]);
     }
   }
+
+  LIBSEMIGROUPS_TEST_CASE("Sims1",
+                          "090",
+                          "possible full transf. monoid 8",
+                          "[extreme][sims1]") {
+    Presentation<word_type> p;
+    p.rules = std::vector<word_type>(
+        {00_w,         {},           11_w,        {},         22_w,     {},
+         33_w,         {},           44_w,        {},         55_w,     {},
+         66_w,         {},           101_w,       010_w,      212_w,    121_w,
+         323_w,        232_w,        434_w,       343_w,      545_w,    454_w,
+         656_w,        565_w,        606_w,       060_w,      2010_w,   0102_w,
+         3010_w,       0103_w,       4010_w,      0104_w,     5010_w,   0105_w,
+         6010_w,       0106_w,       1210_w,      0121_w,     3121_w,   1213_w,
+         4121_w,       1214_w,       5121_w,      1215_w,     6121_w,   1216_w,
+         2320_w,       0232_w,       2321_w,      1232_w,     4232_w,   2324_w,
+         5232_w,       2325_w,       6232_w,      2326_w,     3430_w,   0343_w,
+         3431_w,       1343_w,       3432_w,      2343_w,     5343_w,   3435_w,
+         6343_w,       3436_w,       4540_w,      0454_w,     4541_w,   1454_w,
+         4542_w,       2454_w,       4543_w,      3454_w,     6454_w,   4546_w,
+         5650_w,       0565_w,       5651_w,      1565_w,     5652_w,   2565_w,
+         5653_w,       3565_w,       5654_w,      4565_w,     6061_w,   1606_w,
+         6062_w,       2606_w,       6063_w,      3606_w,     6064_w,   4606_w,
+         6065_w,       5606_w,       071654321_w, 16543217_w, 217121_w, 17171_w,
+         7010270102_w, 0102720107_w, 7010701_w,   1070170_w});
+    p.alphabet_from_rules();
+    auto q = full_transformation_monoid(8);
+
+    std::array<uint64_t, 9> const num = {0, 1, 2, 3, 3, 3, 3, 0, 0};
+    Sims1                         s(congruence_kind::right, p);
+    for (size_t n = 1; n < num.size(); ++n) {
+      s.presentation(q);
+      REQUIRE(s.number_of_congruences(n) == num[n]);
+      s.presentation(p);
+      REQUIRE(s.number_of_congruences(n) == num[n]);
+    }
+  }
+
 }  // namespace libsemigroups
 
 // [[[0, 0, 0]],            #1#

@@ -241,7 +241,7 @@ namespace libsemigroups {
           return _mtx;
         }
       };
-
+      // TODO rename variable
       TickerImpl* _detached_thread;
 
      public:

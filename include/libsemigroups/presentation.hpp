@@ -1488,6 +1488,92 @@ namespace libsemigroups {
                                       Word const&                 letters,
                                       std::initializer_list<Word> words);
 
+    // TODO to tpp
+    template <typename Word>
+    void balance(Presentation<Word>& p,
+                 Word const&         letters,
+                 Word const&         inverses) {
+      // TODO check args
+      // So that longer relations are on the lhs
+      presentation::sort_each_rule(p);
+
+      std::unordered_map<typename Word::value_type, size_t> map;
+
+      for (auto [i, x] : rx::enumerate(letters)) {
+        map.emplace(x, i);
+      }
+
+      for (auto it = p.rules.begin(); it != p.rules.end(); it += 2) {
+        auto& l = *it;
+        auto& r = *(it + 1);
+        // Check that we aren't actually about to remove one of the inverse
+        // relations itself
+        if (l.size() == 2 && r.empty()) {
+          auto it = map.find(l.front());
+          if (it != map.cend() && l.back() == inverses[it->second]) {
+            continue;
+          }
+        }
+
+        size_t const min = (l.size() + r.size()) % 2;
+        while (l.size() - r.size() > min) {
+          auto it = map.find(l.back());
+          if (it != map.cend()) {
+            r.insert(r.end(), inverses[it->second]);
+            l.erase(l.end() - 1);
+          } else {
+            break;
+          }
+        }
+        while (l.size() - r.size() > min) {
+          auto it = map.find(l.front());
+          if (it != map.cend()) {
+            r.insert(r.begin(), inverses[it->second]);
+            l.erase(l.begin());
+          } else {
+            break;
+          }
+        }
+      }
+    }
+
+    inline void balance(Presentation<std::string>& p,
+                        char const*                letters,
+                        char const*                inverses) {
+      balance(p, std::string(letters), std::string(inverses));
+    }
+
+    // TODO do a proper version of this
+    template <typename Word>
+    void add_cyclic_conjugates(Presentation<Word>& p,
+                               Word const&         lhs,
+                               Word const&         rhs) {
+      std::string lhs_copy(lhs);
+      std::string rhs_copy(rhs);
+      for (size_t i = 0; i < lhs.size(); ++i) {
+        std::string lcopy(rhs.crbegin(), rhs.crbegin() + i);
+        lcopy.insert(lcopy.end(), lhs.cbegin() + i, lhs.cend());
+        for (auto it = lcopy.begin(); it < lcopy.begin() + i; ++it) {
+          if (std::isupper(*it)) {
+            std::tolower(*it);
+          } else {
+            std::toupper(*it);
+          }
+        }
+
+        std::string rcopy(rhs.cbegin(), rhs.cend() - i + 1);
+        rcopy.insert(rcopy.end(), lhs.crbegin(), lhs.crend() + i);
+        for (auto it = rcopy.end() - i; it < rcopy.end(); ++it) {
+          if (std::isupper(*it)) {
+            std::tolower(*it);
+          } else {
+            std::toupper(*it);
+          }
+        }
+        presentation::add_rule(p, lcopy, rcopy);
+      }
+    }
+
     // TODO(doc)
     std::string to_gap_string(Presentation<word_type> const& p,
                               std::string const&             var_name);

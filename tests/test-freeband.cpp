@@ -29,21 +29,6 @@
 
 namespace libsemigroups {
 
-#ifdef false
-  namespace {
-    word_type random_word(size_t length, size_t nr_letters) {
-      static std::random_device               rd;
-      static std::mt19937                     gen(rd());
-      std::uniform_int_distribution<uint64_t> dist(0, nr_letters);
-      word_type                               out;
-      for (size_t i = 0; i < length; ++i) {
-        out.push_back(dist(gen));
-      }
-      return out;
-    }
-  }  // namespace
-#endif
-
   // The following contains useful test cases when checking the right, left,
   // count_sort and radix_sort functions.
   /*

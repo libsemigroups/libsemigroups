@@ -506,7 +506,7 @@ namespace libsemigroups {
       return _result;
     }
 
-    void really_run(std::function<bool(word_graph_type const&)> hook) {
+    void run(std::function<bool(word_graph_type const&)> hook) {
       try {
         detail::JoinThreads joiner(_threads);
         for (size_t i = 0; i < _num_threads; ++i) {
@@ -516,16 +516,6 @@ namespace libsemigroups {
       } catch (...) {
         _done = true;
         throw;
-      }
-    }
-
-    void run(std::function<bool(word_graph_type const&)> hook) {
-      if (report::should_report()) {
-        // zero _sims1 stats?
-        detail::Ticker t([this]() { _sims1->report_progress_from_thread(); });
-        really_run(hook);
-      } else {
-        really_run(hook);
       }
     }
 

@@ -113,9 +113,9 @@ namespace libsemigroups {
   void Runner::run_for(std::chrono::nanoseconds val) {
     if (!finished() && !dead()) {
       if (val != FOREVER) {
-        REPORT_DEFAULT("running for approx. {}\n", detail::Timer::string(val));
+        report_default("running for approx. {}\n", detail::Timer::string(val));
       } else {
-        REPORT_DEFAULT("running until finished, with no time limit\n");
+        report_default("running until finished, with no time limit\n");
         run();
         return;
       }
@@ -139,7 +139,7 @@ namespace libsemigroups {
         set_state(state::not_running);
       }
     } else {
-      REPORT_DEFAULT("already finished, not running\n");
+      report_default("already finished, not running\n");
     }
   }
 
