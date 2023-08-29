@@ -134,5 +134,28 @@ namespace libsemigroups {
     return to_presentation<WordOutput>(
         p, [&p](auto val) { return human_readable_char(p.index(val)); });
   }
+
+  // TODO re-enable copied from fp-inverse-monoid branch for Stephen
+  //    template <typename T, typename SFINAE = T>
+  //    auto make(std::vector<relation_type> const& rels) -> std::enable_if_t<
+  //        std::is_same<InversePresentation<word_type>, T>::value,
+  //        SFINAE> {
+  //      InversePresentation<word_type> p;
+  //      for (auto const& rel : rels) {
+  //        p.add_rule(rel.first.cbegin(),
+  //                   rel.first.cend(),
+  //                   rel.second.cbegin(),
+  //                   rel.second.cend());
+  //      }
+  //      p.alphabet_from_rules();
+  //      presentation::normalize_alphabet(p);
+  //      p.alphabet(2 * p.alphabet().size());
+  //      auto invs = p.alphabet();
+  //      std::rotate(invs.begin(), invs.begin() + invs.size() / 2, invs.end());
+  //      p.inverses(std::move(invs));
+  //      p.validate();
+  //      return p;
+  //    }
+
 }  // namespace libsemigroups
 #endif  // LIBSEMIGROUPS_TO_PRESENTATION_HPP_

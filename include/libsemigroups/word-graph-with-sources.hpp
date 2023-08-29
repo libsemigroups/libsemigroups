@@ -171,6 +171,14 @@ namespace libsemigroups {
     template <typename It>
     void rebuild_sources_no_checks(It first, It last);
 
+    // TODO remove
+    // Copied from digraph-with-sources.hpp in fp-inverse-monoids branch
+    // void shrink_to_fit(size_type m) {
+    //   this->restrict(m);
+    //   _preim_init.shrink_rows_to(m);
+    //   _preim_next.shrink_rows_to(m);
+    // }
+
    private:
     void remove_source_no_checks(node_type cx, label_type x, node_type d);
     void replace_target_no_checks(node_type c, label_type x, node_type d);
