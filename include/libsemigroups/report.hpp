@@ -438,6 +438,8 @@ namespace libsemigroups {
       explicit PrintTable(size_t width = 72)
           : _rows(), _header(), _footer(), _width(width) {}
 
+      ~PrintTable();
+
       std::string emit() {
         std::string result = lineohash() + _header + lineohash();
         for (auto const& row : _rows) {

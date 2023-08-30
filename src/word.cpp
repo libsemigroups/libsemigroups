@@ -64,14 +64,14 @@ namespace libsemigroups {
 
   word_type detail::StringToWord::operator()(std::string const& input) const {
     word_type output;
-              operator()(input, output);
+    operator()(input, output);
     return output;
   }
 
   namespace literals {
     word_type operator"" _w(const char* w, size_t n) {
       word_type result;
-#if LIBSEMIGROUPS_DEBUG
+#ifdef LIBSEMIGROUPS_DEBUG
       static const std::string valid_chars = "0123456789";
 #endif
       for (size_t i = 0; i < n; ++i) {

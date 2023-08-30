@@ -145,6 +145,8 @@ namespace libsemigroups {
         _options.resize(n);
       }
     }
+
+    PrintTable::~PrintTable() = default;
   }  // namespace detail
 
   namespace report {

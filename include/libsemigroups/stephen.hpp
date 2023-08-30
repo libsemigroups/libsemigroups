@@ -328,10 +328,10 @@ namespace libsemigroups {
     //!
     //! \sa ActionDigraph::cbegin_pstislo for more information about the
     //! iterators returned by this function.
-    const_iterator_words_accepted cbegin_words_accepted(Stephen& s,
-                                                        size_t   min = 0,
-                                                        size_t   max
-                                                        = POSITIVE_INFINITY) {
+    inline const_iterator_words_accepted
+    cbegin_words_accepted(Stephen& s,
+                          size_t   min = 0,
+                          size_t   max = POSITIVE_INFINITY) {
       s.run();
       return s.word_graph().cbegin_pstislo(0, s.accept_state(), min, max);
     }
@@ -341,7 +341,7 @@ namespace libsemigroups {
     //!
     //! \sa \ref cbegin_words_accepted for more information.
     // Not noexcept because cend_pstislo isn't
-    const_iterator_words_accepted cend_words_accepted(Stephen& s) {
+    inline const_iterator_words_accepted cend_words_accepted(Stephen& s) {
       s.run();
       return s.word_graph().cend_pstislo();
     }
@@ -369,10 +369,10 @@ namespace libsemigroups {
     //! \sa ActionDigraph::cbegin_pislo for more information about the
     //! iterators returned by this function.
     // Not noexcept because cbegin_pislo isn't
-    const_iterator_left_factors cbegin_left_factors(Stephen& s,
-                                                    size_t   min = 0,
-                                                    size_t   max
-                                                    = POSITIVE_INFINITY) {
+    inline const_iterator_left_factors
+    cbegin_left_factors(Stephen& s,
+                        size_t   min = 0,
+                        size_t   max = POSITIVE_INFINITY) {
       s.run();
       return s.word_graph().cbegin_pislo(0, min, max);
     }
@@ -382,7 +382,7 @@ namespace libsemigroups {
     //!
     //! \sa \ref cbegin_left_factors for more information.
     // Not noexcept because cend_pislo isn't
-    const_iterator_left_factors cend_left_factors(Stephen& s) {
+    inline const_iterator_left_factors cend_left_factors(Stephen& s) {
       s.run();
       return s.word_graph().cend_pislo();
     }
@@ -408,9 +408,9 @@ namespace libsemigroups {
     //!
     //! \sa ActionDigraph::number_of_paths.
     // Not noexcept because number_of_paths isn't
-    uint64_t number_of_words_accepted(Stephen& s,
-                                      size_t   min = 0,
-                                      size_t   max = POSITIVE_INFINITY) {
+    inline uint64_t number_of_words_accepted(Stephen& s,
+                                             size_t   min = 0,
+                                             size_t   max = POSITIVE_INFINITY) {
       s.run();
       return s.word_graph().number_of_paths(0, s.accept_state(), min, max);
     }
@@ -438,9 +438,9 @@ namespace libsemigroups {
     //! construction or with Stephen::init.
     // Number of words that represent left factors of word()
     // Not noexcept because number_of_paths isn't
-    uint64_t number_of_left_factors(Stephen& s,
-                                    size_t   min = 0,
-                                    size_t   max = POSITIVE_INFINITY) {
+    inline uint64_t number_of_left_factors(Stephen& s,
+                                           size_t   min = 0,
+                                           size_t   max = POSITIVE_INFINITY) {
       s.run();
       return s.word_graph().number_of_paths(0, min, max);
     }
