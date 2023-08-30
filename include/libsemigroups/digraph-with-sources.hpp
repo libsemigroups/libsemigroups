@@ -67,6 +67,7 @@ namespace libsemigroups {
     DigraphWithSources(DigraphWithSources const&)            = default;
     DigraphWithSources& operator=(DigraphWithSources const&) = default;
     DigraphWithSources& operator=(DigraphWithSources&&)      = default;
+    ~DigraphWithSources();
 
     void init(size_type m, size_type n);
 

@@ -283,6 +283,12 @@ namespace libsemigroups {
     Ukkonen& operator=(Ukkonen&&) = default;
 
     ////////////////////////////////////////////////////////////////////////
+    // Ukkonen - destructors - public
+    ////////////////////////////////////////////////////////////////////////
+
+    ~Ukkonen();
+
+    ////////////////////////////////////////////////////////////////////////
     // Ukkonen - initialisation - public
     ////////////////////////////////////////////////////////////////////////
 
@@ -1785,6 +1791,7 @@ namespace libsemigroups {
         GreedyReduceHelper(GreedyReduceHelper&&)                 = delete;
         GreedyReduceHelper& operator=(GreedyReduceHelper const&) = delete;
         GreedyReduceHelper& operator=(GreedyReduceHelper&&)      = delete;
+        ~GreedyReduceHelper();
 
         void pre_order(Ukkonen const& u, size_t v);
         void post_order(Ukkonen const& u, size_t v);
