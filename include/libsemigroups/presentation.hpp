@@ -1654,6 +1654,30 @@ namespace libsemigroups {
   // TODO(later) could do a no check version
   std::string to_string(Presentation<std::string> const& p, word_type const& w);
 
+  namespace detail {
+    template <typename T>
+    struct IsPresentationHelper : std::false_type {};
+
+    template <typename T>
+    struct IsPresentationHelper<Presentation<T>> : std::true_type {};
+
+    template <typename T>
+    struct IsPresentationHelper<InversePresentation<T>> : std::true_type {};
+
+    template <typename T>
+    struct IsInversePresentationHelper : std::false_type {};
+
+    template <typename T>
+    struct IsInversePresentationHelper<InversePresentation<T>>
+        : std::true_type {};
+  }  // namespace detail
+
+  template <typename T>
+  static constexpr bool IsInversePresentation
+      = detail::IsInversePresentationHelper<T>::value;
+
+  template <typename T>
+  static constexpr bool IsPresentation = detail::IsPresentationHelper<T>::value;
 }  // namespace libsemigroups
 
 #include "presentation.tpp"

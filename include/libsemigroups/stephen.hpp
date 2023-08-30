@@ -26,15 +26,17 @@
 #include <utility>      // for forward
 #include <vector>       // for vector
 
-#include "constants.hpp"             // for PositiveInfinity
-#include "digraph-with-sources.hpp"  // for DigraphWithSources
-#include "digraph.hpp"               // for ActionDigraph, Act...
-#include "int-range.hpp"             // for IntegralRange<>::v...
-#include "make-present.hpp"          // for make
-#include "present.hpp"               // for Presentation
-#include "runner.hpp"                // for Runner
-#include "todd-coxeter-digraph.hpp"  // for ToddCoxeterDigraph
-#include "types.hpp"                 // for word_type
+#include "constants.hpp"                // for PositiveInfinity
+#include "paths.hpp"                    // for const_pislo_iterator etc
+#include "presentation.hpp"             // for Presentation
+#include "runner.hpp"                   // for Runner
+#include "to-presentation.hpp"          // for make
+#include "types.hpp"                    // for word_type
+#include "word-graph-with-sources.hpp"  // for DigraphWithSources
+#include "word-graph.hpp"               // for WordGraph, Act...
+
+#include "detail/int-range.hpp"           // for IntegralRange<>::v...
+#include "detail/node-managed-graph.hpp"  // for NodeManagedGraph
 
 // TODO
 // * use presentation_type not PresentationType everywhere
@@ -44,6 +46,29 @@
 // * canonical_form (as per Howie's book)
 // * minimal rep
 namespace libsemigroups {
+
+  class StephenDigraph
+      : public detail::NodeManagedGraph<WordGraphWithSources<uint32_t>> {
+    using BaseDigraph       = WordGraphWithSources<uint32_t>;
+    using NodeManagedGraph_ = NodeManagedGraph<BaseDigraph>;
+
+   public:
+    using node_type = typename BaseDigraph::node_type;
+
+    StephenDigraph& init(Presentation<word_type> const& p) {
+      NodeManager<node_type>::clear();
+      BaseDigraph::init(NodeManager<node_type>::node_capacity(),
+                        p.alphabet().size());
+      return *this;
+    }
+
+    StephenDigraph& init(Presentation<word_type>&& p) {
+      NodeManager<node_type>::clear();
+      BaseDigraph::init(NodeManager<node_type>::node_capacity(),
+                        p.alphabet().size());
+      return *this;
+    }
+  };
 
   namespace v3 {
 
@@ -71,13 +96,15 @@ namespace libsemigroups {
     //! On this page we describe the functionality in ``libsemigroups``
     //! relating to Stephen's procedure for finitely presented semigroups.
     //! This class implements Stephen's procedure for (possibly) constructing
-    //! the word graph (ActionDigraph) corresponding to the left factors of a
+    //! the word graph (WordGraph) corresponding to the left factors of a
     //! word in a finitely presented semigroup. The algorithm implemented in
     //! this class is closely related to the Todd-Coxeter algorithm  (as
     //! implemented in \ref congruence::ToddCoxeter) and originates in
     //! [Applications of automata theory to presentations of monoids and
     //! inverse monoids](https://rb.gy/brsuvc) by J. B. Stephen.
 
+    // TODO split into StephenBase (no template params) and move everything not
+    // related to the presentation directly into the base class
     template <typename ConstructFrom = Presentation<word_type>>
     class Stephen : public Runner {
       template <typename T>
@@ -104,7 +131,7 @@ namespace libsemigroups {
 
       template <typename P>
       static constexpr auto& deref_if_necessary(P&& p) {
-        if constexpr (!IsPresentation<std::decay_t<P>>) {
+        if constexpr (IsStdSharedPtr<std::decay_t<P>>) {
           return *p;
         } else {
           return p;
@@ -116,22 +143,22 @@ namespace libsemigroups {
       using presentation_type = typename PresentationType<ConstructFrom>::type;
 
       //! The return type of the function \ref word_graph.
-      using digraph_type = ActionDigraph<size_t>;
+      using word_graph_type = WordGraph<uint32_t>;
 
-      //! The type of the nodes of a \ref digraph_type.
-      using node_type = digraph_type::node_type;
+      //! The type of the nodes of a \ref word_graph_type.
+      using node_type = word_graph_type::node_type;
 
      private:
-      using internal_digraph_type = ::libsemigroups::detail::ToddCoxeterDigraph<
-          DigraphWithSources<size_t>>;
-      using label_type = digraph_type::label_type;
+      // TODO remove this alias
+      using internal_word_graph_type = StephenDigraph;
+      using label_type               = word_graph_type::label_type;
 
       // Data members
-      bool                  _finished;
-      node_type             _accept_state;
-      construct_from_type   _presentation;
-      word_type             _word;
-      internal_digraph_type _word_graph;
+      bool                     _finished;
+      node_type                _accept_state;
+      construct_from_type      _presentation;
+      word_type                _word;
+      internal_word_graph_type _word_graph;
 
      public:
       //! Default constructor.
@@ -247,11 +274,11 @@ namespace libsemigroups {
       //!
       //! \param (None)
       //!
-      //! \returns A const reference to a \ref digraph_type.
+      //! \returns A const reference to a \ref word_graph_type.
       //!
       //! \exceptions
       //! \noexcept
-      digraph_type const& word_graph() const noexcept {
+      word_graph_type const& word_graph() const noexcept {
         return _word_graph;
       }
 
@@ -276,14 +303,14 @@ namespace libsemigroups {
       node_type accept_state();
 
      private:
-      void def_edge(internal_digraph_type&   wg,
-                    node_type                from,
-                    node_type                to,
-                    label_type               letter,
-                    presentation_type const& p) const;
+      void def_edge(internal_word_graph_type& wg,
+                    node_type                 from,
+                    node_type                 to,
+                    label_type                letter,
+                    presentation_type const&  p) const;
 
       std::pair<bool, node_type>
-      complete_path(internal_digraph_type&    wg,
+      complete_path(internal_word_graph_type& wg,
                     node_type                 c,
                     word_type::const_iterator first,
                     word_type::const_iterator last) noexcept;
@@ -320,13 +347,13 @@ namespace libsemigroups {
 namespace libsemigroups {
   namespace v3 {
     namespace stephen {
+      // TODO remove the template parameters here
       template <typename PresentationType>
-      using const_iterator_words_accepted = typename Stephen<
-          PresentationType>::digraph_type::const_pstislo_iterator;
+      using const_iterator_words_accepted = const_pstislo_iterator<uint32_t>;
 
+      // TODO remove the template parameters here
       template <typename PresentationType>
-      using const_iterator_left_factors = typename Stephen<
-          PresentationType>::digraph_type::const_pislo_iterator;
+      using const_iterator_left_factors = const_pislo_iterator<uint32_t>;
 
       template <typename PresentationType>
       bool accepts(Stephen<PresentationType>& s, word_type const& w);
@@ -339,15 +366,17 @@ namespace libsemigroups {
       cbegin_words_accepted(Stephen<PresentationType>& s,
                             size_t                     min = 0,
                             size_t max = POSITIVE_INFINITY) {
+        using node_type = typename Stephen<PresentationType>::node_type;
         s.run();
-        return s.word_graph().cbegin_pstislo(0, s.accept_state(), min, max);
+        return cbegin_pstislo(
+            s.word_graph(), node_type(0), s.accept_state(), min, max);
       }
 
       template <typename PresentationType>
       const_iterator_words_accepted<PresentationType>
       cend_words_accepted(Stephen<PresentationType>& s) {
         s.run();
-        return s.word_graph().cend_pstislo();
+        return cend_pstislo(s.word_graph());
       }
 
       template <typename PresentationType>
@@ -356,14 +385,14 @@ namespace libsemigroups {
                           size_t                     min = 0,
                           size_t                     max = POSITIVE_INFINITY) {
         s.run();
-        return s.word_graph().cbegin_pislo(0, min, max);
+        return cbegin_pislo(s.word_graph(), 0, min, max);
       }
 
       template <typename PresentationType>
       const_iterator_left_factors<PresentationType>
       cend_left_factors(Stephen<PresentationType>& s) {
         s.run();
-        return s.word_graph().cend_pislo();
+        return cend_pislo(s.word_graph());
       }
 
       template <typename PresentationType>
@@ -371,7 +400,9 @@ namespace libsemigroups {
                                         size_t                     min = 0,
                                         size_t max = POSITIVE_INFINITY) {
         s.run();
-        return s.word_graph().number_of_paths(0, s.accept_state(), min, max);
+        using node_type = typename Stephen<PresentationType>::node_type;
+        return number_of_paths(
+            s.word_graph(), node_type(0), s.accept_state(), min, max);
       }
 
       template <typename PresentationType>
@@ -379,7 +410,7 @@ namespace libsemigroups {
                                       size_t                     min = 0,
                                       size_t max = POSITIVE_INFINITY) {
         s.run();
-        return s.word_graph().number_of_paths(0, min, max);
+        return number_of_paths(s.word_graph(), 0, min, max);
       }
 
     }  // namespace stephen
@@ -412,15 +443,13 @@ namespace libsemigroups {
   namespace stephen {
     //! The return type of \ref cbegin_words_accepted and \ref
     //! cend_words_accepted. This is the same as
-    //! \ref ActionDigraph::const_pstislo_iterator.
-    using const_iterator_words_accepted
-        = Stephen::digraph_type::const_pstislo_iterator;
+    //! \ref WordGraph::const_pstislo_iterator.
+    using const_iterator_words_accepted = const_pstislo_iterator<uint32_t>;
 
     //! The return type of \ref cbegin_left_factors and \ref
     //! cend_left_factors. This is the same as \ref
-    //! ActionDigraph::const_pislo_iterator.
-    using const_iterator_left_factors
-        = Stephen::digraph_type::const_pislo_iterator;
+    //! WordGraph::const_pislo_iterator.
+    using const_iterator_left_factors = const_pislo_iterator<uint32_t>;
 
     //! Check if a word is equivalent to Stephen::word.
     //!
@@ -489,7 +518,7 @@ namespace libsemigroups {
     //! a finitely presented semigroup is undecidable in general, and this
     //! function may never terminate.
     //!
-    //! \sa ActionDigraph::cbegin_pstislo for more information about the
+    //! \sa WordGraph::cbegin_pstislo for more information about the
     //! iterators returned by this function.
     const_iterator_words_accepted cbegin_words_accepted(Stephen& s,
                                                         size_t   min = 0,
@@ -528,7 +557,7 @@ namespace libsemigroups {
     //! another word in a finitely presented semigroup is undecidable in
     //! general, and this function may never terminate.
     //!
-    //! \sa ActionDigraph::cbegin_pislo for more information about the
+    //! \sa WordGraph::cbegin_pislo for more information about the
     //! iterators returned by this function.
     // Not noexcept because cbegin_pislo isn't
     const_iterator_left_factors cbegin_left_factors(Stephen& s,
@@ -567,7 +596,7 @@ namespace libsemigroups {
     //! the construction of \p s or with Stephen::init.
     //!
     //!
-    //! \sa ActionDigraph::number_of_paths.
+    //! \sa WordGraph::number_of_paths.
     // Not noexcept because number_of_paths isn't
     uint64_t number_of_words_accepted(Stephen& s,
                                       size_t   min = 0,
@@ -594,7 +623,7 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if no presentation was set at
     //! the construction of \p s or with Stephen::init.
     //!
-    //! \sa ActionDigraph::number_of_paths.
+    //! \sa WordGraph::number_of_paths.
     //!
     //! \throws LibsemigroupsException if no presentation was set at
     //! construction or with Stephen::init.

@@ -854,6 +854,39 @@ namespace libsemigroups {
       return p.rules.cend();
     }
 
+    template <typename T>
+    inline tril try_equal_to(Presentation<std::string>& p,
+                             std::string const&         lhs,
+                             std::string const&         rhs,
+                             T t = std::chrono::seconds(1)) {
+      constexpr static congruence_kind twosided = congruence_kind::twosided;
+
+      KnuthBendix         kb(twosided, p);
+      std::string         lphbt = p.alphabet();
+      std::vector<size_t> perm(lphbt.size(), 0);
+      std::iota(perm.begin(), perm.end(), 0);
+
+      do {
+        detail::apply_permutation(lphbt, perm);
+
+        p.alphabet(lphbt);
+        p.validate();
+
+        kb.init(twosided, p);
+        if (kb.rewrite(lhs) == kb.rewrite(rhs)) {
+          return tril::TRUE;
+        }
+        kb.run_for(t);
+        if (kb.rewrite(lhs) == kb.rewrite(rhs)) {
+          return tril::TRUE;
+        } else if (kb.finished()) {
+          return tril::FALSE;
+        }
+
+      } while (std::next_permutation(perm.begin(), perm.end()));
+      return tril::unknown;
+    }
+
     //! Return an iterator pointing at the left hand side of a redundant rule.
     //!
     //! This function is defined in ``knuth-bendix.hpp``.

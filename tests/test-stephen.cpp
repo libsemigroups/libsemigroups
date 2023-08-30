@@ -54,7 +54,7 @@ namespace libsemigroups {
       s.set_word({0}).run();
       REQUIRE(s.word_graph().number_of_nodes() == 2);
       REQUIRE(s.word_graph()
-              == to_word_graph<size_t>(2, {{1, UNDEFINED}, {UNDEFINED, 1}}));
+              == to_word_graph<uint32_t>(2, {{1, UNDEFINED}, {UNDEFINED, 1}}));
       REQUIRE(stephen::number_of_words_accepted(s) == POSITIVE_INFINITY);
       {
         auto first = stephen::cbegin_words_accepted(s);

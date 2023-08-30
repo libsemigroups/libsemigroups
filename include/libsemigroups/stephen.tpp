@@ -50,10 +50,10 @@ namespace libsemigroups {
     template <typename ConstructFrom>
     template <typename P>
     void Stephen<ConstructFrom>::init_impl(P&& p, lvalue_tag) {
-      if constexpr (IsPresentation<construct_from_type>) {
-        init_impl(std::move(make<construct_from_type>(p)), non_lvalue_tag());
-      } else {
+      if constexpr (IsStdSharedPtr<construct_from_type>) {
         init_impl(std::move(construct_from_type(p)), non_lvalue_tag());
+      } else {
+        init_impl(std::move(to_presentation<word_type>(p)), non_lvalue_tag());
       }
     }
 
@@ -97,11 +97,11 @@ namespace libsemigroups {
     typename Stephen<ConstructFrom>::node_type
     Stephen<ConstructFrom>::accept_state() {
       if (_accept_state == UNDEFINED) {
-        using action_digraph_helper::last_node_on_path_nc;
+        using word_graph::last_node_on_path_no_checks;
         run();
-        _accept_state
-            = last_node_on_path_nc(_word_graph, 0, _word.cbegin(), _word.cend())
-                  .first;
+        _accept_state = last_node_on_path_no_checks(
+                            _word_graph, 0, _word.cbegin(), _word.cend())
+                            .first;
       }
       return _accept_state;
     }
@@ -111,34 +111,34 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////
 
     template <typename ConstructFrom>
-    void Stephen<ConstructFrom>::def_edge(internal_digraph_type&   wg,
-                                          node_type                from,
-                                          node_type                to,
-                                          label_type               letter,
-                                          presentation_type const& p) const {
+    void Stephen<ConstructFrom>::def_edge(internal_word_graph_type& wg,
+                                          node_type                 from,
+                                          node_type                 to,
+                                          label_type                letter,
+                                          presentation_type const&  p) const {
       if constexpr (!IsInversePresentation<presentation_type>) {
-        wg.add_edge_nc(from, to, letter);
+        wg.set_target_no_checks(from, to, letter);
       } else {
-        wg.add_edge_nc(from, to, letter);
+        wg.set_target_no_checks(from, to, letter);
         // convert l (which is an index)
         // -> actual letter
         // -> inverse of letter
         // -> index of inverse of letter
         auto ll             = p.index(p.inverse(p.letter(letter)));
-        auto inverse_target = wg.neighbor(to, ll);
+        auto inverse_target = wg.target_no_checks(to, ll);
         if (inverse_target != UNDEFINED && inverse_target != from) {
-          wg.coincide_nodes(from, inverse_target);
-          wg.process_coincidences();
+          wg.merge_nodes_no_checks(from, inverse_target);
+          wg.process_coincidences<DoNotRegisterDefs>();
           return;
         }
-        wg.add_edge_nc(to, from, ll);
+        wg.set_target_no_checks(to, from, ll);
       }
     }
 
     template <typename ConstructFrom>
     std::pair<bool, typename Stephen<ConstructFrom>::node_type>
     Stephen<ConstructFrom>::complete_path(
-        internal_digraph_type&    wg,
+        internal_word_graph_type& wg,
         node_type                 c,
         word_type::const_iterator first,
         word_type::const_iterator last) noexcept {
@@ -148,10 +148,10 @@ namespace libsemigroups {
       LIBSEMIGROUPS_ASSERT(first < last);
       word_type::const_iterator it;
       std::tie(c, it)
-          = action_digraph_helper::last_node_on_path_nc(wg, c, first, last);
+          = word_graph::last_node_on_path_no_checks(wg, c, first, last);
       bool result = false;
       for (; it < last; ++it) {
-        node_type d = wg.unsafe_neighbor(c, *it);
+        node_type d = wg.target_no_checks(c, *it);
         if (d == UNDEFINED) {
           d = wg.new_node();
           def_edge(wg, c, d, *it, presentation());
@@ -215,8 +215,9 @@ namespace libsemigroups {
 
     template <typename ConstructFrom>
     void Stephen<ConstructFrom>::standardize() {
-      digraph_with_sources::standardize(_word_graph);
-      _word_graph.shrink_to_fit(_word_graph.number_of_nodes_active());
+      word_graph::standardize(_word_graph);
+      _word_graph.induced_subgraph_no_checks(
+          0, _word_graph.number_of_nodes_active());
     }
 
     template <typename ConstructFrom>
@@ -247,7 +248,7 @@ namespace libsemigroups {
             node_type                 u_end;
             word_type::const_iterator rit;
             bool                      did_def = false;
-            std::tie(u_end, rit) = action_digraph_helper::last_node_on_path_nc(
+            std::tie(u_end, rit) = word_graph::last_node_on_path_no_checks(
                 _word_graph, current, it->cbegin(), it->cend());
             node_type c, v_end;
             if (rit == it->cend()) {
@@ -259,7 +260,7 @@ namespace libsemigroups {
               } else {
                 std::tie(did_def, c) = complete_path(
                     _word_graph, current, it->cbegin(), it->cend() - 1);
-                v_end = _word_graph.unsafe_neighbor(c, it->back());
+                v_end = _word_graph.target_no_checks(c, it->back());
               }
               if (v_end == UNDEFINED) {
                 LIBSEMIGROUPS_ASSERT(!it->empty());
@@ -267,15 +268,14 @@ namespace libsemigroups {
                 def_edge(_word_graph, c, u_end, it->back(), presentation());
               } else if (u_end != v_end) {
                 did_def = true;
-                _word_graph.coincide_nodes(u_end, v_end);
-                _word_graph.process_coincidences();
+                _word_graph.merge_nodes_no_checks(u_end, v_end);
+                _word_graph.process_coincidences<DoNotRegisterDefs>();
               }
               --it;
             } else {
               ++it;
-              std::tie(v_end, rit)
-                  = action_digraph_helper::last_node_on_path_nc(
-                      _word_graph, current, it->cbegin(), it->cend());
+              std::tie(v_end, rit) = word_graph::last_node_on_path_no_checks(
+                  _word_graph, current, it->cbegin(), it->cend());
               if (rit == it->cend()) {
                 --it;
                 if (it->empty()) {
@@ -285,7 +285,7 @@ namespace libsemigroups {
                 } else {
                   std::tie(did_def, c) = complete_path(
                       _word_graph, current, it->cbegin(), it->cend() - 1);
-                  u_end = _word_graph.unsafe_neighbor(c, it->back());
+                  u_end = _word_graph.target_no_checks(c, it->back());
                 }
                 if (u_end == UNDEFINED) {
                   LIBSEMIGROUPS_ASSERT(!it->empty());
@@ -293,8 +293,8 @@ namespace libsemigroups {
                   def_edge(_word_graph, c, v_end, it->back(), presentation());
                 } else if (u_end != v_end) {
                   did_def = true;
-                  _word_graph.coincide_nodes(u_end, v_end);
-                  _word_graph.process_coincidences();
+                  _word_graph.merge_nodes_no_checks(u_end, v_end);
+                  _word_graph.process_coincidences<DoNotRegisterDefs>();
                 }
               } else {
                 --it;
@@ -316,7 +316,7 @@ namespace libsemigroups {
 
       template <typename ConstructFrom>
       bool accepts(Stephen<ConstructFrom>& s, word_type const& w) {
-        using action_digraph_helper::follow_path;
+        using word_graph::follow_path;
         s.run();
         LIBSEMIGROUPS_ASSERT(s.accept_state() != UNDEFINED);
         return s.accept_state() == follow_path(s.word_graph(), 0, w);
@@ -324,7 +324,7 @@ namespace libsemigroups {
 
       template <typename ConstructFrom>
       bool is_left_factor(Stephen<ConstructFrom>& s, word_type const& w) {
-        using action_digraph_helper::last_node_on_path;
+        using word_graph::last_node_on_path;
         s.run();
         return last_node_on_path(s.word_graph(), 0, w.cbegin(), w.cend()).second
                == w.cend();
