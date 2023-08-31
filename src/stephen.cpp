@@ -129,15 +129,18 @@ namespace libsemigroups {
   }
 
   void Stephen::reset() noexcept {
+    _initted      = false;  // HERE
     _finished     = false;
     _accept_state = UNDEFINED;
   }
 
   void Stephen::run_impl() {
     auto start_time = std::chrono::high_resolution_clock::now();
-    validate();  // throws if no presentation is defined
-    _word_graph.init(presentation());
-    std::ignore = _word_graph.complete_path(0, _word.cbegin(), _word.cend());
+    if (!initted()) {
+      validate();  // throws if no presentation is defined
+      _word_graph.init(presentation());
+      std::ignore = _word_graph.complete_path(0, _word.cbegin(), _word.cend());
+    }
     node_type& current     = _word_graph.cursor();
     auto const rules_begin = presentation().rules.cbegin();
     auto const rules_end   = presentation().rules.cend();
@@ -156,10 +159,22 @@ namespace libsemigroups {
           node_type c;
           if (rit == it->cend()) {
             ++it;
-            std::tie(did_def, c) = _word_graph.complete_path(
-                current, it->cbegin(), it->cend() - 1);
-            node_type v_end = _word_graph.target_no_checks(c, it->back());
+            if (it->empty()) {
+              // TODO move this logic into complete_path
+              did_def = false;
+              c       = current;
+            } else {
+              std::tie(did_def, c) = _word_graph.complete_path(
+                  current, it->cbegin(), it->cend() - 1);
+            }
+            node_type v_end;
+            if (it->empty()) {
+              v_end = c;
+            } else {
+              v_end = _word_graph.target_no_checks(c, it->back());
+            }
             if (v_end == UNDEFINED) {
+              LIBSEMIGROUPS_ASSERT(!it->empty());
               did_def = true;
               _word_graph.set_target_no_checks(c, it->back(), u_end);
             } else if (u_end != v_end) {
@@ -175,9 +190,14 @@ namespace libsemigroups {
                 _word_graph, current, it->cbegin(), it->cend());
             if (rit == it->cend()) {
               --it;
-              c = _word_graph
-                      .complete_path(current, it->cbegin(), it->cend() - 1)
-                      .second;
+              if (it->empty()) {
+                // TODO move this logic into complete_path
+                continue;
+              } else {
+                c = _word_graph
+                        .complete_path(current, it->cbegin(), it->cend() - 1)
+                        .second;
+              }
               u_end = _word_graph.target_no_checks(c, it->back());
               LIBSEMIGROUPS_ASSERT(u_end == UNDEFINED);
               _word_graph.set_target_no_checks(c, it->back(), v_end);

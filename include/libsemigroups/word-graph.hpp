@@ -1025,6 +1025,12 @@ namespace libsemigroups {
                                 Iterator                first,
                                 Iterator                last) noexcept;
 
+    template <typename Node1, typename Node2>
+    std::pair<Node1, word_type::const_iterator>
+    last_node_on_path(WordGraph<Node1> const& wg,
+                      Node2                   from,
+                      word_type const&        w);
+
     //! Returns the last node on the path labelled by a word and an iterator to
     //! the position in the word reached.
     //!

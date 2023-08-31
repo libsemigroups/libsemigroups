@@ -21,7 +21,7 @@
 
 #include "libsemigroups/runner.hpp"
 
-#include "libsemigroups/detail/report.hpp"  // for REPORT_DEFAULT
+#include "libsemigroups/detail/report.hpp"  // for report_default
 #include "libsemigroups/detail/timer.hpp"   // for Timer::string
 
 namespace libsemigroups {
@@ -113,9 +113,9 @@ namespace libsemigroups {
   void Runner::run_for(std::chrono::nanoseconds val) {
     if (!finished() && !dead()) {
       if (val != FOREVER) {
-        REPORT_DEFAULT("running for approx. {}\n", detail::Timer::string(val));
+        report_default("running for approx. {}\n", detail::Timer::string(val));
       } else {
-        REPORT_DEFAULT("running until finished, with no time limit\n");
+        report_default("running until finished, with no time limit\n");
         run();
         return;
       }
@@ -139,15 +139,15 @@ namespace libsemigroups {
         set_state(state::not_running);
       }
     } else {
-      REPORT_DEFAULT("already finished, not running\n");
+      report_default("already finished, not running\n");
     }
   }
 
   void Runner::report_why_we_stopped() const {
     if (dead()) {
-      REPORT_DEFAULT("killed!\n");
+      report_default("killed!\n");
     } else if (timed_out()) {
-      REPORT_DEFAULT("timed out!\n");
+      report_default("timed out!\n");
     }
     // Checking finished can be expensive, so we don't
   }
