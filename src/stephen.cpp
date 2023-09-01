@@ -129,18 +129,18 @@ namespace libsemigroups {
   }
 
   void Stephen::reset() noexcept {
-    _initted      = false;  // HERE
+    // _initted      = false;  // HERE
     _finished     = false;
     _accept_state = UNDEFINED;
   }
 
   void Stephen::run_impl() {
     auto start_time = std::chrono::high_resolution_clock::now();
-    if (!initted()) {
-      validate();  // throws if no presentation is defined
-      _word_graph.init(presentation());
-      std::ignore = _word_graph.complete_path(0, _word.cbegin(), _word.cend());
-    }
+    // if (!initted()) {
+    validate();  // throws if no presentation is defined
+    _word_graph.init(presentation());
+    std::ignore = _word_graph.complete_path(0, _word.cbegin(), _word.cend());
+    // }
     node_type& current     = _word_graph.cursor();
     auto const rules_begin = presentation().rules.cbegin();
     auto const rules_end   = presentation().rules.cend();
