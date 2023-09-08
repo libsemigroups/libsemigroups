@@ -796,6 +796,14 @@ namespace libsemigroups {
       }
     }
 
+    template <typename Node1, typename Node2>
+    std::pair<Node1, word_type::const_iterator>
+    last_node_on_path(WordGraph<Node1> const& wg,
+                      Node2                   from,
+                      word_type const&        w) {
+      return last_node_on_path(wg, from, w.cbegin(), w.cend());
+    }
+
   }  // namespace word_graph
 
   //////////////////////////////////////////////////////////////////////////////

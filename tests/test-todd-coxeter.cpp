@@ -4559,9 +4559,10 @@ namespace libsemigroups {
     REQUIRE((todd_coxeter::normal_forms(tc) | random()).get() == word_type());
   }
 
+  // Takes nearly 13 hours to complete
   LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "045",
-                          "Whyte's 4-relation full transf monoid 8",
+                          "Whyte's 8-generator 4-relation full transf monoid 8",
                           "[todd-coxeter][extreme]") {
     auto                    rg = ReportGuard(true);
     Presentation<word_type> p;
@@ -4583,7 +4584,7 @@ namespace libsemigroups {
         5653_w,       3565_w,       5654_w,      4565_w,     6061_w,   1606_w,
         6062_w,       2606_w,       6063_w,      3606_w,     6064_w,   4606_w,
         6065_w,       5606_w,       071654321_w, 16543217_w, 217121_w, 17171_w,
-        7010270102_w, 0102720107_w, 7010701_w,   1070170_w};
+        7010270102_w, 0102720107_w, 7010701_w,   1070170_w,  1217_w,   7121_w};
 
     p.alphabet_from_rules();
 
@@ -4598,28 +4599,28 @@ namespace libsemigroups {
     presentation::balance(p, 0123456_w, 0123456_w);
     REQUIRE(p.rules
             == std::vector<word_type>(
-                {00_w,     {},      11_w,         {},           22_w,
-                 {},       33_w,    {},           44_w,         {},
-                 55_w,     {},      66_w,         {},           101_w,
-                 010_w,    212_w,   121_w,        323_w,        232_w,
-                 434_w,    343_w,   545_w,        454_w,        656_w,
-                 565_w,    606_w,   060_w,        2010_w,       0102_w,
-                 3010_w,   0103_w,  4010_w,       0104_w,       5010_w,
-                 0105_w,   6010_w,  0106_w,       1210_w,       0121_w,
-                 3121_w,   1213_w,  4121_w,       1214_w,       5121_w,
-                 1215_w,   6121_w,  1216_w,       2320_w,       0232_w,
-                 2321_w,   1232_w,  4232_w,       2324_w,       5232_w,
-                 2325_w,   6232_w,  2326_w,       3430_w,       0343_w,
-                 3431_w,   1343_w,  3432_w,       2343_w,       5343_w,
-                 3435_w,   6343_w,  3436_w,       4540_w,       0454_w,
-                 4541_w,   1454_w,  4542_w,       2454_w,       4543_w,
-                 3454_w,   6454_w,  4546_w,       5650_w,       0565_w,
-                 5651_w,   1565_w,  5652_w,       2565_w,       5653_w,
-                 3565_w,   5654_w,  4565_w,       6061_w,       1606_w,
-                 6062_w,   2606_w,  6063_w,       3606_w,       6064_w,
-                 4606_w,   6065_w,  5606_w,       071654321_w,  16543217_w,
-                 217121_w, 17171_w, 7010270102_w, 0102720107_w, 7010701_w,
-                 1070170_w}));
+                {00_w,      {},      11_w,         {},           22_w,
+                 {},        33_w,    {},           44_w,         {},
+                 55_w,      {},      66_w,         {},           101_w,
+                 010_w,     212_w,   121_w,        323_w,        232_w,
+                 434_w,     343_w,   545_w,        454_w,        656_w,
+                 565_w,     606_w,   060_w,        2010_w,       0102_w,
+                 3010_w,    0103_w,  4010_w,       0104_w,       5010_w,
+                 0105_w,    6010_w,  0106_w,       1210_w,       0121_w,
+                 3121_w,    1213_w,  4121_w,       1214_w,       5121_w,
+                 1215_w,    6121_w,  1216_w,       2320_w,       0232_w,
+                 2321_w,    1232_w,  4232_w,       2324_w,       5232_w,
+                 2325_w,    6232_w,  2326_w,       3430_w,       0343_w,
+                 3431_w,    1343_w,  3432_w,       2343_w,       5343_w,
+                 3435_w,    6343_w,  3436_w,       4540_w,       0454_w,
+                 4541_w,    1454_w,  4542_w,       2454_w,       4543_w,
+                 3454_w,    6454_w,  4546_w,       5650_w,       0565_w,
+                 5651_w,    1565_w,  5652_w,       2565_w,       5653_w,
+                 3565_w,    5654_w,  4565_w,       6061_w,       1606_w,
+                 6062_w,    2606_w,  6063_w,       3606_w,       6064_w,
+                 4606_w,    6065_w,  5606_w,       071654321_w,  16543217_w,
+                 217121_w,  17171_w, 7010270102_w, 0102720107_w, 7010701_w,
+                 1070170_w, 7121_w,  1217_w}));
     // REQUIRE(presentation::length(p) == 398);
     // REQUIRE(presentation::longest_subword_reducing_length(p) == 010_w);
     // presentation::replace_word_with_new_generator(p, 010_w);
@@ -4627,6 +4628,17 @@ namespace libsemigroups {
     // presentation::greedy_reduce_length(p);
     // presentation::reduce_complements(p);
     // REQUIRE(presentation::length(p) == 253);
+
+    {
+      ToddCoxeter tc(twosided, p);
+      tc.strategy(options::strategy::hlt)
+          .lookahead_extent(options::lookahead_extent::full)
+          .lookahead_growth_factor(1.01)
+          .lookahead_next(32'000'000)
+          .lookahead_min(24'000'000)
+          .lower_bound(16'777'216);
+      REQUIRE(tc.number_of_classes() == 0);
+    }
 
     presentation::add_rule(p, 07_w, 7_w);
     presentation::add_rule(p, 70_w, 7_w);
@@ -4658,5 +4670,81 @@ namespace libsemigroups {
       tc.add_pair(21_w, 2_w);
       REQUIRE(tc.number_of_classes() == 40'321);
     }
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
+                          "066",
+                          "Whyte's 2-generator 4-relation full transf monoid 8",
+                          "[todd-coxeter][extreme]") {
+    auto                    rg = ReportGuard(true);
+    Presentation<word_type> p;
+    p.rules = {00_w,
+               {},
+               11111111_w,
+               {},
+               01010101010101_w,
+               {},
+               011111110101111111010111111101_w,
+               {},
+               01111110110111111011_w,
+               {},
+               01111101110111110111_w,
+               {},
+               01111011110111101111_w,
+               {},
+               01110111110111011111_w,
+               {},
+               01101111110110111111_w,
+               {},
+               010111111101211111110101111111_w,
+               201111111010201111111010_w,
+               1111110112111111011_w,
+               201111111010201111111010_w,
+               0111111010101111110101201111110101011111101012_w,
+               2011111101010111111010120111111010101111110101_w,
+               0111111101211111110102_w,
+               21111111012111111101_w};
+    p.alphabet_from_rules();
+    REQUIRE(presentation::length(p) == 385);
+    REQUIRE(presentation::longest_subword_reducing_length(p) == 11111101_w);
+    presentation::replace_word_with_new_generator(p, 11111101_w);
+    REQUIRE(presentation::length(p) == 212);
+    // REQUIRE(presentation::longest_subword_reducing_length(p) == 01_w);
+    // presentation::replace_word_with_new_generator(p, 01_w);
+    // REQUIRE(presentation::length(p) == 174);
+
+    ToddCoxeter tc(twosided, p);
+
+    tc.strategy(options::strategy::felsch)
+        .lookahead_extent(options::lookahead_extent::partial)
+        .lookahead_growth_factor(1.03)
+        .lookahead_next(16'000'000);
+    REQUIRE(tc.number_of_classes() == 0);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE(
+      "ToddCoxeter",
+      "085",
+      "minimal E-disjunctive idempotent pure right congruence",
+      "[todd-coxeter][extreme]") {
+    using PPerm = LeastPPerm<5>;
+    FroidurePin<PPerm> S;
+    S.add_generator(PPerm({1, 3, 4}, {0, 4, 3}));
+    S.add_generator(PPerm({1, 3, 4}, {2, 4, 3}));
+    S.add_generator(PPerm({0, 3, 4}, {1, 4, 3}));
+    S.add_generator(PPerm({2, 3, 4}, {1, 4, 3}));
+
+    REQUIRE(S.size() == 11);
+    auto p = to_presentation<std::string>(S);  // TODO should use better letters
+    presentation::change_alphabet(p, "xyXY");
+    REQUIRE(p.alphabet() == "xyXY");
+    auto it = knuth_bendix::redundant_rule(p, std::chrono::milliseconds(100));
+    while (it != p.rules.end()) {
+      std::cout << std::endl
+                << "REMOVING " << *it << " = " << *(it + 1) << std::endl;
+      p.rules.erase(it, it + 2);
+      it = knuth_bendix::redundant_rule(p, std::chrono::milliseconds(100));
+    }
+    REQUIRE(p.rules == std::vector<std::string>());
   }
 }  // namespace libsemigroups

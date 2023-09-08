@@ -21,7 +21,7 @@
 
 #include "libsemigroups/runner.hpp"
 
-#include "libsemigroups/detail/report.hpp"  // for REPORT_DEFAULT
+#include "libsemigroups/detail/report.hpp"  // for report_default
 #include "libsemigroups/detail/timer.hpp"   // for Timer::string
 
 namespace libsemigroups {
@@ -145,9 +145,9 @@ namespace libsemigroups {
 
   void Runner::report_why_we_stopped() const {
     if (dead()) {
-      REPORT_DEFAULT("killed!\n");
+      report_default("killed!\n");
     } else if (timed_out()) {
-      REPORT_DEFAULT("timed out!\n");
+      report_default("timed out!\n");
     }
     // Checking finished can be expensive, so we don't
   }
