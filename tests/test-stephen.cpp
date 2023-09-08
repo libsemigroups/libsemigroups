@@ -1,6 +1,6 @@
 //
 // libsemigroups - C++ library for semigroups and monoids
-// Copyright (C) 2022 James D. Mitchell
+// Copyright (C) 2022-2023 James D. Mitchell
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -17,6 +17,7 @@
 //
 
 #define CATCH_CONFIG_ENABLE_ALL_STRINGMAKERS
+// TODO use _w literals
 
 #include <cstddef>   // for size_t
 #include <iostream>  // for cout
@@ -163,11 +164,11 @@ namespace libsemigroups {
     auto                    rg = ReportGuard(true);
     Presentation<word_type> p;
     p.alphabet(2);
-    presentation::add_rule(p, {0, 0, 0}, {0});
-    presentation::add_rule(p, {1, 1, 1}, {1});
-    presentation::add_rule(p, {0, 1, 0, 1}, {0, 0});
+    presentation::add_rule(p, 000_w, 0_w);
+    presentation::add_rule(p, 111_w, 1_w);
+    presentation::add_rule(p, 0101_w, 00_w);
     Stephen s(p);
-    s.set_word({1, 1, 0, 1}).run();
+    s.set_word(1101_w).run();
     REQUIRE(s.word_graph().number_of_nodes() == 7);
     REQUIRE(s.word_graph()
             == to_word_graph<size_t>(7,
@@ -180,38 +181,38 @@ namespace libsemigroups {
                                       {5, 4}}));
     REQUIRE(stephen::number_of_words_accepted(s) == POSITIVE_INFINITY);
 
-    word_type w = {1, 1, 0, 1};
+    word_type w = 1101_w;
 
     REQUIRE(word_graph::last_node_on_path_no_checks(
                 s.word_graph(), 0, w.begin(), w.end())
                 .first
             == 5);
-    w = {1, 1, 0, 0, 1, 0};
+    w = 110010_w;
     REQUIRE(word_graph::last_node_on_path_no_checks(
                 s.word_graph(), 0, w.begin(), w.end())
                 .first
             == 5);
 
-    REQUIRE(stephen::accepts(s, {1, 1, 0, 0, 1, 0}));
-    REQUIRE(stephen::accepts(s, {1, 1, 0, 0, 1, 0}));
+    REQUIRE(stephen::accepts(s, 110010_w));
+    REQUIRE(stephen::accepts(s, 110010_w));
     REQUIRE(!stephen::accepts(s, {}));
-    REQUIRE(!stephen::accepts(s, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0}));
-    REQUIRE(!stephen::accepts(s, {1, 1, 1}));
+    REQUIRE(!stephen::accepts(s, 0000000000_w));
+    REQUIRE(!stephen::accepts(s, 111_w));
     {
       auto first = stephen::cbegin_words_accepted(s);
       auto last  = stephen::cbegin_words_accepted(s);
       std::advance(last, 10);
       REQUIRE(std::vector<word_type>(first, last)
-              == std::vector<word_type>({{1, 1, 0, 1},
-                                         {1, 1, 0, 0, 0, 1},
-                                         {1, 1, 0, 0, 1, 0},
-                                         {1, 1, 0, 1, 0, 0},
-                                         {1, 1, 0, 1, 1, 1},
-                                         {1, 1, 1, 1, 0, 1},
-                                         {1, 1, 0, 0, 0, 0, 0, 1},
-                                         {1, 1, 0, 0, 0, 0, 1, 0},
-                                         {1, 1, 0, 0, 0, 1, 0, 0},
-                                         {1, 1, 0, 0, 0, 1, 1, 1}}));
+              == std::vector<word_type>({1101_w,
+                                         110001_w,
+                                         110010_w,
+                                         110100_w,
+                                         110111_w,
+                                         111101_w,
+                                         11000001_w,
+                                         11000010_w,
+                                         11000100_w,
+                                         11000111_w}));
     }
     {
       auto first = stephen::cbegin_left_factors(s);
@@ -219,31 +220,31 @@ namespace libsemigroups {
       std::advance(last, 10);
       REQUIRE(std::vector<word_type>(first, last)
               == std::vector<word_type>({{},
-                                         {1},
-                                         {1, 1},
-                                         {1, 1, 0},
-                                         {1, 1, 1},
-                                         {1, 1, 0, 0},
-                                         {1, 1, 0, 1},
-                                         {1, 1, 1, 1},
-                                         {1, 1, 0, 0, 0},
-                                         {1, 1, 0, 0, 1}}));
+                                         1_w,
+                                         11_w,
+                                         110_w,
+                                         111_w,
+                                         1100_w,
+                                         1101_w,
+                                         1111_w,
+                                         11000_w,
+                                         11001_w}));
       REQUIRE(stephen::number_of_left_factors(s) == POSITIVE_INFINITY);
       std::for_each(first, last, [&s](auto const& w) {
         return stephen::is_left_factor(s, w);
       });
     }
 
-    s.set_word({0, 0}).run();
+    s.set_word(00_w).run();
     REQUIRE(s.word_graph().number_of_nodes() == 5);
     REQUIRE(s.word_graph()
             == to_word_graph<size_t>(
                 5, {{1, UNDEFINED}, {2, 3}, {1, 4}, {4, 1}, {3, 2}}));
 
     p.rules.clear();
-    presentation::add_rule(p, {0, 0, 0}, {0});
-    presentation::add_rule(p, {1, 1, 1}, {1});
-    s.init(p).set_word({0, 0}).run();
+    presentation::add_rule(p, 000_w, 0_w);
+    presentation::add_rule(p, 111_w, 1_w);
+    s.init(p).set_word(00_w).run();
     REQUIRE(s.word_graph().number_of_nodes() == 3);
     REQUIRE(s.word_graph()
             == to_word_graph<size_t>(

@@ -110,6 +110,8 @@ namespace libsemigroups {
     // Private Member Functions
     ////////////////////////////////////////////////////////////////////////
 
+    // TODO rename to set_target_
+    // TODO reorder args
     template <typename ConstructFrom>
     void Stephen<ConstructFrom>::def_edge(internal_word_graph_type& wg,
                                           node_type                 from,
@@ -117,9 +119,9 @@ namespace libsemigroups {
                                           label_type                letter,
                                           presentation_type const&  p) const {
       if constexpr (!IsInversePresentation<presentation_type>) {
-        wg.set_target_no_checks(from, to, letter);
+        wg.set_target_no_checks(from, letter, to);
       } else {
-        wg.set_target_no_checks(from, to, letter);
+        wg.set_target_no_checks(from, letter, to);
         // convert l (which is an index)
         // -> actual letter
         // -> inverse of letter
@@ -131,7 +133,7 @@ namespace libsemigroups {
           wg.process_coincidences<DoNotRegisterDefs>();
           return;
         }
-        wg.set_target_no_checks(to, from, ll);
+        wg.set_target_no_checks(to, ll, from);
       }
     }
 
@@ -317,16 +319,22 @@ namespace libsemigroups {
       template <typename ConstructFrom>
       bool accepts(Stephen<ConstructFrom>& s, word_type const& w) {
         using word_graph::follow_path;
+        using node_type =
+            typename Stephen<ConstructFrom>::word_graph_type::node_type;
         s.run();
         LIBSEMIGROUPS_ASSERT(s.accept_state() != UNDEFINED);
-        return s.accept_state() == follow_path(s.word_graph(), 0, w);
+        return s.accept_state() == follow_path(s.word_graph(), node_type(0), w);
       }
 
       template <typename ConstructFrom>
       bool is_left_factor(Stephen<ConstructFrom>& s, word_type const& w) {
         using word_graph::last_node_on_path;
+        using node_type =
+            typename Stephen<ConstructFrom>::word_graph_type::node_type;
         s.run();
-        return last_node_on_path(s.word_graph(), 0, w.cbegin(), w.cend()).second
+        return last_node_on_path(
+                   s.word_graph(), node_type(0), w.cbegin(), w.cend())
+                   .second
                == w.cend();
       }
     }  // namespace stephen

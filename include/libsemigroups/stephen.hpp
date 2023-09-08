@@ -86,7 +86,7 @@ namespace libsemigroups {
           : std::true_type {};
 
     }  // namespace detail
-       //
+
     template <typename T>
     static constexpr bool IsStdSharedPtr
         = detail::IsStdSharedPtrHelper<T>::value;
