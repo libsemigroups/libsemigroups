@@ -51,7 +51,8 @@
 namespace libsemigroups {
   using namespace literals;
   namespace {
-    void check_000(Stephen& s) {
+    template <typename PresentationType>
+    void check_000(Stephen<PresentationType>& s) {
       s.set_word({0}).run();
       REQUIRE(s.word_graph().number_of_nodes() == 2);
       REQUIRE(s.word_graph()
@@ -62,16 +63,16 @@ namespace libsemigroups {
         auto last  = stephen::cbegin_words_accepted(s);
         std::advance(last, 10);
         REQUIRE(std::vector<word_type>(first, last)
-                == std::vector<word_type>({{0},
-                                           {0, 1},
-                                           {0, 1, 1},
-                                           {0, 1, 1, 1},
-                                           {0, 1, 1, 1, 1},
-                                           {0, 1, 1, 1, 1, 1},
-                                           {0, 1, 1, 1, 1, 1, 1},
-                                           {0, 1, 1, 1, 1, 1, 1, 1},
-                                           {0, 1, 1, 1, 1, 1, 1, 1, 1},
-                                           {0, 1, 1, 1, 1, 1, 1, 1, 1, 1}}));
+                == std::vector<word_type>({0_w,
+                                           01_w,
+                                           011_w,
+                                           0111_w,
+                                           01111_w,
+                                           011111_w,
+                                           0111111_w,
+                                           01111111_w,
+                                           011111111_w,
+                                           0111111111_w}));
       }
       {
         auto first = stephen::cbegin_left_factors(s);
@@ -79,15 +80,15 @@ namespace libsemigroups {
         std::advance(last, 10);
         REQUIRE(std::vector<word_type>(first, last)
                 == std::vector<word_type>({{},
-                                           {0},
-                                           {0, 1},
-                                           {0, 1, 1},
-                                           {0, 1, 1, 1},
-                                           {0, 1, 1, 1, 1},
-                                           {0, 1, 1, 1, 1, 1},
-                                           {0, 1, 1, 1, 1, 1, 1},
-                                           {0, 1, 1, 1, 1, 1, 1, 1},
-                                           {0, 1, 1, 1, 1, 1, 1, 1, 1}}));
+                                           0_w,
+                                           01_w,
+                                           011_w,
+                                           0111_w,
+                                           01111_w,
+                                           011111_w,
+                                           0111111_w,
+                                           01111111_w,
+                                           011111111_w}));
       }
     }
 
