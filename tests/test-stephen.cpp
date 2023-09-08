@@ -265,7 +265,7 @@ namespace libsemigroups {
     p.validate();
 
     Stephen s;
-    s.init(std::move(p)).set_word({0, 1, 0, 1, 1, 1, 0, 2, 0, 1, 2, 0}).run();
+    s.init(std::move(p)).set_word(010111020120_w).run();
     REQUIRE(s.word_graph().number_of_nodes() == 121);
     REQUIRE(
         s.word_graph()
@@ -520,8 +520,7 @@ namespace libsemigroups {
     REQUIRE(stephen::number_of_words_accepted(S) == 3);
     REQUIRE(std::vector<word_type>(stephen::cbegin_words_accepted(S),
                                    stephen::cend_words_accepted(S))
-            == std::vector<word_type>(
-                {{0, 1, 2, 3, 6}, {0, 1, 2, 4, 5}, {0, 0, 0, 4, 0, 0, 6}}));
+            == std::vector<word_type>({01236_w, 01245_w, 0004006_w}));
 
     S.set_word(string_to_word("aaaeaaaeaa")).run();
 
@@ -530,17 +529,14 @@ namespace libsemigroups {
     REQUIRE(stephen::accepts(S, string_to_word("aaaeabcd")));
     REQUIRE(std::vector<word_type>(stephen::cbegin_words_accepted(S),
                                    stephen::cend_words_accepted(S))
-            == std::vector<word_type>({{0, 0, 0, 4, 0, 1, 2, 3},
-                                       {0, 1, 2, 3, 0, 4, 0, 0},
-                                       {0, 0, 0, 4, 0, 0, 0, 4, 0, 0}}));
+            == std::vector<word_type>({00040123_w, 01230400_w, 0004000400_w}));
 
     S.set_word(string_to_word("aaaeaag")).run();
     REQUIRE(S.word_graph().number_of_nodes() == 11);
     REQUIRE(stephen::number_of_words_accepted(S) == 3);
     REQUIRE(std::vector<word_type>(stephen::cbegin_words_accepted(S),
                                    stephen::cend_words_accepted(S))
-            == std::vector<word_type>(
-                {{0, 1, 2, 3, 6}, {0, 1, 2, 4, 5}, {0, 0, 0, 4, 0, 0, 6}}));
+            == std::vector<word_type>({01236_w, 01245_w, 0004006_w}));
   }
 
   LIBSEMIGROUPS_TEST_CASE("Stephen",
@@ -600,7 +596,7 @@ namespace libsemigroups {
     using namespace fpsemigroup;
     auto    rg = ReportGuard(true);
     Stephen S(fibonacci_semigroup(4, 6));
-    S.set_word({0, 1, 2, 3}).run_for(std::chrono::seconds(10));
+    S.set_word(0123_w).run_for(std::chrono::seconds(10));
     REQUIRE(!S.finished());
   }
 
@@ -1489,10 +1485,10 @@ namespace libsemigroups {
     REQUIRE(!stephen::accepts(s, 0013212_w));
   }
 
-  LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
+  LIBSEMIGROUPS_TEST_CASE("Stephen",
                           "033",
                           "Whyte's 4-relation full transf monoid 8",
-                          "[todd-coxeter][extreme]") {
+                          "[stephen][fail]") {
     auto                    rg = ReportGuard(true);
     Presentation<word_type> p;
     p.rules = {00_w,       {},         11_w,         {},           22_w,

@@ -1,6 +1,6 @@
 //
 // libsemigroups - C++ library for semigroups and monoids
-// Copyright (C) 2022 James D. Mitchell
+// Copyright (C) 2022-2023 James D. Mitchell
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -47,22 +47,21 @@
 // * minimal rep
 namespace libsemigroups {
 
-  class StephenDigraph
+  class StephenGraph
       : public detail::NodeManagedGraph<WordGraphWithSources<uint32_t>> {
-    using BaseDigraph       = WordGraphWithSources<uint32_t>;
-    using NodeManagedGraph_ = NodeManagedGraph<BaseDigraph>;
+    using BaseDigraph = WordGraphWithSources<uint32_t>;
 
    public:
     using node_type = typename BaseDigraph::node_type;
 
-    StephenDigraph& init(Presentation<word_type> const& p) {
+    StephenGraph& init(Presentation<word_type> const& p) {
       NodeManager<node_type>::clear();
       BaseDigraph::init(NodeManager<node_type>::node_capacity(),
                         p.alphabet().size());
       return *this;
     }
 
-    StephenDigraph& init(Presentation<word_type>&& p) {
+    StephenGraph& init(Presentation<word_type>&& p) {
       NodeManager<node_type>::clear();
       BaseDigraph::init(NodeManager<node_type>::node_capacity(),
                         p.alphabet().size());
@@ -150,7 +149,7 @@ namespace libsemigroups {
 
      private:
       // TODO remove this alias
-      using internal_word_graph_type = StephenDigraph;
+      using internal_word_graph_type = StephenGraph;
       using label_type               = word_graph_type::label_type;
 
       // Data members
