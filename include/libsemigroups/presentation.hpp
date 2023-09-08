@@ -1595,6 +1595,13 @@ namespace libsemigroups {
    public:
     using Presentation<Word>::Presentation;
 
+    // TODO init functions
+    InversePresentation<Word>(Presentation<Word> const& p)
+        : Presentation<Word>(p), _inverses() {}
+
+    InversePresentation<Word>(Presentation<Word>&& p)
+        : Presentation<Word>(p), _inverses() {}
+
     // TODO validate that checks that inverses are set
     // TODO to tpp
     InversePresentation& inverses(word_type const& w) {

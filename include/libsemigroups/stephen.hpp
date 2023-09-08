@@ -89,24 +89,20 @@ namespace libsemigroups {
 
   //! Defined in ``stephen.hpp``.
   //!
-  //! On this page we describe the functionality in ``libsemigroups``
-  //! relating to Stephen's procedure for finitely presented semigroups.
-  //! This class implements Stephen's procedure for (possibly) constructing
-  //! the word graph (WordGraph) corresponding to the left factors of a
-  //! word in a finitely presented semigroup. The algorithm implemented in
-  //! this class is closely related to the Todd-Coxeter algorithm  (as
-  //! implemented in \ref congruence::ToddCoxeter) and originates in
-  //! [Applications of automata theory to presentations of monoids and
-  //! inverse monoids](https://rb.gy/brsuvc) by J. B. Stephen.
+  //! On this page we describe the functionality in ``libsemigroups`` relating
+  //! to Stephen's procedure for finitely presented semigroups. This class
+  //! implements Stephen's procedure for (possibly) constructing the word graph
+  //! (WordGraph) corresponding to the left factors of a word in a finitely
+  //! presented semigroup. The algorithm implemented in this class is closely
+  //! related to the Todd-Coxeter algorithm  (as implemented in \ref
+  //! ToddCoxeter) and originates in [Applications of automata theory to
+  //! presentations of monoids and inverse monoids](https://rb.gy/brsuvc) by J.
+  //! B. Stephen.
 
   // TODO split into StephenBase (no template params) and move everything not
   // related to the presentation directly into the base class
   template <typename ConstructFrom = Presentation<word_type>>
   class Stephen : public Runner {
-    static_assert(IsPresentation<ConstructFrom>);
-    static_assert(
-        !std::is_same_v<typename ConstructFrom::word_type, std::string>);
-
     template <typename T>
     struct PresentationType {
       using type = T;
@@ -142,6 +138,10 @@ namespace libsemigroups {
     using construct_from_type = ConstructFrom;
     using presentation_type   = typename PresentationType<ConstructFrom>::type;
 
+    static_assert(IsPresentation<presentation_type>);
+    static_assert(
+        std::is_same_v<typename presentation_type::word_type, word_type>);
+
     //! The return type of the function \ref word_graph.
     using word_graph_type = WordGraph<uint32_t>;
 
@@ -166,6 +166,7 @@ namespace libsemigroups {
     //! Default constructs an empty instance, use \ref init and \ref set_word
     //! to specify the presentation and the word, respectively.
     Stephen();
+    // TODO init()
 
     //! Construct from a presentation.
     //!
@@ -178,7 +179,7 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if `p.validate()` throws.
     //! \throws LibsemigroupsException if `p.alphabet().size()` is `0`.
     template <typename P, typename = std::enable_if_t<can_construct_from<P>()>>
-    explicit Stephen(P&& p);
+    Stephen(P&& p);
 
     //! Default copy constructor
     Stephen(Stephen const& that) = default;
@@ -337,6 +338,7 @@ namespace libsemigroups {
     void validate() const;
   };
 
+  // Deduction guides
   // The following is not a mistake but intentional, if no presentation type is
   // explicitly used, then we use Presentation<word_type>. The only other
   // alternative is to use a std::shared_ptr<Presentation<word_type>>  or
@@ -344,6 +346,28 @@ namespace libsemigroups {
   // is not allowed.
   template <typename Word>
   Stephen(Presentation<Word> const&) -> Stephen<Presentation<word_type>>;
+
+  template <typename Word>
+  Stephen(Presentation<Word>&) -> Stephen<Presentation<word_type>>;
+
+  template <typename Word>
+  Stephen(Presentation<Word>&&) -> Stephen<Presentation<word_type>>;
+
+  template <typename Word>
+  Stephen(InversePresentation<Word> const&)
+      -> Stephen<InversePresentation<word_type>>;
+
+  template <typename Word>
+  Stephen(InversePresentation<Word>&)
+      -> Stephen<InversePresentation<word_type>>;
+
+  template <typename Word>
+  Stephen(InversePresentation<Word>&&)
+      -> Stephen<InversePresentation<word_type>>;
+
+  template <typename Word>
+  Stephen(std::shared_ptr<InversePresentation<Word>>&&)
+      -> Stephen<std::shared_ptr<InversePresentation<word_type>>>;
 
 }  // namespace libsemigroups
 
@@ -418,10 +442,9 @@ namespace libsemigroups {
   template <typename PresentationType>
   bool operator==(Stephen<PresentationType> const& x,
                   Stephen<PresentationType> const& y) {
-    return Stephen<PresentationType>::accepts(
-               const_cast<Stephen<PresentationType>&>(x), y.word())
-           && Stephen<PresentationType>::accepts(
-               const_cast<Stephen<PresentationType>&>(y), x.word());
+    return stephen::accepts(const_cast<Stephen<PresentationType>&>(x), y.word())
+           && stephen::accepts(const_cast<Stephen<PresentationType>&>(y),
+                               x.word());
   }
 
   template <typename PresentationType>

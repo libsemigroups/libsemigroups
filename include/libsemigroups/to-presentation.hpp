@@ -91,6 +91,8 @@ namespace libsemigroups {
             typename = std::enable_if_t<std::is_invocable_v<
                 std::decay_t<Func>,
                 typename Presentation<WordInput>::letter_type>>>
+  // TODO add WordOutput != WordInput as for inverse
+  // presentations below
   Presentation<WordOutput> to_presentation(Presentation<WordInput> const& p,
                                            Func&&                         f) {
     p.validate();
@@ -107,7 +109,7 @@ namespace libsemigroups {
     for (auto it = p.rules.cbegin(); it != p.rules.cend(); ++it) {
       rel.resize(it->size());
       std::transform(it->cbegin(), it->cend(), rel.begin(), f);
-      result.rules.push_back(rel);
+      result.rules.push_back(rel);  // TODO std::move?
       rel.clear();
     }
     return result;
@@ -118,44 +120,68 @@ namespace libsemigroups {
   // couldn't figure out how to use doxygenfunction in this case (since there
   // are multiple function templates with the same arguments, just different
   // type constraints).
-  template <typename WordOutput, typename WordInput>
-  auto to_presentation(Presentation<WordInput> const& p)
+  template <typename WordOutput,
+            template <typename>
+            class Presentation_,
+            typename WordInput>
+  auto to_presentation(Presentation_<WordInput> const& p)
       -> std::enable_if_t<!std::is_same_v<WordOutput, std::string>,
-                          Presentation<WordOutput>> {
+                          Presentation_<WordOutput>> {
     return to_presentation<WordOutput>(p,
                                        [&p](auto val) { return p.index(val); });
   }
 
   //! No doc
-  template <typename WordOutput, typename WordInput>
-  auto to_presentation(Presentation<WordInput> const& p)
+  template <typename WordOutput,
+            template <typename>
+            class Presentation_,
+            typename WordInput>
+  auto to_presentation(Presentation_<WordInput> const& p)
       -> std::enable_if_t<std::is_same_v<WordOutput, std::string>,
-                          Presentation<WordOutput>> {
+                          Presentation_<WordOutput>> {
     return to_presentation<WordOutput>(
         p, [&p](auto val) { return human_readable_char(p.index(val)); });
   }
 
-  // TODO re-enable copied from fp-inverse-monoid branch for Stephen
-  //    template <typename T, typename SFINAE = T>
-  //    auto make(std::vector<relation_type> const& rels) -> std::enable_if_t<
-  //        std::is_same<InversePresentation<word_type>, T>::value,
-  //        SFINAE> {
-  //      InversePresentation<word_type> p;
-  //      for (auto const& rel : rels) {
-  //        p.add_rule(rel.first.cbegin(),
-  //                   rel.first.cend(),
-  //                   rel.second.cbegin(),
-  //                   rel.second.cend());
-  //      }
-  //      p.alphabet_from_rules();
-  //      presentation::normalize_alphabet(p);
-  //      p.alphabet(2 * p.alphabet().size());
-  //      auto invs = p.alphabet();
-  //      std::rotate(invs.begin(), invs.begin() + invs.size() / 2, invs.end());
-  //      p.inverses(std::move(invs));
-  //      p.validate();
-  //      return p;
-  //    }
+  template <
+      typename WordOutput,
+      typename WordInput,
+      typename Func,
+      typename = std::enable_if_t<
+          std::is_invocable_v<std::decay_t<Func>,
+                              typename Presentation<WordInput>::letter_type>
+          && !std::is_same_v<WordOutput, WordInput>>>
+  InversePresentation<WordOutput>
+  to_presentation(InversePresentation<WordInput> const& p, Func&& f) {
+    WordOutput new_alphabet;
+    new_alphabet.resize(p.alphabet().size());
+    std::transform(
+        p.alphabet().cbegin(), p.alphabet().cend(), new_alphabet.begin(), f);
 
+    WordOutput new_inverses;
+    new_inverses.resize(p.inverses().size());
+    std::transform(
+        p.inverses().cbegin(), p.inverses().cend(), new_inverses.begin(), f);
+
+    InversePresentation<WordOutput> result;
+    result.contains_empty_word(p.contains_empty_word());
+    result.alphabet(new_alphabet);
+    result.inverses(new_inverses);
+
+    WordOutput rel;
+    for (auto it = p.rules.cbegin(); it != p.rules.cend(); ++it) {
+      rel.resize(it->size());
+      std::transform(it->cbegin(), it->cend(), rel.begin(), f);
+      result.rules.push_back(rel);  // TODO std::move?
+      rel.clear();
+    }
+    return result;
+  }
+
+  template <typename Word>
+  InversePresentation<Word>
+  to_presentation(InversePresentation<Word> const& p) {
+    return p;
+  }
 }  // namespace libsemigroups
 #endif  // LIBSEMIGROUPS_TO_PRESENTATION_HPP_
