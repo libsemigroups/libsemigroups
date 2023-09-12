@@ -368,6 +368,7 @@ namespace libsemigroups {
   template <typename Word>
   Stephen(std::shared_ptr<InversePresentation<Word>>&&)
       -> Stephen<std::shared_ptr<InversePresentation<word_type>>>;
+  // TODO other shared_prt guides?
 
 }  // namespace libsemigroups
 
@@ -384,6 +385,9 @@ namespace libsemigroups {
 
     template <typename PresentationType>
     bool is_left_factor(Stephen<PresentationType>& s, word_type const& w);
+
+    // TODO left_factors range object
+    // TODO words_accepted range object
 
     template <typename PresentationType>
     const_iterator_words_accepted

@@ -29,14 +29,14 @@ namespace libsemigroups {
   class Cutting : public Runner {
    public:
     using stephen_type
-        = v3::Stephen<std::shared_ptr<InversePresentation<word_type>>>;
+        = Stephen<std::shared_ptr<InversePresentation<word_type>>>;
 
    private:
     std::shared_ptr<InversePresentation<word_type>> _presentation;
     std::vector<stephen_type>                       _stephens;
     bool                                            _finished;
-    // TODO use StephenB::node_type
-    ActionDigraph<size_t> _graph;
+    // TODO use Stephen::node_type
+    WordGraph<uint32_t> _graph;
 
    public:
     // TODO to cpp
@@ -100,16 +100,16 @@ namespace libsemigroups {
           // since Stephen's are standardized, we can possibly do a binary
           // search in the sorted list of _stephens...
           for (size_t j = 0; j < _stephens.size(); ++j) {
-            if (v3::stephen::is_left_factor(_stephens[j], word)) {
-              if (v3::stephen::is_left_factor(tmp, _stephens[j].word())) {
-                _graph.add_edge_nc(i, j, letter);
+            if (stephen::is_left_factor(_stephens[j], word)) {
+              if (stephen::is_left_factor(tmp, _stephens[j].word())) {
+                _graph.set_target_no_checks(i, letter, j);
                 old = true;
                 break;
               }
             }
           }
           if (!old) {
-            _graph.add_edge_nc(i, _stephens.size(), letter);
+            _graph.set_target_no_checks(i, letter, _stephens.size());
             _stephens.push_back(tmp);
           }
         }

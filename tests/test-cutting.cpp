@@ -20,8 +20,8 @@
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
 #include "libsemigroups/cutting.hpp"
+#include "libsemigroups/detail/string.hpp"
 #include "libsemigroups/fpsemi-examples.hpp"
-#include "libsemigroups/string.hpp"
 #include "libsemigroups/types.hpp"
 
 namespace libsemigroups {
@@ -34,8 +34,7 @@ namespace libsemigroups {
     InversePresentation<word_type> p;
     p.alphabet(string_to_word("xX"));
     p.inverses(string_to_word("Xx"));
-    presentation::add_rule_and_check(
-        p, string_to_word("xx"), string_to_word("xxxx"));
+    presentation::add_rule(p, string_to_word("xx"), string_to_word("xxxx"));
 
     auto c = Cutting(p);
     REQUIRE(c.number_of_r_classes() == 4);
@@ -50,12 +49,9 @@ namespace libsemigroups {
     InversePresentation<word_type> p;
     p.alphabet(string_to_word("xyXY"));
     p.inverses(string_to_word("XYxy"));
-    presentation::add_rule_and_check(
-        p, string_to_word("xxx"), string_to_word("x"));
-    presentation::add_rule_and_check(
-        p, string_to_word("yyyyy"), string_to_word("y"));
-    presentation::add_rule_and_check(
-        p, string_to_word("xyxy"), string_to_word("xx"));
+    presentation::add_rule(p, string_to_word("xxx"), string_to_word("x"));
+    presentation::add_rule(p, string_to_word("yyyyy"), string_to_word("y"));
+    presentation::add_rule(p, string_to_word("xyxy"), string_to_word("xx"));
 
     auto c = Cutting(p);
     REQUIRE(c.size() == 13);
@@ -70,18 +66,12 @@ namespace libsemigroups {
     InversePresentation<word_type> p;
     p.alphabet(string_to_word("xyzXYZ"));
     p.inverses(string_to_word("XYZxyz"));
-    presentation::add_rule_and_check(
-        p, string_to_word("xxxxx"), string_to_word("x"));
-    presentation::add_rule_and_check(
-        p, string_to_word("yyyyy"), string_to_word("y"));
-    presentation::add_rule_and_check(
-        p, string_to_word("zzzzz"), string_to_word("z"));
-    presentation::add_rule_and_check(
-        p, string_to_word("xyy"), string_to_word("yxx"));
-    presentation::add_rule_and_check(
-        p, string_to_word("xzz"), string_to_word("zxx"));
-    presentation::add_rule_and_check(
-        p, string_to_word("yzz"), string_to_word("zyy"));
+    presentation::add_rule(p, string_to_word("xxxxx"), string_to_word("x"));
+    presentation::add_rule(p, string_to_word("yyyyy"), string_to_word("y"));
+    presentation::add_rule(p, string_to_word("zzzzz"), string_to_word("z"));
+    presentation::add_rule(p, string_to_word("xyy"), string_to_word("yxx"));
+    presentation::add_rule(p, string_to_word("xzz"), string_to_word("zxx"));
+    presentation::add_rule(p, string_to_word("yzz"), string_to_word("zyy"));
 
     auto c = Cutting(p);
     REQUIRE(c.size() == 173);
@@ -92,8 +82,7 @@ namespace libsemigroups {
                           "003",
                           "symmetric_inverse_semigroup",
                           "[cutting][quick]") {
-    auto p = fpsemigroup::make<InversePresentation<word_type>>(
-        fpsemigroup::symmetric_inverse_monoid(4));
+    InversePresentation<word_type> p = fpsemigroup::symmetric_inverse_monoid(4);
     presentation::replace_word(p, {}, {p.alphabet().size()});
     auto alpha = p.alphabet();
     alpha.push_back(alpha.size());
@@ -116,8 +105,7 @@ namespace libsemigroups {
                           "004",
                           "symmetric_inverse_monoid",
                           "[cutting][extreme]") {
-    auto p = fpsemigroup::make<InversePresentation<word_type>>(
-        fpsemigroup::symmetric_inverse_monoid(7));
+    InversePresentation<word_type> p = fpsemigroup::symmetric_inverse_monoid(7);
 
     // REQUIRE(p.alphabet() == word_type({0, 1, 2, 3, 4, 5, 6, 7}));
     // REQUIRE(p.inverses() == word_type({4, 5, 6, 7, 0, 1, 2, 3}));
@@ -164,10 +152,9 @@ namespace libsemigroups {
     p.alphabet(string_to_word("egG"));
     p.inverses(string_to_word("eGg"));
     p.contains_empty_word(true);
-    presentation::add_rule_and_check(
+    presentation::add_rule(
         p, string_to_word(std::string(n, 'g')), string_to_word(""));
-    presentation::add_rule_and_check(
-        p, string_to_word("ee"), string_to_word("e"));
+    presentation::add_rule(p, string_to_word("ee"), string_to_word("e"));
     presentation::add_rule(
         p, string_to_word("gxxxxxx"), string_to_word("xxxxxx"));
     presentation::replace_subword(
