@@ -333,9 +333,9 @@ namespace libsemigroups {
     //! out_degree())`, then this function adds an edge from \p i to \p j
     //! labelled \p lbl.
     //!
-    //! \param i the source node
-    //! \param j the range node
-    //! \param lbl the label of the edge from \p i to \p j
+    //! \param m the source node
+    //! \param lbl the label of the edge from \p m to \p n
+    //! \param n the range node
     //!
     //! \returns
     //! (None)
@@ -1448,9 +1448,12 @@ namespace libsemigroups {
   //! to_word_graph<uint8_t>(5, {{0, 0}, {1, 1}, {2}, {3, 3}});
   //! \endcode
   template <typename Node>
-  WordGraph<Node>
-  to_word_graph(size_t                                             num_nodes,
-                std::initializer_list<std::initializer_list<Node>> il);
+  WordGraph<Node> to_word_graph(size_t num_nodes,
+                                std::initializer_list<std::vector<Node>> il);
+
+  template <typename Node>
+  WordGraph<Node> to_word_graph(size_t                                num_nodes,
+                                std::vector<std::vector<Node>> const& v);
 
 }  // namespace libsemigroups
 
