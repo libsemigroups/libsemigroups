@@ -4747,4 +4747,48 @@ namespace libsemigroups {
     }
     REQUIRE(p.rules == std::vector<std::string>());
   }
+
+  // Takes about 2 minutes
+  LIBSEMIGROUPS_TEST_CASE(
+      "ToddCoxeter",
+      "10X",
+      "https://brauer.maths.qmul.ac.uk/Atlas/exc/TF42/mag/TF42G1-P1.M",
+      "[todd-coxeter][extreme]") {
+    Presentation<std::string> p;
+    p.contains_empty_word(true).alphabet("xyXY");
+    presentation::add_inverse_rules(p, "XYxy");
+
+    presentation::add_rule(p, "x^2"_p, ""_p);
+    presentation::add_rule(p, "y^3"_p, ""_p);
+    presentation::add_rule(p, "(xy)^13"_p, ""_p);
+    presentation::add_rule(p, "(XYxy)^5"_p, ""_p);
+    presentation::add_rule(p, "(XYXYxyxy)^4"_p, ""_p);
+    presentation::add_rule(p, "(xyxyxyxyxY)^6"_p, ""_p);
+    REQUIRE(presentation::length(p) == 151);
+    presentation::replace_word_with_new_generator(
+        p, presentation::longest_subword_reducing_length(p));
+    REQUIRE(presentation::length(p) == 90);
+    // Can't balance don't know the inverse of the new generator,
+    // presentation::balance(p, "xyXY", "XYxy");
+
+    ToddCoxeter tc(twosided, p);
+    tc.lower_bound(17'971'200).strategy(options::strategy::felsch);
+    REQUIRE(tc.number_of_classes() == 17'971'200);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
+                          "10Y",
+                          "cyclic groups",
+                          "[todd-coxeter][quick]") {
+    Presentation<std::string> p;
+    p.contains_empty_word(true).alphabet("xyz");
+
+    presentation::add_rule(p, "x^2"_p, "y"_p);
+    presentation::add_rule(p, "y^2"_p, "z"_p);
+    presentation::add_rule(p, "xz"_p, ""_p);
+
+    ToddCoxeter tc(twosided, p);
+    REQUIRE(tc.number_of_classes() == 6);
+  }
+
 }  // namespace libsemigroups
