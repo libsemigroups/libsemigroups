@@ -21,7 +21,8 @@
 #define LIBSEMIGROUPS_CUTTING_HPP_
 
 #include "cong-intf.hpp"  // for CongruenceInterface
-#include "runner.hpp"     // for Runner
+#include "gabow.hpp"
+#include "runner.hpp"  // for Runner
 #include "stephen.hpp"
 #include "types.hpp"
 
@@ -37,6 +38,7 @@ namespace libsemigroups {
     bool                                            _finished;
     // TODO use Stephen::node_type
     WordGraph<uint32_t> _graph;
+    Gabow<uint32_t>     _gabow;
 
    public:
     // TODO to cpp
@@ -45,7 +47,8 @@ namespace libsemigroups {
           _presentation(std::make_shared<InversePresentation<word_type>>(p)),
           _stephens(),
           _finished(false),
-          _graph(0, p.alphabet().size()) {
+          _graph(0, p.alphabet().size()),
+          _gabow() {
       _presentation->validate();
       _presentation->contains_empty_word(true);  // TODO
       _stephens.emplace_back(_presentation);
@@ -70,7 +73,7 @@ namespace libsemigroups {
 
     uint64_t number_of_d_classes() {
       run();
-      return _graph.number_of_scc();
+      return _gabow.number_of_components();
     }
 
    private:
@@ -114,6 +117,7 @@ namespace libsemigroups {
           }
         }
       }
+      _gabow.init(_graph);
       _finished = true;
     }
   };

@@ -25,16 +25,17 @@
 #include "libsemigroups/types.hpp"
 
 namespace libsemigroups {
+  using literals::operator""_w;
 
   LIBSEMIGROUPS_TEST_CASE("Cutting",
                           "000",
                           "step_hen Stephen test case 001",
                           "[cutting][quick]") {
-    detail::StringToWord           string_to_word("xX");
+    detail::StringToWord           to_word("xX");
     InversePresentation<word_type> p;
-    p.alphabet(string_to_word("xX"));
-    p.inverses(string_to_word("Xx"));
-    presentation::add_rule(p, string_to_word("xx"), string_to_word("xxxx"));
+    p.alphabet(to_word("xX"));
+    p.inverses(to_word("Xx"));
+    presentation::add_rule(p, to_word("xx"), to_word("xxxx"));
 
     auto c = Cutting(p);
     REQUIRE(c.number_of_r_classes() == 4);
@@ -45,13 +46,13 @@ namespace libsemigroups {
                           "001",
                           "step_hen Stephen test case 002",
                           "[cutting][quick]") {
-    detail::StringToWord           string_to_word("xyXY");
+    detail::StringToWord           to_word("xyXY");
     InversePresentation<word_type> p;
-    p.alphabet(string_to_word("xyXY"));
-    p.inverses(string_to_word("XYxy"));
-    presentation::add_rule(p, string_to_word("xxx"), string_to_word("x"));
-    presentation::add_rule(p, string_to_word("yyyyy"), string_to_word("y"));
-    presentation::add_rule(p, string_to_word("xyxy"), string_to_word("xx"));
+    p.alphabet(to_word("xyXY"));
+    p.inverses(to_word("XYxy"));
+    presentation::add_rule(p, to_word("xxx"), to_word("x"));
+    presentation::add_rule(p, to_word("yyyyy"), to_word("y"));
+    presentation::add_rule(p, to_word("xyxy"), to_word("xx"));
 
     auto c = Cutting(p);
     REQUIRE(c.size() == 13);
@@ -62,16 +63,16 @@ namespace libsemigroups {
                           "002",
                           "step_hen Stephen test case 004",
                           "[cutting][quick]") {
-    detail::StringToWord           string_to_word("xyzXYZ");
+    detail::StringToWord           to_word("xyzXYZ");
     InversePresentation<word_type> p;
-    p.alphabet(string_to_word("xyzXYZ"));
-    p.inverses(string_to_word("XYZxyz"));
-    presentation::add_rule(p, string_to_word("xxxxx"), string_to_word("x"));
-    presentation::add_rule(p, string_to_word("yyyyy"), string_to_word("y"));
-    presentation::add_rule(p, string_to_word("zzzzz"), string_to_word("z"));
-    presentation::add_rule(p, string_to_word("xyy"), string_to_word("yxx"));
-    presentation::add_rule(p, string_to_word("xzz"), string_to_word("zxx"));
-    presentation::add_rule(p, string_to_word("yzz"), string_to_word("zyy"));
+    p.alphabet(to_word("xyzXYZ"));
+    p.inverses(to_word("XYZxyz"));
+    presentation::add_rule(p, to_word("xxxxx"), to_word("x"));
+    presentation::add_rule(p, to_word("yyyyy"), to_word("y"));
+    presentation::add_rule(p, to_word("zzzzz"), to_word("z"));
+    presentation::add_rule(p, to_word("xyy"), to_word("yxx"));
+    presentation::add_rule(p, to_word("xzz"), to_word("zxx"));
+    presentation::add_rule(p, to_word("yzz"), to_word("zyy"));
 
     auto c = Cutting(p);
     REQUIRE(c.size() == 173);
@@ -82,33 +83,23 @@ namespace libsemigroups {
                           "003",
                           "symmetric_inverse_semigroup",
                           "[cutting][quick]") {
-    InversePresentation<word_type> p = fpsemigroup::symmetric_inverse_monoid(4);
-    presentation::replace_word(p, {}, {p.alphabet().size()});
-    auto alpha = p.alphabet();
-    alpha.push_back(alpha.size());
-    p.alphabet(alpha);
-    alpha = p.inverses();
-    alpha.push_back(alpha.size());
-    p.inverses(alpha);
-    presentation::add_identity_rules(p, p.alphabet().back());
-
-    REQUIRE(p.alphabet() == word_type({0, 1, 2, 3, 4, 5, 6, 7, 8}));
-    REQUIRE(p.inverses() == word_type({4, 5, 6, 7, 0, 1, 2, 3, 8}));
+    auto p = to_inverse_presentation(fpsemigroup::symmetric_inverse_monoid(4));
+    REQUIRE(p.alphabet() == 01234567_w);
+    REQUIRE(p.inverses() == 45670123_w);
     p.validate();
 
     auto c = Cutting(p);
-    REQUIRE(c.size() == 210);
-    REQUIRE(c.number_of_r_classes() == 17);
+    REQUIRE(c.size() == 209);
+    REQUIRE(c.number_of_r_classes() == 16);
   }
 
+  // TODO this is rather slow (~4s)
   LIBSEMIGROUPS_TEST_CASE("Cutting",
                           "004",
                           "symmetric_inverse_monoid",
                           "[cutting][extreme]") {
-    InversePresentation<word_type> p = fpsemigroup::symmetric_inverse_monoid(7);
-
-    // REQUIRE(p.alphabet() == word_type({0, 1, 2, 3, 4, 5, 6, 7}));
-    // REQUIRE(p.inverses() == word_type({4, 5, 6, 7, 0, 1, 2, 3}));
+    InversePresentation<word_type> p
+        = to_inverse_presentation(fpsemigroup::symmetric_inverse_monoid(7));
 
     REQUIRE(presentation::length(p) == 340);
     presentation::sort_each_rule(p);
@@ -133,13 +124,13 @@ namespace libsemigroups {
                           "005",
                           "dual_symmetric_inverse_monoid",
                           "[cutting][quick]") {
-    auto p = fpsemigroup::make<InversePresentation<word_type>>(
+    auto p = to_inverse_presentation(
         fpsemigroup::dual_symmetric_inverse_monoid(4));
-    REQUIRE(!p.contains_empty_word());
+    REQUIRE(p.contains_empty_word());
 
     auto c = Cutting(p);
-    REQUIRE(c.size() == 340);
-    REQUIRE(c.number_of_r_classes() == 16);
+    REQUIRE(c.size() == 339);
+    REQUIRE(c.number_of_r_classes() == 15);
   }
 
   LIBSEMIGROUPS_TEST_CASE("Cutting",
@@ -147,25 +138,22 @@ namespace libsemigroups {
                           "cyclic inverse monoid",
                           "[cutting][quick]") {
     size_t                         n = 6;
-    detail::StringToWord           string_to_word("egGx");
+    detail::StringToWord           to_word("egGx");
     InversePresentation<word_type> p;
-    p.alphabet(string_to_word("egG"));
-    p.inverses(string_to_word("eGg"));
+    p.alphabet(to_word("egG"));
+    p.inverses(to_word("eGg"));
     p.contains_empty_word(true);
-    presentation::add_rule(
-        p, string_to_word(std::string(n, 'g')), string_to_word(""));
-    presentation::add_rule(p, string_to_word("ee"), string_to_word("e"));
-    presentation::add_rule(
-        p, string_to_word("gxxxxxx"), string_to_word("xxxxxx"));
-    presentation::replace_subword(
-        p, string_to_word("x"), string_to_word("eggggg"));
+    presentation::add_rule(p, to_word(words::pow("g", n)), to_word(""));
+    presentation::add_rule(p, to_word("ee"), to_word("e"));
+    presentation::add_rule_no_checks(p, to_word("gxxxxxx"), to_word("xxxxxx"));
+    presentation::replace_subword(p, to_word("x"), to_word("eggggg"));
     p.validate();
 
     // REQUIRE(p.rules == std::vector<word_type>());
 
     auto c = Cutting(p);
-    REQUIRE(c.size() == 0);
-    REQUIRE(c.number_of_r_classes() == 16);
+    REQUIRE(c.size() == 379);
+    REQUIRE(c.number_of_r_classes() == 64);
   }
 
 }  // namespace libsemigroups

@@ -178,10 +178,28 @@ namespace libsemigroups {
     return result;
   }
 
+  // TODO required?
   template <typename Word>
   InversePresentation<Word>
   to_presentation(InversePresentation<Word> const& p) {
     return p;
   }
+
+  template <typename Word>
+  InversePresentation<Word>
+  to_inverse_presentation(Presentation<Word> const& p) {
+    InversePresentation<Word> result;
+    result.rules.insert(result.rules.end(), p.rules.cbegin(), p.rules.cend());
+    result.alphabet_from_rules();
+    result.contains_empty_word(p.contains_empty_word());
+    presentation::normalize_alphabet(result);
+    result.alphabet(2 * result.alphabet().size());
+    auto invs = result.alphabet();
+    std::rotate(invs.begin(), invs.begin() + invs.size() / 2, invs.end());
+    result.inverses(std::move(invs));
+    // result.validate();
+    return result;
+  }
+
 }  // namespace libsemigroups
 #endif  // LIBSEMIGROUPS_TO_PRESENTATION_HPP_
