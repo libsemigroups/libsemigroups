@@ -120,6 +120,7 @@ namespace libsemigroups {
   // couldn't figure out how to use doxygenfunction in this case (since there
   // are multiple function templates with the same arguments, just different
   // type constraints).
+  // TODO revert this to whatever it was before
   template <typename WordOutput,
             template <typename>
             class Presentation_,
@@ -132,6 +133,7 @@ namespace libsemigroups {
   }
 
   //! No doc
+  // TODO revert this to whatever it was before
   template <typename WordOutput,
             template <typename>
             class Presentation_,
@@ -152,7 +154,7 @@ namespace libsemigroups {
                               typename Presentation<WordInput>::letter_type>
           && !std::is_same_v<WordOutput, WordInput>>>
   InversePresentation<WordOutput>
-  to_presentation(InversePresentation<WordInput> const& p, Func&& f) {
+  to_inverse_presentation(InversePresentation<WordInput> const& p, Func&& f) {
     WordOutput new_alphabet;
     new_alphabet.resize(p.alphabet().size());
     std::transform(
@@ -178,7 +180,7 @@ namespace libsemigroups {
     return result;
   }
 
-  // TODO required?
+  // TODO required? It's not even correct so remove!
   template <typename Word>
   InversePresentation<Word>
   to_presentation(InversePresentation<Word> const& p) {
@@ -199,6 +201,22 @@ namespace libsemigroups {
     result.inverses(std::move(invs));
     // result.validate();
     return result;
+  }
+
+  template <typename WordOutput, typename WordInput>
+  auto to_inverse_presentation(InversePresentation<WordInput> const& p)
+      -> std::enable_if_t<!std::is_same_v<WordOutput, std::string>,
+                          InversePresentation<WordOutput>> {
+    return to_inverse_presentation<WordOutput>(
+        p, [&p](auto val) { return p.index(val); });
+  }
+
+  template <typename WordOutput, typename WordInput>
+  auto to_inverse_presentation(InversePresentation<WordInput> const& p)
+      -> std::enable_if_t<std::is_same_v<WordOutput, std::string>,
+                          InversePresentation<WordOutput>> {
+    return to_inverse_presentation<WordOutput>(
+        p, [&p](auto val) { return human_readable_char(p.index(val)); });
   }
 
 }  // namespace libsemigroups

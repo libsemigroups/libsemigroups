@@ -40,7 +40,6 @@
 #include "detail/stl.hpp"                 // for IsStdSharedPtr
 
 // TODO
-// * use presentation_type not PresentationType everywhere
 // * iwyu
 // * operator* method for Stephens (i.e. identify the accept_state() of the
 //   first with the initial state of the second, then determinise).
@@ -62,86 +61,48 @@ namespace libsemigroups {
   //! ToddCoxeter) and originates in [Applications of automata theory to
   //! presentations of monoids and inverse monoids](https://rb.gy/brsuvc) by J.
   //! B. Stephen.
-
-  // TODO split into StephenBase (no template params) and move everything not
-  // related to the presentation directly into the base class
-  template <typename ConstructFrom = Presentation<word_type>>
+  template <typename P>
   class Stephen : public Runner {
     template <typename T>
-    struct PresentationType {
+    struct ActualPresentation {
       using type = T;
     };
 
     template <>
-    struct PresentationType<std::shared_ptr<Presentation<word_type>>> {
+    struct ActualPresentation<std::shared_ptr<Presentation<word_type>>> {
       using type = Presentation<word_type>;
     };
 
     template <>
-    struct PresentationType<std::shared_ptr<InversePresentation<word_type>>> {
+    struct ActualPresentation<std::shared_ptr<InversePresentation<word_type>>> {
       using type = InversePresentation<word_type>;
     };
 
-    template <typename P>
-    static constexpr bool can_construct_from() {
-      using Q = std::decay_t<P>;
-      return (IsPresentation<Q> && IsPresentation<construct_from_type>)
-             || (std::is_same_v<Q, construct_from_type>
-                 && detail::IsStdSharedPtr<Q>);
+    template <typename Q>
+    static constexpr bool is_valid_presentation() {
+      using R = typename ActualPresentation<std::decay_t<Q>>::type;
+      return std::is_same_v<R, Presentation<word_type>>
+             || std::is_same_v<R, InversePresentation<word_type>>;
     }
 
-    template <typename P>
-    static constexpr auto& deref_if_necessary(P&& p) {
-      if constexpr (detail::IsStdSharedPtr<std::decay_t<P>>) {
-        return *p;
-      } else {
-        return p;
-      }
-    }
+    static_assert(is_valid_presentation<P>(), "TODO");
 
    public:
-    using construct_from_type = ConstructFrom;
-    using presentation_type   = typename PresentationType<ConstructFrom>::type;
-
-    static_assert(IsPresentation<presentation_type>);
-    static_assert(
-        std::is_same_v<typename presentation_type::word_type, word_type>);
+    using presentation_type = typename ActualPresentation<P>::type;
 
     //! The return type of the function \ref word_graph.
     using word_graph_type = WordGraph<uint32_t>;
-
-    //! The type of the nodes of a \ref word_graph_type.
-    using node_type = word_graph_type::node_type;
+    using node_type       = word_graph_type::node_type;
 
    private:
-    class StephenGraph
-        : public detail::NodeManagedGraph<WordGraphWithSources<uint32_t>> {
-      using BaseGraph = WordGraphWithSources<uint32_t>;
-
-     public:
-      using node_type = typename BaseGraph::node_type;
-
-      StephenGraph& init(Presentation<word_type> const& p) {
-        NodeManager<node_type>::clear();
-        BaseGraph::init(NodeManager<node_type>::node_capacity(),
-                        p.alphabet().size());
-        return *this;
-      }
-
-      StephenGraph& init(Presentation<word_type>&& p) {
-        NodeManager<node_type>::clear();
-        BaseGraph::init(NodeManager<node_type>::node_capacity(),
-                        p.alphabet().size());
-        return *this;
-      }
-    };
+    class StephenGraph;  // forward decl
 
     // Data members
-    bool                _finished;
-    node_type           _accept_state;
-    construct_from_type _presentation;
-    word_type           _word;
-    StephenGraph        _word_graph;
+    node_type    _accept_state;
+    bool         _finished;
+    P            _presentation;
+    word_type    _word;
+    StephenGraph _word_graph;
 
    public:
     //! Default constructor.
@@ -149,7 +110,7 @@ namespace libsemigroups {
     //! Default constructs an empty instance, use \ref init and \ref set_word
     //! to specify the presentation and the word, respectively.
     Stephen();
-    // TODO init()
+    Stephen& init();
 
     //! Construct from a presentation.
     //!
@@ -161,8 +122,8 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if `p.validate()` throws.
     //! \throws LibsemigroupsException if `p.alphabet().size()` is `0`.
-    template <typename P, typename = std::enable_if_t<can_construct_from<P>()>>
     Stephen(P&& p);
+    Stephen& init(P&& p);
 
     //! Initialize from a presentation.
     //!
@@ -178,8 +139,8 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if `p.validate()` throws.
     //! \throws LibsemigroupsException if `p.alphabet().size()` is `0`.
-    template <typename P>
-    Stephen& init(P&& p);
+    Stephen(P const& p);
+    Stephen& init(P const& p);
 
     //! Default copy constructor
     Stephen(Stephen const& that) = default;
@@ -194,6 +155,33 @@ namespace libsemigroups {
     Stephen& operator=(Stephen&&) = default;
 
     ~Stephen() = default;
+
+    template <typename Q>
+    Stephen(Q const& q) : Stephen() {
+      init(q);
+    }
+
+    template <typename Q>
+    Stephen& init(Q const& q) {
+      static_assert(((IsInversePresentation<P>) == (IsInversePresentation<Q>) )
+                        && IsPresentation<P> && IsPresentation<Q>,
+                    "TODO");
+      if constexpr (IsInversePresentation<P> && IsInversePresentation<Q>) {
+        return init(to_inverse_presentation<word_type>(q));
+      } else {
+        return init(to_presentation<word_type>(q));
+      }
+    }
+
+    // TODO make private and hid in tpp file
+    template <typename PP>
+    static constexpr auto& deref_if_necessary(PP&& p) {
+      if constexpr (detail::IsStdSharedPtr<std::decay_t<PP>>) {
+        return *p;
+      } else {
+        return p;
+      }
+    }
 
     //! The input presentation.
     //!
@@ -286,6 +274,10 @@ namespace libsemigroups {
     node_type accept_state();
 
    private:
+    Stephen& init_after_presentation_set();
+    void     validate(presentation_type const&) const;
+    void     reset() noexcept;
+
     void run_impl() override;
 
     bool finished_impl() const noexcept override {
@@ -311,26 +303,18 @@ namespace libsemigroups {
     using lvalue_tag     = std::true_type;
     using non_lvalue_tag = std::false_type;
 
-    template <typename P>
-    void init_impl(P&&, lvalue_tag);
-
-    void init_impl(construct_from_type&&, non_lvalue_tag);
-
     void report_status(
         std::chrono::high_resolution_clock::time_point const& start_time);
 
-    void reset() noexcept;
-
     void standardize();
-    void validate() const;
   };
 
   // Deduction guides
-  // The following is not a mistake but intentional, if no presentation type is
-  // explicitly used, then we use Presentation<word_type>. The only other
+  // The following is not a mistake but intentional, if no presentation type
+  // is explicitly used, then we use Presentation<word_type>. The only other
   // alternative is to use a std::shared_ptr<Presentation<word_type>>  or
-  // std::shared_ptr<InversePresentation<word_type>. Presentation<std::string>
-  // is not allowed.
+  // std::shared_ptr<InversePresentation<word_type>>;
+  // Presentation<std::string> is not allowed.
   template <typename Word>
   Stephen(Presentation<Word> const&) -> Stephen<Presentation<word_type>>;
 
@@ -358,7 +342,6 @@ namespace libsemigroups {
   // TODO other shared_prt guides?
 
 }  // namespace libsemigroups
-
 #include "stephen.tpp"
 
 namespace libsemigroups {

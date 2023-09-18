@@ -151,8 +151,7 @@ namespace libsemigroups {
     Presentation<word_type> p;
     p.alphabet(2);
     presentation::add_rule(p, {0}, {0, 1});
-    Stephen s;
-    s.init(p);
+    Stephen s(p);
     check_000(s);
     s.init(p);
     check_000(s);
@@ -239,7 +238,7 @@ namespace libsemigroups {
     s.set_word(00_w).run();
     REQUIRE(s.word_graph().number_of_nodes() == 5);
     REQUIRE(s.word_graph()
-            == to_word_graph<decltype(s)::node_type>(
+            == to_word_graph<uint32_t>(
                 5, {{1, UNDEFINED}, {2, 3}, {1, 4}, {4, 1}, {3, 2}}));
 
     p.rules.clear();
@@ -262,12 +261,12 @@ namespace libsemigroups {
     auto   p  = full_transformation_monoid(n, author::Iwahori);
     p.validate();
 
-    Stephen s;
-    s.init(std::move(p)).set_word(010111020120_w).run();
+    Stephen s(std::move(p));
+    s.set_word(010111020120_w).run();
     REQUIRE(s.word_graph().number_of_nodes() == 120);
     REQUIRE(
         s.word_graph()
-        == to_word_graph<decltype(s)::node_type>(
+        == to_word_graph<uint32_t>(
             120,
             {{1, 2, 3, 4, UNDEFINED},        {0, 5, 6, 7, UNDEFINED},
              {8, 0, 9, 10, UNDEFINED},       {11, 12, 0, 13, UNDEFINED},
@@ -658,7 +657,7 @@ namespace libsemigroups {
     REQUIRE(stephen::number_of_words_accepted(S) == 1);
     REQUIRE(stephen::number_of_left_factors(S) == w.size() + 1);
 
-    Stephen V;
+    decltype(S) V;
     V = std::move(S);
     REQUIRE(stephen::accepts(V, w));
     REQUIRE(!stephen::accepts(V, to_word("abbbd")));
@@ -967,7 +966,7 @@ namespace libsemigroups {
                           "031",
                           "Test behaviour when uninitialised",
                           "[stephen][quick]") {
-    Stephen S;
+    Stephen<Presentation<word_type>> S;
 
     REQUIRE_THROWS_AS(S.accept_state(), LibsemigroupsException);
     REQUIRE_THROWS_AS(stephen::cbegin_words_accepted(S),
@@ -1022,7 +1021,7 @@ namespace libsemigroups {
     p.alphabet("abcABC");
     p.inverses("ABCabc");
 
-    auto S = Stephen(p);
+    Stephen S(p);
     REQUIRE(to_word(p, "aBcAbC") == 042315_w);
 
     S.set_word(to_word(p, "aBcAbC")).run();
@@ -1107,12 +1106,11 @@ namespace libsemigroups {
     REQUIRE(S.word_graph().number_of_edges() == 8);
 
     REQUIRE(S.word_graph()
-            == to_word_graph<decltype(S)::node_type>(
-                4,
-                {{1, 2, UNDEFINED, UNDEFINED},
-                 {UNDEFINED, 1, 0, 1},
-                 {UNDEFINED, 3, UNDEFINED, 0},
-                 {UNDEFINED, UNDEFINED, UNDEFINED, 2}}));
+            == to_word_graph<uint32_t>(4,
+                                       {{1, 2, UNDEFINED, UNDEFINED},
+                                        {UNDEFINED, 1, 0, 1},
+                                        {UNDEFINED, 3, UNDEFINED, 0},
+                                        {UNDEFINED, UNDEFINED, UNDEFINED, 2}}));
   }
 
   LIBSEMIGROUPS_TEST_CASE("Stephen",
@@ -1153,7 +1151,7 @@ namespace libsemigroups {
     S.run();
     REQUIRE(S.word_graph().number_of_nodes() == 7);
     REQUIRE(S.word_graph()
-            == to_word_graph<decltype(S)::node_type>(
+            == to_word_graph<uint32_t>(
                 7,
                 {{1, UNDEFINED, 2, UNDEFINED, 3, UNDEFINED},
                  {UNDEFINED, UNDEFINED, UNDEFINED, 0, 4, UNDEFINED},
@@ -1214,7 +1212,7 @@ namespace libsemigroups {
     S.run();
     REQUIRE(S.word_graph().number_of_nodes() == 7);
     REQUIRE(S.word_graph()
-            == to_word_graph<decltype(S)::node_type>(
+            == to_word_graph<uint32_t>(
                 7,
                 {{1, UNDEFINED, 2, UNDEFINED, 3, UNDEFINED},
                  {UNDEFINED, UNDEFINED, UNDEFINED, 0, 4, UNDEFINED},
@@ -1378,8 +1376,8 @@ namespace libsemigroups {
     // REQUIRE(presentation::length(p) == 368);
     // presentation::replace_word_with_new_generator(p, 010_w);
 
-    Stephen s;
-    s.init(p).set_word(1217_w);
+    Stephen s(p);
+    s.set_word(1217_w);
     // TODO doing run_for and then checking and running some more doesn't seem
     // to work, seems to be going in a circle.
     // TODO the next is excessively slow takes about 2 minutes to return.
