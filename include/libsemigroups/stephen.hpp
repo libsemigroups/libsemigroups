@@ -43,32 +43,13 @@
 // * use presentation_type not PresentationType everywhere
 // * iwyu
 // * operator* method for Stephens (i.e. identify the accept_state() of the
-// first with the initial state of the second, then determinise.
+//   first with the initial state of the second, then determinise).
 // * canonical_form (as per Howie's book)
 // * minimal rep
+// * update reporting to new standard
+// * update so that run_for, run_until work properly (at present basically
+//   run_impl starts again from scratch every time)
 namespace libsemigroups {
-
-  class StephenGraph
-      : public detail::NodeManagedGraph<WordGraphWithSources<uint32_t>> {
-    using BaseDigraph = WordGraphWithSources<uint32_t>;
-
-   public:
-    using node_type = typename BaseDigraph::node_type;
-
-    StephenGraph& init(Presentation<word_type> const& p) {
-      NodeManager<node_type>::clear();
-      BaseDigraph::init(NodeManager<node_type>::node_capacity(),
-                        p.alphabet().size());
-      return *this;
-    }
-
-    StephenGraph& init(Presentation<word_type>&& p) {
-      NodeManager<node_type>::clear();
-      BaseDigraph::init(NodeManager<node_type>::node_capacity(),
-                        p.alphabet().size());
-      return *this;
-    }
-  };
 
   //! Defined in ``stephen.hpp``.
   //!
@@ -133,16 +114,34 @@ namespace libsemigroups {
     using node_type = word_graph_type::node_type;
 
    private:
-    // TODO remove this alias
-    using internal_word_graph_type = StephenGraph;
-    using label_type               = word_graph_type::label_type;
+    class StephenGraph
+        : public detail::NodeManagedGraph<WordGraphWithSources<uint32_t>> {
+      using BaseGraph = WordGraphWithSources<uint32_t>;
+
+     public:
+      using node_type = typename BaseGraph::node_type;
+
+      StephenGraph& init(Presentation<word_type> const& p) {
+        NodeManager<node_type>::clear();
+        BaseGraph::init(NodeManager<node_type>::node_capacity(),
+                        p.alphabet().size());
+        return *this;
+      }
+
+      StephenGraph& init(Presentation<word_type>&& p) {
+        NodeManager<node_type>::clear();
+        BaseGraph::init(NodeManager<node_type>::node_capacity(),
+                        p.alphabet().size());
+        return *this;
+      }
+    };
 
     // Data members
-    bool                     _finished;
-    node_type                _accept_state;
-    construct_from_type      _presentation;
-    word_type                _word;
-    internal_word_graph_type _word_graph;
+    bool                _finished;
+    node_type           _accept_state;
+    construct_from_type _presentation;
+    word_type           _word;
+    StephenGraph        _word_graph;
 
    public:
     //! Default constructor.
@@ -165,20 +164,6 @@ namespace libsemigroups {
     template <typename P, typename = std::enable_if_t<can_construct_from<P>()>>
     Stephen(P&& p);
 
-    //! Default copy constructor
-    Stephen(Stephen const& that) = default;
-
-    //! Default move constructor
-    Stephen(Stephen&&) = default;
-
-    //! Default copy assignment operator
-    Stephen& operator=(Stephen const&) = default;
-
-    //! Default move assignment operator
-    Stephen& operator=(Stephen&&) = default;
-
-    ~Stephen() = default;
-
     //! Initialize from a presentation.
     //!
     //! Replaces the current value (if any) returned by \ref presentation by
@@ -195,6 +180,20 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if `p.alphabet().size()` is `0`.
     template <typename P>
     Stephen& init(P&& p);
+
+    //! Default copy constructor
+    Stephen(Stephen const& that) = default;
+
+    //! Default move constructor
+    Stephen(Stephen&&) = default;
+
+    //! Default copy assignment operator
+    Stephen& operator=(Stephen const&) = default;
+
+    //! Default move assignment operator
+    Stephen& operator=(Stephen&&) = default;
+
+    ~Stephen() = default;
 
     //! The input presentation.
     //!
@@ -287,24 +286,30 @@ namespace libsemigroups {
     node_type accept_state();
 
    private:
-    void def_edge(internal_word_graph_type& wg,
-                  node_type                 from,
-                  node_type                 to,
-                  label_type                letter,
-                  presentation_type const&  p) const;
+    void run_impl() override;
 
+    bool finished_impl() const noexcept override {
+      return _finished;
+    }
+
+    using label_type = word_graph_type::label_type;
+
+    // TODO move into StephenGraph itself maybe?
+    void def_edge(StephenGraph&            wg,
+                  node_type                from,
+                  node_type                to,
+                  label_type               letter,
+                  presentation_type const& p) const;
+
+    // TODO move into StephenGraph itself maybe?
     std::pair<bool, node_type>
-    complete_path(internal_word_graph_type& wg,
+    complete_path(StephenGraph&             wg,
                   node_type                 c,
                   word_type::const_iterator first,
                   word_type::const_iterator last) noexcept;
 
     using lvalue_tag     = std::true_type;
     using non_lvalue_tag = std::false_type;
-
-    bool finished_impl() const noexcept override {
-      return _finished;
-    }
 
     template <typename P>
     void init_impl(P&&, lvalue_tag);
@@ -315,8 +320,6 @@ namespace libsemigroups {
         std::chrono::high_resolution_clock::time_point const& start_time);
 
     void reset() noexcept;
-
-    void run_impl() override;
 
     void standardize();
     void validate() const;

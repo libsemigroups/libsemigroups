@@ -41,7 +41,7 @@ namespace libsemigroups {
   template <typename P>
   Stephen<ConstructFrom>& Stephen<ConstructFrom>::init(P&& p) {
     static_assert(can_construct_from<P>());
-    deref_if_necessary(p).validate();
+    deref_if_necessary(p).alidate();
     init_impl(std::forward<P>(p), std::is_lvalue_reference<P>());
     return *this;
   }
@@ -111,11 +111,11 @@ namespace libsemigroups {
   // TODO rename to set_target_
   // TODO reorder args
   template <typename ConstructFrom>
-  void Stephen<ConstructFrom>::def_edge(internal_word_graph_type& wg,
-                                        node_type                 from,
-                                        node_type                 to,
-                                        label_type                letter,
-                                        presentation_type const&  p) const {
+  void Stephen<ConstructFrom>::def_edge(StephenGraph&            wg,
+                                        node_type                from,
+                                        node_type                to,
+                                        label_type               letter,
+                                        presentation_type const& p) const {
     if constexpr (!IsInversePresentation<presentation_type>) {
       wg.set_target_no_checks(from, letter, to);
     } else {
@@ -128,7 +128,7 @@ namespace libsemigroups {
       auto inverse_target = wg.target_no_checks(to, ll);
       if (inverse_target != UNDEFINED && inverse_target != from) {
         wg.merge_nodes_no_checks(from, inverse_target);
-        wg.process_coincidences<DoNotRegisterDefs>();
+        wg.template process_coincidences<DoNotRegisterDefs>();
         return;
       }
       wg.set_target_no_checks(to, ll, from);
@@ -138,7 +138,7 @@ namespace libsemigroups {
   template <typename ConstructFrom>
   std::pair<bool, typename Stephen<ConstructFrom>::node_type>
   Stephen<ConstructFrom>::complete_path(
-      internal_word_graph_type& wg,
+      StephenGraph&             wg,
       node_type                 c,
       word_type::const_iterator first,
       word_type::const_iterator last) noexcept {
@@ -268,7 +268,7 @@ namespace libsemigroups {
             } else if (u_end != v_end) {
               did_def = true;
               _word_graph.merge_nodes_no_checks(u_end, v_end);
-              _word_graph.process_coincidences<DoNotRegisterDefs>();
+              _word_graph.template process_coincidences<DoNotRegisterDefs>();
             }
             --it;
           } else {
@@ -293,7 +293,7 @@ namespace libsemigroups {
               } else if (u_end != v_end) {
                 did_def = true;
                 _word_graph.merge_nodes_no_checks(u_end, v_end);
-                _word_graph.process_coincidences<DoNotRegisterDefs>();
+                _word_graph.template process_coincidences<DoNotRegisterDefs>();
               }
             } else {
               --it;
