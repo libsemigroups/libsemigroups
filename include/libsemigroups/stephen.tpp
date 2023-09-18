@@ -41,6 +41,52 @@ namespace libsemigroups {
                       p.alphabet().size());
       return *this;
     }
+
+    void set_target_no_checks(presentation_type const& p,
+                              node_type                from,
+                              label_type               letter,
+                              node_type                to) {
+      WordGraphWithSources::set_target_no_checks(from, letter, to);
+      if constexpr (IsInversePresentation<presentation_type>) {
+        // convert l (which is an index)
+        // -> actual letter
+        // -> inverse of letter
+        // -> index of inverse of letter
+        auto ll             = p.index(p.inverse(p.letter(letter)));
+        auto inverse_target = target_no_checks(to, ll);
+        if (inverse_target != UNDEFINED && inverse_target != from) {
+          merge_nodes_no_checks(from, inverse_target);
+          process_coincidences<DoNotRegisterDefs>();
+          return;
+        }
+        WordGraphWithSources::set_target_no_checks(to, ll, from);
+      }
+    }
+
+    std::pair<bool, node_type>
+    complete_path(presentation_type const&  p,
+                  node_type                 c,
+                  word_type::const_iterator first,
+                  word_type::const_iterator last) noexcept {
+      if (first == last) {
+        return std::make_pair(false, c);
+      }
+      LIBSEMIGROUPS_ASSERT(first < last);
+      word_type::const_iterator it;
+      std::tie(c, it)
+          = word_graph::last_node_on_path_no_checks(*this, c, first, last);
+      bool result = false;
+      for (; it < last; ++it) {
+        node_type d = target_no_checks(c, *it);
+        if (d == UNDEFINED) {
+          d = new_node();
+          StephenGraph::set_target_no_checks(p, c, *it, d);
+          result = true;
+        }
+        c = d;
+      }
+      return std::make_pair(result, c);
+    }
   };
 
   template <typename P>
@@ -129,54 +175,6 @@ namespace libsemigroups {
   ////////////////////////////////////////////////////////////////////////
 
   template <typename P>
-  void Stephen<P>::set_target_no_checks(node_type  from,
-                                        label_type letter,
-                                        node_type  to) {
-    _word_graph.set_target_no_checks(from, letter, to);
-    if constexpr (IsInversePresentation<presentation_type>) {
-      // convert l (which is an index)
-      // -> actual letter
-      // -> inverse of letter
-      // -> index of inverse of letter
-      auto const& p              = presentation();
-      auto        ll             = p.index(p.inverse(p.letter(letter)));
-      auto        inverse_target = _word_graph.target_no_checks(to, ll);
-      if (inverse_target != UNDEFINED && inverse_target != from) {
-        _word_graph.merge_nodes_no_checks(from, inverse_target);
-        _word_graph.template process_coincidences<DoNotRegisterDefs>();
-        return;
-      }
-      _word_graph.set_target_no_checks(to, ll, from);
-    }
-  }
-
-  template <typename P>
-  std::pair<bool, typename Stephen<P>::node_type>
-  Stephen<P>::complete_path(StephenGraph&             wg,
-                            node_type                 c,
-                            word_type::const_iterator first,
-                            word_type::const_iterator last) noexcept {
-    if (first == last) {
-      return std::make_pair(false, c);
-    }
-    LIBSEMIGROUPS_ASSERT(first < last);
-    word_type::const_iterator it;
-    std::tie(c, it)
-        = word_graph::last_node_on_path_no_checks(wg, c, first, last);
-    bool result = false;
-    for (; it < last; ++it) {
-      node_type d = wg.target_no_checks(c, *it);
-      if (d == UNDEFINED) {
-        d = wg.new_node();
-        set_target_no_checks(c, *it, d);
-        result = true;
-      }
-      c = d;
-    }
-    return std::make_pair(result, c);
-  }
-
-  template <typename P>
   void Stephen<P>::report_status(
       std::chrono::high_resolution_clock::time_point const& start_time) {
     if (!report()) {
@@ -247,7 +245,7 @@ namespace libsemigroups {
     auto start_time = std::chrono::high_resolution_clock::now();
     validate(presentation());  // throws if no presentation is defined
     _word_graph.init(deref_if_necessary(presentation()));
-    complete_path(_word_graph, 0, _word.cbegin(), _word.cend());
+    _word_graph.complete_path(presentation(), 0, _word.cbegin(), _word.cend());
     node_type& current     = _word_graph.cursor();
     auto const rules_begin = deref_if_necessary(presentation()).rules.cbegin();
     auto const rules_end   = deref_if_necessary(presentation()).rules.cend();
@@ -271,14 +269,15 @@ namespace libsemigroups {
               c       = current;
               v_end   = c;
             } else {
-              std::tie(did_def, c) = complete_path(
-                  _word_graph, current, it->cbegin(), it->cend() - 1);
+              std::tie(did_def, c) = _word_graph.complete_path(
+                  presentation(), current, it->cbegin(), it->cend() - 1);
               v_end = _word_graph.target_no_checks(c, it->back());
             }
             if (v_end == UNDEFINED) {
               LIBSEMIGROUPS_ASSERT(!it->empty());
               did_def = true;
-              set_target_no_checks(c, it->back(), u_end);
+              _word_graph.set_target_no_checks(
+                  presentation(), c, it->back(), u_end);
             } else if (u_end != v_end) {
               did_def = true;
               _word_graph.merge_nodes_no_checks(u_end, v_end);
@@ -296,14 +295,15 @@ namespace libsemigroups {
                 c       = current;
                 u_end   = c;
               } else {
-                std::tie(did_def, c) = complete_path(
-                    _word_graph, current, it->cbegin(), it->cend() - 1);
+                std::tie(did_def, c) = _word_graph.complete_path(
+                    presentation(), current, it->cbegin(), it->cend() - 1);
                 u_end = _word_graph.target_no_checks(c, it->back());
               }
               if (u_end == UNDEFINED) {
                 LIBSEMIGROUPS_ASSERT(!it->empty());
                 did_def = true;
-                set_target_no_checks(c, it->back(), v_end);
+                _word_graph.set_target_no_checks(
+                    presentation(), c, it->back(), v_end);
               } else if (u_end != v_end) {
                 did_def = true;
                 _word_graph.merge_nodes_no_checks(u_end, v_end);

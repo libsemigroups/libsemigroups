@@ -284,22 +284,10 @@ namespace libsemigroups {
       return _finished;
     }
 
-    using label_type = word_graph_type::label_type;
-
-    // This is here because StephenGraph doesn't know about the presentation.
-    void set_target_no_checks(node_type from, label_type letter, node_type to);
-
-    // This also has to be here because it calls set_target_no_checks.
-    std::pair<bool, node_type>
-    complete_path(StephenGraph&             wg,
-                  node_type                 c,
-                  word_type::const_iterator first,
-                  word_type::const_iterator last) noexcept;
+    void standardize();
 
     void report_status(
         std::chrono::high_resolution_clock::time_point const& start_time);
-
-    void standardize();
   };
 
   // Deduction guides
