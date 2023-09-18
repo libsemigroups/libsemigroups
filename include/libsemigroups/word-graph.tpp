@@ -1143,10 +1143,10 @@ namespace libsemigroups {
     return os;
   }
 
+  // TODO: Refactor to use vectors
   template <typename Node>
-  WordGraph<Node>
-  to_word_graph(size_t                                             num_nodes,
-                std::initializer_list<std::initializer_list<Node>> il) {
+  WordGraph<Node> to_word_graph(size_t                                num_nodes,
+                                std::vector<std::vector<Node>> const& il) {
     WordGraph<Node> result(num_nodes, il.begin()->size());
     for (size_t i = 0; i < il.size(); ++i) {
       for (size_t j = 0; j < (il.begin() + i)->size(); ++j) {
@@ -1157,6 +1157,12 @@ namespace libsemigroups {
       }
     }
     return result;
+  }
+
+  template <typename Node>
+  WordGraph<Node> to_word_graph(size_t num_nodes,
+                                std::initializer_list<std::vector<Node>> il) {
+    return to_word_graph<Node>(num_nodes, std::vector<std::vector<Node>>(il));
   }
 
 }  // namespace libsemigroups

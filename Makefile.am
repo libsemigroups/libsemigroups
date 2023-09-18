@@ -45,6 +45,7 @@ pkgconfig_DATA     = libsemigroups.pc
 
 ## libsemigroups headers
 pkginclude_HEADERS =  include/libsemigroups/action.hpp
+pkginclude_HEADERS += include/libsemigroups/action.tpp
 pkginclude_HEADERS += include/libsemigroups/adapters.hpp
 pkginclude_HEADERS += include/libsemigroups/bipart.hpp
 pkginclude_HEADERS += include/libsemigroups/bitset.hpp
@@ -84,6 +85,7 @@ pkginclude_HEADERS += include/libsemigroups/pbr.hpp
 pkginclude_HEADERS += include/libsemigroups/presentation.hpp
 pkginclude_HEADERS += include/libsemigroups/presentation.tpp
 pkginclude_HEADERS += include/libsemigroups/ranges.hpp
+pkginclude_HEADERS += include/libsemigroups/ranges.tpp
 pkginclude_HEADERS += include/libsemigroups/runner.hpp
 pkginclude_HEADERS += include/libsemigroups/schreier-sims.hpp
 pkginclude_HEADERS += include/libsemigroups/sims1.hpp
@@ -103,28 +105,36 @@ pkginclude_HEADERS += include/libsemigroups/word-graph.tpp
 pkginclude_HEADERS += include/libsemigroups/word-graph-with-sources.hpp
 pkginclude_HEADERS += include/libsemigroups/word-graph-with-sources.tpp
 pkginclude_HEADERS += include/libsemigroups/words.hpp
+pkginclude_HEADERS += include/libsemigroups/words.tpp
 
-pkginclude_HEADERS += include/libsemigroups/detail/bruidhinn-traits.hpp
-pkginclude_HEADERS += include/libsemigroups/detail/containers.hpp
-pkginclude_HEADERS += include/libsemigroups/detail/felsch-tree.hpp
-pkginclude_HEADERS += include/libsemigroups/detail/function-ref.hpp
-pkginclude_HEADERS += include/libsemigroups/detail/int-range.hpp
-pkginclude_HEADERS += include/libsemigroups/detail/iterator.hpp
-pkginclude_HEADERS += include/libsemigroups/detail/kbe.hpp
-pkginclude_HEADERS += include/libsemigroups/detail/ke.hpp
-pkginclude_HEADERS += include/libsemigroups/detail/multi-string-view.hpp
-pkginclude_HEADERS += include/libsemigroups/detail/node-managed-graph.hpp
-pkginclude_HEADERS += include/libsemigroups/detail/node-managed-graph.tpp
-pkginclude_HEADERS += include/libsemigroups/detail/node-manager.hpp
-pkginclude_HEADERS += include/libsemigroups/detail/node-manager.tpp
-pkginclude_HEADERS += include/libsemigroups/detail/pool.hpp
-pkginclude_HEADERS += include/libsemigroups/detail/race.hpp
-pkginclude_HEADERS += include/libsemigroups/detail/report.hpp
-pkginclude_HEADERS += include/libsemigroups/detail/stl.hpp
-pkginclude_HEADERS += include/libsemigroups/detail/string.hpp
-pkginclude_HEADERS += include/libsemigroups/detail/tce.hpp
-pkginclude_HEADERS += include/libsemigroups/detail/timer.hpp
-pkginclude_HEADERS += include/libsemigroups/detail/uf.hpp
+detailincludedir = $(includedir)/libsemigroups/detail
+detailinclude_HEADERS = include/libsemigroups/detail/bruidhinn-traits.hpp
+detailinclude_HEADERS += include/libsemigroups/detail/containers.hpp
+detailinclude_HEADERS += include/libsemigroups/detail/felsch-tree.hpp
+detailinclude_HEADERS += include/libsemigroups/detail/function-ref.hpp
+detailinclude_HEADERS += include/libsemigroups/detail/int-range.hpp
+detailinclude_HEADERS += include/libsemigroups/detail/iterator.hpp
+detailinclude_HEADERS += include/libsemigroups/detail/kbe.hpp
+detailinclude_HEADERS += include/libsemigroups/detail/ke.hpp
+detailinclude_HEADERS += include/libsemigroups/detail/multi-string-view.hpp
+detailinclude_HEADERS += include/libsemigroups/detail/node-managed-graph.hpp
+detailinclude_HEADERS += include/libsemigroups/detail/node-managed-graph.tpp
+detailinclude_HEADERS += include/libsemigroups/detail/node-manager.hpp
+detailinclude_HEADERS += include/libsemigroups/detail/node-manager.tpp
+detailinclude_HEADERS += include/libsemigroups/detail/pool.hpp
+detailinclude_HEADERS += include/libsemigroups/detail/race.hpp
+detailinclude_HEADERS += include/libsemigroups/detail/report.hpp
+detailinclude_HEADERS += include/libsemigroups/detail/stl.hpp
+detailinclude_HEADERS += include/libsemigroups/detail/string.hpp
+detailinclude_HEADERS += include/libsemigroups/detail/tce.hpp
+detailinclude_HEADERS += include/libsemigroups/detail/timer.hpp
+detailinclude_HEADERS += include/libsemigroups/detail/uf.hpp
+
+magicenumincludedir = $(includedir)/libsemigroups/magic_enum
+magicenuminclude_HEADERS = extern/magic_enum/magic_enum.hpp
+
+rxrangesincludedir = $(includedir)/libsemigroups/rx
+rxrangesinclude_HEADERS = extern/rx-ranges/include/rx/ranges.hpp
 
 textflowcppincludedir = $(includedir)/libsemigroups/textflowcpp
 textflowcppinclude_HEADERS=extern/textflowcpp/TextFlow.hpp
@@ -211,6 +221,17 @@ eigeninclude_HEADERS += extern/eigen-3.3.9/Eigen/SparseCholesky
 eigeninclude_HEADERS += extern/eigen-3.3.9/Eigen/UmfPackSupport
 eigeninclude_HEADERS += extern/eigen-3.3.9/Eigen/Sparse
 eigeninclude_HEADERS += extern/eigen-3.3.9/Eigen/Householder
+
+eigenunsupportedincludedir = $(includedir)/libsemigroups/unsupported/Eigen
+eigenunsupportedinclude_HEADERS =  extern/eigen-3.3.9/unsupported/Eigen/MatrixFunctions
+
+eigenunsupportedsrcincludedir = $(includedir)/libsemigroups/unsupported/Eigen/src/MatrixFunctions
+eigenunsupportedsrcinclude_HEADERS = extern/eigen-3.3.9/unsupported/Eigen/src/MatrixFunctions/MatrixExponential.h
+eigenunsupportedsrcinclude_HEADERS += extern/eigen-3.3.9/unsupported/Eigen/src/MatrixFunctions/MatrixLogarithm.h
+eigenunsupportedsrcinclude_HEADERS += extern/eigen-3.3.9/unsupported/Eigen/src/MatrixFunctions/MatrixSquareRoot.h
+eigenunsupportedsrcinclude_HEADERS += extern/eigen-3.3.9/unsupported/Eigen/src/MatrixFunctions/MatrixFunction.h
+eigenunsupportedsrcinclude_HEADERS += extern/eigen-3.3.9/unsupported/Eigen/src/MatrixFunctions/MatrixPower.h
+eigenunsupportedsrcinclude_HEADERS += extern/eigen-3.3.9/unsupported/Eigen/src/MatrixFunctions/StemFunction.h
 
 eigensrcincludedir = $(includedir)/libsemigroups/Eigen/src
 
