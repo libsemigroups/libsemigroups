@@ -171,8 +171,8 @@ namespace libsemigroups {
     for (auto const& letter : _alphabet) {
       auto it = alphabet_map.emplace(letter, index++);
       if (!it.second) {
-        LIBSEMIGROUPS_EXCEPTION("invalid alphabet, duplicate letter {}!",
-                                letter);
+        LIBSEMIGROUPS_EXCEPTION(
+            "invalid alphabet {}, duplicate letter {}!", _alphabet, letter);
       }
     }
   }
@@ -195,14 +195,13 @@ namespace libsemigroups {
     template <typename Word>
     void validate_semigroup_inverses(Presentation<Word> const& p,
                                      Word const&               vals) {
-      p.validate_word(vals.begin(), vals.end());
-
       if (vals.size() != p.alphabet().size()) {
         LIBSEMIGROUPS_EXCEPTION(
             "invalid number of inverses, expected {} but found {}",
             p.alphabet().size(),
             vals.size());
       }
+      p.validate_word(vals.begin(), vals.end());
 
       Word cpy = vals;
       std::sort(cpy.begin(), cpy.end());

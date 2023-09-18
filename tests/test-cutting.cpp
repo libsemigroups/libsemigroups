@@ -156,4 +156,76 @@ namespace libsemigroups {
     REQUIRE(c.number_of_r_classes() == 64);
   }
 
+  LIBSEMIGROUPS_TEST_CASE("Cutting",
+                          "007",
+                          "step_hen Stephen test case 003",
+                          "[cutting][quick]") {
+    detail::StringToWord           to_word("xyXY");
+    InversePresentation<word_type> p;
+    p.alphabet(to_word("xyXY"));
+    p.inverses(to_word("XYxy"));
+    presentation::add_rule(p, to_word("xxx"), to_word("x"));
+    presentation::add_rule(p, to_word("yyy"), to_word("y"));
+    presentation::add_rule(p, to_word("xyy"), to_word("yxx"));
+
+    auto c = Cutting(p);
+    REQUIRE(c.size() == 7);
+    REQUIRE(c.number_of_r_classes() == 4);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Cutting",
+                          "008",
+                          "step_hen Stephen test case 005",
+                          "[cutting][quick]") {
+    detail::StringToWord           to_word("xeXE");
+    InversePresentation<word_type> p;
+    p.alphabet(to_word("xeXE"));
+    p.inverses(to_word("XExe"));
+    presentation::add_rule(p, to_word("xxxx"), to_word("x"));
+    presentation::add_rule(p, to_word("ee"), to_word("e"));
+
+    auto c = Cutting(p);
+    REQUIRE(c.size() == 26);
+    REQUIRE(c.number_of_r_classes() == 10);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Cutting",
+                          "009",
+                          "step_hen Stephen test case 006",
+                          "[cutting][quick]") {
+    detail::StringToWord           to_word("abcABC");
+    InversePresentation<word_type> p;
+    p.contains_empty_word(true);
+    p.alphabet(to_word("abcABC"));
+    p.inverses(to_word("ABCabc"));
+
+    presentation::add_rule(p, to_word("aaa"), to_word(""));
+    presentation::add_rule(p, to_word("bb"), to_word(""));
+    presentation::add_rule(p, to_word("Ab"), to_word("ba"));
+    presentation::add_rule(p, to_word("bA"), to_word("ab"));
+    presentation::add_rule(p, to_word("aba"), to_word("b"));
+    presentation::add_rule(p, to_word("bab"), to_word("A"));
+    presentation::add_rule(p, to_word("cb"), to_word("bc"));
+    presentation::add_rule(p, to_word("cc"), to_word("c"));
+    presentation::add_rule(p, to_word("bcA"), to_word("cab"));
+    presentation::add_rule(p, to_word("bcab"), to_word("cA"));
+    presentation::add_rule(p, to_word("Acac"), to_word("bcac"));
+    presentation::add_rule(p, to_word("abcac"), to_word("cac"));
+    presentation::add_rule(p, to_word("acAc"), to_word("cabc"));
+    presentation::add_rule(p, to_word("bacA"), to_word("Acab"));
+    presentation::add_rule(p, to_word("bacab"), to_word("AcA"));
+    presentation::add_rule(p, to_word("bacac"), to_word("acac"));
+    presentation::add_rule(p, to_word("cAca"), to_word("bcac"));
+    presentation::add_rule(p, to_word("cabca"), to_word("cac"));
+    presentation::add_rule(p, to_word("cacA"), to_word("cabc"));
+    presentation::add_rule(p, to_word("cacab"), to_word("caca"));
+    presentation::add_rule(p, to_word("Acabc"), to_word("cAc"));
+    presentation::add_rule(p, to_word("acacac"), to_word("cacac"));
+    presentation::add_rule(p, to_word("bcacac"), to_word("cacac"));
+    presentation::add_rule(p, to_word("cacaca"), to_word("cacac"));
+
+    auto c = Cutting(p);
+    REQUIRE(c.size() == 34);
+    REQUIRE(c.number_of_r_classes() == 8);
+  }
 }  // namespace libsemigroups
