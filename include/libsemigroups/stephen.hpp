@@ -161,6 +161,7 @@ namespace libsemigroups {
       init(q);
     }
 
+    // TODO to tpp
     template <typename Q>
     Stephen& init(Q const& q) {
       static_assert(((IsInversePresentation<P>) == (IsInversePresentation<Q>) )
@@ -272,6 +273,9 @@ namespace libsemigroups {
     // Throws if run throws, also this is not in the helper namespace because
     // we cache the return value.
     node_type accept_state();
+    node_type initial_state() {
+      return 0;
+    }
 
    private:
     Stephen& init_after_presentation_set();
@@ -291,9 +295,9 @@ namespace libsemigroups {
   };
 
   // Deduction guides
-  // The following is not a mistake but intentional, if no presentation type
-  // is explicitly used, then we use Presentation<word_type>. The only other
-  // alternative is to use a std::shared_ptr<Presentation<word_type>>  or
+  // The following is not a mistake but intentional, if no presentation type is
+  // explicitly used, then we use Presentation<word_type>. The only other
+  // alternative is to use a std::shared_ptr<Presentation<word_type>> or
   // std::shared_ptr<InversePresentation<word_type>>;
   // Presentation<std::string> is not allowed.
   template <typename Word>
@@ -340,15 +344,15 @@ namespace libsemigroups {
     // TODO left_factors range object
     // TODO words_accepted range object
 
+    // TODO to tpp
     template <typename PresentationType>
     const_iterator_words_accepted
     cbegin_words_accepted(Stephen<PresentationType>& s,
                           size_t                     min = 0,
                           size_t                     max = POSITIVE_INFINITY) {
-      using node_type = typename Stephen<PresentationType>::node_type;
       s.run();
       return cbegin_pstislo(
-          s.word_graph(), node_type(0), s.accept_state(), min, max);
+          s.word_graph(), s.initial_state(), s.accept_state(), min, max);
     }
 
     template <typename PresentationType>
@@ -356,6 +360,12 @@ namespace libsemigroups {
     cend_words_accepted(Stephen<PresentationType>& s) {
       s.run();
       return cend_pstislo(s.word_graph());
+    }
+
+    template <typename PresentationType>
+    auto words_accepted(Stephen<PresentationType>& s) {
+      Paths paths(s.word_graph());
+      return paths.from(s.initial_state()).to(s.accept_state());
     }
 
     template <typename PresentationType>
@@ -374,6 +384,13 @@ namespace libsemigroups {
       return cend_pislo(s.word_graph());
     }
 
+    template <typename PresentationType>
+    auto left_factors(Stephen<PresentationType>& s) {
+      Paths paths(s.word_graph());
+      return paths.from(s.initial_state());
+    }
+
+    // TODO to tpp
     template <typename PresentationType>
     uint64_t number_of_words_accepted(Stephen<PresentationType>& s,
                                       size_t                     min = 0,
@@ -402,6 +419,7 @@ namespace libsemigroups {
                                x.word());
   }
 
+  // TODO to tpp
   template <typename PresentationType>
   std::ostream& operator<<(std::ostream&                    os,
                            Stephen<PresentationType> const& x) {
