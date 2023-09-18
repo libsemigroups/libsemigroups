@@ -37,6 +37,7 @@
 
 #include "detail/int-range.hpp"           // for IntegralRange<>::v...
 #include "detail/node-managed-graph.hpp"  // for NodeManagedGraph
+#include "detail/stl.hpp"                 // for IsStdSharedPtr
 
 // TODO
 // * use presentation_type not PresentationType everywhere
@@ -68,24 +69,6 @@ namespace libsemigroups {
       return *this;
     }
   };
-
-  // TODO(Cutting): move to stl.hpp
-  namespace detail {
-    template <typename T>
-    struct IsStdSharedPtrHelper : std::false_type {};
-
-    template <typename T>
-    struct IsStdSharedPtrHelper<std::shared_ptr<Presentation<T>>>
-        : std::true_type {};
-
-    template <typename T>
-    struct IsStdSharedPtrHelper<std::shared_ptr<InversePresentation<T>>>
-        : std::true_type {};
-
-  }  // namespace detail
-
-  template <typename T>
-  static constexpr bool IsStdSharedPtr = detail::IsStdSharedPtrHelper<T>::value;
 
   //! Defined in ``stephen.hpp``.
   //!
@@ -122,12 +105,13 @@ namespace libsemigroups {
     static constexpr bool can_construct_from() {
       using Q = std::decay_t<P>;
       return (IsPresentation<Q> && IsPresentation<construct_from_type>)
-             || (std::is_same_v<Q, construct_from_type> && IsStdSharedPtr<Q>);
+             || (std::is_same_v<Q, construct_from_type>
+                 && detail::IsStdSharedPtr<Q>);
     }
 
     template <typename P>
     static constexpr auto& deref_if_necessary(P&& p) {
-      if constexpr (IsStdSharedPtr<std::decay_t<P>>) {
+      if constexpr (detail::IsStdSharedPtr<std::decay_t<P>>) {
         return *p;
       } else {
         return p;

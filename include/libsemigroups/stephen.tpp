@@ -49,7 +49,7 @@ namespace libsemigroups {
   template <typename ConstructFrom>
   template <typename P>
   void Stephen<ConstructFrom>::init_impl(P&& p, lvalue_tag) {
-    if constexpr (IsStdSharedPtr<construct_from_type>) {
+    if constexpr (detail::IsStdSharedPtr<construct_from_type>) {
       init_impl(std::move(construct_from_type(p)), non_lvalue_tag());
     } else {
       init_impl(std::move(to_presentation<word_type>(p)), non_lvalue_tag());

@@ -123,6 +123,15 @@ namespace libsemigroups {
         std::void_t<typename std::iterator_traits<T>::iterator_category>>
         : std::true_type {};
 
+    template <typename T>
+    struct IsStdSharedPtrHelper : std::false_type {};
+
+    template <typename T>
+    struct IsStdSharedPtrHelper<std::shared_ptr<T>> : std::true_type {};
+
+    template <typename T>
+    static constexpr bool IsStdSharedPtr = IsStdSharedPtrHelper<T>::value;
+
   }  // namespace detail
 }  // namespace libsemigroups
 

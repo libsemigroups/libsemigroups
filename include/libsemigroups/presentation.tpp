@@ -201,6 +201,8 @@ namespace libsemigroups {
             p.alphabet().size(),
             vals.size());
       }
+      // Validate word after checking the size so that we get a more meaningful
+      // exception message
       p.validate_word(vals.begin(), vals.end());
 
       Word cpy = vals;
