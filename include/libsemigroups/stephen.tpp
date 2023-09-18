@@ -41,30 +41,6 @@ namespace libsemigroups {
                       p.alphabet().size());
       return *this;
     }
-
-    std::pair<bool, node_type>
-    complete_path(node_type                 c,
-                  word_type::const_iterator first,
-                  word_type::const_iterator last) noexcept {
-      if (first == last) {
-        return std::make_pair(false, c);
-      }
-      LIBSEMIGROUPS_ASSERT(first < last);
-      word_type::const_iterator it;
-      std::tie(c, it)
-          = word_graph::last_node_on_path_no_checks(*this, c, first, last);
-      bool result = false;
-      for (; it < last; ++it) {
-        node_type d = target_no_checks(c, *it);
-        if (d == UNDEFINED) {
-          d = new_node();
-          set_target_no_checks(c, *it, d);
-          result = true;
-        }
-        c = d;
-      }
-      return std::make_pair(result, c);
-    }
   };
 
   template <typename P>
@@ -175,6 +151,32 @@ namespace libsemigroups {
   }
 
   template <typename P>
+  std::pair<bool, typename Stephen<P>::node_type>
+  Stephen<P>::complete_path(StephenGraph&             wg,
+                            node_type                 c,
+                            word_type::const_iterator first,
+                            word_type::const_iterator last) noexcept {
+    if (first == last) {
+      return std::make_pair(false, c);
+    }
+    LIBSEMIGROUPS_ASSERT(first < last);
+    word_type::const_iterator it;
+    std::tie(c, it)
+        = word_graph::last_node_on_path_no_checks(wg, c, first, last);
+    bool result = false;
+    for (; it < last; ++it) {
+      node_type d = wg.target_no_checks(c, *it);
+      if (d == UNDEFINED) {
+        d = wg.new_node();
+        set_target_no_checks(c, *it, d);
+        result = true;
+      }
+      c = d;
+    }
+    return std::make_pair(result, c);
+  }
+
+  template <typename P>
   void Stephen<P>::report_status(
       std::chrono::high_resolution_clock::time_point const& start_time) {
     if (!report()) {
@@ -245,7 +247,7 @@ namespace libsemigroups {
     auto start_time = std::chrono::high_resolution_clock::now();
     validate(presentation());  // throws if no presentation is defined
     _word_graph.init(deref_if_necessary(presentation()));
-    _word_graph.complete_path(0, _word.cbegin(), _word.cend());
+    complete_path(_word_graph, 0, _word.cbegin(), _word.cend());
     node_type& current     = _word_graph.cursor();
     auto const rules_begin = deref_if_necessary(presentation()).rules.cbegin();
     auto const rules_end   = deref_if_necessary(presentation()).rules.cend();
@@ -269,8 +271,8 @@ namespace libsemigroups {
               c       = current;
               v_end   = c;
             } else {
-              std::tie(did_def, c) = _word_graph.complete_path(
-                  current, it->cbegin(), it->cend() - 1);
+              std::tie(did_def, c) = complete_path(
+                  _word_graph, current, it->cbegin(), it->cend() - 1);
               v_end = _word_graph.target_no_checks(c, it->back());
             }
             if (v_end == UNDEFINED) {
@@ -294,8 +296,8 @@ namespace libsemigroups {
                 c       = current;
                 u_end   = c;
               } else {
-                std::tie(did_def, c) = _word_graph.complete_path(
-                    current, it->cbegin(), it->cend() - 1);
+                std::tie(did_def, c) = complete_path(
+                    _word_graph, current, it->cbegin(), it->cend() - 1);
                 u_end = _word_graph.target_no_checks(c, it->back());
               }
               if (u_end == UNDEFINED) {
