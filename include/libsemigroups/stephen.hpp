@@ -286,22 +286,8 @@ namespace libsemigroups {
 
     using label_type = word_graph_type::label_type;
 
-    // TODO move into StephenGraph itself maybe?
-    void def_edge(StephenGraph&            wg,
-                  node_type                from,
-                  node_type                to,
-                  label_type               letter,
-                  presentation_type const& p) const;
-
-    // TODO move into StephenGraph itself maybe?
-    std::pair<bool, node_type>
-    complete_path(StephenGraph&             wg,
-                  node_type                 c,
-                  word_type::const_iterator first,
-                  word_type::const_iterator last) noexcept;
-
-    using lvalue_tag     = std::true_type;
-    using non_lvalue_tag = std::false_type;
+    // This is here because StephenGraph doesn't know about the presentation.
+    void set_target_no_checks(node_type from, label_type letter, node_type to);
 
     void report_status(
         std::chrono::high_resolution_clock::time_point const& start_time);
