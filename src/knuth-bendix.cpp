@@ -1041,22 +1041,22 @@ namespace libsemigroups {
   KnuthBendix::Rule* KnuthBendix::new_rule(internal_string_type* lhs,
                                            internal_string_type* rhs) const {
     Rule* rule = new_rule();
-    delete rule->_lhs;
-    delete rule->_rhs;
+    rule->free();
     if (shortlex_compare(rhs, lhs)) {
-      rule->_lhs = lhs;
-      rule->_rhs = rhs;
+      rule->lhs(lhs);
+      rule->rhs(rhs);
     } else {
-      rule->_lhs = rhs;
-      rule->_rhs = lhs;
+      rule->lhs(rhs);
+      rule->rhs(lhs);
     }
     return rule;
   }
 
   KnuthBendix::Rule* KnuthBendix::new_rule(Rule const* rule1) const {
     Rule* rule2 = new_rule();
-    rule2->_lhs->append(*rule1->lhs());  // copies lhs
-    rule2->_rhs->append(*rule1->rhs());  // copies rhs
+    LIBSEMIGROUPS_ASSERT(rule2->empty());
+    rule2->lhs(new internal_string_type(*rule1->lhs()));  // copies lhs
+    rule2->rhs(new internal_string_type(*rule1->rhs()));  // copies rhs
     return rule2;
   }
 
@@ -1066,8 +1066,9 @@ namespace libsemigroups {
                         internal_string_type::const_iterator begin_rhs,
                         internal_string_type::const_iterator end_rhs) const {
     Rule* rule = new_rule();
-    rule->_lhs->append(begin_lhs, end_lhs);
-    rule->_rhs->append(begin_rhs, end_rhs);
+    LIBSEMIGROUPS_ASSERT(rule->empty());
+    rule->lhs(new internal_string_type(begin_lhs, end_lhs));  // copies lhs
+    rule->rhs(new internal_string_type(begin_rhs, end_rhs));  // copies rhs
     return rule;
   }
 
@@ -1105,9 +1106,10 @@ namespace libsemigroups {
                               it,
                               u->rhs()->cbegin(),
                               u->rhs()->cend());  // rule = A -> Q_i
-        rule->_lhs->append(*v->rhs());            // rule = AQ_j -> Q_i
-        rule->_rhs->append(v->lhs()->cbegin() + (u->lhs()->cend() - it),
-                           v->lhs()->cend());  // rule = AQ_j -> Q_iC
+        rule->append_lhs(v->rhs()->cbegin(),
+                         v->rhs()->cend());  // rule = AQ_j -> Q_i
+        rule->append_rhs(v->lhs()->cbegin() + (u->lhs()->cend() - it),
+                         v->lhs()->cend());  // rule = AQ_j -> Q_iC
         // rule is reordered during rewriting in
         // clear_stack
         push_stack(rule);

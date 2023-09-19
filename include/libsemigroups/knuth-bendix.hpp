@@ -99,12 +99,13 @@ namespace libsemigroups {
     // KnuthBendix - nested subclasses - private
     ////////////////////////////////////////////////////////////////////////
 
-    struct Rule {
+    class Rule {
       KnuthBendix const*    _kbimpl;
       internal_string_type* _lhs;
       internal_string_type* _rhs;
       int64_t               _id;
 
+     public:
       // Construct from KnuthBendix with new but empty internal_string_type's
       Rule(KnuthBendix const* kbimpl, int64_t id);
 
@@ -133,12 +134,38 @@ namespace libsemigroups {
         return _rhs;
       }
 
+      Rule& rhs(internal_string_type* rhs) noexcept {
+        _rhs = rhs;
+        return *this;
+      }
+
+      Rule& lhs(internal_string_type* lhs) noexcept {
+        _lhs = lhs;
+        return *this;
+      }
+
+      Rule& append_lhs(internal_string_type::const_iterator first,
+                       internal_string_type::const_iterator last) noexcept {
+        _lhs->append(first, last);
+        return *this;
+      }
+
+      Rule& append_rhs(internal_string_type::const_iterator first,
+                       internal_string_type::const_iterator last) noexcept {
+        _rhs->append(first, last);
+        return *this;
+      }
+
       void rewrite();
 
       void clear() {
         LIBSEMIGROUPS_ASSERT(_id != 0);
         _lhs->clear();
         _rhs->clear();
+      }
+
+      [[nodiscard]] bool empty() const noexcept {
+        return _lhs->empty() && _rhs->empty();
       }
 
       [[nodiscard]] inline bool active() const noexcept {
@@ -160,9 +187,12 @@ namespace libsemigroups {
         LIBSEMIGROUPS_ASSERT(_id != 0);
         return _id;
       }
-    };  // struct Rule
 
-    friend struct Rule;
+      void free() {
+        delete _lhs;
+        delete _rhs;
+      }
+    };  // class Rule
 
     class RuleLookup;  // forward decl
 
@@ -226,6 +256,7 @@ namespace libsemigroups {
       options::overlap overlap_policy;
     } _settings;
 
+    // TODO remove mutable
     mutable struct Stats {
       using time_point = std::chrono::high_resolution_clock::time_point;
       Stats() noexcept;
@@ -254,19 +285,20 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////
 
     std::list<Rule const*>           _active_rules;
-    mutable std::atomic<bool>        _confluent;
-    mutable std::atomic<bool>        _confluence_known;
-    bool                             _gen_pairs_initted;
-    WordGraph<size_t>                _gilman_graph;
-    std::vector<std::string>         _gilman_graph_node_labels;
-    mutable std::list<Rule*>         _inactive_rules;
-    bool                             _internal_is_same_as_external;
     std::list<Rule const*>::iterator _next_rule_it1;
     std::list<Rule const*>::iterator _next_rule_it2;
-    OverlapMeasure*                  _overlap_measure;
-    Presentation<std::string>        _presentation;
+    mutable std::list<Rule*>         _inactive_rules;
     std::set<RuleLookup>             _set_rules;
     std::stack<Rule*>                _stack;
+
+    mutable std::atomic<bool> _confluent;
+    mutable std::atomic<bool> _confluence_known;
+    bool                      _gen_pairs_initted;
+    WordGraph<size_t>         _gilman_graph;
+    std::vector<std::string>  _gilman_graph_node_labels;
+    bool                      _internal_is_same_as_external;
+    OverlapMeasure*           _overlap_measure;
+    Presentation<std::string> _presentation;
 
    public:
     //////////////////////////////////////////////////////////////////////////
@@ -494,18 +526,21 @@ namespace libsemigroups {
     }
 
     // TODO doc
+    // TODO required?
     KnuthBendix& presentation(Presentation<std::string> const& p) {
       throw_if_started();
       return private_init(kind(), p, false);
     }
 
     // TODO doc
+    // TODO required?
     KnuthBendix& presentation(Presentation<std::string>&& p) {
       throw_if_started();
       return private_init(kind(), std::move(p), false);
     }
 
     // TODO doc
+    // TODO required?
     template <typename Word>
     KnuthBendix& presentation(Presentation<Word> const& p) {
       throw_if_started();
@@ -513,6 +548,7 @@ namespace libsemigroups {
     }
 
     // TODO doc
+    // TODO required?
     template <typename Word>
     KnuthBendix& presentation(Presentation<Word>&& p) {
       throw_if_started();
@@ -672,6 +708,7 @@ namespace libsemigroups {
 
     // No in-place version just use rewrite instead, this only exists so that
     // run is called.
+    // TODO required?
     [[nodiscard]] std::string normal_form(std::string const& w);
 
     void report_rules() const;
