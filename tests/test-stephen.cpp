@@ -96,16 +96,16 @@ namespace libsemigroups {
       Stephen              S(p);
       S.set_word(to_word(word)).run();
 
-      REQUIRE((stephen::accepted_words(S) | to_strings(p.alphabet())
+      REQUIRE((stephen::words_accepted(S) | to_strings(p.alphabet())
                | rx::sort(LexicographicalCompare()) | rx::take(1))
                   .get()
               == nf);
 
-      REQUIRE(std::all_of(
-          strings.cbegin(), strings.cend(), [&S, &to_word](auto const& w) {
-            return stephen::accepts(S, to_word(w));
-          }));
-      REQUIRE(stephen::number_of_words_accepted(S) == strings.size());
+      REQUIRE((stephen::words_accepted(S) | rx::all_of([&S](auto const& w) {
+                 return stephen::accepts(S, w);
+               })));
+      REQUIRE(stephen::number_of_words_accepted(S)
+              == stephen::words_accepted(S).count());
     }
 
     void verify_c4_equal_to(Presentation<std::string> const& p,
@@ -1359,4 +1359,5 @@ namespace libsemigroups {
              == word_graph::last_node_on_path(s.word_graph(), 0, 7121_w);
     });
   }
+  // TODO tests for operator*=
 }  // namespace libsemigroups

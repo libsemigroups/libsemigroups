@@ -179,6 +179,16 @@ namespace libsemigroups {
     //   _preim_next.shrink_rows_to(m);
     // }
 
+    void disjoint_union_inplace(WordGraphWithSources<Node> const& that) {
+      size_t N = number_of_nodes();
+      add_nodes(that.number_of_nodes());
+      for (auto s : that.nodes()) {
+        for (auto [a, t] : that.targets(s)) {
+          set_target_no_checks(s + N, a, t + N);
+        }
+      }
+    }
+
    private:
     void remove_source_no_checks(node_type cx, label_type x, node_type d);
     void replace_target_no_checks(node_type c, label_type x, node_type d);

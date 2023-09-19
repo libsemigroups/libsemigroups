@@ -277,6 +277,19 @@ namespace libsemigroups {
       return 0;
     }
 
+    void operator*=(Stephen<P> const& y) {
+      // TODO if one of this and that is finished, then just tack on the linear
+      // graph.
+      // Basically glue the word graph of this to that of y edge by edge,
+      // and then run.
+
+      size_t const N = _word_graph.number_of_nodes();
+      _word_graph.disjoint_union_inplace(y.word_graph());
+      _word_graph.merge_nodes_no_checks(accept_state(), y.initial_state() + N);
+      // TODO put this into a state where run will work, and then run
+      // TODO have to fix running first
+    }
+
    private:
     Stephen& init_after_presentation_set();
     void     validate(presentation_type const&) const;

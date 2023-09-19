@@ -837,6 +837,19 @@ namespace libsemigroups {
     [[nodiscard]] rx::iterator_range<const_iterator_targets>
     targets(node_type n) const;
 
+    void disjoint_union_inplace(WordGraph<Node> const& that) {
+      if (that.number_of_nodes() == 0) {
+        return;
+      }
+      // TODO check out degrees agree!
+      size_t old_num_nodes = number_of_nodes();
+      _dynamic_array_2.append(that._dynamic_array_2);
+      auto first = _dynamic_array_2.begin_row(old_num_nodes);
+      auto last  = _dynamic_array_2.cend();
+      std::for_each(
+          first, last, [&old_num_nodes](node_type& n) { n += old_num_nodes; });
+    }
+
     ////////////////////////////////////////////////////////////////////////
     // WordGraph - strongly connected components - public
     ////////////////////////////////////////////////////////////////////////
