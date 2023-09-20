@@ -1317,7 +1317,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("Stephen",
                           "033",
                           "Whyte's 4-relation full transf monoid 8",
-                          "[stephen][fail]") {
+                          "[stephen][standard]") {
     auto                    rg = ReportGuard(true);
     Presentation<word_type> p;
     p.rules = {00_w,       {},         11_w,         {},           22_w,
@@ -1343,21 +1343,44 @@ namespace libsemigroups {
                217121_w,   17171_w,    0102720107_w, 7010270102_w, 107017_w,
                70107010_w, 1217_w,     7121_w};
     p.alphabet_from_rules();
-    // REQUIRE(presentation::length(p) == 398);
-    // REQUIRE(presentation::longest_subword_reducing_length(p) == 010_w);
-    // presentation::replace_word_with_new_generator(p, 010_w);
-    // REQUIRE(presentation::length(p) == 368);
-    // presentation::replace_word_with_new_generator(p, 010_w);
+    presentation::balance(p, 0123456_w, 0123456_w);
 
     Stephen s(p);
     s.set_word(1217_w);
-    // TODO doing run_for and then checking and running some more doesn't seem
-    // to work, seems to be going in a circle.
-    // TODO the next is excessively slow takes about 2 minutes to return.
-    s.run_until([&s]() {
-      return word_graph::last_node_on_path(s.word_graph(), 0, 1217_w)
-             == word_graph::last_node_on_path(s.word_graph(), 0, 7121_w);
-    });
+
+    while (!s.finished()) {
+      s.run_for(std::chrono::seconds(1));
+    }
+
+    REQUIRE(word_graph::last_node_on_path(s.word_graph(), 0, 1217_w).first
+            == word_graph::last_node_on_path(s.word_graph(), 0, 7121_w).first);
   }
-  // TODO tests for operator*=
+
+  LIBSEMIGROUPS_TEST_CASE("Stephen",
+                          "045",
+                          "Munn tree products",
+                          "[stephen][quick]") {
+    using words::pow;
+    detail::StringToWord to_word("abcABC");
+
+    InversePresentation<word_type> p;
+    p.alphabet(to_word("abcABC"));
+    p.inverses(to_word("ABCabc"));
+
+    auto S = Stephen(p);
+    auto T = Stephen(p);
+
+    S.set_word(to_word("aBbcaABAabCc"));
+    T.set_word(to_word("aBbcaABAabCc"));
+    S.run();
+    REQUIRE(S.word_graph().number_of_nodes() == 7);
+    T.run();
+    REQUIRE(T.word_graph().number_of_nodes() == 7);
+    S *= T;
+    REQUIRE(!S.finished());
+    S.run();
+    REQUIRE(S.finished());
+    REQUIRE(S.word_graph().number_of_nodes() == 0);
+    REQUIRE(stephen::accepts(S, pow(T.word(), 2)));
+  }
 }  // namespace libsemigroups

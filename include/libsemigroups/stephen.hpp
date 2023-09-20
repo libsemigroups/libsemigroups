@@ -99,6 +99,7 @@ namespace libsemigroups {
 
     // Data members
     node_type    _accept_state;
+    bool         _something_changed;
     bool         _finished;
     P            _presentation;
     word_type    _word;
@@ -250,6 +251,10 @@ namespace libsemigroups {
     //!
     //! \exceptions
     //! \noexcept
+    // TODO add a warning that if the value of word is set, then run is called,
+    // then word is set to another value, then word_graph() is accessed, then
+    // the returned value doesn't relate to the currently set value. Or better
+    // still don't have this behaviour
     word_graph_type const& word_graph() const noexcept {
       return _word_graph;
     }
@@ -272,28 +277,29 @@ namespace libsemigroups {
     //! function may never terminate.
     // Throws if run throws, also this is not in the helper namespace because
     // we cache the return value.
-    node_type accept_state();
-    node_type initial_state() {
+    node_type                  accept_state();
+    static constexpr node_type initial_state() {
       return 0;
     }
 
     void operator*=(Stephen<P> const& y) {
       // TODO if one of this and that is finished, then just tack on the linear
       // graph.
-      // Basically glue the word graph of this to that of y edge by edge,
-      // and then run.
 
       size_t const N = _word_graph.number_of_nodes();
-      _word_graph.disjoint_union_inplace(y.word_graph());
+      _word_graph.disjoint_union_inplace(y._word_graph);
       _word_graph.merge_nodes_no_checks(accept_state(), y.initial_state() + N);
-      // TODO put this into a state where run will work, and then run
-      // TODO have to fix running first
+      _word_graph.template process_coincidences<DoNotRegisterDefs>();
+      _accept_state = UNDEFINED;
+      _finished     = false;
+      _word.insert(_word.end(), y._word.cbegin(), y._word.cend());
+      _word_graph.cursor() = initial_state();
     }
 
    private:
     Stephen& init_after_presentation_set();
-    void     validate(presentation_type const&) const;
-    void     reset() noexcept;
+    void     throw_if_presentation_empty(presentation_type const&) const;
+    void     something_changed() noexcept;
 
     void run_impl() override;
 

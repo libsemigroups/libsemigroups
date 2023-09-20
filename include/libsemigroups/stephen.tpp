@@ -92,6 +92,7 @@ namespace libsemigroups {
   template <typename P>
   Stephen<P>::Stephen()
       : _accept_state(UNDEFINED),
+        _something_changed(true),
         _finished(false),
         _presentation(),
         _word(),
@@ -99,8 +100,9 @@ namespace libsemigroups {
 
   template <typename P>
   Stephen<P>& Stephen<P>::init() {
-    _accept_state = UNDEFINED;
-    _finished     = false;
+    _accept_state      = UNDEFINED;
+    _something_changed = true;
+    _finished          = false;
     _presentation.init();
     _word.clear();
     _word_graph.init();
@@ -118,24 +120,29 @@ namespace libsemigroups {
 
   template <typename P>
   Stephen<P>& Stephen<P>::init(P&& p) {
-    validate(deref_if_necessary(p));
+    deref_if_necessary(p).validate();
+    throw_if_presentation_empty(deref_if_necessary(p));
     _presentation = std::move(p);
-    return init_after_presentation_set();
+    something_changed();
+    _word.clear();
+    return *this;
   }
 
   template <typename P>
   Stephen<P>& Stephen<P>::init(P const& p) {
-    validate(deref_if_necessary(p));
+    deref_if_necessary(p).validate();
+    throw_if_presentation_empty(deref_if_necessary(p));
     _presentation = p;
-    return init_after_presentation_set();
+    something_changed();
+    _word.clear();
+    return *this;
   }
 
   template <typename P>
-  Stephen<P>& Stephen<P>::init_after_presentation_set() {
-    reset();
-    _word_graph.init(presentation());
-    _word.clear();
-    return *this;
+  void Stephen<P>::something_changed() noexcept {
+    _something_changed = true;
+    _finished          = false;
+    _accept_state      = UNDEFINED;
   }
 
   ////////////////////////////////////////////////////////////////////////
@@ -145,7 +152,7 @@ namespace libsemigroups {
   template <typename P>
   Stephen<P>& Stephen<P>::set_word(word_type const& w) {
     presentation().validate_word(w.cbegin(), w.cend());
-    reset();
+    something_changed();
     _word = w;
     return *this;
   }
@@ -153,7 +160,7 @@ namespace libsemigroups {
   template <typename P>
   Stephen<P>& Stephen<P>::set_word(word_type&& w) {
     presentation().validate_word(w.cbegin(), w.cend());
-    reset();
+    something_changed();
     _word = std::move(w);
     return *this;
   }
@@ -220,12 +227,6 @@ namespace libsemigroups {
   }
 
   template <typename P>
-  void Stephen<P>::reset() noexcept {
-    _finished     = false;
-    _accept_state = UNDEFINED;
-  }
-
-  template <typename P>
   void Stephen<P>::standardize() {
     word_graph::standardize(_word_graph);
     _word_graph.induced_subgraph_no_checks(
@@ -233,8 +234,8 @@ namespace libsemigroups {
   }
 
   template <typename P>
-  void Stephen<P>::validate(presentation_type const& p) const {
-    p.validate();
+  void
+  Stephen<P>::throw_if_presentation_empty(presentation_type const& p) const {
     if (p.alphabet().empty()) {
       LIBSEMIGROUPS_EXCEPTION("the presentation must not have 0 generators");
     }
@@ -243,12 +244,17 @@ namespace libsemigroups {
   template <typename P>
   void Stephen<P>::run_impl() {
     auto start_time = std::chrono::high_resolution_clock::now();
-    validate(presentation());  // throws if no presentation is defined
-    _word_graph.init(deref_if_necessary(presentation()));
-    _word_graph.complete_path(presentation(), 0, _word.cbegin(), _word.cend());
+
+    if (_something_changed) {
+      throw_if_presentation_empty(presentation());
+      _something_changed = false;
+      _word_graph.init(presentation());
+      _word_graph.complete_path(
+          presentation(), 0, _word.cbegin(), _word.cend());
+    }
     node_type& current     = _word_graph.cursor();
-    auto const rules_begin = deref_if_necessary(presentation()).rules.cbegin();
-    auto const rules_end   = deref_if_necessary(presentation()).rules.cend();
+    auto const rules_begin = presentation().rules.cbegin();
+    auto const rules_end   = presentation().rules.cend();
     bool       did_change  = true;
 
     do {
