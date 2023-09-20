@@ -585,13 +585,11 @@ namespace libsemigroups {
                                                       {0, 0, 0, 0, 1}})};
 
     Konieczny<BMat8> T(reg_bmat5_gens);
-    T.run_for(std::chrono::milliseconds(4000));
-    size_t number_of_classes = T.cend_D_classes() - T.cbegin_D_classes();
-    REQUIRE(number_of_classes > 0);
-    T.run_for(std::chrono::milliseconds(2000));
-    REQUIRE(size_t(T.cend_D_classes() - T.cbegin_D_classes())
-            > number_of_classes);
+    T.run_for(std::chrono::milliseconds(500));
+    REQUIRE(T.current_number_of_D_classes() > 0);
 
+    T.run();
+    REQUIRE(T.current_number_of_D_classes() == 704);
     REQUIRE(T.size() == 32311832);
     REQUIRE(T.number_of_regular_elements() == 8683982);
     REQUIRE(T.number_of_idempotents() == 73023);
