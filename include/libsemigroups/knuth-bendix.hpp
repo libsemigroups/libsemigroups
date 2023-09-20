@@ -284,12 +284,14 @@ namespace libsemigroups {
     // KnuthBendix - data - private
     ////////////////////////////////////////////////////////////////////////
 
-    std::list<Rule const*>           _active_rules;
-    std::list<Rule const*>::iterator _next_rule_it1;
-    std::list<Rule const*>::iterator _next_rule_it2;
-    mutable std::list<Rule*>         _inactive_rules;
-    std::set<RuleLookup>             _set_rules;
-    std::stack<Rule*>                _stack;
+    struct Rules {
+      std::list<Rule const*>           _active_rules;
+      std::list<Rule const*>::iterator _next_rule_it1;
+      std::list<Rule const*>::iterator _next_rule_it2;
+      mutable std::list<Rule*>         _inactive_rules;
+      std::set<RuleLookup>             _set_rules;
+      std::stack<Rule*>                _stack;
+    } _rules;
 
     mutable std::atomic<bool> _confluent;
     mutable std::atomic<bool> _confluence_known;
@@ -572,7 +574,7 @@ namespace libsemigroups {
     [[nodiscard]] size_t number_of_active_rules() const noexcept;
     // TODO doc
     [[nodiscard]] size_t number_of_inactive_rules() const noexcept {
-      return _inactive_rules.size();
+      return _rules._inactive_rules.size();
     }
 
     //! Returns a copy of the active rules.
@@ -598,7 +600,8 @@ namespace libsemigroups {
     [[nodiscard]] auto active_rules() const {
       using rx::iterator_range;
       using rx::transform;
-      return iterator_range(_active_rules.cbegin(), _active_rules.cend())
+      return iterator_range(_rules._active_rules.cbegin(),
+                            _rules._active_rules.cend())
              | transform([this](auto const& rule) {
                  // TODO remove allocation
                  internal_string_type lhs = internal_string_type(*rule->lhs());
