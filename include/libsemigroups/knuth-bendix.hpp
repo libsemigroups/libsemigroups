@@ -285,12 +285,46 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////
 
     struct Rules {
-      std::list<Rule const*>           _active_rules;
-      std::list<Rule const*>::iterator _next_rule_it1;
-      std::list<Rule const*>::iterator _next_rule_it2;
-      mutable std::list<Rule*>         _inactive_rules;
-      std::set<RuleLookup>             _set_rules;
-      std::stack<Rule*>                _stack;
+      using iterator       = std::list<Rule const*>::iterator;
+      using const_iterator = std::list<Rule const*>::const_iterator;
+      using const_reverse_iterator
+          = std::list<Rule const*>::const_reverse_iterator;
+
+      std::list<Rule const*>   _active_rules;
+      iterator                 _next_rule_it1;
+      iterator                 _next_rule_it2;
+      mutable std::list<Rule*> _inactive_rules;
+      std::set<RuleLookup>     _set_rules;
+      std::stack<Rule*>        _stack;
+
+      const_iterator begin() const noexcept {
+        return _active_rules.cbegin();
+      }
+
+      const_iterator end() const noexcept {
+        return _active_rules.cend();
+      }
+
+      iterator begin() noexcept {
+        return _active_rules.begin();
+      }
+
+      iterator end() noexcept {
+        return _active_rules.end();
+      }
+
+      const_reverse_iterator rbegin() const noexcept {
+        return _active_rules.crbegin();
+      }
+
+      const_reverse_iterator rend() const noexcept {
+        return _active_rules.crend();
+      }
+
+      size_t number_of_active_rules() const noexcept {
+        return _active_rules.size();
+      }
+
     } _rules;
 
     mutable std::atomic<bool> _confluent;
@@ -600,8 +634,7 @@ namespace libsemigroups {
     [[nodiscard]] auto active_rules() const {
       using rx::iterator_range;
       using rx::transform;
-      return iterator_range(_rules._active_rules.cbegin(),
-                            _rules._active_rules.cend())
+      return iterator_range(_rules.begin(), _rules.end())
              | transform([this](auto const& rule) {
                  // TODO remove allocation
                  internal_string_type lhs = internal_string_type(*rule->lhs());
