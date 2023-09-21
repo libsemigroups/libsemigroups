@@ -251,8 +251,6 @@ namespace libsemigroups {
         _settings(),
         _stats(),
         _rules(),
-        _confluent(),
-        _confluence_known(),
         _gen_pairs_initted(),
         _gilman_graph(),
         _internal_is_same_as_external(),
@@ -270,8 +268,8 @@ namespace libsemigroups {
 
     _gen_pairs_initted = false;
     _gilman_graph.init(0, 0);
-    _confluent                    = false;
-    _confluence_known             = false;
+    _rules._confluent             = false;
+    _rules._confluence_known      = false;
     _internal_is_same_as_external = false;
     _overlap_measure              = nullptr;
     _presentation.init();
@@ -314,8 +312,8 @@ namespace libsemigroups {
     // Don't copy the inactive rules, because why bother
 
     _settings                     = that._settings;
-    _confluent                    = that._confluent.load();
-    _confluence_known             = that._confluence_known.load();
+    _rules._confluent             = that._rules._confluent.load();
+    _rules._confluence_known      = that._rules._confluence_known.load();
     _gilman_graph                 = that._gilman_graph;
     _internal_is_same_as_external = that._internal_is_same_as_external;
     _stats.min_length_lhs_rule    = that._stats.min_length_lhs_rule;
@@ -589,7 +587,7 @@ namespace libsemigroups {
   //////////////////////////////////////////////////////////////////////////
 
   bool KnuthBendix::confluent_known() const noexcept {
-    return _confluence_known;
+    return _rules._confluence_known;
   }
 
   bool KnuthBendix::confluent() const {
@@ -597,10 +595,10 @@ namespace libsemigroups {
       return false;
     }
     bool reported = false;
-    if (!_confluence_known && (!running() || !stopped()) && !dead()) {
+    if (!_rules._confluence_known && (!running() || !stopped()) && !dead()) {
       LIBSEMIGROUPS_ASSERT(_rules._stack.empty());
-      _confluent        = true;
-      _confluence_known = true;
+      _rules._confluent        = true;
+      _rules._confluence_known = true;
       internal_string_type word1;
       internal_string_type word2;
       size_t               seen = 0;
@@ -644,8 +642,8 @@ namespace libsemigroups {
                 internal_rewrite(word1);
                 internal_rewrite(word2);
                 if (word1 != word2) {
-                  _confluent = false;
-                  return _confluent;
+                  _rules._confluent = false;
+                  return _rules._confluent;
                 }
               }
             }
@@ -668,13 +666,14 @@ namespace libsemigroups {
         }
       }
       if (running() && stopped()) {
-        _confluence_known = false;
+        _rules._confluence_known = false;
       }
     }
     if (reported) {
-      report_default("KnuthBendix:{} confluent!\n", (_confluent ? "" : " not"));
+      report_default("KnuthBendix:{} confluent!\n",
+                     (_rules._confluent ? "" : " not"));
     }
-    return _confluent;
+    return _rules._confluent;
   }
 
   bool KnuthBendix::finished_impl() const {
@@ -772,8 +771,8 @@ namespace libsemigroups {
     // and maybe more
     if (_settings.max_overlap == POSITIVE_INFINITY
         && _settings.max_rules == POSITIVE_INFINITY && !stopped()) {
-      _confluence_known = true;
-      _confluent        = true;
+      _rules._confluence_known = true;
+      _rules._confluent        = true;
       for (Rule* rule : _rules._inactive_rules) {
         delete rule;
       }
@@ -897,7 +896,7 @@ namespace libsemigroups {
     if (_rules._next_rule_it2 == _rules.end()) {
       --_rules._next_rule_it2;
     }
-    _confluence_known = false;
+    _rules._confluence_known = false;
     if (rule->lhs()->size() < _stats.min_length_lhs_rule) {
       // TODO(later) this is not valid when using
       // non-length reducing orderings (such as

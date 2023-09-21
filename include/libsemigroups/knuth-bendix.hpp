@@ -288,12 +288,14 @@ namespace libsemigroups {
       using const_reverse_iterator
           = std::list<Rule const*>::const_reverse_iterator;
 
-      std::list<Rule const*>   _active_rules;
-      iterator                 _next_rule_it1;
-      iterator                 _next_rule_it2;
-      mutable std::list<Rule*> _inactive_rules;
-      std::set<RuleLookup>     _set_rules;
-      std::stack<Rule*>        _stack;
+      std::list<Rule const*>    _active_rules;
+      mutable std::atomic<bool> _confluent;
+      mutable std::atomic<bool> _confluence_known;
+      iterator                  _next_rule_it1;
+      iterator                  _next_rule_it2;
+      mutable std::list<Rule*>  _inactive_rules;
+      std::set<RuleLookup>      _set_rules;
+      std::stack<Rule*>         _stack;
 
       const_iterator begin() const noexcept {
         return _active_rules.cbegin();
@@ -325,8 +327,6 @@ namespace libsemigroups {
 
     } _rules;
 
-    mutable std::atomic<bool> _confluent;
-    mutable std::atomic<bool> _confluence_known;
     bool                      _gen_pairs_initted;
     WordGraph<size_t>         _gilman_graph;
     std::vector<std::string>  _gilman_graph_node_labels;
