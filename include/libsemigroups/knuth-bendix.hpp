@@ -350,7 +350,9 @@ namespace libsemigroups {
         return _active_rules.size();
       }
       // private
-      void add_rule(Rule* rule);
+      void                add_rule(Rule* rule);
+      [[nodiscard]] Rule* new_rule();
+
       void rewrite(Rule* rule) const;
 
     } _rules;
@@ -801,15 +803,13 @@ namespace libsemigroups {
 
     void add_rule_impl(std::string const& p, std::string const& q);
 
-    [[nodiscard]] Rule* new_rule() const;
     [[nodiscard]] Rule* new_rule(internal_string_type* lhs,
-                                 internal_string_type* rhs) const;
-    [[nodiscard]] Rule* new_rule(Rule const* rule1) const;
-    [[nodiscard]] Rule*
-    new_rule(internal_string_type::const_iterator begin_lhs,
-             internal_string_type::const_iterator end_lhs,
-             internal_string_type::const_iterator begin_rhs,
-             internal_string_type::const_iterator end_rhs) const;
+                                 internal_string_type* rhs);
+    [[nodiscard]] Rule* new_rule(Rule const* rule1);
+    [[nodiscard]] Rule* new_rule(internal_string_type::const_iterator begin_lhs,
+                                 internal_string_type::const_iterator end_lhs,
+                                 internal_string_type::const_iterator begin_rhs,
+                                 internal_string_type::const_iterator end_rhs);
 
     void push_stack(Rule* rule);
     void overlap(Rule const* u, Rule const* v);

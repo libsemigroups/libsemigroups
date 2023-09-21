@@ -145,6 +145,21 @@ namespace libsemigroups {
     return *this;
   }
 
+  KnuthBendix::Rule* KnuthBendix::Rules::new_rule() {
+    ++_stats.total_rules;
+    Rule* rule;
+    if (!_inactive_rules.empty()) {
+      rule = _inactive_rules.front();
+      rule->clear();
+      rule->set_id(_stats.total_rules);
+      _inactive_rules.erase(_inactive_rules.begin());
+    } else {
+      rule = new Rule(_stats.total_rules);
+    }
+    LIBSEMIGROUPS_ASSERT(!rule->active());
+    return rule;
+  }
+
   void KnuthBendix::Rules::add_rule(Rule* rule) {
     LIBSEMIGROUPS_ASSERT(*rule->lhs() != *rule->rhs());
     _stats.max_word_length
@@ -1027,24 +1042,9 @@ namespace libsemigroups {
     }
   }
 
-  KnuthBendix::Rule* KnuthBendix::new_rule() const {
-    ++_stats.total_rules;
-    Rule* rule;
-    if (!_rules._inactive_rules.empty()) {
-      rule = _rules._inactive_rules.front();
-      rule->clear();
-      rule->set_id(_stats.total_rules);
-      _rules._inactive_rules.erase(_rules._inactive_rules.begin());
-    } else {
-      rule = new Rule(_stats.total_rules);
-    }
-    LIBSEMIGROUPS_ASSERT(!rule->active());
-    return rule;
-  }
-
   KnuthBendix::Rule* KnuthBendix::new_rule(internal_string_type* lhs,
-                                           internal_string_type* rhs) const {
-    Rule* rule = new_rule();
+                                           internal_string_type* rhs) {
+    Rule* rule = _rules.new_rule();
     rule->free();
     if (shortlex_compare(rhs, lhs)) {
       rule->lhs(lhs);
@@ -1056,8 +1056,8 @@ namespace libsemigroups {
     return rule;
   }
 
-  KnuthBendix::Rule* KnuthBendix::new_rule(Rule const* rule1) const {
-    Rule* rule2 = new_rule();
+  KnuthBendix::Rule* KnuthBendix::new_rule(Rule const* rule1) {
+    Rule* rule2 = _rules.new_rule();
     LIBSEMIGROUPS_ASSERT(rule2->empty());
     rule2->lhs(new internal_string_type(*rule1->lhs()));  // copies lhs
     rule2->rhs(new internal_string_type(*rule1->rhs()));  // copies rhs
@@ -1068,8 +1068,8 @@ namespace libsemigroups {
   KnuthBendix::new_rule(internal_string_type::const_iterator begin_lhs,
                         internal_string_type::const_iterator end_lhs,
                         internal_string_type::const_iterator begin_rhs,
-                        internal_string_type::const_iterator end_rhs) const {
-    Rule* rule = new_rule();
+                        internal_string_type::const_iterator end_rhs) {
+    Rule* rule = _rules.new_rule();
     LIBSEMIGROUPS_ASSERT(rule->empty());
     rule->lhs(new internal_string_type(begin_lhs, end_lhs));  // copies lhs
     rule->rhs(new internal_string_type(begin_rhs, end_rhs));  // copies rhs
