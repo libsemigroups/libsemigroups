@@ -190,6 +190,33 @@ namespace libsemigroups {
     return rule2;
   }
 
+  std::list<KnuthBendix::Rule const*>::iterator
+  KnuthBendix::Rules::remove_rule(std::list<Rule const*>::iterator it) {
+    // _stats.unique_lhs_rules.erase(*((*it)->lhs()));
+    Rule* rule = const_cast<Rule*>(*it);
+    rule->deactivate();
+    if (it != _next_rule_it1 && it != _next_rule_it2) {
+      it = _active_rules.erase(it);
+    } else if (it == _next_rule_it1 && it != _next_rule_it2) {
+      _next_rule_it1 = _active_rules.erase(it);
+      it             = _next_rule_it1;
+    } else if (it != _next_rule_it1 && it == _next_rule_it2) {
+      _next_rule_it2 = _active_rules.erase(it);
+      it             = _next_rule_it2;
+    } else {
+      _next_rule_it1 = _active_rules.erase(it);
+      _next_rule_it2 = _next_rule_it1;
+      it             = _next_rule_it1;
+    }
+#ifdef LIBSEMIGROUPS_DEBUG
+    LIBSEMIGROUPS_ASSERT(_set_rules.erase(RuleLookup(rule)));
+#else
+    _set_rules.erase(RuleLookup(rule));
+#endif
+    LIBSEMIGROUPS_ASSERT(_set_rules.size() == number_of_active_rules());
+    return it;
+  }
+
   void KnuthBendix::Rules::add_rule(Rule* rule) {
     LIBSEMIGROUPS_ASSERT(*rule->lhs() != *rule->rhs());
     _stats.max_word_length
@@ -268,6 +295,56 @@ namespace libsemigroups {
     rewrite(*rule->lhs());
     rewrite(*rule->rhs());
     rule->reorder();
+  }
+
+  // FIXME(later) there is a possibly infinite loop here clear_stack ->
+  // push_stack -> clear_stack and so on
+  void KnuthBendix::Rules::push_stack(Rule* rule) {
+    LIBSEMIGROUPS_ASSERT(!rule->active());
+    if (*rule->lhs() != *rule->rhs()) {
+      _stack.emplace(rule);
+      clear_stack();
+    } else {
+      _inactive_rules.push_back(rule);
+    }
+  }
+
+  // TEST_2 from Sims, p76
+  void KnuthBendix::Rules::clear_stack() {
+    while (!_stack.empty()) {
+      _stats.max_stack_depth = std::max(_stats.max_stack_depth, _stack.size());
+
+      Rule* rule1 = _stack.top();
+      _stack.pop();
+      LIBSEMIGROUPS_ASSERT(!rule1->active());
+      LIBSEMIGROUPS_ASSERT(*rule1->lhs() != *rule1->rhs());
+      // Rewrite both sides and reorder if necessary . . .
+      rewrite(rule1);
+
+      if (*rule1->lhs() != *rule1->rhs()) {
+        internal_string_type const* lhs = rule1->lhs();
+        for (auto it = begin(); it != end();) {
+          Rule* rule2 = const_cast<Rule*>(*it);
+          if (rule2->lhs()->find(*lhs) != external_string_type::npos) {
+            it = remove_rule(it);
+            LIBSEMIGROUPS_ASSERT(*rule2->lhs() != *rule2->rhs());
+            // rule2 is added to _inactive_rules by
+            // clear_stack
+            _stack.emplace(rule2);
+          } else {
+            if (rule2->rhs()->find(*lhs) != external_string_type::npos) {
+              rewrite(*rule2->rhs());
+            }
+            ++it;
+          }
+        }
+        add_rule(rule1);
+        // rule1 is activated, we do this after removing rules that rule1 makes
+        // redundant to avoid failing to insert rule1 in _set_rules
+      } else {
+        _inactive_rules.push_back(rule1);
+      }
+    }
   }
 
   struct KnuthBendix::ABC : KnuthBendix::OverlapMeasure {
@@ -817,7 +894,7 @@ namespace libsemigroups {
       // is not modified by the call to clear_stack.
       LIBSEMIGROUPS_ASSERT((*_rules._next_rule_it1)->lhs()
                            != (*_rules._next_rule_it1)->rhs());
-      push_stack(_rules.copy_rule(*_rules._next_rule_it1));
+      _rules.push_stack(_rules.copy_rule(*_rules._next_rule_it1));
       ++_rules._next_rule_it1;
     }
     _rules._next_rule_it1 = _rules.begin();
@@ -846,7 +923,7 @@ namespace libsemigroups {
         nr = 0;
       }
       if (_rules._next_rule_it1 == _rules.end()) {
-        clear_stack();
+        _rules.clear_stack();
       }
     }
     // LIBSEMIGROUPS_ASSERT(_rules._stack.empty());
@@ -957,7 +1034,7 @@ namespace libsemigroups {
     auto qq = new external_string_type(q);
     external_to_internal_string(*pp);
     external_to_internal_string(*qq);
-    push_stack(_rules.new_rule(pp, qq));
+    _rules.push_stack(_rules.new_rule(pp, qq));
   }
 
   //////////////////////////////////////////////////////////////////////////
@@ -1072,18 +1149,6 @@ namespace libsemigroups {
     }
   }
 
-  // FIXME(later) there is a possibly infinite loop here clear_stack ->
-  // push_stack -> clear_stack and so on
-  void KnuthBendix::push_stack(Rule* rule) {
-    LIBSEMIGROUPS_ASSERT(!rule->active());
-    if (*rule->lhs() != *rule->rhs()) {
-      _rules._stack.emplace(rule);
-      clear_stack();
-    } else {
-      _rules._inactive_rules.push_back(rule);
-    }
-  }
-
   // OVERLAP_2 from Sims, p77
   void KnuthBendix::overlap(Rule const* u, Rule const* v) {
     LIBSEMIGROUPS_ASSERT(u->active() && v->active());
@@ -1112,7 +1177,7 @@ namespace libsemigroups {
                          v->lhs()->cend());  // rule = AQ_j -> Q_iC
         // rule is reordered during rewriting in
         // clear_stack
-        push_stack(rule);
+        _rules.push_stack(rule);
         // It can be that the iterator `it` is invalidated by the call to
         // push_stack (i.e. if `u` is deactivated, then rewritten, actually
         // changed, and reactivated) and that is the reason for the checks in
@@ -1122,74 +1187,6 @@ namespace libsemigroups {
         // added to the end of the active rules list.
       }
     }
-  }
-
-  // TEST_2 from Sims, p76
-  void KnuthBendix::clear_stack() {
-    while (!_rules._stack.empty() && !stopped()) {
-      _stats.max_stack_depth
-          = std::max(_stats.max_stack_depth, _rules._stack.size());
-
-      Rule* rule1 = _rules._stack.top();
-      _rules._stack.pop();
-      LIBSEMIGROUPS_ASSERT(!rule1->active());
-      LIBSEMIGROUPS_ASSERT(*rule1->lhs() != *rule1->rhs());
-      // Rewrite both sides and reorder if necessary . . .
-      _rules.rewrite(rule1);
-
-      if (*rule1->lhs() != *rule1->rhs()) {
-        internal_string_type const* lhs = rule1->lhs();
-        for (auto it = _rules.begin(); it != _rules.end();) {
-          Rule* rule2 = const_cast<Rule*>(*it);
-          if (rule2->lhs()->find(*lhs) != external_string_type::npos) {
-            it = remove_rule(it);
-            LIBSEMIGROUPS_ASSERT(*rule2->lhs() != *rule2->rhs());
-            // rule2 is added to _rules._inactive_rules by
-            // clear_stack
-            _rules._stack.emplace(rule2);
-          } else {
-            if (rule2->rhs()->find(*lhs) != external_string_type::npos) {
-              _rules.rewrite(*rule2->rhs());
-            }
-            ++it;
-          }
-        }
-        _rules.add_rule(rule1);
-        // rule1 is activated, we do this after removing rules that rule1 makes
-        // redundant to avoid failing to insert rule1 in _rules._set_rules
-      } else {
-        _rules._inactive_rules.push_back(rule1);
-      }
-      report_rules();
-    }
-  }
-
-  std::list<KnuthBendix::Rule const*>::iterator
-  KnuthBendix::remove_rule(std::list<Rule const*>::iterator it) {
-    _stats.unique_lhs_rules.erase(*((*it)->lhs()));
-    Rule* rule = const_cast<Rule*>(*it);
-    rule->deactivate();
-    if (it != _rules._next_rule_it1 && it != _rules._next_rule_it2) {
-      it = _rules._active_rules.erase(it);
-    } else if (it == _rules._next_rule_it1 && it != _rules._next_rule_it2) {
-      _rules._next_rule_it1 = _rules._active_rules.erase(it);
-      it                    = _rules._next_rule_it1;
-    } else if (it != _rules._next_rule_it1 && it == _rules._next_rule_it2) {
-      _rules._next_rule_it2 = _rules._active_rules.erase(it);
-      it                    = _rules._next_rule_it2;
-    } else {
-      _rules._next_rule_it1 = _rules._active_rules.erase(it);
-      _rules._next_rule_it2 = _rules._next_rule_it1;
-      it                    = _rules._next_rule_it1;
-    }
-#ifdef LIBSEMIGROUPS_DEBUG
-    LIBSEMIGROUPS_ASSERT(_rules._set_rules.erase(RuleLookup(rule)));
-#else
-    _rules._set_rules.erase(RuleLookup(rule));
-#endif
-    LIBSEMIGROUPS_ASSERT(_rules._set_rules.size()
-                         == _rules.number_of_active_rules());
-    return it;
   }
 
   void KnuthBendix::deactivate_all_rules() {

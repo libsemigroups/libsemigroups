@@ -361,7 +361,13 @@ namespace libsemigroups {
                internal_string_type::const_iterator end_rhs);
       [[nodiscard]] Rule* copy_rule(Rule const* rule1);
 
+      std::list<Rule const*>::iterator
+      remove_rule(std::list<Rule const*>::iterator it);
+
       void rewrite(Rule* rule) const;
+
+      void push_stack(Rule* rule);
+      void clear_stack();
 
     } _rules;
 
@@ -811,12 +817,7 @@ namespace libsemigroups {
 
     void add_rule_impl(std::string const& p, std::string const& q);
 
-    std::list<Rule const*>::iterator
-         remove_rule(std::list<Rule const*>::iterator it);
     void deactivate_all_rules();
-
-    void push_stack(Rule* rule);
-    void clear_stack();
 
     void overlap(Rule const* u, Rule const* v);
 
