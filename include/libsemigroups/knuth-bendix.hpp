@@ -313,12 +313,13 @@ namespace libsemigroups {
         // std::unordered_set<internal_string_type> unique_lhs_rules;
       };
 
+      // TODO remove const
       std::list<Rule const*>    _active_rules;
       mutable std::atomic<bool> _confluent;
       mutable std::atomic<bool> _confluence_known;
       iterator                  _next_rule_it1;
       iterator                  _next_rule_it2;
-      mutable std::list<Rule*>  _inactive_rules;
+      std::list<Rule*>          _inactive_rules;
       std::set<RuleLookup>      _set_rules;
       std::stack<Rule*>         _stack;
       Stats                     _stats;
@@ -326,12 +327,15 @@ namespace libsemigroups {
      public:
       Rules() = default;
 
+      // Rules(Rules const& that);
+      // Rules(Rules&& that);
       Rules& operator=(Rules const&);
+
       // TODO the other constructors
 
       ~Rules();
 
-      void init();
+      Rules& init();
 
       // public
       void rewrite(internal_string_type& u) const;
@@ -416,7 +420,6 @@ namespace libsemigroups {
       }
 
      private:
-      void                add_rule(Rule* rule);
       [[nodiscard]] Rule* new_rule();
 
       [[nodiscard]] Rule* new_rule(internal_string_type* lhs,
@@ -434,10 +437,11 @@ namespace libsemigroups {
         return rule;
       }
 
+      void add_rule(Rule* rule);
+
       [[nodiscard]] Rule* copy_rule(Rule const* rule1);
 
-      std::list<Rule const*>::iterator
-      remove_rule(std::list<Rule const*>::iterator it);
+      iterator remove_rule(iterator it);
 
       void rewrite(Rule* rule) const;
 

@@ -150,7 +150,7 @@ namespace libsemigroups {
     return *this;
   }
 
-  void KnuthBendix::Rules::init() {
+  KnuthBendix::Rules& KnuthBendix::Rules::init() {
     // Put all active rules and those rules in the stack into the
     // inactive_rules list
     for (Rule const* cptr : _active_rules) {
@@ -163,11 +163,12 @@ namespace libsemigroups {
       _inactive_rules.insert(_inactive_rules.end(), _stack.top());
       _stack.pop();
     }
-    _next_rule_it1 = end();
-    _next_rule_it2 = end();
+    _next_rule_it1 = _active_rules.end();
+    _next_rule_it2 = _active_rules.end();
     _set_rules.clear();
     _confluent        = false;
     _confluence_known = false;
+    return *this;
   }
 
   KnuthBendix::Rules& KnuthBendix::Rules::operator=(Rules const& that) {
@@ -175,18 +176,16 @@ namespace libsemigroups {
     for (Rule const* rule : that) {
       add_rule(copy_rule(rule));
     }
-    _next_rule_it1 = begin();
+    _next_rule_it1 = _active_rules.begin();
     std::advance(
         _next_rule_it1,
         std::distance(that.begin(),
-                      static_cast<std::list<Rule const*>::const_iterator>(
-                          that._next_rule_it1)));
-    _next_rule_it2 = begin();
+                      static_cast<const_iterator>(that._next_rule_it1)));
+    _next_rule_it2 = _active_rules.begin();
     std::advance(
         _next_rule_it2,
         std::distance(that.begin(),
-                      static_cast<std::list<Rule const*>::const_iterator>(
-                          that._next_rule_it2)));
+                      static_cast<const_iterator>(that._next_rule_it2)));
     // Don't copy the inactive rules, because why bother
     _confluent        = that._confluent.load();
     _confluence_known = that._confluence_known.load();
@@ -240,8 +239,7 @@ namespace libsemigroups {
     return rule2;
   }
 
-  std::list<KnuthBendix::Rule const*>::iterator
-  KnuthBendix::Rules::remove_rule(std::list<Rule const*>::iterator it) {
+  KnuthBendix::Rules::iterator KnuthBendix::Rules::remove_rule(iterator it) {
     // _stats.unique_lhs_rules.erase(*((*it)->lhs()));
     Rule* rule = const_cast<Rule*>(*it);
     rule->deactivate();
