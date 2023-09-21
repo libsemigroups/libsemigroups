@@ -1162,28 +1162,26 @@ namespace libsemigroups {
   // OVERLAP_2 from Sims, p77
   void KnuthBendix::overlap(Rule const* u, Rule const* v) {
     LIBSEMIGROUPS_ASSERT(u->active() && v->active());
-    auto limit
-        = u->lhs()->cend() - std::min(u->lhs()->size(), v->lhs()->size());
-    int64_t u_id = u->id();
-    int64_t v_id = v->id();
-    for (auto it = u->lhs()->cend() - 1;
+    auto const &ulhs = *(u->lhs()), vlhs = *(v->lhs());
+    auto const &urhs = *(u->rhs()), vrhs = *(v->rhs());
+    auto const  limit = ulhs.cend() - std::min(ulhs.size(), vlhs.size());
+
+    int64_t const u_id = u->id(), v_id = v->id();
+    for (auto it = ulhs.cend() - 1;
          it > limit && u_id == u->id() && v_id == v->id() && !stopped()
          && (_settings.max_overlap == POSITIVE_INFINITY
              || (*_overlap_measure)(u, v, it) <= _settings.max_overlap);
          --it) {
-      // Check if B = [it, u->lhs()->cend()) is a prefix
-      // of v->lhs()
-      if (detail::is_prefix(
-              v->lhs()->cbegin(), v->lhs()->cend(), it, u->lhs()->cend())) {
-        // u = P_i = AB -> Q_i and v = P_j = BC -> Q_j
-        // This version of new_rule does not reorder
-        // _rules.add_rule(AQ_j, Q_iC);
-        detail::MultiStringView lhs(u->lhs()->cbegin(), it);
-        lhs.append(v->rhs()->cbegin(), v->rhs()->cend());
-        detail::MultiStringView rhs(u->rhs()->cbegin(), u->rhs()->cend());
-        rhs.append(v->lhs()->cbegin() + (u->lhs()->cend() - it),
-                   v->lhs()->cend());  // rule = AQ_j -> Q_iC
-        _rules.add_rule(lhs, rhs);
+      // Check if B = [it, ulhs.cend()) is a prefix of v->lhs()
+      if (detail::is_prefix(vlhs.cbegin(), vlhs.cend(), it, ulhs.cend())) {
+        // u = P_i = AB -> Q_i and v = P_j = BC -> Q_j This version of new_rule
+        // does not reorder _rules.add_rule(AQ_j, Q_iC);
+        detail::MultiStringView x(ulhs.cbegin(), it);
+        x.append(vrhs.cbegin(), vrhs.cend());
+        detail::MultiStringView y(urhs.cbegin(), urhs.cend());
+        y.append(vlhs.cbegin() + (ulhs.cend() - it),
+                 vlhs.cend());  // rule = AQ_j -> Q_iC
+        _rules.add_rule(x, y);
         // It can be that the iterator `it` is invalidated by the call to
         // push_stack (i.e. if `u` is deactivated, then rewritten, actually
         // changed, and reactivated) and that is the reason for the checks in
