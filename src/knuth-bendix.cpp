@@ -38,6 +38,7 @@
 #include "libsemigroups/word-graph.hpp"    // for WordGraph
 #include "libsemigroups/words.hpp"         // for to_strings
 
+#include "libsemigroups/detail/multi-string-view.hpp"  // for is_prefix, maximum_common_prefix
 #include "libsemigroups/detail/report.hpp"  // for Reporter, REPORT_DEFAULT, REP...
 #include "libsemigroups/detail/string.hpp"  // for is_prefix, maximum_common_prefix
 
@@ -214,18 +215,6 @@ namespace libsemigroups {
     rule->lhs(lhs);
     rule->rhs(rhs);
     rule->reorder();
-    return rule;
-  }
-
-  KnuthBendix::Rule*
-  KnuthBendix::Rules::new_rule(internal_string_type::const_iterator begin_lhs,
-                               internal_string_type::const_iterator end_lhs,
-                               internal_string_type::const_iterator begin_rhs,
-                               internal_string_type::const_iterator end_rhs) {
-    Rule* rule = new_rule();
-    LIBSEMIGROUPS_ASSERT(rule->empty());
-    rule->lhs(new internal_string_type(begin_lhs, end_lhs));  // copies lhs
-    rule->rhs(new internal_string_type(begin_rhs, end_rhs));  // copies rhs
     return rule;
   }
 
@@ -1195,17 +1184,13 @@ namespace libsemigroups {
               v->lhs()->cbegin(), v->lhs()->cend(), it, u->lhs()->cend())) {
         // u = P_i = AB -> Q_i and v = P_j = BC -> Q_j
         // This version of new_rule does not reorder
-        Rule* rule = _rules.new_rule(u->lhs()->cbegin(),
-                                     it,
-                                     u->rhs()->cbegin(),
-                                     u->rhs()->cend());  // rule = A -> Q_i
-        rule->append_lhs(v->rhs()->cbegin(),
-                         v->rhs()->cend());  // rule = AQ_j -> Q_i
-        rule->append_rhs(v->lhs()->cbegin() + (u->lhs()->cend() - it),
-                         v->lhs()->cend());  // rule = AQ_j -> Q_iC
-        // rule is reordered during rewriting in
-        // clear_stack
-        _rules.push_stack(rule);
+        // _rules.add_rule(AQ_j, Q_iC);
+        detail::MultiStringView lhs(u->lhs()->cbegin(), it);
+        lhs.append(v->rhs()->cbegin(), v->rhs()->cend());
+        detail::MultiStringView rhs(u->rhs()->cbegin(), u->rhs()->cend());
+        rhs.append(v->lhs()->cbegin() + (u->lhs()->cend() - it),
+                   v->lhs()->cend());  // rule = AQ_j -> Q_iC
+        _rules.add_rule(lhs, rhs);
         // It can be that the iterator `it` is invalidated by the call to
         // push_stack (i.e. if `u` is deactivated, then rewritten, actually
         // changed, and reactivated) and that is the reason for the checks in

@@ -48,6 +48,8 @@
 #include "types.hpp"            // for word_type
 #include "word-graph.hpp"       // for WordGraph
 
+#include "detail/multi-string-view.hpp"  // for MultiStringView
+
 #include "rx/ranges.hpp"  // for iterator_range
 
 namespace libsemigroups {
@@ -384,16 +386,33 @@ namespace libsemigroups {
         return *this;
       }
 
+      void add_rule(detail::MultiStringView const& lhs,
+                    detail::MultiStringView const& rhs) {
+        if (lhs != rhs) {
+          push_stack(
+              new_rule(lhs.cbegin(), lhs.cend(), rhs.cbegin(), rhs.cend()));
+        }
+      }
+
       // private
       void                add_rule(Rule* rule);
       [[nodiscard]] Rule* new_rule();
       [[nodiscard]] Rule* new_rule(internal_string_type* lhs,
                                    internal_string_type* rhs);
-      [[nodiscard]] Rule*
-      new_rule(internal_string_type::const_iterator begin_lhs,
-               internal_string_type::const_iterator end_lhs,
-               internal_string_type::const_iterator begin_rhs,
-               internal_string_type::const_iterator end_rhs);
+
+      template <typename Iterator>
+      [[nodiscard]] Rule* new_rule(Iterator begin_lhs,
+                                   Iterator end_lhs,
+                                   Iterator begin_rhs,
+                                   Iterator end_rhs) {
+        Rule* rule = new_rule();
+        LIBSEMIGROUPS_ASSERT(rule->empty());
+        // TODO remove memory alloc here
+        rule->lhs(new internal_string_type(begin_lhs, end_lhs));  // copies lhs
+        rule->rhs(new internal_string_type(begin_rhs, end_rhs));  // copies rhs
+        return rule;
+      }
+
       [[nodiscard]] Rule* copy_rule(Rule const* rule1);
 
       std::list<Rule const*>::iterator
