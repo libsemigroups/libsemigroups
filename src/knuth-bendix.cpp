@@ -66,22 +66,11 @@ namespace libsemigroups {
   ////////////////////////////////////////////////////////////////////////
 
   // Construct from KnuthBendix with new but empty internal_string_type's
-  KnuthBendix::Rule::Rule(KnuthBendix const* kbimpl, int64_t id)
-      : _kbimpl(kbimpl),
-        _lhs(new internal_string_type()),
+  KnuthBendix::Rule::Rule(int64_t id)
+      : _lhs(new internal_string_type()),
         _rhs(new internal_string_type()),
         _id(-1 * id) {
     LIBSEMIGROUPS_ASSERT(_id < 0);
-  }
-
-  void KnuthBendix::Rule::rewrite() {
-    LIBSEMIGROUPS_ASSERT(_id != 0);
-    _kbimpl->_rules.rewrite(*_lhs);
-    _kbimpl->_rules.rewrite(*_rhs);
-    // reorder if necessary
-    if (shortlex_compare(_lhs, _rhs)) {
-      std::swap(_lhs, _rhs);
-    }
   }
 
   void KnuthBendix::Rule::deactivate() noexcept {
@@ -227,6 +216,13 @@ namespace libsemigroups {
       }
     }
     u.erase(v_end - u.cbegin());
+  }
+
+  void KnuthBendix::Rules::rewrite(Rule* rule) const {
+    // LIBSEMIGROUPS_ASSERT(_id != 0);
+    rewrite(*rule->lhs());
+    rewrite(*rule->rhs());
+    rule->reorder();
   }
 
   struct KnuthBendix::ABC : KnuthBendix::OverlapMeasure {
@@ -1040,7 +1036,7 @@ namespace libsemigroups {
       rule->set_id(_stats.total_rules);
       _rules._inactive_rules.erase(_rules._inactive_rules.begin());
     } else {
-      rule = new Rule(this, _stats.total_rules);
+      rule = new Rule(_stats.total_rules);
     }
     LIBSEMIGROUPS_ASSERT(!rule->active());
     return rule;
@@ -1143,7 +1139,7 @@ namespace libsemigroups {
       LIBSEMIGROUPS_ASSERT(!rule1->active());
       LIBSEMIGROUPS_ASSERT(*rule1->lhs() != *rule1->rhs());
       // Rewrite both sides and reorder if necessary . . .
-      rule1->rewrite();
+      _rules.rewrite(rule1);
 
       if (*rule1->lhs() != *rule1->rhs()) {
         internal_string_type const* lhs = rule1->lhs();

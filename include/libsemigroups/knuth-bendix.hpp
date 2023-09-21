@@ -100,14 +100,13 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////
 
     class Rule {
-      KnuthBendix const*    _kbimpl;
       internal_string_type* _lhs;
       internal_string_type* _rhs;
       int64_t               _id;
 
      public:
       // Construct from KnuthBendix with new but empty internal_string_type's
-      Rule(KnuthBendix const* kbimpl, int64_t id);
+      Rule(int64_t id);
 
       Rule& operator=(Rule const& copy) = delete;
       Rule(Rule const& copy)            = delete;
@@ -156,8 +155,6 @@ namespace libsemigroups {
         return *this;
       }
 
-      void rewrite();
-
       void clear() {
         LIBSEMIGROUPS_ASSERT(_id != 0);
         _lhs->clear();
@@ -186,6 +183,12 @@ namespace libsemigroups {
       [[nodiscard]] int64_t id() const noexcept {
         LIBSEMIGROUPS_ASSERT(_id != 0);
         return _id;
+      }
+
+      void reorder() {
+        if (shortlex_compare(_lhs, _rhs)) {
+          std::swap(_lhs, _rhs);
+        }
       }
 
       void free() {
@@ -316,8 +319,8 @@ namespace libsemigroups {
       std::stack<Rule*>         _stack;
       Stats                     _stats;
 
+      // public
       void rewrite(internal_string_type& u) const;
-      void add_rule(Rule* rule);
 
       const_iterator begin() const noexcept {
         return _active_rules.cbegin();
@@ -346,6 +349,9 @@ namespace libsemigroups {
       size_t number_of_active_rules() const noexcept {
         return _active_rules.size();
       }
+      // private
+      void add_rule(Rule* rule);
+      void rewrite(Rule* rule) const;
 
     } _rules;
 
