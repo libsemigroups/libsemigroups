@@ -357,6 +357,8 @@ namespace libsemigroups {
         return _active_rules.size();
       }
 
+      void reduce();
+
       // private
       void                add_rule(Rule* rule);
       [[nodiscard]] Rule* new_rule();

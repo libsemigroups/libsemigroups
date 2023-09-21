@@ -131,6 +131,10 @@ namespace libsemigroups {
     Rule const*                          _rule;
   };  // class RuleLookup
 
+  ////////////////////////////////////////////////////////////////////////
+  // KnuthBendix::Rules
+  ////////////////////////////////////////////////////////////////////////
+
   KnuthBendix::Rules::Stats::Stats() noexcept {
     init();
   }
@@ -161,6 +165,8 @@ namespace libsemigroups {
     _next_rule_it1 = end();
     _next_rule_it2 = end();
     _set_rules.clear();
+    _confluent        = false;
+    _confluence_known = false;
   }
 
   KnuthBendix::Rules& KnuthBendix::Rules::operator=(Rules const& that) {
@@ -388,6 +394,17 @@ namespace libsemigroups {
     }
   }
 
+  void KnuthBendix::Rules::reduce() {
+    for (Rule const* rule : _active_rules) {
+      // Copy *_next_rule_it1 and push_stack so that it
+      // is not modified by the call to clear_stack.
+      LIBSEMIGROUPS_ASSERT(rule->lhs() != rule->rhs());
+      push_stack(copy_rule(rule));
+    }
+  }
+
+  ////////////////////////////////////////////////////////////////////////
+
   struct KnuthBendix::ABC : KnuthBendix::OverlapMeasure {
     size_t operator()(Rule const*                                 AB,
                       Rule const*                                 BC,
@@ -514,8 +531,6 @@ namespace libsemigroups {
 
     _gen_pairs_initted = false;
     _gilman_graph.init(0, 0);
-    _rules._confluent             = false;
-    _rules._confluence_known      = false;
     _internal_is_same_as_external = false;
     _overlap_measure              = nullptr;
     _presentation.init();
@@ -771,6 +786,7 @@ namespace libsemigroups {
     return _rules._confluence_known;
   }
 
+  // TODO move into Rules
   bool KnuthBendix::confluent() const {
     if (!_rules._stack.empty()) {
       return false;
@@ -908,16 +924,7 @@ namespace libsemigroups {
                      max_rules());
       return;
     }
-    // Reduce the rules
-    _rules._next_rule_it1 = _rules.begin();
-    while (_rules._next_rule_it1 != _rules.end() && !stopped()) {
-      // Copy *_rules._next_rule_it1 and push_stack so that it
-      // is not modified by the call to clear_stack.
-      LIBSEMIGROUPS_ASSERT((*_rules._next_rule_it1)->lhs()
-                           != (*_rules._next_rule_it1)->rhs());
-      _rules.push_stack(_rules.copy_rule(*_rules._next_rule_it1));
-      ++_rules._next_rule_it1;
-    }
+    _rules.reduce();
     _rules._next_rule_it1 = _rules.begin();
     size_t nr             = 0;
     while (_rules._next_rule_it1 != _rules.end()
@@ -1204,8 +1211,8 @@ namespace libsemigroups {
         // push_stack (i.e. if `u` is deactivated, then rewritten, actually
         // changed, and reactivated) and that is the reason for the checks in
         // the for-loop above. If this is the case, then we should stop
-        // considering the overlaps of u and v here, and note that they will be
-        // considered later, because when the rule `u` is reactivated it is
+        // considering the overlaps of u and v here, and note that they will
+        // be considered later, because when the rule `u` is reactivated it is
         // added to the end of the active rules list.
       }
     }
@@ -1266,7 +1273,8 @@ namespace libsemigroups {
 
       if (g2.number_of_nodes() < g1.number_of_nodes()) {
         LIBSEMIGROUPS_EXCEPTION(
-            "the Gilman digraph of the 1st argument must have at least as many "
+            "the Gilman digraph of the 1st argument must have at least as "
+            "many "
             "nodes as the Gilman digraph of the 2nd argument, found {} nodes "
             "and {} nodes",
             g2.number_of_nodes(),
@@ -1302,8 +1310,8 @@ namespace libsemigroups {
       // reach a node incident to an edge in E" and "number of paths through a
       // node is infinite"
       size_t const N = g2.number_of_nodes();
-      // can_reach[v] == true if there is a path from v to a node incident to an
-      // edge in g2 that's not in g1.
+      // can_reach[v] == true if there is a path from v to a node incident to
+      // an edge in g2 that's not in g1.
       std::vector<bool> can_reach(N, false);
       std::vector<bool> inf_paths(N, false);
       std::vector<bool> seen(N, false);
@@ -1345,9 +1353,9 @@ namespace libsemigroups {
               if (!can_reach[v]) {
                 auto ve1 = g1.target_no_checks(to_g1[v], e);
                 if (ve1 != UNDEFINED) {
-                  // edges (v, e, ve2) and (to_g1[v], e, ve1) exist, so there's
-                  // an edge in g2 not in g1 if the targets of these edges do
-                  // not correspond to each other.
+                  // edges (v, e, ve2) and (to_g1[v], e, ve1) exist, so
+                  // there's an edge in g2 not in g1 if the targets of these
+                  // edges do not correspond to each other.
                   can_reach[v] = (ve2 != to_g2[ve1]);
                 } else {
                   // There's no edge labelled by e incident to the node
@@ -1400,9 +1408,9 @@ namespace libsemigroups {
                        | to_strings(kb2.presentation().alphabet())));
       // The check in the next loop could be put into the lambda passed to
       // filter above, but then we'd have to convert `path` to a string, and
-      // then discard the string, so better to do it here. Note that the normal
-      // forms in `kb1` never contain an edge in g2 \ g1 and so we must add in
-      // every normal form.
+      // then discard the string, so better to do it here. Note that the
+      // normal forms in `kb1` never contain an edge in g2 \ g1 and so we must
+      // add in every normal form.
       for (auto& klass : ntc) {
         klass.push_back(kb1.normal_form(klass[0]));
       }
