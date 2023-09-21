@@ -26,6 +26,8 @@
 #include <unordered_map>  // for unordered_map, operator!=
 #include <utility>        // for swap
 
+#include <iostream>
+
 #include "libsemigroups/constants.hpp"  // for Max, PositiveInfinity, operat...
 #include "libsemigroups/debug.hpp"      // for LIBSEMIGROUPS_ASSERT
 #include "libsemigroups/obvinf.hpp"     // for is_obviously_infinite
@@ -404,11 +406,10 @@ namespace libsemigroups {
   bool KnuthBendix::Rules::confluent() const {
     if (!_stack.empty()) {
       return false;
-    }
-    // bool reported = false;
-    if (_confluence_known) {
+    } else if (_confluence_known) {
       return _confluent;
     }
+    // bool reported = false;
     LIBSEMIGROUPS_ASSERT(_stack.empty());
     _confluent        = true;
     _confluence_known = true;
@@ -432,16 +433,15 @@ namespace libsemigroups {
                                                       rule2->lhs()->cend());
           if (prefix.first == rule1->lhs()->cend()
               || prefix.second == rule2->lhs()->cend()) {
-            // TODO use MultiStringView instead of allocating strings above
-            word1.clear();
-            word1.append(rule1->lhs()->cbegin(),
+            // Seems that this function isn't called enough to merit using
+            // MSV's here.
+            word1.assign(rule1->lhs()->cbegin(),
                          it);             // A
             word1.append(*rule2->rhs());  // S
             word1.append(prefix.first,
                          rule1->lhs()->cend());  // D
 
-            word2.clear();
-            word2.append(*rule1->rhs());  // Q
+            word2.assign(*rule1->rhs());  // Q
             word2.append(prefix.second,
                          rule2->lhs()->cend());  // E
 
