@@ -287,13 +287,14 @@ namespace libsemigroups {
     // KnuthBendix - data - private
     ////////////////////////////////////////////////////////////////////////
 
-    // TODO make a class
-    struct Rules {
+    class Rules {
+     public:
       using iterator       = std::list<Rule const*>::iterator;
       using const_iterator = std::list<Rule const*>::const_iterator;
       using const_reverse_iterator
           = std::list<Rule const*>::const_reverse_iterator;
 
+     private:
       struct Stats {
         Stats() noexcept;
         Stats& init() noexcept;
@@ -322,6 +323,7 @@ namespace libsemigroups {
       std::stack<Rule*>         _stack;
       Stats                     _stats;
 
+     public:
       Rules() = default;
 
       Rules& operator=(Rules const&);
@@ -407,12 +409,18 @@ namespace libsemigroups {
         }
       }
 
-      // private
+      void add_rule(internal_string_type* lhs, internal_string_type* rhs) {
+        if (lhs != rhs) {
+          push_stack(new_rule(lhs, rhs));
+        }
+      }
+
+     private:
       void                add_rule(Rule* rule);
       [[nodiscard]] Rule* new_rule();
+
       [[nodiscard]] Rule* new_rule(internal_string_type* lhs,
                                    internal_string_type* rhs);
-
       template <typename Iterator>
       [[nodiscard]] Rule* new_rule(Iterator begin_lhs,
                                    Iterator end_lhs,
@@ -435,7 +443,6 @@ namespace libsemigroups {
 
       void push_stack(Rule* rule);
       void clear_stack();
-
     } _rules;
 
     bool                      _gen_pairs_initted;
@@ -717,7 +724,7 @@ namespace libsemigroups {
     [[nodiscard]] size_t number_of_active_rules() const noexcept;
     // TODO doc
     [[nodiscard]] size_t number_of_inactive_rules() const noexcept {
-      return _rules._inactive_rules.size();
+      return _rules.number_of_inactive_rules();
     }
 
     //! Returns a copy of the active rules.

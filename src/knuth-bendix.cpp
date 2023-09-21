@@ -277,7 +277,7 @@ namespace libsemigroups {
 #ifdef LIBSEMIGROUPS_DEBUG
     LIBSEMIGROUPS_ASSERT(_set_rules.emplace(RuleLookup(rule)).second);
 #else
-    _rules._set_rules.emplace(RuleLookup(rule));
+    _set_rules.emplace(RuleLookup(rule));
 #endif
     rule->activate();
     _active_rules.push_back(rule);
@@ -944,9 +944,6 @@ namespace libsemigroups {
         }
         nr = 0;
       }
-      if (first == _rules.end()) {
-        _rules.clear_stack();
-      }
     }
 
     // LIBSEMIGROUPS_ASSERT(_rules._stack.empty());
@@ -1052,7 +1049,7 @@ namespace libsemigroups {
     auto qq = new external_string_type(q);
     external_to_internal_string(*pp);
     external_to_internal_string(*qq);
-    _rules.push_stack(_rules.new_rule(pp, qq));
+    _rules.add_rule(pp, qq);
   }
 
   //////////////////////////////////////////////////////////////////////////
