@@ -359,6 +359,14 @@ namespace libsemigroups {
 
       void reduce();
 
+      iterator& cursor(size_t index) {
+        LIBSEMIGROUPS_ASSERT(index == 0 || index == 1);
+        if (index == 0) {
+          return _next_rule_it1;
+        }
+        return _next_rule_it2;
+      }
+
       // private
       void                add_rule(Rule* rule);
       [[nodiscard]] Rule* new_rule();

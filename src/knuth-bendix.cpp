@@ -925,18 +925,21 @@ namespace libsemigroups {
       return;
     }
     _rules.reduce();
-    _rules._next_rule_it1 = _rules.begin();
-    size_t nr             = 0;
-    while (_rules._next_rule_it1 != _rules.end()
+
+    auto& first  = _rules.cursor(0);
+    auto& second = _rules.cursor(1);
+    first        = _rules.begin();
+
+    size_t nr = 0;
+    while (first != _rules.end()
            && _rules.number_of_active_rules() < _settings.max_rules
            && !stopped()) {
-      Rule const* rule1     = *_rules._next_rule_it1;
-      _rules._next_rule_it2 = _rules._next_rule_it1;
-      ++_rules._next_rule_it1;
+      Rule const* rule1 = *first;
+      second            = first++;
       overlap(rule1, rule1);
-      while (_rules._next_rule_it2 != _rules.begin() && rule1->active()) {
-        --_rules._next_rule_it2;
-        Rule const* rule2 = *_rules._next_rule_it2;
+      while (second != _rules.begin() && rule1->active()) {
+        --second;
+        Rule const* rule2 = *second;
         overlap(rule1, rule2);
         ++nr;
         if (rule1->active() && rule2->active()) {
@@ -950,7 +953,7 @@ namespace libsemigroups {
         }
         nr = 0;
       }
-      if (_rules._next_rule_it1 == _rules.end()) {
+      if (first == _rules.end()) {
         _rules.clear_stack();
       }
     }
