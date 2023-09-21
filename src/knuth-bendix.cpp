@@ -193,6 +193,20 @@ namespace libsemigroups {
     return *this;
   }
 
+  KnuthBendix::Rules::~Rules() {
+    for (Rule const* rule : _active_rules) {
+      delete const_cast<Rule*>(rule);
+    }
+    for (Rule* rule : _inactive_rules) {
+      delete rule;
+    }
+    while (!_stack.empty()) {
+      Rule* rule = _stack.top();
+      _stack.pop();
+      delete rule;
+    }
+  }
+
   KnuthBendix::Rule* KnuthBendix::Rules::new_rule() {
     ++_stats.total_rules;
     Rule* rule;
@@ -557,17 +571,6 @@ namespace libsemigroups {
   KnuthBendix::~KnuthBendix() {
     delete _overlap_measure;
     // TODO move to destructor of Rules
-    for (Rule const* rule : _rules) {
-      delete const_cast<Rule*>(rule);
-    }
-    for (Rule* rule : _rules._inactive_rules) {
-      delete rule;
-    }
-    while (!_rules._stack.empty()) {
-      Rule* rule = _rules._stack.top();
-      _rules._stack.pop();
-      delete rule;
-    }
   }
 
   KnuthBendix& KnuthBendix::init(congruence_kind                  knd,

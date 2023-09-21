@@ -325,6 +325,9 @@ namespace libsemigroups {
       Rules() = default;
 
       Rules& operator=(Rules const&);
+      // TODO the other constructors
+
+      ~Rules();
 
       void init();
 
