@@ -405,6 +405,83 @@ namespace libsemigroups {
     }
   }
 
+  bool KnuthBendix::Rules::confluent() const {
+    if (!_stack.empty()) {
+      return false;
+    }
+    bool reported = false;
+    if (!_confluence_known) {
+      LIBSEMIGROUPS_ASSERT(_stack.empty());
+      _confluent        = true;
+      _confluence_known = true;
+      internal_string_type word1;
+      internal_string_type word2;
+      // size_t               seen = 0;
+
+      for (auto it1 = begin(); it1 != end(); ++it1) {
+        Rule const* rule1 = *it1;
+        // Seems to be much faster to do this in reverse.
+        for (auto it2 = rbegin(); it2 != rend(); ++it2) {
+          // seen++;
+          Rule const* rule2 = *it2;
+          for (auto it = rule1->lhs()->cend() - 1; it >= rule1->lhs()->cbegin();
+               --it) {
+            // Find longest common prefix of suffix B of
+            // rule1.lhs() defined by it and R =
+            // rule2.lhs()
+            auto prefix = detail::maximum_common_prefix(it,
+                                                        rule1->lhs()->cend(),
+                                                        rule2->lhs()->cbegin(),
+                                                        rule2->lhs()->cend());
+            if (prefix.first == rule1->lhs()->cend()
+                || prefix.second == rule2->lhs()->cend()) {
+              word1.clear();
+              word1.append(rule1->lhs()->cbegin(),
+                           it);             // A
+              word1.append(*rule2->rhs());  // S
+              word1.append(prefix.first,
+                           rule1->lhs()->cend());  // D
+
+              word2.clear();
+              word2.append(*rule1->rhs());  // Q
+              word2.append(prefix.second,
+                           rule2->lhs()->cend());  // E
+
+              if (word1 != word2) {
+                rewrite(word1);
+                rewrite(word2);
+                if (word1 != word2) {
+                  _confluent = false;
+                  return _confluent;
+                }
+              }
+            }
+          }
+        }
+        // TODO re-include
+        // if (report()) {
+        //   using detail::group_digits;
+        //   reported = true;
+        //   auto total_pairs
+        //       = number_of_active_rules() * number_of_active_rules();
+        //   auto total_pairs_s = group_digits(total_pairs);
+
+        //   report_default("KnuthBendix: locally confluent for "
+        //                  "{:>{width}} / "
+        //                  "{:>{width}} ({:.1f}%)\n",
+        //                  group_digits(seen),
+        //                  total_pairs_s,
+        //                  100 * static_cast<double>(seen) / total_pairs,
+        //                  fmt::arg("width", total_pairs_s.size()));
+        // }
+      }
+    }
+    if (reported) {
+      report_default("KnuthBendix:{} confluent!\n", (_confluent ? "" : " not"));
+    }
+    return _confluent;
+  }
+
   ////////////////////////////////////////////////////////////////////////
 
   struct KnuthBendix::ABC : KnuthBendix::OverlapMeasure {
@@ -780,89 +857,7 @@ namespace libsemigroups {
 
   // TODO move into Rules
   bool KnuthBendix::confluent() const {
-    if (!_rules._stack.empty()) {
-      return false;
-    }
-    bool reported = false;
-    if (!_rules._confluence_known && (!running() || !stopped()) && !dead()) {
-      LIBSEMIGROUPS_ASSERT(_rules._stack.empty());
-      _rules._confluent        = true;
-      _rules._confluence_known = true;
-      internal_string_type word1;
-      internal_string_type word2;
-      size_t               seen = 0;
-
-      for (auto it1 = _rules.begin();
-           it1 != _rules.end() && (!running() || !stopped()) && !dead();
-           ++it1) {
-        Rule const* rule1 = *it1;
-        // Seems to be much faster to do this in reverse.
-        for (auto it2 = _rules.rbegin();
-             it2 != _rules.rend() && (!running() || !stopped()) && !dead();
-             ++it2) {
-          seen++;
-          Rule const* rule2 = *it2;
-          for (auto it = rule1->lhs()->cend() - 1;
-               it >= rule1->lhs()->cbegin() && (!running() || !stopped())
-               && !dead();
-               --it) {
-            // Find longest common prefix of suffix B of
-            // rule1.lhs() defined by it and R =
-            // rule2.lhs()
-            auto prefix = detail::maximum_common_prefix(it,
-                                                        rule1->lhs()->cend(),
-                                                        rule2->lhs()->cbegin(),
-                                                        rule2->lhs()->cend());
-            if (prefix.first == rule1->lhs()->cend()
-                || prefix.second == rule2->lhs()->cend()) {
-              word1.clear();
-              word1.append(rule1->lhs()->cbegin(),
-                           it);             // A
-              word1.append(*rule2->rhs());  // S
-              word1.append(prefix.first,
-                           rule1->lhs()->cend());  // D
-
-              word2.clear();
-              word2.append(*rule1->rhs());  // Q
-              word2.append(prefix.second,
-                           rule2->lhs()->cend());  // E
-
-              if (word1 != word2) {
-                _rules.rewrite(word1);
-                _rules.rewrite(word2);
-                if (word1 != word2) {
-                  _rules._confluent = false;
-                  return _rules._confluent;
-                }
-              }
-            }
-          }
-        }
-        if (report()) {
-          using detail::group_digits;
-          reported         = true;
-          auto total_pairs = _rules.number_of_active_rules()
-                             * _rules.number_of_active_rules();
-          auto total_pairs_s = group_digits(total_pairs);
-
-          report_default("KnuthBendix: locally confluent for "
-                         "{:>{width}} / "
-                         "{:>{width}} ({:.1f}%)\n",
-                         group_digits(seen),
-                         total_pairs_s,
-                         100 * static_cast<double>(seen) / total_pairs,
-                         fmt::arg("width", total_pairs_s.size()));
-        }
-      }
-      if (running() && stopped()) {
-        _rules._confluence_known = false;
-      }
-    }
-    if (reported) {
-      report_default("KnuthBendix:{} confluent!\n",
-                     (_rules._confluent ? "" : " not"));
-    }
-    return _rules._confluent;
+    return _rules.confluent();
   }
 
   bool KnuthBendix::finished_impl() const {

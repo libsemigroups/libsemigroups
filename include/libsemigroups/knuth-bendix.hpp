@@ -376,6 +376,7 @@ namespace libsemigroups {
         return _stack.empty();
       }
 
+      // TODO remove
       Rules& confluent(tril val) {
         if (val == tril::TRUE) {
           _confluence_known = true;
@@ -388,6 +389,8 @@ namespace libsemigroups {
         }
         return *this;
       }
+
+      [[nodiscard]] bool confluent() const;
 
       void add_rule(detail::MultiStringView const& lhs,
                     detail::MultiStringView const& rhs) {
