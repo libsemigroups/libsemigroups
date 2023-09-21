@@ -160,6 +160,20 @@ namespace libsemigroups {
     return rule;
   }
 
+  KnuthBendix::Rule* KnuthBendix::Rules::new_rule(internal_string_type* lhs,
+                                                  internal_string_type* rhs) {
+    Rule* rule = new_rule();
+    rule->free();
+    if (shortlex_compare(rhs, lhs)) {
+      rule->lhs(lhs);
+      rule->rhs(rhs);
+    } else {
+      rule->lhs(rhs);
+      rule->rhs(lhs);
+    }
+    return rule;
+  }
+
   void KnuthBendix::Rules::add_rule(Rule* rule) {
     LIBSEMIGROUPS_ASSERT(*rule->lhs() != *rule->rhs());
     _stats.max_word_length
@@ -927,7 +941,7 @@ namespace libsemigroups {
     auto qq = new external_string_type(q);
     external_to_internal_string(*pp);
     external_to_internal_string(*qq);
-    push_stack(new_rule(pp, qq));
+    push_stack(_rules.new_rule(pp, qq));
   }
 
   //////////////////////////////////////////////////////////////////////////
@@ -1040,20 +1054,6 @@ namespace libsemigroups {
       }
       add_rule_impl(lhs, rhs);
     }
-  }
-
-  KnuthBendix::Rule* KnuthBendix::new_rule(internal_string_type* lhs,
-                                           internal_string_type* rhs) {
-    Rule* rule = _rules.new_rule();
-    rule->free();
-    if (shortlex_compare(rhs, lhs)) {
-      rule->lhs(lhs);
-      rule->rhs(rhs);
-    } else {
-      rule->lhs(rhs);
-      rule->rhs(lhs);
-    }
-    return rule;
   }
 
   KnuthBendix::Rule* KnuthBendix::new_rule(Rule const* rule1) {
