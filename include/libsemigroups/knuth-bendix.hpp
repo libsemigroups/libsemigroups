@@ -214,8 +214,6 @@ namespace libsemigroups {
     //////////////////////////////////////////////////////////////////////////
 
    public:
-    using rule_type = std::pair<std::string, std::string>;
-
     //////////////////////////////////////////////////////////////////////////
     // KnuthBendix - types - public
     //////////////////////////////////////////////////////////////////////////
@@ -630,6 +628,7 @@ namespace libsemigroups {
     //!
     //! \parameters
     //! (None)
+    using rule_type = std::pair<std::string, std::string>;
     // TODO update the doc, now returns a Range
     [[nodiscard]] auto active_rules() const {
       using rx::iterator_range;
