@@ -135,34 +135,6 @@ namespace libsemigroups {
         return _rhs;
       }
 
-      Rule& rhs(internal_string_type* rhs) noexcept {
-        _rhs = rhs;
-        return *this;
-      }
-
-      Rule& lhs(internal_string_type* lhs) noexcept {
-        _lhs = lhs;
-        return *this;
-      }
-
-      Rule& append_lhs(internal_string_type::const_iterator first,
-                       internal_string_type::const_iterator last) noexcept {
-        _lhs->append(first, last);
-        return *this;
-      }
-
-      Rule& append_rhs(internal_string_type::const_iterator first,
-                       internal_string_type::const_iterator last) noexcept {
-        _rhs->append(first, last);
-        return *this;
-      }
-
-      void clear() {
-        LIBSEMIGROUPS_ASSERT(_id != 0);
-        _lhs->clear();
-        _rhs->clear();
-      }
-
       [[nodiscard]] bool empty() const noexcept {
         return _lhs->empty() && _rhs->empty();
       }
@@ -191,11 +163,6 @@ namespace libsemigroups {
         if (shortlex_compare(_lhs, _rhs)) {
           std::swap(_lhs, _rhs);
         }
-      }
-
-      void free() {
-        delete _lhs;
-        delete _rhs;
       }
     };  // class Rule
 
@@ -401,43 +368,33 @@ namespace libsemigroups {
         return _confluence_known;
       }
 
-      void add_rule(detail::MultiStringView const& lhs,
-                    detail::MultiStringView const& rhs) {
+      template <typename StringLike>
+      void add_rule(StringLike const& lhs, StringLike const& rhs) {
         if (lhs != rhs) {
           push_stack(
               new_rule(lhs.cbegin(), lhs.cend(), rhs.cbegin(), rhs.cend()));
         }
       }
 
-      void add_rule(internal_string_type* lhs, internal_string_type* rhs) {
-        if (lhs != rhs) {
-          push_stack(new_rule(lhs, rhs));
-        }
-      }
-
      private:
       [[nodiscard]] Rule* new_rule();
 
-      [[nodiscard]] Rule* new_rule(internal_string_type* lhs,
-                                   internal_string_type* rhs);
       template <typename Iterator>
       [[nodiscard]] Rule* new_rule(Iterator begin_lhs,
                                    Iterator end_lhs,
                                    Iterator begin_rhs,
                                    Iterator end_rhs) {
         Rule* rule = new_rule();
-        LIBSEMIGROUPS_ASSERT(rule->empty());
-        // TODO remove memory alloc here
-        rule->lhs(new internal_string_type(begin_lhs, end_lhs));  // copies lhs
-        rule->rhs(new internal_string_type(begin_rhs, end_rhs));  // copies rhs
+        rule->lhs()->assign(begin_lhs, end_lhs);
+        rule->rhs()->assign(begin_rhs, end_rhs);
+        rule->reorder();
         return rule;
       }
 
       void add_rule(Rule* rule);
 
-      [[nodiscard]] Rule* copy_rule(Rule const* rule1);
-
-      iterator remove_rule(iterator it);
+      [[nodiscard]] Rule*    copy_rule(Rule const* rule1);
+      [[nodiscard]] iterator remove_rule(iterator it);
 
       void rewrite(Rule* rule) const;
 

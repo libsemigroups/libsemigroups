@@ -211,7 +211,6 @@ namespace libsemigroups {
     Rule* rule;
     if (!_inactive_rules.empty()) {
       rule = _inactive_rules.front();
-      rule->clear();
       rule->set_id(_stats.total_rules);
       _inactive_rules.erase(_inactive_rules.begin());
     } else {
@@ -221,21 +220,11 @@ namespace libsemigroups {
     return rule;
   }
 
-  KnuthBendix::Rule* KnuthBendix::Rules::new_rule(internal_string_type* lhs,
-                                                  internal_string_type* rhs) {
-    Rule* rule = new_rule();
-    rule->free();
-    rule->lhs(lhs);
-    rule->rhs(rhs);
-    rule->reorder();
-    return rule;
-  }
-
   KnuthBendix::Rule* KnuthBendix::Rules::copy_rule(Rule const* rule1) {
     Rule* rule2 = new_rule();
-    LIBSEMIGROUPS_ASSERT(rule2->empty());
-    rule2->lhs(new internal_string_type(*rule1->lhs()));  // copies lhs
-    rule2->rhs(new internal_string_type(*rule1->rhs()));  // copies rhs
+    rule2->lhs()->assign(*rule1->lhs());  // copies lhs
+    rule2->rhs()->assign(*rule1->rhs());  // copies rhs
+    rule2->reorder();
     return rule2;
   }
 
@@ -1040,11 +1029,15 @@ namespace libsemigroups {
     if (p == q) {
       return;
     }
-    auto pp = new external_string_type(p);
-    auto qq = new external_string_type(q);
-    external_to_internal_string(*pp);
-    external_to_internal_string(*qq);
-    _rules.add_rule(pp, qq);
+    if (_internal_is_same_as_external) {
+      _rules.add_rule(p, q);
+    } else {
+      auto pp(p), qq(q);
+      // Can't see an alternative to the copy here
+      external_to_internal_string(pp);
+      external_to_internal_string(qq);
+      _rules.add_rule(pp, qq);
+    }
   }
 
   //////////////////////////////////////////////////////////////////////////
