@@ -375,8 +375,7 @@ namespace libsemigroups {
           if (rule2->lhs()->find(*lhs) != external_string_type::npos) {
             it = remove_rule(it);
             LIBSEMIGROUPS_ASSERT(*rule2->lhs() != *rule2->rhs());
-            // rule2 is added to _inactive_rules by
-            // clear_stack
+            // rule2 is added to _inactive_rules by clear_stack
             _stack.emplace(rule2);
           } else {
             if (rule2->rhs()->find(*lhs) != external_string_type::npos) {
@@ -396,8 +395,8 @@ namespace libsemigroups {
 
   void KnuthBendix::Rules::reduce() {
     for (Rule const* rule : _active_rules) {
-      // Copy *_next_rule_it1 and push_stack so that it
-      // is not modified by the call to clear_stack.
+      // Copy *_next_rule_it1 and push_stack so that it is not modified by the
+      // call to clear_stack.
       LIBSEMIGROUPS_ASSERT(rule->lhs() != rule->rhs());
       push_stack(copy_rule(rule));
     }
@@ -568,6 +567,7 @@ namespace libsemigroups {
 
   KnuthBendix::~KnuthBendix() {
     delete _overlap_measure;
+    // TODO move to destructor of Rules
     for (Rule const* rule : _rules) {
       delete const_cast<Rule*>(rule);
     }
@@ -909,19 +909,17 @@ namespace libsemigroups {
     _stats.start_time = std::chrono::high_resolution_clock::now();
 
     init_from_generating_pairs();
-    if (_rules._stack.empty() && confluent() && !stopped()) {
-      // _rules._stack can be non-empty if non-reduced rules
-      // were used to define the KnuthBendix.  If _rules._stack
-      // is non-empty, then it means that the rules in
-      // _rules might not define the system.
-      report_default("KnuthBendix: the system is "
-                     "confluent already!\n");
+    if (_rules.consistent() && confluent() && !stopped()) {
+      // _rules._stack can be non-empty if non-reduced rules were used to
+      // define the KnuthBendix.  If _rules._stack is non-empty, then it means
+      // that the rules in _rules might not define the system.
+      report_default("KnuthBendix: the system is confluent already!\n");
       return;
     } else if (_rules.number_of_active_rules() >= max_rules()) {
-      report_default("KnuthBendix: too many rules, "
-                     "found {}, max_rules() is {}\n",
-                     _rules.number_of_active_rules(),
-                     max_rules());
+      report_default(
+          "KnuthBendix: too many rules, found {}, max_rules() is {}\n",
+          _rules.number_of_active_rules(),
+          max_rules());
       return;
     }
     _rules.reduce();
@@ -935,7 +933,10 @@ namespace libsemigroups {
            && _rules.number_of_active_rules() < _settings.max_rules
            && !stopped()) {
       Rule const* rule1 = *first;
-      second            = first++;
+      // It is tempting to remove rule1 and rule2 here and use *first and
+      // *second instead but this leads to some badness (which we didn't
+      // understand, but it also didn't seem super important).
+      second = first++;
       overlap(rule1, rule1);
       while (second != _rules.begin() && rule1->active()) {
         --second;
@@ -963,12 +964,7 @@ namespace libsemigroups {
     // and maybe more
     if (_settings.max_overlap == POSITIVE_INFINITY
         && _settings.max_rules == POSITIVE_INFINITY && !stopped()) {
-      _rules._confluence_known = true;
-      _rules._confluent        = true;
-      for (Rule* rule : _rules._inactive_rules) {
-        delete rule;
-      }
-      _rules._inactive_rules.clear();
+      _rules.confluent(tril::TRUE);
     }
     report_rules();
     if (finished()) {

@@ -367,6 +367,23 @@ namespace libsemigroups {
         return _next_rule_it2;
       }
 
+      [[nodiscard]] bool consistent() const noexcept {
+        return _stack.empty();
+      }
+
+      Rules& confluent(tril val) {
+        if (val == tril::TRUE) {
+          _confluence_known = true;
+          _confluent        = true;
+        } else if (val == tril::FALSE) {
+          _confluence_known = true;
+          _confluent        = false;
+        } else {
+          _confluence_known = false;
+        }
+        return *this;
+      }
+
       // private
       void                add_rule(Rule* rule);
       [[nodiscard]] Rule* new_rule();
