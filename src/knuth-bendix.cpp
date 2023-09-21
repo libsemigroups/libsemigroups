@@ -164,14 +164,18 @@ namespace libsemigroups {
                                                   internal_string_type* rhs) {
     Rule* rule = new_rule();
     rule->free();
-    if (shortlex_compare(rhs, lhs)) {
-      rule->lhs(lhs);
-      rule->rhs(rhs);
-    } else {
-      rule->lhs(rhs);
-      rule->rhs(lhs);
-    }
+    rule->lhs(lhs);
+    rule->rhs(rhs);
+    rule->reorder();
     return rule;
+  }
+
+  KnuthBendix::Rule* KnuthBendix::Rules::copy_rule(Rule const* rule1) {
+    Rule* rule2 = new_rule();
+    LIBSEMIGROUPS_ASSERT(rule2->empty());
+    rule2->lhs(new internal_string_type(*rule1->lhs()));  // copies lhs
+    rule2->rhs(new internal_string_type(*rule1->rhs()));  // copies rhs
+    return rule2;
   }
 
   void KnuthBendix::Rules::add_rule(Rule* rule) {
@@ -407,7 +411,7 @@ namespace libsemigroups {
 
     // TODO replace with Rules::operator=
     for (Rule const* rule : that._rules) {
-      _rules.add_rule(new_rule(rule));
+      _rules.add_rule(_rules.copy_rule(rule));
     }
     _rules._next_rule_it1 = _rules.begin();
     std::advance(
@@ -801,7 +805,7 @@ namespace libsemigroups {
       // is not modified by the call to clear_stack.
       LIBSEMIGROUPS_ASSERT((*_rules._next_rule_it1)->lhs()
                            != (*_rules._next_rule_it1)->rhs());
-      push_stack(new_rule(*_rules._next_rule_it1));
+      push_stack(_rules.copy_rule(*_rules._next_rule_it1));
       ++_rules._next_rule_it1;
     }
     _rules._next_rule_it1 = _rules.begin();
@@ -1054,14 +1058,6 @@ namespace libsemigroups {
       }
       add_rule_impl(lhs, rhs);
     }
-  }
-
-  KnuthBendix::Rule* KnuthBendix::new_rule(Rule const* rule1) {
-    Rule* rule2 = _rules.new_rule();
-    LIBSEMIGROUPS_ASSERT(rule2->empty());
-    rule2->lhs(new internal_string_type(*rule1->lhs()));  // copies lhs
-    rule2->rhs(new internal_string_type(*rule1->rhs()));  // copies rhs
-    return rule2;
   }
 
   KnuthBendix::Rule*
