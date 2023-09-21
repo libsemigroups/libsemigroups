@@ -22,6 +22,9 @@
 // TODO:
 // * noexcept
 // * fix doc
+// * template Rules
+// * template Order
+// * Separate rule container from Rules
 
 #ifndef LIBSEMIGROUPS_KNUTH_BENDIX_HPP_
 #define LIBSEMIGROUPS_KNUTH_BENDIX_HPP_
@@ -280,7 +283,7 @@ namespace libsemigroups {
         // std::unordered_set<internal_string_type> unique_lhs_rules;
       };
 
-      // TODO remove const
+      // TODO remove const?
       std::list<Rule const*>    _active_rules;
       mutable std::atomic<bool> _confluent;
       mutable std::atomic<bool> _confluence_known;
@@ -393,8 +396,8 @@ namespace libsemigroups {
 
       void add_rule(Rule* rule);
 
-      [[nodiscard]] Rule*    copy_rule(Rule const* rule1);
-      [[nodiscard]] iterator remove_rule(iterator it);
+      [[nodiscard]] Rule*    copy_rule(Rule const* rule);
+      [[nodiscard]] iterator erase_from_active_rules(iterator it);
 
       void rewrite(Rule* rule) const;
 

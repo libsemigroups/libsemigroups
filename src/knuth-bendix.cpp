@@ -220,18 +220,19 @@ namespace libsemigroups {
     return rule;
   }
 
-  KnuthBendix::Rule* KnuthBendix::Rules::copy_rule(Rule const* rule1) {
-    Rule* rule2 = new_rule();
-    rule2->lhs()->assign(*rule1->lhs());  // copies lhs
-    rule2->rhs()->assign(*rule1->rhs());  // copies rhs
-    rule2->reorder();
-    return rule2;
+  KnuthBendix::Rule* KnuthBendix::Rules::copy_rule(Rule const* rule) {
+    return new_rule(rule->lhs()->cbegin(),
+                    rule->lhs()->cend(),
+                    rule->rhs()->cbegin(),
+                    rule->rhs()->cend());
   }
 
-  KnuthBendix::Rules::iterator KnuthBendix::Rules::remove_rule(iterator it) {
+  KnuthBendix::Rules::iterator
+  KnuthBendix::Rules::erase_from_active_rules(iterator it) {
     // _stats.unique_lhs_rules.erase(*((*it)->lhs()));
     Rule* rule = const_cast<Rule*>(*it);
     rule->deactivate();
+    _stack.emplace(rule);
     if (it != _cursors[0] && it != _cursors[1]) {
       it = _active_rules.erase(it);
     } else if (it == _cursors[0] && it != _cursors[1]) {
@@ -363,10 +364,8 @@ namespace libsemigroups {
         for (auto it = begin(); it != end();) {
           Rule* rule2 = const_cast<Rule*>(*it);
           if (rule2->lhs()->find(*lhs) != external_string_type::npos) {
-            it = remove_rule(it);
-            LIBSEMIGROUPS_ASSERT(*rule2->lhs() != *rule2->rhs());
-            // rule2 is added to _inactive_rules by clear_stack
-            _stack.emplace(rule2);
+            it = erase_from_active_rules(it);
+            // rule2 is added to _inactive_rules or _active_rules by clear_stack
           } else {
             if (rule2->rhs()->find(*lhs) != external_string_type::npos) {
               rewrite(*rule2->rhs());
