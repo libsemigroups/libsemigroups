@@ -29,11 +29,11 @@ namespace libsemigroups {
     KBE::KBE(internal_string_type&& w) : _kb_word(std::move(w)) {}
 
     KBE::KBE(KnuthBendix& kb, internal_string_type const& w) : KBE(w) {
-      kb.internal_rewrite(_kb_word);
+      kb._rules.rewrite(_kb_word);
     }
 
     KBE::KBE(KnuthBendix& kb, internal_string_type&& w) : KBE(std::move(w)) {
-      kb.internal_rewrite(_kb_word);
+      kb._rules.rewrite(_kb_word);
     }
 
     KBE::KBE(KnuthBendix& kb, word_type const& w)

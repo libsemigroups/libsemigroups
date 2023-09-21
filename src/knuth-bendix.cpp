@@ -76,8 +76,8 @@ namespace libsemigroups {
 
   void KnuthBendix::Rule::rewrite() {
     LIBSEMIGROUPS_ASSERT(_id != 0);
-    _kbimpl->internal_rewrite(*_lhs);
-    _kbimpl->internal_rewrite(*_rhs);
+    _kbimpl->_rules.rewrite(*_lhs);
+    _kbimpl->_rules.rewrite(*_rhs);
     // reorder if necessary
     if (shortlex_compare(_lhs, _rhs)) {
       std::swap(_lhs, _rhs);
@@ -141,6 +141,93 @@ namespace libsemigroups {
     internal_string_type::const_iterator _last;
     Rule const*                          _rule;
   };  // class RuleLookup
+
+  KnuthBendix::Rules::Stats::Stats() noexcept {
+    init();
+  }
+
+  KnuthBendix::Rules::Stats& KnuthBendix::Rules::Stats::init() noexcept {
+    max_stack_depth        = 0;
+    max_word_length        = 0;
+    max_active_word_length = 0;
+    max_active_rules       = 0;
+    min_length_lhs_rule    = std::numeric_limits<size_t>::max();
+    total_rules            = 0;
+    return *this;
+  }
+
+  void KnuthBendix::Rules::add_rule(Rule* rule) {
+    LIBSEMIGROUPS_ASSERT(*rule->lhs() != *rule->rhs());
+    _stats.max_word_length
+        = std::max(_stats.max_word_length, rule->lhs()->size());
+    _stats.max_active_rules
+        = std::max(_stats.max_active_rules, number_of_active_rules());
+    // _stats.unique_lhs_rules.insert(*rule->lhs());
+    LIBSEMIGROUPS_ASSERT(_set_rules.emplace(RuleLookup(rule)).second);
+#ifndef LIBSEMIGROUPS_DEBUG
+    _rules._set_rules.emplace(RuleLookup(rule));
+#endif
+    rule->activate();
+    _active_rules.push_back(rule);
+    if (_next_rule_it1 == end()) {
+      --_next_rule_it1;
+    }
+    if (_next_rule_it2 == end()) {
+      --_next_rule_it2;
+    }
+    _confluence_known = false;
+    if (rule->lhs()->size() < _stats.min_length_lhs_rule) {
+      // TODO(later) this is not valid when using non-length reducing orderings
+      // (such as RECURSIVE)
+      _stats.min_length_lhs_rule = rule->lhs()->size();
+    }
+    LIBSEMIGROUPS_ASSERT(_set_rules.size() == number_of_active_rules());
+  }
+
+  // REWRITE_FROM_LEFT from Sims, p67
+  // Caution: this uses the assumption that rules are length reducing, if they
+  // are not, then u might not have sufficient space!
+  void KnuthBendix::Rules::rewrite(internal_string_type& u) const {
+    using iterator = internal_string_type::iterator;
+
+    if (u.size() < _stats.min_length_lhs_rule) {
+      return;
+    }
+
+    iterator v_begin = u.begin();
+    iterator v_end   = u.begin() + _stats.min_length_lhs_rule - 1;
+    iterator w_begin = v_end;
+    iterator w_end   = u.end();
+
+    RuleLookup lookup;
+
+    while (w_begin != w_end) {
+      *v_end = *w_begin;
+      ++v_end;
+      ++w_begin;
+
+      auto it = _set_rules.find(lookup(v_begin, v_end));
+      if (it != _set_rules.end()) {
+        Rule const* rule = (*it).rule();
+        if (rule->lhs()->size() <= static_cast<size_t>(v_end - v_begin)) {
+          LIBSEMIGROUPS_ASSERT(detail::is_suffix(
+              v_begin, v_end, rule->lhs()->cbegin(), rule->lhs()->cend()));
+          v_end -= rule->lhs()->size();
+          w_begin -= rule->rhs()->size();
+          detail::string_replace(
+              w_begin, rule->rhs()->cbegin(), rule->rhs()->cend());
+        }
+      }
+      while (w_begin != w_end
+             && _stats.min_length_lhs_rule - 1
+                    > static_cast<size_t>((v_end - v_begin))) {
+        *v_end = *w_begin;
+        ++v_end;
+        ++w_begin;
+      }
+    }
+    u.erase(v_end - u.cbegin());
+  }
 
   struct KnuthBendix::ABC : KnuthBendix::OverlapMeasure {
     size_t operator()(Rule const*                                 AB,
@@ -295,7 +382,7 @@ namespace libsemigroups {
 
     // TODO replace with Rules::operator=
     for (Rule const* rule : that._rules) {
-      add_rule(new_rule(rule));
+      _rules.add_rule(new_rule(rule));
     }
     _rules._next_rule_it1 = _rules.begin();
     std::advance(
@@ -421,8 +508,8 @@ namespace libsemigroups {
     run();
     external_to_internal_string(uu);
     external_to_internal_string(vv);
-    internal_rewrite(uu);
-    internal_rewrite(vv);
+    _rules.rewrite(uu);
+    _rules.rewrite(vv);
     return uu == vv;
   }
 
@@ -511,7 +598,7 @@ namespace libsemigroups {
     }
     add_octo(w);
     external_to_internal_string(w);
-    internal_rewrite(w);
+    _rules.rewrite(w);
     internal_to_external_string(w);
     rm_octo(w);
     if (kind() == congruence_kind::left) {
@@ -535,51 +622,6 @@ namespace libsemigroups {
     _stats.prev_active_rules   = _rules.number_of_active_rules();
     _stats.prev_inactive_rules = _rules._inactive_rules.size();
     _stats.prev_total_rules    = _stats.total_rules;
-  }
-
-  // REWRITE_FROM_LEFT from Sims, p67
-  // Caution: this uses the assumption that rules are length reducing, if they
-  // are not, then u might not have sufficient space!
-  void KnuthBendix::internal_rewrite(internal_string_type& u) const {
-    using iterator = internal_string_type::iterator;
-
-    if (u.size() < _stats.min_length_lhs_rule) {
-      return;
-    }
-
-    iterator v_begin = u.begin();
-    iterator v_end   = u.begin() + _stats.min_length_lhs_rule - 1;
-    iterator w_begin = v_end;
-    iterator w_end   = u.end();
-
-    RuleLookup lookup;
-
-    while (w_begin != w_end) {
-      *v_end = *w_begin;
-      ++v_end;
-      ++w_begin;
-
-      auto it = _rules._set_rules.find(lookup(v_begin, v_end));
-      if (it != _rules._set_rules.end()) {
-        Rule const* rule = (*it).rule();
-        if (rule->lhs()->size() <= static_cast<size_t>(v_end - v_begin)) {
-          LIBSEMIGROUPS_ASSERT(detail::is_suffix(
-              v_begin, v_end, rule->lhs()->cbegin(), rule->lhs()->cend()));
-          v_end -= rule->lhs()->size();
-          w_begin -= rule->rhs()->size();
-          detail::string_replace(
-              w_begin, rule->rhs()->cbegin(), rule->rhs()->cend());
-        }
-      }
-      while (w_begin != w_end
-             && _stats.min_length_lhs_rule - 1
-                    > static_cast<size_t>((v_end - v_begin))) {
-        *v_end = *w_begin;
-        ++v_end;
-        ++w_begin;
-      }
-    }
-    u.erase(v_end - u.cbegin());
   }
 
   //////////////////////////////////////////////////////////////////////////
@@ -639,8 +681,8 @@ namespace libsemigroups {
                            rule2->lhs()->cend());  // E
 
               if (word1 != word2) {
-                internal_rewrite(word1);
-                internal_rewrite(word2);
+                _rules.rewrite(word1);
+                _rules.rewrite(word2);
                 if (word1 != word2) {
                   _rules._confluent = false;
                   return _rules._confluent;
@@ -822,7 +864,7 @@ namespace libsemigroups {
             _gilman_graph.set_target(p.second, i, it->second);
           } else {
             auto t = s;
-            internal_rewrite(t);
+            _rules.rewrite(t);
             if (t == s) {
               while (!s.empty()) {
                 s  = std::string(s.begin() + 1, s.end());
@@ -875,36 +917,6 @@ namespace libsemigroups {
     external_to_internal_string(*pp);
     external_to_internal_string(*qq);
     push_stack(new_rule(pp, qq));
-  }
-
-  void KnuthBendix::add_rule(Rule* rule) {
-    LIBSEMIGROUPS_ASSERT(*rule->lhs() != *rule->rhs());
-    _stats.max_word_length
-        = std::max(_stats.max_word_length, rule->lhs()->size());
-    _stats.max_active_rules
-        = std::max(_stats.max_active_rules, _rules.number_of_active_rules());
-    _stats.unique_lhs_rules.insert(*rule->lhs());
-    LIBSEMIGROUPS_ASSERT(_rules._set_rules.emplace(RuleLookup(rule)).second);
-#ifndef LIBSEMIGROUPS_DEBUG
-    _rules._set_rules.emplace(RuleLookup(rule));
-#endif
-    rule->activate();
-    _rules._active_rules.push_back(rule);
-    if (_rules._next_rule_it1 == _rules.end()) {
-      --_rules._next_rule_it1;
-    }
-    if (_rules._next_rule_it2 == _rules.end()) {
-      --_rules._next_rule_it2;
-    }
-    _rules._confluence_known = false;
-    if (rule->lhs()->size() < _stats.min_length_lhs_rule) {
-      // TODO(later) this is not valid when using
-      // non-length reducing orderings (such as
-      // RECURSIVE)
-      _stats.min_length_lhs_rule = rule->lhs()->size();
-    }
-    LIBSEMIGROUPS_ASSERT(_rules._set_rules.size()
-                         == _rules.number_of_active_rules());
   }
 
   //////////////////////////////////////////////////////////////////////////
@@ -1145,12 +1157,12 @@ namespace libsemigroups {
             _rules._stack.emplace(rule2);
           } else {
             if (rule2->rhs()->find(*lhs) != external_string_type::npos) {
-              internal_rewrite(*rule2->rhs());
+              _rules.rewrite(*rule2->rhs());
             }
             ++it;
           }
         }
-        add_rule(rule1);
+        _rules.add_rule(rule1);
         // rule1 is activated, we do this after removing rules that rule1 makes
         // redundant to avoid failing to insert rule1 in _rules._set_rules
       } else {

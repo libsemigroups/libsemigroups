@@ -288,6 +288,24 @@ namespace libsemigroups {
       using const_reverse_iterator
           = std::list<Rule const*>::const_reverse_iterator;
 
+      struct Stats {
+        Stats() noexcept;
+        Stats& init() noexcept;
+
+        Stats(Stats const&) noexcept            = default;
+        Stats(Stats&&) noexcept                 = default;
+        Stats& operator=(Stats const&) noexcept = default;
+        Stats& operator=(Stats&&) noexcept      = default;
+
+        size_t   max_stack_depth;
+        size_t   max_word_length;
+        size_t   max_active_word_length;
+        size_t   max_active_rules;
+        size_t   min_length_lhs_rule;
+        uint64_t total_rules;
+        // std::unordered_set<internal_string_type> unique_lhs_rules;
+      };
+
       std::list<Rule const*>    _active_rules;
       mutable std::atomic<bool> _confluent;
       mutable std::atomic<bool> _confluence_known;
@@ -296,6 +314,10 @@ namespace libsemigroups {
       mutable std::list<Rule*>  _inactive_rules;
       std::set<RuleLookup>      _set_rules;
       std::stack<Rule*>         _stack;
+      Stats                     _stats;
+
+      void rewrite(internal_string_type& u) const;
+      void add_rule(Rule* rule);
 
       const_iterator begin() const noexcept {
         return _active_rules.cbegin();
@@ -752,8 +774,6 @@ namespace libsemigroups {
     void throw_if_started() const;
     void stats_check_point() const;
 
-    void internal_rewrite(internal_string_type& u) const;
-
     [[nodiscard]] static internal_char_type uint_to_internal_char(size_t a);
     [[nodiscard]] static size_t internal_char_to_uint(internal_char_type c);
 
@@ -774,7 +794,6 @@ namespace libsemigroups {
     void rm_octo(external_string_type& w) const;
 
     void add_rule_impl(std::string const& p, std::string const& q);
-    void add_rule(Rule* rule);
 
     [[nodiscard]] Rule* new_rule() const;
     [[nodiscard]] Rule* new_rule(internal_string_type* lhs,
