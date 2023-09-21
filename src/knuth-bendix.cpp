@@ -274,8 +274,9 @@ namespace libsemigroups {
     _stats.max_active_rules
         = std::max(_stats.max_active_rules, number_of_active_rules());
     // _stats.unique_lhs_rules.insert(*rule->lhs());
+#ifdef LIBSEMIGROUPS_DEBUG
     LIBSEMIGROUPS_ASSERT(_set_rules.emplace(RuleLookup(rule)).second);
-#ifndef LIBSEMIGROUPS_DEBUG
+#else
     _rules._set_rules.emplace(RuleLookup(rule));
 #endif
     rule->activate();
@@ -845,7 +846,7 @@ namespace libsemigroups {
 
   void KnuthBendix::stats_check_point() const {
     _stats.prev_active_rules   = _rules.number_of_active_rules();
-    _stats.prev_inactive_rules = _rules._inactive_rules.size();
+    _stats.prev_inactive_rules = _rules.number_of_inactive_rules();
     _stats.prev_total_rules    = _stats.total_rules;
   }
 
@@ -854,7 +855,7 @@ namespace libsemigroups {
   //////////////////////////////////////////////////////////////////////////
 
   bool KnuthBendix::confluent_known() const noexcept {
-    return _rules._confluence_known;
+    return _rules.confluence_known();
   }
 
   // TODO move into Rules

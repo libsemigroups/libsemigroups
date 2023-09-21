@@ -358,8 +358,12 @@ namespace libsemigroups {
         return _active_rules.crend();
       }
 
-      size_t number_of_active_rules() const noexcept {
+      [[nodiscard]] size_t number_of_active_rules() const noexcept {
         return _active_rules.size();
+      }
+
+      [[nodiscard]] size_t number_of_inactive_rules() const noexcept {
+        return _inactive_rules.size();
       }
 
       void reduce();
@@ -391,6 +395,9 @@ namespace libsemigroups {
       }
 
       [[nodiscard]] bool confluent() const;
+      [[nodiscard]] bool confluence_known() const {
+        return _confluence_known;
+      }
 
       void add_rule(detail::MultiStringView const& lhs,
                     detail::MultiStringView const& rhs) {
