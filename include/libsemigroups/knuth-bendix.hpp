@@ -354,6 +354,11 @@ namespace libsemigroups {
       [[nodiscard]] Rule* new_rule();
       [[nodiscard]] Rule* new_rule(internal_string_type* lhs,
                                    internal_string_type* rhs);
+      [[nodiscard]] Rule*
+      new_rule(internal_string_type::const_iterator begin_lhs,
+               internal_string_type::const_iterator end_lhs,
+               internal_string_type::const_iterator begin_rhs,
+               internal_string_type::const_iterator end_rhs);
       [[nodiscard]] Rule* copy_rule(Rule const* rule1);
 
       void rewrite(Rule* rule) const;
@@ -805,11 +810,6 @@ namespace libsemigroups {
     void rm_octo(external_string_type& w) const;
 
     void add_rule_impl(std::string const& p, std::string const& q);
-
-    [[nodiscard]] Rule* new_rule(internal_string_type::const_iterator begin_lhs,
-                                 internal_string_type::const_iterator end_lhs,
-                                 internal_string_type::const_iterator begin_rhs,
-                                 internal_string_type::const_iterator end_rhs);
 
     std::list<Rule const*>::iterator
          remove_rule(std::list<Rule const*>::iterator it);

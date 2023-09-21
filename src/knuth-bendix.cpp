@@ -170,6 +170,18 @@ namespace libsemigroups {
     return rule;
   }
 
+  KnuthBendix::Rule*
+  KnuthBendix::Rules::new_rule(internal_string_type::const_iterator begin_lhs,
+                               internal_string_type::const_iterator end_lhs,
+                               internal_string_type::const_iterator begin_rhs,
+                               internal_string_type::const_iterator end_rhs) {
+    Rule* rule = new_rule();
+    LIBSEMIGROUPS_ASSERT(rule->empty());
+    rule->lhs(new internal_string_type(begin_lhs, end_lhs));  // copies lhs
+    rule->rhs(new internal_string_type(begin_rhs, end_rhs));  // copies rhs
+    return rule;
+  }
+
   KnuthBendix::Rule* KnuthBendix::Rules::copy_rule(Rule const* rule1) {
     Rule* rule2 = new_rule();
     LIBSEMIGROUPS_ASSERT(rule2->empty());
@@ -1060,18 +1072,6 @@ namespace libsemigroups {
     }
   }
 
-  KnuthBendix::Rule*
-  KnuthBendix::new_rule(internal_string_type::const_iterator begin_lhs,
-                        internal_string_type::const_iterator end_lhs,
-                        internal_string_type::const_iterator begin_rhs,
-                        internal_string_type::const_iterator end_rhs) {
-    Rule* rule = _rules.new_rule();
-    LIBSEMIGROUPS_ASSERT(rule->empty());
-    rule->lhs(new internal_string_type(begin_lhs, end_lhs));  // copies lhs
-    rule->rhs(new internal_string_type(begin_rhs, end_rhs));  // copies rhs
-    return rule;
-  }
-
   // FIXME(later) there is a possibly infinite loop here clear_stack ->
   // push_stack -> clear_stack and so on
   void KnuthBendix::push_stack(Rule* rule) {
@@ -1102,10 +1102,10 @@ namespace libsemigroups {
               v->lhs()->cbegin(), v->lhs()->cend(), it, u->lhs()->cend())) {
         // u = P_i = AB -> Q_i and v = P_j = BC -> Q_j
         // This version of new_rule does not reorder
-        Rule* rule = new_rule(u->lhs()->cbegin(),
-                              it,
-                              u->rhs()->cbegin(),
-                              u->rhs()->cend());  // rule = A -> Q_i
+        Rule* rule = _rules.new_rule(u->lhs()->cbegin(),
+                                     it,
+                                     u->rhs()->cbegin(),
+                                     u->rhs()->cend());  // rule = A -> Q_i
         rule->append_lhs(v->rhs()->cbegin(),
                          v->rhs()->cend());  // rule = AQ_j -> Q_i
         rule->append_rhs(v->lhs()->cbegin() + (u->lhs()->cend() - it),
