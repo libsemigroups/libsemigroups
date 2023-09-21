@@ -163,8 +163,9 @@ namespace libsemigroups {
       _inactive_rules.insert(_inactive_rules.end(), _stack.top());
       _stack.pop();
     }
-    _next_rule_it1 = _active_rules.end();
-    _next_rule_it2 = _active_rules.end();
+    for (auto& it : _cursors) {
+      it = _active_rules.end();
+    }
     _set_rules.clear();
     _confluent        = false;
     _confluence_known = false;
@@ -176,16 +177,13 @@ namespace libsemigroups {
     for (Rule const* rule : that) {
       add_rule(copy_rule(rule));
     }
-    _next_rule_it1 = _active_rules.begin();
-    std::advance(
-        _next_rule_it1,
-        std::distance(that.begin(),
-                      static_cast<const_iterator>(that._next_rule_it1)));
-    _next_rule_it2 = _active_rules.begin();
-    std::advance(
-        _next_rule_it2,
-        std::distance(that.begin(),
-                      static_cast<const_iterator>(that._next_rule_it2)));
+    for (size_t i = 0; i < _cursors.size(); ++i) {
+      _cursors[i] = _active_rules.begin();
+      std::advance(
+          _cursors[i],
+          std::distance(that.begin(),
+                        static_cast<const_iterator>(that._cursors[i])));
+    }
     // Don't copy the inactive rules, because why bother
     _confluent        = that._confluent.load();
     _confluence_known = that._confluence_known.load();
@@ -243,18 +241,18 @@ namespace libsemigroups {
     // _stats.unique_lhs_rules.erase(*((*it)->lhs()));
     Rule* rule = const_cast<Rule*>(*it);
     rule->deactivate();
-    if (it != _next_rule_it1 && it != _next_rule_it2) {
+    if (it != _cursors[0] && it != _cursors[1]) {
       it = _active_rules.erase(it);
-    } else if (it == _next_rule_it1 && it != _next_rule_it2) {
-      _next_rule_it1 = _active_rules.erase(it);
-      it             = _next_rule_it1;
-    } else if (it != _next_rule_it1 && it == _next_rule_it2) {
-      _next_rule_it2 = _active_rules.erase(it);
-      it             = _next_rule_it2;
+    } else if (it == _cursors[0] && it != _cursors[1]) {
+      _cursors[0] = _active_rules.erase(it);
+      it          = _cursors[0];
+    } else if (it != _cursors[0] && it == _cursors[1]) {
+      _cursors[1] = _active_rules.erase(it);
+      it          = _cursors[1];
     } else {
-      _next_rule_it1 = _active_rules.erase(it);
-      _next_rule_it2 = _next_rule_it1;
-      it             = _next_rule_it1;
+      _cursors[0] = _active_rules.erase(it);
+      _cursors[1] = _cursors[0];
+      it          = _cursors[0];
     }
 #ifdef LIBSEMIGROUPS_DEBUG
     LIBSEMIGROUPS_ASSERT(_set_rules.erase(RuleLookup(rule)));
@@ -279,16 +277,15 @@ namespace libsemigroups {
 #endif
     rule->activate();
     _active_rules.push_back(rule);
-    if (_next_rule_it1 == end()) {
-      --_next_rule_it1;
-    }
-    if (_next_rule_it2 == end()) {
-      --_next_rule_it2;
+    for (auto& it : _cursors) {
+      if (it == end()) {
+        --it;
+      }
     }
     _confluence_known = false;
     if (rule->lhs()->size() < _stats.min_length_lhs_rule) {
-      // TODO(later) this is not valid when using non-length reducing orderings
-      // (such as RECURSIVE)
+      // TODO(later) this is not valid when using non-length reducing
+      // orderings (such as RECURSIVE)
       _stats.min_length_lhs_rule = rule->lhs()->size();
     }
     LIBSEMIGROUPS_ASSERT(_set_rules.size() == number_of_active_rules());
@@ -387,8 +384,8 @@ namespace libsemigroups {
           }
         }
         add_rule(rule1);
-        // rule1 is activated, we do this after removing rules that rule1 makes
-        // redundant to avoid failing to insert rule1 in _set_rules
+        // rule1 is activated, we do this after removing rules that rule1
+        // makes redundant to avoid failing to insert rule1 in _set_rules
       } else {
         _inactive_rules.push_back(rule1);
       }
@@ -397,7 +394,7 @@ namespace libsemigroups {
 
   void KnuthBendix::Rules::reduce() {
     for (Rule const* rule : _active_rules) {
-      // Copy *_next_rule_it1 and push_stack so that it is not modified by the
+      // Copy rule and push_stack so that it is not modified by the
       // call to clear_stack.
       LIBSEMIGROUPS_ASSERT(rule->lhs() != rule->rhs());
       push_stack(copy_rule(rule));

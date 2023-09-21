@@ -317,8 +317,7 @@ namespace libsemigroups {
       std::list<Rule const*>    _active_rules;
       mutable std::atomic<bool> _confluent;
       mutable std::atomic<bool> _confluence_known;
-      iterator                  _next_rule_it1;
-      iterator                  _next_rule_it2;
+      std::array<iterator, 2>   _cursors;
       std::list<Rule*>          _inactive_rules;
       std::set<RuleLookup>      _set_rules;
       std::stack<Rule*>         _stack;
@@ -375,11 +374,8 @@ namespace libsemigroups {
       void reduce();
 
       iterator& cursor(size_t index) {
-        LIBSEMIGROUPS_ASSERT(index == 0 || index == 1);
-        if (index == 0) {
-          return _next_rule_it1;
-        }
-        return _next_rule_it2;
+        LIBSEMIGROUPS_ASSERT(index < _cursors.size());
+        return _cursors[index];
       }
 
       [[nodiscard]] bool consistent() const noexcept {
