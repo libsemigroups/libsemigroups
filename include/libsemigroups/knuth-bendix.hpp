@@ -285,6 +285,7 @@ namespace libsemigroups {
     // KnuthBendix - data - private
     ////////////////////////////////////////////////////////////////////////
 
+    // TODO make a class
     struct Rules {
       using iterator       = std::list<Rule const*>::iterator;
       using const_iterator = std::list<Rule const*>::const_iterator;
@@ -319,6 +320,12 @@ namespace libsemigroups {
       std::stack<Rule*>         _stack;
       Stats                     _stats;
 
+      Rules() = default;
+
+      Rules& operator=(Rules const&);
+
+      void init();
+
       // public
       void rewrite(internal_string_type& u) const;
 
@@ -349,6 +356,7 @@ namespace libsemigroups {
       size_t number_of_active_rules() const noexcept {
         return _active_rules.size();
       }
+
       // private
       void                add_rule(Rule* rule);
       [[nodiscard]] Rule* new_rule();
@@ -816,8 +824,6 @@ namespace libsemigroups {
     void rm_octo(external_string_type& w) const;
 
     void add_rule_impl(std::string const& p, std::string const& q);
-
-    void deactivate_all_rules();
 
     void overlap(Rule const* u, Rule const* v);
 

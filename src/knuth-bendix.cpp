@@ -145,6 +145,47 @@ namespace libsemigroups {
     return *this;
   }
 
+  void KnuthBendix::Rules::init() {
+    // Put all active rules and those rules in the stack into the
+    // inactive_rules list
+    for (Rule const* cptr : _active_rules) {
+      Rule* ptr = const_cast<Rule*>(cptr);
+      ptr->deactivate();
+      _inactive_rules.insert(_inactive_rules.end(), ptr);
+    }
+    _active_rules.clear();
+    while (!_stack.empty()) {
+      _inactive_rules.insert(_inactive_rules.end(), _stack.top());
+      _stack.pop();
+    }
+    _next_rule_it1 = end();
+    _next_rule_it2 = end();
+    _set_rules.clear();
+  }
+
+  KnuthBendix::Rules& KnuthBendix::Rules::operator=(Rules const& that) {
+    init();
+    for (Rule const* rule : that) {
+      add_rule(copy_rule(rule));
+    }
+    _next_rule_it1 = begin();
+    std::advance(
+        _next_rule_it1,
+        std::distance(that.begin(),
+                      static_cast<std::list<Rule const*>::const_iterator>(
+                          that._next_rule_it1)));
+    _next_rule_it2 = begin();
+    std::advance(
+        _next_rule_it2,
+        std::distance(that.begin(),
+                      static_cast<std::list<Rule const*>::const_iterator>(
+                          that._next_rule_it2)));
+    // Don't copy the inactive rules, because why bother
+    _confluent        = that._confluent.load();
+    _confluence_known = that._confluence_known.load();
+    return *this;
+  }
+
   KnuthBendix::Rule* KnuthBendix::Rules::new_rule() {
     ++_stats.total_rules;
     Rule* rule;
@@ -465,7 +506,7 @@ namespace libsemigroups {
   }
 
   KnuthBendix& KnuthBendix::init(congruence_kind knd) {
-    deactivate_all_rules();
+    _rules.init();
 
     CongruenceInterface::init(knd);
     _settings.init();
@@ -496,29 +537,9 @@ namespace libsemigroups {
 
   KnuthBendix& KnuthBendix::operator=(KnuthBendix const& that) {
     Runner::operator=(that);
-    deactivate_all_rules();
-
-    // TODO replace with Rules::operator=
-    for (Rule const* rule : that._rules) {
-      _rules.add_rule(_rules.copy_rule(rule));
-    }
-    _rules._next_rule_it1 = _rules.begin();
-    std::advance(
-        _rules._next_rule_it1,
-        std::distance(that._rules.begin(),
-                      static_cast<std::list<Rule const*>::const_iterator>(
-                          that._rules._next_rule_it1)));
-    _rules._next_rule_it2 = _rules.begin();
-    std::advance(
-        _rules._next_rule_it2,
-        std::distance(that._rules.begin(),
-                      static_cast<std::list<Rule const*>::const_iterator>(
-                          that._rules._next_rule_it2)));
-    // Don't copy the inactive rules, because why bother
+    _rules = that._rules;
 
     _settings                     = that._settings;
-    _rules._confluent             = that._rules._confluent.load();
-    _rules._confluence_known      = that._rules._confluence_known.load();
     _gilman_graph                 = that._gilman_graph;
     _internal_is_same_as_external = that._internal_is_same_as_external;
     _stats.min_length_lhs_rule    = that._stats.min_length_lhs_rule;
@@ -926,6 +947,7 @@ namespace libsemigroups {
         _rules.clear_stack();
       }
     }
+
     // LIBSEMIGROUPS_ASSERT(_rules._stack.empty());
     // Seems that the stack can be non-empty here in KnuthBendix 12, 14, 16
     // and maybe more
@@ -1187,25 +1209,6 @@ namespace libsemigroups {
         // added to the end of the active rules list.
       }
     }
-  }
-
-  void KnuthBendix::deactivate_all_rules() {
-    // Put all active rules and those rules in the stack into the
-    // inactive_rules list
-    for (Rule const* cptr : _rules) {
-      Rule* ptr = const_cast<Rule*>(cptr);
-      ptr->deactivate();
-      _rules._inactive_rules.insert(_rules._inactive_rules.end(), ptr);
-    }
-    _rules._active_rules.clear();
-    while (!_rules._stack.empty()) {
-      _rules._inactive_rules.insert(_rules._inactive_rules.end(),
-                                    _rules._stack.top());
-      _rules._stack.pop();
-    }
-    _rules._next_rule_it1 = _rules.end();
-    _rules._next_rule_it2 = _rules.end();
-    _rules._set_rules.clear();
   }
 
   size_t KnuthBendix::max_active_word_length() const {
