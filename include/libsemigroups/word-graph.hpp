@@ -48,6 +48,7 @@
 #include "types.hpp"      // for word_type
 
 #include "detail/containers.hpp"  // for DynamicArray2
+#include "detail/dot.hpp"         // for Duf
 #include "detail/int-range.hpp"   // for IntRange
 #include "detail/stl.hpp"         // for IsIterator
 #include "detail/uf.hpp"          // for Duf
@@ -1414,6 +1415,9 @@ namespace libsemigroups {
 
     template <typename Graph>
     std::pair<bool, Forest> standardize(Graph& wg, Order val = Order::shortlex);
+
+    template <typename Node>
+    std::string dot(WordGraph<Node> const& wg);
 
   }  // namespace word_graph
 

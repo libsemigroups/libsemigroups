@@ -352,7 +352,7 @@ namespace libsemigroups {
         return _stack.empty();
       }
 
-      // TODO remove
+      // TODO remove?
       Rules& confluent(tril val) {
         if (val == tril::TRUE) {
           _confluence_known = true;

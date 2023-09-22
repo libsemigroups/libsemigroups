@@ -87,6 +87,23 @@ namespace libsemigroups {
       }
       return std::make_pair(result, c);
     }
+
+    void disjoint_union_inplace(StephenGraph const& that) {
+      // TODO throw exception if that.labels() != this->labels()
+      // TODO the following requires that this and that are standardized
+      // and that this and that are run to the end
+      size_t const N = number_of_nodes_active();
+      // TODO the following 2 lines are a bit awkward
+      BaseGraph::add_nodes(that.number_of_nodes());
+      NodeManager<node_type>::add_active_nodes(that.number_of_nodes());
+
+      for (auto n : that.nodes()) {
+        for (auto a : that.labels()) {
+          BaseGraph::set_target_no_checks(
+              n + N, a, that.target_no_checks(n, a) + N);
+        }
+      }
+    }
   };
 
   template <typename P>

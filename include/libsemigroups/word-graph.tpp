@@ -804,6 +804,26 @@ namespace libsemigroups {
       return last_node_on_path(wg, from, w.cbegin(), w.cend());
     }
 
+    template <typename Node>
+    std::string dot(WordGraph<Node> const& wg) {
+      using rx::enumerate;
+      Dot result;
+      result.name("WordGraph").kind(Dot::Kind::digraph);
+      for (auto n : wg.nodes()) {
+        result.add_node(n);
+        result.add_node_attr(n, "shape", "box");
+      }
+      for (auto n : wg.nodes()) {
+        for (auto [a, m] : enumerate(wg.targets_no_checks(n))) {
+          if (m != UNDEFINED) {
+            result.add_edge(n, m);
+            result.add_edge_attr(n, m, "color", result.colors[a]);
+          }
+        }
+      }
+      return result.to_string();
+    }
+
   }  // namespace word_graph
 
   //////////////////////////////////////////////////////////////////////////////

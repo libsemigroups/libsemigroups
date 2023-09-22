@@ -26,6 +26,7 @@
 #include <chrono>       // for duration, microsec...
 #include <cstddef>      // for size_t
 #include <cstdint>      // for size_t
+#include <fstream>      // for ofstream
 #include <iostream>     // for string, char_traits
 #include <iterator>     // for advance
 #include <string>       // for swap, basic_string
@@ -1374,13 +1375,19 @@ namespace libsemigroups {
     T.set_word(to_word("aBbcaABAabCc"));
     S.run();
     REQUIRE(S.word_graph().number_of_nodes() == 7);
+
+    std::ofstream f("wordgraph.gv");
     T.run();
     REQUIRE(T.word_graph().number_of_nodes() == 7);
     S *= T;
+    REQUIRE(S.word_graph().number_of_nodes() == 14);
+    f << word_graph::dot(S.word_graph());
+    // fmt::print("{}", word_graph::dot(S.word_graph()));
     REQUIRE(!S.finished());
     S.run();
     REQUIRE(S.finished());
-    REQUIRE(S.word_graph().number_of_nodes() == 0);
+    REQUIRE(S.word_graph().number_of_nodes() == 9);
     REQUIRE(stephen::accepts(S, pow(T.word(), 2)));
+    // fmt::print("{}", word_graph::dot(S.word_graph()));
   }
 }  // namespace libsemigroups

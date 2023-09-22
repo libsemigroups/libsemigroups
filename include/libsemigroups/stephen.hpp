@@ -35,6 +35,7 @@
 #include "word-graph-with-sources.hpp"  // for DigraphWithSources
 #include "word-graph.hpp"               // for WordGraph, Act...
 
+#include "detail/dot.hpp"                 // for Dot
 #include "detail/int-range.hpp"           // for IntegralRange<>::v...
 #include "detail/node-managed-graph.hpp"  // for NodeManagedGraph
 #include "detail/stl.hpp"                 // for IsStdSharedPtr
@@ -282,11 +283,14 @@ namespace libsemigroups {
       return 0;
     }
 
-    void operator*=(Stephen<P> const& y) {
+    void operator*=(Stephen<P>& y) {
       // TODO if one of this and that is finished, then just tack on the linear
       // graph.
-
-      size_t const N = _word_graph.number_of_nodes();
+      this->run();
+      y.run();
+      // FIXME _word_graph has two mem fns number_nodes_active (in NodeManager)
+      // and number_active_nodes (in WordGraph), this is super confusing!
+      size_t const N = _word_graph.number_of_nodes_active();
       _word_graph.disjoint_union_inplace(y._word_graph);
       _word_graph.merge_nodes_no_checks(accept_state(), y.initial_state() + N);
       _word_graph.template process_coincidences<DoNotRegisterDefs>();
