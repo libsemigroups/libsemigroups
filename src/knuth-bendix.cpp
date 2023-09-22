@@ -335,8 +335,6 @@ namespace libsemigroups {
     rule->reorder();
   }
 
-  // FIXME(later) there is a possibly infinite loop here clear_stack ->
-  // push_stack -> clear_stack and so on
   void KnuthBendix::Rules::push_stack(Rule* rule) {
     LIBSEMIGROUPS_ASSERT(!rule->active());
     if (*rule->lhs() != *rule->rhs()) {
@@ -633,7 +631,6 @@ namespace libsemigroups {
 
   KnuthBendix::~KnuthBendix() {
     delete _overlap_measure;
-    // TODO move to destructor of Rules
   }
 
   KnuthBendix& KnuthBendix::init(congruence_kind                  knd,
@@ -841,7 +838,6 @@ namespace libsemigroups {
     return _rules.confluence_known();
   }
 
-  // TODO move into Rules
   bool KnuthBendix::confluent() const {
     return _rules.confluent();
   }
