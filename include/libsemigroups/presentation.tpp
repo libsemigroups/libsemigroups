@@ -170,6 +170,8 @@ namespace libsemigroups {
     size_type index = 0;
     for (auto const& letter : _alphabet) {
       auto it = alphabet_map.emplace(letter, index++);
+      // FIXME this doesn't compile when using a size_type to initialise the
+      // alphabet (rather than a word), see 045
       if (!it.second) {
         LIBSEMIGROUPS_EXCEPTION(
             "invalid alphabet {}, duplicate letter {}!", _alphabet, letter);

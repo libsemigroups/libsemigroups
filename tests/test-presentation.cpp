@@ -2195,4 +2195,10 @@ namespace libsemigroups {
     REQUIRE(prod(eps, 2, -1, -1) == "210"_w);
     REQUIRE(prod(eps, -1, -2, -1) == "5"_w);
   }
+
+  LIBSEMIGROUPS_TEST_CASE("Presentation", "021", "iterator", "[quick]") {
+    using namespace literals;
+    presentation::PresentationIterator it(2, 2, 7);
+    REQUIRE(it.get().rules == std::vector<word_type>({00_w, ""_w, ""_w, ""_w}));
+  }
 }  // namespace libsemigroups

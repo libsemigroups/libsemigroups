@@ -38,6 +38,7 @@ namespace libsemigroups {
     REQUIRE(39 == number_of_words(3, 1, 4));
     REQUIRE(29'524 == number_of_words(3, 0, 10));
     REQUIRE(32 == number_of_words(2, 5, 6));
+    REQUIRE(32 == sum_of_lengths_of_words(2, 5, 6));
     REQUIRE(797'161 == number_of_words(3, 0, 13));
     REQUIRE(number_of_words(2, 4, 1) == 0);
     REQUIRE(number_of_words(2, 4, 4) == 0);

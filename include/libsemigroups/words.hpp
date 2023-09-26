@@ -64,6 +64,8 @@ namespace libsemigroups {
   //! the return value of this function will not be correct.
   uint64_t number_of_words(size_t n, size_t min, size_t max);
 
+  uint64_t sum_of_lengths_of_words(size_t n, size_t min, size_t max);
+
   namespace detail {
     // TODO(later) doc, check args etc
     void word_to_string(std::string const& alphabet,

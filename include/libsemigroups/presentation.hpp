@@ -54,6 +54,7 @@
 #include "ukkonen.hpp"    // for GreedyReduceHelper, Ukkonen
 #include "words.hpp"      // for operator+
 
+#include "detail/report.hpp"  // for formatter<vector>
 #include "detail/string.hpp"  // for maximum_common_prefix
 #include "detail/uf.hpp"      // for Duf
 
@@ -1577,6 +1578,88 @@ namespace libsemigroups {
     // TODO(doc)
     std::string to_gap_string(Presentation<word_type> const& p,
                               std::string const&             var_name);
+
+    class PresentationIterator {
+     private:
+      std::vector<std::pair<const_wislo_iterator, const_wislo_iterator>>
+                              _iterators;
+      size_t                  _length;
+      size_t                  _num_rules;
+      Presentation<word_type> _presentation;
+
+     public:
+      PresentationIterator(size_t alphabet_size, size_t num_rules, size_t len)
+          : _iterators(
+              2 * num_rules,
+              std::make_pair(cbegin_wislo(0, {}, {}), cend_wislo(0, {}, {}))),
+            _length(len),
+            _num_rules(num_rules),
+            _presentation() {
+        _presentation.alphabet(alphabet_size);
+        init_iterators(0, _num_rules, _length - alphabet_size);
+      }
+
+      Presentation<word_type> const& get() {
+        _presentation.rules.clear();
+        for (auto const& p : _iterators) {
+          _presentation.rules.push_back(*p.first);
+        }
+        return _presentation;
+      }
+
+      bool next() {
+        return false;
+      }
+
+     private:
+      void init_iterators(size_t relation_word_index,
+                          size_t num_rules,
+                          size_t len) {
+        using words::pow;
+        if (relation_word_index > 2 * num_rules + 1) {
+          return;
+        }
+
+        if (relation_word_index % 2 == 0) {
+          size_t const k           = _presentation.alphabet().size();
+          size_t const n           = (len - 2 * num_rules + 2);
+          size_t       prev_length = std::max(n / 2, size_t(2));
+          auto         first       = _presentation.alphabet().front();
+          auto         it    = cbegin_wislo(_presentation.alphabet().size(),
+                                 pow({first}, prev_length),
+                                 pow({first}, n + 1));
+          int64_t      count = 0;
+          int64_t len_smaller_words = sum_of_lengths_of_words(k, 2, it->size());
+
+          while (static_cast<int64_t>(len_smaller_words + count * it->size())
+                 < static_cast<int64_t>(len)) {
+            ++count;
+            ++it;
+            if (it->size() > prev_length) {
+              count = 0;
+              prev_length++;
+            }
+            len_smaller_words = sum_of_lengths_of_words(k, 2, it->size());
+          }
+          _iterators[relation_word_index].first = it;
+          _iterators[relation_word_index].second
+              = cend_wislo(_presentation.alphabet().size(),
+                           pow({first}, it->size()),
+                           pow({first}, n + 1));
+          init_iterators(relation_word_index + 1, num_rules, len - it->size());
+        } else {
+          _iterators[relation_word_index].first
+              = cbegin_wislo(_presentation.alphabet().size(),
+                             {},
+                             *_iterators[relation_word_index - 1].first);
+          _iterators[relation_word_index].second
+              = cend_wislo(_presentation.alphabet().size(),
+                           {},
+                           *_iterators[relation_word_index - 1].first);
+          init_iterators(relation_word_index + 1, num_rules - 1, len);
+        }
+      }
+    };
 
   }  // namespace presentation
 
