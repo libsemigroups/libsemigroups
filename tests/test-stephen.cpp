@@ -1376,18 +1376,44 @@ namespace libsemigroups {
     S.run();
     REQUIRE(S.word_graph().number_of_nodes() == 7);
 
-    std::ofstream f("wordgraph.gv");
     T.run();
     REQUIRE(T.word_graph().number_of_nodes() == 7);
     S *= T;
     REQUIRE(S.word_graph().number_of_nodes() == 14);
-    f << word_graph::dot(S.word_graph());
     // fmt::print("{}", word_graph::dot(S.word_graph()));
     REQUIRE(!S.finished());
     S.run();
     REQUIRE(S.finished());
-    REQUIRE(S.word_graph().number_of_nodes() == 9);
+    REQUIRE(S.word_graph().number_of_nodes() == 12);
     REQUIRE(stephen::accepts(S, pow(T.word(), 2)));
-    // fmt::print("{}", word_graph::dot(S.word_graph()));
+    T.set_word(pow(T.word(), 2));
+    T.run();
+    REQUIRE(S == T);
+    REQUIRE(stephen::words_accepted(S).get() == 0202_w);
+    REQUIRE(stephen::number_of_left_factors(S) == POSITIVE_INFINITY);
+    S.set_word(to_word("aBbcaABAabCc"));
+    std::ofstream f("wordgraph.gv");
+    f << stephen::dot(S).to_string();
+    T.set_word(to_word("CcBAabaACBbA"));
+    S *= T;
   }
+
+  LIBSEMIGROUPS_TEST_CASE("Stephen",
+                          "047",
+                          "bicyclic monoid",
+                          "[stephen][fail]") {
+    ReportGuard                    rg(true);
+    detail::StringToWord           to_word("aA");
+    InversePresentation<word_type> p;
+    p.alphabet(to_word("aA"));
+    p.inverses(to_word("Aa"));
+    p.contains_empty_word(true);
+    presentation::add_rule(p, to_word("aA"), to_word(""));
+
+    Stephen S(p);
+    S.set_word(""_w).run();
+    REQUIRE(S.word_graph().number_of_nodes() == 0);
+  }
+
+  // TODO the examples from Stephen's paper/thesis?
 }  // namespace libsemigroups

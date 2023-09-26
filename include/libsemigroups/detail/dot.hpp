@@ -49,10 +49,11 @@ namespace libsemigroups {
     enum class Kind { digraph, graph };
 
    private:
-    Kind                                  _kind;
-    std::string                           _name;
-    std::unordered_map<std::string, Node> _nodes;
-    std::vector<Edge>                     _edges;
+    std::unordered_map<std::string, std::string> _attrs;
+    Kind                                         _kind;
+    std::string                                  _name;
+    std::unordered_map<std::string, Node>        _nodes;
+    std::vector<Edge>                            _edges;
 
    public:
     static constexpr std::array<std::string_view, 24> colors
@@ -60,7 +61,7 @@ namespace libsemigroups {
            "#de0328", "#19801d", "#d881f5", "#00ffff", "#ffff00", "#00ff7f",
            "#ad5867", "#85f610", "#84e9f5", "#f5c778", "#207090", "#764ef3",
            "#7b4c00", "#0000ff", "#b80c9a", "#601045", "#29b7c0", "#839f12"};
-    Dot() : _kind(), _name(), _nodes(), _edges() {}
+    Dot() : _attrs(), _kind(), _name(), _nodes(), _edges() {}
 
     Dot& kind(Kind val) {
       _kind = val;
@@ -69,6 +70,11 @@ namespace libsemigroups {
 
     Dot& name(std::string val) {
       _name = val;
+      return *this;
+    }
+
+    Dot& add_attr(std::string const& key, std::string const& val) {
+      add_or_replace_attr(_attrs, key, val);
       return *this;
     }
 
@@ -96,7 +102,8 @@ namespace libsemigroups {
       return *this;
     }
 
-    template <typename T>
+    template <typename T,
+              typename = std::enable_if_t<!std::is_same_v<T, char const*>>>
     Dot& add_node_attr(T name, std::string const& key, std::string const& val) {
       return add_node_attr(std::to_string(name), key, val);
     }
@@ -112,6 +119,7 @@ namespace libsemigroups {
       return add_edge(std::to_string(from), std::to_string(to));
     }
 
+    // TODO replace by edge index
     Dot& add_edge_attr(std::string const& from,
                        std::string const& to,
                        std::string const& key,
@@ -131,6 +139,7 @@ namespace libsemigroups {
       return *this;
     }
 
+    // TODO replace by edge index
     template <typename S, typename T>
     Dot& add_edge_attr(S const&         from,
                        T const&         to,
@@ -148,15 +157,19 @@ namespace libsemigroups {
       if (_kind == Kind::graph) {
         result.erase(result.begin(), result.begin() + 2);
       }
+      if (!_name.empty()) {
+        result += " ";
+      }
+      result += _name + " {\n";
+      append_attrs(result, _attrs, false);
 
-      result += " " + _name + " {\n";
       for (auto const& [_, node] : _nodes) {
-        result += fmt::format("{}", node.name);
+        result += fmt::format("  {}", node.name);
         append_attrs(result, node.attrs);
       }
 
       for (auto const& edge : _edges) {
-        result += fmt::format("{} {} {}", edge.from, edge_string(), edge.to);
+        result += fmt::format("  {} {} {}", edge.from, edge_string(), edge.to);
         append_attrs(result, edge.attrs);
       }
       result += "}";
@@ -189,20 +202,26 @@ namespace libsemigroups {
       }
     }
 
-    void append_attrs(
-        std::string&                                        s,
-        std::unordered_map<std::string, std::string> const& map) const {
+    void append_attrs(std::string&                                        s,
+                      std::unordered_map<std::string, std::string> const& map,
+                      bool include_brace = true) const {
       if (map.empty()) {
         s += "\n";
         return;
       }
-      s += " [";
+      s += "  ";
+      if (include_brace) {
+        s += "[";
+      }
       std::string_view sep = "";
       for (auto const& attr : map) {
-        s += fmt::format("{}=\"{}\"{}", attr.first, attr.second, sep);
-        sep = ",";
+        s += fmt::format("{}{}=\"{}\"", sep, attr.first, attr.second);
+        sep = ", ";
       }
-      s += "]\n";
+      if (include_brace) {
+        s += "]";
+      }
+      s += "\n";
     }
   };
 

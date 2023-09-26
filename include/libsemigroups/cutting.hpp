@@ -16,6 +16,27 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 // TODO:
+// * nr_h_classes (easy)
+// * h_class_reps (harder, as words, and/or as Stephen objects)
+//   either all words labelling a path in both Stephen and Stephen^-1; or
+//   use the automorphism group of Stephen::word_graph() (as per Theorem 3.5).
+// * idempotents (easy, as words and/or Stephen objects)
+// * natural partial order
+// * is_natural_less(word, word) and is_natural_less(Stephen, Stephen)
+// * Stephen.natural_order_filter() = S.words_accepted()
+// * d_class reps (easy)
+// * r_class reps (easy)
+// * l_class reps (just inverses of r_class reps)
+// * is_X_related(Stephen, Stephen) and/or is_X_related(word, word)
+//   for X = L, R, H, D.
+// * contains
+// * is_group (Theorem 3.7(a))
+// * is_bisimple (just nr_of_dclasses = 1)
+// * is_e_unitary (Theorem 3.8)
+// * elements(Stephen) and elements(Cutting)
+// * to_froidure_pin impl
+// * to_konieczny impl
+// * to_schreier_sims_impl (when is_group)
 
 #ifndef LIBSEMIGROUPS_CUTTING_HPP_
 #define LIBSEMIGROUPS_CUTTING_HPP_
@@ -56,6 +77,7 @@ namespace libsemigroups {
     }
 
     // TODO to cpp
+    // TODO rename number_of_classes
     uint64_t size() {
       run();
       uint64_t result = 0;
@@ -102,6 +124,9 @@ namespace libsemigroups {
           // TODO try multiplying the Stephen for letter by _stephen[j], then
           // since Stephen's are standardized, we can possibly do a binary
           // search in the sorted list of _stephens...
+          // TODO or even better can't we just keep track of where we fall out
+          // of one Stephen into the next, and just follow the edges
+          // accordingly?
           for (size_t j = 0; j < _stephens.size(); ++j) {
             if (stephen::is_left_factor(_stephens[j], word)) {
               if (stephen::is_left_factor(tmp, _stephens[j].word())) {

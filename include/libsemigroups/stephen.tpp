@@ -99,8 +99,10 @@ namespace libsemigroups {
 
       for (auto n : that.nodes()) {
         for (auto a : that.labels()) {
-          BaseGraph::set_target_no_checks(
-              n + N, a, that.target_no_checks(n, a) + N);
+          auto m = that.target_no_checks(n, a);
+          if (m != UNDEFINED) {
+            BaseGraph::set_target_no_checks(n + N, a, m + N);
+          }
         }
       }
     }

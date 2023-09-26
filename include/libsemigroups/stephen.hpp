@@ -42,13 +42,17 @@
 
 // TODO
 // * iwyu
-// * operator* method for Stephens (i.e. identify the accept_state() of the
-//   first with the initial state of the second, then determinise).
-// * canonical_form (as per Howie's book)
-// * minimal rep
+// * minimal rep (as per Reinis) (named normal_form?)
+// * class_of for inverse Stephen (i.e. all walks in the graph through all
+// nodes) (not sure how to do this just yet). This is different than
+// words_accepted see Corollary 3.2 in Stephen's "Presentations of inverse
+// monoids" paper (not thesis).
+// * invert() - just swap the initial and accept states and re-standardize
+// * idempotent() - just make the accept state = initial state.
 // * update reporting to new standard
 // * update so that run_for, run_until work properly (at present basically
 //   run_impl starts again from scratch every time)
+// * canonical_form (as per Howie's book)
 namespace libsemigroups {
 
   //! Defined in ``stephen.hpp``.
@@ -432,6 +436,37 @@ namespace libsemigroups {
       return number_of_paths(s.word_graph(), 0, min, max);
     }
 
+    // TODO to tpp
+    template <typename P>
+    Dot dot(Stephen<P>& s) {
+      if constexpr (IsInversePresentation<P>) {
+        Dot result;
+        result.kind(Dot::Kind::digraph);
+        result.add_node("initial").add_node_attr("initial", "style", "invis");
+        result.add_node("accept").add_node_attr("accept", "style", "invis");
+        for (auto n : s.word_graph().nodes()) {
+          result.add_node(n);
+          result.add_node_attr(n, "shape", "box");
+        }
+        result.add_edge("initial", std::to_string(s.initial_state()));
+        result.add_edge(std::to_string(s.accept_state()), "accept");
+
+        for (auto n : s.word_graph().nodes()) {
+          for (size_t a = 0; a < s.presentation().alphabet().size() / 2; ++a) {
+            auto m = s.word_graph().target(n, a);
+            if (m != UNDEFINED) {
+              result.add_edge(n, m)
+                  .add_edge_attr(n, m, "color", result.colors[a])
+                  .add_edge_attr(n, m, "label", std::to_string(a))
+                  .add_edge_attr(n, m, "minlen", std::to_string(2));
+            }
+          }
+        }
+        return result;
+      } else {
+      }
+    }
+
   }  // namespace stephen
 
   template <typename PresentationType>
@@ -452,6 +487,7 @@ namespace libsemigroups {
     // } else {
     word = " " + std::to_string(x.word().size()) + " letter word, ";
     //}
+    // TODO use fmt
     os << std::string("<Stephen for ") << word << " with "
        << x.word_graph().number_of_nodes() << "  nodes, "
        << x.word_graph().number_of_edges() << " edges>";
