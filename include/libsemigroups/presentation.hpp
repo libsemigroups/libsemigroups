@@ -1581,83 +1581,106 @@ namespace libsemigroups {
 
     class PresentationIterator {
      private:
+      size_t                                 _max_length;
+      size_t                                 _num_rules;
+      Presentation<word_type>                _presentation;
+      std::vector<word_type::const_iterator> _uv_iterators;
       std::vector<std::pair<const_wislo_iterator, const_wislo_iterator>>
-                              _iterators;
-      size_t                  _length;
-      size_t                  _num_rules;
-      Presentation<word_type> _presentation;
+          _w_iterators;
 
      public:
-      PresentationIterator(size_t alphabet_size, size_t num_rules, size_t len)
-          : _iterators(
-              2 * num_rules,
-              std::make_pair(cbegin_wislo(0, {}, {}), cend_wislo(0, {}, {}))),
-            _length(len),
+      PresentationIterator(size_t alphabet_size,
+                           size_t num_rules,
+                           size_t max_len)
+          : _max_length(max_len),
             _num_rules(num_rules),
-            _presentation() {
+            _presentation(),
+            _uv_iterators(),
+            _w_iterators() {
+        using words::pow;
+        using namespace literals;
+
         _presentation.alphabet(alphabet_size);
-        init_iterators(0, _num_rules, _length - alphabet_size);
+
+        _w_iterators.emplace_back(
+            cbegin_wislo(
+                alphabet_size, "00"_w, pow("0"_w, max_len - alphabet_size)),
+            cend_wislo(
+                alphabet_size, "00"_w, pow("0"_w, max_len - alphabet_size)));
+        _w_iterators.resize(num_rules, _w_iterators[0]);
+        _uv_iterators.push_back(_w_iterators.front().first->cbegin());
+        _uv_iterators.resize(num_rules, _uv_iterators[0]);
+        _uv_iterators[0] = _w_iterators.front().first->cbegin();
+        if (init(0)) {
+          next();
+        }
       }
 
       Presentation<word_type> const& get() {
         _presentation.rules.clear();
-        for (auto const& p : _iterators) {
-          _presentation.rules.push_back(*p.first);
+        for (auto [i, it] : rx::enumerate(_uv_iterators)) {
+          _presentation.rules.emplace_back(_w_iterators[i].first->cbegin(), it);
+          _presentation.rules.emplace_back(it, _w_iterators[i].first->cend());
         }
         return _presentation;
       }
 
       bool next() {
-        return false;
+        size_t i = _num_rules - 1;
+        ++_uv_iterators[i];
+
+        while (_uv_iterators[i] > _w_iterators[i].first->begin()
+                                      + (_w_iterators[i].first->size() / 2)
+               || _uv_iterators[i] > _w_iterators[i].first->end() - 2
+               || !init(i)) {
+          _w_iterators[i].first++;
+          if (_w_iterators[i].first == _w_iterators[i].second) {
+            if (i == 0) {
+              return false;
+            }
+            --i;
+            _uv_iterators[i]++;
+          } else {
+            _uv_iterators[i] = _w_iterators[i].first->begin();
+          }
+        }
+        return true;
       }
 
      private:
-      void init_iterators(size_t relation_word_index,
-                          size_t num_rules,
-                          size_t len) {
-        using words::pow;
-        if (relation_word_index > 2 * num_rules + 1) {
-          return;
+      [[nodiscard]] bool init(size_t depth) {
+        size_t len = std::accumulate(_w_iterators.cbegin(),
+                                     _w_iterators.cbegin() + depth + 1,
+                                     size_t(0),
+                                     [&](auto& tot, auto const& wi) {
+                                       tot += wi.first->size();
+                                       return tot;
+                                     }
+
+        );
+        if (len > _max_length - _presentation.alphabet().size()) {
+          return false;
         }
 
-        if (relation_word_index % 2 == 0) {
-          size_t const k           = _presentation.alphabet().size();
-          size_t const n           = (len - 2 * num_rules + 2);
-          size_t       prev_length = std::max(n / 2, size_t(2));
-          auto         first       = _presentation.alphabet().front();
-          auto         it    = cbegin_wislo(_presentation.alphabet().size(),
-                                 pow({first}, prev_length),
-                                 pow({first}, n + 1));
-          int64_t      count = 0;
-          int64_t len_smaller_words = sum_of_lengths_of_words(k, 2, it->size());
-
-          while (static_cast<int64_t>(len_smaller_words + count * it->size())
-                 < static_cast<int64_t>(len)) {
-            ++count;
-            ++it;
-            if (it->size() > prev_length) {
-              count = 0;
-              prev_length++;
-            }
-            len_smaller_words = sum_of_lengths_of_words(k, 2, it->size());
+        for (size_t i = depth + 1; i < _num_rules; ++i) {
+          auto wi  = _w_iterators[i - 1];
+          auto iti = wi.first->cbegin()
+                     + std::distance(_w_iterators[i - 1].first->cbegin(),
+                                     _uv_iterators[i - 1])
+                     + 1;
+          if (std::equal(wi.first->cbegin(), iti, iti, wi.first->cend())) {
+            iti++;
           }
-          _iterators[relation_word_index].first = it;
-          _iterators[relation_word_index].second
-              = cend_wislo(_presentation.alphabet().size(),
-                           pow({first}, it->size()),
-                           pow({first}, n + 1));
-          init_iterators(relation_word_index + 1, num_rules, len - it->size());
-        } else {
-          _iterators[relation_word_index].first
-              = cbegin_wislo(_presentation.alphabet().size(),
-                             {},
-                             *_iterators[relation_word_index - 1].first);
-          _iterators[relation_word_index].second
-              = cend_wislo(_presentation.alphabet().size(),
-                           {},
-                           *_iterators[relation_word_index - 1].first);
-          init_iterators(relation_word_index + 1, num_rules - 1, len);
+          len += wi.first->size();
+          if (len > _max_length - _presentation.alphabet().size()) {
+            return false;
+          }
+          LIBSEMIGROUPS_ASSERT(i < _w_iterators.size());
+          LIBSEMIGROUPS_ASSERT(i < _uv_iterators.size());
+          _w_iterators[i]  = std::move(wi);
+          _uv_iterators[i] = std::move(iti);
         }
+        return true;
       }
     };
 
@@ -1688,9 +1711,8 @@ namespace libsemigroups {
     // TODO validate that checks that inverses are set
     // TODO to tpp
     InversePresentation& inverses(word_type const& w) {
-      // TODO maybe don't validate here but only in the validate function to be
-      // written.
-      // Set the alphabet to include the inverses
+      // TODO maybe don't validate here but only in the validate function to
+      // be written. Set the alphabet to include the inverses
       _inverses = w;
       return *this;
     }

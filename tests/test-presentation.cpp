@@ -2198,7 +2198,24 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("Presentation", "021", "iterator", "[quick]") {
     using namespace literals;
-    presentation::PresentationIterator it(2, 2, 7);
-    REQUIRE(it.get().rules == std::vector<word_type>({00_w, ""_w, ""_w, ""_w}));
+    presentation::PresentationIterator it(2, 2, 6);
+    REQUIRE(it.get().rules == std::vector<word_type>({""_w, 00_w, ""_w, 01_w}));
+    it.next();
+    REQUIRE(it.get().rules == std::vector<word_type>({""_w, 00_w, ""_w, 10_w}));
+    it.next();
+    REQUIRE(it.get().rules == std::vector<word_type>({""_w, 00_w, ""_w, 11_w}));
+    it.next();
+    REQUIRE(it.get().rules == std::vector<word_type>({""_w, 01_w, 0_w, 1_w}));
+    it.next();
+    REQUIRE(it.get().rules == std::vector<word_type>({""_w, 01_w, ""_w, 10_w}));
+    it.next();
+    REQUIRE(it.get().rules == std::vector<word_type>({""_w, 01_w, ""_w, 11_w}));
+    it.next();
+    REQUIRE(it.get().rules == std::vector<word_type>({""_w, 10_w, 1_w, 0_w}));
+    it.next();
+    REQUIRE(it.get().rules == std::vector<word_type>({""_w, 10_w, ""_w, 11_w}));
+    it.next();
+    REQUIRE(it.get().rules == std::vector<word_type>({""_w, 10_w, ""_w, 11_w}));
+    // 70
   }
 }  // namespace libsemigroups
