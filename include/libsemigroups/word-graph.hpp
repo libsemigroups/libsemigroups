@@ -835,6 +835,11 @@ namespace libsemigroups {
                                 cend_targets_no_checks(n));
     }
 
+    [[nodiscard]] auto
+    labels_and_targets_no_checks(node_type n) const noexcept {
+      return rx::enumerate(targets_no_checks(n));
+    }
+
     [[nodiscard]] rx::iterator_range<const_iterator_targets>
     targets(node_type n) const;
 

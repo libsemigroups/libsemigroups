@@ -179,16 +179,15 @@ namespace libsemigroups {
     //   _preim_next.shrink_rows_to(m);
     // }
 
-    // TODO move to StephenGraph
-    void disjoint_union_inplace(WordGraphWithSources<Node> const& that) {
+    // TODO to cpp/tpp file
+    void disjoint_union_inplace(WordGraph<Node> const& that) {
       size_t N = number_of_nodes();
-      // TODO next line is probably not correct, should take into consideration
-      // the number of active nodes and inactive nodes, i.e. it should use the
-      // NodeManagedGraph facilities to manage the nodes.
       add_nodes(that.number_of_nodes());
       for (auto s : that.nodes()) {
-        for (auto [a, t] : rx::enumerate(that.targets(s))) {
-          set_target_no_checks(s + N, a, t + N);
+        for (auto [a, t] : that.labels_and_targets_no_checks(s)) {
+          if (t != UNDEFINED) {
+            set_target_no_checks(s + N, a, t + N);
+          }
         }
       }
     }
