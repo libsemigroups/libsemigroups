@@ -24,7 +24,6 @@
 #include "catch.hpp"      // for REQUIRE, REQUIRE_THROWS_AS, REQUI...
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
-#include "libsemigroups/cirpons.hpp"
 #include "libsemigroups/cutting.hpp"
 #include "libsemigroups/detail/string.hpp"
 #include "libsemigroups/fpsemi-examples.hpp"
@@ -119,15 +118,11 @@ namespace libsemigroups {
     // == 302); presentation::replace_subword(p,
     // presentation::longest_common_subword(p)); REQUIRE(presentation::length(p)
     // == 288);
-    // {
-    //   auto c = Cutting(p);
-    //   REQUIRE(c.size() == 130'922);
-    //   REQUIRE(c.number_of_r_classes() == 128);
-    //   REQUIRE(c.number_of_d_classes() == 8);
-    // }
-    Cirpons c(p);
-    c.run();
-    REQUIRE(c.number_of_classes() == 5040);
+
+    auto c = Cutting(p);
+    REQUIRE(c.size() == 130'922);
+    REQUIRE(c.number_of_r_classes() == 128);
+    REQUIRE(c.number_of_d_classes() == 8);
   }
 
   LIBSEMIGROUPS_TEST_CASE("Cutting",

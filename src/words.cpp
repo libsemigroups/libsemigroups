@@ -177,19 +177,6 @@ namespace libsemigroups {
     return geometric_progression(max, 1, n) - geometric_progression(min, 1, n);
   }
 
-  uint64_t sum_of_lengths_of_words(size_t n, size_t min, size_t max) {
-    if (max <= min) {
-      return 0;
-    }
-    uint64_t result = 0;
-    for (size_t i = min; i < max; ++i) {
-      result += number_of_words(n, i, i + 1) * i;
-    }
-    return result;
-  }
-
-  // TODO number_of_words(size_t, word_type, word_type)
-
   void detail::word_to_string(std::string const& alphabet,
                               word_type const&   input,
                               std::string&       output) {
