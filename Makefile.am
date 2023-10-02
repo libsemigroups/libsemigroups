@@ -669,6 +669,7 @@ CHECK_FLAGS2  = [quick]
 check_PROGRAMS =  test_all
 
 EXTRA_PROGRAMS =  test_action
+EXTRA_PROGRAMS += test_aho_corasick
 EXTRA_PROGRAMS += test_bipart
 EXTRA_PROGRAMS += test_bitset
 EXTRA_PROGRAMS += test_bmat8
@@ -826,6 +827,9 @@ test_all_SOURCES += tests/test-words.cpp
 
 test_action_SOURCES =  tests/test-action.cpp
 test_action_SOURCES += tests/test-main.cpp
+
+test_aho_corasick_SOURCES =  tests/test-aho-corasick.cpp
+test_aho_corasick_SOURCES += tests/test-main.cpp
 
 test_bipart_SOURCES =  tests/test-bipart.cpp
 test_bipart_SOURCES += tests/test-main.cpp
