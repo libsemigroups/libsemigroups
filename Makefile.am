@@ -589,7 +589,8 @@ endif  ## LIBSEMIGROUPS_WITH_INTERNAL_EIGEN
 lib_LTLIBRARIES = libsemigroups.la
 
 ## libsemigroups sources
-libsemigroups_la_SOURCES  = src/bipart.cpp
+libsemigroups_la_SOURCES  = src/aho-corasick.cpp
+libsemigroups_la_SOURCES += src/bipart.cpp
 libsemigroups_la_SOURCES += src/bmat8.cpp
 libsemigroups_la_SOURCES += src/cong-intf.cpp
 libsemigroups_la_SOURCES += src/cong.cpp

@@ -16,6 +16,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
+#include <fstream>
+
 #include "libsemigroups/aho-corasick.hpp"  // for AhoCorasick
 
 #include "catch.hpp"      // for REQUIRE, REQUIRE_THROWS_AS, REQUI...
@@ -29,14 +31,15 @@ namespace libsemigroups {
                           "initial test",
                           "[quick][aho-corasick]") {
     AhoCorasick ac;
-    ac.add_word_no_checks(0104_w);
-    REQUIRE(ac.number_of_nodes() == 5);
-    REQUIRE(!ac.accepts(""_w));
-    REQUIRE(!ac.accepts("0"_w));
-    REQUIRE(!ac.accepts("01"_w));
-    REQUIRE(!ac.accepts("010"_w));
-    REQUIRE(ac.accepts("0104"_w));
-    REQUIRE(!ac.accepts("01045"_w));
+    ac.add_word_no_checks(00101_w);
+    ac.add_word_no_checks(010_w);
+
+    REQUIRE(ac.number_of_nodes() == 8);
+    REQUIRE(ac.traverse(00101_w) == 5);
+    REQUIRE(ac.traverse(010_w) == 7);
+
+    std::ofstream file("aho.gv");
+    file << dot(ac).to_string();
   }
 
 }  // namespace libsemigroups

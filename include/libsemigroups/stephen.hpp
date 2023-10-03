@@ -27,6 +27,7 @@
 #include <vector>       // for vector
 
 #include "constants.hpp"                // for PositiveInfinity
+#include "dot.hpp"                      // for Dot
 #include "paths.hpp"                    // for const_pislo_iterator etc
 #include "presentation.hpp"             // for Presentation
 #include "runner.hpp"                   // for Runner
@@ -35,7 +36,6 @@
 #include "word-graph-with-sources.hpp"  // for DigraphWithSources
 #include "word-graph.hpp"               // for WordGraph, Act...
 
-#include "detail/dot.hpp"                 // for Dot
 #include "detail/int-range.hpp"           // for IntegralRange<>::v...
 #include "detail/node-managed-graph.hpp"  // for NodeManagedGraph
 #include "detail/stl.hpp"                 // for IsStdSharedPtr
@@ -86,6 +86,7 @@ namespace libsemigroups {
     template <typename Q>
     static constexpr bool is_valid_presentation() {
       using R = typename ActualPresentation<std::decay_t<Q>>::type;
+
       return std::is_same_v<R, Presentation<word_type>>
              || std::is_same_v<R, InversePresentation<word_type>>;
     }
@@ -368,10 +369,6 @@ namespace libsemigroups {
     template <typename PresentationType>
     bool is_left_factor(Stephen<PresentationType>& s, word_type const& w);
 
-    // TODO left_factors range object
-    // TODO words_accepted range object
-
-    // TODO to tpp
     template <typename PresentationType>
     const_iterator_words_accepted
     cbegin_words_accepted(Stephen<PresentationType>& s,
@@ -439,34 +436,34 @@ namespace libsemigroups {
     // TODO to tpp
     template <typename P>
     Dot dot(Stephen<P>& s) {
-      if constexpr (IsInversePresentation<P>) {
-        Dot result;
-        result.kind(Dot::Kind::digraph);
-        result.add_node("initial").add_node_attr("initial", "style", "invis");
-        result.add_node("accept").add_node_attr("accept", "style", "invis");
-        for (auto n : s.word_graph().nodes()) {
-          result.add_node(n);
-          result.add_node_attr(n, "shape", "box");
-        }
-        result.add_edge("initial", std::to_string(s.initial_state()));
-        result.add_edge(std::to_string(s.accept_state()), "accept");
+      Dot result;
+      result.kind(Dot::Kind::digraph);
+      result.add_node("initial").add_attr("style", "invis");
+      result.add_node("accept").add_attr("style", "invis");
+      for (auto n : s.word_graph().nodes()) {
+        result.add_node(n).add_attr("shape", "box");
+      }
+      result.add_edge("initial", s.initial_state());
+      result.add_edge(s.accept_state(), "accept");
 
-        for (auto n : s.word_graph().nodes()) {
-          for (size_t a = 0; a < s.presentation().alphabet().size() / 2; ++a) {
-            auto m = s.word_graph().target(n, a);
-            if (m != UNDEFINED) {
-              result.add_edge(n, m)
-                  .add_edge_attr(n, m, "color", result.colors[a])
-                  .add_edge_attr(n, m, "label", std::to_string(a))
-                  .add_edge_attr(n, m, "minlen", std::to_string(2));
-            }
+      size_t max_letters = s.presentation().alphabet().size();
+      if constexpr (IsInversePresentation<P>) {
+        max_letters /= 2;
+      }
+
+      for (auto n : s.word_graph().nodes()) {
+        for (size_t a = 0; a < max_letters; ++a) {
+          auto m = s.word_graph().target(n, a);
+          if (m != UNDEFINED) {
+            result.add_edge(n, m)
+                .add_attr("color", result.colors[a])
+                .add_attr("label", a)
+                .add_attr("minlen", 2);
           }
         }
-        return result;
-      } else {
       }
+      return result;
     }
-
   }  // namespace stephen
 
   template <typename PresentationType>

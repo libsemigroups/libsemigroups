@@ -83,3 +83,4 @@ site/*
 tags
 test_*
 tmp/*
+.cache

@@ -42,13 +42,13 @@
 #include "config.hpp"     // for LIBSEMIGROUPS_EIGEN_EN...
 #include "constants.hpp"  // for UNDEFINED
 #include "debug.hpp"      // for LIBSEMIGROUPS_ASSERT
+#include "dot.hpp"        // for Dot
 #include "exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
 #include "forest.hpp"     // for Forest
 #include "order.hpp"      // for Order
 #include "types.hpp"      // for word_type
 
 #include "detail/containers.hpp"  // for DynamicArray2
-#include "detail/dot.hpp"         // for Duf
 #include "detail/int-range.hpp"   // for IntRange
 #include "detail/stl.hpp"         // for IsIterator
 #include "detail/uf.hpp"          // for Duf
