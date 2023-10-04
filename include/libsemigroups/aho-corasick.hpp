@@ -70,6 +70,14 @@ namespace libsemigroups {
         return _link;
       }
 
+      void clear_suffix_link() {
+        if (parent() == root || parent() == UNDEFINED) {
+          set_suffix_link(root);
+        } else {
+          set_suffix_link(UNDEFINED);
+        }
+      }
+
       [[nodiscard]] decltype(_children)& children() const {
         return _children;
       }
@@ -137,18 +145,20 @@ namespace libsemigroups {
         // TODO is this right? what if last_index has children?
       }
       clear_suffix_links();
-      auto  parent_index  = _nodes[last_index].parent();
-      auto  parent_letter = *(last - 1);
-      auto& parent        = _nodes[parent_index];
+      auto parent_index  = _nodes[last_index].parent();
+      auto parent_letter = *(last - 1);
       rm_node(last_index);
-      while (parent.children().size() == 1) {
+      while (_nodes[parent_index].children().size() == 1) {
         last_index    = parent_index;
         parent_index  = _nodes[last_index].parent();
         parent_letter = _nodes[last_index].parent_letter();
-        parent        = _nodes[parent_index];
         rm_node(last_index);
       }
-      parent.children().erase(parent_letter);
+      _nodes[parent_index].children().erase(parent_letter);
+    }
+
+    void rm_word_no_checks(word_type const& w) {
+      rm_word_no_checks(w.cbegin(), w.cend());
     }
 
     void add_word_no_checks(word_type const& w) {
@@ -218,7 +228,7 @@ namespace libsemigroups {
 
     void clear_suffix_links() {
       for (auto& node : _nodes) {
-        node.set_suffix_link(UNDEFINED);
+        node.clear_suffix_link();
       }
     }
 
@@ -231,6 +241,8 @@ namespace libsemigroups {
   class Dot;  // forward decl
 
   Dot dot(AhoCorasick& ac);
+
+  class TrieRewriter {};
 
 }  // namespace libsemigroups
 

@@ -43,7 +43,10 @@ namespace libsemigroups {
     word_type w;
     for (index_type n = 0; n < ac.number_of_nodes(); ++n) {
       ac.signature(w, n);
-      result.add_node(n).add_attr("label", to_word(w));
+      auto& node = result.add_node(n).add_attr("label", to_word(w));
+      if (ac.node(n).is_terminal()) {
+        node.add_attr("peripheries", "2");
+      }
     }
 
     for (index_type n = 0; n < ac.number_of_nodes(); ++n) {
