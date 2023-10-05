@@ -93,7 +93,7 @@ namespace libsemigroups {
     //! \no_libsemigroups_except
     explicit PBR(size_t n);
 
-    //! Construct from adjancencies \c 1 to \c n and \c -1 to \c
+    //! Construct from adjacencies \c 1 to \c n and \c -1 to \c
     //! -n.
     //!
     //! The parameters \p left and \p right should be containers of
