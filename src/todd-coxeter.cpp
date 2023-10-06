@@ -2270,7 +2270,7 @@ namespace libsemigroups {
         push_settings();
         do_pop_settings = true;
         // The call to process_deductions in the main loop below could
-        // potentially accummulate large numbers of preferred definitions in
+        // potentially accumulate large numbers of preferred definitions in
         // the queue if the preferred_defs() setting is
         // options::preferred_defs::deferred, so we change it.
         preferred_defs(options::preferred_defs::none);
