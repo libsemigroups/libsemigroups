@@ -21,6 +21,9 @@
 
 namespace libsemigroups {
 
+  template <typename T>
+  DigraphWithSources<T>::~DigraphWithSources() = default;
+
   // number of nodes, out-degree
   template <typename T>
   void DigraphWithSources<T>::init(size_type m, size_type n) {

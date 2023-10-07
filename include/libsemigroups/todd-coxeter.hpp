@@ -2002,7 +2002,7 @@ namespace libsemigroups {
       }
 
       template <typename TStackDeduct>
-      inline void def_edge(coset_type c, letter_type x, coset_type d) noexcept {
+      void def_edge(coset_type c, letter_type x, coset_type d) noexcept {
         LIBSEMIGROUPS_ASSERT(is_valid_coset(c));
         LIBSEMIGROUPS_ASSERT(x < number_of_generators());
         LIBSEMIGROUPS_ASSERT(is_valid_coset(d));

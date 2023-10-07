@@ -14,11 +14,6 @@ pool:
   vmImage: 'ubuntu-latest'
 
 jobs:
-- job: GAP
-  steps:
-  - script: ci/launch-gap-docker-container.sh
-    displayName: 'Running the Semigroups package for GAP tests in docker container. . .'
-
 - job: quick
   steps:
   - bash: |

@@ -129,6 +129,9 @@ namespace libsemigroups {
       : _alphabet(), _alphabet_map(), _contains_empty_word(false), rules() {}
 
   template <typename W>
+  Presentation<W>::~Presentation() = default;
+
+  template <typename W>
   void Presentation<W>::clear() {
     _alphabet.clear();
     _alphabet_map.clear();

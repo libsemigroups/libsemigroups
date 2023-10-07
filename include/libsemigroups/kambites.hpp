@@ -309,7 +309,7 @@ namespace libsemigroups {
       // init_XYZ_data is split into the function that really does the work
       // (really_init_XYZ_data) which is called once, and init_XYZ_data which
       // can be called very often.
-      inline void init_XYZ_data(size_t i) const {
+      void init_XYZ_data(size_t i) const {
         LIBSEMIGROUPS_ASSERT(i < _relation_words.size());
         if (_XYZ_data.empty()) {
           _XYZ_data.resize(_relation_words.size());
@@ -557,6 +557,7 @@ namespace libsemigroups {
       // Data structure for caching the regularly accessed parts of the
       // relation words.
       struct RelationWords {
+        ~RelationWords();
         using internal_type          = Kambites::internal_type;
         bool          is_initialized = false;
         internal_type X;
@@ -616,6 +617,9 @@ namespace libsemigroups {
 
     template <typename T>
     Kambites<T>::~Kambites() = default;
+
+    template <typename T>
+    Kambites<T>::RelationWords::~RelationWords() = default;
 
     ////////////////////////////////////////////////////////////////////////
     // FpSemigroupInterface - pure virtual functions impl - public
