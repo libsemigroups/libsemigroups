@@ -166,10 +166,6 @@ namespace libsemigroups {
       add_word_no_checks(w.cbegin(), w.cend());
     }
 
-    void rm_word_no_checks(word_type const& w) {
-      rm_word_no_checks(w.cbegin(), w.cend());
-    }
-
     // TODO to cpp
     [[nodiscard]] index_type traverse(const_iterator first,
                                       const_iterator last) const {
