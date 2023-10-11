@@ -115,7 +115,7 @@ namespace libsemigroups {
     }
 
     // TODO to cpp
-    // Add links_exist flag
+    // TODO Add flags to show links have been cleared?
     void add_word_no_checks(const_iterator first, const_iterator last) {
       clear_suffix_links();
       index_type current = root;
@@ -242,7 +242,7 @@ namespace libsemigroups {
     // in this vector
     void rm_node(index_type i) {
       LIBSEMIGROUPS_ASSERT(i < _nodes.size());
-      // _nodes.erase(_nodes.begin() + i);
+      _nodes.erase(_nodes.begin() + i);
     }
   };
 
