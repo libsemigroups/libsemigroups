@@ -115,6 +115,7 @@ namespace libsemigroups {
     }
 
     // TODO to cpp
+    // Add links_exist flag
     void add_word_no_checks(const_iterator first, const_iterator last) {
       clear_suffix_links();
       index_type current = root;
@@ -165,11 +166,16 @@ namespace libsemigroups {
       add_word_no_checks(w.cbegin(), w.cend());
     }
 
+    void rm_word_no_checks(word_type const& w) {
+      rm_word_no_checks(w.cbegin(), w.cend());
+    }
+
     // TODO to cpp
     [[nodiscard]] index_type traverse(const_iterator first,
                                       const_iterator last) const {
       index_type current = root;
       for (auto it = first; it != last; ++it) {
+        // Uses private traverse by node function
         current = traverse(current, *it);
       }
       return current;
@@ -232,9 +238,11 @@ namespace libsemigroups {
       }
     }
 
+    // This breaks traversal, as node numbers should correlate to their position
+    // in this vector
     void rm_node(index_type i) {
       LIBSEMIGROUPS_ASSERT(i < _nodes.size());
-      _nodes.erase(_nodes.begin() + i);
+      // _nodes.erase(_nodes.begin() + i);
     }
   };
 
