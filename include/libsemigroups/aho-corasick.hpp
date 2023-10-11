@@ -158,12 +158,12 @@ namespace libsemigroups {
       _nodes[parent_index].children().erase(parent_letter);
     }
 
-    void rm_word_no_checks(word_type const& w) {
-      rm_word_no_checks(w.cbegin(), w.cend());
-    }
-
     void add_word_no_checks(word_type const& w) {
       add_word_no_checks(w.cbegin(), w.cend());
+    }
+
+    void rm_word_no_checks(word_type const& w) {
+      rm_word_no_checks(w.cbegin(), w.cend());
     }
 
     // TODO to cpp
