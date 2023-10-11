@@ -48,6 +48,7 @@
 
 #include "detail/containers.hpp"  // for DynamicArray2
 #include "detail/iterator.hpp"    // for default_postfix_increment
+#include "detail/report.hpp"      // for magic_enum formatter
 
 #include <rx/ranges.hpp>  // for is_input_range
 
@@ -914,12 +915,14 @@ namespace libsemigroups {
     mutable const_iterator      _end;
     mutable bool                _current_valid;
 
+    bool set_iterator_no_checks() const;
     bool set_iterator() const;
 
    public:
     output_type get() const {
       set_iterator();
-      return std::visit([](auto& it) -> auto const& { return *it; }, _current);
+      return std::visit(
+          [](auto& it) -> auto const& { return *it; }, _current);
     }
 
     void next() {
@@ -934,6 +937,7 @@ namespace libsemigroups {
     }
 
     uint64_t size_hint() const;
+    uint64_t size_hint_no_checks() const;
 
     uint64_t count() const {
       return size_hint();
@@ -1032,6 +1036,13 @@ namespace libsemigroups {
 
     template <typename Subclass>
     Subclass& order(Subclass* obj, Order val);
+
+   private:
+    void throw_if_word_graph_nullptr() const {
+      if (_digraph == nullptr) {
+        LIBSEMIGROUPS_EXCEPTION("No word graph defined");
+      }
+    }
   };
 
   template <typename Node>
