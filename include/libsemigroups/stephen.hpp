@@ -66,8 +66,7 @@ namespace libsemigroups {
   //! ToddCoxeter) and originates in [Applications of automata theory to
   //! presentations of monoids and inverse monoids](https://rb.gy/brsuvc) by J.
   //! B. Stephen.
-  template <typename P>
-  class Stephen : public Runner {
+  namespace detail {
     template <typename T>
     struct ActualPresentation {
       using type = T;
@@ -82,10 +81,13 @@ namespace libsemigroups {
     struct ActualPresentation<std::shared_ptr<InversePresentation<word_type>>> {
       using type = InversePresentation<word_type>;
     };
+  }  // namespace detail
 
+  template <typename P>
+  class Stephen : public Runner {
     template <typename Q>
     static constexpr bool is_valid_presentation() {
-      using R = typename ActualPresentation<std::decay_t<Q>>::type;
+      using R = typename detail::ActualPresentation<std::decay_t<Q>>::type;
 
       return std::is_same_v<R, Presentation<word_type>>
              || std::is_same_v<R, InversePresentation<word_type>>;
@@ -94,7 +96,7 @@ namespace libsemigroups {
     static_assert(is_valid_presentation<P>(), "TODO");
 
    public:
-    using presentation_type = typename ActualPresentation<P>::type;
+    using presentation_type = typename detail::ActualPresentation<P>::type;
 
     //! The return type of the function \ref word_graph.
     using word_graph_type = WordGraph<uint32_t>;

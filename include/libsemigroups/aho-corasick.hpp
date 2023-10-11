@@ -19,6 +19,7 @@
 #ifndef LIBSEMIGROUPS_AHO_CORASICK_HPP_
 #define LIBSEMIGROUPS_AHO_CORASICK_HPP_
 
+#include <algorithm>
 #include <map>
 #include <vector>
 

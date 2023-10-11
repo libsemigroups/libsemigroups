@@ -19,14 +19,19 @@
 #ifndef LIBSEMIGROUPS_DETAIL_DOT_
 #define LIBSEMIGROUPS_DETAIL_DOT_
 
-#include <map>
-#include <string>
-#include <string_view>
-#include <vector>
+#include <array>        // for array
+#include <cstddef>      // for size_t
+#include <map>          // for map, operator!=, __map_const_...
+#include <string>       // for basic_string, operator<, oper...
+#include <string_view>  // for basic_string_view
+#include <utility>      // for forward, move etc
+#include <vector>       // for vector
 
-#include "libsemigroups/exception.hpp"
+#include <fmt/core.h>  // for format
 
-#include <fmt/format.h>
+#include "exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
+
+#include "detail/report.hpp"  // for LIBSEMIGROUPS_EXCEPTION
 
 namespace libsemigroups {
   namespace detail {
