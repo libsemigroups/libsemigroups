@@ -1,6 +1,11 @@
 Changelog - version 2
 =====================
 
+v2.7.2 (released 20/10/2023)
+----------------------------
+
+This is a minor release where some minor issues have been resolved.
+
 v2.7.1 (released 29/03/2023)
 ----------------------------
 
