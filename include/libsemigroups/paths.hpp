@@ -48,6 +48,7 @@
 
 #include "detail/containers.hpp"  // for DynamicArray2
 #include "detail/iterator.hpp"    // for default_postfix_increment
+#include "detail/report.hpp"      // for magic_enum formatter
 
 #include <rx/ranges.hpp>  // for is_input_range
 
