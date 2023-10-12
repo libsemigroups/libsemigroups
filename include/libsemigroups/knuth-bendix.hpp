@@ -425,12 +425,21 @@ namespace libsemigroups {
       }
 
       Rule* next_pending_rule() {
-        if (_stack.empty()) {
-          return nullptr;
-        }
+        LIBSEMIGROUPS_ASSERT(_stack.size() != 0);
         Rule* rule = _stack.top();
         _stack.pop();
         return rule;
+      }
+
+      template <typename StringLike>
+      bool add_rule(StringLike const& lhs, StringLike const& rhs) {
+        if (lhs != rhs) {
+          if (push_stack(new_rule(
+                  lhs.cbegin(), lhs.cend(), rhs.cbegin(), rhs.cend()))) {
+            return true;
+          }
+        }
+        return false;
       }
     };
 
@@ -455,27 +464,27 @@ namespace libsemigroups {
 
       void rewrite(internal_string_type& u) const;
 
-      template <typename StringLike>
-      void add_rule(StringLike const& lhs, StringLike const& rhs) {
-        if (lhs != rhs) {
-          if (push_stack(new_rule(
-                  lhs.cbegin(), lhs.cend(), rhs.cbegin(), rhs.cend()))) {
-            clear_stack();
-          }
-        }
-      }
-
       [[nodiscard]] bool confluent() const;
 
       // TODO private?
       void add_rule(Rule* rule);
       void reduce();
 
+      template <typename StringLike>
+      void add_rule(StringLike const& lhs, StringLike const& rhs) {
+        if (Rewriter::add_rule(lhs, rhs)) {
+          clear_stack();
+        }
+      }
+
      private:
       void     rewrite(Rule* rule) const;
       void     clear_stack();
       iterator erase_from_active_rules(iterator);
     } _rewriter;
+
+    // class RewriteTrie : public Rewriter {
+    // } _rewriter;
 
     bool                      _gen_pairs_initted;
     WordGraph<size_t>         _gilman_graph;
