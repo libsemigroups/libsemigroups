@@ -372,13 +372,49 @@ namespace libsemigroups {
       }
     };
 
-    class RewriteFromLeft : public Rules {
+    struct Rewriter : public Rules {
       mutable std::atomic<bool> _confluent;
       mutable std::atomic<bool> _confluence_known;
-      std::set<RuleLookup>      _set_rules;
       std::stack<Rule*>         _stack;
 
+      Rewriter() = default;
+      Rewriter& init();
+
+      ~Rewriter();
+
+      Rewriter& operator=(Rewriter const& that) {
+        Rules::operator=(that);
+        _confluent        = that._confluent.load();
+        _confluence_known = that._confluence_known.load();
+        return *this;
+      }
+      // TODO remove?
+      //  TODO to cpp if keeping it
+      void confluent(tril val) {
+        if (val == tril::TRUE) {
+          _confluence_known = true;
+          _confluent        = true;
+        } else if (val == tril::FALSE) {
+          _confluence_known = true;
+          _confluent        = false;
+        } else {
+          _confluence_known = false;
+        }
+      }
+
+      [[nodiscard]] bool consistent() const noexcept {
+        return _stack.empty();
+      }
+      [[nodiscard]] bool confluence_known() const {
+        return _confluence_known;
+      }
+    };
+
+    class RewriteFromLeft : public Rewriter {
+      std::set<RuleLookup> _set_rules;
+
      public:
+      using Rewriter::confluent;
       using Rules::stats;
 
       RewriteFromLeft() = default;
@@ -389,7 +425,7 @@ namespace libsemigroups {
 
       // TODO the other constructors
 
-      ~RewriteFromLeft();
+      ~RewriteFromLeft() = default;  // TODO out-of-line this
 
       RewriteFromLeft& init();
 
@@ -402,28 +438,9 @@ namespace libsemigroups {
               new_rule(lhs.cbegin(), lhs.cend(), rhs.cbegin(), rhs.cend()));
         }
       }
-      // TODO remove?
-      Rules& confluent(tril val) {
-        if (val == tril::TRUE) {
-          _confluence_known = true;
-          _confluent        = true;
-        } else if (val == tril::FALSE) {
-          _confluence_known = true;
-          _confluent        = false;
-        } else {
-          _confluence_known = false;
-        }
-        return *this;
-      }
-
-      [[nodiscard]] bool consistent() const noexcept {
-        return _stack.empty();
-      }
 
       [[nodiscard]] bool confluent() const;
-      [[nodiscard]] bool confluence_known() const {
-        return _confluence_known;
-      }
+
       // TODO private?
       void add_rule(Rule* rule);
       void reduce();

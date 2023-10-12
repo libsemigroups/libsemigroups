@@ -167,7 +167,7 @@ namespace libsemigroups {
     return *this;
   }
 
-  KnuthBendix::RewriteFromLeft& KnuthBendix::RewriteFromLeft::init() {
+  KnuthBendix::Rewriter& KnuthBendix::Rewriter::init() {
     Rules::init();
     // Put all active rules and those rules in the stack into the
     // inactive_rules list
@@ -175,9 +175,14 @@ namespace libsemigroups {
       Rules::add_inactive_rule(_stack.top());
       _stack.pop();
     }
-    _set_rules.clear();
     _confluent        = false;
     _confluence_known = false;
+    return *this;
+  }
+
+  KnuthBendix::RewriteFromLeft& KnuthBendix::RewriteFromLeft::init() {
+    Rewriter::init();
+    _set_rules.clear();
     return *this;
   }
 
@@ -199,7 +204,7 @@ namespace libsemigroups {
   KnuthBendix::RewriteFromLeft&
   KnuthBendix::RewriteFromLeft::operator=(RewriteFromLeft const& that) {
     init();
-    KnuthBendix::Rules::operator=(that);
+    KnuthBendix::Rewriter::operator=(that);
     _confluent        = that._confluent.load();
     _confluence_known = that._confluence_known.load();
     for (auto* crule : that) {
@@ -222,7 +227,7 @@ namespace libsemigroups {
     }
   }
 
-  KnuthBendix::RewriteFromLeft::~RewriteFromLeft() {
+  KnuthBendix::Rewriter::~Rewriter() {
     while (!_stack.empty()) {
       Rule* rule = _stack.top();
       _stack.pop();
