@@ -205,8 +205,6 @@ namespace libsemigroups {
   KnuthBendix::RewriteFromLeft::operator=(RewriteFromLeft const& that) {
     init();
     KnuthBendix::Rewriter::operator=(that);
-    _confluent        = that._confluent.load();
-    _confluence_known = that._confluence_known.load();
     for (auto* crule : that) {
       Rule* rule = const_cast<Rule*>(crule);
 #ifdef LIBSEMIGROUPS_DEBUG
@@ -280,10 +278,9 @@ namespace libsemigroups {
 
   KnuthBendix::RewriteFromLeft::iterator
   KnuthBendix::RewriteFromLeft::erase_from_active_rules(iterator it) {
-    // _stats.unique_lhs_rules.erase(*((*it)->lhs()));
-
     Rule* rule = const_cast<Rule*>(*it);
-    _stack.emplace(rule);
+    rule->deactivate();
+    push_stack(rule);
 #ifdef LIBSEMIGROUPS_DEBUG
     LIBSEMIGROUPS_ASSERT(_set_rules.erase(RuleLookup(rule)));
 #else
@@ -334,7 +331,7 @@ namespace libsemigroups {
     _set_rules.emplace(RuleLookup(rule));
 #endif
     LIBSEMIGROUPS_ASSERT(_set_rules.size() == number_of_active_rules());
-    _confluence_known = false;
+    confluent(tril::unknown);
   }
 
   // REWRITE_FROM_LEFT from Sims, p67
@@ -391,12 +388,11 @@ namespace libsemigroups {
 
   // TEST_2 from Sims, p76
   void KnuthBendix::RewriteFromLeft::clear_stack() {
-    while (!_stack.empty()) {
+    while (number_of_pending_rules() != 0) {
       // _stats.max_stack_depth = std::max(_stats.max_stack_depth,
       // _stack.size());
 
-      Rule* rule1 = _stack.top();
-      _stack.pop();
+      Rule* rule1 = next_pending_rule();
       LIBSEMIGROUPS_ASSERT(!rule1->active());
       LIBSEMIGROUPS_ASSERT(*rule1->lhs() != *rule1->rhs());
       // Rewrite both sides and reorder if necessary . . .
@@ -438,15 +434,13 @@ namespace libsemigroups {
   }
 
   bool KnuthBendix::RewriteFromLeft::confluent() const {
-    if (!_stack.empty()) {
+    if (number_of_pending_rules() != 0) {
       return false;
-    } else if (_confluence_known) {
-      return _confluent;
+    } else if (confluence_known()) {
+      return Rewriter::confluent();
     }
     // bool reported = false;
-    LIBSEMIGROUPS_ASSERT(_stack.empty());
-    _confluent        = true;
-    _confluence_known = true;
+    confluent(tril::TRUE);
     internal_string_type word1;
     internal_string_type word2;
     // size_t               seen = 0;
@@ -483,15 +477,15 @@ namespace libsemigroups {
               rewrite(word1);
               rewrite(word2);
               if (word1 != word2) {
-                _confluent = false;
-                return _confluent;
+                confluent(tril::FALSE);
+                return false;
               }
             }
           }
         }
       }
     }
-    return _confluent;
+    return confluent();
   }
 
   ////////////////////////////////////////////////////////////////////////

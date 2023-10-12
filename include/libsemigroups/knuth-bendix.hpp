@@ -372,11 +372,12 @@ namespace libsemigroups {
       }
     };
 
-    struct Rewriter : public Rules {
+    class Rewriter : public Rules {
       mutable std::atomic<bool> _confluent;
       mutable std::atomic<bool> _confluence_known;
       std::stack<Rule*>         _stack;
 
+     public:
       Rewriter() = default;
       Rewriter& init();
 
@@ -388,9 +389,10 @@ namespace libsemigroups {
         _confluence_known = that._confluence_known.load();
         return *this;
       }
+
       // TODO remove?
       //  TODO to cpp if keeping it
-      void confluent(tril val) {
+      void confluent(tril val) const {
         if (val == tril::TRUE) {
           _confluence_known = true;
           _confluent        = true;
@@ -402,6 +404,12 @@ namespace libsemigroups {
         }
       }
 
+      // TODO this should be renamed, it's confusingly different than the
+      // confluent() mem fn of RewriteFromLeft
+      bool confluent() const noexcept {
+        return _confluent;
+      }
+
       [[nodiscard]] bool consistent() const noexcept {
         return _stack.empty();
       }
@@ -411,6 +419,19 @@ namespace libsemigroups {
       }
 
       bool push_stack(Rule* rule);
+
+      size_t number_of_pending_rules() const noexcept {
+        return _stack.size();
+      }
+
+      Rule* next_pending_rule() {
+        if (_stack.empty()) {
+          return nullptr;
+        }
+        Rule* rule = _stack.top();
+        _stack.pop();
+        return rule;
+      }
     };
 
     class RewriteFromLeft : public Rewriter {
