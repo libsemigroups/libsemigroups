@@ -274,7 +274,7 @@ namespace libsemigroups {
         Stats& operator=(Stats const&) noexcept = default;
         Stats& operator=(Stats&&) noexcept      = default;
 
-        size_t   max_stack_depth;
+        size_t   max_stack_depth;  // TODO remove this to RewriteFromLeft
         size_t   max_word_length;
         size_t   max_active_word_length;
         size_t   max_active_rules;
@@ -284,14 +284,10 @@ namespace libsemigroups {
       };
 
       // TODO remove const?
-      std::list<Rule const*>    _active_rules;
-      mutable std::atomic<bool> _confluent;
-      mutable std::atomic<bool> _confluence_known;
-      std::array<iterator, 2>   _cursors;
-      std::list<Rule*>          _inactive_rules;
-      std::set<RuleLookup>      _set_rules;
-      std::stack<Rule*>         _stack;
-      Stats                     _stats;
+      std::list<Rule const*>  _active_rules;
+      std::array<iterator, 2> _cursors;
+      std::list<Rule*>        _inactive_rules;
+      Stats                   _stats;
 
      public:
       Rules() = default;
@@ -305,9 +301,6 @@ namespace libsemigroups {
       ~Rules();
 
       Rules& init();
-
-      // public
-      void rewrite(internal_string_type& u) const;
 
       const_iterator begin() const noexcept {
         return _active_rules.cbegin();
@@ -341,43 +334,27 @@ namespace libsemigroups {
         return _inactive_rules.size();
       }
 
-      void reduce();
-
       iterator& cursor(size_t index) {
         LIBSEMIGROUPS_ASSERT(index < _cursors.size());
         return _cursors[index];
       }
 
-      [[nodiscard]] bool consistent() const noexcept {
-        return _stack.empty();
+      void add_active_rule(Rule* rule) {
+        _active_rules.push_back(rule);
       }
 
-      // TODO remove?
-      Rules& confluent(tril val) {
-        if (val == tril::TRUE) {
-          _confluence_known = true;
-          _confluent        = true;
-        } else if (val == tril::FALSE) {
-          _confluence_known = true;
-          _confluent        = false;
-        } else {
-          _confluence_known = false;
-        }
-        return *this;
+      void add_inactive_rule(Rule* rule) {
+        _inactive_rules.push_back(rule);
       }
 
-      [[nodiscard]] bool confluent() const;
-      [[nodiscard]] bool confluence_known() const {
-        return _confluence_known;
+      Stats const& stats() const {
+        return _stats;
       }
 
-      template <typename StringLike>
-      void add_rule(StringLike const& lhs, StringLike const& rhs) {
-        if (lhs != rhs) {
-          push_stack(
-              new_rule(lhs.cbegin(), lhs.cend(), rhs.cbegin(), rhs.cend()));
-        }
-      }
+      [[nodiscard]] iterator erase_from_active_rules(iterator it);
+      void                   add_rule(Rule* rule);
+
+      [[nodiscard]] Rule* copy_rule(Rule const* rule);
 
      private:
       [[nodiscard]] Rule* new_rule();
@@ -393,17 +370,70 @@ namespace libsemigroups {
         rule->reorder();
         return rule;
       }
+    };
 
+    class RewriteFromLeft : public Rules {
+      mutable std::atomic<bool> _confluent;
+      mutable std::atomic<bool> _confluence_known;
+      std::set<RuleLookup>      _set_rules;
+      std::stack<Rule*>         _stack;
+
+     public:
+      using Rules::stats;
+
+      RewriteFromLeft() = default;
+
+      // Rules(Rules const& that);
+      // Rules(Rules&& that);
+      RewriteFromLeft& operator=(RewriteFromLeft const&);
+
+      // TODO the other constructors
+
+      ~RewriteFromLeft();
+
+      RewriteFromLeft& init();
+
+      void rewrite(internal_string_type& u) const;
+
+      template <typename StringLike>
+      void add_rule(StringLike const& lhs, StringLike const& rhs) {
+        if (lhs != rhs) {
+          push_stack(
+              new_rule(lhs.cbegin(), lhs.cend(), rhs.cbegin(), rhs.cend()));
+        }
+      }
+      // TODO remove?
+      Rules& confluent(tril val) {
+        if (val == tril::TRUE) {
+          _confluence_known = true;
+          _confluent        = true;
+        } else if (val == tril::FALSE) {
+          _confluence_known = true;
+          _confluent        = false;
+        } else {
+          _confluence_known = false;
+        }
+        return *this;
+      }
+
+      [[nodiscard]] bool consistent() const noexcept {
+        return _stack.empty();
+      }
+
+      [[nodiscard]] bool confluent() const;
+      [[nodiscard]] bool confluence_known() const {
+        return _confluence_known;
+      }
+      // TODO private?
       void add_rule(Rule* rule);
+      void reduce();
 
-      [[nodiscard]] Rule*    copy_rule(Rule const* rule);
-      [[nodiscard]] iterator erase_from_active_rules(iterator it);
-
-      void rewrite(Rule* rule) const;
-
-      void push_stack(Rule* rule);
-      void clear_stack();
-    } _rules;
+     private:
+      void     rewrite(Rule* rule) const;
+      void     clear_stack();
+      void     push_stack(Rule* rule);
+      iterator erase_from_active_rules(iterator);
+    } _rewriter;
 
     bool                      _gen_pairs_initted;
     WordGraph<size_t>         _gilman_graph;
@@ -684,7 +714,7 @@ namespace libsemigroups {
     [[nodiscard]] size_t number_of_active_rules() const noexcept;
     // TODO doc
     [[nodiscard]] size_t number_of_inactive_rules() const noexcept {
-      return _rules.number_of_inactive_rules();
+      return _rewriter.number_of_inactive_rules();
     }
 
     //! Returns a copy of the active rules.
@@ -711,7 +741,7 @@ namespace libsemigroups {
     [[nodiscard]] auto active_rules() const {
       using rx::iterator_range;
       using rx::transform;
-      return iterator_range(_rules.begin(), _rules.end())
+      return iterator_range(_rewriter.begin(), _rewriter.end())
              | transform([this](auto const& rule) {
                  // TODO remove allocation
                  internal_string_type lhs = internal_string_type(*rule->lhs());
