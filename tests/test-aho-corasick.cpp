@@ -46,22 +46,12 @@ namespace libsemigroups {
                           "all words size 4",
                           "[quick][aho-corasick]") {
     AhoCorasick ac;
-    ac.add_word_no_checks(0000_w);
-    ac.add_word_no_checks(0001_w);
-    ac.add_word_no_checks(0010_w);
-    ac.add_word_no_checks(0011_w);
-    ac.add_word_no_checks(0100_w);
-    ac.add_word_no_checks(0101_w);
-    ac.add_word_no_checks(0110_w);
-    ac.add_word_no_checks(0111_w);
-    ac.add_word_no_checks(1000_w);
-    ac.add_word_no_checks(1001_w);
-    ac.add_word_no_checks(1010_w);
-    ac.add_word_no_checks(1011_w);
-    ac.add_word_no_checks(1100_w);
-    ac.add_word_no_checks(1101_w);
-    ac.add_word_no_checks(1110_w);
-    ac.add_word_no_checks(1111_w);
+
+    Words words;
+    words.letters(2).min(4).max(5);
+    for (auto const& w : words) {
+      ac.add_word_no_checks(w);
+    }
 
     REQUIRE(ac.number_of_nodes() == 31);
 
@@ -88,11 +78,11 @@ namespace libsemigroups {
 
     ac.rm_word_no_checks(0111_w);
     REQUIRE(ac.number_of_nodes() == 30);
-    ac.traverse(0111_w);
+    REQUIRE(ac.traverse(0111_w) == ac.traverse(111_w));
   }
 
   LIBSEMIGROUPS_TEST_CASE("AhoCorasick",
-                          "001",
+                          "002",
                           "add/rm_word",
                           "[quick][aho-corasick]") {
     AhoCorasick ac;
@@ -109,6 +99,10 @@ namespace libsemigroups {
     REQUIRE(ac.traverse(010_w) == 7);
     REQUIRE(ac.node(5).is_terminal());
     REQUIRE(ac.node(7).is_terminal());
+
+    // std::ofstream file("aho.gv");
+    // file << dot(ac).to_string();
+    // file.close();
 
     ac.rm_word_no_checks(010_w);
     REQUIRE(ac.number_of_nodes() == 6);
@@ -132,7 +126,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("AhoCorasick",
-                          "002",
+                          "003",
                           "long word",
                           "[quick][aho-corasick]") {
     using words::pow;

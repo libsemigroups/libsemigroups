@@ -21,6 +21,8 @@
 
 #include <algorithm>
 #include <map>
+#include <set>
+#include <stack>
 #include <vector>
 
 #include "constants.hpp"  // for UNDEFINED
@@ -49,15 +51,18 @@ namespace libsemigroups {
       Node() : Node(UNDEFINED, UNDEFINED) {}
 
       // TODO to cpp
-      explicit Node(index_type parent, letter_type a)
-          : _children(),
-            _link(UNDEFINED),
-            _parent(parent),
-            _parent_letter(a),
-            _terminal(false) {
-        if (_parent == root || _parent == UNDEFINED) {
-          _link = root;
-        }
+      Node(index_type parent, letter_type a)
+          : _children(), _link(), _parent(), _parent_letter(), _terminal() {
+        init(parent, a);
+      }
+
+      Node& init(index_type parent, letter_type a) {
+        _parent        = parent;
+        _parent_letter = a;
+        _children.clear();
+        clear_suffix_link();
+        _terminal = false;
+        return *this;
       }
 
       [[nodiscard]] index_type child(letter_type a) const noexcept {
@@ -105,58 +110,61 @@ namespace libsemigroups {
       }
     };
 
-    std::vector<Node> _nodes;
+    std::vector<Node>      _all_nodes;
+    std::set<index_type>   _active_nodes_index;
+    std::stack<index_type> _inactive_nodes_index;
 
    public:
-    AhoCorasick() : _nodes({Node()}) {}
+    AhoCorasick()
+        : _all_nodes({Node()}), _active_nodes_index(), _inactive_nodes_index() {
+      _active_nodes_index.insert(0);
+    }
     // TODO init
 
-    [[nodiscard]] size_t number_of_nodes() const noexcept {
-      return _nodes.size();
+    size_t number_of_nodes() const noexcept {
+      return _active_nodes_index.size();
     }
 
     // TODO to cpp
     // TODO Add flags to show links have been cleared?
     void add_word_no_checks(const_iterator first, const_iterator last) {
-      clear_suffix_links();
+      clear_suffix_links();  // don't do this if first >= last
       index_type current = root;
       for (auto it = first; it != last; ++it) {
-        index_type next = _nodes[current].child(*it);
+        index_type next = _all_nodes[current].child(*it);
         if (next != UNDEFINED) {
           current = next;
         } else {
-          next = _nodes.size();               // index of next node added
-          _nodes.emplace_back(current, *it);  // create next Node obj
+          next = new_active_node(current, *it);  // index of next node added
           // set next as child of parent
-          _nodes[current].children()[*it] = next;
-          current                         = next;
+          _all_nodes[current].children()[*it] = next;
+          current                             = next;
         }
       }
-      _nodes[current].set_terminal(true);
+      _all_nodes[current].set_terminal(true);
     }
 
     // TODO to cpp
     // TODO completely untested
     void rm_word_no_checks(const_iterator first, const_iterator last) {
       auto last_index = traverse_trie(first, last);
-      if (last_index == UNDEFINED || !_nodes[last_index].is_terminal()) {
+      if (last_index == UNDEFINED || !_all_nodes[last_index].is_terminal()) {
         return;
-      } else if (!_nodes[last_index].children().empty()) {
-        _nodes[last_index].set_terminal(false);
+      } else if (!_all_nodes[last_index].children().empty()) {
+        _all_nodes[last_index].set_terminal(false);
         return;
-        // TODO is this right? what if last_index has children?
       }
       clear_suffix_links();
-      auto parent_index  = _nodes[last_index].parent();
+      auto parent_index  = _all_nodes[last_index].parent();
       auto parent_letter = *(last - 1);
-      rm_node(last_index);
-      while (_nodes[parent_index].children().size() == 1) {
+      deactivate_node(last_index);
+      while (_all_nodes[parent_index].children().size() == 1) {
         last_index    = parent_index;
-        parent_index  = _nodes[last_index].parent();
-        parent_letter = _nodes[last_index].parent_letter();
-        rm_node(last_index);
+        parent_index  = _all_nodes[last_index].parent();
+        parent_letter = _all_nodes[last_index].parent_letter();
+        deactivate_node(last_index);
       }
-      _nodes[parent_index].children().erase(parent_letter);
+      _all_nodes[parent_index].children().erase(parent_letter);
     }
 
     void add_word_no_checks(word_type const& w) {
@@ -184,7 +192,7 @@ namespace libsemigroups {
 
     // TODO to cpp
     [[nodiscard]] index_type suffix_link(index_type current) const {
-      auto& n = _nodes[current];
+      auto& n = _all_nodes[current];
       if (n.suffix_link() == UNDEFINED) {
         n.set_suffix_link(traverse(suffix_link(n.parent()), n.parent_letter()));
       }
@@ -192,23 +200,50 @@ namespace libsemigroups {
     }
 
     [[nodiscard]] Node const& node(index_type i) const {
-      return _nodes.at(i);
+      return _all_nodes.at(i);
     }
 
     // TODO to cpp
     void signature(word_type& w, index_type i) const {
       w.clear();
       while (i != root) {
-        w.push_back(_nodes[i].parent_letter());
-        i = _nodes[i].parent();
+        w.push_back(_all_nodes[i].parent_letter());
+        i = _all_nodes[i].parent();
       }
       std::reverse(w.begin(), w.end());
     }
 
    private:
+    index_type new_active_node(index_type parent, letter_type a) {
+      index_type index;
+      if (_inactive_nodes_index.empty()) {
+        index = _all_nodes.size();
+        _all_nodes.emplace_back(parent, a);
+        _active_nodes_index.insert(index);
+      } else {
+        index = _inactive_nodes_index.top();
+        _inactive_nodes_index.pop();
+        _active_nodes_index.insert(index);
+        _all_nodes[index].init(parent, a);
+      }
+      return index;
+    }
+
+    // This breaks traversal, as node numbers should correlate to their position
+    // in this vector
+    void deactivate_node(index_type i) {
+      LIBSEMIGROUPS_ASSERT(i < _all_nodes.size());
+#ifdef LIBSEMIGROUPS_DEBUG
+      auto num_removed =
+#endif
+          _active_nodes_index.erase(i);
+      LIBSEMIGROUPS_ASSERT(num_removed == 1);
+      _inactive_nodes_index.push(i);
+    }
+
     // TODO to cpp
     [[nodiscard]] index_type traverse(index_type current, letter_type a) const {
-      index_type next = _nodes[current].child(a);
+      index_type next = _all_nodes[current].child(a);
       if (next != UNDEFINED) {
         return next;
       } else if (current == root) {
@@ -221,7 +256,7 @@ namespace libsemigroups {
                                            const_iterator last) const {
       index_type current = root;
       for (auto it = first; it != last; ++it) {
-        current = _nodes[current].child(*it);
+        current = _all_nodes[current].child(*it);
         if (current == UNDEFINED) {
           return current;
         }
@@ -230,16 +265,9 @@ namespace libsemigroups {
     }
 
     void clear_suffix_links() {
-      for (auto& node : _nodes) {
-        node.clear_suffix_link();
+      for (auto index : _active_nodes_index) {
+        _all_nodes[index].clear_suffix_link();
       }
-    }
-
-    // This breaks traversal, as node numbers should correlate to their position
-    // in this vector
-    void rm_node(index_type i) {
-      LIBSEMIGROUPS_ASSERT(i < _nodes.size());
-      _nodes.erase(_nodes.begin() + i);
     }
   };
 
