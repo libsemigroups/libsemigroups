@@ -16,8 +16,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#ifndef LIBSEMIGROUPS_DETAIL_DOT_
-#define LIBSEMIGROUPS_DETAIL_DOT_
+#ifndef LIBSEMIGROUPS_DOT_
+#define LIBSEMIGROUPS_DOT_
 
 #include <array>        // for array
 #include <cstddef>      // for size_t
@@ -36,28 +36,28 @@
 namespace libsemigroups {
   namespace detail {
 
-    inline std::string const& to_string(std::string const& x) {
+    inline std::string const& dot_to_string(std::string const& x) {
       return x;
     }
 
-    inline std::string& to_string(std::string& x) {
+    inline std::string& dot_to_string(std::string& x) {
       return x;
     }
 
-    inline std::string&& to_string(std::string&& x) {
+    inline std::string&& dot_to_string(std::string&& x) {
       return std::move(x);
     }
     // TODO required?
-    inline std::string to_string(char const* x) {
+    inline std::string dot_to_string(char const* x) {
       return std::string(x);
     }
 
-    inline std::string to_string(std::string_view x) {
+    inline std::string dot_to_string(std::string_view x) {
       return std::string(x);
     }
 
     template <typename Thing>
-    std::string to_string(Thing&& thing) {
+    std::string dot_to_string(Thing&& thing) {
       return std::to_string(std::forward<Thing>(thing));
     }
   }  // namespace detail
@@ -70,12 +70,12 @@ namespace libsemigroups {
 
       template <typename Thing>
       Node(Thing&& thing)
-          : attrs(), name(detail::to_string(std::forward<Thing>(thing))) {}
+          : attrs(), name(detail::dot_to_string(std::forward<Thing>(thing))) {}
 
       template <typename Thing1, typename Thing2>
       Node& add_attr(Thing1&& key, Thing2&& val) {
-        auto key_str = detail::to_string(std::forward<Thing1>(key));
-        auto val_str = detail::to_string(std::forward<Thing2>(val));
+        auto key_str = detail::dot_to_string(std::forward<Thing1>(key));
+        auto val_str = detail::dot_to_string(std::forward<Thing2>(val));
 
         add_or_replace_attr(attrs, key_str, val_str);
         return *this;
@@ -86,13 +86,13 @@ namespace libsemigroups {
       template <typename Thing1, typename Thing2>
       Edge(Thing1&& from, Thing2&& to)
           : attrs(),
-            from(detail::to_string(std::forward<Thing1>(from))),
-            to(detail::to_string(std::forward<Thing2>(to))) {}
+            from(detail::dot_to_string(std::forward<Thing1>(from))),
+            to(detail::dot_to_string(std::forward<Thing2>(to))) {}
 
       template <typename Thing1, typename Thing2>
       Edge& add_attr(Thing1&& key, Thing2&& val) {
-        auto key_str = detail::to_string(std::forward<Thing1>(key));
-        auto val_str = detail::to_string(std::forward<Thing2>(val));
+        auto key_str = detail::dot_to_string(std::forward<Thing1>(key));
+        auto val_str = detail::dot_to_string(std::forward<Thing2>(val));
 
         add_or_replace_attr(attrs, key_str, val_str);
         return *this;
@@ -150,12 +150,12 @@ namespace libsemigroups {
     template <typename Thing>
     [[nodiscard]] bool is_node(Thing&& name) {
       return _nodes.count(name);
-      return is_node(detail::to_string(std::forward<Thing>(name)));
+      return is_node(detail::dot_to_string(std::forward<Thing>(name)));
     }
 
     template <typename Thing>
     Node& add_node(Thing&& name) {
-      auto name_str       = detail::to_string(std::forward<Thing>(name));
+      auto name_str       = detail::dot_to_string(std::forward<Thing>(name));
       auto [it, inserted] = _nodes.emplace(name_str, Node(name_str));
       if (!inserted) {
         LIBSEMIGROUPS_EXCEPTION("there is already a node named {}!", name);
@@ -165,8 +165,8 @@ namespace libsemigroups {
 
     template <typename Thing1, typename Thing2>
     Edge& add_edge(Thing1&& from, Thing2&& to) {
-      auto from_str = detail::to_string(std::forward<Thing1>(from));
-      auto to_str   = detail::to_string(std::forward<Thing2>(to));
+      auto from_str = detail::dot_to_string(std::forward<Thing1>(from));
+      auto to_str   = detail::dot_to_string(std::forward<Thing2>(to));
       throw_if_not_node(from_str);
       throw_if_not_node(to_str);
       _edges.emplace_back(from_str, to_str);
@@ -253,4 +253,4 @@ namespace libsemigroups {
   };
 
 }  // namespace libsemigroups
-#endif  // LIBSEMIGROUPS_DETAIL_DOT_
+#endif  // LIBSEMIGROUPS_DOT_

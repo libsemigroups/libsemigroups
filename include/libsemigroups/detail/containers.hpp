@@ -120,6 +120,10 @@ namespace libsemigroups {
         return N - depth;
       }
 
+      [[nodiscard]] bool empty() const noexcept {
+        return std::count(_sizes.cbegin(), _sizes.cend(), 0) == N;
+      }
+
      private:
       std::array<T, N*(N + 1) / 2> _data;
       std::array<size_t, N>        _sizes;

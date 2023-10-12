@@ -1,4 +1,3 @@
-
 // libsemigroups - C++ library for semigroups and monoids
 // Copyright (C) 2023 Joe Edwards + James D. Mitchell
 //
