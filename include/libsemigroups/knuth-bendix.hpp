@@ -405,9 +405,12 @@ namespace libsemigroups {
       [[nodiscard]] bool consistent() const noexcept {
         return _stack.empty();
       }
+
       [[nodiscard]] bool confluence_known() const {
         return _confluence_known;
       }
+
+      bool push_stack(Rule* rule);
     };
 
     class RewriteFromLeft : public Rewriter {
@@ -434,8 +437,10 @@ namespace libsemigroups {
       template <typename StringLike>
       void add_rule(StringLike const& lhs, StringLike const& rhs) {
         if (lhs != rhs) {
-          push_stack(
-              new_rule(lhs.cbegin(), lhs.cend(), rhs.cbegin(), rhs.cend()));
+          if (push_stack(new_rule(
+                  lhs.cbegin(), lhs.cend(), rhs.cbegin(), rhs.cend()))) {
+            clear_stack();
+          }
         }
       }
 
@@ -448,7 +453,6 @@ namespace libsemigroups {
      private:
       void     rewrite(Rule* rule) const;
       void     clear_stack();
-      void     push_stack(Rule* rule);
       iterator erase_from_active_rules(iterator);
     } _rewriter;
 

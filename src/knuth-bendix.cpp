@@ -314,6 +314,17 @@ namespace libsemigroups {
     }
   }
 
+  bool KnuthBendix::Rewriter::push_stack(Rule* rule) {
+    LIBSEMIGROUPS_ASSERT(!rule->active());
+    if (*rule->lhs() != *rule->rhs()) {
+      _stack.emplace(rule);
+      return true;
+    } else {
+      Rules::add_inactive_rule(rule);
+      return false;
+    }
+  }
+
   void KnuthBendix::RewriteFromLeft::add_rule(Rule* rule) {
     Rules::add_rule(rule);
     // _stats.unique_lhs_rules.insert(*rule->lhs());
@@ -378,16 +389,6 @@ namespace libsemigroups {
     rule->reorder();
   }
 
-  void KnuthBendix::RewriteFromLeft::push_stack(Rule* rule) {
-    LIBSEMIGROUPS_ASSERT(!rule->active());
-    if (*rule->lhs() != *rule->rhs()) {
-      _stack.emplace(rule);
-      clear_stack();
-    } else {
-      Rules::add_inactive_rule(rule);
-    }
-  }
-
   // TEST_2 from Sims, p76
   void KnuthBendix::RewriteFromLeft::clear_stack() {
     while (!_stack.empty()) {
@@ -430,7 +431,9 @@ namespace libsemigroups {
       // Copy rule and push_stack so that it is not modified by the
       // call to clear_stack.
       LIBSEMIGROUPS_ASSERT(rule->lhs() != rule->rhs());
-      push_stack(copy_rule(rule));
+      if (push_stack(copy_rule(rule))) {
+        clear_stack();
+      }
     }
   }
 
