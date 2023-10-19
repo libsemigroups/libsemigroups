@@ -89,6 +89,7 @@ namespace libsemigroups {
       }
 
       [[nodiscard]] bool is_terminal() const noexcept {
+        // TODO should this check suffix links are terminal?
         return _terminal;
       }
 
@@ -175,10 +176,10 @@ namespace libsemigroups {
       rm_word_no_checks(w.cbegin(), w.cend());
     }
 
-    // TODO to cpp
-    [[nodiscard]] index_type traverse(const_iterator first,
-                                      const_iterator last) const {
-      index_type current = root;
+    [[nodiscard]] index_type traverse_from(index_type     start,
+                                           const_iterator first,
+                                           const_iterator last) const {
+      index_type current = start;
       for (auto it = first; it != last; ++it) {
         // Uses private traverse by node function
         current = traverse(current, *it);
@@ -186,8 +187,19 @@ namespace libsemigroups {
       return current;
     }
 
+    [[nodiscard]] index_type traverse_from(index_type       start,
+                                           word_type const& w) const {
+      return traverse_from(start, w.cbegin(), w.cend());
+    }
+
+    // TODO to cpp
+    [[nodiscard]] index_type traverse(const_iterator first,
+                                      const_iterator last) const {
+      return traverse_from(root, first, last);
+    }
+
     [[nodiscard]] index_type traverse(word_type const& w) const {
-      return traverse(w.cbegin(), w.cend());
+      return traverse_from(root, w.cbegin(), w.cend());
     }
 
     // TODO to cpp
