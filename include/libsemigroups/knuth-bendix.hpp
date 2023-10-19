@@ -35,12 +35,14 @@
 #include <iosfwd>               // for ostream
 #include <iterator>             // for distance
 #include <list>                 // for list
+#include <map>                  // for map
 #include <set>                  // for set
 #include <stack>                // for stack
 #include <string>               // for basic_string, operator==
 #include <utility>              // for forward, move, pair
 #include <vector>               // for allocator, vector
                                 //
+#include "aho-corasick.hpp"     // for Aho-corasick
 #include "cong-intf.hpp"        // for CongruenceInterface
 #include "debug.hpp"            // for LIBSEMIGROUPS_ASSERT
 #include "exception.hpp"        // for LIBSEMIGROUPS_EXCEPTION
@@ -483,8 +485,70 @@ namespace libsemigroups {
       iterator erase_from_active_rules(iterator);
     } _rewriter;
 
-    // class RewriteTrie : public Rewriter {
-    // } _rewriter;
+    class RewriteTrie : public Rewriter {
+      using index_type = AhoCorasick::index_type;
+      AhoCorasick                 _trie;
+      std::map<index_type, Rule*> _rules;  // TODO RuleLookup?
+
+     public:
+      using Rewriter::confluent;
+      using Rules::stats;
+      using iterator = internal_string_type::iterator;
+
+      // TODO constructors
+      // TODO equals operator
+      // TODO destructors
+      // TODO initialisers
+
+      // TODO add_rule
+      // TODO confluent
+
+      RewriteTrie() = default;
+      void rewrite(internal_string_type& u) const {
+        if (u.size() < stats().min_length_lhs_rule) {
+          return;
+        }
+
+        std::stack<index_type> nodes;
+        index_type             current = _trie.root;
+        nodes.emplace(current);
+
+        iterator v_begin = u.begin();
+        iterator v_end   = u.begin();
+        iterator w_begin = u.begin();
+        iterator w_end   = u.end();
+
+        // TODO optimise to traverse the first k letters without checks based on
+        // the length of smallest LHS?
+
+        while (w_begin != w_end) {
+          *v_end = *w_begin;
+
+          // FIXME: Consolidate string or word
+          current = _trie.traverse_from(current, *w_begin);
+          ++w_begin;
+
+          if (!_trie.node(current).is_terminal()) {
+            ++v_end;
+            nodes.emplace(current);
+          } else {
+            Rule const* rule     = _rules.find(current)->second;
+            auto        lhs_size = rule->lhs()->size();
+            if (lhs_size <= static_cast<size_t>(v_end - v_begin)) {
+              LIBSEMIGROUPS_ASSERT(detail::is_suffix(
+                  v_begin, v_end, rule->lhs()->cbegin(), rule->lhs()->cend()));
+              v_end -= lhs_size - 1;
+              w_begin -= rule->rhs()->size();
+              detail::string_replace(
+                  w_begin, rule->rhs()->cbegin(), rule->rhs()->cend());
+              for (auto i = 0; i < lhs_size - 1; ++i) {
+                nodes.pop();
+              }
+            }
+          }
+        }
+      }
+    } _rewriter;
 
     bool                      _gen_pairs_initted;
     WordGraph<size_t>         _gilman_graph;
