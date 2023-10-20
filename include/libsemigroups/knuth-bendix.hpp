@@ -501,10 +501,11 @@ namespace libsemigroups {
       // TODO initialisers
 
       // TODO add_rule
-      // TODO confluent
 
       RewriteTrie() = default;
+
       void rewrite(internal_string_type& u) const {
+        // Check if u is rewriteable
         if (u.size() < stats().min_length_lhs_rule) {
           return;
         }
@@ -515,28 +516,34 @@ namespace libsemigroups {
 
         iterator v_begin = u.begin();
         iterator v_end   = u.begin();
-        iterator w_begin = u.begin();
+        iterator w_begin = v_end;
         iterator w_end   = u.end();
 
-        // TODO optimise to traverse the first k letters without checks based on
-        // the length of smallest LHS?
-
         while (w_begin != w_end) {
-          *v_end = *w_begin;
-
-          // FIXME: Consolidate string or word
-          current = _trie.traverse_from(current, *w_begin);
+          // Read first letter of W and traverse trie
+          auto x = *w_begin;
           ++w_begin;
+          // FIXME: Consolidate string or word
+          current = _trie.traverse_from(current, x);
 
           if (!_trie.node(current).is_terminal()) {
+            // TODO at the moment, v is only updated if current is terminal to
+            // follow along with Sims. This means when we can't do the suffix
+            // check assertion below. Is this desired?
+            nodes.emplace(current);
+            *v_end = x;
             ++v_end;
             nodes.emplace(current);
           } else {
+            // Find rule that corresponds to terminal node
             Rule const* rule     = _rules.find(current)->second;
             auto        lhs_size = rule->lhs()->size();
-            if (lhs_size <= static_cast<size_t>(v_end - v_begin)) {
-              LIBSEMIGROUPS_ASSERT(detail::is_suffix(
-                  v_begin, v_end, rule->lhs()->cbegin(), rule->lhs()->cend()));
+
+            // Must be true
+            if (lhs_size <= static_cast<size_t>(v_end - v_begin) - 1) {
+              // LIBSEMIGROUPS_ASSERT(detail::is_suffix(
+              //     v_begin, v_end, rule->lhs()->cbegin(),
+              //     rule->lhs()->cend()));
               v_end -= lhs_size - 1;
               w_begin -= rule->rhs()->size();
               detail::string_replace(
@@ -544,9 +551,12 @@ namespace libsemigroups {
               for (auto i = 0; i < lhs_size - 1; ++i) {
                 nodes.pop();
               }
+              current = nodes.top();
             }
           }
         }
+        u.erase(v_end - u.cbegin());
+      }
       }
     } _rewriter;
 
