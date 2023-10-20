@@ -557,6 +557,56 @@ namespace libsemigroups {
         }
         u.erase(v_end - u.cbegin());
       }
+
+      [[nodiscard]] bool confluent() const {
+        if (number_of_pending_rules() != 0) {
+          return false;
+        } else if (confluence_known()) {
+          return Rewriter::confluent();
+        }
+
+        confluent(tril::TRUE);
+        internal_string_type word1;
+        internal_string_type word2;
+        bool                 backtrack;
+
+        for (auto it = begin(); it != end(); ++it) {
+          std::stack<index_type> nodes;
+          Rule const*            rule1 = *it;
+          index_type current = _trie.traverse(rule1->lhs()->cbegin() + 1,
+                                              rule1->lhs()->cend());
+          nodes.emplace(current);
+          backtrack = false;
+          while (!nodes.empty()) {
+            backtrack = (_trie.height(current) <= nodes.size() - 1);
+            if (_trie.node(current).is_terminal() and !backtrack) {
+              Rule const* rule2 = _rules.find(current)->second;
+              // Process overlap
+              // Word looks like ABC where the LHS of rule1 corresponds to AB,
+              // the LHS of rule2 corresponds to BC, and |C|=nodes.size() - 1.
+              // If failure, confluence is false, break
+              backtrack = true;
+            }
+            if (!backtrack) {
+              // Get a letter x from the alphabet
+              // current = _trie.traverse(current, x)
+              // nodes.emplace(current);
+            } else {
+              while (backtrack && !nodes.empty()) {
+                // if we've not gone through all letters {
+                // pick a new letter x
+                // nodes.pop();
+                // current = _trie.traverse(nodes.top(), x);
+                // nodes.emplace(current);
+                // backtrack = false;}
+                // else {
+                // nodes.pop();
+                // current = nodes.top();}
+              }
+            }
+          }
+        }
+        return true;
       }
     } _rewriter;
 
