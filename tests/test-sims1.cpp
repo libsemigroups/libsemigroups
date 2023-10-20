@@ -2804,6 +2804,38 @@ namespace libsemigroups {
     }
   }
 
+  LIBSEMIGROUPS_TEST_CASE("Sims1",
+                          "091",
+                          "free semilattice n = 8",
+                          "[extreme][sims1]") {
+    Presentation<std::string> p;
+    p.alphabet("abcdef");
+    presentation::add_rule(p, "a^2"_p, "a");
+    presentation::add_rule(p, "b^2"_p, "b");
+    presentation::add_rule(p, "ba"_p, "ab");
+    presentation::add_rule(p, "c^2"_p, "c");
+    presentation::add_rule(p, "ca"_p, "ac");
+    presentation::add_rule(p, "cb"_p, "bc");
+    presentation::add_rule(p, "d^2"_p, "d");
+    presentation::add_rule(p, "da"_p, "ad");
+    presentation::add_rule(p, "db"_p, "bd");
+    presentation::add_rule(p, "dc"_p, "cd");
+    presentation::add_rule(p, "e^2"_p, "e");
+    presentation::add_rule(p, "ea"_p, "ae");
+    presentation::add_rule(p, "eb"_p, "be");
+    presentation::add_rule(p, "ec"_p, "ce");
+    presentation::add_rule(p, "ed"_p, "de");
+    presentation::add_rule(p, "f^2"_p, "f");
+    presentation::add_rule(p, "fa"_p, "af");
+    presentation::add_rule(p, "fb"_p, "bf");
+    presentation::add_rule(p, "fc"_p, "cf");
+    presentation::add_rule(p, "fd"_p, "df");
+    presentation::add_rule(p, "fe"_p, "ef");
+    Sims1 s(congruence_kind::right, p);
+
+    REQUIRE(s.number_of_threads(4).number_of_congruences(std::pow(2, 6)) == 0);
+  }
+
 }  // namespace libsemigroups
 
 // [[[0, 0, 0]],            #1#

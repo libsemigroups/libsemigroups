@@ -16,7 +16,7 @@ AC_DEFUN([AX_CHECK_FMT], [
   AC_MSG_CHECKING([whether to use external fmt])
   AC_MSG_RESULT([$with_external_fmt])
 
-  MIN_FMT_VERSION="10.1.1"
+  MIN_FMT_VERSION="10.1.0"
 
   fmt_PCDEP=""
   if test "x$with_external_fmt" = xyes;  then
