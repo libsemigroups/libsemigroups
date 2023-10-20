@@ -225,6 +225,13 @@ namespace libsemigroups {
       std::reverse(w.begin(), w.end());
     }
 
+    size_t height(index_type i) const {
+      if (i == root) {
+        return 0;
+      }
+      return height(_all_nodes[i].parent()) + 1
+    }
+
    private:
     index_type new_active_node(index_type parent, letter_type a) {
       index_type index;
