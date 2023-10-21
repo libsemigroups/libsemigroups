@@ -56,7 +56,6 @@ namespace libsemigroups {
   using fpsemigroup::partition_monoid;
   using fpsemigroup::plactic_monoid;
   using fpsemigroup::rectangular_band;
-  using fpsemigroup::rook_monoid;
   using fpsemigroup::singular_brauer_monoid;
   using fpsemigroup::stellar_monoid;
   using fpsemigroup::stylic_monoid;
@@ -64,6 +63,7 @@ namespace libsemigroups {
   using fpsemigroup::symmetric_inverse_monoid;
   using fpsemigroup::temperley_lieb_monoid;
   using fpsemigroup::uniform_block_bijection_monoid;
+  using fpsemigroup::zero_rook_monoid;
 
   LIBSEMIGROUPS_TEST_CASE("fpsemi-examples",
                           "000",
@@ -595,10 +595,35 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("fpsemi-examples",
                           "048",
-                          "test for the rook monoid",
+                          "symmetric inverse monoid Gay presentation",
                           "[fpsemi-examples][quick]") {
-    auto        rg = ReportGuard(REPORT);
-    ToddCoxeter tc(congruence_kind::twosided, rook_monoid(4, 1));
+    auto rg = ReportGuard(REPORT);
+    auto p  = symmetric_inverse_monoid(4, author::Gay);
+
+    presentation::sort_each_rule(p);
+    presentation::sort_rules(p);
+
+    REQUIRE(p.rules
+            == std::vector<word_type>(
+                {00_w,  {},    11_w,   {},    22_w,   {},    33_w,  3_w,
+                 20_w,  02_w,  31_w,   13_w,  32_w,   23_w,  101_w, 010_w,
+                 212_w, 121_w, 0303_w, 303_w, 3030_w, 0303_w}));
+
+    ToddCoxeter tc(congruence_kind::twosided, p);
+    REQUIRE(tc.number_of_classes() == 209);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("fpsemi-examples",
+                          "073",
+                          "0-Hecke rook monoid",
+                          "[fpsemi-examples][quick]") {
+    auto rg = ReportGuard(REPORT);
+    auto p  = zero_rook_monoid(4);
+
+    presentation::sort_each_rule(p);
+    presentation::sort_rules(p);
+
+    ToddCoxeter tc(congruence_kind::twosided, p);
     REQUIRE(tc.number_of_classes() == 209);
   }
 

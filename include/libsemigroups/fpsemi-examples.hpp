@@ -54,7 +54,8 @@ namespace libsemigroups {
       Miller     = 16'384,
       Moore      = 32'768,
       Moser      = 65'536,
-      Sutov      = 131'072
+      Sutov      = 131'072,
+      Gay        = 262'144
     };
 
     //! This operator can be used arbitrarily to combine author values (see \ref
@@ -571,21 +572,54 @@ namespace libsemigroups {
 
     // TODO (doc)
     Presentation<word_type> hypo_plactic_monoid(size_t n);
+
     Presentation<word_type>
     sigma_stylic_monoid(std::vector<size_t> const& sigma);
 
-    // The following block of 7 functions remains undocumented, as we are not
-    // entirely sure what they are.
-    Presentation<word_type>    rook_monoid(size_t l, int q);
-    std::vector<relation_type> renner_common_type_B_monoid(size_t l, int q);
+    // TODO add okada_monoid
+    // TODO add free_semilattice
+
+    // When q = 1, this is just a presentation for the symmetric inverse monoid,
+    // a slightly modified version from Solomon (so that contains the
+    // Coxeter+Moser presentation for the symmetric group), Example 7.1.2 in
+    // Joel gay's thesis
+    //
+    // When q = 0, the a_i^2 = 1 relations from the C+M symmetric group
+    // presentation are replaced with a_i^2 = a_i. See Definition 4.1.1 in Joel
+    // Gay's thesis
+    // https://theses.hal.science/tel-01861199
+    //
+    //  This could also be called the RennerTypeAMonoid
+    Presentation<word_type> zero_rook_monoid(size_t n);
+
+    // TODO rename renner_type_b_monoid:
+    // when q = 0: Definition 8.4.1 + Example 8.4.2 in Joel's thesis.
+    // when q = 1: same presentation as for q=0 except pi_i ^ 2 = pi_i replaced
+    // with pi_i ^ 2 = 1 (usual Renner monoid) (q is the Iwahori-Hecke
+    // deformation of the Renner monoid). q = 1From Joel's thesis,
+    // Theorem 8.4.19.
+    //
     std::vector<relation_type> RennerTypeBMonoid(size_t l, int q);
+
+    // not_renner_type_b_monoid
+    // when q = 0, Example 7.1.2, of Joel's thesis
+    // when q = 1, is Godelle's presentation from: p40 of
+    // https://www.cambridge.org/core/services/aop-cambridge-core/content/view/B6BAB75BD3463916FEDEC15BEDA724FF/S0004972710000365a.pdf/presentation_for_renner_monoids.pdf
+    // or
+    // https://arxiv.org/abs/0904.0926
     std::vector<relation_type> renner_type_B_monoid(size_t l,
                                                     int    q,
                                                     author val);
-    std::vector<relation_type> renner_common_type_D_monoid(size_t l, int q);
+
+    // Godelle's:
+    // when q = 1, p41 of
+    // https://www.cambridge.org/core/services/aop-cambridge-core/content/view/B6BAB75BD3463916FEDEC15BEDA724FF/S0004972710000365a.pdf/presentation_for_renner_monoids.pdf
+    // q = 0, no reference
     std::vector<relation_type> renner_type_D_monoid(size_t l,
                                                     int    q,
                                                     author val);
+    // See Theorem 8.4.43 in Joel's thesis q = 1,
+    // for q = 0, Definition 8.4.22 (author = Gay)
     std::vector<relation_type> RennerTypeDMonoid(size_t l, int q);
 
   }  // namespace fpsemigroup

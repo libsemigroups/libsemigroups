@@ -53,11 +53,12 @@ namespace libsemigroups {
   using fpsemigroup::partition_monoid;
   using fpsemigroup::plactic_monoid;
   using fpsemigroup::rectangular_band;
-  using fpsemigroup::rook_monoid;
   using fpsemigroup::singular_brauer_monoid;
   using fpsemigroup::stellar_monoid;
   using fpsemigroup::stylic_monoid;
+  using fpsemigroup::symmetric_inverse_monoid;
   using fpsemigroup::temperley_lieb_monoid;
+  using fpsemigroup::zero_rook_monoid;
 
   using namespace literals;
 
@@ -381,11 +382,11 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("Sims1",
                           "009",
-                          "rook_monoid(2, 1)",
+                          "symmetric_inverse_monoid(2, author::Gay)",
                           "[quick][low-index]") {
     auto  rg = ReportGuard(false);
     Sims1 C(congruence_kind::right);
-    C.presentation(rook_monoid(2, 1));
+    C.presentation(symmetric_inverse_monoid(2, author::Gay));
     REQUIRE(C.number_of_congruences(7) == 10);  // Should be 10
   }
 
@@ -408,7 +409,7 @@ namespace libsemigroups {
                           "[quick][low-index]") {
     auto  rg = ReportGuard(false);
     Sims1 C(congruence_kind::left);
-    C.presentation(rook_monoid(3, 1));
+    C.presentation(symmetric_inverse_monoid(3, author::Gay));
     REQUIRE(C.number_of_congruences(34) == 274);
   }
 
@@ -416,7 +417,7 @@ namespace libsemigroups {
                           "012",
                           "symmetric_inverse_monoid(4)",
                           "[extreme][low-index]") {
-    auto p = rook_monoid(4, 1);
+    auto p = symmetric_inverse_monoid(4, author::Gay);
     presentation::remove_duplicate_rules(p);
     presentation::sort_each_rule(p);
     presentation::sort_rules(p);
@@ -443,7 +444,7 @@ namespace libsemigroups {
     // This might take an extremely long time to terminate
     auto  rg = ReportGuard(true);
     Sims1 C(congruence_kind::left);
-    C.presentation(rook_monoid(5, 1));
+    C.presentation(symmetric_inverse_monoid(5, author::Gay));
     REQUIRE(C.number_of_threads(6).number_of_congruences(1'546) == 0);
     // On 24/08/2022 JDM ran this for approx. 16 hours overnight on his laptop,
     // the last line of output was:
@@ -1653,7 +1654,7 @@ namespace libsemigroups {
     std::array<uint64_t, 10> const num_right = {0, 0, 0, 1'521, 0};
 
     for (size_t n = 3; n < 5; ++n) {
-      auto p = rook_monoid(n, 0);
+      auto p = zero_rook_monoid(n);
       auto q = stellar_monoid(n);
       p.rules.insert(p.rules.end(), q.rules.cbegin(), q.rules.cend());
       REQUIRE(p.alphabet().size() == n + 1);

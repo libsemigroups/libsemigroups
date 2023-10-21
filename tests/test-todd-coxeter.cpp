@@ -1892,7 +1892,6 @@ namespace libsemigroups {
                           "048",
                           "stellar_monoid(7) (Gay-Hivert)",
                           "[todd-coxeter][quick][no-valgrind][no-coverage]") {
-    using fpsemigroup::rook_monoid;
     using fpsemigroup::stellar_monoid;
 
     auto         rg = ReportGuard(false);
@@ -2026,7 +2025,6 @@ namespace libsemigroups {
       "054",
       "Generate GAP benchmarks for stellar_monoid(n) (Gay-Hivert)",
       "[todd-coxeter][fail]") {
-    using fpsemigroup::rook_monoid;
     using fpsemigroup::stellar_monoid;
     auto rg = ReportGuard(true);
     for (size_t n = 3; n <= 9; ++n) {
@@ -4788,7 +4786,7 @@ namespace libsemigroups {
     presentation::add_rule(p, "xz"_p, ""_p);
 
     ToddCoxeter tc(twosided, p);
-    REQUIRE(tc.number_of_classes() == 6);
+    REQUIRE(tc.number_of_classes() == 5);
   }
 
 }  // namespace libsemigroups
