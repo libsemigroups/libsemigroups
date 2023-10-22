@@ -234,40 +234,23 @@ namespace libsemigroups {
       }
     }
 
-    std::vector<relation_type> renner_common_type_D_monoid(size_t l, int q) {
+    void add_renner_type_D_common(Presentation<word_type>& p, size_t l, int q) {
+      LIBSEMIGROUPS_ASSERT(q == 0 || q == 1);
       // q is supposed to be 0 or 1
-      std::vector<size_t> s;
-      std::vector<size_t> e;
-      for (size_t i = 0; i < l; ++i) {
-        s.push_back(i);  // 0 est \pi_1^f et 1 est \pi_1^e
-      }
-      for (size_t i = l; i < 2 * l + 1; ++i) {
-        e.push_back(i);
-      }
-      size_t f  = 2 * l + 1;
-      size_t id = 2 * l + 2;
-
-      std::vector<relation_type> rels = {relation_type({id, id}, {id})};
-      // identity relations
-      for (size_t i = 0; i < l; ++i) {
-        rels.push_back({{s[i], id}, {s[i]}});
-        rels.push_back({{id, s[i]}, {s[i]}});
-        rels.push_back({{id, e[i]}, {e[i]}});
-        rels.push_back({{e[i], id}, {e[i]}});
-      }
-      rels.push_back({{id, e[l]}, {e[l]}});
-      rels.push_back({{e[l], id}, {e[l]}});
-      rels.push_back({{id, f}, {f}});
-      rels.push_back({{f, id}, {f}});
+      auto        s = range(l);
+      auto        e = range(l, 2 * l + 1);
+      letter_type f = 2 * l + 1;
 
       switch (q) {
         case 0:
-          for (size_t i = 0; i < l; ++i)
-            rels.push_back({{s[i], s[i]}, {s[i]}});
+          for (size_t i = 0; i < l; ++i) {
+            presentation::add_rule_no_checks(p, {s[i], s[i]}, {s[i]});
+          }
           break;
         case 1:
-          for (size_t i = 0; i < l; ++i)
-            rels.push_back({{s[i], s[i]}, {id}});
+          for (size_t i = 0; i < l; ++i) {
+            presentation::add_rule_no_checks(p, {s[i], s[i]}, {});
+          }
           break;
         default: {
         }
@@ -275,65 +258,68 @@ namespace libsemigroups {
       for (int i = 1; i < static_cast<int>(l); ++i) {  // tout sauf \pi_1^f
         for (int j = 1; j < static_cast<int>(l); ++j) {
           if (std::abs(i - j) >= 2) {
-            rels.push_back({{s[i], s[j]}, {s[j], s[i]}});
+            presentation::add_rule_no_checks(p, {s[i], s[j]}, {s[j], s[i]});
           }
         }
       }
       for (int i = 3; i < static_cast<int>(l);
            ++i) {  // \pi_1^f avec les \pi_i pour i>2
-        rels.push_back({{s[0], s[i]}, {s[i], s[0]}});
+        presentation::add_rule_no_checks(p, {s[0], s[i]}, {s[i], s[0]});
       }
-      rels.push_back({{s[0], s[1]}, {s[1], s[0]}});  // \pi_1^f avec \pi_1^e
+      presentation::add_rule_no_checks(
+          p, {s[0], s[1]}, {s[1], s[0]});  // \pi_1^f avec \pi_1^e
 
       for (size_t i = 1; i < l - 1; ++i) {  // tresses
-        rels.push_back({{s[i], s[i + 1], s[i]}, {s[i + 1], s[i], s[i + 1]}});
+        presentation::add_rule_no_checks(
+            p, {s[i], s[i + 1], s[i]}, {s[i + 1], s[i], s[i + 1]});
       }
       if (l > 2) {
-        rels.push_back(
-            {{s[0], s[2], s[0]}, {s[2], s[0], s[2]}});  // tresse de \pi_1^f
+        presentation::add_rule_no_checks(
+            p, {s[0], s[2], s[0]}, {s[2], s[0], s[2]});  // tresse de \pi_1^f
       }
 
       for (size_t i = 2; i < l; ++i) {  // commutation, attention début à 2
         for (size_t j = 0; j < i; ++j) {
-          rels.push_back({{s[i], e[j]}, {e[j], s[i]}});
+          presentation::add_rule_no_checks(p, {s[i], e[j]}, {e[j], s[i]});
         }
-        rels.push_back({{s[i], f}, {f, s[i]}});
+        presentation::add_rule_no_checks(p, {s[i], f}, {f, s[i]});
       }
-      rels.push_back({{s[0], f}, {f, s[0]}});        // commutation \pi_1^f et f
-      rels.push_back({{s[1], e[0]}, {e[0], s[1]}});  // commutation \pi_1^e et e
+      presentation::add_rule_no_checks(
+          p, {s[0], f}, {f, s[0]});  // commutation \pi_1^f et f
+      presentation::add_rule_no_checks(
+          p, {s[1], e[0]}, {e[0], s[1]});  // commutation \pi_1^e et e
 
       for (size_t i = 1; i < l; ++i) {  // absorption
         for (size_t j = i + 1; j < l + 1; ++j) {
-          rels.push_back({{s[i], e[j]}, {e[j], s[i]}});
-          rels.push_back({{s[i], e[j]}, {e[j]}});
+          presentation::add_rule_no_checks(p, {s[i], e[j]}, {e[j], s[i]});
+          presentation::add_rule_no_checks(p, {s[i], e[j]}, {e[j]});
           if (i == 1) {  // cas particulier \pi_1^f
-            rels.push_back({{s[0], e[j]}, {e[j], s[0]}});
-            rels.push_back({{s[0], e[j]}, {e[j]}});
+            presentation::add_rule_no_checks(p, {s[0], e[j]}, {e[j], s[0]});
+            presentation::add_rule_no_checks(p, {s[0], e[j]}, {e[j]});
           }
         }
       }
 
       for (size_t i = 0; i < l + 1; ++i) {  // produit e_i
         for (size_t j = 0; j < l + 1; ++j) {
-          rels.push_back({{e[i], e[j]}, {e[j], e[i]}});
-          rels.push_back({{e[i], e[j]}, {e[std::max(i, j)]}});
+          presentation::add_rule_no_checks(p, {e[i], e[j]}, {e[j], e[i]});
+          presentation::add_rule_no_checks(
+              p, {e[i], e[j]}, {e[std::max(i, j)]});
         }
         if (i > 1) {
-          rels.push_back({{f, e[i]}, {e[i], f}});
-          rels.push_back({{f, e[i]}, {e[i]}});
+          presentation::add_rule_no_checks(p, {f, e[i]}, {e[i], f});
+          presentation::add_rule_no_checks(p, {f, e[i]}, {e[i]});
         }
       }
-      rels.push_back({{f, f}, {f}});
-      rels.push_back({{f, e[0]}, {e[1]}});
-      rels.push_back({{e[0], f}, {e[1]}});
+      presentation::add_rule_no_checks(p, {f, f}, {f});
+      presentation::add_rule_no_checks(p, {f, e[0]}, {e[1]});
+      presentation::add_rule_no_checks(p, {e[0], f}, {e[1]});
 
       for (size_t i = 2; i < l; ++i) {
-        rels.push_back({{e[i], s[i], e[i]}, {e[i + 1]}});
+        presentation::add_rule_no_checks(p, {e[i], s[i], e[i]}, {e[i + 1]});
       }
-      rels.push_back({{e[0], s[0], e[0]}, {e[2]}});
-      rels.push_back({{f, s[1], f}, {e[2]}});
-
-      return rels;
+      presentation::add_rule_no_checks(p, {e[0], s[0], e[0]}, {e[2]});
+      presentation::add_rule_no_checks(p, {f, s[1], f}, {e[2]});
     }
 
     void add_coxeter_common(Presentation<word_type>& p, size_t n) {
@@ -354,6 +340,30 @@ namespace libsemigroups {
           p, pow({0, n - 1}, 2), pow({n - 1, 0}, 2));
       presentation::add_rule_no_checks(
           p, pow({0, n - 1}, 2), {n - 1, 0, n - 1});
+    }
+
+    word_type max_elt_B(size_t i) {
+      word_type t(0);
+      for (int end = i; end >= 0; end--) {
+        for (int k = 0; k <= end; k++) {
+          t.push_back(k);
+        }
+      }
+      return t;
+    }
+
+    word_type max_elt_D(size_t i, int g) {
+      // g est 0 ou 1 : 0 pour f et 1 pour e
+      word_type t(0);
+      int       parity = g;
+      for (int end = i; end > 0; end--) {
+        t.push_back(parity);
+        for (int k = 2; k <= end; k++) {
+          t.push_back(k);
+        }
+        parity = (parity + 1) % 2;
+      }
+      return t;
     }
 
   }  // namespace
@@ -1687,34 +1697,6 @@ namespace libsemigroups {
       return p;
     }
 
-    // The remaining presentation functions are currently undocumented, as we
-    // are not completely sure what they are.
-
-    namespace {
-      std::vector<size_t> max_elt_B(size_t i) {
-        std::vector<size_t> t(0);
-        for (int end = i; end >= 0; end--) {
-          for (int k = 0; k <= end; k++) {
-            t.push_back(k);
-          }
-        }
-        return t;
-      }
-      std::vector<size_t> max_elt_D(size_t i, int g) {
-        // g est 0 ou 1 : 0 pour f et 1 pour e
-        std::vector<size_t> t(0);
-        int                 parity = g;
-        for (int end = i; end > 0; end--) {
-          t.push_back(parity);
-          for (int k = 2; k <= end; k++) {
-            t.push_back(k);
-          }
-          parity = (parity + 1) % 2;
-        }
-        return t;
-      }
-    }  // namespace
-
     Presentation<word_type> zero_rook_monoid(size_t n) {
       if (n < 2) {
         LIBSEMIGROUPS_EXCEPTION(
@@ -1768,69 +1750,61 @@ namespace libsemigroups {
       return p;
     }
 
-    std::vector<relation_type> renner_type_D_monoid(size_t l,
-                                                    int    q,
-                                                    author val) {
-      if (val == author::Godelle) {
-        std::vector<size_t> s;
-        std::vector<size_t> e;
-        for (size_t i = 0; i < l; ++i) {
-          s.push_back(i);
-        }
-        for (size_t i = l; i < 2 * l + 1; ++i) {
-          e.push_back(i);
-        }
-        size_t f = 2 * l + 1;
-
-        std::vector<relation_type> rels = renner_common_type_D_monoid(l, q);
-
-        if (l >= 3) {
-          rels.push_back({{e[0], s[0], s[2], s[1], f}, {e[3]}});
-          rels.push_back({{f, s[1], s[2], s[0], e[0]}, {e[3]}});
-        }
-        return rels;
-      } else {
-        LIBSEMIGROUPS_EXCEPTION(
-            "expected 2nd argument to be author::Godelle, found {}", val);
+    Presentation<word_type> not_renner_type_D_monoid(size_t l, int q) {
+      if (q != 0 && q != 1) {
+        LIBSEMIGROUPS_EXCEPTION("the 2nd argument must be 0 or 1, found {}", q);
       }
+      Presentation<word_type> p;
+      add_renner_type_D_common(p, l, q);
+
+      auto        s = range(l);
+      auto        e = range(l, 2 * l + 1);
+      letter_type f = 2 * l + 1;
+
+      if (l >= 3) {
+        presentation::add_rule_no_checks(
+            p, {e[0], s[0], s[2], s[1], f}, {e[3]});
+        presentation::add_rule_no_checks(
+            p, {f, s[1], s[2], s[0], e[0]}, {e[3]});
+      }
+      p.alphabet_from_rules().contains_empty_word(true);
+      return p;
     }
 
-    std::vector<relation_type> RennerTypeDMonoid(size_t l, int q) {
-      std::vector<size_t> s;
-      std::vector<size_t> e;
-      for (size_t i = 0; i < l; ++i) {
-        s.push_back(i);
+    Presentation<word_type> renner_type_D_monoid(size_t l, int q) {
+      if (q != 0 && q != 1) {
+        LIBSEMIGROUPS_EXCEPTION("the 2nd argument must be 0 or 1, found {}", q);
       }
-      for (size_t i = l; i < 2 * l + 1; ++i) {
-        e.push_back(i);
-      }
-      size_t f = 2 * l + 1;
+      Presentation<word_type> p;
+      add_renner_type_D_common(p, l, q);
 
-      std::vector<relation_type> rels = renner_common_type_D_monoid(l, q);
+      auto        s = range(l);
+      auto        e = range(l, 2 * l + 1);
+      letter_type f = 2 * l + 1;
 
       for (size_t i = 2; i < l; i++) {
-        std::vector<size_t> new_rel_f = max_elt_D(i, 0);
-        std::vector<size_t> new_rel_e = max_elt_D(i, 1);
+        word_type new_rel_f = max_elt_D(i, 0);
+        word_type new_rel_e = max_elt_D(i, 1);
 
         if (i % 2 == 0) {
           new_rel_e.insert(new_rel_e.begin(), f);
           new_rel_e.push_back(e[0]);
-          rels.push_back({new_rel_e, {e[i + 1]}});
+          presentation::add_rule_no_checks(p, new_rel_e, {e[i + 1]});
 
           new_rel_f.insert(new_rel_f.begin(), e[0]);
           new_rel_f.push_back(f);
-          rels.push_back({new_rel_f, {e[i + 1]}});
+          presentation::add_rule_no_checks(p, new_rel_f, {e[i + 1]});
         } else {
           new_rel_e.insert(new_rel_e.begin(), f);
           new_rel_e.push_back(f);
-          rels.push_back({new_rel_e, {e[i + 1]}});
-
+          presentation::add_rule_no_checks(p, new_rel_e, {e[i + 1]});
           new_rel_f.insert(new_rel_f.begin(), e[0]);
           new_rel_f.push_back(e[0]);
-          rels.push_back({new_rel_f, {e[i + 1]}});
+          presentation::add_rule_no_checks(p, new_rel_f, {e[i + 1]});
         }
       }
-      return rels;
+      p.alphabet_from_rules().contains_empty_word(true);
+      return p;
     }
 
   }  // namespace fpsemigroup

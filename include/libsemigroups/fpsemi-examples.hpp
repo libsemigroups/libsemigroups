@@ -613,16 +613,15 @@ namespace libsemigroups {
     // https://arxiv.org/abs/0904.0926
     Presentation<word_type> not_renner_type_B_monoid(size_t l, int q);
 
+    // See Theorem 8.4.43 in Joel's thesis q = 1,
+    // for q = 0, Definition 8.4.22 (author = Gay)
+    Presentation<word_type> renner_type_D_monoid(size_t l, int q);
+
     // Godelle's:
     // when q = 1, p41 of
     // https://www.cambridge.org/core/services/aop-cambridge-core/content/view/B6BAB75BD3463916FEDEC15BEDA724FF/S0004972710000365a.pdf/presentation_for_renner_monoids.pdf
     // q = 0, no reference
-    std::vector<relation_type> renner_type_D_monoid(size_t l,
-                                                    int    q,
-                                                    author val);
-    // See Theorem 8.4.43 in Joel's thesis q = 1,
-    // for q = 0, Definition 8.4.22 (author = Gay)
-    std::vector<relation_type> RennerTypeDMonoid(size_t l, int q);
+    Presentation<word_type> not_renner_type_D_monoid(size_t l, int q);
 
   }  // namespace fpsemigroup
 }  // namespace libsemigroups
