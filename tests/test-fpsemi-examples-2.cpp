@@ -19,6 +19,7 @@
 // functions. The presentations here define not necessarily finite semigroups,
 // and we use KnuthBendix in testing them.
 
+#include "libsemigroups/constants.hpp"
 #define CATCH_CONFIG_ENABLE_PAIR_STRINGMAKER
 
 #include "catch.hpp"      // for REQUIRE, REQUIRE_NOTHROW, REQUIRE_THROWS_AS
@@ -190,5 +191,29 @@ namespace libsemigroups {
     REQUIRE(
         (knuth_bendix::normal_forms(kb).min(3).max(4) | rx::to_vector()).size()
         == 19);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("fpsemi-examples",
+                          "076",
+                          "Renner monoid type B3 (E. G. presentation), q = 1",
+                          "[quick][fpsemi-examples][hivert][no-valgrind]") {
+    auto        rg = ReportGuard(false);
+    KnuthBendix kb(congruence_kind::twosided,
+                   fpsemigroup::not_renner_type_B_monoid(3, 1));
+    REQUIRE(!is_obviously_infinite(kb));
+    kb.run();
+    REQUIRE(kb.number_of_classes() == POSITIVE_INFINITY);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("fpsemi-examples",
+                          "077",
+                          "Renner monoid type B3 (E. G. presentation), q = 0",
+                          "[quick][fpsemi-examples][hivert][no-valgrind]") {
+    auto        rg = ReportGuard(false);
+    KnuthBendix kb(congruence_kind::twosided,
+                   fpsemigroup::not_renner_type_B_monoid(3, 0));
+    REQUIRE(!is_obviously_infinite(kb));
+    kb.run();
+    REQUIRE(kb.number_of_classes() == POSITIVE_INFINITY);
   }
 }  // namespace libsemigroups

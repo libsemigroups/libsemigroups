@@ -411,6 +411,15 @@ namespace libsemigroups {
     //! presentation which is returned. The options are:
     //! * `author::Sutov` (see Theorem 9.2.2 of
     //! [10.1007/978-1-84800-281-4][])
+
+    // When val == author::Gay, this is just a presentation for the symmetric
+    // inverse monoid, a slightly modified version from Solomon (so that
+    // contains the Coxeter+Moser presentation for the symmetric group),
+    // Example 7.1.2 in Joel gay's thesis (JDM the presentation in Example 7.1.2
+    // seems to have 2n - 1 generators whereas this function returns a monoid on
+    // n generators. TODO ask Florent again if this reference is correct
+    // Maybe should be Solomon:
+    // https://www.sciencedirect.com/science/article/pii/S0021869303005933/pdf
     //!
     //! The default for `val` is the only option above.
     //!
@@ -579,11 +588,7 @@ namespace libsemigroups {
     // TODO add okada_monoid
     // TODO add free_semilattice
 
-    // When q = 1, this is just a presentation for the symmetric inverse monoid,
-    // a slightly modified version from Solomon (so that contains the
-    // Coxeter+Moser presentation for the symmetric group), Example 7.1.2 in
-    // Joel gay's thesis
-    //
+    // TODO update doc
     // When q = 0, the a_i^2 = 1 relations from the C+M symmetric group
     // presentation are replaced with a_i^2 = a_i. See Definition 4.1.1 in Joel
     // Gay's thesis
@@ -598,8 +603,7 @@ namespace libsemigroups {
     // with pi_i ^ 2 = 1 (usual Renner monoid) (q is the Iwahori-Hecke
     // deformation of the Renner monoid). q = 1From Joel's thesis,
     // Theorem 8.4.19.
-    //
-    std::vector<relation_type> RennerTypeBMonoid(size_t l, int q);
+    Presentation<word_type> renner_type_B_monoid(size_t l, int q);
 
     // not_renner_type_b_monoid
     // when q = 0, Example 7.1.2, of Joel's thesis
@@ -607,9 +611,7 @@ namespace libsemigroups {
     // https://www.cambridge.org/core/services/aop-cambridge-core/content/view/B6BAB75BD3463916FEDEC15BEDA724FF/S0004972710000365a.pdf/presentation_for_renner_monoids.pdf
     // or
     // https://arxiv.org/abs/0904.0926
-    std::vector<relation_type> renner_type_B_monoid(size_t l,
-                                                    int    q,
-                                                    author val);
+    Presentation<word_type> not_renner_type_B_monoid(size_t l, int q);
 
     // Godelle's:
     // when q = 1, p41 of

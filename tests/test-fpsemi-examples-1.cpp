@@ -22,7 +22,8 @@
 
 // #define CATCH_CONFIG_ENABLE_PAIR_STRINGMAKER
 
-#include "catch.hpp"      // for REQUIRE, REQUIRE_NOTHROW, REQUIRE_THROWS_AS
+#include "catch.hpp"  // for REQUIRE, REQUIRE_NOTHROW, REQUIRE_THROWS_AS
+#include "libsemigroups/to-froidure-pin.hpp"
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
 #include "libsemigroups/detail/report.hpp"    // for ReportGuard
@@ -851,5 +852,159 @@ namespace libsemigroups {
     REQUIRE(tc.number_of_classes() == 764);
     REQUIRE_THROWS_AS(fpsemigroup::partial_brauer_monoid(0),
                       LibsemigroupsException);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("fpsemi-examples",
+                          "074",
+                          "Renner monoid type B2 (E. G. presentation), q = 1",
+                          "[quick][fpsemi][hivert]") {
+    auto        rg = ReportGuard(REPORT);
+    ToddCoxeter tc(congruence_kind::twosided,
+                   fpsemigroup::not_renner_type_B_monoid(2, 1));
+    REQUIRE(!is_obviously_infinite(tc));
+    REQUIRE(!tc.started());
+    REQUIRE(!tc.finished());
+    REQUIRE(tc.number_of_classes() == 57);
+    REQUIRE(tc.started());
+    REQUIRE(tc.finished());
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("fpsemi-examples",
+                          "075",
+                          "Renner monoid type B2 (E. G. presentation), q = 0",
+                          "[quick][fpsemi][hivert]") {
+    auto        rg = ReportGuard(REPORT);
+    ToddCoxeter tc(congruence_kind::twosided,
+                   fpsemigroup::not_renner_type_B_monoid(2, 0));
+    REQUIRE(!is_obviously_infinite(tc));
+    REQUIRE(tc.number_of_classes() == 57);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE(
+      "fpsemi-examples",
+      "078",
+      "Renner monoid type B2 (Gay-Hivert presentation), q = 1",
+      "[quick][fpsemi][hivert]") {
+    auto        rg = ReportGuard(REPORT);
+    ToddCoxeter tc(congruence_kind::twosided,
+                   fpsemigroup::renner_type_B_monoid(2, 1));
+    // REQUIRE(tc.presentation().rules == std::vector<word_type>());
+    REQUIRE(!is_obviously_infinite(tc));
+    REQUIRE(tc.number_of_classes() == 57);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE(
+      "fpsemi-examples",
+      "079",
+      "Renner monoid type B2 (Gay-Hivert presentation), q = 0",
+      "[quick][fpsemi][hivert]") {
+    auto        rg = ReportGuard(REPORT);
+    ToddCoxeter tc(congruence_kind::twosided,
+                   fpsemigroup::renner_type_B_monoid(2, 0));
+    REQUIRE(!is_obviously_infinite(tc));
+    REQUIRE(tc.number_of_classes() == 57);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE(
+      "fpsemi-examples",
+      "080",
+      "Renner monoid type B3 (Gay-Hivert presentation), q = 1",
+      "[quick][fpsemi][hivert][no-valgrind]") {
+    auto        rg = ReportGuard(REPORT);
+    ToddCoxeter tc(congruence_kind::twosided,
+                   fpsemigroup::renner_type_B_monoid(3, 1));
+    REQUIRE(!is_obviously_infinite(tc));
+    REQUIRE(tc.number_of_classes() == 757);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE(
+      "fpsemi-examples",
+      "081",
+      "Renner monoid type B3 (Gay-Hivert presentation), q = 0",
+      "[quick][fpsemi][hivert][no-valgrind]") {
+    auto        rg = ReportGuard(REPORT);
+    ToddCoxeter tc(congruence_kind::twosided,
+                   fpsemigroup::renner_type_B_monoid(3, 0));
+    REQUIRE(!is_obviously_infinite(tc));
+    REQUIRE(tc.number_of_classes() == 757);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE(
+      "fpsemi-examples",
+      "082",
+      "Renner monoid type B4 (Gay-Hivert presentation), q = 1",
+      "[quick][fpsemi][hivert][no-valgrind]") {
+    auto        rg = ReportGuard(REPORT);
+    ToddCoxeter tc(congruence_kind::twosided,
+                   fpsemigroup::renner_type_B_monoid(4, 1));
+    REQUIRE(tc.presentation().rules.size() == 192);
+    REQUIRE(!is_obviously_infinite(tc));
+    REQUIRE(tc.number_of_classes() == 13'889);
+    // TODO REQUIRE(to_froidure_pin(tc).run().number_of_rules() == 356);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE(
+      "fpsemi-examples",
+      "083",
+      "Renner monoid type B4 (Gay-Hivert presentation), q = 0",
+      "[quick][fpsemi][hivert][no-valgrind]") {
+    auto        rg = ReportGuard(REPORT);
+    ToddCoxeter tc(congruence_kind::twosided,
+                   fpsemigroup::renner_type_B_monoid(4, 0));
+    REQUIRE(tc.presentation().rules.size() == 192);
+    REQUIRE(!is_obviously_infinite(tc));
+    REQUIRE(tc.number_of_classes() == 13'889);
+    // REQUIRE(S.froidure_pin()->number_of_rules() == 356);
+  }
+
+  // This appears to be an example where KB + FP is faster than TC
+  LIBSEMIGROUPS_TEST_CASE(
+      "fpsemi-examples",
+      "084",
+      "Renner monoid type B5 (Gay-Hivert presentation), q = 1",
+      "[extreme][fpsemi][hivert]") {
+    auto        rg = ReportGuard(true);
+    ToddCoxeter tc(congruence_kind::twosided,
+                   fpsemigroup::renner_type_B_monoid(5, 1));
+    REQUIRE(tc.presentation().rules.size() == 284);
+    REQUIRE(!is_obviously_infinite(tc));
+    tc.strategy(ToddCoxeter::options::strategy::felsch);
+    REQUIRE(tc.number_of_classes() == 322'021);
+    // REQUIRE(S.froidure_pin()->number_of_rules() == 1453);
+    // {
+    //   congruence::ToddCoxeter tc(
+    //       twosided,
+    //       S.froidure_pin(),
+    //       congruence::ToddCoxeter::options::froidure_pin::use_cayley_graph);
+    //   REQUIRE(tc.number_of_classes() == 322021);  // Works!
+    // }
+    // {
+    //   fpsemigroup::ToddCoxeter tc(S.froidure_pin());
+    //   REQUIRE(tc.number_of_rules() == 1453);
+    //   REQUIRE(tc.size() == 322021);
+    // }
+  }
+
+  LIBSEMIGROUPS_TEST_CASE(
+      "fpsemi-examples",
+      "085",
+      "Renner monoid type B5 (Gay-Hivert presentation), q = 0",
+      "[extreme][fpsemi][hivert]") {
+    auto        rg = ReportGuard(true);
+    ToddCoxeter tc(congruence_kind::twosided,
+                   fpsemigroup::renner_type_B_monoid(5, 0));
+    tc.strategy(ToddCoxeter::options::strategy::felsch);
+
+    REQUIRE(tc.presentation().rules.size() == 284);
+    REQUIRE(!is_obviously_infinite(tc));
+    REQUIRE(tc.number_of_classes() == 322'021);
+
+    auto S = to_froidure_pin(tc);
+    S.run();
+    REQUIRE(S.number_of_rules() == 1'430);
+
+    //  FIXME the following doesn't seem to work
+    // tc.init(congruence_kind::twosided, S.right_cayley_graph());
+    // REQUIRE(tc.number_of_classes() == 322'021);  // Works!
   }
 }  // namespace libsemigroups
