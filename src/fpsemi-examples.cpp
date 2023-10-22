@@ -176,27 +176,18 @@ namespace libsemigroups {
 
     void add_renner_type_B_common(Presentation<word_type>& p, size_t l, int q) {
       LIBSEMIGROUPS_ASSERT(q == 0 || q == 1);
-      // q is supposed to be 0 or 1
       auto s = range(l);
       auto e = range(l, 2 * l + 1);
 
-      switch (q) {
-        case 0:
-          for (size_t i = 0; i < l; ++i)
-            presentation::add_rule_no_checks(p, {s[i], s[i]}, {s[i]});
-          break;
-        case 1:
-          for (size_t i = 0; i < l; ++i)
-            presentation::add_rule_no_checks(p, {s[i], s[i]}, {});
-          break;
-        default: {
-        }
+      if (q == 0) {
+        presentation::add_idempotent_rules_no_checks(p, s);
+      } else {
+        presentation::add_transposition_rules_no_checks(p, s);
       }
-      for (int i = 0; i < static_cast<int>(l); ++i) {
-        for (int j = 0; j < static_cast<int>(l); ++j) {
-          if (std::abs(i - j) >= 2) {
-            presentation::add_rule_no_checks(p, {s[i], s[j]}, {s[j], s[i]});
-          }
+
+      for (size_t i = 0; i < l; ++i) {
+        for (size_t j = i + 2; j < l; ++j) {
+          presentation::add_rule_no_checks(p, {s[i], s[j]}, {s[j], s[i]});
         }
       }
 
@@ -241,29 +232,18 @@ namespace libsemigroups {
       auto        e = range(l, 2 * l + 1);
       letter_type f = 2 * l + 1;
 
-      switch (q) {
-        case 0:
-          for (size_t i = 0; i < l; ++i) {
-            presentation::add_rule_no_checks(p, {s[i], s[i]}, {s[i]});
-          }
-          break;
-        case 1:
-          for (size_t i = 0; i < l; ++i) {
-            presentation::add_rule_no_checks(p, {s[i], s[i]}, {});
-          }
-          break;
-        default: {
+      if (q == 0) {
+        presentation::add_idempotent_rules_no_checks(p, s);
+      } else {
+        presentation::add_transposition_rules_no_checks(p, s);
+      }
+
+      for (size_t i = 1; i < l; ++i) {  // tout sauf \pi_1^f
+        for (size_t j = i + 2; j < l; ++j) {
+          presentation::add_rule_no_checks(p, {s[i], s[j]}, {s[j], s[i]});
         }
       }
-      for (int i = 1; i < static_cast<int>(l); ++i) {  // tout sauf \pi_1^f
-        for (int j = 1; j < static_cast<int>(l); ++j) {
-          if (std::abs(i - j) >= 2) {
-            presentation::add_rule_no_checks(p, {s[i], s[j]}, {s[j], s[i]});
-          }
-        }
-      }
-      for (int i = 3; i < static_cast<int>(l);
-           ++i) {  // \pi_1^f avec les \pi_i pour i>2
+      for (size_t i = 3; i < l; ++i) {  // \pi_1^f avec les \pi_i pour i>2
         presentation::add_rule_no_checks(p, {s[0], s[i]}, {s[i], s[0]});
       }
       presentation::add_rule_no_checks(
@@ -486,10 +466,7 @@ namespace libsemigroups {
       if (val == author::Carmichael) {
         // Exercise 9.5.2, p172 of
         // https://link.springer.com/book/10.1007/978-1-84800-281-4
-
-        for (size_t i = 0; i <= n - 2; ++i) {
-          presentation::add_rule_no_checks(p, {i, i}, {});
-        }
+        presentation::add_transposition_rules_no_checks(p, range(n - 1));
         for (size_t i = 0; i < n - 2; ++i) {
           presentation::add_rule_no_checks(p, pow({i, i + 1}, 3), {});
         }
@@ -509,15 +486,13 @@ namespace libsemigroups {
         // From Chapter 3, Proposition 1.2 in https://bit.ly/3R5ZpKW (Ruskuc
         // thesis)
 
-        for (size_t i = 0; i < n - 1; i++) {
-          presentation::add_rule_no_checks(p, {i, i}, {});
-        }
+        presentation::add_transposition_rules_no_checks(p, range(n - 1));
         add_coxeter_common(p, n);
       } else if (val == author::Moore) {
         if (index == 0) {
           // From Chapter 3, Proposition 1.1 in https://bit.ly/3R5ZpKW (Ruskuc
           // thesis)
-          presentation::add_rule_no_checks(p, pow(0_w, 2), {});
+          presentation::add_rule_no_checks(p, 00_w, {});
           presentation::add_rule_no_checks(p, pow(1_w, n), {});
           presentation::add_rule_no_checks(p, pow(01_w, n - 1), {});
           presentation::add_rule_no_checks(
@@ -529,9 +504,7 @@ namespace libsemigroups {
                 {});
           }
         } else if (index == 1) {
-          for (size_t i = 0; i <= n - 2; ++i) {
-            presentation::add_rule_no_checks(p, {i, i}, {});
-          }
+          presentation::add_transposition_rules_no_checks(p, range(n - 1));
           for (size_t i = 0; i <= n - 4; ++i) {
             for (size_t j = i + 2; j <= n - 2; ++j) {
               presentation::add_rule_no_checks(p, {i, j}, {j, i});
@@ -546,10 +519,7 @@ namespace libsemigroups {
       } else if (val == author::Burnside + author::Miller) {
         // See Eq 2.6 of 'Presentations of finite simple groups: A
         // quantitative approach' J. Amer. Math. Soc. 21 (2008), 711-774
-
-        for (size_t i = 0; i <= n - 2; ++i) {
-          presentation::add_rule_no_checks(p, {i, i}, {});
-        }
+        presentation::add_transposition_rules_no_checks(p, range(n - 1));
 
         for (size_t i = 0; i <= n - 2; ++i) {
           for (size_t j = 0; j <= n - 2; ++j) {
@@ -576,9 +546,7 @@ namespace libsemigroups {
                                     + author::Kassabov + author::Lubotzky);
         // See Section 2.2 of 'Presentations of finite simple groups: A
         // quantitative approach' J. Amer. Math. Soc. 21 (2008), 711-774
-        for (size_t i = 0; i <= n - 2; ++i) {
-          presentation::add_rule_no_checks(p, {i, i}, {});
-        }
+        presentation::add_transposition_rules_no_checks(p, range(n - 1));
 
         for (size_t i = 0; i <= n - 2; ++i) {
           for (size_t j = 0; j <= n - 2; ++j) {
@@ -616,9 +584,7 @@ namespace libsemigroups {
 
       presentation::add_rule_no_checks(p, 000_w, {});
 
-      for (size_t j = 1; j <= n - 3; ++j) {
-        presentation::add_rule_no_checks(p, {j, j}, {});
-      }
+      presentation::add_transposition_rules_no_checks(p, range(1, n - 2));
 
       for (size_t i = 1; i <= n - 3; ++i) {
         presentation::add_rule_no_checks(p, pow({i - 1, i}, 3), {});
@@ -727,6 +693,7 @@ namespace libsemigroups {
       p.contains_empty_word(true);
 
       // S in Theorem 3 (same as dual_symmetric_inverse_monoid)
+      // TODO factor out the common part
       for (size_t i = 0; i <= n - 2; ++i) {
         presentation::add_rule_no_checks(p, {i, i}, {});
         if (i != n - 2) {

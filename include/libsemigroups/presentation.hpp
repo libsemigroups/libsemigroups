@@ -1464,12 +1464,18 @@ namespace libsemigroups {
     template <typename Word>
     void add_idempotent_rules_no_checks(Presentation<Word>& p,
                                         word_type const&    letters) {
-      using words::operator+;
       for (auto x : letters) {
-        add_rule_no_checks(p, word_type({x}) + word_type({x}), word_type({x}));
+        add_rule_no_checks(p, {x, x}, {x});
       }
     }
 
+    template <typename Word>
+    void add_transposition_rules_no_checks(Presentation<Word>& p,
+                                           word_type const&    letters) {
+      for (auto x : letters) {
+        add_rule_no_checks(p, {x, x}, {});
+      }
+    }
     // TODO(doc)
     template <typename Word>
     void add_commutes_rules_no_checks(Presentation<Word>& p,

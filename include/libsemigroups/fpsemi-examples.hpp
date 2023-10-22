@@ -45,6 +45,7 @@ namespace libsemigroups {
       East       = 32,
       Fernandes  = 64,
       FitzGerald = 128,
+      Gay        = 262'144,
       Godelle    = 256,
       Guralnick  = 512,
       Iwahori    = 1024,
@@ -55,7 +56,6 @@ namespace libsemigroups {
       Moore      = 32'768,
       Moser      = 65'536,
       Sutov      = 131'072,
-      Gay        = 262'144
     };
 
     //! This operator can be used arbitrarily to combine author values (see \ref
