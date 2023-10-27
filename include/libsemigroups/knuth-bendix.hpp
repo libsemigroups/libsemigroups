@@ -358,7 +358,7 @@ namespace libsemigroups {
 
       [[nodiscard]] Rule* copy_rule(Rule const* rule);
 
-     private:
+      //  private:
       [[nodiscard]] Rule* new_rule();
 
       template <typename Iterator>
