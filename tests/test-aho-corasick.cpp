@@ -142,4 +142,22 @@ namespace libsemigroups {
     REQUIRE(ac.number_of_nodes() == 31'998);
   }
 
+  LIBSEMIGROUPS_TEST_CASE("AhoCorasick",
+                          "004",
+                          "initial test with strings",
+                          "[quick][aho-corasick]") {
+    AhoCorasick ac;
+    std::string x = "aabab";
+    std::string y = "aba";
+    ac.add_word_no_checks(x.begin(), x.end());
+    ac.add_word_no_checks(y.begin(), y.end());
+
+    REQUIRE(ac.number_of_nodes() == 8);
+    REQUIRE(ac.traverse(x.begin(), x.end()) == 5);
+    REQUIRE(ac.traverse(y.begin(), y.end()) == 7);
+
+    // std::ofstream file("aho.gv");
+    // file << dot(ac).to_string();
+  }
+
 }  // namespace libsemigroups

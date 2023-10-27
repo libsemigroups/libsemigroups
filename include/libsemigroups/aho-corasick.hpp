@@ -125,9 +125,9 @@ namespace libsemigroups {
       return _active_nodes_index.size();
     }
 
-    // TODO to cpp
     // TODO Add flags to show links have been cleared?
-    void add_word_no_checks(const_iterator first, const_iterator last) {
+    template <typename Iterator>
+    void add_word_no_checks(Iterator first, Iterator last) {
       clear_suffix_links();  // don't do this if first >= last
       index_type current = root;
       for (auto it = first; it != last; ++it) {
@@ -144,9 +144,8 @@ namespace libsemigroups {
       _all_nodes[current].set_terminal(true);
     }
 
-    // TODO to cpp
-    // TODO completely untested
-    void rm_word_no_checks(const_iterator first, const_iterator last) {
+    template <typename Iterator>
+    void rm_word_no_checks(Iterator first, Iterator last) {
       auto last_index = traverse_trie(first, last);
       if (last_index == UNDEFINED || !_all_nodes[last_index].is_terminal()) {
         return;
@@ -167,17 +166,9 @@ namespace libsemigroups {
       _all_nodes[parent_index].children().erase(parent_letter);
     }
 
-    void add_word_no_checks(word_type const& w) {
-      add_word_no_checks(w.cbegin(), w.cend());
-    }
-
-    void rm_word_no_checks(word_type const& w) {
-      rm_word_no_checks(w.cbegin(), w.cend());
-    }
-
     // TODO to cpp
-    [[nodiscard]] index_type traverse(const_iterator first,
-                                      const_iterator last) const {
+    template <typename Iterator>
+    [[nodiscard]] index_type traverse(Iterator first, Iterator last) const {
       index_type current = root;
       for (auto it = first; it != last; ++it) {
         // Uses private traverse by node function
@@ -186,6 +177,28 @@ namespace libsemigroups {
       return current;
     }
 
+    // TODO to cpp
+    // TODO template to accept Iterator not word_type&
+    void signature(word_type& w, index_type i) const {
+      w.clear();
+      while (i != root) {
+        w.push_back(_all_nodes[i].parent_letter());
+        i = _all_nodes[i].parent();
+      }
+      std::reverse(w.begin(), w.end());
+    }
+
+    // TODO move to helper namespace
+    void add_word_no_checks(word_type const& w) {
+      add_word_no_checks(w.cbegin(), w.cend());
+    }
+
+    // TODO move to helper namespace
+    void rm_word_no_checks(word_type const& w) {
+      rm_word_no_checks(w.cbegin(), w.cend());
+    }
+
+    // TODO move to helper namespace
     [[nodiscard]] index_type traverse(word_type const& w) const {
       return traverse(w.cbegin(), w.cend());
     }
@@ -201,16 +214,6 @@ namespace libsemigroups {
 
     [[nodiscard]] Node const& node(index_type i) const {
       return _all_nodes.at(i);
-    }
-
-    // TODO to cpp
-    void signature(word_type& w, index_type i) const {
-      w.clear();
-      while (i != root) {
-        w.push_back(_all_nodes[i].parent_letter());
-        i = _all_nodes[i].parent();
-      }
-      std::reverse(w.begin(), w.end());
     }
 
    private:
@@ -252,8 +255,9 @@ namespace libsemigroups {
       return traverse(suffix_link(current), a);
     }
 
-    [[nodiscard]] index_type traverse_trie(const_iterator first,
-                                           const_iterator last) const {
+    template <typename Iterator>
+    [[nodiscard]] index_type traverse_trie(Iterator first,
+                                           Iterator last) const {
       index_type current = root;
       for (auto it = first; it != last; ++it) {
         current = _all_nodes[current].child(*it);
@@ -275,7 +279,7 @@ namespace libsemigroups {
 
   Dot dot(AhoCorasick& ac);
 
-  class TrieRewriter {};
+  namespace aho_corasick {}
 
 }  // namespace libsemigroups
 
