@@ -195,7 +195,7 @@ namespace libsemigroups {
       if (i == root) {
         return 0;
       }
-      return height(_all_nodes[i].parent()) + 1
+      return height(_all_nodes[i].parent()) + 1;
     }
 
     // TODO move to helper namespace
@@ -206,6 +206,13 @@ namespace libsemigroups {
     // TODO move to helper namespace
     void rm_word_no_checks(word_type const& w) {
       rm_word_no_checks(w.cbegin(), w.cend());
+    }
+
+    // TODO move to helper namespace
+    template <typename Letter>
+    [[nodiscard]] index_type traverse_from(index_type    start,
+                                           Letter const& w) const {
+      return traverse(start, w);
     }
 
     // TODO move to helper namespace
