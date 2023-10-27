@@ -120,27 +120,19 @@ namespace libsemigroups {
   // couldn't figure out how to use doxygenfunction in this case (since there
   // are multiple function templates with the same arguments, just different
   // type constraints).
-  // TODO revert this to whatever it was before
-  template <typename WordOutput,
-            template <typename>
-            class Presentation_,
-            typename WordInput>
-  auto to_presentation(Presentation_<WordInput> const& p)
+  template <typename WordOutput, typename WordInput>
+  auto to_presentation(Presentation<WordInput> const& p)
       -> std::enable_if_t<!std::is_same_v<WordOutput, std::string>,
-                          Presentation_<WordOutput>> {
+                          Presentation<WordOutput>> {
     return to_presentation<WordOutput>(p,
                                        [&p](auto val) { return p.index(val); });
   }
 
   //! No doc
-  // TODO revert this to whatever it was before
-  template <typename WordOutput,
-            template <typename>
-            class Presentation_,
-            typename WordInput>
-  auto to_presentation(Presentation_<WordInput> const& p)
+  template <typename WordOutput, typename WordInput>
+  auto to_presentation(Presentation<WordInput> const& p)
       -> std::enable_if_t<std::is_same_v<WordOutput, std::string>,
-                          Presentation_<WordOutput>> {
+                          Presentation<WordOutput>> {
     return to_presentation<WordOutput>(
         p, [&p](auto val) { return human_readable_char(p.index(val)); });
   }
