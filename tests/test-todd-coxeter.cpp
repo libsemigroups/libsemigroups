@@ -1892,7 +1892,6 @@ namespace libsemigroups {
                           "048",
                           "stellar_monoid(7) (Gay-Hivert)",
                           "[todd-coxeter][quick][no-valgrind][no-coverage]") {
-    using fpsemigroup::rook_monoid;
     using fpsemigroup::stellar_monoid;
 
     auto         rg = ReportGuard(false);
@@ -2026,7 +2025,6 @@ namespace libsemigroups {
       "054",
       "Generate GAP benchmarks for stellar_monoid(n) (Gay-Hivert)",
       "[todd-coxeter][fail]") {
-    using fpsemigroup::rook_monoid;
     using fpsemigroup::stellar_monoid;
     auto rg = ReportGuard(true);
     for (size_t n = 3; n <= 9; ++n) {
@@ -3207,40 +3205,32 @@ namespace libsemigroups {
 
   // TODO uncomment
   // The next example demonstrates why we require deferred standardization
-  // LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
-  //                         "085",
-  //                         "Renner monoid type D4 (Gay-Hivert), q = 1",
-  //                         "[no-valgrind][quick][todd-coxeter][no-coverage]")
-  //                         {
-  //   using fpsemigroup::RennerTypeDMonoid;
+  LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
+                          "085",
+                          "Renner monoid type D4 (Gay-Hivert), q = 1",
+                          "[no-valgrind][quick][todd-coxeter][no-coverage]") {
+    auto rg = ReportGuard(false);
 
-  //   auto rg = ReportGuard(false);
-  //   auto p  = to_presentation<word_type>(RennerTypeDMonoid(4, 1));
+    ToddCoxeter tc(twosided, fpsemigroup::renner_type_D_monoid(4, 1));
+    tc.strategy(options::strategy::hlt)
+        .lookahead_extent(options::lookahead_extent::partial);
+    REQUIRE(!is_obviously_infinite(tc));
 
-  //   REQUIRE(p.rules.size() == 252);
-  //   REQUIRE(p.alphabet().size() == 11);
+    section_felsch(tc);
+    section_hlt(tc);
+    section_CR_style(tc);
+    section_R_over_C_style(tc);
+    section_Rc_style(tc);
+    section_Cr_style(tc);
 
-  //   ToddCoxeter tc(twosided, p);
-  //   tc.strategy(options::strategy::hlt)
-  //       .lookahead_extent(options::lookahead_extent::partial);
-  //   REQUIRE(!is_obviously_infinite(tc));
+    REQUIRE(tc.number_of_classes() == 10'625);
 
-  //   section_felsch(tc);
-  //   section_hlt(tc);
-  //   section_CR_style(tc);
-  //   section_R_over_C_style(tc);
-  //   section_Rc_style(tc);
-  //   section_Cr_style(tc);
-
-  //   REQUIRE(tc.number_of_classes() == 10'625);
-
-  //   tc.standardize(Order::shortlex);
-  //   REQUIRE(is_sorted(todd_coxeter::normal_forms(tc), ShortLexCompare()));
-  //   tc.standardize(Order::lex);
-  //   REQUIRE(
-  //       is_sorted(todd_coxeter::normal_forms(tc),
-  //       LexicographicalCompare()));
-  // }
+    tc.standardize(Order::shortlex);
+    REQUIRE(is_sorted(todd_coxeter::normal_forms(tc), ShortLexCompare()));
+    tc.standardize(Order::lex);
+    REQUIRE(
+        is_sorted(todd_coxeter::normal_forms(tc), LexicographicalCompare()));
+  }
 
   // Felsch very slow here
   LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
@@ -3591,27 +3581,26 @@ namespace libsemigroups {
   // Felsch is much much better here, slightly slower in v3, nothing obvious
   // stands out as being the cause of this, in v2 this takes about 1.4s in v3
   // 1.5s or so.
-  // TODO uncomment
-  // LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
-  //                         "097",
-  //                         "relation ordering",
-  //                         "[todd-coxeter][extreme]") {
-  //   using fpsemigroup::RennerTypeDMonoid;
-  //   auto rg = ReportGuard();
-  //   auto p  = to_presentation<word_type>(RennerTypeDMonoid(5, 1));
-  //   REQUIRE(p.rules.size() == 358);
-  //   // Sorting the rules makes this twice as slow...
-  //   // presentation::sort_each_rule(p);
-  //   // presentation::sort_rules(p);
-  //   presentation::remove_duplicate_rules(p);
-  //   REQUIRE(p.rules.size() == 322);
+  // Seems to have gotten worse still since the comment about up to 1.8s
+  LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
+                          "097",
+                          "relation ordering",
+                          "[todd-coxeter][extreme]") {
+    auto rg = ReportGuard(true);
+    // Sorting the rules makes this twice as slow...
+    auto p = fpsemigroup::renner_type_D_monoid(5, 1);
+    presentation::sort_each_rule(p);
+    presentation::sort_rules(p);
+    REQUIRE(p.rules.size() == 308);
+    presentation::remove_duplicate_rules(p);
+    presentation::reduce_complements(p);
+    REQUIRE(p.rules.size() == 230);
 
-  //   ToddCoxeter tc(twosided, p);
-  //   REQUIRE(!is_obviously_infinite(tc));
-
-  //   tc.strategy(options::strategy::felsch);
-  //   REQUIRE(tc.number_of_classes() == 258'661);
-  // }
+    ToddCoxeter tc(twosided, p);
+    REQUIRE(!is_obviously_infinite(tc));
+    tc.strategy(options::strategy::felsch);
+    REQUIRE(tc.number_of_classes() == 258'661);
+  }
 
   LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "098",
@@ -4724,7 +4713,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE(
       "ToddCoxeter",
-      "085",
+      "110",
       "minimal E-disjunctive idempotent pure right congruence",
       "[todd-coxeter][extreme]") {
     using PPerm = LeastPPerm<5>;
@@ -4788,7 +4777,7 @@ namespace libsemigroups {
     presentation::add_rule(p, "xz"_p, ""_p);
 
     ToddCoxeter tc(twosided, p);
-    REQUIRE(tc.number_of_classes() == 6);
+    REQUIRE(tc.number_of_classes() == 5);
   }
 
 }  // namespace libsemigroups

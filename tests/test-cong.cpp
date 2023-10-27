@@ -62,8 +62,8 @@ namespace libsemigroups {
   constexpr congruence_kind left     = congruence_kind::left;
   constexpr congruence_kind right    = congruence_kind::right;
 
-  using fpsemigroup::rook_monoid;
   using fpsemigroup::stellar_monoid;
+  using fpsemigroup::zero_rook_monoid;
 
   LIBSEMIGROUPS_TEST_CASE("Congruence",
                           "000",
@@ -924,12 +924,14 @@ namespace libsemigroups {
                           "stellar_monoid S2",
                           "[quick][cong]") {
     auto                    rg = ReportGuard(false);
-    Presentation<word_type> p  = rook_monoid(2, 0);
+    Presentation<word_type> p  = zero_rook_monoid(2);
+    presentation::change_alphabet(p, 10_w);
 
     REQUIRE(!is_obviously_infinite(p));
 
     Congruence cong(twosided, p);
     auto       q = stellar_monoid(2);
+    presentation::change_alphabet(q, 10_w);
     for (auto it = q.rules.cbegin(); it != q.rules.cend(); it += 2) {
       cong.add_pair(*it, *(it + 1));
     }
@@ -952,7 +954,7 @@ namespace libsemigroups {
                           "stellar_monoid S3",
                           "[quick][cong]") {
     auto                    rg = ReportGuard(false);
-    Presentation<word_type> p  = rook_monoid(3, 0);
+    Presentation<word_type> p  = zero_rook_monoid(3);
 
     REQUIRE(!is_obviously_infinite(p));
 
@@ -975,22 +977,22 @@ namespace libsemigroups {
     });
     std::sort(ntc.begin(), ntc.end());
     REQUIRE(ntc
-            == decltype(ntc)({{010_w, 10_w, 101_w},
-                              {0102_w, 1012_w, 102_w},
-                              {01021_w, 10121_w, 1021_w},
-                              {010210_w,
-                               01210_w,
-                               012101_w,
-                               0210_w,
-                               101210_w,
-                               1012101_w,
-                               10210_w,
-                               1210_w,
-                               12101_w,
-                               121012_w,
-                               210_w,
-                               2101_w,
-                               21012_w}}));
+            == decltype(ntc)({{0102_w,
+                               01020_w,
+                               010201_w,
+                               012012_w,
+                               0120120_w,
+                               01202_w,
+                               102_w,
+                               1020_w,
+                               10201_w,
+                               12012_w,
+                               120120_w,
+                               1202_w,
+                               201202_w},
+                              {012_w, 0201_w, 2012_w},
+                              {0120_w, 01201_w, 20120_w},
+                              {02_w, 020_w, 202_w}}));
   }
 
   LIBSEMIGROUPS_TEST_CASE("Congruence",
@@ -998,7 +1000,7 @@ namespace libsemigroups {
                           "stellar_monoid S4",
                           "[quick][cong]") {
     auto                    rg = ReportGuard(false);
-    Presentation<word_type> p  = rook_monoid(4, 0);
+    Presentation<word_type> p  = zero_rook_monoid(4);
 
     REQUIRE(!is_obviously_infinite(p));
 
@@ -1032,7 +1034,7 @@ namespace libsemigroups {
                           "stellar_monoid S5",
                           "[quick][cong][no-valgrind]") {
     auto                    rg = ReportGuard(false);
-    Presentation<word_type> p  = rook_monoid(5, 0);
+    Presentation<word_type> p  = zero_rook_monoid(5);
 
     Congruence cong(twosided, p);
     auto       q = stellar_monoid(5);
@@ -1067,7 +1069,7 @@ namespace libsemigroups {
                           "stellar_monoid S6",
                           "[quick][cong][no-valgrind]") {
     auto                    rg = ReportGuard(false);
-    Presentation<word_type> p  = rook_monoid(6, 0);
+    Presentation<word_type> p  = zero_rook_monoid(6);
 
     Congruence cong(twosided, p);
     auto       q = stellar_monoid(6);
@@ -1098,7 +1100,7 @@ namespace libsemigroups {
                           "stellar_monoid S7",
                           "[quick][cong][no-valgrind]") {
     auto                    rg = ReportGuard(false);
-    Presentation<word_type> p  = rook_monoid(7, 0);
+    Presentation<word_type> p  = zero_rook_monoid(7);
 
     Congruence cong(twosided, p);
     auto       q = stellar_monoid(7);

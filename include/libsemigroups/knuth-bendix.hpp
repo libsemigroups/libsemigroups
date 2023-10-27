@@ -361,6 +361,7 @@ namespace libsemigroups {
       //  private:
       [[nodiscard]] Rule* new_rule();
 
+     protected:
       template <typename Iterator>
       [[nodiscard]] Rule* new_rule(Iterator begin_lhs,
                                    Iterator end_lhs,

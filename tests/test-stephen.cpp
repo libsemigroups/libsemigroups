@@ -1392,8 +1392,8 @@ namespace libsemigroups {
     REQUIRE(stephen::words_accepted(S).get() == 0202_w);
     REQUIRE(stephen::number_of_left_factors(S) == POSITIVE_INFINITY);
     S.set_word(to_word("aBbcaABAabCc"));
-    std::ofstream f("wordgraph.gv");
-    f << stephen::dot(S).to_string();
+    // std::ofstream f("wordgraph.gv");
+    // f << stephen::dot(S).to_string();
     T.set_word(to_word("CcBAabaACBbA"));
     S *= T;
   }
