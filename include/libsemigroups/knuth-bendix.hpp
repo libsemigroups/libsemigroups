@@ -500,6 +500,10 @@ namespace libsemigroups {
       // TODO equals operator
       // TODO destructors
       // TODO initialisers
+      // TODO &
+      // TODO erase_from_active_rules
+      // TODO clear_stack
+      // TODO reduce
 
       // TODO add_rule
 
