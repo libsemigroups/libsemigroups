@@ -486,30 +486,44 @@ namespace libsemigroups {
       iterator erase_from_active_rules(iterator);
     } _rewriter;
 
+    // TODO make it work with strings or ints with AC
+    // TODO destructors
+    // TODO write remove_rule
     class RewriteTrie : public Rewriter {
-      using index_type  = AhoCorasick::index_type;
-      using letter_type = std::string;
-      AhoCorasick                           _trie;
-      std::unordered_map<index_type, Rule*> _rules;  // TODO RuleLookup?
-      std::unordered_set<letter_type>       _alphabet;
+      using index_type = AhoCorasick::index_type;
+      AhoCorasick                              _trie;
+      std::unordered_map<index_type, Rule*>    _rules;
+      std::unordered_set<internal_string_type> _alphabet;
 
      public:
       using Rewriter::confluent;
       using Rules::stats;
       using iterator = internal_string_type::iterator;
 
-      // TODO constructors
-      // TODO equals operator
-      // TODO destructors
-      // TODO initialisers
-      // TODO &
-      // TODO erase_from_active_rules
-      // TODO clear_stack
-      // TODO reduce
-
-      // TODO add_rule
-
       RewriteTrie() = default;
+
+      RewriteTrie(const RewriteTrie& that);
+      RewriteTrie& operator=(RewriteTrie const& that) {
+        init();
+        Rewriter::operator=(that);
+        for (auto* crule : that) {
+          Rule* rule = const_cast<Rule*>(crule);
+          // TODO Should this be calling add_rule, or should it just be
+          // _trie.add_word_no_checks?
+          add_rule(rule);
+        }
+        return *this;
+      }
+
+      ~RewriteTrie() = default;
+
+      RewriteTrie& init() {
+        Rewriter::init();
+        _trie.init();
+        _rules.clear();
+        _alphabet.clear();
+        return *this;
+      }
 
       void rewrite(internal_string_type& u) const {
         // Check if u is rewriteable
@@ -667,7 +681,87 @@ namespace libsemigroups {
         }
         return true;
       }
-    } _rewriter;
+
+      void add_rule(Rule* rule) {
+        Rules::add_rule(rule);
+        index_type node = _trie.add_word_no_checks(rule->lhs()->cbegin(),
+                                                   rule->lhs()->cend());
+        _rules.emplace(node, rule);
+        confluent(tril::unknown);
+      }
+
+      void reduce() {
+        for (Rule const* rule : *this) {
+          // Copy rule and push_stack so that it is not modified by the
+          // call to clear_stack.
+          LIBSEMIGROUPS_ASSERT(rule->lhs() != rule->rhs());
+          if (push_stack(copy_rule(rule))) {
+            clear_stack();
+          }
+        }
+      }
+
+      template <typename StringLike>
+      void add_rule(StringLike const& lhs, StringLike const& rhs) {
+        if (Rewriter::add_rule(lhs, rhs)) {
+          clear_stack();
+        }
+      }
+
+     private:
+      void rewrite(Rule* rule) const {
+        rewrite(*rule->lhs());
+        rewrite(*rule->rhs());
+        rule->reorder();
+      }
+
+      void clear_stack() {
+        while (number_of_pending_rules() != 0) {
+          // _stats.max_stack_depth = std::max(_stats.max_stack_depth,
+          // _stack.size());
+
+          Rule* rule1 = next_pending_rule();
+          LIBSEMIGROUPS_ASSERT(!rule1->active());
+          LIBSEMIGROUPS_ASSERT(*rule1->lhs() != *rule1->rhs());
+          // Rewrite both sides and reorder if necessary . . .
+          rewrite(rule1);
+
+          if (*rule1->lhs() != *rule1->rhs()) {
+            internal_string_type const* lhs = rule1->lhs();
+            for (auto it = begin(); it != end();) {
+              Rule* rule2 = const_cast<Rule*>(*it);
+              if (rule2->lhs()->find(*lhs) != external_string_type::npos) {
+                it = erase_from_active_rules(it);
+                // rule2 is added to _inactive_rules or _active_rules by
+                // clear_stack
+              } else {
+                if (rule2->rhs()->find(*lhs) != external_string_type::npos) {
+                  rewrite(*rule2->rhs());
+                }
+                ++it;
+              }
+            }
+            add_rule(rule1);
+            // rule1 is activated, we do this after removing rules that rule1
+            // makes redundant to avoid failing to insert rule1 in _set_rules
+          } else {
+            add_inactive_rule(rule1);
+          }
+        }
+      }
+
+      Rules::iterator erase_from_active_rules(Rules::iterator it) {
+        Rule* rule = const_cast<Rule*>(*it);
+        rule->deactivate();
+        push_stack(rule);
+        index_type node = _trie.rm_word_no_checks(rule->lhs()->cbegin(),
+                                                  rule->lhs()->cend());
+        _rules.erase(node);
+        // TODO Add assertion that checks number of rules stored in trie is
+        // equal to number of rules in number_of_active_rules()
+        return Rules::erase_from_active_rules(it);
+      }
+    };  // _rewriter;
 
     bool                      _gen_pairs_initted;
     WordGraph<size_t>         _gilman_graph;
