@@ -530,7 +530,6 @@ namespace libsemigroups {
           // Read first letter of W and traverse trie
           auto x = *w_begin;
           ++w_begin;
-          // FIXME: Consolidate string or word
           current = _trie.traverse_from(current, x);
 
           if (!_trie.node(current).is_terminal()) {
@@ -578,11 +577,12 @@ namespace libsemigroups {
         bool                 backtrack;
 
         for (auto it = begin(); it != end(); ++it) {
-          std::stack<index_type>                      nodes;
-          std::stack<std::unordered_set<letter_type>> stack_unsearched_letters;
-          Rule const*                                 rule1 = *it;
-          index_type current = _trie.traverse_from(
-              _trie.root, rule1->lhs()->cbegin() + 1, rule1->lhs()->cend());
+          std::stack<index_type> nodes;
+          std::stack<std::unordered_set<internal_string_type>>
+                      stack_unsearched_letters;
+          Rule const* rule1   = *it;
+          index_type  current = _trie.traverse(rule1->lhs()->cbegin() + 1,
+                                              rule1->lhs()->cend());
 
           nodes.emplace(current);
           auto unsearched_letters = _alphabet;  // copying the contents?

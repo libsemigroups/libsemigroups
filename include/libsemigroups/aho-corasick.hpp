@@ -232,8 +232,8 @@ namespace libsemigroups {
     }
 
     // TODO move to helper namespace
-    [[nodiscard]] index_type traverse(const_iterator first,
-                                      const_iterator last) const {
+    template <typename Iterator>
+    [[nodiscard]] index_type traverse(Iterator first, Iterator last) const {
       return traverse_from(root, first, last);
     }
 
