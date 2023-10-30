@@ -136,7 +136,7 @@ namespace libsemigroups {
 
     // TODO Add flags to show links have been cleared?
     template <typename Iterator>
-    void add_word_no_checks(Iterator first, Iterator last) {
+    index_type add_word_no_checks(Iterator first, Iterator last) {
       clear_suffix_links();  // don't do this if first >= last
       index_type current = root;
       for (auto it = first; it != last; ++it) {
@@ -151,16 +151,17 @@ namespace libsemigroups {
         }
       }
       _all_nodes[current].set_terminal(true);
+      return current;
     }
 
     template <typename Iterator>
-    void rm_word_no_checks(Iterator first, Iterator last) {
+    index_type rm_word_no_checks(Iterator first, Iterator last) {
       auto last_index = traverse_trie(first, last);
       if (last_index == UNDEFINED || !_all_nodes[last_index].is_terminal()) {
-        return;
+        return root;  // FIXME: This is not nice behaviour
       } else if (!_all_nodes[last_index].children().empty()) {
         _all_nodes[last_index].set_terminal(false);
-        return;
+        return root;  // FIXME: This is not nice behaviour
       }
       clear_suffix_links();
       auto parent_index  = _all_nodes[last_index].parent();
@@ -173,6 +174,7 @@ namespace libsemigroups {
         deactivate_node(last_index);
       }
       _all_nodes[parent_index].children().erase(parent_letter);
+      return last_index;
     }
 
     // TODO to cpp
@@ -212,8 +214,8 @@ namespace libsemigroups {
     }
 
     // TODO move to helper namespace
-    void rm_word_no_checks(word_type const& w) {
-      rm_word_no_checks(w.cbegin(), w.cend());
+    index_type rm_word_no_checks(word_type const& w) {
+      return rm_word_no_checks(w.cbegin(), w.cend());
     }
 
     // TODO move to helper namespace
