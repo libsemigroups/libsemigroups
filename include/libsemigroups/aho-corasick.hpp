@@ -120,7 +120,15 @@ namespace libsemigroups {
         : _all_nodes({Node()}), _active_nodes_index(), _inactive_nodes_index() {
       _active_nodes_index.insert(0);
     }
-    // TODO init
+
+    AhoCorasick& init() {
+      _all_nodes = {Node()};
+      _active_nodes_index.clear();
+      while (!_inactive_nodes_index.empty()) {
+        _inactive_nodes_index.pop();
+      }
+      _active_nodes_index.insert(0);
+    }
 
     size_t number_of_nodes() const noexcept {
       return _active_nodes_index.size();
