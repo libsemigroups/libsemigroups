@@ -487,9 +487,11 @@ namespace libsemigroups {
     } _rewriter;
 
     class RewriteTrie : public Rewriter {
-      using index_type = AhoCorasick::index_type;
-      AhoCorasick                 _trie;
-      std::map<index_type, Rule*> _rules;  // TODO RuleLookup?
+      using index_type  = AhoCorasick::index_type;
+      using letter_type = std::string;
+      AhoCorasick                           _trie;
+      std::unordered_map<index_type, Rule*> _rules;  // TODO RuleLookup?
+      std::unordered_set<letter_type>       _alphabet;
 
      public:
       using Rewriter::confluent;
@@ -576,37 +578,89 @@ namespace libsemigroups {
         bool                 backtrack;
 
         for (auto it = begin(); it != end(); ++it) {
-          std::stack<index_type> nodes;
-          Rule const*            rule1 = *it;
-          index_type current = _trie.traverse(rule1->lhs()->cbegin() + 1,
-                                              rule1->lhs()->cend());
+          std::stack<index_type>                      nodes;
+          std::stack<std::unordered_set<letter_type>> stack_unsearched_letters;
+          Rule const*                                 rule1 = *it;
+          index_type current = _trie.traverse_from(
+              _trie.root, rule1->lhs()->cbegin() + 1, rule1->lhs()->cend());
+
           nodes.emplace(current);
+          auto unsearched_letters = _alphabet;  // copying the contents?
+          stack_unsearched_letters.emplace(unsearched_letters);
+
           backtrack = false;
           while (!nodes.empty()) {
             backtrack = (_trie.height(current) <= nodes.size() - 1);
-            if (_trie.node(current).is_terminal() and !backtrack) {
+            if (_trie.node(current).is_terminal() && !backtrack) {
               Rule const* rule2 = _rules.find(current)->second;
               // Process overlap
               // Word looks like ABC where the LHS of rule1 corresponds to AB,
               // the LHS of rule2 corresponds to BC, and |C|=nodes.size() - 1.
-              // If failure, confluence is false, break
+              // AB -> X, BC -> Y
+              // ABC gets rewritten to XC and AY
+              auto overlap_length
+                  = rule2->lhs()->length() - (nodes.size() - 1);  // |B|
+
+              word1.assign(*rule1->rhs());  // X
+              word1.append(rule2->lhs()->cbegin() + overlap_length,
+                           rule2->lhs()->cend());  // C
+
+              word2.assign(rule2->lhs()->cbegin(),
+                           rule2->lhs()->cend() - overlap_length);  // A
+              word2.append(*rule2->rhs());                          // Y
+
+              if (word1 != word2) {
+                rewrite(word1);
+                rewrite(word2);
+                if (word1 != word2) {
+                  confluent(tril::FALSE);
+                  return false;
+                }
+              }
               backtrack = true;
             }
             if (!backtrack) {
-              // Get a letter x from the alphabet
-              // current = _trie.traverse(current, x)
-              // nodes.emplace(current);
+              // Get an unsearched letter
+              unsearched_letters = stack_unsearched_letters.top();
+              stack_unsearched_letters.pop();
+              auto x = *unsearched_letters.begin();
+              unsearched_letters.erase(x);
+              stack_unsearched_letters.emplace(unsearched_letters);
+
+              // Traverse with new letter
+              current = _trie.traverse_from(current, x);
+
+              // Update the search stacks
+              nodes.emplace(current);
+              unsearched_letters = _alphabet;
+              stack_unsearched_letters.emplace(unsearched_letters);
             } else {
               while (backtrack && !nodes.empty()) {
-                // if we've not gone through all letters {
-                // pick a new letter x
-                // nodes.pop();
-                // current = _trie.traverse(nodes.top(), x);
-                // nodes.emplace(current);
-                // backtrack = false;}
-                // else {
-                // nodes.pop();
-                // current = nodes.top();}
+                unsearched_letters = stack_unsearched_letters.top();
+                stack_unsearched_letters.pop();
+                if (!unsearched_letters.empty()) {
+                  // Get an unsearched letter
+                  auto x = *unsearched_letters.begin();
+                  unsearched_letters.erase(x);
+                  stack_unsearched_letters.emplace(unsearched_letters);
+
+                  // Backtrack
+                  nodes.pop();
+
+                  // Traverse using new letter
+                  current = _trie.traverse_from(nodes.top(), x);
+
+                  // Update the search stacks
+                  nodes.emplace(current);
+                  unsearched_letters = _alphabet;
+                  stack_unsearched_letters.emplace(unsearched_letters);
+
+                  backtrack = false;
+                } else {
+                  nodes.pop();
+                  current = nodes.top();
+                  stack_unsearched_letters.pop();
+                }
               }
             }
           }
