@@ -488,7 +488,6 @@ namespace libsemigroups {
 
     // TODO make it work with strings or ints with AC
     // TODO destructors
-    // TODO write remove_rule
     class RewriteTrie : public Rewriter {
       using index_type = AhoCorasick::index_type;
       AhoCorasick                              _trie;
@@ -687,6 +686,9 @@ namespace libsemigroups {
         index_type node = _trie.add_word_no_checks(rule->lhs()->cbegin(),
                                                    rule->lhs()->cend());
         _rules.emplace(node, rule);
+        for (auto it = rule->lhs()->cbegin(), it != rule->lhs()->cend(), ++it) {
+          _alphabet.emplace(*it);
+        }
         confluent(tril::unknown);
       }
 
