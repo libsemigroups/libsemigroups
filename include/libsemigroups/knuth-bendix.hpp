@@ -484,7 +484,7 @@ namespace libsemigroups {
       void     rewrite(Rule* rule) const;
       void     clear_stack();
       iterator erase_from_active_rules(iterator);
-    } _rewriter;
+    };  //_rewriter;
 
     // TODO make it work with strings or ints with AC
     // TODO destructors
@@ -567,7 +567,7 @@ namespace libsemigroups {
               w_begin -= rule->rhs()->size();
               detail::string_replace(
                   w_begin, rule->rhs()->cbegin(), rule->rhs()->cend());
-              for (auto i = 0; i < lhs_size - 1; ++i) {
+              for (size_t i = 0; i < lhs_size - 1; ++i) {
                 nodes.pop();
               }
               current = nodes.top();
@@ -685,7 +685,7 @@ namespace libsemigroups {
         index_type node = _trie.add_word_no_checks(rule->lhs()->cbegin(),
                                                    rule->lhs()->cend());
         _rules.emplace(node, rule);
-        for (auto it = rule->lhs()->cbegin(), it != rule->lhs()->cend(), ++it) {
+        for (auto it = rule->lhs()->cbegin(); it != rule->lhs()->cend(); ++it) {
           _alphabet.emplace(*it);
         }
         confluent(tril::unknown);
@@ -762,7 +762,7 @@ namespace libsemigroups {
         // equal to number of rules in number_of_active_rules()
         return Rules::erase_from_active_rules(it);
       }
-    };  // _rewriter;
+    } _rewriter;
 
     bool                      _gen_pairs_initted;
     WordGraph<size_t>         _gilman_graph;

@@ -128,6 +128,7 @@ namespace libsemigroups {
         _inactive_nodes_index.pop();
       }
       _active_nodes_index.insert(0);
+      return *this;
     }
 
     size_t number_of_nodes() const noexcept {
@@ -158,7 +159,7 @@ namespace libsemigroups {
     index_type rm_word_no_checks(Iterator first, Iterator last) {
       auto last_index = traverse_trie(first, last);
       if (last_index == UNDEFINED || !_all_nodes[last_index].is_terminal()) {
-        return root;  // FIXME: This is not nice behaviour
+        return root;  // FIXME: This is not nice behaviour. Assertion instead?
       } else if (!_all_nodes[last_index].children().empty()) {
         _all_nodes[last_index].set_terminal(false);
         return root;  // FIXME: This is not nice behaviour
