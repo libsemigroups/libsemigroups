@@ -490,9 +490,9 @@ namespace libsemigroups {
     // TODO destructors
     class RewriteTrie : public Rewriter {
       using index_type = AhoCorasick::index_type;
-      AhoCorasick                              _trie;
-      std::unordered_map<index_type, Rule*>    _rules;
-      std::unordered_set<internal_string_type> _alphabet;
+      AhoCorasick                           _trie;
+      std::unordered_map<index_type, Rule*> _rules;
+      std::unordered_set<letter_type>       _alphabet;
 
      public:
       using Rewriter::confluent;
@@ -543,7 +543,7 @@ namespace libsemigroups {
           // Read first letter of W and traverse trie
           auto x = *w_begin;
           ++w_begin;
-          current = _trie.traverse_from(current, x);
+          current = _trie.traverse_from(current, static_cast<letter_type>(x));
 
           if (!_trie.node(current).is_terminal()) {
             // TODO at the moment, v is only updated if current is terminal to
@@ -590,11 +590,10 @@ namespace libsemigroups {
         bool                 backtrack;
 
         for (auto it = begin(); it != end(); ++it) {
-          std::stack<index_type> nodes;
-          std::stack<std::unordered_set<internal_string_type>>
-                      stack_unsearched_letters;
-          Rule const* rule1   = *it;
-          index_type  current = _trie.traverse(rule1->lhs()->cbegin() + 1,
+          std::stack<index_type>                      nodes;
+          std::stack<std::unordered_set<letter_type>> stack_unsearched_letters;
+          Rule const*                                 rule1 = *it;
+          index_type current = _trie.traverse(rule1->lhs()->cbegin() + 1,
                                               rule1->lhs()->cend());
 
           nodes.emplace(current);
