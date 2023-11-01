@@ -488,11 +488,14 @@ namespace libsemigroups {
 
     // TODO make it work with strings or ints with AC
     // TODO destructors
+    // TODO remove publicness!!!
+   public:  // For intermediate testing only
     class RewriteTrie : public Rewriter {
       using index_type = AhoCorasick::index_type;
-      AhoCorasick                           _trie;
-      std::unordered_map<index_type, Rule*> _rules;
-      std::unordered_set<letter_type>       _alphabet;
+
+      std::unordered_map<index_type, Rule*>  _rules    = {};
+      std::unordered_set<internal_char_type> _alphabet = {};
+      AhoCorasick                            _trie;
 
      public:
       using Rewriter::confluent;
@@ -590,10 +593,11 @@ namespace libsemigroups {
         bool                 backtrack;
 
         for (auto it = begin(); it != end(); ++it) {
-          std::stack<index_type>                      nodes;
-          std::stack<std::unordered_set<letter_type>> stack_unsearched_letters;
-          Rule const*                                 rule1 = *it;
-          index_type current = _trie.traverse(rule1->lhs()->cbegin() + 1,
+          std::stack<index_type> nodes;
+          std::stack<std::unordered_set<internal_char_type>>
+                      stack_unsearched_letters;
+          Rule const* rule1   = *it;
+          index_type  current = _trie.traverse(rule1->lhs()->cbegin() + 1,
                                               rule1->lhs()->cend());
 
           nodes.emplace(current);
@@ -640,7 +644,8 @@ namespace libsemigroups {
               stack_unsearched_letters.emplace(unsearched_letters);
 
               // Traverse with new letter
-              current = _trie.traverse_from(current, x);
+              current
+                  = _trie.traverse_from(current, static_cast<letter_type>(x));
 
               // Update the search stacks
               nodes.emplace(current);
@@ -660,7 +665,8 @@ namespace libsemigroups {
                   nodes.pop();
 
                   // Traverse using new letter
-                  current = _trie.traverse_from(nodes.top(), x);
+                  current = _trie.traverse_from(nodes.top(),
+                                                static_cast<letter_type>(x));
 
                   // Update the search stacks
                   nodes.emplace(current);
@@ -684,9 +690,13 @@ namespace libsemigroups {
         Rules::add_rule(rule);
         index_type node = _trie.add_word_no_checks(rule->lhs()->cbegin(),
                                                    rule->lhs()->cend());
-        _rules.emplace(node, rule);
+        _rules[node]    = rule;
         for (auto it = rule->lhs()->cbegin(); it != rule->lhs()->cend(); ++it) {
+#ifdef LIBSEMIGROUPS_DEBUG
+          LIBSEMIGROUPS_ASSERT(_alphabet.emplace(*it).second);
+#else
           _alphabet.emplace(*it);
+#endif
         }
         confluent(tril::unknown);
       }
