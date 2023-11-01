@@ -715,6 +715,7 @@ EXTRA_PROGRAMS += test_pool
 EXTRA_PROGRAMS += test_presentation
 EXTRA_PROGRAMS += test_race
 EXTRA_PROGRAMS += test_ranges
+EXTRA_PROGRAMS += test_rewriting
 EXTRA_PROGRAMS += test_runner
 EXTRA_PROGRAMS += test_schreier_sims
 EXTRA_PROGRAMS += test_sims1
@@ -814,6 +815,7 @@ test_all_SOURCES += tests/test-schreier-sims.cpp
 test_all_SOURCES += tests/test-sims1.cpp
 test_all_SOURCES += tests/test-stephen.cpp
 test_all_SOURCES += tests/test-string.cpp
+test_all_SOURCES += tests/test-rewriting.cpp
 test_all_SOURCES += tests/test-transf.cpp
 test_all_SOURCES += tests/test-timer.cpp
 test_all_SOURCES += tests/test-to-froidure-pin.cpp
@@ -982,6 +984,9 @@ test_race_SOURCES += tests/test-main.cpp
 
 test_ranges_SOURCES =  tests/test-ranges.cpp
 test_ranges_SOURCES += tests/test-main.cpp
+
+test_rewriting_SOURCES = tests/test-rewriting.cpp
+test_rewriting_SOURCES += tests/test-main.cpp
 
 test_runner_SOURCES =  tests/test-runner.cpp
 test_runner_SOURCES += tests/test-main.cpp
