@@ -591,6 +591,7 @@ namespace libsemigroups {
         internal_string_type word1;
         internal_string_type word2;
         bool                 backtrack;
+        bool                 done = false;
 
         for (auto it = begin(); it != end(); ++it) {
           std::stack<index_type> nodes;
@@ -605,7 +606,7 @@ namespace libsemigroups {
           stack_unsearched_letters.emplace(unsearched_letters);
 
           backtrack = false;
-          while (!nodes.empty()) {
+          while (!nodes.empty() && !done) {
             backtrack = (_trie.height(current) <= nodes.size() - 1);
             if (_trie.node(current).is_terminal() && !backtrack) {
               Rule const* rule2 = _rules.find(current)->second;
@@ -637,6 +638,7 @@ namespace libsemigroups {
             }
             if (!backtrack) {
               // Get an unsearched letter
+              unsearched_letters.clear();
               unsearched_letters = stack_unsearched_letters.top();
               stack_unsearched_letters.pop();
               auto x = *unsearched_letters.begin();
@@ -649,10 +651,17 @@ namespace libsemigroups {
 
               // Update the search stacks
               nodes.emplace(current);
+              unsearched_letters.clear();
               unsearched_letters = _alphabet;
               stack_unsearched_letters.emplace(unsearched_letters);
             } else {
               while (backtrack && !nodes.empty()) {
+                // Backtrack
+                nodes.pop();
+                stack_unsearched_letters.pop();
+
+                // Get remaining letters
+                unsearched_letters.clear();
                 unsearched_letters = stack_unsearched_letters.top();
                 stack_unsearched_letters.pop();
                 if (!unsearched_letters.empty()) {
@@ -661,23 +670,24 @@ namespace libsemigroups {
                   unsearched_letters.erase(x);
                   stack_unsearched_letters.emplace(unsearched_letters);
 
-                  // Backtrack
-                  nodes.pop();
-
                   // Traverse using new letter
                   current = _trie.traverse_from(nodes.top(),
                                                 static_cast<letter_type>(x));
 
                   // Update the search stacks
                   nodes.emplace(current);
+                  unsearched_letters.clear();
                   unsearched_letters = _alphabet;
                   stack_unsearched_letters.emplace(unsearched_letters);
 
                   backtrack = false;
-                } else {
+                } else if (nodes.size() > 1) {
                   nodes.pop();
                   current = nodes.top();
                   stack_unsearched_letters.pop();
+                } else {
+                  done = true;
+                  break;
                 }
               }
             }
