@@ -555,14 +555,14 @@ namespace libsemigroups {
             nodes.emplace(current);
             *v_end = x;
             ++v_end;
-            nodes.emplace(current);
           } else {
             // Find rule that corresponds to terminal node
             Rule const* rule     = _rules.find(current)->second;
             auto        lhs_size = rule->lhs()->size();
 
-            // Must be true
-            if (lhs_size <= static_cast<size_t>(v_end - v_begin) - 1) {
+            // Check the lhs is small than the portion of the word that has been
+            // read (should be the case)
+            if (lhs_size <= static_cast<size_t>(v_end - v_begin) + 1) {
               // LIBSEMIGROUPS_ASSERT(detail::is_suffix(
               //     v_begin, v_end, rule->lhs()->cbegin(),
               //     rule->lhs()->cend()));
