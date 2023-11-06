@@ -703,7 +703,8 @@ namespace libsemigroups {
         _rules[node]    = rule;
         for (auto it = rule->lhs()->cbegin(); it != rule->lhs()->cend(); ++it) {
 #ifdef LIBSEMIGROUPS_DEBUG
-          LIBSEMIGROUPS_ASSERT(_alphabet.emplace(*it).second);
+          _alphabet.emplace(*it);
+          LIBSEMIGROUPS_ASSERT(_alphabet.count(*it) == 1);
 #else
           _alphabet.emplace(*it);
 #endif
