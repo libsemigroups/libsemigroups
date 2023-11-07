@@ -158,6 +158,7 @@ namespace libsemigroups {
     template <typename Iterator>
     index_type rm_word_no_checks(Iterator first, Iterator last) {
       auto last_index = traverse_trie(first, last);
+      auto rule_node  = last_index;
       if (last_index == UNDEFINED || !_all_nodes[last_index].is_terminal()) {
         return root;  // FIXME: This is not nice behaviour. Assertion instead?
       } else if (!_all_nodes[last_index].children().empty()) {
@@ -168,14 +169,16 @@ namespace libsemigroups {
       auto parent_index  = _all_nodes[last_index].parent();
       auto parent_letter = *(last - 1);
       deactivate_node(last_index);
-      while (_all_nodes[parent_index].children().size() == 1) {
-        last_index    = parent_index;
+      while (_all_nodes[parent_index].children().size() == 1
+             && parent_index != root) {
+        last_index = parent_index;
+        // FIXME: Reduce function calls here
         parent_index  = _all_nodes[last_index].parent();
         parent_letter = _all_nodes[last_index].parent_letter();
         deactivate_node(last_index);
       }
       _all_nodes[parent_index].children().erase(parent_letter);
-      return last_index;
+      return rule_node;
     }
 
     // TODO to cpp
