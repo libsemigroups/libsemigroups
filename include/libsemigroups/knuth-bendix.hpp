@@ -510,9 +510,7 @@ namespace libsemigroups {
         Rewriter::operator=(that);
         for (auto* crule : that) {
           Rule* rule = const_cast<Rule*>(crule);
-          // TODO Should this be calling add_rule, or should it just be
-          // _trie.add_word_no_checks?
-          add_rule(rule);
+          add_rule_to_trie(rule);
         }
         return *this;
       }
@@ -698,17 +696,7 @@ namespace libsemigroups {
 
       void add_rule(Rule* rule) {
         Rules::add_rule(rule);
-        index_type node = _trie.add_word_no_checks(rule->lhs()->cbegin(),
-                                                   rule->lhs()->cend());
-        _rules[node]    = rule;
-        for (auto it = rule->lhs()->cbegin(); it != rule->lhs()->cend(); ++it) {
-#ifdef LIBSEMIGROUPS_DEBUG
-          _alphabet.emplace(*it);
-          LIBSEMIGROUPS_ASSERT(_alphabet.count(*it) == 1);
-#else
-          _alphabet.emplace(*it);
-#endif
-        }
+        add_rule_to_trie(rule);
         confluent(tril::unknown);
       }
 
@@ -735,6 +723,20 @@ namespace libsemigroups {
         rewrite(*rule->lhs());
         rewrite(*rule->rhs());
         rule->reorder();
+      }
+
+      void add_rule_to_trie(Rule* rule) {
+        index_type node = _trie.add_word_no_checks(rule->lhs()->cbegin(),
+                                                   rule->lhs()->cend());
+        _rules[node]    = rule;
+        for (auto it = rule->lhs()->cbegin(); it != rule->lhs()->cend(); ++it) {
+#ifdef LIBSEMIGROUPS_DEBUG
+          _alphabet.emplace(*it);
+          LIBSEMIGROUPS_ASSERT(_alphabet.count(*it) == 1);
+#else
+          _alphabet.emplace(*it);
+#endif
+        }
       }
 
       void clear_stack() {
