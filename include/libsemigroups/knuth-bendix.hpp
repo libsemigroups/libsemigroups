@@ -493,8 +493,8 @@ namespace libsemigroups {
     class RewriteTrie : public Rewriter {
       using index_type = AhoCorasick::index_type;
 
-      std::unordered_map<index_type, Rule*>  _rules    = {};
-      std::unordered_set<internal_char_type> _alphabet = {};
+      std::unordered_map<index_type, Rule*>  _rules;
+      std::unordered_set<internal_char_type> _alphabet;
       AhoCorasick                            _trie;
 
      public:
