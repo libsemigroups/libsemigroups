@@ -586,28 +586,43 @@ namespace libsemigroups {
         }
 
         confluent(tril::TRUE);
-        internal_string_type word1;
-        internal_string_type word2;
-        bool                 backtrack;
-        bool                 done = false;
+        internal_string_type    word1;
+        internal_string_type    word2;
+        bool                    backtrack;
+        bool                    done;
+        std::vector<index_type> nodes;
+        std::vector<std::unordered_set<internal_char_type>>
+                                               stack_unsearched_letters;
+        std::unordered_set<internal_char_type> unsearched_letters;
+
+        Rule const* rule1;
+        Rule const* rule2;
+        index_type  current;
 
         for (auto it = begin(); it != end(); ++it) {
-          std::stack<index_type> nodes;
-          std::stack<std::unordered_set<internal_char_type>>
-                      stack_unsearched_letters;
-          Rule const* rule1   = *it;
-          index_type  current = _trie.traverse(rule1->lhs()->cbegin() + 1,
-                                              rule1->lhs()->cend());
+          done  = false;
+          rule1 = *it;
+          if (rule1->lhs()->size() == 1) {
+            continue;
+          }
+          nodes.clear();
+          stack_unsearched_letters.clear();
+          current = _trie.traverse(rule1->lhs()->cbegin() + 1,
+                                   rule1->lhs()->cend());
 
-          nodes.emplace(current);
-          auto unsearched_letters = _alphabet;  // copying the contents?
-          stack_unsearched_letters.emplace(unsearched_letters);
+          if (current == _trie.root) {
+            continue;
+          }
+
+          nodes.emplace_back(current);
+          unsearched_letters = _alphabet;  // copying the contents?
+          stack_unsearched_letters.emplace_back(unsearched_letters);
 
           backtrack = false;
           while (!nodes.empty() && !done) {
             backtrack = (_trie.height(current) <= nodes.size() - 1);
             if (_trie.node(current).is_terminal() && !backtrack) {
-              Rule const* rule2 = _rules.find(current)->second;
+              rule2 = _rules.find(current)->second;
               // Process overlap
               // Word looks like ABC where the LHS of rule1 corresponds to AB,
               // the LHS of rule2 corresponds to BC, and |C|=nodes.size() - 1.
@@ -620,8 +635,8 @@ namespace libsemigroups {
               word1.append(rule2->lhs()->cbegin() + overlap_length,
                            rule2->lhs()->cend());  // C
 
-              word2.assign(rule2->lhs()->cbegin(),
-                           rule2->lhs()->cend() - overlap_length);  // A
+              word2.assign(rule1->lhs()->cbegin(),
+                           rule1->lhs()->cend() - overlap_length);  // A
               word2.append(*rule2->rhs());                          // Y
 
               if (word1 != word2) {
@@ -637,53 +652,49 @@ namespace libsemigroups {
             if (!backtrack) {
               // Get an unsearched letter
               unsearched_letters.clear();
-              unsearched_letters = stack_unsearched_letters.top();
-              stack_unsearched_letters.pop();
+              unsearched_letters = stack_unsearched_letters.back();
+              stack_unsearched_letters.pop_back();
               auto x = *unsearched_letters.begin();
               unsearched_letters.erase(x);
-              stack_unsearched_letters.emplace(unsearched_letters);
+              stack_unsearched_letters.emplace_back(unsearched_letters);
 
               // Traverse with new letter
               current
                   = _trie.traverse_from(current, static_cast<letter_type>(x));
 
               // Update the search stacks
-              nodes.emplace(current);
+              nodes.emplace_back(current);
               unsearched_letters.clear();
               unsearched_letters = _alphabet;
-              stack_unsearched_letters.emplace(unsearched_letters);
+              stack_unsearched_letters.emplace_back(unsearched_letters);
             } else {
               while (backtrack && !nodes.empty()) {
                 // Backtrack
-                nodes.pop();
-                stack_unsearched_letters.pop();
+                nodes.pop_back();
+                stack_unsearched_letters.pop_back();
 
                 // Get remaining letters
                 unsearched_letters.clear();
-                unsearched_letters = stack_unsearched_letters.top();
-                stack_unsearched_letters.pop();
+                unsearched_letters = stack_unsearched_letters.back();
                 if (!unsearched_letters.empty()) {
                   // Get an unsearched letter
+                  stack_unsearched_letters.pop_back();
                   auto x = *unsearched_letters.begin();
                   unsearched_letters.erase(x);
-                  stack_unsearched_letters.emplace(unsearched_letters);
+                  stack_unsearched_letters.emplace_back(unsearched_letters);
 
                   // Traverse using new letter
-                  current = _trie.traverse_from(nodes.top(),
+                  current = _trie.traverse_from(nodes.back(),
                                                 static_cast<letter_type>(x));
 
                   // Update the search stacks
-                  nodes.emplace(current);
+                  nodes.emplace_back(current);
                   unsearched_letters.clear();
                   unsearched_letters = _alphabet;
-                  stack_unsearched_letters.emplace(unsearched_letters);
+                  stack_unsearched_letters.emplace_back(unsearched_letters);
 
                   backtrack = false;
-                } else if (nodes.size() > 1) {
-                  nodes.pop();
-                  current = nodes.top();
-                  stack_unsearched_letters.pop();
-                } else {
+                } else if (nodes.size() == 1) {
                   done = true;
                   break;
                 }
@@ -776,7 +787,7 @@ namespace libsemigroups {
 
       Rules::iterator erase_from_active_rules(Rules::iterator it) {
         Rule* rule = const_cast<Rule*>(*it);
-        rule->deactivate();
+        rule->deactivate();  // Done in Rules::erase_from
         push_stack(rule);
         index_type node = _trie.rm_word_no_checks(rule->lhs()->cbegin(),
                                                   rule->lhs()->cend());
