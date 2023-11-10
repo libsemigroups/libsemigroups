@@ -41,11 +41,11 @@ namespace libsemigroups {
    private:
     class Node {
      private:
-      mutable std::map<letter_type, index_type> _children;
-      mutable index_type                        _link;
-      index_type                                _parent;
-      letter_type                               _parent_letter;
-      bool                                      _terminal;
+      mutable std::unordered_map<letter_type, index_type> _children;
+      mutable index_type                                  _link;
+      index_type                                          _parent;
+      letter_type                                         _parent_letter;
+      bool                                                _terminal;
 
      public:
       Node() : Node(UNDEFINED, UNDEFINED) {}
