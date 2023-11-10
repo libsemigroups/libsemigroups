@@ -76,7 +76,7 @@ namespace libsemigroups {
         return _link;
       }
 
-      void clear_suffix_link() {
+      void clear_suffix_link() const {
         if (parent() == root || parent() == UNDEFINED) {
           set_suffix_link(root);
         } else {
@@ -114,16 +114,19 @@ namespace libsemigroups {
     std::vector<Node>      _all_nodes;
     std::set<index_type>   _active_nodes_index;
     std::stack<index_type> _inactive_nodes_index;
+    mutable bool           _valid_links;
 
    public:
     AhoCorasick()
         : _all_nodes({Node()}), _active_nodes_index(), _inactive_nodes_index() {
       _active_nodes_index.insert(0);
+      _valid_links = true;
     }
 
     AhoCorasick& init() {
       _all_nodes = {Node()};
       _active_nodes_index.clear();
+      _valid_links = true;
       while (!_inactive_nodes_index.empty()) {
         _inactive_nodes_index.pop();
       }
@@ -138,7 +141,8 @@ namespace libsemigroups {
     // TODO Add flags to show links have been cleared?
     template <typename Iterator>
     index_type add_word_no_checks(Iterator first, Iterator last) {
-      clear_suffix_links();  // don't do this if first >= last
+      // clear_suffix_links();  // don't do this if first >= last
+      _valid_links       = false;
       index_type current = root;
       for (auto it = first; it != last; ++it) {
         index_type next = _all_nodes[current].child(*it);
@@ -165,7 +169,8 @@ namespace libsemigroups {
         _all_nodes[last_index].set_terminal(false);
         return root;  // FIXME: This is not nice behaviour
       }
-      clear_suffix_links();
+      // clear_suffix_links();
+      _valid_links       = false;
       auto parent_index  = _all_nodes[last_index].parent();
       auto parent_letter = *(last - 1);
       deactivate_node(last_index);
@@ -248,6 +253,10 @@ namespace libsemigroups {
 
     // TODO to cpp
     [[nodiscard]] index_type suffix_link(index_type current) const {
+      if (!_valid_links) {
+        clear_suffix_links();
+        _valid_links = true;
+      }
       auto& n = _all_nodes[current];
       if (n.suffix_link() == UNDEFINED) {
         n.set_suffix_link(traverse(suffix_link(n.parent()), n.parent_letter()));
@@ -311,7 +320,7 @@ namespace libsemigroups {
       return current;
     }
 
-    void clear_suffix_links() {
+    void clear_suffix_links() const {
       for (auto index : _active_nodes_index) {
         _all_nodes[index].clear_suffix_link();
       }
