@@ -535,7 +535,9 @@ namespace libsemigroups {
         index_type             current = _trie.root;
         nodes.emplace(current);
 
+#ifdef LIBSEMIGROUPS_DEBUG
         iterator v_begin = u.begin();
+#endif
         iterator v_end   = u.begin();
         iterator w_begin = v_end;
         iterator w_end   = u.end();
@@ -547,9 +549,6 @@ namespace libsemigroups {
           current = _trie.traverse_from(current, static_cast<letter_type>(x));
 
           if (!_trie.node(current).is_terminal()) {
-            // TODO at the moment, v is only updated if current is terminal to
-            // follow along with Sims. This means when we can't do the suffix
-            // check assertion below. Is this desired?
             nodes.emplace(current);
             *v_end = x;
             ++v_end;
@@ -558,21 +557,18 @@ namespace libsemigroups {
             Rule const* rule     = _rules.find(current)->second;
             auto        lhs_size = rule->lhs()->size();
 
-            // Check the lhs is small than the portion of the word that has been
-            // read (should be the case)
-            if (lhs_size <= static_cast<size_t>(v_end - v_begin) + 1) {
-              // LIBSEMIGROUPS_ASSERT(detail::is_suffix(
-              //     v_begin, v_end, rule->lhs()->cbegin(),
-              //     rule->lhs()->cend()));
-              v_end -= lhs_size - 1;
-              w_begin -= rule->rhs()->size();
-              detail::string_replace(
-                  w_begin, rule->rhs()->cbegin(), rule->rhs()->cend());
-              for (size_t i = 0; i < lhs_size - 1; ++i) {
-                nodes.pop();
-              }
-              current = nodes.top();
+            // Check the lhs is smaller than the portion of the word that has
+            // been read
+            LIBSEMIGROUPS_ASSERT(lhs_size
+                                 <= static_cast<size_t>(v_end - v_begin) + 1);
+            v_end -= lhs_size - 1;
+            w_begin -= rule->rhs()->size();
+            detail::string_replace(
+                w_begin, rule->rhs()->cbegin(), rule->rhs()->cend());
+            for (size_t i = 0; i < lhs_size - 1; ++i) {
+              nodes.pop();
             }
+            current = nodes.top();
           }
         }
         u.erase(v_end - u.cbegin());
@@ -619,7 +615,7 @@ namespace libsemigroups {
           stack_nodes.clear();
           stack_unsearched_letters.clear();
           current_node = _trie.traverse(rule1->lhs()->cbegin() + 1,
-                                   rule1->lhs()->cend());
+                                        rule1->lhs()->cend());
 
           // If the first node in the procedure is the root, there can be no
           // overlaps, so skip
