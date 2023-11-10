@@ -531,7 +531,7 @@ namespace libsemigroups {
           return;
         }
 
-        std::stack<index_type> nodes;
+        std::stack<index_type> nodes;  // TODO better choice than stack?
         index_type             current = _trie.root;
         nodes.emplace(current);
 
@@ -578,6 +578,7 @@ namespace libsemigroups {
         u.erase(v_end - u.cbegin());
       }
 
+      // TODO Better option than vector of unordered_sets
       [[nodiscard]] bool confluent() const {
         if (number_of_pending_rules() != 0) {
           return false;
@@ -585,51 +586,63 @@ namespace libsemigroups {
           return Rewriter::confluent();
         }
 
+        // Set cached value
         confluent(tril::TRUE);
-        internal_string_type    word1;
-        internal_string_type    word2;
-        bool                    backtrack;
-        bool                    done;
-        std::vector<index_type> nodes;
-        std::vector<std::unordered_set<internal_char_type>>
-                                               stack_unsearched_letters;
-        std::unordered_set<internal_char_type> unsearched_letters;
 
+        // Rules with critical pairs
         Rule const* rule1;
         Rule const* rule2;
-        index_type  current;
+
+        // For the result of writing words with critical pairs
+        internal_string_type word1;
+        internal_string_type word2;
+
+        bool backtrack;
+        bool all_overlaps_checked;
+
+        index_type                             current_node;
+        std::vector<index_type>                stack_nodes;
+        std::unordered_set<internal_char_type> unsearched_letters;
+        std::vector<std::unordered_set<internal_char_type>>
+            stack_unsearched_letters;
 
         for (auto it = begin(); it != end(); ++it) {
-          done  = false;
-          rule1 = *it;
+          all_overlaps_checked = false;
+          rule1                = *it;
+
+          // Don't check for overlaps of rules with lhs size 1
           if (rule1->lhs()->size() == 1) {
             continue;
           }
-          nodes.clear();
+
+          // Reset the backtrack variables
+          stack_nodes.clear();
           stack_unsearched_letters.clear();
-          current = _trie.traverse(rule1->lhs()->cbegin() + 1,
+          current_node = _trie.traverse(rule1->lhs()->cbegin() + 1,
                                    rule1->lhs()->cend());
 
-          if (current == _trie.root) {
+          // If the first node in the procedure is the root, there can be no
+          // overlaps, so skip
+          if (current_node == _trie.root) {
             continue;
           }
 
-          nodes.emplace_back(current);
+          stack_nodes.emplace_back(current_node);
           unsearched_letters = _alphabet;  // copying the contents?
           stack_unsearched_letters.emplace_back(unsearched_letters);
 
           backtrack = false;
-          while (!nodes.empty() && !done) {
-            backtrack = (_trie.height(current) <= nodes.size() - 1);
-            if (_trie.node(current).is_terminal() && !backtrack) {
-              rule2 = _rules.find(current)->second;
+          while (!stack_nodes.empty() && !all_overlaps_checked) {
+            backtrack = (_trie.height(current_node) <= stack_nodes.size() - 1);
+            if (_trie.node(current_node).is_terminal() && !backtrack) {
+              rule2 = _rules.find(current_node)->second;
               // Process overlap
               // Word looks like ABC where the LHS of rule1 corresponds to AB,
               // the LHS of rule2 corresponds to BC, and |C|=nodes.size() - 1.
               // AB -> X, BC -> Y
               // ABC gets rewritten to XC and AY
               auto overlap_length
-                  = rule2->lhs()->length() - (nodes.size() - 1);  // |B|
+                  = rule2->lhs()->length() - (stack_nodes.size() - 1);  // |B|
 
               word1.assign(*rule1->rhs());  // X
               word1.append(rule2->lhs()->cbegin() + overlap_length,
@@ -651,7 +664,6 @@ namespace libsemigroups {
             }
             if (!backtrack) {
               // Get an unsearched letter
-              unsearched_letters.clear();
               unsearched_letters = stack_unsearched_letters.back();
               stack_unsearched_letters.pop_back();
               auto x = *unsearched_letters.begin();
@@ -659,22 +671,20 @@ namespace libsemigroups {
               stack_unsearched_letters.emplace_back(unsearched_letters);
 
               // Traverse with new letter
-              current
-                  = _trie.traverse_from(current, static_cast<letter_type>(x));
+              current_node = _trie.traverse_from(current_node,
+                                                 static_cast<letter_type>(x));
 
               // Update the search stacks
-              nodes.emplace_back(current);
-              unsearched_letters.clear();
+              stack_nodes.emplace_back(current_node);
               unsearched_letters = _alphabet;
               stack_unsearched_letters.emplace_back(unsearched_letters);
             } else {
-              while (backtrack && !nodes.empty()) {
+              while (backtrack && !stack_nodes.empty()) {
                 // Backtrack
-                nodes.pop_back();
+                stack_nodes.pop_back();
                 stack_unsearched_letters.pop_back();
 
                 // Get remaining letters
-                unsearched_letters.clear();
                 unsearched_letters = stack_unsearched_letters.back();
                 if (!unsearched_letters.empty()) {
                   // Get an unsearched letter
@@ -684,18 +694,17 @@ namespace libsemigroups {
                   stack_unsearched_letters.emplace_back(unsearched_letters);
 
                   // Traverse using new letter
-                  current = _trie.traverse_from(nodes.back(),
-                                                static_cast<letter_type>(x));
+                  current_node = _trie.traverse_from(
+                      stack_nodes.back(), static_cast<letter_type>(x));
 
                   // Update the search stacks
-                  nodes.emplace_back(current);
-                  unsearched_letters.clear();
+                  stack_nodes.emplace_back(current_node);
                   unsearched_letters = _alphabet;
                   stack_unsearched_letters.emplace_back(unsearched_letters);
 
                   backtrack = false;
-                } else if (nodes.size() == 1) {
-                  done = true;
+                } else if (stack_nodes.size() == 1) {
+                  all_overlaps_checked = true;
                   break;
                 }
               }
@@ -736,6 +745,7 @@ namespace libsemigroups {
         rule->reorder();
       }
 
+      // TODO Fix unnecessary alphabet checking
       void add_rule_to_trie(Rule* rule) {
         index_type node = _trie.add_word_no_checks(rule->lhs()->cbegin(),
                                                    rule->lhs()->cend());
@@ -750,6 +760,7 @@ namespace libsemigroups {
         }
       }
 
+      // TODO Make use of trie
       void clear_stack() {
         while (number_of_pending_rules() != 0) {
           // _stats.max_stack_depth = std::max(_stats.max_stack_depth,
@@ -765,6 +776,8 @@ namespace libsemigroups {
             internal_string_type const* lhs = rule1->lhs();
             for (auto it = begin(); it != end();) {
               Rule* rule2 = const_cast<Rule*>(*it);
+              // TODO Does this need to happen? Can we ensure rules are always
+              // reduced wrt each other?
               if (rule2->lhs()->find(*lhs) != external_string_type::npos) {
                 it = erase_from_active_rules(it);
                 // rule2 is added to _inactive_rules or _active_rules by
