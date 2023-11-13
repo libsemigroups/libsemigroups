@@ -585,126 +585,12 @@ namespace libsemigroups {
         // Set cached value
         confluent(tril::TRUE);
 
-        // Rules with critical pairs
-        Rule const* rule1;
-        Rule const* rule2;
-
-        // For the result of writing words with critical pairs
-        internal_string_type word1;
-        internal_string_type word2;
-
-        bool backtrack;
-        bool all_overlaps_checked;
-
-        index_type                             current_node;
-        std::vector<index_type>                stack_nodes;
-        std::unordered_set<internal_char_type> unsearched_letters;
-        std::vector<std::unordered_set<internal_char_type>>
-            stack_unsearched_letters;
-
         for (auto it = begin(); it != end(); ++it) {
-          all_overlaps_checked = false;
-          rule1                = *it;
-
-          // Don't check for overlaps of rules with lhs size 1
-          if (rule1->lhs()->size() == 1) {
-            continue;
-          }
-
-          // Reset the backtrack variables
-          stack_nodes.clear();
-          stack_unsearched_letters.clear();
-          current_node = _trie.traverse(rule1->lhs()->cbegin() + 1,
-                                        rule1->lhs()->cend());
-
-          // If the first node in the procedure is the root, there can be no
-          // overlaps, so skip
-          if (current_node == _trie.root) {
-            continue;
-          }
-
-          stack_nodes.emplace_back(current_node);
-          unsearched_letters = _alphabet;  // copying the contents?
-          stack_unsearched_letters.emplace_back(unsearched_letters);
-
-          backtrack = false;
-          while (!stack_nodes.empty() && !all_overlaps_checked) {
-            backtrack = (_trie.height(current_node) <= stack_nodes.size() - 1);
-            if (_trie.node(current_node).is_terminal() && !backtrack) {
-              rule2 = _rules.find(current_node)->second;
-              // Process overlap
-              // Word looks like ABC where the LHS of rule1 corresponds to AB,
-              // the LHS of rule2 corresponds to BC, and |C|=nodes.size() - 1.
-              // AB -> X, BC -> Y
-              // ABC gets rewritten to XC and AY
-              auto overlap_length
-                  = rule2->lhs()->length() - (stack_nodes.size() - 1);  // |B|
-
-              word1.assign(*rule1->rhs());  // X
-              word1.append(rule2->lhs()->cbegin() + overlap_length,
-                           rule2->lhs()->cend());  // C
-
-              word2.assign(rule1->lhs()->cbegin(),
-                           rule1->lhs()->cend() - overlap_length);  // A
-              word2.append(*rule2->rhs());                          // Y
-
-              if (word1 != word2) {
-                rewrite(word1);
-                rewrite(word2);
-                if (word1 != word2) {
-                  confluent(tril::FALSE);
-                  return false;
-                }
-              }
-              backtrack = true;
-            }
-            if (!backtrack) {
-              // Get an unsearched letter
-              unsearched_letters = stack_unsearched_letters.back();
-              stack_unsearched_letters.pop_back();
-              auto x = *unsearched_letters.begin();
-              unsearched_letters.erase(x);
-              stack_unsearched_letters.emplace_back(unsearched_letters);
-
-              // Traverse with new letter
-              current_node = _trie.traverse_from(current_node,
-                                                 static_cast<letter_type>(x));
-
-              // Update the search stacks
-              stack_nodes.emplace_back(current_node);
-              unsearched_letters = _alphabet;
-              stack_unsearched_letters.emplace_back(unsearched_letters);
-            } else {
-              while (backtrack && !stack_nodes.empty()) {
-                // Backtrack
-                stack_nodes.pop_back();
-                stack_unsearched_letters.pop_back();
-
-                // Get remaining letters
-                unsearched_letters = stack_unsearched_letters.back();
-                if (!unsearched_letters.empty()) {
-                  // Get an unsearched letter
-                  stack_unsearched_letters.pop_back();
-                  auto x = *unsearched_letters.begin();
-                  unsearched_letters.erase(x);
-                  stack_unsearched_letters.emplace_back(unsearched_letters);
-
-                  // Traverse using new letter
-                  current_node = _trie.traverse_from(
-                      stack_nodes.back(), static_cast<letter_type>(x));
-
-                  // Update the search stacks
-                  stack_nodes.emplace_back(current_node);
-                  unsearched_letters = _alphabet;
-                  stack_unsearched_letters.emplace_back(unsearched_letters);
-
-                  backtrack = false;
-                } else if (stack_nodes.size() == 1) {
-                  all_overlaps_checked = true;
-                  break;
-                }
-              }
-            }
+          if (!backtrack_confluence(*it,
+                                    _trie.traverse((*it)->lhs()->cbegin() + 1,
+                                                   (*it)->lhs()->cend()),
+                                    0)) {
+            return false;
           }
         }
         return true;
@@ -735,6 +621,66 @@ namespace libsemigroups {
       }
 
      private:
+      [[nodiscard]] bool backtrack_confluence(Rule const* rule1,
+                                              index_type  current_node,
+                                              size_t backtrack_depth) const {
+        if (current_node == _trie.root) {
+          return true;
+        }
+
+        if (_trie.height(current_node) <= backtrack_depth) {
+          return true;
+        }
+
+        // Don't check for overlaps of rules with lhs size 1
+        if (rule1->lhs()->size() == 1) {
+          return true;
+        }
+
+        if (_trie.node(current_node).is_terminal()) {
+          Rule const* rule2 = _rules.find(current_node)->second;
+          // Process overlap
+          // Word looks like ABC where the LHS of rule1 corresponds to AB,
+          // the LHS of rule2 corresponds to BC, and |C|=nodes.size() - 1.
+          // AB -> X, BC -> Y
+          // ABC gets rewritten to XC and AY
+          auto overlap_length
+              = rule2->lhs()->length() - (backtrack_depth);  // |B|
+
+          internal_string_type word1;
+          internal_string_type word2;
+
+          word1.assign(*rule1->rhs());  // X
+          word1.append(rule2->lhs()->cbegin() + overlap_length,
+                       rule2->lhs()->cend());  // C
+
+          word2.assign(rule1->lhs()->cbegin(),
+                       rule1->lhs()->cend() - overlap_length);  // A
+          word2.append(*rule2->rhs());                          // Y
+
+          if (word1 != word2) {
+            rewrite(word1);
+            rewrite(word2);
+            if (word1 != word2) {
+              confluent(tril::FALSE);
+              return false;
+            }
+          }
+          return true;
+        }
+
+        for (auto x = _alphabet.cbegin(); x != _alphabet.cend(); ++x) {
+          if (!backtrack_confluence(
+                  rule1,
+                  _trie.traverse_from(current_node,
+                                      static_cast<letter_type>(*x)),
+                  backtrack_depth + 1)) {
+            return false;
+          }
+        }
+        return true;
+      }
+
       void rewrite(Rule* rule) const {
         rewrite(*rule->lhs());
         rewrite(*rule->rhs());
