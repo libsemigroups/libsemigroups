@@ -88,6 +88,10 @@ namespace libsemigroups {
         return _children;
       }
 
+      [[nodiscard]] size_t number_of_children() const {
+        return _children.size();
+      }
+
       [[nodiscard]] bool is_terminal() const noexcept {
         // TODO should this check suffix links are terminal?
         return _terminal;
@@ -138,10 +142,8 @@ namespace libsemigroups {
       return _active_nodes_index.size();
     }
 
-    // TODO Add flags to show links have been cleared?
     template <typename Iterator>
     index_type add_word_no_checks(Iterator first, Iterator last) {
-      // clear_suffix_links();  // don't do this if first >= last
       _valid_links       = false;
       index_type current = root;
       for (auto it = first; it != last; ++it) {
@@ -160,30 +162,35 @@ namespace libsemigroups {
     }
 
     template <typename Iterator>
+    index_type rm_word(Iterator first, Iterator last) {
+      auto last_index = traverse_trie(first, last);
+      LIBSEMIGROUPS_ASSERT(last_index != UNDEFINED);
+      LIBSEMIGROUPS_ASSERT(_all_nodes[last_index].is_terminal());
+      return rm_word_no_checks(first, last);
+    }
+
+    template <typename Iterator>
     index_type rm_word_no_checks(Iterator first, Iterator last) {
       auto last_index = traverse_trie(first, last);
-      auto rule_node  = last_index;
-      if (last_index == UNDEFINED || !_all_nodes[last_index].is_terminal()) {
-        return root;  // FIXME: This is not nice behaviour. Assertion instead?
-      } else if (!_all_nodes[last_index].children().empty()) {
+      auto rule_index = last_index;
+      if (!_all_nodes[last_index].children().empty()) {
         _all_nodes[last_index].set_terminal(false);
-        return root;  // FIXME: This is not nice behaviour
+        return rule_index;
       }
-      // clear_suffix_links();
+
       _valid_links       = false;
       auto parent_index  = _all_nodes[last_index].parent();
       auto parent_letter = *(last - 1);
       deactivate_node(last_index);
-      while (_all_nodes[parent_index].children().size() == 1
+      while (_all_nodes[parent_index].number_of_children() == 1
              && parent_index != root) {
-        last_index = parent_index;
-        // FIXME: Reduce function calls here
+        last_index    = parent_index;
         parent_index  = _all_nodes[last_index].parent();
         parent_letter = _all_nodes[last_index].parent_letter();
         deactivate_node(last_index);
       }
       _all_nodes[parent_index].children().erase(parent_letter);
-      return rule_node;
+      return rule_index;
     }
 
     // TODO to cpp
@@ -284,8 +291,6 @@ namespace libsemigroups {
       return index;
     }
 
-    // This breaks traversal, as node numbers should correlate to their position
-    // in this vector
     void deactivate_node(index_type i) {
       LIBSEMIGROUPS_ASSERT(i < _all_nodes.size());
 #ifdef LIBSEMIGROUPS_DEBUG
