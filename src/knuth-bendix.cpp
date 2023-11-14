@@ -169,6 +169,9 @@ namespace libsemigroups {
 
   KnuthBendix::Rewriter& KnuthBendix::Rewriter::init() {
     Rules::init();
+    if (_requires_alphabet) {
+      _alphabet.clear();
+    }
     // Put all active rules and those rules in the stack into the
     // inactive_rules list
     while (!_stack.empty()) {
@@ -1157,6 +1160,19 @@ namespace libsemigroups {
         break;
       }
     }
+
+    if (_rewriter.requires_alphabet()) {
+      if (_internal_is_same_as_external) {
+        for (auto x = p.alphabet().begin(); x != p.alphabet().end(); ++x) {
+          _rewriter.add_to_alphabet(*x);
+        }
+      } else {
+        for (auto x = p.alphabet().begin(); x != p.alphabet().end(); ++x) {
+          _rewriter.add_to_alphabet(external_to_internal_char(*x));
+        }
+      }
+    }
+
     auto const first = p.rules.cbegin();
     auto const last  = p.rules.cend();
     for (auto it = first; it != last; it += 2) {

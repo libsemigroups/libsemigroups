@@ -30,6 +30,7 @@ namespace libsemigroups {
     REQUIRE(rt.number_of_active_rules() == 0);
     rt.add_rule("ba"s, "a"s);
     REQUIRE(rt.number_of_active_rules() == 1);
+    REQUIRE(rt.requires_alphabet());
   }
 
   LIBSEMIGROUPS_TEST_CASE("RewriteTrie", "001", "simple test", "[quick]") {

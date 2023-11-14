@@ -376,21 +376,50 @@ namespace libsemigroups {
     };
 
     class Rewriter : public Rules {
-      mutable std::atomic<bool> _confluent;
-      mutable std::atomic<bool> _confluence_known;
-      std::stack<Rule*>         _stack;
+      std::unordered_set<internal_char_type> _alphabet;
+      mutable std::atomic<bool>              _confluent;
+      mutable std::atomic<bool>              _confluence_known;
+      std::atomic<bool>                      _requires_alphabet;
+      std::stack<Rule*>                      _stack;
+
+      using alphabet_citerator
+          = std::unordered_set<internal_char_type>::const_iterator;
 
      public:
       Rewriter() = default;
       Rewriter& init();
 
+      Rewriter(bool requires_alphabet) : Rewriter() {
+        _requires_alphabet = requires_alphabet;
+      }
+
       ~Rewriter();
 
       Rewriter& operator=(Rewriter const& that) {
         Rules::operator=(that);
-        _confluent        = that._confluent.load();
-        _confluence_known = that._confluence_known.load();
+        _confluent         = that._confluent.load();
+        _confluence_known  = that._confluence_known.load();
+        _requires_alphabet = that._requires_alphabet.load();
+        if (_requires_alphabet) {
+          _alphabet = that._alphabet;
+        }
         return *this;
+      }
+
+      bool requires_alphabet() const {
+        return _requires_alphabet;
+      }
+
+      decltype(_alphabet) alphabet() const {
+        return _alphabet;
+      }
+
+      alphabet_citerator alphabet_cbegin() const {
+        return _alphabet.cbegin();
+      }
+
+      alphabet_citerator alphabet_cend() const {
+        return _alphabet.cend();
       }
 
       // TODO remove?
@@ -444,6 +473,10 @@ namespace libsemigroups {
         }
         return false;
       }
+
+      void add_to_alphabet(internal_char_type letter) {
+        _alphabet.emplace(letter);
+      }
     };
 
     class RewriteFromLeft : public Rewriter {
@@ -493,16 +526,15 @@ namespace libsemigroups {
     class RewriteTrie : public Rewriter {
       using index_type = AhoCorasick::index_type;
 
-      std::unordered_map<index_type, Rule*>  _rules;
-      std::unordered_set<internal_char_type> _alphabet;
-      AhoCorasick                            _trie;
+      std::unordered_map<index_type, Rule*> _rules;
+      AhoCorasick                           _trie;
 
      public:
       using Rewriter::confluent;
       using Rules::stats;
       using iterator = internal_string_type::iterator;
 
-      RewriteTrie() = default;
+      RewriteTrie() : Rewriter(true), _rules(), _trie() {}
 
       RewriteTrie(const RewriteTrie& that);
       RewriteTrie& operator=(RewriteTrie const& that) {
@@ -521,7 +553,6 @@ namespace libsemigroups {
         Rewriter::init();
         _trie.init();
         _rules.clear();
-        _alphabet.clear();
         return *this;
       }
 
@@ -669,7 +700,7 @@ namespace libsemigroups {
           return true;
         }
 
-        for (auto x = _alphabet.cbegin(); x != _alphabet.cend(); ++x) {
+        for (auto x = alphabet_cbegin(); x != alphabet_cend(); ++x) {
           if (!backtrack_confluence(
                   rule1,
                   _trie.traverse_from(current_node,
@@ -691,15 +722,15 @@ namespace libsemigroups {
       void add_rule_to_trie(Rule* rule) {
         index_type node = _trie.add_word_no_checks(rule->lhs()->cbegin(),
                                                    rule->lhs()->cend());
-        _rules[node]    = rule;
-        for (auto it = rule->lhs()->cbegin(); it != rule->lhs()->cend(); ++it) {
-#ifdef LIBSEMIGROUPS_DEBUG
-          _alphabet.emplace(*it);
-          LIBSEMIGROUPS_ASSERT(_alphabet.count(*it) == 1);
-#else
-          _alphabet.emplace(*it);
-#endif
-        }
+        _rules.emplace(node, rule);
+        //         for (auto it = rule->lhs()->cbegin(); it !=
+        //         rule->lhs()->cend(); ++it) {
+        // #ifdef LIBSEMIGROUPS_DEBUG _alphabet.emplace(*it);
+        //           LIBSEMIGROUPS_ASSERT(_alphabet.count(*it) == 1);
+        // #else
+        // _alphabet.emplace(*it);
+        // #endif
+        //         }
       }
 
       // TODO Make use of trie
