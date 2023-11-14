@@ -21,6 +21,7 @@
 
 #include <algorithm>
 #include <map>
+#include <queue>
 #include <set>
 #include <stack>
 #include <vector>
@@ -123,7 +124,7 @@ namespace libsemigroups {
    public:
     AhoCorasick()
         : _all_nodes({Node()}), _active_nodes_index(), _inactive_nodes_index() {
-      _active_nodes_index.insert(0);
+      _active_nodes_index.insert(root);
       _valid_links = true;
     }
 
@@ -134,7 +135,7 @@ namespace libsemigroups {
       while (!_inactive_nodes_index.empty()) {
         _inactive_nodes_index.pop();
       }
-      _active_nodes_index.insert(0);
+      _active_nodes_index.insert(root);
       return *this;
     }
 
@@ -258,11 +259,35 @@ namespace libsemigroups {
       return traverse_from(root, w.cbegin(), w.cend());
     }
 
+    void populate_suffix_links() const {
+      index_type             current;
+      std::queue<index_type> next_nodes;
+      _valid_links = true;
+
+      for (auto child : node(root).children()) {
+        for (auto grandchild : node(child.second).children()) {
+          next_nodes.emplace(grandchild.second);
+        }
+      }
+
+      while (!next_nodes.empty()) {
+        current = next_nodes.front();
+        next_nodes.pop();
+
+        for (auto child : node(current).children()) {
+          next_nodes.emplace(child.second);
+        }
+
+        node(current).set_suffix_link(
+            traverse(node(_all_nodes[current].parent()).suffix_link(),
+                     _all_nodes[current].parent_letter()));
+      }
+    }
+
     // TODO to cpp
     [[nodiscard]] index_type suffix_link(index_type current) const {
       if (!_valid_links) {
-        clear_suffix_links();
-        _valid_links = true;
+        populate_suffix_links();
       }
       auto& n = _all_nodes[current];
       if (n.suffix_link() == UNDEFINED) {
