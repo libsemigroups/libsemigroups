@@ -1415,5 +1415,20 @@ namespace libsemigroups {
     REQUIRE(S.word_graph().number_of_nodes() == 0);
   }
 
+  LIBSEMIGROUPS_TEST_CASE("Stephen",
+                          "048",
+                          "plactic monoid",
+                          "[stephen][fail]") {
+    ReportGuard rg(true);
+    auto        p = fpsemigroup::chinese_monoid(3);
+
+    Stephen S(p);
+    S.set_word(0110_w).run();
+    REQUIRE(S.word_graph().number_of_nodes() == 8);
+    // TODO rename words_accepted -> class_of
+    REQUIRE((stephen::words_accepted(S) | rx::to_vector())
+            == std::vector<word_type>());
+  }
+
   // TODO the examples from Stephen's paper/thesis?
 }  // namespace libsemigroups

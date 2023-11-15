@@ -53,6 +53,7 @@
 #include "libsemigroups/order.hpp"            // for shortlex_compare
 #include "libsemigroups/paths.hpp"            // for Paths
 #include "libsemigroups/presentation.hpp"     // for add_rule, Presentation
+#include "libsemigroups/to-froidure-pin.hpp"  // for to_froidure_pin
 #include "libsemigroups/word-graph.hpp"       // for WordGraph
 #include "libsemigroups/words.hpp"            // for Inner, to_strings
 
@@ -1777,12 +1778,12 @@ namespace libsemigroups {
     //                                    10212_w,
     //                                    1021_w}));
     p.rules.clear();
-    p.alphabet(3);
-    presentation::add_idempotent_rules_no_checks(p, 012_w);
+    p.alphabet(2);
+    presentation::add_idempotent_rules_no_checks(p, 01_w);
     using words::operator+;
     Words words;
-    words.letters(3).min(0).max(3);
-    size_t n = 3;
+    words.letters(2).min(0).max(3);
+    size_t n = 2;
     for (size_t a = 0; a < n - 1; ++a) {
       for (size_t b = a; b < n - 1; ++b) {
         for (size_t c = b + 1; c < n; ++c) {
@@ -1800,15 +1801,22 @@ namespace libsemigroups {
     presentation::sort_each_rule(p);
     presentation::sort_rules(p);
     presentation::remove_trivial_rules(p);
+    p.contains_empty_word(true);
 
     KnuthBendix kb(twosided, p);
     p = to_presentation<word_type>(kb);
-    REQUIRE(kb.number_of_classes() == 26);
+    // REQUIRE(kb.number_of_classes() == 26);
     std::vector<word_type> reduce_binary_tree_words
         = {{},     0_w,    1_w,    2_w,    10_w,    20_w,    01_w,    21_w,
            02_w,   12_w,   210_w,  120_w,  101_w,   201_w,   201_w,   102_w,
            202_w,  012_w,  212_w,  2120_w, 2101_w,  2101_w,  2101_w,  2102_w,
            1202_w, 1012_w, 2012_w, 2012_w, 21202_w, 21012_w, 21012_w, 21012_w};
+
+    auto S = to_froidure_pin(kb);
+    // TODO this is off by 1
+    REQUIRE(S.size() == kb.number_of_classes());
+    REQUIRE(S.size() == 0);
+    REQUIRE(S.number_of_idempotents() == 0);
     // auto range = iterator_range(reduce_binary_tree_words);
 
     // REQUIRE(first_equivalent_pair(
