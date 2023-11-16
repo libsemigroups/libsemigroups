@@ -3,13 +3,19 @@
 ##############################################################################
 
 AM_CXXFLAGS =  -I$(abs_top_srcdir)/include
-AM_CXXFLAGS += -I$(abs_top_srcdir)/extern  ## for HPCombi
-AM_CXXFLAGS += -std=gnu++14 -O3 -Wall -Wextra
+AM_CXXFLAGS += -I$(abs_top_srcdir)/extern  ## for textflowcpp
+AM_CXXFLAGS += -std=gnu++17 -O3 -Wall -Wextra
 AM_CXXFLAGS += $(WARNING_CXXFLAGS)
 AM_CXXFLAGS += $(FMT_CFLAGS)
 AM_CXXFLAGS += $(EIGEN3_CFLAGS)
 if LIBSEMIGROUPS_HPCOMBI_ENABLED
 AM_CXXFLAGS += $(HPCOMBI_CXXFLAGS)
+AM_CXXFLAGS += -I$(abs_top_srcdir)/extern/HPCombi/include
+AM_CXXFLAGS += -I$(abs_top_srcdir)/extern/HPCombi/third_party
+# The next line is there to avoid warnings about "-mavx" being unused. This
+# flag apparently exists in clang even on systems that don't implement the AVX
+# instruction set (such as apple clang version 14.0.3)
+AM_CXXFLAGS += -Wno-unused-command-line-argument
 endif
 
 AM_LDFLAGS  =  -no-undefined -lpthread $(FMT_LIBS)
@@ -19,10 +25,6 @@ AM_CPPFLAGS = -DDEBUG
 AM_CXXFLAGS += -g3 -O0 -fno-omit-frame-pointer
 else
 AM_CPPFLAGS = -DNDEBUG
-endif
-
-if HPCOMBI_CONSTEXPR_FUN_ARGS
-AM_CPPFLAGS += -DHPCOMBI_CONSTEXPR_FUN_ARGS
 endif
 
 AM_CPPFLAGS += $(CODE_COVERAGE_CPPFLAGS)
@@ -132,25 +134,28 @@ backwardcppinclude_HEADERS=extern/backward-cpp/backward.hpp
 ## Define hpcombiincludedir outside the conditional
 ## LIBSEMIGROUPS_HPCOMBI_ENABLED because it is used by
 ## uninstall-hook
-hpcombiincludedir = $(includedir)/libsemigroups/HPCombi/include
+hpcombiincludedir = $(includedir)/libsemigroups/hpcombi
+simdeincludedir = $(includedir)/libsemigroups/hpcombi/simde/x86
 if LIBSEMIGROUPS_HPCOMBI_ENABLED
-hpcombiinclude_HEADERS =  extern/HPCombi/include/bmat8.hpp
-hpcombiinclude_HEADERS += extern/HPCombi/include/bmat8_impl.hpp
-hpcombiinclude_HEADERS += extern/HPCombi/include/epu.hpp
-hpcombiinclude_HEADERS += extern/HPCombi/include/epu_impl.hpp
-hpcombiinclude_HEADERS += extern/HPCombi/include/hpcombi.hpp
-hpcombiinclude_HEADERS += extern/HPCombi/include/perm16.hpp
-hpcombiinclude_HEADERS += extern/HPCombi/include/perm16_impl.hpp
-hpcombiinclude_HEADERS += extern/HPCombi/include/perm_generic.hpp
-hpcombiinclude_HEADERS += extern/HPCombi/include/perm_generic_impl.hpp
-hpcombiinclude_HEADERS += extern/HPCombi/include/power.hpp
-hpcombiinclude_HEADERS += extern/HPCombi/include/testtools.hpp
-hpcombiinclude_HEADERS += extern/HPCombi/include/vect16.hpp
-hpcombiinclude_HEADERS += extern/HPCombi/include/vect_generic.hpp
+hpcombiinclude_HEADERS =  extern/HPCombi/include/hpcombi/arch.hpp
+hpcombiinclude_HEADERS += extern/HPCombi/include/hpcombi/bmat8.hpp
+hpcombiinclude_HEADERS += extern/HPCombi/include/hpcombi/bmat8_impl.hpp
+hpcombiinclude_HEADERS += extern/HPCombi/include/hpcombi/builder.hpp
+hpcombiinclude_HEADERS += extern/HPCombi/include/hpcombi/debug.hpp
+hpcombiinclude_HEADERS += extern/HPCombi/include/hpcombi/epu8.hpp
+hpcombiinclude_HEADERS += extern/HPCombi/include/hpcombi/epu8_impl.hpp
+hpcombiinclude_HEADERS += extern/HPCombi/include/hpcombi/hpcombi.hpp
+hpcombiinclude_HEADERS += extern/HPCombi/include/hpcombi/perm16.hpp
+hpcombiinclude_HEADERS += extern/HPCombi/include/hpcombi/perm16_impl.hpp
+hpcombiinclude_HEADERS += extern/HPCombi/include/hpcombi/perm_generic.hpp
+hpcombiinclude_HEADERS += extern/HPCombi/include/hpcombi/perm_generic_impl.hpp
+hpcombiinclude_HEADERS += extern/HPCombi/include/hpcombi/power.hpp
+hpcombiinclude_HEADERS += extern/HPCombi/include/hpcombi/vect16.hpp
+hpcombiinclude_HEADERS += extern/HPCombi/include/hpcombi/vect_generic.hpp
 
-hpcombifallbackincludedir = $(includedir)/libsemigroups/HPCombi/include/fallback
-hpcombifallbackinclude_HEADERS =  extern/HPCombi/include/fallback/gcdlcm.hpp
-hpcombifallbackinclude_HEADERS += extern/HPCombi/include/fallback/seq.hpp
+simdeinclude_HEADERS = extern/HPCombi/third_party/simde/x86/sse4.1.h
+simdeinclude_HEADERS += extern/HPCombi/third_party/simde/x86/sse4.2.h
+
 endif ## LIBSEMIGROUPS_HPCOMBI_ENABLED
 
 ## Define fmtincludedir outside the conditional
@@ -624,7 +629,7 @@ EXTRA_DIST += etc/make-format.sh
 EXTRA_DIST += etc/make-lint.sh
 EXTRA_DIST += etc/post-proc-doc.sh
 EXTRA_DIST += etc/version-number.sh
-EXTRA_DIST += extern/HPCombi/VERSION
+EXTRA_DIST += extern/HPCombi/HPCOMBI_VERSION
 EXTRA_DIST += extern/textflowcpp/LICENSE.txt
 EXTRA_DIST += extern/textflowcpp/README.md
 EXTRA_DIST += src/kbe-impl.hpp
@@ -1110,7 +1115,7 @@ distclean-local:
 
 uninstall-hook:
 	if test -d ${eigenincludedir}; then rm -rf ${eigenincludedir}; fi
-	if test -d $(includedir)/libsemigroups/HPCombi; then rm -rf $(includedir)/libsemigroups/HPCombi; fi
+	if test -d $(includedir)/libsemigroups/hpcombi; then rm -rf $(includedir)/libsemigroups/hpcombi; fi
 	if test -d ${fmtincludedir}; then rm -rf ${fmtincludedir}; fi
 	if test -d ${textflowcppincludedir}; then rm -rf ${textflowcppincludedir}; fi
 	if test -d ${backwardcppincludedir}; then rm -rf ${backwardcppincludedir}; fi

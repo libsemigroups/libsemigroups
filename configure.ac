@@ -121,7 +121,7 @@ AS_IF([test "x$enable_backward" != "xno"], [
 # Check if code coverage mode is enabled
 AX_CODE_COVERAGE()
 
-# Check if HPCombi is enable, and available
+# Check whether HPCombi is enabled + set flags
 AX_CHECK_HPCOMBI()
 
 # Check if the vendored fmt should be used or not
