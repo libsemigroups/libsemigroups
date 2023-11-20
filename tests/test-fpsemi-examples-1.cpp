@@ -592,6 +592,9 @@ namespace libsemigroups {
     ToddCoxeter tc(congruence_kind::twosided,
                    symmetric_group(n, author::Coxeter + author::Moser));
     REQUIRE(tc.number_of_classes() == 720);
+    REQUIRE(presentation::length(
+                symmetric_group(n, author::Coxeter + author::Moser))
+            == 58);
   }
 
   LIBSEMIGROUPS_TEST_CASE("fpsemi-examples",
