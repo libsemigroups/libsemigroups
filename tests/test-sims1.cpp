@@ -40,8 +40,6 @@
 
 namespace libsemigroups {
 
-  namespace {}  // namespace
-
   using word_graph_type = typename Sims1::word_graph_type;
   using node_type       = typename word_graph_type::node_type;
 
@@ -2838,6 +2836,48 @@ namespace libsemigroups {
     REQUIRE(s.number_of_threads(4).number_of_congruences(std::pow(2, 6)) == 0);
   }
 
+  LIBSEMIGROUPS_TEST_CASE("Sims1", "092", "2-sided example", "[quick][sims1]") {
+    Presentation<word_type> p;
+    p.alphabet(2);
+    p.contains_empty_word(true);
+    presentation::add_rule(p, 00_w, {});
+    presentation::add_rule(p, 01_w, 1_w);
+    presentation::add_rule(p, 11_w, 1_w);
+    Sims1 s(congruence_kind::twosided, p);
+    // REQUIRE(s.number_of_congruences(4) == 4);  // Verified with GAP
+    auto it = s.cbegin(4);
+    REQUIRE(*(it++) == to_word_graph<node_type>(4, {{0, 0}}));
+    REQUIRE(*(it++) == to_word_graph<node_type>(4, {{0, 1}, {1, 1}}));
+    REQUIRE(*(it++) == to_word_graph<node_type>(4, {{1, 2}, {0, 2}, {2, 2}}));
+    REQUIRE(*(it++)
+            == to_word_graph<node_type>(4, {{1, 2}, {0, 2}, {3, 2}, {2, 2}}));
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Sims1", "093", "2-sided example", "[quick][sims1]") {
+    Sims1 s(congruence_kind::twosided, full_transformation_monoid(4));
+
+    REQUIRE(s.number_of_congruences(256) == 11);  // Verified with GAP
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Sims1", "094", "2-sided example", "[quick][sims1]") {
+    Presentation<word_type> p;
+    p.contains_empty_word(true);
+    p.alphabet({0, 1});
+    presentation::add_rule(p, {0, 0, 0}, {0});
+    presentation::add_rule(p, {1, 1}, {1});
+    presentation::add_rule(p, {0, 1, 0, 1}, {0});
+    Sims1 s(congruence_kind::twosided, p);
+
+    // REQUIRE(s.number_of_congruences(4) == 6);  // Verified with GAP
+    auto it = s.cbegin(5);
+    REQUIRE(*(it++) == to_word_graph<node_type>(5, {{0, 0}}));
+    REQUIRE(*(it++) == to_word_graph<node_type>(5, {{1, 0}, {1, 1}}));
+    REQUIRE(*(it++) == to_word_graph<node_type>(5, {{1, 1}, {1, 1}}));
+    REQUIRE(*(it++) == to_word_graph<node_type>(5, {{1, 2}, {1, 1}, {1, 2}}));
+    REQUIRE(*(it++) == to_word_graph<node_type>(5, {{1, 2}, {1, 1}, {2, 2}}));
+    REQUIRE(*(it++)
+            == to_word_graph<node_type>(5, {{1, 2}, {1, 1}, {3, 2}, {3, 3}}));
+  }
 }  // namespace libsemigroups
 
 // [[[0, 0, 0]],            #1#

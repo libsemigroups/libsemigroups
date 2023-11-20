@@ -863,6 +863,8 @@ namespace libsemigroups {
 
       FelschGraph<word_type, node_type, std::vector<Definition>> _felsch_graph;
 
+      std::vector<word_type> _2_sided_include;
+      std::vector<word_type> _2_sided_words;
       // This mutex does nothing for iterator, only does
       // something for thread_iterator
       std::mutex              _mtx;
