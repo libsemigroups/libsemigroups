@@ -93,8 +93,14 @@ namespace libsemigroups {
                letter_type g,
                node_type   t,
                size_type   e,
-               size_type   n) noexcept
-        : source(s), generator(g), target(t), num_edges(e), num_nodes(n) {}
+               size_type   n,
+               bool        tin) noexcept
+        : source(s),
+          generator(g),
+          target(t),
+          num_edges(e),
+          num_nodes(n),
+          target_is_new_node(tin) {}
     node_type   source;
     letter_type generator;
     node_type   target;
@@ -102,6 +108,7 @@ namespace libsemigroups {
                             // *this was added to the stack
     size_type num_nodes;    // Number of nodes in the graph
                             // after the definition is made
+    bool target_is_new_node;
   };
 
   ///////////////////////////////////////////////////////////////////////////////
@@ -205,11 +212,14 @@ namespace libsemigroups {
   void Sims1::iterator_base::init(size_type n) {
     if (n != 0) {
       if (n > 1 || _min_target_node == 1) {
-        _pending.emplace_back(0, 0, 1, 0, 2);
+        _pending.emplace_back(0, 0, 1, 0, 2, true);
       }
       if (_min_target_node == 0) {
-        _pending.emplace_back(0, 0, 0, 0, 1);
+        _pending.emplace_back(0, 0, 0, 0, 1, false);
       }
+      // TODO maybe use less space in _2_sided_include
+      _2_sided_include.assign((n * (n - 1)), word_type());
+      _2_sided_words.assign(n, word_type());
     }
   }
 
@@ -242,7 +252,9 @@ namespace libsemigroups {
 
       // Don't call number_of_edges because this calls the function in
       // WordGraph
-      size_type const start = _felsch_graph.definitions().size();
+      size_type       start = _felsch_graph.definitions().size();
+      size_type const prev_num_non_tree_edges
+          = 2 * ((start - _felsch_graph.number_of_active_nodes()) + 2);
 
       _felsch_graph.set_target_no_checks(
           current.source, current.generator, current.target);
@@ -255,6 +267,52 @@ namespace libsemigroups {
         // Seems to be important to check include() first then
         // process_definitions
         return false;
+      }
+
+      if (_sims1->kind() == congruence_kind::twosided) {
+        if (current.target_is_new_node) {
+          _2_sided_words[current.target] = _2_sided_words[current.source];
+          _2_sided_words[current.target].push_back(current.generator);
+        }
+        // TODO avoid extra copies here
+        // One relation in _2_sided_include for every non-tree edge
+        while (start < _felsch_graph.definitions().size()) {
+          for (size_t i = start, j = 0; i < _felsch_graph.definitions().size();
+               ++i) {
+            auto e = _felsch_graph.definitions()[i];
+            if (current.target_is_new_node && e.first == current.source
+                && e.second == current.generator) {
+              continue;
+            }
+            _2_sided_include[prev_num_non_tree_edges + 2 * j]
+                = _2_sided_words[e.first];
+            _2_sided_include[prev_num_non_tree_edges + 2 * j].push_back(
+                e.second);
+            _2_sided_include[prev_num_non_tree_edges + 2 * j + 1]
+                // TODO target_no_checks
+                = _2_sided_words[_felsch_graph.target(e.first, e.second)];
+            j++;
+          }
+          // TODO different things if current.target is a new node
+
+          size_t num_non_tree_edges
+              = 2
+                * (_felsch_graph.definitions().size()
+                   - _felsch_graph.number_of_active_nodes() + 1);
+
+          first = _2_sided_include.cbegin();
+          last  = _2_sided_include.cbegin() + num_non_tree_edges;
+          start = _felsch_graph.definitions().size();
+
+          if (!felsch_graph::make_compatible<RegisterDefs>(
+                  _felsch_graph,
+                  0,
+                  _felsch_graph.number_of_active_nodes(),
+                  first,
+                  last)) {
+            return false;
+          }
+        }
       }
 
       first          = _sims1->exclude().cbegin();
@@ -285,10 +343,10 @@ namespace libsemigroups {
           {
             std::lock_guard<std::mutex> lock(_mtx);
             if (M < _max_num_classes) {
-              _pending.emplace_back(next, a, M, N, M + 1);
+              _pending.emplace_back(next, a, M, N, M + 1, true);
             }
             for (node_type b = M; b-- > _min_target_node;) {
-              _pending.emplace_back(next, a, b, N, M);
+              _pending.emplace_back(next, a, b, N, M, false);
             }
           }
           stats.total_pending_now
@@ -524,16 +582,12 @@ namespace libsemigroups {
   ////////////////////////////////////////////////////////////////////////
 
   Sims1& Sims1::kind(congruence_kind ck) {
-    if (ck == congruence_kind::twosided) {
-      LIBSEMIGROUPS_EXCEPTION("expected congruence_kind::right or "
-                              "congruence_kind::left, found {}",
-                              ck);
-    } else if (ck != kind()) {
+    if (ck == congruence_kind::left && kind() != ck) {
       presentation::reverse(_presentation);
       reverse(_include);
       reverse(_exclude);
-      _kind = ck;
     }
+    _kind = ck;
     return *this;
   }
 
