@@ -324,6 +324,42 @@ namespace libsemigroups {
       return false;
     }
   }
+  void KnuthBendix::Rewriter::clear_stack() {
+    while (number_of_pending_rules() != 0) {
+      // _stats.max_stack_depth = std::max(_stats.max_stack_depth,
+      // _stack.size());
+
+      Rule* rule1 = next_pending_rule();
+      LIBSEMIGROUPS_ASSERT(!rule1->active());
+      LIBSEMIGROUPS_ASSERT(*rule1->lhs() != *rule1->rhs());
+      // Rewrite both sides and reorder if necessary . . .
+      rewrite(rule1);
+
+      if (*rule1->lhs() != *rule1->rhs()) {
+        internal_string_type const* lhs = rule1->lhs();
+        for (auto it = begin(); it != end();) {
+          Rule* rule2 = const_cast<Rule*>(*it);
+          // TODO Does this need to happen? Can we ensure rules are always
+          // reduced wrt each other?
+          if (rule2->lhs()->find(*lhs) != external_string_type::npos) {
+            it = erase_from_active_rules(it);
+            // rule2 is added to _inactive_rules or _active_rules by
+            // clear_stack
+          } else {
+            if (rule2->rhs()->find(*lhs) != external_string_type::npos) {
+              rewrite(*rule2->rhs());
+            }
+            ++it;
+          }
+        }
+        add_rule(rule1);
+        // rule1 is activated, we do this after removing rules that rule1
+        // makes redundant to avoid failing to insert rule1 in _set_rules
+      } else {
+        add_inactive_rule(rule1);
+      }
+    }
+  }
 
   void KnuthBendix::RewriteFromLeft::add_rule(Rule* rule) {
     Rules::add_rule(rule);
@@ -389,41 +425,41 @@ namespace libsemigroups {
     rule->reorder();
   }
 
-  // TEST_2 from Sims, p76
-  void KnuthBendix::RewriteFromLeft::clear_stack() {
-    while (number_of_pending_rules() != 0) {
-      // _stats.max_stack_depth = std::max(_stats.max_stack_depth,
-      // _stack.size());
+  // // TEST_2 from Sims, p76
+  // void KnuthBendix::RewriteFromLeft::clear_stack() {
+  //   while (number_of_pending_rules() != 0) {
+  //     // _stats.max_stack_depth = std::max(_stats.max_stack_depth,
+  //     // _stack.size());
 
-      Rule* rule1 = next_pending_rule();
-      LIBSEMIGROUPS_ASSERT(!rule1->active());
-      LIBSEMIGROUPS_ASSERT(*rule1->lhs() != *rule1->rhs());
-      // Rewrite both sides and reorder if necessary . . .
-      rewrite(rule1);
+  //     Rule* rule1 = next_pending_rule();
+  //     LIBSEMIGROUPS_ASSERT(!rule1->active());
+  //     LIBSEMIGROUPS_ASSERT(*rule1->lhs() != *rule1->rhs());
+  //     // Rewrite both sides and reorder if necessary . . .
+  //     rewrite(rule1);
 
-      if (*rule1->lhs() != *rule1->rhs()) {
-        internal_string_type const* lhs = rule1->lhs();
-        for (auto it = begin(); it != end();) {
-          Rule* rule2 = const_cast<Rule*>(*it);
-          if (rule2->lhs()->find(*lhs) != external_string_type::npos) {
-            it = erase_from_active_rules(it);
-            // rule2 is added to _inactive_rules or _active_rules by
-            // clear_stack
-          } else {
-            if (rule2->rhs()->find(*lhs) != external_string_type::npos) {
-              rewrite(*rule2->rhs());
-            }
-            ++it;
-          }
-        }
-        add_rule(rule1);
-        // rule1 is activated, we do this after removing rules that rule1
-        // makes redundant to avoid failing to insert rule1 in _set_rules
-      } else {
-        add_inactive_rule(rule1);
-      }
-    }
-  }
+  //     if (*rule1->lhs() != *rule1->rhs()) {
+  //       internal_string_type const* lhs = rule1->lhs();
+  //       for (auto it = begin(); it != end();) {
+  //         Rule* rule2 = const_cast<Rule*>(*it);
+  //         if (rule2->lhs()->find(*lhs) != external_string_type::npos) {
+  //           it = erase_from_active_rules(it);
+  //           // rule2 is added to _inactive_rules or _active_rules by
+  //           // clear_stack
+  //         } else {
+  //           if (rule2->rhs()->find(*lhs) != external_string_type::npos) {
+  //             rewrite(*rule2->rhs());
+  //           }
+  //           ++it;
+  //         }
+  //       }
+  //       add_rule(rule1);
+  //       // rule1 is activated, we do this after removing rules that rule1
+  //       // makes redundant to avoid failing to insert rule1 in _set_rules
+  //     } else {
+  //       add_inactive_rule(rule1);
+  //     }
+  //   }
+  // }
 
   void KnuthBendix::RewriteFromLeft::reduce() {
     for (Rule const* rule : *this) {

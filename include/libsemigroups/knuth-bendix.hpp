@@ -354,7 +354,8 @@ namespace libsemigroups {
       }
 
       [[nodiscard]] iterator erase_from_active_rules(iterator it);
-      void                   add_rule(Rule* rule);
+
+      void add_rule(Rule* rule);
 
       [[nodiscard]] Rule* copy_rule(Rule const* rule);
 
@@ -452,6 +453,20 @@ namespace libsemigroups {
 
       bool push_stack(Rule* rule);
 
+      void clear_stack();
+
+      void rewrite(Rule* rule) const {
+        rewrite(*rule->lhs());
+        rewrite(*rule->rhs());
+        rule->reorder();
+      }
+
+      virtual void rewrite(internal_string_type& u) const = 0;
+
+      virtual void add_rule(Rule* rule) = 0;
+
+      virtual Rules::iterator erase_from_active_rules(Rules::iterator it) = 0;
+
       size_t number_of_pending_rules() const noexcept {
         return _stack.size();
       }
@@ -463,15 +478,15 @@ namespace libsemigroups {
         return rule;
       }
 
+      // TODO Remove bool and swap true for clear_stack?
       template <typename StringLike>
-      bool add_rule(StringLike const& lhs, StringLike const& rhs) {
+      void add_rule(StringLike const& lhs, StringLike const& rhs) {
         if (lhs != rhs) {
           if (push_stack(new_rule(
                   lhs.cbegin(), lhs.cend(), rhs.cbegin(), rhs.cend()))) {
-            return true;
+            clear_stack();
           }
         }
-        return false;
       }
 
       void add_to_alphabet(internal_char_type letter) {
@@ -514,8 +529,8 @@ namespace libsemigroups {
       }
 
      private:
-      void     rewrite(Rule* rule) const;
-      void     clear_stack();
+      void rewrite(Rule* rule) const;
+      // void     clear_stack();
       iterator erase_from_active_rules(iterator);
     };  //_rewriter;
 
@@ -644,12 +659,13 @@ namespace libsemigroups {
         }
       }
 
-      template <typename StringLike>
-      void add_rule(StringLike const& lhs, StringLike const& rhs) {
-        if (Rewriter::add_rule(lhs, rhs)) {
-          clear_stack();
-        }
-      }
+      using Rewriter::add_rule;
+      // template <typename StringLike>
+      // void add_rule(StringLike const& lhs, StringLike const& rhs) {
+      //   if (Rewriter::add_rule(lhs, rhs)) {
+      //     clear_stack();
+      //   }
+      // }
 
      private:
       [[nodiscard]] bool backtrack_confluence(Rule const* rule1,
