@@ -1165,7 +1165,7 @@ namespace libsemigroups {
     Presentation<word_type> full_transformation_monoid(size_t n, author val) {
       if (n < 4) {
         LIBSEMIGROUPS_EXCEPTION(
-            "the 1st argument (size_t) must be at least 4, found {}", n);
+            "the 1st argument (degree) must be at least 4, found {}", n);
       } else if (val != author::Aizenstat && val != author::Iwahori) {
         LIBSEMIGROUPS_EXCEPTION(
             "expected 2nd argument to be author::Aizenstat or "
