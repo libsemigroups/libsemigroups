@@ -129,6 +129,9 @@ namespace libsemigroups {
     size_t                  m = std::distance(s->presentation().rules.cbegin(),
                              s->cbegin_long_rules());
     p.rules.erase(p.rules.begin() + m, p.rules.end());
+    // TODO could be slightly less space allocated here
+    _2_sided_include.assign(2 * n * p.alphabet().size(), word_type());
+    _2_sided_words.assign(n, word_type());
     _felsch_graph.init(std::move(p));
     // n == 0 only when the iterator is cend
     _felsch_graph.number_of_active_nodes(n == 0 ? 0 : 1);
@@ -146,7 +149,9 @@ namespace libsemigroups {
         _felsch_graph(that._felsch_graph),
         _mtx(),
         _pending(that._pending),
-        _sims1(that._sims1) {}
+        _sims1(that._sims1),
+        _2_sided_include(that._2_sided_include),
+        _2_sided_words(that._2_sided_words) {}
 
   // Intentionally don't copy the mutex, it doesn't compile, wouldn't make
   // sense if the mutex was used here.
@@ -159,7 +164,9 @@ namespace libsemigroups {
         _felsch_graph(std::move(that._felsch_graph)),
         _mtx(),
         _pending(std::move(that._pending)),
-        _sims1(that._sims1) {}
+        _sims1(that._sims1),
+        _2_sided_include(std::move(that._2_sided_include)),
+        _2_sided_words(std::move(that._2_sided_words)) {}
 
   // Intentionally don't copy the mutex, it doesn't compile, wouldn't make
   // sense if the mutex was used here.
@@ -174,6 +181,10 @@ namespace libsemigroups {
     // keep our own _mtx
     _pending = that._pending;
     _sims1   = that._sims1;
+
+    _2_sided_include = that._2_sided_include;
+    _2_sided_words   = that._2_sided_words;
+
     return *this;
   }
 
@@ -187,8 +198,10 @@ namespace libsemigroups {
     _min_target_node = std::move(that._min_target_node);
 
     // protected
-    _felsch_graph = std::move(that._felsch_graph);
-    _pending      = std::move(that._pending);
+    _felsch_graph    = std::move(that._felsch_graph);
+    _pending         = std::move(that._pending);
+    _2_sided_include = std::move(that._2_sided_include);
+    _2_sided_words   = std::move(that._2_sided_words);
     // keep our own _mtx
     _sims1 = that._sims1;
     return *this;
@@ -217,9 +230,6 @@ namespace libsemigroups {
       if (_min_target_node == 0) {
         _pending.emplace_back(0, 0, 0, 0, 1, false);
       }
-      // TODO maybe use less space in _2_sided_include
-      _2_sided_include.assign((n * (n - 1)), word_type());
-      _2_sided_words.assign(n, word_type());
     }
   }
 
@@ -252,9 +262,33 @@ namespace libsemigroups {
 
       // Don't call number_of_edges because this calls the function in
       // WordGraph
-      size_type       start = _felsch_graph.definitions().size();
-      size_type const prev_num_non_tree_edges
-          = 2 * ((start - _felsch_graph.number_of_active_nodes()) + 2);
+      size_type start = _felsch_graph.definitions().size();
+
+      size_type prev_num_non_tree_edges;
+      if (current.target_is_new_node) {
+        // number of tree edges is number_of_active_nodes - 2
+        // because the active nodes include the target which is a new node
+        prev_num_non_tree_edges = 2
+                                  * ((_felsch_graph.definitions().size()
+                                      - _felsch_graph.number_of_active_nodes())
+                                     + 2);
+        LIBSEMIGROUPS_ASSERT(_felsch_graph.definitions().size()
+                                 - (prev_num_non_tree_edges / 2)
+                             == _felsch_graph.number_of_active_nodes() - 2);
+      } else {
+        // number of tree edges is number_of_active_nodes - 1 because the
+        // target is not a new node
+        prev_num_non_tree_edges = 2
+                                  * ((_felsch_graph.definitions().size()
+                                      - _felsch_graph.number_of_active_nodes())
+                                     + 1);
+        LIBSEMIGROUPS_ASSERT(_felsch_graph.definitions().size()
+                                 - (prev_num_non_tree_edges / 2)
+                             == _felsch_graph.number_of_active_nodes() - 1);
+      }
+
+      LIBSEMIGROUPS_ASSERT(prev_num_non_tree_edges / 2
+                           <= _felsch_graph.definitions().size());
 
       _felsch_graph.set_target_no_checks(
           current.source, current.generator, current.target);
@@ -279,7 +313,7 @@ namespace libsemigroups {
         while (start < _felsch_graph.definitions().size()) {
           for (size_t i = start, j = 0; i < _felsch_graph.definitions().size();
                ++i) {
-            auto e = _felsch_graph.definitions()[i];
+            auto e = _felsch_graph.definitions()[i];  // TODO reference
             if (current.target_is_new_node && e.first == current.source
                 && e.second == current.generator) {
               continue;
@@ -303,13 +337,15 @@ namespace libsemigroups {
           first = _2_sided_include.cbegin();
           last  = _2_sided_include.cbegin() + num_non_tree_edges;
           start = _felsch_graph.definitions().size();
+          prev_num_non_tree_edges = num_non_tree_edges;
 
           if (!felsch_graph::make_compatible<RegisterDefs>(
                   _felsch_graph,
                   0,
                   _felsch_graph.number_of_active_nodes(),
                   first,
-                  last)) {
+                  last)
+              || !_felsch_graph.process_definitions(start)) {
             return false;
           }
         }
