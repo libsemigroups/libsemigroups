@@ -326,8 +326,11 @@ namespace libsemigroups {
     }
 
     void clear_suffix_links() const {
-      for (auto index : _active_nodes_index) {
-        _all_nodes[index].clear_suffix_link();
+      // for (auto index : _active_nodes_index) {
+      //   _all_nodes[index].clear_suffix_link();
+      // }
+      for (auto node = _all_nodes.begin(); node != _all_nodes.end(); ++node) {
+        node->clear_suffix_link();
       }
     }
   };
