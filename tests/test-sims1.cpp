@@ -2994,10 +2994,10 @@ namespace libsemigroups {
     Sims1 s(congruence_kind::twosided, p);
     s.number_of_threads(4);
     REQUIRE(s.number_of_congruences(1) == 1);
-    REQUIRE(s.number_of_congruences(2) == 7);   // verified with GAP
-    REQUIRE(s.number_of_congruences(3) == 27);  // verified with GAP
-    REQUIRE(s.number_of_congruences(4) == 94);  // verified with GAP
-    REQUIRE(s.number_of_congruences(5) == 275);
+    REQUIRE(s.number_of_congruences(2) == 7);    // verified with GAP
+    REQUIRE(s.number_of_congruences(3) == 27);   // verified with GAP
+    REQUIRE(s.number_of_congruences(4) == 94);   // verified with GAP
+    REQUIRE(s.number_of_congruences(5) == 275);  // verified with GAP
     REQUIRE(s.number_of_congruences(6) == 833);
     REQUIRE(s.number_of_congruences(7) == 2'307);
     REQUIRE(s.number_of_congruences(8) == 6'488);
