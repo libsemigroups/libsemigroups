@@ -22,6 +22,10 @@ AsWordGraph := function(C)
   return Digraph(out);
 end;
 
+EqualWordGraph := function(D1, D2)
+  return OutNeighbours(D1) = OutNeighbours(D2);
+end;
+
 StandardizeWordGraph := function(D, root)
   local i, alph, letter, que, seen, node, child, next_node, perm;
 
@@ -41,7 +45,7 @@ StandardizeWordGraph := function(D, root)
     for letter in [1 .. alph] do
       child := next_node[node][letter];
       if not seen[child] then
-        Append(que, child);
+        Add(que, child);
         seen[child] := true;
       fi;
     od;
@@ -57,7 +61,7 @@ StandardizeWordGraph := function(D, root)
   for i in [1 .. Length(que)] do
     perm[que[i]] := i;
   od;
-  return OnDigraphs(D, perm);
+  return OnDigraphs(D, PermList(perm));
 end;
 
 ToWordGraphs := function(Cs)
@@ -81,9 +85,67 @@ AllMultiplicationTables:= function(S)
   return result;
 end;
 
-
-
 ExpectedNumber := function(num_gens, max_size)
-  
-  
+  local Ds, size, enum, S, subset, T, D;
+  Ds := [];
+  for size in [1 .. max_size] do
+    enum := EnumeratorOfSmallSemigroups(size, 
+                                        IsMonoidAsSemigroup, 
+                                        true,
+                                        x -> Size(MinimalGeneratingSet(x)) <= num_gens, 
+                                        true);
+    for S in enum do
+      S := AsMonoid(IsTransformationMonoid, S);
+      for subset in EnumeratorOfTuples(S, num_gens) do
+        subset := ShallowCopy(subset);
+        Add(subset, One(S));
+        T := Semigroup(subset);
+        if Size(T) = size then
+          D := RightCayleyDigraph(T);
+          D := StandardizeWordGraph(D, PositionCanonical(T, One(T)));
+          if not ForAny(Ds, x -> EqualWordGraph(D, x)) then
+            Add(Ds, D);
+          fi;
+        fi;
+      od;
+    od;
+  od;
+  return Ds;
+end;
+
+
+WordGraphOfAction := function(S)
+  Assert(1, IsTransformationMonoid(S));
+end;
+
+IsConjugateTransfMonoid := function(S, T)
+  local n;
+  n := DegreeOfTransformationSemigroup(S);
+  return S in Orbit(SymmetricGroup(n), T, POW);
+end;
+
+ExpectedNumber2 := function(max_size)
+local count, i, j, S, D, Ds, o, Ss; 
+  count := 0;
+  Ds := []; 
+  Ss := [];
+  for i in [1 .. (max_size ^ max_size)] do
+  for j in [1 .. (max_size ^ max_size)] do
+    S := Monoid(TransformationNumber(i, max_size),
+                TransformationNumber(j, max_size));
+    if Size(S) = max_size  then
+      D := DigraphOfActionOnPoints(S, max_size);
+      if Size(VerticesReachableFrom(D, 1)) = max_size then
+        o := Orbit(SymmetricGroup(max_size), GeneratorsOfSemigroup(S), POW);
+        if not ForAny(Ss, x -> x in o) then
+          Add(Ds, D);
+          Add(Ss, GeneratorsOfSemigroup(S));
+          count := count + 1;
+        fi;
+      fi;
+    fi;
+  od;
+od;
+return Ds;
+
 end;

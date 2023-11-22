@@ -77,7 +77,7 @@ namespace libsemigroups {
   Sims1Stats& Sims1Stats::init_from(Sims1Stats const& that) {
     count_last         = that.count_last;
     count_now          = that.count_now.load();
-    max_pending        = that.max_pending;
+    max_pending        = that.max_pending.load();
     total_pending_last = that.total_pending_last;
     total_pending_now  = that.total_pending_now.load();
     return *this;
@@ -131,8 +131,9 @@ namespace libsemigroups {
                              s->cbegin_long_rules());
     p.rules.erase(p.rules.begin() + m, p.rules.end());
     // TODO could be slightly less space allocated here
-    _2_sided_include.assign(2 * n * p.alphabet().size(), word_type());
-    _2_sided_words.assign(n, word_type());
+    _2_sided_include.assign(2 * _max_num_classes * p.alphabet().size(),
+                            word_type());
+    _2_sided_words.assign(_max_num_classes, word_type());
     _felsch_graph.init(std::move(p));
     // n == 0 only when the iterator is cend
     _felsch_graph.number_of_active_nodes(n == 0 ? 0 : 1);
@@ -306,6 +307,8 @@ namespace libsemigroups {
 
       if (_sims1->kind() == congruence_kind::twosided) {
         if (current.target_is_new_node) {
+          LIBSEMIGROUPS_ASSERT(current.target < _2_sided_include.size());
+          LIBSEMIGROUPS_ASSERT(current.source < _2_sided_include.size());
           _2_sided_words[current.target] = _2_sided_words[current.source];
           _2_sided_words[current.target].push_back(current.generator);
         }
@@ -319,6 +322,8 @@ namespace libsemigroups {
                 && e.second == current.generator) {
               continue;
             }
+            LIBSEMIGROUPS_ASSERT(prev_num_non_tree_edges + 2 * j + 1
+                                 < _2_sided_include.size());
             _2_sided_include[prev_num_non_tree_edges + 2 * j]
                 = _2_sided_words[e.first];
             _2_sided_include[prev_num_non_tree_edges + 2 * j].push_back(
@@ -377,19 +382,19 @@ namespace libsemigroups {
     for (node_type next = current.source; next < M; ++next) {
       for (; a < num_gens; ++a) {
         if (_felsch_graph.target_no_checks(next, a) == UNDEFINED) {
-          {
-            std::lock_guard<std::mutex> lock(_mtx);
-            if (M < _max_num_classes) {
-              _pending.emplace_back(next, a, M, N, M + 1, true);
-            }
-            for (node_type b = M; b-- > _min_target_node;) {
-              _pending.emplace_back(next, a, b, N, M, false);
-            }
+          std::lock_guard<std::mutex> lock(_mtx);
+          if (M < _max_num_classes) {
+            _pending.emplace_back(next, a, M, N, M + 1, true);
+          }
+          for (node_type b = M; b-- > _min_target_node;) {
+            _pending.emplace_back(next, a, b, N, M, false);
           }
           stats.total_pending_now
               += M - _min_target_node + (M < _max_num_classes);
+
+          // Mutex must be locked here so that we can call _pending.size()
           stats.max_pending = std::max(static_cast<uint64_t>(_pending.size()),
-                                       stats.max_pending);
+                                       stats.max_pending.load());
           return false;
         }
       }
@@ -634,7 +639,7 @@ namespace libsemigroups {
       for_each(n, [&result](word_graph_type const&) { ++result; });
       return result;
     } else {
-      std::atomic_int64_t result(0);
+      std::atomic_uint64_t result(0);
       for_each(n, [&result](word_graph_type const&) { ++result; });
       return result;
     }
@@ -805,6 +810,7 @@ namespace libsemigroups {
                        presentation::longest_rule_length(first, last),
                        presentation::length(first, last));
     }
+    ReporterV3::reset_start_time();
   }
 
   void Sims1::report_progress_from_thread() const {

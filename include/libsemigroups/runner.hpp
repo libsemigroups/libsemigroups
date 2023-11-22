@@ -215,9 +215,9 @@ namespace libsemigroups {
                 // 1. the Ticker goes out of scope, the mutex is locked, then
                 //    _stop is set to false, Ticker is destroyed, maybe the
                 //    object where Ticker is created is also destroyed (the
-                //    object containing _func and/or its related data), then we
-                //    acquire the mutex here, and _stop is false, so we don't
-                //    call _func (which is actually destroyed).
+                //    object containing _func and/or its related data), then
+                //    we acquire the mutex here, and _stop is false, so we
+                //    don't call _func (which is actually destroyed).
                 // 2. we acquire the lock on the mutex here first, and then
                 //    Ticker goes out of scope, the destructor of Ticker is
                 //    then blocked (and so too is the possible destruction of

@@ -92,9 +92,7 @@ namespace libsemigroups {
     //!
     //! This member tracks the maximum number of such pending definitions that
     //! occur during the running of the algorithms in Sims1.
-    // Not atomic because this is not accessed by report_progress_from_thread,
-    // and access is protected by a mutex in the actual algorithm.
-    uint64_t max_pending;
+    std::atomic_uint64_t max_pending;
 
     //! The total number of pending definitions.
     //!
@@ -880,6 +878,9 @@ namespace libsemigroups {
       // and so we only copy that.
       void copy_felsch_graph(iterator_base const& that) {
         _felsch_graph = that._felsch_graph;
+        // TODO only do this if kind() == twosided
+        _2_sided_include = that._2_sided_include;
+        _2_sided_words   = that._2_sided_words;
       }
 
       // Try to make the definition represented by
