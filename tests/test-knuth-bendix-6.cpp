@@ -31,7 +31,6 @@
 // 5: contains tests for KnuthBendix created from FroidurePin instances
 //
 // 6: contains tests for KnuthBendix.
-#ifdef false
 
 #include <cstddef>  // for size_t
 #include <string>   // for basic_string, char_traits
@@ -39,7 +38,7 @@
 #include <vector>   // for vector
 
 #include "catch.hpp"      // for operator""_catch_sr
-#include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
+#include "test-main.hpp"  // for TEMPLATE_TEST_CASE
 
 #include "libsemigroups/constants.hpp"        // for operator==, Max, POSIT...
 #include "libsemigroups/exception.hpp"        // for LibsemigroupsException
@@ -60,10 +59,12 @@ namespace libsemigroups {
 
   using literals::operator""_w;
 
-  LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
-                          "103",
-                          "Presentation<word_type>",
-                          "[quick][knuth-bendix]") {
+#define KNUTH_BENDIX_TYPES \
+  KnuthBendix<RewriteTrie>, KnuthBendix<RewriteFromLeft>
+
+  TEMPLATE_TEST_CASE("Presentation<word_type>",
+                     "[000][quick][knuth-bendix]",
+                     KNUTH_BENDIX_TYPES) {
     auto rg = ReportGuard(false);
 
     Presentation<word_type> p;
@@ -71,7 +72,7 @@ namespace libsemigroups {
     presentation::add_rule(p, 000_w, 0_w);
     presentation::add_rule(p, 0_w, 11_w);
 
-    KnuthBendix kb(twosided, p);
+    TestType kb(twosided, p);
 
     REQUIRE(!kb.finished());
     REQUIRE(kb.number_of_classes() == 5);
@@ -86,10 +87,9 @@ namespace libsemigroups {
                          to_string(kb.presentation(), 000_w)));
   }
 
-  LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
-                          "104",
-                          "free semigroup congruence (6 classes)",
-                          "[quick][knuth-bendix]") {
+  TEMPLATE_TEST_CASE("free semigroup congruence (6 classes)",
+                     "[000][quick][knuth-bendix]",
+                     KNUTH_BENDIX_TYPES) {
     auto                    rg = ReportGuard(false);
     Presentation<word_type> p;
     p.alphabet(5);
@@ -110,17 +110,16 @@ namespace libsemigroups {
     presentation::add_rule(p, 14233_w, 0_w);
     presentation::add_rule(p, 444_w, 0_w);
 
-    KnuthBendix kb(twosided, p);
+    TestType kb(twosided, p);
 
     REQUIRE(kb.number_of_classes() == 6);
     REQUIRE(kb.equal_to(to_string(kb.presentation(), 1_w),
                         to_string(kb.presentation(), 2_w)));
   }
 
-  LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
-                          "105",
-                          "free semigroup congruence (16 classes)",
-                          "[quick][knuth-bendix]") {
+  TEMPLATE_TEST_CASE("free semigroup congruence (16 classes)",
+                     "[000][quick][knuth-bendix]",
+                     KNUTH_BENDIX_TYPES) {
     auto rg = ReportGuard(false);
 
     Presentation<word_type> p;
@@ -147,17 +146,16 @@ namespace libsemigroups {
     presentation::add_rule(p, {2, 0, 1, 0}, {2, 0, 1});
     presentation::add_rule(p, {2, 0, 2, 0}, {2, 0, 2});
 
-    KnuthBendix kb(twosided, p);
+    TestType kb(twosided, p);
     REQUIRE(kb.number_of_classes() == 16);
     REQUIRE(kb.number_of_active_rules() == 18);
     REQUIRE(kb.equal_to(to_string(kb.presentation(), 2_w),
                         to_string(kb.presentation(), 3_w)));
   }
 
-  LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
-                          "106",
-                          "free semigroup congruence (6 classes)",
-                          "[quick][knuth-bendix]") {
+  TEMPLATE_TEST_CASE("free semigroup congruence (6 classes) x 2",
+                     "[000][quick][knuth-bendix]",
+                     KNUTH_BENDIX_TYPES) {
     auto                    rg = ReportGuard(false);
     Presentation<word_type> p;
     p.alphabet(11);
@@ -183,7 +181,7 @@ namespace libsemigroups {
            {1, 3, 0, 1}, {1, 0, 1},    {1, 3, 0, 3}, {3, 0, 3},    {3, 0, 1, 0},
            {3, 0, 1},    {3, 0, 3, 0}, {3, 0, 3}};
 
-    KnuthBendix kb(twosided, p);
+    TestType kb(twosided, p);
     REQUIRE(kb.number_of_classes() == 16);
     REQUIRE(kb.equal_to(to_string(kb.presentation(), {0}),
                         to_string(kb.presentation(), {5})));
@@ -205,10 +203,9 @@ namespace libsemigroups {
                         to_string(kb.presentation(), {9})));
   }
 
-  LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
-                          "107",
-                          "free semigroup congruence (240 classes)",
-                          "[no-valgrind][quick][knuth-bendix]") {
+  TEMPLATE_TEST_CASE("free semigroup congruence (240 classes)",
+                     "[000][no-valgrind][quick][knuth-bendix]",
+                     KNUTH_BENDIX_TYPES) {
     auto                    rg = ReportGuard(false);
     Presentation<word_type> p;
     p.alphabet(2);
@@ -218,14 +215,13 @@ namespace libsemigroups {
     presentation::add_rule(p, 1001_w, 11_w);
     presentation::add_rule(p, 001010101010_w, 00_w);
 
-    KnuthBendix kb(twosided, p);
+    TestType kb(twosided, p);
     REQUIRE(kb.number_of_classes() == 240);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
-                          "108",
-                          "free semigroup congruence (240 classes)",
-                          "[no-valgrind][quick][knuth-bendix]") {
+  TEMPLATE_TEST_CASE("free semigroup congruence (240 classes) x 2",
+                     "[000][no-valgrind][quick][knuth-bendix]",
+                     KNUTH_BENDIX_TYPES) {
     auto                    rg = ReportGuard(false);
     Presentation<word_type> p;
     p.alphabet(2);
@@ -235,14 +231,14 @@ namespace libsemigroups {
     presentation::add_rule(p, 1001_w, 11_w);
     presentation::add_rule(p, 001010101010_w, 00_w);
 
-    KnuthBendix kb(twosided, p);
-    REQUIRE_NOTHROW(to_froidure_pin(kb));
+    // TODO Uncomment
+    // TestType kb(twosided, p);
+    // REQUIRE_NOTHROW(to_froidure_pin(kb));
   }
 
-  LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
-                          "111",
-                          "constructors",
-                          "[quick][knuth-bendix][no-valgrind]") {
+  TEMPLATE_TEST_CASE("constructors",
+                     "[000][quick][knuth-bendix][no-valgrind]",
+                     KNUTH_BENDIX_TYPES) {
     auto                    rg = ReportGuard(false);
     Presentation<word_type> p;
     p.alphabet(2);
@@ -250,7 +246,7 @@ namespace libsemigroups {
     presentation::add_rule(p, 111111111_w, 1_w);
     presentation::add_rule(p, 011111011_w, 110_w);
 
-    KnuthBendix kb(twosided, p);
+    TestType kb(twosided, p);
     REQUIRE(kb.number_of_classes() == 746);
 
     auto copy(kb);
@@ -261,10 +257,9 @@ namespace libsemigroups {
     REQUIRE(copy.number_of_active_rules() == 105);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
-                          "115",
-                          "to_froidure_pin",
-                          "[quick][knuth-bendix]") {
+  TEMPLATE_TEST_CASE("to_froidure_pin",
+                     "[000][quick][knuth-bendix]",
+                     KNUTH_BENDIX_TYPES) {
     auto                    rg = ReportGuard(false);
     Presentation<word_type> p;
     p.alphabet(2);
@@ -272,14 +267,14 @@ namespace libsemigroups {
     presentation::add_rule(p, 1111_w, 1_w);
     presentation::add_rule(p, 011111011_w, 110_w);
 
-    KnuthBendix kb(twosided, p);
-    REQUIRE(to_froidure_pin(kb).size() == 12);
+    // TODO Uncomment
+    // TestType kb(twosided, p);
+    // REQUIRE(to_froidure_pin(kb).size() == 12);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
-                          "117",
-                          "number of classes when obv-inf",
-                          "[quick][knuth-bendix]") {
+  TEMPLATE_TEST_CASE("number of classes when obv-inf",
+                     "[000][quick][knuth-bendix]",
+                     KNUTH_BENDIX_TYPES) {
     auto                    rg = ReportGuard(false);
     Presentation<word_type> p;
     p.alphabet(3);
@@ -295,19 +290,18 @@ namespace libsemigroups {
     presentation::add_rule(p, 21_w, 1_w);
     presentation::add_rule(p, 0_w, 1_w);
 
-    KnuthBendix kb(twosided, p);
+    TestType kb(twosided, p);
     REQUIRE(is_obviously_infinite(kb));
     REQUIRE(kb.number_of_classes() == POSITIVE_INFINITY);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
-                          "020",
-                          "Chinese monoid",
-                          "[quick][knuth-bendix]") {
+  TEMPLATE_TEST_CASE("Chinese monoid x 2",
+                     "[000][quick][knuth-bendix]",
+                     KNUTH_BENDIX_TYPES) {
     auto                    rg = ReportGuard(false);
     Presentation<word_type> p  = fpsemigroup::chinese_monoid(3);
 
-    KnuthBendix kb(twosided, p);
+    TestType kb(twosided, p);
     REQUIRE(is_obviously_infinite(kb));
     REQUIRE(kb.number_of_classes() == POSITIVE_INFINITY);
     REQUIRE(kb.presentation().rules.size() / 2 == 8);
@@ -315,55 +309,51 @@ namespace libsemigroups {
     REQUIRE(nf.count() == 1'175);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
-                          "083",
-                          "partial_transformation_monoid(4)",
-                          "[standard][knuth-bendix]") {
+  TEMPLATE_TEST_CASE("partial_transformation_monoid(4)",
+                     "[000][standard][knuth-bendix]",
+                     KNUTH_BENDIX_TYPES) {
     auto rg = ReportGuard(false);
 
     size_t n = 4;
     auto   p = partial_transformation_monoid(n, fpsemigroup::author::Sutov);
 
-    KnuthBendix kb(twosided, p);
+    TestType kb(twosided, p);
     REQUIRE(!is_obviously_infinite(kb));
     REQUIRE(kb.number_of_classes() == 625);
   }
 
   // Takes about 1 minute
-  LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
-                          "118",
-                          "partial_transformation_monoid5",
-                          "[extreme][knuth-bendix]") {
+  TEMPLATE_TEST_CASE("partial_transformation_monoid5",
+                     "[000][extreme][knuth-bendix]",
+                     KNUTH_BENDIX_TYPES) {
     auto rg = ReportGuard(true);
 
     size_t n = 5;
     auto   p = partial_transformation_monoid(n, fpsemigroup::author::Sutov);
 
-    KnuthBendix kb(twosided, p);
+    TestType kb(twosided, p);
     REQUIRE(!is_obviously_infinite(kb));
     REQUIRE(kb.number_of_classes() == 7'776);
   }
 
   // Takes about 5 seconds
-  LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
-                          "119",
-                          "full_transformation_monoid Iwahori",
-                          "[extreme][knuth-bendix]") {
+  TEMPLATE_TEST_CASE("full_transformation_monoid Iwahori",
+                     "[000][extreme][knuth-bendix]",
+                     KNUTH_BENDIX_TYPES) {
     auto rg = ReportGuard(true);
 
-    size_t      n = 5;
-    auto        p = full_transformation_monoid(n, fpsemigroup::author::Iwahori);
-    KnuthBendix kb(twosided, p);
+    size_t   n = 5;
+    auto     p = full_transformation_monoid(n, fpsemigroup::author::Iwahori);
+    TestType kb(twosided, p);
     REQUIRE(!is_obviously_infinite(kb));
     REQUIRE(kb.number_of_classes() == 3'125);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
-                          "109",
-                          "constructors/init for finished",
-                          "[quick][knuth-bendix]") {
+  TEMPLATE_TEST_CASE("constructors/init for finished x 2",
+                     "[000][quick][knuth-bendix]",
+                     KNUTH_BENDIX_TYPES) {
     using literals::operator""_w;
-    auto rg = ReportGuard(false);
+    auto            rg = ReportGuard(false);
 
     Presentation<word_type> p1;
     p1.contains_empty_word(true);
@@ -381,7 +371,7 @@ namespace libsemigroups {
     presentation::add_rule(p2, 111_w, {});
     presentation::add_rule(p2, 010101_w, {});
 
-    KnuthBendix kb1(twosided, p1);
+    TestType kb1(twosided, p1);
     REQUIRE(!kb1.confluent());
     REQUIRE(!kb1.finished());
     kb1.run();
@@ -406,7 +396,7 @@ namespace libsemigroups {
     REQUIRE(kb1.confluent_known());
     REQUIRE(kb1.number_of_active_rules() == 8);
 
-    KnuthBendix kb2(std::move(kb1));
+    TestType kb2(std::move(kb1));
     REQUIRE(kb2.confluent());
     REQUIRE(kb2.confluent_known());
     REQUIRE(kb2.finished());
@@ -427,7 +417,7 @@ namespace libsemigroups {
     REQUIRE(kb1.confluent_known());
     REQUIRE(kb1.number_of_active_rules() == 8);
 
-    KnuthBendix kb3(twosided, std::move(p2));
+    TestType kb3(twosided, std::move(p2));
     REQUIRE(!kb3.confluent());
     REQUIRE(!kb3.finished());
     kb3.run();
@@ -438,4 +428,3 @@ namespace libsemigroups {
   }
 
 }  // namespace libsemigroups
-#endif
