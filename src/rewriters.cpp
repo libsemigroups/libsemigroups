@@ -166,7 +166,7 @@ namespace libsemigroups {
       _stats.min_length_lhs_rule = rule->lhs()->size();
     }
   }
-  Rewriter& Rewriter::init() {
+  RewriterBase& RewriterBase::init() {
     Rules::init();
     if (_requires_alphabet) {
       _alphabet.clear();
@@ -182,7 +182,7 @@ namespace libsemigroups {
     return *this;
   }
 
-  Rewriter::~Rewriter() {
+  RewriterBase::~RewriterBase() {
     while (!_stack.empty()) {
       Rule* rule = _stack.top();
       _stack.pop();
@@ -190,7 +190,7 @@ namespace libsemigroups {
     }
   }
 
-  bool Rewriter::push_stack(Rule* rule) {
+  bool RewriterBase::push_stack(Rule* rule) {
     LIBSEMIGROUPS_ASSERT(!rule->active());
     if (*rule->lhs() != *rule->rhs()) {
       _stack.emplace(rule);
@@ -201,7 +201,7 @@ namespace libsemigroups {
     }
   }
 
-  void Rewriter::clear_stack() {
+  void RewriterBase::clear_stack() {
     while (number_of_pending_rules() != 0) {
       // _stats.max_stack_depth = std::max(_stats.max_stack_depth,
       // _stack.size());
@@ -239,14 +239,14 @@ namespace libsemigroups {
   }
 
   RewriteFromLeft& RewriteFromLeft::init() {
-    Rewriter::init();
+    RewriterBase::init();
     _set_rules.clear();
     return *this;
   }
 
   RewriteFromLeft& RewriteFromLeft::operator=(RewriteFromLeft const& that) {
     init();
-    Rewriter::operator=(that);
+    RewriterBase::operator=(that);
     for (auto* crule : that) {
       Rule* rule = const_cast<Rule*>(crule);
 #ifdef LIBSEMIGROUPS_DEBUG
@@ -351,7 +351,7 @@ namespace libsemigroups {
     if (number_of_pending_rules() != 0) {
       return false;
     } else if (confluence_known()) {
-      return Rewriter::confluent();
+      return RewriterBase::confluent();
     }
     // bool reported = false;
     confluent(tril::TRUE);

@@ -91,6 +91,7 @@ namespace libsemigroups {
   //! kb.number_of_active_rules();  // 31
   //! kb.confluent();        // true
   //! \endcode
+
   class KnuthBendix : public CongruenceInterface {
     friend class ::libsemigroups::detail::KBE;  // defined in detail/kbe.hpp
 

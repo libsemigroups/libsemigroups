@@ -248,7 +248,7 @@ namespace libsemigroups {
     }
   };
 
-  class Rewriter : public Rules {
+  class RewriterBase : public Rules {
     std::unordered_set<internal_char_type> _alphabet;
     mutable std::atomic<bool>              _confluent;
     mutable std::atomic<bool>              _confluence_known;
@@ -259,16 +259,16 @@ namespace libsemigroups {
         = std::unordered_set<internal_char_type>::const_iterator;
 
    public:
-    Rewriter() = default;
-    Rewriter& init();
+    RewriterBase() = default;
+    RewriterBase& init();
 
-    Rewriter(bool requires_alphabet) : Rewriter() {
+    RewriterBase(bool requires_alphabet) : RewriterBase() {
       _requires_alphabet = requires_alphabet;
     }
 
-    ~Rewriter();
+    ~RewriterBase();
 
-    Rewriter& operator=(Rewriter const& that) {
+    RewriterBase& operator=(RewriterBase const& that) {
       Rules::operator=(that);
       _confluent         = that._confluent.load();
       _confluence_known  = that._confluence_known.load();
@@ -365,11 +365,12 @@ namespace libsemigroups {
       _alphabet.emplace(letter);
     }
   };
-  class RewriteFromLeft : public Rewriter {
+
+  class RewriteFromLeft : public RewriterBase {
     std::set<RuleLookup> _set_rules;
 
    public:
-    using Rewriter::confluent;
+    using RewriterBase::confluent;
     using Rules::stats;
 
     RewriteFromLeft() = default;
@@ -392,10 +393,10 @@ namespace libsemigroups {
     void add_rule(Rule* rule);
     void reduce();
 
-    using Rewriter::add_rule;
+    using RewriterBase::add_rule;
     // template <typename StringLike>
     // void add_rule(StringLike const& lhs, StringLike const& rhs) {
-    //   if (Rewriter::add_rule(lhs, rhs)) {
+    //   if (RewriterBase::add_rule(lhs, rhs)) {
     //     clear_stack();
     //   }
     // }
@@ -406,23 +407,23 @@ namespace libsemigroups {
     iterator erase_from_active_rules(iterator);
   };
 
-  class RewriteTrie : public Rewriter {
+  class RewriteTrie : public RewriterBase {
     using index_type = AhoCorasick::index_type;
 
     std::unordered_map<index_type, Rule*> _rules;
     AhoCorasick                           _trie;
 
    public:
-    using Rewriter::confluent;
+    using RewriterBase::confluent;
     using Rules::stats;
     using iterator = internal_string_type::iterator;
 
-    RewriteTrie() : Rewriter(true), _rules(), _trie() {}
+    RewriteTrie() : RewriterBase(true), _rules(), _trie() {}
 
     RewriteTrie(const RewriteTrie& that);
     RewriteTrie& operator=(RewriteTrie const& that) {
       init();
-      Rewriter::operator=(that);
+      RewriterBase::operator=(that);
       for (auto* crule : that) {
         Rule* rule = const_cast<Rule*>(crule);
         add_rule_to_trie(rule);
@@ -433,7 +434,7 @@ namespace libsemigroups {
     ~RewriteTrie() = default;
 
     RewriteTrie& init() {
-      Rewriter::init();
+      RewriterBase::init();
       _trie.init();
       _rules.clear();
       return *this;
@@ -493,7 +494,7 @@ namespace libsemigroups {
       if (number_of_pending_rules() != 0) {
         return false;
       } else if (confluence_known()) {
-        return Rewriter::confluent();
+        return RewriterBase::confluent();
       }
 
       // Set cached value
@@ -527,10 +528,10 @@ namespace libsemigroups {
       }
     }
 
-    using Rewriter::add_rule;
+    using RewriterBase::add_rule;
     // template <typename StringLike>
     // void add_rule(StringLike const& lhs, StringLike const& rhs) {
-    //   if (Rewriter::add_rule(lhs, rhs)) {
+    //   if (RewriterBase::add_rule(lhs, rhs)) {
     //     clear_stack();
     //   }
     // }
