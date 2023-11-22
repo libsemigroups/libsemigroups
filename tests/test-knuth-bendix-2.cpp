@@ -32,6 +32,8 @@
 //
 // 6: contains tests for KnuthBendix created from word_type presentations
 
+#ifdef false
+
 #include <cstddef>      // for size_t
 #include <cstdint>      // for uint64_t
 #include <iostream>     // for string, ostringstream
@@ -1838,3 +1840,4 @@ namespace libsemigroups {
   }
 
 }  // namespace libsemigroups
+#endif

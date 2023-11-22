@@ -18,7 +18,7 @@
 
 // This file contains the declaration of the class KBE, which can be used as
 // the element_type for a FroidurePin instance. This class just wraps a
-// reduced word of a KnuthBendix instance.
+// reduced word of a KnuthBendix<> instance.
 
 #ifndef LIBSEMIGROUPS_DETAIL_KBE_HPP_
 #define LIBSEMIGROUPS_DETAIL_KBE_HPP_
@@ -29,7 +29,7 @@
 
 #include "libsemigroups/adapters.hpp"      // for One
 #include "libsemigroups/froidure-pin.hpp"  // for FroidurePin
-#include "libsemigroups/knuth-bendix.hpp"  // for KnuthBendix
+#include "libsemigroups/knuth-bendix.hpp"  // for KnuthBendix<>
 #include "libsemigroups/types.hpp"         // for word_type, letter_type
 
 namespace libsemigroups {
@@ -54,20 +54,20 @@ namespace libsemigroups {
       ~KBE() = default;
 
       // Construct from internal string
-      KBE(KnuthBendix&, internal_string_type const&);
-      KBE(KnuthBendix&, internal_string_type&&);
+      KBE(KnuthBendix<>&, internal_string_type const&);
+      KBE(KnuthBendix<>&, internal_string_type&&);
 
       // Construct from external types
-      KBE(KnuthBendix&, letter_type const&);
-      KBE(KnuthBendix&, word_type const&);
+      KBE(KnuthBendix<>&, letter_type const&);
+      KBE(KnuthBendix<>&, word_type const&);
 
       bool operator==(KBE const&) const;
       bool operator<(KBE const&) const;
       void swap(KBE&);
 
       internal_string_type const& string() const noexcept;
-      std::string                 string(KnuthBendix const& kb) const;
-      word_type                   word(KnuthBendix const& kb) const;
+      std::string                 string(KnuthBendix<> const& kb) const;
+      word_type                   word(KnuthBendix<> const& kb) const;
 
       friend std::ostringstream& operator<<(std::ostringstream& os,
                                             KBE const&          kbe) {
@@ -126,7 +126,7 @@ namespace libsemigroups {
     void operator()(detail::KBE&       xy,
                     detail::KBE const& x,
                     detail::KBE const& y,
-                    KnuthBendix*       kb,
+                    KnuthBendix<>*     kb,
                     size_t) {
       std::string w(x.string());  // internal_string_type
       w += y.string();
@@ -136,7 +136,7 @@ namespace libsemigroups {
 
   template <>
   struct FroidurePinState<detail::KBE> {
-    using type = KnuthBendix;
+    using type = KnuthBendix<>;
   };
 
   template <>

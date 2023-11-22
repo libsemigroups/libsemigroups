@@ -331,10 +331,10 @@ namespace libsemigroups {
       cong.run();
       if (cong.has<ToddCoxeter>() && cong.get<ToddCoxeter>()->finished()) {
         return non_trivial_classes(*cong.get<ToddCoxeter>(), r);
-      } else if (cong.has<KnuthBendix>()
-                 && cong.get<KnuthBendix>()->finished()) {
-        auto const& p       = cong.get<KnuthBendix>()->presentation();
-        auto        strings = non_trivial_classes(*cong.get<KnuthBendix>(),
+      } else if (cong.has<KnuthBendix<>>()
+                 && cong.get<KnuthBendix<>>()->finished()) {
+        auto const& p       = cong.get<KnuthBendix<>>()->presentation();
+        auto        strings = non_trivial_classes(*cong.get<KnuthBendix<>>(),
                                            r | to_strings(p.alphabet()));
         std::vector<std::vector<word_type>> result;
         for (auto const& klass : strings) {

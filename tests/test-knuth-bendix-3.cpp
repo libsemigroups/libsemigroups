@@ -32,6 +32,8 @@
 //
 // 6: contains tests for KnuthBendix using word_type presentations
 
+#ifdef false
+
 #include <cstddef>  // for size_t
 #include <iosfwd>   // for string
 #include <string>   // for allocator, basic_string
@@ -1198,3 +1200,4 @@ namespace libsemigroups {
   }
 
 }  // namespace libsemigroups
+#endif

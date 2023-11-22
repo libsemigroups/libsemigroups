@@ -212,7 +212,7 @@ namespace libsemigroups {
     return ioi.result();
   }
 
-  bool is_obviously_infinite(KnuthBendix& kb) {
+  bool is_obviously_infinite(KnuthBendix<>& kb) {
     if (kb.finished()) {
       return !word_graph::is_acyclic(kb.gilman_graph());
     }
@@ -241,8 +241,8 @@ namespace libsemigroups {
     if (cong.has<ToddCoxeter>()
         && is_obviously_infinite(*cong.get<ToddCoxeter>())) {
       return true;
-    } else if (cong.has<KnuthBendix>()
-               && is_obviously_infinite(*cong.get<KnuthBendix>())) {
+    } else if (cong.has<KnuthBendix<>>()
+               && is_obviously_infinite(*cong.get<KnuthBendix<>>())) {
       return true;
     } else if (cong.has<Kambites<word_type>>()
                && is_obviously_infinite(*cong.get<Kambites<word_type>>())) {

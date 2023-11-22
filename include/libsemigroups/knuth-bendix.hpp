@@ -29,32 +29,42 @@
 #ifndef LIBSEMIGROUPS_KNUTH_BENDIX_HPP_
 #define LIBSEMIGROUPS_KNUTH_BENDIX_HPP_
 
-#include <atomic>               // for atomic
-#include <cstddef>              // for size_t
-#include <cstdint>              // for int64_t, uint64_t
-#include <iosfwd>               // for ostream
-#include <iterator>             // for distance
-#include <list>                 // for list
-#include <map>                  // for map
-#include <set>                  // for set
-#include <stack>                // for stack
-#include <string>               // for basic_string, operator==
-#include <utility>              // for forward, move, pair
-#include <vector>               // for allocator, vector
-                                //
-#include "aho-corasick.hpp"     // for Aho-corasick
-#include "cong-intf.hpp"        // for CongruenceInterface
-#include "debug.hpp"            // for LIBSEMIGROUPS_ASSERT
-#include "exception.hpp"        // for LIBSEMIGROUPS_EXCEPTION
+#include <algorithm>         // for max, min
+#include <atomic>            // for atomic
+#include <cstddef>           // for size_t
+#include <cstdint>           // for int64_t, uint64_t
+#include <iosfwd>            // for ostream
+#include <iterator>          // for distance
+#include <limits>            // for numeric_limits
+#include <list>              // for list
+#include <map>               // for map
+#include <set>               // for set
+#include <stack>             // for stack
+#include <string>            // for basic_string, operator==
+#include <unordered_map>     // for unordered_map, operator!=
+#include <utility>           // for forward, move, pair
+#include <vector>            // for allocator, vector
+                             //
+#include "aho-corasick.hpp"  // for Aho-corasick
+#include "cong-intf.hpp"     // for CongruenceInterface
+#include "constants.hpp"     // for Max, PositiveInfinity, operat...
+#include "debug.hpp"         // for LIBSEMIGROUPS_ASSERT
+#include "exception.hpp"     // for LIBSEMIGROUPS_EXCEPTION
+// #include "obvinf.hpp"           // for is_obviously_infinite
+#include "order.hpp"            // for ShortLexCompare
 #include "paths.hpp"            // for Paths
 #include "presentation.hpp"     // for Presentation
+#include "ranges.hpp"           // for operator<<
 #include "rewriters.hpp"        // for RewriteTrie
 #include "runner.hpp"           // for Runner
 #include "to-presentation.hpp"  // for to_presentation
 #include "types.hpp"            // for word_type
 #include "word-graph.hpp"       // for WordGraph
+#include "words.hpp"            // for to_strings
 
 #include "detail/multi-string-view.hpp"  // for MultiStringView
+#include "detail/report.hpp"             // for Reporter, REPORT_DEFAULT, REP...
+#include "detail/string.hpp"             // for is_prefix, maximum_common_prefix
 
 #include "rx/ranges.hpp"  // for iterator_range
 
@@ -92,6 +102,8 @@ namespace libsemigroups {
   //! kb.confluent();        // true
   //! \endcode
 
+  template <typename Rewriter       = RewriteTrie,
+            typename ReductionOrder = ShortLexCompare>
   class KnuthBendix : public CongruenceInterface {
     friend class ::libsemigroups::detail::KBE;  // defined in detail/kbe.hpp
 
@@ -107,8 +119,6 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////
     // KnuthBendix - nested subclasses - private
     ////////////////////////////////////////////////////////////////////////
-
-    // class Rule;
 
     // Overlap measures
     struct OverlapMeasure {
@@ -162,10 +172,10 @@ namespace libsemigroups {
       Settings& operator=(Settings const&) noexcept = default;
       Settings& operator=(Settings&&) noexcept      = default;
 
-      size_t           check_confluence_interval;
-      size_t           max_overlap;
-      size_t           max_rules;
-      options::overlap overlap_policy;
+      size_t                    check_confluence_interval;
+      size_t                    max_overlap;
+      size_t                    max_rules;
+      typename options::overlap overlap_policy;
     } _settings;
 
     // TODO remove mutable
@@ -196,7 +206,7 @@ namespace libsemigroups {
     // KnuthBendix - data - private
     ////////////////////////////////////////////////////////////////////////
 
-    RewriteTrie               _rewriter;
+    Rewriter                  _rewriter;
     bool                      _gen_pairs_initted;
     WordGraph<size_t>         _gilman_graph;
     std::vector<std::string>  _gilman_graph_node_labels;
@@ -406,10 +416,10 @@ namespace libsemigroups {
     //! Constant.
     //!
     //! \sa options::overlap.
-    KnuthBendix& overlap_policy(options::overlap val);
+    KnuthBendix& overlap_policy(typename options::overlap val);
 
     // TODO doc
-    [[nodiscard]] options::overlap overlap_policy() const noexcept {
+    [[nodiscard]] typename options::overlap overlap_policy() const noexcept {
       return _settings.overlap_policy;
     }
 
@@ -658,7 +668,11 @@ namespace libsemigroups {
   //! This friend function allows a KnuthBendix object to be left shifted
   //! into a std::ostream, such as std::cout. The currently active rules
   //! of the system are represented in the output.
-  std::ostream& operator<<(std::ostream&, KnuthBendix const&);
+  template <typename Rewriter, typename ReductionOrder>
+  std::ostream& operator<<(std::ostream&,
+                           KnuthBendix<Rewriter, ReductionOrder> const&);
+
+  KnuthBendix(congruence_kind) -> KnuthBendix<>;
 
   namespace knuth_bendix {
 
@@ -682,7 +696,8 @@ namespace libsemigroups {
     //!
     //! \parameters
     //! (None)
-    void by_overlap_length(KnuthBendix&);
+    template <typename Rewriter, typename ReductionOrder>
+    void by_overlap_length(KnuthBendix<Rewriter, ReductionOrder>&);
 
     //! Returns a forward iterator pointing at the first normal form with
     //! length in a given range.
@@ -715,7 +730,9 @@ namespace libsemigroups {
     //! \sa
     //! \ref cend_normal_forms.
     // TODO update doc
-    [[nodiscard]] inline auto normal_forms(KnuthBendix& kb) {
+    template <typename Rewriter, typename ReductionOrder>
+    [[nodiscard]] inline auto
+    normal_forms(KnuthBendix<Rewriter, ReductionOrder>& kb) {
       using rx::operator|;
       ReversiblePaths paths(kb.gilman_graph());
       paths.from(0).reverse(kb.kind() == congruence_kind::left);
@@ -723,8 +740,10 @@ namespace libsemigroups {
     }
 
     // Compute non-trivial classes in kb1!
+    template <typename Rewriter, typename ReductionOrder>
     [[nodiscard]] std::vector<std::vector<std::string>>
-    non_trivial_classes(KnuthBendix& kb1, KnuthBendix& kb2);
+    non_trivial_classes(KnuthBendix<Rewriter, ReductionOrder>& kb1,
+                        KnuthBendix<Rewriter, ReductionOrder>& kb2);
 
     //! Return an iterator pointing at the left hand side of a redundant rule.
     //!
@@ -845,9 +864,9 @@ namespace libsemigroups {
     }
   }  // namespace knuth_bendix
 
-  template <typename Range>
-  [[nodiscard]] std::vector<std::vector<std::string>> partition(KnuthBendix& kb,
-                                                                Range r) {
+  template <typename Rewriter, typename ReductionOrder, typename Range>
+  [[nodiscard]] std::vector<std::vector<std::string>>
+  partition(KnuthBendix<Rewriter, ReductionOrder>& kb, Range r) {
     static_assert(
         std::is_same_v<std::decay_t<typename Range::output_type>, std::string>);
     using return_type = std::vector<std::vector<std::string>>;
@@ -880,8 +899,9 @@ namespace libsemigroups {
     return result;
   }
 
-  template <typename Word>
-  Presentation<Word> to_presentation(KnuthBendix const& kb) {
+  template <typename Word, typename Rewriter, typename ReductionOrder>
+  Presentation<Word>
+  to_presentation(KnuthBendix<Rewriter, ReductionOrder> const& kb) {
     if constexpr (std::is_same_v<Word, std::string>) {
       Presentation<std::string> p;
       p.alphabet(kb.presentation().alphabet());
@@ -895,4 +915,7 @@ namespace libsemigroups {
   }
 
 }  // namespace libsemigroups
+
+#include "knuth-bendix.tpp"
+
 #endif  // LIBSEMIGROUPS_KNUTH_BENDIX_HPP_

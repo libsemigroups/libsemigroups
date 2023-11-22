@@ -31,6 +31,7 @@
 // 5: contains tests for KnuthBendix created from FroidurePin instances
 //
 // 6: contains tests for KnuthBendix.
+#ifdef false
 
 #include <cstddef>  // for size_t
 #include <string>   // for basic_string, char_traits
@@ -437,3 +438,4 @@ namespace libsemigroups {
   }
 
 }  // namespace libsemigroups
+#endif

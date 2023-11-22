@@ -28,26 +28,27 @@ namespace libsemigroups {
     KBE::KBE(internal_string_type const& w) : _kb_word(w) {}
     KBE::KBE(internal_string_type&& w) : _kb_word(std::move(w)) {}
 
-    KBE::KBE(KnuthBendix& kb, internal_string_type const& w) : KBE(w) {
+    KBE::KBE(KnuthBendix<>& kb, internal_string_type const& w) : KBE(w) {
       kb._rewriter.rewrite(_kb_word);
     }
 
-    KBE::KBE(KnuthBendix& kb, internal_string_type&& w) : KBE(std::move(w)) {
+    KBE::KBE(KnuthBendix<>& kb, internal_string_type&& w) : KBE(std::move(w)) {
       kb._rewriter.rewrite(_kb_word);
     }
 
-    KBE::KBE(KnuthBendix& kb, word_type const& w)
+    KBE::KBE(KnuthBendix<>& kb, word_type const& w)
         : KBE(kb,
               std::accumulate(w.cbegin(),
                               w.cend(),
                               std::string(),
                               [](std::string& acc, letter_type a) {
-                                acc += KnuthBendix::uint_to_internal_string(a);
+                                acc += KnuthBendix<>::uint_to_internal_string(
+                                    a);
                                 return acc;
                               })) {}
 
-    KBE::KBE(KnuthBendix& kb, letter_type const& a)
-        : KBE(kb, KnuthBendix::uint_to_internal_string(a)) {}
+    KBE::KBE(KnuthBendix<>& kb, letter_type const& a)
+        : KBE(kb, KnuthBendix<>::uint_to_internal_string(a)) {}
 
     bool KBE::operator==(KBE const& that) const {
       return that._kb_word == this->_kb_word;
@@ -65,11 +66,11 @@ namespace libsemigroups {
       return _kb_word;
     }
 
-    word_type KBE::word(KnuthBendix const& kb) const {
+    word_type KBE::word(KnuthBendix<> const& kb) const {
       return kb.internal_string_to_word(_kb_word);
     }
 
-    std::string KBE::string(KnuthBendix const& kb) const {
+    std::string KBE::string(KnuthBendix<> const& kb) const {
       std::string out(_kb_word);
       kb.internal_to_external_string(out);  // changes out in-place
       return out;
@@ -87,7 +88,7 @@ namespace libsemigroups {
     // Turns out that the FroidurePin can be finished without the state
     // being finished, this sounds like a bug, I'm not 100% sure how that
     // works. Probably the state of the FroidurePin and the underlying
-    // KnuthBendix are not the same object, and one is being used when the
+    // KnuthBendix<> are not the same object, and one is being used when the
     // other one should be, or something.
     if (state()->finished()
         && state()->number_of_classes() != POSITIVE_INFINITY) {

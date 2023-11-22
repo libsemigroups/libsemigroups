@@ -22,13 +22,14 @@
 namespace libsemigroups {
 
   class FroidurePinBase;
-  class KnuthBendix;
+  // TODO uncomment  class KnuthBendix;
   class ToddCoxeter;
   enum class congruence_kind;
 
   ToddCoxeter to_todd_coxeter(congruence_kind knd, FroidurePinBase& fp);
 
-  ToddCoxeter to_todd_coxeter(congruence_kind knd, KnuthBendix& kb);
+  // TODO uncomment
+  // ToddCoxeter to_todd_coxeter(congruence_kind knd, KnuthBendix& kb);
 
 }  // namespace libsemigroups
 #endif  // LIBSEMIGROUPS_TO_TODD_COXETER_HPP_

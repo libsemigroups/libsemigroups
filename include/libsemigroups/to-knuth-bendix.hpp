@@ -22,12 +22,12 @@
 namespace libsemigroups {
 
   class FroidurePinBase;
-  class KnuthBendix;
+  // TODO uncomment class KnuthBendix;
   class ToddCoxeter;
   enum class congruence_kind;
 
-  KnuthBendix to_knuth_bendix(congruence_kind knd, FroidurePinBase& fp);
-  KnuthBendix to_knuth_bendix(congruence_kind knd, ToddCoxeter const& tc);
+  // KnuthBendix to_knuth_bendix(congruence_kind knd, FroidurePinBase& fp);
+  // KnuthBendix to_knuth_bendix(congruence_kind knd, ToddCoxeter const& tc);
 
 }  // namespace libsemigroups
 #endif  // LIBSEMIGROUPS_TO_KNUTH_BENDIX_HPP_

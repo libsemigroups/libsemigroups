@@ -22,8 +22,9 @@
 #include <cstddef>      // for size_t
 #include <type_traits>  // for enable_if_t, is_base_of
 
-#include "debug.hpp"       // for LIBSEMIGROUPS_ASSERT
-#include "exception.hpp"   // for LIBSEMIGROUPS_EXCEPTION
+#include "debug.hpp"      // for LIBSEMIGROUPS_ASSERT
+#include "exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
+#include "rewriters.hpp"
 #include "word-graph.hpp"  // for WordGraph
 
 #include "detail/kbe.hpp"  // for KBE
@@ -33,6 +34,8 @@
 namespace libsemigroups {
   class FroidurePinBase;  // forward decl
   class ToddCoxeter;
+
+  template <typename Rewriter, typename ReductionOrder>
   class KnuthBendix;
   class Congruence;
 
@@ -123,7 +126,7 @@ namespace libsemigroups {
   }
 
   FroidurePin<detail::TCE> to_froidure_pin(ToddCoxeter& tc);
-  FroidurePin<detail::KBE> to_froidure_pin(KnuthBendix& tc);
+  FroidurePin<detail::KBE> to_froidure_pin(KnuthBendix<>& tc);
 
   template <typename String>
   auto to_froidure_pin(Kambites<String>& k) {

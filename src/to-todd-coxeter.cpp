@@ -25,7 +25,7 @@
 #include "libsemigroups/exception.hpp"          // for LIBSEMIGROUPS_EXCEPTI...
 #include "libsemigroups/froidure-pin-base.hpp"  // for FroidurePinBase
 #include "libsemigroups/froidure-pin.hpp"       // for FroidurePin
-#include "libsemigroups/knuth-bendix.hpp"       // for KnuthBendix
+#include "libsemigroups/knuth-bendix.hpp"       // for KnuthBendix<>
 #include "libsemigroups/to-froidure-pin.hpp"    // for to_froidure_pin
 #include "libsemigroups/todd-coxeter.hpp"       // for ToddCoxeter
 #include "libsemigroups/types.hpp"              // for congruence_kind
@@ -60,11 +60,11 @@ namespace libsemigroups {
     return ToddCoxeter(knd, std::move(tc_arg));
   }
 
-  ToddCoxeter to_todd_coxeter(congruence_kind knd, KnuthBendix& kb) {
+  ToddCoxeter to_todd_coxeter(congruence_kind knd, KnuthBendix<>& kb) {
     if (kb.number_of_classes() == POSITIVE_INFINITY) {
       LIBSEMIGROUPS_EXCEPTION(
           "cannot construct a ToddCoxeter instance using the Cayley graph of "
-          "an infinite KnuthBendix object, maybe try ToddCoxeter({}, "
+          "an infinite KnuthBendix<> object, maybe try ToddCoxeter({}, "
           "kb.presentation()) instead?",
           kb.kind());
     }

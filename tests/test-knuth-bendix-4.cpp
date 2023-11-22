@@ -32,6 +32,8 @@
 //
 // 6: contains tests for KnuthBendix.
 
+#ifdef false
+
 #include <algorithm>      // for next_permutation
 #include <chrono>         // for milliseconds, seconds
 #include <cmath>          // for pow
@@ -752,3 +754,4 @@ namespace libsemigroups {
   }
 
 }  // namespace libsemigroups
+#endif

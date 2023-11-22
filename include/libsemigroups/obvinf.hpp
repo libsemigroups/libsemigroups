@@ -64,8 +64,9 @@
 #include <utility>  // for pair
 #include <vector>   // for vector
 
-#include "config.hpp"  // for LIBSEMIGROUPS_EIGEN_ENABLED
-#include "types.hpp"   // for word_type etc
+#include "config.hpp"     // for LIBSEMIGROUPS_EIGEN_ENABLED
+#include "rewriters.hpp"  // for RewriteTrie
+#include "types.hpp"      // for word_type etc
 
 #include "detail/uf.hpp"  // for Duf
 
@@ -84,6 +85,7 @@
 
 namespace libsemigroups {
   class ToddCoxeter;  // forward decl
+  template <typename Rewriter, typename ReductionOrder>
   class KnuthBendix;  // forward decl
   class Congruence;   // forward decl
 
@@ -201,7 +203,6 @@ namespace libsemigroups {
   bool is_obviously_infinite(Presentation<std::string> const& p);
 
   bool is_obviously_infinite(ToddCoxeter const& tc);
-  bool is_obviously_infinite(KnuthBendix& kb);
   bool is_obviously_infinite(Congruence& kb);
 
   template <typename Word>
@@ -214,6 +215,8 @@ namespace libsemigroups {
     }
     return k.small_overlap_class() >= 3;
   }
+
+  bool is_obviously_infinite(KnuthBendix<RewriteTrie, ShortLexCompare>& kb);
 
 }  // namespace libsemigroups
 #endif  // LIBSEMIGROUPS_OBVINF_HPP_
