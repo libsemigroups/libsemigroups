@@ -48,9 +48,7 @@
 #include "exception.hpp"        // for LIBSEMIGROUPS_EXCEPTION
 #include "paths.hpp"            // for Paths
 #include "presentation.hpp"     // for Presentation
-#include "rewrite-trie.hpp"     // for RewriteTrie
-#include "rewriter-base.hpp"    // for Rewriter
-#include "rule.hpp"             // for Rule
+#include "rewriters.hpp"        // for RewriteTrie
 #include "runner.hpp"           // for Runner
 #include "to-presentation.hpp"  // for to_presentation
 #include "types.hpp"            // for word_type
@@ -717,7 +715,7 @@ namespace libsemigroups {
     //! \ref cend_normal_forms.
     // TODO update doc
     [[nodiscard]] inline auto normal_forms(KnuthBendix& kb) {
-      using rx::      operator|;
+      using rx::operator|;
       ReversiblePaths paths(kb.gilman_graph());
       paths.from(0).reverse(kb.kind() == congruence_kind::left);
       return paths;

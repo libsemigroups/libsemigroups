@@ -35,7 +35,6 @@
 #include "libsemigroups/paths.hpp"      // for Paths
 #include "libsemigroups/presentation.hpp"  // for Presentation
 #include "libsemigroups/ranges.hpp"        // for operator<<
-#include "libsemigroups/rule.hpp"          // for rule
 #include "libsemigroups/runner.hpp"        // for Runner
 #include "libsemigroups/types.hpp"         // for word_type
 #include "libsemigroups/word-graph.hpp"    // for WordGraph
