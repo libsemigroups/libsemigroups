@@ -216,7 +216,20 @@ namespace libsemigroups {
     return k.small_overlap_class() >= 3;
   }
 
-  bool is_obviously_infinite(KnuthBendix<RewriteTrie, ShortLexCompare>& kb);
+  template <typename Rewriter, typename ReductionOrder>
+  bool is_obviously_infinite(KnuthBendix<Rewriter, ReductionOrder>& kb) {
+    if (kb.finished()) {
+      return !word_graph::is_acyclic(kb.gilman_graph());
+    }
+    auto const& p = kb.presentation();
+    if (p.alphabet().empty()) {
+      return false;
+    }
+    detail::IsObviouslyInfinite ioi(p.alphabet().size());
+    ioi.add_rules(p.alphabet(), p.rules.cbegin(), p.rules.cend());
+    ioi.add_rules(kb.generating_pairs().cbegin(), kb.generating_pairs().cend());
+    return ioi.result();
+  }
 
 }  // namespace libsemigroups
 #endif  // LIBSEMIGROUPS_OBVINF_HPP_

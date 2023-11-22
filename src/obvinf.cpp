@@ -17,6 +17,10 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
+// We put this first so that KnuthBendix is defined by the time obvinf.hpp
+// needs it.
+#include "libsemigroups/knuth-bendix.hpp"
+
 #include "libsemigroups/obvinf.hpp"
 
 #include <algorithm>  // for all_of
@@ -31,7 +35,6 @@
 #include "libsemigroups/cong.hpp"       // for StringToWord
 #include "libsemigroups/constants.hpp"  // for UNDEFINED
 #include "libsemigroups/debug.hpp"      // for LIBSEMIGROUPS_ASSERT
-#include "libsemigroups/knuth-bendix.hpp"
 #include "libsemigroups/todd-coxeter.hpp"
 #include "libsemigroups/words.hpp"  // for StringToWord
 
@@ -209,20 +212,6 @@ namespace libsemigroups {
     detail::IsObviouslyInfinite ioi(p.alphabet().size());
     ioi.add_rules(p.rules.cbegin(), p.rules.cend());
     ioi.add_rules(tc.generating_pairs().cbegin(), tc.generating_pairs().cend());
-    return ioi.result();
-  }
-
-  bool is_obviously_infinite(KnuthBendix<>& kb) {
-    if (kb.finished()) {
-      return !word_graph::is_acyclic(kb.gilman_graph());
-    }
-    auto const& p = kb.presentation();
-    if (p.alphabet().empty()) {
-      return false;
-    }
-    detail::IsObviouslyInfinite ioi(p.alphabet().size());
-    ioi.add_rules(p.alphabet(), p.rules.cbegin(), p.rules.cend());
-    ioi.add_rules(kb.generating_pairs().cbegin(), kb.generating_pairs().cend());
     return ioi.result();
   }
 
