@@ -19,6 +19,7 @@
 #ifndef LIBSEMIGROUPS_REWRITERS_HPP_
 #define LIBSEMIGROUPS_REWRITERS_HPP_
 
+#include <atomic>         // for atomic
 #include <set>            // for set
 #include <string>         // for basic_string, operator==
 #include <unordered_set>  // for set
