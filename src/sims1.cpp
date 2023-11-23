@@ -817,7 +817,6 @@ namespace libsemigroups {
     using namespace detail;       // NOLINT(build/namespaces)
     using namespace std::chrono;  // NOLINT(build/namespaces)
 
-    // Reporter
     auto time_total_ns = delta(start_time());
     auto time_diff     = delta(last_report());
 
@@ -874,9 +873,6 @@ namespace libsemigroups {
        string_time(time_per_node_last_sec));
 
     rc("Sims1: mean time    {} (/cong.)  | {} (/node)\n",
-       string_time(time_per_cong),
-       string_time(time_per_node));
-
     rc("Sims1: time         {} (total)   |\n", string_time(time_total_ns));
 
     reset_last_report();
