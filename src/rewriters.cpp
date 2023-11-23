@@ -238,6 +238,17 @@ namespace libsemigroups {
     }
   }
 
+  void RewriterBase::reduce() {
+    for (Rule const* rule : *this) {
+      // Copy rule and push_stack so that it is not modified by the
+      // call to clear_stack.
+      LIBSEMIGROUPS_ASSERT(rule->lhs() != rule->rhs());
+      if (push_stack(copy_rule(rule))) {
+        clear_stack();
+      }
+    }
+  }
+
   RewriteFromLeft& RewriteFromLeft::init() {
     RewriterBase::init();
     _set_rules.clear();
@@ -334,17 +345,6 @@ namespace libsemigroups {
     rewrite(*rule->lhs());
     rewrite(*rule->rhs());
     rule->reorder();
-  }
-
-  void RewriteFromLeft::reduce() {
-    for (Rule const* rule : *this) {
-      // Copy rule and push_stack so that it is not modified by the
-      // call to clear_stack.
-      LIBSEMIGROUPS_ASSERT(rule->lhs() != rule->rhs());
-      if (push_stack(copy_rule(rule))) {
-        clear_stack();
-      }
-    }
   }
 
   bool RewriteFromLeft::confluent() const {

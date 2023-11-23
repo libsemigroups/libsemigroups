@@ -22,7 +22,8 @@
 #include <atomic>         // for atomic
 #include <set>            // for set
 #include <string>         // for basic_string, operator==
-#include <unordered_set>  // for set
+#include <unordered_map>  // for unordered map
+#include <unordered_set>  // for unordered set
 
 #include "aho-corasick.hpp"
 #include "debug.hpp"  // for LIBSEMIGROUPS_ASSERT
@@ -328,6 +329,8 @@ namespace libsemigroups {
 
     void clear_stack();
 
+    void reduce();
+
     void rewrite(Rule* rule) const {
       rewrite(*rule->lhs());
       rewrite(*rule->rhs());
@@ -351,7 +354,6 @@ namespace libsemigroups {
       return rule;
     }
 
-    // TODO Remove bool and swap true for clear_stack?
     template <typename StringLike>
     void add_rule(StringLike const& lhs, StringLike const& rhs) {
       if (lhs != rhs) {
@@ -392,7 +394,6 @@ namespace libsemigroups {
 
     // TODO private?
     void add_rule(Rule* rule);
-    void reduce();
 
     using RewriterBase::add_rule;
     // template <typename StringLike>
@@ -516,17 +517,6 @@ namespace libsemigroups {
       Rules::add_rule(rule);
       add_rule_to_trie(rule);
       confluent(tril::unknown);
-    }
-
-    void reduce() {
-      for (Rule const* rule : *this) {
-        // Copy rule and push_stack so that it is not modified by the
-        // call to clear_stack.
-        LIBSEMIGROUPS_ASSERT(rule->lhs() != rule->rhs());
-        if (push_stack(copy_rule(rule))) {
-          clear_stack();
-        }
-      }
     }
 
     using RewriterBase::add_rule;
