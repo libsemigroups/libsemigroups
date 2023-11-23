@@ -198,7 +198,7 @@ namespace libsemigroups {
 
   word_type detail::StringToWord::operator()(std::string const& input) const {
     word_type output;
-    operator()(input, output);
+              operator()(input, output);
     return output;
   }
 

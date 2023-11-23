@@ -849,7 +849,7 @@ namespace libsemigroups {
     void add_commutes_rules_no_checks(Presentation<Word>& p,
                                       Word const&         letters1,
                                       Word const&         letters2) {
-      using words::operator+;
+      using words::      operator+;
       size_t const       m = letters1.size();
       size_t const       n = letters2.size();
       Presentation<Word> q;

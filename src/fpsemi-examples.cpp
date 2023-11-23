@@ -40,7 +40,7 @@
 
 namespace libsemigroups {
   using literals::operator""_w;
-  using words::operator+;
+  using words::   operator+;
 
   namespace {
 
