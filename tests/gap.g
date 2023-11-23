@@ -124,7 +124,7 @@ IsConjugateTransfMonoid := function(S, T)
   return S in Orbit(SymmetricGroup(n), T, POW);
 end;
 
-ExpectedNumber2 := function(max_size)
+:= function(max_size)
 local count, i, j, S, D, Ds, o, Ss; 
   count := 0;
   Ds := []; 
