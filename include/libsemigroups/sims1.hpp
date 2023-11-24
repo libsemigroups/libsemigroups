@@ -889,9 +889,8 @@ namespace libsemigroups {
       //! No doc
       [[nodiscard]] bool try_define(PendingDef const&);
 
-      // Try to pop from _pending into the argument
-      // (reference), returns true if successful and false
-      // if not.
+      // Try to pop from _pending into the argument (reference), returns true if
+      // successful and false if not.
       [[nodiscard]] bool try_pop(PendingDef&);
 
      public:
@@ -947,6 +946,13 @@ namespace libsemigroups {
         return _sims1->stats();
       }
     };  // class iterator_base
+
+    // TODO:
+    // * iterator_base_2_sided including the difference of iterator_base before
+    // the Sims2 changes and after
+    // * also rename iterator_base -> iterator_base_1_sided
+    // * make iterator templated on which iterator_base it inherits from
+    // *
 
    public:
     //! The return type of \ref cbegin and \ref cend.
