@@ -499,17 +499,17 @@ namespace libsemigroups {
         return RewriterBase::confluent();
       }
 
-      // Set cached value
-      confluent(tril::TRUE);
-
       for (auto it = begin(); it != end(); ++it) {
         if (!backtrack_confluence(*it,
                                   _trie.traverse((*it)->lhs()->cbegin() + 1,
                                                  (*it)->lhs()->cend()),
                                   0)) {
+          confluent(tril::FALSE);
           return false;
         }
       }
+      // Set cached value
+      confluent(tril::TRUE);
       return true;
     }
 

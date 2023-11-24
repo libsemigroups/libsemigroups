@@ -21,12 +21,12 @@
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
 #include "libsemigroups/aho-corasick.hpp"  // for dot
-#include "libsemigroups/knuth-bendix.hpp"  // for KnuthBendix
+#include "libsemigroups/rewriters.hpp"     // for RewriteTrie
 
 namespace libsemigroups {
   using namespace std::literals;
   LIBSEMIGROUPS_TEST_CASE("RewriteTrie", "000", "initial test", "[quick]") {
-    KnuthBendix::RewriteTrie rt;
+    RewriteTrie rt;
     REQUIRE(rt.number_of_active_rules() == 0);
     rt.add_rule("ba"s, "a"s);
     REQUIRE(rt.number_of_active_rules() == 1);
@@ -34,7 +34,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("RewriteTrie", "001", "simple test", "[quick]") {
-    KnuthBendix::RewriteTrie rt = KnuthBendix::RewriteTrie();
+    RewriteTrie rt = RewriteTrie();
 
     rt.add_rule("ac"s, "ca"s);
     rt.add_rule("aa"s, "a"s);
@@ -74,7 +74,7 @@ namespace libsemigroups {
                           "002",
                           "confluent fp semigroup 3 (infinite)",
                           "[quick]") {
-    KnuthBendix::RewriteTrie rt = KnuthBendix::RewriteTrie();
+    RewriteTrie rt = RewriteTrie();
 
     rt.add_rule("01"s, "10"s);
     rt.add_rule("02"s, "20"s);
@@ -96,7 +96,7 @@ namespace libsemigroups {
                           "non-confluent fp semigroup from "
                           "wikipedia (infinite)",
                           "[quick]") {
-    KnuthBendix::RewriteTrie rt = KnuthBendix::RewriteTrie();
+    RewriteTrie rt = RewriteTrie();
     rt.add_rule("000"s, ""s);
     rt.add_rule("111"s, ""s);
     rt.add_rule("010101"s, ""s);
@@ -107,7 +107,7 @@ namespace libsemigroups {
                           "004",
                           "Example 5.1 in Sims (infinite)",
                           "[quick]") {
-    KnuthBendix::RewriteTrie rt = KnuthBendix::RewriteTrie();
+    RewriteTrie rt = RewriteTrie();
     rt.add_rule("ab"s, ""s);
     rt.add_rule("ba"s, ""s);
     rt.add_rule("cd"s, ""s);
@@ -121,7 +121,7 @@ namespace libsemigroups {
                           "005",
                           "Example 5.1 in Sims (infinite)",
                           "[quick]") {
-    KnuthBendix::RewriteTrie rt = KnuthBendix::RewriteTrie();
+    RewriteTrie rt = RewriteTrie();
 
     rt.add_rule("Aa"s, ""s);
     rt.add_rule("aA"s, ""s);
@@ -136,7 +136,7 @@ namespace libsemigroups {
                           "006",
                           "Example 5.3 in Sims",
                           "[quick]") {
-    KnuthBendix::RewriteTrie rt = KnuthBendix::RewriteTrie();
+    RewriteTrie rt = RewriteTrie();
 
     rt.add_rule("aa"s, ""s);
     rt.add_rule("bbb"s, ""s);
@@ -149,7 +149,7 @@ namespace libsemigroups {
                           "007",
                           "Example 5.4 in Sims",
                           "[quick]") {
-    KnuthBendix::RewriteTrie rt = KnuthBendix::RewriteTrie();
+    RewriteTrie rt = RewriteTrie();
 
     rt.add_rule("aa"s, ""s);
     rt.add_rule("bB"s, ""s);
@@ -163,7 +163,7 @@ namespace libsemigroups {
                           "008",
                           "Example 6.4 in Sims (size 168)",
                           "[no-valgrind][quick]") {
-    KnuthBendix::RewriteTrie rt = KnuthBendix::RewriteTrie();
+    RewriteTrie rt = RewriteTrie();
 
     rt.add_rule("aa"s, ""s);
     rt.add_rule("bc"s, ""s);
@@ -178,7 +178,7 @@ namespace libsemigroups {
                           "009",
                           "random example",
                           "[no-valgrind][quick]") {
-    KnuthBendix::RewriteTrie rt = KnuthBendix::RewriteTrie();
+    RewriteTrie rt = RewriteTrie();
 
     rt.add_rule("000"s, "2"s);
     rt.add_rule("111"s, "2"s);
@@ -191,30 +191,30 @@ namespace libsemigroups {
   }
 
   // LIBSEMIGROUPS_TEST_CASE("RewriteTrie", "001", "simple test", "[quick]") {
-  //   KnuthBendix::RewriteTrie rt = KnuthBendix::RewriteTrie();
+  //   RewriteTrie rt = RewriteTrie();
   // }
 
   // LIBSEMIGROUPS_TEST_CASE("RewriteTrie", "001", "simple test", "[quick]") {
-  //   KnuthBendix::RewriteTrie rt = KnuthBendix::RewriteTrie();
+  //   RewriteTrie rt = RewriteTrie();
   // }
 
   // LIBSEMIGROUPS_TEST_CASE("RewriteTrie", "001", "simple test", "[quick]") {
-  //   KnuthBendix::RewriteTrie rt = KnuthBendix::RewriteTrie();
+  //   RewriteTrie rt = RewriteTrie();
   // }
 
   // LIBSEMIGROUPS_TEST_CASE("RewriteTrie", "001", "simple test", "[quick]") {
-  //   KnuthBendix::RewriteTrie rt = KnuthBendix::RewriteTrie();
+  //   RewriteTrie rt = RewriteTrie();
   // }
 
   // LIBSEMIGROUPS_TEST_CASE("RewriteTrie", "001", "simple test", "[quick]") {
-  //   KnuthBendix::RewriteTrie rt = KnuthBendix::RewriteTrie();
+  //   RewriteTrie rt = RewriteTrie();
   // }
 
   // LIBSEMIGROUPS_TEST_CASE("RewriteTrie", "001", "simple test", "[quick]") {
-  //   KnuthBendix::RewriteTrie rt = KnuthBendix::RewriteTrie();
+  //   RewriteTrie rt = RewriteTrie();
   // }
 
   // LIBSEMIGROUPS_TEST_CASE("RewriteTrie", "001", "simple test", "[quick]") {
-  //   KnuthBendix::RewriteTrie rt = KnuthBendix::RewriteTrie();
+  //   RewriteTrie rt = RewriteTrie();
   // }
 }  // namespace libsemigroups
