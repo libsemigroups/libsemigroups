@@ -85,7 +85,7 @@ namespace libsemigroups {
   // Fibonacci group F(2,5) - monoid presentation - has order 12 (group
   // elements + empty word)
   TEMPLATE_TEST_CASE("(from kbmag/standalone/kb_data/f25monoid)",
-                     "[000][quick][knuth-bendix][kbmag][shortlex]",
+                     "[031][quick][knuth-bendix][kbmag][shortlex]",
                      KNUTH_BENDIX_TYPES) {
     auto rg = ReportGuard(false);
 
@@ -150,7 +150,7 @@ namespace libsemigroups {
 
   // trivial group - BHN presentation
   TEMPLATE_TEST_CASE("(from kbmag/standalone/kb_data/degen4a)",
-                     "[000][quick][knuth-bendix][kbmag][shortlex]",
+                     "[032][quick][knuth-bendix][kbmag][shortlex]",
                      KNUTH_BENDIX_TYPES) {
     auto rg = ReportGuard(false);
 
@@ -188,7 +188,7 @@ namespace libsemigroups {
 
   // Torus group
   TEMPLATE_TEST_CASE("(from kbmag/standalone/kb_data/torus)",
-                     "[000][quick][knuth-bendix][kbmag][shortlex]",
+                     "[033][quick][knuth-bendix][kbmag][shortlex]",
                      KNUTH_BENDIX_TYPES) {
     auto rg = ReportGuard(false);
 
@@ -238,7 +238,7 @@ namespace libsemigroups {
 
   //  3-fold cover of A_6
   TEMPLATE_TEST_CASE("(from kbmag/standalone/kb_data/3a6)",
-                     "[000][quick][knuth-bendix][kbmag][shortlex]",
+                     "[034][quick][knuth-bendix][kbmag][shortlex]",
                      KNUTH_BENDIX_TYPES) {
     auto rg = ReportGuard(false);
 
@@ -295,7 +295,7 @@ namespace libsemigroups {
 
   //  Free group on 2 generators
   TEMPLATE_TEST_CASE("(from kbmag/standalone/kb_data/f2)",
-                     "[000][quick][knuth-bendix][kbmag][shortlex]",
+                     "[035][quick][knuth-bendix][kbmag][shortlex]",
                      KNUTH_BENDIX_TYPES) {
     auto rg = ReportGuard(false);
 
@@ -336,7 +336,7 @@ namespace libsemigroups {
 
   // Symmetric group S_16
   TEMPLATE_TEST_CASE("(from kbmag/standalone/kb_data/s16)",
-                     "[000][quick][knuth-bendix][kbmag][shortlex][no-valgrind]",
+                     "[036][quick][knuth-bendix][kbmag][shortlex][no-valgrind]",
                      KNUTH_BENDIX_TYPES) {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
@@ -596,7 +596,7 @@ namespace libsemigroups {
   // Presentation of group A_4 regarded as monoid presentation - gives
   // infinite monoid.
   TEMPLATE_TEST_CASE("(from kbmag/standalone/kb_data/a4monoid)",
-                     "[000][quick][knuth-bendix][kbmag][shortlex]",
+                     "[037][quick][knuth-bendix][kbmag][shortlex]",
                      KNUTH_BENDIX_TYPES) {
     auto rg = ReportGuard(false);
 
@@ -630,7 +630,7 @@ namespace libsemigroups {
 
   // fairly clearly the trivial group
   TEMPLATE_TEST_CASE("(from kbmag/standalone/kb_data/degen3)",
-                     "[000][quick][knuth-bendix][kbmag][shortlex][no-valgrind]",
+                     "[038][quick][knuth-bendix][kbmag][shortlex][no-valgrind]",
                      KNUTH_BENDIX_TYPES) {
     auto rg = ReportGuard(false);
 
@@ -658,7 +658,7 @@ namespace libsemigroups {
 
   // infinite cyclic group
   TEMPLATE_TEST_CASE("(from kbmag/standalone/kb_data/ab1)",
-                     "[000][quick][knuth-bendix][kbmag][shortlex]",
+                     "[039][quick][knuth-bendix][kbmag][shortlex]",
                      KNUTH_BENDIX_TYPES) {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
@@ -677,7 +677,7 @@ namespace libsemigroups {
 
   // A generator, but trivial.
   TEMPLATE_TEST_CASE("(from kbmag/standalone/kb_data/degen2)",
-                     "[000][quick][knuth-bendix][kbmag][shortlex]",
+                     "[040][quick][knuth-bendix][kbmag][shortlex]",
                      KNUTH_BENDIX_TYPES) {
     auto rg = ReportGuard(false);
 
@@ -700,7 +700,7 @@ namespace libsemigroups {
 
   // Fibonacci group F(2,5)
   TEMPLATE_TEST_CASE("(from kbmag/standalone/kb_data/f25)",
-                     "[000][quick][knuth-bendix][kbmag][shortlex]",
+                     "[041][quick][knuth-bendix][kbmag][shortlex]",
                      KNUTH_BENDIX_TYPES) {
     auto rg = ReportGuard(false);
 
@@ -756,7 +756,7 @@ namespace libsemigroups {
 
   // Von Dyck (2,3,7) group - infinite hyperbolic
   TEMPLATE_TEST_CASE("(from kbmag/standalone/kb_data/237)",
-                     "[000][quick][knuth-bendix][kbmag][shortlex]",
+                     "[042][quick][knuth-bendix][kbmag][shortlex]",
                      KNUTH_BENDIX_TYPES) {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
@@ -813,7 +813,7 @@ namespace libsemigroups {
 
   // Cyclic group of order 2.
   TEMPLATE_TEST_CASE("(from kbmag/standalone/kb_data/c2)",
-                     "[000][quick][knuth-bendix][kbmag][shortlex]",
+                     "[043][quick][knuth-bendix][kbmag][shortlex]",
                      KNUTH_BENDIX_TYPES) {
     auto rg = ReportGuard(false);
 
@@ -837,7 +837,7 @@ namespace libsemigroups {
   // The group is S_4, and the subgroup H of order 4. There are 30 reduced
   // words - 24 for the group elements, and 6 for the 6 cosets Hg.
   TEMPLATE_TEST_CASE("(from kbmag/standalone/kb_data/cosets)",
-                     "[000][quick][knuth-bendix][kbmag][shortlex]",
+                     "[044][quick][knuth-bendix][kbmag][shortlex]",
                      KNUTH_BENDIX_TYPES) {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
@@ -891,7 +891,7 @@ namespace libsemigroups {
   }
 
   TEMPLATE_TEST_CASE("Example 5.1 in Sims (KnuthBendix 09 again)",
-                     "[000][quick][knuth-bendix]",
+                     "[045][quick][knuth-bendix]",
                      KNUTH_BENDIX_TYPES) {
     auto rg = ReportGuard(false);
 
@@ -914,7 +914,7 @@ namespace libsemigroups {
   }
 
   TEMPLATE_TEST_CASE("(from kbmag/standalone/kb_data/nilp2)",
-                     "[000][quick][knuth-bendix][kbmag][shortlex]",
+                     "[046][quick][knuth-bendix][kbmag][shortlex]",
                      KNUTH_BENDIX_TYPES) {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
@@ -932,7 +932,7 @@ namespace libsemigroups {
   }
 
   TEMPLATE_TEST_CASE("Example 6.4 in Sims",
-                     "[000][quick][knuth-bendix][no-valgrind]",
+                     "[047][quick][knuth-bendix][no-valgrind]",
                      KNUTH_BENDIX_TYPES) {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
@@ -970,7 +970,7 @@ namespace libsemigroups {
 
   // Von Dyck (2,3,7) group - infinite hyperbolic
   TEMPLATE_TEST_CASE("KnuthBendix 071 again",
-                     "[no-valgrind][000][quick][knuth-bendix][shortlex]",
+                     "[no-valgrind][048][quick][knuth-bendix][shortlex]",
                      KNUTH_BENDIX_TYPES) {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
@@ -1043,7 +1043,7 @@ namespace libsemigroups {
 
   TEMPLATE_TEST_CASE(
       "Example 5.4 in Sims (KnuthBendix 11 again) (different overlap policy)",
-      "[000][quick][knuth-bendix]",
+      "[049][quick][knuth-bendix]",
       KNUTH_BENDIX_TYPES) {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
@@ -1085,7 +1085,7 @@ namespace libsemigroups {
 
   TEMPLATE_TEST_CASE("Example 5.4 in Sims (KnuthBendix 11 again) (different "
                      "overlap policy) x 2",
-                     "[000][quick][knuth-bendix]",
+                     "[050][quick][knuth-bendix]",
                      KNUTH_BENDIX_TYPES) {
     auto rg = ReportGuard(false);
 
@@ -1111,7 +1111,7 @@ namespace libsemigroups {
   }
 
   TEMPLATE_TEST_CASE("operator<<",
-                     "[000][quick][knuth-bendix]",
+                     "[051][quick][knuth-bendix]",
                      KNUTH_BENDIX_TYPES) {
     std::ostringstream os;
 
@@ -1135,7 +1135,7 @@ namespace libsemigroups {
   }
 
   TEMPLATE_TEST_CASE("confluence_interval",
-                     "[000][quick][knuth-bendix]",
+                     "[052][quick][knuth-bendix]",
                      KNUTH_BENDIX_TYPES) {
     Presentation<std::string> p;
     p.contains_empty_word(true);
@@ -1150,7 +1150,7 @@ namespace libsemigroups {
   }
 
   TEMPLATE_TEST_CASE("max_overlap",
-                     "[000][quick][knuth-bendix]",
+                     "[053][quick][knuth-bendix]",
                      KNUTH_BENDIX_TYPES) {
     Presentation<std::string> p;
     p.contains_empty_word(true);
@@ -1167,7 +1167,7 @@ namespace libsemigroups {
   }
 
   TEMPLATE_TEST_CASE("(from kbmag/standalone/kb_data/d22) (2 / 3) (finite)",
-                     "[000][quick][knuth-bendix][fpsemi][kbmag][shortlex]",
+                     "[054][quick][knuth-bendix][fpsemi][kbmag][shortlex]",
                      KNUTH_BENDIX_TYPES) {
     auto rg = ReportGuard(false);
 
@@ -1201,7 +1201,7 @@ namespace libsemigroups {
   }
 
   TEMPLATE_TEST_CASE("(from kbmag/standalone/kb_data/d22) (3 / 3) (finite)",
-                     "[000][quick][knuth-bendix][fpsemi][kbmag][shortlex]",
+                     "[055][quick][knuth-bendix][fpsemi][kbmag][shortlex]",
                      KNUTH_BENDIX_TYPES) {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
@@ -1226,7 +1226,7 @@ namespace libsemigroups {
   }
 
   TEMPLATE_TEST_CASE("small example",
-                     "[000][quick][knuth-bendix][shortlex]",
+                     "[056][quick][knuth-bendix][shortlex]",
                      KNUTH_BENDIX_TYPES) {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
@@ -1244,7 +1244,7 @@ namespace libsemigroups {
             == std::vector<std::string>({"a", "b", "aa", "ab", "ba", "bb"}));
   }
 
-  TEMPLATE_TEST_CASE("code coverage", "[000][quick]", KNUTH_BENDIX_TYPES) {
+  TEMPLATE_TEST_CASE("code coverage", "[057][quick]", KNUTH_BENDIX_TYPES) {
     TestType kb1(twosided);
     TestType kb2(kb1);
     REQUIRE(kb1.number_of_classes() == 0);
@@ -1256,7 +1256,7 @@ namespace libsemigroups {
     REQUIRE(kb3.presentation().rules.size() / 2 == 1);
   }
 
-  TEMPLATE_TEST_CASE("small overlap 1", "[000][quick]", KNUTH_BENDIX_TYPES) {
+  TEMPLATE_TEST_CASE("small overlap 1", "[058][quick]", KNUTH_BENDIX_TYPES) {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("BCA");
@@ -1280,7 +1280,7 @@ namespace libsemigroups {
 
   // Symmetric group S_9
   TEMPLATE_TEST_CASE("(from kbmag/standalone/kb_data/s9)",
-                     "[000][quick][knuth-bendix][kbmag][shortlex]",
+                     "[059][quick][knuth-bendix][kbmag][shortlex]",
                      KNUTH_BENDIX_TYPES) {
     auto rg = ReportGuard(false);
 
@@ -1328,7 +1328,7 @@ namespace libsemigroups {
   }
 
   TEMPLATE_TEST_CASE("C(4) monoid",
-                     "[000][quick][knuthbendix]",
+                     "[060][quick][knuthbendix]",
                      KNUTH_BENDIX_TYPES) {
     Presentation<std::string> p;
     p.alphabet("abcde");
@@ -1410,7 +1410,7 @@ namespace libsemigroups {
   }
 
   TEMPLATE_TEST_CASE("search for a monoid that might not exist",
-                     "[000][quick][knuthbendix]",
+                     "[061][quick][knuthbendix]",
                      KNUTH_BENDIX_TYPES) {
     Presentation<std::string> p;
     p.contains_empty_word(true);
@@ -1445,7 +1445,7 @@ namespace libsemigroups {
   }
 
   TEMPLATE_TEST_CASE("Chinese monoid",
-                     "[000][todd-coxeter][extreme]",
+                     "[062][todd-coxeter][extreme]",
                      KNUTH_BENDIX_TYPES) {
     // std::array<uint64_t, 11> const num = {
     //     0, 0, 4, 14, 50, 187, 730, 2'949, 12'234, 51'821, 223'190};  //
@@ -1463,7 +1463,7 @@ namespace libsemigroups {
   }
 
   TEMPLATE_TEST_CASE("hypostylic",
-                     "[000][todd-coxeter][extreme]",
+                     "[063][todd-coxeter][extreme]",
                      KNUTH_BENDIX_TYPES) {
     size_t n = 2;
     auto   p = fpsemigroup::hypo_plactic_monoid(n);
@@ -1483,7 +1483,7 @@ namespace libsemigroups {
   }
 
   TEMPLATE_TEST_CASE("Chinese id monoid",
-                     "[000][todd-coxeter][extreme]",
+                     "[064][todd-coxeter][extreme]",
                      KNUTH_BENDIX_TYPES) {
     auto n = 4;
     auto p = fpsemigroup::chinese_monoid(n);
@@ -1498,7 +1498,7 @@ namespace libsemigroups {
   }
 
   TEMPLATE_TEST_CASE("sigma stylic monoid",
-                     "[000][todd-coxeter][extreme]",
+                     "[065][todd-coxeter][extreme]",
                      KNUTH_BENDIX_TYPES) {
     {
       auto     p = fpsemigroup::sigma_stylic_monoid({2, 2, 2});
@@ -1561,7 +1561,7 @@ namespace libsemigroups {
   }
 
   TEMPLATE_TEST_CASE("sigma sylvester monoid",
-                     "[000][todd-coxeter][extreme]",
+                     "[066][todd-coxeter][extreme]",
                      KNUTH_BENDIX_TYPES) {
     using namespace literals;
     Presentation<word_type> p;
@@ -1691,7 +1691,7 @@ namespace libsemigroups {
   }
 
   TEMPLATE_TEST_CASE("sigma sylvester monoid x 2",
-                     "[000][todd-coxeter][extreme]",
+                     "[067][todd-coxeter][extreme]",
                      KNUTH_BENDIX_TYPES) {
     using namespace literals;
     Presentation<word_type> p;

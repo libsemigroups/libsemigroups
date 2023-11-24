@@ -79,7 +79,7 @@ namespace libsemigroups {
   }  // namespace
 
   TEMPLATE_TEST_CASE("Chapter 11, Lemma 1.8 (q = 6, r = 5) in NR (infinite)",
-                     "[000][knuth-bendix][quick]",
+                     "[068][knuth-bendix][quick]",
                      KNUTH_BENDIX_TYPES) {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
@@ -127,7 +127,7 @@ namespace libsemigroups {
 
   TEMPLATE_TEST_CASE(
       "Chapter 11, Section 2 (q = 6, r = 2, alpha = abaabba) in NR (size 4)",
-      "[000][knuth-bendix][quick]",
+      "[069][knuth-bendix][quick]",
       KNUTH_BENDIX_TYPES) {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
@@ -151,7 +151,7 @@ namespace libsemigroups {
   }
 
   TEMPLATE_TEST_CASE("Chapter 8, Theorem 4.2 in NR (infinite) ",
-                     "[000][knuth-bendix][quick]",
+                     "[070][knuth-bendix][quick]",
                      KNUTH_BENDIX_TYPES) {
     auto rg = ReportGuard(false);
 
@@ -189,7 +189,7 @@ namespace libsemigroups {
   }
 
   TEMPLATE_TEST_CASE("equal_to fp semigroup",
-                     "[000][quick][knuth-bendix]",
+                     "[071][quick][knuth-bendix]",
                      KNUTH_BENDIX_TYPES) {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
@@ -218,7 +218,7 @@ namespace libsemigroups {
   }
 
   TEMPLATE_TEST_CASE("equal_to free semigroup",
-                     "[000][quick][knuth-bendix]",
+                     "[072][quick][knuth-bendix]",
                      KNUTH_BENDIX_TYPES) {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
@@ -241,7 +241,7 @@ namespace libsemigroups {
   }
 
   TEMPLATE_TEST_CASE("from GAP smalloverlap gap/test.gi (infinite)",
-                     "[000][quick][knuth-bendix][smalloverlap]",
+                     "[073][quick][knuth-bendix][smalloverlap]",
                      KNUTH_BENDIX_TYPES) {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
@@ -273,7 +273,7 @@ namespace libsemigroups {
   }
 
   TEMPLATE_TEST_CASE("from GAP smalloverlap gap/test.gi:49 (infinite)",
-                     "[000][quick][knuth-bendix][smalloverlap]",
+                     "[074][quick][knuth-bendix][smalloverlap]",
                      KNUTH_BENDIX_TYPES) {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
@@ -303,7 +303,7 @@ namespace libsemigroups {
   }
 
   TEMPLATE_TEST_CASE("from GAP smalloverlap gap/test.gi:63 (infinite)",
-                     "[000][quick][knuth-bendix][smalloverlap]",
+                     "[075][quick][knuth-bendix][smalloverlap]",
                      KNUTH_BENDIX_TYPES) {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
@@ -331,7 +331,7 @@ namespace libsemigroups {
   }
 
   TEMPLATE_TEST_CASE("from GAP smalloverlap gap/test.gi:70 (infinite)",
-                     "[000][quick][knuth-bendix][smalloverlap]",
+                     "[076][quick][knuth-bendix][smalloverlap]",
                      KNUTH_BENDIX_TYPES) {
     auto rg = ReportGuard(false);
     // The following permits a more complex test of case (6), which also
@@ -363,7 +363,7 @@ namespace libsemigroups {
   }
 
   TEMPLATE_TEST_CASE("from GAP smalloverlap gap/test.gi:77 (infinite)",
-                     "[000][quick][knuth-bendix][smalloverlap][no-valgrind]",
+                     "[077][quick][knuth-bendix][smalloverlap][no-valgrind]",
                      KNUTH_BENDIX_TYPES) {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
@@ -395,7 +395,7 @@ namespace libsemigroups {
   }
 
   TEMPLATE_TEST_CASE("from GAP smalloverlap gap/test.gi:85 (infinite)",
-                     "[000][quick][knuth-bendix][smalloverlap]",
+                     "[078][quick][knuth-bendix][smalloverlap]",
                      KNUTH_BENDIX_TYPES) {
     auto rg = ReportGuard(false);
 
@@ -419,7 +419,7 @@ namespace libsemigroups {
   }
 
   TEMPLATE_TEST_CASE("Von Dyck (2,3,7) group (infinite)",
-                     "[000][quick][knuth-bendix][kbmag]",
+                     "[079][quick][knuth-bendix][kbmag]",
                      KNUTH_BENDIX_TYPES) {
     auto rg = ReportGuard(false);
 
@@ -452,7 +452,7 @@ namespace libsemigroups {
 
   TEMPLATE_TEST_CASE("Von Dyck (2,3,7) group - different "
                      "presentation (infinite)",
-                     "[000][no-valgrind][quick][knuth-bendix][kbmag]",
+                     "[080][no-valgrind][quick][knuth-bendix][kbmag]",
                      KNUTH_BENDIX_TYPES) {
     auto rg = ReportGuard(false);
 
@@ -480,7 +480,7 @@ namespace libsemigroups {
   }
 
   TEMPLATE_TEST_CASE("rewriting system from another test",
-                     "[000][quick][knuth-bendix][kbmag]",
+                     "[081][quick][knuth-bendix][kbmag]",
                      KNUTH_BENDIX_TYPES) {
     auto rg = ReportGuard(false);
 
@@ -532,7 +532,7 @@ namespace libsemigroups {
   }
 
   TEMPLATE_TEST_CASE("rewriting system from Congruence 20",
-                     "[000][quick][knuth-bendix]",
+                     "[082][quick][knuth-bendix]",
                      KNUTH_BENDIX_TYPES) {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
@@ -552,7 +552,7 @@ namespace libsemigroups {
   // 2-generator free abelian group (with this ordering KB terminates - but
   // no all)
   TEMPLATE_TEST_CASE("(from kbmag/standalone/kb_data/ab2)",
-                     "[000][quick][knuth-bendix][kbmag][shortlex]",
+                     "[083][quick][knuth-bendix][kbmag][shortlex]",
                      KNUTH_BENDIX_TYPES) {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
@@ -586,7 +586,7 @@ namespace libsemigroups {
   // uncommented order.
   TEMPLATE_TEST_CASE("(from kbmag/standalone/kb_data/d22) (1 / 3)"
                      "(infinite)",
-                     "[000][quick][knuth-bendix][kbmag][shortlex]",
+                     "[084][quick][knuth-bendix][kbmag][shortlex]",
                      KNUTH_BENDIX_TYPES) {
     auto rg = ReportGuard(false);
 
@@ -650,7 +650,7 @@ namespace libsemigroups {
 
   // No generators - no anything!
   TEMPLATE_TEST_CASE("(from kbmag/standalone/kb_data/degen1)",
-                     "[000][quick][knuth-bendix][kbmag][shortlex]",
+                     "[085][quick][knuth-bendix][kbmag][shortlex]",
                      KNUTH_BENDIX_TYPES) {
     auto rg = ReportGuard(false);
 
@@ -667,7 +667,7 @@ namespace libsemigroups {
 
   // Symmetric group S_4
   TEMPLATE_TEST_CASE("(from kbmag/standalone/kb_data/s4)",
-                     "[000][quick][knuth-bendix][kbmag][shortlex]",
+                     "[086][quick][knuth-bendix][kbmag][shortlex]",
                      KNUTH_BENDIX_TYPES) {
     auto rg = ReportGuard(false);
 
@@ -701,7 +701,7 @@ namespace libsemigroups {
   }
 
   TEMPLATE_TEST_CASE("fp semigroup (infinite)",
-                     "[000][quick][knuth-bendix]",
+                     "[087][quick][knuth-bendix]",
                      KNUTH_BENDIX_TYPES) {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
@@ -731,7 +731,7 @@ namespace libsemigroups {
   }
 
   TEMPLATE_TEST_CASE("Chapter 11, Section 1 (q = 4, r = 3) in NR(size 86)",
-                     "[000][knuth-bendix][quick]",
+                     "[088][knuth-bendix][quick]",
                      KNUTH_BENDIX_TYPES) {
     auto rg = ReportGuard(false);
 
@@ -775,7 +775,7 @@ namespace libsemigroups {
   }
 
   TEMPLATE_TEST_CASE("Chapter 11, Section 1 (q = 8, r = 5) in NR (size 746)",
-                     "[000][no-valgrind][knuth-bendix][quick]",
+                     "[089][no-valgrind][knuth-bendix][quick]",
                      KNUTH_BENDIX_TYPES) {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
@@ -815,7 +815,7 @@ namespace libsemigroups {
 
   // See KBFP 07 also.
   TEMPLATE_TEST_CASE("Chapter 7, Theorem 3.9 in NR (size 240)",
-                     "[000][no-valgrind][knuth-bendix][quick]",
+                     "[090][no-valgrind][knuth-bendix][quick]",
                      KNUTH_BENDIX_TYPES) {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
@@ -838,7 +838,7 @@ namespace libsemigroups {
   }
 
   TEMPLATE_TEST_CASE("F(2, 5) - Chapter 9, Section 1 in NR (size 11) x 2",
-                     "[000][knuth-bendix][quick]",
+                     "[091][knuth-bendix][quick]",
                      KNUTH_BENDIX_TYPES) {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
@@ -865,7 +865,7 @@ namespace libsemigroups {
   }
 
   TEMPLATE_TEST_CASE("F(2, 6) - Chapter 9, Section 1 in NR",
-                     "[000][knuth-bendix][quick]",
+                     "[092][knuth-bendix][quick]",
                      KNUTH_BENDIX_TYPES) {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
@@ -894,7 +894,7 @@ namespace libsemigroups {
   }
 
   TEMPLATE_TEST_CASE("Chapter 10, Section 4 in NR (infinite)",
-                     "[000][knuth-bendix][quick]",
+                     "[093][knuth-bendix][quick]",
                      KNUTH_BENDIX_TYPES) {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
@@ -921,7 +921,7 @@ namespace libsemigroups {
   // should be 2. With exponent 3, the presentation defines the trivial group,
   // with exponent of 2, it defines the symmetric group as desired.
   TEMPLATE_TEST_CASE("Sym(5) from Chapter 3, Proposition 1.1 in NR (size 120)",
-                     "[000][no-valgrind][knuth-bendix][quick]",
+                     "[094][no-valgrind][knuth-bendix][quick]",
                      KNUTH_BENDIX_TYPES) {
     auto rg = ReportGuard(false);
 
@@ -959,7 +959,7 @@ namespace libsemigroups {
 
   TEMPLATE_TEST_CASE(
       "SL(2, 7) from Chapter 3, Proposition 1.5 in NR (size 336) x 2",
-      "[000][no-valgrind][quick][knuth-bendix]",
+      "[095][no-valgrind][quick][knuth-bendix]",
       KNUTH_BENDIX_TYPES) {
     auto rg = ReportGuard(false);
 
@@ -995,7 +995,7 @@ namespace libsemigroups {
   }
 
   TEMPLATE_TEST_CASE("bicyclic monoid (infinite)",
-                     "[000][knuth-bendix][quick]",
+                     "[096][knuth-bendix][quick]",
                      KNUTH_BENDIX_TYPES) {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
@@ -1020,7 +1020,7 @@ namespace libsemigroups {
   }
 
   TEMPLATE_TEST_CASE("plactic monoid of degree 2 (infinite)",
-                     "[000][knuth-bendix][quick]",
+                     "[097][knuth-bendix][quick]",
                      KNUTH_BENDIX_TYPES) {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
@@ -1050,7 +1050,7 @@ namespace libsemigroups {
 
   TEMPLATE_TEST_CASE(
       "example before Chapter 7, Proposition 1.1 in NR (infinite)",
-      "[000][knuth-bendix][quick]",
+      "[098][knuth-bendix][quick]",
       KNUTH_BENDIX_TYPES) {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
@@ -1072,7 +1072,7 @@ namespace libsemigroups {
   }
 
   TEMPLATE_TEST_CASE("Chapter 7, Theorem 3.6 in NR (size 243)",
-                     "[000][knuth-bendix][quick]",
+                     "[099][knuth-bendix][quick]",
                      KNUTH_BENDIX_TYPES) {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
@@ -1109,7 +1109,7 @@ namespace libsemigroups {
   }
 
   TEMPLATE_TEST_CASE("finite semigroup (size 99)",
-                     "[000][knuth-bendix][quick]",
+                     "[100][knuth-bendix][quick]",
                      KNUTH_BENDIX_TYPES) {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;

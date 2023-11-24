@@ -71,7 +71,7 @@ namespace libsemigroups {
   KnuthBendix<RewriteTrie>, KnuthBendix<RewriteFromLeft>
 
   TEMPLATE_TEST_CASE("transformation semigroup (size 4)",
-                     "[000][quick][knuth-bendix]",
+                     "[119][quick][knuth-bendix]",
                      KNUTH_BENDIX_TYPES) {
     auto                  rg = ReportGuard(false);
     FroidurePin<Transf<>> S({Transf<>({1, 0}), Transf<>({0, 0})});
@@ -88,7 +88,7 @@ namespace libsemigroups {
   }
 
   TEMPLATE_TEST_CASE("transformation semigroup (size 9)",
-                     "[000][quick][knuth-bendix]",
+                     "[120][quick][knuth-bendix]",
                      KNUTH_BENDIX_TYPES) {
     auto                  rg = ReportGuard(false);
     FroidurePin<Transf<>> S;
@@ -107,7 +107,7 @@ namespace libsemigroups {
   }
 
   TEMPLATE_TEST_CASE("transformation semigroup (size 88)",
-                     "[000][quick][knuth-bendix]",
+                     "[121][quick][knuth-bendix]",
                      KNUTH_BENDIX_TYPES) {
     auto                  rg = ReportGuard(false);
     FroidurePin<Transf<>> S;
@@ -126,7 +126,7 @@ namespace libsemigroups {
   }
 
   TEMPLATE_TEST_CASE("internal_string_to_word",
-                     "[000][quick]",
+                     "[122][quick]",
                      KNUTH_BENDIX_TYPES) {
     auto                  rg = ReportGuard(false);
     FroidurePin<Transf<>> S;
@@ -143,7 +143,7 @@ namespace libsemigroups {
   }
 
   TEMPLATE_TEST_CASE("internal_string_to_word x 2",
-                     "[000][quick]",
+                     "[123][quick]",
                      KNUTH_BENDIX_TYPES) {
     auto                  rg = ReportGuard(false);
     FroidurePin<Transf<>> S(
@@ -160,7 +160,7 @@ namespace libsemigroups {
   }
 
   TEMPLATE_TEST_CASE("manual right congruence",
-                     "[000][quick][knuthbendix]",
+                     "[124][quick][knuthbendix]",
                      KNUTH_BENDIX_TYPES) {
     using words::operator+;
 
@@ -253,7 +253,7 @@ namespace libsemigroups {
   }
 
   TEMPLATE_TEST_CASE("right congruence!!!",
-                     "[000][quick][knuthbendix]",
+                     "[125][quick][knuthbendix]",
                      KNUTH_BENDIX_TYPES) {
     using words::operator+;
 
@@ -343,7 +343,7 @@ namespace libsemigroups {
   }
 
   TEMPLATE_TEST_CASE("manual left congruence!!!",
-                     "[000][quick][knuthbendix]",
+                     "[126][quick][knuthbendix]",
                      KNUTH_BENDIX_TYPES) {
     using words::operator+;
 
@@ -404,7 +404,7 @@ namespace libsemigroups {
   }
 
   TEMPLATE_TEST_CASE("automatic left congruence!!!",
-                     "[000][quick][knuthbendix]",
+                     "[127][quick][knuthbendix]",
                      KNUTH_BENDIX_TYPES) {
     using words::operator+;
 
