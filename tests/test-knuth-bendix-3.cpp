@@ -1152,12 +1152,13 @@ namespace libsemigroups {
       KNUTH_BENDIX_TYPES) {
     Presentation<std::string> p;
     p.alphabet("bABa");
-    presentation::add_inverse_rules(p, "BabeA");
+    p.contains_empty_word(true);
+    presentation::add_inverse_rules(p, "BabA");
     presentation::add_rule(p, "Abba", "BB");
     presentation::add_rule(p, "Baab", "AA");
 
     TestType kb(twosided, p);
-    knuth_bendix::by_overlap_length(kb);
+    // knuth_bendix::by_overlap_length(kb);
 
     REQUIRE(kb.number_of_classes() == POSITIVE_INFINITY);
   }

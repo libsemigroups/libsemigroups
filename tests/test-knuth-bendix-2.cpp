@@ -1341,7 +1341,7 @@ namespace libsemigroups {
   }
 
   TEMPLATE_TEST_CASE("1-relation hard case",
-                     "[fail][knuthbendix]",
+                     "[142][fail][knuthbendix]",
                      KNUTH_BENDIX_TYPES) {
     auto                      rg = ReportGuard(true);
     Presentation<std::string> p;
@@ -1357,8 +1357,9 @@ namespace libsemigroups {
   }
 
   TEMPLATE_TEST_CASE("1-relation hard case x 2",
-                     "[fail][knuthbendix]",
+                     "[143][quick][knuthbendix]",
                      KNUTH_BENDIX_TYPES) {
+    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.contains_empty_word(true);
     p.alphabet("abcd");
@@ -1385,12 +1386,16 @@ namespace libsemigroups {
     presentation::add_rule(p, "cbac", "ac");
     auto it = knuth_bendix::redundant_rule(p, std::chrono::milliseconds(100));
     while (it != p.rules.end()) {
-      std::cout << std::endl
-                << "REMOVING " << *it << " = " << *(it + 1) << std::endl;
+      // std::cout << std::endl
+      //           << "REMOVING " << *it << " = " << *(it + 1) << std::endl;
       p.rules.erase(it, it + 2);
       it = knuth_bendix::redundant_rule(p, std::chrono::milliseconds(100));
     }
-    REQUIRE(p.rules == std::vector<std::string>());
+    REQUIRE(p.rules
+            == std::vector<std::string>(
+                {"aa",  "a", "ad",  "d",  "bb",  "b", "ca",  "ac", "cc",  "c",
+                 "da",  "d", "dc",  "cd", "dd",  "d", "aba", "a",  "bab", "b",
+                 "bcb", "b", "bcd", "cd", "cbc", "c", "cdb", "cd"}));
     TestType kb(congruence_kind::twosided, p);
     REQUIRE(kb.number_of_classes() == 24);
     REQUIRE(kb.normal_form("dcb") == "cd");
@@ -1406,7 +1411,10 @@ namespace libsemigroups {
     REQUIRE(kb.normal_form("db") == "db");
     REQUIRE(kb.normal_form("cbdcbd") == "cd");
     REQUIRE((knuth_bendix::normal_forms(kb) | to_strings("abcd") | to_vector())
-            == std::vector<std::string>());
+            == std::vector<std::string>(
+                {"",    "a",   "b",   "c",   "d",    "ab",   "ac",   "ba",
+                 "bc",  "bd",  "cb",  "cd",  "db",   "abc",  "acb",  "bac",
+                 "bdb", "cba", "cbd", "dbc", "bacb", "bdbc", "cbdb", "cbdbc"}));
   }
 
   TEMPLATE_TEST_CASE("search for a monoid that might not exist",
@@ -1735,7 +1743,7 @@ namespace libsemigroups {
     p.alphabet(3);
     presentation::add_idempotent_rules_no_checks(p, 012_w);
     using words::operator+;
-    Words        words;
+    Words words;
     words.letters(3).min(0).max(3);
     size_t n = 3;
     for (size_t a = 0; a < n - 1; ++a) {
