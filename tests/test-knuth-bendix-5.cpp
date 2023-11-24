@@ -186,18 +186,17 @@ namespace libsemigroups {
     TestType    kb2(twosided, p);
     auto const& q = kb2.presentation();
 
-    // TODO Uncomment
-    // auto words = (S.normal_forms()
-    //               | rx::transform([](auto const& w) { return 2_w + w; })
-    //               | to_strings(q.alphabet()));
-    // REQUIRE((words | rx::count()) == 88);
-    // REQUIRE((words | rx::take(4) | rx::to_vector())
-    //         == std::vector<std::string>({"ca", "cb", "caa", "cab"}));
+    auto words = (S.normal_forms()
+                  | rx::transform([](word_type const& w) { return 2_w + w; })
+                  | to_strings(q.alphabet()));
+    REQUIRE((words | rx::count()) == 88);
+    REQUIRE((words | rx::take(4) | rx::to_vector())
+            == std::vector<std::string>({"ca", "cb", "caa", "cab"}));
 
     kb2.run();
-    // auto pp = partition(kb2, words);
+    auto pp = partition(kb2, words);
 
-    // REQUIRE(pp.size() == 72);
+    REQUIRE(pp.size() == 72);
 
     REQUIRE(kb2.gilman_graph().number_of_nodes() == 62);
 
@@ -223,33 +222,32 @@ namespace libsemigroups {
     REQUIRE(!kb2.contains(2_w + S.factorisation(Transf<>({1, 3, 3, 3, 3})),
                           2_w + S.factorisation(Transf<>({2, 3, 3, 3, 3}))));
 
-    // TODO Uncomment
-    // auto ntc = (iterator_range(pp.begin(), pp.end())
-    //             | filter([](auto const& val) { return val.size() > 1; })
-    //             | transform([](auto& val) {
-    //                 std::for_each(
-    //                     val.begin(), val.end(), [](auto& w) -> auto& {
-    //                       w.erase(w.begin());
-    //                       return w;
-    //                     });
-    //                 return val;
-    //               }));
+    auto ntc = (iterator_range(pp.begin(), pp.end())
+                | filter([](auto const& val) { return val.size() > 1; })
+                | transform([](auto& val) {
+                    std::for_each(
+                        val.begin(), val.end(), [](auto& w) -> auto& {
+                          w.erase(w.begin());
+                          return w;
+                        });
+                    return val;
+                  }));
 
-    // REQUIRE((ntc | count()) == 4);
-    // REQUIRE(
-    //     (ntc | to_vector())
-    //     == std::vector<std::vector<std::string>>(
-    //         {{"baaab",
-    //           "baaabb",
-    //           "aabaaab",
-    //           "abaaaba",
-    //           "abaaabab",
-    //           "baaabaaa",
-    //           "abaaabbaa"},
-    //          {"abaaab", "baaabab", "aabaaabab"},
-    //          {"baaaba", "abaaabb", "baaabba", "aabaaaba", "abaaabaa"},
-    //          {"baaabaa", "abaaabba", "baaabbaa", "aabaaabaa",
-    //          "abaaabaaa"}}));
+    REQUIRE((ntc | count()) == 4);
+    REQUIRE(
+        (ntc | to_vector())
+        == std::vector<std::vector<std::string>>(
+            {{"baaab",
+              "baaabb",
+              "aabaaab",
+              "abaaaba",
+              "abaaabab",
+              "baaabaaa",
+              "abaaabbaa"},
+             {"abaaab", "baaabab", "aabaaabab"},
+             {"baaaba", "abaaabb", "baaabba", "aabaaaba", "abaaabaa"},
+             {"baaabaa", "abaaabba", "baaabbaa", "aabaaabaa",
+             "abaaabaaa"}}));
   }
 
   TEMPLATE_TEST_CASE("right congruence!!!",
