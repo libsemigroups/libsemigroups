@@ -26,7 +26,7 @@
 namespace libsemigroups {
   using namespace std::literals;
   LIBSEMIGROUPS_TEST_CASE("RewriteTrie", "000", "initial test", "[quick]") {
-    RewriteTrie rt;
+    RewriteTrie rt = RewriteTrie();
     REQUIRE(rt.number_of_active_rules() == 0);
     rt.add_rule("ba"s, "a"s);
     REQUIRE(rt.number_of_active_rules() == 1);
@@ -100,6 +100,8 @@ namespace libsemigroups {
     rt.add_rule("000"s, ""s);
     rt.add_rule("111"s, ""s);
     rt.add_rule("010101"s, ""s);
+    rt.add_to_alphabet('0');
+    rt.add_to_alphabet('1');
     REQUIRE(!rt.confluent());
   }
 
@@ -113,6 +115,11 @@ namespace libsemigroups {
     rt.add_rule("cd"s, ""s);
     rt.add_rule("dc"s, ""s);
     rt.add_rule("ca"s, "ac"s);
+
+    rt.add_to_alphabet('a');
+    rt.add_to_alphabet('b');
+    rt.add_to_alphabet('c');
+    rt.add_to_alphabet('d');
 
     REQUIRE(!rt.confluent());
   }
@@ -129,6 +136,11 @@ namespace libsemigroups {
     rt.add_rule("bB"s, ""s);
     rt.add_rule("ba"s, "ab"s);
 
+    rt.add_to_alphabet('A');
+    rt.add_to_alphabet('a');
+    rt.add_to_alphabet('B');
+    rt.add_to_alphabet('b');
+
     REQUIRE(!rt.confluent());
   }
 
@@ -141,6 +153,9 @@ namespace libsemigroups {
     rt.add_rule("aa"s, ""s);
     rt.add_rule("bbb"s, ""s);
     rt.add_rule("ababab"s, ""s);
+
+    rt.add_to_alphabet('a');
+    rt.add_to_alphabet('b');
 
     REQUIRE(!rt.confluent());
   }
@@ -156,6 +171,10 @@ namespace libsemigroups {
     rt.add_rule("bbb"s, ""s);
     rt.add_rule("ababab"s, ""s);
 
+    rt.add_to_alphabet('a');
+    rt.add_to_alphabet('b');
+    rt.add_to_alphabet('B');
+
     REQUIRE(!rt.confluent());
   }
 
@@ -170,6 +189,9 @@ namespace libsemigroups {
     rt.add_rule("bbb"s, ""s);
     rt.add_rule("ababababababab"s, ""s);
     rt.add_rule("abacabacabacabac"s, ""s);
+
+    rt.add_to_alphabet('a');
+    rt.add_to_alphabet('b');
 
     REQUIRE(!rt.confluent());
   }
@@ -187,34 +209,45 @@ namespace libsemigroups {
     rt.add_rule("12"s, "1"s);
     rt.add_rule("12"s, "2"s);
 
+    rt.add_to_alphabet('0');
+    rt.add_to_alphabet('1');
+    rt.add_to_alphabet('2');
+
     REQUIRE(!rt.confluent());
   }
 
-  // LIBSEMIGROUPS_TEST_CASE("RewriteTrie", "001", "simple test", "[quick]") {
+  // LIBSEMIGROUPS_TEST_CASE("RewriteTrie", "001", "simple test", "[quick]")
+  // {
   //   RewriteTrie rt = RewriteTrie();
   // }
 
-  // LIBSEMIGROUPS_TEST_CASE("RewriteTrie", "001", "simple test", "[quick]") {
+  // LIBSEMIGROUPS_TEST_CASE("RewriteTrie", "001", "simple test", "[quick]")
+  // {
   //   RewriteTrie rt = RewriteTrie();
   // }
 
-  // LIBSEMIGROUPS_TEST_CASE("RewriteTrie", "001", "simple test", "[quick]") {
+  // LIBSEMIGROUPS_TEST_CASE("RewriteTrie", "001", "simple test", "[quick]")
+  // {
   //   RewriteTrie rt = RewriteTrie();
   // }
 
-  // LIBSEMIGROUPS_TEST_CASE("RewriteTrie", "001", "simple test", "[quick]") {
+  // LIBSEMIGROUPS_TEST_CASE("RewriteTrie", "001", "simple test", "[quick]")
+  // {
   //   RewriteTrie rt = RewriteTrie();
   // }
 
-  // LIBSEMIGROUPS_TEST_CASE("RewriteTrie", "001", "simple test", "[quick]") {
+  // LIBSEMIGROUPS_TEST_CASE("RewriteTrie", "001", "simple test", "[quick]")
+  // {
   //   RewriteTrie rt = RewriteTrie();
   // }
 
-  // LIBSEMIGROUPS_TEST_CASE("RewriteTrie", "001", "simple test", "[quick]") {
+  // LIBSEMIGROUPS_TEST_CASE("RewriteTrie", "001", "simple test", "[quick]")
+  // {
   //   RewriteTrie rt = RewriteTrie();
   // }
 
-  // LIBSEMIGROUPS_TEST_CASE("RewriteTrie", "001", "simple test", "[quick]") {
+  // LIBSEMIGROUPS_TEST_CASE("RewriteTrie", "001", "simple test", "[quick]")
+  // {
   //   RewriteTrie rt = RewriteTrie();
   // }
 }  // namespace libsemigroups
