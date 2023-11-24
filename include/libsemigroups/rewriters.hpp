@@ -494,6 +494,7 @@ namespace libsemigroups {
     // TODO Better option than vector of unordered_sets
     [[nodiscard]] bool confluent() const {
       if (number_of_pending_rules() != 0) {
+        confluent(tril::FALSE);
         return false;
       } else if (confluence_known()) {
         return RewriterBase::confluent();
