@@ -353,6 +353,17 @@ namespace libsemigroups {
     } else if (confluence_known()) {
       return RewriterBase::confluent();
     }
+    // TODO Launch ticker here
+    // reported           = true;
+    // auto total_pairs   = _active_rules.size() * _active_rules.size();
+    // auto total_pairs_s = detail::group_digits(total_pairs);
+
+    // report_default("KnuthBendix: locally confluent for {:>{width}} / "
+    //                "{:>{width}} ({:.1f}%)\n",
+    //                detail::group_digits(seen),
+    //                total_pairs_s,
+    //                100 * static_cast<double>(seen) / total_pairs,
+    //                fmt::arg("width", total_pairs_s.size()));
     // bool reported = false;
     confluent(tril::TRUE);
     internal_string_type word1;

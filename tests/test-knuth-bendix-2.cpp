@@ -1675,28 +1675,35 @@ namespace libsemigroups {
     presentation::add_rule(p, 2310213_w, 231021_w);
     presentation::add_rule(p, 2312013_w, 231201_w);
     REQUIRE(p.rules.size() == 196);
-    auto it = knuth_bendix::redundant_rule(p, std::chrono::milliseconds(100));
-    while (it != p.rules.cend()) {
-      p.rules.erase(it, it + 2);
-      it = knuth_bendix::redundant_rule(p, std::chrono::milliseconds(100));
-    }
+    {
+      ReportGuard rg(false);
+      auto it = knuth_bendix::redundant_rule(p, std::chrono::milliseconds(100));
+      while (it != p.rules.cend()) {
+        p.rules.erase(it, it + 2);
+        it = knuth_bendix::redundant_rule(p, std::chrono::milliseconds(100));
+      }
 
-    REQUIRE(p.rules.size() == 58);
-    REQUIRE(p.rules
-            == std::vector<word_type>(
-                {00_w,      0_w,      11_w,      1_w,      22_w,      2_w,
-                 33_w,      3_w,      010_w,     01_w,     020_w,     02_w,
-                 030_w,     03_w,     121_w,     12_w,     131_w,     13_w,
-                 232_w,     23_w,     1202_w,    120_w,    1303_w,    130_w,
-                 2303_w,    230_w,    2313_w,    231_w,    10212_w,   1021_w,
-                 10313_w,   1031_w,   20313_w,   2031_w,   20323_w,   2032_w,
-                 21323_w,   2132_w,   102312_w,  10231_w,  103212_w,  10321_w,
-                 201323_w,  20132_w,  203123_w,  20312_w,  210323_w,  21032_w,
-                 213023_w,  21302_w,  1032312_w, 103231_w, 2101323_w, 210132_w,
-                 2103123_w, 210312_w, 2130123_w, 213012_w}));
-    TestType kb(twosided, p);
-    kb.run();
-    REQUIRE(kb.number_of_classes() == 312);
+      REQUIRE(p.rules.size() == 58);
+      REQUIRE(
+          p.rules
+          == std::vector<word_type>(
+              {00_w,      0_w,      11_w,      1_w,      22_w,      2_w,
+               33_w,      3_w,      010_w,     01_w,     020_w,     02_w,
+               030_w,     03_w,     121_w,     12_w,     131_w,     13_w,
+               232_w,     23_w,     1202_w,    120_w,    1303_w,    130_w,
+               2303_w,    230_w,    2313_w,    231_w,    10212_w,   1021_w,
+               10313_w,   1031_w,   20313_w,   2031_w,   20323_w,   2032_w,
+               21323_w,   2132_w,   102312_w,  10231_w,  103212_w,  10321_w,
+               201323_w,  20132_w,  203123_w,  20312_w,  210323_w,  21032_w,
+               213023_w,  21302_w,  1032312_w, 103231_w, 2101323_w, 210132_w,
+               2103123_w, 210312_w, 2130123_w, 213012_w}));
+    }
+    {
+      TestType    kb(twosided, p);
+      ReportGuard rg(true);
+      kb.run();
+      REQUIRE(kb.number_of_classes() == 312);
+    }
   }
 
   TEMPLATE_TEST_CASE("sigma sylvester monoid x 2",

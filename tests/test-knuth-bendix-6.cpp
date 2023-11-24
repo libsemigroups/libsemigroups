@@ -344,6 +344,8 @@ namespace libsemigroups {
     auto     p = full_transformation_monoid(n, fpsemigroup::author::Iwahori);
     TestType kb(twosided, p);
     REQUIRE(!is_obviously_infinite(kb));
+    kb.run();
+    REQUIRE(kb.number_of_active_rules() == 1'162);
     REQUIRE(kb.number_of_classes() == 3'125);
   }
 

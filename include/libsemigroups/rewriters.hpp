@@ -150,6 +150,7 @@ namespace libsemigroups {
       Stats& operator=(Stats const&) noexcept = default;
       Stats& operator=(Stats&&) noexcept      = default;
 
+      // TODO remove duplication with KnuthBendix::Stats
       size_t   max_stack_depth;  // TODO remove this to RewriteFromLeft
       size_t   max_word_length;
       size_t   max_active_word_length;

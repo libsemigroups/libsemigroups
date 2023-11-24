@@ -60,15 +60,4 @@ namespace libsemigroups {
     return ToddCoxeter(knd, std::move(tc_arg));
   }
 
-  ToddCoxeter to_todd_coxeter(congruence_kind knd, KnuthBendix<>& kb) {
-    if (kb.number_of_classes() == POSITIVE_INFINITY) {
-      LIBSEMIGROUPS_EXCEPTION(
-          "cannot construct a ToddCoxeter instance using the Cayley graph of "
-          "an infinite KnuthBendix<> object, maybe try ToddCoxeter({}, "
-          "kb.presentation()) instead?",
-          kb.kind());
-    }
-    auto fp = to_froidure_pin(kb);
-    return to_todd_coxeter(knd, fp);
-  }
 }  // namespace libsemigroups

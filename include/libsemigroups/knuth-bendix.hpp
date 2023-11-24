@@ -106,8 +106,8 @@ namespace libsemigroups {
   template <typename Rewriter       = RewriteTrie,
             typename ReductionOrder = ShortLexCompare>
   class KnuthBendix : public CongruenceInterface {
-    friend class ::libsemigroups::detail::KBE<KnuthBendix>;  // defined in
-                                                             // detail/kbe.hpp
+    // defined in detail/kbe.hpp
+    friend class ::libsemigroups::detail::KBE<KnuthBendix>;
 
     ////////////////////////////////////////////////////////////////////////
     // KnuthBendix - typedefs/aliases - private
@@ -486,9 +486,14 @@ namespace libsemigroups {
     //! \parameters
     //! (None)
     [[nodiscard]] size_t number_of_active_rules() const noexcept;
+
     // TODO doc
     [[nodiscard]] size_t number_of_inactive_rules() const noexcept {
       return _rewriter.number_of_inactive_rules();
+    }
+
+    [[nodiscard]] size_t total_rules() const noexcept {
+      return _rewriter.stats().total_rules;
     }
 
     //! Returns a copy of the active rules.
@@ -583,7 +588,7 @@ namespace libsemigroups {
     //! reduced and confluent, which might be never.
     //!
     //! \sa \ref number_of_normal_forms,
-    //! \ref cbegin_normal_forms, and \ref cend_normal_forms.
+    //! \ref cbegin_normal_forms, and \ref cend_normal_forms./
     //!
     //! \parameters
     //! (None)
@@ -628,9 +633,12 @@ namespace libsemigroups {
     // TODO required?
     [[nodiscard]] std::string normal_form(std::string const& w);
 
-    void report_rules() const;
-
    private:
+    void report_presentation(Presentation<std::string> const&) const;
+    void report_before_run() const;
+    void report_progress_from_thread() const;
+    void report_after_run() const;
+
     void throw_if_started() const;
     void stats_check_point() const;
 
@@ -664,6 +672,7 @@ namespace libsemigroups {
     //////////////////////////////////////////////////////////////////////////
 
     void run_impl() override;
+    void run_real();
     bool finished_impl() const override;
   };
 
@@ -901,12 +910,16 @@ namespace libsemigroups {
     return result;
   }
 
+  // TODO to tpp file
   template <typename Word, typename Rewriter, typename ReductionOrder>
   Presentation<Word>
   to_presentation(KnuthBendix<Rewriter, ReductionOrder> const& kb) {
     if constexpr (std::is_same_v<Word, std::string>) {
+      auto const&               p_orig = kb.presentation();
       Presentation<std::string> p;
-      p.alphabet(kb.presentation().alphabet());
+      p.alphabet(p_orig.alphabet())
+          .contains_empty_word(p_orig.contains_empty_word());
+
       for (auto const& rule : kb.active_rules()) {
         presentation::add_rule(p, rule.first, rule.second);
       }

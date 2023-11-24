@@ -16,6 +16,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
+#include "libsemigroups/detail/report.hpp"
 namespace libsemigroups {
 
   namespace detail {
@@ -336,27 +337,52 @@ namespace libsemigroups {
   }
 
   template <typename Rewriter, typename ReductionOrder>
-  void KnuthBendix<Rewriter, ReductionOrder>::report_rules() const {
+  void KnuthBendix<Rewriter, ReductionOrder>::report_presentation(
+      Presentation<std::string> const& p) const {
+    using detail::group_digits;
+    auto shortest_short = presentation::shortest_rule_length(presentation());
+    auto longest_short  = presentation::longest_rule_length(presentation());
+
+    report_default("KnuthBendix: |A| = {}, |R| = {}, "
+                   "|u| + |v| \u2208 [{}, {}], \u2211(|u| + |v|) = {}\n",
+                   p.alphabet().size(),
+                   group_digits(p.rules.size() / 2),
+                   shortest_short,
+                   longest_short,
+                   group_digits(presentation::length(p)));
+  }
+
+  template <typename Rewriter, typename ReductionOrder>
+  void KnuthBendix<Rewriter, ReductionOrder>::report_before_run() const {
+    if (report::should_report()) {
+      report_no_prefix("{:+<95}\n", "");
+      report_default("KnuthBendix: STARTING . . .\n");
+      report_no_prefix("{:+<95}\n", "");
+
+      report_presentation(presentation());
+    }
+  }
+
+  template <typename Rewriter, typename ReductionOrder>
+  void
+  KnuthBendix<Rewriter, ReductionOrder>::report_progress_from_thread() const {
     using detail::group_digits;
     using detail::signed_group_digits;
     using std::chrono::duration_cast;
+
     using high_resolution_clock = std::chrono::high_resolution_clock;
     using nanoseconds           = std::chrono::nanoseconds;
 
-    if (!report() && (!report::should_report() || !finished())) {
-      return;
-    }
-    auto run_time = duration_cast<nanoseconds>(high_resolution_clock::now()
-                                               - this->_stats.start_time);
-
     auto active   = number_of_active_rules();
     auto inactive = number_of_inactive_rules();
-    auto defined  = _stats.total_rules;
+    auto defined  = _rewriter.stats().total_rules;
 
     int64_t const active_diff   = active - _stats.prev_active_rules;
     int64_t const inactive_diff = inactive - _stats.prev_inactive_rules;
     int64_t const defined_diff  = defined - _stats.prev_total_rules;
 
+    auto run_time = duration_cast<nanoseconds>(high_resolution_clock::now()
+                                               - start_time());
     auto const mean_defined
         = group_digits(std::pow(10, 9) * static_cast<double>(defined)
                        / run_time.count())
@@ -366,49 +392,69 @@ namespace libsemigroups {
                        / run_time.count())
           + "/s";
 
-    auto msg = fmt::format("{:-<95}\n", "");
-    msg += fmt_default(
-        "KnuthBendix: rules {:>12} (active) | {:>12} (inactive) | {:>12} "
-        "(defined)\n",
-        group_digits(active),
-        group_digits(inactive),
-        group_digits(defined));
+    detail::ReportCell<4> rc;
+    rc.min_width(12).divider("{:-<95}\n");
+    rc("KnuthBendix: rules {} (active) | {} (inactive) | {} (defined)\n",
+       group_digits(active),
+       group_digits(inactive),
+       group_digits(defined));
 
-    msg += fmt_default(
-        "KnuthBendix: diff  {:>12} (active) | {:>12} (inactive) | "
-        "{:>12} (defined)\n",
-        signed_group_digits(active_diff),
-        signed_group_digits(inactive_diff),
-        signed_group_digits(defined_diff));
-    msg += fmt_default(
-        "KnuthBendix: time  {:>12} (total)  | {:>12} (killed)   | {:>12} "
-        "(defined)\n",
-        string_time(run_time),
-        mean_killed,
-        mean_defined);
-    msg += fmt::format("{:-<95}\n", "");
+    rc("KnuthBendix: diff  {} (active) | {} (inactive) | {} (defined)\n",
+       signed_group_digits(active_diff),
+       signed_group_digits(inactive_diff),
+       signed_group_digits(defined_diff));
 
-    if (finished()) {
-      auto width = group_digits(_stats.max_stack_depth).size();
-      msg += fmt_default("KnuthBendix: max stack depth          {:>{width}}\n",
-                         group_digits(_stats.max_stack_depth),
-                         fmt::arg("width", width));
-      msg += fmt_default("KnuthBendix: max rule length          {:>{width}}\n",
-                         group_digits(_stats.max_word_length),
-                         fmt::arg("width", width));
-      msg += fmt_default("KnuthBendix: max active rule length   {:>{width}}\n",
-                         group_digits(max_active_word_length()),
-                         fmt::arg("width", width));
-      msg += fmt_default("KnuthBendix: number of unique lhs     {:>{width}}\n",
-                         group_digits(_stats.unique_lhs_rules.size()),
-                         fmt::arg("width", width));
-      msg += fmt::format("{:-<95}\n", "");
-    }
+    rc("KnuthBendix: time  {} (total)  | {} (killed)   | {} (defined)\n",
+       string_time(run_time),
+       mean_killed,
+       mean_defined);
 
-    report_no_prefix(msg);
     stats_check_point();
   }
 
+  template <typename Rewriter, typename ReductionOrder>
+  void KnuthBendix<Rewriter, ReductionOrder>::report_after_run() const {
+    if (report::should_report()) {
+      report_progress_from_thread();
+      if (finished()) {
+        using detail::group_digits;
+        detail::ReportCell<2> rc;
+        rc.min_width(12).divider("{:-<95}\n");
+        rc("KnuthBendix: RUN STATISTICS\n");
+        rc.divider();
+        rc("KnuthBendix: max stack depth        {}\n",
+           group_digits(_stats.max_stack_depth));
+        rc("KnuthBendix: max rule length        {}\n",
+           group_digits(_stats.max_word_length));
+        rc("KnuthBendix: max active rule length {}\n",
+           group_digits(max_active_word_length()));
+        rc("KnuthBendix: number of unique lhs   {}\n",
+           group_digits(_stats.unique_lhs_rules.size()));
+      }
+
+      report_no_prefix("{:-<95}\n", "");
+      auto p = to_presentation<std::string>(*this);
+      report_presentation(p);
+
+      report_no_prefix("{:+<95}\n", "");
+      report_default("KnuthBendix: STOPPING -- ");
+
+      if (finished()) {
+        report_no_prefix("finished!\n");
+      } else if (dead()) {
+        report_no_prefix("killed!\n");
+      } else if (timed_out()) {
+        report_no_prefix("timed out!\n");
+      } else if (stopped_by_predicate()) {
+        report_no_prefix("stopped by predicate!\n");
+      } else {
+        report_no_prefix("max. overlap length of {} reached!\n", max_overlap());
+      }
+      report_no_prefix("{:+<95}\n", "");
+    }
+  }
+
+  // report_no_prefix(msg);
   template <typename Rewriter, typename ReductionOrder>
   void KnuthBendix<Rewriter, ReductionOrder>::rewrite_inplace(
       external_string_type& w) const {
@@ -440,9 +486,9 @@ namespace libsemigroups {
 
   template <typename Rewriter, typename ReductionOrder>
   void KnuthBendix<Rewriter, ReductionOrder>::stats_check_point() const {
-    _stats.prev_active_rules   = _rewriter.number_of_active_rules();
-    _stats.prev_inactive_rules = _rewriter.number_of_inactive_rules();
-    _stats.prev_total_rules    = _stats.total_rules;
+    _stats.prev_active_rules   = number_of_active_rules();
+    _stats.prev_inactive_rules = number_of_inactive_rules();
+    _stats.prev_total_rules    = total_rules();
   }
 
   //////////////////////////////////////////////////////////////////////////
@@ -493,24 +539,7 @@ namespace libsemigroups {
   }
 
   template <typename Rewriter, typename ReductionOrder>
-  void KnuthBendix<Rewriter, ReductionOrder>::run_impl() {
-    stats_check_point();
-    _stats.start_time = std::chrono::high_resolution_clock::now();
-
-    init_from_generating_pairs();
-    if (_rewriter.consistent() && confluent() && !stopped()) {
-      // _rewriter._stack can be non-empty if non-reduced rules were used to
-      // define the KnuthBendix.  If _rewriter._stack is non-empty, then it
-      // means that the rules in _rewriter might not define the system.
-      report_default("KnuthBendix: the system is confluent already!\n");
-      return;
-    } else if (_rewriter.number_of_active_rules() >= max_rules()) {
-      report_default(
-          "KnuthBendix: too many rules, found {}, max_rules() is {}\n",
-          _rewriter.number_of_active_rules(),
-          max_rules());
-      return;
-    }
+  void KnuthBendix<Rewriter, ReductionOrder>::run_real() {
     _rewriter.reduce();
 
     auto& first  = _rewriter.cursor(0);
@@ -552,12 +581,37 @@ namespace libsemigroups {
         && _settings.max_rules == POSITIVE_INFINITY && !stopped()) {
       _rewriter.confluent(tril::TRUE);
     }
-    report_rules();
-    if (finished()) {
-      report_default("KnuthBendix: finished!\n");
-    } else {
-      report_why_we_stopped();
+  }
+
+  template <typename Rewriter, typename ReductionOrder>
+  void KnuthBendix<Rewriter, ReductionOrder>::run_impl() {
+    stats_check_point();
+    reset_start_time();
+
+    init_from_generating_pairs();
+    if (_rewriter.consistent() && confluent() && !stopped()) {
+      // _rewriter._stack can be non-empty if non-reduced rules were used to
+      // define the KnuthBendix.  If _rewriter._stack is non-empty, then it
+      // means that the rules in _rewriter might not define the system.
+      report_default("KnuthBendix: the system is confluent already!\n");
+      return;
+    } else if (_rewriter.number_of_active_rules() >= max_rules()) {
+      report_default(
+          "KnuthBendix: too many rules, found {}, max_rules() is {}\n",
+          _rewriter.number_of_active_rules(),
+          max_rules());
+      return;
     }
+
+    report_before_run();
+    if (report::should_report()) {
+      detail::Ticker t([this]() { report_progress_from_thread(); });
+      run_real();
+    } else {
+      run_real();
+    }
+
+    report_after_run();
   }
 
   template <typename Rewriter, typename ReductionOrder>
@@ -1057,7 +1111,6 @@ namespace libsemigroups {
       }
       kb.max_overlap(prev_max_overlap);
       kb.check_confluence_interval(prev_check_confluence_interval);
-      kb.report_rules();
     }
 
   }  // namespace knuth_bendix
