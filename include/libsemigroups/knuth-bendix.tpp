@@ -18,10 +18,11 @@
 
 namespace libsemigroups {
 
-  namespace {
-    void prefixes_string(std::unordered_map<std::string, size_t>& st,
-                         std::string const&                       x,
-                         size_t&                                  n) {
+  namespace detail {
+    static inline void
+    prefixes_string(std::unordered_map<std::string, size_t>& st,
+                    std::string const&                       x,
+                    size_t&                                  n) {
       for (auto it = x.cbegin() + 1; it < x.cend(); ++it) {
         auto w   = std::string(x.cbegin(), it);
         auto wit = st.find(w);
@@ -32,7 +33,7 @@ namespace libsemigroups {
       }
     }
 
-  }  // namespace
+  }  // namespace detail
 
   template <typename Rewriter, typename ReductionOrder>
   struct KnuthBendix<Rewriter, ReductionOrder>::ABC
@@ -579,7 +580,7 @@ namespace libsemigroups {
       prefixes.emplace("", 0);
       size_t n = 1;
       for (auto const* rule : _rewriter) {
-        prefixes_string(prefixes, *rule->lhs(), n);
+        detail::prefixes_string(prefixes, *rule->lhs(), n);
       }
 
       _gilman_graph_node_labels.resize(prefixes.size(), "");

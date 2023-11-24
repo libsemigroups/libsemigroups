@@ -231,9 +231,8 @@ namespace libsemigroups {
     presentation::add_rule(p, 1001_w, 11_w);
     presentation::add_rule(p, 001010101010_w, 00_w);
 
-    // TODO Uncomment
-    // TestType kb(twosided, p);
-    // REQUIRE_NOTHROW(to_froidure_pin(kb));
+    TestType kb(twosided, p);
+    REQUIRE_NOTHROW(to_froidure_pin(kb));
   }
 
   TEMPLATE_TEST_CASE("constructors",
@@ -267,9 +266,8 @@ namespace libsemigroups {
     presentation::add_rule(p, 1111_w, 1_w);
     presentation::add_rule(p, 011111011_w, 110_w);
 
-    // TODO Uncomment
-    // TestType kb(twosided, p);
-    // REQUIRE(to_froidure_pin(kb).size() == 12);
+    TestType kb(twosided, p);
+    REQUIRE(to_froidure_pin(kb).size() == 12);
   }
 
   TEMPLATE_TEST_CASE("number of classes when obv-inf",
@@ -353,7 +351,7 @@ namespace libsemigroups {
                      "[141][quick][knuth-bendix]",
                      KNUTH_BENDIX_TYPES) {
     using literals::operator""_w;
-    auto            rg = ReportGuard(false);
+    auto rg = ReportGuard(false);
 
     Presentation<word_type> p1;
     p1.contains_empty_word(true);

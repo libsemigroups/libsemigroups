@@ -57,27 +57,6 @@ namespace libsemigroups {
     return result;
   }
 
-  using KBE = detail::KBE;
-
-  FroidurePin<KBE> to_froidure_pin(KnuthBendix<>& kb) {
-    size_t const n = kb.presentation().alphabet().size();
-
-    if (n == 0) {
-      LIBSEMIGROUPS_EXCEPTION("TODO");
-    } else if (kb.kind() != congruence_kind::twosided) {
-      LIBSEMIGROUPS_EXCEPTION(
-          "the argument must be a two-sided congruence, found a {} congruence",
-          kb.kind());
-    }
-    kb.run();
-
-    FroidurePin<KBE> result(kb);
-    for (size_t i = 0; i < n; ++i) {
-      result.add_generator(KBE(kb, i));
-    }
-    return result;
-  }
-
   std::unique_ptr<FroidurePinBase> to_froidure_pin(Congruence& cong) {
     cong.run();
     if (cong.has<KnuthBendix<>>()) {

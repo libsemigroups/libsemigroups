@@ -51,18 +51,18 @@
 #include "catch.hpp"      // for AssertionHandler, ope...
 #include "test-main.hpp"  // for TEMPLATE_TEST_CASE
 
-#include "libsemigroups/constants.hpp"  // for operator==, operator!=
-#include "libsemigroups/exception.hpp"  // for LibsemigroupsException
-// #include "libsemigroups/froidure-pin.hpp"     // for FroidurePin
-#include "libsemigroups/knuth-bendix.hpp"  // for KnuthBendix, normal_f...
-#include "libsemigroups/obvinf.hpp"        // for is_obviously_infinite
-#include "libsemigroups/paths.hpp"         // for Paths
-#include "libsemigroups/presentation.hpp"  // for add_rule, Presentation
-#include "libsemigroups/ranges.hpp"        // for equal
-// #include "libsemigroups/to-froidure-pin.hpp"  // for to_froidure_pin
-#include "libsemigroups/types.hpp"       // for word_type
-#include "libsemigroups/word-graph.hpp"  // for WordGraph
-#include "libsemigroups/words.hpp"       // for Inner, to_strings
+#include "libsemigroups/constants.hpp"        // for operator==, operator!=
+#include "libsemigroups/exception.hpp"        // for LibsemigroupsException
+#include "libsemigroups/froidure-pin.hpp"     // for FroidurePin
+#include "libsemigroups/knuth-bendix.hpp"     // for KnuthBendix, normal_f...
+#include "libsemigroups/obvinf.hpp"           // for is_obviously_infinite
+#include "libsemigroups/paths.hpp"            // for Paths
+#include "libsemigroups/presentation.hpp"     // for add_rule, Presentation
+#include "libsemigroups/ranges.hpp"           // for equal
+#include "libsemigroups/to-froidure-pin.hpp"  // for to_froidure_pin
+#include "libsemigroups/types.hpp"            // for word_type
+#include "libsemigroups/word-graph.hpp"       // for WordGraph
+#include "libsemigroups/words.hpp"            // for Inner, to_strings
 
 // #include "libsemigroups/detail/kbe.hpp"     // for KBE
 #include "libsemigroups/detail/report.hpp"  // for ReportGuard
@@ -393,10 +393,9 @@ namespace libsemigroups {
                 {"a",    "b",    "c",    "ab",   "ac",   "ba",   "ca",
                  "aba",  "aca",  "bab",  "bac",  "cab",  "cac",  "abab",
                  "abac", "acab", "acac", "baba", "baca", "caba", "caca"}));
-    // TODO uncomment
-    // auto S = to_froidure_pin(kb);
-    // REQUIRE(S.size() == 168);
-    // REQUIRE(S.generator(2).string(kb) == "c");
+    auto S = to_froidure_pin(kb);
+    REQUIRE(S.size() == 168);
+    REQUIRE(S.generator(2).string(kb) == "c");
   }
 
   TEMPLATE_TEST_CASE("random example",
@@ -424,17 +423,16 @@ namespace libsemigroups {
     REQUIRE(ad.number_of_edges() == 13);
     REQUIRE(!word_graph::is_acyclic(ad));
 
-    // TODO uncomment
-    // auto fp = to_froidure_pin(kb);
-    // fp.enumerate(100);
+    auto fp = to_froidure_pin(kb);
+    fp.enumerate(100);
 
-    // auto expected
-    //     = iterator_range(fp.cbegin_normal_forms(), fp.cend_normal_forms());
+    auto expected
+        = iterator_range(fp.cbegin_normal_forms(), fp.cend_normal_forms());
 
-    // Paths paths(ad);
-    // paths.from(0).min(1).max(fp.current_max_word_length() + 1);
+    Paths paths(ad);
+    paths.from(0).min(1).max(fp.current_max_word_length() + 1);
 
-    // REQUIRE(equal(expected, paths));
+    REQUIRE(equal(expected, paths));
 
     auto nf = knuth_bendix::normal_forms(kb).min(1).max(5)
               | to_strings(p.alphabet());
@@ -473,12 +471,11 @@ namespace libsemigroups {
     REQUIRE(kb.number_of_classes() == 336);
 
     // Test copy constructor
-    // TODO Uncomment
-    // auto T = to_froidure_pin(kb);
-    // auto S = T.copy_closure({T.generator(0)});
+    auto T = to_froidure_pin(kb);
+    auto S = T.copy_closure({T.generator(0)});
 
-    // REQUIRE(S.size() == 336);
-    // REQUIRE(S.number_of_generators() == 4);
+    REQUIRE(S.size() == 336);
+    REQUIRE(S.number_of_generators() == 4);
 
     auto& ad = kb.gilman_graph();
     REQUIRE(ad.number_of_nodes() == 232);
@@ -565,7 +562,7 @@ namespace libsemigroups {
   TEMPLATE_TEST_CASE("redundant_rule (word_type)",
                      "[014][quick][knuth-bendix]",
                      KNUTH_BENDIX_TYPES) {
-    using literals::        operator""_w;
+    using literals::operator""_w;
     auto                    rg = ReportGuard(false);
     Presentation<word_type> p;
     p.alphabet(3);
@@ -656,7 +653,7 @@ namespace libsemigroups {
                      "[016][quick][knuth-bendix]",
                      KNUTH_BENDIX_TYPES) {
     using literals::operator""_w;
-    auto            rg = ReportGuard(false);
+    auto rg = ReportGuard(false);
 
     Presentation<std::string> p;
     p.contains_empty_word(true);

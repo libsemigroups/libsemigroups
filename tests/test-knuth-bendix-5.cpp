@@ -137,9 +137,8 @@ namespace libsemigroups {
 
     TestType kb(twosided, p);
     REQUIRE(kb.confluent());
-    // TODO Uncomment
-    // auto t = to_froidure_pin(kb);
-    // REQUIRE(t.generator(0).word(kb) == 0_w);
+    auto t = to_froidure_pin(kb);
+    REQUIRE(t.generator(0).word(kb) == 0_w);
   }
 
   TEMPLATE_TEST_CASE("internal_string_to_word x 2",

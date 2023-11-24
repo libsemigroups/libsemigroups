@@ -126,7 +126,28 @@ namespace libsemigroups {
   }
 
   FroidurePin<detail::TCE> to_froidure_pin(ToddCoxeter& tc);
-  FroidurePin<detail::KBE> to_froidure_pin(KnuthBendix<>& tc);
+
+  template <typename Rewriter, typename ReductionOrder>
+  FroidurePin<detail::KBE<KnuthBendix<Rewriter, ReductionOrder>>>
+  to_froidure_pin(KnuthBendix<Rewriter, ReductionOrder>& kb) {
+    using KBE      = detail::KBE<KnuthBendix<Rewriter, ReductionOrder>>;
+    size_t const n = kb.presentation().alphabet().size();
+
+    if (n == 0) {
+      LIBSEMIGROUPS_EXCEPTION("TODO");
+    } else if (kb.kind() != congruence_kind::twosided) {
+      LIBSEMIGROUPS_EXCEPTION(
+          "the argument must be a two-sided congruence, found a {} congruence",
+          kb.kind());
+    }
+    kb.run();
+
+    FroidurePin<KBE> result(kb);
+    for (size_t i = 0; i < n; ++i) {
+      result.add_generator(KBE(kb, i));
+    }
+    return result;
+  }
 
   template <typename String>
   auto to_froidure_pin(Kambites<String>& k) {

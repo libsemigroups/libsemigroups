@@ -616,7 +616,6 @@ libsemigroups_la_SOURCES += src/ukkonen.cpp
 libsemigroups_la_SOURCES += src/words.cpp
 
 libsemigroups_la_SOURCES += src/detail/felsch-tree.cpp
-libsemigroups_la_SOURCES += src/detail/kbe.cpp
 libsemigroups_la_SOURCES += src/detail/ke.cpp
 libsemigroups_la_SOURCES += src/detail/race.cpp
 libsemigroups_la_SOURCES += src/detail/report.cpp
@@ -787,7 +786,6 @@ test_all_SOURCES += tests/test-gabow.cpp
 test_all_SOURCES += tests/test-hpcombi.cpp
 test_all_SOURCES += tests/test-iterator.cpp
 test_all_SOURCES += tests/test-kambites.cpp
-test_all_SOURCES += tests/test-kbe.cpp
 test_all_SOURCES += tests/test-knuth-bendix-1.cpp
 test_all_SOURCES += tests/test-knuth-bendix-2.cpp
 test_all_SOURCES += tests/test-knuth-bendix-3.cpp
@@ -936,8 +934,7 @@ test_iterator_SOURCES += tests/test-main.cpp
 test_kambites_SOURCES =  tests/test-kambites.cpp
 test_kambites_SOURCES += tests/test-main.cpp
 
-test_kbe_SOURCES =  tests/test-kbe.cpp
-test_kbe_SOURCES += tests/test-main.cpp
+test_kbe_SOURCES = tests/test-main.cpp
 
 test_knuth_bendix_SOURCES =  tests/test-knuth-bendix-1.cpp
 test_knuth_bendix_SOURCES += tests/test-knuth-bendix-2.cpp
