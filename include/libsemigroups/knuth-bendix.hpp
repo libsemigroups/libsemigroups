@@ -636,7 +636,7 @@ namespace libsemigroups {
    private:
     void report_presentation(Presentation<std::string> const&) const;
     void report_before_run() const;
-    void report_progress_from_thread() const;
+    void report_progress_from_thread(std::atomic_bool const&) const;
     void report_after_run() const;
 
     void throw_if_started() const;
@@ -672,7 +672,7 @@ namespace libsemigroups {
     //////////////////////////////////////////////////////////////////////////
 
     void run_impl() override;
-    void run_real();
+    void run_real(std::atomic_bool&);
     bool finished_impl() const override;
   };
 

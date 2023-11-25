@@ -16,7 +16,6 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "libsemigroups/detail/report.hpp"
 namespace libsemigroups {
 
   namespace detail {
@@ -358,14 +357,16 @@ namespace libsemigroups {
       report_no_prefix("{:+<95}\n", "");
       report_default("KnuthBendix: STARTING . . .\n");
       report_no_prefix("{:+<95}\n", "");
-
-      report_presentation(presentation());
+      // Required so that we can use the current presentation and not the
+      // initial one.
+      auto p = to_presentation<std::string>(*this);
+      report_presentation(p);
     }
   }
 
   template <typename Rewriter, typename ReductionOrder>
-  void
-  KnuthBendix<Rewriter, ReductionOrder>::report_progress_from_thread() const {
+  void KnuthBendix<Rewriter, ReductionOrder>::report_progress_from_thread(
+      std::atomic_bool const& pause) const {
     using detail::group_digits;
     using detail::signed_group_digits;
     using std::chrono::duration_cast;
@@ -373,55 +374,59 @@ namespace libsemigroups {
     using high_resolution_clock = std::chrono::high_resolution_clock;
     using nanoseconds           = std::chrono::nanoseconds;
 
-    auto active   = number_of_active_rules();
-    auto inactive = number_of_inactive_rules();
-    auto defined  = _rewriter.stats().total_rules;
+    if (!pause) {
+      auto active   = number_of_active_rules();
+      auto inactive = number_of_inactive_rules();
+      auto defined  = _rewriter.stats().total_rules;
 
-    int64_t const active_diff   = active - _stats.prev_active_rules;
-    int64_t const inactive_diff = inactive - _stats.prev_inactive_rules;
-    int64_t const defined_diff  = defined - _stats.prev_total_rules;
+      int64_t const active_diff   = active - _stats.prev_active_rules;
+      int64_t const inactive_diff = inactive - _stats.prev_inactive_rules;
+      int64_t const defined_diff  = defined - _stats.prev_total_rules;
 
-    auto run_time = duration_cast<nanoseconds>(high_resolution_clock::now()
-                                               - start_time());
-    auto const mean_defined
-        = group_digits(std::pow(10, 9) * static_cast<double>(defined)
-                       / run_time.count())
-          + "/s";
-    auto const mean_killed
-        = group_digits(std::pow(10, 9) * static_cast<double>(inactive)
-                       / run_time.count())
-          + "/s";
+      auto run_time = duration_cast<nanoseconds>(high_resolution_clock::now()
+                                                 - start_time());
+      auto const mean_defined
+          = group_digits(std::pow(10, 9) * static_cast<double>(defined)
+                         / run_time.count())
+            + "/s";
+      auto const mean_killed
+          = group_digits(std::pow(10, 9) * static_cast<double>(inactive)
+                         / run_time.count())
+            + "/s";
 
-    detail::ReportCell<4> rc;
-    rc.min_width(12).divider("{:-<95}\n");
-    rc("KnuthBendix: rules {} (active) | {} (inactive) | {} (defined)\n",
-       group_digits(active),
-       group_digits(inactive),
-       group_digits(defined));
+      detail::ReportCell<4> rc;
+      rc.min_width(12).divider("{:-<95}\n");
+      rc("KnuthBendix: rules {} (active) | {} (inactive) | {} (defined)\n",
+         group_digits(active),
+         group_digits(inactive),
+         group_digits(defined));
 
-    rc("KnuthBendix: diff  {} (active) | {} (inactive) | {} (defined)\n",
-       signed_group_digits(active_diff),
-       signed_group_digits(inactive_diff),
-       signed_group_digits(defined_diff));
+      rc("KnuthBendix: diff  {} (active) | {} (inactive) | {} (defined)\n",
+         signed_group_digits(active_diff),
+         signed_group_digits(inactive_diff),
+         signed_group_digits(defined_diff));
 
-    rc("KnuthBendix: time  {} (total)  | {} (killed)   | {} (defined)\n",
-       string_time(run_time),
-       mean_killed,
-       mean_defined);
+      rc("KnuthBendix: time  {} (total)  | {} (killed)   | {} (defined)\n",
+         string_time(run_time),
+         mean_killed,
+         mean_defined);
 
-    stats_check_point();
+      stats_check_point();
+    }
   }
 
   template <typename Rewriter, typename ReductionOrder>
   void KnuthBendix<Rewriter, ReductionOrder>::report_after_run() const {
     if (report::should_report()) {
-      report_progress_from_thread();
+      report_progress_from_thread(false);
       if (finished()) {
         using detail::group_digits;
         detail::ReportCell<2> rc;
         rc.min_width(12).divider("{:-<95}\n");
         rc("KnuthBendix: RUN STATISTICS\n");
         rc.divider();
+        // FIXME these are mostly 0, and should be obtained from the rewriter
+        // probably
         rc("KnuthBendix: max stack depth        {}\n",
            group_digits(_stats.max_stack_depth));
         rc("KnuthBendix: max rule length        {}\n",
@@ -539,7 +544,8 @@ namespace libsemigroups {
   }
 
   template <typename Rewriter, typename ReductionOrder>
-  void KnuthBendix<Rewriter, ReductionOrder>::run_real() {
+  void
+  KnuthBendix<Rewriter, ReductionOrder>::run_real(std::atomic_bool& pause) {
     _rewriter.reduce();
 
     auto& first  = _rewriter.cursor(0);
@@ -567,10 +573,13 @@ namespace libsemigroups {
         }
       }
       if (nr > _settings.check_confluence_interval) {
+        pause = true;
         if (confluent()) {
+          pause = false;
           break;
         }
-        nr = 0;
+        pause = false;
+        nr    = 0;
       }
     }
 
@@ -604,11 +613,12 @@ namespace libsemigroups {
     }
 
     report_before_run();
+    std::atomic_bool pause = false;
     if (report::should_report()) {
-      detail::Ticker t([this]() { report_progress_from_thread(); });
-      run_real();
+      detail::Ticker t([&]() { report_progress_from_thread(pause); });
+      run_real(pause);
     } else {
-      run_real();
+      run_real(pause);
     }
 
     report_after_run();

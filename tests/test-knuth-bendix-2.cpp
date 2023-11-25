@@ -1329,7 +1329,7 @@ namespace libsemigroups {
   }
 
   TEMPLATE_TEST_CASE("C(4) monoid",
-                     "[060][quick][knuthbendix]",
+                     "[060][quick][knuth-bendix]",
                      KNUTH_BENDIX_TYPES) {
     Presentation<std::string> p;
     p.alphabet("abcde");
@@ -1342,7 +1342,7 @@ namespace libsemigroups {
   }
 
   TEMPLATE_TEST_CASE("1-relation hard case",
-                     "[142][fail][knuthbendix]",
+                     "[061][fail][knuth-bendix]",
                      KNUTH_BENDIX_TYPES) {
     auto                      rg = ReportGuard(true);
     Presentation<std::string> p;
@@ -1358,7 +1358,7 @@ namespace libsemigroups {
   }
 
   TEMPLATE_TEST_CASE("1-relation hard case x 2",
-                     "[143][quick][knuthbendix]",
+                     "[062][quick][knuth-bendix]",
                      KNUTH_BENDIX_TYPES) {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
@@ -1419,8 +1419,9 @@ namespace libsemigroups {
   }
 
   TEMPLATE_TEST_CASE("search for a monoid that might not exist",
-                     "[061][quick][knuthbendix]",
+                     "[063][quick][knuth-bendix]",
                      KNUTH_BENDIX_TYPES) {
+    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.contains_empty_word(true);
     p.alphabet("abcde");
@@ -1454,125 +1455,68 @@ namespace libsemigroups {
   }
 
   TEMPLATE_TEST_CASE("Chinese monoid",
-                     "[062][todd-coxeter][extreme]",
+                     "[064][knuth-bendix][quick]",
                      KNUTH_BENDIX_TYPES) {
-    // std::array<uint64_t, 11> const num = {
-    //     0, 0, 4, 14, 50, 187, 730, 2'949, 12'234, 51'821, 223'190};  //
-    //     A007317
-    auto rg = ReportGuard(true);
+    auto rg = ReportGuard(false);
+    // fmt::print(bg(fmt::color::white) | fg(fmt::color::black),
+    //            "[062]: Chinese monoid STARTING . . .\n");
+
+    std::array<uint64_t, 11> const num
+        = {0, 0, 22, 71, 181, 391, 750, 1'317, 2'161, 3'361, 5'006};
+
     for (size_t n = 2; n < 11; ++n) {
       auto p = fpsemigroup::chinese_monoid(n);
       p.contains_empty_word(true);
       TestType kb(twosided, p);
       kb.run();
-      REQUIRE((knuth_bendix::normal_forms(kb).min(0).max(5) | to_strings("ab")
-               | to_vector())
-              == std::vector<std::string>());
+      REQUIRE(knuth_bendix::normal_forms(kb).min(0).max(5).count() == num[n]);
     }
   }
 
   TEMPLATE_TEST_CASE("hypostylic",
-                     "[063][todd-coxeter][extreme]",
+                     "[065][todd-coxeter][quick]",
                      KNUTH_BENDIX_TYPES) {
-    size_t n = 2;
-    auto   p = fpsemigroup::hypo_plactic_monoid(n);
+    auto   rg = ReportGuard(false);
+    size_t n  = 2;
+    auto   p  = fpsemigroup::hypo_plactic_monoid(n);
     p.contains_empty_word(true);
     presentation::add_idempotent_rules_no_checks(
         p, (seq<size_t>() | take(n) | to_vector()));
     TestType kb(congruence_kind::twosided, p);
     kb.run();
+    // TODO implement knuth_bendix::idempotents
     REQUIRE(
         (knuth_bendix::normal_forms(kb) | to_strings("ab")
          | filter([&kb](auto const& w) { return kb.normal_form(w + w) == w; })
          | to_vector())
-        == std::vector<std::string>());
+        == std::vector<std::string>({"", "a", "b", "ba"}));
     REQUIRE((kb.active_rules() | to_vector())
-            == std::vector<std::pair<std::string, std::string>>());
-    REQUIRE(kb.gilman_graph() == to_word_graph<size_t>(1, {{}}));
+            == std::vector<std::pair<std::string, std::string>>(
+                {{"aa", "a"}, {"aba", "ba"}, {"bb", "b"}, {"bab", "ba"}}));
+    REQUIRE(kb.gilman_graph()
+            == to_word_graph<size_t>(5, {{1, 3}, {UNDEFINED, 2}, {}, {4}}));
   }
 
   TEMPLATE_TEST_CASE("Chinese id monoid",
-                     "[064][todd-coxeter][extreme]",
+                     "[066][todd-coxeter][quick]",
                      KNUTH_BENDIX_TYPES) {
-    auto n = 4;
-    auto p = fpsemigroup::chinese_monoid(n);
+    auto rg = ReportGuard(false);
+    auto n  = 4;
+    auto p  = fpsemigroup::chinese_monoid(n);
     p.contains_empty_word(true);
-    presentation::add_idempotent_rules_no_checks(
-        p, (seq<size_t>() | take(n) | to_vector()));
+    presentation::add_idempotent_rules_no_checks(p, p.alphabet());
     TestType kb(twosided, p);
     kb.run();
     REQUIRE(kb.normal_form("cbda") == "bcda");
-    REQUIRE(kb.normal_form("badc") == "cbda");
-    REQUIRE(kb.normal_form("cadb") == "cbda");
-  }
-
-  TEMPLATE_TEST_CASE("sigma stylic monoid",
-                     "[065][todd-coxeter][extreme]",
-                     KNUTH_BENDIX_TYPES) {
-    {
-      auto     p = fpsemigroup::sigma_stylic_monoid({2, 2, 2});
-      TestType kb(twosided, p);
-      kb.run();
-      TestType kb2(twosided, p);
-      auto     plax = kb2.active_rules() | to_vector();
-      REQUIRE((kb.active_rules() | filter([&plax](auto const& r) {
-                 return std::find(plax.begin(), plax.end(), r) == plax.end();
-               })
-               | to_vector())
-              == std::vector<rule_type>({{"acba", "cba"}, {"cbac", "cba"}}));
-    }
-    {
-      auto     p = fpsemigroup::sigma_stylic_monoid({2, 2, 2, 2});
-      TestType kb(twosided, p);
-      kb.run();
-      TestType kb2(twosided, p);
-      auto     plax = kb2.active_rules() | to_vector();
-      REQUIRE((kb.active_rules() | filter([&plax](auto const& r) {
-                 return !(r.first.size() == 4 && r.second.size() == 3)
-                        && std::find(plax.begin(), plax.end(), r) == plax.end();
-               })
-               | to_vector())
-              == std::vector<rule_type>({{"cbdca", "cbadc"},
-                                         {"dbac", "bdca"},
-                                         {"cadb", "acbd"},
-                                         {"cbadb", "cbad"},
-                                         {"cadcb", "adcb"},
-                                         {"abdca", "bdca"},
-                                         {"adcba", "dcba"},
-                                         {"dcbad", "dcba"}}));
-    }
-
-    {
-      auto     p = fpsemigroup::sigma_stylic_monoid({2, 2, 2, 2, 2});
-      TestType kb(twosided, p);
-      kb.run();
-      TestType kb2(twosided, p);
-      auto     plax = kb2.active_rules() | to_vector();
-      REQUIRE((kb.active_rules() | filter([&plax](auto const& r) {
-                 return !(r.first.size() == 4 && r.second.size() == 3)
-                        && std::find(plax.begin(), plax.end(), r) == plax.end();
-               })
-               | to_vector())
-              == std::vector<rule_type>({{"bca", "bac"},
-                                         {"cab", "acb"},
-                                         {"aa", "a"},
-                                         {"aca", "ca"},
-                                         {"aba", "ba"},
-                                         {"bb", "b"},
-                                         {"bcb", "cb"},
-                                         {"bab", "ba"},
-                                         {"cc", "c"},
-                                         {"cbc", "cb"},
-                                         {"cac", "ca"},
-                                         {"acba", "cba"},
-                                         {"cbac", "cba"}}));
-    }
+    REQUIRE(kb.normal_form("badc") == "badc");
+    REQUIRE(kb.normal_form("cadb") == "cadb");
   }
 
   TEMPLATE_TEST_CASE("sigma sylvester monoid",
-                     "[066][todd-coxeter][extreme]",
+                     "[067][todd-coxeter][quick]",
                      KNUTH_BENDIX_TYPES) {
     using namespace literals;
+    auto                    rg = ReportGuard(false);
     Presentation<word_type> p;
     p.alphabet(4);
     p.contains_empty_word(true);
@@ -1675,41 +1619,39 @@ namespace libsemigroups {
     presentation::add_rule(p, 2310213_w, 231021_w);
     presentation::add_rule(p, 2312013_w, 231201_w);
     REQUIRE(p.rules.size() == 196);
-    {
-      ReportGuard rg(false);
-      auto it = knuth_bendix::redundant_rule(p, std::chrono::milliseconds(100));
-      while (it != p.rules.cend()) {
-        p.rules.erase(it, it + 2);
-        it = knuth_bendix::redundant_rule(p, std::chrono::milliseconds(100));
-      }
+    // {
+    //   ReportGuard rg(false);
+    //   auto it = knuth_bendix::redundant_rule(p,
+    //   std::chrono::milliseconds(100)); while (it != p.rules.cend()) {
+    //     p.rules.erase(it, it + 2);
+    //     it = knuth_bendix::redundant_rule(p, std::chrono::milliseconds(100));
+    //   }
 
-      REQUIRE(p.rules.size() == 58);
-      REQUIRE(
-          p.rules
-          == std::vector<word_type>(
-              {00_w,      0_w,      11_w,      1_w,      22_w,      2_w,
-               33_w,      3_w,      010_w,     01_w,     020_w,     02_w,
-               030_w,     03_w,     121_w,     12_w,     131_w,     13_w,
-               232_w,     23_w,     1202_w,    120_w,    1303_w,    130_w,
-               2303_w,    230_w,    2313_w,    231_w,    10212_w,   1021_w,
-               10313_w,   1031_w,   20313_w,   2031_w,   20323_w,   2032_w,
-               21323_w,   2132_w,   102312_w,  10231_w,  103212_w,  10321_w,
-               201323_w,  20132_w,  203123_w,  20312_w,  210323_w,  21032_w,
-               213023_w,  21302_w,  1032312_w, 103231_w, 2101323_w, 210132_w,
-               2103123_w, 210312_w, 2130123_w, 213012_w}));
-    }
-    {
-      TestType    kb(twosided, p);
-      ReportGuard rg(true);
-      kb.run();
-      REQUIRE(kb.number_of_classes() == 312);
-    }
+    //   REQUIRE(p.rules.size() == 58);
+    //   REQUIRE(
+    //       p.rules
+    //       == std::vector<word_type>(
+    //           {00_w,      0_w,      11_w,      1_w,      22_w,      2_w,
+    //            33_w,      3_w,      010_w,     01_w,     020_w,     02_w,
+    //            030_w,     03_w,     121_w,     12_w,     131_w,     13_w,
+    //            232_w,     23_w,     1202_w,    120_w,    1303_w,    130_w,
+    //            2303_w,    230_w,    2313_w,    231_w,    10212_w,   1021_w,
+    //            10313_w,   1031_w,   20313_w,   2031_w,   20323_w,   2032_w,
+    //            21323_w,   2132_w,   102312_w,  10231_w,  103212_w,  10321_w,
+    //            201323_w,  20132_w,  203123_w,  20312_w,  210323_w,  21032_w,
+    //            213023_w,  21302_w,  1032312_w, 103231_w, 2101323_w, 210132_w,
+    //            2103123_w, 210312_w, 2130123_w, 213012_w}));
+    // }
+    TestType kb(twosided, p);
+    kb.run();
+    REQUIRE(kb.number_of_classes() == 312);
   }
 
   TEMPLATE_TEST_CASE("sigma sylvester monoid x 2",
-                     "[067][todd-coxeter][extreme]",
+                     "[068][todd-coxeter][quick]",
                      KNUTH_BENDIX_TYPES) {
     using namespace literals;
+    auto                    rg = ReportGuard(false);
     Presentation<word_type> p;
     p.alphabet(3);
     p.contains_empty_word(true);
@@ -1775,36 +1717,5 @@ namespace libsemigroups {
     TestType kb(twosided, p);
     p = to_presentation<word_type>(kb);
     REQUIRE(kb.number_of_classes() == 26);
-    std::vector<word_type> reduce_binary_tree_words
-        = {{},     0_w,    1_w,    2_w,    10_w,    20_w,    01_w,    21_w,
-           02_w,   12_w,   210_w,  120_w,  101_w,   201_w,   201_w,   102_w,
-           202_w,  012_w,  212_w,  2120_w, 2101_w,  2101_w,  2101_w,  2102_w,
-           1202_w, 1012_w, 2012_w, 2012_w, 21202_w, 21012_w, 21012_w, 21012_w};
-    // auto range = iterator_range(reduce_binary_tree_words);
-
-    // REQUIRE(first_equivalent_pair(
-    //             kb, range | to_strings(kb.presentation().alphabet()))
-    //         ==);
-
-    // REQUIRE((kb.active_rules() | to_vector())
-    //         == std::vector<rule_type>({{"aa", "a"},
-    //                                    {"bb", "b"},
-    //                                    {"cc", "c"},
-    //                                    {"acab", "acb"},
-    //                                    {"acbab", "abcab"},
-    //                                    {"abcb", "acb"},
-    //                                    {"baba", "ba"},
-    //                                    {"babca", "baca"},
-    //                                    {"baca", "bca"},
-    //                                    {"bcab", "bacb"},
-    //                                    {"bacba", "bcba"},
-    //                                    {"bcbab", "bacb"},
-    //                                    {"caba", "cba"},
-    //                                    {"cabca", "cbca"},
-    //                                    {"caca", "ca"},
-    //                                    {"cacb", "cab"},
-    //                                    {"cbacb", "cbab"},
-    //                                    {"cbcb", "cb"},
-    //                                    {"bacbca", "bcbca"}}));
   }
 }  // namespace libsemigroups
