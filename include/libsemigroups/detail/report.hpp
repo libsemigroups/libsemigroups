@@ -21,29 +21,22 @@
 #ifndef LIBSEMIGROUPS_DETAIL_REPORT_HPP_
 #define LIBSEMIGROUPS_DETAIL_REPORT_HPP_
 
-#include <cxxabi.h>  // for abi::
-
 #include <cstddef>        // for size_t
 #include <cstdint>        // for uint64_t
-#include <cstdlib>        // for free
 #include <mutex>          // for mutex, lock_guard
 #include <string>         // for string
 #include <thread>         // for get_id, thread, thread::id
 #include <unordered_map>  // for unordered_map
 #include <utility>        // for pair
-#include <vector>         // for vector
-
-#include "containers.hpp"  // for StaticVector1
-#include "string.hpp"      // for string_format, to_string
-#include "timer.hpp"       // for string_format, to_string
-
-#include <magic_enum/magic_enum.hpp>
 
 #include <fmt/chrono.h>
 #include <fmt/color.h>
 #include <fmt/compile.h>
 #include <fmt/format.h>
 #include <fmt/printf.h>
+
+#include "formatters.hpp"  // for custom formatters
+#include "timer.hpp"       // for string_format, to_strin
 
 namespace libsemigroups {
   namespace detail {
@@ -216,44 +209,5 @@ namespace libsemigroups {
     }
   }  // namespace report
 }  // namespace libsemigroups
-
-template <typename T, typename Char>
-struct fmt::formatter<T, Char, std::enable_if_t<std::is_enum_v<T>>>
-    : fmt::formatter<std::string> {
-  template <typename FormatContext>
-  auto format(T knd, FormatContext& ctx) const {
-    auto name = magic_enum::enum_name(knd);
-    return formatter<string_view>::format(name, ctx);
-  }
-};
-
-template <typename T, typename Char>
-struct fmt::formatter<std::vector<T>, Char> : fmt::formatter<std::string> {
-  template <typename FormatContext>
-  auto format(std::vector<T> const& v, FormatContext& ctx) const {
-    return formatter<string_view>::format(libsemigroups::detail::to_string(v),
-                                          ctx);
-  }
-};
-
-template <typename T, size_t N, typename Char>
-struct fmt::formatter<libsemigroups::detail::StaticVector1<T, N>, Char>
-    : fmt::formatter<std::string> {
-  template <typename FormatContext>
-  auto format(libsemigroups::detail::StaticVector1<T, N> const& v,
-              FormatContext&                                    ctx) const {
-    return formatter<string_view>::format(libsemigroups::detail::to_string(v),
-                                          ctx);
-  }
-};
-
-template <>
-struct fmt::formatter<libsemigroups::detail::Timer>
-    : fmt::formatter<std::string> {
-  template <typename FormatContext>
-  auto format(libsemigroups::detail::Timer const& v, FormatContext& ctx) const {
-    return formatter<string_view>::format(v.string(), ctx);
-  }
-};
 
 #endif  // LIBSEMIGROUPS_DETAIL_REPORT_HPP_

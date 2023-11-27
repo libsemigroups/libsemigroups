@@ -18,7 +18,7 @@
 
 #include "libsemigroups/detail/report.hpp"
 
-#include <unordered_map>  // for operator!=
+#include <unordered_set>  // for unordered_set
 
 #include "libsemigroups/debug.hpp"  // for LIBSEMIGROUPS_ASSERT
 
