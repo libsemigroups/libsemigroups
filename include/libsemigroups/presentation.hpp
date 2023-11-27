@@ -1555,16 +1555,14 @@ namespace libsemigroups {
     void add_cyclic_conjugates(Presentation<Word>& p,
                                Word const&         lhs,
                                Word const&         rhs) {
-      std::string lhs_copy(lhs);
-      std::string rhs_copy(rhs);
       for (size_t i = 0; i < lhs.size(); ++i) {
         std::string lcopy(rhs.crbegin(), rhs.crbegin() + i);
         lcopy.insert(lcopy.end(), lhs.cbegin() + i, lhs.cend());
         for (auto it = lcopy.begin(); it < lcopy.begin() + i; ++it) {
           if (std::isupper(*it)) {
-            std::tolower(*it);
+            *it = std::tolower(*it);
           } else {
-            std::toupper(*it);
+            *it = std::toupper(*it);
           }
         }
 
@@ -1572,9 +1570,9 @@ namespace libsemigroups {
         rcopy.insert(rcopy.end(), lhs.crbegin(), lhs.crend() + i);
         for (auto it = rcopy.end() - i; it < rcopy.end(); ++it) {
           if (std::isupper(*it)) {
-            std::tolower(*it);
+            *it = std::tolower(*it);
           } else {
-            std::toupper(*it);
+            *it = std::tolower(*it);
           }
         }
         presentation::add_rule(p, lcopy, rcopy);
