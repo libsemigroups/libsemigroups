@@ -21,13 +21,11 @@
 #ifndef LIBSEMIGROUPS_DETAIL_REPORT_HPP_
 #define LIBSEMIGROUPS_DETAIL_REPORT_HPP_
 
-#include <cstddef>        // for size_t
-#include <cstdint>        // for uint64_t
-#include <mutex>          // for mutex, lock_guard
-#include <string>         // for string
-#include <thread>         // for get_id, thread, thread::id
-#include <unordered_map>  // for unordered_map
-#include <utility>        // for pair
+#include <cstddef>  // for size_t
+#include <mutex>    // for mutex, lock_guard
+#include <string>   // for string
+#include <thread>   // for get_id, thread, thread::id
+#include <utility>  // for pair
 
 #include <fmt/chrono.h>
 #include <fmt/color.h>
@@ -39,46 +37,20 @@
 #include "timer.hpp"       // for string_format, to_strin
 
 namespace libsemigroups {
-  namespace detail {
 
-    class ThreadIdManager {
-     public:
-      ThreadIdManager();
-      ThreadIdManager(ThreadIdManager const&)            = delete;
-      ThreadIdManager(ThreadIdManager&&)                 = delete;
-      ThreadIdManager& operator=(ThreadIdManager const&) = delete;
-      ThreadIdManager& operator=(ThreadIdManager&&)      = delete;
-
-      void   reset();
-      size_t tid(std::thread::id t);
-
-     private:
-      std::mutex                                  _mtx;
-      size_t                                      _next_tid;
-      std::unordered_map<std::thread::id, size_t> _thread_map;
-    };
-  }  // namespace detail
-
-  extern detail::ThreadIdManager THREAD_ID_MANAGER;
+  using t_id = size_t;
+  t_id this_threads_id();
+  t_id thread_id(std::thread::id);
+  void reset_thread_ids();
 
   namespace report {
+
     bool should_report() noexcept;
     bool suppress(std::string_view const&);
     bool is_suppressed(std::string_view const&);
     bool stop_suppressing(std::string_view const&);
-  }  // namespace report
 
-  //! This struct can be used to enable printing of some information during
-  //! various of the computation in ``libsemigroups``. Reporting is enable (or
-  //! not) at construction time, and disable when the ReportGuard goes out of
-  //! scope.
-  struct ReportGuard {
-    //! Constructs a ReportGuard with reporting enabled by default.
-    //!
-    //! \param val whether to report or not (default: \c true).
-    explicit ReportGuard(bool val = true);
-    ~ReportGuard();
-  };
+  }  // namespace report
 
   template <typename... Args>
   void report_no_prefix(char const* s, Args&&... args) {
@@ -109,7 +81,7 @@ namespace libsemigroups {
         }
       }
 
-      uint64_t    tid    = THREAD_ID_MANAGER.tid(std::this_thread::get_id());
+      auto        tid    = this_threads_id();
       std::string prefix = fmt::format("#{}: ", tid);
       report_no_prefix(prefix + s, std::forward<Args>(args)...);
     }
@@ -123,25 +95,12 @@ namespace libsemigroups {
   template <typename... Args>
   std::string fmt_default(char const* s, Args&&... args) {
     if (report::should_report()) {
-      uint64_t tid = THREAD_ID_MANAGER.tid(std::this_thread::get_id());
+      auto tid = this_threads_id();
       return fmt::format(
           std::string("#{}: ") + s, tid, std::forward<Args>(args)...);
     }
     return "";
   }
-
-  class SuppressReportFor {
-    std::string_view _name;
-
-   public:
-    SuppressReportFor(std::string_view const& name) : _name(name) {
-      report::suppress(_name);
-    }
-
-    ~SuppressReportFor() {
-      report::stop_suppressing(_name);
-    }
-  };
 
   namespace detail {
     template <typename T>
@@ -208,6 +167,31 @@ namespace libsemigroups {
       report_default("{} elapsed time {}", prefix, tmr);
     }
   }  // namespace report
+
+  //! This struct can be used to enable printing of some information during
+  //! various of the computation in ``libsemigroups``. Reporting is enable (or
+  //! not) at construction time, and disable when the ReportGuard goes out of
+  //! scope.
+  struct ReportGuard {
+    //! Constructs a ReportGuard with reporting enabled by default.
+    //!
+    //! \param val whether to report or not (default: \c true).
+    explicit ReportGuard(bool val = true);
+    ~ReportGuard();
+  };
+
+  class SuppressReportFor {
+    std::string_view _name;
+
+   public:
+    SuppressReportFor(std::string_view const& name) : _name(name) {
+      report::suppress(_name);
+    }
+
+    ~SuppressReportFor() {
+      report::stop_suppressing(_name);
+    }
+  };
 }  // namespace libsemigroups
 
 #endif  // LIBSEMIGROUPS_DETAIL_REPORT_HPP_

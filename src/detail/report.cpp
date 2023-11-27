@@ -45,20 +45,23 @@ namespace libsemigroups {
     };
 
     Reporter::Reporter(bool report) : _report(report) {}
-  }  // namespace
 
-  Reporter                REPORTER;
-  detail::ThreadIdManager THREAD_ID_MANAGER;
+    class ThreadIdManager {
+     public:
+      ThreadIdManager();
+      ThreadIdManager(ThreadIdManager const&)            = delete;
+      ThreadIdManager(ThreadIdManager&&)                 = delete;
+      ThreadIdManager& operator=(ThreadIdManager const&) = delete;
+      ThreadIdManager& operator=(ThreadIdManager&&)      = delete;
 
-  ReportGuard::ReportGuard(bool val) {
-    REPORTER.report(val);
-  }
+      void   reset();
+      size_t tid(std::thread::id t);
 
-  ReportGuard::~ReportGuard() {
-    REPORTER.report(false);
-  }
-
-  namespace detail {
+     private:
+      std::mutex                                  _mtx;
+      size_t                                      _next_tid;
+      std::unordered_map<std::thread::id, size_t> _thread_map;
+    };
 
     ThreadIdManager::ThreadIdManager() : _mtx(), _next_tid(0), _thread_map() {
       tid(std::this_thread::get_id());
@@ -90,6 +93,33 @@ namespace libsemigroups {
       }
     }
 
+  }  // namespace
+
+  ThreadIdManager THREAD_ID_MANAGER;
+
+  t_id thread_id(std::thread::id t) {
+    return THREAD_ID_MANAGER.tid(t);
+  }
+
+  t_id this_threads_id() {
+    return thread_id(std::this_thread::get_id());
+  }
+
+  void reset_thread_ids() {
+    THREAD_ID_MANAGER.reset();
+  }
+
+  Reporter REPORTER;
+
+  ReportGuard::ReportGuard(bool val) {
+    REPORTER.report(val);
+  }
+
+  ReportGuard::~ReportGuard() {
+    REPORTER.report(false);
+  }
+
+  namespace detail {
     bool string_time_incremental(std::string&              result,
                                  std::chrono::nanoseconds& elapsed,
                                  bool                      use_float) {

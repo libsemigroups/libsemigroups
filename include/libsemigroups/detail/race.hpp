@@ -265,7 +265,7 @@ namespace libsemigroups {
             try {
               func(_runners.at(pos));
             } catch (std::exception const& e) {
-              size_t tid = THREAD_ID_MANAGER.tid(tids[pos]);
+              size_t tid = thread_id(tids[pos]);
               report_default("exception thrown by #{}:\n{}\n", tid, e.what());
               return;
             }
@@ -284,8 +284,8 @@ namespace libsemigroups {
               }
             }
           };
-
-          THREAD_ID_MANAGER.reset();
+          // TODO remove the next line?
+          reset_thread_ids();
 
           std::vector<std::thread> t;
           for (size_t i = 0; i < nr_threads; ++i) {
@@ -299,9 +299,8 @@ namespace libsemigroups {
                ++method) {
             if ((*method)->finished()) {
               LIBSEMIGROUPS_ASSERT(_winner == nullptr);
-              _winner = *method;
-              size_t tid
-                  = THREAD_ID_MANAGER.tid(tids.at(method - _runners.begin()));
+              _winner    = *method;
+              size_t tid = thread_id(tids.at(method - _runners.begin()));
               report_default("#{} is the winner!\n", tid);
               break;
             }

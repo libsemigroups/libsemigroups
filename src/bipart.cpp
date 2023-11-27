@@ -27,7 +27,7 @@
 #include "libsemigroups/constants.hpp"  // for UNDEFINED, operator==, operator!=
 #include "libsemigroups/exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
 
-#include "libsemigroups/detail/report.hpp"  // for THREAD_ID_MANAGER, ThreadIdManager
+#include "libsemigroups/detail/report.hpp"  // for this_threads_id
 
 namespace libsemigroups {
 
@@ -85,8 +85,7 @@ namespace libsemigroups {
   Blocks::Blocks(const_iterator first, const_iterator last) {
     _blocks.assign(first, last);
     // must reindex the blocks
-    std::vector<uint32_t>& lookup
-        = thread_lookup(THREAD_ID_MANAGER.tid(std::this_thread::get_id()));
+    std::vector<uint32_t>& lookup = thread_lookup(this_threads_id());
 
     lookup.clear();
     lookup.resize(2 * degree(), UNDEFINED);

@@ -19,6 +19,7 @@
 // This file contains implementations of the member functions for the
 // FroidurePin class.
 
+#include "libsemigroups/detail/report.hpp"
 namespace libsemigroups {
 
   ////////////////////////////////////////////////////////////////////////
@@ -416,8 +417,7 @@ namespace libsemigroups {
           "FroidurePin: enumerating until all elements are found . . .\n");
     }
     auto start_time = std::chrono::high_resolution_clock::now();
-
-    size_t tid = THREAD_ID_MANAGER.tid(std::this_thread::get_id());
+    auto tid        = this_threads_id();
 
     LIBSEMIGROUPS_ASSERT(_lenindex.size() > 1);
 
@@ -669,8 +669,8 @@ namespace libsemigroups {
   template <typename T>
   void FroidurePin<Element, Traits>::add_generators_after_start(T const& first,
                                                                 T const& last) {
-    auto         start_time = std::chrono::high_resolution_clock::now();
-    size_t const tid        = THREAD_ID_MANAGER.tid(std::this_thread::get_id());
+    auto       start_time = std::chrono::high_resolution_clock::now();
+    auto const tid        = this_threads_id();
 
     // get some parameters from the old semigroup
     generator_index_type const old_nrgens         = number_of_generators();
@@ -1142,7 +1142,8 @@ namespace libsemigroups {
       std::vector<std::vector<internal_idempotent_pair>> tmp(
           N, std::vector<internal_idempotent_pair>());
       std::vector<std::thread> threads;
-      THREAD_ID_MANAGER.reset();
+      // TODO remove the next line
+      reset_thread_ids();
 
       for (size_t i = 0; i < N - 1; i++) {
         size_t thread_load = 0;
@@ -1233,8 +1234,8 @@ namespace libsemigroups {
 
     // Cannot use _tmp_product itself since there are multiple threads here!
     internal_element_type tmp_product = this->internal_copy(_tmp_product);
-    size_t tid = THREAD_ID_MANAGER.tid(std::this_thread::get_id());
-    auto   ptr = _state.get();
+    auto                  tid         = this_threads_id();
+    auto                  ptr         = _state.get();
 
     for (; pos < last; pos++) {
       element_index_type k = _enumerate_order[pos];
