@@ -85,7 +85,7 @@ namespace libsemigroups {
   Blocks::Blocks(const_iterator first, const_iterator last) {
     _blocks.assign(first, last);
     // must reindex the blocks
-    std::vector<uint32_t>& lookup = thread_lookup(this_threads_id());
+    std::vector<uint32_t>& lookup = thread_lookup(detail::this_threads_id());
 
     lookup.clear();
     lookup.resize(2 * degree(), UNDEFINED);

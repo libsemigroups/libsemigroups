@@ -38,28 +38,21 @@
 
 namespace libsemigroups {
 
-  using t_id = size_t;
+  namespace detail {
+    using t_id = size_t;
 
-  t_id this_threads_id();
-  t_id thread_id(std::thread::id);
-  void reset_thread_ids();
+    t_id this_threads_id();
+    t_id thread_id(std::thread::id);
+    void reset_thread_ids();
+
+    bool is_report_suppressed_for(std::string_view);
+  }  // namespace detail
 
   bool reporting_enabled() noexcept;
 
-  namespace report {
-
-    // TODO Move to cpp
-    bool suppress(std::string_view const&);
-    // TODO Move to cpp
-    bool is_suppressed(std::string_view const&);
-    // TODO Move to cpp
-    bool stop_suppressing(std::string_view const&);
-
-  }  // namespace report
-
   template <typename... Args>
   std::string fmt_default(std::string_view sv, Args&&... args) {
-    auto        tid     = this_threads_id();
+    auto        tid     = detail::this_threads_id();
     std::string fmt_str = "#{}: ";
     fmt_str.append(sv.begin(), sv.end());
     return fmt::format(fmt_str, tid, std::forward<Args>(args)...);
@@ -82,7 +75,7 @@ namespace libsemigroups {
       auto             pos = prefix.find(":");
       if (pos != std::string::npos) {
         prefix.remove_suffix(prefix.size() - prefix.find(":"));
-        if (report::is_suppressed(prefix)) {
+        if (detail::is_report_suppressed_for((prefix))) {
           return;
         }
       }
@@ -94,22 +87,6 @@ namespace libsemigroups {
   report_elapsed_time(std::string_view                    prefix,
                       libsemigroups::detail::Timer const& tmr) {
     report_default("{} elapsed time {}", prefix, tmr);
-  }
-
-  template <typename Arg>
-  std::string italic(Arg&& arg) {
-    if (reporting_enabled()) {
-      return fmt::format(fmt::emphasis::italic, "{}", std::forward<Arg>(arg));
-    }
-    return "";
-  }
-
-  template <typename Arg>
-  std::string italic(char const* s, Arg&& arg) {
-    if (reporting_enabled()) {
-      return fmt::format(fmt::emphasis::italic, s, std::forward<Arg>(arg));
-    }
-    return "";
   }
 
   //! This struct can be used to enable printing of some information during
@@ -125,16 +102,11 @@ namespace libsemigroups {
   };
 
   class SuppressReportFor {
-    std::string_view _name;
+    std::string_view _prefix;
 
    public:
-    SuppressReportFor(std::string_view const& name) : _name(name) {
-      report::suppress(_name);
-    }
-
-    ~SuppressReportFor() {
-      report::stop_suppressing(_name);
-    }
+    SuppressReportFor(std::string_view const&);
+    ~SuppressReportFor();
   };
 }  // namespace libsemigroups
 

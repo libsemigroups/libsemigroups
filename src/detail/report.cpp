@@ -26,7 +26,7 @@ namespace libsemigroups {
   namespace {
     class Reporter {
      public:
-      explicit Reporter(bool report = true);
+      explicit Reporter(bool report = true) : _report(report) {}
 
       Reporter(Reporter const&)            = delete;
       Reporter(Reporter&&)                 = delete;
@@ -41,10 +41,17 @@ namespace libsemigroups {
         return _report;
       }
 
-      std::atomic<bool> _report;
-    };
+      bool suppress(std::string_view const& prefix) {
+        return _suppressions.insert(prefix).second;
+      }
 
-    Reporter::Reporter(bool report) : _report(report) {}
+      bool stop_suppressing(std::string_view const& prefix) {
+        return _suppressions.erase(prefix);
+      }
+
+      std::atomic<bool>                    _report;
+      std::unordered_set<std::string_view> _suppressions;
+    };
 
     class ThreadIdManager {
      public:
@@ -92,24 +99,46 @@ namespace libsemigroups {
         return _next_tid - 1;
       }
     }
+    ThreadIdManager THREAD_ID_MANAGER;
+    Reporter        REPORTER;
 
   }  // namespace
 
-  ThreadIdManager THREAD_ID_MANAGER;
+  ////////////////////////////////////////////////////////////////////////
+  // Threads
+  ////////////////////////////////////////////////////////////////////////
 
-  t_id thread_id(std::thread::id t) {
-    return THREAD_ID_MANAGER.tid(t);
+  namespace detail {
+    t_id thread_id(std::thread::id t) {
+      return THREAD_ID_MANAGER.tid(t);
+    }
+
+    t_id this_threads_id() {
+      return thread_id(std::this_thread::get_id());
+    }
+
+    void reset_thread_ids() {
+      THREAD_ID_MANAGER.reset();
+    }
+  }  // namespace detail
+
+  ////////////////////////////////////////////////////////////////////////
+  // Reporting
+  ////////////////////////////////////////////////////////////////////////
+
+  bool reporting_enabled() noexcept {
+    return REPORTER.report();
   }
 
-  t_id this_threads_id() {
-    return thread_id(std::this_thread::get_id());
-  }
+  namespace detail {
+    bool is_report_suppressed_for(std::string_view prefix) {
+      return REPORTER.stop_suppressing(prefix);
+    }
+  }  // namespace detail
 
-  void reset_thread_ids() {
-    THREAD_ID_MANAGER.reset();
-  }
-
-  Reporter REPORTER;
+  ////////////////////////////////////////////////////////////////////////
+  // ReportGuard
+  ////////////////////////////////////////////////////////////////////////
 
   ReportGuard::ReportGuard(bool val) {
     REPORTER.report(val);
@@ -119,32 +148,17 @@ namespace libsemigroups {
     REPORTER.report(false);
   }
 
-  bool reporting_enabled() noexcept {
-    return REPORTER.report();
+  ////////////////////////////////////////////////////////////////////////
+  // SuppressReportFor
+  ////////////////////////////////////////////////////////////////////////
+
+  SuppressReportFor::SuppressReportFor(std::string_view const& name)
+      : _prefix(name) {
+    REPORTER.suppress(_prefix);
   }
 
-  namespace report {
-    namespace {
-      std::unordered_set<std::string_view>& suppressions() {
-        static std::unordered_set<std::string_view> _suppressions;
-        return _suppressions;
-      }
-    }  // namespace
-
-    bool suppress(std::string_view const& prefix) {
-      // TODO throw exception if prefix is empty
-      return suppressions().insert(prefix).second;
-    }
-
-    bool stop_suppressing(std::string_view const& prefix) {
-      // TODO throw exception if prefix is empty
-      return suppressions().erase(prefix);
-    }
-
-    bool is_suppressed(std::string_view const& prefix) {
-      return suppressions().find(prefix) != suppressions().cend();
-    }
-
-  }  // namespace report
+  SuppressReportFor::~SuppressReportFor() {
+    REPORTER.stop_suppressing(_prefix);
+  }
 
 }  // namespace libsemigroups

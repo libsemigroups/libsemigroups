@@ -15,83 +15,84 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include <chrono>    // for nanoseconds, milliseconds, durati...
-#include <iostream>  // for string, ostringstream, ostream
-#include <sstream>   // for ostringstream
-#include <string>    // for operator==
-#include <thread>    // for sleep_for
+#include <chrono>   // for nanoseconds, milliseconds, durati...
+#include <sstream>  // for ostringstream
+#include <string>   // for operator==
+#include <thread>   // for sleep_for
 
 #include "catch.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 #include "test-main.hpp"
 
-#include "libsemigroups/detail/timer.hpp"  // for detail::Timer, operator<<
+#include "libsemigroups/detail/timer.hpp"  // for Timer, operator<<
 
 namespace libsemigroups {
+  namespace detail {
+    LIBSEMIGROUPS_TEST_CASE("Timer",
+                            "001",
+                            "string method (1 argument)",
+                            "[quick]") {
+      Timer                    t;
+      std::chrono::nanoseconds ns(1);
+      REQUIRE(string_time(ns) == "1ns");
+      ns *= 10;
+      REQUIRE(string_time(ns) == "10ns");
+      ns *= 10;
+      REQUIRE(string_time(ns) == "100ns");
+      ns *= 10;
+      REQUIRE(string_time(ns) == "1000ns");
+      ns *= 10;
+      REQUIRE(string_time(ns) == "10μs");
+      ns *= 10;
+      REQUIRE(string_time(ns) == "100μs");
+      ns *= 10;
+      REQUIRE(string_time(ns) == "1000μs");
+      ns *= 10;
+      REQUIRE(string_time(ns) == "10ms");
+      ns *= 10;
+      REQUIRE(string_time(ns) == "100ms");
+      ns *= 10;
+      REQUIRE(string_time(ns) == "1000ms");
+      ns *= 10;
+      REQUIRE(string_time(ns) == "10000ms");
+      ns *= 10;
+      REQUIRE(string_time(ns) == "1m40s");
+      ns *= 10;
+      REQUIRE(string_time(ns) == "16m40s");
+      ns *= 10;
+      REQUIRE(string_time(ns) == "2h46m");
+      ns *= 10;
+      REQUIRE(string_time(ns) == "27h46m");
+      ns *= 10;
+      REQUIRE(string_time(ns) == "277h46m");
+    }
 
-  LIBSEMIGROUPS_TEST_CASE("Timer",
-                          "001",
-                          "string method (1 argument)",
-                          "[quick]") {
-    detail::Timer            t;
-    std::chrono::nanoseconds ns(1);
-    REQUIRE(t.string(ns) == "1ns");
-    ns *= 10;
-    REQUIRE(t.string(ns) == "10ns");
-    ns *= 10;
-    REQUIRE(t.string(ns) == "100ns");
-    ns *= 10;
-    REQUIRE(t.string(ns) == "1000ns");
-    ns *= 10;
-    REQUIRE(t.string(ns) == "10μs");
-    ns *= 10;
-    REQUIRE(t.string(ns) == "100μs");
-    ns *= 10;
-    REQUIRE(t.string(ns) == "1000μs");
-    ns *= 10;
-    REQUIRE(t.string(ns) == "10ms");
-    ns *= 10;
-    REQUIRE(t.string(ns) == "100ms");
-    ns *= 10;
-    REQUIRE(t.string(ns) == "1000ms");
-    ns *= 10;
-    REQUIRE(t.string(ns) == "10000ms");
-    ns *= 10;
-    REQUIRE(t.string(ns) == "1m40s");
-    ns *= 10;
-    REQUIRE(t.string(ns) == "16m40s");
-    ns *= 10;
-    REQUIRE(t.string(ns) == "2h46m");
-    ns *= 10;
-    REQUIRE(t.string(ns) == "27h46m");
-    ns *= 10;
-    REQUIRE(t.string(ns) == "277h46m");
-  }
+    LIBSEMIGROUPS_TEST_CASE("Timer",
+                            "002",
+                            "string method (0 arguments)",
+                            "[quick]") {
+      Timer t;
+      std::this_thread::sleep_for(std::chrono::milliseconds(10));
+      t.string();  // Can't really test this
+    }
 
-  LIBSEMIGROUPS_TEST_CASE("Timer",
-                          "002",
-                          "string method (0 arguments)",
-                          "[quick]") {
-    detail::Timer t;
-    std::this_thread::sleep_for(std::chrono::milliseconds(10));
-    t.string();  // Can't really test this
-  }
+    LIBSEMIGROUPS_TEST_CASE("Timer", "003", "reset/elapsed method", "[quick]") {
+      Timer t;
+      std::this_thread::sleep_for(std::chrono::milliseconds(10));
+      auto e
+          = std::chrono::duration_cast<std::chrono::milliseconds>(t.elapsed());
+      REQUIRE(e.count() > 0);
+      REQUIRE(e.count() < 1000);
+      t.reset();
+      std::this_thread::sleep_for(std::chrono::milliseconds(10));
+      e = std::chrono::duration_cast<std::chrono::milliseconds>(t.elapsed());
+      REQUIRE(e.count() > 0);
+      REQUIRE(e.count() < 1000);
+    }
 
-  LIBSEMIGROUPS_TEST_CASE("Timer", "003", "reset/elapsed method", "[quick]") {
-    detail::Timer t;
-    std::this_thread::sleep_for(std::chrono::milliseconds(10));
-    auto e = std::chrono::duration_cast<std::chrono::milliseconds>(t.elapsed());
-    REQUIRE(e.count() > 0);
-    REQUIRE(e.count() < 1000);
-    t.reset();
-    std::this_thread::sleep_for(std::chrono::milliseconds(10));
-    e = std::chrono::duration_cast<std::chrono::milliseconds>(t.elapsed());
-    REQUIRE(e.count() > 0);
-    REQUIRE(e.count() < 1000);
-  }
-
-  LIBSEMIGROUPS_TEST_CASE("Timer", "004", "operator<<", "[quick]") {
-    std::ostringstream os;
-    detail::Timer      t;
-    os << t;
-  }
+    LIBSEMIGROUPS_TEST_CASE("Timer", "004", "operator<<", "[quick]") {
+      std::ostringstream os;
+      Timer              t;
+      os << t;
+    }
+  }  // namespace detail
 }  // namespace libsemigroups

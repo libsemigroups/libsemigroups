@@ -133,6 +133,7 @@ struct LibsemigroupsListener : Catch::TestEventListenerBase {
     test_number(testInfo);
     test_category(testInfo);
     _section_number = 0;
+    _test_time      = 0;
   }
 
   void testCaseStarting(Catch::TestCaseInfo const& testInfo) override {
@@ -162,20 +163,26 @@ struct LibsemigroupsListener : Catch::TestEventListenerBase {
   }
 
   void sectionEnded(Catch::SectionStats const& sectionStats) override {
-    _total_time += static_cast<uint64_t>(sectionStats.durationInSeconds
-                                         * std::pow(10, 9));
+    auto section_ns = static_cast<uint64_t>(sectionStats.durationInSeconds
+                                            * std::pow(10, 9));
+    _total_time += section_ns;
+    _test_time += section_ns;
     if (test_category() != "extreme") {
       if (_section_number == 1) {
         fmt::print("{:.>{}}", section_time(sectionStats), time_cols);
       }
-    } else {
-      extreme_test_divider("END - " + section_time(sectionStats));
     }
     _section_number--;
   }
 
   void testCaseEnded(Catch::TestCaseStats const&) override {
-    fmt::print("\n");
+    if (test_category() != "extreme") {
+      fmt::print("\n");
+    } else {
+      extreme_test_divider("END - "
+                           + libsemigroups::detail::string_time(
+                               std::chrono::nanoseconds(_test_time)));
+    }
   }
 
   void testRunEnded(Catch::TestRunStats const&) override {
@@ -199,6 +206,7 @@ struct LibsemigroupsListener : Catch::TestEventListenerBase {
   std::string _test_name;
   std::string _test_number;
   std::string _test_category;
+  uint64_t    _test_time;
 
   static constexpr size_t line_cols   = 79;
   static constexpr size_t time_cols   = 12;
