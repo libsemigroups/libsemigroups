@@ -1671,8 +1671,19 @@ namespace RX_NAMESPACE {
           = remove_cvref_t<decltype(as_input_range(std::forward<R>(range)))>;
       RX_TYPE_ASSERT(is_finite<range_type>);
       // Copying for reentrancy.
-      auto   copy = as_input_range(std::forward<R>(range));
-      size_t n    = 0;
+      // g++-11 issues a warning here, which is not issued by g++-12 or higher.
+#if (defined(__GNUC__) && __GNUC__ < 12 \
+     && !(defined(__clang__) || defined(__INTEL_COMPILER)))
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wmaybe-uninitialized"
+#endif
+      auto copy = as_input_range(std::forward<R>(range));
+#if (defined(__GNUC__) && __GNUC__ < 12 \
+     && !(defined(__clang__) || defined(__INTEL_COMPILER)))
+#pragma GCC diagnostic pop
+#endif
+
+      size_t n = 0;
       while (RX_LIKELY(!copy.at_end())) {
         n += 1;
         copy.next();
