@@ -113,7 +113,7 @@ namespace libsemigroups {
   void Runner::run_for(std::chrono::nanoseconds val) {
     if (!finished() && !dead()) {
       if (val != FOREVER) {
-        report_default("running for approx. {}\n", detail::Timer::string(val));
+        report_default("running for approx. {}\n", detail::string_time(val));
       } else {
         report_default("running until finished, with no time limit\n");
         run();

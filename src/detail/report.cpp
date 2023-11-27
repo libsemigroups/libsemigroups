@@ -119,26 +119,6 @@ namespace libsemigroups {
     REPORTER.report(false);
   }
 
-  namespace detail {
-    bool string_time_incremental(std::string&              result,
-                                 std::chrono::nanoseconds& elapsed,
-                                 bool                      use_float) {
-      using seconds = std::chrono::seconds;
-      seconds x     = std::chrono::duration_cast<seconds>(elapsed);
-      if (x.count() > 0) {
-        if (use_float) {
-          double x_float = static_cast<double>(elapsed.count()) / 1'000'000'000;
-          result += fmt::format("{:.3f}s", x_float);
-        } else {
-          result += fmt::format("{}", x);
-        }
-        elapsed -= std::chrono::nanoseconds(x);
-        return true;
-      }
-      return false;
-    }
-  }  // namespace detail
-
   bool reporting_enabled() noexcept {
     return REPORTER.report();
   }

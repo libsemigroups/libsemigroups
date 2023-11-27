@@ -794,7 +794,7 @@ namespace libsemigroups {
     msg += fmt_default(
         "KnuthBendix: time  {:>12} (total)  | {:>12} (killed)   | {:>12} "
         "(defined)\n",
-        string_time(run_time),
+        detail::string_time(run_time),
         mean_killed,
         mean_defined);
     msg += fmt::format("{:-<95}\n", "");

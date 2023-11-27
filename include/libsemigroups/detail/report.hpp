@@ -58,96 +58,42 @@ namespace libsemigroups {
   }  // namespace report
 
   template <typename... Args>
-  std::string fmt_default(char const* s, Args&&... args) {
-    if (reporting_enabled()) {
-      auto tid = this_threads_id();
-      return fmt::format(
-          std::string("#{}: ") + s, tid, std::forward<Args>(args)...);
-    }
-    return "";
+  std::string fmt_default(std::string_view sv, Args&&... args) {
+    auto        tid     = this_threads_id();
+    std::string fmt_str = "#{}: ";
+    fmt_str.append(sv.begin(), sv.end());
+    return fmt::format(fmt_str, tid, std::forward<Args>(args)...);
   }
 
   template <typename... Args>
-  void report_no_prefix(char const* s, Args&&... args) {
+  void report_no_prefix(std::string_view sv, Args&&... args) {
     static std::mutex mtx;
 
     if (reporting_enabled()) {
       std::lock_guard<std::mutex> lg(mtx);
-      fmt::print(s, std::forward<Args>(args)...);
+      fmt::print(sv, std::forward<Args>(args)...);
     }
   }
 
   template <typename... Args>
-  void report_no_prefix(std::string const& s, Args&&... args) {
-    report_no_prefix(s.c_str(), std::forward<Args>(args)...);
-  }
-
-  // TODO use fmt_default
-  // TODO write a this_thread_id function
-  template <typename... Args>
-  void report_default(char const* s, Args&&... args) {
+  void report_default(std::string_view sv, Args&&... args) {
     if (reporting_enabled()) {
-      std::string_view sv(s);
-      auto             pos = sv.find(":");
+      std::string_view prefix(sv);
+      auto             pos = prefix.find(":");
       if (pos != std::string::npos) {
-        sv.remove_suffix(sv.size() - sv.find(":"));
-        if (report::is_suppressed(sv)) {
+        prefix.remove_suffix(prefix.size() - prefix.find(":"));
+        if (report::is_suppressed(prefix)) {
           return;
         }
       }
-
-      auto        tid    = this_threads_id();
-      std::string prefix = fmt::format("#{}: ", tid);
-      report_no_prefix(prefix + s, std::forward<Args>(args)...);
+      report_no_prefix(fmt_default(sv, std::forward<Args>(args)...));
     }
   }
 
-  template <typename... Args>
-  void report_default(std::string const& s, Args&&... args) {
-    report_default(s.c_str(), std::forward<Args>(args)...);
-  }
-
-  namespace detail {
-    template <typename T>
-    bool string_time_incremental(std::string&              result,
-                                 std::chrono::nanoseconds& elapsed) {
-      T x = std::chrono::duration_cast<T>(elapsed);
-      if (x.count() > 0) {
-        result += fmt::format("{}", x);
-        elapsed -= std::chrono::nanoseconds(x);
-        return true;
-      }
-      return false;
-    }
-
-    bool string_time_incremental(std::string&              result,
-                                 std::chrono::nanoseconds& elapsed,
-                                 bool                      use_float = false);
-  }  // namespace detail
-
-  template <typename Time>
-  std::string string_time(Time elapsed_arg) {
-    using detail::string_time_incremental;
-
-    std::string out;
-
-    std::chrono::nanoseconds elapsed = elapsed_arg;
-
-    // TODO add day, months etc
-    if (string_time_incremental<std::chrono::hours>(out, elapsed)) {
-      string_time_incremental<std::chrono::minutes>(out, elapsed);
-      string_time_incremental(out, elapsed, false);
-    } else if (string_time_incremental<std::chrono::minutes>(out, elapsed)) {
-      string_time_incremental(out, elapsed, false);
-    } else if (string_time_incremental<std::chrono::seconds>(out, elapsed)) {
-    } else if (string_time_incremental<std::chrono::milliseconds>(out,
-                                                                  elapsed)) {
-    } else if (string_time_incremental<std::chrono::microseconds>(out,
-                                                                  elapsed)) {
-    } else if (string_time_incremental<std::chrono::nanoseconds>(out,
-                                                                 elapsed)) {
-    }
-    return out;
+  static inline void
+  report_elapsed_time(std::string_view                    prefix,
+                      libsemigroups::detail::Timer const& tmr) {
+    report_default("{} elapsed time {}", prefix, tmr);
   }
 
   template <typename Arg>
@@ -165,13 +111,6 @@ namespace libsemigroups {
     }
     return "";
   }
-
-  namespace report {
-    static inline void elapsed_time(std::string_view                    prefix,
-                                    libsemigroups::detail::Timer const& tmr) {
-      report_default("{} elapsed time {}", prefix, tmr);
-    }
-  }  // namespace report
 
   //! This struct can be used to enable printing of some information during
   //! various of the computation in ``libsemigroups``. Reporting is enable (or

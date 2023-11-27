@@ -748,13 +748,15 @@ namespace libsemigroups {
        group_digits(stats().count_now / time_total_s.count()),
        group_digits(stats().total_pending_now / time_total_s.count()));
     rc("Sims1: time last s. {} (/cong.)  | {} (/node)\n",
-       count_diff == 0 ? "x" : string_time(time_diff / count_diff),
-       total_pending_diff == 0 ? "x"
-                               : string_time(time_diff / total_pending_diff));
+       count_diff == 0 ? "x" : detail::string_time(time_diff / count_diff),
+       total_pending_diff == 0
+           ? "x"
+           : detail::string_time(time_diff / total_pending_diff));
     rc("Sims1: mean time    {} (/cong.)  | {} (/node)\n",
-       string_time(time_total_ns / stats().count_now.load()),
-       string_time(time_total_ns / stats().total_pending_now.load()));
-    rc("Sims1: time         {} (total)   |\n", string_time(time_total_ns));
+       detail::string_time(time_total_ns / stats().count_now.load()),
+       detail::string_time(time_total_ns / stats().total_pending_now.load()));
+    rc("Sims1: time         {} (total)   |\n",
+       detail::string_time(time_total_ns));
 
     last_report(now);
     stats().stats_check_point();

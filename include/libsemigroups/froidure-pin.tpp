@@ -402,7 +402,7 @@ namespace libsemigroups {
                    "\u2300 " + italic("{:<4}", current_max_word_length()),
                    italic("{:<11}", detail::group_digits(_nr)),
                    italic("{:<9}", detail::group_digits(_nr_rules)),
-                   italic("{:<7}", string_time(run_time)));
+                   italic("{:<7}", detail::string_time(run_time)));
   }
 
   template <typename Element, typename Traits>
@@ -1192,7 +1192,7 @@ namespace libsemigroups {
         std::chrono::high_resolution_clock::now() - start_time);
     report_default("FroidurePin: found {} idempotents in {}\n",
                    italic(detail::group_digits(_idempotents.size())),
-                   italic(string_time(run_time)));
+                   italic(detail::string_time(run_time)));
   }
 
   // Find the idempotents in the range [first, last) and store

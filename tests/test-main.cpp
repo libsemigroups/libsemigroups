@@ -97,7 +97,7 @@ struct LibsemigroupsListener : Catch::TestEventListenerBase {
   std::string section_time(Catch::SectionStats const& sectionStats) {
     auto t = static_cast<uint64_t>(sectionStats.durationInSeconds
                                    * std::pow(10, 9));
-    return libsemigroups::detail::Timer::string(std::chrono::nanoseconds(t));
+    return libsemigroups::detail::string_time(std::chrono::nanoseconds(t));
   }
 
   bool find_tag(Catch::TestCaseInfo const& testInfo, std::string tag) {
@@ -179,13 +179,13 @@ struct LibsemigroupsListener : Catch::TestEventListenerBase {
   }
 
   void testRunEnded(Catch::TestRunStats const&) override {
-    using Timer_ = libsemigroups::detail::Timer;
+    using libsemigroups::detail::string_time;
     using std::chrono::nanoseconds;
 
     auto const emph
         = fmt::emphasis::bold | fg(fmt::terminal_color::bright_green);
     constexpr std::string_view prefix = "Total time ";
-    auto const                 t = Timer_::string(nanoseconds(_total_time));
+    auto const                 t      = string_time(nanoseconds(_total_time));
     auto const                 prefix_pad = line_cols - prefix.size();
 
     fmt::print(emph, "{:=>{}}\n", "", line_cols);

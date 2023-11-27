@@ -238,7 +238,7 @@ namespace libsemigroups {
             detail::Timer tmr;
             func(_runners.at(0));
             _winner = _runners.at(0);
-            report::elapsed_time("Race: ", tmr);
+            report_elapsed_time("Race: ", tmr);
             return;
           }
           for (size_t i = 0; i < _runners.size(); ++i) {
@@ -294,7 +294,7 @@ namespace libsemigroups {
           for (size_t i = 0; i < nr_threads; ++i) {
             t.at(i).join();
           }
-          report::elapsed_time("Race: ", tmr);
+          report_elapsed_time("Race: ", tmr);
           for (auto method = _runners.begin(); method < _runners.end();
                ++method) {
             if ((*method)->finished()) {
