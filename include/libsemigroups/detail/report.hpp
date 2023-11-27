@@ -55,7 +55,7 @@ namespace libsemigroups {
     auto        tid     = detail::this_threads_id();
     std::string fmt_str = "#{}: ";
     fmt_str.append(sv.begin(), sv.end());
-    return fmt::format(fmt_str, tid, std::forward<Args>(args)...);
+    return fmt::format(std::move(fmt_str), tid, std::forward<Args>(args)...);
   }
 
   template <typename... Args>
@@ -64,7 +64,7 @@ namespace libsemigroups {
 
     if (reporting_enabled()) {
       std::lock_guard<std::mutex> lg(mtx);
-      fmt::print(sv, std::forward<Args>(args)...);
+      fmt::print(std::move(sv), std::forward<Args>(args)...);
     }
   }
 
@@ -105,7 +105,7 @@ namespace libsemigroups {
     std::string_view _prefix;
 
    public:
-    SuppressReportFor(std::string_view const&);
+    SuppressReportFor(std::string_view);
     ~SuppressReportFor();
   };
 }  // namespace libsemigroups
