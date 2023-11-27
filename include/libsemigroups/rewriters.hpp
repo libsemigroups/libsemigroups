@@ -20,6 +20,7 @@
 #define LIBSEMIGROUPS_REWRITERS_HPP_
 
 #include <atomic>         // for atomic
+#include <chrono>         // for time_point
 #include <set>            // for set
 #include <string>         // for basic_string, operator==
 #include <unordered_map>  // for unordered map
@@ -150,6 +151,7 @@ namespace libsemigroups {
       Stats& operator=(Stats const&) noexcept = default;
       Stats& operator=(Stats&&) noexcept      = default;
 
+      // TODO remove duplication with KnuthBendix::Stats
       size_t   max_stack_depth;  // TODO remove this to RewriteFromLeft
       size_t   max_word_length;
       size_t   max_active_word_length;
@@ -407,6 +409,10 @@ namespace libsemigroups {
     void rewrite(Rule* rule) const;
     // void     clear_stack();
     iterator erase_from_active_rules(iterator);
+    void     report_from_confluent(
+            std::atomic_uint64_t const&,
+            std::chrono::high_resolution_clock::time_point const&) const;
+    bool confluent_impl(std::atomic_uint64_t&) const;
   };
 
   class RewriteTrie : public RewriterBase {

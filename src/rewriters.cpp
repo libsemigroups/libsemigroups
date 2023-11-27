@@ -18,6 +18,10 @@
 
 #include "libsemigroups/rewriters.hpp"
 
+#include "libsemigroups/detail/report.hpp"  // for report_default
+#include "libsemigroups/runner.hpp"         // for Ticker
+#include <chrono>
+
 namespace libsemigroups {
   // Construct from KnuthBendix with new but empty internal_string_type's
   Rule::Rule(int64_t id)
@@ -347,23 +351,35 @@ namespace libsemigroups {
     rule->reorder();
   }
 
-  bool RewriteFromLeft::confluent() const {
-    if (number_of_pending_rules() != 0) {
-      return false;
-    } else if (confluence_known()) {
-      return RewriterBase::confluent();
-    }
-    // bool reported = false;
+  void RewriteFromLeft::report_from_confluent(
+      std::atomic_uint64_t const&                           seen,
+      std::chrono::high_resolution_clock::time_point const& start_time) const {
+    auto total_pairs   = std::pow(Rules::number_of_active_rules(), 2);
+    auto total_pairs_s = detail::group_digits(total_pairs);
+    auto now           = std::chrono::high_resolution_clock::now();
+    auto time
+        = std::chrono::duration_cast<std::chrono::seconds>(now - start_time);
+
+    report_default("KnuthBendix: locally confluent for: {:>{width}} / "
+                   "{:>{width}} ({:>4.1f}%) pairs of rules ({}s)\n",
+                   detail::group_digits(seen),
+                   total_pairs_s,
+                   // TODO avoid dividing by 0
+                   100 * static_cast<double>(seen) / total_pairs,
+                   time.count(),
+                   fmt::arg("width", total_pairs_s.size()));
+  }
+
+  bool RewriteFromLeft::confluent_impl(std::atomic_uint64_t& seen) const {
     confluent(tril::TRUE);
     internal_string_type word1;
     internal_string_type word2;
-    // size_t               seen = 0;
 
     for (auto it1 = begin(); it1 != end(); ++it1) {
       Rule const* rule1 = *it1;
       // Seems to be much faster to do this in reverse.
       for (auto it2 = rbegin(); it2 != rend(); ++it2) {
-        // seen++;
+        seen++;
         Rule const* rule2 = *it2;
         for (auto it = rule1->lhs()->cend() - 1; it >= rule1->lhs()->cbegin();
              --it) {
@@ -400,5 +416,23 @@ namespace libsemigroups {
       }
     }
     return confluent();
+  }
+
+  bool RewriteFromLeft::confluent() const {
+    if (number_of_pending_rules() != 0) {
+      return false;
+    } else if (confluence_known()) {
+      return RewriterBase::confluent();
+    }
+    std::atomic_uint64_t seen = 0;
+    if (report::should_report()) {
+      using std::chrono::time_point;
+      time_point     start_time = std::chrono::high_resolution_clock::now();
+      detail::Ticker t([&]() { report_from_confluent(seen, start_time); });
+      report_no_prefix("{:-<95}\n", "");
+      return confluent_impl(seen);
+    } else {
+      return confluent_impl(seen);
+    }
   }
 }  // namespace libsemigroups

@@ -39,21 +39,18 @@
 
 #define CATCH_CONFIG_ENABLE_ALL_STRINGMAKERS
 
-#include <algorithm>      // for fill
-#include <chrono>         // for milliseconds
-#include <cstddef>        // for size_t
-#include <iosfwd>         // for string
-#include <string>         // for basic_string, operator==
-#include <unordered_map>  // for operator==, operator!=
-#include <utility>        // for move
-#include <vector>         // for vector, operator==
+#include <algorithm>  // for fill
+#include <chrono>     // for milliseconds
+#include <cstddef>    // for size_t
+#include <string>     // for basic_string, operator==
+#include <utility>    // for move
+#include <vector>     // for vector, operator==
 
 #include "catch.hpp"      // for AssertionHandler, ope...
 #include "test-main.hpp"  // for TEMPLATE_TEST_CASE
 
 #include "libsemigroups/constants.hpp"        // for operator==, operator!=
 #include "libsemigroups/exception.hpp"        // for LibsemigroupsException
-#include "libsemigroups/froidure-pin.hpp"     // for FroidurePin
 #include "libsemigroups/knuth-bendix.hpp"     // for KnuthBendix, normal_f...
 #include "libsemigroups/obvinf.hpp"           // for is_obviously_infinite
 #include "libsemigroups/paths.hpp"            // for Paths
@@ -79,7 +76,8 @@ namespace libsemigroups {
   KnuthBendix<RewriteTrie>, KnuthBendix<RewriteFromLeft>
 
   TEMPLATE_TEST_CASE("confluent fp semigroup 1 (infinite)",
-                     "[000][quick][knuth-bendix]",
+                     "[000][quick][knuth-bendix][" __FILE__
+                     "][" STR(__LINE__) "]",
                      KNUTH_BENDIX_TYPES) {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
