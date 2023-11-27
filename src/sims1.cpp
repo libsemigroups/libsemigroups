@@ -844,7 +844,6 @@ namespace libsemigroups {
         result.number_of_active_nodes(result.number_of_active_nodes() - 1);
       }
     }
-    report::clear_suppressions();
     return result;
   }
 

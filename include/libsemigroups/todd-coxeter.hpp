@@ -831,7 +831,7 @@ namespace libsemigroups {
         uu = const_word_to_class_index(u);
         vv = const_word_to_class_index(v);
       } catch (LibsemigroupsException const& e) {
-        REPORT_VERBOSE_DEFAULT("ignoring exception:\n%s", e.what());
+        report_default("ignoring exception:\n%s", e.what());
         return tril::unknown;
       }
       if (uu == UNDEFINED || vv == UNDEFINED) {

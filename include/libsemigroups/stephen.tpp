@@ -219,29 +219,29 @@ namespace libsemigroups {
     static bool first_call = true;
     if (first_call) {
       first_call = false;
-      REPORT_DEFAULT_V3("Stephen: " + std::string(60, '-') + "\n");
-      REPORT_DEFAULT_V3("Stephen: %11s | %11s | %11s | %11s |\n",
-                        "nodes",
-                        "defined",
-                        "killed",
-                        "diff");
-      REPORT_DEFAULT_V3("Stephen: " + std::string(60, '-') + "\n");
+      // REPORT_DEFAULT_V3("Stephen: " + std::string(60, '-') + "\n");
+      // REPORT_DEFAULT_V3("Stephen: %11s | %11s | %11s | %11s |\n",
+      //                   "nodes",
+      //                   "defined",
+      //                   "killed",
+      //                   "diff");
+      // REPORT_DEFAULT_V3("Stephen: " + std::string(60, '-') + "\n");
     }
     using ::libsemigroups::detail::group_digits;
-    REPORT_DEFAULT_V3(
-        "Stephen: %11s | %11s | %11s | %11s | "
-        "(%llus)\n",
-        group_digits(_word_graph.number_of_nodes_active()).c_str(),
-        ("+"
-         + group_digits(int64_t(_word_graph.number_of_nodes_defined()
-                                - stats.prev_nodes_defined)))
-            .c_str(),
-        ("-"
-         + group_digits(int64_t(_word_graph.number_of_nodes_killed()
-                                - stats.prev_nodes_killed)))
-            .c_str(),
-        ((diff < 0 ? "" : "+") + group_digits(diff)).c_str(),
-        total_time.count());
+    // REPORT_DEFAULT_V3(
+    //     "Stephen: %11s | %11s | %11s | %11s | "
+    //     "(%llus)\n",
+    //     group_digits(_word_graph.number_of_nodes_active()).c_str(),
+    //     ("+"
+    //      + group_digits(int64_t(_word_graph.number_of_nodes_defined()
+    //                             - stats.prev_nodes_defined)))
+    //         .c_str(),
+    //     ("-"
+    //      + group_digits(int64_t(_word_graph.number_of_nodes_killed()
+    //                             - stats.prev_nodes_killed)))
+    //         .c_str(),
+    //     ((diff < 0 ? "" : "+") + group_digits(diff)).c_str(),
+    //     total_time.count());
     _word_graph.stats_check_point();
   }
 

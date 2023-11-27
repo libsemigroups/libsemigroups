@@ -40,7 +40,7 @@
 #include "libsemigroups/exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
 #include "libsemigroups/runner.hpp"     // for Runner
 
-#include "report.hpp"  // for REPORT_DEFAULT, REPORT_TIME
+#include "report.hpp"  // for report_default, REPORT_TIME
 #include "stl.hpp"     // for IsCallable
 #include "timer.hpp"   // for Timer
 
@@ -234,18 +234,18 @@ namespace libsemigroups {
         if (_winner == nullptr) {
           size_t nr_threads = std::min(_runners.size(), _max_threads);
           if (nr_threads == 1) {
-            REPORT_DEFAULT("using 0 additional threads\n");
+            report_default("using 0 additional threads\n");
             detail::Timer tmr;
             func(_runners.at(0));
             _winner = _runners.at(0);
-            REPORT_TIME(tmr);
+            report::elapsed_time("Race: ", tmr);
             return;
           }
           for (size_t i = 0; i < _runners.size(); ++i) {
             if (_runners[i]->finished()) {
-              REPORT_DEFAULT("using 0 additional threads\n");
+              report_default("using 0 additional threads\n");
               _winner = _runners[i];
-              REPORT_DEFAULT("#%d is already finished!\n", i);
+              report_default("#{} is already finished!\n", i);
               // delete the other runners?
               return;
             }
@@ -254,7 +254,7 @@ namespace libsemigroups {
           std::vector<std::thread::id> tids(_runners.size(),
                                             std::this_thread::get_id());
 
-          REPORT_DEFAULT("using %d / %d additional threads\n",
+          report_default("using {} / {} additional threads\n",
                          nr_threads,
                          std::thread::hardware_concurrency());
           detail::Timer tmr;
@@ -266,7 +266,7 @@ namespace libsemigroups {
               func(_runners.at(pos));
             } catch (std::exception const& e) {
               size_t tid = THREAD_ID_MANAGER.tid(tids[pos]);
-              REPORT_DEFAULT("exception thrown by #%d:\n%s\n", tid, e.what());
+              report_default("exception thrown by #{}:\n{}\n", tid, e.what());
               return;
             }
             // Stop two Runner* objects from killing each other
@@ -294,7 +294,7 @@ namespace libsemigroups {
           for (size_t i = 0; i < nr_threads; ++i) {
             t.at(i).join();
           }
-          REPORT_TIME(tmr);
+          report::elapsed_time("Race: ", tmr);
           for (auto method = _runners.begin(); method < _runners.end();
                ++method) {
             if ((*method)->finished()) {
@@ -302,7 +302,7 @@ namespace libsemigroups {
               _winner = *method;
               size_t tid
                   = THREAD_ID_MANAGER.tid(tids.at(method - _runners.begin()));
-              REPORT_DEFAULT("#%d is the winner!\n", tid);
+              report_default("#{} is the winner!\n", tid);
               break;
             }
           }

@@ -214,7 +214,7 @@ namespace libsemigroups {
         }
       }
       if (report()) {
-        REPORT_DEFAULT("found %d points, so far\n", _orb.size());
+        report_default("found {} points, so far\n", _orb.size());
       }
     }
     report_why_we_stopped();

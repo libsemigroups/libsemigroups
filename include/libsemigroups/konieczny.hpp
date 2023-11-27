@@ -4005,7 +4005,7 @@ namespace libsemigroups {
       }
     }
 
-    REPORT_TIME(t);
+    report::elapsed_time("Konieczny: ", t);
     report_why_we_stopped();
   }
 }  // namespace libsemigroups

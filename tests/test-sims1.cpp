@@ -22,7 +22,8 @@
 #include <unordered_set>  // for unordered_set
 #include <vector>         // for vector
 
-#include "catch.hpp"      // for REQUIRE, REQUIRE_THROWS_AS, REQUI...
+#include "catch.hpp"  // for REQUIRE, REQUIRE_THROWS_AS, REQUI...
+#include "libsemigroups/detail/report.hpp"
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
 #include "libsemigroups/bipart.hpp"           // for Bipartition
@@ -2598,7 +2599,7 @@ namespace libsemigroups {
                                     size_t                           skip) {
     using word_graph_type = WordGraph<uint32_t>;
 
-    report::suppress("FroidurePin");
+    SuppressReportFor suppressor("FroidurePin");
 
     auto   T              = Sims1(congruence_kind::right).presentation(p);
     size_t skipped_so_far = 0;
@@ -2628,7 +2629,6 @@ namespace libsemigroups {
     };
 
     auto result = T.find_if(120, hook);
-    report::clear_suppressions();
     return result;
   }
 

@@ -18,19 +18,45 @@
 
 #include "libsemigroups/detail/report.hpp"
 
-#include <ratio>          // for ratio, nano
 #include <unordered_map>  // for operator!=
 
-#include "fmt/format.h"  // for everything
-
-#include "libsemigroups/config.hpp"  // for LIBSEMIGROUPS_FMT_ENABLED
-#include "libsemigroups/debug.hpp"   // for LIBSEMIGROUPS_ASSERT
-
-#include "libsemigroups/detail/string.hpp"  // for unicode_string_length, wrap
+#include "libsemigroups/debug.hpp"  // for LIBSEMIGROUPS_ASSERT
 
 namespace libsemigroups {
-  detail::Reporter        REPORTER;
+  namespace {
+    class Reporter {
+     public:
+      explicit Reporter(bool report = true);
+
+      Reporter(Reporter const&)            = delete;
+      Reporter(Reporter&&)                 = delete;
+      Reporter& operator=(Reporter const&) = delete;
+      Reporter& operator=(Reporter&&)      = delete;
+
+      void report(bool val) {
+        _report = val;
+      }
+
+      bool report() const noexcept {
+        return _report;
+      }
+
+      std::atomic<bool> _report;
+    };
+
+    Reporter::Reporter(bool report) : _report(report) {}
+  }  // namespace
+
+  Reporter                REPORTER;
   detail::ThreadIdManager THREAD_ID_MANAGER;
+
+  ReportGuard::ReportGuard(bool val) {
+    REPORTER.report(val);
+  }
+
+  ReportGuard::~ReportGuard() {
+    REPORTER.report(false);
+  }
 
   namespace detail {
 
@@ -61,94 +87,6 @@ namespace libsemigroups {
         // std::thread::hardware_concurrency());
         _thread_map.emplace(t, _next_tid++);
         return _next_tid - 1;
-      }
-    }
-
-    Reporter::Reporter(bool report)
-        : _last_msg(), _mtx(), _msg(), _options(), _report(report) {}
-
-#ifdef LIBSEMIGROUPS_FMT_ENABLED
-    Reporter& Reporter::color(fmt::color c) {
-      if (_report) {
-        size_t tid = THREAD_ID_MANAGER.tid(std::this_thread::get_id());
-        resize(tid + 1);
-        _options[tid].color = c;
-      }
-      return *this;
-    }
-
-    Reporter& Reporter::thread_color() {
-      if (_report) {
-        std::lock_guard<std::mutex> lg(_mtx);
-        size_t tid = THREAD_ID_MANAGER.tid(std::this_thread::get_id());
-        resize(tid + 1);
-        _options[tid].color = thread_colors[tid % thread_colors.size()];
-      }
-      return *this;
-    }
-#endif
-
-    Reporter& Reporter::prefix() {
-      if (_report) {
-        std::lock_guard<std::mutex> lg(_mtx);
-        size_t tid = THREAD_ID_MANAGER.tid(std::this_thread::get_id());
-        resize(tid + 1);
-        _options[tid].prefix = "";
-      }
-      return *this;
-    }
-
-    Reporter& Reporter::flush_right() {
-      if (_report) {
-        std::lock_guard<std::mutex> lg(_mtx);
-        size_t tid = THREAD_ID_MANAGER.tid(std::this_thread::get_id());
-        resize(tid + 1);
-        _options[tid].flush_right = true;
-      }
-      return *this;
-    }
-
-    void Reporter::flush() {
-      if (_report) {
-        std::lock_guard<std::mutex> lg(_mtx);
-        size_t      tid  = THREAD_ID_MANAGER.tid(std::this_thread::get_id());
-        auto const& prfx = _options[tid].prefix;
-        auto        pos  = prfx.find(":");
-        if (pos != std::string::npos && pos + 2 <= prfx.size() - 1) {
-          std::string class_name(prfx.cbegin() + prfx.find(":") + 2,
-                                 prfx.cend() - 2);
-          if (_suppressions.find(class_name) != _suppressions.cend()) {
-            return;
-          }
-        }
-
-        size_t pad = 0;
-        _msg[tid]  = _options[tid].prefix + _msg[tid];
-        if (_options[tid].flush_right
-            && _last_msg[tid].size() + unicode_string_length(_msg[tid]) < 80) {
-          pad = (80 - _last_msg[tid].size()) - unicode_string_length(_msg[tid]);
-          _msg[tid] = std::string(pad, ' ') + _msg[tid];
-        }
-#ifdef LIBSEMIGROUPS_VERBOSE
-        if (_msg[tid].back() != '\n') {
-          _msg[tid] += "\n";
-        }
-#endif
-        _msg[tid] = wrap(_options[tid].prefix.length(), _msg[tid]);
-#ifdef LIBSEMIGROUPS_FMT_ENABLED
-        fmt::print(fg(_options[tid].color), _msg[tid]);
-#else
-        std::cout << _msg[tid];
-#endif
-        _options[tid] = Options();
-      }
-    }
-
-    void Reporter::resize(size_t n) {
-      if (n > _msg.size()) {
-        _last_msg.resize(n);
-        _msg.resize(n);
-        _options.resize(n);
       }
     }
 
@@ -195,11 +133,6 @@ namespace libsemigroups {
 
     bool is_suppressed(std::string_view const& prefix) {
       return suppressions().find(prefix) != suppressions().cend();
-    }
-
-    // TODO delete
-    void clear_suppressions() {
-      REPORTER.clear_suppressions();
     }
 
   }  // namespace report
