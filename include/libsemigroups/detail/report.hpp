@@ -39,24 +39,39 @@
 namespace libsemigroups {
 
   using t_id = size_t;
+
   t_id this_threads_id();
   t_id thread_id(std::thread::id);
   void reset_thread_ids();
 
+  bool reporting_enabled() noexcept;
+
   namespace report {
 
-    bool should_report() noexcept;
+    // TODO Move to cpp
     bool suppress(std::string_view const&);
+    // TODO Move to cpp
     bool is_suppressed(std::string_view const&);
+    // TODO Move to cpp
     bool stop_suppressing(std::string_view const&);
 
   }  // namespace report
 
   template <typename... Args>
+  std::string fmt_default(char const* s, Args&&... args) {
+    if (reporting_enabled()) {
+      auto tid = this_threads_id();
+      return fmt::format(
+          std::string("#{}: ") + s, tid, std::forward<Args>(args)...);
+    }
+    return "";
+  }
+
+  template <typename... Args>
   void report_no_prefix(char const* s, Args&&... args) {
     static std::mutex mtx;
 
-    if (report::should_report()) {
+    if (reporting_enabled()) {
       std::lock_guard<std::mutex> lg(mtx);
       fmt::print(s, std::forward<Args>(args)...);
     }
@@ -71,7 +86,7 @@ namespace libsemigroups {
   // TODO write a this_thread_id function
   template <typename... Args>
   void report_default(char const* s, Args&&... args) {
-    if (report::should_report()) {
+    if (reporting_enabled()) {
       std::string_view sv(s);
       auto             pos = sv.find(":");
       if (pos != std::string::npos) {
@@ -90,16 +105,6 @@ namespace libsemigroups {
   template <typename... Args>
   void report_default(std::string const& s, Args&&... args) {
     report_default(s.c_str(), std::forward<Args>(args)...);
-  }
-
-  template <typename... Args>
-  std::string fmt_default(char const* s, Args&&... args) {
-    if (report::should_report()) {
-      auto tid = this_threads_id();
-      return fmt::format(
-          std::string("#{}: ") + s, tid, std::forward<Args>(args)...);
-    }
-    return "";
   }
 
   namespace detail {
@@ -147,7 +152,7 @@ namespace libsemigroups {
 
   template <typename Arg>
   std::string italic(Arg&& arg) {
-    if (report::should_report()) {
+    if (reporting_enabled()) {
       return fmt::format(fmt::emphasis::italic, "{}", std::forward<Arg>(arg));
     }
     return "";
@@ -155,7 +160,7 @@ namespace libsemigroups {
 
   template <typename Arg>
   std::string italic(char const* s, Arg&& arg) {
-    if (report::should_report()) {
+    if (reporting_enabled()) {
       return fmt::format(fmt::emphasis::italic, s, std::forward<Arg>(arg));
     }
     return "";

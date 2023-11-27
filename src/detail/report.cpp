@@ -139,6 +139,10 @@ namespace libsemigroups {
     }
   }  // namespace detail
 
+  bool reporting_enabled() noexcept {
+    return REPORTER.report();
+  }
+
   namespace report {
     namespace {
       std::unordered_set<std::string_view>& suppressions() {
@@ -146,10 +150,6 @@ namespace libsemigroups {
         return _suppressions;
       }
     }  // namespace
-
-    bool should_report() noexcept {
-      return REPORTER.report();
-    }
 
     bool suppress(std::string_view const& prefix) {
       // TODO throw exception if prefix is empty

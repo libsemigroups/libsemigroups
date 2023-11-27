@@ -754,7 +754,7 @@ namespace libsemigroups {
     using high_resolution_clock = std::chrono::high_resolution_clock;
     using nanoseconds           = std::chrono::nanoseconds;
 
-    if (!report() && (!report::should_report() || !finished())) {
+    if (!report() && (!reporting_enabled() || !finished())) {
       return;
     }
     auto run_time = duration_cast<nanoseconds>(high_resolution_clock::now()

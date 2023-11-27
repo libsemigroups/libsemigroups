@@ -530,7 +530,7 @@ namespace libsemigroups {
 
     init_run();
 
-    if (report::should_report()
+    if (reporting_enabled()
         && (!running_for()
             || report_every() >= std::chrono::nanoseconds(1'500'000'000))) {
       // TODO report_strategy

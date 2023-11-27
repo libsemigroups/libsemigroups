@@ -565,7 +565,7 @@ namespace libsemigroups {
     }
     report_at_start(n);
     if (number_of_threads() == 1) {
-      if (!report::should_report()) {
+      if (!reporting_enabled()) {
         // Don't care about stats in this case
         std::for_each(cbegin(n), cend(n), pred);
       } else {
@@ -584,7 +584,7 @@ namespace libsemigroups {
         pred(ad);
         return false;
       };
-      if (!report::should_report()) {
+      if (!reporting_enabled()) {
         den.run(pred_wrapper);
       } else {
         stats().stats_zero();
@@ -608,7 +608,7 @@ namespace libsemigroups {
     }
     report_at_start(n);
     if (number_of_threads() == 1) {
-      if (!report::should_report()) {
+      if (!reporting_enabled()) {
         return *std::find_if(cbegin(n), cend(n), pred);
       } else {
         stats().stats_zero();
@@ -628,7 +628,7 @@ namespace libsemigroups {
       }
     } else {
       thread_runner den(this, n, number_of_threads());
-      if (!report::should_report()) {
+      if (!reporting_enabled()) {
         den.run(pred);
         return den.word_graph();
       } else {
