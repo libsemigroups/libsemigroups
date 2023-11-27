@@ -205,16 +205,24 @@ namespace libsemigroups {
     }
   }
 
-  void RewriterBase::clear_stack() {
-    while (number_of_pending_rules() != 0) {
-      // _stats.max_stack_depth = std::max(_stats.max_stack_depth,
-      // _stack.size());
+  void RewriterBase::process_batch(size_t batch_size) {
+    Rule*              batch[batch_size];
+    std::vector<Rule*> rules_to_add;
+    std::vector<Rule*> rules_to_inactive;
 
-      Rule* rule1 = next_pending_rule();
-      LIBSEMIGROUPS_ASSERT(!rule1->active());
-      LIBSEMIGROUPS_ASSERT(*rule1->lhs() != *rule1->rhs());
-      // Rewrite both sides and reorder if necessary . . .
-      rewrite(rule1);
+    rules_to_add.reserve(batch_size);
+    rules_to_inactive.reserve(batch_size);
+
+    for (size_t i = 0; i != batch_size; ++i) {
+      Rule* rule = next_pending_rule();
+      LIBSEMIGROUPS_ASSERT(!rule->active());
+      LIBSEMIGROUPS_ASSERT(*rule->lhs() != *rule->rhs());
+      rewrite(rule);
+      batch[i] = rule;
+    }
+
+    for (size_t i = 0; i != batch_size; ++i) {
+      Rule* rule1 = batch[i];
 
       if (*rule1->lhs() != *rule1->rhs()) {
         internal_string_type const* lhs = rule1->lhs();
@@ -233,12 +241,30 @@ namespace libsemigroups {
             ++it;
           }
         }
-        add_rule(rule1);
+        rules_to_add.push_back(rule1);
         // rule1 is activated, we do this after removing rules that rule1
         // makes redundant to avoid failing to insert rule1 in _set_rules
       } else {
-        add_inactive_rule(rule1);
+        rules_to_inactive.push_back(rule1);
       }
+    }
+
+    for (Rule* rule : rules_to_add) {
+      add_rule(rule);
+    }
+
+    for (Rule* rule : rules_to_inactive) {
+      add_inactive_rule(rule);
+    }
+  }
+
+  void RewriterBase::clear_stack() {
+    size_t batch_size = 1;  // std::sqrt(number_of_pending_rules());
+    while (number_of_pending_rules() >= batch_size) {
+      process_batch(batch_size);
+    }
+    while (!_stack.empty()) {
+      process_batch(1);
     }
   }
 
