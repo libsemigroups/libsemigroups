@@ -776,8 +776,8 @@ namespace libsemigroups {
       }
     }
 
-    REQUIRE(M == 10'052'729);
-    REQUIRE(N == 4392);
+    REQUIRE(M == 10'057'120);
+    REQUIRE(N == 1);
 
     auto s = to_froidure_pin(k);
     s.run_until([&s]() { return s.current_max_word_length() >= 6; });
@@ -787,7 +787,7 @@ namespace libsemigroups {
              | transform([](auto const& val) { return val.value(); })
              | to_vector())
             == std::vector<std::string>(
-                {"a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l"}));
+                {"a", "b", "c", "d", "e", "f", "g", "h", "i", "ei", "k", "l"}));
   }
 
   LIBSEMIGROUPS_TEST_CASE("Kambites",

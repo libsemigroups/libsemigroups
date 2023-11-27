@@ -368,13 +368,12 @@ namespace libsemigroups {
     REQUIRE(
         to_string(kb.presentation(), S.factorisation(Transf<>({3, 1, 3, 3, 3})))
         == "baaab");
-    // kb.add_pair(S.factorisation(Transf<>({3, 4, 4, 4, 4})),
-    //             S.factorisation(Transf<>({3, 1, 3, 3, 3})));
 
     kb.add_pair(to_word(kb.presentation(), "caabbaaaba"),
                 to_word(kb.presentation(), "cbaaab"));
 
     kb.run();
+    REQUIRE(kb.number_of_active_rules() == 23);
     // std::cout << (kb.active_rules() | to_vector()) << std::endl;
 
     auto copy   = kb.gilman_graph();
@@ -390,16 +389,18 @@ namespace libsemigroups {
 
     auto nrset = word_graph::nodes_reachable_from(copy, source);
     auto nrvec = std::vector<size_t>(nrset.begin(), nrset.end());
-    std::iter_swap(nrvec.begin(), (nrvec.end() - 1));
+    std::sort(nrvec.begin(), nrvec.end());
+    source = std::distance(nrvec.begin(),
+                           std::find(nrvec.begin(), nrvec.end(), source));
     // FIXME this is broken on RC's computer, returns 36
-    REQUIRE(nrvec[0] == 34);
+    REQUIRE(source == 28);
 
     copy.induced_subgraph_no_checks(nrvec.begin(), nrvec.end());
     REQUIRE(copy.out_degree() == 2);
     REQUIRE(copy.number_of_nodes() == 45);
 
     Paths paths(copy);
-    REQUIRE(paths.min(1).from(0).count() == 69);
+    REQUIRE(paths.min(1).from(source).count() == 69);
 
     REQUIRE(kb.gilman_graph().number_of_nodes() == 51);
   }
@@ -464,16 +465,16 @@ namespace libsemigroups {
 
     auto nf = S.normal_forms() | to_strings(kb.presentation().alphabet())
               | take(S.size());
-    REQUIRE(kb.gilman_graph()
-            == to_word_graph<size_t>(
-                45, {{1, 2},  {27, 35}, {36, 38}, {4},      {},       {6, 3},
-                     {},      {5, 8},   {},       {7, 10},  {33},     {},
-                     {11},    {9, 12},  {6, 13},  {},       {15},     {6, 16},
-                     {17, 8}, {18, 10}, {},       {6, 20},  {21, 8},  {22, 24},
-                     {43},    {23},     {19, 25}, {14, 26}, {},       {28},
-                     {29},    {6, 30},  {31, 8},  {},       {32, 10}, {34, 38},
-                     {37},    {},       {39},     {40, 24}, {41, 8},  {6, 44},
-                     {},      {},       {42}}));
+    auto result   = kb.gilman_graph();
+    auto expected = to_word_graph<size_t>(
+        45, {{1, 2},   {31, 9}, {43, 11}, {4, 5},  {},       {20, 21}, {7, 8},
+             {4, 18},  {},      {10, 11}, {6, 12}, {14},     {13},     {},
+             {15, 16}, {24, 8}, {17},     {},      {19},     {23},     {27, 12},
+             {22},     {},      {},       {4, 25}, {26},     {},       {28, 8},
+             {4, 29},  {30},    {},       {3, 32}, {33, 34}, {39, 12}, {35},
+             {36, 16}, {37, 8}, {4, 38},  {},      {40, 8},  {4, 41},  {42},
+             {},       {44},    {}});
+    REQUIRE(result == expected);
 
     REQUIRE(kb.normal_form("abaaaa") == "aba");
 

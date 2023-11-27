@@ -360,9 +360,13 @@ namespace libsemigroups {
     KnuthBendix kb(congruence_kind::twosided, p);
     REQUIRE(kb.number_of_classes() == 9);
     auto S = to_froidure_pin(kb);
+    REQUIRE(S.size() == 9);
 
     WordGraph<size_t> ad(S.right_cayley_graph());
+    REQUIRE(ad.number_of_nodes() == S.size());
     ad.add_nodes(1);
+    REQUIRE(ad.number_of_nodes() == S.size() + 1);
+    REQUIRE(ad.target(S.size(), 0) == static_cast<size_t>(UNDEFINED));
 
     REQUIRE(ad.number_of_nodes() == 10);
     REQUIRE(ad.number_of_edges() == 18);

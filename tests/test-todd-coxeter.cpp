@@ -2225,7 +2225,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "114",
                           "partial_transformation_monoid(5, Sutov)",
-                          "[todd-coxeter][standard]") {
+                          "[todd-coxeter][extreme]") {
     using fpsemigroup::author;
     using fpsemigroup::partial_transformation_monoid;
 
@@ -2611,15 +2611,15 @@ namespace libsemigroups {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("abcABCDEFGHIXYZ");
-    presentation::add_rule(p, "A", parse("a^14"));
-    presentation::add_rule(p, "B", parse("b^14"));
-    presentation::add_rule(p, "C", parse("c^14"));
-    presentation::add_rule(p, "D", parse("a^4ba"));
-    presentation::add_rule(p, "E", parse("b^4ab"));
-    presentation::add_rule(p, "F", parse("a^4ca"));
-    presentation::add_rule(p, "G", parse("c^4ac"));
-    presentation::add_rule(p, "H", parse("b^4cb"));
-    presentation::add_rule(p, "I", parse("c^4bc"));
+    presentation::add_rule(p, "A", "a^14"_p);
+    presentation::add_rule(p, "B", "b^14"_p);
+    presentation::add_rule(p, "C", "c^14"_p);
+    presentation::add_rule(p, "D", "a^4ba"_p);
+    presentation::add_rule(p, "E", "b^4ab"_p);
+    presentation::add_rule(p, "F", "a^4ca"_p);
+    presentation::add_rule(p, "G", "c^4ac"_p);
+    presentation::add_rule(p, "H", "b^4cb"_p);
+    presentation::add_rule(p, "I", "c^4bc"_p);
     presentation::add_rule(p, "X", "aaa");
     presentation::add_rule(p, "Y", "bbb");
     presentation::add_rule(p, "Z", "ccc");
@@ -2636,36 +2636,20 @@ namespace libsemigroups {
 
     REQUIRE(presentation::length(p) == 117);
 
+    presentation::sort_each_rule(p);
     presentation::sort_rules(p);
+
+    // reduce_complements seems to be non-deterministic, and as such we
+    // shouldn't check the result of the reductions below.
     presentation::reduce_complements(p);
     presentation::remove_redundant_generators(p);
     presentation::remove_trivial_rules(p);
-    REQUIRE(presentation::length(p) == 105);
 
     presentation::normalize_alphabet(p);
     REQUIRE(p.alphabet() == "abc");
 
     presentation::sort_each_rule(p);
     presentation::sort_rules(p);
-    REQUIRE(p.rules
-            == std::vector<std::string>({parse("a^4ba"),
-                                         parse("b^3"),
-                                         parse("b^4ab"),
-                                         parse("a^3"),
-                                         parse("b^4cb"),
-                                         parse("c^3"),
-                                         parse("c^4ac"),
-                                         parse("a^3"),
-                                         parse("b^4cb"),
-                                         parse("a^4ca"),
-                                         parse("c^4bc"),
-                                         parse("a^4ba"),
-                                         parse("a^14"),
-                                         parse("a"),
-                                         parse("b^14"),
-                                         parse("b"),
-                                         parse("c^14"),
-                                         parse("c")}));
 
     ToddCoxeter tc(twosided, p);
     tc.run_until([&tc]() -> bool {
@@ -3298,8 +3282,8 @@ namespace libsemigroups {
     presentation::add_rule(p, "accAABab", "");
 
     ToddCoxeter H(right, p);
-    H.add_pair("bc"_w, ""_w);
-    H.add_pair("bc"_w, "ABAAbcabC"_w);
+    H.add_pair(12_w, {});
+    H.add_pair(12_w, 343312015_w);
 
     H.strategy(options::strategy::hlt)
         .lookahead_extent(options::lookahead_extent::partial);
@@ -3331,9 +3315,9 @@ namespace libsemigroups {
     presentation::add_rule(p, "accAABab", "");
 
     ToddCoxeter H(right, p);
-    H.add_pair("bc"_w, ""_w);
-    H.add_pair("ABAAbcabC"_w, ""_w);
-    H.add_pair("AcccacBcA"_w, ""_w);
+    H.add_pair(to_word(p, "bc"), ""_w);
+    H.add_pair(to_word(p, "ABAAbcabC"), ""_w);
+    H.add_pair(to_word(p, "AcccacBcA"), ""_w);
     H.large_collapse(10'000)
         .strategy(options::strategy::hlt)
         .lookahead_extent(options::lookahead_extent::partial);

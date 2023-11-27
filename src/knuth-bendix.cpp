@@ -1025,6 +1025,9 @@ namespace libsemigroups {
         // This is a bit awkward, it exists to ensure
         // that node 0 in the induced subdigraph is src.
         std::vector<decltype(src)> sorted_nodes(nodes.cbegin(), nodes.cend());
+        // The order which nodes come out of nodes_reachable_from is
+        // non-deterministic and so we sort the nodes
+        std::sort(sorted_nodes.begin(), sorted_nodes.end());
         if (sorted_nodes[0] != src) {
           std::iter_swap(
               sorted_nodes.begin(),

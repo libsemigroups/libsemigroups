@@ -321,6 +321,9 @@ namespace libsemigroups {
       }
     }
 
+    // TODO this appears to be non-deterministic (different results with g++-11
+    // than with clang++). Not sure that this is a problem, but this should be
+    // recorded in the doc.
     template <typename Word>
     void reduce_complements(Presentation<Word>& p) {
       // the first loop below depends on p.rules being of even length

@@ -855,11 +855,22 @@ namespace libsemigroups {
   WordGraph<Node>::WordGraph(WordGraph<OtherNode> const& wg)
       : WordGraph(wg.number_of_nodes(), wg.out_degree()) {
     _dynamic_array_2 = wg._dynamic_array_2;
+    if (_dynamic_array_2.default_value() == static_cast<OtherNode>(UNDEFINED)) {
+      _dynamic_array_2.set_default_value(static_cast<Node>(UNDEFINED));
+    }
+    std::for_each(
+        _dynamic_array_2.begin(), _dynamic_array_2.end(), [](auto& val) {
+          if (val == static_cast<OtherNode>(UNDEFINED)) {
+            val = static_cast<Node>(UNDEFINED);
+          }
+        });
   }
 
   template <typename Node>
   template <typename OtherNode>
   WordGraph<Node>& WordGraph<Node>::init(WordGraph<OtherNode> const& wg) {
+    // TODO same as the constructor above adjust UNDEFINED from OtherNode ->
+    // Node
     init(wg.number_of_nodes(), wg.out_degree());
     _dynamic_array_2 = wg._dynamic_array_2;
     return *this;
@@ -1072,8 +1083,9 @@ namespace libsemigroups {
   template <typename Node>
   size_t WordGraph<Node>::number_of_edges() const {
     return _dynamic_array_2.number_of_rows() * _dynamic_array_2.number_of_cols()
-           - std::count(
-               _dynamic_array_2.cbegin(), _dynamic_array_2.cend(), UNDEFINED);
+           - std::count(_dynamic_array_2.cbegin(),
+                        _dynamic_array_2.cend(),
+                        static_cast<Node>(UNDEFINED));
   }
 
   template <typename Node>

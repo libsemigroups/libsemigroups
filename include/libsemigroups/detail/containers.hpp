@@ -352,6 +352,10 @@ namespace libsemigroups {
         _default_val = val;
       }
 
+      inline T default_value() const noexcept {
+        return _default_val;
+      }
+
       // Not noexcept
       void add_cols(size_type nr) {
         if (nr <= _nr_unused_cols) {
