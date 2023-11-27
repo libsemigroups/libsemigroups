@@ -23,8 +23,6 @@
 
 #include <cxxabi.h>  // for abi::
 
-#include <array>          // for array
-#include <atomic>         // for atomic
 #include <cstddef>        // for size_t
 #include <cstdint>        // for uint64_t
 #include <cstdlib>        // for free
@@ -32,17 +30,13 @@
 #include <string>         // for string
 #include <thread>         // for get_id, thread, thread::id
 #include <unordered_map>  // for unordered_map
-#include <unordered_set>  // for unordered_set
 #include <utility>        // for pair
 #include <vector>         // for vector
-
-#include "libsemigroups/config.hpp"  // for LIBSEMIGROUPS_FMT_ENABLED
 
 #include "containers.hpp"  // for StaticVector1
 #include "string.hpp"      // for string_format, to_string
 #include "timer.hpp"       // for string_format, to_string
 
-#include "textflowcpp/TextFlow.hpp"
 #include <magic_enum/magic_enum.hpp>
 
 #include <fmt/chrono.h>
