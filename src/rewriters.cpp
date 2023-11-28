@@ -194,7 +194,7 @@ namespace libsemigroups {
     }
   }
 
-  bool RewriterBase::push_stack(Rule* rule) {
+  bool RewriterBase::add_pending_rule(Rule* rule) {
     LIBSEMIGROUPS_ASSERT(!rule->active());
     if (*rule->lhs() != *rule->rhs()) {
       _pending_rules.emplace(rule);
@@ -205,7 +205,7 @@ namespace libsemigroups {
     }
   }
 
-  void RewriterBase::clear_stack() {
+  void RewriterBase::process_pending_rules() {
     while (number_of_pending_rules() != 0) {
       // _stats.max_stack_depth = std::max(_stats.max_stack_depth,
       // _pending_rules.size());
@@ -225,7 +225,7 @@ namespace libsemigroups {
           if (rule2->lhs()->find(*lhs) != external_string_type::npos) {
             it = make_active_rule_pending(it);
             // rule2 is added to _inactive_rules or _active_rules by
-            // clear_stack
+            // process_pending_rules
           } else {
             if (rule2->rhs()->find(*lhs) != external_string_type::npos) {
               rewrite(*rule2->rhs());
@@ -244,11 +244,11 @@ namespace libsemigroups {
 
   void RewriterBase::reduce() {
     for (Rule const* rule : *this) {
-      // Copy rule and push_stack so that it is not modified by the
-      // call to clear_stack.
+      // Copy rule and add_pending_rule so that it is not modified by the
+      // call to process_pending_rules.
       LIBSEMIGROUPS_ASSERT(rule->lhs() != rule->rhs());
-      if (push_stack(copy_rule(rule))) {
-        clear_stack();
+      if (add_pending_rule(copy_rule(rule))) {
+        process_pending_rules();
       }
     }
   }
@@ -277,7 +277,7 @@ namespace libsemigroups {
   RewriteFromLeft::make_active_rule_pending(iterator it) {
     Rule* rule = const_cast<Rule*>(*it);
     rule->deactivate();
-    push_stack(rule);
+    add_pending_rule(rule);
 #ifdef LIBSEMIGROUPS_DEBUG
     LIBSEMIGROUPS_ASSERT(_set_rules.erase(RuleLookup(rule)));
 #else
@@ -415,14 +415,14 @@ namespace libsemigroups {
         }
       }
     }
-    return confluent();
+    return cached_confluent();
   }
 
   bool RewriteFromLeft::confluent() const {
     if (number_of_pending_rules() != 0) {
       return false;
     } else if (confluence_known()) {
-      return RewriterBase::confluent();
+      return RewriterBase::cached_confluent();
     }
     std::atomic_uint64_t seen = 0;
     if (report::should_report()) {

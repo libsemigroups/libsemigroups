@@ -217,6 +217,7 @@ namespace libsemigroups {
       return _cursors[index];
     }
 
+    // TODO is this ever called?
     void add_active_rule(Rule* rule) {
       _active_rules.push_back(rule);
     }
@@ -231,6 +232,8 @@ namespace libsemigroups {
 
     [[nodiscard]] iterator erase_from_active_rules(iterator it);
 
+    // TODO this feels like it should be add_active rule. The above
+    // add_active_rule seems a bit dangerous
     void add_rule(Rule* rule);
 
     [[nodiscard]] Rule* copy_rule(Rule const* rule);
@@ -313,9 +316,7 @@ namespace libsemigroups {
       }
     }
 
-    // TODO this should be renamed, it's confusingly different than the
-    // confluent() mem fn of RewriteFromLeft
-    bool confluent() const noexcept {
+    bool cached_confluent() const noexcept {
       return _cached_confluent;
     }
 
@@ -327,9 +328,9 @@ namespace libsemigroups {
       return _confluence_known;
     }
 
-    bool push_stack(Rule* rule);
+    bool add_pending_rule(Rule* rule);
 
-    void clear_stack();
+    void process_pending_rules();
 
     void reduce();
 
@@ -359,9 +360,9 @@ namespace libsemigroups {
     template <typename StringLike>
     void add_rule(StringLike const& lhs, StringLike const& rhs) {
       if (lhs != rhs) {
-        if (push_stack(
+        if (add_pending_rule(
                 new_rule(lhs.cbegin(), lhs.cend(), rhs.cbegin(), rhs.cend()))) {
-          clear_stack();
+          process_pending_rules();
         }
       }
     }
@@ -375,7 +376,7 @@ namespace libsemigroups {
     std::set<RuleLookup> _set_rules;
 
    public:
-    using RewriterBase::confluent;
+    using RewriterBase::cached_confluent;
     using Rules::stats;
 
     RewriteFromLeft() = default;
@@ -401,13 +402,13 @@ namespace libsemigroups {
     // template <typename StringLike>
     // void add_rule(StringLike const& lhs, StringLike const& rhs) {
     //   if (RewriterBase::add_rule(lhs, rhs)) {
-    //     clear_stack();
+    //     process_pending_rules();
     //   }
     // }
 
    private:
     void rewrite(Rule* rule) const;
-    // void     clear_stack();
+    // void     process_pending_rules();
     iterator make_active_rule_pending(iterator);
     void     report_from_confluent(
             std::atomic_uint64_t const&,
@@ -422,7 +423,7 @@ namespace libsemigroups {
     AhoCorasick                           _trie;
 
    public:
-    using RewriterBase::confluent;
+    using RewriterBase::cached_confluent;
     using Rules::stats;
     using iterator = internal_string_type::iterator;
 
@@ -503,7 +504,7 @@ namespace libsemigroups {
         set_cached_confluent(tril::FALSE);
         return false;
       } else if (confluence_known()) {
-        return RewriterBase::confluent();
+        return RewriterBase::cached_confluent();
       }
 
       for (auto it = begin(); it != end(); ++it) {
@@ -530,7 +531,7 @@ namespace libsemigroups {
     // template <typename StringLike>
     // void add_rule(StringLike const& lhs, StringLike const& rhs) {
     //   if (RewriterBase::add_rule(lhs, rhs)) {
-    //     clear_stack();
+    //     process_pending_rules();
     //   }
     // }
 
@@ -618,7 +619,7 @@ namespace libsemigroups {
     Rules::iterator make_active_rule_pending(Rules::iterator it) {
       Rule* rule = const_cast<Rule*>(*it);
       rule->deactivate();  // Done in Rules::erase_from
-      push_stack(rule);
+      add_pending_rule(rule);
       index_type node
           = _trie.rm_word_no_checks(rule->lhs()->cbegin(), rule->lhs()->cend());
       _rules.erase(node);

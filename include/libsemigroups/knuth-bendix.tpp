@@ -897,12 +897,12 @@ namespace libsemigroups {
                  vlhs.cend());  // rule = AQ_j -> Q_iC
         _rewriter.add_rule(x, y);
         // It can be that the iterator `it` is invalidated by the call to
-        // push_stack (i.e. if `u` is deactivated, then rewritten, actually
-        // changed, and reactivated) and that is the reason for the checks in
-        // the for-loop above. If this is the case, then we should stop
-        // considering the overlaps of u and v here, and note that they will
-        // be considered later, because when the rule `u` is reactivated it is
-        // added to the end of the active rules list.
+        // add_pending_rule (i.e. if `u` is deactivated, then rewritten,
+        // actually changed, and reactivated) and that is the reason for the
+        // checks in the for-loop above. If this is the case, then we should
+        // stop considering the overlaps of u and v here, and note that they
+        // will be considered later, because when the rule `u` is reactivated it
+        // is added to the end of the active rules list.
       }
     }
   }
