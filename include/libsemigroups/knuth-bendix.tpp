@@ -583,7 +583,7 @@ namespace libsemigroups {
       }
     }
 
-    // LIBSEMIGROUPS_ASSERT(_rewriter._stack.empty());
+    // LIBSEMIGROUPS_ASSERT(_rewriter._pending_rules.empty());
     // Seems that the stack can be non-empty here in KnuthBendix 12, 14, 16
     // and maybe more
     if (_settings.max_overlap == POSITIVE_INFINITY
@@ -599,9 +599,10 @@ namespace libsemigroups {
 
     init_from_generating_pairs();
     if (_rewriter.consistent() && confluent() && !stopped()) {
-      // _rewriter._stack can be non-empty if non-reduced rules were used to
-      // define the KnuthBendix.  If _rewriter._stack is non-empty, then it
-      // means that the rules in _rewriter might not define the system.
+      // _rewriter._pending_rules can be non-empty if non-reduced rules were
+      // used to define the KnuthBendix.  If _rewriter._pending_rules is
+      // non-empty, then it means that the rules in _rewriter might not define
+      // the system.
       report_default("KnuthBendix: the system is confluent already!\n");
       return;
     } else if (_rewriter.number_of_active_rules() >= max_rules()) {

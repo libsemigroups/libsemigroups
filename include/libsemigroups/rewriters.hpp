@@ -257,7 +257,7 @@ namespace libsemigroups {
     mutable std::atomic<bool>              _confluent;
     mutable std::atomic<bool>              _confluence_known;
     std::atomic<bool>                      _requires_alphabet;
-    std::stack<Rule*>                      _stack;
+    std::stack<Rule*>                      _pending_rules;
 
     using alphabet_citerator
         = std::unordered_set<internal_char_type>::const_iterator;
@@ -320,7 +320,7 @@ namespace libsemigroups {
     }
 
     [[nodiscard]] bool consistent() const noexcept {
-      return _stack.empty();
+      return _pending_rules.empty();
     }
 
     [[nodiscard]] bool confluence_known() const {
@@ -346,13 +346,13 @@ namespace libsemigroups {
     virtual Rules::iterator make_active_rule_pending(Rules::iterator it) = 0;
 
     size_t number_of_pending_rules() const noexcept {
-      return _stack.size();
+      return _pending_rules.size();
     }
 
     Rule* next_pending_rule() {
-      LIBSEMIGROUPS_ASSERT(_stack.size() != 0);
-      Rule* rule = _stack.top();
-      _stack.pop();
+      LIBSEMIGROUPS_ASSERT(_pending_rules.size() != 0);
+      Rule* rule = _pending_rules.top();
+      _pending_rules.pop();
       return rule;
     }
 
