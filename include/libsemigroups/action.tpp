@@ -198,6 +198,7 @@ namespace libsemigroups {
       _scc.reset();
     }
 
+    detail::Timer t;
     for (; _pos < _orb.size() && !stopped(); ++_pos) {
       for (size_t j = 0; j < _gens.size(); ++j) {
         ActionOp()(this->to_external(_tmp_point),
@@ -214,7 +215,9 @@ namespace libsemigroups {
         }
       }
       if (report()) {
-        report_default("found {} points, so far\n", _orb.size());
+        report_default("Action: found {:>12} points so far {:>7}\n",
+                       detail::group_digits(_orb.size()),
+                       t);
       }
     }
     report_why_we_stopped();
