@@ -181,7 +181,7 @@ namespace libsemigroups {
       Rules::add_inactive_rule(_pending_rules.top());
       _pending_rules.pop();
     }
-    _confluent        = false;
+    _cached_confluent = false;
     _confluence_known = false;
     return *this;
   }
@@ -296,7 +296,7 @@ namespace libsemigroups {
     _set_rules.emplace(RuleLookup(rule));
 #endif
     LIBSEMIGROUPS_ASSERT(_set_rules.size() == number_of_active_rules());
-    confluent(tril::unknown);
+    set_cached_confluent(tril::unknown);
   }
 
   // REWRITE_FROM_LEFT from Sims, p67
@@ -371,7 +371,7 @@ namespace libsemigroups {
   }
 
   bool RewriteFromLeft::confluent_impl(std::atomic_uint64_t& seen) const {
-    confluent(tril::TRUE);
+    set_cached_confluent(tril::TRUE);
     internal_string_type word1;
     internal_string_type word2;
 
@@ -407,7 +407,7 @@ namespace libsemigroups {
               rewrite(word1);
               rewrite(word2);
               if (word1 != word2) {
-                confluent(tril::FALSE);
+                set_cached_confluent(tril::FALSE);
                 return false;
               }
             }

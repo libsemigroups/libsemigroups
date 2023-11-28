@@ -254,7 +254,7 @@ namespace libsemigroups {
 
   class RewriterBase : public Rules {
     std::unordered_set<internal_char_type> _alphabet;
-    mutable std::atomic<bool>              _confluent;
+    mutable std::atomic<bool>              _cached_confluent;
     mutable std::atomic<bool>              _confluence_known;
     std::atomic<bool>                      _requires_alphabet;
     std::stack<Rule*>                      _pending_rules;
@@ -274,7 +274,7 @@ namespace libsemigroups {
 
     RewriterBase& operator=(RewriterBase const& that) {
       Rules::operator=(that);
-      _confluent         = that._confluent.load();
+      _cached_confluent  = that._cached_confluent.load();
       _confluence_known  = that._confluence_known.load();
       _requires_alphabet = that._requires_alphabet.load();
       if (_requires_alphabet) {
@@ -301,13 +301,13 @@ namespace libsemigroups {
 
     // TODO remove?
     //  TODO to cpp if keeping it
-    void confluent(tril val) const {
+    void set_cached_confluent(tril val) const {
       if (val == tril::TRUE) {
         _confluence_known = true;
-        _confluent        = true;
+        _cached_confluent = true;
       } else if (val == tril::FALSE) {
         _confluence_known = true;
-        _confluent        = false;
+        _cached_confluent = false;
       } else {
         _confluence_known = false;
       }
@@ -316,7 +316,7 @@ namespace libsemigroups {
     // TODO this should be renamed, it's confusingly different than the
     // confluent() mem fn of RewriteFromLeft
     bool confluent() const noexcept {
-      return _confluent;
+      return _cached_confluent;
     }
 
     [[nodiscard]] bool consistent() const noexcept {
@@ -500,7 +500,7 @@ namespace libsemigroups {
     // TODO Better option than vector of unordered_sets
     [[nodiscard]] bool confluent() const {
       if (number_of_pending_rules() != 0) {
-        confluent(tril::FALSE);
+        set_cached_confluent(tril::FALSE);
         return false;
       } else if (confluence_known()) {
         return RewriterBase::confluent();
@@ -511,19 +511,19 @@ namespace libsemigroups {
                                   _trie.traverse((*it)->lhs()->cbegin() + 1,
                                                  (*it)->lhs()->cend()),
                                   0)) {
-          confluent(tril::FALSE);
+          set_cached_confluent(tril::FALSE);
           return false;
         }
       }
       // Set cached value
-      confluent(tril::TRUE);
+      set_cached_confluent(tril::TRUE);
       return true;
     }
 
     void add_rule(Rule* rule) {
       Rules::add_rule(rule);
       add_rule_to_trie(rule);
-      confluent(tril::unknown);
+      set_cached_confluent(tril::unknown);
     }
 
     using RewriterBase::add_rule;
@@ -576,7 +576,7 @@ namespace libsemigroups {
           rewrite(word1);
           rewrite(word2);
           if (word1 != word2) {
-            confluent(tril::FALSE);
+            set_cached_confluent(tril::FALSE);
             return false;
           }
         }

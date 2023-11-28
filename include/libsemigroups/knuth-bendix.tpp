@@ -588,7 +588,7 @@ namespace libsemigroups {
     // and maybe more
     if (_settings.max_overlap == POSITIVE_INFINITY
         && _settings.max_rules == POSITIVE_INFINITY && !stopped()) {
-      _rewriter.confluent(tril::TRUE);
+      _rewriter.set_cached_confluent(tril::TRUE);
     }
   }
 
