@@ -223,7 +223,7 @@ namespace libsemigroups {
           // TODO Does this need to happen? Can we ensure rules are always
           // reduced wrt each other?
           if (rule2->lhs()->find(*lhs) != external_string_type::npos) {
-            it = erase_from_active_rules(it);
+            it = make_active_rule_pending(it);
             // rule2 is added to _inactive_rules or _active_rules by
             // clear_stack
           } else {
@@ -274,7 +274,7 @@ namespace libsemigroups {
   }
 
   RewriteFromLeft::iterator
-  RewriteFromLeft::erase_from_active_rules(iterator it) {
+  RewriteFromLeft::make_active_rule_pending(iterator it) {
     Rule* rule = const_cast<Rule*>(*it);
     rule->deactivate();
     push_stack(rule);

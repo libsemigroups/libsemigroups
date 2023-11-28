@@ -343,7 +343,7 @@ namespace libsemigroups {
 
     virtual void add_rule(Rule* rule) = 0;
 
-    virtual Rules::iterator erase_from_active_rules(Rules::iterator it) = 0;
+    virtual Rules::iterator make_active_rule_pending(Rules::iterator it) = 0;
 
     size_t number_of_pending_rules() const noexcept {
       return _stack.size();
@@ -408,7 +408,7 @@ namespace libsemigroups {
    private:
     void rewrite(Rule* rule) const;
     // void     clear_stack();
-    iterator erase_from_active_rules(iterator);
+    iterator make_active_rule_pending(iterator);
     void     report_from_confluent(
             std::atomic_uint64_t const&,
             std::chrono::high_resolution_clock::time_point const&) const;
@@ -615,7 +615,7 @@ namespace libsemigroups {
       //         }
     }
 
-    Rules::iterator erase_from_active_rules(Rules::iterator it) {
+    Rules::iterator make_active_rule_pending(Rules::iterator it) {
       Rule* rule = const_cast<Rule*>(*it);
       rule->deactivate();  // Done in Rules::erase_from
       push_stack(rule);
