@@ -19,16 +19,18 @@
 // 1. add examples from Action
 
 #include <algorithm>  // for sort
-#include <cstdint>    // for uint8_t
 #include <stdexcept>  // for out_of_range
 #include <vector>     // for vector
 
-#include "libsemigroups/action.hpp"         // for LeftAction, RightAction
-#include "libsemigroups/bmat.hpp"           // for BMat adapters
-#include "libsemigroups/bmat8.hpp"          // for BMat8 etc
-#include "libsemigroups/detail/report.hpp"  // for ReportGuard
-#include "libsemigroups/matrix.hpp"         // for BMat
-#include "libsemigroups/transf.hpp"         // for PPerm<>
+#include "libsemigroups/action.hpp"  // for LeftAction, RightAction
+#include "libsemigroups/bitset.hpp"  // for BitSet
+#include "libsemigroups/bmat.hpp"    // for adapters
+#include "libsemigroups/bmat8.hpp"   // for BMat8 etc
+#include "libsemigroups/matrix.hpp"  // for BMat
+#include "libsemigroups/transf.hpp"  // for PPerm<>
+
+#include "libsemigroups/detail/containers.hpp"  // for StaticVector1
+#include "libsemigroups/detail/report.hpp"      // for ReportGuard
 
 #include "catch.hpp"      // for REQUIRE, REQUIRE_THROWS_AS, REQUI...
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
@@ -43,71 +45,6 @@ namespace libsemigroups {
   using col_action_type = ImageLeftAction<BMat8, BMat8>;
   using row_orb_type    = RightAction<BMat8, BMat8, row_action_type>;
   using col_orb_type    = LeftAction<BMat8, BMat8, col_action_type>;
-
-  namespace {
-    template <typename Mat>  // = BMat..
-    void test000() {
-      auto rg = ReportGuard(REPORT);
-      using boolmat_row_action_type
-          = ImageRightAction<Mat, detail::StaticVector1<BitSet<5>, 5>>;
-      using boolmat_col_action_type
-          = ImageLeftAction<Mat, detail::StaticVector1<BitSet<5>, 5>>;
-      using boolmat_row_orb_type
-          = RightAction<Mat,
-                        detail::StaticVector1<BitSet<5>, 5>,
-                        boolmat_row_action_type>;
-      using boolmat_col_orb_type
-          = LeftAction<Mat,
-                       detail::StaticVector1<BitSet<5>, 5>,
-                       boolmat_col_action_type>;
-      const std::vector<Mat> reg_bmat5_gens = {Mat({{0, 1, 0, 0, 0},
-                                                    {1, 0, 0, 0, 0},
-                                                    {0, 0, 1, 0, 0},
-                                                    {0, 0, 0, 1, 0},
-                                                    {0, 0, 0, 0, 1}}),
-                                               Mat({{0, 1, 0, 0, 0},
-                                                    {0, 0, 1, 0, 0},
-                                                    {0, 0, 0, 1, 0},
-                                                    {0, 0, 0, 0, 1},
-                                                    {1, 0, 0, 0, 0}}),
-                                               Mat({{1, 0, 0, 0, 0},
-                                                    {1, 1, 0, 0, 0},
-                                                    {0, 0, 1, 0, 0},
-                                                    {0, 0, 0, 1, 0},
-                                                    {0, 0, 0, 0, 1}}),
-                                               Mat({{0, 0, 0, 0, 0},
-                                                    {0, 1, 0, 0, 0},
-                                                    {0, 0, 1, 0, 0},
-                                                    {0, 0, 0, 1, 0},
-                                                    {0, 0, 0, 0, 1}})};
-      boolmat_row_orb_type   row_orb;
-      boolmat_col_orb_type   col_orb;
-
-      row_orb.add_seed({BitSet<5>(0x10),
-                        BitSet<5>(0x8),
-                        BitSet<5>(0x4),
-                        BitSet<5>(0x2),
-                        BitSet<5>(0x1)});
-      col_orb.add_seed({BitSet<5>(0x10),
-                        BitSet<5>(0x8),
-                        BitSet<5>(0x4),
-                        BitSet<5>(0x2),
-                        BitSet<5>(0x1)});
-      for (Mat g : reg_bmat5_gens) {
-        row_orb.add_generator(g);
-        col_orb.add_generator(g);
-      }
-      row_orb.run_for(std::chrono::milliseconds(100));
-      row_orb.run_for(std::chrono::milliseconds(100));
-      row_orb.run_for(std::chrono::milliseconds(100));
-      col_orb.run_for(std::chrono::milliseconds(100));
-      col_orb.run_for(std::chrono::milliseconds(100));
-      col_orb.run_for(std::chrono::milliseconds(100));
-
-      REQUIRE(row_orb.size() == 110519);
-      REQUIRE(col_orb.size() == 110519);
-    }
-  }  // namespace
 
   LIBSEMIGROUPS_TEST_CASE("Action",
                           "001",
@@ -333,8 +270,8 @@ namespace libsemigroups {
     row_orb.run();
     col_orb.run();
 
-    REQUIRE(row_orb.size() == 110519);
-    REQUIRE(col_orb.size() == 110519);
+    REQUIRE(row_orb.size() == 110'519);
+    REQUIRE(col_orb.size() == 110'519);
   }
 
   LIBSEMIGROUPS_TEST_CASE("Action",
@@ -374,7 +311,7 @@ namespace libsemigroups {
     }
     // row_orb.run_for(std::chrono::milliseconds(500));
 
-    REQUIRE(row_orb.size() == 37977468);
+    REQUIRE(row_orb.size() == 37'977'468);
   }
 
   LIBSEMIGROUPS_TEST_CASE("Action",
@@ -416,7 +353,7 @@ namespace libsemigroups {
         PPerm<16>({0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14},
                   {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15},
                   16));
-    o.reserve(70000);
+    o.reserve(70'000);
     REQUIRE(o.size() == 65536);
   }
 
@@ -682,19 +619,68 @@ namespace libsemigroups {
     REQUIRE(col_orb.size() == 110519);
   }
 
-  LIBSEMIGROUPS_TEST_CASE(
-      "Action",
-      "020",
-      "orbits for regular boolean mat monoid 5 (BMat<>) with stop/start",
-      "[standard][no-valgrind]") {
-    test000<BMat<>>();
-  }
+  TEMPLATE_TEST_CASE("Action: regular boolean mat monoid 5",
+                     "[020][quick][no-valgrind]",
+                     BMat<>,
+                     BMat<5>) {
+    auto rg = ReportGuard(false);
 
-  LIBSEMIGROUPS_TEST_CASE(
-      "Action",
-      "021",
-      "orbits for regular boolean mat monoid 5 (BMat<5>) with stop/start",
-      "[quick][no-valgrind]") {
-    test000<BMat<5>>();
+    using static_vector = detail::StaticVector1<BitSet<5>, 5>;
+
+    using boolmat_row_action_type = ImageRightAction<TestType, static_vector>;
+    using boolmat_col_action_type = ImageLeftAction<TestType, static_vector>;
+
+    using boolmat_row_orb_type
+        = RightAction<TestType, static_vector, boolmat_row_action_type>;
+    using boolmat_col_orb_type
+        = LeftAction<TestType, static_vector, boolmat_col_action_type>;
+
+    const std::vector<TestType> reg_bmat5_gens = {TestType({{0, 1, 0, 0, 0},
+                                                            {1, 0, 0, 0, 0},
+                                                            {0, 0, 1, 0, 0},
+                                                            {0, 0, 0, 1, 0},
+                                                            {0, 0, 0, 0, 1}}),
+                                                  TestType({{0, 1, 0, 0, 0},
+                                                            {0, 0, 1, 0, 0},
+                                                            {0, 0, 0, 1, 0},
+                                                            {0, 0, 0, 0, 1},
+                                                            {1, 0, 0, 0, 0}}),
+                                                  TestType({{1, 0, 0, 0, 0},
+                                                            {1, 1, 0, 0, 0},
+                                                            {0, 0, 1, 0, 0},
+                                                            {0, 0, 0, 1, 0},
+                                                            {0, 0, 0, 0, 1}}),
+                                                  TestType({{0, 0, 0, 0, 0},
+                                                            {0, 1, 0, 0, 0},
+                                                            {0, 0, 1, 0, 0},
+                                                            {0, 0, 0, 1, 0},
+                                                            {0, 0, 0, 0, 1}})};
+
+    boolmat_row_orb_type row_orb;
+    boolmat_col_orb_type col_orb;
+
+    row_orb.add_seed({BitSet<5>(0x10),
+                      BitSet<5>(0x8),
+                      BitSet<5>(0x4),
+                      BitSet<5>(0x2),
+                      BitSet<5>(0x1)});
+    col_orb.add_seed({BitSet<5>(0x10),
+                      BitSet<5>(0x8),
+                      BitSet<5>(0x4),
+                      BitSet<5>(0x2),
+                      BitSet<5>(0x1)});
+    for (TestType const& g : reg_bmat5_gens) {
+      row_orb.add_generator(g);
+      col_orb.add_generator(g);
+    }
+    row_orb.run_for(std::chrono::milliseconds(100));
+    row_orb.run_for(std::chrono::milliseconds(100));
+    row_orb.run_for(std::chrono::milliseconds(100));
+    col_orb.run_for(std::chrono::milliseconds(100));
+    col_orb.run_for(std::chrono::milliseconds(100));
+    col_orb.run_for(std::chrono::milliseconds(100));
+
+    REQUIRE(row_orb.size() == 110'519);
+    REQUIRE(col_orb.size() == 110'519);
   }
 }  // namespace libsemigroups
