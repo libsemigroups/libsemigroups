@@ -329,8 +329,6 @@ namespace libsemigroups {
 
     bool push_stack(Rule* rule);
 
-    void process_batch(size_t batch_size);
-
     void clear_stack();
 
     void reduce();
