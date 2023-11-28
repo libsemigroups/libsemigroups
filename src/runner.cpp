@@ -21,21 +21,22 @@
 
 #include "libsemigroups/runner.hpp"
 
+#include "libsemigroups/exception.hpp"  // for LibsemigroupsException
+
 #include "libsemigroups/detail/report.hpp"  // for report_default
 #include "libsemigroups/detail/timer.hpp"   // for Timer::string
 
 namespace libsemigroups {
 
   ////////////////////////////////////////////////////////////////////////
-  // ReporterV3 - constructors - public
+  // Reporter - constructors - public
   ////////////////////////////////////////////////////////////////////////
 
-  ReporterV3& ReporterV3::init() {
+  Reporter& Reporter::init() {
     _prefix               = "";
     _report_time_interval = nanoseconds(std::chrono::seconds(1));
     _last_report          = std::chrono::high_resolution_clock::now();
     _start_time           = _last_report;
-    _stop_reporting       = true;
     return *this;
   }
 
@@ -44,14 +45,14 @@ namespace libsemigroups {
   ////////////////////////////////////////////////////////////////////////
 
   Runner::Runner()
-      : ReporterV3(),
+      : Reporter(),
         _run_for(FOREVER),
         _start_time(),
         _state(state::never_run),
         _stopper() {}
 
   Runner& Runner::init() {
-    ReporterV3::init();
+    Reporter::init();
     _run_for    = FOREVER;
     _start_time = decltype(_start_time)();
     _state      = state::never_run;
@@ -60,7 +61,7 @@ namespace libsemigroups {
   }
 
   Runner::Runner(Runner const& other)
-      : ReporterV3(other),
+      : Reporter(other),
         _run_for(other._run_for),
         _start_time(other._start_time),
         _state(),
@@ -69,7 +70,7 @@ namespace libsemigroups {
   }
 
   Runner::Runner(Runner&& other)
-      : ReporterV3(std::move(other)),
+      : Reporter(std::move(other)),
         _run_for(std::move(other._run_for)),
         _start_time(std::move(other._start_time)),
         _state(),
@@ -78,7 +79,7 @@ namespace libsemigroups {
   }
 
   Runner& Runner::operator=(Runner const& other) {
-    ReporterV3::operator=(other);
+    Reporter::operator=(other);
     _run_for    = other._run_for;
     _start_time = other._start_time;
     _state      = other._state.load();
@@ -86,7 +87,7 @@ namespace libsemigroups {
   }
 
   Runner& Runner::operator=(Runner&& other) {
-    ReporterV3::operator=(std::move(other));
+    Reporter::operator=(std::move(other));
     _run_for    = std::move(other._run_for);
     _start_time = std::move(other._start_time);
     _state      = other._state.load();

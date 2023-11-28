@@ -56,7 +56,7 @@ namespace libsemigroups {
       _word_graph.report_every(val);
     }
 
-    using ReporterV3::report_every;
+    using Reporter::report_every;
 
     struct options : public FelschGraphSettings_::options {
       enum class strategy {

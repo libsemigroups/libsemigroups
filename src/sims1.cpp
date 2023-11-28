@@ -725,7 +725,7 @@ namespace libsemigroups {
     using std::chrono::nanoseconds;
     using std::chrono::seconds;
 
-    // ReporterV3
+    // Reporter
     auto now           = std::chrono::high_resolution_clock::now();
     auto time_total_ns = duration_cast<nanoseconds>(now - start_time());
     auto time_total_s  = duration_cast<seconds>(time_total_ns);

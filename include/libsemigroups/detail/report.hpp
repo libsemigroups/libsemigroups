@@ -64,7 +64,7 @@ namespace libsemigroups {
 
     if (reporting_enabled()) {
       std::lock_guard<std::mutex> lg(mtx);
-      fmt::print(std::move(sv), std::forward<Args>(args)...);
+      fmt::print(sv, std::forward<Args>(args)...);
     }
   }
 

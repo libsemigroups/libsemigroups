@@ -567,7 +567,7 @@ namespace libsemigroups {
   //! number of classes. An iterator returned by \ref cbegin points at an
   //! WordGraph instance containing the action of the semigroup or monoid
   //! on the classes of a congruence.
-  class Sims1 : public Sims1Settings<Sims1>, public ReporterV3 {
+  class Sims1 : public Sims1Settings<Sims1>, public Reporter {
    public:
     //! Type for the nodes in the associated WordGraph
     //! objects.

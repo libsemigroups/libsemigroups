@@ -54,7 +54,7 @@ namespace libsemigroups {
     template <typename BaseGraph>
     class NodeManagedGraph : public BaseGraph,
                              public NodeManager<typename BaseGraph::node_type>,
-                             public ReporterV3 {
+                             public Reporter {
      public:
       ////////////////////////////////////////////////////////////////////////
       // Aliases - public

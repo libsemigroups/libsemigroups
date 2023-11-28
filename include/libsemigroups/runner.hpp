@@ -23,31 +23,23 @@
 #ifndef LIBSEMIGROUPS_RUNNER_HPP_
 #define LIBSEMIGROUPS_RUNNER_HPP_
 
-#include <atomic>       // for atomic
-#include <chrono>       // for nanoseconds, high_resolution_clock
-#include <thread>       // for ??
-#include <type_traits>  // for forward
+#include <atomic>  // for atomic
+#include <chrono>  // for nanoseconds, high_resolution_clock
+#include <thread>  // for ??
 
-#include "debug.hpp"      // for LIBSEMIGROUPS_ASSERT
-#include "exception.hpp"  // for LibsemigroupsException
+#include "debug.hpp"  // for LIBSEMIGROUPS_ASSERT
 
 #include "detail/function-ref.hpp"  // for FunctionRef
 #include "detail/report.hpp"        // for LibsemigroupsException
-#include "detail/stl.hpp"           // for LibsemigroupsException
-
-#include "rx/ranges.hpp"
 
 namespace libsemigroups {
   //! A pseudonym for std::chrono::nanoseconds::max().
   constexpr std::chrono::nanoseconds FOREVER = std::chrono::nanoseconds::max();
 
-  // TODO:
-  // * rename to Reporter (when the v2 one is removed)
-  // * use this anywhere?
   // This class exists so that the "reporting" functionality can be used
   // independently from the "runner" functionality, for example in
   // NodeManagedDigraph, Sims1, and so on
-  class ReporterV3 {
+  class Reporter {
     using time_point  = std::chrono::high_resolution_clock::time_point;
     using nanoseconds = std::chrono::nanoseconds;
 
@@ -56,31 +48,29 @@ namespace libsemigroups {
 
     mutable time_point _last_report;
     mutable time_point _start_time;
-    mutable bool       _stop_reporting;
     // TODO atomic so that we can read in thread_func and write elsewhere
     // safely
 
    public:
     // not noexcept because std::string constructor isn't
-    ReporterV3()
+    Reporter()
         : _prefix(),
-          _report_time_interval(),
+          _report_time_interval(),  // TODO remove
           // mutable
-          _last_report(),  // TODO required?
-          _start_time(),
-          _stop_reporting() {
+          _last_report(),
+          _start_time() {
       // All values set in init
       init();
     }
 
-    ReporterV3& init();
+    Reporter& init();
 
-    ReporterV3(ReporterV3 const&)            = default;
-    ReporterV3(ReporterV3&&)                 = default;
-    ReporterV3& operator=(ReporterV3 const&) = default;
-    ReporterV3& operator=(ReporterV3&&)      = default;
+    Reporter(Reporter const&)            = default;
+    Reporter(Reporter&&)                 = default;
+    Reporter& operator=(Reporter const&) = default;
+    Reporter& operator=(Reporter&&)      = default;
 
-    ~ReporterV3() = default;
+    ~Reporter() = default;
 
     //! Check if it is time to report.
     //!
@@ -96,7 +86,7 @@ namespace libsemigroups {
     //!
     //! \sa report_every(std::chrono::nanoseconds) and report_every(TIntType).
     // not noexcept because operator- for time_points can throw.
-    // TODO remove?
+    // TODO remove!
     [[nodiscard]] inline bool report() const {
       auto t       = std::chrono::high_resolution_clock::now();
       auto elapsed = t - _last_report;
@@ -123,7 +113,7 @@ namespace libsemigroups {
     //!
     //! \sa
     //! report_every(TIntType)
-    ReporterV3& report_every(nanoseconds val) noexcept {
+    Reporter& report_every(nanoseconds val) noexcept {
       _last_report          = std::chrono::high_resolution_clock::now();
       _report_time_interval = val;
       return *this;
@@ -143,7 +133,7 @@ namespace libsemigroups {
     //!
     //! \sa report_every(std::chrono::nanoseconds)
     template <typename TIntType>
-    ReporterV3& report_every(TIntType t) noexcept {
+    Reporter& report_every(TIntType t) noexcept {
       return report_every(nanoseconds(t));
     }
 
@@ -167,13 +157,13 @@ namespace libsemigroups {
     }
 
     // TODO noexcept
-    ReporterV3 const& last_report(time_point val) const {
+    Reporter const& last_report(time_point val) const {
       _last_report = val;
       return *this;
     }
 
     // Not noexcept because std::string::operator= isn't
-    ReporterV3& report_prefix(std::string const& val) {
+    Reporter& report_prefix(std::string const& val) {
       _prefix = val;
       return *this;
     }
@@ -337,7 +327,7 @@ namespace libsemigroups {
   //! \ref stopped for any reason?
   //! * permit the function \ref run to be killed from another thread
   //! (\ref kill).
-  class Runner : public ReporterV3 {
+  class Runner : public Reporter {
    public:
     // Enum class for the state of the Runner.
     enum class state {
@@ -359,7 +349,7 @@ namespace libsemigroups {
     std::chrono::nanoseconds                       _run_for;
     std::chrono::high_resolution_clock::time_point _start_time;  // TODO remove
                                                                  // (it's in
-                                                                 // ReporterV3
+                                                                 // Reporter
     mutable std::atomic<state>      _state;
     detail::FunctionRef<bool(void)> _stopper;
 
@@ -377,7 +367,7 @@ namespace libsemigroups {
     //!
     //! \par Parameters
     //! (None)
-    // not noexcept because ReporterV3() isn't
+    // not noexcept because Reporter() isn't
     Runner();
 
     // TODO doc
@@ -732,6 +722,7 @@ namespace libsemigroups {
     }
   };
 
+  // TODO to tpp file
   template <typename T>
   void Runner::run_until(T&& func) {
     if (!finished() && !dead()) {
