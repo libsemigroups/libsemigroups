@@ -27,13 +27,10 @@
 #include <functional>   // for less
 #include <ostream>      // for operator<<, ostream
 #include <random>       // for mt19937, random_device, uniform_int_distribution
-#include <string>       // for basic_string
 #include <type_traits>  // for enable_if_t
 #include <utility>      // for forward
 
 #include <rx/ranges.hpp>  // for count, iterator_range
-
-#include "debug.hpp"  // for LIBSEMIGROUPS_ASSERT
 
 #include "detail/string.hpp"  // for to_string
 
@@ -55,7 +52,7 @@ namespace libsemigroups {
       bool       _at_end;
       InputRange _input;
 
-      constexpr Range(InputRange&& input) noexcept
+      explicit constexpr Range(InputRange&& input) noexcept
           : _at_end(false), _input(std::move(input)) {}
 
       [[nodiscard]] output_type get() const noexcept;

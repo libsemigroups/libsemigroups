@@ -4621,9 +4621,8 @@ namespace libsemigroups {
     }
 
     // TODO lookahead_max
-    //.lookahead_style(options::lookahead_style::felsch)
-    //.lower_bound(16'777'216);
-    //
+    // .lookahead_style(options::lookahead_style::felsch)
+    // .lower_bound(16'777'216);
 
     WordGraph<uint32_t> wg;
     {

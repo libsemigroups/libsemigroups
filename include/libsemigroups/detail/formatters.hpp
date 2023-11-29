@@ -18,6 +18,8 @@
 
 // This file contains various formatters for libsemigroups types.
 
+#ifndef LIBSEMIGROUPS_DETAIL_FORMATTERS_HPP_
+#define LIBSEMIGROUPS_DETAIL_FORMATTERS_HPP_
 #include <magic_enum/magic_enum.hpp>
 
 #include <fmt/chrono.h>
@@ -68,3 +70,4 @@ struct fmt::formatter<libsemigroups::detail::Timer>
     return formatter<string_view>::format(v.string(), ctx);
   }
 };
+#endif  // LIBSEMIGROUPS_DETAIL_FORMATTERS_HPP_

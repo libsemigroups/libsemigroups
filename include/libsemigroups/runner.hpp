@@ -155,7 +155,8 @@ namespace libsemigroups {
     }
 
     [[nodiscard]] static nanoseconds delta(time_point const& t) {
-      using namespace std::chrono;
+      using std::chrono::duration_cast;
+      using std::chrono::high_resolution_clock;
       return duration_cast<nanoseconds>(high_resolution_clock::now() - t);
     }
 
@@ -200,7 +201,7 @@ namespace libsemigroups {
 
        public:
         template <typename Func>
-        TickerImpl(Func&& func)
+        explicit TickerImpl(Func&& func)
             : _func(std::forward<Func>(func)), _stop(false) {
           auto thread_func = [this](TickerImpl* dtg) {
             std::unique_ptr<TickerImpl> ptr;
@@ -248,7 +249,7 @@ namespace libsemigroups {
 
      public:
       template <typename Func>
-      Ticker(Func&& func)
+      explicit Ticker(Func&& func)
           : _detached_thread(new TickerImpl(std::forward<Func>(func))) {}
 
       ~Ticker() {

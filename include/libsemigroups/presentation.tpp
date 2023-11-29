@@ -434,7 +434,7 @@ namespace libsemigroups {
 
     template <typename Word, typename Compare>
     bool are_rules_sorted(Presentation<Word> const& p, Compare cmp) {
-      using namespace rx;
+      using namespace rx;  // NOLINT(build/namespaces)
       detail::validate_rules_length(p);
       auto const&  rules = p.rules;
       size_t const n     = rules.size() / 2;

@@ -127,7 +127,7 @@ namespace libsemigroups {
     }
 
     std::string inline evaluate_rpn(std::string const& rpn) {
-      using namespace words;
+      using namespace words;  // NOLINT(build/namespaces)
       std::stack<std::string>             stck;
       bool                                in_digits = false;
       std::pair<std::string, std::string> pr;

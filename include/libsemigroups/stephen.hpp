@@ -131,7 +131,7 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if `p.validate()` throws.
     //! \throws LibsemigroupsException if `p.alphabet().size()` is `0`.
-    Stephen(P&& p);
+    explicit Stephen(P&& p);
     Stephen& init(P&& p);
 
     //! Initialize from a presentation.
@@ -148,7 +148,7 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if `p.validate()` throws.
     //! \throws LibsemigroupsException if `p.alphabet().size()` is `0`.
-    Stephen(P const& p);
+    explicit Stephen(P const& p);
     Stephen& init(P const& p);
 
     //! Default copy constructor
@@ -166,7 +166,7 @@ namespace libsemigroups {
     ~Stephen() = default;
 
     template <typename Q>
-    Stephen(Q const& q) : Stephen() {
+    explicit Stephen(Q const& q) : Stephen() {
       init(q);
     }
 
@@ -320,8 +320,6 @@ namespace libsemigroups {
     }
 
     void standardize();
-
-    void report_progress_from_thread();
   };
 
   // Deduction guides

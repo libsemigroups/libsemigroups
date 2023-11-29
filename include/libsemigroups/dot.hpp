@@ -16,8 +16,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#ifndef LIBSEMIGROUPS_DOT_
-#define LIBSEMIGROUPS_DOT_
+#ifndef LIBSEMIGROUPS_DOT_HPP_
+#define LIBSEMIGROUPS_DOT_HPP_
 
 #include <array>        // for array
 #include <cstddef>      // for size_t
@@ -69,7 +69,7 @@ namespace libsemigroups {
       std::string                        name;
 
       template <typename Thing>
-      Node(Thing&& thing)
+      explicit Node(Thing&& thing)
           : attrs(), name(detail::dot_to_string(std::forward<Thing>(thing))) {}
 
       template <typename Thing1, typename Thing2>
@@ -253,4 +253,4 @@ namespace libsemigroups {
   };
 
 }  // namespace libsemigroups
-#endif  // LIBSEMIGROUPS_DOT_
+#endif  // LIBSEMIGROUPS_DOT_HPP_

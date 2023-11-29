@@ -2369,7 +2369,7 @@ namespace libsemigroups {
       ProjMaxPlusMat(size_t r, size_t c)
           : _is_normalized(false), _underlying_mat(r, c) {}
 
-      ProjMaxPlusMat(std::vector<std::vector<scalar_type>> const& m)
+      explicit ProjMaxPlusMat(std::vector<std::vector<scalar_type>> const& m)
           : _is_normalized(false), _underlying_mat(m) {
         normalize();
       }
@@ -2580,7 +2580,7 @@ namespace libsemigroups {
       }
 
      private:
-      ProjMaxPlusMat(T&& mat)
+      explicit ProjMaxPlusMat(T&& mat)
           : _is_normalized(false), _underlying_mat(std::move(mat)) {
         normalize();
       }

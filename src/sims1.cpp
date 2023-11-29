@@ -518,7 +518,6 @@ namespace libsemigroups {
         throw;
       }
     }
-
   };  // class thread_runner
 
   ////////////////////////////////////////////////////////////////////////
@@ -719,8 +718,8 @@ namespace libsemigroups {
   }
 
   void Sims1::report_progress_from_thread() const {
-    using namespace detail;
-    using namespace std::chrono;
+    using namespace detail;       // NOLINT()
+    using namespace std::chrono;  // NOLINT()
 
     // Reporter
     auto time_total_ns = delta(start_time());

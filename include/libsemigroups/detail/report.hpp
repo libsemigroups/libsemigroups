@@ -105,7 +105,7 @@ namespace libsemigroups {
     std::string_view _prefix;
 
    public:
-    SuppressReportFor(std::string_view);
+    explicit SuppressReportFor(std::string_view);
     ~SuppressReportFor();
   };
 }  // namespace libsemigroups

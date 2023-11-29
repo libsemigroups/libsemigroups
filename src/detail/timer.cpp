@@ -25,7 +25,7 @@
 #include <fmt/format.h>
 
 namespace libsemigroups {
-  using namespace std::chrono;
+  using namespace std::chrono;  // NOLINT(build/namespaces)
 
   // days, weeks, months, years are C++20, hence we declare them here
   using days   = std::chrono::duration<int, std::ratio<86400>>;
