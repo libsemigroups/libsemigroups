@@ -174,6 +174,7 @@ namespace libsemigroups {
       Settings& operator=(Settings const&) noexcept = default;
       Settings& operator=(Settings&&) noexcept      = default;
 
+      size_t                    batch_size;
       size_t                    check_confluence_interval;
       size_t                    max_overlap;
       size_t                    max_rules;
@@ -313,6 +314,17 @@ namespace libsemigroups {
     //////////////////////////////////////////////////////////////////////////
     // KnuthBendix - setters for optional parameters - public
     //////////////////////////////////////////////////////////////////////////
+
+    // TODO docs
+    KnuthBendix& batch_size(size_t val) {
+      _settings.batch_size = val;
+      return *this;
+    }
+
+    // TODO doc
+    [[nodiscard]] size_t batch_size() const noexcept {
+      return _settings.batch_size;
+    }
 
     //! Set the interval at which confluence is checked.
     //!
@@ -683,7 +695,7 @@ namespace libsemigroups {
   std::ostream& operator<<(std::ostream&,
                            KnuthBendix<Rewriter, ReductionOrder> const&);
 
-  KnuthBendix(congruence_kind) -> KnuthBendix<>;
+  KnuthBendix(congruence_kind)->KnuthBendix<>;
 
   namespace knuth_bendix {
 
@@ -744,7 +756,7 @@ namespace libsemigroups {
     template <typename Rewriter, typename ReductionOrder>
     [[nodiscard]] inline auto
     normal_forms(KnuthBendix<Rewriter, ReductionOrder>& kb) {
-      using rx::operator|;
+      using rx::      operator|;
       ReversiblePaths paths(kb.gilman_graph());
       paths.from(0).reverse(kb.kind() == congruence_kind::left);
       return paths;

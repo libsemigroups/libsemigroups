@@ -560,7 +560,7 @@ namespace libsemigroups {
   TEMPLATE_TEST_CASE("redundant_rule (word_type)",
                      "[014][quick][knuth-bendix]",
                      KNUTH_BENDIX_TYPES) {
-    using literals::operator""_w;
+    using literals::        operator""_w;
     auto                    rg = ReportGuard(false);
     Presentation<word_type> p;
     p.alphabet(3);
@@ -651,7 +651,7 @@ namespace libsemigroups {
                      "[016][quick][knuth-bendix]",
                      KNUTH_BENDIX_TYPES) {
     using literals::operator""_w;
-    auto rg = ReportGuard(false);
+    auto            rg = ReportGuard(false);
 
     Presentation<std::string> p;
     p.contains_empty_word(true);

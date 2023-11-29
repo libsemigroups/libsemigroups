@@ -91,6 +91,7 @@ namespace libsemigroups {
   template <typename Rewriter, typename ReductionOrder>
   typename KnuthBendix<Rewriter, ReductionOrder>::Settings&
   KnuthBendix<Rewriter, ReductionOrder>::Settings::init() noexcept {
+    batch_size                = 128;
     check_confluence_interval = 4'096;
     max_overlap               = POSITIVE_INFINITY;
     max_rules                 = POSITIVE_INFINITY;
@@ -553,6 +554,7 @@ namespace libsemigroups {
     first        = _rewriter.begin();
 
     size_t nr = 0;
+  check_overlaps:
     while (first != _rewriter.end()
            && _rewriter.number_of_active_rules() < _settings.max_rules
            && !stopped()) {
@@ -572,7 +574,13 @@ namespace libsemigroups {
           overlap(rule2, rule1);
         }
       }
+
+      if (_rewriter.number_of_pending_rules() > _settings.batch_size) {
+        _rewriter.process_pending_rules();
+      }
+
       if (nr > _settings.check_confluence_interval) {
+        // TODO Should we process rules here too?
         pause = true;
         if (confluent()) {
           pause = false;
@@ -581,6 +589,11 @@ namespace libsemigroups {
         pause = false;
         nr    = 0;
       }
+    }
+
+    if (_rewriter.number_of_pending_rules() != 0) {
+      _rewriter.process_pending_rules();
+      goto check_overlaps;
     }
 
     // LIBSEMIGROUPS_ASSERT(_rewriter._pending_rules.empty());
@@ -872,6 +885,8 @@ namespace libsemigroups {
   }
 
   // OVERLAP_2 from Sims, p77
+  // TODO Should this be a RewriterBase function that can be overridden by
+  // implementations?
   template <typename Rewriter, typename ReductionOrder>
   void KnuthBendix<Rewriter, ReductionOrder>::overlap(Rule const* u,
                                                       Rule const* v) {
@@ -881,6 +896,7 @@ namespace libsemigroups {
     auto const  limit = ulhs.cend() - std::min(ulhs.size(), vlhs.size());
 
     int64_t const u_id = u->id(), v_id = v->id();
+    // TODO this can be done by a Trie in the same was as in confluence
     for (auto it = ulhs.cend() - 1;
          it > limit && u_id == u->id() && v_id == v->id() && !stopped()
          && (_settings.max_overlap == POSITIVE_INFINITY
@@ -895,7 +911,7 @@ namespace libsemigroups {
         detail::MultiStringView y(urhs.cbegin(), urhs.cend());
         y.append(vlhs.cbegin() + (ulhs.cend() - it),
                  vlhs.cend());  // rule = AQ_j -> Q_iC
-        _rewriter.add_rule(x, y);
+        _rewriter.add_pending_rule(x, y);
         // It can be that the iterator `it` is invalidated by the call to
         // add_pending_rule (i.e. if `u` is deactivated, then rewritten,
         // actually changed, and reactivated) and that is the reason for the
