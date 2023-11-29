@@ -718,8 +718,8 @@ namespace libsemigroups {
   }
 
   void Sims1::report_progress_from_thread() const {
-    using namespace detail;       // NOLINT()
-    using namespace std::chrono;  // NOLINT()
+    using namespace detail;       // NOLINT(build/namespaces)
+    using namespace std::chrono;  // NOLINT(build/namespaces)
 
     // Reporter
     auto time_total_ns = delta(start_time());
@@ -759,7 +759,7 @@ namespace libsemigroups {
     ReportCell<2> rc;
     rc.min_width(0, 7).min_width(1, 11);
     rc(group_digits,
-       "Sims1: total        {} (cong.)   | {} (nodes)\n",
+       "Sims1: total        {} (cong.)   | {} (nodes) \n",
        count_now,
        total_pending_now);
 

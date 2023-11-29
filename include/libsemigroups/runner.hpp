@@ -317,16 +317,17 @@ namespace libsemigroups {
 
      private:
       size_t line_width() const {
-        return std::accumulate(
-                   _col_widths.begin(), _col_widths.end(), size_t(0))
-               - 5;
+        auto fmt = [](auto&&... args) {
+          return fmt::format(std::forward<decltype(args)>(args)...).size();
+        };
+        return std::apply(fmt, _rows[0]) + 3;
       }
 
       void emit() {
         auto fmt = [](auto&&... args) {
           report_default(std::forward<decltype(args)>(args)...);
         };
-        report_no_prefix("{:-<{}}\n", "", line_width());
+        // This isn't quite right
         for (size_t i = 0; i < _rows.size(); ++i) {
           for (size_t j = 1; j < C + 1; ++j) {
             _rows[i][j]
@@ -334,6 +335,9 @@ namespace libsemigroups {
                       _col_widths[j] - unicode_string_length(_rows[i][j]), ' ')
                   + _rows[i][j];
           }
+        }
+        report_no_prefix("{:-<{}}\n", "", line_width());
+        for (size_t i = 0; i < _rows.size(); ++i) {
           std::apply(fmt, _rows[i]);
         }
       }
