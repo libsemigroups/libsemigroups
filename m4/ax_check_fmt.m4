@@ -1,12 +1,6 @@
 dnl handle fmt checks
 
 AC_DEFUN([AX_CHECK_FMT], [
-  dnl The following defines the LIBSEMIGROUPS_FMT_ENABLED preprocessor macro
-  dnl (the LIBSEMIGROUPS_ prefix is added by another part of the build system)
-  AC_DEFINE([FMT_ENABLED], [1], [define if building with fmt])
-  dnl TODO remove the previous line when LIBSEMIGROUPS_FMT_ENABLED is
-  dnl completely removed
-
   AC_ARG_WITH(
     [external-fmt],
     [AS_HELP_STRING([--with-external-fmt], [use the external fmt (default: no)])],

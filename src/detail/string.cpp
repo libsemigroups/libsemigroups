@@ -19,12 +19,9 @@
 
 #include <random>  // for mt19937
 
-#include "libsemigroups/config.hpp"     // for LIBSEMIGROUPS_FMT_ENABLED
 #include "libsemigroups/exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
 
-#ifdef LIBSEMIGROUPS_FMT_ENABLED
 #include "fmt/format.h"  // for group_digits
-#endif
 
 namespace libsemigroups {
   namespace detail {
@@ -83,22 +80,9 @@ namespace libsemigroups {
     }
 
     namespace {
-#ifdef LIBSEMIGROUPS_FMT_ENABLED
       std::string group_digits(uint64_t num) {
         return fmt::to_string(fmt::group_digits(num));
       }
-#else
-      std::string group_digits(uint64_t num) {
-        std::string result = detail::to_string(num);
-        if (result.size() < 4) {
-          return result;
-        }
-        for (size_t i = 3; i < result.size(); i += 4) {
-          result.insert(result.size() - i, ",");
-        }
-        return result;
-      }
-#endif
     }  // namespace
 
     std::string group_digits(int64_t num) {
