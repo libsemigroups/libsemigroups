@@ -532,7 +532,7 @@ namespace libsemigroups {
 
     if (reporting_enabled()
         && (!running_for()
-            || report_every() >= std::chrono::nanoseconds(1'500'000'000))) {
+            || report_every() >= std::chrono::milliseconds(1'500))) {
       // TODO report_strategy
       auto msg = fmt::format("{:+<93}\n", "");
       msg += fmt_default("ToddCoxeter: Using {} strategy . . .\n", strategy());
@@ -621,7 +621,7 @@ namespace libsemigroups {
     }
 
     _word_graph.settings(*this);
-    _word_graph.stats().start_time = std::chrono::high_resolution_clock::now();
+    _word_graph.reset_start_time();
     _word_graph.stats_check_point();
     auto       first = generating_pairs().cbegin();
     auto       last  = generating_pairs().cend();

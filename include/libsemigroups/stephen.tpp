@@ -18,6 +18,7 @@
 
 // This file contains the implementation of the Stephen class template.
 
+#include "libsemigroups/detail/report.hpp"
 namespace libsemigroups {
 
   template <typename P>
@@ -115,7 +116,9 @@ namespace libsemigroups {
         _finished(false),
         _presentation(),
         _word(),
-        _word_graph() {}
+        _word_graph() {
+    _word_graph.report_prefix("Stephen");
+  }
 
   template <typename P>
   Stephen<P>& Stephen<P>::init() {
@@ -125,6 +128,7 @@ namespace libsemigroups {
     _presentation.init();
     _word.clear();
     _word_graph.init();
+    _word_graph.report_prefix("Stephen");
   }
 
   template <typename P>
@@ -201,51 +205,6 @@ namespace libsemigroups {
   ////////////////////////////////////////////////////////////////////////
 
   template <typename P>
-  void Stephen<P>::report_status(
-      std::chrono::high_resolution_clock::time_point const& start_time) {
-    if (!report()) {
-      return;
-    }
-    using std::chrono::duration_cast;
-    using std::chrono::seconds;
-    auto now        = std::chrono::high_resolution_clock::now();
-    auto total_time = duration_cast<seconds>(now - start_time);
-
-    auto&   stats = _word_graph.stats();
-    int64_t diff  = int64_t(_word_graph.number_of_nodes_active()
-                           - stats.prev_active_nodes);
-
-    // TODO(v3) use fmtlib
-    static bool first_call = true;
-    if (first_call) {
-      first_call = false;
-      // REPORT_DEFAULT_V3("Stephen: " + std::string(60, '-') + "\n");
-      // REPORT_DEFAULT_V3("Stephen: %11s | %11s | %11s | %11s |\n",
-      //                   "nodes",
-      //                   "defined",
-      //                   "killed",
-      //                   "diff");
-      // REPORT_DEFAULT_V3("Stephen: " + std::string(60, '-') + "\n");
-    }
-    using ::libsemigroups::detail::group_digits;
-    // REPORT_DEFAULT_V3(
-    //     "Stephen: %11s | %11s | %11s | %11s | "
-    //     "(%llus)\n",
-    //     group_digits(_word_graph.number_of_nodes_active()).c_str(),
-    //     ("+"
-    //      + group_digits(int64_t(_word_graph.number_of_nodes_defined()
-    //                             - stats.prev_nodes_defined)))
-    //         .c_str(),
-    //     ("-"
-    //      + group_digits(int64_t(_word_graph.number_of_nodes_killed()
-    //                             - stats.prev_nodes_killed)))
-    //         .c_str(),
-    //     ((diff < 0 ? "" : "+") + group_digits(diff)).c_str(),
-    //     total_time.count());
-    _word_graph.stats_check_point();
-  }
-
-  template <typename P>
   void Stephen<P>::standardize() {
     word_graph::standardize(_word_graph);
     _word_graph.induced_subgraph_no_checks(
@@ -262,8 +221,19 @@ namespace libsemigroups {
 
   template <typename P>
   void Stephen<P>::run_impl() {
-    auto start_time = std::chrono::high_resolution_clock::now();
+    reset_start_time();
+    // TODO report_after_run (including report_why_we_stopped) and
+    // report_before_run
+    if (reporting_enabled()) {
+      detail::Ticker t([this]() { _word_graph.report_progress_from_thread(); });
+      really_run_impl();
+    } else {
+      really_run_impl();
+    }
+  }
 
+  template <typename P>
+  void Stephen<P>::really_run_impl() {
     if (_something_changed) {
       throw_if_presentation_empty(presentation());
       _something_changed = false;
@@ -340,7 +310,6 @@ namespace libsemigroups {
           }
           did_change |= did_def;
         }
-        report_status(start_time);
         current = _word_graph.next_active_node(current);
       }
     } while (did_change && !stopped());

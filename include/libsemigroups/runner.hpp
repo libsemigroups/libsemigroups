@@ -23,11 +23,13 @@
 #ifndef LIBSEMIGROUPS_RUNNER_HPP_
 #define LIBSEMIGROUPS_RUNNER_HPP_
 
-#include <atomic>  // for atomic
-#include <chrono>  // for nanoseconds, high_resolution_clock
-#include <thread>  // for ??
+#include <atomic>   // for atomic
+#include <chrono>   // for nanoseconds, high_resolution_clock
+#include <numeric>  // for accumulate
+#include <thread>   // for ??
 
-#include "debug.hpp"  // for LIBSEMIGROUPS_ASSERT
+#include "debug.hpp"      // for LIBSEMIGROUPS_ASSERT
+#include "exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
 
 #include "detail/function-ref.hpp"  // for FunctionRef
 #include "detail/report.hpp"        // for LibsemigroupsException
@@ -40,22 +42,22 @@ namespace libsemigroups {
   // independently from the "runner" functionality, for example in
   // NodeManagedDigraph, Sims1, and so on
   class Reporter {
+   public:
     using time_point  = std::chrono::high_resolution_clock::time_point;
     using nanoseconds = std::chrono::nanoseconds;
 
+   private:
     std::string _prefix;
     nanoseconds _report_time_interval;
 
     mutable time_point _last_report;
     mutable time_point _start_time;
-    // TODO atomic so that we can read in thread_func and write elsewhere
-    // safely
 
    public:
     // not noexcept because std::string constructor isn't
     Reporter()
         : _prefix(),
-          _report_time_interval(),  // TODO remove
+          _report_time_interval(),
           // mutable
           _last_report(),
           _start_time() {
@@ -86,7 +88,7 @@ namespace libsemigroups {
     //!
     //! \sa report_every(std::chrono::nanoseconds) and report_every(TIntType).
     // not noexcept because operator- for time_points can throw.
-    // TODO remove!
+    // TODO(v3) remove!
     [[nodiscard]] inline bool report() const {
       auto t       = std::chrono::high_resolution_clock::now();
       auto elapsed = t - _last_report;
@@ -152,13 +154,24 @@ namespace libsemigroups {
       return _start_time;
     }
 
+    [[nodiscard]] static nanoseconds delta(time_point const& t) {
+      using namespace std::chrono;
+      return duration_cast<nanoseconds>(high_resolution_clock::now() - t);
+    }
+
+    Reporter& reset_start_time() {
+      _last_report = std::chrono::high_resolution_clock::now();
+      _start_time  = _last_report;
+      return *this;
+    }
+
     [[nodiscard]] time_point last_report() const noexcept {
       return _last_report;
     }
 
     // TODO noexcept
-    Reporter const& last_report(time_point val) const {
-      _last_report = val;
+    Reporter const& reset_last_report() const {
+      _last_report = std::chrono::high_resolution_clock::now();
       return *this;
     }
 
@@ -189,7 +202,6 @@ namespace libsemigroups {
         template <typename Func>
         TickerImpl(Func&& func)
             : _func(std::forward<Func>(func)), _stop(false) {
-          // _start_time      = std::chrono::high_resolution_clock::now();
           auto thread_func = [this](TickerImpl* dtg) {
             std::unique_ptr<TickerImpl> ptr;
             ptr.reset(dtg);
@@ -252,11 +264,10 @@ namespace libsemigroups {
       using Row = std::array<std::string, C + 1>;
 
       std::array<size_t, C + 1> _col_widths;
-      std::string               _divider;
       std::vector<Row>          _rows;
 
      public:
-      ReportCell() : _col_widths(), _divider("{:-<93}\n"), _rows() {
+      ReportCell() : _col_widths(), _rows() {
         _col_widths.fill(0);
       }
 
@@ -277,26 +288,44 @@ namespace libsemigroups {
         return *this;
       }
 
-      ReportCell& divider(std::string_view val) {
-        _divider = val;
-        return *this;
-      }
+      // template <typename... Args>
+      // ReportCell& divider(std::string_view val) {
+      //   if (val.size() != 1) {
+      //     LIBSEMIGROUPS_EXCEPTION(
+      //         "expected the argument to be of length 1, found {}",
+      //         val.size());
+      //   }
+      //   _divider = val;
+      //   return *this;
+      // }
 
       template <typename... Args>
-      void operator()(char const* arg, Args&&... args) {
-        // TODO static_assert that sizeof(args) == C
-        _rows.push_back(Row({std::string(arg), std::forward<Args>(args)...}));
+      void operator()(std::string_view fmt_str, Args&&... args) {
+        static_assert(sizeof...(args) <= C);
+        _rows.push_back(
+            Row({std::string(fmt_str), std::forward<Args>(args)...}));
         for (size_t i = 0; i < _rows.back().size(); ++i) {
           _col_widths[i] = std::max(_col_widths[i], _rows.back()[i].size());
         }
       }
 
+      template <typename Func, typename... Args>
+      void operator()(Func&& f, char const* fmt_str, Args&&... args) {
+        operator()(fmt_str, f(args)...);
+      }
+
      private:
+      size_t line_width() const {
+        return std::accumulate(
+                   _col_widths.begin(), _col_widths.end(), size_t(0))
+               - 5;
+      }
+
       void emit() {
         auto fmt = [](auto&&... args) {
           report_default(std::forward<decltype(args)>(args)...);
         };
-        report_no_prefix(_divider, "");
+        report_no_prefix("{:-<{}}\n", "", line_width());
         for (size_t i = 0; i < _rows.size(); ++i) {
           for (size_t j = 1; j < C + 1; ++j) {
             _rows[i][j]
@@ -346,10 +375,7 @@ namespace libsemigroups {
     // Runner - data - private
     ////////////////////////////////////////////////////////////////////////
 
-    std::chrono::nanoseconds                       _run_for;
-    std::chrono::high_resolution_clock::time_point _start_time;  // TODO remove
-                                                                 // (it's in
-                                                                 // Reporter
+    std::chrono::nanoseconds        _run_for;
     mutable std::atomic<state>      _state;
     detail::FunctionRef<bool(void)> _stopper;
 
@@ -473,10 +499,8 @@ namespace libsemigroups {
     //! run_for(TIntType).
     // not noexcept because operator-(time_point, time_point) isn't
     [[nodiscard]] inline bool timed_out() const {
-      return (running_for()
-                  ? std::chrono::high_resolution_clock::now() - _start_time
-                        >= _run_for
-                  : current_state() == state::timed_out);
+      return (running_for() ? delta(start_time()) >= _run_for
+                            : current_state() == state::timed_out);
     }
 
     //! Run until a nullary predicate returns \p true or \ref finished.

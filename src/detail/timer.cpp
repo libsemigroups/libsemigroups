@@ -27,34 +27,42 @@
 namespace libsemigroups {
   using namespace std::chrono;
 
+  // days, weeks, months, years are C++20, hence we declare them here
+  using days   = std::chrono::duration<int, std::ratio<86400>>;
+  using weeks  = std::chrono::duration<int, std::ratio<604800>>;
+  using months = std::chrono::duration<int, std::ratio<2629746>>;
+  using years  = std::chrono::duration<int, std::ratio<31556952>>;
+
   namespace detail {
     namespace {
 
-      template <typename T>
-      bool string_time_incremental(std::string& result, nanoseconds& elapsed) {
-        T x = duration_cast<T>(elapsed);
-        if (x.count() > 0) {
-          result += fmt::format("{}", x);
-          elapsed -= nanoseconds(x);
-          return true;
-        }
-        return false;
+      template <typename Unit>
+      void append(std::string& s, Unit const& x) {
+        s += fmt::format("{}", x);
       }
 
-      bool string_time_incremental(std::string& result,
-                                   nanoseconds& elapsed,
-                                   bool         use_float) {
-        using seconds = seconds;
-        seconds x     = duration_cast<seconds>(elapsed);
-        if (x.count() > 0) {
-          if (use_float) {
-            double x_float
-                = static_cast<double>(elapsed.count()) / 1'000'000'000;
-            result += fmt::format("{:.3f}s", x_float);
-          } else {
-            result += fmt::format("{}", x);
-          }
-          elapsed -= nanoseconds(x);
+      void append(std::string& s, days const& x) {
+        s += fmt::format("{}d", x.count());
+      }
+
+      void append(std::string& s, weeks const& x) {
+        s += fmt::format("{}w", x.count());
+      }
+
+      void append(std::string& s, months const& x) {
+        s += fmt::format("{}mon", x.count());
+      }
+
+      void append(std::string& s, years const& x) {
+        s += fmt::format("{}y", x.count());
+      }
+
+      template <typename Unit>
+      bool append_if_non_zero(std::string& s, nanoseconds& x) {
+        auto y = duration_cast<Unit>(x);
+        if (y.count() > 0) {
+          x -= nanoseconds(y);
+          append(s, y);
           return true;
         }
         return false;
@@ -63,21 +71,30 @@ namespace libsemigroups {
 
     // String containing the somewhat human readable amount of time, this is
     // primarily intended for testing purposes
-    std::string string_time(nanoseconds elapsed) {
-      using detail::string_time_incremental;
-      std::string out;
-      // TODO add day, months etc
-      if (string_time_incremental<hours>(out, elapsed)) {
-        string_time_incremental<minutes>(out, elapsed);
-        string_time_incremental(out, elapsed, false);
-      } else if (string_time_incremental<minutes>(out, elapsed)) {
-        string_time_incremental(out, elapsed, false);
-      } else if (string_time_incremental(out, elapsed, true)) {
-      } else if (string_time_incremental<milliseconds>(out, elapsed)) {
-      } else if (string_time_incremental<microseconds>(out, elapsed)) {
-      } else if (string_time_incremental<nanoseconds>(out, elapsed)) {
+    std::string string_time(nanoseconds x) {
+      using units = std::tuple<years, months, weeks, days, hours, minutes>;
+
+      std::string s;
+      std::apply(
+          [&](auto... args) {
+            ((append_if_non_zero<decltype(args)>(s, x)), ...);
+          },
+          units{});
+
+      if (!s.empty()) {
+        append<seconds>(s, duration_cast<seconds>(x));
+        return s;
       }
-      return out;
+      auto y = duration_cast<seconds>(x);
+      if (y.count() > 0) {
+        auto x_double = static_cast<double>(x.count()) / 1'000'000'000;
+        s += fmt::format("{:.3f}s", x_double);
+      } else {
+        append_if_non_zero<milliseconds>(s, x)
+            || append_if_non_zero<microseconds>(s, x)
+            || append_if_non_zero<nanoseconds>(s, x);
+      }
+      return s;
     }
   }  // namespace detail
 }  // namespace libsemigroups

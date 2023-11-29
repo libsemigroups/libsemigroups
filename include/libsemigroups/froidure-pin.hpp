@@ -1271,7 +1271,8 @@ namespace libsemigroups {
 
    private:
     void run_impl() override;
-    void report_progress(std::chrono::high_resolution_clock::time_point);
+
+    void report_progress();
 
     bool finished_impl() const override;
 

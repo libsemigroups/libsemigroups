@@ -136,9 +136,6 @@ magicenuminclude_HEADERS = extern/magic_enum/magic_enum.hpp
 rxrangesincludedir = $(includedir)/libsemigroups/rx
 rxrangesinclude_HEADERS = extern/rx-ranges/include/rx/ranges.hpp
 
-textflowcppincludedir = $(includedir)/libsemigroups/textflowcpp
-textflowcppinclude_HEADERS=extern/textflowcpp/TextFlow.hpp
-
 backwardcppincludedir = $(includedir)/libsemigroups/backward-cpp
 backwardcppinclude_HEADERS=extern/backward-cpp/backward.hpp
 
@@ -648,8 +645,6 @@ EXTRA_DIST += etc/make-lint.sh
 EXTRA_DIST += etc/post-proc-doc.sh
 EXTRA_DIST += etc/version-number.sh
 EXTRA_DIST += extern/HPCombi/VERSION
-EXTRA_DIST += extern/textflowcpp/LICENSE.txt
-EXTRA_DIST += extern/textflowcpp/README.md
 EXTRA_DIST += tests/catch.hpp
 EXTRA_DIST += tests/bmat-data.hpp
 EXTRA_DIST += tests/test-main.hpp
@@ -1130,7 +1125,6 @@ uninstall-hook:
 	if test -d ${eigenincludedir}; then rm -rf ${eigenincludedir}; fi
 	if test -d $(includedir)/libsemigroups/HPCombi; then rm -rf $(includedir)/libsemigroups/HPCombi; fi
 	if test -d ${fmtincludedir}; then rm -rf ${fmtincludedir}; fi
-	if test -d ${textflowcppincludedir}; then rm -rf ${textflowcppincludedir}; fi
 	if test -d ${backwardcppincludedir}; then rm -rf ${backwardcppincludedir}; fi
 	if test -d ${includedir}/libsemigroups; then rmdir ${includedir}/libsemigroups; fi
 .PHONY: uninstall-hook

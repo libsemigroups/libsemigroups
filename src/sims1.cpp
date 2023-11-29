@@ -719,46 +719,72 @@ namespace libsemigroups {
   }
 
   void Sims1::report_progress_from_thread() const {
-    using detail::group_digits;
-    using detail::signed_group_digits;
-    using std::chrono::duration_cast;
-    using std::chrono::nanoseconds;
-    using std::chrono::seconds;
+    using namespace detail;
+    using namespace std::chrono;
 
     // Reporter
-    auto now           = std::chrono::high_resolution_clock::now();
-    auto time_total_ns = duration_cast<nanoseconds>(now - start_time());
-    auto time_total_s  = duration_cast<seconds>(time_total_ns);
-    auto time_diff     = duration_cast<nanoseconds>(now - last_report());
+    auto time_total_ns = delta(start_time());
+    auto time_diff     = delta(last_report());
 
     // Stats
-    auto count_diff = stats().count_now - stats().count_last;
-    auto total_pending_diff
-        = stats().total_pending_now - stats().total_pending_last;
+    auto count_now          = stats().count_now.load();
+    auto count_diff         = count_now - stats().count_last;
+    auto total_pending_now  = stats().total_pending_now.load();
+    auto total_pending_diff = total_pending_now - stats().total_pending_last;
 
-    detail::ReportCell<2> rc;
-    rc.min_width(0, 7).min_width(1, 11).divider("{:-<80}\n");
-    rc("Sims1: total        {} (cong.)   | {} (node)\n",
-       group_digits(stats().count_now),
-       group_digits(stats().total_pending_now));
-    rc("Sims1: diff         {} (cong.)   | {} (node)\n",
-       signed_group_digits(count_diff),
-       signed_group_digits(total_pending_diff));
-    rc("Sims1: mean         {} (cong./s) | {} (node/s)\n",
-       group_digits(stats().count_now / time_total_s.count()),
-       group_digits(stats().total_pending_now / time_total_s.count()));
+    constexpr uint64_t billion = 1'000'000'000;
+    uint64_t congs_per_sec     = (billion * count_now) / time_total_ns.count();
+    uint64_t nodes_per_sec
+        = (billion * total_pending_now) / time_total_ns.count();
+
+    nanoseconds time_per_cong_last_sec(0);
+    if (count_diff != 0) {
+      time_per_cong_last_sec = time_diff / count_diff;
+    }
+
+    nanoseconds time_per_node_last_sec(0);
+    if (total_pending_diff != 0) {
+      time_per_node_last_sec = time_diff / total_pending_diff;
+    }
+
+    nanoseconds time_per_cong(0);
+    if (count_now != 0) {
+      time_per_cong = time_total_ns / count_now;
+    }
+
+    nanoseconds time_per_node(0);
+    if (total_pending_now != 0) {
+      time_per_node = time_total_ns / total_pending_now;
+    }
+
+    ReportCell<2> rc;
+    rc.min_width(0, 7).min_width(1, 11);
+    rc(group_digits,
+       "Sims1: total        {} (cong.)   | {} (nodes)\n",
+       count_now,
+       total_pending_now);
+
+    rc(signed_group_digits,
+       "Sims1: diff         {} (cong.)   | {} (nodes)\n",
+       count_diff,
+       total_pending_diff);
+
+    rc(group_digits,
+       "Sims1: mean         {} (cong./s) | {} (node/s)\n",
+       congs_per_sec,
+       nodes_per_sec);
+
     rc("Sims1: time last s. {} (/cong.)  | {} (/node)\n",
-       count_diff == 0 ? "x" : detail::string_time(time_diff / count_diff),
-       total_pending_diff == 0
-           ? "x"
-           : detail::string_time(time_diff / total_pending_diff));
-    rc("Sims1: mean time    {} (/cong.)  | {} (/node)\n",
-       detail::string_time(time_total_ns / stats().count_now.load()),
-       detail::string_time(time_total_ns / stats().total_pending_now.load()));
-    rc("Sims1: time         {} (total)   |\n",
-       detail::string_time(time_total_ns));
+       string_time(time_per_cong_last_sec),
+       string_time(time_per_node_last_sec));
 
-    last_report(now);
+    rc("Sims1: mean time    {} (/cong.)  | {} (/node)\n",
+       string_time(time_per_cong),
+       string_time(time_per_node));
+
+    rc("Sims1: time         {} (total)   |\n", string_time(time_total_ns));
+
+    reset_last_report();
     stats().stats_check_point();
   }
 

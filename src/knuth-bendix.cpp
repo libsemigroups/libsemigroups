@@ -758,7 +758,7 @@ namespace libsemigroups {
       return;
     }
     auto run_time = duration_cast<nanoseconds>(high_resolution_clock::now()
-                                               - this->_stats.start_time);
+                                               - start_time());
 
     auto active   = number_of_active_rules();
     auto inactive = number_of_inactive_rules();
@@ -897,7 +897,7 @@ namespace libsemigroups {
 
   void KnuthBendix::run_impl() {
     stats_check_point();
-    _stats.start_time = std::chrono::high_resolution_clock::now();
+    reset_start_time();
 
     init_from_generating_pairs();
     if (_rewriter.consistent() && confluent() && !stopped()) {

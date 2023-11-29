@@ -2229,7 +2229,7 @@ namespace libsemigroups {
     using fpsemigroup::author;
     using fpsemigroup::partial_transformation_monoid;
 
-    auto   rg = ReportGuard(false);
+    auto   rg = ReportGuard(true);
     size_t n  = 5;
     auto   p  = partial_transformation_monoid(n, author::Sutov);
 

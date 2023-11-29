@@ -313,6 +313,7 @@ namespace libsemigroups {
     void     something_changed() noexcept;
 
     void run_impl() override;
+    void really_run_impl();
 
     bool finished_impl() const noexcept override {
       return _finished;
@@ -320,8 +321,7 @@ namespace libsemigroups {
 
     void standardize();
 
-    void report_status(
-        std::chrono::high_resolution_clock::time_point const& start_time);
+    void report_progress_from_thread();
   };
 
   // Deduction guides

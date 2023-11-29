@@ -390,25 +390,16 @@ namespace libsemigroups {
   }
 
   template <typename Element, typename Traits>
-  void FroidurePin<Element, Traits>::report_progress(
-      std::chrono::high_resolution_clock::time_point start_time) {
-    using std::chrono::duration_cast;
-    using std::chrono::nanoseconds;
-
-    using high_resolution_clock = std::chrono::high_resolution_clock;
-
+  void FroidurePin<Element, Traits>::report_progress() {
     using detail::group_digits;
     using detail::string_time;
 
-    static constexpr auto italic = fmt::emphasis::italic;
+    auto run_time = delta(start_time());
 
-    auto run_time
-        = duration_cast<nanoseconds>(high_resolution_clock::now() - start_time);
-
-    auto num_elts  = fmt::format(italic, "{:<11}", group_digits(_nr));
-    auto num_rules = fmt::format(italic, "{:<9}", group_digits(_nr_rules));
-    auto run_time_string = fmt::format(italic, "{:<7}", string_time(run_time));
-    auto diam = fmt::format(italic, "\u2300 {:<4}", current_max_word_length());
+    auto num_elts        = fmt::format("{:<11}", group_digits(_nr));
+    auto num_rules       = fmt::format("{:<9}", group_digits(_nr_rules));
+    auto run_time_string = fmt::format("{:<7}", string_time(run_time));
+    auto diam = fmt::format("\u2300 {:<4}", current_max_word_length());
 
     report_default("FroidurePin: {} (Cayley graph) | {} (elements) | "
                    "{} (rules) | {} (total) \n",
@@ -429,8 +420,8 @@ namespace libsemigroups {
       report_default(
           "FroidurePin: enumerating until all elements are found . . .\n");
     }
-    auto start_time = std::chrono::high_resolution_clock::now();
-    auto tid        = detail::this_threads_id();
+    reset_start_time();
+    auto tid = detail::this_threads_id();
 
     LIBSEMIGROUPS_ASSERT(_lenindex.size() > 1);
 
@@ -438,7 +429,7 @@ namespace libsemigroups {
 
     // product the generators by every generator
     if (_pos < _lenindex[1]) {
-      report_progress(start_time);
+      report_progress();
       size_type number_of_shorter_elements = _nr;
       while (_pos < _lenindex[1]) {
         element_index_type i = _enumerate_order[_pos];
@@ -484,7 +475,7 @@ namespace libsemigroups {
       _wordlen++;
       expand(_nr - number_of_shorter_elements);
       _lenindex.push_back(_enumerate_order.size());
-      report_progress(start_time);
+      report_progress();
     }
 
     // Multiply the words of length > 1 by every generator
@@ -556,24 +547,20 @@ namespace libsemigroups {
         _lenindex.push_back(_enumerate_order.size());
       }
       if (_pos < _nr) {
-        report_progress(start_time);
+        report_progress();
       }
     }
     report_why_we_stopped();
 
-    static constexpr auto italic = fmt::emphasis::italic;
-
     auto const num_prods
-        = fmt::format(italic, "{}", detail::group_digits(_nr_products));
+        = fmt::format("{}", detail::group_digits(_nr_products));
 
     auto const poss_prods = fmt::format(
-        italic,
-        "{}",
-        detail::group_digits(current_size() * number_of_generators()));
+
+        "{}", detail::group_digits(current_size() * number_of_generators()));
 
     auto const percent_prods
-        = fmt::format(italic,
-                      "{:.3f}",
+        = fmt::format("{:.3f}",
                       static_cast<double>(100 * _nr_products)
                           / (current_size() * number_of_generators()));
 
@@ -696,8 +683,8 @@ namespace libsemigroups {
   template <typename T>
   void FroidurePin<Element, Traits>::add_generators_after_start(T const& first,
                                                                 T const& last) {
-    auto       start_time = std::chrono::high_resolution_clock::now();
-    auto const tid        = detail::this_threads_id();
+    reset_start_time();
+    auto const tid = detail::this_threads_id();
 
     // get some parameters from the old semigroup
     generator_index_type const old_nrgens         = number_of_generators();
@@ -809,7 +796,7 @@ namespace libsemigroups {
         _lenindex.push_back(_enumerate_order.size());
         _wordlen++;
       }
-      report_progress(start_time);
+      report_progress();
     }
     report_why_we_stopped();
   }
@@ -1104,7 +1091,7 @@ namespace libsemigroups {
       return;
     }
     report_default("FroidurePin: finding idempotents . . .\n");
-    auto start_time    = std::chrono::high_resolution_clock::now();
+    reset_start_time();
     _idempotents_found = true;
     run();
     _is_idempotent.resize(_nr, 0);
@@ -1131,21 +1118,15 @@ namespace libsemigroups {
       // i.
       total_load += i * (_lenindex[i] - _lenindex[i - 1]);
     }
-    static constexpr auto italic = fmt::emphasis::italic;
+    auto const cmplxy_str = fmt::format("{:>11}", cmplxty);
 
-    auto const cmplxy_str = fmt::format(italic, "{:>11}", cmplxty);
-
-    auto const threshold_length_str
-        = fmt::format(italic, "{:>11}", threshold_length);
-
+    auto const threshold_length_str = fmt::format("{:>11}", threshold_length);
     auto const threshold_index_str
-        = fmt::format(italic, "{:>11}", detail::group_digits(threshold_index));
-
+        = fmt::format("{:>11}", detail::group_digits(threshold_index));
     auto const mean_path_len = fmt::format(
-        italic, "{:>11.3f}", static_cast<double>(total_load) / threshold_index);
-
-    auto const num_prods = fmt::format(
-        italic, "{:>11}", detail::group_digits(_nr - threshold_index));
+        "{:>11.3f}", static_cast<double>(total_load) / threshold_index);
+    auto const num_prods
+        = fmt::format("{:>11}", detail::group_digits(_nr - threshold_index));
 
     report_default("FroidurePin: complexity of multiplication {:>11} | {}\n",
                    "",
@@ -1225,15 +1206,11 @@ namespace libsemigroups {
             tmp[i].begin(), tmp[i].end(), std::back_inserter(_idempotents));
       }
     }
-    auto run_time = std::chrono::duration_cast<std::chrono::nanoseconds>(
-        std::chrono::high_resolution_clock::now() - start_time);
-
+    auto       run_time = detail::string_time(delta(start_time()));
     auto const num_idem
-        = fmt::format(italic, detail::group_digits(_idempotents.size()));
-    auto const run_time_str
-        = fmt::format(italic, detail::string_time(run_time));
+        = fmt::format(detail::group_digits(_idempotents.size()));
     report_default(
-        "FroidurePin: found {} idempotents in {}\n", num_idem, run_time_str);
+        "FroidurePin: found {} idempotents in {}\n", num_idem, run_time);
   }
 
   // Find the idempotents in the range [first, last) and store

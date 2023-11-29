@@ -248,7 +248,6 @@ namespace libsemigroups {
       size_t                                   prev_active_rules;
       size_t                                   prev_inactive_rules;
       size_t                                   prev_total_rules;
-      time_point                               start_time;
       size_t                                   total_rules;
       std::unordered_set<internal_string_type> unique_lhs_rules;
     } _stats;

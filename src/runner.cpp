@@ -35,8 +35,7 @@ namespace libsemigroups {
   Reporter& Reporter::init() {
     _prefix               = "";
     _report_time_interval = nanoseconds(std::chrono::seconds(1));
-    _last_report          = std::chrono::high_resolution_clock::now();
-    _start_time           = _last_report;
+    reset_start_time();
     return *this;
   }
 
@@ -45,34 +44,24 @@ namespace libsemigroups {
   ////////////////////////////////////////////////////////////////////////
 
   Runner::Runner()
-      : Reporter(),
-        _run_for(FOREVER),
-        _start_time(),
-        _state(state::never_run),
-        _stopper() {}
+      : Reporter(), _run_for(FOREVER), _state(state::never_run), _stopper() {}
 
   Runner& Runner::init() {
     Reporter::init();
-    _run_for    = FOREVER;
-    _start_time = decltype(_start_time)();
-    _state      = state::never_run;
-    _stopper    = decltype(_stopper)();
+    _run_for = FOREVER;
+    _state   = state::never_run;
+    _stopper = decltype(_stopper)();
     return *this;
   }
 
   Runner::Runner(Runner const& other)
-      : Reporter(other),
-        _run_for(other._run_for),
-        _start_time(other._start_time),
-        _state(),
-        _stopper() {
+      : Reporter(other), _run_for(other._run_for), _state(), _stopper() {
     _state = other._state.load();
   }
 
   Runner::Runner(Runner&& other)
       : Reporter(std::move(other)),
         _run_for(std::move(other._run_for)),
-        _start_time(std::move(other._start_time)),
         _state(),
         _stopper() {
     _state = other._state.load();
@@ -80,17 +69,15 @@ namespace libsemigroups {
 
   Runner& Runner::operator=(Runner const& other) {
     Reporter::operator=(other);
-    _run_for    = other._run_for;
-    _start_time = other._start_time;
-    _state      = other._state.load();
+    _run_for = other._run_for;
+    _state   = other._state.load();
     return *this;
   }
 
   Runner& Runner::operator=(Runner&& other) {
     Reporter::operator=(std::move(other));
-    _run_for    = std::move(other._run_for);
-    _start_time = std::move(other._start_time);
-    _state      = other._state.load();
+    _run_for = std::move(other._run_for);
+    _state   = other._state.load();
     return *this;
   }
 
@@ -122,8 +109,8 @@ namespace libsemigroups {
       }
       auto previous_state = current_state();
       set_state(state::running_for);
-      _start_time = std::chrono::high_resolution_clock::now();
-      _run_for    = val;
+      reset_start_time();
+      _run_for = val;
       // run_impl should depend on the method timed_out!
 
       try {

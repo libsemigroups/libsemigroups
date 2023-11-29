@@ -45,11 +45,9 @@ namespace libsemigroups {
 
     template <typename BaseGraph>
     struct NodeManagedGraph<BaseGraph>::Stats {
-      using time_point = std::chrono::high_resolution_clock::time_point;
-      uint64_t   prev_active_nodes;
-      uint64_t   prev_nodes_killed;
-      uint64_t   prev_nodes_defined;
-      time_point start_time = std::chrono::high_resolution_clock::now();
+      uint64_t prev_active_nodes;
+      uint64_t prev_nodes_killed;
+      uint64_t prev_nodes_defined;
     };
 
     ////////////////////////////////////////////////////////////////////////
@@ -273,12 +271,8 @@ namespace libsemigroups {
     void NodeManagedGraph<BaseGraph>::report_progress_from_thread() const {
       using detail::group_digits;
       using detail::signed_group_digits;
-      using std::chrono::duration_cast;
-      using high_resolution_clock = std::chrono::high_resolution_clock;
-      using nanoseconds           = std::chrono::nanoseconds;
 
-      auto run_time = duration_cast<nanoseconds>(high_resolution_clock::now()
-                                                 - this->_stats.start_time);
+      auto run_time = delta(start_time());
 
       auto const active  = this->number_of_nodes_active();
       auto const killed  = this->number_of_nodes_killed();
@@ -300,9 +294,13 @@ namespace libsemigroups {
                          / run_time.count())
             + "/s";
 
-      detail::ReportCell<4> rc;
+      std::string_view const line1
+          = "{}: nodes {} (active) | {} (killed) | {} (defined)\n";
 
-      rc("{}: nodes {} (active) | {} (killed) | {} (defined)\n",
+      detail::ReportCell<4> rc;
+      rc.min_width(11).min_width(0, report_prefix().size());
+
+      rc(line1,
          report_prefix(),
          group_digits(active),
          group_digits(killed),

@@ -79,6 +79,7 @@ namespace libsemigroups {
                           "003",
                           "detail::group_digits",
                           "[quick][string]") {
+    REQUIRE(detail::group_digits(0) == "0");
     REQUIRE(detail::group_digits(1) == "1");
     REQUIRE(detail::group_digits(10) == "10");
     REQUIRE(detail::group_digits(100) == "100");

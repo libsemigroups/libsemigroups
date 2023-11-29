@@ -39,31 +39,35 @@ namespace libsemigroups {
       ns *= 10;
       REQUIRE(string_time(ns) == "100ns");
       ns *= 10;
-      REQUIRE(string_time(ns) == "1000ns");
+      REQUIRE(string_time(ns) == "1µs");
       ns *= 10;
-      REQUIRE(string_time(ns) == "10μs");
+      REQUIRE(string_time(ns) == "10µs");
       ns *= 10;
-      REQUIRE(string_time(ns) == "100μs");
+      REQUIRE(string_time(ns) == "100µs");
       ns *= 10;
-      REQUIRE(string_time(ns) == "1000μs");
+      REQUIRE(string_time(ns) == "1ms");
       ns *= 10;
       REQUIRE(string_time(ns) == "10ms");
       ns *= 10;
       REQUIRE(string_time(ns) == "100ms");
       ns *= 10;
-      REQUIRE(string_time(ns) == "1000ms");
+      REQUIRE(string_time(ns) == "1.000s");
       ns *= 10;
-      REQUIRE(string_time(ns) == "10000ms");
+      REQUIRE(string_time(ns) == "10.000s");
       ns *= 10;
       REQUIRE(string_time(ns) == "1m40s");
       ns *= 10;
       REQUIRE(string_time(ns) == "16m40s");
       ns *= 10;
-      REQUIRE(string_time(ns) == "2h46m");
+      REQUIRE(string_time(ns) == "2h46m40s");
       ns *= 10;
-      REQUIRE(string_time(ns) == "27h46m");
+      REQUIRE(string_time(ns) == "1d3h46m40s");
       ns *= 10;
-      REQUIRE(string_time(ns) == "277h46m");
+      REQUIRE(string_time(ns) == "1w4d13h46m40s");
+      ns *= 10;
+      REQUIRE(string_time(ns) == "3mon3w3d10h19m22s");
+      ns *= 10;
+      REQUIRE(string_time(ns) == "3y2mon19h20m52s");
     }
 
     LIBSEMIGROUPS_TEST_CASE("Timer",
