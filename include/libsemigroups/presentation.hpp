@@ -442,23 +442,6 @@ namespace libsemigroups {
     void validate_alphabet(decltype(_alphabet_map)& alphabet_map) const;
   };
 
-  namespace detail {
-    template <typename T>
-    struct IsWord {
-      static constexpr bool value = false;
-    };
-
-    template <>
-    struct IsWord<word_type> {
-      static constexpr bool value = true;
-    };
-
-    template <>
-    struct IsWord<std::string> {
-      static constexpr bool value = true;
-    };
-  }  // namespace detail
-
   namespace presentation {
 
     template <typename Word, typename Iterator>
@@ -1307,6 +1290,7 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if `i` exceeds the number of letters in
     //! supported by `letter_type`.
+    // TODO move to words.*pp
     template <typename Word>
     typename Presentation<Word>::letter_type
     human_readable_letter(Presentation<Word> const&, size_t i);
@@ -1327,6 +1311,7 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if \p i exceeds the number of letters
     //! in supported by `letter_type`.
+    // TODO move to words.*pp
     typename Presentation<std::string>::letter_type
     human_readable_letter(Presentation<std::string> const& p, size_t i);
 

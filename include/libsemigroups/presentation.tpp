@@ -721,8 +721,7 @@ namespace libsemigroups {
       if (p.alphabet().size() == max_letter) {
         LIBSEMIGROUPS_EXCEPTION(
             "the alphabet of the 1st argument already has the maximum size "
-            "of "
-            "{}, there are no unused generators",
+            "of {}, there are no unused generators",
             std::numeric_limits<letter_type>::max()
                 - std::numeric_limits<letter_type>::min());
       }

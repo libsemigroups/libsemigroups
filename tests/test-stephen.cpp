@@ -93,8 +93,8 @@ namespace libsemigroups {
     void verify_c4_normal_form(Presentation<std::string> const& p,
                                std::string const&               word,
                                std::string const&               nf) {
-      detail::StringToWord to_word(p.alphabet());
-      Stephen              S(p);
+      ToWord  to_word(p.alphabet());
+      Stephen S(p);
       S.set_word(to_word(word)).run();
 
       REQUIRE((stephen::words_accepted(S) | to_strings(p.alphabet())
@@ -112,8 +112,8 @@ namespace libsemigroups {
     void verify_c4_equal_to(Presentation<std::string> const& p,
                             std::string const&               word1,
                             std::string const&               word2) {
-      detail::StringToWord to_word(p.alphabet());
-      Stephen              S(p);
+      ToWord  to_word(p.alphabet());
+      Stephen S(p);
       S.set_word(to_word(word1)).run();
       REQUIRE(stephen::accepts(S, to_word(word2)));
       S.set_word(to_word(word2)).run();
@@ -123,8 +123,8 @@ namespace libsemigroups {
     void verify_c4_not_equal_to(Presentation<std::string> const& p,
                                 std::string const&               word1,
                                 std::string const&               word2) {
-      detail::StringToWord to_word(p.alphabet());
-      Stephen              S(p);
+      ToWord  to_word(p.alphabet());
+      Stephen S(p);
       S.set_word(to_word(word1)).run();
       REQUIRE(!stephen::accepts(S, to_word(word2)));
       S.set_word(to_word(word2)).run();
@@ -325,24 +325,23 @@ namespace libsemigroups {
     presentation::add_rule(p, "bbb", "b");
     presentation::add_rule(p, "abab", "aa");
 
-    Stephen              S(p);
-    detail::StringToWord to_word("ab");
-    S.set_word(to_word("bbab"));
+    Stephen S(p);
+    S.set_word("bbab"_w);
 
-    REQUIRE(stephen::accepts(S, to_word("bbaaba")));
-    REQUIRE(!stephen::accepts(S, to_word("")));
-    REQUIRE(!stephen::accepts(S, to_word("aaaaaaaaaa")));
-    REQUIRE(!stephen::accepts(S, to_word("bbb")));
+    REQUIRE(stephen::accepts(S, "bbaaba"_w));
+    REQUIRE(!stephen::accepts(S, ""_w));
+    REQUIRE(!stephen::accepts(S, "aaaaaaaaaa"_w));
+    REQUIRE(!stephen::accepts(S, "bbb"_w));
 
-    S.set_word(to_word("bba"));
-    REQUIRE(stephen::accepts(S, to_word("bbabb")));
-    REQUIRE(stephen::accepts(S, to_word("bba")));
-    REQUIRE(!stephen::accepts(S, to_word("bbb")));
-    REQUIRE(!stephen::accepts(S, to_word("a")));
-    REQUIRE(!stephen::accepts(S, to_word("ab")));
+    S.set_word("bba"_w);
+    REQUIRE(stephen::accepts(S, "bbabb"_w));
+    REQUIRE(stephen::accepts(S, "bba"_w));
+    REQUIRE(!stephen::accepts(S, "bbb"_w));
+    REQUIRE(!stephen::accepts(S, "a"_w));
+    REQUIRE(!stephen::accepts(S, "ab"_w));
 
-    S.set_word(to_word("bbaab"));
-    REQUIRE(stephen::accepts(S, to_word("bbaba")));
+    S.set_word("bbaab"_w);
+    REQUIRE(stephen::accepts(S, "bbaba"_w));
   }
 
   LIBSEMIGROUPS_TEST_CASE("Stephen",
@@ -354,11 +353,10 @@ namespace libsemigroups {
     presentation::add_rule(p, "aaaeaa", "abcd");
     presentation::add_rule(p, "ef", "dg");
 
-    Stephen              S(p);
-    detail::StringToWord to_word("abcdefg");
+    Stephen S(p);
 
-    S.set_word(to_word("abcef")).run();
-    REQUIRE(to_word("abcef") == word_type({0, 1, 2, 4, 5}));
+    S.set_word("abcef"_w).run();
+    REQUIRE("abcef"_w == 01245_w);
     REQUIRE(S.word_graph()
             == to_word_graph<uint32_t>(
                 11,
@@ -397,21 +395,21 @@ namespace libsemigroups {
     REQUIRE(n != UNDEFINED);
     REQUIRE(m == n);
     REQUIRE(S.word_graph().number_of_nodes() == 11);
-    REQUIRE(stephen::accepts(S, to_word("aaaeaag")));
+    REQUIRE(stephen::accepts(S, "aaaeaag"_w));
     REQUIRE(stephen::number_of_words_accepted(S) == 3);
     REQUIRE((stephen::words_accepted(S) | rx::to_vector())
             == std::vector<word_type>({01236_w, 01245_w, 0004006_w}));
 
-    S.set_word(to_word("aaaeaaaeaa")).run();
+    S.set_word("aaaeaaaeaa"_w).run();
 
     REQUIRE(S.word_graph().number_of_nodes() == 15);
     REQUIRE(stephen::number_of_words_accepted(S) == 3);
-    REQUIRE(stephen::accepts(S, to_word("aaaeabcd")));
+    REQUIRE(stephen::accepts(S, "aaaeabcd"_w));
     REQUIRE(std::vector<word_type>(stephen::cbegin_words_accepted(S),
                                    stephen::cend_words_accepted(S))
             == std::vector<word_type>({00040123_w, 01230400_w, 0004000400_w}));
 
-    S.set_word(to_word("aaaeaag")).run();
+    S.set_word("aaaeaag"_w).run();
     REQUIRE(S.word_graph().number_of_nodes() == 11);
     REQUIRE(stephen::number_of_words_accepted(S) == 3);
     REQUIRE(std::vector<word_type>(stephen::cbegin_words_accepted(S),
@@ -435,10 +433,9 @@ namespace libsemigroups {
     presentation::add_rule(p, "cc", "b");
     presentation::add_rule(p, "a", "b");
 
-    Stephen              S(p);
-    detail::StringToWord to_word("abc");
-    S.set_word(to_word("abcc")).run();
-    REQUIRE(stephen::accepts(S, to_word("baac")));
+    Stephen S(p);
+    S.set_word("abcc"_w).run();
+    REQUIRE(stephen::accepts(S, "baac"_w));
     REQUIRE(S.word_graph().number_of_nodes() == 3);
     REQUIRE(stephen::number_of_words_accepted(S) == POSITIVE_INFINITY);
     REQUIRE((stephen::words_accepted(S) | rx::take(10) | to_strings("abc")
@@ -465,10 +462,9 @@ namespace libsemigroups {
     presentation::add_rule(p, "cd", "c");
     presentation::add_rule(p, "dc", "c");
 
-    Stephen              S(p);
-    detail::StringToWord to_word("abcd");
-    S.set_word(to_word("dabdaaadabab")).run();
-    REQUIRE(stephen::accepts(S, to_word("abdadcaca")));
+    Stephen S(p);
+    S.set_word("dabdaaadabab"_w).run();
+    REQUIRE(stephen::accepts(S, "abdadcaca"_w));
     REQUIRE(S.word_graph().number_of_nodes() == 25);
     REQUIRE(stephen::number_of_words_accepted(S) == POSITIVE_INFINITY);
   }
@@ -495,9 +491,8 @@ namespace libsemigroups {
     presentation::add_rule(p, "abcd", "ce");
     presentation::add_rule(p, "df", "dg");
 
-    detail::StringToWord to_word("abcdefg");
-    Stephen              S(p);
-    S.set_word(to_word("dfabcdf")).run();
+    Stephen S(p);
+    S.set_word("dfabcdf"_w).run();
 
     REQUIRE(S.word_graph().number_of_nodes() == 9);
     REQUIRE(stephen::number_of_words_accepted(S) == 8);
@@ -524,7 +519,7 @@ namespace libsemigroups {
     REQUIRE(stephen::number_of_words_accepted(S)
             == stephen::words_accepted(S).count());
 
-    S.set_word(to_word("abcdfceg")).run();
+    S.set_word("abcdfceg"_w).run();
     REQUIRE(stephen::number_of_words_accepted(S) == 16);
 
     REQUIRE((stephen::words_accepted(S) | to_strings(p.alphabet())
@@ -551,7 +546,7 @@ namespace libsemigroups {
                                      | rx::take(1))
                 .get()
             == "abcdfabcdf");
-    REQUIRE(stephen::accepts(S, to_word("abcdfabcdf")));
+    REQUIRE(stephen::accepts(S, "abcdfabcdf"_w));
   }
 
   LIBSEMIGROUPS_TEST_CASE(
@@ -564,28 +559,22 @@ namespace libsemigroups {
     p.alphabet("cab");
     presentation::add_rule(p, "aabc", "acba");
 
-    detail::StringToWord to_word("cab");
-    Stephen              S(p);
-    S.set_word(to_word("a")).run();
-    REQUIRE(!stephen::accepts(S, to_word("b")));
+    ToWord  word("cab");
+    Stephen S(p);
+    S.set_word(word("a")).run();
+    REQUIRE(!stephen::accepts(S, word("b")));
 
-    S.set_word(to_word("aabcabc")).run();
-    REQUIRE(stephen::accepts(S, to_word("aabccba")));
+    S.set_word(word("aabcabc")).run();
+    REQUIRE(stephen::accepts(S, word("aabccba")));
 
-    S.set_word(to_word("aabccba")).run();
-    REQUIRE(stephen::accepts(S, to_word("aabcabc")));
+    S.set_word(word("aabccba")).run();
+    REQUIRE(stephen::accepts(S, word("aabcabc")));
 
-    S.set_word(to_word("acba")).run();
-    auto words = std::vector<word_type>(stephen::cbegin_words_accepted(S),
-                                        stephen::cend_words_accepted(S));
-    std::vector<std::string> strings(words.size(), "");
+    S.set_word(word("acba")).run();
+    auto words = stephen::words_accepted(S) | to_strings(p.alphabet());
 
-    std::transform(
-        words.cbegin(), words.cend(), strings.begin(), [&p](auto const& w) {
-          return detail::word_to_string(p.alphabet(), w.cbegin(), w.cend());
-        });
-
-    REQUIRE(strings == std::vector<std::string>({"acba", "aabc"}));
+    REQUIRE((words | rx::to_vector())
+            == std::vector<std::string>({"acba", "aabc"}));
     verify_c4_normal_form(p, "acba", "aabc");
   }
 
@@ -598,48 +587,47 @@ namespace libsemigroups {
     REQUIRE_THROWS_AS(Stephen(p), LibsemigroupsException);
     p.alphabet("abcdefg");
 
-    detail::StringToWord to_word("abcdefg");
-    Stephen              S(p);
-    auto                 w = to_word("abbbddbcbcbc");
+    Stephen S(p);
+    auto    w = "abbbddbcbcbc"_w;
     S.set_word(w);
     S.run();
     REQUIRE(S.finished());
     S.run();
-    S.set_word(to_word("abbbddbcbcbc"));  // resets
+    S.set_word("abbbddbcbcbc"_w);  // resets
     S.report_every(std::chrono::microseconds(10));
 
     S.run();
 
     Stephen T(S);
     REQUIRE(stephen::accepts(T, w));
-    REQUIRE(!stephen::accepts(T, to_word("abbbd")));
+    REQUIRE(!stephen::accepts(T, "abbbd"_w));
     REQUIRE(stephen::number_of_words_accepted(T) == 1);
     REQUIRE(stephen::number_of_left_factors(T) == w.size() + 1);
     REQUIRE(stephen::accepts(S, w));
-    REQUIRE(!stephen::accepts(S, to_word("abbbd")));
+    REQUIRE(!stephen::accepts(S, "abbbd"_w));
     REQUIRE(stephen::number_of_words_accepted(S) == 1);
     REQUIRE(stephen::number_of_left_factors(S) == w.size() + 1);
 
     Stephen U(std::move(S));
     REQUIRE(stephen::accepts(U, w));
-    REQUIRE(!stephen::accepts(U, to_word("abbbd")));
+    REQUIRE(!stephen::accepts(U, "abbbd"_w));
     REQUIRE(stephen::number_of_words_accepted(U) == 1);
     REQUIRE(stephen::number_of_left_factors(U) == w.size() + 1);
 
     S = T;
     REQUIRE(stephen::accepts(T, w));
-    REQUIRE(!stephen::accepts(T, to_word("abbbd")));
+    REQUIRE(!stephen::accepts(T, "abbbd"_w));
     REQUIRE(stephen::number_of_words_accepted(T) == 1);
     REQUIRE(stephen::number_of_left_factors(T) == w.size() + 1);
     REQUIRE(stephen::accepts(S, w));
-    REQUIRE(!stephen::accepts(S, to_word("abbbd")));
+    REQUIRE(!stephen::accepts(S, "abbbd"_w));
     REQUIRE(stephen::number_of_words_accepted(S) == 1);
     REQUIRE(stephen::number_of_left_factors(S) == w.size() + 1);
 
     decltype(S) V;
     V = std::move(S);
     REQUIRE(stephen::accepts(V, w));
-    REQUIRE(!stephen::accepts(V, to_word("abbbd")));
+    REQUIRE(!stephen::accepts(V, "abbbd"_w));
     REQUIRE(stephen::number_of_words_accepted(V) == 1);
     REQUIRE(stephen::number_of_left_factors(V) == w.size() + 1);
     REQUIRE(V.word() == w);
@@ -969,7 +957,7 @@ namespace libsemigroups {
                           "(inverse presentation) "
                           "step_hen/tests/test_schutzenbergergraph.py:test_001",
                           "[stephen][quick]") {
-    detail::StringToWord to_word("abcABC");
+    ToWord to_word("abcABC");
 
     InversePresentation<word_type> p;
     p.alphabet(to_word("abcABC"));
@@ -1022,7 +1010,7 @@ namespace libsemigroups {
                           "(inverse presentation) "
                           "step_hen/tests/test_schutzenbergergraph.py:test_002",
                           "[stephen][quick]") {
-    detail::StringToWord           to_word("abcABC");
+    ToWord                         to_word("abcABC");
     InversePresentation<word_type> p;
     p.alphabet(to_word("abcABC"));
     p.inverses(to_word("ABCabc"));
@@ -1040,7 +1028,7 @@ namespace libsemigroups {
                           "(inverse presentation) "
                           "step_hen/tests/test_schutzenbergergraph.py:test_003",
                           "[stephen][quick]") {
-    detail::StringToWord           to_word("xyXY");
+    ToWord                         to_word("xyXY");
     InversePresentation<word_type> p;
     p.alphabet(to_word("xyXY"));
     p.inverses(to_word("XYxy"));
@@ -1059,7 +1047,7 @@ namespace libsemigroups {
                           "(inverse presentation) "
                           "step_hen/tests/test_schutzenbergergraph.py:test_004",
                           "[stephen][quick]") {
-    detail::StringToWord           to_word("xyXY");
+    ToWord                         to_word("xyXY");
     InversePresentation<word_type> p;
     p.alphabet(to_word("xyXY"));
     p.inverses(to_word("XYxy"));
@@ -1097,7 +1085,7 @@ namespace libsemigroups {
                           "(inverse presentation) "
                           "step_hen/tests/test_schutzenbergergraph.py:test_005",
                           "[stephen][quick]") {
-    detail::StringToWord           to_word("xyXY");
+    ToWord                         to_word("xyXY");
     InversePresentation<word_type> p;
     p.alphabet(to_word("xyXY"));
     p.inverses(to_word("XYxy"));
@@ -1117,7 +1105,7 @@ namespace libsemigroups {
                           "(inverse presentation) "
                           "step_hen/tests/test_schutzenbergergraph.py:test_006",
                           "[stephen][quick]") {
-    detail::StringToWord           to_word("abcABC");
+    ToWord                         to_word("abcABC");
     InversePresentation<word_type> p;
     p.alphabet(to_word("abcABC"));
     p.inverses(to_word("ABCabc"));
@@ -1142,7 +1130,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Stephen", "041", "corner case", "[stephen][quick]") {
-    detail::StringToWord to_word("x");
+    ToWord to_word("x");
 
     Presentation<word_type> p;
     p.contains_empty_word(true);
@@ -1177,7 +1165,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Stephen", "043", "shared_ptr", "[stephen][quick]") {
-    detail::StringToWord           to_word("abcABC");
+    ToWord                         to_word("abcABC");
     InversePresentation<word_type> p;
     p.alphabet(to_word("abcABC"));
     p.inverses(to_word("ABCabc"));
@@ -1246,7 +1234,7 @@ namespace libsemigroups {
   //                           "045",
   //                           "inverse presentation",
   //                           "[stephen][quick]") {
-  //     detail::StringToWord           to_word("abcABC");
+  //     ToWord           to_word("abcABC");
   //     InversePresentation<word_type> p;
   //     p.alphabet(to_word("abcABC"));
   //     p.inverses(to_word("ABCabc"));
@@ -1362,7 +1350,7 @@ namespace libsemigroups {
                           "Munn tree products",
                           "[stephen][quick]") {
     using words::pow;
-    detail::StringToWord to_word("abcABC");
+    ToWord to_word("abcABC");
 
     InversePresentation<word_type> p;
     p.alphabet(to_word("abcABC"));
@@ -1403,7 +1391,7 @@ namespace libsemigroups {
                           "bicyclic monoid",
                           "[stephen][fail]") {
     ReportGuard                    rg(true);
-    detail::StringToWord           to_word("aA");
+    ToWord                         to_word("aA");
     InversePresentation<word_type> p;
     p.alphabet(to_word("aA"));
     p.inverses(to_word("Aa"));

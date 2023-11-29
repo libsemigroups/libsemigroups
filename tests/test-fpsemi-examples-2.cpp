@@ -180,10 +180,8 @@ namespace libsemigroups {
     std::unordered_map<std::string, size_t> map;
     size_t                                  next = 0;
     do {
-      std::string s;
-      detail::word_to_string(kb.presentation().alphabet(), letters, s);
-      s = kb.normal_form(s);
-      next += map.emplace(s, next).second;
+      auto s = to_string(kb.presentation().alphabet(), letters);
+      next += map.emplace(kb.normal_form(s), next).second;
     } while (std::next_permutation(letters.begin(), letters.end()));
     REQUIRE(map.size() == 4);
 

@@ -676,7 +676,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("Ukkonen", "018", "pieces", "[quick][ukkonen]") {
     Ukkonen              t;
-    detail::StringToWord string_to_word("ab");
+    ToWord string_to_word("ab");
     t.add_word(string_to_word("baabbaaaa"));
     t.add_word(string_to_word("abababbbaa"));
 

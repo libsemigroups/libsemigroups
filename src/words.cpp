@@ -177,9 +177,9 @@ namespace libsemigroups {
     return geometric_progression(max, 1, n) - geometric_progression(min, 1, n);
   }
 
-  void detail::word_to_string(std::string const& alphabet,
-                              word_type const&   input,
-                              std::string&       output) {
+  void to_string(std::string const& alphabet,
+                 word_type const&   input,
+                 std::string&       output) {
     output.clear();
     output.reserve(input.size());
     for (auto const x : input) {
@@ -187,8 +187,7 @@ namespace libsemigroups {
     }
   }
 
-  void detail::StringToWord::operator()(std::string const& input,
-                                        word_type&         output) const {
+  void ToWord::operator()(std::string const& input, word_type& output) const {
     output.clear();
     output.reserve(input.size());
     for (auto const& c : input) {
@@ -196,7 +195,7 @@ namespace libsemigroups {
     }
   }
 
-  word_type detail::StringToWord::operator()(std::string const& input) const {
+  word_type ToWord::operator()(std::string const& input) const {
     word_type output;
     operator()(input, output);
     return output;
@@ -237,6 +236,14 @@ namespace libsemigroups {
 
     word_type operator"" _w(const char* w) {
       return operator"" _w(w, std::strlen(w));
+    }
+
+    std::string operator""_p(char const* w, size_t n) {
+      return evaluate_rpn(shunting_yard(w, n));
+    }
+
+    std::string operator""_p(char const* w) {
+      return operator""_p(w, std::strlen(w));
     }
   }  // namespace literals
 
@@ -497,10 +504,6 @@ namespace libsemigroups {
     std::swap(_words, that._words);
   }
 
-  std::string parse(char const* w, size_t n) {
-    return evaluate_rpn(shunting_yard(w, n));
-  }
-
   namespace {
     std::string const& chars_in_human_readable_order() {
       // Choose visible characters a-zA-Z0-9 first before anything else
@@ -564,7 +567,7 @@ namespace libsemigroups {
     auto it = map.find(c);
     if (it == map.cend()) {
       LIBSEMIGROUPS_EXCEPTION(
-          "unexpected character, cannot convert \'{}\' to a letter", c);
+          "unexpected character, cannot convert \'{}\' to a letter_type", c);
     }
 
     return it->second;

@@ -26,17 +26,20 @@
 #ifndef LIBSEMIGROUPS_WORDS_HPP_
 #define LIBSEMIGROUPS_WORDS_HPP_
 
-#include <array>     // for std::array
-#include <cstddef>   // for size_t
-#include <cstdint>   // for uint64_t
-#include <iterator>  // for distance
-#include <random>    // for mt19937
-#include <string>    // for std::string
-#include <variant>   // for variant
+#include <array>             // for array
+#include <cstddef>           // for size_t
+#include <cstdint>           // for uint64_t, uint8_t
+#include <cstring>           // for size_t, strlen
+#include <initializer_list>  // for initializer_list
+#include <iterator>          // for distance
+#include <random>            // for mt19937
+#include <string>            // for basic_string
+#include <type_traits>       // for decay_t
+#include <utility>           // for forward
+#include <variant>           // for visit, operator==
+#include <vector>            // for vector, operator==
 
-#include <stack>  // TODO remove
-
-#include "exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
+#include "exception.hpp"  // for LibsemigroupsException
 #include "types.hpp"      // for word_type
 
 #include "detail/iterator.hpp"  // for default_postfix_increment
@@ -46,6 +49,10 @@
 namespace libsemigroups {
 
   enum class Order : uint8_t;  // forward decl
+
+  ////////////////////////////////////////////////////////////////////////
+  // Words
+  ////////////////////////////////////////////////////////////////////////
 
   //! Returns the number of words over an alphabet with a given number of
   //! letters with length in a specified range.
@@ -64,96 +71,17 @@ namespace libsemigroups {
   //! the return value of this function will not be correct.
   uint64_t number_of_words(size_t n, size_t min, size_t max);
 
-  namespace detail {
-    // TODO(later) doc, check args etc
-    void word_to_string(std::string const& alphabet,
-                        word_type const&   input,
-                        std::string&       output);
-
-    template <typename T>
-    std::string word_to_string(std::string const& alphabet, T first, T last) {
-      std::string output;
-      output.reserve(std::distance(first, last));
-      for (auto it = first; it != last; ++it) {
-        output.push_back(alphabet[*it]);
-      }
-      return output;
+  // TODO to cpp
+  static inline word_type random_word(size_t length, size_t nr_letters) {
+    static std::random_device               rd;
+    static std::mt19937                     gen(rd());
+    std::uniform_int_distribution<uint64_t> dist(0, nr_letters - 1);
+    word_type                               out;
+    for (size_t i = 0; i < length; ++i) {
+      out.push_back(dist(gen));
     }
-
-    inline std::string word_to_string(std::string const& alphabet,
-                                      word_type const&   w) {
-      return word_to_string(alphabet, w.begin(), w.end());
-    }
-
-    // TODO(later) doc, check args etc
-    class StringToWord {
-     public:
-      StringToWord() : _lookup() {
-        clear();
-      }
-
-      explicit StringToWord(std::string const& alphabet) : _lookup() {
-        init(alphabet);
-      }
-
-      StringToWord& init(std::string const& alphabet) {
-        clear();
-        _lookup.back() = alphabet.size();
-        for (letter_type l = 0; l < alphabet.size(); ++l) {
-          _lookup[alphabet[l]] = l;
-        }
-        return *this;
-      }
-
-      bool empty() const {
-        return _lookup.back() == 0;
-      }
-
-      void clear() {
-        _lookup.fill(0);
-      }
-
-      // TODO(later) doc
-      void      operator()(std::string const& input, word_type& output) const;
-      word_type operator()(std::string const& input) const;
-
-     private:
-      std::array<letter_type, 256> _lookup;
-    };
-  }  // namespace detail
-
-  namespace literals {
-    //! Literal for defining \ref word_type over integers less than 10.
-    //!
-    //! This operator provides a convenient brief means of constructing a  \ref
-    //! word_type from an sequence of literal integer digits or a string. For
-    //! example, `0123_w` produces the same output as `word_type({0, 1, 2,
-    //! 3})`.
-    //!
-    //! There are some gotchas and this operator should be used with some care:
-    //!
-    //! * the parameter \p w must only consist of the integers \f$\{0, \ldots,
-    //! 9\}\f$. For example, there are no guarantees about the value of
-    //! `"abc"_w`.
-    //! * if \p w starts with `0` and is follows by a value greater than `7`,
-    //! then it is necessary to enclose \p w in quotes. For example, `08_w`
-    //! will not compile because it is interpreted as an invalid octal. However
-    //! `"08"_w` behaves as expected.
-    //!
-    //! \param w the letters of the word
-    //! \param n the length of \p w (defaults to the length of \p w)
-    //!
-    //! \warning
-    //! This operator performs no checks on its arguments whatsoever.
-    //!
-    //! \returns A value of type \ref word_type.
-    //!
-    //! \exceptions \no_libsemigroups_except
-    word_type operator"" _w(const char* w, size_t n);
-
-    //! \copydoc operator""_w
-    word_type operator"" _w(const char* w);
-  }  // namespace literals
+    return out;
+  }
 
   class const_wilo_iterator {
    public:
@@ -534,53 +462,89 @@ namespace libsemigroups {
     }
   };
 
-  // The next class is a custom combinator for rx::ranges to convert the output
-  // of a Words object into strings
-  template <typename = void>  // TODO why is typename = void here?
-  struct to_strings {
-    explicit to_strings(std::string const& lttrs) : _letters(lttrs) {}
-    explicit to_strings(std::string&& lttrs) : _letters(std::move(lttrs)) {}
-    explicit to_strings(char const* lttrs) : _letters(lttrs) {}
+  ////////////////////////////////////////////////////////////////////////
+  // Strings -> Words
+  ////////////////////////////////////////////////////////////////////////
 
-    std::string _letters;
+  // TODO doc
+  // The inverse of human_readable_char
+  letter_type human_readable_index(char c);
 
-    template <typename InputRange>
-    struct Range {
-      using output_type = std::string;
+  // TODO(later) could do a no_check version
+  void to_word(word_type& w, std::string const& s);
 
-      static constexpr bool is_finite     = true;
-      static constexpr bool is_idempotent = true;
+  // TODO(later) could do a no_check version
+  word_type to_word(std::string const& s);
 
-      InputRange _input;
-      to_strings _to_string;
-
-      constexpr Range(InputRange input, to_strings t_strng) noexcept
-          // TODO move correct?
-          : _input(std::move(input)), _to_string(std::move(t_strng)) {}
-
-      [[nodiscard]] output_type get() const noexcept {
-        return detail::word_to_string(_to_string._letters, _input.get());
-      }
-
-      constexpr void next() noexcept {
-        _input.next();
-      }
-
-      [[nodiscard]] constexpr bool at_end() const noexcept {
-        return _input.at_end();
-      }
-
-      [[nodiscard]] constexpr size_t size_hint() const noexcept {
-        return _input.size_hint();
-      }
-    };
-
-    template <typename InputRange>
-    [[nodiscard]] constexpr auto operator()(InputRange&& input) const {
-      using Inner = rx::get_range_type_t<InputRange>;
-      return Range<Inner>(std::forward<InputRange>(input), *this);
+  // TODO(later) doc, check args etc
+  class ToWord {
+   public:
+    ToWord() : _lookup() {
+      clear();
     }
+
+    explicit ToWord(std::string const& alphabet) : _lookup() {
+      init(alphabet);
+    }
+
+    ToWord& init(std::string const& alphabet) {
+      clear();
+      _lookup.back() = alphabet.size();
+      for (letter_type l = 0; l < alphabet.size(); ++l) {
+        _lookup[alphabet[l]] = l;
+      }
+      return *this;
+    }
+
+    bool empty() const {
+      return _lookup.back() == 0;
+    }
+
+    void clear() {
+      _lookup.fill(0);
+    }
+
+    // TODO(later) doc
+    void      operator()(std::string const& input, word_type& output) const;
+    word_type operator()(std::string const& input) const;
+
+   private:
+    std::array<letter_type, 256> _lookup;
   };
+
+  ////////////////////////////////////////////////////////////////////////
+  // Words -> Strings
+  ////////////////////////////////////////////////////////////////////////
+
+  // TODO doc
+  // Returns the i-th human readable char.
+  char human_readable_char(size_t i);
+
+  // TODO(later) doc, check args etc
+  void to_string(std::string const& alphabet,
+                 word_type const&   input,
+                 std::string&       output);
+
+  template <typename Iterator>
+  std::string to_string(std::string const& alphabet,
+                        Iterator           first,
+                        Iterator           last) {
+    std::string output;
+    output.reserve(std::distance(first, last));
+    for (auto it = first; it != last; ++it) {
+      output.push_back(alphabet[*it]);
+    }
+    return output;
+  }
+
+  inline std::string to_string(std::string const& alphabet,
+                               word_type const&   w) {
+    return to_string(alphabet, w.begin(), w.end());
+  }
+
+  ////////////////////////////////////////////////////////////////////////
+  // Strings
+  ////////////////////////////////////////////////////////////////////////
 
   class Strings {
    public:
@@ -588,15 +552,15 @@ namespace libsemigroups {
     using output_type = std::string const&;
 
    private:
-    mutable std::string  _current;
-    mutable bool         _current_valid;
-    std::string          _letters;
-    detail::StringToWord _string_to_word;
-    Words                _words;
+    mutable std::string _current;
+    mutable bool        _current_valid;
+    std::string         _letters;
+    ToWord              _string_to_word;
+    Words               _words;
 
     void init_current() const {
       if (!_current_valid) {
-        _current = detail::word_to_string(_letters, _words.get());
+        _current = to_string(_letters, _words.get());
       }
     }
 
@@ -651,7 +615,7 @@ namespace libsemigroups {
     }
 
     [[nodiscard]] std::string first() const noexcept {
-      return detail::word_to_string(_letters, _words.first());
+      return to_string(_letters, _words.first());
     }
 
     Strings& last(std::string const& lst) {
@@ -661,7 +625,7 @@ namespace libsemigroups {
     }
 
     [[nodiscard]] std::string last() const noexcept {
-      return detail::word_to_string(_letters, _words.last());
+      return to_string(_letters, _words.last());
     }
 
     Strings& order(Order val) {
@@ -711,6 +675,10 @@ namespace libsemigroups {
     }
   };
 
+  ////////////////////////////////////////////////////////////////////////
+  // Ranges
+  ////////////////////////////////////////////////////////////////////////
+
   // The next class is a custom combinator for rx::ranges to convert the output
   // of a Strings object into words
   template <typename = void>
@@ -730,8 +698,8 @@ namespace libsemigroups {
       static constexpr bool is_finite     = true;
       static constexpr bool is_idempotent = true;
 
-      InputRange           _input;
-      detail::StringToWord _string_to_word;
+      InputRange _input;
+      ToWord     _string_to_word;
 
       explicit constexpr Range(InputRange&& input, to_words t_wrds) noexcept
           : _input(std::move(input)), _string_to_word(t_wrds._letters) {}
@@ -769,63 +737,103 @@ namespace libsemigroups {
     }
   };
 
-  // TODO to cpp
-  static inline word_type random_word(size_t length, size_t nr_letters) {
-    static std::random_device               rd;
-    static std::mt19937                     gen(rd());
-    std::uniform_int_distribution<uint64_t> dist(0, nr_letters - 1);
-    word_type                               out;
-    for (size_t i = 0; i < length; ++i) {
-      out.push_back(dist(gen));
+  // The next class is a custom combinator for rx::ranges to convert the output
+  // of a Words object into strings
+  template <typename = void>
+  struct to_strings {
+    explicit to_strings(std::string const& lttrs) : _letters(lttrs) {}
+    explicit to_strings(std::string&& lttrs) : _letters(std::move(lttrs)) {}
+    explicit to_strings(char const* lttrs) : _letters(lttrs) {}
+
+    std::string _letters;
+
+    template <typename InputRange>
+    struct Range {
+      using output_type = std::string;
+
+      static constexpr bool is_finite     = true;
+      static constexpr bool is_idempotent = true;
+
+      InputRange _input;
+      to_strings _to_string;
+
+      constexpr Range(InputRange input, to_strings t_strng) noexcept
+          : _input(std::move(input)), _to_string(std::move(t_strng)) {}
+
+      [[nodiscard]] output_type get() const noexcept {
+        return to_string(_to_string._letters, _input.get());
+      }
+
+      constexpr void next() noexcept {
+        _input.next();
+      }
+
+      [[nodiscard]] constexpr bool at_end() const noexcept {
+        return _input.at_end();
+      }
+
+      [[nodiscard]] constexpr size_t size_hint() const noexcept {
+        return _input.size_hint();
+      }
+    };
+
+    template <typename InputRange>
+    [[nodiscard]] constexpr auto operator()(InputRange&& input) const {
+      using Inner = rx::get_range_type_t<InputRange>;
+      return Range<Inner>(std::forward<InputRange>(input), *this);
     }
-    return out;
-  }
+  };
 
-  std::string parse(char const* w, size_t n);
+  ////////////////////////////////////////////////////////////////////////
+  // Literals
+  ////////////////////////////////////////////////////////////////////////
 
-  inline std::string parse(char const* w) {
-    return parse(w, std::strlen(w));
-  }
+  namespace literals {
+    //! Literal for defining \ref word_type over integers less than 10.
+    //!
+    //! This operator provides a convenient brief means of constructing a  \ref
+    //! word_type from an sequence of literal integer digits or a string. For
+    //! example, `0123_w` produces the same output as `word_type({0, 1, 2,
+    //! 3})`.
+    //!
+    //! There are some gotchas and this operator should be used with some care:
+    //!
+    //! * the parameter \p w must only consist of the integers \f$\{0, \ldots,
+    //! 9\}\f$. For example, there are no guarantees about the value of
+    //! `"abc"_w`.
+    //! * if \p w starts with `0` and is follows by a value greater than `7`,
+    //! then it is necessary to enclose \p w in quotes. For example, `08_w`
+    //! will not compile because it is interpreted as an invalid octal. However
+    //! `"08"_w` behaves as expected.
+    //!
+    //! \param w the letters of the word
+    //! \param n the length of \p w (defaults to the length of \p w)
+    //!
+    //! \warning
+    //! This operator performs no checks on its arguments whatsoever.
+    //!
+    //! \returns A value of type \ref word_type.
+    //!
+    //! \exceptions \no_libsemigroups_except
+    word_type operator"" _w(const char* w, size_t n);
 
-  inline std::string operator"" _p(const char* w, size_t n) {
-    return parse(w, n);
-  }
+    //! \copydoc operator""_w
+    word_type operator"" _w(const char* w);
 
-  inline std::string operator"" _p(const char* w) {
-    return parse(w);
-  }
+    // TODO doc
+    std::string operator"" _p(const char* w, size_t n);
 
-  // TODO doc
-  char human_readable_char(size_t i);
+    // TODO doc
+    std::string operator"" _p(const char* w);
+  }  // namespace literals
 
-  // TODO doc
-  size_t human_readable_index(char c);
-
-  // TODO(later) could do a no_check version
-  void to_word(word_type& w, std::string const& s);
-
-  // TODO(later) could do a no_check version
-  word_type to_word(std::string const& s);
+  ////////////////////////////////////////////////////////////////////////
 
   namespace words {
 
-    // TODO remove IsWord
-    namespace detail {
-      template <typename T>
-      struct IsWord {
-        static constexpr bool value = false;
-      };
-
-      template <>
-      struct IsWord<word_type> {
-        static constexpr bool value = true;
-      };
-
-      template <>
-      struct IsWord<std::string> {
-        static constexpr bool value = true;
-      };
-    }  // namespace detail
+    ////////////////////////////////////////////////////////////////////////
+    // Operators - declarations
+    ////////////////////////////////////////////////////////////////////////
 
     //! \anchor operator_plus
     //! Concatenate two words or strings.
@@ -870,6 +878,11 @@ namespace libsemigroups {
       u.insert(u.begin(), a);
     }
 
+#define ENABLE_IF_IS_WORD(Word)                                 \
+  typename = std::enable_if_t < std::is_same_v<Word, word_type> \
+             || std::is_same_v < Word,                          \
+  std::string >>
+
     //! Take a power of a word or string.
     //!
     //! Returns the `n`th power of the word/string given by `w` .
@@ -881,8 +894,7 @@ namespace libsemigroups {
     //!
     //! \exceptions
     //! \noexcept
-    template <typename Word,
-              typename = std::enable_if_t<detail::IsWord<Word>::value>>
+    template <typename Word, ENABLE_IF_IS_WORD(Word)>
     Word pow(Word const& w, size_t n);
 
     //! Take a power of a word.
@@ -897,8 +909,7 @@ namespace libsemigroups {
     //!
     //! \exceptions
     //! \noexcept
-    template <typename Word,
-              typename = std::enable_if_t<detail::IsWord<Word>::value>>
+    template <typename Word, ENABLE_IF_IS_WORD(Word)>
     void pow_inplace(Word& w, size_t n);
 
     //! Take a power of a word.
@@ -953,21 +964,19 @@ namespace libsemigroups {
     //! \endcode
     template <typename Container,
               typename Word = Container,
-              typename      = std::enable_if_t<detail::IsWord<Word>::value>>
+              ENABLE_IF_IS_WORD(Word)>
     Word prod(Container const& elts, int first, int last, int step = 1);
 
     //! Returns the output of `prod` where \p elts is treated as a `word_type`
     //! instead of a vector. See \ref prod "prod".
-    template <typename Word,
-              typename = std::enable_if_t<detail::IsWord<Word>::value>>
+    template <typename Word, ENABLE_IF_IS_WORD(Word)>
     Word
     prod(std::vector<Word> const& elts, int first, int last, int step = 1) {
       return prod<std::vector<Word>, Word, void>(elts, first, last, step);
     }
 
     //! Returns `prod(elts, 0, last, 1)` -- see \ref prod "prod".
-    template <typename Word,
-              typename = std::enable_if_t<detail::IsWord<Word>::value>>
+    template <typename Word, ENABLE_IF_IS_WORD(Word)>
     Word prod(Word const& elts, size_t last) {
       return prod(elts, 0, static_cast<int>(last), 1);
     }
@@ -976,9 +985,81 @@ namespace libsemigroups {
     word_type
     prod(std::initializer_list<size_t> ilist, int first, int last, int step);
 
+#undef ENABLE_IF_IS_WORD
+
+    ////////////////////////////////////////////////////////////////////////
+    // Operators - implementations
+    ////////////////////////////////////////////////////////////////////////
+
+    template <typename Word, typename>
+    Word pow(Word const& x, size_t n) {
+      Word y(x);
+      pow_inplace(y, n);
+      return y;
+    }
+
+    template <typename Word, typename>
+    void pow_inplace(Word& x, size_t n) {
+      Word y(x);
+      x.reserve(x.size() * n);
+      if (n % 2 == 0) {
+        x = Word({});
+      }
+
+      while (n > 1) {
+        y += y;
+        n /= 2;
+        if (n % 2 == 1) {
+          x += y;
+        }
+      }
+    }
+
+    // Note: we could do a version of the below using insert on words, where
+    // the step is +/- 1.
+    template <typename Container, typename Word, typename>
+    Word prod(Container const& elts, int first, int last, int step) {
+      if (step == 0) {
+        LIBSEMIGROUPS_EXCEPTION("the 4th argument must not be 0");
+      } else if (((first < last && step > 0) || (first > last && step < 0))
+                 && elts.size() == 0) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "1st argument must be empty if the given range is not empty");
+      }
+      Word result;
+
+      if (first < last) {
+        if (step < 0) {
+          return result;
+        }
+        result.reserve((last - first) / step);
+
+        int i = first;
+        for (; i < last && i < 0; i += step) {
+          size_t a = ((-i / elts.size()) + 1) * elts.size() + i;
+          result += elts[a];
+        }
+        for (; i < last; i += step) {
+          result += elts[i % elts.size()];
+        }
+      } else {
+        if (step > 0) {
+          return result;
+        }
+        size_t steppos = static_cast<size_t>(-step);
+        result.reserve((first - last) / steppos);
+        int i = first;
+        for (; i > last && i >= 0; i += step) {
+          result += elts[i % elts.size()];
+        }
+        for (; i > last; i += step) {
+          size_t a = ((-i / elts.size()) + 1) * elts.size() + i;
+          result += elts[a];
+        }
+      }
+      return result;
+    }
   }  // namespace words
 }  // namespace libsemigroups
-
-#include "words.tpp"
 
 #endif  // LIBSEMIGROUPS_WORDS_HPP_

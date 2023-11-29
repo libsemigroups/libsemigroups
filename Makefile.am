@@ -105,7 +105,6 @@ pkginclude_HEADERS += include/libsemigroups/word-graph.tpp
 pkginclude_HEADERS += include/libsemigroups/word-graph-with-sources.hpp
 pkginclude_HEADERS += include/libsemigroups/word-graph-with-sources.tpp
 pkginclude_HEADERS += include/libsemigroups/words.hpp
-pkginclude_HEADERS += include/libsemigroups/words.tpp
 
 detailincludedir = $(includedir)/libsemigroups/detail
 detailinclude_HEADERS = include/libsemigroups/detail/bruidhinn-traits.hpp

@@ -2187,7 +2187,7 @@ namespace libsemigroups {
     p.alphabet(2);
     Sims1 S(congruence_kind::right);
     S.presentation(p);
-    std::cout << "\n";
+    std::cout << "\n";  // So that the reporting looks good
     REQUIRE(S.number_of_threads(2).number_of_congruences(4) == 5'477);
   }
 
