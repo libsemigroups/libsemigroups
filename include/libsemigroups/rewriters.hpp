@@ -457,6 +457,24 @@ namespace libsemigroups {
       return *this;
     }
 
+    void all_overlaps() {
+      for (auto node_it = _rules.begin(); node_it != _rules.end(); ++node_it) {
+        index_type link = _trie.suffix_link(node_it->first);
+        while (link != _trie.root) {
+          add_overlaps(node_it->second, link);
+          link = _trie.suffix_link(link);
+        }
+      }
+    }
+
+    void add_overlaps(Rule* rule, index_type node) {
+      // DFS from node to all terminal_nodes below node{
+      //   Add rule corresponding to overlap between rule and
+      //   _rules.find(terminal_node)->second, where the overlap position is
+      //   determined by the height of node
+      // }
+    }
+
     void rewrite(internal_string_type& u) const {
       // Check if u is rewriteable
       if (u.size() < stats().min_length_lhs_rule) {

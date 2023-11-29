@@ -544,6 +544,7 @@ namespace libsemigroups {
     }
   }
 
+  // TODO This feels like it should call something in the rewriter?
   template <typename Rewriter, typename ReductionOrder>
   void
   KnuthBendix<Rewriter, ReductionOrder>::run_real(std::atomic_bool& pause) {
@@ -885,8 +886,6 @@ namespace libsemigroups {
   }
 
   // OVERLAP_2 from Sims, p77
-  // TODO Should this be a RewriterBase function that can be overridden by
-  // implementations?
   template <typename Rewriter, typename ReductionOrder>
   void KnuthBendix<Rewriter, ReductionOrder>::overlap(Rule const* u,
                                                       Rule const* v) {
@@ -896,7 +895,6 @@ namespace libsemigroups {
     auto const  limit = ulhs.cend() - std::min(ulhs.size(), vlhs.size());
 
     int64_t const u_id = u->id(), v_id = v->id();
-    // TODO this can be done by a Trie in the same was as in confluence
     for (auto it = ulhs.cend() - 1;
          it > limit && u_id == u->id() && v_id == v->id() && !stopped()
          && (_settings.max_overlap == POSITIVE_INFINITY
@@ -919,6 +917,9 @@ namespace libsemigroups {
         // stop considering the overlaps of u and v here, and note that they
         // will be considered later, because when the rule `u` is reactivated it
         // is added to the end of the active rules list.
+
+        // TODO remove some of the above checks, since now rules don't get
+        // processed after being added.
       }
     }
   }
