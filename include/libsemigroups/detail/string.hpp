@@ -40,25 +40,6 @@
 namespace libsemigroups {
 
   namespace detail {
-    // TODO rm
-    static inline std::string const& string_format(std::string const& format) {
-      return format;
-    }
-
-    // TODO rm
-    template <typename... Args>
-    std::string string_format(std::string const& format, Args... args) {
-      size_t size = snprintf(nullptr, 0, format.c_str(), args...)
-                    + 1;  // Extra space for '\0'
-      if (size <= 0) {
-        throw std::runtime_error("Error during formatting.");
-      }
-      std::unique_ptr<char[]> buf(new char[size]);
-      snprintf(buf.get(), size, format.c_str(), args...);
-      return std::string(
-          buf.get(), buf.get() + size - 1);  // We don't want the '\0' inside
-    }
-
     // Forward declaration
     template <typename T>
     std::string to_string(T const& n);
@@ -99,40 +80,6 @@ namespace libsemigroups {
   }
 
   namespace detail {
-    // TODO(v3) delete these
-    // preprocess the next 3 functions out if using clang or gcc > 5
-    // A << function for vectors - to keep gcc 5 happy
-    template <typename T>
-    std::ostream& operator<<(std::ostream& os, std::vector<T> const& vec) {
-      return ::libsemigroups::operator<<(os, vec);
-    }
-
-    // A << function for arrays - to keep gcc 5 happy
-    template <typename T, size_t N>
-    std::ostream& operator<<(std::ostream& os, std::array<T, N> const& rry) {
-      return ::libsemigroups::operator<<(os, rry);
-    }
-
-    // A << function for pairs - to keep gcc 5 happy
-    template <typename T, typename S>
-    std::ostream& operator<<(std::ostream& os, std::pair<T, S> const& p) {
-      return ::libsemigroups::operator<<(os, p);
-    }
-
-    static inline std::string wrap(size_t indent, std::string& s) {
-      size_t      pos = 100 - indent;
-      std::string prefix(indent, ' ');
-      while (pos < s.size()) {
-        auto last_space = s.find_last_of(' ', pos);
-        if (last_space != std::string::npos) {
-          s.replace(last_space, 1, "\n");
-          s.insert(last_space + 1, prefix);
-        }
-        pos += (100 - indent);
-      }
-      return s;
-    }
-
     static inline size_t unicode_string_length(std::string const& s) {
       size_t count = 0;
       for (auto p = s.cbegin(); *p != 0; ++p) {
@@ -272,8 +219,9 @@ namespace libsemigroups {
     // Returns the string s to the power N, not optimized, complexity is O(N *
     // |s|)
     std::string power_string(std::string const& s, size_t N);
-
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
     std::string group_digits(int64_t num);
+#endif
     std::string signed_group_digits(int64_t num);
 
   }  // namespace detail

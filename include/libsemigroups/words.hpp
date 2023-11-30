@@ -54,6 +54,7 @@ namespace libsemigroups {
   // Words
   ////////////////////////////////////////////////////////////////////////
 
+  //! \defgroup Words
   //! Returns the number of words over an alphabet with a given number of
   //! letters with length in a specified range.
   //!

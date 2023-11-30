@@ -48,7 +48,7 @@ PROJECT_NAME           = libsemigroups
 # could be handy for archiving the generated documentation or if some version
 # control system is used.
 
-PROJECT_NUMBER         =
+PROJECT_NUMBER         = v3.0.0
 
 # Using the PROJECT_BRIEF tag one can provide an optional one line description
 # for a project that appears at the top of each page and should give viewer a
@@ -68,7 +68,7 @@ PROJECT_LOGO           = ./logo.drawio.svg
 # entered, it will be relative to the location where doxygen was started. If
 # left blank the current directory will be used.
 
-OUTPUT_DIRECTORY       = docs
+# OUTPUT_DIRECTORY       = docs
 
 # If the CREATE_SUBDIRS tag is set to YES then doxygen will create up to 4096
 # sub-directories (in 2 levels) under the output directory of each output format
@@ -283,7 +283,28 @@ TAB_SIZE               = 4
 # with the commands \{ and \} for these it is advised to use the version @{ and
 # @} or use a double escape (\\{ and \\})
 
-ALIASES                =
+ALIASES               =  exceptions="\throws (None)"
+ALIASES               += noexcept="This function is `noexcept` and is guaranteed never to throw."
+ALIASES               += no_libsemigroups_except="This function guarantees not to throw a `LibsemigroupsException`."
+ALIASES               += no_libsemigroups_except_detail="This function guarantees not to throw a \ref libsemigroups::LibsemigroupsException."
+ALIASES               += strong_guarantee="If an exception is thrown, \c this is guaranteed not to be modified (strong exception guarantee)."
+ALIASES               += basic_guarantee="If an exception is thrown, \c this might be modified but is guaranteed to be in a valid state (basic exception guarantee)."
+ALIASES               += iterator_validity="\par Iterator validity"
+ALIASES               += iterator_invalid="This function modifies the object defined by \p this, any iterators, pointers or references pointing into \c this may be invalidated by a call to this function."
+ALIASES               += complexity="\par Complexity"
+ALIASES               += parameters="\par Parameters"
+ALIASES               += shared_ptr="<a href=\"https://en.cppreference.com/w/cpp/memory/shared_ptr\">std::shared_ptr</a>"
+ALIASES  += chrono_duration="<a href=\"https://en.cppreference.com/w/cpp/chrono/duration\">std::chrono::duration</a>"
+ALIASES  += string="<a href=\"https://en.cppreference.com/w/cpp/string/basic_string\">std::string</a>"
+ALIASES  += range_error="<a href=\"https://en.cppreference.com/w/cpp/error/range_error\">std::range_error</a>"
+ALIASES  += equal_to="<a href=\"https://en.cppreference.com/w/cpp/utility/functional/equal_to\">std::equal_to</a>"
+ALIASES  += hash="<a href=\"https://en.cppreference.com/w/cpp/utility/hash\">std::hash</a>"
+ALIASES  += less="<a href=\"https://en.cppreference.com/w/cpp/utility/functional/less\">std::less</a>"
+ALIASES  += vector="<a href=\"https://en.cppreference.com/w/cpp/container/vector\">std::vector</a>"
+ALIASES  += array="<a href=\"https://en.cppreference.com/w/cpp/container/array\">std::array</a>"
+ALIASES  += swap="<a href=\"https://en.cppreference.com/w/cpp/algorithm/swap\">std::swap</a>"
+ALIASES  += ostream="<a href=\"https://en.cppreference.com/w/cpp/io/basic_ostream\">std::ostream</a>"
+ALIASES  += ostringstream="<a href=\"https://en.cppreference.com/w/cpp/io/basic_ostringstream\">std::ostringstream</a>"
 
 # Set the OPTIMIZE_OUTPUT_FOR_C tag to YES if your project consists of C sources
 # only. Doxygen will then generate output that is more tailored for C. For
@@ -636,7 +657,7 @@ CASE_SENSE_NAMES       = NO
 # scope will be hidden.
 # The default value is: NO.
 
-HIDE_SCOPE_NAMES       = NO
+HIDE_SCOPE_NAMES       = YES
 
 # If the HIDE_COMPOUND_REFERENCE tag is set to NO (default) then doxygen will
 # append additional text to a page's title, such as Class Reference. If set to
@@ -815,7 +836,7 @@ FILE_VERSION_FILTER    =
 # DoxygenLayout.xml, doxygen will parse it automatically even if the LAYOUT_FILE
 # tag is left empty.
 
-LAYOUT_FILE            =
+LAYOUT_FILE            = DoxygenLayout.xml
 
 # The CITE_BIB_FILES tag can be used to specify one or more bib files containing
 # the reference definitions. This must be a list of .bib files. The .bib
@@ -885,7 +906,7 @@ WARN_NO_PARAMDOC       = NO
 # will automatically be disabled.
 # The default value is: NO.
 
-WARN_IF_UNDOC_ENUM_VAL = NO
+WARN_IF_UNDOC_ENUM_VAL = YES
 
 # If the WARN_AS_ERROR tag is set to YES then doxygen will immediately stop when
 # a warning is encountered. If the WARN_AS_ERROR tag is set to FAIL_ON_WARNINGS
@@ -943,8 +964,7 @@ WARN_LOGFILE           =
 # spaces. See also FILE_PATTERNS and EXTENSION_MAPPING
 # Note: If this tag is empty the current directory is searched.
 
-INPUT                  = ../include/libsemigroups \
-                         ../README.md
+INPUT = "../include/libsemigroups" "../README.md" "install.md" "Words.md"
 
 # This tag can be used to specify the character encoding of the source files
 # that doxygen parses. Internally doxygen uses the UTF-8 encoding. Doxygen uses
@@ -1043,7 +1063,7 @@ RECURSIVE              = YES
 # Note that relative paths are relative to the directory from which doxygen is
 # run.
 
-EXCLUDE                =
+EXCLUDE                = ../include/libsemigroups/detail/
 
 # The EXCLUDE_SYMLINKS tag can be used to select whether or not files or
 # directories that are symbolic links (a Unix file system feature) are excluded
@@ -1067,7 +1087,13 @@ EXCLUDE_PATTERNS       =
 # wildcard * is used, a substring. Examples: ANamespace, AClass,
 # ANamespace::AClass, ANamespace::*Test
 
-EXCLUDE_SYMBOLS        =
+EXCLUDE_SYMBOLS       = libsemigroups::detail::* \
+                        libsemigroups::ukkonen::detail* \
+                        libsemigroups::detail::group_digits \
+                        *KBE* \
+                        *TCE* \
+                        *KE* \
+                        Internal* \
 
 # The EXAMPLE_PATH tag can be used to specify one or more files or directories
 # that contain example code fragments that are included (see the \include
@@ -1093,8 +1119,7 @@ EXAMPLE_RECURSIVE      = NO
 # that contain images that are to be included in the documentation (see the
 # \image command).
 
-IMAGE_PATH             = img \
-                         docs/img
+IMAGE_PATH             = 
 
 # The INPUT_FILTER tag can be used to specify a program that doxygen should
 # invoke to filter for each input file. Doxygen will invoke the filter program
@@ -1155,7 +1180,7 @@ FILTER_SOURCE_PATTERNS =
 # (index.html). This can be useful if you have a project on for instance GitHub
 # and want to reuse the introduction page also for the doxygen output.
 
-USE_MDFILE_AS_MAINPAGE = README.md
+USE_MDFILE_AS_MAINPAGE = ../README.md
 
 # The Fortran standard specifies that for fixed formatted Fortran code all
 # characters from position 72 are to be considered as comment. A common
@@ -1356,8 +1381,6 @@ HTML_STYLESHEET        =
 
 HTML_EXTRA_STYLESHEET  = doxygen-awesome-css/doxygen-awesome.css \
                          doxygen-awesome-css/doxygen-custom/custom.css \
-                         doxygen-awesome-css/doxygen-awesome-sidebar-only.css \
-                         doxygen-awesome-css/doxygen-awesome-sidebar-only-darkmode-toggle.css \
                          doxygen-awesome-css/doxygen-custom/custom-alternative.css
 
 # The HTML_EXTRA_FILES tag can be used to specify one or more extra images or
@@ -1767,7 +1790,7 @@ FORMULA_MACROFILE      =
 # The default value is: NO.
 # This tag requires that the tag GENERATE_HTML is set to YES.
 
-USE_MATHJAX            = NO
+USE_MATHJAX            = YES
 
 # With MATHJAX_VERSION it is possible to specify the MathJax version to be used.
 # Note that the different versions of MathJax have different requirements with
@@ -2363,7 +2386,8 @@ INCLUDE_FILE_PATTERNS  =
 # recursively expanded use the := operator instead of the = operator.
 # This tag requires that the tag ENABLE_PREPROCESSING is set to YES.
 
-PREDEFINED             =
+PREDEFINED = DOXYGEN_SHOULD_SKIP_THIS
+PREDEFINED += LIBSEMIGROUPS_PARSED_BY_DOXYGEN
 
 # If the MACRO_EXPANSION and EXPAND_ONLY_PREDEF tags are set to YES then this
 # tag can be used to specify a list of macro names that should be expanded. The
