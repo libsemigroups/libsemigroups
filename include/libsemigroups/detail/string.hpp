@@ -80,6 +80,19 @@ namespace libsemigroups {
   }
 
   namespace detail {
+    // FIXME test_action doesn't compile if the function below is not present,
+    // it complains that it doesn't know how to format PPerm's, I don't
+    // understand the issue
+    template <typename T>
+    std::ostream& operator<<(std::ostream& os, std::vector<T> const& vec) {
+      return ::libsemigroups::operator<<(os, vec);
+    }
+    // FIXME and test-knuth-bendix doesn't compile without this one
+    template <typename T, typename S>
+    std::ostream& operator<<(std::ostream& os, std::pair<T, S> const& p) {
+      return ::libsemigroups::operator<<(os, p);
+    }
+
     static inline size_t unicode_string_length(std::string const& s) {
       size_t count = 0;
       for (auto p = s.cbegin(); *p != 0; ++p) {
@@ -89,10 +102,6 @@ namespace libsemigroups {
     }
 
     // Returns a string representing an object of type \c T.
-    //
-    // It appears that GCC 4.9.1 (at least) does not have std::to_string
-    // implemented, so we implement our own. This requires the operator \c <<
-    // to be implemented for an \c ostringstream& and const T& element.
     template <typename T>
     std::string to_string(T const& n) {
       std::ostringstream stm;
@@ -204,13 +213,17 @@ namespace libsemigroups {
     }
 
     // Random string with length <length> over <alphabet>.
+    // TODO to words.hpp
     std::string random_string(std::string const& alphabet, size_t length);
 
     // Random string with random length in the range [min, max) over <alphabet>
+    // TODO to words.hpp
     std::string random_string(std::string const& alphabet,
                               size_t             min,
                               size_t             max);
 
+    // TODO to words.hpp
+    // TODO change to a range object
     std::vector<std::string> random_strings(std::string const& alphabet,
                                             size_t             number,
                                             size_t             min,
@@ -218,10 +231,10 @@ namespace libsemigroups {
 
     // Returns the string s to the power N, not optimized, complexity is O(N *
     // |s|)
+    // TODO move to words.hpp and/or remove
     std::string power_string(std::string const& s, size_t N);
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+
     std::string group_digits(int64_t num);
-#endif
     std::string signed_group_digits(int64_t num);
 
   }  // namespace detail
