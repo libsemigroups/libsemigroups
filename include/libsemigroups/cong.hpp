@@ -335,11 +335,11 @@ namespace libsemigroups {
                  && cong.get<KnuthBendix>()->finished()) {
         auto const& p       = cong.get<KnuthBendix>()->presentation();
         auto        strings = non_trivial_classes(*cong.get<KnuthBendix>(),
-                                           r | to_strings(p.alphabet()));
+                                           r | ToStrings(p.alphabet()));
         std::vector<std::vector<word_type>> result;
         for (auto const& klass : strings) {
           result.push_back(rx::iterator_range(klass.begin(), klass.end())
-                           | to_words(p.alphabet()) | rx::to_vector());
+                           | ToWords(p.alphabet()) | rx::to_vector());
         }
         return result;
       } else if (cong.has<Kambites<word_type>>()) {

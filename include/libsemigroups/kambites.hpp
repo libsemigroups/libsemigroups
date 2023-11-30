@@ -50,7 +50,7 @@
 #include "to-presentation.hpp"  // for to_presentation
 #include "types.hpp"            // for word_type, tril, letter_type
 #include "ukkonen.hpp"          // for Ukkonen
-#include "words.hpp"            // for to_strings
+#include "words.hpp"            // for ToStrings
 
 #include "detail/multi-string-view.hpp"  // for MultiStringView
 #include "detail/string.hpp"             // for is_prefix

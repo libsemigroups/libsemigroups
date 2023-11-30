@@ -143,7 +143,7 @@ namespace libsemigroups {
         std::vector<std::vector<word_type>> result;
         for (auto const& klass : strings) {
           result.push_back(rx::iterator_range(klass.begin(), klass.end())
-                           | to_words(kb.presentation().alphabet())
+                           | ToWords(kb.presentation().alphabet())
                            | rx::to_vector());
         }
         return result;
@@ -171,7 +171,7 @@ namespace libsemigroups {
         std::vector<std::vector<std::string>> result;
         for (auto const& klass : words) {
           result.push_back(rx::iterator_range(klass.begin(), klass.end())
-                           | to_strings(p.alphabet()) | rx::to_vector());
+                           | ToStrings(p.alphabet()) | rx::to_vector());
         }
         return result;
       }

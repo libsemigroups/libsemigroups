@@ -556,7 +556,7 @@ namespace libsemigroups {
     mutable std::string _current;
     mutable bool        _current_valid;
     std::string         _letters;
-    ToWord              _string_to_word;
+    ToWord              _to_word;
     Words               _words;
 
     void init_current() const {
@@ -611,7 +611,7 @@ namespace libsemigroups {
 
     Strings& first(std::string const& frst) {
       _current_valid = false;
-      _words.first(_string_to_word(frst));
+      _words.first(_to_word(frst));
       return *this;
     }
 
@@ -621,7 +621,7 @@ namespace libsemigroups {
 
     Strings& last(std::string const& lst) {
       _current_valid = false;
-      _words.last(_string_to_word(lst));
+      _words.last(_to_word(lst));
       return *this;
     }
 
@@ -672,7 +672,7 @@ namespace libsemigroups {
     void swap(Strings& that) noexcept;
 
     word_type to_word(std::string const& x) const {
-      return _string_to_word(x);
+      return _to_word(x);
     }
   };
 
@@ -683,12 +683,12 @@ namespace libsemigroups {
   // The next class is a custom combinator for rx::ranges to convert the output
   // of a Strings object into words
   template <typename = void>
-  struct to_words {
-    to_words() = default;
+  struct ToWords {
+    ToWords() = default;
 
-    explicit to_words(std::string const& lttrs) : _letters(lttrs) {}
-    explicit to_words(std::string&& lttrs) : _letters(std::move(lttrs)) {}
-    explicit to_words(char const* lttrs) : _letters(lttrs) {}
+    explicit ToWords(std::string const& lttrs) : _letters(lttrs) {}
+    explicit ToWords(std::string&& lttrs) : _letters(std::move(lttrs)) {}
+    explicit ToWords(char const* lttrs) : _letters(lttrs) {}
 
     std::string _letters;
 
@@ -700,16 +700,16 @@ namespace libsemigroups {
       static constexpr bool is_idempotent = true;
 
       InputRange _input;
-      ToWord     _string_to_word;
+      ToWord     _to_word;
 
-      explicit constexpr Range(InputRange&& input, to_words t_wrds) noexcept
-          : _input(std::move(input)), _string_to_word(t_wrds._letters) {}
+      explicit constexpr Range(InputRange&& input, ToWords t_wrds) noexcept
+          : _input(std::move(input)), _to_word(t_wrds._letters) {}
 
       explicit constexpr Range(Strings const& input)
-          : _input(input), _string_to_word(input.letters()) {}
+          : _input(input), _to_word(input.letters()) {}
 
       [[nodiscard]] output_type get() const noexcept {
-        return _string_to_word(_input.get());
+        return _to_word(_input.get());
       }
 
       constexpr void next() noexcept {
@@ -741,10 +741,10 @@ namespace libsemigroups {
   // The next class is a custom combinator for rx::ranges to convert the output
   // of a Words object into strings
   template <typename = void>
-  struct to_strings {
-    explicit to_strings(std::string const& lttrs) : _letters(lttrs) {}
-    explicit to_strings(std::string&& lttrs) : _letters(std::move(lttrs)) {}
-    explicit to_strings(char const* lttrs) : _letters(lttrs) {}
+  struct ToStrings {
+    explicit ToStrings(std::string const& lttrs) : _letters(lttrs) {}
+    explicit ToStrings(std::string&& lttrs) : _letters(std::move(lttrs)) {}
+    explicit ToStrings(char const* lttrs) : _letters(lttrs) {}
 
     std::string _letters;
 
@@ -756,9 +756,9 @@ namespace libsemigroups {
       static constexpr bool is_idempotent = true;
 
       InputRange _input;
-      to_strings _to_string;
+      ToStrings _to_string;
 
-      constexpr Range(InputRange input, to_strings t_strng) noexcept
+      constexpr Range(InputRange input, ToStrings t_strng) noexcept
           : _input(std::move(input)), _to_string(std::move(t_strng)) {}
 
       [[nodiscard]] output_type get() const noexcept {

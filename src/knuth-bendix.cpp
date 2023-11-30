@@ -38,7 +38,7 @@
 #include "libsemigroups/runner.hpp"        // for Runner
 #include "libsemigroups/types.hpp"         // for word_type
 #include "libsemigroups/word-graph.hpp"    // for WordGraph
-#include "libsemigroups/words.hpp"         // for to_strings
+#include "libsemigroups/words.hpp"         // for ToStrings
 
 #include "libsemigroups/detail/multi-string-view.hpp"  // for is_prefix, maximum_common_prefix
 #include "libsemigroups/detail/report.hpp"  // for Reporter, REPORT_DEFAULT, REP...
@@ -1393,7 +1393,7 @@ namespace libsemigroups {
                                     .second
                                 != path.cend();
                        })
-                       | to_strings(kb2.presentation().alphabet())));
+                       | ToStrings(kb2.presentation().alphabet())));
       // The check in the next loop could be put into the lambda passed to
       // filter above, but then we'd have to convert `path` to a string, and
       // then discard the string, so better to do it here. Note that the

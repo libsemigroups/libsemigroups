@@ -477,7 +477,7 @@ namespace libsemigroups {
     _current.clear();
     _current_valid = false;
     _letters.clear();
-    _string_to_word.clear();
+    _to_word.clear();
     _words.init();
     return *this;
   }
@@ -492,7 +492,7 @@ namespace libsemigroups {
     _current_valid = false;
     _words.letters(x.size());
     _letters = x;
-    _string_to_word.init(x);
+    _to_word.init(x);
     return *this;
   }
 
@@ -500,7 +500,7 @@ namespace libsemigroups {
     std::swap(_current, that._current);
     std::swap(_current_valid, that._current_valid);
     std::swap(_letters, that._letters);
-    std::swap(_string_to_word, that._string_to_word);
+    std::swap(_to_word, that._to_word);
     std::swap(_words, that._words);
   }
 

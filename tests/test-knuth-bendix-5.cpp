@@ -191,7 +191,7 @@ namespace libsemigroups {
 
     auto words = (S.normal_forms()
                   | rx::transform([](auto const& w) { return 2_w + w; })
-                  | to_strings(q.alphabet()));
+                  | ToStrings(q.alphabet()));
     REQUIRE((words | rx::count()) == 88);
     REQUIRE((words | rx::take(4) | rx::to_vector())
             == std::vector<std::string>({"ca", "cb", "caa", "cab"}));
@@ -300,7 +300,7 @@ namespace libsemigroups {
 
     REQUIRE(
         (knuth_bendix::normal_forms(kb)
-         | to_strings(kb.presentation().alphabet()) | to_vector())
+         | ToStrings(kb.presentation().alphabet()) | to_vector())
         == std::vector<std::string>(
             {"",        "a",       "b",       "aa",      "ab",      "ba",
              "bb",      "aaa",     "aab",     "aba",     "abb",     "baa",
@@ -318,7 +318,7 @@ namespace libsemigroups {
 
     REQUIRE(kb.rewrite("baaabb") == "baaab");
 
-    auto nf = (S.normal_forms() | to_strings(kb.presentation().alphabet()));
+    auto nf = (S.normal_forms() | ToStrings(kb.presentation().alphabet()));
     REQUIRE((nf | count()) == 88);
     auto pp = partition(kb, nf);
     REQUIRE(pp.size() == 72);
@@ -441,7 +441,7 @@ namespace libsemigroups {
     REQUIRE(kb.number_of_classes() == 69);
 
     auto nf1 = (knuth_bendix::normal_forms(kb).min(1)
-                | to_strings(kb.presentation().alphabet()) | to_vector());
+                | ToStrings(kb.presentation().alphabet()) | to_vector());
 
     REQUIRE(nf1
             == std::vector<std::string>(
@@ -463,7 +463,7 @@ namespace libsemigroups {
       return kb.normal_form(w) == w;
     }));
 
-    auto nf = S.normal_forms() | to_strings(kb.presentation().alphabet())
+    auto nf = S.normal_forms() | ToStrings(kb.presentation().alphabet())
               | take(S.size());
     auto result   = kb.gilman_graph();
     auto expected = to_word_graph<size_t>(

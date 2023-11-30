@@ -522,7 +522,7 @@ namespace libsemigroups {
                                          "bba",
                                          "bbb"}));
 
-    REQUIRE((strings | to_words() | to_vector())
+    REQUIRE((strings | ToWords() | to_vector())
             == std::vector<word_type>({0_w,
                                        00_w,
                                        000_w,
@@ -616,7 +616,7 @@ namespace libsemigroups {
     Words words;
     words.letters(1).min(0).max(10);
 
-    auto w = (words | to_strings("a"));
+    auto w = (words | ToStrings("a"));
     REQUIRE((w | count()) == 10);
     REQUIRE((w | to_vector())
             == std::vector<std::string>({"",
@@ -630,7 +630,7 @@ namespace libsemigroups {
                                          "aaaaaaaa",
                                          "aaaaaaaaa"}));
     words.min(2).max(4);
-    REQUIRE((words | to_strings("b") | to_vector())
+    REQUIRE((words | ToStrings("b") | to_vector())
             == std::vector<std::string>({"bb", "bbb"}));
   }
 
