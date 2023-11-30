@@ -36,7 +36,7 @@ namespace libsemigroups {
                           "000",
                           "step_hen Stephen test case 001",
                           "[cutting][quick]") {
-    ToWord           to_word("xX");
+    ToWord                         to_word("xX");
     InversePresentation<word_type> p;
     p.alphabet(to_word("xX"));
     p.inverses(to_word("Xx"));
@@ -51,7 +51,7 @@ namespace libsemigroups {
                           "001",
                           "step_hen Stephen test case 002",
                           "[cutting][quick]") {
-    ToWord           to_word("xyXY");
+    ToWord                         to_word("xyXY");
     InversePresentation<word_type> p;
     p.alphabet(to_word("xyXY"));
     p.inverses(to_word("XYxy"));
@@ -68,7 +68,7 @@ namespace libsemigroups {
                           "002",
                           "step_hen Stephen test case 004",
                           "[cutting][quick]") {
-    ToWord           to_word("xyzXYZ");
+    ToWord                         to_word("xyzXYZ");
     InversePresentation<word_type> p;
     p.alphabet(to_word("xyzXYZ"));
     p.inverses(to_word("XYZxyz"));
@@ -143,7 +143,7 @@ namespace libsemigroups {
                           "cyclic inverse monoid",
                           "[cutting][quick]") {
     size_t                         n = 6;
-    ToWord           to_word("egGx");
+    ToWord                         to_word("egGx");
     InversePresentation<word_type> p;
     p.alphabet(to_word("egG"));
     p.inverses(to_word("eGg"));
@@ -165,7 +165,7 @@ namespace libsemigroups {
                           "007",
                           "step_hen Stephen test case 003",
                           "[cutting][quick]") {
-    ToWord           to_word("xyXY");
+    ToWord                         to_word("xyXY");
     InversePresentation<word_type> p;
     p.alphabet(to_word("xyXY"));
     p.inverses(to_word("XYxy"));
@@ -182,7 +182,7 @@ namespace libsemigroups {
                           "008",
                           "step_hen Stephen test case 005",
                           "[cutting][quick]") {
-    ToWord           to_word("xeXE");
+    ToWord                         to_word("xeXE");
     InversePresentation<word_type> p;
     p.alphabet(to_word("xeXE"));
     p.inverses(to_word("XExe"));
@@ -198,7 +198,7 @@ namespace libsemigroups {
                           "009",
                           "step_hen Stephen test case 006",
                           "[cutting][quick]") {
-    ToWord           to_word("abcABC");
+    ToWord                         to_word("abcABC");
     InversePresentation<word_type> p;
     p.contains_empty_word(true);
     p.alphabet(to_word("abcABC"));

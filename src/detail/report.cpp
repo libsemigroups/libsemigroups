@@ -18,6 +18,7 @@
 
 #include "libsemigroups/detail/report.hpp"
 
+#include <atomic>
 #include <unordered_set>  // for unordered_set
 
 #include "libsemigroups/debug.hpp"  // for LIBSEMIGROUPS_ASSERT

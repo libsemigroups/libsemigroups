@@ -357,8 +357,8 @@ namespace libsemigroups {
       if (u.number_of_distinct_words() == 0) {
         LIBSEMIGROUPS_EXCEPTION("expected at least 1 word, found 0");
       }
-      static const std::vector<std::array<char const*, 24>> colors = {
-          {"#00ff00"},
+      static constexpr std::array<std::array<char const*, 24>, 24> colors = {
+          std::array<char const*, 24>({"#00ff00"}),
           {"#00ff00", "#ff00ff"},
           {"#00ff00", "#ff00ff", "#007fff"},
           {"#00ff00", "#ff00ff", "#007fff", "#ff7f00"},
@@ -553,23 +553,25 @@ namespace libsemigroups {
            "#de0328", "#19801d", "#d881f5", "#00ffff", "#ffff00", "#00ff7f",
            "#ad5867", "#85f610", "#84e9f5", "#f5c778", "#207090", "#764ef3",
            "#7b4c00", "#0000ff", "#b80c9a", "#601045", "#29b7c0", "#839f12"}};
-      if (u.number_of_distinct_words() > colors.size()) {
+      if (u.number_of_distinct_words() >= colors.size()) {
         LIBSEMIGROUPS_EXCEPTION("expected at most {} words, found {}",
                                 colors.size(),
                                 u.number_of_distinct_words());
       }
-
+      LIBSEMIGROUPS_ASSERT(colors.size() == 24);
       std::string  result = "digraph {\nordering=\"out\"\n";
       auto const&  nodes  = u.nodes();
       size_t const n      = u.number_of_distinct_words();
       for (size_t i = 0; i < nodes.size(); ++i) {
         auto color_index = (i == 0 ? 0 : u.word_index(nodes[i]));
+        LIBSEMIGROUPS_ASSERT(color_index < colors[n].size());
         result += std::to_string(i) + "[shape=box, width=.5, color=\""
                   + colors[n][color_index] + "\"]\n";
         for (auto const& child : nodes[i].children) {
           auto const& l = nodes[child.second].l;
           auto const& r = nodes[child.second].r;
-          color_index   = u.word_index(nodes[child.second]);
+          LIBSEMIGROUPS_ASSERT(color_index < colors[n].size());
+          color_index = u.word_index(nodes[child.second]);
           result += std::to_string(i) + "->" + std::to_string(child.second)
                     + "[color=\"" + colors[n][color_index] + "\" label=\"["
                     + std::to_string(l) + "," + std::to_string(r)

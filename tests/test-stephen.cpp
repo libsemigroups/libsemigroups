@@ -497,16 +497,16 @@ namespace libsemigroups {
     REQUIRE(S.word_graph().number_of_nodes() == 9);
     REQUIRE(stephen::number_of_words_accepted(S) == 8);
 
-    REQUIRE((stephen::words_accepted(S) | ToStrings(p.alphabet())
-             | rx::to_vector())
-            == std::vector<std::string>({"dfcef",
-                                         "dfceg",
-                                         "dgcef",
-                                         "dgceg",
-                                         "dfabcdf",
-                                         "dfabcdg",
-                                         "dgabcdf",
-                                         "dgabcdg"}));
+    REQUIRE(
+        (stephen::words_accepted(S) | ToStrings(p.alphabet()) | rx::to_vector())
+        == std::vector<std::string>({"dfcef",
+                                     "dfceg",
+                                     "dgcef",
+                                     "dgceg",
+                                     "dfabcdf",
+                                     "dfabcdg",
+                                     "dgabcdf",
+                                     "dgabcdg"}));
 
     REQUIRE((stephen::words_accepted(S) | rx::sort(LexicographicalCompare())
              | rx::take(1) | ToStrings(p.alphabet()))
@@ -542,8 +542,8 @@ namespace libsemigroups {
                                          "cegceg"}));
 
     REQUIRE(ToStrings(p.alphabet())(stephen::words_accepted(S)
-                                     | rx::sort(LexicographicalCompare())
-                                     | rx::take(1))
+                                    | rx::sort(LexicographicalCompare())
+                                    | rx::take(1))
                 .get()
             == "abcdfabcdf");
     REQUIRE(stephen::accepts(S, "abcdfabcdf"_w));
@@ -684,7 +684,7 @@ namespace libsemigroups {
     presentation::add_rule(p, "ei", "j");
 
     verify_c4_equal_to(p, "afdj", "bgdj");
-    verify_c4_not_equal_to(p, "xxxxxxxxxxxxxxxxxxxxxxx", "b");
+    verify_c4_not_equal_to(p, "jjjjjjjjjjjjjjjjjjjjjjj", "b");
   }
 
   LIBSEMIGROUPS_TEST_CASE("Stephen",

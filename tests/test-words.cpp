@@ -26,7 +26,7 @@
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
 #include "libsemigroups/order.hpp"   // for number_of_words
-#include "libsemigroups/ranges.hpp"  // for number_of_words
+#include "libsemigroups/ranges.hpp"  // for equals
 #include "libsemigroups/types.hpp"   // for word_type
 #include "libsemigroups/words.hpp"   // for number_of_words
 
@@ -42,17 +42,44 @@ namespace libsemigroups {
     REQUIRE(number_of_words(2, 4, 1) == 0);
     REQUIRE(number_of_words(2, 4, 4) == 0);
     REQUIRE(number_of_words(2, 4, 2) == 0);
+    REQUIRE(3 == number_of_words(1, 1, 4));
   }
 
-  LIBSEMIGROUPS_TEST_CASE("string_to_word", "001", "", "[quick]") {
-    ToWord string_to_word("BCA");
-    REQUIRE(string_to_word("BCABACB") == word_type({0, 1, 2, 0, 2, 1, 0}));
-    REQUIRE(string_to_word("B") == word_type({0}));
-    REQUIRE(string_to_word("C") == word_type({1}));
-    REQUIRE(string_to_word("A") == word_type({2}));
+  LIBSEMIGROUPS_TEST_CASE("ToWord", "001", "", "[quick]") {
+    {
+      ToWord toword("BCA");
+      REQUIRE(!toword.empty());
+      REQUIRE(toword("BCABACB") == 0120210_w);
+      REQUIRE(toword("B") == 0_w);
+      REQUIRE(toword("C") == 1_w);
+      REQUIRE(toword("A") == 2_w);
+
+      REQUIRE_THROWS_AS(toword.init("aa"), LibsemigroupsException);
+      REQUIRE_THROWS_AS(toword.init("XX"), LibsemigroupsException);
+      REQUIRE_THROWS_AS(toword.init(std::string(256, 'a')),
+                        LibsemigroupsException);
+
+      REQUIRE(toword("BCABACB") == 0120210_w);
+      REQUIRE(toword("B") == 0_w);
+      REQUIRE(toword("C") == 1_w);
+      REQUIRE(toword("A") == 2_w);
+    }
+    {
+      ToWord toword("bac");
+      REQUIRE(toword("bac") == 012_w);
+      REQUIRE(toword("bababbbcbcbaac") == 01010002020112_w);
+      REQUIRE(to_string("bac", toword("bababbbcbcbaac")) == "bababbbcbcbaac");
+      REQUIRE(toword(to_string("bac", 01010002020112_w)) == 01010002020112_w);
+    }
+    std::string output;
+    to_string("bac", 012101_w, output);
+    REQUIRE(output == "bacaba");
   }
 
-  LIBSEMIGROUPS_TEST_CASE("operator\"\" _w", "002", "literal", "[quick]") {
+  LIBSEMIGROUPS_TEST_CASE("operator\"\" _w",
+                          "002",
+                          "literal",
+                          "[quick][Words]") {
     REQUIRE(0120210_w == word_type({0, 1, 2, 0, 2, 1, 0}));
     REQUIRE(0_w == word_type({0}));
     REQUIRE(1_w == word_type({1}));
@@ -86,6 +113,12 @@ namespace libsemigroups {
                                        111_w}));
     REQUIRE(w.size() == 14);
     REQUIRE(std::is_sorted(w.cbegin(), w.cend(), ShortLexCompare()));
+
+    Words words;
+    words.first(first).last(last);
+    REQUIRE(words.count() == 0);
+    words.letters(2);
+    REQUIRE(words.count() == 14);
   }
 
   LIBSEMIGROUPS_TEST_CASE("Words", "004", "corner cases", "[wislo][quick]") {
@@ -439,6 +472,38 @@ namespace libsemigroups {
     REQUIRE(words.last() == 0000000000000000000000000000_w);
 
     REQUIRE(words.count() == 27);
+
+    REQUIRE_THROWS_AS(words.order(Order::none), LibsemigroupsException);
+    REQUIRE_THROWS_AS(words.order(Order::recursive), LibsemigroupsException);
+
+    Words copy;
+    copy.operator=(words);
+    REQUIRE(equal(words, copy));
+    REQUIRE(copy.upper_bound() == 28);
+    REQUIRE(copy.first() == 0_w);
+    REQUIRE(copy.last() == 0000000000000000000000000000_w);
+    REQUIRE(copy.count() == 27);
+
+    Words move;
+    move.operator=(std::move(words));
+    REQUIRE(equal(copy, move));
+    REQUIRE(move.upper_bound() == 28);
+    REQUIRE(move.first() == 0_w);
+    REQUIRE(move.last() == 0000000000000000000000000000_w);
+    REQUIRE(move.count() == 27);
+    REQUIRE(move.letters() == 2);
+
+    Words more;
+    REQUIRE(more.at_end());
+    REQUIRE_NOTHROW(more.next());
+    REQUIRE(more.get() == ""_w);
+    REQUIRE(more.letters() == 0);
+    REQUIRE(more.order() == Order::shortlex);
+    REQUIRE(more.is_finite);
+    REQUIRE(more.is_idempotent);
+    REQUIRE(more.size_hint() == 0);
+    REQUIRE(more.count() == 0);
+    REQUIRE(equal(more, move.init()));
   }
 
   LIBSEMIGROUPS_TEST_CASE("Strings",
@@ -639,7 +704,8 @@ namespace libsemigroups {
                           "shortlex | corner cases",
                           "[shortlex][quick]") {
     Strings strings;
-    strings.last("").first("bbaaab");
+    // TODO first and last throw if they contain letters not in the alphabet
+    strings.letters("ab").last("").first("bbaaab");
 
     REQUIRE((strings | count()) == 0);
 
@@ -792,7 +858,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Words",
-                          "048",
+                          "031",
                           "operator+",
                           "[quick][word_functions]") {
     using namespace literals;
@@ -808,7 +874,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Words",
-                          "047",
+                          "032",
                           "operator+=",
                           "[quick][word_functions]") {
     using namespace literals;
@@ -823,7 +889,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Words",
-                          "049",
+                          "033",
                           "pow",
                           "[quick][word_functions][no-coverage][no-valgrind]") {
     using namespace literals;
@@ -843,7 +909,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Words",
-                          "046",
+                          "034",
                           "pow_inplace",
                           "[quick][word_functions][no-coverage][no-valgrind]") {
     using namespace literals;
@@ -875,7 +941,7 @@ namespace libsemigroups {
     REQUIRE(a == "aaaaa");
   }
 
-  LIBSEMIGROUPS_TEST_CASE("Words", "050", "prod", "[quick][word_functions]") {
+  LIBSEMIGROUPS_TEST_CASE("Words", "035", "prod", "[quick][word_functions]") {
     using namespace literals;
     using words::prod;
     word_type eps = 012345_w;
@@ -899,6 +965,42 @@ namespace libsemigroups {
 
     REQUIRE(prod(eps, 2, -1, -1) == "210"_w);
     REQUIRE(prod(eps, -1, -2, -1) == "5"_w);
+  }
+
+  TEST_CASE("random_word", "[036][Words][quick]") {
+    auto w = random_word(10, 3);
+    REQUIRE(w.size() == 10);
+    REQUIRE(
+        std::all_of(w.begin(), w.end(), [](auto const& x) { return x < 3; }));
+  }
+
+  TEST_CASE("human_readable_index", "[037][quick][Words]") {
+    std::array<uint8_t, 255> result;
+    std::iota(result.begin(), result.end(), 0);
+    auto expected = result;
+
+    std::for_each(result.begin(), result.end(), [](auto& val) {
+      val = human_readable_index(val);
+    });
+    std::for_each(result.begin(), result.end(), [](auto& val) {
+      val = human_readable_char(val);
+    });
+    REQUIRE(result == expected);
+
+    std::for_each(result.begin(), result.end(), [](auto& val) {
+      val = human_readable_char(val);
+    });
+    std::for_each(result.begin(), result.end(), [](auto& val) {
+      val = human_readable_index(val);
+    });
+    REQUIRE(result == expected);
+
+    REQUIRE_THROWS_AS(human_readable_char(1'000), LibsemigroupsException);
+  }
+
+  TEST_CASE("to_word", "[038][quick][Words]") {
+    REQUIRE(to_word("abc") == 012_w);
+    REQUIRE(to_word("ABC") == word_type({26, 27, 28}));
   }
 
 }  // namespace libsemigroups

@@ -637,11 +637,8 @@ EXTRA_DIST += LICENSE
 EXTRA_DIST += README.rst
 EXTRA_DIST += .VERSION
 EXTRA_DIST += docs
-EXTRA_DIST += etc/make-doc-sphinx.sh
-EXTRA_DIST += etc/make-doc-yml.sh
 EXTRA_DIST += etc/make-format.sh
 EXTRA_DIST += etc/make-lint.sh
-EXTRA_DIST += etc/post-proc-doc.sh
 EXTRA_DIST += etc/version-number.sh
 EXTRA_DIST += extern/HPCombi/VERSION
 EXTRA_DIST += tests/catch.hpp
@@ -1102,8 +1099,7 @@ endif
 	etc/version-number.sh > .TMP_VERSION && mv .TMP_VERSION .VERSION
 
 clean-local:
-	rm -rf docs/build
-	rm -rf docs/source/_generated
+	rm -rf docs/html
 	rm -rf coverage/
 	rm -f bench_*
 	rm -f test_*
@@ -1150,12 +1146,5 @@ lint:
 	@echo "Running cpplint . . .";
 	@etc/make-lint.sh
 
-doc-yml:
-	@etc/make-doc-yml.sh
-
-doc-sphinx:
-	@etc/make-doc-sphinx.sh
-
 doc:
-	$(MAKE) doc-yml
-	$(MAKE) doc-sphinx
+	cd docs && doxygen

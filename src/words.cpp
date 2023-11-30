@@ -21,11 +21,14 @@
 
 #include "libsemigroups/words.hpp"
 
-#include <iostream>
-
 #include <algorithm>    // for lexicographical_...
+#include <cctype>       // for isalpha, isdigit
 #include <cmath>        // for pow
 #include <cstring>      // for strlen
+#include <limits>       // for iota
+#include <numeric>      // for iota
+#include <random>       // for std::mt19937
+#include <stack>        // for iota
 #include <string>       // for allocator
 #include <type_traits>  // for is_destructible
 #include <utility>      // for move
@@ -38,13 +41,18 @@
 #include "libsemigroups/presentation.hpp"  // for index
 #include "libsemigroups/types.hpp"         // for word_type
 
-#include "libsemigroups/detail/report.hpp"  // for magic_enum formatting
+#include "libsemigroups/detail/formatters.hpp"  // for magic_enum formatting
 
-#include "rx/ranges.hpp"  // for count, operator|
+#include <rx/ranges.hpp>  // for count, operator|
 
 namespace libsemigroups {
+  ////////////////////////////////////////////////////////////////////////
+  // 0. Implementational details
+  ////////////////////////////////////////////////////////////////////////
+
   namespace {
     uint64_t geometric_progression(size_t n, size_t a, size_t r) {
+      LIBSEMIGROUPS_ASSERT(r != 1);  // to avoid division by 0
       return a * ((1 - std::pow(r, n)) / (1 - static_cast<float>(r)));
     }
 
@@ -68,7 +76,6 @@ namespace libsemigroups {
         }
       }
       input_copy += input[len - 1];
-      // std::cout << input_copy << std::endl;
 
       std::string      output;
       std::stack<char> ops;
@@ -170,82 +177,34 @@ namespace libsemigroups {
 
   }  // namespace
 
+  ////////////////////////////////////////////////////////////////////////
+  // 1. Words
+  ////////////////////////////////////////////////////////////////////////
+
   uint64_t number_of_words(size_t n, size_t min, size_t max) {
     if (max <= min) {
       return 0;
+    } else if (n == 1) {
+      return max - min;
     }
+
     return geometric_progression(max, 1, n) - geometric_progression(min, 1, n);
   }
 
-  void to_string(std::string const& alphabet,
-                 word_type const&   input,
-                 std::string&       output) {
-    output.clear();
-    output.reserve(input.size());
-    for (auto const x : input) {
-      output.push_back(alphabet[x]);
+  word_type random_word(size_t length, size_t nr_letters) {
+    static std::random_device rd;
+    std::mt19937              mt(rd());
+
+    if (nr_letters == 0) {
+      LIBSEMIGROUPS_EXCEPTION(
+          "the 2nd argument (number of letters) must be non-zero, found 0");
     }
+
+    std::uniform_int_distribution<uint64_t> dist(0, nr_letters - 1);
+    word_type                               out(length);
+    std::generate(out.begin(), out.end(), [&dist, &mt]() { return dist(mt); });
+    return out;
   }
-
-  void ToWord::operator()(std::string const& input, word_type& output) const {
-    output.clear();
-    output.reserve(input.size());
-    for (auto const& c : input) {
-      output.push_back(_lookup[c]);
-    }
-  }
-
-  word_type ToWord::operator()(std::string const& input) const {
-    word_type output;
-    operator()(input, output);
-    return output;
-  }
-
-  namespace literals {
-    word_type operator"" _w(char const* w, size_t n) {
-      word_type result;
-#if LIBSEMIGROUPS_DEBUG
-      static const std::string valid_chars = "0123456789";
-#endif
-      // 0 is unset, 1 is reading integers, 2 is parsing a string
-      int mode = 0;
-      for (size_t i = 0; i < n; ++i) {
-        if (48 <= w[i] && w[i] < 58) {
-          if (mode == 0) {
-            mode = 1;
-          } else if (mode == 2) {
-            LIBSEMIGROUPS_EXCEPTION("cannot mix numbers and letters, expected "
-                                    "digits in 0123456789, found {}",
-                                    w[i]);
-          }
-          LIBSEMIGROUPS_ASSERT(valid_chars.find(w[i]) != std::string::npos);
-          result.push_back(static_cast<letter_type>(w[i] - 48));
-        } else {
-          if (mode == 0) {
-            mode = 2;
-          } else if (mode == 1) {
-            LIBSEMIGROUPS_EXCEPTION("cannot mix numbers and letters, expected "
-                                    "digits in 0123456789, found {}",
-                                    w[i]);
-          }
-          result.push_back(human_readable_index(w[i]));
-        }
-      }
-      return result;
-    }
-
-    word_type operator"" _w(const char* w) {
-      return operator"" _w(w, std::strlen(w));
-    }
-
-    std::string operator""_p(char const* w, size_t n) {
-      return evaluate_rpn(shunting_yard(w, n));
-    }
-
-    std::string operator""_p(char const* w) {
-      return operator""_p(w, std::strlen(w));
-    }
-  }  // namespace literals
 
   const_wilo_iterator::const_wilo_iterator() = default;
   const_wilo_iterator::const_wilo_iterator(const_wilo_iterator const&)
@@ -473,36 +432,9 @@ namespace libsemigroups {
     return *this;
   }
 
-  Strings& Strings::init() {
-    _current.clear();
-    _current_valid = false;
-    _letters.clear();
-    _to_word.clear();
-    _words.init();
-    return *this;
-  }
-
-  Strings::Strings(Strings const&)            = default;
-  Strings::Strings(Strings&&)                 = default;
-  Strings& Strings::operator=(Strings const&) = default;
-  Strings& Strings::operator=(Strings&&)      = default;
-  Strings::~Strings()                         = default;
-
-  Strings& Strings::letters(std::string const& x) {
-    _current_valid = false;
-    _words.letters(x.size());
-    _letters = x;
-    _to_word.init(x);
-    return *this;
-  }
-
-  void Strings::swap(Strings& that) noexcept {
-    std::swap(_current, that._current);
-    std::swap(_current_valid, that._current_valid);
-    std::swap(_letters, that._letters);
-    std::swap(_to_word, that._to_word);
-    std::swap(_words, that._words);
-  }
+  ////////////////////////////////////////////////////////////////////////
+  // 2. Strings -> Words
+  ////////////////////////////////////////////////////////////////////////
 
   namespace {
     std::string const& chars_in_human_readable_order() {
@@ -532,8 +464,89 @@ namespace libsemigroups {
       }
       return letters;
     }
-
   }  // namespace
+
+  size_t human_readable_index(char c) {
+    static bool first_call = true;
+    // It might be preferable to use an array here but char is sometimes signed
+    // and so chars[i] can be negative in the loop below.
+    static std::unordered_map<Presentation<std::string>::letter_type,
+                              Presentation<word_type>::letter_type>
+        map;
+    if (first_call) {
+      first_call        = false;
+      auto const& chars = chars_in_human_readable_order();
+      for (letter_type i = 0; i < chars.size(); ++i) {
+        map.emplace(chars[i], i);
+      }
+    }
+    LIBSEMIGROUPS_ASSERT(map.size() == 255);
+
+    auto it = map.find(c);
+    if (it == map.cend()) {
+      LIBSEMIGROUPS_EXCEPTION(
+          "unexpected character, cannot convert \'{}\' to a letter_type", c);
+    }
+    return it->second;
+  }
+
+  void to_word(word_type& w, std::string const& s) {
+    w.resize(s.size(), 0);
+    std::transform(s.cbegin(), s.cend(), w.begin(), [](char c) {
+      return human_readable_index(c);
+    });
+  }
+
+  word_type to_word(std::string const& s) {
+    word_type w;
+    to_word(w, s);
+    return w;
+  }
+
+  ToWord& ToWord::init(std::string const& alphabet) {
+    if (alphabet.size() >= 256) {
+      LIBSEMIGROUPS_EXCEPTION("The argument (alphabet) is too big, expected at "
+                              "most 256, found {}",
+                              alphabet.size());
+    }
+    auto _old_lookup = _lookup;
+    init();
+    _lookup.back() = alphabet.size();
+    for (letter_type l = 0; l < alphabet.size(); ++l) {
+      if (_lookup[alphabet[l]] != UNDEFINED) {
+        _lookup = _old_lookup;  // strong exception guarantee
+        LIBSEMIGROUPS_EXCEPTION(
+            "The argument (alphabet) contains \'{}\' more than once!",
+            alphabet[l]);
+      }
+      _lookup[alphabet[l]] = l;
+    }
+    return *this;
+  }
+
+  void ToWord::operator()(std::string const& input, word_type& output) const {
+    output.clear();
+    output.reserve(input.size());
+    for (auto const& c : input) {
+      if (_lookup[c] == UNDEFINED) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "the 1st argument (input string) contains the letter \'{}\' that "
+            "does not belong to the alphabet!",
+            c);
+      }
+      output.push_back(_lookup[c]);
+    }
+  }
+
+  word_type ToWord::operator()(std::string const& input) const {
+    word_type output;
+    operator()(input, output);
+    return output;
+  }
+
+  ////////////////////////////////////////////////////////////////////////
+  // 3. Words -> Strings
+  ////////////////////////////////////////////////////////////////////////
 
   char human_readable_char(size_t i) {
     using letter_type = typename Presentation<std::string>::letter_type;
@@ -551,40 +564,89 @@ namespace libsemigroups {
     return chars_in_human_readable_order()[i];
   }
 
-  size_t human_readable_index(char c) {
-    static bool first_call = true;
-    static std::unordered_map<Presentation<std::string>::letter_type,
-                              Presentation<word_type>::letter_type>
-        map;
-    if (first_call) {
-      first_call        = false;
-      auto const& chars = chars_in_human_readable_order();
-      for (letter_type i = 0; i < chars.size(); ++i) {
-        map.emplace(chars[i], i);
+  ////////////////////////////////////////////////////////////////////////
+  // 4. Strings
+  ////////////////////////////////////////////////////////////////////////
+
+  Strings& Strings::init() {
+    _current.clear();
+    _current_valid = false;
+    _letters.clear();
+    _to_word.init();
+    _words.init();
+    return *this;
+  }
+
+  Strings::Strings(Strings const&)            = default;
+  Strings::Strings(Strings&&)                 = default;
+  Strings& Strings::operator=(Strings const&) = default;
+  Strings& Strings::operator=(Strings&&)      = default;
+  Strings::~Strings()                         = default;
+
+  Strings& Strings::letters(std::string const& x) {
+    _current_valid = false;
+    _words.letters(x.size());
+    _letters = x;
+    _to_word.init(x);
+    return *this;
+  }
+
+  void Strings::swap(Strings& that) noexcept {
+    std::swap(_current, that._current);
+    std::swap(_current_valid, that._current_valid);
+    std::swap(_letters, that._letters);
+    std::swap(_to_word, that._to_word);
+    std::swap(_words, that._words);
+  }
+
+  ////////////////////////////////////////////////////////////////////////
+  ////////////////////////////////////////////////////////////////////////
+
+  namespace literals {
+    word_type operator"" _w(char const* w, size_t n) {
+      word_type result;
+#ifdef LIBSEMIGROUPS_DEBUG
+      static const std::string valid_chars = "0123456789";
+#endif
+      // 0 is unset, 1 is reading integers, 2 is parsing a string
+      int mode = 0;
+      for (size_t i = 0; i < n; ++i) {
+        if (48 <= w[i] && w[i] < 58) {
+          if (mode == 0) {
+            mode = 1;
+          } else if (mode == 2) {
+            LIBSEMIGROUPS_EXCEPTION("cannot mix numbers and letters, expected "
+                                    "digits in 0123456789, found {}",
+                                    w[i]);
+          }
+          LIBSEMIGROUPS_ASSERT(valid_chars.find(w[i]) != std::string::npos);
+          result.push_back(static_cast<letter_type>(w[i] - 48));
+        } else {
+          if (mode == 0) {
+            mode = 2;
+          } else if (mode == 1) {
+            LIBSEMIGROUPS_EXCEPTION("cannot mix numbers and letters, expected "
+                                    "digits in 0123456789, found {}",
+                                    w[i]);
+          }
+          result.push_back(human_readable_index(w[i]));
+        }
       }
+      return result;
     }
 
-    auto it = map.find(c);
-    if (it == map.cend()) {
-      LIBSEMIGROUPS_EXCEPTION(
-          "unexpected character, cannot convert \'{}\' to a letter_type", c);
+    word_type operator"" _w(const char* w) {
+      return operator"" _w(w, std::strlen(w));
     }
 
-    return it->second;
-  }
+    std::string operator""_p(char const* w, size_t n) {
+      return evaluate_rpn(shunting_yard(w, n));
+    }
 
-  void to_word(word_type& w, std::string const& s) {
-    w.resize(s.size(), 0);
-    std::transform(s.cbegin(), s.cend(), w.begin(), [](char c) {
-      return human_readable_index(c);
-    });
-  }
-
-  word_type to_word(std::string const& s) {
-    word_type w;
-    to_word(w, s);
-    return w;
-  }
+    std::string operator""_p(char const* w) {
+      return operator""_p(w, std::strlen(w));
+    }
+  }  // namespace literals
 
   // The following functions belong to the words namespace so as to only have
   // them apply when explicitly wanted.
