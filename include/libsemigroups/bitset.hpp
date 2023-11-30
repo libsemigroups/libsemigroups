@@ -133,11 +133,10 @@ namespace libsemigroups {
       LIBSEMIGROUPS_ASSERT(first <= last);
       size_t const K = std::distance(first, last);
       if (K > size()) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "the size of the container is %llu, trying to initialize with %llu "
-            "items",
-            static_cast<uint64_t>(size()),
-            static_cast<uint64_t>(K))
+        LIBSEMIGROUPS_EXCEPTION("the size of the container is {}, trying to "
+                                "initialize with {} items",
+                                size(),
+                                K)
       }
       auto it = first;
       for (size_t i = 0; i < K; ++i, ++it) {

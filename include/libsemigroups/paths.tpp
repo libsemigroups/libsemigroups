@@ -552,8 +552,8 @@ namespace libsemigroups {
       if (topo.empty()) {
         // Can't topologically sort, so the digraph contains cycles.
         LIBSEMIGROUPS_EXCEPTION("the subdigraph induced by the nodes reachable "
-                                "from %llu is not acyclic",
-                                static_cast<uint64_t>(source));
+                                "from {} is not acyclic",
+                                source);
       } else if (topo.size() <= min) {
         // There are fewer than `min` nodes reachable from source, and so there
         // are no paths of length `min` or greater
@@ -601,8 +601,8 @@ namespace libsemigroups {
       if (topo.empty()) {
         // Can't topologically sort, so the digraph contains cycles.
         LIBSEMIGROUPS_EXCEPTION("the subdigraph induced by the nodes reachable "
-                                "from %llu is not acyclic",
-                                static_cast<uint64_t>(source));
+                                "from {} is not acyclic",
+                                source);
       } else if ((max == 1 && source != target)
                  || (min != 0 && source == target)) {
         return 0;

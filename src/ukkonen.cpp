@@ -554,9 +554,9 @@ namespace libsemigroups {
            "#ad5867", "#85f610", "#84e9f5", "#f5c778", "#207090", "#764ef3",
            "#7b4c00", "#0000ff", "#b80c9a", "#601045", "#29b7c0", "#839f12"}};
       if (u.number_of_distinct_words() > colors.size()) {
-        LIBSEMIGROUPS_EXCEPTION("expected at most %llu words, found %llu",
-                                uint64_t(colors.size()),
-                                uint64_t(u.number_of_distinct_words()));
+        LIBSEMIGROUPS_EXCEPTION("expected at most {} words, found {}",
+                                colors.size(),
+                                u.number_of_distinct_words());
       }
 
       std::string  result = "digraph {\nordering=\"out\"\n";

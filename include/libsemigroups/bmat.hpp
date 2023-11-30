@@ -117,9 +117,9 @@ namespace libsemigroups {
       size_t const N   = value_type().size();
       if (x.number_of_rows() > N) {
         LIBSEMIGROUPS_EXCEPTION(
-            "expected matrix of dimension at most %llu, found %llu",
-            static_cast<uint64_t>(N),
-            static_cast<uint64_t>(x.number_of_rows()));
+            "expected matrix of dimension at most {}, found {}",
+            N,
+            x.number_of_rows());
       }
       res.clear();
       for (size_t i = 0; i < x.number_of_rows(); ++i) {

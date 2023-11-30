@@ -225,8 +225,8 @@ namespace libsemigroups {
   void Kambites<Word>::validate_small_overlap_class() {
     if (small_overlap_class() < 4) {
       LIBSEMIGROUPS_EXCEPTION(
-          "small overlap class must be at least 4, but found %llu",
-          uint64_t(small_overlap_class()));
+          "small overlap class must be at least 4, but found {}",
+          small_overlap_class());
     }
   }
 

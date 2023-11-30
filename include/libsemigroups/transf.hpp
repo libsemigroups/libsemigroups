@@ -729,7 +729,7 @@ namespace libsemigroups {
                               SFINAE> {
         if (cont.size() != std::tuple_size<container_type>::value) {
           LIBSEMIGROUPS_EXCEPTION(
-              "incorrect container size, expected %llu, found %llu",
+              "incorrect container size, expected {}, found {}",
               uint64_t(std::tuple_size<container_type>::value),
               uint64_t(cont.size()));
         }
@@ -1000,7 +1000,7 @@ namespace libsemigroups {
       // being less than 0
       if (val >= M && val != UNDEFINED) {
         LIBSEMIGROUPS_EXCEPTION("image value out of bounds, expected value in "
-                                "[%llu, %llu), found %llu",
+                                "[{}, {}), found {}",
                                 uint64_t(0),
                                 uint64_t(M),
                                 uint64_t(val));
@@ -1205,7 +1205,7 @@ namespace libsemigroups {
     for (auto const& val : x) {
       if (val >= M) {
         LIBSEMIGROUPS_EXCEPTION("image value out of bounds, expected value in "
-                                "[%llu, %llu), found %llu",
+                                "[{}, {}), found {}",
                                 uint64_t(0),
                                 uint64_t(M),
                                 uint64_t(val));
@@ -1576,7 +1576,7 @@ namespace libsemigroups {
         // Sanity check that the final argument is compatible with the
         // template param N, if we have a dynamic pperm
         LIBSEMIGROUPS_EXCEPTION(
-            "the 3rd argument is not valid, expected %llu, found %llu",
+            "the 3rd argument is not valid, expected {}, found {}",
             uint64_t(N),
             uint64_t(deg));
       } else if (dom.size() != ran.size()) {
@@ -1584,13 +1584,13 @@ namespace libsemigroups {
         // constructor that uses *this[dom[i]] = im[i] for i = 0, ...,
         // dom.size() - 1.
         LIBSEMIGROUPS_EXCEPTION("domain and range size mismatch, domain has "
-                                "size %llu but range has size %llu",
+                                "size {} but range has size {}",
                                 uint64_t(dom.size()),
                                 uint64_t(ran.size()));
       } else if (!(dom.empty()
                    || deg > *std::max_element(dom.cbegin(), dom.cend()))) {
         LIBSEMIGROUPS_EXCEPTION(
-            "domain value out of bounds, found %llu, must be less than %llu",
+            "domain value out of bounds, found {}, must be less than {}",
             uint64_t(*std::max_element(dom.cbegin(), dom.cend())),
             uint64_t(deg));
       }
@@ -1640,8 +1640,8 @@ namespace libsemigroups {
         if (*it != UNDEFINED) {
           if (present[*it]) {
             LIBSEMIGROUPS_EXCEPTION(
-                "duplicate image value, found %llu in position %llu, first "
-                "occurrence in position %llu",
+                "duplicate image value, found {} in position {}, first "
+                "occurrence in position {}",
                 uint64_t(*it),
                 std::distance(x.begin(), it),
                 std::distance(x.begin(), std::find(x.begin(), it, *it)));
@@ -2056,9 +2056,9 @@ namespace libsemigroups {
     void operator()(BitSet<M>& res, Transf<N, Scalar> const& x) const {
       if (x.degree() > M) {
         LIBSEMIGROUPS_EXCEPTION(
-            "expected a transformation of degree at most %llu, found %llu",
-            static_cast<uint64_t>(M),
-            static_cast<uint64_t>(x.degree()));
+            "expected a transformation of degree at most {}, found {}",
+            M,
+            x.degree());
       }
       res.reset();
       for (size_t i = 0; i < x.degree(); ++i) {
@@ -2272,7 +2272,7 @@ namespace libsemigroups {
     void operator()(BitSet<M>& res, PPerm<N, Scalar> const& x) const {
       if (x.degree() > M) {
         LIBSEMIGROUPS_EXCEPTION(
-            "expected partial perm of degree at most %llu, found %llu",
+            "expected partial perm of degree at most {}, found {}",
             static_cast<uint64_t>(M),
             static_cast<uint64_t>(x.degree()));
       }
@@ -2296,9 +2296,9 @@ namespace libsemigroups {
     void operator()(BitSet<M>& res, PPerm<N, Scalar> const& x) const {
       if (x.degree() > M) {
         LIBSEMIGROUPS_EXCEPTION(
-            "expected partial perm of degree at most %llu, found %llu",
-            static_cast<uint64_t>(M),
-            static_cast<uint64_t>(x.degree()));
+            "expected partial perm of degree at most {}, found {}",
+            M,
+            x.degree());
       }
       static PPerm<N, Scalar> xx({});
       x.inverse(xx);

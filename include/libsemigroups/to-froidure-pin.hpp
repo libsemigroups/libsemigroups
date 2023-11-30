@@ -75,22 +75,22 @@ namespace libsemigroups {
     using node_type = typename WordGraph<Node>::node_type;
 
     if (first > last) {
-      LIBSEMIGROUPS_EXCEPTION("the 2nd argument (size_t) must be at most the"
-                              " 3rd argument (size_t), found %llu > %llu",
+      LIBSEMIGROUPS_EXCEPTION("the 2nd argument (first node) must be at most "
+                              "the 3rd argument (last node), found {} > {}",
                               first,
                               last);
     } else if (first > ad.number_of_nodes()) {
-      LIBSEMIGROUPS_EXCEPTION("the 2nd argument (size_t) must be at most the "
-                              "out-degree of the 1st argument (WordGraph), "
-                              "found %llu > %llu",
-                              first,
-                              ad.out_degree());
+      LIBSEMIGROUPS_EXCEPTION(
+          "the 2nd argument (first node) must be at most the out-degree of the "
+          "1st argument (WordGraph), found {} > {}",
+          first,
+          ad.out_degree());
     } else if (last > ad.number_of_nodes()) {
-      LIBSEMIGROUPS_EXCEPTION("the 3rd argument (size_t) must be at most the "
-                              "out-degree of the 1st argument (WordGraph), "
-                              "found %llu > %llu",
-                              last,
-                              ad.out_degree());
+      LIBSEMIGROUPS_EXCEPTION(
+          "the 3rd argument (last node) must be at most the out-degree of the "
+          "1st argument (WordGraph), found {} > {}",
+          last,
+          ad.out_degree());
     }
 
     LIBSEMIGROUPS_ASSERT(ad.out_degree() > 0);
