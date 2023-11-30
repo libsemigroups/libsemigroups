@@ -1,0 +1,40 @@
+libsemigroups::StaticPTransf:
+- Member types:
+  - value_type
+  - container_type
+  - const_iterator
+  - iterator
+- Constructors:
+  - StaticPTransf(size_t)
+- Static member functions:
+  - identity() const
+  - identity(size_t)
+  - make(TContainerAgain &&)
+  - make(std::initializer_list< value_type > const &)
+- Modifiers:
+  - increase_degree_by(size_t)
+  - swap(PTransfBase &) noexcept
+- Iterators:
+  - begin() noexcept
+  - end() noexcept
+  - cbegin() const noexcept
+  - cend() const noexcept
+  - begin() const noexcept
+  - end() const noexcept
+- Operators:
+  - operator>(PTransfBase const &) const
+  - operator<(PTransfBase const &) const
+  - operator==(PTransfBase const &) const
+  - operator<=(PTransfBase const &) const
+  - operator>=(PTransfBase const &) const
+  - operator!=(PTransfBase const &) const
+  - operator[](size_t)
+  - operator[](size_t) const
+  - at(size_t)
+  - at(size_t) const
+  - operator*(TSubclass const &) const
+- Other member functions:
+  - rank() const
+  - hash_value() const
+  - degree() const noexcept
+  - undef() noexcept

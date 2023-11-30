@@ -1,0 +1,37 @@
+libsemigroups::PBR:
+- Member types:
+  - ["This page lists the member types of :cpp:any:`PBR`."]
+  - vector_type
+  - initializer_list_type
+- Friends:
+  - ["This page lists the friend functions of :cpp:any:`PBR`."]
+  - operator<<(std::ostringstream &,PBR const &)
+  - operator<<(std::ostream &,PBR const &)
+- Constructors:
+  - ["This page lists the constructors of :cpp:any:`PBR`."]
+  - PBR(initializer_list_type<uint32_t>)
+  - PBR(vector_type<uint32_t>)
+  - PBR(size_t)
+  - PBR(initializer_list_type<int32_t>,initializer_list_type<int32_t>)
+  - PBR(vector_type<int32_t>,vector_type<int32_t>)
+  - PBR() = delete
+  - PBR(PBR const &) = default
+  - PBR(PBR &&) = default
+  - operator=(PBR const &) = default
+  - operator=(PBR &&) = default
+- Static member functions:
+  - ["This page lists the static member functions of :cpp:any:`PBR`."]
+  - identity() const
+  - identity(size_t)
+  - make(T...)
+  - make(initializer_list_type<uint32_t>)
+  - make(initializer_list_type<int32_t>,initializer_list_type<int32_t>)
+- Member functions:
+  - ["This page lists the member functions of :cpp:any:`PBR`."]
+  - degree() const noexcept
+  - product_inplace(PBR const &,PBR const &,size_t)
+  - operator==(PBR const &) const
+  - operator<(PBR const &) const
+  - operator[](size_t)
+  - operator[](size_t) const
+  - hash_value() const

@@ -1,0 +1,44 @@
+libsemigroups::Blocks:
+- Member types:
+  - ["This page contains information about the member types of the
+     :cpp:any:`Blocks` class."]
+  - lookup_const_iterator
+  - iterator
+  - const_iterator
+- Constructors:
+  - ["This page contains information about the constructors for the
+     :cpp:any:`Blocks` class."]
+  - Blocks() noexcept = default
+  - Blocks(const_iterator,const_iterator)
+  - Blocks(size_t)
+  - operator=(Blocks const&) = default
+  - operator=(Blocks&&) = default
+  - Blocks(Blocks&&) = default
+  - Blocks(Blocks const&) = default
+- Initialisation:
+  - ["This page contains information about the member functions of the
+     :cpp:any:`Blocks` class that can be used for initialisation."]
+  - set_is_transverse_block(size_t, bool)
+  - set_block(size_t, uint32_t)
+- Operators:
+  - ["This page contains information about the comparison operators for the
+     :cpp:any:`Blocks` class."]
+  - operator==(Blocks const&) const
+  - operator!=(Blocks const&) const
+  - operator<(Blocks const&) const
+  - operator[](size_t) const
+- Attributes:
+  - ["This page contains information about attributes of the
+     :cpp:any:`Blocks` class."]
+  - degree() const noexcept
+  - is_transverse_block(size_t) const noexcept
+  - number_of_blocks() const noexcept
+  - rank() const
+  - hash_value() const noexcept
+- Iterators:
+  - ["This page contains information about iterators for the
+      :cpp:any:`Blocks` class."]
+  - cbegin() const noexcept
+  - cend() const noexcept
+  - cbegin_lookup() const noexcept
+  - cend_lookup() const noexcept

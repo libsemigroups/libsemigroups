@@ -1,0 +1,19 @@
+libsemigroups::Ukkonen::State:
+- Data members:
+  - ["This page contains information about the data members for the
+     :cpp:any:`Ukkonen::State` struct."]
+  - v
+  - pos
+- Constructors:
+  - ["This page contains information about the constructors for the
+     :cpp:any:`Ukkonen::State` struct."]
+  - State() = default
+  - State(State const &) = default
+  - State(State &&) = default
+  - State(node_index_type,edge_index_type)
+  - operator=(State const &) = default
+  - operator=(State &&) = default
+- Operators:
+  - ["This page contains information about the member functions of the
+     :cpp:any:`Ukkonen::State` struct."]
+  - operator==(State const &) const noexcept

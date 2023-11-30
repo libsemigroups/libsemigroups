@@ -1,0 +1,14 @@
+libsemigroups::SchreierSimsTraits:
+- Stateful type aliases:
+  - index_type
+  - domain_type
+  - element_type
+  - point_type
+- Stateless type aliases:
+  - Action
+  - Degree
+  - EqualTo
+  - Inverse
+  - One
+  - Product
+  - Swap

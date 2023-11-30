@@ -1,0 +1,7 @@
+libsemigroups::ActionTraits:
+- Type aliases:
+  - Hash
+  - EqualTo
+  - One
+  - Product
+  - Swap

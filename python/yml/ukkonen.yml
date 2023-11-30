@@ -1,0 +1,66 @@
+libsemigroups::Ukkonen:
+- Constructors:
+  - ["This page contains information about the constructors for the
+     :cpp:any:`Ukkonen` class."]
+  - Ukkonen()
+  - Ukkonen(Ukkonen const &) = default
+  - Ukkonen(Ukkonen &&) = default
+  - operator=(Ukkonen const &) = default
+  - operator=(Ukkonen &&) = default
+- Member types:
+  - ["This page contains information about the member types of the
+     :cpp:any:`Ukkonen` class."]
+  - unique_letter_type
+  - word_index_type
+  - const_iterator
+  - index_type 
+- Initialisation:
+  - ["This page contains information about the member functions for the
+     :cpp:any:`Ukkonen` class related to initialisation."]
+  - add_word_no_checks(const_iterator,const_iterator)
+  - add_word_no_checks(word_type const &)
+  - add_word_no_checks(Iterator,Iterator)
+  - add_word_no_checks(Word const &)
+  - add_word_no_checks(char const *)
+  - add_word(const_iterator,const_iterator)
+  - add_word(word_type const &)
+  - add_word(Iterator,Iterator)
+  - add_word(Word const &)
+  - add_word(char const *)
+- Attributes:
+  - ["This page contains information about the member functions for querying
+     the attributes of an instance of the :cpp:any:`Ukkonen` class."]
+  - nodes() const noexcept
+  - number_of_distinct_words() const noexcept
+  - length_of_distinct_words() const noexcept
+  - length_of_words() const noexcept
+  - number_of_words() const noexcept
+  - max_word_length() const noexcept
+- Iterators:
+  - ["This page contains information about the member functions for iterators
+     in the :cpp:any:`Ukkonen` class."]
+  - begin() const noexcept
+  - cbegin() const noexcept
+  - end() const noexcept
+  - cend() const noexcept
+- Validation:
+  - ["This page contains information about the member functions for validating words
+     in the :cpp:any:`Ukkonen` class."]
+  - validate_word(word_type const &) const
+  - validate_word(Iterator,Iterator) const
+- Other member functions:
+  - ["This page contains information about the remaining member functions of
+    the :cpp:any:`Ukkonen` class."]
+  - word_index(Node const &) const
+  - word_index(index_type) const
+  - distance_from_root(Node const &) const
+  - is_suffix(State const &) const
+  - unique_letter(word_index_type) const noexcept
+  - multiplicity(word_index_type) const
+  - index_no_checks(Iterator,Iterator) const
+  - index(Iterator,Iterator) const
+  - is_unique_letter(letter_type) const noexcept
+  - traverse_no_checks(State &,Iterator,Iterator) const
+  - traverse_no_checks(Iterator,Iterator) const
+  - traverse(State &,Iterator,Iterator) const
+  - traverse(Iterator,Iterator) const

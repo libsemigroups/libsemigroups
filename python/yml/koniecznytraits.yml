@@ -1,0 +1,20 @@
+libsemigroups::KoniecznyTraits:
+- Member types:
+  - element_type
+  - lambda_value_type
+  - lambda_orb_type
+  - rank_state_type
+  - rho_value_type
+  - rho_orb_type
+  - const_element_type
+- Adapters:
+  - Degree
+  - ElementHash
+  - EqualTo
+  - Lambda
+  - Less
+  - One
+  - Product
+  - Rank
+  - Rho
+  - Swap

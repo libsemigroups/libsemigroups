@@ -1,0 +1,91 @@
+libsemigroups::Congruence:
+- Member types:
+  - ["This page contains information about the member types of the
+     :cpp:any:`Congruence` class."]
+  - options
+  - options::runners
+  - class_index_type
+  - non_trivial_classes_type
+  - non_trivial_class_iterator
+  - const_iterator
+- Constructors:
+  - ["This page contains information about the constructors for the
+     :cpp:any:`Congruence` class."]
+  - Congruence(congruence_kind, options::runners)
+  - Congruence(congruence_kind, T const&)
+  - Congruence(congruence_kind, std::shared_ptr<FroidurePinBase>)
+  - Congruence(congruence_kind, FpSemigroup&)
+- Deleted constructors:
+  - ["This page lists the deleted constructors of the
+     :cpp:any:`Congruence` class."]
+  - Congruence() = delete
+  - Congruence(Congruence const&) = delete
+  - Congruence(Congruence&&) = delete
+  - operator=(Congruence&&) = delete
+  - operator=(Congruence const&) = delete
+- Member functions:
+  - ["This page lists the member functions of the
+     :cpp:any:`Congruence` class that are not present in its base classes
+     :cpp:any:`Runner` and :cpp:any:`CongruenceInterface`."]
+  - add_runner(T const&)
+  - has_todd_coxeter() const
+  - todd_coxeter() const
+  - has_knuth_bendix() const
+  - knuth_bendix() const
+  - has_kambites() const
+  - kambites() const
+  - max_threads() const noexcept
+  - max_threads(size_t) noexcept
+- Member functions inherited from CongruenceInterface:
+  - ["This page contains a description of the member functions of the
+     :cpp:any:`Congruence` class inherited from
+     :cpp:any:`CongruenceInterface`."]
+  - set_number_of_generators(size_t)
+  - kind() const noexcept
+  - quotient_froidure_pin()
+  - has_quotient_froidure_pin() const noexcept
+  - parent_froidure_pin() const
+  - has_parent_froidure_pin() const noexcept
+  - is_quotient_obviously_finite()
+  - is_quotient_obviously_infinite()
+  - number_of_generators() const noexcept
+  - number_of_generating_pairs() const noexcept
+  - cbegin_generating_pairs() const noexcept
+  - cend_generating_pairs() const noexcept
+  - cbegin_ntc()
+  - cend_ntc()
+  - add_pair(std::initializer_list<size_t>, std::initializer_list<size_t>)
+  - add_pair(word_type const&, word_type const&)
+  - less(word_type const&, word_type const&)
+  - const_contains(word_type const&, word_type const&) const override
+  - contains(word_type const&, word_type const&) override
+  - number_of_classes()
+  - number_of_non_trivial_classes()
+  - non_trivial_classes()
+  - word_to_class_index(word_type const&)
+  - class_index_to_word(class_index_type)
+  - parent_fpsemigroup() const
+  - has_parent_fpsemigroup() const noexcept
+- Member functions inherited from Runner:
+  - ["This page contains a description of the member functions of the
+     :cpp:any:`Congruence` class inherited from :cpp:any:`Runner`."]
+  - dead() const noexcept
+  - finished() const
+  - started() const
+  - stopped() const
+  - timed_out() const
+  - running() const noexcept
+  - stopped_by_predicate() const
+  - kill() noexcept
+  - run()
+  - run_for(std::chrono::nanoseconds)
+  - run_for(TIntType)
+  - run_until(T&&)
+  - run_until(bool(*)())
+  - report_every(TIntType)
+  - report_every(std::chrono::nanoseconds)
+  - report_every() const noexcept
+  - report() const
+  - report_why_we_stopped() const
+  - running_for() const noexcept
+  - running_until() const noexcept
