@@ -33,7 +33,6 @@
 #include <cstdint>           // for uint64_t, uint8_t
 #include <initializer_list>  // for initializer_list
 #include <iterator>          // for distance
-#include <random>            // for std::mt19937
 #include <string>            // for basic_string
 #include <type_traits>       // for decay_t
 #include <utility>           // for forward
@@ -728,15 +727,43 @@ namespace libsemigroups {
       return *this;
     }
 
+    //! \brief Returns an input iterator pointing to the first word in the
+    //! range.
+    //!
+    //! This function returns an input iterator pointing to the first word in
+    //! a Words object.
+    //!
+    //! \returns An input iterator.
+    //!
+    //! \exception
+    //! \noexcept
+    //!
+    //! \note The return type of \ref end might be different from the return
+    //! type of \ref begin.
+    //!
+    //! \sa \ref end.
     // REQUIRED so that we can use Strings in range based loops
-    // TODO doc
-    auto begin() const {
+    auto begin() const noexcept {
       return rx::begin(*this);
     }
 
+    //! \brief Returns an input iterator pointing one beyond the last word in
+    //! the range.
+    //!
+    //! This function returns an input iterator pointing one beyond the last
+    //! word in a Words object.
+    //!
+    //! \returns An input iterator.
+    //!
+    //! \exception
+    //! \noexcept
+    //!
+    //! \note The return type of \ref end might be different from the return
+    //! type of \ref begin.
+    //!
+    //! \sa \ref begin.
     // REQUIRED so that we can use Strings in range based loops
-    // TODO doc
-    auto end() const {
+    auto end() const noexcept {
       return rx::end(*this);
     }
   };
@@ -745,12 +772,18 @@ namespace libsemigroups {
   // Strings -> Words
   ////////////////////////////////////////////////////////////////////////
 
-  // Choose visible characters a-zA-Z0-9 first before anything else
-  // The ascii ranges for these characters are: [97, 123), [65, 91),
-  // [48, 58) so the remaining range of chars that are appended to the end
-  // after these chars are [0,48), [58, 65), [91, 97), [123, 255)
-  // The inverse of human_readable_char
-  // TODO doc
+  //! \ingroup Words
+  //! \brief Returns the index of a character in human readable order.
+  //!
+  //! This function is the inverse of \ref human_readable_char, see the
+  //! documentation of that function for more details.
+  //!
+  //! \param c character whose index is sought.
+  //!
+  //! \exception
+  //! \no_libsemigroups_except
+  //!
+  //! \returns A value of type \ref letter_type.
   [[nodiscard]] letter_type human_readable_index(char c);
 
   //! \ingroup Words
@@ -797,7 +830,6 @@ namespace libsemigroups {
   //! * literals::operator""_w
   [[nodiscard]] word_type to_word(std::string const& s);
 
-  // TODO doc, check args etc
   //! \ingroup Words
   //! \brief Class for converting strings to word_type with specified alphabet.
   //!
@@ -885,13 +917,9 @@ namespace libsemigroups {
     //! \param input the string to convert
     //! \param output word to hold the result
     //!
-    //! \exception
-    //! \no_libsemigroups_except
-    //!
-    //! \warning No checks on the arguments are performed, if \p input contains
-    //! letters that do not correspond to letters of the alphabet used to define
-    //! an instance of ToWord, then these letters are mapped to UNDEFINED.
-    // FIXME update this comment to \throws LibsemigroupsException
+    //! \throws LibsemigroupsException
+    //! If \p input contains any letters that letters that do not correspond to
+    //! letters of the alphabet used to define an instance of ToWord.
     //!
     //! \sa
     //! * to_word
@@ -928,13 +956,23 @@ namespace libsemigroups {
   // Words -> Strings
   ////////////////////////////////////////////////////////////////////////
 
-  // TODO doc
-  // Returns the i-th human readable char.
-  // Choose visible characters a-zA-Z0-9 first before anything else
-  // The ascii ranges for these characters are: [97, 123), [65, 91),
-  // [48, 58) so the remaining range of chars that are appended to the end
-  // after these chars are [0,48), [58, 65), [91, 97), [123, 255)
-  // The inverse of human_readable_index
+  //! \ingroup Words
+  //! \brief Returns a character by index in human readable order.
+  //!
+  //! This function exists to map the numbers \c 0 to \c 254 to the possible
+  //! values of a \c char, in such a way that the first characters are \c
+  //! a-zA-Z0-9 The ascii ranges for these characters are: \f$[97, 123)\f$,
+  //! \f$[65, 91)\f$, \f$[48, 58)\f$ so the remaining range of chars that are
+  //! appended to the end after these chars are \f$[0,48)\f$, \f$[58, 65)\f$,
+  //! \f$[91, 97)\f$, \f$[123, 255)\f$.
+  //!
+  //! This function is the inverse of \ref human_readable_letter.
+  //!
+  //! \param i the index of the character.
+  //!
+  //! \returns A value of type \c char.
+  //!
+  //! \throws LibsemigroupsException if \p i exceeds the number of characters.
   [[nodiscard]] char human_readable_char(size_t i);
 
   //! \ingroup Words

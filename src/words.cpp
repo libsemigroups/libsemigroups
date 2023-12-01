@@ -483,10 +483,9 @@ namespace libsemigroups {
     LIBSEMIGROUPS_ASSERT(map.size() == 255);
 
     auto it = map.find(c);
-    if (it == map.cend()) {
-      LIBSEMIGROUPS_EXCEPTION(
-          "unexpected character, cannot convert \'{}\' to a letter_type", c);
-    }
+    // There are only 255 chars and so it shouldn't be possible that <c> is not
+    // in the map.
+    LIBSEMIGROUPS_ASSERT(it != map.cend());
     return it->second;
   }
 
