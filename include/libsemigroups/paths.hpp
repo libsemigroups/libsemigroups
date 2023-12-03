@@ -100,14 +100,11 @@ namespace libsemigroups {
     std::vector<node_type> _nodes;
 
    public:
-    // None of the constructors are noexcept because the corresponding
-    // constructors for std::vector aren't (until C++17).
-    // TODO revise previous statement and the noexcept specifications below
-    const_pilo_iterator();
+    const_pilo_iterator() noexcept;
     const_pilo_iterator(const_pilo_iterator const&);
-    const_pilo_iterator(const_pilo_iterator&&);
+    const_pilo_iterator(const_pilo_iterator&&) noexcept;
     const_pilo_iterator& operator=(const_pilo_iterator const&);
-    const_pilo_iterator& operator=(const_pilo_iterator&&);
+    const_pilo_iterator& operator=(const_pilo_iterator&&) noexcept;
     ~const_pilo_iterator();
 
     const_pilo_iterator(WordGraph<node_type> const* ptr,
@@ -414,14 +411,11 @@ namespace libsemigroups {
     node_type              _target;
 
    public:
-    // None of the constructors are noexcept because the corresponding
-    // constructors for std::vector aren't (until C++17).
-    // TODO revisit noexcept specification
-    const_pstilo_iterator();
+    const_pstilo_iterator() noexcept;
     const_pstilo_iterator(const_pstilo_iterator const&);
-    const_pstilo_iterator(const_pstilo_iterator&&);
+    const_pstilo_iterator(const_pstilo_iterator&&) noexcept;
     const_pstilo_iterator& operator=(const_pstilo_iterator const&);
-    const_pstilo_iterator& operator=(const_pstilo_iterator&&);
+    const_pstilo_iterator& operator=(const_pstilo_iterator&&) noexcept;
     ~const_pstilo_iterator();
 
     const_pstilo_iterator(WordGraph<Node> const* ptr,

@@ -932,6 +932,7 @@ namespace libsemigroups {
 
       // None of the constructors are noexcept because the corresponding
       // constructors for std::vector aren't (until C++17).
+      // TODO add noexcept, in particular this class doesn't wrap any vectors!
       const_rule_iterator()                                      = default;
       const_rule_iterator(const_rule_iterator const&)            = default;
       const_rule_iterator(const_rule_iterator&&)                 = default;

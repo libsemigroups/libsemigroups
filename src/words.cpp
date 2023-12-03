@@ -206,14 +206,16 @@ namespace libsemigroups {
     return out;
   }
 
-  const_wilo_iterator::const_wilo_iterator() = default;
+  const_wilo_iterator::const_wilo_iterator() noexcept = default;
   const_wilo_iterator::const_wilo_iterator(const_wilo_iterator const&)
       = default;
-  const_wilo_iterator::const_wilo_iterator(const_wilo_iterator&&) = default;
+  const_wilo_iterator::const_wilo_iterator(const_wilo_iterator&&) noexcept
+      = default;
   const_wilo_iterator&
   const_wilo_iterator::operator=(const_wilo_iterator const&)
       = default;
-  const_wilo_iterator& const_wilo_iterator::operator=(const_wilo_iterator&&)
+  const_wilo_iterator&
+  const_wilo_iterator::operator=(const_wilo_iterator&&) noexcept
       = default;
   const_wilo_iterator::~const_wilo_iterator() = default;
 
@@ -305,14 +307,16 @@ namespace libsemigroups {
     return cend_wilo(n, upper_bound, word_type(), word_type(last));
   }
 
-  const_wislo_iterator::const_wislo_iterator() = default;
+  const_wislo_iterator::const_wislo_iterator() noexcept = default;
   const_wislo_iterator::const_wislo_iterator(const_wislo_iterator const&)
       = default;
-  const_wislo_iterator::const_wislo_iterator(const_wislo_iterator&&) = default;
+  const_wislo_iterator::const_wislo_iterator(const_wislo_iterator&&) noexcept
+      = default;
   const_wislo_iterator&
   const_wislo_iterator::operator=(const_wislo_iterator const&)
       = default;
-  const_wislo_iterator& const_wislo_iterator::operator=(const_wislo_iterator&&)
+  const_wislo_iterator&
+  const_wislo_iterator::operator=(const_wislo_iterator&&) noexcept
       = default;
   const_wislo_iterator::~const_wislo_iterator() = default;
 
@@ -489,7 +493,7 @@ namespace libsemigroups {
     return it->second;
   }
 
-  void to_word(word_type& w, std::string const& s) {
+  void to_word(std::string const& s, word_type& w) {
     w.resize(s.size(), 0);
     std::transform(s.cbegin(), s.cend(), w.begin(), [](char c) {
       return human_readable_index(c);
@@ -498,7 +502,7 @@ namespace libsemigroups {
 
   word_type to_word(std::string const& s) {
     word_type w;
-    to_word(w, s);
+    to_word(s, w);
     return w;
   }
 
@@ -512,6 +516,9 @@ namespace libsemigroups {
     init();
     _lookup.back() = alphabet.size();
     for (letter_type l = 0; l < alphabet.size(); ++l) {
+      LIBSEMIGROUPS_ASSERT(static_cast<size_t>(alphabet[l]) < _lookup.size());
+      // FIXME I think this has the same issue as human_readable_index, that
+      // chars can be negative, and so this will be bad!
       if (_lookup[alphabet[l]] != UNDEFINED) {
         _lookup = _old_lookup;  // strong exception guarantee
         LIBSEMIGROUPS_EXCEPTION(

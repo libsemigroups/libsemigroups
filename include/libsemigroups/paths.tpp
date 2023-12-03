@@ -34,7 +34,7 @@ namespace libsemigroups {
       = default;
 
   template <typename Node>
-  const_pilo_iterator<Node>::const_pilo_iterator() = default;
+  const_pilo_iterator<Node>::const_pilo_iterator() noexcept = default;
 
   template <typename Node>
   const_pilo_iterator<Node>&
@@ -43,11 +43,11 @@ namespace libsemigroups {
 
   template <typename Node>
   const_pilo_iterator<Node>&
-  const_pilo_iterator<Node>::operator=(const_pilo_iterator&&)
+  const_pilo_iterator<Node>::operator=(const_pilo_iterator&&) noexcept
       = default;
 
   template <typename Node>
-  const_pilo_iterator<Node>::const_pilo_iterator(const_pilo_iterator&&)
+  const_pilo_iterator<Node>::const_pilo_iterator(const_pilo_iterator&&) noexcept
       = default;
 
   template <typename Node>
@@ -199,7 +199,7 @@ namespace libsemigroups {
                 "forward iterator requires destructible");
 
   template <typename Node>
-  const_pstilo_iterator<Node>::const_pstilo_iterator() = default;
+  const_pstilo_iterator<Node>::const_pstilo_iterator() noexcept = default;
 
   template <typename Node>
   const_pstilo_iterator<Node>::const_pstilo_iterator(
@@ -207,7 +207,8 @@ namespace libsemigroups {
       = default;
 
   template <typename Node>
-  const_pstilo_iterator<Node>::const_pstilo_iterator(const_pstilo_iterator&&)
+  const_pstilo_iterator<Node>::const_pstilo_iterator(
+      const_pstilo_iterator&&) noexcept
       = default;
 
   template <typename Node>
@@ -217,7 +218,7 @@ namespace libsemigroups {
 
   template <typename Node>
   const_pstilo_iterator<Node>&
-  const_pstilo_iterator<Node>::operator=(const_pstilo_iterator&&)
+  const_pstilo_iterator<Node>::operator=(const_pstilo_iterator&&) noexcept
       = default;
 
   template <typename Node>

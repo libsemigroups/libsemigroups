@@ -16,13 +16,14 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include <algorithm>      // for find, is_sorted, sort
-#include <cstddef>        // for size_t
-#include <iterator>       // for distance
-#include <utility>        // for swap
-#include <vector>         // for vector
-                          //
-#include "catch.hpp"      // for REQUIRE etc
+#include <algorithm>  // for find, is_sorted, sort
+#include <cstddef>    // for size_t
+#include <iterator>   // for distance
+#include <utility>    // for swap
+#include <vector>     // for vector
+                      //
+#include "catch.hpp"  // for REQUIRE etc
+#include "libsemigroups/exception.hpp"
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
 #include "libsemigroups/order.hpp"   // for number_of_words
@@ -63,6 +64,7 @@ namespace libsemigroups {
       REQUIRE(toword("B") == 0_w);
       REQUIRE(toword("C") == 1_w);
       REQUIRE(toword("A") == 2_w);
+      REQUIRE_THROWS_AS(toword("z"), LibsemigroupsException);
     }
     {
       ToWord toword("bac");
@@ -863,14 +865,14 @@ namespace libsemigroups {
                           "[quick][word_functions]") {
     using namespace literals;
     using words::operator+;
-    word_type w = {0, 1};
-    word_type v = {2};
-    REQUIRE((w + v) == word_type({0, 1, 2}));
-    REQUIRE((w + v + w) == word_type({0, 1, 2, 0, 1}));
+    word_type w = 01_w;
+    word_type v = 2_w;
+    REQUIRE((w + v) == 012_w);
+    REQUIRE((w + v + w) == 01201_w);
 
-    REQUIRE((word_type({0, 1, 0}) + word_type({2})) == word_type({0, 1, 0, 2}));
-    REQUIRE((word_type({0}) + word_type({})) == word_type({0}));
-    REQUIRE((word_type({}) + word_type({0})) == word_type({0}));
+    REQUIRE((010_w + 2_w) == 0102_w);
+    REQUIRE((0_w + ""_w) == 0_w);
+    REQUIRE((""_w + 0_w) == 0_w);
   }
 
   LIBSEMIGROUPS_TEST_CASE("Words",
@@ -972,6 +974,7 @@ namespace libsemigroups {
     REQUIRE(w.size() == 10);
     REQUIRE(
         std::all_of(w.begin(), w.end(), [](auto const& x) { return x < 3; }));
+    REQUIRE_THROWS_AS(random_word(10, 0), LibsemigroupsException);
   }
 
   TEST_CASE("human_readable_index", "[037][quick][Words]") {
