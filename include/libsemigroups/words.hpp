@@ -1862,27 +1862,32 @@ namespace libsemigroups {
     // operator+=
     ////////////////////////////////////////////////////////////////////////
 
-    //! Concatenate a word/string with another word/string in-place.
+    //! \anchor operator_plus_equals
+    //! \brief Concatenate a word with another word in-place.
     //!
     //! Changes \c u to `u + w` in-place. See \ref operator_plus "operator+".
     //!
-    //! \param u a word or string
-    //! \param w a word or string
+    //! \param u a word
+    //! \param w a word
     //!
     //! \exception
-    //! \noexcept
+    //! \no_libsemigroups_except
     //!
     //! \sa \ref operator_plus "operator+"
     static inline void operator+=(word_type& u, word_type const& v) {
       u.insert(u.end(), v.cbegin(), v.cend());
     }
 
-    // TODO doc
+    //! \brief Concatenate a word and a letter in-place.
+    //!
+    //! See \ref operator_plus_equals "operator+=".
     inline void operator+=(word_type& u, letter_type a) {
       u.push_back(a);
     }
 
-    // TODO doc
+    //! \brief Concatenate a letter and a word in-place.
+    //!
+    //! See \ref operator_plus_equals "operator+=".
     inline void operator+=(letter_type a, word_type& u) {
       u.insert(u.begin(), a);
     }
@@ -1891,13 +1896,11 @@ namespace libsemigroups {
     // pow
     ////////////////////////////////////////////////////////////////////////
 
-#define ENABLE_IF_IS_WORD(Word)                                 \
-  typename = std::enable_if_t < std::is_same_v<Word, word_type> \
-             || std::is_same_v < Word,                          \
-  std::string >>
-    //! Take a power of a word.
+    //! \brief Power a word in-place.
     //!
-    //! Change the word/string \c w to its \c nth power, in-place.
+    //! Modify the Word \c w to contains its `n`th power.
+    //!
+    //! \tparam Word the type of the first parameter.
     //!
     //! \param w the word
     //! \param n the power
@@ -1906,18 +1909,22 @@ namespace libsemigroups {
     //! (None)
     //!
     //! \exception
-    //! \noexcept
+    //! \no_libsemigroups_except
     template <typename Word>
     void pow_inplace(Word& w, size_t n);
+    // No pow_inplace for string_view or initializer_list because there's no
+    // where to store the result.
 
-    //! Take a power of a word or string.
+    //! \brief Returns the power of a word.
     //!
-    //! Returns the word/string \c w to the power \p n.
+    //! Returns the Word \c w to the power \p n.
     //!
-    //! \param w a word or string
+    //! \tparam Word the type of the first parameter.
+    //!
+    //! \param w the word to power
     //! \param n the power
     //!
-    //! \returns A word_type
+    //! \returns A Word
     //!
     //! \exception
     //! \no_libsemigroups_except
@@ -1928,24 +1935,17 @@ namespace libsemigroups {
       return y;
     }
 
-    //! Take a power of a word.
+    //! \brief Returns the power of a word.
     //!
-    //! Returns the \c nth power of the word corresponding to the initializer
-    //! list \c ilist.
-    //!
-    //! \param ilist the initializer list
-    //! \param n the power
-    //!
-    //! \returns A \ref word_type or \ref std::string
-    //!
-    //! \exception
-    //! \noexcept
+    //! See pow(Word const&, size_t) for details.
     static inline word_type pow(std::initializer_list<letter_type> ilist,
                                 size_t                             n) {
       return pow(word_type(ilist), n);
     }
 
-    //! See \ref pow(Word const&, size_t)
+    //! \brief Returns the power of a string.
+    //!
+    //! See pow(Word const&, size_t) for details.
     static inline std::string pow(std::string_view w, size_t n) {
       return pow(std::string(w), n);
     }
@@ -1955,7 +1955,7 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////
 
     //! \anchor prod
-    //! Take a product from a collection of letters.
+    //! \brief Returns a product of letters or words.
     //!
     //! Let \p elts correspond to the ordered set \f$a_0, a_1, \ldots, a_{n -
     //! 1}\f$, \p first to \f$f\f$, \p last to \f$l\f$, and \p step to
@@ -1969,12 +1969,15 @@ namespace libsemigroups {
     //! analogously, where \f$k\f$ is the greatest positive integer such that
     //! \f$f + k s > l\f$.
     //!
+    //! \tparam Container the type of the 1st argument \c elts
+    //! \tparam Word the return type (defaults to Container).
+    //!
     //! \param elts the ordered set
     //! \param first the first index
     //! \param last the last index
     //! \param step the step
     //!
-    //! \return A \ref word_type or \ref std::string
+    //! \return A Word.
     //!
     //! \throws LibsemigroupsException if `step = 0`
     //! \throws LibsemigroupsException if \p elts is empty, but the specified
@@ -1983,44 +1986,46 @@ namespace libsemigroups {
     //! \par Examples
     //! \code
     //! word_type w = 012345_w
-    //! prod(w, 0, 5, 2)  // same as {0, 2, 4}
-    //! prod(w, 1, 9, 2)  // same as {1, 3, 5, 1}
-    //! prod(std::string("abcde"), 4, 1, -1)  // same as "edc"
+    //! prod(w, 0, 5, 2)         // {0, 2, 4}
+    //! prod(w, 1, 9, 2)         // {1, 3, 5, 1}
+    //! prod("abcde", 4, 1, -1)  // "edc"
+    //! prod({"aba", "xyz"}, 0, 4, 1) // "abaxyzabaxyz"
     //! \endcode
-    template <typename Container,
-              typename Word = Container,
-              ENABLE_IF_IS_WORD(Word)>
+    template <typename Container, typename Word = Container>
     Word prod(Container const& elts, int first, int last, int step = 1);
 
-    //! Returns the output of \c prod where \p elts is treated as a word_type
-    //! instead of a vector. See \ref prod "prod".
-    template <typename Word, ENABLE_IF_IS_WORD(Word)>
-    Word
-    prod(std::vector<Word> const& elts, int first, int last, int step = 1) {
-      return prod<std::vector<Word>, Word, void>(elts, first, last, step);
-    }
-
-    static inline word_type prod(std::initializer_list<word_type> const& elts,
-                                 int                                     first,
-                                 int                                     last,
-                                 int step = 1) {
-      return prod<std::vector<word_type>, word_type, void>(
-          std::vector<word_type>(elts), first, last, step);
-    }
-
-    //! See \ref prod "prod".
+    //! \brief Returns a product of letters.
+    //!
+    //! See \ref prod(Container const&, int, int, int).
     static inline word_type prod(std::initializer_list<letter_type> ilist,
                                  int                                first,
                                  int                                last,
                                  int                                step = 1) {
-      return prod(word_type(ilist), first, last, step);
+      return prod<word_type>(word_type(ilist), first, last, step);
     }
 
+    //! \brief Returns a product of letters.
+    //!
+    //! See \ref prod(Container const&, int, int, int).
     static inline std::string
     prod(std::string_view sv, int first, int last, int step = 1) {
-      return to_string(sv, prod(to_word(sv), first, last, step));
+      return prod<std::string>(std::string(sv), first, last, step);
     }
 
+    //! \brief Returns a product of words.
+    //!
+    //! See \ref prod(Container const&, int, int, int).
+    static inline word_type prod(std::initializer_list<word_type> const& elts,
+                                 int                                     first,
+                                 int                                     last,
+                                 int step = 1) {
+      return prod<std::vector<word_type>, word_type>(
+          std::vector<word_type>(elts), first, last, step);
+    }
+
+    //! \brief Returns a product of strings.
+    //!
+    //! See \ref prod(Container const&, int, int, int).
     static inline std::string
     prod(std::initializer_list<std::string_view> const& sv,
          int                                            first,
@@ -2029,40 +2034,63 @@ namespace libsemigroups {
       return prod<std::vector<std::string_view>, std::string>(
           sv, first, last, step);
     }
-    //! Returns `prod(elts, 0, last, 1)` -- see \ref prod "prod".
+
+    //! \brief Returns a product of letters or words.
+    //!
+    //! Returns the same as `prod(elts, 0, last, 1)`.
+    //!
+    //! See \ref prod(Container const&, int, int, int).
     template <typename Container, typename Word = Container>
     Word prod(Container const& elts, size_t last) {
       return prod(elts, 0, static_cast<int>(last), 1);
     }
 
-    static inline word_type prod(std::initializer_list<word_type> const& elts,
-                                 size_t                                  last) {
-      return prod(elts, 0, static_cast<int>(last), 1);
-    }
-
+    //! \brief Returns a product of letters.
+    //!
+    //! Returns the same as `prod(elts, 0, last, 1)`.
+    //!
+    //! See \ref prod(Container const&, int, int, int).
     static inline word_type prod(std::initializer_list<letter_type> const& elts,
                                  size_t last) {
       return prod(elts, 0, static_cast<int>(last), 1);
     }
 
-    static inline std::string
-    prod(std::initializer_list<std::string_view> const& elts, size_t last) {
-      return prod<std::vector<std::string_view>, std::string, void>(
-          std::vector<std::string_view>(elts), 0, static_cast<int>(last), 1);
-    }
-
+    //! \brief Returns a product of letters.
+    //!
+    //! Returns the same as `prod(elts, 0, last, 1)`.
+    //!
+    //! See \ref prod(Container const&, int, int, int).
     static inline std::string prod(std::string_view elts, size_t last) {
       return prod<std::string_view, std::string>(
           elts, 0, static_cast<int>(last), 1);
     }
-    // TODO string_view versions
 
-#undef ENABLE_IF_IS_WORD
+    //! \brief Returns a product of words.
+    //!
+    //! Returns the same as `prod(elts, 0, last, 1)`.
+    //!
+    //! See \ref prod(Container const&, int, int, int).
+    static inline word_type prod(std::initializer_list<word_type> const& elts,
+                                 size_t                                  last) {
+      return prod(elts, 0, static_cast<int>(last), 1);
+    }
+
+    //! \brief Returns a product of words.
+    //!
+    //! Returns the same as `prod(elts, 0, last, 1)`.
+    //!
+    //! See \ref prod(Container const&, int, int, int).
+    static inline std::string
+    prod(std::initializer_list<std::string_view> const& elts, size_t last) {
+      return prod<std::vector<std::string_view>, std::string>(
+          std::vector<std::string_view>(elts), 0, static_cast<int>(last), 1);
+    }
 
     ////////////////////////////////////////////////////////////////////////
     // pow - implementation
     ////////////////////////////////////////////////////////////////////////
 
+    // HERE
     template <typename Word>
     void pow_inplace(Word& x, size_t n) {
       Word y(x);
@@ -2086,7 +2114,7 @@ namespace libsemigroups {
 
     // Note: we could do a version of the below using insert on words, where
     // the step is +/- 1.
-    template <typename Container, typename Word, typename>
+    template <typename Container, typename Word>
     Word prod(Container const& elts, int first, int last, int step) {
       if (step == 0) {
         LIBSEMIGROUPS_EXCEPTION("the 4th argument must not be 0");

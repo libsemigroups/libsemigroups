@@ -1112,6 +1112,8 @@ namespace libsemigroups {
     REQUIRE(prod(0123_w, 0, 16, 3) == 032103_w);
 
     REQUIRE(prod(0123_w, 16) == pow(0123_w, 4));
+    // Test for the function that uses an initializer_list of letters
+    REQUIRE(prod({0, 1, 2, 3}, 16) == pow(0123_w, 4));
     REQUIRE(prod(0123_w, -16) == ""_w);
     REQUIRE(prod(012345_w, -1, -2, -1) == 5_w);
     REQUIRE(prod(012345_w, -10, -2, 1) == 23450123_w);
@@ -1121,6 +1123,7 @@ namespace libsemigroups {
 
     REQUIRE(prod({"aba", "xyz"}, 0, 4, 1) == "abaxyzabaxyz");
     REQUIRE(prod({"aba", "xyz"}, 4) == "abaxyzabaxyz");
+    REQUIRE(prod("aba", 4) == "abaa");
   }
 
   LIBSEMIGROUPS_TEST_CASE("random_word", "036", "", "[quick]") {
