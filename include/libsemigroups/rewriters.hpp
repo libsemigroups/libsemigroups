@@ -30,6 +30,8 @@
 #include "debug.hpp"  // for LIBSEMIGROUPS_ASSERT
 #include "order.hpp"  // for shortlex_compare
 
+#include "detail/multi-string-view.hpp"  // for MultiStringView
+
 namespace libsemigroups {
   // TODO remove from libsemigroups namespace and put into relevant class
   using external_string_type = std::string;
@@ -458,21 +460,36 @@ namespace libsemigroups {
     }
 
     void all_overlaps() {
+      // For each active rule, get the corresponding terminal node.
       for (auto node_it = _rules.begin(); node_it != _rules.end(); ++node_it) {
         index_type link = _trie.suffix_link(node_it->first);
         while (link != _trie.root) {
-          add_overlaps(node_it->second, link);
+          // For each suffix link, add an overlap between rule and every other
+          // rule that corresponds to a terminal descendant of link
+          add_overlaps(node_it->second, link, _trie.height(link));
           link = _trie.suffix_link(link);
         }
       }
     }
 
-    void add_overlaps(Rule* rule, index_type node) {
-      // DFS from node to all terminal_nodes below node{
-      //   Add rule corresponding to overlap between rule and
-      //   _rules.find(terminal_node)->second, where the overlap position is
-      //   determined by the height of node
-      // }
+    void add_overlaps(Rule* rule, index_type node, size_t overlap_length) {
+      // BFS find the terminal descendants of node and add overlaps with rule
+      if (_trie.node(node).is_terminal()) {
+        Rule const*             rule2 = _rules.find(node)->second;
+        detail::MultiStringView x(rule->lhs()->cbegin(),
+                                  rule->lhs()->cend() - overlap_length);
+        x.append(rule2->rhs()->cbegin(), rule2->rhs()->cend());
+        detail::MultiStringView y(rule->rhs()->cbegin(), rule->rhs()->cend());
+        y.append(rule2->lhs()->cbegin() + overlap_length,
+                 rule2->lhs()->cend());  // rule = AQ_j -> Q_iC
+        add_pending_rule(x, y);
+      }
+      for (auto a = alphabet_cbegin(); a != alphabet_cend(); ++a) {
+        auto child = _trie.child(node, static_cast<letter_type>(*a));
+        if (child != UNDEFINED) {
+          add_overlaps(rule, child, overlap_length);
+        }
+      }
     }
 
     void rewrite(internal_string_type& u) const {
