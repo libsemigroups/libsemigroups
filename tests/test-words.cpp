@@ -88,6 +88,13 @@ namespace libsemigroups {
     REQUIRE(2_w == word_type({2}));
     // Require ""s to avoid interpretation as bad octal.
     REQUIRE("08"_w == word_type({0, 8}));
+
+    // The other mode of behaviour
+    REQUIRE("ab"_w == word_type({0, 1}));
+    REQUIRE("zz"_w == word_type({25, 25}));
+    REQUIRE_THROWS_AS("\n"_w, LibsemigroupsException);
+    REQUIRE_THROWS_AS("0a"_w, LibsemigroupsException);
+    REQUIRE_THROWS_AS("a0"_w, LibsemigroupsException);
   }
 
   LIBSEMIGROUPS_TEST_CASE("Words",
@@ -947,14 +954,43 @@ namespace libsemigroups {
     REQUIRE(""_p == "");
     REQUIRE("a"_p == "a");
 
+    REQUIRE_THROWS_AS("a*a*b*bc"_p, LibsemigroupsException);
+    REQUIRE("           "_p == "");
+
+    // TODO the error message for the block of lines aren't very good
+    REQUIRE_THROWS_AS("(a*b)^3*b"_p, LibsemigroupsException);
+    REQUIRE_THROWS_AS("(a*b)^3*bc"_p, LibsemigroupsException);
+    REQUIRE_THROWS_AS("(2^2)"_p, LibsemigroupsException);
+    REQUIRE_THROWS_AS("2*2"_p, LibsemigroupsException);
+
     REQUIRE_THROWS_AS("(()()()((((())()())"_p, LibsemigroupsException);
     REQUIRE_THROWS_AS("("_p, LibsemigroupsException);
     REQUIRE_THROWS_AS("(^2)"_p, LibsemigroupsException);
+    REQUIRE_THROWS_AS("(a^)"_p, LibsemigroupsException);
+    REQUIRE_THROWS_AS("(a^a)"_p, LibsemigroupsException);
+    REQUIRE_THROWS_AS("(a^^a)"_p, LibsemigroupsException);
+    REQUIRE_THROWS_AS("^"_p, LibsemigroupsException);
+    REQUIRE_THROWS_AS("*"_p, LibsemigroupsException);
+    REQUIRE_THROWS_AS("*2"_p, LibsemigroupsException);
+    REQUIRE_THROWS_AS("a*"_p, LibsemigroupsException);
+    REQUIRE_THROWS_AS("*b"_p, LibsemigroupsException);
+    REQUIRE_THROWS_AS("2*"_p, LibsemigroupsException);
+    REQUIRE("22"_p == "22");
+
     REQUIRE_THROWS_AS("a^"_p, LibsemigroupsException);
     REQUIRE_THROWS_AS("^y"_p, LibsemigroupsException);
     REQUIRE_THROWS_AS("1^1"_p, LibsemigroupsException);
     REQUIRE_THROWS_AS("&^1"_p, LibsemigroupsException);
     REQUIRE_THROWS_AS("a^16cd^10((ab)^2)^4(!f)^2"_p, LibsemigroupsException);
+    REQUIRE("((ab)^3xx)^2"_p == "abababxxabababxx");
+    REQUIRE(""_p == "");
+    REQUIRE_THROWS_AS(")"_p, LibsemigroupsException);
+    REQUIRE_THROWS_AS("xy)"_p, LibsemigroupsException);
+    REQUIRE_THROWS_AS("(ab)^2xy^7)"_p, LibsemigroupsException);
+    REQUIRE_THROWS_AS("((ab)()"_p, LibsemigroupsException);
+    REQUIRE_THROWS_AS("("_p, LibsemigroupsException);
+    REQUIRE_THROWS_AS("\n"_p, LibsemigroupsException);
+    REQUIRE_THROWS_AS("-"_p, LibsemigroupsException);
   }
 
   LIBSEMIGROUPS_TEST_CASE("Words",
@@ -971,6 +1007,9 @@ namespace libsemigroups {
     REQUIRE((010_w + 2_w) == 0102_w);
     REQUIRE((0_w + ""_w) == 0_w);
     REQUIRE((""_w + 0_w) == 0_w);
+
+    REQUIRE(w + 7 == 017_w);
+    REQUIRE(7 + w == 701_w);
   }
 
   LIBSEMIGROUPS_TEST_CASE("Words",
@@ -986,25 +1025,29 @@ namespace libsemigroups {
     word_type t = word_type({});
     w += t;
     REQUIRE(w == 123345_w);
+
+    w = 01_w;
+    w += 2_w;
+    REQUIRE(w == 012_w);
+
+    w += 7;
+    REQUIRE(w == 0127_w);
+    7 += w;
+    REQUIRE(w == 70127_w);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("Words",
-                          "033",
-                          "pow",
-                          "[quick][word_functions][no-coverage][no-valgrind]") {
+  LIBSEMIGROUPS_TEST_CASE("Words", "033", "pow", "[quick][word_functions]") {
     using namespace literals;
     using words::pow;
     word_type w = 01_w;
-    REQUIRE(pow(w, 0) == word_type({}));
+    REQUIRE(pow(w, 0) == ""_w);
     REQUIRE(pow(w, 1) == w);
     REQUIRE(pow(w, 2) == 0101_w);
     REQUIRE(pow(pow(w, 2), 3) == 010101010101_w);
-    for (size_t i = 0; i <= 1'000'000; i += 10'000) {
-      REQUIRE(pow(0_w, i) == word_type(i, 0));
-    }
+    REQUIRE(pow(0_w, 1'000'000) == word_type(1'000'000, 0));
+    REQUIRE(pow({0, 1}, 3) == 010101_w);
 
-    REQUIRE(pow(std::string("ab"), 2) == std::string("abab"));
-
+    REQUIRE(pow("ab", 2) == "abab");
     REQUIRE(pow("a", 5) == "aaaaa");
   }
 
@@ -1043,28 +1086,41 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("Words", "035", "prod", "[quick][word_functions]") {
     using namespace literals;
+    using words::pow;
     using words::prod;
     word_type eps = 012345_w;
-    REQUIRE(prod(eps, 1, 6, 2) == 135_w);
-    REQUIRE(prod(eps, 0, 6, 1) == eps);
-    REQUIRE(prod(eps, 5, 0, -1) == 54321_w);
-    REQUIRE(prod(eps, 5, 3, 1) == word_type({}));
-    REQUIRE(prod(eps, 3, 10, -1) == word_type({}));
+    REQUIRE(prod(012345_w, 1, 6, 2) == 135_w);
+    REQUIRE(prod(012345_w, 0, 6, 1) == 012345_w);
+    REQUIRE(prod(012345_w, 5, 0, -1) == 54321_w);
+    REQUIRE(prod(012345_w, 5, 3, 1) == ""_w);
+    REQUIRE(prod(012345_w, 3, 10, -1) == ""_w);
 
-    REQUIRE(prod({1, 2, 4, 5}, 0, 8, 3) == 154_w);
-    REQUIRE(prod({0, 1}, 0, 0, 1) == word_type({}));
+    REQUIRE(prod(1245_w, 0, 8, 3) == 154_w);
+    REQUIRE(prod(01_w, 0, 0, 1) == ""_w);
 
-    REQUIRE(prod(std::string("abcdef"), 0, 6, 2) == "ace");
+    REQUIRE(prod("abcdef", 0, 6, 2) == "ace");
 
-    REQUIRE_THROWS_AS(prod({}, 0, 1, 1), LibsemigroupsException);
+    REQUIRE_THROWS_AS(prod(""_w, 0, 1, 1), LibsemigroupsException);
 
-    REQUIRE(prod({}, 0, 0, 1) == word_type({}));
-    REQUIRE(prod({0}, 1, 1, -1) == word_type({}));
+    REQUIRE(prod(""_w, 0, 0, 1) == ""_w);
+    REQUIRE(prod(0_w, 1, 1, -1) == ""_w);
 
     REQUIRE_THROWS_AS(prod({0, 1}, 0, 1, 0), LibsemigroupsException);
 
-    REQUIRE(prod(eps, 2, -1, -1) == "210"_w);
-    REQUIRE(prod(eps, -1, -2, -1) == "5"_w);
+    REQUIRE(prod(012345_w, 2, -1, -1) == 210_w);
+    REQUIRE(prod(012345_w, -1, -2, -1) == 5_w);
+    REQUIRE(prod(0123_w, 0, 16, 3) == 032103_w);
+
+    REQUIRE(prod(0123_w, 16) == pow(0123_w, 4));
+    REQUIRE(prod(0123_w, -16) == ""_w);
+    REQUIRE(prod(012345_w, -1, -2, -1) == 5_w);
+    REQUIRE(prod(012345_w, -10, -2, 1) == 23450123_w);
+
+    REQUIRE(prod({010_w, 232_w}, 0, 4, 1) == 010232010232_w);
+    REQUIRE(prod({010_w, 232_w}, 4) == 010232010232_w);
+
+    REQUIRE(prod({"aba", "xyz"}, 0, 4, 1) == "abaxyzabaxyz");
+    REQUIRE(prod({"aba", "xyz"}, 4) == "abaxyzabaxyz");
   }
 
   LIBSEMIGROUPS_TEST_CASE("random_word", "036", "", "[quick]") {
@@ -1144,6 +1200,78 @@ namespace libsemigroups {
                  0101_w, 0100_w, 0011_w, 0010_w, 0001_w}));
   }
 
-}  // namespace libsemigroups
+  LIBSEMIGROUPS_TEST_CASE("ToStrings", "040", "code coverage", "[quick]") {
+    using words::pow;
 
-// namespace libsemigroups
+    Words words;
+    words.letters(2).first(0_w).last(pow(1_w, 3));
+
+    REQUIRE((words | ToStrings("ba") | to_vector())
+            == std::vector<std::string>({"b",
+                                         "a",
+                                         "bb",
+                                         "ba",
+                                         "ab",
+                                         "aa",
+                                         "bbb",
+                                         "bba",
+                                         "bab",
+                                         "baa",
+                                         "abb",
+                                         "aba",
+                                         "aab"}));
+
+    ToStrings to_strings("xy");
+    REQUIRE((words | to_strings | to_vector())
+            == std::vector<std::string>({"x",
+                                         "y",
+                                         "xx",
+                                         "xy",
+                                         "yx",
+                                         "yy",
+                                         "xxx",
+                                         "xxy",
+                                         "xyx",
+                                         "xyy",
+                                         "yxx",
+                                         "yxy",
+                                         "yyx"}));
+
+    ToStrings copy(to_strings);
+    REQUIRE(equal(words | to_strings, words | copy));
+
+    ToStrings move(std::move(copy));
+    REQUIRE(equal(words | to_strings, words | move));
+
+    move.operator=(to_strings);
+    REQUIRE(equal(words | to_strings, words | move));
+
+    copy = move;
+    move.operator=(std::move(copy));
+    REQUIRE(equal(words | to_strings, words | move));
+
+    REQUIRE((std::move(words) | to_strings | to_vector())
+            == std::vector<std::string>({"x",
+                                         "y",
+                                         "xx",
+                                         "xy",
+                                         "yx",
+                                         "yy",
+                                         "xxx",
+                                         "xxy",
+                                         "xyx",
+                                         "xyy",
+                                         "yxx",
+                                         "yxy",
+                                         "yyx"}));
+    using words::pow;
+    words.letters(10).first(pow(0_w, 100)).last(pow(1_w, 1'000));
+    // Tests ToStrings::Range<Words>::begin/end
+    for (auto const& s :
+         words | ToStrings("abcdefghij") | skip_n(1'000) | take(1)) {
+      REQUIRE(s
+              == "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+                 "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaa");
+    }
+  }
+}  // namespace libsemigroups

@@ -101,7 +101,6 @@
   <!-- Layout definition for a namespace page -->
   <namespace>
     <detaileddescription title=""/>
-    <briefdescription visible="yes"/>
     <memberdecl>
       <nestednamespaces visible="yes" title=""/>
       <constantgroups visible="yes" title=""/>

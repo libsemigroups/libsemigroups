@@ -80,6 +80,26 @@ namespace libsemigroups {
   }
 
   namespace detail {
+    // TODO to cpp
+    static inline std::string to_visible(char x) {
+      if (x == '\n') {
+        return std::string("\\n");
+      } else if (x == '\r') {
+        return std::string("\\r");
+      } else if (x == '\b') {
+        return std::string("\\b");
+      } else if (x == '\t') {
+        return std::string("\\t");
+      } else if (x == '\a') {
+        return std::string("\\a");
+      } else if (x == '\v') {
+        return std::string("\\v");
+      } else if (x == '\0') {
+        return std::string("\\0");
+      }
+      return std::string(x, 1);
+    }
+
     // FIXME test_action doesn't compile if the function below is not present,
     // it complains that it doesn't know how to format PPerm's, I don't
     // understand the issue

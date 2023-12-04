@@ -790,7 +790,7 @@ namespace libsemigroups {
   //! This function converts its second argument \p input into a word_type and
   //! stores the result in the first argument \p output. The characters of \p
   //! input are converted using \ref human_readable_index, so that \c 'a' is
-  //! mapped to \c 0, 'b' to \c 1, and so on.
+  //! mapped to \c 0, \c 'b' to \c 1, and so on.
   //!
   //! The contents of the first argument \p output, if any, is removed.
   //!
@@ -803,15 +803,15 @@ namespace libsemigroups {
   //! \sa
   //! * human_readable_index
   //! * ToWord
-  //! * literals::operator""_w
-  void to_word(std::string const& input, word_type& output);
+  //! * \ref literals
+  void to_word(std::string_view input, word_type& output);
 
   //! \ingroup Words
   //! \brief Convert a string to a word_type.
   //!
   //! This function converts its argument \p s into a word_type. The characters
   //! of \p s are converted using \ref human_readable_index, so that \c 'a' is
-  //! mapped to \c 0, 'b' to \c 1, and so on.
+  //! mapped to \c 0,\c 'b' to \c 1, and so on.
   //!
   //! The contents of the first argument \p w, if any, is removed.
   //!
@@ -824,8 +824,8 @@ namespace libsemigroups {
   //! \sa
   //! * human_readable_index
   //! * ToWord
-  //! * literals::operator""_w
-  [[nodiscard]] word_type to_word(std::string const& s);
+  //! * \ref literals
+  [[nodiscard]] word_type to_word(std::string_view s);
 
   //! \ingroup Words
   //! \brief Class for converting strings to \ref word_type with specified
@@ -936,7 +936,7 @@ namespace libsemigroups {
     //! \sa
     //! * to_word
     //! * to_string
-    //! * literals::operator""_w
+    //! * \ref literals
     void operator()(std::string const& input, word_type& output) const;
 
     //! \brief Convert a string to a word_type.
@@ -957,7 +957,7 @@ namespace libsemigroups {
     //! \sa
     //! * to_word
     //! * to_string
-    //! * literals::operator""_w
+    //! * \ref literals
     [[nodiscard]] word_type operator()(std::string const& input) const;
 
    private:
@@ -1017,12 +1017,12 @@ namespace libsemigroups {
   //! \sa
   //! * ToWord
   //! * to_word
-  //! * literals::operator""_w
+  //! * \ref literals
   template <typename Iterator>
-  void to_string(std::string const& alphabet,
-                 Iterator           input_first,
-                 Iterator           input_last,
-                 std::string&       output) {
+  void to_string(std::string_view alphabet,
+                 Iterator         input_first,
+                 Iterator         input_last,
+                 std::string&     output) {
     output.resize(std::distance(input_first, input_last));
     size_t i = 0;
     for (auto it = input_first; it != input_last; ++it) {
@@ -1034,9 +1034,9 @@ namespace libsemigroups {
   //! \brief Convert a word_type to a string.
   //!
   //! See to_string(std::string const&, Iterator, Iterator, std::string&)
-  static inline void to_string(std::string const& alphabet,
-                               word_type const&   input,
-                               std::string&       output) {
+  static inline void to_string(std::string_view alphabet,
+                               word_type const& input,
+                               std::string&     output) {
     return to_string(alphabet, input.cbegin(), input.cend(), output);
   }
 
@@ -1046,9 +1046,9 @@ namespace libsemigroups {
   //! See to_string(std::string const&, Iterator, Iterator, std::string&)
   //! the difference is that this function returns a new string.
   template <typename Iterator>
-  [[nodiscard]] std::string to_string(std::string const& alphabet,
-                                      Iterator           first,
-                                      Iterator           last) {
+  [[nodiscard]] std::string to_string(std::string_view alphabet,
+                                      Iterator         first,
+                                      Iterator         last) {
     std::string output;
     to_string(alphabet, first, last, output);
     return output;
@@ -1059,8 +1059,8 @@ namespace libsemigroups {
   //!
   //! See to_string(std::string const&, Iterator, Iterator, std::string&)
   //! the difference is that this function returns a new string.
-  [[nodiscard]] static inline std::string to_string(std::string const& alphabet,
-                                                    word_type const&   input) {
+  [[nodiscard]] static inline std::string to_string(std::string_view alphabet,
+                                                    word_type const& input) {
     return to_string(alphabet, input.cbegin(), input.cend());
   }
 
@@ -1708,14 +1708,6 @@ namespace libsemigroups {
       [[nodiscard]] constexpr size_t size_hint() const noexcept {
         return _input.size_hint();
       }
-
-      [[nodiscard]] constexpr auto begin() const noexcept {
-        return rx::begin(*this);
-      }
-
-      [[nodiscard]] constexpr auto end() const noexcept {
-        return rx::end(*this);
-      }
     };
 
    public:
@@ -1734,8 +1726,21 @@ namespace libsemigroups {
   // Literals
   ////////////////////////////////////////////////////////////////////////
 
+  //! \brief Namespace containing some custom literals for creating words.
+  //!
+  //! Defined in `words.hpp`.
+  //!
+  //! This namespace contains some functions for creating \ref word_type objects
+  //! in a compact form.
+  //! \par Example
+  //! \code
+  //! 012_w      \\ same as word_type({0, 1, 2})
+  //! "abc"_w    \\ also same as word_type({0, 1, 2})
+  //! "(ab)^3"_p \\ same as "ababab"
+  //! \endcode
   namespace literals {
-    //! Literal for defining \ref word_type over integers less than 10.
+    //! \anchor literal_operator_w
+    //!\brief Literal for defining \ref word_type over integers less than 10.
     //!
     //! This operator provides a convenient brief means of constructing a  \ref
     //! word_type from an sequence of literal integer digits or a string. For
@@ -1744,63 +1749,118 @@ namespace libsemigroups {
     //!
     //! There are some gotchas and this operator should be used with some care:
     //!
-    //! * the parameter \p w must only consist of the integers \f$\{0, \ldots,
-    //! 9\}\f$. For example, there are no guarantees about the value of
-    //! `"abc"_w`.
+    //! * the parameter \p w must consist of the integers \f$\{0, \ldots,
+    //! 9\}\f$ or the characters in `a-zA-Z` but not both.
     //! * if \p w starts with \c 0 and is follows by a value greater than \c 7,
     //! then it is necessary to enclose \p w in quotes. For example, \c 08_w
     //! will not compile because it is interpreted as an invalid octal. However
     //! `"08"_w` behaves as expected.
+    //! * if \p w consists of characters in `a-zA-Z`, then the output is
+    //! the same as that of `to_word(w)`, see \ref to_word(std::string const&).
     //!
     //! \param w the letters of the word
     //! \param n the length of \p w (defaults to the length of \p w)
     //!
-    //! \warning
-    //! This operator performs no checks on its arguments whatsoever.
-    //!
     //! \returns A value of type \ref word_type.
     //!
-    //! \exception \no_libsemigroups_except
-    // TODO update with new behaviour
+    //! \throws LibsemigroupsException if the input contains a mixture of
+    //! integers and non-integers.
     word_type operator"" _w(const char* w, size_t n);
 
-    //! \copydoc operator""_w
+    //! \brief Literal for defining \ref word_type over integers less than 10.
+    //!
+    //! See \ref literal_operator_w "operator\"\"_w" for details.
     word_type operator"" _w(const char* w);
 
-    // TODO doc
+    //! \anchor literal_operator_p
+    //! \brief Literal for defining \ref word_type by parsing an algebraic
+    //! expression.
+    //!
+    //! This operator provides a convenient concise means of constructing a \ref
+    //! word_type from an algebraic expression.
+    //! For example, \c "((ab)^3cc)^2"_p equals
+    //! \c "abababccabababcc" and \c "a^0"_p equals the empty string \c "".
+    //!
+    //! This function has the following behaviour:
+    //! * arbitrarily nested brackets;
+    //! * spaces are ignore;
+    //! * redundant matched brackets are ignored;
+    //! * only the characters in \c "()^ " and in \c a-zA-Z0-9 are allowed.
+    //!
+    //! \param w the letters of the word
+    //! \param n the length of \p w (defaults to the length of \p w)
+    //!
+    //! \returns A value of type \ref std::string.
+    //!
+    //! \throws LibsemigroupsException if the string cannot be parsed.
     std::string operator"" _p(const char* w, size_t n);
 
-    // TODO doc
+    //! \brief Literal for defining \ref word_type by parsing an algebraic
+    //! expression.
+    //!
+    //! See \ref literal_operator_p "operator\"\"_p" for details.
     std::string operator"" _p(const char* w);
   }  // namespace literals
 
   ////////////////////////////////////////////////////////////////////////
 
+  //! \brief Namespace containing some operators for creating words.
+  //!
+  //! Defined in `words.hpp`.
+  //!
+  //! This namespace contains some functions for creating \ref word_type objects
+  //! in a compact form.
+  //! \par Example
+  //! \code
+  //! using namespace words;
+  //! pow("a", 5)            \\ same as "aaaaa"
+  //! 01_w + 2               \\ same as 012_w
+  //! 01_w + 01_w            \\ same as 0110_w
+  //! prod(0123_w, 0, 16, 3) \\ same as 032103_w
+  //! \endcode
   namespace words {
 
     ////////////////////////////////////////////////////////////////////////
-    // Operators - declarations
+    // operator+
     ////////////////////////////////////////////////////////////////////////
 
     //! \anchor operator_plus
-    //! Concatenate two words or strings.
+    //! \brief Concatenate two words.
     //!
     //! Returns the concatenation of \c u and \c w.
     //!
-    //! \param u a word or string
-    //! \param w a word or string
+    //! \param u a word
+    //! \param w a word
     //!
-    //! \returns A word_type or string
+    //! \returns A \ref word_type.
     //!
     //! \exception
-    //! \noexcept
-    word_type operator+(word_type const& u, word_type const& w);
+    //! \no_libsemigroups_except
+    static inline word_type operator+(word_type const& u, word_type const& w) {
+      word_type result(u);
+      result.insert(result.end(), w.cbegin(), w.cend());
+      return result;
+    }
 
+    //! \brief Concatenate a word and a letter.
+    //!
     //! See \ref operator_plus "operator+".
-    word_type operator+(word_type const& u, letter_type w);
+    static inline word_type operator+(word_type const& u, letter_type w) {
+      word_type result(u);
+      result.push_back(w);
+      return result;
+    }
 
+    //! \brief Concatenate a letter and a word.
+    //!
     //! See \ref operator_plus "operator+".
-    word_type operator+(letter_type w, word_type const& u);
+    static inline word_type operator+(letter_type w, word_type const& u) {
+      return word_type({w}) + u;
+    }
+
+    ////////////////////////////////////////////////////////////////////////
+    // operator+=
+    ////////////////////////////////////////////////////////////////////////
 
     //! Concatenate a word/string with another word/string in-place.
     //!
@@ -1813,7 +1873,9 @@ namespace libsemigroups {
     //! \noexcept
     //!
     //! \sa \ref operator_plus "operator+"
-    void operator+=(word_type& u, word_type const& w);
+    static inline void operator+=(word_type& u, word_type const& v) {
+      u.insert(u.end(), v.cbegin(), v.cend());
+    }
 
     // TODO doc
     inline void operator+=(word_type& u, letter_type a) {
@@ -1825,25 +1887,14 @@ namespace libsemigroups {
       u.insert(u.begin(), a);
     }
 
+    ////////////////////////////////////////////////////////////////////////
+    // pow
+    ////////////////////////////////////////////////////////////////////////
+
 #define ENABLE_IF_IS_WORD(Word)                                 \
   typename = std::enable_if_t < std::is_same_v<Word, word_type> \
              || std::is_same_v < Word,                          \
   std::string >>
-
-    //! Take a power of a word or string.
-    //!
-    //! Returns the \c nth power of the word/string given by \c w .
-    //!
-    //! \param w a word
-    //! \param n the power
-    //!
-    //! \returns A word_type
-    //!
-    //! \exception
-    //! \noexcept
-    template <typename Word, ENABLE_IF_IS_WORD(Word)>
-    Word pow(Word const& w, size_t n);
-
     //! Take a power of a word.
     //!
     //! Change the word/string \c w to its \c nth power, in-place.
@@ -1856,8 +1907,26 @@ namespace libsemigroups {
     //!
     //! \exception
     //! \noexcept
-    template <typename Word, ENABLE_IF_IS_WORD(Word)>
+    template <typename Word>
     void pow_inplace(Word& w, size_t n);
+
+    //! Take a power of a word or string.
+    //!
+    //! Returns the word/string \c w to the power \p n.
+    //!
+    //! \param w a word or string
+    //! \param n the power
+    //!
+    //! \returns A word_type
+    //!
+    //! \exception
+    //! \no_libsemigroups_except
+    template <typename Word>
+    Word pow(Word const& x, size_t n) {
+      Word y(x);
+      pow_inplace(y, n);
+      return y;
+    }
 
     //! Take a power of a word.
     //!
@@ -1871,10 +1940,19 @@ namespace libsemigroups {
     //!
     //! \exception
     //! \noexcept
-    word_type pow(std::initializer_list<size_t> ilist, size_t n);
+    static inline word_type pow(std::initializer_list<letter_type> ilist,
+                                size_t                             n) {
+      return pow(word_type(ilist), n);
+    }
 
     //! See \ref pow(Word const&, size_t)
-    std::string pow(char const* w, size_t n);
+    static inline std::string pow(std::string_view w, size_t n) {
+      return pow(std::string(w), n);
+    }
+
+    ////////////////////////////////////////////////////////////////////////
+    // prod
+    ////////////////////////////////////////////////////////////////////////
 
     //! \anchor prod
     //! Take a product from a collection of letters.
@@ -1905,9 +1983,9 @@ namespace libsemigroups {
     //! \par Examples
     //! \code
     //! word_type w = 012345_w
-    //! prod(w, 0, 5, 2)  // Gives the word {0, 2, 4}
-    //! prod(w, 1, 9, 2)  // Gives the word {1, 3, 5, 1}
-    //! prod(std::string("abcde", 4, 1, -1)  // Gives the string "edc")
+    //! prod(w, 0, 5, 2)  // same as {0, 2, 4}
+    //! prod(w, 1, 9, 2)  // same as {1, 3, 5, 1}
+    //! prod(std::string("abcde"), 4, 1, -1)  // same as "edc"
     //! \endcode
     template <typename Container,
               typename Word = Container,
@@ -1922,30 +2000,70 @@ namespace libsemigroups {
       return prod<std::vector<Word>, Word, void>(elts, first, last, step);
     }
 
-    //! Returns `prod(elts, 0, last, 1)` -- see \ref prod "prod".
-    template <typename Word, ENABLE_IF_IS_WORD(Word)>
-    Word prod(Word const& elts, size_t last) {
-      return prod(elts, 0, static_cast<int>(last), 1);
+    static inline word_type prod(std::initializer_list<word_type> const& elts,
+                                 int                                     first,
+                                 int                                     last,
+                                 int step = 1) {
+      return prod<std::vector<word_type>, word_type, void>(
+          std::vector<word_type>(elts), first, last, step);
     }
 
     //! See \ref prod "prod".
-    word_type
-    prod(std::initializer_list<size_t> ilist, int first, int last, int step);
+    static inline word_type prod(std::initializer_list<letter_type> ilist,
+                                 int                                first,
+                                 int                                last,
+                                 int                                step = 1) {
+      return prod(word_type(ilist), first, last, step);
+    }
+
+    static inline std::string
+    prod(std::string_view sv, int first, int last, int step = 1) {
+      return to_string(sv, prod(to_word(sv), first, last, step));
+    }
+
+    static inline std::string
+    prod(std::initializer_list<std::string_view> const& sv,
+         int                                            first,
+         int                                            last,
+         int                                            step = 1) {
+      return prod<std::vector<std::string_view>, std::string>(
+          sv, first, last, step);
+    }
+    //! Returns `prod(elts, 0, last, 1)` -- see \ref prod "prod".
+    template <typename Container, typename Word = Container>
+    Word prod(Container const& elts, size_t last) {
+      return prod(elts, 0, static_cast<int>(last), 1);
+    }
+
+    static inline word_type prod(std::initializer_list<word_type> const& elts,
+                                 size_t                                  last) {
+      return prod(elts, 0, static_cast<int>(last), 1);
+    }
+
+    static inline word_type prod(std::initializer_list<letter_type> const& elts,
+                                 size_t last) {
+      return prod(elts, 0, static_cast<int>(last), 1);
+    }
+
+    static inline std::string
+    prod(std::initializer_list<std::string_view> const& elts, size_t last) {
+      return prod<std::vector<std::string_view>, std::string, void>(
+          std::vector<std::string_view>(elts), 0, static_cast<int>(last), 1);
+    }
+
+    static inline std::string prod(std::string_view elts, size_t last) {
+      return prod<std::string_view, std::string>(
+          elts, 0, static_cast<int>(last), 1);
+    }
+    // TODO string_view versions
 
 #undef ENABLE_IF_IS_WORD
 
     ////////////////////////////////////////////////////////////////////////
-    // Operators - implementations
+    // pow - implementation
     ////////////////////////////////////////////////////////////////////////
 
-    template <typename Word, typename>
-    Word pow(Word const& x, size_t n) {
-      Word y(x);
-      pow_inplace(y, n);
-      return y;
-    }
-
-    template <typename Word, typename>
+    template <typename Word>
     void pow_inplace(Word& x, size_t n) {
       Word y(x);
       x.reserve(x.size() * n);
@@ -1961,6 +2079,10 @@ namespace libsemigroups {
         }
       }
     }
+
+    ////////////////////////////////////////////////////////////////////////
+    // prod - implementation
+    ////////////////////////////////////////////////////////////////////////
 
     // Note: we could do a version of the below using insert on words, where
     // the step is +/- 1.
