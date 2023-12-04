@@ -19,7 +19,7 @@ delete_gcda_files() {
 if [ -x "$(command -v ccache)" ]; then
   bold "using ccache. . ."
   MYCXX="ccache g++"
-  MYCXXFLAGS="-fdiagnostics-color --coverage"
+  MYCXXFLAGS="$CXXFLAGS -fdiagnostics-color --coverage"
 else
   bold "not using ccache (not available). . ."
   MYCXX="$CXX"
@@ -58,13 +58,13 @@ fi
 if [[ ! -f config.log ]]; then
   bold "No config.log file found, running $CONFIGURE. . ."
   printf "\033[2m";
-  ./configure CXX="$MYCXX" CXXFLAGS="$MYCXXFLAGS" --enable-code-coverage
+  ./configure CXX="$MYCXX" CXXFLAGS="$MYCXXFLAGS" --enable-code-coverage --disable-backward
   ./autogen.sh
   printf "\033[0m"
 elif [[ ! -f Makefile ]]; then
   bold "No Makefile found, running $CONFIGURE. . ."
   printf "\033[2m"
-  ./configure CXX="$MYCXX" CXXFLAGS="$MYCXXFLAGS" --enable-code-coverage
+  ./configure CXX="$MYCXX" CXXFLAGS="$MYCXXFLAGS" --enable-code-coverage --disable-backward
   printf "\033[0m"
 elif ! grep -q "\.\/configure.*\-\-enable-code\-coverage" config.log; then
   bold "Didn't find --enable-code-coverage flag in config.log, running make clean && ./configure --enable-code-coverage. . ."

@@ -372,7 +372,7 @@ namespace libsemigroups {
   //! \brief Class for generating words in a given range and in a particular
   //! order.
   //!
-  //! Defined in \c words.hpp\c .
+  //! Defined in `words.hpp`.
   //!
   //! This class implements a range object for the lower level
   //! functions \ref cbegin_wislo and \ref cbegin_wilo. The purpose of this
@@ -689,7 +689,7 @@ namespace libsemigroups {
 
     //! \brief Set the first word in the range by length.
     //!
-    //! Sets the first word in a Words object to be \c pow(0_w, val) (the word
+    //! Sets the first word in a Words object to be  `pow(0_w, val)` (the word
     //! consisting of \p val letters equal to \c 0).
     //!
     //! \param val the exponent.
@@ -709,7 +709,7 @@ namespace libsemigroups {
 
     //! \brief Set one past the last word in the range by length.
     //!
-    //! Sets one past the last word in a Words object to be \c pow(0_w, val)
+    //! Sets one past the last word in a Words object to be `pow(0_w, val)`
     //! (the word consisting of \p val letters equal to \c 0).
     //!
     //! \param val the exponent.
@@ -828,11 +828,12 @@ namespace libsemigroups {
   [[nodiscard]] word_type to_word(std::string const& s);
 
   //! \ingroup Words
-  //! \brief Class for converting strings to word_type with specified alphabet.
+  //! \brief Class for converting strings to \ref word_type with specified
+  //! alphabet.
   //!
-  //! Defined in \c words.hpp\c .
+  //! Defined in `words.hpp`.
   //!
-  //! An instance of this class can be used like to_word but where the
+  //! An instance of this class can be used like \ref to_word but where the
   //! characters in the string are converted to integers according to their
   //! position in alphabet used to construct a ToWord instance.
   //!
@@ -851,9 +852,19 @@ namespace libsemigroups {
     //! \brief Default constructor.
     //!
     //! Constructs an empty object with no alphabet set.
+    // TODO noexcept?
     ToWord() : _lookup() {
       init();
     }
+
+    // TODO noexcept?
+    // TODO Out of line these
+    ToWord(ToWord const&)            = default;
+    ToWord(ToWord&&)                 = default;
+    ToWord& operator=(ToWord const&) = default;
+    ToWord& operator=(ToWord&&)      = default;
+
+    ~ToWord() = default;
 
     //! \brief Initialize an existing ToWord object.
     //!
@@ -1064,7 +1075,7 @@ namespace libsemigroups {
   //! \brief Class for generating strings in a given range and in a particular
   //! order.
   //!
-  //! Defined in \c words.hpp.
+  //! Defined in `words.hpp`.
   //!
   //! This class implements a range object for strings and produces the same
   //! output as `Words() | ToStrings("ab")`, but is more convenient in some
@@ -1209,7 +1220,7 @@ namespace libsemigroups {
       init();
     }
 
-    //! \brief Initialize an existing Words object.
+    //! \brief Initialize an existing Strings object.
     //!
     //! This function puts a Strings object back into the same state as if it
     //! had been newly default constructed.
@@ -1387,7 +1398,7 @@ namespace libsemigroups {
 
     //! \brief Set the first string in the range by length.
     //!
-    //! Sets the first string in a Strings object to be \c pow("a", val) (the
+    //! Sets the first string in a Strings object to be `pow("a", val)` (the
     //! string consisting of \p val letters equal to \c "a").
     //!
     //! \param val the exponent.
@@ -1408,7 +1419,7 @@ namespace libsemigroups {
 
     //! \brief Set one past the last string in the range by length.
     //!
-    //! Sets one past the last string in a Strings object to be \c pow("a", val)
+    //! Sets one past the last string in a Strings object to be `pow("a", val)`
     //! (the string consisting of \p val letters equal to \c "a").
     //!
     //! \param val the exponent.
@@ -1439,7 +1450,7 @@ namespace libsemigroups {
     //!
     //! \sa \ref end.
     // REQUIRED so that we can use Strings in range based loops
-    auto begin() const {
+    auto begin() const noexcept {
       return rx::begin(*this);
     }
 
@@ -1459,31 +1470,92 @@ namespace libsemigroups {
     //!
     //! \sa \ref begin.
     // REQUIRED so that we can use Strings in range based loops
-    auto end() const {
+    auto end() const noexcept {
       return rx::end(*this);
     }
-
-    // TODO doc
-    // HERE next do code coverage for Strings
-    void swap(Strings& that) noexcept;
   };
 
   ////////////////////////////////////////////////////////////////////////
   // Ranges
   ////////////////////////////////////////////////////////////////////////
 
-  // The next class is a custom combinator for rx::ranges to convert the output
-  // of a Strings object into words
-  template <typename = void>
-  struct ToWords {
-    ToWords() = default;
-
-    explicit ToWords(std::string const& lttrs) : _letters(lttrs) {}
-    explicit ToWords(std::string&& lttrs) : _letters(std::move(lttrs)) {}
-    explicit ToWords(char const* lttrs) : _letters(lttrs) {}
-
+  //! \ingroup Words
+  //! \brief A custom combinator for rx::ranges to convert the output
+  //! of a Strings object into \ref word_type.
+  //!
+  //! A custom combinator for rx::ranges to convert the output of a Strings
+  //! object into \ref word_type, that can be combined with other combinators
+  //! using `operator|`.
+  //!
+  //! Defined in `words.hpp`.
+  //!
+  //! \par Example
+  //! \code
+  //!  Strings strings;
+  //!  strings.letters("ab").first("a").last("bbbb");
+  //!  auto words = (strings | ToWords("ba"));
+  //!  // contains the words
+  //!  // {1_w,    0_w,    11_w,   10_w,   01_w,   00_w,   111_w,
+  //!  //  110_w,  101_w,  100_w,  011_w,  010_w,  001_w,  000_w,
+  //!  //  1111_w, 1110_w, 1101_w, 1100_w, 1011_w, 1010_w, 1001_w,
+  //!  //  1000_w, 0111_w, 0110_w, 0101_w, 0100_w, 0011_w, 0010_w,
+  //!  //  0001_w}));
+  //! \endcode
+  class ToWords {
+   private:
     std::string _letters;
 
+   public:
+    //! \brief Deleted.
+    //!
+    //! The default constructor is deleted, since the alphabet must defined.
+    ToWords() = delete;
+
+    // TODO out of line these
+
+    //! \brief Default copy constructor.
+    //!
+    //! Default copy constructor.
+    ToWords(ToWords const&) = default;
+
+    //! \brief Default move constructor.
+    //!
+    //! Default move constructor.
+    ToWords(ToWords&&) = default;
+
+    //! \brief Default copy assignment operator.
+    //!
+    //! Default move assignment operator.
+    ToWords& operator=(ToWords const&) = default;
+
+    //! \brief Default move assignment operator.
+    //!
+    //! Default move assignment operator.
+    ToWords& operator=(ToWords&&) = default;
+
+    //! \brief Default destructor.
+    //!
+    //! Default destructor.
+    ~ToWords() = default;
+
+    //! \brief Construct from \ref std::string_view
+    //!
+    //! Constructs a ToWords object using the specified alphabet. The position
+    //! of each character in the alphabet \p lttrs is the corresponding letter
+    //! in output word. For example, if \p lttrs is \c "ba", then \c "b" is
+    //! mapped to \c 0 and \c "a" is mapped to \c 1.
+    //!
+    //! \param lttrs the letters in the alphabet
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \warning  When combining a ToWords object with another range, for
+    //! example via `operator|`, no checks are done to ensure that the incoming
+    //! strings use the same letters as the alphabet used to define ToWords.
+    explicit ToWords(std::string_view lttrs) : _letters(lttrs) {}
+
+   private:
     template <typename InputRange>
     struct Range {
       using output_type = word_type;
@@ -1494,13 +1566,14 @@ namespace libsemigroups {
       InputRange _input;
       ToWord     _to_word;
 
-      explicit constexpr Range(InputRange input, ToWords t_wrds) noexcept
+      explicit Range(InputRange const& input, ToWords const& t_wrds) noexcept
           : _input(input), _to_word(t_wrds._letters) {}
 
-      explicit constexpr Range(Strings const& input)
-          : _input(input), _to_word(input.letters()) {}
+      explicit Range(InputRange&& input, ToWords const& t_wrds) noexcept
+          : _input(std::move(input)), _to_word(t_wrds._letters) {}
 
-      [[nodiscard]] output_type get() const noexcept {
+      // Not noexcept because ToWord()() isn't
+      [[nodiscard]] output_type get() const {
         return _to_word(_input.get());
       }
 
@@ -1517,29 +1590,93 @@ namespace libsemigroups {
       }
     };
 
-    [[nodiscard]] constexpr auto operator()(Strings const& input) const {
-      return Range<Strings>(input);
-    }
-
-    template <typename InputRange,
-              typename = std::enable_if_t<
-                  !std::is_same_v<std::decay_t<InputRange>, Strings>>>
+   public:
+    //! \brief Call operator for combining with other range objects.
+    //!
+    //! This is the call operator that is used by `rx::ranges::operator|` for
+    //! combining ranges.
+    template <typename InputRange>
     [[nodiscard]] constexpr auto operator()(InputRange&& input) const {
       using Inner = rx::get_range_type_t<InputRange>;
       return Range<Inner>(std::forward<InputRange>(input), *this);
     }
   };
 
-  // The next class is a custom combinator for rx::ranges to convert the output
-  // of a Words object into strings
-  template <typename = void>
-  struct ToStrings {
-    explicit ToStrings(std::string const& lttrs) : _letters(lttrs) {}
-    explicit ToStrings(std::string&& lttrs) : _letters(std::move(lttrs)) {}
-    explicit ToStrings(char const* lttrs) : _letters(lttrs) {}
-
+  //! \ingroup Words
+  //! \brief A custom combinator for rx::ranges to convert the output
+  //! of a Words object into \ref std::string.
+  //!
+  //! Defined in `words.hpp`.
+  //!
+  //! A custom combinator for rx::ranges to convert the output of a Words
+  //! object (or any other range with \ref output_type equal to \ref
+  //! word_type) into \ref std::string, that can be combined with other
+  //! combinators using `operator|`.
+  //!
+  //! \par Example
+  //! \code
+  //!  Words words;
+  //!  words.letters(2).first(0_w).last(1111_w);
+  //!  auto strings = (words | ToStrings("ba"));
+  //!  // contains the strings
+  //!  // {"b",    "a",    "bb",   "ba",   "ab",   "aa",   "bbb",
+  //!  //  "bba",  "bab",  "baa",  "abb",  "aba",  "aab",  "aaa",
+  //!  //  "bbbb", "bbba", "bbab", "bbaa", "babb", "baba", "baab",
+  //!  //  "baaa", "abbb", "abba", "abab", "abaa", "aabb", "aaba",
+  //!  //  "aaab"}));
+  //! \endcode
+  class ToStrings {
+   private:
     std::string _letters;
 
+   public:
+    //! \brief Deleted.
+    //!
+    //! The default constructor is deleted, since the alphabet must defined.
+    ToStrings() = delete;
+
+    // TODO out of line these
+
+    //! \brief Default copy constructor.
+    //!
+    //! Default copy constructor.
+    ToStrings(ToStrings const&) = default;
+
+    //! \brief Default move constructor.
+    //!
+    //! Default move constructor.
+    ToStrings(ToStrings&&) = default;
+
+    //! \brief Default copy assignment operator.
+    //!
+    //! Default move assignment operator.
+    ToStrings& operator=(ToStrings const&) = default;
+
+    //! \brief Default move assignment operator.
+    //!
+    //! Default move assignment operator.
+    ToStrings& operator=(ToStrings&&) = default;
+
+    //! \brief Default destructor.
+    //!
+    //! Default destructor.
+    ~ToStrings() = default;
+
+    //! \brief Construct from \ref std::string_view
+    //!
+    //! Constructs a ToStrings object using the specified alphabet.
+    //!
+    //! \param lttrs the letters in the alphabet
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \warning  When combining a ToStrings object with another range, for
+    //! example via `operator|`, no checks are done to ensure that the incoming
+    //! words use the same letters as the alphabet used to define ToStrings.
+    explicit ToStrings(std::string_view lttrs) : _letters(lttrs) {}
+
+   private:
     template <typename InputRange>
     struct Range {
       using output_type = std::string;
@@ -1547,19 +1684,17 @@ namespace libsemigroups {
       static constexpr bool is_finite     = true;
       static constexpr bool is_idempotent = true;
 
-      InputRange _input;
-      // TODO reference?
-      ToStrings _to_string;
+      InputRange  _input;
+      std::string _letters;
 
-      constexpr Range(InputRange&& input, ToStrings&& t_strng) noexcept
-          : _input(std::move(input)), _to_string(std::move(t_strng)) {}
+      constexpr Range(InputRange&& input, ToStrings const& t_strng)
+          : _input(std::move(input)), _letters(t_strng._letters) {}
 
-      constexpr Range(InputRange const& input,
-                      ToStrings const&  t_strng) noexcept
-          : _input(input), _to_string(t_strng) {}
+      constexpr Range(InputRange const& input, ToStrings const& t_strng)
+          : _input(input), _letters(t_strng._letters) {}
 
-      [[nodiscard]] output_type get() const noexcept {
-        return to_string(_to_string._letters, _input.get());
+      [[nodiscard]] output_type get() const {
+        return to_string(_letters, _input.get());
       }
 
       constexpr void next() noexcept {
@@ -1583,6 +1718,11 @@ namespace libsemigroups {
       }
     };
 
+   public:
+    //! \brief Call operator for combining with other range objects.
+    //!
+    //! This is the call operator that is used by `rx::ranges::operator|` for
+    //! combining ranges.
     template <typename InputRange>
     [[nodiscard]] constexpr auto operator()(InputRange&& input) const {
       using Inner = rx::get_range_type_t<InputRange>;
@@ -1600,7 +1740,7 @@ namespace libsemigroups {
     //! This operator provides a convenient brief means of constructing a  \ref
     //! word_type from an sequence of literal integer digits or a string. For
     //! example, \c 0123_w produces the same output as `word_type({0, 1, 2,
-    //! 3})`.
+    //! 3})` and so too does \c "abc"_w.
     //!
     //! There are some gotchas and this operator should be used with some care:
     //!
@@ -1621,6 +1761,7 @@ namespace libsemigroups {
     //! \returns A value of type \ref word_type.
     //!
     //! \exception \no_libsemigroups_except
+    // TODO update with new behaviour
     word_type operator"" _w(const char* w, size_t n);
 
     //! \copydoc operator""_w

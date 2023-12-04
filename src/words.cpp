@@ -597,14 +597,6 @@ namespace libsemigroups {
     return *this;
   }
 
-  void Strings::swap(Strings& that) noexcept {
-    std::swap(_current, that._current);
-    std::swap(_current_valid, that._current_valid);
-    std::swap(_letters, that._letters);
-    std::swap(_to_word, that._to_word);
-    std::swap(_words, that._words);
-  }
-
   ////////////////////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////////////////
 
