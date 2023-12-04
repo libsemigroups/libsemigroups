@@ -275,6 +275,11 @@ namespace libsemigroups {
       return _all_nodes.at(i);
     }
 
+    [[nodiscard]] index_type child(index_type  parent,
+                                   letter_type letter) const {
+      return _all_nodes[parent].child(letter);
+    }
+
    private:
     index_type new_active_node(index_type parent, letter_type a) {
       index_type index;
