@@ -429,17 +429,19 @@ namespace libsemigroups {
   class RewriteTrie : public RewriterBase {
     using index_type = AhoCorasick::index_type;
 
-    std::unordered_map<index_type, Rule*> _rules;
-    AhoCorasick                           _trie;
+    std::map<index_type, Rule*> _rules;
+    AhoCorasick                 _trie;
 
    public:
     using RewriterBase::cached_confluent;
     using Rules::stats;
-    using iterator = internal_string_type::iterator;
+    using iterator      = internal_string_type::iterator;
+    using rule_iterator = std::map<index_type, Rule*>::iterator;
 
     RewriteTrie() : RewriterBase(true), _rules(), _trie() {}
 
     RewriteTrie(const RewriteTrie& that);
+
     RewriteTrie& operator=(RewriteTrie const& that) {
       init();
       RewriterBase::operator=(that);
@@ -459,6 +461,14 @@ namespace libsemigroups {
       return *this;
     }
 
+    rule_iterator rules_begin() {
+      return _rules.begin();
+    }
+
+    rule_iterator rules_end() {
+      return _rules.end();
+    }
+
     void all_overlaps() {
       // For each active rule, get the corresponding terminal node.
       for (auto node_it = _rules.begin(); node_it != _rules.end(); ++node_it) {
@@ -469,6 +479,16 @@ namespace libsemigroups {
           add_overlaps(node_it->second, link, _trie.height(link));
           link = _trie.suffix_link(link);
         }
+      }
+    }
+
+    void rule_overlaps(index_type node) {
+      index_type link = _trie.suffix_link(node);
+      while (link != _trie.root) {
+        // For each suffix link, add an overlap between rule and every other
+        // rule that corresponds to a terminal descendant of link
+        add_overlaps(_rules[node], link, _trie.height(link));
+        link = _trie.suffix_link(link);
       }
     }
 
