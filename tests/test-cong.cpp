@@ -1214,7 +1214,7 @@ namespace libsemigroups {
       }
 
       Words w;
-      w.letters(2).min(0).max(5);
+      w.number_of_letters(2).min(0).max(5);
 
       REQUIRE(w.count() == 31);
 
@@ -1242,7 +1242,7 @@ namespace libsemigroups {
     REQUIRE(!cong.get<ToddCoxeter>()->finished());
 
     Words w;
-    w.letters(p.alphabet().size()).min(1).max(4);
+    w.number_of_letters(p.alphabet().size()).min(1).max(4);
     REQUIRE(w.count() == 399);
     REQUIRE(cong.get<Kambites<word_type>>()->presentation().alphabet()
             == word_type({0, 1, 2, 3, 4, 5, 6}));

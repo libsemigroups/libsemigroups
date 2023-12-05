@@ -29,7 +29,7 @@ def __accepts(*types):
         assert len(types) == f.__code__.co_argcount
 
         def new_f(*args, **kwds):
-            for (a, t) in zip(args, types):
+            for a, t in zip(args, types):
                 assert isinstance(a, t), "arg %r does not match %s" % (a, t)
             return f(*args, **kwds)
 
@@ -60,10 +60,10 @@ def doxygen_filename(class_n):
     class_n = p.sub("_1_1", class_n)
     p = re.compile(r"([A-Z])")
     class_n = p.sub(r"_\1", class_n).lower()
-    if os.path.isfile("docs/build/xml/class" + class_n + ".xml"):
-        return "docs/build/xml/class" + class_n + ".xml"
-    elif os.path.isfile("build/xml/struct" + class_n + ".xml"):
-        return "docs/build/xml/struct" + class_n + ".xml"
+    if os.path.isfile("docs/xml/class" + class_n + ".xml"):
+        return "docs/xml/class" + class_n + ".xml"
+    elif os.path.isfile("xml/struct" + class_n + ".xml"):
+        return "docs/xml/struct" + class_n + ".xml"
     raise FileNotFoundError("couldn't find the doxygen file for " + class_n)
 
 

@@ -164,7 +164,7 @@ namespace libsemigroups {
     REQUIRE(s.current_size() == 8'205);
 
     Strings strings;
-    strings.letters(p.alphabet()).min(1).max(4);
+    strings.alphabet(p.alphabet()).min(1).max(4);
     REQUIRE(strings.count() == 399);
     REQUIRE(non_trivial_classes(k, strings)
             == std::vector<std::vector<std::string>>({{"dg", "ef"},
@@ -539,7 +539,7 @@ namespace libsemigroups {
     REQUIRE(number_of_words(3, 4, 16) == 21'523'320);
 
     Strings s;
-    s.letters("cab").first("aabc").last("aaabc");
+    s.alphabet("cab").first("aabc").last("aaabc");
     REQUIRE((s | count()) == 162);
 
     s.first("cccc").last("ccccc");
@@ -759,7 +759,7 @@ namespace libsemigroups {
     REQUIRE(k.number_of_classes() == POSITIVE_INFINITY);
 
     Strings lhs;
-    lhs.letters("abcdefghijkl").first("a").last("bgdk");
+    lhs.alphabet("abcdefghijkl").first("a").last("bgdk");
     Strings rhs = lhs;
 
     REQUIRE((lhs | count()) == 4'522);
@@ -957,7 +957,7 @@ namespace libsemigroups {
     Kambites<T> k(p);
 
     Strings s;
-    s.letters("abcd").first("a").last("aaaa");
+    s.alphabet("abcd").first("a").last("aaaa");
     REQUIRE((s | all_of([&k](auto& w) { return k.normal_form(w) == w; })));
 
     s.first("aaaa").last("aaaaa");
@@ -1384,7 +1384,7 @@ namespace libsemigroups {
     REQUIRE(number_of_words(4, 4, 6) == 1280);
 
     Strings s;
-    s.letters("abcd").first("aaaa").last("aaaaaa");
+    s.alphabet("abcd").first("aaaa").last("aaaaaa");
     REQUIRE(
         (s | filter([&k](auto& w) { return k.contains("acba", w); }) | count())
         == 3);
@@ -1427,7 +1427,7 @@ namespace libsemigroups {
     REQUIRE(k.contains("aabcabc", k.normal_form("acbacba")));
 
     Strings s;
-    s.letters("abcd").first("aaaa").last("aaaaaa");
+    s.alphabet("abcd").first("aaaa").last("aaaaaa");
 
     REQUIRE(
         (s | filter([&k](auto& w) { return k.contains("acba", w); }) | count())
@@ -1464,7 +1464,7 @@ namespace libsemigroups {
     REQUIRE(k.contains("aeebbcaeebbc", k.normal_form("bceacdabcd")));
 
     Strings s;
-    s.letters("abcd").first("aaaa").last("aaaaaa");
+    s.alphabet("abcd").first("aaaa").last("aaaaaa");
 
     REQUIRE(
         (s | filter([&k](auto& w) { return k.contains("acba", w); }) | count())
@@ -1647,7 +1647,7 @@ namespace libsemigroups {
   template <typename T>
   auto count_2_gen_1_rel(size_t min, size_t max) {
     Strings x;
-    x.letters("ab").min(min).max(max);
+    x.alphabet("ab").min(min).max(max);
     Strings y = x;
 
     uint64_t total_c4 = 0;

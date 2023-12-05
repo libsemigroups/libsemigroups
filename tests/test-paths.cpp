@@ -328,9 +328,10 @@ namespace libsemigroups {
 
     Words w;
 
-    auto expected2 = (w.letters(2).min(0).max(N) | filter([&ad](auto const& w) {
-                        return word_graph::follow_path(ad, 0, w) == 4;
-                      }));
+    auto expected2
+        = (w.number_of_letters(2).min(0).max(N) | filter([&ad](auto const& w) {
+             return word_graph::follow_path(ad, 0, w) == 4;
+           }));
     REQUIRE((expected2 | count()) == 131'062);
 
     p.order(Order::shortlex).max(N);
@@ -483,10 +484,11 @@ namespace libsemigroups {
     size_t const N = 18;
 
     Words w;
-    expected = (w.letters(2).min(0).max(N) | filter([&ad](auto const& w) {
-                  return word_graph::follow_path(ad, 0, w) == 4;
-                })
-                | to_vector());
+    expected
+        = (w.number_of_letters(2).min(0).max(N) | filter([&ad](auto const& w) {
+             return word_graph::follow_path(ad, 0, w) == 4;
+           })
+           | to_vector());
     REQUIRE(expected.size() == 131'062);
 
     p.order(Order::shortlex).from(0).to(4).min(0).max(N);

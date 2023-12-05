@@ -1782,7 +1782,7 @@ namespace libsemigroups {
     presentation::add_idempotent_rules_no_checks(p, 01_w);
     using words::operator+;
     Words words;
-    words.letters(2).min(0).max(3);
+    words.number_of_letters(2).min(0).max(3);
     size_t n = 2;
     for (size_t a = 0; a < n - 1; ++a) {
       for (size_t b = a; b < n - 1; ++b) {

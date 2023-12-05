@@ -1,0 +1,24 @@
+libsemigroups::Words:
+- Constructors:
+  - Words()
+  - init()
+  - Words(Words const&)
+  - operator=(Words const&)
+- Member functions:
+  - get() const noexcept
+  - next() noexcept
+  - at_end() const noexcept
+  - size_hint() const noexcept 
+  - count() const noexcept;
+  - number_of_letters(size_type) noexcept 
+  - number_of_letters() const noexcept 
+  - first(word_type const&) 
+  - first() const noexcept 
+  - last(word_type const&) 
+  - last() const noexcept 
+  - order(Order);
+  - order() const noexcept 
+  - upper_bound(size_type) 
+  - upper_bound() const noexcept 
+  - min(size_type) 
+  - max(size_type) 

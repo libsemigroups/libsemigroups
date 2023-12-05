@@ -239,7 +239,7 @@ namespace libsemigroups {
     REQUIRE(nf.count() == 62);
 
     Strings s;
-    s.letters(p.alphabet()).min(1).max(6);
+    s.alphabet(p.alphabet()).min(1).max(6);
     REQUIRE(equal(s, nf | ToStrings(p.alphabet())));
   }
 

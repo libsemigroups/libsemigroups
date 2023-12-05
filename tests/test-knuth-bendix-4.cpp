@@ -616,11 +616,11 @@ namespace libsemigroups {
     auto rg = ReportGuard(false);
 
     Strings lhss;
-    lhss.letters("ab").min(1).max(11);
+    lhss.alphabet("ab").min(1).max(11);
     REQUIRE((lhss | count()) == 2'046);
 
     Strings rhss;
-    rhss.letters("ab").max(11);
+    rhss.alphabet("ab").max(11);
 
     size_t total_c4 = 0;
     size_t total    = 0;
