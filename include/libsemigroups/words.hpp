@@ -20,8 +20,6 @@
 // converting) in libsemigroups.
 
 // TODO:
-// * doc
-// * code coverage
 // * iwyu
 // * nodiscard
 
@@ -34,7 +32,6 @@
 #include <initializer_list>  // for initializer_list
 #include <iterator>          // for distance
 #include <string>            // for basic_string
-#include <type_traits>       // for decay_t
 #include <utility>           // for forward
 #include <variant>           // for visit, operator==
 #include <vector>            // for vector, operator==
@@ -55,7 +52,7 @@ namespace libsemigroups {
   // Words
   ////////////////////////////////////////////////////////////////////////
 
-  //! \defgroup Words
+  //! \defgroup Words "Words"
   //! This page contains details of the functionality in \c libsemigroups
   //! related to generating words in a given range and in a given order.
 
@@ -551,7 +548,7 @@ namespace libsemigroups {
     //!
     //! \exception
     //! \noexcept
-    Words& letters(size_type n) noexcept {
+    Words& number_of_letters(size_type n) noexcept {
       _current_valid &= (n == _number_of_letters);
       _number_of_letters = n;
       return *this;
@@ -565,7 +562,7 @@ namespace libsemigroups {
     //!
     //! \exception
     //! \noexcept
-    [[nodiscard]] size_type letters() const noexcept {
+    [[nodiscard]] size_type number_of_letters() const noexcept {
       return _number_of_letters;
     }
 
@@ -662,7 +659,7 @@ namespace libsemigroups {
     //! Sets an upper bound for the length of a word in a Words object.
     //! This setting is only used if order() is Order::lex.
     //!
-    //! \param val the upper bound.
+    //! \param n the upper bound.
     //!
     //! \returns A reference to \c *this.
     //!
@@ -762,8 +759,6 @@ namespace libsemigroups {
     auto end() const noexcept {
       return rx::end(*this);
     }
-
-    // TODO impl swap for consistency with Strings
   };
 
   ////////////////////////////////////////////////////////////////////////
@@ -978,7 +973,7 @@ namespace libsemigroups {
   //! appended to the end after these chars are \f$[0,48)\f$, \f$[58, 65)\f$,
   //! \f$[91, 97)\f$, \f$[123, 255)\f$.
   //!
-  //! This function is the inverse of \ref human_readable_letter.
+  //! This function is the inverse of \ref human_readable_index.
   //!
   //! \param i the index of the character.
   //!
@@ -1257,7 +1252,7 @@ namespace libsemigroups {
     //! \exception
     //! \noexcept
     // TODO rename to alphabet for consistence with Presentation
-    Strings& letters(std::string const& x);
+    Strings& alphabet(std::string const& x);
 
     //! \brief The current alphabet.
     //!
@@ -1268,7 +1263,7 @@ namespace libsemigroups {
     //! \exception
     //! \noexcept
     // TODO rename to alphabet for consistence with Presentation
-    [[nodiscard]] std::string const& letters() const noexcept {
+    [[nodiscard]] std::string const& alphabet() const noexcept {
       return _letters;
     }
 
@@ -1371,7 +1366,7 @@ namespace libsemigroups {
     //! Sets an upper bound for the length of a string in a Strings object.
     //! This setting is only used if order() is Order::lex.
     //!
-    //! \param val the upper bound.
+    //! \param n the upper bound.
     //!
     //! \returns A reference to \c *this.
     //!
@@ -1538,7 +1533,7 @@ namespace libsemigroups {
     //! Default destructor.
     ~ToWords() = default;
 
-    //! \brief Construct from \ref std::string_view
+    //! \brief Construct from `std::string_view`
     //!
     //! Constructs a ToWords object using the specified alphabet. The position
     //! of each character in the alphabet \p lttrs is the corresponding letter
@@ -1609,7 +1604,7 @@ namespace libsemigroups {
   //! Defined in `words.hpp`.
   //!
   //! A custom combinator for rx::ranges to convert the output of a Words
-  //! object (or any other range with \ref output_type equal to \ref
+  //! object (or any other range with \c output_type equal to \ref
   //! word_type) into \ref std::string, that can be combined with other
   //! combinators using `operator|`.
   //!
@@ -1662,7 +1657,7 @@ namespace libsemigroups {
     //! Default destructor.
     ~ToStrings() = default;
 
-    //! \brief Construct from \ref std::string_view
+    //! \brief Construct from `std::string_view`
     //!
     //! Constructs a ToStrings object using the specified alphabet.
     //!
@@ -1756,7 +1751,7 @@ namespace libsemigroups {
     //! will not compile because it is interpreted as an invalid octal. However
     //! `"08"_w` behaves as expected.
     //! * if \p w consists of characters in `a-zA-Z`, then the output is
-    //! the same as that of `to_word(w)`, see \ref to_word(std::string const&).
+    //! the same as that of `to_word(w)`, see \ref to_word(std::string_view).
     //!
     //! \param w the letters of the word
     //! \param n the length of \p w (defaults to the length of \p w)
@@ -1865,10 +1860,10 @@ namespace libsemigroups {
     //! \anchor operator_plus_equals
     //! \brief Concatenate a word with another word in-place.
     //!
-    //! Changes \c u to `u + w` in-place. See \ref operator_plus "operator+".
+    //! Changes \c u to `u + v` in-place. See \ref operator_plus "operator+".
     //!
     //! \param u a word
-    //! \param w a word
+    //! \param v a word
     //!
     //! \exception
     //! \no_libsemigroups_except
@@ -1905,9 +1900,6 @@ namespace libsemigroups {
     //! \param w the word
     //! \param n the power
     //!
-    //! \returns
-    //! (None)
-    //!
     //! \exception
     //! \no_libsemigroups_except
     template <typename Word>
@@ -1921,7 +1913,7 @@ namespace libsemigroups {
     //!
     //! \tparam Word the type of the first parameter.
     //!
-    //! \param w the word to power
+    //! \param x the word to power
     //! \param n the power
     //!
     //! \returns A Word
@@ -2090,7 +2082,6 @@ namespace libsemigroups {
     // pow - implementation
     ////////////////////////////////////////////////////////////////////////
 
-    // HERE
     template <typename Word>
     void pow_inplace(Word& x, size_t n) {
       Word y(x);

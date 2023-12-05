@@ -126,7 +126,7 @@ namespace libsemigroups {
     Words words;
     words.first(first).last(last);
     REQUIRE(words.count() == 0);
-    words.letters(2);
+    words.number_of_letters(2);
     REQUIRE(words.count() == 14);
   }
 
@@ -471,7 +471,11 @@ namespace libsemigroups {
     size_t const n = 2;
 
     Words words;
-    words.order(Order::lex).letters(n).upper_bound(m + 1).min(1).max(m + 1);
+    words.order(Order::lex)
+        .number_of_letters(n)
+        .upper_bound(m + 1)
+        .min(1)
+        .max(m + 1);
     REQUIRE(words.get() == 0_w);
     words.next();
     REQUIRE(words.get() == 00_w);
@@ -508,13 +512,13 @@ namespace libsemigroups {
     REQUIRE(move.first() == 0_w);
     REQUIRE(move.last() == pow(0_w, 28));
     REQUIRE(move.count() == 25);
-    REQUIRE(move.letters() == 2);
+    REQUIRE(move.number_of_letters() == 2);
 
     Words more;
     REQUIRE(more.at_end());
     REQUIRE_NOTHROW(more.next());
     REQUIRE(more.get() == ""_w);
-    REQUIRE(more.letters() == 0);
+    REQUIRE(more.number_of_letters() == 0);
     REQUIRE(more.order() == Order::shortlex);
     REQUIRE(more.is_finite);
     REQUIRE(more.is_idempotent);
@@ -523,14 +527,14 @@ namespace libsemigroups {
     REQUIRE(equal(more, move.init()));
 
     Words swap;
-    swap.letters(3).first("abc"_w).last("abcbcbcbcb"_w);
+    swap.number_of_letters(3).first("abc"_w).last("abcbcbcbcb"_w);
     std::swap(swap, more);
     REQUIRE(equal(move, swap));
     REQUIRE(swap.upper_bound() == move.upper_bound());
     REQUIRE(swap.first() == move.first());
     REQUIRE(swap.last() == move.last());
     REQUIRE(swap.count() == move.count());
-    REQUIRE(swap.letters() == move.letters());
+    REQUIRE(swap.number_of_letters() == move.number_of_letters());
   }
 
   LIBSEMIGROUPS_TEST_CASE("Strings",
@@ -540,7 +544,7 @@ namespace libsemigroups {
     Strings strings;
 
     strings.order(Order::lex)
-        .letters("a")
+        .alphabet("a")
         .first("")
         .last("aaaaaaaaaa")
         .upper_bound(10);
@@ -556,10 +560,10 @@ namespace libsemigroups {
                                          "aaaaaaa",
                                          "aaaaaaaa",
                                          "aaaaaaaaa"}));
-    strings.letters("");
+    strings.alphabet("");
     REQUIRE((strings | count()) == 1);
 
-    strings.letters("a").upper_bound(4).first("aa");
+    strings.alphabet("a").upper_bound(4).first("aa");
     REQUIRE((strings | to_vector()) == std::vector<std::string>({"aa", "aaa"}));
   }
 
@@ -569,7 +573,7 @@ namespace libsemigroups {
                           "[lex][quick]") {
     Strings strings;
     strings.order(Order::lex)
-        .letters("ab")
+        .alphabet("ab")
         .first("aaaaaaaaaa")
         .last("")
         .upper_bound(4);
@@ -591,7 +595,7 @@ namespace libsemigroups {
                           "lex | alphabet = ab | min = 1 | max = 4",
                           "[lex][quick]") {
     Strings strings;
-    strings.letters("ab")
+    strings.alphabet("ab")
         .order(Order::lex)
         .upper_bound(4)
         .first("a")
@@ -631,7 +635,7 @@ namespace libsemigroups {
                                        111_w}));
     REQUIRE(is_sorted(strings, LexicographicalCompare()));
 
-    strings.letters("ba").first("b").last("aaaaa");
+    strings.alphabet("ba").first("b").last("aaaaa");
     REQUIRE((strings | count()) == 14);
     REQUIRE((strings | to_vector())
             == std::vector<std::string>({"b",
@@ -656,7 +660,7 @@ namespace libsemigroups {
                           "[lex][quick][no-valgrind]") {
     Strings strings;
     strings.order(Order::lex)
-        .letters("abc")
+        .alphabet("abc")
         .upper_bound(13)
         .first("")
         .last(std::string(13, 'c'));
@@ -674,7 +678,7 @@ namespace libsemigroups {
     auto    last  = "bbbb";
     Strings strings;
 
-    strings.letters("ab").first(first).last(last).upper_bound(5).order(
+    strings.alphabet("ab").first(first).last(last).upper_bound(5).order(
         Order::lex);
 
     auto it = begin(strings);
@@ -706,7 +710,7 @@ namespace libsemigroups {
                           "shortlex | alphabet = a | min = 0 | max = 10",
                           "[shortlex][quick]") {
     Words words;
-    words.letters(1).min(0).max(10);
+    words.number_of_letters(1).min(0).max(10);
 
     auto w = (words | ToStrings("a"));
     REQUIRE((w | count()) == 10);
@@ -732,14 +736,14 @@ namespace libsemigroups {
                           "[shortlex][quick]") {
     Strings strings;
     // TODO first and last throw if they contain letters not in the alphabet
-    strings.letters("ab").last("").first("bbaaab");
+    strings.alphabet("ab").last("").first("bbaaab");
 
     REQUIRE((strings | count()) == 0);
 
     strings.first("").last("");
     REQUIRE((strings | count()) == 0);
 
-    strings.letters("ab").first("a").last("aa");
+    strings.alphabet("ab").first("a").last("aa");
     REQUIRE((strings | count()) == 2);
     REQUIRE((strings | to_vector()) == std::vector<std::string>({"a", "b"}));
 
@@ -773,7 +777,7 @@ namespace libsemigroups {
                           "[shortlex][quick]") {
     Strings strings;
 
-    strings.letters("ab").first("a").last("aaaa");
+    strings.alphabet("ab").first("a").last("aaaa");
     REQUIRE((strings | to_vector())
             == std::vector<std::string>({"a",
                                          "b",
@@ -793,10 +797,10 @@ namespace libsemigroups {
     REQUIRE((strings | count()) == 14);
     REQUIRE(is_sorted(strings, ShortLexCompare()));
 
-    strings.letters("ab").first("a").last("bbbbb");
+    strings.alphabet("ab").first("a").last("bbbbb");
     REQUIRE(is_sorted(strings, ShortLexCompare()));
 
-    strings.letters("ba").first("b").last("bbbb");
+    strings.alphabet("ba").first("b").last("bbbb");
     REQUIRE((strings | to_vector())
             == std::vector<std::string>({"b",
                                          "a",
@@ -819,7 +823,7 @@ namespace libsemigroups {
                           "shortlex | alphabet = abc | min = 0 | max = 13",
                           "[shortlex][quick][no-valgrind]") {
     Strings strings;
-    strings.letters("abc").max(13);
+    strings.alphabet("abc").max(13);
     REQUIRE((strings | count()) == number_of_words(3, 0, 13));
     REQUIRE(strings.count() == 797'161);
     REQUIRE(is_sorted(strings, ShortLexCompare()));
@@ -833,7 +837,7 @@ namespace libsemigroups {
     auto    last  = "bbbb";
     Strings strings;
 
-    strings.letters("ab").first(first).last(last).upper_bound(5).order(
+    strings.alphabet("ab").first(first).last(last).upper_bound(5).order(
         Order::shortlex);
     auto it = begin(strings);
     REQUIRE(*it == "aaa");
@@ -865,7 +869,7 @@ namespace libsemigroups {
 
     Strings strings;
     strings.order(Order::lex)
-        .letters("ab")
+        .alphabet("ab")
         .upper_bound(m + 1)
         .min(1)
         .max(m + 1);
@@ -901,13 +905,13 @@ namespace libsemigroups {
     REQUIRE(move.first() == "a");
     REQUIRE(move.last() == pow("a", 28));
     REQUIRE(move.count() == 25);
-    REQUIRE(move.letters() == "ab");
+    REQUIRE(move.alphabet() == "ab");
 
     Strings more;
     REQUIRE(more.at_end());
     REQUIRE_NOTHROW(more.next());
     REQUIRE(more.get() == "");
-    REQUIRE(more.letters() == "");
+    REQUIRE(more.alphabet() == "");
     REQUIRE(more.order() == Order::shortlex);
     REQUIRE(more.is_finite);
     REQUIRE(more.is_idempotent);
@@ -921,17 +925,17 @@ namespace libsemigroups {
     REQUIRE(move2.first() == "a");
     REQUIRE(move2.last() == pow("a", 28));
     REQUIRE(move2.count() == 25);
-    REQUIRE(move2.letters() == "ab");
+    REQUIRE(move2.alphabet() == "ab");
 
     Strings swap;
-    swap.letters("abc").first("abc").last("abcbcbcbcb");
+    swap.alphabet("abc").first("abc").last("abcbcbcbcb");
     std::swap(swap, move2);
     REQUIRE(equal(move, swap));
     REQUIRE(swap.upper_bound() == 28);
     REQUIRE(swap.first() == "a");
     REQUIRE(swap.last() == pow("a", 28));
     REQUIRE(swap.count() == 25);
-    REQUIRE(swap.letters() == "ab");
+    REQUIRE(swap.alphabet() == "ab");
 
     for (auto const& s : swap) {
       REQUIRE(s.size() > 0);
@@ -1165,9 +1169,9 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("ToWords", "039", "code coverage", "[quick]") {
     Strings strings;
-    strings.letters("ab").first("a").last("bbbb");
+    strings.alphabet("ab").first("a").last("bbbb");
 
-    REQUIRE((strings | ToWords(strings.letters()) | to_vector())
+    REQUIRE((strings | ToWords(strings.alphabet()) | to_vector())
             == std::vector<word_type>(
                 {0_w,    1_w,    00_w,   01_w,   10_w,   11_w,   000_w,  001_w,
                  010_w,  011_w,  100_w,  101_w,  110_w,  111_w,  0000_w, 0001_w,
@@ -1207,7 +1211,7 @@ namespace libsemigroups {
     using words::pow;
 
     Words words;
-    words.letters(2).first(0_w).last(pow(1_w, 3));
+    words.number_of_letters(2).first(0_w).last(pow(1_w, 3));
 
     REQUIRE((words | ToStrings("ba") | to_vector())
             == std::vector<std::string>({"b",
@@ -1268,8 +1272,7 @@ namespace libsemigroups {
                                          "yxy",
                                          "yyx"}));
     using words::pow;
-    words.letters(10).first(pow(0_w, 100)).last(pow(1_w, 1'000));
-    // Tests ToStrings::Range<Words>::begin/end
+    words.number_of_letters(10).first(pow(0_w, 100)).last(pow(1_w, 1'000));
     for (auto const& s :
          words | ToStrings("abcdefghij") | skip_n(1'000) | take(1)) {
       REQUIRE(s

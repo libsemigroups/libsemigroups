@@ -465,9 +465,9 @@ namespace libsemigroups {
   Strings& Strings::operator=(Strings&&)      = default;
   Strings::~Strings()                         = default;
 
-  Strings& Strings::letters(std::string const& x) {
+  Strings& Strings::alphabet(std::string const& x) {
     _current_valid = false;
-    _words.letters(x.size());
+    _words.number_of_letters(x.size());
     _letters = x;
     _to_word.init(x);
     return *this;
