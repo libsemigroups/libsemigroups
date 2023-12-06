@@ -383,7 +383,7 @@ namespace libsemigroups {
   //! The order and range of the words in a Words instance can be set using the
   //! member functions:
   //! * \ref order
-  //! * \ref letters
+  //! * \ref number_of_letters
   //! * \ref min
   //! * \ref max
   //! * \ref first
@@ -393,7 +393,7 @@ namespace libsemigroups {
   //! \code
   //! Words words;
   //! words.order(Order::shortlex) // words in shortlex order
-  //!      .letters(2)             // on 2 letters
+  //!      .number_of_letters(2)   // on 2 letters
   //!      .min(1)                 // of length in the range from 1
   //!      .max(5);                // to 5
   //! \endcode
@@ -1052,7 +1052,7 @@ namespace libsemigroups {
   //! \ingroup Words
   //! \brief Convert a word_type to a string.
   //!
-  //! See to_string(std::string const&, Iterator, Iterator, std::string&)
+  //! See to_string(std::string_view, Iterator, Iterator, std::string&)
   //! the difference is that this function returns a new string.
   [[nodiscard]] static inline std::string to_string(std::string_view alphabet,
                                                     word_type const& input) {
@@ -1082,7 +1082,7 @@ namespace libsemigroups {
   //! The order and range of the words in a Strings instance can be set using
   //! the member functions:
   //! * \ref order
-  //! * \ref letters
+  //! * \ref alphabet
   //! * \ref min
   //! * \ref max
   //! * \ref first
@@ -1092,7 +1092,7 @@ namespace libsemigroups {
   //! \code
   //! Strings strings;
   //! strings.order(Order::shortlex) // strings in shortlex order
-  //!        .letters(2)             // on 2 letters
+  //!        .alphabet("ab")         // on 2 letters
   //!        .min(1)                 // of length in the range from 1
   //!        .max(5);                // to 5
   //! \endcode
@@ -1249,9 +1249,7 @@ namespace libsemigroups {
     //!
     //! \returns A reference to \c *this.
     //!
-    //! \exception
-    //! \noexcept
-    // TODO rename to alphabet for consistence with Presentation
+    //! \throws LibsemigroupsException if \p x contains repeated letters.
     Strings& alphabet(std::string const& x);
 
     //! \brief The current alphabet.
@@ -1262,7 +1260,6 @@ namespace libsemigroups {
     //!
     //! \exception
     //! \noexcept
-    // TODO rename to alphabet for consistence with Presentation
     [[nodiscard]] std::string const& alphabet() const noexcept {
       return _letters;
     }

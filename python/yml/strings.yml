@@ -1,0 +1,24 @@
+libsemigroups::Strings:
+- Constructors:
+  - Strings()
+  - init()
+  - Strings(Strings const&)
+  - operator=(Strings const&)
+- Member functions:
+  - get() const noexcept
+  - next() noexcept
+  - at_end() const noexcept
+  - size_hint() const noexcept 
+  - count() const noexcept;
+  - alphabet(std::string const&) noexcept 
+  - alphabet() const noexcept 
+  - first(std::string const&) 
+  - first() const noexcept 
+  - last(std::string const&) 
+  - last() const noexcept 
+  - order(Order);
+  - order() const noexcept 
+  - upper_bound(size_type) 
+  - upper_bound() const noexcept 
+  - min(size_type) 
+  - max(size_type) 

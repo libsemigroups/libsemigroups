@@ -882,6 +882,8 @@ namespace libsemigroups {
     REQUIRE(strings.last() == pow("a", 28));
     REQUIRE(strings.count() == 26);
 
+    REQUIRE_THROWS_AS(strings.alphabet("aba"), LibsemigroupsException);
+
     REQUIRE_THROWS_AS(strings.order(Order::none), LibsemigroupsException);
     REQUIRE_THROWS_AS(strings.order(Order::recursive), LibsemigroupsException);
 

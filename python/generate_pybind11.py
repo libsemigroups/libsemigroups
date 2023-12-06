@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
 """
-This module generates the documentation pages in docs/source/_generated from
-the yml files in docs/yml.
+This module partially generates pybind11 bindings from the yml files in
+libsemigroups/python/yml and from the doxygen output in docs/xml.
 """
-import datetime
 import os
 import re
 import sys
