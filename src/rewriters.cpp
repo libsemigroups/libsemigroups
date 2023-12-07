@@ -435,4 +435,201 @@ namespace libsemigroups {
       return confluent_impl(seen);
     }
   }
+
+  RewriteTrie& RewriteTrie::operator=(RewriteTrie const& that) {
+    init();
+    RewriterBase::operator=(that);
+    for (auto* crule : that) {
+      Rule* rule = const_cast<Rule*>(crule);
+      add_rule_to_trie(rule);
+    }
+    return *this;
+  }
+
+  void RewriteTrie::all_overlaps() {
+    // For each active rule, get the corresponding terminal node.
+    for (auto node_it = _rules.begin(); node_it != _rules.end(); ++node_it) {
+      index_type link = _trie.suffix_link(node_it->first);
+      while (link != _trie.root) {
+        // For each suffix link, add an overlap between rule and every other
+        // rule that corresponds to a terminal descendant of link
+        add_overlaps(node_it->second, link, _trie.height(link));
+        link = _trie.suffix_link(link);
+      }
+    }
+  }
+
+  void RewriteTrie::rule_overlaps(index_type node) {
+    index_type link = _trie.suffix_link(node);
+    while (link != _trie.root) {
+      // For each suffix link, add an overlap between rule and every other
+      // rule that corresponds to a terminal descendant of link
+      add_overlaps(_rules[node], link, _trie.height(link));
+      link = _trie.suffix_link(link);
+    }
+  }
+
+  void RewriteTrie::add_overlaps(Rule*      rule,
+                                 index_type node,
+                                 size_t     overlap_length) {
+    // BFS find the terminal descendants of node and add overlaps with rule
+    if (_trie.node(node).is_terminal()) {
+      Rule const*             rule2 = _rules.find(node)->second;
+      detail::MultiStringView x(rule->lhs()->cbegin(),
+                                rule->lhs()->cend() - overlap_length);
+      x.append(rule2->rhs()->cbegin(), rule2->rhs()->cend());
+      detail::MultiStringView y(rule->rhs()->cbegin(), rule->rhs()->cend());
+      y.append(rule2->lhs()->cbegin() + overlap_length,
+               rule2->lhs()->cend());  // rule = AQ_j -> Q_iC
+      add_pending_rule(x, y);
+    }
+    for (auto a = alphabet_cbegin(); a != alphabet_cend(); ++a) {
+      auto child = _trie.child(node, static_cast<letter_type>(*a));
+      if (child != UNDEFINED) {
+        add_overlaps(rule, child, overlap_length);
+      }
+    }
+  }
+
+  void RewriteTrie::rewrite(internal_string_type& u) const {
+    // Check if u is rewriteable
+    if (u.size() < stats().min_length_lhs_rule) {
+      return;
+    }
+
+    std::stack<index_type> nodes;  // TODO better choice than stack?
+    index_type             current = _trie.root;
+    nodes.emplace(current);
+
+#ifdef LIBSEMIGROUPS_DEBUG
+    iterator v_begin = u.begin();
+#endif
+    iterator v_end   = u.begin();
+    iterator w_begin = v_end;
+    iterator w_end   = u.end();
+
+    while (w_begin != w_end) {
+      // Read first letter of W and traverse trie
+      auto x = *w_begin;
+      ++w_begin;
+      current = _trie.traverse_from(current, static_cast<letter_type>(x));
+
+      if (!_trie.node(current).is_terminal()) {
+        nodes.emplace(current);
+        *v_end = x;
+        ++v_end;
+      } else {
+        // Find rule that corresponds to terminal node
+        Rule const* rule     = _rules.find(current)->second;
+        auto        lhs_size = rule->lhs()->size();
+
+        // Check the lhs is smaller than the portion of the word that has
+        // been read
+        LIBSEMIGROUPS_ASSERT(lhs_size
+                             <= static_cast<size_t>(v_end - v_begin) + 1);
+        v_end -= lhs_size - 1;
+        w_begin -= rule->rhs()->size();
+        detail::string_replace(
+            w_begin, rule->rhs()->cbegin(), rule->rhs()->cend());
+        for (size_t i = 0; i < lhs_size - 1; ++i) {
+          nodes.pop();
+        }
+        current = nodes.top();
+      }
+    }
+    u.erase(v_end - u.cbegin());
+  }
+
+  [[nodiscard]] bool RewriteTrie::confluent() const {
+    if (number_of_pending_rules() != 0) {
+      set_cached_confluent(tril::FALSE);
+      return false;
+    } else if (confluence_known()) {
+      return RewriterBase::cached_confluent();
+    }
+
+    for (auto it = begin(); it != end(); ++it) {
+      if (!backtrack_confluence(
+              *it,
+              _trie.traverse((*it)->lhs()->cbegin() + 1, (*it)->lhs()->cend()),
+              0)) {
+        set_cached_confluent(tril::FALSE);
+        return false;
+      }
+    }
+    // Set cached value
+    set_cached_confluent(tril::TRUE);
+    return true;
+  }
+
+  [[nodiscard]] bool
+  RewriteTrie::backtrack_confluence(Rule const* rule1,
+                                    index_type  current_node,
+                                    size_t      backtrack_depth) const {
+    if (current_node == _trie.root) {
+      return true;
+    }
+
+    if (_trie.height(current_node) <= backtrack_depth) {
+      return true;
+    }
+
+    // Don't check for overlaps of rules with lhs size 1
+    if (rule1->lhs()->size() == 1) {
+      return true;
+    }
+
+    if (_trie.node(current_node).is_terminal()) {
+      Rule const* rule2 = _rules.find(current_node)->second;
+      // Process overlap
+      // Word looks like ABC where the LHS of rule1 corresponds to AB,
+      // the LHS of rule2 corresponds to BC, and |C|=nodes.size() - 1.
+      // AB -> X, BC -> Y
+      // ABC gets rewritten to XC and AY
+      auto overlap_length = rule2->lhs()->length() - (backtrack_depth);  // |B|
+
+      internal_string_type word1;
+      internal_string_type word2;
+
+      word1.assign(*rule1->rhs());  // X
+      word1.append(rule2->lhs()->cbegin() + overlap_length,
+                   rule2->lhs()->cend());  // C
+
+      word2.assign(rule1->lhs()->cbegin(),
+                   rule1->lhs()->cend() - overlap_length);  // A
+      word2.append(*rule2->rhs());                          // Y
+
+      if (word1 != word2) {
+        rewrite(word1);
+        rewrite(word2);
+        if (word1 != word2) {
+          set_cached_confluent(tril::FALSE);
+          return false;
+        }
+      }
+      return true;
+    }
+
+    for (auto x = alphabet_cbegin(); x != alphabet_cend(); ++x) {
+      if (!backtrack_confluence(
+              rule1,
+              _trie.traverse_from(current_node, static_cast<letter_type>(*x)),
+              backtrack_depth + 1)) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  Rules::iterator RewriteTrie::make_active_rule_pending(Rules::iterator it) {
+    Rule* rule = const_cast<Rule*>(*it);
+    rule->deactivate();  // Done in Rules::erase_from
+    add_pending_rule(rule);
+    index_type node
+        = _trie.rm_word_no_checks(rule->lhs()->cbegin(), rule->lhs()->cend());
+    _rules.erase(node);
+    // TODO Add assertion that checks number of rules stored in trie is
+    // equal to number of rules in number_of_active_rules()
+    return Rules::erase_from_active_rules(it);
+  }
 }  // namespace libsemigroups
