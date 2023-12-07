@@ -469,7 +469,6 @@ namespace libsemigroups {
 
     void rewrite(internal_string_type& u) const;
 
-    // TODO Better option than vector of unordered_sets
     [[nodiscard]] bool confluent() const;
 
     void add_rule(Rule* rule) {
