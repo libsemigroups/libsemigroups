@@ -497,9 +497,9 @@ namespace libsemigroups {
       return;
     }
 
-    std::stack<index_type> nodes;  // TODO better choice than stack?
-    index_type             current = _trie.root;
-    nodes.emplace(current);
+    std::vector<index_type> nodes;
+    index_type              current = _trie.root;
+    nodes.push_back(current);
 
 #ifdef LIBSEMIGROUPS_DEBUG
     iterator v_begin = u.begin();
@@ -515,7 +515,7 @@ namespace libsemigroups {
       current = _trie.traverse_from(current, static_cast<letter_type>(x));
 
       if (!_trie.node(current).is_terminal()) {
-        nodes.emplace(current);
+        nodes.push_back(current);
         *v_end = x;
         ++v_end;
       } else {
@@ -532,9 +532,9 @@ namespace libsemigroups {
         detail::string_replace(
             w_begin, rule->rhs()->cbegin(), rule->rhs()->cend());
         for (size_t i = 0; i < lhs_size - 1; ++i) {
-          nodes.pop();
+          nodes.pop_back();
         }
-        current = nodes.top();
+        current = nodes.back();
       }
     }
     u.erase(v_end - u.cbegin());
