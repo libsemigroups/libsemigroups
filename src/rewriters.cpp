@@ -474,6 +474,7 @@ namespace libsemigroups {
                                  size_t     overlap_length) {
     // BFS find the terminal descendants of node and add overlaps with rule
     if (_trie.node(node).is_terminal()) {
+      // TODO Add function that takes two rules and a length
       Rule const*             rule2 = _rules.find(node)->second;
       detail::MultiStringView x(rule->lhs()->cbegin(),
                                 rule->lhs()->cend() - overlap_length);

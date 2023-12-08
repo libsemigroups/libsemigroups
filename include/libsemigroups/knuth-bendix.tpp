@@ -576,7 +576,7 @@ namespace libsemigroups {
         }
       }
 
-      if (_rewriter.number_of_pending_rules() > _settings.batch_size) {
+      if (_rewriter.number_of_pending_rules() >= _settings.batch_size) {
         _rewriter.process_pending_rules();
       }
 
