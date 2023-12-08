@@ -59,7 +59,7 @@
 
 #include "libsemigroups/detail/report.hpp"  // for ReportGuard
 
-#include "rx/ranges.hpp"  // for operator|, Inner, to_v...
+#include "libsemigroups/ranges.hpp"  // for operator|, Inner, to_v...
 
 namespace libsemigroups {
 

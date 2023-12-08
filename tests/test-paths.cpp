@@ -50,7 +50,7 @@
 #include "libsemigroups/detail/report.hpp"  // for ReportGuard
 #include "libsemigroups/detail/stl.hpp"     // for hash
 
-#include "rx/ranges.hpp"  // for operator|, begin, end
+#include "libsemigroups/ranges.hpp"  // for operator|, begin, end
 
 namespace libsemigroups {
 
@@ -329,8 +329,8 @@ namespace libsemigroups {
     Words w;
 
     auto expected2
-        = (w.number_of_letters(2).min(0).max(N) | filter([&ad](auto const& w) {
-             return word_graph::follow_path(ad, 0, w) == 4;
+        = (w.number_of_letters(2).min(0).max(N) | filter([&ad](auto const& ww) {
+             return word_graph::follow_path(ad, 0, ww) == 4;
            }));
     REQUIRE((expected2 | count()) == 131'062);
 
@@ -485,8 +485,8 @@ namespace libsemigroups {
 
     Words w;
     expected
-        = (w.number_of_letters(2).min(0).max(N) | filter([&ad](auto const& w) {
-             return word_graph::follow_path(ad, 0, w) == 4;
+        = (w.number_of_letters(2).min(0).max(N) | filter([&ad](auto const& ww) {
+             return word_graph::follow_path(ad, 0, ww) == 4;
            })
            | to_vector());
     REQUIRE(expected.size() == 131'062);

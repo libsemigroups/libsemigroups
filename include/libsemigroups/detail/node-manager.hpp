@@ -26,10 +26,9 @@
 #include <cstdint>  // for uint32_t
 #include <vector>   // for vector
 
-#include <rx/ranges.hpp>
-
 #include "libsemigroups/constants.hpp"  // for UNDEFINED
 #include "libsemigroups/debug.hpp"      // for LIBSEMIGROUPS_ASSERT/DEBUG
+#include "libsemigroups/ranges.hpp"
 
 namespace libsemigroups {
   namespace detail {

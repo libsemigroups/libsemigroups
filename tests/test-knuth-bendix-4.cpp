@@ -60,7 +60,7 @@
 #include "libsemigroups/detail/stl.hpp"     // for apply_permutation
 #include "libsemigroups/detail/string.hpp"  // for random_string, operator<<
 
-#include "rx/ranges.hpp"  // for operator|, to_vector
+#include "libsemigroups/ranges.hpp"  // for operator|, to_vector
 
 namespace libsemigroups {
   congruence_kind constexpr twosided = congruence_kind::twosided;

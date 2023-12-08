@@ -40,9 +40,7 @@
 #include <utility>           // for move, pair
 #include <vector>            // for vector, operator!=
 
-#include "fmt/core.h"  // for format
-
-#include "rx/ranges.hpp"  // for seq, operator|, rx, take
+#include "ranges.hpp"  // for seq, operator|, rx, take
 
 #include "adapters.hpp"   // for Hash, EqualTo
 #include "constants.hpp"  // for Max, UNDEFINED, operator==
@@ -54,6 +52,7 @@
 #include "ukkonen.hpp"    // for GreedyReduceHelper, Ukkonen
 #include "words.hpp"      // for operator+
 
+#include "detail/fmt.hpp"     // for format
 #include "detail/report.hpp"  // for formatter<vector>
 #include "detail/string.hpp"  // for maximum_common_prefix
 #include "detail/uf.hpp"      // for Duf
@@ -1501,26 +1500,26 @@ namespace libsemigroups {
         // Check that we aren't actually about to remove one of the inverse
         // relations itself
         if (l.size() == 2 && r.empty()) {
-          auto it = map.find(l.front());
-          if (it != map.cend() && l.back() == inverses[it->second]) {
+          auto mit = map.find(l.front());
+          if (mit != map.cend() && l.back() == inverses[mit->second]) {
             continue;
           }
         }
 
         size_t const min = (l.size() + r.size()) % 2;
         while (l.size() - r.size() > min) {
-          auto it = map.find(l.back());
-          if (it != map.cend()) {
-            r.insert(r.end(), inverses[it->second]);
+          auto mit = map.find(l.back());
+          if (mit != map.cend()) {
+            r.insert(r.end(), inverses[mit->second]);
             l.erase(l.end() - 1);
           } else {
             break;
           }
         }
         while (l.size() - r.size() > min) {
-          auto it = map.find(l.front());
-          if (it != map.cend()) {
-            r.insert(r.begin(), inverses[it->second]);
+          auto mit = map.find(l.front());
+          if (mit != map.cend()) {
+            r.insert(r.begin(), inverses[mit->second]);
             l.erase(l.begin());
           } else {
             break;

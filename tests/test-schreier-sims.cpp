@@ -3200,8 +3200,13 @@ namespace libsemigroups {
            true,  false, false, false};
     REQUIRE_THROWS_AS(S.orbit_lookup(3, 0), LibsemigroupsException);
     REQUIRE_THROWS_AS(S.orbit_lookup(4, 0), LibsemigroupsException);
+
+    // GCC issues some warnings for the code below, but it's ok.
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Warray-bounds"
     REQUIRE_THROWS_AS(S.orbit_lookup(0, 64), LibsemigroupsException);
     REQUIRE_THROWS_AS(S.orbit_lookup(0, 65), LibsemigroupsException);
+#pragma GCC diagnostic pop
     for (size_t i = 0; i < 3; ++i) {
       for (size_t j = 0; j < 64; ++j) {
         REQUIRE(S.orbit_lookup(i, j) == orbits_lookup_test[i][j]);
@@ -3238,8 +3243,12 @@ namespace libsemigroups {
            false, false, false, false};
     REQUIRE_THROWS_AS(T.orbit_lookup(3, 0), LibsemigroupsException);
     REQUIRE_THROWS_AS(T.orbit_lookup(4, 0), LibsemigroupsException);
+    // GCC issues some warnings for the code below, but it's ok.
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Warray-bounds"
     REQUIRE_THROWS_AS(T.orbit_lookup(0, 64), LibsemigroupsException);
     REQUIRE_THROWS_AS(T.orbit_lookup(0, 65), LibsemigroupsException);
+#pragma GCC diagnostic pop
     for (size_t i = 0; i < 3; ++i) {
       for (size_t j = 0; j < 64; ++j) {
         REQUIRE(T.orbit_lookup(i, j) == orbits_lookup_test[i][j]);

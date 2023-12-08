@@ -53,7 +53,7 @@
 
 #include "detail/multi-string-view.hpp"  // for MultiStringView
 
-#include "rx/ranges.hpp"  // for iterator_range
+#include "ranges.hpp"  // for iterator_range
 
 namespace libsemigroups {
   // Forward declarations

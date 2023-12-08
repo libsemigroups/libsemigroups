@@ -68,8 +68,8 @@ namespace libsemigroups {
     REQUIRE(ukkonen::number_of_distinct_subwords(t) == 16);
     Words w;
     w.number_of_letters(6).min(0).max(8);
-    REQUIRE((w | rx::filter([&t](word_type const& w) {
-               return ukkonen::is_subword(t, w);
+    REQUIRE((w | rx::filter([&t](word_type const& u) {
+               return ukkonen::is_subword(t, u);
              })
              | rx::count())
             == 16);
@@ -156,8 +156,8 @@ namespace libsemigroups {
     REQUIRE(!ukkonen::is_suffix_no_checks(t, std::string("ab")));
 
     w.number_of_letters(5).min(0).max(7);
-    REQUIRE((w | rx::filter([&t](word_type const& w) {
-               return ukkonen::is_suffix(t, w);
+    REQUIRE((w | rx::filter([&t](word_type const& u) {
+               return ukkonen::is_suffix(t, u);
              })
              | rx::count())
             == 11);

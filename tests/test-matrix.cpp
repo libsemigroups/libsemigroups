@@ -126,6 +126,10 @@ namespace libsemigroups {
     // Test functions - BMat
     ////////////////////////////////////////////////////////////////////////
 
+    // Line 166 triggers a warning with gcc-13 that originates in a standard
+    // library header, so we ignore that warning.
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Warray-bounds"
     template <typename Mat>
     void test_BMat000() {
       auto rg = ReportGuard(REPORT);
@@ -158,7 +162,8 @@ namespace libsemigroups {
       {
         Mat m({{1, 1}, {0, 0}});
         using RowView = typename Mat::RowView;
-        auto r        = matrix::rows(m);
+
+        auto r = matrix::rows(m);
         REQUIRE(std::vector<bool>(r[0].cbegin(), r[0].cend())
                 == std::vector<bool>({true, true}));
         REQUIRE(std::vector<bool>(r[1].cbegin(), r[1].cend())
@@ -257,6 +262,7 @@ namespace libsemigroups {
         REQUIRE_THROWS_AS(Mat::make({{0, 0}, {0, 2}}), LibsemigroupsException);
       }
     }
+#pragma GCC diagnostic pop
 
     template <typename Mat>
     void test_BMat001() {

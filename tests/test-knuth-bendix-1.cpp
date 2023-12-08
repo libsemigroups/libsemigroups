@@ -67,7 +67,7 @@
 #include "libsemigroups/detail/kbe.hpp"     // for KBE
 #include "libsemigroups/detail/report.hpp"  // for ReportGuard
 
-#include "rx/ranges.hpp"  // for operator|, to_vector
+#include "libsemigroups/ranges.hpp"  // for operator|, to_vector
 
 namespace libsemigroups {
   using namespace rx;

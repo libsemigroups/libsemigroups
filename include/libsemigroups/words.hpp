@@ -42,7 +42,7 @@
 
 #include "detail/iterator.hpp"  // for default_postfix_increment
 
-#include <rx/ranges.hpp>  // for begin, end
+#include "ranges.hpp"  // for begin, end
 
 namespace libsemigroups {
 

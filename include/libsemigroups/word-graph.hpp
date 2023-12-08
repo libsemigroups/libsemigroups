@@ -46,27 +46,16 @@
 #include "exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
 #include "forest.hpp"     // for Forest
 #include "order.hpp"      // for Order
-#include "types.hpp"      // for word_type
+#include "ranges.hpp"
+#include "types.hpp"  // for word_type
 
 #include "detail/containers.hpp"  // for DynamicArray2
 #include "detail/int-range.hpp"   // for IntRange
 #include "detail/stl.hpp"         // for IsIterator
 #include "detail/uf.hpp"          // for Duf
 
-#include <rx/ranges.hpp>
-
 #ifdef LIBSEMIGROUPS_EIGEN_ENABLED
-#if defined(__clang__)
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-#endif
-#define _SILENCE_ALL_CXX17_DEPRECATION_WARNINGS
-#include <Eigen/Core>
-#include <unsupported/Eigen/MatrixFunctions>
-#undef _SILENCE_ALL_CXX17_DEPRECATION_WARNINGS
-#if defined(__clang__)
-#pragma clang diagnostic pop
-#endif
+#include "detail/eigen.hpp"
 #else
 #include "matrix.hpp"
 #endif

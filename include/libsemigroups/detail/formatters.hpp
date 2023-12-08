@@ -20,15 +20,11 @@
 
 #ifndef LIBSEMIGROUPS_DETAIL_FORMATTERS_HPP_
 #define LIBSEMIGROUPS_DETAIL_FORMATTERS_HPP_
+
 #include <magic_enum/magic_enum.hpp>
 
-#include <fmt/chrono.h>
-#include <fmt/color.h>
-#include <fmt/compile.h>
-#include <fmt/format.h>
-#include <fmt/printf.h>
-
 #include "containers.hpp"
+#include "fmt.hpp"
 #include "string.hpp"
 #include "timer.hpp"
 

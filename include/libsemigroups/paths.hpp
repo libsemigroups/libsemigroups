@@ -27,6 +27,12 @@
 #ifndef LIBSEMIGROUPS_PATHS_HPP_
 #define LIBSEMIGROUPS_PATHS_HPP_
 
+#if (defined(__GNUC__) && !(defined(__clang__) || defined(__INTEL_COMPILER)))
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wmaybe-uninitialized"
+#pragma GCC diagnostic ignored "-Wuninitialized"
+#endif
+
 #include <algorithm>    // for any_of, for_each, max_element
 #include <cstddef>      // for size_t, ptrdiff_t
 #include <iterator>     // for distance, forward_iterator_tag
@@ -42,6 +48,7 @@
 #include "debug.hpp"       // for LIBSEMIGROUPS_ASSERT
 #include "exception.hpp"   // for LIBSEMIGROUPS_EXCEPTION
 #include "order.hpp"       // for order
+#include "ranges.hpp"      // for is_input_range
 #include "types.hpp"       // for word_type
 #include "word-graph.hpp"  // for WordGraph
 #include "words.hpp"       // for number_of_words
@@ -49,8 +56,6 @@
 #include "detail/containers.hpp"  // for DynamicArray2
 #include "detail/iterator.hpp"    // for default_postfix_increment
 #include "detail/report.hpp"      // for magic_enum formatter
-
-#include <rx/ranges.hpp>  // for is_input_range
 
 namespace libsemigroups {
 
@@ -1125,4 +1130,7 @@ namespace libsemigroups {
 
 #include "paths.tpp"
 
+#if (defined(__GNUC__) && !(defined(__clang__) || defined(__INTEL_COMPILER)))
+#pragma GCC diagnostic pop
+#endif
 #endif  // LIBSEMIGROUPS_PATHS_HPP_

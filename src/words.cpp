@@ -39,11 +39,10 @@
 #include "libsemigroups/exception.hpp"     // for word_type
 #include "libsemigroups/order.hpp"         // for order
 #include "libsemigroups/presentation.hpp"  // for index
+#include "libsemigroups/ranges.hpp"        // for count, operator|
 #include "libsemigroups/types.hpp"         // for word_type
 
 #include "libsemigroups/detail/formatters.hpp"  // for magic_enum formatting
-
-#include <rx/ranges.hpp>  // for count, operator|
 
 namespace libsemigroups {
 
@@ -431,13 +430,13 @@ namespace libsemigroups {
   ////////////////////////////////////////////////////////////////////////
 
   char human_readable_char(size_t i) {
-    using letter_type = typename Presentation<std::string>::letter_type;
+    using letter_type_ = typename Presentation<std::string>::letter_type;
     // Choose visible characters a-zA-Z0-9 first before anything else
     // The ascii ranges for these characters are: [97, 123), [65, 91),
     // [48, 58) so the remaining range of chars that are appended to the end
     // after these chars are [0,48), [58, 65), [91, 97), [123, 255)
-    if (i >= std::numeric_limits<letter_type>::max()
-                 - std::numeric_limits<letter_type>::min()) {
+    if (i >= std::numeric_limits<letter_type_>::max()
+                 - std::numeric_limits<letter_type_>::min()) {
       LIBSEMIGROUPS_EXCEPTION("expected a value in the range [0, {}) found {}",
                               std::numeric_limits<letter_type>::max()
                                   - std::numeric_limits<letter_type>::min(),

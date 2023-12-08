@@ -118,9 +118,9 @@ namespace libsemigroups {
 
           kb1.init(congruence_kind::twosided, p);
 
-          std::string A = p.alphabet();
-          std::reverse(A.begin(), A.end());
-          p.alphabet(A);
+          std::string AA = p.alphabet();
+          std::reverse(AA.begin(), AA.end());
+          p.alphabet(AA);
           kb2.init(congruence_kind::twosided, p);
 
           kb1.run_for(std::chrono::milliseconds(1));

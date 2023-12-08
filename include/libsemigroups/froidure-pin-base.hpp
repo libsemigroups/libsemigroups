@@ -46,7 +46,7 @@
 
 #include "detail/containers.hpp"  // for DynamicArray2
 
-#include <rx/ranges.hpp>  // for iterator_range
+#include "ranges.hpp"  // for iterator_range
 
 namespace libsemigroups {
 

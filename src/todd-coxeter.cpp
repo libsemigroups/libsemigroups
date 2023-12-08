@@ -56,8 +56,7 @@ namespace libsemigroups {
 
   void ToddCoxeter::Digraph::process_definitions() {
     CollectCoincidences incompat(_coinc);
-    using NoPreferredDefs = typename FelschGraph_::NoPreferredDefs;
-    NoPreferredDefs pref_defs;
+    NoPreferredDefs     pref_defs;
 
     auto&      defs = FelschGraph_::definitions();
     Definition d;
@@ -99,11 +98,11 @@ namespace libsemigroups {
 
     CollectCoincidences incompat(_coinc);
     auto                pref_defs
-        = [this](node_type x, letter_type a, node_type y, letter_type b) {
+        = [this](node_type xx, letter_type aa, node_type yy, letter_type bb) {
             node_type d = new_node();
-            set_target_no_checks<RegDefs>(x, a, d);
-            if (a != b || x != y) {
-              set_target_no_checks<RegDefs>(y, b, d);
+            set_target_no_checks<RegDefs>(xx, aa, d);
+            if (aa != bb || xx != yy) {
+              set_target_no_checks<RegDefs>(yy, bb, d);
             }
           };
 
@@ -192,6 +191,8 @@ namespace libsemigroups {
         clear();
         break;
       }
+      case def_policy::no_stack_if_no_space:
+      case def_policy::unlimited:
       default: {
         break;
       }
@@ -957,6 +958,9 @@ namespace libsemigroups {
       return tril::unknown;
     }
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wmaybe-uninitialized"
+
     uint64_t number_of_idempotents(ToddCoxeter& tc) {
       word_type tmp;
       size_t    i = 0;
@@ -968,5 +972,6 @@ namespace libsemigroups {
              })
              | rx::count();
     }
+#pragma GCC diagnostic pop
   }  // namespace todd_coxeter
 }  // namespace libsemigroups

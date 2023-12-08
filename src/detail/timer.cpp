@@ -21,8 +21,7 @@
 #include <chrono>  // for nanoseconds, duration_cast, minutes, operator>
 #include <string>  // for string
 
-#include <fmt/chrono.h>
-#include <fmt/format.h>
+#include "libsemigroups/detail/fmt.hpp"
 
 namespace libsemigroups {
   using namespace std::chrono;  // NOLINT(build/namespaces)

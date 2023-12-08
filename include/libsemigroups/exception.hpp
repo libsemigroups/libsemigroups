@@ -23,7 +23,7 @@
 #include <stdexcept>  // for std::runtime_error
 #include <string>     // for std::string
 
-#include <fmt/format.h>
+#include "detail/fmt.hpp"
 
 namespace libsemigroups {
   //! Exception class deriving from std::runtime_error.

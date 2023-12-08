@@ -20,6 +20,7 @@
 
 #include <atomic>
 #include <unordered_set>  // for unordered_set
+#include <unordered_map>  // for unordered_map
 
 #include "libsemigroups/debug.hpp"  // for LIBSEMIGROUPS_ASSERT
 

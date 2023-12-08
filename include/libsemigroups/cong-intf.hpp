@@ -29,7 +29,7 @@
 #include "runner.hpp"  // for Runner
 #include "types.hpp"   // for word_type, relation_type, letter_type, tril
 
-#include <rx/ranges.hpp>  // for is_input_or_sink_v
+#include "ranges.hpp"  // for is_input_or_sink_v
 
 namespace libsemigroups {
   class Congruence;  // forward decl

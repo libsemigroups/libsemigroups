@@ -21,7 +21,7 @@
 #include "catch.hpp"      // for operator""_catch_sr
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
-#include "rx/ranges.hpp"  // for ChainRange, get_range...
+#include "libsemigroups/ranges.hpp"  // for ChainRange, get_range...
 
 #include "libsemigroups/ranges.hpp"  // for chain, shortlex_compare
 

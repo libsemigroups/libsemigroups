@@ -33,7 +33,7 @@
 
 #include "libsemigroups/detail/report.hpp"  // for ReportGuard
 
-#include "rx/ranges.hpp"
+#include "libsemigroups/ranges.hpp"
 
 namespace libsemigroups {
 

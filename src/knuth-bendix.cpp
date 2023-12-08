@@ -44,8 +44,6 @@
 #include "libsemigroups/detail/report.hpp"  // for Reporter, REPORT_DEFAULT, REP...
 #include "libsemigroups/detail/string.hpp"  // for is_prefix, maximum_common_prefix
 
-#include "rx/ranges.hpp"
-
 namespace libsemigroups {
 
   namespace {

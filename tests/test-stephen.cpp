@@ -215,8 +215,8 @@ namespace libsemigroups {
                                          11001_w}));
       REQUIRE(stephen::number_of_left_factors(s) == POSITIVE_INFINITY);
       REQUIRE((stephen::left_factors(s) | rx::take(10)
-               | rx::all_of([&s](auto const& w) {
-                   return stephen::is_left_factor(s, w);
+               | rx::all_of([&s](auto const& ww) {
+                   return stephen::is_left_factor(s, ww);
                  })));
     }
 
@@ -1220,9 +1220,9 @@ namespace libsemigroups {
         auto const index = tc.word_to_class_index(w);
         auto       T     = Stephen(p);
 
-        for (auto const& w : (stephen::words_accepted(S) | rx::take(1024))) {
-          REQUIRE(tc.word_to_class_index(w) == index);
-          REQUIRE(stephen::accepts(T.set_word(w), w));
+        for (auto const& ww : (stephen::words_accepted(S) | rx::take(1024))) {
+          REQUIRE(tc.word_to_class_index(ww) == index);
+          REQUIRE(stephen::accepts(T.set_word(ww), ww));
         }
       }
     }
@@ -1281,8 +1281,8 @@ namespace libsemigroups {
     {
       auto const index = tc.word_to_class_index(w);
 
-      for (auto const& w : (stephen::words_accepted(S) | rx::take(1024))) {
-        REQUIRE(tc.word_to_class_index(w) == index);
+      for (auto const& u : (stephen::words_accepted(S) | rx::take(1024))) {
+        REQUIRE(tc.word_to_class_index(u) == index);
       }
     }
     {

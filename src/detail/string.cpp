@@ -21,7 +21,7 @@
 
 #include "libsemigroups/exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
 
-#include "fmt/format.h"  // for group_digits
+#include "libsemigroups/detail/fmt.hpp"  // for group_digits
 
 namespace libsemigroups {
   namespace detail {

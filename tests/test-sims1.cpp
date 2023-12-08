@@ -1268,11 +1268,11 @@ namespace libsemigroups {
 
     auto hook = [&](WordGraph<uint32_t> const& x) {
       auto first = 1;
-      auto S     = to_froidure_pin<Transf<0, node_type>>(
+      auto SS    = to_froidure_pin<Transf<0, node_type>>(
           x, first, x.number_of_active_nodes());
       SuppressReportFor supp("FroidurePin");
 
-      if (S.size() == 203) {
+      if (SS.size() == 203) {
         return all.push_back(x);
       }
     };
@@ -2596,10 +2596,12 @@ namespace libsemigroups {
     }
   }
 
+  // To keep GCC from complaining
+  WordGraph<uint32_t> find_quotient(Presentation<std::string> const& p,
+                                    size_t                           skip);
+
   WordGraph<uint32_t> find_quotient(Presentation<std::string> const& p,
                                     size_t                           skip) {
-    using word_graph_type = WordGraph<uint32_t>;
-
     SuppressReportFor suppressor("FroidurePin");
 
     auto   T              = Sims1(congruence_kind::right).presentation(p);

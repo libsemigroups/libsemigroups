@@ -195,14 +195,14 @@ namespace libsemigroups {
 
         std::unordered_map<node_type, word_type> map;
         for (auto const& w : words) {
-          node_type n = follow_path_no_checks(tc.word_graph(), 0, w);
-          REQUIRE(n != UNDEFINED);
-          if (n != 0) {
+          node_type t = follow_path_no_checks(tc.word_graph(), 0, w);
+          REQUIRE(t != UNDEFINED);
+          if (t != 0) {
             auto ww = w;
             if (tc.kind() == congruence_kind::left) {
               std::reverse(ww.begin(), ww.end());
             }
-            map.emplace(n - 1, std::move(ww));
+            map.emplace(t - 1, std::move(ww));
             if (map.size() == tc.number_of_classes()) {
               break;
             }
@@ -231,14 +231,14 @@ namespace libsemigroups {
         std::unordered_map<node_type, word_type> map;
 
         for (auto const& w : words) {
-          node_type n
+          node_type t
               = word_graph::follow_path_no_checks(tc.word_graph(), 0, w);
-          if (n != 0) {
+          if (t != 0) {
             auto ww = w;
             if (tc.kind() == congruence_kind::left) {
               std::reverse(ww.begin(), ww.end());
             }
-            map.emplace(n - 1, std::move(ww));
+            map.emplace(t - 1, std::move(ww));
             if (map.size() == tc.number_of_classes()) {
               break;
             }
@@ -613,8 +613,8 @@ namespace libsemigroups {
                  110_w,  1100_w, 11000_w, 011_w,  0110_w,  01100_w, 011000_w}));
     REQUIRE(std::unique(w.begin(), w.end()) == w.end());
     REQUIRE(std::is_sorted(w.cbegin(), w.cend(), RecursivePathCompare{}));
-    REQUIRE((todd_coxeter::normal_forms(tc) | all_of([&tc](auto const& w) {
-               return tc.class_index_to_word(tc.word_to_class_index(w)) == w;
+    REQUIRE((todd_coxeter::normal_forms(tc) | all_of([&tc](auto const& u) {
+               return tc.class_index_to_word(tc.word_to_class_index(u)) == u;
              })));
     check_normal_forms(tc, tc.number_of_classes());
   }
@@ -2354,22 +2354,22 @@ namespace libsemigroups {
         REQUIRE(tc.number_of_classes() == 5);
       }
       {
-        Presentation<std::string> p;
-        p.alphabet("ab");
-        presentation::add_rule(p, "aaa", "a");
-        presentation::add_rule(p, "a", "bb");
+        Presentation<std::string> q;
+        q.alphabet("ab");
+        presentation::add_rule(q, "aaa", "a");
+        presentation::add_rule(q, "a", "bb");
 
-        ToddCoxeter tc(twosided, p);
-        tc.lookahead_next(1);
+        ToddCoxeter tcq(twosided, q);
+        tcq.lookahead_next(1);
 
-        section_hlt(tc);
-        section_felsch(tc);
-        section_Rc_style(tc);
-        section_R_over_C_style(tc);
-        section_CR_style(tc);
-        section_Cr_style(tc);
+        section_hlt(tcq);
+        section_felsch(tcq);
+        section_Rc_style(tcq);
+        section_R_over_C_style(tcq);
+        section_CR_style(tcq);
+        section_Cr_style(tcq);
 
-        REQUIRE(tc.number_of_classes() == 5);
+        REQUIRE(tcq.number_of_classes() == 5);
       }
     }
   }

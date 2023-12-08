@@ -139,22 +139,22 @@ namespace libsemigroups {
 
         // TODO move this out of here and use it in the other standardize
         // functions
-        auto swap_if_necessary = [&wg, &f, &p, &q](node_type const   s,
-                                                   node_type&        t,
+        auto swap_if_necessary = [&wg, &f, &p, &q](node_type const   ss,
+                                                   node_type&        tt,
                                                    letter_type const x) {
-          node_type r      = wg.target_no_checks(p[s], x);
+          node_type r      = wg.target_no_checks(p[ss], x);
           bool      result = false;
           if (r != UNDEFINED) {
             r = q[r];  // new
-            if (r > t) {
-              t++;
+            if (r > tt) {
+              tt++;
               f.add_nodes(1);
-              if (r > t) {
-                std::swap(p[t], p[r]);
-                std::swap(q[p[t]], q[p[r]]);
+              if (r > tt) {
+                std::swap(p[tt], p[r]);
+                std::swap(q[p[tt]], q[p[r]]);
               }
               result = true;
-              f.set(t, (s == t ? r : s), x);
+              f.set(tt, (ss == tt ? r : ss), x);
             }
           }
           return result;

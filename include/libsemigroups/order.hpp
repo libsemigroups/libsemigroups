@@ -32,7 +32,7 @@
 
 #include "ranges.hpp"  // for shortlex_compare
 
-#include <rx/ranges.hpp>
+#include "ranges.hpp"
 
 namespace libsemigroups {
   // TODO(v3): redo the doc

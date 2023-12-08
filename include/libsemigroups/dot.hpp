@@ -27,10 +27,9 @@
 #include <utility>      // for forward, move etc
 #include <vector>       // for vector
 
-#include <fmt/core.h>  // for format
-
 #include "exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
 
+#include "detail/fmt.hpp"     // for format
 #include "detail/report.hpp"  // for LIBSEMIGROUPS_EXCEPTION
 
 namespace libsemigroups {
@@ -84,10 +83,10 @@ namespace libsemigroups {
 
     struct Edge {
       template <typename Thing1, typename Thing2>
-      Edge(Thing1&& from, Thing2&& to)
+      Edge(Thing1&& f, Thing2&& t)
           : attrs(),
-            from(detail::dot_to_string(std::forward<Thing1>(from))),
-            to(detail::dot_to_string(std::forward<Thing2>(to))) {}
+            from(detail::dot_to_string(std::forward<Thing1>(f))),
+            to(detail::dot_to_string(std::forward<Thing2>(t))) {}
 
       template <typename Thing1, typename Thing2>
       Edge& add_attr(Thing1&& key, Thing2&& val) {

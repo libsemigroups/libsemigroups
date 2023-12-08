@@ -19,15 +19,14 @@
 #ifndef LIBSEMIGROUPS_TYPES_HPP_
 #define LIBSEMIGROUPS_TYPES_HPP_
 
-#include <cstddef>  // for size_t
-
+#include <cstddef>      // for size_t
 #include <cstdint>      // for uint8_t, uint16_t, uint32_t, uint64_t
 #include <string_view>  // for string_view
 #include <type_traits>  // for conditional
 #include <utility>      // for pair
 #include <vector>       // for vector
 
-#include <fmt/format.h>
+#include "detail/fmt.hpp"
 #include <magic_enum/magic_enum.hpp>
 
 namespace libsemigroups {

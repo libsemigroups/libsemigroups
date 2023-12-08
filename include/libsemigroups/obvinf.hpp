@@ -67,20 +67,8 @@
 #include "config.hpp"  // for LIBSEMIGROUPS_EIGEN_ENABLED
 #include "types.hpp"   // for word_type etc
 
+#include "detail/eigen.hpp"
 #include "detail/uf.hpp"  // for Duf
-
-#ifdef LIBSEMIGROUPS_EIGEN_ENABLED
-#if defined(__clang__)
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-#endif
-#define _SILENCE_ALL_CXX17_DEPRECATION_WARNINGS
-#include <Eigen/Core>
-#undef _SILENCE_ALL_CXX17_DEPRECATION_WARNINGS
-#if defined(__clang__)
-#pragma clang diagnostic pop
-#endif
-#endif
 
 namespace libsemigroups {
   class ToddCoxeter;  // forward decl

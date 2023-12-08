@@ -55,7 +55,7 @@
 
 #include "libsemigroups/detail/report.hpp"  // for ReportGuard
 
-#include "rx/ranges.hpp"  // for operator|, to_vector
+#include "libsemigroups/ranges.hpp"  // for operator|, to_vector
 
 namespace libsemigroups {
   congruence_kind constexpr twosided = congruence_kind::twosided;

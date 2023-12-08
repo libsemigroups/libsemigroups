@@ -117,10 +117,10 @@ namespace libsemigroups {
     }
 
     for (node_index_type i = old_nr_nodes; i < _nodes.size(); ++i) {
-      auto& n = _nodes[i];
-      for (auto const& child : n.children) {
+      auto& node = _nodes[i];
+      for (auto const& child : node.children) {
         if (is_unique_letter(child.first)) {
-          n.is_real_suffix = true;
+          node.is_real_suffix = true;
           break;
         }
       }

@@ -44,11 +44,10 @@
 #include "libsemigroups/types.hpp"            // for congruence_kind
 #include "libsemigroups/word-graph.hpp"       // for follow_path_no_...
 
+#include "libsemigroups/detail/fmt.hpp"     // for buffer::append
 #include "libsemigroups/detail/report.hpp"  // for report_default
 #include "libsemigroups/detail/stl.hpp"     // for JoinThreads
 #include "libsemigroups/detail/string.hpp"  // for group_digits
-
-#include "fmt/format.h"  // for buffer::append
 
 namespace libsemigroups {
 

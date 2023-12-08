@@ -30,11 +30,9 @@
 
 #include "catch.hpp"  // for Colour, Colour::Code::BrightRed, CATCH_REGISTER...
 
+#include "libsemigroups/detail/fmt.hpp"
 #include "libsemigroups/detail/string.hpp"  // for to_string, unicode_string_length
 #include "libsemigroups/detail/timer.hpp"  // for Timer
-
-#include <fmt/color.h>
-#include <fmt/format.h>
 
 struct LibsemigroupsListener : Catch::TestEventListenerBase {
   using TestEventListenerBase::TestEventListenerBase;  // inherit constructor

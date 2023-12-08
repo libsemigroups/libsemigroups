@@ -24,12 +24,12 @@
 #include <string>     // for basic_string, operator+
 #include <vector>     // for vector
 
-#include "fmt/core.h"  // for format
-
 #include "libsemigroups/exception.hpp"     // for LIBSEMIGROUPS_EXCEPTION
 #include "libsemigroups/presentation.hpp"  // for Presentation, to_string, to_word
 #include "libsemigroups/types.hpp"         // for word_type
 #include "libsemigroups/words.hpp"         // for human_readable_char
+                                           //
+#include "libsemigroups/detail/fmt.hpp"    // for format
 
 namespace libsemigroups {
   namespace presentation {

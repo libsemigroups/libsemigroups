@@ -27,12 +27,7 @@
 #include <thread>   // for get_id, thread, thread::id
 #include <utility>  // for pair
 
-#include <fmt/chrono.h>
-#include <fmt/color.h>
-#include <fmt/compile.h>
-#include <fmt/format.h>
-#include <fmt/printf.h>
-
+#include "fmt.hpp"         // for fmtlib includes
 #include "formatters.hpp"  // for custom formatters
 #include "timer.hpp"       // for string_format, to_strin
 

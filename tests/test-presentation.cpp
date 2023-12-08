@@ -33,10 +33,7 @@
 #include "catch.hpp"      // for operator""_catch_sr
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
-#include "fmt/core.h"    // for format, print
-#include "fmt/format.h"  // for buffer::append
-
-#include "rx/ranges.hpp"  // for ChainRange, get_range...
+#include "libsemigroups/ranges.hpp"  // for ChainRange, get_range...
 
 #include "libsemigroups/bipart.hpp"           // for Bipartition
 #include "libsemigroups/constants.hpp"        // for operator==, operator!=

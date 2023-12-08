@@ -30,7 +30,7 @@
 #include "forest.hpp"      // for Forest
 #include "word-graph.hpp"  // for WordGraph
 
-#include "rx/ranges.hpp"  // for iterator_range, transform
+#include "ranges.hpp"  // for iterator_range, transform
 
 namespace libsemigroups {
 
