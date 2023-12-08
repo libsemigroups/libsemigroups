@@ -450,6 +450,7 @@ namespace libsemigroups {
             == std::vector<std::string>({"", "A", "B", "a", "b", "c"}));
   }
 
+  // TODO fix max rule assertion
   TEMPLATE_TEST_CASE("Von Dyck (2,3,7) group - different "
                      "presentation (infinite)",
                      "[081][no-valgrind][quick][knuth-bendix][kbmag]",
@@ -469,9 +470,9 @@ namespace libsemigroups {
     kb.overlap_policy(TestType::options::overlap::MAX_AB_BC);
     kb.max_rules(100);
     kb.run();
-    // REQUIRE(kb.number_of_active_rules() == 101);
+    REQUIRE(kb.number_of_active_rules() == 101);
     kb.run();
-    // REQUIRE(kb.number_of_active_rules() == 101);
+    REQUIRE(kb.number_of_active_rules() == 101);
     kb.max_rules(250);
     kb.run();
     REQUIRE(kb.number_of_active_rules() == 259);

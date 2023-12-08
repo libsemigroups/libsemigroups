@@ -399,6 +399,7 @@ namespace libsemigroups {
     REQUIRE(kb.gilman_graph().number_of_nodes() == 51);
   }
 
+  // TODO fix gilman graph
   TEMPLATE_TEST_CASE("automatic left congruence!!!",
                      "[128][quick][knuth-bendix]",
                      KNUTH_BENDIX_TYPES) {
@@ -458,17 +459,16 @@ namespace libsemigroups {
 
     auto nf = S.normal_forms() | to_strings(kb.presentation().alphabet())
               | take(S.size());
-    // REQUIRE(kb.gilman_graph()
-    //         == to_word_graph<size_t>(
-    //             45, {{1, 2},  {27, 35}, {36, 38}, {4},      {},       {6, 3},
-    //                  {},      {5, 8},   {},       {7, 10},  {33},     {},
-    //                  {11},    {9, 12},  {6, 13},  {},       {15},     {6,
-    //                  16}, {17, 8}, {18, 10}, {},       {6, 20},  {21, 8},
-    //                  {22, 24}, {43},    {23},     {19, 25}, {14, 26}, {},
-    //                  {28}, {29},    {6, 30},  {31, 8},  {},       {32, 10},
-    //                  {34, 38}, {37},    {},       {39},     {40, 24}, {41,
-    //                  8},  {6, 44},
-    //                  {},      {},       {42}}));
+    REQUIRE(kb.gilman_graph()
+            == to_word_graph<size_t>(
+                45, {{1, 2},  {27, 35}, {36, 38}, {4},      {},       {6, 3},
+                     {},      {5, 8},   {},       {7, 10},  {33},     {},
+                     {11},    {9, 12},  {6, 13},  {},       {15},     {6, 16},
+                     {17, 8}, {18, 10}, {},       {6, 20},  {21, 8},  {22, 24},
+                     {43},    {23},     {19, 25}, {14, 26}, {},       {28},
+                     {29},    {6, 30},  {31, 8},  {},       {32, 10}, {34, 38},
+                     {37},    {},       {39},     {40, 24}, {41, 8},  {6, 44},
+                     {},      {},       {42}}));
 
     REQUIRE(kb.normal_form("abaaaa") == "aba");
 
@@ -495,31 +495,31 @@ namespace libsemigroups {
 
     REQUIRE((kb.active_rules() | count()) == 23);
 
-    // REQUIRE((kb.active_rules() | to_vector())
-    //         == std::vector<std::pair<std::string, std::string>>(
-    //             {{"bbb", "b"},
-    //              {"bbab", "bab"},
-    //              {"aaaaa", "aa"},
-    //              {"abaab", "aaaab"},
-    //              {"baaaa", "ba"},
-    //              {"bbaab", "baaab"},
-    //              {"aababa", "aabb"},
-    //              {"aababb", "aaba"},
-    //              {"bababa", "babb"},
-    //              {"bababb", "baba"},
-    //              {"bbaaab", "baab"},
-    //              {"aabbaaa", "aabb"},
-    //              {"babaaab", "aabaaab"},
-    //              {"babbaaa", "babb"},
-    //              {"aaabaaab", "aabaaab"},
-    //              {"aabaaabb", "aabaaab"},
-    //              {"baabaaab", "aabaaab"},
-    //              {"aabaaabaaa", "aabaaab"},
-    //              {"abaaabbaac", "babc"},
-    //              {"aabaaabaac", "baabc"},
-    //              {"baabc", "babc"},
-    //              {"aaabc", "babc"},
-    //              {"babc", "aabc"}}));
+    REQUIRE((kb.active_rules() | to_vector())
+            == std::vector<std::pair<std::string, std::string>>(
+                {{"bbb", "b"},
+                 {"bbab", "bab"},
+                 {"aaaaa", "aa"},
+                 {"abaab", "aaaab"},
+                 {"baaaa", "ba"},
+                 {"bbaab", "baaab"},
+                 {"aababa", "aabb"},
+                 {"aababb", "aaba"},
+                 {"bababa", "babb"},
+                 {"bababb", "baba"},
+                 {"bbaaab", "baab"},
+                 {"aabbaaa", "aabb"},
+                 {"babaaab", "aabaaab"},
+                 {"babbaaa", "babb"},
+                 {"aaabaaab", "aabaaab"},
+                 {"aabaaabb", "aabaaab"},
+                 {"baabaaab", "aabaaab"},
+                 {"aabaaabaaa", "aabaaab"},
+                 {"abaaabbaac", "babc"},
+                 {"aabaaabaac", "baabc"},
+                 {"baabc", "babc"},
+                 {"aaabc", "babc"},
+                 {"babc", "aabc"}}));
 
     kb.init(right, p);
     kb.add_pair(S.factorisation(Transf<>({3, 4, 4, 4, 4})),
