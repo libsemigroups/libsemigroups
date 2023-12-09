@@ -99,7 +99,7 @@ AC_ARG_ENABLE([stats],
 AC_MSG_CHECKING([whether to enable stats mode])
 AC_MSG_RESULT([$enable_stats])
 
-AS_IF([test "x$enable_stats" == "xyes"], [
+AS_IF([test "x$enable_stats" = "xyes"], [
   AC_DEFINE([ENABLE_STATS], [1], [define if building with stats mode])
 ])
 
