@@ -1737,7 +1737,7 @@ namespace libsemigroups {
     //! This operator provides a convenient brief means of constructing a  \ref
     //! word_type from an sequence of literal integer digits or a string. For
     //! example, \c 0123_w produces the same output as `word_type({0, 1, 2,
-    //! 3})` and so too does \c "abc"_w.
+    //! 3})` and so too does \c "abcd"_w.
     //!
     //! There are some gotchas and this operator should be used with some care:
     //!

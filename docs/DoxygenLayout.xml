@@ -5,13 +5,13 @@
   <navindex>
     <tab type="mainpage" visible="yes" title=""/>
     <tab type="pages" visible="yes" title="" intro=""/>
-    <!--    <tab type="modules" visible="yes" title="" intro="">
-      <tab type="modulelist" visible="yes" title="" intro=""/>
-      <tab type="modulemembers" visible="yes" title="" intro=""/>
-    </tab>
     <tab type="namespaces" visible="yes" title="">
       <tab type="namespacelist" visible="yes" title="" intro=""/>
       <tab type="namespacemembers" visible="yes" title="" intro=""/>
+    </tab>
+    <!--    <tab type="modules" visible="yes" title="" intro="">
+      <tab type="modulelist" visible="yes" title="" intro=""/>
+      <tab type="modulemembers" visible="yes" title="" intro=""/>
     </tab>
     <tab type="concepts" visible="yes" title="">
     </tab>

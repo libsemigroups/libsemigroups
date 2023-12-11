@@ -870,12 +870,18 @@ namespace libsemigroups {
     mutable detail::DynamicArray2<Node> _dynamic_array_2;
   };
 
+  //! \brief Blurb
+  //!
+  //! Defined in ``word-graph.hpp``.
   namespace word_graph {
     //////////////////////////////////////////////////////////////////////////
     // WordGraph - helper functions - validation
     //////////////////////////////////////////////////////////////////////////
 
     // not noexcept because it throws an exception!
+    //! \brief Blurb
+    //!
+    //! This function
     template <typename Node>
     void validate_node(WordGraph<Node> const& wg, Node v);
 
@@ -1377,7 +1383,7 @@ namespace libsemigroups {
     template <typename Node, typename Iterator>
     void add_cycle(WordGraph<Node>& wg, Iterator first, Iterator last);
 
-    //! Adds a cycle consisting of \p N new nodes.
+    //! \brief Adds a cycle consisting of \p N new nodes.
     //!
     //! \tparam T the type used as the template parameter for the
     //! WordGraph.
