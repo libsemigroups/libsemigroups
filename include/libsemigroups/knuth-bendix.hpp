@@ -683,9 +683,10 @@ namespace libsemigroups {
     // Runner - pure virtual member functions - private
     //////////////////////////////////////////////////////////////////////////
 
-    void run_impl() override;
-    void run_real(std::atomic_bool&);
-    bool finished_impl() const override;
+    void               run_impl() override;
+    void               run_real(std::atomic_bool&);
+    bool               finished_impl() const override;
+    [[nodiscard]] bool stop_running() const;
   };
 
   //! This friend function allows a KnuthBendix object to be left shifted

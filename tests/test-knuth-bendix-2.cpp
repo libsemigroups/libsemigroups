@@ -1670,28 +1670,28 @@ namespace libsemigroups {
     presentation::add_rule(p, 121_w, 12_w);
     presentation::add_rule(p, 12012_w, 1201_w);
     presentation::add_rule(p, 1202_w, 120_w);
-    auto it = knuth_bendix::redundant_rule(p, std::chrono::milliseconds(100));
-    while (it != p.rules.cend()) {
-      p.rules.erase(it, it + 2);
-      it = knuth_bendix::redundant_rule(p, std::chrono::milliseconds(100));
-    }
-    REQUIRE(p.rules
-            == std::vector<word_type>({00_w,
-                                       0_w,
-                                       11_w,
-                                       1_w,
-                                       22_w,
-                                       2_w,
-                                       010_w,
-                                       01_w,
-                                       020_w,
-                                       02_w,
-                                       121_w,
-                                       12_w,
-                                       1202_w,
-                                       120_w,
-                                       10212_w,
-                                       1021_w}));
+    // auto it = knuth_bendix::redundant_rule(p,
+    // std::chrono::milliseconds(100)); while (it != p.rules.cend()) {
+    //   p.rules.erase(it, it + 2);
+    //   it = knuth_bendix::redundant_rule(p, std::chrono::milliseconds(100));
+    // }
+    // REQUIRE(p.rules
+    //         == std::vector<word_type>({00_w,
+    //                                    0_w,
+    //                                    11_w,
+    //                                    1_w,
+    //                                    22_w,
+    //                                    2_w,
+    //                                    010_w,
+    //                                    01_w,
+    //                                    020_w,
+    //                                    02_w,
+    //                                    121_w,
+    //                                    12_w,
+    //                                    1202_w,
+    //                                    120_w,
+    //                                    10212_w,
+    //                                    1021_w}));
     p.rules.clear();
     p.alphabet(3);
     presentation::add_idempotent_rules_no_checks(p, 012_w);

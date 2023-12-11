@@ -517,6 +517,13 @@ namespace libsemigroups {
   }
 
   template <typename Rewriter, typename ReductionOrder>
+  [[nodiscard]] bool
+  KnuthBendix<Rewriter, ReductionOrder>::stop_running() const {
+    return stopped()
+           || _rewriter.number_of_active_rules() > _settings.max_rules;
+  }
+
+  template <typename Rewriter, typename ReductionOrder>
   void KnuthBendix<Rewriter, ReductionOrder>::init_from_generating_pairs() {
     if (_gen_pairs_initted) {
       return;
@@ -556,9 +563,7 @@ namespace libsemigroups {
 
     size_t nr = 0;
   check_overlaps:
-    while (first != _rewriter.end()
-           && _rewriter.number_of_active_rules() < _settings.max_rules
-           && !stopped()) {
+    while (first != _rewriter.end() && !stop_running()) {
       Rule const* rule1 = *first;
       // It is tempting to remove rule1 and rule2 here and use *first and
       // *second instead but this leads to some badness (which we didn't
