@@ -809,7 +809,7 @@ namespace libsemigroups {
                        presentation::longest_rule_length(first, last),
                        presentation::length(first, last));
     }
-    ReporterV3::reset_start_time();
+    Reporter::reset_start_time();
   }
 
   void Sims1::report_progress_from_thread() const {
@@ -872,6 +872,9 @@ namespace libsemigroups {
        string_time(time_per_node_last_sec));
 
     rc("Sims1: mean time    {} (/cong.)  | {} (/node)\n",
+       string_time(time_per_cong),
+       string_time(time_per_node));
+
     rc("Sims1: time         {} (total)   |\n", string_time(time_total_ns));
 
     reset_last_report();
