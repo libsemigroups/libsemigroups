@@ -160,7 +160,7 @@ namespace libsemigroups {
       return duration_cast<nanoseconds>(high_resolution_clock::now() - t);
     }
 
-    Reporter& reset_start_time() {
+    Reporter const& reset_start_time() const {
       _last_report = std::chrono::high_resolution_clock::now();
       _start_time  = _last_report;
       return *this;
