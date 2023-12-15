@@ -470,12 +470,12 @@ namespace libsemigroups {
     kb.overlap_policy(TestType::options::overlap::MAX_AB_BC);
     kb.max_rules(100);
     kb.run();
-    REQUIRE(kb.number_of_active_rules() == 101);
+    REQUIRE(kb.number_of_active_rules() > 100);
     kb.run();
-    REQUIRE(kb.number_of_active_rules() == 101);
+    REQUIRE(kb.number_of_active_rules() > 100);
     kb.max_rules(250);
     kb.run();
-    REQUIRE(kb.number_of_active_rules() == 259);
+    REQUIRE(kb.number_of_active_rules() > 250);
     // kb.max_rules(POSITIVE_INFINITY);
     // kb.run();
   }

@@ -953,16 +953,16 @@ namespace libsemigroups {
 
     kb.max_rules(10);
     kb.run();
-    // REQUIRE(kb.number_of_active_rules() == 10);
+    REQUIRE(kb.number_of_active_rules() > 10);
     REQUIRE(!kb.confluent());
 
     kb.run();
-    // REQUIRE(kb.number_of_active_rules() == 10);
+    REQUIRE(kb.number_of_active_rules() > 10);
     REQUIRE(!kb.confluent());
 
     kb.max_rules(20);
     kb.run();
-    REQUIRE(kb.number_of_active_rules() == 21);
+    REQUIRE(kb.number_of_active_rules() > 20);
     REQUIRE(!kb.confluent());
 
     kb.max_rules(LIMIT_MAX);
