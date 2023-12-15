@@ -133,12 +133,12 @@ namespace libsemigroups {
     REQUIRE(
         ((kb.active_rules() | to_vector()) | sort(weird_cmp()) | to_vector())
         == std::vector<rule_type>(
-            {{"ab", "c"},  {"ae", "b"},   {"ba", "c"},   {"bc", "d"},
-             {"bd", "aa"}, {"ca", "ac"},  {"cb", "d"},   {"cc", "ad"},
-             {"cd", "e"},  {"ce", "bb"},  {"da", "ad"},  {"db", "aa"},
-             {"dc", "e"},  {"dd", "be"},  {"de", "a"},   {"ea", "b"},
-             {"eb", "be"}, {"ec", "bb"},  {"ed", "a"},   {"ee", "ca"},
-             {"aaa", "e"}, {"aac", "be"}, {"bbb", "ed"}, {"bbe", "aad"}}));
+            {{"ab", "c"},  {"ae", "b"},   {"ba", "c"},  {"bc", "d"},
+             {"bd", "aa"}, {"ca", "ac"},  {"cb", "d"},  {"cc", "ad"},
+             {"cd", "e"},  {"ce", "bb"},  {"da", "ad"}, {"db", "aa"},
+             {"dc", "e"},  {"dd", "be"},  {"de", "a"},  {"ea", "b"},
+             {"eb", "be"}, {"ec", "bb"},  {"ed", "a"},  {"ee", "ac"},
+             {"aaa", "e"}, {"aac", "be"}, {"bbb", "a"}, {"bbe", "aad"}}));
 
     auto nf = knuth_bendix::normal_forms(kb);
     REQUIRE(
@@ -460,7 +460,11 @@ namespace libsemigroups {
     REQUIRE(kb.confluent());
     REQUIRE(kb.number_of_active_rules() == 211);  // verified with KBMAG
     REQUIRE(kb.gilman_graph().number_of_nodes() == 121);
-    REQUIRE(kb.gilman_graph_node_labels()
+    auto g = kb.gilman_graph_node_labels();
+    std::sort(g.begin(), g.end(), [](std::string x, std::string y) {
+      return shortlex_compare(x, y);
+    });
+    REQUIRE(g
             == std::vector<std::string>({"",
                                          "a",
                                          "b",
@@ -748,12 +752,12 @@ namespace libsemigroups {
     REQUIRE(kb.equal_to("bbb", "a"));
     REQUIRE((kb.active_rules() | sort(weird_cmp()) | to_vector())
             == std::vector<rule_type>(
-                {{"ab", "c"},  {"ay", "b"},   {"ba", "c"},   {"bc", "d"},
-                 {"bd", "aa"}, {"ca", "ac"},  {"cb", "d"},   {"cc", "ad"},
-                 {"cd", "y"},  {"cy", "bb"},  {"da", "ad"},  {"db", "aa"},
-                 {"dc", "y"},  {"dd", "by"},  {"dy", "a"},   {"ya", "b"},
-                 {"yb", "by"}, {"yc", "bb"},  {"yd", "a"},   {"yy", "ca"},
-                 {"aaa", "y"}, {"aac", "by"}, {"bbb", "yd"}, {"bby", "aad"}}));
+                {{"ab", "c"},  {"ay", "b"},   {"ba", "c"},  {"bc", "d"},
+                 {"bd", "aa"}, {"ca", "ac"},  {"cb", "d"},  {"cc", "ad"},
+                 {"cd", "y"},  {"cy", "bb"},  {"da", "ad"}, {"db", "aa"},
+                 {"dc", "y"},  {"dd", "by"},  {"dy", "a"},  {"ya", "b"},
+                 {"yb", "by"}, {"yc", "bb"},  {"yd", "a"},  {"yy", "ac"},
+                 {"aaa", "y"}, {"aac", "by"}, {"bbb", "a"}, {"bby", "aad"}}));
   }
 
   // Von Dyck (2,3,7) group - infinite hyperbolic
