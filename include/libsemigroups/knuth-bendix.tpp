@@ -581,10 +581,6 @@ namespace libsemigroups {
         }
       }
 
-      if (_rewriter.number_of_pending_rules() >= _settings.batch_size) {
-        _rewriter.process_pending_rules();
-      }
-
       if (nr > _settings.check_confluence_interval) {
         // TODO Should we process rules here too?
         pause = true;
@@ -915,8 +911,12 @@ namespace libsemigroups {
         y.append(vlhs.cbegin() + (ulhs.cend() - it),
                  vlhs.cend());  // rule = AQ_j -> Q_iC
         _rewriter.add_pending_rule(x, y);
+
+        if (_rewriter.number_of_pending_rules() >= _settings.batch_size) {
+          _rewriter.process_pending_rules();
+        }
         // It can be that the iterator `it` is invalidated by the call to
-        // add_pending_rule (i.e. if `u` is deactivated, then rewritten,
+        // proccess_pending_rule (i.e. if `u` is deactivated, then rewritten,
         // actually changed, and reactivated) and that is the reason for the
         // checks in the for-loop above. If this is the case, then we should
         // stop considering the overlaps of u and v here, and note that they
