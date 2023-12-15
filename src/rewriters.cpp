@@ -218,6 +218,7 @@ namespace libsemigroups {
 
       if (*rule1->lhs() != *rule1->rhs()) {
         internal_string_type const* lhs = rule1->lhs();
+        internal_string_type const* rhs = rule1->rhs();
         for (auto it = begin(); it != end();) {
           Rule* rule2 = const_cast<Rule*>(*it);
           // TODO Does this need to happen? Can we ensure rules are always
@@ -227,9 +228,7 @@ namespace libsemigroups {
             // rule2 is added to _inactive_rules or _active_rules by
             // process_pending_rules
           } else {
-            if (rule2->rhs()->find(*lhs) != external_string_type::npos) {
-              rewrite(*rule2->rhs());
-            }
+            rewrite_string(*rule2->rhs(), lhs, rhs);
             ++it;
           }
         }
@@ -240,6 +239,50 @@ namespace libsemigroups {
         add_inactive_rule(rule1);
       }
     }
+  }
+
+  void RewriterBase::rewrite_string(internal_string_type&       u,
+                                    internal_string_type const* lhs,
+                                    internal_string_type const* rhs) const {
+    using iterator = internal_string_type::iterator;
+
+    size_t pos = u.find(*lhs);
+
+    if (pos == external_string_type::npos || u.size() < lhs->size()) {
+      return;
+    }
+
+    iterator v_end   = u.begin() + pos;
+    iterator w_begin = v_end;
+    iterator w_end   = u.end();
+
+    while (w_begin != w_end) {
+      LIBSEMIGROUPS_ASSERT(
+          detail::is_prefix(w_begin, w_end, lhs->cbegin(), lhs->cend()));
+      w_begin += lhs->size() - rhs->size();
+      detail::string_replace(w_begin, rhs->cbegin(), rhs->cend());
+      for (size_t i = 0; i != rhs->size(); ++i) {
+        *v_end = *w_begin;
+        ++v_end;
+        ++w_begin;
+      }
+
+      pos = u.find(*lhs, pos + lhs->size());
+      if (pos == external_string_type::npos) {
+        break;
+      }
+      while (w_begin != u.begin() + pos) {
+        *v_end = *w_begin;
+        ++v_end;
+        ++w_begin;
+      }
+    }
+    while (w_begin != w_end) {
+      *v_end = *w_begin;
+      ++v_end;
+      ++w_begin;
+    }
+    u.erase(v_end - u.cbegin());
   }
 
   void RewriterBase::reduce() {
