@@ -606,7 +606,7 @@ namespace libsemigroups {
     // Seems that the stack can be non-empty here in KnuthBendix 12, 14, 16
     // and maybe more
     if (_settings.max_overlap == POSITIVE_INFINITY
-        && _settings.max_rules == POSITIVE_INFINITY && !stopped()) {
+        && _settings.max_rules == POSITIVE_INFINITY && !stop_running()) {
       _rewriter.set_cached_confluent(tril::TRUE);
     }
   }
@@ -617,7 +617,7 @@ namespace libsemigroups {
     reset_start_time();
 
     init_from_generating_pairs();
-    if (_rewriter.consistent() && confluent() && !stopped()) {
+    if (_rewriter.consistent() && confluent() && !stop_running()) {
       // _rewriter._pending_rules can be non-empty if non-reduced rules were
       // used to define the KnuthBendix.  If _rewriter._pending_rules is
       // non-empty, then it means that the rules in _rewriter might not define
