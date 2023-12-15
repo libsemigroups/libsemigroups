@@ -893,11 +893,12 @@ namespace libsemigroups {
     LIBSEMIGROUPS_ASSERT(u->active() && v->active());
     auto const &ulhs = *(u->lhs()), vlhs = *(v->lhs());
     auto const &urhs = *(u->rhs()), vrhs = *(v->rhs());
-    auto const  limit = ulhs.cend() - std::min(ulhs.size(), vlhs.size());
+    auto const  lower_limit = ulhs.cend() - std::min(ulhs.size(), vlhs.size());
 
     int64_t const u_id = u->id(), v_id = v->id();
     for (auto it = ulhs.cend() - 1;
-         it > limit && u_id == u->id() && v_id == v->id() && !stopped()
+         it > lower_limit && u_id == u->id() && v_id == v->id()
+         && it < ulhs.cend() && !stop_running()
          && (_settings.max_overlap == POSITIVE_INFINITY
              || (*_overlap_measure)(u, v, it) <= _settings.max_overlap);
          --it) {
