@@ -720,6 +720,7 @@ namespace libsemigroups {
       stats().stats_check_point();
     }
 
+    // TODO to tpp
     void report_final() const {
       report_progress_from_thread();
       report_no_prefix("{:+<80}\n", "");
@@ -1087,6 +1088,12 @@ namespace libsemigroups {
     // thread_iterator nested classes. The mutex does nothing for <iterator>
     // and is an actual std::mutex for <thread_iterator>. Also subclassed by
     // Sims2::iterator_base.
+    //
+    // TODO(maybe) template PendingDef so that we can include extra stuff in the
+    // 2-sided version if necessary
+    //
+    // TODO(maybe) also template the subclass so that we don't have to store a
+    // Sims1 const* if we are in Sims2
     class iterator_base {
      public:
       //! No doc
@@ -1191,7 +1198,6 @@ namespace libsemigroups {
       }
     };  // class iterator_base
 
-   private:
     //! The return type of \ref cbegin and \ref cend.
     //!
     //! This is a forward iterator values of this type are expensive to copy
