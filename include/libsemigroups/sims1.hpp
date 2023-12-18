@@ -550,7 +550,129 @@ namespace libsemigroups {
   };
 
   template <typename Subclass>
-  class Sims1Base : public Sims1Setting<Subclass>, public Reporter {};
+  class SimsBase : public Sims1Settings<Subclass>, public Reporter {
+   public:
+    //! Type for the nodes in the associated WordGraph
+    //! objects.
+    using node_type  = uint32_t;
+    using label_type = typename WordGraph<node_type>::label_type;
+
+    //! Type for letters in the underlying presentation.
+    using letter_type = typename word_type::value_type;
+
+    //! The size_type of the associated WordGraph objects.
+    using size_type = typename WordGraph<node_type>::size_type;
+
+    // We use WordGraph, even though the iterators produced by this class
+    // hold FelschGraph's, none of the features of FelschGraph are useful
+    // for the output, only for the implementation
+    //! The type of the associated WordGraph objects.
+    using word_graph_type = WordGraph<node_type>;
+
+    using iterator = typename Subclass::iterator;
+
+    SimsBase()                           = default;
+    SimsBase(SimsBase const& other)      = default;
+    SimsBase(SimsBase&&)                 = default;
+    SimsBase& operator=(SimsBase const&) = default;
+    SimsBase& operator=(SimsBase&&)      = default;
+    ~SimsBase()                          = default;
+
+    Subclass& init() {
+      Sims1Settings<Subclass>::init();
+      return static_cast<Subclass&>(*this);
+    }
+
+    using Sims1Settings<Subclass>::presentation;
+    using Sims1Settings<Subclass>::number_of_threads;
+    using Sims1Settings<Subclass>::stats;
+
+    void report_progress_from_thread() const;
+    void report_at_start(size_t num_classes) const;
+    void report_final() const;
+
+    // TODO to tpp
+    [[nodiscard]] iterator cbegin(size_type n) const {
+      if (n == 0) {
+        LIBSEMIGROUPS_EXCEPTION("the argument (size_type) must be non-zero");
+      } else if (presentation().rules.empty()
+                 && presentation().alphabet().empty()) {
+        LIBSEMIGROUPS_EXCEPTION("the presentation() must be defined before "
+                                "calling this function");
+      }
+      return iterator(static_cast<Subclass>(this), n);
+    }
+
+    // TODO to tpp
+    [[nodiscard]] iterator cend(size_type n) const {
+      if (n == 0) {
+        LIBSEMIGROUPS_EXCEPTION("the argument (size_type) must be non-zero");
+      } else if (presentation().rules.empty()
+                 && presentation().alphabet().empty()) {
+        LIBSEMIGROUPS_EXCEPTION("the presentation() must be defined before "
+                                "calling this function");
+      }
+      return iterator(static_cast<Subclass>(this), 0);
+    }
+
+    // Apply the function pred to every one-sided congruence with at
+    // most n classes
+    void for_each(size_type                                   n,
+                  std::function<void(word_graph_type const&)> pred) const {
+      using thread_runner = typename Subclass::thread_runner;
+      if (n == 0) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "expected the 1st argument (size_type) to be non-zero");
+      } else if (presentation().rules.empty()
+                 && presentation().alphabet().empty()) {
+        LIBSEMIGROUPS_EXCEPTION("the presentation() must be defined before "
+                                "calling this function");
+      }
+      report_at_start(n);
+      if (number_of_threads() == 1) {
+        if (!reporting_enabled()) {
+          // Don't care about stats in this case
+          std::for_each(cbegin(n), cend(n), pred);
+        } else {
+          Subclass::stats().stats_zero();
+          detail::Ticker t([this]() { report_progress_from_thread(); });
+          auto           it   = cbegin(n);
+          auto const     last = cend(n);
+          for (; it != last; ++it) {
+            pred(*it);
+          }
+          report_final();
+        }
+      } else {
+        thread_runner den(this, n, number_of_threads());
+        auto          pred_wrapper = [&pred](word_graph_type const& ad) {
+          pred(ad);
+          return false;
+        };
+        if (!reporting_enabled()) {
+          den.run(pred_wrapper);
+        } else {
+          stats().stats_zero();
+          detail::Ticker t([this]() { report_progress_from_thread(); });
+          den.run(pred_wrapper);
+          report_final();
+        }
+      }
+    }
+
+    // TODO to tpp
+    uint64_t number_of_congruences(size_type n) const {
+      if (number_of_threads() == 1) {
+        uint64_t result = 0;
+        for_each(n, [&result](word_graph_type const&) { ++result; });
+        return result;
+      } else {
+        std::atomic_uint64_t result(0);
+        for_each(n, [&result](word_graph_type const&) { ++result; });
+        return result;
+      }
+    }
+  };
 
   //! Defined in ``sims1.hpp``.
   //!
