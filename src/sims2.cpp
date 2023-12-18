@@ -87,29 +87,24 @@ namespace libsemigroups {
 
     size_type prev_num_non_tree_edges;
 
-    // if (current.target_is_new_node) {
-    //   // number of tree edges is number_of_active_nodes - 2
-    //   // because the active nodes include the target which is a new node
-    //   prev_num_non_tree_edges = 2
-    //                             * ((_felsch_graph.definitions().size()
-    //                                 - _felsch_graph.number_of_active_nodes())
-    //                                + 2);
-    //   LIBSEMIGROUPS_ASSERT(_felsch_graph.definitions().size()
-    //                            - (prev_num_non_tree_edges / 2)
-    //                        == _felsch_graph.number_of_active_nodes() - 2);
-    // } else {
-    // number of tree edges is number_of_active_nodes - 1 because the
-    // target is not a new node
-    prev_num_non_tree_edges = 2
-                              * ((_felsch_graph.definitions().size()
-                                  - _felsch_graph.number_of_active_nodes())
-                                 + 1);
-    LIBSEMIGROUPS_ASSERT(_felsch_graph.definitions().size()
-                             - (prev_num_non_tree_edges / 2)
-                         == _felsch_graph.number_of_active_nodes() - 1);
-    //}
+    if (current.target_is_new_node) {
+      // number of tree edges is number_of_active_nodes - 2
+      // because the active nodes include the target which is a new node
+      prev_num_non_tree_edges
+          = 2 * ((current.num_edges - current.num_nodes) + 2);
+      LIBSEMIGROUPS_ASSERT(current.num_edges - (prev_num_non_tree_edges / 2)
+                           == current.num_nodes - 2);
+    } else {
+      // number of tree edges is number_of_active_nodes - 1 because the
+      // target is not a new node
+      prev_num_non_tree_edges
+          = 2 * ((current.num_edges - current.num_nodes) + 1);
+      LIBSEMIGROUPS_ASSERT(current.num_edges - (prev_num_non_tree_edges / 2)
+                           == current.num_nodes - 1);
+    }
 
-    LIBSEMIGROUPS_ASSERT(prev_num_non_tree_edges / 2
+    LIBSEMIGROUPS_ASSERT(prev_num_non_tree_edges / 2 <= current.num_edges);
+    LIBSEMIGROUPS_ASSERT(current.num_edges
                          <= _felsch_graph.definitions().size());
 
     if (current.target_is_new_node) {
