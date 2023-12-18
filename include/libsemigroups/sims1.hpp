@@ -549,6 +549,9 @@ namespace libsemigroups {
     Sims1Settings& init_from(Sims1Settings<OtherSubclass> const& that);
   };
 
+  template <typename Subclass>
+  class Sims1Base : public Sims1Setting<Subclass>, public Reporter {};
+
   //! Defined in ``sims1.hpp``.
   //!
   //! On this page we describe the functionality relating to the small index
@@ -690,8 +693,13 @@ namespace libsemigroups {
     // TODO(doc)
     Sims1& kind(congruence_kind ck);
 
-    class iterator;  // forward decl
+   private:
+    template <typename Base>
+    class iterator_template;
 
+    class iterator_base;
+
+   public:
     //! Returns a forward iterator pointing at the first congruence.
     //!
     //! Returns a forward iterator pointing to the WordGraph representing
@@ -741,7 +749,7 @@ namespace libsemigroups {
     //! \ref cend
     // TODO(Sims1) it'd be good to remove node 0 to avoid confusion. This
     // seems complicated however, and so isn't done at present.
-    [[nodiscard]] iterator cbegin(size_type n) const;
+    [[nodiscard]] iterator_template<iterator_base> cbegin(size_type n) const;
 
     //! Returns a forward iterator pointing one beyond the last congruence.
     //!
@@ -767,7 +775,7 @@ namespace libsemigroups {
     //!
     //! \sa
     //! \ref cbegin
-    [[nodiscard]] iterator cend(size_type n) const;
+    [[nodiscard]] iterator_template<iterator_base> cend(size_type n) const;
 
     //! Returns the number of one-sided congruences with up to a given
     //! number of classes.
@@ -864,7 +872,8 @@ namespace libsemigroups {
 
     // This class collects some common aspects of the iterator and
     // thread_iterator nested classes. The mutex does nothing for <iterator>
-    // and is an actual std::mutex for <thread_iterator>.
+    // and is an actual std::mutex for <thread_iterator>. Also subclassed by
+    // Sims2::iterator_base.
     class iterator_base {
      public:
       //! No doc
@@ -886,8 +895,6 @@ namespace libsemigroups {
 
       FelschGraph<word_type, node_type, std::vector<Definition>> _felsch_graph;
 
-      std::vector<word_type> _2_sided_include;
-      std::vector<word_type> _2_sided_words;
       // This mutex does nothing for iterator, only does
       // something for thread_iterator
       std::mutex              _mtx;
@@ -898,19 +905,14 @@ namespace libsemigroups {
       // file for explanation.
       void init(size_type n);
 
-      // We could use the copy constructor, but there's no
-      // point in copying anything except the FelschGraph
-      // and so we only copy that.
+      // We could use the copy constructor, but there's no point in copying
+      // anything except the FelschGraph and so we only copy that.
       void copy_felsch_graph(iterator_base const& that) {
         _felsch_graph = that._felsch_graph;
-        // TODO only do this if kind() == twosided
-        _2_sided_include = that._2_sided_include;
-        _2_sided_words   = that._2_sided_words;
       }
 
-      // Try to make the definition represented by
-      // PendingDef, returns false if it wasn't possible,
-      // and true if it was.
+      // Try to make the definition represented by PendingDef, returns false if
+      // it wasn't possible, and true if it was.
       //! No doc
       [[nodiscard]] bool try_define(PendingDef const&);
 
@@ -976,29 +978,25 @@ namespace libsemigroups {
       }
     };  // class iterator_base
 
-    // TODO:
-    // * iterator_base_2_sided including the difference of iterator_base before
-    // the Sims2 changes and after
-    // * also rename iterator_base -> iterator_base_1_sided
-    // * make iterator templated on which iterator_base it inherits from
-    // *
-
-   public:
+   private:
     //! The return type of \ref cbegin and \ref cend.
     //!
     //! This is a forward iterator values of this type are expensive to copy
     //! due to their internal state, and prefix increment should be
     //! preferred to postfix.
-    class iterator : public iterator_base {
-      using iterator_base::init;
-      using iterator_base::try_define;
-      using iterator_base::try_pop;
+    //
+    // Has a template parameter because it's also used by Sims2
+    template <typename Base>
+    class iterator_template : public Base {
+      using Base::init;
+      using Base::try_define;
+      using Base::try_pop;
 
      public:
       //! No doc
-      using const_pointer = typename iterator_base::const_pointer;
+      using const_pointer = typename Base::const_pointer;
       //! No doc
-      using const_reference = typename iterator_base::const_reference;
+      using const_reference = typename Base::const_reference;
 
       //! No doc
       using size_type = typename std::vector<word_graph_type>::size_type;
@@ -1015,36 +1013,61 @@ namespace libsemigroups {
       using iterator_category = std::forward_iterator_tag;
 
       //! No doc
-      using iterator_base::iterator_base;
+      using Base::Base;
 
      private:
       // Only want Sims1 to be able to use this constructor.
-      iterator(Sims1 const* s, size_type n);
+      // TODO to tpp
+      iterator_template(Sims1 const* s, size_type n) : Base(s, n) {
+        if (this->_felsch_graph.number_of_active_nodes() == 0) {
+          return;
+        }
+        init(n);
+        ++(*this);
+        // The increment above is required so that when dereferencing any
+        // instance of this type we obtain a valid word graph (o/w the value
+        // pointed to here is empty).
+      }
 
       // So that we can use the constructor above.
-      friend iterator Sims1::cbegin(Sims1::size_type) const;
-      friend iterator Sims1::cend(Sims1::size_type) const;
+      friend iterator_template<iterator_base>
+          Sims1::cbegin(Sims1::size_type) const;
+
+      friend iterator_template<iterator_base>
+          Sims1::cend(Sims1::size_type) const;
 
      public:
       //! No doc
-      ~iterator() = default;
+      ~iterator_template() = default;
 
       // prefix
       //! No doc
-      iterator const& operator++();
+      // TODO to tpp
+      iterator_template const& operator++() {
+        PendingDef current;
+        while (try_pop(current)) {
+          if (try_define(current)) {
+            return *this;
+          }
+        }
+        this->_felsch_graph.number_of_active_nodes(0);
+        // indicates that the iterator is done
+        this->_felsch_graph.induced_subgraph_no_checks(0, 0);
+        return *this;
+      }
 
       // postfix
       //! No doc
-      iterator operator++(int) {
-        iterator copy(*this);
+      iterator_template operator++(int) {
+        iterator_template copy(*this);
         ++(*this);
         return copy;
       }
 
-      using iterator_base::swap;
-    };  // class iterator
+      using Base::swap;
+    };  // class iterator_template
 
-   private:
+    using iterator = iterator_template<iterator_base>;
     void report_progress_from_thread() const;
     void report_at_start(size_t num_classes) const;
     void report_final() const;
@@ -1057,9 +1080,10 @@ namespace libsemigroups {
   //! Defined in ``sims1.hpp``.
   //!
   //! This class is a helper for `Sims1` calling the `word_graph` member
-  //! function attempts to find a right congruence, represented as an WordGraph,
-  //! of the semigroup or monoid defined by the presentation consisting of its
-  //! \ref presentation and \ref long_rules with the following properties:
+  //! function attempts to find a right congruence, represented as an
+  //! WordGraph, of the semigroup or monoid defined by the presentation
+  //! consisting of its \ref presentation and \ref long_rules with the
+  //! following properties:
   //! * the transformation semigroup defined by the WordGraph has size
   //!   \ref target_size;
   //! * the number of nodes in the WordGraph is at least \ref min_nodes
@@ -1273,8 +1297,8 @@ namespace libsemigroups {
     //! Set the target size.
     //!
     //! This function sets the target size, i.e. the desired size of the
-    //! transformation semigroup corresponding to the WordGraph returned by the
-    //! function \ref word_graph.
+    //! transformation semigroup corresponding to the WordGraph returned by
+    //! the function \ref word_graph.
     //!
     //! \param val the target size.
     //!
