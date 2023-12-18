@@ -16,7 +16,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-// This file contains the implementation of the Sims1Settings class template.
+// This file contains the implementations of the Sims low-index congruence
+// functionality in libsemigroups.
 
 namespace libsemigroups {
 
