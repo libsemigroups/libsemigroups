@@ -754,8 +754,8 @@ namespace libsemigroups {
       }
     }
 
-    //     // Apply the function pred to every one-sided congruence with at
-    //     // most n classes
+    // Apply the function pred to every one-sided congruence with at
+    // most n classes
     void for_each(size_type                                   n,
                   std::function<void(word_graph_type const&)> pred) const {
       using thread_runner = typename Subclass::thread_runner;
@@ -1205,17 +1205,17 @@ namespace libsemigroups {
     //! preferred to postfix.
     //
     // Has a template parameter because it's also used by Sims2
-    template <typename Base>
-    class iterator_template : public Base {
-      using Base::init;
-      using Base::try_define;
-      using Base::try_pop;
+    template <typename BaseIterator, typename Sims1or2>
+    class Iterator : public BaseIterator {
+      using BaseIterator::init;
+      using BaseIterator::try_define;
+      using BaseIterator::try_pop;
 
      public:
       //! No doc
-      using const_pointer = typename Base::const_pointer;
+      using const_pointer = typename BaseIterator::const_pointer;
       //! No doc
-      using const_reference = typename Base::const_reference;
+      using const_reference = typename BaseIterator::const_reference;
 
       //! No doc
       using size_type = typename std::vector<word_graph_type>::size_type;
@@ -1231,13 +1231,15 @@ namespace libsemigroups {
       //! No doc
       using iterator_category = std::forward_iterator_tag;
 
+      using sims_type = Sims1or2;
+
       //! No doc
-      using Base::Base;
+      using BaseIterator::BaseIterator;
 
      private:
       // Only want Sims1 to be able to use this constructor.
       // TODO to tpp
-      iterator_template(Sims1 const* s, size_type n) : Base(s, n) {
+      Iterator(Sims1or2 const* s, size_type n) : BaseIterator(s, n) {
         if (this->_felsch_graph.number_of_active_nodes() == 0) {
           return;
         }
@@ -1249,20 +1251,20 @@ namespace libsemigroups {
       }
 
       // So that we can use the constructor above.
-      friend iterator_template<iterator_base>
-          SimsBase<Sims1>::cbegin(SimsBase::size_type) const;
+      friend Iterator<BaseIterator, Sims1or2>
+          SimsBase<Sims1or2>::cbegin(SimsBase::size_type) const;
 
-      friend iterator_template<iterator_base>
-          SimsBase::cend(SimsBase::size_type) const;
+      friend Iterator<BaseIterator, Sims1or2>
+          SimsBase<Sims1or2>::cend(SimsBase::size_type) const;
 
      public:
       //! No doc
-      ~iterator_template() = default;
+      ~Iterator() = default;
 
       // prefix
       //! No doc
       // TODO to tpp
-      iterator_template const& operator++() {
+      Iterator const& operator++() {
         PendingDef current;
         while (try_pop(current)) {
           if (try_define(current)) {
@@ -1277,17 +1279,17 @@ namespace libsemigroups {
 
       // postfix
       //! No doc
-      iterator_template operator++(int) {
-        iterator_template copy(*this);
+      Iterator operator++(int) {
+        Iterator copy(*this);
         ++(*this);
         return copy;
       }
 
-      using Base::swap;
-    };  // class iterator_template
+      using BaseIterator::swap;
+    };  // class Iterator
 
    public:
-    using iterator = iterator_template<iterator_base>;
+    using iterator = Iterator<iterator_base, Sims1>;
 
     //! Returns a forward iterator pointing at the first congruence.
     //!
@@ -1370,35 +1372,40 @@ namespace libsemigroups {
       return SimsBase::cend<iterator>(n);
     }
 
-    class thread_runner;
+    // TODO private?
+    template <typename ThreadIt>
+    class ThreadRunner;
 
+    // TODO private?
     // Note that this class is private, and not really an iterator in the usual
     // sense. It is designed solely to work with thread_runner.
-    template <typename IteratorBase>
-    class thread_iterator : public IteratorBase {
-      friend class Sims1::thread_runner;
+    template <typename IteratorBase, typename Sims1or2>
+    class ThreadIterator : public IteratorBase {
+      friend class Sims1::ThreadRunner<ThreadIterator>;
 
       using IteratorBase::copy_felsch_graph;
 
      public:
+      using sims_type = Sims1or2;
+
       //! No doc
-      thread_iterator(Sims1 const* s, size_type n) : IteratorBase(s, n) {}
+      ThreadIterator(Sims1or2 const* s, size_type n) : IteratorBase(s, n) {}
 
       // None of the constructors are noexcept because the corresponding
       // constructors for std::vector aren't (until C++17).
       //! No doc
-      thread_iterator() = delete;
+      ThreadIterator() = delete;
       //! No doc
-      thread_iterator(thread_iterator const&) = delete;
+      ThreadIterator(ThreadIterator const&) = delete;
       //! No doc
-      thread_iterator(thread_iterator&&) = delete;
+      ThreadIterator(ThreadIterator&&) = delete;
       //! No doc
-      thread_iterator& operator=(thread_iterator const&) = delete;
+      ThreadIterator& operator=(ThreadIterator const&) = delete;
       //! No doc
-      thread_iterator& operator=(thread_iterator&&) = delete;
+      ThreadIterator& operator=(ThreadIterator&&) = delete;
 
       //! No doc
-      ~thread_iterator() = default;
+      ~ThreadIterator() = default;
 
       using IteratorBase::stats;
 
@@ -1407,7 +1414,7 @@ namespace libsemigroups {
         this->_pending.push_back(std::move(pd));
       }
 
-      void steal_from(thread_iterator& that) {
+      void steal_from(ThreadIterator& that) {
         // WARNING <that> must be locked before calling this function
         std::lock_guard<std::mutex> lock(this->_mtx);
         LIBSEMIGROUPS_ASSERT(this->_pending.empty());
@@ -1435,7 +1442,7 @@ namespace libsemigroups {
                             that._pending.cend());
       }
 
-      bool try_steal(thread_iterator& q) {
+      bool try_steal(ThreadIterator& q) {
         std::lock_guard<std::mutex> lock(this->_mtx);
         if (this->_pending.empty()) {
           return false;
@@ -1446,15 +1453,20 @@ namespace libsemigroups {
       }
     };
 
-    class thread_runner {
+    using thread_iterator = ThreadIterator<iterator_base, Sims1>;
+
+    template <typename ThreadIt>
+    class ThreadRunner {
      private:
-      std::atomic_bool                                             _done;
-      std::vector<std::unique_ptr<thread_iterator<iterator_base>>> _theives;
-      std::vector<std::thread>                                     _threads;
-      std::mutex                                                   _mtx;
-      size_type                                                    _num_threads;
-      word_graph_type                                              _result;
-      Sims1 const*                                                 _sims1;
+      using Sims1or2 = typename ThreadIt::sims_type;
+
+      std::atomic_bool                       _done;
+      std::vector<std::unique_ptr<ThreadIt>> _theives;
+      std::vector<std::thread>               _threads;
+      std::mutex                             _mtx;
+      size_type                              _num_threads;
+      word_graph_type                        _result;
+      Sims1or2 const*                        _sims1;
 
       void worker_thread(unsigned                                    my_index,
                          std::function<bool(word_graph_type const&)> hook) {
@@ -1503,7 +1515,7 @@ namespace libsemigroups {
       }
 
      public:
-      thread_runner(Sims1 const* s, size_type n, size_type num_threads)
+      ThreadRunner(Sims1or2 const* s, size_type n, size_type num_threads)
           : _done(false),
             _theives(),
             _threads(),
@@ -1512,13 +1524,12 @@ namespace libsemigroups {
             _result(),
             _sims1(s) {
         for (size_t i = 0; i < _num_threads; ++i) {
-          _theives.push_back(
-              std::make_unique<thread_iterator<iterator_base>>(s, n));
+          _theives.push_back(std::make_unique<ThreadIt>(s, n));
         }
         _theives.front()->init(n);
       }
 
-      ~thread_runner() = default;
+      ~ThreadRunner() = default;
 
       word_graph_type const& word_graph() const {
         return _result;
@@ -1529,14 +1540,16 @@ namespace libsemigroups {
           detail::JoinThreads joiner(_threads);
           for (size_t i = 0; i < _num_threads; ++i) {
             _threads.push_back(std::thread(
-                &thread_runner::worker_thread, this, i, std::ref(hook)));
+                &ThreadRunner::worker_thread, this, i, std::ref(hook)));
           }
         } catch (...) {
           _done = true;
           throw;
         }
       }
-    };  // class thread_runner
+    };  // class ThreadRunner
+
+    using thread_runner = ThreadRunner<thread_iterator>;
   };
 
   //! Defined in ``sims1.hpp``.
