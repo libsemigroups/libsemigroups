@@ -1162,54 +1162,54 @@ namespace libsemigroups {
       bool try_define(PendingDef const& current) {
         LIBSEMIGROUPS_ASSERT(current.target < current.num_nodes);
         LIBSEMIGROUPS_ASSERT(current.num_nodes <= _max_num_classes);
-        {
-          std::lock_guard<std::mutex> lock(_mtx);
-          // Backtrack if necessary
-          _felsch_graph.reduce_number_of_edges_to(current.num_edges);
+        std::lock_guard<std::mutex> lock(_mtx);
+        // Backtrack if necessary
+        _felsch_graph.reduce_number_of_edges_to(current.num_edges);
 
-          // It might be that current.target is a new node, in which case
-          // _felsch_graph.number_of_active_nodes() includes this new node even
-          // before the edge current.source -> current.target is defined.
-          _felsch_graph.number_of_active_nodes(current.num_nodes);
+        // It might be that current.target is a new node, in which case
+        // _felsch_graph.number_of_active_nodes() includes this new node even
+        // before the edge current.source -> current.target is defined.
+        _felsch_graph.number_of_active_nodes(current.num_nodes);
 
-          LIBSEMIGROUPS_ASSERT(
-              _felsch_graph.target_no_checks(current.source, current.generator)
-              == UNDEFINED);
+        LIBSEMIGROUPS_ASSERT(
+            _felsch_graph.target_no_checks(current.source, current.generator)
+            == UNDEFINED);
 
-          // Don't call number_of_edges because this calls the function in
-          // WordGraph
-          size_type start = _felsch_graph.definitions().size();
+        // Don't call number_of_edges because this calls the function in
+        // WordGraph
+        size_type start = _felsch_graph.definitions().size();
 
-          _felsch_graph.set_target_no_checks(
-              current.source, current.generator, current.target);
+        _felsch_graph.set_target_no_checks(
+            current.source, current.generator, current.target);
 
-          auto first = _sims1->include().cbegin();
-          auto last  = _sims1->include().cend();
-          if (!felsch_graph::make_compatible<RegisterDefs>(
-                  _felsch_graph, 0, 1, first, last)
-              || !_felsch_graph.process_definitions(start)) {
-            // Seems to be important to check include() first then
-            // process_definitions
-            return false;
-          }
+        auto first = _sims1->include().cbegin();
+        auto last  = _sims1->include().cend();
+        if (!felsch_graph::make_compatible<RegisterDefs>(
+                _felsch_graph, 0, 1, first, last)
+            || !_felsch_graph.process_definitions(start)) {
+          // Seems to be important to check include() first then
+          // process_definitions
+          return false;
+        }
 
-          first          = _sims1->exclude().cbegin();
-          last           = _sims1->exclude().cend();
-          node_type root = 0;
+        first          = _sims1->exclude().cbegin();
+        last           = _sims1->exclude().cend();
+        node_type root = 0;
 
-          for (auto it = first; it != last; it += 2) {
-            auto l
-                = word_graph::follow_path_no_checks(_felsch_graph, root, *it);
-            if (l != UNDEFINED) {
-              auto r = word_graph::follow_path_no_checks(
-                  _felsch_graph, root, *(it + 1));
-              if (l == r) {
-                return false;
-              }
+        for (auto it = first; it != last; it += 2) {
+          auto l = word_graph::follow_path_no_checks(_felsch_graph, root, *it);
+          if (l != UNDEFINED) {
+            auto r = word_graph::follow_path_no_checks(
+                _felsch_graph, root, *(it + 1));
+            if (l == r) {
+              return false;
             }
           }
         }
+        return true;
+      }
 
+      bool install_descendents(PendingDef const& current) {
         letter_type     a        = current.generator + 1;
         size_type const M        = _felsch_graph.number_of_active_nodes();
         size_type const N        = _felsch_graph.number_of_edges();
@@ -1399,6 +1399,7 @@ namespace libsemigroups {
     template <typename IteratorBase>
     class Iterator : public IteratorBase {
       using IteratorBase::init;
+      using IteratorBase::install_descendents;
       using IteratorBase::try_define;
       using IteratorBase::try_pop;
 
@@ -1458,7 +1459,7 @@ namespace libsemigroups {
       Iterator const& operator++() {
         PendingDef current;
         while (try_pop(current)) {
-          if (try_define(current)) {
+          if (try_define(current) && install_descendents(current)) {
             return *this;
           }
         }
@@ -1670,7 +1671,8 @@ namespace libsemigroups {
           while ((pop_from_local_queue(pd, my_index)
                   || pop_from_other_thread_queue(pd, my_index))
                  && !_done) {
-            if (_theives[my_index]->try_define(pd)) {
+            if (_theives[my_index]->try_define(pd)
+                && _theives[my_index]->install_descendents(pd)) {
               if (hook(**_theives[my_index])) {
                 // hook returns true to indicate that we should stop early
                 std::lock_guard<std::mutex> lock(_mtx);
