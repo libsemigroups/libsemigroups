@@ -2881,7 +2881,11 @@ namespace libsemigroups {
                 4, {{1, 2}, {0, 2}, {3, 2}, {2, 2}}));  // ok
   }
 
-  LIBSEMIGROUPS_TEST_CASE("Sims1", "093", "2-sided T_4", "[quick][sims1]") {
+  // Takes approx. 13.5s in debug mode.
+  LIBSEMIGROUPS_TEST_CASE("Sims1",
+                          "093",
+                          "2-sided T_4",
+                          "[standard][sims1][no-valgrind][no-coverage]") {
     Sims1 s(congruence_kind::twosided, full_transformation_monoid(4));
 
     REQUIRE(s.number_of_congruences(256) == 11);  // Verified with GAP
@@ -2890,10 +2894,10 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("Sims1", "094", "2-sided example", "[quick][sims1]") {
     Presentation<word_type> p;
     p.contains_empty_word(true);
-    p.alphabet({0, 1});
-    presentation::add_rule(p, {0, 0, 0}, {0});
-    presentation::add_rule(p, {1, 1}, {1});
-    presentation::add_rule(p, {0, 1, 0, 1}, {0});
+    p.alphabet(01_w);
+    presentation::add_rule(p, 000_w, 0_w);
+    presentation::add_rule(p, 11_w, 1_w);
+    presentation::add_rule(p, 0101_w, 0_w);
     Sims1 s(congruence_kind::twosided, p);
 
     REQUIRE(s.number_of_congruences(4) == 6);  // Verified with GAP
