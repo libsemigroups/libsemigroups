@@ -1370,18 +1370,19 @@ namespace libsemigroups {
       return SimsBase::cend<iterator>(n);
     }
 
-    // Note that this class is private, and not really an iterator in the usual
-    // sense. It is designed solely to work with thread_runner.
     class thread_runner;
 
-    class thread_iterator : public iterator_base {
+    // Note that this class is private, and not really an iterator in the usual
+    // sense. It is designed solely to work with thread_runner.
+    template <typename IteratorBase>
+    class thread_iterator : public IteratorBase {
       friend class Sims1::thread_runner;
 
-      using iterator_base::copy_felsch_graph;
+      using IteratorBase::copy_felsch_graph;
 
      public:
       //! No doc
-      thread_iterator(Sims1 const* s, size_type n) : iterator_base(s, n) {}
+      thread_iterator(Sims1 const* s, size_type n) : IteratorBase(s, n) {}
 
       // None of the constructors are noexcept because the corresponding
       // constructors for std::vector aren't (until C++17).
@@ -1399,7 +1400,7 @@ namespace libsemigroups {
       //! No doc
       ~thread_iterator() = default;
 
-      using iterator_base::stats;
+      using IteratorBase::stats;
 
      public:
       void push(PendingDef pd) {
@@ -1447,13 +1448,13 @@ namespace libsemigroups {
 
     class thread_runner {
      private:
-      std::atomic_bool                              _done;
-      std::vector<std::unique_ptr<thread_iterator>> _theives;
-      std::vector<std::thread>                      _threads;
-      std::mutex                                    _mtx;
-      size_type                                     _num_threads;
-      word_graph_type                               _result;
-      Sims1 const*                                  _sims1;
+      std::atomic_bool                                             _done;
+      std::vector<std::unique_ptr<thread_iterator<iterator_base>>> _theives;
+      std::vector<std::thread>                                     _threads;
+      std::mutex                                                   _mtx;
+      size_type                                                    _num_threads;
+      word_graph_type                                              _result;
+      Sims1 const*                                                 _sims1;
 
       void worker_thread(unsigned                                    my_index,
                          std::function<bool(word_graph_type const&)> hook) {
@@ -1511,7 +1512,8 @@ namespace libsemigroups {
             _result(),
             _sims1(s) {
         for (size_t i = 0; i < _num_threads; ++i) {
-          _theives.push_back(std::make_unique<thread_iterator>(s, n));
+          _theives.push_back(
+              std::make_unique<thread_iterator<iterator_base>>(s, n));
         }
         _theives.front()->init(n);
       }
