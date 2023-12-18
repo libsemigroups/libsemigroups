@@ -80,35 +80,6 @@ namespace libsemigroups {
     return *this;
   }
 
-  ////////////////////////////////////////////////////////////////////////
-  // PendingDef
-  ////////////////////////////////////////////////////////////////////////
-
-  struct Sims1::PendingDef {
-    PendingDef() = default;
-
-    PendingDef(node_type   s,
-               letter_type g,
-               node_type   t,
-               size_type   e,
-               size_type   n,
-               bool        tin) noexcept
-        : source(s),
-          generator(g),
-          target(t),
-          num_edges(e),
-          num_nodes(n),
-          target_is_new_node(tin) {}
-    node_type   source;
-    letter_type generator;
-    node_type   target;
-    size_type   num_edges;  // Number of edges in the graph when
-                            // *this was added to the stack
-    size_type num_nodes;    // Number of nodes in the graph
-                            // after the definition is made
-    bool target_is_new_node;
-  };
-
   ///////////////////////////////////////////////////////////////////////////////
   // iterator_base nested class
   ///////////////////////////////////////////////////////////////////////////////
@@ -127,10 +98,6 @@ namespace libsemigroups {
     size_t                  m = std::distance(s->presentation().rules.cbegin(),
                              s->cbegin_long_rules());
     p.rules.erase(p.rules.begin() + m, p.rules.end());
-    // TODO could be slightly less space allocated here
-    _2_sided_include.assign(2 * _max_num_classes * p.alphabet().size(),
-                            word_type());
-    _2_sided_words.assign(_max_num_classes, word_type());
     _felsch_graph.init(std::move(p));
     // n == 0 only when the iterator is cend
     _felsch_graph.number_of_active_nodes(n == 0 ? 0 : 1);
@@ -148,13 +115,10 @@ namespace libsemigroups {
         _felsch_graph(that._felsch_graph),
         _mtx(),
         _pending(that._pending),
-        _sims1(that._sims1),
-        _2_sided_include(that._2_sided_include),
-        _2_sided_words(that._2_sided_words) {}
+        _sims1(that._sims1) {}
 
   // Intentionally don't copy the mutex, it doesn't compile, wouldn't make
   // sense if the mutex was used here.
-
   Sims1::iterator_base::iterator_base(Sims1::iterator_base&& that)
       :  // private
         _max_num_classes(std::move(that._max_num_classes)),
@@ -163,9 +127,7 @@ namespace libsemigroups {
         _felsch_graph(std::move(that._felsch_graph)),
         _mtx(),
         _pending(std::move(that._pending)),
-        _sims1(that._sims1),
-        _2_sided_include(std::move(that._2_sided_include)),
-        _2_sided_words(std::move(that._2_sided_words)) {}
+        _sims1(that._sims1) {}
 
   // Intentionally don't copy the mutex, it doesn't compile, wouldn't make
   // sense if the mutex was used here.
@@ -181,9 +143,6 @@ namespace libsemigroups {
     _pending = that._pending;
     _sims1   = that._sims1;
 
-    _2_sided_include = that._2_sided_include;
-    _2_sided_words   = that._2_sided_words;
-
     return *this;
   }
 
@@ -197,10 +156,8 @@ namespace libsemigroups {
     _min_target_node = std::move(that._min_target_node);
 
     // protected
-    _felsch_graph    = std::move(that._felsch_graph);
-    _pending         = std::move(that._pending);
-    _2_sided_include = std::move(that._2_sided_include);
-    _2_sided_words   = std::move(that._2_sided_words);
+    _felsch_graph = std::move(that._felsch_graph);
+    _pending      = std::move(that._pending);
     // keep our own _mtx
     _sims1 = that._sims1;
     return *this;
@@ -263,32 +220,6 @@ namespace libsemigroups {
       // WordGraph
       size_type start = _felsch_graph.definitions().size();
 
-      size_type prev_num_non_tree_edges;
-      if (current.target_is_new_node) {
-        // number of tree edges is number_of_active_nodes - 2
-        // because the active nodes include the target which is a new node
-        prev_num_non_tree_edges = 2
-                                  * ((_felsch_graph.definitions().size()
-                                      - _felsch_graph.number_of_active_nodes())
-                                     + 2);
-        LIBSEMIGROUPS_ASSERT(_felsch_graph.definitions().size()
-                                 - (prev_num_non_tree_edges / 2)
-                             == _felsch_graph.number_of_active_nodes() - 2);
-      } else {
-        // number of tree edges is number_of_active_nodes - 1 because the
-        // target is not a new node
-        prev_num_non_tree_edges = 2
-                                  * ((_felsch_graph.definitions().size()
-                                      - _felsch_graph.number_of_active_nodes())
-                                     + 1);
-        LIBSEMIGROUPS_ASSERT(_felsch_graph.definitions().size()
-                                 - (prev_num_non_tree_edges / 2)
-                             == _felsch_graph.number_of_active_nodes() - 1);
-      }
-
-      LIBSEMIGROUPS_ASSERT(prev_num_non_tree_edges / 2
-                           <= _felsch_graph.definitions().size());
-
       _felsch_graph.set_target_no_checks(
           current.source, current.generator, current.target);
 
@@ -300,58 +231,6 @@ namespace libsemigroups {
         // Seems to be important to check include() first then
         // process_definitions
         return false;
-      }
-
-      if (_sims1->kind() == congruence_kind::twosided) {
-        if (current.target_is_new_node) {
-          LIBSEMIGROUPS_ASSERT(current.target < _2_sided_include.size());
-          LIBSEMIGROUPS_ASSERT(current.source < _2_sided_include.size());
-          _2_sided_words[current.target] = _2_sided_words[current.source];
-          _2_sided_words[current.target].push_back(current.generator);
-        }
-        // TODO avoid extra copies here
-        // One relation in _2_sided_include for every non-tree edge
-        while (start < _felsch_graph.definitions().size()) {
-          for (size_t i = start, j = 0; i < _felsch_graph.definitions().size();
-               ++i) {
-            auto e = _felsch_graph.definitions()[i];  // TODO reference
-            if (current.target_is_new_node && e.first == current.source
-                && e.second == current.generator) {
-              continue;
-            }
-            LIBSEMIGROUPS_ASSERT(prev_num_non_tree_edges + 2 * j + 1
-                                 < _2_sided_include.size());
-            _2_sided_include[prev_num_non_tree_edges + 2 * j]
-                = _2_sided_words[e.first];
-            _2_sided_include[prev_num_non_tree_edges + 2 * j].push_back(
-                e.second);
-            _2_sided_include[prev_num_non_tree_edges + 2 * j + 1]
-                // TODO target_no_checks
-                = _2_sided_words[_felsch_graph.target(e.first, e.second)];
-            j++;
-          }
-          // TODO different things if current.target is a new node
-
-          size_t num_non_tree_edges
-              = 2
-                * (_felsch_graph.definitions().size()
-                   - _felsch_graph.number_of_active_nodes() + 1);
-
-          first = _2_sided_include.cbegin();
-          last  = _2_sided_include.cbegin() + num_non_tree_edges;
-          start = _felsch_graph.definitions().size();
-          prev_num_non_tree_edges = num_non_tree_edges;
-
-          if (!felsch_graph::make_compatible<RegisterDefs>(
-                  _felsch_graph,
-                  0,
-                  _felsch_graph.number_of_active_nodes(),
-                  first,
-                  last)
-              || !_felsch_graph.process_definitions(start)) {
-            return false;
-          }
-        }
       }
 
       first          = _sims1->exclude().cbegin();
