@@ -819,6 +819,25 @@ namespace libsemigroups {
       return p.rules.cend();
     }
 
+    // Check if kb is defines a reduced rewriting system
+    template <typename Rewriter, typename ReductionOrder>
+    [[nodiscard]] bool is_reduced(KnuthBendix<Rewriter, ReductionOrder>& kb) {
+      for (auto const& test_rule : kb.active_rules()) {
+        auto const lhs = test_rule.first;
+        for (auto const& rule : kb.active_rules()) {
+          if (test_rule == rule) {
+            continue;
+          }
+
+          if (rule.first.find(lhs) != internal_string_type::npos
+              && rule.second.find(lhs) != internal_string_type::npos) {
+            return false;
+          }
+        }
+      }
+      return true;
+    }
+
     template <typename T>
     inline tril try_equal_to(Presentation<std::string>& p,
                              std::string const&         lhs,
