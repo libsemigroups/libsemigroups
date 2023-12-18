@@ -17,7 +17,8 @@
 //
 
 // This file contains a declaration of a class for performing the "low-index
-// congruence" algorithm for semigroups and monoids.
+// congruence" algorithm for 1-sided congruences of semigroups and monoids.
+
 // TODO(Sims1):
 // * implement joins (HopcroftKarp), meets (not sure), containment (find join
 //   and check equality)?
@@ -677,9 +678,9 @@ namespace libsemigroups {
     }
 #endif
 
-    using Sims1Settings<Sims1>::presentation;
-    using Sims1Settings<Sims1>::cbegin_long_rules;
-    using Sims1Settings<Sims1>::number_of_threads;
+    using Sims1Settings::cbegin_long_rules;
+    using Sims1Settings::number_of_threads;
+    using Sims1Settings::presentation;
 
     // TODO(doc)
     [[nodiscard]] congruence_kind kind() const noexcept {
@@ -810,9 +811,8 @@ namespace libsemigroups {
     void for_each(size_type                                   n,
                   std::function<void(word_graph_type const&)> pred) const;
 
-    //! Apply the function \p pred to every one-sided
-    //! congruence with at most \p n classes, until it
-    //! returns \c true.
+    //! Apply the function \p pred to every one-sided congruence with at most \p
+    //! n classes, until it returns \c true.
     //!
     //! This function is similar to `std::find_if(begin(n),
     //! end(n), pred)` and exists to:
@@ -835,7 +835,32 @@ namespace libsemigroups {
             std::function<bool(word_graph_type const&)> pred) const;
 
    private:
-    struct PendingDef;
+    friend class Sims2;
+
+    struct PendingDef {
+      PendingDef() = default;
+
+      PendingDef(node_type   s,
+                 letter_type g,
+                 node_type   t,
+                 size_type   e,
+                 size_type   n,
+                 bool        tin) noexcept
+          : source(s),
+            generator(g),
+            target(t),
+            num_edges(e),
+            num_nodes(n),
+            target_is_new_node(tin) {}
+      node_type   source;
+      letter_type generator;
+      node_type   target;
+      size_type   num_edges;  // Number of edges in the graph when
+                              // *this was added to the stack
+      size_type num_nodes;    // Number of nodes in the graph
+                              // after the definition is made
+      bool target_is_new_node;
+    };
 
     // This class collects some common aspects of the iterator and
     // thread_iterator nested classes. The mutex does nothing for <iterator>
@@ -944,6 +969,10 @@ namespace libsemigroups {
       //! No doc
       Sims1Stats& stats() noexcept {
         return _sims1->stats();
+      }
+
+      size_type maximum_number_of_classes() const noexcept {
+        return _max_num_classes;
       }
     };  // class iterator_base
 
