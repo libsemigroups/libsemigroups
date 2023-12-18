@@ -295,34 +295,6 @@ namespace libsemigroups {
   }
 
   ///////////////////////////////////////////////////////////////////////////////
-  // iterator nested class
-  ///////////////////////////////////////////////////////////////////////////////
-
-  Sims1::iterator::iterator(Sims1 const* s, size_type n) : iterator_base(s, n) {
-    if (this->_felsch_graph.number_of_active_nodes() == 0) {
-      return;
-    }
-    init(n);
-    ++(*this);
-    // The increment above is required so that when dereferencing any
-    // instance of this type we obtain a valid word graph (o/w the value
-    // pointed to here is empty).
-  }
-
-  typename Sims1::iterator const& Sims1::iterator::operator++() {
-    PendingDef current;
-    while (try_pop(current)) {
-      if (try_define(current)) {
-        return *this;
-      }
-    }
-    this->_felsch_graph.number_of_active_nodes(0);
-    // indicates that the iterator is done
-    this->_felsch_graph.induced_subgraph_no_checks(0, 0);
-    return *this;
-  }
-
-  ///////////////////////////////////////////////////////////////////////////////
   // thread_iterator
   ///////////////////////////////////////////////////////////////////////////////
 
