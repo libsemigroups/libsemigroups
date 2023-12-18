@@ -569,7 +569,7 @@ namespace libsemigroups {
     //! The type of the associated WordGraph objects.
     using word_graph_type = WordGraph<node_type>;
 
-    using iterator = typename Subclass::iterator;
+    // using iterator = typename Subclass::iterator;
 
     SimsBase()                           = default;
     SimsBase(SimsBase const& other)      = default;
@@ -586,25 +586,164 @@ namespace libsemigroups {
     using Sims1Settings<Subclass>::presentation;
     using Sims1Settings<Subclass>::number_of_threads;
     using Sims1Settings<Subclass>::stats;
-
-    void report_progress_from_thread() const;
-    void report_at_start(size_t num_classes) const;
-    void report_final() const;
+    using Sims1Settings<Subclass>::include;
+    using Sims1Settings<Subclass>::exclude;
+    using Sims1Settings<Subclass>::cbegin_long_rules;
 
     // TODO to tpp
+    void report_at_start(size_t num_classes) const {
+      std::string num_threads = "0";
+      if (number_of_threads() != 1) {
+        num_threads = fmt::format("{} / {}",
+                                  number_of_threads(),
+                                  std::thread::hardware_concurrency());
+      }
+      auto shortest_short = presentation::shortest_rule_length(presentation());
+      auto longest_short  = presentation::longest_rule_length(presentation());
+
+      std::string pairs;
+      if (!include().empty() && !exclude().empty()) {
+        pairs = fmt::format(", including {} + excluding {} pairs",
+                            include().size() / 2,
+                            exclude().size() / 2);
+      } else if (!include().empty()) {
+        pairs = fmt::format(", including {} pairs", include().size() / 2);
+      } else if (!exclude().empty()) {
+        pairs = fmt::format(", excluding {} pairs", exclude().size() / 2);
+      }
+
+      report_no_prefix("{:+<80}\n", "");
+      report_default("Sims1: STARTING with {} additional threads . . . \n",
+                     num_threads);
+      report_no_prefix("{:+<80}\n", "");
+      report_default("Sims1: \u2264 {} classes{} for \u27E8A|R\u27E9 with:\n",
+                     num_classes,
+                     pairs);
+      report_default("Sims1: |A| = {}, |R| = {}, "
+                     "|u| + |v| \u2208 [{}, {}], \u2211(|u| + |v|) = {}\n",
+                     presentation().alphabet().size(),
+                     presentation().rules.size() / 2,
+                     shortest_short,
+                     longest_short,
+                     presentation::length(presentation()));
+
+      if (cbegin_long_rules() != presentation().rules.cend()) {
+        auto first = presentation().rules.cbegin(), last = cbegin_long_rules();
+
+        report_default("Sims1: {} \"short\" relations with: ",
+                       std::distance(first, last) / 2);
+        report_no_prefix(
+            "|u| + |v| \u2208 [{}, {}] and \u2211(|u| + |v|) = {}\n",
+            presentation::shortest_rule_length(first, last),
+            presentation::longest_rule_length(first, last),
+            presentation::length(first, last));
+
+        first = cbegin_long_rules(), last = presentation().rules.cend();
+        report_default("Sims1: {} \"long\" relations with: ",
+                       std::distance(first, last) / 2);
+        report_no_prefix(
+            "|u| + |v| \u2208 [{}, {}] and \u2211(|u| + |v|) = {}\n",
+            presentation::shortest_rule_length(first, last),
+            presentation::longest_rule_length(first, last),
+            presentation::length(first, last));
+      }
+      Reporter::reset_start_time();
+    }
+
+    // TODO to tpp
+    void report_progress_from_thread() const {
+      using namespace detail;       // NOLINT(build/namespaces)
+      using namespace std::chrono;  // NOLINT(build/namespaces)
+
+      auto time_total_ns = delta(start_time());
+      auto time_diff     = delta(last_report());
+
+      // Stats
+      auto count_now          = stats().count_now.load();
+      auto count_diff         = count_now - stats().count_last;
+      auto total_pending_now  = stats().total_pending_now.load();
+      auto total_pending_diff = total_pending_now - stats().total_pending_last;
+
+      constexpr uint64_t billion = 1'000'000'000;
+      uint64_t congs_per_sec = (billion * count_now) / time_total_ns.count();
+      uint64_t nodes_per_sec
+          = (billion * total_pending_now) / time_total_ns.count();
+
+      nanoseconds time_per_cong_last_sec(0);
+      if (count_diff != 0) {
+        time_per_cong_last_sec = time_diff / count_diff;
+      }
+
+      nanoseconds time_per_node_last_sec(0);
+      if (total_pending_diff != 0) {
+        time_per_node_last_sec = time_diff / total_pending_diff;
+      }
+
+      nanoseconds time_per_cong(0);
+      if (count_now != 0) {
+        time_per_cong = time_total_ns / count_now;
+      }
+
+      nanoseconds time_per_node(0);
+      if (total_pending_now != 0) {
+        time_per_node = time_total_ns / total_pending_now;
+      }
+
+      ReportCell<2> rc;
+      rc.min_width(0, 7).min_width(1, 11);
+      rc(group_digits,
+         "Sims1: total        {} (cong.)   | {} (nodes) \n",
+         count_now,
+         total_pending_now);
+
+      rc(signed_group_digits,
+         "Sims1: diff         {} (cong.)   | {} (nodes)\n",
+         count_diff,
+         total_pending_diff);
+
+      rc(group_digits,
+         "Sims1: mean         {} (cong./s) | {} (node/s)\n",
+         congs_per_sec,
+         nodes_per_sec);
+
+      rc("Sims1: time last s. {} (/cong.)  | {} (/node)\n",
+         string_time(time_per_cong_last_sec),
+         string_time(time_per_node_last_sec));
+
+      rc("Sims1: mean time    {} (/cong.)  | {} (/node)\n",
+         string_time(time_per_cong),
+         string_time(time_per_node));
+
+      rc("Sims1: time         {} (total)   |\n", string_time(time_total_ns));
+
+      reset_last_report();
+      stats().stats_check_point();
+    }
+
+    void report_final() const {
+      report_progress_from_thread();
+      report_no_prefix("{:+<80}\n", "");
+      report_default("Sims1: FINISHED!\n");
+      report_no_prefix("{:+<80}\n", "");
+    }
+
+    // TODO to tpp
+    template <typename iterator>
     [[nodiscard]] iterator cbegin(size_type n) const {
-      if (n == 0) {
-        LIBSEMIGROUPS_EXCEPTION("the argument (size_type) must be non-zero");
-      } else if (presentation().rules.empty()
-                 && presentation().alphabet().empty()) {
-        LIBSEMIGROUPS_EXCEPTION("the presentation() must be defined before "
-                                "calling this function");
-      }
-      return iterator(static_cast<Subclass>(this), n);
+      throw_if_not_ready(n);
+      return iterator(static_cast<Subclass const*>(this), n);
     }
 
     // TODO to tpp
+    template <typename iterator>
     [[nodiscard]] iterator cend(size_type n) const {
+      throw_if_not_ready(n);
+      return iterator(static_cast<Subclass const*>(this), 0);
+    }
+
+    // TODO to tpp
+    // TODO private
+    void throw_if_not_ready(size_type n) const {
       if (n == 0) {
         LIBSEMIGROUPS_EXCEPTION("the argument (size_type) must be non-zero");
       } else if (presentation().rules.empty()
@@ -612,40 +751,35 @@ namespace libsemigroups {
         LIBSEMIGROUPS_EXCEPTION("the presentation() must be defined before "
                                 "calling this function");
       }
-      return iterator(static_cast<Subclass>(this), 0);
     }
 
-    // Apply the function pred to every one-sided congruence with at
-    // most n classes
+    //     // Apply the function pred to every one-sided congruence with at
+    //     // most n classes
     void for_each(size_type                                   n,
                   std::function<void(word_graph_type const&)> pred) const {
       using thread_runner = typename Subclass::thread_runner;
-      if (n == 0) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "expected the 1st argument (size_type) to be non-zero");
-      } else if (presentation().rules.empty()
-                 && presentation().alphabet().empty()) {
-        LIBSEMIGROUPS_EXCEPTION("the presentation() must be defined before "
-                                "calling this function");
-      }
+      using iterator      = typename Subclass::iterator;
+      throw_if_not_ready(n);
+
       report_at_start(n);
       if (number_of_threads() == 1) {
         if (!reporting_enabled()) {
           // Don't care about stats in this case
-          std::for_each(cbegin(n), cend(n), pred);
+          std::for_each(cbegin<iterator>(n), cend<iterator>(n), pred);
         } else {
           Subclass::stats().stats_zero();
           detail::Ticker t([this]() { report_progress_from_thread(); });
-          auto           it   = cbegin(n);
-          auto const     last = cend(n);
+          auto           it   = cbegin<iterator>(n);
+          auto const     last = cend<iterator>(n);
           for (; it != last; ++it) {
             pred(*it);
           }
           report_final();
         }
       } else {
-        thread_runner den(this, n, number_of_threads());
-        auto          pred_wrapper = [&pred](word_graph_type const& ad) {
+        thread_runner den(
+            static_cast<Subclass const*>(this), n, number_of_threads());
+        auto pred_wrapper = [&pred](word_graph_type const& ad) {
           pred(ad);
           return false;
         };
@@ -656,6 +790,48 @@ namespace libsemigroups {
           detail::Ticker t([this]() { report_progress_from_thread(); });
           den.run(pred_wrapper);
           report_final();
+        }
+      }
+    }
+
+    word_graph_type
+    find_if(size_type                                   n,
+            std::function<bool(word_graph_type const&)> pred) const {
+      using thread_runner = typename Subclass::thread_runner;
+      using iterator      = typename Subclass::iterator;
+      throw_if_not_ready(n);
+      report_at_start(n);
+      if (number_of_threads() == 1) {
+        if (!reporting_enabled()) {
+          return *std::find_if(cbegin<iterator>(n), cend<iterator>(n), pred);
+        } else {
+          stats().stats_zero();
+          detail::Ticker t([this]() { report_progress_from_thread(); });
+
+          auto       it   = cbegin<iterator>(n);
+          auto const last = cend<iterator>(n);
+
+          for (; it != last; ++it) {
+            if (pred(*it)) {
+              report_final();
+              return *it;
+            }
+          }
+          report_final();
+          return *last;  // the empty digraph
+        }
+      } else {
+        thread_runner den(
+            static_cast<Subclass const*>(this), n, number_of_threads());
+        if (!reporting_enabled()) {
+          den.run(pred);
+          return den.word_graph();
+        } else {
+          stats().stats_zero();
+          detail::Ticker t([this]() { report_progress_from_thread(); });
+          den.run(pred);
+          report_final();
+          return den.word_graph();
         }
       }
     }
@@ -691,7 +867,7 @@ namespace libsemigroups {
   //! number of classes. An iterator returned by \ref cbegin points at an
   //! WordGraph instance containing the action of the semigroup or monoid
   //! on the classes of a congruence.
-  class Sims1 : public Sims1Settings<Sims1>, public Reporter {
+  class Sims1 : public SimsBase<Sims1> {
    public:
     //! Type for the nodes in the associated WordGraph
     //! objects.
@@ -719,8 +895,7 @@ namespace libsemigroups {
 
     // TODO(doc)
     Sims1& init() {
-      Sims1Settings<Sims1>::init();
-      return *this;
+      return SimsBase<Sims1>::init();
     }
 
     //! Construct from \ref congruence_kind.
@@ -731,7 +906,7 @@ namespace libsemigroups {
     //! congruence_kind::twosided
     //!
     //! \sa \ref cbegin and \ref cend.
-    explicit Sims1(congruence_kind ck) : Sims1Settings<Sims1>(), _kind() {
+    explicit Sims1(congruence_kind ck) : SimsBase<Sims1>(), _kind() {
       kind(ck);
     }
 
@@ -759,7 +934,7 @@ namespace libsemigroups {
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
     template <typename PresentationOfSomeKind>
     Sims1& presentation(PresentationOfSomeKind const& p) {
-      Sims1Settings<Sims1>::presentation(p);
+      SimsBase<Sims1>::presentation(p);
       if (_kind == congruence_kind::left) {
         presentation::reverse(_presentation);
       }
@@ -770,9 +945,9 @@ namespace libsemigroups {
     // include() which is const!
     template <typename Arg, typename... Args>
     Sims1& include(Arg arg, Args&&... args) {
-      Sims1Settings<Sims1>::include(arg, std::forward<Args>(args)...);
+      SimsBase<Sims1>::include(arg, std::forward<Args>(args)...);
       if (_kind == congruence_kind::left) {
-        Sims1Settings<Sims1>::reverse(_include);
+        SimsBase<Sims1>::reverse(_include);
       }
       return *this;
     }
@@ -781,31 +956,31 @@ namespace libsemigroups {
     // exclude() which is const!
     template <typename Arg, typename... Args>
     Sims1& exclude(Arg arg, Args&&... args) {
-      Sims1Settings<Sims1>::exclude(arg, std::forward<Args>(args)...);
+      SimsBase<Sims1>::exclude(arg, std::forward<Args>(args)...);
       if (_kind == congruence_kind::left) {
-        Sims1Settings<Sims1>::reverse(_exclude);
+        SimsBase<Sims1>::reverse(_exclude);
       }
       return *this;
     }
 
-    // This is required because "using Sims1Settings<Sims1>::include;" tries to
-    // drag in all of the include mem fns from Sims1Settings, which clash with
+    // This is required because "using SimsBase<Sims1>::include;" tries to
+    // drag in all of the include mem fns from SimsBase, which clash with
     // the fns above.
     [[nodiscard]] std::vector<word_type> const& include() const noexcept {
-      return Sims1Settings<Sims1>::include();
+      return SimsBase<Sims1>::include();
     }
 
-    // This is required because "using Sims1Settings<Sims1>::exclude;" tries to
-    // drag in all of the include mem fns from Sims1Settings, which clash with
+    // This is required because "using SimsBase<Sims1>::exclude;" tries to
+    // drag in all of the include mem fns from SimsBase, which clash with
     // the fns above.
     [[nodiscard]] std::vector<word_type> const& exclude() const noexcept {
-      return Sims1Settings<Sims1>::exclude();
+      return SimsBase<Sims1>::exclude();
     }
 #endif
 
-    using Sims1Settings::cbegin_long_rules;
-    using Sims1Settings::number_of_threads;
-    using Sims1Settings::presentation;
+    using SimsBase<Sims1>::cbegin_long_rules;
+    using SimsBase<Sims1>::number_of_threads;
+    using SimsBase<Sims1>::presentation;
 
     // TODO(doc)
     [[nodiscard]] congruence_kind kind() const noexcept {
@@ -815,90 +990,7 @@ namespace libsemigroups {
     // TODO(doc)
     Sims1& kind(congruence_kind ck);
 
-   private:
-    template <typename Base>
-    class iterator_template;
-
-    class iterator_base;
-
    public:
-    //! Returns a forward iterator pointing at the first congruence.
-    //!
-    //! Returns a forward iterator pointing to the WordGraph representing
-    //! the first congruence described by Sims1 object with at most \p n
-    //! classes.
-    //!
-    //! If incremented, the iterator will point to the next such congruence.
-    //! The order which the congruences are returned in is implementation
-    //! specific. Iterators of the type returned by this function are equal
-    //! whenever they point to equal objects. The iterator is exhausted if
-    //! and only if it points to an WordGraph with zero nodes.
-    //!
-    //! The meaning of the WordGraph pointed at by Sims1 iterators depends
-    //! on whether the input is a monoid presentation (i.e.
-    //! Presentation::contains_empty_word() returns \c true) or a semigroup
-    //! presentation. If the input is a monoid presentation for a monoid
-    //! \f$M\f$, then the WordGraph pointed to by an iterator of this type
-    //! has precisely \p n nodes, and the right action of \f$M\f$ on the
-    //! nodes of the word graph is isomorphic to the action of \f$M\f$ on the
-    //! classes of a right congruence.
-    //!
-    //! If the input is a semigroup presentation for a semigroup \f$S\f$,
-    //! then the WordGraph has \p n + 1 nodes, and the right action of
-    //! \f$S\f$ on the nodes \f$\{1, \ldots, n\}\f$ of the WordGraph is
-    //! isomorphic to the action of \f$S\f$ on the classes of a right
-    //! congruence. It'd probably be better in this case if node \f$0\f$ was
-    //! not included in the output WordGraph, but it is required in the
-    //! implementation of the low-index congruence algorithm, and to avoid
-    //! unnecessary copies, we've left it in for the time being. \param n
-    //! the maximum number of classes in a congruence.
-    //!
-    //! \returns
-    //! An iterator \c it of type \c iterator pointing to an WordGraph with
-    //! at most \p n nodes.
-    //!
-    //! \throws LibsemigroupsException if \p n is \c 0.
-    //! \throws LibsemigroupsException if `presentation()`
-    //! has 0-generators and 0-relations (i.e. it has not
-    //! been initialised).
-    //!
-    //! \warning
-    //! Copying iterators of this type is expensive.  As a consequence,
-    //! prefix incrementing \c ++it the returned  iterator \c it
-    //! significantly cheaper than postfix incrementing \c it++.
-    //!
-    //! \sa
-    //! \ref cend
-    // TODO(Sims1) it'd be good to remove node 0 to avoid confusion. This
-    // seems complicated however, and so isn't done at present.
-    [[nodiscard]] iterator_template<iterator_base> cbegin(size_type n) const;
-
-    //! Returns a forward iterator pointing one beyond the last congruence.
-    //!
-    //! Returns a forward iterator pointing to the empty WordGraph. If
-    //! incremented, the returned iterator remains valid and continues to
-    //! point at the empty WordGraph.
-    //!
-    //! \param n the maximum number of classes in a
-    //! congruence.
-    //!
-    //! \returns
-    //! An iterator \c it of type \c iterator pointing to an WordGraph with
-    //! at most \p 0 nodes.
-    //!
-    //! \throws LibsemigroupsException if \p n is \c 0.
-    //! \throws LibsemigroupsException if `presentation()` has 0-generators
-    //! and 0-relations (i.e. it has not been initialised).
-    //!
-    //! \warning
-    //! Copying iterators of this type is expensive.  As a consequence,
-    //! prefix incrementing \c ++it the returned  iterator \c it
-    //! significantly cheaper than postfix incrementing \c it++.
-    //!
-    //! \sa
-    //! \ref cbegin
-    [[nodiscard]] iterator_template<iterator_base> cend(size_type n) const;
-
     //! Returns the number of one-sided congruences with up to a given
     //! number of classes.
     //!
@@ -916,7 +1008,7 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if \p n is \c 0.
     //! \throws LibsemigroupsException if `presentation()` has 0-generators
     //! and 0-relations (i.e. it has not been initialised).
-    [[nodiscard]] uint64_t number_of_congruences(size_type n) const;
+    using SimsBase<Sims1>::number_of_congruences;
 
     //! Apply the function \p pred to every one-sided
     //! congruence with at most \p n classes
@@ -938,8 +1030,9 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if \p n is \c 0.
     //! \throws LibsemigroupsException if `presentation()` has 0-generators and
     //! 0-relations (i.e. it has not been initialised).
-    void for_each(size_type                                   n,
-                  std::function<void(word_graph_type const&)> pred) const;
+    // void for_each(size_type                                   n,
+    //              std::function<void(word_graph_type const&)> pred) const;
+    using SimsBase<Sims1>::for_each;
 
     //! Apply the function \p pred to every one-sided congruence with at most \p
     //! n classes, until it returns \c true.
@@ -960,9 +1053,7 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if \p n is \c 0.
     //! \throws LibsemigroupsException if `presentation()` has 0-generators and
     //! 0-relations (i.e. it has not been initialised).
-    [[nodiscard]] word_graph_type
-    find_if(size_type                                   n,
-            std::function<bool(word_graph_type const&)> pred) const;
+    using SimsBase<Sims1>::find_if;
 
    private:
     friend class Sims2;
@@ -1153,10 +1244,10 @@ namespace libsemigroups {
 
       // So that we can use the constructor above.
       friend iterator_template<iterator_base>
-          Sims1::cbegin(Sims1::size_type) const;
+          SimsBase<Sims1>::cbegin(SimsBase::size_type) const;
 
       friend iterator_template<iterator_base>
-          Sims1::cend(Sims1::size_type) const;
+          SimsBase::cend(SimsBase::size_type) const;
 
      public:
       //! No doc
@@ -1189,14 +1280,255 @@ namespace libsemigroups {
       using Base::swap;
     };  // class iterator_template
 
+   public:
     using iterator = iterator_template<iterator_base>;
-    void report_progress_from_thread() const;
-    void report_at_start(size_t num_classes) const;
-    void report_final() const;
 
-    // Nested classes
-    class thread_iterator;
+    //! Returns a forward iterator pointing at the first congruence.
+    //!
+    //! Returns a forward iterator pointing to the WordGraph representing
+    //! the first congruence described by Sims1 object with at most \p n
+    //! classes.
+    //!
+    //! If incremented, the iterator will point to the next such congruence.
+    //! The order which the congruences are returned in is implementation
+    //! specific. Iterators of the type returned by this function are equal
+    //! whenever they point to equal objects. The iterator is exhausted if
+    //! and only if it points to an WordGraph with zero nodes.
+    //!
+    //! The meaning of the WordGraph pointed at by Sims1 iterators depends
+    //! on whether the input is a monoid presentation (i.e.
+    //! Presentation::contains_empty_word() returns \c true) or a semigroup
+    //! presentation. If the input is a monoid presentation for a monoid
+    //! \f$M\f$, then the WordGraph pointed to by an iterator of this type
+    //! has precisely \p n nodes, and the right action of \f$M\f$ on the
+    //! nodes of the word graph is isomorphic to the action of \f$M\f$ on the
+    //! classes of a right congruence.
+    //!
+    //! If the input is a semigroup presentation for a semigroup \f$S\f$,
+    //! then the WordGraph has \p n + 1 nodes, and the right action of
+    //! \f$S\f$ on the nodes \f$\{1, \ldots, n\}\f$ of the WordGraph is
+    //! isomorphic to the action of \f$S\f$ on the classes of a right
+    //! congruence. It'd probably be better in this case if node \f$0\f$ was
+    //! not included in the output WordGraph, but it is required in the
+    //! implementation of the low-index congruence algorithm, and to avoid
+    //! unnecessary copies, we've left it in for the time being. \param n
+    //! the maximum number of classes in a congruence.
+    //!
+    //! \returns
+    //! An iterator \c it of type \c iterator pointing to an WordGraph with
+    //! at most \p n nodes.
+    //!
+    //! \throws LibsemigroupsException if \p n is \c 0.
+    //! \throws LibsemigroupsException if `presentation()`
+    //! has 0-generators and 0-relations (i.e. it has not
+    //! been initialised).
+    //!
+    //! \warning
+    //! Copying iterators of this type is expensive.  As a consequence,
+    //! prefix incrementing \c ++it the returned  iterator \c it
+    //! significantly cheaper than postfix incrementing \c it++.
+    //!
+    //! \sa
+    //! \ref cend
+    // TODO(Sims1) it'd be good to remove node 0 to avoid confusion. This
+    // seems complicated however, and so isn't done at present.
+    [[nodiscard]] iterator cbegin(size_type n) const {
+      return SimsBase::cbegin<iterator>(n);
+    }
+
+    //! Returns a forward iterator pointing one beyond the last congruence.
+    //!
+    //! Returns a forward iterator pointing to the empty WordGraph. If
+    //! incremented, the returned iterator remains valid and continues to
+    //! point at the empty WordGraph.
+    //!
+    //! \param n the maximum number of classes in a
+    //! congruence.
+    //!
+    //! \returns
+    //! An iterator \c it of type \c iterator pointing to an WordGraph with
+    //! at most \p 0 nodes.
+    //!
+    //! \throws LibsemigroupsException if \p n is \c 0.
+    //! \throws LibsemigroupsException if `presentation()` has 0-generators
+    //! and 0-relations (i.e. it has not been initialised).
+    //!
+    //! \warning
+    //! Copying iterators of this type is expensive.  As a consequence,
+    //! prefix incrementing \c ++it the returned  iterator \c it
+    //! significantly cheaper than postfix incrementing \c it++.
+    //!
+    //! \sa
+    //! \ref cbegin
+    [[nodiscard]] iterator cend(size_type n) const {
+      return SimsBase::cend<iterator>(n);
+    }
+
+    // Note that this class is private, and not really an iterator in the usual
+    // sense. It is designed solely to work with thread_runner.
     class thread_runner;
+
+    class thread_iterator : public iterator_base {
+      friend class Sims1::thread_runner;
+
+      using iterator_base::copy_felsch_graph;
+
+     public:
+      //! No doc
+      thread_iterator(Sims1 const* s, size_type n) : iterator_base(s, n) {}
+
+      // None of the constructors are noexcept because the corresponding
+      // constructors for std::vector aren't (until C++17).
+      //! No doc
+      thread_iterator() = delete;
+      //! No doc
+      thread_iterator(thread_iterator const&) = delete;
+      //! No doc
+      thread_iterator(thread_iterator&&) = delete;
+      //! No doc
+      thread_iterator& operator=(thread_iterator const&) = delete;
+      //! No doc
+      thread_iterator& operator=(thread_iterator&&) = delete;
+
+      //! No doc
+      ~thread_iterator() = default;
+
+      using iterator_base::stats;
+
+     public:
+      void push(PendingDef pd) {
+        this->_pending.push_back(std::move(pd));
+      }
+
+      void steal_from(thread_iterator& that) {
+        // WARNING <that> must be locked before calling this function
+        std::lock_guard<std::mutex> lock(this->_mtx);
+        LIBSEMIGROUPS_ASSERT(this->_pending.empty());
+        size_t const n = that._pending.size();
+        if (n == 1) {
+          return;
+        }
+        // Copy the FelschGraph from that into *this
+        copy_felsch_graph(that);
+
+        // Unzip that._pending into _pending and that._pending, this seems to
+        // give better performance in the search than splitting that._pending
+        // into [begin, begin + size / 2) and [begin + size / 2, end)
+        size_t i = 0;
+        for (; i < n - 2; i += 2) {
+          this->_pending.push_back(std::move(that._pending[i]));
+          that._pending[i / 2] = std::move(that._pending[i + 1]);
+        }
+        this->_pending.push_back(std::move(that._pending[i]));
+        if (i == n - 2) {
+          that._pending[i / 2] = std::move(that._pending[i + 1]);
+        }
+
+        that._pending.erase(that._pending.cbegin() + that._pending.size() / 2,
+                            that._pending.cend());
+      }
+
+      bool try_steal(thread_iterator& q) {
+        std::lock_guard<std::mutex> lock(this->_mtx);
+        if (this->_pending.empty()) {
+          return false;
+        }
+        // Copy the FelschGraph and half pending from *this into q
+        q.steal_from(*this);  // Must call steal_from on q, so that q is locked
+        return true;
+      }
+    };
+
+    class thread_runner {
+     private:
+      std::atomic_bool                              _done;
+      std::vector<std::unique_ptr<thread_iterator>> _theives;
+      std::vector<std::thread>                      _threads;
+      std::mutex                                    _mtx;
+      size_type                                     _num_threads;
+      word_graph_type                               _result;
+      Sims1 const*                                  _sims1;
+
+      void worker_thread(unsigned                                    my_index,
+                         std::function<bool(word_graph_type const&)> hook) {
+        PendingDef pd;
+        auto const restarts = _sims1->idle_thread_restarts();
+        for (size_t i = 0; i < restarts; ++i) {
+          while ((pop_from_local_queue(pd, my_index)
+                  || pop_from_other_thread_queue(pd, my_index))
+                 && !_done) {
+            if (_theives[my_index]->try_define(pd)) {
+              if (hook(**_theives[my_index])) {
+                // hook returns true to indicate that we should stop early
+                std::lock_guard<std::mutex> lock(_mtx);
+                if (!_done) {
+                  _done   = true;
+                  _result = **_theives[my_index];
+                }
+                return;
+              }
+            }
+          }
+          std::this_thread::yield();
+          // It's possible to reach here before all of the work is done,
+          // because by coincidence there's nothing in the local queue and
+          // nothing in any other queue either, this sometimes leads to
+          // threads shutting down earlier than desirable. On the other hand,
+          // maybe this is a desirable.
+        }
+      }
+
+      bool pop_from_local_queue(PendingDef& pd, unsigned my_index) {
+        return _theives[my_index]->try_pop(pd);
+      }
+
+      bool pop_from_other_thread_queue(PendingDef& pd, unsigned my_index) {
+        for (size_t i = 0; i < _theives.size() - 1; ++i) {
+          unsigned const index = (my_index + i + 1) % _theives.size();
+          // Could always do something different here, like find
+          // the largest queue and steal from that? I tried this and it didn't
+          // seem to be faster.
+          if (_theives[index]->try_steal(*_theives[my_index])) {
+            return pop_from_local_queue(pd, my_index);
+          }
+        }
+        return false;
+      }
+
+     public:
+      thread_runner(Sims1 const* s, size_type n, size_type num_threads)
+          : _done(false),
+            _theives(),
+            _threads(),
+            _mtx(),
+            _num_threads(num_threads),
+            _result(),
+            _sims1(s) {
+        for (size_t i = 0; i < _num_threads; ++i) {
+          _theives.push_back(std::make_unique<thread_iterator>(s, n));
+        }
+        _theives.front()->init(n);
+      }
+
+      ~thread_runner() = default;
+
+      word_graph_type const& word_graph() const {
+        return _result;
+      }
+
+      void run(std::function<bool(word_graph_type const&)> hook) {
+        try {
+          detail::JoinThreads joiner(_threads);
+          for (size_t i = 0; i < _num_threads; ++i) {
+            _threads.push_back(std::thread(
+                &thread_runner::worker_thread, this, i, std::ref(hook)));
+          }
+        } catch (...) {
+          _done = true;
+          throw;
+        }
+      }
+    };  // class thread_runner
   };
 
   //! Defined in ``sims1.hpp``.
