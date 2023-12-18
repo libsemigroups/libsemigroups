@@ -689,6 +689,7 @@ namespace libsemigroups {
         time_per_node = time_total_ns / total_pending_now;
       }
 
+      // TODO fix the prefix
       ReportCell<2> rc;
       rc.min_width(0, 7).min_width(1, 11);
       rc(group_digits,
