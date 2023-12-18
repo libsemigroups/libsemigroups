@@ -246,13 +246,14 @@ namespace libsemigroups {
                                     internal_string_type const* rhs) const {
     using iterator = internal_string_type::iterator;
 
-    size_t pos = u.find(*lhs);
+    size_t old_pos = u.find(*lhs);
+    size_t new_pos;
 
-    if (pos == external_string_type::npos || u.size() < lhs->size()) {
+    if (old_pos == external_string_type::npos) {
       return;
     }
 
-    iterator v_end   = u.begin() + pos;
+    iterator v_end   = u.begin() + old_pos;
     iterator w_begin = v_end;
     iterator w_end   = u.end();
 
@@ -261,17 +262,20 @@ namespace libsemigroups {
           detail::is_prefix(w_begin, w_end, lhs->cbegin(), lhs->cend()));
       w_begin += lhs->size() - rhs->size();
       detail::string_replace(w_begin, rhs->cbegin(), rhs->cend());
+
       for (size_t i = 0; i != rhs->size(); ++i) {
         *v_end = *w_begin;
         ++v_end;
         ++w_begin;
       }
 
-      pos = u.find(*lhs, pos + lhs->size());
-      if (pos == external_string_type::npos) {
+      old_pos = new_pos;
+      new_pos = u.find(*lhs, old_pos + (lhs->size() - rhs->size()));
+      if (new_pos == external_string_type::npos) {
         break;
       }
-      while (w_begin != u.begin() + pos) {
+
+      for (size_t i = 0; i != new_pos - (old_pos + lhs->size()); ++i) {
         *v_end = *w_begin;
         ++v_end;
         ++w_begin;
