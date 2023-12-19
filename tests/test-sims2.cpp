@@ -195,14 +195,24 @@ namespace libsemigroups {
     // REQUIRE(s.number_of_congruences(13) == 1'387'117);
   }
 
+  LIBSEMIGROUPS_TEST_CASE("Sims2", "101", "todo", "[extreme][sims2]") {
+    auto p = symmetric_inverse_monoid(5, fpsemigroup::author::Gay);
+    presentation::remove_duplicate_rules(p);
+    presentation::sort_each_rule(p);
+    presentation::sort_rules(p);
+
+    Sims2 C(p);
+    REQUIRE(C.number_of_threads(1).number_of_congruences(512) == 7);
+  }
+
   LIBSEMIGROUPS_TEST_CASE("Sims2",
                           "097",
                           "2-sided congruence-free monoid n=3",
                           "[quick][sims2]") {
     // Presentation taken from
     // Al-Kharousi, F., Cain, A.J., Maltcev, V. et al.
-    // A countable family of finitely presented infinite congruence-free monoids
-    // https://doi.org/10.14232/actasm-013-028-z
+    // A countable family of finitely presented infinite congruence-free
+    // monoids https://doi.org/10.14232/actasm-013-028-z
     Presentation<std::string> p;
     p.alphabet("abcdz");
     p.contains_empty_word(true);
@@ -232,8 +242,8 @@ namespace libsemigroups {
                           "[quick][sims2]") {
     // Presentation taken from
     // Al-Kharousi, F., Cain, A.J., Maltcev, V. et al.
-    // A countable family of finitely presented infinite congruence-free monoids
-    // https://doi.org/10.14232/actasm-013-028-z
+    // A countable family of finitely presented infinite congruence-free
+    // monoids https://doi.org/10.14232/actasm-013-028-z
     Presentation<std::string> p;
     p.alphabet("abcdz");
     p.contains_empty_word(true);
