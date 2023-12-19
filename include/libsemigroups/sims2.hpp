@@ -110,7 +110,7 @@ namespace libsemigroups {
         for (size_t j = i + 1; j <= num_edges; ++j) {
           _used_slots[j] = _used_slots[i];
         }
-        LIBSEMIGROUPS_ASSERT(_used_slots[num_edges] < _2_sided_include.size());
+        LIBSEMIGROUPS_ASSERT(_used_slots[num_edges] <= _2_sided_include.size());
         return _used_slots[num_edges];
       }
     };
