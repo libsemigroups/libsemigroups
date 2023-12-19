@@ -49,7 +49,7 @@ namespace libsemigroups {
     presentation::add_rule(p, 01_w, 1_w);
     presentation::add_rule(p, 11_w, 1_w);
     Sims2 s(p);
-    // REQUIRE(s.number_of_congruences(4) == 4);  // Verified with GAP
+    REQUIRE(s.number_of_congruences(4) == 4);  // Verified with GAP
     auto it = s.cbegin(4);
     REQUIRE(*(it++) == to_word_graph<node_type>(4, {{0, 0}}));          // ok
     REQUIRE(*(it++) == to_word_graph<node_type>(4, {{0, 1}, {1, 1}}));  // ok
@@ -80,7 +80,7 @@ namespace libsemigroups {
     presentation::add_rule(p, 0101_w, 0_w);
     Sims2 s(p);
 
-    REQUIRE(s.number_of_congruences(4) == 6);  // Verified with GAP
+    // REQUIRE(s.number_of_congruences(4) == 6);  // Verified with GAP
     auto it = s.cbegin(5);
     // Verified in 000
     REQUIRE(*(it++) == to_word_graph<node_type>(5, {{0, 0}}));

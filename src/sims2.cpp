@@ -34,7 +34,7 @@ namespace libsemigroups {
     // TODO could be slightly less space allocated here
     size_t const m = Sims1::iterator_base<Sims2>::maximum_number_of_classes();
     Presentation<word_type> const& p = this->_felsch_graph.presentation();
-    _2_sided_include.assign(2 * m * p.alphabet().size(), word_type());
+    _2_sided_include.resize(2 * m * p.alphabet().size());
     _2_sided_words.assign(n, word_type());
   }
 
@@ -79,72 +79,41 @@ namespace libsemigroups {
     LIBSEMIGROUPS_ASSERT(current.target < current.num_nodes);
     LIBSEMIGROUPS_ASSERT(current.num_nodes <= maximum_number_of_classes());
 
-    size_type start = current.num_edges;
-
     if (!Sims1::iterator_base<Sims2>::try_define(current)) {
       return false;
     }
 
-    size_type prev_num_non_tree_edges;
+    _2_sided_include.backtrack(current.num_edges);
 
     if (current.target_is_new_node) {
-      // number of tree edges is number_of_active_nodes - 2
-      // because the active nodes include the target which is a new node
-      prev_num_non_tree_edges
-          = 2 * ((current.num_edges - current.num_nodes) + 2);
-      LIBSEMIGROUPS_ASSERT(current.num_edges - (prev_num_non_tree_edges / 2)
-                           == current.num_nodes - 2);
-    } else {
-      // number of tree edges is number_of_active_nodes - 1 because the
-      // target is not a new node
-      prev_num_non_tree_edges
-          = 2 * ((current.num_edges - current.num_nodes) + 1);
-      LIBSEMIGROUPS_ASSERT(current.num_edges - (prev_num_non_tree_edges / 2)
-                           == current.num_nodes - 1);
-    }
-
-    LIBSEMIGROUPS_ASSERT(prev_num_non_tree_edges / 2 <= current.num_edges);
-    LIBSEMIGROUPS_ASSERT(current.num_edges
-                         <= _felsch_graph.definitions().size());
-
-    if (current.target_is_new_node) {
-      LIBSEMIGROUPS_ASSERT(current.target < _2_sided_include.size());
-      LIBSEMIGROUPS_ASSERT(current.source < _2_sided_include.size());
+      LIBSEMIGROUPS_ASSERT(current.target < _2_sided_words.size());
+      LIBSEMIGROUPS_ASSERT(current.source < _2_sided_words.size());
       _2_sided_words[current.target] = _2_sided_words[current.source];
       _2_sided_words[current.target].push_back(current.generator);
     }
+
+    size_type start = current.num_edges;
     // TODO avoid extra copies here
     // One relation in _2_sided_include for every non-tree edge
     while (start < _felsch_graph.definitions().size()) {
-      for (size_t i = start, j = 0; i < _felsch_graph.definitions().size();
-           ++i) {
-        auto e = _felsch_graph.definitions()[i];  // TODO reference
+      for (size_t i = start; i < _felsch_graph.definitions().size(); ++i) {
+        auto const& e = _felsch_graph.definitions()[i];  // TODO reference
         if (current.target_is_new_node && e.first == current.source
             && e.second == current.generator) {
           continue;
         }
-        LIBSEMIGROUPS_ASSERT(prev_num_non_tree_edges + 2 * j + 1
-                             < _2_sided_include.size());
-        _2_sided_include[prev_num_non_tree_edges + 2 * j]
-            = _2_sided_words[e.first];
-        _2_sided_include[prev_num_non_tree_edges + 2 * j].push_back(e.second);
-        _2_sided_include[prev_num_non_tree_edges + 2 * j + 1]
-            // TODO target_no_checks
-            = _2_sided_words[_felsch_graph.target(e.first, e.second)];
-        j++;
+        word_type u = _2_sided_words[e.first];
+        u.push_back(e.second);
+        _2_sided_include.add_rule(
+            u,
+            _2_sided_words[_felsch_graph.target_no_checks(e.first, e.second)],
+            current.num_edges);
       }
       // TODO different things if current.target is a new node
 
-      size_t num_non_tree_edges
-          = 2
-            * (_felsch_graph.definitions().size()
-               - _felsch_graph.number_of_active_nodes() + 1);
-
-      auto first              = _2_sided_include.cbegin();
-      auto last               = _2_sided_include.cbegin() + num_non_tree_edges;
-      start                   = _felsch_graph.definitions().size();
-      prev_num_non_tree_edges = num_non_tree_edges;
-
+      auto first = _2_sided_include.begin(current.num_edges);
+      auto last  = _2_sided_include.end(current.num_edges);
+      start      = _felsch_graph.definitions().size();
       if (!felsch_graph::make_compatible<RegisterDefs>(
               _felsch_graph,
               0,
