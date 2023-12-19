@@ -31,7 +31,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("Sims2",
                           "000",
                           "temperley_lieb_monoid(4) from presentation",
-                          "[quick][low-index]") {
+                          "[quick][sims2][low-index]") {
     auto  rg = ReportGuard(false);
     Sims2 S;
     S.presentation(fpsemigroup::temperley_lieb_monoid(4));
@@ -41,7 +41,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("Sims2",
                           "092",
                           "2-sided full transformation monoid 2",
-                          "[quick][sims1]") {
+                          "[quick][sims2]") {
     Presentation<word_type> p;
     p.alphabet(2);
     p.contains_empty_word(true);
@@ -65,7 +65,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("Sims2",
                           "093",
                           "2-sided T_4",
-                          "[standard][sims1][no-valgrind][no-coverage]") {
+                          "[standard][sims2][no-valgrind][no-coverage]") {
     Sims2 s(fpsemigroup::full_transformation_monoid(4));
 
     REQUIRE(s.number_of_congruences(256) == 11);  // Verified with GAP
@@ -95,7 +95,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("Sims2",
                           "095",
                           "2-sided full transf. monoid 3",
-                          "[quick][sims1]") {
+                          "[quick][sims2]") {
     Presentation<std::string> p;
     p.alphabet("abc");
     p.contains_empty_word(true);
@@ -172,8 +172,8 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("Sims2",
                           "096",
-                          "2-sided free monoid",
-                          "[extreme][sims1]") {
+                          "2-sided 2-generated free monoid",
+                          "[extreme][sims2]") {
     Presentation<std::string> p;
     p.alphabet("ab");
     p.contains_empty_word(true);
@@ -192,5 +192,128 @@ namespace libsemigroups {
     REQUIRE(s.number_of_congruences(11) == 156'100);
     REQUIRE(s.number_of_congruences(12) == 462'271);
     REQUIRE(s.number_of_congruences(13) == 1'387'117);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Sims2",
+                          "097",
+                          "2-sided congruence-free monoid n=3",
+                          "[quick][sims2]") {
+    // Presentation taken from
+    // Al-Kharousi, F., Cain, A.J., Maltcev, V. et al.
+    // A countable family of finitely presented infinite congruence-free monoids
+    // https://doi.org/10.14232/actasm-013-028-z
+    Presentation<std::string> p;
+    p.alphabet("abcdz");
+    p.contains_empty_word(true);
+    presentation::add_rule(p, "zz"_p, "z"_p);
+    presentation::add_rule(p, "za"_p, "z"_p);
+    presentation::add_rule(p, "zb"_p, "z"_p);
+    presentation::add_rule(p, "zc"_p, "z"_p);
+    presentation::add_rule(p, "zd"_p, "z"_p);
+    presentation::add_rule(p, "az"_p, "z"_p);
+    presentation::add_rule(p, "bz"_p, "z"_p);
+    presentation::add_rule(p, "cz"_p, "z"_p);
+    presentation::add_rule(p, "dz"_p, "z"_p);
+    presentation::add_rule(p, "ac"_p, ""_p);
+    presentation::add_rule(p, "db"_p, ""_p);
+    presentation::add_rule(p, "dc"_p, ""_p);
+    // n = 3
+    presentation::add_rule(p, "dab"_p, ""_p);
+    presentation::add_rule(p, "da^2b"_p, ""_p);
+    presentation::add_rule(p, "a^3b"_p, "z"_p);
+    Sims2 s(p);
+    s.number_of_threads(1);
+    REQUIRE(s.number_of_congruences(1) == 1);
+    REQUIRE(s.number_of_congruences(2) == 1);
+    REQUIRE(s.number_of_congruences(3) == 1);
+    REQUIRE(s.number_of_congruences(4) == 1);
+    REQUIRE(s.number_of_congruences(5) == 1);
+    REQUIRE(s.number_of_congruences(10) == 1);
+    REQUIRE(s.number_of_congruences(20) == 1);
+    REQUIRE(s.number_of_congruences(30) == 1);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Sims2",
+                          "098",
+                          "2-sided congruence-free monoid n=8",
+                          "[quick][sims2]") {
+    // Presentation taken from
+    // Al-Kharousi, F., Cain, A.J., Maltcev, V. et al.
+    // A countable family of finitely presented infinite congruence-free monoids
+    // https://doi.org/10.14232/actasm-013-028-z
+    Presentation<std::string> p;
+    p.alphabet("abcdz");
+    p.contains_empty_word(true);
+    presentation::add_rule(p, "zz"_p, "z"_p);
+    presentation::add_rule(p, "za"_p, "z"_p);
+    presentation::add_rule(p, "zb"_p, "z"_p);
+    presentation::add_rule(p, "zc"_p, "z"_p);
+    presentation::add_rule(p, "zd"_p, "z"_p);
+    presentation::add_rule(p, "az"_p, "z"_p);
+    presentation::add_rule(p, "bz"_p, "z"_p);
+    presentation::add_rule(p, "cz"_p, "z"_p);
+    presentation::add_rule(p, "dz"_p, "z"_p);
+    presentation::add_rule(p, "ac"_p, ""_p);
+    presentation::add_rule(p, "db"_p, ""_p);
+    presentation::add_rule(p, "dc"_p, ""_p);
+    // n = 8
+    presentation::add_rule(p, "dab"_p, ""_p);
+    presentation::add_rule(p, "da^2b"_p, ""_p);
+    presentation::add_rule(p, "da^3b"_p, ""_p);
+    presentation::add_rule(p, "da^4b"_p, ""_p);
+    presentation::add_rule(p, "da^5b"_p, ""_p);
+    presentation::add_rule(p, "da^6b"_p, ""_p);
+    presentation::add_rule(p, "da^7b"_p, ""_p);
+    presentation::add_rule(p, "a^8b"_p, "z"_p);
+    Sims2 s(p);
+    s.number_of_threads(1);
+    REQUIRE(s.number_of_congruences(1) == 1);
+    REQUIRE(s.number_of_congruences(2) == 1);
+    REQUIRE(s.number_of_congruences(3) == 1);
+    REQUIRE(s.number_of_congruences(4) == 1);
+    REQUIRE(s.number_of_congruences(5) == 1);
+    REQUIRE(s.number_of_congruences(10) == 1);
+    REQUIRE(s.number_of_congruences(20) == 1);
+    REQUIRE(s.number_of_congruences(30) == 1);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Sims2",
+                          "099",
+                          "2-sided bicyclic monoid",
+                          "[quick][sims2]") {
+    Presentation<std::string> p;
+    p.alphabet("ab");
+    p.contains_empty_word(true);
+    presentation::add_rule(p, "ab"_p, ""_p);
+    Sims2 s(p);
+    s.number_of_threads(1);
+    for (size_t i = 1; i < 50; ++i) {
+      REQUIRE(s.number_of_congruences(i) == i);
+    }
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Sims2",
+                          "100",
+                          "2-sided 2-generated free commutative monoid",
+                          "[quick][sims2]") {
+    Presentation<std::string> p;
+    p.alphabet("ab");
+    p.contains_empty_word(true);
+    presentation::add_rule(p, "ab"_p, "ba"_p);
+    Sims2 s(p);
+    s.number_of_threads(1);
+    REQUIRE(s.number_of_congruences(1) == 1);
+    REQUIRE(s.number_of_congruences(2) == 7);  // verified by hand
+    REQUIRE(s.number_of_congruences(3) == 25);
+    REQUIRE(s.number_of_congruences(4) == 76);
+    REQUIRE(s.number_of_congruences(5) == 184);
+    REQUIRE(s.number_of_congruences(6) == 432);
+    REQUIRE(s.number_of_congruences(7) == 892);
+    REQUIRE(s.number_of_congruences(8) == 1'800);
+    REQUIRE(s.number_of_congruences(9) == 3'402);
+    REQUIRE(s.number_of_congruences(10) == 6'280);
+    REQUIRE(s.number_of_congruences(11) == 11'051);
+    REQUIRE(s.number_of_congruences(12) == 19'245);
+    REQUIRE(s.number_of_congruences(13) == 32'299);
   }
 }  // namespace libsemigroups
