@@ -281,12 +281,22 @@ namespace libsemigroups {
                                        Incompatible&  incompat,
                                        PreferredDefs& pref_defs) noexcept;
 
+    [[nodiscard]] bool
+    merge_targets_of_paths_if_possible(node_type     u_node,
+                                       word_iterator u_first,
+                                       word_iterator u_last,
+                                       letter_type   a,
+                                       node_type     v_node,
+                                       word_iterator v_first,
+                                       word_iterator v_last) noexcept;
+
     ////////////////////////////////////////////////////////////////////////
     // FelschGraph - process definitions - public
     ////////////////////////////////////////////////////////////////////////
 
     // This function should remain here, i.e. don't move to tpp file.
-    // Not nodiscard because we don't care about the return value in ToddCoxeter
+    // Not nodiscard because we don't care about the return value in
+    // ToddCoxeter
     template <typename Incompatible, typename PreferredDefs>
     inline bool process_definition(Definition const& d,
                                    Incompatible&     incompat,
@@ -333,7 +343,8 @@ namespace libsemigroups {
     // Follows the paths from node c labelled by the left and right handsides
     // of the i-th rule, and returns merge_targets on the last but one nodes
     // and letters.
-    // Not nodiscard because we don't care about the return value in ToddCoxeter
+    // Not nodiscard because we don't care about the return value in
+    // ToddCoxeter
     template <bool RegDefs, typename Incompatible, typename PreferredDefs>
     bool merge_targets_of_paths_labelled_by_rules_if_possible(
         node_type const& c,
@@ -386,7 +397,8 @@ namespace libsemigroups {
     // Check that [first_node, last_node) is compatible with [first_rule,
     // last_rule) or if there are edges missing in paths labelled by rules,
     // then try to fill those in so that fd is compatible.
-    // Not nodiscard because we don't care about the return value in ToddCoxeter
+    // Not nodiscard because we don't care about the return value in
+    // ToddCoxeter
     template <bool RegDefs,
               typename Word,
               typename Node,
@@ -402,7 +414,8 @@ namespace libsemigroups {
         Incompatible&&                                           incompat,
         PrefDefs&& pref_defs) noexcept;
 
-    // Not nodiscard because we don't care about the return value in ToddCoxeter
+    // Not nodiscard because we don't care about the return value in
+    // ToddCoxeter
     template <bool RegDefs, typename Word, typename Node, typename Definitions>
     bool make_compatible(
         FelschGraph<Word, Node, Definitions>&                    fd,

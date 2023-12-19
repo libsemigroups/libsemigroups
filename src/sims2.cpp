@@ -106,27 +106,33 @@ namespace libsemigroups {
 
         // TODO replace _2_sided_include to only take (e.first, e.second,
         // target(e.first, e.second)) to avoid the copies here.
-        word_type& u = _2_sided_include.next_rule_word(current.num_edges);
-        u.assign(_2_sided_words[e.first].cbegin(),
-                 _2_sided_words[e.first].cend());
-        u.push_back(e.second);
-        word_type&       v = _2_sided_include.next_rule_word(current.num_edges);
-        word_type const& w
-            = _2_sided_words[_felsch_graph.target_no_checks(e.first, e.second)];
-        v.assign(w.begin(), w.end());
+        detail::Rule& u = _2_sided_include.next_rule(current.num_edges);
+        u.source        = e.first;
+        u.generator     = e.second;
+        u.target        = _felsch_graph.target_no_checks(e.first, e.second);
       }
       // TODO different things if current.target is a new node
 
       auto first = _2_sided_include.begin(current.num_edges);
       auto last  = _2_sided_include.end(current.num_edges);
       start      = _felsch_graph.definitions().size();
-      if (!felsch_graph::make_compatible<RegisterDefs>(
-              _felsch_graph,
-              0,
-              _felsch_graph.number_of_active_nodes(),
-              first,
-              last)
-          || !_felsch_graph.process_definitions(start)) {
+
+      for (node_type n = 0; n < _felsch_graph.number_of_active_nodes(); ++n) {
+        for (auto it = first; it != last; ++it) {
+          if (!_felsch_graph.merge_targets_of_paths_if_possible(
+                  n,
+                  _2_sided_words[it->source].cbegin(),
+                  _2_sided_words[it->source].cend(),
+                  it->generator,
+                  n,
+                  _2_sided_words[it->target].cbegin(),
+                  _2_sided_words[it->target].cend())) {
+            return false;
+          }
+        }
+      }
+
+      if (!_felsch_graph.process_definitions(start)) {
         return false;
       }
     }

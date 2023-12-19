@@ -278,6 +278,52 @@ namespace libsemigroups {
         x, a, y, b, incompat, pref_defs);
   }
 
+  template <typename Word, typename Node, typename Definitions>
+  bool FelschGraph<Word, Node, Definitions>::merge_targets_of_paths_if_possible(
+      node_type                          u_node,
+      typename word_type::const_iterator u_first,
+      typename word_type::const_iterator u_last,
+      letter_type                        a,
+      node_type                          v_node,
+      typename word_type::const_iterator v_first,
+      typename word_type::const_iterator v_last) noexcept {
+    LIBSEMIGROUPS_ASSERT(u_node < number_of_nodes());
+    LIBSEMIGROUPS_ASSERT(v_node < number_of_nodes());
+
+    node_type x;
+    if (u_first == u_last) {
+      x = u_node;
+    } else {
+      LIBSEMIGROUPS_ASSERT(u_first < u_last);
+      x = word_graph::follow_path_no_checks(*this, u_node, u_first, u_last);
+      if (x == UNDEFINED) {
+        return true;
+      }
+      LIBSEMIGROUPS_ASSERT(x < number_of_nodes());
+    }
+    LIBSEMIGROUPS_ASSERT(a < _presentation.alphabet().size());
+    // TODO reduce code dupl
+    node_type  y;
+    label_type b;
+    if (v_first == v_last) {
+      y = v_node;
+      b = UNDEFINED;
+    } else {
+      LIBSEMIGROUPS_ASSERT(v_first < v_last);
+      y = word_graph::follow_path_no_checks(*this, v_node, v_first, v_last - 1);
+      if (y == UNDEFINED) {
+        return true;
+      }
+      b = *(v_last - 1);
+      LIBSEMIGROUPS_ASSERT(y < number_of_nodes());
+      LIBSEMIGROUPS_ASSERT(b < _presentation.alphabet().size());
+    }
+    auto incompat = StopIfIncompatible();
+    auto prefdefs = NoPreferredDefs();
+    return merge_targets_of_nodes_if_possible<RegisterDefs>(
+        x, a, y, b, incompat, prefdefs);
+  }
+
   ////////////////////////////////////////////////////////////////////////
   // FelschGraph - process definitions - public
   ////////////////////////////////////////////////////////////////////////
