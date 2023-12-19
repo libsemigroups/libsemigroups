@@ -70,18 +70,24 @@ namespace libsemigroups {
         size_t operator()(rule_type const& x,
                           rule_type const& y) const noexcept {
           return ::libsemigroups::EqualTo<word_type>()(*x.first, *y.first)
-                 and ::libsemigroups::EqualTo<word_type>()(*x.second,
-                                                           *y.second);
+                 || ::libsemigroups::EqualTo<word_type>()(*x.second, *y.second);
+        }
+      };
+
+      struct Less {
+        size_t operator()(rule_type const& x,
+                          rule_type const& y) const noexcept {
+          return ::libsemigroups::Less<word_type>()(*x.first, *y.first)
+                 || (::libsemigroups::EqualTo<word_type>()(*x.first, *y.first)
+                     && ::libsemigroups::Less<word_type>()(*x.second,
+                                                           *y.second));
         }
       };
 
       std::vector<word_type> _2_sided_include;
       // _used_slots[i] is the length of _2_sided_include when we have i edges
       std::vector<size_t> _used_slots;
-      std::unordered_map<std::pair<word_type const*, word_type const*>,
-                         size_t,
-                         Hash,
-                         EqualTo>
+      std::map<std::pair<word_type const*, word_type const*>, size_t, Less>
           _map;
 
      public:
