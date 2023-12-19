@@ -77,10 +77,9 @@ namespace libsemigroups {
       struct Less {
         size_t operator()(rule_type const& x,
                           rule_type const& y) const noexcept {
-          return ::libsemigroups::Less<word_type>()(*x.first, *y.first)
+          return shortlex_compare(*x.first, *y.first)
                  || (::libsemigroups::EqualTo<word_type>()(*x.first, *y.first)
-                     && ::libsemigroups::Less<word_type>()(*x.second,
-                                                           *y.second));
+                     && shortlex_compare(*x.second, *y.second));
         }
       };
 
