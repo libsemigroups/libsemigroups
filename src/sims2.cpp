@@ -90,24 +90,30 @@ namespace libsemigroups {
       LIBSEMIGROUPS_ASSERT(current.source < _2_sided_words.size());
       _2_sided_words[current.target] = _2_sided_words[current.source];
       _2_sided_words[current.target].push_back(current.generator);
+      // if (_felsch_graph.definitions().size() == current.num_edges + 1) {
+      //   return true;
+      // }
     }
 
     size_type start = current.num_edges;
-    // TODO avoid extra copies here
-    // One relation in _2_sided_include for every non-tree edge
     while (start < _felsch_graph.definitions().size()) {
       for (size_t i = start; i < _felsch_graph.definitions().size(); ++i) {
-        auto const& e = _felsch_graph.definitions()[i];  // TODO reference
+        auto const& e = _felsch_graph.definitions()[i];
         if (current.target_is_new_node && e.first == current.source
             && e.second == current.generator) {
           continue;
         }
-        word_type u = _2_sided_words[e.first];
+
+        // TODO replace _2_sided_include to only take (e.first, e.second,
+        // target(e.first, e.second)) to avoid the copies here.
+        word_type& u = _2_sided_include.next_rule_word(current.num_edges);
+        u.assign(_2_sided_words[e.first].cbegin(),
+                 _2_sided_words[e.first].cend());
         u.push_back(e.second);
-        _2_sided_include.add_rule(
-            u,
-            _2_sided_words[_felsch_graph.target_no_checks(e.first, e.second)],
-            current.num_edges);
+        word_type&       v = _2_sided_include.next_rule_word(current.num_edges);
+        word_type const& w
+            = _2_sided_words[_felsch_graph.target_no_checks(e.first, e.second)];
+        v.assign(w.begin(), w.end());
       }
       // TODO different things if current.target is a new node
 
