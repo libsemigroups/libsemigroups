@@ -92,7 +92,6 @@ pkginclude_HEADERS += include/libsemigroups/schreier-sims.hpp
 pkginclude_HEADERS += include/libsemigroups/sims1.hpp
 pkginclude_HEADERS += include/libsemigroups/sims1.tpp
 pkginclude_HEADERS += include/libsemigroups/sims2.hpp
-pkginclude_HEADERS += include/libsemigroups/sims2.tpp
 pkginclude_HEADERS += include/libsemigroups/stephen.hpp
 pkginclude_HEADERS += include/libsemigroups/stephen.tpp
 pkginclude_HEADERS += include/libsemigroups/to-froidure-pin.hpp

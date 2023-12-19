@@ -98,6 +98,9 @@ namespace libsemigroups {
      private:
       size_t& used_slots(size_t num_edges) {
         LIBSEMIGROUPS_ASSERT(num_edges < _used_slots.size());
+        if (_used_slots[0] == UNDEFINED) {
+          _used_slots[0] = 0;
+        }
         size_t i = num_edges;
         while (_used_slots[i] == UNDEFINED) {
           --i;

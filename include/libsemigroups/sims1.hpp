@@ -769,7 +769,7 @@ namespace libsemigroups {
           // Don't care about stats in this case
           std::for_each(cbegin<iterator>(n), cend<iterator>(n), pred);
         } else {
-          Subclass::stats().stats_zero();
+          stats().stats_zero();
           detail::Ticker t([this]() { report_progress_from_thread(); });
           auto           it   = cbegin<iterator>(n);
           auto const     last = cend<iterator>(n);
