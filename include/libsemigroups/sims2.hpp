@@ -22,7 +22,7 @@
 // This file and the class Sims2 exist because iterating through 2-sided
 // congruences is fundamentally different that iterating through 1-sided
 // congruences. In more words, iterating through 2-sided congruences requires
-// some extra steps than iterating through 1-sided congruences. It might have
+// some more steps than iterating through 1-sided congruences. It might have
 // been more pleasing to allow Sims1 objects (maybe appropriately renamed) to
 // accept congruence_kind::twosided as their "kind". However, this would either
 // have required:
@@ -47,6 +47,71 @@
 #include "sims1.hpp"
 
 namespace libsemigroups {
+
+  namespace detail {
+    class RuleContainer {
+     private:
+      std::vector<word_type> _2_sided_include;
+      // _used_slots[i] is the length of _2_sided_include when we have i edges
+      std::vector<size_t> _used_slots;
+
+     public:
+      RuleContainer()                                = default;
+      RuleContainer(RuleContainer const&)            = default;
+      RuleContainer(RuleContainer&&)                 = default;
+      RuleContainer& operator=(RuleContainer const&) = default;
+      RuleContainer& operator=(RuleContainer&&)      = default;
+
+      ~RuleContainer() = default;
+
+      void resize(size_t m) {
+        // TODO should we use resize?
+        _used_slots.assign(m, UNDEFINED);
+        if (m > 0) {
+          _used_slots[0] = 0;
+        }
+        _2_sided_include.assign(m, word_type());
+      }
+
+      void add_rule(word_type const& u, word_type const& v, size_t num_edges) {
+        _2_sided_include[used_slots(num_edges)++] = u;
+        _2_sided_include[used_slots(num_edges)++] = v;
+      }
+
+      auto begin(size_t) const noexcept {
+        return _2_sided_include.begin();
+      }
+
+      auto end(size_t num_edges) noexcept {
+        return _2_sided_include.begin() + used_slots(num_edges);
+      }
+
+      void backtrack(size_t num_edges) {
+        std::fill(_used_slots.begin() + num_edges,
+                  _used_slots.end(),
+                  size_t(UNDEFINED));
+        if (num_edges == 0) {
+          _used_slots[0] = 0;
+        }
+      }
+
+     private:
+      size_t& used_slots(size_t num_edges) {
+        LIBSEMIGROUPS_ASSERT(num_edges < _used_slots.size());
+        size_t i = num_edges;
+        while (_used_slots[i] == UNDEFINED) {
+          --i;
+        }
+        LIBSEMIGROUPS_ASSERT(i < _used_slots.size());
+        LIBSEMIGROUPS_ASSERT(_used_slots[i] != UNDEFINED);
+        for (size_t j = i + 1; j <= num_edges; ++j) {
+          _used_slots[j] = _used_slots[i];
+        }
+        LIBSEMIGROUPS_ASSERT(_used_slots[num_edges] < _2_sided_include.size());
+        return _used_slots[num_edges];
+      }
+    };
+  }  // namespace detail
 
   class Sims2 : public SimsBase<Sims2> {
    public:
@@ -85,7 +150,7 @@ namespace libsemigroups {
       using const_pointer   = Sims1::iterator_base<Sims2>::const_pointer;
 
      protected:
-      std::vector<word_type> _2_sided_include;
+      detail::RuleContainer  _2_sided_include;
       std::vector<word_type> _2_sided_words;
 
       using Sims1::iterator_base<Sims2>::init;

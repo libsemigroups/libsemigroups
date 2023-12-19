@@ -2070,7 +2070,8 @@ namespace libsemigroups {
                           "FreeSemigroup(n) up to index 3",
                           "[extreme][low-index]") {
     // (27^n - 9^n)/2 - 12^n + 6^n
-    std::array<uint64_t, 10> const num = {0, 2, 229, 8022, 243241, 6904866};
+    std::array<uint64_t, 10> const num
+        = {0, 2, 229, 8022, 243241, 6904866, 190509229};
     // 4 ^ n - 2 ^ n
     //  {0, 2, 13, 57, 241, 993, 4033};
     //    = {0, 1, 29, 249, 2'033, 16'353, 131'009};
