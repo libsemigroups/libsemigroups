@@ -46,14 +46,43 @@
 
 #include "sims1.hpp"
 
+#include "adapters.hpp"
+
 namespace libsemigroups {
 
   namespace detail {
     class RuleContainer {
      private:
+      using rule_type = std::pair<word_type const*, word_type const*>;
+
+      struct Hash {
+        size_t operator()(rule_type const& x) const noexcept {
+          size_t val = 0;
+          val ^= ::libsemigroups::Hash<word_type>()(*x.first)
+                 + 0x9e3779b97f4a7c16 + (val << 6) + (val >> 2);
+          val ^= ::libsemigroups::Hash<word_type>()(*x.second)
+                 + 0x9e3779b97f4a7c16 + (val << 6) + (val >> 2);
+          return val;
+        }
+      };
+
+      struct EqualTo {
+        size_t operator()(rule_type const& x,
+                          rule_type const& y) const noexcept {
+          return ::libsemigroups::EqualTo<word_type>()(*x.first, *y.first)
+                 and ::libsemigroups::EqualTo<word_type>()(*x.second,
+                                                           *y.second);
+        }
+      };
+
       std::vector<word_type> _2_sided_include;
       // _used_slots[i] is the length of _2_sided_include when we have i edges
       std::vector<size_t> _used_slots;
+      std::unordered_map<std::pair<word_type const*, word_type const*>,
+                         size_t,
+                         Hash,
+                         EqualTo>
+          _map;
 
      public:
       RuleContainer()                                = default;
@@ -74,8 +103,20 @@ namespace libsemigroups {
       }
 
       void add_rule(word_type const& u, word_type const& v, size_t num_edges) {
+        if (shortlex_compare(u, v)) {
+          add_rule(v, u, num_edges);
+          return;
+        }
+        auto it = _map.find(std::make_pair(&u, &v));
+        if (it != _map.cend()) {
+          return;
+        }
         _2_sided_include[used_slots(num_edges)++] = u;
         _2_sided_include[used_slots(num_edges)++] = v;
+        _map.emplace(
+            std::make_pair(&_2_sided_include[used_slots(num_edges) - 2],
+                           &_2_sided_include[used_slots(num_edges) - 1]),
+            num_edges);
       }
 
       auto begin(size_t) const noexcept {
@@ -92,6 +133,14 @@ namespace libsemigroups {
                   size_t(UNDEFINED));
         if (num_edges == 0) {
           _used_slots[0] = 0;
+        }
+
+        for (auto it = _map.begin(); it != _map.end();) {
+          if (it->second >= num_edges) {
+            it = _map.erase(it);
+          } else {
+            ++it;
+          }
         }
       }
 
