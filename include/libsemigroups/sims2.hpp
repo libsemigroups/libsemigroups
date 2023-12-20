@@ -49,15 +49,9 @@
 namespace libsemigroups {
 
   namespace detail {
-    struct Rule {
-      size_t source;
-      size_t generator;
-      size_t target;
-    };
-
     class RuleContainer {
      private:
-      std::vector<Rule> _2_sided_include;
+      std::vector<word_type> _2_sided_include;
       // _used_slots[i] is the length of _2_sided_include when we have i edges
       std::vector<size_t> _used_slots;
 
@@ -76,11 +70,16 @@ namespace libsemigroups {
         if (m > 0) {
           _used_slots[0] = 0;
         }
-        _2_sided_include.assign(m, {});
+        _2_sided_include.assign(m, word_type());
       }
 
-      Rule& next_rule(size_t num_edges) {
+      word_type& next_rule_word(size_t num_edges) {
         return _2_sided_include[used_slots(num_edges)++];
+      }
+
+      void add_rule(word_type const& u, word_type const& v, size_t num_edges) {
+        _2_sided_include[used_slots(num_edges)++] = u;
+        _2_sided_include[used_slots(num_edges)++] = v;
       }
 
       auto begin(size_t) const noexcept {
