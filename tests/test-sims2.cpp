@@ -16,19 +16,14 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-<<<<<<< HEAD
-#include "catch.hpp"  // for REQUIRE, REQUIRE_THROWS_AS, REQUI...
-#include "libsemigroups/presentation.hpp"
-=======
-#include "catch.hpp"  // for REQUIRE, REQUIRE_THROWS_AS, REQUI...
-    >>>>>>> reinis
-                / sims2
+#include "catch.hpp"      // for REQUIRE, REQUIRE_THROWS_AS, REQUI...
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
 #include "libsemigroups/fpsemi-examples.hpp"
+#include "libsemigroups/presentation.hpp"
 #include "libsemigroups/sims2.hpp"
 
-                namespace libsemigroups {
+namespace libsemigroups {
   using word_graph_type = typename Sims2::word_graph_type;
   using node_type       = typename word_graph_type::node_type;
 
@@ -98,8 +93,10 @@
             == to_word_graph<node_type>(5, {{1, 2}, {1, 1}, {3, 2}, {3, 3}}));
   }
 
-  LIBSEMIGROUPS_TEST_CASE(
-      "Sims2", "095", "2-sided full transf. monoid 3", "[quick][sims2]") {
+  LIBSEMIGROUPS_TEST_CASE("Sims2",
+                          "095",
+                          "2-sided full transf. monoid 3",
+                          "[quick][sims2]") {
     Presentation<std::string> p;
     p.alphabet("abc");
     p.contains_empty_word(true);
@@ -174,8 +171,10 @@
                      {23, 22, 10}, {26, 21, 25}, {21, 26, 21}}));  // ok
   }
 
-  LIBSEMIGROUPS_TEST_CASE(
-      "Sims2", "096", "2-sided 2-generated free monoid", "[extreme][sims2]") {
+  LIBSEMIGROUPS_TEST_CASE("Sims2",
+                          "096",
+                          "2-sided 2-generated free monoid",
+                          "[extreme][sims2]") {
     Presentation<std::string> p;
     p.alphabet("ab");
     p.contains_empty_word(true);
@@ -206,8 +205,10 @@
     REQUIRE(C.number_of_threads(1).number_of_congruences(512) == 7);
   }
 
-  LIBSEMIGROUPS_TEST_CASE(
-      "Sims2", "097", "2-sided congruence-free monoid n=3", "[quick][sims2]") {
+  LIBSEMIGROUPS_TEST_CASE("Sims2",
+                          "097",
+                          "2-sided congruence-free monoid n=3",
+                          "[quick][sims2]") {
     // Presentation taken from
     // Al-Kharousi, F., Cain, A.J., Maltcev, V. et al.
     // A countable family of finitely presented infinite congruence-free
@@ -236,8 +237,10 @@
     REQUIRE(s.number_of_congruences(30) == 1);
   }
 
-  LIBSEMIGROUPS_TEST_CASE(
-      "Sims2", "098", "2-sided congruence-free monoid n=8", "[quick][sims2]") {
+  LIBSEMIGROUPS_TEST_CASE("Sims2",
+                          "098",
+                          "2-sided congruence-free monoid n=8",
+                          "[quick][sims2]") {
     // Presentation taken from
     // Al-Kharousi, F., Cain, A.J., Maltcev, V. et al.
     // A countable family of finitely presented infinite congruence-free
@@ -271,8 +274,10 @@
     REQUIRE(s.number_of_congruences(30) == 1);
   }
 
-  LIBSEMIGROUPS_TEST_CASE(
-      "Sims2", "099", "2-sided bicyclic monoid", "[quick][sims2]") {
+  LIBSEMIGROUPS_TEST_CASE("Sims2",
+                          "099",
+                          "2-sided bicyclic monoid",
+                          "[quick][sims2]") {
     Presentation<std::string> p;
     p.alphabet("ab");
     p.contains_empty_word(true);
