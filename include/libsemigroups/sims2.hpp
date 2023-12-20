@@ -77,11 +77,6 @@ namespace libsemigroups {
         return _2_sided_include[used_slots(num_edges)++];
       }
 
-      void add_rule(word_type const& u, word_type const& v, size_t num_edges) {
-        _2_sided_include[used_slots(num_edges)++] = u;
-        _2_sided_include[used_slots(num_edges)++] = v;
-      }
-
       auto begin(size_t) const noexcept {
         return _2_sided_include.begin();
       }
