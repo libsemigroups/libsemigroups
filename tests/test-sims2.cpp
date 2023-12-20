@@ -33,10 +33,16 @@ namespace libsemigroups {
                           "000",
                           "temperley_lieb_monoid(4) from presentation",
                           "[quick][sims2][low-index]") {
-    auto  rg = ReportGuard(false);
+    auto  rg = ReportGuard(true);
     Sims2 S;
-    S.presentation(fpsemigroup::temperley_lieb_monoid(4));
-    REQUIRE(S.number_of_congruences(14) == 9);
+    // S.presentation(fpsemigroup::temperley_lieb_monoid(4));
+    // REQUIRE(S.number_of_congruences(14) == 9);
+    S.presentation(fpsemigroup::full_transformation_monoid(5));
+
+    REQUIRE(
+        S.number_of_threads(6).idle_thread_restarts(128).number_of_congruences(
+            3125)
+        == 14);
   }
 
   LIBSEMIGROUPS_TEST_CASE("Sims2",
@@ -179,7 +185,7 @@ namespace libsemigroups {
     p.alphabet("ab");
     p.contains_empty_word(true);
     Sims2 s(p);
-    s.number_of_threads(1);  // FIXME fails if number of threads is >1
+    s.number_of_threads(4);  // FIXME fails if number of threads is >1
     REQUIRE(s.number_of_congruences(1) == 1);
     REQUIRE(s.number_of_congruences(2) == 7);    // verified with GAP
     REQUIRE(s.number_of_congruences(3) == 27);   // verified with GAP
@@ -192,7 +198,7 @@ namespace libsemigroups {
     REQUIRE(s.number_of_congruences(10) == 52'960);
     REQUIRE(s.number_of_congruences(11) == 156'100);
     REQUIRE(s.number_of_congruences(12) == 462'271);
-    // REQUIRE(s.number_of_congruences(13) == 1'387'117);
+    REQUIRE(s.number_of_congruences(13) == 1'387'117);
   }
 
   LIBSEMIGROUPS_TEST_CASE("Sims2", "101", "todo", "[extreme][sims2]") {
@@ -202,7 +208,7 @@ namespace libsemigroups {
     presentation::sort_rules(p);
 
     Sims2 C(p);
-    REQUIRE(C.number_of_threads(1).number_of_congruences(512) == 7);
+    REQUIRE(C.number_of_threads(1).number_of_congruences(1546) == 14);
   }
 
   LIBSEMIGROUPS_TEST_CASE("Sims2",
@@ -299,7 +305,7 @@ namespace libsemigroups {
     presentation::add_rule(p, "ab", "ba");
 
     Sims2 s(p);
-    s.number_of_threads(1);
+    s.number_of_threads(4);
     REQUIRE(s.number_of_congruences(1) == 1);
     REQUIRE(s.number_of_congruences(2) == 7);  // verified by hand
     REQUIRE(s.number_of_congruences(3) == 25);

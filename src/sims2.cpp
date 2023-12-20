@@ -83,6 +83,7 @@ namespace libsemigroups {
       return false;
     }
 
+    std::lock_guard lg(_mtx);
     _2_sided_include.backtrack(current.num_edges);
 
     if (current.target_is_new_node) {
