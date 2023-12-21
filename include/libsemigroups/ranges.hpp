@@ -32,7 +32,9 @@
 
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wshadow"
+#if !defined(__clang__)
 #pragma GCC diagnostic ignored "-Wmaybe-uninitialized"
+#endif
 #include <rx/ranges.hpp>  // for count, iterator_range
 #pragma GCC diagnostic pop
 

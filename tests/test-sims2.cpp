@@ -33,16 +33,16 @@ namespace libsemigroups {
                           "000",
                           "temperley_lieb_monoid(4) from presentation",
                           "[quick][sims2][low-index]") {
-    auto  rg = ReportGuard(true);
+    auto  rg = ReportGuard(false);
     Sims2 S;
-    // S.presentation(fpsemigroup::temperley_lieb_monoid(4));
-    // REQUIRE(S.number_of_congruences(14) == 9);
-    S.presentation(fpsemigroup::full_transformation_monoid(5));
+    S.presentation(fpsemigroup::temperley_lieb_monoid(4));
+    REQUIRE(S.number_of_congruences(14) == 9);
+    // S.presentation(fpsemigroup::full_transformation_monoid(5));
 
-    REQUIRE(
-        S.number_of_threads(6).idle_thread_restarts(128).number_of_congruences(
-            3125)
-        == 14);
+    // REQUIRE(
+    //     S.number_of_threads(6).idle_thread_restarts(128).number_of_congruences(
+    //         3125)
+    //     == 14);
   }
 
   LIBSEMIGROUPS_TEST_CASE("Sims2",
