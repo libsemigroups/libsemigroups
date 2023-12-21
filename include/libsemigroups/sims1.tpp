@@ -22,11 +22,11 @@
 namespace libsemigroups {
 
   ////////////////////////////////////////////////////////////////////////
-  // Sims1Settings
+  // SimsSettings
   ////////////////////////////////////////////////////////////////////////
 
   template <typename Subclass>
-  Sims1Settings<Subclass>::Sims1Settings()
+  SimsSettings<Subclass>::SimsSettings()
       :  // protected
         _exclude(),
         _include(),
@@ -40,7 +40,7 @@ namespace libsemigroups {
   }
 
   template <typename Subclass>
-  Subclass& Sims1Settings<Subclass>::init() {
+  Subclass& SimsSettings<Subclass>::init() {
     _exclude.clear();
     _include.clear();
     _presentation.init();
@@ -52,8 +52,8 @@ namespace libsemigroups {
 
   template <typename Subclass>
   template <typename OtherSubclass>
-  Sims1Settings<Subclass>&
-  Sims1Settings<Subclass>::init(Sims1Settings<OtherSubclass> const& that) {
+  SimsSettings<Subclass>&
+  SimsSettings<Subclass>::init(SimsSettings<OtherSubclass> const& that) {
     // protected
     _exclude      = that.exclude();
     _include      = that.include();
@@ -72,7 +72,7 @@ namespace libsemigroups {
   template <typename Subclass>
   template <typename PresentationOfSomeKind>
   Subclass&
-  Sims1Settings<Subclass>::presentation(PresentationOfSomeKind const& p) {
+  SimsSettings<Subclass>::presentation(PresentationOfSomeKind const& p) {
     static_assert(
         std::is_base_of<PresentationBase, PresentationOfSomeKind>::value,
         "the template parameter PresentationOfSomeKind must be derived from "
@@ -102,7 +102,7 @@ namespace libsemigroups {
   }
 
   template <typename Subclass>
-  Subclass& Sims1Settings<Subclass>::cbegin_long_rules(
+  Subclass& SimsSettings<Subclass>::cbegin_long_rules(
       std::vector<word_type>::const_iterator it) {
     auto const& rules = presentation().rules;
     if (!(rules.cbegin() <= it && it <= rules.cend())) {
@@ -119,12 +119,12 @@ namespace libsemigroups {
   }
 
   template <typename Subclass>
-  Subclass& Sims1Settings<Subclass>::cbegin_long_rules(size_t pos) {
+  Subclass& SimsSettings<Subclass>::cbegin_long_rules(size_t pos) {
     return cbegin_long_rules(presentation().rules.cbegin() + pos);
   }
 
   template <typename Subclass>
-  Subclass& Sims1Settings<Subclass>::number_of_threads(size_t val) {
+  Subclass& SimsSettings<Subclass>::number_of_threads(size_t val) {
     if (val == 0) {
       LIBSEMIGROUPS_EXCEPTION(
           "the argument (number of threads) must be non-zero");
@@ -134,7 +134,7 @@ namespace libsemigroups {
   }
 
   template <typename Subclass>
-  Subclass& Sims1Settings<Subclass>::long_rule_length(size_t val) {
+  Subclass& SimsSettings<Subclass>::long_rule_length(size_t val) {
     presentation::sort_rules(_presentation);
     auto& rules = _presentation.rules;
     auto  it    = rules.cbegin();
@@ -151,7 +151,7 @@ namespace libsemigroups {
 
   template <typename Subclass>
   template <typename Iterator>
-  Subclass& Sims1Settings<Subclass>::include(Iterator first, Iterator last) {
+  Subclass& SimsSettings<Subclass>::include(Iterator first, Iterator last) {
     if (std::distance(first, last) % 2 != 0) {
       LIBSEMIGROUPS_EXCEPTION("expected the distance between the 1st and 2nd "
                               "arguments (iterators) to be even, found {}",
@@ -165,8 +165,8 @@ namespace libsemigroups {
   }
 
   template <typename Subclass>
-  Subclass& Sims1Settings<Subclass>::include(word_type const& lhs,
-                                             word_type const& rhs) {
+  Subclass& SimsSettings<Subclass>::include(word_type const& lhs,
+                                            word_type const& rhs) {
     presentation().validate_word(lhs.cbegin(), lhs.cend());
     presentation().validate_word(rhs.cbegin(), rhs.cend());
     _include.push_back(lhs);
@@ -176,7 +176,7 @@ namespace libsemigroups {
 
   template <typename Subclass>
   template <typename Iterator>
-  Subclass& Sims1Settings<Subclass>::exclude(Iterator first, Iterator last) {
+  Subclass& SimsSettings<Subclass>::exclude(Iterator first, Iterator last) {
     if (std::distance(first, last) % 2 != 0) {
       LIBSEMIGROUPS_EXCEPTION("expected the distance between the 1st and 2nd "
                               "arguments (iterators) to be even, found {}",
@@ -190,8 +190,8 @@ namespace libsemigroups {
   }
 
   template <typename Subclass>
-  Subclass& Sims1Settings<Subclass>::exclude(word_type const& lhs,
-                                             word_type const& rhs) {
+  Subclass& SimsSettings<Subclass>::exclude(word_type const& lhs,
+                                            word_type const& rhs) {
     presentation().validate_word(lhs.cbegin(), lhs.cend());
     presentation().validate_word(rhs.cbegin(), rhs.cend());
     _exclude.push_back(lhs);

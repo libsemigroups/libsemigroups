@@ -50,10 +50,10 @@
 namespace libsemigroups {
 
   ////////////////////////////////////////////////////////////////////////
-  // Sims1Stats
+  // SimsStats
   ////////////////////////////////////////////////////////////////////////
 
-  Sims1Stats::Sims1Stats()
+  SimsStats::SimsStats()
       : count_last(),
         count_now(),
         max_pending(),
@@ -62,7 +62,7 @@ namespace libsemigroups {
     stats_zero();
   }
 
-  Sims1Stats& Sims1Stats::stats_zero() {
+  SimsStats& SimsStats::stats_zero() {
     count_last         = 0;
     count_now          = 0;
     max_pending        = 0;
@@ -71,7 +71,7 @@ namespace libsemigroups {
     return *this;
   }
 
-  Sims1Stats& Sims1Stats::init_from(Sims1Stats const& that) {
+  SimsStats& SimsStats::init_from(SimsStats const& that) {
     count_last         = that.count_last;
     count_now          = that.count_now.load();
     max_pending        = that.max_pending.load();

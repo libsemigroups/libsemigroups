@@ -63,12 +63,12 @@ namespace libsemigroups {
     ~Sims2()                       = default;
 
     Sims2& init() {
-      Sims1Settings<Sims2>::init();
+      SimsSettings<Sims2>::init();
       return *this;
     }
 
     template <typename Word>
-    Sims2(Presentation<Word> p) : Sims2() {
+    explicit Sims2(Presentation<Word> p) : Sims2() {
       presentation(p);
     }
 
@@ -130,11 +130,11 @@ namespace libsemigroups {
     using thread_iterator = SimsBase::ThreadIterator<iterator_base>;
     using thread_runner   = SimsBase::ThreadRunner<thread_iterator>;
 
-    using Sims1Settings::cbegin_long_rules;
-    using Sims1Settings::exclude;
-    using Sims1Settings::include;
-    using Sims1Settings::number_of_threads;
-    using Sims1Settings::presentation;
+    using SimsSettings::cbegin_long_rules;
+    using SimsSettings::exclude;
+    using SimsSettings::include;
+    using SimsSettings::number_of_threads;
+    using SimsSettings::presentation;
 
     [[nodiscard]] iterator cbegin(size_type n) const {
       return SimsBase<Sims2>::cbegin<iterator>(n);

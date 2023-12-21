@@ -43,7 +43,6 @@
 #include <cstddef>     // for size_t
 #include <cstdint>     // for uint64_t, uint32_t
 #include <functional>  // for function
-#include <iostream>    // for ostream
 #include <iterator>    // for forward_iterator_tag
 #include <mutex>       // for mutex
 #include <string>      // for operator+, basic_string
@@ -55,7 +54,6 @@
 #include "debug.hpp"            // for LIBSEMIGROUPS_ASSERT
 #include "exception.hpp"        // for LIBSEMIGROUPS_EXCEPTION
 #include "felsch-graph.hpp"     // for FelschGraph
-#include "froidure-pin.hpp"     // for FroidurePin
 #include "presentation.hpp"     // for Presentation, Presentati...
 #include "to-froidure-pin.hpp"  // for make
 #include "to-presentation.hpp"  // for make
@@ -71,11 +69,11 @@ namespace libsemigroups {
 
   //! Defined in ``sims1.hpp``.
   //!
-  //! On this page we describe the `Sims1Stats` class. The purpose of this
+  //! On this page we describe the `SimsStats` class. The purpose of this
   //! class is to collect some statistics related to `Sims1` class template.
   //!
   //! \sa \ref Sims1
-  class Sims1Stats {
+  class SimsStats {
    public:
     // TODO(doc)
     // Not atomic because this is only accessed by report_progress_from_thread
@@ -113,41 +111,41 @@ namespace libsemigroups {
     // threads modifying total_pending_now
     std::atomic_uint64_t total_pending_now;
 
-    Sims1Stats();
+    SimsStats();
 
-    Sims1Stats(Sims1Stats const& that) : Sims1Stats() {
+    SimsStats(SimsStats const& that) : SimsStats() {
       init_from(that);
     }
 
-    Sims1Stats& operator=(Sims1Stats const& that) {
+    SimsStats& operator=(SimsStats const& that) {
       return init_from(that);
     }
 
-    Sims1Stats(Sims1Stats&& that) : Sims1Stats() {
+    SimsStats(SimsStats&& that) : SimsStats() {
       init_from(that);
     }
 
-    Sims1Stats& operator=(Sims1Stats&& that) {
+    SimsStats& operator=(SimsStats&& that) {
       return init_from(that);
     }
 
-    Sims1Stats& stats_zero();
+    SimsStats& stats_zero();
 
-    Sims1Stats& stats_check_point() {
+    SimsStats& stats_check_point() {
       count_last         = count_now;
       total_pending_last = total_pending_now;
       return *this;
     }
 
    private:
-    Sims1Stats& init_from(Sims1Stats const& that);
+    SimsStats& init_from(SimsStats const& that);
   };
 
   //! No doc
   // This class allows us to use the same interface for settings for Sims1,
   // RepOrc, and MinimalRepOrc without duplicating the code.
   template <typename Subclass>
-  class Sims1Settings {
+  class SimsSettings {
    protected:
     // These are protected so that Sims1 can reverse them if necessary for
     // left congruences.
@@ -159,11 +157,11 @@ namespace libsemigroups {
     size_t                                 _idle_thread_restarts;
     std::vector<word_type>::const_iterator _longs_begin;
     size_t                                 _num_threads;
-    mutable Sims1Stats                     _stats;
+    mutable SimsStats                      _stats;
 
    public:
     // TODO(doc)
-    Sims1Settings();
+    SimsSettings();
 
     // TODO(doc)
     // TODO(tests)
@@ -172,23 +170,23 @@ namespace libsemigroups {
     // Copy constructor is explicitly required, the constructor template is not
     // a substitute. If no copy constructor is implemented, then _longs_begin
     // is not properly initialised, and leads to badness.
-    Sims1Settings(Sims1Settings const& that) {
+    SimsSettings(SimsSettings const& that) {
       init(that);
     }
 
-    Sims1Settings& operator=(Sims1Settings const& that) {
+    SimsSettings& operator=(SimsSettings const& that) {
       init(that);
       return *this;
     }
 
-    //! Construct from Sims1Settings with different subclass.
+    //! Construct from SimsSettings with different subclass.
     template <typename OtherSubclass>
-    Sims1Settings(Sims1Settings<OtherSubclass> const& that) {
+    SimsSettings(SimsSettings<OtherSubclass> const& that) {
       init(that);
     }
 
     template <typename OtherSubclass>
-    Sims1Settings& init(Sims1Settings<OtherSubclass> const& that);
+    SimsSettings& init(SimsSettings<OtherSubclass> const& that);
 
     //! Returns the settings object of *this.
     //!
@@ -205,12 +203,12 @@ namespace libsemigroups {
     //!
     //! \param (None) this function has no parameters.
     //!
-    //! \returns A const reference to `Sims1Settings`.
+    //! \returns A const reference to `SimsSettings`.
     //!
     //! \exceptions
     //! \noexcept
     // So that we can access the settings from the derived class T.
-    [[nodiscard]] Sims1Settings const& settings() const noexcept {
+    [[nodiscard]] SimsSettings const& settings() const noexcept {
       return *this;
     }
 
@@ -232,7 +230,7 @@ namespace libsemigroups {
     //!
     //! \exceptions
     //! \no_libsemigroups_except
-    Subclass& settings_copy_from(Sims1Settings const& that) {
+    Subclass& settings_copy_from(SimsSettings const& that) {
       *this = that;
       return static_cast<Subclass&>(*this);
     }
@@ -479,18 +477,18 @@ namespace libsemigroups {
 
     //! Returns a const reference to the current stats object.
     //!
-    //! The value returned by this function is a `Sims1Stats` object which
+    //! The value returned by this function is a `SimsStats` object which
     //! contains some statistics related to the current `Sims1` instance and
     //! any part of the depth first search already conducted.
     //!
     //! \param (None) this function has no parameters.
     //!
     //! \returns
-    //! A const reference to `Sims1Stats`.
+    //! A const reference to `SimsStats`.
     //!
     //! \exceptions
     //! \noexcept
-    [[nodiscard]] Sims1Stats& stats() const noexcept {
+    [[nodiscard]] SimsStats& stats() const noexcept {
       return _stats;
     }
 
@@ -533,7 +531,7 @@ namespace libsemigroups {
     }
 
    protected:
-    Subclass const& stats_copy_from(Sims1Stats const& stts) const {
+    Subclass const& stats_copy_from(SimsStats const& stts) const {
       _stats = std::move(stts);
       return static_cast<Subclass const&>(*this);
     }
@@ -546,11 +544,11 @@ namespace libsemigroups {
 
    private:
     template <typename OtherSubclass>
-    Sims1Settings& init_from(Sims1Settings<OtherSubclass> const& that);
+    SimsSettings& init_from(SimsSettings<OtherSubclass> const& that);
   };
 
   template <typename Sims1or2>
-  class SimsBase : public Sims1Settings<Sims1or2>, public Reporter {
+  class SimsBase : public SimsSettings<Sims1or2>, public Reporter {
    public:
     //! Type for the nodes in the associated WordGraph
     //! objects.
@@ -579,16 +577,16 @@ namespace libsemigroups {
     ~SimsBase()                          = default;
 
     Sims1or2& init() {
-      Sims1Settings<Sims1or2>::init();
+      SimsSettings<Sims1or2>::init();
       return static_cast<Sims1or2&>(*this);
     }
 
-    using Sims1Settings<Sims1or2>::presentation;
-    using Sims1Settings<Sims1or2>::number_of_threads;
-    using Sims1Settings<Sims1or2>::stats;
-    using Sims1Settings<Sims1or2>::include;
-    using Sims1Settings<Sims1or2>::exclude;
-    using Sims1Settings<Sims1or2>::cbegin_long_rules;
+    using SimsSettings<Sims1or2>::presentation;
+    using SimsSettings<Sims1or2>::number_of_threads;
+    using SimsSettings<Sims1or2>::stats;
+    using SimsSettings<Sims1or2>::include;
+    using SimsSettings<Sims1or2>::exclude;
+    using SimsSettings<Sims1or2>::cbegin_long_rules;
 
     struct PendingDef {
       PendingDef() = default;
@@ -908,7 +906,7 @@ namespace libsemigroups {
       }
 
       //! No doc
-      Sims1Stats& stats() noexcept {
+      SimsStats& stats() noexcept {
         return _sims1->stats();
       }
 
@@ -1754,7 +1752,7 @@ namespace libsemigroups {
   //!
   //! If no such WordGraph can be found, then an empty WordGraph is
   //! returned (with `0` nodes and `0` edges).
-  class RepOrc : public Sims1Settings<RepOrc> {
+  class RepOrc : public SimsSettings<RepOrc> {
    private:
     size_t _min;
     size_t _max;
@@ -1771,11 +1769,11 @@ namespace libsemigroups {
     //! Construct from Sims1 or MinimalRepOrc.
     //!
     //! This constructor creates a new RepOrc instance with
-    //! the same Sims1Settings as \p s but that is
+    //! the same SimsSettings as \p s but that is
     //! otherwise uninitialised.
     //!
     //! \tparam S the type of the argument \p s (which is
-    //! derived from `Sims1Settings<S>`).
+    //! derived from `SimsSettings<S>`).
     //!
     //! \param s the Sims1 or MinimalRepOrc whose settings
     //! should be used.
@@ -1783,13 +1781,13 @@ namespace libsemigroups {
     //! \exceptions
     //! \no_libsemigroups_except
     template <typename OtherSubclass>
-    explicit RepOrc(Sims1Settings<OtherSubclass> const& s) : RepOrc() {
-      Sims1Settings<RepOrc>::init(s);
+    explicit RepOrc(SimsSettings<OtherSubclass> const& s) : RepOrc() {
+      SimsSettings<RepOrc>::init(s);
     }
 
     template <typename OtherSubclass>
-    RepOrc& init(Sims1Settings<OtherSubclass> const& s) {
-      Sims1Settings<RepOrc>::init(s);
+    RepOrc& init(SimsSettings<OtherSubclass> const& s) {
+      SimsSettings<RepOrc>::init(s);
       return *this;
     }
 
@@ -1927,8 +1925,8 @@ namespace libsemigroups {
     //! \exceptions \no_libsemigroups_except
     [[nodiscard]] Sims1::word_graph_type word_graph() const;
 
-    using Sims1Settings<RepOrc>::presentation;
-    using Sims1Settings<RepOrc>::cbegin_long_rules;
+    using SimsSettings<RepOrc>::presentation;
+    using SimsSettings<RepOrc>::cbegin_long_rules;
   };
 
   //! Defined in ``sims1.hpp``.
@@ -1942,12 +1940,12 @@ namespace libsemigroups {
   //!
   //! If no such WordGraph can be found, then an empty WordGraph is
   //! returned (with `0` nodes and `0` edges).
-  class MinimalRepOrc : public Sims1Settings<MinimalRepOrc> {
+  class MinimalRepOrc : public SimsSettings<MinimalRepOrc> {
    private:
     size_t _size;
 
    public:
-    using Sims1Settings<MinimalRepOrc>::stats;
+    using SimsSettings<MinimalRepOrc>::stats;
 
     //! Default constructor
     MinimalRepOrc() = default;
