@@ -85,10 +85,11 @@ namespace libsemigroups {
       using const_reference = SimsBase::IteratorBase::const_reference;
       using const_pointer   = SimsBase::IteratorBase::const_pointer;
 
-     protected:
+     private:
       std::unique_ptr<RuleContainer> _2_sided_include;
       std::vector<word_type>         _2_sided_words;
 
+     protected:
       using SimsBase::IteratorBase::init;
       using SimsBase::IteratorBase::try_pop;
 
@@ -102,12 +103,9 @@ namespace libsemigroups {
       //! No doc
       [[nodiscard]] bool try_define(PendingDef const&);
 
-     public:
       iterator_base(Sims2 const* s, size_type n);
 
-      // None of the constructors are noexcept because the corresponding
-      // constructors for Presentation aren't currently
-
+     public:
       iterator_base() = default;
 
       iterator_base(iterator_base const& that);

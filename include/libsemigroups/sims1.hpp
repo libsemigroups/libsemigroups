@@ -551,8 +551,6 @@ namespace libsemigroups {
 
   template <typename Sims1or2>
   class SimsBase : public Sims1Settings<Sims1or2>, public Reporter {
-    friend Sims1or2;
-
    public:
     //! Type for the nodes in the associated WordGraph
     //! objects.
@@ -647,8 +645,8 @@ namespace libsemigroups {
 
       FelschGraph<word_type, node_type, std::vector<Definition>> _felsch_graph;
 
-      // This mutex does nothing for iterator, only does
-      // something for thread_iterator
+      // This mutex does nothing for iterator, only does something for
+      // thread_iterator
       std::mutex              _mtx;
       std::vector<PendingDef> _pending;
       Sims1or2 const*         _sims1;
@@ -1011,19 +1009,15 @@ namespace libsemigroups {
       using IteratorBase::swap;
     };  // class Iterator
 
-    // TODO private?
-    // TODO move to SimsBase
     template <typename ThreadIt>
     class ThreadRunner;
 
     // TODO private?
     // Note that this class is private, and not really an iterator in the usual
     // sense. It is designed solely to work with thread_runner.
-    // TODO move to SimsBase
-
     template <typename IteratorBase>
     class ThreadIterator : public IteratorBase {
-      friend class Sims1or2::template ThreadRunner<ThreadIterator>;
+      friend class ThreadRunner<ThreadIterator>;
 
       using IteratorBase::copy_felsch_graph;
 
@@ -1097,8 +1091,6 @@ namespace libsemigroups {
 
     template <typename ThreadIt>
     class ThreadRunner {
-      friend Sims1or2;
-
      private:
       std::atomic_bool                       _done;
       std::vector<std::unique_ptr<ThreadIt>> _theives;
@@ -1594,7 +1586,6 @@ namespace libsemigroups {
     // TODO(doc)
     Sims1& kind(congruence_kind ck);
 
-   public:
     //! Returns the number of one-sided congruences with up to a given
     //! number of classes.
     //!
@@ -1612,7 +1603,7 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if \p n is \c 0.
     //! \throws LibsemigroupsException if `presentation()` has 0-generators
     //! and 0-relations (i.e. it has not been initialised).
-    using SimsBase<Sims1>::number_of_congruences;
+    using SimsBase::number_of_congruences;
 
     //! Apply the function \p pred to every one-sided
     //! congruence with at most \p n classes
@@ -1636,7 +1627,7 @@ namespace libsemigroups {
     //! 0-relations (i.e. it has not been initialised).
     // void for_each(size_type                                   n,
     //              std::function<void(word_graph_type const&)> pred) const;
-    using SimsBase<Sims1>::for_each;
+    using SimsBase::for_each;
 
     //! Apply the function \p pred to every one-sided congruence with at most \p
     //! n classes, until it returns \c true.
@@ -1657,7 +1648,7 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if \p n is \c 0.
     //! \throws LibsemigroupsException if `presentation()` has 0-generators and
     //! 0-relations (i.e. it has not been initialised).
-    using SimsBase<Sims1>::find_if;
+    using SimsBase::find_if;
 
    private:
     using iterator_base   = IteratorBase;
