@@ -22,25 +22,97 @@
 #include "libsemigroups/sims2.hpp"
 
 namespace libsemigroups {
+  class Sims2::iterator_base::RuleContainer {
+   private:
+    std::vector<word_type> _words;
+    // _used_slots[i] is the length of _words when we have i edges
+    std::vector<size_t> _used_slots;
+
+   public:
+    RuleContainer()                                = default;
+    RuleContainer(RuleContainer const&)            = default;
+    RuleContainer(RuleContainer&&)                 = default;
+    RuleContainer& operator=(RuleContainer const&) = default;
+    RuleContainer& operator=(RuleContainer&&)      = default;
+
+    ~RuleContainer() = default;
+
+    void resize(size_t m) {
+      // TODO should we use resize?
+      _used_slots.assign(m, UNDEFINED);
+      if (m > 0) {
+        _used_slots[0] = 0;
+      }
+      _words.assign(m, word_type());
+    }
+
+    word_type& next_rule_word(size_t num_edges) {
+      return _words[used_slots(num_edges)++];
+    }
+
+    auto begin(size_t) const noexcept {
+      return _words.begin();
+    }
+
+    auto end(size_t num_edges) noexcept {
+      return _words.begin() + used_slots(num_edges);
+    }
+
+    void backtrack(size_t num_edges) {
+      std::fill(_used_slots.begin() + num_edges,
+                _used_slots.end(),
+                size_t(UNDEFINED));
+      if (num_edges == 0) {
+        _used_slots[0] = 0;
+      }
+    }
+
+   private:
+    size_t& used_slots(size_t num_edges) {
+      LIBSEMIGROUPS_ASSERT(num_edges < _used_slots.size());
+      if (_used_slots[0] == UNDEFINED) {
+        _used_slots[0] = 0;
+      }
+      size_t i = num_edges;
+      while (_used_slots[i] == UNDEFINED) {
+        --i;
+      }
+      LIBSEMIGROUPS_ASSERT(i < _used_slots.size());
+      LIBSEMIGROUPS_ASSERT(_used_slots[i] != UNDEFINED);
+      for (size_t j = i + 1; j <= num_edges; ++j) {
+        _used_slots[j] = _used_slots[i];
+      }
+      LIBSEMIGROUPS_ASSERT(_used_slots[num_edges] <= _words.size());
+      return _used_slots[num_edges];
+    }
+  };
+
   ///////////////////////////////////////////////////////////////////////////////
   // iterator_base nested class
   ///////////////////////////////////////////////////////////////////////////////
 
+  void
+  Sims2::iterator_base::copy_felsch_graph(Sims2::iterator_base const& that) {
+    Sims1::iterator_base<Sims2>::copy_felsch_graph(that);
+    *_2_sided_include = *that._2_sided_include;
+    _2_sided_words    = that._2_sided_words;
+  }
+
   Sims2::iterator_base::iterator_base(Sims2 const* s, size_type n)
       : Sims1::iterator_base<Sims2>(s, n),
         // protected
-        _2_sided_include(),
+        _2_sided_include(new RuleContainer()),
         _2_sided_words() {
     // TODO could be slightly less space allocated here
     size_t const m = Sims1::iterator_base<Sims2>::maximum_number_of_classes();
     Presentation<word_type> const& p = this->_felsch_graph.presentation();
-    _2_sided_include.resize(2 * m * p.alphabet().size());
+    _2_sided_include->resize(2 * m * p.alphabet().size());
     _2_sided_words.assign(n, word_type());
   }
 
   Sims2::iterator_base::iterator_base(Sims2::iterator_base const& that)
       : Sims1::iterator_base<Sims2>(that),
-        _2_sided_include(that._2_sided_include),
+        _2_sided_include(new RuleContainer(*that._2_sided_include)),
         _2_sided_words(that._2_sided_words) {}
 
   Sims2::iterator_base::iterator_base(Sims2::iterator_base&& that)
@@ -52,8 +124,8 @@ namespace libsemigroups {
   typename Sims2::iterator_base&
   Sims2::iterator_base::operator=(Sims2::iterator_base const& that) {
     Sims1::iterator_base<Sims2>::operator=(that);
-    _2_sided_include = that._2_sided_include;
-    _2_sided_words   = that._2_sided_words;
+    *_2_sided_include = *that._2_sided_include;
+    _2_sided_words    = that._2_sided_words;
 
     return *this;
   }
@@ -84,7 +156,7 @@ namespace libsemigroups {
     }
 
     std::lock_guard lg(_mtx);
-    _2_sided_include.backtrack(current.num_edges);
+    _2_sided_include->backtrack(current.num_edges);
 
     if (current.target_is_new_node) {
       LIBSEMIGROUPS_ASSERT(current.target < _2_sided_words.size());
@@ -93,11 +165,11 @@ namespace libsemigroups {
       _2_sided_words[current.target].push_back(current.generator);
     } else {
       auto const& e = _felsch_graph.definitions()[current.num_edges];
-      word_type&  u = _2_sided_include.next_rule_word(current.num_edges);
+      word_type&  u = _2_sided_include->next_rule_word(current.num_edges);
       u.assign(_2_sided_words[e.first].cbegin(),
                _2_sided_words[e.first].cend());
       u.push_back(e.second);
-      word_type&       v = _2_sided_include.next_rule_word(current.num_edges);
+      word_type&       v = _2_sided_include->next_rule_word(current.num_edges);
       word_type const& w
           = _2_sided_words[_felsch_graph.target_no_checks(e.first, e.second)];
       v.assign(w.begin(), w.end());
@@ -105,8 +177,8 @@ namespace libsemigroups {
 
     size_type start = current.num_edges;
     while (start < _felsch_graph.definitions().size()) {
-      auto first = _2_sided_include.begin(current.num_edges);
-      auto last  = _2_sided_include.end(current.num_edges);
+      auto first = _2_sided_include->begin(current.num_edges);
+      auto last  = _2_sided_include->end(current.num_edges);
       start      = _felsch_graph.definitions().size();
       if (!felsch_graph::make_compatible<RegisterDefs>(
               _felsch_graph,

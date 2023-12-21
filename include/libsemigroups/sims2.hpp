@@ -47,74 +47,6 @@
 #include "sims1.hpp"
 
 namespace libsemigroups {
-
-  namespace detail {
-    class RuleContainer {
-     private:
-      std::vector<word_type> _2_sided_include;
-      // _used_slots[i] is the length of _2_sided_include when we have i edges
-      std::vector<size_t> _used_slots;
-
-     public:
-      RuleContainer()                                = default;
-      RuleContainer(RuleContainer const&)            = default;
-      RuleContainer(RuleContainer&&)                 = default;
-      RuleContainer& operator=(RuleContainer const&) = default;
-      RuleContainer& operator=(RuleContainer&&)      = default;
-
-      ~RuleContainer() = default;
-
-      void resize(size_t m) {
-        // TODO should we use resize?
-        _used_slots.assign(m, UNDEFINED);
-        if (m > 0) {
-          _used_slots[0] = 0;
-        }
-        _2_sided_include.assign(m, word_type());
-      }
-
-      word_type& next_rule_word(size_t num_edges) {
-        return _2_sided_include[used_slots(num_edges)++];
-      }
-
-      auto begin(size_t) const noexcept {
-        return _2_sided_include.begin();
-      }
-
-      auto end(size_t num_edges) noexcept {
-        return _2_sided_include.begin() + used_slots(num_edges);
-      }
-
-      void backtrack(size_t num_edges) {
-        std::fill(_used_slots.begin() + num_edges,
-                  _used_slots.end(),
-                  size_t(UNDEFINED));
-        if (num_edges == 0) {
-          _used_slots[0] = 0;
-        }
-      }
-
-     private:
-      size_t& used_slots(size_t num_edges) {
-        LIBSEMIGROUPS_ASSERT(num_edges < _used_slots.size());
-        if (_used_slots[0] == UNDEFINED) {
-          _used_slots[0] = 0;
-        }
-        size_t i = num_edges;
-        while (_used_slots[i] == UNDEFINED) {
-          --i;
-        }
-        LIBSEMIGROUPS_ASSERT(i < _used_slots.size());
-        LIBSEMIGROUPS_ASSERT(_used_slots[i] != UNDEFINED);
-        for (size_t j = i + 1; j <= num_edges; ++j) {
-          _used_slots[j] = _used_slots[i];
-        }
-        LIBSEMIGROUPS_ASSERT(_used_slots[num_edges] <= _2_sided_include.size());
-        return _used_slots[num_edges];
-      }
-    };
-  }  // namespace detail
-
   class Sims2 : public SimsBase<Sims2> {
    public:
     using node_type       = SimsBase::node_type;
@@ -147,13 +79,15 @@ namespace libsemigroups {
     // thread_iterator nested classes. The mutex does nothing for <iterator>
     // and is an actual std::mutex for <thread_iterator>.
     class iterator_base : public Sims1::iterator_base<Sims2> {
+      class RuleContainer;
+
      public:
       using const_reference = Sims1::iterator_base<Sims2>::const_reference;
       using const_pointer   = Sims1::iterator_base<Sims2>::const_pointer;
 
      protected:
-      detail::RuleContainer  _2_sided_include;
-      std::vector<word_type> _2_sided_words;
+      std::unique_ptr<RuleContainer> _2_sided_include;
+      std::vector<word_type>         _2_sided_words;
 
       using Sims1::iterator_base<Sims2>::init;
       using Sims1::iterator_base<Sims2>::try_pop;
@@ -161,11 +95,7 @@ namespace libsemigroups {
       // We could use the copy constructor, but there's no point in copying
       // anything except the FelschGraph and so we only copy that.
       // TODO rename
-      void copy_felsch_graph(iterator_base const& that) {
-        Sims1::iterator_base<Sims2>::copy_felsch_graph(that);
-        _2_sided_include = that._2_sided_include;
-        _2_sided_words   = that._2_sided_words;
-      }
+      void copy_felsch_graph(iterator_base const& that);
 
       // Try to make the definition represented by PendingDef, returns false if
       // it wasn't possible, and true if it was.
