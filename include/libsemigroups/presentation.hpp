@@ -1447,7 +1447,7 @@ namespace libsemigroups {
     // TODO(doc)
     template <typename Word>
     void add_idempotent_rules_no_checks(Presentation<Word>& p,
-                                        word_type const&    letters) {
+                                        Word const&         letters) {
       for (auto x : letters) {
         add_rule_no_checks(p, {x, x}, {x});
       }

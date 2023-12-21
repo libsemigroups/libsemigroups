@@ -48,6 +48,8 @@
 
 namespace libsemigroups {
   class Sims2 : public SimsBase<Sims2> {
+    friend SimsBase<Sims2>;
+
    public:
     using node_type       = SimsBase::node_type;
     using label_type      = SimsBase::label_type;
@@ -55,7 +57,9 @@ namespace libsemigroups {
     using size_type       = SimsBase::size_type;
     using word_graph_type = SimsBase::word_graph_type;
 
-    Sims2()                        = default;
+    Sims2() {
+      init();
+    }
     Sims2(Sims2 const& other)      = default;
     Sims2(Sims2&&)                 = default;
     Sims2& operator=(Sims2 const&) = default;
@@ -63,12 +67,14 @@ namespace libsemigroups {
     ~Sims2()                       = default;
 
     Sims2& init() {
+      report_prefix("Sims2");
       SimsSettings<Sims2>::init();
       return *this;
     }
 
     template <typename Word>
     explicit Sims2(Presentation<Word> p) : Sims2() {
+      report_prefix("Sims2");
       presentation(p);
     }
 
@@ -125,10 +131,11 @@ namespace libsemigroups {
       using SimsBase::IteratorBase::stats;
     };  // class iterator_base
 
-   public:
-    using iterator        = SimsBase::Iterator<iterator_base>;
     using thread_iterator = SimsBase::ThreadIterator<iterator_base>;
     using thread_runner   = SimsBase::ThreadRunner<thread_iterator>;
+
+   public:
+    using iterator = SimsBase::Iterator<iterator_base>;
 
     using SimsSettings::cbegin_long_rules;
     using SimsSettings::exclude;

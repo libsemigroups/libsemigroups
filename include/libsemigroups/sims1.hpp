@@ -1203,14 +1203,17 @@ namespace libsemigroups {
       }
 
       report_no_prefix("{:+<80}\n", "");
-      report_default("Sims1: STARTING with {} additional threads . . . \n",
+      report_default("{}: STARTING with {} additional threads . . . \n",
+                     report_prefix(),
                      num_threads);
       report_no_prefix("{:+<80}\n", "");
-      report_default("Sims1: \u2264 {} classes{} for \u27E8A|R\u27E9 with:\n",
+      report_default("{}: \u2264 {} classes{} for \u27E8A|R\u27E9 with:\n",
+                     report_prefix(),
                      num_classes,
                      pairs);
-      report_default("Sims1: |A| = {}, |R| = {}, "
+      report_default("{}: |A| = {}, |R| = {}, "
                      "|u| + |v| \u2208 [{}, {}], \u2211(|u| + |v|) = {}\n",
+                     report_prefix(),
                      presentation().alphabet().size(),
                      presentation().rules.size() / 2,
                      shortest_short,
@@ -1220,7 +1223,8 @@ namespace libsemigroups {
       if (cbegin_long_rules() != presentation().rules.cend()) {
         auto first = presentation().rules.cbegin(), last = cbegin_long_rules();
 
-        report_default("Sims1: {} \"short\" relations with: ",
+        report_default("{}: {} \"short\" relations with: ",
+                       report_prefix(),
                        std::distance(first, last) / 2);
         report_no_prefix(
             "|u| + |v| \u2208 [{}, {}] and \u2211(|u| + |v|) = {}\n",
@@ -1229,7 +1233,8 @@ namespace libsemigroups {
             presentation::length(first, last));
 
         first = cbegin_long_rules(), last = presentation().rules.cend();
-        report_default("Sims1: {} \"long\" relations with: ",
+        report_default("{}: {} \"long\" relations with: ",
+                       report_prefix(),
                        std::distance(first, last) / 2);
         report_no_prefix(
             "|u| + |v| \u2208 [{}, {}] and \u2211(|u| + |v|) = {}\n",

@@ -856,9 +856,9 @@ namespace libsemigroups {
       size_t const       n = letters2.size();
       Presentation<Word> q;
       for (size_t i = 0; i < m; ++i) {
-        word_type u = {letters1[i]};
+        Word u = {letters1[i]};
         for (size_t j = 0; j < n; ++j) {
-          word_type v = {letters2[j]};
+          Word v = {letters2[j]};
           if (u != v) {
             presentation::add_rule_no_checks(q, u + v, v + u);
           }

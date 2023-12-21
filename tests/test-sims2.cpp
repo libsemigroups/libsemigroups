@@ -320,4 +320,23 @@ namespace libsemigroups {
     REQUIRE(s.number_of_congruences(12) == 19'245);
     REQUIRE(s.number_of_congruences(13) == 32'299);
   }
+
+  LIBSEMIGROUPS_TEST_CASE("Sims2",
+                          "001",
+                          "free semilattice n = 8",
+                          "[extreme][sims1]") {
+    // https://oeis.org/A102894
+    constexpr std::array<size_t, 6> results = {0, 1, 4, 45, 2'271, 1'373'701};
+    for (auto A : {"a", "ab", "abc", "abcd", "abcde"}) {
+      Presentation<std::string> p;
+      p.alphabet(A);
+      presentation::add_commutes_rules_no_checks(p, p.alphabet());
+      presentation::add_idempotent_rules_no_checks(p, p.alphabet());
+      Sims2 s(p);
+
+      size_t const n = p.alphabet().size();
+      REQUIRE(s.number_of_threads(4).number_of_congruences(std::pow(2, n))
+              == results[n]);
+    }
+  }
 }  // namespace libsemigroups
