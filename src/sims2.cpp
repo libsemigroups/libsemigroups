@@ -93,37 +93,36 @@ namespace libsemigroups {
 
   void
   Sims2::iterator_base::copy_felsch_graph(Sims2::iterator_base const& that) {
-    Sims1::iterator_base<Sims2>::copy_felsch_graph(that);
+    Sims1::IteratorBase<Sims2>::copy_felsch_graph(that);
     *_2_sided_include = *that._2_sided_include;
     _2_sided_words    = that._2_sided_words;
   }
 
   Sims2::iterator_base::iterator_base(Sims2 const* s, size_type n)
-      : Sims1::iterator_base<Sims2>(s, n),
+      : Sims1::IteratorBase<Sims2>(s, n),
         // protected
         _2_sided_include(new RuleContainer()),
         _2_sided_words() {
     // TODO could be slightly less space allocated here
-    size_t const m = Sims1::iterator_base<Sims2>::maximum_number_of_classes();
+    size_t const m = Sims1::IteratorBase<Sims2>::maximum_number_of_classes();
     Presentation<word_type> const& p = this->_felsch_graph.presentation();
     _2_sided_include->resize(2 * m * p.alphabet().size());
     _2_sided_words.assign(n, word_type());
   }
 
   Sims2::iterator_base::iterator_base(Sims2::iterator_base const& that)
-      : Sims1::iterator_base<Sims2>(that),
+      : Sims1::IteratorBase<Sims2>(that),
         _2_sided_include(new RuleContainer(*that._2_sided_include)),
         _2_sided_words(that._2_sided_words) {}
 
   Sims2::iterator_base::iterator_base(Sims2::iterator_base&& that)
-      : Sims1::iterator_base<Sims2>(
-          std::move(that)),  // TODO std::move correct?
+      : Sims1::IteratorBase<Sims2>(std::move(that)),  // TODO std::move correct?
         _2_sided_include(std::move(that._2_sided_include)),
         _2_sided_words(std::move(that._2_sided_words)) {}
 
   typename Sims2::iterator_base&
   Sims2::iterator_base::operator=(Sims2::iterator_base const& that) {
-    Sims1::iterator_base<Sims2>::operator=(that);
+    Sims1::IteratorBase<Sims2>::operator=(that);
     *_2_sided_include = *that._2_sided_include;
     _2_sided_words    = that._2_sided_words;
 
@@ -132,7 +131,7 @@ namespace libsemigroups {
 
   typename Sims2::iterator_base&
   Sims2::iterator_base::operator=(Sims2::iterator_base&& that) {
-    Sims1::iterator_base<Sims2>::operator=(
+    Sims1::IteratorBase<Sims2>::operator=(
         std::move(that));  // TODO std::move ok?
     _2_sided_include = std::move(that._2_sided_include);
     _2_sided_words   = std::move(that._2_sided_words);
@@ -140,7 +139,7 @@ namespace libsemigroups {
   }
 
   void Sims2::iterator_base::swap(Sims2::iterator_base& that) noexcept {
-    Sims1::iterator_base<Sims2>::swap(that);
+    Sims1::IteratorBase<Sims2>::swap(that);
     std::swap(_2_sided_include, that._2_sided_include);
     std::swap(_2_sided_words, that._2_sided_words);
   }
@@ -151,7 +150,7 @@ namespace libsemigroups {
     LIBSEMIGROUPS_ASSERT(current.target < current.num_nodes);
     LIBSEMIGROUPS_ASSERT(current.num_nodes <= maximum_number_of_classes());
 
-    if (!Sims1::iterator_base<Sims2>::try_define(current)) {
+    if (!Sims1::IteratorBase<Sims2>::try_define(current)) {
       return false;
     }
 

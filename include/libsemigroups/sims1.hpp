@@ -1088,13 +1088,13 @@ namespace libsemigroups {
     // This class collects some common aspects of the iterator and
     // thread_iterator nested classes. The mutex does nothing for <iterator>
     // and is an actual std::mutex for <thread_iterator>. Also subclassed by
-    // Sims2::iterator_base.
+    // Sims2::IteratorBase.
     //
     // TODO(maybe) template PendingDef so that we can include extra stuff in the
     // 2-sided version if necessary
     //
     template <typename Sims1or2>
-    class iterator_base {
+    class IteratorBase {
      public:
       //! No doc
       using const_reference =
@@ -1141,7 +1141,7 @@ namespace libsemigroups {
 
       // We could use the copy constructor, but there's no point in copying
       // anything except the FelschGraph and so we only copy that.
-      void copy_felsch_graph(iterator_base const& that) {
+      void copy_felsch_graph(IteratorBase const& that) {
         _felsch_graph = that._felsch_graph;
       }
 
@@ -1260,8 +1260,8 @@ namespace libsemigroups {
 
      public:
       //! No doc
-      iterator_base(Sims1or2 const* s,
-                    size_type       n)
+      IteratorBase(Sims1or2 const* s,
+                   size_type       n)
           :  // private
             _max_num_classes(s->presentation().contains_empty_word() ? n
                                                                      : n + 1),
@@ -1286,12 +1286,12 @@ namespace libsemigroups {
       // constructors for Presentation aren't currently
 
       //! No doc
-      iterator_base() = default;
+      IteratorBase() = default;
 
       //! No doc
       // Intentionally don't copy the mutex, it doesn't compile, wouldn't make
       // sense if the mutex was used here.
-      iterator_base(iterator_base const& that)
+      IteratorBase(IteratorBase const& that)
           :  // private
             _max_num_classes(that._max_num_classes),
             _min_target_node(that._min_target_node),
@@ -1303,7 +1303,7 @@ namespace libsemigroups {
 
       // Intentionally don't copy the mutex, it doesn't compile, wouldn't make
       // sense if the mutex was used here.
-      iterator_base(iterator_base&& that)
+      IteratorBase(IteratorBase&& that)
           :  // private
             _max_num_classes(std::move(that._max_num_classes)),
             _min_target_node(std::move(that._min_target_node)),
@@ -1316,7 +1316,7 @@ namespace libsemigroups {
       // Intentionally don't copy the mutex, it doesn't compile, wouldn't make
       // sense if the mutex was used here.
 
-      iterator_base& operator=(iterator_base const& that) {
+      IteratorBase& operator=(IteratorBase const& that) {
         // private
         _max_num_classes = that._max_num_classes;
         _min_target_node = that._min_target_node;
@@ -1332,7 +1332,7 @@ namespace libsemigroups {
       // Intentionally don't copy the mutex, it doesn't compile, wouldn't make
       // sense if the mutex was used here.
 
-      iterator_base& operator=(iterator_base&& that) {
+      IteratorBase& operator=(IteratorBase&& that) {
         // private
         _max_num_classes = std::move(that._max_num_classes);
         _min_target_node = std::move(that._min_target_node);
@@ -1346,15 +1346,15 @@ namespace libsemigroups {
       }
 
       //! No doc
-      ~iterator_base() = default;
+      ~IteratorBase() = default;
 
       //! No doc
-      [[nodiscard]] bool operator==(iterator_base const& that) const noexcept {
+      [[nodiscard]] bool operator==(IteratorBase const& that) const noexcept {
         return _felsch_graph == that._felsch_graph;
       }
 
       //! No doc
-      [[nodiscard]] bool operator!=(iterator_base const& that) const noexcept {
+      [[nodiscard]] bool operator!=(IteratorBase const& that) const noexcept {
         return !(operator==(that));
       }
 
@@ -1369,7 +1369,7 @@ namespace libsemigroups {
       }
 
       //! No doc
-      void swap(iterator_base& that) noexcept {
+      void swap(IteratorBase& that) noexcept {
         // private
         std::swap(_max_num_classes, that._max_num_classes);
         std::swap(_min_target_node, that._min_target_node);
@@ -1387,7 +1387,7 @@ namespace libsemigroups {
       size_type maximum_number_of_classes() const noexcept {
         return _max_num_classes;
       }
-    };  // class iterator_base
+    };  // class IteratorBase
 
     //! The return type of \ref cbegin and \ref cend.
     //!
@@ -1482,7 +1482,8 @@ namespace libsemigroups {
     };  // class Iterator
 
    public:
-    using iterator = Iterator<iterator_base<Sims1>>;
+    using iterator_base = IteratorBase<Sims1>;
+    using iterator      = Iterator<iterator_base>;
 
     //! Returns a forward iterator pointing at the first congruence.
     //!
@@ -1648,7 +1649,7 @@ namespace libsemigroups {
       }
     };
 
-    using thread_iterator = ThreadIterator<iterator_base<Sims1>>;
+    using thread_iterator = ThreadIterator<iterator_base>;
 
     // TODO move to SimsBase
     template <typename ThreadIt>

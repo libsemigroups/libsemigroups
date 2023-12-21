@@ -45,6 +45,7 @@
   <!-- Layout definition for a class page -->
   <class>
     <detaileddescription title=""/>
+    <inheritancegraph visibile="yes"/>
     <!-- <briefdescription visible="yes"/>-->
     <memberdecl>
       <nestedclasses visible="yes" title=""/>

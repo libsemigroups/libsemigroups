@@ -78,19 +78,19 @@ namespace libsemigroups {
     // This class collects some common aspects of the iterator and
     // thread_iterator nested classes. The mutex does nothing for <iterator>
     // and is an actual std::mutex for <thread_iterator>.
-    class iterator_base : public Sims1::iterator_base<Sims2> {
+    class iterator_base : public Sims1::IteratorBase<Sims2> {
       class RuleContainer;
 
      public:
-      using const_reference = Sims1::iterator_base<Sims2>::const_reference;
-      using const_pointer   = Sims1::iterator_base<Sims2>::const_pointer;
+      using const_reference = Sims1::IteratorBase<Sims2>::const_reference;
+      using const_pointer   = Sims1::IteratorBase<Sims2>::const_pointer;
 
      protected:
       std::unique_ptr<RuleContainer> _2_sided_include;
       std::vector<word_type>         _2_sided_words;
 
-      using Sims1::iterator_base<Sims2>::init;
-      using Sims1::iterator_base<Sims2>::try_pop;
+      using Sims1::IteratorBase<Sims2>::init;
+      using Sims1::IteratorBase<Sims2>::try_pop;
 
       // We could use the copy constructor, but there's no point in copying
       // anything except the FelschGraph and so we only copy that.
@@ -116,15 +116,15 @@ namespace libsemigroups {
       iterator_base& operator=(iterator_base&& that);
       ~iterator_base();
 
-      using Sims1::iterator_base<Sims2>::operator==;
-      using Sims1::iterator_base<Sims2>::operator!=;
-      using Sims1::iterator_base<Sims2>::operator*;
-      using Sims1::iterator_base<Sims2>::operator->;
+      using Sims1::IteratorBase<Sims2>::operator==;
+      using Sims1::IteratorBase<Sims2>::operator!=;
+      using Sims1::IteratorBase<Sims2>::operator*;
+      using Sims1::IteratorBase<Sims2>::operator->;
 
       //! No doc
       void swap(iterator_base& that) noexcept;
 
-      using Sims1::iterator_base<Sims2>::stats;
+      using Sims1::IteratorBase<Sims2>::stats;
     };  // class iterator_base
 
    public:
