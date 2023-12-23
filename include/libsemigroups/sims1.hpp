@@ -556,29 +556,27 @@ namespace libsemigroups {
                     || std::is_same_v<Sims1or2, Sims2>);
 
      public:
-      //! Type for the nodes in the associated WordGraph
-      //! objects.
-      using node_type = uint32_t;
-
-      using label_type = typename WordGraph<node_type>::label_type;
-
-      //! Type for letters in the underlying presentation.
-      using letter_type = typename word_type::value_type;
-
-      //! The size_type of the associated WordGraph objects.
-      using size_type = typename WordGraph<node_type>::size_type;
-
       // We use WordGraph, even though the iterators produced by this class
       // hold FelschGraph's, none of the features of FelschGraph are useful
       // for the output, only for the implementation
       //! The type of the associated WordGraph objects.
-      using word_graph_type = WordGraph<node_type>;
+      using word_graph_type = WordGraph<uint32_t>;
 
-      // using iterator = typename Sims1or2::iterator;
+      //! Type for the nodes in the associated WordGraph objects.
+      using node_type = typename word_graph_type::node_type;
+
+      using label_type = typename word_graph_type::label_type;
+
+      //! The size_type of the associated WordGraph objects.
+      using size_type = typename word_graph_type::size_type;
+
+      //! Type for letters in the underlying presentation.
+      using letter_type = typename word_type::value_type;
 
       SimsBase() {
         init();
       }
+
       SimsBase(SimsBase const& other)      = default;
       SimsBase(SimsBase&&)                 = default;
       SimsBase& operator=(SimsBase const&) = default;
@@ -603,21 +601,17 @@ namespace libsemigroups {
       using SimsSettings<Sims1or2>::cbegin_long_rules;
 
      protected:
-      struct PendingDef {
-        PendingDef() = default;
+      struct PendingDefBase {
+        PendingDefBase() = default;
 
-        PendingDef(node_type   s,
-                   letter_type g,
-                   node_type   t,
-                   size_type   e,
-                   size_type   n,
-                   bool        tin) noexcept
-            : source(s),
-              generator(g),
-              target(t),
-              num_edges(e),
-              num_nodes(n),
-              target_is_new_node(tin) {}
+        PendingDefBase(node_type   s,
+                       letter_type g,
+                       node_type   t,
+                       size_type   e,
+                       size_type   n,
+                       bool) noexcept
+            : source(s), generator(g), target(t), num_edges(e), num_nodes(n) {}
+
         node_type   source;
         letter_type generator;
         node_type   target;
@@ -625,32 +619,24 @@ namespace libsemigroups {
                                 // *this was added to the stack
         size_type num_nodes;    // Number of nodes in the graph
                                 // after the definition is made
-        bool target_is_new_node;
       };
+
       // This class collects some common aspects of the iterator and
       // thread_iterator nested classes. The mutex does nothing for <iterator>
       // and is an actual std::mutex for <thread_iterator>. Also subclassed by
       // Sims2::IteratorBase.
-      //
-      // TODO(maybe) template PendingDef so that we can include extra stuff in
-      // the 2-sided version if necessary
       class IteratorBase {
        public:
-        //! No doc
-        using const_reference =
-            typename std::vector<word_graph_type>::const_reference;
-
-        //! No doc
-        using const_pointer =
-            typename std::vector<word_graph_type>::const_pointer;
-
-        using sims_type = Sims1or2;
+        using const_reference = word_graph_type const&;
+        using const_pointer   = word_graph_type const*;
+        using sims_type       = Sims1or2;
 
        private:
         size_type _max_num_classes;
         size_type _min_target_node;
 
        protected:
+        using PendingDef = typename Sims1or2::PendingDef;
         // TODO(Sims1) ensure that _felsch_graph's settings are
         // properly initialised
         using Definition = std::pair<node_type, label_type>;
@@ -939,6 +925,7 @@ namespace libsemigroups {
       //! preferred to postfix.
       class iterator : public Sims1or2::iterator_base {
         using iterator_base = typename Sims1or2::iterator_base;
+        using PendingDef    = typename Sims1or2::PendingDef;
 
         using iterator_base::init;
         using iterator_base::install_descendents;
@@ -1022,10 +1009,10 @@ namespace libsemigroups {
      private:
       class thread_runner;
 
-      // TODO private?
       // Note that this class is private, and not really an iterator in the
       // usual sense. It is designed solely to work with thread_runner.
       class thread_iterator : public Sims1or2::iterator_base {
+        using PendingDef    = typename Sims1or2::PendingDef;
         using iterator_base = typename Sims1or2::iterator_base;
 
         friend class thread_runner;
@@ -1104,7 +1091,8 @@ namespace libsemigroups {
 
       class thread_runner {
        private:
-        using ThreadIt = typename Sims1or2::thread_iterator;
+        using ThreadIt   = typename Sims1or2::thread_iterator;
+        using PendingDef = typename Sims1or2::PendingDef;
 
         std::atomic_bool                       _done;
         std::vector<std::unique_ptr<ThreadIt>> _theives;
@@ -1303,7 +1291,6 @@ namespace libsemigroups {
           time_per_node = time_total_ns / total_pending_now;
         }
 
-        // TODO fix the prefix
         ReportCell<3> rc;
         rc.min_width(0, 4).min_width(1, 7).min_width(2, 11);
         rc("{}: total        {} (cong.)   | {} (nodes) \n",
@@ -1492,6 +1479,7 @@ namespace libsemigroups {
     friend SimsBase;
 
     using iterator_base = IteratorBase;
+    using PendingDef    = PendingDefBase;
 
    public:
     //! Type for the nodes in the associated WordGraph

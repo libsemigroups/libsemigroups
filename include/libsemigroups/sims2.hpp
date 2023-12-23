@@ -76,7 +76,19 @@ namespace libsemigroups {
     }
 
    private:
-    using PendingDef = SimsBase::PendingDef;
+    struct PendingDef : public SimsBase::PendingDefBase {
+      PendingDef() = default;
+
+      PendingDef(node_type   s,
+                 letter_type g,
+                 node_type   t,
+                 size_type   e,
+                 size_type   n,
+                 bool        tin) noexcept
+          : SimsBase::PendingDefBase(s, g, t, e, n, tin),
+            target_is_new_node(tin) {}
+      bool target_is_new_node;
+    };
 
     // This class collects some common aspects of the iterator and
     // thread_iterator nested classes. The mutex does nothing for <iterator>
