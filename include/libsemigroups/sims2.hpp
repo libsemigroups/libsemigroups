@@ -47,8 +47,9 @@
 #include "sims1.hpp"
 
 namespace libsemigroups {
-  class Sims2 : public SimsBase<Sims2> {
-    friend SimsBase<Sims2>;
+  class Sims2 : public detail::SimsBase<Sims2> {
+    using SimsBase = detail::SimsBase<Sims2>;
+    friend SimsBase;
 
    public:
     using node_type       = SimsBase::node_type;
@@ -135,16 +136,16 @@ namespace libsemigroups {
     using SimsSettings::presentation;
 
     [[nodiscard]] iterator cbegin(size_type n) const {
-      return SimsBase<Sims2>::cbegin<iterator>(n);
+      return SimsBase::cbegin<iterator>(n);
     }
 
     [[nodiscard]] iterator cend(size_type n) const {
-      return SimsBase<Sims2>::cend<iterator>(n);
+      return SimsBase::cend<iterator>(n);
     }
 
-    using SimsBase<Sims2>::number_of_congruences;
-    using SimsBase<Sims2>::for_each;
-    using SimsBase<Sims2>::find_if;
+    using SimsBase::find_if;
+    using SimsBase::for_each;
+    using SimsBase::number_of_congruences;
   };
 }  // namespace libsemigroups
 #endif  // LIBSEMIGROUPS_SIMS2_HPP_

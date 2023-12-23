@@ -549,917 +549,925 @@ namespace libsemigroups {
   class Sims1;
   class Sims2;
 
-  template <typename Sims1or2>
-  class SimsBase : public SimsSettings<Sims1or2>, public Reporter {
-    static_assert(std::is_same_v<Sims1or2, Sims1>
-                  || std::is_same_v<Sims1or2, Sims2>);
+  namespace detail {
+    template <typename Sims1or2>
+    class SimsBase : public SimsSettings<Sims1or2>, public Reporter {
+      static_assert(std::is_same_v<Sims1or2, Sims1>
+                    || std::is_same_v<Sims1or2, Sims2>);
 
-   public:
-    //! Type for the nodes in the associated WordGraph
-    //! objects.
-    using node_type = uint32_t;
-
-    using label_type = typename WordGraph<node_type>::label_type;
-
-    //! Type for letters in the underlying presentation.
-    using letter_type = typename word_type::value_type;
-
-    //! The size_type of the associated WordGraph objects.
-    using size_type = typename WordGraph<node_type>::size_type;
-
-    // We use WordGraph, even though the iterators produced by this class
-    // hold FelschGraph's, none of the features of FelschGraph are useful
-    // for the output, only for the implementation
-    //! The type of the associated WordGraph objects.
-    using word_graph_type = WordGraph<node_type>;
-
-    // using iterator = typename Sims1or2::iterator;
-
-    SimsBase() {
-      init();
-    }
-    SimsBase(SimsBase const& other)      = default;
-    SimsBase(SimsBase&&)                 = default;
-    SimsBase& operator=(SimsBase const&) = default;
-    SimsBase& operator=(SimsBase&&)      = default;
-    ~SimsBase()                          = default;
-
-    Sims1or2& init() {
-      if constexpr (std::is_same_v<Sims1or2, Sims1>) {
-        report_prefix("Sims1");
-      } else {
-        report_prefix("Sims2");
-      }
-      SimsSettings<Sims1or2>::init();
-      return static_cast<Sims1or2&>(*this);
-    }
-
-    using SimsSettings<Sims1or2>::presentation;
-    using SimsSettings<Sims1or2>::number_of_threads;
-    using SimsSettings<Sims1or2>::stats;
-    using SimsSettings<Sims1or2>::include;
-    using SimsSettings<Sims1or2>::exclude;
-    using SimsSettings<Sims1or2>::cbegin_long_rules;
-
-   protected:
-    struct PendingDef {
-      PendingDef() = default;
-
-      PendingDef(node_type   s,
-                 letter_type g,
-                 node_type   t,
-                 size_type   e,
-                 size_type   n,
-                 bool        tin) noexcept
-          : source(s),
-            generator(g),
-            target(t),
-            num_edges(e),
-            num_nodes(n),
-            target_is_new_node(tin) {}
-      node_type   source;
-      letter_type generator;
-      node_type   target;
-      size_type   num_edges;  // Number of edges in the graph when
-                              // *this was added to the stack
-      size_type num_nodes;    // Number of nodes in the graph
-                              // after the definition is made
-      bool target_is_new_node;
-    };
-    // This class collects some common aspects of the iterator and
-    // thread_iterator nested classes. The mutex does nothing for <iterator>
-    // and is an actual std::mutex for <thread_iterator>. Also subclassed by
-    // Sims2::IteratorBase.
-    //
-    // TODO(maybe) template PendingDef so that we can include extra stuff in the
-    // 2-sided version if necessary
-    class IteratorBase {
      public:
-      //! No doc
-      using const_reference =
-          typename std::vector<word_graph_type>::const_reference;
+      //! Type for the nodes in the associated WordGraph
+      //! objects.
+      using node_type = uint32_t;
 
-      //! No doc
-      using const_pointer =
-          typename std::vector<word_graph_type>::const_pointer;
+      using label_type = typename WordGraph<node_type>::label_type;
 
-      using sims_type = Sims1or2;
+      //! Type for letters in the underlying presentation.
+      using letter_type = typename word_type::value_type;
 
-     private:
-      size_type _max_num_classes;
-      size_type _min_target_node;
+      //! The size_type of the associated WordGraph objects.
+      using size_type = typename WordGraph<node_type>::size_type;
+
+      // We use WordGraph, even though the iterators produced by this class
+      // hold FelschGraph's, none of the features of FelschGraph are useful
+      // for the output, only for the implementation
+      //! The type of the associated WordGraph objects.
+      using word_graph_type = WordGraph<node_type>;
+
+      // using iterator = typename Sims1or2::iterator;
+
+      SimsBase() {
+        init();
+      }
+      SimsBase(SimsBase const& other)      = default;
+      SimsBase(SimsBase&&)                 = default;
+      SimsBase& operator=(SimsBase const&) = default;
+      SimsBase& operator=(SimsBase&&)      = default;
+      ~SimsBase()                          = default;
+
+      Sims1or2& init() {
+        if constexpr (std::is_same_v<Sims1or2, Sims1>) {
+          report_prefix("Sims1");
+        } else {
+          report_prefix("Sims2");
+        }
+        SimsSettings<Sims1or2>::init();
+        return static_cast<Sims1or2&>(*this);
+      }
+
+      using SimsSettings<Sims1or2>::presentation;
+      using SimsSettings<Sims1or2>::number_of_threads;
+      using SimsSettings<Sims1or2>::stats;
+      using SimsSettings<Sims1or2>::include;
+      using SimsSettings<Sims1or2>::exclude;
+      using SimsSettings<Sims1or2>::cbegin_long_rules;
 
      protected:
-      // TODO(Sims1) ensure that _felsch_graph's settings are
-      // properly initialised
-      using Definition = std::pair<node_type, label_type>;
+      struct PendingDef {
+        PendingDef() = default;
 
-      FelschGraph<word_type, node_type, std::vector<Definition>> _felsch_graph;
+        PendingDef(node_type   s,
+                   letter_type g,
+                   node_type   t,
+                   size_type   e,
+                   size_type   n,
+                   bool        tin) noexcept
+            : source(s),
+              generator(g),
+              target(t),
+              num_edges(e),
+              num_nodes(n),
+              target_is_new_node(tin) {}
+        node_type   source;
+        letter_type generator;
+        node_type   target;
+        size_type   num_edges;  // Number of edges in the graph when
+                                // *this was added to the stack
+        size_type num_nodes;    // Number of nodes in the graph
+                                // after the definition is made
+        bool target_is_new_node;
+      };
+      // This class collects some common aspects of the iterator and
+      // thread_iterator nested classes. The mutex does nothing for <iterator>
+      // and is an actual std::mutex for <thread_iterator>. Also subclassed by
+      // Sims2::IteratorBase.
+      //
+      // TODO(maybe) template PendingDef so that we can include extra stuff in
+      // the 2-sided version if necessary
+      class IteratorBase {
+       public:
+        //! No doc
+        using const_reference =
+            typename std::vector<word_graph_type>::const_reference;
 
-      // This mutex does nothing for iterator, only does something for
-      // thread_iterator
-      std::mutex              _mtx;
-      std::vector<PendingDef> _pending;
-      Sims1or2 const*         _sims1;
+        //! No doc
+        using const_pointer =
+            typename std::vector<word_graph_type>::const_pointer;
 
-      // Push initial PendingDef's into _pending, see tpp
-      // file for explanation.
-      // The following function is separated from the constructor so that it
-      // isn't called in the constructor of every thread_iterator
+        using sims_type = Sims1or2;
 
-      void init(size_type n) {
-        if (n != 0) {
-          if (n > 1 || _min_target_node == 1) {
-            _pending.emplace_back(0, 0, 1, 0, 2, true);
-          }
-          if (_min_target_node == 0) {
-            _pending.emplace_back(0, 0, 0, 0, 1, false);
-          }
-        }
-      }
+       private:
+        size_type _max_num_classes;
+        size_type _min_target_node;
 
-      // We could use the copy constructor, but there's no point in copying
-      // anything except the FelschGraph and so we only copy that.
-      void copy_felsch_graph(IteratorBase const& that) {
-        _felsch_graph = that._felsch_graph;
-      }
+       protected:
+        // TODO(Sims1) ensure that _felsch_graph's settings are
+        // properly initialised
+        using Definition = std::pair<node_type, label_type>;
 
-      // Try to pop from _pending into the argument (reference), returns true if
-      // successful and false if not.
-      [[nodiscard]] bool try_pop(PendingDef& pd) {
-        std::lock_guard<std::mutex> lock(_mtx);
-        if (_pending.empty()) {
-          return false;
-        }
-        pd = std::move(_pending.back());
-        _pending.pop_back();
-        return true;
-      }
+        FelschGraph<word_type, node_type, std::vector<Definition>>
+            _felsch_graph;
 
-      // Try to make the definition represented by PendingDef, returns false if
-      // it wasn't possible, and true if it was.
-      //! No doc
-      bool try_define(PendingDef const& current) {
-        LIBSEMIGROUPS_ASSERT(current.target < current.num_nodes);
-        LIBSEMIGROUPS_ASSERT(current.num_nodes <= _max_num_classes);
-        std::lock_guard<std::mutex> lock(_mtx);
-        // Backtrack if necessary
-        _felsch_graph.reduce_number_of_edges_to(current.num_edges);
+        // This mutex does nothing for iterator, only does something for
+        // thread_iterator
+        std::mutex              _mtx;
+        std::vector<PendingDef> _pending;
+        Sims1or2 const*         _sims1;
 
-        // It might be that current.target is a new node, in which case
-        // _felsch_graph.number_of_active_nodes() includes this new node even
-        // before the edge current.source -> current.target is defined.
-        _felsch_graph.number_of_active_nodes(current.num_nodes);
+        // Push initial PendingDef's into _pending, see tpp
+        // file for explanation.
+        // The following function is separated from the constructor so that it
+        // isn't called in the constructor of every thread_iterator
 
-        LIBSEMIGROUPS_ASSERT(
-            _felsch_graph.target_no_checks(current.source, current.generator)
-            == UNDEFINED);
-
-        // Don't call number_of_edges because this calls the function in
-        // WordGraph
-        size_type start = _felsch_graph.definitions().size();
-
-        _felsch_graph.set_target_no_checks(
-            current.source, current.generator, current.target);
-
-        auto first = _sims1->include().cbegin();
-        auto last  = _sims1->include().cend();
-        if (!felsch_graph::make_compatible<RegisterDefs>(
-                _felsch_graph, 0, 1, first, last)
-            || !_felsch_graph.process_definitions(start)) {
-          // Seems to be important to check include() first then
-          // process_definitions
-          return false;
-        }
-
-        first          = _sims1->exclude().cbegin();
-        last           = _sims1->exclude().cend();
-        node_type root = 0;
-
-        for (auto it = first; it != last; it += 2) {
-          auto l = word_graph::follow_path_no_checks(_felsch_graph, root, *it);
-          if (l != UNDEFINED) {
-            auto r = word_graph::follow_path_no_checks(
-                _felsch_graph, root, *(it + 1));
-            if (l == r) {
-              return false;
+        void init(size_type n) {
+          if (n != 0) {
+            if (n > 1 || _min_target_node == 1) {
+              _pending.emplace_back(0, 0, 1, 0, 2, true);
+            }
+            if (_min_target_node == 0) {
+              _pending.emplace_back(0, 0, 0, 0, 1, false);
             }
           }
         }
-        return true;
-      }
 
-      bool install_descendents(PendingDef const& current) {
-        letter_type     a        = current.generator + 1;
-        size_type const M        = _felsch_graph.number_of_active_nodes();
-        size_type const N        = _felsch_graph.number_of_edges();
-        size_type const num_gens = _felsch_graph.out_degree();
-        auto&           stats    = _sims1->stats();
+        // We could use the copy constructor, but there's no point in copying
+        // anything except the FelschGraph and so we only copy that.
+        void copy_felsch_graph(IteratorBase const& that) {
+          _felsch_graph = that._felsch_graph;
+        }
 
-        for (node_type next = current.source; next < M; ++next) {
-          for (; a < num_gens; ++a) {
-            if (_felsch_graph.target_no_checks(next, a) == UNDEFINED) {
-              std::lock_guard<std::mutex> lock(_mtx);
-              if (M < _max_num_classes) {
-                _pending.emplace_back(next, a, M, N, M + 1, true);
+        // Try to pop from _pending into the argument (reference), returns true
+        // if successful and false if not.
+        [[nodiscard]] bool try_pop(PendingDef& pd) {
+          std::lock_guard<std::mutex> lock(_mtx);
+          if (_pending.empty()) {
+            return false;
+          }
+          pd = std::move(_pending.back());
+          _pending.pop_back();
+          return true;
+        }
+
+        // Try to make the definition represented by PendingDef, returns false
+        // if it wasn't possible, and true if it was.
+        //! No doc
+        bool try_define(PendingDef const& current) {
+          LIBSEMIGROUPS_ASSERT(current.target < current.num_nodes);
+          LIBSEMIGROUPS_ASSERT(current.num_nodes <= _max_num_classes);
+          std::lock_guard<std::mutex> lock(_mtx);
+          // Backtrack if necessary
+          _felsch_graph.reduce_number_of_edges_to(current.num_edges);
+
+          // It might be that current.target is a new node, in which case
+          // _felsch_graph.number_of_active_nodes() includes this new node even
+          // before the edge current.source -> current.target is defined.
+          _felsch_graph.number_of_active_nodes(current.num_nodes);
+
+          LIBSEMIGROUPS_ASSERT(
+              _felsch_graph.target_no_checks(current.source, current.generator)
+              == UNDEFINED);
+
+          // Don't call number_of_edges because this calls the function in
+          // WordGraph
+          size_type start = _felsch_graph.definitions().size();
+
+          _felsch_graph.set_target_no_checks(
+              current.source, current.generator, current.target);
+
+          auto first = _sims1->include().cbegin();
+          auto last  = _sims1->include().cend();
+          if (!felsch_graph::make_compatible<RegisterDefs>(
+                  _felsch_graph, 0, 1, first, last)
+              || !_felsch_graph.process_definitions(start)) {
+            // Seems to be important to check include() first then
+            // process_definitions
+            return false;
+          }
+
+          first          = _sims1->exclude().cbegin();
+          last           = _sims1->exclude().cend();
+          node_type root = 0;
+
+          for (auto it = first; it != last; it += 2) {
+            auto l
+                = word_graph::follow_path_no_checks(_felsch_graph, root, *it);
+            if (l != UNDEFINED) {
+              auto r = word_graph::follow_path_no_checks(
+                  _felsch_graph, root, *(it + 1));
+              if (l == r) {
+                return false;
               }
-              for (node_type b = M; b-- > _min_target_node;) {
-                _pending.emplace_back(next, a, b, N, M, false);
-              }
-              stats.total_pending_now
-                  += M - _min_target_node + (M < _max_num_classes);
-
-              // Mutex must be locked here so that we can call _pending.size()
-              stats.max_pending
-                  = std::max(static_cast<uint64_t>(_pending.size()),
-                             stats.max_pending.load());
-              return false;
             }
           }
-          a = 0;
-        }
-        // No undefined edges, word graph is complete
-        LIBSEMIGROUPS_ASSERT(N == M * num_gens);
-
-        auto first = _sims1->cbegin_long_rules();
-        auto last  = _sims1->presentation().rules.cend();
-
-        bool result
-            = word_graph::is_compatible(_felsch_graph,
-                                        _felsch_graph.cbegin_nodes(),
-                                        _felsch_graph.cbegin_nodes() + M,
-                                        first,
-                                        last);
-        if (result) {
-          // stats.count_now is atomic so this is ok
-          ++stats.count_now;
-        }
-        return result;
-      }
-
-      //! No doc
-      IteratorBase(Sims1or2 const* s,
-                   size_type       n)
-          :  // private
-            _max_num_classes(s->presentation().contains_empty_word() ? n
-                                                                     : n + 1),
-            _min_target_node(s->presentation().contains_empty_word() ? 0 : 1),
-            // protected
-            _felsch_graph(),
-            _mtx(),
-            _pending(),
-            _sims1(s) {
-        Presentation<word_type> p = s->presentation();
-        size_t m = std::distance(s->presentation().rules.cbegin(),
-                                 s->cbegin_long_rules());
-        p.rules.erase(p.rules.begin() + m, p.rules.end());
-        _felsch_graph.init(std::move(p));
-        // n == 0 only when the iterator is cend
-        _felsch_graph.number_of_active_nodes(n == 0 ? 0 : 1);
-        // = 0 indicates iterator is done
-        _felsch_graph.add_nodes(n);
-      }
-
-     public:
-      // None of the constructors are noexcept because the corresponding
-      // constructors for Presentation aren't currently
-
-      //! No doc
-      IteratorBase() = default;
-
-      //! No doc
-      // Intentionally don't copy the mutex, it doesn't compile, wouldn't make
-      // sense if the mutex was used here.
-      IteratorBase(IteratorBase const& that)
-          :  // private
-            _max_num_classes(that._max_num_classes),
-            _min_target_node(that._min_target_node),
-            // protected
-            _felsch_graph(that._felsch_graph),
-            _mtx(),
-            _pending(that._pending),
-            _sims1(that._sims1) {}
-
-      // Intentionally don't copy the mutex, it doesn't compile, wouldn't make
-      // sense if the mutex was used here.
-      IteratorBase(IteratorBase&& that)
-          :  // private
-            _max_num_classes(std::move(that._max_num_classes)),
-            _min_target_node(std::move(that._min_target_node)),
-            // protected
-            _felsch_graph(std::move(that._felsch_graph)),
-            _mtx(),
-            _pending(std::move(that._pending)),
-            _sims1(that._sims1) {}
-
-      // Intentionally don't copy the mutex, it doesn't compile, wouldn't make
-      // sense if the mutex was used here.
-
-      IteratorBase& operator=(IteratorBase const& that) {
-        // private
-        _max_num_classes = that._max_num_classes;
-        _min_target_node = that._min_target_node;
-        // protected
-        _felsch_graph = that._felsch_graph;
-        // keep our own _mtx
-        _pending = that._pending;
-        _sims1   = that._sims1;
-
-        return *this;
-      }
-
-      // Intentionally don't copy the mutex, it doesn't compile, wouldn't make
-      // sense if the mutex was used here.
-
-      IteratorBase& operator=(IteratorBase&& that) {
-        // private
-        _max_num_classes = std::move(that._max_num_classes);
-        _min_target_node = std::move(that._min_target_node);
-
-        // protected
-        _felsch_graph = std::move(that._felsch_graph);
-        _pending      = std::move(that._pending);
-        // keep our own _mtx
-        _sims1 = that._sims1;
-        return *this;
-      }
-
-      //! No doc
-      ~IteratorBase() = default;
-
-      //! No doc
-      [[nodiscard]] bool operator==(IteratorBase const& that) const noexcept {
-        return _felsch_graph == that._felsch_graph;
-      }
-
-      //! No doc
-      [[nodiscard]] bool operator!=(IteratorBase const& that) const noexcept {
-        return !(operator==(that));
-      }
-
-      //! No doc
-      [[nodiscard]] const_reference operator*() const noexcept {
-        return _felsch_graph;
-      }
-
-      //! No doc
-      [[nodiscard]] const_pointer operator->() const noexcept {
-        return &_felsch_graph;
-      }
-
-      //! No doc
-      void swap(IteratorBase& that) noexcept {
-        // private
-        std::swap(_max_num_classes, that._max_num_classes);
-        std::swap(_min_target_node, that._min_target_node);
-        // protected
-        std::swap(_felsch_graph, that._felsch_graph);
-        std::swap(_pending, that._pending);
-        std::swap(_sims1, that._sims1);
-      }
-
-      //! No doc
-      SimsStats& stats() noexcept {
-        return _sims1->stats();
-      }
-
-      size_type maximum_number_of_classes() const noexcept {
-        return _max_num_classes;
-      }
-    };  // class IteratorBase
-
-   public:
-    //! The return type of \ref cbegin and \ref cend.
-    //!
-    //! This is a forward iterator values of this type are expensive to copy
-    //! due to their internal state, and prefix increment should be
-    //! preferred to postfix.
-    class iterator : public Sims1or2::iterator_base {
-      using iterator_base = typename Sims1or2::iterator_base;
-
-      using iterator_base::init;
-      using iterator_base::install_descendents;
-      using iterator_base::try_define;
-      using iterator_base::try_pop;
-
-     public:
-      //! No doc
-      using const_pointer = typename iterator_base::const_pointer;
-      //! No doc
-      using const_reference = typename iterator_base::const_reference;
-
-      //! No doc
-      using size_type = typename std::vector<word_graph_type>::size_type;
-      //! No doc
-      using difference_type =
-          typename std::vector<word_graph_type>::difference_type;
-      //! No doc
-      using pointer = typename std::vector<word_graph_type>::pointer;
-      //! No doc
-      using reference = typename std::vector<word_graph_type>::reference;
-      //! No doc
-      using value_type = word_graph_type;
-      //! No doc
-      using iterator_category = std::forward_iterator_tag;
-
-      using sims_type = typename iterator_base::sims_type;
-
-      //! No doc
-      using iterator_base::iterator_base;
-
-     private:
-      // Only want Sims1 to be able to use this constructor.
-      // TODO to tpp
-      iterator(sims_type const* s, size_type n) : iterator_base(s, n) {
-        if (this->_felsch_graph.number_of_active_nodes() == 0) {
-          return;
-        }
-        init(n);
-        ++(*this);
-        // The increment above is required so that when dereferencing any
-        // instance of this type we obtain a valid word graph (o/w the value
-        // pointed to here is empty).
-      }
-
-      // So that we can use the constructor above.
-      friend iterator SimsBase<sims_type>::cbegin(SimsBase::size_type) const;
-
-      friend iterator SimsBase<sims_type>::cend(SimsBase::size_type) const;
-
-     public:
-      //! No doc
-      ~iterator() = default;
-
-      // prefix
-      //! No doc
-      // TODO to tpp
-      iterator const& operator++() {
-        PendingDef current;
-        while (try_pop(current)) {
-          if (try_define(current) && install_descendents(current)) {
-            return *this;
-          }
-        }
-        this->_felsch_graph.number_of_active_nodes(0);
-        // indicates that the iterator is done
-        this->_felsch_graph.induced_subgraph_no_checks(0, 0);
-        return *this;
-      }
-
-      // postfix
-      //! No doc
-      iterator operator++(int) {
-        iterator copy(*this);
-        ++(*this);
-        return copy;
-      }
-
-      using iterator_base::swap;
-    };  // class iterator
-
-   private:
-    class thread_runner;
-
-    // TODO private?
-    // Note that this class is private, and not really an iterator in the usual
-    // sense. It is designed solely to work with thread_runner.
-    class thread_iterator : public Sims1or2::iterator_base {
-      using iterator_base = typename Sims1or2::iterator_base;
-
-      friend class thread_runner;
-
-      using iterator_base::copy_felsch_graph;
-
-     public:
-      using sims_type = typename iterator_base::sims_type;
-
-      //! No doc
-      thread_iterator(sims_type const* s, size_type n) : iterator_base(s, n) {}
-
-      // None of the constructors are noexcept because the corresponding
-      // constructors for std::vector aren't (until C++17).
-      //! No doc
-      thread_iterator() = delete;
-      //! No doc
-      thread_iterator(thread_iterator const&) = delete;
-      //! No doc
-      thread_iterator(thread_iterator&&) = delete;
-      //! No doc
-      thread_iterator& operator=(thread_iterator const&) = delete;
-      //! No doc
-      thread_iterator& operator=(thread_iterator&&) = delete;
-
-      //! No doc
-      ~thread_iterator() = default;
-
-      using iterator_base::stats;
-
-     public:
-      void push(PendingDef pd) {
-        this->_pending.push_back(std::move(pd));
-      }
-
-      void steal_from(thread_iterator& that) {
-        // WARNING <that> must be locked before calling this function
-        std::lock_guard<std::mutex> lock(this->_mtx);
-        LIBSEMIGROUPS_ASSERT(this->_pending.empty());
-        size_t const n = that._pending.size();
-        if (n == 1) {
-          return;
-        }
-        // Copy the FelschGraph from that into *this
-        copy_felsch_graph(that);
-
-        // Unzip that._pending into _pending and that._pending, this seems to
-        // give better performance in the search than splitting that._pending
-        // into [begin, begin + size / 2) and [begin + size / 2, end)
-        size_t i = 0;
-        for (; i < n - 2; i += 2) {
-          this->_pending.push_back(std::move(that._pending[i]));
-          that._pending[i / 2] = std::move(that._pending[i + 1]);
-        }
-        this->_pending.push_back(std::move(that._pending[i]));
-        if (i == n - 2) {
-          that._pending[i / 2] = std::move(that._pending[i + 1]);
+          return true;
         }
 
-        that._pending.erase(that._pending.cbegin() + that._pending.size() / 2,
-                            that._pending.cend());
-      }
+        bool install_descendents(PendingDef const& current) {
+          letter_type     a        = current.generator + 1;
+          size_type const M        = _felsch_graph.number_of_active_nodes();
+          size_type const N        = _felsch_graph.number_of_edges();
+          size_type const num_gens = _felsch_graph.out_degree();
+          auto&           stats    = _sims1->stats();
 
-      bool try_steal(thread_iterator& q) {
-        std::lock_guard<std::mutex> lock(this->_mtx);
-        if (this->_pending.empty()) {
-          return false;
-        }
-        // Copy the FelschGraph and half pending from *this into q
-        q.steal_from(*this);  // Must call steal_from on q, so that q is locked
-        return true;
-      }
-    };  // thread_iterator
-
-    class thread_runner {
-     private:
-      using ThreadIt = typename Sims1or2::thread_iterator;
-
-      std::atomic_bool                       _done;
-      std::vector<std::unique_ptr<ThreadIt>> _theives;
-      std::vector<std::thread>               _threads;
-      std::mutex                             _mtx;
-      size_type                              _num_threads;
-      word_graph_type                        _result;
-      Sims1or2 const*                        _sims1;
-
-      void worker_thread(unsigned                                    my_index,
-                         std::function<bool(word_graph_type const&)> hook) {
-        PendingDef pd;
-        auto const restarts = _sims1->idle_thread_restarts();
-        for (size_t i = 0; i < restarts; ++i) {
-          while ((pop_from_local_queue(pd, my_index)
-                  || pop_from_other_thread_queue(pd, my_index))
-                 && !_done) {
-            if (_theives[my_index]->try_define(pd)
-                && _theives[my_index]->install_descendents(pd)) {
-              if (hook(**_theives[my_index])) {
-                // hook returns true to indicate that we should stop early
+          for (node_type next = current.source; next < M; ++next) {
+            for (; a < num_gens; ++a) {
+              if (_felsch_graph.target_no_checks(next, a) == UNDEFINED) {
                 std::lock_guard<std::mutex> lock(_mtx);
-                if (!_done) {
-                  _done   = true;
-                  _result = **_theives[my_index];
+                if (M < _max_num_classes) {
+                  _pending.emplace_back(next, a, M, N, M + 1, true);
                 }
-                return;
+                for (node_type b = M; b-- > _min_target_node;) {
+                  _pending.emplace_back(next, a, b, N, M, false);
+                }
+                stats.total_pending_now
+                    += M - _min_target_node + (M < _max_num_classes);
+
+                // Mutex must be locked here so that we can call _pending.size()
+                stats.max_pending
+                    = std::max(static_cast<uint64_t>(_pending.size()),
+                               stats.max_pending.load());
+                return false;
               }
             }
+            a = 0;
           }
-          std::this_thread::yield();
-          // It's possible to reach here before all of the work is done,
-          // because by coincidence there's nothing in the local queue and
-          // nothing in any other queue either, this sometimes leads to
-          // threads shutting down earlier than desirable. On the other hand,
-          // maybe this is a desirable.
+          // No undefined edges, word graph is complete
+          LIBSEMIGROUPS_ASSERT(N == M * num_gens);
+
+          auto first = _sims1->cbegin_long_rules();
+          auto last  = _sims1->presentation().rules.cend();
+
+          bool result
+              = word_graph::is_compatible(_felsch_graph,
+                                          _felsch_graph.cbegin_nodes(),
+                                          _felsch_graph.cbegin_nodes() + M,
+                                          first,
+                                          last);
+          if (result) {
+            // stats.count_now is atomic so this is ok
+            ++stats.count_now;
+          }
+          return result;
         }
+
+        //! No doc
+        IteratorBase(Sims1or2 const* s,
+                     size_type       n)
+            :  // private
+              _max_num_classes(s->presentation().contains_empty_word() ? n
+                                                                       : n + 1),
+              _min_target_node(s->presentation().contains_empty_word() ? 0 : 1),
+              // protected
+              _felsch_graph(),
+              _mtx(),
+              _pending(),
+              _sims1(s) {
+          Presentation<word_type> p = s->presentation();
+          size_t m = std::distance(s->presentation().rules.cbegin(),
+                                   s->cbegin_long_rules());
+          p.rules.erase(p.rules.begin() + m, p.rules.end());
+          _felsch_graph.init(std::move(p));
+          // n == 0 only when the iterator is cend
+          _felsch_graph.number_of_active_nodes(n == 0 ? 0 : 1);
+          // = 0 indicates iterator is done
+          _felsch_graph.add_nodes(n);
+        }
+
+       public:
+        // None of the constructors are noexcept because the corresponding
+        // constructors for Presentation aren't currently
+
+        //! No doc
+        IteratorBase() = default;
+
+        //! No doc
+        // Intentionally don't copy the mutex, it doesn't compile, wouldn't make
+        // sense if the mutex was used here.
+        IteratorBase(IteratorBase const& that)
+            :  // private
+              _max_num_classes(that._max_num_classes),
+              _min_target_node(that._min_target_node),
+              // protected
+              _felsch_graph(that._felsch_graph),
+              _mtx(),
+              _pending(that._pending),
+              _sims1(that._sims1) {}
+
+        // Intentionally don't copy the mutex, it doesn't compile, wouldn't make
+        // sense if the mutex was used here.
+        IteratorBase(IteratorBase&& that)
+            :  // private
+              _max_num_classes(std::move(that._max_num_classes)),
+              _min_target_node(std::move(that._min_target_node)),
+              // protected
+              _felsch_graph(std::move(that._felsch_graph)),
+              _mtx(),
+              _pending(std::move(that._pending)),
+              _sims1(that._sims1) {}
+
+        // Intentionally don't copy the mutex, it doesn't compile, wouldn't make
+        // sense if the mutex was used here.
+
+        IteratorBase& operator=(IteratorBase const& that) {
+          // private
+          _max_num_classes = that._max_num_classes;
+          _min_target_node = that._min_target_node;
+          // protected
+          _felsch_graph = that._felsch_graph;
+          // keep our own _mtx
+          _pending = that._pending;
+          _sims1   = that._sims1;
+
+          return *this;
+        }
+
+        // Intentionally don't copy the mutex, it doesn't compile, wouldn't make
+        // sense if the mutex was used here.
+
+        IteratorBase& operator=(IteratorBase&& that) {
+          // private
+          _max_num_classes = std::move(that._max_num_classes);
+          _min_target_node = std::move(that._min_target_node);
+
+          // protected
+          _felsch_graph = std::move(that._felsch_graph);
+          _pending      = std::move(that._pending);
+          // keep our own _mtx
+          _sims1 = that._sims1;
+          return *this;
+        }
+
+        //! No doc
+        ~IteratorBase() = default;
+
+        //! No doc
+        [[nodiscard]] bool operator==(IteratorBase const& that) const noexcept {
+          return _felsch_graph == that._felsch_graph;
+        }
+
+        //! No doc
+        [[nodiscard]] bool operator!=(IteratorBase const& that) const noexcept {
+          return !(operator==(that));
+        }
+
+        //! No doc
+        [[nodiscard]] const_reference operator*() const noexcept {
+          return _felsch_graph;
+        }
+
+        //! No doc
+        [[nodiscard]] const_pointer operator->() const noexcept {
+          return &_felsch_graph;
+        }
+
+        //! No doc
+        void swap(IteratorBase& that) noexcept {
+          // private
+          std::swap(_max_num_classes, that._max_num_classes);
+          std::swap(_min_target_node, that._min_target_node);
+          // protected
+          std::swap(_felsch_graph, that._felsch_graph);
+          std::swap(_pending, that._pending);
+          std::swap(_sims1, that._sims1);
+        }
+
+        //! No doc
+        SimsStats& stats() noexcept {
+          return _sims1->stats();
+        }
+
+        size_type maximum_number_of_classes() const noexcept {
+          return _max_num_classes;
+        }
+      };  // class IteratorBase
+
+     public:
+      //! The return type of \ref cbegin and \ref cend.
+      //!
+      //! This is a forward iterator values of this type are expensive to copy
+      //! due to their internal state, and prefix increment should be
+      //! preferred to postfix.
+      class iterator : public Sims1or2::iterator_base {
+        using iterator_base = typename Sims1or2::iterator_base;
+
+        using iterator_base::init;
+        using iterator_base::install_descendents;
+        using iterator_base::try_define;
+        using iterator_base::try_pop;
+
+       public:
+        //! No doc
+        using const_pointer = typename iterator_base::const_pointer;
+        //! No doc
+        using const_reference = typename iterator_base::const_reference;
+
+        //! No doc
+        using size_type = typename std::vector<word_graph_type>::size_type;
+        //! No doc
+        using difference_type =
+            typename std::vector<word_graph_type>::difference_type;
+        //! No doc
+        using pointer = typename std::vector<word_graph_type>::pointer;
+        //! No doc
+        using reference = typename std::vector<word_graph_type>::reference;
+        //! No doc
+        using value_type = word_graph_type;
+        //! No doc
+        using iterator_category = std::forward_iterator_tag;
+
+        using sims_type = typename iterator_base::sims_type;
+
+        //! No doc
+        using iterator_base::iterator_base;
+
+       private:
+        // Only want Sims1 to be able to use this constructor.
+        // TODO to tpp
+        iterator(sims_type const* s, size_type n) : iterator_base(s, n) {
+          if (this->_felsch_graph.number_of_active_nodes() == 0) {
+            return;
+          }
+          init(n);
+          ++(*this);
+          // The increment above is required so that when dereferencing any
+          // instance of this type we obtain a valid word graph (o/w the value
+          // pointed to here is empty).
+        }
+
+        // So that we can use the constructor above.
+        friend iterator SimsBase<sims_type>::cbegin(SimsBase::size_type) const;
+        friend iterator SimsBase<sims_type>::cend(SimsBase::size_type) const;
+
+       public:
+        //! No doc
+        ~iterator() = default;
+
+        // prefix
+        //! No doc
+        // TODO to tpp
+        iterator const& operator++() {
+          PendingDef current;
+          while (try_pop(current)) {
+            if (try_define(current) && install_descendents(current)) {
+              return *this;
+            }
+          }
+          this->_felsch_graph.number_of_active_nodes(0);
+          // indicates that the iterator is done
+          this->_felsch_graph.induced_subgraph_no_checks(0, 0);
+          return *this;
+        }
+
+        // postfix
+        //! No doc
+        iterator operator++(int) {
+          iterator copy(*this);
+          ++(*this);
+          return copy;
+        }
+
+        using iterator_base::swap;
+      };  // class iterator
+
+     private:
+      class thread_runner;
+
+      // TODO private?
+      // Note that this class is private, and not really an iterator in the
+      // usual sense. It is designed solely to work with thread_runner.
+      class thread_iterator : public Sims1or2::iterator_base {
+        using iterator_base = typename Sims1or2::iterator_base;
+
+        friend class thread_runner;
+
+        using iterator_base::copy_felsch_graph;
+
+       public:
+        using sims_type = typename iterator_base::sims_type;
+
+        //! No doc
+        thread_iterator(sims_type const* s, size_type n)
+            : iterator_base(s, n) {}
+
+        // None of the constructors are noexcept because the corresponding
+        // constructors for std::vector aren't (until C++17).
+        //! No doc
+        thread_iterator() = delete;
+        //! No doc
+        thread_iterator(thread_iterator const&) = delete;
+        //! No doc
+        thread_iterator(thread_iterator&&) = delete;
+        //! No doc
+        thread_iterator& operator=(thread_iterator const&) = delete;
+        //! No doc
+        thread_iterator& operator=(thread_iterator&&) = delete;
+
+        //! No doc
+        ~thread_iterator() = default;
+
+        using iterator_base::stats;
+
+       public:
+        void push(PendingDef pd) {
+          this->_pending.push_back(std::move(pd));
+        }
+
+        void steal_from(thread_iterator& that) {
+          // WARNING <that> must be locked before calling this function
+          std::lock_guard<std::mutex> lock(this->_mtx);
+          LIBSEMIGROUPS_ASSERT(this->_pending.empty());
+          size_t const n = that._pending.size();
+          if (n == 1) {
+            return;
+          }
+          // Copy the FelschGraph from that into *this
+          copy_felsch_graph(that);
+
+          // Unzip that._pending into _pending and that._pending, this seems to
+          // give better performance in the search than splitting that._pending
+          // into [begin, begin + size / 2) and [begin + size / 2, end)
+          size_t i = 0;
+          for (; i < n - 2; i += 2) {
+            this->_pending.push_back(std::move(that._pending[i]));
+            that._pending[i / 2] = std::move(that._pending[i + 1]);
+          }
+          this->_pending.push_back(std::move(that._pending[i]));
+          if (i == n - 2) {
+            that._pending[i / 2] = std::move(that._pending[i + 1]);
+          }
+
+          that._pending.erase(that._pending.cbegin() + that._pending.size() / 2,
+                              that._pending.cend());
+        }
+
+        bool try_steal(thread_iterator& q) {
+          std::lock_guard<std::mutex> lock(this->_mtx);
+          if (this->_pending.empty()) {
+            return false;
+          }
+          // Copy the FelschGraph and half pending from *this into q
+          q.steal_from(
+              *this);  // Must call steal_from on q, so that q is locked
+          return true;
+        }
+      };  // thread_iterator
+
+      class thread_runner {
+       private:
+        using ThreadIt = typename Sims1or2::thread_iterator;
+
+        std::atomic_bool                       _done;
+        std::vector<std::unique_ptr<ThreadIt>> _theives;
+        std::vector<std::thread>               _threads;
+        std::mutex                             _mtx;
+        size_type                              _num_threads;
+        word_graph_type                        _result;
+        Sims1or2 const*                        _sims1;
+
+        void worker_thread(unsigned                                    my_index,
+                           std::function<bool(word_graph_type const&)> hook) {
+          PendingDef pd;
+          auto const restarts = _sims1->idle_thread_restarts();
+          for (size_t i = 0; i < restarts; ++i) {
+            while ((pop_from_local_queue(pd, my_index)
+                    || pop_from_other_thread_queue(pd, my_index))
+                   && !_done) {
+              if (_theives[my_index]->try_define(pd)
+                  && _theives[my_index]->install_descendents(pd)) {
+                if (hook(**_theives[my_index])) {
+                  // hook returns true to indicate that we should stop early
+                  std::lock_guard<std::mutex> lock(_mtx);
+                  if (!_done) {
+                    _done   = true;
+                    _result = **_theives[my_index];
+                  }
+                  return;
+                }
+              }
+            }
+            std::this_thread::yield();
+            // It's possible to reach here before all of the work is done,
+            // because by coincidence there's nothing in the local queue and
+            // nothing in any other queue either, this sometimes leads to
+            // threads shutting down earlier than desirable. On the other hand,
+            // maybe this is a desirable.
+          }
+        }
+
+        bool pop_from_local_queue(PendingDef& pd, unsigned my_index) {
+          return _theives[my_index]->try_pop(pd);
+        }
+
+        bool pop_from_other_thread_queue(PendingDef& pd, unsigned my_index) {
+          for (size_t i = 0; i < _theives.size() - 1; ++i) {
+            unsigned const index = (my_index + i + 1) % _theives.size();
+            // Could always do something different here, like find
+            // the largest queue and steal from that? I tried this and it didn't
+            // seem to be faster.
+            if (_theives[index]->try_steal(*_theives[my_index])) {
+              return pop_from_local_queue(pd, my_index);
+            }
+          }
+          return false;
+        }
+
+       public:
+        thread_runner(Sims1or2 const* s, size_type n, size_type num_threads)
+            : _done(false),
+              _theives(),
+              _threads(),
+              _mtx(),
+              _num_threads(num_threads),
+              _result(),
+              _sims1(s) {
+          for (size_t i = 0; i < _num_threads; ++i) {
+            _theives.push_back(std::make_unique<ThreadIt>(s, n));
+          }
+          _theives.front()->init(n);
+        }
+
+        ~thread_runner() = default;
+
+        word_graph_type const& word_graph() const {
+          return _result;
+        }
+
+        void run(std::function<bool(word_graph_type const&)> hook) {
+          try {
+            detail::JoinThreads joiner(_threads);
+            for (size_t i = 0; i < _num_threads; ++i) {
+              _threads.push_back(std::thread(
+                  &thread_runner::worker_thread, this, i, std::ref(hook)));
+            }
+          } catch (...) {
+            _done = true;
+            throw;
+          }
+        }
+      };  // class thread_runner
+
+      // TODO to tpp
+      void report_at_start(size_t num_classes) const {
+        std::string num_threads = "0";
+        if (number_of_threads() != 1) {
+          num_threads = fmt::format("{} / {}",
+                                    number_of_threads(),
+                                    std::thread::hardware_concurrency());
+        }
+        auto shortest_short
+            = presentation::shortest_rule_length(presentation());
+        auto longest_short = presentation::longest_rule_length(presentation());
+
+        std::string pairs;
+        if (!include().empty() && !exclude().empty()) {
+          pairs = fmt::format(", including {} + excluding {} pairs",
+                              include().size() / 2,
+                              exclude().size() / 2);
+        } else if (!include().empty()) {
+          pairs = fmt::format(", including {} pairs", include().size() / 2);
+        } else if (!exclude().empty()) {
+          pairs = fmt::format(", excluding {} pairs", exclude().size() / 2);
+        }
+
+        report_no_prefix("{:+<80}\n", "");
+        report_default("{}: STARTING with {} additional threads . . . \n",
+                       report_prefix(),
+                       num_threads);
+        report_no_prefix("{:+<80}\n", "");
+        report_default("{}: \u2264 {} classes{} for \u27E8A|R\u27E9 with:\n",
+                       report_prefix(),
+                       num_classes,
+                       pairs);
+        report_default("{}: |A| = {}, |R| = {}, "
+                       "|u| + |v| \u2208 [{}, {}], \u2211(|u| + |v|) = {}\n",
+                       report_prefix(),
+                       presentation().alphabet().size(),
+                       presentation().rules.size() / 2,
+                       shortest_short,
+                       longest_short,
+                       presentation::length(presentation()));
+
+        if (cbegin_long_rules() != presentation().rules.cend()) {
+          auto first = presentation().rules.cbegin(),
+               last  = cbegin_long_rules();
+
+          report_default("{}: {} \"short\" relations with: ",
+                         report_prefix(),
+                         std::distance(first, last) / 2);
+          report_no_prefix(
+              "|u| + |v| \u2208 [{}, {}] and \u2211(|u| + |v|) = {}\n",
+              presentation::shortest_rule_length(first, last),
+              presentation::longest_rule_length(first, last),
+              presentation::length(first, last));
+
+          first = cbegin_long_rules(), last = presentation().rules.cend();
+          report_default("{}: {} \"long\" relations with: ",
+                         report_prefix(),
+                         std::distance(first, last) / 2);
+          report_no_prefix(
+              "|u| + |v| \u2208 [{}, {}] and \u2211(|u| + |v|) = {}\n",
+              presentation::shortest_rule_length(first, last),
+              presentation::longest_rule_length(first, last),
+              presentation::length(first, last));
+        }
+        Reporter::reset_start_time();
       }
 
-      bool pop_from_local_queue(PendingDef& pd, unsigned my_index) {
-        return _theives[my_index]->try_pop(pd);
+      // TODO to tpp
+      void report_progress_from_thread() const {
+        using namespace detail;       // NOLINT(build/namespaces)
+        using namespace std::chrono;  // NOLINT(build/namespaces)
+
+        auto time_total_ns = delta(start_time());
+        auto time_diff     = delta(last_report());
+
+        // Stats
+        auto count_now         = stats().count_now.load();
+        auto count_diff        = count_now - stats().count_last;
+        auto total_pending_now = stats().total_pending_now.load();
+        auto total_pending_diff
+            = total_pending_now - stats().total_pending_last;
+
+        constexpr uint64_t billion = 1'000'000'000;
+        uint64_t congs_per_sec = (billion * count_now) / time_total_ns.count();
+        uint64_t nodes_per_sec
+            = (billion * total_pending_now) / time_total_ns.count();
+
+        nanoseconds time_per_cong_last_sec(0);
+        if (count_diff != 0) {
+          time_per_cong_last_sec = time_diff / count_diff;
+        }
+
+        nanoseconds time_per_node_last_sec(0);
+        if (total_pending_diff != 0) {
+          time_per_node_last_sec = time_diff / total_pending_diff;
+        }
+
+        nanoseconds time_per_cong(0);
+        if (count_now != 0) {
+          time_per_cong = time_total_ns / count_now;
+        }
+
+        nanoseconds time_per_node(0);
+        if (total_pending_now != 0) {
+          time_per_node = time_total_ns / total_pending_now;
+        }
+
+        // TODO fix the prefix
+        ReportCell<3> rc;
+        rc.min_width(0, 4).min_width(1, 7).min_width(2, 11);
+        rc("{}: total        {} (cong.)   | {} (nodes) \n",
+           report_prefix(),
+           group_digits(count_now),
+           group_digits(total_pending_now));
+
+        rc("{}: diff         {} (cong.)   | {} (nodes)\n",
+           report_prefix(),
+           signed_group_digits(count_diff),
+           signed_group_digits(total_pending_diff));
+
+        rc("{}: mean         {} (cong./s) | {} (node/s)\n",
+           report_prefix(),
+           group_digits(congs_per_sec),
+           group_digits(nodes_per_sec));
+
+        rc("{}: time last s. {} (/cong.)  | {} (/node)\n",
+           report_prefix(),
+           string_time(time_per_cong_last_sec),
+           string_time(time_per_node_last_sec));
+
+        rc("{}: mean time    {} (/cong.)  | {} (/node)\n",
+           report_prefix(),
+           string_time(time_per_cong),
+           string_time(time_per_node));
+
+        rc("{}: time         {} (total)   |\n",
+           report_prefix(),
+           string_time(time_total_ns));
+
+        reset_last_report();
+        stats().stats_check_point();
       }
 
-      bool pop_from_other_thread_queue(PendingDef& pd, unsigned my_index) {
-        for (size_t i = 0; i < _theives.size() - 1; ++i) {
-          unsigned const index = (my_index + i + 1) % _theives.size();
-          // Could always do something different here, like find
-          // the largest queue and steal from that? I tried this and it didn't
-          // seem to be faster.
-          if (_theives[index]->try_steal(*_theives[my_index])) {
-            return pop_from_local_queue(pd, my_index);
-          }
+      // TODO to tpp
+      void report_final() const {
+        report_progress_from_thread();
+        report_no_prefix("{:+<80}\n", "");
+        report_default("{}: FINISHED!\n", report_prefix());
+        report_no_prefix("{:+<80}\n", "");
+      }
+
+      // TODO to tpp
+     private:
+      void throw_if_not_ready(size_type n) const {
+        if (n == 0) {
+          LIBSEMIGROUPS_EXCEPTION("the argument (size_type) must be non-zero");
+        } else if (presentation().rules.empty()
+                   && presentation().alphabet().empty()) {
+          LIBSEMIGROUPS_EXCEPTION("the presentation() must be defined before "
+                                  "calling this function");
         }
-        return false;
       }
 
      public:
-      thread_runner(Sims1or2 const* s, size_type n, size_type num_threads)
-          : _done(false),
-            _theives(),
-            _threads(),
-            _mtx(),
-            _num_threads(num_threads),
-            _result(),
-            _sims1(s) {
-        for (size_t i = 0; i < _num_threads; ++i) {
-          _theives.push_back(std::make_unique<ThreadIt>(s, n));
-        }
-        _theives.front()->init(n);
+      // TODO to tpp
+      template <typename iterator>
+      [[nodiscard]] iterator cbegin(size_type n) const {
+        throw_if_not_ready(n);
+        return iterator(static_cast<Sims1or2 const*>(this), n);
       }
 
-      ~thread_runner() = default;
-
-      word_graph_type const& word_graph() const {
-        return _result;
+      // TODO to tpp
+      template <typename iterator>
+      [[nodiscard]] iterator cend(size_type n) const {
+        throw_if_not_ready(n);
+        return iterator(static_cast<Sims1or2 const*>(this), 0);
       }
 
-      void run(std::function<bool(word_graph_type const&)> hook) {
-        try {
-          detail::JoinThreads joiner(_threads);
-          for (size_t i = 0; i < _num_threads; ++i) {
-            _threads.push_back(std::thread(
-                &thread_runner::worker_thread, this, i, std::ref(hook)));
-          }
-        } catch (...) {
-          _done = true;
-          throw;
-        }
-      }
-    };  // class thread_runner
+     public:
+      // Apply the function pred to every one-sided congruence with at
+      // most n classes
+      void for_each(size_type                                   n,
+                    std::function<void(word_graph_type const&)> pred) const {
+        throw_if_not_ready(n);
 
-    // TODO to tpp
-    void report_at_start(size_t num_classes) const {
-      std::string num_threads = "0";
-      if (number_of_threads() != 1) {
-        num_threads = fmt::format("{} / {}",
-                                  number_of_threads(),
-                                  std::thread::hardware_concurrency());
-      }
-      auto shortest_short = presentation::shortest_rule_length(presentation());
-      auto longest_short  = presentation::longest_rule_length(presentation());
-
-      std::string pairs;
-      if (!include().empty() && !exclude().empty()) {
-        pairs = fmt::format(", including {} + excluding {} pairs",
-                            include().size() / 2,
-                            exclude().size() / 2);
-      } else if (!include().empty()) {
-        pairs = fmt::format(", including {} pairs", include().size() / 2);
-      } else if (!exclude().empty()) {
-        pairs = fmt::format(", excluding {} pairs", exclude().size() / 2);
-      }
-
-      report_no_prefix("{:+<80}\n", "");
-      report_default("{}: STARTING with {} additional threads . . . \n",
-                     report_prefix(),
-                     num_threads);
-      report_no_prefix("{:+<80}\n", "");
-      report_default("{}: \u2264 {} classes{} for \u27E8A|R\u27E9 with:\n",
-                     report_prefix(),
-                     num_classes,
-                     pairs);
-      report_default("{}: |A| = {}, |R| = {}, "
-                     "|u| + |v| \u2208 [{}, {}], \u2211(|u| + |v|) = {}\n",
-                     report_prefix(),
-                     presentation().alphabet().size(),
-                     presentation().rules.size() / 2,
-                     shortest_short,
-                     longest_short,
-                     presentation::length(presentation()));
-
-      if (cbegin_long_rules() != presentation().rules.cend()) {
-        auto first = presentation().rules.cbegin(), last = cbegin_long_rules();
-
-        report_default("{}: {} \"short\" relations with: ",
-                       report_prefix(),
-                       std::distance(first, last) / 2);
-        report_no_prefix(
-            "|u| + |v| \u2208 [{}, {}] and \u2211(|u| + |v|) = {}\n",
-            presentation::shortest_rule_length(first, last),
-            presentation::longest_rule_length(first, last),
-            presentation::length(first, last));
-
-        first = cbegin_long_rules(), last = presentation().rules.cend();
-        report_default("{}: {} \"long\" relations with: ",
-                       report_prefix(),
-                       std::distance(first, last) / 2);
-        report_no_prefix(
-            "|u| + |v| \u2208 [{}, {}] and \u2211(|u| + |v|) = {}\n",
-            presentation::shortest_rule_length(first, last),
-            presentation::longest_rule_length(first, last),
-            presentation::length(first, last));
-      }
-      Reporter::reset_start_time();
-    }
-
-    // TODO to tpp
-    void report_progress_from_thread() const {
-      using namespace detail;       // NOLINT(build/namespaces)
-      using namespace std::chrono;  // NOLINT(build/namespaces)
-
-      auto time_total_ns = delta(start_time());
-      auto time_diff     = delta(last_report());
-
-      // Stats
-      auto count_now          = stats().count_now.load();
-      auto count_diff         = count_now - stats().count_last;
-      auto total_pending_now  = stats().total_pending_now.load();
-      auto total_pending_diff = total_pending_now - stats().total_pending_last;
-
-      constexpr uint64_t billion = 1'000'000'000;
-      uint64_t congs_per_sec = (billion * count_now) / time_total_ns.count();
-      uint64_t nodes_per_sec
-          = (billion * total_pending_now) / time_total_ns.count();
-
-      nanoseconds time_per_cong_last_sec(0);
-      if (count_diff != 0) {
-        time_per_cong_last_sec = time_diff / count_diff;
-      }
-
-      nanoseconds time_per_node_last_sec(0);
-      if (total_pending_diff != 0) {
-        time_per_node_last_sec = time_diff / total_pending_diff;
-      }
-
-      nanoseconds time_per_cong(0);
-      if (count_now != 0) {
-        time_per_cong = time_total_ns / count_now;
-      }
-
-      nanoseconds time_per_node(0);
-      if (total_pending_now != 0) {
-        time_per_node = time_total_ns / total_pending_now;
-      }
-
-      // TODO fix the prefix
-      ReportCell<3> rc;
-      rc.min_width(0, 4).min_width(1, 7).min_width(2, 11);
-      rc("{}: total        {} (cong.)   | {} (nodes) \n",
-         report_prefix(),
-         group_digits(count_now),
-         group_digits(total_pending_now));
-
-      rc("{}: diff         {} (cong.)   | {} (nodes)\n",
-         report_prefix(),
-         signed_group_digits(count_diff),
-         signed_group_digits(total_pending_diff));
-
-      rc("{}: mean         {} (cong./s) | {} (node/s)\n",
-         report_prefix(),
-         group_digits(congs_per_sec),
-         group_digits(nodes_per_sec));
-
-      rc("{}: time last s. {} (/cong.)  | {} (/node)\n",
-         report_prefix(),
-         string_time(time_per_cong_last_sec),
-         string_time(time_per_node_last_sec));
-
-      rc("{}: mean time    {} (/cong.)  | {} (/node)\n",
-         report_prefix(),
-         string_time(time_per_cong),
-         string_time(time_per_node));
-
-      rc("{}: time         {} (total)   |\n",
-         report_prefix(),
-         string_time(time_total_ns));
-
-      reset_last_report();
-      stats().stats_check_point();
-    }
-
-    // TODO to tpp
-    void report_final() const {
-      report_progress_from_thread();
-      report_no_prefix("{:+<80}\n", "");
-      report_default("{}: FINISHED!\n", report_prefix());
-      report_no_prefix("{:+<80}\n", "");
-    }
-
-    // TODO to tpp
-   private:
-    void throw_if_not_ready(size_type n) const {
-      if (n == 0) {
-        LIBSEMIGROUPS_EXCEPTION("the argument (size_type) must be non-zero");
-      } else if (presentation().rules.empty()
-                 && presentation().alphabet().empty()) {
-        LIBSEMIGROUPS_EXCEPTION("the presentation() must be defined before "
-                                "calling this function");
-      }
-    }
-
-   public:
-    // TODO to tpp
-    template <typename iterator>
-    [[nodiscard]] iterator cbegin(size_type n) const {
-      throw_if_not_ready(n);
-      return iterator(static_cast<Sims1or2 const*>(this), n);
-    }
-
-    // TODO to tpp
-    template <typename iterator>
-    [[nodiscard]] iterator cend(size_type n) const {
-      throw_if_not_ready(n);
-      return iterator(static_cast<Sims1or2 const*>(this), 0);
-    }
-
-   public:
-    // Apply the function pred to every one-sided congruence with at
-    // most n classes
-    void for_each(size_type                                   n,
-                  std::function<void(word_graph_type const&)> pred) const {
-      throw_if_not_ready(n);
-
-      report_at_start(n);
-      if (number_of_threads() == 1) {
-        if (!reporting_enabled()) {
-          // Don't care about stats in this case
-          std::for_each(cbegin<iterator>(n), cend<iterator>(n), pred);
-        } else {
-          stats().stats_zero();
-          detail::Ticker t([this]() { report_progress_from_thread(); });
-          auto           it   = cbegin<iterator>(n);
-          auto const     last = cend<iterator>(n);
-          for (; it != last; ++it) {
-            pred(*it);
-          }
-          report_final();
-        }
-      } else {
-        thread_runner den(
-            static_cast<Sims1or2 const*>(this), n, number_of_threads());
-        auto pred_wrapper = [&pred](word_graph_type const& ad) {
-          pred(ad);
-          return false;
-        };
-        if (!reporting_enabled()) {
-          den.run(pred_wrapper);
-        } else {
-          stats().stats_zero();
-          detail::Ticker t([this]() { report_progress_from_thread(); });
-          den.run(pred_wrapper);
-          report_final();
-        }
-      }
-    }
-
-    word_graph_type
-    find_if(size_type                                   n,
-            std::function<bool(word_graph_type const&)> pred) const {
-      throw_if_not_ready(n);
-      report_at_start(n);
-      if (number_of_threads() == 1) {
-        if (!reporting_enabled()) {
-          return *std::find_if(cbegin<iterator>(n), cend<iterator>(n), pred);
-        } else {
-          stats().stats_zero();
-          detail::Ticker t([this]() { report_progress_from_thread(); });
-
-          auto       it   = cbegin<iterator>(n);
-          auto const last = cend<iterator>(n);
-
-          for (; it != last; ++it) {
-            if (pred(*it)) {
-              report_final();
-              return *it;
+        report_at_start(n);
+        if (number_of_threads() == 1) {
+          if (!reporting_enabled()) {
+            // Don't care about stats in this case
+            std::for_each(cbegin<iterator>(n), cend<iterator>(n), pred);
+          } else {
+            stats().stats_zero();
+            detail::Ticker t([this]() { report_progress_from_thread(); });
+            auto           it   = cbegin<iterator>(n);
+            auto const     last = cend<iterator>(n);
+            for (; it != last; ++it) {
+              pred(*it);
             }
+            report_final();
           }
-          report_final();
-          return *last;  // the empty digraph
-        }
-      } else {
-        thread_runner den(
-            static_cast<Sims1or2 const*>(this), n, number_of_threads());
-        if (!reporting_enabled()) {
-          den.run(pred);
-          return den.word_graph();
         } else {
-          stats().stats_zero();
-          detail::Ticker t([this]() { report_progress_from_thread(); });
-          den.run(pred);
-          report_final();
-          return den.word_graph();
+          thread_runner den(
+              static_cast<Sims1or2 const*>(this), n, number_of_threads());
+          auto pred_wrapper = [&pred](word_graph_type const& ad) {
+            pred(ad);
+            return false;
+          };
+          if (!reporting_enabled()) {
+            den.run(pred_wrapper);
+          } else {
+            stats().stats_zero();
+            detail::Ticker t([this]() { report_progress_from_thread(); });
+            den.run(pred_wrapper);
+            report_final();
+          }
         }
       }
-    }
 
-    // TODO to tpp
-    uint64_t number_of_congruences(size_type n) const {
-      if (number_of_threads() == 1) {
-        uint64_t result = 0;
-        for_each(n, [&result](word_graph_type const&) { ++result; });
-        return result;
-      } else {
-        std::atomic_uint64_t result(0);
-        for_each(n, [&result](word_graph_type const&) { ++result; });
-        return result;
+      word_graph_type
+      find_if(size_type                                   n,
+              std::function<bool(word_graph_type const&)> pred) const {
+        throw_if_not_ready(n);
+        report_at_start(n);
+        if (number_of_threads() == 1) {
+          if (!reporting_enabled()) {
+            return *std::find_if(cbegin<iterator>(n), cend<iterator>(n), pred);
+          } else {
+            stats().stats_zero();
+            detail::Ticker t([this]() { report_progress_from_thread(); });
+
+            auto       it   = cbegin<iterator>(n);
+            auto const last = cend<iterator>(n);
+
+            for (; it != last; ++it) {
+              if (pred(*it)) {
+                report_final();
+                return *it;
+              }
+            }
+            report_final();
+            return *last;  // the empty digraph
+          }
+        } else {
+          thread_runner den(
+              static_cast<Sims1or2 const*>(this), n, number_of_threads());
+          if (!reporting_enabled()) {
+            den.run(pred);
+            return den.word_graph();
+          } else {
+            stats().stats_zero();
+            detail::Ticker t([this]() { report_progress_from_thread(); });
+            den.run(pred);
+            report_final();
+            return den.word_graph();
+          }
+        }
       }
-    }
-  };
+
+      // TODO to tpp
+      uint64_t number_of_congruences(size_type n) const {
+        if (number_of_threads() == 1) {
+          uint64_t result = 0;
+          for_each(n, [&result](word_graph_type const&) { ++result; });
+          return result;
+        } else {
+          std::atomic_uint64_t result(0);
+          for_each(n, [&result](word_graph_type const&) { ++result; });
+          return result;
+        }
+      }
+    };
+  }  // namespace detail
 
   //! Defined in ``sims1.hpp``.
   //!
@@ -1478,7 +1486,9 @@ namespace libsemigroups {
   //! number of classes. An iterator returned by \ref cbegin points at an
   //! WordGraph instance containing the action of the semigroup or monoid
   //! on the classes of a congruence.
-  class Sims1 : public SimsBase<Sims1> {
+  class Sims1 : public detail::SimsBase<Sims1> {
+    using SimsBase = detail::SimsBase<Sims1>;
+
     friend SimsBase;
 
     using iterator_base = IteratorBase;
@@ -1822,9 +1832,8 @@ namespace libsemigroups {
 
     //! The current minimum number of nodes.
     //!
-    //! This function returns the current value for the
-    //! minimum number of nodes in the WordGraph that we
-    //! are seeking.
+    //! This function returns the current value for the minimum number of nodes
+    //! in the WordGraph that we are seeking.
     //!
     //! \param (None) this function has no parameters.
     //!
@@ -1838,8 +1847,8 @@ namespace libsemigroups {
 
     //! Set the maximum number of nodes.
     //!
-    //! This function sets the maximum number of nodes in
-    //! the WordGraph that we are seeking.
+    //! This function sets the maximum number of nodes in the WordGraph that we
+    //! are seeking.
     //!
     //! \param val the maximum number of nodes
     //!
@@ -1854,9 +1863,8 @@ namespace libsemigroups {
 
     //! The current maximum number of nodes.
     //!
-    //! This function returns the current value for the
-    //! maximum number of nodes in the WordGraph that we
-    //! are seeking.
+    //! This function returns the current value for the maximum number of nodes
+    //! in the WordGraph that we are seeking.
     //!
     //! \param (None) this function has no parameters.
     //!
@@ -1870,9 +1878,8 @@ namespace libsemigroups {
 
     //! Set the target size.
     //!
-    //! This function sets the target size, i.e. the
-    //! desired size of the transformation semigroup
-    //! corresponding to the WordGraph returned by the
+    //! This function sets the target size, i.e. the desired size of the
+    //! transformation semigroup corresponding to the WordGraph returned by the
     //! function \ref word_graph.
     //!
     //! \param val the target size.
@@ -1888,9 +1895,8 @@ namespace libsemigroups {
 
     //! The current target size.
     //!
-    //! This function returns the current value for the
-    //! target size, i.e. the desired size of the
-    //! transformation semigroup corresponding to the
+    //! This function returns the current value for the target size, i.e. the
+    //! desired size of the transformation semigroup corresponding to the
     //! WordGraph returned by the function \ref word_graph.
     //!
     //! \param (None) this function has no parameters.
@@ -1905,33 +1911,27 @@ namespace libsemigroups {
 
     //! Get the word_graph.
     //!
-    //! This function attempts to find a right congruence,
-    //! represented as an WordGraph, of the semigroup or
-    //! monoid defined by the presentation consisting of
-    //! its \ref presentation and \ref long_rules with the
+    //! This function attempts to find a right congruence, represented as an
+    //! WordGraph, of the semigroup or monoid defined by the presentation
+    //! consisting of its \ref presentation and \ref long_rules with the
     //! following properties:
-    //! * the transformation semigroup defined by the
-    //! WordGraph has size \ref target_size;
-    //! * the number of nodes in the WordGraph is at least
-    //! \ref min_nodes
+    //! * the transformation semigroup defined by the WordGraph has size \ref
+    //!   target_size;
+    //! * the number of nodes in the WordGraph is at least \ref min_nodes
     //!   and at most \ref max_nodes.
     //!
-    //! If no such WordGraph can be found, then an empty
-    //! WordGraph is returned (with `0` nodes and `0`
-    //! edges).
+    //! If no such WordGraph can be found, then an empty WordGraph is returned
+    //! (with `0` nodes and `0` edges).
     //!
-    //! \warning The return value of this function is
-    //! recomputed every time it is called.
+    //! \warning The return value of this function is recomputed every time it
+    //! is called.
     //!
-    //! \warning If the return value of \ref
-    //! number_of_threads is greater than \c 1, then the
-    //! value returned by this function is
-    //! non-deterministic, and may vary even for the same
-    //! parameters.
+    //! \warning If the return value of \ref number_of_threads is greater than
+    //! \c 1, then the value returned by this function is non-deterministic, and
+    //! may vary even for the same parameters.
     //!
-    //! \tparam T the type of the nodes in the returned
-    //! word graph. \param (None) this function has no
-    //! parameters.
+    //! \tparam T the type of the nodes in the returned word graph. \param
+    //! (None) this function has no parameters.
     //!
     //! \returns A value of type `WordGraph`.
     //!
