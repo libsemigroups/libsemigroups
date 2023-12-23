@@ -57,9 +57,7 @@ namespace libsemigroups {
     using size_type       = SimsBase::size_type;
     using word_graph_type = SimsBase::word_graph_type;
 
-    Sims2() {
-      init();
-    }
+    Sims2()                        = default;
     Sims2(Sims2 const& other)      = default;
     Sims2(Sims2&&)                 = default;
     Sims2& operator=(Sims2 const&) = default;
@@ -67,14 +65,12 @@ namespace libsemigroups {
     ~Sims2()                       = default;
 
     Sims2& init() {
-      report_prefix("Sims2");
       SimsSettings<Sims2>::init();
       return *this;
     }
 
     template <typename Word>
     explicit Sims2(Presentation<Word> p) : Sims2() {
-      report_prefix("Sims2");
       presentation(p);
     }
 

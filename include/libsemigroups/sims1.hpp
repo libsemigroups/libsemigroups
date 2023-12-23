@@ -546,8 +546,14 @@ namespace libsemigroups {
     SimsSettings& init_from(SimsSettings<OtherSubclass> const& that);
   };
 
+  class Sims1;
+  class Sims2;
+
   template <typename Sims1or2>
   class SimsBase : public SimsSettings<Sims1or2>, public Reporter {
+    static_assert(std::is_same_v<Sims1or2, Sims1>
+                  || std::is_same_v<Sims1or2, Sims2>);
+
    public:
     //! Type for the nodes in the associated WordGraph
     //! objects.
@@ -569,7 +575,9 @@ namespace libsemigroups {
 
     // using iterator = typename Sims1or2::iterator;
 
-    SimsBase()                           = default;
+    SimsBase() {
+      init();
+    }
     SimsBase(SimsBase const& other)      = default;
     SimsBase(SimsBase&&)                 = default;
     SimsBase& operator=(SimsBase const&) = default;
@@ -577,6 +585,11 @@ namespace libsemigroups {
     ~SimsBase()                          = default;
 
     Sims1or2& init() {
+      if constexpr (std::is_same_v<Sims1or2, Sims1>) {
+        report_prefix("Sims1");
+      } else {
+        report_prefix("Sims2");
+      }
       SimsSettings<Sims1or2>::init();
       return static_cast<Sims1or2&>(*this);
     }
@@ -588,6 +601,7 @@ namespace libsemigroups {
     using SimsSettings<Sims1or2>::exclude;
     using SimsSettings<Sims1or2>::cbegin_long_rules;
 
+   protected:
     struct PendingDef {
       PendingDef() = default;
 
@@ -783,7 +797,6 @@ namespace libsemigroups {
         return result;
       }
 
-     public:
       //! No doc
       IteratorBase(Sims1or2 const* s,
                    size_type       n)
@@ -807,6 +820,7 @@ namespace libsemigroups {
         _felsch_graph.add_nodes(n);
       }
 
+     public:
       // None of the constructors are noexcept because the corresponding
       // constructors for Presentation aren't currently
 
@@ -914,6 +928,7 @@ namespace libsemigroups {
       }
     };  // class IteratorBase
 
+   public:
     //! The return type of \ref cbegin and \ref cend.
     //!
     //! This is a forward iterator values of this type are expensive to copy
@@ -1002,6 +1017,7 @@ namespace libsemigroups {
       using iterator_base::swap;
     };  // class iterator
 
+   private:
     class thread_runner;
 
     // TODO private?
@@ -1281,32 +1297,36 @@ namespace libsemigroups {
       }
 
       // TODO fix the prefix
-      ReportCell<2> rc;
-      rc.min_width(0, 7).min_width(1, 11);
-      rc(group_digits,
-         "Sims1: total        {} (cong.)   | {} (nodes) \n",
-         count_now,
-         total_pending_now);
+      ReportCell<3> rc;
+      rc.min_width(0, 4).min_width(1, 7).min_width(2, 11);
+      rc("{}: total        {} (cong.)   | {} (nodes) \n",
+         report_prefix(),
+         group_digits(count_now),
+         group_digits(total_pending_now));
 
-      rc(signed_group_digits,
-         "Sims1: diff         {} (cong.)   | {} (nodes)\n",
-         count_diff,
-         total_pending_diff);
+      rc("{}: diff         {} (cong.)   | {} (nodes)\n",
+         report_prefix(),
+         signed_group_digits(count_diff),
+         signed_group_digits(total_pending_diff));
 
-      rc(group_digits,
-         "Sims1: mean         {} (cong./s) | {} (node/s)\n",
-         congs_per_sec,
-         nodes_per_sec);
+      rc("{}: mean         {} (cong./s) | {} (node/s)\n",
+         report_prefix(),
+         group_digits(congs_per_sec),
+         group_digits(nodes_per_sec));
 
-      rc("Sims1: time last s. {} (/cong.)  | {} (/node)\n",
+      rc("{}: time last s. {} (/cong.)  | {} (/node)\n",
+         report_prefix(),
          string_time(time_per_cong_last_sec),
          string_time(time_per_node_last_sec));
 
-      rc("Sims1: mean time    {} (/cong.)  | {} (/node)\n",
+      rc("{}: mean time    {} (/cong.)  | {} (/node)\n",
+         report_prefix(),
          string_time(time_per_cong),
          string_time(time_per_node));
 
-      rc("Sims1: time         {} (total)   |\n", string_time(time_total_ns));
+      rc("{}: time         {} (total)   |\n",
+         report_prefix(),
+         string_time(time_total_ns));
 
       reset_last_report();
       stats().stats_check_point();
@@ -1316,10 +1336,23 @@ namespace libsemigroups {
     void report_final() const {
       report_progress_from_thread();
       report_no_prefix("{:+<80}\n", "");
-      report_default("Sims1: FINISHED!\n");
+      report_default("{}: FINISHED!\n", report_prefix());
       report_no_prefix("{:+<80}\n", "");
     }
 
+    // TODO to tpp
+   private:
+    void throw_if_not_ready(size_type n) const {
+      if (n == 0) {
+        LIBSEMIGROUPS_EXCEPTION("the argument (size_type) must be non-zero");
+      } else if (presentation().rules.empty()
+                 && presentation().alphabet().empty()) {
+        LIBSEMIGROUPS_EXCEPTION("the presentation() must be defined before "
+                                "calling this function");
+      }
+    }
+
+   public:
     // TODO to tpp
     template <typename iterator>
     [[nodiscard]] iterator cbegin(size_type n) const {
@@ -1334,24 +1367,11 @@ namespace libsemigroups {
       return iterator(static_cast<Sims1or2 const*>(this), 0);
     }
 
-    // TODO to tpp
-    // TODO private
-    void throw_if_not_ready(size_type n) const {
-      if (n == 0) {
-        LIBSEMIGROUPS_EXCEPTION("the argument (size_type) must be non-zero");
-      } else if (presentation().rules.empty()
-                 && presentation().alphabet().empty()) {
-        LIBSEMIGROUPS_EXCEPTION("the presentation() must be defined before "
-                                "calling this function");
-      }
-    }
-
+   public:
     // Apply the function pred to every one-sided congruence with at
     // most n classes
     void for_each(size_type                                   n,
                   std::function<void(word_graph_type const&)> pred) const {
-      using thread_runner = typename Sims1or2::thread_runner;
-      using iterator      = typename Sims1or2::iterator;
       throw_if_not_ready(n);
 
       report_at_start(n);
@@ -1390,8 +1410,6 @@ namespace libsemigroups {
     word_graph_type
     find_if(size_type                                   n,
             std::function<bool(word_graph_type const&)> pred) const {
-      using thread_runner = typename Sims1or2::thread_runner;
-      using iterator      = typename Sims1or2::iterator;
       throw_if_not_ready(n);
       report_at_start(n);
       if (number_of_threads() == 1) {
@@ -1461,7 +1479,7 @@ namespace libsemigroups {
   //! WordGraph instance containing the action of the semigroup or monoid
   //! on the classes of a congruence.
   class Sims1 : public SimsBase<Sims1> {
-    friend SimsBase<Sims1>;
+    friend SimsBase;
 
     using iterator_base = IteratorBase;
 
@@ -1492,7 +1510,7 @@ namespace libsemigroups {
 
     // TODO(doc)
     Sims1& init() {
-      return SimsBase<Sims1>::init();
+      return SimsBase::init();
     }
 
     //! Construct from \ref congruence_kind.
@@ -1503,7 +1521,7 @@ namespace libsemigroups {
     //! congruence_kind::twosided
     //!
     //! \sa \ref cbegin and \ref cend.
-    explicit Sims1(congruence_kind ck) : SimsBase<Sims1>(), _kind() {
+    explicit Sims1(congruence_kind ck) : SimsBase(), _kind() {
       kind(ck);
     }
 
@@ -1531,7 +1549,7 @@ namespace libsemigroups {
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
     template <typename PresentationOfSomeKind>
     Sims1& presentation(PresentationOfSomeKind const& p) {
-      SimsBase<Sims1>::presentation(p);
+      SimsBase::presentation(p);
       if (_kind == congruence_kind::left) {
         presentation::reverse(_presentation);
       }
@@ -1542,9 +1560,9 @@ namespace libsemigroups {
     // include() which is const!
     template <typename Arg, typename... Args>
     Sims1& include(Arg arg, Args&&... args) {
-      SimsBase<Sims1>::include(arg, std::forward<Args>(args)...);
+      SimsBase::include(arg, std::forward<Args>(args)...);
       if (_kind == congruence_kind::left) {
-        SimsBase<Sims1>::reverse(_include);
+        SimsBase::reverse(_include);
       }
       return *this;
     }
@@ -1553,31 +1571,31 @@ namespace libsemigroups {
     // exclude() which is const!
     template <typename Arg, typename... Args>
     Sims1& exclude(Arg arg, Args&&... args) {
-      SimsBase<Sims1>::exclude(arg, std::forward<Args>(args)...);
+      SimsBase::exclude(arg, std::forward<Args>(args)...);
       if (_kind == congruence_kind::left) {
-        SimsBase<Sims1>::reverse(_exclude);
+        SimsBase::reverse(_exclude);
       }
       return *this;
     }
 
-    // This is required because "using SimsBase<Sims1>::include;" tries to
+    // This is required because "using SimsBase::include;" tries to
     // drag in all of the include mem fns from SimsBase, which clash with
     // the fns above.
     [[nodiscard]] std::vector<word_type> const& include() const noexcept {
-      return SimsBase<Sims1>::include();
+      return SimsBase::include();
     }
 
-    // This is required because "using SimsBase<Sims1>::exclude;" tries to
+    // This is required because "using SimsBase::exclude;" tries to
     // drag in all of the include mem fns from SimsBase, which clash with
     // the fns above.
     [[nodiscard]] std::vector<word_type> const& exclude() const noexcept {
-      return SimsBase<Sims1>::exclude();
+      return SimsBase::exclude();
     }
 #endif
 
-    using SimsBase<Sims1>::cbegin_long_rules;
-    using SimsBase<Sims1>::number_of_threads;
-    using SimsBase<Sims1>::presentation;
+    using SimsBase::cbegin_long_rules;
+    using SimsBase::number_of_threads;
+    using SimsBase::presentation;
 
     // TODO(doc)
     [[nodiscard]] congruence_kind kind() const noexcept {
