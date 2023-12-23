@@ -147,14 +147,8 @@ namespace libsemigroups {
     using SimsSettings::number_of_threads;
     using SimsSettings::presentation;
 
-    [[nodiscard]] iterator cbegin(size_type n) const {
-      return SimsBase::cbegin<iterator>(n);
-    }
-
-    [[nodiscard]] iterator cend(size_type n) const {
-      return SimsBase::cend<iterator>(n);
-    }
-
+    using SimsBase::cbegin;
+    using SimsBase::cend;
     using SimsBase::find_if;
     using SimsBase::for_each;
     using SimsBase::number_of_congruences;

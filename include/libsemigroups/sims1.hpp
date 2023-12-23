@@ -344,10 +344,10 @@ namespace libsemigroups {
     //!
     //! \returns A reference to \c this.
     //!
-    //! \throws LibsemigroupsException if `to_presentation<word_type>(p)`
-    //! throws \throws LibsemigroupsException if `p` is not valid \throws
-    //! LibsemigroupsException if the alphabet of `p` is non-empty and not
-    //! equal to that of \ref presentation or \ref extra.
+    //! \throws LibsemigroupsException if `to_presentation<word_type>(p)` throws
+    //! \throws LibsemigroupsException if `p` is not valid
+    //! \throws LibsemigroupsException if the alphabet of `p` is non-empty and
+    //! not equal to that of \ref presentation or \ref extra.
     Subclass& cbegin_long_rules(std::vector<word_type>::const_iterator p);
 
     // TODO(doc)
@@ -1348,14 +1348,12 @@ namespace libsemigroups {
 
      public:
       // TODO to tpp
-      template <typename iterator>
       [[nodiscard]] iterator cbegin(size_type n) const {
         throw_if_not_ready(n);
         return iterator(static_cast<Sims1or2 const*>(this), n);
       }
 
       // TODO to tpp
-      template <typename iterator>
       [[nodiscard]] iterator cend(size_type n) const {
         throw_if_not_ready(n);
         return iterator(static_cast<Sims1or2 const*>(this), 0);
@@ -1372,12 +1370,12 @@ namespace libsemigroups {
         if (number_of_threads() == 1) {
           if (!reporting_enabled()) {
             // Don't care about stats in this case
-            std::for_each(cbegin<iterator>(n), cend<iterator>(n), pred);
+            std::for_each(cbegin(n), cend(n), pred);
           } else {
             stats().stats_zero();
             detail::Ticker t([this]() { report_progress_from_thread(); });
-            auto           it   = cbegin<iterator>(n);
-            auto const     last = cend<iterator>(n);
+            auto           it   = cbegin(n);
+            auto const     last = cend(n);
             for (; it != last; ++it) {
               pred(*it);
             }
@@ -1408,13 +1406,13 @@ namespace libsemigroups {
         report_at_start(n);
         if (number_of_threads() == 1) {
           if (!reporting_enabled()) {
-            return *std::find_if(cbegin<iterator>(n), cend<iterator>(n), pred);
+            return *std::find_if(cbegin(n), cend(n), pred);
           } else {
             stats().stats_zero();
             detail::Ticker t([this]() { report_progress_from_thread(); });
 
-            auto       it   = cbegin<iterator>(n);
-            auto const last = cend<iterator>(n);
+            auto       it   = cbegin(n);
+            auto const last = cend(n);
 
             for (; it != last; ++it) {
               if (pred(*it)) {
@@ -1716,9 +1714,7 @@ namespace libsemigroups {
     //! \ref cend
     // TODO(Sims1) it'd be good to remove node 0 to avoid confusion. This
     // seems complicated however, and so isn't done at present.
-    [[nodiscard]] iterator cbegin(size_type n) const {
-      return SimsBase::cbegin<iterator>(n);
-    }
+    using SimsBase::cbegin;
 
     //! Returns a forward iterator pointing one beyond the last congruence.
     //!
@@ -1744,9 +1740,7 @@ namespace libsemigroups {
     //!
     //! \sa
     //! \ref cbegin
-    [[nodiscard]] iterator cend(size_type n) const {
-      return SimsBase::cend<iterator>(n);
-    }
+    using SimsBase::cend;
   };
 
   //! Defined in ``sims1.hpp``.
