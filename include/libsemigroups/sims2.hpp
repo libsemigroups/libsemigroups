@@ -131,12 +131,7 @@ namespace libsemigroups {
       using SimsBase::IteratorBase::stats;
     };  // class iterator_base
 
-    using thread_iterator = SimsBase::ThreadIterator<iterator_base>;
-    using thread_runner   = SimsBase::ThreadRunner<thread_iterator>;
-
    public:
-    using iterator = SimsBase::Iterator<iterator_base>;
-
     using SimsSettings::cbegin_long_rules;
     using SimsSettings::exclude;
     using SimsSettings::include;
