@@ -668,7 +668,7 @@ namespace libsemigroups {
 
         // We could use the copy constructor, but there's no point in copying
         // anything except the FelschGraph and so we only copy that.
-        void copy_felsch_graph(IteratorBase const& that) {
+        void partial_copy_for_steal_from(IteratorBase const& that) {
           _felsch_graph = that._felsch_graph;
         }
 
@@ -1017,7 +1017,7 @@ namespace libsemigroups {
 
         friend class thread_runner;
 
-        using iterator_base::copy_felsch_graph;
+        using iterator_base::partial_copy_for_steal_from;
 
        public:
         using sims_type = typename iterator_base::sims_type;
@@ -1058,7 +1058,7 @@ namespace libsemigroups {
             return;
           }
           // Copy the FelschGraph from that into *this
-          copy_felsch_graph(that);
+          partial_copy_for_steal_from(that);
 
           // Unzip that._pending into _pending and that._pending, this seems to
           // give better performance in the search than splitting that._pending

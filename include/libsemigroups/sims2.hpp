@@ -110,8 +110,7 @@ namespace libsemigroups {
 
       // We could use the copy constructor, but there's no point in copying
       // anything except the FelschGraph and so we only copy that.
-      // TODO rename
-      void copy_felsch_graph(iterator_base const& that);
+      void partial_copy_for_steal_from(iterator_base const& that);
 
       // Try to make the definition represented by PendingDef, returns false if
       // it wasn't possible, and true if it was.

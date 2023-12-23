@@ -91,9 +91,9 @@ namespace libsemigroups {
   // iterator_base nested class
   ///////////////////////////////////////////////////////////////////////////////
 
-  void
-  Sims2::iterator_base::copy_felsch_graph(Sims2::iterator_base const& that) {
-    SimsBase::IteratorBase::copy_felsch_graph(that);
+  void Sims2::iterator_base::partial_copy_for_steal_from(
+      Sims2::iterator_base const& that) {
+    SimsBase::IteratorBase::partial_copy_for_steal_from(that);
     *_2_sided_include = *that._2_sided_include;
     _2_sided_words    = that._2_sided_words;
   }
