@@ -45,7 +45,6 @@
 #include <iterator>    // for forward_iterator_tag
 #include <mutex>       // for mutex
 #include <string>      // for operator+, basic_string
-#include <thread>      // for thread, yield
 #include <utility>     // for move
 #include <vector>      // for vector
 
@@ -56,6 +55,8 @@
 #include "to-presentation.hpp"  // for to_presentation
 #include "types.hpp"            // for word_type, congruence_kind
 #include "word-graph.hpp"       // for WordGraph
+
+#include "detail/iterator.hpp"  // for detail/default_postfix_increment
 
 namespace libsemigroups {
 
@@ -135,7 +136,7 @@ namespace libsemigroups {
 
   //! No doc
   // This class allows us to use the same interface for settings for Sims1,
-  // RepOrc, and MinimalRepOrc without duplicating the code.
+  // Sims2, RepOrc, and MinimalRepOrc without duplicating the code.
   template <typename Subclass>
   class SimsSettings {
    protected:
@@ -503,16 +504,10 @@ namespace libsemigroups {
     //! \no_libsemigroups_except
     Subclass& long_rule_length(size_t val);
 
-    // TODO to tpp
-    Subclass& idle_thread_restarts(size_t val) {
-      if (val == 0) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "the argument (idle thread restarts) must be non-zero");
-      }
-      _idle_thread_restarts = val;
-      return static_cast<Subclass&>(*this);
-    }
+    // TODO doc
+    Subclass& idle_thread_restarts(size_t val);
 
+    // TODO doc
     [[nodiscard]] size_t idle_thread_restarts() const noexcept {
       return _idle_thread_restarts;
     }
@@ -533,6 +528,91 @@ namespace libsemigroups {
     template <typename OtherSubclass>
     SimsSettings& init_from(SimsSettings<OtherSubclass> const& that);
   };
+
+  ////////////////////////////////////////////////////////////////////////
+  // SimsSettings - impl of template mem fns
+  ////////////////////////////////////////////////////////////////////////
+
+  template <typename Subclass>
+  template <typename OtherSubclass>
+  SimsSettings<Subclass>&
+  SimsSettings<Subclass>::init(SimsSettings<OtherSubclass> const& that) {
+    // protected
+    _exclude      = that.exclude();
+    _include      = that.include();
+    _presentation = that.presentation();
+
+    // private
+    _idle_thread_restarts = that.idle_thread_restarts();
+    _longs_begin          = _presentation.rules.cbegin()
+                   + std::distance(that.presentation().rules.cbegin(),
+                                   that.cbegin_long_rules());
+    _num_threads = that.number_of_threads();
+    _stats       = that.stats();
+    return *this;
+  }
+
+  template <typename Subclass>
+  template <typename PresentationOfSomeKind>
+  Subclass&
+  SimsSettings<Subclass>::presentation(PresentationOfSomeKind const& p) {
+    static_assert(
+        std::is_base_of<PresentationBase, PresentationOfSomeKind>::value,
+        "the template parameter PresentationOfSomeKind must be derived from "
+        "PresentationBase");
+    if (p.alphabet().empty()) {
+      LIBSEMIGROUPS_EXCEPTION(
+          "the argument (a presentation) must not have 0 generators");
+    }
+    // This normalises the rules in the case they are of the right type but
+    // not normalised
+    auto p_copy = to_presentation<word_type>(p);
+    p_copy.validate();
+    try {
+      presentation::validate_rules(
+          p_copy, include().cbegin(), include().cend());
+      presentation::validate_rules(
+          p_copy, exclude().cbegin(), exclude().cend());
+    } catch (LibsemigroupsException const& e) {
+      LIBSEMIGROUPS_EXCEPTION(
+          "the argument (a presentation) is not compatible with include() and "
+          "exclude(), the following exception was thrown:\n{}",
+          e.what());
+    }
+    _presentation = std::move(p_copy);
+    _longs_begin  = _presentation.rules.cend();
+    return static_cast<Subclass&>(*this);
+  }
+
+  template <typename Subclass>
+  template <typename Iterator>
+  Subclass& SimsSettings<Subclass>::include(Iterator first, Iterator last) {
+    if (std::distance(first, last) % 2 != 0) {
+      LIBSEMIGROUPS_EXCEPTION("expected the distance between the 1st and 2nd "
+                              "arguments (iterators) to be even, found {}",
+                              std::distance(first, last));
+    }
+    for (auto it = first; it != last; ++it) {
+      presentation().validate_word(it->cbegin(), it->cend());
+    }
+    _include.assign(first, last);
+    return static_cast<Subclass&>(*this);
+  }
+
+  template <typename Subclass>
+  template <typename Iterator>
+  Subclass& SimsSettings<Subclass>::exclude(Iterator first, Iterator last) {
+    if (std::distance(first, last) % 2 != 0) {
+      LIBSEMIGROUPS_EXCEPTION("expected the distance between the 1st and 2nd "
+                              "arguments (iterators) to be even, found {}",
+                              std::distance(first, last));
+    }
+    for (auto it = first; it != last; ++it) {
+      presentation().validate_word(it->cbegin(), it->cend());
+    }
+    _exclude.assign(first, last);
+    return static_cast<Subclass&>(*this);
+  }
 
   class Sims1;
   class Sims2;
@@ -709,9 +789,7 @@ namespace libsemigroups {
         // postfix
         //! No doc
         iterator operator++(int) {
-          iterator copy(*this);
-          ++(*this);
-          return copy;
+          return detail::default_postfix_increment(*this);
         }
 
         using iterator_base::swap;
@@ -786,21 +864,24 @@ namespace libsemigroups {
   //! WordGraph instance containing the action of the semigroup or monoid
   //! on the classes of a congruence.
   class Sims1 : public detail::SimsBase<Sims1> {
-    using SimsBase = detail::SimsBase<Sims1>;
+    // Aliases
+    using SimsBase      = detail::SimsBase<Sims1>;
+    using iterator_base = IteratorBase;
 
+    // Friends
     // so that SimsBase can access iterator_base, PendingDef, etc
     friend SimsBase;
     // so that Sims2 can access PendingDef
     friend Sims2;
 
-    using iterator_base = IteratorBase;
-
+    // Forward decl
     struct PendingDef;
 
    public:
     //! Type for the nodes in the associated WordGraph
     //! objects.
-    using node_type  = uint32_t;
+    using node_type = uint32_t;
+    // TODO(doc)
     using label_type = typename WordGraph<node_type>::label_type;
 
     //! Type for letters in the underlying presentation.
@@ -1433,7 +1514,5 @@ namespace libsemigroups {
   };
 
 }  // namespace libsemigroups
-
-#include "sims.tpp"
 
 #endif  // LIBSEMIGROUPS_SIMS_HPP_

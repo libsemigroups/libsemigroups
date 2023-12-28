@@ -79,6 +79,118 @@ namespace libsemigroups {
   }
 
   ////////////////////////////////////////////////////////////////////////
+  // SimsSettings
+  ////////////////////////////////////////////////////////////////////////
+
+  template <typename Subclass>
+  SimsSettings<Subclass>::SimsSettings()
+      :  // protected
+        _exclude(),
+        _include(),
+        _presentation(),
+        // private
+        _idle_thread_restarts(64),
+        _longs_begin(),
+        _num_threads(1),
+        _stats() {
+    _longs_begin = _presentation.rules.cend();
+  }
+
+  template <typename Subclass>
+  Subclass& SimsSettings<Subclass>::init() {
+    _exclude.clear();
+    _include.clear();
+    _presentation.init();
+    _idle_thread_restarts = 64;
+    _longs_begin          = _presentation.rules.cend();
+    _num_threads          = 1;
+    return static_cast<Subclass&>(*this);
+  }
+
+  template <typename Subclass>
+  Subclass& SimsSettings<Subclass>::cbegin_long_rules(
+      std::vector<word_type>::const_iterator it) {
+    auto const& rules = presentation().rules;
+    if (!(rules.cbegin() <= it && it <= rules.cend())) {
+      LIBSEMIGROUPS_EXCEPTION(
+          "expected an iterator pointing into presentation().rules()");
+    } else if (std::distance(it, rules.cend()) % 2 != 0) {
+      LIBSEMIGROUPS_EXCEPTION(
+          "expected an iterator pointing at the left hand side of a rule "
+          "(an even distance from the end of the rules), found distance {}",
+          std::distance(it, rules.cend()));
+    }
+    _longs_begin = it;
+    return static_cast<Subclass&>(*this);
+  }
+
+  template <typename Subclass>
+  Subclass& SimsSettings<Subclass>::cbegin_long_rules(size_t pos) {
+    return cbegin_long_rules(presentation().rules.cbegin() + pos);
+  }
+
+  template <typename Subclass>
+  Subclass& SimsSettings<Subclass>::number_of_threads(size_t val) {
+    if (val == 0) {
+      LIBSEMIGROUPS_EXCEPTION(
+          "the argument (number of threads) must be non-zero");
+    }
+    _num_threads = val;
+    return static_cast<Subclass&>(*this);
+  }
+
+  template <typename Subclass>
+  Subclass& SimsSettings<Subclass>::long_rule_length(size_t val) {
+    presentation::sort_rules(_presentation);
+    auto& rules = _presentation.rules;
+    auto  it    = rules.cbegin();
+
+    for (; it < rules.cend(); it += 2) {
+      if (it->size() + (it + 1)->size() >= val) {
+        break;
+      }
+    }
+
+    _longs_begin = it;
+    return static_cast<Subclass&>(*this);
+  }
+
+  template <typename Subclass>
+  Subclass& SimsSettings<Subclass>::idle_thread_restarts(size_t val) {
+    if (val == 0) {
+      LIBSEMIGROUPS_EXCEPTION(
+          "the argument (idle thread restarts) must be non-zero");
+    }
+    _idle_thread_restarts = val;
+    return static_cast<Subclass&>(*this);
+  }
+
+  template <typename Subclass>
+  Subclass& SimsSettings<Subclass>::include(word_type const& lhs,
+                                            word_type const& rhs) {
+    presentation().validate_word(lhs.cbegin(), lhs.cend());
+    presentation().validate_word(rhs.cbegin(), rhs.cend());
+    _include.push_back(lhs);
+    _include.push_back(rhs);
+    return static_cast<Subclass&>(*this);
+  }
+
+  template <typename Subclass>
+  Subclass& SimsSettings<Subclass>::exclude(word_type const& lhs,
+                                            word_type const& rhs) {
+    presentation().validate_word(lhs.cbegin(), lhs.cend());
+    presentation().validate_word(rhs.cbegin(), rhs.cend());
+    _exclude.push_back(lhs);
+    _exclude.push_back(rhs);
+    return static_cast<Subclass&>(*this);
+  }
+
+  template class SimsSettings<Sims1>;
+  template class SimsSettings<Sims2>;
+  template class SimsSettings<RepOrc>;
+  template class SimsSettings<MinimalRepOrc>;
+
+  ////////////////////////////////////////////////////////////////////////
   // Sims1and2::PendingDef
   ////////////////////////////////////////////////////////////////////////
 
