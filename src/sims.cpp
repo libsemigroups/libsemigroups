@@ -166,22 +166,14 @@ namespace libsemigroups {
   }
 
   template <typename Subclass>
-  Subclass& SimsSettings<Subclass>::include(word_type const& lhs,
-                                            word_type const& rhs) {
+  Subclass& SimsSettings<Subclass>::include_exclude(
+      word_type const&        lhs,
+      word_type const&        rhs,
+      std::vector<word_type>& include_or_exclude) {
     presentation().validate_word(lhs.cbegin(), lhs.cend());
     presentation().validate_word(rhs.cbegin(), rhs.cend());
-    _include.push_back(lhs);
-    _include.push_back(rhs);
-    return static_cast<Subclass&>(*this);
-  }
-
-  template <typename Subclass>
-  Subclass& SimsSettings<Subclass>::exclude(word_type const& lhs,
-                                            word_type const& rhs) {
-    presentation().validate_word(lhs.cbegin(), lhs.cend());
-    presentation().validate_word(rhs.cbegin(), rhs.cend());
-    _exclude.push_back(lhs);
-    _exclude.push_back(rhs);
+    include_or_exclude.push_back(lhs);
+    include_or_exclude.push_back(rhs);
     return static_cast<Subclass&>(*this);
   }
 

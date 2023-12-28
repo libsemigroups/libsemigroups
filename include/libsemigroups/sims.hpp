@@ -417,11 +417,15 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if `p` is not valid \throws
     //! LibsemigroupsException if the alphabet of `p` is non-empty and not
     //! equal to that of \ref presentation or \ref long_rules.
-    template <typename iterator>
-    Subclass& include(iterator first, iterator last);
+    template <typename Iterator>
+    Subclass& include(Iterator first, Iterator last) {
+      return include_exclude(first, last, _include);
+    }
 
     // TODO(doc)
-    Subclass& include(word_type const& lhs, word_type const& rhs);
+    Subclass& include(word_type const& lhs, word_type const& rhs) {
+      return include_exclude(lhs, rhs, _include);
+    }
 
     // TODO(doc)
     template <typename Container>
@@ -437,8 +441,10 @@ namespace libsemigroups {
     }
 
     // TODO(doc)
-    template <typename iterator>
-    Subclass& exclude(iterator first, iterator last);
+    template <typename Iterator>
+    Subclass& exclude(Iterator first, Iterator last) {
+      return include_exclude(first, last, _exclude);
+    }
 
     // TODO(doc)
     template <typename Container>
@@ -448,7 +454,9 @@ namespace libsemigroups {
     }
 
     // TODO(doc)
-    Subclass& exclude(word_type const& lhs, word_type const& rhs);
+    Subclass& exclude(word_type const& lhs, word_type const& rhs) {
+      return include_exclude(lhs, rhs, _exclude);
+    }
 
     // TODO(doc)
     [[nodiscard]] std::vector<word_type> const& exclude() const noexcept {
@@ -527,6 +535,15 @@ namespace libsemigroups {
    private:
     template <typename OtherSubclass>
     SimsSettings& init_from(SimsSettings<OtherSubclass> const& that);
+
+    template <typename Iterator>
+    Subclass& include_exclude(Iterator                first,
+                              Iterator                last,
+                              std::vector<word_type>& include_or_exclude);
+
+    Subclass& include_exclude(word_type const&        lhs,
+                              word_type const&        rhs,
+                              std::vector<word_type>& include_or_exclude);
   };
 
   ////////////////////////////////////////////////////////////////////////
@@ -586,7 +603,10 @@ namespace libsemigroups {
 
   template <typename Subclass>
   template <typename Iterator>
-  Subclass& SimsSettings<Subclass>::include(Iterator first, Iterator last) {
+  Subclass& SimsSettings<Subclass>::include_exclude(
+      Iterator                first,
+      Iterator                last,
+      std::vector<word_type>& include_or_exclude) {
     if (std::distance(first, last) % 2 != 0) {
       LIBSEMIGROUPS_EXCEPTION("expected the distance between the 1st and 2nd "
                               "arguments (iterators) to be even, found {}",
@@ -595,25 +615,13 @@ namespace libsemigroups {
     for (auto it = first; it != last; ++it) {
       presentation().validate_word(it->cbegin(), it->cend());
     }
-    _include.assign(first, last);
+    include_or_exclude.assign(first, last);
     return static_cast<Subclass&>(*this);
   }
 
-  template <typename Subclass>
-  template <typename Iterator>
-  Subclass& SimsSettings<Subclass>::exclude(Iterator first, Iterator last) {
-    if (std::distance(first, last) % 2 != 0) {
-      LIBSEMIGROUPS_EXCEPTION("expected the distance between the 1st and 2nd "
-                              "arguments (iterators) to be even, found {}",
-                              std::distance(first, last));
-    }
-    for (auto it = first; it != last; ++it) {
-      presentation().validate_word(it->cbegin(), it->cend());
-    }
-    _exclude.assign(first, last);
-    return static_cast<Subclass&>(*this);
-  }
-
+  ////////////////////////////////////////////////////////////////////////
+  // Sims1 - Sims2 - forward decl
+  ////////////////////////////////////////////////////////////////////////
   class Sims1;
   class Sims2;
 
