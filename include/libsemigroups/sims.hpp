@@ -35,8 +35,8 @@
 //    hold the words rather than the heap), but this didn't seem to give any
 //    performance improvement, and so I backed out the changes.
 
-#ifndef LIBSEMIGROUPS_SIMS1_HPP_
-#define LIBSEMIGROUPS_SIMS1_HPP_
+#ifndef LIBSEMIGROUPS_SIMS_HPP_
+#define LIBSEMIGROUPS_SIMS_HPP_
 
 #include <algorithm>   // for max
 #include <chrono>      // for high_resolution_clock
@@ -66,7 +66,7 @@
 
 namespace libsemigroups {
 
-  //! Defined in ``sims1.hpp``.
+  //! Defined in ``sims.hpp``.
   //!
   //! On this page we describe the `SimsStats` class. The purpose of this
   //! class is to collect some statistics related to `Sims1` class template.
@@ -1433,7 +1433,7 @@ namespace libsemigroups {
     };
   }  // namespace detail
 
-  //! Defined in ``sims1.hpp``.
+  //! Defined in ``sims.hpp``.
   //!
   //! On this page we describe the functionality relating to the small index
   //! congruence algorithm. The algorithm implemented by this class template
@@ -1826,7 +1826,7 @@ namespace libsemigroups {
     using SimsBase::number_of_congruences;
   };
 
-  //! Defined in ``sims1.hpp``.
+  //! Defined in ``sims.hpp``.
   //!
   //! This class is a helper for `Sims1` calling the `word_graph` member
   //! function attempts to find a right congruence, represented as an
@@ -2007,7 +2007,7 @@ namespace libsemigroups {
     using SimsSettings<RepOrc>::cbegin_long_rules;
   };
 
-  //! Defined in ``sims1.hpp``.
+  //! Defined in ``sims.hpp``.
   //!
   //! This class is a helper for `Sims1`, calling the `word_graph` member
   //! function attempts to find a right congruence, represented as an
@@ -2107,6 +2107,6 @@ namespace libsemigroups {
 
 }  // namespace libsemigroups
 
-#include "sims1.tpp"
+#include "sims.tpp"
 
-#endif  // LIBSEMIGROUPS_SIMS1_HPP_
+#endif  // LIBSEMIGROUPS_SIMS_HPP_

@@ -28,7 +28,7 @@
 #define STR(X) STR2(X)
 
 #define LIBSEMIGROUPS_TEST_CASE(classname, nr, msg, tags)             \
-  TEST_CASE(classname " " nr ": " msg,                                \
+  TEST_CASE(classname ": " msg,                                       \
             "[" classname " " nr "][" classname "][" nr "][" __FILE__ \
             "][" STR(__LINE__) "]" tags)
 

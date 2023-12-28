@@ -19,24 +19,22 @@
 // This file contains a declaration of a class for performing the "low-index
 // congruence" algorithm for semigroups and monoid.
 
-#include "libsemigroups/sims1.hpp"
+#include "libsemigroups/sims.hpp"
 
 #include <algorithm>   // for max, find_if, fill
 #include <chrono>      // for duration, durat...
 #include <functional>  // for ref
 #include <memory>      // for unique_ptr, mak...
-#include <string>      // for string
 #include <string>      // for operator+, basi...
 #include <thread>      // for thread, yield
 #include <utility>     // for swap
 
-#include "libsemigroups/constants.hpp"     // for operator!=, ope...
-#include "libsemigroups/debug.hpp"         // for LIBSEMIGROUPS_A...
-#include "libsemigroups/exception.hpp"     // for LIBSEMIGROUPS_E...
-#include "libsemigroups/felsch-graph.hpp"  // for FelschGraph
-#include "libsemigroups/froidure-pin.hpp"  // for FroidurePin
-#include "libsemigroups/presentation.hpp"  // for Presentation
-#include "libsemigroups/sims1.hpp"
+#include "libsemigroups/constants.hpp"        // for operator!=, ope...
+#include "libsemigroups/debug.hpp"            // for LIBSEMIGROUPS_A...
+#include "libsemigroups/exception.hpp"        // for LIBSEMIGROUPS_E...
+#include "libsemigroups/felsch-graph.hpp"     // for FelschGraph
+#include "libsemigroups/froidure-pin.hpp"     // for FroidurePin
+#include "libsemigroups/presentation.hpp"     // for Presentation
 #include "libsemigroups/to-froidure-pin.hpp"  // for to_froidure_pin
 #include "libsemigroups/transf.hpp"           // for Transf, validate
 #include "libsemigroups/types.hpp"            // for congruence_kind

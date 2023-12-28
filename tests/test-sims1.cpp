@@ -16,22 +16,19 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include <cstddef>        // for size_t
-#include <iostream>       // for cout
-#include <stdexcept>      // for number_of_congruencestime_error
-#include <unordered_set>  // for unordered_set
-#include <vector>         // for vector
+#include <cstddef>   // for size_t
+#include <iostream>  // for cout
+#include <vector>    // for vector
 
 #include "catch.hpp"      // for REQUIRE, REQUIRE_THROWS_AS, REQUI...
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
 #include "libsemigroups/bipart.hpp"           // for Bipartition
-#include "libsemigroups/config.hpp"           // for LIBSEMIGROUPS_ENABLE_STATS
 #include "libsemigroups/fpsemi-examples.hpp"  // for brauer_monoid etc
 #include "libsemigroups/froidure-pin.hpp"     // for FroidurePin
 #include "libsemigroups/gabow.hpp"            // for Gabow
 #include "libsemigroups/knuth-bendix.hpp"     // for redundant_rule
-#include "libsemigroups/sims1.hpp"            // for Sims1
+#include "libsemigroups/sims.hpp"             // for Sims1
 #include "libsemigroups/to-froidure-pin.hpp"  // for make
 #include "libsemigroups/to-presentation.hpp"  // for make
 #include "libsemigroups/transf.hpp"           // for Transf
@@ -207,7 +204,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("Sims1",
                           "002",
-                          "ToddCoxeter failing example",
+                          "ToddCoxeter failing example (word_type)",
                           "[quick][low-index]") {
     auto                    rg = ReportGuard(false);
     Presentation<word_type> p;
@@ -230,7 +227,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("Sims1",
                           "003",
-                          "ToddCoxeter failing example",
+                          "ToddCoxeter failing example (std::string)",
                           "[quick][low-index]") {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
@@ -615,7 +612,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("Sims1",
                           "020",
-                          "fp example 2",
+                          "fp example 2 (check_include)",
                           "[quick][low-index]") {
     auto                    rg = ReportGuard(false);
     Presentation<word_type> p;
@@ -894,10 +891,11 @@ namespace libsemigroups {
             == 280'455);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("Sims1",
-                          "027",
-                          "from https://mathoverflow.net/questions/423541/",
-                          "[quick][sims1]") {
+  LIBSEMIGROUPS_TEST_CASE(
+      "Sims1",
+      "027",
+      "from https://mathoverflow.net/questions/423541/ (semigroup)",
+      "[quick][sims1]") {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.contains_empty_word(false);
@@ -911,10 +909,11 @@ namespace libsemigroups {
     REQUIRE(C.number_of_congruences(10) == 3);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("Sims1",
-                          "028",
-                          "from https://mathoverflow.net/questions/423541/",
-                          "[quick][sims1]") {
+  LIBSEMIGROUPS_TEST_CASE(
+      "Sims1",
+      "028",
+      "from https://mathoverflow.net/questions/423541/ (monoid)",
+      "[quick][sims1]") {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.contains_empty_word(true);
@@ -1400,8 +1399,7 @@ namespace libsemigroups {
     REQUIRE(d.number_of_nodes() == 0);
   }
 
-  // unbuffer -p ./test_sims1 "[042]" | ag -v FroidurePin
-  LIBSEMIGROUPS_TEST_CASE("Sims1",
+  LIBSEMIGROUPS_TEST_CASE("MinimalRepOrc",
                           "042",
                           "rectangular_band(m, n) - m = 1 .. 5, n = 1 .. 5",
                           "[fail][sims1]") {
@@ -2137,7 +2135,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("Sims1",
                           "069",
-                          "fp example 1",
+                          "fp example 1 (settings)",
                           "[quick][low-index]") {
     auto rg = ReportGuard(false);
 

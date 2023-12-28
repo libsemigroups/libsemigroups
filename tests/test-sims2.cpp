@@ -21,7 +21,7 @@
 
 #include "libsemigroups/fpsemi-examples.hpp"
 #include "libsemigroups/presentation.hpp"
-#include "libsemigroups/sims2.hpp"
+#include "libsemigroups/sims.hpp"
 
 namespace libsemigroups {
   using word_graph_type = typename Sims2::word_graph_type;
@@ -30,7 +30,7 @@ namespace libsemigroups {
   using namespace literals;
 
   LIBSEMIGROUPS_TEST_CASE("Sims2",
-                          "000",
+                          "092",
                           "temperley_lieb_monoid(4) from presentation",
                           "[quick][sims2][low-index]") {
     auto  rg = ReportGuard(false);
@@ -46,7 +46,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Sims2",
-                          "092",
+                          "093",
                           "2-sided full transformation monoid 2",
                           "[quick][sims2]") {
     Presentation<word_type> p;
@@ -70,7 +70,7 @@ namespace libsemigroups {
 
   // Takes approx. 13.5s in debug mode.
   LIBSEMIGROUPS_TEST_CASE("Sims2",
-                          "093",
+                          "094",
                           "2-sided T_4",
                           "[standard][sims2][no-valgrind][no-coverage]") {
     Sims2 s(fpsemigroup::full_transformation_monoid(4));
@@ -78,7 +78,7 @@ namespace libsemigroups {
     REQUIRE(s.number_of_congruences(256) == 11);  // Verified with GAP
   }
 
-  LIBSEMIGROUPS_TEST_CASE("Sims2", "094", "2-sided example", "[quick][sims1]") {
+  LIBSEMIGROUPS_TEST_CASE("Sims2", "095", "2-sided example", "[quick][sims1]") {
     Presentation<word_type> p;
     p.contains_empty_word(true);
     p.alphabet(01_w);
@@ -100,7 +100,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Sims2",
-                          "095",
+                          "096",
                           "2-sided full transf. monoid 3",
                           "[quick][sims2]") {
     Presentation<std::string> p;
@@ -178,7 +178,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Sims2",
-                          "096",
+                          "097",
                           "2-sided 2-generated free monoid",
                           "[extreme][sims2]") {
     Presentation<std::string> p;
@@ -201,7 +201,7 @@ namespace libsemigroups {
     REQUIRE(s.number_of_congruences(13) == 1'387'117);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("Sims2", "101", "todo", "[extreme][sims2]") {
+  LIBSEMIGROUPS_TEST_CASE("Sims2", "098", "todo", "[extreme][sims2]") {
     auto p = symmetric_inverse_monoid(5, fpsemigroup::author::Gay);
     presentation::remove_duplicate_rules(p);
     presentation::sort_each_rule(p);
@@ -212,7 +212,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Sims2",
-                          "097",
+                          "099",
                           "2-sided congruence-free monoid n=3",
                           "[quick][sims2]") {
     // Presentation taken from
@@ -244,7 +244,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Sims2",
-                          "098",
+                          "100",
                           "2-sided congruence-free monoid n=8",
                           "[quick][sims2]") {
     // Presentation taken from
@@ -281,7 +281,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Sims2",
-                          "099",
+                          "101",
                           "2-sided bicyclic monoid",
                           "[quick][sims2]") {
     Presentation<std::string> p;
@@ -296,7 +296,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Sims2",
-                          "100",
+                          "102",
                           "2-sided 2-generated free commutative monoid",
                           "[quick][sims2]") {
     Presentation<std::string> p;
@@ -322,7 +322,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Sims2",
-                          "001",
+                          "103",
                           "free semilattice n = 8",
                           "[extreme][sims1]") {
     // https://oeis.org/A102894
