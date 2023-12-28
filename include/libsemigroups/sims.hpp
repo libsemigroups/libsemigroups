@@ -39,7 +39,6 @@
 #define LIBSEMIGROUPS_SIMS_HPP_
 
 #include <algorithm>   // for max
-#include <chrono>      // for high_resolution_clock
 #include <cstddef>     // for size_t
 #include <cstdint>     // for uint64_t, uint32_t
 #include <functional>  // for function
@@ -50,19 +49,13 @@
 #include <utility>     // for move
 #include <vector>      // for vector
 
-#include "constants.hpp"        // for UNDEFINED
 #include "debug.hpp"            // for LIBSEMIGROUPS_ASSERT
 #include "exception.hpp"        // for LIBSEMIGROUPS_EXCEPTION
 #include "felsch-graph.hpp"     // for FelschGraph
 #include "presentation.hpp"     // for Presentation, Presentati...
-#include "to-presentation.hpp"  // for make
-#include "transf.hpp"           // for Transf
+#include "to-presentation.hpp"  // for to_presentation
 #include "types.hpp"            // for word_type, congruence_kind
 #include "word-graph.hpp"       // for WordGraph
-
-#include "detail/report.hpp"  // for REPORT_DEFAULT, Reporter
-#include "detail/stl.hpp"     // for JoinThreads
-#include "detail/timer.hpp"   // for Timer
 
 namespace libsemigroups {
 
@@ -567,23 +560,11 @@ namespace libsemigroups {
       //! Type for letters in the underlying presentation.
       using letter_type = typename word_type::value_type;
 
-      SimsBase();
-      SimsBase(SimsBase const& other)      = default;
-      SimsBase(SimsBase&&)                 = default;
-      SimsBase& operator=(SimsBase const&) = default;
-      SimsBase& operator=(SimsBase&&)      = default;
-      ~SimsBase()                          = default;
-
-      Sims1or2& init();
-
-      using SimsSettings<Sims1or2>::presentation;
-      using SimsSettings<Sims1or2>::number_of_threads;
-      using SimsSettings<Sims1or2>::stats;
-      using SimsSettings<Sims1or2>::include;
-      using SimsSettings<Sims1or2>::exclude;
-      using SimsSettings<Sims1or2>::cbegin_long_rules;
-
      protected:
+      ////////////////////////////////////////////////////////////////////////
+      // SimsBase nested classes - protected
+      ////////////////////////////////////////////////////////////////////////
+
       struct PendingDefBase {
         PendingDefBase() = default;
 
@@ -631,7 +612,7 @@ namespace libsemigroups {
         // thread_iterator
         std::mutex              _mtx;
         std::vector<PendingDef> _pending;
-        Sims1or2 const*         _sims1;
+        Sims1or2 const*         _sims1or2;
 
         // Push initial PendingDef's into _pending, see tpp file for
         // explanation.
@@ -688,7 +669,7 @@ namespace libsemigroups {
         void swap(IteratorBase& that) noexcept;
 
         SimsStats& stats() noexcept {
-          return _sims1->stats();
+          return _sims1or2->stats();
         }
 
         size_type maximum_number_of_classes() const noexcept {
@@ -697,6 +678,10 @@ namespace libsemigroups {
       };  // class IteratorBase
 
      public:
+      ////////////////////////////////////////////////////////////////////////
+      // SimsBase nested classes - public
+      ////////////////////////////////////////////////////////////////////////
+
       //! The return type of \ref cbegin and \ref cend.
       //!
       //! This is a forward iterator values of this type are expensive to copy
@@ -712,28 +697,18 @@ namespace libsemigroups {
         using iterator_base::try_pop;
 
        public:
-        //! No doc
-        using const_pointer = typename iterator_base::const_pointer;
-        //! No doc
+        using const_pointer   = typename iterator_base::const_pointer;
         using const_reference = typename iterator_base::const_reference;
-
-        //! No doc
         using size_type = typename std::vector<word_graph_type>::size_type;
-        //! No doc
         using difference_type =
             typename std::vector<word_graph_type>::difference_type;
-        // No doc
-        using pointer = typename std::vector<word_graph_type>::pointer;
-        //! No doc
-        using reference = typename std::vector<word_graph_type>::reference;
-        //! No doc
+        using pointer    = typename std::vector<word_graph_type>::pointer;
+        using reference  = typename std::vector<word_graph_type>::reference;
         using value_type = word_graph_type;
-        //! No doc
         using iterator_category = std::forward_iterator_tag;
 
         using sims_type = typename iterator_base::sims_type;
 
-        //! No doc
         using iterator_base::iterator_base;
 
        private:
@@ -762,6 +737,9 @@ namespace libsemigroups {
       };  // class iterator
 
      private:
+      ////////////////////////////////////////////////////////////////////////
+      // SimsBase nested classes - private
+      ////////////////////////////////////////////////////////////////////////
       class thread_runner;
 
       // Note that this class is private, and not really an iterator in the
@@ -777,435 +755,105 @@ namespace libsemigroups {
        public:
         using sims_type = typename iterator_base::sims_type;
 
-        //! No doc
         thread_iterator(sims_type const* s, size_type n)
             : iterator_base(s, n) {}
 
-        // None of the constructors are noexcept because the corresponding
-        // constructors for std::vector aren't (until C++17).
-        //! No doc
-        thread_iterator() = delete;
-        //! No doc
-        thread_iterator(thread_iterator const&) = delete;
-        //! No doc
-        thread_iterator(thread_iterator&&) = delete;
-        //! No doc
-        thread_iterator& operator=(thread_iterator const&) = delete;
-        //! No doc
-        thread_iterator& operator=(thread_iterator&&) = delete;
+        ~thread_iterator();
 
-        //! No doc
-        ~thread_iterator() = default;
+        thread_iterator()                                  = delete;
+        thread_iterator(thread_iterator const&)            = delete;
+        thread_iterator(thread_iterator&&)                 = delete;
+        thread_iterator& operator=(thread_iterator const&) = delete;
+        thread_iterator& operator=(thread_iterator&&)      = delete;
 
         using iterator_base::stats;
 
-       public:
+        // TODO by value really?
         void push(PendingDef pd) {
-          this->_pending.push_back(std::move(pd));
+          iterator_base::_pending.push_back(std::move(pd));
         }
 
-        void steal_from(thread_iterator& that) {
-          // WARNING <that> must be locked before calling this function
-          std::lock_guard<std::mutex> lock(this->_mtx);
-          LIBSEMIGROUPS_ASSERT(this->_pending.empty());
-          size_t const n = that._pending.size();
-          if (n == 1) {
-            return;
-          }
-          // Copy the FelschGraph from that into *this
-          partial_copy_for_steal_from(that);
-
-          // Unzip that._pending into _pending and that._pending, this seems to
-          // give better performance in the search than splitting that._pending
-          // into [begin, begin + size / 2) and [begin + size / 2, end)
-          size_t i = 0;
-          for (; i < n - 2; i += 2) {
-            this->_pending.push_back(std::move(that._pending[i]));
-            that._pending[i / 2] = std::move(that._pending[i + 1]);
-          }
-          this->_pending.push_back(std::move(that._pending[i]));
-          if (i == n - 2) {
-            that._pending[i / 2] = std::move(that._pending[i + 1]);
-          }
-
-          that._pending.erase(that._pending.cbegin() + that._pending.size() / 2,
-                              that._pending.cend());
-        }
-
-        bool try_steal(thread_iterator& q) {
-          std::lock_guard<std::mutex> lock(this->_mtx);
-          if (this->_pending.empty()) {
-            return false;
-          }
-          // Copy the FelschGraph and half pending from *this into q
-          q.steal_from(
-              *this);  // Must call steal_from on q, so that q is locked
-          return true;
-        }
+        void steal_from(thread_iterator& that);
+        bool try_steal(thread_iterator& that);
       };  // thread_iterator
 
       class thread_runner {
        private:
-        using ThreadIt   = typename Sims1or2::thread_iterator;
-        using PendingDef = typename Sims1or2::PendingDef;
+        using thread_iterator = typename Sims1or2::thread_iterator;
+        using PendingDef      = typename Sims1or2::PendingDef;
 
-        std::atomic_bool                       _done;
-        std::vector<std::unique_ptr<ThreadIt>> _theives;
-        std::vector<std::thread>               _threads;
-        std::mutex                             _mtx;
-        size_type                              _num_threads;
-        word_graph_type                        _result;
-        Sims1or2 const*                        _sims1;
+        std::atomic_bool                              _done;
+        std::vector<std::unique_ptr<thread_iterator>> _theives;
+        std::vector<std::thread>                      _threads;
+        std::mutex                                    _mtx;
+        size_type                                     _num_threads;
+        word_graph_type                               _result;
+        Sims1or2 const*                               _sims1or2;
 
         void worker_thread(unsigned                                    my_index,
-                           std::function<bool(word_graph_type const&)> hook) {
-          PendingDef pd;
-          auto const restarts = _sims1->idle_thread_restarts();
-          for (size_t i = 0; i < restarts; ++i) {
-            while ((pop_from_local_queue(pd, my_index)
-                    || pop_from_other_thread_queue(pd, my_index))
-                   && !_done) {
-              if (_theives[my_index]->try_define(pd)
-                  && _theives[my_index]->install_descendents(pd)) {
-                if (hook(**_theives[my_index])) {
-                  // hook returns true to indicate that we should stop early
-                  std::lock_guard<std::mutex> lock(_mtx);
-                  if (!_done) {
-                    _done   = true;
-                    _result = **_theives[my_index];
-                  }
-                  return;
-                }
-              }
-            }
-            std::this_thread::yield();
-            // It's possible to reach here before all of the work is done,
-            // because by coincidence there's nothing in the local queue and
-            // nothing in any other queue either, this sometimes leads to
-            // threads shutting down earlier than desirable. On the other hand,
-            // maybe this is a desirable.
-          }
-        }
+                           std::function<bool(word_graph_type const&)> hook);
 
         bool pop_from_local_queue(PendingDef& pd, unsigned my_index) {
           return _theives[my_index]->try_pop(pd);
         }
 
-        bool pop_from_other_thread_queue(PendingDef& pd, unsigned my_index) {
-          for (size_t i = 0; i < _theives.size() - 1; ++i) {
-            unsigned const index = (my_index + i + 1) % _theives.size();
-            // Could always do something different here, like find
-            // the largest queue and steal from that? I tried this and it didn't
-            // seem to be faster.
-            if (_theives[index]->try_steal(*_theives[my_index])) {
-              return pop_from_local_queue(pd, my_index);
-            }
-          }
-          return false;
-        }
+        bool pop_from_other_thread_queue(PendingDef& pd, unsigned my_index);
 
        public:
-        thread_runner(Sims1or2 const* s, size_type n, size_type num_threads)
-            : _done(false),
-              _theives(),
-              _threads(),
-              _mtx(),
-              _num_threads(num_threads),
-              _result(),
-              _sims1(s) {
-          for (size_t i = 0; i < _num_threads; ++i) {
-            _theives.push_back(std::make_unique<ThreadIt>(s, n));
-          }
-          _theives.front()->init(n);
-        }
-
-        ~thread_runner() = default;
+        thread_runner(Sims1or2 const* s, size_type n, size_type num_threads);
+        ~thread_runner();
 
         word_graph_type const& word_graph() const {
           return _result;
         }
 
-        void run(std::function<bool(word_graph_type const&)> hook) {
-          try {
-            detail::JoinThreads joiner(_threads);
-            for (size_t i = 0; i < _num_threads; ++i) {
-              _threads.push_back(std::thread(
-                  &thread_runner::worker_thread, this, i, std::ref(hook)));
-            }
-          } catch (...) {
-            _done = true;
-            throw;
-          }
-        }
+        void run(std::function<bool(word_graph_type const&)> hook);
       };  // class thread_runner
 
-      // TODO to tpp
-      void report_at_start(size_t num_classes) const {
-        std::string num_threads = "0";
-        if (number_of_threads() != 1) {
-          num_threads = fmt::format("{} / {}",
-                                    number_of_threads(),
-                                    std::thread::hardware_concurrency());
-        }
-        auto shortest_short
-            = presentation::shortest_rule_length(presentation());
-        auto longest_short = presentation::longest_rule_length(presentation());
-
-        std::string pairs;
-        if (!include().empty() && !exclude().empty()) {
-          pairs = fmt::format(", including {} + excluding {} pairs",
-                              include().size() / 2,
-                              exclude().size() / 2);
-        } else if (!include().empty()) {
-          pairs = fmt::format(", including {} pairs", include().size() / 2);
-        } else if (!exclude().empty()) {
-          pairs = fmt::format(", excluding {} pairs", exclude().size() / 2);
-        }
-
-        report_no_prefix("{:+<80}\n", "");
-        report_default("{}: STARTING with {} additional threads . . . \n",
-                       report_prefix(),
-                       num_threads);
-        report_no_prefix("{:+<80}\n", "");
-        report_default("{}: \u2264 {} classes{} for \u27E8A|R\u27E9 with:\n",
-                       report_prefix(),
-                       num_classes,
-                       pairs);
-        report_default("{}: |A| = {}, |R| = {}, "
-                       "|u| + |v| \u2208 [{}, {}], \u2211(|u| + |v|) = {}\n",
-                       report_prefix(),
-                       presentation().alphabet().size(),
-                       presentation().rules.size() / 2,
-                       shortest_short,
-                       longest_short,
-                       presentation::length(presentation()));
-
-        if (cbegin_long_rules() != presentation().rules.cend()) {
-          auto first = presentation().rules.cbegin(),
-               last  = cbegin_long_rules();
-
-          report_default("{}: {} \"short\" relations with: ",
-                         report_prefix(),
-                         std::distance(first, last) / 2);
-          report_no_prefix(
-              "|u| + |v| \u2208 [{}, {}] and \u2211(|u| + |v|) = {}\n",
-              presentation::shortest_rule_length(first, last),
-              presentation::longest_rule_length(first, last),
-              presentation::length(first, last));
-
-          first = cbegin_long_rules(), last = presentation().rules.cend();
-          report_default("{}: {} \"long\" relations with: ",
-                         report_prefix(),
-                         std::distance(first, last) / 2);
-          report_no_prefix(
-              "|u| + |v| \u2208 [{}, {}] and \u2211(|u| + |v|) = {}\n",
-              presentation::shortest_rule_length(first, last),
-              presentation::longest_rule_length(first, last),
-              presentation::length(first, last));
-        }
-        Reporter::reset_start_time();
-      }
-
-      // TODO to tpp
-      void report_progress_from_thread() const {
-        using namespace detail;       // NOLINT(build/namespaces)
-        using namespace std::chrono;  // NOLINT(build/namespaces)
-
-        auto time_total_ns = delta(start_time());
-        auto time_diff     = delta(last_report());
-
-        // Stats
-        auto count_now         = stats().count_now.load();
-        auto count_diff        = count_now - stats().count_last;
-        auto total_pending_now = stats().total_pending_now.load();
-        auto total_pending_diff
-            = total_pending_now - stats().total_pending_last;
-
-        constexpr uint64_t billion = 1'000'000'000;
-        uint64_t congs_per_sec = (billion * count_now) / time_total_ns.count();
-        uint64_t nodes_per_sec
-            = (billion * total_pending_now) / time_total_ns.count();
-
-        nanoseconds time_per_cong_last_sec(0);
-        if (count_diff != 0) {
-          time_per_cong_last_sec = time_diff / count_diff;
-        }
-
-        nanoseconds time_per_node_last_sec(0);
-        if (total_pending_diff != 0) {
-          time_per_node_last_sec = time_diff / total_pending_diff;
-        }
-
-        nanoseconds time_per_cong(0);
-        if (count_now != 0) {
-          time_per_cong = time_total_ns / count_now;
-        }
-
-        nanoseconds time_per_node(0);
-        if (total_pending_now != 0) {
-          time_per_node = time_total_ns / total_pending_now;
-        }
-
-        ReportCell<3> rc;
-        rc.min_width(0, 4).min_width(1, 7).min_width(2, 11);
-        rc("{}: total        {} (cong.)   | {} (nodes) \n",
-           report_prefix(),
-           group_digits(count_now),
-           group_digits(total_pending_now));
-
-        rc("{}: diff         {} (cong.)   | {} (nodes)\n",
-           report_prefix(),
-           signed_group_digits(count_diff),
-           signed_group_digits(total_pending_diff));
-
-        rc("{}: mean         {} (cong./s) | {} (node/s)\n",
-           report_prefix(),
-           group_digits(congs_per_sec),
-           group_digits(nodes_per_sec));
-
-        rc("{}: time last s. {} (/cong.)  | {} (/node)\n",
-           report_prefix(),
-           string_time(time_per_cong_last_sec),
-           string_time(time_per_node_last_sec));
-
-        rc("{}: mean time    {} (/cong.)  | {} (/node)\n",
-           report_prefix(),
-           string_time(time_per_cong),
-           string_time(time_per_node));
-
-        rc("{}: time         {} (total)   |\n",
-           report_prefix(),
-           string_time(time_total_ns));
-
-        reset_last_report();
-        stats().stats_check_point();
-      }
-
-      // TODO to tpp
-      void report_final() const {
-        report_progress_from_thread();
-        report_no_prefix("{:+<80}\n", "");
-        report_default("{}: FINISHED!\n", report_prefix());
-        report_no_prefix("{:+<80}\n", "");
-      }
-
-      // TODO to tpp
      private:
-      void throw_if_not_ready(size_type n) const {
-        if (n == 0) {
-          LIBSEMIGROUPS_EXCEPTION("the argument (size_type) must be non-zero");
-        } else if (presentation().rules.empty()
-                   && presentation().alphabet().empty()) {
-          LIBSEMIGROUPS_EXCEPTION("the presentation() must be defined before "
-                                  "calling this function");
-        }
-      }
+      void report_at_start(size_t num_classes) const;
+      void report_progress_from_thread() const;
+      void report_final() const;
+
+      void throw_if_not_ready(size_type n) const;
 
      public:
-      // TODO to tpp
+      SimsBase();
+      SimsBase(SimsBase const& other)      = default;
+      SimsBase(SimsBase&&)                 = default;
+      SimsBase& operator=(SimsBase const&) = default;
+      SimsBase& operator=(SimsBase&&)      = default;
+      ~SimsBase()                          = default;
+
+      Sims1or2& init();
+
+      using SimsSettings<Sims1or2>::presentation;
+      using SimsSettings<Sims1or2>::number_of_threads;
+      using SimsSettings<Sims1or2>::stats;
+      using SimsSettings<Sims1or2>::include;
+      using SimsSettings<Sims1or2>::exclude;
+      using SimsSettings<Sims1or2>::cbegin_long_rules;
+
       [[nodiscard]] iterator cbegin(size_type n) const {
         throw_if_not_ready(n);
         return iterator(static_cast<Sims1or2 const*>(this), n);
       }
 
-      // TODO to tpp
       [[nodiscard]] iterator cend(size_type n) const {
         throw_if_not_ready(n);
         return iterator(static_cast<Sims1or2 const*>(this), 0);
       }
 
-     public:
-      // Apply the function pred to every one-sided congruence with at
+      // Apply the function pred to every congruence with at
       // most n classes
       void for_each(size_type                                   n,
-                    std::function<void(word_graph_type const&)> pred) const {
-        throw_if_not_ready(n);
-
-        report_at_start(n);
-        if (number_of_threads() == 1) {
-          if (!reporting_enabled()) {
-            // Don't care about stats in this case
-            std::for_each(cbegin(n), cend(n), pred);
-          } else {
-            stats().stats_zero();
-            detail::Ticker t([this]() { report_progress_from_thread(); });
-            auto           it   = cbegin(n);
-            auto const     last = cend(n);
-            for (; it != last; ++it) {
-              pred(*it);
-            }
-            report_final();
-          }
-        } else {
-          thread_runner den(
-              static_cast<Sims1or2 const*>(this), n, number_of_threads());
-          auto pred_wrapper = [&pred](word_graph_type const& ad) {
-            pred(ad);
-            return false;
-          };
-          if (!reporting_enabled()) {
-            den.run(pred_wrapper);
-          } else {
-            stats().stats_zero();
-            detail::Ticker t([this]() { report_progress_from_thread(); });
-            den.run(pred_wrapper);
-            report_final();
-          }
-        }
-      }
+                    std::function<void(word_graph_type const&)> pred) const;
 
       word_graph_type
       find_if(size_type                                   n,
-              std::function<bool(word_graph_type const&)> pred) const {
-        throw_if_not_ready(n);
-        report_at_start(n);
-        if (number_of_threads() == 1) {
-          if (!reporting_enabled()) {
-            return *std::find_if(cbegin(n), cend(n), pred);
-          } else {
-            stats().stats_zero();
-            detail::Ticker t([this]() { report_progress_from_thread(); });
+              std::function<bool(word_graph_type const&)> pred) const;
 
-            auto       it   = cbegin(n);
-            auto const last = cend(n);
-
-            for (; it != last; ++it) {
-              if (pred(*it)) {
-                report_final();
-                return *it;
-              }
-            }
-            report_final();
-            return *last;  // the empty digraph
-          }
-        } else {
-          thread_runner den(
-              static_cast<Sims1or2 const*>(this), n, number_of_threads());
-          if (!reporting_enabled()) {
-            den.run(pred);
-            return den.word_graph();
-          } else {
-            stats().stats_zero();
-            detail::Ticker t([this]() { report_progress_from_thread(); });
-            den.run(pred);
-            report_final();
-            return den.word_graph();
-          }
-        }
-      }
-
-      // TODO to tpp
-      uint64_t number_of_congruences(size_type n) const {
-        if (number_of_threads() == 1) {
-          uint64_t result = 0;
-          for_each(n, [&result](word_graph_type const&) { ++result; });
-          return result;
-        } else {
-          std::atomic_uint64_t result(0);
-          for_each(n, [&result](word_graph_type const&) { ++result; });
-          return result;
-        }
-      }
+      uint64_t number_of_congruences(size_type n) const;
     };
   }  // namespace detail
 
@@ -1600,7 +1248,7 @@ namespace libsemigroups {
     using SimsBase::find_if;
     using SimsBase::for_each;
     using SimsBase::number_of_congruences;
-  };
+  };  // Sims2
 
   //! Defined in ``sims.hpp``.
   //!
