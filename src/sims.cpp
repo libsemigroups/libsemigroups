@@ -637,6 +637,75 @@ namespace libsemigroups {
     // SimsBase::thread_iterator - public
     ////////////////////////////////////////////////////////////////////////
 
+    // Note that this class is private, and not really an iterator in the
+    // usual sense. It is designed solely to work with thread_runner.
+    template <typename Sims1or2>
+    class SimsBase<Sims1or2>::thread_iterator : public Sims1or2::iterator_base {
+      using PendingDef    = typename Sims1or2::PendingDef;
+      using iterator_base = typename Sims1or2::iterator_base;
+
+      friend class thread_runner;
+
+      using iterator_base::partial_copy_for_steal_from;
+
+     public:
+      using sims_type = typename iterator_base::sims_type;
+
+      thread_iterator(sims_type const* s, size_type n) : iterator_base(s, n) {}
+
+      ~thread_iterator();
+
+      thread_iterator()                                  = delete;
+      thread_iterator(thread_iterator const&)            = delete;
+      thread_iterator(thread_iterator&&)                 = delete;
+      thread_iterator& operator=(thread_iterator const&) = delete;
+      thread_iterator& operator=(thread_iterator&&)      = delete;
+
+      using iterator_base::stats;
+
+      // TODO by value really?
+      void push(PendingDef pd) {
+        iterator_base::_pending.push_back(std::move(pd));
+      }
+
+      void steal_from(thread_iterator& that);
+      bool try_steal(thread_iterator& that);
+    };  // thread_iterator
+
+    template <typename Sims1or2>
+    class SimsBase<Sims1or2>::thread_runner {
+     private:
+      using thread_iterator = typename Sims1or2::thread_iterator;
+      using PendingDef      = typename Sims1or2::PendingDef;
+
+      std::atomic_bool                              _done;
+      std::vector<std::unique_ptr<thread_iterator>> _theives;
+      std::vector<std::thread>                      _threads;
+      std::mutex                                    _mtx;
+      size_type                                     _num_threads;
+      word_graph_type                               _result;
+      Sims1or2 const*                               _sims1or2;
+
+      void worker_thread(unsigned                                    my_index,
+                         std::function<bool(word_graph_type const&)> hook);
+
+      bool pop_from_local_queue(PendingDef& pd, unsigned my_index) {
+        return _theives[my_index]->try_pop(pd);
+      }
+
+      bool pop_from_other_thread_queue(PendingDef& pd, unsigned my_index);
+
+     public:
+      thread_runner(Sims1or2 const* s, size_type n, size_type num_threads);
+      ~thread_runner();
+
+      word_graph_type const& word_graph() const {
+        return _result;
+      }
+
+      void run(std::function<bool(word_graph_type const&)> hook);
+    };  // class thread_runner
+
     template <typename Sims1or2>
     SimsBase<Sims1or2>::thread_iterator::~thread_iterator() = default;
 

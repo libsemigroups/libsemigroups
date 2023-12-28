@@ -384,6 +384,7 @@ namespace libsemigroups {
     //! A const reference to `Presentation<word_type>`.
     //!
     //! \exceptions
+
     //! \noexcept
     [[nodiscard]] std::vector<word_type> const& include() const noexcept {
       return _include;
@@ -565,26 +566,6 @@ namespace libsemigroups {
       // SimsBase nested classes - protected
       ////////////////////////////////////////////////////////////////////////
 
-      struct PendingDefBase {
-        PendingDefBase() = default;
-
-        PendingDefBase(node_type   s,
-                       letter_type g,
-                       node_type   t,
-                       size_type   e,
-                       size_type   n,
-                       bool) noexcept
-            : source(s), generator(g), target(t), num_edges(e), num_nodes(n) {}
-
-        node_type   source;
-        letter_type generator;
-        node_type   target;
-        size_type   num_edges;  // Number of edges in the graph when
-                                // *this was added to the stack
-        size_type num_nodes;    // Number of nodes in the graph
-                                // after the definition is made
-      };
-
       // This class collects some common aspects of the iterator and
       // thread_iterator nested classes. The mutex does nothing for <iterator>
       // and is an actual std::mutex for <thread_iterator>. Also subclassed by
@@ -741,74 +722,7 @@ namespace libsemigroups {
       // SimsBase nested classes - private
       ////////////////////////////////////////////////////////////////////////
       class thread_runner;
-
-      // Note that this class is private, and not really an iterator in the
-      // usual sense. It is designed solely to work with thread_runner.
-      class thread_iterator : public Sims1or2::iterator_base {
-        using PendingDef    = typename Sims1or2::PendingDef;
-        using iterator_base = typename Sims1or2::iterator_base;
-
-        friend class thread_runner;
-
-        using iterator_base::partial_copy_for_steal_from;
-
-       public:
-        using sims_type = typename iterator_base::sims_type;
-
-        thread_iterator(sims_type const* s, size_type n)
-            : iterator_base(s, n) {}
-
-        ~thread_iterator();
-
-        thread_iterator()                                  = delete;
-        thread_iterator(thread_iterator const&)            = delete;
-        thread_iterator(thread_iterator&&)                 = delete;
-        thread_iterator& operator=(thread_iterator const&) = delete;
-        thread_iterator& operator=(thread_iterator&&)      = delete;
-
-        using iterator_base::stats;
-
-        // TODO by value really?
-        void push(PendingDef pd) {
-          iterator_base::_pending.push_back(std::move(pd));
-        }
-
-        void steal_from(thread_iterator& that);
-        bool try_steal(thread_iterator& that);
-      };  // thread_iterator
-
-      class thread_runner {
-       private:
-        using thread_iterator = typename Sims1or2::thread_iterator;
-        using PendingDef      = typename Sims1or2::PendingDef;
-
-        std::atomic_bool                              _done;
-        std::vector<std::unique_ptr<thread_iterator>> _theives;
-        std::vector<std::thread>                      _threads;
-        std::mutex                                    _mtx;
-        size_type                                     _num_threads;
-        word_graph_type                               _result;
-        Sims1or2 const*                               _sims1or2;
-
-        void worker_thread(unsigned                                    my_index,
-                           std::function<bool(word_graph_type const&)> hook);
-
-        bool pop_from_local_queue(PendingDef& pd, unsigned my_index) {
-          return _theives[my_index]->try_pop(pd);
-        }
-
-        bool pop_from_other_thread_queue(PendingDef& pd, unsigned my_index);
-
-       public:
-        thread_runner(Sims1or2 const* s, size_type n, size_type num_threads);
-        ~thread_runner();
-
-        word_graph_type const& word_graph() const {
-          return _result;
-        }
-
-        void run(std::function<bool(word_graph_type const&)> hook);
-      };  // class thread_runner
+      class thread_iterator;
 
      private:
       void report_at_start(size_t num_classes) const;
@@ -878,9 +792,29 @@ namespace libsemigroups {
     using SimsBase = detail::SimsBase<Sims1>;
 
     friend SimsBase;
+    friend Sims2;
 
     using iterator_base = IteratorBase;
-    using PendingDef    = PendingDefBase;
+
+    struct PendingDef {
+      PendingDef() = default;
+
+      PendingDef(node_type   s,
+                 letter_type g,
+                 node_type   t,
+                 size_type   e,
+                 size_type   n,
+                 bool) noexcept
+          : source(s), generator(g), target(t), num_edges(e), num_nodes(n) {}
+
+      node_type   source;
+      letter_type generator;
+      node_type   target;
+      size_type   num_edges;  // Number of edges in the graph when
+                              // *this was added to the stack
+      size_type num_nodes;    // Number of nodes in the graph
+                              // after the definition is made
+    };
 
    public:
     //! Type for the nodes in the associated WordGraph
@@ -1173,7 +1107,7 @@ namespace libsemigroups {
     }
 
    private:
-    struct PendingDef : public SimsBase::PendingDefBase {
+    struct PendingDef : public Sims1::PendingDef {
       PendingDef() = default;
 
       PendingDef(node_type   s,
@@ -1182,8 +1116,7 @@ namespace libsemigroups {
                  size_type   e,
                  size_type   n,
                  bool        tin) noexcept
-          : SimsBase::PendingDefBase(s, g, t, e, n, tin),
-            target_is_new_node(tin) {}
+          : Sims1::PendingDef(s, g, t, e, n, tin), target_is_new_node(tin) {}
       bool target_is_new_node;
     };
 
