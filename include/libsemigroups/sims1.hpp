@@ -573,25 +573,14 @@ namespace libsemigroups {
       //! Type for letters in the underlying presentation.
       using letter_type = typename word_type::value_type;
 
-      SimsBase() {
-        init();
-      }
-
+      SimsBase();
       SimsBase(SimsBase const& other)      = default;
       SimsBase(SimsBase&&)                 = default;
       SimsBase& operator=(SimsBase const&) = default;
       SimsBase& operator=(SimsBase&&)      = default;
       ~SimsBase()                          = default;
 
-      Sims1or2& init() {
-        if constexpr (std::is_same_v<Sims1or2, Sims1>) {
-          report_prefix("Sims1");
-        } else {
-          report_prefix("Sims2");
-        }
-        SimsSettings<Sims1or2>::init();
-        return static_cast<Sims1or2&>(*this);
-      }
+      Sims1or2& init();
 
       using SimsSettings<Sims1or2>::presentation;
       using SimsSettings<Sims1or2>::number_of_threads;
@@ -624,7 +613,7 @@ namespace libsemigroups {
       // This class collects some common aspects of the iterator and
       // thread_iterator nested classes. The mutex does nothing for <iterator>
       // and is an actual std::mutex for <thread_iterator>. Also subclassed by
-      // Sims2::IteratorBase.
+      // Sims2::iterator_base.
       class IteratorBase {
        public:
         using const_reference = word_graph_type const&;
@@ -943,7 +932,7 @@ namespace libsemigroups {
         //! No doc
         using difference_type =
             typename std::vector<word_graph_type>::difference_type;
-        //! No doc
+        // No doc
         using pointer = typename std::vector<word_graph_type>::pointer;
         //! No doc
         using reference = typename std::vector<word_graph_type>::reference;
@@ -959,17 +948,7 @@ namespace libsemigroups {
 
        private:
         // Only want Sims1 to be able to use this constructor.
-        // TODO to tpp
-        iterator(sims_type const* s, size_type n) : iterator_base(s, n) {
-          if (this->_felsch_graph.number_of_active_nodes() == 0) {
-            return;
-          }
-          init(n);
-          ++(*this);
-          // The increment above is required so that when dereferencing any
-          // instance of this type we obtain a valid word graph (o/w the value
-          // pointed to here is empty).
-        }
+        iterator(Sims1or2 const* s, size_type n);
 
         // So that we can use the constructor above.
         friend iterator SimsBase<sims_type>::cbegin(SimsBase::size_type) const;
@@ -1505,9 +1484,7 @@ namespace libsemigroups {
     Sims1() = default;
 
     // TODO(doc)
-    Sims1& init() {
-      return SimsBase::init();
-    }
+    Sims1& init();
 
     //! Construct from \ref congruence_kind.
     //!
@@ -1741,6 +1718,112 @@ namespace libsemigroups {
     //! \sa
     //! \ref cbegin
     using SimsBase::cend;
+  };
+
+  class Sims2 : public detail::SimsBase<Sims2> {
+    using SimsBase = detail::SimsBase<Sims2>;
+    friend SimsBase;
+
+   public:
+    using node_type       = SimsBase::node_type;
+    using label_type      = SimsBase::label_type;
+    using letter_type     = SimsBase::letter_type;
+    using size_type       = SimsBase::size_type;
+    using word_graph_type = SimsBase::word_graph_type;
+
+    Sims2()                        = default;
+    Sims2(Sims2 const& other)      = default;
+    Sims2(Sims2&&)                 = default;
+    Sims2& operator=(Sims2 const&) = default;
+    Sims2& operator=(Sims2&&)      = default;
+    ~Sims2()                       = default;
+
+    Sims2& init() {
+      SimsSettings<Sims2>::init();
+      return *this;
+    }
+
+    template <typename Word>
+    explicit Sims2(Presentation<Word> p) : Sims2() {
+      presentation(p);
+    }
+
+   private:
+    struct PendingDef : public SimsBase::PendingDefBase {
+      PendingDef() = default;
+
+      PendingDef(node_type   s,
+                 letter_type g,
+                 node_type   t,
+                 size_type   e,
+                 size_type   n,
+                 bool        tin) noexcept
+          : SimsBase::PendingDefBase(s, g, t, e, n, tin),
+            target_is_new_node(tin) {}
+      bool target_is_new_node;
+    };
+
+    // This class collects some common aspects of the iterator and
+    // thread_iterator nested classes. The mutex does nothing for <iterator>
+    // and is an actual std::mutex for <thread_iterator>.
+    class iterator_base : public SimsBase::IteratorBase {
+      class RuleContainer;
+
+     public:
+      using const_reference = SimsBase::IteratorBase::const_reference;
+      using const_pointer   = SimsBase::IteratorBase::const_pointer;
+
+     private:
+      std::unique_ptr<RuleContainer> _2_sided_include;
+      std::vector<word_type>         _2_sided_words;
+
+     protected:
+      using SimsBase::IteratorBase::init;
+      using SimsBase::IteratorBase::try_pop;
+
+      // We could use the copy constructor, but there's no point in copying
+      // anything except the FelschGraph and so we only copy that.
+      void partial_copy_for_steal_from(iterator_base const& that);
+
+      // Try to make the definition represented by PendingDef, returns false if
+      // it wasn't possible, and true if it was.
+      //! No doc
+      [[nodiscard]] bool try_define(PendingDef const&);
+
+      iterator_base(Sims2 const* s, size_type n);
+
+     public:
+      iterator_base() = default;
+
+      iterator_base(iterator_base const& that);
+      iterator_base(iterator_base&& that);
+      iterator_base& operator=(iterator_base const& that);
+      iterator_base& operator=(iterator_base&& that);
+      ~iterator_base();
+
+      using SimsBase::IteratorBase::operator==;
+      using SimsBase::IteratorBase::operator!=;
+      using SimsBase::IteratorBase::operator*;
+      using SimsBase::IteratorBase::operator->;
+
+      //! No doc
+      void swap(iterator_base& that) noexcept;
+
+      using SimsBase::IteratorBase::stats;
+    };  // class iterator_base
+
+   public:
+    using SimsSettings::cbegin_long_rules;
+    using SimsSettings::exclude;
+    using SimsSettings::include;
+    using SimsSettings::number_of_threads;
+    using SimsSettings::presentation;
+
+    using SimsBase::cbegin;
+    using SimsBase::cend;
+    using SimsBase::find_if;
+    using SimsBase::for_each;
+    using SimsBase::number_of_congruences;
   };
 
   //! Defined in ``sims1.hpp``.
