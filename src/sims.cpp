@@ -78,41 +78,326 @@ namespace libsemigroups {
     return *this;
   }
 
-  template <typename Sims1or2>
-  Sims1or2& detail::SimsBase<Sims1or2>::init() {
-    if constexpr (std::is_same_v<Sims1or2, Sims1>) {
-      report_prefix("Sims1");
-    } else {
-      report_prefix("Sims2");
+  namespace detail {
+    ////////////////////////////////////////////////////////////////////////
+    // SimsBase
+    ////////////////////////////////////////////////////////////////////////
+
+    template <typename Sims1or2>
+    Sims1or2& SimsBase<Sims1or2>::init() {
+      if constexpr (std::is_same_v<Sims1or2, Sims1>) {
+        report_prefix("Sims1");
+      } else {
+        report_prefix("Sims2");
+      }
+      SimsSettings<Sims1or2>::init();
+      return static_cast<Sims1or2&>(*this);
     }
-    SimsSettings<Sims1or2>::init();
-    return static_cast<Sims1or2&>(*this);
-  }
 
-  template <typename Sims1or2>
-  detail::SimsBase<Sims1or2>::SimsBase() {
-    init();
-  }
-
-  template <typename Sims1or2>
-  detail::SimsBase<Sims1or2>::iterator::iterator(Sims1or2 const* s, size_type n)
-      : iterator_base(s, n) {
-    if (this->_felsch_graph.number_of_active_nodes() == 0) {
-      return;
+    template <typename Sims1or2>
+    SimsBase<Sims1or2>::SimsBase() {
+      init();
     }
-    init(n);
-    ++(*this);
-    // The increment above is required so that when dereferencing any
-    // instance of this type we obtain a valid word graph (o/w the value
-    // pointed to here is empty).
+
+    ////////////////////////////////////////////////////////////////////////
+    // SimsBase::IteratorBase - protected
+    ////////////////////////////////////////////////////////////////////////
+
+    // The following function is separated from the constructor
+    // so that it isn't called in the constructor of every thread_iterator
+    template <typename Sims1or2>
+    void SimsBase<Sims1or2>::IteratorBase::init(size_type n) {
+      if (n != 0) {
+        if (n > 1 || _min_target_node == 1) {
+          _pending.emplace_back(0, 0, 1, 0, 2, true);
+        }
+        if (_min_target_node == 0) {
+          _pending.emplace_back(0, 0, 0, 0, 1, false);
+        }
+      }
+    }
+
+    // Try to pop from _pending into the argument (reference), returns true
+    // if successful and false if not.
+    template <typename Sims1or2>
+    bool SimsBase<Sims1or2>::IteratorBase::try_pop(PendingDef& pd) {
+      std::lock_guard<std::mutex> lock(_mtx);
+      if (_pending.empty()) {
+        return false;
+      }
+      pd = std::move(_pending.back());
+      _pending.pop_back();
+      return true;
+    }
+
+    // Try to make the definition represented by PendingDef, returns false
+    // if it wasn't possible, and true if it was.
+    template <typename Sims1or2>
+    bool
+    SimsBase<Sims1or2>::IteratorBase::try_define(PendingDef const& current) {
+      // Try to make the definition represented by PendingDef, returns false
+      // if it wasn't possible, and true if it was.
+      //! No doc
+      LIBSEMIGROUPS_ASSERT(current.target < current.num_nodes);
+      LIBSEMIGROUPS_ASSERT(current.num_nodes <= _max_num_classes);
+      std::lock_guard<std::mutex> lock(_mtx);
+      // Backtrack if necessary
+      _felsch_graph.reduce_number_of_edges_to(current.num_edges);
+
+      // It might be that current.target is a new node, in which case
+      // _felsch_graph.number_of_active_nodes() includes this new node even
+      // before the edge current.source -> current.target is defined.
+      _felsch_graph.number_of_active_nodes(current.num_nodes);
+
+      LIBSEMIGROUPS_ASSERT(
+          _felsch_graph.target_no_checks(current.source, current.generator)
+          == UNDEFINED);
+
+      // Don't call number_of_edges because this calls the function in
+      // WordGraph
+      size_type start = _felsch_graph.definitions().size();
+
+      _felsch_graph.set_target_no_checks(
+          current.source, current.generator, current.target);
+
+      auto first = _sims1->include().cbegin();
+      auto last  = _sims1->include().cend();
+      if (!felsch_graph::make_compatible<RegisterDefs>(
+              _felsch_graph, 0, 1, first, last)
+          || !_felsch_graph.process_definitions(start)) {
+        // Seems to be important to check include() first then
+        // process_definitions
+        return false;
+      }
+
+      first          = _sims1->exclude().cbegin();
+      last           = _sims1->exclude().cend();
+      node_type root = 0;
+
+      for (auto it = first; it != last; it += 2) {
+        auto l = word_graph::follow_path_no_checks(_felsch_graph, root, *it);
+        if (l != UNDEFINED) {
+          auto r = word_graph::follow_path_no_checks(
+              _felsch_graph, root, *(it + 1));
+          if (l == r) {
+            return false;
+          }
+        }
+      }
+      return true;
+    }
+
+    template <typename Sims1or2>
+    bool SimsBase<Sims1or2>::IteratorBase::install_descendents(
+        PendingDef const& current) {
+      letter_type     a        = current.generator + 1;
+      size_type const M        = _felsch_graph.number_of_active_nodes();
+      size_type const N        = _felsch_graph.number_of_edges();
+      size_type const num_gens = _felsch_graph.out_degree();
+      auto&           stats    = _sims1->stats();
+
+      for (node_type next = current.source; next < M; ++next) {
+        for (; a < num_gens; ++a) {
+          if (_felsch_graph.target_no_checks(next, a) == UNDEFINED) {
+            std::lock_guard<std::mutex> lock(_mtx);
+            if (M < _max_num_classes) {
+              _pending.emplace_back(next, a, M, N, M + 1, true);
+            }
+            for (node_type b = M; b-- > _min_target_node;) {
+              _pending.emplace_back(next, a, b, N, M, false);
+            }
+            stats.total_pending_now
+                += M - _min_target_node + (M < _max_num_classes);
+
+            // Mutex must be locked here so that we can call _pending.size()
+            stats.max_pending = std::max(static_cast<uint64_t>(_pending.size()),
+                                         stats.max_pending.load());
+            return false;
+          }
+        }
+        a = 0;
+      }
+      // No undefined edges, word graph is complete
+      LIBSEMIGROUPS_ASSERT(N == M * num_gens);
+
+      auto first = _sims1->cbegin_long_rules();
+      auto last  = _sims1->presentation().rules.cend();
+
+      bool result = word_graph::is_compatible(_felsch_graph,
+                                              _felsch_graph.cbegin_nodes(),
+                                              _felsch_graph.cbegin_nodes() + M,
+                                              first,
+                                              last);
+      if (result) {
+        // stats.count_now is atomic so this is ok
+        ++stats.count_now;
+      }
+      return result;
+    }
+
+    template <typename Sims1or2>
+    SimsBase<Sims1or2>::IteratorBase::IteratorBase(Sims1or2 const* s,
+                                                   size_type       n)
+        :  // private
+          _max_num_classes(s->presentation().contains_empty_word() ? n : n + 1),
+          _min_target_node(s->presentation().contains_empty_word() ? 0 : 1),
+          // protected
+          _felsch_graph(),
+          _mtx(),
+          _pending(),
+          _sims1(s) {
+      Presentation<word_type> p = s->presentation();
+      size_t m = std::distance(s->presentation().rules.cbegin(),
+                               s->cbegin_long_rules());
+      p.rules.erase(p.rules.begin() + m, p.rules.end());
+      _felsch_graph.init(std::move(p));
+      // n == 0 only when the iterator is cend
+      _felsch_graph.number_of_active_nodes(n == 0 ? 0 : 1);
+      // = 0 indicates iterator is done
+      _felsch_graph.add_nodes(n);
+    }
+
+    ////////////////////////////////////////////////////////////////////////
+    // SimsBase::IteratorBase - public
+    ////////////////////////////////////////////////////////////////////////
+
+    template <typename Sims1or2>
+    SimsBase<Sims1or2>::IteratorBase::IteratorBase() = default;
+
+    // Intentionally don't copy the mutex, it doesn't compile, wouldn't make
+    // sense if the mutex was used here.
+    template <typename Sims1or2>
+    SimsBase<Sims1or2>::IteratorBase::IteratorBase(IteratorBase const& that)
+        :  // private
+          _max_num_classes(that._max_num_classes),
+          _min_target_node(that._min_target_node),
+          // protected
+          _felsch_graph(that._felsch_graph),
+          _mtx(),
+          _pending(that._pending),
+          _sims1(that._sims1) {}
+
+    // Intentionally don't copy the mutex, it doesn't compile, wouldn't make
+    // sense if the mutex was used here.
+    template <typename Sims1or2>
+    SimsBase<Sims1or2>::IteratorBase::IteratorBase(IteratorBase&& that)
+        :  // private
+          _max_num_classes(std::move(that._max_num_classes)),
+          _min_target_node(std::move(that._min_target_node)),
+          // protected
+          _felsch_graph(std::move(that._felsch_graph)),
+          _mtx(),
+          _pending(std::move(that._pending)),
+          _sims1(that._sims1) {}
+
+    // Intentionally don't copy the mutex, it doesn't compile, wouldn't make
+    // sense if the mutex was used here.
+    template <typename Sims1or2>
+    typename SimsBase<Sims1or2>::IteratorBase&
+    SimsBase<Sims1or2>::IteratorBase::operator=(IteratorBase const& that) {
+      // private
+      _max_num_classes = that._max_num_classes;
+      _min_target_node = that._min_target_node;
+      // protected
+      _felsch_graph = that._felsch_graph;
+      // keep our own _mtx
+      _pending = that._pending;
+      _sims1   = that._sims1;
+
+      return *this;
+    }
+
+    // Intentionally don't copy the mutex, it doesn't compile, wouldn't make
+    // sense if the mutex was used here.
+    template <typename Sims1or2>
+    typename SimsBase<Sims1or2>::IteratorBase&
+    SimsBase<Sims1or2>::IteratorBase::operator=(IteratorBase&& that) {
+      // private
+      _max_num_classes = std::move(that._max_num_classes);
+      _min_target_node = std::move(that._min_target_node);
+
+      // protected
+      _felsch_graph = std::move(that._felsch_graph);
+      _pending      = std::move(that._pending);
+      // keep our own _mtx
+      _sims1 = that._sims1;
+      return *this;
+    }
+
+    template <typename Sims1or2>
+    SimsBase<Sims1or2>::IteratorBase::~IteratorBase() = default;
+
+    template <typename Sims1or2>
+    void SimsBase<Sims1or2>::IteratorBase::swap(IteratorBase& that) noexcept {
+      // private
+      std::swap(_max_num_classes, that._max_num_classes);
+      std::swap(_min_target_node, that._min_target_node);
+      // protected
+      std::swap(_felsch_graph, that._felsch_graph);
+      std::swap(_pending, that._pending);
+      std::swap(_sims1, that._sims1);
+    }
+
+    ////////////////////////////////////////////////////////////////////////
+    // SimsBase::iterator - private
+    ////////////////////////////////////////////////////////////////////////
+
+    template <typename Sims1or2>
+    SimsBase<Sims1or2>::iterator::iterator(Sims1or2 const* s, size_type n)
+        : iterator_base(s, n) {
+      if (this->_felsch_graph.number_of_active_nodes() == 0) {
+        return;
+      }
+      init(n);
+      ++(*this);
+      // The increment above is required so that when dereferencing any
+      // instance of this type we obtain a valid word graph (o/w the value
+      // pointed to here is empty).
+    }
+
+    ////////////////////////////////////////////////////////////////////////
+    // SimsBase::iterator - public
+    ////////////////////////////////////////////////////////////////////////
+
+    template <typename Sims1or2>
+    SimsBase<Sims1or2>::iterator::~iterator() = default;
+
+    template <typename Sims1or2>
+    typename SimsBase<Sims1or2>::iterator const&
+    SimsBase<Sims1or2>::iterator::operator++() {
+      PendingDef current;
+      while (try_pop(current)) {
+        if (try_define(current) && install_descendents(current)) {
+          return *this;
+        }
+      }
+      this->_felsch_graph.number_of_active_nodes(0);
+      // indicates that the iterator is done
+      this->_felsch_graph.induced_subgraph_no_checks(0, 0);
+      return *this;
+    }
+
+    template class SimsBase<Sims1>;
+    template class SimsBase<Sims2>;
+  }  // namespace detail
+
+  ////////////////////////////////////////////////////////////////////////
+  // Sims1
+  ////////////////////////////////////////////////////////////////////////
+
+  Sims1& Sims1::kind(congruence_kind ck) {
+    if (ck == congruence_kind::left && kind() != ck) {
+      presentation::reverse(_presentation);
+      reverse(_include);
+      reverse(_exclude);
+    }
+    _kind = ck;
+    return *this;
   }
 
-  template class detail::SimsBase<Sims1>;
-  template class detail::SimsBase<Sims2>;
-
-  Sims1& Sims1::init() {
-    return SimsBase::init();
-  }
+  ////////////////////////////////////////////////////////////////////////
+  // Sims2
+  ////////////////////////////////////////////////////////////////////////
 
   class Sims2::iterator_base::RuleContainer {
    private:
@@ -180,7 +465,7 @@ namespace libsemigroups {
   };
 
   ///////////////////////////////////////////////////////////////////////////////
-  // iterator_base nested class
+  // Sims2::iterator_base nested class
   ///////////////////////////////////////////////////////////////////////////////
 
   void Sims2::iterator_base::partial_copy_for_steal_from(
@@ -281,20 +566,6 @@ namespace libsemigroups {
       }
     }
     return true;
-  }
-
-  ////////////////////////////////////////////////////////////////////////
-  // Sims1
-  ////////////////////////////////////////////////////////////////////////
-
-  Sims1& Sims1::kind(congruence_kind ck) {
-    if (ck == congruence_kind::left && kind() != ck) {
-      presentation::reverse(_presentation);
-      reverse(_include);
-      reverse(_exclude);
-    }
-    _kind = ck;
-    return *this;
   }
 
   ////////////////////////////////////////////////////////////////////////
