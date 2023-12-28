@@ -718,9 +718,6 @@ namespace libsemigroups {
       };  // class iterator
 
      private:
-      ////////////////////////////////////////////////////////////////////////
-      // SimsBase nested classes - private
-      ////////////////////////////////////////////////////////////////////////
       class thread_runner;
       class thread_iterator;
 
@@ -791,30 +788,14 @@ namespace libsemigroups {
   class Sims1 : public detail::SimsBase<Sims1> {
     using SimsBase = detail::SimsBase<Sims1>;
 
+    // so that SimsBase can access iterator_base, PendingDef, etc
     friend SimsBase;
+    // so that Sims2 can access PendingDef
     friend Sims2;
 
     using iterator_base = IteratorBase;
 
-    struct PendingDef {
-      PendingDef() = default;
-
-      PendingDef(node_type   s,
-                 letter_type g,
-                 node_type   t,
-                 size_type   e,
-                 size_type   n,
-                 bool) noexcept
-          : source(s), generator(g), target(t), num_edges(e), num_nodes(n) {}
-
-      node_type   source;
-      letter_type generator;
-      node_type   target;
-      size_type   num_edges;  // Number of edges in the graph when
-                              // *this was added to the stack
-      size_type num_nodes;    // Number of nodes in the graph
-                              // after the definition is made
-    };
+    struct PendingDef;
 
    public:
     //! Type for the nodes in the associated WordGraph
@@ -1080,6 +1061,7 @@ namespace libsemigroups {
 
   class Sims2 : public detail::SimsBase<Sims2> {
     using SimsBase = detail::SimsBase<Sims2>;
+    // so that SimsBase can access iterator_base, PendingDef, etc
     friend SimsBase;
 
    public:
@@ -1106,19 +1088,20 @@ namespace libsemigroups {
       presentation(p);
     }
 
-   private:
-    struct PendingDef : public Sims1::PendingDef {
-      PendingDef() = default;
+    using SimsSettings::cbegin_long_rules;
+    using SimsSettings::exclude;
+    using SimsSettings::include;
+    using SimsSettings::number_of_threads;
+    using SimsSettings::presentation;
 
-      PendingDef(node_type   s,
-                 letter_type g,
-                 node_type   t,
-                 size_type   e,
-                 size_type   n,
-                 bool        tin) noexcept
-          : Sims1::PendingDef(s, g, t, e, n, tin), target_is_new_node(tin) {}
-      bool target_is_new_node;
-    };
+    using SimsBase::cbegin;
+    using SimsBase::cend;
+    using SimsBase::find_if;
+    using SimsBase::for_each;
+    using SimsBase::number_of_congruences;
+
+   private:
+    struct PendingDef;
 
     // This class collects some common aspects of the iterator and
     // thread_iterator nested classes. The mutex does nothing for <iterator>
@@ -1168,20 +1151,7 @@ namespace libsemigroups {
 
       using SimsBase::IteratorBase::stats;
     };  // class iterator_base
-
-   public:
-    using SimsSettings::cbegin_long_rules;
-    using SimsSettings::exclude;
-    using SimsSettings::include;
-    using SimsSettings::number_of_threads;
-    using SimsSettings::presentation;
-
-    using SimsBase::cbegin;
-    using SimsBase::cend;
-    using SimsBase::find_if;
-    using SimsBase::for_each;
-    using SimsBase::number_of_congruences;
-  };  // Sims2
+  };    // Sims2
 
   //! Defined in ``sims.hpp``.
   //!

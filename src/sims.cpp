@@ -78,6 +78,43 @@ namespace libsemigroups {
     return *this;
   }
 
+  ////////////////////////////////////////////////////////////////////////
+  // Sims1and2::PendingDef
+  ////////////////////////////////////////////////////////////////////////
+
+  struct Sims1::PendingDef {
+    PendingDef() = default;
+
+    PendingDef(node_type   s,
+               letter_type g,
+               node_type   t,
+               size_type   e,
+               size_type   n,
+               bool) noexcept
+        : source(s), generator(g), target(t), num_edges(e), num_nodes(n) {}
+
+    node_type   source;
+    letter_type generator;
+    node_type   target;
+    size_type   num_edges;  // Number of edges in the graph when
+                            // *this was added to the stack
+    size_type num_nodes;    // Number of nodes in the graph
+                            // after the definition is made
+  };
+
+  struct Sims2::PendingDef : public Sims1::PendingDef {
+    PendingDef() = default;
+
+    PendingDef(node_type   s,
+               letter_type g,
+               node_type   t,
+               size_type   e,
+               size_type   n,
+               bool        tin) noexcept
+        : Sims1::PendingDef(s, g, t, e, n, tin), target_is_new_node(tin) {}
+    bool target_is_new_node;
+  };
+
   namespace detail {
     ////////////////////////////////////////////////////////////////////////
     // SimsBase - public
