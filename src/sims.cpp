@@ -994,7 +994,7 @@ namespace libsemigroups {
   ////////////////////////////////////////////////////////////////////////
 
   Sims1& Sims1::kind(congruence_kind ck) {
-    if (ck == congruence_kind::left && kind() != ck) {
+    if (kind() != ck) {
       presentation::reverse(_presentation);
       reverse(_include);
       reverse(_exclude);

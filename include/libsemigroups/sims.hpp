@@ -526,12 +526,6 @@ namespace libsemigroups {
       return static_cast<Subclass const&>(*this);
     }
 
-    void reverse(std::vector<word_type>& vec) {
-      std::for_each(vec.begin(), vec.end(), [](word_type& w) {
-        std::reverse(w.begin(), w.end());
-      });
-    }
-
    private:
     template <typename OtherSubclass>
     SimsSettings& init_from(SimsSettings<OtherSubclass> const& that);
@@ -951,9 +945,7 @@ namespace libsemigroups {
     template <typename PresentationOfSomeKind>
     Sims1& presentation(PresentationOfSomeKind const& p) {
       SimsBase::presentation(p);
-      if (_kind == congruence_kind::left) {
-        presentation::reverse(_presentation);
-      }
+      reverse_if_left(_presentation);
       return *this;
     }
 
@@ -962,9 +954,7 @@ namespace libsemigroups {
     template <typename Arg, typename... Args>
     Sims1& include(Arg arg, Args&&... args) {
       SimsBase::include(arg, std::forward<Args>(args)...);
-      if (_kind == congruence_kind::left) {
-        SimsBase::reverse(_include);
-      }
+      reverse_if_left(_include);
       return *this;
     }
 
@@ -973,9 +963,7 @@ namespace libsemigroups {
     template <typename Arg, typename... Args>
     Sims1& exclude(Arg arg, Args&&... args) {
       SimsBase::exclude(arg, std::forward<Args>(args)...);
-      if (_kind == congruence_kind::left) {
-        SimsBase::reverse(_exclude);
-      }
+      reverse_if_left(_exclude);
       return *this;
     }
 
@@ -1146,6 +1134,26 @@ namespace libsemigroups {
     //! \sa
     //! \ref cbegin
     using SimsBase::cend;
+
+   private:
+    // TODO to cpp
+    void reverse(std::vector<word_type>& vec) {
+      std::for_each(vec.begin(), vec.end(), [](word_type& w) {
+        std::reverse(w.begin(), w.end());
+      });
+    }
+
+    void reverse_if_left(std::vector<word_type>& vec) {
+      if (kind() == congruence_kind::left) {
+        reverse(vec);
+      }
+    }
+
+    void reverse_if_left(Presentation<word_type>& p) {
+      if (kind() == congruence_kind::left) {
+        presentation::reverse(p);
+      }
+    }
   };
 
   class Sims2 : public detail::SimsBase<Sims2> {
