@@ -417,7 +417,7 @@ namespace libsemigroups {
     p.alphabet("ab");
     p.contains_empty_word(true);
     Sims2 s(p);
-    s.number_of_threads(4);  // FIXME fails if number of threads is >1
+    s.number_of_threads(4);
     REQUIRE(s.number_of_congruences(1) == 1);
     REQUIRE(s.number_of_congruences(2) == 7);    // verified with GAP
     REQUIRE(s.number_of_congruences(3) == 27);   // verified with GAP
@@ -580,7 +580,7 @@ namespace libsemigroups {
     p.alphabet("ab");
     p.contains_empty_word(false);  // FIXME: Method fails for non-monoids
     Sims2 s(p);
-    s.number_of_threads(1);
+    s.number_of_threads(4);
     // Number of congruences with up to 7 classes given in:
     // A. Bailey, M. Finn-Sell and R. Snocken
     // "SUBSEMIGROUP, IDEAL AND CONGRUENCE GROWTH OF FREE SEMIGROUPS"
