@@ -79,7 +79,7 @@ namespace libsemigroups {
     CongruenceInterface& operator=(CongruenceInterface const&) = default;
     CongruenceInterface& operator=(CongruenceInterface&&)      = default;
 
-    virtual ~CongruenceInterface() = default;
+    virtual ~CongruenceInterface();
 
     ////////////////////////////////////////////////////////////////////////////
     // CongruenceInterface - pure virtual - public

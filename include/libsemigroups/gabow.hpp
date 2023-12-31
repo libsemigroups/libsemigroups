@@ -57,7 +57,7 @@ namespace libsemigroups {
     Gabow(Gabow&&)                 = default;
     Gabow& operator=(Gabow const&) = default;
     Gabow& operator=(Gabow&&)      = default;
-    ~Gabow()                       = default;
+    ~Gabow();
 
     explicit Gabow(WordGraph<node_type> const& wg) : Gabow() {
       init(wg);

@@ -319,7 +319,7 @@ namespace libsemigroups {
     // init_XYZ_data is split into the function that really does the work
     // (really_init_XYZ_data) which is called once, and init_XYZ_data which
     // can be called very often.
-    inline void init_XYZ_data(size_t i) const {
+    void init_XYZ_data(size_t i) const {
       LIBSEMIGROUPS_ASSERT(i < _presentation.rules.size());
       if (_XYZ_data.empty()) {
         _XYZ_data.resize(_presentation.rules.size());

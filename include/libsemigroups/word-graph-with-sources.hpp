@@ -89,6 +89,8 @@ namespace libsemigroups {
     WordGraphWithSources& operator=(WordGraphWithSources const&) = default;
     WordGraphWithSources& operator=(WordGraphWithSources&&)      = default;
 
+    ~WordGraphWithSources();
+
     // the template is for uniformity of interface with FelschGraph
     template <bool = true>
     void set_target_no_checks(node_type c, label_type x, node_type d) noexcept {

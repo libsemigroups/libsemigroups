@@ -178,6 +178,8 @@ namespace libsemigroups {
     template <typename OtherSubclass>
     SimsSettings& init(SimsSettings<OtherSubclass> const& that);
 
+    ~SimsSettings();
+
     //! Returns the settings object of *this.
     //!
     //! The settings object contains all the settings that are common to
@@ -610,6 +612,9 @@ namespace libsemigroups {
     return static_cast<Subclass&>(*this);
   }
 
+  template <typename Subclass>
+  SimsSettings<Subclass>::~SimsSettings() = default;
+
   ////////////////////////////////////////////////////////////////////////
   // Sims1 - Sims2 - forward decl
   ////////////////////////////////////////////////////////////////////////
@@ -815,7 +820,7 @@ namespace libsemigroups {
       SimsBase(SimsBase&&)                 = default;
       SimsBase& operator=(SimsBase const&) = default;
       SimsBase& operator=(SimsBase&&)      = default;
-      ~SimsBase()                          = default;
+      ~SimsBase();
 
       Sims1or2& init();
 
@@ -1574,7 +1579,7 @@ namespace libsemigroups {
       const_rule_iterator& operator=(const_rule_iterator const&) = default;
       const_rule_iterator& operator=(const_rule_iterator&&)      = default;
 
-      ~const_rule_iterator() = default;
+      ~const_rule_iterator();
 
       [[nodiscard]] bool
       operator==(const_rule_iterator const& that) const noexcept {
@@ -1624,10 +1629,8 @@ namespace libsemigroups {
       return const_rule_iterator(&wg, wg.number_of_active_nodes(), 0);
     }
 
-    inline auto generating_pairs(Sims1::word_graph_type const& wg) {
-      return rx::iterator_range(cbegin_generating_pairs(wg),
-                                cend_generating_pairs(wg));
-    }
+    rx::iterator_range<const_rule_iterator>
+    generating_pairs(Sims1::word_graph_type const& wg);
 
   }  // namespace sims
 

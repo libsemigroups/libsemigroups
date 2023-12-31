@@ -52,6 +52,23 @@ namespace libsemigroups {
   }
 
   template <typename Word>
+  Presentation<Word>::Presentation(Presentation const&) = default;
+
+  template <typename Word>
+  Presentation<Word>::Presentation(Presentation&&) = default;
+
+  template <typename Word>
+  Presentation<Word>& Presentation<Word>::operator=(Presentation<Word> const&)
+      = default;
+
+  template <typename Word>
+  Presentation<Word>& Presentation<Word>::operator=(Presentation<Word>&&)
+      = default;
+
+  template <typename Word>
+  Presentation<Word>::~Presentation() = default;
+
+  template <typename Word>
   Presentation<Word>& Presentation<Word>::alphabet(size_type n) {
     if (n > std::numeric_limits<letter_type>::max()
                 - std::numeric_limits<letter_type>::min()) {

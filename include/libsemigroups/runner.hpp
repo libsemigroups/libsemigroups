@@ -557,16 +557,7 @@ namespace libsemigroups {
     //!
     //! \sa started()
     // Not noexcept because finished_impl isn't
-    [[nodiscard]] inline bool finished() const {
-      if (started() && !dead() && finished_impl()) {
-        _state = state::not_running;
-        return true;
-      } else {
-        return false;
-      }
-      // since kill() may leave the object in an invalid state we only return
-      // true here if we are not dead and the object thinks it is finished.
-    }
+    [[nodiscard]] bool finished() const;
 
     //! Check if \ref run has been called at least once before.
     //!

@@ -173,10 +173,10 @@ namespace libsemigroups {
     FelschGraph() = default;
     FelschGraph& init();
 
-    FelschGraph(FelschGraph const&)            = default;
-    FelschGraph(FelschGraph&&)                 = default;
-    FelschGraph& operator=(FelschGraph const&) = default;
-    FelschGraph& operator=(FelschGraph&&)      = default;
+    FelschGraph(FelschGraph const&);
+    FelschGraph(FelschGraph&&);
+    FelschGraph& operator=(FelschGraph const&);
+    FelschGraph& operator=(FelschGraph&&);
 
     explicit FelschGraph(Presentation<Word> const& p);
     FelschGraph& init(Presentation<Word> const& p);
@@ -199,6 +199,8 @@ namespace libsemigroups {
 
     // TODO remove and replace with an init(Presentation, WordGraph)
     FelschGraph& init(WordGraph<Node>&& ad);
+
+    ~FelschGraph();
 
     // This is *not* the same as init(p) since we only replace the presentation
     // but otherwise do not modify the graph, whereas init(p) returns this to

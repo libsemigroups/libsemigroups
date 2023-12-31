@@ -123,16 +123,18 @@ namespace libsemigroups {
     Presentation& init();
 
     //! Default copy constructor.
-    Presentation(Presentation const&) = default;
+    Presentation(Presentation const&);
 
     //! Default move constructor.
-    Presentation(Presentation&&) = default;
+    Presentation(Presentation&&);
 
     //! Default copy assignment operator.
-    Presentation& operator=(Presentation const&) = default;
+    Presentation& operator=(Presentation const&);
 
     //! Default move assignment operator.
-    Presentation& operator=(Presentation&&) = default;
+    Presentation& operator=(Presentation&&);
+
+    ~Presentation();
 
     //! Returns the alphabet of the presentation.
     //!

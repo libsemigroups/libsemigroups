@@ -32,6 +32,7 @@
 
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wshadow"
+#pragma GCC diagnostic ignored "-Winline"
 #if !defined(__clang__)
 #pragma GCC diagnostic ignored "-Wmaybe-uninitialized"
 #endif

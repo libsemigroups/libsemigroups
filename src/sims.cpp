@@ -233,6 +233,9 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////
 
     template <typename Sims1or2>
+    SimsBase<Sims1or2>::~SimsBase() = default;
+
+    template <typename Sims1or2>
     Sims1or2& SimsBase<Sims1or2>::init() {
       if constexpr (std::is_same_v<Sims1or2, Sims1>) {
         report_prefix("Sims1");
@@ -1311,6 +1314,8 @@ namespace libsemigroups {
   }
 
   namespace sims {
+    const_rule_iterator::~const_rule_iterator() = default;
+
     const_rule_iterator::const_rule_iterator(word_graph_type const* ptr,
                                              node_type              source,
                                              label_type             gen)
@@ -1370,6 +1375,12 @@ namespace libsemigroups {
         return true;
       }
       return false;
+    }
+
+    rx::iterator_range<const_rule_iterator>
+    generating_pairs(Sims1::word_graph_type const& wg) {
+      return rx::iterator_range(cbegin_generating_pairs(wg),
+                                cend_generating_pairs(wg));
     }
   }  // namespace sims
 }  // namespace libsemigroups

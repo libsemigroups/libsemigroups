@@ -330,6 +330,8 @@ namespace libsemigroups {
     return *this;
   }
 
+  ToddCoxeter::~ToddCoxeter() = default;
+
   ////////////////////////////////////////////////////////////////////////
   // ToddCoxeter - settings - public
   ////////////////////////////////////////////////////////////////////////
@@ -977,5 +979,9 @@ namespace libsemigroups {
 #if !defined(__clang__)
 #pragma GCC diagnostic pop
 #endif
+    std::vector<std::vector<word_type>> non_trivial_classes(ToddCoxeter& tc1,
+                                                            ToddCoxeter& tc2) {
+      return non_trivial_classes(tc1, normal_forms(tc2));
+    }
   }  // namespace todd_coxeter
 }  // namespace libsemigroups

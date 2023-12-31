@@ -56,6 +56,8 @@ namespace libsemigroups {
       FelschTree& operator=(FelschTree const&) = default;
       FelschTree& operator=(FelschTree&&)      = default;
 
+      ~FelschTree();
+
       void add_relations(word_iterator first, word_iterator last);
 
       void push_back(letter_type x) {
