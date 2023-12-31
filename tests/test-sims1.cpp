@@ -258,33 +258,32 @@ namespace libsemigroups {
 
     auto it = S.cbegin(3);
     REQUIRE((sims::generating_pairs(*it) | rx::to_vector())
-            == std::vector<relation_type>({{{1}, {0}},
-                                           {{2}, {0}},
-                                           {{3}, {0}},
-                                           {{4}, {0}},
-                                           {{5}, {0}},
-                                           {{6}, {0}},
-                                           {{0, 0}, {0}},
-                                           {{0, 1}, {0}},
-                                           {{0, 2}, {0}},
-                                           {{0, 3}, {0}},
-                                           {{0, 4}, {0}},
-                                           {{0, 5}, {0}},
-                                           {{0, 6}, {0}}}));
+            == std::vector<relation_type>({{1_w, 0_w},
+                                           {2_w, 0_w},
+                                           {3_w, 0_w},
+                                           {4_w, 0_w},
+                                           {5_w, 0_w},
+                                           {6_w, 0_w},
+                                           {00_w, 0_w},
+                                           {01_w, 0_w},
+                                           {02_w, 0_w},
+                                           {03_w, 0_w},
+                                           {04_w, 0_w},
+                                           {05_w, 0_w},
+                                           {06_w, 0_w}}));
 
     check_generating_pairs(S, *it);
 
     ++it;
     check_generating_pairs(S, *it);
-    REQUIRE((sims::generating_pairs(*it) | rx::to_vector())
-            == std::vector<relation_type>(
-                {{{1}, {0}},    {{2}, {0}},    {{3}, {0}},    {{6}, {0}},
-                 {{0, 0}, {0}}, {{0, 1}, {0}}, {{0, 2}, {0}}, {{0, 3}, {0}},
-                 {{0, 4}, {4}}, {{0, 5}, {5}}, {{0, 6}, {0}}, {{4, 0}, {4}},
-                 {{4, 1}, {4}}, {{4, 2}, {4}}, {{4, 3}, {4}}, {{4, 4}, {5}},
-                 {{4, 5}, {0}}, {{4, 6}, {4}}, {{5, 0}, {5}}, {{5, 1}, {5}},
-                 {{5, 2}, {5}}, {{5, 3}, {5}}, {{5, 4}, {0}}, {{5, 5}, {4}},
-                 {{5, 6}, {5}}}));
+    REQUIRE(
+        (sims::generating_pairs(*it) | rx::to_vector())
+        == std::vector<relation_type>(
+            {{1_w, 0_w},  {2_w, 0_w},  {3_w, 0_w},  {6_w, 0_w},  {00_w, 0_w},
+             {01_w, 0_w}, {02_w, 0_w}, {03_w, 0_w}, {04_w, 4_w}, {05_w, 5_w},
+             {06_w, 0_w}, {40_w, 4_w}, {41_w, 4_w}, {42_w, 4_w}, {43_w, 4_w},
+             {44_w, 5_w}, {45_w, 0_w}, {46_w, 4_w}, {50_w, 5_w}, {51_w, 5_w},
+             {52_w, 5_w}, {53_w, 5_w}, {54_w, 0_w}, {55_w, 4_w}, {56_w, 5_w}}));
   }
 
   LIBSEMIGROUPS_TEST_CASE("Sims1",
@@ -367,12 +366,12 @@ namespace libsemigroups {
     auto rg = ReportGuard(false);
     auto p  = partition_monoid(3, author::Machine);
     REQUIRE(!p.contains_empty_word());
-    REQUIRE(p.alphabet() == word_type({0, 1, 2, 3, 4}));
+    REQUIRE(p.alphabet() == 01234_w);
 
     Sims1 S(congruence_kind::right);
     S.presentation(p).long_rule_length(11).number_of_threads(
         4);  // This actually helps here!
-    REQUIRE(S.number_of_congruences(17) == 1589);
+    REQUIRE(S.number_of_congruences(17) == 1'589);
   }
 
   LIBSEMIGROUPS_TEST_CASE("Sims1",
@@ -488,8 +487,8 @@ namespace libsemigroups {
 
     REQUIRE(presentation::length(p) == 48);
     REQUIRE(p.alphabet().size() == 4);
-    REQUIRE(*presentation::shortest_rule(p) == word_type({0, 0}));
-    REQUIRE(*(presentation::shortest_rule(p) + 1) == word_type({}));
+    REQUIRE(*presentation::shortest_rule(p) == 00_w);
+    REQUIRE(*(presentation::shortest_rule(p) + 1) == ""_w);
     REQUIRE(presentation::longest_rule_length(p) == 8);
 
     Sims1 C(congruence_kind::right);
@@ -738,8 +737,8 @@ namespace libsemigroups {
     REQUIRE(p.alphabet().size() == 12);
     REQUIRE(presentation::length(p) == 660);
 
-    REQUIRE(*presentation::shortest_rule(p) == word_type({0}));
-    REQUIRE(*(presentation::shortest_rule(p) + 1) == word_type({3}));
+    REQUIRE(*presentation::shortest_rule(p) == 0_w);
+    REQUIRE(*(presentation::shortest_rule(p) + 1) == 3_w);
 
     presentation::remove_redundant_generators(p);
 
@@ -748,12 +747,12 @@ namespace libsemigroups {
     presentation::sort_rules(p);
 
     REQUIRE(presentation::shortest_rule_length(p) == 3);
-    REQUIRE(*presentation::shortest_rule(p) == word_type({0, 0}));
-    REQUIRE(*(presentation::shortest_rule(p) + 1) == word_type({0}));
+    REQUIRE(*presentation::shortest_rule(p) == 00_w);
+    REQUIRE(*(presentation::shortest_rule(p) + 1) == 0_w);
 
     REQUIRE(presentation::longest_rule_length(p) == 6);
-    REQUIRE(*presentation::longest_rule(p) == word_type({0, 4, 8}));
-    REQUIRE(*(presentation::longest_rule(p) + 1) == word_type({0, 2, 8}));
+    REQUIRE(*presentation::longest_rule(p) == "048"_w);
+    REQUIRE(*(presentation::longest_rule(p) + 1) == "028"_w);
 
     REQUIRE(p.alphabet().size() == 6);
     REQUIRE(presentation::length(p) == 462);
@@ -1018,13 +1017,13 @@ namespace libsemigroups {
     auto                    rg = ReportGuard(false);
     Presentation<word_type> p;
     p.alphabet(4);
-    presentation::add_rule_no_checks(p, {1, 2, 1}, {1, 1});
-    presentation::add_rule_no_checks(p, {3, 3}, {1, 1});
-    presentation::add_rule_no_checks(p, {1, 1, 1}, {1, 1});
-    presentation::add_rule_no_checks(p, {3, 2}, {2, 3});
-    presentation::add_rule_no_checks(p, {3, 1}, {1, 1});
-    presentation::add_rule_no_checks(p, {2, 2}, {2});
-    presentation::add_rule_no_checks(p, {1, 3}, {1, 1});
+    presentation::add_rule_no_checks(p, 121_w, 11_w);
+    presentation::add_rule_no_checks(p, 33_w, 11_w);
+    presentation::add_rule_no_checks(p, 111_w, 11_w);
+    presentation::add_rule_no_checks(p, 32_w, 23_w);
+    presentation::add_rule_no_checks(p, 31_w, 11_w);
+    presentation::add_rule_no_checks(p, 22_w, 2_w);
+    presentation::add_rule_no_checks(p, 13_w, 11_w);
     p.validate();
     Sims1 C(congruence_kind::right);
     C.presentation(p);
@@ -1037,13 +1036,13 @@ namespace libsemigroups {
                           "[quick][sims1]") {
     auto                    rg = ReportGuard(false);
     Presentation<word_type> p;
-    presentation::add_rule_no_checks(p, {1, 2, 1}, {1, 1});
-    presentation::add_rule_no_checks(p, {3, 3}, {1, 1});
-    presentation::add_rule_no_checks(p, {1, 1, 1}, {1, 1});
-    presentation::add_rule_no_checks(p, {3, 2}, {2, 3});
-    presentation::add_rule_no_checks(p, {3, 1}, {1, 1});
-    presentation::add_rule_no_checks(p, {2, 2}, {2});
-    presentation::add_rule_no_checks(p, {1, 3}, {1, 1});
+    presentation::add_rule_no_checks(p, 121_w, 11_w);
+    presentation::add_rule_no_checks(p, 33_w, 11_w);
+    presentation::add_rule_no_checks(p, 111_w, 11_w);
+    presentation::add_rule_no_checks(p, 32_w, 23_w);
+    presentation::add_rule_no_checks(p, 31_w, 11_w);
+    presentation::add_rule_no_checks(p, 22_w, 2_w);
+    presentation::add_rule_no_checks(p, 13_w, 11_w);
     p.alphabet_from_rules();
     p.validate();
 
@@ -1060,12 +1059,12 @@ namespace libsemigroups {
     Presentation<word_type> p;
     p.contains_empty_word(true);
 
-    //          a  A  b  B  c  C
-    p.alphabet({0, 1, 2, 3, 4, 5});
-    presentation::add_inverse_rules(p, {1, 0, 3, 2, 5, 4});
-    presentation::add_rule(p, {0, 0, 5, 0, 4}, {});
-    presentation::add_rule(p, {0, 4, 2, 2, 1, 5, 2}, {});
-    presentation::add_rule(p, {1, 3, 0, 2, 4, 4, 4}, {});
+    //         aAbBcC
+    p.alphabet(012345_w);
+    presentation::add_inverse_rules(p, 103254_w);
+    presentation::add_rule(p, 00504_w, {});
+    presentation::add_rule(p, 0422152_w, {});
+    presentation::add_rule(p, 1302444_w, {});
     Sims1 S(congruence_kind::right);
     S.presentation(p);
     REQUIRE(S.number_of_congruences(3) == 14);
@@ -1109,7 +1108,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("Sims1",
                           "034",
                           "cbegin_long_rules",
-                          "[quick][sims1]") {
+                          "[standard][sims1]") {
     auto                    rg = ReportGuard(false);
     Presentation<word_type> p;
     p.contains_empty_word(true);
@@ -1125,33 +1124,33 @@ namespace libsemigroups {
     // R := [ a*a*c^-1*a*c, a*c*b*b*a^-1*c^-1*b, a^-1*b^-1*a*b*c*c*c];
     // G := F/ R;
     // LowIndexSubgroups(G, 3); # returns 14
-    // Sims1 S(congruence_kind::right);
-    // S.presentation(p);
-    // REQUIRE(S.number_of_congruences(3) == 14);
-    // REQUIRE(S.number_of_congruences(4) == 14);
+    Sims1 S(congruence_kind::right);
+    S.presentation(p);
+    REQUIRE(S.number_of_congruences(3) == 14);
+    REQUIRE(S.number_of_congruences(4) == 14);
 
-    // REQUIRE_THROWS_AS(S.cbegin_long_rules(p.rules.size() + 1),
-    //                   LibsemigroupsException);
-    // REQUIRE_THROWS_AS(S.cbegin_long_rules(9), LibsemigroupsException);
-    // REQUIRE_NOTHROW(S.cbegin_long_rules(0));
+    REQUIRE_THROWS_AS(S.cbegin_long_rules(p.rules.size() + 1),
+                      LibsemigroupsException);
+    REQUIRE_THROWS_AS(S.cbegin_long_rules(9), LibsemigroupsException);
+    REQUIRE_NOTHROW(S.cbegin_long_rules(0));
 
-    // REQUIRE(!S.presentation().rules.empty());
+    REQUIRE(!S.presentation().rules.empty());
 
-    // auto const& rules = S.presentation().rules;
+    auto const& rules = S.presentation().rules;
 
-    // for (size_t i = 0; i <= rules.size() / 2; ++i) {
-    //   S.cbegin_long_rules(2 * i);
-    //   REQUIRE(static_cast<size_t>(
-    //               std::distance(rules.cbegin(), S.cbegin_long_rules()))
-    //           == 2 * i);
-    // }
-    // REQUIRE(S.presentation().rules.size() == p.rules.size());
-    // for (size_t i = p.rules.size() / 2; i > 0; --i) {
-    //   S.cbegin_long_rules(2 * i);
-    //   REQUIRE(static_cast<size_t>(
-    //               std::distance(rules.cbegin(), S.cbegin_long_rules()))
-    //           == 2 * i);
-    // }
+    for (size_t i = 0; i <= rules.size() / 2; ++i) {
+      S.cbegin_long_rules(2 * i);
+      REQUIRE(static_cast<size_t>(
+                  std::distance(rules.cbegin(), S.cbegin_long_rules()))
+              == 2 * i);
+    }
+    REQUIRE(S.presentation().rules.size() == p.rules.size());
+    for (size_t i = p.rules.size() / 2; i > 0; --i) {
+      S.cbegin_long_rules(2 * i);
+      REQUIRE(static_cast<size_t>(
+                  std::distance(rules.cbegin(), S.cbegin_long_rules()))
+              == 2 * i);
+    }
 
     Presentation<word_type> q;
     q.contains_empty_word(p.contains_empty_word()).alphabet(p.alphabet());
@@ -1178,47 +1177,45 @@ namespace libsemigroups {
     });
     REQUIRE(num == 14);  // 14 is the correct value
 
-    // num = 0;
+    num = 0;
 
-    // // REQUIRE(rules.size() == 18);
-    // // REQUIRE(S.number_of_long_rules() == 8);
-    // S.number_of_threads(1);
-    // REQUIRE(S.number_of_congruences(3) == 5);
-    // REQUIRE(rules.size() == 18);
-    // S.for_each(3, [&](auto const& wg) {
-    //   REQUIRE(wg.out_degree() == 6);
-    //   num += word_graph::is_compatible(wg,
-    //                                    wg.cbegin_nodes(),
-    //                                    wg.cbegin_nodes()
-    //                                        + wg.number_of_active_nodes(),
-    //                                    rules.cbegin(),
-    //                                    S.cbegin_long_rules())
-    //          && word_graph::is_complete(wg,
-    //                                     wg.cbegin_nodes(),
-    //                                     wg.cbegin_nodes()
-    //                                         + wg.number_of_active_nodes());
-    // });
-    // REQUIRE(S.presentation().rules == p.rules);
-    // REQUIRE(num == 5);
-    // S.clear_long_rules();
-    // num = 0;
-    // REQUIRE(rules.size() == 18);
-    // REQUIRE(S.number_of_threads() == 1);
-    // REQUIRE(S.presentation().rules == p.rules);
-    // REQUIRE(S.number_of_congruences(3) == 14);
-    // S.for_each(3, [&](auto const& wg) {
-    //   REQUIRE(wg.out_degree() == 6);
-    //   num += word_graph::is_compatible(wg,
-    //                                    wg.cbegin_nodes(),
-    //                                    wg.cend_nodes(),
-    //                                    rules.cbegin(),
-    //                                    S.cbegin_long_rules())
-    //          && word_graph::is_complete(wg,
-    //                                     wg.cbegin_nodes(),
-    //                                     wg.cbegin_nodes()
-    //                                         + wg.number_of_active_nodes());
-    // });
-    // REQUIRE(num == 14);
+    S.number_of_threads(1);
+    REQUIRE(S.number_of_congruences(3) == 14);
+    REQUIRE(rules.size() == 18);
+    S.for_each(3, [&](auto const& wg) {
+      REQUIRE(wg.out_degree() == 6);
+      num += word_graph::is_compatible(wg,
+                                       wg.cbegin_nodes(),
+                                       wg.cbegin_nodes()
+                                           + wg.number_of_active_nodes(),
+                                       rules.cbegin(),
+                                       S.cbegin_long_rules())
+             && word_graph::is_complete(wg,
+                                        wg.cbegin_nodes(),
+                                        wg.cbegin_nodes()
+                                            + wg.number_of_active_nodes());
+    });
+    REQUIRE(S.presentation().rules == p.rules);
+    REQUIRE(num == 14);
+    S.clear_long_rules();
+    num = 0;
+    REQUIRE(rules.size() == 18);
+    REQUIRE(S.number_of_threads() == 1);
+    REQUIRE(S.presentation().rules == p.rules);
+    REQUIRE(S.number_of_congruences(3) == 14);
+    S.for_each(3, [&](auto const& wg) {
+      REQUIRE(wg.out_degree() == 6);
+      num += word_graph::is_compatible(wg,
+                                       wg.cbegin_nodes(),
+                                       wg.cend_nodes(),
+                                       rules.cbegin(),
+                                       S.cbegin_long_rules())
+             && word_graph::is_complete(wg,
+                                        wg.cbegin_nodes(),
+                                        wg.cbegin_nodes()
+                                            + wg.number_of_active_nodes());
+    });
+    REQUIRE(num == 14);
   }
 
   LIBSEMIGROUPS_TEST_CASE("Sims1", "035", "stats", "[quick][sims1]") {
@@ -1226,12 +1223,12 @@ namespace libsemigroups {
     Presentation<word_type> p;
     p.contains_empty_word(true);
 
-    //          a  A  b  B  c  C
-    p.alphabet({0, 1, 2, 3, 4, 5});
-    presentation::add_inverse_rules(p, {1, 0, 3, 2, 5, 4});
-    presentation::add_rule(p, {0, 0, 5, 0, 4}, {});
-    presentation::add_rule(p, {0, 4, 2, 2, 1, 5, 2}, {});
-    presentation::add_rule(p, {1, 3, 0, 2, 4, 4, 4}, {});
+    //         aAbBcC
+    p.alphabet(012345_w);
+    presentation::add_inverse_rules(p, 103254_w);
+    presentation::add_rule(p, 00504_w, {});
+    presentation::add_rule(p, 0422152_w, {});
+    presentation::add_rule(p, 1302444_w, {});
     Sims1 S(congruence_kind::right);
     S.presentation(p);
 
@@ -1249,10 +1246,10 @@ namespace libsemigroups {
                           "[quick][sims1]") {
     Presentation<word_type> p;
     p.contains_empty_word(true);
-    p.alphabet({0, 1});
-    presentation::add_rule(p, {0, 0, 0}, {0});
-    presentation::add_rule(p, {1, 1}, {1});
-    presentation::add_rule(p, {0, 1, 0, 1}, {0});
+    p.alphabet(01_w);
+    presentation::add_rule(p, 000_w, 0_w);
+    presentation::add_rule(p, 11_w, 1_w);
+    presentation::add_rule(p, 0101_w, 0_w);
 
     {
       Sims1 S(congruence_kind::right);
@@ -1307,7 +1304,7 @@ namespace libsemigroups {
     auto rg = ReportGuard(true);
     auto p  = partition_monoid(3, author::Machine);
     REQUIRE(!p.contains_empty_word());
-    REQUIRE(p.alphabet() == word_type({0, 1, 2, 3, 4}));
+    REQUIRE(p.alphabet() == 01234_w);
 
     auto d = RepOrc()
                  .presentation(p)
@@ -1398,22 +1395,22 @@ namespace libsemigroups {
     auto                    rg = ReportGuard(false);
     Presentation<word_type> p;
     p.contains_empty_word(true);
-    p.alphabet({0, 1, 2, 3, 4});
-    presentation::add_rule(p, {0, 0}, {});
-    presentation::add_rule(p, {1, 1}, {});
-    presentation::add_rule(p, {2, 2}, {});
-    presentation::add_rule(p, {3, 3}, {});
-    presentation::add_rule(p, {4, 4}, {});
-    presentation::add_rule(p, {0, 1, 0, 1, 0, 1}, {});
-    presentation::add_rule(p, {0, 2, 0, 2}, {});
-    presentation::add_rule(p, {0, 3, 0, 3}, {});
-    presentation::add_rule(p, {0, 4, 0, 4}, {});
-    presentation::add_rule(p, {1, 2, 1, 2, 1, 2}, {});
-    presentation::add_rule(p, {1, 3, 1, 3}, {});
-    presentation::add_rule(p, {1, 4, 1, 4}, {});
-    presentation::add_rule(p, {2, 3, 2, 3, 2, 3}, {});
-    presentation::add_rule(p, {2, 4, 2, 4}, {});
-    presentation::add_rule(p, {3, 4, 3, 4, 3, 4}, {});
+    p.alphabet(01234_w);
+    presentation::add_rule(p, 00_w, {});
+    presentation::add_rule(p, 11_w, {});
+    presentation::add_rule(p, 22_w, {});
+    presentation::add_rule(p, 33_w, {});
+    presentation::add_rule(p, 44_w, {});
+    presentation::add_rule(p, 010101_w, {});
+    presentation::add_rule(p, 0202_w, {});
+    presentation::add_rule(p, 0303_w, {});
+    presentation::add_rule(p, 0404_w, {});
+    presentation::add_rule(p, 121212_w, {});
+    presentation::add_rule(p, 1313_w, {});
+    presentation::add_rule(p, 1414_w, {});
+    presentation::add_rule(p, 232323_w, {});
+    presentation::add_rule(p, 2424_w, {});
+    presentation::add_rule(p, 343434_w, {});
     REQUIRE(MinimalRepOrc()
                 .presentation(p)
                 .target_size(0)
