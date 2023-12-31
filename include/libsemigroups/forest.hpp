@@ -28,6 +28,7 @@
 #include <vector>            // for vector, allocator, operator==
 
 #include "constants.hpp"  // for Undefined, Max, UNDEFINED, operator!=
+#include "debug.hpp"      // for LIBSEMIGROUPS_ASSERT
 #include "exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
 #include "types.hpp"      // for word_type
 
@@ -275,6 +276,7 @@ namespace libsemigroups {
     void path_to_root_no_checks(word_type& w, node_type i) const {
       while (parent_no_checks(i) != UNDEFINED) {
         w.push_back(label_no_checks(i));
+        LIBSEMIGROUPS_ASSERT(i != parent_no_checks(i));
         i = parent_no_checks(i);
       }
     }

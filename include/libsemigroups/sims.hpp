@@ -22,18 +22,13 @@
 // TODO(Sims1):
 // * implement joins (HopcroftKarp), meets (not sure), containment (find join
 //   and check equality)?
-// * generating pairs for congruences defined by "word_graph"?
 // * is 2-sided congruence method. One approach would be to compute the kernel
 //   of the associated homomorphism, which is the largest 2-sided congruence
 //   contained in the right congruence. Not sure if this is a good approach.
+//   Another approach would be to use the same method as in Sims2, find the
+//   relations arising from "non-tree" edges and check if the word graph is
+//   compatible from every node with each of these relations.
 // * a version which allows specifying the word_graph to Sims1 too
-//
-// Notes:
-// 1. In 2022, when first writing this file, JDM tried templating the word_type
-//    used by the presentations in Sims1 (so that we could use StaticVector1
-//    for example, using smaller integer types for letters, and the stack to
-//    hold the words rather than the heap), but this didn't seem to give any
-//    performance improvement, and so I backed out the changes.
 
 #ifndef LIBSEMIGROUPS_SIMS_HPP_
 #define LIBSEMIGROUPS_SIMS_HPP_
@@ -57,6 +52,8 @@
 #include "word-graph.hpp"       // for WordGraph
 
 #include "detail/iterator.hpp"  // for detail/default_postfix_increment
+
+#include "rx/ranges.hpp"
 
 namespace libsemigroups {
 
@@ -738,6 +735,10 @@ namespace libsemigroups {
         size_type maximum_number_of_classes() const noexcept {
           return _max_num_classes;
         }
+
+        Sims1or2 const& sims() const noexcept {
+          return *_sims1or2;
+        }
       };  // class IteratorBase
 
      public:
@@ -1033,8 +1034,6 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if \p n is \c 0.
     //! \throws LibsemigroupsException if `presentation()` has 0-generators and
     //! 0-relations (i.e. it has not been initialised).
-    // void for_each(size_type                                   n,
-    //              std::function<void(word_graph_type const&)> pred) const;
     using SimsBase::for_each;
 
     //! Apply the function \p pred to every one-sided congruence with at most \p
@@ -1136,7 +1135,6 @@ namespace libsemigroups {
     using SimsBase::cend;
 
    private:
-    // TODO to cpp
     void reverse(std::vector<word_type>& vec) {
       std::for_each(vec.begin(), vec.end(), [](word_type& w) {
         std::reverse(w.begin(), w.end());
@@ -1528,6 +1526,110 @@ namespace libsemigroups {
     //! \exceptions \no_libsemigroups_except
     [[nodiscard]] Sims1::word_graph_type word_graph() const;
   };
+
+  namespace sims {
+    // This is similar to FroidurePinBase::const_rule_iterator
+    class const_rule_iterator {
+     public:
+      using size_type = typename std::vector<relation_type>::size_type;
+      using difference_type =
+          typename std::vector<relation_type>::difference_type;
+      using const_pointer = typename std::vector<relation_type>::const_pointer;
+      using pointer       = typename std::vector<relation_type>::pointer;
+      using const_reference =
+          typename std::vector<relation_type>::const_reference;
+      using reference         = typename std::vector<relation_type>::reference;
+      using value_type        = relation_type;
+      using iterator_category = std::forward_iterator_tag;
+
+      using word_graph_type = Sims1::word_graph_type;
+      using node_type       = word_graph_type::node_type;
+      using label_type      = word_graph_type::label_type;
+
+     private:
+      word_graph_type const* _word_graph;
+      label_type             _gen;
+      node_type              _source;
+      mutable relation_type  _relation;
+      Forest                 _tree;
+
+      // Set source to ptr->number_of_active_nodes() for cend
+      const_rule_iterator(word_graph_type const* ptr,
+                          node_type              source,
+                          label_type             gen);
+
+      // To allow the use of the above constructor
+      friend const_rule_iterator
+      cbegin_generating_pairs(Sims1::word_graph_type const&);
+
+      // To allow the use of the above constructor
+      friend const_rule_iterator
+      cend_generating_pairs(Sims1::word_graph_type const&);
+
+     public:
+      // TODO add noexcept?
+      const_rule_iterator()                                      = default;
+      const_rule_iterator(const_rule_iterator const&)            = default;
+      const_rule_iterator(const_rule_iterator&&)                 = default;
+      const_rule_iterator& operator=(const_rule_iterator const&) = default;
+      const_rule_iterator& operator=(const_rule_iterator&&)      = default;
+
+      ~const_rule_iterator() = default;
+
+      [[nodiscard]] bool
+      operator==(const_rule_iterator const& that) const noexcept {
+        return _gen == that._gen && _source == that._source;
+      }
+
+      [[nodiscard]] bool
+      operator!=(const_rule_iterator const& that) const noexcept {
+        return !(this->operator==(that));
+      }
+
+      [[nodiscard]] const_reference operator*() const {
+        populate_relation();
+        return _relation;
+      }
+
+      [[nodiscard]] const_pointer operator->() const {
+        populate_relation();
+        return &_relation;
+      }
+
+      // prefix
+      const_rule_iterator const& operator++();
+
+      // postfix
+      const_rule_iterator operator++(int) noexcept {
+        return detail::default_postfix_increment(*this);
+      }
+
+      void swap(const_rule_iterator& that) noexcept;
+
+     private:
+      [[nodiscard]] bool at_end() const noexcept {
+        return _source == _word_graph->number_of_active_nodes();
+      }
+
+      bool populate_relation() const;
+    };  // const_rule_iterator
+
+    inline const_rule_iterator
+    cbegin_generating_pairs(Sims1::word_graph_type const& wg) {
+      return const_rule_iterator(&wg, 0, 0);
+    }
+
+    inline const_rule_iterator
+    cend_generating_pairs(Sims1::word_graph_type const& wg) {
+      return const_rule_iterator(&wg, wg.number_of_active_nodes(), 0);
+    }
+
+    inline auto generating_pairs(Sims1::word_graph_type const& wg) {
+      return rx::iterator_range(cbegin_generating_pairs(wg),
+                                cend_generating_pairs(wg));
+    }
+
+  }  // namespace sims
 
 }  // namespace libsemigroups
 

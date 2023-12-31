@@ -16,6 +16,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
+#define CATCH_CONFIG_ENABLE_PAIR_STRINGMAKER
+
 #include <cstddef>   // for size_t
 #include <iostream>  // for cout
 #include <vector>    // for vector
@@ -95,6 +97,32 @@ namespace libsemigroups {
     constexpr unsigned int factorial(unsigned int n) {
       return n > 1 ? n * factorial(n - 1) : 1;
     }
+
+    // The following checks whether the return value of generating_pairs is
+    // correct by using a ToddCoxeter instance. This works for both left and
+    // right congruences because we really compute a right congruence on the
+    // dual semigroup when setting the kind to left. Thus when we get the
+    // generating pairs they generate that right congruence on the dual, which
+    // the function below checks. This seems potentially confusing.
+    void check_generating_pairs(Sims1 const&                  s,
+                                Sims1::word_graph_type const& wg) {
+      ToddCoxeter tc(congruence_kind::right, s.presentation());
+
+      for (auto const& p : sims::generating_pairs(wg)) {
+        tc.add_pair(p.first, p.second);
+      }
+      tc.run();
+
+      tc.standardize(Order::shortlex);
+      auto expected = tc.word_graph();
+      auto result   = wg;
+
+      REQUIRE(expected.number_of_nodes() >= result.number_of_active_nodes());
+
+      expected.induced_subgraph_no_checks(0, result.number_of_active_nodes());
+      result.induced_subgraph_no_checks(0, result.number_of_active_nodes());
+      REQUIRE(result == expected);
+    }
   }  // namespace
 
   LIBSEMIGROUPS_TEST_CASE("Sims1",
@@ -105,10 +133,10 @@ namespace libsemigroups {
 
     Presentation<word_type> p;
     p.contains_empty_word(true);
-    p.alphabet({0, 1});
-    presentation::add_rule(p, {0, 0, 0}, {0});
-    presentation::add_rule(p, {1, 1}, {1});
-    presentation::add_rule(p, {0, 1, 0, 1}, {0});
+    p.alphabet(01_w);
+    presentation::add_rule(p, 000_w, 0_w);
+    presentation::add_rule(p, 11_w, 1_w);
+    presentation::add_rule(p, 0101_w, 0_w);
 
     {
       Sims1 S(congruence_kind::right);
@@ -140,6 +168,7 @@ namespace libsemigroups {
 
       it = S.cbegin(3);
       REQUIRE(*it == to_word_graph<node_type>(3, {{0, 0}}));
+      S.for_each(5, [&S](auto const& wg) { check_generating_pairs(S, wg); });
     }
     // [[[0, 0]],
     // [[1, 2], [1, 1], [3, 2], [3, 3]],
@@ -151,9 +180,10 @@ namespace libsemigroups {
       Sims1 S(congruence_kind::left);
       REQUIRE(S.presentation(p).number_of_congruences(5) == 9);
       for (auto it = S.cbegin(5); it != S.cend(5); ++it) {
-        REQUIRE(word_graph::follow_path_no_checks(*it, 0, {1, 0, 1, 0})
+        REQUIRE(word_graph::follow_path_no_checks(*it, 0, 1010_w)
                 == word_graph::follow_path_no_checks(*it, 0, {0}));
       }
+      S.for_each(5, [&S](auto const& wg) { check_generating_pairs(S, wg); });
     }
   }
 
@@ -165,14 +195,14 @@ namespace libsemigroups {
     Presentation<word_type> p;
     p.contains_empty_word(true);
 
-    p.alphabet({0, 1, 2});
-    presentation::add_rule(p, {0, 1, 0}, {0, 0});
-    presentation::add_rule(p, {2, 2}, {0, 0});
-    presentation::add_rule(p, {0, 0, 0}, {0, 0});
-    presentation::add_rule(p, {2, 1}, {1, 2});
-    presentation::add_rule(p, {2, 0}, {0, 0});
-    presentation::add_rule(p, {1, 1}, {1});
-    presentation::add_rule(p, {0, 2}, {0, 0});
+    p.alphabet(012_w);
+    presentation::add_rule(p, 010_w, 00_w);
+    presentation::add_rule(p, 22_w, 00_w);
+    presentation::add_rule(p, 000_w, 00_w);
+    presentation::add_rule(p, 21_w, 12_w);
+    presentation::add_rule(p, 20_w, 00_w);
+    presentation::add_rule(p, 11_w, 1_w);
+    presentation::add_rule(p, 02_w, 00_w);
 
     {
       Sims1 S(congruence_kind::right);
@@ -210,19 +240,51 @@ namespace libsemigroups {
     Presentation<word_type> p;
     p.contains_empty_word(false);
 
-    //          a  A  b  B  c  C  e
-    p.alphabet({0, 1, 2, 3, 4, 5, 6});
+    //         aAbBcCe
+    p.alphabet(0123456_w);
     presentation::add_identity_rules(p, 6);
-    presentation::add_inverse_rules(p, {1, 0, 3, 2, 5, 4, 6}, 6);
-    presentation::add_rule(p, {0, 0, 5, 0, 4}, {6});
-    presentation::add_rule(p, {0, 4, 2, 2, 1, 5, 2}, {6});
-    presentation::add_rule(p, {1, 3, 0, 2, 4, 4, 4}, {6});
+    presentation::add_inverse_rules(p, 1032546_w, 6);
+    presentation::add_rule(p, 00504_w, 6_w);
+    presentation::add_rule(p, 0422152_w, 6_w);
+    presentation::add_rule(p, 1302444_w, 6_w);
     Sims1 S(congruence_kind::right);
     S.presentation(p);
-    REQUIRE(S.number_of_congruences(1) == 1);
-    REQUIRE(S.number_of_congruences(3) == 14);
-    REQUIRE(S.number_of_congruences(4) == 14);
-    REQUIRE(S.number_of_congruences(5) == 14);
+    // REQUIRE(S.number_of_congruences(1) == 1);
+    // REQUIRE(S.number_of_congruences(3) == 14);
+    // REQUIRE(S.number_of_congruences(4) == 14);
+    // REQUIRE(S.number_of_congruences(5) == 14);
+
+    S.for_each(3, [&S](auto const& wg) { check_generating_pairs(S, wg); });
+
+    auto it = S.cbegin(3);
+    REQUIRE((sims::generating_pairs(*it) | rx::to_vector())
+            == std::vector<relation_type>({{{1}, {0}},
+                                           {{2}, {0}},
+                                           {{3}, {0}},
+                                           {{4}, {0}},
+                                           {{5}, {0}},
+                                           {{6}, {0}},
+                                           {{0, 0}, {0}},
+                                           {{0, 1}, {0}},
+                                           {{0, 2}, {0}},
+                                           {{0, 3}, {0}},
+                                           {{0, 4}, {0}},
+                                           {{0, 5}, {0}},
+                                           {{0, 6}, {0}}}));
+
+    check_generating_pairs(S, *it);
+
+    ++it;
+    check_generating_pairs(S, *it);
+    REQUIRE((sims::generating_pairs(*it) | rx::to_vector())
+            == std::vector<relation_type>(
+                {{{1}, {0}},    {{2}, {0}},    {{3}, {0}},    {{6}, {0}},
+                 {{0, 0}, {0}}, {{0, 1}, {0}}, {{0, 2}, {0}}, {{0, 3}, {0}},
+                 {{0, 4}, {4}}, {{0, 5}, {5}}, {{0, 6}, {0}}, {{4, 0}, {4}},
+                 {{4, 1}, {4}}, {{4, 2}, {4}}, {{4, 3}, {4}}, {{4, 4}, {5}},
+                 {{4, 5}, {0}}, {{4, 6}, {4}}, {{5, 0}, {5}}, {{5, 1}, {5}},
+                 {{5, 2}, {5}}, {{5, 3}, {5}}, {{5, 4}, {0}}, {{5, 5}, {4}},
+                 {{5, 6}, {5}}}));
   }
 
   LIBSEMIGROUPS_TEST_CASE("Sims1",

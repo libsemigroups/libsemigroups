@@ -16,8 +16,15 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-// This file contains a declaration of a class for performing the "low-index
-// congruence" algorithm for semigroups and monoid.
+// This file contains the implementations of the classes for performing the
+// "low-index congruence" algorithm (and using it) for semigroups and monoid.
+
+// Notes:
+// 1. In 2022, when first writing this file, JDM tried templating the word_type
+//    used by the presentations in Sims1 (so that we could use StaticVector1
+//    for example, using smaller integer types for letters, and the stack to
+//    hold the words rather than the heap), but this didn't seem to give any
+//    performance improvement, and so I backed out the changes.
 
 #include "libsemigroups/sims.hpp"
 
@@ -29,13 +36,14 @@
 #include <thread>      // for thread, yield
 #include <utility>     // for swap
 
-#include "libsemigroups/constants.hpp"        // for operator!=, ope...
-#include "libsemigroups/debug.hpp"            // for LIBSEMIGROUPS_A...
+#include "libsemigroups/constants.hpp"  // for operator!=, ope...
+#include "libsemigroups/debug.hpp"      // for LIBSEMIGROUPS_A...
+#include "libsemigroups/detail/iterator.hpp"
 #include "libsemigroups/exception.hpp"        // for LIBSEMIGROUPS_E...
 #include "libsemigroups/felsch-graph.hpp"     // for FelschGraph
 #include "libsemigroups/froidure-pin.hpp"     // for FroidurePin
 #include "libsemigroups/presentation.hpp"     // for Presentation
-#include "libsemigroups/to-froidure-pin.hpp"  // for to_froidure_pin
+#include "libsemigroups/to-froidure-pin.hpp"  // for to_word_graph
 #include "libsemigroups/transf.hpp"           // for Transf, validate
 #include "libsemigroups/types.hpp"            // for congruence_kind
 #include "libsemigroups/word-graph.hpp"       // for follow_path_no_...
@@ -804,8 +812,7 @@ namespace libsemigroups {
 
       using iterator_base::stats;
 
-      // TODO by value really?
-      void push(PendingDef pd) {
+      void push(PendingDef&& pd) {
         iterator_base::_pending.push_back(std::move(pd));
       }
 
@@ -1303,4 +1310,66 @@ namespace libsemigroups {
     return best;
   }
 
+  namespace sims {
+    const_rule_iterator::const_rule_iterator(word_graph_type const* ptr,
+                                             node_type              source,
+                                             label_type             gen)
+        : _word_graph(ptr),
+          _gen(gen),
+          _source(source),
+          _relation({}, {}),
+          _tree(ptr->number_of_active_nodes()) {
+      ++(*this);
+    }
+
+    const_rule_iterator const& const_rule_iterator::operator++() {
+      if (at_end()) {
+        return *this;
+      }
+
+      _relation.first.clear();
+      _relation.second.clear();
+
+      auto const& wg = *_word_graph;
+
+      while (_source < wg.number_of_active_nodes()) {
+        while (_gen < wg.out_degree()) {
+          auto target = wg.target_no_checks(_source, _gen);
+          if (target != UNDEFINED) {
+            if (_tree.parent(target) == UNDEFINED && target > _source) {
+              _tree.set(target, _source, _gen);
+            } else {
+              _gen++;
+              return *this;
+            }
+          }
+          _gen++;
+        }
+        _gen = 0;
+        _source++;
+      }
+      return *this;
+    }
+    void const_rule_iterator::swap(const_rule_iterator& that) noexcept {
+      std::swap(_word_graph, that._word_graph);
+      std::swap(_gen, that._gen);
+      std::swap(_source, that._source);
+      std::swap(_tree, that._tree);
+    }
+
+    bool const_rule_iterator::populate_relation() const {
+      if (_relation.first.empty() && !at_end()) {
+        LIBSEMIGROUPS_ASSERT(_relation.second.empty());
+        LIBSEMIGROUPS_ASSERT(_gen > 0);
+        _tree.path_to_root_no_checks(_relation.first, _source);
+        std::reverse(_relation.first.begin(), _relation.first.end());
+        _relation.first.push_back(_gen - 1);
+        _tree.path_to_root_no_checks(
+            _relation.second, _word_graph->target_no_checks(_source, _gen - 1));
+        std::reverse(_relation.second.begin(), _relation.second.end());
+        return true;
+      }
+      return false;
+    }
+  }  // namespace sims
 }  // namespace libsemigroups
