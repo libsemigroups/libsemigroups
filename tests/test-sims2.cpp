@@ -339,4 +339,25 @@ namespace libsemigroups {
               == results[n]);
     }
   }
+
+  LIBSEMIGROUPS_TEST_CASE("Sims2",
+                          "104",
+                          "2-sided 2-generated free semigroup",
+                          "[extreme][sims2]") {
+    Presentation<std::string> p;
+    p.alphabet("ab");
+    p.contains_empty_word(false);  // FIXME: Method fails for non-monoids
+    Sims2 s(p);
+    s.number_of_threads(1);
+    // Number of congruences with up to 7 classes given in:
+    // A. Bailey, M. Finn-Sell and R. Snocken
+    // "SUBSEMIGROUP, IDEAL AND CONGRUENCE GROWTH OF FREE SEMIGROUPS"
+    REQUIRE(s.number_of_congruences(1) == 1);
+    REQUIRE(s.number_of_congruences(2) == 11);    // From Bailey et al
+    REQUIRE(s.number_of_congruences(3) == 51);    // From Bailey et al
+    REQUIRE(s.number_of_congruences(4) == 200);   // From Bailey et al
+    REQUIRE(s.number_of_congruences(5) == 657);   // From Bailey et al
+    REQUIRE(s.number_of_congruences(6) == 2037);  // From Bailey et al
+    REQUIRE(s.number_of_congruences(7) == 5977);  // From Bailey et al
+  }
 }  // namespace libsemigroups
