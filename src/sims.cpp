@@ -1103,6 +1103,9 @@ namespace libsemigroups {
     Presentation<word_type> const& p = this->_felsch_graph.presentation();
     _2_sided_include->resize(2 * m * p.alphabet().size());
     _2_sided_words.assign(n + 1, word_type());
+    // +1 to the number of 2-sided words because if we the defining presentation
+    // is a semigroup presentation, then we will use 1 more slot here (i.e. the
+    // number of nodes in the resulting graphs is n + 1.
   }
 
   Sims2::iterator_base::iterator_base(Sims2::iterator_base const& that)
