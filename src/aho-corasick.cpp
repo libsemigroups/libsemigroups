@@ -24,6 +24,105 @@
 
 namespace libsemigroups {
 
+  AhoCorasick::Node& AhoCorasick::Node::init(index_type parent, letter_type a) {
+    _parent        = parent;
+    _parent_letter = a;
+    _children.clear();
+    clear_suffix_link();
+    _terminal = false;
+    return *this;
+  }
+
+  [[nodiscard]] AhoCorasick::index_type
+  AhoCorasick::Node::child(letter_type a) const noexcept {
+    if (_children.count(a) == 0) {
+      return UNDEFINED;
+    }
+    return static_cast<index_type>(_children[a]);
+  }
+
+  void AhoCorasick::Node::clear_suffix_link() const {
+    if (parent() == root || parent() == UNDEFINED) {
+      set_suffix_link(root);
+    } else {
+      set_suffix_link(UNDEFINED);
+    }
+  }
+
+  AhoCorasick::AhoCorasick()
+      : _all_nodes({Node()}), _active_nodes_index(), _inactive_nodes_index() {
+    _active_nodes_index.insert(0);
+    _valid_links = true;
+  }
+
+  AhoCorasick& AhoCorasick::init() {
+    _all_nodes = {Node()};
+    _active_nodes_index.clear();
+    _valid_links = true;
+    while (!_inactive_nodes_index.empty()) {
+      _inactive_nodes_index.pop();
+    }
+    _active_nodes_index.insert(0);
+    return *this;
+  }
+
+  void AhoCorasick::signature(word_type& w, index_type i) const {
+    w.clear();
+    while (i != root) {
+      w.push_back(_all_nodes[i].parent_letter());
+      i = _all_nodes[i].parent();
+    }
+    std::reverse(w.begin(), w.end());
+  }
+
+  [[nodiscard]] AhoCorasick::index_type
+  AhoCorasick::suffix_link(index_type current) const {
+    if (!_valid_links) {
+      clear_suffix_links();
+      _valid_links = true;
+    }
+    auto& n = _all_nodes[current];
+    if (n.suffix_link() == UNDEFINED) {
+      n.set_suffix_link(traverse(suffix_link(n.parent()), n.parent_letter()));
+    }
+    return n.suffix_link();
+  }
+
+  AhoCorasick::index_type AhoCorasick::new_active_node(index_type  parent,
+                                                       letter_type a) {
+    index_type index;
+    if (_inactive_nodes_index.empty()) {
+      index = _all_nodes.size();
+      _all_nodes.emplace_back(parent, a);
+      _active_nodes_index.insert(index);
+    } else {
+      index = _inactive_nodes_index.top();
+      _inactive_nodes_index.pop();
+      _active_nodes_index.insert(index);
+      _all_nodes[index].init(parent, a);
+    }
+    return index;
+  }
+
+  [[nodiscard]] AhoCorasick::index_type
+  AhoCorasick::traverse(index_type current, letter_type a) const {
+    index_type next = _all_nodes[current].child(a);
+    if (next != UNDEFINED) {
+      return next;
+    } else if (current == root) {
+      return root;
+    }
+    return traverse(suffix_link(current), a);
+  }
+
+  void AhoCorasick::clear_suffix_links() const {
+    // TODO determine if it is more efficient to clear the link of all nodes,
+    // or just the active ones
+    for (auto node = _all_nodes.begin(); node != _all_nodes.end(); ++node) {
+      node->clear_suffix_link();
+    }
+  }
+
   Dot dot(AhoCorasick& ac) {
     auto to_word = [](word_type const& w) {
       if (w.empty()) {

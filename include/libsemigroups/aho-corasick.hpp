@@ -29,6 +29,9 @@
 #include "debug.hpp"      // for LIBSEMIGROUPS_ASSERT
 #include "types.hpp"      // for letter_type
 
+// TODO make nodes accessible as indices of some list (numbered nodes).
+// Make sure this address the badness of traversals (lots of different data
+// types and it just feels a bit hacky)
 namespace libsemigroups {
 
   class AhoCorasick {
@@ -50,39 +53,20 @@ namespace libsemigroups {
      public:
       Node() : Node(UNDEFINED, UNDEFINED) {}
 
-      // TODO to cpp
       Node(index_type parent, letter_type a)
           : _children(), _link(), _parent(), _parent_letter(), _terminal() {
         init(parent, a);
       }
 
-      Node& init(index_type parent, letter_type a) {
-        _parent        = parent;
-        _parent_letter = a;
-        _children.clear();
-        clear_suffix_link();
-        _terminal = false;
-        return *this;
-      }
+      Node& init(index_type parent, letter_type a);
 
-      [[nodiscard]] index_type child(letter_type a) const noexcept {
-        if (_children.count(a) == 0) {
-          return UNDEFINED;
-        }
-        return static_cast<index_type>(_children[a]);
-      }
+      [[nodiscard]] index_type child(letter_type a) const noexcept;
 
       [[nodiscard]] index_type suffix_link() const noexcept {
         return _link;
       }
 
-      void clear_suffix_link() const {
-        if (parent() == root || parent() == UNDEFINED) {
-          set_suffix_link(root);
-        } else {
-          set_suffix_link(UNDEFINED);
-        }
-      }
+      void clear_suffix_link() const;
 
       [[nodiscard]] decltype(_children)& children() const {
         return _children;
@@ -93,7 +77,6 @@ namespace libsemigroups {
       }
 
       [[nodiscard]] bool is_terminal() const noexcept {
-        // TODO should this check suffix links are terminal?
         return _terminal;
       }
 
@@ -121,101 +104,30 @@ namespace libsemigroups {
     mutable bool           _valid_links;
 
    public:
-    AhoCorasick()
-        : _all_nodes({Node()}), _active_nodes_index(), _inactive_nodes_index() {
-      _active_nodes_index.insert(0);
-      _valid_links = true;
-    }
+    AhoCorasick();
 
-    AhoCorasick& init() {
-      _all_nodes = {Node()};
-      _active_nodes_index.clear();
-      _valid_links = true;
-      while (!_inactive_nodes_index.empty()) {
-        _inactive_nodes_index.pop();
-      }
-      _active_nodes_index.insert(0);
-      return *this;
-    }
+    AhoCorasick& init();
 
     size_t number_of_nodes() const noexcept {
       return _active_nodes_index.size();
     }
 
     template <typename Iterator>
-    index_type add_word_no_checks(Iterator first, Iterator last) {
-      _valid_links       = false;
-      index_type current = root;
-      for (auto it = first; it != last; ++it) {
-        index_type next = _all_nodes[current].child(*it);
-        if (next != UNDEFINED) {
-          current = next;
-        } else {
-          next = new_active_node(current, *it);  // index of next node added
-          // set next as child of parent
-          _all_nodes[current].children()[*it] = next;
-          current                             = next;
-        }
-      }
-      _all_nodes[current].set_terminal(true);
-      return current;
-    }
+    index_type add_word_no_checks(Iterator first, Iterator last);
 
     template <typename Iterator>
-    index_type rm_word(Iterator first, Iterator last) {
-      auto last_index = traverse_trie(first, last);
-      LIBSEMIGROUPS_ASSERT(last_index != UNDEFINED);
-      LIBSEMIGROUPS_ASSERT(_all_nodes[last_index].is_terminal());
-      return rm_word_no_checks(first, last);
-    }
+    index_type rm_word(Iterator first, Iterator last);
 
     template <typename Iterator>
-    index_type rm_word_no_checks(Iterator first, Iterator last) {
-      auto last_index = traverse_trie(first, last);
-      auto rule_index = last_index;
-      if (!_all_nodes[last_index].children().empty()) {
-        _all_nodes[last_index].set_terminal(false);
-        return rule_index;
-      }
+    index_type rm_word_no_checks(Iterator first, Iterator last);
 
-      _valid_links       = false;
-      auto parent_index  = _all_nodes[last_index].parent();
-      auto parent_letter = *(last - 1);
-      deactivate_node(last_index);
-      while (_all_nodes[parent_index].number_of_children() == 1
-             && parent_index != root) {
-        last_index    = parent_index;
-        parent_index  = _all_nodes[last_index].parent();
-        parent_letter = _all_nodes[last_index].parent_letter();
-        deactivate_node(last_index);
-      }
-      _all_nodes[parent_index].children().erase(parent_letter);
-      return rule_index;
-    }
-
-    // TODO to cpp
     template <typename Iterator>
     [[nodiscard]] index_type traverse_from(index_type start,
                                            Iterator   first,
-                                           Iterator   last) const {
-      index_type current = start;
-      for (auto it = first; it != last; ++it) {
-        // Uses private traverse by node function
-        current = traverse(current, *it);
-      }
-      return current;
-    }
+                                           Iterator   last) const;
 
-    // TODO to cpp
     // TODO template to accept Iterator not word_type&
-    void signature(word_type& w, index_type i) const {
-      w.clear();
-      while (i != root) {
-        w.push_back(_all_nodes[i].parent_letter());
-        i = _all_nodes[i].parent();
-      }
-      std::reverse(w.begin(), w.end());
-    }
+    void signature(word_type& w, index_type i) const;
 
     size_t height(index_type i) const {
       if (i == root) {
@@ -258,18 +170,7 @@ namespace libsemigroups {
       return traverse_from(root, w.cbegin(), w.cend());
     }
 
-    // TODO to cpp
-    [[nodiscard]] index_type suffix_link(index_type current) const {
-      if (!_valid_links) {
-        clear_suffix_links();
-        _valid_links = true;
-      }
-      auto& n = _all_nodes[current];
-      if (n.suffix_link() == UNDEFINED) {
-        n.set_suffix_link(traverse(suffix_link(n.parent()), n.parent_letter()));
-      }
-      return n.suffix_link();
-    }
+    [[nodiscard]] index_type suffix_link(index_type current) const;
 
     [[nodiscard]] Node const& node(index_type i) const {
       return _all_nodes.at(i);
@@ -281,20 +182,7 @@ namespace libsemigroups {
     }
 
    private:
-    index_type new_active_node(index_type parent, letter_type a) {
-      index_type index;
-      if (_inactive_nodes_index.empty()) {
-        index = _all_nodes.size();
-        _all_nodes.emplace_back(parent, a);
-        _active_nodes_index.insert(index);
-      } else {
-        index = _inactive_nodes_index.top();
-        _inactive_nodes_index.pop();
-        _active_nodes_index.insert(index);
-        _all_nodes[index].init(parent, a);
-      }
-      return index;
-    }
+    index_type new_active_node(index_type parent, letter_type a);
 
     void deactivate_node(index_type i) {
       LIBSEMIGROUPS_ASSERT(i < _all_nodes.size());
@@ -306,38 +194,12 @@ namespace libsemigroups {
       _inactive_nodes_index.push(i);
     }
 
-    // TODO to cpp
-    [[nodiscard]] index_type traverse(index_type current, letter_type a) const {
-      index_type next = _all_nodes[current].child(a);
-      if (next != UNDEFINED) {
-        return next;
-      } else if (current == root) {
-        return root;
-      }
-      return traverse(suffix_link(current), a);
-    }
+    [[nodiscard]] index_type traverse(index_type current, letter_type a) const;
 
     template <typename Iterator>
-    [[nodiscard]] index_type traverse_trie(Iterator first,
-                                           Iterator last) const {
-      index_type current = root;
-      for (auto it = first; it != last; ++it) {
-        current = _all_nodes[current].child(*it);
-        if (current == UNDEFINED) {
-          return current;
-        }
-      }
-      return current;
-    }
+    [[nodiscard]] index_type traverse_trie(Iterator first, Iterator last) const;
 
-    void clear_suffix_links() const {
-      // for (auto index : _active_nodes_index) {
-      //   _all_nodes[index].clear_suffix_link();
-      // }
-      for (auto node = _all_nodes.begin(); node != _all_nodes.end(); ++node) {
-        node->clear_suffix_link();
-      }
-    }
+    void clear_suffix_links() const;
   };
 
   class Dot;  // forward decl
@@ -347,5 +209,7 @@ namespace libsemigroups {
   namespace aho_corasick {}
 
 }  // namespace libsemigroups
+
+#include "aho-corasick.tpp"
 
 #endif  // LIBSEMIGROUPS_AHO_CORASICK_HPP_
