@@ -20,8 +20,10 @@
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
 #include "libsemigroups/fpsemi-examples.hpp"
+#include "libsemigroups/froidure-pin.hpp"
 #include "libsemigroups/presentation.hpp"
 #include "libsemigroups/sims.hpp"
+#include "libsemigroups/transf.hpp"
 
 namespace libsemigroups {
   using word_graph_type = typename Sims2::word_graph_type;
@@ -37,57 +39,61 @@ namespace libsemigroups {
     Sims2 S;
     S.presentation(fpsemigroup::temperley_lieb_monoid(4));
     REQUIRE(S.number_of_congruences(14) == 9);
-    // S.presentation(fpsemigroup::full_transformation_monoid(5));
-
-    // REQUIRE(
-    //     S.number_of_threads(6).idle_thread_restarts(128).number_of_congruences(
-    //         3125)
-    //     == 14);
   }
 
   // Takes approx. 13.5s in debug mode.
   LIBSEMIGROUPS_TEST_CASE("Sims2",
-                          "001",
+                          "093",
                           "2-sided T_4",
-                          "[standard][sims2][no-valgrind][no-coverage]") {
+                          "[quick][sims2][no-valgrind][no-coverage]") {
+    auto  rg = ReportGuard(false);
     Sims2 S(fpsemigroup::full_transformation_monoid(4));
 
     REQUIRE(S.number_of_congruences(256) == 11);  // Verified with GAP
   }
 
   LIBSEMIGROUPS_TEST_CASE("Sims2",
-                          "002",
+                          "094",
                           "2-sided T_4 Iwahori presentation",
                           "[quick][sims2][low-index]") {
+    auto  rg = ReportGuard(false);
     Sims2 S(fpsemigroup::full_transformation_monoid(
         4, fpsemigroup::author::Iwahori));
     REQUIRE(S.number_of_congruences(256) == 11);
   }
 
-  LIBSEMIGROUPS_TEST_CASE(
-      "Sims2",
-      "003",
-      "2-sided T_4 Aizenstat presentation",
-      "[extreme][sims2][low-index][no-valgrind][no-coverage]") {
+  // Not sure if the next test case runs to completion or not, JDM ran this for
+  // 2m30s and it didn't terminate.
+  LIBSEMIGROUPS_TEST_CASE("Sims2",
+                          "095",
+                          "2-sided T_4 Aizenstat presentation",
+                          "[fail][sims2][low-index]") {
+    auto  rg = ReportGuard(true);
     Sims2 S(fpsemigroup::full_transformation_monoid(
         4, fpsemigroup::author::Aizenstat));
+    S.number_of_threads(4);
     // The below test takes too long to terminate
     REQUIRE(S.number_of_congruences(256) == 11);
   }
 
+  // Not sure if the next test case runs to completion or not, JDM ran this for
+  // 2m30s and it didn't terminate.
   LIBSEMIGROUPS_TEST_CASE("Sims2",
-                          "004",
+                          "096",
                           "2-sided S_6 Burnside+Miller presentation",
-                          "[quick][sims2][low-index]") {
+                          "[fail][sims2][low-index]") {
+    auto  rg = ReportGuard(true);
     Sims2 S(fpsemigroup::symmetric_group(
         7, fpsemigroup::author::Burnside + fpsemigroup::author::Miller));
+    S.number_of_threads(4);
     REQUIRE(S.number_of_congruences(720) == 3);
   }
 
   LIBSEMIGROUPS_TEST_CASE("Sims2",
-                          "005",
+                          "097",
                           "2-sided CI_4 Fernandes presentation",
-                          "[quick][sims2][low-index]") {
+                          "[standard][sims2][low-index]") {
+    auto  rg = ReportGuard(false);
     Sims2 S(fpsemigroup::cyclic_inverse_monoid(
         4, fpsemigroup::author::Fernandes, 0));
     REQUIRE(S.number_of_congruences(61) == 14);
@@ -96,28 +102,30 @@ namespace libsemigroups {
     REQUIRE(S.number_of_congruences(61) == 14);
   }
 
-  /*
   LIBSEMIGROUPS_TEST_CASE("Sims2",
-                          "006",
+                          "098",
                           "2-sided CI_4 Froidure-Pin presentation",
-                          "[quick][sims2][low-index]") {
-    FroidurePinBase<PPerm<4>> T;
+                          "[standard][sims2][low-index]") {
+    auto                  rg = ReportGuard(false);
+    FroidurePin<PPerm<4>> T;
     T.add_generator(PPerm<4>::make({1, 2, 3, 0}));
     T.add_generator(PPerm<4>::make({1, 2, 3}, {1, 2, 3}, 4));
     T.add_generator(PPerm<4>::make({0, 2, 3}, {0, 2, 3}, 4));
     T.add_generator(PPerm<4>::make({0, 1, 3}, {0, 1, 3}, 4));
     T.add_generator(PPerm<4>::make({0, 1, 2}, {0, 1, 2}, 4));
+    REQUIRE(T.size() == 61);
+
     auto p = to_presentation<word_type>(T);
 
     Sims2 S(p);
-    // FIXME: Segfaults
     REQUIRE(S.number_of_congruences(61) == 14);
-  }*/
+  }
 
   LIBSEMIGROUPS_TEST_CASE("Sims2",
-                          "007",
-                          "2-sided (2,3,7) tringle group",
+                          "099",
+                          "2-sided (2,3,7) triangle group",
                           "[quick][sims2][low-index]") {
+    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.contains_empty_word(true);
     p.alphabet("xy");
@@ -132,9 +140,10 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Sims2",
-                          "008",
+                          "100",
                           "2-sided Heineken group",
-                          "[standard][sims2][low-index]") {
+                          "[extreme][sims2][low-index]") {
+    auto                      rg = ReportGuard(true);
     Presentation<std::string> p;
     p.contains_empty_word(true);
     p.alphabet("xXyY");
@@ -151,45 +160,52 @@ namespace libsemigroups {
     REQUIRE(S.number_of_threads(32).number_of_congruences(50) == 1);
   }
 
-  /*
-LIBSEMIGROUPS_TEST_CASE("Sims2",
-                        "009",
-                        "2-sided Catalan monoid n=4",
-                        "[quick][sims2][low-index]") {
-  FroidurePinBase<Transf<4>> S;
-  S.add_generator(Transf<4>::make({0, 1, 2, 3}));
-  S.add_generator(Transf<4>::make({0, 0, 2, 3}));
-  S.add_generator(Transf<4>::make({0, 1, 1, 3}));
-  S.add_generator(Transf<4>::make({0, 1, 2, 2}));
-  REQUIRE(S.size() == 14);
-  auto p = to_presentation<word_type>(S);
+  LIBSEMIGROUPS_TEST_CASE("Sims2",
+                          "101",
+                          "2-sided Catalan monoid n=4",
+                          "[quick][sims2][low-index]") {
+    auto                   rg = ReportGuard(false);
+    FroidurePin<Transf<4>> S;
+    S.add_generator(Transf<4>::make({0, 1, 2, 3}));
+    S.add_generator(Transf<4>::make({0, 0, 2, 3}));
+    S.add_generator(Transf<4>::make({0, 1, 1, 3}));
+    S.add_generator(Transf<4>::make({0, 1, 2, 2}));
+    REQUIRE(S.size() == 14);
+    auto p = to_presentation<word_type>(S);
 
-  // FIXME: Segfaults
-  Sims2 C(p);
-  REQUIRE(C.number_of_threads(1).number_of_congruences(S.size()) == 133);
-  REQUIRE(C.number_of_threads(2).number_of_congruences(S.size()) == 133);
-  REQUIRE(C.number_of_threads(4).number_of_congruences(S.size()) == 133);
-  REQUIRE(C.number_of_threads(8).number_of_congruences(S.size()) == 133);
-}*/
+    Sims2 C(p);
+    REQUIRE(C.number_of_threads(1).number_of_congruences(S.size()) == 133);
+    REQUIRE(C.number_of_threads(2).number_of_congruences(S.size()) == 133);
+    REQUIRE(C.number_of_threads(4).number_of_congruences(S.size()) == 133);
+    REQUIRE(C.number_of_threads(8).number_of_congruences(S.size()) == 133);
+  }
 
   LIBSEMIGROUPS_TEST_CASE("Sims2",
-                          "010",
+                          "102",
                           "2-sided Heineken monoid",
                           "[extreme][sims2][low-index]") {
+    auto                      rg = ReportGuard(true);
     Presentation<std::string> p;
     p.contains_empty_word(true);
     p.alphabet("xyXY");
     presentation::add_rule(p, "yXYYxyYYxyyXYYxyyXyXYYxyX", "");
     presentation::add_rule(p, "YxyyXXYYxyxYxyyXYXyXYYxxyyXYXyXYYxyxY", "");
+    // REQUIRE(presentation::to_gap_string(p, "S") == "");
     Sims2 S(p);
     // TODO: check correctness
+    // JDM: not sure how to check correctness of this result, other than
+    // possibly running through the 36'892'600 2-sided congruences of the free
+    // monoid with 4 generators and checking for compatiblity with the
+    // relations? Or running through the one-sided congruences and checking
+    // which are 2-sided also.
     REQUIRE(S.number_of_threads(8).number_of_congruences(8) == 63);
   }
 
   LIBSEMIGROUPS_TEST_CASE("Sims2",
-                          "011",
+                          "103",
                           "2-sided Fibonacci(2, 9)",
                           "[extreme][sims2][low-index]") {
+    auto                      rg = ReportGuard(true);
     Presentation<std::string> p;
     p.alphabet("abAB");
     p.contains_empty_word(true);
@@ -211,15 +227,17 @@ LIBSEMIGROUPS_TEST_CASE("Sims2",
     presentation::add_rule(p, "abbabaaBaaB", "bAbAAbA");
     presentation::add_rule(p, "babaaBaaBaB", "BAbAbAA");
 
+    REQUIRE(presentation::to_gap_string(p, "S") == "");
     Sims2 S(p);
     // TODO: check correctness
     REQUIRE(S.number_of_threads(8).number_of_congruences(64) == 10);
   }
 
   LIBSEMIGROUPS_TEST_CASE("Sims2",
-                          "012",
+                          "104",
                           "2-sided one-relation baaabaaa=aba",
-                          "[quick][sims2][low-index]") {
+                          "[standard][sims2][low-index]") {
+    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("ab");
     p.contains_empty_word(true);
@@ -233,20 +251,21 @@ LIBSEMIGROUPS_TEST_CASE("Sims2",
     REQUIRE(S.number_of_threads(8).number_of_congruences(4) == 52);
     REQUIRE(S.number_of_threads(8).number_of_congruences(5) == 148);
     REQUIRE(S.number_of_threads(8).number_of_congruences(6) == 413);
-    REQUIRE(S.number_of_threads(8).number_of_congruences(7) == 1101);
-    REQUIRE(S.number_of_threads(8).number_of_congruences(8) == 2901);
-    REQUIRE(S.number_of_threads(8).number_of_congruences(9) == 7569);
-    REQUIRE(S.number_of_threads(8).number_of_congruences(10) == 19756);
-    REQUIRE(S.number_of_threads(8).number_of_congruences(11) == 50729);
-    REQUIRE(S.number_of_threads(8).number_of_congruences(12) == 129157);
-    REQUIRE(S.number_of_threads(8).number_of_congruences(13) == 330328);
+    REQUIRE(S.number_of_threads(8).number_of_congruences(7) == 1'101);
+    REQUIRE(S.number_of_threads(8).number_of_congruences(8) == 2'901);
+    REQUIRE(S.number_of_threads(8).number_of_congruences(9) == 7'569);
+    REQUIRE(S.number_of_threads(8).number_of_congruences(10) == 19'756);
+    REQUIRE(S.number_of_threads(8).number_of_congruences(11) == 50'729);
+    REQUIRE(S.number_of_threads(8).number_of_congruences(12) == 129'157);
+    REQUIRE(S.number_of_threads(8).number_of_congruences(13) == 330'328);
   }
 
   LIBSEMIGROUPS_TEST_CASE(
       "Sims2",
-      "013",
+      "105",
       "2-sided one-relation baabbaa=a",
       "[extreme][sims2][low-index][no-valgrind][no-coverage]") {
+    auto                      rg = ReportGuard(true);
     Presentation<std::string> p;
     p.alphabet("ab");
     p.contains_empty_word(true);
@@ -270,19 +289,21 @@ LIBSEMIGROUPS_TEST_CASE("Sims2",
     REQUIRE(S.number_of_threads(8).number_of_congruences(11) == 518);
     REQUIRE(S.number_of_threads(8).number_of_congruences(12) == 693);
     REQUIRE(S.number_of_threads(8).number_of_congruences(13) == 891);
-    REQUIRE(S.number_of_threads(8).number_of_congruences(14) == 1127);
-    REQUIRE(S.number_of_threads(8).number_of_congruences(15) == 1402);
-    REQUIRE(S.number_of_threads(8).number_of_congruences(16) == 1733);
-    REQUIRE(S.number_of_threads(8).number_of_congruences(17) == 2094);
-    REQUIRE(S.number_of_threads(8).number_of_congruences(18) == 2531);
-    REQUIRE(S.number_of_threads(8).number_of_congruences(19) == 3012);
-    REQUIRE(S.number_of_threads(8).number_of_congruences(20) == 3574);
+    REQUIRE(S.number_of_threads(8).number_of_congruences(14) == 1'127);
+    REQUIRE(S.number_of_threads(8).number_of_congruences(15) == 1'402);
+    REQUIRE(S.number_of_threads(8).number_of_congruences(16) == 1'733);
+    REQUIRE(S.number_of_threads(8).number_of_congruences(17) == 2'094);
+    // This is a little too extreme with the next 3 lines uncommented.
+    // REQUIRE(S.number_of_threads(8).number_of_congruences(18) == 2'531);
+    // REQUIRE(S.number_of_threads(8).number_of_congruences(19) == 3'012);
+    // REQUIRE(S.number_of_threads(8).number_of_congruences(20) == 3'574);
   }
 
   LIBSEMIGROUPS_TEST_CASE("Sims2",
-                          "093",
+                          "106",
                           "2-sided full transformation monoid 2",
                           "[quick][sims2]") {
+    auto                    rg = ReportGuard(false);
     Presentation<word_type> p;
     p.alphabet(2);
     p.contains_empty_word(true);
@@ -302,7 +323,8 @@ LIBSEMIGROUPS_TEST_CASE("Sims2",
                 4, {{1, 2}, {0, 2}, {3, 2}, {2, 2}}));  // ok
   }
 
-  LIBSEMIGROUPS_TEST_CASE("Sims2", "095", "2-sided example", "[quick][sims1]") {
+  LIBSEMIGROUPS_TEST_CASE("Sims2", "107", "2-sided example", "[quick][sims1]") {
+    auto                    rg = ReportGuard(false);
     Presentation<word_type> p;
     p.contains_empty_word(true);
     p.alphabet(01_w);
@@ -311,7 +333,7 @@ LIBSEMIGROUPS_TEST_CASE("Sims2",
     presentation::add_rule(p, 0101_w, 0_w);
     Sims2 s(p);
 
-    // REQUIRE(s.number_of_congruences(4) == 6);  // Verified with GAP
+    REQUIRE(s.number_of_congruences(4) == 6);  // Verified with GAP
     auto it = s.cbegin(5);
     // Verified in 000
     REQUIRE(*(it++) == to_word_graph<node_type>(5, {{0, 0}}));
@@ -324,9 +346,10 @@ LIBSEMIGROUPS_TEST_CASE("Sims2",
   }
 
   LIBSEMIGROUPS_TEST_CASE("Sims2",
-                          "096",
+                          "108",
                           "2-sided full transf. monoid 3",
                           "[quick][sims2]") {
+    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("abc");
     p.contains_empty_word(true);
@@ -402,9 +425,10 @@ LIBSEMIGROUPS_TEST_CASE("Sims2",
   }
 
   LIBSEMIGROUPS_TEST_CASE("Sims2",
-                          "097",
+                          "109",
                           "2-sided 2-generated free monoid",
                           "[extreme][sims2]") {
+    auto                      rg = ReportGuard(true);
     Presentation<std::string> p;
     p.alphabet("ab");
     p.contains_empty_word(true);
@@ -425,20 +449,25 @@ LIBSEMIGROUPS_TEST_CASE("Sims2",
     REQUIRE(s.number_of_congruences(13) == 1'387'117);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("Sims2", "098", "todo", "[extreme][sims2]") {
-    auto p = symmetric_inverse_monoid(5, fpsemigroup::author::Gay);
+  LIBSEMIGROUPS_TEST_CASE("Sims2",
+                          "110",
+                          "symmetric inverse monoid (Gay)",
+                          "[extreme][sims2]") {
+    auto rg = ReportGuard(true);
+    auto p  = symmetric_inverse_monoid(5, fpsemigroup::author::Gay);
     presentation::remove_duplicate_rules(p);
     presentation::sort_each_rule(p);
     presentation::sort_rules(p);
 
     Sims2 C(p);
-    REQUIRE(C.number_of_threads(1).number_of_congruences(1546) == 14);
+    REQUIRE(C.number_of_threads(1).number_of_congruences(1'546) == 14);
   }
 
   LIBSEMIGROUPS_TEST_CASE("Sims2",
-                          "099",
+                          "111",
                           "2-sided congruence-free monoid n=3",
                           "[quick][sims2]") {
+    auto rg = ReportGuard(false);
     // Presentation taken from
     // Al-Kharousi, F., Cain, A.J., Maltcev, V. et al.
     // A countable family of finitely presented infinite congruence-free
@@ -468,9 +497,10 @@ LIBSEMIGROUPS_TEST_CASE("Sims2",
   }
 
   LIBSEMIGROUPS_TEST_CASE("Sims2",
-                          "100",
+                          "112",
                           "2-sided congruence-free monoid n=8",
                           "[quick][sims2]") {
+    auto rg = ReportGuard(false);
     // Presentation taken from
     // Al-Kharousi, F., Cain, A.J., Maltcev, V. et al.
     // A countable family of finitely presented infinite congruence-free
@@ -505,9 +535,10 @@ LIBSEMIGROUPS_TEST_CASE("Sims2",
   }
 
   LIBSEMIGROUPS_TEST_CASE("Sims2",
-                          "101",
+                          "113",
                           "2-sided bicyclic monoid",
                           "[quick][sims2]") {
+    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("ab");
     p.contains_empty_word(true);
@@ -520,9 +551,10 @@ LIBSEMIGROUPS_TEST_CASE("Sims2",
   }
 
   LIBSEMIGROUPS_TEST_CASE("Sims2",
-                          "102",
+                          "114",
                           "2-sided 2-generated free commutative monoid",
                           "[quick][sims2]") {
+    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("ab");
     p.contains_empty_word(true);
@@ -546,9 +578,10 @@ LIBSEMIGROUPS_TEST_CASE("Sims2",
   }
 
   LIBSEMIGROUPS_TEST_CASE("Sims2",
-                          "103",
+                          "115",
                           "free semilattice n = 8",
                           "[extreme][sims1]") {
+    auto rg = ReportGuard(true);
     // https://oeis.org/A102894
     constexpr std::array<size_t, 6> results = {0, 1, 4, 45, 2'271, 1'373'701};
     for (auto A : {"a", "ab", "abc", "abcd", "abcde"}) {
@@ -565,23 +598,24 @@ LIBSEMIGROUPS_TEST_CASE("Sims2",
   }
 
   LIBSEMIGROUPS_TEST_CASE("Sims2",
-                          "104",
+                          "116",
                           "2-sided 2-generated free semigroup",
                           "[extreme][sims2]") {
+    auto                      rg = ReportGuard(true);
     Presentation<std::string> p;
     p.alphabet("ab");
-    p.contains_empty_word(false);  // FIXME: Method fails for non-monoids
+    p.contains_empty_word(false);
     Sims2 s(p);
     s.number_of_threads(4);
     // Number of congruences with up to 7 classes given in:
     // A. Bailey, M. Finn-Sell and R. Snocken
     // "SUBSEMIGROUP, IDEAL AND CONGRUENCE GROWTH OF FREE SEMIGROUPS"
     REQUIRE(s.number_of_congruences(1) == 1);
-    REQUIRE(s.number_of_congruences(2) == 11);    // From Bailey et al
-    REQUIRE(s.number_of_congruences(3) == 51);    // From Bailey et al
-    REQUIRE(s.number_of_congruences(4) == 200);   // From Bailey et al
-    REQUIRE(s.number_of_congruences(5) == 657);   // From Bailey et al
-    REQUIRE(s.number_of_congruences(6) == 2037);  // From Bailey et al
-    REQUIRE(s.number_of_congruences(7) == 5977);  // From Bailey et al
+    REQUIRE(s.number_of_congruences(2) == 11);     // From Bailey et al
+    REQUIRE(s.number_of_congruences(3) == 51);     // From Bailey et al
+    REQUIRE(s.number_of_congruences(4) == 200);    // From Bailey et al
+    REQUIRE(s.number_of_congruences(5) == 657);    // From Bailey et al
+    REQUIRE(s.number_of_congruences(6) == 2'037);  // From Bailey et al
+    REQUIRE(s.number_of_congruences(7) == 5'977);  // From Bailey et al
   }
 }  // namespace libsemigroups
