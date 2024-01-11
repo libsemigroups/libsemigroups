@@ -198,7 +198,10 @@ namespace libsemigroups {
     // monoid with 4 generators and checking for compatiblity with the
     // relations? Or running through the one-sided congruences and checking
     // which are 2-sided also.
-    REQUIRE(S.number_of_threads(8).number_of_congruences(8) == 63);
+    S.include(0_w, 2_w);
+    REQUIRE(S.number_of_threads(8).number_of_congruences(8) == 9);
+    S.clear_include().exclude(0_w, 2_w);
+    REQUIRE(S.number_of_threads(8).number_of_congruences(8) == 63 - 9);
   }
 
   LIBSEMIGROUPS_TEST_CASE("Sims2",
@@ -600,8 +603,8 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("Sims2",
                           "116",
                           "2-sided 2-generated free semigroup",
-                          "[extreme][sims2]") {
-    auto                      rg = ReportGuard(true);
+                          "[quick][sims2]") {
+    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("ab");
     p.contains_empty_word(false);
@@ -617,5 +620,13 @@ namespace libsemigroups {
     REQUIRE(s.number_of_congruences(5) == 657);    // From Bailey et al
     REQUIRE(s.number_of_congruences(6) == 2'037);  // From Bailey et al
     REQUIRE(s.number_of_congruences(7) == 5'977);  // From Bailey et al
+    s.include(0_w, 1_w);
+    REQUIRE(s.number_of_congruences(8) == 36);
+    s.exclude(0_w, 1_w);
+    REQUIRE(s.number_of_congruences(8) == 0);
+    s.clear_include();
+    REQUIRE(s.number_of_congruences(8) == 17381);
+    s.clear_exclude();
+    REQUIRE(s.number_of_congruences(8) == 17381 + 36);
   }
 }  // namespace libsemigroups
