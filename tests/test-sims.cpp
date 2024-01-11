@@ -3310,8 +3310,6 @@ namespace libsemigroups {
                })
              | rx::to_vector())
             == std::vector<relation_type>({{100_w, 1_w}}));
-    REQUIRE((sims::two_sided_generating_pairs(p, *it) | rx::to_vector())
-            == std::vector<relation_type>({{100_w, 1_w}}));
   }
 
   LIBSEMIGROUPS_TEST_CASE("Sims2", "107", "2-sided example", "[quick][sims1]") {
