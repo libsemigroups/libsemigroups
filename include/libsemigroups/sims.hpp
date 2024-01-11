@@ -47,7 +47,9 @@
 #include "exception.hpp"        // for LIBSEMIGROUPS_EXCEPTION
 #include "felsch-graph.hpp"     // for FelschGraph
 #include "presentation.hpp"     // for Presentation, Presentati...
+#include "to-froidure-pin.hpp"  // for to_froidure_pin
 #include "to-presentation.hpp"  // for to_presentation
+#include "todd-coxeter.hpp"     // for ToddCoxeter
 #include "types.hpp"            // for word_type, congruence_kind
 #include "word-graph.hpp"       // for WordGraph
 
@@ -1668,6 +1670,9 @@ namespace libsemigroups {
     template <typename Node>
     bool is_right_congruence(Presentation<word_type> const& p,
                              WordGraph<Node> const&         wg) {
+      if (p.alphabet().size() != wg.out_degree()) {
+        return false;
+      }
       auto const N     = wg.number_of_active_nodes();
       auto       first = wg.cbegin_nodes();
       auto       last  = wg.cbegin_nodes() + N;
@@ -1690,11 +1695,9 @@ namespace libsemigroups {
       return is_right_congruence(p_rev, wg);
     }
 
-    inline bool is_two_sided_congruence(Presentation<word_type> const& p,
-                                        Sims1::word_graph_type const&  wg) {
-      if (!is_right_congruence(p, wg)) {
-        return false;
-      }
+    template <typename Node>
+    bool is_two_sided_congruence_no_checks(Presentation<word_type> const& p,
+                                           WordGraph<Node> const&         wg) {
       auto const N     = wg.number_of_active_nodes();
       auto       first = wg.cbegin_nodes();
       auto       last  = wg.cbegin_nodes() + N;
@@ -1708,19 +1711,35 @@ namespace libsemigroups {
       return true;
     }
 
-    // auto two_sided_generating_pairs(Sims1::word_graph_type const&) {
-    //   // TODO check that the word graph represents a 2-sided congruence
-    //   // Then:
-    //   // * create a 2-sided ToddCoxeter, and prefill it with wg
-    //   // * create a FroidurePin<TCE> from the ToddCoxeter instance and
-    //   enumerate
-    //   // * return the rules of the FroidurePin
-    // }
+    inline bool is_two_sided_congruence(Presentation<word_type> const& p,
+                                        Sims1::word_graph_type const&  wg) {
+      if (!is_right_congruence(p, wg)) {
+        return false;
+      }
+      return is_two_sided_congruence_no_checks(p, wg);
+    }
+
+    template <typename Node>
+    auto two_sided_generating_pairs(Presentation<word_type> const& p,
+                                    WordGraph<Node> const&         wg) {
+      if (!is_two_sided_congruence(p, wg)) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "The 2nd argument (a word graph) does not represent a 2-sided "
+            "congruence of the 1st argument (a presentation)");
+      }
+
+      ToddCoxeter tc(congruence_kind::twosided, wg);
+      auto        fp = std::make_unique<decltype(to_froidure_pin(tc))>(
+          to_froidure_pin(tc));
+      fp->run();
+
+      auto first = fp->cbegin_rules();
+      auto last  = fp->cend_rules();
+
+      return IteratorRangeStateful(std::move(fp), first, last);
+    }
 
   }  // namespace sims
-
-  // TODO Add another function that gives the generating pairs for 2-sided
-  // congruences also
 
 }  // namespace libsemigroups
 

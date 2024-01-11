@@ -2990,7 +2990,7 @@ namespace libsemigroups {
 
     std::atomic_size_t count = 0;
     T.for_each(14, [&](auto const& wg) {
-      count += sims::is_two_sided_congruence(T.presentation(), wg);
+      count += sims::is_two_sided_congruence_no_checks(T.presentation(), wg);
     });
     REQUIRE(count == 9);
   }
@@ -3337,6 +3337,8 @@ namespace libsemigroups {
                  return !presentation::contains_rule(p, rel.first, rel.second);
                })
              | rx::to_vector())
+            == std::vector<relation_type>({{100_w, 1_w}}));
+    REQUIRE((sims::two_sided_generating_pairs(p, *it) | rx::to_vector())
             == std::vector<relation_type>({{100_w, 1_w}}));
   }
 
