@@ -90,7 +90,6 @@ pkginclude_HEADERS += include/libsemigroups/ranges.tpp
 pkginclude_HEADERS += include/libsemigroups/runner.hpp
 pkginclude_HEADERS += include/libsemigroups/schreier-sims.hpp
 pkginclude_HEADERS += include/libsemigroups/sims.hpp
-pkginclude_HEADERS += include/libsemigroups/sims.tpp
 pkginclude_HEADERS += include/libsemigroups/stephen.hpp
 pkginclude_HEADERS += include/libsemigroups/stephen.tpp
 pkginclude_HEADERS += include/libsemigroups/to-froidure-pin.hpp
@@ -805,8 +804,7 @@ test_all_SOURCES += tests/test-race.cpp
 test_all_SOURCES += tests/test-ranges.cpp
 test_all_SOURCES += tests/test-runner.cpp
 test_all_SOURCES += tests/test-schreier-sims.cpp
-test_all_SOURCES += tests/test-sims1.cpp
-test_all_SOURCES += tests/test-sims2.cpp
+test_all_SOURCES += tests/test-sims.cpp
 test_all_SOURCES += tests/test-stephen.cpp
 test_all_SOURCES += tests/test-string.cpp
 test_all_SOURCES += tests/test-transf.cpp
@@ -984,8 +982,7 @@ test_runner_SOURCES += tests/test-main.cpp
 test_schreier_sims_SOURCES =  tests/test-schreier-sims.cpp
 test_schreier_sims_SOURCES += tests/test-main.cpp
 
-test_sims_SOURCES =  tests/test-sims1.cpp
-test_sims_SOURCES += tests/test-sims2.cpp
+test_sims_SOURCES =  tests/test-sims.cpp
 test_sims_SOURCES += tests/test-main.cpp
 
 test_stephen_SOURCES =  tests/test-stephen.cpp

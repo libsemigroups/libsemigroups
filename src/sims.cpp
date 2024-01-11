@@ -1333,10 +1333,10 @@ namespace libsemigroups {
   }
 
   namespace sims {
-    const_rule_iterator::~const_rule_iterator() = default;
+    const_rcgp_iterator::~const_rcgp_iterator() = default;
 
     // TODO change 2nd arg to const reference
-    const_rule_iterator::const_rule_iterator(Presentation<word_type> const& p,
+    const_rcgp_iterator::const_rcgp_iterator(Presentation<word_type> const& p,
                                              word_graph_type const*         ptr,
                                              node_type  source,
                                              label_type gen)
@@ -1358,7 +1358,7 @@ namespace libsemigroups {
       ++(*this);
     }
 
-    const_rule_iterator const& const_rule_iterator::operator++() {
+    const_rcgp_iterator const& const_rcgp_iterator::operator++() {
       if (at_end()) {
         return *this;
       }
@@ -1398,14 +1398,14 @@ namespace libsemigroups {
       return *this;
     }
 
-    void const_rule_iterator::swap(const_rule_iterator& that) noexcept {
+    void const_rcgp_iterator::swap(const_rcgp_iterator& that) noexcept {
       std::swap(_word_graph, that._word_graph);
       std::swap(_gen, that._gen);
       std::swap(_source, that._source);
       std::swap(_tree, that._tree);
     }
 
-    bool const_rule_iterator::populate_relation() const {
+    bool const_rcgp_iterator::populate_relation() const {
       if (_relation.first.empty() && !at_end()) {
         LIBSEMIGROUPS_ASSERT(_relation.second.empty());
         LIBSEMIGROUPS_ASSERT(_gen > 0);
@@ -1420,14 +1420,14 @@ namespace libsemigroups {
       return false;
     }
 
-    rx::iterator_range<const_rule_iterator>
+    rx::iterator_range<const_rcgp_iterator>
     generating_pairs(Presentation<word_type> const& p,
                      Sims1::word_graph_type const&  wg) {
       return rx::iterator_range(cbegin_generating_pairs(p, wg),
                                 cend_generating_pairs(p, wg));
     }
 
-    rx::iterator_range<const_rule_iterator>
+    rx::iterator_range<const_rcgp_iterator>
     generating_pairs(Sims1::word_graph_type const& wg) {
       Presentation<word_type> p;
       p.alphabet(wg.out_degree());

@@ -655,6 +655,20 @@ namespace libsemigroups {
       add_rules_no_checks(p, q.rules.cbegin(), q.rules.cend());
     }
 
+    // TODO to tpp
+    template <typename Word>
+    [[nodiscard]] bool contains_rule(Presentation<Word>& p,
+                                     Word const&         lhs,
+                                     Word const&         rhs) {
+      for (auto it = p.rules.cbegin(); it != p.rules.cend(); it += 2) {
+        if ((*it == lhs && *(it + 1) == rhs)
+            || (*it == rhs && *(it + 1) == lhs)) {
+          return true;
+        }
+      }
+      return false;
+    }
+
     //! Add rules for an identity element.
     //!
     //! Adds rules of the form \f$ae = ea = a\f$ for every letter \f$a\f$ in

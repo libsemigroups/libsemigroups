@@ -1542,7 +1542,8 @@ namespace libsemigroups {
 
   namespace sims {
     // This is similar to FroidurePinBase::const_rule_iterator
-    class const_rule_iterator {
+    // Right Congruence Generating Pairs (rcgp)
+    class const_rcgp_iterator {
      public:
       using size_type = typename std::vector<relation_type>::size_type;
       using difference_type =
@@ -1569,44 +1570,44 @@ namespace libsemigroups {
       word_graph_type const* _word_graph;
 
       // Set source to ptr->number_of_active_nodes() for cend
-      const_rule_iterator(Presentation<word_type> const& p,
+      const_rcgp_iterator(Presentation<word_type> const& p,
                           word_graph_type const*         ptr,
                           node_type                      source,
                           label_type                     gen);
 
       // To allow the use of the above constructor
-      friend const_rule_iterator
+      friend const_rcgp_iterator
       cbegin_generating_pairs(Sims1::word_graph_type const&);
 
-      friend const_rule_iterator
+      friend const_rcgp_iterator
       cbegin_generating_pairs(Presentation<word_type> const&,
                               Sims1::word_graph_type const&);
 
       // To allow the use of the above constructor
-      friend const_rule_iterator
+      friend const_rcgp_iterator
       cend_generating_pairs(Sims1::word_graph_type const&);
 
-      friend const_rule_iterator
+      friend const_rcgp_iterator
       cend_generating_pairs(Presentation<word_type> const&,
                             Sims1::word_graph_type const&);
 
      public:
       // TODO add noexcept?
-      const_rule_iterator()                                      = default;
-      const_rule_iterator(const_rule_iterator const&)            = default;
-      const_rule_iterator(const_rule_iterator&&)                 = default;
-      const_rule_iterator& operator=(const_rule_iterator const&) = default;
-      const_rule_iterator& operator=(const_rule_iterator&&)      = default;
+      const_rcgp_iterator()                                      = default;
+      const_rcgp_iterator(const_rcgp_iterator const&)            = default;
+      const_rcgp_iterator(const_rcgp_iterator&&)                 = default;
+      const_rcgp_iterator& operator=(const_rcgp_iterator const&) = default;
+      const_rcgp_iterator& operator=(const_rcgp_iterator&&)      = default;
 
-      ~const_rule_iterator();
+      ~const_rcgp_iterator();
 
       [[nodiscard]] bool
-      operator==(const_rule_iterator const& that) const noexcept {
+      operator==(const_rcgp_iterator const& that) const noexcept {
         return _gen == that._gen && _source == that._source;
       }
 
       [[nodiscard]] bool
-      operator!=(const_rule_iterator const& that) const noexcept {
+      operator!=(const_rcgp_iterator const& that) const noexcept {
         return !(this->operator==(that));
       }
 
@@ -1621,14 +1622,14 @@ namespace libsemigroups {
       }
 
       // prefix
-      const_rule_iterator const& operator++();
+      const_rcgp_iterator const& operator++();
 
       // postfix
-      const_rule_iterator operator++(int) noexcept {
+      const_rcgp_iterator operator++(int) noexcept {
         return detail::default_postfix_increment(*this);
       }
 
-      void swap(const_rule_iterator& that) noexcept;
+      void swap(const_rcgp_iterator& that) noexcept;
 
      private:
       [[nodiscard]] bool at_end() const noexcept {
@@ -1636,27 +1637,38 @@ namespace libsemigroups {
       }
 
       bool populate_relation() const;
-    };  // const_rule_iterator
+    };  // const_rcgp_iterator
 
     // TODO this would work for arbitrary word_graphs
-    inline const_rule_iterator
+    // TODO add the parameter congruence_kind since 2-sided congruences have a
+    // somewhat different method?
+    // Returns an iterator pointing to the first generating pair of the right
+    // congruence on the semigroup or monoid defined by \p p defined by the word
+    // graph \p wg. Note that this is the generating pairs of the right
+    // congruence so defined not the 2-sided congruence.
+    inline const_rcgp_iterator
     cbegin_generating_pairs(Presentation<word_type> const& p,
                             Sims1::word_graph_type const&  wg) {
-      return const_rule_iterator(p, &wg, 0, 0);
+      // TODO Check that wg is compatible with p, and add a no_checks version
+      return const_rcgp_iterator(p, &wg, 0, 0);
     }
 
-    inline const_rule_iterator
+    inline const_rcgp_iterator
     cend_generating_pairs(Presentation<word_type> const& p,
                           Sims1::word_graph_type const&  wg) {
-      return const_rule_iterator(p, &wg, wg.number_of_active_nodes(), 0);
+      // TODO Check that wg is compatible with p, and add a no_checks version
+      return const_rcgp_iterator(p, &wg, wg.number_of_active_nodes(), 0);
     }
 
-    rx::iterator_range<const_rule_iterator>
+    rx::iterator_range<const_rcgp_iterator>
     generating_pairs(Presentation<word_type> const& p,
                      Sims1::word_graph_type const&  wg);
 
-    rx::iterator_range<const_rule_iterator>
+    rx::iterator_range<const_rcgp_iterator>
     generating_pairs(Sims1::word_graph_type const& wg);
+
+    // TODO Add another function that gives the generating pairs for 2-sided
+    // congruences also
 
   }  // namespace sims
 
