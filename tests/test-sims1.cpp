@@ -122,6 +122,18 @@ namespace libsemigroups {
       expected.induced_subgraph_no_checks(0, result.number_of_active_nodes());
       result.induced_subgraph_no_checks(0, result.number_of_active_nodes());
       REQUIRE(result == expected);
+
+      tc.init(congruence_kind::right, s.presentation());
+      for (auto const& p : sims::generating_pairs(s.presentation(), wg)) {
+        tc.add_pair(p.first, p.second);
+      }
+      tc.run();
+      tc.standardize(Order::shortlex);
+      expected = tc.word_graph();
+      REQUIRE(expected.number_of_nodes() >= result.number_of_active_nodes());
+
+      expected.induced_subgraph_no_checks(0, result.number_of_active_nodes());
+      REQUIRE(result == expected);
     }
   }  // namespace
 
@@ -272,6 +284,14 @@ namespace libsemigroups {
                                            {05_w, 0_w},
                                            {06_w, 0_w}}));
 
+    REQUIRE((sims::generating_pairs(p, *it) | rx::to_vector())
+            == std::vector<relation_type>({{1_w, 0_w},
+                                           {2_w, 0_w},
+                                           {3_w, 0_w},
+                                           {4_w, 0_w},
+                                           {5_w, 0_w},
+                                           {6_w, 0_w}}));
+
     check_generating_pairs(S, *it);
 
     ++it;
@@ -284,6 +304,15 @@ namespace libsemigroups {
              {06_w, 0_w}, {40_w, 4_w}, {41_w, 4_w}, {42_w, 4_w}, {43_w, 4_w},
              {44_w, 5_w}, {45_w, 0_w}, {46_w, 4_w}, {50_w, 5_w}, {51_w, 5_w},
              {52_w, 5_w}, {53_w, 5_w}, {54_w, 0_w}, {55_w, 4_w}, {56_w, 5_w}}));
+    REQUIRE((sims::generating_pairs(p, *it) | rx::to_vector())
+            == std::vector<relation_type>({{1_w, 0_w},
+                                           {2_w, 0_w},
+                                           {3_w, 0_w},
+                                           {6_w, 0_w},
+                                           {40_w, 4_w},
+                                           {42_w, 4_w},
+                                           {44_w, 5_w},
+                                           {50_w, 5_w}}));
   }
 
   LIBSEMIGROUPS_TEST_CASE("Sims1",

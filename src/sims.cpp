@@ -1335,14 +1335,26 @@ namespace libsemigroups {
   namespace sims {
     const_rule_iterator::~const_rule_iterator() = default;
 
-    const_rule_iterator::const_rule_iterator(word_graph_type const* ptr,
-                                             node_type              source,
-                                             label_type             gen)
-        : _word_graph(ptr),
-          _gen(gen),
+    // TODO change 2nd arg to const reference
+    const_rule_iterator::const_rule_iterator(Presentation<word_type> const& p,
+                                             word_graph_type const*         ptr,
+                                             node_type  source,
+                                             label_type gen)
+        : _gen(gen),
           _source(source),
           _relation({}, {}),
-          _tree(ptr->number_of_active_nodes()) {
+          _reconstructed_word_graph(p),
+          _tree(ptr->number_of_active_nodes()),
+          _word_graph(ptr) {
+      if (!word_graph::is_complete(*ptr,
+                                   ptr->cbegin_nodes(),
+                                   ptr->cbegin_nodes()
+                                       + ptr->number_of_active_nodes())) {
+        LIBSEMIGROUPS_EXCEPTION("The 1st argument must be a pointer to a "
+                                "complete word graph on the nodes [0, {})",
+                                ptr->number_of_active_nodes());
+      }
+      _reconstructed_word_graph.add_nodes(ptr->number_of_active_nodes());
       ++(*this);
     }
 
@@ -1356,14 +1368,25 @@ namespace libsemigroups {
 
       auto const& wg = *_word_graph;
 
+      size_type start = _reconstructed_word_graph.definitions().size();
+
       while (_source < wg.number_of_active_nodes()) {
         while (_gen < wg.out_degree()) {
-          auto target = wg.target_no_checks(_source, _gen);
-          if (target != UNDEFINED) {
-            if (_tree.parent(target) == UNDEFINED && target > _source) {
-              _tree.set(target, _source, _gen);
+          auto target1 = wg.target_no_checks(_source, _gen);
+          auto target2
+              = _reconstructed_word_graph.target_no_checks(_source, _gen);
+          LIBSEMIGROUPS_ASSERT(target1 != UNDEFINED);
+          if (target2 == UNDEFINED) {
+            _reconstructed_word_graph.set_target_no_checks(
+                _source, _gen, target1);
+            if (_tree.parent(target1) == UNDEFINED && target1 > _source) {
+              // Tree edges
+              _tree.set(target1, _source, _gen);
             } else {
+              // Non-tree edge, not implied by other edges
               _gen++;
+              std::ignore
+                  = _reconstructed_word_graph.process_definitions(start);
               return *this;
             }
           }
@@ -1374,6 +1397,7 @@ namespace libsemigroups {
       }
       return *this;
     }
+
     void const_rule_iterator::swap(const_rule_iterator& that) noexcept {
       std::swap(_word_graph, that._word_graph);
       std::swap(_gen, that._gen);
@@ -1397,9 +1421,18 @@ namespace libsemigroups {
     }
 
     rx::iterator_range<const_rule_iterator>
+    generating_pairs(Presentation<word_type> const& p,
+                     Sims1::word_graph_type const&  wg) {
+      return rx::iterator_range(cbegin_generating_pairs(p, wg),
+                                cend_generating_pairs(p, wg));
+    }
+
+    rx::iterator_range<const_rule_iterator>
     generating_pairs(Sims1::word_graph_type const& wg) {
-      return rx::iterator_range(cbegin_generating_pairs(wg),
-                                cend_generating_pairs(wg));
+      Presentation<word_type> p;
+      p.alphabet(wg.out_degree());
+      return rx::iterator_range(cbegin_generating_pairs(p, wg),
+                                cend_generating_pairs(p, wg));
     }
   }  // namespace sims
 }  // namespace libsemigroups

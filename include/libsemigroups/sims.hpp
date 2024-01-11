@@ -807,7 +807,6 @@ namespace libsemigroups {
       class thread_runner;
       class thread_iterator;
 
-     private:
       void report_at_start(size_t num_classes) const;
       void report_progress_from_thread() const;
       void report_final() const;
@@ -902,7 +901,16 @@ namespace libsemigroups {
     // hold FelschGraph's, none of the features of FelschGraph are useful
     // for the output, only for the implementation
     //! The type of the associated WordGraph objects.
+
+    // TODO the next line should be SimsBase::word_graph_type
     using word_graph_type = WordGraph<node_type>;
+
+   private:
+    using Definition = std::pair<node_type, label_type>;
+
+   public:
+    using felsch_graph_type
+        = FelschGraph<word_type, node_type, std::vector<Definition>>;
 
    private:
     congruence_kind _kind;
@@ -1547,29 +1555,40 @@ namespace libsemigroups {
       using value_type        = relation_type;
       using iterator_category = std::forward_iterator_tag;
 
-      using word_graph_type = Sims1::word_graph_type;
-      using node_type       = word_graph_type::node_type;
-      using label_type      = word_graph_type::label_type;
+      using word_graph_type   = Sims1::word_graph_type;
+      using felsch_graph_type = Sims1::felsch_graph_type;
+      using node_type         = word_graph_type::node_type;
+      using label_type        = word_graph_type::label_type;
 
      private:
-      word_graph_type const* _word_graph;
       label_type             _gen;
       node_type              _source;
       mutable relation_type  _relation;
+      felsch_graph_type      _reconstructed_word_graph;
       Forest                 _tree;
+      word_graph_type const* _word_graph;
 
       // Set source to ptr->number_of_active_nodes() for cend
-      const_rule_iterator(word_graph_type const* ptr,
-                          node_type              source,
-                          label_type             gen);
+      const_rule_iterator(Presentation<word_type> const& p,
+                          word_graph_type const*         ptr,
+                          node_type                      source,
+                          label_type                     gen);
 
       // To allow the use of the above constructor
       friend const_rule_iterator
       cbegin_generating_pairs(Sims1::word_graph_type const&);
 
+      friend const_rule_iterator
+      cbegin_generating_pairs(Presentation<word_type> const&,
+                              Sims1::word_graph_type const&);
+
       // To allow the use of the above constructor
       friend const_rule_iterator
       cend_generating_pairs(Sims1::word_graph_type const&);
+
+      friend const_rule_iterator
+      cend_generating_pairs(Presentation<word_type> const&,
+                            Sims1::word_graph_type const&);
 
      public:
       // TODO add noexcept?
@@ -1619,15 +1638,22 @@ namespace libsemigroups {
       bool populate_relation() const;
     };  // const_rule_iterator
 
+    // TODO this would work for arbitrary word_graphs
     inline const_rule_iterator
-    cbegin_generating_pairs(Sims1::word_graph_type const& wg) {
-      return const_rule_iterator(&wg, 0, 0);
+    cbegin_generating_pairs(Presentation<word_type> const& p,
+                            Sims1::word_graph_type const&  wg) {
+      return const_rule_iterator(p, &wg, 0, 0);
     }
 
     inline const_rule_iterator
-    cend_generating_pairs(Sims1::word_graph_type const& wg) {
-      return const_rule_iterator(&wg, wg.number_of_active_nodes(), 0);
+    cend_generating_pairs(Presentation<word_type> const& p,
+                          Sims1::word_graph_type const&  wg) {
+      return const_rule_iterator(p, &wg, wg.number_of_active_nodes(), 0);
     }
+
+    rx::iterator_range<const_rule_iterator>
+    generating_pairs(Presentation<word_type> const& p,
+                     Sims1::word_graph_type const&  wg);
 
     rx::iterator_range<const_rule_iterator>
     generating_pairs(Sims1::word_graph_type const& wg);

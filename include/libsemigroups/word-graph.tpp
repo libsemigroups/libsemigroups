@@ -455,9 +455,10 @@ namespace libsemigroups {
     bool is_complete(WordGraph<Node> const& wg,
                      Iterator1              first_node,
                      Iterator2              last_node) {
-      size_t const n = wg.out_degree();
+      using label_type = typename WordGraph<Node>::label_type;
+      size_t const n   = wg.out_degree();
       for (auto it = first_node; it != last_node; ++it) {
-        for (size_t a = 0; a < n; ++a) {
+        for (label_type a = 0; a < n; ++a) {
           if (wg.target_no_checks(*it, a) == UNDEFINED) {
             return false;
           }
