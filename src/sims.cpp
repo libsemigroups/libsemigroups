@@ -1434,10 +1434,5 @@ namespace libsemigroups {
       return rx::iterator_range(cbegin_right_generating_pairs(p, wg),
                                 cend_right_generating_pairs(p, wg));
     }
-      Presentation<word_type> p;
-      p.alphabet(wg.out_degree());
-      return rx::iterator_range(cbegin_generating_pairs(p, wg),
-                                cend_generating_pairs(p, wg));
-    }
   }  // namespace sims
 }  // namespace libsemigroups
