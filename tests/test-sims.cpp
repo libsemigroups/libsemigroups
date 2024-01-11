@@ -109,7 +109,7 @@ namespace libsemigroups {
                                 Sims1::word_graph_type const& wg) {
       ToddCoxeter tc(congruence_kind::right, s.presentation());
 
-      for (auto const& p : sims::generating_pairs(wg)) {
+      for (auto const& p : sims::right_generating_pairs(wg)) {
         tc.add_pair(p.first, p.second);
       }
       tc.run();
@@ -125,7 +125,7 @@ namespace libsemigroups {
       REQUIRE(result == expected);
 
       tc.init(congruence_kind::right, s.presentation());
-      for (auto const& p : sims::generating_pairs(s.presentation(), wg)) {
+      for (auto const& p : sims::right_generating_pairs(s.presentation(), wg)) {
         tc.add_pair(p.first, p.second);
       }
       tc.run();
@@ -141,7 +141,7 @@ namespace libsemigroups {
                                 Sims2::word_graph_type const& wg) {
       ToddCoxeter tc(congruence_kind::twosided, s.presentation());
 
-      for (auto const& p : sims::generating_pairs(wg)) {
+      for (auto const& p : sims::right_generating_pairs(wg)) {
         tc.add_pair(p.first, p.second);
       }
       tc.run();
@@ -157,7 +157,7 @@ namespace libsemigroups {
       REQUIRE(result == expected);
 
       tc.init(congruence_kind::right, s.presentation());
-      for (auto const& p : sims::generating_pairs(s.presentation(), wg)) {
+      for (auto const& p : sims::right_generating_pairs(s.presentation(), wg)) {
         tc.add_pair(p.first, p.second);
       }
       tc.run();
@@ -302,7 +302,7 @@ namespace libsemigroups {
     S.for_each(3, [&S](auto const& wg) { check_generating_pairs(S, wg); });
 
     auto it = S.cbegin(3);
-    REQUIRE((sims::generating_pairs(*it) | rx::to_vector())
+    REQUIRE((sims::right_generating_pairs(*it) | rx::to_vector())
             == std::vector<relation_type>({{1_w, 0_w},
                                            {2_w, 0_w},
                                            {3_w, 0_w},
@@ -317,7 +317,7 @@ namespace libsemigroups {
                                            {05_w, 0_w},
                                            {06_w, 0_w}}));
 
-    REQUIRE((sims::generating_pairs(p, *it) | rx::to_vector())
+    REQUIRE((sims::right_generating_pairs(p, *it) | rx::to_vector())
             == std::vector<relation_type>({{1_w, 0_w},
                                            {2_w, 0_w},
                                            {3_w, 0_w},
@@ -330,14 +330,14 @@ namespace libsemigroups {
     ++it;
     check_generating_pairs(S, *it);
     REQUIRE(
-        (sims::generating_pairs(*it) | rx::to_vector())
+        (sims::right_generating_pairs(*it) | rx::to_vector())
         == std::vector<relation_type>(
             {{1_w, 0_w},  {2_w, 0_w},  {3_w, 0_w},  {6_w, 0_w},  {00_w, 0_w},
              {01_w, 0_w}, {02_w, 0_w}, {03_w, 0_w}, {04_w, 4_w}, {05_w, 5_w},
              {06_w, 0_w}, {40_w, 4_w}, {41_w, 4_w}, {42_w, 4_w}, {43_w, 4_w},
              {44_w, 5_w}, {45_w, 0_w}, {46_w, 4_w}, {50_w, 5_w}, {51_w, 5_w},
              {52_w, 5_w}, {53_w, 5_w}, {54_w, 0_w}, {55_w, 4_w}, {56_w, 5_w}}));
-    REQUIRE((sims::generating_pairs(p, *it) | rx::to_vector())
+    REQUIRE((sims::right_generating_pairs(p, *it) | rx::to_vector())
             == std::vector<relation_type>({{1_w, 0_w},
                                            {2_w, 0_w},
                                            {3_w, 0_w},
@@ -3274,38 +3274,40 @@ namespace libsemigroups {
     s.for_each(4, [&s](auto const& wg) { check_generating_pairs(s, wg); });
 
     it = s.cbegin(4);
-    REQUIRE((sims::generating_pairs(*it) | rx::to_vector())
+    REQUIRE((sims::right_generating_pairs(*it) | rx::to_vector())
             == std::vector<relation_type>({{0_w, {}}, {1_w, {}}}));
-    REQUIRE((sims::generating_pairs(p, *it) | rx::to_vector())
+    REQUIRE((sims::right_generating_pairs(p, *it) | rx::to_vector())
             == std::vector<relation_type>({{0_w, {}}, {1_w, {}}}));
     ++it;
     REQUIRE(
-        (sims::generating_pairs(*it) | rx::to_vector())
+        (sims::right_generating_pairs(*it) | rx::to_vector())
         == std::vector<relation_type>({{0_w, {}}, {10_w, 1_w}, {11_w, 1_w}}));
-    REQUIRE((sims::generating_pairs(p, *it) | rx::to_vector())
+    REQUIRE((sims::right_generating_pairs(p, *it) | rx::to_vector())
             == std::vector<relation_type>({{0_w, {}}, {10_w, 1_w}}));
     ++it;
-    REQUIRE((sims::generating_pairs(*it) | rx::to_vector())
+    REQUIRE((sims::right_generating_pairs(*it) | rx::to_vector())
             == std::vector<relation_type>(
                 {{00_w, {}}, {01_w, 1_w}, {10_w, 1_w}, {11_w, 1_w}}));
-    REQUIRE((sims::generating_pairs(p, *it) | rx::filter([&p](auto const& rel) {
-               return !presentation::contains_rule(p, rel.first, rel.second);
-             })
+    REQUIRE((sims::right_generating_pairs(p, *it)
+             | rx::filter([&p](auto const& rel) {
+                 return !presentation::contains_rule(p, rel.first, rel.second);
+               })
              | rx::to_vector())
             == std::vector<relation_type>({{10_w, 1_w}}));
 
     // Note that all the rules below follow from the rules in the presentation,
     // and so this congruence is the trivial one.
     ++it;
-    REQUIRE((sims::generating_pairs(*it) | rx::to_vector())
+    REQUIRE((sims::right_generating_pairs(*it) | rx::to_vector())
             == std::vector<relation_type>({{00_w, {}},
                                            {01_w, 1_w},
                                            {11_w, 1_w},
                                            {100_w, 1_w},
                                            {101_w, 1_w}}));
-    REQUIRE((sims::generating_pairs(p, *it) | rx::filter([&p](auto const& rel) {
-               return !presentation::contains_rule(p, rel.first, rel.second);
-             })
+    REQUIRE((sims::right_generating_pairs(p, *it)
+             | rx::filter([&p](auto const& rel) {
+                 return !presentation::contains_rule(p, rel.first, rel.second);
+               })
              | rx::to_vector())
             == std::vector<relation_type>({{100_w, 1_w}}));
   }

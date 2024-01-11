@@ -1577,19 +1577,19 @@ namespace libsemigroups {
 
       // To allow the use of the above constructor
       friend const_rcgp_iterator
-      cbegin_generating_pairs(Sims1::word_graph_type const&);
+      cbegin_right_generating_pairs(Sims1::word_graph_type const&);
 
       friend const_rcgp_iterator
-      cbegin_generating_pairs(Presentation<word_type> const&,
-                              Sims1::word_graph_type const&);
+      cbegin_right_generating_pairs(Presentation<word_type> const&,
+                                    Sims1::word_graph_type const&);
 
       // To allow the use of the above constructor
       friend const_rcgp_iterator
-      cend_generating_pairs(Sims1::word_graph_type const&);
+      cend_right_generating_pairs(Sims1::word_graph_type const&);
 
       friend const_rcgp_iterator
-      cend_generating_pairs(Presentation<word_type> const&,
-                            Sims1::word_graph_type const&);
+      cend_right_generating_pairs(Presentation<word_type> const&,
+                                  Sims1::word_graph_type const&);
 
      public:
       // TODO add noexcept?
@@ -1640,32 +1640,30 @@ namespace libsemigroups {
     };  // const_rcgp_iterator
 
     // TODO this would work for arbitrary word_graphs
-    // TODO add the parameter congruence_kind since 2-sided congruences have a
-    // somewhat different method?
     // Returns an iterator pointing to the first generating pair of the right
     // congruence on the semigroup or monoid defined by \p p defined by the word
     // graph \p wg. Note that this is the generating pairs of the right
     // congruence so defined not the 2-sided congruence.
     inline const_rcgp_iterator
-    cbegin_generating_pairs(Presentation<word_type> const& p,
-                            Sims1::word_graph_type const&  wg) {
+    cbegin_right_generating_pairs(Presentation<word_type> const& p,
+                                  Sims1::word_graph_type const&  wg) {
       // TODO Check that wg is compatible with p, and add a no_checks version
       return const_rcgp_iterator(p, &wg, 0, 0);
     }
 
     inline const_rcgp_iterator
-    cend_generating_pairs(Presentation<word_type> const& p,
-                          Sims1::word_graph_type const&  wg) {
+    cend_right_generating_pairs(Presentation<word_type> const& p,
+                                Sims1::word_graph_type const&  wg) {
       // TODO Check that wg is compatible with p, and add a no_checks version
       return const_rcgp_iterator(p, &wg, wg.number_of_active_nodes(), 0);
     }
 
     rx::iterator_range<const_rcgp_iterator>
-    generating_pairs(Presentation<word_type> const& p,
-                     Sims1::word_graph_type const&  wg);
+    right_generating_pairs(Presentation<word_type> const& p,
+                           Sims1::word_graph_type const&  wg);
 
     rx::iterator_range<const_rcgp_iterator>
-    generating_pairs(Sims1::word_graph_type const& wg);
+    right_generating_pairs(Sims1::word_graph_type const& wg);
 
     // TODO Add another function that gives the generating pairs for 2-sided
     // congruences also

@@ -1421,14 +1421,19 @@ namespace libsemigroups {
     }
 
     rx::iterator_range<const_rcgp_iterator>
-    generating_pairs(Presentation<word_type> const& p,
-                     Sims1::word_graph_type const&  wg) {
-      return rx::iterator_range(cbegin_generating_pairs(p, wg),
-                                cend_generating_pairs(p, wg));
+    right_generating_pairs(Presentation<word_type> const& p,
+                           Sims1::word_graph_type const&  wg) {
+      return rx::iterator_range(cbegin_right_generating_pairs(p, wg),
+                                cend_right_generating_pairs(p, wg));
     }
 
     rx::iterator_range<const_rcgp_iterator>
-    generating_pairs(Sims1::word_graph_type const& wg) {
+    right_generating_pairs(Sims1::word_graph_type const& wg) {
+      Presentation<word_type> p;
+      p.alphabet(wg.out_degree());
+      return rx::iterator_range(cbegin_right_generating_pairs(p, wg),
+                                cend_right_generating_pairs(p, wg));
+    }
       Presentation<word_type> p;
       p.alphabet(wg.out_degree());
       return rx::iterator_range(cbegin_generating_pairs(p, wg),
