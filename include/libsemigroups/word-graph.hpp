@@ -912,6 +912,7 @@ namespace libsemigroups {
     // TODO doc
     // TODO tests
     // TODO version where std::unordered_set is passed by reference
+    // TODO version which is an iterator
     template <typename Node1, typename Node2>
     std::unordered_set<Node1> nodes_reachable_from(WordGraph<Node1> const& wg,
                                                    Node2 source);

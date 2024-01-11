@@ -2984,6 +2984,15 @@ namespace libsemigroups {
     Sims2 S;
     S.presentation(fpsemigroup::temperley_lieb_monoid(4));
     REQUIRE(S.number_of_congruences(14) == 9);
+
+    Sims1 T(congruence_kind::left, fpsemigroup::temperley_lieb_monoid(4));
+    REQUIRE(T.number_of_congruences(14) == 79);
+
+    std::atomic_size_t count = 0;
+    T.for_each(14, [&](auto const& wg) {
+      count += sims::is_two_sided_congruence(T.presentation(), wg);
+    });
+    REQUIRE(count == 9);
   }
 
   // Takes approx. 13.5s in debug mode.
@@ -3149,6 +3158,7 @@ namespace libsemigroups {
     REQUIRE(S.number_of_threads(8).number_of_congruences(8) == 63 - 9);
   }
 
+  // Takes approx. 1 minute
   LIBSEMIGROUPS_TEST_CASE("Sims2",
                           "103",
                           "2-sided Fibonacci(2, 9)",
@@ -3175,7 +3185,7 @@ namespace libsemigroups {
     presentation::add_rule(p, "abbabaaBaaB", "bAbAAbA");
     presentation::add_rule(p, "babaaBaaBaB", "BAbAbAA");
 
-    REQUIRE(presentation::to_gap_string(p, "S") == "");
+    // REQUIRE(presentation::to_gap_string(p, "S") == "");
     Sims2 S(p);
     // TODO: check correctness
     REQUIRE(S.number_of_threads(8).number_of_congruences(64) == 10);
@@ -3197,6 +3207,24 @@ namespace libsemigroups {
     REQUIRE(S.number_of_threads(8).number_of_congruences(2) == 5);
     REQUIRE(S.number_of_threads(8).number_of_congruences(3) == 17);
     REQUIRE(S.number_of_threads(8).number_of_congruences(4) == 52);
+
+    std::atomic_size_t count = 0;
+    Sims1              T(congruence_kind::right, p);
+    REQUIRE(T.number_of_congruences(4) == 977);
+    T.for_each(4, [&](auto const& wg) {
+      count += sims::is_two_sided_congruence(T.presentation(), wg);
+    });
+    REQUIRE(count == 52);
+    count = 0;
+
+    presentation::reverse(p);
+    T.presentation(p);
+    REQUIRE(T.number_of_congruences(4) == 227);
+    T.for_each(4, [&](auto const& wg) {
+      count += sims::is_two_sided_congruence(T.presentation(), wg);
+    });
+    REQUIRE(count == 52);
+
     REQUIRE(S.number_of_threads(8).number_of_congruences(5) == 148);
     REQUIRE(S.number_of_threads(8).number_of_congruences(6) == 413);
     REQUIRE(S.number_of_threads(8).number_of_congruences(7) == 1'101);

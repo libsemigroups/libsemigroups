@@ -1665,10 +1665,62 @@ namespace libsemigroups {
     rx::iterator_range<const_rcgp_iterator>
     right_generating_pairs(Sims1::word_graph_type const& wg);
 
-    // TODO Add another function that gives the generating pairs for 2-sided
-    // congruences also
+    template <typename Node>
+    bool is_right_congruence(Presentation<word_type> const& p,
+                             WordGraph<Node> const&         wg) {
+      auto const N     = wg.number_of_active_nodes();
+      auto       first = wg.cbegin_nodes();
+      auto       last  = wg.cbegin_nodes() + N;
+
+      if (!word_graph::is_complete(wg, first, last)
+          || !word_graph::is_compatible(
+              wg, first, last, p.rules.cbegin(), p.rules.cend())) {
+        return false;
+      }
+      auto norf = word_graph::nodes_reachable_from(wg, 0);
+      return std::all_of(
+          norf.begin(), norf.end(), [&N](auto n) { return n < N; });
+    }
+
+    template <typename Node>
+    bool is_right_congruence_of_dual(Presentation<word_type> const& p,
+                                     WordGraph<Node> const&         wg) {
+      auto p_rev(p);
+      presentation::reverse(p_rev);
+      return is_right_congruence(p_rev, wg);
+    }
+
+    inline bool is_two_sided_congruence(Presentation<word_type> const& p,
+                                        Sims1::word_graph_type const&  wg) {
+      if (!is_right_congruence(p, wg)) {
+        return false;
+      }
+      auto const N     = wg.number_of_active_nodes();
+      auto       first = wg.cbegin_nodes();
+      auto       last  = wg.cbegin_nodes() + N;
+
+      for (auto const& rule : right_generating_pairs(p, wg)) {
+        if (!word_graph::is_compatible(
+                wg, first, last, rule.first, rule.second)) {
+          return false;
+        }
+      }
+      return true;
+    }
+
+    // auto two_sided_generating_pairs(Sims1::word_graph_type const&) {
+    //   // TODO check that the word graph represents a 2-sided congruence
+    //   // Then:
+    //   // * create a 2-sided ToddCoxeter, and prefill it with wg
+    //   // * create a FroidurePin<TCE> from the ToddCoxeter instance and
+    //   enumerate
+    //   // * return the rules of the FroidurePin
+    // }
 
   }  // namespace sims
+
+  // TODO Add another function that gives the generating pairs for 2-sided
+  // congruences also
 
 }  // namespace libsemigroups
 
