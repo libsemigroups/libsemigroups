@@ -194,6 +194,18 @@ namespace libsemigroups {
     }
   }
 
+  void RewriterBase::set_cached_confluent(tril val) const {
+    if (val == tril::TRUE) {
+      _confluence_known = true;
+      _cached_confluent = true;
+    } else if (val == tril::FALSE) {
+      _confluence_known = true;
+      _cached_confluent = false;
+    } else {
+      _confluence_known = false;
+    }
+  }
+
   bool RewriterBase::add_pending_rule(Rule* rule) {
     LIBSEMIGROUPS_ASSERT(!rule->active());
     if (*rule->lhs() != *rule->rhs()) {
@@ -216,25 +228,27 @@ namespace libsemigroups {
       // Rewrite both sides and reorder if necessary . . .
       rewrite(rule1);
 
+      // Check rule is non-trivial
       if (*rule1->lhs() != *rule1->rhs()) {
+        // TODO Should these be declared at the top of the function?
         internal_string_type const* lhs = rule1->lhs();
         internal_string_type const* rhs = rule1->rhs();
+
         for (auto it = begin(); it != end();) {
           Rule* rule2 = const_cast<Rule*>(*it);
-          // TODO Does this need to happen? Can we ensure rules are always
-          // reduced wrt each other?
+
+          // Check if lhs is contained within the lhs rule2
           if (rule2->lhs()->find(*lhs) != external_string_type::npos) {
+            // If it is, rule2 must be deactivated and re-processed
             it = make_active_rule_pending(it);
-            // rule2 is added to _inactive_rules or _active_rules by
-            // process_pending_rules
           } else {
+            // If not, rewrite the rhs of rule2 with respect to rule1. This may
+            // not change rule2
             rewrite_string(*rule2->rhs(), lhs, rhs);
             ++it;
           }
         }
         add_rule(rule1);
-        // rule1 is activated, we do this after removing rules that rule1
-        // makes redundant to avoid failing to insert rule1 in _set_rules
       } else {
         add_inactive_rule(rule1);
       }
@@ -247,12 +261,15 @@ namespace libsemigroups {
     using iterator = internal_string_type::iterator;
 
     size_t old_pos = u.find(*lhs);
-    size_t new_pos;
 
     if (old_pos == external_string_type::npos) {
       return;
     }
 
+    size_t new_pos;
+
+    // Consider u as vw, where v is the longest prefix of u before an occurrence
+    // of lhs.
     iterator v_end   = u.begin() + old_pos;
     iterator w_begin = v_end;
     iterator w_end   = u.end();
@@ -260,6 +277,8 @@ namespace libsemigroups {
     while (w_begin != w_end) {
       LIBSEMIGROUPS_ASSERT(
           detail::is_prefix(w_begin, w_end, lhs->cbegin(), lhs->cend()));
+
+      // Replace lhs with rhs in-place
       w_begin += lhs->size() - rhs->size();
       detail::string_replace(w_begin, rhs->cbegin(), rhs->cend());
 
@@ -269,6 +288,8 @@ namespace libsemigroups {
         ++w_begin;
       }
 
+      // Find the next occurrence of lhs, without unnecessarily searching the
+      // begging of u that we have already searched
       old_pos = new_pos;
       new_pos = u.find(*lhs, old_pos + (lhs->size() - rhs->size()));
       if (new_pos == external_string_type::npos) {
@@ -286,6 +307,8 @@ namespace libsemigroups {
       ++v_end;
       ++w_begin;
     }
+
+    // Remove any garbage characters at the end
     u.erase(v_end - u.cbegin());
   }
 
@@ -483,6 +506,13 @@ namespace libsemigroups {
     }
   }
 
+  RewriteTrie& RewriteTrie::init() {
+    RewriterBase::init();
+    _trie.init();
+    _rules.clear();
+    return *this;
+  }
+
   RewriteTrie& RewriteTrie::operator=(RewriteTrie const& that) {
     init();
     RewriterBase::operator=(that);
@@ -539,6 +569,8 @@ namespace libsemigroups {
     }
   }
 
+  // As with RewriteFromLeft::rewrite, this assumes that all rules are length
+  // reducing.
   void RewriteTrie::rewrite(internal_string_type& u) const {
     // Check if u is rewriteable
     if (u.size() < stats().min_length_lhs_rule) {
@@ -577,6 +609,7 @@ namespace libsemigroups {
                              <= static_cast<size_t>(v_end - v_begin) + 1);
         v_end -= lhs_size - 1;
         w_begin -= rule->rhs()->size();
+        // Replace lhs with rhs in-place
         detail::string_replace(
             w_begin, rule->rhs()->cbegin(), rule->rhs()->cend());
         for (size_t i = 0; i < lhs_size - 1; ++i) {
@@ -618,6 +651,10 @@ namespace libsemigroups {
       return true;
     }
 
+    // The size of an overlap is determined by height of terminal node minus the
+    // backtrack depth. Traversing down the trie increases both the height and
+    // backtrack depth by one, so if height isn't greater than the backtrack
+    // depth, no overlap can be found
     if (_trie.height(current_node) <= backtrack_depth) {
       return true;
     }
@@ -658,6 +695,7 @@ namespace libsemigroups {
       return true;
     }
 
+    // Read each possible letter and recurse
     for (auto x = alphabet_cbegin(); x != alphabet_cend(); ++x) {
       if (!backtrack_confluence(
               rule1,

@@ -304,19 +304,7 @@ namespace libsemigroups {
       return _alphabet.cend();
     }
 
-    // TODO remove?
-    //  TODO to cpp if keeping it
-    void set_cached_confluent(tril val) const {
-      if (val == tril::TRUE) {
-        _confluence_known = true;
-        _cached_confluent = true;
-      } else if (val == tril::FALSE) {
-        _confluence_known = true;
-        _cached_confluent = false;
-      } else {
-        _confluence_known = false;
-      }
-    }
+    void set_cached_confluent(tril val) const;
 
     bool cached_confluent() const noexcept {
       return _cached_confluent;
@@ -346,6 +334,7 @@ namespace libsemigroups {
       rule->reorder();
     }
 
+    // TODO remove virtual functions
     virtual void rewrite(internal_string_type& u) const = 0;
 
     virtual void add_rule(Rule* rule) = 0;
@@ -395,8 +384,6 @@ namespace libsemigroups {
 
     RewriteFromLeft() = default;
 
-    // Rules(Rules const& that);
-    // Rules(Rules&& that);
     RewriteFromLeft& operator=(RewriteFromLeft const&);
 
     // TODO the other constructors
@@ -413,20 +400,16 @@ namespace libsemigroups {
     void add_rule(Rule* rule);
 
     using RewriterBase::add_rule;
-    // template <typename StringLike>
-    // void add_rule(StringLike const& lhs, StringLike const& rhs) {
-    //   if (RewriterBase::add_rule(lhs, rhs)) {
-    //     process_pending_rules();
-    //   }
-    // }
 
    private:
     void rewrite(Rule* rule) const;
-    // void     process_pending_rules();
+
     iterator make_active_rule_pending(iterator);
-    void     report_from_confluent(
-            std::atomic_uint64_t const&,
-            std::chrono::high_resolution_clock::time_point const&) const;
+
+    void report_from_confluent(
+        std::atomic_uint64_t const&,
+        std::chrono::high_resolution_clock::time_point const&) const;
+
     bool confluent_impl(std::atomic_uint64_t&) const;
   };
 
@@ -450,12 +433,7 @@ namespace libsemigroups {
 
     ~RewriteTrie() = default;
 
-    RewriteTrie& init() {
-      RewriterBase::init();
-      _trie.init();
-      _rules.clear();
-      return *this;
-    }
+    RewriteTrie& init();
 
     rule_iterator rules_begin() {
       return _rules.begin();
