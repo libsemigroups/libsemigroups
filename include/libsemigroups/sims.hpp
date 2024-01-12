@@ -1,6 +1,6 @@
 //
 // libsemigroups - C++ library for semigroups and monoids
-// Copyright (C) 2022 James D. Mitchell
+// Copyright (C) 2022-24 James D. Mitchell
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -17,18 +17,19 @@
 //
 
 // This file contains a declaration of a class for performing the "low-index
-// congruence" algorithm for 1-sided congruences of semigroups and monoids.
+// congruence" algorithm for 1-sided or 2-sided congruences of semigroups and
+// monoids.
 
-// TODO(Sims1):
+// TODO(Sims):
 // * implement joins (HopcroftKarp), meets (not sure), containment (find join
 //   and check equality)?
-// * is 2-sided congruence method. One approach would be to compute the kernel
-//   of the associated homomorphism, which is the largest 2-sided congruence
-//   contained in the right congruence. Not sure if this is a good approach.
-//   Another approach would be to use the same method as in Sims2, find the
-//   relations arising from "non-tree" edges and check if the word graph is
-//   compatible from every node with each of these relations.
-// * a version which allows specifying the word_graph to Sims1 too
+// * meet/join_semilattice of word graphs
+// * implement maximum_2_sided_congruence_contained to compute the kernel of the
+//   associated homomorphism, which is the largest 2-sided congruence contained
+//   in the right congruence.
+// * a version which allows specifying the word_graph to Sims1 too (This'd be
+//   good but it's not currently clear how to check that the input is a valid
+//   graph, so skipping for now)
 
 #ifndef LIBSEMIGROUPS_SIMS_HPP_
 #define LIBSEMIGROUPS_SIMS_HPP_
@@ -47,9 +48,7 @@
 #include "exception.hpp"        // for LIBSEMIGROUPS_EXCEPTION
 #include "felsch-graph.hpp"     // for FelschGraph
 #include "presentation.hpp"     // for Presentation, Presentati...
-#include "to-froidure-pin.hpp"  // for to_froidure_pin
 #include "to-presentation.hpp"  // for to_presentation
-#include "todd-coxeter.hpp"     // for ToddCoxeter
 #include "types.hpp"            // for word_type, congruence_kind
 #include "word-graph.hpp"       // for WordGraph
 
@@ -1582,36 +1581,44 @@ namespace libsemigroups {
                           label_type                     gen);
 
       // To allow the use of the above constructor
+      template <typename Node>
       friend const_rcgp_iterator
-      cbegin_right_generating_pairs(Sims1::word_graph_type const&);
+      cbegin_right_generating_pairs_no_checks(WordGraph<Node> const&);
 
+      template <typename Node>
       friend const_rcgp_iterator
-      cbegin_right_generating_pairs(Presentation<word_type> const&,
-                                    Sims1::word_graph_type const&);
+      cbegin_right_generating_pairs_no_checks(Presentation<word_type> const&,
+                                              WordGraph<Node> const&);
 
       // To allow the use of the above constructor
+      template <typename Node>
       friend const_rcgp_iterator
-      cend_right_generating_pairs(Sims1::word_graph_type const&);
+      cend_right_generating_pairs_no_checks(WordGraph<Node> const&);
 
+      template <typename Node>
       friend const_rcgp_iterator
-      cend_right_generating_pairs(Presentation<word_type> const&,
-                                  Sims1::word_graph_type const&);
+      cend_right_generating_pairs_no_checks(Presentation<word_type> const&,
+                                            WordGraph<Node> const&);
 
       // To allow the use of the private constructor from pointer
+      template <typename Node>
       friend const_cgp_iterator
-      cbegin_two_sided_generating_pairs(Sims1::word_graph_type const&);
+      cbegin_two_sided_generating_pairs_no_checks(WordGraph<Node> const&);
 
-      friend const_cgp_iterator
-      cbegin_two_sided_generating_pairs(Presentation<word_type> const&,
-                                        Sims1::word_graph_type const&);
+      template <typename Node>
+      friend const_cgp_iterator cbegin_two_sided_generating_pairs_no_checks(
+          Presentation<word_type> const&,
+          WordGraph<Node> const&);
 
       // To allow the use of the above constructor
+      template <typename Node>
       friend const_cgp_iterator
-      cend_two_sided_generating_pairs(Sims1::word_graph_type const&);
+      cend_two_sided_generating_pairs_no_checks(WordGraph<Node> const&);
 
+      template <typename Node>
       friend const_cgp_iterator
-      cend_two_sided_generating_pairs(Presentation<word_type> const&,
-                                      Sims1::word_graph_type const&);
+      cend_two_sided_generating_pairs_no_checks(Presentation<word_type> const&,
+                                                WordGraph<Node> const&);
 
      public:
       // TODO add noexcept?
@@ -1719,49 +1726,24 @@ namespace libsemigroups {
       bool populate_relation() const;
     };  // const_cgp_iterator
 
-    // TODO this would work for arbitrary word_graphs
-    // Returns an iterator pointing to the first generating pair of the right
-    // congruence on the semigroup or monoid defined by \p p defined by the word
-    // graph \p wg. Note that this is the generating pairs of the right
-    // congruence so defined not the 2-sided congruence.
-    inline const_rcgp_iterator
-    cbegin_right_generating_pairs(Presentation<word_type> const& p,
-                                  Sims1::word_graph_type const&  wg) {
-      // TODO Check that wg is compatible with p, and add a no_checks version
-      return const_rcgp_iterator(p, &wg, 0, 0);
-    }
-
-    inline const_cgp_iterator
-    cbegin_two_sided_generating_pairs(Presentation<word_type> const& p,
-                                      Sims1::word_graph_type const&  wg) {
-      // TODO Check that wg is compatible with p, and add a no_checks version
-      return const_cgp_iterator(p, &wg, 0, 0);
-    }
-
-    inline const_rcgp_iterator
-    cend_right_generating_pairs(Presentation<word_type> const& p,
-                                Sims1::word_graph_type const&  wg) {
-      // TODO Check that wg is compatible with p, and add a no_checks version
-      return const_rcgp_iterator(p, &wg, wg.number_of_active_nodes(), 0);
-    }
-
-    inline const_cgp_iterator
-    cend_two_sided_generating_pairs(Presentation<word_type> const& p,
-                                    Sims1::word_graph_type const&  wg) {
-      // TODO Check that wg is compatible with p, and add a no_checks version
-      return const_cgp_iterator(p, &wg, wg.number_of_active_nodes(), 0);
-    }
-
+    template <typename Node>
     rx::iterator_range<const_rcgp_iterator>
     right_generating_pairs(Presentation<word_type> const& p,
-                           Sims1::word_graph_type const&  wg);
+                           WordGraph<Node> const&         wg);
 
+    template <typename Node>
     rx::iterator_range<const_rcgp_iterator>
-    right_generating_pairs(Sims1::word_graph_type const& wg);
+    right_generating_pairs(WordGraph<Node> const& wg);
 
+    template <typename Node>
     rx::iterator_range<const_cgp_iterator>
     two_sided_generating_pairs(Presentation<word_type> const& p,
-                               Sims1::word_graph_type const&  wg);
+                               WordGraph<Node> const&         wg);
+
+    template <typename Node>
+    rx::iterator_range<const_cgp_iterator>
+    two_sided_generating_pairs(WordGraph<Node> const& wg);
+
     template <typename Node>
     bool is_right_congruence(Presentation<word_type> const& p,
                              WordGraph<Node> const&         wg) {
@@ -1780,6 +1762,16 @@ namespace libsemigroups {
       auto norf = word_graph::nodes_reachable_from(wg, 0);
       return std::all_of(
           norf.begin(), norf.end(), [&N](auto n) { return n < N; });
+    }
+
+    template <typename Node>
+    void validate_right_congruence(Presentation<word_type> const& p,
+                                   WordGraph<Node> const&         wg) {
+      if (!is_right_congruence(p, wg)) {
+        LIBSEMIGROUPS_EXCEPTION("The 2nd argument (a word graph) does not "
+                                "represent a right congruence of the semigroup "
+                                "defined by the 1st argument (a presentation)")
+      }
     }
 
     template <typename Node>
@@ -1806,19 +1798,158 @@ namespace libsemigroups {
       return true;
     }
 
-    inline bool is_two_sided_congruence(Presentation<word_type> const& p,
-                                        Sims1::word_graph_type const&  wg) {
+    template <typename Node>
+    bool is_two_sided_congruence(Presentation<word_type> const& p,
+                                 WordGraph<Node> const&         wg) {
       if (!is_right_congruence(p, wg)) {
         return false;
       }
       return is_two_sided_congruence_no_checks(p, wg);
     }
 
-    rx::iterator_range<const_cgp_iterator>
-    two_sided_generating_pairs(Sims1::word_graph_type const& wg);
+    template <typename Node>
+    void validate_two_sided_congruence(Presentation<word_type> const& p,
+                                       WordGraph<Node> const&         wg) {
+      if (!is_two_sided_congruence(p, wg)) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "The 2nd argument (a word graph) does not "
+            "represent a 2-sided congruence of the semigroup "
+            "defined by the 1st argument (a presentation)")
+      }
+    }
 
-    // TODO Add another function that gives the generating pairs for 2-sided
-    // congruences also
+    // Returns an iterator pointing to the first generating pair of the right
+    // congruence on the semigroup or monoid defined by \p p defined by the word
+    // graph \p wg. Note that this is the generating pairs of the right
+    // congruence so defined not the 2-sided congruence.
+    template <typename Node>
+    const_rcgp_iterator
+    cbegin_right_generating_pairs_no_checks(Presentation<word_type> const& p,
+                                            WordGraph<Node> const&         wg) {
+      return const_rcgp_iterator(p, &wg, 0, 0);
+    }
+
+    template <typename Node>
+    const_rcgp_iterator
+    cbegin_right_generating_pairs(Presentation<word_type> const& p,
+                                  WordGraph<Node> const&         wg) {
+      validate_right_congruence(p, wg);
+      return cbegin_right_generating_pairs(p, wg);
+    }
+
+    template <typename Node>
+    const_cgp_iterator cbegin_two_sided_generating_pairs_no_checks(
+        Presentation<word_type> const& p,
+        WordGraph<Node> const&         wg) {
+      return const_cgp_iterator(p, &wg, 0, 0);
+    }
+
+    template <typename Node>
+    const_cgp_iterator
+    cbegin_two_sided_generating_pairs(Presentation<word_type> const& p,
+                                      WordGraph<Node> const&         wg) {
+      validate_two_sided_congruence(p, wg);
+      return cbegin_two_sided_generating_pairs_no_checks(p, wg);
+    }
+
+    template <typename Node>
+    const_rcgp_iterator
+    cend_right_generating_pairs_no_checks(Presentation<word_type> const& p,
+                                          WordGraph<Node> const&         wg) {
+      return const_rcgp_iterator(p, &wg, wg.number_of_active_nodes(), 0);
+    }
+
+    template <typename Node>
+    const_rcgp_iterator
+    cend_right_generating_pairs(Presentation<word_type> const& p,
+                                WordGraph<Node> const&         wg) {
+      validate_right_congruence(p, wg);
+      return cend_right_generating_pairs_no_checks(p, wg);
+    }
+
+    template <typename Node>
+    const_cgp_iterator
+    cend_two_sided_generating_pairs_no_checks(Presentation<word_type> const& p,
+                                              WordGraph<Node> const& wg) {
+      return const_cgp_iterator(p, &wg, wg.number_of_active_nodes(), 0);
+    }
+
+    template <typename Node>
+    const_cgp_iterator
+    cend_two_sided_generating_pairs(Presentation<word_type> const& p,
+                                    WordGraph<Node> const&         wg) {
+      validate_two_sided_congruence(p, wg);
+      return cend_two_sided_generating_pairs_no_checks(p, wg);
+    }
+
+    template <typename Node>
+    rx::iterator_range<const_rcgp_iterator>
+    right_generating_pairs_no_checks(Presentation<word_type> const& p,
+                                     WordGraph<Node> const&         wg) {
+      return rx::iterator_range(cbegin_right_generating_pairs_no_checks(p, wg),
+                                cend_right_generating_pairs_no_checks(p, wg));
+    }
+
+    template <typename Node>
+    rx::iterator_range<const_rcgp_iterator>
+    right_generating_pairs(Presentation<word_type> const& p,
+                           WordGraph<Node> const&         wg) {
+      validate_right_congruence(p, wg);
+      return right_generating_pairs_no_checks(p, wg);
+    }
+
+    template <typename Node>
+    rx::iterator_range<const_rcgp_iterator>
+    right_generating_pairs_no_checks(WordGraph<Node> const& wg) {
+      Presentation<word_type> p;
+      p.alphabet(wg.out_degree());
+      return right_generating_pairs_no_checks(p, wg);
+    }
+
+    template <typename Node>
+    rx::iterator_range<const_rcgp_iterator>
+    right_generating_pairs(WordGraph<Node> const& wg) {
+      Presentation<word_type> p;
+      p.alphabet(wg.out_degree());
+      validate_right_congruence(p, wg);
+      return right_generating_pairs_no_checks(p, wg);
+    }
+
+    template <typename Node>
+    rx::iterator_range<const_cgp_iterator>
+    two_sided_generating_pairs_no_checks(Presentation<word_type> const& p,
+                                         WordGraph<Node> const&         wg) {
+      return rx::iterator_range(
+          cbegin_two_sided_generating_pairs_no_checks(p, wg),
+          cend_two_sided_generating_pairs_no_checks(p, wg));
+    }
+
+    template <typename Node>
+    rx::iterator_range<const_cgp_iterator>
+    two_sided_generating_pairs(Presentation<word_type> const& p,
+                               WordGraph<Node> const&         wg) {
+      validate_two_sided_congruence(p, wg);
+      return two_sided_generating_pairs_no_checks(p, wg);
+    }
+
+    template <typename Node>
+    rx::iterator_range<const_cgp_iterator>
+    two_sided_generating_pairs_no_checks(WordGraph<Node> const& wg) {
+      Presentation<word_type> p;
+      p.alphabet(wg.out_degree());
+      return rx::iterator_range(
+          cbegin_two_sided_generating_pairs_no_checks(p, wg),
+          cend_two_sided_generating_pairs_no_checks(p, wg));
+    }
+
+    template <typename Node>
+    rx::iterator_range<const_cgp_iterator>
+    two_sided_generating_pairs(WordGraph<Node> const& wg) {
+      Presentation<word_type> p;
+      p.alphabet(wg.out_degree());
+      validate_two_sided_congruence(p, wg);
+      return two_sided_generating_pairs_no_checks(p, wg);
+    }
 
   }  // namespace sims
 

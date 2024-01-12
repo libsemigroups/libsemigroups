@@ -105,8 +105,9 @@ namespace libsemigroups {
     // dual semigroup when setting the kind to left. Thus when we get the
     // generating pairs they generate that right congruence on the dual, which
     // the function below checks. This seems potentially confusing.
-    void check_generating_pairs(Sims1 const&                  s,
-                                Sims1::word_graph_type const& wg) {
+    template <typename Sims1Or2, typename Node>
+    void check_right_generating_pairs(Sims1Or2 const&        s,
+                                      WordGraph<Node> const& wg) {
       ToddCoxeter tc(congruence_kind::right, s.presentation());
 
       for (auto const& p : sims::right_generating_pairs(wg)) {
@@ -137,8 +138,8 @@ namespace libsemigroups {
       REQUIRE(result == expected);
     }
 
-    void check_generating_pairs(Sims2 const&                  s,
-                                Sims2::word_graph_type const& wg) {
+    void check_two_sided_generating_pairs(Sims2 const&                  s,
+                                          Sims2::word_graph_type const& wg) {
       ToddCoxeter tc(congruence_kind::twosided, s.presentation());
 
       for (auto const& p : sims::right_generating_pairs(wg)) {
@@ -213,7 +214,8 @@ namespace libsemigroups {
 
       it = S.cbegin(3);
       REQUIRE(*it == to_word_graph<node_type>(3, {{0, 0}}));
-      S.for_each(5, [&S](auto const& wg) { check_generating_pairs(S, wg); });
+      S.for_each(5,
+                 [&S](auto const& wg) { check_right_generating_pairs(S, wg); });
     }
     // [[[0, 0]],
     // [[1, 2], [1, 1], [3, 2], [3, 3]],
@@ -228,7 +230,8 @@ namespace libsemigroups {
         REQUIRE(word_graph::follow_path_no_checks(*it, 0, 1010_w)
                 == word_graph::follow_path_no_checks(*it, 0, {0}));
       }
-      S.for_each(5, [&S](auto const& wg) { check_generating_pairs(S, wg); });
+      S.for_each(5,
+                 [&S](auto const& wg) { check_right_generating_pairs(S, wg); });
     }
   }
 
@@ -299,7 +302,8 @@ namespace libsemigroups {
     // REQUIRE(S.number_of_congruences(4) == 14);
     // REQUIRE(S.number_of_congruences(5) == 14);
 
-    S.for_each(3, [&S](auto const& wg) { check_generating_pairs(S, wg); });
+    S.for_each(3,
+               [&S](auto const& wg) { check_right_generating_pairs(S, wg); });
 
     auto it = S.cbegin(3);
     REQUIRE((sims::right_generating_pairs(*it) | rx::to_vector())
@@ -325,10 +329,10 @@ namespace libsemigroups {
                                            {5_w, 0_w},
                                            {6_w, 0_w}}));
 
-    check_generating_pairs(S, *it);
+    check_right_generating_pairs(S, *it);
 
     ++it;
-    check_generating_pairs(S, *it);
+    check_right_generating_pairs(S, *it);
     REQUIRE(
         (sims::right_generating_pairs(*it) | rx::to_vector())
         == std::vector<relation_type>(
@@ -2587,7 +2591,7 @@ namespace libsemigroups {
                           "080",
                           "fibonacci_group(2, 9) x 1",
                           "[quick]") {
-    auto                      rg = ReportGuard(true);
+    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("abcdefghiABCDEFGHI");
     p.contains_empty_word(true);
@@ -2868,8 +2872,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Sims1", "088", "Brauer monoid", "[extreme][sims1]") {
-    auto p = brauer_monoid(5);
-    // REQUIRE(p.alphabet() == 012_w);
+    auto          p = brauer_monoid(5);
     MinimalRepOrc orc;
     auto          d = orc.presentation(brauer_monoid(5))
                  .target_size(945)
@@ -3229,6 +3232,11 @@ namespace libsemigroups {
     });
     REQUIRE(count == 52);
 
+    S.for_each(
+        5, [&S](auto const& wg) { check_two_sided_generating_pairs(S, wg); });
+    S.for_each(5,
+               [&S](auto const& wg) { check_right_generating_pairs(S, wg); });
+
     REQUIRE(S.number_of_threads(8).number_of_congruences(5) == 148);
     REQUIRE(S.number_of_threads(8).number_of_congruences(6) == 413);
     REQUIRE(S.number_of_threads(8).number_of_congruences(7) == 1'101);
@@ -3303,7 +3311,11 @@ namespace libsemigroups {
                 4, {{1, 2}, {0, 2}, {3, 2}, {2, 2}}));  // ok
     REQUIRE(it == s.cend(4));
 
-    s.for_each(4, [&s](auto const& wg) { check_generating_pairs(s, wg); });
+    s.for_each(
+        4, [&s](auto const& wg) { check_two_sided_generating_pairs(s, wg); });
+    auto not_in_p = rx::filter([&p](auto const& rel) {
+      return !presentation::contains_rule(p, rel.first, rel.second);
+    });
 
     it = s.cbegin(4);
     REQUIRE((sims::right_generating_pairs(*it) | rx::to_vector())
@@ -3320,11 +3332,7 @@ namespace libsemigroups {
     REQUIRE((sims::right_generating_pairs(*it) | rx::to_vector())
             == std::vector<relation_type>(
                 {{00_w, {}}, {01_w, 1_w}, {10_w, 1_w}, {11_w, 1_w}}));
-    REQUIRE((sims::right_generating_pairs(p, *it)
-             | rx::filter([&p](auto const& rel) {
-                 return !presentation::contains_rule(p, rel.first, rel.second);
-               })
-             | rx::to_vector())
+    REQUIRE((sims::right_generating_pairs(p, *it) | not_in_p | rx::to_vector())
             == std::vector<relation_type>({{10_w, 1_w}}));
 
     // Note that all the rules below follow from the rules in the presentation,
@@ -3336,14 +3344,11 @@ namespace libsemigroups {
                                            {11_w, 1_w},
                                            {100_w, 1_w},
                                            {101_w, 1_w}}));
-    REQUIRE((sims::right_generating_pairs(p, *it)
-             | rx::filter([&p](auto const& rel) {
-                 return !presentation::contains_rule(p, rel.first, rel.second);
-               })
-             | rx::to_vector())
+    REQUIRE((sims::right_generating_pairs(p, *it) | not_in_p | rx::to_vector())
             == std::vector<relation_type>({{100_w, 1_w}}));
-    REQUIRE((sims::two_sided_generating_pairs(p, *it) | rx::to_vector())
-            == std::vector<relation_type>({{100_w, 1_w}}));
+    REQUIRE(
+        (sims::two_sided_generating_pairs(p, *it) | not_in_p | rx::to_vector())
+        == std::vector<relation_type>({{100_w, 1_w}}));
   }
 
   LIBSEMIGROUPS_TEST_CASE("Sims2", "107", "2-sided example", "[quick][sims1]") {
