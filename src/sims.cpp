@@ -1403,6 +1403,7 @@ namespace libsemigroups {
       std::swap(_gen, that._gen);
       std::swap(_source, that._source);
       std::swap(_tree, that._tree);
+      std::swap(_reconstructed_word_graph, that._reconstructed_word_graph);
     }
 
     bool const_rcgp_iterator::populate_relation() const {
