@@ -631,12 +631,16 @@ namespace libsemigroups {
 
     index_type link;
 
+    // For each rule, check if any descendent of any suffix breaks confluence
     for (auto node_it = _rules.begin(); node_it != _rules.end(); ++node_it) {
       link = _trie.suffix_link(node_it->first);
-      if (_trie.height(node_it->first) != 1
-          && !backtrack_confluence(node_it->second, link, 0)) {
-        set_cached_confluent(tril::FALSE);
-        return false;
+      LIBSEMIGROUPS_ASSERT(node_it->first != _trie.root);
+      while (link != _trie.root) {
+        if (!descendants_confluent(node_it->second, link, _trie.height(link))) {
+          set_cached_confluent(tril::FALSE);
+          return false;
+        }
+        link = _trie.suffix_link(link);
       }
     }
     // Set cached value
@@ -645,21 +649,9 @@ namespace libsemigroups {
   }
 
   [[nodiscard]] bool
-  RewriteTrie::backtrack_confluence(Rule const* rule1,
-                                    index_type  current_node,
-                                    size_t      backtrack_depth) const {
-    if (current_node == _trie.root) {
-      return true;
-    }
-
-    // The size of an overlap is determined by height of terminal node minus the
-    // backtrack depth. Traversing down the trie increases both the height and
-    // backtrack depth by one, so if height isn't greater than the backtrack
-    // depth, no overlap can be found
-    if (_trie.height(current_node) <= backtrack_depth) {
-      return true;
-    }
-
+  RewriteTrie::descendants_confluent(Rule const* rule1,
+                                     index_type  current_node,
+                                     size_t      overlap_length) const {
     if (_trie.node(current_node).is_terminal()) {
       Rule const* rule2 = _rules.find(current_node)->second;
       // Process overlap
@@ -667,7 +659,6 @@ namespace libsemigroups {
       // the LHS of rule2 corresponds to BC, and |C|=nodes.size() - 1.
       // AB -> X, BC -> Y
       // ABC gets rewritten to XC and AY
-      auto overlap_length = rule2->lhs()->length() - (backtrack_depth);  // |B|
 
       internal_string_type word1;
       internal_string_type word2;
@@ -691,13 +682,13 @@ namespace libsemigroups {
       return true;
     }
 
-    // Read each possible letter and recurse
+    // Read each possible letter and traverse down the trie
     for (auto x = alphabet_cbegin(); x != alphabet_cend(); ++x) {
-      if (!backtrack_confluence(
-              rule1,
-              _trie.traverse_from(current_node, static_cast<letter_type>(*x)),
-              backtrack_depth + 1)) {
-        return false;
+      auto child = _trie.child(current_node, static_cast<letter_type>(*x));
+      if (child != UNDEFINED) {
+        if (!descendants_confluent(rule1, child, overlap_length)) {
+          return false;
+        }
       }
     }
     return true;

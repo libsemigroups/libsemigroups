@@ -462,9 +462,9 @@ namespace libsemigroups {
     using RewriterBase::add_rule;
 
    private:
-    [[nodiscard]] bool backtrack_confluence(Rule const* rule1,
-                                            index_type  current_node,
-                                            size_t      backtrack_depth) const;
+    [[nodiscard]] bool descendants_confluent(Rule const* rule1,
+                                             index_type  current_node,
+                                             size_t      backtrack_depth) const;
 
     // TODO can this be in base?
     void rewrite(Rule* rule) const {
