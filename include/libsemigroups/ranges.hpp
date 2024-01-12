@@ -110,6 +110,55 @@ namespace libsemigroups {
   template <typename Range1, typename Range2>
   constexpr bool shortlex_compare(Range1 r1, Range2 r2);
 
+  template <typename Iterator, typename State>
+  class IteratorRangeStateful {
+   public:
+    using output_type = typename rx::iterator_range<Iterator>::output_type;
+    using size_type   = size_t;
+
+   private:
+    std::unique_ptr<State>       _state;
+    rx::iterator_range<Iterator> _it_range;
+
+   public:
+    static constexpr bool is_finite = rx::iterator_range<Iterator>::is_finite;
+    static constexpr bool is_idempotent
+        = rx::iterator_range<Iterator>::is_idempotent;
+
+    IteratorRangeStateful(std::unique_ptr<State>&& state,
+                          Iterator                 first,
+                          Iterator                 last)
+        : _state(std::move(state)), _it_range(first, last) {}
+
+    output_type const& get() const noexcept {
+      return _it_range.get();
+    }
+
+    void next() {
+      _it_range.next();
+    }
+
+    bool at_end() const {
+      return _it_range.at_end();
+    }
+
+    size_type size_hint() const {
+      return _it_range.size_hint();
+    }
+
+    size_type count() const {
+      return _it_range.count();
+    }
+
+    auto begin() const {
+      return rx::begin(_it_range);
+    }
+
+    auto end() const {
+      return rx::end(_it_range);
+    }
+  };
+
   ////////////////////////////////////////////////////////////////////////
   // Custom combinators
   ////////////////////////////////////////////////////////////////////////

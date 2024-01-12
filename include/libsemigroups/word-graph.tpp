@@ -452,6 +452,30 @@ namespace libsemigroups {
     }
 
     template <typename Node, typename Iterator1, typename Iterator2>
+    bool is_compatible(WordGraph<Node> const& wg,
+                       Iterator1              first_node,
+                       Iterator2              last_node,
+                       word_type const&       lhs,
+                       word_type const&       rhs) {
+      for (auto nit = first_node; nit != last_node; ++nit) {
+        auto l = word_graph::follow_path_no_checks(
+            wg, *nit, lhs.cbegin(), lhs.cend());
+        if (l == UNDEFINED) {
+          continue;
+        }
+        auto r = word_graph::follow_path_no_checks(
+            wg, *nit, rhs.cbegin(), rhs.cend());
+        if (r == UNDEFINED) {
+          continue;
+        }
+        if (l != r) {
+          return false;
+        }
+      }
+      return true;
+    }
+
+    template <typename Node, typename Iterator1, typename Iterator2>
     bool is_complete(WordGraph<Node> const& wg,
                      Iterator1              first_node,
                      Iterator2              last_node) {
