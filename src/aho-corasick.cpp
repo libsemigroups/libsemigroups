@@ -28,6 +28,7 @@ namespace libsemigroups {
     _parent        = parent;
     _parent_letter = a;
     _children.clear();
+    _height = UNDEFINED;
     clear_suffix_link();
     _terminal = false;
     return *this;

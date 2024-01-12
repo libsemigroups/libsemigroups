@@ -46,6 +46,7 @@ namespace libsemigroups {
      private:
       mutable std::unordered_map<letter_type, index_type> _children;
       mutable index_type                                  _link;
+      mutable size_t                                      _height;
       index_type                                          _parent;
       letter_type                                         _parent_letter;
       bool                                                _terminal;
@@ -54,13 +55,22 @@ namespace libsemigroups {
       Node() : Node(UNDEFINED, UNDEFINED) {}
 
       Node(index_type parent, letter_type a)
-          : _children(), _link(), _parent(), _parent_letter(), _terminal() {
+          : _children(),
+            _link(),
+            _height(),
+            _parent(),
+            _parent_letter(),
+            _terminal() {
         init(parent, a);
       }
 
       Node& init(index_type parent, letter_type a);
 
       [[nodiscard]] index_type child(letter_type a) const noexcept;
+
+      [[nodiscard]] size_t height() const noexcept {
+        return _height;
+      }
 
       [[nodiscard]] index_type suffix_link() const noexcept {
         return _link;
@@ -96,6 +106,10 @@ namespace libsemigroups {
       void set_suffix_link(index_type val) const {
         _link = val;
       }
+
+      void set_height(size_t val) const {
+        _height = val;
+      }
     };
 
     std::vector<Node>      _all_nodes;
@@ -130,10 +144,19 @@ namespace libsemigroups {
     void signature(word_type& w, index_type i) const;
 
     size_t height(index_type i) const {
+      size_t cached_height = _all_nodes[i].height();
+      if (cached_height != UNDEFINED) {
+        return cached_height;
+      }
+
       if (i == root) {
+        _all_nodes[i].set_height(0);
         return 0;
       }
-      return height(_all_nodes[i].parent()) + 1;
+
+      cached_height = height(_all_nodes[i].parent()) + 1;
+      _all_nodes[i].set_height(cached_height);
+      return cached_height;
     }
 
     // TODO move to helper namespace

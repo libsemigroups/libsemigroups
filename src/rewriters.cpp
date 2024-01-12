@@ -629,11 +629,12 @@ namespace libsemigroups {
       return RewriterBase::cached_confluent();
     }
 
-    for (auto it = begin(); it != end(); ++it) {
-      if (!backtrack_confluence(
-              *it,
-              _trie.traverse((*it)->lhs()->cbegin() + 1, (*it)->lhs()->cend()),
-              0)) {
+    index_type link;
+
+    for (auto node_it = _rules.begin(); node_it != _rules.end(); ++node_it) {
+      link = _trie.suffix_link(node_it->first);
+      if (_trie.height(node_it->first) != 1
+          && !backtrack_confluence(node_it->second, link, 0)) {
         set_cached_confluent(tril::FALSE);
         return false;
       }
@@ -656,11 +657,6 @@ namespace libsemigroups {
     // backtrack depth by one, so if height isn't greater than the backtrack
     // depth, no overlap can be found
     if (_trie.height(current_node) <= backtrack_depth) {
-      return true;
-    }
-
-    // Don't check for overlaps of rules with lhs size 1
-    if (rule1->lhs()->size() == 1) {
       return true;
     }
 
