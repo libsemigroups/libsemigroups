@@ -1335,15 +1335,16 @@ namespace libsemigroups {
   namespace sims {
     const_rcgp_iterator::~const_rcgp_iterator() = default;
 
-    // TODO change 2nd arg to const reference
     const_rcgp_iterator::const_rcgp_iterator(Presentation<word_type> const& p,
                                              word_graph_type const*         ptr,
                                              node_type  source,
                                              label_type gen)
-        : _gen(gen),
+        :  // protected
+          _reconstructed_word_graph(p),
+          // private
+          _gen(gen),
           _source(source),
           _relation({}, {}),
-          _reconstructed_word_graph(p),
           _tree(ptr->number_of_active_nodes()),
           _word_graph(ptr) {
       if (!word_graph::is_complete(*ptr,
@@ -1421,6 +1422,8 @@ namespace libsemigroups {
       return false;
     }
 
+    const_cgp_iterator::~const_cgp_iterator() = default;
+
     rx::iterator_range<const_rcgp_iterator>
     right_generating_pairs(Presentation<word_type> const& p,
                            Sims1::word_graph_type const&  wg) {
@@ -1434,6 +1437,21 @@ namespace libsemigroups {
       p.alphabet(wg.out_degree());
       return rx::iterator_range(cbegin_right_generating_pairs(p, wg),
                                 cend_right_generating_pairs(p, wg));
+    }
+
+    rx::iterator_range<const_cgp_iterator>
+    two_sided_generating_pairs(Presentation<word_type> const& p,
+                               Sims1::word_graph_type const&  wg) {
+      return rx::iterator_range(cbegin_two_sided_generating_pairs(p, wg),
+                                cend_two_sided_generating_pairs(p, wg));
+    }
+
+    rx::iterator_range<const_cgp_iterator>
+    two_sided_generating_pairs(Sims1::word_graph_type const& wg) {
+      Presentation<word_type> p;
+      p.alphabet(wg.out_degree());
+      return rx::iterator_range(cbegin_two_sided_generating_pairs(p, wg),
+                                cend_two_sided_generating_pairs(p, wg));
     }
   }  // namespace sims
 }  // namespace libsemigroups

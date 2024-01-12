@@ -36,13 +36,13 @@ namespace libsemigroups {
   class KnuthBendix;
   class Congruence;
 
-  //! Make a FroidurePin object from an WordGraph.
+  //! Make a FroidurePin object from a WordGraph.
   //!
-  //! If \f$m\f$ is the number of nodes in an WordGraph,
+  //! If \f$m\f$ is the number of nodes in a WordGraph,
   //! \f$0 \leq a,  b< m\f$, and \f$n\f$ is an edge label, then we define
   //! \f$f: \{a, \ldots, b - 1\} \to \{0, \ldots, n - 1\}\f$ so that \f$(x)f\f$
   //! equals the target of the edge starting at node \f$x\f$ with label \f$n\f$.
-  //! In this way, every edge label in an WordGraph corresponds to a
+  //! In this way, every edge label in a WordGraph corresponds to a
   //! transformation of the nodes of the digraph. If \f$\{a, \ldots, b - 1\}f
   //! \subseteq \{a, \ldots, b - 1\}\f$, then \f$f\f$ is a transformation in the
   //! sense of Transf. Assuming that for every edge label of the WordGraph
@@ -114,7 +114,7 @@ namespace libsemigroups {
     return result;
   }
 
-  //! Make a FroidurePin object from an WordGraph.
+  //! Make a FroidurePin object from a WordGraph.
   //!
   //! Calls `make(ad, 0, ad.number_of_nodes())`; see above.
   template <typename Element, typename Node>

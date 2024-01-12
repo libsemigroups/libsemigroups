@@ -1543,6 +1543,8 @@ namespace libsemigroups {
   };
 
   namespace sims {
+    class const_cgp_iterator;
+
     // This is similar to FroidurePinBase::const_rule_iterator
     // Right Congruence Generating Pairs (rcgp)
     class const_rcgp_iterator {
@@ -1563,11 +1565,13 @@ namespace libsemigroups {
       using node_type         = word_graph_type::node_type;
       using label_type        = word_graph_type::label_type;
 
+     protected:
+      felsch_graph_type _reconstructed_word_graph;
+
      private:
       label_type             _gen;
       node_type              _source;
       mutable relation_type  _relation;
-      felsch_graph_type      _reconstructed_word_graph;
       Forest                 _tree;
       word_graph_type const* _word_graph;
 
@@ -1592,6 +1596,22 @@ namespace libsemigroups {
       friend const_rcgp_iterator
       cend_right_generating_pairs(Presentation<word_type> const&,
                                   Sims1::word_graph_type const&);
+
+      // To allow the use of the private constructor from pointer
+      friend const_cgp_iterator
+      cbegin_two_sided_generating_pairs(Sims1::word_graph_type const&);
+
+      friend const_cgp_iterator
+      cbegin_two_sided_generating_pairs(Presentation<word_type> const&,
+                                        Sims1::word_graph_type const&);
+
+      // To allow the use of the above constructor
+      friend const_cgp_iterator
+      cend_two_sided_generating_pairs(Sims1::word_graph_type const&);
+
+      friend const_cgp_iterator
+      cend_two_sided_generating_pairs(Presentation<word_type> const&,
+                                      Sims1::word_graph_type const&);
 
      public:
       // TODO add noexcept?
@@ -1633,13 +1653,71 @@ namespace libsemigroups {
 
       void swap(const_rcgp_iterator& that) noexcept;
 
-     private:
+     protected:
       [[nodiscard]] bool at_end() const noexcept {
         return _source == _word_graph->number_of_active_nodes();
       }
 
+     private:
       bool populate_relation() const;
     };  // const_rcgp_iterator
+
+    class const_cgp_iterator : public const_rcgp_iterator {
+     public:
+      // TODO use const_cgp_iterator instead of std::vector
+      using size_type = typename std::vector<relation_type>::size_type;
+      using difference_type =
+          typename std::vector<relation_type>::difference_type;
+      using const_pointer = typename std::vector<relation_type>::const_pointer;
+      using pointer       = typename std::vector<relation_type>::pointer;
+      using const_reference =
+          typename std::vector<relation_type>::const_reference;
+      using reference         = typename std::vector<relation_type>::reference;
+      using value_type        = relation_type;
+      using iterator_category = std::forward_iterator_tag;
+
+      using word_graph_type   = Sims1::word_graph_type;
+      using felsch_graph_type = Sims1::felsch_graph_type;
+      using node_type         = word_graph_type::node_type;
+      using label_type        = word_graph_type::label_type;
+
+      using const_rcgp_iterator::const_rcgp_iterator;
+
+      ~const_cgp_iterator();
+
+      using const_rcgp_iterator::operator==;
+      using const_rcgp_iterator::operator!=;
+      using const_rcgp_iterator::operator*;
+      using const_rcgp_iterator::operator->;
+
+      // prefix
+      const_cgp_iterator const& operator++() {
+        size_type start = _reconstructed_word_graph.definitions().size();
+        const_rcgp_iterator::operator++();
+        if (at_end()) {
+          return *this;
+        }
+        // Copy wasteful
+        auto p = _reconstructed_word_graph.presentation();
+        presentation::add_rule_no_checks(p, (**this).first, (**this).second);
+        _reconstructed_word_graph.presentation(std::move(p));
+
+        std::ignore = _reconstructed_word_graph.process_definitions(start);
+        return *this;
+      }
+
+      // postfix
+      const_cgp_iterator operator++(int) noexcept {
+        return detail::default_postfix_increment(*this);
+      }
+
+      void swap(const_cgp_iterator& that) noexcept {
+        const_rcgp_iterator::swap(that);
+      }
+
+     private:
+      bool populate_relation() const;
+    };  // const_cgp_iterator
 
     // TODO this would work for arbitrary word_graphs
     // Returns an iterator pointing to the first generating pair of the right
@@ -1653,11 +1731,25 @@ namespace libsemigroups {
       return const_rcgp_iterator(p, &wg, 0, 0);
     }
 
+    inline const_cgp_iterator
+    cbegin_two_sided_generating_pairs(Presentation<word_type> const& p,
+                                      Sims1::word_graph_type const&  wg) {
+      // TODO Check that wg is compatible with p, and add a no_checks version
+      return const_cgp_iterator(p, &wg, 0, 0);
+    }
+
     inline const_rcgp_iterator
     cend_right_generating_pairs(Presentation<word_type> const& p,
                                 Sims1::word_graph_type const&  wg) {
       // TODO Check that wg is compatible with p, and add a no_checks version
       return const_rcgp_iterator(p, &wg, wg.number_of_active_nodes(), 0);
+    }
+
+    inline const_cgp_iterator
+    cend_two_sided_generating_pairs(Presentation<word_type> const& p,
+                                    Sims1::word_graph_type const&  wg) {
+      // TODO Check that wg is compatible with p, and add a no_checks version
+      return const_cgp_iterator(p, &wg, wg.number_of_active_nodes(), 0);
     }
 
     rx::iterator_range<const_rcgp_iterator>
@@ -1667,6 +1759,9 @@ namespace libsemigroups {
     rx::iterator_range<const_rcgp_iterator>
     right_generating_pairs(Sims1::word_graph_type const& wg);
 
+    rx::iterator_range<const_cgp_iterator>
+    two_sided_generating_pairs(Presentation<word_type> const& p,
+                               Sims1::word_graph_type const&  wg);
     template <typename Node>
     bool is_right_congruence(Presentation<word_type> const& p,
                              WordGraph<Node> const&         wg) {
@@ -1719,25 +1814,11 @@ namespace libsemigroups {
       return is_two_sided_congruence_no_checks(p, wg);
     }
 
-    template <typename Node>
-    auto two_sided_generating_pairs(Presentation<word_type> const& p,
-                                    WordGraph<Node> const&         wg) {
-      if (!is_two_sided_congruence(p, wg)) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "The 2nd argument (a word graph) does not represent a 2-sided "
-            "congruence of the 1st argument (a presentation)");
-      }
+    rx::iterator_range<const_cgp_iterator>
+    two_sided_generating_pairs(Sims1::word_graph_type const& wg);
 
-      ToddCoxeter tc(congruence_kind::twosided, wg);
-      auto        fp = std::make_unique<decltype(to_froidure_pin(tc))>(
-          to_froidure_pin(tc));
-      fp->run();
-
-      auto first = fp->cbegin_rules();
-      auto last  = fp->cend_rules();
-
-      return IteratorRangeStateful(std::move(fp), first, last);
-    }
+    // TODO Add another function that gives the generating pairs for 2-sided
+    // congruences also
 
   }  // namespace sims
 
