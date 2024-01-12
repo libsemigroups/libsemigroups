@@ -2586,7 +2586,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("Sims1",
                           "080",
                           "fibonacci_group(2, 9) x 1",
-                          "[fail][sims1]") {
+                          "[quick]") {
     auto                      rg = ReportGuard(true);
     Presentation<std::string> p;
     p.alphabet("abcdefghiABCDEFGHI");
@@ -2602,9 +2602,9 @@ namespace libsemigroups {
     presentation::add_rule(p, "gh", "i");
     presentation::add_rule(p, "hi", "a");
     presentation::add_rule(p, "ia", "b");
-    Sims1 S(congruence_kind::right);
+    Sims2 S;
     S.presentation(p);
-    REQUIRE(S.number_of_threads(4).number_of_congruences(12) == 37'951);
+    REQUIRE(S.number_of_threads(4).number_of_congruences(12) == 6);
   }
 
   LIBSEMIGROUPS_TEST_CASE("Sims1",
@@ -2637,6 +2637,10 @@ namespace libsemigroups {
     Sims1 S(congruence_kind::right);
     S.presentation(p);
     REQUIRE(S.number_of_threads(6).number_of_congruences(12) == 6);
+
+    Sims2 T;
+    T.presentation(p);
+    REQUIRE(T.number_of_threads(6).number_of_congruences(12) == 6);
   }
 
   LIBSEMIGROUPS_TEST_CASE("Sims1", "082", "trivial group", "[extreme][sims1]") {
