@@ -174,7 +174,7 @@ namespace libsemigroups {
     void rebuild_sources_no_checks(It first, It last);
 
     // TODO remove
-    // Copied from digraph-with-sources.hpp in fp-inverse-monoids branch
+    // Copied from word graph-with-sources.hpp in fp-inverse-monoids branch
     // void shrink_to_fit(size_type m) {
     //   this->restrict(m);
     //   _preim_init.shrink_rows_to(m);
@@ -201,6 +201,86 @@ namespace libsemigroups {
                                   node_type  d,
                                   label_type x,
                                   node_type  cx);
+  };
+
+  template <typename Node>
+  class HopcroftKarp {
+   private:
+    using word_graph_type = WordGraph<Node>;
+    using node_type       = Node;
+    using label_type      = typename word_graph_type::label_type;
+
+    detail::Duf<>                               _uf;
+    std::stack<std::pair<node_type, node_type>> _stck;
+    WordGraph<Node> const*                      _wg1;
+    WordGraph<Node> const*                      _wg2;
+
+    [[nodiscard]] node_type find(node_type n, label_type a) const {
+      // Check which word graph q1 and q2 belong to. nodes with labels
+      // from 0 to N1 correspond to nodes in wg1; above N1 corresponds to
+      // wg2.
+      auto N1 = _wg1->number_of_nodes();
+      if (n < N1) {
+        return _uf.find(_wg1->target_no_checks(n, a));
+      } else {
+        return _uf.find(_wg2->target_no_checks(n - N1, a) + N1);
+      }
+    }
+
+   public:
+    HopcroftKarp() = default;
+
+    HopcroftKarp(WordGraph<Node> const& wg1, WordGraph<Node> const& wg2)
+        : HopcroftKarp() {
+      init(wg1, wg2);
+    }
+
+    HopcroftKarp& init(WordGraph<Node> const& wg1, WordGraph<Node> const& wg2) {
+      auto const N1 = wg1->number_of_nodes();
+      auto const N2 = wg2->number_of_nodes();
+
+      if (wg1.out_degree() != wg2->out_degree()) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "the arguments (word graphs) must have the same "
+            "out-degree, found out-degrees {} and {}",
+            wg1->out_degree(),
+            wg2->out_degree());
+      }
+      _uf.init(N1 + N2);
+      _stck.clear();
+    }
+
+    // Return the partition obtained by Hopcroft and Karp's Algorithm for
+    // checking if two finite state automata accept the same language, with
+    // given start nodes root1 and root2.
+    detail::Duf<> const& operator()(node_type root1, node_type root2) {
+      word_graph::validate_node(_wg1, root1);
+      word_graph::validate_node(_wg2, root2);
+
+      auto const M  = _wg1->out_degree();
+      auto const N1 = _wg1->number_of_nodes();
+      auto const N2 = _wg2->number_of_nodes();
+
+      _uf.unite(root1, root2 + N1);
+
+      // 0 .. N1 - 1, N1  .. N1 + N2 -1
+      LIBSEMIGROUPS_ASSERT(_stck.empty());
+      _stck.emplace(root1, root2 + N1);
+
+      // Traverse wg1 and wg2, uniting the target nodes at each stage
+      while (!_stck.empty()) {
+        auto [q1, q2] = _stck.top();
+        _stck.pop();
+        for (label_type a = 0; a < M; ++a) {
+          node_type r1 = find(q1, a), r2 = find(q2, a);
+          if (r1 != r2) {
+            _uf.unite(r1, r2);
+            _stck.emplace(r1, r2);
+          }
+        }
+      }
+      return _uf;
+    }
   };
 }  // namespace libsemigroups
 
