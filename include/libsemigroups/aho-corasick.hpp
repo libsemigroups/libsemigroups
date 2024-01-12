@@ -32,6 +32,11 @@
 // TODO make nodes accessible as indices of some list (numbered nodes).
 // Make sure this address the badness of traversals (lots of different data
 // types and it just feels a bit hacky)
+// TODO (later) is it worthwhile storing a pointer to the terminal nodes beneath
+// each node? If this can be updated quickly, it would save a lot of time in
+// overlap/confluence checking. One compromise is to have a pointer to the rules
+// any given node is contained within. This could be updated easily when adding
+// new rules, but more care would be needed when removing rules.
 namespace libsemigroups {
 
   class AhoCorasick {
