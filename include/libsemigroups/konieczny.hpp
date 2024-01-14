@@ -1411,12 +1411,16 @@ namespace libsemigroups {
                 this->to_external_const(y),
                 this->to_external_const(x));
       Lambda()(_tmp_lambda_value1, this->to_external(tmp));
-      Rho()(_tmp_rho_value1, this->to_external(tmp));
       Lambda()(_tmp_lambda_value2, this->to_external_const(x));
+
+      if (_tmp_lambda_value1 != _tmp_lambda_value2) {
+        return false;
+      }
+
+      Rho()(_tmp_rho_value1, this->to_external(tmp));
       Rho()(_tmp_rho_value2, this->to_external_const(y));
 
-      return _tmp_lambda_value1 == _tmp_lambda_value2
-             && _tmp_rho_value1 == _tmp_rho_value2;
+      return _tmp_rho_value1 == _tmp_rho_value2;
     }
 
     // pass full_check = true to use the contains method of the D-classes
