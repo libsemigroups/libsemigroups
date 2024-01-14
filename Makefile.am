@@ -721,6 +721,7 @@ EXTRA_PROGRAMS += test_transf
 EXTRA_PROGRAMS += test_types
 EXTRA_PROGRAMS += test_uf
 EXTRA_PROGRAMS += test_ukkonen
+EXTRA_PROGRAMS += test_word_graph_with_sources
 EXTRA_PROGRAMS += test_word_graph
 EXTRA_PROGRAMS += test_words
 
@@ -1014,6 +1015,9 @@ test_uf_SOURCES += tests/test-main.cpp
 
 test_ukkonen_SOURCES =  tests/test-ukkonen.cpp
 test_ukkonen_SOURCES += tests/test-main.cpp
+
+test_word_graph_with_sources_SOURCES =  tests/test-word-graph-with-sources.cpp
+test_word_graph_with_sources_SOURCES += tests/test-main.cpp
 
 test_word_graph_SOURCES =  tests/test-word-graph.cpp
 test_word_graph_SOURCES += tests/test-main.cpp
