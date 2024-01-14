@@ -1414,7 +1414,7 @@ namespace libsemigroups {
       Lambda()(_tmp_lambda_value2, this->to_external_const(x));
 
       if (_tmp_lambda_value1 != _tmp_lambda_value2) {
-          return false;
+        return false;
       }
 
       Rho()(_tmp_rho_value1, this->to_external(tmp));
