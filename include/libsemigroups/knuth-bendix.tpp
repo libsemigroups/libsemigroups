@@ -558,51 +558,54 @@ namespace libsemigroups {
   void
   KnuthBendix<Rewriter, ReductionOrder>::run_real(std::atomic_bool& pause) {
     _rewriter.reduce();
+    bool add_overlaps = true;
 
     auto& first  = _rewriter.cursor(0);
     auto& second = _rewriter.cursor(1);
     first        = _rewriter.begin();
 
     size_t nr = 0;
-  check_overlaps:
-    while (first != _rewriter.end() && !stop_running()) {
-      Rule const* rule1 = *first;
-      // It is tempting to remove rule1 and rule2 here and use *first and
-      // *second instead but this leads to some badness (which we didn't
-      // understand, but it also didn't seem super important).
-      second = first++;
-      overlap(rule1, rule1);
-      while (second != _rewriter.begin() && rule1->active()) {
-        --second;
-        Rule const* rule2 = *second;
-        overlap(rule1, rule2);
-        ++nr;
-        if (rule1->active() && rule2->active()) {
+    // Add overlaps that occur between rules. Repeat this process until no
+    // non-trivial overlaps are added and there are a no pending rules.
+    while (add_overlaps) {
+      while (first != _rewriter.end() && !stop_running()) {
+        Rule const* rule1 = *first;
+        // It is tempting to remove rule1 and rule2 here and use *first and
+        // *second instead but this leads to some badness (which we didn't
+        // understand, but it also didn't seem super important).
+        second = first++;
+        overlap(rule1, rule1);
+        while (second != _rewriter.begin() && rule1->active()) {
+          --second;
+          Rule const* rule2 = *second;
+          overlap(rule1, rule2);
           ++nr;
-          overlap(rule2, rule1);
+          if (rule1->active() && rule2->active()) {
+            ++nr;
+            overlap(rule2, rule1);
+          }
         }
-      }
 
-      if (nr > _settings.check_confluence_interval) {
-        // TODO Should we process rules here too?
-        pause = true;
-        if (confluent()) {
+        if (nr > _settings.check_confluence_interval) {
+          pause = true;
+          if (confluent()) {
+            pause = false;
+            break;
+          }
           pause = false;
-          break;
+          nr    = 0;
         }
-        pause = false;
-        nr    = 0;
       }
-    }
 
-    if (_rewriter.number_of_pending_rules() != 0) {
-      _rewriter.process_pending_rules();
-      goto check_overlaps;
-    }
+      if (_rewriter.number_of_pending_rules() != 0) {
+        _rewriter.process_pending_rules();
+      } else {
+        add_overlaps = false;
+      }
+    };
 
-    // LIBSEMIGROUPS_ASSERT(_rewriter._pending_rules.empty());
-    // Seems that the stack can be non-empty here in KnuthBendix 12, 14, 16
-    // and maybe more
+    LIBSEMIGROUPS_ASSERT(_rewriter._pending_rules.empty());
+
     if (_settings.max_overlap == POSITIVE_INFINITY
         && _settings.max_rules == POSITIVE_INFINITY && !stop_running()) {
       _rewriter.set_cached_confluent(tril::TRUE);
