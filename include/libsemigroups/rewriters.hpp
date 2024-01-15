@@ -32,6 +32,10 @@
 
 #include "detail/multi-string-view.hpp"  // for MultiStringView
 
+// TODO Add a KnuthBendix pointer to the rewriter class so that overlap
+// detection can be handled by the rewriter (and therefore depend on the
+// implementation) rather than on the KB object.
+
 namespace libsemigroups {
   // TODO remove from libsemigroups namespace and put into relevant class
   using external_string_type = std::string;
@@ -466,7 +470,7 @@ namespace libsemigroups {
                                              index_type  current_node,
                                              size_t      backtrack_depth) const;
 
-    // TODO can this be in base?
+    // TODO (After removing virtual functions) Put in base
     void rewrite(Rule* rule) const {
       rewrite(*rule->lhs());
       rewrite(*rule->rhs());

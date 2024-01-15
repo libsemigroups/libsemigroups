@@ -79,7 +79,7 @@ namespace libsemigroups {
   //!
   //! On this page we describe the functionality relating to the Knuth-Bendix
   //! algorithm for semigroups and monoids that is available in
-  //! ``libsemigroups``. This page contains a details of the member functions
+  //! ``libsemigroups``. This page contains details of the member functions
   //! of the class KnuthBendix.
   //!
   //! This class is used to represent a
@@ -233,7 +233,17 @@ namespace libsemigroups {
     //! \complexity
     //! Constant.
     explicit KnuthBendix(congruence_kind knd);
-    // TODO doc
+
+    //! Remove the presentation and rewriter data
+    //!
+    //! This function clears the rewriter, presentation, settings and stats from
+    //! the KnuthBendix object, putting it back into the state it would be in if
+    //! it was newly constructed.
+    //!
+    //! \param (None)
+    //!
+    //! \returns
+    //! A reference to `this`.
     KnuthBendix& init(congruence_kind knd);
 
     //! Copy constructor.
@@ -244,10 +254,13 @@ namespace libsemigroups {
     //! \f$O(n)\f$ where \f$n\f$ is the sum of the lengths of the words in
     //! rules of \p copy.
     KnuthBendix(KnuthBendix const& copy);
+
     // TODO doc
     KnuthBendix(KnuthBendix&&);
+
     // TODO doc
     KnuthBendix& operator=(KnuthBendix const&);
+
     // TODO doc
     KnuthBendix& operator=(KnuthBendix&&);
 
@@ -315,13 +328,47 @@ namespace libsemigroups {
     // KnuthBendix - setters for optional parameters - public
     //////////////////////////////////////////////////////////////////////////
 
-    // TODO docs
+    //! Set the number of rules to accumulate before they are processed.
+    //!
+    //! This function can be used to specify the number of pending rules that
+    //! must accumulate before they are reduced, processed, and added to the
+    //! system.
+    //!
+    //! The default value is \c 128, and should be set to \c 1 if \ref run
+    //! should attempt to add each rule as they are created without waiting for
+    //! rules to accumulate.
+    //!
+    //! \param val the new value of the batch size.
+    //!
+    //! \returns
+    //! A reference to \c *this
+    //!
+    //! \complexity
+    //! Constant.
     KnuthBendix& batch_size(size_t val) {
       _settings.batch_size = val;
       return *this;
     }
 
-    // TODO doc
+    //! Return the number of rules to accumulate before they are processed.
+    //!
+    //! This function can be used to return the number of pending rules that
+    //! must accumulate before they are reduced, processed, and added to the
+    //! system.
+    //!
+    //! The default value is \c 128.
+    //!
+    //! \returns
+    //! The batch size, a value of type `size_t`.
+    //!
+    //! \exceptions
+    //! \noexcept
+    //!
+    //! \complexity
+    //! Constant.
+    //!
+    //! \parameters
+    //! (None)
     [[nodiscard]] size_t batch_size() const noexcept {
       return _settings.batch_size;
     }
@@ -586,7 +633,14 @@ namespace libsemigroups {
     //! (None)
     [[nodiscard]] bool confluent() const;
 
-    // TODO doc
+    //! Check if the current system knows the state of confluence of the current
+    //! rules.
+    //!
+    //! \returns \c true if the confluence of the rules in the KnuthBendix
+    //! instance is known, and \c false if it is not.
+    //!
+    //! \parameters
+    //! (None)
     [[nodiscard]] bool confluent_known() const noexcept;
 
     //! Returns the Gilman digraph.
@@ -627,6 +681,7 @@ namespace libsemigroups {
 
     // TODO doc
     [[nodiscard]] bool equal_to(std::string const&, std::string const&);
+
     // TODO doc
     [[nodiscard]] bool contains(word_type const& u,
                                 word_type const& v) override {
@@ -819,7 +874,20 @@ namespace libsemigroups {
       return p.rules.cend();
     }
 
-    // Check if kb is defines a reduced rewriting system
+    //! Check if the all rules are reduced with respect to each other.
+    //!
+    //! This function is defined in ``knuth-bendix.hpp``.
+    //!
+    //! \returns \c true if for each pair \f$(A, B)$\f and \f$(C, D)$\f of rules
+    //! stored within the KnuthBendix instance, \f$C$\f is neither a subword of
+    //! \f$A$\f nor \f$B$\f. Returns \c false otherwise.
+    //!
+    //! \tparam Rewriter type of the rewriting system to be used in the
+    //! Knuth-Bendix algorithm.
+    //! \tparam ReductionOrder type of the reduction ordering used by the
+    //! Knuth-Bendix algorithm.
+    //! \param kb the KnuthBendix instance defining the rules that are to be
+    //! checked for being reduced.
     template <typename Rewriter, typename ReductionOrder>
     [[nodiscard]] bool is_reduced(KnuthBendix<Rewriter, ReductionOrder>& kb) {
       for (auto const& test_rule : kb.active_rules()) {

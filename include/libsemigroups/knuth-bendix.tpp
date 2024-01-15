@@ -91,6 +91,7 @@ namespace libsemigroups {
   template <typename Rewriter, typename ReductionOrder>
   typename KnuthBendix<Rewriter, ReductionOrder>::Settings&
   KnuthBendix<Rewriter, ReductionOrder>::Settings::init() noexcept {
+    // TODO experiment with starting size to optimise speed.
     batch_size                = 128;
     check_confluence_interval = 4'096;
     max_overlap               = POSITIVE_INFINITY;
@@ -551,7 +552,8 @@ namespace libsemigroups {
     }
   }
 
-  // TODO This feels like it should call something in the rewriter?
+  // TODO (When the rewriters have a pointer to the KB instance) move this into
+  // the rewriter
   template <typename Rewriter, typename ReductionOrder>
   void
   KnuthBendix<Rewriter, ReductionOrder>::run_real(std::atomic_bool& pause) {
