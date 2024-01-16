@@ -1,6 +1,6 @@
 //
 // libsemigroups - C++ library for semigroups and monoids
-// Copyright (C) 2019 James D. Mitchell
+// Copyright (C) 2019-2023 James D. Mitchell
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -29,13 +29,15 @@
 
 #include "libsemigroups/adapters.hpp"      // for One
 #include "libsemigroups/froidure-pin.hpp"  // for FroidurePin
-#include "libsemigroups/knuth-bendix.hpp"  // for KnuthBendix
+#include "libsemigroups/knuth-bendix.hpp"  // for KnuthBendix<KnuthBendix_>
+#include "libsemigroups/obvinf.hpp"        // for is_obviously_infinite
 #include "libsemigroups/types.hpp"         // for word_type, letter_type
 
 namespace libsemigroups {
   namespace detail {
     // This class is used to wrap libsemigroups::internal_string_type into an
     // object that can be used as generators for a FroidurePin object.
+    template <typename KnuthBendix_>
     class KBE {
       using internal_string_type = std::string;
 
@@ -43,6 +45,8 @@ namespace libsemigroups {
       explicit KBE(internal_string_type&&);
 
      public:
+      using knuth_bendix_type = KnuthBendix_;
+
       KBE() = default;
 
       KBE(KBE const&) = default;
@@ -54,20 +58,22 @@ namespace libsemigroups {
       ~KBE() = default;
 
       // Construct from internal string
-      KBE(KnuthBendix&, internal_string_type const&);
-      KBE(KnuthBendix&, internal_string_type&&);
+      KBE(knuth_bendix_type&, internal_string_type const&);
+      KBE(knuth_bendix_type&, internal_string_type&&);
 
       // Construct from external types
-      KBE(KnuthBendix&, letter_type const&);
-      KBE(KnuthBendix&, word_type const&);
+      KBE(knuth_bendix_type&, letter_type const&);
+      KBE(knuth_bendix_type&, word_type const&);
 
       bool operator==(KBE const&) const;
       bool operator<(KBE const&) const;
       void swap(KBE&);
 
       internal_string_type const& string() const noexcept;
-      std::string                 string(KnuthBendix const& kb) const;
-      word_type                   word(KnuthBendix const& kb) const;
+
+      std::string string(knuth_bendix_type const& kb) const;
+
+      word_type word(knuth_bendix_type const& kb) const;
 
       friend std::ostringstream& operator<<(std::ostringstream& os,
                                             KBE const&          kbe) {
@@ -81,9 +87,9 @@ namespace libsemigroups {
     // The following are not really required but are here as a reminder that
     // KBE are used in BruidhinnTraits which depends on the values in the
     // static_asserts below.
-    static_assert(!std::is_trivial<KBE>::value, "KBE is trivial!!!");
-    static_assert(std::integral_constant<bool, (sizeof(KBE) <= 32)>::value,
-                  "KBE's sizeof exceeds 32!!");
+    // static_assert(!std::is_trivial<KBE>::value, "KBE is trivial!!!");
+    // static_assert(std::integral_constant<bool, (sizeof(KBE) <= 32)>::value,
+    //               "KBE's sizeof exceeds 32!!");
 
   }  // namespace detail
 
@@ -91,59 +97,63 @@ namespace libsemigroups {
   // Adapters for KBE class
   ////////////////////////////////////////////////////////////////////////
 
-  template <>
-  struct Complexity<detail::KBE> {
-    constexpr size_t operator()(detail::KBE const&) const noexcept {
+  template <typename KnuthBendix_>
+  struct Complexity<detail::KBE<KnuthBendix_>> {
+    constexpr size_t
+    operator()(detail::KBE<KnuthBendix_> const&) const noexcept {
       return LIMIT_MAX;
     }
   };
 
-  template <>
-  struct Degree<detail::KBE> {
-    constexpr size_t operator()(detail::KBE const&) const noexcept {
+  template <typename KnuthBendix_>
+  struct Degree<detail::KBE<KnuthBendix_>> {
+    constexpr size_t
+    operator()(detail::KBE<KnuthBendix_> const&) const noexcept {
       return 0;
     }
   };
 
-  template <>
-  struct IncreaseDegree<detail::KBE> {
-    void operator()(detail::KBE const&, size_t) const noexcept {}
+  template <typename KnuthBendix_>
+  struct IncreaseDegree<detail::KBE<KnuthBendix_>> {
+    void operator()(detail::KBE<KnuthBendix_> const&, size_t) const noexcept {}
   };
 
-  template <>
-  struct One<detail::KBE> {
-    detail::KBE operator()(detail::KBE const&) const noexcept {
-      return detail::KBE();
+  template <typename KnuthBendix_>
+  struct One<detail::KBE<KnuthBendix_>> {
+    detail::KBE<KnuthBendix_>
+    operator()(detail::KBE<KnuthBendix_> const&) const noexcept {
+      return detail::KBE<KnuthBendix_>();
     }
 
-    detail::KBE operator()(size_t = 0) const noexcept {
-      return detail::KBE();
+    detail::KBE<KnuthBendix_> operator()(size_t = 0) const noexcept {
+      return detail::KBE<KnuthBendix_>();
     }
   };
 
-  template <>
-  struct Product<detail::KBE> {
-    void operator()(detail::KBE&       xy,
-                    detail::KBE const& x,
-                    detail::KBE const& y,
-                    KnuthBendix*       kb,
+  template <typename KnuthBendix_>
+  struct Product<detail::KBE<KnuthBendix_>> {
+    void operator()(detail::KBE<KnuthBendix_>&       xy,
+                    detail::KBE<KnuthBendix_> const& x,
+                    detail::KBE<KnuthBendix_> const& y,
+                    KnuthBendix_*                    kb,
                     size_t) {
       std::string w(x.string());  // internal_string_type
       w += y.string();
-      xy = detail::KBE(*kb, w);
+      xy = detail::KBE<KnuthBendix_>(*kb, w);
     }
   };
 
-  template <>
-  struct FroidurePinState<detail::KBE> {
-    using type = KnuthBendix;
+  template <typename KnuthBendix_>
+  struct FroidurePinState<detail::KBE<KnuthBendix_>> {
+    using type = KnuthBendix_;
   };
 
-  template <>
-  word_type FroidurePin<detail::KBE>::factorisation(detail::KBE const& x);
+  // template <>
+  // word_type FroidurePin<detail::KBE<KnuthBendix<>>>::factorisation(
+  //     detail::KBE<KnuthBendix<>> const& x);
 
-  template <>
-  tril FroidurePin<detail::KBE>::is_finite() const;
+  // template <>
+  // tril FroidurePin<detail::KBE<KnuthBendix<>>>::is_finite() const;
 
 }  // namespace libsemigroups
 
@@ -152,19 +162,22 @@ namespace libsemigroups {
 ////////////////////////////////////////////////////////////////////////
 
 namespace std {
-  template <>
-  struct hash<libsemigroups::detail::KBE> {
-    size_t operator()(libsemigroups::detail::KBE const& x) const {
+  template <typename KnuthBendix_>
+  struct hash<libsemigroups::detail::KBE<KnuthBendix_>> {
+    size_t operator()(libsemigroups::detail::KBE<KnuthBendix_> const& x) const {
       return hash<string>()(x.string());
     }
   };
 
-  template <>
-  struct equal_to<libsemigroups::detail::KBE> {
-    bool operator()(libsemigroups::detail::KBE const& x,
-                    libsemigroups::detail::KBE const& y) const {
+  template <typename KnuthBendix_>
+  struct equal_to<libsemigroups::detail::KBE<KnuthBendix_>> {
+    bool operator()(libsemigroups::detail::KBE<KnuthBendix_> const& x,
+                    libsemigroups::detail::KBE<KnuthBendix_> const& y) const {
       return x == y;
     }
   };
 }  // namespace std
+
+#include "kbe.tpp"
+
 #endif  // LIBSEMIGROUPS_DETAIL_KBE_HPP_

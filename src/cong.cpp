@@ -53,7 +53,7 @@ namespace libsemigroups {
     if (type == congruence_kind::twosided) {
       _race.add_runner(std::make_shared<Kambites<word_type>>(p));
     }
-    _race.add_runner(std::make_shared<KnuthBendix>(type, p));
+    _race.add_runner(std::make_shared<KnuthBendix<>>(type, p));
     _race.add_runner(std::make_shared<ToddCoxeter>(type, p));
     auto tc = std::make_shared<ToddCoxeter>(type, p);
     tc->strategy(ToddCoxeter::options::strategy::felsch);
@@ -90,9 +90,9 @@ namespace libsemigroups {
     _race.add_runner(tc);
     if (p.rules.size() < 256) {
       // TODO(later) at present if there are lots of rules it takes a long
-      // time to construct a KnuthBendix instance since it reduces the rules as
-      // they are added maybe better to defer this until running
-      _race.add_runner(std::make_shared<KnuthBendix>(type, p));
+      // time to construct a KnuthBendix<> instance since it reduces the rules
+      // as they are added maybe better to defer this until running
+      _race.add_runner(std::make_shared<KnuthBendix<>>(type, p));
     }
     return *this;
   }
@@ -135,11 +135,11 @@ namespace libsemigroups {
         ToddCoxeter tc(cong.kind(), p);
         return ::libsemigroups::todd_coxeter::non_trivial_classes(
             *cong.get<ToddCoxeter>(), tc);
-      } else if (cong.has<KnuthBendix>()
-                 && cong.get<KnuthBendix>()->finished()) {
-        KnuthBendix kb(cong.kind(), p);
+      } else if (cong.has<KnuthBendix<>>()
+                 && cong.get<KnuthBendix<>>()->finished()) {
+        KnuthBendix<> kb(cong.kind(), p);
         auto strings = ::libsemigroups::knuth_bendix::non_trivial_classes(
-            *cong.get<KnuthBendix>(), kb);
+            *cong.get<KnuthBendix<>>(), kb);
         std::vector<std::vector<word_type>> result;
         for (auto const& klass : strings) {
           result.push_back(rx::iterator_range(klass.begin(), klass.end())
@@ -159,10 +159,10 @@ namespace libsemigroups {
     non_trivial_classes(Congruence& cong, Presentation<std::string> const& p) {
       using rx::operator|;
       cong.run();
-      if (cong.has<KnuthBendix>() && cong.get<KnuthBendix>()->finished()) {
-        KnuthBendix kb(cong.kind(), p);
+      if (cong.has<KnuthBendix<>>() && cong.get<KnuthBendix<>>()->finished()) {
+        KnuthBendix<> kb(cong.kind(), p);
         return ::libsemigroups::knuth_bendix::non_trivial_classes(
-            *cong.get<KnuthBendix>(), kb);
+            *cong.get<KnuthBendix<>>(), kb);
       }
       if (cong.has<ToddCoxeter>() && cong.get<ToddCoxeter>()->finished()) {
         ToddCoxeter tc(cong.kind(), p);

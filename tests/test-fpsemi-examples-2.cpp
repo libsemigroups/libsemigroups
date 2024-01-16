@@ -82,7 +82,7 @@ namespace libsemigroups {
                           "068",
                           "plactic_monoid(3)",
                           "[fpsemi-examples][quick]") {
-    using rule_type = KnuthBendix::rule_type;
+    using rule_type = KnuthBendix<>::rule_type;
     auto rg         = ReportGuard(false);
     REQUIRE(plactic_monoid(3).rules
             == std::vector<word_type>({102_w,

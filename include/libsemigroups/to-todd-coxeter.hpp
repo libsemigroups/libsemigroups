@@ -19,16 +19,32 @@
 #ifndef LIBSEMIGROUPS_TO_TODD_COXETER_HPP_
 #define LIBSEMIGROUPS_TO_TODD_COXETER_HPP_
 
+#include "knuth-bendix.hpp"
+#include "todd-coxeter.hpp"
+
 namespace libsemigroups {
 
   class FroidurePinBase;
-  class KnuthBendix;
+  // TODO uncomment  class KnuthBendix;
   class ToddCoxeter;
   enum class congruence_kind;
 
   ToddCoxeter to_todd_coxeter(congruence_kind knd, FroidurePinBase& fp);
 
-  ToddCoxeter to_todd_coxeter(congruence_kind knd, KnuthBendix& kb);
+  template <typename Rewriter, typename ReductionOrder>
+  ToddCoxeter to_todd_coxeter(congruence_kind                        knd,
+                              KnuthBendix<Rewriter, ReductionOrder>& kb) {
+    if (kb.number_of_classes() == POSITIVE_INFINITY) {
+      LIBSEMIGROUPS_EXCEPTION(
+          "cannot construct a ToddCoxeter instance using the Cayley graph of "
+          "an infinite KnuthBendix<> object, maybe try ToddCoxeter({}, "
+          "kb.presentation()) instead?",
+          kb.kind());
+    }
+    // TODO why are we doing this? Why not just use the active rules of kb?
+    auto fp = to_froidure_pin(kb);
+    return to_todd_coxeter(knd, fp);
+  }
 
 }  // namespace libsemigroups
 #endif  // LIBSEMIGROUPS_TO_TODD_COXETER_HPP_

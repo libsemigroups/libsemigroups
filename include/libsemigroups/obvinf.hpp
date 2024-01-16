@@ -64,14 +64,16 @@
 #include <utility>  // for pair
 #include <vector>   // for vector
 
-#include "config.hpp"  // for LIBSEMIGROUPS_EIGEN_ENABLED
-#include "types.hpp"   // for word_type etc
+#include "config.hpp"     // for LIBSEMIGROUPS_EIGEN_ENABLED
+#include "rewriters.hpp"  // for RewriteTrie
+#include "types.hpp"      // for word_type etc
 
 #include "detail/eigen.hpp"
 #include "detail/uf.hpp"  // for Duf
 
 namespace libsemigroups {
   class ToddCoxeter;  // forward decl
+  template <typename Rewriter, typename ReductionOrder>
   class KnuthBendix;  // forward decl
   class Congruence;   // forward decl
 
@@ -189,7 +191,6 @@ namespace libsemigroups {
   bool is_obviously_infinite(Presentation<std::string> const& p);
 
   bool is_obviously_infinite(ToddCoxeter const& tc);
-  bool is_obviously_infinite(KnuthBendix& kb);
   bool is_obviously_infinite(Congruence& kb);
 
   template <typename Word>
@@ -201,6 +202,21 @@ namespace libsemigroups {
       return true;
     }
     return k.small_overlap_class() >= 3;
+  }
+
+  template <typename Rewriter, typename ReductionOrder>
+  bool is_obviously_infinite(KnuthBendix<Rewriter, ReductionOrder>& kb) {
+    if (kb.finished()) {
+      return !word_graph::is_acyclic(kb.gilman_graph());
+    }
+    auto const& p = kb.presentation();
+    if (p.alphabet().empty()) {
+      return false;
+    }
+    detail::IsObviouslyInfinite ioi(p.alphabet().size());
+    ioi.add_rules(p.alphabet(), p.rules.cbegin(), p.rules.cend());
+    ioi.add_rules(kb.generating_pairs().cbegin(), kb.generating_pairs().cend());
+    return ioi.result();
   }
 
 }  // namespace libsemigroups

@@ -2079,5 +2079,4 @@ namespace libsemigroups {
       REQUIRE(std::make_pair(found[i], i) == std::make_pair(expected[i], i));
     }
   }
-
 }  // namespace libsemigroups

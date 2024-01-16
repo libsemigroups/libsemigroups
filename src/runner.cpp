@@ -136,6 +136,8 @@ namespace libsemigroups {
       report_default("killed!\n");
     } else if (timed_out()) {
       report_default("timed out!\n");
+    } else if (stopped_by_predicate()) {
+      report_default("stopped by predicate!\n");
     }
     // Checking finished can be expensive, so we don't
   }

@@ -169,6 +169,8 @@ struct LibsemigroupsListener : Catch::TestEventListenerBase {
       if (_section_number == 1) {
         fmt::print("{:.>{}}", section_time(sectionStats), time_cols);
       }
+    } else {
+      extreme_test_divider("END - " + section_time(sectionStats));
     }
     _section_number--;
   }
@@ -185,6 +187,11 @@ struct LibsemigroupsListener : Catch::TestEventListenerBase {
 
   void testRunEnded(Catch::TestRunStats const&) override {
     using libsemigroups::detail::string_time;
+    fmt::print("\n");
+  }
+
+  void testRunEnded(Catch::TestRunStats const&) override {
+    using Timer_ = libsemigroups::detail::Timer;
     using std::chrono::nanoseconds;
 
     auto const emph

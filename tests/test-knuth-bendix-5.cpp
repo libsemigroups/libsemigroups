@@ -42,7 +42,7 @@
 #include <vector>         // for vector, operator==
 
 #include "catch.hpp"      // for AssertionHandler, ope...
-#include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
+#include "test-main.hpp"  // for TEMPLATE_TEST_CASE
 
 #include "libsemigroups/constants.hpp"        // for operator!=, operator==
 #include "libsemigroups/exception.hpp"        // for LibsemigroupsException
@@ -67,10 +67,12 @@ namespace libsemigroups {
   using literals::operator""_w;
   using namespace rx;
 
-  LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
-                          "097",
-                          "transformation semigroup (size 4)",
-                          "[quick][knuth-bendix]") {
+#define KNUTH_BENDIX_TYPES \
+  KnuthBendix<RewriteTrie>, KnuthBendix<RewriteFromLeft>
+
+  TEMPLATE_TEST_CASE("transformation semigroup (size 4)",
+                     "[120][quick][knuth-bendix]",
+                     KNUTH_BENDIX_TYPES) {
     auto                  rg = ReportGuard(false);
     FroidurePin<Transf<>> S({Transf<>({1, 0}), Transf<>({0, 0})});
     REQUIRE(S.size() == 4);
@@ -78,17 +80,16 @@ namespace libsemigroups {
 
     auto p = to_presentation<word_type>(S);
 
-    KnuthBendix kb(twosided, p);
+    TestType kb(twosided, p);
     REQUIRE(kb.confluent());
     REQUIRE(kb.presentation().rules.size() / 2 == 4);
     REQUIRE(kb.number_of_active_rules() == 4);
     REQUIRE(kb.number_of_classes() == 4);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
-                          "098",
-                          "transformation semigroup (size 9)",
-                          "[quick][knuth-bendix]") {
+  TEMPLATE_TEST_CASE("transformation semigroup (size 9)",
+                     "[121][quick][knuth-bendix]",
+                     KNUTH_BENDIX_TYPES) {
     auto                  rg = ReportGuard(false);
     FroidurePin<Transf<>> S;
     S.add_generator(Transf<>({1, 3, 4, 2, 3}));
@@ -98,17 +99,16 @@ namespace libsemigroups {
     REQUIRE(S.degree() == 5);
     REQUIRE(S.number_of_rules() == 3);
 
-    auto        p = to_presentation<word_type>(S);
-    KnuthBendix kb(twosided, p);
+    auto     p = to_presentation<word_type>(S);
+    TestType kb(twosided, p);
     REQUIRE(kb.confluent());
     REQUIRE(kb.number_of_active_rules() == 3);
     REQUIRE(kb.number_of_classes() == 9);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
-                          "099",
-                          "transformation semigroup (size 88)",
-                          "[quick][knuth-bendix]") {
+  TEMPLATE_TEST_CASE("transformation semigroup (size 88)",
+                     "[122][quick][knuth-bendix]",
+                     KNUTH_BENDIX_TYPES) {
     auto                  rg = ReportGuard(false);
     FroidurePin<Transf<>> S;
     S.add_generator(Transf<>({1, 3, 4, 2, 3}));
@@ -118,17 +118,16 @@ namespace libsemigroups {
     REQUIRE(S.degree() == 5);
     REQUIRE(S.number_of_rules() == 18);
 
-    auto        p = to_presentation<word_type>(S);
-    KnuthBendix kb(twosided, p);
+    auto     p = to_presentation<word_type>(S);
+    TestType kb(twosided, p);
     REQUIRE(kb.confluent());
     REQUIRE(kb.number_of_active_rules() == 18);
     REQUIRE(kb.number_of_classes() == 88);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
-                          "100",
-                          "internal_string_to_word",
-                          "[quick]") {
+  TEMPLATE_TEST_CASE("internal_string_to_word",
+                     "[123][quick]",
+                     KNUTH_BENDIX_TYPES) {
     auto                  rg = ReportGuard(false);
     FroidurePin<Transf<>> S;
     S.add_generator(Transf<>({1, 0}));
@@ -136,17 +135,15 @@ namespace libsemigroups {
 
     auto p = to_presentation<word_type>(S);
 
-    KnuthBendix kb(twosided, p);
+    TestType kb(twosided, p);
     REQUIRE(kb.confluent());
-
     auto t = to_froidure_pin(kb);
     REQUIRE(t.generator(0).word(kb) == 0_w);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
-                          "102",
-                          "internal_string_to_word",
-                          "[quick]") {
+  TEMPLATE_TEST_CASE("internal_string_to_word x 2",
+                     "[124][quick]",
+                     KNUTH_BENDIX_TYPES) {
     auto                  rg = ReportGuard(false);
     FroidurePin<Transf<>> S(
         {Transf<>({1, 3, 4, 2, 3}), Transf<>({3, 2, 1, 3, 3})});
@@ -155,16 +152,15 @@ namespace libsemigroups {
 
     auto p = to_presentation<word_type>(S);
 
-    KnuthBendix kb(twosided, p);
+    TestType kb(twosided, p);
     kb.run();
     REQUIRE(kb.confluent());
     REQUIRE(kb.number_of_classes() == 88);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
-                          "122",
-                          "manual right congruence",
-                          "[quick][knuthbendix]") {
+  TEMPLATE_TEST_CASE("manual right congruence",
+                     "[125][quick][knuth-bendix]",
+                     KNUTH_BENDIX_TYPES) {
     using words::operator+;
 
     auto rg = ReportGuard(false);
@@ -176,7 +172,7 @@ namespace libsemigroups {
 
     auto p = to_presentation<word_type>(S);
 
-    KnuthBendix kb1(twosided, p);
+    TestType kb1(twosided, p);
     REQUIRE(kb1.number_of_classes() == 88);
 
     presentation::add_rule_no_checks(
@@ -186,11 +182,11 @@ namespace libsemigroups {
 
     p.alphabet(3);
 
-    KnuthBendix kb2(twosided, p);
+    TestType    kb2(twosided, p);
     auto const& q = kb2.presentation();
 
     auto words = (S.normal_forms()
-                  | rx::transform([](auto const& w) { return 2_w + w; })
+                  | rx::transform([](word_type const& w) { return 2_w + w; })
                   | ToStrings(q.alphabet()));
     REQUIRE((words | rx::count()) == 88);
     REQUIRE((words | rx::take(4) | rx::to_vector())
@@ -251,10 +247,9 @@ namespace libsemigroups {
              {"baaabaa", "abaaabba", "baaabbaa", "aabaaabaa", "abaaabaaa"}}));
   }
 
-  LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
-                          "123",
-                          "right congruence!!!",
-                          "[quick][knuthbendix]") {
+  TEMPLATE_TEST_CASE("right congruence!!!",
+                     "[126][quick][knuth-bendix]",
+                     KNUTH_BENDIX_TYPES) {
     using words::operator+;
 
     auto rg = ReportGuard(false);
@@ -266,7 +261,7 @@ namespace libsemigroups {
 
     auto p = to_presentation<word_type>(S);
 
-    KnuthBendix kb(right, p);
+    TestType kb(right, p);
     REQUIRE(kb.presentation().rules
             == std::vector<std::string>(
                 {"bbb",      "b",       "bbab",     "bab",      "aaaaa",
@@ -342,10 +337,9 @@ namespace libsemigroups {
              {"baaabaa", "abaaabba", "baaabbaa", "aabaaabaa", "abaaabaaa"}}));
   }
 
-  LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
-                          "124",
-                          "manual left congruence!!!",
-                          "[quick][knuthbendix]") {
+  TEMPLATE_TEST_CASE("manual left congruence!!!",
+                     "[127][quick][knuth-bendix]",
+                     KNUTH_BENDIX_TYPES) {
     using words::operator+;
 
     auto rg = ReportGuard(false);
@@ -361,7 +355,7 @@ namespace libsemigroups {
     presentation::reverse(p);
     REQUIRE(!p.contains_empty_word());
     p.alphabet(3);
-    KnuthBendix kb(twosided, p);
+    TestType kb(twosided, p);
     REQUIRE(
         to_string(kb.presentation(), S.factorisation(Transf<>({3, 4, 4, 4, 4})))
         == "abaaabbaa");
@@ -405,10 +399,10 @@ namespace libsemigroups {
     REQUIRE(kb.gilman_graph().number_of_nodes() == 51);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
-                          "125",
-                          "automatic left congruence!!!",
-                          "[quick][knuthbendix]") {
+  // TODO fix gilman graph
+  TEMPLATE_TEST_CASE("automatic left congruence!!!",
+                     "[128][quick][knuth-bendix]",
+                     KNUTH_BENDIX_TYPES) {
     using words::operator+;
 
     auto rg = ReportGuard(false);
@@ -421,7 +415,7 @@ namespace libsemigroups {
     auto p = to_presentation<word_type>(S);
     REQUIRE(!p.contains_empty_word());
 
-    KnuthBendix kb(left, p);
+    TestType kb(left, p);
 
     kb.add_pair(S.factorisation(Transf<>({3, 4, 4, 4, 4})),
                 S.factorisation(Transf<>({3, 1, 3, 3, 3})));
