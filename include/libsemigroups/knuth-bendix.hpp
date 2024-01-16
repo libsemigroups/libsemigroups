@@ -219,7 +219,7 @@ namespace libsemigroups {
     // KnuthBendix - constructors and destructor - public
     //////////////////////////////////////////////////////////////////////////
 
-    //! Default constructor.
+    //! \brief Default constructor.
     //!
     //! Constructs a KnuthBendix instance with no rules, and the short-lex
     //! reduction ordering.

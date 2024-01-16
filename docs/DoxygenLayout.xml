@@ -45,7 +45,7 @@
   <!-- Layout definition for a class page -->
   <class>
     <detaileddescription title=""/>
-    <!-- <briefdescription visible="yes"/>-->
+    <briefdescription visible="yes"/>
     <memberdecl>
       <nestedclasses visible="yes" title=""/>
       <publictypes title=""/>
