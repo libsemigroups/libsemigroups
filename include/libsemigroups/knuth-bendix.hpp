@@ -29,28 +29,27 @@
 #ifndef LIBSEMIGROUPS_KNUTH_BENDIX_HPP_
 #define LIBSEMIGROUPS_KNUTH_BENDIX_HPP_
 
-#include <algorithm>         // for max, min
-#include <atomic>            // for atomic
-#include <cstddef>           // for size_t
-#include <cstdint>           // for int64_t, uint64_t
-#include <iosfwd>            // for ostream
-#include <iterator>          // for distance
-#include <limits>            // for numeric_limits
-#include <list>              // for list
-#include <map>               // for map
-#include <set>               // for set
-#include <stack>             // for stack
-#include <string>            // for basic_string, operator==
-#include <unordered_map>     // for unordered_map, operator!=
-#include <utility>           // for forward, move, pair
-#include <vector>            // for allocator, vector
-                             //
-#include "aho-corasick.hpp"  // for Aho-corasick
-#include "cong-intf.hpp"     // for CongruenceInterface
-#include "constants.hpp"     // for Max, PositiveInfinity, operat...
-#include "debug.hpp"         // for LIBSEMIGROUPS_ASSERT
-#include "exception.hpp"     // for LIBSEMIGROUPS_EXCEPTION
-// #include "obvinf.hpp"           // for is_obviously_infinite
+#include <algorithm>            // for max, min
+#include <atomic>               // for atomic
+#include <cstddef>              // for size_t
+#include <cstdint>              // for int64_t, uint64_t
+#include <iosfwd>               // for ostream
+#include <iterator>             // for distance
+#include <limits>               // for numeric_limits
+#include <list>                 // for list
+#include <map>                  // for map
+#include <set>                  // for set
+#include <stack>                // for stack
+#include <string>               // for basic_string, operator==
+#include <unordered_map>        // for unordered_map, operator!=
+#include <utility>              // for forward, move, pair
+#include <vector>               // for allocator, vector
+                                //
+#include "aho-corasick.hpp"     // for Aho-corasick
+#include "cong-intf.hpp"        // for CongruenceInterface
+#include "constants.hpp"        // for Max, PositiveInfinity, operat...
+#include "debug.hpp"            // for LIBSEMIGROUPS_ASSERT
+#include "exception.hpp"        // for LIBSEMIGROUPS_EXCEPTION
 #include "order.hpp"            // for ShortLexCompare
 #include "paths.hpp"            // for Paths
 #include "presentation.hpp"     // for Presentation
@@ -102,7 +101,6 @@ namespace libsemigroups {
   //! kb.number_of_active_rules();  // 31
   //! kb.confluent();        // true
   //! \endcode
-
   template <typename Rewriter       = RewriteTrie,
             typename ReductionOrder = ShortLexCompare>
   class KnuthBendix : public CongruenceInterface {
@@ -877,9 +875,9 @@ namespace libsemigroups {
     //!
     //! This function is defined in ``knuth-bendix.hpp``.
     //!
-    //! \returns \c true if for each pair \f$(A, B)$\f and \f$(C, D)$\f of rules
-    //! stored within the KnuthBendix instance, \f$C$\f is neither a subword of
-    //! \f$A$\f nor \f$B$\f. Returns \c false otherwise.
+    //! \returns \c true if for each pair \f$(A, B)\f$ and \f$(C, D)\f$ of rules
+    //! stored within the KnuthBendix instance, \f$C\f$ is neither a subword of
+    //! \f$A\f$ nor \f$B\f$. Returns \c false otherwise.
     //!
     //! \tparam Rewriter type of the rewriting system to be used in the
     //! Knuth-Bendix algorithm.

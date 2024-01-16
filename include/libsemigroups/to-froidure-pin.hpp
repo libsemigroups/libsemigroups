@@ -32,12 +32,14 @@
 #include "detail/tce.hpp"  // for TCE
 
 namespace libsemigroups {
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
   class FroidurePinBase;  // forward decl
   class ToddCoxeter;
 
   template <typename Rewriter, typename ReductionOrder>
   class KnuthBendix;
   class Congruence;
+#endif
 
   //! Make a FroidurePin object from an WordGraph.
   //!
