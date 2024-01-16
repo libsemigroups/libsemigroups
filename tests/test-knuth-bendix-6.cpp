@@ -33,7 +33,6 @@
 // 6: contains tests for KnuthBendix.
 
 #include <cstddef>  // for size_t
-#include <string>   // for basic_string, char_traits
 #include <utility>  // for move
 #include <vector>   // for vector
 
@@ -41,12 +40,9 @@
 #include "test-main.hpp"  // for TEMPLATE_TEST_CASE
 
 #include "libsemigroups/constants.hpp"        // for operator==, Max, POSIT...
-#include "libsemigroups/exception.hpp"        // for LibsemigroupsException
 #include "libsemigroups/fpsemi-examples.hpp"  // for partial_transformation...
-#include "libsemigroups/froidure-pin.hpp"     // for FroidurePin
 #include "libsemigroups/knuth-bendix.hpp"     // for KnuthBendix, normal_forms
 #include "libsemigroups/obvinf.hpp"           // for is_obviously_infinite
-#include "libsemigroups/paths.hpp"            // for Paths
 #include "libsemigroups/presentation.hpp"     // for to_string, add_rule
 #include "libsemigroups/to-froidure-pin.hpp"  // for to_froidure_pin
 #include "libsemigroups/types.hpp"            // for word_type
@@ -353,7 +349,7 @@ namespace libsemigroups {
                      "[142][quick][knuth-bendix]",
                      KNUTH_BENDIX_TYPES) {
     using literals::operator""_w;
-    auto            rg = ReportGuard(false);
+    auto rg = ReportGuard(false);
 
     Presentation<word_type> p1;
     p1.contains_empty_word(true);

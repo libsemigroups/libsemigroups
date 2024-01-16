@@ -339,7 +339,6 @@ namespace libsemigroups {
   }
 
   // Symmetric group S_16
-  // TODO fix gillman graph
   TEMPLATE_TEST_CASE("(from kbmag/standalone/kb_data/s16)",
                      "[036][quick][knuth-bendix][kbmag][shortlex][no-valgrind]",
                      KNUTH_BENDIX_TYPES) {
@@ -940,7 +939,6 @@ namespace libsemigroups {
     REQUIRE(!kb.confluent());
   }
 
-  // TODO adjust max_rule assertion
   TEMPLATE_TEST_CASE("Example 6.4 in Sims",
                      "[047][quick][knuth-bendix][no-valgrind]",
                      KNUTH_BENDIX_TYPES) {
@@ -1478,10 +1476,6 @@ namespace libsemigroups {
       p.contains_empty_word(true);
       TestType kb(twosided, p);
       kb.run();
-      // TODO uncomment or delete
-      // REQUIRE((knuth_bendix::normal_forms(kb).min(0).max(5) | ToStrings("ab")
-      //          | to_vector())
-      //         == std::vector<std::string>());
       REQUIRE(knuth_bendix::normal_forms(kb).min(0).max(5).count() == num[n]);
     }
   }
@@ -1660,7 +1654,6 @@ namespace libsemigroups {
     REQUIRE(kb.number_of_classes() == 312);
   }
 
-  // TODO Fix rules requirement
   TEMPLATE_TEST_CASE("sigma sylvester monoid x 2",
                      "[068][todd-coxeter][quick]",
                      KNUTH_BENDIX_TYPES) {
@@ -1681,28 +1674,7 @@ namespace libsemigroups {
     presentation::add_rule(p, 121_w, 12_w);
     presentation::add_rule(p, 12012_w, 1201_w);
     presentation::add_rule(p, 1202_w, 120_w);
-    // auto it = knuth_bendix::redundant_rule(p,
-    // std::chrono::milliseconds(100)); while (it != p.rules.cend()) {
-    //   p.rules.erase(it, it + 2);
-    //   it = knuth_bendix::redundant_rule(p, std::chrono::milliseconds(100));
-    // }
-    // REQUIRE(p.rules
-    //         == std::vector<word_type>({00_w,
-    //                                    0_w,
-    //                                    11_w,
-    //                                    1_w,
-    //                                    22_w,
-    //                                    2_w,
-    //                                    010_w,
-    //                                    01_w,
-    //                                    020_w,
-    //                                    02_w,
-    //                                    121_w,
-    //                                    12_w,
-    //                                    1202_w,
-    //                                    120_w,
-    //                                    10212_w,
-    //                                    1021_w}));
+
     p.rules.clear();
     p.alphabet(2);
     presentation::add_idempotent_rules_no_checks(p, 01_w);

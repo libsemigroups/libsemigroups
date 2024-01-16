@@ -379,7 +379,6 @@ namespace libsemigroups {
 
     kb.run();
     REQUIRE(kb.number_of_active_rules() == 23);
-    // std::cout << (kb.active_rules() | to_vector()) << std::endl;
 
     auto copy   = kb.gilman_graph();
     auto source = copy.target(0, 2);
@@ -397,7 +396,6 @@ namespace libsemigroups {
     std::sort(nrvec.begin(), nrvec.end());
     source = std::distance(nrvec.begin(),
                            std::find(nrvec.begin(), nrvec.end(), source));
-    // FIXME this is broken on RC's computer, returns 36
     REQUIRE(source == 28);
 
     copy.induced_subgraph_no_checks(nrvec.begin(), nrvec.end());
@@ -410,7 +408,6 @@ namespace libsemigroups {
     REQUIRE(kb.gilman_graph().number_of_nodes() == 51);
   }
 
-  // TODO fix gilman graph
   TEMPLATE_TEST_CASE("automatic left congruence!!!",
                      "[128][quick][knuth-bendix]",
                      KNUTH_BENDIX_TYPES) {
