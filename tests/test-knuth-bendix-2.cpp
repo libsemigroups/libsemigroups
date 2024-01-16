@@ -131,15 +131,17 @@ namespace libsemigroups {
     REQUIRE(kb.equal_to("dc", "e"));
     REQUIRE(kb.equal_to("ae", "b"));
     REQUIRE(kb.equal_to("bbb", "a"));
-    REQUIRE(
-        ((kb.active_rules() | to_vector()) | sort(weird_cmp()) | to_vector())
-        == std::vector<rule_type>(
-            {{"ab", "c"},  {"ae", "b"},   {"ba", "c"},  {"bc", "d"},
-             {"bd", "aa"}, {"ca", "ac"},  {"cb", "d"},  {"cc", "ad"},
-             {"cd", "e"},  {"ce", "bb"},  {"da", "ad"}, {"db", "aa"},
-             {"dc", "e"},  {"dd", "be"},  {"de", "a"},  {"ea", "b"},
-             {"eb", "be"}, {"ec", "bb"},  {"ed", "a"},  {"ee", "ac"},
-             {"aaa", "e"}, {"aac", "be"}, {"bbb", "a"}, {"bbe", "aad"}}));
+
+    // REQUIRE(knuth_bendix::is_reduced(kb));
+    REQUIRE(kb.rewrite("ca") == "ac");
+    REQUIRE((kb.active_rules() | sort(weird_cmp()) | to_vector())
+            == std::vector<rule_type>(
+                {{"ab", "c"},  {"ae", "b"},   {"ba", "c"},  {"bc", "d"},
+                 {"bd", "aa"}, {"ca", "ac"},  {"cb", "d"},  {"cc", "ad"},
+                 {"cd", "e"},  {"ce", "bb"},  {"da", "ad"}, {"db", "aa"},
+                 {"dc", "e"},  {"dd", "be"},  {"de", "a"},  {"ea", "b"},
+                 {"eb", "be"}, {"ec", "bb"},  {"ed", "a"},  {"ee", "ac"},
+                 {"aaa", "e"}, {"aac", "be"}, {"bbb", "a"}, {"bbe", "aad"}}));
 
     auto nf = knuth_bendix::normal_forms(kb);
     REQUIRE(
@@ -1729,44 +1731,11 @@ namespace libsemigroups {
 
     TestType kb(twosided, p);
     p = to_presentation<word_type>(kb);
-    // REQUIRE(kb.number_of_classes() == 26);
-    std::vector<word_type> reduce_binary_tree_words
-        = {{},     0_w,    1_w,    2_w,    10_w,    20_w,    01_w,    21_w,
-           02_w,   12_w,   210_w,  120_w,  101_w,   201_w,   201_w,   102_w,
-           202_w,  012_w,  212_w,  2120_w, 2101_w,  2101_w,  2101_w,  2102_w,
-           1202_w, 1012_w, 2012_w, 2012_w, 21202_w, 21012_w, 21012_w, 21012_w};
 
     auto S = to_froidure_pin(kb);
-    // TODO this is off by 1
+    REQUIRE(S.is_monoid());
     REQUIRE(S.size() == kb.number_of_classes());
-    REQUIRE(S.size() == 0);
-    REQUIRE(S.number_of_idempotents() == 0);
-    // auto range = iterator_range(reduce_binary_tree_words);
-
-    // REQUIRE(first_equivalent_pair(
-    //             kb, range | ToStrings(kb.presentation().alphabet()))
-    //         ==);
-
-    // REQUIRE((kb.active_rules() | to_vector())
-    //         == std::vector<rule_type>({{"aa", "a"},
-    //                                    {"bb", "b"},
-    //                                    {"cc", "c"},
-    //                                    {"acab", "acb"},
-    //                                    {"acbab", "abcab"},
-    //                                    {"abcb", "acb"},
-    //                                    {"baba", "ba"},
-    //                                    {"babca", "baca"},
-    //                                    {"baca", "bca"},
-    //                                    {"bcab", "bacb"},
-    //                                    {"bacba", "bcba"},
-    //                                    {"bcbab", "bacb"},
-    //                                    {"caba", "cba"},
-    //                                    {"cabca", "cbca"},
-    //                                    {"caca", "ca"},
-    //                                    {"cacb", "cab"},
-    //                                    {"cbacb", "cbab"},
-    //                                    {"cbcb", "cb"},
-    //                                    {"bacbca", "bcbca"}}));
-    REQUIRE(kb.number_of_classes() == 26);
+    REQUIRE(S.number_of_idempotents() == 5);
+    REQUIRE(kb.number_of_classes() == 6);
   }
 }  // namespace libsemigroups

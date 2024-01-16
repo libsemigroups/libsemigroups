@@ -146,6 +146,9 @@ namespace libsemigroups {
     for (size_t i = 0; i < n; ++i) {
       result.add_generator(KBE(kb, i));
     }
+    if (kb.presentation().contains_empty_word()) {
+      result.add_generator(KBE(kb, ""));
+    }
     return result;
   }
 

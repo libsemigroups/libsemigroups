@@ -361,6 +361,7 @@ namespace libsemigroups {
       if (lhs != rhs) {
         if (add_pending_rule(
                 new_rule(lhs.cbegin(), lhs.cend(), rhs.cbegin(), rhs.cend()))) {
+          // TODO only process_pending_rules when ready to run
           process_pending_rules();
         }
       }

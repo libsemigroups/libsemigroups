@@ -355,7 +355,7 @@ namespace libsemigroups {
 
   template <typename Rewriter, typename ReductionOrder>
   void KnuthBendix<Rewriter, ReductionOrder>::report_before_run() const {
-    if (report::should_report()) {
+    if (reporting_enabled()) {
       report_no_prefix("{:+<95}\n", "");
       report_default("KnuthBendix: STARTING . . .\n");
       report_no_prefix("{:+<95}\n", "");
@@ -397,7 +397,7 @@ namespace libsemigroups {
             + "/s";
 
       detail::ReportCell<4> rc;
-      rc.min_width(12).divider("{:-<95}\n");
+      rc.min_width(12);  // .divider("{:-<95}\n");
       rc("KnuthBendix: rules {} (active) | {} (inactive) | {} (defined)\n",
          group_digits(active),
          group_digits(inactive),
@@ -409,7 +409,7 @@ namespace libsemigroups {
          signed_group_digits(defined_diff));
 
       rc("KnuthBendix: time  {} (total)  | {} (killed)   | {} (defined)\n",
-         string_time(run_time),
+         detail::string_time(run_time),
          mean_killed,
          mean_defined);
 
@@ -419,14 +419,14 @@ namespace libsemigroups {
 
   template <typename Rewriter, typename ReductionOrder>
   void KnuthBendix<Rewriter, ReductionOrder>::report_after_run() const {
-    if (report::should_report()) {
+    if (reporting_enabled()) {
       report_progress_from_thread(false);
       if (finished()) {
         using detail::group_digits;
         detail::ReportCell<2> rc;
-        rc.min_width(12).divider("{:-<95}\n");
+        rc.min_width(12);  // .divider("{:-<95}\n");
         rc("KnuthBendix: RUN STATISTICS\n");
-        rc.divider();
+        // rc.divider();
         // FIXME these are mostly 0, and should be obtained from the rewriter
         // probably
         rc("KnuthBendix: max stack depth        {}\n",
@@ -604,7 +604,7 @@ namespace libsemigroups {
       }
     };
 
-    LIBSEMIGROUPS_ASSERT(_rewriter._pending_rules.empty());
+    // TODO uncomment LIBSEMIGROUPS_ASSERT(_rewriter._pending_rules.empty());
 
     if (_settings.max_overlap == POSITIVE_INFINITY
         && _settings.max_rules == POSITIVE_INFINITY && !stop_running()) {
@@ -635,7 +635,7 @@ namespace libsemigroups {
 
     report_before_run();
     std::atomic_bool pause = false;
-    if (report::should_report()) {
+    if (reporting_enabled()) {
       detail::Ticker t([&]() { report_progress_from_thread(pause); });
       run_real(pause);
     } else {

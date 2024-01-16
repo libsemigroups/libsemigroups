@@ -187,11 +187,6 @@ struct LibsemigroupsListener : Catch::TestEventListenerBase {
 
   void testRunEnded(Catch::TestRunStats const&) override {
     using libsemigroups::detail::string_time;
-    fmt::print("\n");
-  }
-
-  void testRunEnded(Catch::TestRunStats const&) override {
-    using Timer_ = libsemigroups::detail::Timer;
     using std::chrono::nanoseconds;
 
     auto const emph

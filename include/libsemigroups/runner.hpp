@@ -215,9 +215,9 @@ namespace libsemigroups {
                 // 1. the Ticker goes out of scope, the mutex is locked, then
                 //    _stop is set to false, Ticker is destroyed, maybe the
                 //    object where Ticker is created is also destroyed (the
-                //    object containing _func and/or its related data), then
-                //    we acquire the mutex here, and _stop is false, so we
-                //    don't call _func (which is actually destroyed).
+                //    object containing _func and/or its related data), then we
+                //    acquire the mutex here, and _stop is false, so we don't
+                //    call _func (which is actually destroyed).
                 // 2. we acquire the lock on the mutex here first, and then
                 //    Ticker goes out of scope, the destructor of Ticker is
                 //    then blocked (and so too is the possible destruction of
@@ -300,10 +300,6 @@ namespace libsemigroups {
       //   return *this;
       // }
 
-      void divider() {
-        _rows.push_back(Row({_divider}));
-      }
-
       template <typename... Args>
       void operator()(std::string_view fmt_str, Args&&... args) {
         static_assert(sizeof...(args) <= C);
@@ -333,17 +329,11 @@ namespace libsemigroups {
         };
         // This isn't quite right
         for (size_t i = 0; i < _rows.size(); ++i) {
-          if (_rows[i][0] == _divider) {
-            report_no_prefix(_divider, "");
-          } else {
-            for (size_t j = 1; j < C + 1; ++j) {
-              _rows[i][j]
-                  = std::string(_col_widths[j]
-                                    - unicode_string_length(_rows[i][j]),
-                                ' ')
-                    + _rows[i][j];
-            }
-            std::apply(fmt, _rows[i]);
+          for (size_t j = 1; j < C + 1; ++j) {
+            _rows[i][j]
+                = std::string(
+                      _col_widths[j] - unicode_string_length(_rows[i][j]), ' ')
+                  + _rows[i][j];
           }
         }
         report_no_prefix("{:-<{}}\n", "", line_width());

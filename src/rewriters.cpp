@@ -20,6 +20,7 @@
 
 #include "libsemigroups/detail/report.hpp"  // for report_default
 #include "libsemigroups/runner.hpp"         // for Ticker
+#include <algorithm>
 #include <chrono>
 
 namespace libsemigroups {
@@ -237,14 +238,11 @@ namespace libsemigroups {
         for (auto it = begin(); it != end();) {
           Rule* rule2 = const_cast<Rule*>(*it);
 
-          // Check if lhs is contained within the lhs rule2
+          // Check if lhs is contained within the lhs of rule2
           if (rule2->lhs()->find(*lhs) != external_string_type::npos) {
             // If it is, rule2 must be deactivated and re-processed
             it = make_active_rule_pending(it);
           } else {
-            // If not, rewrite the rhs of rule2 with respect to rule1. This may
-            // not change rule2
-            rewrite_string(*rule2->rhs(), lhs, rhs);
             ++it;
           }
         }
@@ -253,63 +251,54 @@ namespace libsemigroups {
         add_inactive_rule(rule1);
       }
     }
+    for (auto it = begin(); it != end(); ++it) {
+      Rule* rule2 = const_cast<Rule*>(*it);
+      // If not, rewrite the rhs of rule2 with respect to rule1. This may
+      // not change rule2
+      rewrite(*rule2->rhs());
+    }
   }
 
+  // TODO write some comments about the rationale for the existence of this
+  // function.
+  // TODO delete this
   void RewriterBase::rewrite_string(internal_string_type&       u,
                                     internal_string_type const* lhs,
                                     internal_string_type const* rhs) const {
+    // fmt::print("u = {}\n", u);
+    // if (u == "caeaeea" && *lhs == "aea" && *rhs == "e") {
+    //   (void) u;
+    // }
+    LIBSEMIGROUPS_ASSERT(&u != lhs);
+    LIBSEMIGROUPS_ASSERT(&u != rhs);
     using iterator = internal_string_type::iterator;
 
-    size_t old_pos = u.find(*lhs);
-
-    if (old_pos == external_string_type::npos) {
-      return;
-    }
-
-    size_t new_pos;
-
-    // Consider u as vw, where v is the longest prefix of u before an occurrence
+    // Consider u as vw, where v is the prefix of u before the 1st occurrence
     // of lhs.
-    iterator v_end   = u.begin() + old_pos;
-    iterator w_begin = v_end;
-    iterator w_end   = u.end();
+    iterator   w_begin = u.begin();
+    iterator   w_end   = u.end();
+    auto const diff    = lhs->size() - rhs->size();
 
-    while (w_begin != w_end) {
+    do {
+      size_t pos = u.find(*lhs, std::distance(u.begin(), w_begin));
+      if (pos == external_string_type::npos
+          || u.begin() + pos + lhs->size() >= w_end) {
+        break;
+      }
+      w_begin = u.begin() + pos;
       LIBSEMIGROUPS_ASSERT(
           detail::is_prefix(w_begin, w_end, lhs->cbegin(), lhs->cend()));
 
       // Replace lhs with rhs in-place
-      w_begin += lhs->size() - rhs->size();
       detail::string_replace(w_begin, rhs->cbegin(), rhs->cend());
-
-      for (size_t i = 0; i != rhs->size(); ++i) {
-        *v_end = *w_begin;
-        ++v_end;
-        ++w_begin;
-      }
-
-      // Find the next occurrence of lhs, without unnecessarily searching the
-      // begging of u that we have already searched
-      old_pos = new_pos;
-      new_pos = u.find(*lhs, old_pos + (lhs->size() - rhs->size()));
-      if (new_pos == external_string_type::npos) {
-        break;
-      }
-
-      for (size_t i = 0; i != new_pos - (old_pos + lhs->size()); ++i) {
-        *v_end = *w_begin;
-        ++v_end;
-        ++w_begin;
-      }
-    }
-    while (w_begin != w_end) {
-      *v_end = *w_begin;
-      ++v_end;
+      // Move the suffix down
+      std::copy_backward(w_begin + lhs->size(), w_end, w_end - diff);
       ++w_begin;
-    }
+      w_end -= diff;
+    } while (w_begin < w_end);
 
     // Remove any garbage characters at the end
-    u.erase(v_end - u.cbegin());
+    u.erase(w_end, u.end());
   }
 
   void RewriterBase::reduce() {
@@ -495,7 +484,7 @@ namespace libsemigroups {
       return RewriterBase::cached_confluent();
     }
     std::atomic_uint64_t seen = 0;
-    if (report::should_report()) {
+    if (reporting_enabled()) {
       using std::chrono::time_point;
       time_point     start_time = std::chrono::high_resolution_clock::now();
       detail::Ticker t([&]() { report_from_confluent(seen, start_time); });

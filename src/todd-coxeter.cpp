@@ -958,8 +958,10 @@ namespace libsemigroups {
       return tril::unknown;
     }
 
+#if defined(__GNUC__) && !defined(__clang__)
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wmaybe-uninitialized"
+#endif
 
     uint64_t number_of_idempotents(ToddCoxeter& tc) {
       word_type tmp;
@@ -972,6 +974,8 @@ namespace libsemigroups {
              })
              | rx::count();
     }
+#if defined(__GNUC__) && !defined(__clang__)
 #pragma GCC diagnostic pop
+#endif
   }  // namespace todd_coxeter
 }  // namespace libsemigroups
