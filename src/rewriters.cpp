@@ -233,13 +233,13 @@ namespace libsemigroups {
       if (*rule1->lhs() != *rule1->rhs()) {
         // TODO Should these be declared at the top of the function?
         internal_string_type const* lhs = rule1->lhs();
-        internal_string_type const* rhs = rule1->rhs();
 
         for (auto it = begin(); it != end();) {
           Rule* rule2 = const_cast<Rule*>(*it);
 
-          // Check if lhs is contained within the lhs of rule2
-          if (rule2->lhs()->find(*lhs) != external_string_type::npos) {
+          // Check if lhs is contained within either the lhs or rhs of rule2
+          if (rule2->lhs()->find(*lhs) != external_string_type::npos
+              || rule2->rhs()->find(*lhs) != external_string_type::npos) {
             // If it is, rule2 must be deactivated and re-processed
             it = make_active_rule_pending(it);
           } else {
@@ -251,12 +251,12 @@ namespace libsemigroups {
         add_inactive_rule(rule1);
       }
     }
-    for (auto it = begin(); it != end(); ++it) {
-      Rule* rule2 = const_cast<Rule*>(*it);
-      // If not, rewrite the rhs of rule2 with respect to rule1. This may
-      // not change rule2
-      rewrite(*rule2->rhs());
-    }
+    // for (auto it = begin(); it != end(); ++it) {
+    //   Rule* rule2 = const_cast<Rule*>(*it);
+    //   // If not, rewrite the rhs of rule2 with respect to rule1. This may
+    //   // not change rule2
+    //   rewrite(*rule2->rhs());
+    // }
   }
 
   // TODO write some comments about the rationale for the existence of this

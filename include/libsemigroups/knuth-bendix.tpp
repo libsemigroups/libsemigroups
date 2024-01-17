@@ -599,6 +599,7 @@ namespace libsemigroups {
 
       if (_rewriter.number_of_pending_rules() != 0) {
         _rewriter.process_pending_rules();
+        LIBSEMIGROUPS_ASSERT(knuth_bendix::is_reduced(*this));
       } else {
         add_overlaps = false;
       }
