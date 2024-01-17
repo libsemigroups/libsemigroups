@@ -74,7 +74,7 @@ namespace libsemigroups {
   template <typename T, typename S>
   std::vector<T> initialised_sample(Catch::Benchmark::Chronometer meter,
                                     S const& sample_constructor_params,
-                                    T        (*before_func)(S const&)) {
+                                    T (*before_func)(S const&)) {
     std::vector<T> out;
     for (int i = 0; i < meter.runs(); ++i) {
       out.push_back(before_func(sample_constructor_params));

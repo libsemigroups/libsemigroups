@@ -638,7 +638,8 @@ namespace Catch {
     virtual ~ITestCaseRegistry();
     virtual std::vector<TestCase> const& getAllTests() const = 0;
     virtual std::vector<TestCase> const&
-    getAllTestsSorted(IConfig const& config) const = 0;
+    getAllTestsSorted(IConfig const& config) const
+        = 0;
   };
 
   bool isThrowSafe(TestCase const& testCase, IConfig const& config);
@@ -908,13 +909,13 @@ constexpr auto operator"" _catch_sr(char const* rawChars,
   template <typename...>                                                       \
   struct TypeList {};                                                          \
   template <typename... Ts>                                                    \
-  constexpr auto get_wrapper() noexcept->TypeList<Ts...> {                     \
+  constexpr auto get_wrapper() noexcept -> TypeList<Ts...> {                   \
     return {};                                                                 \
   }                                                                            \
   template <template <typename...> class...>                                   \
   struct TemplateTypeList {};                                                  \
   template <template <typename...> class... Cs>                                \
-  constexpr auto get_wrapper() noexcept->TemplateTypeList<Cs...> {             \
+  constexpr auto get_wrapper() noexcept -> TemplateTypeList<Cs...> {           \
     return {};                                                                 \
   }                                                                            \
   template <typename...>                                                       \
@@ -983,13 +984,13 @@ constexpr auto operator"" _catch_sr(char const* rawChars,
   template <INTERNAL_CATCH_REMOVE_PARENS(signature)>                        \
   struct Nttp {};                                                           \
   template <INTERNAL_CATCH_REMOVE_PARENS(signature)>                        \
-  constexpr auto get_wrapper() noexcept->Nttp<__VA_ARGS__> {                \
+  constexpr auto get_wrapper() noexcept -> Nttp<__VA_ARGS__> {              \
     return {};                                                              \
   }                                                                         \
   template <template <INTERNAL_CATCH_REMOVE_PARENS(signature)> class...>    \
   struct NttpTemplateTypeList {};                                           \
   template <template <INTERNAL_CATCH_REMOVE_PARENS(signature)> class... Cs> \
-  constexpr auto get_wrapper() noexcept->NttpTemplateTypeList<Cs...> {      \
+  constexpr auto get_wrapper() noexcept -> NttpTemplateTypeList<Cs...> {    \
     return {};                                                              \
   }                                                                         \
                                                                             \
@@ -1451,15 +1452,17 @@ namespace Catch {
     TestName, TestFunc, Name, Tags, Signature, ...)          \
   INTERNAL_CATCH_DEFINE_SIG_TEST(TestFunc,                   \
                                  INTERNAL_CATCH_REMOVE_PARENS(Signature))
-#define INTERNAL_CATCH_TEMPLATE_TEST_CASE_METHOD_NO_REGISTRATION_2(      \
-    TestNameClass, TestName, ClassName, Name, Tags, Signature, ...)      \
-  namespace {                                                            \
-    namespace INTERNAL_CATCH_MAKE_NAMESPACE(TestName) {                  \
-      INTERNAL_CATCH_DECLARE_SIG_TEST_METHOD(                            \
-          TestName, ClassName, INTERNAL_CATCH_REMOVE_PARENS(Signature)); \
-    }                                                                    \
-  }                                                                      \
-  INTERNAL_CATCH_DEFINE_SIG_TEST_METHOD(                                 \
+#define INTERNAL_CATCH_TEMPLATE_TEST_CASE_METHOD_NO_REGISTRATION_2( \
+    TestNameClass, TestName, ClassName, Name, Tags, Signature, ...) \
+  namespace {                                                       \
+    namespace INTERNAL_CATCH_MAKE_NAMESPACE(TestName) {             \
+      INTERNAL_CATCH_DECLARE_SIG_TEST_METHOD(                       \
+          TestName,                                                 \
+          ClassName,                                                \
+          INTERNAL_CATCH_REMOVE_PARENS(Signature));                 \
+    }                                                               \
+  }                                                                 \
+  INTERNAL_CATCH_DEFINE_SIG_TEST_METHOD(                            \
       TestName, INTERNAL_CATCH_REMOVE_PARENS(Signature))
 
 #ifndef CATCH_CONFIG_TRADITIONAL_MSVC_PREPROCESSOR
@@ -1860,9 +1863,12 @@ namespace Catch {
       INTERNAL_CATCH_TYPE_GEN                                               \
       INTERNAL_CATCH_NTTP_GEN(INTERNAL_CATCH_REMOVE_PARENS(Signature))      \
       INTERNAL_CATCH_DECLARE_SIG_TEST_METHOD(                               \
-          TestName, ClassName, INTERNAL_CATCH_REMOVE_PARENS(Signature));    \
+          TestName,                                                         \
+          ClassName,                                                        \
+          INTERNAL_CATCH_REMOVE_PARENS(Signature));                         \
       INTERNAL_CATCH_NTTP_REG_METHOD_GEN(                                   \
-          TestName, INTERNAL_CATCH_REMOVE_PARENS(Signature))                \
+          TestName,                                                         \
+          INTERNAL_CATCH_REMOVE_PARENS(Signature))                          \
       template <typename... Types>                                          \
       struct TestNameClass {                                                \
         TestNameClass() {                                                   \
@@ -2311,7 +2317,7 @@ inline id   performOptionalSelector(id obj, SEL sel) {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
 #endif
-    if ([obj respondsToSelector:sel])
+  if ([obj respondsToSelector:sel])
     return [obj performSelector:sel];
 #ifdef __clang__
 #pragma clang diagnostic pop
@@ -3853,10 +3859,11 @@ namespace Catch {
     virtual ITestCaseRegistry const& getTestCaseRegistry() const = 0;
     virtual ITagAliasRegistry const& getTagAliasRegistry() const = 0;
     virtual IExceptionTranslatorRegistry const&
-    getExceptionTranslatorRegistry() const = 0;
+    getExceptionTranslatorRegistry() const
+        = 0;
 
-    virtual StartupExceptionRegistry const&
-    getStartupExceptionRegistry() const = 0;
+    virtual StartupExceptionRegistry const& getStartupExceptionRegistry() const
+        = 0;
   };
 
   struct IMutableRegistryHub {
@@ -3903,7 +3910,8 @@ namespace Catch {
     virtual ~IExceptionTranslator();
     virtual std::string
     translate(ExceptionTranslators::const_iterator it,
-              ExceptionTranslators::const_iterator itEnd) const = 0;
+              ExceptionTranslators::const_iterator itEnd) const
+        = 0;
   };
 
   struct IExceptionTranslatorRegistry {
@@ -5432,9 +5440,9 @@ namespace Catch {
   class Option {
    public:
     Option() : nullableValue(nullptr) {}
-    Option(T const& _value) : nullableValue(new (storage) T(_value)) {}
+    Option(T const& _value) : nullableValue(new(storage) T(_value)) {}
     Option(Option const& _other)
-        : nullableValue(_other ? new (storage) T(*_other) : nullptr) {}
+        : nullableValue(_other ? new(storage) T(*_other) : nullptr) {}
 
     ~Option() {
       reset();
@@ -6247,7 +6255,8 @@ namespace Catch {
     // Nullptr if not present
     virtual TagAlias const* find(std::string const& alias) const = 0;
     virtual std::string
-    expandAliases(std::string const& unexpandedTestSpec) const = 0;
+    expandAliases(std::string const& unexpandedTestSpec) const
+        = 0;
 
     static ITagAliasRegistry const& get();
   };
@@ -6753,9 +6762,9 @@ namespace Catch {
 
   struct IReporterFactory {
     virtual ~IReporterFactory();
-    virtual IStreamingReporterPtr
-                        create(ReporterConfig const& config) const = 0;
-    virtual std::string getDescription() const                     = 0;
+    virtual IStreamingReporterPtr create(ReporterConfig const& config) const
+        = 0;
+    virtual std::string getDescription() const = 0;
   };
   using IReporterFactoryPtr = std::shared_ptr<IReporterFactory>;
 
@@ -6765,9 +6774,10 @@ namespace Catch {
 
     virtual ~IReporterRegistry();
     virtual IStreamingReporterPtr create(std::string const& name,
-                                         IConfigPtr const&  config) const = 0;
-    virtual FactoryMap const&     getFactories() const                   = 0;
-    virtual Listeners const&      getListeners() const                   = 0;
+                                         IConfigPtr const&  config) const
+        = 0;
+    virtual FactoryMap const& getFactories() const = 0;
+    virtual Listeners const&  getListeners() const = 0;
   };
 
 }  // end namespace Catch
@@ -10547,7 +10557,8 @@ namespace Catch {
         }
         virtual auto parse(std::string const& exeName,
                            TokenStream const& tokens) const
-            -> InternalParseResult = 0;
+            -> InternalParseResult
+            = 0;
         virtual auto cardinality() const -> size_t {
           return 1;
         }
@@ -10824,7 +10835,7 @@ namespace Catch {
                 showHelpFlag = flag;
                 return ParserResult::ok(ParseResultType::ShortCircuitAll);
               }) {
-          static_cast<Opt&> (*this)(
+          static_cast<Opt&>(*this)(
               "display usage information")["-?"]["-h"]["--help"]
               .optional();
         }

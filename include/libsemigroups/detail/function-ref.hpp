@@ -47,7 +47,7 @@ namespace libsemigroups {
     template <typename TReturn, typename... TArgs>
     class FunctionRef<TReturn(TArgs...)> {
      private:
-      void*   _ptr;
+      void* _ptr;
       TReturn (*_erased_fn)(void*, TArgs...);
 
      public:
