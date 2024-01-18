@@ -255,48 +255,6 @@ namespace libsemigroups {
     // reduce_rhs();
   }
 
-  // TODO write some comments about the rationale for the existence of this
-  // function.
-  // TODO delete this
-  void RewriterBase::rewrite_string(internal_string_type&       u,
-                                    internal_string_type const* lhs,
-                                    internal_string_type const* rhs) const {
-    // fmt::print("u = {}\n", u);
-    // if (u == "caeaeea" && *lhs == "aea" && *rhs == "e") {
-    //   (void) u;
-    // }
-    LIBSEMIGROUPS_ASSERT(&u != lhs);
-    LIBSEMIGROUPS_ASSERT(&u != rhs);
-    using iterator = internal_string_type::iterator;
-
-    // Consider u as vw, where v is the prefix of u before the 1st occurrence
-    // of lhs.
-    iterator   w_begin = u.begin();
-    iterator   w_end   = u.end();
-    auto const diff    = lhs->size() - rhs->size();
-
-    do {
-      size_t pos = u.find(*lhs, std::distance(u.begin(), w_begin));
-      if (pos == external_string_type::npos
-          || u.begin() + pos + lhs->size() >= w_end) {
-        break;
-      }
-      w_begin = u.begin() + pos;
-      LIBSEMIGROUPS_ASSERT(
-          detail::is_prefix(w_begin, w_end, lhs->cbegin(), lhs->cend()));
-
-      // Replace lhs with rhs in-place
-      detail::string_replace(w_begin, rhs->cbegin(), rhs->cend());
-      // Move the suffix down
-      std::copy_backward(w_begin + lhs->size(), w_end, w_end - diff);
-      ++w_begin;
-      w_end -= diff;
-    } while (w_begin < w_end);
-
-    // Remove any garbage characters at the end
-    u.erase(w_end, u.end());
-  }
-
   void RewriterBase::reduce() {
     for (Rule const* rule : *this) {
       // Copy rule and add_pending_rule so that it is not modified by the

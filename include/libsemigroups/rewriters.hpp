@@ -326,10 +326,6 @@ namespace libsemigroups {
 
     void process_pending_rules();
 
-    void rewrite_string(internal_string_type&       u,
-                        internal_string_type const* lhs,
-                        internal_string_type const* rhs) const;
-
     void reduce();
 
     void reduce_rhs();
