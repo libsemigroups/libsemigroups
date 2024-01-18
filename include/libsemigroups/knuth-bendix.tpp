@@ -1,6 +1,6 @@
 //
 // libsemigroups - C++ library for semigroups and monoids
-// Copyright (C) 2019-2023 James D. Mitchell
+// Copyright (C) 2019-2024 James D. Mitchell
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -281,7 +281,7 @@ namespace libsemigroups {
   uint64_t KnuthBendix<Rewriter, ReductionOrder>::number_of_classes() {
     // TODO uncomment
     // if (is_obviously_infinite(*this)) {
-    //  return POSITIVE_INFINITY;
+    //   return POSITIVE_INFINITY;
     // }
 
     int const modifier = (presentation().contains_empty_word() ? 0 : -1);
