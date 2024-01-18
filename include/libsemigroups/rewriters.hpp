@@ -332,6 +332,8 @@ namespace libsemigroups {
 
     void reduce();
 
+    void reduce_rhs();
+
     void rewrite(Rule* rule) const {
       rewrite(*rule->lhs());
       rewrite(*rule->rhs());

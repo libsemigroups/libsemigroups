@@ -219,11 +219,13 @@ namespace libsemigroups {
   }
 
   void RewriterBase::process_pending_rules() {
+    Rule*                       rule1;
+    internal_string_type const* lhs;
     while (number_of_pending_rules() != 0) {
       // _stats.max_stack_depth = std::max(_stats.max_stack_depth,
       // _pending_rules.size());
 
-      Rule* rule1 = next_pending_rule();
+      rule1 = next_pending_rule();
       LIBSEMIGROUPS_ASSERT(!rule1->active());
       LIBSEMIGROUPS_ASSERT(*rule1->lhs() != *rule1->rhs());
       // Rewrite both sides and reorder if necessary . . .
@@ -231,8 +233,7 @@ namespace libsemigroups {
 
       // Check rule is non-trivial
       if (*rule1->lhs() != *rule1->rhs()) {
-        // TODO Should these be declared at the top of the function?
-        internal_string_type const* lhs = rule1->lhs();
+        lhs = rule1->lhs();
 
         for (auto it = begin(); it != end();) {
           Rule* rule2 = const_cast<Rule*>(*it);
@@ -251,12 +252,7 @@ namespace libsemigroups {
         add_inactive_rule(rule1);
       }
     }
-    // for (auto it = begin(); it != end(); ++it) {
-    //   Rule* rule2 = const_cast<Rule*>(*it);
-    //   // If not, rewrite the rhs of rule2 with respect to rule1. This may
-    //   // not change rule2
-    //   rewrite(*rule2->rhs());
-    // }
+    // reduce_rhs();
   }
 
   // TODO write some comments about the rationale for the existence of this
@@ -309,6 +305,12 @@ namespace libsemigroups {
       if (add_pending_rule(copy_rule(rule))) {
         process_pending_rules();
       }
+    }
+  }
+
+  void RewriterBase::reduce_rhs() {
+    for (Rule const* rule : *this) {
+      rewrite(*rule->rhs());
     }
   }
 

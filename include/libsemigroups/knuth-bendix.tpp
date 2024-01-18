@@ -557,7 +557,6 @@ namespace libsemigroups {
   template <typename Rewriter, typename ReductionOrder>
   void
   KnuthBendix<Rewriter, ReductionOrder>::run_real(std::atomic_bool& pause) {
-    _rewriter.reduce();
     bool add_overlaps = true;
 
     auto& first  = _rewriter.cursor(0);
@@ -590,7 +589,7 @@ namespace libsemigroups {
           pause = true;
           if (confluent()) {
             pause = false;
-            break;
+            goto confluence_achieved;
           }
           pause = false;
           nr    = 0;
@@ -605,7 +604,9 @@ namespace libsemigroups {
       }
     };
 
-    // TODO uncomment LIBSEMIGROUPS_ASSERT(_rewriter._pending_rules.empty());
+  confluence_achieved:
+    // _rewriter.reduce_rhs();
+    LIBSEMIGROUPS_ASSERT(_rewriter.number_of_pending_rules() == 0);
 
     if (_settings.max_overlap == POSITIVE_INFINITY
         && _settings.max_rules == POSITIVE_INFINITY && !stop_running()) {
