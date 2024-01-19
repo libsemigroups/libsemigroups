@@ -1,10 +1,10 @@
-.. Copyright (c) 2019-2023, J. D. Mitchell
+.. Copyright (c) 2019-2024, J. D. Mitchell
 
    Distributed under the terms of the GPL license version 3.
 
    The full license is in the file LICENSE, distributed with this software.
 
-libsemigroups - Version 2.7.2
+libsemigroups - Version 2.7.3
 =============================
 
 .. image:: https://readthedocs.org/projects/libsemigroups/badge/?version=master
@@ -160,6 +160,7 @@ Contributors
 - `Julius Jonušas`_ contributed to the implementation of the Froidure-Pin
   algorithm.
 - `Alex Levine`  contributed to the Schreier-Sims implementation.
+- `Michael Orlitzky` (michael@orlitzky.com) contributed to the build system.
 - `Dima Pasechnik`_ (dimpase@gmail.com) contributed to the build system.
 - Chris Russell contributed some tests for finitely presented semigroups.
 - `Finn Smith`_ (fls3@st-andrews.ac.uk) contributed the implementation of the

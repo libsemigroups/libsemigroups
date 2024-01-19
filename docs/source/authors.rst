@@ -27,7 +27,7 @@ Contributors
 - Jan Engelhardt (jengelh@inai.de) contributed some bug fixes to the build
   system, and a number of helpful issues.
 - Ilya Finkelshteyn (ilyaf@appveyor.com) contributed to the continuous
-  integration in AppVeyor.
+  integration on AppVeyor.
 - Isuru Fernando (isuruf@gmail.com) contributed to the build system.
 - `Florent Hivert`_ (Florent.Hivert@lri.fr) contributed many helpful ideas to
   ``libsemigroups``, an allocator implementation (to be included in a future
@@ -36,7 +36,8 @@ Contributors
 - `Jerry James`_ (loganjerry@gmail.com) contributed some bugfixes.
 - `Julius Jonušas`_ contributed to the implementation of the Froidure-Pin
   algorithm.
-- `Alex Levine`  contributed to the Schreier-Sims implementation.
+- `Alex Levine` contributed to the Schreier-Sims implementation.
+- `Michael Orlitzky` (michael@orlitzky.com) contributed to the build system.
 - `Dima Pasechnik`_ (dimpase@gmail.com) contributed to the build system.
 - Chris Russell contributed some tests for finitely presented semigroups.
 - `Finn Smith`_ (fls3@st-andrews.ac.uk) contributed the implementation of the
