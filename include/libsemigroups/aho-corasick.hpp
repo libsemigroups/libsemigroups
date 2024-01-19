@@ -140,6 +140,8 @@ namespace libsemigroups {
     template <typename Iterator>
     index_type rm_word_no_checks(Iterator first, Iterator last);
 
+    [[nodiscard]] index_type traverse(index_type current, letter_type a) const;
+
     template <typename Iterator>
     [[nodiscard]] index_type traverse_from(index_type start,
                                            Iterator   first,
@@ -162,40 +164,6 @@ namespace libsemigroups {
       cached_height = height(_all_nodes[i].parent()) + 1;
       _all_nodes[i].set_height(cached_height);
       return cached_height;
-    }
-
-    // TODO move to helper namespace
-    void add_word_no_checks(word_type const& w) {
-      add_word_no_checks(w.cbegin(), w.cend());
-    }
-
-    // TODO move to helper namespace
-    index_type rm_word_no_checks(word_type const& w) {
-      return rm_word_no_checks(w.cbegin(), w.cend());
-    }
-
-    // TODO move to helper namespace
-    template <typename Letter>
-    [[nodiscard]] index_type traverse_from(index_type    start,
-                                           Letter const& w) const {
-      return traverse(start, w);
-    }
-
-    // TODO move to helper namespace
-    [[nodiscard]] index_type traverse_from(index_type       start,
-                                           word_type const& w) const {
-      return traverse_from(start, w.cbegin(), w.cend());
-    }
-
-    // TODO move to helper namespace
-    template <typename Iterator>
-    [[nodiscard]] index_type traverse(Iterator first, Iterator last) const {
-      return traverse_from(root, first, last);
-    }
-
-    // TODO move to helper namespace
-    [[nodiscard]] index_type traverse(word_type const& w) const {
-      return traverse_from(root, w.cbegin(), w.cend());
     }
 
     [[nodiscard]] index_type suffix_link(index_type current) const;
@@ -222,8 +190,6 @@ namespace libsemigroups {
       _inactive_nodes_index.push(i);
     }
 
-    [[nodiscard]] index_type traverse(index_type current, letter_type a) const;
-
     template <typename Iterator>
     [[nodiscard]] index_type traverse_trie(Iterator first, Iterator last) const;
 
@@ -234,7 +200,43 @@ namespace libsemigroups {
 
   Dot dot(AhoCorasick& ac);
 
-  namespace aho_corasick {}
+  namespace aho_corasick {
+    using index_type = AhoCorasick::index_type;
+
+    // TODO Can these all be made inline?
+    inline void add_word_no_checks(AhoCorasick& ac, word_type const& w) {
+      ac.add_word_no_checks(w.cbegin(), w.cend());
+    }
+
+    inline index_type rm_word_no_checks(AhoCorasick& ac, word_type const& w) {
+      return ac.rm_word_no_checks(w.cbegin(), w.cend());
+    }
+
+    template <typename Letter>
+    [[nodiscard]] inline index_type traverse_from(AhoCorasick const& ac,
+                                                  index_type         start,
+                                                  Letter const&      w) {
+      return ac.traverse(start, w);
+    }
+
+    [[nodiscard]] inline index_type traverse_from(AhoCorasick const& ac,
+                                                  index_type         start,
+                                                  word_type const&   w) {
+      return ac.traverse_from(start, w.cbegin(), w.cend());
+    }
+
+    template <typename Iterator>
+    [[nodiscard]] inline index_type traverse(AhoCorasick const& ac,
+                                             Iterator           first,
+                                             Iterator           last) {
+      return ac.traverse_from(AhoCorasick::root, first, last);
+    }
+
+    [[nodiscard]] inline index_type traverse(AhoCorasick const& ac,
+                                             word_type const&   w) {
+      return ac.traverse_from(AhoCorasick::root, w.cbegin(), w.cend());
+    }
+  }  // namespace aho_corasick
 
 }  // namespace libsemigroups
 

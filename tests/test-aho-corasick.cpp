@@ -30,12 +30,12 @@ namespace libsemigroups {
                           "initial test",
                           "[quick][aho-corasick]") {
     AhoCorasick ac;
-    ac.add_word_no_checks(00101_w);
-    ac.add_word_no_checks(010_w);
+    aho_corasick::add_word_no_checks(ac, 00101_w);
+    aho_corasick::add_word_no_checks(ac, 010_w);
 
     REQUIRE(ac.number_of_nodes() == 8);
-    REQUIRE(ac.traverse(00101_w) == 5);
-    REQUIRE(ac.traverse(010_w) == 7);
+    REQUIRE(aho_corasick::traverse(ac, 00101_w) == 5);
+    REQUIRE(aho_corasick::traverse(ac, 010_w) == 7);
 
     // std::ofstream file("aho.gv");
     // file << dot(ac).to_string();
@@ -48,37 +48,38 @@ namespace libsemigroups {
     AhoCorasick ac;
 
     Words words;
-    words.letters(2).min(4).max(5);
+    words.number_of_letters(2).min(4).max(5);
     for (auto const& w : words) {
-      ac.add_word_no_checks(w);
+      aho_corasick::add_word_no_checks(ac, w);
     }
 
     REQUIRE(ac.number_of_nodes() == 31);
 
-    REQUIRE(ac.traverse(0000_w) == 4);
-    REQUIRE(ac.traverse(0001_w) == 5);
-    REQUIRE(ac.traverse(0010_w) == 7);
-    REQUIRE(ac.traverse(0011_w) == 8);
-    REQUIRE(ac.traverse(0100_w) == 11);
-    REQUIRE(ac.traverse(0101_w) == 12);
-    REQUIRE(ac.traverse(0110_w) == 14);
-    REQUIRE(ac.traverse(0111_w) == 15);
-    REQUIRE(ac.traverse(1000_w) == 19);
-    REQUIRE(ac.traverse(1001_w) == 20);
-    REQUIRE(ac.traverse(1010_w) == 22);
-    REQUIRE(ac.traverse(1011_w) == 23);
-    REQUIRE(ac.traverse(1100_w) == 26);
-    REQUIRE(ac.traverse(1101_w) == 27);
-    REQUIRE(ac.traverse(1110_w) == 29);
-    REQUIRE(ac.traverse(1111_w) == 30);
+    REQUIRE(aho_corasick::traverse(ac, 0000_w) == 4);
+    REQUIRE(aho_corasick::traverse(ac, 0001_w) == 5);
+    REQUIRE(aho_corasick::traverse(ac, 0010_w) == 7);
+    REQUIRE(aho_corasick::traverse(ac, 0011_w) == 8);
+    REQUIRE(aho_corasick::traverse(ac, 0100_w) == 11);
+    REQUIRE(aho_corasick::traverse(ac, 0101_w) == 12);
+    REQUIRE(aho_corasick::traverse(ac, 0110_w) == 14);
+    REQUIRE(aho_corasick::traverse(ac, 0111_w) == 15);
+    REQUIRE(aho_corasick::traverse(ac, 1000_w) == 19);
+    REQUIRE(aho_corasick::traverse(ac, 1001_w) == 20);
+    REQUIRE(aho_corasick::traverse(ac, 1010_w) == 22);
+    REQUIRE(aho_corasick::traverse(ac, 1011_w) == 23);
+    REQUIRE(aho_corasick::traverse(ac, 1100_w) == 26);
+    REQUIRE(aho_corasick::traverse(ac, 1101_w) == 27);
+    REQUIRE(aho_corasick::traverse(ac, 1110_w) == 29);
+    REQUIRE(aho_corasick::traverse(ac, 1111_w) == 30);
 
     // Should do nothing
-    ac.rm_word_no_checks(000_w);
+    aho_corasick::rm_word_no_checks(ac, 000_w);
     REQUIRE(ac.number_of_nodes() == 31);
 
-    ac.rm_word_no_checks(0111_w);
+    aho_corasick::rm_word_no_checks(ac, 0111_w);
     REQUIRE(ac.number_of_nodes() == 30);
-    REQUIRE(ac.traverse(0111_w) == ac.traverse(111_w));
+    REQUIRE(aho_corasick::traverse(ac, 0111_w)
+            == aho_corasick::traverse(ac, 111_w));
   }
 
   LIBSEMIGROUPS_TEST_CASE("AhoCorasick",
@@ -86,17 +87,17 @@ namespace libsemigroups {
                           "add/rm_word",
                           "[quick][aho-corasick]") {
     AhoCorasick ac;
-    ac.add_word_no_checks(00101_w);
+    aho_corasick::add_word_no_checks(ac, 00101_w);
 
     REQUIRE(ac.number_of_nodes() == 6);
-    REQUIRE(ac.traverse(00101_w) == 5);
+    REQUIRE(aho_corasick::traverse(ac, 00101_w) == 5);
     REQUIRE(ac.node(5).is_terminal());
-    REQUIRE(ac.traverse(010_w) == 1);
+    REQUIRE(aho_corasick::traverse(ac, 010_w) == 1);
     REQUIRE(!ac.node(1).is_terminal());
 
-    ac.add_word_no_checks(010_w);
+    aho_corasick::add_word_no_checks(ac, 010_w);
     REQUIRE(ac.number_of_nodes() == 8);
-    REQUIRE(ac.traverse(010_w) == 7);
+    REQUIRE(aho_corasick::traverse(ac, 010_w) == 7);
     REQUIRE(ac.node(5).is_terminal());
     REQUIRE(ac.node(7).is_terminal());
 
@@ -104,24 +105,24 @@ namespace libsemigroups {
     // file << dot(ac).to_string();
     // file.close();
 
-    ac.rm_word_no_checks(010_w);
+    aho_corasick::rm_word_no_checks(ac, 010_w);
     REQUIRE(ac.number_of_nodes() == 6);
-    REQUIRE(ac.traverse(00101_w) == 5);
+    REQUIRE(aho_corasick::traverse(ac, 00101_w) == 5);
     REQUIRE(ac.node(5).is_terminal());
-    REQUIRE(ac.traverse(010_w) == 1);
+    REQUIRE(aho_corasick::traverse(ac, 010_w) == 1);
     REQUIRE(!ac.node(1).is_terminal());
 
-    ac.add_word_no_checks(010_w);
-    ac.add_word_no_checks(00_w);
-    ac.rm_word_no_checks(00_w);
+    aho_corasick::add_word_no_checks(ac, 010_w);
+    aho_corasick::add_word_no_checks(ac, 00_w);
+    aho_corasick::rm_word_no_checks(ac, 00_w);
 
     REQUIRE(ac.number_of_nodes() == 8);
-    REQUIRE(ac.traverse(00101_w) == 5);
-    REQUIRE(ac.traverse(00_w) == 2);
-    REQUIRE(!ac.node(ac.traverse(00_w)).is_terminal());
+    REQUIRE(aho_corasick::traverse(ac, 00101_w) == 5);
+    REQUIRE(aho_corasick::traverse(ac, 00_w) == 2);
+    REQUIRE(!ac.node(aho_corasick::traverse(ac, 00_w)).is_terminal());
     REQUIRE(ac.node(5).is_terminal());
 
-    REQUIRE(ac.traverse(010_w) == 7);
+    REQUIRE(aho_corasick::traverse(ac, 010_w) == 7);
     REQUIRE(ac.node(7).is_terminal());
   }
 
@@ -132,8 +133,8 @@ namespace libsemigroups {
     using words::pow;
     using index_type = AhoCorasick::index_type;
     AhoCorasick ac;
-    ac.add_word_no_checks(pow(01_w, 1000));
-    ac.add_word_no_checks(pow(010_w, 10'000));
+    aho_corasick::add_word_no_checks(ac, pow(01_w, 1000));
+    aho_corasick::add_word_no_checks(ac, pow(010_w, 10'000));
     REQUIRE(ac.number_of_nodes() == 31'998);
     for (index_type n = 0; n < ac.number_of_nodes(); ++n) {
       std::ignore = ac.suffix_link(n);
@@ -153,8 +154,8 @@ namespace libsemigroups {
     ac.add_word_no_checks(y.begin(), y.end());
 
     REQUIRE(ac.number_of_nodes() == 8);
-    REQUIRE(ac.traverse(x.begin(), x.end()) == 5);
-    REQUIRE(ac.traverse(y.begin(), y.end()) == 7);
+    REQUIRE(aho_corasick::traverse(ac, x.begin(), x.end()) == 5);
+    REQUIRE(aho_corasick::traverse(ac, y.begin(), y.end()) == 7);
 
     // std::ofstream file("aho.gv");
     // file << dot(ac).to_string();

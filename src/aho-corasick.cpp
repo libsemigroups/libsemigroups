@@ -162,4 +162,5 @@ namespace libsemigroups {
     }
     return result;
   }
+
 }  // namespace libsemigroups
