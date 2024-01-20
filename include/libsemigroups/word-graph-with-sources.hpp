@@ -227,39 +227,21 @@ namespace libsemigroups {
       }
     }
 
-   public:
-    HopcroftKarp() = default;
-
-    HopcroftKarp(WordGraph<Node> const& wg1, WordGraph<Node> const& wg2)
-        : HopcroftKarp() {
-      init(wg1, wg2);
-    }
-
-    HopcroftKarp& init(WordGraph<Node> const& wg1, WordGraph<Node> const& wg2) {
-      auto const N1 = wg1->number_of_nodes();
-      auto const N2 = wg2->number_of_nodes();
-
-      if (wg1.out_degree() != wg2->out_degree()) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "the arguments (word graphs) must have the same "
-            "out-degree, found out-degrees {} and {}",
-            wg1->out_degree(),
-            wg2->out_degree());
+    void clear_stack() {
+      while (!_stck.empty()) {
+        _stck.pop();
       }
-      _uf.init(N1 + N2);
-      _stck.clear();
     }
 
     // Return the partition obtained by Hopcroft and Karp's Algorithm for
     // checking if two finite state automata accept the same language, with
     // given start nodes root1 and root2.
-    detail::Duf<> const& operator()(node_type root1, node_type root2) {
-      word_graph::validate_node(_wg1, root1);
-      word_graph::validate_node(_wg2, root2);
+    void init_uf(node_type root1, node_type root2) {
+      word_graph::validate_node(*_wg1, root1);
+      word_graph::validate_node(*_wg2, root2);
 
       auto const M  = _wg1->out_degree();
       auto const N1 = _wg1->number_of_nodes();
-      auto const N2 = _wg2->number_of_nodes();
 
       _uf.unite(root1, root2 + N1);
 
@@ -279,9 +261,48 @@ namespace libsemigroups {
           }
         }
       }
-      return _uf;
+    }
+
+   public:
+    HopcroftKarp() = default;
+
+    HopcroftKarp(WordGraph<Node> const& wg1, WordGraph<Node> const& wg2)
+        : HopcroftKarp() {
+      init(wg1, wg2);
+    }
+
+    HopcroftKarp& init(WordGraph<Node> const& wg1, WordGraph<Node> const& wg2) {
+      auto const N1 = wg1.number_of_nodes();
+      auto const N2 = wg2.number_of_nodes();
+
+      if (wg1.out_degree() != wg2.out_degree()) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "the arguments (word graphs) must have the same "
+            "out-degree, found out-degrees {} and {}",
+            wg1.out_degree(),
+            wg2.out_degree());
+      }
+      _wg1 = &wg1;
+      _wg2 = &wg2;
+      _uf.init(N1 + N2);
+      clear_stack();
+      return *this;
+    }
+
+    bool join_inplace(WordGraph<Node>&       xy,
+                      WordGraph<Node> const& x,
+                      WordGraph<Node> const& y) {
+      init(x, y);
+      init_uf(0, 0);
+
+      xy.init(_uf.number_of_blocks(), x.out_degree());
     }
   };
+
+  template <typename Node>
+  HopcroftKarp(WordGraph<Node> const&, WordGraph<Node> const&)
+      -> HopcroftKarp<Node>;
+
 }  // namespace libsemigroups
 
 #include "word-graph-with-sources.tpp"
