@@ -228,6 +228,11 @@ namespace libsemigroups {
         return std::equal(cbegin(), cend(), that.cbegin());
       }
 
+      bool operator<(DynamicArray2<T, A> const& that) const {
+        return std::lexicographical_compare(
+            _vec.cbegin(), _vec.cend(), that.cbegin(), that.cend());
+      }
+
       // Not noexcept, since operator== can throw
       bool operator!=(DynamicArray2<T, A> const& that) const {
         return !operator==(that);

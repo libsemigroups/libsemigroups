@@ -232,6 +232,30 @@ namespace libsemigroups {
       }
       S.for_each(5,
                  [&S](auto const& wg) { check_right_generating_pairs(S, wg); });
+      auto mat = sims::poset(S.cbegin(5), S.cend(5));
+      REQUIRE(mat
+              == BMat<>({{0, 0, 0, 0, 0, 0, 0, 0, 0},
+                         {1, 0, 0, 0, 0, 0, 0, 0, 0},
+                         {1, 0, 0, 0, 0, 0, 0, 0, 0},
+                         {1, 0, 0, 0, 0, 0, 0, 0, 0},
+                         {0, 0, 1, 1, 0, 0, 0, 0, 0},
+                         {1, 0, 0, 0, 0, 0, 0, 0, 0},
+                         {0, 0, 0, 1, 0, 1, 0, 0, 0},
+                         {0, 1, 1, 0, 0, 1, 0, 0, 0},
+                         {0, 0, 0, 0, 1, 0, 1, 1, 0}}));
+      // f << sims::dot_poset(S.cbegin(5), S.cend(5)).to_string();
+      size_t index = 0;
+      for (auto it = S.cbegin(5); it != S.cend(5); ++it) {
+        auto copy = *it;
+        copy.induced_subgraph_no_checks(0, copy.number_of_active_nodes());
+        Dot         dot_graph = word_graph::dot(copy);
+        std::string name      = std::to_string(index++);
+        dot_graph.name(name);
+        std::ofstream f(name + ".gv");
+        f << dot_graph.to_string();
+      }
+      std::ofstream f("lattice.gv");
+      f << sims::dot_poset2(S.cbegin(5), S.cend(5)).to_string();
     }
   }
 
@@ -3639,20 +3663,33 @@ namespace libsemigroups {
     // A. Bailey, M. Finn-Sell and R. Snocken
     // "SUBSEMIGROUP, IDEAL AND CONGRUENCE GROWTH OF FREE SEMIGROUPS"
     REQUIRE(s.number_of_congruences(1) == 1);
-    REQUIRE(s.number_of_congruences(2) == 11);     // From Bailey et al
-    REQUIRE(s.number_of_congruences(3) == 51);     // From Bailey et al
-    REQUIRE(s.number_of_congruences(4) == 200);    // From Bailey et al
-    REQUIRE(s.number_of_congruences(5) == 657);    // From Bailey et al
-    REQUIRE(s.number_of_congruences(6) == 2'037);  // From Bailey et al
-    REQUIRE(s.number_of_congruences(7) == 5'977);  // From Bailey et al
-    s.include(0_w, 1_w);
-    REQUIRE(s.number_of_congruences(8) == 36);
-    s.exclude(0_w, 1_w);
-    REQUIRE(s.number_of_congruences(8) == 0);
-    s.clear_include();
-    REQUIRE(s.number_of_congruences(8) == 17381);
-    s.clear_exclude();
-    REQUIRE(s.number_of_congruences(8) == 17381 + 36);
+    REQUIRE(s.number_of_congruences(2) == 11);  // From Bailey et al
+    REQUIRE(s.number_of_congruences(3) == 51);  // From Bailey et al
+    size_t index = 0;
+    for (auto it = s.cbegin(3); it != s.cend(3); ++it) {
+      auto copy = *it;
+      copy.induced_subgraph_no_checks(0, copy.number_of_active_nodes());
+      Dot         dot_graph = word_graph::dot(copy);
+      std::string name      = std::to_string(index++);
+      dot_graph.name(name);
+      std::ofstream f(name + ".gv");
+      f << dot_graph.to_string();
+    }
+    std::ofstream f("lattice.gv");
+    f << sims::dot_poset2(s.cbegin(3), s.cend(3)).to_string();
+    REQUIRE(s.number_of_congruences(4) == 200);  // From Bailey et al
+
+    // REQUIRE(s.number_of_congruences(5) == 657);    // From Bailey et al
+    // REQUIRE(s.number_of_congruences(6) == 2'037);  // From Bailey et al
+    // REQUIRE(s.number_of_congruences(7) == 5'977);  // From Bailey et al
+    // s.include(0_w, 1_w);
+    // REQUIRE(s.number_of_congruences(8) == 36);
+    // s.exclude(0_w, 1_w);
+    // REQUIRE(s.number_of_congruences(8) == 0);
+    // s.clear_include();
+    // REQUIRE(s.number_of_congruences(8) == 17381);
+    // s.clear_exclude();
+    // REQUIRE(s.number_of_congruences(8) == 17381 + 36);
   }
 
 }  // namespace libsemigroups

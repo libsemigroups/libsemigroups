@@ -830,7 +830,7 @@ namespace libsemigroups {
     }
 
     template <typename Node>
-    std::string dot(WordGraph<Node> const& wg) {
+    Dot dot(WordGraph<Node> const& wg) {
       Dot result;
       result.name("WordGraph").kind(Dot::Kind::digraph);
       for (auto n : wg.nodes()) {
@@ -843,7 +843,7 @@ namespace libsemigroups {
           }
         }
       }
-      return result.to_string();
+      return result;
     }
 
   }  // namespace word_graph

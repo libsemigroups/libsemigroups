@@ -471,6 +471,10 @@ namespace libsemigroups {
       return _dynamic_array_2 == that._dynamic_array_2;
     }
 
+    [[nodiscard]] bool operator<(WordGraph const& that) const {
+      return _dynamic_array_2 < that._dynamic_array_2;
+    }
+
     ////////////////////////////////////////////////////////////////////////
     // WordGraph - nodes, targets, etc - public
     ////////////////////////////////////////////////////////////////////////
@@ -1418,7 +1422,7 @@ namespace libsemigroups {
     std::pair<bool, Forest> standardize(Graph& wg, Order val = Order::shortlex);
 
     template <typename Node>
-    std::string dot(WordGraph<Node> const& wg);
+    Dot dot(WordGraph<Node> const& wg);
 
   }  // namespace word_graph
 

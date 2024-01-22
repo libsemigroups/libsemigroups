@@ -33,51 +33,54 @@ namespace libsemigroups {
                           "046",
                           "HopcroftKarp",
                           "[quick]") {
-    WordGraphWithSources<size_t> d1(
+    WordGraphWithSources<size_t> x(
         to_word_graph<size_t>(3, {{0, 1, 2}, {0, 1, 2}, {0, 1, 2}}));
 
-    WordGraphWithSources<size_t> d2 = d1;
+    WordGraphWithSources<size_t> y = x;
 
-    detail::Duf<> output_uf;
-    output_uf.resize(6);
-    output_uf.unite(0, 3);
-    output_uf.unite(1, 4);
-    output_uf.unite(2, 5);
+    HopcroftKarp<size_t> hk;
 
-    auto          hk = HopcroftKarp(d1, d2);
-    detail::Duf<> uf = hk(0, 0);
-    REQUIRE(uf == output_uf);
+    WordGraphWithSources<size_t> xy;
+    hk.join(xy, x, y);
+    REQUIRE(xy == x);
+    hk.join(xy, y, x);
+    REQUIRE(xy == x);
   }
+
   LIBSEMIGROUPS_TEST_CASE("WordGraphWithSources",
-                          "047",
-                          "quotient",
+                          "050",
+                          "hopcroft_karp_quotient",
                           "[quick]") {
-    WordGraphWithSources<size_t> dws1(0, 0);
-    WordGraphWithSources<size_t> dws1_q(0, 0);
-    detail::Duf<>                uf1;
-    dws1.get_quotient(uf1);
-    REQUIRE(dws1.is_valid());
-    REQUIRE(dws1 == dws1_q);
-    uf1.resize(7);
-    REQUIRE_THROWS_AS(dws1.get_quotient(uf1), LibsemigroupsException);
+    WordGraphWithSources<size_t> x(3, 3);
+    x.set_target(0, 0, 1);
+    x.set_target(0, 1, 1);
+    x.set_target(0, 2, 1);
+    x.set_target(1, 0, 2);
+    x.set_target(1, 1, 2);
+    x.set_target(1, 2, 2);
+    x.set_target(2, 0, 2);
+    x.set_target(2, 1, 2);
+    x.set_target(2, 2, 2);
 
-    WordGraphWithSources<size_t> dws2(3, 2);
-    dws2.set_target(0, 0, 1);
-    dws2.set_target(0, 1, 2);
-    dws2.set_target(1, 0, 1);
-    dws2.set_target(1, 1, 2);
-    dws2.set_target(2, 0, 2);
-    dws2.set_target(2, 1, 2);
+    WordGraphWithSources<size_t> y(3, 3);
+    y.set_target(0, 0, 1);
+    y.set_target(0, 1, 1);
+    y.set_target(0, 2, 2);
+    y.set_target(1, 0, 1);
+    y.set_target(1, 1, 1);
+    y.set_target(1, 2, 2);
+    y.set_target(2, 0, 1);
+    y.set_target(2, 1, 1);
+    y.set_target(2, 2, 2);
 
-    detail::Duf<> uf2;
-    REQUIRE_THROWS_AS(dws2.get_quotient(uf2), LibsemigroupsException);
+    WordGraphWithSources<size_t> xy;
 
-    detail::Duf<> uf3(3);
-    uf3.unite(0, 2);
+    HopcroftKarp<size_t> hk;
+    hk.join(xy, x, y);
 
-    dws2.quotient_digraph(uf3);
-    REQUIRE(dws2.is_valid());
-    REQUIRE(dws2 == word_graph::make<size_t>(1, {{0, 0}}));
+    REQUIRE(xy == to_word_graph<size_t>(2, {{1, 1, 1}, {1, 1, 1}}));
+    REQUIRE(hk.is_subrelation_no_checks(x, 3, xy, 2));
+    REQUIRE(hk.is_subrelation_no_checks(y, 3, xy, 2));
   }
 
   /*
@@ -201,39 +204,6 @@ namespace libsemigroups {
       REQUIRE(dws4 == word_graph::make<size_t>(1, {{0, 0}}));
     }
 
-    LIBSEMIGROUPS_TEST_CASE("WordGraphWithSources",
-                            "050",
-                            "hopcroft_karp_quotient",
-                            "[quick]") {
-      WordGraphWithSources<size_t> d1(3, 3);
-      d1.set_target(0, 0, 0);
-      d1.set_target(0, 1, 1);
-      d1.set_target(0, 2, 2);
-      d1.set_target(1, 0, 0);
-      d1.set_target(1, 1, 1);
-      d1.set_target(1, 2, 2);
-      d1.set_target(2, 0, 0);
-      d1.set_target(2, 1, 1);
-      d1.set_target(2, 2, 2);
-
-      WordGraphWithSources<size_t> d2(3, 3);
-      d2.set_target(0, 0, 0);
-      d2.set_target(0, 1, 1);
-      d2.set_target(0, 2, 2);
-      d2.set_target(1, 0, 0);
-      d2.set_target(1, 1, 1);
-      d2.set_target(1, 2, 2);
-      d2.set_target(2, 0, 0);
-      d2.set_target(2, 1, 1);
-      d2.set_target(2, 2, 2);
-
-      d1.hopcroft_karp_quotient(d2, 0, 0);
-
-      REQUIRE(d1.is_valid());
-      REQUIRE(d1
-              == word_graph::make<size_t>(3, {{0, 1, 2}, {0, 1, 2}, {0, 1,
-    2}}));
-    }
 
     LIBSEMIGROUPS_TEST_CASE("WordGraphWithSources",
                             "051",

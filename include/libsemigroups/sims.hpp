@@ -44,6 +44,8 @@
 #include <utility>     // for move
 #include <vector>      // for vector
 
+#include <fstream>
+
 #include "debug.hpp"            // for LIBSEMIGROUPS_ASSERT
 #include "exception.hpp"        // for LIBSEMIGROUPS_EXCEPTION
 #include "felsch-graph.hpp"     // for FelschGraph
@@ -51,6 +53,8 @@
 #include "to-presentation.hpp"  // for to_presentation
 #include "types.hpp"            // for word_type, congruence_kind
 #include "word-graph.hpp"       // for WordGraph
+
+#include "matrix.hpp"
 
 #include "detail/iterator.hpp"  // for detail/default_postfix_increment
 
@@ -1951,8 +1955,104 @@ namespace libsemigroups {
       return two_sided_generating_pairs_no_checks(p, wg);
     }
 
+    template <typename Iterator>
+    BMat<> poset(Iterator first, Iterator last) {
+      using WordGraph_ = std::decay_t<decltype(*first)>;
+      std::vector<WordGraph_> graphs(first, last);
+      size_t const            n = graphs.size();
+
+      HopcroftKarp<uint32_t> hk;
+
+      BMat<> mat1(n, n);
+
+      for (size_t i = 0; i < n; ++i) {
+        for (size_t j = 0; j < n; ++j) {
+          mat1(i, j) = hk.is_subrelation_no_checks(graphs[i], graphs[j]);
+        }
+      }
+
+      auto   mat2 = mat1;
+      auto   mat3 = mat1;
+      BMat<> zero(n, n);
+      auto   acc = zero;
+      while (mat2 != zero) {
+        mat3.product_inplace(mat2, mat1);
+        std::swap(mat3, mat2);
+        acc += mat2;
+      }
+
+      for (size_t i = 0; i < n; ++i) {
+        for (size_t j = 0; j < n; ++j) {
+          if (!acc(i, j) && mat1(i, j)) {
+            zero(i, j) = true;
+          }
+        }
+      }
+      return zero;
+    }
+
+    template <typename Iterator>
+    Dot dot_poset(Iterator first, Iterator last) {
+      auto mat = poset(first, last);
+      auto n   = mat.number_of_rows();
+
+      Dot result;
+
+      result.kind(Dot::Kind::digraph)
+          .add_attr("node [shape=\"box\"]")
+          .add_attr("rankdir=\"BT\"")
+          .add_attr("compound=true");
+      size_t index = 0;
+      for (auto it = first; it != last; ++it) {
+        auto copy = *it;
+        copy.induced_subgraph_no_checks(0, copy.number_of_active_nodes());
+        Dot dot_graph = word_graph::dot(copy);
+        dot_graph.name(std::to_string(index++));
+        result.add_subgraph(std::move(dot_graph));
+      }
+      for (size_t i = 0; i < n; ++i) {
+        for (size_t j = 0; j < n; ++j) {
+          if (mat(i, j)) {
+            result
+                .add_edge(fmt::format("cluster_{}_0", i),
+                          fmt::format("cluster_{}_0", j))
+                .add_attr("minlen", 2.5)
+                .add_attr("ltail", fmt::format("cluster_{}", i))
+                .add_attr("lhead", fmt::format("cluster_{}", j));
+          }
+        }
+      }
+      result.add_attr("splines=line");
+      return result;
+    }
+
+    template <typename Iterator>
+    Dot dot_poset2(Iterator first, Iterator last) {
+      auto mat = poset(first, last);
+      auto n   = mat.number_of_rows();
+
+      Dot result;
+
+      result.kind(Dot::Kind::digraph)
+          .add_attr("node [shape=\"box\"]")
+          .add_attr("rankdir=\"BT\"");
+      size_t index = 0;
+      for (size_t i = 0; i < n; ++i) {
+        result.add_node(index)
+            .add_attr("image", std::to_string(index++) + ".png")
+            .add_attr("label", "XXX");
+      }
+      for (size_t i = 0; i < n; ++i) {
+        for (size_t j = 0; j < n; ++j) {
+          if (mat(i, j)) {
+            result.add_edge(fmt::format("{}", i), fmt::format("{}", j))
+                .add_attr("minlen", "2.5");
+          }
+        }
+      }
+      result.add_attr("splines=line");
+      return result;
+    }
   }  // namespace sims
-
 }  // namespace libsemigroups
-
 #endif  // LIBSEMIGROUPS_SIMS_HPP_
