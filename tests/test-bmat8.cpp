@@ -390,7 +390,7 @@ namespace libsemigroups {
     todo.push_back(BMat8::one().row_space_basis());
     while (todo.size()) {
       newtodo.clear();
-      lg++;
+      // lg++;
       for (auto v : todo) {
         for (auto g : gens) {
           auto el = (v * g).row_space_basis();
