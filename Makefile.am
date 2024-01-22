@@ -68,6 +68,7 @@ pkginclude_HEADERS += include/libsemigroups/digraph-with-sources.hpp
 pkginclude_HEADERS += include/libsemigroups/digraph-with-sources.tpp
 pkginclude_HEADERS += include/libsemigroups/digraph.hpp
 pkginclude_HEADERS += include/libsemigroups/exception.hpp
+pkginclude_HEADERS += include/libsemigroups/eigen.hpp
 pkginclude_HEADERS += include/libsemigroups/fastest-bmat.hpp
 pkginclude_HEADERS += include/libsemigroups/felsch-tree.hpp
 pkginclude_HEADERS += include/libsemigroups/felsch-digraph.hpp
