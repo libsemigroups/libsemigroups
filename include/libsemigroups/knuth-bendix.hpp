@@ -224,26 +224,27 @@ namespace libsemigroups {
     //! Constructs a KnuthBendix instance with no rules, and the short-lex
     //! reduction ordering.
     //!
-    //! \parameters
-    //! (None)
+    //! \param knd The kind of congruence to be used. Either `left`, `right` or
+    //! `twosided`.
     //!
     //! \complexity
     //! Constant.
     explicit KnuthBendix(congruence_kind knd);
 
-    //! Remove the presentation and rewriter data
+    //! \brief Remove the presentation and rewriter data
     //!
     //! This function clears the rewriter, presentation, settings and stats from
     //! the KnuthBendix object, putting it back into the state it would be in if
     //! it was newly constructed.
     //!
-    //! \param (None)
+    //! \param knd The kind of congruence to be used. Either `left`, `right` or
+    //! `twosided`.
     //!
     //! \returns
     //! A reference to `this`.
     KnuthBendix& init(congruence_kind knd);
 
-    //! Copy constructor.
+    //! \brief Copy constructor.
     //!
     //! \param copy the KnuthBendix instance to copy.
     //!
@@ -325,7 +326,7 @@ namespace libsemigroups {
     // KnuthBendix - setters for optional parameters - public
     //////////////////////////////////////////////////////////////////////////
 
-    //! Set the number of rules to accumulate before they are processed.
+    //! \brief Set the number of rules to accumulate before they are processed.
     //!
     //! This function can be used to specify the number of pending rules that
     //! must accumulate before they are reduced, processed, and added to the
@@ -342,12 +343,14 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Constant.
+    //!
+    //! \sa \ref run.
     KnuthBendix& batch_size(size_t val) {
       _settings.batch_size = val;
       return *this;
     }
 
-    //! Return the number of rules to accumulate before they are processed.
+    //! \brief Return the number of rules to accumulate before processing.
     //!
     //! This function can be used to return the number of pending rules that
     //! must accumulate before they are reduced, processed, and added to the
@@ -366,11 +369,13 @@ namespace libsemigroups {
     //!
     //! \parameters
     //! (None)
+    //!
+    //! \sa \ref run.
     [[nodiscard]] size_t batch_size() const noexcept {
       return _settings.batch_size;
     }
 
-    //! Set the interval at which confluence is checked.
+    //! \brief Set the interval at which confluence is checked.
     //!
     //! The function \ref run periodically checks if
     //! the system is already confluent. This function can be used to
@@ -397,12 +402,27 @@ namespace libsemigroups {
       return *this;
     }
 
-    // TODO doc
+    //! \brief Return the interval at which confluence is checked.
+    //!
+    //! The function \ref run periodically checks if
+    //! the system is already confluent. This function can be used to
+    //! return how frequently this happens, it is the number of new overlaps
+    //! that should be considered before checking confluence.
+    //!
+    //! \returns
+    //! The interval at which confluence is checked a value of type `size_t`.
+    //!
+    //! \complexity
+    //! Constant.
+    //!
+    //! \param (None)
+    //!
+    //! \sa \ref run.
     [[nodiscard]] size_t check_confluence_interval() const noexcept {
       return _settings.check_confluence_interval;
     }
 
-    //! Set the maximum length of overlaps to be considered.
+    //! \brief Set the maximum length of overlaps to be considered.
     //!
     //! This function can be used to specify the maximum length of the
     //! overlap of two left hand sides of rules that should be considered in
@@ -426,12 +446,26 @@ namespace libsemigroups {
       return *this;
     }
 
-    // TODO doc
+    //! \brief Return the maximum length of overlaps to be considered.
+    //!
+    //! This function returns the maximum length of the overlap of two left hand
+    //! sides of rules that should be considered in \ref run.
+    //!
+    //! \returns
+    //! The maximum length of the overlaps to be considered a value of type
+    //! `size_t`.
+    //!
+    //! \complexity
+    //! Constant.
+    //!
+    //! \param (None)
+    //!
+    //! \sa \ref run.
     [[nodiscard]] size_t max_overlap() const noexcept {
       return _settings.max_overlap;
     }
 
-    //! Set the maximum number of rules.
+    //! \brief Set the maximum number of rules.
     //!
     //! This member function sets the (approximate) maximum number of rules
     //! that the system should contain. If this is number is exceeded in
@@ -455,12 +489,29 @@ namespace libsemigroups {
       return *this;
     }
 
-    // TODO doc
+    //! \brief Return the maximum number of rules.
+    //!
+    //! This member function returns the (approximate) maximum number of rules
+    //! that the system should contain. If this is number is exceeded in
+    //! calls to \ref run or knuth_bendix_by_overlap_length, then they
+    //! will terminate and the system may not be confluent.
+    //!
+    //!
+    //! \returns
+    //! The maximum number of rules the system should contain, a value of type
+    //! `size_t`.
+    //!
+    //! \complexity
+    //! Constant.
+    //!
+    //! \param (None)
+    //!
+    //! \sa \ref run.
     [[nodiscard]] size_t max_rules() const noexcept {
       return _settings.max_rules;
     }
 
-    //! Set the overlap policy.
+    //! \brief Set the overlap policy.
     //!
     //! This function can be used to determine the way that the length
     //! of an overlap of two words in the system is measured.
@@ -476,7 +527,20 @@ namespace libsemigroups {
     //! \sa options::overlap.
     KnuthBendix& overlap_policy(typename options::overlap val);
 
-    // TODO doc
+    //! \brief Return the overlap policy.
+    //!
+    //! This function returns the way that the length of an overlap of two words
+    //! in the system is measured.
+    //!
+    //! \returns
+    //! The overlap policy.
+    //!
+    //! \complexity
+    //! Constant.
+    //!
+    //! \param (None)
+    //!
+    //! \sa options::overlap.
     [[nodiscard]] typename options::overlap overlap_policy() const noexcept {
       return _settings.overlap_policy;
     }
@@ -527,6 +591,7 @@ namespace libsemigroups {
       return private_init(kind(), to_presentation<std::string>(p), false);
     }
 
+    // TODO is this brief or not?
     //! Returns the current number of active rules in the KnuthBendix
     //! instance.
     //!
@@ -543,7 +608,20 @@ namespace libsemigroups {
     //! (None)
     [[nodiscard]] size_t number_of_active_rules() const noexcept;
 
-    // TODO doc
+    //! Returns the current number of inactive rules in the KnuthBendix
+    //! instance.
+    //!
+    //! \returns
+    //! The current number of inactive rules, a value of type `size_t`.
+    //!
+    //! \exceptions
+    //! \noexcept
+    //!
+    //! \complexity
+    //! Constant.
+    //!
+    //! \parameters
+    //! (None)
     [[nodiscard]] size_t number_of_inactive_rules() const noexcept {
       return _rewriter.number_of_inactive_rules();
     }
@@ -552,7 +630,7 @@ namespace libsemigroups {
       return _rewriter.stats().total_rules;
     }
 
-    //! Returns a copy of the active rules.
+    //! \brief Returns a copy of the active rules.
     //!
     //! This member function returns a vector consisting of the pairs of
     //! strings which represent the rules of the KnuthBendix instance. The \c
@@ -591,7 +669,7 @@ namespace libsemigroups {
                });
     }
 
-    //! Rewrite a word in-place.
+    //! \brief Rewrite a word in-place.
     //!
     //! The word \p w is rewritten in-place according to the current active
     //! rules in the KnuthBendix instance.
@@ -620,7 +698,7 @@ namespace libsemigroups {
     //////////////////////////////////////////////////////////////////////////
     // KnuthBendix - main member functions - public
     //////////////////////////////////////////////////////////////////////////
-    //! Doc
+    // TODO Doc
     void pre_run();
 
     //! Check confluence of the current rules.
@@ -754,7 +832,8 @@ namespace libsemigroups {
 
   namespace knuth_bendix {
 
-    //! Run the Knuth-Bendix by considering all overlaps of a given length.
+    //! \brief Run the Knuth-Bendix by considering all overlaps of a given
+    //! length.
     //!
     //! This function runs the Knuth-Bendix algorithm on the rewriting
     //! system represented by a KnuthBendix instance by considering all
@@ -777,7 +856,7 @@ namespace libsemigroups {
     template <typename Rewriter, typename ReductionOrder>
     void by_overlap_length(KnuthBendix<Rewriter, ReductionOrder>&);
 
-    //! Returns a forward iterator pointing at the first normal form with
+    //! \brief Returns a forward iterator pointing at the first normal form with
     //! length in a given range.
     //!
     //! If incremented, the iterator will point to the next least short-lex
@@ -823,7 +902,8 @@ namespace libsemigroups {
     non_trivial_classes(KnuthBendix<Rewriter, ReductionOrder>& kb1,
                         KnuthBendix<Rewriter, ReductionOrder>& kb2);
 
-    //! Return an iterator pointing at the left hand side of a redundant rule.
+    //! \brief Return an iterator pointing at the left hand side of a redundant
+    //! rule.
     //!
     //! This function is defined in ``knuth-bendix.hpp``.
     //!
@@ -873,7 +953,7 @@ namespace libsemigroups {
       return p.rules.cend();
     }
 
-    //! Check if the all rules are reduced with respect to each other.
+    //! \brief Check if the all rules are reduced with respect to each other.
     //!
     //! This function is defined in ``knuth-bendix.hpp``.
     //!
@@ -938,7 +1018,8 @@ namespace libsemigroups {
       return tril::unknown;
     }
 
-    //! Return an iterator pointing at the left hand side of a redundant rule.
+    //! \brief Return an iterator pointing at the left hand side of a redundant
+    //! rule.
     //!
     //! This function is defined in ``knuth-bendix.hpp``.
     //!
