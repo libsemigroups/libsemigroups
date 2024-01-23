@@ -158,10 +158,10 @@ namespace libsemigroups {
       Stats& operator=(Stats&&) noexcept      = default;
 
       // TODO remove duplication with KnuthBendix::Stats
-      size_t   max_stack_depth;  // TODO remove this to RewriteFromLeft
-      size_t   max_word_length;
-      size_t   max_active_word_length;
-      size_t   max_active_rules;
+      // size_t   max_stack_depth;
+      // size_t max_word_length;
+      // size_t   max_active_word_length;
+      // size_t   max_active_rules;
       size_t   min_length_lhs_rule;
       uint64_t total_rules;
       // std::unordered_set<internal_string_type> unique_lhs_rules;
