@@ -28,6 +28,8 @@ AS_IF([test "x$enable_hpcombi" = xyes],
                              [ax_hpcombi_cxxflags_variable]),
                              [])])
 
+# TODO check if compiling in 32-bit, and in that case disable hpcombi
+
 AS_IF([test "x$enable_hpcombi" = xyes],
       AC_SUBST(ax_hpcombi_cxxflags_variable))
 ])
