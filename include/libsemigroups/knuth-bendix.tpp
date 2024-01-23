@@ -503,6 +503,11 @@ namespace libsemigroups {
   //////////////////////////////////////////////////////////////////////////
 
   template <typename Rewriter, typename ReductionOrder>
+  void KnuthBendix<Rewriter, ReductionOrder>::pre_run() {
+    _rewriter.process_pending_rules();
+  }
+
+  template <typename Rewriter, typename ReductionOrder>
   bool KnuthBendix<Rewriter, ReductionOrder>::confluent_known() const noexcept {
     return _rewriter.confluence_known();
   }
@@ -587,6 +592,15 @@ namespace libsemigroups {
 
         if (nr > _settings.check_confluence_interval) {
           pause = true;
+          // Checking confluence requires there to be no pending rules which, in
+          // general, isn't the case at this point in the loop (other than when
+          // nr is a common multiple of batch_size and
+          // confluence_check_interval). Therefore, it might make sense to
+          // process any remaining rules before checking confluence. However,
+          // this seems to worsen performance on the test cases, so it remains
+          // to see what the best option is for default behaviour.
+          // TODO should we process rules here too?
+          _rewriter.process_pending_rules();
           if (confluent()) {
             pause = false;
             goto confluence_achieved;
@@ -620,6 +634,7 @@ namespace libsemigroups {
     reset_start_time();
 
     init_from_generating_pairs();
+    _rewriter.process_pending_rules();
     if (_rewriter.consistent() && confluent() && !stop_running()) {
       // _rewriter._pending_rules can be non-empty if non-reduced rules were
       // used to define the KnuthBendix.  If _rewriter._pending_rules is
@@ -742,13 +757,13 @@ namespace libsemigroups {
       return;
     }
     if (_internal_is_same_as_external) {
-      _rewriter.add_rule(p, q);
+      _rewriter.add_pending_rule(p, q);
     } else {
       auto pp(p), qq(q);
       // Can't see an alternative to the copy here
       external_to_internal_string(pp);
       external_to_internal_string(qq);
-      _rewriter.add_rule(pp, qq);
+      _rewriter.add_pending_rule(pp, qq);
     }
   }
 

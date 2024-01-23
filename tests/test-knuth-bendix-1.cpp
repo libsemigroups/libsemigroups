@@ -87,6 +87,8 @@ namespace libsemigroups {
 
     TestType kb(twosided, p);
 
+    kb.pre_run();
+
     REQUIRE(kb.number_of_active_rules() == 4);
     REQUIRE(kb.confluent());
     REQUIRE(kb.normal_form("ca") == "a");
@@ -123,6 +125,8 @@ namespace libsemigroups {
 
     TestType kb(twosided, p);
 
+    kb.pre_run();
+
     REQUIRE(kb.confluent());
     REQUIRE(kb.number_of_active_rules() == 4);
     REQUIRE(is_obviously_infinite(kb));
@@ -153,6 +157,8 @@ namespace libsemigroups {
     presentation::add_rule_no_checks(p, "0", "1");
 
     TestType kb(twosided, p);
+
+    kb.pre_run();
 
     REQUIRE(kb.number_of_active_rules() == 4);
     REQUIRE(kb.confluent());
