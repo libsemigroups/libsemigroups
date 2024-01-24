@@ -74,6 +74,7 @@ namespace libsemigroups {
     class KBE;
   }  // namespace detail
 
+  // TODO update the description and examples
   //! Defined in ``knuth-bendix.hpp``.
   //!
   //! On this page we describe the functionality relating to the Knuth-Bendix
@@ -412,6 +413,9 @@ namespace libsemigroups {
     //! \returns
     //! The interval at which confluence is checked a value of type `size_t`.
     //!
+    //! \exceptions
+    //! \noexcept
+    //!
     //! \complexity
     //! Constant.
     //!
@@ -454,6 +458,9 @@ namespace libsemigroups {
     //! \returns
     //! The maximum length of the overlaps to be considered a value of type
     //! `size_t`.
+    //!
+    //! \exceptions
+    //! \noexcept
     //!
     //! \complexity
     //! Constant.
@@ -501,6 +508,9 @@ namespace libsemigroups {
     //! The maximum number of rules the system should contain, a value of type
     //! `size_t`.
     //!
+    //! \exceptions
+    //! \noexcept
+    //!
     //! \complexity
     //! Constant.
     //!
@@ -535,6 +545,9 @@ namespace libsemigroups {
     //! \returns
     //! The overlap policy.
     //!
+    //! \exceptions
+    //! \noexcept
+    //!
     //! \complexity
     //! Constant.
     //!
@@ -549,13 +562,36 @@ namespace libsemigroups {
     // KnuthBendix - member functions for rules and rewriting - public
     //////////////////////////////////////////////////////////////////////////
 
-    // TODO doc
+    //! \brief Check if every letter of a word is in the presentation's
+    //! alphabet.
+    //!
+    //! \throws LibsemigroupsException if there is a letter of \p w not in the
+    //! presentations alphabet.
+    //!
+    //! \param w word to validate.
+    //!
+    //! \returns
+    //! (None)
+    //!
+    //! \sa Presentation::validate_word
     void validate_word(word_type const& w) const override {
       std::string s = to_string(presentation(), w);
       return presentation().validate_word(s.cbegin(), s.cend());
     }
 
-    // TODO doc
+    //! \brief Return the presentation defined by the rewriting system
+    //!
+    //! \returns
+    //! A const reference to the presentation, a value of type
+    //! `Presentation<std::string> const&.`
+    //!
+    //! \exceptions
+    //! \noexcept
+    //!
+    //! \complexity
+    //! Constant.
+    //!
+    //! \param (None)
     [[nodiscard]] Presentation<std::string> const&
     presentation() const noexcept {
       return _presentation;
@@ -591,8 +627,7 @@ namespace libsemigroups {
       return private_init(kind(), to_presentation<std::string>(p), false);
     }
 
-    // TODO is this brief or not?
-    //! Returns the current number of active rules in the KnuthBendix
+    //! Return the current number of active rules in the KnuthBendix
     //! instance.
     //!
     //! \returns
@@ -608,7 +643,7 @@ namespace libsemigroups {
     //! (None)
     [[nodiscard]] size_t number_of_active_rules() const noexcept;
 
-    //! Returns the current number of inactive rules in the KnuthBendix
+    //! Return the current number of inactive rules in the KnuthBendix
     //! instance.
     //!
     //! \returns
@@ -626,11 +661,30 @@ namespace libsemigroups {
       return _rewriter.number_of_inactive_rules();
     }
 
+    //! \brief Return the number of rules that KnuthBendix has created
+    //!
+    //! Return the total number of Rule instances that have been created whilst
+    //! whilst the Knuth-Bendix algorithm has been running. Note that this is
+    //! not the sum of \ref number_of_active_rules and \ref
+    //! number_of_inactive_rules, due to the re-initialisation of rules where
+    //! possible.
+    //!
+    //! \returns
+    //! The current number of inactive rules, a value of type `size_t`.
+    //!
+    //! \exceptions
+    //! \noexcept
+    //!
+    //! \complexity
+    //! Constant.
+    //!
+    //! \parameters
+    //! (None)
     [[nodiscard]] size_t total_rules() const noexcept {
       return _rewriter.stats().total_rules;
     }
 
-    //! \brief Returns a copy of the active rules.
+    //! \brief Return a copy of the active rules.
     //!
     //! This member function returns a vector consisting of the pairs of
     //! strings which represent the rules of the KnuthBendix instance. The \c
@@ -699,6 +753,7 @@ namespace libsemigroups {
     // KnuthBendix - main member functions - public
     //////////////////////////////////////////////////////////////////////////
     // TODO Doc
+    // TODO Required?
     void pre_run();
 
     //! Check confluence of the current rules.
@@ -720,7 +775,15 @@ namespace libsemigroups {
     //! (None)
     [[nodiscard]] bool confluent_known() const noexcept;
 
-    //! Returns the Gilman digraph.
+    //! \brief Return the Gilman \Ref WordGraph.
+    //!
+    //! Return the Gilman WordGraph of the system.
+    //!
+    //! The Gilman WordGraph is a digraph where the labels of the paths from the
+    //! initial node (corresponding to the empty word) correspond to the
+    //! shortlex normal forms of the semigroup elements.
+    //!
+    //! The semigroup is finite if the graph is cyclic, and infinite otherwise.
     //!
     //! \returns A const reference to a \ref WordGraph.
     //!
@@ -756,10 +819,36 @@ namespace libsemigroups {
     //! gilman_graph.
     [[nodiscard]] uint64_t number_of_classes() override;
 
-    // TODO doc
-    [[nodiscard]] bool equal_to(std::string const&, std::string const&);
+    //! \brief Check if two inputs are equivalent with respect to the system
+    //!
+    //! By first testing `string` equivalence, then by rewriting the inputs,
+    //! then by running the Knuth-Bendix algorithm and rewriting the inputs with
+    //! respect to the updated system again, check if \p u and \p v are
+    //! equivalent.
+    //!
+    //! \param u, v the words to test the equivalence of.
+    //!
+    //! \returns `true` if \p u is equivalent to \p v, and `false` otherwise.
+    //!
+    //! \warning If the inputs don't rewrite to equivalent words with the
+    //! initial rewriting rules, then the Knuth-Bendix algorithm is run. This
+    //! terminates when the rewriting system is confluent, which may be never.
+    //!
+    //! \sa run.
+    [[nodiscard]] bool equal_to(std::string const& u, std::string const& v);
 
-    // TODO doc
+    // TODO: Think of a better word than system.
+    //! \brief Check containment
+    //!
+    //! Check if the pair of words \p u and \p v is contained in within the
+    //! congruence corresponding to rewriting system.
+    //!
+    //! \param u, v the words to check containment of.
+    //!
+    //! \returns `true` if the the pair consisting of \p u and \p v is contained
+    //! within the congruence, and `false` otherwise.
+    //!
+    //! \sa equal_to
     [[nodiscard]] bool contains(word_type const& u,
                                 word_type const& v) override {
       return equal_to(to_string(presentation(), u),
@@ -832,8 +921,8 @@ namespace libsemigroups {
 
   namespace knuth_bendix {
 
-    //! \brief Run the Knuth-Bendix by considering all overlaps of a given
-    //! length.
+    //! \brief Run the Knuth-Bendix algorithm by considering all overlaps of a
+    //! given length.
     //!
     //! This function runs the Knuth-Bendix algorithm on the rewriting
     //! system represented by a KnuthBendix instance by considering all
@@ -851,12 +940,11 @@ namespace libsemigroups {
     //!
     //! \sa \ref run.
     //!
-    //! \parameters
-    //! (None)
+    //! \param (None)
     template <typename Rewriter, typename ReductionOrder>
     void by_overlap_length(KnuthBendix<Rewriter, ReductionOrder>&);
 
-    //! \brief Returns a forward iterator pointing at the first normal form with
+    //! \brief Return a forward iterator pointing at the first normal form with
     //! length in a given range.
     //!
     //! If incremented, the iterator will point to the next least short-lex

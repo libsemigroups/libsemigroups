@@ -226,9 +226,9 @@ namespace libsemigroups {
     }
 
     template <typename Iterator>
-    [[nodiscard]] inline index_type traverse(AhoCorasick const& ac,
-                                             Iterator           first,
-                                             Iterator           last) {
+    [[nodiscard]] index_type traverse(AhoCorasick const& ac,
+                                      Iterator           first,
+                                      Iterator           last) {
       return ac.traverse_from(AhoCorasick::root, first, last);
     }
 
