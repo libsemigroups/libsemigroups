@@ -12,4 +12,4 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
-    - uses: codespell-project/actions-codespell@v1.0
+    - uses: codespell-project/actions-codespell@v2.0
