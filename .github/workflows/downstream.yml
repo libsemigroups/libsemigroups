@@ -27,7 +27,7 @@ jobs:
             - ${{ github.workspace }}:/home/libsemigroups
       steps:
           - name: "Checkout libsemigroups"
-            uses: actions/checkout@v3
+            uses: actions/checkout@v4
           - name: "Install git + autotools"
             run: |
               sudo apt-get --yes update
