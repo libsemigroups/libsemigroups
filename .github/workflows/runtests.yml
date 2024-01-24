@@ -16,7 +16,7 @@ jobs:
         CHERE_INVOKING: 1
       steps:
          - uses: gap-actions/setup-cygwin@v1
-         - uses: actions/checkout@v3
+         - uses: actions/checkout@v4
          - name: "Configure . . ."
            run: ./autogen.sh && ./configure
          - name: "Build libsemigroups . . ."
@@ -32,7 +32,7 @@ jobs:
         CXX: "ccache g++"
         CXXFLAGS: "-fdiagnostics-color"
       steps:
-         - uses: actions/checkout@v3
+         - uses: actions/checkout@v4
          - name: "Restore cache . . ."
            uses: actions/cache@v4
            with:
@@ -61,7 +61,7 @@ jobs:
         CXX: "ccache clang++"
         CXXFLAGS: "-fdiagnostics-color"
       steps:
-         - uses: actions/checkout@v3
+         - uses: actions/checkout@v4
          - name: "Restore cache . . ."
            uses: actions/cache@v4
            with:
@@ -90,7 +90,7 @@ jobs:
       timeout-minutes: 45
       runs-on: ubuntu-latest
       steps:
-         - uses: actions/checkout@v3
+         - uses: actions/checkout@v4
          - name: "Install other dependencies . . ."
            run: |
                 sudo apt-get --yes update
@@ -125,7 +125,7 @@ jobs:
         PKG_CONFIG_PATH: "/home/runner/micromamba-root/envs/libsemigroups/lib/pkgconfig:/home/runner/micromamba-root/envs/libsemigroups/share/pkgconfig/"
         LD_LIBRARY_PATH: "/home/runner/micromamba-root/envs/libsemigroups/lib"
       steps:
-        - uses: actions/checkout@v3
+        - uses: actions/checkout@v4
         - name: "Install conda environment from environment.yml . . ."
           uses: mamba-org/provision-with-micromamba@main
         - name: "Run ./autogen.sh . . ."
@@ -170,7 +170,7 @@ jobs:
               restore-keys: |
                 ccache:${{ matrix.os }}:${{ matrix.compiler }}:${{ matrix.modules }}-modules:${{ github.ref }}
                 ccache:${{ matrix.os }}:${{ matrix.compiler }}:${{ matrix.modules }}-modules
-         - uses: actions/checkout@v3
+         - uses: actions/checkout@v4
          - name: "Install dependencies . . ."
            run: |
                 sudo apt-get --yes update
@@ -189,7 +189,7 @@ jobs:
          CXX: "ccache g++"
          CXXFLAGS: "-fdiagnostics-color"
       steps:
-         - uses: actions/checkout@v3
+         - uses: actions/checkout@v4
          - name: "Restore cache . . ."
            uses: actions/cache@v4
            with:
@@ -212,7 +212,7 @@ jobs:
       timeout-minutes: 10
       runs-on: ubuntu-latest
       steps:
-         - uses: actions/checkout@v3
+         - uses: actions/checkout@v4
          - name: "Install dependencies . . ."
            run: |
                 sudo apt-get --yes update
@@ -252,7 +252,7 @@ jobs:
          CXX: "ccache clang++"
          CXXFLAGS: "-fdiagnostics-color"
       steps:
-         - uses: actions/checkout@v3
+         - uses: actions/checkout@v4
          - name: "Restore cache . . ."
            uses: actions/cache@v4
            with:
@@ -286,7 +286,7 @@ jobs:
         CXX: "ccache g++"
         CXXFLAGS: "-fdiagnostics-color"
       steps:
-         - uses: actions/checkout@v3
+         - uses: actions/checkout@v4
          - name: "Restore cache . . ."
            uses: actions/cache@v4
            with:
@@ -325,7 +325,7 @@ jobs:
         GH_ACTIONS_TEST_PROG: "test_all"
         GH_ACTIONS_TEST_TAGS: "[quick]"
       steps:
-         - uses: actions/checkout@v3
+         - uses: actions/checkout@v4
          - name: "Running the quick tests in libsemigroups-docker-x86-32-base docker container . . ."
            run: |
                 ci/launch-docker-container.sh
