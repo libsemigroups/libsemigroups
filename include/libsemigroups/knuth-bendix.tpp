@@ -503,8 +503,8 @@ namespace libsemigroups {
   //////////////////////////////////////////////////////////////////////////
 
   template <typename Rewriter, typename ReductionOrder>
-  void KnuthBendix<Rewriter, ReductionOrder>::pre_run() {
-    _rewriter.process_pending_rules();
+  bool KnuthBendix<Rewriter, ReductionOrder>::process_pending_rules() {
+    return _rewriter.process_pending_rules();
   }
 
   template <typename Rewriter, typename ReductionOrder>

@@ -92,7 +92,7 @@ namespace libsemigroups {
     auto p = to_presentation<word_type>(S);
 
     TestType kb(twosided, p);
-    kb.pre_run();
+    kb.process_pending_rules();
     REQUIRE(kb.confluent());
     REQUIRE(kb.presentation().rules.size() / 2 == 4);
     REQUIRE(kb.number_of_active_rules() == 4);
@@ -113,7 +113,7 @@ namespace libsemigroups {
 
     auto     p = to_presentation<word_type>(S);
     TestType kb(twosided, p);
-    kb.pre_run();
+    kb.process_pending_rules();
     REQUIRE(kb.confluent());
     REQUIRE(kb.number_of_active_rules() == 3);
     REQUIRE(kb.number_of_classes() == 9);
@@ -133,7 +133,7 @@ namespace libsemigroups {
 
     auto     p = to_presentation<word_type>(S);
     TestType kb(twosided, p);
-    kb.pre_run();
+    kb.process_pending_rules();
     REQUIRE(kb.confluent());
     REQUIRE(kb.number_of_active_rules() == 18);
     REQUIRE(kb.number_of_classes() == 88);

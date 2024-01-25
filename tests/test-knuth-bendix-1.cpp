@@ -87,7 +87,7 @@ namespace libsemigroups {
 
     TestType kb(twosided, p);
 
-    kb.pre_run();
+    kb.process_pending_rules();
 
     REQUIRE(kb.number_of_active_rules() == 4);
     REQUIRE(kb.confluent());
@@ -125,7 +125,7 @@ namespace libsemigroups {
 
     TestType kb(twosided, p);
 
-    kb.pre_run();
+    kb.process_pending_rules();
 
     REQUIRE(kb.confluent());
     REQUIRE(kb.number_of_active_rules() == 4);
@@ -158,7 +158,7 @@ namespace libsemigroups {
 
     TestType kb(twosided, p);
 
-    kb.pre_run();
+    kb.process_pending_rules();
 
     REQUIRE(kb.number_of_active_rules() == 4);
     REQUIRE(kb.confluent());

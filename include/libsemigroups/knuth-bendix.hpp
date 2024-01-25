@@ -340,12 +340,12 @@ namespace libsemigroups {
     //! \param val the new value of the batch size.
     //!
     //! \returns
-    //! A reference to \c *this
+    //! A reference to \c *this.
     //!
     //! \complexity
     //! Constant.
     //!
-    //! \sa \ref run.
+    //! \sa \ref run, \ref process_pending_rules
     KnuthBendix& batch_size(size_t val) {
       _settings.batch_size = val;
       return *this;
@@ -371,7 +371,7 @@ namespace libsemigroups {
     //! \parameters
     //! (None)
     //!
-    //! \sa \ref run.
+    //! \sa \ref run, \sa process_pending_rules
     [[nodiscard]] size_t batch_size() const noexcept {
       return _settings.batch_size;
     }
@@ -752,9 +752,29 @@ namespace libsemigroups {
     //////////////////////////////////////////////////////////////////////////
     // KnuthBendix - main member functions - public
     //////////////////////////////////////////////////////////////////////////
-    // TODO Doc
-    // TODO Required?
-    void pre_run();
+
+    // REVIEW is the description to implementation-specific?
+    //! \brief Decide whether to add pending rules to the rewriting system.
+    //!
+    //! Before a rule is added to the rewriting system, it is stored in an
+    //! intermediate pending state. This function takes each of these pending
+    //! rules, rewrites both the left-hand side and the right-hand side with
+    //! respect to the rules already defined in the rewriting system, and adds
+    //! the new rewritten rule to the system if it is non-trivial.
+    //!
+    //! \note This process is performed when \ref run is called after
+    //! initialising a KnuthBendix instance, and therefore there is no need to
+    //! call this function if \ref run will be called. However, if a KnuthBendix
+    //! instance is initialised from a presentation and \ref run will not be
+    //! called, this function should be called to ensure the rewriting system
+    //! has the rules as specified by the presentation.
+    //!
+    //! \return \c true if any rules get added to the rewriting system, and
+    //! \c false otherwise.
+    //!
+    //! \param
+    //! (None)
+    bool process_pending_rules();
 
     //! Check confluence of the current rules.
     //!

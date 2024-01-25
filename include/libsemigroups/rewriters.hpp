@@ -324,7 +324,7 @@ namespace libsemigroups {
 
     bool add_pending_rule(Rule* rule);
 
-    void process_pending_rules();
+    bool process_pending_rules();
 
     void reduce();
 

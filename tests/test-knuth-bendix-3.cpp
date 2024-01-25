@@ -283,7 +283,7 @@ namespace libsemigroups {
     presentation::add_rule(p, "df", "hd");
 
     TestType kb(twosided, p);
-    kb.pre_run();
+    kb.process_pending_rules();
     REQUIRE(is_obviously_infinite(kb));
     REQUIRE(kb.confluent());
 
@@ -405,7 +405,7 @@ namespace libsemigroups {
     presentation::add_rule(p, "aabc", "acba");
 
     TestType kb(twosided, p);
-    kb.pre_run();
+    kb.process_pending_rules();
     REQUIRE(is_obviously_infinite(kb));
     REQUIRE(kb.confluent());  // Confirmed with GAP
 
@@ -496,7 +496,7 @@ namespace libsemigroups {
     presentation::add_rule(p, "bbcbcb", "bbcbc");
 
     TestType kb(twosided, p);
-    kb.pre_run();
+    kb.process_pending_rules();
     REQUIRE(!kb.confluent());
     REQUIRE(kb.number_of_active_rules() == 6);
     kb.run();
@@ -731,7 +731,7 @@ namespace libsemigroups {
     presentation::add_rule(p, {0}, {1});
 
     TestType kb(twosided, p);
-    kb.pre_run();
+    kb.process_pending_rules();
     REQUIRE(kb.confluent());
 
     REQUIRE(kb.equal_to({0, 0}, {0}));
@@ -1018,7 +1018,7 @@ namespace libsemigroups {
     presentation::add_rule(p, "ab", "");
 
     TestType kb(twosided, p);
-    kb.pre_run();
+    kb.process_pending_rules();
     REQUIRE(kb.confluent());
     kb.run();
     REQUIRE(kb.number_of_active_rules() == 1);
@@ -1074,7 +1074,7 @@ namespace libsemigroups {
     presentation::add_rule(p, "bb", "b");
 
     TestType kb(twosided, p);
-    kb.pre_run();
+    kb.process_pending_rules();
     REQUIRE(kb.confluent());
     kb.run();
     REQUIRE(kb.number_of_active_rules() == 2);

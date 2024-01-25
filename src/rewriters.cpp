@@ -218,7 +218,8 @@ namespace libsemigroups {
     }
   }
 
-  void RewriterBase::process_pending_rules() {
+  bool RewriterBase::process_pending_rules() {
+    bool                        rules_added = false;
     Rule*                       rule1;
     internal_string_type const* lhs;
     while (number_of_pending_rules() != 0) {
@@ -248,11 +249,15 @@ namespace libsemigroups {
           }
         }
         add_rule(rule1);
+        if (!rules_added) {
+          rules_added = true;
+        }
       } else {
         add_inactive_rule(rule1);
       }
     }
     // reduce_rhs();
+    return rules_added;
   }
 
   void RewriterBase::reduce() {
