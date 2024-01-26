@@ -47,6 +47,8 @@ pkgconfig_DATA     = libsemigroups.pc
 pkginclude_HEADERS =  include/libsemigroups/action.hpp
 pkginclude_HEADERS += include/libsemigroups/action.tpp
 pkginclude_HEADERS += include/libsemigroups/adapters.hpp
+pkginclude_HEADERS += include/libsemigroups/aho-corasick.hpp
+pkginclude_HEADERS += include/libsemigroups/aho-corasick.tpp
 pkginclude_HEADERS += include/libsemigroups/bipart.hpp
 pkginclude_HEADERS += include/libsemigroups/bitset.hpp
 pkginclude_HEADERS += include/libsemigroups/bmat.hpp
@@ -75,6 +77,7 @@ pkginclude_HEADERS += include/libsemigroups/hpcombi.hpp
 pkginclude_HEADERS += include/libsemigroups/kambites.hpp
 pkginclude_HEADERS += include/libsemigroups/kambites.tpp
 pkginclude_HEADERS += include/libsemigroups/knuth-bendix.hpp
+pkginclude_HEADERS += include/libsemigroups/knuth-bendix.tpp
 pkginclude_HEADERS += include/libsemigroups/konieczny.hpp
 pkginclude_HEADERS += include/libsemigroups/libsemigroups.hpp
 pkginclude_HEADERS += include/libsemigroups/matrix.hpp
@@ -110,14 +113,17 @@ pkginclude_HEADERS += include/libsemigroups/word-graph-with-sources.tpp
 pkginclude_HEADERS += include/libsemigroups/words.hpp
 
 detailincludedir = $(includedir)/libsemigroups/detail
-detailinclude_HEADERS = include/libsemigroups/detail/bruidhinn-traits.hpp
+detailinclude_HEADERS =  include/libsemigroups/detail/bruidhinn-traits.hpp
 detailinclude_HEADERS += include/libsemigroups/detail/containers.hpp
+detailinclude_HEADERS += include/libsemigroups/detail/eigen.hpp
 detailinclude_HEADERS += include/libsemigroups/detail/felsch-tree.hpp
+detailinclude_HEADERS += include/libsemigroups/detail/fmt.hpp
 detailinclude_HEADERS += include/libsemigroups/detail/formatters.hpp
 detailinclude_HEADERS += include/libsemigroups/detail/function-ref.hpp
 detailinclude_HEADERS += include/libsemigroups/detail/int-range.hpp
 detailinclude_HEADERS += include/libsemigroups/detail/iterator.hpp
 detailinclude_HEADERS += include/libsemigroups/detail/kbe.hpp
+detailinclude_HEADERS += include/libsemigroups/detail/kbe.tpp
 detailinclude_HEADERS += include/libsemigroups/detail/ke.hpp
 detailinclude_HEADERS += include/libsemigroups/detail/multi-string-view.hpp
 detailinclude_HEADERS += include/libsemigroups/detail/node-managed-graph.hpp
@@ -221,7 +227,8 @@ eigeninclude_HEADERS += extern/eigen-3.3.9/Eigen/UmfPackSupport
 eigeninclude_HEADERS += extern/eigen-3.3.9/Eigen/Sparse
 eigeninclude_HEADERS += extern/eigen-3.3.9/Eigen/Householder
 
-eigenunsupportedincludedir = $(includedir)/libsemigroups/unsupported/Eigen
+unsupportedincludedir = $(includedir)/libsemigroups/unsupported
+eigenunsupportedincludedir = $(unsupportedincludedir)/Eigen
 eigenunsupportedinclude_HEADERS =  extern/eigen-3.3.9/unsupported/Eigen/MatrixFunctions
 
 eigenunsupportedsrcincludedir = $(includedir)/libsemigroups/unsupported/Eigen/src/MatrixFunctions
@@ -1123,10 +1130,16 @@ distclean-local:
 .PHONY: distclean-local
 
 uninstall-hook:
-	if test -d ${eigenincludedir}; then rm -rf ${eigenincludedir}; fi
-	if test -d $(includedir)/libsemigroups/HPCombi; then rm -rf $(includedir)/libsemigroups/HPCombi; fi
-	if test -d ${fmtincludedir}; then rm -rf ${fmtincludedir}; fi
+	## The order of these deletions is important!
 	if test -d ${backwardcppincludedir}; then rm -rf ${backwardcppincludedir}; fi
+	if test -d ${detailincludedir}; then rmdir ${detailincludedir}; fi
+	if test -d ${eigenunsupportedincludedir}; then rm -rf ${eigenunsupportedincludedir}; fi
+	if test -d ${unsupportedincludedir}; then rmdir ${unsupportedincludedir}; fi
+	if test -d ${eigenincludedir}; then rm -rf ${eigenincludedir}; fi
+	if test -d ${fmtincludedir}; then rm -rf ${fmtincludedir}; fi
+	if test -d $(includedir)/libsemigroups/HPCombi; then rm -rf $(includedir)/libsemigroups/HPCombi; fi
+	if test -d ${magicenumincludedir}; then rmdir ${magicenumincludedir}; fi
+	if test -d ${rxrangesincludedir}; then rmdir ${rxrangesincludedir}; fi
 	if test -d ${includedir}/libsemigroups; then rmdir ${includedir}/libsemigroups; fi
 .PHONY: uninstall-hook
 
