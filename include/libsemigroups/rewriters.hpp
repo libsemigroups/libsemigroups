@@ -157,11 +157,10 @@ namespace libsemigroups {
       Stats& operator=(Stats const&) noexcept = default;
       Stats& operator=(Stats&&) noexcept      = default;
 
-      // TODO remove duplication with KnuthBendix::Stats
-      // size_t   max_stack_depth;
-      // size_t max_word_length;
-      // size_t   max_active_word_length;
-      // size_t   max_active_rules;
+      // size_t   max_stack_depth; // TODO Move to RewriterBase
+      size_t   max_word_length;
+      size_t   max_active_word_length;
+      size_t   max_active_rules;
       size_t   min_length_lhs_rule;
       uint64_t total_rules;
       // std::unordered_set<internal_string_type> unique_lhs_rules;
@@ -171,7 +170,7 @@ namespace libsemigroups {
     std::list<Rule const*>  _active_rules;
     std::array<iterator, 2> _cursors;
     std::list<Rule*>        _inactive_rules;
-    Stats                   _stats;
+    mutable Stats           _stats;  // REVIEW is this allowed to be mutable?
 
    public:
     Rules() = default;
@@ -217,6 +216,8 @@ namespace libsemigroups {
     [[nodiscard]] size_t number_of_inactive_rules() const noexcept {
       return _inactive_rules.size();
     }
+
+    [[nodiscard]] size_t max_active_word_length() const;
 
     iterator& cursor(size_t index) {
       LIBSEMIGROUPS_ASSERT(index < _cursors.size());

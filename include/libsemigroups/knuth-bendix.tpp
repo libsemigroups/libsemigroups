@@ -108,18 +108,9 @@ namespace libsemigroups {
   template <typename Rewriter, typename ReductionOrder>
   typename KnuthBendix<Rewriter, ReductionOrder>::Stats&
   KnuthBendix<Rewriter, ReductionOrder>::Stats::init() noexcept {
-    max_stack_depth        = 0;
-    max_word_length        = 0;
-    max_active_word_length = 0;
-    max_active_rules       = 0;
-
-    min_length_lhs_rule = std::numeric_limits<size_t>::max();
-
     prev_active_rules   = 0;
     prev_inactive_rules = 0;
     prev_total_rules    = 0;
-    total_rules         = 0;
-    unique_lhs_rules.clear();
     return *this;
   }
 
@@ -214,9 +205,7 @@ namespace libsemigroups {
     _settings                     = that._settings;
     _gilman_graph                 = that._gilman_graph;
     _internal_is_same_as_external = that._internal_is_same_as_external;
-    _stats.min_length_lhs_rule    = that._stats.min_length_lhs_rule;
     _presentation                 = that._presentation;
-    _stats.total_rules            = that._stats.total_rules;
 
     overlap_policy(_settings.overlap_policy);
 
@@ -429,14 +418,14 @@ namespace libsemigroups {
         // rc.divider();
         // FIXME these are mostly 0, and should be obtained from the rewriter
         // probably
-        rc("KnuthBendix: max stack depth        {}\n",
-           group_digits(_stats.max_stack_depth));
+        // rc("KnuthBendix: max stack depth        {}\n",
+        //    group_digits(_rewriter.stats().max_stack_depth));
         rc("KnuthBendix: max rule length        {}\n",
-           group_digits(_stats.max_word_length));
+           group_digits(_rewriter.stats().max_word_length));
         rc("KnuthBendix: max active rule length {}\n",
            group_digits(max_active_word_length()));
-        rc("KnuthBendix: number of unique lhs   {}\n",
-           group_digits(_stats.unique_lhs_rules.size()));
+        // rc("KnuthBendix: number of unique lhs   {}\n",
+        //    group_digits(_stats.unique_lhs_rules.size()));
       }
 
       report_no_prefix("{:-<95}\n", "");
@@ -600,7 +589,7 @@ namespace libsemigroups {
           // this seems to worsen performance on the test cases, so it remains
           // to see what the best option is for default behaviour.
           // TODO should we process rules here too?
-          _rewriter.process_pending_rules();
+          // _rewriter.process_pending_rules();
           if (confluent()) {
             pause = false;
             goto confluence_achieved;
@@ -953,19 +942,6 @@ namespace libsemigroups {
         // processed after being added.
       }
     }
-  }
-
-  template <typename Rewriter, typename ReductionOrder>
-  size_t KnuthBendix<Rewriter, ReductionOrder>::max_active_word_length() const {
-    auto comp = [](Rule const* p, Rule const* q) -> bool {
-      return p->lhs()->size() < q->lhs()->size();
-    };
-    auto max = std::max_element(_rewriter.begin(), _rewriter.end(), comp);
-    if (max != _rewriter.end()) {
-      _stats.max_active_word_length
-          = std::max(_stats.max_active_word_length, (*max)->lhs()->size());
-    }
-    return _stats.max_active_word_length;
   }
 
   namespace knuth_bendix {

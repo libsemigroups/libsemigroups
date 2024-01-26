@@ -194,16 +194,9 @@ namespace libsemigroups {
       Stats& operator=(Stats const&) noexcept = default;
       Stats& operator=(Stats&&) noexcept      = default;
 
-      size_t                                   max_stack_depth;
-      size_t                                   max_word_length;
-      size_t                                   max_active_word_length;
-      size_t                                   max_active_rules;
-      size_t                                   min_length_lhs_rule;
-      size_t                                   prev_active_rules;
-      size_t                                   prev_inactive_rules;
-      size_t                                   prev_total_rules;
-      size_t                                   total_rules;
-      std::unordered_set<internal_string_type> unique_lhs_rules;
+      size_t prev_active_rules;
+      size_t prev_inactive_rules;
+      size_t prev_total_rules;
     } _stats;
 
     ////////////////////////////////////////////////////////////////////////
@@ -699,6 +692,7 @@ namespace libsemigroups {
     [[nodiscard]] size_t total_rules() const noexcept {
       return _rewriter.stats().total_rules;
     }
+
     // TODO What do we do about doc-ing this?
     using rule_type = std::pair<std::string, std::string>;
     // TODO update the doc, now returns a Range
@@ -954,7 +948,9 @@ namespace libsemigroups {
 
     void overlap(Rule const* u, Rule const* v);
 
-    [[nodiscard]] size_t max_active_word_length() const;
+    [[nodiscard]] size_t max_active_word_length() const {
+      return _rewriter.max_active_word_length();
+    }
 
     //////////////////////////////////////////////////////////////////////////
     // Runner - pure virtual member functions - private

@@ -61,12 +61,12 @@ namespace libsemigroups {
   }
 
   Rules::Stats& Rules::Stats::init() noexcept {
-    // max_stack_depth        = 0;
-    // max_word_length = 0;
-    // max_active_word_length = 0;
-    // max_active_rules    = 0;
-    min_length_lhs_rule = std::numeric_limits<size_t>::max();
-    total_rules         = 0;
+    // max_stack_depth        = 0; //TODO Move to RewriterBase
+    max_word_length        = 0;
+    max_active_word_length = 0;
+    max_active_rules       = 0;
+    min_length_lhs_rule    = std::numeric_limits<size_t>::max();
+    total_rules            = 0;
     return *this;
   }
 
@@ -153,10 +153,10 @@ namespace libsemigroups {
 
   void Rules::add_rule(Rule* rule) {
     LIBSEMIGROUPS_ASSERT(*rule->lhs() != *rule->rhs());
-    // _stats.max_word_length
-    //     = std::max(_stats.max_word_length, rule->lhs()->size());
-    // _stats.max_active_rules
-    //     = std::max(_stats.max_active_rules, number_of_active_rules());
+    _stats.max_word_length
+        = std::max(_stats.max_word_length, rule->lhs()->size());
+    _stats.max_active_rules
+        = std::max(_stats.max_active_rules, number_of_active_rules());
     // _stats.unique_lhs_rules.insert(*rule->lhs());
     rule->activate();
     _active_rules.push_back(rule);
@@ -171,6 +171,19 @@ namespace libsemigroups {
       _stats.min_length_lhs_rule = rule->lhs()->size();
     }
   }
+
+  size_t Rules::max_active_word_length() const {
+    auto comp = [](Rule const* p, Rule const* q) -> bool {
+      return p->lhs()->size() < q->lhs()->size();
+    };
+    auto max = std::max_element(begin(), end(), comp);
+    if (max != end()) {
+      _stats.max_active_word_length
+          = std::max(_stats.max_active_word_length, (*max)->lhs()->size());
+    }
+    return _stats.max_active_word_length;
+  }
+
   RewriterBase& RewriterBase::init() {
     Rules::init();
     if (_requires_alphabet) {
@@ -223,8 +236,8 @@ namespace libsemigroups {
     Rule*                       rule1;
     internal_string_type const* lhs;
     while (number_of_pending_rules() != 0) {
-      // _stats.max_stack_depth = std::max(_stats.max_stack_depth,
-      // _pending_rules.size());
+      // stats().max_stack_depth
+      //     = std::max(stats().max_stack_depth, _pending_rules.size());
 
       rule1 = next_pending_rule();
       LIBSEMIGROUPS_ASSERT(!rule1->active());
