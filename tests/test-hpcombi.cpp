@@ -21,7 +21,6 @@
 #include "libsemigroups/config.hpp"  // for LIBSEMIGROUPS_HPCOMBI_ENABLED
 
 #ifdef LIBSEMIGROUPS_HPCOMBI_ENABLED
-
 #include <cstddef>  // for size_t
 
 #include "catch.hpp"                       // for REQUIRE
@@ -46,10 +45,10 @@ struct Renner0Element : public PTransf16 {
 
   Renner0Element operator*(Renner0Element const& y) const {
     Renner0Element minab, maxab, mask, b = permuted(y);
-    mask  = _mm_cmplt_epi8(y, Perm16::one());
-    minab = _mm_min_epi8(v, b);
-    maxab = _mm_max_epi8(v, b);
-    return static_cast<epu8>(_mm_blendv_epi8(maxab, minab, mask))
+    mask  = simde_mm_cmplt_epi8(y, Perm16::one());
+    minab = simde_mm_min_epi8(v, b);
+    maxab = simde_mm_max_epi8(v, b);
+    return static_cast<epu8>(simde_mm_blendv_epi8(maxab, minab, mask))
            | (y.v == Epu8(0xFF));
   }
 };

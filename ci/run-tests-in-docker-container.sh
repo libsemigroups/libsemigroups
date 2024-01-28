@@ -6,6 +6,6 @@ sudo chown -R libsemigroups: /home/libsemigroups
 cd /home/libsemigroups
 mkdir -p m4
 ./autogen.sh
-./configure
+./configure --disable-hpcombi # HPCombi doesn't work in 32-bit mode
 make "$GH_ACTIONS_TEST_PROG" -j4
 ./"$GH_ACTIONS_TEST_PROG" "$GH_ACTIONS_TEST_TAGS" --abort

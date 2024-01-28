@@ -128,11 +128,9 @@ namespace libsemigroups {
         c = next_active_node(c);
       }
 
-      c        = _id_node;
-      size_t m = 0;
+      c = _id_node;
 
       while (c != first_free_node()) {
-        m++;
         for (letter_type x = 0; x < out_degree(); ++x) {
           auto cx = unsafe_neighbor(c, x);
           if (cx != UNDEFINED) {

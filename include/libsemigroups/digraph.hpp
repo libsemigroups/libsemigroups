@@ -55,7 +55,7 @@
 #include "word.hpp"            // for number_of_words
 
 #ifdef LIBSEMIGROUPS_EIGEN_ENABLED
-#include <Eigen/Core>
+#include "eigen.hpp"
 #endif
 
 namespace libsemigroups {

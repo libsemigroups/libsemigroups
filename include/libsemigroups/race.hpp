@@ -136,9 +136,9 @@ namespace libsemigroups {
                      = std::chrono::milliseconds(2)) {
         static_assert(detail::IsCallable<TCallable>::value,
                       "the template parameter TCallable must be callable");
-        static_assert(std::is_same<typename std::result_of<TCallable()>::type,
-                                   bool>::value,
-                      "the template parameter TCallable must return a bool");
+        static_assert(
+            std::is_same<std::invoke_result_t<TCallable>, bool>::value,
+            "the template parameter TCallable must return a bool");
         if (empty()) {
           LIBSEMIGROUPS_EXCEPTION("no runners given, cannot run_until");
         }
@@ -180,11 +180,12 @@ namespace libsemigroups {
       // Runs the callable object \p func on every Runner in parallel.
       template <typename TCallable>
       void run_func(TCallable const& func) {
-        static_assert(std::is_same<typename std::result_of<TCallable(
-                                       std::shared_ptr<Runner>)>::type,
-                                   void>::value,
-                      "the result of calling the template parameter TCallable "
-                      "must be void");
+        static_assert(
+            std::is_same<
+                std::invoke_result_t<TCallable, std::shared_ptr<Runner>>,
+                void>::value,
+            "the result of calling the template parameter TCallable "
+            "must be void");
         LIBSEMIGROUPS_ASSERT(!empty());
         if (_winner == nullptr) {
           size_t nr_threads = std::min(_runners.size(), _max_threads);

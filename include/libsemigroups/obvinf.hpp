@@ -69,7 +69,7 @@
 #include "uf.hpp"      // for Duf
 
 #ifdef LIBSEMIGROUPS_EIGEN_ENABLED
-#include <Eigen/Core>
+#include "eigen.hpp"
 #endif
 
 namespace libsemigroups {
