@@ -22,12 +22,14 @@
 
 // TODO(now)
 // * iwyu
+// * word_graph::is_standardized
 
 #ifndef LIBSEMIGROUPS_WORD_GRAPH_HPP_
 #define LIBSEMIGROUPS_WORD_GRAPH_HPP_
 
-#include <algorithm>      // for uniform_int_distribution
-#include <cstddef>        // for size_t
+#include <algorithm>  // for uniform_int_distribution
+#include <cstddef>    // for size_t
+#include <cstdint>
 #include <numeric>        // for accumulate
 #include <ostream>        // for operator<<
 #include <random>         // for mt19937
@@ -849,13 +851,30 @@ namespace libsemigroups {
           first, last, [&old_num_nodes](node_type& n) { n += old_num_nodes; });
     }
 
-    ////////////////////////////////////////////////////////////////////////
-    // WordGraph - strongly connected components - public
-    ////////////////////////////////////////////////////////////////////////
+    // TODO doc
+    // TODO move to tpp
+    void permute_nodes_no_checks(std::vector<node_type> const& p,
+                                 std::vector<node_type> const& q,
+                                 size_t                        m) {
+      // p : new -> old, q = p ^ -1: old -> new
+      node_type c = 0;
+      while (c < m) {
+        for (auto x : WordGraph<Node>::labels()) {
+          node_type i = WordGraph<Node>::target_no_checks(p[c], x);
+          WordGraph<Node>::set_target_no_checks(
+              p[c], x, (i == UNDEFINED ? i : q[i]));
+        }
+        c++;
+      }
+      // Permute the rows themselves
+      apply_row_permutation(p);
+    }
+    void permute_nodes_no_checks(std::vector<node_type> const& p,
+                                 std::vector<node_type> const& q) {
+      permute_nodes_no_checks(p, q, p.size());
+    }
 
    protected:
-    // TODO(v3) make this public, doc, and test it
-    // TODO rename permute_nodes_no_checks, move part of the definition here
     // from WordGraphWithSources
     template <typename S>
     void apply_row_permutation(S const& p) {
@@ -878,6 +897,7 @@ namespace libsemigroups {
   //!
   //! Defined in ``word-graph.hpp``.
   namespace word_graph {
+
     //////////////////////////////////////////////////////////////////////////
     // WordGraph - helper functions - validation
     //////////////////////////////////////////////////////////////////////////
@@ -1424,6 +1444,32 @@ namespace libsemigroups {
     template <typename Node>
     Dot dot(WordGraph<Node> const& wg);
 
+    template <typename Node>
+    [[nodiscard]] bool equal_to(WordGraph<Node> const& x,
+                                WordGraph<Node> const& y,
+                                Node                   first,
+                                Node                   last) {
+      using label_type = typename WordGraph<Node>::label_type;
+
+      if (x.out_degree() != y.out_degree()) {
+        return false;
+      }
+
+      validate_node(x, first);
+      validate_node(x, last - 1);
+      validate_node(y, first);
+      validate_node(y, last - 1);
+
+      for (auto n = first; n != last; ++n) {
+        for (label_type a = 0; a < x.out_degree(); ++a) {
+          if (x.target_no_checks(n, a) != y.target_no_checks(n, a)) {
+            return false;
+          }
+        }
+      }
+      return true;
+    }
+
   }  // namespace word_graph
 
   //////////////////////////////////////////////////////////////////////////
@@ -1613,7 +1659,7 @@ namespace libsemigroups {
       _uf.normalize();
 
       xy.init(_uf.number_of_blocks(), x.out_degree());
-      for (auto s : x.nodes()) {
+      for (Node s = 0; s < x.number_of_active_nodes(); ++s) {
         for (auto [a, t] : rx::enumerate(x.targets_no_checks(s))) {
           // TODO set_target_no_checks
           xy.set_target(_uf.find(s), a, _uf.find(t));
@@ -1656,6 +1702,174 @@ namespace libsemigroups {
           xy, x, static_cast<Node>(0), y, static_cast<Node>(0));
     }
   };
+
+  // Class for forming the meet of two word graphs
+  template <typename Node>
+  class WordGraphMeeter {
+   private:
+    using node_type = std::pair<uint32_t, uint32_t>;
+
+    std::unordered_map<node_type, uint32_t, Hash<node_type>> _lookup;
+    std::vector<node_type>                                   _todo;
+    std::vector<node_type>                                   _todo_new;
+    WordGraph<Node> const*                                   _x;
+    WordGraph<Node> const*                                   _y;
+    size_t                                                   _x_num_nodes;
+    size_t                                                   _y_num_nodes;
+    Node                                                     _x_root;
+    Node                                                     _y_root;
+
+    void before_get() {
+      // TODO check that xy isn't the same object as _X or _y
+      if (_x == nullptr || _y == nullptr) {
+        LIBSEMIGROUPS_EXCEPTION("TODO1");
+      }
+      if (_x_num_nodes == UNDEFINED) {
+        _x_num_nodes = word_graph::number_of_nodes_reachable_from(*_x, _x_root);
+      }
+      if (_y_num_nodes == UNDEFINED) {
+        _y_num_nodes = word_graph::number_of_nodes_reachable_from(*_y, _y_root);
+      }
+    }
+
+   public:
+    WordGraphMeeter()
+        : _lookup(),
+          _todo(),
+          _todo_new(),
+          _x(),
+          _y(),
+          _x_num_nodes(),
+          _y_num_nodes(),
+          _x_root(),
+          _y_root() {
+      init();
+    }
+
+    WordGraphMeeter& init() {
+      _lookup.clear();
+      _todo.clear();
+      _todo_new.clear();
+      _x           = nullptr;
+      _y           = nullptr;
+      _x_num_nodes = UNDEFINED;
+      _y_num_nodes = UNDEFINED;
+      _x_root      = 0;
+      _y_root      = 0;
+      return *this;
+    }
+    explicit WordGraphMeeter(WordGraph<Node> const& x) : WordGraphMeeter() {
+      _x = &x;
+    }
+
+    WordGraphMeeter& with_no_checks(WordGraph<Node> const& x) {
+      if (_x == nullptr || _y != nullptr) {
+        if (_y != nullptr) {
+          init();
+        }
+        _x = &x;
+      } else {
+        _y = &x;
+      }
+      return *this;
+    }
+
+    WordGraphMeeter& with(WordGraph<Node> const& x) {
+      if (_x != nullptr) {
+        // TODO check the outdegrees
+      }
+      return with_no_checks(x);
+    }
+
+    WordGraphMeeter& root(Node root) {
+      if (_x == nullptr && _y == nullptr) {
+        LIBSEMIGROUPS_EXCEPTION("TODO2");
+      } else if (_y == nullptr) {
+        _x_root = root;
+      } else {
+        _y_root = root;
+      }
+      return *this;
+    }
+
+    WordGraphMeeter& number_of_nodes(size_t num_nodes) {
+      if (_x == nullptr && _y == nullptr) {
+        LIBSEMIGROUPS_EXCEPTION("TODO3");
+      } else if (_y == nullptr) {
+        _x_num_nodes = num_nodes;
+      } else {
+        _y_num_nodes = num_nodes;
+      }
+      return *this;
+    }
+
+    // TODO(doc)
+    // TODO move to tpp
+    void get_no_checks(WordGraph<Node>& xy) {
+      Node next = 0;
+
+      _lookup.clear();
+      _lookup.emplace(std::pair(_x_root, _y_root), next++);
+
+      _todo.clear();
+      _todo.emplace_back(_x_root, _y_root);
+
+      size_t const N
+          = _x->out_degree();  // Must be the same as _y->out_degree()
+      xy.init(_x_num_nodes * _y_num_nodes, N);
+
+      node_type target;
+      while (!_todo.empty()) {
+        _todo_new.clear();
+        for (auto const& source : _todo) {
+          auto xy_source = _lookup[source];
+          for (size_t a = 0; a < N; ++a) {
+            target = std::pair(_x->target_no_checks(source.first, a),
+                               _y->target_no_checks(source.second, a));
+            auto [it, inserted] = _lookup.emplace(target, next);
+
+            xy.set_target_no_checks(xy_source, a, it->second);
+            if (inserted) {
+              next++;
+              _todo_new.push_back(std::move(target));
+            }
+          }
+        }
+        std::swap(_todo, _todo_new);
+      }
+      xy.induced_subgraph_no_checks(0, next);
+    }
+
+    void get(WordGraph<Node>& xy) {
+      before_get();
+      get_no_checks(xy);
+    }
+
+    [[nodiscard]] WordGraph<Node> get() {
+      WordGraph<Node> wg;
+      get(wg);
+      return wg;
+    }
+
+    // is x a subrelation of y
+    [[nodiscard]] bool is_subrelation_no_checks() {
+      // If _x is a subrelation of _y, then the meet of _x and _y must be _x.
+      before_get();
+      if (_y_num_nodes >= _x_num_nodes) {
+        return false;
+      }
+      auto xy = get();
+      // FIXME the following only works if _x_root == 0 == _y_root
+      return xy.number_of_nodes() == _x_num_nodes
+             && word_graph::equal_to(*_x,
+                                     xy,
+                                     static_cast<Node>(0),
+                                     static_cast<Node>(xy.number_of_nodes()));
+    }
+  };
+
+  template <typename Node>
+  WordGraphMeeter(WordGraph<Node> const&) -> WordGraphMeeter<Node>;
 
 }  // namespace libsemigroups
 

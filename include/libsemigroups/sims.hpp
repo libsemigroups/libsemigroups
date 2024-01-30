@@ -21,15 +21,15 @@
 // monoids.
 
 // TODO(Sims):
-// * implement joins (HopcroftKarp), meets (not sure), containment (find join
-//   and check equality)?
-// * meet/join_semilattice of word graphs
+// * a version which allows specifying the word_graph to Sims1 too
+
+// TODO(later):
 // * implement maximum_2_sided_congruence_contained to compute the kernel of the
 //   associated homomorphism, which is the largest 2-sided congruence contained
 //   in the right congruence.
-// * a version which allows specifying the word_graph to Sims1 too (This'd be
-//   good but it's not currently clear how to check that the input is a valid
-//   graph, so skipping for now)
+// * change RepOrc and MinimalRepOrc to compute minimal 2-sided congruences
+//   first (not sure how), and then to try and find a right congruence not
+//   containing any of the minimal 2-sided congruences.
 
 #ifndef LIBSEMIGROUPS_SIMS_HPP_
 #define LIBSEMIGROUPS_SIMS_HPP_

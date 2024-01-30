@@ -17,6 +17,7 @@
 //
 
 #define CATCH_CONFIG_ENABLE_PAIR_STRINGMAKER
+#define CATCH_CONFIG_ENABLE_TUPLE_STRINGMAKER
 
 #include <cstddef>   // for size_t
 #include <iostream>  // for cout
@@ -169,6 +170,26 @@ namespace libsemigroups {
       expected.induced_subgraph_no_checks(0, result.number_of_active_nodes());
       REQUIRE(result == expected);
     }
+
+    template <typename Iterator>
+    void check_meets_and_joins(Iterator first, Iterator last) {
+      using WordGraph_ = std::decay_t<decltype(*first)>;
+      std::vector<WordGraph_>                         graphs(first, last);
+      size_t const                                    n = graphs.size();
+      HopcroftKarp                                    joiner;
+      WordGraphMeeter<typename WordGraph_::node_type> meeter;
+      for (size_t i = 0; i < n; ++i) {
+        for (size_t j = 0; j < n; ++j) {
+          meeter.with(graphs[i]).with(graphs[j]);
+          REQUIRE(std::tuple(
+                      meeter.is_subrelation_no_checks(), graphs[i], graphs[j])
+                  == std::tuple(
+                      joiner.is_subrelation_no_checks(graphs[i], graphs[j]),
+                      graphs[i],
+                      graphs[j]));
+        }
+      }
+    }
   }  // namespace
 
   LIBSEMIGROUPS_TEST_CASE("Sims1",
@@ -243,6 +264,7 @@ namespace libsemigroups {
                          {0, 0, 0, 1, 0, 1, 0, 0, 0},
                          {0, 1, 1, 0, 0, 1, 0, 0, 0},
                          {0, 0, 0, 0, 1, 0, 1, 1, 0}}));
+      check_meets_and_joins(S.cbegin(5), S.cend(5));
       // f << sims::dot_poset(S.cbegin(5), S.cend(5)).to_string();
       size_t index = 0;
       for (auto it = S.cbegin(5); it != S.cend(5); ++it) {
@@ -3621,12 +3643,16 @@ namespace libsemigroups {
     REQUIRE(s.number_of_congruences(5) == 184);
     REQUIRE(s.number_of_congruences(6) == 432);
     REQUIRE(s.number_of_congruences(7) == 892);
+
     REQUIRE(s.number_of_congruences(8) == 1'800);
     REQUIRE(s.number_of_congruences(9) == 3'402);
     REQUIRE(s.number_of_congruences(10) == 6'280);
     REQUIRE(s.number_of_congruences(11) == 11'051);
+
     REQUIRE(s.number_of_congruences(12) == 19'245);
     REQUIRE(s.number_of_congruences(13) == 32'299);
+
+    check_meets_and_joins(s.cbegin(5), s.cend(5));
   }
 
   LIBSEMIGROUPS_TEST_CASE("Sims2",
