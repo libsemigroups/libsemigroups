@@ -1160,9 +1160,10 @@ namespace libsemigroups {
 
     // That the graph is compatible at 0 with include is checked in
     // Sims1::iterator_base::try_define.
-    if (!felsch_graph::make_compatible<RegisterDefs>(
-            _felsch_graph, 1, num_nodes, first, last)
-        || !_felsch_graph.process_definitions(start)) {
+    if (num_nodes > 1
+        && (!felsch_graph::make_compatible<RegisterDefs>(
+                _felsch_graph, 1, num_nodes, first, last)
+            || !_felsch_graph.process_definitions(start))) {
       // Seems to be important to check include() first then
       // process_definitions
       return false;

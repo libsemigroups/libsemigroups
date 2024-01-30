@@ -1016,9 +1016,6 @@ test_uf_SOURCES += tests/test-main.cpp
 test_ukkonen_SOURCES =  tests/test-ukkonen.cpp
 test_ukkonen_SOURCES += tests/test-main.cpp
 
-test_word_graph_with_sources_SOURCES =  tests/test-word-graph-with-sources.cpp
-test_word_graph_with_sources_SOURCES += tests/test-main.cpp
-
 test_word_graph_SOURCES =  tests/test-word-graph.cpp
 test_word_graph_SOURCES += tests/test-main.cpp
 

@@ -464,7 +464,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("WordGraph",
                           "024",
-                          "is_acyclic | for a node",
+                          "is_acyclic | for a node | 2",
                           "[quick]") {
     WordGraph<size_t> ad;
     using node_type = decltype(ad)::node_type;
@@ -652,6 +652,42 @@ namespace libsemigroups {
     REQUIRE(word_graph::is_strictly_cyclic(ad));
     ad = WordGraph<size_t>();
     REQUIRE(word_graph::is_strictly_cyclic(ad));
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("WordGraph", "046", "HopcroftKarp x 1", "[quick]") {
+    WordGraph<size_t> x(
+        to_word_graph<size_t>(3, {{0, 1, 2}, {0, 1, 2}, {0, 1, 2}}));
+    x.number_of_active_nodes(x.number_of_nodes());
+
+    WordGraph<size_t> y = x;
+    REQUIRE(y.number_of_active_nodes() == x.number_of_active_nodes());
+
+    HopcroftKarp hk;
+
+    WordGraph<size_t> xy;
+    hk.join(xy, x, y);
+    REQUIRE(xy == x);
+    hk.join(xy, y, x);
+    REQUIRE(xy == x);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("WordGraph", "050", "HopcroftKarp x 2", "[quick]") {
+    WordGraph<size_t> x(
+        to_word_graph<size_t>(3, {{1, 1, 1}, {2, 2, 2}, {2, 2, 2}}));
+    x.number_of_active_nodes(x.number_of_nodes());
+
+    WordGraph<size_t> y(
+        to_word_graph<size_t>(3, {{1, 1, 2}, {1, 1, 2}, {1, 1, 2}}));
+    y.number_of_active_nodes(y.number_of_nodes());
+
+    WordGraph<size_t> xy;
+
+    HopcroftKarp hk;
+    hk.join(xy, x, y);
+
+    REQUIRE(xy == to_word_graph<size_t>(2, {{1, 1, 1}, {1, 1, 1}}));
+    REQUIRE(hk.is_subrelation_no_checks(x, 3, xy, 2));
+    REQUIRE(hk.is_subrelation_no_checks(y, 3, xy, 2));
   }
 
 }  // namespace libsemigroups

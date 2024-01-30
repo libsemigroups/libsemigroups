@@ -1483,6 +1483,180 @@ namespace libsemigroups {
   WordGraph<Node> to_word_graph(size_t                                num_nodes,
                                 std::vector<std::vector<Node>> const& v);
 
+  // TODO(doc)
+  class HopcroftKarp {
+   private:
+    detail::Duf<>                             _uf;
+    std::stack<std::pair<uint32_t, uint32_t>> _stck;
+
+    // TODO(doc)
+    template <typename Node>
+    [[nodiscard]] Node find(WordGraph<Node> const&               x,
+                            size_t                               x_num_nodes,
+                            WordGraph<Node> const&               y,
+                            uint32_t                             n,
+                            typename WordGraph<Node>::label_type a) const {
+      // Check which word graph q1 and q2 belong to. nodes with labels
+      // from 0 to Nx correspond to nodes in x; above Nx corresponds to
+      // y.
+      if (n < x_num_nodes) {
+        return _uf.find(x.target_no_checks(n, a));
+      } else {
+        return _uf.find(y.target_no_checks(n - x_num_nodes, a) + x_num_nodes);
+      }
+    }
+
+    // TODO(doc)
+    // TODO move to cpp
+    template <typename Node>
+    void run(WordGraph<Node> const& x,
+             size_t                 x_num_nodes,
+             Node                   xroot,
+             WordGraph<Node> const& y,
+             size_t                 y_num_nodes,
+             Node                   yroot) {
+      using label_type = typename WordGraph<Node>::label_type;
+      auto const M     = x.out_degree();
+      _uf.init(x_num_nodes + y_num_nodes);
+      _uf.unite(xroot, yroot + x_num_nodes);
+
+      LIBSEMIGROUPS_ASSERT(_stck.empty());
+      // 0 .. x.number_of_nodes() - 1, x.number_of_nodes()  ..
+      //   x.number_of_nodes() + y.number_of_nodes() -1
+      _stck.emplace(xroot, yroot + x_num_nodes);
+
+      // Traverse x and y, uniting the target nodes at each stage
+      while (!_stck.empty()) {
+        auto [qx, qy] = _stck.top();
+        _stck.pop();
+        for (label_type a = 0; a < M; ++a) {
+          Node rx = find(x, x_num_nodes, y, qx, a);
+          Node ry = find(x, x_num_nodes, y, qy, a);
+          if (rx != ry) {
+            _uf.unite(rx, ry);
+            _stck.emplace(rx, ry);
+          }
+        }
+      }
+    }
+
+   public:
+    HopcroftKarp() = default;
+
+    // is x a subrelation of y?
+    // TODO(doc)
+    // TODO move to cpp
+    template <typename Node>
+    bool is_subrelation_no_checks(WordGraph<Node> const& x,
+                                  size_t                 x_num_nodes,
+                                  Node                   xroot,
+                                  WordGraph<Node> const& y,
+                                  size_t                 y_num_nodes,
+                                  Node                   yroot) {
+      if (y_num_nodes >= x_num_nodes) {
+        return false;
+      }
+      run(x, x_num_nodes, xroot, y, y_num_nodes, yroot);
+      // if x is contained in y, then the join of x and y must be y, and hence
+      // we just check that the number of nodes in the quotient equals that of
+      // y. TODO We could just stop early in "run" if we find that we are trying
+      // to merge two nodes of x also.
+      return _uf.number_of_blocks() == y_num_nodes;
+    }
+
+    template <typename Node>
+    bool is_subrelation_no_checks(WordGraph<Node> const& x,
+                                  size_t                 x_num_nodes,
+                                  WordGraph<Node> const& y,
+                                  size_t                 y_num_nodes) {
+      return is_subrelation_no_checks(x,
+                                      x_num_nodes,
+                                      static_cast<Node>(0),
+                                      y,
+                                      y_num_nodes,
+                                      static_cast<Node>(0));
+    }
+
+    template <typename Node>
+    bool is_subrelation_no_checks(WordGraph<Node> const& x,
+                                  WordGraph<Node> const& y) {
+      return is_subrelation_no_checks(x,
+                                      x.number_of_active_nodes(),
+                                      static_cast<Node>(0),
+                                      y,
+                                      y.number_of_active_nodes(),
+                                      static_cast<Node>(0));
+    }
+
+    // Return the partition obtained by Hopcroft and Karp's Algorithm for
+    // checking if two finite state automata accept the same language, with
+    // given start nodes root1 and root2.
+    // TODO add x_num_nodes, y_num_nodes
+    // TODO(doc)
+    // TODO move to cpp
+    template <typename Node>
+    void join_no_checks(WordGraph<Node>&       xy,
+                        WordGraph<Node> const& x,
+                        Node                   xroot,
+                        WordGraph<Node> const& y,
+                        Node                   yroot) {
+      if (x.number_of_nodes() > y.number_of_nodes()) {
+        join_no_checks(xy, y, x);
+        return;
+      }
+      run(x,
+          x.number_of_active_nodes(),
+          xroot,
+          y,
+          y.number_of_active_nodes(),
+          yroot);
+      _uf.normalize();
+
+      xy.init(_uf.number_of_blocks(), x.out_degree());
+      for (auto s : x.nodes()) {
+        for (auto [a, t] : rx::enumerate(x.targets_no_checks(s))) {
+          // TODO set_target_no_checks
+          xy.set_target(_uf.find(s), a, _uf.find(t));
+        }
+      }
+    }
+
+    // TODO(doc)
+    // TODO move to cpp
+    template <typename Node>
+    void join(WordGraph<Node>&       xy,
+              WordGraph<Node> const& x,
+              Node                   xroot,
+              WordGraph<Node> const& y,
+              Node                   yroot) {
+      word_graph::validate_node(x, xroot);
+      word_graph::validate_node(y, yroot);
+      if (x.out_degree() != y.out_degree()) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "the arguments (word graphs) must have the same "
+            "out-degree, found out-degrees {} and {}",
+            x.out_degree(),
+            y.out_degree());
+      }
+      join_no_checks(xy, x, xroot, y, yroot);
+    }
+
+    template <typename Node>
+    void join(WordGraph<Node>&       xy,
+              WordGraph<Node> const& x,
+              WordGraph<Node> const& y) {
+      return join(xy, x, static_cast<Node>(0), y, static_cast<Node>(0));
+    }
+
+    template <typename Node>
+    void join_no_checks(WordGraph<Node>&       xy,
+                        WordGraph<Node> const& x,
+                        WordGraph<Node> const& y) {
+      return join_no_checks(
+          xy, x, static_cast<Node>(0), y, static_cast<Node>(0));
+    }
+  };
+
 }  // namespace libsemigroups
 
 #include "word-graph.tpp"
