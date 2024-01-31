@@ -66,31 +66,20 @@ namespace libsemigroups {
   namespace {
     // TODO check_exclude
     template <typename P>
-    void check_include(congruence_kind               ck,
-                       P const&                      p,
-                       std::vector<word_type> const& e,
-                       size_t                        n) {
-      auto f = e;
-      if (ck == congruence_kind::left) {
-        std::for_each(f.begin(), f.end(), [](word_type& w) {
-          std::reverse(w.begin(), w.end());
-        });
-      }
-      auto foo = [&f](auto const& ad) {
+    void check_include(P const& p, std::vector<word_type> const& e, size_t n) {
+      auto foo = [&e](auto const& wg) {
         using word_graph::follow_path_no_checks;
-        for (auto it = f.cbegin(); it != f.cend(); it += 2) {
-          if (follow_path_no_checks(ad, 0, *it)
-              != follow_path_no_checks(ad, 0, *(it + 1))) {
+        for (auto it = e.cbegin(); it != e.cend(); it += 2) {
+          if (follow_path_no_checks(wg, 0, *it)
+              != follow_path_no_checks(wg, 0, *(it + 1))) {
             return false;
           }
         }
         return true;
       };
-      Sims1 S(ck);
-      S.presentation(p);
-
-      Sims1 T(ck);
-      T.presentation(p).include(e);
+      Sims1 S(p);
+      Sims1 T(p);
+      T.include(e);
 
       REQUIRE(static_cast<uint64_t>(std::count_if(S.cbegin(n), S.cend(n), foo))
               == T.number_of_congruences(n));
@@ -206,7 +195,7 @@ namespace libsemigroups {
     presentation::add_rule(p, 0101_w, 0_w);
 
     {
-      Sims1 S(congruence_kind::right);
+      Sims1 S;
       REQUIRE(S.presentation(p).number_of_threads(2).number_of_congruences(5)
               == 6);
       REQUIRE_THROWS_AS(S.number_of_congruences(0), LibsemigroupsException);
@@ -245,7 +234,8 @@ namespace libsemigroups {
     // [[1, 1], [1, 1]],
     // [[1, 0], [1, 1]]]
     {
-      Sims1 S(congruence_kind::left);
+      presentation::reverse(p);
+      Sims1 S;
       REQUIRE(S.presentation(p).number_of_congruences(5) == 9);
       for (auto it = S.cbegin(5); it != S.cend(5); ++it) {
         REQUIRE(word_graph::follow_path_no_checks(*it, 0, 1010_w)
@@ -286,33 +276,30 @@ namespace libsemigroups {
     presentation::add_rule(p, 11_w, 1_w);
     presentation::add_rule(p, 02_w, 00_w);
 
-    {
-      Sims1 S(congruence_kind::right);
-      S.presentation(p);
-      REQUIRE(S.number_of_congruences(1) == 1);
-      REQUIRE(S.number_of_congruences(2) == 3);
-      REQUIRE(S.number_of_congruences(3) == 13);
-      REQUIRE(S.number_of_congruences(4) == 36);
-      REQUIRE(S.number_of_congruences(5) == 82);
-      REQUIRE(S.number_of_congruences(6) == 135);
-      REQUIRE(S.number_of_congruences(7) == 166);
-      REQUIRE(S.number_of_congruences(8) == 175);
-      REQUIRE(S.number_of_congruences(9) == 176);
-      REQUIRE(S.number_of_congruences(10) == 176);
+    Sims1 S;
+    S.presentation(p);
+    REQUIRE(S.number_of_congruences(1) == 1);
+    REQUIRE(S.number_of_congruences(2) == 3);
+    REQUIRE(S.number_of_congruences(3) == 13);
+    REQUIRE(S.number_of_congruences(4) == 36);
+    REQUIRE(S.number_of_congruences(5) == 82);
+    REQUIRE(S.number_of_congruences(6) == 135);
+    REQUIRE(S.number_of_congruences(7) == 166);
+    REQUIRE(S.number_of_congruences(8) == 175);
+    REQUIRE(S.number_of_congruences(9) == 176);
+    REQUIRE(S.number_of_congruences(10) == 176);
 
-      auto it = S.cbegin(2);
-      REQUIRE(*(it++) == to_word_graph<node_type>(2, {{0, 0, 0}}));
-      REQUIRE(*(it++) == to_word_graph<node_type>(2, {{1, 0, 1}, {1, 1, 1}}));
-      REQUIRE(*(it++) == to_word_graph<node_type>(2, {{1, 1, 1}, {1, 1, 1}}));
-      REQUIRE(*(it++) == WordGraph<node_type>(0, 3));
-      REQUIRE(*(it++) == WordGraph<node_type>(0, 3));
-      // sims::dot_poset("example-001", S.cbegin(4), S.cend(4));
-    }
-    {
-      Sims1 S(congruence_kind::left);
-      S.presentation(p);
-      REQUIRE(S.number_of_congruences(11) == 176);
-    }
+    auto it = S.cbegin(2);
+    REQUIRE(*(it++) == to_word_graph<node_type>(2, {{0, 0, 0}}));
+    REQUIRE(*(it++) == to_word_graph<node_type>(2, {{1, 0, 1}, {1, 1, 1}}));
+    REQUIRE(*(it++) == to_word_graph<node_type>(2, {{1, 1, 1}, {1, 1, 1}}));
+    REQUIRE(*(it++) == WordGraph<node_type>(0, 3));
+    REQUIRE(*(it++) == WordGraph<node_type>(0, 3));
+    // sims::dot_poset("example-001", S.cbegin(4), S.cend(4));
+
+    presentation::reverse(p);
+    S.init(p);
+    REQUIRE(S.number_of_congruences(11) == 176);
   }
 
   LIBSEMIGROUPS_TEST_CASE("Sims1",
@@ -330,7 +317,7 @@ namespace libsemigroups {
     presentation::add_rule(p, 00504_w, 6_w);
     presentation::add_rule(p, 0422152_w, 6_w);
     presentation::add_rule(p, 1302444_w, 6_w);
-    Sims1 S(congruence_kind::right);
+    Sims1 S;
     S.presentation(p);
     // REQUIRE(S.number_of_congruences(1) == 1);
     // REQUIRE(S.number_of_congruences(3) == 14);
@@ -403,7 +390,7 @@ namespace libsemigroups {
     presentation::add_rule(p, "aaCac", "e");
     presentation::add_rule(p, "acbbACb", "e");
     presentation::add_rule(p, "ABabccc", "e");
-    Sims1 S(congruence_kind::right);
+    Sims1 S;
     S.presentation(p);
     REQUIRE(S.number_of_congruences(3) == 14);
   }
@@ -428,13 +415,7 @@ namespace libsemigroups {
     presentation::add_rule(p, 1212_w, 212_w);
     presentation::add_rule(p, 2121_w, 212_w);
 
-    Sims1 S(congruence_kind::twosided);  // TODO remove the twosided here
-    S.presentation(p);
-    // TODO put into test-sims2.cpp
-    // S.kind(congruence_kind::twosided).number_of_threads(2);
-    // REQUIRE(S.number_of_congruences(16) == 13);
-
-    S.kind(congruence_kind::right);
+    Sims1 S(p);
     REQUIRE(S.number_of_congruences(2) == 4);
     REQUIRE(S.number_of_congruences(3) == 7);
     REQUIRE(S.number_of_congruences(4) == 14);
@@ -451,6 +432,11 @@ namespace libsemigroups {
     REQUIRE(S.number_of_congruences(15) == 105);
     REQUIRE(S.number_of_congruences(16) == 105);
     REQUIRE(S.number_of_congruences(17) == 105);
+
+    Sims2 T;  // TODO remove the twosided here
+    T.presentation(p);
+    T.number_of_threads(2);
+    REQUIRE(T.number_of_congruences(16) == 13);
 
     // sims::dot_poset("example-004", S.cbegin(16), S.cend(16));
 
@@ -472,7 +458,7 @@ namespace libsemigroups {
     REQUIRE(!p.contains_empty_word());
     REQUIRE(p.alphabet() == 01234_w);
 
-    Sims1 S(congruence_kind::right);
+    Sims1 S;
     S.presentation(p).long_rule_length(11).number_of_threads(
         4);  // This actually helps here!
     REQUIRE(S.number_of_congruences(17) == 1'589);
@@ -492,7 +478,7 @@ namespace libsemigroups {
     auto p = to_presentation<word_type>(S);
     REQUIRE(static_cast<size_t>(std::distance(p.rules.cbegin(), p.rules.cend()))
             == 2 * S.number_of_rules());
-    Sims1 C(congruence_kind::right);
+    Sims1 C;
     C.presentation(p);
     REQUIRE(C.number_of_congruences(27) == 287);
     // sims::dot_poset("example-006-T-3", C.cbegin(27), C.cend(27));
@@ -506,9 +492,9 @@ namespace libsemigroups {
     FroidurePin<Transf<3>> S(
         {Transf<3>({1, 2, 0}), Transf<3>({1, 0, 2}), Transf<3>({0, 1, 0})});
     REQUIRE(S.size() == 27);
-    auto  p = to_presentation<word_type>(S);
-    Sims1 C(congruence_kind::left);
-    C.presentation(p);
+    auto p = to_presentation<word_type>(S);
+    presentation::reverse(p);
+    Sims1 C(p);
     REQUIRE(C.number_of_congruences(27) == 120);
     // sims::dot_poset("example-006-T-3-left", C.cbegin(27), C.cend(27));
   }
@@ -540,13 +526,13 @@ namespace libsemigroups {
       p.rules.erase(it, it + 2);
     } while (presentation::length(p) > 700);
 
-    Sims1 C(congruence_kind::right);
+    Sims1 C;
     C.presentation(p);
     // Takes about 1h31m to run!
     REQUIRE(C.number_of_threads(6).number_of_congruences(256) == 22'069'828);
-    // Sims1 C(congruence_kind::left);
-    // C.presentation(p);
-    // REQUIRE(C.number_of_threads(6).number_of_congruences(256) == 120'121);
+    presentation::reverse(p);
+    C.init(p);
+    REQUIRE(C.number_of_threads(6).number_of_congruences(256) == 120'121);
   }
 
   LIBSEMIGROUPS_TEST_CASE("Sims1",
@@ -554,7 +540,7 @@ namespace libsemigroups {
                           "symmetric_inverse_monoid(2, author::Gay)",
                           "[quick][low-index]") {
     auto  rg = ReportGuard(false);
-    Sims1 C(congruence_kind::right);
+    Sims1 C;
     C.presentation(symmetric_inverse_monoid(2, author::Gay));
     REQUIRE(C.number_of_congruences(7) == 10);  // Should be 10
   }
@@ -566,9 +552,9 @@ namespace libsemigroups {
     auto                  rg = ReportGuard(false);
     FroidurePin<PPerm<2>> S({PPerm<2>({1, 0}), PPerm<2>({0}, {0}, 2)});
     REQUIRE(S.size() == 7);
-    auto  p = to_presentation<word_type>(S);
-    Sims1 C(congruence_kind::left);
-    C.presentation(p);
+    auto p = to_presentation<word_type>(S);
+    presentation::reverse(p);
+    Sims1 C(p);
     REQUIRE(C.number_of_congruences(7) == 10);
     // sims::dot_poset("example-010-I-2-left", C.cbegin(7), C.cend(7));
   }
@@ -577,9 +563,10 @@ namespace libsemigroups {
                           "011",
                           "symmetric_inverse_monoid(3)",
                           "[quick][low-index]") {
-    auto  rg = ReportGuard(false);
-    Sims1 C(congruence_kind::left);
-    C.presentation(symmetric_inverse_monoid(3, author::Gay));
+    auto rg = ReportGuard(false);
+    auto p  = symmetric_inverse_monoid(3, author::Gay);
+    presentation::reverse(p);
+    Sims1 C(p);
     REQUIRE(C.number_of_congruences(34) == 274);
   }
 
@@ -598,21 +585,17 @@ namespace libsemigroups {
     REQUIRE(*(presentation::shortest_rule(p) + 1) == ""_w);
     REQUIRE(presentation::longest_rule_length(p) == 8);
 
-    Sims1 C(congruence_kind::right);
+    Sims1 C;
     C.presentation(p).exclude(""_w, 11_w);
     REQUIRE(C.number_of_threads(2).number_of_congruences(209) == 0);
     C.clear_exclude();
 
     auto rg = ReportGuard(true);
     REQUIRE(C.number_of_threads(2).number_of_congruences(209) == 195'709);
-    // REQUIRE(C.number_of_threads(1)
-    //             .kind(congruence_kind::twosided)
-    //             .number_of_congruences(209)
-    //         == 11);
-    // REQUIRE(C.number_of_threads(2)  // FIXME
-    //             .kind(congruence_kind::twosided)
-    //             .number_of_congruences(209)
-    //         == 11);
+
+    Sims2 S(p);
+    REQUIRE(S.number_of_threads(1).number_of_congruences(209) == 11);
+    REQUIRE(S.number_of_threads(2).number_of_congruences(209) == 11);
   }
 
   LIBSEMIGROUPS_TEST_CASE("Sims1",
@@ -620,20 +603,21 @@ namespace libsemigroups {
                           "symmetric_inverse_monoid(5)",
                           "[fail][low-index]") {
     // This might take an extremely long time to terminate
-    auto  rg = ReportGuard(true);
-    Sims1 C(congruence_kind::left);
-    C.presentation(symmetric_inverse_monoid(5, author::Gay));
+    auto rg = ReportGuard(true);
+    auto p  = symmetric_inverse_monoid(5, author::Gay);
+    presentation::reverse(p);
+    Sims1 C(p);
     REQUIRE(C.number_of_threads(6).number_of_congruences(1'546) == 0);
-    // On 24/08/2022 JDM ran this for approx. 16 hours overnight on his laptop,
-    // the last line of output was:
-    // #4: Sims1: found 63'968'999 congruences in 52156s!
-    // #21: Sims1: found 759'256'468 congruences in 244617.546875
-    // #12: Sims1: found 943'233'501 congruences in 321019.531250!
-    // #30: Sims1: found 1'005'857'634 congruences in 350411.000000!
-    // #45: Sims1: found 1'314'588'296 congruences in 487405.000000!
-    // #20: Sims1: found 4'619'043'843 congruences in 2'334'184.500000!
-    // #49: Sims1: found 5'582'499'404 congruences in 2'912'877.000000!
-    // #10: Sims1: found 6'825'113'083 congruences in 3705611.250000!
+    // On 24/08/2022 JDM ran this for approx. 16 hours overnight on his
+    // laptop, the last line of output was: #4: Sims1: found 63'968'999
+    // congruences in 52156s! #21: Sims1: found 759'256'468 congruences in
+    // 244617.546875 #12: Sims1: found 943'233'501 congruences in
+    // 321019.531250! #30: Sims1: found 1'005'857'634 congruences in
+    // 350411.000000! #45: Sims1: found 1'314'588'296 congruences in
+    // 487405.000000! #20: Sims1: found 4'619'043'843 congruences in
+    // 2'334'184.500000! #49: Sims1: found 5'582'499'404 congruences in
+    // 2'912'877.000000! #10: Sims1: found 6'825'113'083 congruences in
+    // 3705611.250000!
     //
   }
 
@@ -641,36 +625,28 @@ namespace libsemigroups {
                           "014",
                           "temperley_lieb_monoid(3) from presentation",
                           "[quick][low-index]") {
-    auto rg = ReportGuard(false);
-    {
-      Sims1 S(congruence_kind::right);
-      S.presentation(temperley_lieb_monoid(3));
-      REQUIRE(S.number_of_congruences(14) == 9);
-      // sims::dot_poset("example-014-TL-3-right", S.cbegin(14), S.cend(14));
-    }
-    {
-      Sims1 S(congruence_kind::left);
-      S.presentation(temperley_lieb_monoid(3));
-      REQUIRE(S.number_of_congruences(14) == 9);
-    }
+    auto  rg = ReportGuard(false);
+    auto  p  = temperley_lieb_monoid(3);
+    Sims1 S(p);
+    REQUIRE(S.number_of_congruences(14) == 9);
+    // sims::dot_poset("example-014-TL-3-right", S.cbegin(14), S.cend(14));
+    presentation::reverse(p);
+    S.init(p);
+    REQUIRE(S.number_of_congruences(14) == 9);
   }
 
   LIBSEMIGROUPS_TEST_CASE("Sims1",
                           "015",
                           "temperley_lieb_monoid(4) from presentation",
                           "[quick][low-index]") {
-    auto rg = ReportGuard(false);
-    {
-      Sims1 S(congruence_kind::right);
-      S.presentation(temperley_lieb_monoid(4));
-      REQUIRE(S.number_of_congruences(14) == 79);
-      // sims::dot_poset("example-015-TL-4-right", S.cbegin(14), S.cend(14));
-    }
-    {
-      Sims1 S(congruence_kind::left);
-      S.presentation(temperley_lieb_monoid(4));
-      REQUIRE(S.number_of_congruences(14) == 79);
-    }
+    auto  rg = ReportGuard(false);
+    auto  p  = temperley_lieb_monoid(4);
+    Sims1 S(p);
+    REQUIRE(S.number_of_congruences(14) == 79);
+    // sims::dot_poset("example-014-TL-4-right", S.cbegin(14), S.cend(14));
+    presentation::reverse(p);
+    S.init(p);
+    REQUIRE(S.number_of_congruences(14) == 79);
   }
 
   LIBSEMIGROUPS_TEST_CASE("Sims1",
@@ -689,11 +665,11 @@ namespace libsemigroups {
 
     std::vector<word_type> e = {0_w, 1_w};
 
-    Sims1 S(congruence_kind::right);
+    Sims1 S;
     S.presentation(p).include(e);
     REQUIRE(S.number_of_congruences(5) == 2);
-    check_include(congruence_kind::right, p, e, 5);
-    check_include(congruence_kind::left, p, e, 5);
+    check_include(p, e, 5);
+
     S.exclude(e).clear_include();
     REQUIRE(S.number_of_congruences(5) == 4);
     S.clear_exclude();
@@ -713,18 +689,15 @@ namespace libsemigroups {
     presentation::add_rule(p, 000_w, 0_w);
     presentation::add_rule(p, 11_w, 1_w);
     presentation::add_rule(p, 0101_w, 0_w);
-    {
-      Sims1 T(congruence_kind::right);
-      T.presentation(p).include(01_w, 1_w);
-      REQUIRE(T.number_of_congruences(5) == 2);
-      check_include(congruence_kind::right, p, T.include(), 5);
-    }
-    {
-      Sims1 T(congruence_kind::left);
-      T.presentation(p).include(01_w, 1_w);
-      REQUIRE(T.number_of_congruences(5) == 2);
-      check_include(congruence_kind::left, p, T.include(), 5);
-    }
+    Sims1 T;
+    T.presentation(p).include(01_w, 1_w);
+    REQUIRE(T.number_of_congruences(5) == 2);
+    check_include(p, T.include(), 5);
+    presentation::reverse(p);
+    T.init(p).include(10_w, 1_w);
+    REQUIRE(T.number_of_congruences(5) == 2);
+    check_include(p, T.include(), 5);
+    // TODO not sure I updated this correctly
   }
 
   LIBSEMIGROUPS_TEST_CASE("Sims1",
@@ -741,18 +714,21 @@ namespace libsemigroups {
     presentation::add_rule(p, 0101_w, 0_w);
 
     {
-      Sims1 T(congruence_kind::right);
+      Sims1 T;
       T.presentation(p).include(0101_w, 0_w);
       REQUIRE(T.number_of_congruences(5) == 6);
     }
     {
-      Sims1 T(congruence_kind::left);
-      T.presentation(p).include(0101_w, 0_w);
+      Sims1 T;
+      presentation::reverse(p);
+      T.presentation(p).include(1010_w, 0_w);
       REQUIRE(T.include() == std::vector<word_type>({1010_w, 0_w}));
       REQUIRE(T.number_of_congruences(5) == 9);  // Verified with GAP
     }
-    check_include(congruence_kind::right, p, {0101_w, 0_w}, 5);
-    check_include(congruence_kind::left, p, {0101_w, 0_w}, 5);
+    presentation::reverse(p);
+    check_include(p, {0101_w, 0_w}, 5);
+    presentation::reverse(p);
+    check_include(p, {1010_w, 0_w}, 5);
   }
 
   LIBSEMIGROUPS_TEST_CASE("Sims1",
@@ -771,13 +747,15 @@ namespace libsemigroups {
     presentation::add_rule(p, "acbbACb", "e");
     presentation::add_rule(p, "ABabccc", "e");
 
-    Sims1 S(congruence_kind::right);
+    Sims1 S;
     S.presentation(p).include(to_word(p, "a"), to_word(p, "A"));
     S.presentation(p).include(to_word(p, "a"), to_word(p, "b"));
     REQUIRE(S.number_of_congruences(3) == 2);
 
-    check_include(congruence_kind::right, S.presentation(), S.include(), 3);
-    check_include(congruence_kind::left, S.presentation(), S.include(), 3);
+    check_include(S.presentation(), S.include(), 3);
+    presentation::reverse(p);
+    S.presentation(p);
+    check_include(S.presentation(), S.include(), 3);
   }
 
   LIBSEMIGROUPS_TEST_CASE("Sims1",
@@ -798,8 +776,9 @@ namespace libsemigroups {
     presentation::add_rule(p, 02_w, 00_w);
 
     std::vector<word_type> e = {1_w, 00_w};
-    check_include(congruence_kind::right, p, e, 11);
-    check_include(congruence_kind::left, p, e, 11);
+    check_include(p, e, 11);
+    presentation::reverse(p);
+    check_include(p, e, 11);
   }
 
   LIBSEMIGROUPS_TEST_CASE("Sims1", "021", "exceptions", "[quick][low-index]") {
@@ -809,27 +788,11 @@ namespace libsemigroups {
 
     Presentation<word_type> e;
     e.alphabet({0, 1});
-    // REQUIRE_THROWS_AS(Sims1(congruence_kind::right).presentation(p).include(e),
-    //                  LibsemigroupsException);
-    // REQUIRE_THROWS_AS(
-    //     Sims1(congruence_kind::right).presentation(p).long_rules(e),
-    //     LibsemigroupsException);
-    // REQUIRE_THROWS_AS(
-    //     Sims1(congruence_kind::right).long_rules(p).presentation(e),
-    //     LibsemigroupsException);
-    // REQUIRE_THROWS_AS(Sims1(congruence_kind::right).long_rules(p).include(e),
-    //                  LibsemigroupsException);
-
-    // REQUIRE_THROWS_AS(Sims1(congruence_kind::right).include(p).presentation(e),
-    //                   LibsemigroupsException);
-    // REQUIRE_THROWS_AS(Sims1(congruence_kind::right).include(p).long_rules(e),
-    //                  LibsemigroupsException);
-    // REQUIRE_NOTHROW(Sims1(congruence_kind::right).include(p).include(e));
-    REQUIRE_NOTHROW(
-        Sims1(congruence_kind::right).presentation(p).presentation(e));
+    REQUIRE_NOTHROW(Sims1().presentation(p).presentation(e));
+    // TODO uncomment or delete
     // REQUIRE_NOTHROW(Sims1(congruence_kind::right).long_rules(p).long_rules(e));
-    REQUIRE_NOTHROW(Sims1(congruence_kind::twosided));
-    Sims1 S(congruence_kind::right);
+    REQUIRE_NOTHROW(Sims1());
+    Sims1 S;
     REQUIRE_THROWS_AS(S.number_of_threads(0), LibsemigroupsException);
     RepOrc ro;
     REQUIRE_THROWS_AS(ro.number_of_threads(0), LibsemigroupsException);
@@ -880,7 +843,7 @@ namespace libsemigroups {
 
     p.contains_empty_word(false);
 
-    Sims1 C(congruence_kind::right);
+    Sims1 C;
     C.presentation(p);
     REQUIRE(C.presentation().rules.size() == 186);
 
@@ -888,9 +851,8 @@ namespace libsemigroups {
                 .number_of_congruences(81)
             == 601'265);
 
-    // TODO put into test-sims2.cpp
-    // C.kind(congruence_kind::twosided);
-    // REQUIRE(C.number_of_threads(1).number_of_congruences(81) == 75);
+    Sims2 sim2(p);
+    REQUIRE(C.number_of_threads(1).number_of_congruences(81) == 75);
   }
 
   LIBSEMIGROUPS_TEST_CASE("Sims1",
@@ -915,7 +877,7 @@ namespace libsemigroups {
     presentation::sort_rules(p);
     REQUIRE(p.rules.size() == 86);
 
-    Sims1 C(congruence_kind::right);
+    Sims1 C;
     C.presentation(p).long_rule_length(12);
     REQUIRE(C.number_of_threads(4).number_of_congruences(105) == 103'406);
   }
@@ -989,7 +951,7 @@ namespace libsemigroups {
     //                              11, 13, 13, 11, 2,  11, 11, 7, 13, 13,
     //                              7}));
 
-    Sims1 C(congruence_kind::right);
+    Sims1 C;
     C.presentation(p);
     REQUIRE(C.number_of_threads(std::thread::hardware_concurrency())
                 .number_of_congruences(105)
@@ -1054,7 +1016,7 @@ namespace libsemigroups {
     presentation::sort_each_rule(p);
     presentation::sort_rules(p);
 
-    Sims1 C(congruence_kind::right);
+    Sims1 C;
     C.presentation(p);
     REQUIRE(C.number_of_threads(std::thread::hardware_concurrency())
                 .number_of_congruences(131)
@@ -1074,7 +1036,7 @@ namespace libsemigroups {
     presentation::add_inverse_rules(p, "AaBbe", 'e');
     presentation::add_rule(p, "aaa", "e");
     presentation::add_rule(p, "baBBBABA", "e");
-    Sims1 C(congruence_kind::right);
+    Sims1 C;
     C.presentation(p);
     REQUIRE(C.number_of_congruences(10) == 3);
   }
@@ -1091,7 +1053,7 @@ namespace libsemigroups {
     presentation::add_inverse_rules(p, "AaBb");
     presentation::add_rule(p, "aaa", "");
     presentation::add_rule(p, "baBBBABA", "");
-    Sims1 C(congruence_kind::right);
+    Sims1 C;
     C.presentation(p);
     REQUIRE(C.number_of_congruences(10) == 3);
   }
@@ -1100,6 +1062,7 @@ namespace libsemigroups {
                           "029",
                           "fibonacci_semigroup(4, 6)",
                           "[standard][sims1][no-valgrind]") {
+    std::cout << "\n";            // So that the reporting looks good
     auto rg = ReportGuard(true);  // for code coverage
     auto p  = fibonacci_semigroup(4, 6);
     presentation::remove_duplicate_rules(p);
@@ -1109,7 +1072,7 @@ namespace libsemigroups {
     REQUIRE(p.rules.size() == 12);
     REQUIRE(p.rules[0].size() + p.rules[1].size() == 5);
 
-    Sims1 C(congruence_kind::right);
+    Sims1 C;
     C.presentation(p);
     REQUIRE(C.number_of_congruences(3) == 5);
 
@@ -1134,7 +1097,7 @@ namespace libsemigroups {
     presentation::add_rule_no_checks(p, 22_w, 2_w);
     presentation::add_rule_no_checks(p, 13_w, 11_w);
     p.validate();
-    Sims1 C(congruence_kind::right);
+    Sims1 C;
     C.presentation(p);
     REQUIRE(C.number_of_congruences(2) == 67);
     // sims::dot_poset("example-030-right", C.cbegin(2), C.cend(2));
@@ -1156,7 +1119,7 @@ namespace libsemigroups {
     p.alphabet_from_rules();
     p.validate();
 
-    Sims1 C(congruence_kind::right);
+    Sims1 C;
     C.presentation(p);
     REQUIRE(C.number_of_congruences(2) == 7);
   }
@@ -1175,7 +1138,7 @@ namespace libsemigroups {
     presentation::add_rule(p, 00504_w, {});
     presentation::add_rule(p, 0422152_w, {});
     presentation::add_rule(p, 1302444_w, {});
-    Sims1 S(congruence_kind::right);
+    Sims1 S;
     S.presentation(p);
     REQUIRE(S.number_of_congruences(3) == 14);
     REQUIRE(S.number_of_congruences(4) == 14);
@@ -1193,7 +1156,7 @@ namespace libsemigroups {
     presentation::add_rule(p, 00504_w, {});
     presentation::add_rule(p, 0422152_w, {});
     presentation::add_rule(p, 1302444_w, {});
-    Sims1 S(congruence_kind::right);
+    Sims1 S;
     S.presentation(p);
 
     Sims1 T(S);
@@ -1210,7 +1173,7 @@ namespace libsemigroups {
     S = std::move(U);
     REQUIRE(S.number_of_congruences(3) == 14);
 
-    Sims1 C(congruence_kind::right);
+    Sims1 C;
     REQUIRE_THROWS_AS(C.presentation(p).include(0127_w, 0_w),
                       LibsemigroupsException);
   }
@@ -1234,7 +1197,7 @@ namespace libsemigroups {
     // R := [ a*a*c^-1*a*c, a*c*b*b*a^-1*c^-1*b, a^-1*b^-1*a*b*c*c*c];
     // G := F/ R;
     // LowIndexSubgroups(G, 3); # returns 14
-    Sims1 S(congruence_kind::right);
+    Sims1 S;
     S.presentation(p);
     REQUIRE(S.number_of_congruences(3) == 14);
     REQUIRE(S.number_of_congruences(4) == 14);
@@ -1274,7 +1237,7 @@ namespace libsemigroups {
     q.validate();
 
     std::atomic_uint64_t num = 0;
-    Sims1                T(congruence_kind::right);
+    Sims1                T;
     T.presentation(q);
 
     REQUIRE(T.number_of_long_rules() == 0);
@@ -1340,7 +1303,7 @@ namespace libsemigroups {
     presentation::add_rule(p, 00504_w, {});
     presentation::add_rule(p, 0422152_w, {});
     presentation::add_rule(p, 1302444_w, {});
-    Sims1 S(congruence_kind::right);
+    Sims1 S;
     S.presentation(p);
 
     std::stringbuf buff;
@@ -1362,20 +1325,17 @@ namespace libsemigroups {
     presentation::add_rule(p, 11_w, 1_w);
     presentation::add_rule(p, 0101_w, 0_w);
 
-    {
-      Sims1 S(congruence_kind::right);
-      S.presentation(p);
-      verify_forward_iterator_requirements(S.cbegin(10));
-      auto it = S.cbegin(10);
-      REQUIRE(it->number_of_nodes() == 10);
-    }
-    {
-      Sims1 S(congruence_kind::left);
-      S.presentation(p);
-      verify_forward_iterator_requirements(S.cbegin(10));
-      auto it = S.cbegin(10);
-      REQUIRE(it->number_of_nodes() == 10);
-    }
+    Sims1 S;
+    S.presentation(p);
+    verify_forward_iterator_requirements(S.cbegin(10));
+    auto it = S.cbegin(10);
+    REQUIRE(it->number_of_nodes() == 10);
+
+    presentation::reverse(p);
+    S.init(p);
+    verify_forward_iterator_requirements(S.cbegin(10));
+    it = S.cbegin(10);
+    REQUIRE(it->number_of_nodes() == 10);
   }
 
   // Takes about 4s
@@ -1462,7 +1422,7 @@ namespace libsemigroups {
       }
     };
 
-    auto SS = Sims1(congruence_kind::right).presentation(p);
+    auto SS = Sims1(p);
 
     SS.for_each(22, hook);
     REQUIRE(all.size() == 24);
@@ -1610,14 +1570,14 @@ namespace libsemigroups {
     auto rg = ReportGuard(false);
     auto p  = rectangular_band(2, 2);
     REQUIRE(!p.contains_empty_word());
-    Sims1 S(congruence_kind::right);
+    Sims1 S;
     S.presentation(p);
 
     REQUIRE(S.number_of_congruences(4) == 6);
 
     p.contains_empty_word(true);
 
-    Sims1 T(congruence_kind::right);
+    Sims1 T;
     T.presentation(p);
     REQUIRE(T.number_of_congruences(5) == 9);
     // sims::dot_poset("example-043-rectangular-band^1", T.cbegin(5),
@@ -1693,7 +1653,7 @@ namespace libsemigroups {
     presentation::add_rule(p, "ab", "");
     presentation::add_rule(p, "abb", "");
 
-    Sims1 S(congruence_kind::right);
+    Sims1 S;
     S.presentation(p);
 
     REQUIRE(S.number_of_congruences(10) == 1);
@@ -1758,7 +1718,7 @@ namespace libsemigroups {
     auto U = to_froidure_pin<Transf<5>>(dd);
     REQUIRE(U.size() == 5);
 
-    Sims1 C(congruence_kind::right);
+    Sims1 C;
     C.presentation(p);
     REQUIRE(C.number_of_congruences(5) == 9);
     uint64_t strictly_cyclic_count     = 0;
@@ -1820,13 +1780,12 @@ namespace libsemigroups {
                   << std::string(72, '#') << std::endl;
 
         auto  p = rectangular_band(m, n);
-        Sims1 S(congruence_kind::left);
-        S.presentation(p);
+        Sims1 S(p);
         REQUIRE(S.number_of_threads(4).number_of_congruences(m * n)
                 == left[m][n]);
-        Sims1 T(congruence_kind::right);
-        T.presentation(p);
-        REQUIRE(T.number_of_threads(4).number_of_congruences(m * n)
+        presentation::reverse(p);
+        S.init(p);
+        REQUIRE(S.number_of_threads(4).number_of_congruences(m * n)
                 == left[n][m]);
       }
     }
@@ -1845,16 +1804,13 @@ namespace libsemigroups {
       auto q = stellar_monoid(n);
       p.rules.insert(p.rules.end(), q.rules.cbegin(), q.rules.cend());
       REQUIRE(p.alphabet().size() == n + 1);
-      {
-        Sims1 S(congruence_kind::left);
-        S.presentation(p).number_of_threads(4);
-        REQUIRE(S.number_of_congruences(size[n]) == num_left[n]);
-      }
-      {
-        Sims1 S(congruence_kind::right);
-        S.presentation(p).number_of_threads(4);
-        REQUIRE(S.number_of_congruences(size[n]) == num_right[n]);
-      }
+      presentation::reverse(p);
+      Sims1 S;
+      S.presentation(p).number_of_threads(4);
+      REQUIRE(S.number_of_congruences(size[n]) == num_left[n]);
+      presentation::reverse(p);
+      S.presentation(p);
+      REQUIRE(S.number_of_congruences(size[n]) == num_right[n]);
     }
   }
 
@@ -1869,17 +1825,13 @@ namespace libsemigroups {
     std::array<uint64_t, 10> const num_right = {0, 0, 0, 1'214, 1'429'455'689};
 
     for (size_t n = 3; n < 5; ++n) {
-      auto p = to_presentation<word_type>(stylic_monoid(n));
-      {
-        Sims1 S(congruence_kind::right);
-        S.presentation(p).number_of_threads(4);
-        REQUIRE(S.number_of_congruences(size[n]) == num_right[n]);
-      }
-      {
-        Sims1 S(congruence_kind::left);
-        S.presentation(p).number_of_threads(4);
-        REQUIRE(S.number_of_congruences(size[n]) == num_left[n]);
-      }
+      auto  p = to_presentation<word_type>(stylic_monoid(n));
+      Sims1 S;
+      S.presentation(p).number_of_threads(4);
+      REQUIRE(S.number_of_congruences(size[n]) == num_right[n]);
+      presentation::reverse(p);
+      S.presentation(p).number_of_threads(4);
+      REQUIRE(S.number_of_congruences(size[n]) == num_left[n]);
     }
   }
 
@@ -1894,7 +1846,7 @@ namespace libsemigroups {
     presentation::add_rule(p, "xx", "");
     presentation::add_rule(p, "yyy", "");
     presentation::add_rule(p, "xyxyxyxy", "yyxyyxyyx");
-    Sims1 S(congruence_kind::right);
+    Sims1 S;
     S.presentation(p).number_of_threads(1);
     REQUIRE(S.number_of_congruences(50) == 75'971);
   }
@@ -1926,7 +1878,7 @@ namespace libsemigroups {
                                          "YxyyXXYYxyxYxyyXYXy",
                                          "yXYXyyxYxyxYYXXyyx"}));
 
-    Sims1 S(congruence_kind::right);
+    Sims1 S;
     S.presentation(p).number_of_threads(4).long_rule_length(37);
     REQUIRE(S.number_of_congruences(10) == 1);
   }
@@ -1943,7 +1895,7 @@ namespace libsemigroups {
     for (size_t n = 3; n < 7; ++n) {
       auto p = temperley_lieb_monoid(n);
       p.contains_empty_word(true);
-      Sims1 S(congruence_kind::right);
+      Sims1 S;
       S.presentation(p).number_of_threads(4);
       REQUIRE(S.number_of_congruences(size[n]) == num_right[n]);
     }
@@ -1953,18 +1905,14 @@ namespace libsemigroups {
                           "053",
                           "partial_transformation_monoid(3)",
                           "[extreme][low-index]") {
-    auto rg = ReportGuard(true);
-    auto p  = partial_transformation_monoid(3, author::Machine);
-    {
-      Sims1 S(congruence_kind::right);
-      S.presentation(p).number_of_threads(4);
-      REQUIRE(S.number_of_congruences(64) == 92'703);
-    }
-    {
-      Sims1 S(congruence_kind::left);
-      S.presentation(p).number_of_threads(4);
-      REQUIRE(S.number_of_congruences(64) == 371);
-    }
+    auto  rg = ReportGuard(true);
+    auto  p  = partial_transformation_monoid(3, author::Machine);
+    Sims1 S;
+    S.presentation(p).number_of_threads(4);
+    REQUIRE(S.number_of_congruences(64) == 92'703);
+    presentation::reverse(p);
+    S.presentation(p).number_of_threads(4);
+    REQUIRE(S.number_of_congruences(64) == 371);
   }
 
   LIBSEMIGROUPS_TEST_CASE("Sims1",
@@ -1979,8 +1927,9 @@ namespace libsemigroups {
                             Transf_({4, 1, 2, 3, 4}),
                             Transf_({1, 1, 2, 3, 4})});
     REQUIRE(S.size() == 625);
-    auto  p = to_presentation<word_type>(S);
-    Sims1 C(congruence_kind::left);
+    auto p = to_presentation<word_type>(S);
+    presentation::reverse(p);
+    Sims1 C(p);
     REQUIRE(presentation::longest_rule_length(p) == 18);
     REQUIRE(presentation::shortest_rule_length(p) == 3);
 
@@ -2012,12 +1961,10 @@ namespace libsemigroups {
     auto p  = plactic_monoid(3);
     for (size_t n = 2; n < 9; ++n) {
       {
-        Sims1 S(congruence_kind::right);
+        Sims1 S;
         S.presentation(p).number_of_threads(4);
         REQUIRE(S.number_of_congruences(n) == num[n]);
-      }
-      {
-        Sims1 S(congruence_kind::left);
+        presentation::reverse(p);
         S.presentation(p).number_of_threads(4);
         REQUIRE(S.number_of_congruences(n) == num[n]);
       }
@@ -2034,16 +1981,12 @@ namespace libsemigroups {
     auto rg = ReportGuard(true);
     auto p  = plactic_monoid(4);
     for (size_t n = 2; n < 7; ++n) {
-      {
-        Sims1 S(congruence_kind::right);
-        S.presentation(p).number_of_threads(4);
-        REQUIRE(S.number_of_congruences(n) == num[n]);
-      }
-      {
-        Sims1 S(congruence_kind::left);
-        S.presentation(p).number_of_threads(4);
-        REQUIRE(S.number_of_congruences(n) == num[n]);
-      }
+      Sims1 S;
+      S.presentation(p).number_of_threads(4);
+      REQUIRE(S.number_of_congruences(n) == num[n]);
+      presentation::reverse(p);
+      S.presentation(p).number_of_threads(4);
+      REQUIRE(S.number_of_congruences(n) == num[n]);
     }
   }
 
@@ -2057,16 +2000,12 @@ namespace libsemigroups {
     auto rg = ReportGuard(true);
     auto p  = plactic_monoid(5);
     for (size_t n = 3; n < 6; ++n) {
-      {
-        Sims1 S(congruence_kind::right);
-        S.presentation(p).number_of_threads(4);
-        REQUIRE(S.number_of_congruences(n) == num[n]);
-      }
-      {
-        Sims1 S(congruence_kind::left);
-        S.presentation(p).number_of_threads(4);
-        REQUIRE(S.number_of_congruences(n) == num[n]);
-      }
+      Sims1 S;
+      S.presentation(p).number_of_threads(4);
+      REQUIRE(S.number_of_congruences(n) == num[n]);
+      presentation::reverse(p);
+      S.presentation(p).number_of_threads(4);
+      REQUIRE(S.number_of_congruences(n) == num[n]);
     }
   }
 
@@ -2080,16 +2019,13 @@ namespace libsemigroups {
     auto rg = ReportGuard(true);
     auto p  = plactic_monoid(6);
     for (size_t n = 2; n < 5; ++n) {
-      {
-        Sims1 S(congruence_kind::right);
-        S.presentation(p).number_of_threads(4);
-        REQUIRE(S.number_of_congruences(n) == num[n]);
-      }
-      {
-        Sims1 S(congruence_kind::left);
-        S.presentation(p).number_of_threads(4);
-        REQUIRE(S.number_of_congruences(n) == num[n]);
-      }
+      Sims1 S;
+      S.presentation(p).number_of_threads(4);
+      REQUIRE(S.number_of_congruences(n) == num[n]);
+      S.presentation(p).number_of_threads(4);
+      presentation::reverse(p);
+      S.presentation(p).number_of_threads(4);
+      REQUIRE(S.number_of_congruences(n) == num[n]);
     }
   }
 
@@ -2103,16 +2039,12 @@ namespace libsemigroups {
     auto rg = ReportGuard(true);
     auto p  = plactic_monoid(7);
     for (size_t n = 2; n < 4; ++n) {
-      {
-        Sims1 S(congruence_kind::right);
-        S.presentation(p).number_of_threads(4);
-        REQUIRE(S.number_of_congruences(n) == num[n]);
-      }
-      {
-        Sims1 S(congruence_kind::left);
-        S.presentation(p).number_of_threads(4);
-        REQUIRE(S.number_of_congruences(n) == num[n]);
-      }
+      Sims1 S;
+      S.presentation(p).number_of_threads(4);
+      REQUIRE(S.number_of_congruences(n) == num[n]);
+      presentation::reverse(p);
+      S.presentation(p).number_of_threads(4);
+      REQUIRE(S.number_of_congruences(n) == num[n]);
     }
   }
 
@@ -2124,16 +2056,12 @@ namespace libsemigroups {
     auto                          rg  = ReportGuard(true);
     auto                          p   = plactic_monoid(8);
     for (size_t n = 2; n < 4; ++n) {
-      {
-        Sims1 S(congruence_kind::right);
-        S.presentation(p).number_of_threads(4);
-        REQUIRE(S.number_of_congruences(n) == num[n]);
-      }
-      {
-        Sims1 S(congruence_kind::left);
-        S.presentation(p).number_of_threads(4);
-        REQUIRE(S.number_of_congruences(n) == num[n]);
-      }
+      Sims1 S;
+      S.presentation(p).number_of_threads(4);
+      REQUIRE(S.number_of_congruences(n) == num[n]);
+      presentation::reverse(p);
+      S.presentation(p).number_of_threads(4);
+      REQUIRE(S.number_of_congruences(n) == num[n]);
     }
   }
 
@@ -2148,7 +2076,7 @@ namespace libsemigroups {
     auto rg = ReportGuard(true);
     auto p  = chinese_monoid(3);
     for (size_t n = 2; n < 8; ++n) {
-      Sims1 S(congruence_kind::right);
+      Sims1 S;
       S.presentation(p).number_of_threads(4);
       REQUIRE(S.number_of_congruences(n) == num[n]);
     }
@@ -2166,7 +2094,7 @@ namespace libsemigroups {
     auto rg = ReportGuard(true);
     auto p  = chinese_monoid(4);
     for (size_t n = 3; n < 7; ++n) {
-      Sims1 S(congruence_kind::right);
+      Sims1 S;
       S.presentation(p).number_of_threads(4);
       REQUIRE(S.number_of_congruences(n) == num[n]);
     }
@@ -2183,7 +2111,7 @@ namespace libsemigroups {
     auto rg = ReportGuard(true);
     auto p  = chinese_monoid(5);
     for (size_t n = 3; n < 6; ++n) {
-      Sims1 S(congruence_kind::right);
+      Sims1 S;
       S.presentation(p).number_of_threads(4);
       REQUIRE(S.number_of_congruences(n) == num[n]);
     }
@@ -2200,7 +2128,7 @@ namespace libsemigroups {
     auto rg = ReportGuard(true);
     auto p  = chinese_monoid(6);
     for (size_t n = 3; n < 5; ++n) {
-      Sims1 S(congruence_kind::right);
+      Sims1 S;
       S.presentation(p).number_of_threads(4);
       REQUIRE(S.number_of_congruences(n) == num[n]);
     }
@@ -2215,7 +2143,7 @@ namespace libsemigroups {
     auto                          rg  = ReportGuard(true);
     auto                          p   = chinese_monoid(7);
     for (size_t n = 2; n < 4; ++n) {
-      Sims1 S(congruence_kind::right);
+      Sims1 S;
       S.presentation(p).number_of_threads(4);
       REQUIRE(S.number_of_congruences(n) == num[n]);
     }
@@ -2229,7 +2157,7 @@ namespace libsemigroups {
     auto                          rg  = ReportGuard(true);
     auto                          p   = chinese_monoid(8);
     for (size_t n = 2; n < 4; ++n) {
-      Sims1 S(congruence_kind::right);
+      Sims1 S;
       S.presentation(p).number_of_threads(4);
       REQUIRE(S.number_of_congruences(n) == num[n]);
     }
@@ -2251,7 +2179,7 @@ namespace libsemigroups {
       Presentation<word_type> p;
       p.contains_empty_word(true);
       p.alphabet(n);
-      Sims1 S(congruence_kind::right);
+      Sims1 S;
       S.presentation(p);
       REQUIRE(S.number_of_congruences(3) == num[n]);
     }
@@ -2318,7 +2246,7 @@ namespace libsemigroups {
     presentation::add_rule(p, 11_w, 1_w);
     presentation::add_rule(p, 0101_w, 0_w);
 
-    Sims1 S(congruence_kind::right);
+    Sims1 S;
     REQUIRE(S.presentation(p)
                 .cbegin_long_rules(4)
                 .number_of_threads(1)
@@ -2331,7 +2259,7 @@ namespace libsemigroups {
     REQUIRE(S.number_of_long_rules() == 2);
     REQUIRE(S.presentation().rules.size() == 6);
 
-    S = Sims1(congruence_kind::left);
+    presentation::reverse(p);
     REQUIRE(S.presentation(p)
                 .cbegin_long_rules(4)
                 .number_of_threads(2)
@@ -2344,6 +2272,7 @@ namespace libsemigroups {
                           "temperley_lieb_monoid(3) - n = minimal rep "
                           "(single-threaded, reporting on)",
                           "[standard][sims1]") {
+    std::cout << "\n";  // So that the reporting looks good
     auto rg = ReportGuard(true);
 
     for (size_t n = 3; n <= 3; ++n) {
@@ -2372,7 +2301,7 @@ namespace libsemigroups {
     Presentation<word_type> p;
     p.contains_empty_word(true);
     p.alphabet(2);
-    Sims1 S(congruence_kind::right);
+    Sims1 S;
     S.presentation(p);
     std::cout << "\n";  // So that the reporting looks good
     REQUIRE(S.number_of_threads(2).number_of_congruences(4) == 5'477);
@@ -2386,7 +2315,7 @@ namespace libsemigroups {
     auto                           rg  = ReportGuard(false);
     size_t                         n   = 4;
     auto                           p   = symmetric_group(n, author::Carmichael);
-    Sims1                          C(congruence_kind::right);
+    Sims1                          C;
     C.presentation(p).number_of_threads(4);
     REQUIRE(C.number_of_congruences(factorial(n)) == num[n]);
   }
@@ -2397,7 +2326,7 @@ namespace libsemigroups {
                           "[quick][low-index]") {
     Presentation<word_type> p;
     p.alphabet(0);
-    Sims1 S(congruence_kind::right);
+    Sims1 S;
     REQUIRE_THROWS_AS(S.presentation(p), LibsemigroupsException);
     REQUIRE_THROWS_AS(S.number_of_congruences(1), LibsemigroupsException);
     REQUIRE_THROWS_AS(S.cbegin(2), LibsemigroupsException);
@@ -2443,7 +2372,7 @@ namespace libsemigroups {
         // Cyclic groups
         auto p = monogenic_semigroup(m, r);
 
-        Sims1 C(congruence_kind::right);
+        Sims1 C;
         C.presentation(p);
         // std::cout << C.number_of_congruences(m + r) << ", ";
         REQUIRE(C.number_of_congruences(m + r) == num[m - 1][r - 1]);
@@ -2474,7 +2403,8 @@ namespace libsemigroups {
       auto it = knuth_bendix::redundant_rule(p, std::chrono::milliseconds(100));
       p.rules.erase(it, it + 2);
     } while (presentation::length(p) > 800);
-    Sims1 C(congruence_kind::left);
+    presentation::reverse(p);
+    Sims1 C(p);
     C.presentation(p).number_of_threads(4);
     REQUIRE(C.number_of_congruences(624) == 0);
   }
@@ -2610,7 +2540,7 @@ namespace libsemigroups {
     presentation::remove_trivial_rules(p);
     REQUIRE(p.rules.size() == 50);
 
-    Sims1 S(congruence_kind::right);
+    Sims1 S;
     REQUIRE(S.presentation(p).number_of_threads(4).number_of_congruences(126)
             == 37'951);
   }
@@ -2629,7 +2559,7 @@ namespace libsemigroups {
     presentation::remove_trivial_rules(p);
     REQUIRE(p.rules.size() == 72);
 
-    Sims1 S(congruence_kind::right);
+    Sims1 S;
     REQUIRE(S.presentation(p).number_of_threads(4).number_of_congruences(462)
             == 37'951);
   }
@@ -2685,7 +2615,7 @@ namespace libsemigroups {
     presentation::add_rule(p, "abbabaaBaaB", "bAbAAbA");
     presentation::add_rule(p, "babaaBaaBaB", "BAbAbAA");
 
-    Sims1 S(congruence_kind::right);
+    Sims1 S;
     S.presentation(p);
     REQUIRE(S.number_of_threads(6).number_of_congruences(12) == 6);
 
@@ -2706,7 +2636,7 @@ namespace libsemigroups {
     ToddCoxeter tc(congruence_kind::twosided, p);
     REQUIRE(tc.number_of_classes() == 1);
 
-    Sims1 S(congruence_kind::right);
+    Sims1 S;
     S.presentation(p);
     REQUIRE(S.number_of_threads(4).number_of_congruences(20) == 1);
   }
@@ -2733,7 +2663,7 @@ namespace libsemigroups {
     ToddCoxeter tc(congruence_kind::twosided, p);
     REQUIRE(tc.number_of_classes() == 7'920);
 
-    Sims1 S(congruence_kind::right);
+    Sims1 S;
     S.presentation(p);
     REQUIRE(S.number_of_threads(4).number_of_congruences(12) == 24);
   }
@@ -2759,7 +2689,7 @@ namespace libsemigroups {
     ToddCoxeter tc(congruence_kind::twosided, p);
     REQUIRE(tc.number_of_classes() == 7'920);
 
-    Sims1 S(congruence_kind::right);
+    Sims1 S;
     S.presentation(p);
     REQUIRE(S.number_of_threads(4).number_of_congruences(16) == 24);
   }
@@ -2775,7 +2705,7 @@ namespace libsemigroups {
     presentation::sort_each_rule(p);
     presentation::sort_rules(p);
 
-    Sims1 S(congruence_kind::right);
+    Sims1 S;
     S.presentation(p);
     REQUIRE(S.number_of_threads(4).number_of_congruences(10) == 69);
     REQUIRE(S.number_of_threads(4).number_of_congruences(11) == 74);
@@ -2795,7 +2725,7 @@ namespace libsemigroups {
                                     size_t                           skip) {
     SuppressReportFor suppressor("FroidurePin");
 
-    auto   T              = Sims1(congruence_kind::right).presentation(p);
+    auto   T              = Sims1(p);
     size_t skipped_so_far = 0;
 
     auto hook = [&](word_graph_type const& x) {
@@ -2914,7 +2844,7 @@ namespace libsemigroups {
                101122210_w, 011122210_w, 101222120_w, 011222120_w, 101222210_w,
                011222210_w, 102221220_w, 012221220_w};
 
-    auto S = Sims1(congruence_kind::right).presentation(p);
+    auto S = Sims1(p);
     REQUIRE(S.number_of_congruences(31) == 0);
   }
 
@@ -2955,7 +2885,8 @@ namespace libsemigroups {
                    .word_graph();
 
       // sigma_i = (i, i + 1)
-      // theta_i = Bipartition([[i, i + 1], [-i, -(i + 1)], [j, -j], j neq i]);
+      // theta_i = Bipartition([[i, i + 1], [-i, -(i + 1)], [j, -j], j neq
+      // i]);
 
       REQUIRE(d.number_of_nodes() == min_degrees[n]);
     }
@@ -2989,7 +2920,7 @@ namespace libsemigroups {
     auto q = full_transformation_monoid(8);
 
     std::array<uint64_t, 9> const num = {0, 1, 2, 3, 3, 3, 3, 0, 0};
-    Sims1                         s(congruence_kind::right, p);
+    Sims1                         s(p);
     for (size_t n = 1; n < num.size(); ++n) {
       s.presentation(q);
       REQUIRE(s.number_of_congruences(n) == num[n]);
@@ -3025,7 +2956,7 @@ namespace libsemigroups {
     presentation::add_rule(p, "fc"_p, "cf");
     presentation::add_rule(p, "fd"_p, "df");
     presentation::add_rule(p, "fe"_p, "ef");
-    Sims1 s(congruence_kind::right, p);
+    Sims1 s(p);
 
     REQUIRE(s.number_of_threads(4).number_of_congruences(std::pow(2, 6)) == 0);
   }
@@ -3039,7 +2970,9 @@ namespace libsemigroups {
     S.presentation(fpsemigroup::temperley_lieb_monoid(4));
     REQUIRE(S.number_of_congruences(14) == 9);
 
-    Sims1 T(congruence_kind::left, fpsemigroup::temperley_lieb_monoid(4));
+    auto p = fpsemigroup::temperley_lieb_monoid(4);
+    presentation::reverse(p);
+    Sims1 T(p);
     REQUIRE(T.number_of_congruences(14) == 79);
 
     std::atomic_size_t count = 0;
@@ -3071,8 +3004,8 @@ namespace libsemigroups {
     REQUIRE(S.number_of_congruences(256) == 11);
   }
 
-  // Not sure if the next test case runs to completion or not, JDM ran this for
-  // 2m30s and it didn't terminate.
+  // Not sure if the next test case runs to completion or not, JDM ran this
+  // for 2m30s and it didn't terminate.
   LIBSEMIGROUPS_TEST_CASE("Sims2",
                           "095",
                           "2-sided T_4 Aizenstat presentation",
@@ -3085,8 +3018,8 @@ namespace libsemigroups {
     REQUIRE(S.number_of_congruences(256) == 11);
   }
 
-  // Not sure if the next test case runs to completion or not, JDM ran this for
-  // 2m30s and it didn't terminate.
+  // Not sure if the next test case runs to completion or not, JDM ran this
+  // for 2m30s and it didn't terminate.
   LIBSEMIGROUPS_TEST_CASE("Sims2",
                           "096",
                           "2-sided S_6 Burnside+Miller presentation",
@@ -3265,7 +3198,7 @@ namespace libsemigroups {
     // sims::dot_poset("example-104-baaabaaa=aba", S.cbegin(4), S.cend(4));
 
     std::atomic_size_t count = 0;
-    Sims1              T(congruence_kind::right, p);
+    Sims1              T(p);
     REQUIRE(T.number_of_congruences(4) == 977);
     T.for_each(4, [&](auto const& wg) {
       count += sims::is_two_sided_congruence(T.presentation(), wg);
@@ -3310,7 +3243,8 @@ namespace libsemigroups {
 
     Sims2 S(p);
 
-    // sims::dot_poset("example-105-baabbaa=a-2-sided", S.cbegin(8), S.cend(8));
+    // sims::dot_poset("example-105-baabbaa=a-2-sided", S.cbegin(8),
+    // S.cend(8));
     // TODO: check correctness
     // Takes a long time to run, seems like we get all the congruences quite
     // early on, but then spend very long checking that there are no more.
@@ -3386,8 +3320,8 @@ namespace libsemigroups {
     REQUIRE((sims::right_generating_pairs(p, *it) | not_in_p | rx::to_vector())
             == std::vector<relation_type>({{10_w, 1_w}}));
 
-    // Note that all the rules below follow from the rules in the presentation,
-    // and so this congruence is the trivial one.
+    // Note that all the rules below follow from the rules in the
+    // presentation, and so this congruence is the trivial one.
     ++it;
     REQUIRE((sims::right_generating_pairs(*it) | rx::to_vector())
             == std::vector<relation_type>({{00_w, {}},

@@ -21,7 +21,6 @@
 // monoids.
 
 // TODO:
-// * withdraw left
 // * doc
 // * iwyu
 // * const
@@ -59,7 +58,7 @@
 #include "felsch-graph.hpp"     // for FelschGraph
 #include "presentation.hpp"     // for Presentation, Presentati...
 #include "to-presentation.hpp"  // for to_presentation
-#include "types.hpp"            // for word_type, congruence_kind
+#include "types.hpp"            // for word_type,
 #include "word-graph.hpp"       // for WordGraph
 
 #include "matrix.hpp"
@@ -925,32 +924,21 @@ namespace libsemigroups {
     using felsch_graph_type
         = FelschGraph<word_type, node_type, std::vector<Definition>>;
 
-   private:
-    congruence_kind _kind;
-
    public:
     //! Default constructor
     Sims1() = default;
 
-    // TODO(doc)
     using SimsBase::init;
 
-    //! Construct from \ref congruence_kind.
-    //!
-    //! \param ck the handedness of the congruences (left or right)
-    //!
-    //! \throws LibsemigroupsException if \p ck is \ref
-    //! congruence_kind::twosided
-    //!
-    //! \sa \ref cbegin and \ref cend.
-    explicit Sims1(congruence_kind ck) : SimsBase(), _kind() {
-      kind(ck);
+    // TODO(doc)
+    template <typename Word>
+    explicit Sims1(Presentation<Word> const& p) : Sims1() {
+      presentation(p);
     }
 
-    // TODO(doc)
-    template <typename W>
-    Sims1(congruence_kind ck, Presentation<W> p) : Sims1(ck) {
-      presentation(p);
+    template <typename Word>
+    explicit Sims1(Presentation<Word> const&& p) : Sims1() {
+      presentation(std::move(p));
     }
 
     //! Default copy constructor.
@@ -968,58 +956,18 @@ namespace libsemigroups {
     // No doc
     ~Sims1() = default;
 
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
     template <typename PresentationOfSomeKind>
-    Sims1& presentation(PresentationOfSomeKind const& p) {
-      SimsBase::presentation(p);
-      reverse_if_left(_presentation);
+    Sims1& init(PresentationOfSomeKind const& p) {
+      init();
+      presentation(p);
       return *this;
     }
-
-    // Must accept at least one argument so that we're not calling the 0-arg
-    // include() which is const!
-    template <typename Arg, typename... Args>
-    Sims1& include(Arg arg, Args&&... args) {
-      SimsBase::include(arg, std::forward<Args>(args)...);
-      reverse_if_left(_include);
-      return *this;
-    }
-
-    // Must accept at least one argument so that we're not calling the 0-arg
-    // exclude() which is const!
-    template <typename Arg, typename... Args>
-    Sims1& exclude(Arg arg, Args&&... args) {
-      SimsBase::exclude(arg, std::forward<Args>(args)...);
-      reverse_if_left(_exclude);
-      return *this;
-    }
-
-    // This is required because "using SimsBase::include;" tries to
-    // drag in all of the include mem fns from SimsBase, which clash with
-    // the fns above.
-    [[nodiscard]] std::vector<word_type> const& include() const noexcept {
-      return SimsBase::include();
-    }
-
-    // This is required because "using SimsBase::exclude;" tries to
-    // drag in all of the include mem fns from SimsBase, which clash with
-    // the fns above.
-    [[nodiscard]] std::vector<word_type> const& exclude() const noexcept {
-      return SimsBase::exclude();
-    }
-#endif
 
     using SimsBase::cbegin_long_rules;
+    using SimsBase::exclude;
+    using SimsBase::include;
     using SimsBase::number_of_threads;
     using SimsBase::presentation;
-
-    // TODO(doc)
-    [[nodiscard]] congruence_kind kind() const noexcept {
-      return _kind;
-    }
-
-    // TODO(doc)
-    Sims1& kind(congruence_kind ck);
 
     //! Returns the number of one-sided congruences with up to a given
     //! number of classes.
@@ -1159,25 +1107,6 @@ namespace libsemigroups {
     //! \sa
     //! \ref cbegin
     using SimsBase::cend;
-
-   private:
-    void reverse(std::vector<word_type>& vec) {
-      std::for_each(vec.begin(), vec.end(), [](word_type& w) {
-        std::reverse(w.begin(), w.end());
-      });
-    }
-
-    void reverse_if_left(std::vector<word_type>& vec) {
-      if (kind() == congruence_kind::left) {
-        reverse(vec);
-      }
-    }
-
-    void reverse_if_left(Presentation<word_type>& p) {
-      if (kind() == congruence_kind::left) {
-        presentation::reverse(p);
-      }
-    }
   };
 
   class Sims2 : public detail::SimsBase<Sims2> {

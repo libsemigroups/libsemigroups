@@ -36,9 +36,8 @@
 #include <thread>      // for thread, yield
 #include <utility>     // for swap
 
-#include "libsemigroups/constants.hpp"  // for operator!=, ope...
-#include "libsemigroups/debug.hpp"      // for LIBSEMIGROUPS_A...
-#include "libsemigroups/detail/iterator.hpp"
+#include "libsemigroups/constants.hpp"        // for operator!=, ope...
+#include "libsemigroups/debug.hpp"            // for LIBSEMIGROUPS_A...
 #include "libsemigroups/exception.hpp"        // for LIBSEMIGROUPS_E...
 #include "libsemigroups/felsch-graph.hpp"     // for FelschGraph
 #include "libsemigroups/froidure-pin.hpp"     // for FroidurePin
@@ -1000,20 +999,6 @@ namespace libsemigroups {
   }  // namespace detail
 
   ////////////////////////////////////////////////////////////////////////
-  // Sims1
-  ////////////////////////////////////////////////////////////////////////
-
-  Sims1& Sims1::kind(congruence_kind ck) {
-    if (kind() != ck) {
-      presentation::reverse(_presentation);
-      reverse(_include);
-      reverse(_exclude);
-    }
-    _kind = ck;
-    return *this;
-  }
-
-  ////////////////////////////////////////////////////////////////////////
   // Sims2
   ////////////////////////////////////////////////////////////////////////
 
@@ -1261,9 +1246,7 @@ namespace libsemigroups {
       return false;
     };
 
-    auto result = Sims1(congruence_kind::right)
-                      .settings_copy_from(*this)
-                      .find_if(_max, hook);
+    auto result = Sims1().settings_copy_from(*this).find_if(_max, hook);
 
     if (result.number_of_active_nodes() == 0) {
       report_default(
