@@ -157,7 +157,6 @@ namespace libsemigroups {
       Stats& operator=(Stats const&) noexcept = default;
       Stats& operator=(Stats&&) noexcept      = default;
 
-      // size_t   max_stack_depth; // TODO Move to RewriterBase
       size_t   max_word_length;
       size_t   max_active_word_length;
       size_t   max_active_rules;
@@ -266,8 +265,9 @@ namespace libsemigroups {
     std::unordered_set<internal_char_type> _alphabet;
     mutable std::atomic<bool>              _cached_confluent;
     mutable std::atomic<bool>              _confluence_known;
-    std::atomic<bool>                      _requires_alphabet;
+    size_t                                 _max_stack_depth;
     std::stack<Rule*>                      _pending_rules;
+    std::atomic<bool>                      _requires_alphabet;
 
     using alphabet_citerator
         = std::unordered_set<internal_char_type>::const_iterator;
@@ -321,6 +321,10 @@ namespace libsemigroups {
 
     [[nodiscard]] bool confluence_known() const {
       return _confluence_known;
+    }
+
+    [[nodiscard]] size_t max_stack_depth() const {
+      return _max_stack_depth;
     }
 
     bool add_pending_rule(Rule* rule);

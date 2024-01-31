@@ -418,8 +418,8 @@ namespace libsemigroups {
         // rc.divider();
         // FIXME these are mostly 0, and should be obtained from the rewriter
         // probably
-        // rc("KnuthBendix: max stack depth        {}\n",
-        //    group_digits(_rewriter.stats().max_stack_depth));
+        rc("KnuthBendix: max stack depth        {}\n",
+           group_digits(_rewriter.max_stack_depth()));
         rc("KnuthBendix: max rule length        {}\n",
            group_digits(_rewriter.stats().max_word_length));
         rc("KnuthBendix: max active rule length {}\n",

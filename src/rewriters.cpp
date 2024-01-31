@@ -61,7 +61,6 @@ namespace libsemigroups {
   }
 
   Rules::Stats& Rules::Stats::init() noexcept {
-    // max_stack_depth        = 0; //TODO Move to RewriterBase
     max_word_length        = 0;
     max_active_word_length = 0;
     max_active_rules       = 0;
@@ -195,6 +194,7 @@ namespace libsemigroups {
       Rules::add_inactive_rule(_pending_rules.top());
       _pending_rules.pop();
     }
+    _max_stack_depth  = 0;
     _cached_confluent = false;
     _confluence_known = false;
     return *this;
@@ -224,6 +224,7 @@ namespace libsemigroups {
     LIBSEMIGROUPS_ASSERT(!rule->active());
     if (*rule->lhs() != *rule->rhs()) {
       _pending_rules.emplace(rule);
+      _max_stack_depth = std::max(_max_stack_depth, _pending_rules.size());
       return true;
     } else {
       Rules::add_inactive_rule(rule);
@@ -236,9 +237,6 @@ namespace libsemigroups {
     Rule*                       rule1;
     internal_string_type const* lhs;
     while (number_of_pending_rules() != 0) {
-      // stats().max_stack_depth
-      //     = std::max(stats().max_stack_depth, _pending_rules.size());
-
       rule1 = next_pending_rule();
       LIBSEMIGROUPS_ASSERT(!rule1->active());
       LIBSEMIGROUPS_ASSERT(*rule1->lhs() != *rule1->rhs());
