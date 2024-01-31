@@ -20,16 +20,24 @@
 // congruence" algorithm for 1-sided or 2-sided congruences of semigroups and
 // monoids.
 
-// TODO(Sims):
-// * a version which allows specifying the word_graph to Sims1 too
+// TODO:
+// * withdraw left
+// * doc
+// * iwyu
+// * const
+// * noexcept
+// * nodiscard
+// * python bindings
+// * gap bindings
 
 // TODO(later):
+// * a version which allows specifying the word_graph to Sims1 too
 // * implement maximum_2_sided_congruence_contained to compute the kernel of the
 //   associated homomorphism, which is the largest 2-sided congruence contained
 //   in the right congruence.
 // * change RepOrc and MinimalRepOrc to compute minimal 2-sided congruences
-//   first (not sure how), and then to try and find a right congruence not
-//   containing any of the minimal 2-sided congruences.
+//   first (by using generating pairs), and then to try and find a right
+//   congruence not containing any of the minimal 2-sided congruences.
 
 #ifndef LIBSEMIGROUPS_SIMS_HPP_
 #define LIBSEMIGROUPS_SIMS_HPP_
