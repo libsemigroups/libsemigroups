@@ -265,19 +265,7 @@ namespace libsemigroups {
                          {0, 1, 1, 0, 0, 1, 0, 0, 0},
                          {0, 0, 0, 0, 1, 0, 1, 1, 0}}));
       check_meets_and_joins(S.cbegin(5), S.cend(5));
-      // f << sims::dot_poset(S.cbegin(5), S.cend(5)).to_string();
-      size_t index = 0;
-      for (auto it = S.cbegin(5); it != S.cend(5); ++it) {
-        auto copy = *it;
-        copy.induced_subgraph_no_checks(0, copy.number_of_active_nodes());
-        Dot         dot_graph = word_graph::dot(copy);
-        std::string name      = std::to_string(index++);
-        dot_graph.name(name);
-        std::ofstream f(name + ".gv");
-        f << dot_graph.to_string();
-      }
-      std::ofstream f("lattice.gv");
-      f << sims::dot_poset2(S.cbegin(5), S.cend(5)).to_string();
+      // sims::dot_poset("example-000", S.cbegin(5), S.cend(5));
     }
   }
 
@@ -318,6 +306,7 @@ namespace libsemigroups {
       REQUIRE(*(it++) == to_word_graph<node_type>(2, {{1, 1, 1}, {1, 1, 1}}));
       REQUIRE(*(it++) == WordGraph<node_type>(0, 3));
       REQUIRE(*(it++) == WordGraph<node_type>(0, 3));
+      // sims::dot_poset("example-001", S.cbegin(4), S.cend(4));
     }
     {
       Sims1 S(congruence_kind::left);
@@ -347,6 +336,7 @@ namespace libsemigroups {
     // REQUIRE(S.number_of_congruences(3) == 14);
     // REQUIRE(S.number_of_congruences(4) == 14);
     // REQUIRE(S.number_of_congruences(5) == 14);
+    // sims::dot_poset("example-002", S.cbegin(3), S.cend(3));
 
     S.for_each(3,
                [&S](auto const& wg) { check_right_generating_pairs(S, wg); });
@@ -438,7 +428,7 @@ namespace libsemigroups {
     presentation::add_rule(p, 1212_w, 212_w);
     presentation::add_rule(p, 2121_w, 212_w);
 
-    Sims1 S(congruence_kind::twosided);
+    Sims1 S(congruence_kind::twosided);  // TODO remove the twosided here
     S.presentation(p);
     // TODO put into test-sims2.cpp
     // S.kind(congruence_kind::twosided).number_of_threads(2);
@@ -461,6 +451,8 @@ namespace libsemigroups {
     REQUIRE(S.number_of_congruences(15) == 105);
     REQUIRE(S.number_of_congruences(16) == 105);
     REQUIRE(S.number_of_congruences(17) == 105);
+
+    // sims::dot_poset("example-004", S.cbegin(16), S.cend(16));
 
     MinimalRepOrc orc;
     auto          d = orc.presentation(p)
@@ -503,6 +495,7 @@ namespace libsemigroups {
     Sims1 C(congruence_kind::right);
     C.presentation(p);
     REQUIRE(C.number_of_congruences(27) == 287);
+    // sims::dot_poset("example-006-T-3", C.cbegin(27), C.cend(27));
   }
 
   LIBSEMIGROUPS_TEST_CASE("Sims1",
@@ -517,6 +510,7 @@ namespace libsemigroups {
     Sims1 C(congruence_kind::left);
     C.presentation(p);
     REQUIRE(C.number_of_congruences(27) == 120);
+    // sims::dot_poset("example-006-T-3-left", C.cbegin(27), C.cend(27));
   }
 
   LIBSEMIGROUPS_TEST_CASE("Sims1",
@@ -576,6 +570,7 @@ namespace libsemigroups {
     Sims1 C(congruence_kind::left);
     C.presentation(p);
     REQUIRE(C.number_of_congruences(7) == 10);
+    // sims::dot_poset("example-010-I-2-left", C.cbegin(7), C.cend(7));
   }
 
   LIBSEMIGROUPS_TEST_CASE("Sims1",
@@ -651,6 +646,7 @@ namespace libsemigroups {
       Sims1 S(congruence_kind::right);
       S.presentation(temperley_lieb_monoid(3));
       REQUIRE(S.number_of_congruences(14) == 9);
+      // sims::dot_poset("example-014-TL-3-right", S.cbegin(14), S.cend(14));
     }
     {
       Sims1 S(congruence_kind::left);
@@ -668,6 +664,7 @@ namespace libsemigroups {
       Sims1 S(congruence_kind::right);
       S.presentation(temperley_lieb_monoid(4));
       REQUIRE(S.number_of_congruences(14) == 79);
+      // sims::dot_poset("example-015-TL-4-right", S.cbegin(14), S.cend(14));
     }
     {
       Sims1 S(congruence_kind::left);
@@ -1140,6 +1137,7 @@ namespace libsemigroups {
     Sims1 C(congruence_kind::right);
     C.presentation(p);
     REQUIRE(C.number_of_congruences(2) == 67);
+    // sims::dot_poset("example-030-right", C.cbegin(2), C.cend(2));
   }
 
   LIBSEMIGROUPS_TEST_CASE("Sims1",
@@ -1240,6 +1238,7 @@ namespace libsemigroups {
     S.presentation(p);
     REQUIRE(S.number_of_congruences(3) == 14);
     REQUIRE(S.number_of_congruences(4) == 14);
+    // sims::dot_poset("example-034-right", S.cbegin(3), S.cend(3));
 
     REQUIRE_THROWS_AS(S.cbegin_long_rules(p.rules.size() + 1),
                       LibsemigroupsException);
@@ -1621,6 +1620,8 @@ namespace libsemigroups {
     Sims1 T(congruence_kind::right);
     T.presentation(p);
     REQUIRE(T.number_of_congruences(5) == 9);
+    // sims::dot_poset("example-043-rectangular-band^1", T.cbegin(5),
+    // T.cend(5));
 
     auto it = S.cbegin(4);
 
@@ -3057,6 +3058,7 @@ namespace libsemigroups {
     Sims2 S(fpsemigroup::full_transformation_monoid(4));
 
     REQUIRE(S.number_of_congruences(256) == 11);  // Verified with GAP
+    // sims::dot_poset("example-093-T-4-2-sided", S.cbegin(256), S.cend(256));
   }
 
   LIBSEMIGROUPS_TEST_CASE("Sims2",
@@ -3260,6 +3262,7 @@ namespace libsemigroups {
     REQUIRE(S.number_of_threads(8).number_of_congruences(2) == 5);
     REQUIRE(S.number_of_threads(8).number_of_congruences(3) == 17);
     REQUIRE(S.number_of_threads(8).number_of_congruences(4) == 52);
+    // sims::dot_poset("example-104-baaabaaa=aba", S.cbegin(4), S.cend(4));
 
     std::atomic_size_t count = 0;
     Sims1              T(congruence_kind::right, p);
@@ -3306,6 +3309,8 @@ namespace libsemigroups {
     presentation::add_rule(p, "baabbaa", "a");
 
     Sims2 S(p);
+
+    // sims::dot_poset("example-105-baabbaa=a-2-sided", S.cbegin(8), S.cend(8));
     // TODO: check correctness
     // Takes a long time to run, seems like we get all the congruences quite
     // early on, but then spend very long checking that there are no more.
@@ -3691,18 +3696,7 @@ namespace libsemigroups {
     REQUIRE(s.number_of_congruences(1) == 1);
     REQUIRE(s.number_of_congruences(2) == 11);  // From Bailey et al
     REQUIRE(s.number_of_congruences(3) == 51);  // From Bailey et al
-    size_t index = 0;
-    for (auto it = s.cbegin(3); it != s.cend(3); ++it) {
-      auto copy = *it;
-      copy.induced_subgraph_no_checks(0, copy.number_of_active_nodes());
-      Dot         dot_graph = word_graph::dot(copy);
-      std::string name      = std::to_string(index++);
-      dot_graph.name(name);
-      std::ofstream f(name + ".gv");
-      f << dot_graph.to_string();
-    }
-    std::ofstream f("lattice.gv");
-    f << sims::dot_poset2(s.cbegin(3), s.cend(3)).to_string();
+    // sims::dot_poset("free-semigroup-2-sided", s.cbegin(3), s.cend(3));
     REQUIRE(s.number_of_congruences(4) == 200);  // From Bailey et al
 
     // REQUIRE(s.number_of_congruences(5) == 657);    // From Bailey et al

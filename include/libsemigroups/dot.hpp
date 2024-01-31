@@ -283,7 +283,11 @@ namespace libsemigroups {
       std::string_view sep = "";
       for (auto const& attr : map) {
         if (!attr.second.empty()) {
-          s += fmt::format("{}{}=\"{}\"", sep, attr.first, attr.second);
+          s += fmt::format(
+              "{}{}=\"{}\"",
+              sep,
+              attr.first,
+              attr.second == "__NONE__" ? "" : attr.second);  // TODO fixme
         } else {
           s += fmt::format("{}\n  ", attr.first);
         }
