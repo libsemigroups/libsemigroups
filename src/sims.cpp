@@ -569,12 +569,15 @@ namespace libsemigroups {
 
       auto first = _sims1or2->include().cbegin();
       auto last  = _sims1or2->include().cend();
-      if (!felsch_graph::make_compatible<RegisterDefs>(
-              _felsch_graph, 0, 1, first, last)
-          || !_felsch_graph.process_definitions(start)) {
-        // Seems to be important to check include() first then
-        // process_definitions
-        return false;
+      while (start != _felsch_graph.definitions().size()) {
+        if (!_felsch_graph.process_definitions(start)) {
+          return false;
+        }
+        start = _felsch_graph.definitions().size();
+        if (!felsch_graph::make_compatible<RegisterDefs>(
+                _felsch_graph, 0, 1, first, last)) {
+          return false;
+        }
       }
 
       first          = _sims1or2->exclude().cbegin();
@@ -1088,9 +1091,9 @@ namespace libsemigroups {
     Presentation<word_type> const& p = this->_felsch_graph.presentation();
     _2_sided_include->resize(2 * m * p.alphabet().size());
     _2_sided_words.assign(n + 1, word_type());
-    // +1 to the number of 2-sided words because if we the defining presentation
-    // is a semigroup presentation, then we will use 1 more slot here (i.e. the
-    // number of nodes in the resulting graphs is n + 1.
+    // +1 to the number of 2-sided words because if we the defining
+    // presentation is a semigroup presentation, then we will use 1 more slot
+    // here (i.e. the number of nodes in the resulting graphs is n + 1.
   }
 
   Sims2::iterator_base::iterator_base(Sims2::iterator_base const& that)

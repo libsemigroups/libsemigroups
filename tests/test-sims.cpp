@@ -80,7 +80,11 @@ namespace libsemigroups {
       Sims1 S(p);
       Sims1 T(p);
       T.include(e);
+      REQUIRE(T.include() == e);
 
+      // auto it = std::find_if(T.cbegin(n), T.cend(n), foo);
+      // REQUIRE(*it == to_word_graph<uint32_t>(1, {{0, 0}}));
+      REQUIRE(std::all_of(T.cbegin(n), T.cend(n), foo));
       REQUIRE(static_cast<uint64_t>(std::count_if(S.cbegin(n), S.cend(n), foo))
               == T.number_of_congruences(n));
     }
@@ -697,7 +701,6 @@ namespace libsemigroups {
     T.init(p).include(10_w, 1_w);
     REQUIRE(T.number_of_congruences(5) == 2);
     check_include(p, T.include(), 5);
-    // TODO not sure I updated this correctly
   }
 
   LIBSEMIGROUPS_TEST_CASE("Sims1",
@@ -721,11 +724,10 @@ namespace libsemigroups {
     {
       Sims1 T;
       presentation::reverse(p);
-      T.presentation(p).include(1010_w, 0_w);
-      REQUIRE(T.include() == std::vector<word_type>({1010_w, 0_w}));
-      REQUIRE(T.number_of_congruences(5) == 9);  // Verified with GAP
+      T.presentation(p).include(0101_w, 0_w);
+      REQUIRE(T.include() == std::vector<word_type>({0101_w, 0_w}));
+      REQUIRE(T.number_of_congruences(5) == 4);  // Verified with GAP
     }
-    presentation::reverse(p);
     check_include(p, {0101_w, 0_w}, 5);
     presentation::reverse(p);
     check_include(p, {1010_w, 0_w}, 5);

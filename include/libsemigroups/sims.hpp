@@ -148,14 +148,10 @@ namespace libsemigroups {
   // Sims2, RepOrc, and MinimalRepOrc without duplicating the code.
   template <typename Subclass>
   class SimsSettings {
-   protected:
-    // These are protected so that Sims1 can reverse them if necessary for
-    // left congruences.
-    std::vector<word_type>  _exclude;
-    std::vector<word_type>  _include;
-    Presentation<word_type> _presentation;
-
    private:
+    std::vector<word_type>                 _exclude;
+    std::vector<word_type>                 _include;
+    Presentation<word_type>                _presentation;
     size_t                                 _idle_thread_restarts;
     std::vector<word_type>::const_iterator _longs_begin;
     size_t                                 _num_threads;
