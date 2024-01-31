@@ -1,0 +1,95 @@
+libsemigroups::KnuthBendix:
+- Public Types:
+  - froidure_pin_type
+  - options::overlap
+  - options
+  - const_normal_form_iterator
+- Constructors:
+  - KnuthBendix(congruence_kind)
+  - KnuthBendix(congruence_kind, Presentation<std::string> const&)
+  - KnuthBendix(KnuthBendix const&)
+- Deleted constructors:
+  - rewrite(std::string) const
+  - rewrite(std::string *) const
+  - cbegin_normal_forms(std::string const&, size_t, size_t)
+  - cbegin_normal_forms(size_t, size_t)
+  - cend_normal_forms()
+  - number_of_active_rules() const noexcept
+  - active_rules() const
+  - confluent() const
+  - gilman_digraph()
+  - contains_empty_string() const
+  - number_of_normal_forms(size_t, size_t)
+  - knuth_bendix_by_overlap_length()
+  - operator<<(std::ostream &,KnuthBendix const &)
+- Settings:
+  - check_confluence_interval(size_t)
+  - overlap_policy(options::overlap)
+  - max_overlap(size_t)
+  - max_rules(size_t)
+- Member functions and types inherited from FpSemigroupInterface:
+  - rule_type
+  - const_iterator
+  - char_type
+  - string_type
+  - uint_to_char(letter_type) const
+  - char_to_uint(char) const
+  - string_to_word(std::string const&) const
+  - is_obviously_finite()
+  - word_to_string(word_type const&) const
+  - is_obviously_infinite()
+  - size() override
+  - cbegin_rules() const noexcept
+  - cend_rules() const noexcept
+  - alphabet(size_t) const
+  - alphabet() const noexcept
+  - identity() const
+  - set_identity(std::string const&)
+  - set_identity(letter_type)
+  - inverses() const
+  - number_of_rules() const noexcept
+  - add_rule(relation_type)
+  - add_rule(rule_type)
+  - add_rule(std::initializer_list<size_t>, std::initializer_list<size_t>)
+  - add_rule(std::string const&, std::string const&)
+  - add_rule(word_type const&, word_type const&)
+  - add_rules(FroidurePinBase&)
+  - add_rules(std::vector<rule_type> const&)
+  - has_froidure_pin() const noexcept
+  - froidure_pin()
+  - set_alphabet(size_t)
+  - set_alphabet(std::string const&)
+  - set_inverses(std::string const&)
+  - validate_letter(char) const
+  - validate_letter(letter_type) const
+  - validate_word(word_type const&) const
+  - validate_word(std::string const&) const
+  - to_gap_string()
+  - normal_form(std::string const&) override
+  - normal_form(word_type const&)
+  - normal_form(std::initializer_list<letter_type>)
+  - equal_to(std::initializer_list<letter_type>, std::initializer_list<letter_type>)
+  - equal_to(std::string const&, std::string const&) override
+  - equal_to(word_type const&, word_type const&)
+  - has_identity() const noexcept
+- Member functions inherited from Runner:
+  - dead() const noexcept
+  - finished() const
+  - started() const
+  - stopped() const
+  - timed_out() const
+  - running() const noexcept
+  - stopped_by_predicate() const
+  - kill() noexcept
+  - run()
+  - run_for(std::chrono::nanoseconds)
+  - run_for(TIntType)
+  - run_until(T&&)
+  - run_until(bool(*)())
+  - report_every(TIntType)
+  - report_every(std::chrono::nanoseconds)
+  - report_every() const noexcept
+  - report() const
+  - report_why_we_stopped() const
+  - running_for() const noexcept
+  - running_until() const noexcept
