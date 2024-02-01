@@ -437,7 +437,7 @@ namespace libsemigroups {
     REQUIRE(S.number_of_congruences(16) == 105);
     REQUIRE(S.number_of_congruences(17) == 105);
 
-    Sims2 T;  // TODO remove the twosided here
+    Sims2 T;
     T.presentation(p);
     T.number_of_threads(2);
     REQUIRE(T.number_of_congruences(16) == 13);
@@ -791,8 +791,6 @@ namespace libsemigroups {
     Presentation<word_type> e;
     e.alphabet({0, 1});
     REQUIRE_NOTHROW(Sims1().presentation(p).presentation(e));
-    // TODO uncomment or delete
-    // REQUIRE_NOTHROW(Sims1(congruence_kind::right).long_rules(p).long_rules(e));
     REQUIRE_NOTHROW(Sims1());
     Sims1 S;
     REQUIRE_THROWS_AS(S.number_of_threads(0), LibsemigroupsException);

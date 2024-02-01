@@ -26,6 +26,10 @@
 #ifndef LIBSEMIGROUPS_WORDS_HPP_
 #define LIBSEMIGROUPS_WORDS_HPP_
 
+#ifndef PARSED_BY_DOXYGEN
+#define NOT_PARSED_BY_DOXYGEN
+#endif
+
 #include <array>             // for array
 #include <cstddef>           // for size_t
 #include <cstdint>           // for uint64_t, uint8_t
@@ -89,7 +93,7 @@ namespace libsemigroups {
   //! \sa \ref random_string
   [[nodiscard]] word_type random_word(size_t length, size_t nr_letters);
 
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+#ifdef NOT_PARSED_BY_DOXYGEN
 
   class const_wilo_iterator {
    public:
@@ -156,7 +160,7 @@ namespace libsemigroups {
     x.swap(y);
   }
 
-#endif  // DOXYGEN_SHOULD_SKIP_THIS
+#endif  // NOT_PARSED_BY_DOXYGEN
 
   //! \ingroup Words
   //! \brief Returns a forward iterator pointing to the 3rd parameter \p first.
@@ -235,7 +239,7 @@ namespace libsemigroups {
                                               word_type const& first,
                                               word_type const& last);
 
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+#ifdef NOT_PARSED_BY_DOXYGEN
   class const_wislo_iterator {
    public:
     using size_type         = typename std::vector<word_type>::size_type;
@@ -297,7 +301,7 @@ namespace libsemigroups {
     x.swap(y);
   }
 
-#endif  // DOXYGEN_SHOULD_SKIP_THIS
+#endif  // NOT_PARSED_BY_DOXYGEN
 
   //! \ingroup Words
   //! \brief Returns a forward iterator pointing to the 2nd parameter \p first.

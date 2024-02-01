@@ -27,6 +27,10 @@
 #ifndef LIBSEMIGROUPS_WORD_GRAPH_HPP_
 #define LIBSEMIGROUPS_WORD_GRAPH_HPP_
 
+#ifndef PARSED_BY_DOXYGEN
+#define NOT_PARSED_BY_DOXYGEN
+#endif
+
 #include <algorithm>  // for uniform_int_distribution
 #include <cstddef>    // for size_t
 #include <cstdint>
@@ -603,7 +607,7 @@ namespace libsemigroups {
       return _nr_nodes;
     }
 
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+#ifdef NOT_PARSED_BY_DOXYGEN
     WordGraph& number_of_active_nodes(size_type val) {
       _num_active_nodes = val;
       return *this;

@@ -184,7 +184,6 @@
     <groupgraph visible="yes"/>
     <memberdecl>
       <nestedgroups visible="yes" title=""/>
-      <modules visible="yes" title=""/>
       <dirs visible="yes" title=""/>
       <files visible="yes" title=""/>
       <namespaces visible="yes" title=""/>
@@ -228,25 +227,6 @@
     </memberdef>
     <authorsection visible="yes"/>
   </group>
-
-  <!-- Layout definition for a C++20 module page -->
-  <module>
-    <briefdescription visible="yes"/>
-    <exportedmodules visible="yes"/>
-    <memberdecl>
-      <concepts visible="yes" title=""/>
-      <classes visible="yes" title=""/>
-      <enums title=""/>
-      <typedefs title=""/>
-      <functions title=""/>
-      <variables title=""/>
-      <membergroups title=""/>
-    </memberdecl>
-    <detaileddescription title=""/>
-    <memberdecl>
-      <files visible="yes"/>
-    </memberdecl>
-  </module>
 
   <!-- Layout definition for a directory page -->
   <directory>

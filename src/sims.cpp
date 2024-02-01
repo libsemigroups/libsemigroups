@@ -1249,7 +1249,9 @@ namespace libsemigroups {
       return false;
     };
 
-    auto result = Sims1().settings_copy_from(*this).find_if(_max, hook);
+    Sims1 sims1;
+    sims1.SimsSettings::init(*this);
+    auto result = sims1.find_if(_max, hook);
 
     if (result.number_of_active_nodes() == 0) {
       report_default(

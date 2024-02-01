@@ -29,6 +29,10 @@
 #ifndef LIBSEMIGROUPS_UKKONEN_HPP_
 #define LIBSEMIGROUPS_UKKONEN_HPP_
 
+#ifndef PARSED_BY_DOXYGEN
+#define NOT_PARSED_BY_DOXYGEN
+#endif
+
 #include <algorithm>  // for equal, find_if
 #include <cstddef>    // for size_t
 #include <cstdint>    // for uint64_t
@@ -144,7 +148,7 @@ namespace libsemigroups {
       //! The index of the parent node.
       node_index_type parent;
 
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+#ifdef NOT_PARSED_BY_DOXYGEN
       // No doc
       node_index_type link;
       // The next member is a weak indicator of whether or not the node

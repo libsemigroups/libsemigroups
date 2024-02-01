@@ -1742,7 +1742,7 @@ namespace libsemigroups {
       return base_type::template make<Perm>(std::forward<T>(cont));
     }
 
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+#ifndef PARSED_BY_DOXYGEN
     // We don't document this, because it's basically identical to the function
     // template above, and because it confuses the doc system.
     static Perm make(std::initializer_list<value_type>&& cont) {

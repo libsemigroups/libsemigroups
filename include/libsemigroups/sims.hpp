@@ -21,6 +21,7 @@
 // monoids.
 
 // TODO:
+// * review the function aliases, and remove them if they are unnecessary
 // * doc
 // * iwyu
 // * const
@@ -195,7 +196,6 @@ namespace libsemigroups {
     //! * \ref presentation
     //! * \ref long_rules
     //! * \ref number_of_threads
-    //! * \ref extra
     //!
     //! The return value of this function can be used to
     //! initialise another `Sims1`, `RepOrc`, or
@@ -212,34 +212,9 @@ namespace libsemigroups {
       return *this;
     }
 
-    //! Copy the settings from \p that into `this`.
+    //! \brief Set the number of threads.
     //!
-    //! The settings object contains all the settings that are common to
-    //! `Sims1`, `RepOrc`, and `MinimalRepOrc`, which are currently:
-    //! * \ref presentation
-    //! * \ref long_rules
-    //! * \ref number_of_threads
-    //! * \ref extra
-    //!
-    //! The return value of this function can be used to initialise another
-    //! `Sims1`, `RepOrc`, or `MinimalRepOrc` with these settings.
-    //!
-    //! \param that the object to copy the settings from.
-    //!
-    //! \returns A const reference to `this`.
-    //!
-    //! \exceptions
-    //! \no_libsemigroups_except
-    Subclass& settings_copy_from(SimsSettings const& that) {
-      *this = that;
-      return static_cast<Subclass&>(*this);
-    }
-
-    //! \anchor number_of_threads
-    //! Set the number of threads.
-    //!
-    //! This function sets the number of threads to be used
-    //! by `Sims1`.
+    //! This function sets the number of threads to be used by `Sims1`.
     //!
     //! The default value is `1`.
     //!
@@ -247,13 +222,11 @@ namespace libsemigroups {
     //!
     //! \returns A reference to \c this.
     //!
-    //! \throws LibsemigroupsException if the argument \p
-    //! val is 0.
+    //! \throws LibsemigroupsException if the argument \p val is 0.
     //!
-    //! \warning If \p val exceeds
-    //! `std::thread::hardware_concurrency()`, then this is
-    //! likely to have a negative impact on the performance
-    //! of the algorithms implemented by `Sims1`.
+    //! \warning If \p val exceeds `std::thread::hardware_concurrency()`, then
+    //! this is likely to have a negative impact on the performance of the
+    //! algorithms implemented by `Sims1`.
     Subclass& number_of_threads(size_t val);
 
     //! Returns the current number of threads.
@@ -269,28 +242,34 @@ namespace libsemigroups {
       return _num_threads;
     }
 
-    //! Set the short rules.
+    //! \brief Set the presentation over which the congruences produced by an
+    //! instance are defined.
     //!
     //! These are the rules used at every node in the depth first search
-    //! conducted by `Sims1`.
+    //! conducted by objects of this type.
     //!
-    //! If the template parameter \p P is not `Presentation<word_type>`, then
+    //! If the template parameter \p Word is not `word_type`, then
     //! the parameter \p p is first converted to a value of type
     //! `Presentation<word_type>` and it is this converted value that is used.
     //!
-    //! \tparam P A specific value of the class template `Presentation`, must
-    //! be derived from `PresentationBase`. \param p the presentation.
+    //! \tparam Word the type of words in the input presentation.
+    //!
+    //! \param p the presentation.
     //!
     //! \returns A reference to \c this.
     //!
     //! \throws LibsemigroupsException if `to_presentation<word_type>(p)`
-    //! throws
-    //! \throws LibsemigroupsException if `p` is not valid
+    //! throws.
+    //!
+    //! \throws LibsemigroupsException if `p` is not valid.
+    //!
     //! \throws LibsemigroupsException if the alphabet of `p` is non-empty and
-    //! not equal to that of \ref long_rules or \ref extra. \throws
-    //! LibsemigroupsException if `p` has 0-generators and 0-relations.
-    template <typename PresentationOfSomeKind>
-    Subclass& presentation(PresentationOfSomeKind const& p);
+    //! not equal to that of \ref long_rules or \ref extra.
+    // TODO review the previous exception
+    //!
+    //! \throws LibsemigroupsException if `p` has 0-generators and 0-relations.
+    template <typename Word>
+    Subclass& presentation(Presentation<Word> const& p);
 
     //! \anchor presentation
     //! Returns a const reference to the current short rules.
@@ -322,28 +301,31 @@ namespace libsemigroups {
       return _presentation;
     }
 
-    //! Set the long rules.
+    //! \brief Set the beginning of the  long rules (iterator).
     //!
-    //! These are the rules used after a complete deterministic word graph
-    //! compatible with \ref presentation has been found by `Sims1`. If such a
-    //! word graph is compatible with the long rules specified by this
-    //! function, then this word graph is accepted, and if not it is not
-    //! accepted.
+    //! Set the beginning of the long rules using an iterator.
     //!
-    //! If the template parameter \p P is not `Presentation<word_type>`, then
-    //! the parameter \p p is first converted to a value of type
-    //! `Presentation<word_type>` and it is this converted value that is used.
+    //! The "long rules" are the rules used after a complete deterministic word
+    //! graph has been found in the search. If such a word graph is compatible
+    //! with the long rules specified by this function, then this word graph is
+    //! accepted, and if not it is rejected.
     //!
-    //! \tparam P A specific value of the class template `Presentation`, must
-    //! be derived from `PresentationBase`. \param p the presentation.
+    //! The purpose of this is to improve the backtrack search by reducing the
+    //! time spent processing "long" rules in each node of the search tree, and
+    //! to only check them at the leaves.
+    //!
+    //! \param it iterator pointing at the left hand side of the first long
+    //! rule.
     //!
     //! \returns A reference to \c this.
     //!
-    //! \throws LibsemigroupsException if `to_presentation<word_type>(p)` throws
-    //! \throws LibsemigroupsException if `p` is not valid
-    //! \throws LibsemigroupsException if the alphabet of `p` is non-empty and
-    //! not equal to that of \ref presentation or \ref extra.
-    Subclass& cbegin_long_rules(std::vector<word_type>::const_iterator p);
+    //! \throws LibsemigroupsException if \p it does not point into
+    //! `presentation().rules`
+    //!
+    //! \throws LibsemigroupsException if  \p it does not point at the left hand
+    //! side of a rule (i.e. if it points at an odd indexed position in
+    //! `presentation().rules`).
+    Subclass& cbegin_long_rules(std::vector<word_type>::const_iterator it);
 
     // TODO(doc)
     Subclass& cbegin_long_rules(size_t pos);
@@ -358,10 +340,7 @@ namespace libsemigroups {
       return std::distance(_longs_begin, _presentation.rules.cend()) / 2;
     }
 
-    //! \anchor long_rules
-    //! Returns the current long rules.
-    //!
-    //! \param (None) this function has no parameters.
+    //! Returns the pointer to the first long rule.
     //!
     //! \returns
     //! A const reference to `Presentation<word_type>`.
@@ -398,43 +377,52 @@ namespace libsemigroups {
       return _include;
     }
 
-    //! Set the extra rules.
+    //! \brief Define a set of pairs that should be included in every
+    //! congruence.
     //!
-    //! The congruences computed by a `Sims1` instance always contain the
-    //! relations of this presentation. In other words, the congruences
-    //! computed by this instance are only taken among those that contains the
-    //! pairs of elements of the underlying semigroup (defined by the
-    //! presentation returned by \ref presentation and \ref long_rules)
-    //! represented by the relations of the presentation returned by
-    //! `extra()`.
+    //! Define a set of pairs that should be included in every congruence.
     //!
-    //! If the template parameter \p P is not `Presentation<word_type>`, then
-    //! the parameter \p p is first converted to a value of type
-    //! `Presentation<word_type>` and it is this converted value that is used.
+    //! The congruences computed by an instance of this type will always contain
+    //! the relations input here. In other words, the congruences computed are
+    //! only taken among those that contains the pairs of elements of the
+    //! underlying semigroup (defined by the presentation returned by \ref
+    //! presentation) represented by the relations returned by `include()`.
     //!
-    //! \tparam P A specific value of the class template `Presentation`, must
-    //! be derived from `PresentationBase`.
+    //! \tparam Iterator the type of the arguments, an iterator pointing at a
+    //! word_type.
     //!
-    //! \param p the presentation.
+    //! \param first an iterator pointing to the first rule to be included.
+    //! \param last an iterator pointing one beyond the last rule to be
+    //! included.
     //!
     //! \returns A reference to \c this.
     //!
-    //! \throws LibsemigroupsException if `to_presentation<word_type>(p)`
-    //! throws
-    //! \throws LibsemigroupsException if `p` is not valid \throws
-    //! LibsemigroupsException if the alphabet of `p` is non-empty and not
-    //! equal to that of \ref presentation or \ref long_rules.
+    // TODO exceptions
     template <typename Iterator>
     Subclass& include(Iterator first, Iterator last) {
       return include_exclude(first, last, _include);
     }
 
-    // TODO(doc)
+    //! \brief Define a pair that should be included in every congruence.
+    //!
+    //! Define a pair that should be included in every congruence.
+    //!
+    //! The congruences computed by an instance of this type will always contain
+    //! the relations input here. In other words, the congruences computed are
+    //! only taken among those that contains the pairs of elements of the
+    //! underlying semigroup (defined by the presentation returned by \ref
+    //! presentation) represented by the relations returned by `include()`.
+    //!
+    //! \param lhs the left hand side of the rule being added.
+    //! \param rhs the right hand side of the rule being added.
+    //!
+    //! \returns A reference to \c this.
+    // TODO exceptions
     Subclass& include(word_type const& lhs, word_type const& rhs) {
       return include_exclude(lhs, rhs, _include);
     }
 
-    // TODO(doc)
+    // TODO move to helper namespace
     template <typename Container>
     Subclass& include(Container const& c) {
       include(std::begin(c), std::end(c));
@@ -476,7 +464,7 @@ namespace libsemigroups {
       return static_cast<Subclass&>(*this);
     }
 
-    // TODO(Sims1) ranges version of include/exclude?
+    // TODO(later) ranges version of include/exclude?
 
     //! Returns a const reference to the current stats object.
     //!
@@ -495,25 +483,20 @@ namespace libsemigroups {
       return _stats;
     }
 
-    //! \anchor long_rule_length
-    //! Define the long rule length.
+    //! Define the length of a "long" rule.
     //!
-    //! This function modifies \ref presentation and \ref long_rules so that
-    //! \ref presentation only contains those rules whose length (sum of the
-    //! lengths of the two sides of the rules) is less than \p val (if any)
-    //! and \ref long_rules only contains those rules of length at least \p
-    //! val (if any). The rules contained in the union of \ref presentation
-    //! and \ref long_rules is invariant under this function, but the
-    //! distribution of the rules between \ref presentation and \ref
-    //! long_rules is not.
+    //! This function modifies \ref presentation so that the rules whose length
+    //! (sum of the lengths of both sizes) is at least  \p val (if any) occur at
+    //! the end of `presentation().rules` and so that `cbegin_long_rules` points
+    //! at the such rule.
     //!
-    //! The relative orders of the rules within \ref presentation and \ref
-    //! long_rules may not be preserved.
+    //! The relative orders of the rules within \ref presentation
+    //! may not be preserved.
     //!
     //! \param val the value of the long rule length.
     //!
     //! \returns
-    //! A const reference to `this`.
+    //! A reference to `this`.
     //!
     //! \exceptions
     //! \no_libsemigroups_except
@@ -571,13 +554,8 @@ namespace libsemigroups {
   }
 
   template <typename Subclass>
-  template <typename PresentationOfSomeKind>
-  Subclass&
-  SimsSettings<Subclass>::presentation(PresentationOfSomeKind const& p) {
-    static_assert(
-        std::is_base_of<PresentationBase, PresentationOfSomeKind>::value,
-        "the template parameter PresentationOfSomeKind must be derived from "
-        "PresentationBase");
+  template <typename Word>
+  Subclass& SimsSettings<Subclass>::presentation(Presentation<Word> const& p) {
     if (p.alphabet().empty()) {
       LIBSEMIGROUPS_EXCEPTION(
           "the argument (a presentation) must not have 0 generators");
@@ -626,6 +604,7 @@ namespace libsemigroups {
   ////////////////////////////////////////////////////////////////////////
   // Sims1 - Sims2 - forward decl
   ////////////////////////////////////////////////////////////////////////
+
   class Sims1;
   class Sims2;
 
@@ -831,6 +810,7 @@ namespace libsemigroups {
 
       Sims1or2& init();
 
+      // Required because we are inheriting from Reporter and SimsSettings
       using SimsSettings<Sims1or2>::presentation;
       using SimsSettings<Sims1or2>::number_of_threads;
       using SimsSettings<Sims1or2>::stats;
@@ -858,18 +838,23 @@ namespace libsemigroups {
               std::function<bool(word_graph_type const&)> pred) const;
 
       uint64_t number_of_congruences(size_type n) const;
-    };
-  }  // namespace detail
+    };  // SimsBase
+  }     // namespace detail
 
+  namespace sims {
+    class const_cgp_iterator;
+    class const_rcgp_iterator;
+  }  // namespace sims
   //! Defined in ``sims.hpp``.
   //!
   //! On this page we describe the functionality relating to the small index
-  //! congruence algorithm. The algorithm implemented by this class template
-  //! is essentially the low index subgroup algorithm for finitely presented
-  //! groups described in Section 5.6 of [Computation with Finitely Presented
-  //! Groups](https://doi.org/10.1017/CBO9780511574702) by C. Sims. The low
-  //! index subgroups algorithm was adapted for semigroups and monoids by J.
-  //! D. Mitchell and M. Tsalakou.
+  //! congruence algorithm for 1-sided congruences. The algorithm implemented by
+  //! this class is essentially the low index subgroup algorithm for
+  //! finitely presented groups described in Section 5.6 of [Computation with
+  //! Finitely Presented Groups](https://doi.org/10.1017/CBO9780511574702) by C.
+  //! Sims. The low index subgroups algorithm was adapted for semigroups and
+  //! monoids by R. Cirpons, J. D. Mitchell, and M. Tsalakou; see
+  //! \cite Anagnostopoulou-Merkouri2023aa
   //!
   //! The purpose of this class is to provide the functions \ref cbegin, \ref
   //! cend, \ref for_each, and \ref find_if which permit iterating through the
@@ -878,6 +863,9 @@ namespace libsemigroups {
   //! number of classes. An iterator returned by \ref cbegin points at an
   //! WordGraph instance containing the action of the semigroup or monoid
   //! on the classes of a congruence.
+  //!
+  //! \sa Sims2 for equivalent functionality for 2-sided congruences.
+  //! \sa SimsSettings for the various things that can be set in a Sims1 object.
   class Sims1 : public detail::SimsBase<Sims1> {
     // Aliases
     using SimsBase      = detail::SimsBase<Sims1>;
@@ -893,30 +881,30 @@ namespace libsemigroups {
     struct PendingDef;
 
    public:
-    //! Type for the nodes in the associated WordGraph
-    //! objects.
-    using node_type = uint32_t;
-    // TODO(doc)
-    using label_type = typename WordGraph<node_type>::label_type;
-
-    //! Type for letters in the underlying presentation.
-    using letter_type = typename word_type::value_type;
-
-    //! The size_type of the associated WordGraph objects.
-    using size_type = typename WordGraph<node_type>::size_type;
-
     // We use WordGraph, even though the iterators produced by this class
     // hold FelschGraph's, none of the features of FelschGraph are useful
     // for the output, only for the implementation
     //! The type of the associated WordGraph objects.
+    using word_graph_type = SimsBase::word_graph_type;
 
-    // TODO the next line should be SimsBase::word_graph_type
-    using word_graph_type = WordGraph<node_type>;
+    //! Type of the nodes in the associated WordGraph objects.
+    using node_type = word_graph_type::node_type;
+
+    //! Type of the edge labels in the associated WordGraph objects.
+    using label_type = word_graph_type::label_type;
+
+    //! Type for letters in the underlying presentation.
+    using letter_type = word_type::value_type;
+
+    //! The \ref WordGraph::size_type of the associated WordGraph objects.
+    using size_type = word_graph_type::size_type;
 
    private:
     using Definition = std::pair<node_type, label_type>;
 
-   public:
+    friend class sims::const_rcgp_iterator;
+    friend class sims::const_cgp_iterator;
+
     using felsch_graph_type
         = FelschGraph<word_type, node_type, std::vector<Definition>>;
 
@@ -924,14 +912,35 @@ namespace libsemigroups {
     //! Default constructor
     Sims1() = default;
 
+    // TODO(doc)
     using SimsBase::init;
 
-    // TODO(doc)
+    //! \brief Construct from a presentation.
+    //!
+    //! Constructs an instance from a presentation of any kind.
+    //!
+    //! The rules of the presentation \p p are used at every node in the depth
+    //! first search conducted by an object of this type.
+    //!
+    //! If the template parameter \p Word is not \ref word_type, then
+    //! the parameter \p p is first converted to a value of type
+    //! `Presentation<word_type>` and it is this converted value that is used.
+    //!
+    //! \throws LibsemigroupsException if `to_presentation<word_type>(p)` throws
+    //! \throws LibsemigroupsException if `p` is not valid
+    //! \throws LibsemigroupsException if `p` has 0-generators and 0-relations.
+    //!
+    //! \tparam Word the type of the words in the presentation \p p
+    //! \param p the presentation
+    //!
+    //! \sa presentation
+    //! \sa init
     template <typename Word>
     explicit Sims1(Presentation<Word> const& p) : Sims1() {
       presentation(p);
     }
 
+    //! \copydoc Sims1::Sims1(Presentation<Word> const&)
     template <typename Word>
     explicit Sims1(Presentation<Word> const&& p) : Sims1() {
       presentation(std::move(p));
@@ -952,20 +961,35 @@ namespace libsemigroups {
     // No doc
     ~Sims1() = default;
 
-    template <typename PresentationOfSomeKind>
-    Sims1& init(PresentationOfSomeKind const& p) {
+    //! \brief Initialize an existing object.
+    //!
+    //! This function puts an object back into the same state as if it had
+    //! been newly constructed from the presentation \p p.
+    //!
+    //! \returns A reference to \c *this.
+    //!
+    //! \throws LibsemigroupsException if `to_presentation<word_type>(p)` throws
+    //! \throws LibsemigroupsException if `p` is not valid
+    //! \throws LibsemigroupsException if `p` has 0-generators and 0-relations.
+    //!
+    //! \warning This function has no exception guarantee, the object will be
+    //! in the same state as if it was default constructed if an exception is
+    //! thrown.
+    //!
+    //! \tparam Word the type of the words in the presentation \p p
+    //! \param p the presentation
+    //!
+    //! \sa presentation(Presentation<Word> const&)
+    template <typename Word>
+    Sims1& init(Presentation<Word> const& p) {
       init();
       presentation(p);
       return *this;
     }
+    // TODO init from rvalue reference presentation
 
-    using SimsBase::cbegin_long_rules;
-    using SimsBase::exclude;
-    using SimsBase::include;
-    using SimsBase::number_of_threads;
-    using SimsBase::presentation;
-
-    //! Returns the number of one-sided congruences with up to a given
+#ifdef PARSED_BY_DOXYGEN
+    //! \brief Returns the number of one-sided congruences with up to a given
     //! number of classes.
     //!
     //! This function is similar to `std::distance(begin(n), end(n))` and
@@ -982,30 +1006,37 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if \p n is \c 0.
     //! \throws LibsemigroupsException if `presentation()` has 0-generators
     //! and 0-relations (i.e. it has not been initialised).
-    using SimsBase::number_of_congruences;
+    uint64_t number_of_congruences(size_t n);
 
-    //! Apply the function \p pred to every one-sided
-    //! congruence with at most \p n classes
+    //! \brief Apply a unary predicate to every one-sided congruence with at
+    //! most a given number of classes.
     //!
-    //! This function is similar to
-    //! `std::for_each(begin(n), end(n), pred)` and exists
-    //! to:
-    //! * provide some feedback on the progress of the
-    //!   computation if it runs for more than 1 second.
-    //! * allow for the computation of
-    //!   `std::for_each(begin(n), end(n), pred)` to be
-    //!   performed using \ref number_of_threads in parallel.
+    //! Apply the function \p pred to every one-sided congruence with at most
+    //! \p n classes
     //!
-    //! \param n the maximum number of congruence classes.
-    //! \param pred the predicate applied to every congruence found.
+    //!  This function is similar to `std::for_each(begin(n), end(n), pred)` and
+    //!  exists to:
+    //!  * provide some feedback on the progress of the computation if it runs
+    //!  for more than 1 second.
+    //!  * allow for the computation of `std::for_each(begin(n), end(n), pred)`
+    //!  to be performed using \ref number_of_threads in parallel.
     //!
-    //! \returns (None)
+    //!  \param n the maximum number of congruence classes.
+    //!  \param pred the predicate applied to every congruence found.
     //!
-    //! \throws LibsemigroupsException if \p n is \c 0.
-    //! \throws LibsemigroupsException if `presentation()` has 0-generators and
-    //! 0-relations (i.e. it has not been initialised).
-    using SimsBase::for_each;
+    //!  \returns (None)
+    //!
+    //!  \throws LibsemigroupsException if \p n is \c 0.
+    //!  \throws LibsemigroupsException if `presentation()` has 0-generators and
+    //!  0-relations (i.e. it has not been initialised).
+    //!
+    //!  \sa cbegin
+    void for_each(size_type                                   n,
+                  std::function<void(word_graph_type const&)> pred) const;
 
+    //! \brief Apply a unary predicate to one-sided congruences with at  most a
+    //! given number of classes, until it returns \c true.
+    //!
     //! Apply the function \p pred to every one-sided congruence with at most \p
     //! n classes, until it returns \c true.
     //!
@@ -1019,34 +1050,37 @@ namespace libsemigroups {
     //! \param n the maximum number of congruence classes.
     //! \param pred the predicate applied to every congruence found.
     //!
-    //! \returns The first congruence whose WordGraph for which \p pred returns
-    //! \c true.
+    //! \returns The first WordGraph for which \p pred returns \c true.
     //!
     //! \throws LibsemigroupsException if \p n is \c 0.
     //! \throws LibsemigroupsException if `presentation()` has 0-generators and
     //! 0-relations (i.e. it has not been initialised).
-    using SimsBase::find_if;
-
-    //! Returns a forward iterator pointing at the first congruence.
     //!
-    //! Returns a forward iterator pointing to the WordGraph representing
-    //! the first congruence described by Sims1 object with at most \p n
+    //! \sa cbegin
+    word_graph_type
+    find_if(size_type                                   n,
+            std::function<bool(word_graph_type const&)> pred) const;
+
+    //! \brief Returns a forward iterator pointing at the first congruence.
+    //!
+    //! Returns a forward iterator pointing to the WordGraph representing the
+    //! first congruence described by an object of this type with at most \p n
     //! classes.
     //!
     //! If incremented, the iterator will point to the next such congruence.
-    //! The order which the congruences are returned in is implementation
+    //! The order in which the congruences are returned is implementation
     //! specific. Iterators of the type returned by this function are equal
     //! whenever they point to equal objects. The iterator is exhausted if
     //! and only if it points to an WordGraph with zero nodes.
     //!
-    //! The meaning of the WordGraph pointed at by Sims1 iterators depends
+    //! The meaning of the WordGraph pointed at by the returned iterator depends
     //! on whether the input is a monoid presentation (i.e.
     //! Presentation::contains_empty_word() returns \c true) or a semigroup
     //! presentation. If the input is a monoid presentation for a monoid
-    //! \f$M\f$, then the WordGraph pointed to by an iterator of this type
-    //! has precisely \p n nodes, and the right action of \f$M\f$ on the
-    //! nodes of the word graph is isomorphic to the action of \f$M\f$ on the
-    //! classes of a right congruence.
+    //! \f$M\f$, then the WordGraph pointed to by an iterator of this type has
+    //! precisely \p n nodes, and the right action of \f$M\f$ on the nodes of
+    //! the word graph is isomorphic to the action of \f$M\f$ on the classes of
+    //! a right congruence.
     //!
     //! If the input is a semigroup presentation for a semigroup \f$S\f$,
     //! then the WordGraph has \p n + 1 nodes, and the right action of
@@ -1076,9 +1110,10 @@ namespace libsemigroups {
     //! \ref cend
     // TODO(Sims1) it'd be good to remove node 0 to avoid confusion. This
     // seems complicated however, and so isn't done at present.
-    using SimsBase::cbegin;
+    [[nodiscard]] iterator cbegin(size_type n) const;
 
-    //! Returns a forward iterator pointing one beyond the last congruence.
+    //! \brief Returns a forward iterator pointing one beyond the last
+    //! congruence.
     //!
     //! Returns a forward iterator pointing to the empty WordGraph. If
     //! incremented, the returned iterator remains valid and continues to
@@ -1102,49 +1137,80 @@ namespace libsemigroups {
     //!
     //! \sa
     //! \ref cbegin
-    using SimsBase::cend;
+    [[nodiscard]] iterator cend(size_type n) const;
+#endif
   };
 
+  //! Defined in ``sims.hpp``.
+  //!
+  //! On this page we describe the functionality relating to the small index
+  //! congruence algorithm for 2-sided congruences. The algorithm implemented by
+  //! this class is described in \cite Anagnostopoulou-Merkouri2023aa.
+  //!
+  //! The purpose of this class is to provide the functions \ref cbegin, \ref
+  //! cend, \ref for_each, and \ref find_if which permit iterating through the
+  //! two-sided congruences of a semigroup or monoid defined by a presentation
+  //! containing, or not containing, (possibly empty) sets of pairs and with at
+  //! most a given number of classes. An iterator returned by \ref cbegin points
+  //! at an WordGraph instance containing the action of the semigroup or monoid
+  //! on the classes of a congruence.
+  //!
+  //! \sa Sims1 for equivalent functionality for 1-sided congruences.
   class Sims2 : public detail::SimsBase<Sims2> {
     using SimsBase = detail::SimsBase<Sims2>;
     // so that SimsBase can access iterator_base, PendingDef, etc
     friend SimsBase;
 
    public:
-    using node_type       = SimsBase::node_type;
-    using label_type      = SimsBase::label_type;
-    using letter_type     = SimsBase::letter_type;
-    using size_type       = SimsBase::size_type;
+    //! \copydoc Sims1::node_type
+    using node_type = SimsBase::node_type;
+    //! \copydoc Sims1::label_type
+    using label_type = SimsBase::label_type;
+    //! \copydoc Sims1::letter_type
+    using letter_type = SimsBase::letter_type;
+    //! \copydoc Sims1::size_type
+    using size_type = SimsBase::size_type;
+    //! \copydoc Sims1::word_graph_type
     using word_graph_type = SimsBase::word_graph_type;
 
-    Sims2()                        = default;
-    Sims2(Sims2 const& other)      = default;
-    Sims2(Sims2&&)                 = default;
+    //! Default constructor.
+    Sims2() = default;
+    //! Default copy constructor.
+    Sims2(Sims2 const& other) = default;
+    //! Default move constructor.
+    Sims2(Sims2&&) = default;
+    //! Default copy assignment operator.
     Sims2& operator=(Sims2 const&) = default;
-    Sims2& operator=(Sims2&&)      = default;
-    ~Sims2()                       = default;
+    //! Default move assignment operator.
+    Sims2& operator=(Sims2&&) = default;
 
+    ~Sims2() = default;
+
+    //! \copydoc Sims1::init
     Sims2& init() {
       SimsSettings<Sims2>::init();
       return *this;
     }
 
+    //! \copydoc Sims1::Sims1(Presentation<Word> const&)
     template <typename Word>
-    explicit Sims2(Presentation<Word> p) : Sims2() {
+    explicit Sims2(Presentation<Word> const& p) : Sims2() {
       presentation(p);
     }
 
-    using SimsSettings::cbegin_long_rules;
-    using SimsSettings::exclude;
-    using SimsSettings::include;
-    using SimsSettings::number_of_threads;
-    using SimsSettings::presentation;
+    //! \copydoc Sims1::Sims1(Presentation<Word> const&)
+    template <typename Word>
+    explicit Sims2(Presentation<Word> const&& p) : Sims2() {
+      presentation(std::move(p));
+    }
 
-    using SimsBase::cbegin;
-    using SimsBase::cend;
-    using SimsBase::find_if;
-    using SimsBase::for_each;
-    using SimsBase::number_of_congruences;
+#ifdef PARSED_BY_DOXYGEN
+    //! \copydoc Sims1::cbegin
+    [[nodiscard]] iterator cbegin(size_type n) const;
+
+    //! \copydoc Sims1::cend
+    [[nodiscard]] iterator cend(size_type n) const;
+#endif
 
    private:
     struct PendingDef;
@@ -1164,8 +1230,9 @@ namespace libsemigroups {
       std::vector<word_type>         _2_sided_words;
 
      protected:
-      using SimsBase::IteratorBase::init;
-      using SimsBase::IteratorBase::try_pop;
+      // TODO delete after ensuring that compilation with GCC works
+      // using SimsBase::IteratorBase::init;
+      // using SimsBase::IteratorBase::try_pop;
 
       // We could use the copy constructor, but there's no point in copying
       // anything except the FelschGraph and so we only copy that.
@@ -1187,10 +1254,11 @@ namespace libsemigroups {
       iterator_base& operator=(iterator_base&& that);
       ~iterator_base();
 
-      using SimsBase::IteratorBase::operator==;
-      using SimsBase::IteratorBase::operator!=;
-      using SimsBase::IteratorBase::operator*;
-      using SimsBase::IteratorBase::operator->;
+      // TODO delete after ensuring that compilation with GCC works
+      // using SimsBase::IteratorBase::operator==;
+      // using SimsBase::IteratorBase::operator!=;
+      // using SimsBase::IteratorBase::operator*;
+      // using SimsBase::IteratorBase::operator->;
 
       //! No doc
       void swap(iterator_base& that) noexcept;
@@ -1375,9 +1443,6 @@ namespace libsemigroups {
     //!
     //! \exceptions \no_libsemigroups_except
     [[nodiscard]] Sims1::word_graph_type word_graph() const;
-
-    using SimsSettings<RepOrc>::presentation;
-    using SimsSettings<RepOrc>::cbegin_long_rules;
   };
 
   //! Defined in ``sims.hpp``.
@@ -1386,8 +1451,8 @@ namespace libsemigroups {
   //! function attempts to find a right congruence, represented as an
   //! WordGraph, with the minimum possible number of nodes such that the
   //! action of the semigroup or monoid defined by the presentation consisting
-  //! of its \ref presentation and \ref long_rules on the nodes of the
-  //! WordGraph corresponds to a semigroup of size \ref target_size.
+  //! of its \ref presentation on the nodes of the WordGraph corresponds to a
+  //! semigroup of size \ref target_size.
   //!
   //! If no such WordGraph can be found, then an empty WordGraph is
   //! returned (with `0` nodes and `0` edges).
@@ -1428,8 +1493,6 @@ namespace libsemigroups {
     //! This function returns the current value for the target size, i.e. the
     //! desired size of the transformation semigroup corresponding to the
     //! WordGraph returned by the function \ref word_graph.
-    //!
-    //! \param (None) this function has no parameters.
     //!
     //! \returns A value of type `size_t`.
     //!
@@ -1608,15 +1671,12 @@ namespace libsemigroups {
 
     class const_cgp_iterator : public const_rcgp_iterator {
      public:
-      // TODO use const_cgp_iterator instead of std::vector
-      using size_type = typename std::vector<relation_type>::size_type;
-      using difference_type =
-          typename std::vector<relation_type>::difference_type;
-      using const_pointer = typename std::vector<relation_type>::const_pointer;
-      using pointer       = typename std::vector<relation_type>::pointer;
-      using const_reference =
-          typename std::vector<relation_type>::const_reference;
-      using reference         = typename std::vector<relation_type>::reference;
+      using size_type         = const_rcgp_iterator::size_type;
+      using difference_type   = const_rcgp_iterator::difference_type;
+      using const_pointer     = const_rcgp_iterator::const_pointer;
+      using pointer           = const_rcgp_iterator::pointer;
+      using const_reference   = const_rcgp_iterator::const_reference;
+      using reference         = const_rcgp_iterator::reference;
       using value_type        = relation_type;
       using iterator_category = std::forward_iterator_tag;
 
@@ -1635,6 +1695,7 @@ namespace libsemigroups {
       using const_rcgp_iterator::operator->;
 
       // prefix
+      // TODO to cpp file
       const_cgp_iterator const& operator++() {
         size_type start = _reconstructed_word_graph.definitions().size();
         const_rcgp_iterator::operator++();
