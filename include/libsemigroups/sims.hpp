@@ -21,6 +21,20 @@
 // monoids.
 
 // TODO:
+// * factor out include/exclude so that they are just a "list" of refinment
+// functions applied at every node in the search tree.
+// * Update HopcroftKarp to accept complete graph <x> and incomplete word graph
+// <y>, and to provide an mem fn that returns true only if no completion of <y>
+// contains <x>; and true otherwise. Do this by not using a union-find object
+// but something simpler where it will be possible to know if we are "merging"
+// two nodes in <y> so that the join of <x> and any completion of <y> is not
+// <y>, and so <y> does not contain <x>.
+// * Replace RepOrc + MinimalRepOrc with the following: generate the distinct
+// principal 2-sided congruences of a semigroup S, and add the functionality of
+// the previous point as a refinment function to Sims1. I.e. perform the
+// backtrack search only on those word graphs that don't contain any of the
+// 2-sided congruences of S.
+//
 // * review the function aliases, and remove them if they are unnecessary
 // * doc
 // * iwyu
@@ -330,16 +344,6 @@ namespace libsemigroups {
     // TODO(doc)
     Subclass& cbegin_long_rules(size_t pos);
 
-    // TODO(doc)
-    Subclass& clear_long_rules() {
-      return cbegin_long_rules(_presentation.rules.cend());
-    }
-
-    // TODO(doc)
-    [[nodiscard]] size_t number_of_long_rules() const noexcept {
-      return std::distance(_longs_begin, _presentation.rules.cend()) / 2;
-    }
-
     //! Returns the pointer to the first long rule.
     //!
     //! \returns
@@ -353,6 +357,35 @@ namespace libsemigroups {
       LIBSEMIGROUPS_ASSERT(_longs_begin <= _presentation.rules.cend());
       return _longs_begin;
     }
+
+    // TODO(doc)
+    Subclass& clear_long_rules() {
+      return cbegin_long_rules(_presentation.rules.cend());
+    }
+
+    // TODO(doc)
+    [[nodiscard]] size_t number_of_long_rules() const noexcept {
+      return std::distance(_longs_begin, _presentation.rules.cend()) / 2;
+    }
+
+    //! Define the length of a "long" rule.
+    //!
+    //! This function modifies \ref presentation so that the rules whose length
+    //! (sum of the lengths of both sizes) is at least  \p val (if any) occur at
+    //! the end of `presentation().rules` and so that `cbegin_long_rules` points
+    //! at the such rule.
+    //!
+    //! The relative orders of the rules within \ref presentation
+    //! may not be preserved.
+    //!
+    //! \param val the value of the long rule length.
+    //!
+    //! \returns
+    //! A reference to `this`.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    Subclass& long_rule_length(size_t val);
 
     //! \anchor extra
     //! Returns a const reference to the additional defining pairs.
@@ -482,25 +515,6 @@ namespace libsemigroups {
     [[nodiscard]] SimsStats& stats() const noexcept {
       return _stats;
     }
-
-    //! Define the length of a "long" rule.
-    //!
-    //! This function modifies \ref presentation so that the rules whose length
-    //! (sum of the lengths of both sizes) is at least  \p val (if any) occur at
-    //! the end of `presentation().rules` and so that `cbegin_long_rules` points
-    //! at the such rule.
-    //!
-    //! The relative orders of the rules within \ref presentation
-    //! may not be preserved.
-    //!
-    //! \param val the value of the long rule length.
-    //!
-    //! \returns
-    //! A reference to `this`.
-    //!
-    //! \exceptions
-    //! \no_libsemigroups_except
-    Subclass& long_rule_length(size_t val);
 
     // TODO doc
     Subclass& idle_thread_restarts(size_t val);
