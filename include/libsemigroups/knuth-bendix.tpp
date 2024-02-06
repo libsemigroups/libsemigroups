@@ -343,7 +343,7 @@ namespace libsemigroups {
   }
 
   template <typename Rewriter, typename ReductionOrder>
-  void KnuthBendix<Rewriter, ReductionOrder>::report_before_run() const {
+  void KnuthBendix<Rewriter, ReductionOrder>::report_before_run() {
     if (reporting_enabled()) {
       report_no_prefix("{:+<95}\n", "");
       report_default("KnuthBendix: STARTING . . .\n");
@@ -357,7 +357,7 @@ namespace libsemigroups {
 
   template <typename Rewriter, typename ReductionOrder>
   void KnuthBendix<Rewriter, ReductionOrder>::report_progress_from_thread(
-      std::atomic_bool const& pause) const {
+      std::atomic_bool const& pause) {
     using detail::group_digits;
     using detail::signed_group_digits;
     using std::chrono::duration_cast;
@@ -407,7 +407,7 @@ namespace libsemigroups {
   }
 
   template <typename Rewriter, typename ReductionOrder>
-  void KnuthBendix<Rewriter, ReductionOrder>::report_after_run() const {
+  void KnuthBendix<Rewriter, ReductionOrder>::report_after_run() {
     if (reporting_enabled()) {
       report_progress_from_thread(false);
       if (finished()) {
@@ -451,11 +451,17 @@ namespace libsemigroups {
   }
 
   // report_no_prefix(msg);
+  // REVIEW was it okay to remove const here? Needed to do so to maybe process
+  // some rules.
   template <typename Rewriter, typename ReductionOrder>
   void KnuthBendix<Rewriter, ReductionOrder>::rewrite_inplace(
-      external_string_type& w) const {
+      external_string_type& w) {
     if (kind() == congruence_kind::left) {
       std::reverse(w.begin(), w.end());
+    }
+    if (_rewriter.number_of_active_rules() == 0
+        && _rewriter.number_of_pending_rules() != 0) {
+      _rewriter.process_pending_rules();
     }
     add_octo(w);
     external_to_internal_string(w);
@@ -481,7 +487,7 @@ namespace libsemigroups {
   }
 
   template <typename Rewriter, typename ReductionOrder>
-  void KnuthBendix<Rewriter, ReductionOrder>::stats_check_point() const {
+  void KnuthBendix<Rewriter, ReductionOrder>::stats_check_point() {
     _stats.prev_active_rules   = number_of_active_rules();
     _stats.prev_inactive_rules = number_of_inactive_rules();
     _stats.prev_total_rules    = total_rules();
@@ -492,17 +498,17 @@ namespace libsemigroups {
   //////////////////////////////////////////////////////////////////////////
 
   template <typename Rewriter, typename ReductionOrder>
-  bool KnuthBendix<Rewriter, ReductionOrder>::process_pending_rules() {
-    return _rewriter.process_pending_rules();
-  }
-
-  template <typename Rewriter, typename ReductionOrder>
   bool KnuthBendix<Rewriter, ReductionOrder>::confluent_known() const noexcept {
     return _rewriter.confluence_known();
   }
 
+  // TODO should this check for 0 active rules?
   template <typename Rewriter, typename ReductionOrder>
   bool KnuthBendix<Rewriter, ReductionOrder>::confluent() const {
+    // if (_rewriter.number_of_active_rules() == 0
+    //     && _rewriter.number_of_pending_rules() != 0) {
+    //   _rewriter.process_pending_rules();
+    // }
     return _rewriter.confluent();
   }
 
@@ -651,9 +657,14 @@ namespace libsemigroups {
     report_after_run();
   }
 
+  // REVIEW was it okay to remove const here?
   template <typename Rewriter, typename ReductionOrder>
-  size_t KnuthBendix<Rewriter, ReductionOrder>::number_of_active_rules()
-      const noexcept {
+  size_t
+  KnuthBendix<Rewriter, ReductionOrder>::number_of_active_rules() noexcept {
+    if (_rewriter.number_of_active_rules() == 0
+        && _rewriter.number_of_pending_rules() != 0) {
+      _rewriter.process_pending_rules();
+    }
     return _rewriter.number_of_active_rules();
   }
 
@@ -1151,8 +1162,8 @@ namespace libsemigroups {
   }  // namespace knuth_bendix
 
   template <typename Rewriter, typename ReductionOrder>
-  std::ostream& operator<<(std::ostream&                                os,
-                           KnuthBendix<Rewriter, ReductionOrder> const& kb) {
+  std::ostream& operator<<(std::ostream&                          os,
+                           KnuthBendix<Rewriter, ReductionOrder>& kb) {
     os << kb.active_rules();
     return os;
   }

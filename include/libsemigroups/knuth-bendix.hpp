@@ -630,6 +630,7 @@ namespace libsemigroups {
       return private_init(kind(), to_presentation<std::string>(p), false);
     }
 
+    // TODO add note about empty active rules after init and non-const-ness
     //! \brief Return the current number of active rules in the KnuthBendix
     //! instance.
     //!
@@ -647,7 +648,7 @@ namespace libsemigroups {
     //!
     //! \param
     //! (None)
-    [[nodiscard]] size_t number_of_active_rules() const noexcept;
+    [[nodiscard]] size_t number_of_active_rules() noexcept;
 
     //! \brief Return the current number of inactive rules in the KnuthBendix
     //! instance.
@@ -696,6 +697,7 @@ namespace libsemigroups {
     // TODO What do we do about doc-ing this?
     using rule_type = std::pair<std::string, std::string>;
     // TODO update the doc, now returns a Range
+    // TODO add note about empty active rules after init
     //! \brief Return a copy of the active rules.
     //!
     //! This member function returns a vector consisting of the pairs of
@@ -715,9 +717,13 @@ namespace libsemigroups {
     //!
     //! \param
     //! (None)
-    [[nodiscard]] auto active_rules() const {
+    [[nodiscard]] auto active_rules() {
       using rx::iterator_range;
       using rx::transform;
+      if (_rewriter.number_of_active_rules() == 0
+          && _rewriter.number_of_pending_rules() != 0) {
+        _rewriter.process_pending_rules();
+      }
       return iterator_range(_rewriter.begin(), _rewriter.end())
              | transform([this](auto const& rule) {
                  // TODO remove allocation
@@ -733,6 +739,7 @@ namespace libsemigroups {
                });
     }
 
+    // TODO add note about empty active rules after init and non-const-ness
     //! \brief Rewrite a word in-place.
     //!
     //! The word \p w is rewritten in-place according to the current active
@@ -743,8 +750,9 @@ namespace libsemigroups {
     //! \returns
     //! The argument \p w after it has been rewritten.
     // TODO update doc
-    void rewrite_inplace(std::string& w) const;
+    void rewrite_inplace(std::string& w);
 
+    // TODO add note about empty active rules after init and non-const-ness
     //! \brief Rewrite a word.
     //!
     //! Rewrites a copy of the word \p w rewritten according to the current
@@ -754,7 +762,7 @@ namespace libsemigroups {
     //!
     //! \returns
     //! A copy of the argument \p w after it has been rewritten.
-    [[nodiscard]] std::string rewrite(std::string w) const {
+    [[nodiscard]] std::string rewrite(std::string w) {
       rewrite_inplace(w);
       return w;
     }
@@ -762,29 +770,6 @@ namespace libsemigroups {
     //////////////////////////////////////////////////////////////////////////
     // KnuthBendix - main member functions - public
     //////////////////////////////////////////////////////////////////////////
-
-    // REVIEW is the description to implementation-specific?
-    //! \brief Decide whether to add pending rules to the rewriting system.
-    //!
-    //! Before a rule is added to the rewriting system, it is stored in an
-    //! intermediate pending state. This function takes each of these pending
-    //! rules, rewrites both the left-hand side and the right-hand side with
-    //! respect to the rules already defined in the rewriting system, and adds
-    //! the new rewritten rule to the system if it is non-trivial.
-    //!
-    //! \note This process is performed when \ref run is called after
-    //! initialising a KnuthBendix instance, and therefore there is no need to
-    //! call this function if \ref run will be called. However, if a KnuthBendix
-    //! instance is initialised from a presentation and \ref run will not be
-    //! called, this function should be called to ensure the rewriting system
-    //! has the rules as specified by the presentation.
-    //!
-    //! \return \c true if any rules get added to the rewriting system, and
-    //! \c false otherwise.
-    //!
-    //! \param
-    //! (None)
-    bool process_pending_rules();
 
     //! \brief Check confluence of the current rules.
     //!
@@ -887,6 +872,7 @@ namespace libsemigroups {
     //! \sa run.
     [[nodiscard]] bool equal_to(std::string const& u, std::string const& v);
 
+    // REVIEW Why does equal to take strings, but this take words?
     //! \brief Check containment
     //!
     //! Check if the pair of words \p u and \p v is contained in within the
@@ -918,12 +904,12 @@ namespace libsemigroups {
 
    private:
     void report_presentation(Presentation<std::string> const&) const;
-    void report_before_run() const;
-    void report_progress_from_thread(std::atomic_bool const&) const;
-    void report_after_run() const;
+    void report_before_run();
+    void report_progress_from_thread(std::atomic_bool const&);
+    void report_after_run();
 
     void throw_if_started() const;
-    void stats_check_point() const;
+    void stats_check_point();
 
     [[nodiscard]] static internal_char_type uint_to_internal_char(size_t a);
     [[nodiscard]] static size_t internal_char_to_uint(internal_char_type c);
@@ -1235,7 +1221,7 @@ namespace libsemigroups {
   // TODO to tpp file
   template <typename Word, typename Rewriter, typename ReductionOrder>
   Presentation<Word>
-  to_presentation(KnuthBendix<Rewriter, ReductionOrder> const& kb) {
+  to_presentation(KnuthBendix<Rewriter, ReductionOrder>& kb) {
     if constexpr (std::is_same_v<Word, std::string>) {
       auto const&               p_orig = kb.presentation();
       Presentation<std::string> p;

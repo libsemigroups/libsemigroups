@@ -309,7 +309,7 @@ namespace libsemigroups {
     presentation::add_inverse_rules(p, "AaBb");
 
     TestType kb(twosided, p);
-    kb.process_pending_rules();
+    // kb.process_pending_rules();
     REQUIRE(kb.confluent());
     kb.run();
     REQUIRE(kb.confluent());
@@ -650,7 +650,7 @@ namespace libsemigroups {
     presentation::add_rule(p, "abb", "");
 
     TestType kb(twosided, p);
-    kb.process_pending_rules();
+    // kb.process_pending_rules();
     REQUIRE((kb.active_rules() | sort(weird_cmp()) | to_vector())
             == std::vector<rule_type>({{"a", ""}, {"b", ""}}));
     REQUIRE(kb.number_of_active_rules() == 2);
@@ -677,7 +677,7 @@ namespace libsemigroups {
     presentation::add_inverse_rules(p, "Aa");
 
     TestType kb(twosided, p);
-    kb.process_pending_rules();
+    // kb.process_pending_rules();
     REQUIRE(kb.confluent());
 
     kb.run();
@@ -698,7 +698,7 @@ namespace libsemigroups {
     presentation::add_rule(p, "a", "");
 
     TestType kb(twosided, p);
-    kb.process_pending_rules();
+    // kb.process_pending_rules();
     REQUIRE(kb.confluent());
 
     kb.run();
@@ -835,7 +835,7 @@ namespace libsemigroups {
     presentation::add_rule(p, "aa", "");
 
     TestType kb(twosided, p);
-    kb.process_pending_rules();
+    // kb.process_pending_rules();
     REQUIRE(kb.confluent());
 
     kb.run();
@@ -957,7 +957,7 @@ namespace libsemigroups {
     presentation::add_rule(p, "abacabacabacabac", "");
 
     TestType kb(twosided, p);
-    kb.process_pending_rules();
+    // kb.process_pending_rules();
     REQUIRE(kb.number_of_active_rules() == 5);
     REQUIRE(!kb.confluent());
 
@@ -1036,7 +1036,7 @@ namespace libsemigroups {
     presentation::add_rule(p, "BaAAaAAaAAaAAA", "cAAaAAaAAaAAa");
 
     TestType kb(twosided, p);
-    kb.process_pending_rules();
+    // kb.process_pending_rules();
     REQUIRE(kb.number_of_active_rules() == 9);
     REQUIRE(!kb.confluent());
     kb.run();
@@ -1277,7 +1277,7 @@ namespace libsemigroups {
     presentation::add_rule(p, "AABC", "ACBA");
 
     TestType kb(twosided, p);
-    kb.process_pending_rules();
+    // kb.process_pending_rules();
     REQUIRE(kb.confluent());
     REQUIRE(kb.normal_form("CBACBAABCAABCACBACBA") == "CBACBACBAACBAACBACBA");
     REQUIRE(kb.equal_to("CBAABCABCAABCAABCABC", "CBACBAABCAABCACBACBA"));
