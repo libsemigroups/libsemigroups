@@ -163,14 +163,33 @@ namespace libsemigroups {
   // Sims2, RepOrc, and MinimalRepOrc without duplicating the code.
   template <typename Subclass>
   class SimsSettings {
+   public:
+    // We use WordGraph, even though the iterators produced by this class
+    // hold FelschGraph's, none of the features of FelschGraph are useful
+    // for the output, only for the implementation
+    //! The type of the associated WordGraph objects.
+    using word_graph_type = WordGraph<uint32_t>;
+
+    //! Type for the nodes in the associated WordGraph objects.
+    using node_type = typename word_graph_type::node_type;
+
+    using label_type = typename word_graph_type::label_type;
+
+    //! The size_type of the associated WordGraph objects.
+    using size_type = typename word_graph_type::size_type;
+
+    //! Type for letters in the underlying presentation.
+    using letter_type = typename word_type::value_type;
+
    private:
     std::vector<word_type>                 _exclude;
-    std::vector<word_type>                 _include;
-    Presentation<word_type>                _presentation;
     size_t                                 _idle_thread_restarts;
+    std::vector<word_type>                 _include;
     std::vector<word_type>::const_iterator _longs_begin;
     size_t                                 _num_threads;
-    mutable SimsStats                      _stats;
+    Presentation<word_type>                _presentation;
+    std::vector<std::function<bool(word_graph_type const&)>> _pruners;
+    mutable SimsStats                                        _stats;
 
    public:
     // TODO(doc)
@@ -387,6 +406,23 @@ namespace libsemigroups {
     //! \no_libsemigroups_except
     Subclass& long_rule_length(size_t val);
 
+    template <typename Func>
+    Subclass& add_pruner(Func&& func) {
+      _pruners.emplace_back(func);
+      // TODO could return an iterator to the inserted func in case we want to
+      // remove it again
+      return static_cast<Subclass&>(*this);
+    }
+
+    Subclass& clear_pruners() {
+      _pruners.clear();
+      return static_cast<Subclass&>(*this);
+    }
+
+    auto const& pruners() const noexcept {
+      return _pruners;
+    }
+
     //! \anchor extra
     //! Returns a const reference to the additional defining pairs.
     //!
@@ -469,12 +505,15 @@ namespace libsemigroups {
     }
 
     // TODO(doc)
+    // TODO maybe should add instead of replacing similar to exclude of r pair?
+    // Replaces current exclude with [first, last)
     template <typename Iterator>
     Subclass& exclude(Iterator first, Iterator last) {
       return include_exclude(first, last, _exclude);
     }
 
     // TODO(doc)
+    // TODO move to helper namespace
     template <typename Container>
     Subclass& exclude(Container const& c) {
       exclude(std::begin(c), std::end(c));
@@ -482,6 +521,7 @@ namespace libsemigroups {
     }
 
     // TODO(doc)
+    // Adds a pair to exclude
     Subclass& exclude(word_type const& lhs, word_type const& rhs) {
       return include_exclude(lhs, rhs, _exclude);
     }
@@ -493,6 +533,7 @@ namespace libsemigroups {
 
     // TODO(doc)
     Subclass& clear_exclude() {
+      // TODO remove the pruner
       _exclude.clear();
       return static_cast<Subclass&>(*this);
     }
@@ -552,18 +593,17 @@ namespace libsemigroups {
   template <typename OtherSubclass>
   SimsSettings<Subclass>&
   SimsSettings<Subclass>::init(SimsSettings<OtherSubclass> const& that) {
-    // protected
     _exclude      = that.exclude();
     _include      = that.include();
     _presentation = that.presentation();
 
-    // private
     _idle_thread_restarts = that.idle_thread_restarts();
     _longs_begin          = _presentation.rules.cbegin()
                    + std::distance(that.presentation().rules.cbegin(),
                                    that.cbegin_long_rules());
     _num_threads = that.number_of_threads();
     _stats       = that.stats();
+    _pruners     = that.pruners();
     return *this;
   }
 
@@ -633,6 +673,7 @@ namespace libsemigroups {
       // hold FelschGraph's, none of the features of FelschGraph are useful
       // for the output, only for the implementation
       //! The type of the associated WordGraph objects.
+      // TODO use SimsSettings::word_graph_type
       using word_graph_type = WordGraph<uint32_t>;
 
       //! Type for the nodes in the associated WordGraph objects.
@@ -646,7 +687,6 @@ namespace libsemigroups {
       //! Type for letters in the underlying presentation.
       using letter_type = typename word_type::value_type;
 
-     protected:
       ////////////////////////////////////////////////////////////////////////
       // SimsBase nested classes - protected
       ////////////////////////////////////////////////////////////////////////
@@ -1553,6 +1593,40 @@ namespace libsemigroups {
     //!
     //! \exceptions \no_libsemigroups_except
     [[nodiscard]] Sims1::word_graph_type word_graph() const;
+  };
+
+  // This struct provides an alternative way of doing MinimalRepOrc, when the
+  // generating pairs of the minimal 2-sided congruences are known. These pairs
+  // should be added to forbid, and then your Pruno instance should be passed to
+  // a Sims1 object via add_pruner.
+  struct Pruno {
+    std::vector<word_type> forbid;
+    // TODO to cpp
+    bool operator()(Sims1::word_graph_type const& wg) {
+      auto first = forbid.cbegin(), last = forbid.cend();
+      // TODO use 1 felsch tree per excluded pairs, and use it to check if
+      // paths containing newly added edges, lead to the same place
+      for (auto it = first; it != last; it += 2) {
+        bool this_rule_compatible = true;
+        for (uint32_t n = 0; n < wg.number_of_active_nodes(); ++n) {
+          auto l = word_graph::follow_path_no_checks(wg, n, *it);
+          if (l != UNDEFINED) {
+            auto r = word_graph::follow_path_no_checks(wg, n, *(it + 1));
+            if (r == UNDEFINED || (r != UNDEFINED && l != r)) {
+              this_rule_compatible = false;
+              break;
+            }
+          } else {
+            this_rule_compatible = false;
+            break;
+          }
+        }
+        if (this_rule_compatible) {
+          return false;
+        }
+      }
+      return true;
+    }
   };
 
   namespace sims {

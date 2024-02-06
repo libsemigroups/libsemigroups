@@ -91,14 +91,12 @@ namespace libsemigroups {
 
   template <typename Subclass>
   SimsSettings<Subclass>::SimsSettings()
-      :  // protected
-        _exclude(),
-        _include(),
-        _presentation(),
-        // private
+      : _exclude(),
         _idle_thread_restarts(64),
+        _include(),
         _longs_begin(),
         _num_threads(1),
+        _presentation(),
         _stats() {
     _longs_begin = _presentation.rules.cend();
   }
@@ -106,11 +104,29 @@ namespace libsemigroups {
   template <typename Subclass>
   Subclass& SimsSettings<Subclass>::init() {
     _exclude.clear();
-    _include.clear();
-    _presentation.init();
     _idle_thread_restarts = 64;
-    _longs_begin          = _presentation.rules.cend();
-    _num_threads          = 1;
+    _include.clear();
+    _longs_begin = _presentation.rules.cend();
+    _num_threads = 1;
+    _presentation.init();
+    _pruners.clear();
+    auto pruner = [this](auto const& wg) {
+      auto      first = _exclude.cbegin();
+      auto      last  = _exclude.cend();
+      node_type root  = 0;
+
+      for (auto it = first; it != last; it += 2) {
+        auto l = word_graph::follow_path_no_checks(wg, root, *it);
+        if (l != UNDEFINED) {
+          auto r = word_graph::follow_path_no_checks(wg, root, *(it + 1));
+          if (l == r) {
+            return false;
+          }
+        }
+      }
+      return true;
+    };
+    add_pruner(pruner);
     return static_cast<Subclass&>(*this);
   }
 
@@ -580,31 +596,38 @@ namespace libsemigroups {
         }
       }
 
-      first = _sims1or2->exclude().cbegin();
-      last  = _sims1or2->exclude().cend();
-      // TODO use 1 felsch tree per excluded pairs, and use it to check if
-      // paths containing newly added edges, lead to the same place
-      for (auto it = first; it != last; it += 2) {
-        bool this_rule_compatible = true;
-        for (uint32_t n = 0; n < _felsch_graph.number_of_active_nodes(); ++n) {
-          auto l = word_graph::follow_path_no_checks(_felsch_graph, n, *it);
-          if (l != UNDEFINED) {
-            auto r = word_graph::follow_path_no_checks(
-                _felsch_graph, n, *(it + 1));
-            if (r == UNDEFINED || (r != UNDEFINED && l != r)) {
-              this_rule_compatible = false;
-              break;
-            }
-          } else {
-            this_rule_compatible = false;
-            break;
-          }
-        }
-        if (this_rule_compatible) {
+      for (auto const& pruner : _sims1or2->pruners()) {
+        if (!pruner(_felsch_graph)) {
           return false;
         }
       }
       return true;
+
+      // first = _sims1or2->exclude().cbegin();
+      // last  = _sims1or2->exclude().cend();
+      // // TODO use 1 felsch tree per excluded pairs, and use it to check if
+      // // paths containing newly added edges, lead to the same place
+      // for (auto it = first; it != last; it += 2) {
+      //   bool this_rule_compatible = true;
+      //   for (uint32_t n = 0; n < _felsch_graph.number_of_active_nodes(); ++n)
+      //   {
+      //     auto l = word_graph::follow_path_no_checks(_felsch_graph, n, *it);
+      //     if (l != UNDEFINED) {
+      //       auto r = word_graph::follow_path_no_checks(
+      //           _felsch_graph, n, *(it + 1));
+      //       if (r == UNDEFINED || (r != UNDEFINED && l != r)) {
+      //         this_rule_compatible = false;
+      //         break;
+      //       }
+      //     } else {
+      //       this_rule_compatible = false;
+      //       break;
+      //     }
+      //   }
+      //   if (this_rule_compatible) {
+      //     return false;
+      //   }
+      // }
       // node_type root = 0;
 
       // for (auto it = first; it != last; it += 2) {

@@ -184,6 +184,7 @@ namespace libsemigroups {
         }
       }
     }
+
   }  // namespace
 
   LIBSEMIGROUPS_TEST_CASE("Sims1",
@@ -676,6 +677,7 @@ namespace libsemigroups {
     check_include(p, e, 5);
 
     S.exclude(e).clear_include();
+    REQUIRE(S.pruners().size() == 1);
     REQUIRE(S.number_of_congruences(5) == 4);
     S.clear_exclude();
     REQUIRE(S.number_of_congruences(5) == 6);
@@ -821,6 +823,7 @@ namespace libsemigroups {
 
     /// auto p  = singular_brauer_monoid(4);
     auto p = to_presentation<word_type>(S);
+    p.validate();
     REQUIRE(p.alphabet().size() == 10);
     REQUIRE(presentation::length(p) == 719);
 
@@ -847,38 +850,25 @@ namespace libsemigroups {
     // REQUIRE(p.rules == std::vector<word_type>());
 
     // p.contains_empty_word(true);
-    //
-    p.validate();
 
-    std::vector<word_type> forbidden = {{0},
-                                        {3, 0},
-                                        {0, 0},
-                                        {0, 1},
-                                        {0, 0},
-                                        {0, 2},
-                                        {0, 2},
-                                        {0, 1},
-                                        {0, 0},
-                                        {5, 9},
-                                        {0, 0},
-                                        {6, 9},
-                                        {5, 9},
-                                        {6, 9}};
-    // {{0, 0}, {6, 2},    {0, 0},    {6, 3, 1}, {0, 2},    {6, 3, 1},
-    //  {0, 0}, {5, 2},    {5, 9},    {6, 2},    {0, 0},    {5, 3, 1},
-    //  {0, 2}, {5, 3, 1}, {5, 9},    {6, 3, 1}, {5, 0, 2}, {6, 3, 1},
-    //  {0, 0}, {6, 0},    {0, 0},    {2},       {0, 0},    {5, 0},
-    //  {0, 0}, {1},       {0, 2},    {1},       {5, 9},    {6, 0},
-    //  {0, 0}, {0},       {0},       {3, 0},    {0, 0},    {5, 0, 1},
-    //  {0, 0}, {6, 0, 1}, {5, 9},    {6, 0, 1}, {0, 0},    {5, 0, 2},
-    //  {0, 0}, {6, 0, 2}, {0, 2},    {5, 0, 1}, {0, 2},    {6, 0, 1},
-    //  {5, 9}, {6, 0, 2}, {5, 0, 2}, {6, 0, 1}, {0, 0},    {0, 1},
-    //  {0, 0}, {0, 2},    {0, 2},    {0, 1},    {0, 0},    {5, 9},
-    //  {0, 0}, {6, 9},    {5, 9},    {6, 9}};
+    std::vector<word_type> forbid = {{0},
+                                     {3, 0},
+                                     {0, 0},
+                                     {0, 1},
+                                     {0, 0},
+                                     {0, 2},
+                                     {0, 2},
+                                     {0, 1},
+                                     {0, 0},
+                                     {5, 9},
+                                     {0, 0},
+                                     {6, 9},
+                                     {5, 9},
+                                     {6, 9}};
 
-    auto filter = [&forbidden](auto const& wg) {
-      auto first = forbidden.cbegin();
-      auto last  = forbidden.cend();
+    auto filter = [&forbid](auto const& wg) {
+      auto first = forbid.cbegin();
+      auto last  = forbid.cend();
       for (auto it = first; it != last; it += 2) {
         bool this_rule_compatible = true;
         for (auto n : wg.nodes()) {
@@ -899,13 +889,10 @@ namespace libsemigroups {
     Sims1 sims;
     sims.presentation(p);
     {
-      auto first = forbidden.cbegin();
-      auto last  = forbidden.cend();
-      for (auto it = first; it != last; it += 2) {
-        sims.exclude(*it, *(it + 1));
-      }
+      Pruno pruno;
+      pruno.forbid = forbid;
 
-      auto const& wg = sims.number_of_threads(1).find_if(
+      auto const& wg = sims.number_of_threads(1).add_pruner(pruno).find_if(
           82, [](auto const&) { return true; });
       REQUIRE(wg.number_of_active_nodes() == 18);
       REQUIRE(sims.stats().total_pending_now == 370'719);
@@ -916,7 +903,7 @@ namespace libsemigroups {
       REQUIRE(wg2.number_of_active_nodes() == 0);
     }
     {
-      sims.clear_exclude();
+      sims.clear_pruners();
 
       auto const& wg = sims.number_of_threads(1).find_if(82, filter);
       REQUIRE(wg.number_of_active_nodes() == 18);
@@ -1104,6 +1091,7 @@ namespace libsemigroups {
         {{4, 8}, {4, 5, 7}, {4, 7}, {5, 4, 7}};
     Sims1 sims;
     sims.presentation(p);
+    // TODO use Pruno instead
     for (auto it = forbid.cbegin(); it != forbid.cend(); it += 2) {
       sims.exclude(*it, *(it + 1));
     }
@@ -1111,8 +1099,6 @@ namespace libsemigroups {
     Sims1::word_graph_type wg = sims.number_of_threads(8).find_if(
         945, [](auto const&) { return true; });
 
-    constexpr std::array<size_t, 8> expected = {51, 46};
-    size_t                          index    = 0;
     // REQUIRE(wg.number_of_active_nodes() == expected[index++]);
     while (wg.number_of_active_nodes() != 0) {
       wg = sims.number_of_threads(8).find_if(wg.number_of_active_nodes() - 1,
