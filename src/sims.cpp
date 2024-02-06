@@ -582,8 +582,8 @@ namespace libsemigroups {
 
       first = _sims1or2->exclude().cbegin();
       last  = _sims1or2->exclude().cend();
-      // first = forbidden.cbegin();
-      // last  = forbidden.cend();
+      // TODO use 1 felsch tree per excluded pairs, and use it to check if
+      // paths containing newly added edges, lead to the same place
       for (auto it = first; it != last; it += 2) {
         bool this_rule_compatible = true;
         for (uint32_t n = 0; n < _felsch_graph.number_of_active_nodes(); ++n) {
@@ -1294,6 +1294,7 @@ namespace libsemigroups {
         result.number_of_active_nodes(result.number_of_active_nodes() - 1);
       }
     }
+    stats_copy_from(sims1.stats());
     return result;
   }
 

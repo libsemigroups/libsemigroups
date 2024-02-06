@@ -896,31 +896,47 @@ namespace libsemigroups {
       return true;
     };
 
-    // SECTION("New method") {
     Sims1 sims;
     sims.presentation(p);
-    auto first = forbidden.cbegin();
-    auto last  = forbidden.cend();
-    for (auto it = first; it != last; it += 2) {
-      sims.exclude(*it, *(it + 1));
-    }
-    auto const& wg = sims.number_of_threads(8).find_if(
-        82, [](auto const&) { return true; });
-    REQUIRE(wg.number_of_active_nodes() == 18);
+    {
+      auto first = forbidden.cbegin();
+      auto last  = forbidden.cend();
+      for (auto it = first; it != last; it += 2) {
+        sims.exclude(*it, *(it + 1));
+      }
 
-    auto const& wg2 = sims.find_if(wg.number_of_active_nodes() - 2,
-                                   [](auto const&) { return true; });
-    REQUIRE(wg2.number_of_active_nodes() == 0);
-    // }
-    // SECTION("Old method") {
-    // MinimalRepOrc orc;
-    // p.contains_empty_word(true);
-    // auto d = orc.presentation(p)
-    //              .target_size(82)
-    //              .number_of_threads(std::thread::hardware_concurrency())
-    //              .word_graph();
-    // REQUIRE(d.number_of_nodes() == 18);
-    // REQUIRE(orc.target_size() == 82);
+      auto const& wg = sims.number_of_threads(1).find_if(
+          82, [](auto const&) { return true; });
+      REQUIRE(wg.number_of_active_nodes() == 18);
+      REQUIRE(sims.stats().total_pending_now == 370'719);
+
+      auto const& wg2 = sims.find_if(wg.number_of_active_nodes() - 2,
+                                     [](auto const&) { return true; });
+      REQUIRE(sims.stats().total_pending_now == 1'930'725);
+      REQUIRE(wg2.number_of_active_nodes() == 0);
+    }
+    {
+      sims.clear_exclude();
+
+      auto const& wg = sims.number_of_threads(1).find_if(82, filter);
+      REQUIRE(wg.number_of_active_nodes() == 18);
+      REQUIRE(sims.stats().total_pending_now == 1'014'357);
+      auto const& wg2 = sims.find_if(wg.number_of_active_nodes() - 2, filter);
+      REQUIRE(sims.stats().total_pending_now == 3'374'651);
+      REQUIRE(wg2.number_of_active_nodes() == 0);
+    }
+    {
+      MinimalRepOrc orc;
+      p.contains_empty_word(true);
+      auto d
+          = orc.presentation(p)
+                .target_size(82)
+                //                 .number_of_threads(std::thread::hardware_concurrency())
+                .word_graph();
+      REQUIRE(d.number_of_nodes() == 18);
+      REQUIRE(orc.target_size() == 82);
+      REQUIRE(orc.stats().total_pending_now == 3'626'612);
+    }
 
     //   // p.contains_empty_word(false);
 
@@ -934,7 +950,6 @@ namespace libsemigroups {
 
     //   // Sims2 sim2(p);
     //   // REQUIRE(C.number_of_threads(1).number_of_congruences(81) == 75);
-    // }
   }
 
   LIBSEMIGROUPS_TEST_CASE("Sims1",
@@ -1048,10 +1063,10 @@ namespace libsemigroups {
 
     // FroidurePin<Bipartition> S;
     // S.add_generator(Bipartition({{1, -1}, {2, -2}, {3, -3}, {4, -4}, {5,
-    // -5}})); S.add_generator(Bipartition({{1, -2}, {2, -3}, {3, -4}, {4, -5},
-    // {5, -1}})); S.add_generator(Bipartition({{1, -2}, {2, -1}, {3, -3}, {4,
-    // -4}, {5, -5}})); S.add_generator(Bipartition({{1, 2}, {3, -3}, {4, -4},
-    // {5, -5}, {-1, -2}})); REQUIRE(S.size() == 945);
+    // -5}})); S.add_generator(Bipartition({{1, -2}, {2, -3}, {3, -4}, {4,
+    // -5}, {5, -1}})); S.add_generator(Bipartition({{1, -2}, {2, -1}, {3,
+    // -3}, {4, -4}, {5, -5}})); S.add_generator(Bipartition({{1, 2}, {3, -3},
+    // {4, -4}, {5, -5}, {-1, -2}})); REQUIRE(S.size() == 945);
 
     // auto p = to_presentation<word_type>(S);
     auto p = brauer_monoid(5);
