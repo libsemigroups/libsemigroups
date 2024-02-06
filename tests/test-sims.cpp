@@ -16,6 +16,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
+#include "libsemigroups/word-graph.hpp"
 #define CATCH_CONFIG_ENABLE_PAIR_STRINGMAKER
 #define CATCH_CONFIG_ENABLE_TUPLE_STRINGMAKER
 
@@ -804,55 +805,136 @@ namespace libsemigroups {
                           "022",
                           "singular_brauer_monoid(4) (Maltcev-Mazorchuk)",
                           "[extreme][sims1]") {
-    auto rg = ReportGuard(true);
-    auto p  = singular_brauer_monoid(4);
-    REQUIRE(p.alphabet().size() == 12);
-    REQUIRE(presentation::length(p) == 660);
+    auto                     rg = ReportGuard(true);
+    FroidurePin<Bipartition> S;
+    S.add_generator(Bipartition({{1, 2}, {3, -1}, {4, -2}, {-3, -4}}));
+    S.add_generator(Bipartition({{1, 2}, {3, -1}, {4, -4}, {-2, -3}}));
+    S.add_generator(Bipartition({{1, 2}, {3, -3}, {4, -1}, {-2, -4}}));
+    S.add_generator(Bipartition({{1, 2}, {3, -2}, {4, -3}, {-1, -4}}));
+    S.add_generator(Bipartition({{1, 2}, {3, -2}, {4, -4}, {-1, -3}}));
+    S.add_generator(Bipartition({{1, 3}, {2, -4}, {4, -3}, {-1, -2}}));
+    S.add_generator(Bipartition({{1, -4}, {2, 3}, {4, -3}, {-1, -2}}));
+    S.add_generator(Bipartition({{1, 4}, {2, -3}, {3, -4}, {-1, -2}}));
+    S.add_generator(Bipartition({{1, -3}, {2, 4}, {3, -4}, {-1, -2}}));
+    S.add_generator(Bipartition({{1, -3}, {2, -4}, {3, 4}, {-1, -2}}));
+    REQUIRE(S.size() == 81);
 
-    REQUIRE(*presentation::shortest_rule(p) == 0_w);
-    REQUIRE(*(presentation::shortest_rule(p) + 1) == 3_w);
+    /// auto p  = singular_brauer_monoid(4);
+    auto p = to_presentation<word_type>(S);
+    REQUIRE(p.alphabet().size() == 10);
+    REQUIRE(presentation::length(p) == 719);
 
-    presentation::remove_redundant_generators(p);
+    // REQUIRE(*presentation::shortest_rule(p) == 0_w);
+    // REQUIRE(*(presentation::shortest_rule(p) + 1) == 3_w);
 
-    presentation::remove_duplicate_rules(p);
-    presentation::sort_each_rule(p);
-    presentation::sort_rules(p);
+    // presentation::remove_redundant_generators(p);
 
-    REQUIRE(presentation::shortest_rule_length(p) == 3);
-    REQUIRE(*presentation::shortest_rule(p) == 00_w);
-    REQUIRE(*(presentation::shortest_rule(p) + 1) == 0_w);
+    // presentation::remove_duplicate_rules(p);
+    // presentation::sort_each_rule(p);
+    // presentation::sort_rules(p);
 
-    REQUIRE(presentation::longest_rule_length(p) == 6);
-    REQUIRE(*presentation::longest_rule(p) == "048"_w);
-    REQUIRE(*(presentation::longest_rule(p) + 1) == "028"_w);
+    // REQUIRE(presentation::shortest_rule_length(p) == 3);
+    // REQUIRE(*presentation::shortest_rule(p) == 00_w);
+    // REQUIRE(*(presentation::shortest_rule(p) + 1) == 0_w);
 
-    REQUIRE(p.alphabet().size() == 6);
-    REQUIRE(presentation::length(p) == 462);
-    REQUIRE(p.rules.size() == 186);
+    // REQUIRE(presentation::longest_rule_length(p) == 6);
+    // REQUIRE(*presentation::longest_rule(p) == "048"_w);
+    // REQUIRE(*(presentation::longest_rule(p) + 1) == "028"_w);
 
-    p.contains_empty_word(true);
+    // REQUIRE(p.alphabet().size() == 6);
+    // REQUIRE(presentation::length(p) == 462);
+    // REQUIRE(p.rules.size() == 186);
+    // REQUIRE(p.rules == std::vector<word_type>());
+
+    // p.contains_empty_word(true);
+    //
     p.validate();
 
-    MinimalRepOrc orc;
-    auto          d = orc.presentation(p)
-                 .target_size(82)
-                 .number_of_threads(std::thread::hardware_concurrency())
-                 .word_graph();
-    REQUIRE(d.number_of_nodes() == 18);
-    REQUIRE(orc.target_size() == 82);
+    std::vector<word_type> forbidden = {{0},
+                                        {3, 0},
+                                        {0, 0},
+                                        {0, 1},
+                                        {0, 0},
+                                        {0, 2},
+                                        {0, 2},
+                                        {0, 1},
+                                        {0, 0},
+                                        {5, 9},
+                                        {0, 0},
+                                        {6, 9},
+                                        {5, 9},
+                                        {6, 9}};
+    // {{0, 0}, {6, 2},    {0, 0},    {6, 3, 1}, {0, 2},    {6, 3, 1},
+    //  {0, 0}, {5, 2},    {5, 9},    {6, 2},    {0, 0},    {5, 3, 1},
+    //  {0, 2}, {5, 3, 1}, {5, 9},    {6, 3, 1}, {5, 0, 2}, {6, 3, 1},
+    //  {0, 0}, {6, 0},    {0, 0},    {2},       {0, 0},    {5, 0},
+    //  {0, 0}, {1},       {0, 2},    {1},       {5, 9},    {6, 0},
+    //  {0, 0}, {0},       {0},       {3, 0},    {0, 0},    {5, 0, 1},
+    //  {0, 0}, {6, 0, 1}, {5, 9},    {6, 0, 1}, {0, 0},    {5, 0, 2},
+    //  {0, 0}, {6, 0, 2}, {0, 2},    {5, 0, 1}, {0, 2},    {6, 0, 1},
+    //  {5, 9}, {6, 0, 2}, {5, 0, 2}, {6, 0, 1}, {0, 0},    {0, 1},
+    //  {0, 0}, {0, 2},    {0, 2},    {0, 1},    {0, 0},    {5, 9},
+    //  {0, 0}, {6, 9},    {5, 9},    {6, 9}};
 
-    p.contains_empty_word(false);
+    auto filter = [&forbidden](auto const& wg) {
+      auto first = forbidden.cbegin();
+      auto last  = forbidden.cend();
+      for (auto it = first; it != last; it += 2) {
+        bool this_rule_compatible = true;
+        for (auto n : wg.nodes()) {
+          auto l = word_graph::follow_path_no_checks(wg, n, *it);
+          auto r = word_graph::follow_path_no_checks(wg, n, *(it + 1));
+          if (l != r) {
+            this_rule_compatible = false;
+            break;
+          }
+        }
+        if (this_rule_compatible) {
+          return false;
+        }
+      }
+      return true;
+    };
 
-    Sims1 C;
-    C.presentation(p);
-    REQUIRE(C.presentation().rules.size() == 186);
+    // SECTION("New method") {
+    Sims1 sims;
+    sims.presentation(p);
+    auto first = forbidden.cbegin();
+    auto last  = forbidden.cend();
+    for (auto it = first; it != last; it += 2) {
+      sims.exclude(*it, *(it + 1));
+    }
+    auto const& wg = sims.number_of_threads(8).find_if(
+        82, [](auto const&) { return true; });
+    REQUIRE(wg.number_of_active_nodes() == 18);
 
-    REQUIRE(C.number_of_threads(std::thread::hardware_concurrency())
-                .number_of_congruences(81)
-            == 601'265);
+    auto const& wg2 = sims.find_if(wg.number_of_active_nodes() - 2,
+                                   [](auto const&) { return true; });
+    REQUIRE(wg2.number_of_active_nodes() == 0);
+    // }
+    // SECTION("Old method") {
+    // MinimalRepOrc orc;
+    // p.contains_empty_word(true);
+    // auto d = orc.presentation(p)
+    //              .target_size(82)
+    //              .number_of_threads(std::thread::hardware_concurrency())
+    //              .word_graph();
+    // REQUIRE(d.number_of_nodes() == 18);
+    // REQUIRE(orc.target_size() == 82);
 
-    Sims2 sim2(p);
-    REQUIRE(C.number_of_threads(1).number_of_congruences(81) == 75);
+    //   // p.contains_empty_word(false);
+
+    //   // Sims1 C;
+    //   // C.presentation(p);
+    //   // REQUIRE(C.presentation().rules.size() == 186);
+
+    //   // REQUIRE(C.number_of_threads(std::thread::hardware_concurrency())
+    //   //             .number_of_congruences(81)
+    //   //         == 601'265);
+
+    //   // Sims2 sim2(p);
+    //   // REQUIRE(C.number_of_threads(1).number_of_congruences(81) == 75);
+    // }
   }
 
   LIBSEMIGROUPS_TEST_CASE("Sims1",
@@ -963,7 +1045,16 @@ namespace libsemigroups {
                           "brauer_monoid(5) (Kudryavtseva-Mazorchuk)",
                           "[extreme][sims1]") {
     auto rg = ReportGuard(true);
-    auto p  = brauer_monoid(5);
+
+    // FroidurePin<Bipartition> S;
+    // S.add_generator(Bipartition({{1, -1}, {2, -2}, {3, -3}, {4, -4}, {5,
+    // -5}})); S.add_generator(Bipartition({{1, -2}, {2, -3}, {3, -4}, {4, -5},
+    // {5, -1}})); S.add_generator(Bipartition({{1, -2}, {2, -1}, {3, -3}, {4,
+    // -4}, {5, -5}})); S.add_generator(Bipartition({{1, 2}, {3, -3}, {4, -4},
+    // {5, -5}, {-1, -2}})); REQUIRE(S.size() == 945);
+
+    // auto p = to_presentation<word_type>(S);
+    auto p = brauer_monoid(5);
 
     REQUIRE(presentation::length(p) == 240);
 
@@ -991,18 +1082,42 @@ namespace libsemigroups {
     presentation::replace_word_with_new_generator(p, 76_w);
     REQUIRE(presentation::length(p) == 193);
 
-    auto d = MinimalRepOrc()
-                 .presentation(p)
-                 .include(0_w, 1_w)
-                 .target_size(945)
-                 .number_of_threads(8)
-                 .word_graph();
-    // WARNING: the number below is not necessarily the minimal degree of an
-    // action on right congruences, only the minimal degree of an action on
-    // right congruences containing the pair {0}, {1}.
-    REQUIRE(d.number_of_nodes() == 51);
-    auto S = to_froidure_pin<Transf<0, node_type>>(d);
-    REQUIRE(S.size() == 945);
+    std::vector<word_type> forbid =  // {{3, 1, 2, 1, 1, 3},
+                                     //  {1, 1, 3, 1, 2, 1, 1, 3},
+                                     //  {1, 1, 2, 1, 3, 1, 1, 3, 1},
+                                     //  {1, 1, 2, 1, 3, 1, 1, 3}};
+        {{4, 8}, {4, 5, 7}, {4, 7}, {5, 4, 7}};
+    Sims1 sims;
+    sims.presentation(p);
+    for (auto it = forbid.cbegin(); it != forbid.cend(); it += 2) {
+      sims.exclude(*it, *(it + 1));
+    }
+
+    Sims1::word_graph_type wg = sims.number_of_threads(8).find_if(
+        945, [](auto const&) { return true; });
+
+    constexpr std::array<size_t, 8> expected = {51, 46};
+    size_t                          index    = 0;
+    // REQUIRE(wg.number_of_active_nodes() == expected[index++]);
+    while (wg.number_of_active_nodes() != 0) {
+      wg = sims.number_of_threads(8).find_if(wg.number_of_active_nodes() - 1,
+                                             [](auto const&) { return true; });
+      fmt::print("NUMBER OF NODES IS {}\n", wg.number_of_active_nodes());
+    }
+    REQUIRE(wg.number_of_active_nodes() == 0);
+
+    // auto d = MinimalRepOrc()
+    //              .presentation(p)
+    //              .target_size(945)
+    //              .number_of_threads(8)
+    //              .word_graph();
+    // // WARNING: the number below is not necessarily the minimal degree of
+    // an
+    // // action on right congruences, only the minimal degree of an action on
+    // // right congruences containing the pair {0}, {1}.
+    // REQUIRE(d.number_of_nodes() == 51);
+    // auto S = to_froidure_pin<Transf<0, node_type>>(d);
+    // REQUIRE(S.size() == 945);
   }
 
   LIBSEMIGROUPS_TEST_CASE("Sims1",

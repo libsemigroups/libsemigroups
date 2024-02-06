@@ -580,21 +580,44 @@ namespace libsemigroups {
         }
       }
 
-      first          = _sims1or2->exclude().cbegin();
-      last           = _sims1or2->exclude().cend();
-      node_type root = 0;
-
+      first = _sims1or2->exclude().cbegin();
+      last  = _sims1or2->exclude().cend();
+      // first = forbidden.cbegin();
+      // last  = forbidden.cend();
       for (auto it = first; it != last; it += 2) {
-        auto l = word_graph::follow_path_no_checks(_felsch_graph, root, *it);
-        if (l != UNDEFINED) {
-          auto r = word_graph::follow_path_no_checks(
-              _felsch_graph, root, *(it + 1));
-          if (l == r) {
-            return false;
+        bool this_rule_compatible = true;
+        for (uint32_t n = 0; n < _felsch_graph.number_of_active_nodes(); ++n) {
+          auto l = word_graph::follow_path_no_checks(_felsch_graph, n, *it);
+          if (l != UNDEFINED) {
+            auto r = word_graph::follow_path_no_checks(
+                _felsch_graph, n, *(it + 1));
+            if (r == UNDEFINED || (r != UNDEFINED && l != r)) {
+              this_rule_compatible = false;
+              break;
+            }
+          } else {
+            this_rule_compatible = false;
+            break;
           }
+        }
+        if (this_rule_compatible) {
+          return false;
         }
       }
       return true;
+      // node_type root = 0;
+
+      // for (auto it = first; it != last; it += 2) {
+      //   auto l = word_graph::follow_path_no_checks(_felsch_graph, root,
+      //   *it); if (l != UNDEFINED) {
+      //     auto r = word_graph::follow_path_no_checks(
+      //         _felsch_graph, root, *(it + 1));
+      //     if (l == r) {
+      //       return false;
+      //     }
+      //   }
+      // }
+      // return true;
     }
 
     template <typename Sims1or2>
