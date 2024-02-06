@@ -560,6 +560,7 @@ namespace libsemigroups {
     // KnuthBendix - member functions for rules and rewriting - public
     //////////////////////////////////////////////////////////////////////////
 
+    // TODO can this be done in a better ways?
     //! \brief Check if every letter of a word is in the presentation's
     //! alphabet.
     //!
@@ -959,8 +960,35 @@ namespace libsemigroups {
 
   namespace knuth_bendix {
 
-    //! \brief Run the Knuth-Bendix algorithm by considering all overlaps of a
-    //! given length.
+    // TODO What should the \param be?
+    //! \brief Return a string representation of a KnuthBendix instance
+    //!
+    //! Return a string representation of a KnuthBendix instance, specifying the
+    //! size of the underlying alphabet and the number of active rules.
+    //!
+    //! \returns The representation, a value of type \c std::string
+    template <typename Rewriter, typename ReductionOrder>
+    std::string repr(KnuthBendix<Rewriter, ReductionOrder>& kb) {
+      using str = std::string;
+
+      str conf;
+      if (!kb.confluent_known()) {
+        conf = "KnuthBendix of unknown confluence";
+      } else if (kb.confluent()) {
+        conf = "confluent KnuthBendix";
+      } else {
+        conf = "non-confluent KnuthBendix";
+      }
+      str alphabet_size = std::to_string(kb.presentation().alphabet().size());
+      str n_rules       = std::to_string(kb.number_of_active_rules());
+
+      return str("<") + conf + " on " + alphabet_size + " letters with "
+             + n_rules + " active rules>";
+    }
+
+    // TODO Should this have a param?
+    //! \brief Run the Knuth-Bendix algorithm by considering all overlaps of
+    //! a given length.
     //!
     //! This function runs the Knuth-Bendix algorithm on the rewriting
     //! system represented by a KnuthBendix instance by considering all
