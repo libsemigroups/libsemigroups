@@ -27,7 +27,7 @@
 #ifndef LIBSEMIGROUPS_FROIDURE_PIN_HPP_
 #define LIBSEMIGROUPS_FROIDURE_PIN_HPP_
 
-#ifdef PARSED_BY_DOXYGEN
+#ifndef PARSED_BY_DOXYGEN
 #define NOT_PARSED_BY_DOXYGEN
 #endif
 
@@ -713,7 +713,7 @@ namespace libsemigroups {
     //! \note This function may trigger a (partial) enumeration.
     word_type minimal_factorisation(const_reference x);
 
-#ifdef PARSED_BY_DOXYGEN
+#ifdef NOT_PARSED_BY_DOXYGEN
     // The following are required, they are documented in FroidurePinBase.
     // Sphinx/doxygen get confused by this, so we don't allow Doxygen to parse
     // these two declarations.
