@@ -602,45 +602,6 @@ namespace libsemigroups {
         }
       }
       return true;
-
-      // first = _sims1or2->exclude().cbegin();
-      // last  = _sims1or2->exclude().cend();
-      // // TODO use 1 felsch tree per excluded pairs, and use it to check if
-      // // paths containing newly added edges, lead to the same place
-      // for (auto it = first; it != last; it += 2) {
-      //   bool this_rule_compatible = true;
-      //   for (uint32_t n = 0; n < _felsch_graph.number_of_active_nodes(); ++n)
-      //   {
-      //     auto l = word_graph::follow_path_no_checks(_felsch_graph, n, *it);
-      //     if (l != UNDEFINED) {
-      //       auto r = word_graph::follow_path_no_checks(
-      //           _felsch_graph, n, *(it + 1));
-      //       if (r == UNDEFINED || (r != UNDEFINED && l != r)) {
-      //         this_rule_compatible = false;
-      //         break;
-      //       }
-      //     } else {
-      //       this_rule_compatible = false;
-      //       break;
-      //     }
-      //   }
-      //   if (this_rule_compatible) {
-      //     return false;
-      //   }
-      // }
-      // node_type root = 0;
-
-      // for (auto it = first; it != last; it += 2) {
-      //   auto l = word_graph::follow_path_no_checks(_felsch_graph, root,
-      //   *it); if (l != UNDEFINED) {
-      //     auto r = word_graph::follow_path_no_checks(
-      //         _felsch_graph, root, *(it + 1));
-      //     if (l == r) {
-      //       return false;
-      //     }
-      //   }
-      // }
-      // return true;
     }
 
     template <typename Sims1or2>

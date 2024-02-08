@@ -21,20 +21,6 @@
 // monoids.
 
 // TODO:
-// * factor out include/exclude so that they are just a "list" of refinment
-// functions applied at every node in the search tree.
-// * Update HopcroftKarp to accept complete graph <x> and incomplete word graph
-// <y>, and to provide an mem fn that returns true only if no completion of <y>
-// contains <x>; and true otherwise. Do this by not using a union-find object
-// but something simpler where it will be possible to know if we are "merging"
-// two nodes in <y> so that the join of <x> and any completion of <y> is not
-// <y>, and so <y> does not contain <x>.
-// * Replace RepOrc + MinimalRepOrc with the following: generate the distinct
-// principal 2-sided congruences of a semigroup S, and add the functionality of
-// the previous point as a refinment function to Sims1. I.e. perform the
-// backtrack search only on those word graphs that don't contain any of the
-// 2-sided congruences of S.
-//
 // * review the function aliases, and remove them if they are unnecessary
 // * doc
 // * iwyu
@@ -45,6 +31,7 @@
 // * gap bindings
 
 // TODO(later):
+// * use Pruno in RepOrc + MinimalRepOrc
 // * a version which allows specifying the word_graph to Sims1 too
 // * implement maximum_2_sided_congruence_contained to compute the kernel of the
 //   associated homomorphism, which is the largest 2-sided congruence contained

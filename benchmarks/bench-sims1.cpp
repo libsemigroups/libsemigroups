@@ -805,7 +805,7 @@ namespace libsemigroups {
 
     for (size_t i = 1; i <= std::thread::hardware_concurrency(); i *= 2) {
       MinimalRepOrc orc;
-      BENCHMARK(fmt::format(name + " - Filter - {} / {} threads",
+      BENCHMARK(fmt::format(name + " - Orc - {} / {} threads",
                             i,
                             std::thread::hardware_concurrency())) {
         auto wg = orc.presentation(q)

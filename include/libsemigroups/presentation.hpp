@@ -1692,6 +1692,7 @@ namespace libsemigroups {
 
   template <typename T>
   static constexpr bool IsPresentation = detail::IsPresentationHelper<T>::value;
+
 }  // namespace libsemigroups
 
 #include "presentation.tpp"
