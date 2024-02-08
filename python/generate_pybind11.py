@@ -1,12 +1,10 @@
 #!/usr/bin/env python3
 """
-This module partially generates pybind11 bindings from the yml files in
-libsemigroups/python/yml and from the doxygen output in docs/xml.
+This module partially generates pybind11 bindings from the doxygen output in docs/xml.
 """
 import os
 import re
 import sys
-import yaml
 import argparse
 
 from bs4 import BeautifulSoup
@@ -42,7 +40,7 @@ def __parse_args():
     parser = argparse.ArgumentParser(
         prog="generate_pybind11", usage="%(prog)s [options]"
     )
-    parser.add_argument("files", nargs="+", help="the files to lint")
+    parser.add_argument("classes", nargs="+", help="the classes to lint")
     return parser.parse_args()
 
 
@@ -117,6 +115,16 @@ def get_xml(class_n, mem_fn=None, params_t=None):
 
 
 @__accepts(str, str, str)
+def is_public_mem_fn(class_n, mem_fn, params_t):
+    xml = get_xml(class_n, mem_fn, params_t)
+    prot = xml.get("prot")
+    if prot is not None:
+        return prot == "public"
+    else:
+        return False
+
+
+@__accepts(str, str, str)
 def is_const_mem_fn(class_n, mem_fn, params_t):
     xml = get_xml(class_n, mem_fn, params_t)
     assert "const" in xml.attrs, "const not an attribute!"
@@ -153,8 +161,10 @@ def skip_mem_fn(class_n, mem_fn, params_t):
         get_xml(class_n, mem_fn, params_t)
     except KeyError:
         return True
-    return is_deleted_mem_fn(class_n, mem_fn, params_t) or is_mem_fn_template(
-        class_n, mem_fn, params_t
+    return (
+        is_deleted_mem_fn(class_n, mem_fn, params_t)
+        or is_mem_fn_template(class_n, mem_fn, params_t)
+        or not is_public_mem_fn(class_n, mem_fn, params_t)
     )
 
 
@@ -184,17 +194,6 @@ def normalize_params_t(params_t):
     # remove whitespace around commas
     params_t = re.sub("\s*,\s*", ",", params_t)
     return params_t
-
-
-@__accepts(str)
-def extract_func_params_t(yml_entry):
-    pos = yml_entry.find("(")
-    if pos == -1:
-        return yml_entry, ""
-    else:
-        params_t = normalize_params_t(yml_entry[pos + 1 : yml_entry.rfind(")")])
-        return yml_entry[:pos], params_t
-
 
 @__accepts(str, str)
 def exceptional_mem_fn(class_n, mem_fn):
@@ -304,32 +303,24 @@ def pybind11_mem_fn(class_n, mem_fn, params_t):
         )
 
 
-def generate(ymlfname):
-    with open(ymlfname, "r") as f:
-        ymldic = yaml.load(f, Loader=yaml.FullLoader)
-        class_n = next(iter(ymldic))
-        if ymldic[class_n] is None:
-            return
-        out = pybind11_class_n(class_n)
-        for sectiondic in ymldic[class_n]:
-            name = next(iter(sectiondic))
-            if sectiondic[name] is not None:
-                for x in sectiondic[name]:
-                    if not isinstance(x, str):
-                        continue
-                    mem_fn, params_t = extract_func_params_t(x)
-                    if skip_mem_fn(class_n, mem_fn, params_t):
-                        continue  # ignore
-                    out += pybind11_mem_fn(class_n, mem_fn, params_t)
-        return out + ";"
+def generate(class_n):
+    out = pybind11_class_n(class_n)
+    class_fns = get_xml(class_n)
+    for func in class_fns.keys():
+        if not isinstance(func, str):
+            continue
+        if skip_mem_fn(class_n, func, ""):
+            continue  # ignore
+        out += pybind11_mem_fn(class_n, func, "")
+    return out + ";"
 
 
 def main():
     if sys.version_info[0] < 3:
         raise Exception("Python 3 is required")
     args = __parse_args()
-    for fname in args.files:
-        print(generate(fname))
+    for class_name in args.classes:
+        print(generate(class_name))
 
 
 if __name__ == "__main__":
