@@ -1057,7 +1057,6 @@ bench_kambites_SOURCES =  benchmarks/bench-kambites.cpp
 bench_kambites_SOURCES += benchmarks/bench-main.cpp
 
 bench_knuth_bendix_SOURCES =  benchmarks/bench-knuth-bendix.cpp
-bench_knuth_bendix_SOURCES += benchmarks/examples/fpsemi-intf.cpp
 bench_knuth_bendix_SOURCES += benchmarks/bench-main.cpp
 
 bench_konieczny_SOURCES =  benchmarks/bench-konieczny.cpp
@@ -1070,7 +1069,6 @@ bench_multi_string_view_SOURCES =  benchmarks/bench-multi-string-view.cpp
 bench_multi_string_view_SOURCES += benchmarks/bench-main.cpp
 
 bench_todd_coxeter_SOURCES =  benchmarks/bench-todd-coxeter.cpp
-bench_todd_coxeter_SOURCES += benchmarks/examples/fpsemi-intf.cpp
 bench_todd_coxeter_SOURCES += benchmarks/examples/cong-intf.cpp
 bench_todd_coxeter_SOURCES += benchmarks/bench-main.cpp
 

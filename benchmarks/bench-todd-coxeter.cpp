@@ -17,135 +17,184 @@
 //
 
 #include <array>     // for array
-#include <chrono>    // for duration, seconds
-#include <cmath>     // for pow
 #include <cstddef>   // for size_t
 #include <cstdint>   // for uint64_t
 #include <iostream>  // for operator<<, cout, ostream
-#include <memory>    // for allocator, shared_ptr, sha...
 #include <string>    // for operator+, basic_string
 #include <vector>    // for vector, operator==
 
 #include "bench-main.hpp"  // for Benchmark, SourceLineInfo
 #include "catch.hpp"       // for REQUIRE, REQUIRE_NOTHROW, REQUIRE_THROWS_AS
 
-#include "libsemigroups/cong-intf.hpp"      // for congruence_kind, congruenc...
-#include "libsemigroups/constants.hpp"      // for PositiveInfinity, POSITIVE...
-#include "libsemigroups/detail/report.hpp"  // for ReportGuard
 #include "libsemigroups/fpsemi-examples.hpp"
-#include "libsemigroups/froidure-pin-base.hpp"  // for FroidurePinBase
+#include "libsemigroups/presentation.hpp"
 #include "libsemigroups/todd-coxeter.hpp"  // for ToddCoxeter, ToddCoxeter::...
 #include "libsemigroups/types.hpp"         // for word_type, letter_type
 
-#include "examples/cong-intf.hpp"
-#include "examples/fpsemi-intf.hpp"
-
+#include "libsemigroups/detail/report.hpp"  // for ReportGuard
+//
 namespace libsemigroups {
-
-  congruence_kind constexpr twosided = congruence_kind::twosided;
-  congruence_kind constexpr right    = congruence_kind::right;
-  using options                      = congruence::ToddCoxeter::options;
-
-  using fpsemigroup::author;
-
   namespace {
-    template <typename T, typename F, typename... Args>
-    void setup(T& tc, size_t num_gens, F func, Args... args) {
-      tc.set_number_of_generators(num_gens);
-      for (auto const& w : func(args...)) {
-        tc.add_pair(w.first, w.second);
-      }
+    template <typename S, typename T>
+    void xml_tag(S name, T val) {
+      fmt::print("<{0} value=\"{1}\"></{0}>", name, val);
     }
   }  // namespace
+
+  using options = ToddCoxeter::options;
+
+  using fpsemigroup::author;
 
   using fpsemigroup::dual_symmetric_inverse_monoid;
   using fpsemigroup::orientation_preserving_monoid;
   using fpsemigroup::orientation_reversing_monoid;
   using fpsemigroup::partition_monoid;
-  using fpsemigroup::rook_monoid;
   using fpsemigroup::singular_brauer_monoid;
   using fpsemigroup::stellar_monoid;
   using fpsemigroup::stylic_monoid;
   using fpsemigroup::temperley_lieb_monoid;
   using fpsemigroup::uniform_block_bijection_monoid;
 
-  namespace {
-    using order = congruence::ToddCoxeter::order;
-    fpsemigroup::ToddCoxeter* before_normal_forms2(FpSemiIntfArgs const& p) {
-      auto tc = make<fpsemigroup::ToddCoxeter>(p);
-      tc->run();
-      tc->congruence().standardize(order::shortlex);
-      return tc;
+  ////////////////////////////////////////////////////////////////////////
+  // orientation_preserving_monoid
+  ////////////////////////////////////////////////////////////////////////
+
+  TEST_CASE("orientation_preserving_monoid(n) (Arthur-Ruskuc), n = 3 .. 9",
+            "[paper][OP][orientation_preserving_monoid]") {
+    constexpr std::array<uint64_t, 14> sizes = {0,
+                                                0,
+                                                0,
+                                                24,
+                                                128,
+                                                610,
+                                                2'742,
+                                                11'970,
+                                                51'424,
+                                                218'718,
+                                                923'690,
+                                                3'879'766,
+                                                16'224'804,
+                                                67'603'744};
+    // n/2*binomial(2*n, n)-n*(n-1)
+
+    constexpr std::array<uint64_t, 14> lengths
+        = {0, 0, 0, 43, 86, 145, 220, 311, 418, 541, 680, 835, 1'006, 1'193};
+    // 8n ^ 2 - 13n + 10
+
+    constexpr std::array<uint64_t, 14> reduced_length
+        = {0, 0, 0, 29, 47, 57, 68, 80, 94, 101, 117, 122, 139, 149};
+
+    constexpr std::array<uint64_t, 14> reduced_num_gens
+        = {0, 0, 0, 4, 5, 6, 8, 10, 9, 11, 11, 13, 13, 12};
+
+    constexpr std::array<uint64_t, 14> reduced_num_rules
+        = {0, 0, 0, 7, 9, 11, 14, 17, 17, 20, 21, 24, 25, 25};
+    auto rg = ReportGuard(false);
+    xml_tag("LatexCaption",
+            "The presentations for the monoid $OP_n$ of orientation preserving "
+            "transformations of a chain from \\cite{Arthur2000aa}.");
+    xml_tag("LatexLabel", "table-orient");
+    xml_tag("LatexSymbol", "OP_n");
+    for (size_t n = 3; n <= 7; ++n) {
+      std::string title = fmt::format("orientation_preserving_monoid({})", n);
+      auto        p     = orientation_preserving_monoid(n);
+      REQUIRE(p.contains_empty_word());
+      presentation::reduce_complements(p);
+      presentation::remove_trivial_rules(p);
+      presentation::remove_duplicate_rules(p);
+      presentation::sort_each_rule(p);
+      presentation::sort_rules(p);
+
+      REQUIRE(p.alphabet().size() == 2);
+      REQUIRE(p.rules.size() / 2 == n + 2);
+      REQUIRE(presentation::length(p) == lengths[n]);
+      xml_tag("Index", n);
+      xml_tag("Size", sizes[n]);
+      xml_tag("PresentationNumGens", p.alphabet().size());
+      xml_tag("PresentationNumRels", p.rules.size() / 2);
+      xml_tag("PresentationLength", presentation::length(p));
+
+      BENCHMARK((title + "+ HLT (default)").c_str()) {
+        ToddCoxeter tc(congruence_kind::twosided, p);
+        tc.strategy(ToddCoxeter::options::strategy::hlt);
+        REQUIRE(tc.number_of_classes() == sizes[n]);
+      };
+
+      BENCHMARK((title + "+ Felsch (default)").c_str()) {
+        ToddCoxeter tc(congruence_kind::twosided, p);
+        tc.strategy(ToddCoxeter::options::strategy::felsch);
+        REQUIRE(tc.number_of_classes() == sizes[n]);
+      };
+
+      // presentation::greedy_reduce_length_and_number_of_gens(p);
+      // REQUIRE(p.alphabet().size() == reduced_num_gens[n]);
+      // REQUIRE(p.rules.size() / 2 == reduced_num_rules[n]);
+      // REQUIRE(presentation::length(p) == reduced_length[n]);
+      // // fmt::print("{},", p.alphabet().size());
+      // // fmt::print("{},", p.rules.size() / 2);
+      // // fmt::print("{},", presentation::length(p));
+
+      // BENCHMARK((title + "+ HLT (greedy_reduce_length)").c_str()) {
+      //   ToddCoxeter tc(congruence_kind::twosided, p);
+      //   tc.strategy(ToddCoxeter::options::strategy::hlt);
+      //   REQUIRE(tc.number_of_classes() == sizes[n]);
+      // };
+
+      // BENCHMARK((title + "+ Felsch (greedy_reduce_length)").c_str()) {
+      //   ToddCoxeter tc(congruence_kind::twosided, p);
+      //   tc.strategy(ToddCoxeter::options::strategy::felsch);
+      //   REQUIRE(tc.number_of_classes() == sizes[n]);
+      // };
     }
+  }
 
-    congruence::ToddCoxeter* before_normal_forms1(CongIntfArgs const& p) {
-      auto tc = make<congruence::ToddCoxeter>(p);
-      tc->run();
-      tc->standardize(order::shortlex);
-      return tc;
-    }
+  // Becomes impractical to do multiple runs after n = 10, so we switch to
+  // doing single runs.
+  /*  namespace {
+      void bench_orientation(size_t n, size_t size) {
+        auto rg = ReportGuard(true);
+        auto p  = orientation_preserving_monoid(n);
+        p.alphabet(3);
+        presentation::replace_word(p, word_type({}), {2});
+        presentation::add_identity_rules(p, 2);
 
-    void bench_normal_forms(fpsemigroup::ToddCoxeter* tc, size_t) {
-      auto ptr = tc->froidure_pin();
-      ptr->run();
-    }
-
-    void bench_normal_forms(congruence::ToddCoxeter* tc, size_t) {
-      auto ptr = tc->quotient_froidure_pin();
-      ptr->run();
-    }
-
-    template <typename S>
-    void after_normal_forms(S* tc) {
-      delete tc;
-    }
-
-    using options = typename congruence::ToddCoxeter::options;
-
-    void check_felsch(congruence::ToddCoxeter& var) {
-      SECTION("Felsch (default)") {
-        std::cout << "Running Felsch (default) . . ." << std::endl;
-        var.strategy(options::strategy::felsch);
+        ToddCoxeter tc(congruence_kind::twosided);
+        tc.set_number_of_generators(3);
+        for (size_t i = 0; i < p.rules.size() - 1; i += 2) {
+          tc.add_pair(p.rules[i], p.rules[i + 1]);
+        }
+        check_hlt(tc);
+        std::cout << tc.settings_string();
+        REQUIRE(tc.number_of_classes() == size);
+        std::cout << tc.stats_string();
       }
+    }  // namespace
+
+    // Approx 27s (2021 - MacBook Air M1 - 8GB RAM)
+    TEST_CASE("orientation_preserving_monoid(10) - hlt",
+              "[paper][orientation_preserving_monoid][n=10][hlt]") {
+      bench_orientation(10, 923'690);
     }
 
-    void check_hlt(congruence::ToddCoxeter& var) {
-      SECTION("HLT (default)") {
-        std::cout << "Running HLT (default) . . ." << std::endl;
-        var.strategy(options::strategy::hlt);
-      }
+    // 4m13s (2021 - MacBook Air M1 - 8GB RAM)
+    TEST_CASE("orientation_preserving_monoid(11) - hlt",
+              "[paper][orientation_preserving_monoid][n=11][hlt]") {
+      bench_orientation(11, 3'879'766);
     }
 
-    void check_Rc_full_style(congruence::ToddCoxeter& tc) {
-      SECTION("Rc style + full lookahead") {
-        std::cout << "Running Rc style + full lookahead . . ." << std::endl;
-        tc.strategy(options::strategy::Rc).lookahead(options::lookahead::full);
-      }
+    // 54m35s (2021 - MacBook Air M1 - 8GB RAM)
+    TEST_CASE("orientation_preserving_monoid(12) - hlt",
+              "[paper][orientation_preserving_monoid][n=12][hlt]") {
+      bench_orientation(12, 16'224'804);
     }
-    void check_random(congruence::ToddCoxeter& tc) {
-      SECTION("random") {
-        std::cout << "Running random strategy . . ." << std::endl;
-        tc.strategy(options::strategy::random);
-      }
+
+    // 9h14m (2021 - MacBook Air M1 - 8GB RAM)
+    TEST_CASE("orientation_preserving_monoid(13) - hlt",
+              "[paper][orientation_preserving_monoid][n=13][hlt]") {
+      bench_orientation(13, 67'603'744);
     }
-  }  // namespace
-
-  LIBSEMIGROUPS_BENCHMARK("Shortlex normal forms ToddCoxeter 1",
-                          "[ToddCoxeter][normal_forms_short_lex][quick][001]",
-                          before_normal_forms1,
-                          bench_normal_forms,
-                          after_normal_forms<congruence::ToddCoxeter>,
-                          congruence::finite_examples());
-
-  LIBSEMIGROUPS_BENCHMARK("Shortlex normal forms ToddCoxeter 2",
-                          "[ToddCoxeter][normal_forms_short_lex][quick][002]",
-                          before_normal_forms2,
-                          bench_normal_forms,
-                          after_normal_forms<fpsemigroup::ToddCoxeter>,
-                          fpsemigroup::finite_examples());
-
-  namespace congruence {
-
+    */
+  /*
     ////////////////////////////////////////////////////////////////////////
     // DualSymInv
     ////////////////////////////////////////////////////////////////////////
@@ -156,13 +205,9 @@ namespace libsemigroups {
           = {0, 0, 0, 25, 339, 6'721, 179'643, 6'166'105, 262'308'819};
       auto rg = ReportGuard(false);
       for (size_t n = 3; n <= 7; ++n) {
-        std::string title
-            = std::string("DualSymInv(") + std::to_string(n) + ") ";
-        BENCHMARK((title + "+ Rc (full HLT lookahead)").c_str()) {
-          ToddCoxeter tc(congruence_kind::twosided);
-          setup(tc,
-                n + 1,
-                dual_symmetric_inverse_monoid,
+        std::string title = std::string("DualSymInv(") + std::to_string(n) + ")
+  "; BENCHMARK((title + "+ Rc (full HLT lookahead)").c_str()) { ToddCoxeter
+  tc(congruence_kind::twosided); setup(tc, n + 1, dual_symmetric_inverse_monoid,
                 n,
                 author::Easdown + author::East + author::FitzGerald);
           tc.strategy(ToddCoxeter::options::strategy::Rc)
@@ -245,39 +290,34 @@ namespace libsemigroups {
 
     TEST_CASE("uniform_block_bijection_monoid(n) (FitzGerald), n = 3 .. 7",
               "[paper][uniform_block_bijection_monoid][EEF]") {
-      std::array<uint64_t, 8> sizes
-          = {0, 0, 0, 16, 131, 1'496, 22'482, 426'833};
-      auto rg = ReportGuard(false);
-      for (size_t n = 3; n <= 7; ++n) {
-        std::string title = std::string("uniform_block_bijection_monoid(")
+      std::array<uint64_t, 8> sizes = {0, 0, 0, 16, 131, 1'496, 22'482,
+  426'833}; auto                    rg    = ReportGuard(false); for (size_t n =
+  3; n <= 7; ++n) { std::string title =
+  std::string("uniform_block_bijection_monoid(")
                             + std::to_string(n) + ") ";
         BENCHMARK((title + "+ Rc (full HLT lookahead)").c_str()) {
           ToddCoxeter tc(congruence_kind::twosided);
-          setup(
-              tc, n + 1, uniform_block_bijection_monoid, n, author::FitzGerald);
-          tc.strategy(ToddCoxeter::options::strategy::Rc)
+          setup(tc, n + 1, uniform_block_bijection_monoid, n,
+  author::FitzGerald); tc.strategy(ToddCoxeter::options::strategy::Rc)
               .lookahead(ToddCoxeter::options::lookahead::full);
           REQUIRE(tc.number_of_classes() == sizes[n]);
         };
         BENCHMARK((title + "+ HLT (default)").c_str()) {
           ToddCoxeter tc(congruence_kind::twosided);
-          setup(
-              tc, n + 1, uniform_block_bijection_monoid, n, author::FitzGerald);
-          tc.strategy(ToddCoxeter::options::strategy::hlt);
+          setup(tc, n + 1, uniform_block_bijection_monoid, n,
+  author::FitzGerald); tc.strategy(ToddCoxeter::options::strategy::hlt);
           REQUIRE(tc.number_of_classes() == sizes[n]);
         };
         BENCHMARK((title + "+ Felsch (default)").c_str()) {
           ToddCoxeter tc(congruence_kind::twosided);
-          setup(
-              tc, n + 1, uniform_block_bijection_monoid, n, author::FitzGerald);
-          tc.strategy(ToddCoxeter::options::strategy::felsch);
+          setup(tc, n + 1, uniform_block_bijection_monoid, n,
+  author::FitzGerald); tc.strategy(ToddCoxeter::options::strategy::felsch);
           REQUIRE(tc.number_of_classes() == sizes[n]);
         };
         BENCHMARK((title + "+ random").c_str()) {
           ToddCoxeter tc(congruence_kind::twosided);
-          setup(
-              tc, n + 1, uniform_block_bijection_monoid, n, author::FitzGerald);
-          tc.strategy(ToddCoxeter::options::strategy::random);
+          setup(tc, n + 1, uniform_block_bijection_monoid, n,
+  author::FitzGerald); tc.strategy(ToddCoxeter::options::strategy::random);
           REQUIRE(tc.number_of_classes() == sizes[n]);
         };
       }
@@ -579,110 +619,6 @@ namespace libsemigroups {
     }
 
     ////////////////////////////////////////////////////////////////////////
-    // orientation_preserving_monoid
-    ////////////////////////////////////////////////////////////////////////
-
-    TEST_CASE("orientation_preserving_monoid(n) (Arthur-Ruskuc), n = 3 .. 9",
-              "[paper][OP][orientation_preserving_monoid]") {
-      std::array<uint64_t, 15> sizes = {0,
-                                        0,
-                                        0,
-                                        24,
-                                        128,
-                                        610,
-                                        2'742,
-                                        11'970,
-                                        51'424,
-                                        218'718,
-                                        923'690,
-                                        3'879'766,
-                                        16'224'804,
-                                        67'603'744,
-                                        280'816'018};
-
-      auto rg = ReportGuard(false);
-      for (size_t n = 3; n <= 9; ++n) {
-        std::string title = std::string("orientation_preserving_monoid(")
-                            + std::to_string(n) + ") ";
-        BENCHMARK((title + "+ HLT (default)").c_str()) {
-          auto p = orientation_preserving_monoid(n);
-          p.alphabet(3);
-          presentation::replace_word(p, word_type({}), {2});
-          presentation::add_identity_rules(p, 2);
-
-          ToddCoxeter tc(congruence_kind::twosided);
-          tc.set_number_of_generators(3);
-          for (size_t i = 0; i < p.rules.size() - 1; i += 2) {
-            tc.add_pair(p.rules[i], p.rules[i + 1]);
-          }
-          tc.strategy(ToddCoxeter::options::strategy::hlt);
-          REQUIRE(tc.number_of_classes() == sizes[n]);
-        };
-        BENCHMARK((title + "+ Felsch (default)").c_str()) {
-          auto p = orientation_preserving_monoid(n);
-          p.alphabet(3);
-          presentation::replace_word(p, word_type({}), {2});
-          presentation::add_identity_rules(p, 2);
-
-          ToddCoxeter tc(congruence_kind::twosided);
-          tc.set_number_of_generators(3);
-          for (size_t i = 0; i < p.rules.size() - 1; i += 2) {
-            tc.add_pair(p.rules[i], p.rules[i + 1]);
-          }
-
-          tc.strategy(ToddCoxeter::options::strategy::felsch);
-          REQUIRE(tc.number_of_classes() == sizes[n]);
-        };
-      }
-    }
-
-    // Becomes impractical to do multiple runs after n = 7, so we switch to
-    // doing single runs.
-    namespace {
-      void bench_orientation(size_t n, size_t size) {
-        auto rg = ReportGuard(true);
-        auto p  = orientation_preserving_monoid(n);
-        p.alphabet(3);
-        presentation::replace_word(p, word_type({}), {2});
-        presentation::add_identity_rules(p, 2);
-
-        ToddCoxeter tc(congruence_kind::twosided);
-        tc.set_number_of_generators(3);
-        for (size_t i = 0; i < p.rules.size() - 1; i += 2) {
-          tc.add_pair(p.rules[i], p.rules[i + 1]);
-        }
-        check_hlt(tc);
-        std::cout << tc.settings_string();
-        REQUIRE(tc.number_of_classes() == size);
-        std::cout << tc.stats_string();
-      }
-    }  // namespace
-
-    // Approx 27s (2021 - MacBook Air M1 - 8GB RAM)
-    TEST_CASE("orientation_preserving_monoid(10) - hlt",
-              "[paper][orientation_preserving_monoid][n=10][hlt]") {
-      bench_orientation(10, 923'690);
-    }
-
-    // 4m13s (2021 - MacBook Air M1 - 8GB RAM)
-    TEST_CASE("orientation_preserving_monoid(11) - hlt",
-              "[paper][orientation_preserving_monoid][n=11][hlt]") {
-      bench_orientation(11, 3'879'766);
-    }
-
-    // 54m35s (2021 - MacBook Air M1 - 8GB RAM)
-    TEST_CASE("orientation_preserving_monoid(12) - hlt",
-              "[paper][orientation_preserving_monoid][n=12][hlt]") {
-      bench_orientation(12, 16'224'804);
-    }
-
-    // 9h14m (2021 - MacBook Air M1 - 8GB RAM)
-    TEST_CASE("orientation_preserving_monoid(13) - hlt",
-              "[paper][orientation_preserving_monoid][n=13][hlt]") {
-      bench_orientation(13, 67'603'744);
-    }
-
-    ////////////////////////////////////////////////////////////////////////
     // temperley_lieb_monoid
     ////////////////////////////////////////////////////////////////////////
 
@@ -866,7 +802,7 @@ namespace libsemigroups {
               "[paper][orientation_reversing_monoid][n=13][hlt]") {
       bench_orient_reverse(13, 135'195'307);
     }
-  }  // namespace congruence
+  }  // namespace libsemigroups
 
   namespace fpsemigroup {
     TEST_CASE("ACE --- 2p17-2p14", "[paper][ace][2p17-2p14]") {
@@ -1200,9 +1136,7 @@ namespace libsemigroups {
       G.add_rule("dCACacAcadACaCAcacdCACacAcA", "x");
       G.add_rule("dCACacAcadCACacAcadCACacAcadCACacAcadCACacAcadCACacAca", "x");
 
-      G.congruence()
-          .remove_duplicate_generating_pairs()
-          .sort_generating_pairs();
+      G.congruence().remove_duplicate_generating_pairs().sort_generating_pairs();
       REQUIRE(G.size() == 1);
       std::cout << G.congruence().stats_string();
     }
@@ -1250,7 +1184,7 @@ namespace libsemigroups {
         tc.add_rule("bbbbbb", "b");
         tc.add_rule(
             "ababbbbababbbbababbbbababbbbababbbbababbbbababbbbabbabbbbbaa",
-            "bb");
+  "bb");
       }
 
       void walker6(ToddCoxeter& tc) {
@@ -1536,5 +1470,5 @@ namespace libsemigroups {
       REQUIRE(tc.size() == 270'272);
       std::cout << tc.congruence().stats_string();
     }
-  }  // namespace fpsemigroup
+  */
 }  // namespace libsemigroups

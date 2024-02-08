@@ -778,6 +778,22 @@ namespace libsemigroups {
       }
     }
 
+    // TODO declare and doc in hpp
+    template <typename Word>
+    void greedy_reduce_length_and_number_of_gens(Presentation<Word>& p) {
+      auto w = longest_subword_reducing_length(p);
+      while (!w.empty()) {
+        auto copy = p;
+        replace_word_with_new_generator(p, w);
+        w = longest_subword_reducing_length(p);
+        if (presentation::length(p) + p.alphabet().size()
+            >= presentation::length(copy) + copy.alphabet().size()) {
+          std::swap(copy, p);
+          break;
+        }
+      }
+    }
+
     template <typename Word>
     bool is_strongly_compressible(Presentation<Word> const& p) {
       if (p.rules.size() != 2) {
