@@ -16,15 +16,15 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include <array>     // for array
-#include <cstddef>   // for size_t
-#include <cstdint>   // for uint64_t
-#include <iostream>  // for operator<<, cout, ostream
-#include <string>    // for operator+, basic_string
-#include <vector>    // for vector, operator==
+#define CATCH_CONFIG_ENABLE_BENCHMARKING
 
-#include "bench-main.hpp"  // for Benchmark, SourceLineInfo
-#include "catch.hpp"       // for REQUIRE, REQUIRE_NOTHROW, REQUIRE_THROWS_AS
+#include <array>    // for array
+#include <cstddef>  // for size_t
+#include <cstdint>  // for uint64_t
+#include <string>   // for operator+, basic_string
+#include <vector>   // for vector, operator==
+
+#include "catch.hpp"  // for REQUIRE, REQUIRE_NOTHROW, REQUIRE_THROWS_AS
 
 #include "libsemigroups/fpsemi-examples.hpp"
 #include "libsemigroups/presentation.hpp"
@@ -34,14 +34,53 @@
 #include "libsemigroups/detail/report.hpp"  // for ReportGuard
 //
 namespace libsemigroups {
+  using options = ToddCoxeter::options;
   namespace {
     template <typename S, typename T>
     void xml_tag(S name, T val) {
       fmt::print("<{0} value=\"{1}\"></{0}>", name, val);
     }
-  }  // namespace
 
-  using options = ToddCoxeter::options;
+    void preprocess_presentation(Presentation<word_type>& p) {
+      presentation::reduce_complements(p);
+      presentation::remove_trivial_rules(p);
+      presentation::remove_duplicate_rules(p);
+      presentation::remove_redundant_generators(p);
+      presentation::sort_each_rule(p);
+      presentation::sort_rules(p);
+    }
+
+    void emit_xml_presentation_tags(Presentation<word_type>& p,
+                                    size_t                   index,
+                                    size_t                   size) {
+      xml_tag("Index", index);
+      xml_tag("Size", size);
+      xml_tag("PresentationNumGens", p.alphabet().size());
+      xml_tag("PresentationNumRels", p.rules.size() / 2);
+      xml_tag("PresentationLength", presentation::length(p));
+    }
+
+    void bench_hlt(std::string_view          prefix,
+                   Presentation<word_type>&& p,
+                   size_t                    size) {
+      auto        rg = ReportGuard(true);
+      ToddCoxeter tc(congruence_kind::twosided, p);
+      SECTION(std::string(prefix) + "HLT (default)") {
+        fmt::print("Running HLT (default) . . .\n");
+        tc.strategy(options::strategy::hlt);
+        // .lookahead_next(20'000'000)
+        // .lookahead_min(10'000'000);
+        // while (!tc.finished()) {  // TODO reporting doesn't work
+        //   tc.run_for(std::chrono::seconds(10));
+        //   tc.standardize(Order::shortlex);
+        // }
+        REQUIRE(tc.number_of_classes() == size);
+      }
+      // TODO be good to recover the below
+      // std::cout << tc.settings_string();
+      // std::cout << tc.stats_string();
+    }
+  }  // namespace
 
   using fpsemigroup::author;
 
@@ -81,46 +120,38 @@ namespace libsemigroups {
         = {0, 0, 0, 43, 86, 145, 220, 311, 418, 541, 680, 835, 1'006, 1'193};
     // 8n ^ 2 - 13n + 10
 
-    constexpr std::array<uint64_t, 14> reduced_length
-        = {0, 0, 0, 29, 47, 57, 68, 80, 94, 101, 117, 122, 139, 149};
+    // constexpr std::array<uint64_t, 14> reduced_length
+    //     = {0, 0, 0, 29, 47, 57, 68, 80, 94, 101, 117, 122, 139, 149};
 
-    constexpr std::array<uint64_t, 14> reduced_num_gens
-        = {0, 0, 0, 4, 5, 6, 8, 10, 9, 11, 11, 13, 13, 12};
+    // constexpr std::array<uint64_t, 14> reduced_num_gens
+    //     = {0, 0, 0, 4, 5, 6, 8, 10, 9, 11, 11, 13, 13, 12};
 
-    constexpr std::array<uint64_t, 14> reduced_num_rules
-        = {0, 0, 0, 7, 9, 11, 14, 17, 17, 20, 21, 24, 25, 25};
+    // constexpr std::array<uint64_t, 14> reduced_num_rules
+    //     = {0, 0, 0, 7, 9, 11, 14, 17, 17, 20, 21, 24, 25, 25};
     auto rg = ReportGuard(false);
     xml_tag("LatexCaption",
             "The presentations for the monoid $OP_n$ of orientation preserving "
             "transformations of a chain from \\cite{Arthur2000aa}.");
     xml_tag("LatexLabel", "table-orient");
     xml_tag("LatexSymbol", "OP_n");
-    for (size_t n = 3; n <= 7; ++n) {
+    for (size_t n = 3; n <= 9; ++n) {
       std::string title = fmt::format("orientation_preserving_monoid({})", n);
       auto        p     = orientation_preserving_monoid(n);
       REQUIRE(p.contains_empty_word());
-      presentation::reduce_complements(p);
-      presentation::remove_trivial_rules(p);
-      presentation::remove_duplicate_rules(p);
-      presentation::sort_each_rule(p);
-      presentation::sort_rules(p);
+      preprocess_presentation(p);
 
       REQUIRE(p.alphabet().size() == 2);
       REQUIRE(p.rules.size() / 2 == n + 2);
       REQUIRE(presentation::length(p) == lengths[n]);
-      xml_tag("Index", n);
-      xml_tag("Size", sizes[n]);
-      xml_tag("PresentationNumGens", p.alphabet().size());
-      xml_tag("PresentationNumRels", p.rules.size() / 2);
-      xml_tag("PresentationLength", presentation::length(p));
+      emit_xml_presentation_tags(p, n, sizes[n]);
 
-      BENCHMARK((title + "+ HLT (default)").c_str()) {
+      BENCHMARK(title + "+ HLT (default)") {
         ToddCoxeter tc(congruence_kind::twosided, p);
         tc.strategy(ToddCoxeter::options::strategy::hlt);
         REQUIRE(tc.number_of_classes() == sizes[n]);
       };
 
-      BENCHMARK((title + "+ Felsch (default)").c_str()) {
+      BENCHMARK(title + "+ Felsch (default)") {
         ToddCoxeter tc(congruence_kind::twosided, p);
         tc.strategy(ToddCoxeter::options::strategy::felsch);
         REQUIRE(tc.number_of_classes() == sizes[n]);
@@ -148,52 +179,129 @@ namespace libsemigroups {
     }
   }
 
-  // Becomes impractical to do multiple runs after n = 10, so we switch to
+  // Becomes impractical to do multiple runs when n >= 10, so we switch to
   // doing single runs.
-  /*  namespace {
-      void bench_orientation(size_t n, size_t size) {
-        auto rg = ReportGuard(true);
-        auto p  = orientation_preserving_monoid(n);
-        p.alphabet(3);
-        presentation::replace_word(p, word_type({}), {2});
-        presentation::add_identity_rules(p, 2);
+  // Approx 27s (2021 - MacBook Air M1 - 8GB RAM)
+  TEST_CASE("orientation_preserving_monoid(n) (Arthur-Ruskuc), n = 10",
+            "[paper][orientation_preserving_monoid][n=10][hlt]") {
+    bench_hlt("orientation_preserving_monoid(10) (Arthur-Ruskuc)",
+              orientation_preserving_monoid(10),
+              923'690);
+  }
 
-        ToddCoxeter tc(congruence_kind::twosided);
-        tc.set_number_of_generators(3);
-        for (size_t i = 0; i < p.rules.size() - 1; i += 2) {
-          tc.add_pair(p.rules[i], p.rules[i + 1]);
-        }
-        check_hlt(tc);
-        std::cout << tc.settings_string();
-        REQUIRE(tc.number_of_classes() == size);
-        std::cout << tc.stats_string();
-      }
-    }  // namespace
+  // 4m13s (2021 - MacBook Air M1 - 8GB RAM)
+  TEST_CASE("orientation_preserving_monoid(n) (Arthur-Ruskuc), n = 11",
+            "[paper][orientation_preserving_monoid][n=11][hlt]") {
+    bench_hlt("orientation_preserving_monoid(11) (Arthur-Ruskuc)",
+              orientation_preserving_monoid(11),
+              3'879'766);
+  }
 
-    // Approx 27s (2021 - MacBook Air M1 - 8GB RAM)
-    TEST_CASE("orientation_preserving_monoid(10) - hlt",
-              "[paper][orientation_preserving_monoid][n=10][hlt]") {
-      bench_orientation(10, 923'690);
+  // 54m35s (2021 - MacBook Air M1 - 8GB RAM)
+  TEST_CASE("orientation_preserving_monoid(n) (Arthur-Ruskuc), n = 12",
+            "[paper][orientation_preserving_monoid][n=12][hlt]") {
+    bench_hlt("orientation_preserving_monoid(12) (Arthur-Ruskuc)",
+              orientation_preserving_monoid(12),
+              16'224'804);
+  }
+
+  // 9h14m (2021 - MacBook Air M1 - 8GB RAM)
+  TEST_CASE("orientation_preserving_monoid(n) (Arthur-Ruskuc), n = 13",
+            "[paper][orientation_preserving_monoid][n=13][hlt]") {
+    bench_hlt("orientation_preserving_monoid(13) (Arthur-Ruskuc)",
+              orientation_preserving_monoid(13),
+              67'603'744);
+  }
+  ////////////////////////////////////////////////////////////////////////
+  // orientation_reversing_monoid
+  ////////////////////////////////////////////////////////////////////////
+
+  TEST_CASE("orientation_reversing_monoid(n) (Arthur-Ruskuc), n = 3 .. 8",
+            "[paper][orientation_reversing_monoid][OR]") {
+    std::array<uint64_t, 17> sizes = {0,
+                                      0,
+                                      0,
+                                      27,
+                                      180,
+                                      1'015,
+                                      5'028,
+                                      23'051,
+                                      101'272,
+                                      434'835,
+                                      1'843'320,
+                                      7'753'471,
+                                      32'440'884,
+                                      135'195'307,
+                                      561'615'460,
+                                      2'326'740'315};
+
+    auto rg = ReportGuard(false);
+    xml_tag("LatexCaption",
+            "The presentations for the monoid $OR_n$ of orientation preserving "
+            "and reversing transformations of a chain from "
+            "\\cite{Arthur2000aa}.");
+    xml_tag("LatexLabel", "table-orient-reverse");
+    xml_tag("LatexSymbol", "OR_n");
+    for (size_t n = 3; n <= 8; ++n) {
+      auto title = fmt::format("orientation_reversing_monoid({})", n);
+      auto p     = orientation_reversing_monoid(n);
+      preprocess_presentation(p);
+      emit_xml_presentation_tags(p, n, sizes[n]);
+
+      BENCHMARK(title + "+ HLT (default)") {
+        ToddCoxeter tc(congruence_kind::twosided, p);
+        tc.strategy(ToddCoxeter::options::strategy::hlt);
+        REQUIRE(tc.number_of_classes() == sizes[n]);
+      };
+
+      BENCHMARK(title + "+ Felsch (default)") {
+        ToddCoxeter tc(congruence_kind::twosided, p);
+        tc.strategy(ToddCoxeter::options::strategy::felsch);
+        REQUIRE(tc.number_of_classes() == sizes[n]);
+      };
     }
+  }
 
-    // 4m13s (2021 - MacBook Air M1 - 8GB RAM)
-    TEST_CASE("orientation_preserving_monoid(11) - hlt",
-              "[paper][orientation_preserving_monoid][n=11][hlt]") {
-      bench_orientation(11, 3'879'766);
-    }
+  // Approx 9s (2021 - MacBook Air M1 - 8GB RAM)
+  TEST_CASE("orientation_reversing_monoid(9) - hlt",
+            "[paper][orientation_reversing_monoid][n=9][hlt]") {
+    bench_hlt("orientation_reversing_monoid(9)",
+              orientation_reversing_monoid(9),
+              434'835);
+  }
 
-    // 54m35s (2021 - MacBook Air M1 - 8GB RAM)
-    TEST_CASE("orientation_preserving_monoid(12) - hlt",
-              "[paper][orientation_preserving_monoid][n=12][hlt]") {
-      bench_orientation(12, 16'224'804);
-    }
+  // Approx 90s (2021 - MacBook Air M1 - 8GB RAM)
+  TEST_CASE("orientation_reversing_monoid(10) - hlt",
+            "[paper][orientation_reversing_monoid][n=10][hlt]") {
+    bench_hlt("orientation_reversing_monoid(10)",
+              orientation_reversing_monoid(10),
+              1'843'320);
+  }
 
-    // 9h14m (2021 - MacBook Air M1 - 8GB RAM)
-    TEST_CASE("orientation_preserving_monoid(13) - hlt",
-              "[paper][orientation_preserving_monoid][n=13][hlt]") {
-      bench_orientation(13, 67'603'744);
-    }
-    */
+  // ?? (2021 - MacBook Air M1 - 8GB RAM)
+  TEST_CASE("orientation_reversing_monoid(11) - hlt",
+            "[paper][orientation_reversing_monoid][n=11][hlt]") {
+    bench_hlt("orientation_reversing_monoid(11)",
+              orientation_reversing_monoid(11),
+              7'753'471);
+  }
+
+  // ?? (2021 - MacBook Air M1 - 8GB RAM)
+  TEST_CASE("orientation_reversing_monoid(12) - hlt",
+            "[paper][orientation_reversing_monoid][n=12][hlt]") {
+    bench_hlt("orientation_reversing_monoid(12)",
+              orientation_reversing_monoid(12),
+              32'440'884);
+  }
+
+  // ?? (2021 - MacBook Air M1 - 8GB RAM)
+  TEST_CASE("orientation_reversing_monoid(13) - hlt",
+            "[paper][orientation_reversing_monoid][n=13][hlt]") {
+    bench_hlt("orientation_reversing_monoid(13)",
+              orientation_reversing_monoid(13),
+              135'195'307);
+  }
+
   /*
     ////////////////////////////////////////////////////////////////////////
     // DualSymInv
@@ -205,12 +313,12 @@ namespace libsemigroups {
           = {0, 0, 0, 25, 339, 6'721, 179'643, 6'166'105, 262'308'819};
       auto rg = ReportGuard(false);
       for (size_t n = 3; n <= 7; ++n) {
-        std::string title = std::string("DualSymInv(") + std::to_string(n) + ")
+        std::string title = std::string("DualSymInv(") + std::to_string(n) +
+  ")
   "; BENCHMARK((title + "+ Rc (full HLT lookahead)").c_str()) { ToddCoxeter
-  tc(congruence_kind::twosided); setup(tc, n + 1, dual_symmetric_inverse_monoid,
-                n,
-                author::Easdown + author::East + author::FitzGerald);
-          tc.strategy(ToddCoxeter::options::strategy::Rc)
+  tc(congruence_kind::twosided); setup(tc, n + 1,
+  dual_symmetric_inverse_monoid, n, author::Easdown + author::East +
+  author::FitzGerald); tc.strategy(ToddCoxeter::options::strategy::Rc)
               .lookahead(ToddCoxeter::options::lookahead::full);
           REQUIRE(tc.number_of_classes() == sizes[n]);
         };
@@ -267,8 +375,8 @@ namespace libsemigroups {
       }
     }  // namespace
 
-    TEST_CASE("SymInv(7) - Felsch (default)", "[paper][SymInv][n=7][Felsch]") {
-      bench_sym_inv(7, 6'166'105, check_felsch);
+    TEST_CASE("SymInv(7) - Felsch (default)", "[paper][SymInv][n=7][Felsch]")
+  { bench_sym_inv(7, 6'166'105, check_felsch);
     }
 
     TEST_CASE("SymInv(7) - HLT (default)", "[paper][SymInv][n=7][HLT]") {
@@ -291,8 +399,8 @@ namespace libsemigroups {
     TEST_CASE("uniform_block_bijection_monoid(n) (FitzGerald), n = 3 .. 7",
               "[paper][uniform_block_bijection_monoid][EEF]") {
       std::array<uint64_t, 8> sizes = {0, 0, 0, 16, 131, 1'496, 22'482,
-  426'833}; auto                    rg    = ReportGuard(false); for (size_t n =
-  3; n <= 7; ++n) { std::string title =
+  426'833}; auto                    rg    = ReportGuard(false); for (size_t n
+  = 3; n <= 7; ++n) { std::string title =
   std::string("uniform_block_bijection_monoid(")
                             + std::to_string(n) + ") ";
         BENCHMARK((title + "+ Rc (full HLT lookahead)").c_str()) {
@@ -330,9 +438,8 @@ namespace libsemigroups {
       void bench_uniform_block_bijection(size_t n, size_t size, Func&& foo) {
         auto        rg = ReportGuard(true);
         ToddCoxeter tc(congruence_kind::twosided);
-        setup(tc, n + 1, uniform_block_bijection_monoid, n, author::FitzGerald);
-        foo(tc);
-        std::cout << tc.settings_string();
+        setup(tc, n + 1, uniform_block_bijection_monoid, n,
+  author::FitzGerald); foo(tc); std::cout << tc.settings_string();
         REQUIRE(tc.number_of_classes() == size);
         std::cout << tc.stats_string();
       }
@@ -362,7 +469,8 @@ namespace libsemigroups {
       bench_uniform_block_bijection(8, 9'934'563, check_random);
     }
 
-    // |FI_9 ^ *| = 277'006'192 which would require too much memory at present.
+    // |FI_9 ^ *| = 277'006'192 which would require too much memory at
+  present.
 
     ////////////////////////////////////////////////////////////////////////
     // stylic_monoid
@@ -576,11 +684,10 @@ namespace libsemigroups {
       auto rg = ReportGuard(false);
       for (size_t n = 3; n <= 7; ++n) {
         std::string title
-            = std::string("singular_brauer_monoid(") + std::to_string(n) + ") ";
-        BENCHMARK((title + "+ HLT (default)").c_str()) {
-          ToddCoxeter tc(congruence_kind::twosided);
-          setup(tc, n * n - n, singular_brauer_monoid, n);
-          tc.strategy(ToddCoxeter::options::strategy::hlt);
+            = std::string("singular_brauer_monoid(") + std::to_string(n) + ")
+  "; BENCHMARK((title + "+ HLT (default)").c_str()) { ToddCoxeter
+  tc(congruence_kind::twosided); setup(tc, n * n - n, singular_brauer_monoid,
+  n); tc.strategy(ToddCoxeter::options::strategy::hlt);
           REQUIRE(tc.number_of_classes() == sizes[n]);
         };
         BENCHMARK((title + "+ Felsch (default)").c_str()) {
@@ -645,10 +752,9 @@ namespace libsemigroups {
       auto rg = ReportGuard(false);
       for (size_t n = 3; n <= 14; ++n) {
         std::string title
-            = std::string("temperley_lieb_monoid(") + std::to_string(n) + ") ";
-        BENCHMARK((title + "+ HLT (default)").c_str()) {
-          ToddCoxeter tc(congruence_kind::twosided);
-          setup(tc, n - 1, temperley_lieb_monoid, n);
+            = std::string("temperley_lieb_monoid(") + std::to_string(n) + ")
+  "; BENCHMARK((title + "+ HLT (default)").c_str()) { ToddCoxeter
+  tc(congruence_kind::twosided); setup(tc, n - 1, temperley_lieb_monoid, n);
           tc.strategy(ToddCoxeter::options::strategy::hlt);
           REQUIRE(tc.number_of_classes() == sizes[n] - 1);
         };
@@ -693,64 +799,6 @@ namespace libsemigroups {
       bench_temperley_lieb(15, 129'644'790);
     }
 
-    ////////////////////////////////////////////////////////////////////////
-    // orientation_reversing_monoid
-    ////////////////////////////////////////////////////////////////////////
-
-    TEST_CASE("orientation_reversing_monoid(n) (Arthur-Ruskuc), n = 3 .. 8",
-              "[paper][orientation_reversing_monoid][OR]") {
-      std::array<uint64_t, 17> sizes = {0,
-                                        0,
-                                        0,
-                                        27,
-                                        180,
-                                        1'015,
-                                        5'028,
-                                        23'051,
-                                        101'272,
-                                        434'835,
-                                        1'843'320,
-                                        7'753'471,
-                                        32'440'884,
-                                        135'195'307,
-                                        561'615'460,
-                                        2'326'740'315};
-
-      auto rg = ReportGuard(false);
-      for (size_t n = 3; n <= 8; ++n) {
-        std::string title = std::string("orientation_reversing_monoid(")
-                            + std::to_string(n) + ") ";
-        BENCHMARK((title + "+ HLT (default)").c_str()) {
-          auto p = orientation_reversing_monoid(n);
-          p.alphabet(4);
-          presentation::replace_word(p, word_type({}), {3});
-          presentation::add_identity_rules(p, 3);
-
-          ToddCoxeter tc(congruence_kind::twosided);
-          tc.set_number_of_generators(4);
-          for (size_t i = 0; i < p.rules.size() - 1; i += 2) {
-            tc.add_pair(p.rules[i], p.rules[i + 1]);
-          }
-          tc.strategy(ToddCoxeter::options::strategy::hlt);
-          tc.next_lookahead(4 * sizes[n]).sort_generating_pairs();
-          REQUIRE(tc.number_of_classes() == sizes[n]);
-        };
-        BENCHMARK((title + "+ Felsch (default)").c_str()) {
-          auto p = orientation_reversing_monoid(n);
-          p.alphabet(4);
-          presentation::replace_word(p, word_type({}), {3});
-          presentation::add_identity_rules(p, 3);
-
-          ToddCoxeter tc(congruence_kind::twosided);
-          tc.set_number_of_generators(4);
-          for (size_t i = 0; i < p.rules.size() - 1; i += 2) {
-            tc.add_pair(p.rules[i], p.rules[i + 1]);
-          }
-          tc.strategy(ToddCoxeter::options::strategy::felsch);
-          REQUIRE(tc.number_of_classes() == sizes[n]);
-        };
-      }
-    }
 
     namespace {
       void bench_orient_reverse(size_t n, size_t size) {
@@ -1134,7 +1182,8 @@ namespace libsemigroups {
       G.add_rule("eAcaeACaeAcabCBaBcbaaa", "x");
       G.add_rule("deBAceAeACACacAcabcBcbaBBA", "x");
       G.add_rule("dCACacAcadACaCAcacdCACacAcA", "x");
-      G.add_rule("dCACacAcadCACacAcadCACacAcadCACacAcadCACacAcadCACacAca", "x");
+      G.add_rule("dCACacAcadCACacAcadCACacAcadCACacAcadCACacAcadCACacAca",
+  "x");
 
       G.congruence().remove_duplicate_generating_pairs().sort_generating_pairs();
       REQUIRE(G.size() == 1);
@@ -1286,10 +1335,9 @@ namespace libsemigroups {
             .max_deductions(2'000)
             .use_relations_in_extra(true)
             .strategy(options::strategy::hlt)
-            .lookahead(options::lookahead::partial | options::lookahead::felsch)
-            .deduction_policy(options::deductions::v2
-                              | options::deductions::no_stack_if_no_space);
-        REQUIRE(tc.size() == 14'911);
+            .lookahead(options::lookahead::partial |
+  options::lookahead::felsch) .deduction_policy(options::deductions::v2 |
+  options::deductions::no_stack_if_no_space); REQUIRE(tc.size() == 14'911);
       };
     }
 
