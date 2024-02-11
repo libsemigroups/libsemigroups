@@ -110,8 +110,7 @@ namespace libsemigroups {
     //! the uniform block bijection monoid of degree `n`. The argument `val`
     //! determines the specific presentation which is returned. The only option
     //! is:
-    //! * `author::FitzGerald` (see
-    //! [10.1017/s0004972700037692][])
+    //! * `author::FitzGerald` (see [10.1017/s0004972700037692][])
     //!
     //! The default for `val` is the only option above.
     //!
