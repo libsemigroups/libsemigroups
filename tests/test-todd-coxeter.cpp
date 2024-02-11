@@ -1952,9 +1952,10 @@ namespace libsemigroups {
     // presentation::sort_rules(p);
     // presentation::sort_each_rule(p);
     // REQUIRE(!p.contains_empty_word());
-    //  REQUIRE(p.alphabet() == "012"_w);
-    // REQUIRE(p.rules == std::vector<word_type>());
-
+    REQUIRE(p.alphabet() == "013"_w);
+    REQUIRE(!is_obviously_infinite(p));
+    presentation::normalize_alphabet(p);
+    // FIXME this test case seg faults if we don't normalize_alphabet
     ToddCoxeter tc(twosided, p);
     REQUIRE(tc.number_of_classes() == 9);
   }

@@ -205,7 +205,8 @@ namespace libsemigroups {
             d, d.cbegin_active_nodes(), d.cend_active_nodes())) {
       return false;
     }
-    auto const&                 p = tc.presentation();
+    auto p = tc.presentation();  // TODO don't copy this here
+    presentation::normalize_alphabet(p);
     detail::IsObviouslyInfinite ioi(p.alphabet().size());
     ioi.add_rules(p.rules.cbegin(), p.rules.cend());
     ioi.add_rules(tc.generating_pairs().cbegin(), tc.generating_pairs().cend());

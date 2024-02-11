@@ -16,6 +16,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
+#include <chrono>
 #include <initializer_list>
 #define CATCH_CONFIG_ENABLE_BENCHMARKING
 
@@ -40,74 +41,112 @@ namespace libsemigroups {
   namespace {
     template <typename S, typename T>
     void open_xml_tag(S name, T val) {
-      fmt::print("      <{0} value=\"{1}\">\n", name, val);
+      fmt::print("      <{} value=\"{}\">\n", name, val);
     }
 
-    template <typename S>
-    void open_xml_tag(S name) {
-      fmt::print("      <{0}>\n", name);
-    }
     template <typename S>
     void close_xml_tag(S name) {
-      fmt::print("      </{0}>\n", name);
+      fmt::print("      </{}>\n", name);
     }
 
-    template <typename S, typename T>
-    void xml_tag(S name, T val) {
-      fmt::print("      <{0} value=\"{1}\"/>\n", name, val);
+    std::string xml_tag() {
+      return "/>\n";
+    }
+
+    template <typename K, typename V, typename... Args>
+    auto xml_tag(K key, V val, Args&&... args)
+        -> std::enable_if_t<sizeof...(Args) % 2 == 0, std::string> {
+      return fmt::format(" {}=\"{}\"", key, val)
+             + xml_tag(std::forward<Args>(args)...);
+    }
+
+    template <typename... Args>
+    auto xml_tag(char const* name, Args&&... args)
+        -> std::enable_if_t<sizeof...(Args) % 2 == 0, std::string> {
+      return fmt::format("      <{} ", name)
+             + xml_tag(std::forward<Args>(args)...);
     }
 
     void preprocess_presentation(Presentation<word_type>& p) {
-      // presentation::reduce_complements(p);
-      // presentation::remove_trivial_rules(p);
-      //  presentation::remove_duplicate_rules(p);
       presentation::remove_redundant_generators(p);
-      // presentation::sort_each_rule(p);
-      // presentation::sort_rules(p);
+      presentation::reduce_complements(p);
+      presentation::remove_trivial_rules(p);
+      presentation::remove_duplicate_rules(p);
+      presentation::normalize_alphabet(p);
+      presentation::sort_each_rule(p);
+      presentation::sort_rules(p);
     }
 
     void emit_xml_presentation_tags(Presentation<word_type>& p,
                                     size_t                   index,
                                     size_t                   size) {
-      xml_tag("Index", index);
-      xml_tag("Size", size);
-      xml_tag("PresentationNumGens", p.alphabet().size());
-      xml_tag("PresentationNumRels", p.rules.size() / 2);
-      xml_tag("PresentationLength", presentation::length(p));
+      fmt::print("{}", xml_tag("Index", "value", index));
+      fmt::print("{}", xml_tag("Size", "value", size));
+      fmt::print("{}",
+                 xml_tag("PresentationNumGens", "value", p.alphabet().size()));
+      fmt::print("{}",
+                 xml_tag("PresentationNumRels", "value", p.rules.size() / 2));
+      fmt::print(
+          "{}",
+          xml_tag("PresentationLength", "value", presentation::length(p)));
     }
 
-    void bench_hlt(std::string_view          prefix,
-                   Presentation<word_type>&& p,
-                   size_t                    size) {
-      auto        rg = ReportGuard(true);
-      ToddCoxeter tc(congruence_kind::twosided, p);
-      SECTION(std::string(prefix) + "HLT (default)") {
-        fmt::print("Running HLT (default) . . .\n");
-        tc.strategy(strategy::hlt);
-        // .lookahead_next(20'000'000)
-        // .lookahead_min(10'000'000);
-        // while (!tc.finished()) {  // TODO reporting doesn't work
-        //   tc.run_for(std::chrono::seconds(10));
-        //   tc.standardize(Order::shortlex);
-        // }
-        REQUIRE(tc.number_of_classes() == size);
+    template <typename Func2>
+    void benchmark(size_t                                 size,
+                   Presentation<word_type>&&              p,
+                   size_t                                 n,
+                   std::initializer_list<strategy> const& strategies,
+                   Func2&&                                init) {
+      preprocess_presentation(p);
+      emit_xml_presentation_tags(p, n, size);
+      auto rg = ReportGuard(true);
+      for (auto strategy : strategies) {
+        ToddCoxeter tc(congruence_kind::twosided, p);
+        auto        title = fmt::format("{}", strategy);
+        open_xml_tag("LatexColumnTitle", title);
+        SECTION(title) {
+          ToddCoxeter tc(congruence_kind::twosided, p);
+          tc.strategy(strategy);
+          init(tc);
+          tc.strategy(strategy::hlt);
+          auto start = std::chrono::high_resolution_clock::now();
+          REQUIRE(tc.number_of_classes() == size);
+          auto now = std::chrono::high_resolution_clock::now();
+          open_xml_tag("BenchmarkResults", title);
+          fmt::print(
+              "{}",
+              xml_tag("mean",
+                      "value",
+                      std::chrono::duration_cast<std::chrono::nanoseconds>(
+                          now - start)
+                          .count()));
+          fmt::print("{}", xml_tag("standardDeviation", "value", 0));
+          close_xml_tag("BenchmarkResults");
+        }
+        close_xml_tag("LatexColumnTitle");
       }
-      // TODO be good to recover the below
-      // std::cout << tc.settings_string();
-      // std::cout << tc.stats_string();
     }
-  }  // namespace
-//
-#define BENCHMARK_TODD_COXETER(SIZES,                          \
-                               CAPTION,                        \
-                               LABEL,                          \
-                               SYMBOL,                         \
-                               FIRST,                          \
-                               LAST,                           \
-                               PRESENTATION,                   \
-                               PRESENTATION_NAME,              \
-                               STRATEGIES,                     \
-                               INIT)                           \
+
+    // .lookahead_next(20'000'000)
+    // .lookahead_min(10'000'000);
+    // while (!tc.finished()) {  // TODO reporting doesn't work
+    //   tc.run_for(std::chrono::seconds(10));
+    //   tc.standardize(Order::shortlex);
+    // }
+    // TODO be good to recover the below
+    // std::cout << tc.settings_string();
+    // std::cout << tc.stats_string();
+
+#define BENCHMARK_TODD_COXETER_RANGE(SIZES,                    \
+                                     CAPTION,                  \
+                                     LABEL,                    \
+                                     SYMBOL,                   \
+                                     FIRST,                    \
+                                     LAST,                     \
+                                     PRESENTATION,             \
+                                     PRESENTATION_NAME,        \
+                                     STRATEGIES,               \
+                                     INIT)                     \
   TEST_CASE(PRESENTATION_NAME "(n), n = " #FIRST " .. " #LAST, \
             "[paper][" PRESENTATION_NAME "][000]") {           \
     benchmark_todd_coxeter(SIZES,                              \
@@ -121,44 +160,46 @@ namespace libsemigroups {
                            INIT);                              \
   }
 
-  using sizes_type = std::initializer_list<uint64_t>;
+    using sizes_type = std::initializer_list<uint64_t>;
 
-  template <typename Func1, typename Func2>
-  void benchmark_todd_coxeter(sizes_type const& ilist_sizes,
-                              std::string_view  caption,
-                              std::string_view  label,
-                              std::string_view  symbol,
-                              size_t            first,
-                              size_t            last,
-                              Func1&&           constructor,
-                              std::initializer_list<strategy> const& strategies,
-                              Func2&&                                init) {
-    std::vector<uint64_t> sizes(ilist_sizes);
-    auto                  rg = ReportGuard(false);
-    xml_tag("LatexCaption", caption);
-    xml_tag("LatexLabel", label);
-    xml_tag("LatexSymbol", symbol);
-    for (size_t n = first; n <= last; ++n) {
-      auto p = constructor(n);
-      preprocess_presentation(p);
-      emit_xml_presentation_tags(p, n, sizes[n]);
-      for (auto const& strategy : strategies) {
-        auto title = fmt::format("{}", strategy);
-        open_xml_tag("LatexColumnTitle", title);
-        BENCHMARK(title.c_str()) {
-          ToddCoxeter tc(congruence_kind::twosided, p);
-          tc.strategy(strategy);
-          init(tc);
-          REQUIRE(tc.number_of_classes() == static_cast<uint64_t>(sizes[n]));
-        };
-        close_xml_tag("LatexColumnTitle");
+    template <typename Func1, typename Func2>
+    void
+    benchmark_todd_coxeter(sizes_type const&                      ilist_sizes,
+                           std::string_view                       caption,
+                           std::string_view                       label,
+                           std::string_view                       symbol,
+                           size_t                                 first,
+                           size_t                                 last,
+                           Func1&&                                constructor,
+                           std::initializer_list<strategy> const& strategies,
+                           Func2&&                                init) {
+      std::vector<uint64_t> sizes(ilist_sizes);
+      auto                  rg = ReportGuard(false);
+      fmt::print("{}", xml_tag("LatexCaption", "value", caption));
+      fmt::print("{}", xml_tag("LatexLabel", "value", label));
+      fmt::print("{}", xml_tag("LatexSymbol", "value", symbol));
+      for (size_t n = first; n <= last; ++n) {
+        auto p = constructor(n);
+        preprocess_presentation(p);
+        emit_xml_presentation_tags(p, n, sizes[n]);
+        for (auto const& strategy : strategies) {
+          auto title = fmt::format("{}", strategy);
+          open_xml_tag("LatexColumnTitle", title);
+          BENCHMARK(title.c_str()) {
+            ToddCoxeter tc(congruence_kind::twosided, p);
+            tc.strategy(strategy);
+            init(tc);
+            REQUIRE(tc.number_of_classes() == static_cast<uint64_t>(sizes[n]));
+          };
+          close_xml_tag("LatexColumnTitle");
+        }
       }
     }
-  }
 
-  constexpr auto DoNothing = [](ToddCoxeter&) {};
+    constexpr auto DoNothing = [](ToddCoxeter&) {};
+  }  // namespace
 
-  using fpsemigroup::author;
+  // using fpsemigroup::author;
 
   using fpsemigroup::dual_symmetric_inverse_monoid;
   using fpsemigroup::orientation_preserving_monoid;
@@ -192,14 +233,14 @@ namespace libsemigroups {
 
     auto strategies = {strategy::hlt, strategy::felsch};
 
-    BENCHMARK_TODD_COXETER(
+    BENCHMARK_TODD_COXETER_RANGE(
         sizes,
         "The presentations for the monoid $OP_n$ of orientation "
         "preserving transformations of a chain from \\cite{Arthur2000aa}.",
         "table-orient",
         "OP_n",
         3,
-        9,
+        4,
         orientation_preserving_monoid,
         "orientation_preserving_monoid",
         strategies,
@@ -211,34 +252,36 @@ namespace libsemigroups {
   // Approx 27s (2021 - MacBook Air M1 - 8GB RAM)
   TEST_CASE("orientation_preserving_monoid(n) (Arthur-Ruskuc), n = 10",
             "[paper][orientation_preserving_monoid][n=10][hlt]") {
-    bench_hlt("orientation_preserving_monoid(10) (Arthur-Ruskuc)",
-              orientation_preserving_monoid(10),
-              923'690);
+    benchmark(218'718,
+              orientation_preserving_monoid(9),
+              9,
+              {strategy::hlt},
+              DoNothing);
   }
 
-  // 4m13s (2021 - MacBook Air M1 - 8GB RAM)
-  TEST_CASE("orientation_preserving_monoid(n) (Arthur-Ruskuc), n = 11",
-            "[paper][orientation_preserving_monoid][n=11][hlt]") {
-    bench_hlt("orientation_preserving_monoid(11) (Arthur-Ruskuc)",
-              orientation_preserving_monoid(11),
-              3'879'766);
-  }
+  // // 4m13s (2021 - MacBook Air M1 - 8GB RAM)
+  // TEST_CASE("orientation_preserving_monoid(n) (Arthur-Ruskuc), n = 11",
+  //           "[paper][orientation_preserving_monoid][n=11][hlt]") {
+  //   bench_hlt("orientation_preserving_monoid(11) (Arthur-Ruskuc)",
+  //             orientation_preserving_monoid(11),
+  //             3'879'766);
+  // }
 
-  // 54m35s (2021 - MacBook Air M1 - 8GB RAM)
-  TEST_CASE("orientation_preserving_monoid(n) (Arthur-Ruskuc), n = 12",
-            "[paper][orientation_preserving_monoid][n=12][hlt]") {
-    bench_hlt("orientation_preserving_monoid(12) (Arthur-Ruskuc)",
-              orientation_preserving_monoid(12),
-              16'224'804);
-  }
+  // // 54m35s (2021 - MacBook Air M1 - 8GB RAM)
+  // TEST_CASE("orientation_preserving_monoid(n) (Arthur-Ruskuc), n = 12",
+  //           "[paper][orientation_preserving_monoid][n=12][hlt]") {
+  //   bench_hlt("orientation_preserving_monoid(12) (Arthur-Ruskuc)",
+  //             orientation_preserving_monoid(12),
+  //             16'224'804);
+  // }
 
-  // 9h14m (2021 - MacBook Air M1 - 8GB RAM)
-  TEST_CASE("orientation_preserving_monoid(n) (Arthur-Ruskuc), n = 13",
-            "[paper][orientation_preserving_monoid][n=13][hlt]") {
-    bench_hlt("orientation_preserving_monoid(13) (Arthur-Ruskuc)",
-              orientation_preserving_monoid(13),
-              67'603'744);
-  }
+  // // 9h14m (2021 - MacBook Air M1 - 8GB RAM)
+  // TEST_CASE("orientation_preserving_monoid(n) (Arthur-Ruskuc), n = 13",
+  //           "[paper][orientation_preserving_monoid][n=13][hlt]") {
+  //   bench_hlt("orientation_preserving_monoid(13) (Arthur-Ruskuc)",
+  //             orientation_preserving_monoid(13),
+  //             67'603'744);
+  // }
   ////////////////////////////////////////////////////////////////////////
   // 2. orientation_reversing_monoid
   ////////////////////////////////////////////////////////////////////////
@@ -261,7 +304,7 @@ namespace libsemigroups {
                              561'615'460,
                              2'326'740'315};
     auto       strategies = {strategy::hlt, strategy::felsch};
-    BENCHMARK_TODD_COXETER(
+    BENCHMARK_TODD_COXETER_RANGE(
         sizes,
         "The presentations for the monoid $OR_n$ of orientation preserving "
         "and reversing transformations of a chain from \\cite{Arthur2000aa}.",
@@ -276,44 +319,44 @@ namespace libsemigroups {
   }  // namespace orientation_reversing
 
   // Approx 9s (2021 - MacBook Air M1 - 8GB RAM)
-  TEST_CASE("orientation_reversing_monoid(9) - hlt",
-            "[paper][orientation_reversing_monoid][n=9][hlt]") {
-    bench_hlt("orientation_reversing_monoid(9)",
-              orientation_reversing_monoid(9),
-              434'835);
-  }
-
-  // Approx 90s (2021 - MacBook Air M1 - 8GB RAM)
-  TEST_CASE("orientation_reversing_monoid(10) - hlt",
-            "[paper][orientation_reversing_monoid][n=10][hlt]") {
-    bench_hlt("orientation_reversing_monoid(10)",
-              orientation_reversing_monoid(10),
-              1'843'320);
-  }
-
-  // ?? (2021 - MacBook Air M1 - 8GB RAM)
-  TEST_CASE("orientation_reversing_monoid(11) - hlt",
-            "[paper][orientation_reversing_monoid][n=11][hlt]") {
-    bench_hlt("orientation_reversing_monoid(11)",
-              orientation_reversing_monoid(11),
-              7'753'471);
-  }
-
-  // ?? (2021 - MacBook Air M1 - 8GB RAM)
-  TEST_CASE("orientation_reversing_monoid(12) - hlt",
-            "[paper][orientation_reversing_monoid][n=12][hlt]") {
-    bench_hlt("orientation_reversing_monoid(12)",
-              orientation_reversing_monoid(12),
-              32'440'884);
-  }
-
-  // ?? (2021 - MacBook Air M1 - 8GB RAM)
-  TEST_CASE("orientation_reversing_monoid(13) - hlt",
-            "[paper][orientation_reversing_monoid][n=13][hlt]") {
-    bench_hlt("orientation_reversing_monoid(13)",
-              orientation_reversing_monoid(13),
-              135'195'307);
-  }
+  //   TEST_CASE("orientation_reversing_monoid(9) - hlt",
+  //             "[paper][orientation_reversing_monoid][n=9][hlt]") {
+  //     bench_hlt("orientation_reversing_monoid(9)",
+  //               orientation_reversing_monoid(9),
+  //               434'835);
+  //   }
+  //
+  //   // Approx 90s (2021 - MacBook Air M1 - 8GB RAM)
+  //   TEST_CASE("orientation_reversing_monoid(10) - hlt",
+  //             "[paper][orientation_reversing_monoid][n=10][hlt]") {
+  //     bench_hlt("orientation_reversing_monoid(10)",
+  //               orientation_reversing_monoid(10),
+  //               1'843'320);
+  //   }
+  //
+  //   // ?? (2021 - MacBook Air M1 - 8GB RAM)
+  //   TEST_CASE("orientation_reversing_monoid(11) - hlt",
+  //             "[paper][orientation_reversing_monoid][n=11][hlt]") {
+  //     bench_hlt("orientation_reversing_monoid(11)",
+  //               orientation_reversing_monoid(11),
+  //               7'753'471);
+  //   }
+  //
+  //   // ?? (2021 - MacBook Air M1 - 8GB RAM)
+  //   TEST_CASE("orientation_reversing_monoid(12) - hlt",
+  //             "[paper][orientation_reversing_monoid][n=12][hlt]") {
+  //     bench_hlt("orientation_reversing_monoid(12)",
+  //               orientation_reversing_monoid(12),
+  //               32'440'884);
+  //   }
+  //
+  //   // ?? (2021 - MacBook Air M1 - 8GB RAM)
+  //   TEST_CASE("orientation_reversing_monoid(13) - hlt",
+  //             "[paper][orientation_reversing_monoid][n=13][hlt]") {
+  //     bench_hlt("orientation_reversing_monoid(13)",
+  //               orientation_reversing_monoid(13),
+  //               135'195'307);
+  //   }
 
   ////////////////////////////////////////////////////////////////////////
   // partition_monoid
@@ -323,7 +366,7 @@ namespace libsemigroups {
     sizes_type sizes = {0, 2, 15, 203, 4'140, 115'975, 4'213'597, 190'899'322};
     auto       strategies = {strategy::hlt, strategy::felsch};
 
-    BENCHMARK_TODD_COXETER(
+    BENCHMARK_TODD_COXETER_RANGE(
         sizes,
         "The presentations for the partition monoids $P_n$ from "
         "\\cite[Theorem 41]{East2011aa}.",
@@ -382,7 +425,7 @@ namespace libsemigroups {
 
     auto strategies = {strategy::hlt, strategy::felsch, strategy::Rc};
 
-    BENCHMARK_TODD_COXETER(
+    BENCHMARK_TODD_COXETER_RANGE(
         sizes,
         "The presentations for the dual symmetric inverse "
         "monoids $I_n ^ *$ from \\cite{Easdown2008aa}.",
@@ -416,7 +459,8 @@ namespace libsemigroups {
   //     }
   //   }  // namespace
 
-  //   TEST_CASE("SymInv(7) - Felsch (default)", "[paper][SymInv][n=7][Felsch]")
+  //   TEST_CASE("SymInv(7) - Felsch (default)",
+  //   "[paper][SymInv][n=7][Felsch]")
   //  { bench_sym_inv(7, 6'166'105, check_felsch);
   //   }
 
@@ -429,7 +473,8 @@ namespace libsemigroups {
   //     bench_sym_inv(7, 6'166'105, check_Rc_full_style);
   //   }
 
-  //   TEST_CASE("SymInv(7) - random strategy", "[paper][SymInv][n=7][random]")
+  //   TEST_CASE("SymInv(7) - random strategy",
+  //   "[paper][SymInv][n=7][random]")
   //  { bench_sym_inv(7, 6'166'105, check_random);
   //   }
 
@@ -441,7 +486,7 @@ namespace libsemigroups {
     sizes_type sizes      = {0, 0, 0, 16, 131, 1'496, 22'482, 426'833};
     auto       strategies = {strategy::hlt, strategy::felsch, strategy::Rc};
 
-    BENCHMARK_TODD_COXETER(
+    BENCHMARK_TODD_COXETER_RANGE(
         sizes,
         "The presentations for the factorisable dual symmetric inverse "
         "monoids $FI_n ^ *$ from \\cite{fitzgerald_2003}. This monoid is "
@@ -524,7 +569,7 @@ namespace libsemigroups {
                              35'357'670};
     auto       strategies = {strategy::hlt, strategy::felsch};
 
-    BENCHMARK_TODD_COXETER(
+    BENCHMARK_TODD_COXETER_RANGE(
         sizes,
         "The presentations for the Temperley-Lieb monoids $J_n$ from "
         "\\cite[Theorem 2.2]{East2021aa}; the Temperley-Lieb monoid is also "
@@ -583,17 +628,18 @@ namespace libsemigroups {
 
     auto strategies = {strategy::hlt, strategy::felsch};
 
-    BENCHMARK_TODD_COXETER(sizes,
-                           "The presentations for the singular Brauer monoids "
-                           "$B_n \\setminus S_n$ from \\cite{Maltcev2007aa}.",
-                           "table-singular-brauer",
-                           "B_n\\setminus S_n",
-                           3,
-                           4,
-                           singular_brauer_monoid,
-                           "singular_brauer_monoid",
-                           strategies,
-                           DoNothing);
+    BENCHMARK_TODD_COXETER_RANGE(
+        sizes,
+        "The presentations for the singular Brauer monoids "
+        "$B_n \\setminus S_n$ from \\cite{Maltcev2007aa}.",
+        "table-singular-brauer",
+        "B_n\\setminus S_n",
+        3,
+        7,
+        singular_brauer_monoid,
+        "singular_brauer_monoid",
+        strategies,
+        DoNothing);
 
   }  // namespace singular_brauer
 
@@ -626,111 +672,103 @@ namespace libsemigroups {
   ////////////////////////////////////////////////////////////////////////
   // stylic_monoid
   ////////////////////////////////////////////////////////////////////////
-  namespace stylic {
-    sizes_type sizes      = {0,
-                             1,
-                             4,
-                             14,
-                             51,
-                             202,
-                             876,
-                             4'139,
-                             21'146,
-                             115'974,
-                             678'569,
-                             4'213'596,
-                             27'644'436};
-    auto       strategies = {strategy::hlt, strategy::felsch};
 
-    BENCHMARK_TODD_COXETER(
+  namespace stylic {
+    sizes_type sizes = {0,
+                        1,
+                        4,
+                        14,
+                        51,
+                        202,
+                        876,
+                        4'139,
+                        21'146,
+                        115'974,
+                        678'569,
+                        4'213'596,
+                        27'644'436};
+
+    auto strategies = {strategy::hlt, strategy::felsch};
+
+    BENCHMARK_TODD_COXETER_RANGE(
         sizes,
         "The presentations for the stylic monoids from \\cite{Abram2021aa}.",
         "table-stylic",
         "\\operatorname{Stylic}(n)",
         3,
-        10,
-        orientation_preserving_monoid,
-        "orientation_preserving_monoid",
+        12,
+        stylic_monoid,
+        "stylic_monoid",
         strategies,
         DoNothing);
 
   }  // namespace stylic
 
+  // Becomes impractical to do multiple runs after n = 10, so we switch to
+  // doing single runs.
+  // namespace {
+  //   template <typename Func>
+  //   void bench_stylic(size_t n, size_t size, Func&& foo) {
+  //     auto        rg = ReportGuard(true);
+  //     ToddCoxeter tc(congruence_kind::twosided);
+  //     setup(tc, n, stylic_monoid, n);
+  //     foo(tc);
+  //     std::cout << tc.settings_string();
+  //     REQUIRE(tc.number_of_classes() == size);
+  //     std::cout << tc.stats_string();
+  //   }
+  // }  // namespace
+
+  // // Approx 17s (2021 - MacBook Air M1 - 8GB RAM)
+  // TEST_CASE("stylic_monoid(11) - HLT (default)",
+  //           "[paper][stylic_monoid][n=11][hlt]") {
+  //   bench_stylic(11, 4'213'596, check_hlt);
+  // }
+
+  // // Approx 153s (2021 - MacBook Air M1 - 8GB RAM)
+  // TEST_CASE("stylic_monoid(12) - HLT (default)",
+  //           "[paper][stylic_monoid][n=12][hlt]") {
+  //   bench_stylic(12, 27'644'436, check_hlt);
+  // }
+
+  // // Approx ?? (2021 - MacBook Air M1 - 8GB RAM)
+  // TEST_CASE("stylic_monoid(13) - HLT (default)",
+  //           "[paper][stylic_monoid][n=13][hlt]") {
+  //   bench_stylic(13, 27'644'436, check_hlt);
+  // }
+
+  ////////////////////////////////////////////////////////////////////////
+  // stellar_monoid
+  ////////////////////////////////////////////////////////////////////////
+  namespace stellar {
+    sizes_type sizes      = {1,
+                             2,
+                             5,
+                             16,
+                             65,
+                             326,
+                             1'957,
+                             13'700,
+                             109'601,
+                             986'410,
+                             9'864'101,
+                             108'505'112};
+    auto       strategies = {strategy::hlt, strategy::felsch};
+
+    BENCHMARK_TODD_COXETER_RANGE(
+        sizes,
+        "The presentations for the stellar monoids from \\cite{Gay2019aa}.",
+        "table-stellar",
+        "\\operatorname{Stellar}(n)",
+        3,
+        9,
+        stellar_monoid,
+        "stellar_monoid",
+        strategies,
+        DoNothing);
+  }  // namespace stellar
+
   /*
-      // Becomes impractical to do multiple runs after n = 10, so we switch to
-      // doing single runs.
-      namespace {
-        template <typename Func>
-        void bench_stylic(size_t n, size_t size, Func&& foo) {
-          auto        rg = ReportGuard(true);
-          ToddCoxeter tc(congruence_kind::twosided);
-          setup(tc, n, stylic_monoid, n);
-          foo(tc);
-          std::cout << tc.settings_string();
-          REQUIRE(tc.number_of_classes() == size);
-          std::cout << tc.stats_string();
-        }
-      }  // namespace
-
-      // Approx 17s (2021 - MacBook Air M1 - 8GB RAM)
-      TEST_CASE("stylic_monoid(11) - HLT (default)",
-                "[paper][stylic_monoid][n=11][hlt]") {
-        bench_stylic(11, 4'213'596, check_hlt);
-      }
-
-      // Approx 153s (2021 - MacBook Air M1 - 8GB RAM)
-      TEST_CASE("stylic_monoid(12) - HLT (default)",
-                "[paper][stylic_monoid][n=12][hlt]") {
-        bench_stylic(12, 27'644'436, check_hlt);
-      }
-
-      // Approx ?? (2021 - MacBook Air M1 - 8GB RAM)
-      TEST_CASE("stylic_monoid(13) - HLT (default)",
-                "[paper][stylic_monoid][n=13][hlt]") {
-        bench_stylic(13, 27'644'436, check_hlt);
-      }
-
-      ////////////////////////////////////////////////////////////////////////
-      // stellar_monoid
-      ////////////////////////////////////////////////////////////////////////
-
-      TEST_CASE("stellar_monoid(n) (Gay-Hivert), n = 3 .. 9",
-                "[paper][stellar_monoid]") {
-        sizes_type sizes = {1,
-                                          2,
-                                          5,
-                                          16,
-                                          65,
-                                          326,
-                                          1'957,
-                                          13'700,
-                                          109'601,
-                                          986'410,
-                                          9'864'101,
-                                          108'505'112};
-        auto                     rg    = ReportGuard(false);
-        for (size_t n = 3; n <= 9; ++n) {
-          std::string title
-              = std::string("stellar_monoid(") + std::to_string(n) + ") ";
-          BENCHMARK((title + "+ HLT (default)").c_str()) {
-            ToddCoxeter tc1(congruence_kind::twosided);
-            setup(tc1, n + 1, rook_monoid, n, 0);
-            ToddCoxeter tc2(congruence_kind::twosided, tc1);
-            setup(tc2, n + 1, stellar_monoid, n);
-            tc2.strategy(strategy::hlt);
-            REQUIRE(tc2.number_of_classes() == sizes[n]);
-          };
-          BENCHMARK((title + "+ Felsch (default)").c_str()) {
-            ToddCoxeter tc1(congruence_kind::twosided);
-            setup(tc1, n + 1, rook_monoid, n, 0);
-            ToddCoxeter tc2(congruence_kind::twosided, tc1);
-            setup(tc2, n + 1, stellar_monoid, n);
-            tc2.strategy(strategy::felsch);
-            REQUIRE(tc2.number_of_classes() == sizes[n]);
-          };
-        }
-      }
-
       // Becomes impractical to do multiple runs after n = 9, so we switch to
       // doing single runs.
       namespace {
@@ -855,8 +893,8 @@ namespace libsemigroups {
         ToddCoxeter tc(congruence_kind::twosided);
         setup(tc, n * n - n, singular_brauer_monoid, n);
         tc.sort_generating_pairs().remove_duplicate_generating_pairs();
-        tc.strategy(strategy::hlt).next_lookahead(size / 2).min_lookahead(size /
-    2); check_hlt(tc); std::cout << tc.settings_string();
+        tc.strategy(strategy::hlt).next_lookahead(size / 2).min_lookahead(size
+    / 2); check_hlt(tc); std::cout << tc.settings_string();
         REQUIRE(tc.number_of_classes() == size);
         std::cout << tc.stats_string();
       }
@@ -1577,8 +1615,8 @@ namespace libsemigroups {
           tc.congruence()
               .strategy(strategy::felsch)
               .deduction_policy(deductions::no_stack_if_no_space |
-    deductions::v1) .preferred_defs(preferred_defs::none); REQUIRE(tc.size() ==
-    153'500);
+    deductions::v1) .preferred_defs(preferred_defs::none); REQUIRE(tc.size()
+    == 153'500);
         };
       }
 

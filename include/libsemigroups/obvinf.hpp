@@ -65,6 +65,7 @@
 #include <vector>   // for vector
 
 #include "config.hpp"  // for LIBSEMIGROUPS_EIGEN_ENABLED
+#include "ranges.hpp"  // for word_type etc
 #include "types.hpp"   // for word_type etc
 
 #include "detail/eigen.hpp"
@@ -80,6 +81,11 @@ namespace libsemigroups {
 
   template <typename Word>
   class Presentation;  // forward decl
+
+  namespace presentation {
+    template <typename Word>
+    void change_alphabet(Presentation<Word>&, Word const&);
+  }
 
   namespace detail {
     class IsObviouslyInfinite {
@@ -180,6 +186,21 @@ namespace libsemigroups {
     if (p.alphabet().empty()) {
       return false;
     }
+    // FIXME! This returns wrong answers if the p.alphabet is not contiguous
+    auto it
+        = std::max_element(std::begin(p.alphabet()), std::end(p.alphabet()));
+
+    if (*it != p.alphabet().size() - 1) {
+      auto copy_p = p;
+      presentation::change_alphabet(
+          copy_p,
+          rx::seq<typename Presentation<Word>::letter_type>(0)
+              | rx::take(p.alphabet().size()) | rx::to_vector());
+      detail::IsObviouslyInfinite ioi(copy_p.alphabet().size());
+      ioi.add_rules(copy_p.rules.cbegin(), copy_p.rules.cend());
+      return ioi.result();
+    }
+
     detail::IsObviouslyInfinite ioi(p.alphabet().size());
     ioi.add_rules(p.rules.cbegin(), p.rules.cend());
     return ioi.result();
