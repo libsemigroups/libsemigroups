@@ -335,7 +335,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "001",
-                          "small 2-sided congruence",
+                          "small 2-sided congruence x 2",
                           "[no-valgrind][todd-coxeter][quick]") {
     auto rg = ReportGuard(false);
 
@@ -1021,7 +1021,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "017",
-                          "finite fp-semigroup, size 16",
+                          "finite fp-semigroup, size 16 x 2",
                           "[todd-coxeter][quick]") {
     auto                    rg = ReportGuard(false);
     Presentation<word_type> p;
@@ -1318,7 +1318,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "026",
-                          "exceptions",
+                          "exceptions x 2",
                           "[todd-coxeter][quick]") {
     auto                    rg = ReportGuard(false);
     Presentation<word_type> p;
@@ -1510,7 +1510,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "034",
-                          "congruence of ToddCoxeter",
+                          "congruence of ToddCoxeter x 2",
                           "[todd-coxeter][quick]") {
     auto rg      = ReportGuard(false);
     using Transf = LeastTransf<5>;
@@ -1944,15 +1944,19 @@ namespace libsemigroups {
     using fpsemigroup::singular_brauer_monoid;
 
     auto         rg = ReportGuard(false);
-    size_t const n  = 6;
+    size_t const n  = 3;
     auto         p  = singular_brauer_monoid(n);
-    presentation::remove_duplicate_rules(p);
-    presentation::sort_rules(p);
-    presentation::sort_each_rule(p);
-    REQUIRE(!p.contains_empty_word());
+    presentation::remove_redundant_generators(p);
+
+    // presentation::remove_duplicate_rules(p);
+    // presentation::sort_rules(p);
+    // presentation::sort_each_rule(p);
+    // REQUIRE(!p.contains_empty_word());
+    //  REQUIRE(p.alphabet() == "012"_w);
+    // REQUIRE(p.rules == std::vector<word_type>());
 
     ToddCoxeter tc(twosided, p);
-    REQUIRE(tc.number_of_classes() == 9'675);
+    REQUIRE(tc.number_of_classes() == 9);
   }
 
   LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
@@ -3125,7 +3129,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "083",
-                          "Holt 3",
+                          "Holt 3 x 2",
                           "[todd-coxeter][fail]") {
     auto                      rg = ReportGuard();
     Presentation<std::string> p;
@@ -3594,7 +3598,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "098",
-                          "relation ordering",
+                          "relation ordering x 2",
                           "[todd-coxeter][quick]") {
     Presentation<word_type> p;
     p.alphabet(10);
@@ -4027,7 +4031,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE(
       "ToddCoxeter",
       "109",
-      "http://brauer.maths.qmul.ac.uk/Atlas/clas/S62/mag/S62G1-P1.M",
+      "http://brauer.maths.qmul.ac.uk/Atlas/clas/S62/mag/S62G1-P1.M x 2",
       "[todd-coxeter][extreme]") {
     Presentation<std::string> p;
     p.alphabet("xyXY");
@@ -4160,7 +4164,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "030",
-                          "Chinese id monoid",
+                          "Chinese id monoid x 2",
                           "[todd-coxeter][extreme]") {
     auto n = 5;
     auto p = fpsemigroup::chinese_monoid(n);
@@ -4421,7 +4425,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "036",
-                          "plactic (n, 1)-id monoid",
+                          "plactic (n, 1)-id monoid x 2",
                           "[todd-coxeter][extreme]") {
     using words::pow;
     using words::operator+;

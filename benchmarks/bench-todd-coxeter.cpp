@@ -1,6 +1,6 @@
 //
 // libsemigroups - C++ library for semigroups and monoids
-// Copyright (C) 2020-21 James D. Mitchell
+// Copyright (C) 2020-24 James D. Mitchell
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -19,7 +19,6 @@
 #include <initializer_list>
 #define CATCH_CONFIG_ENABLE_BENCHMARKING
 
-#include <array>    // for array
 #include <cstddef>  // for size_t
 #include <cstdint>  // for uint64_t
 #include <string>   // for operator+, basic_string
@@ -59,12 +58,12 @@ namespace libsemigroups {
     }
 
     void preprocess_presentation(Presentation<word_type>& p) {
-      presentation::reduce_complements(p);
-      presentation::remove_trivial_rules(p);
-      presentation::remove_duplicate_rules(p);
+      // presentation::reduce_complements(p);
+      // presentation::remove_trivial_rules(p);
+      //  presentation::remove_duplicate_rules(p);
       presentation::remove_redundant_generators(p);
-      presentation::sort_each_rule(p);
-      presentation::sort_rules(p);
+      // presentation::sort_each_rule(p);
+      // presentation::sort_rules(p);
     }
 
     void emit_xml_presentation_tags(Presentation<word_type>& p,
