@@ -91,12 +91,15 @@ namespace libsemigroups {
           xml_tag("PresentationLength", "value", presentation::length(p)));
     }
 
+    constexpr auto DoNothing = [](ToddCoxeter&) {};
+
     template <typename Func2>
-    void benchmark(size_t                                 size,
-                   Presentation<word_type>&&              p,
-                   size_t                                 n,
-                   std::initializer_list<strategy> const& strategies,
-                   Func2&&                                init) {
+    void benchmark_todd_coxeter_single(
+        size_t                                 size,
+        Presentation<word_type>&&              p,
+        size_t                                 n,
+        std::initializer_list<strategy> const& strategies,
+        Func2&&                                init) {
       preprocess_presentation(p);
       emit_xml_presentation_tags(p, n, size);
       auto rg = ReportGuard(true);
@@ -127,6 +130,15 @@ namespace libsemigroups {
       }
     }
 
+    void benchmark_todd_coxeter_single(
+        size_t                                 size,
+        Presentation<word_type>&&              p,
+        size_t                                 n,
+        std::initializer_list<strategy> const& strategies = {strategy::hlt}) {
+      benchmark_todd_coxeter_single<decltype(DoNothing) const&>(
+          size, std::move(p), n, strategies, DoNothing);
+    }
+
     // .lookahead_next(20'000'000)
     // .lookahead_min(10'000'000);
     // while (!tc.finished()) {  // TODO reporting doesn't work
@@ -149,30 +161,30 @@ namespace libsemigroups {
                                      INIT)                     \
   TEST_CASE(PRESENTATION_NAME "(n), n = " #FIRST " .. " #LAST, \
             "[paper][" PRESENTATION_NAME "][000]") {           \
-    benchmark_todd_coxeter(SIZES,                              \
-                           CAPTION,                            \
-                           LABEL,                              \
-                           SYMBOL,                             \
-                           FIRST,                              \
-                           LAST,                               \
-                           PRESENTATION,                       \
-                           STRATEGIES,                         \
-                           INIT);                              \
+    benchmark_todd_coxeter_range(SIZES,                        \
+                                 CAPTION,                      \
+                                 LABEL,                        \
+                                 SYMBOL,                       \
+                                 FIRST,                        \
+                                 LAST,                         \
+                                 PRESENTATION,                 \
+                                 STRATEGIES,                   \
+                                 INIT);                        \
   }
 
     using sizes_type = std::initializer_list<uint64_t>;
 
     template <typename Func1, typename Func2>
-    void
-    benchmark_todd_coxeter(sizes_type const&                      ilist_sizes,
-                           std::string_view                       caption,
-                           std::string_view                       label,
-                           std::string_view                       symbol,
-                           size_t                                 first,
-                           size_t                                 last,
-                           Func1&&                                constructor,
-                           std::initializer_list<strategy> const& strategies,
-                           Func2&&                                init) {
+    void benchmark_todd_coxeter_range(
+        sizes_type const&                      ilist_sizes,
+        std::string_view                       caption,
+        std::string_view                       label,
+        std::string_view                       symbol,
+        size_t                                 first,
+        size_t                                 last,
+        Func1&&                                constructor,
+        std::initializer_list<strategy> const& strategies,
+        Func2&&                                init) {
       std::vector<uint64_t> sizes(ilist_sizes);
       auto                  rg = ReportGuard(false);
       fmt::print("{}", xml_tag("LatexCaption", "value", caption));
@@ -196,10 +208,7 @@ namespace libsemigroups {
       }
     }
 
-    constexpr auto DoNothing = [](ToddCoxeter&) {};
   }  // namespace
-
-  // using fpsemigroup::author;
 
   using fpsemigroup::dual_symmetric_inverse_monoid;
   using fpsemigroup::orientation_preserving_monoid;
@@ -240,7 +249,7 @@ namespace libsemigroups {
         "table-orient",
         "OP_n",
         3,
-        4,
+        9,
         orientation_preserving_monoid,
         "orientation_preserving_monoid",
         strategies,
@@ -252,36 +261,31 @@ namespace libsemigroups {
   // Approx 27s (2021 - MacBook Air M1 - 8GB RAM)
   TEST_CASE("orientation_preserving_monoid(n) (Arthur-Ruskuc), n = 10",
             "[paper][orientation_preserving_monoid][n=10][hlt]") {
-    benchmark(218'718,
-              orientation_preserving_monoid(9),
-              9,
-              {strategy::hlt},
-              DoNothing);
+    benchmark_todd_coxeter_single(
+        923'690, orientation_preserving_monoid(10), 10);
   }
 
-  // // 4m13s (2021 - MacBook Air M1 - 8GB RAM)
-  // TEST_CASE("orientation_preserving_monoid(n) (Arthur-Ruskuc), n = 11",
-  //           "[paper][orientation_preserving_monoid][n=11][hlt]") {
-  //   bench_hlt("orientation_preserving_monoid(11) (Arthur-Ruskuc)",
-  //             orientation_preserving_monoid(11),
-  //             3'879'766);
-  // }
+  // 4m13s (2021 - MacBook Air M1 - 8GB RAM)
+  TEST_CASE("orientation_preserving_monoid(n) (Arthur-Ruskuc), n = 11",
+            "[paper][orientation_preserving_monoid][n=11][hlt]") {
+    benchmark_todd_coxeter_single(
+        3'879'766, orientation_preserving_monoid(11), 11);
+  }
 
-  // // 54m35s (2021 - MacBook Air M1 - 8GB RAM)
-  // TEST_CASE("orientation_preserving_monoid(n) (Arthur-Ruskuc), n = 12",
-  //           "[paper][orientation_preserving_monoid][n=12][hlt]") {
-  //   bench_hlt("orientation_preserving_monoid(12) (Arthur-Ruskuc)",
-  //             orientation_preserving_monoid(12),
-  //             16'224'804);
-  // }
+  // 54m35s (2021 - MacBook Air M1 - 8GB RAM)
+  TEST_CASE("orientation_preserving_monoid(n) (Arthur-Ruskuc), n = 12",
+            "[paper][orientation_preserving_monoid][n=12][hlt]") {
+    benchmark_todd_coxeter_single(
+        16'224'804, orientation_preserving_monoid(12), 12);
+  }
 
-  // // 9h14m (2021 - MacBook Air M1 - 8GB RAM)
-  // TEST_CASE("orientation_preserving_monoid(n) (Arthur-Ruskuc), n = 13",
-  //           "[paper][orientation_preserving_monoid][n=13][hlt]") {
-  //   bench_hlt("orientation_preserving_monoid(13) (Arthur-Ruskuc)",
-  //             orientation_preserving_monoid(13),
-  //             67'603'744);
-  // }
+  // 9h14m (2021 - MacBook Air M1 - 8GB RAM)
+  TEST_CASE("orientation_preserving_monoid(n) (Arthur-Ruskuc), n = 13",
+            "[paper][orientation_preserving_monoid][n=13][hlt]") {
+    benchmark_todd_coxeter_single(
+        67'603'744, orientation_preserving_monoid(13), 13);
+  }
+
   ////////////////////////////////////////////////////////////////////////
   // 2. orientation_reversing_monoid
   ////////////////////////////////////////////////////////////////////////
@@ -319,44 +323,38 @@ namespace libsemigroups {
   }  // namespace orientation_reversing
 
   // Approx 9s (2021 - MacBook Air M1 - 8GB RAM)
-  //   TEST_CASE("orientation_reversing_monoid(9) - hlt",
-  //             "[paper][orientation_reversing_monoid][n=9][hlt]") {
-  //     bench_hlt("orientation_reversing_monoid(9)",
-  //               orientation_reversing_monoid(9),
-  //               434'835);
-  //   }
-  //
-  //   // Approx 90s (2021 - MacBook Air M1 - 8GB RAM)
-  //   TEST_CASE("orientation_reversing_monoid(10) - hlt",
-  //             "[paper][orientation_reversing_monoid][n=10][hlt]") {
-  //     bench_hlt("orientation_reversing_monoid(10)",
-  //               orientation_reversing_monoid(10),
-  //               1'843'320);
-  //   }
-  //
-  //   // ?? (2021 - MacBook Air M1 - 8GB RAM)
-  //   TEST_CASE("orientation_reversing_monoid(11) - hlt",
-  //             "[paper][orientation_reversing_monoid][n=11][hlt]") {
-  //     bench_hlt("orientation_reversing_monoid(11)",
-  //               orientation_reversing_monoid(11),
-  //               7'753'471);
-  //   }
-  //
-  //   // ?? (2021 - MacBook Air M1 - 8GB RAM)
-  //   TEST_CASE("orientation_reversing_monoid(12) - hlt",
-  //             "[paper][orientation_reversing_monoid][n=12][hlt]") {
-  //     bench_hlt("orientation_reversing_monoid(12)",
-  //               orientation_reversing_monoid(12),
-  //               32'440'884);
-  //   }
-  //
-  //   // ?? (2021 - MacBook Air M1 - 8GB RAM)
-  //   TEST_CASE("orientation_reversing_monoid(13) - hlt",
-  //             "[paper][orientation_reversing_monoid][n=13][hlt]") {
-  //     bench_hlt("orientation_reversing_monoid(13)",
-  //               orientation_reversing_monoid(13),
-  //               135'195'307);
-  //   }
+  TEST_CASE("orientation_reversing_monoid(9) - hlt",
+            "[paper][orientation_reversing_monoid][n=9][hlt]") {
+    benchmark_todd_coxeter_single(434'835, orientation_reversing_monoid(9), 9);
+  }
+
+  // Approx 90s (2021 - MacBook Air M1 - 8GB RAM)
+  TEST_CASE("orientation_reversing_monoid(10) - hlt",
+            "[paper][orientation_reversing_monoid][n=10][hlt]") {
+    benchmark_todd_coxeter_single(
+        1'843'320, orientation_reversing_monoid(10), 10);
+  }
+
+  // ?? (2021 - MacBook Air M1 - 8GB RAM)
+  TEST_CASE("orientation_reversing_monoid(11) - hlt",
+            "[paper][orientation_reversing_monoid][n=11][hlt]") {
+    benchmark_todd_coxeter_single(
+        7'753'471, orientation_reversing_monoid(11), 11);
+  }
+
+  // ?? (2021 - MacBook Air M1 - 8GB RAM)
+  TEST_CASE("orientation_reversing_monoid(12) - hlt",
+            "[paper][orientation_reversing_monoid][n=12][hlt]") {
+    benchmark_todd_coxeter_single(
+        32'440'884, orientation_reversing_monoid(12), 12);
+  }
+
+  // ?? (2021 - MacBook Air M1 - 8GB RAM)
+  TEST_CASE("orientation_reversing_monoid(13) - hlt",
+            "[paper][orientation_reversing_monoid][n=13][hlt]") {
+    benchmark_todd_coxeter_single(
+        135'195'307, orientation_reversing_monoid(13), 13);
+  }
 
   ////////////////////////////////////////////////////////////////////////
   // partition_monoid
@@ -380,40 +378,29 @@ namespace libsemigroups {
         DoNothing);
   }  // namespace partition
 
-  //   // Becomes impractical to do multiple runs after n = 7, so we switch
-  //   to
-  //   // doing single runs.
-  //   namespace {
-  //     void bench_partition(size_t n, size_t size) {
-  //       auto        rg = ReportGuard(true);
-  //       ToddCoxeter tc(congruence_kind::twosided);
-  //       setup(tc, 5, partition_monoid, n, author::East);
-  //       tc.lookahead(lookahead::hlt |
-  //       lookahead::partial)
-  //           .use_relations_in_extra(true)
-  //           .sort_generating_pairs()
-  //           .remove_duplicate_generating_pairs()
-  //           .next_lookahead(200'000)
-  //           .lookahead_growth_factor(2.5)
-  //           .reserve(15'000'000);
-  //       check_hlt(tc);
-  //       std::cout << tc.settings_string();
-  //       REQUIRE(tc.number_of_classes() == size);
-  //       std::cout << tc.stats_string();
-  //     }
-  //   }  // namespace
-  //
-  //   // Approx 31s (2021 - MacBook Air M1 - 8GB RAM)
-  //   TEST_CASE("partition_monoid(6) - hlt",
-  //             "[paper][partition_monoid][n=6][hlt]") {
-  //     bench_partition(6, 4'213'597);
-  //   }
-  //
-  //   // Approx 49m35s ??
-  //   TEST_CASE("partition_monoid(7) - hlt",
-  //             "[paper][partition_monoid][n=7][hlt]") {
-  //     bench_partition(7, 190'899'322);
-  //   }
+  // Becomes impractical to do multiple runs for n >= 7, so we switch to
+  // doing single runs.
+
+  auto init_func = [](ToddCoxeter& tc) {
+    tc.use_relations_in_extra(true)
+        .lookahead_next(200'000)
+        .lookahead_growth_factor(2.5);
+    // .reserve(15'000'000);
+  };
+
+  // Approx 31s (2021 - MacBook Air M1 - 8GB RAM)
+  TEST_CASE("partition_monoid(6) - hlt",
+            "[paper][partition_monoid][n=6][hlt]") {
+    benchmark_todd_coxeter_single(
+        4'213'597, partition_monoid(6), 6, {strategy::hlt}, init_func);
+  }
+
+  // Approx 49m35s ??
+  TEST_CASE("partition_monoid(7) - hlt",
+            "[paper][partition_monoid][n=7][hlt]") {
+    benchmark_todd_coxeter_single(
+        190'899'322, partition_monoid(7), 7, {strategy::hlt}, init_func);
+  }
 
   ////////////////////////////////////////////////////////////////////////
   // DualSymInv
@@ -822,39 +809,6 @@ namespace libsemigroups {
             REQUIRE(tc.number_of_classes() == sizes[n]);
           };
         }
-      }
-
-      // Becomes impractical to do multiple runs after n = 7, so we switch to
-      // doing single runs.
-      namespace {
-        void bench_partition(size_t n, size_t size) {
-          auto        rg = ReportGuard(true);
-          ToddCoxeter tc(congruence_kind::twosided);
-          setup(tc, 5, partition_monoid, n, author::East);
-          tc.lookahead(lookahead::hlt | lookahead::partial)
-              .use_relations_in_extra(true)
-              .sort_generating_pairs()
-              .remove_duplicate_generating_pairs()
-              .next_lookahead(200'000)
-              .lookahead_growth_factor(2.5)
-              .reserve(15'000'000);
-          check_hlt(tc);
-          std::cout << tc.settings_string();
-          REQUIRE(tc.number_of_classes() == size);
-          std::cout << tc.stats_string();
-        }
-      }  // namespace
-
-      // Approx 31s (2021 - MacBook Air M1 - 8GB RAM)
-      TEST_CASE("partition_monoid(6) - hlt",
-                "[paper][partition_monoid][n=6][hlt]") {
-        bench_partition(6, 4'213'597);
-      }
-
-      // Approx 49m35s ??
-      TEST_CASE("partition_monoid(7) - hlt",
-                "[paper][partition_monoid][n=7][hlt]") {
-        bench_partition(7, 190'899'322);
       }
 
       ////////////////////////////////////////////////////////////////////////
