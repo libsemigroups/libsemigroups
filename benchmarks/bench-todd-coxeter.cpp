@@ -426,44 +426,17 @@ namespace libsemigroups {
         DoNothing);
   }  // namespace dual_sym_inv
 
-  //   // Becomes impractical to do multiple runs after n = 6, so we switch to
-  //   // doing single runs.
-  //   namespace {
-  //     template <typename Func>
-  //     void bench_sym_inv(size_t n, size_t size, Func&& foo) {
-  //       auto        rg = ReportGuard(true);
-  //       ToddCoxeter tc(congruence_kind::twosided);
-  //       setup(tc,
-  //             n + 1,
-  //             dual_symmetric_inverse_monoid,
-  //             n,
-  //             author::Easdown + author::East + author::FitzGerald);
-  //       foo(tc);
-  //       tc.random_interval(std::chrono::seconds(15));
-  //       std::cout << tc.settings_string();
-  //       REQUIRE(tc.number_of_classes() == size);
-  //       std::cout << tc.stats_string();
-  //     }
-  //   }  // namespace
+  // Becomes impractical to do multiple runs for n >= 7, so we switch to
+  // doing single runs.
 
-  //   TEST_CASE("SymInv(7) - Felsch (default)",
-  //   "[paper][SymInv][n=7][Felsch]")
-  //  { bench_sym_inv(7, 6'166'105, check_felsch);
-  //   }
-
-  //   TEST_CASE("SymInv(7) - HLT (default)", "[paper][SymInv][n=7][HLT]") {
-  //     bench_sym_inv(7, 6'166'105, check_hlt);
-  //   }
-
-  //   TEST_CASE("SymInv(7) - Rc (+ full HLT lookahead)",
-  //             "[paper][SymInv][n=7][Rc]") {
-  //     bench_sym_inv(7, 6'166'105, check_Rc_full_style);
-  //   }
-
-  //   TEST_CASE("SymInv(7) - random strategy",
-  //   "[paper][SymInv][n=7][random]")
-  //  { bench_sym_inv(7, 6'166'105, check_random);
-  //   }
+  TEST_CASE("dual_symmetric_inverse_monoid(7)",
+            "[paper][dual_symmetric_inverse_monoid][n=7][Felsch]") {
+    benchmark_todd_coxeter_single(
+        6'166'105,
+        dual_symmetric_inverse_monoid(7),
+        7,
+        {strategy::hlt, strategy::felsch, strategy::Rc});
+  }
 
   ////////////////////////////////////////////////////////////////////////
   // uniform_block_bijection_monoid
@@ -481,7 +454,7 @@ namespace libsemigroups {
         "table-uniform",
         "FI_n^*",
         3,
-        4,
+        7,
         [](size_t n) { return uniform_block_bijection_monoid(n); },
         "uniform_block_bijection_monoid",
         strategies,
@@ -492,43 +465,18 @@ namespace libsemigroups {
         });
   }  // namespace uniform_block_bijection
 
-  // Becomes impractical to do multiple runs after n = 7, so we switch to
+  // Becomes impractical to do multiple runs for n >= 7, so we switch to
   // doing single runs.
-  // namespace {
-  //   template <typename Func>
-  //   void bench_uniform_block_bijection(size_t n, size_t size, Func&& foo) {
-  //     auto        rg = ReportGuard(true);
-  //     ToddCoxeter tc(congruence_kind::twosided);
-  //     setup(tc, n + 1, uniform_block_bijection_monoid, n,
-  //     author::FitzGerald); foo(tc); std::cout << tc.settings_string();
-  //     REQUIRE(tc.number_of_classes() == size);
-  //     std::cout << tc.stats_string();
-  //   }
-  // }  // namespace
 
-  // // Approx 1m15s (2021 - MacBook Air M1 - 8GB RAM)
-  // TEST_CASE("uniform_block_bijection_monoid(8) - Felsch (default)",
-  //           "[paper][uniform_block_bijection_monoid][n=8][Felsch]") {
-  //   bench_uniform_block_bijection(8, 9'934'563, check_felsch);
-  // }
-
-  // // Approx 1m39s (2021 - MacBook Air M1 - 8GB RAM)
-  // TEST_CASE("uniform_block_bijection_monoid(8) - HLT (default)",
-  //           "[paper][uniform_block_bijection_monoid][n=8][hlt]") {
-  //   bench_uniform_block_bijection(8, 9'934'563, check_hlt);
-  // }
-
-  // // Approx 1m46s (2021 - MacBook Air M1 - 8GB RAM)
-  // TEST_CASE("uniform_block_bijection_monoid(8) - Rc + full lookahead",
-  //           "[paper][uniform_block_bijection_monoid][n=8][Rc]") {
-  //   bench_uniform_block_bijection(8, 9'934'563, check_Rc_full_style);
-  // }
-
-  // // Approx 2m (2021 - MacBook Air M1 - 8GB RAM)
-  // TEST_CASE("uniform_block_bijection_monoid(8) - random",
-  //           "[paper][uniform_block_bijection_monoid][n=8][random]") {
-  //   bench_uniform_block_bijection(8, 9'934'563, check_random);
-  // }
+  // Approx 4m39s (2021 - MacBook Air M1 - 8GB RAM)
+  TEST_CASE("uniform_block_bijection_monoid(8)",
+            "[paper][uniform_block_bijection_monoid][n=8]") {
+    benchmark_todd_coxeter_single(
+        9'934'563,
+        uniform_block_bijection_monoid(8),
+        8,
+        {strategy::hlt, strategy::felsch, strategy::Rc});
+  }
 
   // |FI_9 ^ *| = 277'006'192 which would require too much memory at present.
 
@@ -571,39 +519,27 @@ namespace libsemigroups {
         strategies,
         DoNothing);
   }  // namespace temperley_lieb
-     //
-     // Becomes impractical to do multiple runs after n = 14, so we switch to
-     // doing single runs.
-     // namespace {
-     //
-     //  void bench_temperley_lieb(size_t n, size_t size) {
-     //    auto        rg = ReportGuard(true);
-     //    ToddCoxeter tc(congruence_kind::twosided);
-     //    setup(tc, n - 1, temperley_lieb_monoid, n);
-     //    check_hlt(tc);
-     //    std::cout << tc.settings_string();
-     //    REQUIRE(tc.number_of_classes() == size);
-     //    std::cout << tc.stats_string();
-     //  }
-     //}  // namespace
 
-  //// Approx. ? (2021 - MacBook Air M1 - 8GB RAM)
-  // TEST_CASE("temperley_lieb_monoid(15) - hlt",
-  //           "[paper][temperley_lieb_monoid][n=15][hlt]") {
-  //   bench_temperley_lieb(15, 9'694'845);
-  // }
+  // Becomes impractical to do multiple runs after n >= 15, so we switch to
+  // doing single runs.
 
-  //// Approx. ? (2021 - MacBook Air M1 - 8GB RAM)
-  // TEST_CASE("temperley_lieb_monoid(16) - hlt",
-  //           "[paper][temperley_lieb_monoid][n=16][hlt]") {
-  //   bench_temperley_lieb(15, 35'357'670);
-  // }
+  // Approx. 18s (2021 - MacBook Air M1 - 8GB RAM)
+  TEST_CASE("temperley_lieb_monoid(15) - hlt",
+            "[paper][temperley_lieb_monoid][n=15][hlt]") {
+    benchmark_todd_coxeter_single(9'694'845, temperley_lieb_monoid(15), 15);
+  }
 
-  //// Approx. ? (2021 - MacBook Air M1 - 8GB RAM)
-  // TEST_CASE("temperley_lieb_monoid(17) - hlt",
-  //           "[paper][temperley_lieb_monoid][n=17][hlt]") {
-  //   bench_temperley_lieb(15, 129'644'790);
-  // }
+  // Approx. 82s (2021 - MacBook Air M1 - 8GB RAM)
+  TEST_CASE("temperley_lieb_monoid(16) - hlt",
+            "[paper][temperley_lieb_monoid][n=16][hlt]") {
+    benchmark_todd_coxeter_single(35'357'670, temperley_lieb_monoid(16), 16);
+  }
+
+  // Approx. ? (2021 - MacBook Air M1 - 8GB RAM)
+  TEST_CASE("temperley_lieb_monoid(17) - hlt",
+            "[paper][temperley_lieb_monoid][n=17][hlt]") {
+    benchmark_todd_coxeter_single(129'644'790, temperley_lieb_monoid(17), 17);
+  }
 
   ////////////////////////////////////////////////////////////////////////
   // singular_brauer_monoid
@@ -912,7 +848,7 @@ namespace libsemigroups {
     // Becomes impractical to do multiple runs after n = 14, so we switch to
     // doing single runs.
     namespace {
-      void bench_temperley_lieb(size_t n, size_t size) {
+      void bench_todd_coxeter_single(size_t n, size_t size) {
         auto        rg = ReportGuard(true);
         ToddCoxeter tc(congruence_kind::twosided);
         setup(tc, n - 1, temperley_lieb_monoid, n);
@@ -926,19 +862,19 @@ namespace libsemigroups {
     // Approx. ? (2021 - MacBook Air M1 - 8GB RAM)
     TEST_CASE("temperley_lieb_monoid(15) - hlt",
               "[paper][temperley_lieb_monoid][n=15][hlt]") {
-      bench_temperley_lieb(15, 9'694'845);
+      bench_todd_coxeter_single(15, 9'694'845);
     }
 
     // Approx. ? (2021 - MacBook Air M1 - 8GB RAM)
     TEST_CASE("temperley_lieb_monoid(16) - hlt",
               "[paper][temperley_lieb_monoid][n=16][hlt]") {
-      bench_temperley_lieb(15, 35'357'670);
+      bench_todd_coxeter_single(15, 35'357'670);
     }
 
     // Approx. ? (2021 - MacBook Air M1 - 8GB RAM)
     TEST_CASE("temperley_lieb_monoid(17) - hlt",
               "[paper][temperley_lieb_monoid][n=17][hlt]") {
-      bench_temperley_lieb(15, 129'644'790);
+      bench_todd_coxeter_single(15, 129'644'790);
     }
 
     namespace fpsemigroup {
