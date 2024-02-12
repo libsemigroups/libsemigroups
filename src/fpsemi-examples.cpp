@@ -424,6 +424,7 @@ namespace libsemigroups {
       }
       auto p = plactic_monoid(n);
       presentation::add_idempotent_rules_no_checks(p, range(n));
+      p.contains_empty_word(true);
       return p;
     }
 

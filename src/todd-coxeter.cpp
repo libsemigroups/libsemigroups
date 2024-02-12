@@ -134,20 +134,18 @@ namespace libsemigroups {
       // but didn't seem to be very useful).
       process_coincidences<DoNotRegisterDefs>();
       current = NodeManager<node_type>::next_active_node(current);
-      // if (stop_early && t > std::chrono::seconds(1)) {
-      // TODO setting for this
-      //  size_t killed_last_second
-      //      = number_of_nodes_killed() - stats().prev_nodes_killed;
-      //  if (killed_last_second < number_of_nodes_active() / 100) {
-      //    report_default("ToddCoxeter: too few nodes killed, expected >= "
-      //                   "{}, found {}, aborting lookahead . . .\n",
-      //                   number_of_nodes_active() / 100
-      //                   killed_last_second);
-      //    report_no_prefix("{:-<93}\n", "");
-      //    break;
-      //  }
-      // report_active_nodes();
-      //}
+      if (stop_early && t > std::chrono::seconds(1)) {
+        size_t killed_last_second
+            = number_of_nodes_killed() - stats().prev_nodes_killed;
+        if (killed_last_second == 0) {  // TODO setting for this
+          report_default("ToddCoxeter: too few nodes killed, expected >= "
+                         "{}, found {}, aborting lookahead . . .\n",
+                         0,
+                         killed_last_second);
+          report_no_prefix("{:-<93}\n", "");
+          break;
+        }
+      }
     }
     return NodeManager<node_type>::number_of_nodes_killed()
            - old_number_of_killed;
