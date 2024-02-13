@@ -166,10 +166,10 @@ namespace libsemigroups {
     };
 
     // TODO remove const?
-    std::list<Rule const*>  _active_rules;
-    std::array<iterator, 2> _cursors;
-    std::list<Rule*>        _inactive_rules;
-    mutable Stats           _stats;  // REVIEW is this allowed to be mutable?
+    mutable std::list<Rule const*> _active_rules;
+    std::array<iterator, 2>        _cursors;
+    mutable std::list<Rule*>       _inactive_rules;
+    mutable Stats                  _stats;
 
    public:
     Rules() = default;
@@ -228,7 +228,7 @@ namespace libsemigroups {
       _active_rules.push_back(rule);
     }
 
-    void add_inactive_rule(Rule* rule) {
+    void add_inactive_rule(Rule* rule) const {
       _inactive_rules.push_back(rule);
     }
 
@@ -242,17 +242,17 @@ namespace libsemigroups {
     // add_active_rule seems a bit dangerous
     void add_rule(Rule* rule);
 
-    [[nodiscard]] Rule* copy_rule(Rule const* rule);
+    [[nodiscard]] Rule* copy_rule(Rule const* rule) const;
 
     //  private:
-    [[nodiscard]] Rule* new_rule();
+    [[nodiscard]] Rule* new_rule() const;
 
    protected:
     template <typename Iterator>
     [[nodiscard]] Rule* new_rule(Iterator begin_lhs,
                                  Iterator end_lhs,
                                  Iterator begin_rhs,
-                                 Iterator end_rhs) {
+                                 Iterator end_rhs) const {
       Rule* rule = new_rule();
       rule->lhs()->assign(begin_lhs, end_lhs);
       rule->rhs()->assign(begin_rhs, end_rhs);
@@ -265,8 +265,8 @@ namespace libsemigroups {
     std::unordered_set<internal_char_type> _alphabet;
     mutable std::atomic<bool>              _cached_confluent;
     mutable std::atomic<bool>              _confluence_known;
-    size_t                                 _max_stack_depth;
-    std::stack<Rule*>                      _pending_rules;
+    mutable size_t                         _max_stack_depth;
+    mutable std::stack<Rule*>              _pending_rules;
     std::atomic<bool>                      _requires_alphabet;
 
     using alphabet_citerator
@@ -329,11 +329,11 @@ namespace libsemigroups {
 
     bool add_pending_rule(Rule* rule);
 
-    bool process_pending_rules();
+    bool process_pending_rules() const;
 
-    void reduce();
+    void reduce() const;
 
-    void reduce_rhs();
+    void reduce_rhs() const;
 
     void rewrite(Rule* rule) const {
       rewrite(*rule->lhs());
@@ -346,7 +346,8 @@ namespace libsemigroups {
 
     virtual void add_rule(Rule* rule) = 0;
 
-    virtual Rules::iterator make_active_rule_pending(Rules::iterator it) = 0;
+    virtual Rules::iterator make_active_rule_pending(Rules::iterator it) const
+        = 0;
 
     size_t number_of_pending_rules() const noexcept {
       return _pending_rules.size();
@@ -384,7 +385,7 @@ namespace libsemigroups {
   };
 
   class RewriteFromLeft : public RewriterBase {
-    std::set<RuleLookup> _set_rules;
+    mutable std::set<RuleLookup> _set_rules;
 
    public:
     using RewriterBase::cached_confluent;
@@ -412,7 +413,7 @@ namespace libsemigroups {
    private:
     void rewrite(Rule* rule) const;
 
-    iterator make_active_rule_pending(iterator);
+    iterator make_active_rule_pending(iterator) const;
 
     void report_from_confluent(
         std::atomic_uint64_t const&,
@@ -424,8 +425,8 @@ namespace libsemigroups {
   class RewriteTrie : public RewriterBase {
     using index_type = AhoCorasick::index_type;
 
-    std::map<index_type, Rule*> _rules;
-    AhoCorasick                 _trie;
+    mutable std::map<index_type, Rule*> _rules;
+    mutable AhoCorasick                 _trie;
 
    public:
     using RewriterBase::cached_confluent;
@@ -451,11 +452,11 @@ namespace libsemigroups {
       return _rules.end();
     }
 
-    void all_overlaps();
+    void all_overlaps() const;
 
-    void rule_overlaps(index_type node);
+    void rule_overlaps(index_type node) const;
 
-    void add_overlaps(Rule* rule, index_type node, size_t overlap_length);
+    void add_overlaps(Rule* rule, index_type node, size_t overlap_length) const;
 
     void rewrite(internal_string_type& u) const;
 
@@ -487,7 +488,7 @@ namespace libsemigroups {
       _rules.emplace(node, rule);
     }
 
-    Rules::iterator make_active_rule_pending(Rules::iterator it);
+    Rules::iterator make_active_rule_pending(Rules::iterator it) const;
   };
 }  // namespace libsemigroups
 #endif  // LIBSEMIGROUPS_REWRITERS_HPP_
