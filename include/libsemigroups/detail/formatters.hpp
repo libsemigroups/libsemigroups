@@ -38,26 +38,6 @@ struct fmt::formatter<T, Char, std::enable_if_t<std::is_enum_v<T>>>
   }
 };
 
-template <typename T, typename Char>
-struct fmt::formatter<std::vector<T>, Char> : fmt::formatter<std::string> {
-  template <typename FormatContext>
-  auto format(std::vector<T> const& v, FormatContext& ctx) const {
-    return formatter<string_view>::format(libsemigroups::detail::to_string(v),
-                                          ctx);
-  }
-};
-
-template <typename T, size_t N, typename Char>
-struct fmt::formatter<libsemigroups::detail::StaticVector1<T, N>, Char>
-    : fmt::formatter<std::string> {
-  template <typename FormatContext>
-  auto format(libsemigroups::detail::StaticVector1<T, N> const& v,
-              FormatContext&                                    ctx) const {
-    return formatter<string_view>::format(libsemigroups::detail::to_string(v),
-                                          ctx);
-  }
-};
-
 template <>
 struct fmt::formatter<libsemigroups::detail::Timer>
     : fmt::formatter<std::string> {
@@ -66,4 +46,5 @@ struct fmt::formatter<libsemigroups::detail::Timer>
     return formatter<string_view>::format(v.string(), ctx);
   }
 };
+
 #endif  // LIBSEMIGROUPS_DETAIL_FORMATTERS_HPP_

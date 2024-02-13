@@ -16,6 +16,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
+#include <type_traits>
 #define CATCH_CONFIG_ENABLE_PAIR_STRINGMAKER
 
 #include <algorithm>      // for all_of, equal, fill, sort
@@ -2077,6 +2078,102 @@ namespace libsemigroups {
     REQUIRE(found == expected);
     for (size_t i = 0; i != found.size(); ++i) {
       REQUIRE(std::make_pair(found[i], i) == std::make_pair(expected[i], i));
+    }
+  }
+
+  namespace {
+    std::string chomp(std::string_view what) {
+      auto suffix
+          = std::string_view(what.begin() + what.find(": ") + 2, what.size());
+      std::string result;
+      for (auto& c : suffix) {
+        if (c != '\n') {
+          result += c;
+        }
+      }
+      return result;
+    }
+  }  // namespace
+
+#define REQUIRE_EXCEPTION_MSG(code, expected)                  \
+  REQUIRE_THROWS_AS(code, LibsemigroupsException);             \
+  try {                                                        \
+    code;                                                      \
+  } catch (LibsemigroupsException const& e) {                  \
+    REQUIRE(chomp(e.what()).c_str() == std::string(expected)); \
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Presentation",
+                          "021",
+                          "meaningful exception messages",
+                          "[quick][presentation]") {
+    using literals::operator""_w;
+    auto rg = ReportGuard(false);
+
+    {
+      Presentation<std::string> p;
+      p.alphabet("ab");
+      REQUIRE_EXCEPTION_MSG(p.validate_letter('c'),
+                            "invalid letter \'c\', valid letters are \"ab\"");
+      REQUIRE_EXCEPTION_MSG(p.validate_letter(-109),
+                            "invalid letter (char with value) -109, valid "
+                            "letters are \"ab\" == [97, 98]");
+      p.alphabet({0, 1});
+      REQUIRE_EXCEPTION_MSG(
+          p.validate_letter('c'),
+          "invalid letter 'c', valid letters are (char values) [0, 1]");
+      if constexpr (std::is_unsigned_v<char>) {
+        REQUIRE_EXCEPTION_MSG(p.validate_letter(148),
+                              "invalid letter (char with value) 148, valid "
+                              "letters are (char values) [0, 1]");
+      } else {
+        REQUIRE_EXCEPTION_MSG(p.validate_letter(-109),
+                              "invalid letter (char with value) -109, valid "
+                              "letters are (char values) [0, 1]");
+      }
+      REQUIRE_EXCEPTION_MSG(p.alphabet(256),
+                            "expected a value in the range [0, 256) found 256");
+      REQUIRE_EXCEPTION_MSG(p.alphabet("aba"),
+                            "invalid alphabet \"aba\", duplicate letter 'a'!");
+      REQUIRE_EXCEPTION_MSG(p.alphabet({0, 1, 0}),
+                            "invalid alphabet (char values) [0, 1, 0], "
+                            "duplicate letter (char with value) 0!");
+      REQUIRE_EXCEPTION_MSG(
+          presentation::add_inverse_rules(p, {0, 0}),
+          "invalid inverses, the letter (char with value) 0 is duplicated!");
+      p.alphabet(3);
+      // TODO this one could be better
+      REQUIRE_EXCEPTION_MSG(presentation::add_inverse_rules(p, {1, 2, 0}),
+                            "invalid inverses, (char with value) 0 ^ -1 = "
+                            "(char with value) 1 but (char with value) 1 ^ -1 "
+                            "= (char with value) 2");
+      p.alphabet("abc");
+      REQUIRE_EXCEPTION_MSG(presentation::add_inverse_rules(p, "aab"),
+                            "invalid inverses, the letter 'a' is duplicated!");
+      REQUIRE_EXCEPTION_MSG(
+          presentation::add_inverse_rules(p, "bca"),
+          "invalid inverses, 'a' ^ -1 = 'b' but 'b' ^ -1 = 'c'");
+    }
+    {
+      Presentation<std::vector<uint8_t>> p;
+      p.alphabet(2);
+      p.contains_empty_word(true);
+      REQUIRE_EXCEPTION_MSG(p.validate_letter(99),
+                            "invalid letter 99, valid letters are [0, 1]");
+      REQUIRE_EXCEPTION_MSG(p.validate_letter(109),
+                            "invalid letter 109, valid letters are [0, 1]");
+      REQUIRE_EXCEPTION_MSG(p.alphabet(256),
+                            "expected a value in the range [0, 256) found 256");
+      REQUIRE(p.alphabet().size() == 2);
+      REQUIRE_EXCEPTION_MSG(std::ignore = p.letter(3),
+                            "expected a value in [0, 2), found 3");
+      REQUIRE_EXCEPTION_MSG(p.alphabet({0, 1, 0}),
+                            "invalid alphabet [0, 1, 0], duplicate letter 0!");
+      REQUIRE_EXCEPTION_MSG(presentation::add_inverse_rules(p, {0, 0}),
+                            "invalid inverses, the letter 0 is duplicated!");
+      p.alphabet(3);
+      REQUIRE_EXCEPTION_MSG(presentation::add_inverse_rules(p, {1, 2, 0}),
+                            "invalid inverses, 0 ^ -1 = 1 but 1 ^ -1 = 2");
     }
   }
 }  // namespace libsemigroups

@@ -62,8 +62,4 @@ namespace libsemigroups {
     return result;
   }
 
-  std::ostream& operator<<(std::ostream& os, Forest const& f) {
-    os << "{" << f.parents() << ", " << f.labels() << "}";
-    return os;
-  }
 }  // namespace libsemigroups

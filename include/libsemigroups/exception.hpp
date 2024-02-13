@@ -24,6 +24,7 @@
 #include <string>     // for std::string
 
 #include "detail/fmt.hpp"
+#include "detail/formatters.hpp"
 
 namespace libsemigroups {
   //! Exception class deriving from std::runtime_error.

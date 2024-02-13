@@ -26,10 +26,13 @@
 #pragma GCC diagnostic ignored "-Wswitch-default"
 #pragma GCC diagnostic ignored "-Wswitch-enum"
 #pragma GCC diagnostic ignored "-Winline"
+
 #include <fmt/chrono.h>
 #include <fmt/color.h>
 #include <fmt/compile.h>
 #include <fmt/format.h>
 #include <fmt/printf.h>
+#include <fmt/ranges.h>
+
 #pragma GCC diagnostic pop
 #endif  // LIBSEMIGROUPS_DETAIL_FMT_HPP_

@@ -19,6 +19,7 @@
 // This file contains the implementation of a class template for semigroup or
 // monoid presentations.
 
+#include "libsemigroups/exception.hpp"
 namespace libsemigroups {
   namespace detail {
     template <typename Word>
@@ -35,6 +36,15 @@ namespace libsemigroups {
         LIBSEMIGROUPS_EXCEPTION("expected iterators at even distance, found {}",
                                 std::distance(first, last));
       }
+    }
+
+    std::string to_printable(char c);
+    bool        isprint(std::string const& alphabet);
+    std::string to_printable(std::string const& alphabet);
+
+    template <typename Thing>
+    std::string to_printable(Thing thing) {
+      return fmt::format("{}", thing);
     }
   }  // namespace detail
 
@@ -57,7 +67,7 @@ namespace libsemigroups {
                 - std::numeric_limits<letter_type>::min()) {
       LIBSEMIGROUPS_EXCEPTION("expected a value in the range [0, {}) found {}",
                               std::numeric_limits<letter_type>::max()
-                                  - std::numeric_limits<letter_type>::min(),
+                                  - std::numeric_limits<letter_type>::min() + 1,
                               n);
     }
     word_type lphbt(n, 0);
@@ -117,32 +127,29 @@ namespace libsemigroups {
   template <typename Word>
   typename Presentation<Word>::size_type
   Presentation<Word>::index(letter_type val) const {
-    auto it = _alphabet_map.find(val);
-    if (it == _alphabet_map.cend()) {
-      LIBSEMIGROUPS_EXCEPTION("letter does not belong to alphabet, expected "
-                              "value in {}, found {}",
-                              _alphabet,
-                              val);
-    }
-    return it->second;
+    validate_letter(val);
+    return _alphabet_map.find(val)->second;
+    // TODO index_no_checks
   }
 
+  // TODO use to_printable
   template <typename Word>
   void Presentation<Word>::validate_letter(
       typename Presentation<Word>::letter_type c) const {
     if (_alphabet.empty()) {
       LIBSEMIGROUPS_EXCEPTION("no alphabet has been defined");
     } else if (_alphabet_map.find(c) == _alphabet_map.cend()) {
+      auto msg = fmt::format("invalid letter {}, valid letters are {}",
+                             detail::to_printable(c),
+                             detail::to_printable(_alphabet));
       if constexpr (std::is_same_v<typename Presentation<Word>::letter_type,
                                    char>) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "invalid letter \"{}\", valid letters are \"{}\"",
-            (std::isprint(c) ? c : static_cast<size_t>(c)),
-            _alphabet);
-      } else {
-        LIBSEMIGROUPS_EXCEPTION(
-            "invalid letter {}, valid letters are {}", c, _alphabet);
+        if (!std::isprint(c) && detail::isprint(_alphabet)) {
+          msg += fmt::format(
+              " == {}", std::vector<int>(_alphabet.begin(), _alphabet.end()));
+        }
       }
+      LIBSEMIGROUPS_EXCEPTION(msg);
     }
   }
 
@@ -173,8 +180,9 @@ namespace libsemigroups {
       // FIXME this doesn't compile when using a size_type to initialise the
       // alphabet (rather than a word), see 045
       if (!it.second) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "invalid alphabet {}, duplicate letter {}!", _alphabet, letter);
+        LIBSEMIGROUPS_EXCEPTION("invalid alphabet {}, duplicate letter {}!",
+                                detail::to_printable(_alphabet),
+                                detail::to_printable(letter));
       }
     }
   }
@@ -203,8 +211,8 @@ namespace libsemigroups {
             p.alphabet().size(),
             vals.size());
       }
-      // Validate word after checking the size so that we get a more meaningful
-      // exception message
+      // Validate word after checking the size so that we get a more
+      // meaningful exception message
       p.validate_word(vals.begin(), vals.end());
 
       Word cpy = vals;
@@ -212,7 +220,8 @@ namespace libsemigroups {
       for (auto it = cpy.cbegin(); it < cpy.cend() - 1; ++it) {
         if (*it == *(it + 1)) {
           LIBSEMIGROUPS_EXCEPTION(
-              "invalid inverses, they contain the duplicate letter {}", *it);
+              "invalid inverses, the letter {} is duplicated!",
+              detail::to_printable(*it));
         }
       }
 
@@ -223,10 +232,10 @@ namespace libsemigroups {
             if (vals[j] != p.letter_no_checks(i)) {
               LIBSEMIGROUPS_EXCEPTION(
                   "invalid inverses, {} ^ -1 = {} but {} ^ -1 = {}",
-                  p.letter_no_checks(i),
-                  vals[i],
-                  vals[i],
-                  vals[j]);
+                  detail::to_printable(p.letter_no_checks(i)),
+                  detail::to_printable(vals[i]),
+                  detail::to_printable(vals[i]),
+                  detail::to_printable(vals[j]));
             }
             break;
           }
@@ -273,9 +282,9 @@ namespace libsemigroups {
         if (p.letter_no_checks(i) == id && vals[i] != id) {
           LIBSEMIGROUPS_EXCEPTION(
               "invalid inverses, the identity is {}, but {} ^ -1 != {}",
-              p.letter_no_checks(i),
-              p.letter_no_checks(i),
-              vals[i]);
+              detail::to_printable(p.letter_no_checks(i)),
+              detail::to_printable(p.letter_no_checks(i)),
+              detail::to_printable(vals[i]));
         }
       }
       Word rhs = (id == UNDEFINED ? Word({}) : Word({id}));
@@ -321,9 +330,9 @@ namespace libsemigroups {
       }
     }
 
-    // TODO this appears to be non-deterministic (different results with g++-11
-    // than with clang++). Not sure that this is a problem, but this should be
-    // recorded in the doc.
+    // TODO this appears to be non-deterministic (different results with
+    // g++-11 than with clang++). Not sure that this is a problem, but this
+    // should be recorded in the doc.
     template <typename Word>
     void reduce_complements(Presentation<Word>& p) {
       // the first loop below depends on p.rules being of even length
@@ -381,8 +390,8 @@ namespace libsemigroups {
     bool sort_each_rule(Presentation<Word>& p, Compare cmp) {
       bool result = false;
       detail::validate_rules_length(p);
-      // Sort each relation so that the lhs is greater than the rhs according
-      // to func.
+      // Sort each relation so that the lhs is greater than the rhs
+      // according to func.
       for (auto it = p.rules.begin(); it < p.rules.end(); it += 2) {
         if (cmp(*it, *(it + 1))) {
           std::swap(*it, *(it + 1));
@@ -418,7 +427,8 @@ namespace libsemigroups {
                           chain(rules[2 * j], rules[2 * j + 1]));
              })
              | to_vector());
-      // Apply the permutation (adapted from detail/stl.hpp:apply_permutation)
+      // Apply the permutation (adapted from
+      // detail/stl.hpp:apply_permutation)
       for (size_t i = 0; i < n; ++i) {
         size_t current = i;
         while (i != perm[current]) {
@@ -488,10 +498,10 @@ namespace libsemigroups {
         return;
       }
       LIBSEMIGROUPS_EXCEPTION(
-          "the 2nd argument \"{}\" already belongs to the alphabet \"{}\", "
+          "the 2nd argument {} already belongs to the alphabet {}, "
           "expected an unused letter",
-          (std::isprint(x) ? x : static_cast<size_t>(x)),
-          p.alphabet());
+          to_printable(x),
+          to_printable(p.alphabet()));
     }
 
     template <typename Word, typename Iterator, typename>
@@ -851,7 +861,7 @@ namespace libsemigroups {
     void add_commutes_rules_no_checks(Presentation<Word>& p,
                                       Word const&         letters1,
                                       Word const&         letters2) {
-      using words::      operator+;
+      using words::operator+;
       size_t const       m = letters1.size();
       size_t const       n = letters2.size();
       Presentation<Word> q;

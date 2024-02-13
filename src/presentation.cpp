@@ -32,6 +32,32 @@
 #include "libsemigroups/detail/fmt.hpp"    // for format
 
 namespace libsemigroups {
+  namespace detail {
+
+    bool isprint(std::string const& alphabet) {
+      return std::all_of(alphabet.cbegin(), alphabet.cend(), [](auto c) {
+        return std::isprint(c);
+      });
+    }
+
+    std::string to_printable(char c) {
+      if (std::isprint(c)) {
+        return fmt::format("\'{:c}\'", c);
+      } else {
+        return fmt::format("(char with value) {}", static_cast<int>(c));
+      }
+    }
+
+    std::string to_printable(std::string const& alphabet) {
+      if (isprint(alphabet)) {
+        return fmt::format("\"{}\"", alphabet);
+      } else {
+        return fmt::format("(char values) {}",
+                           std::vector<int>(alphabet.begin(), alphabet.end()));
+      }
+    }
+  }  // namespace detail
+
   namespace presentation {
 
     typename Presentation<std::string>::letter_type

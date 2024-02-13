@@ -313,8 +313,6 @@ namespace libsemigroups {
   [[nodiscard]] Forest to_forest(std::initializer_list<size_t> parent,
                                  std::initializer_list<size_t> edge_label);
 
-  std::ostream& operator<<(std::ostream& os, Forest const& f);
-
   // namespace forest {
 
   //! Returns a \ref normal_form_iterator pointing at the first normal
@@ -352,5 +350,14 @@ namespace libsemigroups {
   //}  // namespace forest
 
 }  // namespace libsemigroups
+
+template <>
+struct fmt::formatter<libsemigroups::Forest> : fmt::formatter<std::string> {
+  template <typename FormatContext>
+  auto format(libsemigroups::Forest const& f, FormatContext& ctx) const {
+    return formatter<string_view>::format(
+        fmt::format("{{{}, {}}}", f.parents(), f.labels()), ctx);
+  }
+};
 
 #endif  // LIBSEMIGROUPS_FOREST_HPP_

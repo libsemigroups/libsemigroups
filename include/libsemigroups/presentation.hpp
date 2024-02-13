@@ -40,22 +40,23 @@
 #include <utility>           // for move, pair
 #include <vector>            // for vector, operator!=
 
-#include "ranges.hpp"  // for seq, operator|, rx, take
-
 #include "adapters.hpp"   // for Hash, EqualTo
 #include "constants.hpp"  // for Max, UNDEFINED, operator==
 #include "debug.hpp"      // for LIBSEMIGROUPS_ASSERT
 #include "exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
 #include "order.hpp"      // for ShortLexCompare
+#include "ranges.hpp"     // for seq, operator|, rx, take
 #include "ranges.hpp"     // for chain, is_sorted
 #include "types.hpp"      // for word_type
 #include "ukkonen.hpp"    // for GreedyReduceHelper, Ukkonen
 #include "words.hpp"      // for operator+
 
-#include "detail/fmt.hpp"     // for format
-#include "detail/report.hpp"  // for formatter<vector>
-#include "detail/string.hpp"  // for maximum_common_prefix
-#include "detail/uf.hpp"      // for Duf
+#include "detail/fmt.hpp"         // for format
+#include "detail/formatters.hpp"  // for StaticVector1 formatter
+#include "detail/report.hpp"      // for formatter<vector>
+#include "detail/string.hpp"      // for maximum_common_prefix
+#include "detail/uf.hpp"          // for Duf
+
 
 namespace libsemigroups {
 
