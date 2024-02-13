@@ -505,10 +505,11 @@ namespace libsemigroups {
   // TODO should this check for 0 active rules?
   template <typename Rewriter, typename ReductionOrder>
   bool KnuthBendix<Rewriter, ReductionOrder>::confluent() const {
-    // if (_rewriter.number_of_active_rules() == 0
-    //     && _rewriter.number_of_pending_rules() != 0) {
-    //   _rewriter.process_pending_rules();
-    // }
+    if (_rewriter.number_of_active_rules() == 0
+        && _rewriter.number_of_pending_rules() != 0) {
+      const_cast<KnuthBendix<Rewriter, ReductionOrder>*>(this)
+          ->_rewriter.process_pending_rules();
+    }
     return _rewriter.confluent();
   }
 
