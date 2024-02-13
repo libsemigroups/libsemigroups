@@ -956,7 +956,7 @@ namespace libsemigroups {
   std::ostream& operator<<(std::ostream&,
                            KnuthBendix<Rewriter, ReductionOrder> const&);
 
-  KnuthBendix(congruence_kind) -> KnuthBendix<>;
+  KnuthBendix(congruence_kind)->KnuthBendix<>;
 
   namespace knuth_bendix {
 
@@ -973,7 +973,7 @@ namespace libsemigroups {
 
       str conf;
       if (!kb.confluent_known()) {
-        conf = "KnuthBendix of unknown confluence";
+        conf = "KnuthBendix";
       } else if (kb.confluent()) {
         conf = "confluent KnuthBendix";
       } else {
@@ -1043,7 +1043,7 @@ namespace libsemigroups {
     template <typename Rewriter, typename ReductionOrder>
     [[nodiscard]] inline auto
     normal_forms(KnuthBendix<Rewriter, ReductionOrder>& kb) {
-      using rx::operator|;
+      using rx::      operator|;
       ReversiblePaths paths(kb.gilman_graph());
       paths.from(0).reverse(kb.kind() == congruence_kind::left);
       if (!kb.presentation().contains_empty_word()) {
@@ -1058,6 +1058,7 @@ namespace libsemigroups {
     non_trivial_classes(KnuthBendix<Rewriter, ReductionOrder>& kb1,
                         KnuthBendix<Rewriter, ReductionOrder>& kb2);
 
+    // TODO should this be in the knuth_bendix namespace?
     //! \brief Return an iterator pointing at the left hand side of a redundant
     //! rule.
     //!
