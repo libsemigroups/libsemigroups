@@ -108,7 +108,7 @@ namespace libsemigroups {
     }
   }
 
-  Rule* Rules::new_rule() const {
+  Rule* Rules::new_rule() {
     ++_stats.total_rules;
     Rule* rule;
     if (!_inactive_rules.empty()) {
@@ -122,7 +122,7 @@ namespace libsemigroups {
     return rule;
   }
 
-  Rule* Rules::copy_rule(Rule const* rule) const {
+  Rule* Rules::copy_rule(Rule const* rule) {
     return new_rule(rule->lhs()->cbegin(),
                     rule->lhs()->cend(),
                     rule->rhs()->cbegin(),
@@ -232,12 +232,12 @@ namespace libsemigroups {
     }
   }
 
-  bool RewriterBase::process_pending_rules() const {
+  bool RewriterBase::process_pending_rules() {
     bool                        rules_added = false;
     Rule*                       rule1;
     internal_string_type const* lhs;
     while (number_of_pending_rules() != 0) {
-      rule1 = const_cast<RewriterBase*>(this)->next_pending_rule();
+      rule1 = next_pending_rule();
       LIBSEMIGROUPS_ASSERT(!rule1->active());
       LIBSEMIGROUPS_ASSERT(*rule1->lhs() != *rule1->rhs());
       // Rewrite both sides and reorder if necessary . . .
@@ -247,8 +247,7 @@ namespace libsemigroups {
       if (*rule1->lhs() != *rule1->rhs()) {
         lhs = rule1->lhs();
 
-        for (Rules::iterator it = const_cast<RewriterBase*>(this)->begin();
-             it != end();) {
+        for (auto it = begin(); it != end();) {
           Rule* rule2 = const_cast<Rule*>(*it);
 
           // Check if lhs is contained within either the lhs or rhs of rule2
@@ -260,7 +259,7 @@ namespace libsemigroups {
             ++it;
           }
         }
-        const_cast<RewriterBase*>(this)->add_rule(rule1);
+        add_rule(rule1);
         if (!rules_added) {
           rules_added = true;
         }
@@ -272,21 +271,18 @@ namespace libsemigroups {
     return rules_added;
   }
 
-  // REVIEW Should this be const? Since reducing rules doesn't change the
-  // mathematical object. add_pending_rules shouldn't be const, but
-  // const_casting feels messy.
-  void RewriterBase::reduce() const {
+  void RewriterBase::reduce() {
     for (Rule const* rule : *this) {
       // Copy rule and add_pending_rule so that it is not modified by the
       // call to process_pending_rules.
       LIBSEMIGROUPS_ASSERT(rule->lhs() != rule->rhs());
-      if (const_cast<RewriterBase*>(this)->add_pending_rule(copy_rule(rule))) {
+      if (add_pending_rule(copy_rule(rule))) {
         process_pending_rules();
       }
     }
   }
 
-  void RewriterBase::reduce_rhs() const {
+  void RewriterBase::reduce_rhs() {
     for (Rule const* rule : *this) {
       rewrite(*rule->rhs());
     }
@@ -313,18 +309,17 @@ namespace libsemigroups {
   }
 
   RewriteFromLeft::iterator
-  RewriteFromLeft::make_active_rule_pending(iterator it) const {
+  RewriteFromLeft::make_active_rule_pending(iterator it) {
     Rule* rule = const_cast<Rule*>(*it);
     rule->deactivate();
-    const_cast<RewriteFromLeft*>(this)->add_pending_rule(rule);
+    add_pending_rule(rule);
 #ifdef LIBSEMIGROUPS_DEBUG
     LIBSEMIGROUPS_ASSERT(_set_rules.erase(RuleLookup(rule)));
 #else
     _set_rules.erase(RuleLookup(rule));
 #endif
     LIBSEMIGROUPS_ASSERT(_set_rules.size() == number_of_active_rules() - 1);
-    return const_cast<RewriteFromLeft*>(this)->Rules::erase_from_active_rules(
-        it);
+    return Rules::erase_from_active_rules(it);
   }
 
   void RewriteFromLeft::add_rule(Rule* rule) {
@@ -493,7 +488,7 @@ namespace libsemigroups {
     return *this;
   }
 
-  void RewriteTrie::all_overlaps() const {
+  void RewriteTrie::all_overlaps() {
     // For each active rule, get the corresponding terminal node.
     for (auto node_it = _rules.begin(); node_it != _rules.end(); ++node_it) {
       index_type link = _trie.suffix_link(node_it->first);
@@ -506,7 +501,7 @@ namespace libsemigroups {
     }
   }
 
-  void RewriteTrie::rule_overlaps(index_type node) const {
+  void RewriteTrie::rule_overlaps(index_type node) {
     index_type link = _trie.suffix_link(node);
     while (link != _trie.root) {
       // For each suffix link, add an overlap between rule and every other
@@ -518,7 +513,7 @@ namespace libsemigroups {
 
   void RewriteTrie::add_overlaps(Rule*      rule,
                                  index_type node,
-                                 size_t     overlap_length) const {
+                                 size_t     overlap_length) {
     // BFS find the terminal descendants of node and add overlaps with rule
     if (_trie.node(node).is_terminal()) {
       // TODO Add function that takes two rules and a length
@@ -529,7 +524,7 @@ namespace libsemigroups {
       detail::MultiStringView y(rule->rhs()->cbegin(), rule->rhs()->cend());
       y.append(rule2->lhs()->cbegin() + overlap_length,
                rule2->lhs()->cend());  // rule = AQ_j -> Q_iC
-      const_cast<RewriteTrie*>(this)->add_pending_rule(x, y);
+      add_pending_rule(x, y);
     }
     for (auto a = alphabet_cbegin(); a != alphabet_cend(); ++a) {
       auto child = _trie.child(node, static_cast<letter_type>(*a));
@@ -665,16 +660,15 @@ namespace libsemigroups {
     return true;
   }
 
-  Rules::iterator
-  RewriteTrie::make_active_rule_pending(Rules::iterator it) const {
+  Rules::iterator RewriteTrie::make_active_rule_pending(Rules::iterator it) {
     Rule* rule = const_cast<Rule*>(*it);
     rule->deactivate();  // Done in Rules::erase_from
-    const_cast<RewriteTrie*>(this)->add_pending_rule(rule);
+    add_pending_rule(rule);
     index_type node
         = _trie.rm_word_no_checks(rule->lhs()->cbegin(), rule->lhs()->cend());
     _rules.erase(node);
     // TODO Add assertion that checks number of rules stored in trie is
     // equal to number of rules in number_of_active_rules()
-    return const_cast<RewriteTrie*>(this)->Rules::erase_from_active_rules(it);
+    return Rules::erase_from_active_rules(it);
   }
 }  // namespace libsemigroups
