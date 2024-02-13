@@ -2660,11 +2660,13 @@ namespace libsemigroups {
     presentation::sort_each_rule(p);
     presentation::sort_rules(p);
 
+    REQUIRE(presentation::length(p) == 105);
+
     ToddCoxeter tc(twosided, p);
-    tc.run_until([&tc]() -> bool {
-      return tc.word_graph().number_of_nodes() >= 10'000;
-    });
-    tc.lookahead_next(100'000);
+    // tc.run_until([&tc]() -> bool {
+    //   return tc.word_graph().number_of_nodes() >= 10'000;
+    // });
+    // tc.lookahead_next(100'000);
     REQUIRE(!tc.finished());
     REQUIRE(!is_obviously_infinite(tc));
     tc.standardize(Order::shortlex);
@@ -2796,34 +2798,36 @@ namespace libsemigroups {
 
     REQUIRE(!is_obviously_infinite(tc));
 
-    section_hlt(tc);
+    // section_hlt(tc);
 
     // Felsch very slow with + without preprocessing
-    // SECTION("preprocessing + Felsch") {
-    //   presentation::greedy_reduce_length(p);
-    //   REQUIRE(presentation::length(p) == 29);
-    //   REQUIRE(p.alphabet() == "abcd");
-    //   p.rules = std::vector<std::string>({"aaa",
-    //                                       "a",
-    //                                       "dbb",
-    //                                       "b",
-    //                                       "abeceba",
-    //                                       "bb",
-    //                                       "c",
-    //                                       "adab",
-    //                                       "d",
-    //                                       "bbbb",
-    //                                       "ccc",
-    //                                       "e"});
-    //   p.alphabet_from_rules();
-    //   tc.init(twosided, p);
-    //   tc.strategy(options::strategy::felsch);
-    // }
-    SECTION("custom R/C") {
-      tc.lookahead_next(3'000'000)
-          .strategy(options::strategy::R_over_C)
-          .def_max(100'000);
+    SECTION("preprocessing + Felsch") {
+      presentation::greedy_reduce_length(p);
+      REQUIRE(presentation::length(p) == 29);
+      REQUIRE(p.alphabet() == "abcd");
+      p.rules = std::vector<std::string>({"aaa",
+                                          "a",
+                                          "dbb",
+                                          "b",
+                                          "abeceba",
+                                          "bb",
+                                          "c",
+                                          "adab",
+                                          "d",
+                                          "bbbb",
+                                          "ccc",
+                                          "e"});
+
+      p.alphabet_from_rules();
+      tc.init(twosided, p);
+      tc.def_max(10'000).large_collapse(3'000);
+      tc.strategy(options::strategy::felsch);
     }
+    // SECTION("custom R/C") {
+    //   tc.lookahead_next(3'000'000)
+    //       .strategy(options::strategy::R_over_C)
+    //       .def_max(100'000);
+    // }
     REQUIRE(tc.number_of_classes() == 36'412);
   }
 

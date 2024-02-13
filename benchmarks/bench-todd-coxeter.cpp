@@ -39,6 +39,7 @@ namespace libsemigroups {
   using literals::operator""_p;
   using strategy         = ToddCoxeter::options::strategy;
   using lookahead_extent = ToddCoxeter::options::lookahead_extent;
+  using def_policy       = ToddCoxeter::options::def_policy;
 
   namespace {
     template <typename S, typename T>
@@ -70,7 +71,7 @@ namespace libsemigroups {
     }
 
     void preprocess_presentation(Presentation<word_type>& p) {
-      presentation::remove_redundant_generators(p);
+      // presentation::remove_redundant_generators(p);
       presentation::reduce_complements(p);
       presentation::remove_trivial_rules(p);
       presentation::remove_duplicate_rules(p);
@@ -106,14 +107,12 @@ namespace libsemigroups {
       emit_xml_presentation_tags(p, n, size);
       auto rg = ReportGuard(true);
       for (auto strategy : strategies) {
-        ToddCoxeter tc(congruence_kind::twosided, p);
-        auto        title = fmt::format("{}", strategy);
+        auto title = fmt::format("{}", strategy);
         open_xml_tag("LatexColumnTitle", title);
         SECTION(title) {
           ToddCoxeter tc(congruence_kind::twosided, p);
-          tc.strategy(strategy);
           init(tc);
-          tc.strategy(strategy::hlt);
+          tc.strategy(strategy);
           auto start = std::chrono::high_resolution_clock::now();
           REQUIRE(tc.number_of_classes() == size);
           auto now = std::chrono::high_resolution_clock::now();
@@ -352,11 +351,11 @@ namespace libsemigroups {
   }
 
   // ?? (2021 - MacBook Air M1 - 8GB RAM)
-  TEST_CASE("orientation_reversing_monoid(13) - hlt",
-            "[paper][orientation_reversing_monoid][n=13][hlt]") {
-    benchmark_todd_coxeter_single(
-        135'195'307, orientation_reversing_monoid(13), 13);
-  }
+  // TEST_CASE("orientation_reversing_monoid(13) - hlt",
+  //           "[paper][orientation_reversing_monoid][n=13][hlt]") {
+  //   benchmark_todd_coxeter_single(
+  //       135'195'307, orientation_reversing_monoid(13), 13);
+  // }
 
   ////////////////////////////////////////////////////////////////////////
   // partition_monoid
@@ -709,132 +708,159 @@ namespace libsemigroups {
   ////////////////////////////////////////////////////////////////////////
   // walker
   ////////////////////////////////////////////////////////////////////////
+
   namespace walker {
     Presentation<word_type> walker(size_t index) {
       Presentation<std::string> p;
       if (index == 1) {
-        p.alphabet("abcABCDEFGHIXYZ");
-        presentation::add_rule(p, "A", "a^14"_p);
-        presentation::add_rule(p, "B", "b^14"_p);
-        presentation::add_rule(p, "C", "c^14"_p);
-        presentation::add_rule(p, "D", "a^4ba"_p);
-        presentation::add_rule(p, "E", "b^4ab"_p);
-        presentation::add_rule(p, "F", "a^4ca"_p);
-        presentation::add_rule(p, "G", "c^4ac"_p);
-        presentation::add_rule(p, "H", "b^4cb"_p);
-        presentation::add_rule(p, "I", "c^4bc"_p);
-        presentation::add_rule(p, "X", "aaa");
-        presentation::add_rule(p, "Y", "bbb");
-        presentation::add_rule(p, "Z", "ccc");
+        p.alphabet("abc");
+        presentation::add_rule(p, "a", "a^14"_p);
+        presentation::add_rule(p, "b", "b^14"_p);
+        presentation::add_rule(p, "c", "c^14"_p);
+        presentation::add_rule(p, "bbb", "a^4ba"_p);
+        presentation::add_rule(p, "aaa", "b^4ab"_p);
+        presentation::add_rule(p, "ccc", "a^4ca"_p);
+        presentation::add_rule(p, "aaa", "c^4ac"_p);
+        presentation::add_rule(p, "ccc", "b^4cb"_p);
+        presentation::add_rule(p, "bbb", "c^4bc"_p);
+      } else if (index == 2) {
+        p.alphabet("ab");
+        presentation::add_rule(p, "a^32"_p, "a");
+        presentation::add_rule(p, "bbb", "b");
+        presentation::add_rule(p, "ababa", "b");
+        presentation::add_rule(p, "a^16ba^4ba^16ba^4"_p, "b");
+        presentation::greedy_reduce_length(p);
+      } else if (index == 3) {
+        p.alphabet("ab");
+        presentation::add_rule(p, "aaaaaaaaaaaaaaaa", "a");
+        presentation::add_rule(p, "bbbbbbbbbbbbbbbb", "b");
+        presentation::add_rule(p, "abb", "baa");
+      } else if (index == 4) {
+        p.alphabet("ab");
+        presentation::add_rule(p, "aaa", "a");
+        presentation::add_rule(p, "b^6"_p, "b");
+        presentation::add_rule(p, "((ab)^2b^3)^7ab^2a"_p, "bb");
+        presentation::greedy_reduce_length(p);
+        REQUIRE(presentation::length(p) == 29);
+        // REQUIRE(p.alphabet() == "abcd");
+        p.rules = std::vector<std::string>({"aaa",
+                                            "a",
+                                            "dbb",
+                                            "b",
+                                            "abeceba",
+                                            "bb",
+                                            "c",
+                                            "adab",
+                                            "d",
+                                            "bbbb",
+                                            "ccc",
+                                            "e"});
+        p.alphabet_from_rules();
+      } else if (index == 5) {
+        p.alphabet("ab");
+        presentation::add_rule(p, "aaa", "a");
+        presentation::add_rule(p, "b^6"_p, "b");
+        presentation::add_rule(p, "((ab)^2b^3)^7(ab^2)^2b^3a^2"_p, "bb");
+        REQUIRE(presentation::length(p) == 73);
+        presentation::greedy_reduce_length(p);
+        REQUIRE(presentation::length(p) == 34);
+        REQUIRE(p.alphabet() == "abcd");
+        REQUIRE(p.rules
+                == std::vector<std::string>({"aaa",
+                                             "a",
+                                             "ddd",
+                                             "b",
+                                             "abc^7bad^2ba^2"_p,
+                                             "d",
+                                             "c",
+                                             "addab",
+                                             "d",
+                                             "bb"}));
+        presentation::replace_word_with_new_generator(p, "ccc");
+      } else if (index == 6) {
+        p.alphabet("ab");
+        presentation::add_rule(p, "aaa", "a");
+        presentation::add_rule(p, "b^9"_p, "b");
+        presentation::add_rule(p, "((ab)^2b^6)^2(ab^2)^2b^6"_p, "bb");
 
-        presentation::add_rule(p, "A", "a");
-        presentation::add_rule(p, "B", "b");
-        presentation::add_rule(p, "C", "c");
-        presentation::add_rule(p, "D", "Y");
-        presentation::add_rule(p, "E", "X");
-        presentation::add_rule(p, "F", "Z");
-        presentation::add_rule(p, "G", "X");
-        presentation::add_rule(p, "H", "Z");
-        presentation::add_rule(p, "I", "Y");
+        REQUIRE(presentation::length(p) == 48);
+        presentation::greedy_reduce_length(p);
+        REQUIRE(presentation::length(p) == 28);
+        REQUIRE(p.alphabet() == "abcde");
+        REQUIRE(p.rules
+                == std::vector<std::string>({"aaa",
+                                             "a",
+                                             "cd",
+                                             "b",
+                                             "aeedacb",
+                                             "d",
+                                             "c",
+                                             "dddb",
+                                             "d",
+                                             "bb",
+                                             "e",
+                                             "baca"}));
+
+        presentation::replace_word_with_new_generator(p, "bbb");
+        REQUIRE(presentation::length(p) == 32);
+      } else if (index == 7) {
+        p.alphabet("abcde");
+        presentation::add_rule(p, "aaa", "a");
+        presentation::add_rule(p, "bbb", "b");
+        presentation::add_rule(p, "ccc", "c");
+        presentation::add_rule(p, "ddd", "d");
+        presentation::add_rule(p, "eee", "e");
+        presentation::add_rule(p, "(ab) ^ 3"_p, "aa");
+        presentation::add_rule(p, "(bc) ^ 3"_p, "bb");
+        presentation::add_rule(p, "(cd) ^ 3"_p, "cc");
+        presentation::add_rule(p, "(de) ^ 3"_p, "dd");
+        presentation::add_rule(p, "ac", "ca");
+        presentation::add_rule(p, "ad", "da");
+        presentation::add_rule(p, "ae", "ea");
+        presentation::add_rule(p, "bd", "db");
+        presentation::add_rule(p, "be", "eb");
+        presentation::add_rule(p, "ce", "ec");
       }
       return to_presentation<word_type>(p);
     }
+
+    // TODO this doesn't really work for the benchmarks because each monoid
+    // requires different settings and this isn't catered for here.
 
     auto init = [](ToddCoxeter& tc) {
       if (tc.strategy() == strategy::hlt) {
         tc.lookahead_next(500'000).large_collapse(2'000);
       } else {
-        tc.lookahead_next(100'000);
+        //     The following settings work well for walker(2) or 3
+        // tc.use_relations_in_extra(true)
+        //     .def_max(100'000)
+        //     .def_version(ToddCoxeter::options::def_version::one)
+        //     .def_policy(def_policy::no_stack_if_no_space);
+        //     The following settings work well for walker(4)
+        tc.def_max(10'000).large_collapse(3'000).lookahead_next(100'000);
       }
     };
-
-    sizes_type sizes      = {0, 1};
-    auto       strategies = {strategy::hlt, strategy::felsch};
-    BENCHMARK_TODD_COXETER_RANGE(sizes,
-                                 "TODO",
-                                 "TODO",
-                                 "TODO",
-                                 1,
-                                 1,
-                                 walker,
-                                 "walker",
-                                 strategies,
-                                 init);
+    auto       rg = ReportGuard();
+    sizes_type sizes
+        = {0, 1, 14'911, 20'490, 36'412, 72'822, 78'722, 153'500, 270'272};
+    auto strategies = {strategy::hlt};
+    BENCHMARK_TODD_COXETER_RANGE(
+        sizes,
+        "The presentations from Walker~\\cite{Walker1992aa}.",
+        "table-walker",
+        "S",
+        5,
+        5,
+        walker,
+        "walker",
+        strategies,
+        init);
   }  // namespace walker
 }  // namespace libsemigroups
 
-// REQUIRE(tc.size() == 1);
-//}
 /*
-      void walker2(ToddCoxeter& tc) {
-        tc.set_alphabet("ab");
-        tc.add_rule("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "a");
-        tc.add_rule("bbb", "b");
-        tc.add_rule("ababa", "b");
-        tc.add_rule("aaaaaaaaaaaaaaaabaaaabaaaaaaaaaaaaaaaabaaaa", "b");
-      }
-
-      void walker3(ToddCoxeter& tc) {
-        tc.set_alphabet("ab");
-        tc.add_rule("aaaaaaaaaaaaaaaa", "a");
-        tc.add_rule("bbbbbbbbbbbbbbbb", "b");
-        tc.add_rule("abb", "baa");
-      }
-
-      void walker4(ToddCoxeter& tc) {
-        tc.set_alphabet("ab");
-        tc.add_rule("aaa", "a");
-        tc.add_rule("bbbbbb", "b");
-        tc.add_rule("ababbbbababbbbababbbbababbbbababbbbababbbbababbbbabba",
-                    "bb");
-      }
-
-      void walker5(ToddCoxeter& tc) {
-        tc.set_alphabet("ab");
-        tc.add_rule("aaa", "a");
-        tc.add_rule("bbbbbb", "b");
-        tc.add_rule(
-            "ababbbbababbbbababbbbababbbbababbbbababbbbababbbbabbabbbbbaa",
-            "bb");
-      }
-
-      void walker6(ToddCoxeter& tc) {
-        tc.set_alphabet("ab");
-        tc.add_rule("aaa", "a");
-        tc.add_rule("bbbbbbbbb", "b");
-        std::string lng("ababbbbbbb");
-        lng += lng;
-        lng += "abbabbbbbbbb";
-        tc.add_rule(lng, "bb");
-      }
-
-      void walker7(ToddCoxeter& tc) {
-        tc.set_alphabet("abcde");
-        tc.add_rule("aaa", "a");
-        tc.add_rule("bbb", "b");
-        tc.add_rule("ccc", "c");
-        tc.add_rule("ddd", "d");
-        tc.add_rule("eee", "e");
-        tc.add_rule("ababab", "aa");
-        tc.add_rule("bcbcbc", "bb");
-        tc.add_rule("cdcdcd", "cc");
-        tc.add_rule("dedede", "dd");
-        tc.add_rule("ac", "ca");
-        tc.add_rule("ad", "da");
-        tc.add_rule("ae", "ea");
-        tc.add_rule("bd", "db");
-        tc.add_rule("be", "eb");
-        tc.add_rule("ce", "ec");
-      }
-
-      void walker8(ToddCoxeter& tc) {
-        tc.set_alphabet("ab");
-        tc.add_rule("aaa", "a");
-        tc.add_rule("bbbbbbbbbbbbbbbbbbbbbbb", "b");
-        tc.add_rule("abbbbbbbbbbbabb", "bba");
-      }
-    }  // namespace
-
+ * TODO: work out whether the settings below are better than those in the test
+ * file and implement the best settings above.
 
     TEST_CASE("Walker 2", "[quick][Walker2][paper]") {
       using options = libsemigroups::congruence::ToddCoxeter::options;

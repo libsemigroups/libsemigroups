@@ -401,7 +401,7 @@ namespace libsemigroups {
       // Sort each relation so that the lhs is greater than the rhs according
       // to func.
       for (auto it = p.rules.begin(); it < p.rules.end(); it += 2) {
-        if (cmp(*it, *(it + 1))) {
+        if (!cmp(*it, *(it + 1))) {
           std::swap(*it, *(it + 1));
           result = true;
         }
