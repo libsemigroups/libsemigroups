@@ -537,9 +537,9 @@ namespace libsemigroups {
         && (!running_for()
             || report_every() >= std::chrono::milliseconds(1'500))) {
       // TODO report_strategy
-      auto msg = fmt::format("{:+<93}\n", "");
+      auto msg = fmt::format("{:+<90}\n", "");
       msg += fmt_default("ToddCoxeter: Using {} strategy . . .\n", strategy());
-      msg += fmt::format("{:+<93}\n", "");
+      msg += fmt::format("{:+<90}\n", "");
       report_no_prefix(msg);
 
       detail::Ticker t([this]() { _word_graph.report_progress_from_thread(); });
@@ -684,6 +684,7 @@ namespace libsemigroups {
         }
       }
       _word_graph.report_progress_from_thread();
+      report_no_prefix("{:-<90}\n", "");
       _finished = true;
     }
   }
@@ -824,17 +825,18 @@ namespace libsemigroups {
   void ToddCoxeter::report_next_lookahead(size_t old_value) const {
     static const std::string pad(8, ' ');
     int64_t                  diff = int64_t(lookahead_next()) - old_value;
-    report_default("ToddCoxeter: next lookahead at {}  | {:>12} (nodes)  "
+    report_default("ToddCoxeter: next lookahead at {} | {:>12} (nodes)  "
                    "| {:>12} (diff)\n",
                    pad,
                    fmt::group_digits(lookahead_next()),
                    detail::signed_group_digits(diff));
-    report_no_prefix("{:-<93}\n", "");
+    report_no_prefix("{:-<90}\n", "");
   }
 
   void ToddCoxeter::report_nodes_killed(int64_t N) const {
+    report_no_prefix("{:-<90}\n", "");
     report_default(
-        "ToddCoxeter: lookahead complete with     | {:>12} (killed) |\n",
+        "ToddCoxeter: lookahead complete with    | {:>12} (killed) |\n",
         detail::group_digits(-1 * N));
   }
 
@@ -843,10 +845,11 @@ namespace libsemigroups {
   ////////////////////////////////////////////////////////////////////////
 
   void ToddCoxeter::perform_lookahead(bool stop_early) {
+    report_no_prefix("{:-<90}\n", "");
     report_default("ToddCoxeter: performing {} {} lookahead . . .\n",
                    lookahead_extent(),
                    lookahead_style());
-    report_no_prefix("{:-<93}\n", "");
+    report_no_prefix("{:-<90}\n", "");
     auto& current = _word_graph.lookahead_cursor();
 
     if (lookahead_extent() == options::lookahead_extent::partial) {
