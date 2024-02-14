@@ -706,7 +706,7 @@ namespace libsemigroups {
     REQUIRE(kb.number_of_active_rules() == 1);
 
     REQUIRE(kb.equal_to("a", ""));
-    REQUIRE((kb.active_rules() | to_vector())
+    REQUIRE((kb.active_rules() | sort(weird_cmp()) | to_vector())
             == std::vector<rule_type>({{"a", ""}}));
   }
 
@@ -1504,7 +1504,7 @@ namespace libsemigroups {
          | filter([&kb](auto const& w) { return kb.normal_form(w + w) == w; })
          | to_vector())
         == std::vector<std::string>({"", "a", "b", "ba"}));
-    REQUIRE((kb.active_rules() | to_vector())
+    REQUIRE((kb.active_rules() | sort(weird_cmp()) | to_vector())
             == std::vector<std::pair<std::string, std::string>>(
                 {{"aa", "a"}, {"aba", "ba"}, {"bb", "b"}, {"bab", "ba"}}));
     REQUIRE(kb.gilman_graph()
