@@ -434,8 +434,7 @@ namespace libsemigroups {
     //! function could be anything.
     [[nodiscard]] output_type get() const noexcept {
       set_iterator();
-      return std::visit(
-          [](auto& it) -> auto const& { return *it; }, _current);
+      return std::visit([](auto& it) -> auto const& { return *it; }, _current);
     }
 
     //! \brief Advance to the next value.
@@ -1669,7 +1668,6 @@ namespace libsemigroups {
     //! words use the same letters as the alphabet used to define ToStrings.
     explicit ToStrings(std::string_view lttrs) : _letters(lttrs) {}
 
-   private:
     template <typename InputRange>
     struct Range {
       using output_type = std::string;
@@ -1703,7 +1701,6 @@ namespace libsemigroups {
       }
     };
 
-   public:
     //! \brief Call operator for combining with other range objects.
     //!
     //! This is the call operator that is used by `rx::ranges::operator|` for
