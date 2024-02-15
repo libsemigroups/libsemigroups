@@ -670,7 +670,7 @@ namespace libsemigroups {
   }
 
   template <typename Rewriter, typename ReductionOrder>
-  WordGraph<size_t> const&
+  WordGraph<uint32_t> const&
   KnuthBendix<Rewriter, ReductionOrder>::gilman_graph() {
     if (_gilman_graph.number_of_nodes() == 0
         && !presentation().alphabet().empty()) {
