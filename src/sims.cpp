@@ -1344,14 +1344,14 @@ namespace libsemigroups {
           _relation({}, {}),
           _tree(ptr->number_of_active_nodes()),
           _word_graph(ptr) {
-      if (!word_graph::is_complete(*ptr,
-                                   ptr->cbegin_nodes(),
-                                   ptr->cbegin_nodes()
-                                       + ptr->number_of_active_nodes())) {
-        LIBSEMIGROUPS_EXCEPTION("The 1st argument must be a pointer to a "
-                                "complete word graph on the nodes [0, {})",
-                                ptr->number_of_active_nodes());
-      }
+      // if (!word_graph::is_complete(*ptr,
+      //                              ptr->cbegin_nodes(),
+      //                              ptr->cbegin_nodes()
+      //                                  + ptr->number_of_active_nodes())) {
+      //   LIBSEMIGROUPS_EXCEPTION("The 1st argument must be a pointer to a "
+      //                           "complete word graph on the nodes [0, {})",
+      //                           ptr->number_of_active_nodes());
+      // }
       _reconstructed_word_graph.add_nodes(ptr->number_of_active_nodes());
       ++(*this);
     }
@@ -1371,21 +1371,23 @@ namespace libsemigroups {
       while (_source < wg.number_of_active_nodes()) {
         while (_gen < wg.out_degree()) {
           auto target1 = wg.target_no_checks(_source, _gen);
-          auto target2
-              = _reconstructed_word_graph.target_no_checks(_source, _gen);
-          LIBSEMIGROUPS_ASSERT(target1 != UNDEFINED);
-          if (target2 == UNDEFINED) {
-            _reconstructed_word_graph.set_target_no_checks(
-                _source, _gen, target1);
-            if (_tree.parent(target1) == UNDEFINED && target1 > _source) {
-              // Tree edges
-              _tree.set(target1, _source, _gen);
-            } else {
-              // Non-tree edge, not implied by other edges
-              _gen++;
-              std::ignore
-                  = _reconstructed_word_graph.process_definitions(start);
-              return *this;
+          if (target1 != UNDEFINED) {
+            auto target2
+                = _reconstructed_word_graph.target_no_checks(_source, _gen);
+            LIBSEMIGROUPS_ASSERT(target1 != UNDEFINED);
+            if (target2 == UNDEFINED) {
+              _reconstructed_word_graph.set_target_no_checks(
+                  _source, _gen, target1);
+              if (_tree.parent(target1) == UNDEFINED && target1 > _source) {
+                // Tree edges
+                _tree.set(target1, _source, _gen);
+              } else {
+                // Non-tree edge, not implied by other edges
+                _gen++;
+                std::ignore
+                    = _reconstructed_word_graph.process_definitions(start);
+                return *this;
+              }
             }
           }
           _gen++;

@@ -3742,7 +3742,7 @@ namespace libsemigroups {
     s.number_of_threads(4);
     // Number of congruences with up to 7 classes given in:
     // A. Bailey, M. Finn-Sell and R. Snocken
-    // "SUBSEMIGROUP, IDEAL AND CONGRUENCE GROWTH OF FREE SEMIGROUPS"
+    // "SUBSEMIGROUP, IDEAL AND CONGRUENCE GROWTH OF FREE SEMIGROU6S"
     REQUIRE(s.number_of_congruences(1) == 1);
     REQUIRE(s.number_of_congruences(2) == 11);  // From Bailey et al
     REQUIRE(s.number_of_congruences(3) == 51);  // From Bailey et al
@@ -3760,6 +3760,51 @@ namespace libsemigroups {
     // REQUIRE(s.number_of_congruences(8) == 17381);
     // s.clear_exclude();
     // REQUIRE(s.number_of_congruences(8) == 17381 + 36);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Sims2",
+                          "117",
+                          "1-sided ideals 2-generated free semigroup",
+                          "[quick][sims1]") {
+    Presentation<std::string> p;
+    p.alphabet("ab");
+    p.contains_empty_word(false);
+
+    PrunerIdeal ip(p);
+
+    Sims1 s(p);
+    s.add_pruner(ip);
+    REQUIRE(s.number_of_congruences(2) == 3);
+    REQUIRE(s.number_of_congruences(3) == 7);
+    REQUIRE(s.number_of_congruences(4) == 18);
+    REQUIRE(s.number_of_congruences(5) == 50);
+    REQUIRE(s.number_of_congruences(6) == 149);
+    REQUIRE(s.number_of_congruences(7) == 467);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Sims2",
+                          "118",
+                          "1-sided ideals partition monoid, n = 2",
+                          "[quick][sims1]") {
+    Presentation<word_type> p;
+    p.contains_empty_word(true);
+
+    p.alphabet(012_w);
+    presentation::add_rule(p, 00_w, ""_w);
+    presentation::add_rule(p, 02_w, 2_w);
+    presentation::add_rule(p, 11_w, 1_w);
+    presentation::add_rule(p, 20_w, 2_w);
+    presentation::add_rule(p, 22_w, 2_w);
+    presentation::add_rule(p, 121_w, 1_w);
+    presentation::add_rule(p, 212_w, 2_w);
+    presentation::add_rule(p, 0101_w, 101_w);
+    presentation::add_rule(p, 1010_w, 101_w);
+
+    PrunerIdeal ip(to_presentation<std::string>(p));
+
+    Sims1 s(p);
+    s.add_pruner(ip);
+    REQUIRE(s.number_of_congruences(15) == 1);  // correct value is 3
   }
 
 }  // namespace libsemigroups

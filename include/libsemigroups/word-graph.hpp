@@ -1474,6 +1474,38 @@ namespace libsemigroups {
       return true;
     }
 
+    // Returns {Node, bool} where the second value indicates whether or not the
+    // DFS should continue, so false if there can be no (or too many) sinks in
+    // any completion of "wg" and true otherwise.
+    template <typename Node, typename Iterator>
+    [[nodiscard]] std::pair<Node, bool> unique_sink(WordGraph<Node> const& wg,
+                                                    Iterator first,
+                                                    Iterator last) {
+      Node   sink          = UNDEFINED;
+      size_t num_non_sinks = 0;
+      for (auto it = first; it != last; ++it) {
+        auto s = *it;
+        if (std::all_of(wg.cbegin_targets_no_checks(s),
+                        wg.cend_targets_no_checks(s),
+                        [&s](Node n) { return n == s; })) {
+          if (sink != UNDEFINED) {
+            // found 2 sinks, so no point in completing the word graph
+            return {UNDEFINED, false};
+          } else {
+            sink = s;
+          }
+
+          if (std::any_of(wg.cbegin_targets_no_checks(s),
+                          wg.cend_targets_no_checks(s),
+                          [&s](Node t) { return t != UNDEFINED && t != s; })) {
+            num_non_sinks += 1;
+          }
+          // if there are as many non-sinks as input nodes, then there can be no
+          // sinks in any completion, and so we return false, otherwise true.
+        }
+      }
+      return {sink, num_non_sinks != std::distance(first, last)};
+    }
   }  // namespace word_graph
 
   //////////////////////////////////////////////////////////////////////////
@@ -1482,11 +1514,12 @@ namespace libsemigroups {
 
   //! Output the edges of an WordGraph to a stream.
   //!
-  //! This function outputs the action digraph \p wg to the stream \p os. The
-  //! digraph is represented by the out-neighbours of each node ordered
-  //! according to their labels. The symbol `-` is used to denote that an edge
-  //! is not defined. For example, the digraph with 1 nodes, out-degree 2, and
-  //! a single loop labelled 1 from node 0 to 0 is represented as `{{-, 0}}`.
+  //! This function outputs the action digraph \p wg to the stream \p os.
+  //! The digraph is represented by the out-neighbours of each node ordered
+  //! according to their labels. The symbol `-` is used to denote that an
+  //! edge is not defined. For example, the digraph with 1 nodes, out-degree
+  //! 2, and a single loop labelled 1 from node 0 to 0 is represented as
+  //! `{{-, 0}}`.
   //!
   //! \param os the ostream
   //! \param wg the action digraph
@@ -1502,9 +1535,9 @@ namespace libsemigroups {
   //! Constructs a word graph from a number of nodes and an \c
   //! initializer_list.
   //!
-  //! This function constructs an WordGraph from its arguments whose out-degree
-  //! is specified by the length of the first \c initializer_list in the 2nd
-  //! parameter.
+  //! This function constructs an WordGraph from its arguments whose
+  //! out-degree is specified by the length of the first \c initializer_list
+  //! in the 2nd parameter.
   //!
   //! \tparam Node the type of the nodes of the digraph
   //!
@@ -1607,10 +1640,10 @@ namespace libsemigroups {
         return false;
       }
       run(x, x_num_nodes, xroot, y, y_num_nodes, yroot);
-      // if x is contained in y, then the join of x and y must be y, and hence
-      // we just check that the number of nodes in the quotient equals that of
-      // y. TODO We could just stop early in "run" if we find that we are trying
-      // to merge two nodes of x also.
+      // if x is contained in y, then the join of x and y must be y, and
+      // hence we just check that the number of nodes in the quotient equals
+      // that of y. TODO We could just stop early in "run" if we find that
+      // we are trying to merge two nodes of x also.
       return _uf.number_of_blocks() == y_num_nodes;
     }
 
@@ -1857,7 +1890,8 @@ namespace libsemigroups {
 
     // is x a subrelation of y
     [[nodiscard]] bool is_subrelation_no_checks() {
-      // If _x is a subrelation of _y, then the meet of _x and _y must be _x.
+      // If _x is a subrelation of _y, then the meet of _x and _y must be
+      // _x.
       before_get();
       if (_y_num_nodes >= _x_num_nodes) {
         return false;

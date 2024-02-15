@@ -55,9 +55,10 @@
 
 #include <fstream>
 
-#include "debug.hpp"            // for LIBSEMIGROUPS_ASSERT
-#include "exception.hpp"        // for LIBSEMIGROUPS_EXCEPTION
-#include "felsch-graph.hpp"     // for FelschGraph
+#include "debug.hpp"         // for LIBSEMIGROUPS_ASSERT
+#include "exception.hpp"     // for LIBSEMIGROUPS_EXCEPTION
+#include "felsch-graph.hpp"  // for FelschGraph
+#include "knuth-bendix.hpp"
 #include "presentation.hpp"     // for Presentation, Presentati...
 #include "to-presentation.hpp"  // for to_presentation
 #include "types.hpp"            // for word_type,
@@ -2165,5 +2166,61 @@ namespace libsemigroups {
       dot_poset(tmp_dir.c_str(), fname, first, last);
     }
   }  // namespace sims
+
+  class PrunerIdeal {
+   private:
+    KnuthBendix _knuth_bendix;
+
+   public:
+    PrunerIdeal(Presentation<std::string> const& p)
+        : _knuth_bendix(congruence_kind::right, p) {}
+
+    bool operator()(Sims1::word_graph_type const& wg) {
+      using sims::right_generating_pairs_no_checks;
+      auto [sink, continue_] = word_graph::unique_sink(
+          wg,
+          wg.cbegin_nodes(),
+          wg.cbegin_nodes() + wg.number_of_active_nodes());
+
+      if (!continue_) {
+        // There's no completion of the word graph with a sink, so no point in
+        // carrying on.
+        // TODO this isn't true it might be that we are about to add a new node
+        // that is a sink, whereas none of the current edges is a sink
+        return false;
+      } else if (sink == UNDEFINED) {
+        // There's no sink currently so we just carry on
+        return true;
+      }
+      // There's a unique sink
+
+      for (auto const& p : right_generating_pairs_no_checks(wg)) {
+        auto const& u = p.first;
+        auto const& v = p.second;
+        if (u.size() < v.size()) {
+          if (word_graph::follow_path_no_checks(wg, 0, u.cbegin(), u.cend())
+              == sink) {
+            continue;
+          }
+        } else if (word_graph::follow_path_no_checks(
+                       wg, 0, v.cbegin(), v.cend())
+                   == sink) {
+          continue;
+        }
+        if (!_knuth_bendix.contains(u, v)) {
+          return false;
+        }
+      }
+      return true;
+    }
+
+    // TODO
+    // Check if the incoming word graph has any generating pairs (via the
+    // functionality below) that are not equal in the underlying semigroup.
+    // Require us to store either a KnuthBendix or Kambites object in this
+    // using a presentation (also requires that the word problem is decidable
+    // in the underlying semigroup).
+  };
+
 }  // namespace libsemigroups
 #endif  // LIBSEMIGROUPS_SIMS_HPP_
