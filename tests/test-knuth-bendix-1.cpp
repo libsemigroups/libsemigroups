@@ -72,6 +72,28 @@ namespace libsemigroups {
 
   congruence_kind constexpr twosided = congruence_kind::twosided;
 
+  namespace {
+    // Generate the 'normal forms' defined by an arbitrary WordGraph.
+    // If `wg` corresponds to the Gilman graph of some KnuthBendix instance,
+    // then the words returned are the normal forms of that KnuthBendix
+    // instance. Since the node labels returned by gilman_graph() are
+    // implementation dependent, the below function can be used to check that
+    // `gilman_graph()` returns something that generates the correct normal
+    // forms.
+    template <typename Rewriter, typename ReductionOrder, typename WordType>
+    [[nodiscard]] inline auto
+    normal_forms_from_word_graph(KnuthBendix<Rewriter, ReductionOrder>& kb,
+                                 WordGraph<WordType>&                   wg) {
+      using rx::      operator|;
+      ReversiblePaths paths(wg);
+      paths.from(0).reverse(kb.kind() == congruence_kind::left);
+      if (!kb.presentation().contains_empty_word()) {
+        paths | rx::skip_n(1);
+      }
+      return paths;
+    }
+  }  // namespace
+
 #define KNUTH_BENDIX_TYPES \
   KnuthBendix<RewriteTrie>, KnuthBendix<RewriteFromLeft>
 
@@ -867,27 +889,35 @@ namespace libsemigroups {
 
     TestType kb1(twosided, p);
 
-    REQUIRE(kb1.gilman_graph()
-            == to_word_graph<size_t>(
-                6,
-                {{1, 2, 3, 4, 5},
-                 {},
-                 {},
-                 {},
-                 {},
-                 {UNDEFINED, UNDEFINED, UNDEFINED, UNDEFINED, 5}}));
+    WordGraph test_wg1 = to_word_graph<size_t>(
+        6,
+        {{1, 2, 3, 4, 5},
+         {},
+         {},
+         {},
+         {},
+         {UNDEFINED, UNDEFINED, UNDEFINED, UNDEFINED, 5}});
+    REQUIRE(kb1.number_of_classes() == POSITIVE_INFINITY);
+
+    REQUIRE(
+        equal((knuth_bendix::normal_forms(kb1) | rx::take(1000)),
+              (normal_forms_from_word_graph(kb1, test_wg1) | rx::take(1000))));
 
     presentation::add_rule_no_checks(p, 1_w, 2_w);
     TestType kb2(twosided, p);
 
-    REQUIRE(kb2.gilman_graph()
-            == to_word_graph<size_t>(
-                5,
-                {{1, 2, UNDEFINED, 3, 4},
-                 {},
-                 {},
-                 {},
-                 {UNDEFINED, UNDEFINED, UNDEFINED, UNDEFINED, 4}}));
+    WordGraph test_wg2 = to_word_graph<size_t>(
+        5,
+        {{1, 2, UNDEFINED, 3, 4},
+         {},
+         {},
+         {},
+         {UNDEFINED, UNDEFINED, UNDEFINED, UNDEFINED, 4}});
+
+    REQUIRE(kb1.number_of_classes() == POSITIVE_INFINITY);
+    REQUIRE(
+        equal((knuth_bendix::normal_forms(kb2) | rx::take(1000)),
+              (normal_forms_from_word_graph(kb2, test_wg2) | rx::take(1000))));
 
     REQUIRE(kb2.equal_to("b", "c"));
 
@@ -1063,51 +1093,55 @@ namespace libsemigroups {
 
     TestType kb1(twosided, p);
     REQUIRE(kb1.gilman_graph().number_of_nodes() == 16);
-    REQUIRE(kb1.gilman_graph()
-            == to_word_graph<size_t>(16,
-                                     {{3,
-                                       1,
-                                       UNDEFINED,
-                                       2,
-                                       UNDEFINED,
-                                       UNDEFINED,
-                                       UNDEFINED,
-                                       UNDEFINED,
-                                       UNDEFINED,
-                                       UNDEFINED,
-                                       UNDEFINED},
-                                      {6, UNDEFINED, UNDEFINED, 12},
-                                      {7, UNDEFINED},
-                                      {4, 5, UNDEFINED, 9},
-                                      {},
-                                      {8},
-                                      {UNDEFINED, 11},
-                                      {UNDEFINED, 14, UNDEFINED, 15},
-                                      {},
-                                      {10},
-                                      {UNDEFINED, 14},
-                                      {},
-                                      {13},
-                                      {UNDEFINED}}));
+
+    WordGraph test_wg1 = to_word_graph<size_t>(16,
+                                               {{3,
+                                                 1,
+                                                 UNDEFINED,
+                                                 2,
+                                                 UNDEFINED,
+                                                 UNDEFINED,
+                                                 UNDEFINED,
+                                                 UNDEFINED,
+                                                 UNDEFINED,
+                                                 UNDEFINED,
+                                                 UNDEFINED},
+                                                {6, UNDEFINED, UNDEFINED, 12},
+                                                {7, UNDEFINED},
+                                                {4, 5, UNDEFINED, 9},
+                                                {},
+                                                {8},
+                                                {UNDEFINED, 11},
+                                                {UNDEFINED, 14, UNDEFINED, 15},
+                                                {},
+                                                {10},
+                                                {UNDEFINED, 14},
+                                                {},
+                                                {13},
+                                                {UNDEFINED}});
+    REQUIRE(equal(knuth_bendix::normal_forms(kb1),
+                  normal_forms_from_word_graph(kb1, test_wg1)));
 
     presentation::add_rule_no_checks(p, {1}, {3});
     TestType kb2(twosided, p);
 
-    REQUIRE(kb2.gilman_graph()
-            == to_word_graph<size_t>(4,
-                                     {{2,
-                                       1,
-                                       UNDEFINED,
-                                       UNDEFINED,
-                                       UNDEFINED,
-                                       UNDEFINED,
-                                       UNDEFINED,
-                                       UNDEFINED,
-                                       UNDEFINED,
-                                       UNDEFINED,
-                                       UNDEFINED},
-                                      {},
-                                      {3}}));
+    WordGraph test_wg2 = to_word_graph<size_t>(4,
+                                               {{2,
+                                                 1,
+                                                 UNDEFINED,
+                                                 UNDEFINED,
+                                                 UNDEFINED,
+                                                 UNDEFINED,
+                                                 UNDEFINED,
+                                                 UNDEFINED,
+                                                 UNDEFINED,
+                                                 UNDEFINED,
+                                                 UNDEFINED},
+                                                {},
+                                                {3}});
+
+    REQUIRE(equal(knuth_bendix::normal_forms(kb2),
+                  normal_forms_from_word_graph(kb2, test_wg2)));
 
     auto ntc = knuth_bendix::non_trivial_classes(kb2, kb1);
 
