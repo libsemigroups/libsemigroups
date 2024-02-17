@@ -395,11 +395,16 @@ namespace libsemigroups {
           4'213'597, partition_monoid(6), 6, {strategy::hlt}, init_func);
     }
 
-    // Approx 49m35s ??
+    // Approx 49m35s
+    // in 2024 I can't get this to terminate in anything like 49m
     TEST_CASE("partition_monoid(7) - hlt",
               "[paper][partition_monoid][n=7][hlt]") {
+      // REQUIRE(partition_monoid(7).rules == std::vector<word_type>());
+      auto p = partition_monoid(7);
+      presentation::make_semigroup(p);
+      REQUIRE(!p.contains_empty_word());
       benchmark_todd_coxeter_single(
-          190'899'322, partition_monoid(7), 7, {strategy::hlt}, DoNothing);
+          190'899'322, std::move(p), 7, {strategy::hlt}, DoNothing);
     }
 
   }  // namespace partition
@@ -430,13 +435,14 @@ namespace libsemigroups {
     // Becomes impractical to do multiple runs for n >= 7, so we switch to
     // doing single runs.
 
+    // auto init = [](ToddCoxeter& tc) { tc.lookahead_min(5'000'000); };
+    //  FIXME in 2024 this doesn't terminate in the 3 minutes indicated in the
+    //  paper.
     TEST_CASE("dual_symmetric_inverse_monoid(7)",
               "[paper][dual_symmetric_inverse_monoid][n=7][Felsch]") {
+      auto p = dual_symmetric_inverse_monoid(6);
       benchmark_todd_coxeter_single(
-          6'166'105,
-          dual_symmetric_inverse_monoid(7),
-          7,
-          {strategy::hlt, strategy::felsch, strategy::Rc});
+          6'166'105, std::move(p), 6, {strategy::hlt}, DoNothing);
     }
   }  // namespace dual_symmetric_inverse
 
@@ -632,31 +638,30 @@ namespace libsemigroups {
         strategies,
         DoNothing);
 
+    // Becomes impractical to do multiple runs after n >= 11, so we switch to
+    // doing single runs.
+
+    // Approx 17s (2021 - MacBook Air M1 - 8GB RAM)
+    TEST_CASE("stylic_monoid(11) - HLT (default)",
+              "[paper][stylic_monoid][n=11][hlt]") {
+      benchmark_todd_coxeter_single(4'213'597, stylic_monoid(11), 11);
+    }
+
+    // Approx 153s (2021 - MacBook Air M1 - 8GB RAM)
+    TEST_CASE("stylic_monoid(12) - HLT (default)",
+              "[paper][stylic_monoid][n=12][hlt]") {
+      benchmark_todd_coxeter_single(
+          27'644'437, stylic_monoid(12), 12, {strategy::hlt});
+    }
+
+    // Approx ?? (2021 - MacBook Air M1 - 8GB RAM)
+    // TODO try implementing lookahead_max, and ensure that lower_bound is used
+    // by HLT this currently just spirals off into too many nodes.
+    // TEST_CASE("stylic_monoid(13) - HLT (default)",
+    //           "[paper][stylic_monoid][n=13][hlt]") {
+    //   benchmark_todd_coxeter_single(190'899'322, stylic_monoid(13), 13);
+    // }
   }  // namespace stylic
-
-  // Becomes impractical to do multiple runs after n >= 11, so we switch to
-  // doing single runs.
-
-  // Approx 17s (2021 - MacBook Air M1 - 8GB RAM)
-  TEST_CASE("stylic_monoid(11) - HLT (default)",
-            "[paper][stylic_monoid][n=11][hlt]") {
-    auto p = stylic_monoid(11);
-    benchmark_todd_coxeter_single(4'213'597, stylic_monoid(11), 11);
-  }
-
-  // Approx 153s (2021 - MacBook Air M1 - 8GB RAM)
-  TEST_CASE("stylic_monoid(12) - HLT (default)",
-            "[paper][stylic_monoid][n=12][hlt]") {
-    benchmark_todd_coxeter_single(27'644'437, stylic_monoid(12), 12);
-  }
-
-  // Approx ?? (2021 - MacBook Air M1 - 8GB RAM)
-  // TODO try implementing lookahead_max, and ensure that lower_bound is used by
-  // HLT this currently just spirals off into too many nodes.
-  // TEST_CASE("stylic_monoid(13) - HLT (default)",
-  //           "[paper][stylic_monoid][n=13][hlt]") {
-  //   benchmark_todd_coxeter_single(190'899'322, stylic_monoid(13), 13);
-  // }
 
   ////////////////////////////////////////////////////////////////////////
   // stellar_monoid
@@ -701,7 +706,7 @@ namespace libsemigroups {
     TEST_CASE("stellar_monoid(11) - Felsch (default)",
               "[paper][stellar_monoid][n=11][hlt]") {
       benchmark_todd_coxeter_single(
-          108'505'112, stylic_monoid(11), 11, {strategy::felsch});
+          108'505'112, stellar_monoid(11), 11, {strategy::felsch});
     }
   }  // namespace stellar
 
