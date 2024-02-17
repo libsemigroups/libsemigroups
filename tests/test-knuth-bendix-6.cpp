@@ -155,7 +155,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
                           "106",
-                          "free semigroup congruence (6 classes)",
+                          "free semigroup congruence (6 classes) x 2",
                           "[quick][knuth-bendix]") {
     auto                    rg = ReportGuard(false);
     Presentation<word_type> p;
@@ -223,7 +223,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
                           "108",
-                          "free semigroup congruence (240 classes)",
+                          "free semigroup congruence (240 classes) x 2",
                           "[no-valgrind][quick][knuth-bendix]") {
     auto                    rg = ReportGuard(false);
     Presentation<word_type> p;
@@ -301,7 +301,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
                           "020",
-                          "Chinese monoid",
+                          "Chinese monoid x 2",
                           "[quick][knuth-bendix]") {
     auto                    rg = ReportGuard(false);
     Presentation<word_type> p  = fpsemigroup::chinese_monoid(3);
@@ -359,7 +359,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
                           "109",
-                          "constructors/init for finished",
+                          "constructors/init for finished x 2",
                           "[quick][knuth-bendix]") {
     using literals::operator""_w;
     auto rg = ReportGuard(false);

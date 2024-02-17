@@ -252,7 +252,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
                           "005",
-                          "Example 5.1 in Sims (infinite)",
+                          "Example 5.1 in Sims (infinite) x 2",
                           "[quick][knuth-bendix]") {
     auto rg = ReportGuard(false);
 
@@ -756,7 +756,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
                           "997",
-                          "non-trivial classes",
+                          "non-trivial classes x 2",
                           "[quick][knuth-bendix]") {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
@@ -785,7 +785,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
                           "996",
-                          "non-trivial classes",
+                          "non-trivial classes x 3",
                           "[quick][knuth-bendix]") {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
@@ -813,7 +813,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
                           "995",
-                          "non-trivial classes",
+                          "non-trivial classes x 4",
                           "[quick][knuth-bendix]") {
     auto                    rg = ReportGuard(false);
     Presentation<word_type> p;
@@ -908,10 +908,11 @@ namespace libsemigroups {
     REQUIRE(ntc == decltype(ntc)({{"c", "b"}}));
   }
 
-  LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
-                          "113",
-                          "non-trivial congruence on an infinite fp semigroup",
-                          "[quick][kbp]") {
+  LIBSEMIGROUPS_TEST_CASE(
+      "KnuthBendix",
+      "113",
+      "non-trivial congruence on an infinite fp semigroup x 2",
+      "[quick][kbp]") {
     auto                    rg = ReportGuard(false);
     Presentation<word_type> p;
     p.alphabet(5);

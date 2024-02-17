@@ -862,7 +862,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
                           "073",
-                          "F(2, 5) - Chapter 9, Section 1 in NR (size 11)",
+                          "F(2, 5) - Chapter 9, Section 1 in NR (size 11) x 2",
                           "[knuth-bendix][quick]") {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
@@ -988,7 +988,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE(
       "KnuthBendix",
       "077",
-      "SL(2, 7) from Chapter 3, Proposition 1.5 in NR (size 336)",
+      "SL(2, 7) from Chapter 3, Proposition 1.5 in NR (size 336) x 2",
       "[no-valgrind][quick][knuth-bendix]") {
     auto rg = ReportGuard(false);
 

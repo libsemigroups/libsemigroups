@@ -145,7 +145,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
                           "102",
-                          "internal_string_to_word",
+                          "internal_string_to_word x 2",
                           "[quick]") {
     auto                  rg = ReportGuard(false);
     FroidurePin<Transf<>> S(

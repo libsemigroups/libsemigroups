@@ -1107,7 +1107,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
                           "040",
                           "Example 5.4 in Sims (KnuthBendix 11 "
-                          "again) "
+                          "again) x 2"
                           "(different overlap policy)",
                           "[quick][knuth-bendix]") {
     auto rg = ReportGuard(false);
@@ -1396,7 +1396,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
                           "128",
-                          "1-relation hard case",
+                          "1-relation hard case x 2",
                           "[fail][knuthbendix]") {
     Presentation<std::string> p;
     p.contains_empty_word(true);
@@ -1737,7 +1737,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
                           "135",
-                          "sigma sylvester monoid",
+                          "sigma sylvester monoid x 2",
                           "[todd-coxeter][extreme]") {
     using namespace literals;
     Presentation<word_type> p;
