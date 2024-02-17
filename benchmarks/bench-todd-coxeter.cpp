@@ -399,7 +399,7 @@ namespace libsemigroups {
     TEST_CASE("partition_monoid(7) - hlt",
               "[paper][partition_monoid][n=7][hlt]") {
       benchmark_todd_coxeter_single(
-          190'899'322, partition_monoid(7), 7, {strategy::hlt}, init_func);
+          190'899'322, partition_monoid(7), 7, {strategy::hlt}, DoNothing);
     }
 
   }  // namespace partition
