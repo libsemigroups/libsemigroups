@@ -678,6 +678,7 @@ namespace libsemigroups {
           // push_settings();
           lookahead_extent(options::lookahead_extent::full);
           lookahead_style(options::lookahead_style::hlt);
+          // TODO this doesn't do
           perform_lookahead(DoNotStopEarly);
           // pop_settings();
           // }

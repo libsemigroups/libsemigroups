@@ -71,6 +71,8 @@ namespace libsemigroups {
     }
 
     void preprocess_presentation(Presentation<word_type>& p) {
+      // Removing redundant generators reverses things like
+      // greedy_reduce_length, so we don't do it.
       // presentation::remove_redundant_generators(p);
       presentation::reduce_complements(p);
       presentation::remove_trivial_rules(p);
@@ -140,12 +142,6 @@ namespace libsemigroups {
           size, std::move(p), n, strategies, DoNothing);
     }
 
-    // .lookahead_next(20'000'000)
-    // .lookahead_min(10'000'000);
-    // while (!tc.finished()) {  // TODO reporting doesn't work
-    //   tc.run_for(std::chrono::seconds(10));
-    //   tc.standardize(Order::shortlex);
-    // }
     // TODO be good to recover the below
     // std::cout << tc.settings_string();
     // std::cout << tc.stats_string();
@@ -207,6 +203,17 @@ namespace libsemigroups {
           close_xml_tag("LatexColumnTitle");
         }
       }
+    }
+
+#define TEST_CASE_TODD_COXETER(PRESENTATION) \
+  TEST_CASE(PRESENTATION, "[paper][" PRESENTATION "]")
+
+    void start_table(char const* caption,
+                     char const* label,
+                     char const* symbol) {
+      fmt::print("{}", xml_tag("LatexCaption", "value", caption));
+      fmt::print("{}", xml_tag("LatexLabel", "value", label));
+      fmt::print("{}", xml_tag("LatexSymbol", "value", symbol));
     }
 
   }  // namespace
@@ -378,33 +385,22 @@ namespace libsemigroups {
         strategies,
         DoNothing);
 
-    // Becomes impractical to do multiple runs for n >= 6, so we switch to
+    // Becomes impractical to do multiple runs for n >= 7, so we switch to
     // doing single runs.
 
     auto init_func = [](ToddCoxeter& tc) {
       tc.use_relations_in_extra(true)
-          .lookahead_next(200'000)
-          .lookahead_growth_factor(2.5);
-      // .reserve(15'000'000);
+          .lookahead_next(200'000'000)
+          .save(true)
+          .lower_bound(190'899'322);
     };
 
-    // Approx 31s (2021 - MacBook Air M1 - 8GB RAM)
-    TEST_CASE("partition_monoid(6) - hlt",
-              "[paper][partition_monoid][n=6][hlt]") {
-      benchmark_todd_coxeter_single(
-          4'213'597, partition_monoid(6), 6, {strategy::hlt}, init_func);
-    }
-
     // Approx 49m35s
-    // in 2024 I can't get this to terminate in anything like 49m
     TEST_CASE("partition_monoid(7) - hlt",
               "[paper][partition_monoid][n=7][hlt]") {
-      // REQUIRE(partition_monoid(7).rules == std::vector<word_type>());
       auto p = partition_monoid(7);
-      presentation::make_semigroup(p);
-      REQUIRE(!p.contains_empty_word());
       benchmark_todd_coxeter_single(
-          190'899'322, std::move(p), 7, {strategy::hlt}, DoNothing);
+          190'899'322, std::move(p), 7, {strategy::hlt}, init_func);
     }
 
   }  // namespace partition
@@ -435,14 +431,15 @@ namespace libsemigroups {
     // Becomes impractical to do multiple runs for n >= 7, so we switch to
     // doing single runs.
 
-    // auto init = [](ToddCoxeter& tc) { tc.lookahead_min(5'000'000); };
-    //  FIXME in 2024 this doesn't terminate in the 3 minutes indicated in the
-    //  paper.
+    auto init = [](ToddCoxeter& tc) {
+      tc.lookahead_min(10'000'000).save(true).def_policy(def_policy::unlimited);
+    };
+
     TEST_CASE("dual_symmetric_inverse_monoid(7)",
-              "[paper][dual_symmetric_inverse_monoid][n=7][Felsch]") {
-      auto p = dual_symmetric_inverse_monoid(6);
+              "[paper][dual_symmetric_inverse_monoid][n=7]") {
+      auto p = dual_symmetric_inverse_monoid(7);
       benchmark_todd_coxeter_single(
-          6'166'105, std::move(p), 6, {strategy::hlt}, DoNothing);
+          6'166'105, std::move(p), 7, {strategy::hlt, strategy::felsch}, init);
     }
   }  // namespace dual_symmetric_inverse
 
@@ -574,10 +571,10 @@ namespace libsemigroups {
         DoNothing);
 
     // Approx. 1 minute
-    // TODO lower bound has no impact here, because HLT doesn't check for this,
-    // maybe it should? When there are no nodes defined or killed in some
-    // interval of time, then we should check if we're already complete and
-    // compatible, and if the lower_bound() == number_of_active_nodes
+    // TODO lower bound has no impact here, because HLT doesn't check for
+    // this, maybe it should? When there are no nodes defined or killed in
+    // some interval of time, then we should check if we're already complete
+    // and compatible, and if the lower_bound() == number_of_active_nodes
     TEST_CASE("singular_brauer_monoid(8) (Maltcev-Mazorchuk)",
               "[paper][singular_brauer_monoid][n=8]") {
       uint64_t size      = 1'986'705;
@@ -589,7 +586,8 @@ namespace libsemigroups {
     }
 
     // Approx. ? Running this appears to use >27gb of memory, which JDM's
-    // laptop does not have.
+    // laptop does not have. The presentation is also huge, which makes it
+    // unlikely that this will work
     // TEST_CASE("singular_brauer_monoid(9) (Maltcev-Mazorchuk)",
     //          "[paper][singular_brauer_monoid][n=9]") {
     //            uint64_t size      = 34'096'545;
@@ -655,8 +653,8 @@ namespace libsemigroups {
     }
 
     // Approx ?? (2021 - MacBook Air M1 - 8GB RAM)
-    // TODO try implementing lookahead_max, and ensure that lower_bound is used
-    // by HLT this currently just spirals off into too many nodes.
+    // TODO try implementing lookahead_max, and ensure that lower_bound is
+    // used by HLT this currently just spirals off into too many nodes.
     // TEST_CASE("stylic_monoid(13) - HLT (default)",
     //           "[paper][stylic_monoid][n=13][hlt]") {
     //   benchmark_todd_coxeter_single(190'899'322, stylic_monoid(13), 13);
@@ -829,9 +827,6 @@ namespace libsemigroups {
       return to_presentation<word_type>(p);
     }
 
-    // TODO this doesn't really work for the benchmarks because each monoid
-    // requires different settings and this isn't catered for here.
-
     auto init = [](ToddCoxeter& tc) {
       if (tc.strategy() == strategy::hlt) {
         tc.lookahead_next(500'000).large_collapse(2'000);
@@ -849,22 +844,35 @@ namespace libsemigroups {
     sizes_type sizes
         = {0, 1, 14'911, 20'490, 36'412, 72'822, 78'722, 153'500, 270'272};
     auto strategies = {strategy::hlt};
-    BENCHMARK_TODD_COXETER_RANGE(
-        sizes,
-        "The presentations from Walker~\\cite{Walker1992aa}.",
-        "table-walker",
-        "S",
-        5,
-        5,
-        walker,
-        "walker",
-        strategies,
-        init);
+
+    TEST_CASE_TODD_COXETER("Walker") {
+      start_table("The presentations from Walker~\\cite{Walker1992aa}.",
+                  "table-walker",
+                  "S");
+
+      auto p = walker(1);
+      preprocess_presentation(p);
+      emit_xml_presentation_tags(p, 1, 1);
+      auto rg = ReportGuard(false);
+
+      BENCHMARK("HLT") {
+        ToddCoxeter tc(congruence_kind::twosided, p);
+        tc.strategy(strategy::hlt)
+            .lookahead_next(500'000)
+            .large_collapse(2'000);
+        REQUIRE(tc.number_of_classes() == 1);
+      };
+      BENCHMARK("Felsch") {
+        ToddCoxeter tc(congruence_kind::twosided, p);
+        tc.strategy(strategy::felsch);
+        REQUIRE(tc.number_of_classes() == 1);
+      };
+    }
   }  // namespace walker
 }  // namespace libsemigroups
-
 /*
- * TODO: work out whether the settings below are better than those in the test
+ * TODO: work out whether the settings below are better than those in the
+ test
  * file and implement the best settings above.
 
     TEST_CASE("Walker 2", "[quick][Walker2][paper]") {

@@ -3253,13 +3253,7 @@ namespace libsemigroups {
       rhs = std::string(N, 'b') + "a";
       presentation::add_rule_no_checks(p, lhs, rhs);
       ToddCoxeter tc(twosided, std::move(p));
-      if (N % 3 == 1) {
-        // TODO this should always be 1 now JDM made a mistake when
-        // implementing this the first time.
-        REQUIRE(tc.number_of_classes() == 3);
-      } else {
-        REQUIRE(tc.number_of_classes() == 1);
-      }
+      REQUIRE(tc.number_of_classes() == 1);
     }
   }
 
