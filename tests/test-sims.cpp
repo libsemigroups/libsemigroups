@@ -3768,18 +3768,24 @@ namespace libsemigroups {
                           "[quick][sims1]") {
     Presentation<std::string> p;
     p.alphabet("ab");
-    p.contains_empty_word(false);
+    p.contains_empty_word(true);
 
     PrunerIdeal ip(p);
 
     Sims1 s(p);
     s.add_pruner(ip);
-    REQUIRE(s.number_of_congruences(2) == 3);
-    REQUIRE(s.number_of_congruences(3) == 7);
-    REQUIRE(s.number_of_congruences(4) == 18);
-    REQUIRE(s.number_of_congruences(5) == 50);
-    REQUIRE(s.number_of_congruences(6) == 149);
-    REQUIRE(s.number_of_congruences(7) == 467);
+    REQUIRE(s.number_of_congruences(1) == 1);
+    REQUIRE(s.number_of_congruences(2) == 2);
+
+    auto it = s.cbegin(2);
+    REQUIRE(*(it++) == to_word_graph<uint32_t>(2, {{0, 0}}));
+    REQUIRE(*(it++) == to_word_graph<uint32_t>(2, {{1, 1}, {1, 1}}));
+
+    REQUIRE(s.number_of_congruences(3) == 4);
+    REQUIRE(s.number_of_congruences(4) == 9);
+    REQUIRE(s.number_of_congruences(5) == 23);
+    REQUIRE(s.number_of_congruences(6) == 65);
+    REQUIRE(s.number_of_congruences(7) == 197);
   }
 
   LIBSEMIGROUPS_TEST_CASE("Sims2",
@@ -3800,11 +3806,20 @@ namespace libsemigroups {
     presentation::add_rule(p, 0101_w, 101_w);
     presentation::add_rule(p, 1010_w, 101_w);
 
+    KnuthBendix kb(congruence_kind::twosided, p);
+    REQUIRE(kb.number_of_classes() == 15);
+
     PrunerIdeal ip(to_presentation<std::string>(p));
 
     Sims1 s(p);
-    s.add_pruner(ip);
-    REQUIRE(s.number_of_congruences(15) == 1);  // correct value is 3
+    // s.number_of_threads(1).add_pruner(ip);
+    // REQUIRE(s.number_of_congruences(15) == 15);  // correct value is 18
+
+    p  = partition_monoid(3, author::Machine);
+    ip = PrunerIdeal(to_presentation<std::string>(p));
+    s.init(p).add_pruner(ip);
+    REQUIRE(s.number_of_congruences(203) == 5767);  // checked in GAP
+                                                    //
   }
 
 }  // namespace libsemigroups

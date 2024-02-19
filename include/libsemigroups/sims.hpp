@@ -2183,10 +2183,7 @@ namespace libsemigroups {
           wg.cbegin_nodes() + wg.number_of_active_nodes());
 
       if (!continue_) {
-        // There's no completion of the word graph with a sink, so no point in
-        // carrying on.
-        // TODO this isn't true it might be that we are about to add a new node
-        // that is a sink, whereas none of the current edges is a sink
+        // Complete graph with no sink or word graph with 2-sinks or more
         return false;
       } else if (sink == UNDEFINED) {
         // There's no sink currently so we just carry on

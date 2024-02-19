@@ -1481,8 +1481,7 @@ namespace libsemigroups {
     [[nodiscard]] std::pair<Node, bool> unique_sink(WordGraph<Node> const& wg,
                                                     Iterator first,
                                                     Iterator last) {
-      Node   sink          = UNDEFINED;
-      size_t num_non_sinks = 0;
+      Node sink = UNDEFINED;
       for (auto it = first; it != last; ++it) {
         auto s = *it;
         if (std::all_of(wg.cbegin_targets_no_checks(s),
@@ -1494,17 +1493,12 @@ namespace libsemigroups {
           } else {
             sink = s;
           }
-
-          if (std::any_of(wg.cbegin_targets_no_checks(s),
-                          wg.cend_targets_no_checks(s),
-                          [&s](Node t) { return t != UNDEFINED && t != s; })) {
-            num_non_sinks += 1;
-          }
-          // if there are as many non-sinks as input nodes, then there can be no
-          // sinks in any completion, and so we return false, otherwise true.
         }
       }
-      return {sink, num_non_sinks != std::distance(first, last)};
+      if (word_graph::is_complete(wg, first, last) && sink == UNDEFINED) {
+        return {sink, false};
+      }
+      return {sink, true};
     }
   }  // namespace word_graph
 
