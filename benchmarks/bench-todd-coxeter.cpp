@@ -84,9 +84,10 @@ namespace libsemigroups {
       presentation::sort_rules(p);
     }
 
-    void emit_xml_presentation_tags(Presentation<word_type>& p,
-                                    size_t                   index,
-                                    size_t                   size) {
+    template <typename Word>
+    void emit_xml_presentation_tags(Presentation<Word>& p,
+                                    std::string const&  index,
+                                    size_t              size) {
       fmt::print("{}", xml_tag("Index", "value", index));
       fmt::print("{}", xml_tag("Size", "value", size));
       fmt::print("{}",
@@ -96,6 +97,13 @@ namespace libsemigroups {
       fmt::print(
           "{}",
           xml_tag("PresentationLength", "value", presentation::length(p)));
+    }
+
+    template <typename Word>
+    void emit_xml_presentation_tags(Presentation<Word>& p,
+                                    size_t              index,
+                                    size_t              size) {
+      emit_xml_presentation_tags(p, std::to_string(index), size);
     }
 
     constexpr auto DoNothing = [](ToddCoxeter&) {};
@@ -192,7 +200,7 @@ namespace libsemigroups {
       for (size_t n = first; n <= last; ++n) {
         auto p = constructor(n);
         preprocess_presentation(p);
-        emit_xml_presentation_tags(p, n, sizes[n]);
+        emit_xml_presentation_tags(p, std::to_string(n), sizes[n]);
         for (auto const& strategy : strategies) {
           auto title = fmt::format("{}", strategy);
           open_xml_tag("LatexColumnTitle", title);
@@ -847,9 +855,10 @@ namespace libsemigroups {
         size_t index = 1;
         auto   p     = walker(index);
         preprocess_presentation(p);
-        emit_xml_presentation_tags(p, index, 1);
+        emit_xml_presentation_tags(p, std::to_string(index), 1);
         auto rg = ReportGuard(false);
 
+        open_xml_tag("LatexColumnTitle", "HLT");
         BENCHMARK("HLT") {
           ToddCoxeter tc(congruence_kind::twosided, p);
           tc.strategy(strategy::hlt)
@@ -857,12 +866,15 @@ namespace libsemigroups {
               .large_collapse(2'000);
           REQUIRE(tc.number_of_classes() == 1);
         };
+        close_xml_tag("LatexColumnTitle");
         presentation::greedy_reduce_length(p);
+        open_xml_tag("LatexColumnTitle", "Felsch");
         BENCHMARK("Felsch") {
           ToddCoxeter tc(congruence_kind::twosided, p);
           tc.strategy(strategy::felsch).use_relations_in_extra(true);
           REQUIRE(tc.number_of_classes() == 1);
         };
+        close_xml_tag("LatexColumnTitle");
       }
       {
         size_t index = 2;
@@ -871,6 +883,7 @@ namespace libsemigroups {
         emit_xml_presentation_tags(p, index, 14'911);
         auto rg = ReportGuard(false);
 
+        open_xml_tag("LatexColumnTitle", "HLT");
         BENCHMARK("HLT") {
           ToddCoxeter tc(congruence_kind::twosided, p);
           tc.strategy(strategy::hlt)
@@ -878,11 +891,14 @@ namespace libsemigroups {
               .lookahead_next(2'000'000);
           REQUIRE(tc.number_of_classes() == 14'911);
         };
+        close_xml_tag("LatexColumnTitle");
+        open_xml_tag("LatexColumnTitle", "Felsch");
         BENCHMARK("Felsch") {
           ToddCoxeter tc(congruence_kind::twosided, p);
           tc.strategy(strategy::felsch);
           REQUIRE(tc.number_of_classes() == 14'911);
         };
+        close_xml_tag("LatexColumnTitle");
       }
       {
         size_t index = 3;
@@ -891,11 +907,14 @@ namespace libsemigroups {
         emit_xml_presentation_tags(p, index, 20'490);
         auto rg = ReportGuard(false);
 
+        open_xml_tag("LatexColumnTitle", "HLT");
         BENCHMARK("HLT") {
           ToddCoxeter tc(congruence_kind::twosided, p);
           tc.strategy(strategy::hlt).lookahead_next(2'000'000);
           REQUIRE(tc.number_of_classes() == 20'490);
         };
+        close_xml_tag("LatexColumnTitle");
+        open_xml_tag("LatexColumnTitle", "Felsch");
         BENCHMARK("Felsch") {
           ToddCoxeter tc(congruence_kind::twosided, p);
           tc.strategy(strategy::felsch)
@@ -905,6 +924,7 @@ namespace libsemigroups {
               .def_policy(def_policy::no_stack_if_no_space);
           REQUIRE(tc.number_of_classes() == 20'490);
         };
+        close_xml_tag("LatexColumnTitle");
       }
       {
         size_t index = 4;
@@ -914,11 +934,14 @@ namespace libsemigroups {
         emit_xml_presentation_tags(p, index, N);
         auto rg = ReportGuard(false);
 
+        open_xml_tag("LatexColumnTitle", "HLT");
         BENCHMARK("HLT") {
           ToddCoxeter tc(congruence_kind::twosided, p);
           tc.strategy(strategy::hlt).lookahead_next(3'000'000);
           REQUIRE(tc.number_of_classes() == N);
         };
+        close_xml_tag("LatexColumnTitle");
+        open_xml_tag("LatexColumnTitle", "Felsch");
         BENCHMARK("Felsch") {
           ToddCoxeter tc(congruence_kind::twosided, p);
           tc.strategy(strategy::felsch)
@@ -927,6 +950,7 @@ namespace libsemigroups {
               .large_collapse(3'000);
           REQUIRE(tc.number_of_classes() == N);
         };
+        close_xml_tag("LatexColumnTitle");
       }
       {
         size_t index = 5;
@@ -935,11 +959,13 @@ namespace libsemigroups {
         emit_xml_presentation_tags(p, index, N);
         auto rg = ReportGuard(false);
 
+        open_xml_tag("LatexColumnTitle", "HLT");
         BENCHMARK("HLT") {
           ToddCoxeter tc(congruence_kind::twosided, p);
           tc.strategy(strategy::hlt).lookahead_next(5'000'000).save(true);
           REQUIRE(tc.number_of_classes() == N);
         };
+        close_xml_tag("LatexColumnTitle");
       }
       {
         size_t index = 6;
@@ -949,16 +975,20 @@ namespace libsemigroups {
         emit_xml_presentation_tags(p, index, N);
         auto rg = ReportGuard(false);
 
+        open_xml_tag("LatexColumnTitle", "HLT");
         BENCHMARK("HLT") {
           ToddCoxeter tc(congruence_kind::twosided, p);
           tc.strategy(strategy::hlt).lookahead_next(5'000'000).save(true);
           REQUIRE(tc.number_of_classes() == N);
         };
+        close_xml_tag("LatexColumnTitle");
+        open_xml_tag("LatexColumnTitle", "Felsch");
         BENCHMARK("Felsch") {
           ToddCoxeter tc(congruence_kind::twosided, p);
           tc.strategy(strategy::felsch).use_relations_in_extra(true);
           REQUIRE(tc.number_of_classes() == N);
         };
+        close_xml_tag("LatexColumnTitle");
       }
       {
         size_t index = 7;
@@ -968,12 +998,15 @@ namespace libsemigroups {
         emit_xml_presentation_tags(p, index, N);
         auto rg = ReportGuard(false);
 
+        open_xml_tag("LatexColumnTitle", "HLT");
         BENCHMARK("HLT") {
           ToddCoxeter tc(congruence_kind::twosided, p);
           tc.strategy(strategy::hlt);
           REQUIRE(tc.number_of_classes() == N);
         };
+        close_xml_tag("LatexColumnTitle");
         presentation::greedy_reduce_length(p);
+        open_xml_tag("LatexColumnTitle", "Felsch");
         BENCHMARK("Felsch") {
           ToddCoxeter tc(congruence_kind::twosided, p);
           tc.strategy(strategy::felsch)
@@ -981,6 +1014,7 @@ namespace libsemigroups {
               .use_relations_in_extra(true);
           REQUIRE(tc.number_of_classes() == N);
         };
+        close_xml_tag("LatexColumnTitle");
       }
       {
         size_t index = 8;
@@ -990,22 +1024,33 @@ namespace libsemigroups {
         emit_xml_presentation_tags(p, index, N);
         auto rg = ReportGuard(false);
 
+        open_xml_tag("LatexColumnTitle", "HLT");
         BENCHMARK("HLT") {
           ToddCoxeter tc(congruence_kind::twosided, p);
           tc.strategy(strategy::hlt).lookahead_next(500'000);
           REQUIRE(tc.number_of_classes() == N);
         };
+        close_xml_tag("LatexColumnTitle");
         presentation::greedy_reduce_length_and_number_of_gens(p);
+        open_xml_tag("LatexColumnTitle", "Felsch");
         BENCHMARK("Felsch") {
           ToddCoxeter tc(congruence_kind::twosided, p);
           tc.strategy(strategy::felsch).use_relations_in_extra(true);
           REQUIRE(tc.number_of_classes() == N);
         };
+        close_xml_tag("LatexColumnTitle");
       }
     }
   }  // namespace walker
 
   namespace ace {
+
+    TEST_CASE("ACE --- table header", "[paper][ace]") {
+      start_table("Comparison of \\libsemigroups, ACE~\\cite{Havas1999aa}, and "
+                  "GAP~\\cite{GAP4}.",
+                  "table-ace",
+                  "|G:H|");
+    }
 
     TEST_CASE("ACE --- 2p17-2p14", "[paper][ace][2p17-2p14]") {
       Presentation<std::string> p;
@@ -1017,13 +1062,18 @@ namespace libsemigroups {
       presentation::add_rule(p, "bACbaacA", "");
       presentation::add_rule(p, "accAABab", "");
 
+      emit_xml_presentation_tags(p, "2p17-2p14", 16'384);
+
+      open_xml_tag("LatexColumnTitle", "HLT");
       BENCHMARK("HLT") {
         ToddCoxeter H(congruence_kind::right, p);
         H.add_pair({1, 2}, {});
         H.lookahead_next(1'000'000).lookahead_extent(lookahead_extent::partial);
         REQUIRE(H.number_of_classes() == 16'384);
       };
+      close_xml_tag("LatexColumnTitle");
       // About 2s
+      // open_xml_tag("LatexColumnTitle", "Felsch");
       // BENCHMARK("Felsch") {
       //  ToddCoxeter H(congruence_kind::right, p);
       //  H.add_pair({1, 2}, {});
@@ -1042,11 +1092,14 @@ namespace libsemigroups {
       presentation::add_rule(p, "bACbaacA", "");
       presentation::add_rule(p, "accAABab", "");
 
+      emit_xml_presentation_tags(p, "2p17-2p3", 8);
+
       letter_type b = 1;
       letter_type c = 2;
       letter_type A = 3;
       letter_type B = 4;
       letter_type C = 5;
+      open_xml_tag("LatexColumnTitle", "HLT");
       BENCHMARK("HLT") {
         ToddCoxeter H(congruence_kind::right, p);
         H.add_pair({b, c}, {});
@@ -1056,7 +1109,9 @@ namespace libsemigroups {
 
         REQUIRE(H.number_of_classes() == 8);
       };
+      close_xml_tag("LatexColumnTitle");
       // About 2s
+      // open_xml_tag("LatexColumnTitle", "Felsch");
       // BENCHMARK("Felsch") {
       //   ToddCoxeter H(congruence_kind::right, p);
       //   H.add_pair({b, c}, {});
@@ -1067,6 +1122,7 @@ namespace libsemigroups {
       //   REQUIRE(H.number_of_classes() == 8);
       // };
     }
+
     TEST_CASE("ACE --- 2p17-fel1", "[paper][ace][2p17-1]") {
       auto                      rg = ReportGuard(false);
       Presentation<std::string> p;
@@ -1086,6 +1142,9 @@ namespace libsemigroups {
 
       presentation::remove_duplicate_rules(p);
 
+      emit_xml_presentation_tags(p, "2p17-fel1", 131'072);
+
+      open_xml_tag("LatexColumnTitle", "HLT");
       BENCHMARK("HLT") {
         ToddCoxeter H(congruence_kind::right, p);
         H.add_pair({}, {a, B, C, b, a, c});
@@ -1095,7 +1154,7 @@ namespace libsemigroups {
         H.save(true).def_max(20'000).large_collapse(10'000);
         REQUIRE(H.number_of_classes() == 131'072);
       };
-      presentation::balance(p, "abcABC", "ABCabc");
+      close_xml_tag("LatexColumnTitle");
     }
 
     TEST_CASE("ACE --- 2p17-fel1a", "[paper][ace][2p17-1a]") {
@@ -1108,6 +1167,7 @@ namespace libsemigroups {
       presentation::add_rule(p, "bACbaacA", "");
       presentation::add_rule(p, "accAABab", "");
 
+      emit_xml_presentation_tags(p, "2p17-fel1a", 1);
       letter_type a = 0;
       letter_type b = 1;
       letter_type c = 2;
@@ -1115,6 +1175,7 @@ namespace libsemigroups {
       letter_type B = 4;
       letter_type C = 5;
 
+      open_xml_tag("LatexColumnTitle", "HLT");
       BENCHMARK("HLT") {
         ToddCoxeter H(congruence_kind::right, p);
         H.add_pair({b, c}, {});
@@ -1128,6 +1189,7 @@ namespace libsemigroups {
             .large_collapse(10'000);
         REQUIRE(H.number_of_classes() == 1);
       };
+      close_xml_tag("LatexColumnTitle");
     }
 
     TEST_CASE("ACE --- 2p17-id-fel1", "[paper][ace][2p17-id]") {
@@ -1140,6 +1202,8 @@ namespace libsemigroups {
       presentation::add_rule(p, "bACbaacA", "");
       presentation::add_rule(p, "accAABab", "");
 
+      emit_xml_presentation_tags(p, "2p17-id-fel1", 131'072);
+      open_xml_tag("LatexColumnTitle", "HLT");
       BENCHMARK("HLT") {
         ToddCoxeter tc(congruence_kind::twosided, p);
         tc.strategy(strategy::hlt)
@@ -1149,6 +1213,7 @@ namespace libsemigroups {
 
         REQUIRE(tc.number_of_classes() == std::pow(2, 17));
       };
+      close_xml_tag("LatexColumnTitle");
     }
 
     TEST_CASE("ACE --- 2p18-fe1", "[paper][ace][2p18]") {
@@ -1165,8 +1230,11 @@ namespace libsemigroups {
       presentation::add_rule(p, "Bxbx", "");
       presentation::add_rule(p, "Cxcx", "");
 
+      emit_xml_presentation_tags(p, "2p18-fe1", 262'144);
+
       letter_type constexpr a = 0, b = 1, c = 2, A = 3, B = 4, C = 5;
 
+      open_xml_tag("LatexColumnTitle", "HLT");
       BENCHMARK("HLT") {
         ToddCoxeter H(congruence_kind::right, p);
         H.add_pair({a, B, C, b, a, c}, {});
@@ -1182,6 +1250,7 @@ namespace libsemigroups {
 
         REQUIRE(H.number_of_classes() == 262'144);
       };
+      close_xml_tag("LatexColumnTitle");
     }
 
     TEST_CASE("ACE --- F27", "[paper][ace][F27]") {
@@ -1197,6 +1266,8 @@ namespace libsemigroups {
       presentation::add_rule(p, "xy", "z");
       presentation::add_rule(p, "yz", "a");
       presentation::add_rule(p, "za", "b");
+      emit_xml_presentation_tags(p, "F27", 29);
+      open_xml_tag("LatexColumnTitle", "HLT");
       BENCHMARK("HLT") {
         ToddCoxeter tc(congruence_kind::twosided, p);
         tc.strategy(strategy::hlt)
@@ -1204,6 +1275,7 @@ namespace libsemigroups {
             .lookahead_extent(lookahead_extent::partial);
         REQUIRE(tc.number_of_classes() == 29);
       };
+      close_xml_tag("LatexColumnTitle");
     }
 
     TEST_CASE("ACE --- M12", "[paper][ace][M12]") {
@@ -1222,7 +1294,9 @@ namespace libsemigroups {
       presentation::add_rule(p, "bcbcbcbcbcbcbcbcbcbc", "");
       presentation::replace_word_with_new_generator(
           p, presentation::longest_subword_reducing_length(p));
+      emit_xml_presentation_tags(p, "M12", 95'040);
 
+      open_xml_tag("LatexColumnTitle", "HLT");
       BENCHMARK("HLT") {
         ToddCoxeter H(congruence_kind::twosided, p);
 
@@ -1232,6 +1306,7 @@ namespace libsemigroups {
 
         REQUIRE(H.number_of_classes() == 95'040);
       };
+      close_xml_tag("LatexColumnTitle");
     }
 
     TEST_CASE("ACE --- SL(2, 19)", "[paper][ace][SL219]") {
@@ -1250,6 +1325,9 @@ namespace libsemigroups {
       presentation::sort_rules(p);
 
       letter_type b = 1;
+      emit_xml_presentation_tags(p, "SL219", 180);
+
+      open_xml_tag("LatexColumnTitle", "HLT");
       BENCHMARK("HLT") {
         ToddCoxeter H(congruence_kind::right, p);
         H.add_pair({b}, {});
@@ -1260,6 +1338,7 @@ namespace libsemigroups {
             .lookahead_next(500'000);
         REQUIRE(H.number_of_classes() == 180);
       };
+      close_xml_tag("LatexColumnTitle");
     }
 
     TEST_CASE("ACE --- big-hard", "[paper][ace][big-hard]") {
@@ -1281,8 +1360,10 @@ namespace libsemigroups {
       presentation::add_rule(p, "CYcy", "");
       presentation::add_rule(p, "xYxy", "");
 
-      letter_type constexpr a = 0, b = 1, c = 2, A = 4, B = 5, C = 6, e = 8;
+      letter_type constexpr a = 0, b = 1, c = 2, A = 4, B = 5, C = 6;
+      emit_xml_presentation_tags(p, "big-hard", 786'432);
 
+      open_xml_tag("LatexColumnTitle", "HLT");
       BENCHMARK("HLT") {
         ToddCoxeter H(congruence_kind::right, p);
         H.add_pair({a, B, C, b, a, c}, {});
@@ -1296,6 +1377,7 @@ namespace libsemigroups {
             .def_max(1'000'000)
             .lower_bound(786'432);
         REQUIRE(H.number_of_classes() == 786'432);
+        close_xml_tag("LatexColumnTitle");
       };
     }
   }  // namespace ace
