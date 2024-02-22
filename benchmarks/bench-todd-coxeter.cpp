@@ -71,7 +71,8 @@ namespace libsemigroups {
              + xml_tag(std::forward<Args>(args)...);
     }
 
-    void preprocess_presentation(Presentation<word_type>& p) {
+    template <typename Word>
+    void preprocess_presentation(Presentation<Word>& p) {
       // Removing redundant generators reverses things like
       // greedy_reduce_length, so we don't do it.
       // presentation::remove_redundant_generators(p);
@@ -1003,67 +1004,78 @@ namespace libsemigroups {
       }
     }
   }  // namespace walker
-}  // namespace libsemigroups
 
-/*
+  namespace ace {
 
-  namespace fpsemigroup {
     TEST_CASE("ACE --- 2p17-2p14", "[paper][ace][2p17-2p14]") {
-      auto        rg = ReportGuard(false);
-      ToddCoxeter G;
-      G.set_alphabet("abcABCe");
-      G.set_identity("e");
-      G.set_inverses("ABCabce");
-      G.add_rule("aBCbac", "e");
-      G.add_rule("bACbaacA", "e");
-      G.add_rule("accAABab", "e");
+      Presentation<std::string> p;
+      p.alphabet("abcABC");
+      p.contains_empty_word(true);
+      std::string inverses = "ABCabc";
+      presentation::add_inverse_rules(p, inverses);
+      presentation::add_rule(p, "aBCbac", "");
+      presentation::add_rule(p, "bACbaacA", "");
+      presentation::add_rule(p, "accAABab", "");
 
       BENCHMARK("HLT") {
-        congruence::ToddCoxeter H(right, G.congruence());
-        H.add_pair({1, 2}, {6});
-        H.simplify();
-        H.lookahead_next(1'000'000).lookahead(lookahead::partial);
+        ToddCoxeter H(congruence_kind::right, p);
+        H.add_pair({1, 2}, {});
+        H.lookahead_next(1'000'000).lookahead_extent(lookahead_extent::partial);
         REQUIRE(H.number_of_classes() == 16'384);
       };
+      // About 2s
+      // BENCHMARK("Felsch") {
+      //  ToddCoxeter H(congruence_kind::right, p);
+      //  H.add_pair({1, 2}, {});
+      //  H.strategy(strategy::felsch).def_max(100'000);
+      //  REQUIRE(H.number_of_classes() == 16'384);
+      //};
     }
 
     TEST_CASE("ACE --- 2p17-2p3", "[paper][ace][2p17-2p3]") {
-      auto        rg = ReportGuard(false);
-      ToddCoxeter G;
-      G.set_alphabet("abcABCe");
-      G.set_identity("e");
-      G.set_inverses("ABCabce");
-      G.add_rule("aBCbac", "e");
-      G.add_rule("bACbaacA", "e");
-      G.add_rule("accAABab", "e");
+      auto                      rg = ReportGuard(false);
+      Presentation<std::string> p;
+      p.contains_empty_word(true);
+      p.alphabet("abcABC");
+      presentation::add_inverse_rules(p, "ABCabc");
+      presentation::add_rule(p, "aBCbac", "");
+      presentation::add_rule(p, "bACbaacA", "");
+      presentation::add_rule(p, "accAABab", "");
 
-      letter_type a = 0;
       letter_type b = 1;
       letter_type c = 2;
       letter_type A = 3;
       letter_type B = 4;
       letter_type C = 5;
-      letter_type e = 6;
       BENCHMARK("HLT") {
-        congruence::ToddCoxeter H(right, G.congruence());
-        H.add_pair({b, c}, {e});
-        H.add_pair({A, B, A, A, b, c, a, b, C}, {e});
+        ToddCoxeter H(congruence_kind::right, p);
+        H.add_pair({b, c}, {});
+        H.add_pair({A, B, A, A, b}, {c, B, A, C});
 
-        H.strategy(strategy::hlt).save(true).lookahead(lookahead::partial);
+        H.strategy(strategy::hlt).save(true).def_max(100'000);
 
         REQUIRE(H.number_of_classes() == 8);
       };
-    }
+      // About 2s
+      // BENCHMARK("Felsch") {
+      //   ToddCoxeter H(congruence_kind::right, p);
+      //   H.add_pair({b, c}, {});
+      //   H.add_pair({A, B, A, A, b, c, a, b, C}, {});
 
+      //   H.strategy(strategy::felsch);
+
+      //   REQUIRE(H.number_of_classes() == 8);
+      // };
+    }
     TEST_CASE("ACE --- 2p17-fel1", "[paper][ace][2p17-1]") {
-      auto        rg = ReportGuard(false);
-      ToddCoxeter G;
-      G.set_alphabet("abcABCe");
-      G.set_identity("e");
-      G.set_inverses("ABCabce");
-      G.add_rule("aBCbac", "e");
-      G.add_rule("bACbaacA", "e");
-      G.add_rule("accAABab", "e");
+      auto                      rg = ReportGuard(false);
+      Presentation<std::string> p;
+      p.alphabet("abcABC");
+      p.contains_empty_word(true);
+      presentation::add_inverse_rules(p, "ABCabc");
+      presentation::add_rule(p, "aBCbac", "");
+      presentation::add_rule(p, "bACbaacA", "");
+      presentation::add_rule(p, "accAABab", "");
 
       letter_type a = 0;
       letter_type b = 1;
@@ -1071,32 +1083,30 @@ namespace libsemigroups {
       letter_type A = 3;
       letter_type B = 4;
       letter_type C = 5;
-      letter_type e = 6;
+
+      presentation::remove_duplicate_rules(p);
 
       BENCHMARK("HLT") {
-        congruence::ToddCoxeter H(right, G.congruence());
-        H.add_pair({e}, {a, B, C, b, a, c});
-        H.add_pair({b, A, C, b, a, a, c, A}, {e});
-        H.add_pair({a, c, c, A, A, B, a, b}, {e});
+        ToddCoxeter H(congruence_kind::right, p);
+        H.add_pair({}, {a, B, C, b, a, c});
+        H.add_pair({b, A, C, b, a, a, c, A}, {});
+        H.add_pair({a, c, c, A, A, B, a, b}, {});
 
-        H.save(true)
-            .lookahead(lookahead::partial)
-            .max_deductions(20'000)
-            .large_collapse(10'000)
-            .remove_duplicate_generating_pairs();
+        H.save(true).def_max(20'000).large_collapse(10'000);
         REQUIRE(H.number_of_classes() == 131'072);
       };
+      presentation::balance(p, "abcABC", "ABCabc");
     }
 
     TEST_CASE("ACE --- 2p17-fel1a", "[paper][ace][2p17-1a]") {
-      auto        rg = ReportGuard(false);
-      ToddCoxeter G;
-      G.set_alphabet("abcABCe");
-      G.set_identity("e");
-      G.set_inverses("ABCabce");
-      G.add_rule("aBCbac", "e");
-      G.add_rule("bACbaacA", "e");
-      G.add_rule("accAABab", "e");
+      auto                      rg = ReportGuard(false);
+      Presentation<std::string> p;
+      p.alphabet("abcABC");
+      p.contains_empty_word(true);
+      presentation::add_inverse_rules(p, "ABCabc");
+      presentation::add_rule(p, "aBCbac", "");
+      presentation::add_rule(p, "bACbaacA", "");
+      presentation::add_rule(p, "accAABab", "");
 
       letter_type a = 0;
       letter_type b = 1;
@@ -1104,74 +1114,70 @@ namespace libsemigroups {
       letter_type A = 3;
       letter_type B = 4;
       letter_type C = 5;
-      letter_type e = 6;
 
       BENCHMARK("HLT") {
-        congruence::ToddCoxeter H(right, G.congruence());
-        H.add_pair({b, c}, {e});
-        H.add_pair({A, B, A, A, b, c, a, b, C}, {e});
-        H.add_pair({A, c, c, c, a, c, B, c, A}, {e});
+        ToddCoxeter H(congruence_kind::right, p);
+        H.add_pair({b, c}, {});
+        H.add_pair({A, B, A, A, b, c, a, b, C}, {});
+        H.add_pair({A, c, c, c, a, c, B, c, A}, {});
 
         H.strategy(strategy::hlt)
             .save(true)
-            .lookahead(lookahead::full)
-            .max_deductions(10'000)
+            .lookahead_extent(lookahead_extent::full)
+            .def_max(10'000)
             .large_collapse(10'000);
         REQUIRE(H.number_of_classes() == 1);
       };
     }
 
     TEST_CASE("ACE --- 2p17-id-fel1", "[paper][ace][2p17-id]") {
-      auto rg = ReportGuard(false);
+      auto                      rg = ReportGuard(false);
+      Presentation<std::string> p;
+      p.alphabet("abcABC");
+      p.contains_empty_word(true);
+      presentation::add_inverse_rules(p, "ABCabc");
+      presentation::add_rule(p, "aBCbac", "");
+      presentation::add_rule(p, "bACbaacA", "");
+      presentation::add_rule(p, "accAABab", "");
+
       BENCHMARK("HLT") {
-        ToddCoxeter G;
-        G.set_alphabet("abcABCe");
-        G.set_identity("e");
-        G.set_inverses("ABCabce");
-        G.add_rule("aBCbac", "e");
-        G.add_rule("bACbaacA", "e");
-        G.add_rule("accAABab", "e");
-
-        G.congruence().reserve(5'000'000);
-        G.congruence()
-            .strategy(strategy::hlt)
-            .lookahead(lookahead::partial)
+        ToddCoxeter tc(congruence_kind::twosided, p);
+        tc.strategy(strategy::hlt)
+            .lookahead_extent(lookahead_extent::partial)
             .save(true)
-            .max_deductions(POSITIVE_INFINITY);
+            .def_max(POSITIVE_INFINITY);
 
-        REQUIRE(G.size() == std::pow(2, 17));
+        REQUIRE(tc.number_of_classes() == std::pow(2, 17));
       };
     }
 
     TEST_CASE("ACE --- 2p18-fe1", "[paper][ace][2p18]") {
-      auto        rg = ReportGuard(false);
-      ToddCoxeter G;
-      G.set_alphabet("abcABCex");
-      G.set_identity("e");
-      G.set_inverses("ABCabcex");
-      G.add_rule("aBCbac", "e");
-      G.add_rule("bACbaacA", "e");
-      G.add_rule("accAABab", "e");
-      G.add_rule("xx", "e");
-      G.add_rule("Axax", "e");
-      G.add_rule("Bxbx", "e");
-      G.add_rule("Cxcx", "e");
+      auto                      rg = ReportGuard(false);
+      Presentation<std::string> p;
+      p.alphabet("abcABCx");
+      p.contains_empty_word(true);
+      presentation::add_inverse_rules(p, "ABCabcx");
+      presentation::add_rule(p, "aBCbac", "");
+      presentation::add_rule(p, "bACbaacA", "");
+      presentation::add_rule(p, "accAABab", "");
+      presentation::add_rule(p, "xx", "");
+      presentation::add_rule(p, "Axax", "");
+      presentation::add_rule(p, "Bxbx", "");
+      presentation::add_rule(p, "Cxcx", "");
 
-      letter_type constexpr a = 0, b = 1, c = 2, A = 3, B = 4, C = 5, e = 6;
+      letter_type constexpr a = 0, b = 1, c = 2, A = 3, B = 4, C = 5;
 
       BENCHMARK("HLT") {
-        congruence::ToddCoxeter H(right, G.congruence());
-        H.add_pair({a, B, C, b, a, c}, {e});
-        H.add_pair({b, A, C, b, a, a, c, A}, {e});
-        H.add_pair({a, c, c, A, A, B, a, b}, {e});
+        ToddCoxeter H(congruence_kind::right, p);
+        H.add_pair({a, B, C, b, a, c}, {});
+        H.add_pair({b, A, C, b, a, a, c, A}, {});
+        H.add_pair({a, c, c, A, A, B, a, b}, {});
 
         H.strategy(strategy::hlt)
             .save(true)
-            .lookahead(lookahead::partial)
-            .sort_generating_pairs()
-            .remove_duplicate_generating_pairs()
             .large_collapse(10'000)
-            .max_deductions(10'000)
+            .def_max(10'000)
+            .lookahead_extent(lookahead_extent::partial)
             .lookahead_next(5'000'000);
 
         REQUIRE(H.number_of_classes() == 262'144);
@@ -1179,167 +1185,174 @@ namespace libsemigroups {
     }
 
     TEST_CASE("ACE --- F27", "[paper][ace][F27]") {
-      auto rg = ReportGuard(false);
+      auto                      rg = ReportGuard(false);
+      Presentation<std::string> p;
+      p.alphabet("abcdxyzABCDXYZ");
+      p.contains_empty_word(true);
+      presentation::add_inverse_rules(p, "ABCDXYZabcdxyz");
+      presentation::add_rule(p, "ab", "c");
+      presentation::add_rule(p, "bc", "d");
+      presentation::add_rule(p, "cd", "x");
+      presentation::add_rule(p, "dx", "y");
+      presentation::add_rule(p, "xy", "z");
+      presentation::add_rule(p, "yz", "a");
+      presentation::add_rule(p, "za", "b");
       BENCHMARK("HLT") {
-        ToddCoxeter G;
-        G.set_alphabet("abcdxyzABCDXYZe");
-        G.set_identity("e");
-        G.set_inverses("ABCDXYZabcdxyze");
-        G.add_rule("abC", "e");
-        G.add_rule("bcD", "e");
-        G.add_rule("cdX", "e");
-        G.add_rule("dxY", "e");
-        G.add_rule("xyZ", "e");
-        G.add_rule("yzA", "e");
-        G.add_rule("zaB", "e");
-
-        G.congruence()
-            .strategy(strategy::hlt)
+        ToddCoxeter tc(congruence_kind::twosided, p);
+        tc.strategy(strategy::hlt)
             .save(true)
-            .lookahead(lookahead::partial);
-        REQUIRE(G.size() == 29);
+            .lookahead_extent(lookahead_extent::partial);
+        REQUIRE(tc.number_of_classes() == 29);
       };
     }
 
     TEST_CASE("ACE --- M12", "[paper][ace][M12]") {
       auto rg = ReportGuard(false);
+
+      Presentation<std::string> p;
+      p.alphabet("abcABC");
+      p.contains_empty_word(true);
+      presentation::add_inverse_rules(p, "ABCabc");
+      presentation::add_rule(p, "bb", "");
+      presentation::add_rule(p, "cc", "");
+      presentation::add_rule(p, "ababab", "");
+      presentation::add_rule(p, "acacac", "");
+      presentation::add_rule(p, "aaaaaaaaaaa", "");
+      presentation::add_rule(p, "cbcbabcbc", "aaaaa");
+      presentation::add_rule(p, "bcbcbcbcbcbcbcbcbcbc", "");
+      presentation::replace_word_with_new_generator(
+          p, presentation::longest_subword_reducing_length(p));
+
       BENCHMARK("HLT") {
-        ToddCoxeter G;
-        G.set_alphabet("abcABCe");
-        G.set_identity("e");
-        G.set_inverses("ABCabce");
-        G.add_rule("aaaaaaaaaaa", "e");
-        G.add_rule("bb", "e");
-        G.add_rule("cc", "e");
-        G.add_rule("ababab", "e");
-        G.add_rule("acacac", "e");
-        G.add_rule("bcbcbcbcbcbcbcbcbcbc", "e");
-        G.add_rule("cbcbabcbcAAAAA", "e");
+        ToddCoxeter H(congruence_kind::twosided, p);
 
-        congruence::ToddCoxeter H(twosided, G);
-
-        H.strategy(strategy::hlt).save(true).lookahead(lookahead::partial);
+        H.strategy(strategy::hlt)
+            .save(true)
+            .lookahead_extent(lookahead_extent::partial);
 
         REQUIRE(H.number_of_classes() == 95'040);
       };
     }
 
     TEST_CASE("ACE --- SL(2, 19)", "[paper][ace][SL219]") {
-      auto rg = ReportGuard(false);
+      auto                      rg = ReportGuard(false);
+      Presentation<std::string> p;
+      p.alphabet("abAB");
+      p.contains_empty_word(true);
+      presentation::add_inverse_rules(p, "ABab");
+      presentation::add_rule(p, "aBABAB", "");
+      presentation::add_rule(p, "BAAbaa", "");
+      presentation::add_rule(
+          p,
+          "abbbbabbbbbbbbbbabbbbabbbbbbbbbbbbbbbbbbbbbbbbbbbbbaaaaaaaaaaaa",
+          "");
+      presentation::balance(p, "abAB", "ABab");
+      presentation::sort_rules(p);
+
+      letter_type b = 1;
       BENCHMARK("HLT") {
-        ToddCoxeter G;
-        G.set_alphabet("abABe");
-        G.set_identity("e");
-        G.set_inverses("ABabe");
-        G.add_rule("aBABAB", "e");
-        G.add_rule("BAAbaa", "e");
-        G.add_rule(
-            "abbbbabbbbbbbbbbabbbbabbbbbbbbbbbbbbbbbbbbbbbbbbbbbaaaaaaaaaaaa",
-            "e");
-
-        letter_type b = 1;
-        letter_type e = 4;
-
-        congruence::ToddCoxeter H(right, G);
-        H.add_pair({b}, {e});
+        ToddCoxeter H(congruence_kind::right, p);
+        H.add_pair({b}, {});
 
         H.strategy(strategy::hlt)
             .save(false)
-            .lookahead(lookahead::partial)
+            .lookahead_extent(lookahead_extent::partial)
             .lookahead_next(500'000);
         REQUIRE(H.number_of_classes() == 180);
       };
     }
 
     TEST_CASE("ACE --- big-hard", "[paper][ace][big-hard]") {
-      auto        rg = ReportGuard(false);
-      ToddCoxeter G;
-      G.set_alphabet("abcyABCYex");
-      G.set_identity("e");
-      G.set_inverses("ABCYabcyex");
-      G.add_rule("aBCbac", "e");
-      G.add_rule("bACbaacA", "e");
-      G.add_rule("accAABab", "e");
-      G.add_rule("xx", "e");
-      G.add_rule("yyy", "e");
-      G.add_rule("Axax", "e");
-      G.add_rule("Bxbx", "e");
-      G.add_rule("Cxcx", "e");
-      G.add_rule("AYay", "e");
-      G.add_rule("BYby", "e");
-      G.add_rule("CYcy", "e");
-      G.add_rule("xYxy", "e");
+      auto                      rg = ReportGuard(false);
+      Presentation<std::string> p;
+      p.alphabet("abcyABCYx");
+      p.contains_empty_word(true);
+      presentation::add_inverse_rules(p, "ABCYabcyx");
+      presentation::add_rule(p, "aBCbac", "");
+      presentation::add_rule(p, "bACbaacA", "");
+      presentation::add_rule(p, "accAABab", "");
+      presentation::add_rule(p, "xx", "");
+      presentation::add_rule(p, "yyy", "");
+      presentation::add_rule(p, "Axax", "");
+      presentation::add_rule(p, "Bxbx", "");
+      presentation::add_rule(p, "Cxcx", "");
+      presentation::add_rule(p, "AYay", "");
+      presentation::add_rule(p, "BYby", "");
+      presentation::add_rule(p, "CYcy", "");
+      presentation::add_rule(p, "xYxy", "");
 
       letter_type constexpr a = 0, b = 1, c = 2, A = 4, B = 5, C = 6, e = 8;
 
       BENCHMARK("HLT") {
-        congruence::ToddCoxeter H(right, G.congruence());
-        H.add_pair({a, B, C, b, a, c}, {e});
-        H.add_pair({b, A, C, b, a, a, c, A}, {e});
-        H.add_pair({a, c, c, A, A, B, a, b}, {e});
+        ToddCoxeter H(congruence_kind::right, p);
+        H.add_pair({a, B, C, b, a, c}, {});
+        H.add_pair({b, A, C, b, a, a, c, A}, {});
+        H.add_pair({a, c, c, A, A, B, a, b}, {});
         H.strategy(strategy::hlt)
             .save(true)
-            .lookahead(lookahead::partial)
+            .lookahead_extent(lookahead_extent::partial)
             .lookahead_next(1'000'000)
             .large_collapse(5'000)
-            .max_deductions(1'000'000)
+            .def_max(1'000'000)
             .lower_bound(786'432);
         REQUIRE(H.number_of_classes() == 786'432);
       };
     }
+  }  // namespace ace
+}  // namespace libsemigroups
 
-    TEST_CASE("ACE --- g25.a", "[paper][ace][g25.a]") {
-      auto        rg = ReportGuard(true);
-      ToddCoxeter G;
-      G.set_alphabet("abcdeABCDx");
-      G.set_identity("x");
-      G.set_inverses("ABCDeabcdx");
-
-      G.add_rule("ee", "x");
-      G.add_rule("DaDa", "x");
-      G.add_rule("dddd", "x");
-      G.add_rule("BDbd", "x");
-      G.add_rule("ccccc", "x");
-      G.add_rule("bbbbb", "x");
-      G.add_rule("AABaab", "x");
-      G.add_rule("ddAAAA", "x");
-      G.add_rule("AAcaacc", "x");
-      G.add_rule("ececBBC", "x");
-      G.add_rule("abababab", "x");
-      G.add_rule("BBcbceceBCC", "x");
-      G.add_rule("ebcBebCBBcB", "x");
-      G.add_rule("ebebccBBcbC", "x");
-      G.add_rule("ACabCBAcabcB", "x");
-      G.add_rule("ABabABabABab", "x");
-      G.add_rule("CACaCaCAccaCA", "x");
-      G.add_rule("ABcbabCBCBccb", "x");
-      G.add_rule("BCbcACaCBcbAca", "x");
-      G.add_rule("eabbaBAeabbaBA", "x");
-      G.add_rule("eBcbeabcBcACBB", "x");
-      G.add_rule("BCbAcaBcbCACac", "x");
-      G.add_rule("CACacaCAcACaCACa", "x");
-      G.add_rule("CAcacbcBCACacbCB", "x");
-      G.add_rule("CaCAcacAcaCACacA", "x");
-      G.add_rule("cacbcBACCaCbCBAc", "x");
-      G.add_rule("CBCbcBcbCCACACaca", "x");
-      G.add_rule("BAcabbcBcbeCebACa", "x");
-      G.add_rule("ACacAcaebcBCBcBCe", "x");
-      G.add_rule("eDCDbABCDACaCAcabb", "x");
-      G.add_rule("BCbbCBBcbbACacAcaB", "x");
-      G.add_rule("eaaebcBACaCAcbABBA", "x");
-      G.add_rule("BACaCAcacbCACacAca", "x");
-      G.add_rule("AbcBabCBCbCBBcbAcaC", "x");
-      G.add_rule("aabaBabaabaBabaabaBab", "x");
-      G.add_rule("eAcaeACaeAcabCBaBcbaaa", "x");
-      G.add_rule("deBAceAeACACacAcabcBcbaBBA", "x");
-      G.add_rule("dCACacAcadACaCAcacdCACacAcA", "x");
-      G.add_rule("dCACacAcadCACacAcadCACacAcadCACacAcadCACacAcadCACacAca",
-  "x");
-
-      G.congruence()
-          .remove_duplicate_generating_pairs()
-          .sort_generating_pairs();
-      REQUIRE(G.size() == 1);
-      std::cout << G.congruence().stats_string();
-    }
-    */
+// Unused!
+//    TEST_CASE("ACE --- g25.a", "[paper][ace][g25.a]") {
+//      auto        rg = ReportGuard(true);
+//      Presentation<std::string> p;
+//      p.alphabet("abcdeABCDx");
+//      G.set_identity("x");
+//      presentation::add_inverse_rules(p, "ABCDeabcdx");
+//
+//      presentation::add_rule(p, "ee", "x");
+//      presentation::add_rule(p, "DaDa", "x");
+//      presentation::add_rule(p, "dddd", "x");
+//      presentation::add_rule(p, "BDbd", "x");
+//      presentation::add_rule(p, "ccccc", "x");
+//      presentation::add_rule(p, "bbbbb", "x");
+//      presentation::add_rule(p, "AABaab", "x");
+//      presentation::add_rule(p, "ddAAAA", "x");
+//      presentation::add_rule(p, "AAcaacc", "x");
+//      presentation::add_rule(p, "ececBBC", "x");
+//      presentation::add_rule(p, "abababab", "x");
+//      presentation::add_rule(p, "BBcbceceBCC", "x");
+//      presentation::add_rule(p, "ebcBebCBBcB", "x");
+//      presentation::add_rule(p, "ebebccBBcbC", "x");
+//      presentation::add_rule(p, "ACabCBAcabcB", "x");
+//      presentation::add_rule(p, "ABabABabABab", "x");
+//      presentation::add_rule(p, "CACaCaCAccaCA", "x");
+//      presentation::add_rule(p, "ABcbabCBCBccb", "x");
+//      presentation::add_rule(p, "BCbcACaCBcbAca", "x");
+//      presentation::add_rule(p, "eabbaBAeabbaBA", "x");
+//      presentation::add_rule(p, "eBcbeabcBcACBB", "x");
+//      presentation::add_rule(p, "BCbAcaBcbCACac", "x");
+//      presentation::add_rule(p, "CACacaCAcACaCACa", "x");
+//      presentation::add_rule(p, "CAcacbcBCACacbCB", "x");
+//      presentation::add_rule(p, "CaCAcacAcaCACacA", "x");
+//      presentation::add_rule(p, "cacbcBACCaCbCBAc", "x");
+//      presentation::add_rule(p, "CBCbcBcbCCACACaca", "x");
+//      presentation::add_rule(p, "BAcabbcBcbeCebACa", "x");
+//      presentation::add_rule(p, "ACacAcaebcBCBcBCe", "x");
+//      presentation::add_rule(p, "eDCDbABCDACaCAcabb", "x");
+//      presentation::add_rule(p, "BCbbCBBcbbACacAcaB", "x");
+//      presentation::add_rule(p, "eaaebcBACaCAcbABBA", "x");
+//      presentation::add_rule(p, "BACaCAcacbCACacAca", "x");
+//      presentation::add_rule(p, "AbcBabCBCbCBBcbAcaC", "x");
+//      presentation::add_rule(p, "aabaBabaabaBabaabaBab", "x");
+//      presentation::add_rule(p, "eAcaeACaeAcabCBaBcbaaa", "x");
+//      presentation::add_rule(p, "deBAceAeACACacAcabcBcbaBBA", "x");
+//      presentation::add_rule(p, "dCACacAcadACaCAcacdCACacAcA", "x");
+//      presentation::add_rule(p,
+//  "dCACacAcadCACacAcadCACacAcadCACacAcadCACacAcadCACacAca", "x");
+//
+//      p
+//          .remove_duplicate_generating_pairs()
+//          .sort_generating_pairs();
+//      REQUIRE(tc.number_of_classes() == 1);
+//      std::cout << p.stats_string();
+//    }
