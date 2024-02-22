@@ -40,6 +40,7 @@ namespace libsemigroups {
   using strategy         = ToddCoxeter::options::strategy;
   using lookahead_extent = ToddCoxeter::options::lookahead_extent;
   using def_policy       = ToddCoxeter::options::def_policy;
+  using def_version      = ToddCoxeter::options::def_version;
 
   namespace {
     template <typename S, typename T>
@@ -823,269 +824,189 @@ namespace libsemigroups {
         presentation::add_rule(p, "bd", "db");
         presentation::add_rule(p, "be", "eb");
         presentation::add_rule(p, "ce", "ec");
+      } else if (index == 8) {
+        p.alphabet("ab");
+        presentation::add_rule(p, "aaa", "a");
+        presentation::add_rule(p, "b^23"_p, "b");
+        presentation::add_rule(p, "ab^11ab^2"_p, "bba");
       }
       return to_presentation<word_type>(p);
     }
 
-    auto init = [](ToddCoxeter& tc) {
-      if (tc.strategy() == strategy::hlt) {
-        tc.lookahead_next(500'000).large_collapse(2'000);
-      } else {
-        //     The following settings work well for walker(2) or 3
-        // tc.use_relations_in_extra(true)
-        //     .def_max(100'000)
-        //     .def_version(ToddCoxeter::options::def_version::one)
-        //     .def_policy(def_policy::no_stack_if_no_space);
-        //     The following settings work well for walker(4)
-        tc.def_max(10'000).large_collapse(3'000).lookahead_next(100'000);
-      }
-    };
     auto       rg = ReportGuard();
     sizes_type sizes
         = {0, 1, 14'911, 20'490, 36'412, 72'822, 78'722, 153'500, 270'272};
-    auto strategies = {strategy::hlt};
 
     TEST_CASE_TODD_COXETER("Walker") {
       start_table("The presentations from Walker~\\cite{Walker1992aa}.",
                   "table-walker",
                   "S");
 
-      auto p = walker(1);
-      preprocess_presentation(p);
-      emit_xml_presentation_tags(p, 1, 1);
-      auto rg = ReportGuard(false);
+      {
+        size_t index = 1;
+        auto   p     = walker(index);
+        preprocess_presentation(p);
+        emit_xml_presentation_tags(p, index, 1);
+        auto rg = ReportGuard(false);
 
-      BENCHMARK("HLT") {
-        ToddCoxeter tc(congruence_kind::twosided, p);
-        tc.strategy(strategy::hlt)
-            .lookahead_next(500'000)
-            .large_collapse(2'000);
-        REQUIRE(tc.number_of_classes() == 1);
-      };
-      BENCHMARK("Felsch") {
-        ToddCoxeter tc(congruence_kind::twosided, p);
-        tc.strategy(strategy::felsch);
-        REQUIRE(tc.number_of_classes() == 1);
-      };
+        BENCHMARK("HLT") {
+          ToddCoxeter tc(congruence_kind::twosided, p);
+          tc.strategy(strategy::hlt)
+              .lookahead_next(500'000)
+              .large_collapse(2'000);
+          REQUIRE(tc.number_of_classes() == 1);
+        };
+        presentation::greedy_reduce_length(p);
+        BENCHMARK("Felsch") {
+          ToddCoxeter tc(congruence_kind::twosided, p);
+          tc.strategy(strategy::felsch).use_relations_in_extra(true);
+          REQUIRE(tc.number_of_classes() == 1);
+        };
+      }
+      {
+        size_t index = 2;
+        auto   p     = walker(index);
+        preprocess_presentation(p);
+        emit_xml_presentation_tags(p, index, 14'911);
+        auto rg = ReportGuard(false);
+
+        BENCHMARK("HLT") {
+          ToddCoxeter tc(congruence_kind::twosided, p);
+          tc.strategy(strategy::hlt)
+              .use_relations_in_extra(true)
+              .lookahead_next(2'000'000);
+          REQUIRE(tc.number_of_classes() == 14'911);
+        };
+        BENCHMARK("Felsch") {
+          ToddCoxeter tc(congruence_kind::twosided, p);
+          tc.strategy(strategy::felsch);
+          REQUIRE(tc.number_of_classes() == 14'911);
+        };
+      }
+      {
+        size_t index = 3;
+        auto   p     = walker(index);
+        preprocess_presentation(p);
+        emit_xml_presentation_tags(p, index, 20'490);
+        auto rg = ReportGuard(false);
+
+        BENCHMARK("HLT") {
+          ToddCoxeter tc(congruence_kind::twosided, p);
+          tc.strategy(strategy::hlt).lookahead_next(2'000'000);
+          REQUIRE(tc.number_of_classes() == 20'490);
+        };
+        BENCHMARK("Felsch") {
+          ToddCoxeter tc(congruence_kind::twosided, p);
+          tc.strategy(strategy::felsch)
+              .use_relations_in_extra(true)
+              .def_max(100'000)
+              .def_version(def_version::one)
+              .def_policy(def_policy::no_stack_if_no_space);
+          REQUIRE(tc.number_of_classes() == 20'490);
+        };
+      }
+      {
+        size_t index = 4;
+        size_t N     = 36'412;
+        auto   p     = walker(index);
+        preprocess_presentation(p);
+        emit_xml_presentation_tags(p, index, N);
+        auto rg = ReportGuard(false);
+
+        BENCHMARK("HLT") {
+          ToddCoxeter tc(congruence_kind::twosided, p);
+          tc.strategy(strategy::hlt).lookahead_next(3'000'000);
+          REQUIRE(tc.number_of_classes() == N);
+        };
+        BENCHMARK("Felsch") {
+          ToddCoxeter tc(congruence_kind::twosided, p);
+          tc.strategy(strategy::felsch)
+              .use_relations_in_extra(true)
+              .def_max(10'000)
+              .large_collapse(3'000);
+          REQUIRE(tc.number_of_classes() == N);
+        };
+      }
+      {
+        size_t index = 5;
+        size_t N     = 72'822;
+        auto   p     = walker(index);
+        emit_xml_presentation_tags(p, index, N);
+        auto rg = ReportGuard(false);
+
+        BENCHMARK("HLT") {
+          ToddCoxeter tc(congruence_kind::twosided, p);
+          tc.strategy(strategy::hlt).lookahead_next(5'000'000).save(true);
+          REQUIRE(tc.number_of_classes() == N);
+        };
+      }
+      {
+        size_t index = 6;
+        size_t N     = 78'722;
+        auto   p     = walker(index);
+        preprocess_presentation(p);
+        emit_xml_presentation_tags(p, index, N);
+        auto rg = ReportGuard(false);
+
+        BENCHMARK("HLT") {
+          ToddCoxeter tc(congruence_kind::twosided, p);
+          tc.strategy(strategy::hlt).lookahead_next(5'000'000).save(true);
+          REQUIRE(tc.number_of_classes() == N);
+        };
+        BENCHMARK("Felsch") {
+          ToddCoxeter tc(congruence_kind::twosided, p);
+          tc.strategy(strategy::felsch).use_relations_in_extra(true);
+          REQUIRE(tc.number_of_classes() == N);
+        };
+      }
+      {
+        size_t index = 7;
+        size_t N     = 153'500;
+        auto   p     = walker(index);
+        preprocess_presentation(p);
+        emit_xml_presentation_tags(p, index, N);
+        auto rg = ReportGuard(false);
+
+        BENCHMARK("HLT") {
+          ToddCoxeter tc(congruence_kind::twosided, p);
+          tc.strategy(strategy::hlt);
+          REQUIRE(tc.number_of_classes() == N);
+        };
+        presentation::greedy_reduce_length(p);
+        BENCHMARK("Felsch") {
+          ToddCoxeter tc(congruence_kind::twosided, p);
+          tc.strategy(strategy::felsch)
+              .def_version(def_version::one)
+              .use_relations_in_extra(true);
+          REQUIRE(tc.number_of_classes() == N);
+        };
+      }
+      {
+        size_t index = 8;
+        size_t N     = 270'272;
+        auto   p     = walker(index);
+        preprocess_presentation(p);
+        emit_xml_presentation_tags(p, index, N);
+        auto rg = ReportGuard(false);
+
+        BENCHMARK("HLT") {
+          ToddCoxeter tc(congruence_kind::twosided, p);
+          tc.strategy(strategy::hlt).lookahead_next(500'000);
+          REQUIRE(tc.number_of_classes() == N);
+        };
+        presentation::greedy_reduce_length_and_number_of_gens(p);
+        BENCHMARK("Felsch") {
+          ToddCoxeter tc(congruence_kind::twosided, p);
+          tc.strategy(strategy::felsch).use_relations_in_extra(true);
+          REQUIRE(tc.number_of_classes() == N);
+        };
+      }
     }
   }  // namespace walker
 }  // namespace libsemigroups
+
 /*
- * TODO: work out whether the settings below are better than those in the
- test
- * file and implement the best settings above.
 
-    TEST_CASE("Walker 2", "[quick][Walker2][paper]") {
-      using options = libsemigroups::congruence::ToddCoxeter::options;
-      auto rg       = ReportGuard(false);
-      BENCHMARK("HLT") {
-        ToddCoxeter tc;
-        walker2(tc);
-        tc.congruence().simplify();
-        tc.congruence().strategy(strategy::hlt).next_lookahead(2'000'000);
-        REQUIRE(tc.size() == 14'911);
-      };
-
-      BENCHMARK("Felsch") {
-        ToddCoxeter tc;
-        walker2(tc);
-        tc.congruence().simplify();
-        tc.congruence()
-            .strategy(strategy::felsch)
-            .use_relations_in_extra(true)
-            .max_deductions(100'000);
-        REQUIRE(tc.size() == 14'911);
-      };
-
-      BENCHMARK("HLT tweaked") {
-        ToddCoxeter tc;
-        walker2(tc);
-        tc.congruence().simplify();
-        tc.congruence()
-            .sort_generating_pairs()
-            .next_lookahead(1'000'000)
-            .max_deductions(2'000)
-            .use_relations_in_extra(true)
-            .strategy(strategy::hlt)
-            .lookahead(lookahead::partial | lookahead::felsch)
-            .deduction_policy(deductions::v2
-                              | deductions::no_stack_if_no_space);
-        REQUIRE(tc.size() == 14'911);
-      };
-    }
-
-    TEST_CASE("Walker 3", "[quick][Walker3][paper]") {
-      using options = libsemigroups::congruence::ToddCoxeter::options;
-      auto rg       = ReportGuard(false);
-      BENCHMARK("HLT") {
-        ToddCoxeter tc;
-        walker3(tc);
-        tc.congruence().next_lookahead(2'000'000).strategy(strategy::hlt);
-        REQUIRE(tc.size() == 20'490);
-      };
-
-      BENCHMARK("Felsch") {
-        ToddCoxeter tc;
-        walker3(tc);
-        tc.congruence()
-            .strategy(strategy::felsch)
-            .use_relations_in_extra(true)
-            .max_deductions(100'000)
-            .deduction_policy(deductions::v1 |
-  deductions::no_stack_if_no_space) .preferred_defs(preferred_defs::none);
-        REQUIRE(tc.size() == 20'490);
-      };
-    }
-
-    TEST_CASE("Walker 4", "[quick][Walker4][paper]") {
-      using options = libsemigroups::congruence::ToddCoxeter::options;
-      auto rg       = ReportGuard(false);
-      BENCHMARK("HLT") {
-        ToddCoxeter tc;
-        walker4(tc);
-        tc.congruence().next_lookahead(3'000'000).strategy(strategy::hlt);
-        REQUIRE(tc.size() == 36'412);
-      };
-    }
-
-    TEST_CASE("Walker 4 - Felsch only", "[paper][Walker4][felsch]") {
-      auto        rg = ReportGuard(true);
-      ToddCoxeter tc;
-      walker4(tc);
-      tc.congruence().simplify(3);
-      REQUIRE(std::vector<word_type>(tc.congruence().cbegin_relations(),
-                                     tc.congruence().cend_relations())
-              == std::vector<word_type>({{0},
-                                         {0, 0, 0},
-                                         {1, 1},
-                                         {0, 1, 2, 2, 2, 2, 2, 2, 2, 1, 0},
-                                         {1},
-                                         {3, 1, 1},
-                                         {2},
-                                         {0, 3, 0, 1},
-                                         {3},
-                                         {1, 1, 1, 1}}));
-
-      tc.congruence()
-          .strategy(strategy::felsch)
-          .preferred_defs(preferred_defs::deferred)
-          .max_deductions(10'000)
-          .large_collapse(3'000);
-      std::cout << tc.congruence().settings_string();
-      REQUIRE(tc.size() == 36'412);
-      std::cout << tc.congruence().stats_string();
-    }
-
-    TEST_CASE("Walker 5", "[quick][Walker5][paper]") {
-      using options = libsemigroups::congruence::ToddCoxeter::options;
-      auto rg       = ReportGuard(false);
-      BENCHMARK("HLT") {
-        ToddCoxeter tc;
-        walker5(tc);
-        tc.congruence().next_lookahead(5'000'000).strategy(strategy::hlt);
-        // REQUIRE(tc.congruence().number_of_generators() == 2);
-        // REQUIRE(tc.congruence().number_of_generating_pairs() == 3);
-        // REQUIRE(tc.congruence().length_of_generating_pairs() == 73);
-        REQUIRE(tc.size() == 72'822);
-      };
-    }
-
-    TEST_CASE("Walker 5 - Felsch only", "[paper][Walker5][felsch]") {
-      auto        rg = ReportGuard(true);
-      ToddCoxeter tc;
-      walker5(tc);
-      tc.congruence().simplify(3);
-      tc.congruence()
-          .strategy(strategy::felsch)
-          .max_deductions(POSITIVE_INFINITY)
-          .preferred_defs(preferred_defs::none);
-      REQUIRE(std::vector<word_type>(tc.congruence().cbegin_relations(),
-                                     tc.congruence().cend_relations())
-              == std::vector<word_type>(
-                  {{0, 0, 0},
-                   {0},
-                   {3, 1, 1},
-                   {1},
-                   {0, 1, 2, 2, 2, 2, 2, 2, 2, 1, 0, 3, 1, 0, 0},
-                   {1, 1},
-                   {2},
-                   {0, 3, 0, 1},
-                   {3},
-                   {1, 1, 1, 1}}));
-      std::cout << tc.congruence().settings_string();
-      REQUIRE(tc.size() == 72'822);
-      std::cout << tc.congruence().stats_string();
-    }
-
-    TEST_CASE("Walker 6", "[quick][Walker6][paper]") {
-      using options = libsemigroups::congruence::ToddCoxeter::options;
-      auto rg       = ReportGuard(false);
-      BENCHMARK("HLT") {
-        ToddCoxeter tc;
-        walker6(tc);
-        tc.congruence().simplify(1);
-        tc.congruence()
-            .sort_generating_pairs()
-            .remove_duplicate_generating_pairs();
-        tc.congruence().strategy(strategy::hlt);
-        REQUIRE(tc.size() == 78'722);
-      };
-      BENCHMARK("Felsch") {
-        ToddCoxeter tc;
-        walker6(tc);
-        tc.congruence().simplify(10);
-        tc.congruence()
-            .sort_generating_pairs()
-            .remove_duplicate_generating_pairs()
-            .use_relations_in_extra(true);
-        tc.congruence().strategy(strategy::felsch);
-        REQUIRE(tc.size() == 78'722);
-      };
-    }
-
-    TEST_CASE("Walker 7", "[quick][Walker7][paper]") {
-      using options = libsemigroups::congruence::ToddCoxeter::options;
-      auto rg       = ReportGuard(false);
-      BENCHMARK("HLT") {
-        ToddCoxeter tc;
-        walker7(tc);
-        tc.congruence().strategy(strategy::hlt);
-        REQUIRE(tc.size() == 153'500);
-      };
-      BENCHMARK("Felsch") {
-        ToddCoxeter tc;
-        walker7(tc);
-        tc.congruence().simplify(10);
-        tc.congruence()
-            .strategy(strategy::felsch)
-            .deduction_policy(deductions::no_stack_if_no_space |
-  deductions::v1) .preferred_defs(preferred_defs::none); REQUIRE(tc.size()
-  == 153'500);
-      };
-    }
-
-    TEST_CASE("Walker 8", "[quick][Walker8][paper]") {
-      using options = libsemigroups::congruence::ToddCoxeter::options;
-      auto rg       = ReportGuard(false);
-      BENCHMARK("HLT") {
-        ToddCoxeter tc;
-        walker8(tc);
-        tc.congruence().next_lookahead(500'000);
-        tc.congruence().strategy(strategy::hlt);
-        REQUIRE(tc.size() == 270'272);
-      };
-    }
-
-    TEST_CASE("Walker 8 - Felsch only", "[paper][Walker8][felsch]") {
-      auto        rg = ReportGuard(true);
-      ToddCoxeter tc;
-      walker5(tc);
-      tc.congruence().simplify(10);
-      tc.congruence().strategy(strategy::felsch);
-      std::cout << tc.congruence().settings_string();
-      REQUIRE(tc.size() == 270'272);
-      std::cout << tc.congruence().stats_string();
-    }
   namespace fpsemigroup {
     TEST_CASE("ACE --- 2p17-2p14", "[paper][ace][2p17-2p14]") {
       auto        rg = ReportGuard(false);
@@ -1101,7 +1022,7 @@ namespace libsemigroups {
         congruence::ToddCoxeter H(right, G.congruence());
         H.add_pair({1, 2}, {6});
         H.simplify();
-        H.next_lookahead(1'000'000).lookahead(lookahead::partial);
+        H.lookahead_next(1'000'000).lookahead(lookahead::partial);
         REQUIRE(H.number_of_classes() == 16'384);
       };
     }
@@ -1251,7 +1172,7 @@ namespace libsemigroups {
             .remove_duplicate_generating_pairs()
             .large_collapse(10'000)
             .max_deductions(10'000)
-            .next_lookahead(5'000'000);
+            .lookahead_next(5'000'000);
 
         REQUIRE(H.number_of_classes() == 262'144);
       };
@@ -1325,7 +1246,7 @@ namespace libsemigroups {
         H.strategy(strategy::hlt)
             .save(false)
             .lookahead(lookahead::partial)
-            .next_lookahead(500'000);
+            .lookahead_next(500'000);
         REQUIRE(H.number_of_classes() == 180);
       };
     }
@@ -1359,7 +1280,7 @@ namespace libsemigroups {
         H.strategy(strategy::hlt)
             .save(true)
             .lookahead(lookahead::partial)
-            .next_lookahead(1'000'000)
+            .lookahead_next(1'000'000)
             .large_collapse(5'000)
             .max_deductions(1'000'000)
             .lower_bound(786'432);
