@@ -649,7 +649,8 @@ namespace libsemigroups {
     report_before_run();
     std::atomic_bool pause = false;
     if (reporting_enabled()) {
-      detail::Ticker t([&]() { report_progress_from_thread(pause); });
+      detail::Ticker t([&]() { report_progress_from_thread(pause); },
+                       report_every());
       run_real(pause);
     } else {
       run_real(pause);
