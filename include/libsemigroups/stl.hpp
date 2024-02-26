@@ -94,7 +94,11 @@ namespace libsemigroups {
         }
       }
     };
+    template <typename... Args>
+    struct IsStdArray final : std::false_type {};
 
+    template <typename T, size_t N>
+    struct IsStdArray<std::array<T, N>> final : std::true_type {};
   }  // namespace detail
 }  // namespace libsemigroups
 

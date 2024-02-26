@@ -3321,5 +3321,84 @@ namespace libsemigroups {
     os << "}";
     return os;
   }
+
+  class HopcroftKarp {
+   private:
+    detail::Duf<> _uf;
+
+   public:
+    HopcroftKarp() = default;
+
+    // Return the partition obtained by Hopcroft and Karp's Algorithm for
+    // checking if two finite state automata accept the same language, with
+    // given start vertices p1 and q1.
+    template <typename T>
+    detail::Duf<> const& operator()(ActionDigraph<T> const&              d1,
+                                    typename ActionDigraph<T>::node_type p1,
+                                    ActionDigraph<T> const&              d2,
+                                    typename ActionDigraph<T>::node_type q1) {
+      using node_type  = typename ActionDigraph<T>::node_type;
+      using label_type = typename ActionDigraph<T>::label_type;
+
+      auto N1 = d1.number_of_nodes();
+      auto N2 = d2.number_of_nodes();
+
+      if (d1.out_degree() != d2.out_degree()) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "1st and 3rd argument must have the same out-degree, found "
+            "out-degrees of %llu and %llu",
+            uint64_t(d1.out_degree()),
+            uint64_t(d2.out_degree()));
+      }
+      if (p1 < 0 || p1 >= N1) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "2nd argument must be an integer in 0 ... %llu - 1, found %llu",
+            uint64_t(N1),
+            uint64_t(p1));
+      }
+      if (q1 < 0 || q1 >= N2) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "4th argument must be an integer in 0 ... %llu - 1, found %llu",
+            uint64_t(N2),
+            uint64_t(q1));
+      }
+
+      auto M = d1.out_degree();
+      _uf.resize(N1 + N2);
+      _uf.unite(p1, q1 + N1);
+      // 0 .. N1 - 1, N1  .. N1 + N2 -1
+      std::stack<std::pair<node_type, node_type>> stck;
+      stck.emplace(p1, q1 + N1);
+
+      // Traverse d1 and d2, uniting the output vertices at each stage
+      while (!stck.empty()) {
+        node_type q1, q2;
+        std::tie(q1, q2) = stck.top();
+        stck.pop();
+        for (label_type a = 0; a < M; ++a) {
+          node_type r1, r2;
+
+          // Check which digraph q1 and q2 belong to. Vertices with labels from
+          // 0 to N1 correspond to vertices in d1; above N1 corresponds to d2.
+          if (q1 < N1) {
+            r1 = _uf.find(d1.unsafe_neighbor(q1, a));
+          } else {
+            r1 = _uf.find(d2.unsafe_neighbor(q1 - N1, a) + N1);
+          }
+          if (q2 < N1) {
+            r2 = _uf.find(d1.unsafe_neighbor(q2, a));
+          } else {
+            r2 = _uf.find(d2.unsafe_neighbor(q2 - N1, a) + N1);
+          }
+
+          if (r1 != r2) {
+            _uf.unite(r1, r2);
+            stck.emplace(r1, r2);
+          }
+        }
+      }
+      return _uf;
+    }
+  };
 }  // namespace libsemigroups
 #endif  // LIBSEMIGROUPS_DIGRAPH_HPP_

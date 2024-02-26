@@ -610,5 +610,59 @@ namespace libsemigroups {
       uf1 = uf3;
       REQUIRE(uf2 == uf1);
     }
-  }  // namespace detail
+
+    LIBSEMIGROUPS_TEST_CASE("UF", "020", "restrict", "[quick]") {
+      Duf<> uf(11);
+      uf.unite(0, 10);
+      uf.unite(2, 3);
+      uf.unite(4, 3);
+      uf.unite(4, 5);
+      uf.unite(6, 2);
+      uf.unite(6, 7);
+      uf.restrict(6);
+      REQUIRE(uf.size() == 6);
+      REQUIRE(uf.number_of_blocks() == 3);
+      REQUIRE(uf.find(0) == 0);
+      REQUIRE(uf.find(1) == 1);
+      REQUIRE(uf.find(2) == 2);
+      REQUIRE(uf.find(3) == 2);
+      REQUIRE(uf.find(4) == 2);
+      REQUIRE(uf.find(5) == 2);
+    }
+
+    LIBSEMIGROUPS_TEST_CASE("Duf", "021", "restrict", "[quick]") {
+      Duf<> uf(0);
+      uf.resize(9);
+      uf.compress();
+      uf.normalize();
+      uf.restrict(6);
+      REQUIRE(std::vector<size_t>(uf.cbegin_data(), uf.cend_data())
+              == std::vector<size_t>({0, 1, 2, 3, 4, 5}));
+      REQUIRE(std::vector<size_t>(uf.cbegin_rank(), uf.cend_rank())
+              == std::vector<size_t>({0, 0, 0, 0, 0, 0}));
+      uf.unite(0, 5);
+      uf.unite(0, 0);
+      uf.unite(1, 0);
+      REQUIRE(std::vector<size_t>(uf.cbegin_data(), uf.cend_data())
+              == std::vector<size_t>({5, 5, 2, 3, 4, 5}));
+      REQUIRE(std::vector<size_t>(uf.cbegin_rank(), uf.cend_rank())
+              == std::vector<size_t>({0, 0, 0, 0, 0, 1}));
+      uf.resize(25);
+      REQUIRE(std::vector<size_t>(uf.cbegin_data(), uf.cend_data())
+              == std::vector<size_t>({5,  5,  2,  3,  4,  5,  6,  7,  8,
+                                      9,  10, 11, 12, 13, 14, 15, 16, 17,
+                                      18, 19, 20, 21, 22, 23, 24}));
+      REQUIRE(std::vector<size_t>(uf.cbegin_rank(), uf.cend_rank())
+              == std::vector<size_t>({0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0,
+                                      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}));
+      REQUIRE(uf.number_of_blocks() == 23);
+      uf.restrict(3);
+      REQUIRE(uf.number_of_blocks() == 2);
+      REQUIRE(uf.size() == 3);
+      REQUIRE(std::vector<size_t>(uf.cbegin_data(), uf.cend_data())
+              == std::vector<size_t>({0, 0, 2}));
+      REQUIRE(std::vector<size_t>(uf.cbegin_rank(), uf.cend_rank())
+              == std::vector<size_t>({0, 1, 0}));
+    }  // namespace detail
+  }    // namespace detail
 }  // namespace libsemigroups

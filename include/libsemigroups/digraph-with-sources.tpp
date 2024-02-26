@@ -215,7 +215,149 @@ namespace libsemigroups {
     }
   }
 
-#ifdef LIBSEMIGROUPS_DEBUG
+  template <typename T>
+  void DigraphWithSources<T>::quotient_digraph(detail::Duf<> uf) {
+    using node_type  = typename DigraphWithSources<T>::node_type;
+    using label_type = typename DigraphWithSources<T>::label_type;
+    auto N           = this->number_of_nodes();
+    auto n_out       = this->out_degree();
+    auto M           = uf.number_of_blocks();
+
+    // Check that uf and d match
+    if (N == 0) {
+      if (uf.empty()) {
+        return;
+      } else {
+        LIBSEMIGROUPS_EXCEPTION("Empty digraph but non-empty partition. "
+                                "Expected empty partition.");
+      }
+    } else if (uf.size() != N) {
+      LIBSEMIGROUPS_EXCEPTION("Union find and digraph have a different number "
+                              "of nodes. Expected union find size and number "
+                              "of digraph nodes to be equal.");
+    }
+
+    // Check if partition is trivial or discrete
+    if (M == N) {
+      return;
+    } else if (M == 1) {
+      this->init(1, n_out);
+      for (label_type a = 0; a < n_out; ++a) {
+        this->add_edge_nc(0, 0, a);
+      }
+      return;
+    }
+
+    std::stack<std::pair<node_type, node_type>> coincidences;
+
+    // Make pairs of vertices that lie in the same part of a union find object
+    for (node_type i = 0; i < uf.size(); ++i) {
+      node_type j = uf.find(i);
+      if (i != j) {
+        coincidences.emplace(i, j);
+      }
+    }
+
+    // For each coincidence (x, y), unite each out neighbour of x with the
+    // corresponding out neighbour of y, unless there are missing edges
+    while (!coincidences.empty()) {
+      node_type x, y, x_nb, y_nb, x_nb_rep, y_nb_rep;
+      std::tie(x, y) = coincidences.top();
+      coincidences.pop();
+      for (label_type a = 0; a < n_out; ++a) {
+        x_nb = this->unsafe_neighbor(x, a);
+        y_nb = this->unsafe_neighbor(y, a);
+
+        if (x_nb != UNDEFINED && y_nb != UNDEFINED) {
+          x_nb_rep = uf.find(x_nb);
+          y_nb_rep = uf.find(y_nb);
+          if (x_nb_rep != y_nb_rep) {
+            coincidences.emplace(x_nb_rep, y_nb_rep);
+          }
+        } else if (x_nb == UNDEFINED && y_nb == UNDEFINED) {
+          continue;
+        } else if (x_nb == UNDEFINED) {
+          y_nb_rep = uf.find(y_nb);
+          ActionDigraph<T>::add_edge_nc(x, y_nb_rep, a);
+          continue;
+        } else {
+          x_nb_rep = uf.find(x_nb);
+          ActionDigraph<T>::add_edge_nc(y, x_nb_rep, a);
+          continue;
+        }
+      }
+      uf.unite(x, y);
+    }
+
+    uf.normalize();
+
+    // Populate representative row with representative out-neighbours
+    for (auto it = uf.cbegin(); it < uf.cend(); ++it) {
+      for (label_type a = 0; a != n_out; ++a) {
+        node_type va = this->unsafe_neighbor(*it, a);
+        if (va != UNDEFINED) {
+          node_type va_rep = uf.find(va);
+          if (va != va_rep) {
+            this->add_edge_nc(*it, va_rep, a);
+          }
+        }
+      }
+    }
+
+    // Identify the representative for each part in uf with a number in 0 ...
+    // number_of_blocks
+    node_type index = 0;
+    for (auto it = uf.cbegin(); it < uf.cend(); ++it) {
+      this->rename_node(*it, index);
+      ++index;
+    }
+
+    // Alternatively, don't normalise the uf and uncomment the below.
+    // for (node_type v = 0; v < N; ++v) {
+    //   node_type rep = uf.find(v);
+    //   if (v == rep) {
+    //     this->rename_node(rep, index);
+    //     ++index;
+    //   }
+    // }
+
+    this->restrict(uf.number_of_blocks());
+  }
+
+  template <typename T>
+  void
+  DigraphWithSources<T>::hopcroft_karp_quotient(DigraphWithSources<T> const& d2,
+                                                node_type                    p0,
+                                                node_type q0) {
+    auto uf = HopcroftKarp()(*this, p0, d2, q0);
+    uf.restrict(this->ActionDigraph<T>::number_of_nodes());
+    this->quotient_digraph(uf);
+  }
+
+  template <typename T>
+  DigraphWithSources<T> DigraphWithSources<T>::get_quotient(detail::Duf<> uf) {
+    auto d2 = *this;
+    d2.quotient_digraph(uf);
+    return d2;
+  }
+
+  template <typename T>
+  bool DigraphWithSources<T>::is_valid() const {
+    using node_type  = typename DigraphWithSources<T>::node_type;
+    using label_type = typename DigraphWithSources<T>::label_type;
+    auto num_nodes   = this->number_of_nodes();
+    auto num_labels  = this->out_degree();
+    for (node_type v = 0; v < num_nodes; ++v) {
+      for (label_type a = 0; a < num_labels; ++a) {
+        node_type va = this->unsafe_neighbor(v, a);
+        if (va != UNDEFINED && !this->is_source(va, v, a)) {
+          return false;
+        }
+      }
+    }
+    return true;
+  }
+
   template <typename T>
   bool DigraphWithSources<T>::is_source(node_type   c,
                                         node_type   d,
@@ -226,7 +368,6 @@ namespace libsemigroups {
     }
     return c == d;
   }
-#endif
 
   template <typename T>
   void DigraphWithSources<T>::add_source(node_type   c,

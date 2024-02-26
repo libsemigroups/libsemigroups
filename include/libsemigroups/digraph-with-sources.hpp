@@ -38,7 +38,7 @@
 #include "config.hpp"      // for LIBSEMIGROUPS_DEBUG
 #include "constants.hpp"   // for UNDEFINED
 #include "containers.hpp"  // for DynamicArray2
-#include "digraph.hpp"     // for ActionDigraph
+#include "digraph.hpp"     // for ActionDigraph and HopcroftKarp
 #include "types.hpp"       // for letter_type
                            //
 namespace libsemigroups {
@@ -129,10 +129,24 @@ namespace libsemigroups {
                      NewEdgeFunc&&      new_edge_func,
                      IncompatibleFunc&& incompat_func);
 
-#ifdef LIBSEMIGROUPS_DEBUG
+    // Take the quotient with respect to the node partition defined in uf.
+    void quotient_digraph(detail::Duf<> uf);
+
+    // Quotient with respect to the partition created upon performing Hopcroft
+    // and Karp's algorithm
+    void hopcroft_karp_quotient(DigraphWithSources<T> const& d2,
+                                node_type                    p0,
+                                node_type                    q0);
+
+    // Out-of-place returns the quotient with respect to the node partition
+    // defined in uf
+    inline DigraphWithSources<T> get_quotient(detail::Duf<> uf);
+
+    // Check if current object is a valid digraph with sources
+    bool is_valid() const;
+
     // Is d a source of c under x?
     bool is_source(node_type c, node_type d, letter_type x) const;
-#endif
 
     void clear_sources_and_targets(node_type c);
     void clear_sources(node_type c);
