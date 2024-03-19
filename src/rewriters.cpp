@@ -455,6 +455,7 @@ namespace libsemigroups {
 
   bool RewriteFromLeft::confluent() const {
     if (number_of_pending_rules() != 0) {
+      set_cached_confluent(tril::unknown);
       return false;
     } else if (confluence_known()) {
       return RewriterBase::cached_confluent();
@@ -587,18 +588,52 @@ namespace libsemigroups {
     u.erase(v_end - u.cbegin());
   }
 
-  [[nodiscard]] bool RewriteTrie::confluent() const {
+  bool RewriteTrie::confluent() const {
     if (number_of_pending_rules() != 0) {
-      set_cached_confluent(tril::FALSE);
+      set_cached_confluent(tril::unknown);
       return false;
     } else if (confluence_known()) {
       return RewriterBase::cached_confluent();
     }
 
+    std::atomic_uint64_t seen = 0;
+    if (reporting_enabled()) {
+      using std::chrono::time_point;
+      time_point     start_time = std::chrono::high_resolution_clock::now();
+      detail::Ticker t([&]() { report_from_confluent(seen, start_time); });
+      report_no_prefix("{:-<95}\n", "");
+      return confluent_impl(seen);
+    } else {
+      return confluent_impl(seen);
+    }
+  }
+
+  void RewriteTrie::report_from_confluent(
+      std::atomic_uint64_t const&                           seen,
+      std::chrono::high_resolution_clock::time_point const& start_time) const {
+    auto total_rules   = Rules::number_of_active_rules();
+    auto total_rules_s = detail::group_digits(total_rules);
+    auto now           = std::chrono::high_resolution_clock::now();
+    auto time
+        = std::chrono::duration_cast<std::chrono::seconds>(now - start_time);
+
+    report_default("KnuthBendix: locally confluent for: {:>{width}} / "
+                   "{:>{width}} ({:>4.1f}%) rules ({}s)\n",
+                   detail::group_digits(seen),
+                   total_rules_s,
+                   // TODO avoid dividing by 0
+                   100 * static_cast<double>(seen) / total_rules,
+                   time.count(),
+                   fmt::arg("width", total_rules_s.size()));
+  }
+
+  bool RewriteTrie::confluent_impl(std::atomic_uint64_t& seen) const {
     index_type link;
+    set_cached_confluent(tril::TRUE);
 
     // For each rule, check if any descendent of any suffix breaks confluence
     for (auto node_it = _rules.begin(); node_it != _rules.end(); ++node_it) {
+      seen++;
       link = _trie.suffix_link(node_it->first);
       LIBSEMIGROUPS_ASSERT(node_it->first != _trie.root);
       while (link != _trie.root) {
@@ -610,7 +645,7 @@ namespace libsemigroups {
       }
     }
     // Set cached value
-    set_cached_confluent(tril::TRUE);
+    // set_cached_confluent(tril::TRUE);
     return true;
   }
 

@@ -488,6 +488,12 @@ namespace libsemigroups {
     }
 
     Rules::iterator make_active_rule_pending(Rules::iterator it);
+
+    void report_from_confluent(
+        std::atomic_uint64_t const&,
+        std::chrono::high_resolution_clock::time_point const&) const;
+
+    bool confluent_impl(std::atomic_uint64_t&) const;
   };
 }  // namespace libsemigroups
 #endif  // LIBSEMIGROUPS_REWRITERS_HPP_
