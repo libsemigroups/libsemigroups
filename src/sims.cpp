@@ -1424,4 +1424,5 @@ namespace libsemigroups {
     const_cgp_iterator::~const_cgp_iterator() = default;
 
   }  // namespace sims
+
 }  // namespace libsemigroups

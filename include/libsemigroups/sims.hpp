@@ -2167,6 +2167,51 @@ namespace libsemigroups {
     }
   }  // namespace sims
 
+  // FIXME: RC writes:
+  // Second: I am writing a proof for the method of checking if a right
+  // congruence is a right Rees congruence (i.e. right congruence corresponding
+  // to quotient by right ideal), and there is an issue.
+
+  // The condition we discussed in the meeting way back when was:
+  // a) Check there is a unique sink
+  // b) Check that no extra relations hold for paths leading to non-sink nodes.
+  //
+  // These conditions are both sufficient and neccesary for two-sided
+  // congruences, I think. However, to be uniform with our handling of right and
+  // two-sided congruences, I want to tackle the right Rees congruences first.
+  // But in the one-sided case they are not enough!
+  //
+  // Indeed, consider the f.p. monoid M=Mon<a, b | ba=b, b^2=b>. The
+  // right-Cayley graph of M has infinitely many sinks b, ab, a^2b ... .
+  // Furthermore, for each $n\in\mathbb{N}$ the quotient by the right ideal a^nM
+  // has n+1 sinks. E.g. for n=1 we get the graph [[1, 2], [1, 1], [2, 2]]. So
+  // we have a bit of a problem here. Somehow the sink at a^n is the "real sink"
+  // and the others are "impostor sinks", which we should be suspicious of.
+  //
+  // I think a way of patching this would be to require that among all sinks
+  // there is a unique sink, call it $\omega$, that has at least one letter
+  // $a\in A$ and vertex $\alpha in V$ (alpha can be equal to omega as well
+  // (something something biblical joke something something)) such that
+  // $(\alpha, a, \omega)\in E$ and $w_\alpha a != w_\omega$ in $M$. This
+  // guarantees that $\omega$ occurs as a result of a genuine quotienting and is
+  // not implied by the relations. However where this does fail is on the
+  // trivial congruence if that is a right Rees congruence (i.e. if we are
+  // finite and have a right zero). E.g. in Mon<a, b | ba=b, b^2 = b, ab = a,
+  // a^2 = a> we have two sinks a, b and e.g. aM = a, so M/aM = M. In this case
+  // no quotienting occurs. To include this case we could change the above
+  // condition so that there is AT MOST ONE sink `\omega` such that there is an
+  // edge $(\alpha, a, \omega)\in E$ with $w_\alpha a \neq w_\omega$ in $M$. The
+  // proof then considers the cases when we have the distinguished sink and when
+  // we do not (establishing that the relation is trivial if this is not the
+  // case).
+  //
+  // We can then mention the improvement of only needing to check if there is a
+  // unique sink in the two sided case.
+  //
+  // When I originally was starting to write this I wasn't sure of how to
+  // resolve the issue but I think in the process of writing it out I have the
+  // fix. So Im mostly letting you know why the original idea didn't work in the
+  // one sided case.
   class PrunerIdeal {
    private:
     KnuthBendix _knuth_bendix;

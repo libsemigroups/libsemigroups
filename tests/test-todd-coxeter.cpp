@@ -3765,6 +3765,7 @@ namespace libsemigroups {
     presentation::add_rule(p, "(xy)^11"_p, "");
     presentation::add_rule(p, "(xy^2)^6"_p, "");
     presentation::add_rule(p, "(xy)^2xY(xy)^2(yxYx)^2Y"_p, "");
+    REQUIRE(presentation::to_gap_string(p, "G") == "");
 
     ToddCoxeter tc(twosided, p);
 

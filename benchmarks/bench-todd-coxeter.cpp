@@ -465,7 +465,7 @@ namespace libsemigroups {
         sizes,
         "The presentations for the factorisable dual symmetric inverse "
         "monoids $FI_n ^ *$ from \\cite{fitzgerald_2003}. This monoid is "
-        "sometimes called the \textit{uniform block bijection monoid}.",
+        "sometimes called the \\textit{uniform block bijection monoid}.",
         "table-uniform",
         "FI_n^*",
         3,
@@ -847,7 +847,9 @@ namespace libsemigroups {
         = {0, 1, 14'911, 20'490, 36'412, 72'822, 78'722, 153'500, 270'272};
 
     TEST_CASE_TODD_COXETER("Walker") {
-      start_table("The presentations from Walker~\\cite{Walker1992aa}.",
+      start_table("Comparison of \\libsemigroups and GAP~\\cite{GAP4} "
+                  "(semigroups Todd-Coxeter implementation) on examples from "
+                  "Walker~\\cite{Walker1992aa}.",
                   "table-walker",
                   "S");
 
@@ -964,6 +966,10 @@ namespace libsemigroups {
           ToddCoxeter tc(congruence_kind::twosided, p);
           tc.strategy(strategy::hlt).lookahead_next(5'000'000).save(true);
           REQUIRE(tc.number_of_classes() == N);
+        };
+        BENCHMARK("Felsch"){
+            // This is intentionally empty so that all the columns have the same
+            // values.
         };
         close_xml_tag("LatexColumnTitle");
       }
@@ -1377,10 +1383,11 @@ namespace libsemigroups {
             .def_max(1'000'000)
             .lower_bound(786'432);
         REQUIRE(H.number_of_classes() == 786'432);
-        close_xml_tag("LatexColumnTitle");
       };
+      close_xml_tag("LatexColumnTitle");
     }
   }  // namespace ace
+  //
 }  // namespace libsemigroups
 
 // Unused!

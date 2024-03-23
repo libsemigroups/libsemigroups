@@ -2741,6 +2741,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Sims1", "082", "trivial group", "[extreme][sims1]") {
+    auto                      rg = ReportGuard();
     Presentation<std::string> p;
     p.alphabet("rstRST");
     p.contains_empty_word(true);
@@ -2750,7 +2751,9 @@ namespace libsemigroups {
     presentation::add_rule(p, "ts", "stt");
 
     ToddCoxeter tc(congruence_kind::twosided, p);
+    tc.strategy(ToddCoxeter::options::strategy::felsch);
     REQUIRE(tc.number_of_classes() == 1);
+    REQUIRE(tc.word_graph().number_of_nodes() == 1);
 
     Sims1 S;
     S.presentation(p);
@@ -3822,6 +3825,21 @@ namespace libsemigroups {
                                                     //
   }
 
+  LIBSEMIGROUPS_TEST_CASE("Sims2",
+                          "119",
+                          "2-sided ideals Jura's example",
+                          "[quick][sims1]") {
+    Presentation<std::string> p;
+    p.alphabet("ab");
+    presentation::add_rule(p, "aaa", "bb");
+    presentation::add_rule(p, "aab", "ba");
+
+    PrunerIdeal ip(p);
+
+    Sims2 s(p);
+    s.add_pruner(ip);
+    REQUIRE(s.number_of_congruences(5) == 2);
+  }
 }  // namespace libsemigroups
 
 // [[[0, 0, 0]],            #1#
