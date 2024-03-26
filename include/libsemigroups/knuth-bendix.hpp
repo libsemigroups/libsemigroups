@@ -498,7 +498,7 @@ namespace libsemigroups {
     //!
     //! This member function returns the (approximate) maximum number of rules
     //! that the system should contain. If this is number is exceeded in
-    //! calls to \ref run or knuth_bendix_by_overlap_length, then they
+    //! calls to \ref run or \ref knuth_bendix::by_overlap_length, then they
     //! will terminate and the system may not be confluent.
     //!
     //!
@@ -524,7 +524,7 @@ namespace libsemigroups {
     //! This function can be used to determine the way that the length
     //! of an overlap of two words in the system is measured.
     //!
-    //! \param val the maximum number of rules.
+    //! \param val the overlap policy.
     //!
     //! \returns
     //! A reference to \c *this.
@@ -956,7 +956,7 @@ namespace libsemigroups {
   std::ostream& operator<<(std::ostream&,
                            KnuthBendix<Rewriter, ReductionOrder> const&);
 
-  KnuthBendix(congruence_kind) -> KnuthBendix<>;
+  KnuthBendix(congruence_kind)->KnuthBendix<>;
 
   namespace knuth_bendix {
 
@@ -1043,7 +1043,7 @@ namespace libsemigroups {
     template <typename Rewriter, typename ReductionOrder>
     [[nodiscard]] inline auto
     normal_forms(KnuthBendix<Rewriter, ReductionOrder>& kb) {
-      using rx::operator|;
+      using rx::      operator|;
       ReversiblePaths paths(kb.gilman_graph());
       paths.from(0).reverse(kb.kind() == congruence_kind::left);
       if (!kb.presentation().contains_empty_word()) {
