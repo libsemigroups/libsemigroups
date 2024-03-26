@@ -2108,7 +2108,7 @@ namespace libsemigroups {
                           "meaningful exception messages",
                           "[quick][presentation]") {
     using literals::operator""_w;
-    auto rg = ReportGuard(false);
+    auto            rg = ReportGuard(false);
 
     {
       Presentation<std::string> p;
