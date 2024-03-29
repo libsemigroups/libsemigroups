@@ -3840,6 +3840,48 @@ namespace libsemigroups {
     s.add_pruner(ip);
     REQUIRE(s.number_of_congruences(5) == 2);
   }
+
+  // about 2 seconds
+  LIBSEMIGROUPS_TEST_CASE("Sims2",
+                          "120",
+                          "order_preserving_monoid(5)",
+                          "[extreme][sims1]") {
+    auto p = fpsemigroup::order_preserving_monoid(5);
+    presentation::sort_each_rule(p);
+    presentation::sort_rules(p);
+    presentation::remove_duplicate_rules(p);
+    presentation::reduce_complements(p);
+    presentation::remove_trivial_rules(p);
+    REQUIRE(presentation::length(p) == 88);
+    Sims1 s(p);
+    s.number_of_threads(6);
+    REQUIRE(s.number_of_congruences(126) == 37'951);
+    presentation::reverse(p);
+    presentation::sort_each_rule(p);
+    presentation::sort_rules(p);
+    presentation::remove_duplicate_rules(p);
+    presentation::reduce_complements(p);
+    presentation::remove_trivial_rules(p);
+    s.init(p).number_of_threads(6);
+    REQUIRE(s.number_of_congruences(126) == 0);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Sims2",
+                          "121",
+                          "order_preserving_monoid(6)",
+                          "[quick][sims1]") {
+    auto p = fpsemigroup::order_preserving_monoid(6);
+    presentation::sort_each_rule(p);
+    presentation::sort_rules(p);
+    presentation::remove_duplicate_rules(p);
+    presentation::reduce_complements(p);
+    presentation::remove_trivial_rules(p);
+    REQUIRE(presentation::length(p) == 128);
+    Sims1 s(p);
+    s.number_of_threads(6);
+    REQUIRE(s.number_of_congruences(462) == 0);
+  }
+
 }  // namespace libsemigroups
 
 // [[[0, 0, 0]],            #1#
