@@ -16,6 +16,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
+#include "libsemigroups/detail/stl.hpp"
 #include "libsemigroups/word-graph.hpp"
 #define CATCH_CONFIG_ENABLE_PAIR_STRINGMAKER
 #define CATCH_CONFIG_ENABLE_TUPLE_STRINGMAKER
@@ -57,7 +58,6 @@ namespace libsemigroups {
   using fpsemigroup::partition_monoid;
   using fpsemigroup::plactic_monoid;
   using fpsemigroup::rectangular_band;
-  using fpsemigroup::singular_brauer_monoid;
   using fpsemigroup::stellar_monoid;
   using fpsemigroup::stylic_monoid;
   using fpsemigroup::symmetric_inverse_monoid;
@@ -3773,10 +3773,11 @@ namespace libsemigroups {
     // REQUIRE(s.number_of_congruences(8) == 17381 + 36);
   }
 
+  // ~24s
   LIBSEMIGROUPS_TEST_CASE("Sims2",
                           "117",
                           "1-sided ideals 2-generated free semigroup",
-                          "[quick][sims1]") {
+                          "[extreme][sims1]") {
     Presentation<std::string> p;
     p.alphabet("ab");
     p.contains_empty_word(true);
@@ -3799,10 +3800,11 @@ namespace libsemigroups {
     REQUIRE(s.number_of_congruences(7) == 197);
   }
 
+  // > 1m30s
   LIBSEMIGROUPS_TEST_CASE("Sims2",
                           "118",
                           "1-sided ideals partition monoid, n = 2",
-                          "[quick][sims1]") {
+                          "[extreme][sims1]") {
     Presentation<word_type> p;
     p.contains_empty_word(true);
 
@@ -3830,7 +3832,6 @@ namespace libsemigroups {
     ip = PrunerIdeal(to_presentation<std::string>(p));
     s.init(p).add_pruner(ip);
     REQUIRE(s.number_of_congruences(203) == 5767);  // checked in GAP
-                                                    //
   }
 
   LIBSEMIGROUPS_TEST_CASE("Sims2",
@@ -3854,24 +3855,60 @@ namespace libsemigroups {
                           "120",
                           "order_preserving_monoid(5)",
                           "[extreme][sims1]") {
-    auto p = fpsemigroup::order_preserving_monoid(5);
+    auto rg = ReportGuard(false);
+    auto p  = fpsemigroup::order_preserving_monoid(5);
+    REQUIRE(p.contains_empty_word());
     presentation::sort_each_rule(p);
     presentation::sort_rules(p);
     presentation::remove_duplicate_rules(p);
     presentation::reduce_complements(p);
     presentation::remove_trivial_rules(p);
-    REQUIRE(presentation::length(p) == 88);
-    Sims1 s(p);
-    s.number_of_threads(6);
-    REQUIRE(s.number_of_congruences(126) == 37'951);
-    presentation::reverse(p);
-    presentation::sort_each_rule(p);
-    presentation::sort_rules(p);
-    presentation::remove_duplicate_rules(p);
-    presentation::reduce_complements(p);
-    presentation::remove_trivial_rules(p);
-    s.init(p).number_of_threads(6);
-    REQUIRE(s.number_of_congruences(126) == 0);
+
+    // presentation::reverse(p);
+    // REQUIRE(presentation::length(p) == 88);
+    Sims1       s(p);
+    auto const& pp = s.presentation();
+
+    // REQUIRE(to_presentation<std::string>(s.presentation()).rules
+    //         == std::vector<std::string>());
+    s.number_of_threads(4);
+    // REQUIRE(s.number_of_congruences(126) == 37'951);
+
+    // auto wg_found = s.find_if(35, [&pp](auto const& wg) {
+    //   return !sims::is_right_congruence(pp, wg);
+    // });
+
+    // REQUIRE(wg_found.number_of_active_nodes() == 0);
+    // auto wg_expected = to_word_graph<uint32_t>(6,
+    //                                            {{1, 0, 0, 2, 0, 0},
+    //                                             {1, 0, 3, 1, 1, 1},
+    //                                             {2, 2, 2, 2, 0, 2},
+    //                                             {3, 3, 3, 3, 3, 1}});
+    //  REQUIRE(sims::is_right_congruence(p, wg_expected));
+
+    // REQUIRE(word_graph::is_complete(
+    //     wg_found, wg_found.cbegin_nodes(), wg_found.cbegin_nodes() + 4));
+    // auto i = 0;
+    // //    static_assert(::libsemigroups::detail::HasLessEqual<, >::value);
+    // // REQUIRE(pp.rules == std::vector<word_type>());
+    // for (auto it = pp.rules.cbegin(); it < pp.rules.cend(); it += 2) {
+    //   fmt::print("i = {}\n", i);
+    //   REQUIRE(word_graph::is_compatible(wg_found,
+    //                                     wg_found.cbegin_nodes(),
+    //                                     wg_found.cbegin_nodes() + 4,
+    //                                     it,
+    //                                     it + 1));
+    //   i += 1;
+    // }
+
+    std::atomic_uint64_t result = 0;
+    s.for_each(125, [&result, &pp](auto const& wg) {
+      if (sims::is_maximal_right_congruence(pp, wg)) {
+        fmt::print("Index {}\n", wg.number_of_active_nodes());
+        result++;
+      }
+    });
+    REQUIRE(result == 31);
   }
 
   LIBSEMIGROUPS_TEST_CASE("Sims2",
@@ -3888,6 +3925,46 @@ namespace libsemigroups {
     Sims1 s(p);
     s.number_of_threads(6);
     REQUIRE(s.number_of_congruences(462) == 0);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Sims2",
+                          "122",
+                          "partition_monoid(2)",
+                          "[quick][sims1]") {
+    // Presentation<word_type> p;
+    // p.contains_empty_word(true);
+
+    // p.alphabet(123_w);
+    // presentation::add_rule(p, 11_w, ""_w);
+    // presentation::add_rule(p, 13_w, 3_w);
+    // presentation::add_rule(p, 22_w, 2_w);
+    // presentation::add_rule(p, 31_w, 3_w);
+    // presentation::add_rule(p, 33_w, 3_w);
+    // presentation::add_rule(p, 232_w, 2_w);
+    // presentation::add_rule(p, 323_w, 3_w);
+    // presentation::add_rule(p, 1212_w, 212_w);
+    // presentation::add_rule(p, 2121_w, 212_w);
+    // presentation::sort_each_rule(p);
+    // presentation::sort_rules(p);
+    // presentation::remove_duplicate_rules(p);
+    // presentation::reduce_complements(p);
+    // presentation::remove_trivial_rules(p);
+
+    auto rg = ReportGuard(false);
+    auto p  = partition_monoid(3, author::Machine);
+    p.contains_empty_word(true);
+
+    Sims1                s(p);
+    auto                 pp     = s.presentation();
+    std::atomic_uint64_t result = 0;
+    s.for_each(11, [&result, &pp](auto const& wg) {
+      if (sims::is_maximal_right_congruence(pp, wg)) {
+        fmt::print("Index {}\n", wg.number_of_active_nodes());
+        result++;
+      }
+    });
+    REQUIRE(result == 6);
+    REQUIRE(s.number_of_congruences(15) == 0);
   }
 
 }  // namespace libsemigroups

@@ -1005,7 +1005,6 @@ namespace libsemigroups {
     //! \ref cend_normal_forms.
     // TODO update doc
     [[nodiscard]] inline auto normal_forms(KnuthBendix& kb) {
-      using rx::operator|;
       ReversiblePaths paths(kb.gilman_graph());
       paths.from(0).reverse(kb.kind() == congruence_kind::left);
       return paths;

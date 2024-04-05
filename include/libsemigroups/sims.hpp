@@ -43,6 +43,8 @@
 #ifndef LIBSEMIGROUPS_SIMS_HPP_
 #define LIBSEMIGROUPS_SIMS_HPP_
 
+#include <iostream>
+
 #include <algorithm>   // for max
 #include <cstddef>     // for size_t
 #include <cstdint>     // for uint64_t, uint32_t
@@ -55,12 +57,13 @@
 
 #include <fstream>
 
-#include "debug.hpp"         // for LIBSEMIGROUPS_ASSERT
-#include "exception.hpp"     // for LIBSEMIGROUPS_EXCEPTION
-#include "felsch-graph.hpp"  // for FelschGraph
-#include "knuth-bendix.hpp"
+#include "debug.hpp"            // for LIBSEMIGROUPS_ASSERT
+#include "exception.hpp"        // for LIBSEMIGROUPS_EXCEPTION
+#include "felsch-graph.hpp"     // for FelschGraph
+#include "knuth-bendix.hpp"     // for KnuthBendix
 #include "presentation.hpp"     // for Presentation, Presentati...
 #include "to-presentation.hpp"  // for to_presentation
+#include "todd-coxeter.hpp"     // for ToddCoxeter
 #include "types.hpp"            // for word_type,
 #include "word-graph.hpp"       // for WordGraph
 
@@ -2023,6 +2026,50 @@ namespace libsemigroups {
       p.alphabet(wg.out_degree());
       validate_two_sided_congruence(p, wg);
       return two_sided_generating_pairs_no_checks(p, wg);
+    }
+
+    template <typename Node>
+    bool is_maximal_right_congruence(Presentation<word_type> const& p,
+                                     WordGraph<Node> const&         wg) {
+      if (!is_right_congruence(p, wg)) {
+        return false;
+      } else if (wg.number_of_active_nodes() == 1) {
+        // Universal congruence
+        return false;
+      }
+
+      ToddCoxeter tc(congruence_kind::right);
+
+      auto   tree = word_graph::spanning_tree(wg, 0);
+      size_t N    = wg.number_of_active_nodes();
+
+      for (Node x = 0; x < N - 1; ++x) {
+        auto wx = tree.path_to_root(x);
+        std::reverse(wx.begin(), wx.end());
+        for (Node y = x + 1; y < N; ++y) {
+          auto wy = tree.path_to_root(y);
+          std::reverse(wy.begin(), wy.end());
+          auto copy = wg;
+          // TODO avoid the copy here
+          copy.induced_subgraph_no_checks(static_cast<Node>(0),
+                                          wg.number_of_active_nodes());
+          tc.init(tc.kind(), p, copy).add_pair(wx, wy);
+          LIBSEMIGROUPS_ASSERT(tc.word_graph().number_of_nodes()
+                               == wg.number_of_active_nodes());
+          // fmt::print("x = {}, y = {}\n", x, y);
+          // fmt::print("wx = {}, wy = {}\n", wx, wy);
+          // std::cout << copy << std::endl;
+          // fmt::print("tc.number_of_classes() == {}\n",
+          // tc.number_of_classes()); fmt::print("copy.number_of_nodes() ==
+          // {}\n", copy.number_of_nodes());
+          LIBSEMIGROUPS_ASSERT(tc.number_of_classes()
+                               < wg.number_of_active_nodes());
+          if (tc.number_of_classes() > 1) {
+            return false;
+          }
+        }
+      }
+      return true;
     }
 
     template <typename Iterator>

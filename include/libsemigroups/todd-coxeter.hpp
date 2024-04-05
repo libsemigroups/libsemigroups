@@ -293,11 +293,19 @@ namespace libsemigroups {
     template <typename Node>
     ToddCoxeter(congruence_kind                knd,
                 Presentation<word_type> const& p,
-                WordGraph<Node> const&         ad)
-        : ToddCoxeter(knd, p) {
+                WordGraph<Node> const&         ad) {
+      init(knd, p, ad);
+    }
+
+    template <typename Node>
+    ToddCoxeter& init(congruence_kind                knd,
+                      Presentation<word_type> const& p,
+                      WordGraph<Node> const&         ad) {
+      init(knd, p);
       _word_graph = ad;
       _word_graph.presentation(p);
       _word_graph.report_prefix("ToddCoxeter");
+      return *this;
     }
 
     ToddCoxeter(congruence_kind knd, ToddCoxeter const& tc);

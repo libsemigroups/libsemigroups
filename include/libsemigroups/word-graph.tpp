@@ -431,7 +431,7 @@ namespace libsemigroups {
                        Iterator3              first_rule,
                        Iterator3              last_rule) {
       for (auto nit = first_node; nit != last_node; ++nit) {
-        for (auto rit = first_rule; rit != last_rule; ++rit) {
+        for (auto rit = first_rule; rit < last_rule; ++rit) {
           auto l = word_graph::follow_path_no_checks(
               wg, *nit, rit->cbegin(), rit->cend());
           ++rit;

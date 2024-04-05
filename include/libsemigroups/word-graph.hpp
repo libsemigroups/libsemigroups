@@ -36,6 +36,7 @@
 #include <cstdint>
 #include <numeric>        // for accumulate
 #include <ostream>        // for operator<<
+#include <queue>          // for queue
 #include <random>         // for mt19937
 #include <stack>          // for stack
 #include <string>         // for to_string
@@ -1448,6 +1449,7 @@ namespace libsemigroups {
     template <typename Node>
     Dot dot(WordGraph<Node> const& wg);
 
+    // TODO to tpp
     template <typename Node>
     [[nodiscard]] bool equal_to(WordGraph<Node> const& x,
                                 WordGraph<Node> const& y,
@@ -1477,6 +1479,7 @@ namespace libsemigroups {
     // Returns {Node, bool} where the second value indicates whether or not the
     // DFS should continue, so false if there can be no (or too many) sinks in
     // any completion of "wg" and true otherwise.
+    // TODO to tpp
     template <typename Node, typename Iterator>
     [[nodiscard]] std::pair<Node, bool> unique_sink(WordGraph<Node> const& wg,
                                                     Iterator first,
@@ -1499,6 +1502,38 @@ namespace libsemigroups {
         return {sink, false};
       }
       return {sink, true};
+    }
+    // TODO to tpp
+    template <typename Node1, typename Node2>
+    void spanning_tree(WordGraph<Node1> const& wg, Node2 root, Forest& f) {
+      using node_type = typename WordGraph<Node1>::node_type;
+      f.clear();
+      f.add_nodes(1);
+
+      std::queue<node_type> queue;
+      queue.push(static_cast<node_type>(root));
+      do {
+        node_type s = queue.front();
+        for (auto [a, t] : wg.labels_and_targets_no_checks(s)) {
+          if (t != UNDEFINED && t != static_cast<node_type>(root)) {
+            if (t >= f.number_of_nodes()) {
+              f.add_nodes(t - f.number_of_nodes() + 1);
+            }
+            if (f.parent(t) == UNDEFINED) {
+              f.set(t, s, a);
+              queue.push(t);
+            }
+          }
+        }
+        queue.pop();
+      } while (!queue.empty());
+    }
+
+    template <typename Node1, typename Node2>
+    Forest spanning_tree(WordGraph<Node1> const& wg, Node2 root) {
+      Forest f;
+      spanning_tree(wg, root, f);
+      return f;
     }
   }  // namespace word_graph
 
