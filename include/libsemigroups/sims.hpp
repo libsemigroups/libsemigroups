@@ -2259,45 +2259,38 @@ namespace libsemigroups {
   // resolve the issue but I think in the process of writing it out I have the
   // fix. So Im mostly letting you know why the original idea didn't work in the
   // one sided case.
-  class PrunerIdeal {
+  class SimsRefinerIdeals {
    private:
+    using node_type = uint32_t;
     KnuthBendix _knuth_bendix;
 
    public:
-    PrunerIdeal(Presentation<std::string> const& p)
+    explicit SimsRefinerIdeals(Presentation<std::string> const& p)
         : _knuth_bendix(congruence_kind::right, p) {}
 
     bool operator()(Sims1::word_graph_type const& wg) {
       using sims::right_generating_pairs_no_checks;
-      auto [sink, continue_] = word_graph::unique_sink(
-          wg,
-          wg.cbegin_nodes(),
-          wg.cbegin_nodes() + wg.number_of_active_nodes());
 
-      if (!continue_) {
-        // Complete graph with no sink or word graph with 2-sinks or more
-        return false;
-      } else if (sink == UNDEFINED) {
-        // There's no sink currently so we just carry on
-        return true;
-      }
-      // There's a unique sink
+      node_type sink = UNDEFINED;
 
       for (auto const& p : right_generating_pairs_no_checks(wg)) {
         auto const& u = p.first;
         auto const& v = p.second;
-        if (u.size() < v.size()) {
-          if (word_graph::follow_path_no_checks(wg, 0, u.cbegin(), u.cend())
-              == sink) {
-            continue;
-          }
-        } else if (word_graph::follow_path_no_checks(
-                       wg, 0, v.cbegin(), v.cend())
-                   == sink) {
-          continue;
-        }
         if (!_knuth_bendix.contains(u, v)) {
-          return false;
+          auto beta
+              = word_graph::follow_path_no_checks(wg, 0, u.cbegin(), u.cend());
+          if (sink == UNDEFINED) {
+            sink = beta;
+          } else if (sink != beta) {
+            return false;
+          }
+        }
+      }
+      if (sink != UNDEFINED) {
+        for (auto [a, t] : wg.labels_and_targets_no_checks(sink)) {
+          if (t != UNDEFINED && t != sink) {
+            return false;
+          }
         }
       }
       return true;

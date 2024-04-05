@@ -1479,7 +1479,7 @@ namespace libsemigroups {
     // Returns {Node, bool} where the second value indicates whether or not the
     // DFS should continue, so false if there can be no (or too many) sinks in
     // any completion of "wg" and true otherwise.
-    // TODO to tpp
+    // TODO to tpp, or delete
     template <typename Node, typename Iterator>
     [[nodiscard]] std::pair<Node, bool> unique_sink(WordGraph<Node> const& wg,
                                                     Iterator first,
