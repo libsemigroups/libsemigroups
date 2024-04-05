@@ -681,7 +681,7 @@ namespace libsemigroups {
     //! possible.
     //!
     //! \returns
-    //! The current number of inactive rules, a value of type \c size_t.
+    //! The total number of rules, a value of type \c size_t.
     //!
     //! \exceptions
     //! \noexcept
@@ -1058,7 +1058,6 @@ namespace libsemigroups {
     non_trivial_classes(KnuthBendix<Rewriter, ReductionOrder>& kb1,
                         KnuthBendix<Rewriter, ReductionOrder>& kb2);
 
-    // TODO should this be in the knuth_bendix namespace?
     //! \brief Return an iterator pointing at the left hand side of a redundant
     //! rule.
     //!
