@@ -1,6 +1,6 @@
 //
 // libsemigroups - C++ library for semigroups and monoids
-// Copyright (C) 2022-23 James D. Mitchell
+// Copyright (C) 2022-24 James D. Mitchell
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -1937,11 +1937,19 @@ namespace libsemigroups {
     auto                           rg   = ReportGuard(true);
     std::array<uint64_t, 10> const size = {0, 0, 0, 14, 51};
     //               1505s
-    std::array<uint64_t, 10> const num_left  = {0, 0, 0, 1'214, 1'429'447'174};
-    std::array<uint64_t, 10> const num_right = {0, 0, 0, 1'214, 1'429'455'689};
+    std::array<uint64_t, 10> const num_left  = {0, 0, 0, 1'318, 1'431'795'099};
+    std::array<uint64_t, 10> const num_right = {0, 0, 0, 1'318, 1'431'795'099};
+
+    auto p = stylic_monoid(4);
+    presentation::sort_each_rule(p);
+    presentation::sort_rules(p);
+    auto q = p;
+    presentation::sort_each_rule(q);
+    presentation::sort_rules(q);
+    REQUIRE(p == q);
 
     for (size_t n = 3; n < 5; ++n) {
-      auto  p = to_presentation<word_type>(stylic_monoid(n));
+      auto  p = stylic_monoid(n);
       Sims1 S;
       S.presentation(p).number_of_threads(4);
       REQUIRE(S.number_of_congruences(size[n]) == num_right[n]);

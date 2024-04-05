@@ -20,7 +20,8 @@
 #include <fstream>   // for ofstream
 #include <iostream>  // for cout
 
-#include "catch.hpp"      // for TEST_CASE
+#include "catch.hpp"  // for TEST_CASE
+#include "libsemigroups/constants.hpp"
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
 #include "libsemigroups/bmat8.hpp"
@@ -4772,6 +4773,68 @@ namespace libsemigroups {
 
     ToddCoxeter tc(twosided, p);
     REQUIRE(tc.number_of_classes() == 5);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
+                          "117",
+                          "Rudvalis group",
+                          "[todd-coxeter][extreme]") {
+    auto                      rg = ReportGuard(true);
+    Presentation<std::string> p;
+    p.alphabet("abctABCT").contains_empty_word(true);
+    presentation::add_inverse_rules(p, "ABCTabct");
+    presentation::add_rule(p, "a^7"_p, "");
+    presentation::add_rule(p, "b^3"_p, "");
+    presentation::add_rule(p, "c^2"_p, "");
+    presentation::add_rule(p, "t^2"_p, "");
+    presentation::add_rule(p, "BCbc"_p, "");
+    presentation::add_rule(p, "TCtc"_p, "");
+    presentation::add_rule(p, "(ac)^6"_p, "");
+    presentation::add_rule(p, "(ACac)^4"_p, "");
+    presentation::add_rule(p, "(bt)^3"_p, "");
+    presentation::add_rule(p, "BabA^2"_p, "");
+    presentation::add_rule(p, "(abc)^7"_p, "");
+    presentation::add_rule(p, "(ab^2t)^3"_p, "");
+    presentation::add_rule(p, "TACABacatACAbaca"_p, "");
+    presentation::add_rule(p, "TB(AC)^2acabtBACA(ca)^2b"_p, "");
+    presentation::add_rule(p, "tA^3ta^3BtAtabACA^2(A^3C)^2a^3ca^5ca"_p, "");
+    presentation::balance(p, p.alphabet(), std::string("ABCTabct"));
+
+    REQUIRE(presentation::length(p) == 183);
+
+    ToWord      to_word(p.alphabet());
+    ToddCoxeter tc(left, p);
+    tc.add_pair(to_word("a"), {});
+    tc.add_pair(to_word("b"), {});
+    tc.add_pair(to_word("c"), {});
+    tc.strategy(options::strategy::felsch).use_relations_in_extra(true);
+
+    REQUIRE(tc.number_of_classes() == 7'238'400);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
+                          "118",
+                          "alternating group 8",
+                          "[todd-coxeter][extreme]") {
+    auto                      rg = ReportGuard(true);
+    Presentation<std::string> p;
+    p.alphabet("abcABC").contains_empty_word(true);
+    presentation::add_inverse_rules(p, "ABCabc");
+    presentation::add_rule(p, "a^7"_p, "");
+    presentation::add_rule(p, "b^3"_p, "");
+    presentation::add_rule(p, "c^2"_p, "");
+    presentation::add_rule(p, "BCbc"_p, "");
+    presentation::add_rule(p, "(ac)^6"_p, "");
+    presentation::add_rule(p, "(ACac)^4"_p, "");
+    presentation::add_rule(p, "BabAA"_p, "");
+    presentation::add_rule(p, "(abc)^7"_p, "");
+    presentation::balance(p, p.alphabet(), std::string("ABCabc"));
+
+    ToWord      to_word(p.alphabet());
+    ToddCoxeter tc(twosided, p);
+    tc.strategy(options::strategy::felsch).use_relations_in_extra(true);
+
+    REQUIRE(tc.number_of_classes() == 20'160);
   }
 
 }  // namespace libsemigroups
