@@ -612,7 +612,7 @@ namespace libsemigroups {
       } else {
         add_overlaps = false;
       }
-    };
+    }
 
   confluence_achieved:
     // _rewriter.reduce_rhs();
