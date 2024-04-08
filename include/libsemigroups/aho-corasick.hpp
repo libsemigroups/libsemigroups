@@ -23,6 +23,7 @@
 #include <map>
 #include <set>
 #include <stack>
+#include <unordered_map>
 #include <vector>
 
 #include "constants.hpp"  // for UNDEFINED
