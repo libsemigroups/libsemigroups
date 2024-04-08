@@ -3,7 +3,9 @@
 ##############################################################################
 
 AM_CXXFLAGS =  -I$(abs_top_srcdir)/include
-AM_CXXFLAGS += -I$(abs_top_srcdir)/extern  ## for HPCombi
+AM_CXXFLAGS += -I$(abs_top_srcdir)/extern # for magic_enum
+AM_CXXFLAGS += -I$(abs_top_srcdir)/extern/HPCombi/include
+AM_CXXFLAGS += -I$(abs_top_srcdir)/extern/HPCombi/third_party
 AM_CXXFLAGS += -I$(abs_top_srcdir)/extern/rx-ranges/include
 AM_CXXFLAGS += -std=gnu++17 -Wall -Wextra
 AM_CXXFLAGS += $(WARNING_CXXFLAGS)
@@ -20,10 +22,6 @@ AM_CPPFLAGS = -DDEBUG
 AM_CXXFLAGS += -g3 -O0 -fno-omit-frame-pointer
 else
 AM_CPPFLAGS = -DNDEBUG
-endif
-
-if HPCOMBI_CONSTEXPR_FUN_ARGS
-AM_CPPFLAGS += -DHPCOMBI_CONSTEXPR_FUN_ARGS
 endif
 
 AM_CPPFLAGS += $(CODE_COVERAGE_CPPFLAGS)
@@ -93,6 +91,7 @@ pkginclude_HEADERS += include/libsemigroups/ranges.tpp
 pkginclude_HEADERS += include/libsemigroups/rewriters.hpp
 pkginclude_HEADERS += include/libsemigroups/runner.hpp
 pkginclude_HEADERS += include/libsemigroups/schreier-sims.hpp
+pkginclude_HEADERS += include/libsemigroups/schreier-sims.tpp
 pkginclude_HEADERS += include/libsemigroups/sims.hpp
 pkginclude_HEADERS += include/libsemigroups/stephen.hpp
 pkginclude_HEADERS += include/libsemigroups/stephen.tpp
@@ -152,23 +151,21 @@ backwardcppinclude_HEADERS=extern/backward-cpp/backward.hpp
 ## uninstall-hook
 hpcombiincludedir = $(includedir)/libsemigroups/HPCombi/include
 if LIBSEMIGROUPS_HPCOMBI_ENABLED
-hpcombiinclude_HEADERS =  extern/HPCombi/include/bmat8.hpp
-hpcombiinclude_HEADERS += extern/HPCombi/include/bmat8_impl.hpp
-hpcombiinclude_HEADERS += extern/HPCombi/include/epu.hpp
-hpcombiinclude_HEADERS += extern/HPCombi/include/epu_impl.hpp
-hpcombiinclude_HEADERS += extern/HPCombi/include/hpcombi.hpp
-hpcombiinclude_HEADERS += extern/HPCombi/include/perm16.hpp
-hpcombiinclude_HEADERS += extern/HPCombi/include/perm16_impl.hpp
-hpcombiinclude_HEADERS += extern/HPCombi/include/perm_generic.hpp
-hpcombiinclude_HEADERS += extern/HPCombi/include/perm_generic_impl.hpp
-hpcombiinclude_HEADERS += extern/HPCombi/include/power.hpp
-hpcombiinclude_HEADERS += extern/HPCombi/include/testtools.hpp
-hpcombiinclude_HEADERS += extern/HPCombi/include/vect16.hpp
-hpcombiinclude_HEADERS += extern/HPCombi/include/vect_generic.hpp
-
-hpcombifallbackincludedir = $(includedir)/libsemigroups/HPCombi/include/fallback
-hpcombifallbackinclude_HEADERS =  extern/HPCombi/include/fallback/gcdlcm.hpp
-hpcombifallbackinclude_HEADERS += extern/HPCombi/include/fallback/seq.hpp
+hpcombiinclude_HEADERS =  extern/HPCombi/include/hpcombi/arch.hpp
+hpcombiinclude_HEADERS =  extern/HPCombi/include/hpcombi/bmat8.hpp
+hpcombiinclude_HEADERS += extern/HPCombi/include/hpcombi/bmat8_impl.hpp
+hpcombiinclude_HEADERS += extern/HPCombi/include/hpcombi/builder.hpp
+hpcombiinclude_HEADERS += extern/HPCombi/include/hpcombi/debug.hpp
+hpcombiinclude_HEADERS += extern/HPCombi/include/hpcombi/epu8.hpp
+hpcombiinclude_HEADERS += extern/HPCombi/include/hpcombi/epu8_impl.hpp
+hpcombiinclude_HEADERS += extern/HPCombi/include/hpcombi/hpcombi.hpp
+hpcombiinclude_HEADERS += extern/HPCombi/include/hpcombi/perm16.hpp
+hpcombiinclude_HEADERS += extern/HPCombi/include/hpcombi/perm16_impl.hpp
+hpcombiinclude_HEADERS += extern/HPCombi/include/hpcombi/perm_generic.hpp
+hpcombiinclude_HEADERS += extern/HPCombi/include/hpcombi/perm_generic_impl.hpp
+hpcombiinclude_HEADERS += extern/HPCombi/include/hpcombi/power.hpp
+hpcombiinclude_HEADERS += extern/HPCombi/include/hpcombi/vect16.hpp
+hpcombiinclude_HEADERS += extern/HPCombi/include/hpcombi/vect_generic.hpp
 endif ## LIBSEMIGROUPS_HPCOMBI_ENABLED
 
 ## Define fmtincludedir outside the conditional
@@ -643,16 +640,17 @@ EXTRA_DIST =  .clang-format
 EXTRA_DIST += autogen.sh
 EXTRA_DIST += CPPLINT.cfg
 EXTRA_DIST += LICENSE
-EXTRA_DIST += README.rst
+EXTRA_DIST += README.md
 EXTRA_DIST += .VERSION
 EXTRA_DIST += docs
 EXTRA_DIST += etc/make-format.sh
 EXTRA_DIST += etc/make-lint.sh
 EXTRA_DIST += etc/version-number.sh
-EXTRA_DIST += extern/HPCombi/VERSION
+EXTRA_DIST += extern/HPCombi/HPCOMBI_VERSION
 EXTRA_DIST += tests/catch.hpp
 EXTRA_DIST += tests/bmat-data.hpp
 EXTRA_DIST += tests/test-main.hpp
+EXTRA_DIST += tests/word-graph-test-common.hpp
 EXTRA_DIST += benchmarks/bench-main.hpp
 EXTRA_DIST += benchmarks/catch.hpp
 EXTRA_DIST += benchmarks/uf-old.hpp
@@ -673,13 +671,11 @@ EXTRA_PROGRAMS += test_aho_corasick
 EXTRA_PROGRAMS += test_bipart
 EXTRA_PROGRAMS += test_bitset
 EXTRA_PROGRAMS += test_bmat8
-EXTRA_PROGRAMS += test_cong_pair
 EXTRA_PROGRAMS += test_cong
 EXTRA_PROGRAMS += test_cong_intf
 EXTRA_PROGRAMS += test_constants
 EXTRA_PROGRAMS += test_containers
 EXTRA_PROGRAMS += test_cutting
-EXTRA_PROGRAMS += test_digraph_helper
 EXTRA_PROGRAMS += test_felsch_tree
 EXTRA_PROGRAMS += test_forest
 EXTRA_PROGRAMS += test_fpsemi_examples
@@ -729,7 +725,6 @@ EXTRA_PROGRAMS += test_transf
 EXTRA_PROGRAMS += test_types
 EXTRA_PROGRAMS += test_uf
 EXTRA_PROGRAMS += test_ukkonen
-EXTRA_PROGRAMS += test_word_graph_with_sources
 EXTRA_PROGRAMS += test_word_graph
 EXTRA_PROGRAMS += test_words
 

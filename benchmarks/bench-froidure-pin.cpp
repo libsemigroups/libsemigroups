@@ -29,49 +29,50 @@
 #include "examples/generators.hpp"
 
 namespace libsemigroups {
-  template <typename T>
-  FroidurePin<T>* before_bench(Generators<T> const& p) {
-    auto fp = to_froidure_pin<T>(p);
-    return fp;
-  }
-
-  template <typename T>
-  void bench_run(FroidurePin<T>* fp, size_t) {
-    fp->run();
-    REQUIRE(fp->finished());
-  }
-
-  template <typename T>
-  void after_bench(FroidurePin<T>* fp) {
-    delete fp;
-  }
-
-  template <typename T>
-  FroidurePin<T>* before_bench_rules(Generators<T> const& p) {
-    auto fp = before_bench(p);
-    fp->run();
-    REQUIRE(fp->finished());
-    return fp;
-  }
-
-  template <typename T>
-  void bench_const_rule_iterator(FroidurePin<T>* fp, size_t) {
-    std::vector<relation_type> v(fp->cbegin_rules(), fp->cend_rules());
-    REQUIRE(v.size() == fp->number_of_rules());
-  }
-
-  LIBSEMIGROUPS_BENCHMARK("FroidurePin<LeastTransf<16>>",
-                          "[FroidurePin][001]",
-                          before_bench<LeastTransf<16>>,
-                          bench_run<LeastTransf<16>>,
-                          after_bench<LeastTransf<16>>,
-                          transf_examples());
-
-  LIBSEMIGROUPS_BENCHMARK("cbegin/end_rules",
-                          "[FroidurePin][002]",
-                          before_bench_rules<LeastTransf<16>>,
-                          bench_const_rule_iterator<LeastTransf<16>>,
-                          after_bench<LeastTransf<16>>,
-                          {transf_examples(0x9806816B9D761476)});
-
+  // TODO(0) uncomment these
+  //  template <typename T>
+  //  FroidurePin<T>* before_bench(Generators<T> const& p) {
+  //    auto fp = to_froidure_pin<T>(p);
+  //    return fp;
+  //  }
+  //
+  //  template <typename T>
+  //  void bench_run(FroidurePin<T>* fp, size_t) {
+  //    fp->run();
+  //    REQUIRE(fp->finished());
+  //  }
+  //
+  //  template <typename T>
+  //  void after_bench(FroidurePin<T>* fp) {
+  //    delete fp;
+  //  }
+  //
+  //  template <typename T>
+  //  FroidurePin<T>* before_bench_rules(Generators<T> const& p) {
+  //    auto fp = before_bench(p);
+  //    fp->run();
+  //    REQUIRE(fp->finished());
+  //    return fp;
+  //  }
+  //
+  //  template <typename T>
+  //  void bench_const_rule_iterator(FroidurePin<T>* fp, size_t) {
+  //    std::vector<relation_type> v(fp->cbegin_rules(), fp->cend_rules());
+  //    REQUIRE(v.size() == fp->number_of_rules());
+  //  }
+  //
+  //  LIBSEMIGROUPS_BENCHMARK("FroidurePin<LeastTransf<16>>",
+  //                          "[FroidurePin][001]",
+  //                          before_bench<LeastTransf<16>>,
+  //                          bench_run<LeastTransf<16>>,
+  //                          after_bench<LeastTransf<16>>,
+  //                          transf_examples());
+  //
+  //  LIBSEMIGROUPS_BENCHMARK("cbegin/end_rules",
+  //                          "[FroidurePin][002]",
+  //                          before_bench_rules<LeastTransf<16>>,
+  //                          bench_const_rule_iterator<LeastTransf<16>>,
+  //                          after_bench<LeastTransf<16>>,
+  //                          {transf_examples(0x9806816B9D761476)});
+  //
 }  // namespace libsemigroups

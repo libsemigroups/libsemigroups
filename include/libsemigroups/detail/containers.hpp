@@ -831,6 +831,11 @@ namespace libsemigroups {
                && std::equal(cbegin(), cend(), that.cbegin());
       }
 
+      // not noexcept because == is not
+      bool operator!=(StaticVector1 const& that) const {
+        return !(*this == that);
+      }
+
       void clear() noexcept {
         _size = 0;
       }

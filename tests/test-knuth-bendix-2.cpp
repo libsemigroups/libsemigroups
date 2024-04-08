@@ -1664,6 +1664,19 @@ namespace libsemigroups {
     REQUIRE(kb.number_of_classes() == 312);
   }
 
+  TEMPLATE_TEST_CASE("Reinis MFE",
+                     "[027][todd-coxeter][quick]",
+                     KNUTH_BENDIX_TYPES) {
+    using literals::        operator""_w;
+    Presentation<word_type> p;
+    p.alphabet(2);
+    presentation::add_rule(p, "000"_w, "11"_w);
+    presentation::add_rule(p, "001"_w, "10"_w);
+    KnuthBendix<> kb(congruence_kind::twosided, p);
+
+    REQUIRE(kb.contains("000"_w, "11"_w));
+  }
+
   TEMPLATE_TEST_CASE("sigma sylvester monoid x 2",
                      "[068][todd-coxeter][quick]",
                      KNUTH_BENDIX_TYPES) {
