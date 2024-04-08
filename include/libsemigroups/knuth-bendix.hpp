@@ -888,10 +888,6 @@ namespace libsemigroups {
     //! \sa \ref equal_to.
     [[nodiscard]] bool contains(word_type const& u,
                                 word_type const& v) override {
-      using literals::operator""_w;
-      if (u == 000_w && v == 11_w) {
-        fmt::print("hll\n");
-      }
       return equal_to(to_string(presentation(), u),
                       to_string(presentation(), v));
     }
