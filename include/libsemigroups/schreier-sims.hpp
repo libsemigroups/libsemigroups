@@ -171,6 +171,8 @@ namespace libsemigroups {
 
     using internal_element_type =
         typename detail::BruidhinnTraits<Element>::internal_value_type;
+    using internal_reference =
+        typename detail::BruidhinnTraits<Element>::internal_reference;
     using internal_const_element_type =
         typename detail::BruidhinnTraits<Element>::internal_const_value_type;
 
@@ -713,7 +715,7 @@ namespace libsemigroups {
                          point_type            pt);
     // Changes _tmp_element2 in-place, and returns the depth reached in the
     // sifting.
-    index_type internal_sift(internal_element_type x) const;
+    index_type internal_sift(internal_reference x) const;
 
     typename domain_type::const_iterator
     first_non_fixed_point(internal_const_element_type x) const {
