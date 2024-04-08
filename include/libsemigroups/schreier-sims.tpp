@@ -256,12 +256,14 @@ namespace libsemigroups {
     start:
       for (auto it = _orbits.cbegin(i); it < _orbits.cend(i); ++it) {
         point_type beta = *it;
+        LIBSEMIGROUPS_ASSERT(_orbits_lookup[i][beta]);
         for (index_type m = 0; m < _strong_gens.size(i); m++) {
           Product()(this->to_external(_tmp_element1),
                     this->to_external_const(_transversal[i][beta]),
                     this->to_external_const(_strong_gens.at(i, m)));
           point_type delta
               = Action()(beta, this->to_external_const(_strong_gens.at(i, m)));
+          LIBSEMIGROUPS_ASSERT(_orbits_lookup[i][delta]);
           LIBSEMIGROUPS_ASSERT(
               delta
               == Action()(_base[i], this->to_external_const(_tmp_element1)));
@@ -419,6 +421,9 @@ namespace libsemigroups {
   void SchreierSims<N, Point, Element, Traits>::internal_add_base_point(
       point_type pt) {
     LIBSEMIGROUPS_ASSERT(_base_size < N);
+    LIBSEMIGROUPS_ASSERT(
+        std::find(_base.begin(), _base.begin() + _base_size, pt)
+        >= _base.begin() + _base_size);
     _base[_base_size] = pt;
     _orbits.push_back(_base_size, pt);
     _orbits_lookup[_base_size][pt] = true;
@@ -476,7 +481,7 @@ namespace libsemigroups {
   template <size_t N, typename Point, typename Element, typename Traits>
   typename SchreierSims<N, Point, Element, Traits>::index_type
   SchreierSims<N, Point, Element, Traits>::internal_sift(
-      internal_element_type x) const {
+      internal_reference x) const {
     LIBSEMIGROUPS_ASSERT(&x != &_tmp_element1);
     for (index_type depth = 0; depth < _base_size; ++depth) {
       point_type beta = Action()(_base[depth], this->to_external_const(x));

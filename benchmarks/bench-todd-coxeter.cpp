@@ -378,7 +378,7 @@ namespace libsemigroups {
   // partition_monoid
   ////////////////////////////////////////////////////////////////////////
 
-  namespace partition {
+  namespace partition_monoid_namespace {
     sizes_type sizes = {0, 2, 15, 203, 4'140, 115'975, 4'213'597, 190'899'322};
     auto       strategies = {strategy::hlt, strategy::felsch};
 
@@ -413,7 +413,7 @@ namespace libsemigroups {
           190'899'322, std::move(p), 7, {strategy::hlt}, init_func);
     }
 
-  }  // namespace partition
+  }  // namespace partition_monoid_namespace
 
   ////////////////////////////////////////////////////////////////////////
   // DualSymInv

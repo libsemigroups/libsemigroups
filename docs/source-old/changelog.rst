@@ -1,6 +1,21 @@
 Changelog - version 2
 =====================
 
+v2.7.3 (released 19/01/2024)
+----------------------------
+
+* configure.ac: fix shell equality test by @orlitzky in
+  https://github.com/libsemigroups/libsemigroups/pull/490
+* Optimise Konieczny by @flsmith in
+  https://github.com/libsemigroups/libsemigroups/pull/491
+
+This is a minor release where some minor issues have been resolved.
+
+v2.7.2 (released 20/10/2023)
+----------------------------
+
+This is a minor release where some minor issues have been resolved.
+
 v2.7.1 (released 29/03/2023)
 ----------------------------
 

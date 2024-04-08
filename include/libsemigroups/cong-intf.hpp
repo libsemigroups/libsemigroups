@@ -104,7 +104,7 @@ namespace libsemigroups {
     //! (None)
     [[nodiscard]] virtual uint64_t number_of_classes() = 0;
 
-    // TODO(doc)
+    // TODO(0)
     [[nodiscard]] virtual bool contains(word_type const& u, word_type const& v)
         = 0;
 
@@ -131,8 +131,7 @@ namespace libsemigroups {
       return *this;
     }
 
-    // TODO(doc)
-    // TODO could return CongruenceInterface&
+    // TODO(0) return CongruenceInterface&
     void add_pair_no_checks(word_type&& u, word_type&& v);
     void add_pair_no_checks(word_type const& u, word_type const& v) {
       add_pair_no_checks(word_type(u), word_type(v));

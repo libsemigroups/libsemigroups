@@ -39,7 +39,7 @@
 #include "libsemigroups/words.hpp"  // for ToWord
 
 #ifdef LIBSEMIGROUPS_EIGEN_ENABLED
-#include <Eigen/QR>  // for dimensionOfKernel
+#include "libsemigroups/eigen.hpp"
 #endif
 
 namespace libsemigroups {

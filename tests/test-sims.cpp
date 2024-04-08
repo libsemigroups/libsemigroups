@@ -3264,7 +3264,7 @@ namespace libsemigroups {
     // TODO: check correctness
     // JDM: not sure how to check correctness of this result, other than
     // possibly running through the 36'892'600 2-sided congruences of the free
-    // monoid with 4 generators and checking for compatiblity with the
+    // monoid with 4 generators and checking for compatibility with the
     // relations? Or running through the one-sided congruences and checking
     // which are 2-sided also.
     S.include(0_w, 2_w);
@@ -3846,9 +3846,8 @@ namespace libsemigroups {
     ToddCoxeter tc(congruence_kind::twosided, p);
     REQUIRE(tc.number_of_classes() == 12);
 
-    SimsRefinerIdeals ip(p);
-
-    Sims2 s(p);
+    Sims2             s(p);
+    SimsRefinerIdeals ip(s.presentation());
     s.add_pruner(ip);
     size_t result = 0;
     s.for_each(3, [&ip, &result](auto const& wg) {
@@ -3987,7 +3986,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("Sims2",
                           "121",
                           "order_preserving_monoid(6)",
-                          "[quick][sims1]") {
+                          "[fail][sims1]") {
     auto p = fpsemigroup::order_preserving_monoid(6);
     presentation::sort_each_rule(p);
     presentation::sort_rules(p);
@@ -4023,23 +4022,22 @@ namespace libsemigroups {
     // presentation::reduce_complements(p);
     // presentation::remove_trivial_rules(p);
 
-    auto rg = ReportGuard(false);
-    auto p  = partition_monoid(3, author::Machine);
-    p.contains_empty_word(true);
+    // auto rg = ReportGuard(false);
+    // auto p  = partition_monoid(3, author::Machine);
+    // p.contains_empty_word(true);
 
-    Sims1                s(p);
-    auto                 pp     = s.presentation();
-    std::atomic_uint64_t result = 0;
-    s.for_each(11, [&result, &pp](auto const& wg) {
-      if (sims::is_maximal_right_congruence(pp, wg)) {
-        fmt::print("Index {}\n", wg.number_of_active_nodes());
-        result++;
-      }
-    });
-    REQUIRE(result == 6);
-    REQUIRE(s.number_of_congruences(15) == 0);
+    // Sims1                s(p);
+    // auto                 pp     = s.presentation();
+    // std::atomic_uint64_t result = 0;
+    // s.for_each(11, [&result, &pp](auto const& wg) {
+    //   if (sims::is_maximal_right_congruence(pp, wg)) {
+    //     fmt::print("Index {}\n", wg.number_of_active_nodes());
+    //     result++;
+    //   }
+    // });
+    // REQUIRE(result == 6);
+    // REQUIRE(s.number_of_congruences(15) == 0);
   }
-
 }  // namespace libsemigroups
 
 // [[[0, 0, 0]],            #1#

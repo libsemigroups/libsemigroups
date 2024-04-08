@@ -31,7 +31,12 @@
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wpedantic"
 #pragma GCC diagnostic ignored "-Winline"
-#include "HPCombi/include/hpcombi.hpp"  // for HPCombi::Perm16, ...
+#pragma GCC diagnostic ignored "-Winline"
+#if defined(__clang__)
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wbitwise-instead-of-logical"
+#endif
+#include "hpcombi/hpcombi.hpp"  // for HPCombi::Perm16, ...
 
 #include "adapters.hpp"  // for Complexity, Degree, ...
 #include "debug.hpp"     // for LIBSEMIGROUPS_ASSERT
@@ -615,5 +620,8 @@ namespace libsemigroups {
 }  // namespace libsemigroups
 
 #pragma GCC diagnostic pop
+#if defined(__clang__)
+#pragma clang diagnostic pop
+#endif
 #endif  // LIBSEMIGROUPS_HPCOMBI_ENABLED
 #endif  // LIBSEMIGROUPS_HPCOMBI_HPP_

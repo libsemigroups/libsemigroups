@@ -1,0 +1,4 @@
+[authors]
+expired_emails = []
+author_files = ["README.md"]
+ignore = []

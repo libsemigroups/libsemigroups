@@ -13,7 +13,7 @@ This page describes the functionality for :math:`n \times n` matrices over the
 finite quotient of the usual semiring of natural number by the congruence
 :math:`t = t + p` for arbitrary :math:`n`, :math:`t`, and :math:`p`. The value
 :math:`t` is referred to as the *threshold* and :math:`p` is called the
-*period*. The matrices of this type are referred to by the acroynm **ntp**
+*period*. The matrices of this type are referred to by the acronym **ntp**
 matrices, for "natural threshold period".  The :cpp:any:`NTPSemiring` has
 elements :math:`\{0, 1, ..., t, t +  1, ..., t + p - 1\}` where  :math:`t`, and
 :math:`p` are the threshold and period, respectively; addition and
