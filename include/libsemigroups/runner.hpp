@@ -195,18 +195,24 @@ namespace libsemigroups {
     // deleted by the function called in the thread.
     class Ticker {
       class TickerImpl {
+        using nanoseconds = std::chrono::nanoseconds;
+
         std::function<void(void)> _func;
-        bool                      _stop;
         std::mutex                _mtx;
+        bool                      _stop;
+        nanoseconds               _report_time_interval;
 
        public:
-        template <typename Func>
-        explicit TickerImpl(Func&& func)
-            : _func(std::forward<Func>(func)), _stop(false) {
+        template <typename Func, typename TIntType = std::chrono::seconds>
+        explicit TickerImpl(Func&&   func,
+                            TIntType time = std::chrono::seconds(1))
+            : _func(std::forward<Func>(func)),
+              _stop(false),
+              _report_time_interval(nanoseconds(time)) {
           auto thread_func = [this](TickerImpl* dtg) {
             std::unique_ptr<TickerImpl> ptr;
             ptr.reset(dtg);
-            std::this_thread::sleep_for(std::chrono::seconds(1));
+            std::this_thread::sleep_for(_report_time_interval);
             while (true) {
               {
                 std::lock_guard<std::mutex> lck(_mtx);
@@ -229,7 +235,7 @@ namespace libsemigroups {
                   break;
                 }
               }
-              std::this_thread::sleep_for(std::chrono::seconds(1));
+              std::this_thread::sleep_for(_report_time_interval);
             }
           };
           auto t = std::thread(thread_func, this);
@@ -248,9 +254,9 @@ namespace libsemigroups {
       TickerImpl* _detached_thread;
 
      public:
-      template <typename Func>
-      explicit Ticker(Func&& func)
-          : _detached_thread(new TickerImpl(std::forward<Func>(func))) {}
+      template <typename Func, typename TIntType = std::chrono::seconds>
+      explicit Ticker(Func&& func, TIntType time = std::chrono::seconds(1))
+          : _detached_thread(new TickerImpl(std::forward<Func>(func), time)) {}
 
       ~Ticker() {
         // See above for an explanation of why we lock the mtx here.

@@ -1669,7 +1669,6 @@ namespace libsemigroups {
     //! words use the same letters as the alphabet used to define ToStrings.
     explicit ToStrings(std::string_view lttrs) : _letters(lttrs) {}
 
-   private:
     template <typename InputRange>
     struct Range {
       using output_type = std::string;
@@ -1703,7 +1702,6 @@ namespace libsemigroups {
       }
     };
 
-   public:
     //! \brief Call operator for combining with other range objects.
     //!
     //! This is the call operator that is used by `rx::ranges::operator|` for

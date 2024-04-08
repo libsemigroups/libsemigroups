@@ -57,7 +57,6 @@
 #include "detail/string.hpp"      // for maximum_common_prefix
 #include "detail/uf.hpp"          // for Duf
 
-
 namespace libsemigroups {
 
   //! No doc

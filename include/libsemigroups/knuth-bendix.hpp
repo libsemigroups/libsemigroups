@@ -1,6 +1,6 @@
 //
 // libsemigroups - C++ library for semigroups and monoids
-// Copyright (C) 2019-2024 James D. Mitchell
+// Copyright (C) 2019-2024 James D. Mitchell + Joseph Edwards
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -205,7 +205,7 @@ namespace libsemigroups {
 
     Rewriter                  _rewriter;
     bool                      _gen_pairs_initted;
-    WordGraph<size_t>         _gilman_graph;
+    WordGraph<uint32_t>       _gilman_graph;
     std::vector<std::string>  _gilman_graph_node_labels;
     bool                      _internal_is_same_as_external;
     OverlapMeasure*           _overlap_measure;
@@ -498,7 +498,7 @@ namespace libsemigroups {
     //!
     //! This member function returns the (approximate) maximum number of rules
     //! that the system should contain. If this is number is exceeded in
-    //! calls to \ref run or knuth_bendix_by_overlap_length, then they
+    //! calls to \ref run or \ref knuth_bendix::by_overlap_length, then they
     //! will terminate and the system may not be confluent.
     //!
     //!
@@ -524,7 +524,7 @@ namespace libsemigroups {
     //! This function can be used to determine the way that the length
     //! of an overlap of two words in the system is measured.
     //!
-    //! \param val the maximum number of rules.
+    //! \param val the overlap policy.
     //!
     //! \returns
     //! A reference to \c *this.
@@ -681,7 +681,7 @@ namespace libsemigroups {
     //! possible.
     //!
     //! \returns
-    //! The current number of inactive rules, a value of type \c size_t.
+    //! The total number of rules, a value of type \c size_t.
     //!
     //! \exceptions
     //! \noexcept
@@ -821,7 +821,7 @@ namespace libsemigroups {
     //!
     //! \param
     //! (None)
-    WordGraph<size_t> const& gilman_graph();
+    WordGraph<uint32_t> const& gilman_graph();
 
     //! \brief Return the node labels of the Gilman \ref WordGraph
     //!
@@ -956,7 +956,7 @@ namespace libsemigroups {
   std::ostream& operator<<(std::ostream&,
                            KnuthBendix<Rewriter, ReductionOrder> const&);
 
-  KnuthBendix(congruence_kind) -> KnuthBendix<>;
+  KnuthBendix(congruence_kind)->KnuthBendix<>;
 
   namespace knuth_bendix {
 
@@ -973,7 +973,7 @@ namespace libsemigroups {
 
       str conf;
       if (!kb.confluent_known()) {
-        conf = "KnuthBendix of unknown confluence";
+        conf = "KnuthBendix";
       } else if (kb.confluent()) {
         conf = "confluent KnuthBendix";
       } else {
@@ -1043,7 +1043,7 @@ namespace libsemigroups {
     template <typename Rewriter, typename ReductionOrder>
     [[nodiscard]] inline auto
     normal_forms(KnuthBendix<Rewriter, ReductionOrder>& kb) {
-      using rx::operator|;
+      using rx::      operator|;
       ReversiblePaths paths(kb.gilman_graph());
       paths.from(0).reverse(kb.kind() == congruence_kind::left);
       if (!kb.presentation().contains_empty_word()) {
