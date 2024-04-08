@@ -745,6 +745,5 @@ namespace libsemigroups {
     HopcroftKarp joiner;
     joiner.join(xy, x, y);
     REQUIRE(xy == to_word_graph<size_t>(1, {{0, 0}}));
-    REQUIRE(std::system("dot --help") == 0);
   }
 }  // namespace libsemigroups
