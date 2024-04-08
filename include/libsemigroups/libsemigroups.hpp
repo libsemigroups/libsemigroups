@@ -1,6 +1,6 @@
 //
 // libsemigroups - C++ library for semigroups and monoids
-// Copyright (C) 2019-2023 James D. Mitchell
+// Copyright (C) 2019-2024 James D. Mitchell
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -23,6 +23,7 @@
 
 #include "action.hpp"
 #include "adapters.hpp"
+#include "aho-corasick.hpp"
 #include "bipart.hpp"
 #include "bitset.hpp"
 #include "bmat.hpp"
@@ -31,8 +32,10 @@
 #include "cong-intf.hpp"
 #include "cong.hpp"
 #include "constants.hpp"
+#include "cutting.hpp"
 #include "debug.hpp"
 #include "deprecated.hpp"
+#include "dot.hpp"
 #include "exception.hpp"
 #include "fastest-bmat.hpp"
 #include "felsch-graph.hpp"
@@ -54,12 +57,13 @@
 #include "pbr.hpp"
 #include "presentation.hpp"
 #include "ranges.hpp"
+#include "rewriters.hpp"
 #include "runner.hpp"
-#include "schreier-sims-helper.hpp"
 #include "schreier-sims.hpp"
-#include "sims1.hpp"
+#include "sims.hpp"
 #include "stephen.hpp"
 #include "to-froidure-pin.hpp"
+#include "to-knuth-bendix.hpp"
 #include "to-presentation.hpp"
 #include "to-todd-coxeter.hpp"
 #include "todd-coxeter.hpp"
