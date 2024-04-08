@@ -3317,7 +3317,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("SchreierSims",
                           "044",
                           "trivial perm. group intersection (degree 1)",
-                          "[quick][schreier-sims][intesection]") {
+                          "[quick][schreier-sims][intersection]") {
     auto            rg = ReportGuard(false);
     SchreierSims<1> S, T, U;
     using Perm = decltype(S)::element_type;

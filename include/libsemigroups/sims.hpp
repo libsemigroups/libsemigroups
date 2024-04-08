@@ -2224,7 +2224,7 @@ namespace libsemigroups {
   // a) Check there is a unique sink
   // b) Check that no extra relations hold for paths leading to non-sink nodes.
   //
-  // These conditions are both sufficient and neccesary for two-sided
+  // These conditions are both sufficient and necessary for two-sided
   // congruences, I think. However, to be uniform with our handling of right and
   // two-sided congruences, I want to tackle the right Rees congruences first.
   // But in the one-sided case they are not enough!

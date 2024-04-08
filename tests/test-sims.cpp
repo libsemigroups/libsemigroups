@@ -3264,7 +3264,7 @@ namespace libsemigroups {
     // TODO: check correctness
     // JDM: not sure how to check correctness of this result, other than
     // possibly running through the 36'892'600 2-sided congruences of the free
-    // monoid with 4 generators and checking for compatiblity with the
+    // monoid with 4 generators and checking for compatibility with the
     // relations? Or running through the one-sided congruences and checking
     // which are 2-sided also.
     S.include(0_w, 2_w);
@@ -4039,7 +4039,6 @@ namespace libsemigroups {
     REQUIRE(result == 6);
     REQUIRE(s.number_of_congruences(15) == 0);
   }
-
 }  // namespace libsemigroups
 
 // [[[0, 0, 0]],            #1#

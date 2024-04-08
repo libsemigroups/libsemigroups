@@ -44,7 +44,7 @@
 #include <vector>       // for vector, allocator
 
 #include "config.hpp"      // for LIBSEMIGROUPS_EIGEN_ENA...
-#include "constants.hpp"   // for Max, UNDEFINED, Positiv...
+#include "constants.hpp"   // for Max, UNDEFINED, Positive...
 #include "debug.hpp"       // for LIBSEMIGROUPS_ASSERT
 #include "exception.hpp"   // for LIBSEMIGROUPS_EXCEPTION
 #include "order.hpp"       // for order
@@ -920,8 +920,7 @@ namespace libsemigroups {
    public:
     output_type get() const {
       set_iterator();
-      return std::visit(
-          [](auto& it) -> auto const& { return *it; }, _current);
+      return std::visit([](auto& it) -> auto const& { return *it; }, _current);
     }
 
     void next() {
