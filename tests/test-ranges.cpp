@@ -47,4 +47,23 @@ namespace libsemigroups {
     REQUIRE(to_string(chain(prefix1, suffix1)) == prefix1 + suffix1);
     REQUIRE(to_string(chain(prefix2, suffix2)) == prefix2 + suffix2);
   }
+
+  LIBSEMIGROUPS_TEST_CASE("Ranges", "001", "skip_n", "[quick]") {
+    auto   sequence      = (rx::seq() | rx::take(100));
+    size_t no_skip_count = (sequence | rx::count());
+    size_t skip_count    = (sequence | rx::skip_n(10) | rx::count());
+    REQUIRE(no_skip_count == skip_count + 10);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Ranges", "002", "next", "[quick]") {
+    auto sequence = (rx::seq() | rx::take(100));
+
+    size_t no_next_count = (sequence | rx::count());
+    for (size_t i = 0; i < 10; ++i) {
+      sequence.next();
+    }
+
+    size_t next_count = (sequence | rx::count());
+    REQUIRE(no_next_count == next_count + 10);
+  }
 }  // namespace libsemigroups

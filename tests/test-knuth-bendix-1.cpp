@@ -84,11 +84,10 @@ namespace libsemigroups {
     [[nodiscard]] inline auto
     normal_forms_from_word_graph(KnuthBendix<Rewriter, ReductionOrder>& kb,
                                  WordGraph<WordType>&                   wg) {
-      using rx::      operator|;
       ReversiblePaths paths(wg);
       paths.from(0).reverse(kb.kind() == congruence_kind::left);
       if (!kb.presentation().contains_empty_word()) {
-        paths | rx::skip_n(1);
+        paths.next();
       }
       return paths;
     }
@@ -988,6 +987,7 @@ namespace libsemigroups {
     TestType kb1(twosided, p);
     TestType kb2(twosided, p);
 
+    REQUIRE(!p.contains_empty_word());
     REQUIRE(kb1.number_of_classes() == 27);
     REQUIRE(kb2.number_of_classes() == 27);
     auto ntc = knuth_bendix::non_trivial_classes(kb2, kb1);

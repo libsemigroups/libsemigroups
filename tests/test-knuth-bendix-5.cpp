@@ -307,24 +307,25 @@ namespace libsemigroups {
                          S.factorisation(Transf<>({2, 3, 3, 3, 3}))));
 
     REQUIRE((knuth_bendix::normal_forms(kb).min(1) | count()) == 72);
-
-    REQUIRE(
-        (knuth_bendix::normal_forms(kb)
-         | ToStrings(kb.presentation().alphabet()) | to_vector())
-        == std::vector<std::string>(
-            {"",        "a",       "b",       "aa",      "ab",      "ba",
-             "bb",      "aaa",     "aab",     "aba",     "abb",     "baa",
-             "bab",     "bba",     "aaaa",    "aaab",    "aaba",    "aabb",
-             "abaa",    "abab",    "abba",    "baaa",    "baab",    "baba",
-             "babb",    "bbaa",    "aaaab",   "aaaba",   "aaabb",   "aabaa",
-             "aabab",   "aabba",   "abaaa",   "ababa",   "ababb",   "abbaa",
-             "baaab",   "baaba",   "baabb",   "babaa",   "babab",   "babba",
-             "bbaaa",   "aaaaba",  "aaaabb",  "aaabaa",  "aaabab",  "aaabba",
-             "aabaaa",  "aabbaa",  "abaaab",  "ababaa",  "ababab",  "ababba",
-             "abbaaa",  "baaaba",  "baabaa",  "baabab",  "baabba",  "babaaa",
-             "babbaa",  "aaaabaa", "aaaabab", "aaaabba", "aaabaaa", "aaabbaa",
-             "ababaaa", "ababbaa", "baaabaa", "baabaaa", "baabbaa", "aaaabaaa",
-             "aaaabbaa"}));
+    REQUIRE(!kb.presentation().contains_empty_word());
+    REQUIRE((knuth_bendix::normal_forms(kb)
+             | ToStrings(kb.presentation().alphabet()) | to_vector())
+            == std::vector<std::string>(
+                {"a",        "b",       "aa",      "ab",      "ba",
+                 "bb",       "aaa",     "aab",     "aba",     "abb",
+                 "baa",      "bab",     "bba",     "aaaa",    "aaab",
+                 "aaba",     "aabb",    "abaa",    "abab",    "abba",
+                 "baaa",     "baab",    "baba",    "babb",    "bbaa",
+                 "aaaab",    "aaaba",   "aaabb",   "aabaa",   "aabab",
+                 "aabba",    "abaaa",   "ababa",   "ababb",   "abbaa",
+                 "baaab",    "baaba",   "baabb",   "babaa",   "babab",
+                 "babba",    "bbaaa",   "aaaaba",  "aaaabb",  "aaabaa",
+                 "aaabab",   "aaabba",  "aabaaa",  "aabbaa",  "abaaab",
+                 "ababaa",   "ababab",  "ababba",  "abbaaa",  "baaaba",
+                 "baabaa",   "baabab",  "baabba",  "babaaa",  "babbaa",
+                 "aaaabaa",  "aaaabab", "aaaabba", "aaabaaa", "aaabbaa",
+                 "ababaaa",  "ababbaa", "baaabaa", "baabaaa", "baabbaa",
+                 "aaaabaaa", "aaaabbaa"}));
 
     REQUIRE(kb.rewrite("baaabb") == "baaab");
 
