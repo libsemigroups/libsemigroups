@@ -84,7 +84,7 @@ namespace libsemigroups {
     [[nodiscard]] inline auto
     normal_forms_from_word_graph(KnuthBendix<Rewriter, ReductionOrder>& kb,
                                  WordGraph<WordType>&                   wg) {
-      using rx::operator|;
+      using rx::      operator|;
       ReversiblePaths paths(wg);
       paths.from(0).reverse(kb.kind() == congruence_kind::left);
       if (!kb.presentation().contains_empty_word()) {
@@ -591,7 +591,7 @@ namespace libsemigroups {
   TEMPLATE_TEST_CASE("redundant_rule (word_type)",
                      "[014][quick][knuth-bendix]",
                      KNUTH_BENDIX_TYPES) {
-    using literals::operator""_w;
+    using literals::        operator""_w;
     auto                    rg = ReportGuard(false);
     Presentation<word_type> p;
     p.alphabet(3);
@@ -682,7 +682,7 @@ namespace libsemigroups {
                      "[016][quick][knuth-bendix]",
                      KNUTH_BENDIX_TYPES) {
     using literals::operator""_w;
-    auto rg = ReportGuard(false);
+    auto            rg = ReportGuard(false);
 
     Presentation<std::string> p;
     p.contains_empty_word(true);

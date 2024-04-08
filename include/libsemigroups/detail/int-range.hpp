@@ -128,7 +128,7 @@ namespace libsemigroups {
         }
 
         [[nodiscard]] constexpr const_iterator operator--(int) noexcept {
-          const_iterator tmp(*this);
+          const_iterator  tmp(*this);
           const_iterator::operator--();
           return tmp;
         }
