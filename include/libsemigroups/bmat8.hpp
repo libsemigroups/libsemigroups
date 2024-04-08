@@ -54,7 +54,7 @@ namespace libsemigroups {
     //! Constant.
     //!
     //! \sa BMat8::one.
-    // TODO(later) noexcept should depend on whether or not the constructor of
+    // TODO(0) noexcept should depend on whether or not the constructor of
     // T is noexcept
     template <typename T>
     T one(size_t dim) noexcept {

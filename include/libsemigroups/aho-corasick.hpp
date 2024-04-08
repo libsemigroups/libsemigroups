@@ -29,10 +29,10 @@
 #include "debug.hpp"      // for LIBSEMIGROUPS_ASSERT
 #include "types.hpp"      // for letter_type
 
-// TODO make nodes accessible as indices of some list (numbered nodes).
+// TODO(2) make nodes accessible as indices of some list (numbered nodes).
 // Make sure this address the badness of traversals (lots of different data
 // types and it just feels a bit hacky)
-// TODO (later) is it worthwhile storing a pointer to the terminal nodes beneath
+// TODO(2) is it worthwhile storing a pointer to the terminal nodes beneath
 // each node? If this can be updated quickly, it would save a lot of time in
 // overlap/confluence checking. One compromise is to have a pointer to the rules
 // any given node is contained within. This could be updated easily when adding
@@ -147,7 +147,7 @@ namespace libsemigroups {
                                            Iterator   first,
                                            Iterator   last) const;
 
-    // TODO template to accept Iterator not word_type&
+    // TODO(2) template to accept Iterator not word_type&
     void signature(word_type& w, index_type i) const;
 
     size_t height(index_type i) const {
@@ -203,7 +203,8 @@ namespace libsemigroups {
   namespace aho_corasick {
     using index_type = AhoCorasick::index_type;
 
-    // TODO Can these all be made inline?
+    // TODO(0) Can these all be made inline?
+    // JDM: yes they can
     inline void add_word_no_checks(AhoCorasick& ac, word_type const& w) {
       ac.add_word_no_checks(w.cbegin(), w.cend());
     }

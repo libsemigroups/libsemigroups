@@ -215,7 +215,7 @@ namespace libsemigroups {
     static_assert(std::is_trivially_default_constructible<ActionOp>::value,
                   "the third template parameter Func is not trivially "
                   "default constructible");
-    // TODO(later) more static assertions
+    // TODO(2) more static assertions
 
     ////////////////////////////////////////////////////////////////////////
     // Action - product functions for left/right multiplication  - private

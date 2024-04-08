@@ -562,7 +562,7 @@ namespace libsemigroups {
    private:
     const_pislo_iterator<Node> _it;
     node_type                  _target;
-    const_pislo_iterator<Node> _end;  // TODO remove?
+    const_pislo_iterator<Node> _end;  // TODO(3) remove?
 
    public:
     const_pstislo_iterator();
@@ -920,8 +920,7 @@ namespace libsemigroups {
    public:
     output_type get() const {
       set_iterator();
-      return std::visit(
-          [](auto& it) -> auto const& { return *it; }, _current);
+      return std::visit([](auto& it) -> auto const& { return *it; }, _current);
     }
 
     void next() {

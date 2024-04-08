@@ -21,7 +21,7 @@
 #ifndef LIBSEMIGROUPS_BIPART_HPP_
 #define LIBSEMIGROUPS_BIPART_HPP_
 
-// TODO(later)
+// TODO(2)
 // * benchmarks
 // * use Duf/Suf where possible (later?)
 // * Template like transformations/pperms etc (later?)
@@ -422,7 +422,7 @@ namespace libsemigroups {
   //! GAP](https://semigroups.github.io/Semigroups/).
   //!
   //! \sa libsemigroups::validate(Bipartition const&).
-  // TODO(later) add more explanation to the doc here
+  // TODO(2) add more explanation to the doc here
   class Bipartition {
    private:
     mutable size_t        _nr_blocks;
@@ -942,7 +942,7 @@ namespace libsemigroups {
     //!
     //! \parameters
     //! (None)
-    // TODO(later) remove this
+    // TODO(2) remove this
     [[nodiscard]] Blocks* left_blocks();
 
     //! Return a pointer to the right blocks of a bipartition.
@@ -961,7 +961,7 @@ namespace libsemigroups {
     //!
     //! \parameters
     //! (None)
-    // TODO(later) remove this
+    // TODO(2) remove this
     [[nodiscard]] Blocks* right_blocks();
 
     //! Set the number of blocks.

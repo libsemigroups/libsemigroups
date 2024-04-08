@@ -16,9 +16,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-// TODO(later)
-// 1) doc
-// 2) tpp file
+// 1) doc TODO(1)
+// 2) tpp file TODO(0)
 
 #ifndef LIBSEMIGROUPS_BITSET_HPP_
 #define LIBSEMIGROUPS_BITSET_HPP_

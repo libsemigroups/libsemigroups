@@ -435,7 +435,7 @@ namespace libsemigroups {
     }
   };
 
-  // TODO(later) same for array!
+  // TODO(2) same for array!
   template <typename T, typename Hasher>
   struct Hash<std::vector<T>, Hasher> {
     //! This call operator hashes \p vec.
@@ -452,7 +452,7 @@ namespace libsemigroups {
     }
   };
 
-  // TODO(later) doc
+  // TODO(1) doc
   template <typename T, size_t N>
   struct Hash<std::array<T, N>> {
     //! This call operator hashes \p vec.
@@ -469,7 +469,7 @@ namespace libsemigroups {
     }
   };
 
-  // TODO(later) doc
+  // TODO(1) doc
   template <typename S, typename T>
   struct Hash<std::pair<S, T>> {
     //! This call operator hashes \p x.
@@ -501,7 +501,7 @@ namespace libsemigroups {
     //!
     //! \returns A hash value for \p x, a value of type `size_t`.
     size_t operator()(std::pair<size_t, size_t> const& x) const noexcept {
-      // TODO(later) this is a very bad hash when the values are larger than the
+      // TODO(2) this is a very bad hash when the values are larger than the
       // shift width
 #if LIBSEMIGROUPS_SIZEOF_VOID_P == 8
       return (x.first << 32) + x.second;
@@ -611,7 +611,7 @@ namespace libsemigroups {
   //! \tparam Point the type of the points acted on
   //! \tparam Container a container of \p Point (defaults to \vector
   //! with template parameter \c Point).
-  // TODO(later) add a template param for sorting
+  // TODO(2) add a template param for sorting
   template <typename Element,
             typename Point,
             typename Container = std::vector<Point>>
