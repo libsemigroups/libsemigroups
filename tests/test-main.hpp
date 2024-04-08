@@ -27,8 +27,10 @@
 #define STR2(X) #X
 #define STR(X) STR2(X)
 
+// TODO(0) remove the nr from the prefix
+
 #define LIBSEMIGROUPS_TEST_CASE(classname, nr, msg, tags)             \
-  TEST_CASE(classname ": " msg,                                       \
+  TEST_CASE(classname " " nr ": " msg,                                \
             "[" classname " " nr "][" classname "][" nr "][" __FILE__ \
             "][" STR(__LINE__) "]" tags)
 

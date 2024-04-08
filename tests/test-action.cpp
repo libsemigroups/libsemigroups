@@ -48,7 +48,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("Action",
                           "001",
-                          "row and column basis orbits for BMat8",
+                          "row and column basis orbits for BMat8 x 1",
                           "[quick]") {
     auto         rg = ReportGuard(REPORT);
     row_orb_type row_orb;
@@ -66,7 +66,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("Action",
                           "002",
-                          "row and column basis orbits for BMat8",
+                          "row and column basis orbits for BMat8 x 2",
                           "[quick]") {
     auto         rg = ReportGuard(REPORT);
     row_orb_type row_orb;
@@ -316,7 +316,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("Action",
                           "007",
-                          "partial perm image orbit",
+                          "partial perm image orbit x 1",
                           "[quick]") {
     auto rg = ReportGuard(REPORT);
     RightAction<PPerm<8>, PPerm<8>, ImageRightAction<PPerm<8>, PPerm<8>>> o;
@@ -332,7 +332,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("Action",
                           "008",
-                          "partial perm image orbit",
+                          "partial perm image orbit x 2",
                           "[quick][no-valgrind]") {
     auto rg = ReportGuard(REPORT);
     RightAction<PPerm<16>, PPerm<16>, ImageRightAction<PPerm<16>, PPerm<16>>> o;
@@ -359,7 +359,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("Action",
                           "009",
-                          "partial perm image orbit",
+                          "partial perm image orbit x 3",
                           "[quick][no-valgrind]") {
     auto rg = ReportGuard(REPORT);
     RightAction<PPerm<16>, PPerm<16>, ImageRightAction<PPerm<16>, PPerm<16>>> o;
@@ -387,7 +387,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("Action",
                           "010",
-                          "partial perm image orbit",
+                          "partial perm image orbit x 4",
                           "[quick][no-valgrind]") {
     auto rg = ReportGuard(REPORT);
     LeftAction<PPerm<16>, PPerm<16>, ImageLeftAction<PPerm<16>, PPerm<16>>> o;
