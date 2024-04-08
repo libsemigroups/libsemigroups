@@ -3834,95 +3834,93 @@ namespace libsemigroups {
     // REQUIRE(s.number_of_congruences(203) == 5767);  // checked in GAP
   }
 
-  /*  LIBSEMIGROUPS_TEST_CASE("Sims2",
-                            "119",
-                            "2-sided ideals Jura's example",
-                            "[quick][sims1]") {
-      Presentation<std::string> p;
-      p.alphabet("ab");
-      presentation::add_rule(p, "aaa", "bb");
-      presentation::add_rule(p, "aab", "ba");
+  LIBSEMIGROUPS_TEST_CASE("Sims2",
+                          "119",
+                          "2-sided ideals Jura's example",
+                          "[quick][sims1]") {
+    Presentation<std::string> p;
+    p.alphabet("ab");
+    presentation::add_rule(p, "aaa", "bb");
+    presentation::add_rule(p, "aab", "ba");
 
-      ToddCoxeter tc(congruence_kind::twosided, p);
-      REQUIRE(tc.number_of_classes() == 12);
+    ToddCoxeter tc(congruence_kind::twosided, p);
+    REQUIRE(tc.number_of_classes() == 12);
 
-      SimsRefinerIdeals ip(p);
+    Sims2             s(p);
+    SimsRefinerIdeals ip(s.presentation());
+    s.add_pruner(ip);
+    size_t result = 0;
+    s.for_each(3, [&ip, &result](auto const& wg) {
+      if (ip(wg)) {
+        result++;
+      }
+    });
+    REQUIRE(result == 5);
+    result = 0;
+    s.for_each(4, [&ip, &result](auto const& wg) {
+      if (ip(wg)) {
+        result++;
+      }
+    });
+    REQUIRE(result == 7);
 
-      Sims2 s(p);
-      s.add_pruner(ip);
-      size_t result = 0;
-      s.for_each(3, [&ip, &result](auto const& wg) {
-        if (ip(wg)) {
-          result++;
-        }
-      });
-      REQUIRE(result == 5);
-      result = 0;
-      s.for_each(4, [&ip, &result](auto const& wg) {
-        if (ip(wg)) {
-          result++;
-        }
-      });
-      REQUIRE(result == 7);
+    result = 0;
+    s.for_each(5, [&ip, &result](auto const& wg) {
+      if (ip(wg)) {
+        result++;
+      }
+    });
+    REQUIRE(result == 9);
 
-      result = 0;
-      s.for_each(5, [&ip, &result](auto const& wg) {
-        if (ip(wg)) {
-          result++;
-        }
-      });
-      REQUIRE(result == 9);
+    result = 0;
+    s.for_each(6, [&ip, &result](auto const& wg) {
+      if (ip(wg)) {
+        result++;
+      }
+    });
+    REQUIRE(result == 11);
 
-      result = 0;
-      s.for_each(6, [&ip, &result](auto const& wg) {
-        if (ip(wg)) {
-          result++;
-        }
-      });
-      REQUIRE(result == 11);
+    result = 0;
+    s.for_each(7, [&ip, &result](auto const& wg) {
+      if (ip(wg)) {
+        result++;
+      }
+    });
+    REQUIRE(result == 12);
 
-      result = 0;
-      s.for_each(7, [&ip, &result](auto const& wg) {
-        if (ip(wg)) {
-          result++;
-        }
-      });
-      REQUIRE(result == 12);
+    result = 0;
+    s.for_each(8, [&ip, &result](auto const& wg) {
+      if (ip(wg)) {
+        result++;
+      }
+    });
+    REQUIRE(result == 12);
 
-      result = 0;
-      s.for_each(8, [&ip, &result](auto const& wg) {
-        if (ip(wg)) {
-          result++;
-        }
-      });
-      REQUIRE(result == 12);
+    REQUIRE(s.number_of_congruences(1) == 1);  // computed using GAP
+    REQUIRE(s.number_of_congruences(2) == 3);  // computed using GAP
 
-      REQUIRE(s.number_of_congruences(1) == 1);  // computed using GAP
-      REQUIRE(s.number_of_congruences(2) == 3);  // computed using GAP
+    auto it = s.cbegin(3);
+    REQUIRE((*it++) == to_word_graph<uint32_t>(4, {{1, 1}, {1, 1}}));
+    REQUIRE((*it++) == to_word_graph<uint32_t>(4, {{1, 2}, {1, 1}, {1, 1}}));
+    REQUIRE((*it++) == to_word_graph<uint32_t>(4, {{1, 2}, {2, 2}, {2, 2}}));
+    REQUIRE(*it
+            == to_word_graph<uint32_t>(4, {{1, 2}, {2, 3}, {3, 3}, {3, 3}}));
 
-      auto it = s.cbegin(3);
-      REQUIRE((*it++) == to_word_graph<uint32_t>(4, {{1, 1}, {1, 1}}));
-      REQUIRE((*it++) == to_word_graph<uint32_t>(4, {{1, 2}, {1, 1}, {1, 1}}));
-      REQUIRE((*it++) == to_word_graph<uint32_t>(4, {{1, 2}, {2, 2}, {2, 2}}));
-      REQUIRE(*it
-              == to_word_graph<uint32_t>(4, {{1, 2}, {2, 3}, {3, 3}, {3, 3}}));
+    REQUIRE((sims::right_generating_pairs(*it) | rx::to_vector())
+            == std::vector<std::pair<word_type, word_type>>());
+    REQUIRE((*it++)
+            == to_word_graph<uint32_t>(4, {{1, 2}, {3, 2}, {2, 2}, {2, 2}}));
+    REQUIRE((*it++)
+            == to_word_graph<uint32_t>(4, {{1, 2}, {3, 3}, {3, 3}, {3, 3}}));
 
-      REQUIRE((sims::right_generating_pairs(*it) | rx::to_vector())
-              == std::vector<std::pair<word_type, word_type>>());
-      REQUIRE((*it++)
-              == to_word_graph<uint32_t>(4, {{1, 2}, {3, 2}, {2, 2}, {2, 2}}));
-      REQUIRE((*it++)
-              == to_word_graph<uint32_t>(4, {{1, 2}, {3, 3}, {3, 3}, {3, 3}}));
+    REQUIRE(s.number_of_congruences(3) == 5);  // computed using GAP
 
-      REQUIRE(s.number_of_congruences(3) == 5);  // computed using GAP
-
-      REQUIRE(s.number_of_congruences(4) == 7);   // computed using GAP
-      REQUIRE(s.number_of_congruences(5) == 9);   // computed using GAP
-      REQUIRE(s.number_of_congruences(6) == 11);  // computed using GAP
-      REQUIRE(s.number_of_congruences(7) == 12);  // computed using GAP
-      REQUIRE(s.number_of_congruences(8) == 12);  // computed using GAP
-    }
-  */
+    REQUIRE(s.number_of_congruences(4) == 7);   // computed using GAP
+    REQUIRE(s.number_of_congruences(5) == 9);   // computed using GAP
+    REQUIRE(s.number_of_congruences(6) == 11);  // computed using GAP
+    REQUIRE(s.number_of_congruences(7) == 12);  // computed using GAP
+    REQUIRE(s.number_of_congruences(8) == 12);  // computed using GAP
+  }
 
   // about 2 seconds
   LIBSEMIGROUPS_TEST_CASE("Sims2",

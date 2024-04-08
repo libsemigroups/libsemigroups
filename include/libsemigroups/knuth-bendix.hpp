@@ -888,6 +888,10 @@ namespace libsemigroups {
     //! \sa \ref equal_to.
     [[nodiscard]] bool contains(word_type const& u,
                                 word_type const& v) override {
+      using literals::operator""_w;
+      if (u == 000_w && v == 11_w) {
+        fmt::print("hll\n");
+      }
       return equal_to(to_string(presentation(), u),
                       to_string(presentation(), v));
     }
@@ -957,7 +961,7 @@ namespace libsemigroups {
   std::ostream& operator<<(std::ostream&,
                            KnuthBendix<Rewriter, ReductionOrder> const&);
 
-  KnuthBendix(congruence_kind)->KnuthBendix<>;
+  KnuthBendix(congruence_kind) -> KnuthBendix<>;
 
   namespace knuth_bendix {
 
@@ -1044,7 +1048,7 @@ namespace libsemigroups {
     template <typename Rewriter, typename ReductionOrder>
     [[nodiscard]] inline auto
     normal_forms(KnuthBendix<Rewriter, ReductionOrder>& kb) {
-      using rx::      operator|;
+      using rx::operator|;
       ReversiblePaths paths(kb.gilman_graph());
       paths.from(0).reverse(kb.kind() == congruence_kind::left);
       if (!kb.presentation().contains_empty_word()) {

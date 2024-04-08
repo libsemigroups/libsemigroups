@@ -287,6 +287,16 @@ namespace libsemigroups {
       _cached_confluent  = that._cached_confluent.load();
       _confluence_known  = that._confluence_known.load();
       _requires_alphabet = that._requires_alphabet.load();
+      while (!_pending_rules.empty()) {
+        _pending_rules.pop();
+      }
+      decltype(_pending_rules) tmp = that._pending_rules;
+      while (!tmp.empty()) {
+        auto const* rule = tmp.top();
+        _pending_rules.push(copy_rule(rule));
+        tmp.pop();
+      }
+
       if (_requires_alphabet) {
         _alphabet = that._alphabet;
       }

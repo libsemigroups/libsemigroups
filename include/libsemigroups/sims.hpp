@@ -58,10 +58,11 @@
 
 #include <fstream>
 
-#include "debug.hpp"            // for LIBSEMIGROUPS_ASSERT
-#include "exception.hpp"        // for LIBSEMIGROUPS_EXCEPTION
-#include "felsch-graph.hpp"     // for FelschGraph
-#include "knuth-bendix.hpp"     // for KnuthBendix
+#include "debug.hpp"         // for LIBSEMIGROUPS_ASSERT
+#include "exception.hpp"     // for LIBSEMIGROUPS_EXCEPTION
+#include "felsch-graph.hpp"  // for FelschGraph
+#include "knuth-bendix.hpp"  // for KnuthBendix
+#include "libsemigroups/rewriters.hpp"
 #include "presentation.hpp"     // for Presentation, Presentati...
 #include "to-presentation.hpp"  // for to_presentation
 #include "todd-coxeter.hpp"     // for ToddCoxeter
@@ -2267,10 +2268,19 @@ namespace libsemigroups {
 
    public:
     explicit SimsRefinerIdeals(Presentation<std::string> const& p)
-        : _knuth_bendix(congruence_kind::right, p) {}
+        : _knuth_bendix(congruence_kind::twosided, p) {
+      // Here
+    }
+
+    explicit SimsRefinerIdeals(Presentation<word_type> const& p)
+        : _knuth_bendix(congruence_kind::twosided,
+                        to_presentation<std::string>(p)) {
+      // Here
+    }
 
     bool operator()(Sims1::word_graph_type const& wg) {
       using sims::right_generating_pairs_no_checks;
+      _knuth_bendix.run();
 
       node_type sink = UNDEFINED;
 
